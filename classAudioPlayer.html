@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;354c145</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;4ba8c08</span>
    </div>
   </td>
  </tr>
@@ -95,6 +95,14 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a56a0ee34331830e4886014a1b658dc02"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a00b979fccb64c86b92c23b5211659ba0"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAudioPlayer.html#a00b979fccb64c86b92c23b5211659ba0">Initialize</a> ()</td></tr>
 <tr class="separator:a00b979fccb64c86b92c23b5211659ba0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6ac08c3c04443ae0662815dd9c42cc4d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAudioPlayer.html#a6ac08c3c04443ae0662815dd9c42cc4d">LoadAudioSnd</a> ()</td></tr>
+<tr class="separator:a6ac08c3c04443ae0662815dd9c42cc4d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aac82d03b250711ed0ce64fa22dfe3a59"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAudioPlayer.html#aac82d03b250711ed0ce64fa22dfe3a59">FindSound</a> (const std::string &amp;pName, struct <a class="el" href="structAudioPlayer_1_1SoundHeader.html">AudioPlayer::SoundHeader</a> *header)</td></tr>
+<tr class="separator:aac82d03b250711ed0ce64fa22dfe3a59"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a404da987053467a8a59a72dd66874199"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classBlob.html">Blob</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAudioPlayer.html#a404da987053467a8a59a72dd66874199">LoadSound</a> (const std::string &amp;pSoundName)</td></tr>
+<tr class="separator:a404da987053467a8a59a72dd66874199"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7d67b37579b1bf98c9c413633e9e9816"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classBlob.html">Blob</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAudioPlayer.html#a7d67b37579b1bf98c9c413633e9e9816">LoadSound</a> (int uSoundID)</td></tr>
+<tr class="separator:a7d67b37579b1bf98c9c413633e9e9816"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab10041b12971aa0d8c366c47be9f1fe2"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAudioPlayer.html#ab10041b12971aa0d8c366c47be9f1fe2">SetMasterVolume</a> (int level)</td></tr>
 <tr class="separator:ab10041b12971aa0d8c366c47be9f1fe2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:acb6d471495fb08985fbdb6da89159641"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAudioPlayer.html#acb6d471495fb08985fbdb6da89159641">SetVoiceVolume</a> (int level)</td></tr>
@@ -113,26 +121,22 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a46e9038c208f7910e8f649f9726db63d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aee52c7fcbee921cd73e9288a6df42ef4"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAudioPlayer.html#aee52c7fcbee921cd73e9288a6df42ef4">MusicGetVolume</a> ()</td></tr>
 <tr class="separator:aee52c7fcbee921cd73e9288a6df42ef4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad7f77ef8ad0ba30e82dc34dc88156cb5"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAudioPlayer.html#ad7f77ef8ad0ba30e82dc34dc88156cb5">UpdateSounds</a> ()</td></tr>
+<tr class="separator:ad7f77ef8ad0ba30e82dc34dc88156cb5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9a49f58dff0645ceccd81a9b58c5388b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAudioPlayer.html#a9a49f58dff0645ceccd81a9b58c5388b">pauseAllSounds</a> ()</td></tr>
+<tr class="separator:a9a49f58dff0645ceccd81a9b58c5388b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab1707273eb2bfa0f2108726beddeedf4"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAudioPlayer.html#ab1707273eb2bfa0f2108726beddeedf4">pauseLooping</a> ()</td></tr>
+<tr class="separator:ab1707273eb2bfa0f2108726beddeedf4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2201d87691bbe58cb0d5da555b1f91e4"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAudioPlayer.html#a2201d87691bbe58cb0d5da555b1f91e4">resumeSounds</a> ()</td></tr>
+<tr class="separator:a2201d87691bbe58cb0d5da555b1f91e4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3ad68af55e575b991c99e250df1148e5"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAudioPlayer.html#a3ad68af55e575b991c99e250df1148e5">stopSounds</a> ()</td></tr>
 <tr class="separator:a3ad68af55e575b991c99e250df1148e5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab0ff35fc600de50b717482376420cc76"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAudioPlayer.html#ab0ff35fc600de50b717482376420cc76">stopWalkingSounds</a> ()</td></tr>
 <tr class="separator:ab0ff35fc600de50b717482376420cc76"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a88c5e9b7cc541425ae56bbbd14f8e006"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAudioPlayer.html#a88c5e9b7cc541425ae56bbbd14f8e006">soundDrain</a> ()</td></tr>
+<tr class="separator:a88c5e9b7cc541425ae56bbbd14f8e006"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a56efb0cc9e24aca326c07d0beb8f0f80"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAudioPlayer.html#a56efb0cc9e24aca326c07d0beb8f0f80">playSound</a> (<a class="el" href="AudioPlayer_8h.html#aa4689ee7c9a692044aebd36cb0915e61">SoundID</a> eSoundID, int pid, unsigned int uNumRepeats=0, int x=-1, int y=0, int sound_data_id=0)</td></tr>
 <tr class="separator:a56efb0cc9e24aca326c07d0beb8f0f80"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad7f77ef8ad0ba30e82dc34dc88156cb5"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAudioPlayer.html#ad7f77ef8ad0ba30e82dc34dc88156cb5">UpdateSounds</a> ()</td></tr>
-<tr class="separator:ad7f77ef8ad0ba30e82dc34dc88156cb5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6dfd93190338f5cbb635b5c313cfe063"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAudioPlayer.html#a6dfd93190338f5cbb635b5c313cfe063">PauseSounds</a> (int uType)</td></tr>
-<tr class="separator:a6dfd93190338f5cbb635b5c313cfe063"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6ac08c3c04443ae0662815dd9c42cc4d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAudioPlayer.html#a6ac08c3c04443ae0662815dd9c42cc4d">LoadAudioSnd</a> ()</td></tr>
-<tr class="separator:a6ac08c3c04443ae0662815dd9c42cc4d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a19d25356f8cdb28b4db5aa1712ee7bdf"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAudioPlayer.html#a19d25356f8cdb28b4db5aa1712ee7bdf">ResumeSounds</a> ()</td></tr>
-<tr class="separator:a19d25356f8cdb28b4db5aa1712ee7bdf"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aac82d03b250711ed0ce64fa22dfe3a59"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAudioPlayer.html#aac82d03b250711ed0ce64fa22dfe3a59">FindSound</a> (const std::string &amp;pName, struct <a class="el" href="structAudioPlayer_1_1SoundHeader.html">AudioPlayer::SoundHeader</a> *header)</td></tr>
-<tr class="separator:aac82d03b250711ed0ce64fa22dfe3a59"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a404da987053467a8a59a72dd66874199"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classBlob.html">Blob</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAudioPlayer.html#a404da987053467a8a59a72dd66874199">LoadSound</a> (const std::string &amp;pSoundName)</td></tr>
-<tr class="separator:a404da987053467a8a59a72dd66874199"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7d67b37579b1bf98c9c413633e9e9816"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classBlob.html">Blob</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAudioPlayer.html#a7d67b37579b1bf98c9c413633e9e9816">LoadSound</a> (int uSoundID)</td></tr>
-<tr class="separator:a7d67b37579b1bf98c9c413633e9e9816"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a22e0d0ce50c278204eab8eb0087dfc4b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAudioPlayer.html#a22e0d0ce50c278204eab8eb0087dfc4b">playMusicSound</a> (<a class="el" href="AudioPlayer_8h.html#aa4689ee7c9a692044aebd36cb0915e61">SoundID</a> id)</td></tr>
 <tr class="separator:a22e0d0ce50c278204eab8eb0087dfc4b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9c565d69f76d1db70ddedb3ce8f9c549"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAudioPlayer.html#a9c565d69f76d1db70ddedb3ce8f9c549">playSpellSound</a> (<a class="el" href="SpellEnums_8h.html#a6ac7ece38acd196bf750bc353e00d088">SPELL_TYPE</a> spell, unsigned int pid, bool is_impact=false)</td></tr>
@@ -182,10 +186,10 @@ Protected Attributes</h2></td></tr>
 <tr class="separator:aac2df45f5a55f2e59727e75ee26a89e9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a354ee5787a7918cff3e5995887389217"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classAudioSamplePool.html">AudioSamplePool</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAudioPlayer.html#a354ee5787a7918cff3e5995887389217">_voiceSoundPool</a></td></tr>
 <tr class="separator:a354ee5787a7918cff3e5995887389217"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a24634130eced9becd23fb6d2b25400d4"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classAudioSamplePool.html">AudioSamplePool</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAudioPlayer.html#a24634130eced9becd23fb6d2b25400d4">_exclusiveSoundPool</a></td></tr>
-<tr class="separator:a24634130eced9becd23fb6d2b25400d4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aebe801404ee08166bf2c73fa51725835"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classAudioSamplePool.html">AudioSamplePool</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAudioPlayer.html#aebe801404ee08166bf2c73fa51725835">_nonExclusiveSoundPool</a></td></tr>
-<tr class="separator:aebe801404ee08166bf2c73fa51725835"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a49f9972ffd73d89193b6cf1682d89934"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classAudioSamplePool.html">AudioSamplePool</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAudioPlayer.html#a49f9972ffd73d89193b6cf1682d89934">_regularSoundPool</a></td></tr>
+<tr class="separator:a49f9972ffd73d89193b6cf1682d89934"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a73be80f36123758e51dfc969a0bdb651"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classAudioSamplePool.html">AudioSamplePool</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAudioPlayer.html#a73be80f36123758e51dfc969a0bdb651">_loopingSoundPool</a></td></tr>
+<tr class="separator:a73be80f36123758e51dfc969a0bdb651"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a82df1e315dd49581cd8dde1cf99b63c2"><td class="memItemLeft" align="right" valign="top"><a class="el" href="Media_8h.html#aec9137d201f9fdc6dc340ae7b19f86f8">PAudioSample</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAudioPlayer.html#a82df1e315dd49581cd8dde1cf99b63c2">_currentWalkingSample</a></td></tr>
 <tr class="separator:a82df1e315dd49581cd8dde1cf99b63c2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
@@ -465,17 +469,33 @@ Protected Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="a6dfd93190338f5cbb635b5c313cfe063" name="a6dfd93190338f5cbb635b5c313cfe063"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a6dfd93190338f5cbb635b5c313cfe063">&#9670;&#160;</a></span>PauseSounds()</h2>
+<a id="a9a49f58dff0645ceccd81a9b58c5388b" name="a9a49f58dff0645ceccd81a9b58c5388b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9a49f58dff0645ceccd81a9b58c5388b">&#9670;&#160;</a></span>pauseAllSounds()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">void AudioPlayer::PauseSounds </td>
+          <td class="memname">void AudioPlayer::pauseAllSounds </td>
           <td>(</td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>uType</em></td><td>)</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ab1707273eb2bfa0f2108726beddeedf4" name="ab1707273eb2bfa0f2108726beddeedf4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab1707273eb2bfa0f2108726beddeedf4">&#9670;&#160;</a></span>pauseLooping()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void AudioPlayer::pauseLooping </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
           <td></td>
         </tr>
       </table>
@@ -760,14 +780,14 @@ Protected Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="a19d25356f8cdb28b4db5aa1712ee7bdf" name="a19d25356f8cdb28b4db5aa1712ee7bdf"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a19d25356f8cdb28b4db5aa1712ee7bdf">&#9670;&#160;</a></span>ResumeSounds()</h2>
+<a id="a2201d87691bbe58cb0d5da555b1f91e4" name="a2201d87691bbe58cb0d5da555b1f91e4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2201d87691bbe58cb0d5da555b1f91e4">&#9670;&#160;</a></span>resumeSounds()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">void AudioPlayer::ResumeSounds </td>
+          <td class="memname">void AudioPlayer::resumeSounds </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
@@ -824,6 +844,23 @@ Protected Attributes</h2></td></tr>
           <td>(</td>
           <td class="paramtype">int&#160;</td>
           <td class="paramname"><em>level</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a88c5e9b7cc541425ae56bbbd14f8e006" name="a88c5e9b7cc541425ae56bbbd14f8e006"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a88c5e9b7cc541425ae56bbbd14f8e006">&#9670;&#160;</a></span>soundDrain()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void AudioPlayer::soundDrain </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
           <td></td>
         </tr>
       </table>
@@ -905,8 +942,8 @@ Protected Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="a24634130eced9becd23fb6d2b25400d4" name="a24634130eced9becd23fb6d2b25400d4"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a24634130eced9becd23fb6d2b25400d4">&#9670;&#160;</a></span>_exclusiveSoundPool</h2>
+<a id="a73be80f36123758e51dfc969a0bdb651" name="a73be80f36123758e51dfc969a0bdb651"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a73be80f36123758e51dfc969a0bdb651">&#9670;&#160;</a></span>_loopingSoundPool</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -915,7 +952,7 @@ Protected Attributes</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="classAudioSamplePool.html">AudioSamplePool</a> AudioPlayer::_exclusiveSoundPool</td>
+          <td class="memname"><a class="el" href="classAudioSamplePool.html">AudioSamplePool</a> AudioPlayer::_loopingSoundPool</td>
         </tr>
       </table>
   </td>
@@ -927,8 +964,8 @@ Protected Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="aebe801404ee08166bf2c73fa51725835" name="aebe801404ee08166bf2c73fa51725835"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aebe801404ee08166bf2c73fa51725835">&#9670;&#160;</a></span>_nonExclusiveSoundPool</h2>
+<a id="a49f9972ffd73d89193b6cf1682d89934" name="a49f9972ffd73d89193b6cf1682d89934"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a49f9972ffd73d89193b6cf1682d89934">&#9670;&#160;</a></span>_regularSoundPool</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -937,7 +974,7 @@ Protected Attributes</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="classAudioSamplePool.html">AudioSamplePool</a> AudioPlayer::_nonExclusiveSoundPool</td>
+          <td class="memname"><a class="el" href="classAudioSamplePool.html">AudioSamplePool</a> AudioPlayer::_regularSoundPool</td>
         </tr>
       </table>
   </td>
