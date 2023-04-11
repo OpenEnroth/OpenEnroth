@@ -97,72 +97,43 @@ void EngineController::pressGuiButton(std::string_view buttonId) {
 }
 
 void EngineController::goToMainMenu() {
-    assert(!pArcomageGame->bGameInProgress); // Going from Arcomage to main menu is not implemented yet.
+    auto maybeThrow = [counter = 0] () mutable {
+        if (++counter >= 128)
+            throw Exception("Couldn't return to main menu");
+    };
 
-    if (current_screen_type == CURRENT_SCREEN::SCREEN_SPELL_BOOK) {
-        pressAndReleaseKey(PlatformKey::Escape);
-        tick(1);
-    }
-
-    if (current_screen_type == CURRENT_SCREEN::SCREEN_CHARACTERS) {
-        pressAndReleaseKey(PlatformKey::Escape);
-        tick(1);
-    }
-
-    if (current_screen_type == CURRENT_SCREEN::SCREEN_HOUSE) {
-        pressAndReleaseKey(PlatformKey::Escape);
-        tick(1);
-    }
-
-    if (current_screen_type == CURRENT_SCREEN::SCREEN_LOADGAME) {
-        for (int i = 0; i < 3; i++) {
-            pressAndReleaseKey(PlatformKey::Escape);
-            tick(1);
-        }
-    }
-
-    if (current_screen_type == CURRENT_SCREEN::SCREEN_SHOP_INVENTORY) {
-        for (int i = 0; i < 3; i++) {
-            pressAndReleaseKey(PlatformKey::Escape);
-            tick(1);
-        }
-    }
-
+    // Can't always leave key settings menu by pressing ESC, so need custom handling.
     if (current_screen_type == CURRENT_SCREEN::SCREEN_KEYBOARD_OPTIONS) {
         pressGuiButton("KeyBinding_Default");
         tick(1);
-        for (int i = 0; i < 3; i++) {
-            pressAndReleaseKey(PlatformKey::Escape);
-            tick(1);
-        }
+    }
+
+    // Leave to game screen if we're in the game, or to main menu if we're in menus.
+    while (current_screen_type != CURRENT_SCREEN::SCREEN_GAME && GetCurrentMenuID() != MENU_MAIN) {
+        maybeThrow();
+        pressAndReleaseKey(PlatformKey::Escape);
+        tick(1);
     }
 
     if (GetCurrentMenuID() == MENU_MAIN)
         return;
+    assert(GetCurrentMenuID() == MENU_NONE);
 
-    if (GetCurrentMenuID() == MENU_CREATEPARTY) {
-        pressAndReleaseKey(PlatformKey::Escape);
-        tick(2);
-        assert(GetCurrentMenuID() == MENU_MAIN);
-        return;
-    }
-
-    if (GetCurrentMenuID() == MENU_NONE) {
-        if (pGUIWindow_CastTargetedSpell) {
-            pressAndReleaseKey(PlatformKey::Escape);
-            tick(1);
-        }
+    // Go to in-game menu.
+    while (current_screen_type != CURRENT_SCREEN::SCREEN_MENU) {
+        maybeThrow();
         pressAndReleaseKey(PlatformKey::Escape);
         tick(1);
-        pressGuiButton("GameMenu_Quit");
-        tick(1);
-        pressGuiButton("GameMenu_Quit");
-        while (GetCurrentMenuID() != MENU_MAIN)
-            tick(1);
-        return;
     }
 
-    assert(false); // TODO(captainurist): implement for other cases
+    // Leave to main menu from there.
+    pressGuiButton("GameMenu_Quit");
+    tick(1);
+    pressGuiButton("GameMenu_Quit");
+    while (GetCurrentMenuID() != MENU_MAIN) {
+        maybeThrow();
+        tick(1);
+    }
 }
 
 void EngineController::skipLoadingScreen() {

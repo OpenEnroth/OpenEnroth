@@ -1446,7 +1446,6 @@ void UI_OnMouseRightClick(int mouse_x, int mouse_y) {
                     popup_window.uFrameHeight = 200;
                     popup_window.uFrameX = 38;
                     popup_window.uFrameY = 60;
-                    pAudioPlayer->PauseSounds(-1);
                     GameUI_CharacterQuickRecord_Draw(
                         &popup_window, &pParty->pPlayers[popup_window.wData.val]);
                 }
@@ -1458,18 +1457,15 @@ void UI_OnMouseRightClick(int mouse_x, int mouse_y) {
                         popup_window.uFrameHeight = 200;
                         popup_window.uFrameX = 38;
                         popup_window.uFrameY = 60;
-                        pAudioPlayer->PauseSounds(-1);
                         popup_window._41D73D_draw_buff_tooltip();
                     } else if ((int)pX < 485 || (int)pX > 548 ||
                                (int)pY < 156 ||
                                (int)pY > 229) {  // NPC zone
                         if (!((signed int)pX < 566 || (signed int)pX > 629 ||
                               (signed int)pY < 156 || (signed int)pY > 229)) {
-                            pAudioPlayer->PauseSounds(-1);
                             GameUI_DrawNPCPopup((void *)1);  // NPC 2
                         }
                     } else {
-                        pAudioPlayer->PauseSounds(-1);
                         GameUI_DrawNPCPopup(0);  // NPC 1
                     }
                 } else {  // minimap zone
@@ -1478,7 +1474,6 @@ void UI_OnMouseRightClick(int mouse_x, int mouse_y) {
                     popup_window.uFrameX = 130;
                     popup_window.uFrameY = 140;
                     popup_window.uFrameHeight = 64;
-                    pAudioPlayer->PauseSounds(-1);
                     popup_window.DrawMessageBox(0);
                 }
             } else {  // game zone
@@ -1520,7 +1515,6 @@ void UI_OnMouseRightClick(int mouse_x, int mouse_y) {
             popup_window.uFrameX = pX + 5;
             popup_window.uFrameY = pY + 5;
             popup_window.uFrameHeight = 64;
-            pAudioPlayer->PauseSounds(-1);
             popup_window.DrawMessageBox(0);
             break;
         }

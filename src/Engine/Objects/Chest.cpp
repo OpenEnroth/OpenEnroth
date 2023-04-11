@@ -151,7 +151,6 @@ bool Chest::Open(int uChestID) {
         chest->uFlags &= ~CHEST_TRAPPED;
         flag_shout = true;
     }
-    pAudioPlayer->PauseSounds(-1);
     pAudioPlayer->playUISound(SOUND_openchest0101);
     if (flag_shout == true) {
         if (!OpenedTelekinesis) {

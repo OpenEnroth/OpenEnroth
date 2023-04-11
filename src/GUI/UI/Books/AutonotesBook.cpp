@@ -26,7 +26,6 @@ GUIWindow_AutonotesBook::GUIWindow_AutonotesBook() : GUIWindow_Book() {
     // --------------------------------
     // 004304E7 Game_EventLoop --- part
     pEventTimer->Pause();
-    pAudioPlayer->PauseSounds(-1);
     pChildBooksOverlay = new GUIWindow_BooksButtonOverlay({527, 353}, {0, 0}, pBtn_Autonotes);
     bFlashAutonotesBook = 0;
 
