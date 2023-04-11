@@ -650,7 +650,7 @@ void ItemGen::GetItemBonusSpecialEnchantment(Player *owner,
     const CEnchantment &currBonus = subpos->second;
     if (currBonus.statPtr != NULL) {
         if (currBonus.statBonus == 0) {
-            *halfSkillBonus = owner->*currBonus.statPtr / 2;
+            *halfSkillBonus = GetSkillLevel(owner->*currBonus.statPtr) / 2;
         } else {
             if (*additiveBonus < currBonus.statBonus) {
                 *additiveBonus = currBonus.statBonus;
@@ -674,7 +674,7 @@ void ItemGen::GetItemBonusArtifact(Player *owner,
 
     const CEnchantment &currBonus = subpos->second;
     if (currBonus.statPtr != NULL) {
-        *bonusSum = owner->*currBonus.statPtr / 2;
+        *bonusSum = GetSkillLevel(owner->*currBonus.statPtr) / 2;
     } else {
         *bonusSum += currBonus.statBonus;
     }
