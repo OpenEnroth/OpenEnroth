@@ -387,7 +387,7 @@ struct Party {
     int getSharedSkillStrongestEffect(PLAYER_SKILL_TYPE skillType, std::any param = std::any());
     /**
      * @brief If config option is enabled, returns highest skill effect among all conscious players. Otherwise returns effect of player with given index.
-     * @param skill Skill type. Can be only ID item/repair item/merchant currently.
+     * @param skillType Skill type. Can be only ID item/repair item/merchant currently.
      * @param playerIndex Index of player whose skill would be tested normally. Can be -1 to get currently active character.
      * @param param Parameter passed to player method.
      * 
