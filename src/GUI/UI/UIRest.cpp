@@ -66,11 +66,12 @@ static void prepareToLoadRestUI() {
 }
 
 static void calculateRequiredFood() {
-    foodRequiredToRest = 2;
-
     if (uCurrentlyLoadedLevelType == LEVEL_Outdoor) {
-        foodRequiredToRest = pOutdoor->GetNumFoodRequiredToRestInCurrentPos(pParty->vPosition);
+        foodRequiredToRest = pOutdoor->getNumFoodRequiredToRestInCurrentPos(pParty->vPosition);
+    } else {
+        foodRequiredToRest = 2;
     }
+
     if (PartyHasDragon()) {
         for (Player &player : pParty->pPlayers) {
             if (player.classType == PLAYER_CLASS_WARLOCK) {

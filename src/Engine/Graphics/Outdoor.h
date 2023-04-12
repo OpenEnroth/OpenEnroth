@@ -76,15 +76,23 @@ struct OutdoorLocation {
     void Release();
     bool Load(const std::string &filename, int days_played,
               int respawn_interval_days, bool *outdoors_was_respawned);
-    int GetTileIdByTileMapId(signed int a2);
-    int _47ED83(int gridX, int gridY);
-    int GetTileAttribByGrid(int gridX, int gridY);
+    int getTileIdByTileMapId(signed int a2);
+
+    /**
+     * @offset 0x47ED83
+     */
+    int getTileMapIdByGrid(int gridX, int gridY);
+
+    /**
+     * @offset 0x47EDB3
+     */
+    int getTileAttribByGrid(int gridX, int gridY);
     int DoGetHeightOnTerrain(signed int sX, signed int sZ);
 
     /**
      * @offset 0x47EE49
      */
-    SoundID getSoundIdByPosition(int X_pos, int Y_pos, bool isRunning);
+    SoundID getSoundIdByGrid(int X_pos, int Y_pos, bool isRunning);
     int UpdateDiscoveredArea(int a2, int a3, int unused);
     bool IsMapCellFullyRevealed(signed int a2, signed int a3);
     bool IsMapCellPartiallyRevealed(signed int a2, signed int a3);
@@ -95,9 +103,21 @@ struct OutdoorLocation {
     bool LoadRoadTileset();
     bool LoadTileGroupIds();
     double GetFogDensityByTime();
-    int GetTileAttribByPos(int sX, int sY);
-    TileDesc *GetTileDescByPos(int sX, int sZ);
-    TileDesc *GetTileDescByGrid(int uX, int uZ);
+
+    /**
+     * @offset 0x488EB1
+     */
+    int getTileAttribByPos(int sX, int sY);
+
+    /**
+     * @offset 0x488EEF
+     */
+    TileDesc *getTileDescByPos(int sX, int sZ);
+
+    /**
+     * @offset 0x47ED08
+     */
+    TileDesc *getTileDescByGrid(int uX, int uZ);
     int GetHeightOnTerrain(int sX, int sZ);
     bool Initialize(const std::string &filename, int days_played,
                     int respawn_interval_days,
@@ -108,7 +128,7 @@ struct OutdoorLocation {
     void MessWithLUN();
     void UpdateSunlightVectors();
     void UpdateFog();
-    int GetNumFoodRequiredToRestInCurrentPos(const Vec3i &pos);
+    int getNumFoodRequiredToRestInCurrentPos(const Vec3i &pos);
     void SetFog();
     void Draw();
 
