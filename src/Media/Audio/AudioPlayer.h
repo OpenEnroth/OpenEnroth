@@ -154,9 +154,9 @@ class AudioSamplePool {
  public:
     explicit AudioSamplePool(bool looping):_looping(looping) {}
 
-    bool playNew(PAudioSample sample, bool positional = false);
-    bool playUniqueSoundId(PAudioSample sample, SoundID id, bool positional = false);
-    bool playUniquePid(PAudioSample sample, int pid, bool positional = false);
+    bool playNew(PAudioSample sample, PAudioDataSource source, bool positional = false);
+    bool playUniqueSoundId(PAudioSample sample, PAudioDataSource source, SoundID id, bool positional = false);
+    bool playUniquePid(PAudioSample sample, PAudioDataSource source, int pid, bool positional = false);
     void pause();
     void resume();
     void stop();
