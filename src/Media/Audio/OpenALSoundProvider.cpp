@@ -793,7 +793,7 @@ PAudioDataSource PlatformDataSourceInitialize(PAudioDataSource baseDataSource) {
 
 class AudioSample16 : public IAudioSample {
  public:
-    AudioSample16():al_source(-1),_position(0.0, 0.0, 0.0),_maxDistance(0.0),_volume(0.0) {}
+    AudioSample16():al_source(-1), _position(0.0, 0.0, 0.0), _maxDistance(0.0), _volume(0.0) {}
     virtual ~AudioSample16() override;
 
     virtual bool Open(PAudioDataSource data_source) override;
