@@ -1764,7 +1764,7 @@ void RenderOpenGL::DrawOutdoorTerrain() {
                 // map is 127 x 127 squares - each square has two triangles - each tri has 3 verts
 
                 // first find all required textures for terrain and add to map
-                auto tile = pOutdoor->GetTileDescByGrid(x, y);
+                auto tile = pOutdoor->getTileDescByGrid(x, y);
                 int tileunit = 0;
                 int tilelayer = 0;
 
@@ -2231,7 +2231,7 @@ void RenderOpenGL::DrawOutdoorTerrain() {
 
                 // splat hits this square of terrain
                 struct Polygon *pTilePolygon = &array_77EC08[pODMRenderParams->uNumPolygons];
-                pTilePolygon->flags = pOutdoor->GetTileAttribByGrid(loopx, loopy);
+                pTilePolygon->flags = pOutdoor->getTileAttribByGrid(loopx, loopy);
 
                 uint norm_idx = pTerrainNormalIndices[(2 * loopx * 128) + (2 * loopy) + 2];  // 2 is top tri // 3 is bottom
                 uint bottnormidx = pTerrainNormalIndices[(2 * loopx * 128) + (2 * loopy) + 3];
@@ -3693,7 +3693,7 @@ void RenderOpenGL::DrawOutdoorBuildings() {
                         std::string *texname = tex->GetName();
                         // gather up all texture and shaderverts data
 
-                        //auto tile = pOutdoor->GetTileDescByGrid(x, y);
+                        //auto tile = pOutdoor->getTileDescByGrid(x, y);
 
                         int texunit = 0;
                         int texlayer = 0;
@@ -3844,7 +3844,7 @@ void RenderOpenGL::DrawOutdoorBuildings() {
             //ignore wtrtyl
             //laod in
 
-            //auto tile = pOutdoor->GetTileDescByGrid(0, 0);
+            //auto tile = pOutdoor->getTileDescByGrid(0, 0);
             //bool border = tile->IsWaterBorderTile();
 
 

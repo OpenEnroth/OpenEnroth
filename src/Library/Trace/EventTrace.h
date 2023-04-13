@@ -18,6 +18,7 @@ struct EventTraceHeader {
     std::vector<EventTraceConfigLine> config;
 
     // TODO(captainurist): std::string saveFileChecksum;
+    // TODO(captainurist): now that we can easily retrace everything, it would make sense to add starting/ending pos & map here.
 };
 
 struct EventTrace {

@@ -22,6 +22,7 @@ typedef std::shared_ptr<IAudioDataSource> PAudioDataSource;
 
 PAudioDataSource CreateAudioFileDataSource(const std::string &file_name);
 PAudioDataSource CreateAudioBufferDataSource(Blob buffer);
+PAudioDataSource PlatformDataSourceInitialize(PAudioDataSource baseDataSource);
 
 class IAudioTrack {
  public:
