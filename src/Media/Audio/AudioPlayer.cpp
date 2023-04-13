@@ -293,6 +293,8 @@ void AudioPlayer::playSound(SoundID eSoundID, int pid, unsigned int uNumRepeats,
             logger->warning("AudioPlayer: failed to create sound data source {} ({})", eSoundID, si.sName);
             return;
         }
+
+        si.dataSource = PlatformDataSourceInitialize(si.dataSource);
     }
 
     PAudioSample sample = CreateAudioSample(si.dataSource);
