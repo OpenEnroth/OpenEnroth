@@ -681,6 +681,8 @@ PAudioTrack CreateAudioTrack(const std::string &file_path) {
     return std::dynamic_pointer_cast<IAudioTrack, AudioTrackS16>(track);
 }
 
+// TODO(Nik-RE-dev): this middleware class is temporary because Media API is not fully
+// ready to properly support current use cases
 class OpenALAudioDataSource : public IAudioDataSource {
  public:
     explicit OpenALAudioDataSource(PAudioDataSource baseDataSource):_baseDataSource(baseDataSource) {}
