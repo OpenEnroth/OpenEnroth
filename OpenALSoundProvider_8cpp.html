@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;4b07515</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;31704b0</span>
    </div>
   </td>
  </tr>
@@ -89,6 +89,7 @@ $(function() {
 <code>#include &lt;thread&gt;</code><br />
 <code>#include &lt;functional&gt;</code><br />
 <code>#include &lt;utility&gt;</code><br />
+<code>#include &lt;vector&gt;</code><br />
 <code>#include &lt;cassert&gt;</code><br />
 <code>#include &lt;cmath&gt;</code><br />
 <code>#include &lt;cstdarg&gt;</code><br />
@@ -106,6 +107,8 @@ Classes</h2></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAudioTrackS16.html">AudioTrackS16</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classOpenALAudioDataSource.html">OpenALAudioDataSource</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAudioSample16.html">AudioSample16</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
@@ -115,6 +118,8 @@ Functions</h2></td></tr>
 <tr class="separator:aece65ae279d5009406167c5949cdf6e1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9ddf1ec6f0d8b6a95f35e17ae192b4d8"><td class="memItemLeft" align="right" valign="top"><a class="el" href="Media_8h.html#ae0744a89d3eaa9875de4dfc82c051b0b">PAudioTrack</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="OpenALSoundProvider_8cpp.html#a9ddf1ec6f0d8b6a95f35e17ae192b4d8">CreateAudioTrack</a> (const std::string &amp;file_path)</td></tr>
 <tr class="separator:a9ddf1ec6f0d8b6a95f35e17ae192b4d8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aea3dc662b7b3f044f09b61de32f6fd60"><td class="memItemLeft" align="right" valign="top"><a class="el" href="Media_8h.html#aa9016c9de6c0ff9dbc6e13d443ec452b">PAudioDataSource</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="OpenALSoundProvider_8cpp.html#aea3dc662b7b3f044f09b61de32f6fd60">PlatformDataSourceInitialize</a> (<a class="el" href="Media_8h.html#aa9016c9de6c0ff9dbc6e13d443ec452b">PAudioDataSource</a> baseDataSource)</td></tr>
+<tr class="separator:aea3dc662b7b3f044f09b61de32f6fd60"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:adab47152950c91b04d5d86f4704bcbbc"><td class="memItemLeft" align="right" valign="top"><a class="el" href="Media_8h.html#aec9137d201f9fdc6dc340ae7b19f86f8">PAudioSample</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="OpenALSoundProvider_8cpp.html#adab47152950c91b04d5d86f4704bcbbc">CreateAudioSample</a> (<a class="el" href="Media_8h.html#aa9016c9de6c0ff9dbc6e13d443ec452b">PAudioDataSource</a> dataSource)</td></tr>
 <tr class="separator:adab47152950c91b04d5d86f4704bcbbc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
@@ -165,6 +170,24 @@ Functions</h2></td></tr>
           <td>(</td>
           <td class="paramtype">const std::string &amp;&#160;</td>
           <td class="paramname"><em>file_path</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="aea3dc662b7b3f044f09b61de32f6fd60" name="aea3dc662b7b3f044f09b61de32f6fd60"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aea3dc662b7b3f044f09b61de32f6fd60">&#9670;&#160;</a></span>PlatformDataSourceInitialize()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="Media_8h.html#aa9016c9de6c0ff9dbc6e13d443ec452b">PAudioDataSource</a> PlatformDataSourceInitialize </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="Media_8h.html#aa9016c9de6c0ff9dbc6e13d443ec452b">PAudioDataSource</a>&#160;</td>
+          <td class="paramname"><em>baseDataSource</em></td><td>)</td>
           <td></td>
         </tr>
       </table>
