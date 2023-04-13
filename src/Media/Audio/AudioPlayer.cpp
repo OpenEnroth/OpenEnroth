@@ -320,6 +320,7 @@ void AudioPlayer::playSound(SoundID eSoundID, int pid, unsigned int uNumRepeats,
             _currentWalkingSample->Stop();
         }
         _currentWalkingSample = sample;
+        _currentWalkingSample->Open(si.dataSource);
         _currentWalkingSample->Play();
     } else if (pid == SOUND_PID_MUSIC_VOLUME) {
         sample->SetVolume(uMusicVolume);
