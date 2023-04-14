@@ -14,6 +14,7 @@
 #include "Engine/MapInfo.h"
 #include "Engine/Objects/Items.h"
 #include "Engine/Party.h"
+#include "Engine/PriceCalculator.h"
 
 #include "GUI/GUIWindow.h"
 #include "GUI/GUIButton.h"
@@ -237,7 +238,10 @@ void ShopDialogLearn(GUIWindow dialogwin) {
     int all_text_height = 0;
 
     int baseprice = (int64_t)(p2DEvents[window_SpeakInHouse->wData.val - 1].flt_24 * 500.0);
-    int pPrice = baseprice * (100 - pPlayers[pParty->getActiveCharacter()]->GetMerchant()) / 100;
+    int pPrice = baseprice *
+                 (100 - PriceCalculator::getMerchant(
+                            pPlayers[pParty->getActiveCharacter()])) /
+                 100;
     if (pPrice < baseprice / 3)
         pPrice = baseprice / 3;
 
@@ -1200,7 +1204,9 @@ void UIShop_Buy_Identify_Repair() {
                 v43 = (int64_t)(p2DEvents[
                     window_SpeakInHouse->wData.val - 1].flt_24 * 500.0);
                 uPriceItemService = v43 *
-                    (100 - pPlayers[pParty->getActiveCharacter()]->GetMerchant()) / 100;
+                    (100 - PriceCalculator::getMerchant(
+                               pPlayers[pParty->getActiveCharacter()])) /
+                    100;
                 if (uPriceItemService < v43 / 3) uPriceItemService = v43 / 3;
                 if (skillMaxMasteryPerClass[pPlayers[pParty->getActiveCharacter()]->classType][skill] != PLAYER_SKILL_MASTERY_NONE) {
                     pSkill = &pPlayers[pParty->getActiveCharacter()]->pActiveSkills[skill];

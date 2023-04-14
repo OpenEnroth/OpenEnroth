@@ -19,6 +19,7 @@
 #include "Engine/Objects/SpriteObject.h"
 #include "Engine/OurMath.h"
 #include "Engine/Party.h"
+#include "Engine/PriceCalculator.h"
 #include "Engine/SpellFxRenderer.h"
 #include "Engine/stru123.h"
 #include "Engine/AttackList.h"
@@ -347,7 +348,7 @@ int Player::GetTempleHealCostModifier(float price_multi) {
 int Player::GetPriceSell(ItemGen itemx, float price_multiplier) {
     int uRealValue = itemx.GetValue();
     int result = static_cast<int>((uRealValue / (price_multiplier + 2.0)) +
-                     uRealValue * GetMerchant() / 100.0);
+                     uRealValue * PriceCalculator::getMerchant(this) / 100.0);
 
     if (result > uRealValue) result = uRealValue;
 
@@ -360,8 +361,9 @@ int Player::GetPriceSell(ItemGen itemx, float price_multiplier) {
 
 //----- (004B8142) --------------------------------------------------------
 int Player::GetBuyingPrice(unsigned int uRealValue, float price_multiplier) {
-    uint price =
-        (uint)(((100 - GetMerchant()) * (uRealValue * price_multiplier)) / 100);
+    uint price = (uint)(((100 - PriceCalculator::getMerchant(this)) *
+                         (uRealValue * price_multiplier)) /
+                        100);
 
     if (price < uRealValue)  // price should always be at least item value
         price = uRealValue;
@@ -372,7 +374,7 @@ int Player::GetBuyingPrice(unsigned int uRealValue, float price_multiplier) {
 //----- (004B8179) --------------------------------------------------------
 int Player::GetPriceIdentification(float price_multiplier) {
     int basecost = (int)(price_multiplier * 50.0f);
-    int actcost = basecost * (100 - GetMerchant()) / 100;
+    int actcost = basecost * (100 - PriceCalculator::getMerchant(this)) / 100;
 
     if (actcost < basecost / 3)  // minimum price
         actcost = basecost / 3;
@@ -386,7 +388,7 @@ int Player::GetPriceIdentification(float price_multiplier) {
 //----- (004B81C3) --------------------------------------------------------
 int Player::GetPriceRepair(int uRealValue, float price_multiplier) {
     int basecost = (int)(uRealValue / (6.0f - price_multiplier));
-    int actcost = basecost * (100 - GetMerchant()) / 100;
+    int actcost = basecost * (100 - PriceCalculator::getMerchant(this)) / 100;
 
     if (actcost < basecost / 3)  // min price
         actcost = basecost / 3;
@@ -395,46 +397,6 @@ int Player::GetPriceRepair(int uRealValue, float price_multiplier) {
         return actcost;
     else
         return 1;
-}
-
-//----- (004B8213) --------------------------------------------------------
-int Player::GetBaseSellingPrice(int uRealValue, float price_multiplier) {
-    int basecost = (int)(uRealValue / (price_multiplier + 2.0f));
-
-    if (basecost < 1)  // min price
-        basecost = 1;
-
-    return basecost;
-}
-
-//----- (004B8233) --------------------------------------------------------
-int Player::GetBaseBuyingPrice(int uRealValue, float price_multiplier) {
-    int basecost = (int)(uRealValue * price_multiplier);
-
-    if (basecost < 1)  // min price
-        basecost = 1;
-
-    return basecost;
-}
-
-//----- (004B824B) --------------------------------------------------------
-int Player::GetBaseIdentifyPrice(float price_multiplier) {
-    int basecost = (int)(price_multiplier * 50.0f);
-
-    if (basecost < 1)  // min price
-        basecost = 1;
-
-    return basecost;
-}
-
-//----- (004B8265) --------------------------------------------------------
-int Player::GetBaseRepairPrice(int uRealValue, float price_multiplier) {
-    int basecost = (int)(uRealValue / (6.0f - price_multiplier));
-
-    if (basecost < 1)  // min price
-        basecost = 1;
-
-    return basecost;
 }
 
 //----- (004B6FF9) --------------------------------------------------------
@@ -950,25 +912,6 @@ bool Player::CanRepair(ItemGen *pItem) {
                   pItemTable->pItems[pItem->uItemID].uItemID_Rep_St;
 
     return result;
-}
-
-//----- (004911F3) --------------------------------------------------------
-int Player::GetMerchant() {
-    PLAYER_SKILL_LEVEL skill = GetActualSkillLevel(PLAYER_SKILL_MERCHANT);
-    PLAYER_SKILL_MASTERY skillmaster = GetActualSkillMastery(PLAYER_SKILL_MERCHANT);
-    int multiplier =
-        GetMultiplierForSkillLevel(PLAYER_SKILL_MERCHANT, 1, 2, 3, 5);
-
-    if (skillmaster == PLAYER_SKILL_MASTERY_GRANDMASTER)  // gm merchant
-        return 10000;
-
-    int rep = pParty->GetPartyReputation();
-    int bonus = multiplier * skill;
-
-    if (bonus == 0)  // no skill so trading on rep alone
-        return -rep;
-
-    return bonus - rep + 7;
 }
 
 //----- (0049125A) --------------------------------------------------------

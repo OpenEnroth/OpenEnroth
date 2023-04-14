@@ -272,7 +272,6 @@ struct Player {
     int GetMeditation();
     bool CanIdentify(ItemGen *pItem);
     bool CanRepair(ItemGen *pItem);
-    int GetMerchant();
     int GetPerception();
     int GetDisarmTrap();
 
@@ -324,10 +323,6 @@ struct Player {
     unsigned int GetItemMainInventoryIndex(int inout_item_cell);
     struct ItemGen *GetItemAtInventoryIndex(int inout_item_cell);
     bool IsPlayerHealableByTemple();
-    int GetBaseIdentifyPrice(float price_multiplier);
-    int GetBaseRepairPrice(int uRealValue, float price_multiplier);
-    int GetBaseBuyingPrice(int uRealValue, float price_multiplier);
-    int GetBaseSellingPrice(int uRealValue, float price_multiplier);
     int GetPriceRepair(int uRealValue, float price_multiplier);
     int GetPriceIdentification(float price_multiplier);
     int GetBuyingPrice(unsigned int uRealValue, float price_multiplier);

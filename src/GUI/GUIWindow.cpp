@@ -22,6 +22,7 @@
 #include "Engine/Objects/PlayerEnums.h"
 #include "Engine/OurMath.h"
 #include "Engine/Party.h"
+#include "Engine/PriceCalculator.h"
 #include "Engine/EngineIocContainer.h"
 #include "Engine/Tables/IconFrameTable.h"
 #include "Engine/Tables/StorylineTextTable.h"
@@ -2017,27 +2018,27 @@ std::string BuildDialogueString(std::string &str, uint8_t uPlayerID, ItemGen *a3
                 break;
 
             case 25:  // base prices
-                v29 = pPlayer->GetBaseBuyingPrice(
+                v29 = PriceCalculator::getBaseBuyingPrice(
                     a3->GetValue(), p2DEvents[eventId - 1].fPriceMultiplier
                 );
                 switch (shop_screen) {
                 case 3:
-                    v29 = pPlayer->GetBaseSellingPrice(
+                        v29 = PriceCalculator::getBaseSellingPrice(
                         a3->GetValue(), p2DEvents[eventId - 1].fPriceMultiplier
                     );
                     break;
                 case 4:
-                    v29 = pPlayer->GetBaseIdentifyPrice(
+                    v29 = PriceCalculator::getBaseIdentifyPrice(
                         p2DEvents[eventId - 1].fPriceMultiplier
                     );
                     break;
                 case 5:
-                    v29 = pPlayer->GetBaseRepairPrice(
+                    v29 = PriceCalculator::getBaseRepairPrice(
                         a3->GetValue(),
                         p2DEvents[eventId - 1].fPriceMultiplier);
                     break;
                 case 6:
-                    v29 = pPlayer->GetBaseSellingPrice(
+                    v29 = PriceCalculator::getBaseSellingPrice(
                         a3->GetValue(),
                         p2DEvents[eventId - 1]
                         .fPriceMultiplier) /
