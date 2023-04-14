@@ -323,11 +323,6 @@ struct Player {
     unsigned int GetItemMainInventoryIndex(int inout_item_cell);
     struct ItemGen *GetItemAtInventoryIndex(int inout_item_cell);
     bool IsPlayerHealableByTemple();
-    int GetPriceRepair(int uRealValue, float price_multiplier);
-    int GetPriceIdentification(float price_multiplier);
-    int GetBuyingPrice(unsigned int uRealValue, float price_multiplier);
-    int GetPriceSell(ItemGen itemx, float price_multiplier);
-    int GetTempleHealCostModifier(float price_multi);
     int GetConditionDaysPassed(Condition uCondition);
     bool NothingOrJustBlastersEquipped();
     void SalesProcess(unsigned int inventory_idnx, int item_index, int _2devent_idx);  // 0x4BE2DD

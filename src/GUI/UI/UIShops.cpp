@@ -239,7 +239,7 @@ void ShopDialogLearn(GUIWindow dialogwin) {
 
     int baseprice = (int64_t)(p2DEvents[window_SpeakInHouse->wData.val - 1].flt_24 * 500.0);
     int pPrice = baseprice *
-                 (100 - PriceCalculator::getMerchant(
+                 (100 - PriceCalculator::getPlayerMerchant(
                             pPlayers[pParty->getActiveCharacter()])) /
                  100;
     if (pPrice < baseprice / 3)
@@ -849,7 +849,10 @@ void UIShop_Buy_Identify_Repair() {
                         if ((pt.y >= 90 && pt.y <= (90 + shop_ui_items_in_store[testx]->GetHeight())) ||
                             (pt.y >= 250 && pt.y <= (250 + shop_ui_items_in_store[testx]->GetHeight()))) {
                             pPriceMultiplier = p2DEvents[window_SpeakInHouse->wData.val - 1].fPriceMultiplier;
-                            uPriceItemService = pPlayers[pParty->getActiveCharacter()]->GetBuyingPrice(bought_item->GetValue(), pPriceMultiplier);
+                            uPriceItemService =
+                                PriceCalculator::getItemBuyingPriceForPlayer(
+                                    pPlayers[pParty->getActiveCharacter()],
+                                    bought_item->GetValue(), pPriceMultiplier);
 
                             if (pParty->GetGold() < uPriceItemService) {
                                 PlayHouseSound(window_SpeakInHouse->wData.val, (HouseSoundID)2);
@@ -913,9 +916,9 @@ void UIShop_Buy_Identify_Repair() {
                  !pItemID))
                 return;
 
-            uPriceItemService =
-                pPlayers[pParty->getActiveCharacter()]->GetPriceIdentification(
-                    p2DEvents[window_SpeakInHouse->wData.val - 1].fPriceMultiplier);
+            uPriceItemService = PriceCalculator::getItemIdentificationPriceForPlayer(
+                pPlayers[pParty->getActiveCharacter()],
+                p2DEvents[window_SpeakInHouse->wData.val - 1].fPriceMultiplier);
             item = &pPlayers[pParty->getActiveCharacter()]->pInventoryItemList[pItemID - 1];
 
             if (!(item->uAttributes & ITEM_IDENTIFIED)) {
@@ -955,8 +958,9 @@ void UIShop_Buy_Identify_Repair() {
             pPriceMultiplier =
                 p2DEvents[window_SpeakInHouse->wData.val - 1]
                     .fPriceMultiplier;
-            uPriceItemService = pPlayers[pParty->getActiveCharacter()]->GetPriceRepair(
-                item->GetValue(), pPriceMultiplier);
+            uPriceItemService = PriceCalculator::getItemRepairPriceForPlayer(
+                pPlayers[pParty->getActiveCharacter()], item->GetValue(),
+                pPriceMultiplier);
 
             if (item->uAttributes & ITEM_BROKEN) {
                 if (item->MerchandiseTest(window_SpeakInHouse->wData.val)) {
@@ -1147,10 +1151,9 @@ void UIShop_Buy_Identify_Repair() {
                     return;
             }
 
-            uPriceItemService = pPlayers[pParty->getActiveCharacter()]->GetBuyingPrice(
-                bought_item->GetValue(),
-                p2DEvents[window_SpeakInHouse->wData.val - 1]
-                    .fPriceMultiplier);
+            uPriceItemService = PriceCalculator::getItemBuyingPriceForPlayer(
+                pPlayers[pParty->getActiveCharacter()], bought_item->GetValue(),
+                p2DEvents[window_SpeakInHouse->wData.val - 1].fPriceMultiplier);
             uNumSeconds = 0;
             a3 = 0;
             if (pMapStats->GetMapInfo(pCurrentMapName))
@@ -1204,7 +1207,7 @@ void UIShop_Buy_Identify_Repair() {
                 v43 = (int64_t)(p2DEvents[
                     window_SpeakInHouse->wData.val - 1].flt_24 * 500.0);
                 uPriceItemService = v43 *
-                    (100 - PriceCalculator::getMerchant(
+                    (100 - PriceCalculator::getPlayerMerchant(
                                pPlayers[pParty->getActiveCharacter()])) /
                     100;
                 if (uPriceItemService < v43 / 3) uPriceItemService = v43 / 3;

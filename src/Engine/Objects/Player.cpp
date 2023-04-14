@@ -260,7 +260,7 @@ void Player::SpendMana(unsigned int uRequiredMana) {
 //----- (004BE2DD) --------------------------------------------------------
 void Player::SalesProcess(unsigned int inventory_idnx, int item_index, int _2devent_idx) {
     float shop_mult = p2DEvents[_2devent_idx - 1].fPriceMultiplier;
-    int sell_price = GetPriceSell(pOwnItems[item_index], shop_mult);
+    int sell_price = PriceCalculator::getItemSellingPriceForPlayer(this, pOwnItems[item_index], shop_mult);
 
     // remove item and add gold
     RemoveItemAtInventoryIndex(inventory_idnx);
@@ -302,101 +302,6 @@ int Player::GetConditionDaysPassed(Condition condition) {
     GameTime diff = playtime - condtime;
 
     return diff.GetDays() + 1;
-}
-
-//----- (004B807C) --------------------------------------------------------
-int Player::GetTempleHealCostModifier(float price_multi) {
-    Condition conditionIdx = GetMajorConditionIdx();  // get worse condition
-    int conditionTimeMultiplier = 1;
-    int baseConditionMultiplier =
-        1;  // condition good unless otherwise , base price for health and mana
-    int high_mult;
-    int result;
-
-    if (conditionIdx >= Condition_Dead &&
-        conditionIdx <= Condition_Eradicated) {  // dead, petri, erad - serious
-        if (conditionIdx <= Condition_Petrified)
-            baseConditionMultiplier = 5;  // dead or petri
-        else
-            baseConditionMultiplier = 10;  // erad
-
-        conditionTimeMultiplier = GetConditionDaysPassed(conditionIdx);
-    } else if (conditionIdx < Condition_Dead) {  // all other conditions
-        for (int i = 0; i <= 13; i++) {
-            high_mult = GetConditionDaysPassed(static_cast<Condition>(i));
-
-            if (high_mult >
-                conditionTimeMultiplier)  // get worst other condition
-                conditionTimeMultiplier = high_mult;
-        }
-    }
-
-    result = (int)((double)conditionTimeMultiplier *
-                   (double)baseConditionMultiplier *
-                   price_multi);  // calc heal price
-
-    if (result < 1)  // min cost
-        result = 1;
-
-    if (result > 10000)  // max cost
-        result = 10000;
-
-    return result;
-}
-
-//----- (004B8102) --------------------------------------------------------
-int Player::GetPriceSell(ItemGen itemx, float price_multiplier) {
-    int uRealValue = itemx.GetValue();
-    int result = static_cast<int>((uRealValue / (price_multiplier + 2.0)) +
-                     uRealValue * PriceCalculator::getMerchant(this) / 100.0);
-
-    if (result > uRealValue) result = uRealValue;
-
-    if (itemx.IsBroken()) result = 1;
-
-    if (result < 1) result = 1;
-
-    return result;
-}
-
-//----- (004B8142) --------------------------------------------------------
-int Player::GetBuyingPrice(unsigned int uRealValue, float price_multiplier) {
-    uint price = (uint)(((100 - PriceCalculator::getMerchant(this)) *
-                         (uRealValue * price_multiplier)) /
-                        100);
-
-    if (price < uRealValue)  // price should always be at least item value
-        price = uRealValue;
-
-    return price;
-}
-
-//----- (004B8179) --------------------------------------------------------
-int Player::GetPriceIdentification(float price_multiplier) {
-    int basecost = (int)(price_multiplier * 50.0f);
-    int actcost = basecost * (100 - PriceCalculator::getMerchant(this)) / 100;
-
-    if (actcost < basecost / 3)  // minimum price
-        actcost = basecost / 3;
-
-    if (actcost > 1)
-        return actcost;
-    else
-        return 1;
-}
-
-//----- (004B81C3) --------------------------------------------------------
-int Player::GetPriceRepair(int uRealValue, float price_multiplier) {
-    int basecost = (int)(uRealValue / (6.0f - price_multiplier));
-    int actcost = basecost * (100 - PriceCalculator::getMerchant(this)) / 100;
-
-    if (actcost < basecost / 3)  // min price
-        actcost = basecost / 3;
-
-    if (actcost > 1)
-        return actcost;
-    else
-        return 1;
 }
 
 //----- (004B6FF9) --------------------------------------------------------
@@ -7550,20 +7455,22 @@ MERCHANT_PHRASE Player::SelectPhrasesTransaction(ItemGen *pItem, BuildingType bu
     multiplier = p2DEvents[BuildID_2Events - 1].fPriceMultiplier;
     switch (ShopMenuType) {
         case 2:
-            price = GetBuyingPrice(itemValue, multiplier);
+            price = PriceCalculator::getItemBuyingPriceForPlayer(this, itemValue, multiplier);
             break;
         case 3:
             // if (pItem->IsBroken())
             // price = 1;
             // else
-            price = this->GetPriceSell(*pItem,
-                                       multiplier);  // itemValue, multiplier);
+            price = PriceCalculator::getItemSellingPriceForPlayer(
+                this, *pItem,
+                multiplier);  // itemValue, multiplier);
             break;
         case 4:
-            price = this->GetPriceIdentification(multiplier);
+            price = PriceCalculator::getItemIdentificationPriceForPlayer(this, multiplier);
             break;
         case 5:
-            price = this->GetPriceRepair(itemValue, multiplier);
+            price = PriceCalculator::getItemRepairPriceForPlayer(
+                this, itemValue, multiplier);
             break;
         default:
             Error("(%u)", ShopMenuType);

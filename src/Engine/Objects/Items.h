@@ -103,7 +103,7 @@ struct ItemGen {  // 0x24
     bool isPassiveEquipment() {
         return IsPassiveEquipment(GetItemEquipType());
     }
-    
+
 
     ITEM_TYPE uItemID = ITEM_NULL;        // 0
     int32_t uEnchantmentType = ITEM_ENCHANTMENT_NULL;       // 4 // For potion it's potion strength.

@@ -1209,7 +1209,7 @@ void OnSelectShopDialogueOption(DIALOGUE_TYPE option) {
             }
 
             pPrice = v36 *
-                     (100 - PriceCalculator::getMerchant(
+                     (100 - PriceCalculator::getPlayerMerchant(
                                 pPlayers[pParty->getActiveCharacter()])) /
                      100;
             if (pPrice < v36 / 3) pPrice = v36 / 3;
@@ -1265,7 +1265,7 @@ void TravelByTransport() {
     int base_price = p2DEvents[window_SpeakInHouse->wData.val - 1].uType == BuildingType_Stables ? 25 : 50;
     base_price *= p2DEvents[window_SpeakInHouse->wData.val - 1].fPriceMultiplier;
     int pPrice = base_price *
-                 (100 - PriceCalculator::getMerchant(
+                 (100 - PriceCalculator::getPlayerMerchant(
                             pPlayers[pParty->getActiveCharacter()])) /
                  100;
     if (pPrice < base_price / 3) pPrice = base_price / 3;
@@ -1669,14 +1669,14 @@ void TavernDialog() {
         pParty->setActiveToFirstCanAct();
 
     pPriceRoom = ((v2 * v2) / 10) *
-                 (100 - PriceCalculator::getMerchant(
+                 (100 - PriceCalculator::getPlayerMerchant(
                             pPlayers[pParty->getActiveCharacter()])) /
         100;  // nzi
     if (pPriceRoom < ((v2 * v2) / 10) / 3) pPriceRoom = ((v2 * v2) / 10) / 3;
     if (pPriceRoom <= 0) pPriceRoom = 1;
 
     pPriceFood = ((v2 * v2) * v2 / 100) *
-                 (100 - PriceCalculator::getMerchant(
+                 (100 - PriceCalculator::getPlayerMerchant(
                             pPlayers[pParty->getActiveCharacter()])) /
                  100;
     if (pPriceFood < ((v2 * v2) * v2 / 100) / 3)
@@ -1857,7 +1857,7 @@ void TavernDialog() {
         v9 = (int64_t)(p2DEvents[
             window_SpeakInHouse->wData.val - 1].flt_24 * 500.0);
         pPriceSkill = v9 *
-                      (100 - PriceCalculator::getMerchant(
+                      (100 - PriceCalculator::getPlayerMerchant(
                                  pPlayers[pParty->getActiveCharacter()])) /
                       100;
         if (pPriceSkill < v9 / 3) pPriceSkill = v9 / 3;
@@ -1972,7 +1972,8 @@ void TempleDialog() {
         pParty->setActiveToFirstCanAct();
     }
 
-    pPrice = pPlayers[pParty->getActiveCharacter()]->GetTempleHealCostModifier(
+    pPrice = PriceCalculator::getTempleHealingCostForPlayer(
+        pPlayers[pParty->getActiveCharacter()],
         p2DEvents[window_SpeakInHouse->wData.val - 1].fPriceMultiplier);
     if (dialog_menu_id == DIALOGUE_MAIN) {
         index = 1;
@@ -2162,7 +2163,7 @@ void TempleDialog() {
                     500.0);
             v64 = (signed int)(pCurrentItem *
                                (100 -
-                                PriceCalculator::getMerchant(
+                                PriceCalculator::getPlayerMerchant(
                                     pPlayers[pParty->getActiveCharacter()]))) /
                   100;
             if (v64 < (signed int)pCurrentItem / 3)
@@ -2231,7 +2232,7 @@ void TrainingDialog(const char *s) {
             .fPriceMultiplier *
             (double)v8);
         pPrice = v10 *
-                 (100 - PriceCalculator::getMerchant(
+                 (100 - PriceCalculator::getPlayerMerchant(
                             pPlayers[pParty->getActiveCharacter()])) /
                  100;
         if (pPrice < v10 / 3) pPrice = v10 / 3;
@@ -2414,7 +2415,7 @@ void TrainingDialog(const char *s) {
             v14 = (int64_t)(p2DEvents[
                 window_SpeakInHouse->wData.val - 1].flt_24 * 500.0);
             pPrice = v14 *
-                     (100 - PriceCalculator::getMerchant(
+                     (100 - PriceCalculator::getPlayerMerchant(
                                 pPlayers[pParty->getActiveCharacter()])) /
                      100;
 
@@ -2466,7 +2467,7 @@ void MercenaryGuildDialog() {
     v32 = (uint8_t)(((p2DEvents[window_SpeakInHouse->wData.val - 1].uType != BuildingType_MercenaryGuild) - 1) & 0x96) + 100;
     v3 = (int64_t)((double)v32 * p2DEvents[window_SpeakInHouse->wData.val - 1].fPriceMultiplier);
     pPrice = v3 *
-             (100 - PriceCalculator::getMerchant(
+             (100 - PriceCalculator::getPlayerMerchant(
                         pPlayers[pParty->getActiveCharacter()])) /
              100;
     if (pPrice < v3 / 3) pPrice = v3 / 3;
