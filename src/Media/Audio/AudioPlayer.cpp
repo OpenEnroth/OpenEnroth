@@ -184,8 +184,7 @@ void AudioPlayer::SetMusicVolume(int level) {
         return;
     }
 
-    level = std::max(0, level);
-    level = std::min(9, level);
+    level = std::clamp(level, 0, 9);
     uMusicVolume = pSoundVolumeLevels[level] * maxVolumeGain;
     pCurrentMusicTrack->SetVolume(uMusicVolume);
     if (level == 0) {
@@ -196,8 +195,7 @@ void AudioPlayer::SetMusicVolume(int level) {
 }
 
 void AudioPlayer::SetMasterVolume(int level) {
-    level = std::max(0, level);
-    level = std::min(9, level);
+    level = std::clamp(level, 0, 9);
     uMasterVolume = (maxVolumeGain * pSoundVolumeLevels[level]);
 
     _regularSoundPool.setVolume(uMasterVolume);
@@ -208,8 +206,7 @@ void AudioPlayer::SetMasterVolume(int level) {
 }
 
 void AudioPlayer::SetVoiceVolume(int level) {
-    level = std::max(0, level);
-    level = std::min(9, level);
+    level = std::clamp(level, 0, 9);
     uVoiceVolume = (maxVolumeGain * pSoundVolumeLevels[level]);
 
     _voiceSoundPool.setVolume(uVoiceVolume);

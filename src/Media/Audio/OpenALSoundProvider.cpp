@@ -793,7 +793,7 @@ PAudioDataSource PlatformDataSourceInitialize(PAudioDataSource baseDataSource) {
 
 class AudioSample16 : public IAudioSample {
  public:
-    AudioSample16():al_source(-1), _position(0.0, 0.0, 0.0), _maxDistance(0.0), _volume(0.0) {}
+    AudioSample16() {}
     virtual ~AudioSample16() override;
 
     virtual bool Open(PAudioDataSource data_source) override;
@@ -810,11 +810,11 @@ class AudioSample16 : public IAudioSample {
  protected:
     void Close();
 
-    PAudioDataSource pDataSource;
-    ALuint al_source;
-    Vec3f _position;
-    float _maxDistance;
-    float _volume;
+    PAudioDataSource pDataSource = nullptr;
+    ALuint al_source = -1;
+    Vec3f _position = Vec3f(0.0, 0.0, 0.0);
+    float _maxDistance = 0.0;
+    float _volume = 0.0;
 };
 
 AudioSample16::~AudioSample16() { Close(); }
