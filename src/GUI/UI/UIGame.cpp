@@ -615,7 +615,7 @@ void GameUI_OnPlayerPortraitLeftClick(unsigned int uPlayerID) {
         return;
     }
     if (current_screen_type != CURRENT_SCREEN::SCREEN_HOUSE) {
-        if (current_screen_type == CURRENT_SCREEN::SCREEN_SHOP_INVENTORY) {
+        if (current_screen_type == CURRENT_SCREEN::SCREEN_SHOP_INVENTORY || current_screen_type == CURRENT_SCREEN::SCREEN_CHEST_INVENTORY) {
             pParty->setActiveCharacter(uPlayerID);
             return;
         }

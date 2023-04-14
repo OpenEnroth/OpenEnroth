@@ -2116,6 +2116,11 @@ void ODM_ProcessPartyActions() {
         }
     }
 
+    if (partyInputXSpeed * partyInputXSpeed + partyInputYSpeed * partyInputYSpeed < 400 && !partyAtHighSlope) {
+        partyInputYSpeed = 0;
+        partyInputXSpeed = 0;
+    }
+
     // set party look angles
     pParty->_viewYaw = partyViewNewYaw;
     pParty->_viewPitch = partyViewNewPitch;
@@ -2163,14 +2168,16 @@ void ODM_ProcessPartyActions() {
             // terrain normal, getting in the air and falling to the gravity,
             // gradually sliding downwards. nice trick
             partyNewZ = currentGroundLevel;
-            Vec3i v98;
-            ODM_GetTerrainNormalAt(partyNewX, partyNewY, &v98);
-            int v35 = partyInputZSpeed + (8 * -(pEventTimer->uTimeElapsed * GetGravityStrength()));
-            int dot = abs(partyInputXSpeed * v98.x + partyInputYSpeed * v98.y + v35 * v98.z) >> 16;
-            partyInputXSpeed += fixpoint_mul(dot, v98.x);
-            partyInputYSpeed += fixpoint_mul(dot, v98.y);
-            partyInputZSpeed = v35 + fixpoint_mul(dot, v98.z);
-            partySlopeMod = true;
+            if (partyAtHighSlope) {
+                Vec3i v98;
+                ODM_GetTerrainNormalAt(partyNewX, partyNewY, &v98);
+                int v35 = partyInputZSpeed + (8 * -(pEventTimer->uTimeElapsed * GetGravityStrength()));
+                int dot = abs(partyInputXSpeed * v98.x + partyInputYSpeed * v98.y + v35 * v98.z) >> 16;
+                partyInputXSpeed += fixpoint_mul(dot, v98.x);
+                partyInputYSpeed += fixpoint_mul(dot, v98.y);
+                partyInputZSpeed = v35 + fixpoint_mul(dot, v98.z);
+                partySlopeMod = true;
+            }
         }
     }
 
@@ -2190,11 +2197,6 @@ void ODM_ProcessPartyActions() {
         }
     } else {
       pParty->uFallStartZ = partyNewZ;
-    }
-
-    if (partyInputXSpeed * partyInputXSpeed + partyInputYSpeed * partyInputYSpeed < 400 && !partyAtHighSlope) {
-        partyInputYSpeed = 0;
-        partyInputXSpeed = 0;
     }
 
     // has the party collided with a outdoor model
