@@ -287,7 +287,7 @@ void Menu::EventLoop() {
 
                 engine->config->settings.MusicLevel.setValue(new_level);
                 pAudioPlayer->SetMusicVolume(engine->config->settings.MusicLevel.value());
-                pAudioPlayer->playMusicSound(SOUND_hurp);
+                pAudioPlayer->playSound(SOUND_hurp, AudioPlayer::SOUND_PID_MUSIC_VOLUME);
                 continue;
             }
 
@@ -338,7 +338,7 @@ void Menu::EventLoop() {
                 engine->config->settings.VoiceLevel.setValue(new_level);
                 pAudioPlayer->SetVoiceVolume(engine->config->settings.VoiceLevel.value());
                 if (engine->config->settings.VoiceLevel.value() > 0) {
-                    pAudioPlayer->playSound(SOUND_hf445a, AudioPlayer::SOUND_PID_PLAYER_RESETABLE);
+                    pAudioPlayer->playSound(SOUND_hf445a, AudioPlayer::SOUND_PID_VOICE_VOLUME);
                 }
                 continue;
             }

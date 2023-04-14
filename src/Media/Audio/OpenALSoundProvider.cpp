@@ -793,7 +793,7 @@ PAudioDataSource PlatformDataSourceInitialize(PAudioDataSource baseDataSource) {
 
 class AudioSample16 : public IAudioSample {
  public:
-    AudioSample16():al_source(-1) {}
+    AudioSample16() {}
     virtual ~AudioSample16() override;
 
     virtual bool Open(PAudioDataSource data_source) override;
@@ -810,8 +810,11 @@ class AudioSample16 : public IAudioSample {
  protected:
     void Close();
 
-    PAudioDataSource pDataSource;
-    ALuint al_source;
+    PAudioDataSource pDataSource = nullptr;
+    ALuint al_source = -1;
+    Vec3f _position = Vec3f(0.0, 0.0, 0.0);
+    float _maxDistance = 0.0;
+    float _volume = 0.0;
 };
 
 AudioSample16::~AudioSample16() { Close(); }
@@ -865,14 +868,15 @@ bool AudioSample16::Open(PAudioDataSource data_source) {
 }
 
 bool AudioSample16::SetPosition(float x, float y, float z, float max_dist) {
-    if (!IsValid()) {
-        return false;
-    }
+    _position = Vec3f(x, y, z);
+    _maxDistance = max_dist;
 
-    alSource3f(al_source, AL_POSITION, x, y, z);
-    alSourcef(al_source, AL_MAX_DISTANCE, max_dist);
-    if (CheckError()) {
-        return false;
+    if (IsValid()) {
+        alSource3f(al_source, AL_POSITION, x, y, z);
+        alSourcef(al_source, AL_MAX_DISTANCE, max_dist);
+        if (CheckError()) {
+            return false;
+        }
     }
 
     return true;
@@ -897,9 +901,13 @@ bool AudioSample16::Play(bool loop, bool positioned) {
     alSourcei(al_source, AL_SOURCE_RELATIVE, positioned ? AL_FALSE : AL_TRUE);
     if (!positioned) {
         alSource3f(al_source, AL_POSITION, 0.f, 0.f, 0.f);
+        alSourcef(al_source, AL_MAX_DISTANCE, 2000.f);
+    } else {
+        alSource3f(al_source, AL_POSITION, _position.x, _position.y, _position.z);
+        alSourcef(al_source, AL_MAX_DISTANCE, _maxDistance);
     }
     alSource3f(al_source, AL_VELOCITY, 0.f, 0.f, 0.f);
-
+    alSourcef(al_source, AL_GAIN, _volume);
     alSourcei(al_source, AL_LOOPING, loop ? AL_TRUE : AL_FALSE);
 
     ALint status;
@@ -968,24 +976,18 @@ bool AudioSample16::Resume() {
 }
 
 bool AudioSample16::SetVolume(float volume) {
-    if (!IsValid()) {
-        return false;
-    }
+    _volume = volume;
 
-    alSourcef(al_source, AL_GAIN, volume);
-    if (CheckError()) {
-        return false;
+    if (IsValid()) {
+        alSourcef(al_source, AL_GAIN, volume);
+        if (CheckError()) {
+            return false;
+        }
     }
 
     return true;
 }
 
-PAudioSample CreateAudioSample(PAudioDataSource dataSource) {
-    std::shared_ptr<AudioSample16> sample = std::make_shared<AudioSample16>();
-
-    if (!sample->Open(dataSource)) {
-        sample = nullptr;
-    }
-
-    return sample;
+PAudioSample CreateAudioSample() {
+    return std::make_shared<AudioSample16>();
 }

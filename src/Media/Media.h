@@ -61,7 +61,7 @@ class IAudioSample {
 };
 typedef std::shared_ptr<IAudioSample> PAudioSample;
 
-PAudioSample CreateAudioSample(PAudioDataSource dataSource);
+PAudioSample CreateAudioSample();
 
 class IVideoDataSource {
  public:
