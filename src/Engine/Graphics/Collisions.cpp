@@ -711,10 +711,7 @@ void ProcessActorCollisionsODM(Actor &actor, bool isFlying) {
         int id = PID_ID(collision_state.pid);
         ObjectType type = PID_TYPE(collision_state.pid);
 
-        int Angle_To_Decor;
-        signed int Coll_Speed;
-        switch (type) {
-        case OBJECT_Actor:
+        if (type == OBJECT_Actor) {
             if (pTurnEngine->turn_stage != TE_ATTACK && pTurnEngine->turn_stage != TE_MOVEMENT || !pParty->bTurnBasedModeOn) {
                 // if(pParty->bTurnBasedModeOn)
                 // v34 = 0;
@@ -731,8 +728,9 @@ void ProcessActorCollisionsODM(Actor &actor, bool isFlying) {
                     Actor::AI_FaceObject(actor.id, collision_state.pid, 0, nullptr);
                 }
             }
-            break;
-        case OBJECT_Player:
+        }
+
+        if (type == OBJECT_Player) {
             if (!actor.GetActorsRelation(0)) {
                 Actor::AI_FaceObject(actor.id, collision_state.pid, 0, nullptr);
                 break;
@@ -744,17 +742,17 @@ void ProcessActorCollisionsODM(Actor &actor, bool isFlying) {
             if (pParty->pPartyBuffs[PARTY_BUFF_INVISIBILITY].Active()) {
                 pParty->pPartyBuffs[PARTY_BUFF_INVISIBILITY].Reset();
             }
-            break;
-        case OBJECT_Decoration:
-            Coll_Speed = integer_sqrt(actor.vVelocity.x * actor.vVelocity.x +
-                                      actor.vVelocity.y * actor.vVelocity.y);
-            Angle_To_Decor = TrigLUT.atan2(actor.vPosition.x - pLevelDecorations[id].vPosition.x,
-                                           actor.vPosition.y - pLevelDecorations[id].vPosition.y);
+        }
+
+        if (type == OBJECT_Decoration) {
+            int Coll_Speed = integer_sqrt(actor.vVelocity.x * actor.vVelocity.x + actor.vVelocity.y * actor.vVelocity.y);
+            int Angle_To_Decor = TrigLUT.atan2(actor.vPosition.x - pLevelDecorations[id].vPosition.x, actor.vPosition.y - pLevelDecorations[id].vPosition.y);
 
             actor.vVelocity.x = TrigLUT.cos(Angle_To_Decor) * Coll_Speed;
             actor.vVelocity.y = TrigLUT.sin(Angle_To_Decor) * Coll_Speed;
-            break;
-        case OBJECT_Face: {
+        }
+
+        if (type == OBJECT_Face) {
             ODMFace * face = &pOutdoor->pBModels[collision_state.pid >> 9].pFaces[id & 0x3F];
             if (!face->Ethereal()) {
                 if (face->uPolygonType == POLYGON_Floor) {
@@ -779,10 +777,6 @@ void ProcessActorCollisionsODM(Actor &actor, bool isFlying) {
                     }
                 }
             }
-        }
-            break;
-        default:
-            break;
         }
 
         actor.vVelocity.x = fixpoint_mul(58500, actor.vVelocity.x);
