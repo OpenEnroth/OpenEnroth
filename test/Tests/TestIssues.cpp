@@ -390,7 +390,6 @@ GAME_TEST(Issues, Issue408) {
 
 GAME_TEST(Issues, Issue417) {
     // testing that portal nodes looping doesnt assert
-    // TODO(captainurist): 417b needs to be retraced, party is getting stuck on a monster.
     test->playTraceFromTestData("issue_417a.mm7", "issue_417a.json");
     test->playTraceFromTestData("issue_417b.mm7", "issue_417b.json");
 }
