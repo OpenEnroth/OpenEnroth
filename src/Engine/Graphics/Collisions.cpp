@@ -680,25 +680,24 @@ void ProcessActorCollisionsODM(Actor &actor, bool isFlying) {
         }
 
         if (type == OBJECT_Player) {
-            if (!actor.GetActorsRelation(0)) {
+            if (actor.GetActorsRelation(0)) {
+                actor.vVelocity.y = 0;
+                actor.vVelocity.x = 0;
+
+                if (pParty->pPartyBuffs[PARTY_BUFF_INVISIBILITY].Active()) {
+                    pParty->pPartyBuffs[PARTY_BUFF_INVISIBILITY].Reset();
+                }
+            } else {
                 Actor::AI_FaceObject(actor.id, collision_state.pid, 0, nullptr);
-                break;
-            }
-
-            actor.vVelocity.y = 0;
-            actor.vVelocity.x = 0;
-
-            if (pParty->pPartyBuffs[PARTY_BUFF_INVISIBILITY].Active()) {
-                pParty->pPartyBuffs[PARTY_BUFF_INVISIBILITY].Reset();
+                break; // TODO(captainurist): drop this break & retrace
             }
         }
 
         if (type == OBJECT_Decoration) {
-            int Coll_Speed = integer_sqrt(actor.vVelocity.x * actor.vVelocity.x + actor.vVelocity.y * actor.vVelocity.y);
-            int Angle_To_Decor = TrigLUT.atan2(actor.vPosition.x - pLevelDecorations[id].vPosition.x, actor.vPosition.y - pLevelDecorations[id].vPosition.y);
-
-            actor.vVelocity.x = TrigLUT.cos(Angle_To_Decor) * Coll_Speed;
-            actor.vVelocity.y = TrigLUT.sin(Angle_To_Decor) * Coll_Speed;
+            int speed = integer_sqrt(actor.vVelocity.x * actor.vVelocity.x + actor.vVelocity.y * actor.vVelocity.y);
+            int angle = TrigLUT.atan2(actor.vPosition.x - pLevelDecorations[id].vPosition.x, actor.vPosition.y - pLevelDecorations[id].vPosition.y);
+            actor.vVelocity.x = TrigLUT.cos(angle) * speed;
+            actor.vVelocity.y = TrigLUT.sin(angle) * speed;
         }
 
         if (type == OBJECT_Face) {
