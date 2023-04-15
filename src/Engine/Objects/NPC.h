@@ -110,8 +110,8 @@ struct NPCStats {
     int field_17884 = 0;
     int field_17888 = 0;
     NPCGreeting pNPCGreetings[206];
-    uint16_t pGroups[51]{};
-    uint16_t pGroups_copy[51]{};
+    std::array<uint16_t, 51> pGroups = {{}};
+    std::array<uint16_t, 51> pGroups_copy = {{}};
     unsigned int uNewlNPCBufPos{};
     unsigned int uNumNewNPCs{};
     int field_17FC8 = 0;

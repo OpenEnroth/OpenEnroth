@@ -139,7 +139,7 @@ void LoadGame(unsigned int uSlot) {
         } else if (sizeof(pNPCStats->pGroups_copy) != 102) {
             logger->warning("NPCStats: deserialization warning");
         } else {
-            memcpy(pNPCStats->pGroups_copy, npcgroup, sizeof(pNPCStats->pGroups_copy));
+            memcpy(pNPCStats->pGroups_copy.data(), npcgroup, sizeof(pNPCStats->pGroups_copy));
         }
     }
 
@@ -310,7 +310,7 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld) {
         }
     }
 
-    if (pNew_LOD->Write("npcgroup.bin", pNPCStats->pGroups_copy, sizeof(pNPCStats->pGroups_copy), 0)) {
+    if (pNew_LOD->Write("npcgroup.bin", pNPCStats->pGroups_copy.data(), sizeof(pNPCStats->pGroups_copy), 0)) {
         logger->warning("{}", localization->FormatString(LSTR_FMT_SAVEGAME_CORRUPTED, 206));
     }
 

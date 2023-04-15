@@ -235,7 +235,7 @@ bool Party::_497FC5_check_party_perception_against_level() {
 //----- (004936E1) --------------------------------------------------------
 void Party::SetHoldingItem(ItemGen *pItem) {
     PickedItem_PlaceInInventory_or_Drop();
-    memcpy(&pPickedItem, pItem, sizeof(pPickedItem));
+    pPickedItem = *pItem;
     mouse->SetCursorBitmapFromItemID(pPickedItem.uItemID);
 }
 
@@ -704,7 +704,7 @@ void Party::Reset() {
     PartyTimes._shop_ban_times.fill(GameTime(0));
 
     pNPCStats->pNewNPCData = pNPCStats->pNPCData;
-    memcpy(pNPCStats->pGroups_copy, pNPCStats->pGroups, 0x66u);
+    pNPCStats->pGroups_copy = pNPCStats->pGroups;
     pNPCStats->pNewNPCData[3].uFlags |= 128;  //|= 0x80u; Lady Margaret
     _494035_timed_effects__water_walking_damage__etc();
     pEventTimer->Pause();
