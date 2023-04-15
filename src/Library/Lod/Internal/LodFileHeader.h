@@ -8,7 +8,7 @@
 #pragma pack(push, 1)
 struct LodFileHeader_Mm6 {
     inline LodFileHeader_Mm6() {
-        memset(this, 0, sizeof(this));
+        memset(this, 0, sizeof(*this));
     }
 
     std::array<std::uint8_t, 16> name;
@@ -24,7 +24,7 @@ struct LodFileHeader_Mm6 {
 #pragma pack(push, 1)
 struct LodFileHeader_Mm8 {
     inline LodFileHeader_Mm8() {
-        memset(this, 0, sizeof(this));
+        memset(this, 0, sizeof(*this));
     }
 
     std::array<std::uint8_t, 16> name;
@@ -50,7 +50,7 @@ struct LodFileHeader_Mm8 {
 #pragma pack(push, 1)
 struct LodFileCompressionHeader_Mm6 {
     inline LodFileCompressionHeader_Mm6() {
-        memset(this, 0, sizeof(this));
+        memset(this, 0, sizeof(*this));
     }
 
     std::uint32_t version;

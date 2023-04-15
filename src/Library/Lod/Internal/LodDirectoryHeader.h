@@ -8,7 +8,7 @@
 #pragma pack(push, 1)
 struct LodDirectoryHeader_Mm6 {
     inline LodDirectoryHeader_Mm6() {
-        memset(this, 0, sizeof(this));
+        memset(this, 0, sizeof(*this));
     }
 
     std::array<std::uint8_t, 16> filename;
