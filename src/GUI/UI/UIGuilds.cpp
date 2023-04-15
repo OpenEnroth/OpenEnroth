@@ -39,7 +39,7 @@ void GuildDialog() {
     working_window.uFrameZ = 334;
 
     int base_teach_price = (p2DEvents[window_SpeakInHouse->wData.val - 1].fPriceMultiplier * 500.0);
-    int pPrice = base_teach_price * (100 - PriceCalculator::getPlayerMerchant(pPlayers[pParty->getActiveCharacter()])) / 100;
+    int pPrice = base_teach_price * (100 - PriceCalculator::playerMerchant(pPlayers[pParty->getActiveCharacter()])) / 100;
     if (pPrice < base_teach_price / 3)
         pPrice = base_teach_price / 3;
 

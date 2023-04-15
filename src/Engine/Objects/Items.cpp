@@ -155,7 +155,8 @@ void ItemGen::UpdateTempBonus(GameTime time) {
 }
 
 //----- (00456442) --------------------------------------------------------
-unsigned int ItemGen::GetValue() {
+unsigned int ItemGen::GetValue() const
+{
     unsigned int uBaseValue;  // edi@1
     unsigned int mod, bonus;
 

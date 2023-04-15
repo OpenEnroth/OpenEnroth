@@ -2018,31 +2018,19 @@ std::string BuildDialogueString(std::string &str, uint8_t uPlayerID, ItemGen *a3
                 break;
 
             case 25:  // base prices
-                v29 = PriceCalculator::getBaseBuyingPrice(
-                    a3->GetValue(), p2DEvents[eventId - 1].fPriceMultiplier
-                );
+                v29 = PriceCalculator::baseItemBuyingPrice(a3->GetValue(), p2DEvents[eventId - 1].fPriceMultiplier);
                 switch (shop_screen) {
                 case 3:
-                        v29 = PriceCalculator::getBaseSellingPrice(
-                        a3->GetValue(), p2DEvents[eventId - 1].fPriceMultiplier
-                    );
+                        v29 = PriceCalculator::baseItemSellingPrice(a3->GetValue(), p2DEvents[eventId - 1].fPriceMultiplier);
                     break;
                 case 4:
-                    v29 = PriceCalculator::getBaseIdentifyPrice(
-                        p2DEvents[eventId - 1].fPriceMultiplier
-                    );
+                    v29 = PriceCalculator::baseItemIdentifyPrice(p2DEvents[eventId - 1].fPriceMultiplier);
                     break;
                 case 5:
-                    v29 = PriceCalculator::getBaseRepairPrice(
-                        a3->GetValue(),
-                        p2DEvents[eventId - 1].fPriceMultiplier);
+                    v29 = PriceCalculator::baseItemRepairPrice(a3->GetValue(), p2DEvents[eventId - 1].fPriceMultiplier);
                     break;
                 case 6:
-                    v29 = PriceCalculator::getBaseSellingPrice(
-                        a3->GetValue(),
-                        p2DEvents[eventId - 1]
-                        .fPriceMultiplier) /
-                        2;
+                    v29 = PriceCalculator::baseItemSellingPrice(a3->GetValue(), p2DEvents[eventId - 1].fPriceMultiplier) / 2;
                     break;
                 }
                 sprintf(v1, "%u", v29);
@@ -2050,14 +2038,11 @@ std::string BuildDialogueString(std::string &str, uint8_t uPlayerID, ItemGen *a3
                 break;
 
             case 27:  // actual price
-                v29 = PriceCalculator::getItemBuyingPriceForPlayer(
-                    pPlayer, a3->GetValue(),
-                    p2DEvents[eventId - 1].fPriceMultiplier);
+                v29 = PriceCalculator::itemBuyingPriceForPlayer(pPlayer, a3->GetValue(), p2DEvents[eventId - 1].fPriceMultiplier);
                 if (shop_screen == 3) {
                     // v29 = PriceCalculator::getItemSellingPriceForPlayer(pPlayer, a3->GetValue(),
                     // p2DEvents[(signed int)eventId - 1].fPriceMultiplier);
-                    v29 = PriceCalculator::getItemSellingPriceForPlayer(
-                        pPlayer, *a3, p2DEvents[eventId - 1].fPriceMultiplier);
+                    v29 = PriceCalculator::itemSellingPriceForPlayer(pPlayer, *a3, p2DEvents[eventId - 1].fPriceMultiplier);
                     // if (a3->IsBroken())
                     // v29 = 1;
                     sprintf(v1, "%u", v29);
@@ -2066,7 +2051,7 @@ std::string BuildDialogueString(std::string &str, uint8_t uPlayerID, ItemGen *a3
                 }
                 if (shop_screen != 4) {
                     if (shop_screen == 5) {
-                    v29 = PriceCalculator::getItemRepairPriceForPlayer(
+                    v29 = PriceCalculator::itemRepairPriceForPlayer(
                         pPlayer, a3->GetValue(),
                         p2DEvents[eventId - 1].fPriceMultiplier);
                     } else {
@@ -2074,10 +2059,7 @@ std::string BuildDialogueString(std::string &str, uint8_t uPlayerID, ItemGen *a3
                             // v29 = PriceCalculator::getItemSellingPriceForPlayer(pPlayer, a3->GetValue(),
                             // p2DEvents[(signed int)eventId -
                             // 1].fPriceMultiplier) / 2;
-                            v29 = PriceCalculator::getItemSellingPriceForPlayer(
-                                      pPlayer, *a3,
-                                      p2DEvents[eventId - 1].fPriceMultiplier) /
-                                  2;
+                            v29 = PriceCalculator::itemSellingPriceForPlayer(pPlayer, *a3, p2DEvents[eventId - 1].fPriceMultiplier) / 2;
                             // if (a3->IsBroken())
                             // v29 = 1;
                             if (!v29)  // cannot be 0
@@ -2091,9 +2073,7 @@ std::string BuildDialogueString(std::string &str, uint8_t uPlayerID, ItemGen *a3
                     result += v1;
                     break;
                 }
-                sprintf(v1, "%u",
-                        PriceCalculator::getItemIdentificationPriceForPlayer(
-                            pPlayer, p2DEvents[eventId - 1].fPriceMultiplier));
+                sprintf(v1, "%u", PriceCalculator::itemIdentificationPriceForPlayer(pPlayer, p2DEvents[eventId - 1].fPriceMultiplier));
                 result += v1;
                 break;
 
@@ -2102,9 +2082,7 @@ std::string BuildDialogueString(std::string &str, uint8_t uPlayerID, ItemGen *a3
                 break;
 
             case 29:  // identify cost
-                sprintf(v1, "%u",
-                        PriceCalculator::getItemIdentificationPriceForPlayer(
-                            pPlayer, p2DEvents[eventId - 1].fPriceMultiplier));
+                sprintf(v1, "%u", PriceCalculator::itemIdentificationPriceForPlayer(pPlayer, p2DEvents[eventId - 1].fPriceMultiplier));
                 result += v1;
                 break;
             case 30:

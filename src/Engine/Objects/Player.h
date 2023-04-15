@@ -247,13 +247,13 @@ struct Player {
     int GetActualResistance(CHARACTER_ATTRIBUTE_TYPE a2);
     void SetRecoveryTime(signed int sRecoveryTime);
     void RandomizeName();
-    Condition GetMajorConditionIdx();
+    Condition GetMajorConditionIdx() const;
     int GetParameterBonus(int player_parameter);
     int GetSpecialItemBonus(ITEM_ENCHANTMENT enchantment);
     int GetItemsBonus(CHARACTER_ATTRIBUTE_TYPE attr, bool a3 = false);
     int GetMagicalBonus(CHARACTER_ATTRIBUTE_TYPE a2);
-    PLAYER_SKILL_LEVEL GetActualSkillLevel(PLAYER_SKILL_TYPE uSkillType);
-    PLAYER_SKILL_MASTERY GetActualSkillMastery(PLAYER_SKILL_TYPE uSkillType);
+    PLAYER_SKILL_LEVEL GetActualSkillLevel(PLAYER_SKILL_TYPE uSkillType) const;
+    PLAYER_SKILL_MASTERY GetActualSkillMastery(PLAYER_SKILL_TYPE uSkillType) const;
     int GetSkillBonus(CHARACTER_ATTRIBUTE_TYPE a2);
     CHARACTER_RACE GetRace() const;
     std::string GetRaceName() const;
@@ -323,7 +323,7 @@ struct Player {
     unsigned int GetItemMainInventoryIndex(int inout_item_cell);
     struct ItemGen *GetItemAtInventoryIndex(int inout_item_cell);
     bool IsPlayerHealableByTemple();
-    int GetConditionDaysPassed(Condition uCondition);
+    int GetConditionDaysPassed(Condition uCondition) const;
     bool NothingOrJustBlastersEquipped();
     void SalesProcess(unsigned int inventory_idnx, int item_index, int _2devent_idx);  // 0x4BE2DD
     bool Recover(GameTime dt);
@@ -345,7 +345,7 @@ struct Player {
 
     bool PlayerHitOrMiss(Actor *pActor, int distancemod, PLAYER_SKILL_LEVEL skillmod);
 
-    unsigned int GetMultiplierForSkillLevel(PLAYER_SKILL_TYPE uSkillType, int mult1, int mult2, int mult3, int mult4);
+    unsigned int GetMultiplierForSkillLevel(PLAYER_SKILL_TYPE uSkillType, int mult1, int mult2, int mult3, int mult4) const;
     int CalculateMeleeDmgToEnemyWithWeapon(ItemGen *weapon,
                                            unsigned int uTargetActorID,
                                            bool addOneDice);
@@ -430,8 +430,8 @@ struct Player {
     void CleanupBeacons();
     bool SetBeacon(size_t index, size_t power);
 
-    PLAYER_SKILL_LEVEL GetSkillLevel(PLAYER_SKILL_TYPE skill);
-    PLAYER_SKILL_MASTERY GetSkillMastery(PLAYER_SKILL_TYPE skill);
+    PLAYER_SKILL_LEVEL GetSkillLevel(PLAYER_SKILL_TYPE skill) const;
+    PLAYER_SKILL_MASTERY GetSkillMastery(PLAYER_SKILL_TYPE skill) const;
     void SetSkillLevel(PLAYER_SKILL_TYPE skill, PLAYER_SKILL_LEVEL level);
     void SetSkillMastery(PLAYER_SKILL_TYPE skill, PLAYER_SKILL_MASTERY mastery);
 
