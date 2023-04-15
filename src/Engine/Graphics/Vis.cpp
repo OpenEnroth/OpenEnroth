@@ -175,16 +175,17 @@ bool Vis::IsPolygonOccludedByBillboard(RenderVertexSoft *vertices,
 void Vis::GetPolygonCenter(RenderVertexD3D3 *pVertices,
                            unsigned int uNumVertices, float *pCenterX,
                            float *pCenterY) {
-    static RenderVertexD3D3 unk_F8EA00[64];
+    std::array<RenderVertexD3D3, 64> unk_F8EA00;
 
-    memcpy(unk_F8EA00, pVertices, 32 * uNumVertices);
+    assert(uNumVertices <= unk_F8EA00.size());
+    std::copy(pVertices, pVertices + uNumVertices, unk_F8EA00.begin());
 
-    SortVerticesByX(unk_F8EA00, 0, uNumVertices - 1);
+    SortVerticesByX(unk_F8EA00.data(), 0, uNumVertices - 1);
     *pCenterX =
         (unk_F8EA00[uNumVertices - 1].pos.x - unk_F8EA00[0].pos.x) * 0.5 +
         unk_F8EA00[0].pos.x;
 
-    SortVerticesByY(unk_F8EA00, 0, uNumVertices - 1);
+    SortVerticesByY(unk_F8EA00.data(), 0, uNumVertices - 1);
     *pCenterY =
         (unk_F8EA00[uNumVertices - 1].pos.y - unk_F8EA00[0].pos.y) * 0.5 +
         unk_F8EA00[0].pos.y;
@@ -198,23 +199,23 @@ void Vis::GetPolygonScreenSpaceCenter(RenderVertexSoft *vertices,
     //  signed int v6; // ecx@2
     //  float *result; // eax@5
 
-    static RenderVertexSoft static_sub_4C1495_array_F8DDF8[64];
+    std::array<RenderVertexSoft, 64> array_F8DDF8;
+    assert(num_vertices <= array_F8DDF8.size());
+    std::copy(vertices, vertices + num_vertices, array_F8DDF8.begin());
 
-    memcpy(static_sub_4C1495_array_F8DDF8, vertices, 48 * num_vertices);
-
-    SortByScreenSpaceX(static_sub_4C1495_array_F8DDF8, 0, num_vertices - 1);
+    SortByScreenSpaceX(array_F8DDF8.data(), 0, num_vertices - 1);
     *out_center_x =
-        (static_sub_4C1495_array_F8DDF8[num_vertices - 1].vWorldViewProjX -
-         static_sub_4C1495_array_F8DDF8[0].vWorldViewProjX) *
-            0.5 +
-        static_sub_4C1495_array_F8DDF8[0].vWorldViewProjX;
+        (array_F8DDF8[num_vertices - 1].vWorldViewProjX -
+         array_F8DDF8[0].vWorldViewProjX) *
+        0.5 +
+        array_F8DDF8[0].vWorldViewProjX;
 
-    SortByScreenSpaceY(static_sub_4C1495_array_F8DDF8, 0, num_vertices - 1);
+    SortByScreenSpaceY(array_F8DDF8.data(), 0, num_vertices - 1);
     *out_center_y =
-        (static_sub_4C1495_array_F8DDF8[num_vertices - 1].vWorldViewProjY -
-         static_sub_4C1495_array_F8DDF8[0].vWorldViewProjY) *
-            0.5 +
-        static_sub_4C1495_array_F8DDF8[0].vWorldViewProjY;
+        (array_F8DDF8[num_vertices - 1].vWorldViewProjY -
+         array_F8DDF8[0].vWorldViewProjY) *
+        0.5 +
+        array_F8DDF8[0].vWorldViewProjY;
 }
 
 //----- (004C1542) --------------------------------------------------------

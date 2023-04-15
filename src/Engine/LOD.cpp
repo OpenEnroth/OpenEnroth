@@ -516,7 +516,7 @@ bool LOD::WriteableFile::AppendDirectory(const std::string &file_name, const voi
     strcpy(dir.pFilename, file_name.c_str());
     dir.uDataSize = data_size;
 
-    memcpy(&pSubIndices[uNumSubDirs++], &dir, sizeof(LOD::Directory));
+    pSubIndices[uNumSubDirs++] = dir;
     fwrite(pData, 1, dir.uDataSize, pOutputFileHandle);
     return true;
 }
@@ -620,11 +620,10 @@ unsigned int LOD::WriteableFile::Write(const std::string &file_name, const void 
         (insert_index < uNumSubDirs)) {  // перезаписывание файлов для освобождения
                                          // места для нового ф-ла
         for (int i = uNumSubDirs; i > insert_index; --i)
-            memcpy(&pSubIndices[i], &pSubIndices[i - 1],
-                   sizeof(LOD::Directory));  // Uninitialized memory access
+            pSubIndices[i] = pSubIndices[i - 1];  // Uninitialized memory access
     }
     // insert
-    memcpy(&pSubIndices[insert_index], &dir, sizeof(LOD::Directory));  // записать текущий файл
+    pSubIndices[insert_index] = dir;  // записать текущий файл
     // correct offsets to data
     if (uNumSubDirs > 0) {
         size_t offset_to_data = sizeof(LOD::Directory) * uNumSubDirs;

@@ -344,7 +344,7 @@ int Chest::PutItemInChest(int position, ItemGen *put_item, int uChestID) {
     }
 
     vChests[uChestID].pInventoryIndices[test_pos] = item_in_chest_count + 1;
-    memcpy(&vChests[uChestID].igChestItems[item_in_chest_count], put_item, sizeof(ItemGen));
+    vChests[uChestID].igChestItems[item_in_chest_count] = *put_item;
 
     return (test_pos + 1);
 }

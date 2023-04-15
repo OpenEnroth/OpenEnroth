@@ -1,5 +1,7 @@
 #include <stdlib.h>
 
+#include <utility>
+
 #include "Engine/Engine.h"
 #include "Engine/Time.h"
 
@@ -27,7 +29,6 @@ void stru262_TurnBased::SortTurnQueue() {
     int active_actors;
     TurnBased_QueueElem *current_top;   // eax@16
     TurnBased_QueueElem *test_element;  // ecx@18
-    TurnBased_QueueElem temp_elem;
     int i, j;
     ObjectType p_type;
     unsigned int p_id;
@@ -72,13 +73,7 @@ void stru262_TurnBased::SortTurnQueue() {
                        (PID_ID(test_element->uPackedID) <
                         PID_ID(
                             current_top->uPackedID)))))) {  // less id preferable
-                                                            // swap
-                    memcpy(&temp_elem, current_top,
-                           sizeof(TurnBased_QueueElem));
-                    memcpy(current_top, test_element,
-                           sizeof(TurnBased_QueueElem));
-                    memcpy(test_element, &temp_elem,
-                           sizeof(TurnBased_QueueElem));
+                    std::swap(*current_top, *test_element);
                 }
             }
         }
@@ -152,7 +147,7 @@ void stru262_TurnBased::Start() {
                 Actor::GetDirectionInfo(
                     PID(OBJECT_Actor, ai_near_actors_ids[i]),
                     ai_near_actors_targets_pid[ai_near_actors_ids[i]], &v31, 0);
-                memcpy(&v30, &v31, sizeof(AIDirection));
+                v30 = v31;
                 Actor::AI_StandOrBored(ai_near_actors_ids[i], 4, 32, &v30);
                 this->pQueue[this->uActorQueueSize].uPackedID =
                     PID(OBJECT_Actor, ai_near_actors_ids[i]);

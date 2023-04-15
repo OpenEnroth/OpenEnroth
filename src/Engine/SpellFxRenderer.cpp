@@ -659,7 +659,6 @@ bool SpellFxRenderer::RenderAsSprite(SpriteObject *a2) {
     //  int v18; // eax@140
     //  int v19; // eax@141
     //  int v20; // eax@151
-    char pContainer[7];  // [sp+10h] [bp-8h]@81
 
     // __debugbreak(); // need to refactor carefully & collect data
     // v2 = this;
@@ -888,9 +887,7 @@ bool SpellFxRenderer::RenderAsSprite(SpriteObject *a2) {
         case SPRITE_SPELL_AIR_LIGHTNING_BOLT:
             // if ( !render->pRenderD3D )
             //  return true;
-            memcpy(pContainer, "sp18h1", 7);
-            pContainer[5] = vrng->randomInSegment(1, 6) + '0';
-            AddProjectile(a2, 100, assets->GetBitmap(pContainer));
+            AddProjectile(a2, 100, assets->GetBitmap(fmt::format("sp18h{}", vrng->randomInSegment(1, 6))));
             return false;
         case SPRITE_SPELL_AIR_LIGHTNING_BOLT_IMPACT:
             _4A7A66_miltiple_spell_collision_partifles___like_after_sparks_or_lightning(a2, colorTable.MustardYellow.c32(), effpar02, 200.0);
