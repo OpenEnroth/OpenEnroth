@@ -586,7 +586,7 @@ void ProcessActorCollisionsBLV(Actor &actor, bool isAboveGround, bool isFlying) 
                 if (actor.vVelocity.lengthSqr() < 400) {
                     actor.vVelocity.x = 0;
                     actor.vVelocity.y = 0;
-                    continue;
+                    continue; // TODO(captainurist): drop this continue
                 }
             } else {
                 float velocityDotNormal = dot(face->pFacePlane.vNormal, actor.vVelocity.toFloat());
@@ -702,12 +702,12 @@ void ProcessActorCollisionsODM(Actor &actor, bool isFlying) {
 
         if (type == OBJECT_Face) {
             ODMFace *face = &pOutdoor->pBModels[collision_state.pid >> 9].pFaces[id & 0x3F];
+
             if (!face->Ethereal()) {
                 if (face->uPolygonType == POLYGON_Floor) {
                     actor.vVelocity.z = 0;
                     actor.vPosition.z = pOutdoor->pBModels[collision_state.pid >> 9].pVertices[face->pVertexIDs[0]].z + 1;
-                    if (actor.vVelocity.x * actor.vVelocity.x +
-                        actor.vVelocity.y * actor.vVelocity.y < 400) {
+                    if (actor.vVelocity.lengthSqr() < 400) {
                         actor.vVelocity.y = 0;
                         actor.vVelocity.x = 0;
                     }
