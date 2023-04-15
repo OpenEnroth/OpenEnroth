@@ -593,8 +593,7 @@ void ProcessActorCollisionsBLV(Actor &actor, bool isAboveGround, bool isFlying) 
                 velocityDotNormal = std::max(std::abs(velocityDotNormal), collision_state.speed / 8);
                 actor.vVelocity += (velocityDotNormal * face->pFacePlane.vNormal).toShort();
                 if (face->uPolygonType != POLYGON_InBetweenFloorAndWall && face->uPolygonType != POLYGON_Floor) {
-                    float overshoot =
-                        collision_state.radius_lo - face->pFacePlane.signedDistanceTo(actor.vPosition.toFloat());
+                    float overshoot = collision_state.radius_lo - face->pFacePlane.signedDistanceTo(actor.vPosition.toFloat());
                     if (overshoot > 0)
                         actor.vPosition += (overshoot * pIndoor->pFaces[id].pFacePlane.vNormal).toShort();
                     actor.uYawAngle = TrigLUT.atan2(actor.vVelocity.x, actor.vVelocity.y);
@@ -712,15 +711,15 @@ void ProcessActorCollisionsODM(Actor &actor, bool isFlying) {
                         actor.vVelocity.x = 0;
                     }
                 } else {
-                    float v72b = dot(face->pFacePlane.vNormal, actor.vVelocity.toFloat());
-                    if ((collision_state.speed / 8) > v72b)
-                        v72b = collision_state.speed / 8;
+                    float velocityDotNormal = dot(face->pFacePlane.vNormal, actor.vVelocity.toFloat());
+                    // TODO(captainurist): in BLV code we have std::abs(velocityDotNormal) here, and adding std::abs affects traces
+                    velocityDotNormal = std::max(velocityDotNormal, collision_state.speed / 8);
 
-                    actor.vVelocity += (v72b * face->pFacePlane.vNormal).toShort();
+                    actor.vVelocity += (velocityDotNormal * face->pFacePlane.vNormal).toShort();
                     if (face->uPolygonType != POLYGON_InBetweenFloorAndWall) {
-                        float v46 = collision_state.radius_lo - face->pFacePlane.signedDistanceTo(actor.vPosition.toFloat());
-                        if (v46 > 0)
-                            actor.vPosition += (v46 * face->pFacePlane.vNormal).toShort();
+                        float overshoot = collision_state.radius_lo - face->pFacePlane.signedDistanceTo(actor.vPosition.toFloat());
+                        if (overshoot > 0)
+                            actor.vPosition += (overshoot * face->pFacePlane.vNormal).toShort();
                         actor.uYawAngle = TrigLUT.atan2(actor.vVelocity.x, actor.vVelocity.y);
                     }
                 }
@@ -730,7 +729,5 @@ void ProcessActorCollisionsODM(Actor &actor, bool isFlying) {
         actor.vVelocity.x = fixpoint_mul(58500, actor.vVelocity.x);
         actor.vVelocity.y = fixpoint_mul(58500, actor.vVelocity.y);
         actor.vVelocity.z = fixpoint_mul(58500, actor.vVelocity.z);
-
-        actorRadius = collision_state.radius_lo;
     }
 }
