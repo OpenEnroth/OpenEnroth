@@ -8,7 +8,8 @@
  * @offset 0x4B824B
  * @brief Calculates base item identify price (before factoring in merchant).
  * @param priceMultiplier General shop price multiplier.
- * @description Note: originally method of Player class.
+ *
+ * Note: originally method of Player class.
  */
 int PriceCalculator::getBaseIdentifyPrice(float priceMultiplier) {
   int baseCost = (int)(priceMultiplier * 50.0f);
@@ -26,7 +27,7 @@ int PriceCalculator::getBaseIdentifyPrice(float priceMultiplier) {
  * @param uRealValue Item base value.
  * @param priceMultiplier General shop price multiplier.
  *
- * @description Note: originally method of Player class.
+ * Note: originally method of Player class.
  */
 int PriceCalculator::getBaseRepairPrice(int uRealValue, float priceMultiplier) {
   int baseCost = (int)(uRealValue / (6.0f - priceMultiplier));
@@ -43,7 +44,8 @@ int PriceCalculator::getBaseRepairPrice(int uRealValue, float priceMultiplier) {
  * @brief Calculates base item buying price (before factoring in merchant).
  * @param uRealValue Item base value.
  * @param priceMultiplier General shop price multiplier.
- * @description Note: originally method of Player class.
+ *
+ * Note: originally method of Player class.
  */
 int PriceCalculator::getBaseBuyingPrice(int uRealValue,
                                         float price_multiplier) {
@@ -61,7 +63,8 @@ int PriceCalculator::getBaseBuyingPrice(int uRealValue,
  * @brief Calculates base item selling price (before factoring in merchant).
  * @param uRealValue Item base value.
  * @param priceMultiplier General shop price multiplier.
- * @description Note: originally method of Player class.
+ *
+ * Note: originally method of Player class.
  */
 int PriceCalculator::getBaseSellingPrice(int uRealValue,
                                          float priceMultiplier) {
@@ -80,7 +83,8 @@ int PriceCalculator::getBaseSellingPrice(int uRealValue,
  * @param player Player trying to repair item.
  * @param uRealValue Item base value.
  * @param priceMultiplier General shop price multiplier.
- * @description Note: originally method of Player class.
+ *
+ * Note: originally method of Player class.
  */
 int PriceCalculator::getItemRepairPriceForPlayer(Player* player, int uRealValue,
                                                  float priceMultiplier) {
@@ -103,7 +107,8 @@ int PriceCalculator::getItemRepairPriceForPlayer(Player* player, int uRealValue,
  * @brief Calculates price that player has to pay for identifying an item.
  * @param player Player trying to identify the item.
  * @param priceMultiplier General shop price multiplier.
- * @description Note: originally method of Player class.
+ *
+ * Note: originally method of Player class.
  */
 int PriceCalculator::getItemIdentificationPriceForPlayer(
     Player* player, float priceMultiplier) {
@@ -127,7 +132,8 @@ int PriceCalculator::getItemIdentificationPriceForPlayer(
  * @param player Player buying the item.
  * @param uRealValue Real item value.
  * @param priceMultiplier General shop price multiplier.
- * @description Note: originally method of Player class.
+ *
+ * Note: originally method of Player class.
  */
 int PriceCalculator::getItemBuyingPriceForPlayer(Player* player,
                                                  unsigned int uRealValue,
@@ -149,7 +155,8 @@ int PriceCalculator::getItemBuyingPriceForPlayer(Player* player,
  * @param player Player buying the item.
  * @param item Item being bought.
  * @param priceMultiplier General shop price multiplier.
- * @description Note: originally method of Player class.
+ *
+ * Note: originally method of Player class.
  */
 int PriceCalculator::getItemSellingPriceForPlayer(Player* player, ItemGen item,
                                                   float priceMultiplier) {
@@ -173,7 +180,8 @@ int PriceCalculator::getItemSellingPriceForPlayer(Player* player, ItemGen item,
  * @brief Calculates price that player has to pay for healing in a temple.
  * @param player Player being healed.
  * @param priceMultiplier General shop price multiplier.
- * @description Note: originally method of Player class.
+ *
+ * Note: originally method of Player class.
  */
 int PriceCalculator::getTempleHealingCostForPlayer(Player* player,
                                                    float priceMultiplier) {
@@ -220,7 +228,8 @@ int PriceCalculator::getTempleHealingCostForPlayer(Player* player,
  * @brief Gets merchant value for player. May depend also on other things than
  * actual skill value.
  * @param player Player to calculate value for.
- * @description Note: originally method of Player class.
+ * 
+ * Note: originally method of Player class.
  */
 int PriceCalculator::getPlayerMerchant(Player* player) {
   PLAYER_SKILL_LEVEL level = player->GetActualSkillLevel(PLAYER_SKILL_MERCHANT);
