@@ -5,8 +5,8 @@ class Player;
 // Class to calculate various prices and overall deal with them
 class PriceCalculator {
  public:
-  static int getBaseIdentifyPrice(float price_multiplier);
-  static int getBaseRepairPrice(int uRealValue, float price_multiplier);
+  static int getBaseIdentifyPrice(float priceMultiplier);
+  static int getBaseRepairPrice(int uRealValue, float priceMultiplier);
   static int getBaseBuyingPrice(int uRealValue, float priceMultiplier);
   static int getBaseSellingPrice(int uRealValue, float priceMultiplier);
 

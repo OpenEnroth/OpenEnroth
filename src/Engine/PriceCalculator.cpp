@@ -48,8 +48,8 @@ int PriceCalculator::getBaseRepairPrice(int uRealValue, float priceMultiplier) {
  * Note: originally method of Player class.
  */
 int PriceCalculator::getBaseBuyingPrice(int uRealValue,
-                                        float price_multiplier) {
-  int baseCost = (int)(uRealValue * price_multiplier);
+                                        float priceMultiplier) {
+  int baseCost = (int)(uRealValue * priceMultiplier);
 
   if (baseCost < 1) {  // min price
     baseCost = 1;
