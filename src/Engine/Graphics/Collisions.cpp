@@ -544,15 +544,11 @@ void ProcessActorCollisionsBLV(Actor &actor, bool isAboveGround, bool isFlying) 
 
         if (type == OBJECT_Actor) {
             if (!pParty->bTurnBasedModeOn || (pTurnEngine->turn_stage != TE_ATTACK && pTurnEngine->turn_stage != TE_MOVEMENT)) {
-                if (actor.pMonsterInfo.uHostilityType != MonsterInfo::Hostility_Friendly) {
-                    if (isInCrowd) {
-                        Actor::AI_StandOrBored(actor.id, PID(OBJECT_Player, 0), 0, nullptr);
-                    } else {
-                        Actor::AI_Flee(actor.id, collision_state.pid, 0, nullptr);
-                    }
-                } else if (isInCrowd) {
+                bool isFriendly = actor.pMonsterInfo.uHostilityType == MonsterInfo::Hostility_Friendly;
+                bool otherFriendly = pActors[id].pMonsterInfo.uHostilityType == MonsterInfo::Hostility_Friendly;
+                if (isInCrowd) {
                     Actor::AI_StandOrBored(actor.id, PID(OBJECT_Player, 0), 0, nullptr);
-                } else if (pActors[id].pMonsterInfo.uHostilityType == MonsterInfo::Hostility_Friendly) {
+                } else if (isFriendly && otherFriendly) {
                     Actor::AI_FaceObject(actor.id, collision_state.pid, 0, nullptr);
                 } else {
                     Actor::AI_Flee(actor.id, collision_state.pid, 0, nullptr);
@@ -562,13 +558,6 @@ void ProcessActorCollisionsBLV(Actor &actor, bool isAboveGround, bool isFlying) 
 
         if (type == OBJECT_Player) {
             if (actor.GetActorsRelation(0)) {
-                // v51 =
-                // __OFSUB__(HIDWORD(pParty->pPartyBuffs[PARTY_BUFF_INVISIBILITY].uExpireTime),
-                // v22); v49 =
-                // HIDWORD(pParty->pPartyBuffs[PARTY_BUFF_INVISIBILITY].uExpireTime)
-                // == v22; v50 =
-                // HIDWORD(pParty->pPartyBuffs[PARTY_BUFF_INVISIBILITY].uExpireTime)
-                // - v22 < 0;
                 actor.vVelocity.y = 0;
                 actor.vVelocity.x = 0;
                 if (pParty->pPartyBuffs[PARTY_BUFF_INVISIBILITY].Active()) {
@@ -691,18 +680,14 @@ void ProcessActorCollisionsODM(Actor &actor, bool isFlying) {
 
         if (type == OBJECT_Actor) {
             if (!pParty->bTurnBasedModeOn || (pTurnEngine->turn_stage != TE_ATTACK && pTurnEngine->turn_stage != TE_MOVEMENT)) {
-                if (actor.pMonsterInfo.uHostilityType != MonsterInfo::Hostility_Friendly) {
-                    if (isInCrowd) {
-                        Actor::AI_StandOrBored(actor.id, 4, 0, nullptr);
-                    } else {
-                        Actor::AI_Flee(actor.id, collision_state.pid, 0, nullptr);
-                    }
-                } else if (isInCrowd) {
-                    Actor::AI_StandOrBored(actor.id, 4, 0, nullptr);
-                } else if (pActors[id].pMonsterInfo.uHostilityType == MonsterInfo::Hostility_Friendly) {
-                    Actor::AI_Flee(actor.id, collision_state.pid, 0, nullptr);
-                } else {
+                bool isFriendly = actor.pMonsterInfo.uHostilityType == MonsterInfo::Hostility_Friendly;
+                bool otherFriendly = pActors[id].pMonsterInfo.uHostilityType == MonsterInfo::Hostility_Friendly;
+                if (isInCrowd) {
+                    Actor::AI_StandOrBored(actor.id, PID(OBJECT_Player, 0), 0, nullptr);
+                } else if (isFriendly && !otherFriendly) { // TODO(captainurist): drop "!" and retrace
                     Actor::AI_FaceObject(actor.id, collision_state.pid, 0, nullptr);
+                } else {
+                    Actor::AI_Flee(actor.id, collision_state.pid, 0, nullptr);
                 }
             }
         }
