@@ -560,33 +560,20 @@ void ProcessActorCollisionsBLV(Actor &actor, bool isAboveGround, bool isFlying) 
             if (actor.GetActorsRelation(0)) {
                 actor.vVelocity.y = 0;
                 actor.vVelocity.x = 0;
+
                 if (pParty->pPartyBuffs[PARTY_BUFF_INVISIBILITY].Active()) {
                     pParty->pPartyBuffs[PARTY_BUFF_INVISIBILITY].Reset();
                 }
-
-                actor.vVelocity.x = fixpoint_mul(58500, actor.vVelocity.x);
-                actor.vVelocity.y = fixpoint_mul(58500, actor.vVelocity.y);
-                actor.vVelocity.z = fixpoint_mul(58500, actor.vVelocity.z);
             } else {
                 Actor::AI_FaceObject(actor.id, collision_state.pid, 0, nullptr);
-                actor.vVelocity.x = fixpoint_mul(58500, actor.vVelocity.x);
-                actor.vVelocity.y = fixpoint_mul(58500, actor.vVelocity.y);
-                actor.vVelocity.z = fixpoint_mul(58500, actor.vVelocity.z);
             }
-            continue;
         }
 
         if (type == OBJECT_Decoration) {
-            unsigned int speed = integer_sqrt(
-                    actor.vVelocity.x * actor.vVelocity.x +
-                    actor.vVelocity.y * actor.vVelocity.y);
+            int speed = integer_sqrt(actor.vVelocity.x * actor.vVelocity.x + actor.vVelocity.y * actor.vVelocity.y);
             int angle = TrigLUT.atan2(actor.vPosition.x - pLevelDecorations[id].vPosition.x, actor.vPosition.y - pLevelDecorations[id].vPosition.y); // Face away from the decoration.
             actor.vVelocity.x = TrigLUT.cos(angle) * speed;
             actor.vVelocity.y = TrigLUT.sin(angle) * speed;
-            actor.vVelocity.x = fixpoint_mul(58500, actor.vVelocity.x);
-            actor.vVelocity.y = fixpoint_mul(58500, actor.vVelocity.y);
-            actor.vVelocity.z = fixpoint_mul(58500, actor.vVelocity.z);
-            continue;
         }
 
         if (type == OBJECT_Face) {
@@ -715,7 +702,7 @@ void ProcessActorCollisionsODM(Actor &actor, bool isFlying) {
         }
 
         if (type == OBJECT_Face) {
-            ODMFace * face = &pOutdoor->pBModels[collision_state.pid >> 9].pFaces[id & 0x3F];
+            ODMFace *face = &pOutdoor->pBModels[collision_state.pid >> 9].pFaces[id & 0x3F];
             if (!face->Ethereal()) {
                 if (face->uPolygonType == POLYGON_Floor) {
                     actor.vVelocity.z = 0;
