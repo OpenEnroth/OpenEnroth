@@ -137,17 +137,6 @@ struct stru316 {
 };
 #pragma pack(pop)
 
-/*  378 */
-#pragma pack(push, 1)
-struct stru337_stru0 {
-    int field_0;
-    int field_4;
-    int field_8;
-    int field_C;
-    int field_10;
-};
-#pragma pack(pop)
-
 /*  147 */
 #pragma pack(push, 1)
 
