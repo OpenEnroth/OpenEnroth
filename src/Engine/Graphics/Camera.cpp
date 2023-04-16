@@ -19,22 +19,6 @@ float Camera3D::GetMouseInfoDepth() {
         return engine->config->gameplay.MouseInfoDepthIndoor.value();
 }
 
-//----- (004364C5) --------------------------------------------------------
-void Camera3D::ViewTransfrom_OffsetUV(RenderVertexSoft *pVertices,
-                                             unsigned int uNumVertices,
-                                             RenderVertexSoft *pOutVertices,
-                                             LightsData *a5) {
-    for (uint i = 0; i < uNumVertices; ++i) {
-        pOutVertices[i].vWorldPosition.x = pVertices[i].vWorldPosition.x;
-        pOutVertices[i].vWorldPosition.y = pVertices[i].vWorldPosition.y;
-        pOutVertices[i].vWorldPosition.z = pVertices[i].vWorldPosition.z;
-
-        pOutVertices[i].u = pVertices[i].u + a5->pDeltaUV[0];
-        pOutVertices[i].v = pVertices[i].v + a5->pDeltaUV[1];
-    }
-    ViewTransform(pOutVertices, uNumVertices);
-}
-
 float Camera3D::GetNearClip() const {
     return engine->config->graphics.ClipNearDistance.value();
 }

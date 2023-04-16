@@ -82,10 +82,6 @@ struct Camera3D {
     bool is_face_faced_to_cameraODM(struct ODMFace *pFace, struct RenderVertexSoft *a2);
     bool GetFacetOrientation(PolygonType polyType, Vec3f *a2,
                              Vec3f *a3, Vec3f *a4);
-    void ViewTransfrom_OffsetUV(struct RenderVertexSoft *pVertices,
-                                unsigned int uNumVertices,
-                                struct RenderVertexSoft *pOutVertices,
-                                struct LightsData *a5);
 
     void CullByNearClip(struct RenderVertexSoft *pverts, uint *unumverts);
     void CullByFarClip(struct RenderVertexSoft *pverts, uint *unumverts);
