@@ -75,57 +75,46 @@ void Camera3D::ViewTransform(RenderVertexSoft *a1a, unsigned int uNumVertices) {
 }
 
 //----- (00436932) --------------------------------------------------------
-bool Camera3D::GetFacetOrientation(PolygonType polyType, Vec3f *a2,
-                                   Vec3f *a3, Vec3f *a4) {
-    switch ((PolygonType)polyType) {
-        case POLYGON_VerticalWall:
-            a4->x = -a2->y;
-            a4->y = a2->x;
-            a4->z = 0.0;
+// TODO(captainurist): function belongs to stru314
+void Camera3D::GetFacetOrientation(const Vec3f &normal, Vec3f *outU, Vec3f *outV) {
+    if (fabsf(normal.z) < 1e-6f) {
+        // Vertical wall.
+        outV->x = -normal.y;
+        outV->y = normal.x;
+        outV->z = 0.0;
 
-            a3->x = 0.0;
-            a3->y = 0.0;
-            a3->z = 1.0f;
+        outU->x = 0.0;
+        outU->y = 0.0;
+        outU->z = 1.0f;
+    } else if (fabsf(normal.x) < 1e-6f && fabsf(normal.y) < 1e-6f) {
+        // Floor.
+        outV->x = 1.0;
+        outV->y = 0.0;
+        outV->z = 0.0;
 
-            return true;
+        outU->x = 0.0;
+        outU->y = 1.0;
+        outU->z = 0.0;
+    } else {
+        // Other.
+        if (fabs(normal.z) < 0.70811361) {
+            outV->x = -normal.y;
+            outV->y = normal.x;
+            outV->z = 0.0;
+            outV->normalize();
 
-        case POLYGON_Floor:
-        case POLYGON_Ceiling:
-            a4->x = 1.0;
-            a4->y = 0.0;
-            a4->z = 0.0;
+            outU->x = 0.0;
+            outU->y = 0.0;
+            outU->z = 1.0;
+        } else {
+            outV->x = 1.0;
+            outV->y = 0.0;
+            outV->z = 0.0;
 
-            a3->x = 0.0;
-            a3->y = 1.0;
-            a3->z = 0.0;
-
-            return true;
-
-        case POLYGON_InBetweenFloorAndWall:
-        case POLYGON_InBetweenCeilingAndWall:
-            if (fabs(a2->z) < 0.70811361) {
-                a4->x = -a2->y;
-                a4->y = a2->x;
-                a4->z = 0.0;
-                a4->normalize();
-
-                a3->x = 0.0;
-                a3->y = 0.0;
-                a3->z = 1.0;
-            } else {
-                a4->x = 1.0;
-                a4->y = 0.0;
-                a4->z = 0.0;
-
-                a3->x = 0.0;
-                a3->y = 1.0;
-                a3->z = 0.0;
-            }
-
-            return true;
-
-        default:
-            return false;
+            outU->x = 0.0;
+            outU->y = 1.0;
+            outU->z = 0.0;
+        }
     }
 }
 

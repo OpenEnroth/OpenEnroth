@@ -29,24 +29,6 @@ struct DDM_DLV_Header {
 };
 #pragma pack(pop)
 
-/*  147 */
-#pragma pack(push, 1)
-struct stru154 {
-    void GetFacePlaneAndClassify(const ODMFace *a2, const std::vector<Vec3i> &a3);
-
-    void ClassifyPolygon(const Vec3f &pNormal, float dist);
-
-    static void GetFacePlane(const ODMFace *pFace, const std::vector<Vec3i> &pVertices,
-                             Vec3f *pOutNormal, float *pOutDist);
-
-    Planef face_plane;
-    PolygonType polygonType = POLYGON_Invalid;
-    char field_15 = 0;
-    char field_16 = 0;
-    char field_17 = 0;
-};
-#pragma pack(pop)
-
 /*  392 */
 #pragma pack(push, 1)
 struct stru352 {

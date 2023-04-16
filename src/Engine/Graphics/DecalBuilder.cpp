@@ -56,21 +56,14 @@ void DecalBuilder::Reset(bool bPreserveBloodsplats) {
 }
 
 //----- (0049B540) --------------------------------------------------------
-char DecalBuilder::BuildAndApplyDecals(int light_level, LocationFlags locationFlags, stru154 *FacePlane, int NumFaceVerts,
+char DecalBuilder::BuildAndApplyDecals(int light_level, LocationFlags locationFlags, const Planef &FacePlane, int NumFaceVerts,
                                        RenderVertexSoft *FaceVerts, char ClipFlags, unsigned int uSectorID) {
     if (!NumFaceVerts) return 0;
 
     static stru314 static_FacePlane;
-    static_FacePlane.Normal.y = FacePlane->face_plane.vNormal.y;
-    static_FacePlane.Normal.x = FacePlane->face_plane.vNormal.x;
-    static_FacePlane.Normal.z = FacePlane->face_plane.vNormal.z;
-    static_FacePlane.dist = FacePlane->face_plane.dist;
-    if (!pCamera3D->GetFacetOrientation(
-        FacePlane->polygonType, &static_FacePlane.Normal, &static_FacePlane.field_10,
-        &static_FacePlane.field_1C)) {
-        log->warning("Error: Failed to get the facet orientation");
-        return 0;
-    }
+    static_FacePlane.Normal = FacePlane.vNormal;
+    static_FacePlane.dist = FacePlane.dist;
+    Camera3D::GetFacetOrientation(static_FacePlane.Normal, &static_FacePlane.field_10, &static_FacePlane.field_1C);
 
     if (this->uNumSplatsThisFace > 0) {
         for (int i = 0; i < this->uNumSplatsThisFace; ++i) {

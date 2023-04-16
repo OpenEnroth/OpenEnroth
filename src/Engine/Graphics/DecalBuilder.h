@@ -82,7 +82,7 @@ struct DecalBuilder {
 
     void AddBloodsplat(const Vec3f &pos, float r, float g, float b, float radius);
     void Reset(bool bPreserveBloodsplats);
-    char BuildAndApplyDecals(int light_level, LocationFlags locationFlags, struct stru154 *FacePlane, int NumFaceVerts,
+    char BuildAndApplyDecals(int light_level, LocationFlags locationFlags, const Planef &FacePlane, int NumFaceVerts,
                              RenderVertexSoft *FaceVerts, char ClipFlags, unsigned int uSectorID);
     bool Build_Decal_Geometry(
         int LightLevel, LocationFlags locationFlags, Bloodsplat *blood, float DecalRadius,
