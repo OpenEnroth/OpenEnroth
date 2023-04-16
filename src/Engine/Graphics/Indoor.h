@@ -16,9 +16,6 @@ struct IndoorLocation;
 
 #pragma pack(push, 1)
 struct DDM_DLV_Header {
-    //----- (00462607) --------------------------------------------------------
-    inline DDM_DLV_Header() {}
-
     int uNumRespawns = 0;
     int uLastRepawnDay = 0;
     int uReputation = 0;
@@ -35,20 +32,16 @@ struct DDM_DLV_Header {
 /*  147 */
 #pragma pack(push, 1)
 struct stru154 {
-    //----- (0049B001) --------------------------------------------------------
-    inline stru154() {}
-
-    //----- (0049B027) --------------------------------------------------------
-    inline ~stru154() {}
-
-    void GetFacePlaneAndClassify(ODMFace *a2,
+    void GetFacePlaneAndClassify(const ODMFace *a2,
                                  const std::vector<Vec3i> &a3);
-    void ClassifyPolygon(Vec3f *pNormal, float dist);
-    void GetFacePlane(ODMFace *pFace, const std::vector<Vec3i> &pVertices,
+
+    void ClassifyPolygon(const Vec3f &pNormal, float dist);
+
+    static void GetFacePlane(const ODMFace *pFace, const std::vector<Vec3i> &pVertices,
                       Vec3f *pOutNormal, float *pOutDist);
 
-    Planef face_plane {};
-    PolygonType polygonType {};
+    Planef face_plane;
+    PolygonType polygonType = POLYGON_Invalid;
     char field_15 = 0;
     char field_16 = 0;
     char field_17 = 0;

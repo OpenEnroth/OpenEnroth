@@ -2536,7 +2536,7 @@ int DropTreasureAt(ITEM_TREASURE_LEVEL trs_level, int trs_type, int x, int y, in
 }
 
 //----- (0049B04D) --------------------------------------------------------
-void stru154::GetFacePlaneAndClassify(ODMFace *a2, const std::vector<Vec3i> &a3) {
+void stru154::GetFacePlaneAndClassify(const ODMFace *a2, const std::vector<Vec3i> &a3) {
     Vec3f OutPlaneNorm;
     float OutPlaneDist;
 
@@ -2560,22 +2560,22 @@ void stru154::GetFacePlaneAndClassify(ODMFace *a2, const std::vector<Vec3i> &a3)
 }
 
 //----- (0049B0C9) --------------------------------------------------------
-void stru154::ClassifyPolygon(Vec3f *pNormal, float dist) {
-    if (fabsf(pNormal->z) < 1e-6f)
+void stru154::ClassifyPolygon(const Vec3f &pNormal, float dist) {
+    if (fabsf(pNormal.z) < 1e-6f)
         polygonType = POLYGON_VerticalWall;
-    else if (fabsf(pNormal->x) < 1e-6f && fabsf(pNormal->y) < 1e-6f)
+    else if (fabsf(pNormal.x) < 1e-6f && fabsf(pNormal.y) < 1e-6f)
         polygonType = POLYGON_Floor;
     else
         polygonType = POLYGON_InBetweenFloorAndWall;
 
-    face_plane.vNormal.x = pNormal->x;
-    face_plane.vNormal.y = pNormal->y;
-    face_plane.vNormal.z = pNormal->z;
+    face_plane.vNormal.x = pNormal.x;
+    face_plane.vNormal.y = pNormal.y;
+    face_plane.vNormal.z = pNormal.z;
     face_plane.dist = dist;
 }
 
 //----- (0049B13D) --------------------------------------------------------
-void stru154::GetFacePlane(ODMFace *pFace, const std::vector<Vec3i> &pVertices,
+void stru154::GetFacePlane(const ODMFace *pFace, const std::vector<Vec3i> &pVertices,
                            Vec3f *pOutNormal, float *pOutDist) {
     Vec3f FirstPairVec;
     Vec3f SecPairVec;
