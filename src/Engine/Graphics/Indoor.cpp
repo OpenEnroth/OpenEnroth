@@ -56,8 +56,6 @@ BLVRenderParams *pBLVRenderParams = new BLVRenderParams;
 LEVEL_TYPE uCurrentlyLoadedLevelType = LEVEL_null;
 
 LightsData Lights;
-stru337_unused _DLV_header_unused;
-// std::array<stru352, 480> stru_F83B80;
 
 uint16_t pDoorSoundIDsByLocationID[78] = {
     300, 300, 300, 300, 300, 300, 300, 300, 300, 300, 300, 300, 300,

@@ -163,7 +163,6 @@ struct stru337_unused {
     stru337_stru0 field_34;
 };
 #pragma pack(pop)
-extern stru337_unused _DLV_header_unused;
 
 /*  147 */
 #pragma pack(push, 1)
