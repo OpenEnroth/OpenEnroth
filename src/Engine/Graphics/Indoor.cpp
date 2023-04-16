@@ -55,8 +55,6 @@ BLVRenderParams *pBLVRenderParams = new BLVRenderParams;
 
 LEVEL_TYPE uCurrentlyLoadedLevelType = LEVEL_null;
 
-LightsData Lights;
-
 uint16_t pDoorSoundIDsByLocationID[78] = {
     300, 300, 300, 300, 300, 300, 300, 300, 300, 300, 300, 300, 300,
     300, 300, 300, 404, 302, 306, 308, 304, 308, 302, 400, 302, 300,

@@ -49,6 +49,8 @@
     #define LOWORD(l) ((unsigned short)(((std::uintptr_t)(l)) & 0xFFFF))
 #endif
 
+static constexpr int DEFAULT_AMBIENT_LIGHT_LEVEL = 0;
+
 // globals
 //TODO(pskelton): Combine and contain
 std::shared_ptr<IRender> render;
@@ -4689,9 +4691,9 @@ void RenderOpenGL::DrawIndoorFaces() {
             mintest = std::max(mintest, pIndoor->pSectors[i].uMinAmbientLightLevel);
         }
 
-        Lights.uCurrentAmbientLightLevel = (Lights.uDefaultAmbientLightLevel + mintest);
+        int uCurrentAmbientLightLevel = (DEFAULT_AMBIENT_LIGHT_LEVEL + mintest);
 
-        float ambient = (248.0f - (Lights.uCurrentAmbientLightLevel << 3)) / 255.0f;
+        float ambient = (248.0f - (uCurrentAmbientLightLevel << 3)) / 255.0f;
         //pParty->uCurrentMinute + pParty->uCurrentHour * 60.0;  // 0 - > 1439
     // ambient = 0.15 + (sinf(((ambient - 360.0) * 2 * pi_double) / 1440) + 1) * 0.27;
 
@@ -4932,7 +4934,7 @@ void RenderOpenGL::DrawIndoorFaces() {
             }
 
             // blood draw
-            decal_builder->BuildAndApplyDecals(Lights.uCurrentAmbientLightLevel, LocationIndoors, &FacePlaneHolder,
+            decal_builder->BuildAndApplyDecals(uCurrentAmbientLightLevel, LocationIndoors, &FacePlaneHolder,
                 pface->uNumVertices, static_vertices_buff_in,
                 0, pface->uSectorID);
         }

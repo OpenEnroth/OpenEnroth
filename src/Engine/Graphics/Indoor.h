@@ -1,4 +1,5 @@
 #pragma once
+
 #include <array>
 #include <memory>
 #include <string>
@@ -12,73 +13,6 @@
 #include "Engine/Graphics/IRender.h"
 
 struct IndoorLocation;
-
-/*  358 */
-#pragma pack(push, 1)
-struct LightsData {
-    int field_0;
-    Planei plane_4;
-    Vec3i vec_14;
-    Vec3i vec_20;
-    unsigned int uCurrentAmbientLightLevel;  // 0 to 31
-    int field_30;
-    int field_34;
-    int field_38;
-    int pDeltaUV[2];
-    int field_44;
-    int field_48;
-    char field_4C[8];
-    Vec3i rotated_normal;
-    Vec3i vec_60;
-    int field_6C;
-    Vec3i vec_70;
-    int field_7C;
-    Vec3i vec_80;
-    Vec3i vec_8C;
-    int field_98;
-    Vec3i vec_9C;
-    int field_A8;
-    unsigned int uNumLightsApplied;
-    int _blv_lights_radii[20];
-    int _blv_lights_inv_radii[20];
-    int _blv_lights_xs[20];
-    int _blv_lights_ys[20];
-    int _blv_lights_light_dot_faces[20];
-    int field_240;
-    int field_244;
-    int field_248;
-    int field_24C;
-    int field_250;
-    int field_254;
-    int field_258;
-    int field_25C;
-    int field_260;
-    int field_264;
-    int field_268;
-    int field_26C;
-    int field_270;
-    int field_274;
-    int field_278;
-    int field_27C;
-    int field_280;
-    int field_284;
-    int field_288;
-    int field_28C;
-    int _blv_lights_zs[20];
-    float _blv_lights_rs[20];
-    float _blv_lights_gs[20];
-    float _blv_lights_bs[20];
-    char _blv_lights_types[20];
-    int field_3E4;
-    int field_3E8;
-    int field_3EC;
-    int field_3F0;
-    int field_3F4;
-    unsigned int uDefaultAmbientLightLevel;
-};
-#pragma pack(pop)
-
-extern LightsData Lights;  // idb
 
 #pragma pack(push, 1)
 struct DDM_DLV_Header {
