@@ -23,6 +23,7 @@ MM_DECLARE_OPERATORS_FOR_FLAGS(LevelDecorationFlags)
 
 /*   74 */
 #pragma pack(push, 1)
+// TODO(captainurist): need to introduce LevelDecoration_MM7
 struct LevelDecoration {
     LevelDecoration();
     int GetGlobalEvent();
