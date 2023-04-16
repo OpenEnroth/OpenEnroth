@@ -1379,7 +1379,7 @@ int Player::CalculateIncommingDamage(DAMAGE_TYPE dmg_type, int dmg) {
 }
 
 //----- (0048D62C) --------------------------------------------------------
-ITEM_EQUIP_TYPE Player::GetEquippedItemEquipType(ITEM_SLOT uEquipSlot) {
+ITEM_EQUIP_TYPE Player::GetEquippedItemEquipType(ITEM_SLOT uEquipSlot) const {
     return GetNthEquippedIndexItem(uEquipSlot)->GetItemEquipType();
 }
 
@@ -1389,7 +1389,8 @@ PLAYER_SKILL_TYPE Player::GetEquippedItemSkillType(ITEM_SLOT uEquipSlot) {
 }
 
 //----- (0048D676) --------------------------------------------------------
-bool Player::IsUnarmed() {
+bool Player::IsUnarmed() const
+{
     return !HasItemEquipped(ITEM_SLOT_MAIN_HAND) &&
            (!HasItemEquipped(ITEM_SLOT_OFF_HAND) ||
             GetOffHandItem()->isShield());
@@ -1405,7 +1406,7 @@ bool Player::HasItemEquipped(ITEM_SLOT uEquipIndex) const {
 }
 
 //----- (0048D6D0) --------------------------------------------------------
-bool Player::HasEnchantedItemEquipped(int uEnchantment) {
+bool Player::HasEnchantedItemEquipped(int uEnchantment) const {
     for (ITEM_SLOT i : AllItemSlots()) {  // search over equipped inventory
         if (HasItemEquipped(i) &&
             GetNthEquippedIndexItem(i)->special_enchantment == uEnchantment)
@@ -2432,7 +2433,7 @@ int Player::GetItemsBonus(CHARACTER_ATTRIBUTE_TYPE attr, bool a3 /*= false*/) co
     PLAYER_SKILL_TYPE v58;             // [sp-4h] [bp-20h]@10
     int v61;                    // [sp+10h] [bp-Ch]@1
     int v62;                    // [sp+14h] [bp-8h]@1
-    ItemGen *currEquippedItem;  // [sp+20h] [bp+4h]@101
+    const ItemGen *currEquippedItem;  // [sp+20h] [bp+4h]@101
     bool no_skills;
 
     v5 = 0;
@@ -2542,7 +2543,7 @@ int Player::GetItemsBonus(CHARACTER_ATTRIBUTE_TYPE attr, bool a3 /*= false*/) co
             } else {
                 if (this->HasItemEquipped(ITEM_SLOT_MAIN_HAND)) {
                     if (IsWeapon(GetEquippedItemEquipType(ITEM_SLOT_MAIN_HAND))) {
-                        ItemGen *mainHandItem = GetMainHandItem();
+                        const ItemGen *mainHandItem = GetMainHandItem();
                         v26 = mainHandItem->GetDamageRoll();
                         if (GetOffHandItem() != nullptr ||
                             mainHandItem->GetPlayerSkillType() != PLAYER_SKILL_SPEAR) {
@@ -2558,7 +2559,7 @@ int Player::GetItemsBonus(CHARACTER_ATTRIBUTE_TYPE attr, bool a3 /*= false*/) co
                     !IsWeapon(GetEquippedItemEquipType(ITEM_SLOT_OFF_HAND))) {
                     return v5;
                 } else {
-                    ItemGen *offHandItem = GetOffHandItem();
+                    const ItemGen *offHandItem = GetOffHandItem();
                     v15 = offHandItem->GetDamageMod();
                     v14 = offHandItem->GetDamageDice() *
                           offHandItem->GetDamageRoll();
@@ -2593,7 +2594,7 @@ int Player::GetItemsBonus(CHARACTER_ATTRIBUTE_TYPE attr, bool a3 /*= false*/) co
             }
             if (this->HasItemEquipped(ITEM_SLOT_MAIN_HAND)) {
                 if (IsWeapon(GetEquippedItemEquipType(ITEM_SLOT_MAIN_HAND))) {
-                    ItemGen *mainHandItem = GetMainHandItem();
+                    const ItemGen *mainHandItem = GetMainHandItem();
                     v5 = mainHandItem->GetDamageDice() +
                          mainHandItem->GetDamageMod();
                     if (GetOffHandItem() == nullptr &&
@@ -2608,7 +2609,7 @@ int Player::GetItemsBonus(CHARACTER_ATTRIBUTE_TYPE attr, bool a3 /*= false*/) co
                 !IsWeapon(GetEquippedItemEquipType(ITEM_SLOT_OFF_HAND))) {
                 return v5;
             } else {
-                ItemGen *offHandItem = GetOffHandItem();
+                const ItemGen *offHandItem = GetOffHandItem();
                 v14 = offHandItem->GetDamageMod();
                 v15 = offHandItem->GetDamageDice();
                 return v5 + v15 + v14;
@@ -6982,30 +6983,39 @@ void Player::SetCondUnconsciousWithBlockCheck(int blockable) {
 }
 
 ItemGen *Player::GetOffHandItem() { return GetItem(&PlayerEquipment::uOffHand); }
+const ItemGen *Player::GetOffHandItem() const { return GetItem(&PlayerEquipment::uOffHand); }
 
-ItemGen *Player::GetMainHandItem() {
-    return GetItem(&PlayerEquipment::uMainHand);
-}
+ItemGen *Player::GetMainHandItem() { return GetItem(&PlayerEquipment::uMainHand); }
+const ItemGen *Player::GetMainHandItem() const { return GetItem(&PlayerEquipment::uMainHand); }
 
 ItemGen *Player::GetBowItem() { return GetItem(&PlayerEquipment::uBow); }
+const ItemGen *Player::GetBowItem() const { return GetItem(&PlayerEquipment::uBow); }
 
 ItemGen *Player::GetArmorItem() { return GetItem(&PlayerEquipment::uArmor); }
+const ItemGen *Player::GetArmorItem() const { return GetItem(&PlayerEquipment::uArmor); }
 
 ItemGen *Player::GetHelmItem() { return GetItem(&PlayerEquipment::uHelm); }
+const ItemGen *Player::GetHelmItem() const { return GetItem(&PlayerEquipment::uHelm); }
 
 ItemGen *Player::GetBeltItem() { return GetItem(&PlayerEquipment::uBelt); }
+const ItemGen *Player::GetBeltItem() const { return GetItem(&PlayerEquipment::uBelt); }
 
 ItemGen *Player::GetCloakItem() { return GetItem(&PlayerEquipment::uCloak); }
+const ItemGen *Player::GetCloakItem() const { return GetItem(&PlayerEquipment::uCloak); }
 
 ItemGen *Player::GetGloveItem() { return GetItem(&PlayerEquipment::uGlove); }
+const ItemGen *Player::GetGloveItem() const { return GetItem(&PlayerEquipment::uGlove); }
 
 ItemGen *Player::GetBootItem() { return GetItem(&PlayerEquipment::uBoot); }
+const ItemGen *Player::GetBootItem() const { return GetItem(&PlayerEquipment::uBoot); }
 
 ItemGen *Player::GetAmuletItem() { return GetItem(&PlayerEquipment::uAmulet); }
+const ItemGen *Player::GetAmuletItem() const { return GetItem(&PlayerEquipment::uAmulet); }
 
 ItemGen *Player::GetNthRingItem(int ringNum) {
     return GetNthEquippedIndexItem(RingSlot(ringNum));
 }
+const ItemGen *Player::GetNthRingItem(int ringNum) const { return GetNthEquippedIndexItem(RingSlot(ringNum)); }
 
 ItemGen *Player::GetNthEquippedIndexItem(ITEM_SLOT index) {
     if (this->pEquipment.pIndices[index] == 0) {
@@ -7025,6 +7035,9 @@ ItemGen *Player::GetItem(unsigned int PlayerEquipment::*itemPos) {
     }
 
     return &this->pInventoryItemList[this->pEquipment.*itemPos - 1];
+}
+const ItemGen *Player::GetItem(unsigned int PlayerEquipment::*itemPos) const {
+    return const_cast<Player *>(this)->GetItem(itemPos);
 }
 
 int Player::GetPlayerIndex() {
@@ -7102,7 +7115,7 @@ void Player::_42ECB5_PlayerAttacksActor() {
 
     int main_hand_idx = player->pEquipment.uMainHand;
     if (main_hand_idx) {
-        ItemGen *item = &player->pInventoryItemList[main_hand_idx - 1];
+        const ItemGen *item = &player->pInventoryItemList[main_hand_idx - 1];
         // v5 = (char *)v1 + 36 * v4;
         if (!item->IsBroken()) {
             // v28b = &v1->pInventoryItems[v4].uItemID;

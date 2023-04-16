@@ -21,8 +21,8 @@ struct ItemGen {  // 0x24
     static void PopulateArtifactBonusMap();
     static void ClearItemBonusMaps();
 
-    void GetItemBonusArtifact(Player *owner, CHARACTER_ATTRIBUTE_TYPE attrToGet, int *bonusSum);
-    void GetItemBonusSpecialEnchantment(Player *owner, CHARACTER_ATTRIBUTE_TYPE attrToGet, int *additiveBonus, int *halfSkillBonus);
+    void GetItemBonusArtifact(const Player *owner, CHARACTER_ATTRIBUTE_TYPE attrToGet, int *bonusSum) const;
+    void GetItemBonusSpecialEnchantment(const Player *owner, CHARACTER_ATTRIBUTE_TYPE attrToGet, int *additiveBonus, int *halfSkillBonus) const;
 
     inline void ResetEnchantAnimation() { uAttributes &= ~ITEM_ENCHANT_ANIMATION_MASK; }
     inline bool ItemEnchanted() const {
@@ -58,21 +58,21 @@ struct ItemGen {  // 0x24
     void Reset();
     int _439DF3_get_additional_damage(DAMAGE_TYPE *a2, bool *vampiyr);
 
-    ITEM_EQUIP_TYPE GetItemEquipType();
-    PLAYER_SKILL_TYPE GetPlayerSkillType();
-    char *GetIconName();
-    uint8_t GetDamageDice();
-    uint8_t GetDamageRoll();
-    uint8_t GetDamageMod();
+    ITEM_EQUIP_TYPE GetItemEquipType() const;
+    PLAYER_SKILL_TYPE GetPlayerSkillType() const;
+    char *GetIconName() const;
+    uint8_t GetDamageDice() const;
+    uint8_t GetDamageRoll() const;
+    uint8_t GetDamageMod() const;
     bool MerchandiseTest(int _2da_idx);
 
     bool isGold() {
         return GetItemEquipType() == EQUIP_GOLD;
     }
-    bool isShield() {
+    bool isShield() const {
         return GetItemEquipType() == EQUIP_SHIELD;
     }
-    bool isWand() {
+    bool isWand() const {
         return GetItemEquipType() == EQUIP_WAND;
     }
     bool isPotion() {

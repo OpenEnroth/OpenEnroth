@@ -1,4 +1,3 @@
-#pragma once
 #include "Engine/PriceCalculator.h"
 
 #include "Engine/Objects/Items.h"

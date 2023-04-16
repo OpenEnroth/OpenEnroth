@@ -316,12 +316,12 @@ void ItemTable::SetSpecialBonus(ItemGen *pItem) {
 }
 
 //----- (00456D43) --------------------------------------------------------
-bool ItemTable::IsMaterialSpecial(ItemGen *pItem) {
+bool ItemTable::IsMaterialSpecial(const ItemGen *pItem) {
     return this->pItems[pItem->uItemID].uMaterial == MATERIAL_SPECIAL;
 }
 
 //----- (00456D5E) --------------------------------------------------------
-bool ItemTable::IsMaterialNonCommon(ItemGen *pItem) {
+bool ItemTable::IsMaterialNonCommon(const ItemGen *pItem) {
     return pItems[pItem->uItemID].uMaterial == MATERIAL_SPECIAL ||
            pItems[pItem->uItemID].uMaterial == MATERIAL_RELIC ||
            pItems[pItem->uItemID].uMaterial == MATERIAL_ARTIFACT;

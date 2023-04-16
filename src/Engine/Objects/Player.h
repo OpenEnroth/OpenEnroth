@@ -216,11 +216,11 @@ struct Player {
     bool CanTrainToNextLevel();
     unsigned int GetExperienceDisplayColor();
     int CalculateIncommingDamage(DAMAGE_TYPE dmg_type, int amount);
-    ITEM_EQUIP_TYPE GetEquippedItemEquipType(ITEM_SLOT uEquipSlot);
+    ITEM_EQUIP_TYPE GetEquippedItemEquipType(ITEM_SLOT uEquipSlot) const;
     PLAYER_SKILL_TYPE GetEquippedItemSkillType(ITEM_SLOT uEquipSlot);
-    bool IsUnarmed();
+    bool IsUnarmed() const;
     bool HasItemEquipped(ITEM_SLOT uEquipIndex) const;
-    bool HasEnchantedItemEquipped(int uEnchantment);
+    bool HasEnchantedItemEquipped(int uEnchantment) const;
     bool WearsItem(ITEM_TYPE item_id, ITEM_SLOT equip_type) const;
     int StealFromShop(ItemGen *itemToSteal, int extraStealDifficulty,
                       int reputation, int extraStealFine, int *fineIfFailed);
@@ -250,7 +250,7 @@ struct Player {
     Condition GetMajorConditionIdx() const;
     int GetParameterBonus(int player_parameter);
     int GetSpecialItemBonus(ITEM_ENCHANTMENT enchantment);
-    int GetItemsBonus(CHARACTER_ATTRIBUTE_TYPE attr, bool a3 = false);
+    int GetItemsBonus(CHARACTER_ATTRIBUTE_TYPE attr, bool a3 = false) const;
     int GetMagicalBonus(CHARACTER_ATTRIBUTE_TYPE a2);
     PLAYER_SKILL_LEVEL GetActualSkillLevel(PLAYER_SKILL_TYPE uSkillType) const;
     PLAYER_SKILL_MASTERY GetActualSkillMastery(PLAYER_SKILL_TYPE uSkillType) const;
@@ -416,9 +416,22 @@ struct Player {
     ItemGen *GetBootItem();
     ItemGen *GetAmuletItem();
     ItemGen *GetNthRingItem(int ringNum);
-    const ItemGen *GetNthEquippedIndexItem(ITEM_SLOT index) const;
     ItemGen *GetNthEquippedIndexItem(ITEM_SLOT index);
     ItemGen *GetItem(unsigned int PlayerEquipment::*itemPos);
+
+    const ItemGen *GetMainHandItem() const;
+    const ItemGen *GetOffHandItem() const;
+    const ItemGen *GetBowItem() const;
+    const ItemGen *GetArmorItem() const;
+    const ItemGen *GetHelmItem() const;
+    const ItemGen *GetBeltItem() const;
+    const ItemGen *GetCloakItem() const;
+    const ItemGen *GetGloveItem() const;
+    const ItemGen *GetBootItem() const;
+    const ItemGen *GetAmuletItem() const;
+    const ItemGen *GetNthRingItem(int ringNum) const;
+    const ItemGen *GetNthEquippedIndexItem(ITEM_SLOT index) const;
+    const ItemGen *GetItem(unsigned int PlayerEquipment::*itemPos) const;
 
     // TODO(Nik-RE-dev): use getCharacterIdInParty directly where this function is called.
     int GetPlayerIndex();

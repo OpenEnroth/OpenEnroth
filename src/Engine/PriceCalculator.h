@@ -1,7 +1,7 @@
 #pragma once
 
-class Player;
-class ItemGen;
+struct Player;
+struct ItemGen;
 // Class to calculate various prices and overall deal with them
 class PriceCalculator {
    public:
