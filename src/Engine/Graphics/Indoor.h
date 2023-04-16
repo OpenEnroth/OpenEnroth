@@ -30,6 +30,7 @@ struct DDM_DLV_Header {
 #pragma pack(pop)
 
 #pragma pack(push, 1)
+// TODO(captainurist): introduce  LocationTime_MM7
 struct LocationTime_stru1 {
     GameTime last_visit {};
     char sky_texture_name[12] {};
@@ -63,6 +64,7 @@ struct BLVHeader {
 
 /*   96 */
 #pragma pack(push, 1)
+// TODO(captainurist): move to legacyimages
 struct BLVSectorMM8 {
     int dword_000074;
 };
@@ -70,6 +72,7 @@ struct BLVSectorMM8 {
 
 /*   97 */
 #pragma pack(push, 1)
+// TODO(captainurist): move to legacyimages
 struct BLVLightMM6 {
     Vec3s vPosition;
     int16_t uRadius;
@@ -80,6 +83,7 @@ struct BLVLightMM6 {
 
 /*   98 */
 #pragma pack(push, 1)
+// TODO(captainurist): move to legacyimages
 struct BLVLightMM7 {  // 10h
     Vec3s vPosition;
     int16_t uRadius;
@@ -94,13 +98,13 @@ struct BLVLightMM7 {  // 10h
 
 /*   99 */
 #pragma pack(push, 1)
+// TODO(captainurist): move to legacyimages
 struct BLVLightMM8 {
     int uID;
 };
 #pragma pack(pop)
 
 /*  100 */
-#pragma pack(push, 1)
 struct BLVDoor {  // 50h
     enum class State : uint16_t {
         Closed = 0,
@@ -132,10 +136,10 @@ struct BLVDoor {  // 50h
     State uState;
     int16_t field_4E;
 };
-#pragma pack(pop)
 
 /*  101 */
 #pragma pack(push, 1)
+// TODO(captainurist): introduce BLVMapOutline_MM7
 struct BLVMapOutline {  // 0C
     uint16_t uVertex1ID;
     uint16_t uVertex2ID;
@@ -156,7 +160,6 @@ enum {
 };
 
 /*   93 */
-#pragma pack(push, 1)
 struct BLVFace {  // 60h
     //----- (0046ED02) --------------------------------------------------------
     inline BLVFace() {
@@ -249,10 +252,10 @@ struct BLVFace {  // 60h
     char field_5E = 0;
     char field_5F = 0;
 };
-#pragma pack(pop)
 
 /*   94 */
 #pragma pack(push, 1)
+// TODO(captainurist): introduce BLVFaceExtra_MM7
 struct BLVFaceExtra {  // 24h
     bool HasEventHint();
 
@@ -278,7 +281,6 @@ struct BLVFaceExtra {  // 24h
 #pragma pack(pop)
 
 /*   95 */
-#pragma pack(push, 1)
 struct BLVSector {  // 0x74
     int32_t field_0;  // flags?? &8 is for check floor level against portals &10 is for adding additonal node faces
     uint16_t uNumFloors;
@@ -322,10 +324,8 @@ struct BLVSector {  // 0x74
     int16_t exit_tag;
     BBoxs pBounding;
 };
-#pragma pack(pop)
 
 /*   89 */
-#pragma pack(push, 1)
 struct IndoorLocation {
     //----- (00462592) --------------------------------------------------------
     inline IndoorLocation() {
@@ -391,12 +391,10 @@ struct IndoorLocation {
     SpellFxRenderer *spell_fx_renderer = nullptr;
     std::shared_ptr<ParticleEngine> particle_engine = nullptr;
 };
-#pragma pack(pop)
 
 extern IndoorLocation *pIndoor;
 
 /*  162 */
-#pragma pack(push, 1)
 struct BLVRenderParams {
     inline BLVRenderParams() {
         uViewportX = 0;
@@ -424,7 +422,6 @@ struct BLVRenderParams {
     int uViewportCenterY = 0;
     unsigned int uNumFacesRenderedThisFrame = 0;
 };
-#pragma pack(pop)
 extern BLVRenderParams *pBLVRenderParams;
 
 char DoInteractionWithTopmostZObject(int pid);

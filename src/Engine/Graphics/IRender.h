@@ -50,7 +50,6 @@ struct RenderBillboard {
 };
 
 /*   88 */
-#pragma pack(push, 1)
 struct ODMRenderParams {
     ODMRenderParams() {
         this->shading_dist_shade = 0x800;
@@ -84,7 +83,6 @@ struct ODMRenderParams {
     unsigned int uMapGridCellX = 0;  // moved from 157 struct IndoorCamera::0C
     unsigned int uMapGridCellY = 0;  // moved from 157 struct IndoorCamera::10
 };
-#pragma pack(pop)
 extern ODMRenderParams *pODMRenderParams;
 
 /*  119 */
