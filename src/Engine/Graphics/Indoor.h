@@ -29,27 +29,6 @@ struct DDM_DLV_Header {
 };
 #pragma pack(pop)
 
-/*  392 */
-#pragma pack(push, 1)
-struct stru352 {
-    int field_0;
-    int field_4;
-    int field_8;
-    int field_C;
-    int field_10;
-    int field_14;
-    int field_18;
-    int field_1C;
-    int field_20;
-    int field_24;
-    int field_28;
-    int field_2C;
-    int field_30;
-    int field_34;
-};
-#pragma pack(pop)
-// extern std::array<stru352, 480> stru_F83B80;
-
 #pragma pack(push, 1)
 struct LocationTime_stru1 {
     GameTime last_visit {};
