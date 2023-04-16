@@ -271,7 +271,6 @@ bool stru9::AdjustVertToClipEdge(struct RenderVertexSoft *a1, struct RenderVerte
 
 
     RenderVertexSoft *v6;  // ecx@5
-    int result;            // eax@5
     double v8;             // st7@5
                            //  int16_t v9; // fps@5
     double v10;            // st7@6
@@ -290,7 +289,6 @@ bool stru9::AdjustVertToClipEdge(struct RenderVertexSoft *a1, struct RenderVerte
     v6 = a1;
     static_AE3378.x = a1->vWorldPosition.x - a3->vWorldPosition.x;
     static_AE3378.y = a1->vWorldPosition.y - a3->vWorldPosition.y;
-    HEXRAYS_HIWORD(result) = HEXRAYS_HIWORD(a4);
     static_AE3378.z = a1->vWorldPosition.z - a3->vWorldPosition.z;
     static_AE3388.x = a2->vWorldPosition.x - a1->vWorldPosition.x;
     static_AE3388.y = a2->vWorldPosition.y - a1->vWorldPosition.y;
@@ -323,7 +321,6 @@ bool stru9::AdjustVertToClipEdge(struct RenderVertexSoft *a1, struct RenderVerte
                 v10 = 0.0;
             }
         }
-        result = (bool)a5;
         a5->vWorldPosition.x =
             (a2->vWorldPosition.x - v6->vWorldPosition.x) * v10 +
             v6->vWorldPosition.x;
@@ -340,7 +337,6 @@ bool stru9::AdjustVertToClipEdge(struct RenderVertexSoft *a1, struct RenderVerte
     v13 = v8 < 0.0;
     v14 = 0;
     v15 = v8 == 0.0;
-    // BYTE1(result) = HIBYTE(v9);
     if (v8 < 0.0) return 1;
     return 0;
 }

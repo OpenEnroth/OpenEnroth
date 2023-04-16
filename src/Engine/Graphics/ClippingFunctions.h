@@ -6,19 +6,12 @@ struct VertexBuffer {
     int uNumVertices;
 };
 
-/*  342 */
-#pragma pack(push, 1)
+// TODO(captainurist): this is just Vec3f
 struct stru312 {
-    //----- (004BE6D1) --------------------------------------------------------
-    inline stru312() {}
-
     float x = 0;
     float y = 0;
     float z = 0;
-    char field_C = 0;
-    char pad[3]{};
 };
-#pragma pack(pop)
 
 /*  126 */
 #pragma pack(push, 1)
