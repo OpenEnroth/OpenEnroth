@@ -1,5 +1,7 @@
 #pragma once
 
+#include <array>
+
 #include <glm.hpp>
 
 #include "Engine/OurMath.h"
@@ -14,14 +16,7 @@ struct IndoorCameraD3D_Vec4 {
     float dot = 0;
 };
 
-/*  123 */
-#pragma pack(push, 1)
 struct Camera3D {
-    Camera3D();
-
-    //----- (004363C6) --------------------------------------------------------
-    virtual ~Camera3D() {}
-
     void ViewTransform(int x, int y, int z, int *transformed_x, int *transformed_y, int *transformed_z);
     void ViewTransform(struct RenderVertexSoft *a1a, unsigned int uNumVertices);
 
@@ -97,9 +92,9 @@ struct Camera3D {
 
     float GetMouseInfoDepth();
 
-    glm::mat3x3 ViewMatrix;
+    glm::mat3x3 ViewMatrix = {};
     // using w comp of vec4 for dotdist
-    glm::vec4 FrustumPlanes[6] {};
+    std::array<glm::vec4, 6> FrustumPlanes = {{}};
 
     // unit fov is normalised focal ratio
     float unit_fov = 0;
@@ -130,12 +125,11 @@ struct Camera3D {
     float _pitchRotationSine = 0;
     float _pitchRotationCosine = 0;
 
-    glm::vec3 vCameraPos {};
+    glm::vec3 vCameraPos = {};
 
 
     float GetNearClip() const;
     float GetFarClip() const;
 };
-#pragma pack(pop)
 
 extern Camera3D *pCamera3D;

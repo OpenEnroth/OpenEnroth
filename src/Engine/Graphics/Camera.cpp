@@ -11,15 +11,6 @@
 
 Camera3D *pCamera3D = new Camera3D;
 
-//----- (004361EF) --------------------------------------------------------
-Camera3D::Camera3D() {
-    // debug_flags = 0;
-    _pitchRotationCosine = 0;
-    _pitchRotationSine = 0;
-    _yawRotationCosine = 0;
-    _yawRotationSine = 0;
-}
-
 //----- (0043643E) --------------------------------------------------------
 float Camera3D::GetMouseInfoDepth() {
     if (uCurrentlyLoadedLevelType == LEVEL_Outdoor)

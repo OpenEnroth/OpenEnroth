@@ -385,9 +385,9 @@ bool stru10::CalcPortalShapePoly(BLVFace *pFace, RenderVertexSoft *pVertices,
 //----- (0049C720) --------------------------------------------------------
 bool stru10::CalcPortalFrustum(RenderVertexSoft *pFaceBounding, IndoorCameraD3D_Vec4 *pPortalDataFrustum) {
     Vec3f pRayStart;
-    pRayStart.x = (double)pCamera3D->vCameraPos.x;
-    pRayStart.y = (double)pCamera3D->vCameraPos.y;
-    pRayStart.z = (double)pCamera3D->vCameraPos.z;
+    pRayStart.x = pCamera3D->vCameraPos.x;
+    pRayStart.y = pCamera3D->vCameraPos.y;
+    pRayStart.z = pCamera3D->vCameraPos.z;
 
     if (CalcPortalFrustumPlane(&pFaceBounding[1], &pFaceBounding[0], &pRayStart, &pPortalDataFrustum[0]) &&
         CalcPortalFrustumPlane(&pFaceBounding[3], &pFaceBounding[2], &pRayStart, &pPortalDataFrustum[1]) &&
