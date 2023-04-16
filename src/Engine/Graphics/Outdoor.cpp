@@ -2699,7 +2699,7 @@ void UpdateActors_ODM() {
                     if (pMonsterStats->pInfos[pActors[Actor_ITR].pMonsterInfo.uID].bBloodSplatOnDeath) {
                         if (engine->config->graphics.BloodSplats.value()) {
                             float splatRadius = pActors[Actor_ITR].uActorRadius * engine->config->graphics.BloodSplatsMultiplier.value();
-                            decal_builder->AddBloodsplat(pActors[Actor_ITR].vPosition.x, pActors[Actor_ITR].vPosition.y, Floor_Level + 30, 1.0, 0.0, 0.0, splatRadius);
+                            decal_builder->AddBloodsplat(Vec3f(pActors[Actor_ITR].vPosition.x, pActors[Actor_ITR].vPosition.y, Floor_Level + 30), 1.0, 0.0, 0.0, splatRadius);
                         }
                         pActors[Actor_ITR].donebloodsplat = true;
                     }

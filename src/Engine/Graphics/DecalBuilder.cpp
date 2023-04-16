@@ -24,29 +24,26 @@ float Decal::Fade_by_time() {
 }
 
 //----- (0043B6EF) --------------------------------------------------------
-void BloodsplatContainer::AddBloodsplat(float x, float y, float z, float radius,
-    unsigned char r, unsigned char g, unsigned char b) {
-
+void BloodsplatContainer::AddBloodsplat(const Vec3f &pos, float radius,
+                                        unsigned char r, unsigned char g, unsigned char b) {
     // this adds to store of bloodsplats to apply
-    this->pBloodsplats_to_apply[this->uNumBloodsplats].pos.x = x;
-    this->pBloodsplats_to_apply[this->uNumBloodsplats].pos.y = y;
-    this->pBloodsplats_to_apply[this->uNumBloodsplats].pos.z = z;
-    this->pBloodsplats_to_apply[this->uNumBloodsplats].radius = radius;
-    this->pBloodsplats_to_apply[this->uNumBloodsplats].r = r;
-    this->pBloodsplats_to_apply[this->uNumBloodsplats].g = g;
-    this->pBloodsplats_to_apply[this->uNumBloodsplats].b = b;
-    this->pBloodsplats_to_apply[this->uNumBloodsplats].dot_dist = 0;
-    this->pBloodsplats_to_apply[this->uNumBloodsplats].blood_flags = DecalFlagsNone;
-    this->pBloodsplats_to_apply[this->uNumBloodsplats].fade_timer = 0;
+    Bloodsplat& splat = pBloodsplats_to_apply[uNumBloodsplats];
+    splat.pos = pos;
+    splat.radius = radius;
+    splat.r = r;
+    splat.g = g;
+    splat.b = b;
+    splat.faceDist = 0;
+    splat.blood_flags = DecalFlagsNone;
+    splat.fade_timer = 0;
 
-    this->uNumBloodsplats++;
-    if (this->uNumBloodsplats == 64) this->uNumBloodsplats = 0;
+    uNumBloodsplats = (uNumBloodsplats + 1) % 64;
 }
 
 //----- (0049B490) --------------------------------------------------------
-void DecalBuilder::AddBloodsplat(float x, float y, float z, float r, float g, float b, float radius) {
+void DecalBuilder::AddBloodsplat(const Vec3f &pos, float r, float g, float b, float radius) {
     bloodsplat_container->AddBloodsplat(
-        x, y, z, radius, bankersRounding(r * 255.0f),
+        pos, radius, bankersRounding(r * 255.0f),
         bankersRounding(g * 255.0f), bankersRounding(b * 255.0f));
 }
 
@@ -84,14 +81,13 @@ char DecalBuilder::BuildAndApplyDecals(int light_level, LocationFlags locationFl
                     buildsplat->pos.x, buildsplat->pos.y, buildsplat->pos.z);
 
             int ColourMult = buildsplat->r | (buildsplat->g << 8) | (buildsplat->b << 16);
-            int BloodSplatX = (int64_t)buildsplat->pos.x;
 
             if (!this->Build_Decal_Geometry(
                 point_light_level, locationFlags,
                 buildsplat,
                 buildsplat->radius,
                 ColourMult,
-                buildsplat->dot_dist,
+                buildsplat->faceDist,
                 &static_FacePlane, NumFaceVerts, FaceVerts, ClipFlags))
                 log->warning("Error: Failed to build decal geometry");
         }
@@ -204,7 +200,7 @@ bool DecalBuilder::ApplyBloodsplatDecals_IndoorFace(unsigned int uFaceID) {
             double dotdist = dot(pFace->pFacePlane.vNormal, pBloodsplat->pos) + pFace->pFacePlane.dist;
             if (dotdist <= pBloodsplat->radius) {
                 // store splat
-                pBloodsplat->dot_dist = dotdist;
+                pBloodsplat->faceDist = dotdist;
                 WhichSplatsOnThisFace[uNumSplatsThisFace++] = i;
             }
         }
@@ -223,11 +219,10 @@ bool DecalBuilder::ApplyBloodSplat_OutdoorFace(ODMFace *pFace) {
         for (int i = 0; i < bloodsplat_container->uNumBloodsplats; i++) {
             Bloodsplat *pBloodsplat = &bloodsplat_container->pBloodsplats_to_apply[i];
             if (pFace->pBoundingBox.intersectsCube(pBloodsplat->pos.toShort(), pBloodsplat->radius)) {
-                double dotdist = pFace->pFacePlaneOLD.signedDistanceTo(round_to_int(pBloodsplat->pos.x), round_to_int(pBloodsplat->pos.y),
-                                                                       round_to_int(pBloodsplat->pos.z));
+                float dotdist = pFace->pFacePlane.signedDistanceTo(pBloodsplat->pos);
                 if (dotdist <= pBloodsplat->radius) {
                     // store splat
-                    pBloodsplat->dot_dist = dotdist;
+                    pBloodsplat->faceDist = dotdist;
                     this->WhichSplatsOnThisFace[this->uNumSplatsThisFace++] = i;
                 }
             }
@@ -266,7 +261,7 @@ bool DecalBuilder::ApplyBloodSplatToTerrain(struct Polygon *terrpoly, Vec3f *ter
             }
 
             bloodsplat_container->pBloodsplats_to_apply[whichsplat].fade_timer = pEventTimer->Time();
-            bloodsplat_container->pBloodsplats_to_apply[whichsplat].dot_dist = planedist;
+            bloodsplat_container->pBloodsplats_to_apply[whichsplat].faceDist = planedist;
 
             // store this decal to apply
             this->WhichSplatsOnThisFace[this->uNumSplatsThisFace] = whichsplat;

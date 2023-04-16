@@ -24,8 +24,8 @@ struct stru314 {  // facet normals face / wall / celings
     inline ~stru314() {}
 
     Vec3f Normal;
-    Vec3f field_10;
-    Vec3f field_1C;
+    Vec3f field_10; // For decal application: u vector, perpendicular to Normal
+    Vec3f field_1C; // For decal application: v vector, perpendicular to Normal and u
     float dist = 0;
 };
 #pragma pack(pop)

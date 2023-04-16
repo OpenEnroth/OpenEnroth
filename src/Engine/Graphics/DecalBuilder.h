@@ -28,12 +28,10 @@ MM_DECLARE_OPERATORS_FOR_FLAGS(LocationFlags)
 
 // bloodsplats are created at enemy death as locations of where blood decal needs to be applied
 struct Bloodsplat {
-    Vec3f pos;
-    //float x = 0;
-    //float y = 0;
-    //float z = 0;
+    Vec3f pos; // Bloodsplat origin, usually 30 units above ground level where the monster was killed.
     float radius = 0;
-    float dot_dist = 0;
+    float faceDist = 0; // Signed distance from bloodsplat origin to the face plane (for the current face).
+                        // TODO(captainurist): doesn't belong to this struct, should be moved out.
     unsigned char r = 0;
     unsigned char g = 0;
     unsigned char b = 0;
@@ -43,16 +41,10 @@ struct Bloodsplat {
 
 // store for all the bloodsplats to be applied
 struct BloodsplatContainer {
-    inline BloodsplatContainer() {
-        uNumBloodsplats = 0;
-    }
-
-    virtual ~BloodsplatContainer() { }
-
-    void AddBloodsplat(float x, float y, float z, float radius, unsigned char r, unsigned char g, unsigned char b);
+    void AddBloodsplat(const Vec3f &pos, float radius, unsigned char r, unsigned char g, unsigned char b);
 
     std::array<Bloodsplat, 64> pBloodsplats_to_apply;
-    uint uNumBloodsplats;  // this loops round so old bloodsplats are replaced
+    uint uNumBloodsplats = 0;  // this loops round so old bloodsplats are replaced
 };
 
 // decal is the created geometry to display
@@ -88,7 +80,7 @@ struct DecalBuilder {
 
     virtual ~DecalBuilder() {}
 
-    void AddBloodsplat(float x, float y, float z, float r, float g, float b, float radius);
+    void AddBloodsplat(const Vec3f &pos, float r, float g, float b, float radius);
     void Reset(bool bPreserveBloodsplats);
     char BuildAndApplyDecals(int light_level, LocationFlags locationFlags, struct stru154 *FacePlane, int NumFaceVerts,
                              RenderVertexSoft *FaceVerts, char ClipFlags, unsigned int uSectorID);

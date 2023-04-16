@@ -1114,7 +1114,7 @@ void UpdateActors_BLV() {
                     if (pMonsterStats->pInfos[actor.pMonsterInfo.uID].bBloodSplatOnDeath) {
                         if (engine->config->graphics.BloodSplats.value()) {
                             float splatRadius = actor.uActorRadius * engine->config->graphics.BloodSplatsMultiplier.value();
-                            decal_builder->AddBloodsplat((float)actor.vPosition.x, (float)actor.vPosition.y, (float)(floorZ + 30), 1.0, 0.0, 0.0, splatRadius);
+                            decal_builder->AddBloodsplat(Vec3f(actor.vPosition.x, actor.vPosition.y, floorZ + 30), 1.0, 0.0, 0.0, splatRadius);
                         }
                         actor.donebloodsplat = true;
                     }
