@@ -6,43 +6,13 @@
 
 #include "Engine/Graphics/IRender.h"
 
-
-
-/*  124 */
-#pragma pack(push, 1)
-struct IndoorCameraD3D_Vec3 {
-    //----- (004C0376) --------------------------------------------------------
-    inline IndoorCameraD3D_Vec3() {}
-    //----- (004C037F) --------------------------------------------------------
-    virtual ~IndoorCameraD3D_Vec3() {}
-    //----- (004C039C) --------------------------------------------------------
-    // void ~IndoorCameraD3D_Vec3() {}
-
-    union {
-        struct {
-            float x;
-            float y;
-            float z;
-        };
-        float v[3] {};
-    };
-};
-#pragma pack(pop)
-
-/*  125 */
-#pragma pack(push, 1)
-struct IndoorCameraD3D_Vec4 : public IndoorCameraD3D_Vec3 {
-    //----- (00498038) --------------------------------------------------------
-    inline IndoorCameraD3D_Vec4() : IndoorCameraD3D_Vec3() {}
-
-    //----- (00498069) --------------------------------------------------------
-    virtual ~IndoorCameraD3D_Vec4() {}
-
+// TODO(captainurist): this is actually Planef, but dot = -dist.
+struct IndoorCameraD3D_Vec4 {
+    float x = 0;
+    float y = 0;
+    float z = 0;
     float dot = 0;
-    int _wtf = 0;  // sizeof vec4 is 18 and first member is vdtor, but vdtor is
-               // already included in vec3 so very weird
 };
-#pragma pack(pop)
 
 /*  123 */
 #pragma pack(push, 1)
