@@ -64,8 +64,6 @@ struct Camera3D {
         signed int NumFrustumPlanes, char DebugLines,
         int _unused);
 
-    bool CullVertsToPlane(struct stru154 *thisa, struct RenderVertexSoft *a2,
-                 unsigned int *pOutNumVertices);
     void BuildViewFrustum();
     void CreateViewMatrixAndProjectionScale();
 
