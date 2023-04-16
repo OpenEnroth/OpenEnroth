@@ -250,7 +250,7 @@ struct Player {
     Condition GetMajorConditionIdx() const;
     int GetParameterBonus(int player_parameter);
     int GetSpecialItemBonus(ITEM_ENCHANTMENT enchantment);
-    int GetItemsBonus(CHARACTER_ATTRIBUTE_TYPE attr, bool a3 = false) const;
+    int GetItemsBonus(CHARACTER_ATTRIBUTE_TYPE attr, bool getOnlyMainHandDmg = false) const;
     int GetMagicalBonus(CHARACTER_ATTRIBUTE_TYPE a2);
     PLAYER_SKILL_LEVEL GetActualSkillLevel(PLAYER_SKILL_TYPE uSkillType) const;
     PLAYER_SKILL_MASTERY GetActualSkillMastery(PLAYER_SKILL_TYPE uSkillType) const;
@@ -323,7 +323,7 @@ struct Player {
     unsigned int GetItemMainInventoryIndex(int inout_item_cell);
     struct ItemGen *GetItemAtInventoryIndex(int inout_item_cell);
     bool IsPlayerHealableByTemple();
-    int GetConditionDaysPassed(Condition uCondition) const;
+    int GetConditionDaysPassed(Condition condition) const;
     bool NothingOrJustBlastersEquipped();
     void SalesProcess(unsigned int inventory_idnx, int item_index, int _2devent_idx);  // 0x4BE2DD
     bool Recover(GameTime dt);

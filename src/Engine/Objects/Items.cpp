@@ -155,8 +155,7 @@ void ItemGen::UpdateTempBonus(GameTime time) {
 }
 
 //----- (00456442) --------------------------------------------------------
-unsigned int ItemGen::GetValue() const
-{
+unsigned int ItemGen::GetValue() const {
     unsigned int uBaseValue;  // edi@1
     unsigned int mod, bonus;
 
@@ -697,8 +696,7 @@ ITEM_EQUIP_TYPE ItemGen::GetItemEquipType() const {
         return pItemTable->pItems[this->uItemID].uEquipType;
 }
 
-PLAYER_SKILL_TYPE ItemGen::GetPlayerSkillType() const
-{
+PLAYER_SKILL_TYPE ItemGen::GetPlayerSkillType() const {
     PLAYER_SKILL_TYPE skl = pItemTable->pItems[this->uItemID].uSkillType;
     if (skl == PLAYER_SKILL_CLUB && engine->config->gameplay.TreatClubAsMace.value()) {
         // club skill not used but some items load it

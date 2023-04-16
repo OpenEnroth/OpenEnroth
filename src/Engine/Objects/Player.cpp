@@ -290,15 +290,15 @@ bool Player::NothingOrJustBlastersEquipped() {
 }
 
 //----- (004B8040) --------------------------------------------------------
-int Player::GetConditionDaysPassed(Condition uCondition) const {
+int Player::GetConditionDaysPassed(Condition condition) const {
     // PS - CHECK ?? is this the intedned behavior - RETURN
     // NUMBER OF DAYS CONDITION HAS BEEN ACTIVE FOR
 
-    if (!this->conditions.Has(uCondition))
+    if (!this->conditions.Has(condition))
         return 0;
 
     GameTime playtime = pParty->GetPlayingTime();
-    GameTime condtime = this->conditions.Get(uCondition);
+    GameTime condtime = this->conditions.Get(condition);
     GameTime diff = playtime - condtime;
 
     return diff.GetDays() + 1;
@@ -1389,8 +1389,7 @@ PLAYER_SKILL_TYPE Player::GetEquippedItemSkillType(ITEM_SLOT uEquipSlot) {
 }
 
 //----- (0048D676) --------------------------------------------------------
-bool Player::IsUnarmed() const
-{
+bool Player::IsUnarmed() const {
     return !HasItemEquipped(ITEM_SLOT_MAIN_HAND) &&
            (!HasItemEquipped(ITEM_SLOT_OFF_HAND) ||
             GetOffHandItem()->isShield());
@@ -2381,8 +2380,7 @@ void Player::RandomizeName() {
 }
 
 //----- (0048E9F4) --------------------------------------------------------
-Condition Player::GetMajorConditionIdx() const
-{
+Condition Player::GetMajorConditionIdx() const {
     for (Condition condition : conditionImportancyTable()) {
         if (conditions.Has(condition))
             return condition;  // return worst condition
@@ -2423,7 +2421,7 @@ int Player::GetSpecialItemBonus(ITEM_ENCHANTMENT enchantment) {
 }
 
 //----- (0048EAAE) --------------------------------------------------------
-int Player::GetItemsBonus(CHARACTER_ATTRIBUTE_TYPE attr, bool a3 /*= false*/) const {
+int Player::GetItemsBonus(CHARACTER_ATTRIBUTE_TYPE attr, bool getOnlyMainHandDmg /*= false*/) const {
     int v5;                     // edi@1
     int v14;                    // ecx@58
     int v15;                    // eax@58
@@ -2554,7 +2552,7 @@ int Player::GetItemsBonus(CHARACTER_ATTRIBUTE_TYPE attr, bool a3 /*= false*/) co
                         v5 = mainHandItem->GetDamageMod() + v25 * v26;
                     }
                 }
-                if (a3 ||
+                if (getOnlyMainHandDmg ||
                     !this->HasItemEquipped(ITEM_SLOT_OFF_HAND) ||
                     !IsWeapon(GetEquippedItemEquipType(ITEM_SLOT_OFF_HAND))) {
                     return v5;
@@ -2578,7 +2576,7 @@ int Player::GetItemsBonus(CHARACTER_ATTRIBUTE_TYPE attr, bool a3 /*= false*/) co
                     v5 = GetMainHandItem()->GetDamageMod();
                 }
             }
-            if (a3 ||
+            if (getOnlyMainHandDmg ||
                 !this->HasItemEquipped(ITEM_SLOT_OFF_HAND) ||
                 !IsWeapon(this->GetEquippedItemEquipType(ITEM_SLOT_OFF_HAND))) {
                 return v5;
@@ -2604,7 +2602,7 @@ int Player::GetItemsBonus(CHARACTER_ATTRIBUTE_TYPE attr, bool a3 /*= false*/) co
                 }
             }
 
-            if (a3 ||
+            if (getOnlyMainHandDmg ||
                 !this->HasItemEquipped(ITEM_SLOT_OFF_HAND) ||
                 !IsWeapon(GetEquippedItemEquipType(ITEM_SLOT_OFF_HAND))) {
                 return v5;

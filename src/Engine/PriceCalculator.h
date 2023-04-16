@@ -4,8 +4,7 @@ struct Player;
 struct ItemGen;
 // Class to calculate various prices and overall deal with them
 class PriceCalculator {
-   public:
-
+ public:
     /**
      * @offset 0x4B824B
      * @brief Calculates base item identify price (before factoring in merchant).
@@ -88,7 +87,6 @@ class PriceCalculator {
      */
     static int itemSellingPriceForPlayer(const Player *player, const ItemGen &item, float priceMultiplier);
 
-    
     /**
      * @offset 0x4B807C
      * @brief Calculates price that player has to pay for healing in a temple.
