@@ -148,22 +148,6 @@ struct stru337_stru0 {
 };
 #pragma pack(pop)
 
-/*  377 */
-#pragma pack(push, 1)
-struct stru337_unused {
-    stru337_stru0 field_0;
-    int field_14;
-    int field_18;
-    int field_1C;
-    int field_20;
-    int field_24;
-    int field_28;
-    int field_2C;
-    int field_30;
-    stru337_stru0 field_34;
-};
-#pragma pack(pop)
-
 /*  147 */
 #pragma pack(push, 1)
 
