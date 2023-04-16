@@ -98,29 +98,6 @@ struct DDM_DLV_Header {
 };
 #pragma pack(pop)
 
-/*  345 */
-#pragma pack(push, 1)
-struct stru315 {
-    int field_0;
-    int field_4;
-    int field_8;
-    int field_C;
-    int field_10;
-    int field_14;
-    int field_18;
-    int field_1C;
-    int field_20;
-    int field_24;
-    int field_28;
-    int field_2C;
-    int field_30;
-    uint16_t *field_34_palette;
-    uint16_t *pTextureLOD;
-    unsigned int *pDepthBuffer;
-    uint16_t *pColorBuffer;
-};
-#pragma pack(pop)
-
 /*  147 */
 #pragma pack(push, 1)
 struct stru154 {
