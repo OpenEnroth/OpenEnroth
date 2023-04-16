@@ -431,6 +431,7 @@ void Chest::ToggleFlag(int uChestID, CHEST_FLAG uFlag, bool bValue) {
 }
 
 #pragma pack(push, 1)
+// TODO(elric): move to legacyimages
 struct ChestDesc_mm7 {
     char pName[32];
     char uWidth;

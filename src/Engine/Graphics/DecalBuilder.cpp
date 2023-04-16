@@ -27,7 +27,7 @@ float Decal::Fade_by_time() {
 void BloodsplatContainer::AddBloodsplat(const Vec3f &pos, float radius,
                                         unsigned char r, unsigned char g, unsigned char b) {
     // this adds to store of bloodsplats to apply
-    Bloodsplat& splat = pBloodsplats_to_apply[uNumBloodsplats];
+    Bloodsplat &splat = pBloodsplats_to_apply[uNumBloodsplats];
     splat.pos = pos;
     splat.radius = radius;
     splat.r = r;
