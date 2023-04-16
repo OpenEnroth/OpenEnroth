@@ -8,7 +8,7 @@
 #pragma pack(push, 1)
 struct LodHeader_Mm6 {
     inline LodHeader_Mm6() {
-        memset(this, 0, sizeof(this));
+        memset(this, 0, sizeof(*this));
     }
 
     std::array<std::uint8_t, 4> signature;
