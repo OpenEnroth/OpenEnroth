@@ -27,6 +27,7 @@ MM_DECLARE_OPERATORS_FOR_FLAGS(DECORATION_DESC_FLAGS)
 
 /*   54 */
 #pragma pack(push, 1)
+// TODO(captainurist): move to legacyimages
 struct DecorationDesc_mm6 {
     inline bool CanMoveThrough() const {
         return uFlags & DECORATION_DESC_MOVE_THROUGH;
