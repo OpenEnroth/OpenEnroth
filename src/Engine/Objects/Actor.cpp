@@ -3791,24 +3791,23 @@ void Actor::LootActor() {
     signed int v2;       // edi@1
     ItemGen Dst;         // [sp+Ch] [bp-2Ch]@1
     bool itemFound;      // [sp+30h] [bp-8h]@1
-    int v14;             // [sp+34h] [bp-4h]@1
 
     pParty->PickedItem_PlaceInInventory_or_Drop();
     Dst.Reset();
     v2 = 0;
     itemFound = false;
-    v14 = 0;
+    int foundGold = 0;
     if (!ActorHasItem()) {
-        v14 = grng->randomDice(this->pMonsterInfo.uTreasureDiceRolls, this->pMonsterInfo.uTreasureDiceSides);
-        if (v14) {
-            pParty->partyFindsGold(v14, GOLD_RECEIVE_SHARE);
+        foundGold = grng->randomDice(this->pMonsterInfo.uTreasureDiceRolls, this->pMonsterInfo.uTreasureDiceSides);
+        if (foundGold) {
+            pParty->partyFindsGold(foundGold, GOLD_RECEIVE_SHARE);
         }
     } else {
         if (this->ActorHasItems[3].isGold()) {
-            v14 = this->ActorHasItems[3].special_enchantment;
+            foundGold = this->ActorHasItems[3].special_enchantment;
             this->ActorHasItems[3].Reset();
-            if (v14) {
-                pParty->partyFindsGold(v14, GOLD_RECEIVE_SHARE);
+            if (foundGold) {
+                pParty->partyFindsGold(foundGold, GOLD_RECEIVE_SHARE);
             }
         }
     }
@@ -3817,7 +3816,7 @@ void Actor::LootActor() {
         Dst.uItemID = this->uCarriedItemID;
 
         StatusBarItemFound(
-            v14,
+            foundGold,
             pItemTable->pItems[Dst.uItemID].pUnidentifiedName
         );
 
@@ -3854,7 +3853,7 @@ void Actor::LootActor() {
             this->ActorHasItems[3].Reset();
 
             StatusBarItemFound(
-                v14,
+                foundGold,
                 pItemTable->pItems[Dst.uItemID].pUnidentifiedName
             );
 
@@ -3868,7 +3867,7 @@ void Actor::LootActor() {
                                      &Dst);
 
             StatusBarItemFound(
-                v14,
+                foundGold,
                 pItemTable->pItems[Dst.uItemID].pUnidentifiedName
             );
 

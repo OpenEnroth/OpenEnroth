@@ -1442,9 +1442,9 @@ void CastSpellInfoHelpers::castSpell() {
                                     // finds how many possible enchaments and adds up to item apply values
                                     // if (pItemTable->pEnchantments_count > 0) {
                                     for (int norm_ench_loop = 0; norm_ench_loop < 24; ++norm_ench_loop) {
-                                        char *this_bon_state = pItemTable->pEnchantments[norm_ench_loop].pBonusStat;
+                                        char *this_bon_state = pItemTable->standardEnchantments[norm_ench_loop].pBonusStat;
                                         if (this_bon_state != NULL && (this_bon_state[0] != '\0')) {
-                                            int this_to_apply = pItemTable->pEnchantments[norm_ench_loop].to_item[this_equip_type];
+                                            int this_to_apply = pItemTable->standardEnchantments[norm_ench_loop].chancesByItemType[this_equip_type];
                                             to_item_apply_sum += this_to_apply;
                                             if (this_to_apply) {
                                                 ench_array[ench_found] = norm_ench_loop;
@@ -1462,7 +1462,7 @@ void CastSpellInfoHelpers::castSpell() {
 
                                     // step through until we hit that ench
                                     for (step = 0; step < ench_found; step++) {
-                                        current_item_apply_sum += pItemTable->pEnchantments[ench_array[step]].to_item[this_equip_type];
+                                        current_item_apply_sum += pItemTable->standardEnchantments[ench_array[step]].chancesByItemType[this_equip_type];
                                         if (current_item_apply_sum >= target_item_apply_rand) {
                                             break;
                                         }
