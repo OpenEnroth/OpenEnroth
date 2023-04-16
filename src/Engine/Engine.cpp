@@ -592,7 +592,6 @@ Engine::Engine(std::shared_ptr<GameConfig> config) {
     // pVisInstance = new Vis;
     // spellfx = new SpellFxRenderer;
     pCamera3D = new Camera3D;
-    pStru9Instance = new stru9;
     pStru10Instance = new stru10;
     // pStru11Instance = new stru11;
     // pStru11Instance = nullptr;
@@ -615,7 +614,6 @@ Engine::~Engine() {
     delete pStru12Instance;
     delete pStru11Instance;*/
     delete pStru10Instance;
-    delete pStru9Instance;
     delete pCamera3D;
     // delete spellfx;
     // delete pVisInstance;

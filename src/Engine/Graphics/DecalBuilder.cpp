@@ -174,7 +174,7 @@ bool DecalBuilder::Build_Decal_Geometry(
     decal->DimmingLevel = LightLevel;
 
     // clip decals to face
-    bool result = engine->pStru9Instance->ClipVertsToFace(
+    bool result = ClippingFunctions::ClipVertsToFace(
         faceverts, numfaceverts, FacetNormals->Normal.x, FacetNormals->Normal.y, FacetNormals->Normal.z, decal->pVertices,
         (signed int*)&decal->uNumVertices);
 

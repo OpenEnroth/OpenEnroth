@@ -504,7 +504,6 @@ bool Camera3D::ClipFaceToFrustum(RenderVertexSoft *pInVertices,
     Vec3f FrustumPlaneVec {};         // [sp+18h] [bp-3Ch]@12
     // float v17; // [sp+44h] [bp-10h]@1
     // int v18; // [sp+48h] [bp-Ch]@5
-    // stru9 *thisa; // [sp+4Ch] [bp-8h]@1
     int VertsAdjusted = 0;  // [sp+53h] [bp-1h]@5
     // bool a6a; // [sp+70h] [bp+1Ch]@5
 
@@ -538,7 +537,7 @@ bool Camera3D::ClipFaceToFrustum(RenderVertexSoft *pInVertices,
         FrustumPlaneVec.y = CameraFrustrum[i].y;
         FrustumPlaneVec.z = CameraFrustrum[i].z;
 
-        engine->pStru9Instance->ClipVertsToFrustumPlane(
+        ClippingFunctions::ClipVertsToFrustumPlane(
             v15, *pOutNumVertices, v14, pOutNumVertices, &FrustumPlaneVec, CameraFrustrum[i].dot,
             (char*)&VertsAdjusted, _unused);
 
