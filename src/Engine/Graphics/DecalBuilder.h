@@ -1,5 +1,7 @@
 #pragma once
 
+#include <array>
+
 #include "Engine/EngineIocContainer.h"
 #include "Engine/Graphics/IRender.h"
 #include "Engine/Graphics/BSPModel.h"
@@ -49,7 +51,7 @@ struct BloodsplatContainer {
 
     void AddBloodsplat(float x, float y, float z, float radius, unsigned char r, unsigned char g, unsigned char b);
 
-    Bloodsplat pBloodsplats_to_apply[64];
+    std::array<Bloodsplat, 64> pBloodsplats_to_apply;
     uint uNumBloodsplats;  // this loops round so old bloodsplats are replaced
 };
 
@@ -65,7 +67,7 @@ struct Decal {
     virtual ~Decal() {}
 
     int uNumVertices;
-    RenderVertexSoft pVertices[64];
+    std::array<RenderVertexSoft, 64> pVertices;
     int16_t DecalXPos;
     int16_t DecalYPos;
     int16_t DecalZPos;
@@ -116,12 +118,12 @@ struct DecalBuilder {
     void DrawBloodsplats();
     void DrawDecalDebugOutlines();
 
-    Decal Decals[1024];  // actual decal geom store
+    std::array<Decal, 1024> Decals;  // actual decal geom store
     unsigned int DecalsCount;  // number of decals
 
     // for building decal geom
     int uNumSplatsThisFace = 0;  // numeber of bloodsplats that overlap this face
-    int WhichSplatsOnThisFace[1024]{};  // stores which ith element of blodsplats to apply outdoor bloodsplats/decals store for calc
+    std::array<int, 1024> WhichSplatsOnThisFace = {{}};  // stores which ith element of blodsplats to apply outdoor bloodsplats/decals store for calc
 
     // sizes for building decal geometry
     float field_30C010 = 0;

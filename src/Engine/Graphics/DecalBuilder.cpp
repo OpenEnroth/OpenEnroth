@@ -175,8 +175,8 @@ bool DecalBuilder::Build_Decal_Geometry(
 
     // clip decals to face
     bool result = ClippingFunctions::ClipVertsToFace(
-        faceverts, numfaceverts, FacetNormals->Normal.x, FacetNormals->Normal.y, FacetNormals->Normal.z, decal->pVertices,
-        (signed int*)&decal->uNumVertices);
+        faceverts, numfaceverts, FacetNormals->Normal.x, FacetNormals->Normal.y, FacetNormals->Normal.z, decal->pVertices.data(),
+        &decal->uNumVertices);
 
     if (result) {
         // no verts then discard
@@ -295,7 +295,7 @@ void DecalBuilder::DrawBloodsplats() {
 //----- (0049C550) --------------------------------------------------------
 void DecalBuilder::DrawDecalDebugOutlines() {
     for (int i = 0; i < DecalsCount; i++)
-        pCamera3D->debug_outline_sw(Decals[i].pVertices, Decals[i].uNumVertices, colorTable.Tawny.c32(), 0.0f);
+        pCamera3D->debug_outline_sw(Decals[i].pVertices.data(), Decals[i].uNumVertices, colorTable.Tawny.c32(), 0.0f);
 }
 
 //----- (0040E4C2) --------------------------------------------------------
