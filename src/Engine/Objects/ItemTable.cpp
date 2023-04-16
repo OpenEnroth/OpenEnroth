@@ -628,8 +628,9 @@ void ItemTable::GenerateItem(ITEM_TREASURE_LEVEL treasure_level, unsigned int uT
                 int enchantmentChanceSumRoll = grng->random(chanceByItemTypeSums[outItem->GetItemEquipType()]) + 1;
                 int currentEnchantmentChancesSum = 0;
                 while (currentEnchantmentChancesSum < enchantmentChanceSumRoll) {
+                    currentEnchantmentChancesSum +=
+                        standardEnchantments[outItem->uEnchantmentType].chancesByItemType[outItem->GetItemEquipType()];
                     ++outItem->uEnchantmentType;
-                    currentEnchantmentChancesSum += standardEnchantments[outItem->uEnchantmentType].chancesByItemType[outItem->GetItemEquipType()];
                 }
 
 
