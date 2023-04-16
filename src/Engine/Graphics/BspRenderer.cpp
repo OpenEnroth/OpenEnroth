@@ -76,7 +76,7 @@ void BspRenderer::AddFaceToRenderList_d3d(unsigned int node_id, unsigned int uFa
     bool vertadj = pCamera3D->ClipFaceToFrustum(
             static_subAddFaceToRenderList_d3d_stru_F7AA08, &pNewNumVertices,
             static_subAddFaceToRenderList_d3d_stru_F79E08,
-            nodes[node_id].ViewportNodeFrustum, 4, 0, 0);
+            nodes[node_id].ViewportNodeFrustum.data(), 4, 0, 0);
 
     if (pNewNumVertices) {
         // current portal visible through previous
@@ -97,8 +97,8 @@ void BspRenderer::AddFaceToRenderList_d3d(unsigned int node_id, unsigned int uFa
         // calculates the portal bounding and frustum
         bool bFrustumbuilt = engine->pStru10Instance->CalcPortalShapePoly(
                 pFace, static_subAddFaceToRenderList_d3d_stru_F79E08,
-                &pNewNumVertices, nodes[num_nodes].ViewportNodeFrustum,
-                nodes[num_nodes].pPortalBounding);
+                &pNewNumVertices, nodes[num_nodes].ViewportNodeFrustum.data(),
+                nodes[num_nodes].pPortalBounding.data());
 
         if (bFrustumbuilt) {
             // add portal sector to drawing list

@@ -1042,7 +1042,7 @@ void RenderOpenGL::DrawIndoorSky(unsigned int uNumVertices, unsigned int uFaceID
     }
 
     // clip accurately to camera
-    pCamera3D->ClipFaceToFrustum(array_507D30, &pSkyPolygon.uNumVertices, VertexRenderList, pBspRenderer->nodes[0].ViewportNodeFrustum, 4, 0, 0);
+    pCamera3D->ClipFaceToFrustum(array_507D30, &pSkyPolygon.uNumVertices, VertexRenderList, pBspRenderer->nodes[0].ViewportNodeFrustum.data(), 4, 0, 0);
     if (!pSkyPolygon.uNumVertices) return;
 
     pCamera3D->ViewTransform(VertexRenderList, pSkyPolygon.uNumVertices);
@@ -4476,9 +4476,9 @@ void RenderOpenGL::DrawIndoorFaces() {
                     continue;
                 }
 
-                IndoorCameraD3D_Vec4 *portalfrustumnorm = pBspRenderer->nodes[pBspRenderer->faces[i].uNodeID].ViewportNodeFrustum;
+                IndoorCameraD3D_Vec4 *portalfrustumnorm = pBspRenderer->nodes[pBspRenderer->faces[i].uNodeID].ViewportNodeFrustum.data();
                 unsigned int uNumFrustums = 4;
-                RenderVertexSoft *pPortalBounding = pBspRenderer->nodes[pBspRenderer->faces[i].uNodeID].pPortalBounding;
+                RenderVertexSoft *pPortalBounding = pBspRenderer->nodes[pBspRenderer->faces[i].uNodeID].pPortalBounding.data();
 
                 // uint ColourMask;  // ebx@25
                 unsigned int uNumVerticesa;  // [sp+24h] [bp-4h]@17
@@ -4762,7 +4762,7 @@ void RenderOpenGL::DrawIndoorFaces() {
             if (!fromexpanded) {
                 for (int i = 0; i < pBspRenderer->num_nodes; ++i) {
                     if (pBspRenderer->nodes[i].uSectorID == test.uSectorID) {
-                        if (IsSphereInFrustum(test.vPosition, test.uRadius, pBspRenderer->nodes[i].ViewportNodeFrustum))
+                        if (IsSphereInFrustum(test.vPosition, test.uRadius, pBspRenderer->nodes[i].ViewportNodeFrustum.data()))
                             visinfrustum = true;
                     }
                 }
