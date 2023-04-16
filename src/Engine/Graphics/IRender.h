@@ -90,8 +90,6 @@ extern ODMRenderParams *pODMRenderParams;
 /*  119 */
 #pragma pack(push, 1)
 struct RenderVertexSoft {
-    inline RenderVertexSoft() : flt_2C(0.0f) {}
-
     Vec3f vWorldPosition {};
     Vec3f vWorldViewPosition {};
     float vWorldViewProjX = 0;

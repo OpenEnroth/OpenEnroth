@@ -1,20 +1,10 @@
 #pragma once
 #include "Engine/Graphics/IRender.h"
 
-/*  341 */
-#pragma pack(push, 1)
 struct VertexBuffer {
-    //----- (0049835A) --------------------------------------------------------
-    inline VertexBuffer() {
-        for (unsigned int i = 0; i < 64; ++i) pVertices[i].flt_2C = 0.0f;
-
-        uNumVertices = 0;
-    }
-
-    RenderVertexSoft pVertices[64];
+    std::array<RenderVertexSoft, 64> pVertices = {{}};
     int uNumVertices;
 };
-#pragma pack(pop)
 
 /*  342 */
 #pragma pack(push, 1)
