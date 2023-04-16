@@ -8,6 +8,8 @@
 #include "Io/KeyboardActionMapping.h"
 #include "Engine/Time.h"
 
+class GUIWindow;
+
 constexpr int DELAY_TOGGLE_TIME_FIRST = Timer::Second / 2;
 constexpr int DELAY_TOGGLE_TIME_AFTER = Timer::Second / 15;
 
@@ -17,8 +19,8 @@ enum class WindowInputStatus : int32_t {
     WINDOW_INPUT_CONFIRMED = 2,
     WINDOW_INPUT_CANCELLED = 3,
 };
+using enum WindowInputStatus;
 
-class GUIWindow;
 namespace Io {
     // Handles events from OSWindow through GameWindowHandler/IKeyboardController
     //      and maps it to game actions/events using KeyboardActionMapping

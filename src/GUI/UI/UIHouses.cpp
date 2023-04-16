@@ -806,7 +806,7 @@ bool EnterHouse(HOUSE_ID uHouseID) {
     GameUI_SetStatusBar("");
     pCurrentFrameMessageQueue->Flush();
     uDialogueType = DIALOGUE_NULL;
-    keyboardInputHandler->SetWindowInputStatus(WindowInputStatus::WINDOW_INPUT_CANCELLED);
+    keyboardInputHandler->SetWindowInputStatus(WINDOW_INPUT_CANCELLED);
     keyboardInputHandler->ResetKeys();
 
     if (uHouseID == HOUSE_THRONEROOM_WIN_GOOD || uHouseID == HOUSE_THRONEROOM_WIN_EVIL) {
@@ -1495,13 +1495,13 @@ void TownHallDialog() {
     }
     case DIALOGUE_TOWNHALL_PAY_FINE:
     {
-        if (window_SpeakInHouse->keyboard_input_status == WindowInputStatus::WINDOW_INPUT_IN_PROGRESS) {
+        if (window_SpeakInHouse->keyboard_input_status == WINDOW_INPUT_IN_PROGRESS) {
             townHall_window.DrawTitleText(pFontArrus, 0, 146, colorTable.PaleCanary.c16(),
                                           fmt::format("{}\n{}", localization->GetString(LSTR_PAY), localization->GetString(LSTR_HOW_MUCH)), 3);
             townHall_window.DrawTitleText(pFontArrus, 0, 186, colorTable.White.c16(), keyboardInputHandler->GetTextInput().c_str(), 3);
             townHall_window.DrawFlashingInputCursor(pFontArrus->GetLineWidth(keyboardInputHandler->GetTextInput().c_str()) / 2 + 80, 185, pFontArrus);
             return;
-        } else if (window_SpeakInHouse->keyboard_input_status == WindowInputStatus::WINDOW_INPUT_CONFIRMED) {
+        } else if (window_SpeakInHouse->keyboard_input_status == WINDOW_INPUT_CONFIRMED) {
             int sum = atoi(keyboardInputHandler->GetTextInput().c_str());
             if (sum > 0) {
                 int party_gold = pParty->GetGold();
@@ -1522,7 +1522,7 @@ void TownHallDialog() {
                 }
             }
         }
-        window_SpeakInHouse->keyboard_input_status = WindowInputStatus::WINDOW_INPUT_NONE;
+        window_SpeakInHouse->keyboard_input_status = WINDOW_INPUT_NONE;
         pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 1, 0);
         break;
     }
@@ -1560,14 +1560,14 @@ void BankDialog() {
     }
     case DIALOGUE_BANK_PUT_GOLD:
     {
-        if (window_SpeakInHouse->keyboard_input_status == WindowInputStatus::WINDOW_INPUT_IN_PROGRESS) {
+        if (window_SpeakInHouse->keyboard_input_status == WINDOW_INPUT_IN_PROGRESS) {
             bank_window.DrawTitleText(pFontArrus, 0, 146, colorTable.PaleCanary.c16(),
                                       fmt::format("{}\n{}", localization->GetString(LSTR_DEPOSIT), localization->GetString(LSTR_HOW_MUCH)), 3);
             bank_window.DrawTitleText(pFontArrus, 0, 186, colorTable.White.c16(), keyboardInputHandler->GetTextInput().c_str(), 3);
             bank_window.DrawFlashingInputCursor(pFontArrus->GetLineWidth(keyboardInputHandler->GetTextInput().c_str()) / 2 + 80, 185, pFontArrus);
             return;
         }
-        if (window_SpeakInHouse->keyboard_input_status == WindowInputStatus::WINDOW_INPUT_CONFIRMED) {
+        if (window_SpeakInHouse->keyboard_input_status == WINDOW_INPUT_CONFIRMED) {
             int sum = atoi(keyboardInputHandler->GetTextInput().c_str());
             if (sum <= 0) {
                 pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 1, 0);
@@ -1588,20 +1588,20 @@ void BankDialog() {
                 }
             }
         }
-        window_SpeakInHouse->keyboard_input_status = WindowInputStatus::WINDOW_INPUT_NONE;
+        window_SpeakInHouse->keyboard_input_status = WINDOW_INPUT_NONE;
         pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 1, 0);
         break;
     }
     case DIALOGUE_BANK_GET_GOLD:
     {
-        if (window_SpeakInHouse->keyboard_input_status == WindowInputStatus::WINDOW_INPUT_IN_PROGRESS) {
+        if (window_SpeakInHouse->keyboard_input_status == WINDOW_INPUT_IN_PROGRESS) {
             bank_window.DrawTitleText(pFontArrus, 0, 146, colorTable.PaleCanary.c16(),
                                       fmt::format("{}\n{}", localization->GetString(LSTR_WITHDRAW), localization->GetString(LSTR_HOW_MUCH)), 3);
             bank_window.DrawTitleText(pFontArrus, 0, 186, colorTable.White.c16(), keyboardInputHandler->GetTextInput().c_str(), 3);
             bank_window.DrawFlashingInputCursor(pFontArrus->GetLineWidth(keyboardInputHandler->GetTextInput().c_str()) / 2 + 80, 185, pFontArrus);
             return;
-        } else if (window_SpeakInHouse->keyboard_input_status == WindowInputStatus::WINDOW_INPUT_CONFIRMED) {
-            window_SpeakInHouse->keyboard_input_status = WindowInputStatus::WINDOW_INPUT_NONE;
+        } else if (window_SpeakInHouse->keyboard_input_status == WINDOW_INPUT_CONFIRMED) {
+            window_SpeakInHouse->keyboard_input_status = WINDOW_INPUT_NONE;
             int sum = atoi(keyboardInputHandler->GetTextInput().c_str());
             if (sum <= 0) {
                 pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 1, 0);
@@ -1619,7 +1619,7 @@ void BankDialog() {
                 pParty->AddGold(sum);
             }
         }
-        window_SpeakInHouse->keyboard_input_status = WindowInputStatus::WINDOW_INPUT_NONE;
+        window_SpeakInHouse->keyboard_input_status = WINDOW_INPUT_NONE;
         pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 1, 0);
         break;
     }
@@ -2940,7 +2940,7 @@ void InitializeBuildingResidents() {
 
 int HouseDialogPressCloseBtn() {
     pCurrentFrameMessageQueue->Flush();
-    keyboardInputHandler->SetWindowInputStatus(WindowInputStatus::WINDOW_INPUT_CANCELLED);
+    keyboardInputHandler->SetWindowInputStatus(WINDOW_INPUT_CANCELLED);
     keyboardInputHandler->ResetKeys();
     activeLevelDecoration = nullptr;
     current_npc_text.clear();
