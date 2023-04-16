@@ -171,29 +171,6 @@ void BLVFace::FromODM(ODMFace *face) {
     this->pVertexIDs = face->pVertexIDs.data();
 }
 
-//----- (004B0E07) --------------------------------------------------------
-unsigned int FaceFlowTextureOffset(unsigned int uFaceID) {  // time texture offset
-    Lights.pDeltaUV[0] = pIndoor->pFaceExtras[pIndoor->pFaces[uFaceID].uFaceExtraID].sTextureDeltaU;
-    Lights.pDeltaUV[1] = pIndoor->pFaceExtras[pIndoor->pFaces[uFaceID].uFaceExtraID].sTextureDeltaV;
-
-    // TODO(pskelton): check tickcount usage here
-    unsigned int offset = platform->tickCount() >> 3;
-
-    if (pIndoor->pFaces[uFaceID].uAttributes & FACE_FlowDown) {
-        Lights.pDeltaUV[1] -= offset & (((Texture *)pIndoor->pFaces[uFaceID].resource)->GetHeight() - 1);
-    } else if (pIndoor->pFaces[uFaceID].uAttributes & FACE_FlowUp) {
-        Lights.pDeltaUV[1] += offset & (((Texture *)pIndoor->pFaces[uFaceID].resource)->GetHeight() - 1);
-    }
-
-    if (pIndoor->pFaces[uFaceID].uAttributes & FACE_FlowRight) {
-        Lights.pDeltaUV[0] -= offset & (((Texture *)pIndoor->pFaces[uFaceID].resource)->GetWidth() - 1);
-    } else if (pIndoor->pFaces[uFaceID].uAttributes & FACE_FlowLeft) {
-        Lights.pDeltaUV[0] += offset & (((Texture *)pIndoor->pFaces[uFaceID].resource)->GetWidth() - 1);
-    }
-
-    return offset;
-}
-
 //----- (004AE5BA) --------------------------------------------------------
 Texture *BLVFace::GetTexture() {
     if (this->IsTextureFrameTable())

@@ -542,7 +542,6 @@ extern BLVRenderParams *pBLVRenderParams;
 
 char DoInteractionWithTopmostZObject(int pid);
 // int sub_4AAEA6_transform(struct RenderVertexSoft *a1);
-unsigned int FaceFlowTextureOffset(unsigned int uFaceID);  // idb
 void BLV_UpdateUserInputAndOther();
 
 /**
