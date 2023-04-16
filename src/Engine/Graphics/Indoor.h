@@ -121,25 +121,8 @@ struct stru315 {
 };
 #pragma pack(pop)
 
-/*  346 */
-#pragma pack(push, 1)
-struct stru316 {
-    int field_0;
-    int field_4;
-    int field_8;
-    int field_C;
-    int field_10;
-    int field_14;
-    int field_18;
-    int field_1C;
-    int field_20;
-    uint16_t *field_24_palette;
-};
-#pragma pack(pop)
-
 /*  147 */
 #pragma pack(push, 1)
-
 struct stru154 {
     //----- (0049B001) --------------------------------------------------------
     inline stru154() {}
