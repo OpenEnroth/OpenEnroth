@@ -823,8 +823,7 @@ void Game::processQueuedMessages() {
                                         DialogueEnding();
                                         current_screen_type = CURRENT_SCREEN::SCREEN_GAME;
                                         continue;
-                                    case CURRENT_SCREEN::SCREEN_CHANGE_LOCATION:  // click
-                                                                  // escape
+                                    case CURRENT_SCREEN::SCREEN_CHANGE_LOCATION: // escape
                                         if (pParty->vPosition.x < -22528)
                                             pParty->vPosition.x = -22528;
                                         if (pParty->vPosition.x > 22528)
@@ -833,9 +832,9 @@ void Game::processQueuedMessages() {
                                             pParty->vPosition.y = -22528;
                                         if (pParty->vPosition.y > 22528)
                                             pParty->vPosition.y = 22528;
-                                        ReleaseBranchlessDialogue();
+                                        pMediaPlayer->Unload();
                                         DialogueEnding();
-                                        current_screen_type = CURRENT_SCREEN::SCREEN_GAME;
+                                        onEscape();
                                         continue;
                                     case CURRENT_SCREEN::SCREEN_VIDEO:
                                         pMediaPlayer->Unload();

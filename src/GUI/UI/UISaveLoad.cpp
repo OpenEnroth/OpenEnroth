@@ -403,7 +403,10 @@ void MainMenuLoad_EventLoop() {
         case UIMSG_SaveLoadScroll: {
             // pskelton add for scroll click
             int pSaveFiles{ static_cast<int>(uNumSavegameFiles) };
-            if (!pSaveFiles) break;
+            if (pSaveFiles < 7) {
+                // Too few saves to scroll yet
+                break;
+            }
             int mx{}, my{};
             mouse->GetClickPos(&mx, &my);
             // 276 is offset down from top (216 + 60 frame)
