@@ -44,7 +44,7 @@ void GuildDialog() {
         pPrice = base_teach_price / 3;
 
     if (dialog_menu_id == DIALOGUE_MAIN) {  // change to switch??
-        if (!_449B57_test_bit((uint8_t *)pPlayers[pParty->getActiveCharacter()]->_achieved_awards_bits, guild_membership_flags[window_SpeakInHouse->wData.val - HOUSE_FIRE_GUILD_INITIATE_EMERALD_ISLE])) {
+        if (!_449B57_test_bit(pPlayers[pParty->getActiveCharacter()]->_achieved_awards_bits, guild_membership_flags[window_SpeakInHouse->wData.val - HOUSE_FIRE_GUILD_INITIATE_EMERALD_ISLE])) {
             // you must be a member
             pTextHeight = pFontArrus->CalcTextHeight(
                 pNPCTopics[121].pText, working_window.uFrameWidth, 0);

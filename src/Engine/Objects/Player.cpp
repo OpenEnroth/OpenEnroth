@@ -3315,7 +3315,7 @@ void Player::Reset(PLAYER_CLASS_TYPE cls) {
     pActiveSkills.fill(0);
     pActiveSkills[PLAYER_SKILL_CLUB] = 1; // Hidden skills, always at 1.
     pActiveSkills[PLAYER_SKILL_MISC] = 1;
-    memset(_achieved_awards_bits, 0, sizeof(_achieved_awards_bits));
+    _achieved_awards_bits.fill(0);
     memset(&spellbook, 0, sizeof(spellbook));
     uQuickSpell = SPELL_NONE;
 
@@ -4162,7 +4162,7 @@ bool Player::CompareVariable(VariableType VarNum, int pValue) {
         case VAR_Age:
             return GetActualAge() >= (unsigned int)pValue;
         case VAR_Award:
-            return _449B57_test_bit(this->_achieved_awards_bits, pValue);
+            return _449B57_test_bit(_achieved_awards_bits, pValue);
         case VAR_Experience:
             return this->uExperience >= pValue;  // TODO(_) change pValue to long long
         case VAR_QBits_QuestsDone:
@@ -4908,7 +4908,7 @@ void Player::SetVariable(VariableType var_type, signed int var_value) {
             PlayAwardSound();
             return;
         case VAR_PlayerBits:
-            _449B7E_toggle_bit((unsigned char*)playerEventBits, var_value, 1u);
+            _449B7E_toggle_bit(playerEventBits, var_value, 1u);
             return;
         case VAR_NPCs2:
             pParty->hirelingScrollPosition = 0;
@@ -5482,7 +5482,7 @@ void Player::AddVariable(VariableType var_type, signed int val) {
             PlayAwardSound();
             return;
         case VAR_PlayerBits:
-            _449B7E_toggle_bit((unsigned char*)this->playerEventBits, val, 1u);
+            _449B7E_toggle_bit(playerEventBits, val, 1u);
             return;
         case VAR_NPCs2:
             pParty->hirelingScrollPosition = 0;
@@ -7390,25 +7390,13 @@ bool Player::isClass(PLAYER_CLASS_TYPE class_type, bool check_honorary) {
 
     switch (class_type) {
     case PLAYER_CLASS_PRIEST_OF_SUN:
-        return _449B57_test_bit(
-            (uint8_t*)_achieved_awards_bits,
-            Award_Promotion_PriestOfLight_Honorary
-        );
+        return _449B57_test_bit(_achieved_awards_bits, Award_Promotion_PriestOfLight_Honorary);
     case PLAYER_CLASS_PRIEST_OF_MOON:
-        return _449B57_test_bit(
-            (uint8_t*)_achieved_awards_bits,
-            Award_Promotion_PriestOfDark_Honorary
-        );
+        return _449B57_test_bit(_achieved_awards_bits, Award_Promotion_PriestOfDark_Honorary);
     case PLAYER_CLASS_ARCHMAGE:
-        return _449B57_test_bit(
-            (uint8_t*)_achieved_awards_bits,
-            Award_Promotion_Archmage_Honorary
-        );
+        return _449B57_test_bit(_achieved_awards_bits, Award_Promotion_Archmage_Honorary);
     case PLAYER_CLASS_LICH:
-        return _449B57_test_bit(
-            (uint8_t*)_achieved_awards_bits,
-            Award_Promotion_Lich_Honorary
-        );
+        return _449B57_test_bit(_achieved_awards_bits, Award_Promotion_Lich_Honorary);
         break;
     default:
         Error("Should not be able to get here (%u)", class_type);
@@ -7580,8 +7568,8 @@ Player::Player() {
     uNumArmageddonCasts = 0;
     uNumFireSpikeCasts = 0;
 
-    memset(field_1988, 0, sizeof(field_1988));
-    memset(playerEventBits, 0, sizeof(playerEventBits));
+    field_1988.fill(0);
+    playerEventBits.fill(0);
 
     field_E0 = 0;
     field_E4 = 0;

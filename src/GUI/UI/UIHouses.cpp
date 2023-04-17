@@ -1407,9 +1407,7 @@ bool IsTravelAvailable(int a1) {
         if (transport_schedule[transport_routes[a1][i]]
             .pSchedule[pParty->uCurrentDayOfMonth % 7]) {
             if (!transport_schedule[transport_routes[a1][i]].uQuestBit ||
-                _449B57_test_bit(
-                    pParty->_quest_bits,
-                    transport_schedule[transport_routes[a1][i]].uQuestBit))
+                _449B57_test_bit(pParty->_quest_bits, transport_schedule[transport_routes[a1][i]].uQuestBit))
                 return true;
         }
     }
@@ -2451,7 +2449,7 @@ void MercenaryGuildDialog() {
     pPrice = v3 * (100 - PriceCalculator::playerMerchant(pPlayers[pParty->getActiveCharacter()])) / 100;
     if (pPrice < v3 / 3) pPrice = v3 / 3;
     if (dialog_menu_id == DIALOGUE_MAIN) {
-        if (!_449B57_test_bit((uint8_t *)pPlayers[pParty->getActiveCharacter()]->_achieved_awards_bits, word_4F0754[2 * window_SpeakInHouse->wData.val])) {
+        if (!_449B57_test_bit(pPlayers[pParty->getActiveCharacter()]->_achieved_awards_bits, word_4F0754[2 * window_SpeakInHouse->wData.val])) {
             // 171 looks like Mercenary Stronghold message from NPCNews.txt in MM6
             pTextHeight = pFontArrus->CalcTextHeight(pNPCTopics[171].pText, dialog_window.uFrameWidth, 0);
             dialog_window.DrawTitleText(pFontArrus, 0, (212 - pTextHeight) / 2 + 101, colorTable.PaleCanary.c16(), pNPCTopics[171].pText, 3);

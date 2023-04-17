@@ -1,6 +1,7 @@
 #pragma once
 
-#include <compare>
+#include <cassert>
+#include <compare> // NOLINT
 #include <cstddef>
 #include <iterator>
 
@@ -102,6 +103,12 @@ class Segment {
 
     constexpr T back() const {
         return _last;
+    }
+
+    constexpr T operator[](size_t index) const {
+        assert(begin() + index < end());
+
+        return *(begin() + index);
     }
 
     constexpr bool contains(T value) const {

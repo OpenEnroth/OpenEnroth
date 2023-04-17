@@ -296,8 +296,7 @@ void GUIWindow_AutonotesBook::Update() {
         num_achieved_awards = 0;
         for (uint i = 1; i <= 195; ++i) {
             if (pAutonoteTxt[i].eType == _506568_autonote_type) {
-                if ((uint16_t)_449B57_test_bit(pParty->_autonote_bits, i)
-                    && (char *)pAutonoteTxt[i].pText)
+                if (_449B57_test_bit(pParty->_autonote_bits, i) && pAutonoteTxt[i].pText)
                     achieved_awards[num_achieved_awards++] = (AwardType)i;
             }
         }

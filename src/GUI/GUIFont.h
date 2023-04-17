@@ -1,5 +1,6 @@
 #pragma once
 
+#include <array>
 #include <vector>
 #include <string>
 
@@ -24,8 +25,8 @@ struct FontData {
     uint8_t field_7 = 0;
     uint32_t palletes_count = 0;
     uint8_t *pFontPalettes[5]{};
-    GUICharMetric pMetrics[256]{};
-    uint32_t font_pixels_offset[256]{};
+    std::array<GUICharMetric, 256> pMetrics = {{}};
+    std::array<uint32_t, 256> font_pixels_offset = {{}};
     std::vector<uint8_t> pFontData;  // array of font pixels
 //    uint8_t pFontData[0];  // array of font pixels
 };

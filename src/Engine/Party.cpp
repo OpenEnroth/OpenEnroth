@@ -130,13 +130,13 @@ void Party::Zero() {
     monster_id_for_hunting.fill(0);
     monster_for_hunting_killed.fill(0);
     days_played_without_rest = 0;
-    memset(_quest_bits, 0, sizeof(_quest_bits));
+    _quest_bits.fill(0);
     pArcomageWins.fill(0);
     field_7B5_in_arena_quest = 0;
     uNumArenaWins.fill(0);
     pIsArtifactFound.fill(0);
     field_7d7_set0_unused.fill(0);
-    memset(_autonote_bits, 0, sizeof(_autonote_bits));
+    _autonote_bits.fill(0);
     field_818_set0_unused.fill(0);
     random_order_num_unused.fill(0);
     uNumArcomageWins = 0;
@@ -697,8 +697,8 @@ void Party::Reset() {
 
     current_character_screen_window = WINDOW_CharacterWindow_Stats;  // default character ui - stats
     uFlags = 0;
-    memset(_autonote_bits, 0, sizeof(_autonote_bits));
-    memset(_quest_bits, 0, sizeof(_quest_bits));
+    _autonote_bits.fill(0);
+    _quest_bits.fill(0);
     pIsArtifactFound.fill(0);
 
     PartyTimes._shop_ban_times.fill(GameTime(0));
@@ -1245,22 +1245,23 @@ int getTravelTime() {
 // 6BD07C: using guessed type int uDefaultTravelTime_ByFoot;
 
 //----- (00449B57) --------------------------------------------------------
-bool _449B57_test_bit(uint8_t *a1, int16_t a2) {
-    return (a1[(a2 - 1) >> 3] & (0x80 >> (a2 - 1) % 8)) != 0;
+bool _449B57_test_bit(std::span<const uint8_t> bits, int index) {
+    assert(index > 0 && index <= bits.size() * 8);
+    index--;
+
+    return bits[index / 8] & (0x80 >> index % 8);
 }
 
 //----- (00449B7E) --------------------------------------------------------
-void _449B7E_toggle_bit(unsigned char *pArray, int16_t a2,
-                        uint16_t bToggle) {
-    signed int v3;          // esi@1
-    unsigned char set_bit;  // edx@1
+void _449B7E_toggle_bit(std::span<uint8_t> bits, int index, bool value) {
+    assert(index > 0 && index <= bits.size() * 8);
+    index--;
 
-    v3 = a2 - 1;
-    set_bit = 0x80 >> v3 % 8;
-    if (bToggle)
-        pArray[v3 / 8] |= set_bit;
+    uint8_t mask = 0x80 >> index % 8;
+    if (value)
+        bits[index / 8] |= mask;
     else
-        pArray[v3 / 8] &= ~set_bit;
+        bits[index / 8] &= ~mask;
 }
 
 //----- (004760D5) --------------------------------------------------------

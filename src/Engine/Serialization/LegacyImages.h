@@ -26,6 +26,7 @@ struct SpellBuff;
 struct Player;
 class UIAnimation;
 class Icon;
+struct OtherOverlay;
 struct OtherOverlayList;
 struct Timer;
 struct Party;
@@ -327,7 +328,7 @@ struct Player_MM7 {
     /* 1A4D */ char field_1A4D;
     /* 1A4E */ char lastOpenedSpellbookPage;
     /* 1A4F */ uint8_t uQuickSpell;
-    /* 1A50 */ std::array<char, 64> playerEventBits;
+    /* 1A50 */ std::array<uint8_t, 64> playerEventBits;
     /* 1A90 */ char _some_attack_bonus;
     /* 1A91 */ char field_1A91;
     /* 1A92 */ char _melee_dmg_bonus;
@@ -363,9 +364,9 @@ struct PartyTimeStruct_MM7 {
     /* 000 */ std::array<int64_t, 10> bountyHunting_next_generation_time;
     /* 050 */ std::array<int64_t, 85> Shops_next_generation_time;  // field_50
     /* 2F8 */ std::array<int64_t, 53> _shop_ban_times;
-    /* 4A0 */ std::array<uint64_t, 10> CounterEventValues;               // (0xACD314h in Silvo's binary)
+    /* 4A0 */ std::array<int64_t, 10> CounterEventValues;               // (0xACD314h in Silvo's binary)
     /* 4F0 */ std::array<int64_t, 29> HistoryEventTimes;  // (0xACD364h in Silvo's binary)
-    /* 5D8 */ std::array<uint64_t, 20> _s_times;  // 5d8 440h+8*51     //(0xACD44Ch in Silvo's binary)
+    /* 5D8 */ std::array<int64_t, 20> _s_times;  // 5d8 440h+8*51     //(0xACD44Ch in Silvo's binary)
     /* 678 */
 };
 static_assert(sizeof(PartyTimeStruct_MM7) == 0x678);
@@ -431,7 +432,7 @@ struct Party_MM7 {
     /* 007A5 */ std::array<uint8_t, 16> pArcomageWins;
     /* 007B5 */ char field_7B5_in_arena_quest;
     /* 007B6 */ std::array<char, 4> uNumArenaWins;
-    /* 007BA */ std::array<char, 29> pIsArtifactFound;  // 7ba
+    /* 007BA */ std::array<bool, 29> pIsArtifactFound;  // 7ba
     /* 007D7 */ std::array<char, 39> field_7d7;
     /* 007FE */ std::array<uint8_t, 26> _autonote_bits;
     /* 00818 */ std::array<char, 60> field_818;
@@ -500,6 +501,9 @@ struct OtherOverlay_MM7 {
     /* 14 */
 };
 static_assert(sizeof(OtherOverlay_MM7) == 0x14);
+
+void Serialize(const OtherOverlay &src, OtherOverlay_MM7 *dst);
+void Deserialize(const OtherOverlay_MM7 &src, OtherOverlay *dst);
 
 
 struct OtherOverlayList_MM7 {
@@ -642,7 +646,7 @@ struct Actor_MM7 {
     int16_t field_22;
     uint32_t uAttributes;
     int16_t sCurrentHP;
-    std::array<char, 2> field_2A;
+    std::array<char, 2> padding_unused;
     MonsterInfo_MM7 pMonsterInfo;
     int16_t word_000084_range_attack;
     int16_t word_000086_some_monster_id;  // base monster class monsterlist id

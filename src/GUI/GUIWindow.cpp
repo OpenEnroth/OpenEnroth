@@ -1862,7 +1862,6 @@ std::string BuildDialogueString(std::string &str, uint8_t uPlayerID, ItemGen *a3
     Player *pPlayer;       // ebx@3
     const char *pText;     // esi@7
     int64_t v18;    // qax@18
-    uint8_t *v20;  // ebx@32
     int v21;               // ecx@34
     int v29;               // eax@68
     int16_t v55[56] {};       // [sp+10h] [bp-128h]@34
@@ -1931,10 +1930,8 @@ std::string BuildDialogueString(std::string &str, uint8_t uPlayerID, ItemGen *a3
                 break;
             case 8:
                 v63 = 0;
-                v20 = (uint8_t *)pPlayer->_achieved_awards_bits;
                 for (uint _i = 0; _i < 28; ++_i) {
-                    if (_449B57_test_bit(
-                        v20, word_4EE150[i])) {
+                    if (_449B57_test_bit(pPlayer->_achieved_awards_bits, word_4EE150[i])) {
                         v21 = v63;
                         ++v63;
                         v55[v63] = word_4EE150[i];
@@ -2465,7 +2462,7 @@ const char *GetJoinGuildDialogueOption(GUILD_ID guild_id) {
         pParty->setActiveToFirstCanAct();  // avoid nzi
 
     if (pPlayers[pParty->getActiveCharacter()]->CanAct()) {
-        if (_449B57_test_bit((uint8_t*)pPlayers[pParty->getActiveCharacter()]->_achieved_awards_bits, dword_F8B1AC_award_bit_number)) {
+        if (_449B57_test_bit(pPlayers[pParty->getActiveCharacter()]->_achieved_awards_bits, dword_F8B1AC_award_bit_number)) {
             return pNPCTopics[dialogue_base + 13].pText;
         } else {
             if (gold_transaction_amount <= pParty->GetGold()) {
