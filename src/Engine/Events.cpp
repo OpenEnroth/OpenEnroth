@@ -19,6 +19,8 @@
 #include "Engine/Party.h"
 #include "Engine/stru123.h"
 #include "Engine/stru159.h"
+#include "Engine/Events/EventParser.h"
+#include "Engine/Events/EventPrinter.h"
 
 #include "GUI/GUIProgressBar.h"
 #include "GUI/UI/UIDialogue.h"
@@ -86,6 +88,9 @@ void Initialize_GlobalEVT() {
     if (!uGlobalEVT_Size) return;
     pGlobalEVT_Index.fill({(int)0x80808080, (int)0x80808080, 0x80808080}); // Fill with invalid data.
     events_count = uGlobalEVT_NumEvents;
+
+    clearEventsGlobal();
+
     current_hdr = (raw_event_header *)pGlobalEVT.data();
     offset_in = 0;
     for (events_count = 0, offset_in = 0; offset_in < uGlobalEVT_Size;
@@ -94,6 +99,7 @@ void Initialize_GlobalEVT() {
         pGlobalEVT_Index[events_count].event_step = current_hdr->evt_sequence_num;
         pGlobalEVT_Index[events_count].uEventOffsetInEVT = offset_in;
         offset_in += current_hdr->evt_size + 1;
+        addEventGlobal(current_hdr);
 
         current_hdr = (raw_event_header *)&pGlobalEVT[offset_in];
     }
@@ -122,6 +128,8 @@ void LoadLevel_InitializeLevelEvt() {
     uLevelEVT_NumEvents = 0;
     MapsLongTimers_count = 0;
 
+    clearEventsLocal();
+
     current_hdr = (raw_event_header *)pLevelEVT.data();
     offset_in = 0;
     for (events_count = 0, offset_in = 0; offset_in < uLevelEVT_Size;
@@ -130,6 +138,7 @@ void LoadLevel_InitializeLevelEvt() {
         pLevelEVT_Index[events_count].event_step = current_hdr->evt_sequence_num;
         pLevelEVT_Index[events_count].uEventOffsetInEVT = offset_in;
         offset_in += current_hdr->evt_size + 1;
+        addEventLocal(current_hdr);
 
         current_hdr = (raw_event_header *)&pLevelEVT[offset_in];
     }
@@ -317,7 +326,7 @@ void EventProcessor(int uEventID, int targetObj, int canShowMessages,
     v133 = 0;
     EvtTargetObj = targetObj;
     dword_5B65C4_cancelEventProcessing = 0;
-    logger->verbose("Processing EventID: {}", uEventID);
+    //logger->verbose("Processing EventID: {}", uEventID);
 
     if (!uEventID) {
         if (!game_ui_status_bar_event_string_time_left)
@@ -333,10 +342,12 @@ void EventProcessor(int uEventID, int targetObj, int canShowMessages,
         uSomeEVT_NumEvents = uGlobalEVT_NumEvents;
         pSomeEVT = pGlobalEVT.data();
         pSomeEVT_Events = pGlobalEVT_Index;
+        dumpEventGlobal(uEventID);
     } else {
         uSomeEVT_NumEvents = uLevelEVT_NumEvents;
         pSomeEVT = pLevelEVT.data();
         pSomeEVT_Events = pLevelEVT_Index;
+        dumpEventLocal(uEventID);
     }
 
     for (v4 = 0; v4 < uSomeEVT_NumEvents; ++v4) {

@@ -61,6 +61,7 @@ target_link_libraries(engine
         engine_spells
         engine_tables
         engine_turnengine
+        engine_events
         library_compression
         library_logger
         library_serialization
@@ -79,4 +80,4 @@ add_subdirectory(Spells)
 add_subdirectory(Tables)
 add_subdirectory(Components)
 add_subdirectory(TurnEngine)
-
+add_subdirectory(Events)
