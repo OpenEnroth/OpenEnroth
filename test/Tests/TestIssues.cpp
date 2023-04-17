@@ -641,3 +641,9 @@ GAME_TEST(Issues, Issue662) {
     EXPECT_EQ(pParty->pPlayers[3].GetItemsBonus(CHARACTER_ATTRIBUTE_SKILL_AIR),
               2);
 }
+
+GAME_TEST(Issues, Issue691) {
+    // Test that hitting escape when in transition window does not crash
+    test->playTraceFromTestData("issue_691.mm7", "issue_691.json");
+    EXPECT_EQ(current_screen_type, CURRENT_SCREEN::SCREEN_GAME);
+}
