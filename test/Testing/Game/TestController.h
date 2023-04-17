@@ -13,6 +13,8 @@ class TestController {
  public:
     TestController(EngineController *controller, const std::string &testDataPath);
 
+    std::string fullPathInTestData(const std::string &fileName);
+
     void loadGameFromTestData(const std::string &name);
     void playTraceFromTestData(const std::string &saveName, const std::string &traceName, std::function<void()> postLoadCallback = {});
     void playTraceFromTestData(const std::string &saveName, const std::string &traceName, EngineTracePlaybackFlags flags, std::function<void()> postLoadCallback = {});

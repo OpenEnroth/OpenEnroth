@@ -32,6 +32,8 @@ void DoSavegame(unsigned int uSlot);
 bool Initialize_GamesLOD_NewLOD();
 void SaveNewGame();
 
+extern int pSaveListPosition;
+extern unsigned int uLoadGameUI_SelectedSlot;
 extern unsigned int uNumSavegameFiles;
 extern std::array<unsigned int, MAX_SAVE_SLOTS> pSavegameUsedSlots;
 extern struct SavegameList *pSavegameList;

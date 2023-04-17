@@ -41,6 +41,10 @@ std::array<unsigned int, MAX_SAVE_SLOTS> pSavegameUsedSlots;
 std::array<Image *, MAX_SAVE_SLOTS> pSavegameThumbnails;
 std::array<SavegameHeader, MAX_SAVE_SLOTS> pSavegameHeader;
 
+// TODO(pskelton): move to save game list
+int pSaveListPosition = 0;
+unsigned int uLoadGameUI_SelectedSlot = 0;
+
 void LoadGame(unsigned int uSlot) {
     MapsLongTimers_count = 0;
     if (!pSavegameUsedSlots[uSlot]) {
