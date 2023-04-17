@@ -622,10 +622,11 @@ void ItemTable::GenerateItem(ITEM_TREASURE_LEVEL treasure_level, unsigned int uT
 
                 outItem->m_enchantmentStrength = bonusRanges[treasure_level].minR +
                                                  grng->random(bonusRanges[treasure_level].maxR - bonusRanges[treasure_level].minR + 1);
-                PLAYER_SKILL_TYPE standardEnchantmentSkill = static_cast<PLAYER_SKILL_TYPE>(outItem->uEnchantmentType - 1);
-                if (standardEnchantmentSkill == PLAYER_SKILL_ARMSMASTER || standardEnchantmentSkill == PLAYER_SKILL_DODGE ||
-                    standardEnchantmentSkill == PLAYER_SKILL_UNARMED) {
-                    outItem->m_enchantmentStrength = outItem->m_enchantmentStrength / 2;
+                CHARACTER_ATTRIBUTE_TYPE standardEnchantmentAttributeSkill = static_cast<CHARACTER_ATTRIBUTE_TYPE>(outItem->uEnchantmentType - 1);
+                if (standardEnchantmentAttributeSkill == CHARACTER_ATTRIBUTE_SKILL_ARMSMASTER ||
+                    standardEnchantmentAttributeSkill == CHARACTER_ATTRIBUTE_SKILL_DODGE ||
+                    standardEnchantmentAttributeSkill == CHARACTER_ATTRIBUTE_SKILL_UNARMED) {
+                    outItem->m_enchantmentStrength /= 2;
                 }
                 // if enchantment generated, it needs to actually have an effect
                 if (outItem->m_enchantmentStrength <= 0) {
