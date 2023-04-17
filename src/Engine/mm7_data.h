@@ -270,8 +270,6 @@ extern size_t num_event_triggers;             // 6836C8
 extern std::array<int, 64> dword_69B010;
 extern float flt_69B138_dist;
 extern char byte_69BD41_unused;
-extern int pSaveListPosition;
-extern unsigned int uLoadGameUI_SelectedSlot;
 extern char cMM7GameCDDriveLetter;  // idb
 extern int uDefaultTravelTime_ByFoot;
 extern int day_attrib;

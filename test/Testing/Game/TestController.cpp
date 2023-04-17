@@ -16,8 +16,12 @@ TestController::TestController(EngineController *controller, const std::string &
     _controller(controller),
     _testDataPath(testDataPath) {}
 
+std::string TestController::fullPathInTestData(const std::string &fileName) {
+    return (_testDataPath / fileName).string();
+}
+
 void TestController::loadGameFromTestData(const std::string &name) {
-    _controller->loadGame((_testDataPath / name).string());
+    _controller->loadGame(fullPathInTestData(name));
 }
 
 void TestController::playTraceFromTestData(const std::string &saveName, const std::string &traceName, std::function<void()> postLoadCallback) {
@@ -30,8 +34,8 @@ void TestController::playTraceFromTestData(const std::string &saveName, const st
     // pick one, and spell it out explicitly in HACKING
     ::application->get<EngineTracePlayer>()->playTrace(
         _controller,
-        (_testDataPath / saveName).string(),
-        (_testDataPath / traceName).string(),
+        fullPathInTestData(saveName),
+        fullPathInTestData(traceName),
         flags,
         std::move(postLoadCallback)
     );
