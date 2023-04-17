@@ -155,7 +155,7 @@ void ItemGen::UpdateTempBonus(GameTime time) {
 }
 
 //----- (00456442) --------------------------------------------------------
-unsigned int ItemGen::GetValue() {
+unsigned int ItemGen::GetValue() const {
     unsigned int uBaseValue;  // edi@1
     unsigned int mod, bonus;
 
@@ -635,10 +635,10 @@ void ItemGen::PopulateArtifactBonusMap() {
     AddToMap(artifactBonusMap, ITEM_ARTIFACT_LADYS_ESCORT, CHARACTER_ATTRIBUTE_RESIST_BODY, 10);
 }
 
-void ItemGen::GetItemBonusSpecialEnchantment(Player *owner,
+void ItemGen::GetItemBonusSpecialEnchantment(const Player *owner,
                                              CHARACTER_ATTRIBUTE_TYPE attrToGet,
                                              int *additiveBonus,
-                                             int *halfSkillBonus) {
+                                             int *halfSkillBonus) const {
     auto pos = specialBonusMap.find(this->special_enchantment);
     if (pos == specialBonusMap.end())
         return;
@@ -661,9 +661,9 @@ void ItemGen::GetItemBonusSpecialEnchantment(Player *owner,
     }
 }
 
-void ItemGen::GetItemBonusArtifact(Player *owner,
+void ItemGen::GetItemBonusArtifact(const Player *owner,
                                    CHARACTER_ATTRIBUTE_TYPE attrToGet,
-                                   int *bonusSum) {
+                                   int *bonusSum) const {
     auto pos = artifactBonusMap.find(this->uItemID);
     if (pos == artifactBonusMap.end())
         return;
@@ -688,7 +688,7 @@ bool ItemGen::IsRegularEnchanmentForAttribute(CHARACTER_ATTRIBUTE_TYPE attrToGet
     return pos->second.find(attrToGet) != pos->second.end();
 }
 
-ITEM_EQUIP_TYPE ItemGen::GetItemEquipType() {
+ITEM_EQUIP_TYPE ItemGen::GetItemEquipType() const {
     // to avoid nzi - is this safe??
     if (this->uItemID == ITEM_NULL)
         return EQUIP_NONE;
@@ -696,7 +696,7 @@ ITEM_EQUIP_TYPE ItemGen::GetItemEquipType() {
         return pItemTable->pItems[this->uItemID].uEquipType;
 }
 
-PLAYER_SKILL_TYPE ItemGen::GetPlayerSkillType() {
+PLAYER_SKILL_TYPE ItemGen::GetPlayerSkillType() const {
     PLAYER_SKILL_TYPE skl = pItemTable->pItems[this->uItemID].uSkillType;
     if (skl == PLAYER_SKILL_CLUB && engine->config->gameplay.TreatClubAsMace.value()) {
         // club skill not used but some items load it
@@ -705,19 +705,19 @@ PLAYER_SKILL_TYPE ItemGen::GetPlayerSkillType() {
     return skl;
 }
 
-char *ItemGen::GetIconName() {
+char *ItemGen::GetIconName() const {
     return pItemTable->pItems[this->uItemID].pIconName;
 }
 
-uint8_t ItemGen::GetDamageDice() {
+uint8_t ItemGen::GetDamageDice() const {
     return pItemTable->pItems[this->uItemID].uDamageDice;
 }
 
-uint8_t ItemGen::GetDamageRoll() {
+uint8_t ItemGen::GetDamageRoll() const {
     return pItemTable->pItems[this->uItemID].uDamageRoll;
 }
 
-uint8_t ItemGen::GetDamageMod() {
+uint8_t ItemGen::GetDamageMod() const {
     return pItemTable->pItems[this->uItemID].uDamageMod;
 }
 

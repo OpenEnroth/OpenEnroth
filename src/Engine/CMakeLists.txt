@@ -15,6 +15,7 @@ set(ENGINE_SOURCES
         MapInfo.cpp
         OurMath.cpp
         Party.cpp
+        PriceCalculator.cpp
         SaveLoad.cpp
         SpellFxRenderer.cpp
         Time.cpp
@@ -41,6 +42,7 @@ set(ENGINE_HEADERS
         MapsLongTimer.h
         OurMath.h
         Party.h
+        PriceCalculator.h
         SaveLoad.h
         SpellFxRenderer.h
         Time.h

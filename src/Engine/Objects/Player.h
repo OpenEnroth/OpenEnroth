@@ -216,11 +216,11 @@ struct Player {
     bool CanTrainToNextLevel();
     unsigned int GetExperienceDisplayColor();
     int CalculateIncommingDamage(DAMAGE_TYPE dmg_type, int amount);
-    ITEM_EQUIP_TYPE GetEquippedItemEquipType(ITEM_SLOT uEquipSlot);
+    ITEM_EQUIP_TYPE GetEquippedItemEquipType(ITEM_SLOT uEquipSlot) const;
     PLAYER_SKILL_TYPE GetEquippedItemSkillType(ITEM_SLOT uEquipSlot);
-    bool IsUnarmed();
+    bool IsUnarmed() const;
     bool HasItemEquipped(ITEM_SLOT uEquipIndex) const;
-    bool HasEnchantedItemEquipped(int uEnchantment);
+    bool HasEnchantedItemEquipped(int uEnchantment) const;
     bool WearsItem(ITEM_TYPE item_id, ITEM_SLOT equip_type) const;
     int StealFromShop(ItemGen *itemToSteal, int extraStealDifficulty,
                       int reputation, int extraStealFine, int *fineIfFailed);
@@ -247,13 +247,13 @@ struct Player {
     int GetActualResistance(CHARACTER_ATTRIBUTE_TYPE a2);
     void SetRecoveryTime(signed int sRecoveryTime);
     void RandomizeName();
-    Condition GetMajorConditionIdx();
+    Condition GetMajorConditionIdx() const;
     int GetParameterBonus(int player_parameter);
     int GetSpecialItemBonus(ITEM_ENCHANTMENT enchantment);
-    int GetItemsBonus(CHARACTER_ATTRIBUTE_TYPE attr, bool a3 = false);
+    int GetItemsBonus(CHARACTER_ATTRIBUTE_TYPE attr, bool getOnlyMainHandDmg = false) const;
     int GetMagicalBonus(CHARACTER_ATTRIBUTE_TYPE a2);
-    PLAYER_SKILL_LEVEL GetActualSkillLevel(PLAYER_SKILL_TYPE uSkillType);
-    PLAYER_SKILL_MASTERY GetActualSkillMastery(PLAYER_SKILL_TYPE uSkillType);
+    PLAYER_SKILL_LEVEL GetActualSkillLevel(PLAYER_SKILL_TYPE uSkillType) const;
+    PLAYER_SKILL_MASTERY GetActualSkillMastery(PLAYER_SKILL_TYPE uSkillType) const;
     int GetSkillBonus(CHARACTER_ATTRIBUTE_TYPE a2);
     CHARACTER_RACE GetRace() const;
     std::string GetRaceName() const;
@@ -272,7 +272,6 @@ struct Player {
     int GetMeditation();
     bool CanIdentify(ItemGen *pItem);
     bool CanRepair(ItemGen *pItem);
-    int GetMerchant();
     int GetPerception();
     int GetDisarmTrap();
 
@@ -324,16 +323,7 @@ struct Player {
     unsigned int GetItemMainInventoryIndex(int inout_item_cell);
     struct ItemGen *GetItemAtInventoryIndex(int inout_item_cell);
     bool IsPlayerHealableByTemple();
-    int GetBaseIdentifyPrice(float price_multiplier);
-    int GetBaseRepairPrice(int uRealValue, float price_multiplier);
-    int GetBaseBuyingPrice(int uRealValue, float price_multiplier);
-    int GetBaseSellingPrice(int uRealValue, float price_multiplier);
-    int GetPriceRepair(int uRealValue, float price_multiplier);
-    int GetPriceIdentification(float price_multiplier);
-    int GetBuyingPrice(unsigned int uRealValue, float price_multiplier);
-    int GetPriceSell(ItemGen itemx, float price_multiplier);
-    int GetTempleHealCostModifier(float price_multi);
-    int GetConditionDaysPassed(Condition uCondition);
+    int GetConditionDaysPassed(Condition condition) const;
     bool NothingOrJustBlastersEquipped();
     void SalesProcess(unsigned int inventory_idnx, int item_index, int _2devent_idx);  // 0x4BE2DD
     bool Recover(GameTime dt);
@@ -355,7 +345,7 @@ struct Player {
 
     bool PlayerHitOrMiss(Actor *pActor, int distancemod, PLAYER_SKILL_LEVEL skillmod);
 
-    unsigned int GetMultiplierForSkillLevel(PLAYER_SKILL_TYPE uSkillType, int mult1, int mult2, int mult3, int mult4);
+    unsigned int GetMultiplierForSkillLevel(PLAYER_SKILL_TYPE uSkillType, int mult1, int mult2, int mult3, int mult4) const;
     int CalculateMeleeDmgToEnemyWithWeapon(ItemGen *weapon,
                                            unsigned int uTargetActorID,
                                            bool addOneDice);
@@ -426,9 +416,22 @@ struct Player {
     ItemGen *GetBootItem();
     ItemGen *GetAmuletItem();
     ItemGen *GetNthRingItem(int ringNum);
-    const ItemGen *GetNthEquippedIndexItem(ITEM_SLOT index) const;
     ItemGen *GetNthEquippedIndexItem(ITEM_SLOT index);
     ItemGen *GetItem(unsigned int PlayerEquipment::*itemPos);
+
+    const ItemGen *GetMainHandItem() const;
+    const ItemGen *GetOffHandItem() const;
+    const ItemGen *GetBowItem() const;
+    const ItemGen *GetArmorItem() const;
+    const ItemGen *GetHelmItem() const;
+    const ItemGen *GetBeltItem() const;
+    const ItemGen *GetCloakItem() const;
+    const ItemGen *GetGloveItem() const;
+    const ItemGen *GetBootItem() const;
+    const ItemGen *GetAmuletItem() const;
+    const ItemGen *GetNthRingItem(int ringNum) const;
+    const ItemGen *GetNthEquippedIndexItem(ITEM_SLOT index) const;
+    const ItemGen *GetItem(unsigned int PlayerEquipment::*itemPos) const;
 
     // TODO(Nik-RE-dev): use getCharacterIdInParty directly where this function is called.
     int GetPlayerIndex();
@@ -440,8 +443,8 @@ struct Player {
     void CleanupBeacons();
     bool SetBeacon(size_t index, size_t power);
 
-    PLAYER_SKILL_LEVEL GetSkillLevel(PLAYER_SKILL_TYPE skill);
-    PLAYER_SKILL_MASTERY GetSkillMastery(PLAYER_SKILL_TYPE skill);
+    PLAYER_SKILL_LEVEL GetSkillLevel(PLAYER_SKILL_TYPE skill) const;
+    PLAYER_SKILL_MASTERY GetSkillMastery(PLAYER_SKILL_TYPE skill) const;
     void SetSkillLevel(PLAYER_SKILL_TYPE skill, PLAYER_SKILL_LEVEL level);
     void SetSkillMastery(PLAYER_SKILL_TYPE skill, PLAYER_SKILL_MASTERY mastery);
 

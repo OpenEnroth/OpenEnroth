@@ -19,6 +19,7 @@
 #include "Engine/Objects/SpriteObject.h"
 #include "Engine/OurMath.h"
 #include "Engine/Party.h"
+#include "Engine/PriceCalculator.h"
 #include "Engine/SpellFxRenderer.h"
 #include "Engine/stru123.h"
 #include "Engine/AttackList.h"
@@ -259,7 +260,7 @@ void Player::SpendMana(unsigned int uRequiredMana) {
 //----- (004BE2DD) --------------------------------------------------------
 void Player::SalesProcess(unsigned int inventory_idnx, int item_index, int _2devent_idx) {
     float shop_mult = p2DEvents[_2devent_idx - 1].fPriceMultiplier;
-    int sell_price = GetPriceSell(pOwnItems[item_index], shop_mult);
+    int sell_price = PriceCalculator::itemSellingPriceForPlayer(this, pOwnItems[item_index], shop_mult);
 
     // remove item and add gold
     RemoveItemAtInventoryIndex(inventory_idnx);
@@ -289,7 +290,7 @@ bool Player::NothingOrJustBlastersEquipped() {
 }
 
 //----- (004B8040) --------------------------------------------------------
-int Player::GetConditionDaysPassed(Condition condition) {
+int Player::GetConditionDaysPassed(Condition condition) const {
     // PS - CHECK ?? is this the intedned behavior - RETURN
     // NUMBER OF DAYS CONDITION HAS BEEN ACTIVE FOR
 
@@ -301,140 +302,6 @@ int Player::GetConditionDaysPassed(Condition condition) {
     GameTime diff = playtime - condtime;
 
     return diff.GetDays() + 1;
-}
-
-//----- (004B807C) --------------------------------------------------------
-int Player::GetTempleHealCostModifier(float price_multi) {
-    Condition conditionIdx = GetMajorConditionIdx();  // get worse condition
-    int conditionTimeMultiplier = 1;
-    int baseConditionMultiplier =
-        1;  // condition good unless otherwise , base price for health and mana
-    int high_mult;
-    int result;
-
-    if (conditionIdx >= Condition_Dead &&
-        conditionIdx <= Condition_Eradicated) {  // dead, petri, erad - serious
-        if (conditionIdx <= Condition_Petrified)
-            baseConditionMultiplier = 5;  // dead or petri
-        else
-            baseConditionMultiplier = 10;  // erad
-
-        conditionTimeMultiplier = GetConditionDaysPassed(conditionIdx);
-    } else if (conditionIdx < Condition_Dead) {  // all other conditions
-        for (int i = 0; i <= 13; i++) {
-            high_mult = GetConditionDaysPassed(static_cast<Condition>(i));
-
-            if (high_mult >
-                conditionTimeMultiplier)  // get worst other condition
-                conditionTimeMultiplier = high_mult;
-        }
-    }
-
-    result = (int)((double)conditionTimeMultiplier *
-                   (double)baseConditionMultiplier *
-                   price_multi);  // calc heal price
-
-    if (result < 1)  // min cost
-        result = 1;
-
-    if (result > 10000)  // max cost
-        result = 10000;
-
-    return result;
-}
-
-//----- (004B8102) --------------------------------------------------------
-int Player::GetPriceSell(ItemGen itemx, float price_multiplier) {
-    int uRealValue = itemx.GetValue();
-    int result = static_cast<int>((uRealValue / (price_multiplier + 2.0)) +
-                     uRealValue * GetMerchant() / 100.0);
-
-    if (result > uRealValue) result = uRealValue;
-
-    if (itemx.IsBroken()) result = 1;
-
-    if (result < 1) result = 1;
-
-    return result;
-}
-
-//----- (004B8142) --------------------------------------------------------
-int Player::GetBuyingPrice(unsigned int uRealValue, float price_multiplier) {
-    uint price =
-        (uint)(((100 - GetMerchant()) * (uRealValue * price_multiplier)) / 100);
-
-    if (price < uRealValue)  // price should always be at least item value
-        price = uRealValue;
-
-    return price;
-}
-
-//----- (004B8179) --------------------------------------------------------
-int Player::GetPriceIdentification(float price_multiplier) {
-    int basecost = (int)(price_multiplier * 50.0f);
-    int actcost = basecost * (100 - GetMerchant()) / 100;
-
-    if (actcost < basecost / 3)  // minimum price
-        actcost = basecost / 3;
-
-    if (actcost > 1)
-        return actcost;
-    else
-        return 1;
-}
-
-//----- (004B81C3) --------------------------------------------------------
-int Player::GetPriceRepair(int uRealValue, float price_multiplier) {
-    int basecost = (int)(uRealValue / (6.0f - price_multiplier));
-    int actcost = basecost * (100 - GetMerchant()) / 100;
-
-    if (actcost < basecost / 3)  // min price
-        actcost = basecost / 3;
-
-    if (actcost > 1)
-        return actcost;
-    else
-        return 1;
-}
-
-//----- (004B8213) --------------------------------------------------------
-int Player::GetBaseSellingPrice(int uRealValue, float price_multiplier) {
-    int basecost = (int)(uRealValue / (price_multiplier + 2.0f));
-
-    if (basecost < 1)  // min price
-        basecost = 1;
-
-    return basecost;
-}
-
-//----- (004B8233) --------------------------------------------------------
-int Player::GetBaseBuyingPrice(int uRealValue, float price_multiplier) {
-    int basecost = (int)(uRealValue * price_multiplier);
-
-    if (basecost < 1)  // min price
-        basecost = 1;
-
-    return basecost;
-}
-
-//----- (004B824B) --------------------------------------------------------
-int Player::GetBaseIdentifyPrice(float price_multiplier) {
-    int basecost = (int)(price_multiplier * 50.0f);
-
-    if (basecost < 1)  // min price
-        basecost = 1;
-
-    return basecost;
-}
-
-//----- (004B8265) --------------------------------------------------------
-int Player::GetBaseRepairPrice(int uRealValue, float price_multiplier) {
-    int basecost = (int)(uRealValue / (6.0f - price_multiplier));
-
-    if (basecost < 1)  // min price
-        basecost = 1;
-
-    return basecost;
 }
 
 //----- (004B6FF9) --------------------------------------------------------
@@ -950,25 +817,6 @@ bool Player::CanRepair(ItemGen *pItem) {
                   pItemTable->pItems[pItem->uItemID].uItemID_Rep_St;
 
     return result;
-}
-
-//----- (004911F3) --------------------------------------------------------
-int Player::GetMerchant() {
-    PLAYER_SKILL_LEVEL skill = GetActualSkillLevel(PLAYER_SKILL_MERCHANT);
-    PLAYER_SKILL_MASTERY skillmaster = GetActualSkillMastery(PLAYER_SKILL_MERCHANT);
-    int multiplier =
-        GetMultiplierForSkillLevel(PLAYER_SKILL_MERCHANT, 1, 2, 3, 5);
-
-    if (skillmaster == PLAYER_SKILL_MASTERY_GRANDMASTER)  // gm merchant
-        return 10000;
-
-    int rep = pParty->GetPartyReputation();
-    int bonus = multiplier * skill;
-
-    if (bonus == 0)  // no skill so trading on rep alone
-        return -rep;
-
-    return bonus - rep + 7;
 }
 
 //----- (0049125A) --------------------------------------------------------
@@ -1531,7 +1379,7 @@ int Player::CalculateIncommingDamage(DAMAGE_TYPE dmg_type, int dmg) {
 }
 
 //----- (0048D62C) --------------------------------------------------------
-ITEM_EQUIP_TYPE Player::GetEquippedItemEquipType(ITEM_SLOT uEquipSlot) {
+ITEM_EQUIP_TYPE Player::GetEquippedItemEquipType(ITEM_SLOT uEquipSlot) const {
     return GetNthEquippedIndexItem(uEquipSlot)->GetItemEquipType();
 }
 
@@ -1541,7 +1389,7 @@ PLAYER_SKILL_TYPE Player::GetEquippedItemSkillType(ITEM_SLOT uEquipSlot) {
 }
 
 //----- (0048D676) --------------------------------------------------------
-bool Player::IsUnarmed() {
+bool Player::IsUnarmed() const {
     return !HasItemEquipped(ITEM_SLOT_MAIN_HAND) &&
            (!HasItemEquipped(ITEM_SLOT_OFF_HAND) ||
             GetOffHandItem()->isShield());
@@ -1557,7 +1405,7 @@ bool Player::HasItemEquipped(ITEM_SLOT uEquipIndex) const {
 }
 
 //----- (0048D6D0) --------------------------------------------------------
-bool Player::HasEnchantedItemEquipped(int uEnchantment) {
+bool Player::HasEnchantedItemEquipped(int uEnchantment) const {
     for (ITEM_SLOT i : AllItemSlots()) {  // search over equipped inventory
         if (HasItemEquipped(i) &&
             GetNthEquippedIndexItem(i)->special_enchantment == uEnchantment)
@@ -2532,7 +2380,7 @@ void Player::RandomizeName() {
 }
 
 //----- (0048E9F4) --------------------------------------------------------
-Condition Player::GetMajorConditionIdx() {
+Condition Player::GetMajorConditionIdx() const {
     for (Condition condition : conditionImportancyTable()) {
         if (conditions.Has(condition))
             return condition;  // return worst condition
@@ -2573,7 +2421,7 @@ int Player::GetSpecialItemBonus(ITEM_ENCHANTMENT enchantment) {
 }
 
 //----- (0048EAAE) --------------------------------------------------------
-int Player::GetItemsBonus(CHARACTER_ATTRIBUTE_TYPE attr, bool getOnlyMainHandDmg /*= false*/) {
+int Player::GetItemsBonus(CHARACTER_ATTRIBUTE_TYPE attr, bool getOnlyMainHandDmg /*= false*/) const {
     int v5;                     // edi@1
     int v14;                    // ecx@58
     int v15;                    // eax@58
@@ -2583,7 +2431,7 @@ int Player::GetItemsBonus(CHARACTER_ATTRIBUTE_TYPE attr, bool getOnlyMainHandDmg
     PLAYER_SKILL_TYPE v58;             // [sp-4h] [bp-20h]@10
     int v61;                    // [sp+10h] [bp-Ch]@1
     int v62;                    // [sp+14h] [bp-8h]@1
-    ItemGen *currEquippedItem;  // [sp+20h] [bp+4h]@101
+    const ItemGen *currEquippedItem;  // [sp+20h] [bp+4h]@101
     bool no_skills;
 
     v5 = 0;
@@ -2693,7 +2541,7 @@ int Player::GetItemsBonus(CHARACTER_ATTRIBUTE_TYPE attr, bool getOnlyMainHandDmg
             } else {
                 if (this->HasItemEquipped(ITEM_SLOT_MAIN_HAND)) {
                     if (IsWeapon(GetEquippedItemEquipType(ITEM_SLOT_MAIN_HAND))) {
-                        ItemGen *mainHandItem = GetMainHandItem();
+                        const ItemGen *mainHandItem = GetMainHandItem();
                         v26 = mainHandItem->GetDamageRoll();
                         if (GetOffHandItem() != nullptr ||
                             mainHandItem->GetPlayerSkillType() != PLAYER_SKILL_SPEAR) {
@@ -2709,7 +2557,7 @@ int Player::GetItemsBonus(CHARACTER_ATTRIBUTE_TYPE attr, bool getOnlyMainHandDmg
                     !IsWeapon(GetEquippedItemEquipType(ITEM_SLOT_OFF_HAND))) {
                     return v5;
                 } else {
-                    ItemGen *offHandItem = GetOffHandItem();
+                    const ItemGen *offHandItem = GetOffHandItem();
                     v15 = offHandItem->GetDamageMod();
                     v14 = offHandItem->GetDamageDice() *
                           offHandItem->GetDamageRoll();
@@ -2744,7 +2592,7 @@ int Player::GetItemsBonus(CHARACTER_ATTRIBUTE_TYPE attr, bool getOnlyMainHandDmg
             }
             if (this->HasItemEquipped(ITEM_SLOT_MAIN_HAND)) {
                 if (IsWeapon(GetEquippedItemEquipType(ITEM_SLOT_MAIN_HAND))) {
-                    ItemGen *mainHandItem = GetMainHandItem();
+                    const ItemGen *mainHandItem = GetMainHandItem();
                     v5 = mainHandItem->GetDamageDice() +
                          mainHandItem->GetDamageMod();
                     if (GetOffHandItem() == nullptr &&
@@ -2759,7 +2607,7 @@ int Player::GetItemsBonus(CHARACTER_ATTRIBUTE_TYPE attr, bool getOnlyMainHandDmg
                 !IsWeapon(GetEquippedItemEquipType(ITEM_SLOT_OFF_HAND))) {
                 return v5;
             } else {
-                ItemGen *offHandItem = GetOffHandItem();
+                const ItemGen *offHandItem = GetOffHandItem();
                 v14 = offHandItem->GetDamageMod();
                 v15 = offHandItem->GetDamageDice();
                 return v5 + v15 + v14;
@@ -2924,7 +2772,7 @@ int Player::GetMagicalBonus(CHARACTER_ATTRIBUTE_TYPE a2) {
 }
 
 //----- (0048F882) --------------------------------------------------------
-PLAYER_SKILL_LEVEL Player::GetActualSkillLevel(PLAYER_SKILL_TYPE uSkillType) {
+PLAYER_SKILL_LEVEL Player::GetActualSkillLevel(PLAYER_SKILL_TYPE uSkillType) const {
     PLAYER_SKILL_LEVEL bonus_value = 0;
     PLAYER_SKILL_LEVEL result;
 
@@ -3079,7 +2927,7 @@ PLAYER_SKILL_LEVEL Player::GetActualSkillLevel(PLAYER_SKILL_TYPE uSkillType) {
     return result;
 }
 
-PLAYER_SKILL_MASTERY Player::GetActualSkillMastery(PLAYER_SKILL_TYPE uSkillType) {
+PLAYER_SKILL_MASTERY Player::GetActualSkillMastery(PLAYER_SKILL_TYPE uSkillType) const {
     return GetSkillMastery(uSkillType);
 }
 
@@ -3308,7 +3156,7 @@ int Player::GetSkillBonus(CHARACTER_ATTRIBUTE_TYPE inSkill) {
 
 unsigned int Player::GetMultiplierForSkillLevel(
     PLAYER_SKILL_TYPE uSkillType, int mult1, int mult2, int mult3,
-    int mult4) {  // ?? needs changing - check behavious
+    int mult4) const {  // ?? needs changing - check behavious
     PLAYER_SKILL_MASTERY masteryLvl = GetActualSkillMastery(uSkillType);
     switch (masteryLvl) {
         case PLAYER_SKILL_MASTERY_NOVICE:
@@ -7133,30 +6981,39 @@ void Player::SetCondUnconsciousWithBlockCheck(int blockable) {
 }
 
 ItemGen *Player::GetOffHandItem() { return GetItem(&PlayerEquipment::uOffHand); }
+const ItemGen *Player::GetOffHandItem() const { return GetItem(&PlayerEquipment::uOffHand); }
 
-ItemGen *Player::GetMainHandItem() {
-    return GetItem(&PlayerEquipment::uMainHand);
-}
+ItemGen *Player::GetMainHandItem() { return GetItem(&PlayerEquipment::uMainHand); }
+const ItemGen *Player::GetMainHandItem() const { return GetItem(&PlayerEquipment::uMainHand); }
 
 ItemGen *Player::GetBowItem() { return GetItem(&PlayerEquipment::uBow); }
+const ItemGen *Player::GetBowItem() const { return GetItem(&PlayerEquipment::uBow); }
 
 ItemGen *Player::GetArmorItem() { return GetItem(&PlayerEquipment::uArmor); }
+const ItemGen *Player::GetArmorItem() const { return GetItem(&PlayerEquipment::uArmor); }
 
 ItemGen *Player::GetHelmItem() { return GetItem(&PlayerEquipment::uHelm); }
+const ItemGen *Player::GetHelmItem() const { return GetItem(&PlayerEquipment::uHelm); }
 
 ItemGen *Player::GetBeltItem() { return GetItem(&PlayerEquipment::uBelt); }
+const ItemGen *Player::GetBeltItem() const { return GetItem(&PlayerEquipment::uBelt); }
 
 ItemGen *Player::GetCloakItem() { return GetItem(&PlayerEquipment::uCloak); }
+const ItemGen *Player::GetCloakItem() const { return GetItem(&PlayerEquipment::uCloak); }
 
 ItemGen *Player::GetGloveItem() { return GetItem(&PlayerEquipment::uGlove); }
+const ItemGen *Player::GetGloveItem() const { return GetItem(&PlayerEquipment::uGlove); }
 
 ItemGen *Player::GetBootItem() { return GetItem(&PlayerEquipment::uBoot); }
+const ItemGen *Player::GetBootItem() const { return GetItem(&PlayerEquipment::uBoot); }
 
 ItemGen *Player::GetAmuletItem() { return GetItem(&PlayerEquipment::uAmulet); }
+const ItemGen *Player::GetAmuletItem() const { return GetItem(&PlayerEquipment::uAmulet); }
 
 ItemGen *Player::GetNthRingItem(int ringNum) {
     return GetNthEquippedIndexItem(RingSlot(ringNum));
 }
+const ItemGen *Player::GetNthRingItem(int ringNum) const { return GetNthEquippedIndexItem(RingSlot(ringNum)); }
 
 ItemGen *Player::GetNthEquippedIndexItem(ITEM_SLOT index) {
     if (this->pEquipment.pIndices[index] == 0) {
@@ -7176,6 +7033,9 @@ ItemGen *Player::GetItem(unsigned int PlayerEquipment::*itemPos) {
     }
 
     return &this->pInventoryItemList[this->pEquipment.*itemPos - 1];
+}
+const ItemGen *Player::GetItem(unsigned int PlayerEquipment::*itemPos) const {
+    return const_cast<Player *>(this)->GetItem(itemPos);
 }
 
 int Player::GetPlayerIndex() {
@@ -7253,7 +7113,7 @@ void Player::_42ECB5_PlayerAttacksActor() {
 
     int main_hand_idx = player->pEquipment.uMainHand;
     if (main_hand_idx) {
-        ItemGen *item = &player->pInventoryItemList[main_hand_idx - 1];
+        const ItemGen *item = &player->pInventoryItemList[main_hand_idx - 1];
         // v5 = (char *)v1 + 36 * v4;
         if (!item->IsBroken()) {
             // v28b = &v1->pInventoryItems[v4].uItemID;
@@ -7430,11 +7290,11 @@ void Player::_42FA66_do_explosive_impact(int xpos, int ypos, int zpos, int a4,
     }
 }
 
-PLAYER_SKILL_LEVEL Player::GetSkillLevel(PLAYER_SKILL_TYPE skill) {
+PLAYER_SKILL_LEVEL Player::GetSkillLevel(PLAYER_SKILL_TYPE skill) const {
     return ::GetSkillLevel(pActiveSkills[skill]);
 }
 
-PLAYER_SKILL_MASTERY Player::GetSkillMastery(PLAYER_SKILL_TYPE skill) {
+PLAYER_SKILL_MASTERY Player::GetSkillMastery(PLAYER_SKILL_TYPE skill) const {
     return ::GetSkillMastery(pActiveSkills[skill]);
 }
 
@@ -7607,20 +7467,19 @@ MERCHANT_PHRASE Player::SelectPhrasesTransaction(ItemGen *pItem, BuildingType bu
     multiplier = p2DEvents[BuildID_2Events - 1].fPriceMultiplier;
     switch (ShopMenuType) {
         case 2:
-            price = GetBuyingPrice(itemValue, multiplier);
+            price = PriceCalculator::itemBuyingPriceForPlayer(this, itemValue, multiplier);
             break;
         case 3:
             // if (pItem->IsBroken())
             // price = 1;
             // else
-            price = this->GetPriceSell(*pItem,
-                                       multiplier);  // itemValue, multiplier);
+            price = PriceCalculator::itemSellingPriceForPlayer(this, *pItem, multiplier);
             break;
         case 4:
-            price = this->GetPriceIdentification(multiplier);
+            price = PriceCalculator::itemIdentificationPriceForPlayer(this, multiplier);
             break;
         case 5:
-            price = this->GetPriceRepair(itemValue, multiplier);
+            price = PriceCalculator::itemRepairPriceForPlayer(this, itemValue, multiplier);
             break;
         default:
             Error("(%u)", ShopMenuType);
