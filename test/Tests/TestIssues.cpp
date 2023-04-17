@@ -617,7 +617,11 @@ GAME_TEST(Issues, Issue625) {
 
 GAME_TEST(Issues, Issue626) {
     // Last loaded save is not remembered
-    test->playTraceFromTestData("issue_626.mm7", "issue_626.json");
+
+    // Skipping random checks because we're essentially loading a random savegame inside this trace.
+    test->playTraceFromTestData("issue_626.mm7", "issue_626.json", TRACE_PLAYBACK_SKIP_RANDOM_CHECKS);
+
+    // TODO(captainurist): this will fail if we don't have any saves in saves folder
     EXPECT_EQ(uLoadGameUI_SelectedSlot, 5);
 }
 
