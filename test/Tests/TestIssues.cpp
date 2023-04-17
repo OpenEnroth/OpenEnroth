@@ -27,10 +27,20 @@ static int partyItemCount() {
 }
 
 GAME_TEST(Items, GenerateItem) {
-    // Calling GenerateItem 100 times shouldn't assert.
+    // Calling GenerateItem 100 times shouldn't assert. Item enchantment types should be in [0, 23].
+    std::initializer_list<ITEM_TREASURE_LEVEL> levels = {
+        ITEM_TREASURE_LEVEL_1, ITEM_TREASURE_LEVEL_2, ITEM_TREASURE_LEVEL_3,
+        ITEM_TREASURE_LEVEL_4, ITEM_TREASURE_LEVEL_5, ITEM_TREASURE_LEVEL_6
+    };
+
     ItemGen item;
-    for (int i = 0; i < 100; i++)
-        pItemTable->GenerateItem(ITEM_TREASURE_LEVEL_6, 0, &item);
+    for (int i = 0; i < 100; i++) {
+        for (ITEM_TREASURE_LEVEL level : levels) {
+            pItemTable->GenerateItem(level, 0, &item);
+            EXPECT_GE(item.uEnchantmentType, 0);
+            EXPECT_LE(item.uEnchantmentType, 23);
+        }
+    }
 }
 
 // 100
