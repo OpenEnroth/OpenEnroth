@@ -1199,17 +1199,14 @@ void OnSelectShopDialogueOption(DIALOGUE_TYPE option) {
     default:
     {
         if (IsSkillLearningDialogue(option)) {
-            v36 = (int64_t)(p2DEvents[
-                    window_SpeakInHouse->wData.val - 1].flt_24 * 500.0);
+            float mul = p2DEvents[window_SpeakInHouse->wData.val - 1].flt_24;
             if (p2DEvents[window_SpeakInHouse->wData.val - 1].uType >= BuildingType_FireGuild &&
                 p2DEvents[window_SpeakInHouse->wData.val - 1].uType <= BuildingType_SelfGuild) {
-                // guild prices use the other multipler
-                v36 = (int64_t)(p2DEvents[
-                    window_SpeakInHouse->wData.val - 1].fPriceMultiplier * 500.0);
+                // guild prices use the other multiplier
+                mul = p2DEvents[window_SpeakInHouse->wData.val - 1].fPriceMultiplier;
             }
 
-            pPrice = v36 * (100 - PriceCalculator::playerMerchant(pPlayers[pParty->getActiveCharacter()])) / 100;
-            if (pPrice < v36 / 3) pPrice = v36 / 3;
+            pPrice = PriceCalculator::skillLearningCostForPlayer(pPlayers[pParty->getActiveCharacter()], mul);
             auto skill = GetLearningDialogueSkill(option);
             if (skillMaxMasteryPerClass[pPlayers[pParty->getActiveCharacter()]->classType][skill] != PLAYER_SKILL_MASTERY_NONE) {
                 if (!pPlayers[pParty->getActiveCharacter()]->pActiveSkills[skill]) {

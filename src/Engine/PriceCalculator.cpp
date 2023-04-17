@@ -150,3 +150,13 @@ int PriceCalculator::playerMerchant(const Player *player) {
 
     return bonus - rep + 7;
 }
+
+static int skillLearningCostForPlayer(const Player* player, float priceMultiplier) {
+    int baseTeachPrice = priceMultiplier * 500.0;
+    int effectivePrice = baseTeachPrice * (100 - PriceCalculator::playerMerchant(pPlayers[pParty->getActiveCharacter()])) / 100;
+    if (effectivePrice < baseTeachPrice / 3) {
+        effectivePrice = baseTeachPrice / 3;
+    }
+    return effectivePrice;
+}
+    

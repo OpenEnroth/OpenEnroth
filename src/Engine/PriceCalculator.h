@@ -105,4 +105,6 @@ class PriceCalculator {
      * Note: originally method of Player class.
      */
     static int playerMerchant(const Player *player);
+
+    static int skillLearningCostForPlayer(const Player *player, float priceMultiplier);
 };
