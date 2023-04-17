@@ -448,7 +448,7 @@ GUIWindow_GenericDialogue::GUIWindow_GenericDialogue(Pointi position, Sizei dime
 
 void GUIWindow_GenericDialogue::Release() {
     current_screen_type = prev_screen_type;
-    keyboardInputHandler->SetWindowInputStatus(WindowInputStatus::WINDOW_INPUT_CANCELLED);
+    keyboardInputHandler->SetWindowInputStatus(WINDOW_INPUT_CANCELLED);
 
     GUIWindow::Release();
 }
@@ -485,16 +485,16 @@ void GUIWindow_GenericDialogue::Update() {
         pFont->FitTextInAWindow(branchless_dialogue_str, BranchlessDlg_window.uFrameWidth, 12),
         0, 0, 0);
     render->DrawTextureNew(0, 352 / 480.0f, game_ui_statusbar);
-    if (pGUIWindow2->keyboard_input_status != WindowInputStatus::WINDOW_INPUT_IN_PROGRESS) {
-        if (pGUIWindow2->keyboard_input_status == WindowInputStatus::WINDOW_INPUT_CONFIRMED) {
-            pGUIWindow2->keyboard_input_status = WindowInputStatus::WINDOW_INPUT_NONE;
+    if (pGUIWindow2->keyboard_input_status != WINDOW_INPUT_IN_PROGRESS) {
+        if (pGUIWindow2->keyboard_input_status == WINDOW_INPUT_CONFIRMED) {
+            pGUIWindow2->keyboard_input_status = WINDOW_INPUT_NONE;
             GameUI_StatusBar_OnInput(keyboardInputHandler->GetTextInput().c_str());
             ReleaseBranchlessDialogue();
             return;
         }
-        if (pGUIWindow2->keyboard_input_status != WindowInputStatus::WINDOW_INPUT_CANCELLED)
+        if (pGUIWindow2->keyboard_input_status != WINDOW_INPUT_CANCELLED)
             return;
-        pGUIWindow2->keyboard_input_status = WindowInputStatus::WINDOW_INPUT_NONE;
+        pGUIWindow2->keyboard_input_status = WINDOW_INPUT_NONE;
         GameUI_StatusBar_ClearInputString();
         ReleaseBranchlessDialogue();
         return;
@@ -508,7 +508,7 @@ void GUIWindow_GenericDialogue::Update() {
     }
 
     if (!keyboardInputHandler->GetTextInput().empty()) {
-        keyboardInputHandler->SetWindowInputStatus(WindowInputStatus::WINDOW_INPUT_NONE);
+        keyboardInputHandler->SetWindowInputStatus(WINDOW_INPUT_NONE);
         GameUI_StatusBar_ClearInputString();
         ReleaseBranchlessDialogue();
         return;

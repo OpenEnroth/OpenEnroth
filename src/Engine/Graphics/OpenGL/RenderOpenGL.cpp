@@ -49,6 +49,8 @@
     #define LOWORD(l) ((unsigned short)(((std::uintptr_t)(l)) & 0xFFFF))
 #endif
 
+static constexpr int DEFAULT_AMBIENT_LIGHT_LEVEL = 0;
+
 // globals
 //TODO(pskelton): Combine and contain
 std::shared_ptr<IRender> render;
@@ -1042,7 +1044,7 @@ void RenderOpenGL::DrawIndoorSky(unsigned int uNumVertices, unsigned int uFaceID
     }
 
     // clip accurately to camera
-    pCamera3D->ClipFaceToFrustum(array_507D30, &pSkyPolygon.uNumVertices, VertexRenderList, pBspRenderer->nodes[0].ViewportNodeFrustum, 4, 0, 0);
+    pCamera3D->ClipFaceToFrustum(array_507D30, &pSkyPolygon.uNumVertices, VertexRenderList, pBspRenderer->nodes[0].ViewportNodeFrustum.data(), 4, 0, 0);
     if (!pSkyPolygon.uNumVertices) return;
 
     pCamera3D->ViewTransform(VertexRenderList, pSkyPolygon.uNumVertices);
@@ -2241,7 +2243,6 @@ void RenderOpenGL::DrawOutdoorTerrain() {
                 Vec3f *norm2 = &pTerrainNormals[bottnormidx];
 
                 float Light_tile_dist = 0.0;
-                static stru154 static_sub_0048034E_stru_154;
 
                 // top tri
                 float _f1 = norm->x * pOutdoor->vSunlight.x + norm->y * pOutdoor->vSunlight.y + norm->z * pOutdoor->vSunlight.z;
@@ -2249,9 +2250,11 @@ void RenderOpenGL::DrawOutdoorTerrain() {
                 pTilePolygon->dimming_level = std::clamp((int)pTilePolygon->dimming_level, 0, 31);
 
                 decal_builder->ApplyBloodSplatToTerrain(pTilePolygon, norm, &Light_tile_dist, VertexRenderList, i);
-                static_sub_0048034E_stru_154.ClassifyPolygon(norm, Light_tile_dist);
+                Planef plane;
+                plane.vNormal = *norm;
+                plane.dist = Light_tile_dist;
                 if (decal_builder->uNumSplatsThisFace > 0)
-                    decal_builder->BuildAndApplyDecals(31 - pTilePolygon->dimming_level, LocationTerrain, &static_sub_0048034E_stru_154, 3, VertexRenderList, 0, -1);
+                    decal_builder->BuildAndApplyDecals(31 - pTilePolygon->dimming_level, LocationTerrain, plane, 3, VertexRenderList, 0, -1);
 
                 //bottom tri
                 float _f = norm2->x * pOutdoor->vSunlight.x + norm2->y * pOutdoor->vSunlight.y + norm2->z * pOutdoor->vSunlight.z;
@@ -2259,9 +2262,10 @@ void RenderOpenGL::DrawOutdoorTerrain() {
                 pTilePolygon->dimming_level = std::clamp((int)pTilePolygon->dimming_level, 0, 31);
 
                 decal_builder->ApplyBloodSplatToTerrain(pTilePolygon, norm2, &Light_tile_dist, (VertexRenderList + 3), i);
-                static_sub_0048034E_stru_154.ClassifyPolygon(norm2, Light_tile_dist);
+                plane.vNormal = *norm2;
+                plane.dist = Light_tile_dist;
                 if (decal_builder->uNumSplatsThisFace > 0)
-                    decal_builder->BuildAndApplyDecals(31 - pTilePolygon->dimming_level, LocationTerrain, &static_sub_0048034E_stru_154, 3, (VertexRenderList + 3), 0, -1);
+                    decal_builder->BuildAndApplyDecals(31 - pTilePolygon->dimming_level, LocationTerrain, plane, 3, (VertexRenderList + 3), 0, -1);
             }
         }
     }
@@ -4203,14 +4207,11 @@ void RenderOpenGL::DrawOutdoorBuildings() {
                 VertexRenderList[vertex_id]._rhw = 1.0 / (array_73D150[vertex_id].vWorldViewPosition.x + 0.0000001);
             }
 
-            static stru154 static_RenderBuildingsD3D_stru_73C834;
-
             decal_builder->ApplyBloodSplat_OutdoorFace(&face);
             if (decal_builder->uNumSplatsThisFace > 0) {
-                static_RenderBuildingsD3D_stru_73C834.GetFacePlaneAndClassify(&face, model.pVertices);
                 decal_builder->BuildAndApplyDecals(
                     31 - poly->dimming_level, LocationBuildings,
-                    &static_RenderBuildingsD3D_stru_73C834,
+                    face.pFacePlane,
                     face.uNumVertices, VertexRenderList, 0, -1);
             }
         }
@@ -4476,9 +4477,9 @@ void RenderOpenGL::DrawIndoorFaces() {
                     continue;
                 }
 
-                IndoorCameraD3D_Vec4 *portalfrustumnorm = pBspRenderer->nodes[pBspRenderer->faces[i].uNodeID].ViewportNodeFrustum;
+                IndoorCameraD3D_Vec4 *portalfrustumnorm = pBspRenderer->nodes[pBspRenderer->faces[i].uNodeID].ViewportNodeFrustum.data();
                 unsigned int uNumFrustums = 4;
-                RenderVertexSoft *pPortalBounding = pBspRenderer->nodes[pBspRenderer->faces[i].uNodeID].pPortalBounding;
+                RenderVertexSoft *pPortalBounding = pBspRenderer->nodes[pBspRenderer->faces[i].uNodeID].pPortalBounding.data();
 
                 // uint ColourMask;  // ebx@25
                 unsigned int uNumVerticesa;  // [sp+24h] [bp-4h]@17
@@ -4486,8 +4487,6 @@ void RenderOpenGL::DrawIndoorFaces() {
 
                 static RenderVertexSoft static_vertices_buff_in[64];  // buff in
                 static RenderVertexSoft static_vertices_calc_out[64];  // buff out - calc portal shape
-
-                static stru154 FacePlaneHolder;  // idb
 
                 // moved face to camera check to avoid missing minimap outlines
                 if (/*pCamera3D->is_face_faced_to_cameraBLV(face) ||*/ true) {
@@ -4689,9 +4688,9 @@ void RenderOpenGL::DrawIndoorFaces() {
             mintest = std::max(mintest, pIndoor->pSectors[i].uMinAmbientLightLevel);
         }
 
-        Lights.uCurrentAmbientLightLevel = (Lights.uDefaultAmbientLightLevel + mintest);
+        int uCurrentAmbientLightLevel = (DEFAULT_AMBIENT_LIGHT_LEVEL + mintest);
 
-        float ambient = (248.0f - (Lights.uCurrentAmbientLightLevel << 3)) / 255.0f;
+        float ambient = (248.0f - (uCurrentAmbientLightLevel << 3)) / 255.0f;
         //pParty->uCurrentMinute + pParty->uCurrentHour * 60.0;  // 0 - > 1439
     // ambient = 0.15 + (sinf(((ambient - 360.0) * 2 * pi_double) / 1440) + 1) * 0.27;
 
@@ -4762,7 +4761,7 @@ void RenderOpenGL::DrawIndoorFaces() {
             if (!fromexpanded) {
                 for (int i = 0; i < pBspRenderer->num_nodes; ++i) {
                     if (pBspRenderer->nodes[i].uSectorID == test.uSectorID) {
-                        if (IsSphereInFrustum(test.vPosition, test.uRadius, pBspRenderer->nodes[i].ViewportNodeFrustum))
+                        if (IsSphereInFrustum(test.vPosition, test.uRadius, pBspRenderer->nodes[i].ViewportNodeFrustum.data()))
                             visinfrustum = true;
                     }
                 }
@@ -4888,7 +4887,6 @@ void RenderOpenGL::DrawIndoorFaces() {
         // stack decals start
 
         if (!decal_builder->bloodsplat_container->uNumBloodsplats) return;
-        static stru154 FacePlaneHolder;
         static RenderVertexSoft static_vertices_buff_in[64];  // buff in
 
         // loop over faces
@@ -4913,12 +4911,6 @@ void RenderOpenGL::DrawIndoorFaces() {
             decal_builder->ApplyBloodsplatDecals_IndoorFace(test);
             if (!decal_builder->uNumSplatsThisFace) continue;
 
-            FacePlaneHolder.face_plane.vNormal.x = pface->pFacePlane.vNormal.x;
-            FacePlaneHolder.polygonType = pface->uPolygonType;
-            FacePlaneHolder.face_plane.vNormal.y = pface->pFacePlane.vNormal.y;
-            FacePlaneHolder.face_plane.vNormal.z = pface->pFacePlane.vNormal.z;
-            FacePlaneHolder.face_plane.dist = pface->pFacePlane.dist;
-
             // copy to buff in
             for (uint i = 0; i < pface->uNumVertices; ++i) {
                 static_vertices_buff_in[i].vWorldPosition.x =
@@ -4932,7 +4924,7 @@ void RenderOpenGL::DrawIndoorFaces() {
             }
 
             // blood draw
-            decal_builder->BuildAndApplyDecals(Lights.uCurrentAmbientLightLevel, LocationIndoors, &FacePlaneHolder,
+            decal_builder->BuildAndApplyDecals(uCurrentAmbientLightLevel, LocationIndoors, pface->pFacePlane,
                 pface->uNumVertices, static_vertices_buff_in,
                 0, pface->uSectorID);
         }

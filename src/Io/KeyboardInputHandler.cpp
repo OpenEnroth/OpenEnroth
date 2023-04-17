@@ -378,13 +378,13 @@ void KeyboardInputHandler::StartTextInput(TextInputType type, int max_string_len
     this->window = window;
 
     if (window != nullptr) {
-        window->keyboard_input_status = WindowInputStatus::WINDOW_INPUT_IN_PROGRESS;
+        window->keyboard_input_status = WINDOW_INPUT_IN_PROGRESS;
     }
 }
 
 void KeyboardInputHandler::EndTextInput() {
     if (window != nullptr) {
-        window->keyboard_input_status = WindowInputStatus::WINDOW_INPUT_NONE;
+        window->keyboard_input_status = WINDOW_INPUT_NONE;
     }
 }
 
@@ -408,9 +408,9 @@ bool KeyboardInputHandler::ProcessTextInput(PlatformKey key, int c) {
                 pPressedKeysBuffer[--uNumKeysPressed] = 0;
             }
         } else if (key == PlatformKey::Return) {
-            SetWindowInputStatus(WindowInputStatus::WINDOW_INPUT_CONFIRMED);
+            SetWindowInputStatus(WINDOW_INPUT_CONFIRMED);
         } else if (key == PlatformKey::Escape) {
-            SetWindowInputStatus(WindowInputStatus::WINDOW_INPUT_CANCELLED);
+            SetWindowInputStatus(WINDOW_INPUT_CANCELLED);
         } else if (key == PlatformKey::Space && this->uNumKeysPressed < this->max_input_string_len) {
             if (inputType == TextInputType::Text) {
                 pPressedKeysBuffer[uNumKeysPressed++] = ' ';
@@ -430,7 +430,7 @@ bool KeyboardInputHandler::ProcessTextInput(PlatformKey key, int c) {
             // pPressedKeysBuffer[uNumKeysPressed++] = c;
             // pPressedKeysBuffer[uNumKeysPressed] = 0;
             lastKeyPressed = key;
-            SetWindowInputStatus(WindowInputStatus::WINDOW_INPUT_CONFIRMED);
+            SetWindowInputStatus(WINDOW_INPUT_CONFIRMED);
         }
     }
     return true;

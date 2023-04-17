@@ -87,7 +87,7 @@ class Vis;
 class ParticleEngine;
 class CShow;
 class GammaController;
-struct stru9;
+struct ClippingFunctions;
 struct stru10;
 
 /*  104 */
@@ -185,7 +185,6 @@ class Engine {
     // Vis *pVisInstance;
     // struct SpellFxRenderer *spellfx;
     // Camera3D *pCamera3D;
-    stru9 *pStru9Instance;
     stru10 *pStru10Instance;
     // void stru11 *pStru11Instance;
     // void stru12 *pStru12Instance;

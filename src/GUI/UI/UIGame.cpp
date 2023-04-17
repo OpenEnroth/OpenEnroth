@@ -265,7 +265,7 @@ void GUIWindow_GameKeyBindings::Update() {
     // int v4;  // ecx@7
     // int v5;  // eax@8
 
-    if (pGUIWindow_CurrentMenu->keyboard_input_status == WindowInputStatus::WINDOW_INPUT_CONFIRMED) {
+    if (pGUIWindow_CurrentMenu->keyboard_input_status == WINDOW_INPUT_CONFIRMED) {
         InputAction action = currently_selected_action_for_binding;
         PlatformKey newKey = keyboardInputHandler->LastPressedKey();
         curr_key_map[action] = newKey;
@@ -639,7 +639,7 @@ void GameUI_OnPlayerPortraitLeftClick(unsigned int uPlayerID) {
         pParty->setActiveCharacter(uPlayerID);
         return;
     }
-    if (window_SpeakInHouse->keyboard_input_status == WindowInputStatus::WINDOW_INPUT_IN_PROGRESS) {
+    if (window_SpeakInHouse->keyboard_input_status == WINDOW_INPUT_IN_PROGRESS) {
         return;
     }
 

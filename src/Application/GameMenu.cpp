@@ -112,8 +112,8 @@ void Menu::EventLoop() {
                 new OnSaveLoad({241, 302}, {106, 42}, pBtnLoadSlot);
                 continue;
             case UIMSG_SelectLoadSlot: {
-                if (pGUIWindow_CurrentMenu->keyboard_input_status == WindowInputStatus::WINDOW_INPUT_IN_PROGRESS)
-                    keyboardInputHandler->SetWindowInputStatus(WindowInputStatus::WINDOW_INPUT_NONE);
+                if (pGUIWindow_CurrentMenu->keyboard_input_status == WINDOW_INPUT_IN_PROGRESS)
+                    keyboardInputHandler->SetWindowInputStatus(WINDOW_INPUT_NONE);
 
                 int v10 = pSaveListPosition + param;
                 if (current_screen_type != CURRENT_SCREEN::SCREEN_SAVEGAME ||
@@ -140,8 +140,8 @@ void Menu::EventLoop() {
                 continue;
             case UIMSG_SaveGame:
                 pAudioPlayer->playUISound(SOUND_StartMainChoice02);
-                if (pGUIWindow_CurrentMenu->keyboard_input_status == WindowInputStatus::WINDOW_INPUT_IN_PROGRESS) {
-                    keyboardInputHandler->SetWindowInputStatus(WindowInputStatus::WINDOW_INPUT_NONE);
+                if (pGUIWindow_CurrentMenu->keyboard_input_status == WINDOW_INPUT_IN_PROGRESS) {
+                    keyboardInputHandler->SetWindowInputStatus(WINDOW_INPUT_NONE);
                     strcpy(pSavegameHeader[uLoadGameUI_SelectedSlot].pName, keyboardInputHandler->GetTextInput().c_str());
                 }
                 DoSavegame(uLoadGameUI_SelectedSlot);

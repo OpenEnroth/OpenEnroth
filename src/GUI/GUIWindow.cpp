@@ -254,7 +254,7 @@ void GUIWindow::Init() {
     this->field_30 = 0;
     this->field_34 = 0;
     this->pStartingPosActiveItem = 0;
-    this->keyboard_input_status = WindowInputStatus::WINDOW_INPUT_NONE;
+    this->keyboard_input_status = WINDOW_INPUT_NONE;
     this->receives_keyboard_input = false;
     this->sHint.clear();
 

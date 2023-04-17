@@ -11,37 +11,12 @@
 
 Camera3D *pCamera3D = new Camera3D;
 
-//----- (004361EF) --------------------------------------------------------
-Camera3D::Camera3D() {
-    // debug_flags = 0;
-    _pitchRotationCosine = 0;
-    _pitchRotationSine = 0;
-    _yawRotationCosine = 0;
-    _yawRotationSine = 0;
-}
-
 //----- (0043643E) --------------------------------------------------------
 float Camera3D::GetMouseInfoDepth() {
     if (uCurrentlyLoadedLevelType == LEVEL_Outdoor)
         return engine->config->gameplay.MouseInfoDepthOutdoor.value();
     else
         return engine->config->gameplay.MouseInfoDepthIndoor.value();
-}
-
-//----- (004364C5) --------------------------------------------------------
-void Camera3D::ViewTransfrom_OffsetUV(RenderVertexSoft *pVertices,
-                                             unsigned int uNumVertices,
-                                             RenderVertexSoft *pOutVertices,
-                                             LightsData *a5) {
-    for (uint i = 0; i < uNumVertices; ++i) {
-        pOutVertices[i].vWorldPosition.x = pVertices[i].vWorldPosition.x;
-        pOutVertices[i].vWorldPosition.y = pVertices[i].vWorldPosition.y;
-        pOutVertices[i].vWorldPosition.z = pVertices[i].vWorldPosition.z;
-
-        pOutVertices[i].u = pVertices[i].u + a5->pDeltaUV[0];
-        pOutVertices[i].v = pVertices[i].v + a5->pDeltaUV[1];
-    }
-    ViewTransform(pOutVertices, uNumVertices);
 }
 
 float Camera3D::GetNearClip() const {
@@ -100,57 +75,46 @@ void Camera3D::ViewTransform(RenderVertexSoft *a1a, unsigned int uNumVertices) {
 }
 
 //----- (00436932) --------------------------------------------------------
-bool Camera3D::GetFacetOrientation(PolygonType polyType, Vec3f *a2,
-                                   Vec3f *a3, Vec3f *a4) {
-    switch ((PolygonType)polyType) {
-        case POLYGON_VerticalWall:
-            a4->x = -a2->y;
-            a4->y = a2->x;
-            a4->z = 0.0;
+// TODO(captainurist): function belongs to stru314
+void Camera3D::GetFacetOrientation(const Vec3f &normal, Vec3f *outU, Vec3f *outV) {
+    if (fabsf(normal.z) < 1e-6f) {
+        // Vertical wall.
+        outV->x = -normal.y;
+        outV->y = normal.x;
+        outV->z = 0.0;
 
-            a3->x = 0.0;
-            a3->y = 0.0;
-            a3->z = 1.0f;
+        outU->x = 0.0;
+        outU->y = 0.0;
+        outU->z = 1.0f;
+    } else if (fabsf(normal.x) < 1e-6f && fabsf(normal.y) < 1e-6f) {
+        // Floor.
+        outV->x = 1.0;
+        outV->y = 0.0;
+        outV->z = 0.0;
 
-            return true;
+        outU->x = 0.0;
+        outU->y = 1.0;
+        outU->z = 0.0;
+    } else {
+        // Other.
+        if (fabs(normal.z) < 0.70811361) {
+            outV->x = -normal.y;
+            outV->y = normal.x;
+            outV->z = 0.0;
+            outV->normalize();
 
-        case POLYGON_Floor:
-        case POLYGON_Ceiling:
-            a4->x = 1.0;
-            a4->y = 0.0;
-            a4->z = 0.0;
+            outU->x = 0.0;
+            outU->y = 0.0;
+            outU->z = 1.0;
+        } else {
+            outV->x = 1.0;
+            outV->y = 0.0;
+            outV->z = 0.0;
 
-            a3->x = 0.0;
-            a3->y = 1.0;
-            a3->z = 0.0;
-
-            return true;
-
-        case POLYGON_InBetweenFloorAndWall:
-        case POLYGON_InBetweenCeilingAndWall:
-            if (fabs(a2->z) < 0.70811361) {
-                a4->x = -a2->y;
-                a4->y = a2->x;
-                a4->z = 0.0;
-                a4->normalize();
-
-                a3->x = 0.0;
-                a3->y = 0.0;
-                a3->z = 1.0;
-            } else {
-                a4->x = 1.0;
-                a4->y = 0.0;
-                a4->z = 0.0;
-
-                a3->x = 0.0;
-                a3->y = 1.0;
-                a3->z = 0.0;
-            }
-
-            return true;
-
-        default:
-            return false;
+            outU->x = 0.0;
+            outU->y = 1.0;
+            outU->z = 0.0;
+        }
     }
 }
 
@@ -346,78 +310,6 @@ void Camera3D::BuildViewFrustum() {
     FrustumPlanes[3].w = glm::dot(glm::vec3(FrustumPlanes[3]), vCameraPos);
 }
 
-
-//----- (00437376) --------------------------------------------------------
-// culls vertices to face plane
-bool Camera3D::CullVertsToPlane(stru154 *faceplane, RenderVertexSoft *vertices,
-                              unsigned int *pOutNumVertices) {
-    double v6;             // st7@3
-    int previous;          // esi@6
-    int current;           // ebx@8
-    int next;              // eax@8
-    int temp_t;               // eax@15
-    signed int v14;        // ebx@17
-    RenderVertexSoft v18;  // [sp+Ch] [bp-34h]@2
-                           //  signed int thisb; // [sp+48h] [bp+8h]@6
-    bool result;           // [sp+4Fh] [bp+Fh]@5
-
-    memcpy(&v18, vertices, sizeof(v18));
-    result = false;
-    memcpy(&vertices[*pOutNumVertices], vertices, sizeof(vertices[*pOutNumVertices]));
-    memcpy(&vertices[*pOutNumVertices + 1], &vertices[1], sizeof(vertices[*pOutNumVertices + 1]));
-
-    if ((signed int)*pOutNumVertices <= 3 ||
-        (((v18.vWorldPosition.z - (double)pCamera3D->vCameraPos.z) *
-            faceplane->face_plane.vNormal.z +
-              (v18.vWorldPosition.y - (double)pCamera3D->vCameraPos.y) *
-            faceplane->face_plane.vNormal.y +
-              (v18.vWorldPosition.x - (double)pCamera3D->vCameraPos.x) *
-            faceplane->face_plane.vNormal.x <
-          0.0)
-             ? (v6 = 1.0)
-             : (v6 = -1.0),
-         (signed int)*pOutNumVertices <= 0))
-        return 0;
-
-    for (int i = 1; i - 1 < (signed int)*pOutNumVertices; i++) {
-        current = i;
-        next = i + 1;
-
-        previous = i - 1;
-        if (previous >= (signed int)*pOutNumVertices)
-            previous -= *pOutNumVertices;
-
-        if (current >= (signed int)*pOutNumVertices)
-            current -= *pOutNumVertices;
-
-        if (next >= (signed int)*pOutNumVertices) next -= *pOutNumVertices;
-
-        // nearest approximation of float 0.01
-        if (-0.009999999776482582 <
-            ((vertices[current].vWorldViewProjX - vertices[previous].vWorldViewProjX) *
-                 (vertices[next].vWorldViewProjY - vertices[previous].vWorldViewProjY) -
-             (vertices[current].vWorldViewProjY - vertices[previous].vWorldViewProjY) *
-                 (vertices[next].vWorldViewProjX - vertices[previous].vWorldViewProjX)) *
-                v6) {
-            temp_t = next;
-            if (next >= (signed int)*pOutNumVertices)
-                temp_t = next - *pOutNumVertices;
-
-            if (temp_t < (signed int)*pOutNumVertices) {
-                for (v14 = temp_t; v14 < (signed int)*pOutNumVertices; ++v14)
-                    memcpy(&vertices[v14], &vertices[v14 + 1], sizeof(vertices[v14]));
-            }
-            result = true;
-            --*pOutNumVertices;
-        }
-    }
-    if (result)
-        return true;
-    else
-        return false;
-}
-
-
 // TODO(pskelton): does this func need to copy verts or could it be eliminated
 //----- (00437285) --------------------------------------------------------
 bool Camera3D::CullFaceToCameraFrustum(RenderVertexSoft *pInVertices,
@@ -513,7 +405,6 @@ bool Camera3D::ClipFaceToFrustum(RenderVertexSoft *pInVertices,
     Vec3f FrustumPlaneVec {};         // [sp+18h] [bp-3Ch]@12
     // float v17; // [sp+44h] [bp-10h]@1
     // int v18; // [sp+48h] [bp-Ch]@5
-    // stru9 *thisa; // [sp+4Ch] [bp-8h]@1
     int VertsAdjusted = 0;  // [sp+53h] [bp-1h]@5
     // bool a6a; // [sp+70h] [bp+1Ch]@5
 
@@ -547,7 +438,7 @@ bool Camera3D::ClipFaceToFrustum(RenderVertexSoft *pInVertices,
         FrustumPlaneVec.y = CameraFrustrum[i].y;
         FrustumPlaneVec.z = CameraFrustrum[i].z;
 
-        engine->pStru9Instance->ClipVertsToFrustumPlane(
+        ClippingFunctions::ClipVertsToFrustumPlane(
             v15, *pOutNumVertices, v14, pOutNumVertices, &FrustumPlaneVec, CameraFrustrum[i].dot,
             (char*)&VertsAdjusted, _unused);
 

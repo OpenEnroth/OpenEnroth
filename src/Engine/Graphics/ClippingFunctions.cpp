@@ -5,11 +5,11 @@
 #include "Camera.h"
 
 //----- (00498377) --------------------------------------------------------
-bool stru9::ClipVertsToPortal(struct RenderVertexSoft *pPortalBounding,  // test skipping this
-                    unsigned int uNumfrust,
-                    IndoorCameraD3D_Vec4 *pfrustnorm,
-                    RenderVertexSoft *pVertices2,
-                    unsigned int *pOutNumVertices) {
+bool ClippingFunctions::ClipVertsToPortal(RenderVertexSoft *pPortalBounding,  // test skipping this
+                                          unsigned int uNumfrust,
+                                          IndoorCameraD3D_Vec4 *pfrustnorm,
+                                          RenderVertexSoft *pVertices2,
+                                          unsigned int *pOutNumVertices) {
     // portal corners
     // 4
     // portal frustum normal
@@ -170,11 +170,11 @@ bool stru9::ClipVertsToPortal(struct RenderVertexSoft *pPortalBounding,  // test
     return true;
 }
 
-bool stru9::ClipVertsToFrustumPlane(RenderVertexSoft *pInVertices, signed int pInNumVertices,
-                                    RenderVertexSoft *pOutVertices,
-                                    unsigned int *pOutNumVertices,
-                                    Vec3f *CamFrustumNormal, float CamDotDistance, char *VertsAdjusted,
-                                    int unused) {
+bool ClippingFunctions::ClipVertsToFrustumPlane(RenderVertexSoft *pInVertices, signed int pInNumVertices,
+                                                RenderVertexSoft *pOutVertices,
+                                                unsigned int *pOutNumVertices,
+                                                Vec3f *CamFrustumNormal, float CamDotDistance, char *VertsAdjusted,
+                                                int unused) {
     // this cycles through adjust vertice posisiton to supplied frustum plane
     // points are inside frstum plane when point dot product is greater than camera dot distance
 
@@ -242,8 +242,8 @@ bool stru9::ClipVertsToFrustumPlane(RenderVertexSoft *pInVertices, signed int pI
 }
 
 //----- (00498737) --------------------------------------------------------
-void stru9::AddVertex(struct VertexBuffer *pVertexBuffer,
-                      struct RenderVertexSoft *pVertex) {
+void ClippingFunctions::AddVertex(VertexBuffer *pVertexBuffer,
+                                  RenderVertexSoft *pVertex) {
     pVertexBuffer->pVertices[pVertexBuffer->uNumVertices].vWorldPosition.x =
         pVertex->vWorldPosition.x;
     pVertexBuffer->pVertices[pVertexBuffer->uNumVertices].vWorldPosition.y =
@@ -258,9 +258,9 @@ void stru9::AddVertex(struct VertexBuffer *pVertexBuffer,
 
 // this adjusts the vert to the face
 //----- (00498774) --------------------------------------------------------
-bool stru9::AdjustVertToClipEdge(struct RenderVertexSoft *a1, struct RenderVertexSoft *a2,
-                    struct RenderVertexSoft *a3, struct stru312 *a4,
-                    struct RenderVertexSoft *a5) {
+bool ClippingFunctions::AdjustVertToClipEdge(RenderVertexSoft *a1, RenderVertexSoft *a2,
+                                             RenderVertexSoft *a3, stru312 *a4,
+                                             RenderVertexSoft *a5) {
     // this looks like it is meant to clip the light map / decal verts to the face plane verts
 
     // a1 - decal vert1
@@ -271,7 +271,6 @@ bool stru9::AdjustVertToClipEdge(struct RenderVertexSoft *a1, struct RenderVerte
 
 
     RenderVertexSoft *v6;  // ecx@5
-    int result;            // eax@5
     double v8;             // st7@5
                            //  int16_t v9; // fps@5
     double v10;            // st7@6
@@ -290,7 +289,6 @@ bool stru9::AdjustVertToClipEdge(struct RenderVertexSoft *a1, struct RenderVerte
     v6 = a1;
     static_AE3378.x = a1->vWorldPosition.x - a3->vWorldPosition.x;
     static_AE3378.y = a1->vWorldPosition.y - a3->vWorldPosition.y;
-    HEXRAYS_HIWORD(result) = HEXRAYS_HIWORD(a4);
     static_AE3378.z = a1->vWorldPosition.z - a3->vWorldPosition.z;
     static_AE3388.x = a2->vWorldPosition.x - a1->vWorldPosition.x;
     static_AE3388.y = a2->vWorldPosition.y - a1->vWorldPosition.y;
@@ -323,7 +321,6 @@ bool stru9::AdjustVertToClipEdge(struct RenderVertexSoft *a1, struct RenderVerte
                 v10 = 0.0;
             }
         }
-        result = (bool)a5;
         a5->vWorldPosition.x =
             (a2->vWorldPosition.x - v6->vWorldPosition.x) * v10 +
             v6->vWorldPosition.x;
@@ -340,16 +337,15 @@ bool stru9::AdjustVertToClipEdge(struct RenderVertexSoft *a1, struct RenderVerte
     v13 = v8 < 0.0;
     v14 = 0;
     v15 = v8 == 0.0;
-    // BYTE1(result) = HIBYTE(v9);
     if (v8 < 0.0) return 1;
     return 0;
 }
 // AE3398: using guessed type char static_init_flag__AE3388_bit1__AE3378_bit2;
 
 //----- (0049895A) --------------------------------------------------------
-bool stru9::AreVectorsCollinear(struct RenderVertexSoft *a1,
-                                struct RenderVertexSoft *a2,
-                                struct stru312 *a3) {
+bool ClippingFunctions::AreVectorsCollinear(RenderVertexSoft *a1,
+                                            RenderVertexSoft *a2,
+                                            stru312 *a3) {
     // is vector a2->a1 in same semiplane as a3
 
     /*static */stru312 static_F942A0;
@@ -365,8 +361,8 @@ bool stru9::AreVectorsCollinear(struct RenderVertexSoft *a1,
 }
 
 //----- (004989E1) --------------------------------------------------------
-bool stru9::DoDecalVertsNeedClipping(struct RenderVertexSoft *a1, struct RenderVertexSoft *a2,
-                    struct RenderVertexSoft *a3, struct stru312 *a4) {
+bool ClippingFunctions::DoDecalVertsNeedClipping(RenderVertexSoft *a1, RenderVertexSoft *a2,
+                                                 RenderVertexSoft *a3, stru312 *a4) {
     // lightmap/decal first two verts
     // 3rd is face vert
     // 4th is vec along face
@@ -388,10 +384,10 @@ bool stru9::DoDecalVertsNeedClipping(struct RenderVertexSoft *a1, struct RenderV
 
 // for clipping lightmaps and decals to face
 //----- (004980B9) --------------------------------------------------------
-bool stru9::ClipVertsToFace(RenderVertexSoft *a1, unsigned int uNumVertices,
-                    float pNormalX, float pNormalY, float pNormalZ,
-                    RenderVertexSoft *pOutVertices,
-                    signed int *pOutNumVertices) {
+bool ClippingFunctions::ClipVertsToFace(RenderVertexSoft *a1, unsigned int uNumVertices,
+                                        float pNormalX, float pNormalY, float pNormalZ,
+                                        RenderVertexSoft *pOutVertices,
+                                        signed int *pOutNumVertices) {
     // first two are for the face
     // last two are light map / decal
 

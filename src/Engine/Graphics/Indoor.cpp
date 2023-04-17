@@ -55,10 +55,6 @@ BLVRenderParams *pBLVRenderParams = new BLVRenderParams;
 
 LEVEL_TYPE uCurrentlyLoadedLevelType = LEVEL_null;
 
-LightsData Lights;
-stru337_unused _DLV_header_unused;
-// std::array<stru352, 480> stru_F83B80;
-
 uint16_t pDoorSoundIDsByLocationID[78] = {
     300, 300, 300, 300, 300, 300, 300, 300, 300, 300, 300, 300, 300,
     300, 300, 300, 404, 302, 306, 308, 304, 308, 302, 400, 302, 300,
@@ -171,29 +167,6 @@ void BLVFace::FromODM(ODMFace *face) {
     this->uNumVertices = face->uNumVertices;
     this->resource = face->resource;
     this->pVertexIDs = face->pVertexIDs.data();
-}
-
-//----- (004B0E07) --------------------------------------------------------
-unsigned int FaceFlowTextureOffset(unsigned int uFaceID) {  // time texture offset
-    Lights.pDeltaUV[0] = pIndoor->pFaceExtras[pIndoor->pFaces[uFaceID].uFaceExtraID].sTextureDeltaU;
-    Lights.pDeltaUV[1] = pIndoor->pFaceExtras[pIndoor->pFaces[uFaceID].uFaceExtraID].sTextureDeltaV;
-
-    // TODO(pskelton): check tickcount usage here
-    unsigned int offset = platform->tickCount() >> 3;
-
-    if (pIndoor->pFaces[uFaceID].uAttributes & FACE_FlowDown) {
-        Lights.pDeltaUV[1] -= offset & (((Texture *)pIndoor->pFaces[uFaceID].resource)->GetHeight() - 1);
-    } else if (pIndoor->pFaces[uFaceID].uAttributes & FACE_FlowUp) {
-        Lights.pDeltaUV[1] += offset & (((Texture *)pIndoor->pFaces[uFaceID].resource)->GetHeight() - 1);
-    }
-
-    if (pIndoor->pFaces[uFaceID].uAttributes & FACE_FlowRight) {
-        Lights.pDeltaUV[0] -= offset & (((Texture *)pIndoor->pFaces[uFaceID].resource)->GetWidth() - 1);
-    } else if (pIndoor->pFaces[uFaceID].uAttributes & FACE_FlowLeft) {
-        Lights.pDeltaUV[0] += offset & (((Texture *)pIndoor->pFaces[uFaceID].resource)->GetWidth() - 1);
-    }
-
-    return offset;
 }
 
 //----- (004AE5BA) --------------------------------------------------------
@@ -1141,7 +1114,7 @@ void UpdateActors_BLV() {
                     if (pMonsterStats->pInfos[actor.pMonsterInfo.uID].bBloodSplatOnDeath) {
                         if (engine->config->graphics.BloodSplats.value()) {
                             float splatRadius = actor.uActorRadius * engine->config->graphics.BloodSplatsMultiplier.value();
-                            decal_builder->AddBloodsplat((float)actor.vPosition.x, (float)actor.vPosition.y, (float)(floorZ + 30), 1.0, 0.0, 0.0, splatRadius);
+                            decal_builder->AddBloodsplat(Vec3f(actor.vPosition.x, actor.vPosition.y, floorZ + 30), 1.0, 0.0, 0.0, splatRadius);
                         }
                         actor.donebloodsplat = true;
                     }
@@ -2560,76 +2533,6 @@ int DropTreasureAt(ITEM_TREASURE_LEVEL trs_level, int trs_type, int x, int y, in
     a1.uSectorID = pIndoor->GetSector(x, y, z);
     a1.uSpriteFrameID = 0;
     return a1.Create(0, 0, 0, 0);
-}
-
-//----- (0049B04D) --------------------------------------------------------
-void stru154::GetFacePlaneAndClassify(ODMFace *a2, const std::vector<Vec3i> &a3) {
-    Vec3f OutPlaneNorm;
-    float OutPlaneDist;
-
-    OutPlaneNorm.x = 0.0;
-    OutPlaneNorm.y = 0.0;
-    OutPlaneNorm.z = 0.0;
-    GetFacePlane(a2, a3, &OutPlaneNorm, &OutPlaneDist);
-
-    if (fabsf(a2->pFacePlane.vNormal.z) < 1e-6f)
-        polygonType = POLYGON_VerticalWall;
-    else if (fabsf(a2->pFacePlane.vNormal.x) < 1e-6f &&
-             fabsf(a2->pFacePlane.vNormal.y) < 1e-6f)
-        polygonType = POLYGON_Floor;
-    else
-        polygonType = POLYGON_InBetweenFloorAndWall;
-
-    face_plane.vNormal.x = OutPlaneNorm.x;
-    face_plane.vNormal.y = OutPlaneNorm.y;
-    face_plane.vNormal.z = OutPlaneNorm.z;
-    face_plane.dist = OutPlaneDist;
-}
-
-//----- (0049B0C9) --------------------------------------------------------
-void stru154::ClassifyPolygon(Vec3f *pNormal, float dist) {
-    if (fabsf(pNormal->z) < 1e-6f)
-        polygonType = POLYGON_VerticalWall;
-    else if (fabsf(pNormal->x) < 1e-6f && fabsf(pNormal->y) < 1e-6f)
-        polygonType = POLYGON_Floor;
-    else
-        polygonType = POLYGON_InBetweenFloorAndWall;
-
-    face_plane.vNormal.x = pNormal->x;
-    face_plane.vNormal.y = pNormal->y;
-    face_plane.vNormal.z = pNormal->z;
-    face_plane.dist = dist;
-}
-
-//----- (0049B13D) --------------------------------------------------------
-void stru154::GetFacePlane(ODMFace *pFace, const std::vector<Vec3i> &pVertices,
-                           Vec3f *pOutNormal, float *pOutDist) {
-    Vec3f FirstPairVec;
-    Vec3f SecPairVec;
-    Vec3f CrossProd;
-
-    if (pFace->uNumVertices >= 2) {
-        for (int i = 0; i < pFace->uNumVertices - 2; i++) {
-            FirstPairVec = (pVertices[pFace->pVertexIDs[i + 1]] - pVertices[pFace->pVertexIDs[i]]).toFloat();
-            SecPairVec = (pVertices[pFace->pVertexIDs[i + 2]] - pVertices[pFace->pVertexIDs[i + 1]]).toFloat();
-
-            CrossProd = cross(FirstPairVec, SecPairVec);
-
-            if (CrossProd.x != 0.0 || CrossProd.y != 0.0 || CrossProd.z != 0.0) {
-                CrossProd.normalize();
-                *pOutNormal = CrossProd;
-                *pOutDist = -dot(pVertices[pFace->pVertexIDs[i]].toFloat(), CrossProd);
-                return;
-            }
-        }
-    }
-
-    // only one/two vert?
-    __debugbreak();
-    pOutNormal->x = pFace->pFacePlane.vNormal.x;
-    pOutNormal->y = pFace->pFacePlane.vNormal.y;
-    pOutNormal->z = pFace->pFacePlane.vNormal.z;
-    *pOutDist = pFace->pFacePlane.dist;
 }
 
 //----- (0043F515) --------------------------------------------------------
