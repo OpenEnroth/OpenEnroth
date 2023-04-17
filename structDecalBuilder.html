@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;c33815f</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;5ecb01b</span>
    </div>
   </td>
  </tr>
@@ -85,12 +85,12 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a44edf12e0fc088d01f11bbe0a117ec5c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac0197587922e57d3136b03d3af8fed2c"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structDecalBuilder.html#ac0197587922e57d3136b03d3af8fed2c">~DecalBuilder</a> ()</td></tr>
 <tr class="separator:ac0197587922e57d3136b03d3af8fed2c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad0584c1099bd0fe1780af4b35e1b9a38"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structDecalBuilder.html#ad0584c1099bd0fe1780af4b35e1b9a38">AddBloodsplat</a> (float x, float y, float z, float r, float g, float b, float radius)</td></tr>
-<tr class="separator:ad0584c1099bd0fe1780af4b35e1b9a38"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4cd9d5323d91f32f73b2f79c8c04549e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structDecalBuilder.html#a4cd9d5323d91f32f73b2f79c8c04549e">AddBloodsplat</a> (const <a class="el" href="Vec_8h.html#a40b8356e33151c22cb4d1adaf2b762a8">Vec3f</a> &amp;pos, float r, float g, float b, float radius)</td></tr>
+<tr class="separator:a4cd9d5323d91f32f73b2f79c8c04549e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9640c823a8bbddae5ca2d1c61a4b9161"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structDecalBuilder.html#a9640c823a8bbddae5ca2d1c61a4b9161">Reset</a> (bool bPreserveBloodsplats)</td></tr>
 <tr class="separator:a9640c823a8bbddae5ca2d1c61a4b9161"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8f3407474b54f3b9d8317575c6b889ff"><td class="memItemLeft" align="right" valign="top">char&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structDecalBuilder.html#a8f3407474b54f3b9d8317575c6b889ff">BuildAndApplyDecals</a> (int light_level, LocationFlags locationFlags, struct <a class="el" href="structstru154.html">stru154</a> *FacePlane, int NumFaceVerts, <a class="el" href="structRenderVertexSoft.html">RenderVertexSoft</a> *FaceVerts, char ClipFlags, unsigned int uSectorID)</td></tr>
-<tr class="separator:a8f3407474b54f3b9d8317575c6b889ff"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8f69d6ce974a754b58bb2bb70098c49c"><td class="memItemLeft" align="right" valign="top">char&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structDecalBuilder.html#a8f69d6ce974a754b58bb2bb70098c49c">BuildAndApplyDecals</a> (int light_level, LocationFlags locationFlags, const <a class="el" href="structPlanef.html">Planef</a> &amp;FacePlane, int NumFaceVerts, <a class="el" href="structRenderVertexSoft.html">RenderVertexSoft</a> *FaceVerts, char ClipFlags, unsigned int uSectorID)</td></tr>
+<tr class="separator:a8f69d6ce974a754b58bb2bb70098c49c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aedde8b2ae1bfe2003beaf869f8f78841"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structDecalBuilder.html#aedde8b2ae1bfe2003beaf869f8f78841">Build_Decal_Geometry</a> (int LightLevel, LocationFlags locationFlags, <a class="el" href="structBloodsplat.html">Bloodsplat</a> *blood, float DecalRadius, unsigned int uColorMultiplier, float DecalDotDist, struct <a class="el" href="structstru314.html">stru314</a> *FacetNormals, signed int numfaceverts, <a class="el" href="structRenderVertexSoft.html">RenderVertexSoft</a> *faceverts, char uClipFlags)</td></tr>
 <tr class="separator:aedde8b2ae1bfe2003beaf869f8f78841"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad0e9f1b9e141c341bd78ad61466fb09b"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structDecalBuilder.html#ad0e9f1b9e141c341bd78ad61466fb09b">ApplyBloodsplatDecals_IndoorFace</a> (unsigned int uFaceID)</td></tr>
@@ -108,14 +108,14 @@ Public Member Functions</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
-<tr class="memitem:aecd839bbc96fd027a6e1f99f0414be84"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structDecal.html">Decal</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structDecalBuilder.html#aecd839bbc96fd027a6e1f99f0414be84">Decals</a> [1024]</td></tr>
-<tr class="separator:aecd839bbc96fd027a6e1f99f0414be84"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9ee0c2d22a63c396fe14920b7d511105"><td class="memItemLeft" align="right" valign="top">std::array&lt; <a class="el" href="structDecal.html">Decal</a>, 1024 &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structDecalBuilder.html#a9ee0c2d22a63c396fe14920b7d511105">Decals</a></td></tr>
+<tr class="separator:a9ee0c2d22a63c396fe14920b7d511105"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4fa899f66e0b488a76fa5bab328e2f67"><td class="memItemLeft" align="right" valign="top">unsigned int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structDecalBuilder.html#a4fa899f66e0b488a76fa5bab328e2f67">DecalsCount</a></td></tr>
 <tr class="separator:a4fa899f66e0b488a76fa5bab328e2f67"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5cb3685fc4e351b1c8e0a64b67e9340c"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structDecalBuilder.html#a5cb3685fc4e351b1c8e0a64b67e9340c">uNumSplatsThisFace</a> = 0</td></tr>
 <tr class="separator:a5cb3685fc4e351b1c8e0a64b67e9340c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8e2a237a7f07860f7f89dc6d37d88463"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structDecalBuilder.html#a8e2a237a7f07860f7f89dc6d37d88463">WhichSplatsOnThisFace</a> [1024] {}</td></tr>
-<tr class="separator:a8e2a237a7f07860f7f89dc6d37d88463"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5a4ac6d3c1624d8501b38015507c4650"><td class="memItemLeft" align="right" valign="top">std::array&lt; int, 1024 &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structDecalBuilder.html#a5a4ac6d3c1624d8501b38015507c4650">WhichSplatsOnThisFace</a> = {{}}</td></tr>
+<tr class="separator:a5a4ac6d3c1624d8501b38015507c4650"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac1539bba81edd6ad639304b4819e168f"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structDecalBuilder.html#ac1539bba81edd6ad639304b4819e168f">field_30C010</a> = 0</td></tr>
 <tr class="separator:ac1539bba81edd6ad639304b4819e168f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a93a4b0672957846959335e967ff72cb7"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structDecalBuilder.html#a93a4b0672957846959335e967ff72cb7">field_30C014</a> = 0</td></tr>
@@ -193,8 +193,8 @@ Public Attributes</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a id="ad0584c1099bd0fe1780af4b35e1b9a38" name="ad0584c1099bd0fe1780af4b35e1b9a38"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ad0584c1099bd0fe1780af4b35e1b9a38">&#9670;&#160;</a></span>AddBloodsplat()</h2>
+<a id="a4cd9d5323d91f32f73b2f79c8c04549e" name="a4cd9d5323d91f32f73b2f79c8c04549e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4cd9d5323d91f32f73b2f79c8c04549e">&#9670;&#160;</a></span>AddBloodsplat()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -202,20 +202,8 @@ Public Attributes</h2></td></tr>
         <tr>
           <td class="memname">void DecalBuilder::AddBloodsplat </td>
           <td>(</td>
-          <td class="paramtype">float&#160;</td>
-          <td class="paramname"><em>x</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">float&#160;</td>
-          <td class="paramname"><em>y</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">float&#160;</td>
-          <td class="paramname"><em>z</em>, </td>
+          <td class="paramtype">const <a class="el" href="Vec_8h.html#a40b8356e33151c22cb4d1adaf2b762a8">Vec3f</a> &amp;&#160;</td>
+          <td class="paramname"><em>pos</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -422,8 +410,8 @@ Public Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="a8f3407474b54f3b9d8317575c6b889ff" name="a8f3407474b54f3b9d8317575c6b889ff"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a8f3407474b54f3b9d8317575c6b889ff">&#9670;&#160;</a></span>BuildAndApplyDecals()</h2>
+<a id="a8f69d6ce974a754b58bb2bb70098c49c" name="a8f69d6ce974a754b58bb2bb70098c49c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8f69d6ce974a754b58bb2bb70098c49c">&#9670;&#160;</a></span>BuildAndApplyDecals()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -443,7 +431,7 @@ Public Attributes</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">struct <a class="el" href="structstru154.html">stru154</a> *&#160;</td>
+          <td class="paramtype">const <a class="el" href="structPlanef.html">Planef</a> &amp;&#160;</td>
           <td class="paramname"><em>FacePlane</em>, </td>
         </tr>
         <tr>
@@ -565,14 +553,14 @@ Public Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="aecd839bbc96fd027a6e1f99f0414be84" name="aecd839bbc96fd027a6e1f99f0414be84"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aecd839bbc96fd027a6e1f99f0414be84">&#9670;&#160;</a></span>Decals</h2>
+<a id="a9ee0c2d22a63c396fe14920b7d511105" name="a9ee0c2d22a63c396fe14920b7d511105"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9ee0c2d22a63c396fe14920b7d511105">&#9670;&#160;</a></span>Decals</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="structDecal.html">Decal</a> DecalBuilder::Decals[1024]</td>
+          <td class="memname">std::array&lt;<a class="el" href="structDecal.html">Decal</a>, 1024&gt; DecalBuilder::Decals</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -761,14 +749,14 @@ Public Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="a8e2a237a7f07860f7f89dc6d37d88463" name="a8e2a237a7f07860f7f89dc6d37d88463"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a8e2a237a7f07860f7f89dc6d37d88463">&#9670;&#160;</a></span>WhichSplatsOnThisFace</h2>
+<a id="a5a4ac6d3c1624d8501b38015507c4650" name="a5a4ac6d3c1624d8501b38015507c4650"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5a4ac6d3c1624d8501b38015507c4650">&#9670;&#160;</a></span>WhichSplatsOnThisFace</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">int DecalBuilder::WhichSplatsOnThisFace[1024] {}</td>
+          <td class="memname">std::array&lt;int, 1024&gt; DecalBuilder::WhichSplatsOnThisFace = {{}}</td>
         </tr>
       </table>
 </div><div class="memdoc">

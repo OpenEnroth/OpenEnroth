@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;c33815f</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;5ecb01b</span>
    </div>
   </td>
  </tr>
@@ -71,6 +71,7 @@ $(function() {
 <div class="header">
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
+<a href="#pub-static-methods">Static Public Member Functions</a> &#124;
 <a href="#pub-attribs">Public Attributes</a> &#124;
 <a href="structCamera3D-members.html">List of all members</a>  </div>
   <div class="headertitle"><div class="title">Camera3D Struct Reference</div></div>
@@ -81,10 +82,6 @@ $(function() {
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:aafc650fff7f122da37572e08a00a614c"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structCamera3D.html#aafc650fff7f122da37572e08a00a614c">Camera3D</a> ()</td></tr>
-<tr class="separator:aafc650fff7f122da37572e08a00a614c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a09f9b471b6547f1202033986299fea71"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structCamera3D.html#a09f9b471b6547f1202033986299fea71">~Camera3D</a> ()</td></tr>
-<tr class="separator:a09f9b471b6547f1202033986299fea71"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a525586eca7cf9a04905be7702dae1625"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structCamera3D.html#a525586eca7cf9a04905be7702dae1625">ViewTransform</a> (int x, int y, int z, int *transformed_x, int *transformed_y, int *transformed_z)</td></tr>
 <tr class="separator:a525586eca7cf9a04905be7702dae1625"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a396badc1e3335dc188a2c88d61f8a7f6"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structCamera3D.html#a396badc1e3335dc188a2c88d61f8a7f6">ViewTransform</a> (struct <a class="el" href="structRenderVertexSoft.html">RenderVertexSoft</a> *a1a, unsigned int uNumVertices)</td></tr>
@@ -113,8 +110,6 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a6329140f3eb68e7476efb455d43a42ea"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac11a2290e91e9d785377fc1e9238478f"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structCamera3D.html#ac11a2290e91e9d785377fc1e9238478f">ClipFaceToFrustum</a> (<a class="el" href="structRenderVertexSoft.html">RenderVertexSoft</a> *pInVertices, unsigned int *pOutNumVertices, <a class="el" href="structRenderVertexSoft.html">RenderVertexSoft</a> *pVertices, <a class="el" href="structIndoorCameraD3D__Vec4.html">IndoorCameraD3D_Vec4</a> *CameraFrustrum, signed int NumFrustumPlanes, char DebugLines, int _unused)</td></tr>
 <tr class="separator:ac11a2290e91e9d785377fc1e9238478f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aedb8f959c09b6bf473527ef141348c57"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structCamera3D.html#aedb8f959c09b6bf473527ef141348c57">CullVertsToPlane</a> (struct <a class="el" href="structstru154.html">stru154</a> *thisa, struct <a class="el" href="structRenderVertexSoft.html">RenderVertexSoft</a> *a2, unsigned int *pOutNumVertices)</td></tr>
-<tr class="separator:aedb8f959c09b6bf473527ef141348c57"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:add0eb5d761f167b74424a2ec7e432817"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structCamera3D.html#add0eb5d761f167b74424a2ec7e432817">BuildViewFrustum</a> ()</td></tr>
 <tr class="separator:add0eb5d761f167b74424a2ec7e432817"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae887340351c4bcebaa06282fb4b324e2"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structCamera3D.html#ae887340351c4bcebaa06282fb4b324e2">CreateViewMatrixAndProjectionScale</a> ()</td></tr>
@@ -127,10 +122,6 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a44f66a76bd857fd66e29c4b7b890a02c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4b98d81def6bd645daf7ca42a99cfded"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structCamera3D.html#a4b98d81def6bd645daf7ca42a99cfded">is_face_faced_to_cameraODM</a> (struct <a class="el" href="structODMFace.html">ODMFace</a> *pFace, struct <a class="el" href="structRenderVertexSoft.html">RenderVertexSoft</a> *a2)</td></tr>
 <tr class="separator:a4b98d81def6bd645daf7ca42a99cfded"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a871d164330165853a14031c61040c22b"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structCamera3D.html#a871d164330165853a14031c61040c22b">GetFacetOrientation</a> (<a class="el" href="BSPModel_8h.html#a91fb3e69af7609c2810f12d81ecf6fab">PolygonType</a> polyType, <a class="el" href="Vec_8h.html#a40b8356e33151c22cb4d1adaf2b762a8">Vec3f</a> *a2, <a class="el" href="Vec_8h.html#a40b8356e33151c22cb4d1adaf2b762a8">Vec3f</a> *a3, <a class="el" href="Vec_8h.html#a40b8356e33151c22cb4d1adaf2b762a8">Vec3f</a> *a4)</td></tr>
-<tr class="separator:a871d164330165853a14031c61040c22b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a96859e741fc9eac1df1ddba1fd451edd"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structCamera3D.html#a96859e741fc9eac1df1ddba1fd451edd">ViewTransfrom_OffsetUV</a> (struct <a class="el" href="structRenderVertexSoft.html">RenderVertexSoft</a> *pVertices, unsigned int uNumVertices, struct <a class="el" href="structRenderVertexSoft.html">RenderVertexSoft</a> *pOutVertices, struct <a class="el" href="structLightsData.html">LightsData</a> *a5)</td></tr>
-<tr class="separator:a96859e741fc9eac1df1ddba1fd451edd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4cec2e0b364a3b51d47e2cdbdc1c5780"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structCamera3D.html#a4cec2e0b364a3b51d47e2cdbdc1c5780">CullByNearClip</a> (struct <a class="el" href="structRenderVertexSoft.html">RenderVertexSoft</a> *pverts, <a class="el" href="MM7_8h.html#a91ad9478d81a7aaf2593e8d9c3d06a14">uint</a> *unumverts)</td></tr>
 <tr class="separator:a4cec2e0b364a3b51d47e2cdbdc1c5780"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa9236a8d944caf05740293ca70e2c325"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structCamera3D.html#aa9236a8d944caf05740293ca70e2c325">CullByFarClip</a> (struct <a class="el" href="structRenderVertexSoft.html">RenderVertexSoft</a> *pverts, <a class="el" href="MM7_8h.html#a91ad9478d81a7aaf2593e8d9c3d06a14">uint</a> *unumverts)</td></tr>
@@ -144,12 +135,17 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:ac267696a8db161c3018482502e85c110"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structCamera3D.html#ac267696a8db161c3018482502e85c110">GetFarClip</a> () const</td></tr>
 <tr class="separator:ac267696a8db161c3018482502e85c110"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-static-methods" name="pub-static-methods"></a>
+Static Public Member Functions</h2></td></tr>
+<tr class="memitem:af0d413ea9ea05f19616d61506f5d658a"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structCamera3D.html#af0d413ea9ea05f19616d61506f5d658a">GetFacetOrientation</a> (const <a class="el" href="Vec_8h.html#a40b8356e33151c22cb4d1adaf2b762a8">Vec3f</a> &amp;normal, <a class="el" href="Vec_8h.html#a40b8356e33151c22cb4d1adaf2b762a8">Vec3f</a> *outU, <a class="el" href="Vec_8h.html#a40b8356e33151c22cb4d1adaf2b762a8">Vec3f</a> *outV)</td></tr>
+<tr class="separator:af0d413ea9ea05f19616d61506f5d658a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
-<tr class="memitem:ac4de9b0b25cf2d456866b1f0d8be0afc"><td class="memItemLeft" align="right" valign="top">glm::mat3x3&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structCamera3D.html#ac4de9b0b25cf2d456866b1f0d8be0afc">ViewMatrix</a></td></tr>
+<tr class="memitem:ac4de9b0b25cf2d456866b1f0d8be0afc"><td class="memItemLeft" align="right" valign="top">glm::mat3x3&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structCamera3D.html#ac4de9b0b25cf2d456866b1f0d8be0afc">ViewMatrix</a> = {}</td></tr>
 <tr class="separator:ac4de9b0b25cf2d456866b1f0d8be0afc"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a74ee04a9564956e3b11b876298005280"><td class="memItemLeft" align="right" valign="top">glm::vec4&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structCamera3D.html#a74ee04a9564956e3b11b876298005280">FrustumPlanes</a> [6] {}</td></tr>
-<tr class="separator:a74ee04a9564956e3b11b876298005280"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0c95d9dc9231615a4ed159b06c7c8451"><td class="memItemLeft" align="right" valign="top">std::array&lt; glm::vec4, 6 &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structCamera3D.html#a0c95d9dc9231615a4ed159b06c7c8451">FrustumPlanes</a> = {{}}</td></tr>
+<tr class="separator:a0c95d9dc9231615a4ed159b06c7c8451"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a22fadb31954a7e078efcd919cf234c0a"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structCamera3D.html#a22fadb31954a7e078efcd919cf234c0a">unit_fov</a> = 0</td></tr>
 <tr class="separator:a22fadb31954a7e078efcd919cf234c0a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5a7923c0d0739f92cfb94b235fcb4077"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structCamera3D.html#a5a7923c0d0739f92cfb94b235fcb4077">fov_y_deg</a> = 0</td></tr>
@@ -184,52 +180,9 @@ Public Attributes</h2></td></tr>
 <tr class="separator:a0e4b6f9091af2ab22b47a1879593e282"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1c0235ee5ac2078a88a61fb6d518dac4"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structCamera3D.html#a1c0235ee5ac2078a88a61fb6d518dac4">_pitchRotationCosine</a> = 0</td></tr>
 <tr class="separator:a1c0235ee5ac2078a88a61fb6d518dac4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3951b9263e6c69a751c08bafeee1172b"><td class="memItemLeft" align="right" valign="top">glm::vec3&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structCamera3D.html#a3951b9263e6c69a751c08bafeee1172b">vCameraPos</a> {}</td></tr>
+<tr class="memitem:a3951b9263e6c69a751c08bafeee1172b"><td class="memItemLeft" align="right" valign="top">glm::vec3&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structCamera3D.html#a3951b9263e6c69a751c08bafeee1172b">vCameraPos</a> = {}</td></tr>
 <tr class="separator:a3951b9263e6c69a751c08bafeee1172b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a id="aafc650fff7f122da37572e08a00a614c" name="aafc650fff7f122da37572e08a00a614c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aafc650fff7f122da37572e08a00a614c">&#9670;&#160;</a></span>Camera3D()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">Camera3D::Camera3D </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a09f9b471b6547f1202033986299fea71" name="a09f9b471b6547f1202033986299fea71"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a09f9b471b6547f1202033986299fea71">&#9670;&#160;</a></span>~Camera3D()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">virtual Camera3D::~Camera3D </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">virtual</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
 <h2 class="groupheader">Member Function Documentation</h2>
 <a id="add0eb5d761f167b74424a2ec7e432817" name="add0eb5d761f167b74424a2ec7e432817"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#add0eb5d761f167b74424a2ec7e432817">&#9670;&#160;</a></span>BuildViewFrustum()</h2>
@@ -533,40 +486,6 @@ Public Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="aedb8f959c09b6bf473527ef141348c57" name="aedb8f959c09b6bf473527ef141348c57"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aedb8f959c09b6bf473527ef141348c57">&#9670;&#160;</a></span>CullVertsToPlane()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">bool Camera3D::CullVertsToPlane </td>
-          <td>(</td>
-          <td class="paramtype">struct <a class="el" href="structstru154.html">stru154</a> *&#160;</td>
-          <td class="paramname"><em>thisa</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">struct <a class="el" href="structRenderVertexSoft.html">RenderVertexSoft</a> *&#160;</td>
-          <td class="paramname"><em>a2</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">unsigned int *&#160;</td>
-          <td class="paramname"><em>pOutNumVertices</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
 <a id="ab2db970b3a5e346e78a5264e63b2686b" name="ab2db970b3a5e346e78a5264e63b2686b"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ab2db970b3a5e346e78a5264e63b2686b">&#9670;&#160;</a></span>debug_outline_sw()</h2>
 
@@ -659,35 +578,32 @@ Public Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="a871d164330165853a14031c61040c22b" name="a871d164330165853a14031c61040c22b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a871d164330165853a14031c61040c22b">&#9670;&#160;</a></span>GetFacetOrientation()</h2>
+<a id="af0d413ea9ea05f19616d61506f5d658a" name="af0d413ea9ea05f19616d61506f5d658a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af0d413ea9ea05f19616d61506f5d658a">&#9670;&#160;</a></span>GetFacetOrientation()</h2>
 
 <div class="memitem">
 <div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">bool Camera3D::GetFacetOrientation </td>
+          <td class="memname">void Camera3D::GetFacetOrientation </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="BSPModel_8h.html#a91fb3e69af7609c2810f12d81ecf6fab">PolygonType</a>&#160;</td>
-          <td class="paramname"><em>polyType</em>, </td>
+          <td class="paramtype">const <a class="el" href="Vec_8h.html#a40b8356e33151c22cb4d1adaf2b762a8">Vec3f</a> &amp;&#160;</td>
+          <td class="paramname"><em>normal</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype"><a class="el" href="Vec_8h.html#a40b8356e33151c22cb4d1adaf2b762a8">Vec3f</a> *&#160;</td>
-          <td class="paramname"><em>a2</em>, </td>
+          <td class="paramname"><em>outU</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype"><a class="el" href="Vec_8h.html#a40b8356e33151c22cb4d1adaf2b762a8">Vec3f</a> *&#160;</td>
-          <td class="paramname"><em>a3</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="Vec_8h.html#a40b8356e33151c22cb4d1adaf2b762a8">Vec3f</a> *&#160;</td>
-          <td class="paramname"><em>a4</em>&#160;</td>
+          <td class="paramname"><em>outV</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -695,6 +611,11 @@ Public Attributes</h2></td></tr>
           <td></td><td></td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 
 </div>
@@ -1190,46 +1111,6 @@ Public Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="a96859e741fc9eac1df1ddba1fd451edd" name="a96859e741fc9eac1df1ddba1fd451edd"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a96859e741fc9eac1df1ddba1fd451edd">&#9670;&#160;</a></span>ViewTransfrom_OffsetUV()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void Camera3D::ViewTransfrom_OffsetUV </td>
-          <td>(</td>
-          <td class="paramtype">struct <a class="el" href="structRenderVertexSoft.html">RenderVertexSoft</a> *&#160;</td>
-          <td class="paramname"><em>pVertices</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">unsigned int&#160;</td>
-          <td class="paramname"><em>uNumVertices</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">struct <a class="el" href="structRenderVertexSoft.html">RenderVertexSoft</a> *&#160;</td>
-          <td class="paramname"><em>pOutVertices</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">struct <a class="el" href="structLightsData.html">LightsData</a> *&#160;</td>
-          <td class="paramname"><em>a5</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
 <h2 class="groupheader">Member Data Documentation</h2>
 <a id="a1c0235ee5ac2078a88a61fb6d518dac4" name="a1c0235ee5ac2078a88a61fb6d518dac4"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a1c0235ee5ac2078a88a61fb6d518dac4">&#9670;&#160;</a></span>_pitchRotationCosine</h2>
@@ -1371,14 +1252,14 @@ Public Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="a74ee04a9564956e3b11b876298005280" name="a74ee04a9564956e3b11b876298005280"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a74ee04a9564956e3b11b876298005280">&#9670;&#160;</a></span>FrustumPlanes</h2>
+<a id="a0c95d9dc9231615a4ed159b06c7c8451" name="a0c95d9dc9231615a4ed159b06c7c8451"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0c95d9dc9231615a4ed159b06c7c8451">&#9670;&#160;</a></span>FrustumPlanes</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">glm::vec4 Camera3D::FrustumPlanes[6] {}</td>
+          <td class="memname">std::array&lt;glm::vec4, 6&gt; Camera3D::FrustumPlanes = {{}}</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -1462,7 +1343,7 @@ Public Attributes</h2></td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">glm::vec3 Camera3D::vCameraPos {}</td>
+          <td class="memname">glm::vec3 Camera3D::vCameraPos = {}</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -1476,7 +1357,7 @@ Public Attributes</h2></td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">glm::mat3x3 Camera3D::ViewMatrix</td>
+          <td class="memname">glm::mat3x3 Camera3D::ViewMatrix = {}</td>
         </tr>
       </table>
 </div><div class="memdoc">

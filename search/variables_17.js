@@ -13,7 +13,7 @@ var searchData=
   ['weapons_5fypos_10',['weapons_Ypos',['../mm7__data_8cpp.html#a25c6bbe804be4001aaa2e4e34766ec4c',1,'weapons_Ypos():&#160;mm7_data.cpp'],['../mm7__data_8h.html#a25c6bbe804be4001aaa2e4e34766ec4c',1,'weapons_Ypos():&#160;mm7_data.cpp']]],
   ['week_11',['Week',['../structTimer.html#a461ac0630f6e2079646eaff29fa75943',1,'Timer']]],
   ['weeksinterval_12',['WeeksInterval',['../structMapsLongTimer.html#a068a67edb9d92cf8c5dd959dc6b3edf6',1,'MapsLongTimer']]],
-  ['whichsplatsonthisface_13',['WhichSplatsOnThisFace',['../structDecalBuilder.html#a8e2a237a7f07860f7f89dc6d37d88463',1,'DecalBuilder']]],
+  ['whichsplatsonthisface_13',['WhichSplatsOnThisFace',['../structDecalBuilder.html#a5a4ac6d3c1624d8501b38015507c4650',1,'DecalBuilder']]],
   ['white_14',['White',['../classColorTable.html#af6c7e84d12ea137a56b1e489849c859b',1,'ColorTable']]],
   ['width_15',['width',['../classMovie.html#af055977ae062d94b4db9f053d87ae8e1',1,'Movie::width()'],['../classImage.html#aaa2cc744ff3969ac6cb63ca05a40e5f6',1,'Image::width()'],['../classGUICredits.html#a0ced87699ecd2845f4538475437266f5',1,'GUICredits::width()'],['../structstat__coord.html#af2e9db3199db9f3ff9977c8134a1af9e',1,'stat_coord::width()']]],
   ['width_16',['Width',['../classGameConfig_1_1Window.html#a52ab9e6da91d34573426dd23cc54eb46',1,'GameConfig::Window']]],
