@@ -686,7 +686,7 @@ void Party::Reset() {
             buff.Reset();
         }
 
-        player.expression = CHARACTER_EXPRESSION_1;
+        player.expression = CHARACTER_EXPRESSION_NORMAL;
         player.uExpressionTimePassed = 0;
         player.uExpressionTimeLength = vrng->random(256) + 128;
     }
@@ -761,10 +761,68 @@ void Party::ResetPosMiscAndSpellBuffs() {
     }
 }
 
-//----- (004909F4) --------------------------------------------------------
-void Party::UpdatePlayersAndHirelingsEmotions() {
-    int v4;  // edx@27
+void Party::resetPlayerEmotions() {
+    for (Player &player : this->pPlayers) {
+        Condition condition = player.GetMajorConditionIdx();
+        if (condition == Condition_Good || condition == Condition_Zombie) {
+            player.expression = CHARACTER_EXPRESSION_NORMAL;
+            player.uExpressionTimeLength = 32;
+        } else {
+            player.uExpressionTimeLength = 0;
+            player.uExpressionTimePassed = 0;
 
+            switch (condition) {
+                case Condition_Dead:
+                    player.expression = CHARACTER_EXPRESSION_DEAD;
+                    break;
+                case Condition_Petrified:
+                    player.expression = CHARACTER_EXPRESSION_PERTIFIED;
+                    break;
+                case Condition_Eradicated:
+                    player.expression = CHARACTER_EXPRESSION_ERADICATED;
+                    break;
+                case Condition_Cursed:
+                    player.expression = CHARACTER_EXPRESSION_CURSED;
+                    break;
+                case Condition_Weak:
+                    player.expression = CHARACTER_EXPRESSION_WEAK;
+                    break;
+                case Condition_Sleep:
+                    player.expression = CHARACTER_EXPRESSION_SLEEP;
+                    break;
+                case Condition_Fear:
+                    player.expression = CHARACTER_EXPRESSION_FEAR;
+                    break;
+                case Condition_Drunk:
+                    player.expression = CHARACTER_EXPRESSION_DRUNK;
+                    break;
+                case Condition_Insane:
+                    player.expression = CHARACTER_EXPRESSION_INSANE;
+                    break;
+                case Condition_Poison_Weak:
+                case Condition_Poison_Medium:
+                case Condition_Poison_Severe:
+                    player.expression = CHARACTER_EXPRESSION_POISONED;
+                    break;
+                case Condition_Disease_Weak:
+                case Condition_Disease_Medium:
+                case Condition_Disease_Severe:
+                    player.expression = CHARACTER_EXPRESSION_DISEASED;
+                    break;
+                case Condition_Paralyzed:
+                    player.expression = CHARACTER_EXPRESSION_PARALYZED;
+                    break;
+                case Condition_Unconscious:
+                    player.expression = CHARACTER_EXPRESSION_UNCONCIOUS;
+                    break;
+                default:
+                    Error("Invalid condition: %u", condition);
+            }
+        }
+    }
+}
+
+void Party::updatePlayersAndHirelingsEmotions() {
     if (pParty->cNonHireFollowers < 0) {
         pParty->CountHirelings();
     }
@@ -779,35 +837,35 @@ void Party::UpdatePlayersAndHirelingsEmotions() {
 
             player.uExpressionTimePassed = 0;
             if (player.expression != 1 || vrng->random(5)) {
-                player.expression = CHARACTER_EXPRESSION_1;
+                player.expression = CHARACTER_EXPRESSION_NORMAL;
                 player.uExpressionTimeLength = vrng->random(256) + 32;
             } else {
-                v4 = vrng->random(100);
-                if (v4 < 25)
+                int randomVal = vrng->random(100);
+                if (randomVal < 25)
                     player.expression = CHARACTER_EXPRESSION_BLINK;
-                else if (v4 < 31)
+                else if (randomVal < 31)
                     player.expression = CHARACTER_EXPRESSION_WINK;
-                else if (v4 < 37)
+                else if (randomVal < 37)
                     player.expression = CHARACTER_EXPRESSION_MOUTH_OPEN_RANDOM;
-                else if (v4 < 43)
+                else if (randomVal < 43)
                     player.expression = CHARACTER_EXPRESSION_PURSE_LIPS_RANDOM;
-                else if (v4 < 46)
+                else if (randomVal < 46)
                     player.expression = CHARACTER_EXPRESSION_LOOK_UP;
-                else if (v4 < 52)
+                else if (randomVal < 52)
                     player.expression = CHARACTER_EXPRESSION_LOOK_RIGHT;
-                else if (v4 < 58)
+                else if (randomVal < 58)
                     player.expression = CHARACTER_EXPRESSION_LOOK_LEFT;
-                else if (v4 < 64)
+                else if (randomVal < 64)
                     player.expression = CHARACTER_EXPRESSION_LOOK_DOWN;
-                else if (v4 < 70)
+                else if (randomVal < 70)
                     player.expression = CHARACTER_EXPRESSION_54;
-                else if (v4 < 76)
+                else if (randomVal < 76)
                     player.expression = CHARACTER_EXPRESSION_55;
-                else if (v4 < 82)
+                else if (randomVal < 82)
                     player.expression = CHARACTER_EXPRESSION_56;
-                else if (v4 < 88)
+                else if (randomVal < 88)
                     player.expression = CHARACTER_EXPRESSION_57;
-                else if (v4 < 94)
+                else if (randomVal < 94)
                     player.expression = CHARACTER_EXPRESSION_PURSE_LIPS_1;
                 else
                     player.expression = CHARACTER_EXPRESSION_PURSE_LIPS_2;
@@ -949,7 +1007,7 @@ void Party::RestAndHeal() {
         }
         if (pPlayer->conditions.Has(Condition_Insane))
             pPlayer->sMana = 0;
-        UpdatePlayersAndHirelingsEmotions();
+        updatePlayersAndHirelingsEmotions();
     }
     pParty->days_played_without_rest = 0;
 }
@@ -992,7 +1050,7 @@ void RestAndHeal(int minutes) {
         player.field_1B3B_set0_unused = 0;
     }
 
-    pParty->UpdatePlayersAndHirelingsEmotions();
+    pParty->updatePlayersAndHirelingsEmotions();
 }
 void Party::restOneFrame() {
     // Before each frame party rested for 6 minutes but that caused

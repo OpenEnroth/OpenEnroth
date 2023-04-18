@@ -177,7 +177,13 @@ struct Party {
     }
 
     void Zero();
-    void UpdatePlayersAndHirelingsEmotions();
+
+    void resetPlayerEmotions();
+
+    /**
+     * @offset 0x4909F4
+     */
+    void updatePlayersAndHirelingsEmotions();
     void RestAndHeal();
 
     /**
