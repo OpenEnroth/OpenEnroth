@@ -116,8 +116,7 @@ void Actor::DrawHealthBar(Actor *actor, GUIWindow *window) {
                                 game_ui_monster_hp_border_right);
 }
 
-//----- (00448A40) --------------------------------------------------------
-void Actor::ToggleFlag(signed int uActorID, ActorAttribute uFlag, bool bValue) {
+void Actor::toggleFlag(signed int uActorID, ActorAttribute uFlag, bool bValue) {
     if (uActorID >= 0 && uActorID <= (signed int)(pActors.size() - 1)) {
         if (bValue) {
             pActors[uActorID].uAttributes |= uFlag;
@@ -4123,7 +4122,7 @@ bool Actor::DoesDmgTypeDoDamage(DAMAGE_TYPE uType) {
 }
 
 //----- (00448A98) --------------------------------------------------------
-void ToggleActorGroupFlag(unsigned int uGroupID, ActorAttribute uFlag,
+void toggleActorGroupFlag(unsigned int uGroupID, ActorAttribute uFlag,
                           bool bValue) {
     if (uGroupID) {
         if (bValue) {

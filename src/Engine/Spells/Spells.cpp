@@ -778,11 +778,11 @@ void SpellStats::Initialize() {
     }
 }
 
-void EventCastSpell(SPELL_TYPE uSpellID, PLAYER_SKILL_MASTERY skillMastery, PLAYER_SKILL_LEVEL skillLevel, int fromx,
+void eventCastSpell(SPELL_TYPE uSpellID, PLAYER_SKILL_MASTERY skillMastery, PLAYER_SKILL_LEVEL skillLevel, int fromx,
                     int fromy, int fromz, int tox, int toy, int toz) {
     // For bug catching
     Assert(skillMastery >= PLAYER_SKILL_MASTERY_NOVICE && skillMastery <= PLAYER_SKILL_MASTERY_GRANDMASTER,
-          "EventCastSpell - Invalid mastery level");
+          "eventCastSpell - Invalid mastery level");
 
     Vec3i from(fromx, fromy, fromz);
     Vec3i to(tox, toy, toz);

@@ -2611,7 +2611,6 @@ int dword_5B65C4_cancelEventProcessing;
 int MapsLongTimers_count;  // dword_5B65C8 счётчик таймеров для колодцев,
                            // фаерволов-ловушек
 int npcIdToDismissAfterDialogue;
-signed int dword_5B65D0_dialogue_actor_npc_id;
 int dword_5C3418; //  eventid store for branchless dialogue
 int dword_5C341C; // entry line store for branchless dialogue
 // std::array<char, 777> byte_5C3427;

@@ -801,8 +801,7 @@ bool HouseUI_CheckIfPlayerCanInteract() {
     }
 }
 
-//----- (0044622E) --------------------------------------------------------
-bool EnterHouse(HOUSE_ID uHouseID) {
+bool enterHouse(HOUSE_ID uHouseID) {
     GameUI_StatusBar_Clear();
     GameUI_SetStatusBar("");
     pCurrentFrameMessageQueue->Flush();
@@ -2339,11 +2338,8 @@ void TrainingDialog(const char *s) {
                         }
                         ++player_levels[pParty->getActiveCharacter() - 1];
                         if (player_levels[pParty->getActiveCharacter() - 1] >
-                            max_level_in_party) {  // if we reach new maximum
-                                                   // party level feature is
-                                                   // broken thou, since this
-                                                   // array is always zeroed in
-                                                   // EnterHouse
+                            max_level_in_party) {  // if we reach new maximum party level feature is broken thou,
+                                                   // since this array is always zeroed in enterHouse
                             v42 = 60 * (_494820_training_time(pParty->uCurrentHour) + 4) - pParty->uCurrentMinute;
                             if (window_SpeakInHouse->wData.val == HOUSE_TRAINING_HALL_PIT || window_SpeakInHouse->wData.val == HOUSE_TRAINING_HALL_NIGHON)
                                 v42 += 12 * 60;
@@ -3024,7 +3020,7 @@ void BackToHouseMenu() {
         HouseDialogPressCloseBtn();
         window_SpeakInHouse->Release();
         pParty->uFlags &= 0xFFFFFFFD;
-        if (EnterHouse(HOUSE_BODY_GUILD_ERATHIA)) {
+        if (enterHouse(HOUSE_BODY_GUILD_ERATHIA)) {
             pAudioPlayer->playUISound(SOUND_Invalid);
             window_SpeakInHouse = new GUIWindow_House({0, 0}, render->GetRenderDimensions(), HOUSE_BODY_GUILD_ERATHIA, "");
             window_SpeakInHouse->CreateButton({61, 424}, {31, 0}, 2, 94, UIMSG_SelectCharacter, 1, InputAction::SelectChar1);

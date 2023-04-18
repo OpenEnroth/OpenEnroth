@@ -156,7 +156,11 @@ class Actor {
     static void StealFrom(unsigned int uActorID);
     static void GiveItem(signed int uActorID, ITEM_TYPE uItemID,
                          unsigned int bGive);
-    static void ToggleFlag(signed int uActorID, ActorAttribute uFlag, bool bToggle);
+
+    /**
+     * @offset 0x448A40
+     */
+    static void toggleFlag(signed int uActorID, ActorAttribute uFlag, bool bToggle);
     static void ApplyFineForKillingPeasant(unsigned int uActorID);
     static void DrawHealthBar(Actor *actor, GUIWindow *window);
     int _43B3E0_CalcDamage(ABILITY_INDEX dmgSource);
@@ -237,8 +241,11 @@ bool CheckActors_proximity();
 int IsActorAlive(unsigned int uType, unsigned int uParam,
                  unsigned int uNumAlive);  // idb
 void sub_448518_npc_set_item(int npc, ITEM_TYPE item, int a3);
-void ToggleActorGroupFlag(unsigned int uGroupID, ActorAttribute uFlag,
-                          bool bValue);
+
+/**
+ * @offset 0x448A98
+ */
+void toggleActorGroupFlag(unsigned int uGroupID, ActorAttribute uFlag, bool bValue);
 bool Detect_Between_Objects(unsigned int uObjID, unsigned int uObj2ID);
 bool SpawnActor(unsigned int uMonsterID);
 void Spawn_Light_Elemental(int spell_power, PLAYER_SKILL_MASTERY caster_skill_mastery, int duration_game_seconds);

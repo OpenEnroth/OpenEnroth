@@ -1353,8 +1353,7 @@ void sub_44861E_set_texture_outdoor(unsigned int uFaceCog,
     }
 }
 
-//----- (0044861E) --------------------------------------------------------
-void sub_44861E_set_texture(unsigned int uFaceCog, const char *pFilename) {
+void setTexture(unsigned int uFaceCog, const char *pFilename) {
     if (uFaceCog) {
         // unsigned int texture = pBitmaps_LOD->LoadTexture(pFilename);
         // if (texture != -1)
@@ -1373,8 +1372,7 @@ void sub_44861E_set_texture(unsigned int uFaceCog, const char *pFilename) {
     }
 }
 
-//----- (0044892E) --------------------------------------------------------
-void sub_44892E_set_faces_bit(int sCogNumber, FaceAttribute bit, int on) {
+void setFacesBit(int sCogNumber, FaceAttribute bit, int on) {
     if (sCogNumber) {
         if (uCurrentlyLoadedLevelType == LEVEL_Indoor) {
             for (uint i = 1; i < (unsigned int)pIndoor->pFaceExtras.size(); ++i) {
@@ -1405,8 +1403,7 @@ void sub_44892E_set_faces_bit(int sCogNumber, FaceAttribute bit, int on) {
     }
 }
 
-//----- (0044882F) --------------------------------------------------------
-void SetDecorationSprite(uint16_t uCog, bool bHide, const char *pFileName) {
+void setDecorationSprite(uint16_t uCog, bool bHide, const char *pFileName) {
     for (size_t i = 0; i < pLevelDecorations.size(); i++) {
         if (pLevelDecorations[i].uCog == uCog) {
             if (pFileName && strcmp(pFileName, "0")) {

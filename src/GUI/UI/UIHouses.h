@@ -37,7 +37,11 @@ void ArmorShopDialog();
 void SimpleHouseDialog();
 void OnSelectShopDialogueOption(DIALOGUE_TYPE option);
 void PrepareHouse(HOUSE_ID house);  // idb
-bool EnterHouse(HOUSE_ID uHouseID);
+
+/**
+ * @offset 0x44622E
+ */
+bool enterHouse(HOUSE_ID uHouseID);
 void BackToHouseMenu();
 
 void InitializaDialogueOptions_Tavern(BuildingType type);  // idb

@@ -230,10 +230,20 @@ void InitializeTurnBasedAnimations(void *);
 unsigned int GetGravityStrength();
 void GameUI_StatusBar_Update(bool force_hide = false);
 
-void sub_44861E_set_texture(unsigned int uFaceCog, const char *pFilename);
-void sub_44892E_set_faces_bit(int sCogNumber, FaceAttribute bit, int on);
-void SetDecorationSprite(uint16_t uCog, bool bHide,
-                         const char *pFileName);  // idb
+/**
+ * @offset 0x44861E
+ */
+void setTexture(unsigned int uFaceCog, const char *pFilename);
+
+/**
+ * @offset 0x44892E
+ */
+void setFacesBit(int sCogNumber, FaceAttribute bit, int on);
+
+/**
+ * @offset 0x44882F
+ */
+void setDecorationSprite(uint16_t uCog, bool bHide, const char *pFileName);  // idb
 void _494035_timed_effects__water_walking_damage__etc();
 
 /**

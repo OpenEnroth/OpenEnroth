@@ -29,7 +29,7 @@
 ChestList *pChestList;
 std::vector<Chest> vChests;
 
-bool Chest::Open(int uChestID) {
+bool Chest::open(int uChestID) {
     ODMFace *pODMFace;                // eax@19
     BLVFace *pBLVFace;                // eax@20
     int pObjectX = 0;                     // ebx@21
@@ -421,7 +421,7 @@ void Chest::PlaceItems(int uChestID) {  // only sued for setup
     vChests[uChestID].SetInitialized(true);
 }
 
-void Chest::ToggleFlag(int uChestID, CHEST_FLAG uFlag, bool bValue) {
+void Chest::toggleFlag(int uChestID, CHEST_FLAG uFlag, bool bValue) {
     if (uChestID >= 0 && uChestID <= 19) {
         if (bValue)
             vChests[uChestID].uFlags |= uFlag;
