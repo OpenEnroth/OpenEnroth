@@ -2,6 +2,8 @@
 
 struct Player;
 struct ItemGen;
+struct _2devent;
+
 // Class to calculate various prices and overall deal with them
 class PriceCalculator {
  public:
@@ -106,5 +108,16 @@ class PriceCalculator {
      */
     static int playerMerchant(const Player *player);
 
-    static int skillLearningCostForPlayer(const Player *player, float priceMultiplier);
+    static int applyMerchantDiscount(const Player *player, int goldAmount);
+    static int applyMerchantDiscount(const Player *player, float goldAmount);
+
+    static int skillLearningCostForPlayer(const Player *player, const _2devent &house);
+    
+    static int transportCostForPlayer(const Player *player, const _2devent &house);
+
+    static int tavernRoomCostForPlayer(const Player *player, const _2devent &house);
+
+    static int tavernFoodCostForPlayer(const Player *player, const _2devent &house);
+
+    static int trainingCostForPlayer(const Player *player, const _2devent &house);
 };

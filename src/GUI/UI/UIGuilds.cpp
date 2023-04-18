@@ -39,7 +39,7 @@ void GuildDialog() {
     working_window.uFrameZ = 334;
 
     int pPrice = PriceCalculator::skillLearningCostForPlayer(pPlayers[pParty->getActiveCharacter()],
-                                                             p2DEvents[window_SpeakInHouse->wData.val - 1].fPriceMultiplier);
+                                                             p2DEvents[window_SpeakInHouse->wData.val - 1]);
 
     if (dialog_menu_id == DIALOGUE_MAIN) {  // change to switch??
         if (!_449B57_test_bit(pPlayers[pParty->getActiveCharacter()]->_achieved_awards_bits, guild_membership_flags[window_SpeakInHouse->wData.val - HOUSE_FIRE_GUILD_INITIATE_EMERALD_ISLE])) {

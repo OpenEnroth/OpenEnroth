@@ -974,7 +974,6 @@ void PlayHouseSound(unsigned int uHouseID, HouseSoundID sound) {
 void OnSelectShopDialogueOption(DIALOGUE_TYPE option) {
     int experience_for_next_level;  // eax@5
     signed int v36;                 // esi@227
-    int pPrice;                     // ecx@227
 
     if (!pDialogueWindow->pNumPresenceButton) return;
     render->ClearZBuffer();
@@ -1199,14 +1198,8 @@ void OnSelectShopDialogueOption(DIALOGUE_TYPE option) {
     default:
     {
         if (IsSkillLearningDialogue(option)) {
-            float mul = p2DEvents[window_SpeakInHouse->wData.val - 1].flt_24;
-            if (p2DEvents[window_SpeakInHouse->wData.val - 1].uType >= BuildingType_FireGuild &&
-                p2DEvents[window_SpeakInHouse->wData.val - 1].uType <= BuildingType_SelfGuild) {
-                // guild prices use the other multiplier
-                mul = p2DEvents[window_SpeakInHouse->wData.val - 1].fPriceMultiplier;
-            }
-
-            pPrice = PriceCalculator::skillLearningCostForPlayer(pPlayers[pParty->getActiveCharacter()], mul);
+            int pPrice = PriceCalculator::skillLearningCostForPlayer(pPlayers[pParty->getActiveCharacter()],
+                                                                         p2DEvents[window_SpeakInHouse->wData.val - 1]);  // ecx@227
             auto skill = GetLearningDialogueSkill(option);
             if (skillMaxMasteryPerClass[pPlayers[pParty->getActiveCharacter()]->classType][skill] != PLAYER_SKILL_MASTERY_NONE) {
                 if (!pPlayers[pParty->getActiveCharacter()]->pActiveSkills[skill]) {
@@ -1256,12 +1249,8 @@ void TravelByTransport() {
 
     assert(pParty->hasActiveCharacter()); // code in this function couldn't handle pParty->getActiveCharacter() = 0 and crash
 
-    int base_price = p2DEvents[window_SpeakInHouse->wData.val - 1].uType == BuildingType_Stables ? 25 : 50;
-    base_price *= p2DEvents[window_SpeakInHouse->wData.val - 1].fPriceMultiplier;
-    int pPrice = base_price * (100 - PriceCalculator::playerMerchant(pPlayers[pParty->getActiveCharacter()])) / 100;
-    if (pPrice < base_price / 3) {
-        pPrice = base_price / 3;
-    }
+    int pPrice = PriceCalculator::transportCostForPlayer(&pParty->pPlayers[pParty->getActiveCharacter()],
+                                                         p2DEvents[window_SpeakInHouse->wData.val - 1]);
     int route_id = window_SpeakInHouse->wData.val - HOUSE_STABLES_HARMONDALE;
 
     if (dialog_menu_id == DIALOGUE_MAIN) {
@@ -1628,13 +1617,9 @@ void BankDialog() {
 
 //----- (004B8285) --------------------------------------------------------
 void TavernDialog() {
-    int pPriceRoom;
-    int pPriceFood;
-    int pPriceSkill;
     int pItemNum;
     double v2;                // st7@1
     int pNumString;           // edi@16
-    signed int v9;            // esi@16
     GUIButton *pButton;       // eax@65
     int pSkillCount;
     signed int pOptionsCount;       // edi@77
@@ -1653,26 +1638,15 @@ void TavernDialog() {
     dialog_window.uFrameX = 483;
     dialog_window.uFrameWidth = 143;
     dialog_window.uFrameZ = 334;
-    v2 = p2DEvents[window_SpeakInHouse->wData.val - 1].fPriceMultiplier;
 
     // TODO(pskelton): check this behaviour
     if (!pParty->hasActiveCharacter())  // avoid nzi
         pParty->setActiveToFirstCanAct();
 
-    pPriceRoom = ((v2 * v2) / 10) * (100 - PriceCalculator::playerMerchant(pPlayers[pParty->getActiveCharacter()])) / 100;  // nzi
-    if (pPriceRoom < ((v2 * v2) / 10) / 3) pPriceRoom = ((v2 * v2) / 10) / 3;
-    if (pPriceRoom <= 0) {
-        pPriceRoom = 1;
-    }
+    const _2devent &house = p2DEvents[window_SpeakInHouse->wData.val - 1];
 
-    pPriceFood = ((v2 * v2) * v2 / 100) * (100 - PriceCalculator::playerMerchant(pPlayers[pParty->getActiveCharacter()])) / 100;
-    if (pPriceFood < ((v2 * v2) * v2 / 100) / 3) {
-        pPriceFood = ((v2 * v2) * v2 / 100) / 3;
-    }
-
-    if (pPriceFood <= 0) {
-        pPriceFood = 1;
-    }
+    int pPriceRoom = PriceCalculator::tavernRoomCostForPlayer(pPlayers[pParty->getActiveCharacter()], house);
+    int pPriceFood = PriceCalculator::tavernFoodCostForPlayer(pPlayers[pParty->getActiveCharacter()], house);
 
     switch (dialog_menu_id) {
     case DIALOGUE_MAIN:
@@ -1845,10 +1819,7 @@ void TavernDialog() {
     {
         if (!HouseUI_CheckIfPlayerCanInteract()) return;
         pSkillCount = 0;
-        v9 = (int64_t)(p2DEvents[
-            window_SpeakInHouse->wData.val - 1].flt_24 * 500.0);
-        pPriceSkill = v9 * (100 - PriceCalculator::playerMerchant(pPlayers[pParty->getActiveCharacter()])) / 100;
-        if (pPriceSkill < v9 / 3) pPriceSkill = v9 / 3;
+        int pPriceSkill = PriceCalculator::skillLearningCostForPlayer(&pParty->pPlayers[pParty->getActiveCharacter()], house);
         all_text_height = 0;
         for (int i = pDialogueWindow->pStartingPosActiveItem;
             i < pDialogueWindow->pStartingPosActiveItem +
@@ -2142,15 +2113,8 @@ void TempleDialog() {
     if (dialog_menu_id == DIALOGUE_LEARN_SKILLS) {
         if (HouseUI_CheckIfPlayerCanInteract()) {
             all_text_height = 0;
-            pCurrentItem =
-                (int64_t)(p2DEvents[
-                    window_SpeakInHouse->wData.val -
-                    1]
-                    .flt_24 *
-                    500.0);
-            v64 = (signed int)(pCurrentItem * (100 - PriceCalculator::playerMerchant(pPlayers[pParty->getActiveCharacter()]))) / 100;
-            if (v64 < (signed int)pCurrentItem / 3)
-                v64 = (signed int)pCurrentItem / 3;
+            v64 = PriceCalculator::skillLearningCostForPlayer(&pParty->pPlayers[pParty->getActiveCharacter()],
+                                                              p2DEvents[window_SpeakInHouse->wData.val - 1]);
             pCurrentItem = 0;
             for (int i = pDialogueWindow->pStartingPosActiveItem;
                 i < pDialogueWindow->pNumPresenceButton +
@@ -2178,7 +2142,6 @@ void TrainingDialog(const char *s) {
     int v8;               // edx@4
     double v9;            // st7@6
     signed int v10;       // esi@6
-    int pPrice = 0;           // ecx@6
     int v14;              // esi@14
     int v33;              // eax@36
     unsigned int v36;     // eax@38
@@ -2188,7 +2151,6 @@ void TrainingDialog(const char *s) {
     int v49;                      // ebx@69
     GUIButton *pButton;           // eax@71
     int pTextHeight;              // eax@71
-    int v69;                      // [sp+70h] [bp-14h]@6
 
     GUIWindow training_dialog_window = *window_SpeakInHouse;
     training_dialog_window.uFrameX = 483;
@@ -2199,24 +2161,8 @@ void TrainingDialog(const char *s) {
     if (!pParty->hasActiveCharacter())  // avoid nzi
         pParty->setActiveToFirstCanAct();
 
-    v5 = 1000ull * pPlayers[pParty->getActiveCharacter()]->uLevel *
-        (pPlayers[pParty->getActiveCharacter()]->uLevel + 1) /
-        2;  // E n = n(n + 1) / 2
-            // v68 = pMaxLevelPerTrainingHallType[(unsigned
-            // int)window_SpeakInHouse->ptr_1C -
-            // HOUSE_TRAINING_HALL_EMERALD_ISLE];
-    if (pPlayers[pParty->getActiveCharacter()]->uExperience >= v5) {
-        v8 = pPlayers[pParty->getActiveCharacter()]->classType % 4 + 1;
-        if (v8 == 4) v8 = 3;
-        v9 = (double)pPlayers[pParty->getActiveCharacter()]->uLevel;
-        v69 = v8;
-        v10 = (int64_t)(v9 *
-            p2DEvents[window_SpeakInHouse->wData.val - 1]
-            .fPriceMultiplier *
-            (double)v8);
-        pPrice = v10 * (100 - PriceCalculator::playerMerchant(pPlayers[pParty->getActiveCharacter()])) / 100;
-        if (pPrice < v10 / 3) pPrice = v10 / 3;
-    }
+    int pPrice = PriceCalculator::trainingCostForPlayer(&pParty->pPlayers[pParty->getActiveCharacter()],
+                                                        p2DEvents[window_SpeakInHouse->wData.val - 1]);
     //-------------------------------------------------------
     all_text_height = 0;
     if (HouseUI_CheckIfPlayerCanInteract()) {
@@ -2392,11 +2338,8 @@ void TrainingDialog(const char *s) {
     //-------------------------------------------------------------
     if (dialog_menu_id == DIALOGUE_LEARN_SKILLS) {
         if (HouseUI_CheckIfPlayerCanInteract()) {
-            v14 = (int64_t)(p2DEvents[
-                window_SpeakInHouse->wData.val - 1].flt_24 * 500.0);
-            pPrice = v14 * (100 - PriceCalculator::playerMerchant(pPlayers[pParty->getActiveCharacter()])) / 100;
-
-            if (pPrice < v14 / 3) pPrice = v14 / 3;
+            pPrice = PriceCalculator::skillLearningCostForPlayer(&pParty->pPlayers[pParty->getActiveCharacter()],
+                                                                 p2DEvents[window_SpeakInHouse->wData.val - 1]);
             index = 0;
             for (int i = pDialogueWindow->pStartingPosActiveItem;
                 (signed int)i < pDialogueWindow->pNumPresenceButton +
@@ -2427,7 +2370,6 @@ void TrainingDialog(const char *s) {
   */
 void MercenaryGuildDialog() {
     signed int v3;                // esi@1
-    int pPrice;                   // ebx@1
     unsigned int v5;              // esi@5
     short *v6;                       // edi@6
     int all_text_height;          // eax@20
@@ -2441,10 +2383,19 @@ void MercenaryGuildDialog() {
     dialog_window.uFrameWidth = 143;
     dialog_window.uFrameZ = 334;
 
-    v32 = (uint8_t)(((p2DEvents[window_SpeakInHouse->wData.val - 1].uType != BuildingType_MercenaryGuild) - 1) & 0x96) + 100;
-    v3 = (int64_t)((double)v32 * p2DEvents[window_SpeakInHouse->wData.val - 1].fPriceMultiplier);
-    pPrice = v3 * (100 - PriceCalculator::playerMerchant(pPlayers[pParty->getActiveCharacter()])) / 100;
-    if (pPrice < v3 / 3) pPrice = v3 / 3;
+    /*
+     * archiving this code just in case
+     * I believe it is 250 gold cost for mercenary guild from mm6 and 100 for all other skill-learning house types in mm6
+     * but they aren't used in mm7, so I'm gonna assume 250 gold cost in price calculator
+     *
+     *  v32 = (uint8_t)(((p2DEvents[window_SpeakInHouse->wData.val - 1].uType != BuildingType_MercenaryGuild) - 1) & 0x96) + 100;
+     *  v3 = (int64_t)((double)v32 * p2DEvents[window_SpeakInHouse->wData.val - 1].fPriceMultiplier);
+     *  pPrice = v3 * (100 - PriceCalculator::playerMerchant(pPlayers[pParty->getActiveCharacter()])) / 100;
+     *  if (pPrice < v3 / 3) pPrice = v3 / 3;
+     */
+    int pPrice =
+        PriceCalculator::skillLearningCostForPlayer(pPlayers[pParty->getActiveCharacter()], p2DEvents[window_SpeakInHouse->wData.val - 1]);
+
     if (dialog_menu_id == DIALOGUE_MAIN) {
         if (!_449B57_test_bit(pPlayers[pParty->getActiveCharacter()]->_achieved_awards_bits, word_4F0754[2 * window_SpeakInHouse->wData.val])) {
             // 171 looks like Mercenary Stronghold message from NPCNews.txt in MM6

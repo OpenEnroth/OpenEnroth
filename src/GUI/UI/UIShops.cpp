@@ -237,14 +237,8 @@ void ShopDialogLearn(GUIWindow dialogwin) {
     uint item_num = 0;
     int all_text_height = 0;
 
-    
-    int baseprice = (int64_t)(p2DEvents[window_SpeakInHouse->wData.val - 1].flt_24 * 500.0);
-    int pPrice = baseprice * (100 - PriceCalculator::playerMerchant(pPlayers[pParty->getActiveCharacter()])) / 100;
-    if (pPrice < baseprice / 3) {
-        pPrice = baseprice / 3;
-    }
-    int pPrice = PriceCalculator::skillLearningCostForPlayer(pPlayers[pParty->getActiveCharacter()],
-                                                             p2DEvents[window_SpeakInHouse->wData.val - 1].flt_24);
+    int pPrice =
+        PriceCalculator::skillLearningCostForPlayer(pPlayers[pParty->getActiveCharacter()], p2DEvents[window_SpeakInHouse->wData.val - 1]);
 
     for (int i = pDialogueWindow->pStartingPosActiveItem;
         i < pDialogueWindow->pNumPresenceButton +
@@ -802,7 +796,6 @@ void UIShop_Buy_Identify_Repair() {
     ItemGen *bought_item = nullptr;      // esi@51
     int party_reputation;      // eax@55
     int v39;                   // eax@63
-    signed int v43;            // ebx@74
     uint16_t *pSkill;  // esi@77
     int v55;                   // [sp+0h] [bp-B4h]@26
     int a6;                    // [sp+98h] [bp-1Ch]@57
@@ -1201,8 +1194,7 @@ void UIShop_Buy_Identify_Repair() {
             if (IsSkillLearningDialogue(dialog_menu_id)) {
                 PLAYER_SKILL_TYPE skill = GetLearningDialogueSkill(dialog_menu_id);
                 uPriceItemService = PriceCalculator::skillLearningCostForPlayer(pPlayers[pParty->getActiveCharacter()],
-                                                                                p2DEvents[window_SpeakInHouse->wData.val - 1].flt_24);
-                if (uPriceItemService < v43 / 3) uPriceItemService = v43 / 3;
+                                                                                p2DEvents[window_SpeakInHouse->wData.val - 1]);
                 if (skillMaxMasteryPerClass[pPlayers[pParty->getActiveCharacter()]->classType][skill] != PLAYER_SKILL_MASTERY_NONE) {
                     pSkill = &pPlayers[pParty->getActiveCharacter()]->pActiveSkills[skill];
                     if (!*pSkill) {
