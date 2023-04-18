@@ -2240,7 +2240,6 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
 
             if (walkDelta < 2) {
                 // mute the walking sound when stopping
-                pParty->currentWalkingSound = SOUND_Invalid;
                 pAudioPlayer->stopWalkingSounds();
             } else {
                 // Delta limits for running/walking has been changed. Previously:
@@ -2274,7 +2273,6 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
                     }
 
                     if (sound != pParty->currentWalkingSound) {
-                        pParty->currentWalkingSound = SOUND_Invalid;
                         pAudioPlayer->stopWalkingSounds();
                         canStartNewSound = true;
                     }
@@ -2283,7 +2281,6 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
                         pAudioPlayer->playWalkSound(sound);
                     }
                 } else {
-                    pParty->currentWalkingSound = SOUND_Invalid;
                     pAudioPlayer->stopWalkingSounds();
                 }
             }

@@ -2530,7 +2530,6 @@ void ODM_ProcessPartyActions() {
 
             if (walkDelta < 2) {
                 // mute the walking sound when stopping
-                pParty->currentWalkingSound = SOUND_Invalid;
                 pAudioPlayer->stopWalkingSounds();
             } else {
                 // Delta limits for running/walking has been changed. Previously:
@@ -2562,7 +2561,6 @@ void ODM_ProcessPartyActions() {
                     }
 
                     if (sound != pParty->currentWalkingSound) {
-                        pParty->currentWalkingSound = SOUND_Invalid;
                         pAudioPlayer->stopWalkingSounds();
                         canStartNewSound = true;
                     }
@@ -2571,7 +2569,6 @@ void ODM_ProcessPartyActions() {
                         pAudioPlayer->playWalkSound(sound);
                     }
                 } else {
-                    pParty->currentWalkingSound = SOUND_Invalid;
                     pAudioPlayer->stopWalkingSounds();
                 }
             }
