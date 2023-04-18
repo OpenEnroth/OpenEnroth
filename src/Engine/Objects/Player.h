@@ -526,7 +526,7 @@ struct Player {
         };
         IndexedArray<PLAYER_SKILL, PLAYER_SKILL_FIRST, PLAYER_SKILL_LAST> pActiveSkills;
     };
-    unsigned char _achieved_awards_bits[64];
+    std::array<unsigned char, 64> _achieved_awards_bits;
     PlayerSpells spellbook;
     char _1F6_padding[2];
     int pure_luck_used;
@@ -581,12 +581,12 @@ struct Player {
     int sMana;
     unsigned int uBirthYear;
     PlayerEquipment pEquipment;
-    int field_1988[49];
+    std::array<int, 49> field_1988;
     char field_1A4C;
     char field_1A4D;
     char lastOpenedSpellbookPage;
     SPELL_TYPE uQuickSpell;
-    char playerEventBits[64];
+    std::array<unsigned char, 64> playerEventBits;
     char _some_attack_bonus;
     char field_1A91;
     char _melee_dmg_bonus;

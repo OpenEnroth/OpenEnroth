@@ -192,7 +192,6 @@ class Actor {
     int16_t field_22 = 0;
     ActorAttributes uAttributes = 0;
     int16_t sCurrentHP = 0;
-    char field_2A[2] = {};
     MonsterInfo pMonsterInfo;
     int16_t word_000084_range_attack = 0;
     int16_t word_000086_some_monster_id = 0;  // base monster class monsterlist id
@@ -225,7 +224,7 @@ class Actor {
     unsigned int uSummonerID = 0;
     unsigned int uLastCharacterIDToHit = 0;
     int dword_000334_unique_name = 0;
-    char field_338[12] = {};
+    std::array<char, 12> field_338 = {{}};
     bool donebloodsplat{ false };
 };
 #pragma pack(pop)

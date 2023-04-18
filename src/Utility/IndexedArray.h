@@ -95,6 +95,7 @@ class IndexedArray: public std::array<T, Size> {
         IsZeroBased ? static_cast<index_type>(static_cast<ptrdiff_t>(SizeOrFirstIndex) - 1) : static_cast<index_type>(static_cast<ptrdiff_t>(LastIndex));
 
  public:
+    static constexpr size_t SIZE = Size;
     using key_type = index_type;
     using typename base_type::value_type;
     using typename base_type::reference;
