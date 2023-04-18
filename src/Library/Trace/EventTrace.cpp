@@ -1,6 +1,5 @@
 #include "EventTrace.h"
 
-#include <fstream>
 #include <memory>
 #include <string>
 
@@ -8,6 +7,9 @@
 #include "Library/Json/Json.h"
 
 #include "Io/Key.h" // TODO(captainurist): doesn't belong here
+
+#include "Utility/Streams/FileInputStream.h"
+#include "Utility/Streams/FileOutputStream.h"
 
 #include "PaintEvent.h"
 
@@ -178,25 +180,19 @@ MM_DEFINE_JSON_STRUCT_SERIALIZATION_FUNCTIONS(EventTrace, (
 ))
 
 void EventTrace::saveToFile(std::string_view path, const EventTrace &trace) {
-    std::ofstream f;
-    f.exceptions(std::ios_base::failbit | std::ios_base::badbit);
-    f.open(std::string(path));
+    FileOutputStream output(path);
 
     // TODO(captainurist): well, nlohmann json is retarded in that it chokes if we throw exceptions inside
     // to_json calls for individual elements. Fix upstream?
     // Note: there is an example in tests to reproduce.
     Json json;
     to_json(json, trace);
-    f << std::setw(4) << json;
+    output.write(json.dump(/*indent=*/4));
 }
 
 EventTrace EventTrace::loadFromFile(std::string_view path, PlatformWindow *window) {
-    std::ifstream f;
-    f.exceptions(std::ios_base::failbit | std::ios_base::badbit);
-    f.open(std::string(path));
-
-    Json json;
-    f >> json;
+    FileInputStream input(path);
+    Json json = Json::parse(input.handle());
 
     EventTrace result;
     from_json(json, result);

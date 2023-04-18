@@ -24,6 +24,16 @@ class OutputStream {
     virtual void write(const void *data, size_t size) = 0;
 
     /**
+     * Writes provided string into the output stream.
+     *
+     * @param s                         String to write.
+     * @throws Exception                On error.
+     */
+    void write(std::string_view s) {
+        write(s.data(), s.size());
+    }
+
+    /**
      * Flushes this output stream if it provides any kind of buffering.
      *
      * @throws Exception                On error.

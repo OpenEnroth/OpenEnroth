@@ -19,8 +19,13 @@ class FileOutputStream : public OutputStream {
     }
 
     virtual void write(const void *data, size_t size) override;
+    using OutputStream::write;
     virtual void flush() override;
     virtual void close() override;
+
+    FILE *handle() {
+        return _file;
+    }
 
  private:
     void closeInternal(bool canThrow);
