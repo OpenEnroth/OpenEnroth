@@ -458,6 +458,13 @@ void AudioPlayer::soundDrain() {
     }
 }
 
+bool AudioPlayer::isWalkingSoundPlays() {
+    if (_currentWalkingSample) {
+        return !_currentWalkingSample->IsStopped();
+    }
+    return false;
+}
+
 bool AudioSamplePool::playNew(PAudioSample sample, PAudioDataSource source, bool positional) {
     update();
     if (!sample->Open(source)) {
