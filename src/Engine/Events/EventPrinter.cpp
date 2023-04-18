@@ -661,78 +661,54 @@ std::string EventIR::toString() {
     switch (type) {
         case EVENT_Exit:
             return fmt::format("{}: Exit", step);
-            break;
         case EVENT_SpeakInHouse:
             if (p2DEvents[data.house_id - 1].pName != NULL) {
                 return fmt::format("{}: SpeakInHouse({}, \"{}\")", step, data.house_id, p2DEvents[data.house_id - 1].pName);
             } else {
                 return fmt::format("{}: SpeakInHouse({})", step, data.house_id);
             }
-            break;
         case EVENT_PlaySound:
             return fmt::format("{}: PlaySound({}, ({}, {}))", step, (int)data.sound_descr.sound_id, data.sound_descr.x, data.sound_descr.y);
-            break;
         case EVENT_MouseOver:
             return fmt::format("{}: MouseOver(\"{}\")", step, &pLevelStr[pLevelStrOffsets[data.text_id]]);
-            break;
         case EVENT_LocationName:
             return fmt::format("{}: LocationName", step);
-            break;
         case EVENT_MoveToMap:
             return fmt::format("{}: MoveToMap(({}, {}, {}), {}, {}, {}, {}, {}, \"{}\")", step, data.move_map_descr.x, data.move_map_descr.y, data.move_map_descr.z, data.move_map_descr.yaw, data.move_map_descr.pitch, data.move_map_descr.zspeed, data.move_map_descr.anim_id, data.move_map_descr.exit_pic_id, str);
-            break;
         case EVENT_OpenChest:
             return fmt::format("{}: OpenChest({})", step, data.chest_id);
-            break;
         case EVENT_ShowFace:
             return fmt::format("{}: SetExpression({}, {})", step, who, (int)data.expr_id);
-            break;
         case EVENT_ReceiveDamage:
             return fmt::format("{}: ReceiveDamage({}, {})", step, data.damage_descr.damage, (int)data.damage_descr.damage_type);
-            break;
         case EVENT_SetSnow:
             return fmt::format("{}: SetSnow({}, {})", step, data.snow_descr.is_nop, data.snow_descr.is_enable);
-            break;
         case EVENT_SetTexture:
             return fmt::format("{}: SetTexture({}, \"{}\")", step, data.sprite_texture_descr.cog, str);
-            break;
         case EVENT_ShowMovie:
             return fmt::format("{}: ShowMovie({}, {})", step, str, data.movie_unknown_field);
-            break;
         case EVENT_SetSprite:
             return fmt::format("{}: SetSprite({}, {}, \"{}\")", step, data.sprite_texture_descr.cog, data.sprite_texture_descr.hide, str);
-            break;
         case EVENT_Compare:
             return fmt::format("{}: If({}) -> {}", step, getVariableCompareStr(data.variable_descr.type, data.variable_descr.value), target_step);
-            break;
         case EVENT_ChangeDoorState:
             return fmt::format("{}: ChangeDoorState({}, {})", step, data.door_descr.door_id, data.door_descr.door_new_state);
-            break;
         case EVENT_Add:
             return fmt::format("{}: Add({})", step, getVariableSetStr(data.variable_descr.type, data.variable_descr.value));
-            break;
         case EVENT_Substract:
             return fmt::format("{}: Sub({})", step, getVariableSetStr(data.variable_descr.type, data.variable_descr.value));
-            break;
         case EVENT_Set:
             return fmt::format("{}: Set({})", step, getVariableSetStr(data.variable_descr.type, data.variable_descr.value));
-            break;
         case EVENT_SummonMonsters:
             return fmt::format("{}: SummonMonster({}, {}, {}, ({}, {}, {}), {}, {})", step, data.monster_descr.type, data.monster_descr.level, data.monster_descr.count, data.monster_descr.x, data.monster_descr.y, data.monster_descr.z, data.monster_descr.group, data.monster_descr.name_id);
-            break;
         case EVENT_CastSpell:
             return fmt::format("{}: CastSpell({}, {}, {}, ({}, {}, {}), ({}, {}, {}))", step, (int)data.spell_descr.spell_id, (int)data.spell_descr.spell_mastery, data.spell_descr.spell_level, data.spell_descr.fromx, data.spell_descr.fromy, data.spell_descr.fromz, data.spell_descr.tox, data.spell_descr.toy, data.spell_descr.toz);
-            break;
         case EVENT_SpeakNPC:
             return fmt::format("{}: SpeakNPC({})", step, data.npc_descr.npc_id);
-            break;
         case EVENT_SetFacesBit:
             return fmt::format("{}: SetFacesBit({}, 0x{:x}, {})", step, data.faces_bit_descr.cog, (int)data.faces_bit_descr.face_bit, data.faces_bit_descr.is_on);
-            break;
         case EVENT_ToggleActorFlag:
             return fmt::format("{}: ToggleActorFlag({}, 0x{:x}, {})", step, data.actor_flag_descr.id, (int)data.actor_flag_descr.attr, data.actor_flag_descr.is_set); // TODO: print attr
-
-            break;
         case EVENT_RandomGoTo:
             {
                 std::string jmps;
@@ -744,64 +720,47 @@ std::string EventIR::toString() {
                     }
                 }
                 return fmt::format("{}: RandomJmp -> ({})", step, jmps);
-                break;
             }
         case EVENT_InputString:
             return fmt::format("{}: InputString(\"{}\")", step, &pLevelStr[pLevelStrOffsets[data.text_id]]);
-            break;
         case EVENT_StatusText:
             if (activeLevelDecoration) {
                 return fmt::format("{}: StatusMessage(\"{}\")", step, pNPCTopics[data.text_id - 1].pText);
             } else {
                 return fmt::format("{}: StatusMessage(\"{}\")", step, &pLevelStr[pLevelStrOffsets[data.text_id]]);
             }
-            break;
         case EVENT_ShowMessage:
             if (activeLevelDecoration) {
                 return fmt::format("{}: ShowMessage(\"{}\")", step, pNPCTopics[data.text_id - 1].pText);
             } else {
                 return fmt::format("{}: ShowMessage(\"{}\")", step, &pLevelStr[pLevelStrOffsets[data.text_id]]);
             }
-            break;
         case EVENT_OnTimer:
             return fmt::format("{}: OnTimer({}yr, {}m, {}w, {}hr, {}min, {}sec, {})", step, data.timer_descr.years, data.timer_descr.months, data.timer_descr.weeks, data.timer_descr.hours, data.timer_descr.minutes, data.timer_descr.seconds, data.timer_descr.alternative_interval);
-            break;
         case EVENT_ToggleIndoorLight:
             return fmt::format("{}: ToggleIndoorLight({}, {})", step, data.light_descr.light_id, data.light_descr.is_enable);
-            break;
         case EVENT_PressAnyKey:
             return fmt::format("{}: PressAnyKey()", step);
-            break;
         case EVENT_SummonItem:
             return fmt::format("{}: SummonItem({}, ({}, {}, {}), {}, {}, {})", step, (int)data.summon_item_descr.sprite, data.summon_item_descr.x, data.summon_item_descr.y, data.summon_item_descr.z, data.summon_item_descr.speed, data.summon_item_descr.count, data.summon_item_descr.random_rotate);
-            break;
         case EVENT_ForPartyMember:
             return fmt::format("{}: ForPartyMember({})", step, who);
-            break;
         case EVENT_Jmp:
             return fmt::format("{}: Jmp -> {}", step, target_step);
-            break;
         case EVENT_OnMapReload:
             return fmt::format("{}: OnMapReload", step);
-            break;
         case EVENT_OnLongTimer:
             return fmt::format("{}: OnLongTimer({}yr, {}m, {}w, {}hr, {}min, {}sec, {})", step, data.timer_descr.years, data.timer_descr.months, data.timer_descr.weeks, data.timer_descr.hours, data.timer_descr.minutes, data.timer_descr.seconds, data.timer_descr.alternative_interval);
-            break;
         case EVENT_SetNPCTopic:
             return fmt::format("{}: SetNPCTopic({}, {}, {})", step, data.npc_topic_descr.npc_id, data.npc_topic_descr.index, data.npc_topic_descr.event_id);
-            break;
         case EVENT_MoveNPC:
             return fmt::format("{}: MoveNPC({}, {})", step, data.npc_move_descr.npc_id, data.npc_move_descr.location_id);
-            break;
         case EVENT_GiveItem:
             return fmt::format("{}: GiveItem({}, {}, {})", step, (int)data.give_item_descr.treasure_level, data.give_item_descr.treasure_type, (int)data.give_item_descr.item_id);
-            break;
         case EVENT_ChangeEvent:
             return fmt::format("{}: ChangeEvent({})", step, data.event_id);
-            break;
         case EVENT_CheckSkill:
              return fmt::format("{}: CheckSkill({}, {}, {}) -> {}", step, (int)data.check_skill_descr.skill_type, (int)data.check_skill_descr.skill_mastery, (int)data.check_skill_descr.skill_level, target_step);
-            break;
         case EVENT_OnCanShowDialogItemCmp:
             // TODO
             break;
@@ -813,25 +772,20 @@ std::string EventIR::toString() {
             break;
         case EVENT_SetNPCGroupNews:
             return fmt::format("{}: SetNPCGroupNews({}, {})", step, data.npc_groups_descr.groups_id, data.npc_groups_descr.group);
-            break;
         case EVENT_SetActorGroup:
             // TODO
             break;
         case EVENT_NPCSetItem:
             return fmt::format("{}: NPCSetItem({}, {}, {})", step, data.npc_item_descr.id, (int)data.npc_item_descr.item, data.npc_item_descr.is_give);
-            break;
         case EVENT_SetNPCGreeting:
             return fmt::format("{}: SetNpcGreeting({}, {})", step, data.npc_descr.npc_id, data.npc_descr.greeting);
-            break;
         case EVENT_IsActorAlive:
             return fmt::format("{}: IsActorAlive({}, {}, {}) -> {}", step, data.actor_descr.type, data.actor_descr.param, data.actor_descr.num, target_step);
-            break;
         case EVENT_IsActorAssasinated:
             // TODO
             break;
         case EVENT_OnMapLeave:
             return fmt::format("{}: OnMapLeave", step);
-            break;
         case EVENT_ChangeGroup:
             // TODO
             break;
@@ -840,19 +794,14 @@ std::string EventIR::toString() {
             break;
         case EVENT_CheckSeason:
             return fmt::format("{}: CheckSeason({}) -> {}", step, data.season, target_step);
-            break;
         case EVENT_ToggleActorGroupFlag:
             return fmt::format("{}: ToggleActorGroupFlag({}, 0x{:x}, {})", step, data.actor_flag_descr.id, (int)data.actor_flag_descr.attr, data.actor_flag_descr.is_set); // TODO: print attr
-            break;
         case EVENT_ToggleChestFlag:
             return fmt::format("{}: ToggleChestFlag({}, 0x{:x}, {})", step, data.chest_flag_descr.chest_id, (int)data.chest_flag_descr.flag, data.chest_flag_descr.is_set);
-            break;
         case EVENT_CharacterAnimation:
             return fmt::format("{}: SetReaction({}, {})", step, who, (int)data.speech_id);
-            break;
         case EVENT_SetActorItem:
             return fmt::format("{}: SetActorItem({}, {}, {})", step, data.npc_item_descr.id, (int)data.npc_item_descr.item, data.npc_item_descr.is_give);
-            break;
         case EVENT_OnDateTimer:
             // TODO
             break;
