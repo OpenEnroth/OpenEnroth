@@ -670,7 +670,7 @@ void ProcessActorCollisionsODM(Actor &actor, bool isFlying) {
                 bool otherFriendly = pActors[id].pMonsterInfo.uHostilityType == MonsterInfo::Hostility_Friendly;
                 if (isInCrowd) {
                     Actor::AI_StandOrBored(actor.id, PID(OBJECT_Player, 0), 0, nullptr);
-                } else if (isFriendly && !otherFriendly) { // TODO(captainurist): drop "!" and retrace
+                } else if (isFriendly && otherFriendly) {
                     Actor::AI_FaceObject(actor.id, collision_state.pid, 0, nullptr);
                 } else {
                     Actor::AI_Flee(actor.id, collision_state.pid, 0, nullptr);
@@ -688,7 +688,6 @@ void ProcessActorCollisionsODM(Actor &actor, bool isFlying) {
                 }
             } else {
                 Actor::AI_FaceObject(actor.id, collision_state.pid, 0, nullptr);
-                break; // TODO(captainurist): drop this break & retrace
             }
         }
 
@@ -712,7 +711,8 @@ void ProcessActorCollisionsODM(Actor &actor, bool isFlying) {
                     }
                 } else {
                     float velocityDotNormal = dot(face->pFacePlane.vNormal, actor.vVelocity.toFloat());
-                    // TODO(captainurist): in BLV code we have std::abs(velocityDotNormal) here, and adding std::abs affects traces
+                    // TODO(captainurist): in BLV code we have std::abs(velocityDotNormal) here, and adding std::abs affects traces.
+                    // Note that not all copies of this code have std::abs. Why?
                     velocityDotNormal = std::max(velocityDotNormal, collision_state.speed / 8);
 
                     actor.vVelocity += (velocityDotNormal * face->pFacePlane.vNormal).toShort();
