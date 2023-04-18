@@ -23,6 +23,10 @@ class FileInputStream : public InputStream {
     virtual void close() override;
     void seek(size_t pos);
 
+    FILE *handle() {
+        return _file;
+    }
+
  private:
     void closeInternal(bool canThrow);
 
