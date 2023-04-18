@@ -106,6 +106,8 @@ struct ItemGen {  // 0x24
 
 
     ITEM_TYPE uItemID = ITEM_NULL;        // 0
+    // TODO(captainurist): this is actually CHARACTER_ATTRIBUTE_TYPE plus one (because 0 means no enchantment),
+    // with values in [0..24], i.e. up to & including CHARACTER_ATTRIBUTE_SKILL_UNARMED
     int32_t uEnchantmentType = ITEM_ENCHANTMENT_NULL;       // 4 // For potion it's potion strength.
     int32_t m_enchantmentStrength = 0;  // 8
     ITEM_ENCHANTMENT special_enchantment = ITEM_ENCHANTMENT_NULL;  // 0c // For gold it's amount
