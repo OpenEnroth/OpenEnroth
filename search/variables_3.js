@@ -82,7 +82,7 @@ var searchData=
   ['converter_79',['converter',['../classAVVideoStream.html#a0a4658d12b7f666308465944a909bd78',1,'AVVideoStream::converter()'],['../classAVAudioStream.html#ab8bce71cf01032ee907285a000942e59',1,'AVAudioStream::converter()']]],
   ['cornflowerblue_80',['CornFlowerBlue',['../classColorTable.html#a7f86dab334d142cb89066cd76e792d7f',1,'ColorTable']]],
   ['count_81',['count',['../classFlatHirelings.html#afe7d0540ee80af97a3a0599dd376263e',1,'FlatHirelings']]],
-  ['countereventvalues_82',['CounterEventValues',['../structPartyTimeStruct.html#abc95a39d551e3477dfb99c4aa588e85a',1,'PartyTimeStruct::CounterEventValues()'],['../structPartyTimeStruct__MM7.html#af2ca48a4316b062722e2657a1461bc7a',1,'PartyTimeStruct_MM7::CounterEventValues()']]],
+  ['countereventvalues_82',['CounterEventValues',['../structPartyTimeStruct.html#abc95a39d551e3477dfb99c4aa588e85a',1,'PartyTimeStruct::CounterEventValues()'],['../structPartyTimeStruct__MM7.html#aa1a7aa24acd06a67727bfabe27a21c7a',1,'PartyTimeStruct_MM7::CounterEventValues()']]],
   ['create_5fper_5fframe_83',['create_per_frame',['../structeffect__params__struct.html#afbf9839938a541ab2ed8e7127d7d8674',1,'effect_params_struct']]],
   ['cred_5ftexture_84',['cred_texture',['../classGUICredits.html#a76153f23b2c2282d971df8c3cbeb7954',1,'GUICredits']]],
   ['credits_85',['Credits',['../classGameConfig_1_1Gamepad.html#a16a9e36ae66d73023bea03ed8c047708',1,'GameConfig::Gamepad::Credits()'],['../classGameConfig_1_1Keybindings.html#a2e4f1a40311cd6106aae833c283b1287',1,'GameConfig::Keybindings::Credits()']]],

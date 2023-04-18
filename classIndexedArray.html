@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;fa0bcaa</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;8868c81</span>
    </div>
   </td>
  </tr>
@@ -72,6 +72,7 @@ $(function() {
   <div class="summary">
 <a href="#pub-types">Public Types</a> &#124;
 <a href="#pub-methods">Public Member Functions</a> &#124;
+<a href="#pub-static-attribs">Static Public Attributes</a> &#124;
 <a href="#pri-types">Private Types</a> &#124;
 <a href="#pri-static-methods">Static Private Member Functions</a> &#124;
 <a href="#pri-static-attribs">Static Private Attributes</a> &#124;
@@ -109,6 +110,11 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:afceab05ddc1942c69e9663a6a1dcdad5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a11b0069eebb4a5b762b640674c8ae6ad"><td class="memItemLeft" align="right" valign="top">constexpr const_reference&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classIndexedArray.html#a11b0069eebb4a5b762b640674c8ae6ad">operator[]</a> (<a class="el" href="classIndexedArray.html#af5c5b34472590d5a46b82139f41857e1">key_type</a> n) const noexcept</td></tr>
 <tr class="separator:a11b0069eebb4a5b762b640674c8ae6ad"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-static-attribs" name="pub-static-attribs"></a>
+Static Public Attributes</h2></td></tr>
+<tr class="memitem:a72100de0e8cc043770f6ef7ffd6e83e8"><td class="memItemLeft" align="right" valign="top">static constexpr size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classIndexedArray.html#a72100de0e8cc043770f6ef7ffd6e83e8">SIZE</a> = <a class="el" href="structSize.html">Size</a></td></tr>
+<tr class="separator:a72100de0e8cc043770f6ef7ffd6e83e8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pri-types" name="pri-types"></a>
 Private Types</h2></td></tr>
@@ -173,7 +179,7 @@ class IndexedArray&lt; T, SizeOrFirstIndex, LastIndex, IsZeroBased, Size &gt;</d
 <div class="line">    userMessageMap[<a class="code hl_variable" href="Json__ut_8cpp.html#a7e98b8a17c0aad30ba64d47b74e2a6c1">i</a>] = defaultMessageMap[<a class="code hl_variable" href="Json__ut_8cpp.html#a7e98b8a17c0aad30ba64d47b74e2a6c1">i</a>];</div>
 <div class="ttc" id="aJson__ut_8cpp_html_a7e98b8a17c0aad30ba64d47b74e2a6c1"><div class="ttname"><a href="Json__ut_8cpp.html#a7e98b8a17c0aad30ba64d47b74e2a6c1">i</a></div><div class="ttdeci">i</div><div class="ttdef"><b>Definition:</b> Json_ut.cpp:79</div></div>
 <div class="ttc" id="aclassIndexedArray_html"><div class="ttname"><a href="classIndexedArray.html">IndexedArray</a></div><div class="ttdef"><b>Definition:</b> IndexedArray.h:84</div></div>
-<div class="ttc" id="aclassIndexedArray_html_a297952753885a02c895ab6154dbbe8f8"><div class="ttname"><a href="classIndexedArray.html#a297952753885a02c895ab6154dbbe8f8">IndexedArray::indices</a></div><div class="ttdeci">constexpr Segment&lt; key_type &gt; indices() const</div><div class="ttdef"><b>Definition:</b> IndexedArray.h:167</div></div>
+<div class="ttc" id="aclassIndexedArray_html_a297952753885a02c895ab6154dbbe8f8"><div class="ttname"><a href="classIndexedArray.html#a297952753885a02c895ab6154dbbe8f8">IndexedArray::indices</a></div><div class="ttdeci">constexpr Segment&lt; key_type &gt; indices() const</div><div class="ttdef"><b>Definition:</b> IndexedArray.h:168</div></div>
 </div><!-- fragment --><dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
     <tr><td class="paramname">T</td><td>Array element type. </td></tr>
@@ -550,6 +556,30 @@ template&lt;class T , auto SizeOrFirstIndex, auto LastIndex = detail::INVALID_LA
 <b>Initial value:</b><div class="fragment"><div class="line">=</div>
 <div class="line">        IsZeroBased ? <span class="keyword">static_cast&lt;</span><a class="code hl_typedef" href="classIndexedArray.html#a43b19570c7cc05e0cffd8d34bf725cdc">index_type</a><span class="keyword">&gt;</span>(<span class="keyword">static_cast&lt;</span>ptrdiff_t<span class="keyword">&gt;</span>(SizeOrFirstIndex) - 1) : static_cast&lt;<a class="code hl_typedef" href="classIndexedArray.html#a43b19570c7cc05e0cffd8d34bf725cdc">index_type</a>&gt;(static_cast&lt;ptrdiff_t&gt;(LastIndex))</div>
 </div><!-- fragment -->
+</div>
+</div>
+<a id="a72100de0e8cc043770f6ef7ffd6e83e8" name="a72100de0e8cc043770f6ef7ffd6e83e8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a72100de0e8cc043770f6ef7ffd6e83e8">&#9670;&#160;</a></span>SIZE</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class T , auto SizeOrFirstIndex, auto LastIndex = detail::INVALID_LAST_INDEX, bool IsZeroBased = std::is_same_v&lt;decltype(LastIndex), detail::LastIndex&gt;, ptrdiff_t Size = IsZeroBased ? static_cast&lt;ptrdiff_t&gt;(SizeOrFirstIndex) : static_cast&lt;ptrdiff_t&gt;(LastIndex) - static_cast&lt;ptrdiff_t&gt;(SizeOrFirstIndex) + 1&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">constexpr size_t <a class="el" href="classIndexedArray.html">IndexedArray</a>&lt; T, SizeOrFirstIndex, LastIndex, IsZeroBased, <a class="el" href="structSize.html">Size</a> &gt;::SIZE = <a class="el" href="structSize.html">Size</a></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span><span class="mlabel">constexpr</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
 </div>
 </div>
 <hr/>The documentation for this class was generated from the following file:<ul>
