@@ -210,7 +210,7 @@ std::string ItemGen::GetIdentifiedName() {
     if (!pItemTable->IsMaterialNonCommon(this)) {
         if (uEnchantmentType) {
             return std::string(pItemTable->pItems[uItemID].pName) + " " +
-                   pItemTable->pEnchantments[uEnchantmentType - 1].pOfName;
+                   pItemTable->standardEnchantments[uEnchantmentType - 1].pOfName;
         } else if (special_enchantment == ITEM_ENCHANTMENT_NULL) {
             return pItemTable->pItems[uItemID].pName;
         } else {
