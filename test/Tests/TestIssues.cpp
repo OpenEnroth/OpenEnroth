@@ -26,25 +26,6 @@ static int partyItemCount() {
     return result;
 }
 
-GAME_TEST(Items, GenerateItem) {
-    // Calling GenerateItem many times shouldn't assert. Item enchantment types should be in [0, 24].
-    std::initializer_list<ITEM_TREASURE_LEVEL> levels = {
-        ITEM_TREASURE_LEVEL_1, ITEM_TREASURE_LEVEL_2, ITEM_TREASURE_LEVEL_3,
-        ITEM_TREASURE_LEVEL_4, ITEM_TREASURE_LEVEL_5, ITEM_TREASURE_LEVEL_6
-    };
-
-    ItemGen item;
-    for (int i = 0; i < 200; i++) {
-        for (ITEM_TREASURE_LEVEL level : levels) {
-            pItemTable->GenerateItem(level, 0, &item);
-            if (!item.isPotion()) { // For potions, uEnchantmentType is potion strength
-                EXPECT_GE(item.uEnchantmentType, 0);
-                EXPECT_LE(item.uEnchantmentType, 24);
-            }
-        }
-    }
-}
-
 // 100
 
 GAME_TEST(Issues, Issue123) {
@@ -656,6 +637,30 @@ GAME_TEST(Issues, Issue662) {
     pParty->pPlayers[3].skillAir = 5;
     EXPECT_EQ(pParty->pPlayers[3].GetItemsBonus(CHARACTER_ATTRIBUTE_SKILL_AIR),
               2);
+}
+
+GAME_TEST(Issues, Issue675) {
+    // GenerateItem used to generate invalid enchantments outside of the [0, 24] range in some cases.
+    // Also, GenerateItem used to assert.
+    std::initializer_list<ITEM_TREASURE_LEVEL> levels = {
+        ITEM_TREASURE_LEVEL_1, ITEM_TREASURE_LEVEL_2, ITEM_TREASURE_LEVEL_3,
+        ITEM_TREASURE_LEVEL_4, ITEM_TREASURE_LEVEL_5, ITEM_TREASURE_LEVEL_6
+    };
+
+    ItemGen item;
+    for (int i = 0; i < 200; i++) {
+        for (ITEM_TREASURE_LEVEL level : levels) {
+            pItemTable->GenerateItem(level, 0, &item);
+            if (IsPotion(item.uItemID)) {
+                // For potions, uEnchantmentType is potion strength.
+                EXPECT_GE(item.uEnchantmentType, 1);
+            } else {
+                // For non-potions, it's a number in [0, 24].
+                EXPECT_GE(item.uEnchantmentType, 0);
+                EXPECT_LE(item.uEnchantmentType, 24);
+            }
+        }
+    }
 }
 
 GAME_TEST(Issues, Issue691) {
