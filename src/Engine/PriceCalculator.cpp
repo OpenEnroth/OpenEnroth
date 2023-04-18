@@ -1,3 +1,5 @@
+#include <algorithm>
+
 #include "Engine/PriceCalculator.h"
 
 #include "Engine/Events2D.h"
@@ -207,7 +209,7 @@ int PriceCalculator::tavernFoodCostForPlayer(const Player *player, const _2deven
 
 int PriceCalculator::trainingCostForPlayer(const Player *player, const _2devent &house) {
     int trainPrice = 0;
-    long long expForNextLevel = 1000ll * player->uLevel * (player->uLevel + 1) / 2;
+    uint64_t expForNextLevel = 1000ull * player->uLevel * (player->uLevel + 1) / 2;
     if (player->uExperience >= expForNextLevel) { // can train
         int playerClassTier = player->classType % 4 + 1;
         if (playerClassTier == 4) {
@@ -220,5 +222,4 @@ int PriceCalculator::trainingCostForPlayer(const Player *player, const _2devent 
         }
     }
     return trainPrice;
-    
 }

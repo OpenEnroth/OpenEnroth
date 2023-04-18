@@ -2138,7 +2138,7 @@ void TempleDialog() {
 }
 
 void TrainingDialog(const char *s) {
-    uint64_t v5;  // edi@3
+    uint64_t expForNextLevel;  // edi@3
     int v8;               // edx@4
     double v9;            // st7@6
     signed int v10;       // esi@6
@@ -2163,6 +2163,7 @@ void TrainingDialog(const char *s) {
 
     int pPrice = PriceCalculator::trainingCostForPlayer(&pParty->pPlayers[pParty->getActiveCharacter()],
                                                         p2DEvents[window_SpeakInHouse->wData.val - 1]);
+    expForNextLevel = 1000ull * pParty->pPlayers[pParty->getActiveCharacter()].uLevel * (pParty->pPlayers[pParty->getActiveCharacter()].uLevel + 1) / 2;
     //-------------------------------------------------------
     all_text_height = 0;
     if (HouseUI_CheckIfPlayerCanInteract()) {
@@ -2194,10 +2195,10 @@ void TrainingDialog(const char *s) {
                                 pShopOptions[index] = shop_option_str_container.c_str();
 
                             } else {
-                                if (pPlayers[pParty->getActiveCharacter()]->uExperience < v5)
+                                if (pPlayers[pParty->getActiveCharacter()]->uExperience < expForNextLevel)
                                     shop_option_str_container = localization->FormatString(
                                         LSTR_XP_UNTIL_NEXT_LEVEL,
-                                        (uint)(v5 - pPlayers[pParty->getActiveCharacter()]->uExperience),
+                                        (uint)(expForNextLevel - pPlayers[pParty->getActiveCharacter()]->uExperience),
                                         pPlayers[pParty->getActiveCharacter()]->uLevel + 1);
                                 else
                                     shop_option_str_container = localization->FormatString(
@@ -2262,7 +2263,7 @@ void TrainingDialog(const char *s) {
                 [window_SpeakInHouse->wData.val -
                 HOUSE_TRAINING_HALL_EMERALD_ISLE]) {
                 if ((int64_t)pPlayers[pParty->getActiveCharacter()]->uExperience >=
-                    v5) {
+                    expForNextLevel) {
                     if (pParty->GetGold() >= pPrice) {
                         pParty->TakeGold(pPrice);
                         PlayHouseSound(
@@ -2314,7 +2315,7 @@ void TrainingDialog(const char *s) {
                 }
                 label = localization->FormatString(
                     LSTR_XP_UNTIL_NEXT_LEVEL,
-                    (unsigned int)(v5 - pPlayers[pParty->getActiveCharacter()]->uExperience),
+                    (unsigned int)(expForNextLevel - pPlayers[pParty->getActiveCharacter()]->uExperience),
                     pPlayers[pParty->getActiveCharacter()]->uLevel + 1);
                 v36 = (212 - pFontArrus->CalcTextHeight(
                         label, training_dialog_window.uFrameWidth, 0)) / 2 + 88;
@@ -2370,7 +2371,6 @@ void TrainingDialog(const char *s) {
   */
 void MercenaryGuildDialog() {
     signed int v3;                // esi@1
-    unsigned int v5;              // esi@5
     short *v6;                       // edi@6
     int all_text_height;          // eax@20
     int pTextHeight;              // eax@29
@@ -2423,7 +2423,6 @@ void MercenaryGuildDialog() {
     }
 
     if (HouseUI_CheckIfPlayerCanInteract()) {
-        v5 = 0;
         __debugbreak();  // what type of house that even is?
         // pSkillAvailabilityPerClass[8 + v58->uClass][4 + v23]
         // or
@@ -2449,10 +2448,8 @@ void MercenaryGuildDialog() {
             }
             PlayHouseSound(window_SpeakInHouse->wData.val, (HouseSoundID)v27);
         }
-    } else {
-        v5 = 0;
     }
-    pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 1, v5);
+    pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 1, 0);
 }
 
 void SimpleHouseDialog() {
