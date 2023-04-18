@@ -1,13 +1,14 @@
 #include "Engine/Events/EventParser.h"
-#include "Engine/Events/EventPrinter.h"
 
-std::map<int, std::vector<EventIR>> localEventsMap;
-std::map<int, std::vector<EventIR>> globalEventsMap;
+EventMap globalEventMap;
+EventMap localEventMap;
 
-void addEvent(void* pointer, bool isGlobal) {
-    _evt_raw *_evt = (_evt_raw*)pointer;
+EventIR EventIR::parse(void *data, size_t maxSize) {
+    _evt_raw *_evt = (_evt_raw*)data;
     int id = _evt->v1 + (_evt->v2 << 8);
     EventIR ir;
+
+    assert(maxSize == sizeof(_evt_raw));
 
     ir.type = _evt->_e_type;
     ir.step = _evt->v3;
@@ -296,21 +297,16 @@ void addEvent(void* pointer, bool isGlobal) {
             break;
     }
 
-    std::map<int, std::vector<EventIR>> &eventsMap = isGlobal ? globalEventsMap : localEventsMap;
+    return ir;
+}
 
-    if (eventsMap.contains(id)) {
-        eventsMap[id].push_back(ir);
+void EventMap::add(int id, EventIR ir) {
+    if (_eventsById.contains(id)) {
+        _eventsById[id].push_back(ir);
     } else {
         std::vector<EventIR> newEvtList;
         newEvtList.push_back(ir);
-        eventsMap[id] = newEvtList;
+        _eventsById[id] = newEvtList;
     }
 }
 
-void clearEvents(bool isGlobal) {
-    if (isGlobal) {
-        globalEventsMap.clear();
-    } else {
-        localEventsMap.clear();
-    }
-}

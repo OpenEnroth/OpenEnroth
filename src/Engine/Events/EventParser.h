@@ -1,6 +1,6 @@
 #pragma once
 
-#include <map>
+#include <unordered_map>
 #include <vector>
 #include <array>
 #include <string>
@@ -14,7 +14,11 @@
 #include "Engine/Graphics/BSPModel.h"
 #include "Media/Audio/AudioPlayer.h"
 
-struct EventIR {
+class EventIR {
+ public:
+    std::string toString();
+    static EventIR parse(void *data, size_t maxSize);
+
     EventType type;
     int step;
     int target_step;
@@ -166,22 +170,16 @@ struct EventIR {
     } data;
 };
 
-void addEvent(void* pointer, bool isGlobal);
-void clearEvents(bool isGlobal);
+class EventMap {
+ public:
+    void add(int id, EventIR ir);
+    void clear() { _eventsById.clear(); }
 
-inline void clearEventsGlobal() {
-    clearEvents(true);
-}
-inline void clearEventsLocal() {
-    clearEvents(false);
-}
+    void dumpAll();
+    void dump(int id);
+ private:
+    std::unordered_map<int, std::vector<EventIR>> _eventsById;
+};
 
-inline void addEventGlobal(void* pointer) {
-    addEvent(pointer, true);
-}
-inline void addEventLocal(void* pointer) {
-    addEvent(pointer, false);
-}
-
-extern std::map<int, std::vector<EventIR>> globalEventsMap;
-extern std::map<int, std::vector<EventIR>> localEventsMap;
+extern EventMap globalEventMap;
+extern EventMap localEventMap;
