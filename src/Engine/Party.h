@@ -12,6 +12,7 @@
 #include "Engine/Time.h"
 #include "GUI/UI/UIHouseEnums.h"
 #include "Library/Random/Random.h"
+#include "Media/Audio/AudioPlayer.h"
 
 #define PARTY_AUTONOTES_BIT__EMERALD_FIRE_FOUNTAIN 2
 
@@ -397,7 +398,7 @@ struct Party {
     int field_6EC_set0_unused;
     int sPartySavedFlightZ;  // this saves the Z position when flying without bob mods
     int floor_face_pid;  // face we are standing at
-    int walk_sound_timer;
+    SoundID currentWalkingSound; // previously was 'walk_sound_timer'
     int _6FC_water_lava_timer;
     int uFallStartZ;
     unsigned int bFlying;

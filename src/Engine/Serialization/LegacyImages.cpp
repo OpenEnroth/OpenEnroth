@@ -343,7 +343,7 @@ void Serialize(const Party &src, Party_MM7 *dst) {
     dst->field_6EC = src.field_6EC_set0_unused;
     dst->field_6F0 = src.sPartySavedFlightZ;
     dst->floor_face_pid = src.floor_face_pid;
-    dst->walk_sound_timer = src.walk_sound_timer;
+    dst->walk_sound_timer = 0; // zero walking sound timer, in OE it was removed and it is little meaning saving it
     dst->_6FC_water_lava_timer = src._6FC_water_lava_timer;
     dst->uFallStartZ = src.uFallStartZ;
     dst->bFlying = src.bFlying;
@@ -464,7 +464,8 @@ void Deserialize(const Party_MM7 &src, Party *dst) {
     dst->field_6EC_set0_unused = src.field_6EC;
     dst->sPartySavedFlightZ = src.field_6F0;
     dst->floor_face_pid = src.floor_face_pid;
-    dst->walk_sound_timer = src.walk_sound_timer;
+    // Walking sound timer was removed from OE
+    //dst->walk_sound_timer = src.walk_sound_timer;
     dst->_6FC_water_lava_timer = src._6FC_water_lava_timer;
     dst->uFallStartZ = src.uFallStartZ;
     dst->bFlying = src.bFlying;

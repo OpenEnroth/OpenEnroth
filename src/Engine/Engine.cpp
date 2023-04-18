@@ -231,6 +231,10 @@ void Engine::DrawGUI() {
         uCurrentlyLoadedLevelType == LEVEL_Outdoor)
         pWeather->Draw();  // Ritor1: my include
 
+    if (current_screen_type != CURRENT_SCREEN::SCREEN_GAME) {
+        pAudioPlayer->stopWalkingSounds();
+    }
+
                            // while(GetTickCount() - last_frame_time < 33 );//FPS control
     uint frame_dt = platform->tickCount() - last_frame_time;
     last_frame_time = platform->tickCount();
