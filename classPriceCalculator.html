@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;3191ccf</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;5d1062c</span>
    </div>
   </td>
  </tr>
@@ -110,8 +110,119 @@ Static Public Member Functions</h2></td></tr>
 <tr class="memitem:a04dc59de69ed8c750f075c682ca6a6bd"><td class="memItemLeft" align="right" valign="top">static int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPriceCalculator.html#a04dc59de69ed8c750f075c682ca6a6bd">playerMerchant</a> (const <a class="el" href="structPlayer.html">Player</a> *player)</td></tr>
 <tr class="memdesc:a04dc59de69ed8c750f075c682ca6a6bd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets effective merchant value for player. May depend also on other things than actual skill value.  <a href="classPriceCalculator.html#a04dc59de69ed8c750f075c682ca6a6bd">More...</a><br /></td></tr>
 <tr class="separator:a04dc59de69ed8c750f075c682ca6a6bd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6cfdd467ee1a6e628d4a7228ab201492"><td class="memItemLeft" align="right" valign="top">static int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPriceCalculator.html#a6cfdd467ee1a6e628d4a7228ab201492">applyMerchantDiscount</a> (const <a class="el" href="structPlayer.html">Player</a> *player, int goldAmount)</td></tr>
+<tr class="memdesc:a6cfdd467ee1a6e628d4a7228ab201492"><td class="mdescLeft">&#160;</td><td class="mdescRight">Applies player's merchant discount for given gold value.  <a href="classPriceCalculator.html#a6cfdd467ee1a6e628d4a7228ab201492">More...</a><br /></td></tr>
+<tr class="separator:a6cfdd467ee1a6e628d4a7228ab201492"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad494e94076315661f260b1782d91e428"><td class="memItemLeft" align="right" valign="top">static int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPriceCalculator.html#ad494e94076315661f260b1782d91e428">applyMerchantDiscount</a> (const <a class="el" href="structPlayer.html">Player</a> *player, float goldAmount)</td></tr>
+<tr class="memdesc:ad494e94076315661f260b1782d91e428"><td class="mdescLeft">&#160;</td><td class="mdescRight">Applies player's merchant discount for given gold value.  <a href="classPriceCalculator.html#ad494e94076315661f260b1782d91e428">More...</a><br /></td></tr>
+<tr class="separator:ad494e94076315661f260b1782d91e428"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab0a94c32218429032d0ca183bc77324a"><td class="memItemLeft" align="right" valign="top">static int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPriceCalculator.html#ab0a94c32218429032d0ca183bc77324a">skillLearningCostForPlayer</a> (const <a class="el" href="structPlayer.html">Player</a> *player, const <a class="el" href="struct__2devent.html">_2devent</a> &amp;house)</td></tr>
+<tr class="memdesc:ab0a94c32218429032d0ca183bc77324a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Calculates skill learning cost for player.  <a href="classPriceCalculator.html#ab0a94c32218429032d0ca183bc77324a">More...</a><br /></td></tr>
+<tr class="separator:ab0a94c32218429032d0ca183bc77324a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac02d9fd1259b2a657cef21543920a136"><td class="memItemLeft" align="right" valign="top">static int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPriceCalculator.html#ac02d9fd1259b2a657cef21543920a136">transportCostForPlayer</a> (const <a class="el" href="structPlayer.html">Player</a> *player, const <a class="el" href="struct__2devent.html">_2devent</a> &amp;house)</td></tr>
+<tr class="memdesc:ac02d9fd1259b2a657cef21543920a136"><td class="mdescLeft">&#160;</td><td class="mdescRight">Calculates transport (stable/boat) cost for player.  <a href="classPriceCalculator.html#ac02d9fd1259b2a657cef21543920a136">More...</a><br /></td></tr>
+<tr class="separator:ac02d9fd1259b2a657cef21543920a136"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad461c576aabfc1aa6f019668f9a2b639"><td class="memItemLeft" align="right" valign="top">static int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPriceCalculator.html#ad461c576aabfc1aa6f019668f9a2b639">tavernRoomCostForPlayer</a> (const <a class="el" href="structPlayer.html">Player</a> *player, const <a class="el" href="struct__2devent.html">_2devent</a> &amp;house)</td></tr>
+<tr class="memdesc:ad461c576aabfc1aa6f019668f9a2b639"><td class="mdescLeft">&#160;</td><td class="mdescRight">Calculates tavern room cost for player.  <a href="classPriceCalculator.html#ad461c576aabfc1aa6f019668f9a2b639">More...</a><br /></td></tr>
+<tr class="separator:ad461c576aabfc1aa6f019668f9a2b639"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae298ea1bd614ed891342e29ce42d9c98"><td class="memItemLeft" align="right" valign="top">static int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPriceCalculator.html#ae298ea1bd614ed891342e29ce42d9c98">tavernFoodCostForPlayer</a> (const <a class="el" href="structPlayer.html">Player</a> *player, const <a class="el" href="struct__2devent.html">_2devent</a> &amp;house)</td></tr>
+<tr class="memdesc:ae298ea1bd614ed891342e29ce42d9c98"><td class="mdescLeft">&#160;</td><td class="mdescRight">Calculates tavern food cost for player.  <a href="classPriceCalculator.html#ae298ea1bd614ed891342e29ce42d9c98">More...</a><br /></td></tr>
+<tr class="separator:ae298ea1bd614ed891342e29ce42d9c98"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aac893602e698073a5e4d273d6cfb07ee"><td class="memItemLeft" align="right" valign="top">static int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPriceCalculator.html#aac893602e698073a5e4d273d6cfb07ee">trainingCostForPlayer</a> (const <a class="el" href="structPlayer.html">Player</a> *player, const <a class="el" href="struct__2devent.html">_2devent</a> &amp;house)</td></tr>
+<tr class="memdesc:aac893602e698073a5e4d273d6cfb07ee"><td class="mdescLeft">&#160;</td><td class="mdescRight">Calculates training cost for player.  <a href="classPriceCalculator.html#aac893602e698073a5e4d273d6cfb07ee">More...</a><br /></td></tr>
+<tr class="separator:aac893602e698073a5e4d273d6cfb07ee"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Member Function Documentation</h2>
+<a id="ad494e94076315661f260b1782d91e428" name="ad494e94076315661f260b1782d91e428"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad494e94076315661f260b1782d91e428">&#9670;&#160;</a></span>applyMerchantDiscount() <span class="overload">[1/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">int PriceCalculator::applyMerchantDiscount </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="structPlayer.html">Player</a> *&#160;</td>
+          <td class="paramname"><em>player</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>goldAmount</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Applies player's merchant discount for given gold value. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">player</td><td><a class="el" href="structPlayer.html">Player</a> to calculate discount for. </td></tr>
+    <tr><td class="paramname">goldAmount</td><td>Full price before merchant. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a6cfdd467ee1a6e628d4a7228ab201492" name="a6cfdd467ee1a6e628d4a7228ab201492"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6cfdd467ee1a6e628d4a7228ab201492">&#9670;&#160;</a></span>applyMerchantDiscount() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">int PriceCalculator::applyMerchantDiscount </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="structPlayer.html">Player</a> *&#160;</td>
+          <td class="paramname"><em>player</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>goldAmount</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Applies player's merchant discount for given gold value. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">player</td><td><a class="el" href="structPlayer.html">Player</a> to calculate discount for. </td></tr>
+    <tr><td class="paramname">goldAmount</td><td>Full price before merchant. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 <a id="a7ffa98a80bd3cc9a90b6af5c25bf5e09" name="a7ffa98a80bd3cc9a90b6af5c25bf5e09"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a7ffa98a80bd3cc9a90b6af5c25bf5e09">&#9670;&#160;</a></span>baseItemBuyingPrice()</h2>
 
@@ -534,6 +645,141 @@ Static Public Member Functions</h2></td></tr>
 
 </div>
 </div>
+<a id="ab0a94c32218429032d0ca183bc77324a" name="ab0a94c32218429032d0ca183bc77324a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab0a94c32218429032d0ca183bc77324a">&#9670;&#160;</a></span>skillLearningCostForPlayer()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">int PriceCalculator::skillLearningCostForPlayer </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="structPlayer.html">Player</a> *&#160;</td>
+          <td class="paramname"><em>player</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="struct__2devent.html">_2devent</a> &amp;&#160;</td>
+          <td class="paramname"><em>house</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Calculates skill learning cost for player. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">player</td><td><a class="el" href="structPlayer.html">Player</a> to calculate cost for. </td></tr>
+    <tr><td class="paramname">house</td><td>House in which player tries to learn skill. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="ae298ea1bd614ed891342e29ce42d9c98" name="ae298ea1bd614ed891342e29ce42d9c98"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae298ea1bd614ed891342e29ce42d9c98">&#9670;&#160;</a></span>tavernFoodCostForPlayer()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">int PriceCalculator::tavernFoodCostForPlayer </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="structPlayer.html">Player</a> *&#160;</td>
+          <td class="paramname"><em>player</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="struct__2devent.html">_2devent</a> &amp;&#160;</td>
+          <td class="paramname"><em>house</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Calculates tavern food cost for player. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">player</td><td><a class="el" href="structPlayer.html">Player</a> to calculate cost for. </td></tr>
+    <tr><td class="paramname">house</td><td>Tavern in which player tries to buy food. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="ad461c576aabfc1aa6f019668f9a2b639" name="ad461c576aabfc1aa6f019668f9a2b639"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad461c576aabfc1aa6f019668f9a2b639">&#9670;&#160;</a></span>tavernRoomCostForPlayer()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">int PriceCalculator::tavernRoomCostForPlayer </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="structPlayer.html">Player</a> *&#160;</td>
+          <td class="paramname"><em>player</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="struct__2devent.html">_2devent</a> &amp;&#160;</td>
+          <td class="paramname"><em>house</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Calculates tavern room cost for player. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">player</td><td><a class="el" href="structPlayer.html">Player</a> to calculate cost for. </td></tr>
+    <tr><td class="paramname">house</td><td>Tavern in which player tries to buy room. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 <a id="af4b7add9eddbe39f278ad52632cfe04d" name="af4b7add9eddbe39f278ad52632cfe04d"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#af4b7add9eddbe39f278ad52632cfe04d">&#9670;&#160;</a></span>templeHealingCostForPlayer()</h2>
 
@@ -578,6 +824,96 @@ Static Public Member Functions</h2></td></tr>
   </dd>
 </dl>
 <p>Note: originally method of <a class="el" href="structPlayer.html">Player</a> class. </p>
+
+</div>
+</div>
+<a id="aac893602e698073a5e4d273d6cfb07ee" name="aac893602e698073a5e4d273d6cfb07ee"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aac893602e698073a5e4d273d6cfb07ee">&#9670;&#160;</a></span>trainingCostForPlayer()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">int PriceCalculator::trainingCostForPlayer </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="structPlayer.html">Player</a> *&#160;</td>
+          <td class="paramname"><em>player</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="struct__2devent.html">_2devent</a> &amp;&#160;</td>
+          <td class="paramname"><em>house</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Calculates training cost for player. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">player</td><td><a class="el" href="structPlayer.html">Player</a> to calculate cost for. </td></tr>
+    <tr><td class="paramname">house</td><td>Training hall in which player tries to train. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="ac02d9fd1259b2a657cef21543920a136" name="ac02d9fd1259b2a657cef21543920a136"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac02d9fd1259b2a657cef21543920a136">&#9670;&#160;</a></span>transportCostForPlayer()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">int PriceCalculator::transportCostForPlayer </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="structPlayer.html">Player</a> *&#160;</td>
+          <td class="paramname"><em>player</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="struct__2devent.html">_2devent</a> &amp;&#160;</td>
+          <td class="paramname"><em>house</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Calculates transport (stable/boat) cost for player. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">player</td><td><a class="el" href="structPlayer.html">Player</a> to calculate cost for. </td></tr>
+    <tr><td class="paramname">house</td><td>Stable/boat building in which player travels. </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
