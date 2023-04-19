@@ -1126,6 +1126,7 @@ int NPCDialogueEventProcessor(int npc_event_id, int entry_line) {
                     break;
 
                 case EVENT_IsActorAssasinated:
+                    // TODO(Nik-RE-dev): Is that correct? Not the other way around?
                     if (IsActorAlive(
                             EVT_BYTE(_evt->v5), EVT_DWORD(_evt->v6),
                             EVT_BYTE(_evt->v10))) {  // drop linear sequence,
