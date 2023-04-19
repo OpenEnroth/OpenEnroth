@@ -834,7 +834,7 @@ var searchData=
   ['updateobjectodm_831',['updateObjectODM',['../structSpriteObject.html#a7b880a5e537090039de57ab8f724a226',1,'SpriteObject']]],
   ['updateobjects_832',['UpdateObjects',['../SpriteObject_8cpp.html#a522912d67446895b0a03d01837b75a99',1,'UpdateObjects():&#160;SpriteObject.cpp'],['../IRender_8h.html#a522912d67446895b0a03d01837b75a99',1,'UpdateObjects():&#160;SpriteObject.cpp']]],
   ['updateparticles_833',['UpdateParticles',['../classParticleEngine.html#a82017d932a3aac0e05acf6ed95783672',1,'ParticleEngine::UpdateParticles()'],['../structTrailParticleGenerator.html#aa8ede04bca9cbc38c4c0880f6645d6fc',1,'TrailParticleGenerator::UpdateParticles()']]],
-  ['updateplayersandhirelingsemotions_834',['UpdatePlayersAndHirelingsEmotions',['../structParty.html#ae0e2e8cbee9642f7a915e2d43a86e8c4',1,'Party']]],
+  ['updateplayersandhirelingsemotions_834',['updatePlayersAndHirelingsEmotions',['../structParty.html#ac79b72eacd793b9fd01069346b87156b',1,'Party']]],
   ['updater_835',['updater',['../classAudioTrackS16.html#a6db66c50e3a6a3b8068ae5b5f32bfcf3',1,'AudioTrackS16']]],
   ['updatesounds_836',['UpdateSounds',['../classAudioPlayer.html#ad7f77ef8ad0ba30e82dc34dc88156cb5',1,'AudioPlayer']]],
   ['updatespriteonimpact_837',['updateSpriteOnImpact',['../SpriteObject_8cpp.html#ab8a03e10e16b41f2710550dc779fe9e6',1,'SpriteObject.cpp']]],
