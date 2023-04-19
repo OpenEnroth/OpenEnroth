@@ -4,13 +4,7 @@
 #include "Engine/Engine.h"
 
 void EventMap::add(int id, EventIR ir) {
-    if (_eventsById.contains(id)) {
-        _eventsById[id].push_back(ir);
-    } else {
-        std::vector<EventIR> newEvtList;
-        newEvtList.push_back(ir);
-        _eventsById[id] = newEvtList;
-    }
+    _eventsById[id].push_back(ir);
 }
 
 void EventMap::dump(int eventId) {
