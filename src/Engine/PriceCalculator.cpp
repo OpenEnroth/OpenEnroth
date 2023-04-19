@@ -1,5 +1,8 @@
+#include <algorithm>
+
 #include "Engine/PriceCalculator.h"
 
+#include "Engine/Events2D.h"
 #include "Engine/Objects/Items.h"
 #include "Engine/Objects/Player.h"
 #include "Engine/Party.h"
@@ -46,36 +49,28 @@ int PriceCalculator::baseItemSellingPrice(int uRealValue, float priceMultiplier)
 
 int PriceCalculator::itemRepairPriceForPlayer(const Player *player, int uRealValue, float priceMultiplier) {
     int baseCost = (int)(uRealValue / (6.0f - priceMultiplier));
-    int actualCost = baseCost * (100 - playerMerchant(player)) / 100;
+    int actualCost = applyMerchantDiscount(player, baseCost);
 
     if (actualCost < baseCost / 3) {  // min price
         actualCost = baseCost / 3;
     }
 
-    if (actualCost > 1) {
-        return actualCost;
-    } else {
-        return 1;
-    }
+    return std::max(1, actualCost);
 }
 
 int PriceCalculator::itemIdentificationPriceForPlayer(const Player *player, float priceMultiplier) {
     int baseCost = (int)(priceMultiplier * 50.0f);
-    int actualCost = baseCost * (100 - playerMerchant(player)) / 100;
+    int actualCost = applyMerchantDiscount(player, baseCost);
 
     if (actualCost < baseCost / 3) {  // minimum price
         actualCost = baseCost / 3;
     }
 
-    if (actualCost > 1) {
-        return actualCost;
-    } else {
-        return 1;
-    }
+    return std::max(1, actualCost);
 }
 
 int PriceCalculator::itemBuyingPriceForPlayer(const Player *player, unsigned int uRealValue, float priceMultiplier) {
-    uint price = (uint)(((100 - playerMerchant(player)) * (uRealValue * priceMultiplier)) / 100);
+    int price = applyMerchantDiscount(player, uRealValue * priceMultiplier);
 
     if (price < uRealValue) {  // price should always be at least item value
         price = uRealValue;
@@ -88,11 +83,10 @@ int PriceCalculator::itemSellingPriceForPlayer(const Player *player, const ItemG
     int uRealValue = item.GetValue();
     int result = static_cast<int>((uRealValue / (priceMultiplier + 2.0)) + uRealValue * playerMerchant(player) / 100.0);
 
-    if (result > uRealValue) {
-        result = uRealValue;
-    }
+    // can't get less than 1 gold or more than item is actually worth
+    result = std::clamp(result, 1, uRealValue);
 
-    if (item.IsBroken() || result < 1) {
+    if (item.IsBroken()) {
         result = 1;
     }
 
@@ -124,7 +118,7 @@ int PriceCalculator::templeHealingCostForPlayer(const Player *player, float pric
         }
     }
 
-    int result = (int)((double)conditionTimeMultiplier * (double)baseConditionMultiplier * priceMultiplier);  // calc heal price
+    int result = ((double)conditionTimeMultiplier * baseConditionMultiplier * priceMultiplier);  // calc heal price
 
     // handle min-max costs
     result = std::clamp(result, 1, 10000);
@@ -149,4 +143,83 @@ int PriceCalculator::playerMerchant(const Player *player) {
     }
 
     return bonus - rep + 7;
+}
+
+int PriceCalculator::applyMerchantDiscount(const Player *player, int goldAmount) {
+    return goldAmount * (100 - playerMerchant(player)) / 100;
+}
+
+int PriceCalculator::applyMerchantDiscount(const Player *player, float goldAmount) {
+    return goldAmount * (100 - playerMerchant(player)) / 100;
+}
+
+int PriceCalculator::skillLearningCostForPlayer(const Player *player, const _2devent &house) {
+    bool isGuild = house.uType >= BuildingType_FireGuild && house.uType <= BuildingType_SelfGuild;
+    // guilds use different multiplier for skill learning
+    int baseTeachPrice = (isGuild ? house.fPriceMultiplier : house.flt_24) * 500.0;
+    if (house.uType == BuildingType_MercenaryGuild) {
+        baseTeachPrice = 250;
+    }
+    int effectivePrice = applyMerchantDiscount(player, baseTeachPrice);
+    if (effectivePrice < baseTeachPrice / 3) {
+        effectivePrice = baseTeachPrice / 3;
+    }
+    return effectivePrice;
+}
+int PriceCalculator::transportCostForPlayer(const Player *player, const _2devent &house) {
+    // boats are 2 times pricier than stables
+    int basePrice = house.uType == BuildingType_Stables ? 25 : 50;
+
+    int price = applyMerchantDiscount(player, basePrice * house.fPriceMultiplier);
+    if (price < basePrice / 3) {
+        price = basePrice / 3;
+    }
+    return price;
+}
+
+int PriceCalculator::tavernRoomCostForPlayer(const Player *player, const _2devent &house) {
+    float houseMult = house.fPriceMultiplier;
+
+    int roomPrice = applyMerchantDiscount(player, houseMult * houseMult / 10), minRoomPrice = ((houseMult * houseMult) / 10) / 3;
+
+    if (roomPrice < minRoomPrice) {
+        roomPrice = minRoomPrice;
+    }
+
+    if (roomPrice <= 0) {
+        roomPrice = 1;
+    }
+
+    return roomPrice;
+}
+
+int PriceCalculator::tavernFoodCostForPlayer(const Player *player, const _2devent &house) {
+    float houseMult = house.fPriceMultiplier;
+
+    int foodPrice = applyMerchantDiscount(player, static_cast<float>(pow(houseMult, 3) / 100)), minFoodPrice = pow(houseMult, 3) / 300;
+    if (foodPrice < minFoodPrice) {
+        foodPrice = minFoodPrice;
+    }
+
+    if (foodPrice <= 0) {
+        foodPrice = 1;
+    }
+    return foodPrice;
+}
+
+int PriceCalculator::trainingCostForPlayer(const Player *player, const _2devent &house) {
+    int trainPrice = 0;
+    uint64_t expForNextLevel = 1000ull * player->uLevel * (player->uLevel + 1) / 2;
+    if (player->uExperience >= expForNextLevel) { // can train
+        int playerClassTier = player->classType % 4 + 1;
+        if (playerClassTier == 4) {
+            playerClassTier = 3;
+        }
+        int baseTrainPrice = player->uLevel * house.fPriceMultiplier * (double)playerClassTier;
+        trainPrice = applyMerchantDiscount(player, baseTrainPrice);
+        if (trainPrice < baseTrainPrice / 3) {
+            trainPrice = baseTrainPrice / 3;
+        }
+    }
+    return trainPrice;
 }

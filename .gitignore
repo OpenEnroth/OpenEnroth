@@ -41,3 +41,6 @@ dist
 *.rej
 *.diff
 *.patch
+
+# Clang formatter file for Visual Studio
+.clang-format

@@ -2,6 +2,8 @@
 
 struct Player;
 struct ItemGen;
+struct _2devent;
+
 // Class to calculate various prices and overall deal with them
 class PriceCalculator {
  public:
@@ -105,4 +107,53 @@ class PriceCalculator {
      * Note: originally method of Player class.
      */
     static int playerMerchant(const Player *player);
+
+    /**
+     * @brief Applies player's merchant discount for given gold value.
+     * @param player Player to calculate discount for.
+     * @param goldAmount Full price before merchant.
+     */
+    static int applyMerchantDiscount(const Player *player, int goldAmount);
+
+    /**
+     * @brief Applies player's merchant discount for given gold value
+     * @param player Player to calculate discount for.
+     * @param goldAmount Full price before merchant.
+     */
+    static int applyMerchantDiscount(const Player *player, float goldAmount);
+
+    /**
+     * @brief Calculates skill learning cost for player.
+     * @param player Player to calculate cost for.
+     * @param house House in which player tries to learn skill.
+     */
+    static int skillLearningCostForPlayer(const Player *player, const _2devent &house);
+
+    /**
+     * @brief Calculates transport (stable/boat) cost for player.
+     * @param player Player to calculate cost for.
+     * @param house Stable/boat building in which player travels.
+     */
+    static int transportCostForPlayer(const Player *player, const _2devent &house);
+
+    /**
+     * @brief Calculates tavern room cost for player.
+     * @param player Player to calculate cost for.
+     * @param house Tavern in which player tries to buy room.
+     */
+    static int tavernRoomCostForPlayer(const Player *player, const _2devent &house);
+
+    /**
+     * @brief Calculates tavern food cost for player.
+     * @param player Player to calculate cost for.
+     * @param house Tavern in which player tries to buy food.
+     */
+    static int tavernFoodCostForPlayer(const Player *player, const _2devent &house);
+
+    /**
+     * @brief Calculates training cost for player.
+     * @param player Player to calculate cost for.
+     * @param house Training hall in which player tries to train.
+     */
+    static int trainingCostForPlayer(const Player *player, const _2devent &house);
 };

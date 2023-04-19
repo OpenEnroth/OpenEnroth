@@ -1,4 +1,5 @@
 #pragma once
+#include <cstdint>
 
 /*  296 */
 enum class BuildingType: uint16_t {
