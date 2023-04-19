@@ -19,8 +19,6 @@
 #include "Engine/Party.h"
 #include "Engine/stru123.h"
 #include "Engine/stru159.h"
-#include "Engine/Events/EventParser.h"
-#include "Engine/Events/EventPrinter.h"
 
 #include "GUI/GUIProgressBar.h"
 #include "GUI/UI/UIDialogue.h"
@@ -89,7 +87,7 @@ void Initialize_GlobalEVT() {
     pGlobalEVT_Index.fill({(int)0x80808080, (int)0x80808080, 0x80808080}); // Fill with invalid data.
     events_count = uGlobalEVT_NumEvents;
 
-    globalEventMap.clear();
+    engine->_globalEventMap.clear();
 
     current_hdr = (raw_event_header *)pGlobalEVT.data();
     offset_in = 0;
@@ -99,7 +97,7 @@ void Initialize_GlobalEVT() {
         pGlobalEVT_Index[events_count].event_step = current_hdr->evt_sequence_num;
         pGlobalEVT_Index[events_count].uEventOffsetInEVT = offset_in;
         offset_in += current_hdr->evt_size + 1;
-        globalEventMap.add(pGlobalEVT_Index[events_count].event_id, EventIR::parse(current_hdr, sizeof(_evt_raw)));
+        engine->_globalEventMap.add(pGlobalEVT_Index[events_count].event_id, EventIR::parse(current_hdr, sizeof(_evt_raw)));
 
         current_hdr = (raw_event_header *)&pGlobalEVT[offset_in];
     }
@@ -128,7 +126,7 @@ void LoadLevel_InitializeLevelEvt() {
     uLevelEVT_NumEvents = 0;
     MapsLongTimers_count = 0;
 
-    localEventMap.clear();
+    engine->_localEventMap.clear();
 
     current_hdr = (raw_event_header *)pLevelEVT.data();
     offset_in = 0;
@@ -138,7 +136,7 @@ void LoadLevel_InitializeLevelEvt() {
         pLevelEVT_Index[events_count].event_step = current_hdr->evt_sequence_num;
         pLevelEVT_Index[events_count].uEventOffsetInEVT = offset_in;
         offset_in += current_hdr->evt_size + 1;
-        localEventMap.add(pLevelEVT_Index[events_count].event_id, EventIR::parse(current_hdr, sizeof(_evt_raw)));
+        engine->_localEventMap.add(pLevelEVT_Index[events_count].event_id, EventIR::parse(current_hdr, sizeof(_evt_raw)));
 
         current_hdr = (raw_event_header *)&pLevelEVT[offset_in];
     }
@@ -342,12 +340,12 @@ void EventProcessor(int uEventID, int targetObj, int canShowMessages,
         uSomeEVT_NumEvents = uGlobalEVT_NumEvents;
         pSomeEVT = pGlobalEVT.data();
         pSomeEVT_Events = pGlobalEVT_Index;
-        globalEventMap.dump(uEventID);
+        engine->_globalEventMap.dump(uEventID);
     } else {
         uSomeEVT_NumEvents = uLevelEVT_NumEvents;
         pSomeEVT = pLevelEVT.data();
         pSomeEVT_Events = pLevelEVT_Index;
-        localEventMap.dump(uEventID);
+        engine->_localEventMap.dump(uEventID);
     }
 
     for (v4 = 0; v4 < uSomeEVT_NumEvents; ++v4) {

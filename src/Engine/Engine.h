@@ -6,6 +6,7 @@
 #include <string>
 #include <climits>
 
+#include "Engine/Events/EventMap.h"
 #include "Engine/AssetsManager.h"
 #include "Engine/ErrorHandling.h"
 #include "Library/Logger/Logger.h"
@@ -204,6 +205,8 @@ class Engine {
     Vis *vis = nullptr;
     std::shared_ptr<KeyboardInputHandler> keyboardInputHandler = nullptr;
     std::shared_ptr<KeyboardActionMapping> keyboardActionMapping = nullptr;
+    EventMap _globalEventMap;
+    EventMap _localEventMap;
 };
 #pragma pack(pop)
 
