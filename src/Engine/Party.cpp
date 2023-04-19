@@ -789,7 +789,7 @@ void Party::updatePlayersAndHirelingsEmotions() {
                 continue;
 
             player.uExpressionTimePassed = 0;
-            if (player.expression != 1 || vrng->random(5)) {
+            if (player.expression != CHARACTER_EXPRESSION_NORMAL || vrng->random(5)) {
                 player.expression = CHARACTER_EXPRESSION_NORMAL;
                 player.uExpressionTimeLength = vrng->random(256) + 32;
             } else {
