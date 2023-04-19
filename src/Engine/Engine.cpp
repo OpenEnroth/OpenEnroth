@@ -232,6 +232,7 @@ void Engine::DrawGUI() {
         pWeather->Draw();  // Ritor1: my include
 
     if (current_screen_type != CURRENT_SCREEN::SCREEN_GAME) {
+        // TODO(Nik-RE-dev): this really doesn't belong to Engine::DrawGUI
         pAudioPlayer->stopWalkingSounds();
     }
 
