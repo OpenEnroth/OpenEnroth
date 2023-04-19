@@ -175,7 +175,7 @@ void Engine::Draw() {
     } else {
         DrawGUI();
         GUI_UpdateWindows();
-        pParty->UpdatePlayersAndHirelingsEmotions();
+        pParty->updatePlayersAndHirelingsEmotions();
         _unused_5B5924_is_travel_ui_drawn = false;
 
         // if (v4)

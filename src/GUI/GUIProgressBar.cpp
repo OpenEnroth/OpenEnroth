@@ -103,7 +103,7 @@ void GUIProgressBar::Draw() {
     if (uType != TYPE_Fullscreen) {
         engine->DrawGUI();
         GUI_UpdateWindows();
-        pParty->UpdatePlayersAndHirelingsEmotions();
+        pParty->updatePlayersAndHirelingsEmotions();
 
         render->DrawTextureNew(80 / 640.0f, 122 / 480.0f, progressbar_dungeon);
         render->DrawTextureNew(100 / 640.0f, 146 / 480.0f, pIconsFrameTable->GetFrame(uIconID_TurnHour, 0)->GetTexture());
