@@ -146,11 +146,11 @@ int PriceCalculator::playerMerchant(const Player *player) {
 }
 
 int PriceCalculator::applyMerchantDiscount(const Player *player, int goldAmount) {
-    return goldAmount * (100 - PriceCalculator::playerMerchant(pPlayers[pParty->getActiveCharacter()])) / 100;
+    return goldAmount * (100 - playerMerchant(player)) / 100;
 }
 
 int PriceCalculator::applyMerchantDiscount(const Player *player, float goldAmount) {
-    return goldAmount * (100 - PriceCalculator::playerMerchant(pPlayers[pParty->getActiveCharacter()])) / 100;
+    return goldAmount * (100 - playerMerchant(player)) / 100;
 }
 
 int PriceCalculator::skillLearningCostForPlayer(const Player *player, const _2devent &house) {
