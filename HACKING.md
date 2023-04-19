@@ -113,7 +113,7 @@ Language features:
 * It's OK to use plain `enum`s if you really need to have implicit casts to integer types, but this is a very rare use case. If you're using `enum` values to index into some array, consider using `enum class` coupled with `IndexedArray`.
 * Make your code speak for itself when it comes to ownership. If a function takes ownership of one of its parameters, it should take `std::unique_ptr` by value. If it allocates its result and passes ownership to the caller, then it should return `std::unique_ptr`.
 * Use an `int` unless you need something else. Don’t try to avoid negative values by using `unsigned`, this implies many changes to the usual behavior of integers and can be a source of bugs. See a section in [core guidelines](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#arithmetic) for more info. However, don't overdo it, use `size_t` for indexing into STL containers.
-* Don't use namespaces when breaking up your code into libraries. OpenEnroth is a relatively small codebase and doesn't need the measures advocated by the Google style guide to prevent name clashes. Exception to this rule is `namespace detail` that you're encouraged to use to hide implementation details and prevent cluttering of the global namespace.
+* We generally refrain from using namespaces, and we consider the approach where namespace hierarchy follows the directory structure an antipattern that might make sense in other languages (e.g. Java), but not in C++. Besides, OpenEnroth is a relatively small codebase and doesn't need the measures advocated by the Google style guide to prevent name clashes. Exception to this rule is `namespace detail` that you're encouraged to use to hide implementation details and to prevent cluttering of the global namespace.
 
 There is a lot of code in the project that doesn't follow these conventions. Please feel free to fix it, preferably not mixing up style and logical changes in the same PR.
 
@@ -127,6 +127,10 @@ OpenEnroth code is broken up as follows:
 * `Platform` – our platform abstraction layer on top of SDL. Platform classes should also be reasonably domain-independent and should depend only on `Utility`.
 * `Library` – collection of independent libraries that the engine is built on top of. Code here can depend on `Utility`, `Platform`, and other libraries in `Library`.
 * The rest of the code is currently pretty tangled with each part depending on each other. This document will be updated once we have some progress there.
+
+Our basic guidelines for code organization are:
+* One `CMakeLists.txt` file per folder. There are exceptions, but those are not yet codified.
+* One class per source file, with the name of the source file matching the name of the class. Exceptions are small structs, which are usually easier to pack into a single source file, and helper classes, which generally should stay next to the main class. Note that this guideline doesn't apply to source files that mainly declare functions.
 
 
 Testing
@@ -156,6 +160,8 @@ To run all unit tests locally, build a `UnitTest` cmake target, or build & run `
 To run all game tests locally, set `OPENENROTH_MM7_PATH` environment variable to point to the location of the game assets, then build `GameTest` cmake target. Alternatively, you can build `OpenEnroth_GameTest`, and run it manually, passing the paths to both game assets and the test data via command line.
 
 Note that if you can't find either `UnitTest` or `GameTest` target in the target list of your IDE, this likely means that you haven't set the `ENABLE_TESTS` cmake variable as described above.
+
+Changing game logic might result in failures in game tests because they check random number generator state after each frame, and this will show as `Random state desynchronized when playing back trace` message in test logs. This is intentional – we don't want accidental game logic changes. If the change was actually intentional, then you might need to either retrace or re-record the traces for the failing tests. To retrace, run `OpenEnroth retrace <path-to-trace.json>`. Note that you can pass multiple trace paths to this command.
 
 
 Additional Resources
