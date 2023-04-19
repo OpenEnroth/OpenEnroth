@@ -154,8 +154,11 @@ class Actor {
     static void AggroSurroundingPeasants(unsigned int uActorID, int a2);
     static bool ArePeasantsOfSameFaction(Actor *a1, Actor *a2);
     static void StealFrom(unsigned int uActorID);
-    static void GiveItem(signed int uActorID, ITEM_TYPE uItemID,
-                         unsigned int bGive);
+
+    /**
+     * @offset 0x4485A7
+     */
+    static void giveItem(signed int uActorID, ITEM_TYPE uItemID, unsigned int bGive);
 
     /**
      * @offset 0x448A40
@@ -238,9 +241,16 @@ class Actor {
 extern std::vector<Actor> pActors;
 
 bool CheckActors_proximity();
-int IsActorAlive(unsigned int uType, unsigned int uParam,
-                 unsigned int uNumAlive);  // idb
-void sub_448518_npc_set_item(int npc, ITEM_TYPE item, int a3);
+
+/**
+ * @offset 0x44665D
+ */
+int isActorAlive(unsigned int uType, unsigned int uParam, unsigned int uNumAlive);  // idb
+
+/**
+ * @offset 0x448518
+ */
+void npcSetItem(int npc, ITEM_TYPE item, int a3);
 
 /**
  * @offset 0x448A98

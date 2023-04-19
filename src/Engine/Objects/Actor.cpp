@@ -130,18 +130,16 @@ void Actor::toggleFlag(signed int uActorID, ActorAttribute uFlag, bool bValue) {
     }
 }
 
-//----- (00448518) --------------------------------------------------------
-void sub_448518_npc_set_item(int npc, ITEM_TYPE item, int a3) {
+void npcSetItem(int npc, ITEM_TYPE item, int a3) {
     for (uint i = 0; i < pActors.size(); i++) {
-        if (pActors[i].sNPC_ID == npc) Actor::GiveItem(i, item, a3);
+        if (pActors[i].sNPC_ID == npc) {
+            Actor::giveItem(i, item, a3);
+        }
     }
 }
 
-//----- (004485A7) --------------------------------------------------------
-void Actor::GiveItem(signed int uActorID, ITEM_TYPE uItemID,
-                     unsigned int bGive) {
-    if ((uActorID >= 0) &&
-        (signed int)uActorID <= (signed int)(pActors.size() - 1)) {
+void Actor::giveItem(signed int uActorID, ITEM_TYPE uItemID, unsigned int bGive) {
+    if ((uActorID >= 0) && (signed int)uActorID <= (signed int)(pActors.size() - 1)) {
         if (bGive) {
             if (pActors[uActorID].uCarriedItemID == ITEM_NULL)
                 pActors[uActorID].uCarriedItemID = uItemID;
@@ -2987,13 +2985,12 @@ void Actor::UpdateActorAI() {
     }
 }
 
-//----- (0044665D) --------------------------------------------------------
 // uType:     0 -> any monster
 //            1 -> uParam is GroupID
 //            2 -> uParam is MonsterID
 //            3 -> uParam is ActorID
 // uNumAlive: 0 -> all must be alive
-int IsActorAlive(unsigned int uType, unsigned int uParam,
+int isActorAlive(unsigned int uType, unsigned int uParam,
                  unsigned int uNumAlive) {
     unsigned int uAliveActors;  // eax@6
     unsigned int uTotalActors;  // [sp+0h] [bp-4h]@1
