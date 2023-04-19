@@ -21,7 +21,6 @@
 #include "Engine/Party.h"
 #include "Engine/PriceCalculator.h"
 #include "Engine/SpellFxRenderer.h"
-#include "Engine/stru123.h"
 #include "Engine/AttackList.h"
 #include "Engine/Tables/PlayerFrameTable.h"
 #include "Engine/Tables/StorylineTextTable.h"
@@ -4130,11 +4129,11 @@ bool Player::CompareVariable(VariableType VarNum, int pValue) {
     int baseStat;                          // eax@161
 
     if (VarNum >= VAR_MapPersistentVariable_0 && VarNum <= VAR_MapPersistentVariable_74)
-        return (uint8_t)stru_5E4C90_MapPersistVars.field_0[VarNum - VAR_MapPersistentVariable_0] >= pValue;  // originally (uint8_t)byte_5E4C15[VarNum];
+        return (uint8_t)mapEventVariables.mapVars[VarNum - VAR_MapPersistentVariable_0] >= pValue;  // originally (uint8_t)byte_5E4C15[VarNum];
 
     // not really sure whether the number gets up to 99, but can't ignore the possibility
     if (VarNum >= VAR_MapPersistentDecorVariable_0 && VarNum <= VAR_MapPersistentDecorVariable_24)
-        return (uint8_t)stru_5E4C90_MapPersistVars._decor_events[VarNum - VAR_MapPersistentDecorVariable_0] >= pValue;
+        return (uint8_t)mapEventVariables.decorVars[VarNum - VAR_MapPersistentDecorVariable_0] >= pValue;
 
     switch (VarNum) {
         case VAR_Sex:
@@ -4550,13 +4549,13 @@ void Player::SetVariable(VariableType var_type, signed int var_value) {
     }
 
     if (var_type >= VAR_MapPersistentVariable_0 && var_type <= VAR_MapPersistentVariable_74) {
-        stru_5E4C90_MapPersistVars.field_0[var_type - VAR_MapPersistentVariable_0] = (char)var_value;
+        mapEventVariables.mapVars[var_type - VAR_MapPersistentVariable_0] = (char)var_value;
         return;
     }
 
     // not really sure whether the number gets up to 99, but can't ignore the possibility
     if (var_type >= VAR_MapPersistentDecorVariable_0 && var_type <= VAR_MapPersistentDecorVariable_24) {
-        stru_5E4C90_MapPersistVars._decor_events[var_type - VAR_MapPersistentDecorVariable_0] = (unsigned char)var_value;
+        mapEventVariables.decorVars[var_type - VAR_MapPersistentDecorVariable_0] = (unsigned char)var_value;
         return;
     }
 
@@ -5137,18 +5136,18 @@ void Player::AddVariable(VariableType var_type, signed int val) {
     }
 
     if (var_type >= VAR_MapPersistentVariable_0 && var_type <= VAR_MapPersistentVariable_74) {
-        if (255 - val > stru_5E4C90_MapPersistVars.field_0[var_type - VAR_MapPersistentVariable_0]) {
-            stru_5E4C90_MapPersistVars.field_0[var_type - VAR_MapPersistentVariable_0] += val;
+        if (255 - val > mapEventVariables.mapVars[var_type - VAR_MapPersistentVariable_0]) {
+            mapEventVariables.mapVars[var_type - VAR_MapPersistentVariable_0] += val;
         } else {
-            stru_5E4C90_MapPersistVars.field_0[var_type - VAR_MapPersistentVariable_0] = 255;
+            mapEventVariables.mapVars[var_type - VAR_MapPersistentVariable_0] = 255;
         }
         return;
     }
     if (var_type >= VAR_MapPersistentDecorVariable_0 && var_type <= VAR_MapPersistentDecorVariable_24) {
-        if (255 - val > stru_5E4C90_MapPersistVars._decor_events[var_type - VAR_MapPersistentDecorVariable_0]) {
-            stru_5E4C90_MapPersistVars._decor_events[var_type - VAR_MapPersistentDecorVariable_0] += val;
+        if (255 - val > mapEventVariables.decorVars[var_type - VAR_MapPersistentDecorVariable_0]) {
+            mapEventVariables.decorVars[var_type - VAR_MapPersistentDecorVariable_0] += val;
         } else {
-            stru_5E4C90_MapPersistVars._decor_events[var_type - VAR_MapPersistentDecorVariable_0] = 255;
+            mapEventVariables.decorVars[var_type - VAR_MapPersistentDecorVariable_0] = 255;
         }
         return;
     }
@@ -5679,11 +5678,11 @@ void Player::SubtractVariable(VariableType VarNum, signed int pValue) {
     int npcIndex;
 
     if (VarNum >= VAR_MapPersistentVariable_0 && VarNum <= VAR_MapPersistentVariable_74) {
-        stru_5E4C90_MapPersistVars.field_0[VarNum - VAR_MapPersistentVariable_0] -= pValue;
+        mapEventVariables.mapVars[VarNum - VAR_MapPersistentVariable_0] -= pValue;
         return;
     }
     if (VarNum >= VAR_MapPersistentDecorVariable_0 && VarNum <= VAR_MapPersistentDecorVariable_24) {
-        stru_5E4C90_MapPersistVars._decor_events[VarNum - VAR_MapPersistentDecorVariable_0] -= pValue;
+        mapEventVariables.decorVars[VarNum - VAR_MapPersistentDecorVariable_0] -= pValue;
         return;
     }
 

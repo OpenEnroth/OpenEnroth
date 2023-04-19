@@ -2,7 +2,7 @@
 
 #include <cstdlib>
 
-#include "Engine/stru123.h"
+#include "Engine/Events.h"
 #include "Engine/Engine.h"
 #include "Level/Decoration.h"
 #include "Sprites.h"
@@ -72,7 +72,7 @@ uint16_t DecorationList::GetDecorIdByName(std::string_view pName) {
 }
 
 void RespawnGlobalDecorations() {
-    memset(stru_5E4C90_MapPersistVars._decor_events.data(), 0, 125);
+    std::fill(std::begin(mapEventVariables.decorVars), std::end(mapEventVariables.decorVars), 0);
 
     uint decorEventIdx = 0;
     for (uint i = 0; i < pLevelDecorations.size(); ++i) {
@@ -82,8 +82,7 @@ void RespawnGlobalDecorations() {
             if (decor->IsInteractive()) {
                 if (decorEventIdx < 124) {
                     decor->_idx_in_stru123 = decorEventIdx + 75;
-                    stru_5E4C90_MapPersistVars._decor_events[decorEventIdx++] =
-                        decor->GetGlobalEvent();
+                    mapEventVariables.decorVars[decorEventIdx++] = decor->GetGlobalEvent();
                 }
             }
         }

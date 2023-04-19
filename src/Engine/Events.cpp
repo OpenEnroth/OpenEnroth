@@ -17,7 +17,6 @@
 #include "Engine/Objects/SpriteObject.h"
 #include "Engine/OurMath.h"
 #include "Engine/Party.h"
-#include "Engine/stru123.h"
 #include "Engine/stru159.h"
 
 #include "GUI/GUIProgressBar.h"
@@ -57,6 +56,8 @@ std::array<char, 9216> pLevelEVT;
 std::array<EventIndex, 4400> pLevelEVT_Index;
 
 _2devent p2DEvents[525];
+
+MapEventVariables mapEventVariables;
 
 unsigned int LoadEventsToBuffer(const std::string &pContainerName, char *pBuffer,
                                 unsigned int uBufferSize) {
@@ -430,9 +431,9 @@ LABEL_47:
                 case EVENT_ChangeEvent:
                     v27 = EVT_DWORD(_evt->v5);
                     if (v27) {
-                        stru_5E4C90_MapPersistVars._decor_events[activeLevelDecoration->_idx_in_stru123 - 75] = v27 - 124;
+                        mapEventVariables.decorVars[activeLevelDecoration->_idx_in_stru123 - 75] = v27 - 124;
                     } else {
-                        stru_5E4C90_MapPersistVars._decor_events[activeLevelDecoration->_idx_in_stru123 - 75] = 0;
+                        mapEventVariables.decorVars[activeLevelDecoration->_idx_in_stru123 - 75] = 0;
                         activeLevelDecoration->uFlags |= LEVEL_DECORATION_INVISIBLE;
                     }
                     ++curr_seq_num;

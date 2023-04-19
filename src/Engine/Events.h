@@ -346,6 +346,13 @@ struct ByteArray {
 };
 #pragma pack(pop)
 
+struct MapEventVariables {
+    std::array<unsigned char, 75> mapVars;
+    std::array<unsigned char, 125> decorVars;
+};
+
+extern MapEventVariables mapEventVariables;
+
 void init_event_triggers();
 void check_event_triggers();
 bool sub_4465DF_check_season(int a1);

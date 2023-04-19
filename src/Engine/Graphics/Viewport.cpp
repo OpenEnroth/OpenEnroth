@@ -14,7 +14,6 @@
 #include "Engine/OurMath.h"
 #include "Engine/Party.h"
 #include "Engine/TurnEngine/TurnEngine.h"
-#include "Engine/stru123.h"
 
 #include "GUI/GUIWindow.h"
 #include "GUI/UI/UIDialogue.h"
@@ -270,12 +269,7 @@ void DecorationInteraction(unsigned int id, unsigned int pid) {
     } else {
         if (pLevelDecorations[id].IsInteractive()) {
             activeLevelDecoration = &pLevelDecorations[id];
-            EventProcessor(
-                stru_5E4C90_MapPersistVars
-                        ._decor_events[pLevelDecorations[id]._idx_in_stru123 -
-                                       75] +
-                    380,
-                0, 1);
+            EventProcessor(mapEventVariables.decorVars[pLevelDecorations[id]._idx_in_stru123 - 75] + 380, 0, 1);
             activeLevelDecoration = nullptr;
         }
     }

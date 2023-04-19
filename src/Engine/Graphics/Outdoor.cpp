@@ -28,7 +28,6 @@
 #include "Engine/Serialization/LegacyImages.h"
 #include "Engine/Serialization/Deserializer.h"
 #include "Engine/SpellFxRenderer.h"
-#include "Engine/stru123.h"
 #include "Engine/Tables/TileFrameTable.h"
 #include "Engine/Time.h"
 #include "Engine/TurnEngine/TurnEngine.h"
@@ -1052,8 +1051,8 @@ bool OutdoorLocation::Load(const std::string &filename, int days_played,
 
     pGameLoadingUI_ProgressBar->Progress();  // прогресс загрузки
 
-    static_assert(sizeof(stru_5E4C90_MapPersistVars) == 0xC8);
-    stream.ReadRaw(&stru_5E4C90_MapPersistVars);
+    static_assert(sizeof(mapEventVariables) == 0xC8);
+    stream.ReadRaw(&mapEventVariables);
 
     pGameLoadingUI_ProgressBar->Progress();  // прогресс загрузки
 
@@ -1327,7 +1326,7 @@ bool OutdoorLocation::PrepareDecorations() {
             if (decor->IsInteractive()) {
                 if (v1 < 124) {
                     decor->_idx_in_stru123 = v1 + 75;
-                    if (!stru_5E4C90_MapPersistVars._decor_events[v1++])
+                    if (!mapEventVariables.decorVars[v1++])
                         decor->uFlags |= LEVEL_DECORATION_INVISIBLE;
                 }
             }
@@ -1806,7 +1805,7 @@ void ODM_ProcessPartyActions() {
     pParty->uFlags &= ~PARTY_FLAGS_1_STANDING_ON_WATER;
     if (pParty->WaterWalkActive()) {
         waterWalkActive = true;
-        stru_5E4C90_MapPersistVars._decor_events[20 * pParty->pPartyBuffs[PARTY_BUFF_WATER_WALK].uOverlayID + 119] |= 1;
+        mapEventVariables.decorVars[20 * pParty->pPartyBuffs[PARTY_BUFF_WATER_WALK].uOverlayID + 119] |= 1;
         if (!pParty->pPartyBuffs[PARTY_BUFF_WATER_WALK].isGMBuff &&
             pParty->pPlayers[pParty->pPartyBuffs[PARTY_BUFF_WATER_WALK].uCaster - 1].sMana <= 0)
             waterWalkActive = false;
@@ -2139,7 +2138,7 @@ void ODM_ProcessPartyActions() {
         }
 
         if (pParty->FlyActive())
-            stru_5E4C90_MapPersistVars._decor_events[20 * pParty->pPartyBuffs[PARTY_BUFF_FLY].uOverlayID + 119] &= 0xFE;
+            mapEventVariables.decorVars[20 * pParty->pPartyBuffs[PARTY_BUFF_FLY].uOverlayID + 119] &= 0xFE;
         pParty->uFallStartZ = partyNewZ;
     } else if (partyNewZ < currentGroundLevel) {
         if (partyIsOnWater && partyInputZSpeed)
@@ -2149,11 +2148,11 @@ void ODM_ProcessPartyActions() {
         pParty->uFallStartZ = currentGroundLevel;
         partyOldFlightZ = partyNewZ;
         if (pParty->FlyActive())
-            stru_5E4C90_MapPersistVars._decor_events[20 * pParty->pPartyBuffs[PARTY_BUFF_FLY].uOverlayID + 119] |= 1;
+            mapEventVariables.decorVars[20 * pParty->pPartyBuffs[PARTY_BUFF_FLY].uOverlayID + 119] |= 1;
     } else {
         partyOldFlightZ = partyNewZ;
         if (pParty->FlyActive())
-            stru_5E4C90_MapPersistVars._decor_events[20 * pParty->pPartyBuffs[PARTY_BUFF_FLY].uOverlayID + 119] |= 1;
+            mapEventVariables.decorVars[20 * pParty->pPartyBuffs[PARTY_BUFF_FLY].uOverlayID + 119] |= 1;
     }
     //------------------------------------------
 
@@ -2455,11 +2454,11 @@ void ODM_ProcessPartyActions() {
         if (waterMoveY || waterMoveX) {
             if (waterWalkActive) {
                 pParty->uFlags &= ~PARTY_FLAGS_1_STANDING_ON_WATER;
-                stru_5E4C90_MapPersistVars._decor_events[20 * pParty->pPartyBuffs[PARTY_BUFF_WATER_WALK].uOverlayID + 119] |= 1;
+                mapEventVariables.decorVars[20 * pParty->pPartyBuffs[PARTY_BUFF_WATER_WALK].uOverlayID + 119] |= 1;
                 if (!partyNewXOnLand || !partyNewYOnLand) {
                     if (!pParty->bFlying) {
                         pParty->uFlags |= PARTY_FLAGS_1_STANDING_ON_WATER;
-                        stru_5E4C90_MapPersistVars._decor_events[20 * pParty->pPartyBuffs[PARTY_BUFF_WATER_WALK].uOverlayID + 119] &= 0xFFFE;
+                        mapEventVariables.decorVars[20 * pParty->pPartyBuffs[PARTY_BUFF_WATER_WALK].uOverlayID + 119] &= 0xFFFE;
                     }
                 }
             }

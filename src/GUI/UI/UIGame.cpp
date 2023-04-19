@@ -34,7 +34,6 @@
 #include "Engine/Tables/PlayerFrameTable.h"
 #include "Engine/Time.h"
 #include "Engine/TurnEngine/TurnEngine.h"
-#include "Engine/stru123.h"
 
 #include "GUI/GUIButton.h"
 #include "GUI/GUIFont.h"
@@ -1028,9 +1027,7 @@ void GameUI_WritePointedObjectStatusString() {
                 if (!pLevelDecorations[pickedObjectID].uEventID) {
                     const char *pText;                 // ecx@79
                     if (pLevelDecorations[pickedObjectID].IsInteractive())
-                        pText = pNPCTopics[stru_5E4C90_MapPersistVars._decor_events
-                                           [pLevelDecorations[pickedObjectID]._idx_in_stru123 -
-                                            75] + 380].pTopic;  // неверно для костра
+                        pText = pNPCTopics[mapEventVariables.decorVars[pLevelDecorations[pickedObjectID]._idx_in_stru123 - 75] + 380].pTopic; // campfire
                     else
                         pText = pDecorationList->GetDecoration(pLevelDecorations[pickedObjectID].uDecorationDescID)->field_20;
                     GameUI_StatusBar_Set(pText);
