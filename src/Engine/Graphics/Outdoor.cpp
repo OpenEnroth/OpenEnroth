@@ -2388,69 +2388,12 @@ void ODM_ProcessPartyActions() {
         partyInputZSpeed = fixpoint_mul(58500, partyInputZSpeed);
     }
 
-    // walking / running sounds ------------------------
-    if (engine->config->settings.WalkSound.value()) {
-        pParty->walk_sound_timer -= pEventTimer->uTimeElapsed;
-
-        if (pParty->walk_sound_timer <= 0) {
-            pAudioPlayer->stopWalkingSounds();
-        }
-
-        // Start sound processing only when actual movement is performed to avoid stopping sounds on high FPS
-        if (pEventTimer->uTimeElapsed) {
-            // TODO(Nik-RE-dev): use calculated velocity of party and walk/run flags instead of delta
-            int walkDelta = integer_sqrt((pParty->vPosition - Vec3i(partyNewX, partyNewY, partyNewZ)).lengthSqr());
-
-            // Delta limits for running/walking has been changed. Previously:
-            // - for run limit was >= 16
-            // - for walk limit was >= 8
-            // - stop sound if delta < 8
-            if (pParty->walk_sound_timer <= 0) {
-                if (!partyNotTouchingFloor || partyCloseToGround) {
-                    int modelId = pParty->floor_face_pid >> 9;
-                    int faceId = (pParty->floor_face_pid >> 3) & 0x3F;
-                    bool isModelWalk = !partyNotOnModel && pOutdoor->pBModels[modelId].pFaces[faceId].Visible();
-                    SoundID sound = SOUND_Invalid;
-                    if (partyIsRunning) {
-                        if (walkDelta >= 4 ) {
-                            if (isModelWalk) {
-                                sound = SOUND_RunWood;
-                            } else {
-                                // Old comment: 56 is ground run
-                                sound = pOutdoor->getSoundIdByGrid(WorldPosToGridCellX(pParty->vPosition.x), WorldPosToGridCellY(pParty->vPosition.y), true);
-                            }
-                            pParty->walk_sound_timer = 96;  // 64
-                        }
-                    } else if (partyIsWalking) {
-                        if (walkDelta >= 2) {
-                            if (isModelWalk) {
-                                sound = SOUND_RunWood;
-                            } else {
-                                sound = pOutdoor->getSoundIdByGrid(WorldPosToGridCellX(pParty->vPosition.x), WorldPosToGridCellY(pParty->vPosition.y), false);
-                            }
-                            pParty->walk_sound_timer = 114;  // 64
-                        }
-                    }
-
-                    if (sound != SOUND_Invalid) {
-                        pAudioPlayer->playWalkSound(sound);
-                    }
-                }
-            }
-
-            // mute the walking sound when stopping
-            if (walkDelta < 2) {
-                pAudioPlayer->stopWalkingSounds();
-            }
-        }
-    }
-    //------------------------------------------------------------------------
-
     if (!partyNotTouchingFloor || partyCloseToGround)
         pParty->setAirborne(false);
     else
         pParty->setAirborne(true);
 
+    Vec3i partyOldPosition = pParty->vPosition;
     int partyCurrentXGrid = WorldPosToGridCellX(pParty->vPosition.x);
     int partyCurrentYGrid = WorldPosToGridCellY(pParty->vPosition.y);
     int partyNewXGrid = WorldPosToGridCellX(partyNewX);
@@ -2520,9 +2463,6 @@ void ODM_ProcessPartyActions() {
                     }
                 }
             }
-        } else if (engine->config->settings.WalkSound.value() && pParty->walk_sound_timer <= 0) {
-            pAudioPlayer->stopWalkingSounds();
-            pParty->walk_sound_timer = 64;
         }
 
         pParty->vPosition.z = partyNewZ;
@@ -2547,9 +2487,8 @@ void ODM_ProcessPartyActions() {
     }
 
     // new ground level
-
     int newFloorLevel = ODM_GetFloorLevel(Vec3i(partyNewX, partyNewY, partyNewZ), pParty->uPartyHeight,
-        &partyIsOnWater, &modelStandingOnPID, waterWalkActive);
+            &partyIsOnWater, &modelStandingOnPID, waterWalkActive);
     int newGroundLevel = newFloorLevel + 1;
 
     // Falling damage
@@ -2579,6 +2518,62 @@ void ODM_ProcessPartyActions() {
 
     if (partySlopeMod)
         pParty->uFallStartZ = partyNewZ;
+
+    // walking / running sounds ------------------------
+    if (engine->config->settings.WalkSound.value()) {
+        bool canStartNewSound = !pAudioPlayer->isWalkingSoundPlays();
+
+        // Start sound processing only when actual movement is performed to avoid stopping sounds on high FPS
+        if (pEventTimer->uTimeElapsed) {
+            // TODO(Nik-RE-dev): use calculated velocity of party and walk/run flags instead of delta
+            int walkDelta = integer_sqrt((partyOldPosition - pParty->vPosition).lengthSqr());
+
+            if (walkDelta < 2) {
+                // mute the walking sound when stopping
+                pAudioPlayer->stopWalkingSounds();
+            } else {
+                // Delta limits for running/walking has been changed. Previously:
+                // - for run limit was >= 16
+                // - for walk limit was >= 8
+                // - stop sound if delta < 8
+                if (!partyNotTouchingFloor || partyCloseToGround) {
+                    int modelId = pParty->floor_face_pid >> 9;
+                    int faceId = (pParty->floor_face_pid >> 3) & 0x3F;
+                    bool isModelWalk = !partyNotOnModel && pOutdoor->pBModels[modelId].pFaces[faceId].Visible();
+                    SoundID sound = SOUND_Invalid;
+                    if (partyIsRunning) {
+                        if (walkDelta >= 4 ) {
+                            if (isModelWalk) {
+                                sound = SOUND_RunWood;
+                            } else {
+                                // Old comment: 56 is ground run
+                                sound = pOutdoor->getSoundIdByGrid(WorldPosToGridCellX(partyOldPosition.x), WorldPosToGridCellY(partyOldPosition.y), true);
+                            }
+                        }
+                    } else if (partyIsWalking) {
+                        if (walkDelta >= 2) {
+                            if (isModelWalk) {
+                                sound = SOUND_RunWood;
+                            } else {
+                                sound = pOutdoor->getSoundIdByGrid(WorldPosToGridCellX(partyOldPosition.x), WorldPosToGridCellY(partyOldPosition.y), false);
+                            }
+                        }
+                    }
+
+                    if (sound != pParty->currentWalkingSound) {
+                        pAudioPlayer->stopWalkingSounds();
+                        canStartNewSound = true;
+                    }
+                    if (sound != SOUND_Invalid && canStartNewSound) {
+                        pParty->currentWalkingSound = sound;
+                        pAudioPlayer->playWalkSound(sound);
+                    }
+                } else {
+                    pAudioPlayer->stopWalkingSounds();
+                }
+            }
+        }
+    }
 }
 
 int GetCeilingHeight(int Party_X, signed int Party_Y, int Party_ZHeight, int *pFaceID) {

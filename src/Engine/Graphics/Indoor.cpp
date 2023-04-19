@@ -2230,22 +2230,21 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
 
     // walking / running sounds ------------------------
     if (engine->config->settings.WalkSound.value()) {
-        pParty->walk_sound_timer -= pEventTimer->uTimeElapsed;
-
-        if (pParty->walk_sound_timer <= 0) {
-            pAudioPlayer->stopWalkingSounds();
-        }
+        bool canStartNewSound = !pAudioPlayer->isWalkingSoundPlays();
 
         // Start sound processing only when actual movement is performed to avoid stopping sounds on high FPS
         if (pEventTimer->uTimeElapsed) {
             // TODO(Nik-RE-dev): use calculated velocity of party and walk/run flags instead of delta
             int walkDelta = integer_sqrt((pParty->vPosition - Vec3i(new_party_x, new_party_y, new_party_z)).lengthSqr());
 
-            // Delta limits for running/walking has been changed. Previously:
-            // - for run limit was >= 16
-            // - for walk limit was >= 8
-            // - stop sound if delta < 8
-            if (pParty->walk_sound_timer <= 0) {
+            if (walkDelta < 2) {
+                // mute the walking sound when stopping
+                pAudioPlayer->stopWalkingSounds();
+            } else {
+                // Delta limits for running/walking has been changed. Previously:
+                // - for run limit was >= 16
+                // - for walk limit was >= 8
+                // - stop sound if delta < 8
                 if (!hovering || not_high_fall) {
                     SoundID sound = SOUND_Invalid;
                     if (party_running_flag) {
@@ -2258,7 +2257,6 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
                                 // TODO(Nik-RE-dev): need to probe surface
                                 sound = SOUND_RunWood;
                             }
-                            pParty->walk_sound_timer = 96;  // 64
                         }
                     } else if (party_walking_flag) {
                         if (walkDelta >= 2) {
@@ -2270,19 +2268,20 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
                                 // TODO(Nik-RE-dev): need to probe surface
                                 sound = SOUND_WalkWood;
                             }
-                            pParty->walk_sound_timer = 144;  // 64
                         }
                     }
 
-                    if (sound != SOUND_Invalid) {
+                    if (sound != pParty->currentWalkingSound) {
+                        pAudioPlayer->stopWalkingSounds();
+                        canStartNewSound = true;
+                    }
+                    if (sound != SOUND_Invalid && canStartNewSound) {
+                        pParty->currentWalkingSound = sound;
                         pAudioPlayer->playWalkSound(sound);
                     }
+                } else {
+                    pAudioPlayer->stopWalkingSounds();
                 }
-            }
-
-            // mute the walking sound when stopping
-            if (walkDelta < 2) {
-                pAudioPlayer->stopWalkingSounds();
             }
         }
     }

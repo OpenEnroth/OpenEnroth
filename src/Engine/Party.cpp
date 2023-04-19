@@ -102,7 +102,7 @@ void Party::Zero() {
     field_6EC_set0_unused = 0;
     sPartySavedFlightZ = 0;
     floor_face_pid = 0;
-    walk_sound_timer = 0;
+    currentWalkingSound = SOUND_Invalid;
     _6FC_water_lava_timer = 0;
     uFallStartZ = 0;
     bFlying = 0;
