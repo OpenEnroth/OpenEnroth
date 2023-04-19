@@ -20,9 +20,11 @@ var searchData=
   ['enumserializer_17',['EnumSerializer',['../classdetail_1_1EnumSerializer.html',1,'detail']]],
   ['equipemntpair_18',['EquipemntPair',['../classEquipemntPair.html',1,'']]],
   ['eventindex_19',['EventIndex',['../structEventIndex.html',1,'']]],
-  ['eventtrace_20',['EventTrace',['../structEventTrace.html',1,'']]],
-  ['eventtraceconfigline_21',['EventTraceConfigLine',['../structEventTraceConfigLine.html',1,'']]],
-  ['eventtraceheader_22',['EventTraceHeader',['../structEventTraceHeader.html',1,'']]],
-  ['exception_23',['Exception',['../classException.html',1,'']]],
-  ['explosion_5feffect_5fstruct_24',['explosion_effect_struct',['../structexplosion__effect__struct.html',1,'']]]
+  ['eventir_20',['EventIR',['../classEventIR.html',1,'']]],
+  ['eventmap_21',['EventMap',['../classEventMap.html',1,'']]],
+  ['eventtrace_22',['EventTrace',['../structEventTrace.html',1,'']]],
+  ['eventtraceconfigline_23',['EventTraceConfigLine',['../structEventTraceConfigLine.html',1,'']]],
+  ['eventtraceheader_24',['EventTraceHeader',['../structEventTraceHeader.html',1,'']]],
+  ['exception_25',['Exception',['../classException.html',1,'']]],
+  ['explosion_5feffect_5fstruct_26',['explosion_effect_struct',['../structexplosion__effect__struct.html',1,'']]]
 ];
