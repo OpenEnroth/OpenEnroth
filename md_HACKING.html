@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;5d1062c</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;18bef5a</span>
    </div>
   </td>
  </tr>
@@ -158,7 +158,7 @@ Coding style</h1>
 <li>It's OK to use plain <code>enum</code>s if you really need to have implicit casts to integer types, but this is a very rare use case. If you're using <code>enum</code> values to index into some array, consider using <code>enum class</code> coupled with <code><a class="el" href="classIndexedArray.html">IndexedArray</a></code>.</li>
 <li>Make your code speak for itself when it comes to ownership. If a function takes ownership of one of its parameters, it should take <code>std::unique_ptr</code> by value. If it allocates its result and passes ownership to the caller, then it should return <code>std::unique_ptr</code>.</li>
 <li>Use an <code>int</code> unless you need something else. Don’t try to avoid negative values by using <code>unsigned</code>, this implies many changes to the usual behavior of integers and can be a source of bugs. See a section in <a href="https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#arithmetic">core guidelines</a> for more info. However, don't overdo it, use <code>size_t</code> for indexing into STL containers.</li>
-<li>Don't use namespaces when breaking up your code into libraries. OpenEnroth is a relatively small codebase and doesn't need the measures advocated by the Google style guide to prevent name clashes. <a class="el" href="classException.html">Exception</a> to this rule is <code>namespace detail</code> that you're encouraged to use to hide implementation details and prevent cluttering of the global namespace.</li>
+<li>We generally refrain from using namespaces, and we consider the approach where namespace hierarchy follows the directory structure an antipattern that might make sense in other languages (e.g. Java), but not in C++. Besides, OpenEnroth is a relatively small codebase and doesn't need the measures advocated by the Google style guide to prevent name clashes. <a class="el" href="classException.html">Exception</a> to this rule is <code>namespace detail</code> that you're encouraged to use to hide implementation details and to prevent cluttering of the global namespace.</li>
 </ul>
 <p >There is a lot of code in the project that doesn't follow these conventions. Please feel free to fix it, preferably not mixing up style and logical changes in the same PR.</p>
 <h1><a class="anchor" id="autotoc_md5"></a>
@@ -169,6 +169,10 @@ Code Organization</h1>
 <li><code><a class="el" href="classPlatform.html">Platform</a></code> – our platform abstraction layer on top of SDL. <a class="el" href="classPlatform.html">Platform</a> classes should also be reasonably domain-independent and should depend only on <code>Utility</code>.</li>
 <li><code>Library</code> – collection of independent libraries that the engine is built on top of. Code here can depend on <code>Utility</code>, <code><a class="el" href="classPlatform.html">Platform</a></code>, and other libraries in <code>Library</code>.</li>
 <li>The rest of the code is currently pretty tangled with each part depending on each other. This document will be updated once we have some progress there.</li>
+</ul>
+<p >Our basic guidelines for code organization are:</p><ul>
+<li>One <code>CMakeLists.txt</code> file per folder. There are exceptions, but those are not yet codified.</li>
+<li>One class per source file, with the name of the source file matching the name of the class. Exceptions are small structs, which are usually easier to pack into a single source file, and helper classes, which generally should stay next to the main class. Note that this guideline doesn't apply to source files that mainly declare functions.</li>
 </ul>
 <h1><a class="anchor" id="autotoc_md6"></a>
 Testing</h1>
@@ -192,6 +196,7 @@ Testing</h1>
 <p >To run all unit tests locally, build a <code>UnitTest</code> cmake target, or build &amp; run <code>OpenEnroth_UnitTest</code>.</p>
 <p >To run all game tests locally, set <code>OPENENROTH_MM7_PATH</code> environment variable to point to the location of the game assets, then build <code><a class="el" href="classGameTest.html">GameTest</a></code> cmake target. Alternatively, you can build <code>OpenEnroth_GameTest</code>, and run it manually, passing the paths to both game assets and the test data via command line.</p>
 <p >Note that if you can't find either <code>UnitTest</code> or <code><a class="el" href="classGameTest.html">GameTest</a></code> target in the target list of your IDE, this likely means that you haven't set the <code>ENABLE_TESTS</code> cmake variable as described above.</p>
+<p >Changing game logic might result in failures in game tests because they check random number generator state after each frame, and this will show as <code>Random state desynchronized when playing back trace</code> message in test logs. This is intentional – we don't want accidental game logic changes. If the change was actually intentional, then you might need to either retrace or re-record the traces for the failing tests. To retrace, run <code>OpenEnroth retrace &lt;path-to-trace.json&gt;</code>. Note that you can pass multiple trace paths to this command.</p>
 <h1><a class="anchor" id="autotoc_md7"></a>
 Additional Resources</h1>
 <p >Old event decompiler and IDB files can be found <a href="https://www.dropbox.com/sh/if4u3lphn633oit/AADUYMxNcrkAU6epJ50RskyXa?dl=0">here</a>. Feel free to ping <code>zipi#6029</code> on Discord for more info.</p>
