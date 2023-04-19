@@ -765,59 +765,12 @@ void Party::resetPlayerEmotions() {
     for (Player &player : this->pPlayers) {
         Condition condition = player.GetMajorConditionIdx();
         if (condition == Condition_Good || condition == Condition_Zombie) {
-            player.expression = CHARACTER_EXPRESSION_NORMAL;
             player.uExpressionTimeLength = 32;
+            player.expression = CHARACTER_EXPRESSION_NORMAL;
         } else {
             player.uExpressionTimeLength = 0;
             player.uExpressionTimePassed = 0;
-
-            switch (condition) {
-                case Condition_Dead:
-                    player.expression = CHARACTER_EXPRESSION_DEAD;
-                    break;
-                case Condition_Petrified:
-                    player.expression = CHARACTER_EXPRESSION_PERTIFIED;
-                    break;
-                case Condition_Eradicated:
-                    player.expression = CHARACTER_EXPRESSION_ERADICATED;
-                    break;
-                case Condition_Cursed:
-                    player.expression = CHARACTER_EXPRESSION_CURSED;
-                    break;
-                case Condition_Weak:
-                    player.expression = CHARACTER_EXPRESSION_WEAK;
-                    break;
-                case Condition_Sleep:
-                    player.expression = CHARACTER_EXPRESSION_SLEEP;
-                    break;
-                case Condition_Fear:
-                    player.expression = CHARACTER_EXPRESSION_FEAR;
-                    break;
-                case Condition_Drunk:
-                    player.expression = CHARACTER_EXPRESSION_DRUNK;
-                    break;
-                case Condition_Insane:
-                    player.expression = CHARACTER_EXPRESSION_INSANE;
-                    break;
-                case Condition_Poison_Weak:
-                case Condition_Poison_Medium:
-                case Condition_Poison_Severe:
-                    player.expression = CHARACTER_EXPRESSION_POISONED;
-                    break;
-                case Condition_Disease_Weak:
-                case Condition_Disease_Medium:
-                case Condition_Disease_Severe:
-                    player.expression = CHARACTER_EXPRESSION_DISEASED;
-                    break;
-                case Condition_Paralyzed:
-                    player.expression = CHARACTER_EXPRESSION_PARALYZED;
-                    break;
-                case Condition_Unconscious:
-                    player.expression = CHARACTER_EXPRESSION_UNCONCIOUS;
-                    break;
-                default:
-                    Error("Invalid condition: %u", condition);
-            }
+            player.expression = expressionForCondition(condition);
         }
     }
 }
@@ -884,54 +837,7 @@ void Party::updatePlayersAndHirelingsEmotions() {
                    player.uExpressionTimePassed >= player.uExpressionTimeLength) {
             player.uExpressionTimeLength = 0;
             player.uExpressionTimePassed = 0;
-
-            switch (condition) {
-                case Condition_Dead:
-                    player.expression = CHARACTER_EXPRESSION_DEAD;
-                    break;
-                case Condition_Petrified:
-                    player.expression = CHARACTER_EXPRESSION_PERTIFIED;
-                    break;
-                case Condition_Eradicated:
-                    player.expression = CHARACTER_EXPRESSION_ERADICATED;
-                    break;
-                case Condition_Cursed:
-                    player.expression = CHARACTER_EXPRESSION_CURSED;
-                    break;
-                case Condition_Weak:
-                    player.expression = CHARACTER_EXPRESSION_WEAK;
-                    break;
-                case Condition_Sleep:
-                    player.expression = CHARACTER_EXPRESSION_SLEEP;
-                    break;
-                case Condition_Fear:
-                    player.expression = CHARACTER_EXPRESSION_FEAR;
-                    break;
-                case Condition_Drunk:
-                    player.expression = CHARACTER_EXPRESSION_DRUNK;
-                    break;
-                case Condition_Insane:
-                    player.expression = CHARACTER_EXPRESSION_INSANE;
-                    break;
-                case Condition_Poison_Weak:
-                case Condition_Poison_Medium:
-                case Condition_Poison_Severe:
-                    player.expression = CHARACTER_EXPRESSION_POISONED;
-                    break;
-                case Condition_Disease_Weak:
-                case Condition_Disease_Medium:
-                case Condition_Disease_Severe:
-                    player.expression = CHARACTER_EXPRESSION_DISEASED;
-                    break;
-                case Condition_Paralyzed:
-                    player.expression = CHARACTER_EXPRESSION_PARALYZED;
-                    break;
-                case Condition_Unconscious:
-                    player.expression = CHARACTER_EXPRESSION_UNCONCIOUS;
-                    break;
-                default:
-                    Error("Invalid condition: %u", condition);
-            }
+            player.expression = expressionForCondition(condition);
         }
     }
 
