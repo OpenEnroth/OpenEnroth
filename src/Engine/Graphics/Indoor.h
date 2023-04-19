@@ -355,7 +355,11 @@ struct IndoorLocation {
     bool Load(const std::string &filename, int num_days_played,
               int respawn_interval_days, char *pDest);
     void Draw();
-    void ToggleLight(signed int uLightID, unsigned int bToggle);
+
+    /**
+     * @offset 0x4488F7
+     */
+    void toggleLight(signed int uLightID, unsigned int bToggle);
 
     static unsigned int GetLocationIndex(const char *Str1);
     void DrawIndoorFaces(bool bD3D);
@@ -441,7 +445,11 @@ int BLV_GetFloorLevel(const Vec3i &pos, unsigned int uSectorID, unsigned int *pF
 void BLV_UpdateDoors();
 void UpdateActors_BLV();
 void BLV_ProcessPartyActions();
-void Door_switch_animation(unsigned int uDoorID, int a2);  // idb: sub_449A49
+
+/**
+ * @offset 0x449A49
+ */
+void switchDoorAnimation(unsigned int uDoorID, int a2);
 int CalcDistPointToLine(int a1, int a2, int a3, int a4, int a5, int a6);
 void PrepareDrawLists_BLV();
 void PrepareToLoadBLV(bool bLoading);

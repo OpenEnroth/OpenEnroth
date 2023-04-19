@@ -216,7 +216,6 @@ extern int Start_Party_Teleport_Flag;
 extern int dword_5B65C4_cancelEventProcessing;
 extern int MapsLongTimers_count;  // dword_5B65C8
 extern int npcIdToDismissAfterDialogue;
-extern int dword_5B65D0_dialogue_actor_npc_id;
 extern int dword_5C3418;
 extern int dword_5C341C;
 // extern std::array<char, 777> byte_5C3427;

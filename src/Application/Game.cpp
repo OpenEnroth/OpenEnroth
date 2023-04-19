@@ -359,7 +359,6 @@ void Game_StartDialogue(unsigned int actor_id) {
     if (pParty->hasActiveCharacter()) {
         pCurrentFrameMessageQueue->Flush();
 
-        dword_5B65D0_dialogue_actor_npc_id = pActors[actor_id].sNPC_ID;
         GameUI_InitializeDialogue(&pActors[actor_id], true);
     }
 }
@@ -458,7 +457,6 @@ void Game::processQueuedMessages() {
     if (bDialogueUI_InitializeActor_NPC_ID) {
         // Actor::Actor(&actor);
         Actor actor = Actor();
-        dword_5B65D0_dialogue_actor_npc_id = bDialogueUI_InitializeActor_NPC_ID;
         actor.sNPC_ID = bDialogueUI_InitializeActor_NPC_ID;
         GameUI_InitializeDialogue(&actor, false);
         bDialogueUI_InitializeActor_NPC_ID = 0;

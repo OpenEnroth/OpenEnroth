@@ -224,8 +224,7 @@ unsigned int IndoorLocation::GetLocationIndex(const char *Str1) {
     return 0;
 }
 
-//----- (004488F7) --------------------------------------------------------
-void IndoorLocation::ToggleLight(signed int sLightID, unsigned int bToggle) {
+void IndoorLocation::toggleLight(signed int sLightID, unsigned int bToggle) {
     if (uCurrentlyLoadedLevelType == LEVEL_Indoor &&
         (sLightID <= pIndoor->pLights.size() - 1) && (sLightID >= 0)) {
         if (bToggle)
@@ -2307,8 +2306,7 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
         EventProcessor(uFaceEvent, 0, 1);
 }
 
-//----- (00449A49) --------------------------------------------------------
-void Door_switch_animation(unsigned int uDoorID, int a2) {
+void switchDoorAnimation(unsigned int uDoorID, int a2) {
     BLVDoor::State old_state;       // eax@1
     signed int door_id;  // esi@2
 

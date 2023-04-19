@@ -153,7 +153,7 @@ bool IsSpellQuickCastableOnShiftClick(SPELL_TYPE uSpellID);
 /**
  * Function for processing spells cast from game scripts.
  */
-void EventCastSpell(SPELL_TYPE uSpellID, PLAYER_SKILL_MASTERY skillMastery, PLAYER_SKILL_LEVEL skillLevel, int fromx,
+void eventCastSpell(SPELL_TYPE uSpellID, PLAYER_SKILL_MASTERY skillMastery, PLAYER_SKILL_LEVEL skillLevel, int fromx,
                     int fromy, int fromz, int tox, int toy, int toz);  // sub_448DF8
 
 void armageddonProgress();

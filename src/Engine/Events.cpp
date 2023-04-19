@@ -411,8 +411,7 @@ LABEL_47:
                     if (canShowMessages) {
                         // Actor::Actor(&Dst);
                         Dst = Actor();
-                        dword_5B65D0_dialogue_actor_npc_id = EVT_DWORD(_evt->v5);
-                        Dst.sNPC_ID = dword_5B65D0_dialogue_actor_npc_id;
+                        Dst.sNPC_ID = EVT_DWORD(_evt->v5);
                         GameUI_InitializeDialogue(&Dst, false);
                     } else {
                         bDialogueUI_InitializeActor_NPC_ID = EVT_DWORD(_evt->v5);
@@ -454,7 +453,7 @@ LABEL_47:
                             HouseDialogPressCloseBtn();
                             window_SpeakInHouse->Release();
                             pParty->uFlags &= ~PARTY_FLAGS_1_ForceRedraw;
-                            if (EnterHouse(HOUSE_DARK_GUILD_PIT)) {
+                            if (enterHouse(HOUSE_DARK_GUILD_PIT)) {
                                 window_SpeakInHouse = new GUIWindow_House({0, 0}, render->GetRenderDimensions(), HOUSE_DARK_GUILD_PIT, "");
                                 window_SpeakInHouse->CreateButton({61, 424}, {31, 0}, 2, 94, UIMSG_SelectCharacter, 1, InputAction::SelectChar1, "");
                                 window_SpeakInHouse->CreateButton({177, 424}, {31, 0}, 2, 94, UIMSG_SelectCharacter, 2, InputAction::SelectChar2, "");
@@ -519,7 +518,7 @@ LABEL_47:
                             window_SpeakInHouse->Release();
                             pParty->uFlags &= ~PARTY_FLAGS_1_ForceRedraw;
                             activeLevelDecoration = (LevelDecoration *)1;
-                            if (EnterHouse(HOUSE_BODY_GUILD_ERATHIA)) {
+                            if (enterHouse(HOUSE_BODY_GUILD_ERATHIA)) {
                                 pAudioPlayer->playUISound(SOUND_Invalid);
                                 window_SpeakInHouse = new GUIWindow_House({0, 0}, render->GetRenderDimensions(), HOUSE_BODY_GUILD_ERATHIA, "");
                                 window_SpeakInHouse->DeleteButtons();
@@ -744,27 +743,24 @@ LABEL_47:
                     ++curr_seq_num;
                     break;
                 case EVENT_ToggleIndoorLight:
-                    pIndoor->ToggleLight(EVT_DWORD(_evt->v5), _evt->v9);
+                    pIndoor->toggleLight(EVT_DWORD(_evt->v5), _evt->v9);
                     ++curr_seq_num;
                     break;
                 case EVENT_SetFacesBit:
-                    sub_44892E_set_faces_bit(EVT_DWORD(_evt->v5),
-                                             static_cast<FaceAttribute>(EVT_DWORD(_evt->v9)), _evt->v13);
+                    setFacesBit(EVT_DWORD(_evt->v5), static_cast<FaceAttribute>(EVT_DWORD(_evt->v9)), _evt->v13);
                     ++curr_seq_num;
                     break;
                 case EVENT_ToggleChestFlag:
-                    Chest::ToggleFlag(EVT_DWORD(_evt->v5), CHEST_FLAG(EVT_DWORD(_evt->v9)),
-                                      _evt->v13);
+                    Chest::toggleFlag(EVT_DWORD(_evt->v5), CHEST_FLAG(EVT_DWORD(_evt->v9)), _evt->v13);
                     ++curr_seq_num;
                     break;
                 case EVENT_ToggleActorFlag:
-                    Actor::ToggleFlag(EVT_DWORD(_evt->v5), ActorAttribute(EVT_DWORD(_evt->v9)),
+                    Actor::toggleFlag(EVT_DWORD(_evt->v5), ActorAttribute(EVT_DWORD(_evt->v9)),
                                       _evt->v13);
                     ++curr_seq_num;
                     break;
                 case EVENT_ToggleActorGroupFlag:
-                    ToggleActorGroupFlag(EVT_DWORD(_evt->v5),
-                                         ActorAttribute(EVT_DWORD(_evt->v9)), _evt->v13);
+                    toggleActorGroupFlag(EVT_DWORD(_evt->v5), ActorAttribute(EVT_DWORD(_evt->v9)), _evt->v13);
                     ++curr_seq_num;
                     break;
                 case EVENT_SetSnow:
@@ -798,20 +794,18 @@ LABEL_47:
                     ++curr_seq_num;
                     break;
                 case EVENT_CastSpell:
-                    EventCastSpell(static_cast<SPELL_TYPE>(_evt->v5), static_cast<PLAYER_SKILL_MASTERY>(_evt->v6 + 1), _evt->v7,
+                    eventCastSpell(static_cast<SPELL_TYPE>(_evt->v5), static_cast<PLAYER_SKILL_MASTERY>(_evt->v6 + 1), _evt->v7,
                                    EVT_DWORD(_evt->v8), EVT_DWORD(_evt->v12),
                                    EVT_DWORD(_evt->v16), EVT_DWORD(_evt->v20),
                                    EVT_DWORD(_evt->v24), EVT_DWORD(_evt->v28));
                     ++curr_seq_num;
                     break;
                 case EVENT_SetTexture:
-                    sub_44861E_set_texture(EVT_DWORD(_evt->v5),
-                                           (char *)&_evt->v9);
+                    setTexture(EVT_DWORD(_evt->v5), (char *)&_evt->v9);
                     ++curr_seq_num;
                     break;
                 case EVENT_SetSprite:
-                    SetDecorationSprite(EVT_DWORD(_evt->v5), _evt->v9,
-                                        (char *)&_evt->v10);
+                    setDecorationSprite(EVT_DWORD(_evt->v5), _evt->v9, (char *)&_evt->v10);
                     ++curr_seq_num;
                     break;
                 case EVENT_SummonMonsters:
@@ -827,11 +821,11 @@ LABEL_47:
                     ++curr_seq_num;
                     break;
                 case EVENT_ChangeDoorState:
-                    Door_switch_animation(_evt->v5, _evt->v6);
+                    switchDoorAnimation(_evt->v5, _evt->v6);
                     ++curr_seq_num;
                     break;
                 case EVENT_OpenChest:
-                    if (!Chest::Open(_evt->v5)) {
+                    if (!Chest::open(_evt->v5)) {
                         if (v133 == 1) OnMapLeave();
                         return;
                     }
@@ -938,7 +932,7 @@ LABEL_47:
                     break;
                 }
                 case EVENT_SpeakInHouse:
-                    if (EnterHouse((enum HOUSE_ID)EVT_DWORD(_evt->v5))) {
+                    if (enterHouse((enum HOUSE_ID)EVT_DWORD(_evt->v5))) {
                         //pAudioPlayer->playSound(SOUND_Invalid);
                         // PID 814 was used which is PID(OBJECT_Face, 101)
                         pAudioPlayer->playUISound(SOUND_enter);
