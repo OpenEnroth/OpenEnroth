@@ -16,8 +16,8 @@ static std::string getVariableSetStr(VariableType type, int value) {
         return fmt::format("MapVars[{}], {}", type - VAR_MapPersistentVariable_0, value);
     }
 
-    if (type >= VAR_MapPersistentVariable_75 && type <= VAR_MapPersistentVariable_99) {
-        return fmt::format("MapVarsDecor[{}], {}", type - VAR_MapPersistentVariable_75, value);
+    if (type >= VAR_MapPersistentDecorVariable_0 && type <= VAR_MapPersistentDecorVariable_24) {
+        return fmt::format("MapVarsDecor[{}], {}", type - VAR_MapPersistentDecorVariable_0, value);
     }
 
     if (type >= VAR_Counter1 && type <= VAR_Counter10) {
@@ -339,8 +339,8 @@ static std::string getVariableCompareStr(VariableType type, int value) {
         return fmt::format("MapVars[{}] >= {}", type - VAR_MapPersistentVariable_0, value);
     }
 
-    if (type >= VAR_MapPersistentVariable_75 && type <= VAR_MapPersistentVariable_99) {
-        return fmt::format("MapVarsDecor[{}] >= {}", type - VAR_MapPersistentVariable_75, value);
+    if (type >= VAR_MapPersistentDecorVariable_0 && type <= VAR_MapPersistentDecorVariable_24) {
+        return fmt::format("MapVarsDecor[{}] >= {}", type - VAR_MapPersistentDecorVariable_0, value);
     }
 
     if (type >= VAR_Counter1 && type <= VAR_Counter10) {
