@@ -10,8 +10,8 @@ class EventMap {
     void add(int id, EventIR ir);
     void clear() { _eventsById.clear(); }
 
-    void dumpAll();
-    void dump(int id);
+    void dumpAll() const;
+    void dump(int id) const;
  private:
     std::unordered_map<int, std::vector<EventIR>> _eventsById;
 };

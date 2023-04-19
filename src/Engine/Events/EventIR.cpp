@@ -657,7 +657,7 @@ static std::string getVariableCompareStr(VariableType type, int value) {
     return fmt::format("UNPROCESSED: [{}] ? {}", (int)type, value);
 }
 
-std::string EventIR::toString() {
+std::string EventIR::toString() const {
     switch (type) {
         case EVENT_Exit:
             return fmt::format("{}: Exit", step);

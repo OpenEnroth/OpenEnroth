@@ -14,7 +14,7 @@
 
 class EventIR {
  public:
-    std::string toString();
+    std::string toString() const;
     static EventIR parse(void *data, size_t maxSize);
 
     EventType type;
