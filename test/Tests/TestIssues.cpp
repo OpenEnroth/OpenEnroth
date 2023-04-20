@@ -499,8 +499,8 @@ GAME_TEST(Issues, Issue520) {
 GAME_TEST(Issues, Issue521) {
     // 500 endurance leads to asserts in Player::SetRecoveryTime
     int oldActive{};
-    test->playTraceFromTestData("issue_521.mm7", "issue_521.json", [&] { oldActive = pParty->getActiveCharacter(); });
-    EXPECT_EQ(oldActive, pParty->getActiveCharacter());
+    test->playTraceFromTestData("issue_521.mm7", "issue_521.json", [&] { oldActive = pParty->activePlayerIndex(); });
+    EXPECT_EQ(oldActive, pParty->activePlayerIndex());
 }
 
 GAME_TEST(Issues, Issue527) {
@@ -591,11 +591,11 @@ GAME_TEST(Issues, Issue613) {
 
 GAME_TEST(Issues, Issue615) {
     // test 1 - ensure that clicking between active portraits changes active character.
-    test->playTraceFromTestData("issue_615a.mm7", "issue_615a.json", []() { EXPECT_EQ(pParty->getActiveCharacter(), 1); });
-    EXPECT_EQ(pParty->getActiveCharacter(), 3);
+    test->playTraceFromTestData("issue_615a.mm7", "issue_615a.json", []() { EXPECT_EQ(pParty->activePlayerIndex(), 1); });
+    EXPECT_EQ(pParty->activePlayerIndex(), 3);
     // Assert when clicking on character portrait when no active character is present
-    test->playTraceFromTestData("issue_615b.mm7", "issue_615b.json", []() { EXPECT_EQ(pParty->getActiveCharacter(), 1); });
-    EXPECT_EQ(pParty->getActiveCharacter(), 4);
+    test->playTraceFromTestData("issue_615b.mm7", "issue_615b.json", []() { EXPECT_EQ(pParty->activePlayerIndex(), 1); });
+    EXPECT_EQ(pParty->activePlayerIndex(), 4);
 }
 
 GAME_TEST(Issues, Issue625) {

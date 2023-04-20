@@ -178,9 +178,9 @@ void KeyboardInputHandler::GenerateGameplayActions() {
             break;
 
         case InputAction::Yell:
-            if (current_screen_type == CURRENT_SCREEN::SCREEN_GAME && pParty->hasActiveCharacter()) {
+            if (current_screen_type == CURRENT_SCREEN::SCREEN_GAME && pParty->hasActivePlayer()) {
                 pParty->yell();
-                pPlayers[pParty->getActiveCharacter()]->playReaction(SPEECH_Yell);
+                pPlayers[pParty->activePlayerIndex()]->playReaction(SPEECH_Yell);
             }
             break;
 
@@ -191,11 +191,11 @@ void KeyboardInputHandler::GenerateGameplayActions() {
                 pTurnEngine->flags |= TE_FLAG_8_finished;
                 break;
             }
-            if (pParty->hasActiveCharacter()) {
-                if (pPlayers[pParty->getActiveCharacter()]->uTimeToRecovery == 0) {
+            if (pParty->hasActivePlayer()) {
+                if (pPlayers[pParty->activePlayerIndex()]->uTimeToRecovery == 0) {
                     if (!pParty->bTurnBasedModeOn) {
-                        pPlayers[pParty->getActiveCharacter()]->SetRecoveryTime(
-                            debug_non_combat_recovery_mul * (double)pPlayers[pParty->getActiveCharacter()]->GetAttackRecoveryTime(false) * flt_debugrecmod3
+                        pPlayers[pParty->activePlayerIndex()]->SetRecoveryTime(
+                            debug_non_combat_recovery_mul * (double)pPlayers[pParty->activePlayerIndex()]->GetAttackRecoveryTime(false) * flt_debugrecmod3
                         );
                     }
                     CastSpellInfoHelpers::cancelSpellCastInProgress();
@@ -229,20 +229,20 @@ void KeyboardInputHandler::GenerateGameplayActions() {
                 break;
             }
 
-            if (!pParty->hasActiveCharacter()) {
+            if (!pParty->hasActivePlayer()) {
                 break;
             }
 
-            SPELL_TYPE quickSpellNumber = pPlayers[pParty->getActiveCharacter()]->uQuickSpell;
+            SPELL_TYPE quickSpellNumber = pPlayers[pParty->activePlayerIndex()]->uQuickSpell;
 
             int uRequiredMana = 0;
             if (quickSpellNumber != SPELL_NONE && !engine->config->debug.AllMagic.value()) {
-                PLAYER_SKILL_MASTERY skill_mastery = pPlayers[pParty->getActiveCharacter()]->GetActualSkillMastery(getSkillTypeForSpell(quickSpellNumber));
+                PLAYER_SKILL_MASTERY skill_mastery = pPlayers[pParty->activePlayerIndex()]->GetActualSkillMastery(getSkillTypeForSpell(quickSpellNumber));
 
                 uRequiredMana = pSpellDatas[quickSpellNumber].mana_per_skill[std::to_underlying(skill_mastery) - 1];
             }
 
-            bool enoughMana = pPlayers[pParty->getActiveCharacter()]->sMana >= uRequiredMana;
+            bool enoughMana = pPlayers[pParty->activePlayerIndex()]->sMana >= uRequiredMana;
 
             if (quickSpellNumber == SPELL_NONE || engine->IsUnderwater() || !enoughMana) {
                 pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Attack, 0, 0);

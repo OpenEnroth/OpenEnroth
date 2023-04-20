@@ -241,7 +241,7 @@ void Party::setHoldingItem(ItemGen *pItem) {
 void Party::setActiveToFirstCanAct() {  // added to fix some nzi problems entering shops
     for (int i = 0; i < this->pPlayers.size(); ++i) {
         if (this->pPlayers[i].CanAct()) {
-            _activeCharacter = i + 1;
+            _activePlayer = i + 1;
             return;
         }
     }
@@ -252,15 +252,15 @@ void Party::setActiveToFirstCanAct() {  // added to fix some nzi problems enteri
 //----- (0049370F) --------------------------------------------------------
 void Party::switchToNextActiveCharacter() {
     // avoid switching away from char that can act
-    if (hasActiveCharacter() && this->pPlayers[_activeCharacter - 1].CanAct() &&
-        this->pPlayers[_activeCharacter - 1].uTimeToRecovery < 1)
+    if (hasActivePlayer() && this->pPlayers[_activePlayer - 1].CanAct() &&
+        this->pPlayers[_activePlayer - 1].uTimeToRecovery < 1)
         return;
 
     if (pParty->bTurnBasedModeOn) {
         if (pTurnEngine->turn_stage != TE_ATTACK || PID_TYPE(pTurnEngine->pQueue[0].uPackedID) != OBJECT_Player) {
-            _activeCharacter = 0;
+            _activePlayer = 0;
         } else {
-            _activeCharacter = PID_ID(pTurnEngine->pQueue[0].uPackedID) + 1;
+            _activePlayer = PID_ID(pTurnEngine->pQueue[0].uPackedID) + 1;
         }
         return;
     }
@@ -277,7 +277,7 @@ void Party::switchToNextActiveCharacter() {
             playerAlreadyPicked[i] = true;
             if (i > 0) { // TODO(_) check if this condition really should be here. it is
                 // equal to the original source but still seems kind of weird
-                _activeCharacter = i + 1;
+                _activePlayer = i + 1;
                 return;
             }
             break;
@@ -295,7 +295,7 @@ void Party::switchToNextActiveCharacter() {
             }
         }
     }
-    _activeCharacter = v12;
+    _activePlayer = v12;
     return;
 }
 
@@ -640,7 +640,7 @@ void Party::Reset() {
 
     bTurnBasedModeOn = false;
 
-    pParty->_activeCharacter = 1;
+    pParty->_activePlayer = 1;
     for (int i = 0; i < pPlayers.size(); ++i) {
         ::pPlayers[i + 1] = &pPlayers[i];
     }
@@ -1083,9 +1083,9 @@ void Party::PickedItem_PlaceInInventory_or_Drop() {
     auto texture = assets->GetImage_ColorKey(pParty->pPickedItem.GetIconName());
 
     // check if active player has room in inventory
-    int inventIndex = ::pPlayers[pParty->_activeCharacter]->AddItem(-1, pParty->pPickedItem.uItemID);
-    if (pParty->_activeCharacter && inventIndex != 0) {
-        ::pPlayers[pParty->_activeCharacter]->pInventoryItemList[inventIndex - 1] = pParty->pPickedItem;
+    int inventIndex = ::pPlayers[pParty->_activePlayer]->AddItem(-1, pParty->pPickedItem.uItemID);
+    if (pParty->_activePlayer && inventIndex != 0) {
+        ::pPlayers[pParty->_activePlayer]->pInventoryItemList[inventIndex - 1] = pParty->pPickedItem;
         mouse->RemoveHoldingItem();
     } else {
         // see if any other char has room
@@ -1129,7 +1129,7 @@ void Party::PickedItem_PlaceInInventory_or_Drop() {
 bool Party::AddItemToParty(ItemGen *pItem) {
     int v10;        // eax@11
 
-    assert(pParty->hasActiveCharacter()); // code in this function couldn't handle pParty->_activeCharacter = 0 and crash
+    assert(pParty->hasActivePlayer()); // code in this function couldn't handle pParty->_activePlayer = 0 and crash
 
     if (!pItemTable->pItems[pItem->uItemID].uItemID_Rep_St) {
         pItem->SetIdentified();
@@ -1138,7 +1138,7 @@ bool Party::AddItemToParty(ItemGen *pItem) {
     char *iconName = pItemTable->pItems[pItem->uItemID].pIconName;
     if (iconName) {
         auto texture = assets->GetImage_ColorKey(iconName);
-        int current_player = pParty->_activeCharacter - 1;
+        int current_player = pParty->_activePlayer - 1;
         for (int i = 0; i < pPlayers.size(); i++, current_player++) {
             if (current_player >= pPlayers.size()) {
                 current_player = 0;
