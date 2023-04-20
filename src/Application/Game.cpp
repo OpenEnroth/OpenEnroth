@@ -700,7 +700,7 @@ void Game::processQueuedMessages() {
                                 switch (current_screen_type) {
                                     case CURRENT_SCREEN::SCREEN_CASTING:
                                         if (enchantingActiveCharacter) {
-                                            pParty->setActivePlayerIndex(enchantingActiveCharacter);
+                                            pParty->setActivePlayerByIndex(enchantingActiveCharacter);
                                             pParty->switchToNextActiveCharacter();
                                             enchantingActiveCharacter = 0;
                                             if (pParty->bTurnBasedModeOn) {
@@ -955,7 +955,7 @@ void Game::processQueuedMessages() {
                     onEscape();
                     continue;
                 case UIMSG_CycleCharacters:
-                    pParty->setActivePlayerIndex(CycleCharacter(keyboardInputHandler->IsAdventurerBackcycleToggled()));
+                    pParty->setActivePlayerByIndex(CycleCharacter(keyboardInputHandler->IsAdventurerBackcycleToggled()));
                     continue;
                 case UIMSG_OnTravelByFoot:
                     pCurrentFrameMessageQueue->Flush();
@@ -1084,7 +1084,7 @@ void Game::processQueuedMessages() {
                     if (IsEnchantingInProgress) {
                         // Change character while enchanting is active
                         // TODO(Nik-RE-dev): need separate message type
-                        pParty->setActivePlayerIndex(uMessageParam);
+                        pParty->setActivePlayerByIndex(uMessageParam);
                     } else {
                         spellTargetPicked(PID_INVALID, uMessageParam);
                         closeTargetedSpellWindow();
@@ -2459,7 +2459,7 @@ void Game::gameLoop() {
                                        // 0, 0x180u);//(pPlayerBuffs[0], 0, 384)
                     player.sHealth = 1;
                 }
-                pParty->setActivePlayerIndex(1);
+                pParty->setActivePlayerByIndex(1);
 
                 if (_449B57_test_bit(pParty->_quest_bits, QBIT_ESCAPED_EMERALD_ISLE)) {
                     pParty->vPosition.x = -17331;  // respawn in harmondale

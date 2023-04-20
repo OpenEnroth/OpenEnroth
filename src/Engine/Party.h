@@ -478,7 +478,7 @@ struct Party {
         assert(hasActivePlayer());
         return _activePlayer;
     }
-    inline void setActivePlayerIndex(uint id) {
+    inline void setActivePlayerByIndex(uint id) {
         assert(id >= 0 && id <= pPlayers.size());
         _activePlayer = id;
     }

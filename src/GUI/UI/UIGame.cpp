@@ -588,7 +588,7 @@ void GameUI_OnPlayerPortraitLeftClick(unsigned int uPlayerID) {
                     return;
                 }
 
-                pParty->setActivePlayerIndex(uPlayerID);
+                pParty->setActivePlayerByIndex(uPlayerID);
                 return;
             }
             pGUIWindow_CurrentMenu = new GUIWindow_CharacterRecord(
@@ -604,22 +604,22 @@ void GameUI_OnPlayerPortraitLeftClick(unsigned int uPlayerID) {
         if (pParty->activePlayerIndex() == uPlayerID) {
             current_character_screen_window = WINDOW_CharacterWindow_Inventory;
             current_screen_type = CURRENT_SCREEN::SCREEN_CHEST_INVENTORY;
-            pParty->setActivePlayerIndex(uPlayerID);
+            pParty->setActivePlayerByIndex(uPlayerID);
             return;
         }
         if (pPlayers[uPlayerID]->uTimeToRecovery) {
             return;
         }
-        pParty->setActivePlayerIndex(uPlayerID);
+        pParty->setActivePlayerByIndex(uPlayerID);
         return;
     }
     if (current_screen_type != CURRENT_SCREEN::SCREEN_HOUSE) {
         if (current_screen_type == CURRENT_SCREEN::SCREEN_SHOP_INVENTORY || current_screen_type == CURRENT_SCREEN::SCREEN_CHEST_INVENTORY) {
-            pParty->setActivePlayerIndex(uPlayerID);
+            pParty->setActivePlayerByIndex(uPlayerID);
             return;
         }
         if (current_screen_type != CURRENT_SCREEN::SCREEN_CHEST_INVENTORY) {
-            pParty->setActivePlayerIndex(uPlayerID);
+            pParty->setActivePlayerByIndex(uPlayerID);
             if (current_character_screen_window ==
                 WINDOW_CharacterWindow_Awards) {
                 FillAwardsData();
@@ -629,13 +629,13 @@ void GameUI_OnPlayerPortraitLeftClick(unsigned int uPlayerID) {
         if (pParty->activePlayerIndex() == uPlayerID) {
             current_character_screen_window = WINDOW_CharacterWindow_Inventory;
             current_screen_type = CURRENT_SCREEN::SCREEN_CHEST_INVENTORY;
-            pParty->setActivePlayerIndex(uPlayerID);
+            pParty->setActivePlayerByIndex(uPlayerID);
             return;
         }
         if (pPlayers[uPlayerID]->uTimeToRecovery) {
             return;
         }
-        pParty->setActivePlayerIndex(uPlayerID);
+        pParty->setActivePlayerByIndex(uPlayerID);
         return;
     }
     if (window_SpeakInHouse->keyboard_input_status == WINDOW_INPUT_IN_PROGRESS) {
@@ -643,7 +643,7 @@ void GameUI_OnPlayerPortraitLeftClick(unsigned int uPlayerID) {
     }
 
     if (pParty->activePlayerIndex() != uPlayerID) {
-        pParty->setActivePlayerIndex(uPlayerID);
+        pParty->setActivePlayerByIndex(uPlayerID);
         return;
     }
 
