@@ -115,7 +115,7 @@ var searchData=
   ['is_5fpart_5fof_5fselection_112',['is_part_of_selection',['../classVis.html#ad0b88aa0343b21936a9bb56479d505e5',1,'Vis']]],
   ['is_5funique_113',['is_unique',['../classIndexedArray.html#a2b8da5e6cbea3b4cdcc864a59dce4ac3',1,'IndexedArray']]],
   ['isactive_114',['IsActive',['../classGUIProgressBar.html#ae95313c4c7a7d2fa6e9ad8cafd3e3b12',1,'GUIProgressBar']]],
-  ['isactoralive_115',['IsActorAlive',['../Actor_8h.html#a34e8d30f2a18b20999b6cad99ee56c27',1,'IsActorAlive(unsigned int uType, unsigned int uParam, unsigned int uNumAlive):&#160;Actor.cpp'],['../Actor_8cpp.html#a34e8d30f2a18b20999b6cad99ee56c27',1,'IsActorAlive(unsigned int uType, unsigned int uParam, unsigned int uNumAlive):&#160;Actor.cpp']]],
+  ['isactoralive_115',['isActorAlive',['../Actor_8h.html#aae95c9f3a520b4c1835c5588e4337560',1,'isActorAlive(unsigned int uType, unsigned int uParam, unsigned int uNumAlive):&#160;Actor.cpp'],['../Actor_8cpp.html#aae95c9f3a520b4c1835c5588e4337560',1,'isActorAlive(unsigned int uType, unsigned int uParam, unsigned int uNumAlive):&#160;Actor.cpp']]],
   ['isadventurerbackcycletoggled_116',['IsAdventurerBackcycleToggled',['../classIo_1_1KeyboardInputHandler.html#a573a26eb32ceb779a91463b3a655207d',1,'Io::KeyboardInputHandler']]],
   ['isairborne_117',['isAirborne',['../structParty.html#a98b408d53544715b79fcdf9ba9c03dce',1,'Party']]],
   ['isarmor_118',['IsArmor',['../ItemEnums_8h.html#a373ced6e6e8db1f1e3ae20abd8e636cb',1,'ItemEnums.h']]],

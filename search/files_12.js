@@ -51,9 +51,8 @@ var searchData=
   ['string_5fut_2ecpp_48',['String_ut.cpp',['../String__ut_8cpp.html',1,'']]],
   ['stringoutputstream_2ecpp_49',['StringOutputStream.cpp',['../StringOutputStream_8cpp.html',1,'']]],
   ['stringoutputstream_2eh_50',['StringOutputStream.h',['../StringOutputStream_8h.html',1,'']]],
-  ['stru123_2eh_51',['stru123.h',['../stru123_8h.html',1,'']]],
-  ['stru159_2eh_52',['stru159.h',['../stru159_8h.html',1,'']]],
-  ['stru160_2eh_53',['stru160.h',['../stru160_8h.html',1,'']]],
-  ['stru314_2eh_54',['stru314.h',['../stru314_8h.html',1,'']]],
-  ['stru367_2eh_55',['stru367.h',['../stru367_8h.html',1,'']]]
+  ['stru159_2eh_51',['stru159.h',['../stru159_8h.html',1,'']]],
+  ['stru160_2eh_52',['stru160.h',['../stru160_8h.html',1,'']]],
+  ['stru314_2eh_53',['stru314.h',['../stru314_8h.html',1,'']]],
+  ['stru367_2eh_54',['stru367.h',['../stru367_8h.html',1,'']]]
 ];

@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;88c031b</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;e9c1716</span>
    </div>
   </td>
  </tr>
@@ -93,6 +93,8 @@ Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct__evt__raw.html">_evt_raw</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structByteArray.html">ByteArray</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structMapEventVariables.html">MapEventVariables</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="define-members" name="define-members"></a>
@@ -432,8 +434,8 @@ Functions</h2></td></tr>
 <tr class="separator:a968ca1ccd91c32205a907ec6e9cb1e37"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a56e8b50cfa13744a376b7c891e06a712"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Events_8h.html#a56e8b50cfa13744a376b7c891e06a712">sub_4465DF_check_season</a> (int a1)</td></tr>
 <tr class="separator:a56e8b50cfa13744a376b7c891e06a712"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8ea156f70d4c1814099941e2789f20e9"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Events_8h.html#a8ea156f70d4c1814099941e2789f20e9">sub_448CF4_spawn_monsters</a> (int16_t typeindex, int16_t level, int count, int x, int y, int z, int group, unsigned int uUniqueName)</td></tr>
-<tr class="separator:a8ea156f70d4c1814099941e2789f20e9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7aad2a3462cbc03678ab435d8249ed0e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Events_8h.html#a7aad2a3462cbc03678ab435d8249ed0e">spawnMonsters</a> (int16_t typeindex, int16_t level, int count, int x, int y, int z, int group, unsigned int uUniqueName)</td></tr>
+<tr class="separator:a7aad2a3462cbc03678ab435d8249ed0e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="var-members" name="var-members"></a>
 Variables</h2></td></tr>
@@ -473,6 +475,8 @@ Variables</h2></td></tr>
 <tr class="separator:a03256766d8670e594276da0d0fa1a33c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aba3729433b200c6d78b4f5fe4f2369b0"><td class="memItemLeft" align="right" valign="top">std::array&lt; <a class="el" href="structEventIndex.html">EventIndex</a>, 4400 &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Events_8h.html#aba3729433b200c6d78b4f5fe4f2369b0">pLevelEVT_Index</a></td></tr>
 <tr class="separator:aba3729433b200c6d78b4f5fe4f2369b0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad8d62090d869b2c1bd6b9d3d6313d25f"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structMapEventVariables.html">MapEventVariables</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Events_8h.html#ad8d62090d869b2c1bd6b9d3d6313d25f">mapEventVariables</a></td></tr>
+<tr class="separator:ad8d62090d869b2c1bd6b9d3d6313d25f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Macro Definition Documentation</h2>
 <a id="a8c11d317123d267c224a2fc5a57c5798" name="a8c11d317123d267c224a2fc5a57c5798"></a>
@@ -1037,32 +1041,14 @@ Variables</h2></td></tr>
 
 </div>
 </div>
-<a id="a56e8b50cfa13744a376b7c891e06a712" name="a56e8b50cfa13744a376b7c891e06a712"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a56e8b50cfa13744a376b7c891e06a712">&#9670;&#160;</a></span>sub_4465DF_check_season()</h2>
+<a id="a7aad2a3462cbc03678ab435d8249ed0e" name="a7aad2a3462cbc03678ab435d8249ed0e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7aad2a3462cbc03678ab435d8249ed0e">&#9670;&#160;</a></span>spawnMonsters()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">bool sub_4465DF_check_season </td>
-          <td>(</td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>a1</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a8ea156f70d4c1814099941e2789f20e9" name="a8ea156f70d4c1814099941e2789f20e9"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a8ea156f70d4c1814099941e2789f20e9">&#9670;&#160;</a></span>sub_448CF4_spawn_monsters()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void sub_448CF4_spawn_monsters </td>
+          <td class="memname">void spawnMonsters </td>
           <td>(</td>
           <td class="paramtype">int16_t&#160;</td>
           <td class="paramname"><em>typeindex</em>, </td>
@@ -1116,10 +1102,51 @@ Variables</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<dl class="section user"><dt>Original binary offset:</dt><dd>0x448CF4 </dd></dl>
+
+</div>
+</div>
+<a id="a56e8b50cfa13744a376b7c891e06a712" name="a56e8b50cfa13744a376b7c891e06a712"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a56e8b50cfa13744a376b7c891e06a712">&#9670;&#160;</a></span>sub_4465DF_check_season()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool sub_4465DF_check_season </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>a1</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
 
 </div>
 </div>
 <h2 class="groupheader">Variable Documentation</h2>
+<a id="ad8d62090d869b2c1bd6b9d3d6313d25f" name="ad8d62090d869b2c1bd6b9d3d6313d25f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad8d62090d869b2c1bd6b9d3d6313d25f">&#9670;&#160;</a></span>mapEventVariables</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structMapEventVariables.html">MapEventVariables</a> mapEventVariables</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">extern</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="adcc2e962218948d60d4d76c722147a0e" name="adcc2e962218948d60d4d76c722147a0e"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#adcc2e962218948d60d4d76c722147a0e">&#9670;&#160;</a></span>pGlobalEVT</h2>
 
