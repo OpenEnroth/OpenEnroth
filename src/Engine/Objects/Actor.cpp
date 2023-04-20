@@ -192,7 +192,7 @@ void Actor::SetRandomGoldIfTheresNoItem() {
     }
     if (grng->random(100) < this->pMonsterInfo.uTreasureDropChance) {
         if (this->pMonsterInfo.uTreasureLevel != ITEM_TREASURE_LEVEL_INVALID)
-            pItemTable->GenerateItem(this->pMonsterInfo.uTreasureLevel,
+            pItemTable->generateItem(this->pMonsterInfo.uTreasureLevel,
                                      this->pMonsterInfo.uTreasureType,
                                      &this->ActorHasItems[2]);
     }
@@ -3373,9 +3373,8 @@ void Actor::DamageMonsterFromParty(signed int a1, unsigned int uActorID_Monster,
             );
         }
     }
-    if (pMonster->pActorBuffs[ACTOR_BUFF_PAIN_REFLECTION].Active() &&
-        uDamageAmount != 0)
-        player->ReceiveDamage(uDamageAmount, attackElement);
+    if (pMonster->pActorBuffs[ACTOR_BUFF_PAIN_REFLECTION].Active() && uDamageAmount != 0)
+        player->receiveDamage(uDamageAmount, attackElement);
     int knockbackValue = 20 * v61 / (signed int)pMonster->pMonsterInfo.uHP;
     if ((player->GetSpecialItemBonus(ITEM_ENCHANTMENT_OF_FORCE) ||
          hit_will_stun) && pMonster->DoesDmgTypeDoDamage(DMGT_EARTH)) {
@@ -3824,19 +3823,21 @@ void Actor::LootActor() {
             Dst.uEnchantmentType = 2 * grng->random(4) + 2;
         }
         pItemTable->SetSpecialBonus(&Dst);
-        if (!pParty->AddItemToParty(&Dst)) pParty->SetHoldingItem(&Dst);
+        if (!pParty->AddItemToParty(&Dst)) {
+            pParty->setHoldingItem(&Dst);
+        }
         this->uCarriedItemID = ITEM_NULL;
         if (this->ActorHasItems[0].uItemID != ITEM_NULL) {
             if (!pParty->AddItemToParty(&this->ActorHasItems[0])) {
                 pParty->PickedItem_PlaceInInventory_or_Drop();
-                pParty->SetHoldingItem(&this->ActorHasItems[0]);
+                pParty->setHoldingItem(&this->ActorHasItems[0]);
             }
             this->ActorHasItems[0].Reset();
         }
         if (this->ActorHasItems[1].uItemID != ITEM_NULL) {
             if (!pParty->AddItemToParty(&this->ActorHasItems[1])) {
                 pParty->PickedItem_PlaceInInventory_or_Drop();
-                pParty->SetHoldingItem(&this->ActorHasItems[1]);
+                pParty->setHoldingItem(&this->ActorHasItems[1]);
             }
             this->ActorHasItems[1].Reset();
         }
@@ -3853,28 +3854,29 @@ void Actor::LootActor() {
                 pItemTable->pItems[Dst.uItemID].pUnidentifiedName
             );
 
-            if (!pParty->AddItemToParty(&Dst)) pParty->SetHoldingItem(&Dst);
+            if (!pParty->AddItemToParty(&Dst)) {
+                pParty->setHoldingItem(&Dst);
+            }
             itemFound = true;
         }
     } else {
         if (grng->random(100) < this->pMonsterInfo.uTreasureDropChance &&
             this->pMonsterInfo.uTreasureLevel != ITEM_TREASURE_LEVEL_INVALID) {
-            pItemTable->GenerateItem(this->pMonsterInfo.uTreasureLevel, this->pMonsterInfo.uTreasureType,
+            pItemTable->generateItem(this->pMonsterInfo.uTreasureLevel, this->pMonsterInfo.uTreasureType,
                                      &Dst);
 
-            StatusBarItemFound(
-                foundGold,
-                pItemTable->pItems[Dst.uItemID].pUnidentifiedName
-            );
+            StatusBarItemFound(foundGold, pItemTable->pItems[Dst.uItemID].pUnidentifiedName);
 
-            if (!pParty->AddItemToParty(&Dst)) pParty->SetHoldingItem(&Dst);
+            if (!pParty->AddItemToParty(&Dst)) {
+                pParty->setHoldingItem(&Dst);
+            }
             itemFound = true;
         }
     }
     if (this->ActorHasItems[0].uItemID != ITEM_NULL) {
         if (!pParty->AddItemToParty(&this->ActorHasItems[0])) {
             pParty->PickedItem_PlaceInInventory_or_Drop();
-            pParty->SetHoldingItem(&this->ActorHasItems[0]);
+            pParty->setHoldingItem(&this->ActorHasItems[0]);
             itemFound = true;
         }
         this->ActorHasItems[0].Reset();
@@ -3882,7 +3884,7 @@ void Actor::LootActor() {
     if (this->ActorHasItems[1].uItemID != ITEM_NULL) {
         if (!pParty->AddItemToParty(&this->ActorHasItems[1])) {
             pParty->PickedItem_PlaceInInventory_or_Drop();
-            pParty->SetHoldingItem(&this->ActorHasItems[1]);
+            pParty->setHoldingItem(&this->ActorHasItems[1]);
             itemFound = true;
         }
         this->ActorHasItems[1].Reset();

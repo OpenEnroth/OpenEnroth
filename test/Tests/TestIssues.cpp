@@ -640,8 +640,8 @@ GAME_TEST(Issues, Issue662) {
 }
 
 GAME_TEST(Issues, Issue675) {
-    // GenerateItem used to generate invalid enchantments outside of the [0, 24] range in some cases.
-    // Also, GenerateItem used to assert.
+    // generateItem used to generate invalid enchantments outside of the [0, 24] range in some cases.
+    // Also, generateItem used to assert.
     std::initializer_list<ITEM_TREASURE_LEVEL> levels = {
         ITEM_TREASURE_LEVEL_1, ITEM_TREASURE_LEVEL_2, ITEM_TREASURE_LEVEL_3,
         ITEM_TREASURE_LEVEL_4, ITEM_TREASURE_LEVEL_5, ITEM_TREASURE_LEVEL_6
@@ -650,7 +650,7 @@ GAME_TEST(Issues, Issue675) {
     ItemGen item;
     for (int i = 0; i < 200; i++) {
         for (ITEM_TREASURE_LEVEL level : levels) {
-            pItemTable->GenerateItem(level, 0, &item);
+            pItemTable->generateItem(level, 0, &item);
             if (IsPotion(item.uItemID)) {
                 // For potions, uEnchantmentType is potion strength.
                 EXPECT_GE(item.uEnchantmentType, 1);

@@ -1130,7 +1130,7 @@ void armageddonProgress() {
 
     for (Player &player : pParty->pPlayers) {
         if (!player.conditions.HasAny({Condition_Dead, Condition_Petrified, Condition_Eradicated})) {
-            player.ReceiveDamage(outgoingDamage, DMGT_MAGICAL);
+            player.receiveDamage(outgoingDamage, DMGT_MAGICAL);
         }
     }
 }

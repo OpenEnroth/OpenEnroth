@@ -58,6 +58,18 @@ int HouseDialogPressCloseBtn();
 
 extern class Image *_591428_endcap;
 
+// Originally was a packed struct.
+struct HouseAnimDescr {
+    const char *video_name;
+    int field_4;
+    int house_npc_id;
+    BuildingType uBuildingType; // Originally was 1 byte.
+    uint8_t uRoomSoundId;
+    uint16_t padding_e;
+};
+
+extern std::array<const HouseAnimDescr, 196> pAnimatedRooms;
+
 class GUIWindow_House : public GUIWindow {
  public:
     GUIWindow_House(Pointi position, Sizei dimensions, HOUSE_ID houseId, const std::string &hint = std::string());

@@ -232,8 +232,7 @@ bool Party::_497FC5_check_party_perception_against_level() {
     return result;
 }
 
-//----- (004936E1) --------------------------------------------------------
-void Party::SetHoldingItem(ItemGen *pItem) {
+void Party::setHoldingItem(ItemGen *pItem) {
     PickedItem_PlaceInInventory_or_Drop();
     pPickedItem = *pItem;
     mouse->SetCursorBitmapFromItemID(pPickedItem.uItemID);
@@ -524,7 +523,7 @@ void Party::createDefaultParty(bool bDebugGiveItems) {
 
         if (bDebugGiveItems) {
             Dst.Reset();
-            pItemTable->GenerateItem(ITEM_TREASURE_LEVEL_2, 40, &Dst);  // ring
+            pItemTable->generateItem(ITEM_TREASURE_LEVEL_2, 40, &Dst);  // ring
             pCharacter.AddItem2(-1, &Dst);
             for (int uSkillIdx = 0; uSkillIdx < 36; uSkillIdx++) {
                 PLAYER_SKILL_TYPE skill = (PLAYER_SKILL_TYPE)uSkillIdx;
@@ -1244,8 +1243,7 @@ void Party::giveFallDamage(int distance) {
     for (Player &player : pParty->pPlayers) {  // receive falling damage
         if (!player.HasEnchantedItemEquipped(ITEM_ENCHANTMENT_OF_FEATHER_FALLING) &&
             !player.WearsItem(ITEM_ARTIFACT_HERMES_SANDALS, ITEM_SLOT_BOOTS)) {
-            player.ReceiveDamage((int)((distance) *
-                    (uint64_t)(player.GetMaxHealth() / 10)) / 256, DMGT_PHISYCAL);
+            player.receiveDamage((int)((distance) * (uint64_t)(player.GetMaxHealth() / 10)) / 256, DMGT_PHISYCAL);
             int bonus = 20 - player.GetParameterBonus(player.GetActualEndurance());
             player.SetRecoveryTime(bonus * debug_non_combat_recovery_mul * flt_debugrecmod3);
         }

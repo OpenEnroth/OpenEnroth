@@ -72,7 +72,7 @@ uint16_t DecorationList::GetDecorIdByName(std::string_view pName) {
 }
 
 void RespawnGlobalDecorations() {
-    std::fill(std::begin(mapEventVariables.decorVars), std::end(mapEventVariables.decorVars), 0);
+    mapEventVariables.decorVars.fill(0);
 
     uint decorEventIdx = 0;
     for (uint i = 0; i < pLevelDecorations.size(); ++i) {

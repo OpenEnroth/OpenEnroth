@@ -2184,10 +2184,9 @@ void CastSpellInfoHelpers::castSpell() {
                         if (pItemTable->pItems[pSpriteObjects[obj_id].containing_item.uItemID].uEquipType == EQUIP_GOLD) {
                             pParty->partyFindsGold(pSpriteObjects[obj_id].containing_item.special_enchantment, GOLD_RECEIVE_SHARE);
                         } else {
-                            GameUI_SetStatusBar(LSTR_FMT_YOU_FOUND_ITEM,
-                                    pItemTable->pItems[pSpriteObjects[obj_id].containing_item.uItemID].pUnidentifiedName);
+                            GameUI_SetStatusBar(LSTR_FMT_YOU_FOUND_ITEM, pItemTable->pItems[pSpriteObjects[obj_id].containing_item.uItemID].pUnidentifiedName);
                             if (!pParty->AddItemToParty(&pSpriteObjects[obj_id].containing_item)) {
-                                pParty->SetHoldingItem(&pSpriteObjects[obj_id].containing_item);
+                                pParty->setHoldingItem(&pSpriteObjects[obj_id].containing_item);
                             }
                         }
                         SpriteObject::OnInteraction(obj_id);

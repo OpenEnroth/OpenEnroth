@@ -2517,7 +2517,7 @@ int SpawnEncounterMonsters(MapInfo *map_info, int enc_index) {
 //----- (00450521) --------------------------------------------------------
 int DropTreasureAt(ITEM_TREASURE_LEVEL trs_level, int trs_type, int x, int y, int z, uint16_t facing) {
     SpriteObject a1;
-    pItemTable->GenerateItem(trs_level, trs_type, &a1.containing_item);
+    pItemTable->generateItem(trs_level, trs_type, &a1.containing_item);
     a1.uType = (SPRITE_OBJECT_TYPE)pItemTable->pItems[a1.containing_item.uItemID].uSpriteID;
     a1.uObjectDescID = pObjectList->ObjectIDByItemID(a1.uType);
     a1.vPosition.x = x;

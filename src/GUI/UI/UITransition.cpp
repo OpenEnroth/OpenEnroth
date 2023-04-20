@@ -9,7 +9,6 @@
 #include "Engine/MapInfo.h"
 #include "Engine/Party.h"
 #include "Engine/Time.h"
-#include "Engine/stru159.h"
 
 #include "GUI/GUIButton.h"
 #include "GUI/UI/UITransition.h"

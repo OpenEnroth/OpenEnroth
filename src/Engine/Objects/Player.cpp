@@ -1564,7 +1564,7 @@ int Player::StealFromActor(
                         this->pName.c_str(),
                         pItemTable->pItems[carriedItemId].pUnidentifiedName
                     );
-                    pParty->SetHoldingItem(&tempItem);
+                    pParty->setHoldingItem(&tempItem);
                     return STEAL_SUCCESS;
                 }
             }
@@ -1598,8 +1598,7 @@ void Player::Heal(int amount) {
     }
 }
 
-//----- (0048DC1E) --------------------------------------------------------
-int Player::ReceiveDamage(signed int amount, DAMAGE_TYPE dmg_type) {
+int Player::receiveDamage(signed int amount, DAMAGE_TYPE dmg_type) {
     SetAsleep(GameTime(0));  // wake up if asleep
     signed int recieved_dmg = CalculateIncommingDamage(dmg_type, amount);  // get damage
     // for no damage cheat - moved from elsewhere
@@ -4654,7 +4653,7 @@ void Player::SetVariable(VariableType var_type, signed int var_value) {
             item.Reset();
             item.uItemID = ITEM_TYPE(var_value);
             item.uAttributes = ITEM_IDENTIFIED;
-            pParty->SetHoldingItem(&item);
+            pParty->setHoldingItem(&item);
             if (IsSpawnableArtifact(ITEM_TYPE(var_value)))
                 pParty->pIsArtifactFound[ITEM_TYPE(var_value)] = 1;
             return;
@@ -5246,7 +5245,7 @@ void Player::AddVariable(VariableType var_type, signed int val) {
                 item.uNumCharges = grng->random(6) + item.GetDamageMod() + 1;
                 item.uMaxCharges = item.uNumCharges;
             }
-            pParty->SetHoldingItem(&item);
+            pParty->setHoldingItem(&item);
             return;
         case VAR_FixedGold:
             pParty->partyFindsGold(val, GOLD_RECEIVE_NOSHARE_MSG);
@@ -5688,7 +5687,7 @@ void Player::SubtractVariable(VariableType VarNum, signed int pValue) {
 
     switch (VarNum) {
         case VAR_CurrentHP:
-            ReceiveDamage((signed int)pValue, DMGT_PHISYCAL);
+            receiveDamage((signed int)pValue, DMGT_PHISYCAL);
             PlayAwardSound_Anim98();
             return;
         case VAR_CurrentSP:
@@ -6233,30 +6232,21 @@ void Player::EquipBody(ITEM_EQUIP_TYPE uEquipType) {
 
     tempPickedItem.Reset();
     itemAnchor = pEquipTypeToBodyAnchor[uEquipType];
-    itemInvLocation =
-        pPlayers[pParty->getActiveCharacter()]->pEquipment.pIndices[itemAnchor];
+    itemInvLocation = pPlayers[pParty->getActiveCharacter()]->pEquipment.pIndices[itemAnchor];
     if (itemInvLocation) {  //переодеться в другую вещь
-        memcpy(&tempPickedItem, &pParty->pPickedItem, sizeof(tempPickedItem));
-        pPlayers[pParty->getActiveCharacter()]
-            ->pInventoryItemList[itemInvLocation - 1]
-            .uBodyAnchor = ITEM_SLOT_INVALID;
+        tempPickedItem = pParty->pPickedItem;
+        pPlayers[pParty->getActiveCharacter()]->pInventoryItemList[itemInvLocation - 1].uBodyAnchor = ITEM_SLOT_INVALID;
         pParty->pPickedItem.Reset();
-        pParty->SetHoldingItem(&pPlayers[pParty->getActiveCharacter()]
-                                    ->pInventoryItemList[itemInvLocation - 1]);
+        pParty->setHoldingItem(&pPlayers[pParty->getActiveCharacter()]->pInventoryItemList[itemInvLocation - 1]);
         tempPickedItem.uBodyAnchor = itemAnchor;
-        memcpy(&pPlayers[pParty->getActiveCharacter()]
-                    ->pInventoryItemList[itemInvLocation - 1],
-               &tempPickedItem, sizeof(ItemGen));
-        pPlayers[pParty->getActiveCharacter()]->pEquipment.pIndices[itemAnchor] =
-            itemInvLocation;
+        pPlayers[pParty->getActiveCharacter()]->pInventoryItemList[itemInvLocation - 1] = tempPickedItem;
+        pPlayers[pParty->getActiveCharacter()]->pEquipment.pIndices[itemAnchor] = itemInvLocation;
     } else {  // одеть вещь
         freeSlot = pPlayers[pParty->getActiveCharacter()]->findFreeInventoryListSlot();
         if (freeSlot >= 0) {
             pParty->pPickedItem.uBodyAnchor = itemAnchor;
-            memcpy(&pPlayers[pParty->getActiveCharacter()]->pInventoryItemList[freeSlot],
-                   &pParty->pPickedItem, sizeof(ItemGen));
-            pPlayers[pParty->getActiveCharacter()]->pEquipment.pIndices[itemAnchor] =
-                freeSlot + 1;
+            pPlayers[pParty->getActiveCharacter()]->pInventoryItemList[freeSlot] = pParty->pPickedItem;
+            pPlayers[pParty->getActiveCharacter()]->pEquipment.pIndices[itemAnchor] = freeSlot + 1;
             mouse->RemoveHoldingItem();
         }
     }
@@ -6488,7 +6478,7 @@ void DamagePlayerFromMonster(unsigned int uObjID, ABILITY_INDEX dmgSource, Vec3i
         }
 
         // calc damage
-        dmgToReceive = playerPtr->ReceiveDamage(dmgToReceive, (DAMAGE_TYPE)damageType);
+        dmgToReceive = playerPtr->receiveDamage(dmgToReceive, (DAMAGE_TYPE)damageType);
 
         // pain reflection back on attacker
         if (playerPtr->pPlayerBuffs[PLAYER_BUFF_PAIN_REFLECTION].Active()) {
@@ -6578,7 +6568,7 @@ void DamagePlayerFromMonster(unsigned int uObjID, ABILITY_INDEX dmgSource, Vec3i
                 damage = pParty->pPlayers[uActorID].CalculateRangedDamageTo(0);
                 damagetype = 0;
             }
-            playerPtr->ReceiveDamage(damage, (DAMAGE_TYPE)damagetype);
+            playerPtr->receiveDamage(damage, (DAMAGE_TYPE)damagetype);
             if (uActorType == OBJECT_Player && !_A750D8_player_speech_timer) {
                 _A750D8_player_speech_timer = 256;
                 PlayerSpeechID = SPEECH_DamagedParty;
@@ -6663,7 +6653,7 @@ void DamagePlayerFromMonster(unsigned int uObjID, ABILITY_INDEX dmgSource, Vec3i
                     break;
             }
 
-            int reflectedDmg = playerPtr->ReceiveDamage(dmgToReceive, (DAMAGE_TYPE)damageType);
+            int reflectedDmg = playerPtr->receiveDamage(dmgToReceive, (DAMAGE_TYPE)damageType);
             if (playerPtr->pPlayerBuffs[PLAYER_BUFF_PAIN_REFLECTION].Active()) {
                 AIState actorState = actorPtr->uAIState;
                 if (actorState != Dying && actorState != Dead) {
@@ -6725,7 +6715,7 @@ void DamagePlayerFromMonster(unsigned int uObjID, ABILITY_INDEX dmgSource, Vec3i
                 damagetype = 0;
             }
 
-            playerPtr->ReceiveDamage(damage, (DAMAGE_TYPE)damagetype);
+            playerPtr->receiveDamage(damage, (DAMAGE_TYPE)damagetype);
             if (uActorType == OBJECT_Player && !_A750D8_player_speech_timer) {
                 _A750D8_player_speech_timer = 256;
                 PlayerSpeechID = SPEECH_DamagedParty;
