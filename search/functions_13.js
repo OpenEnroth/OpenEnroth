@@ -238,7 +238,7 @@ var searchData=
   ['standawhile_235',['StandAwhile',['../classActor.html#abcdcd09bde265d5b55d08ad248f5c473',1,'Actor']]],
   ['start_236',['start',['../classEngineTraceComponent.html#a916ee9d6242c4a409e4a622769c80ef9',1,'EngineTraceComponent']]],
   ['start_237',['Start',['../structstru262__TurnBased.html#adce7b0d24a6f44d9ff1e77a621c29989',1,'stru262_TurnBased::Start()'],['../classCallBackTimer.html#a34849fcf4606ad7377fe3abfff6fd1f2',1,'CallBackTimer::Start()']]],
-  ['startbranchlessdialogue_238',['StartBranchlessDialogue',['../UIDialogue_8h.html#a7de73eb45c452cd4b7a65c389a108f1f',1,'StartBranchlessDialogue(int eventid, int entryline, int button):&#160;UIDialogue.cpp'],['../UIDialogue_8cpp.html#a7de73eb45c452cd4b7a65c389a108f1f',1,'StartBranchlessDialogue(int eventid, int entryline, int button):&#160;UIDialogue.cpp']]],
+  ['startbranchlessdialogue_238',['StartBranchlessDialogue',['../UIDialogue_8h.html#a7de73eb45c452cd4b7a65c389a108f1f',1,'StartBranchlessDialogue(int eventid, int entryline, int button):&#160;UIDialogue.cpp'],['../UIDialogue_8cpp.html#aef73fd7ecf1a120114bd3149e0e242ee',1,'StartBranchlessDialogue(int eventid, int entryline, int event):&#160;UIDialogue.cpp']]],
   ['startfill_239',['StartFill',['../structexplosion__effect__struct.html#a5dab6aba2dbb6f6aa7c13cf1b5cda542',1,'explosion_effect_struct']]],
   ['startrecording_240',['startRecording',['../classEngineTraceRecorder.html#a4d20343083eeae6f1b110bb63f45ea16',1,'EngineTraceRecorder']]],
   ['starttextinput_241',['StartTextInput',['../classIo_1_1KeyboardInputHandler.html#a70cb2a131582d66d8f0de45c6adbef60',1,'Io::KeyboardInputHandler']]],

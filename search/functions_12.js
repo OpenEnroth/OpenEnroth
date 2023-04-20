@@ -46,7 +46,7 @@ var searchData=
   ['releasealltextures_43',['ReleaseAllTextures',['../classAssetsManager.html#abb99280162e26e9df524c050e02db91a',1,'AssetsManager']]],
   ['releaseavcodec_44',['ReleaseAVCodec',['../classMovie.html#ae127560c9b743d7a21ad27f0c617a0ba',1,'Movie']]],
   ['releaseawardsscrollbar_45',['ReleaseAwardsScrollBar',['../GUIButton_8cpp.html#a1be680d09c7856adcc5a118749b5b22c',1,'ReleaseAwardsScrollBar():&#160;GUIButton.cpp'],['../GUIWindow_8h.html#a1be680d09c7856adcc5a118749b5b22c',1,'ReleaseAwardsScrollBar():&#160;GUIButton.cpp']]],
-  ['releasebranchlessdialogue_46',['ReleaseBranchlessDialogue',['../Engine_8cpp.html#a011f8278fa51369f61f2ae546417a876',1,'ReleaseBranchlessDialogue():&#160;Engine.cpp'],['../Engine_8h.html#a011f8278fa51369f61f2ae546417a876',1,'ReleaseBranchlessDialogue():&#160;Engine.cpp']]],
+  ['releasebranchlessdialogue_46',['ReleaseBranchlessDialogue',['../UIDialogue_8cpp.html#a011f8278fa51369f61f2ae546417a876',1,'ReleaseBranchlessDialogue():&#160;UIDialogue.cpp'],['../UIDialogue_8h.html#a011f8278fa51369f61f2ae546417a876',1,'ReleaseBranchlessDialogue():&#160;UIDialogue.cpp']]],
   ['releasebsp_47',['ReleaseBSP',['../classRenderOpenGL.html#a74fbd33814ccb643ba4b9d65520a194e',1,'RenderOpenGL::ReleaseBSP()'],['../classIRender.html#a0838832b098523e7ac02cd5e499eb148',1,'IRender::ReleaseBSP()']]],
   ['releasebutton_48',['releaseButton',['../classEngineController.html#ac70454f14b19ca827e11844ff998c426',1,'EngineController']]],
   ['releasefonttex_49',['ReleaseFontTex',['../classGUIFont.html#adb298c4fccdbb0ea7b2cf53898e8466e',1,'GUIFont']]],

@@ -307,7 +307,7 @@ var searchData=
   ['pgreetings_304',['pGreetings',['../structNPCGreeting.html#a1638f1e485f95f91735ea2d7e57fa410',1,'NPCGreeting']]],
   ['pgroups_305',['pGroups',['../structNPCStats.html#ab43a42c6aa9a5e3a8b94121bc98c4535',1,'NPCStats']]],
   ['pgroups_5fcopy_306',['pGroups_copy',['../structNPCStats.html#a5e1fa84b5d273cc8bd0170b0d4e68722',1,'NPCStats']]],
-  ['pguiwindow2_307',['pGUIWindow2',['../GUIWindow_8h.html#acd5bd26b78148acea4f290d86b1535cd',1,'pGUIWindow2():&#160;GUIWindow.cpp'],['../GUIWindow_8cpp.html#acd5bd26b78148acea4f290d86b1535cd',1,'pGUIWindow2():&#160;GUIWindow.cpp']]],
+  ['pguiwindow_5fbranchlessdialogue_307',['pGUIWindow_BranchlessDialogue',['../GUIWindow_8h.html#aa5669682f7683f857018edf1421e2fc7',1,'pGUIWindow_BranchlessDialogue():&#160;GUIWindow.cpp'],['../GUIWindow_8cpp.html#aa5669682f7683f857018edf1421e2fc7',1,'pGUIWindow_BranchlessDialogue():&#160;GUIWindow.cpp']]],
   ['pguiwindow_5fcasttargetedspell_308',['pGUIWindow_CastTargetedSpell',['../GUIWindow_8cpp.html#af07bd46153a7b735d9862f5769696e8a',1,'pGUIWindow_CastTargetedSpell():&#160;GUIWindow.cpp'],['../GUIWindow_8h.html#af07bd46153a7b735d9862f5769696e8a',1,'pGUIWindow_CastTargetedSpell():&#160;GUIWindow.cpp']]],
   ['pguiwindow_5fcurrentmenu_309',['pGUIWindow_CurrentMenu',['../GUIWindow_8cpp.html#a92046372c9dbad521216a485de9e5731',1,'pGUIWindow_CurrentMenu():&#160;GUIWindow.cpp'],['../GUIWindow_8h.html#a92046372c9dbad521216a485de9e5731',1,'pGUIWindow_CurrentMenu():&#160;GUIWindow.cpp']]],
   ['pguiwindow_5fscrollwindow_310',['pGUIWindow_ScrollWindow',['../GUIWindow_8cpp.html#a1bc8025eb3a9aa1241fafe6c68d3058d',1,'pGUIWindow_ScrollWindow():&#160;GUIWindow.cpp'],['../GUIWindow_8h.html#a1bc8025eb3a9aa1241fafe6c68d3058d',1,'pGUIWindow_ScrollWindow():&#160;GUIWindow.cpp']]],
