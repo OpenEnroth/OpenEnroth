@@ -778,8 +778,7 @@ void Game::processQueuedMessages() {
                                                 continue;
                                         }
                                         GetHouseGoodbyeSpeech();
-                                        // PID 814 was used which is PID(OBJECT_Face, 101)
-                                        pAudioPlayer->playUISound(SOUND_WoodDoorClosing);
+                                        pAudioPlayer->playHouseSound(SOUND_WoodDoorClosing, false);
                                         pMediaPlayer->Unload();
                                         pGUIWindow_CurrentMenu = window_SpeakInHouse;
 

@@ -190,6 +190,8 @@ class AudioPlayer {
     static const int SOUND_PID_WALKING = -3;
     static const int SOUND_PID_MUSIC_VOLUME = -4;
     static const int SOUND_PID_VOICE_VOLUME = -5;
+    static const int SOUND_PID_HOUSE_SPEECH = -6;
+    static const int SOUND_PID_HOUSE_DOOR = -7;
 
     void Initialize();
 
@@ -289,6 +291,20 @@ class AudioPlayer {
     void playWalkSound(SoundID id) {
         // All walk sounds originally used PID 804 which is PID(OBJECT_Player, 100)
         playSound(id, SOUND_PID_WALKING);
+    }
+
+    /**
+     * Play sound of houses.
+     * To avoid multiple sounds when entering/leaving repeatedly sounds needs to be stopped.
+     *
+     * @param id                        ID of sound.
+     * @param isSpeech                  true if this is house greet/goodbye speech.
+     *                                  false if this is entering/cloosing UI sound.
+     */
+    void playHouseSound(SoundID id, bool isSpeech) {
+        // Speech sounds originally used PID 806 which is PID(OBJECT_Face, 100)
+        // Opening/closing sounds originally used PID 814 which is PID(OBJECT_Face, 101)
+        playSound(id, isSpeech ? SOUND_PID_HOUSE_SPEECH : SOUND_PID_HOUSE_DOOR);
     }
 
  protected:

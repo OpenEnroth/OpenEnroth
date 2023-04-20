@@ -963,8 +963,7 @@ void PlayHouseSound(unsigned int uHouseID, HouseSoundID sound) {
     if (uHouseID > 0) {
         if (pAnimatedRooms[p2DEvents[uHouseID - HOUSE_SMITH_EMERALD_ISLE].uAnimationID].uRoomSoundId) {
             int roomSoundId = pAnimatedRooms[p2DEvents[uHouseID - HOUSE_SMITH_EMERALD_ISLE].uAnimationID].uRoomSoundId;
-            // PID 806 was used which is PID(OBJECT_Face, 100)
-            pAudioPlayer->playUISound((SoundID)(sound + 100 * (roomSoundId + 300)));
+            pAudioPlayer->playHouseSound((SoundID)(sound + 100 * (roomSoundId + 300)), true);
         }
     }
 }

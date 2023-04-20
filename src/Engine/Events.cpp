@@ -941,8 +941,7 @@ LABEL_47:
                 case EVENT_SpeakInHouse:
                     if (enterHouse((enum HOUSE_ID)EVT_DWORD(_evt->v5))) {
                         //pAudioPlayer->playSound(SOUND_Invalid);
-                        // PID 814 was used which is PID(OBJECT_Face, 101)
-                        pAudioPlayer->playUISound(SOUND_enter);
+                        pAudioPlayer->playHouseSound(SOUND_enter, false);
                         HOUSE_ID houseId = HOUSE_JAIL;
                         if (uCurrentHouse_Animation != 167)
                             houseId = static_cast<HOUSE_ID>(EVT_DWORD(_evt->v5));
