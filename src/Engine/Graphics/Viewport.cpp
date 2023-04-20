@@ -235,7 +235,7 @@ void ItemInteraction(unsigned int item_id) {
         if (pSpriteObjects[item_id].containing_item.uItemID == ITEM_SPELLBOOK_REMOVE_FEAR)
             _449B7E_toggle_bit(pParty->_quest_bits, 185, 1);
         if (!pParty->AddItemToParty(&pSpriteObjects[item_id].containing_item))
-            pParty->SetHoldingItem(&pSpriteObjects[item_id].containing_item);
+            pParty->setHoldingItem(&pSpriteObjects[item_id].containing_item);
     }
     SpriteObject::OnInteraction(item_id);
 }

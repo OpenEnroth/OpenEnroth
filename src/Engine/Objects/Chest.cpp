@@ -547,7 +547,7 @@ void Chest::OnChestLeftClick() {
                 if (chest->igChestItems[itemindex].isGold()) {
                     pParty->partyFindsGold(chest->igChestItems[itemindex].special_enchantment, GOLD_RECEIVE_SHARE);
                 } else {
-                    pParty->SetHoldingItem(&chest->igChestItems[itemindex]);
+                    pParty->setHoldingItem(&chest->igChestItems[itemindex]);
                 }
 
                 RemoveItemAtChestIndex(invMatrixIndex);
@@ -590,7 +590,7 @@ void Chest::GrabItem(bool all) {  // new fucntion to grab items from chest using
                     pItemTable->pItems[chestitem.uItemID].pUnidentifiedName
                 );
             } else {  // no room so set as holding item
-                pParty->SetHoldingItem(&chestitem);
+                pParty->setHoldingItem(&chestitem);
                 RemoveItemAtChestIndex(loop);
                 pPlayers[pParty->getActiveCharacter()]->playReaction(SPEECH_NoRoom);
                 break;
@@ -659,7 +659,7 @@ void GenerateItemsInChest() {
                             currItem->SetIdentified();
                             currItem->special_enchantment = (ITEM_ENCHANTMENT)goldAmount;
                         } else {
-                            pItemTable->GenerateItem(resultTreasureLevel, 0, currItem);
+                            pItemTable->generateItem(resultTreasureLevel, 0, currItem);
                         }
 
                         for (int m = 0; m < 140; m++) {

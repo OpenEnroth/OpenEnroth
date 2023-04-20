@@ -203,7 +203,11 @@ struct Party {
      * @offset 0x493244
      */
     bool hasItem(ITEM_TYPE uItemID);
-    void SetHoldingItem(ItemGen *pItem);
+
+    /**
+     * @offset 0x4936E1
+     */
+    void setHoldingItem(ItemGen *pItem);
 
     /**
     * Sets _activeCharacter to the first character that can act

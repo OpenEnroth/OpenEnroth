@@ -570,7 +570,7 @@ void SpriteObject::explosionTraps() {
             if (player.CanAct() && (grng->random(perceptionCheckValue) > 20)) {
                 player.playReaction(SPEECH_AvoidDamage);
             } else {
-                player.ReceiveDamage(trapDamage, pDamageType);
+                player.receiveDamage(trapDamage, pDamageType);
             }
         }
     }

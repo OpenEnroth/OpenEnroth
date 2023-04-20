@@ -225,7 +225,11 @@ struct Player {
                       int reputation, int extraStealFine, int *fineIfFailed);
     int StealFromActor(unsigned int uActorID, int _steal_perm, int reputation);
     void Heal(int amount);
-    int ReceiveDamage(signed int amount, DAMAGE_TYPE dmg_type);
+
+    /**
+     * @offset 0x48DC1E
+     */
+    int receiveDamage(signed int amount, DAMAGE_TYPE dmg_type);
     int ReceiveSpecialAttackEffect(int attType, Actor *pActor);
 
     // TODO(captainurist): actually returns DAMAGE_TYPE / SPELL_SCHOOL

@@ -2024,12 +2024,12 @@ void Inventory_ItemPopupAndAlchemy() {  // needs cleaning
             pPlayers[pParty->getActiveCharacter()]->RemoveItemAtInventoryIndex(invMatrixIndex);  // pOut_y); ?? quickfix needs checking
 
             if (damage_level == 1) {
-                pPlayers[pParty->getActiveCharacter()]->ReceiveDamage(grng->random(11) + 10, DMGT_FIRE);
+                pPlayers[pParty->getActiveCharacter()]->receiveDamage(grng->random(11) + 10, DMGT_FIRE);
             } else if (damage_level == 2) {
-                pPlayers[pParty->getActiveCharacter()]->ReceiveDamage(grng->random(71) + 30, DMGT_FIRE);
+                pPlayers[pParty->getActiveCharacter()]->receiveDamage(grng->random(71) + 30, DMGT_FIRE);
                 pPlayers[pParty->getActiveCharacter()]->ItemsPotionDmgBreak(1);  // break 1
             } else if (damage_level == 3) {
-                pPlayers[pParty->getActiveCharacter()]->ReceiveDamage(grng->random(201) + 50, DMGT_FIRE);
+                pPlayers[pParty->getActiveCharacter()]->receiveDamage(grng->random(201) + 50, DMGT_FIRE);
                 pPlayers[pParty->getActiveCharacter()]->ItemsPotionDmgBreak(5);  // break 5
             } else if (damage_level >= 4) {
                 pPlayers[pParty->getActiveCharacter()]->SetCondition(Condition_Eradicated, 0);

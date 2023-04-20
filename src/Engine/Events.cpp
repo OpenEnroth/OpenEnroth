@@ -17,7 +17,6 @@
 #include "Engine/Objects/SpriteObject.h"
 #include "Engine/OurMath.h"
 #include "Engine/Party.h"
-#include "Engine/stru159.h"
 
 #include "GUI/GUIProgressBar.h"
 #include "GUI/UI/UIDialogue.h"
@@ -727,7 +726,7 @@ LABEL_47:
                     break;
                 case EVENT_ReceiveDamage:
                     if ((uint8_t)_evt->v5 <= 3) {
-                        pParty->pPlayers[(uint8_t)_evt->v5].ReceiveDamage(EVT_DWORD(_evt->v7), (DAMAGE_TYPE)_evt->v6);
+                        pParty->pPlayers[(uint8_t)_evt->v5].receiveDamage(EVT_DWORD(_evt->v7), (DAMAGE_TYPE)_evt->v6);
                         ++curr_seq_num;
                         break;
                     }
@@ -736,17 +735,17 @@ LABEL_47:
                             ++curr_seq_num;
                             break;
                         }
-                        pPlayers[pParty->getActiveCharacter()]->ReceiveDamage(EVT_DWORD(_evt->v7), (DAMAGE_TYPE)_evt->v6);
+                        pPlayers[pParty->getActiveCharacter()]->receiveDamage(EVT_DWORD(_evt->v7), (DAMAGE_TYPE)_evt->v6);
                         ++curr_seq_num;
                         break;
                     }
                     if (_evt->v5 != 5) {
-                        pParty->pPlayers[grng->random(4)].ReceiveDamage(EVT_DWORD(_evt->v7), (DAMAGE_TYPE)_evt->v6);
+                        pParty->pPlayers[grng->random(4)].receiveDamage(EVT_DWORD(_evt->v7), (DAMAGE_TYPE)_evt->v6);
                         ++curr_seq_num;
                         break;
                     }
                     for (Player &player : pParty->pPlayers) {
-                        player.ReceiveDamage(EVT_DWORD(_evt->v7), (DAMAGE_TYPE)_evt->v6);
+                        player.receiveDamage(EVT_DWORD(_evt->v7), (DAMAGE_TYPE)_evt->v6);
                     }
                     ++curr_seq_num;
                     break;
@@ -932,9 +931,9 @@ LABEL_47:
                 case EVENT_GiveItem: {
                     item.Reset();
                     ITEM_TYPE v102 = ITEM_TYPE(EVT_DWORD(_evt->v7));
-                    pItemTable->GenerateItem(ITEM_TREASURE_LEVEL(_evt->v5), _evt->v6, &item);
+                    pItemTable->generateItem(ITEM_TREASURE_LEVEL(_evt->v5), _evt->v6, &item);
                     if (v102 != ITEM_NULL) item.uItemID = v102;
-                    pParty->SetHoldingItem(&item);
+                    pParty->setHoldingItem(&item);
                     ++curr_seq_num;
                     break;
                 }

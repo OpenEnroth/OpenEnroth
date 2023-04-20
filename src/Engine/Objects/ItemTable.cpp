@@ -401,8 +401,7 @@ void ItemTable::LoadPotionNotes() {
     }
 }
 
-//----- (00456620) --------------------------------------------------------
-void ItemTable::GenerateItem(ITEM_TREASURE_LEVEL treasure_level, unsigned int uTreasureType, ItemGen *outItem) {
+void ItemTable::generateItem(ITEM_TREASURE_LEVEL treasure_level, unsigned int uTreasureType, ItemGen *outItem) {
     Assert(IsRandomTreasureLevel(treasure_level));
 
     int current_chance;           // ebx@43

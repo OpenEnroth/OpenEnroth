@@ -26,7 +26,6 @@
 #include "Engine/PriceCalculator.h"
 #include "Engine/SaveLoad.h"
 #include "Engine/Spells/CastSpellInfo.h"
-#include "Engine/stru159.h"
 
 #include "GUI/GUIBountyHunting.h"
 #include "GUI/GUIButton.h"
@@ -138,7 +137,7 @@ unsigned char transport_routes[20][4] = {
     { 255, 255, 255, 255 }   // HOUSE_BOATS_73
 };
 
-std::array<const stru159, 196> pAnimatedRooms = { {  // 0x4E5F70
+std::array<const HouseAnimDescr, 196> pAnimatedRooms = { {  // 0x4E5F70
     { "", 0x4, 0x1F4, BuildingType_Invalid, 0, 0 },
     { "Human Armor01", 0x20, 0x2C0, BuildingType_ArmorShop, 58, 0 },
     { "Necromancer Armor01", 0x20, 0x2D7, BuildingType_ArmorShop, 70, 0 },
@@ -3218,11 +3217,8 @@ void GenerateSpecialShopItems() {
                     item_class = 44;  // potion
                 }
             }
-            pItemTable->GenerateItem(
-                treasure_lvl, item_class,
-                &pParty->SpecialItemsInShops[shop_index][item_count]);
-            pParty->SpecialItemsInShops[shop_index][item_count]
-                .SetIdentified();  // identified
+            pItemTable->generateItem(treasure_lvl, item_class, &pParty->SpecialItemsInShops[shop_index][item_count]);
+            pParty->SpecialItemsInShops[shop_index][item_count].SetIdentified();  // identified
         }
     }
     pParty->InTheShopFlags[shop_index] = 0;
@@ -3267,11 +3263,8 @@ void GenerateStandartShopItems() {
                     item_class = 45;  // reagent
                 }
             }
-            pItemTable->GenerateItem(
-                treasure_lvl, item_class,
-                &pParty->StandartItemsInShops[shop_index][item_count]);
-            pParty->StandartItemsInShops[shop_index][item_count]
-                .SetIdentified();  // identified
+            pItemTable->generateItem(treasure_lvl, item_class, &pParty->StandartItemsInShops[shop_index][item_count]);
+            pParty->StandartItemsInShops[shop_index][item_count].SetIdentified();  // identified
         }
     }
     pParty->InTheShopFlags[shop_index] = 0;

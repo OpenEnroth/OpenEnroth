@@ -47,7 +47,6 @@ set(ENGINE_HEADERS
         SpellFxRenderer.h
         Time.h
         mm7_data.h
-        stru159.h
         stru160.h
         stru314.h
         stru367.h)

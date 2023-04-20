@@ -19,7 +19,11 @@ struct ItemTable {
     void Initialize();
     void LoadPotions();
     void LoadPotionNotes();
-    void GenerateItem(ITEM_TREASURE_LEVEL treasure_level, unsigned int uTreasureType, ItemGen *pItem);
+
+    /**
+     * @offset 0x456620
+     */
+    void generateItem(ITEM_TREASURE_LEVEL treasure_level, unsigned int uTreasureType, ItemGen *pItem);
     void SetSpecialBonus(ItemGen *pItem);
     bool IsMaterialSpecial(const ItemGen *pItem);
     bool IsMaterialNonCommon(const ItemGen *pItem);
