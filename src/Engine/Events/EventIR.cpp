@@ -1,15 +1,30 @@
 #include <string>
 #include <utility>
 #include <vector>
+#include <functional>
 
 #include <magic_enum.hpp> // TODO: temporary
 
 #include "Engine/Events/EventIR.h"
 #include "Engine/Events2D.h"
+#include "Engine/Graphics/IRender.h"
+#include "Engine/Graphics/Indoor.h"
+#include "Engine/Graphics/Weather.h"
 #include "Engine/Graphics/Level/Decoration.h"
 #include "Engine/Objects/NPC.h"
+#include "Engine/Objects/SpriteObject.h"
+#include "Engine/Objects/ItemTable.h"
 #include "Engine/Engine.h"
 #include "Engine/mm7_data.h"
+
+#include "Media/Audio/AudioPlayer.h"
+#include "Media/MediaPlayer.h"
+
+#include "GUI/GUIWindow.h"
+#include "GUI/GUIProgressBar.h"
+#include "GUI/UI/UIHouses.h"
+#include "GUI/UI/UIDialogue.h"
+#include "GUI/UI/UIStatusBar.h"
 
 static std::string getVariableSetStr(VariableType type, int value) {
     if (type >= VAR_MapPersistentVariable_0 && type <= VAR_MapPersistentVariable_74) {
@@ -678,7 +693,7 @@ std::string EventIR::toString() const {
         case EVENT_OpenChest:
             return fmt::format("{}: OpenChest({})", step, data.chest_id);
         case EVENT_ShowFace:
-            return fmt::format("{}: SetExpression({}, {})", step, who, (int)data.expr_id);
+            return fmt::format("{}: SetExpression({}, {})", step, (int)who, (int)data.expr_id);
         case EVENT_ReceiveDamage:
             return fmt::format("{}: ReceiveDamage({}, {})", step, data.damage_descr.damage, (int)data.damage_descr.damage_type);
         case EVENT_SetSnow:
@@ -686,7 +701,7 @@ std::string EventIR::toString() const {
         case EVENT_SetTexture:
             return fmt::format("{}: SetTexture({}, \"{}\")", step, data.sprite_texture_descr.cog, str);
         case EVENT_ShowMovie:
-            return fmt::format("{}: ShowMovie({}, {})", step, str, data.movie_unknown_field);
+            return fmt::format("{}: ShowMovie(\"{}\", {})", step, trimRemoveQuotes(str), data.movie_unknown_field);
         case EVENT_SetSprite:
             return fmt::format("{}: SetSprite({}, {}, \"{}\")", step, data.sprite_texture_descr.cog, data.sprite_texture_descr.hide, str);
         case EVENT_Compare:
@@ -700,7 +715,7 @@ std::string EventIR::toString() const {
         case EVENT_Set:
             return fmt::format("{}: Set({})", step, getVariableSetStr(data.variable_descr.type, data.variable_descr.value));
         case EVENT_SummonMonsters:
-            return fmt::format("{}: SummonMonster({}, {}, {}, ({}, {}, {}), {}, {})", step, data.monster_descr.type, data.monster_descr.level, data.monster_descr.count, data.monster_descr.x, data.monster_descr.y, data.monster_descr.z, data.monster_descr.group, data.monster_descr.name_id);
+            return fmt::format("{}: SummonMonsters({}, {}, {}, ({}, {}, {}), {}, {})", step, data.monster_descr.type, data.monster_descr.level, data.monster_descr.count, data.monster_descr.x, data.monster_descr.y, data.monster_descr.z, data.monster_descr.group, data.monster_descr.name_id);
         case EVENT_CastSpell:
             return fmt::format("{}: CastSpell({}, {}, {}, ({}, {}, {}), ({}, {}, {}))", step, (int)data.spell_descr.spell_id, (int)data.spell_descr.spell_mastery, data.spell_descr.spell_level, data.spell_descr.fromx, data.spell_descr.fromy, data.spell_descr.fromz, data.spell_descr.tox, data.spell_descr.toy, data.spell_descr.toz);
         case EVENT_SpeakNPC:
@@ -744,7 +759,7 @@ std::string EventIR::toString() const {
         case EVENT_SummonItem:
             return fmt::format("{}: SummonItem({}, ({}, {}, {}), {}, {}, {})", step, (int)data.summon_item_descr.sprite, data.summon_item_descr.x, data.summon_item_descr.y, data.summon_item_descr.z, data.summon_item_descr.speed, data.summon_item_descr.count, data.summon_item_descr.random_rotate);
         case EVENT_ForPartyMember:
-            return fmt::format("{}: ForPartyMember({})", step, who);
+            return fmt::format("{}: ForPartyMember({})", step, (int)who);
         case EVENT_Jmp:
             return fmt::format("{}: Jmp -> {}", step, target_step);
         case EVENT_OnMapReload:
@@ -793,13 +808,13 @@ std::string EventIR::toString() const {
             // TODO
             break;
         case EVENT_CheckSeason:
-            return fmt::format("{}: CheckSeason({}) -> {}", step, data.season, target_step);
+            return fmt::format("{}: CheckSeason({}) -> {}", step, (int)data.season, target_step);
         case EVENT_ToggleActorGroupFlag:
             return fmt::format("{}: ToggleActorGroupFlag({}, 0x{:x}, {})", step, data.actor_flag_descr.id, (int)data.actor_flag_descr.attr, data.actor_flag_descr.is_set); // TODO: print attr
         case EVENT_ToggleChestFlag:
             return fmt::format("{}: ToggleChestFlag({}, 0x{:x}, {})", step, data.chest_flag_descr.chest_id, (int)data.chest_flag_descr.flag, data.chest_flag_descr.is_set);
         case EVENT_CharacterAnimation:
-            return fmt::format("{}: SetReaction({}, {})", step, who, (int)data.speech_id);
+            return fmt::format("{}: SetReaction({}, {})", step, (int)who, (int)data.speech_id);
         case EVENT_SetActorItem:
             return fmt::format("{}: SetActorItem({}, {}, {})", step, data.npc_item_descr.id, (int)data.npc_item_descr.item, data.npc_item_descr.is_give);
         case EVENT_OnDateTimer:
@@ -856,9 +871,10 @@ EventIR EventIR::parse(void *data, size_t maxSize) {
             break;
         case EVENT_MouseOver:
             ir.data.text_id = _evt->v5;
+            ir.step = -1; // Step duplicated for other command, so ignore it
             break;
         case EVENT_LocationName:
-            // Nothing?
+            ir.step = -1; // Step duplicated for other command, so ignore it
             break;
         case EVENT_MoveToMap:
             ir.data.move_map_descr.x = EVT_DWORD(_evt->v5);
@@ -875,7 +891,7 @@ EventIR EventIR::parse(void *data, size_t maxSize) {
             ir.data.chest_id = _evt->v5;
             break;
         case EVENT_ShowFace:
-            ir.who = _evt->v5;
+            ir.who = (PLAYER_CHOOSE_POLICY)_evt->v5;
             ir.data.expr_id = (CHARACTER_EXPRESSION_ID)_evt->v6;
             break;
         case EVENT_ReceiveDamage:
@@ -901,7 +917,6 @@ EventIR EventIR::parse(void *data, size_t maxSize) {
             break;
         case EVENT_Compare:
             ir.target_step = _evt->v11;
-            ir.who = -1;
             ir.data.variable_descr.type = (enum VariableType)EVT_WORD(_evt->v5);
             ir.data.variable_descr.value = EVT_DWORD(_evt->v7);
             break;
@@ -912,7 +927,6 @@ EventIR EventIR::parse(void *data, size_t maxSize) {
         case EVENT_Add:
         case EVENT_Substract:
         case EVENT_Set:
-            ir.who = -1;
             ir.data.variable_descr.type = (enum VariableType)EVT_WORD(_evt->v5);
             ir.data.variable_descr.value = EVT_DWORD(_evt->v7);
             break;
@@ -994,7 +1008,7 @@ EventIR EventIR::parse(void *data, size_t maxSize) {
             ir.data.summon_item_descr.random_rotate = (bool)_evt->v26;
             break;
         case EVENT_ForPartyMember:
-            ir.who = _evt->v5;
+            ir.who = (PLAYER_CHOOSE_POLICY)_evt->v5;
             break;
         case EVENT_Jmp:
             ir.target_step = _evt->v5;
@@ -1077,7 +1091,7 @@ EventIR EventIR::parse(void *data, size_t maxSize) {
             // TODO
             break;
         case EVENT_CheckSeason:
-            ir.data.season = _evt->v5;
+            ir.data.season = (SEASON)_evt->v5;
             ir.target_step = _evt->v6;
             break;
         case EVENT_ToggleActorGroupFlag:
@@ -1091,7 +1105,7 @@ EventIR EventIR::parse(void *data, size_t maxSize) {
             ir.data.chest_flag_descr.is_set = _evt->v13;
             break;
         case EVENT_CharacterAnimation:
-            ir.who = _evt->v5;
+            ir.who = (PLAYER_CHOOSE_POLICY)_evt->v5;
             ir.data.speech_id = (PlayerSpeech)_evt->v6;
             break;
         case EVENT_SetActorItem:
@@ -1128,4 +1142,408 @@ EventIR EventIR::parse(void *data, size_t maxSize) {
     }
 
     return ir;
+}
+
+static void createHouseUI(HOUSE_ID houseId) {
+    window_SpeakInHouse = new GUIWindow_House({0, 0}, render->GetRenderDimensions(), houseId);
+    window_SpeakInHouse->CreateButton({61, 424}, {31, 0}, 2, 94, UIMSG_SelectCharacter, 1, InputAction::SelectChar1, "");
+    window_SpeakInHouse->CreateButton({177, 424}, {31, 0}, 2, 94, UIMSG_SelectCharacter, 2, InputAction::SelectChar2, "");
+    window_SpeakInHouse->CreateButton({292, 424}, {31, 0}, 2, 94, UIMSG_SelectCharacter, 3, InputAction::SelectChar3, "");
+    window_SpeakInHouse->CreateButton({407, 424}, {31, 0}, 2, 94, UIMSG_SelectCharacter, 4, InputAction::SelectChar4, "");
+    window_SpeakInHouse->CreateButton({0, 0}, {0, 0}, 1, 0, UIMSG_CycleCharacters, 0, InputAction::CharCycle, "");
+}
+
+static bool checkSeason(SEASON season) {
+    int monthPlusOne = pParty->uCurrentMonth + 1;
+    int daysPlusOne = pParty->uCurrentDayOfMonth + 1;
+
+    switch (season) {
+        case WINTER:  // winter 12.21 -> 3.20
+            return (monthPlusOne == 12 && daysPlusOne >= 21 ||
+                    monthPlusOne == 1 || monthPlusOne == 2 ||
+                    monthPlusOne == 3 && daysPlusOne <= 20);
+
+        case AUTUMN:  // autumn/fall 9.21 -> 12.20
+            return (monthPlusOne == 9 && daysPlusOne >= 21 ||
+                    monthPlusOne == 10 || monthPlusOne == 11 ||
+                    monthPlusOne == 12 && daysPlusOne <= 20);
+
+        case SUMMER:  // summer 6.21 -> 9.20
+            return (monthPlusOne == 6 && daysPlusOne >= 21 ||
+                    monthPlusOne == 7 || monthPlusOne == 8 ||
+                    monthPlusOne == 9 && daysPlusOne <= 20);
+
+        case SPRING:  // spring 3.21 -> 6.20
+            return (monthPlusOne == 3 && daysPlusOne >= 21 ||
+                    monthPlusOne == 4 || monthPlusOne == 5 ||
+                    monthPlusOne == 6 && daysPlusOne <= 20);
+
+        default:
+            Error("Unknown season");
+    }
+
+    return false;
+}
+
+bool doForChosenPlayer(PLAYER_CHOOSE_POLICY who, RandomEngine *rng, std::function<int(Player&)> func) {
+    if (who >= CHOOSE_PLAYER1 && who <= CHOOSE_PLAYER4) {
+        return func(pParty->pPlayers[std::to_underlying(who)]);
+    } else if (who == CHOOSE_ACTIVE) {
+        if (pParty->hasActiveCharacter()) {
+            return func(pParty->pPlayers[pParty->getActiveCharacter() - 1]);
+        }
+        return false;
+    } else if (who == CHOOSE_PARTY) {
+        for (Player &player : pParty->pPlayers) {
+            if (func(player)) {
+                return true;
+            }
+        }
+        return false;
+    } else if (who == CHOOSE_RANDOM) {
+        return func(pParty->pPlayers[rng->random(4)]);
+    }
+
+    assert(false);
+    return false;
+}
+
+int EventIR::execute(bool canShowMessages, PLAYER_CHOOSE_POLICY *who, bool *mapExitTriggered) const {
+    *mapExitTriggered = false;
+
+    switch (type) {
+        case EVENT_Exit:
+            return -1;
+        case EVENT_SpeakInHouse:
+            if (enterHouse(data.house_id)) {
+                pAudioPlayer->playHouseSound(SOUND_enter, false);
+                HOUSE_ID houseId = HOUSE_JAIL;
+                if (uCurrentHouse_Animation != 167) { // TODO: magic number
+                    houseId = data.house_id;
+                }
+                createHouseUI(houseId);
+            }
+            break;
+        case EVENT_PlaySound:
+            pAudioPlayer->playSound(data.sound_descr.sound_id, 0, 0, data.sound_descr.x, data.sound_descr.y, 0);
+            break;
+        case EVENT_MouseOver:
+            // TODO
+            break;
+        case EVENT_LocationName:
+            // TODO
+            break;
+        case EVENT_MoveToMap:
+            // TODO
+            break;
+        case EVENT_OpenChest:
+            if (!Chest::open(data.chest_id)) {
+                return -1;
+            }
+            break;
+        case EVENT_ShowFace:
+            doForChosenPlayer(this->who, vrng.get(), [&] (Player &player) { player.playEmotion(data.expr_id, 0); return false; });
+            break;
+        case EVENT_ReceiveDamage:
+            doForChosenPlayer(this->who, grng.get(), [&] (Player &player) { player.receiveDamage(data.damage_descr.damage, data.damage_descr.damage_type); return false; });
+            break;
+        case EVENT_SetSnow:
+            if (!data.snow_descr.is_nop) {
+                pWeather->bRenderSnow = data.snow_descr.is_enable;
+            }
+            break;
+        case EVENT_SetTexture:
+            setTexture(data.sprite_texture_descr.cog, str.c_str());
+            break;
+        case EVENT_ShowMovie:
+        {
+            std::string movieName = trimRemoveQuotes(str);
+            if (movieName.length() == 0) {
+                break;
+            }
+            if (pMediaPlayer->IsMoviePlaying()) {
+                pMediaPlayer->Unload();
+            }
+
+            pMediaPlayer->PlayFullscreenMovie(movieName);
+
+            if (!movieName.compare("arbiter good")) { // change alignment to good
+                pParty->alignment = PartyAlignment::PartyAlignment_Good;
+                SetUserInterface(pParty->alignment, true);
+            } else if (!movieName.compare("arbiter evil")) { // change alignment to evil
+                pParty->alignment = PartyAlignment::PartyAlignment_Evil;
+                SetUserInterface(pParty->alignment, true);
+            } else if (!movieName.compare("pcout01")) { // moving to harmondale from emerald isle
+                Rest(GameTime::FromDays(7));
+                pParty->RestAndHeal();
+                pParty->days_played_without_rest = 0;
+            }
+
+            // is this block is needed anymore?
+            if (!data.movie_unknown_field || current_screen_type == CURRENT_SCREEN::SCREEN_BOOKS) {
+                if (current_screen_type == CURRENT_SCREEN::SCREEN_BOOKS) {
+                    pGameLoadingUI_ProgressBar->Initialize(GUIProgressBar::TYPE_Fullscreen);
+                }
+
+                if (current_screen_type == CURRENT_SCREEN::SCREEN_HOUSE) {
+                    pMediaPlayer->OpenHouseMovie(pAnimatedRooms[uCurrentHouse_Animation].video_name, 1);
+                }
+            }
+            break;
+        }
+        case EVENT_SetSprite:
+            setDecorationSprite(data.sprite_texture_descr.cog, data.sprite_texture_descr.hide, str.c_str());
+            break;
+        case EVENT_Compare:
+        {
+            bool res = doForChosenPlayer(*who, grng.get(), [&] (Player &player) { return player.CompareVariable(data.variable_descr.type, data.variable_descr.value); });
+            if (res) {
+                return target_step;
+            }
+            break;
+        }
+        case EVENT_ChangeDoorState:
+            switchDoorAnimation(data.door_descr.door_id, data.door_descr.door_new_state);
+            break;
+        case EVENT_Add:
+            doForChosenPlayer(*who, grng.get(), [&] (Player &player) { player.AddVariable(data.variable_descr.type, data.variable_descr.value); return false; });
+            break;
+        case EVENT_Substract:
+            if (data.variable_descr.type == VAR_PlayerItemInHands && *who == CHOOSE_PARTY) {
+                for (Player &player : pParty->pPlayers) {
+                    if (player.hasItem((ITEM_TYPE)data.variable_descr.value, 1)) {
+                        player.SubtractVariable(data.variable_descr.type, data.variable_descr.value);
+                        break;  // only take one item
+                    }
+                }
+            } else {
+                doForChosenPlayer(*who, grng.get(), [&] (Player &player) { player.SubtractVariable(data.variable_descr.type, data.variable_descr.value); return false; });
+            }
+            break;
+        case EVENT_Set:
+            doForChosenPlayer(*who, grng.get(), [&] (Player &player) { player.SetVariable(data.variable_descr.type, data.variable_descr.value); return false; });
+            break;
+        case EVENT_SummonMonsters:
+            spawnMonsters(data.monster_descr.type, data.monster_descr.level, data.monster_descr.count,
+                          data.monster_descr.x, data.monster_descr.y, data.monster_descr.z,
+                          data.monster_descr.group, data.monster_descr.name_id);
+            break;
+        case EVENT_CastSpell:
+            eventCastSpell(data.spell_descr.spell_id, data.spell_descr.spell_mastery, data.spell_descr.spell_level,
+                           data.spell_descr.fromx, data.spell_descr.fromy, data.spell_descr.fromz,
+                           data.spell_descr.tox, data.spell_descr.toy, data.spell_descr.toz);
+            break;
+        case EVENT_SpeakNPC:
+            if (canShowMessages) {
+                Actor actor = Actor();
+                actor.sNPC_ID = data.npc_descr.npc_id;
+                GameUI_InitializeDialogue(&actor, false);
+            } else {
+                bDialogueUI_InitializeActor_NPC_ID = data.npc_descr.npc_id;
+            }
+            break;
+        case EVENT_SetFacesBit:
+            setFacesBit(data.faces_bit_descr.cog, data.faces_bit_descr.face_bit, data.faces_bit_descr.is_on);
+            break;
+        case EVENT_ToggleActorFlag:
+            Actor::toggleFlag(data.actor_flag_descr.id, data.actor_flag_descr.attr, data.actor_flag_descr.is_set);
+            break;
+        case EVENT_RandomGoTo:
+            // TODO
+            break;
+        case EVENT_InputString:
+            // TODO
+            break;
+        case EVENT_StatusText:
+            if (activeLevelDecoration) {
+                if (activeLevelDecoration == (LevelDecoration *)1) {
+                    current_npc_text = pNPCTopics[data.text_id - 1].pText;
+                }
+                if (canShowMessages == 1) {
+                    GameUI_SetStatusBar(pNPCTopics[data.text_id - 1].pText);
+                }
+            } else {
+                if (canShowMessages == 1) {
+                    GameUI_SetStatusBar(&pLevelStr[pLevelStrOffsets[data.text_id]]);
+                }
+            }
+            break;
+        case EVENT_ShowMessage:
+            if (activeLevelDecoration) {
+                current_npc_text = pNPCTopics[data.text_id - 1].pText;
+                branchless_dialogue_str.clear();
+            } else {
+                branchless_dialogue_str = &pLevelStr[pLevelStrOffsets[data.text_id]];
+            }
+            break;
+        case EVENT_OnTimer:
+            // TODO
+            break;
+        case EVENT_ToggleIndoorLight:
+            pIndoor->toggleLight(data.light_descr.light_id, data.light_descr.is_enable);
+            break;
+        case EVENT_PressAnyKey:
+            // TODO
+            break;
+        case EVENT_SummonItem:
+            SpriteObject::dropItemAt(data.summon_item_descr.sprite, Vec3i(data.summon_item_descr.x, data.summon_item_descr.y, data.summon_item_descr.z),
+                                     data.summon_item_descr.speed, data.summon_item_descr.count, data.summon_item_descr.random_rotate);
+            break;
+        case EVENT_ForPartyMember:
+            *who = this->who;
+            break;
+        case EVENT_Jmp:
+            return target_step;
+        case EVENT_OnMapReload:
+            // TODO
+            break;
+        case EVENT_OnLongTimer:
+            // TODO
+            break;
+        case EVENT_SetNPCTopic:
+        {
+            NPCData *npc = &pNPCStats->pNewNPCData[data.npc_topic_descr.npc_id];
+            if (data.npc_topic_descr.index == 0) npc->dialogue_1_evt_id = data.npc_topic_descr.event_id;
+            if (data.npc_topic_descr.index == 1) npc->dialogue_2_evt_id = data.npc_topic_descr.event_id;
+            if (data.npc_topic_descr.index == 2) npc->dialogue_3_evt_id = data.npc_topic_descr.event_id;
+            if (data.npc_topic_descr.index == 3) npc->dialogue_4_evt_id = data.npc_topic_descr.event_id;
+            if (data.npc_topic_descr.index == 4) npc->dialogue_5_evt_id = data.npc_topic_descr.event_id;
+            if (data.npc_topic_descr.index == 5) npc->dialogue_6_evt_id = data.npc_topic_descr.event_id;
+            if (data.npc_topic_descr.npc_id == 8) {
+                if (data.npc_topic_descr.event_id == 78) {
+                    HouseDialogPressCloseBtn();
+                    window_SpeakInHouse->Release();
+                    pParty->uFlags &= ~PARTY_FLAGS_1_ForceRedraw;
+                    if (enterHouse(HOUSE_DARK_GUILD_PIT)) {
+                        createHouseUI(HOUSE_DARK_GUILD_PIT);
+                        current_npc_text = pNPCTopics[90].pText;
+                    }
+                }
+            }
+            break;
+        }
+        case EVENT_MoveNPC:
+            pNPCStats->pNewNPCData[data.npc_move_descr.npc_id].Location2D = data.npc_move_descr.location_id;
+            if (window_SpeakInHouse) {
+                if (window_SpeakInHouse->wData.val == HOUSE_BODY_GUILD_ERATHIA) {
+                    HouseDialogPressCloseBtn();
+                    pMediaPlayer->Unload();
+                    window_SpeakInHouse->Release();
+                    pParty->uFlags &= ~PARTY_FLAGS_1_ForceRedraw;
+                    activeLevelDecoration = (LevelDecoration *)1;
+                    if (enterHouse(HOUSE_BODY_GUILD_ERATHIA)) {
+                        pAudioPlayer->playUISound(SOUND_Invalid);
+                        window_SpeakInHouse = new GUIWindow_House({0, 0}, render->GetRenderDimensions(), HOUSE_BODY_GUILD_ERATHIA, "");
+                        window_SpeakInHouse->DeleteButtons();
+                    }
+                }
+            }
+            break;
+        case EVENT_GiveItem:
+        {
+            ItemGen item;
+            item.Reset();
+            pItemTable->generateItem(data.give_item_descr.treasure_level, data.give_item_descr.treasure_type, &item);
+            if (data.give_item_descr.item_id != ITEM_NULL) {
+                item.uItemID = data.give_item_descr.item_id;
+            }
+            pParty->setHoldingItem(&item);
+            break;
+        }
+        case EVENT_ChangeEvent:
+            if (data.event_id) {
+                mapEventVariables.decorVars[activeLevelDecoration->_idx_in_stru123 - 75] = data.event_id - 124;
+            } else {
+                mapEventVariables.decorVars[activeLevelDecoration->_idx_in_stru123 - 75] = 0;
+                activeLevelDecoration->uFlags |= LEVEL_DECORATION_INVISIBLE;
+            }
+            break;
+        case EVENT_CheckSkill:
+            // TODO
+            break;
+        case EVENT_OnCanShowDialogItemCmp:
+            // TODO
+            break;
+        case EVENT_EndCanShowDialogItem:
+            // TODO
+            break;
+        case EVENT_SetCanShowDialogItem:
+            // TODO
+            break;
+        case EVENT_SetNPCGroupNews:
+            pNPCStats->pGroups_copy[data.npc_groups_descr.groups_id] = data.npc_groups_descr.group;
+            break;
+        case EVENT_SetActorGroup:
+            // TODO
+            break;
+        case EVENT_NPCSetItem:
+            npcSetItem(data.npc_item_descr.id, data.npc_item_descr.item, data.npc_item_descr.is_give);
+            break;
+        case EVENT_SetNPCGreeting:
+            pNPCStats->pNewNPCData[data.npc_descr.npc_id].uFlags &= 0xFFFFFFFCu;
+            pNPCStats->pNewNPCData[data.npc_descr.npc_id].greet = data.npc_descr.greeting;
+            break;
+        case EVENT_IsActorAlive:
+            if (isActorAlive(data.actor_descr.type, data.actor_descr.param, data.actor_descr.num)) {
+                return target_step;
+            }
+            break;
+        case EVENT_IsActorAssasinated:
+            // TODO
+            break;
+        case EVENT_OnMapLeave:
+            // TODO
+            break;
+        case EVENT_ChangeGroup:
+            // TODO
+            break;
+        case EVENT_ChangeGroupAlly:
+            // TODO
+            break;
+        case EVENT_CheckSeason:
+            if (checkSeason(data.season)) {
+                return target_step;
+            }
+            break;
+        case EVENT_ToggleActorGroupFlag:
+            toggleActorGroupFlag(data.actor_flag_descr.id, data.actor_flag_descr.attr, data.actor_flag_descr.is_set);
+            break;
+        case EVENT_ToggleChestFlag:
+            Chest::toggleFlag(data.chest_flag_descr.chest_id, data.chest_flag_descr.flag, data.chest_flag_descr.is_set);
+            break;
+        case EVENT_CharacterAnimation:
+            doForChosenPlayer(this->who, vrng.get(), [&] (Player &player) { player.playReaction(data.speech_id); return false; });
+            break;
+        case EVENT_SetActorItem:
+            Actor::giveItem(data.npc_item_descr.id, data.npc_item_descr.item, data.npc_item_descr.is_give);
+            break;
+        case EVENT_OnDateTimer:
+            // TODO
+            break;
+        case EVENT_EnableDateTimer:
+            // TODO
+            break;
+        case EVENT_StopAnimation:
+            // TODO
+            break;
+        case EVENT_CheckItemsCount:
+            // TODO
+            break;
+        case EVENT_RemoveItems:
+            // TODO
+            break;
+        case EVENT_SpecialJump:
+            // TODO
+            break;
+        case EVENT_IsTotalBountyHuntingAwardInRange:
+            // TODO
+            break;
+        case EVENT_IsNPCInParty:
+            // TODO
+            break;
+        default:
+            break;
+    }
+
+    return step + 1;
 }

@@ -360,7 +360,7 @@ std::string GetMapBookHintText(int mouse_x, int mouse_y) {
                 for (ODMFace &face : model.pFaces) {
                     if (face.sCogTriggeredID) {
                         if (!(face.uAttributes & FACE_HAS_EVENT)) {
-                            std::string hintString = GetEventHintString(face.sCogTriggeredID);
+                            std::string hintString = getEventHintString(face.sCogTriggeredID);
                             if (!hintString.empty())
                                 result = hintString;
                         }

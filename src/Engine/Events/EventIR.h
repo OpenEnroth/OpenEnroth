@@ -12,15 +12,37 @@
 #include "Engine/Graphics/BSPModel.h"
 #include "Media/Audio/AudioPlayer.h"
 
+enum class SEASON {
+    SPRING = 0,
+    SUMMER = 1,
+    AUTUMN = 2,
+    WINTER = 3
+};
+using enum SEASON;
+
+// TODO(Nik-RE-dev): currently exclusive for MM7, need to be independent from players number
+enum class PLAYER_CHOOSE_POLICY {
+    CHOOSE_PLAYER1 = 0,
+    CHOOSE_PLAYER2 = 1,
+    CHOOSE_PLAYER3 = 2,
+    CHOOSE_PLAYER4 = 3,
+
+    CHOOSE_ACTIVE = 4,
+    CHOOSE_PARTY = 5,
+    CHOOSE_RANDOM = 6
+};
+using enum PLAYER_CHOOSE_POLICY;
+
 class EventIR {
  public:
     std::string toString() const;
     static EventIR parse(void *data, size_t maxSize);
+    int execute(bool canShowMessages, PLAYER_CHOOSE_POLICY *who, bool *mapExitTriggered) const;
 
     EventType type;
     int step;
     int target_step;
-    int who;
+    PLAYER_CHOOSE_POLICY who;
     std::string str;
     union {
         HOUSE_ID house_id;
@@ -28,7 +50,7 @@ class EventIR {
         CHARACTER_EXPRESSION_ID expr_id;
         PlayerSpeech speech_id;
         int text_id;
-        int season;
+        SEASON season;
         int event_id;
         int movie_unknown_field;
         struct {
