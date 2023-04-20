@@ -184,7 +184,6 @@ extern GameTime _5773B8_event_timer;  // 5773B8
 extern Actor *pDialogue_SpeakingActor;
 extern DIALOGUE_TYPE uDialogueType;
 extern signed int sDialogue_SpeakingActorNPC_ID;
-extern struct LevelDecoration *_591094_decoration;
 extern int uCurrentHouse_Animation;
 
 

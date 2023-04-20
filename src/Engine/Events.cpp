@@ -60,6 +60,7 @@ MapEventVariables mapEventVariables;
 
 int savedEventID;
 int savedEventStep;
+struct LevelDecoration *savedDecoration;
 
 unsigned int LoadEventsToBuffer(const std::string &pContainerName, char *pBuffer,
                                 unsigned int uBufferSize) {
@@ -702,7 +703,7 @@ LABEL_47:
                     if (!entry_line) {
                         game_ui_status_bar_event_string =
                             &pLevelStr[pLevelStrOffsets[EVT_DWORD(_evt->v5)]];
-                        StartBranchlessDialogue(uEventID, curr_seq_num, 26);
+                        StartBranchlessDialogue(uEventID, curr_seq_num, (int)EVENT_InputString);
                         if (v133 == 1) OnMapLeave();
                         return;
                     }
@@ -958,7 +959,7 @@ LABEL_47:
                     ++curr_seq_num;
                     break;
                 case EVENT_PressAnyKey:
-                    StartBranchlessDialogue(uEventID, curr_seq_num + 1, 33);
+                    StartBranchlessDialogue(uEventID, curr_seq_num + 1, (int)EVENT_PressAnyKey);
                     if (v133 == 1) OnMapLeave();
                     return;
                 case EVENT_Exit:

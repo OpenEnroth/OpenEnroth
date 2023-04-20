@@ -515,7 +515,7 @@ void GUIWindow_GenericDialogue::Update() {
     }
 }
 
-void StartBranchlessDialogue(int eventid, int entryline, int button) {
+void StartBranchlessDialogue(int eventid, int entryline, int event) {
     if (!pGUIWindow_BranchlessDialogue) {
         if (pParty->uFlags & PARTY_FLAGS_1_ForceRedraw) {
             engine->Draw();
@@ -524,8 +524,8 @@ void StartBranchlessDialogue(int eventid, int entryline, int button) {
         pEventTimer->Pause();
         savedEventID = eventid;
         savedEventStep = entryline;
-        _591094_decoration = activeLevelDecoration;
-        pGUIWindow_BranchlessDialogue = new GUIWindow_GenericDialogue({0, 0}, render->GetRenderDimensions(), button);
+        savedDecoration = activeLevelDecoration;
+        pGUIWindow_BranchlessDialogue = new GUIWindow_GenericDialogue({0, 0}, render->GetRenderDimensions(), event);
         pGUIWindow_BranchlessDialogue->CreateButton({61, 424}, {31, 40}, 2, 94, UIMSG_SelectCharacter, 1, InputAction::SelectChar1);
         pGUIWindow_BranchlessDialogue->CreateButton({177, 424}, {31, 40}, 2, 94, UIMSG_SelectCharacter, 2, InputAction::SelectChar2);
         pGUIWindow_BranchlessDialogue->CreateButton({292, 424}, {31, 40}, 2, 94, UIMSG_SelectCharacter, 3, InputAction::SelectChar3);
@@ -536,8 +536,12 @@ void StartBranchlessDialogue(int eventid, int entryline, int button) {
 void ReleaseBranchlessDialogue() {
     pGUIWindow_BranchlessDialogue->Release();
     pGUIWindow_BranchlessDialogue = nullptr;
-    activeLevelDecoration = _591094_decoration;
-    EventProcessor(savedEventID, 0, 1, savedEventStep);
+    if (savedEventID) {
+        // Do not run event engine whith no event, it may happen when you close talk window
+        // with NPC that only say catch phrases
+        activeLevelDecoration = savedDecoration;
+        EventProcessor(savedEventID, 0, 1, savedEventStep);
+    }
     activeLevelDecoration = nullptr;
     pEventTimer->Resume();
 }

@@ -341,6 +341,7 @@ std::string GetEventHintString(unsigned int uEventID);  // idb
 
 extern int savedEventID;
 extern int savedEventStep;
+extern struct LevelDecoration *savedDecoration;
 
 /*  312 */
 #pragma pack(push, 1)
