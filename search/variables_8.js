@@ -25,7 +25,7 @@ var searchData=
   ['hours_22',['hours',['../classEventIR.html#a7d78658436cc81ea0adea45dc0502ad2',1,'EventIR']]],
   ['hoursinterval_23',['HoursInterval',['../structMapsLongTimer.html#a21a0861ae15efb367e095ce0acd24fd2',1,'MapsLongTimer']]],
   ['house_5fid_24',['house_id',['../classEventIR.html#a6a3ddf20d9fe30f7a2153177e17e8c03',1,'EventIR']]],
-  ['house_5fnpc_5fid_25',['house_npc_id',['../structstru159.html#a28cfdb736a2c45b0277743f3d55b2d89',1,'stru159']]],
+  ['house_5fnpc_5fid_25',['house_npc_id',['../structHouseAnimDescr.html#a961a6cb64b6c022727f0a0600ee1c2a6',1,'HouseAnimDescr']]],
   ['housemoviex1_26',['HouseMovieX1',['../classGameConfig_1_1Graphics.html#ae0a93bc14e4fb0ec1d8a31ae78f6653b',1,'GameConfig::Graphics']]],
   ['housemoviex2_27',['HouseMovieX2',['../classGameConfig_1_1Graphics.html#aa795023dce5b975d77af2088227a6173',1,'GameConfig::Graphics']]],
   ['housemoviey1_28',['HouseMovieY1',['../classGameConfig_1_1Graphics.html#a3b885d4b35764589ee1b32807436f3e3',1,'GameConfig::Graphics']]],

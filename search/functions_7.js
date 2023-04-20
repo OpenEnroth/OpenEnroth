@@ -62,7 +62,7 @@ var searchData=
   ['generateartifact_59',['GenerateArtifact',['../structItemGen.html#a4cba3b156f908c7dfb35fd9c0541d52c',1,'ItemGen']]],
   ['generategameplayactions_60',['GenerateGameplayActions',['../classIo_1_1KeyboardInputHandler.html#a3e480c37bf9d0b968a55872cd9800a9c',1,'Io::KeyboardInputHandler']]],
   ['generateinputactions_61',['GenerateInputActions',['../classIo_1_1KeyboardInputHandler.html#abaaac5d22c72e304b43196dc76607218',1,'Io::KeyboardInputHandler']]],
-  ['generateitem_62',['GenerateItem',['../structItemTable.html#a6b2f741063cc2d908b343ac6b725a3f3',1,'ItemTable']]],
+  ['generateitem_62',['generateItem',['../structItemTable.html#a247d7664955aea02c260ec73a8cb3077',1,'ItemTable']]],
   ['generateitemsinchest_63',['GenerateItemsInChest',['../Chest_8cpp.html#a605ec4a4eb2b8920c9e67e57f44a9f85',1,'GenerateItemsInChest():&#160;Chest.cpp'],['../Chest_8h.html#a605ec4a4eb2b8920c9e67e57f44a9f85',1,'GenerateItemsInChest():&#160;Chest.cpp']]],
   ['generatepausedactions_64',['GeneratePausedActions',['../classIo_1_1KeyboardInputHandler.html#ad083f7b873b721b76cd9f71507b6e3b4',1,'Io::KeyboardInputHandler']]],
   ['generatespecialshopitems_65',['GenerateSpecialShopItems',['../UIHouses_8cpp.html#a7a541fc22f8a95a91985b42f0604bc9c',1,'UIHouses.cpp']]],

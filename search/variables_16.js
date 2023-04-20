@@ -57,7 +57,7 @@ var searchData=
   ['vibrantgreen_54',['VibrantGreen',['../classColorTable.html#abd374d50aefed916d33d81656ac0a18a',1,'ColorTable']]],
   ['victory_5ftype_55',['Victory_type',['../structArcomageGame.html#a9136caea3621d73e5e4f60acf7dc7545',1,'ArcomageGame']]],
   ['video_56',['video',['../classMovie.html#a8a86213ee9dfa3c989dd8a3a52ce69c3',1,'Movie']]],
-  ['video_5fname_57',['video_name',['../structstru159.html#a6e2eaa22c50a0b02470179c9aa5f92d2',1,'stru159']]],
+  ['video_5fname_57',['video_name',['../structHouseAnimDescr.html#aec55f35fd728df2fbcfe13d4d4981726',1,'HouseAnimDescr']]],
   ['viewing_5fportal_5fid_58',['viewing_portal_id',['../structBspRenderer__ViewportNode.html#aadb13811dbe3b6eff399d2e79fb29f9b',1,'BspRenderer_ViewportNode']]],
   ['viewmat_59',['viewmat',['../classRenderOpenGL.html#a497d748546ae6a1d89cd10cb8aa9c5ea',1,'RenderOpenGL']]],
   ['viewmatrix_60',['ViewMatrix',['../structCamera3D.html#ac4de9b0b25cf2d456866b1f0d8be0afc',1,'Camera3D']]],
