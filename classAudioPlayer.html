@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;7d6f61e</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;6d14891</span>
    </div>
   </td>
  </tr>
@@ -149,6 +149,8 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:aa131ae857491aa58725acef883913cba"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a481ff77c7cce2855f3f16bf8a5336c25"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAudioPlayer.html#a481ff77c7cce2855f3f16bf8a5336c25">playWalkSound</a> (<a class="el" href="AudioPlayer_8h.html#aa4689ee7c9a692044aebd36cb0915e61">SoundID</a> id)</td></tr>
 <tr class="separator:a481ff77c7cce2855f3f16bf8a5336c25"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab650b193358f8c563364985ea22cc40e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAudioPlayer.html#ab650b193358f8c563364985ea22cc40e">playHouseSound</a> (<a class="el" href="AudioPlayer_8h.html#aa4689ee7c9a692044aebd36cb0915e61">SoundID</a> id, bool isSpeech)</td></tr>
+<tr class="separator:ab650b193358f8c563364985ea22cc40e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-static-attribs" name="pub-static-attribs"></a>
 Static Public Attributes</h2></td></tr>
@@ -162,6 +164,10 @@ Static Public Attributes</h2></td></tr>
 <tr class="separator:a2ff44bccf659cb3755d8ab7f95fd2682"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7423398a06c4bef307f56665f00b8b48"><td class="memItemLeft" align="right" valign="top">static const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAudioPlayer.html#a7423398a06c4bef307f56665f00b8b48">SOUND_PID_VOICE_VOLUME</a> = -5</td></tr>
 <tr class="separator:a7423398a06c4bef307f56665f00b8b48"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a877486e1dc5aa3a46d1305b154b52db1"><td class="memItemLeft" align="right" valign="top">static const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAudioPlayer.html#a877486e1dc5aa3a46d1305b154b52db1">SOUND_PID_HOUSE_SPEECH</a> = -6</td></tr>
+<tr class="separator:a877486e1dc5aa3a46d1305b154b52db1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3ae0f87cf9af8c9d99e7c7340c95acb2"><td class="memItemLeft" align="right" valign="top">static const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAudioPlayer.html#a3ae0f87cf9af8c9d99e7c7340c95acb2">SOUND_PID_HOUSE_DOOR</a> = -7</td></tr>
+<tr class="separator:a3ae0f87cf9af8c9d99e7c7340c95acb2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pro-types" name="pro-types"></a>
 Protected Types</h2></td></tr>
@@ -532,6 +538,50 @@ Protected Attributes</h2></td></tr>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">id</td><td>ID of sound. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="ab650b193358f8c563364985ea22cc40e" name="ab650b193358f8c563364985ea22cc40e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab650b193358f8c563364985ea22cc40e">&#9670;&#160;</a></span>playHouseSound()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void AudioPlayer::playHouseSound </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="AudioPlayer_8h.html#aa4689ee7c9a692044aebd36cb0915e61">SoundID</a>&#160;</td>
+          <td class="paramname"><em>id</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>isSpeech</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p >Play sound of houses. To avoid multiple sounds when entering/leaving repeatedly sounds needs to be stopped.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">id</td><td>ID of sound. </td></tr>
+    <tr><td class="paramname">isSpeech</td><td>true if this is house greet/goodbye speech. false if this is entering/cloosing UI sound. </td></tr>
   </table>
   </dd>
 </dl>
@@ -1118,6 +1168,50 @@ Protected Attributes</h2></td></tr>
       <table class="memname">
         <tr>
           <td class="memname">const int AudioPlayer::SOUND_PID_EXCLUSIVE = <a class="el" href="MM7_8h.html#a51fcc1ce2e7a0c1f057fc1e2d54b5e2d">PID_INVALID</a></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a3ae0f87cf9af8c9d99e7c7340c95acb2" name="a3ae0f87cf9af8c9d99e7c7340c95acb2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3ae0f87cf9af8c9d99e7c7340c95acb2">&#9670;&#160;</a></span>SOUND_PID_HOUSE_DOOR</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const int AudioPlayer::SOUND_PID_HOUSE_DOOR = -7</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a877486e1dc5aa3a46d1305b154b52db1" name="a877486e1dc5aa3a46d1305b154b52db1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a877486e1dc5aa3a46d1305b154b52db1">&#9670;&#160;</a></span>SOUND_PID_HOUSE_SPEECH</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const int AudioPlayer::SOUND_PID_HOUSE_SPEECH = -6</td>
         </tr>
       </table>
   </td>
