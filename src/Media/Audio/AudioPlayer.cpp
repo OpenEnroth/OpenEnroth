@@ -327,6 +327,9 @@ void AudioPlayer::playSound(SoundID eSoundID, int pid, unsigned int uNumRepeats,
         sample->SetVolume(uVoiceVolume);
         _regularSoundPool.stopSoundId(eSoundID);
         result = _regularSoundPool.playUniqueSoundId(sample, si.dataSource, eSoundID);
+    } else if (pid == SOUND_PID_HOUSE_SPEECH || pid == SOUND_PID_HOUSE_DOOR) {
+        _regularSoundPool.stopPid(pid);
+        _regularSoundPool.playUniquePid(sample, si.dataSource, pid);
     } else {
         ObjectType object_type = PID_TYPE(pid);
         unsigned int object_id = PID_ID(pid);
@@ -388,7 +391,7 @@ void AudioPlayer::playSound(SoundID eSoundID, int pid, unsigned int uNumRepeats,
             }
 
             case OBJECT_Face: {
-                result = _regularSoundPool.playNew(sample, si.dataSource);
+                result = _regularSoundPool.playUniquePid(sample, si.dataSource, pid);
 
                 break;
             }
