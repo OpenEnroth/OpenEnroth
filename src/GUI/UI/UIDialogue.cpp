@@ -481,29 +481,29 @@ void GUIWindow_GenericDialogue::Update() {
                                     ui_leather_mm7, pTextHeight);
     render->DrawTextureNew(8 / 640.0f, (347 - pTextHeight) / 480.0f,
                                 _591428_endcap);
-    pGUIWindow2->DrawText(pFont, {12, 354 - pTextHeight}, 0,
+    pGUIWindow_BranchlessDialogue->DrawText(pFont, {12, 354 - pTextHeight}, 0,
         pFont->FitTextInAWindow(branchless_dialogue_str, BranchlessDlg_window.uFrameWidth, 12),
         0, 0, 0);
     render->DrawTextureNew(0, 352 / 480.0f, game_ui_statusbar);
-    if (pGUIWindow2->keyboard_input_status != WINDOW_INPUT_IN_PROGRESS) {
-        if (pGUIWindow2->keyboard_input_status == WINDOW_INPUT_CONFIRMED) {
-            pGUIWindow2->keyboard_input_status = WINDOW_INPUT_NONE;
+    if (pGUIWindow_BranchlessDialogue->keyboard_input_status != WINDOW_INPUT_IN_PROGRESS) {
+        if (pGUIWindow_BranchlessDialogue->keyboard_input_status == WINDOW_INPUT_CONFIRMED) {
+            pGUIWindow_BranchlessDialogue->keyboard_input_status = WINDOW_INPUT_NONE;
             GameUI_StatusBar_OnInput(keyboardInputHandler->GetTextInput().c_str());
             ReleaseBranchlessDialogue();
             return;
         }
-        if (pGUIWindow2->keyboard_input_status != WINDOW_INPUT_CANCELLED)
+        if (pGUIWindow_BranchlessDialogue->keyboard_input_status != WINDOW_INPUT_CANCELLED)
             return;
-        pGUIWindow2->keyboard_input_status = WINDOW_INPUT_NONE;
+        pGUIWindow_BranchlessDialogue->keyboard_input_status = WINDOW_INPUT_NONE;
         GameUI_StatusBar_ClearInputString();
         ReleaseBranchlessDialogue();
         return;
     }
 
-    if (pGUIWindow2->wData.val == 26) { // EVENT_InputString
+    if (pGUIWindow_BranchlessDialogue->wData.val == (int)EVENT_InputString) {
         auto str = fmt::format("{} {}", GameUI_StatusBar_GetInput(), keyboardInputHandler->GetTextInput());
-        pGUIWindow2->DrawText(pFontLucida, {13, 357}, 0, str, 0, 0, 0);
-        pGUIWindow2->DrawFlashingInputCursor(pFontLucida->GetLineWidth(str) + 13, 357, pFontLucida);
+        pGUIWindow_BranchlessDialogue->DrawText(pFontLucida, {13, 357}, 0, str, 0, 0, 0);
+        pGUIWindow_BranchlessDialogue->DrawFlashingInputCursor(pFontLucida->GetLineWidth(str) + 13, 357, pFontLucida);
         return;
     }
 
@@ -516,23 +516,31 @@ void GUIWindow_GenericDialogue::Update() {
 }
 
 void StartBranchlessDialogue(int eventid, int entryline, int button) {
-    if (!pGUIWindow2) {
+    if (!pGUIWindow_BranchlessDialogue) {
         if (pParty->uFlags & PARTY_FLAGS_1_ForceRedraw) {
             engine->Draw();
         }
         pMiscTimer->Pause();
         pEventTimer->Pause();
-        dword_5C3418 = eventid;
-        dword_5C341C = entryline;
+        savedEventID = eventid;
+        savedEventStep = entryline;
         _591094_decoration = activeLevelDecoration;
-        pGUIWindow2 = new GUIWindow_GenericDialogue({0, 0}, render->GetRenderDimensions(), button);
-        pGUIWindow2->CreateButton({61, 424}, {31, 40}, 2, 94, UIMSG_SelectCharacter, 1, InputAction::SelectChar1);
-        pGUIWindow2->CreateButton({177, 424}, {31, 40}, 2, 94, UIMSG_SelectCharacter, 2, InputAction::SelectChar2);
-        pGUIWindow2->CreateButton({292, 424}, {31, 40}, 2, 94, UIMSG_SelectCharacter, 3, InputAction::SelectChar3);
-        pGUIWindow2->CreateButton({407, 424}, {31, 40}, 2, 94, UIMSG_SelectCharacter, 4, InputAction::SelectChar4);
+        pGUIWindow_BranchlessDialogue = new GUIWindow_GenericDialogue({0, 0}, render->GetRenderDimensions(), button);
+        pGUIWindow_BranchlessDialogue->CreateButton({61, 424}, {31, 40}, 2, 94, UIMSG_SelectCharacter, 1, InputAction::SelectChar1);
+        pGUIWindow_BranchlessDialogue->CreateButton({177, 424}, {31, 40}, 2, 94, UIMSG_SelectCharacter, 2, InputAction::SelectChar2);
+        pGUIWindow_BranchlessDialogue->CreateButton({292, 424}, {31, 40}, 2, 94, UIMSG_SelectCharacter, 3, InputAction::SelectChar3);
+        pGUIWindow_BranchlessDialogue->CreateButton({407, 424}, {31, 40}, 2, 94, UIMSG_SelectCharacter, 4, InputAction::SelectChar4);
     }
 }
 
+void ReleaseBranchlessDialogue() {
+    pGUIWindow_BranchlessDialogue->Release();
+    pGUIWindow_BranchlessDialogue = nullptr;
+    activeLevelDecoration = _591094_decoration;
+    EventProcessor(savedEventID, 0, 1, savedEventStep);
+    activeLevelDecoration = nullptr;
+    pEventTimer->Resume();
+}
 
 void BuildHireableNpcDialogue() {
     NPCData *v0 = GetNPCData(sDialogue_SpeakingActorNPC_ID);

@@ -938,7 +938,7 @@ void Game::processQueuedMessages() {
                                 MapStartPoint_Party);
                         }
                     } else {
-                        EventProcessor(dword_5C3418, 0, 1, dword_5C341C);
+                        EventProcessor(savedEventID, 0, 1, savedEventStep);
                     }
                     if (iequals(s_SavedMapName.data(), "d05.blv"))
                         pParty->GetPlayingTime().AddDays(4);

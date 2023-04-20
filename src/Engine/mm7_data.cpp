@@ -2609,8 +2609,6 @@ int dword_5B65C4_cancelEventProcessing;
 int MapsLongTimers_count;  // dword_5B65C8 счётчик таймеров для колодцев,
                            // фаерволов-ловушек
 int npcIdToDismissAfterDialogue;
-int dword_5C3418; //  eventid store for branchless dialogue
-int dword_5C341C; // entry line store for branchless dialogue
 // std::array<char, 777> byte_5C3427;
 
 // TODO(pskelton): GameStatusBar class

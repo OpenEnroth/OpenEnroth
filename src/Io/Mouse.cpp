@@ -15,6 +15,7 @@
 
 #include "GUI/GUIButton.h"
 #include "GUI/GUIWindow.h"
+#include "GUI/UI/UIDialogue.h"
 
 #include "Media/Audio/AudioPlayer.h"
 
@@ -259,7 +260,7 @@ void Mouse::UI_OnMouseLeftClick() {
         sub_4637E0_is_there_popup_onscreen())
         return;
 
-    if (pGUIWindow2 && pGUIWindow2->wData.val == 33) {  // EVENT_PressAnyKey
+    if (pGUIWindow_BranchlessDialogue && pGUIWindow_BranchlessDialogue->wData.val == (int)EVENT_PressAnyKey) {
         ReleaseBranchlessDialogue();
         return;
     }
