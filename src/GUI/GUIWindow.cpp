@@ -62,7 +62,7 @@ GUIWindow *ptr_507BC8;  // screen 19 - not used?
 GUIWindow *pGUIWindow_CastTargetedSpell;
 GUIWindow *pGameOverWindow; // UIMSG_ShowGameOverWindow
 bool bGameOverWindowCheckExit{ false }; // TODO(pskelton): contain
-GUIWindow *pGUIWindow2; // branchless dialougue
+GUIWindow *pGUIWindow_BranchlessDialogue; // branchless dialougue
 
 typedef struct _RGBColor {
     unsigned char R;
@@ -2147,7 +2147,7 @@ void WindowManager::DeleteAllVisibleWindows() {
     ptr_507BC8 = nullptr;  // screen 19 - not used?
     pGUIWindow_CastTargetedSpell = nullptr;
     pGameOverWindow = nullptr; // UIMSG_ShowGameOverWindow
-    pGUIWindow2 = nullptr; // branchless dialougue
+    pGUIWindow_BranchlessDialogue = nullptr; // branchless dialougue
 
     current_screen_type = CURRENT_SCREEN::SCREEN_GAME;
     pNextFrameMessageQueue->Clear();

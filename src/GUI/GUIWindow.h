@@ -405,7 +405,7 @@ extern GUIWindow *pGUIWindow_CastTargetedSpell;
 extern GUIWindow *pGameOverWindow;
 extern bool bGameOverWindowCheckExit;
 //extern GUIWindow *pGUIWindow_EscMessageWindow;
-extern GUIWindow *pGUIWindow2;
+extern GUIWindow *pGUIWindow_BranchlessDialogue;
 
 extern unsigned int ui_mainmenu_copyright_color;
 extern unsigned int ui_character_tooltip_header_default_color;

@@ -26,6 +26,7 @@ class GUIWindow_GenericDialogue : public GUIWindow {
 };
 
 void StartBranchlessDialogue(int eventid, int entryline, int button);
+void ReleaseBranchlessDialogue();
 
 void OnSelectNPCDialogueOption(DIALOGUE_TYPE option);
 

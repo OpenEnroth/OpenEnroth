@@ -339,6 +339,10 @@ void LoadLevel_InitializeLevelEvt();
 void EventProcessor(int uEventID, int a2, int a3, int entry_line = 0);
 std::string GetEventHintString(unsigned int uEventID);  // idb
 
+extern int savedEventID;
+extern int savedEventStep;
+extern struct LevelDecoration *savedDecoration;
+
 /*  312 */
 #pragma pack(push, 1)
 struct ByteArray {

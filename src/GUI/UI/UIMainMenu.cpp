@@ -176,7 +176,7 @@ void GUIWindow_MainMenu::Loop() {
 
     current_screen_type = CURRENT_SCREEN::SCREEN_GAME;
 
-    pGUIWindow2 = nullptr;
+    pGUIWindow_BranchlessDialogue = nullptr;
 
     pWindow_MainMenu = new GUIWindow_MainMenu();
 

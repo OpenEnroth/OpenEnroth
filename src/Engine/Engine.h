@@ -261,7 +261,6 @@ void LoadLevel_InitializeLevelStr();
 void OnMapLeave();
 void OnMapLoad();
 void Level_LoadEvtAndStr(const std::string &pLevelName);
-void ReleaseBranchlessDialogue();
 bool _44100D_should_alter_right_panel();
 void Transition_StopSound_Autosave(const char *pMapName,
                                    MapStartPoint point);  // sub_44987B idb
