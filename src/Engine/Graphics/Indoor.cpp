@@ -32,7 +32,6 @@
 #include "Engine/Serialization/LegacyImages.h"
 #include "Engine/Serialization/Deserializer.h"
 #include "Engine/SpellFxRenderer.h"
-#include "Engine/stru123.h"
 #include "Engine/Time.h"
 #include "Engine/TurnEngine/TurnEngine.h"
 
@@ -583,7 +582,7 @@ bool IndoorLocation::Load(const std::string &filename, int num_days_played,
 
     pGameLoadingUI_ProgressBar->Progress();
 
-    stream.ReadRaw(&stru_5E4C90_MapPersistVars);
+    stream.ReadRaw(&mapEventVariables);
 
     pGameLoadingUI_ProgressBar->Progress();
 
@@ -1304,9 +1303,8 @@ void PrepareToLoadBLV(bool bLoading) {
             if (pLevelDecorations[i].IsInteractive()) {
                 if (v35 < 124) {
                     pLevelDecorations[i]._idx_in_stru123 = v35 + 75;
-                    if (!stru_5E4C90_MapPersistVars._decor_events[v35])
-                        pLevelDecorations[i].uFlags |=
-                            LEVEL_DECORATION_INVISIBLE;
+                    if (!mapEventVariables.decorVars[v35])
+                        pLevelDecorations[i].uFlags |= LEVEL_DECORATION_INVISIBLE;
                     v35++;
                 }
             }

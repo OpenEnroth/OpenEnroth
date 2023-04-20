@@ -346,9 +346,20 @@ struct ByteArray {
 };
 #pragma pack(pop)
 
+struct MapEventVariables {
+    std::array<unsigned char, 75> mapVars;
+    std::array<unsigned char, 125> decorVars;
+};
+
+extern MapEventVariables mapEventVariables;
+
 void init_event_triggers();
 void check_event_triggers();
 bool sub_4465DF_check_season(int a1);
-void sub_448CF4_spawn_monsters(int16_t typeindex, int16_t level, int count,
-                               int x, int y, int z, int group,
-                               unsigned int uUniqueName);
+
+/**
+ * @offset 0x448CF4
+ */
+void spawnMonsters(int16_t typeindex, int16_t level, int count,
+                   int x, int y, int z, int group,
+                   unsigned int uUniqueName);

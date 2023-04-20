@@ -12,7 +12,7 @@
 #include "Engine/Localization.h"
 #include "Engine/Party.h"
 #include "Engine/Time.h"
-#include "Engine/stru123.h"
+#include "Engine/Events.h"
 
 #include "Engine/Graphics/ImageLoader.h"
 #include "Engine/Graphics/Level/Decoration.h"
@@ -406,7 +406,7 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld) {
 
             memcpy(data_write_pos, pIndoor->ptr_0002B4_doors_ddata.data(), pIndoor->blv.uDoors_ddata_Size);
             data_write_pos += pIndoor->blv.uDoors_ddata_Size;
-            memcpy(data_write_pos, &stru_5E4C90_MapPersistVars, 0xC8);
+            memcpy(data_write_pos, &mapEventVariables, 0xC8);
             data_write_pos += 200;
             memcpy(data_write_pos, &pIndoor->stru1, 0x38);
             data_write_pos += 56;
@@ -467,7 +467,7 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld) {
 
             data_write_pos += ChestsSerialize(data_write_pos);
 
-            memcpy(data_write_pos, &stru_5E4C90_MapPersistVars, 0xC8);
+            memcpy(data_write_pos, &mapEventVariables, 0xC8);
             data_write_pos += 200;
             memcpy(data_write_pos, &pOutdoor->loc_time, 0x38);
             data_write_pos += 56;

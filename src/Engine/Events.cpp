@@ -17,7 +17,6 @@
 #include "Engine/Objects/SpriteObject.h"
 #include "Engine/OurMath.h"
 #include "Engine/Party.h"
-#include "Engine/stru123.h"
 #include "Engine/stru159.h"
 
 #include "GUI/GUIProgressBar.h"
@@ -57,6 +56,8 @@ std::array<char, 9216> pLevelEVT;
 std::array<EventIndex, 4400> pLevelEVT_Index;
 
 _2devent p2DEvents[525];
+
+MapEventVariables mapEventVariables;
 
 unsigned int LoadEventsToBuffer(const std::string &pContainerName, char *pBuffer,
                                 unsigned int uBufferSize) {
@@ -430,9 +431,9 @@ LABEL_47:
                 case EVENT_ChangeEvent:
                     v27 = EVT_DWORD(_evt->v5);
                     if (v27) {
-                        stru_5E4C90_MapPersistVars._decor_events[activeLevelDecoration->_idx_in_stru123 - 75] = v27 - 124;
+                        mapEventVariables.decorVars[activeLevelDecoration->_idx_in_stru123 - 75] = v27 - 124;
                     } else {
-                        stru_5E4C90_MapPersistVars._decor_events[activeLevelDecoration->_idx_in_stru123 - 75] = 0;
+                        mapEventVariables.decorVars[activeLevelDecoration->_idx_in_stru123 - 75] = 0;
                         activeLevelDecoration->uFlags |= LEVEL_DECORATION_INVISIBLE;
                     }
                     ++curr_seq_num;
@@ -476,13 +477,11 @@ LABEL_47:
                     ++curr_seq_num;
                 } break;
                 case EVENT_NPCSetItem:
-                    sub_448518_npc_set_item(EVT_DWORD(_evt->v5),
-                                            ITEM_TYPE(EVT_DWORD(_evt->v9)), _evt->v13);
+                    npcSetItem(EVT_DWORD(_evt->v5), ITEM_TYPE(EVT_DWORD(_evt->v9)), _evt->v13);
                     ++curr_seq_num;
                     break;
                 case EVENT_SetActorItem:
-                    Actor::GiveItem(EVT_DWORD(_evt->v5), ITEM_TYPE(EVT_DWORD(_evt->v9)),
-                                    _evt->v13);
+                    Actor::giveItem(EVT_DWORD(_evt->v5), ITEM_TYPE(EVT_DWORD(_evt->v9)), _evt->v13);
                     ++curr_seq_num;
                     break;
                 case EVENT_SetNPCGroupNews:
@@ -621,7 +620,7 @@ LABEL_47:
                     v4 = -1;
                     break;
                 case EVENT_IsActorAlive:
-                    if (IsActorAlive(EVT_BYTE(_evt->v5), EVT_DWORD(_evt->v6),
+                    if (isActorAlive(EVT_BYTE(_evt->v5), EVT_DWORD(_evt->v6),
                                      EVT_BYTE(_evt->v10))) {
                         // v124 = -1;
                         curr_seq_num = _evt->v11 - 1;
@@ -818,10 +817,9 @@ LABEL_47:
                     ++curr_seq_num;
                     break;
                 case EVENT_SummonMonsters:
-                    sub_448CF4_spawn_monsters(
-                        _evt->v5, _evt->v6, _evt->v7, EVT_DWORD(_evt->v8),
-                        EVT_DWORD(_evt->v12), EVT_DWORD(_evt->v16),
-                        EVT_DWORD(_evt->v20), EVT_DWORD(_evt->v24));
+                    spawnMonsters(_evt->v5, _evt->v6, _evt->v7, EVT_DWORD(_evt->v8),
+                                  EVT_DWORD(_evt->v12), EVT_DWORD(_evt->v16),
+                                  EVT_DWORD(_evt->v20), EVT_DWORD(_evt->v24));
                     ++curr_seq_num;
                     break;
                 case EVENT_MouseOver:
@@ -1136,10 +1134,9 @@ bool sub_4465DF_check_season(int a1) {
     return false;
 }
 
-//----- (00448CF4) --------------------------------------------------------
-void sub_448CF4_spawn_monsters(int16_t typeindex, int16_t level, int count,
-                               int x, int y, int z, int group,
-                               unsigned int uUniqueName) {
+void spawnMonsters(int16_t typeindex, int16_t level, int count,
+                   int x, int y, int z, int group,
+                   unsigned int uUniqueName) {
     unsigned int map_id;        // eax@1
     size_t old_num_actors;      // ebx@2
     AIDirection v15;            // [sp+28h] [bp-34h]@2

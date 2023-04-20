@@ -20,7 +20,6 @@
 #include "Engine/OurMath.h"
 #include "Engine/Party.h"
 #include "Engine/SpellFxRenderer.h"
-#include "Engine/stru123.h"
 #include "Engine/Tables/IconFrameTable.h"
 #include "Engine/Time.h"
 #include "Engine/TurnEngine/TurnEngine.h"
@@ -2204,7 +2203,7 @@ void CastSpellInfoHelpers::castSpell() {
                         // TODO(captainurist): investigate, that's a very weird std::to_underlying call.
                         if (pLevelDecorations[std::to_underlying(pSpriteObjects[obj_id].containing_item.uItemID)].IsInteractive()) {
                             activeLevelDecoration = &pLevelDecorations[obj_id];
-                            EventProcessor(stru_5E4C90_MapPersistVars._decor_events[pLevelDecorations[obj_id]._idx_in_stru123 - 75] + 380, 0, 1);
+                            EventProcessor(mapEventVariables.decorVars[pLevelDecorations[obj_id]._idx_in_stru123 - 75] + 380, 0, 1);
                             activeLevelDecoration = nullptr;
                         }
                     }
