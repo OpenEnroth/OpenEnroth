@@ -34,6 +34,7 @@
 #include "Engine/SpellFxRenderer.h"
 #include "Engine/Time.h"
 #include "Engine/TurnEngine/TurnEngine.h"
+#include "Engine/Localization.h"
 
 #include "GUI/GUIProgressBar.h"
 #include "GUI/GUIWindow.h"
@@ -1800,6 +1801,10 @@ char DoInteractionWithTopmostZObject(int pid) {
     auto id = PID_ID(pid);
     auto type = PID_TYPE(pid);
 
+    if (current_screen_type != CURRENT_SCREEN::SCREEN_GAME /*CURRENT_SCREEN::SCREEN_BRANCHLESS_NPC_DIALOG*/) {
+        return 1;
+    }
+
     switch (type) {
         case OBJECT_Item: {  // take the item
             if (pSpriteObjects[id].IsUnpickable() || id >= pSpriteObjects.size() || !pSpriteObjects[id].uObjectDescID) {
@@ -1819,19 +1824,24 @@ char DoInteractionWithTopmostZObject(int pid) {
             } else {
                 extern bool CanInteractWithActor(unsigned int id);
                 extern void InteractWithActor(unsigned int id);
-                if (CanInteractWithActor(id))
-                    InteractWithActor(id);
+                if (CanInteractWithActor(id)) {
+                    if (pParty->hasActiveCharacter()) {
+                        InteractWithActor(id);
+                    } else {
+                        GameUI_SetStatusBar(localization->GetString(LSTR_NOBODY_IS_IN_CONDITION));
+                    }
+                }
             }
             break;
 
         case OBJECT_Decoration:
             extern void DecorationInteraction(unsigned int id, unsigned int pid);
-            DecorationInteraction(id, pid);
+            if (pParty->hasActiveCharacter()) {
+                DecorationInteraction(id, pid);
+            } else {
+                GameUI_SetStatusBar(localization->GetString(LSTR_NOBODY_IS_IN_CONDITION));
+            }
             break;
-
-        default:
-            logger->warning("Warning: Invalid ID reached!");
-            return 1;
 
         case OBJECT_Face:
             if (uCurrentlyLoadedLevelType == LEVEL_Outdoor) {
@@ -1841,26 +1851,41 @@ char DoInteractionWithTopmostZObject(int pid) {
                 if (bmodel_id >= pOutdoor->pBModels.size()) {
                     return 1;
                 }
-                if (pOutdoor->pBModels[bmodel_id].pFaces[face_id].uAttributes & FACE_HAS_EVENT ||
-                    pOutdoor->pBModels[bmodel_id].pFaces[face_id].sCogTriggeredID == 0)
+
+                ODMFace &model = pOutdoor->pBModels[bmodel_id].pFaces[face_id];
+
+                if (model.uAttributes & FACE_HAS_EVENT || model.sCogTriggeredID == 0) {
                     return 1;
-                EventProcessor((int16_t)pOutdoor->pBModels[bmodel_id].pFaces[face_id].sCogTriggeredID,
-                               pid, 1);
+                }
+
+                if (pParty->hasActiveCharacter()) {
+                    EventProcessor(pOutdoor->pBModels[bmodel_id].pFaces[face_id].sCogTriggeredID, pid, 1);
+                } else {
+                    GameUI_SetStatusBar(localization->GetString(LSTR_NOBODY_IS_IN_CONDITION));
+                }
             } else {
                 if (!(pIndoor->pFaces[id].uAttributes & FACE_CLICKABLE)) {
                     GameUI_StatusBar_NothingHere();
                     return 1;
                 }
-                if (pIndoor->pFaces[id].uAttributes & FACE_HAS_EVENT ||
-                    !pIndoor->pFaceExtras[pIndoor->pFaces[id].uFaceExtraID].uEventID)
+                if (pIndoor->pFaces[id].uAttributes & FACE_HAS_EVENT || !pIndoor->pFaceExtras[pIndoor->pFaces[id].uFaceExtraID].uEventID) {
                     return 1;
-                if (current_screen_type != CURRENT_SCREEN::SCREEN_BRANCHLESS_NPC_DIALOG)
-                    EventProcessor((int16_t)pIndoor->pFaceExtras[pIndoor->pFaces[id].uFaceExtraID].uEventID,
-                                   pid, 1);
+                }
+
+                if (pParty->hasActiveCharacter()) {
+                    EventProcessor((int16_t)pIndoor->pFaceExtras[pIndoor->pFaces[id].uFaceExtraID].uEventID, pid, 1);
+                } else {
+                    GameUI_SetStatusBar(localization->GetString(LSTR_NOBODY_IS_IN_CONDITION));
+                }
             }
             return 0;
             break;
+
+        default:
+            logger->warning("Warning: Invalid ID reached!");
+            return 1;
     }
+
     return 0;
 }
 //----- (0046BDF1) --------------------------------------------------------

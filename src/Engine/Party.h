@@ -219,7 +219,7 @@ struct Party {
     */
     void switchToNextActiveCharacter();
     bool _497FC5_check_party_perception_against_level();
-    
+
     /**
      * @offset 0x48C6F6
      */
