@@ -346,7 +346,7 @@ static std::string getVariableSetStr(VariableType type, int value) {
             return fmt::format("ERROR: ItemEquipped, value");
     }
 
-    return fmt::format("UNPROCESSED: [{}], {}", (int)type, value);
+    return fmt::format("UNPROCESSED: [{}], {}", std::to_underlying(type), value);
 }
 
 static std::string getVariableCompareStr(VariableType type, int value) {
@@ -669,7 +669,7 @@ static std::string getVariableCompareStr(VariableType type, int value) {
             return fmt::format("ItemEquipped({})", value);
     }
 
-    return fmt::format("UNPROCESSED: [{}] ? {}", (int)type, value);
+    return fmt::format("UNPROCESSED: [{}] ? {}", std::to_underlying(type), value);
 }
 
 std::string EventIR::toString() const {
@@ -683,7 +683,7 @@ std::string EventIR::toString() const {
                 return fmt::format("{}: SpeakInHouse({})", step, data.house_id);
             }
         case EVENT_PlaySound:
-            return fmt::format("{}: PlaySound({}, ({}, {}))", step, (int)data.sound_descr.sound_id, data.sound_descr.x, data.sound_descr.y);
+            return fmt::format("{}: PlaySound({}, ({}, {}))", step, std::to_underlying(data.sound_descr.sound_id), data.sound_descr.x, data.sound_descr.y);
         case EVENT_MouseOver:
             return fmt::format("{}: MouseOver(\"{}\")", step, &pLevelStr[pLevelStrOffsets[data.text_id]]);
         case EVENT_LocationName:
@@ -693,9 +693,9 @@ std::string EventIR::toString() const {
         case EVENT_OpenChest:
             return fmt::format("{}: OpenChest({})", step, data.chest_id);
         case EVENT_ShowFace:
-            return fmt::format("{}: SetExpression({}, {})", step, (int)who, (int)data.expr_id);
+            return fmt::format("{}: SetExpression({}, {})", step, std::to_underlying(who), std::to_underlying(data.expr_id));
         case EVENT_ReceiveDamage:
-            return fmt::format("{}: ReceiveDamage({}, {})", step, data.damage_descr.damage, (int)data.damage_descr.damage_type);
+            return fmt::format("{}: ReceiveDamage({}, {})", step, data.damage_descr.damage, std::to_underlying(data.damage_descr.damage_type));
         case EVENT_SetSnow:
             return fmt::format("{}: SetSnow({}, {})", step, data.snow_descr.is_nop, data.snow_descr.is_enable);
         case EVENT_SetTexture:
@@ -717,13 +717,13 @@ std::string EventIR::toString() const {
         case EVENT_SummonMonsters:
             return fmt::format("{}: SummonMonsters({}, {}, {}, ({}, {}, {}), {}, {})", step, data.monster_descr.type, data.monster_descr.level, data.monster_descr.count, data.monster_descr.x, data.monster_descr.y, data.monster_descr.z, data.monster_descr.group, data.monster_descr.name_id);
         case EVENT_CastSpell:
-            return fmt::format("{}: CastSpell({}, {}, {}, ({}, {}, {}), ({}, {}, {}))", step, (int)data.spell_descr.spell_id, (int)data.spell_descr.spell_mastery, data.spell_descr.spell_level, data.spell_descr.fromx, data.spell_descr.fromy, data.spell_descr.fromz, data.spell_descr.tox, data.spell_descr.toy, data.spell_descr.toz);
+            return fmt::format("{}: CastSpell({}, {}, {}, ({}, {}, {}), ({}, {}, {}))", step, std::to_underlying(data.spell_descr.spell_id), std::to_underlying(data.spell_descr.spell_mastery), data.spell_descr.spell_level, data.spell_descr.fromx, data.spell_descr.fromy, data.spell_descr.fromz, data.spell_descr.tox, data.spell_descr.toy, data.spell_descr.toz);
         case EVENT_SpeakNPC:
             return fmt::format("{}: SpeakNPC({})", step, data.npc_descr.npc_id);
         case EVENT_SetFacesBit:
             return fmt::format("{}: SetFacesBit({}, 0x{:x}, {})", step, data.faces_bit_descr.cog, (int)data.faces_bit_descr.face_bit, data.faces_bit_descr.is_on);
         case EVENT_ToggleActorFlag:
-            return fmt::format("{}: ToggleActorFlag({}, 0x{:x}, {})", step, data.actor_flag_descr.id, (int)data.actor_flag_descr.attr, data.actor_flag_descr.is_set); // TODO: print attr
+            return fmt::format("{}: ToggleActorFlag({}, 0x{:x}, {})", step, data.actor_flag_descr.id, (int)data.actor_flag_descr.attr, data.actor_flag_descr.is_set);
         case EVENT_RandomGoTo:
             {
                 std::string jmps;
@@ -757,9 +757,9 @@ std::string EventIR::toString() const {
         case EVENT_PressAnyKey:
             return fmt::format("{}: PressAnyKey()", step);
         case EVENT_SummonItem:
-            return fmt::format("{}: SummonItem({}, ({}, {}, {}), {}, {}, {})", step, (int)data.summon_item_descr.sprite, data.summon_item_descr.x, data.summon_item_descr.y, data.summon_item_descr.z, data.summon_item_descr.speed, data.summon_item_descr.count, data.summon_item_descr.random_rotate);
+            return fmt::format("{}: SummonItem({}, ({}, {}, {}), {}, {}, {})", step, std::to_underlying(data.summon_item_descr.sprite), data.summon_item_descr.x, data.summon_item_descr.y, data.summon_item_descr.z, data.summon_item_descr.speed, data.summon_item_descr.count, data.summon_item_descr.random_rotate);
         case EVENT_ForPartyMember:
-            return fmt::format("{}: ForPartyMember({})", step, (int)who);
+            return fmt::format("{}: ForPartyMember({})", step, std::to_underlying(who));
         case EVENT_Jmp:
             return fmt::format("{}: Jmp -> {}", step, target_step);
         case EVENT_OnMapReload:
@@ -771,11 +771,11 @@ std::string EventIR::toString() const {
         case EVENT_MoveNPC:
             return fmt::format("{}: MoveNPC({}, {})", step, data.npc_move_descr.npc_id, data.npc_move_descr.location_id);
         case EVENT_GiveItem:
-            return fmt::format("{}: GiveItem({}, {}, {})", step, (int)data.give_item_descr.treasure_level, data.give_item_descr.treasure_type, (int)data.give_item_descr.item_id);
+            return fmt::format("{}: GiveItem({}, {}, {})", step, std::to_underlying(data.give_item_descr.treasure_level), data.give_item_descr.treasure_type, std::to_underlying(data.give_item_descr.item_id));
         case EVENT_ChangeEvent:
             return fmt::format("{}: ChangeEvent({})", step, data.event_id);
         case EVENT_CheckSkill:
-             return fmt::format("{}: CheckSkill({}, {}, {}) -> {}", step, (int)data.check_skill_descr.skill_type, (int)data.check_skill_descr.skill_mastery, (int)data.check_skill_descr.skill_level, target_step);
+             return fmt::format("{}: CheckSkill({}, {}, {}) -> {}", step, std::to_underlying(data.check_skill_descr.skill_type), std::to_underlying(data.check_skill_descr.skill_mastery), data.check_skill_descr.skill_level, target_step);
         case EVENT_OnCanShowDialogItemCmp:
             // TODO
             break;
@@ -791,7 +791,7 @@ std::string EventIR::toString() const {
             // TODO
             break;
         case EVENT_NPCSetItem:
-            return fmt::format("{}: NPCSetItem({}, {}, {})", step, data.npc_item_descr.id, (int)data.npc_item_descr.item, data.npc_item_descr.is_give);
+            return fmt::format("{}: NPCSetItem({}, {}, {})", step, data.npc_item_descr.id, std::to_underlying(data.npc_item_descr.item), data.npc_item_descr.is_give);
         case EVENT_SetNPCGreeting:
             return fmt::format("{}: SetNpcGreeting({}, {})", step, data.npc_descr.npc_id, data.npc_descr.greeting);
         case EVENT_IsActorAlive:
@@ -808,15 +808,15 @@ std::string EventIR::toString() const {
             // TODO
             break;
         case EVENT_CheckSeason:
-            return fmt::format("{}: CheckSeason({}) -> {}", step, (int)data.season, target_step);
+            return fmt::format("{}: CheckSeason({}) -> {}", step, std::to_underlying(data.season), target_step);
         case EVENT_ToggleActorGroupFlag:
-            return fmt::format("{}: ToggleActorGroupFlag({}, 0x{:x}, {})", step, data.actor_flag_descr.id, (int)data.actor_flag_descr.attr, data.actor_flag_descr.is_set); // TODO: print attr
+            return fmt::format("{}: ToggleActorGroupFlag({}, 0x{:x}, {})", step, data.actor_flag_descr.id, std::to_underlying(data.actor_flag_descr.attr), data.actor_flag_descr.is_set);
         case EVENT_ToggleChestFlag:
-            return fmt::format("{}: ToggleChestFlag({}, 0x{:x}, {})", step, data.chest_flag_descr.chest_id, (int)data.chest_flag_descr.flag, data.chest_flag_descr.is_set);
+            return fmt::format("{}: ToggleChestFlag({}, 0x{:x}, {})", step, data.chest_flag_descr.chest_id, std::to_underlying(data.chest_flag_descr.flag), data.chest_flag_descr.is_set);
         case EVENT_CharacterAnimation:
-            return fmt::format("{}: SetReaction({}, {})", step, (int)who, (int)data.speech_id);
+            return fmt::format("{}: SetReaction({}, {})", step, std::to_underlying(who), std::to_underlying(data.speech_id));
         case EVENT_SetActorItem:
-            return fmt::format("{}: SetActorItem({}, {}, {})", step, data.npc_item_descr.id, (int)data.npc_item_descr.item, data.npc_item_descr.is_give);
+            return fmt::format("{}: SetActorItem({}, {}, {})", step, data.npc_item_descr.id, std::to_underlying(data.npc_item_descr.item), data.npc_item_descr.is_give);
         case EVENT_OnDateTimer:
             // TODO
             break;
@@ -1142,15 +1142,6 @@ EventIR EventIR::parse(void *data, size_t maxSize) {
     }
 
     return ir;
-}
-
-static void createHouseUI(HOUSE_ID houseId) {
-    window_SpeakInHouse = new GUIWindow_House({0, 0}, render->GetRenderDimensions(), houseId);
-    window_SpeakInHouse->CreateButton({61, 424}, {31, 0}, 2, 94, UIMSG_SelectCharacter, 1, InputAction::SelectChar1, "");
-    window_SpeakInHouse->CreateButton({177, 424}, {31, 0}, 2, 94, UIMSG_SelectCharacter, 2, InputAction::SelectChar2, "");
-    window_SpeakInHouse->CreateButton({292, 424}, {31, 0}, 2, 94, UIMSG_SelectCharacter, 3, InputAction::SelectChar3, "");
-    window_SpeakInHouse->CreateButton({407, 424}, {31, 0}, 2, 94, UIMSG_SelectCharacter, 4, InputAction::SelectChar4, "");
-    window_SpeakInHouse->CreateButton({0, 0}, {0, 0}, 1, 0, UIMSG_CycleCharacters, 0, InputAction::CharCycle, "");
 }
 
 static bool checkSeason(SEASON season) {

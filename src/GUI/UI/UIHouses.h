@@ -38,6 +38,8 @@ void SimpleHouseDialog();
 void OnSelectShopDialogueOption(DIALOGUE_TYPE option);
 void PrepareHouse(HOUSE_ID house);  // idb
 
+void createHouseUI(HOUSE_ID houseId);
+
 /**
  * @offset 0x44622E
  */

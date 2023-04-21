@@ -20,5 +20,6 @@ class EventMap {
     std::unordered_map<int, std::vector<EventIR>> _eventsById;
 };
 
+// TODO(Nik-RE-dev): move these to separate location
 void eventProcessor(int eventId, int targetObj, int canShowMessages, int startStep);
-std::string getEventHintString(unsigned int eventId);
+std::string getEventHintString(int eventId);

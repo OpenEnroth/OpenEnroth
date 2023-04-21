@@ -23,7 +23,7 @@ void EventMap::execute(int eventId, int startStep, bool canShowMessages) const {
 
     do {
         stepFound = false;
-        for (const EventIR &ir : valueOr(_eventsById, eventId, std::vector<EventIR>())) {
+        for (const EventIR &ir : _eventsById.at(eventId)) {
             if (ir.step == step) {
                 step = ir.execute(canShowMessages, &who, &mapExitTriggered);
                 stepFound = true;
@@ -41,7 +41,7 @@ std::string EventMap::getHintString(int eventId) const {
     std::string result = "";
     bool mouseOverFound = false;
 
-    for (const EventIR &ir : valueOr(_eventsById, eventId, std::vector<EventIR>())) {
+    for (const EventIR &ir : _eventsById.at(eventId)) {
         if (ir.type == EVENT_MouseOver) {
             mouseOverFound = true;
             result = &pLevelStr[pLevelStrOffsets[ir.data.text_id]];
@@ -58,7 +58,7 @@ std::string EventMap::getHintString(int eventId) const {
 void EventMap::dump(int eventId) const {
     if (_eventsById.contains(eventId)) {
         logger->verbose("Event: {}", eventId);
-        for (const EventIR &ir : valueOr(_eventsById, eventId, std::vector<EventIR>())) {
+        for (const EventIR &ir : _eventsById.at(eventId)) {
             logger->verbose("{}", ir.toString());
         }
     } else {
@@ -72,6 +72,7 @@ void EventMap::dumpAll() const {
     }
 }
 
+// TODO(Nik-RE-dev): move to separate location
 void eventProcessor(int eventId, int targetObj, int canShowMessages, int startStep) {
     EvtTargetObj = targetObj; // TODO: pass as local
     dword_5B65C4_cancelEventProcessing = 0; // TODO: rename and contain in this module or better remove it altogether
@@ -86,6 +87,7 @@ void eventProcessor(int eventId, int targetObj, int canShowMessages, int startSt
     }
 }
 
-std::string getEventHintString(unsigned int eventId) {
+// TODO(Nik-RE-dev): move to separate location
+std::string getEventHintString(int eventId) {
     return engine->_localEventMap.getHintString(eventId);
 }

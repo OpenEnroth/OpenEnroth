@@ -12,6 +12,7 @@
 #include "Engine/Graphics/BSPModel.h"
 #include "Media/Audio/AudioPlayer.h"
 
+// TODO(Nik-RE-dev): move to EventEnums.h
 enum class SEASON {
     SPRING = 0,
     SUMMER = 1,
@@ -21,6 +22,7 @@ enum class SEASON {
 using enum SEASON;
 
 // TODO(Nik-RE-dev): currently exclusive for MM7, need to be independent from players number
+// TODO(Nik-RE-dev): move to EventEnums.h
 enum class PLAYER_CHOOSE_POLICY {
     CHOOSE_PLAYER1 = 0,
     CHOOSE_PLAYER2 = 1,
