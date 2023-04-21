@@ -210,12 +210,12 @@ struct Party {
     void setHoldingItem(ItemGen *pItem);
 
     /**
-    * Sets _activePlayer to the first character that can act
+    * Sets _activeCharacter to the first character that can act
     * Added to fix some nzi access problems
     */
     void setActiveToFirstCanAct();
     /**
-    * Sets _activePlayer to the first active (recoverd) character
+    * Sets _activeCharacter to the first active (recoverd) character
     */
     void switchToNextActiveCharacter();
     bool _497FC5_check_party_perception_against_level();
@@ -474,22 +474,22 @@ struct Party {
 
     uint _roundingDt{ 0 };  // keeps track of rounding remainder for recovery
 
-    inline uint activePlayerIndex() const {
-        assert(hasActivePlayer());
-        return _activePlayer;
+    inline uint activeCharacterIndex() const {
+        assert(hasActiveCharacter());
+        return _activeCharacter;
     }
-    inline void setActivePlayerByIndex(uint id) {
+    inline void setActiveCharacterIndex(uint id) {
         assert(id >= 0 && id <= pPlayers.size());
-        _activePlayer = id;
+        _activeCharacter = id;
     }
-    inline bool hasActivePlayer() const {
-        return _activePlayer > 0;
+    inline bool hasActiveCharacter() const {
+        return _activeCharacter > 0;
     }
     // TODO(pskelton): function for returning ref pPlayers[pParty->getActiveCharacter()]
 
  private:
      // TODO(pskelton): change to signed int - make 0 based with -1 for none??
-     unsigned int _activePlayer;  // which character is active - 1 based; 0 for none
+     unsigned int _activeCharacter;  // which character is active - 1 based; 0 for none
 };
 
 extern Party *pParty;  // idb

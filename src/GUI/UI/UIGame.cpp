@@ -574,25 +574,25 @@ void GameUI_OnPlayerPortraitLeftClick(unsigned int uPlayerID) {
         }
 
         if (!player->CanAct()) {
-            player = pPlayers[pParty->activePlayerIndex()];
+            player = pPlayers[pParty->activeCharacterIndex()];
         }
-        if (player->CanAct() || !pPlayers[pParty->activePlayerIndex()]->CanAct()) {
+        if (player->CanAct() || !pPlayers[pParty->activeCharacterIndex()]->CanAct()) {
             player->playReaction(SPEECH_NoRoom);
         }
     }
 
     if (current_screen_type == CURRENT_SCREEN::SCREEN_GAME) {
-        if (pParty->hasActivePlayer()) {
-            if (pParty->activePlayerIndex() != uPlayerID) {
+        if (pParty->hasActiveCharacter()) {
+            if (pParty->activeCharacterIndex() != uPlayerID) {
                 if (pPlayers[uPlayerID]->uTimeToRecovery || !pPlayers[uPlayerID]->CanAct()) {
                     return;
                 }
 
-                pParty->setActivePlayerByIndex(uPlayerID);
+                pParty->setActiveCharacterIndex(uPlayerID);
                 return;
             }
             pGUIWindow_CurrentMenu = new GUIWindow_CharacterRecord(
-                pParty->activePlayerIndex(),
+                pParty->activeCharacterIndex(),
                 CURRENT_SCREEN::SCREEN_CHARACTERS);  // CharacterUI_Initialize(SCREEN_CHARACTERS);
             return;
         }
@@ -601,56 +601,56 @@ void GameUI_OnPlayerPortraitLeftClick(unsigned int uPlayerID) {
 
     if (current_screen_type == CURRENT_SCREEN::SCREEN_SPELL_BOOK) return;
     if (current_screen_type == CURRENT_SCREEN::SCREEN_CHEST) {
-        if (pParty->activePlayerIndex() == uPlayerID) {
+        if (pParty->activeCharacterIndex() == uPlayerID) {
             current_character_screen_window = WINDOW_CharacterWindow_Inventory;
             current_screen_type = CURRENT_SCREEN::SCREEN_CHEST_INVENTORY;
-            pParty->setActivePlayerByIndex(uPlayerID);
+            pParty->setActiveCharacterIndex(uPlayerID);
             return;
         }
         if (pPlayers[uPlayerID]->uTimeToRecovery) {
             return;
         }
-        pParty->setActivePlayerByIndex(uPlayerID);
+        pParty->setActiveCharacterIndex(uPlayerID);
         return;
     }
     if (current_screen_type != CURRENT_SCREEN::SCREEN_HOUSE) {
         if (current_screen_type == CURRENT_SCREEN::SCREEN_SHOP_INVENTORY || current_screen_type == CURRENT_SCREEN::SCREEN_CHEST_INVENTORY) {
-            pParty->setActivePlayerByIndex(uPlayerID);
+            pParty->setActiveCharacterIndex(uPlayerID);
             return;
         }
         if (current_screen_type != CURRENT_SCREEN::SCREEN_CHEST_INVENTORY) {
-            pParty->setActivePlayerByIndex(uPlayerID);
+            pParty->setActiveCharacterIndex(uPlayerID);
             if (current_character_screen_window ==
                 WINDOW_CharacterWindow_Awards) {
                 FillAwardsData();
             }
             return;
         }
-        if (pParty->activePlayerIndex() == uPlayerID) {
+        if (pParty->activeCharacterIndex() == uPlayerID) {
             current_character_screen_window = WINDOW_CharacterWindow_Inventory;
             current_screen_type = CURRENT_SCREEN::SCREEN_CHEST_INVENTORY;
-            pParty->setActivePlayerByIndex(uPlayerID);
+            pParty->setActiveCharacterIndex(uPlayerID);
             return;
         }
         if (pPlayers[uPlayerID]->uTimeToRecovery) {
             return;
         }
-        pParty->setActivePlayerByIndex(uPlayerID);
+        pParty->setActiveCharacterIndex(uPlayerID);
         return;
     }
     if (window_SpeakInHouse->keyboard_input_status == WINDOW_INPUT_IN_PROGRESS) {
         return;
     }
 
-    if (pParty->activePlayerIndex() != uPlayerID) {
-        pParty->setActivePlayerByIndex(uPlayerID);
+    if (pParty->activeCharacterIndex() != uPlayerID) {
+        pParty->setActiveCharacterIndex(uPlayerID);
         return;
     }
 
     if (dialog_menu_id == DIALOGUE_SHOP_BUY_STANDARD || dialog_menu_id == DIALOGUE_SHOP_BUY_SPECIAL) {
         current_character_screen_window = WINDOW_CharacterWindow_Inventory;
         pGUIWindow_CurrentMenu = new GUIWindow_CharacterRecord(
-            pParty->activePlayerIndex(), CURRENT_SCREEN::SCREEN_SHOP_INVENTORY);  // CharacterUI_Initialize(SCREEN_SHOP_INVENTORY);
+            pParty->activeCharacterIndex(), CURRENT_SCREEN::SCREEN_SHOP_INVENTORY);  // CharacterUI_Initialize(SCREEN_SHOP_INVENTORY);
         return;
     }
 }
@@ -704,7 +704,7 @@ void GameUI_DrawNPCPopup(void *_this) {  // PopupWindowForBenefitAndJoinText
                 popup_window.DrawTitleText(pFontArrus, 0, 12, colorTable.PaleCanary.c16(), NameAndTitle(pNPC), 3);
                 popup_window.uFrameWidth -= 24;
                 popup_window.uFrameZ = popup_window.uFrameX + popup_window.uFrameWidth - 1;
-                popup_window.DrawText(pFontArrus, {100, 36}, 0, BuildDialogueString((char *)lpsz, pParty->activePlayerIndex() - 1, 0, 0, 0));
+                popup_window.DrawText(pFontArrus, {100, 36}, 0, BuildDialogueString((char *)lpsz, pParty->activeCharacterIndex() - 1, 0, 0, 0));
             }
         }
     }
@@ -1123,11 +1123,11 @@ void GameUI_WritePointedObjectStatusString() {
                     // if (mouse.x <= 13 || mouse.x >= 462)
                     // return;
                     // testing =
-                    // pPlayers[pParty->activePlayerIndex()]->GetItemIDAtInventoryIndex(invmatrixindex);
+                    // pPlayers[pParty->activeCharacterIndex()]->GetItemIDAtInventoryIndex(invmatrixindex);
                     pItemGen =
-                        pPlayers[pParty->activePlayerIndex()]->GetItemAtInventoryIndex(
+                        pPlayers[pParty->activeCharacterIndex()]->GetItemAtInventoryIndex(
                             invmatrixindex);  // (ItemGen
-                                              // *)&pPlayers[pParty->activePlayerIndex()]->pInventoryItemList[testing
+                                              // *)&pPlayers[pParty->activeCharacterIndex()]->pInventoryItemList[testing
                                               // - 1];
 
                     // TODO(captainurist): get rid of this std::to_underlying cast.
@@ -1135,7 +1135,7 @@ void GameUI_WritePointedObjectStatusString() {
                     // if (!pItemID)
                     // return;
                     // item =
-                    // &pPlayers[pParty->activePlayerIndex()]->pInventoryItemList[pItemID -
+                    // &pPlayers[pParty->activeCharacterIndex()]->pInventoryItemList[pItemID -
                     // 1];
 
                     // v14 = render->pActiveZBuffer[pX +
@@ -1206,13 +1206,13 @@ void GameUI_WritePointedObjectStatusString() {
                         case 3:  // hovering over buttons
                             if (pButton->Contains(pX, pY)) {
                                 PLAYER_SKILL_TYPE skill = static_cast<PLAYER_SKILL_TYPE>(pButton->msg_param);
-                                PLAYER_SKILL_LEVEL skillLevel = pPlayers[pParty->activePlayerIndex()]->GetSkillLevel(skill);
+                                PLAYER_SKILL_LEVEL skillLevel = pPlayers[pParty->activeCharacterIndex()]->GetSkillLevel(skill);
                                 requiredSkillpoints = skillLevel + 1;
 
                                 if (skills_max_level[skill] <= skillLevel)
                                     GameUI_StatusBar_Set(localization->GetString(LSTR_SKILL_ALREADY_MASTERED));
-                                else if (pPlayers[pParty->activePlayerIndex()]->uSkillPoints < requiredSkillpoints)
-                                    GameUI_StatusBar_Set(localization->FormatString(LSTR_FMT_NEED_MORE_SKILL_POINTS, requiredSkillpoints - pPlayers[pParty->activePlayerIndex()]->uSkillPoints));
+                                else if (pPlayers[pParty->activeCharacterIndex()]->uSkillPoints < requiredSkillpoints)
+                                    GameUI_StatusBar_Set(localization->FormatString(LSTR_FMT_NEED_MORE_SKILL_POINTS, requiredSkillpoints - pPlayers[pParty->activeCharacterIndex()]->uSkillPoints));
                                 else
                                     GameUI_StatusBar_Set(localization->FormatString(LSTR_FMT_CLICKING_WILL_SPEND_POINTS, requiredSkillpoints));
 
@@ -1326,15 +1326,15 @@ void GameUI_WritePointedObjectStatusString() {
                              && pY >= pButton->uY && pY <= pButton->uW)
                              {
                              requiredSkillpoints =
-                             (pPlayers[pParty->activePlayerIndex()]->pActiveSkills[pButton->msg_param]
+                             (pPlayers[pParty->activeCharacterIndex()]->pActiveSkills[pButton->msg_param]
                              & 0x3F) + 1;
 
                              std::string str;
-                             if (pPlayers[pParty->activePlayerIndex()]->uSkillPoints <
+                             if (pPlayers[pParty->activeCharacterIndex()]->uSkillPoints <
                              requiredSkillpoints)      str =
                              localization->FormatString(
                              LSTR_FMT_NEED_MORE_SKILL_POINTS, requiredSkillpoints -
-                             pPlayers[pParty->activePlayerIndex()]->uSkillPoints);
+                             pPlayers[pParty->activeCharacterIndex()]->uSkillPoints);
                              else      str =
                              localization->FormatString(
                              LSTR_FMT_CLICKING_WILL_SPEND_POINTS, requiredSkillpoints);
@@ -1359,10 +1359,10 @@ void GameUI_WritePointedObjectStatusString() {
 
 //----- (0044158F) --------------------------------------------------------
 void GameUI_DrawCharacterSelectionFrame() {
-    if (pParty->hasActivePlayer())
+    if (pParty->hasActiveCharacter())
         render->DrawTextureNew(
             (pPlayerPortraitsXCoords_For_PlayerBuffAnimsDrawing
-                 [pParty->activePlayerIndex() - 1] -
+                 [pParty->activeCharacterIndex() - 1] -
              9) /
                 640.0f,
             380 / 480.0f, game_ui_player_selection_frame);

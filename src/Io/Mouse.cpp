@@ -317,9 +317,9 @@ void Mouse::UI_OnMouseLeftClick() {
     Vis_PIDAndDepth picked_object = EngineIocContainer::ResolveVis()->get_picked_object_zbuf_val();
 
     ObjectType type = PID_TYPE(picked_object.object_pid);
-    if (type == OBJECT_Actor && pParty->hasActivePlayer() && picked_object.depth < 0x200 &&
-        pPlayers[pParty->activePlayerIndex()]->CanAct() &&
-        pPlayers[pParty->activePlayerIndex()]->CanSteal()) {
+    if (type == OBJECT_Actor && pParty->hasActiveCharacter() && picked_object.depth < 0x200 &&
+        pPlayers[pParty->activeCharacterIndex()]->CanAct() &&
+        pPlayers[pParty->activeCharacterIndex()]->CanSteal()) {
         pCurrentFrameMessageQueue->AddGUIMessage(
             UIMSG_STEALFROMACTOR,
             PID_ID(picked_object.object_pid),

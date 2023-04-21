@@ -312,7 +312,7 @@ void Engine::OnGameViewportClick() {
         return;
 
     // wasn't there, but we decided to deny interactions where there are no active character
-    if (!pParty->hasActivePlayer()) {
+    if (!pParty->hasActiveCharacter()) {
         GameUI_SetStatusBar(localization->GetString(LSTR_NOBODY_IS_IN_CONDITION));
         return;
     }
@@ -359,7 +359,7 @@ void Engine::OnGameViewportClick() {
             }
         } else if (pParty->bTurnBasedModeOn && pTurnEngine->turn_stage == TE_MOVEMENT) {
             pParty->setAirborne(true);
-        } else if (pParty->hasActivePlayer() && IsSpellQuickCastableOnShiftClick(pPlayers[pParty->activePlayerIndex()]->uQuickSpell)) {
+        } else if (pParty->hasActiveCharacter() && IsSpellQuickCastableOnShiftClick(pPlayers[pParty->activeCharacterIndex()]->uQuickSpell)) {
             pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_CastQuickSpell, 0, 0);
         }
     } else if (PID_TYPE(pid) == OBJECT_Decoration) {
