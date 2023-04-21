@@ -651,14 +651,15 @@ void Player::WearItem(ITEM_TYPE uItemID) {
 
 //----- (004927A8) --------------------------------------------------------
 int Player::AddItem(int index, ITEM_TYPE uItemID) {
-    if (uItemID == ITEM_NULL) return 0;
+    if (uItemID == ITEM_NULL) {
+        return 0;
+    }
+
     if (index == -1) {  // no location specified - search for space
         for (int xcoord = 0; xcoord < INVENTORY_SLOTS_WIDTH; xcoord++) {
             for (int ycoord = 0; ycoord < INVENTORY_SLOTS_HEIGHT; ycoord++) {
-                if (canFitItem(ycoord * INVENTORY_SLOTS_WIDTH + xcoord,
-                               uItemID)) {  // found space
-                    return CreateItemInInventory(
-                        ycoord * INVENTORY_SLOTS_WIDTH + xcoord, uItemID);
+                if (canFitItem(ycoord * INVENTORY_SLOTS_WIDTH + xcoord, uItemID)) {  // found space
+                    return CreateItemInInventory(ycoord * INVENTORY_SLOTS_WIDTH + xcoord, uItemID);
                 }
             }
         }

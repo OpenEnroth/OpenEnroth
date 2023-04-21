@@ -233,7 +233,7 @@ bool Party::_497FC5_check_party_perception_against_level() {
 }
 
 void Party::setHoldingItem(ItemGen *pItem) {
-    PickedItem_PlaceInInventory_or_Drop();
+    placeHeldItemInInventoryOrDrop();
     pPickedItem = *pItem;
     mouse->SetCursorBitmapFromItemID(pPickedItem.uItemID);
 }
@@ -1075,62 +1075,42 @@ void Party::partyFindsGold(int amount, GoldReceivePolicy policy) {
     }
 }
 
-void Party::PickedItem_PlaceInInventory_or_Drop() {
-    // no picked item
-    if (pParty->pPickedItem.uItemID == ITEM_NULL)
+void Party::dropHeldItem() {
+    if (pPickedItem.uItemID == ITEM_NULL) {
         return;
-
-    auto texture = assets->GetImage_ColorKey(pParty->pPickedItem.GetIconName());
-
-    // check if active player has room in inventory
-    int inventIndex = ::pPlayers[pParty->_activeCharacter]->AddItem(-1, pParty->pPickedItem.uItemID);
-    if (pParty->_activeCharacter && inventIndex != 0) {
-        ::pPlayers[pParty->_activeCharacter]->pInventoryItemList[inventIndex - 1] = pParty->pPickedItem;
-        mouse->RemoveHoldingItem();
-    } else {
-        // see if any other char has room
-        bool dropItem = true;
-        for (Player &player : pParty->pPlayers) {
-            inventIndex = player.AddItem(-1, pParty->pPickedItem.uItemID);
-            if (inventIndex) {
-                // found room so give char item
-                player.pInventoryItemList[inventIndex - 1] = pParty->pPickedItem;
-                mouse->RemoveHoldingItem();
-                dropItem = false;
-                break;
-            }
-        }
-
-        // no chars have room so drop
-        if (dropItem) {
-            SpriteObject object;
-            object.uType = (SPRITE_OBJECT_TYPE)pItemTable->pItems[pParty->pPickedItem.uItemID].uSpriteID;
-            object.spell_caster_pid = PID(OBJECT_Player, 0);
-            object.uObjectDescID = pObjectList->ObjectIDByItemID(object.uType);
-            object.vPosition = pParty->vPosition + Vec3i(0, 0, pParty->sEyelevel);
-            object.uSoundID = 0;
-            object.uFacing = 0;
-            object.uAttributes = SPRITE_DROPPED_BY_PLAYER;
-            object.uSpriteFrameID = 0;
-            object.uSectorID = pIndoor->GetSector(object.vPosition);
-            object.containing_item = pParty->pPickedItem;
-            object.Create(pParty->_viewYaw, 184, 200, 0);
-            mouse->RemoveHoldingItem();
-        }
     }
 
-    if (texture) {
-        texture->Release();
-        texture = nullptr;
+    SpriteObject sprite;
+    sprite.uType = (SPRITE_OBJECT_TYPE)pItemTable->pItems[pPickedItem.uItemID].uSpriteID;
+    sprite.uObjectDescID = pObjectList->ObjectIDByItemID(sprite.uType);
+    sprite.spell_caster_pid = PID(OBJECT_Player, 0);
+    sprite.vPosition = vPosition + Vec3i(0, 0, sEyelevel);
+    sprite.uSoundID = 0;
+    sprite.uFacing = 0;
+    sprite.uAttributes = SPRITE_DROPPED_BY_PLAYER;
+    sprite.uSectorID = pBLVRenderParams->uPartyEyeSectorID;
+    sprite.uSpriteFrameID = 0;
+    sprite.containing_item = pPickedItem;
+
+    // extern int UnprojectX(int);
+    // v9 = UnprojectX(v1->x);
+    sprite.Create(_viewYaw, 184, 200, 0);  //+ UnprojectX(v1->x), 184, 200, 0);
+
+    mouse->RemoveHoldingItem();
+}
+
+void Party::placeHeldItemInInventoryOrDrop() {
+    // no picked item
+    if (pPickedItem.uItemID == ITEM_NULL) {
+        return;
+    }
+
+    if (!addItemToParty(&pPickedItem, true)) {
+        dropHeldItem();
     }
 }
 
-//----- (0048C6F6) --------------------------------------------------------
-bool Party::AddItemToParty(ItemGen *pItem) {
-    int v10;        // eax@11
-
-    assert(pParty->hasActiveCharacter()); // code in this function couldn't handle pParty->_activeCharacter = 0 and crash
-
+bool Party::addItemToParty(ItemGen *pItem, bool isSilent) {
     if (!pItemTable->pItems[pItem->uItemID].uItemID_Rep_St) {
         pItem->SetIdentified();
     }
@@ -1138,17 +1118,19 @@ bool Party::AddItemToParty(ItemGen *pItem) {
     char *iconName = pItemTable->pItems[pItem->uItemID].pIconName;
     if (iconName) {
         auto texture = assets->GetImage_ColorKey(iconName);
-        int current_player = pParty->_activeCharacter - 1;
-        for (int i = 0; i < pPlayers.size(); i++, current_player++) {
-            if (current_player >= pPlayers.size()) {
-                current_player = 0;
+        int playerId = hasActiveCharacter() ? (pParty->_activeCharacter - 1) : 0;
+        for (int i = 0; i < pPlayers.size(); i++, playerId++) {
+            if (playerId >= pPlayers.size()) {
+                playerId = 0;
             }
-            int itemIndex = pPlayers[current_player].AddItem(-1, pItem->uItemID);
+            int itemIndex = pPlayers[playerId].AddItem(-1, pItem->uItemID);
             if (itemIndex) {
-                pPlayers[current_player].pInventoryItemList[itemIndex - 1] = *pItem;
+                pPlayers[playerId].pInventoryItemList[itemIndex - 1] = *pItem;
                 pItem->Reset();
-                pAudioPlayer->playUISound(SOUND_gold01);
-                pPlayers[current_player].playReaction(SPEECH_FoundItem);
+                if (!isSilent) {
+                    pAudioPlayer->playUISound(SOUND_gold01);
+                    pPlayers[playerId].playReaction(SPEECH_FoundItem);
+                }
 
                 if (texture) {
                     texture->Release();

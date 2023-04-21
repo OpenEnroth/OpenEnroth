@@ -2185,7 +2185,7 @@ void CastSpellInfoHelpers::castSpell() {
                             pParty->partyFindsGold(pSpriteObjects[obj_id].containing_item.special_enchantment, GOLD_RECEIVE_SHARE);
                         } else {
                             GameUI_SetStatusBar(LSTR_FMT_YOU_FOUND_ITEM, pItemTable->pItems[pSpriteObjects[obj_id].containing_item.uItemID].pUnidentifiedName);
-                            if (!pParty->AddItemToParty(&pSpriteObjects[obj_id].containing_item)) {
+                            if (!pParty->addItemToParty(&pSpriteObjects[obj_id].containing_item)) {
                                 pParty->setHoldingItem(&pSpriteObjects[obj_id].containing_item);
                             }
                         }
@@ -3158,35 +3158,35 @@ void pushSpellOrRangedAttack(SPELL_TYPE spell,
         Sizei renDims = render->GetRenderDimensions();
         if (flags & ON_CAST_TargetedCharacter) {
             pGUIWindow_CastTargetedSpell = new TargetedSpellUI_Character({0, 0}, renDims, &pCastSpellInfo[result]);
-            pParty->PickedItem_PlaceInInventory_or_Drop();
+            pParty->placeHeldItemInInventoryOrDrop();
             return;
         }
         if (flags & ON_CAST_TargetedActor) {
             pGUIWindow_CastTargetedSpell = new TargetedSpellUI_Actor({0, 0}, renDims, &pCastSpellInfo[result]);
-            pParty->PickedItem_PlaceInInventory_or_Drop();
+            pParty->placeHeldItemInInventoryOrDrop();
             return;
         }
         if (flags & ON_CAST_TargetedTelekinesis) {
             pGUIWindow_CastTargetedSpell = new TargetedSpellUI_Telekinesis({0, 0}, renDims, &pCastSpellInfo[result]);
-            pParty->PickedItem_PlaceInInventory_or_Drop();
+            pParty->placeHeldItemInInventoryOrDrop();
             return;
         }
         if (flags & ON_CAST_TargetedEnchantment) {
             pGUIWindow_CastTargetedSpell = pCastSpellInfo[result].GetCastSpellInInventoryWindow();
             IsEnchantingInProgress = true;
             enchantingActiveCharacter = pParty->getActiveCharacter();
-            pParty->PickedItem_PlaceInInventory_or_Drop();
+            pParty->placeHeldItemInInventoryOrDrop();
             return;
         }
         if (flags & ON_CAST_TargetedActorOrCharacter) {
             pGUIWindow_CastTargetedSpell = new TargetedSpellUI_ActorOrCharacter({0, 0}, renDims, &pCastSpellInfo[result]);
-            pParty->PickedItem_PlaceInInventory_or_Drop();
+            pParty->placeHeldItemInInventoryOrDrop();
             return;
         }
         if (flags & ON_CAST_TargetedHireling) {
             pGUIWindow_CastTargetedSpell = new TargetedSpellUI_Hirelings({0, 0}, renDims, &pCastSpellInfo[result]);
             // Next line was added to do something with picked item on Sacrifice cast
-            pParty->PickedItem_PlaceInInventory_or_Drop();
+            pParty->placeHeldItemInInventoryOrDrop();
             return;
         }
     }

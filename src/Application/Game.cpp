@@ -2046,7 +2046,7 @@ void Game::processQueuedMessages() {
                                                     // правую кнопку мыши после
                                                     // UIMSG_MouseLeftClickInGame
                     pCurrentFrameMessageQueue->Flush();
-                    _engine->OnGameViewportClick();
+                    _engine->onGameViewportClick();
                     continue;
                 case UIMSG_F:  // what event?
                     __debugbreak();

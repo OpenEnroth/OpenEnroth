@@ -1794,6 +1794,8 @@ bool Check_LOS_Obscurred_Outdoors_Bmodels(const Vec3i &target, const Vec3i &from
 }
 
 //----- (0046A334) --------------------------------------------------------
+// TODO(Nik-RE-dev): does not belong here, it's common function for interaction for both indoor/outdoor
+// TODO(Nik-RE-dev): get rid of external function declaration inside
 char DoInteractionWithTopmostZObject(int pid) {
     auto id = PID_ID(pid);
     auto type = PID_TYPE(pid);

@@ -108,7 +108,11 @@ class Engine {
                    struct Vis_SelectionFilter *face_filter);
     bool PickKeyboard(float pick_depth, bool bOutline, struct Vis_SelectionFilter *sprite_filter,
                       struct Vis_SelectionFilter *face_filter);
-    void OnGameViewportClick();
+
+    /**
+     * @offset 0x42213C
+     */
+    void onGameViewportClick();
     void OutlineSelection();
     int _44EC23_saturate_face_odm(struct Polygon *a2, int *a3, signed int a4);
     int _44ED0A_saturate_face_blv(struct BLVFace *a2, int *a3, signed int a4);
@@ -126,7 +130,6 @@ class Engine {
     void ResetCursor_Palettes_LODs_Level_Audio_SFT_Windows();
     void SecondaryInitialization();
     void _461103_load_level_sub();
-    void DropHeldItem();
     bool MM7_Initialize();
 
     bool is_underwater = false;
