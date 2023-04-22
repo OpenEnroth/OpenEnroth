@@ -16,7 +16,7 @@ var searchData=
   ['weeksinterval_13',['WeeksInterval',['../structMapsLongTimer.html#a068a67edb9d92cf8c5dd959dc6b3edf6',1,'MapsLongTimer']]],
   ['whichsplatsonthisface_14',['WhichSplatsOnThisFace',['../structDecalBuilder.html#a5a4ac6d3c1624d8501b38015507c4650',1,'DecalBuilder']]],
   ['white_15',['White',['../classColorTable.html#af6c7e84d12ea137a56b1e489849c859b',1,'ColorTable']]],
-  ['who_16',['who',['../classEventIR.html#ab4682bef3cf2063936df04e6b16377d8',1,'EventIR']]],
+  ['who_16',['who',['../classEventIR.html#a33236c3f0dd79349465565be68a49545',1,'EventIR']]],
   ['width_17',['width',['../classMovie.html#af055977ae062d94b4db9f053d87ae8e1',1,'Movie']]],
   ['width_18',['Width',['../classGameConfig_1_1Window.html#a52ab9e6da91d34573426dd23cc54eb46',1,'GameConfig::Window']]],
   ['width_19',['width',['../classAVVideoStream.html#ad6da5b243af338a89d4962e79d910543',1,'AVVideoStream::width()'],['../structstat__coord.html#af2e9db3199db9f3ff9977c8134a1af9e',1,'stat_coord::width()'],['../classGUICredits.html#a0ced87699ecd2845f4538475437266f5',1,'GUICredits::width()'],['../classImage.html#aaa2cc744ff3969ac6cb63ca05a40e5f6',1,'Image::width()']]],
