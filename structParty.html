@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;692924e</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;c7b2e8c</span>
    </div>
   </td>
  </tr>
@@ -205,10 +205,10 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a5e11b4fe9a6cc42a3649dc948d28af81"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:adb81d3f92b512ec82e542b13b10f926d"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structParty.html#adb81d3f92b512ec82e542b13b10f926d">immolationAffectedActors</a> (int *affected, size_t affectedArrSize, size_t effectRange)</td></tr>
 <tr class="separator:adb81d3f92b512ec82e542b13b10f926d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aefc9d53c6de87979c47017099a6bc8f8"><td class="memItemLeft" align="right" valign="top"><a class="el" href="MM7_8h.html#a91ad9478d81a7aaf2593e8d9c3d06a14">uint</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structParty.html#aefc9d53c6de87979c47017099a6bc8f8">getActiveCharacter</a> () const</td></tr>
-<tr class="separator:aefc9d53c6de87979c47017099a6bc8f8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab8d1749b022be9cdc4a3e547d15a602e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structParty.html#ab8d1749b022be9cdc4a3e547d15a602e">setActiveCharacter</a> (<a class="el" href="MM7_8h.html#a91ad9478d81a7aaf2593e8d9c3d06a14">uint</a> id)</td></tr>
-<tr class="separator:ab8d1749b022be9cdc4a3e547d15a602e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aac0a6a15baf3bfe7d242523542a1ee5e"><td class="memItemLeft" align="right" valign="top"><a class="el" href="MM7_8h.html#a91ad9478d81a7aaf2593e8d9c3d06a14">uint</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structParty.html#aac0a6a15baf3bfe7d242523542a1ee5e">activeCharacterIndex</a> () const</td></tr>
+<tr class="separator:aac0a6a15baf3bfe7d242523542a1ee5e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8c589f3e977a6708bc51693010388124"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structParty.html#a8c589f3e977a6708bc51693010388124">setActiveCharacterIndex</a> (<a class="el" href="MM7_8h.html#a91ad9478d81a7aaf2593e8d9c3d06a14">uint</a> id)</td></tr>
+<tr class="separator:a8c589f3e977a6708bc51693010388124"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2a4da48f7351874326b968334d5c8668"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structParty.html#a2a4da48f7351874326b968334d5c8668">hasActiveCharacter</a> () const</td></tr>
 <tr class="separator:a2a4da48f7351874326b968334d5c8668"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
@@ -451,6 +451,31 @@ Private Attributes</h2></td></tr>
 
 </div>
 </div>
+<a id="aac0a6a15baf3bfe7d242523542a1ee5e" name="aac0a6a15baf3bfe7d242523542a1ee5e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aac0a6a15baf3bfe7d242523542a1ee5e">&#9670;&#160;</a></span>activeCharacterIndex()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="MM7_8h.html#a91ad9478d81a7aaf2593e8d9c3d06a14">uint</a> Party::activeCharacterIndex </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="a2d849b9f0b9d8dfd28fb22a242a88beb" name="a2d849b9f0b9d8dfd28fb22a242a88beb"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a2d849b9f0b9d8dfd28fb22a242a88beb">&#9670;&#160;</a></span>AddBankGold()</h2>
 
@@ -595,31 +620,6 @@ Private Attributes</h2></td></tr>
       <table class="memname">
         <tr>
           <td class="memname">bool Party::FlyActive </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td> const</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="aefc9d53c6de87979c47017099a6bc8f8" name="aefc9d53c6de87979c47017099a6bc8f8"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aefc9d53c6de87979c47017099a6bc8f8">&#9670;&#160;</a></span>getActiveCharacter()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="MM7_8h.html#a91ad9478d81a7aaf2593e8d9c3d06a14">uint</a> Party::getActiveCharacter </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td> const</td>
@@ -1319,8 +1319,8 @@ Private Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="ab8d1749b022be9cdc4a3e547d15a602e" name="ab8d1749b022be9cdc4a3e547d15a602e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab8d1749b022be9cdc4a3e547d15a602e">&#9670;&#160;</a></span>setActiveCharacter()</h2>
+<a id="a8c589f3e977a6708bc51693010388124" name="a8c589f3e977a6708bc51693010388124"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8c589f3e977a6708bc51693010388124">&#9670;&#160;</a></span>setActiveCharacterIndex()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1329,7 +1329,7 @@ Private Attributes</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">void Party::setActiveCharacter </td>
+          <td class="memname">void Party::setActiveCharacterIndex </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="MM7_8h.html#a91ad9478d81a7aaf2593e8d9c3d06a14">uint</a>&#160;</td>
           <td class="paramname"><em>id</em></td><td>)</td>
