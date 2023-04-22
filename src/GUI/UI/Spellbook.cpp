@@ -81,7 +81,7 @@ void GUIWindow_Spellbook::OpenSpellbook() {
     int a2;  // [sp+10h] [bp-8h]@1
     // int v7; // [sp+14h] [bp-4h]@1
 
-    pPlayer = pPlayers[pParty->activeCharacterIndex()];
+    pPlayer = &pParty->activeCharacter();
     // pWindow = this;
     LoadSpellbook(pPlayer->lastOpenedSpellbookPage);
     // v3 = 0;
@@ -137,7 +137,7 @@ void GUIWindow_Spellbook::OpenSpellbook() {
 }
 
 void GUIWindow_Spellbook::Update() {
-    auto player = pPlayers[pParty->activeCharacterIndex()];
+    auto player = &pParty->activeCharacter();
 
     Image *pTexture;        // edx@5
     int v10;                // eax@13
@@ -295,7 +295,7 @@ void LoadSpellbook(unsigned int spell_school) {
 static void BookUI_Spellbook_DrawCurrentSchoolBackground() {
     int pTexID = 0;
     if (pParty->hasActiveCharacter()) {
-        pTexID = pParty->pPlayers[pParty->activeCharacterIndex() - 1].lastOpenedSpellbookPage;
+        pTexID = pParty->activeCharacter().lastOpenedSpellbookPage;
     }
     render->DrawTextureNew(8 / 640.0f, 8 / 480.0f,
                                 ui_spellbook_school_backgrounds[pTexID]);

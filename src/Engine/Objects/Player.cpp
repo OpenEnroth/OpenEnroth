@@ -2366,7 +2366,7 @@ void Player::SetRecoveryTime(signed int rec) {
 
     if (rec > uTimeToRecovery) uTimeToRecovery = rec;
 
-    if (pParty->hasActiveCharacter() && pPlayers[pParty->activeCharacterIndex()] == this &&
+    if (pParty->hasActiveCharacter() && &pParty->activeCharacter() == this &&
         !enchantingActiveCharacter)
         pParty->switchToNextActiveCharacter();
 }
@@ -7076,8 +7076,8 @@ void Player::_42ECB5_PlayerAttacksActor() {
     //  unsigned int v12; // eax@47
     //  SoundID v24; // [sp-4h] [bp-40h]@58
 
-    // result = pParty->pPlayers[pParty->activeCharacterIndex()-1].CanAct();
-    Player *player = &pParty->pPlayers[pParty->activeCharacterIndex() - 1];
+    // result = pParty->activeCharacter().CanAct();
+    Player *player = &pParty->activeCharacter();
     if (!player->CanAct()) return;
 
     CastSpellInfoHelpers::cancelSpellCastInProgress();

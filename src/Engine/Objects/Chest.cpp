@@ -139,7 +139,7 @@ bool Chest::open(int uChestID) {
             pAudioPlayer->playSound(SOUND_fireBall, 0);
             pSpellObject.explosionTraps();
             chest->uFlags &= ~CHEST_TRAPPED;
-            if (pParty->activeCharacterIndex() && !_A750D8_player_speech_timer &&
+            if (pParty->hasActiveCharacter() && !_A750D8_player_speech_timer &&
                 !OpenedTelekinesis) {
                 _A750D8_player_speech_timer = 256;
                 PlayerSpeechID = SPEECH_TrapExploded;

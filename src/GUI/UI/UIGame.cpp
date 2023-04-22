@@ -574,7 +574,7 @@ void GameUI_OnPlayerPortraitLeftClick(unsigned int uPlayerID) {
         }
 
         if (!player->CanAct()) {
-            player = pPlayers[pParty->activeCharacterIndex()];
+            player = &pParty->activeCharacter();
         }
         if (player->CanAct() || !pParty->activeCharacter().CanAct()) {
             player->playReaction(SPEECH_NoRoom);

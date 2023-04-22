@@ -1195,7 +1195,7 @@ void OnSelectShopDialogueOption(DIALOGUE_TYPE option) {
     default:
     {
         if (IsSkillLearningDialogue(option)) {
-            int pPrice = PriceCalculator::skillLearningCostForPlayer(pPlayers[pParty->activeCharacterIndex()],
+            int pPrice = PriceCalculator::skillLearningCostForPlayer(&pParty->activeCharacter(),
                                                                          p2DEvents[window_SpeakInHouse->wData.val - 1]);  // ecx@227
             auto skill = GetLearningDialogueSkill(option);
             if (skillMaxMasteryPerClass[pParty->activeCharacter().classType][skill] != PLAYER_SKILL_MASTERY_NONE) {
@@ -1246,7 +1246,7 @@ void TravelByTransport() {
 
     assert(pParty->hasActiveCharacter()); // code in this function couldn't handle pParty->activeCharacterIndex() = 0 and crash
 
-    int pPrice = PriceCalculator::transportCostForPlayer(&pParty->pPlayers[pParty->activeCharacterIndex()],
+    int pPrice = PriceCalculator::transportCostForPlayer(&pParty->activeCharacter(),
                                                          p2DEvents[window_SpeakInHouse->wData.val - 1]);
     int route_id = window_SpeakInHouse->wData.val - HOUSE_STABLES_HARMONDALE;
 
@@ -1642,8 +1642,8 @@ void TavernDialog() {
 
     const _2devent &house = p2DEvents[window_SpeakInHouse->wData.val - 1];
 
-    int pPriceRoom = PriceCalculator::tavernRoomCostForPlayer(pPlayers[pParty->activeCharacterIndex()], house);
-    int pPriceFood = PriceCalculator::tavernFoodCostForPlayer(pPlayers[pParty->activeCharacterIndex()], house);
+    int pPriceRoom = PriceCalculator::tavernRoomCostForPlayer(&pParty->activeCharacter(), house);
+    int pPriceFood = PriceCalculator::tavernFoodCostForPlayer(&pParty->activeCharacter(), house);
 
     switch (dialog_menu_id) {
     case DIALOGUE_MAIN:
@@ -1816,7 +1816,7 @@ void TavernDialog() {
     {
         if (!HouseUI_CheckIfPlayerCanInteract()) return;
         pSkillCount = 0;
-        int pPriceSkill = PriceCalculator::skillLearningCostForPlayer(&pParty->pPlayers[pParty->activeCharacterIndex()], house);
+        int pPriceSkill = PriceCalculator::skillLearningCostForPlayer(&pParty->activeCharacter(), house);
         all_text_height = 0;
         for (int i = pDialogueWindow->pStartingPosActiveItem;
             i < pDialogueWindow->pStartingPosActiveItem +
@@ -1928,7 +1928,7 @@ void TempleDialog() {
         pParty->setActiveToFirstCanAct();
     }
 
-    pPrice = PriceCalculator::templeHealingCostForPlayer(pPlayers[pParty->activeCharacterIndex()],
+    pPrice = PriceCalculator::templeHealingCostForPlayer(&pParty->activeCharacter(),
                                                          p2DEvents[window_SpeakInHouse->wData.val - 1].fPriceMultiplier);
     if (dialog_menu_id == DIALOGUE_MAIN) {
         index = 1;
@@ -2110,7 +2110,7 @@ void TempleDialog() {
     if (dialog_menu_id == DIALOGUE_LEARN_SKILLS) {
         if (HouseUI_CheckIfPlayerCanInteract()) {
             all_text_height = 0;
-            v64 = PriceCalculator::skillLearningCostForPlayer(&pParty->pPlayers[pParty->activeCharacterIndex()],
+            v64 = PriceCalculator::skillLearningCostForPlayer(&pParty->activeCharacter(),
                                                               p2DEvents[window_SpeakInHouse->wData.val - 1]);
             pCurrentItem = 0;
             for (int i = pDialogueWindow->pStartingPosActiveItem;
@@ -2158,9 +2158,9 @@ void TrainingDialog(const char *s) {
     if (!pParty->hasActiveCharacter())  // avoid nzi
         pParty->setActiveToFirstCanAct();
 
-    int pPrice = PriceCalculator::trainingCostForPlayer(&pParty->pPlayers[pParty->activeCharacterIndex()],
+    int pPrice = PriceCalculator::trainingCostForPlayer(&pParty->activeCharacter(),
                                                         p2DEvents[window_SpeakInHouse->wData.val - 1]);
-    expForNextLevel = 1000ull * pParty->pPlayers[pParty->activeCharacterIndex()].uLevel * (pParty->pPlayers[pParty->activeCharacterIndex()].uLevel + 1) / 2;
+    expForNextLevel = 1000ull * pParty->activeCharacter().uLevel * (pParty->activeCharacter().uLevel + 1) / 2;
     //-------------------------------------------------------
     all_text_height = 0;
     if (HouseUI_CheckIfPlayerCanInteract()) {
@@ -2333,7 +2333,7 @@ void TrainingDialog(const char *s) {
     //-------------------------------------------------------------
     if (dialog_menu_id == DIALOGUE_LEARN_SKILLS) {
         if (HouseUI_CheckIfPlayerCanInteract()) {
-            pPrice = PriceCalculator::skillLearningCostForPlayer(&pParty->pPlayers[pParty->activeCharacterIndex()],
+            pPrice = PriceCalculator::skillLearningCostForPlayer(&pParty->activeCharacter(),
                                                                  p2DEvents[window_SpeakInHouse->wData.val - 1]);
             index = 0;
             for (int i = pDialogueWindow->pStartingPosActiveItem;
@@ -2384,11 +2384,10 @@ void MercenaryGuildDialog() {
      *
      *  v32 = (uint8_t)(((p2DEvents[window_SpeakInHouse->wData.val - 1].uType != BuildingType_MercenaryGuild) - 1) & 0x96) + 100;
      *  v3 = (int64_t)((double)v32 * p2DEvents[window_SpeakInHouse->wData.val - 1].fPriceMultiplier);
-     *  pPrice = v3 * (100 - PriceCalculator::playerMerchant(pPlayers[pParty->activeCharacterIndex()])) / 100;
+     *  pPrice = v3 * (100 - PriceCalculator::playerMerchant(&pParty->activeCharacter())) / 100;
      *  if (pPrice < v3 / 3) pPrice = v3 / 3;
      */
-    int pPrice =
-        PriceCalculator::skillLearningCostForPlayer(pPlayers[pParty->activeCharacterIndex()], p2DEvents[window_SpeakInHouse->wData.val - 1]);
+    int pPrice = PriceCalculator::skillLearningCostForPlayer(&pParty->activeCharacter(), p2DEvents[window_SpeakInHouse->wData.val - 1]);
 
     if (dialog_menu_id == DIALOGUE_MAIN) {
         if (!_449B57_test_bit(pParty->activeCharacter()._achieved_awards_bits, word_4F0754[2 * window_SpeakInHouse->wData.val])) {

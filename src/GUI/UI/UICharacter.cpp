@@ -613,7 +613,7 @@ GUIWindow_CharacterRecord::GUIWindow_CharacterRecord(
 }
 
 void GUIWindow_CharacterRecord::Update() {
-    auto player = pPlayers[pParty->activeCharacterIndex()];
+    auto player = &pParty->activeCharacter();
 
     render->ClearZBuffer();
     switch (current_character_screen_window) {
@@ -1470,7 +1470,7 @@ void GUIWindow_CharacterRecord::CharacterUI_SkillsTab_CreateButtons() {
         buttons_count++;
     }
     int first_rows = 0;
-    Player *curr_player = &pParty->pPlayers[pParty->activeCharacterIndex() - 1];
+    Player *curr_player = &pParty->activeCharacter();
 
     int uCurrFontHeght = pFontLucida->GetHeight();
     int current_Y = 2 * uCurrFontHeght + 13;
@@ -1703,7 +1703,7 @@ bool awardSort(int i, int j) {
 
 //----- (00419100) --------------------------------------------------------
 void FillAwardsData() {
-    Player *pPlayer = pPlayers[pParty->activeCharacterIndex()];
+    Player *pPlayer = &pParty->activeCharacter();
 
     memset(achieved_awards.data(), 0, 4000);
     num_achieved_awards = 0;

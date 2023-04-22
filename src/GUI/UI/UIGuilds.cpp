@@ -38,7 +38,7 @@ void GuildDialog() {
     working_window.uFrameWidth = 148;
     working_window.uFrameZ = 334;
 
-    int pPrice = PriceCalculator::skillLearningCostForPlayer(pPlayers[pParty->activeCharacterIndex()],
+    int pPrice = PriceCalculator::skillLearningCostForPlayer(&pParty->activeCharacter(),
                                                              p2DEvents[window_SpeakInHouse->wData.val - 1]);
 
     if (dialog_menu_id == DIALOGUE_MAIN) {  // change to switch??

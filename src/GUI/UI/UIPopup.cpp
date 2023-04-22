@@ -706,8 +706,7 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
         pParty->activeCharacter().playReaction(speech);
     }
 
-    if ((signed int)(pParty->pPlayers[pParty->activeCharacterIndex() - 1]
-                         .GetActualSkillMastery(PLAYER_SKILL_MONSTER_ID)) >= 3)
+    if ((signed int)(pParty->activeCharacter().GetActualSkillMastery(PLAYER_SKILL_MONSTER_ID)) >= 3)
         for_effects = 1;
 
     if (monster_full_informations == true) {

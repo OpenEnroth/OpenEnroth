@@ -489,7 +489,7 @@ void GUIWindow::HouseDialogManager() {
         pNPCPortraits_y[0][0] / 480.0f,
         pDialogueNPCPortraits[v4]);
     if (current_screen_type == CURRENT_SCREEN::SCREEN_SHOP_INVENTORY) {
-        CharacterUI_InventoryTab_Draw(pPlayers[pParty->activeCharacterIndex()], true);
+        CharacterUI_InventoryTab_Draw(&pParty->activeCharacter(), true);
         if (pDialogueNPCCount == uNumDialogueNPCPortraits && uHouse_ExitPic) {
             render->DrawTextureNew(556 / 640.0f, 451 / 480.0f,
                 dialogue_ui_x_x_u);
@@ -1560,7 +1560,7 @@ void OracleDialogue() {
 std::string _4B254D_SkillMasteryTeacher(int trainerInfo) {
     uint8_t teacherLevel = (trainerInfo - 200) % 3;
     PLAYER_SKILL_TYPE skillBeingTaught = static_cast<PLAYER_SKILL_TYPE>((trainerInfo - 200) / 3);
-    Player *activePlayer = pPlayers[pParty->activeCharacterIndex()];
+    Player *activePlayer = &pParty->activeCharacter();
     PLAYER_CLASS_TYPE pClassType = activePlayer->classType;
     PLAYER_SKILL_MASTERY currClassMaxMastery = skillMaxMasteryPerClass[pClassType][skillBeingTaught];
     PLAYER_SKILL_MASTERY masteryLevelBeingTaught = dword_F8B1B0_MasteryBeingTaught = static_cast<PLAYER_SKILL_MASTERY>(teacherLevel + 2);
@@ -2360,7 +2360,7 @@ static std::string SeekKnowledgeElswhereString(Player *player) {
 }
 
 void SeekKnowledgeElswhereDialogueOption(GUIWindow *dialogue, Player *player) {
-    std::string str = SeekKnowledgeElswhereString(pPlayers[pParty->activeCharacterIndex()]);
+    std::string str = SeekKnowledgeElswhereString(&pParty->activeCharacter());
     int text_height = pFontArrus->CalcTextHeight(str, dialogue->uFrameWidth, 0);
 
     dialogue->DrawTitleText(pFontArrus, 0, (174 - text_height) / 2 + 138, colorTable.PaleCanary.c16(), str, 3);
@@ -2374,11 +2374,7 @@ void SkillTrainingDialogue(
      int skill_price
 ) {
     if (!num_skills_avaiable) {
-        SeekKnowledgeElswhereDialogueOption(
-            dialogue,
-            pPlayers[pParty->activeCharacterIndex()]
-        );
-
+        SeekKnowledgeElswhereDialogueOption(dialogue, &pParty->activeCharacter());
         return;
     }
 
