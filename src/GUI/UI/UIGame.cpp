@@ -576,7 +576,7 @@ void GameUI_OnPlayerPortraitLeftClick(unsigned int uPlayerID) {
         if (!player->CanAct()) {
             player = pPlayers[pParty->activeCharacterIndex()];
         }
-        if (player->CanAct() || !pPlayers[pParty->activeCharacterIndex()]->CanAct()) {
+        if (player->CanAct() || !pParty->activeCharacter().CanAct()) {
             player->playReaction(SPEECH_NoRoom);
         }
     }
@@ -1123,11 +1123,11 @@ void GameUI_WritePointedObjectStatusString() {
                     // if (mouse.x <= 13 || mouse.x >= 462)
                     // return;
                     // testing =
-                    // pPlayers[pParty->activeCharacterIndex()]->GetItemIDAtInventoryIndex(invmatrixindex);
+                    // pParty->activeCharacter().GetItemIDAtInventoryIndex(invmatrixindex);
                     pItemGen =
-                        pPlayers[pParty->activeCharacterIndex()]->GetItemAtInventoryIndex(
+                        pParty->activeCharacter().GetItemAtInventoryIndex(
                             invmatrixindex);  // (ItemGen
-                                              // *)&pPlayers[pParty->activeCharacterIndex()]->pInventoryItemList[testing
+                                              // *)&pParty->activeCharacter().pInventoryItemList[testing
                                               // - 1];
 
                     // TODO(captainurist): get rid of this std::to_underlying cast.
@@ -1135,7 +1135,7 @@ void GameUI_WritePointedObjectStatusString() {
                     // if (!pItemID)
                     // return;
                     // item =
-                    // &pPlayers[pParty->activeCharacterIndex()]->pInventoryItemList[pItemID -
+                    // &pParty->activeCharacter().pInventoryItemList[pItemID -
                     // 1];
 
                     // v14 = render->pActiveZBuffer[pX +
@@ -1206,13 +1206,13 @@ void GameUI_WritePointedObjectStatusString() {
                         case 3:  // hovering over buttons
                             if (pButton->Contains(pX, pY)) {
                                 PLAYER_SKILL_TYPE skill = static_cast<PLAYER_SKILL_TYPE>(pButton->msg_param);
-                                PLAYER_SKILL_LEVEL skillLevel = pPlayers[pParty->activeCharacterIndex()]->GetSkillLevel(skill);
+                                PLAYER_SKILL_LEVEL skillLevel = pParty->activeCharacter().GetSkillLevel(skill);
                                 requiredSkillpoints = skillLevel + 1;
 
                                 if (skills_max_level[skill] <= skillLevel)
                                     GameUI_StatusBar_Set(localization->GetString(LSTR_SKILL_ALREADY_MASTERED));
-                                else if (pPlayers[pParty->activeCharacterIndex()]->uSkillPoints < requiredSkillpoints)
-                                    GameUI_StatusBar_Set(localization->FormatString(LSTR_FMT_NEED_MORE_SKILL_POINTS, requiredSkillpoints - pPlayers[pParty->activeCharacterIndex()]->uSkillPoints));
+                                else if (pParty->activeCharacter().uSkillPoints < requiredSkillpoints)
+                                    GameUI_StatusBar_Set(localization->FormatString(LSTR_FMT_NEED_MORE_SKILL_POINTS, requiredSkillpoints - pParty->activeCharacter().uSkillPoints));
                                 else
                                     GameUI_StatusBar_Set(localization->FormatString(LSTR_FMT_CLICKING_WILL_SPEND_POINTS, requiredSkillpoints));
 
@@ -1326,15 +1326,15 @@ void GameUI_WritePointedObjectStatusString() {
                              && pY >= pButton->uY && pY <= pButton->uW)
                              {
                              requiredSkillpoints =
-                             (pPlayers[pParty->activeCharacterIndex()]->pActiveSkills[pButton->msg_param]
+                             (pParty->activeCharacter().pActiveSkills[pButton->msg_param]
                              & 0x3F) + 1;
 
                              std::string str;
-                             if (pPlayers[pParty->activeCharacterIndex()]->uSkillPoints <
+                             if (pParty->activeCharacter().uSkillPoints <
                              requiredSkillpoints)      str =
                              localization->FormatString(
                              LSTR_FMT_NEED_MORE_SKILL_POINTS, requiredSkillpoints -
-                             pPlayers[pParty->activeCharacterIndex()]->uSkillPoints);
+                             pParty->activeCharacter().uSkillPoints);
                              else      str =
                              localization->FormatString(
                              LSTR_FMT_CLICKING_WILL_SPEND_POINTS, requiredSkillpoints);

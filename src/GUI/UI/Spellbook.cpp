@@ -67,7 +67,7 @@ GUIWindow_Spellbook::GUIWindow_Spellbook()
 
 void GUIWindow_Spellbook::OpenSpellbookPage(int page) {
     OnCloseSpellBookPage();
-    pPlayers[pParty->activeCharacterIndex()]->lastOpenedSpellbookPage = page;
+    pParty->activeCharacter().lastOpenedSpellbookPage = page;
     OpenSpellbook();
     pAudioPlayer->playUISound(vrng->randomBool() ? SOUND_TurnPage2 : SOUND_TurnPage1);
 }
@@ -269,15 +269,15 @@ void LoadSpellbook(unsigned int spell_school) {
     byte_506550 = 0;
 
     // TODO(captainurist): encapsulate this enum arithmetic properly
-    if (pPlayers[pParty->activeCharacterIndex()]->uQuickSpell != SPELL_NONE &&
-        (uint8_t)pPlayers[pParty->activeCharacterIndex()]->uQuickSpell / 11 == spell_school)
+    if (pParty->activeCharacter().uQuickSpell != SPELL_NONE &&
+        (uint8_t)pParty->activeCharacter().uQuickSpell / 11 == spell_school)
         quick_spell_at_page =
-            (uint8_t)pPlayers[pParty->activeCharacterIndex()]->uQuickSpell - 11 * spell_school;
+            (uint8_t)pParty->activeCharacter().uQuickSpell - 11 * spell_school;
     else
         quick_spell_at_page = 0;
 
     for (unsigned int i = 1; i <= 11; ++i) {
-        if (pPlayers[pParty->activeCharacterIndex()]->spellbook.pChapters[spell_school].bIsSpellAvailable[i - 1] || engine->config->debug.AllMagic.value()) {
+        if (pParty->activeCharacter().spellbook.pChapters[spell_school].bIsSpellAvailable[i - 1] || engine->config->debug.AllMagic.value()) {
             char pContainer[20];
             sprintf(pContainer, "SB%sS%02d",
                     spellbook_texture_filename_suffices[spell_school],

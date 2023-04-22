@@ -59,7 +59,7 @@ bool Chest::open(int uChestID) {
     flag_shout = false;
     unsigned int pMapID = pMapStats->GetMapInfo(pCurrentMapName);
     if (chest->Trapped() && pMapID) {
-        if (pPlayers[pParty->activeCharacterIndex()]->GetDisarmTrap() <
+        if (pParty->activeCharacter().GetDisarmTrap() <
             2 * pMapStats->pInfos[pMapID].LockX5) {
             pSpriteID[0] = SPRITE_TRAP_FIRE;
             pSpriteID[1] = SPRITE_TRAP_LIGHTNING;
@@ -154,7 +154,7 @@ bool Chest::open(int uChestID) {
     pAudioPlayer->playUISound(SOUND_openchest0101);
     if (flag_shout == true) {
         if (!OpenedTelekinesis) {
-            pPlayers[pParty->activeCharacterIndex()]->playReaction(SPEECH_TrapDisarmed);
+            pParty->activeCharacter().playReaction(SPEECH_TrapDisarmed);
         }
     }
     OpenedTelekinesis = false;
@@ -324,7 +324,7 @@ int Chest::PutItemInChest(int position, ItemGen *put_item, int uChestID) {
 
         if (test_pos == max_size) {  // limits check no room
             if (pParty->hasActiveCharacter()) {
-                pPlayers[pParty->activeCharacterIndex()]->playReaction(SPEECH_NoRoom);
+                pParty->activeCharacter().playReaction(SPEECH_NoRoom);
             }
             return 0;
         }
@@ -582,8 +582,8 @@ void Chest::GrabItem(bool all) {  // new fucntion to grab items from chest using
             goldamount += chestitem.special_enchantment;
             goldcount++;
         } else {  // this should add item to invetory of active char - if that fails set as holding item and break
-            if (pParty->hasActiveCharacter() && (InventSlot = pPlayers[pParty->activeCharacterIndex()]->AddItem(-1, chestitem.uItemID)) != 0) {  // can place
-                memcpy(&pPlayers[pParty->activeCharacterIndex()]->pInventoryItemList[InventSlot - 1], &chestitem, 0x24u);
+            if (pParty->hasActiveCharacter() && (InventSlot = pParty->activeCharacter().AddItem(-1, chestitem.uItemID)) != 0) {  // can place
+                memcpy(&pParty->activeCharacter().pInventoryItemList[InventSlot - 1], &chestitem, 0x24u);
                 grabcount++;
                 GameUI_SetStatusBar(
                     LSTR_FMT_YOU_FOUND_ITEM,
@@ -592,7 +592,7 @@ void Chest::GrabItem(bool all) {  // new fucntion to grab items from chest using
             } else {  // no room so set as holding item
                 pParty->setHoldingItem(&chestitem);
                 RemoveItemAtChestIndex(loop);
-                pPlayers[pParty->activeCharacterIndex()]->playReaction(SPEECH_NoRoom);
+                pParty->activeCharacter().playReaction(SPEECH_NoRoom);
                 break;
             }
         }
