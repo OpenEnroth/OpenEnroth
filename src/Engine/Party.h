@@ -474,11 +474,11 @@ struct Party {
 
     uint _roundingDt{ 0 };  // keeps track of rounding remainder for recovery
 
-    inline uint getActiveCharacter() const {
+    inline uint activeCharacterIndex() const {
         assert(hasActiveCharacter());
         return _activeCharacter;
     }
-    inline void setActiveCharacter(uint id) {
+    inline void setActiveCharacterIndex(uint id) {
         assert(id >= 0 && id <= pPlayers.size());
         _activeCharacter = id;
     }
@@ -488,7 +488,6 @@ struct Party {
     // TODO(pskelton): function for returning ref pPlayers[pParty->getActiveCharacter()]
 
  private:
-     // TODO(pskelton): rename activePlayer
      // TODO(pskelton): change to signed int - make 0 based with -1 for none??
      unsigned int _activeCharacter;  // which character is active - 1 based; 0 for none
 };

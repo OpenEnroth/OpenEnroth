@@ -147,7 +147,7 @@ void LoadGame(unsigned int uSlot) {
         }
     }
 
-    pParty->setActiveCharacter(0);
+    pParty->setActiveCharacterIndex(0);
     pParty->setActiveToFirstCanAct();
 
 /*

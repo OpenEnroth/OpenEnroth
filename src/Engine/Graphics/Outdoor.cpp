@@ -2075,7 +2075,7 @@ void ODM_ProcessPartyActions() {
                 partyViewNewPitch += engine->config->settings.VerticalTurnSpeed.value();
                 if (partyViewNewPitch > 128) partyViewNewPitch = 128;
                 if (pParty->hasActiveCharacter()) {
-                    pPlayers[pParty->getActiveCharacter()]->playReaction(SPEECH_LookUp);
+                    pPlayers[pParty->activeCharacterIndex()]->playReaction(SPEECH_LookUp);
                 }
                 break;
 
@@ -2083,7 +2083,7 @@ void ODM_ProcessPartyActions() {
                 partyViewNewPitch -= engine->config->settings.VerticalTurnSpeed.value();
                 if (partyViewNewPitch < -128) partyViewNewPitch = -128;
                 if (pParty->hasActiveCharacter()) {
-                    pPlayers[pParty->getActiveCharacter()]->playReaction(SPEECH_LookDown);
+                    pPlayers[pParty->activeCharacterIndex()]->playReaction(SPEECH_LookDown);
                 }
                 break;
 

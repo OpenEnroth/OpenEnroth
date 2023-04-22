@@ -3174,7 +3174,7 @@ void pushSpellOrRangedAttack(SPELL_TYPE spell,
         if (flags & ON_CAST_TargetedEnchantment) {
             pGUIWindow_CastTargetedSpell = pCastSpellInfo[result].GetCastSpellInInventoryWindow();
             IsEnchantingInProgress = true;
-            enchantingActiveCharacter = pParty->getActiveCharacter();
+            enchantingActiveCharacter = pParty->activeCharacterIndex();
             pParty->PickedItem_PlaceInInventory_or_Drop();
             return;
         }
@@ -3195,7 +3195,7 @@ void pushSpellOrRangedAttack(SPELL_TYPE spell,
 void pushTempleSpell(SPELL_TYPE spell) {
     PLAYER_SKILL skill_value = ConstructSkillValue(PLAYER_SKILL_MASTERY_MASTER, pParty->uCurrentDayOfMonth % 7 + 1);
 
-    pushSpellOrRangedAttack(spell, pParty->getActiveCharacter() - 1, skill_value,
+    pushSpellOrRangedAttack(spell, pParty->activeCharacterIndex() - 1, skill_value,
                             ON_CAST_TargetIsParty | ON_CAST_NoRecoverySpell, 0);
 }
 

@@ -2033,7 +2033,7 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
                 if (vertical_angle > 128)
                     vertical_angle = 128;
                 if (pParty->hasActiveCharacter())
-                    pPlayers[pParty->getActiveCharacter()]->playReaction(SPEECH_LookUp);
+                    pPlayers[pParty->activeCharacterIndex()]->playReaction(SPEECH_LookUp);
                 break;
 
             case PARTY_LookDown:
@@ -2041,7 +2041,7 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
                 if (vertical_angle < -128)
                     vertical_angle = -128;
                 if (pParty->hasActiveCharacter())
-                    pPlayers[pParty->getActiveCharacter()]->playReaction(SPEECH_LookDown);
+                    pPlayers[pParty->activeCharacterIndex()]->playReaction(SPEECH_LookDown);
                 break;
 
             case PARTY_CenterView:

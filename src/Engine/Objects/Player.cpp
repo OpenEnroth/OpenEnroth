@@ -612,7 +612,7 @@ int Player::CreateItemInInventory(unsigned int uSlot, ITEM_TYPE uItemID) {
 
     if (freeSlot == -1) {  // no room
         if (pParty->hasActiveCharacter()) {
-            pPlayers[pParty->getActiveCharacter()]->playReaction(SPEECH_NoRoom);
+            pPlayers[pParty->activeCharacterIndex()]->playReaction(SPEECH_NoRoom);
         }
 
         return 0;
@@ -2366,7 +2366,7 @@ void Player::SetRecoveryTime(signed int rec) {
 
     if (rec > uTimeToRecovery) uTimeToRecovery = rec;
 
-    if (pParty->hasActiveCharacter() && pPlayers[pParty->getActiveCharacter()] == this &&
+    if (pParty->hasActiveCharacter() && pPlayers[pParty->activeCharacterIndex()] == this &&
         !enchantingActiveCharacter)
         pParty->switchToNextActiveCharacter();
 }
@@ -6232,21 +6232,21 @@ void Player::EquipBody(ITEM_EQUIP_TYPE uEquipType) {
 
     tempPickedItem.Reset();
     itemAnchor = pEquipTypeToBodyAnchor[uEquipType];
-    itemInvLocation = pPlayers[pParty->getActiveCharacter()]->pEquipment.pIndices[itemAnchor];
+    itemInvLocation = pPlayers[pParty->activeCharacterIndex()]->pEquipment.pIndices[itemAnchor];
     if (itemInvLocation) {  //переодеться в другую вещь
         tempPickedItem = pParty->pPickedItem;
-        pPlayers[pParty->getActiveCharacter()]->pInventoryItemList[itemInvLocation - 1].uBodyAnchor = ITEM_SLOT_INVALID;
+        pPlayers[pParty->activeCharacterIndex()]->pInventoryItemList[itemInvLocation - 1].uBodyAnchor = ITEM_SLOT_INVALID;
         pParty->pPickedItem.Reset();
-        pParty->setHoldingItem(&pPlayers[pParty->getActiveCharacter()]->pInventoryItemList[itemInvLocation - 1]);
+        pParty->setHoldingItem(&pPlayers[pParty->activeCharacterIndex()]->pInventoryItemList[itemInvLocation - 1]);
         tempPickedItem.uBodyAnchor = itemAnchor;
-        pPlayers[pParty->getActiveCharacter()]->pInventoryItemList[itemInvLocation - 1] = tempPickedItem;
-        pPlayers[pParty->getActiveCharacter()]->pEquipment.pIndices[itemAnchor] = itemInvLocation;
+        pPlayers[pParty->activeCharacterIndex()]->pInventoryItemList[itemInvLocation - 1] = tempPickedItem;
+        pPlayers[pParty->activeCharacterIndex()]->pEquipment.pIndices[itemAnchor] = itemInvLocation;
     } else {  // одеть вещь
-        freeSlot = pPlayers[pParty->getActiveCharacter()]->findFreeInventoryListSlot();
+        freeSlot = pPlayers[pParty->activeCharacterIndex()]->findFreeInventoryListSlot();
         if (freeSlot >= 0) {
             pParty->pPickedItem.uBodyAnchor = itemAnchor;
-            pPlayers[pParty->getActiveCharacter()]->pInventoryItemList[freeSlot] = pParty->pPickedItem;
-            pPlayers[pParty->getActiveCharacter()]->pEquipment.pIndices[itemAnchor] = freeSlot + 1;
+            pPlayers[pParty->activeCharacterIndex()]->pInventoryItemList[freeSlot] = pParty->pPickedItem;
+            pPlayers[pParty->activeCharacterIndex()]->pEquipment.pIndices[itemAnchor] = freeSlot + 1;
             mouse->RemoveHoldingItem();
         }
     }
@@ -6260,12 +6260,12 @@ int CycleCharacter(bool backwards) {
 
     for (int i = 0; i < (PARTYSIZE - 1); i++) {
         int currCharId =
-            ((pParty->getActiveCharacter() + mult * i + valToAdd) % PARTYSIZE) + 1;
+            ((pParty->activeCharacterIndex() + mult * i + valToAdd) % PARTYSIZE) + 1;
         if (pPlayers[currCharId]->uTimeToRecovery == 0) {
             return currCharId;
         }
     }
-    return pParty->getActiveCharacter();
+    return pParty->activeCharacterIndex();
 }
 
 bool Player::hasUnderwaterSuitEquipped() {
@@ -6753,14 +6753,14 @@ void Player::OnInventoryLeftClick() {
                     /* *((char *)pGUIWindow_CastTargetedSpell->ptr_1C + 8) &=
                      *0x7Fu;
                      *((short *)pGUIWindow_CastTargetedSpell->ptr_1C + 2) =
-                     *pParty->getActiveCharacter() - 1;
+                     *pParty->activeCharacterIndex() - 1;
                      *((int *)pGUIWindow_CastTargetedSpell->ptr_1C + 3) =
                      *enchantedItemPos - 1;
                      *((short *)pGUIWindow_CastTargetedSpell->ptr_1C + 3) =
                      *invMatrixIndex;*/
                     pSpellInfo = static_cast<CastSpellInfo *>(pGUIWindow_CastTargetedSpell->wData.ptr);
                     pSpellInfo->uFlags &= ~ON_CAST_TargetedEnchantment;
-                    pSpellInfo->uPlayerID_2 = pParty->getActiveCharacter() - 1;
+                    pSpellInfo->uPlayerID_2 = pParty->activeCharacterIndex() - 1;
                     pSpellInfo->spell_target_pid = enchantedItemPos - 1;
                     pSpellInfo->field_6 = this->GetItemMainInventoryIndex(invMatrixIndex);
                     ptr_50C9A4_ItemToEnchant = &this->pInventoryItemList[enchantedItemPos - 1];
@@ -7076,8 +7076,8 @@ void Player::_42ECB5_PlayerAttacksActor() {
     //  unsigned int v12; // eax@47
     //  SoundID v24; // [sp-4h] [bp-40h]@58
 
-    // result = pParty->pPlayers[pParty->getActiveCharacter()-1].CanAct();
-    Player *player = &pParty->pPlayers[pParty->getActiveCharacter() - 1];
+    // result = pParty->pPlayers[pParty->activeCharacterIndex()-1].CanAct();
+    Player *player = &pParty->pPlayers[pParty->activeCharacterIndex() - 1];
     if (!player->CanAct()) return;
 
     CastSpellInfoHelpers::cancelSpellCastInProgress();
@@ -7152,14 +7152,14 @@ void Player::_42ECB5_PlayerAttacksActor() {
     if (laser_weapon_item_id != ITEM_NULL) {
         shotting_laser = true;
         pushSpellOrRangedAttack(SPELL_LASER_PROJECTILE,
-                                pParty->getActiveCharacter() - 1, 0, 0,
-                                pParty->getActiveCharacter() + 8);
+                                pParty->activeCharacterIndex() - 1, 0, 0,
+                                pParty->activeCharacterIndex() + 8);
     } else if (wand_item_id != ITEM_NULL) {
         shooting_wand = true;
 
         int main_hand_idx = player->pEquipment.uMainHand;
         pushSpellOrRangedAttack(wandSpellIds[player->pInventoryItemList[main_hand_idx - 1].uItemID],
-                                pParty->getActiveCharacter() - 1, 8, 0, pParty->getActiveCharacter() + 8);
+                                pParty->activeCharacterIndex() - 1, 8, 0, pParty->activeCharacterIndex() + 8);
 
         if (!--player->pInventoryItemList[main_hand_idx - 1].uNumCharges)
             player->pEquipment.uMainHand = 0;
@@ -7169,17 +7169,17 @@ void Player::_42ECB5_PlayerAttacksActor() {
         Vec3i a3 = actor->vPosition - pParty->vPosition;
         normalize_to_fixpoint(&a3.x, &a3.y, &a3.z);
 
-        Actor::DamageMonsterFromParty(PID(OBJECT_Player, pParty->getActiveCharacter() - 1),
+        Actor::DamageMonsterFromParty(PID(OBJECT_Player, pParty->activeCharacterIndex() - 1),
                                       target_id, &a3);
         if (player->WearsItem(ITEM_ARTIFACT_SPLITTER, ITEM_SLOT_MAIN_HAND) ||
             player->WearsItem(ITEM_ARTIFACT_SPLITTER, ITEM_SLOT_OFF_HAND))
             _42FA66_do_explosive_impact(
                 actor->vPosition.x, actor->vPosition.y,
                 actor->vPosition.z + actor->uActorHeight / 2, 0, 512,
-                pParty->getActiveCharacter());
+                pParty->activeCharacterIndex());
     } else if (bow_idx) {
         shooting_bow = true;
-        pushSpellOrRangedAttack(SPELL_BOW_ARROW, pParty->getActiveCharacter() - 1, 0, 0, 0);
+        pushSpellOrRangedAttack(SPELL_BOW_ARROW, pParty->activeCharacterIndex() - 1, 0, 0, 0);
     } else {
         melee_attack = true;
         // ; // actor out of range or no actor; no ranged weapon so melee

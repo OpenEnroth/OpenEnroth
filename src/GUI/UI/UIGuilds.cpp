@@ -38,11 +38,11 @@ void GuildDialog() {
     working_window.uFrameWidth = 148;
     working_window.uFrameZ = 334;
 
-    int pPrice = PriceCalculator::skillLearningCostForPlayer(pPlayers[pParty->getActiveCharacter()],
+    int pPrice = PriceCalculator::skillLearningCostForPlayer(pPlayers[pParty->activeCharacterIndex()],
                                                              p2DEvents[window_SpeakInHouse->wData.val - 1]);
 
     if (dialog_menu_id == DIALOGUE_MAIN) {  // change to switch??
-        if (!_449B57_test_bit(pPlayers[pParty->getActiveCharacter()]->_achieved_awards_bits, guild_membership_flags[window_SpeakInHouse->wData.val - HOUSE_FIRE_GUILD_INITIATE_EMERALD_ISLE])) {
+        if (!_449B57_test_bit(pPlayers[pParty->activeCharacterIndex()]->_achieved_awards_bits, guild_membership_flags[window_SpeakInHouse->wData.val - HOUSE_FIRE_GUILD_INITIATE_EMERALD_ISLE])) {
             // you must be a member
             pTextHeight = pFontArrus->CalcTextHeight(
                 pNPCTopics[121].pText, working_window.uFrameWidth, 0);
@@ -63,8 +63,8 @@ void GuildDialog() {
                 dialogopts++;
             } else {
                 PLAYER_SKILL_TYPE skill = GetLearningDialogueSkill((DIALOGUE_TYPE)pDialogueWindow->GetControl(i)->msg_param);
-                if (skillMaxMasteryPerClass[pPlayers[pParty->getActiveCharacter()]->classType][skill] != PLAYER_SKILL_MASTERY_NONE
-                    && !pPlayers[pParty->getActiveCharacter()]->pActiveSkills[skill]) {
+                if (skillMaxMasteryPerClass[pPlayers[pParty->activeCharacterIndex()]->classType][skill] != PLAYER_SKILL_MASTERY_NONE
+                    && !pPlayers[pParty->activeCharacterIndex()]->pActiveSkills[skill]) {
                     all_text_height += pFontArrus->CalcTextHeight(localization->GetSkillName(skill), working_window.uFrameWidth, 0, 0);
                     dialogopts++;
                 }
@@ -125,9 +125,9 @@ void GuildDialog() {
 
                     if (pt.x >= testpos && pt.x <= testpos + shop_ui_items_in_store[testx]->GetWidth()) {
                         if ((pt.y >= 90 && pt.y <= (90 + shop_ui_items_in_store[testx]->GetHeight())) || (pt.y >= 250 && pt.y <= (250 + shop_ui_items_in_store[testx]->GetHeight()))) {
-                            std::string str = BuildDialogueString(pMerchantsBuyPhrases[pPlayers[pParty->getActiveCharacter()]->SelectPhrasesTransaction(
+                            std::string str = BuildDialogueString(pMerchantsBuyPhrases[pPlayers[pParty->activeCharacterIndex()]->SelectPhrasesTransaction(
                                              item, BuildingType_MagicShop, window_SpeakInHouse->wData.val, 2)],
-                                pParty->getActiveCharacter() - 1, item, window_SpeakInHouse->wData.val, 2);
+                                pParty->activeCharacterIndex() - 1, item, window_SpeakInHouse->wData.val, 2);
                             pTextHeight = pFontArrus->CalcTextHeight(str, working_window.uFrameWidth, 0);
                             working_window.DrawTitleText(pFontArrus, 0, (174 - pTextHeight) / 2 + 138, colorTable.White.c16(), str, 3);
                             return;
