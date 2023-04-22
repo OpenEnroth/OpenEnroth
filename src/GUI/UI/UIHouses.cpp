@@ -2954,6 +2954,15 @@ int HouseDialogPressCloseBtn() {
     return 1;
 }
 
+void createHouseUI(HOUSE_ID houseId) {
+    window_SpeakInHouse = new GUIWindow_House({0, 0}, render->GetRenderDimensions(), houseId);
+    window_SpeakInHouse->CreateButton({61, 424}, {31, 0}, 2, 94, UIMSG_SelectCharacter, 1, InputAction::SelectChar1, "");
+    window_SpeakInHouse->CreateButton({177, 424}, {31, 0}, 2, 94, UIMSG_SelectCharacter, 2, InputAction::SelectChar2, "");
+    window_SpeakInHouse->CreateButton({292, 424}, {31, 0}, 2, 94, UIMSG_SelectCharacter, 3, InputAction::SelectChar3, "");
+    window_SpeakInHouse->CreateButton({407, 424}, {31, 0}, 2, 94, UIMSG_SelectCharacter, 4, InputAction::SelectChar4, "");
+    window_SpeakInHouse->CreateButton({0, 0}, {0, 0}, 1, 0, UIMSG_CycleCharacters, 0, InputAction::CharCycle, "");
+}
+
 void BackToHouseMenu() {
     auto pMouse = EngineIocContainer::ResolveMouse();
     pMouse->ClearPickedItem();
@@ -2965,11 +2974,7 @@ void BackToHouseMenu() {
         pParty->uFlags &= 0xFFFFFFFD;
         if (enterHouse(HOUSE_BODY_GUILD_ERATHIA)) {
             pAudioPlayer->playUISound(SOUND_Invalid);
-            window_SpeakInHouse = new GUIWindow_House({0, 0}, render->GetRenderDimensions(), HOUSE_BODY_GUILD_ERATHIA, "");
-            window_SpeakInHouse->CreateButton({61, 424}, {31, 0}, 2, 94, UIMSG_SelectCharacter, 1, InputAction::SelectChar1);
-            window_SpeakInHouse->CreateButton({177, 424}, {31, 0}, 2, 94, UIMSG_SelectCharacter, 2, InputAction::SelectChar2);
-            window_SpeakInHouse->CreateButton({292, 424}, {31, 0}, 2, 94, UIMSG_SelectCharacter, 3, InputAction::SelectChar3);
-            window_SpeakInHouse->CreateButton({407, 424}, {31, 0}, 2, 94, UIMSG_SelectCharacter, 4, InputAction::SelectChar4);
+            createHouseUI(HOUSE_BODY_GUILD_ERATHIA);
         }
         bGameoverLoop = false;
     }

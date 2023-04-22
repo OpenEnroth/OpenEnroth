@@ -742,7 +742,7 @@ std::string GameUI_GetMinimapHintText() {
                 for (ODMFace &face : model.pFaces) {
                     if (face.sCogTriggeredID) {
                         if (!(face.uAttributes & FACE_HAS_EVENT)) {
-                            std::string hintString = GetEventHintString(face.sCogTriggeredID);
+                            std::string hintString = getEventHintString(face.sCogTriggeredID);
                             if (!hintString.empty())
                                 result = hintString;
                         }
@@ -1032,7 +1032,7 @@ void GameUI_WritePointedObjectStatusString() {
                         pText = pDecorationList->GetDecoration(pLevelDecorations[pickedObjectID].uDecorationDescID)->field_20;
                     GameUI_StatusBar_Set(pText);
                 } else {
-                    std::string hintString = GetEventHintString(pLevelDecorations[pickedObjectID].uEventID);
+                    std::string hintString = getEventHintString(pLevelDecorations[pickedObjectID].uEventID);
                     if (!hintString.empty()) {
                         GameUI_StatusBar_Set(hintString);
                     }
@@ -1044,7 +1044,7 @@ void GameUI_WritePointedObjectStatusString() {
                         v18b = PID_ID(pickedObject.object_pid) >> 6;
                         short triggeredId = pOutdoor->pBModels[v18b].pFaces[pickedObjectID & 0x3F].sCogTriggeredID;
                         if (triggeredId != 0) {
-                            newString = GetEventHintString(pOutdoor->pBModels[v18b].pFaces[pickedObjectID & 0x3F]
+                            newString = getEventHintString(pOutdoor->pBModels[v18b].pFaces[pickedObjectID & 0x3F]
                                     .sCogTriggeredID);
                         }
                     } else {
@@ -1054,7 +1054,7 @@ void GameUI_WritePointedObjectStatusString() {
                                 pIndoor->pFaceExtras[pFace->uFaceExtraID]
                                     .uEventID;
                             if (eventId != 0) {
-                                newString = GetEventHintString(pIndoor->pFaceExtras[pFace->uFaceExtraID].uEventID);
+                                newString = getEventHintString(pIndoor->pFaceExtras[pFace->uFaceExtraID].uEventID);
                             }
                         }
                     }
