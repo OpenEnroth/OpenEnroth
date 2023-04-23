@@ -127,7 +127,6 @@ extern int BtnUp_flag;                       // BtnUp_flag
 extern int quick_spell_at_page;
 extern char byte_506550;
 extern AUTONOTE_TYPE _506568_autonote_type;  // 506568
-extern bool bRecallingBeacon;
 extern int uLastPointedObjectID;
 extern int dword_506980_uW;
 extern int dword_506984_uZ;

@@ -8,6 +8,7 @@ struct GUIWindow_LloydsBook : public GUIWindow_Book {
     virtual void Update();
 };
 
+extern bool bRecallingBeacon;
 extern bool isLloydsBeaconBeingInstalled;
 extern int lloydsBeaconCasterId;
 extern int lloydsBeaconSpellDuration;

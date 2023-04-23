@@ -64,8 +64,11 @@ void GUIWindow_Book::Release() {
     GUIWindow::Release();
 }
 
-GUIWindow_Book::GUIWindow_Book()
-    : GUIWindow(WINDOW_Book, {0, 0}, render->GetRenderDimensions(), 0) {}
+GUIWindow_Book::GUIWindow_Book() : GUIWindow(WINDOW_Book, {0, 0}, render->GetRenderDimensions(), 0) {
+    BasicBookInitialization();
+
+    pEventTimer->Pause();
+}
 
 void GUIWindow_Book::BasicBookInitialization() {
     InitializeFonts();

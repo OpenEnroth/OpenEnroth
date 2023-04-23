@@ -21,11 +21,9 @@ Image *ui_book_autonotes_background = nullptr;
 GUIWindow_AutonotesBook::GUIWindow_AutonotesBook() : GUIWindow_Book() {
     this->wData.val = WINDOW_AutonotesBook;  // inherited from GUIWindow::GUIWindow
     this->eWindowType = WindowType::WINDOW_AutonotesBook;
-    BasicBookInitialization();
 
     // --------------------------------
     // 004304E7 Game_EventLoop --- part
-    pEventTimer->Pause();
     pChildBooksOverlay = new GUIWindow_BooksButtonOverlay({527, 353}, {0, 0}, pBtn_Autonotes);
     bFlashAutonotesBook = 0;
 

@@ -27,11 +27,9 @@ Image *ui_book_calendar_moon_full = nullptr;
 GUIWindow_CalendarBook::GUIWindow_CalendarBook() : GUIWindow_Book() {
     this->wData.val = WINDOW_CalendarBook;  // inherited from GUIWindow::GUIWindow
     this->eWindowType = WindowType::WINDOW_CalendarBook;
-    BasicBookInitialization();
 
     // --------------------------------
     // 004304E7 Game_EventLoop --- part
-    pEventTimer->Pause();
     pChildBooksOverlay = new GUIWindow_BooksButtonOverlay({570, 354}, {0, 0}, pBtn_Calendar);
 
     // ----------------------------------------------

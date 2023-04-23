@@ -26,9 +26,7 @@ Image *ui_book_journal_background = nullptr;
 GUIWindow_JournalBook::GUIWindow_JournalBook() : GUIWindow_Book() {
     eWindowType = WINDOW_JournalBook;
     this->wData.val = WINDOW_JournalBook;  // inherited from GUIWindow::GUIWindow
-    BasicBookInitialization();
 
-    pEventTimer->Pause();
     pChildBooksOverlay = new GUIWindow_BooksButtonOverlay({600, 361}, {0, 0}, pBtn_History);
     bFlashHistoryBook = 0;
 

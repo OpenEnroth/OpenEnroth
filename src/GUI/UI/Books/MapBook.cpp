@@ -31,9 +31,7 @@ Image *ui_book_map_background = nullptr;
 GUIWindow_MapBook::GUIWindow_MapBook() : GUIWindow_Book() {
     this->wData.val = WINDOW_MapsBook;  // inherited from GUIWindow::GUIWindow
     this->eWindowType = WindowType::WINDOW_MapsBook;
-    BasicBookInitialization();
 
-    pEventTimer->Pause();
     viewparams->sViewCenterX = pParty->vPosition.x;
     viewparams->sViewCenterY = pParty->vPosition.y;
     pChildBooksOverlay = new GUIWindow_BooksButtonOverlay({546, 353}, {0, 0}, pBtn_Maps);

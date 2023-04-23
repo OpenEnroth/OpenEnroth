@@ -20,11 +20,9 @@ Image *ui_book_quests_background = nullptr;
 GUIWindow_QuestBook::GUIWindow_QuestBook() : GUIWindow_Book() {
     this->wData.val = WINDOW_QuestBook;  // inherited from GUIWindow::GUIWindow
     this->eWindowType = WindowType::WINDOW_QuestBook;
-    BasicBookInitialization();
 
     // --------------------------------
     // 004304E7 Game_EventLoop --- part
-    pEventTimer->Pause();
     pChildBooksOverlay = new GUIWindow_BooksButtonOverlay({493, 355}, {0, 0}, pBtn_Quests);
     bFlashQuestBook = 0;
 

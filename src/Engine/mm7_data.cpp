@@ -2527,7 +2527,6 @@ int BtnUp_flag;                       // BtnUp_flag
 int quick_spell_at_page;
 char byte_506550;
 AUTONOTE_TYPE _506568_autonote_type;
-bool bRecallingBeacon;
 int uLastPointedObjectID;
 int dword_506980_uW;
 int dword_506984_uZ;
