@@ -109,7 +109,6 @@ extern int dword_4FA9B4[];
 
 // extern std::array<unsigned int, 480> pSRZBufferLineOffsets;
 extern std::array<char, 777> books_num_items_per_page;
-extern int MapBookOpen;
 // extern Texture_MM7 *dword_50640C[];
 extern int
     books_page_number;  // number for page in books(номер страницы в книгах)

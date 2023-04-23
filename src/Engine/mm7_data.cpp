@@ -2513,7 +2513,6 @@ char byte_4FAA24;  // turn over break??
 
 // std::array<unsigned int, 480> pSRZBufferLineOffsets;
 std::array<char, 777> books_num_items_per_page;
-int MapBookOpen;
 int books_page_number;
 int books_primary_item_per_page;
 int Autonotes_Instructors_page_flag;  // dword_50652C

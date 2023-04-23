@@ -1931,23 +1931,18 @@ void Game::processQueuedMessages() {
                             break;
                         case 2:  // Potions
                             Book_PageBtn3_flag = 1;
-                            if (MapBookOpen) continue;
                             pButton = pBtn_Book_3;
                             break;
                         case 3:  // fountains
                             Book_PageBtn4_flag = 1;
-                            if (MapBookOpen) continue;
                             pButton = pBtn_Book_4;
                             break;
                         case 4:  // obelisks
-                            Book_PageBtn5_flag =
-                                1;  // Autonotes_Obelisks_page_flag
-                            if (MapBookOpen) continue;
+                            Book_PageBtn5_flag = 1;  // Autonotes_Obelisks_page_flag
                             pButton = pBtn_Book_5;
                             break;
                         case 5:                      // seer
                             Book_PageBtn6_flag = 1;  // Autonotes_Seer_page_flag
-                            if (MapBookOpen) continue;
                             pButton = pBtn_Book_6;
                             break;
                         case 6:  // misc
@@ -1961,6 +1956,8 @@ void Game::processQueuedMessages() {
                         default:
                             continue;
                     }
+                    bookButtonClicked = true;
+                    bookButtonAction = BOOK_BUTTON_ACTION(uMessageParam);
                     new OnButtonClick({pButton->uX, pButton->uY}, {0, 0}, pButton, std::string(), false);
                     continue;
                 case UIMSG_SelectCharacter:
