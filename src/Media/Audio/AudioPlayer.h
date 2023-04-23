@@ -180,7 +180,7 @@ class AudioPlayer {
     } SoundHeader;
 
  public:
-    AudioPlayer() : bPlayerReady(false), currentMusicTrack(MUSIC_Invalid), uMasterVolume(0), uVoiceVolume(0),
+    AudioPlayer() : bPlayerReady(false), currentMusicTrack(MUSIC_Invalid), uMasterVolume(0), uMusicVolume(0), uVoiceVolume(0),
                     _voiceSoundPool(false), _regularSoundPool(false), _loopingSoundPool(true) {}
     virtual ~AudioPlayer() {}
 
