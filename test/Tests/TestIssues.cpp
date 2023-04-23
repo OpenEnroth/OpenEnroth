@@ -639,6 +639,14 @@ GAME_TEST(Issues, Issue662) {
               2);
 }
 
+GAME_TEST(Issues, Issue663) {
+    // Cant switch between inactive char inventory in chests
+    test->playTraceFromTestData("issue_663.mm7", "issue_663.json");
+    // should switch to char 2 inv
+    EXPECT_EQ(pParty->activeCharacterIndex(), 2);
+    EXPECT_GT(pParty->activeCharacter().uTimeToRecovery, 0);
+}
+
 GAME_TEST(Issues, Issue664) {
     // Party sliding down shallow slopes outdoors
     test->playTraceFromTestData("issue_664.mm7", "issue_664.json");
