@@ -639,6 +639,15 @@ GAME_TEST(Issues, Issue662) {
               2);
 }
 
+GAME_TEST(Issues, Issue664) {
+    // Party sliding down shallow slopes outdoors
+    test->playTraceFromTestData("issue_664.mm7", "issue_664.json");
+    // shouldnt move
+    EXPECT_EQ(pParty->vPosition.x, 7323);
+    EXPECT_EQ(pParty->vPosition.y, 10375);
+    EXPECT_EQ(pParty->vPosition.z, 309);
+}
+
 GAME_TEST(Issues, Issue675) {
     // generateItem used to generate invalid enchantments outside of the [0, 24] range in some cases.
     // Also, generateItem used to assert.
