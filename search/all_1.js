@@ -105,7 +105,7 @@ var searchData=
   ['addguimessage_102',['AddGUIMessage',['../GUIWindow_8h.html#a25b68130b07896dbb9b5407382c8697f',1,'GUIWindow.h']]],
   ['additem_103',['AddItem',['../structPlayer.html#a23213493f5372b675ec5fc5ceec8a8ed',1,'Player::AddItem(ItemGen *pItem)'],['../structPlayer.html#a9ba851dc649305aee42afb4babe6a197',1,'Player::AddItem(int uSlot, ITEM_TYPE uItemID)']]],
   ['additem2_104',['AddItem2',['../structPlayer.html#a0e276155d815037f3b3551f12feed21c',1,'Player']]],
-  ['additemtoparty_105',['AddItemToParty',['../structParty.html#a15aa57610c7dbb86e541329683ab9334',1,'Party']]],
+  ['additemtoparty_105',['addItemToParty',['../structParty.html#afe2f8d187434ba10f860b7cebf94df8a',1,'Party']]],
   ['additional_5fslot_5fcount_106',['ADDITIONAL_SLOT_COUNT',['../structPlayer.html#ae3affb4132e035a9737384e808848547',1,'Player']]],
   ['addlight_107',['AddLight',['../structLightsStack__StationaryLight__.html#aefad8cef4cfe5e87b648ae01a2a8727b',1,'LightsStack_StationaryLight_::AddLight()'],['../structLightsStack__MobileLight__.html#a147eb24c116f205e042508b78ca780c8',1,'LightsStack_MobileLight_::AddLight()']]],
   ['addmessageimpl_108',['AddMessageImpl',['../structGUIMessageQueue.html#a5c65deea8dfc5ca5c071556fe154c7d4',1,'GUIMessageQueue']]],

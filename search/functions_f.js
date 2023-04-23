@@ -26,7 +26,7 @@ var searchData=
   ['onescape_23',['onEscape',['../classGame.html#a03866419f28c37155ee4955d451f2296',1,'Game']]],
   ['onfocus_24',['OnFocus',['../classGameWindowHandler.html#aaa1c3d7e14a26579827a0cc856c11a8e',1,'GameWindowHandler']]],
   ['onfocuslost_25',['OnFocusLost',['../classGameWindowHandler.html#a602ea52f4e99d64771f73c11e612b7db',1,'GameWindowHandler']]],
-  ['ongameviewportclick_26',['OnGameViewportClick',['../classEngine.html#aa61c335333d4fc146a9d721c2a3de07f',1,'Engine']]],
+  ['ongameviewportclick_26',['onGameViewportClick',['../classEngine.html#a5474be1da5dc5a04ade92429402cf23e',1,'Engine']]],
   ['oninteraction_27',['OnInteraction',['../structSpriteObject.html#aba19a5c3248618b6104fdbb864522d54',1,'SpriteObject']]],
   ['oninventoryleftclick_28',['OnInventoryLeftClick',['../structPlayer.html#ab816cb6218e284b05514fa90d8202b6d',1,'Player']]],
   ['onkey_29',['OnKey',['../classGameWindowHandler.html#afb16c3c32b894b5eae5974f69fa30fbc',1,'GameWindowHandler']]],
