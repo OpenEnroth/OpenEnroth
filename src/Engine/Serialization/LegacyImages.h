@@ -1,10 +1,6 @@
 #pragma once
 
-#include "Engine/Spells/Spells.h"
-#include "Engine/Objects/Items.h"
-#include "Engine/Objects/Actor.h"
-#include "Engine/Objects/SpriteObject.h"
-#include "GUI/GUIFont.h"
+#include <array>
 
 #include "Utility/Geometry/Plane.h"
 #include "Utility/Geometry/BBox.h"
@@ -17,22 +13,28 @@
  * with original files.
  */
 
+class Actor;
+class Icon;
+class SpriteFrame;
+class UIAnimation;
+struct ActorJob;
 struct BLVDoor;
 struct BLVFace;
 struct BLVSector;
-struct NPCData;
+struct FontData;
+struct GUICharMetric;
 struct ItemGen;
-struct SpellBuff;
-struct Player;
-class UIAnimation;
-class Icon;
+struct MonsterDesc;
+struct NPCData;
+struct ODMFace;
 struct OtherOverlay;
 struct OtherOverlayList;
-struct Timer;
 struct Party;
-struct MonsterDesc;
-struct ODMFace;
-class SpriteFrame;
+struct Player;
+struct SpawnPoint;
+struct SpellBuff;
+struct SpriteObject;
+struct Timer;
 
 #pragma pack(push, 1)
 
@@ -640,6 +642,20 @@ void Serialize(const MonsterDesc &src, MonsterDesc_MM7 *dst);
 void Deserialize(const MonsterDesc_MM7 &src, MonsterDesc *dst);
 
 
+struct ActorJob_MM7 {
+    Vec3s vPos;
+    uint16_t uAttributes = 0;
+    uint8_t uAction = 0;
+    uint8_t uHour = 0;
+    uint8_t uDay = 0;
+    uint8_t uMonth = 0;
+};
+static_assert(sizeof(ActorJob_MM7) == 12);
+
+void Serialize(const ActorJob &src, ActorJob_MM7 *dst);
+void Deserialize(const ActorJob_MM7 &src, ActorJob *dst);
+
+
 struct Actor_MM7 {
     std::array<char, 32> pActorName;
     int16_t sNPC_ID;
@@ -674,7 +690,7 @@ struct Actor_MM7 {
     std::array<ItemGen_MM7, 4> ActorHasItems;
     uint32_t uGroup;
     uint32_t uAlly;
-    std::array<ActorJob, 8> pScheduledJobs;
+    std::array<ActorJob_MM7, 8> pScheduledJobs;
     uint32_t uSummonerID;
     uint32_t uLastCharacterIDToHit;
     int32_t dword_000334_unique_name;
@@ -764,6 +780,17 @@ void Serialize(const BLVSector &src, BLVSector_MM7 *dst);
 void Deserialize(const BLVSector_MM7 &src, BLVSector *dst);
 
 
+struct GUICharMetric_MM7 {
+    int32_t uLeftSpacing;
+    int32_t uWidth;
+    int32_t uRightSpacing;
+};
+static_assert(sizeof(GUICharMetric_MM7) == 12);
+
+void Serialize(const GUICharMetric &src, GUICharMetric_MM7 *dst);
+void Deserialize(const GUICharMetric_MM7 &src, GUICharMetric *dst);
+
+
 struct FontData_MM7 {
     uint8_t cFirstChar;  // 0
     uint8_t cLastChar;   // 1
@@ -774,7 +801,7 @@ struct FontData_MM7 {
     uint8_t field_7;
     uint32_t palletes_count;
     std::array<uint32_t, 5> pFontPalettes;
-    std::array<GUICharMetric, 256> pMetrics;
+    std::array<GUICharMetric_MM7, 256> pMetrics;
     std::array<uint32_t, 256> font_pixels_offset;
     uint8_t pFontData[0];  // array of font pixels
 };
