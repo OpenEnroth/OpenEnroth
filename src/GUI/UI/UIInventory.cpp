@@ -49,7 +49,7 @@ GUIWindow_Inventory_CastSpell::GUIWindow_Inventory_CastSpell(Pointi position, Si
 void GUIWindow_Inventory_CastSpell::Update() {
     render->ClearZBuffer();
     draw_leather();
-    CharacterUI_InventoryTab_Draw(pPlayers[pParty->getActiveCharacter()], true);
-    CharacterUI_DrawPaperdoll(pPlayers[pParty->getActiveCharacter()]);
+    CharacterUI_InventoryTab_Draw(&pParty->activeCharacter(), true);
+    CharacterUI_DrawPaperdoll(&pParty->activeCharacter());
     render->DrawTextureNew(pBtn_ExitCancel->uX / 640.0f, pBtn_ExitCancel->uY / 480.0f, dialogue_ui_x_x_u);
 }

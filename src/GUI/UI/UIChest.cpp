@@ -34,7 +34,7 @@ void GUIWindow_Chest::Update() {
     if (current_screen_type == CURRENT_SCREEN::SCREEN_CHEST_INVENTORY) {
         render->ClearZBuffer();
         draw_leather();
-        CharacterUI_InventoryTab_Draw(pPlayers[pParty->getActiveCharacter()], true);
+        CharacterUI_InventoryTab_Draw(&pParty->activeCharacter(), true);
         render->DrawTextureNew(pBtn_ExitCancel->uX / 640.0f,
                                     pBtn_ExitCancel->uY / 480.0f,
                                     ui_exit_cancel_button_background);

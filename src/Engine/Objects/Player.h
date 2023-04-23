@@ -156,6 +156,7 @@ class PlayerConditions {
     std::array<GameTime, 20> times_;
 };
 
+// TODO(eksekk): Rename to "Character" (incl. all methods and helper functions, and probably enums too)
 struct Player {
     static constexpr unsigned int INVENTORY_SLOTS_WIDTH = 14;
     static constexpr unsigned int INVENTORY_SLOTS_HEIGHT = 9;

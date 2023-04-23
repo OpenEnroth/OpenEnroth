@@ -329,7 +329,7 @@ void Engine::onGameViewportClick() {
             }
         } else if (pParty->bTurnBasedModeOn && pTurnEngine->turn_stage == TE_MOVEMENT) {
             pParty->setAirborne(true);
-        } else if (pParty->hasActiveCharacter() && IsSpellQuickCastableOnShiftClick(pPlayers[pParty->getActiveCharacter()]->uQuickSpell)) {
+        } else if (pParty->hasActiveCharacter() && IsSpellQuickCastableOnShiftClick(pParty->activeCharacter().uQuickSpell)) {
             pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_CastQuickSpell, 0, 0);
         } else {
             pParty->dropHeldItem();
