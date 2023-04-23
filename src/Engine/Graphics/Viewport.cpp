@@ -279,7 +279,8 @@ void Engine::onGameViewportClick() {
     int16_t clickable_distance = 512;
 
     // bug fix - stops you entering shops while dialog still open.
-    if (current_screen_type != CURRENT_SCREEN::SCREEN_GAME /*CURRENT_SCREEN::SCREEN_NPC_DIALOGUE*/) {
+    // was CURRENT_SCREEN::SCREEN_NPC_DIALOGUE
+    if (current_screen_type != CURRENT_SCREEN::SCREEN_GAME) {
         return;
     }
 

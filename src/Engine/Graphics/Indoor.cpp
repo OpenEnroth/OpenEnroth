@@ -1801,7 +1801,8 @@ char DoInteractionWithTopmostZObject(int pid) {
     auto id = PID_ID(pid);
     auto type = PID_TYPE(pid);
 
-    if (current_screen_type != CURRENT_SCREEN::SCREEN_GAME /*CURRENT_SCREEN::SCREEN_BRANCHLESS_NPC_DIALOG*/) {
+    // was CURRENT_SCREEN::SCREEN_BRANCHLESS_NPC_DIALOG
+    if (current_screen_type != CURRENT_SCREEN::SCREEN_GAME) {
         return 1;
     }
 
