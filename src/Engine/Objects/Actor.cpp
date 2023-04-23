@@ -3783,13 +3783,11 @@ void StatusBarItemFound(int num_gold_found, const char * item_unidentified_name)
 
 //----- (00426A5A) --------------------------------------------------------
 void Actor::LootActor() {
-    signed int v2;       // edi@1
     ItemGen Dst;         // [sp+Ch] [bp-2Ch]@1
     bool itemFound;      // [sp+30h] [bp-8h]@1
 
-    pParty->PickedItem_PlaceInInventory_or_Drop();
+    pParty->placeHeldItemInInventoryOrDrop();
     Dst.Reset();
-    v2 = 0;
     itemFound = false;
     int foundGold = 0;
     if (!ActorHasItem()) {
@@ -3810,10 +3808,7 @@ void Actor::LootActor() {
         Dst.Reset();
         Dst.uItemID = this->uCarriedItemID;
 
-        StatusBarItemFound(
-            foundGold,
-            pItemTable->pItems[Dst.uItemID].pUnidentifiedName
-        );
+        StatusBarItemFound(foundGold, pItemTable->pItems[Dst.uItemID].pUnidentifiedName);
 
         if (Dst.isWand()) {
             Dst.uNumCharges = grng->random(6) + Dst.GetDamageMod() + 1;
@@ -3823,20 +3818,20 @@ void Actor::LootActor() {
             Dst.uEnchantmentType = 2 * grng->random(4) + 2;
         }
         pItemTable->SetSpecialBonus(&Dst);
-        if (!pParty->AddItemToParty(&Dst)) {
+        if (!pParty->addItemToParty(&Dst)) {
             pParty->setHoldingItem(&Dst);
         }
         this->uCarriedItemID = ITEM_NULL;
         if (this->ActorHasItems[0].uItemID != ITEM_NULL) {
-            if (!pParty->AddItemToParty(&this->ActorHasItems[0])) {
-                pParty->PickedItem_PlaceInInventory_or_Drop();
+            if (!pParty->addItemToParty(&this->ActorHasItems[0])) {
+                pParty->placeHeldItemInInventoryOrDrop();
                 pParty->setHoldingItem(&this->ActorHasItems[0]);
             }
             this->ActorHasItems[0].Reset();
         }
         if (this->ActorHasItems[1].uItemID != ITEM_NULL) {
-            if (!pParty->AddItemToParty(&this->ActorHasItems[1])) {
-                pParty->PickedItem_PlaceInInventory_or_Drop();
+            if (!pParty->addItemToParty(&this->ActorHasItems[1])) {
+                pParty->placeHeldItemInInventoryOrDrop();
                 pParty->setHoldingItem(&this->ActorHasItems[1]);
             }
             this->ActorHasItems[1].Reset();
@@ -3849,48 +3844,44 @@ void Actor::LootActor() {
             Dst = this->ActorHasItems[3];
             this->ActorHasItems[3].Reset();
 
-            StatusBarItemFound(
-                foundGold,
-                pItemTable->pItems[Dst.uItemID].pUnidentifiedName
-            );
+            StatusBarItemFound(foundGold, pItemTable->pItems[Dst.uItemID].pUnidentifiedName);
 
-            if (!pParty->AddItemToParty(&Dst)) {
+            if (!pParty->addItemToParty(&Dst)) {
                 pParty->setHoldingItem(&Dst);
             }
             itemFound = true;
         }
     } else {
-        if (grng->random(100) < this->pMonsterInfo.uTreasureDropChance &&
-            this->pMonsterInfo.uTreasureLevel != ITEM_TREASURE_LEVEL_INVALID) {
-            pItemTable->generateItem(this->pMonsterInfo.uTreasureLevel, this->pMonsterInfo.uTreasureType,
-                                     &Dst);
+        if (grng->random(100) < this->pMonsterInfo.uTreasureDropChance && this->pMonsterInfo.uTreasureLevel != ITEM_TREASURE_LEVEL_INVALID) {
+            pItemTable->generateItem(this->pMonsterInfo.uTreasureLevel, this->pMonsterInfo.uTreasureType, &Dst);
 
             StatusBarItemFound(foundGold, pItemTable->pItems[Dst.uItemID].pUnidentifiedName);
 
-            if (!pParty->AddItemToParty(&Dst)) {
+            if (!pParty->addItemToParty(&Dst)) {
                 pParty->setHoldingItem(&Dst);
             }
             itemFound = true;
         }
     }
     if (this->ActorHasItems[0].uItemID != ITEM_NULL) {
-        if (!pParty->AddItemToParty(&this->ActorHasItems[0])) {
-            pParty->PickedItem_PlaceInInventory_or_Drop();
+        if (!pParty->addItemToParty(&this->ActorHasItems[0])) {
+            pParty->placeHeldItemInInventoryOrDrop();
             pParty->setHoldingItem(&this->ActorHasItems[0]);
             itemFound = true;
         }
         this->ActorHasItems[0].Reset();
     }
     if (this->ActorHasItems[1].uItemID != ITEM_NULL) {
-        if (!pParty->AddItemToParty(&this->ActorHasItems[1])) {
-            pParty->PickedItem_PlaceInInventory_or_Drop();
+        if (!pParty->addItemToParty(&this->ActorHasItems[1])) {
+            pParty->placeHeldItemInInventoryOrDrop();
             pParty->setHoldingItem(&this->ActorHasItems[1]);
             itemFound = true;
         }
         this->ActorHasItems[1].Reset();
     }
-    if (!itemFound || grng->random(100) < 90)  // for repeatedly get gold and item
+    if (!itemFound || grng->random(100) < 90) {  // for repeatedly get gold and item
         this->Remove();
+    }
 }
 
 //----- (00427102) --------------------------------------------------------

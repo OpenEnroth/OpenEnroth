@@ -2046,7 +2046,7 @@ void Game::processQueuedMessages() {
                                                     // правую кнопку мыши после
                                                     // UIMSG_MouseLeftClickInGame
                     pCurrentFrameMessageQueue->Flush();
-                    _engine->OnGameViewportClick();
+                    _engine->onGameViewportClick();
                     continue;
                 case UIMSG_F:  // what event?
                     __debugbreak();
@@ -2299,11 +2299,6 @@ void Game::onPressSpace() {
 
     uint16_t pid = _vis->get_picked_object_zbuf_val().object_pid;
     if (pid != PID_INVALID) {
-        // wasn't there, but we decided to deny interactions where there are no active character
-        if (!pParty->hasActiveCharacter()) {
-            GameUI_SetStatusBar(localization->GetString(LSTR_NOBODY_IS_IN_CONDITION));
-            return;
-        }
         DoInteractionWithTopmostZObject(pid);
     }
 }

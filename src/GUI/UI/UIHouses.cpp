@@ -1182,7 +1182,7 @@ void OnSelectShopDialogueOption(DIALOGUE_TYPE option) {
     case DIALOGUE_SHOP_REPAIR:
     {
         dialog_menu_id = option;
-        pParty->PickedItem_PlaceInInventory_or_Drop();
+        pParty->placeHeldItemInInventoryOrDrop();
         break;
     }
     case DIALOGUE_SHOP_DISPLAY_EQUIPMENT:

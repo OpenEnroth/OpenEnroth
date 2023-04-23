@@ -219,7 +219,11 @@ struct Party {
     */
     void switchToNextActiveCharacter();
     bool _497FC5_check_party_perception_against_level();
-    bool AddItemToParty(ItemGen *pItem);
+
+    /**
+     * @offset 0x48C6F6
+     */
+    bool addItemToParty(ItemGen *pItem, bool isSilent = false);
 
     /**
      * @offset 0x43AD34
@@ -234,7 +238,8 @@ struct Party {
      * @offset 0x420C05
      */
     void partyFindsGold(int amount, GoldReceivePolicy policy);
-    void PickedItem_PlaceInInventory_or_Drop();
+    void placeHeldItemInInventoryOrDrop();
+    void dropHeldItem();
 
     int GetGold() const;
     void SetGold(int amount, bool silent = false);
