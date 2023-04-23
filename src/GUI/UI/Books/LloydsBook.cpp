@@ -85,7 +85,7 @@ void GUIWindow_LloydsBook::Update() {
 
     pWindow.DrawTitleText(pBook2Font, 0, 22, 0, pText, 3);
     if (bRecallingBeacon) {
-        render->DrawTextureNew(pBtn_Book_1->uX / 640.0f, pBtn_Book_1->uY / 480.0f,ui_book_button1_on);
+        render->DrawTextureNew(pBtn_Book_1->uX / 640.0f, pBtn_Book_1->uY / 480.0f, ui_book_button1_on);
         render->DrawTextureNew(pBtn_Book_2->uX / 640.0f, pBtn_Book_2->uY / 480.0f, ui_book_button1_off);
     } else {
         render->DrawTextureNew(pBtn_Book_1->uX / 640.0f, pBtn_Book_1->uY / 480.0f, ui_book_button1_off);
