@@ -629,9 +629,13 @@ GAME_TEST(Issue, Issue645) {
 
 GAME_TEST(Issues, Issue661) {
     // HP/SP regen from items is too high
-    test->playTraceFromTestData("issue_661.mm7", "issue_661.json");
-    EXPECT_EQ(pParty->pPlayers[0].sHealth, 417);
-    EXPECT_EQ(pParty->pPlayers[0].sMana, 268);
+    int oldHealth = 0;
+    int oldMana = 0;
+    test->playTraceFromTestData("issue_661.mm7", "issue_661.json", [&] { oldHealth = pParty->pPlayers[0].sHealth; oldMana = pParty->pPlayers[0].sMana; });
+    // two hour wait period is 24 blocks of 5 mins
+    // one item that heals hp, three items heal mana
+    EXPECT_EQ(pParty->pPlayers[0].sHealth, oldHealth + 24);
+    EXPECT_EQ(pParty->pPlayers[0].sMana, oldMana + 24*3);
 }
 
 GAME_TEST(Issues, Issue662) {
