@@ -29,6 +29,7 @@
 
 #include "GUI/GUIFont.h"
 #include "GUI/GUIWindow.h"
+#include "GUI/UI/UIGame.h"
 #include "GUI/UI/UISaveLoad.h"
 #include "GUI/UI/UIStatusBar.h"
 

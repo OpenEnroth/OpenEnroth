@@ -15,6 +15,7 @@
 
 #include "GUI/GUIButton.h"
 #include "GUI/GUIFont.h"
+#include "GUI/UI/UIGame.h"
 #include "GUI/UI/Books/JournalBook.h"
 
 #include "Media/Audio/AudioPlayer.h"
@@ -28,7 +29,7 @@ GUIWindow_JournalBook::GUIWindow_JournalBook() : GUIWindow_Book() {
     this->wData.val = WINDOW_JournalBook;  // inherited from GUIWindow::GUIWindow
 
     pChildBooksOverlay = new GUIWindow_BooksButtonOverlay({600, 361}, {0, 0}, pBtn_History);
-    bFlashHistoryBook = 0;
+    bFlashHistoryBook = false;
 
     int pTextHeight;           // eax@12
     unsigned int page_count;   // esi@12

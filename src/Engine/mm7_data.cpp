@@ -2533,9 +2533,6 @@ int dword_506988_uY;
 int dword_50698C_uX;
 int KeyboardPageNum;
 //int dword_506F1C;
-char bFlashHistoryBook;
-char bFlashAutonotesBook;
-char bFlashQuestBook;
 GUIButton *pBtn_ZoomOut;  // idb
 GUIButton *pBtn_ZoomIn;  // idb
 unsigned int uGameUIFontShadow;

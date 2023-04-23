@@ -133,9 +133,6 @@ extern int dword_506988_uY;
 extern int dword_50698C_uX;
 extern int KeyboardPageNum;
 //extern int dword_506F1C;
-extern char bFlashHistoryBook;
-extern char bFlashAutonotesBook;
-extern char bFlashQuestBook;
 extern GUIButton *pBtn_ZoomOut;  // idb
 extern GUIButton *pBtn_ZoomIn;  // idb
 extern unsigned int uGameUIFontShadow;

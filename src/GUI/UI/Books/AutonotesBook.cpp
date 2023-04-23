@@ -12,6 +12,7 @@
 
 #include "GUI/GUIButton.h"
 #include "GUI/GUIFont.h"
+#include "GUI/UI/UIGame.h"
 #include "GUI/UI/Books/AutonotesBook.h"
 
 #include "Media/Audio/AudioPlayer.h"
@@ -25,7 +26,7 @@ GUIWindow_AutonotesBook::GUIWindow_AutonotesBook() : GUIWindow_Book() {
     // --------------------------------
     // 004304E7 Game_EventLoop --- part
     pChildBooksOverlay = new GUIWindow_BooksButtonOverlay({527, 353}, {0, 0}, pBtn_Autonotes);
-    bFlashAutonotesBook = 0;
+    bFlashAutonotesBook = false;
 
     // ----------------------------------------------
     // 00411BFC GUIWindow::InitializeBookView -- part

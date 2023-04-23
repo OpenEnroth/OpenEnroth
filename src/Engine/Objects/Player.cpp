@@ -4541,7 +4541,7 @@ void Player::SetVariable(VariableType var_type, signed int var_value) {
         if (!pParty->PartyTimes.HistoryEventTimes[var_type - VAR_History_0]) {
             pParty->PartyTimes.HistoryEventTimes[var_type - VAR_History_0] = pParty->GetPlayingTime();
             if (pStorylineText->StoreLine[var_type - VAR_History_0].pText) {
-                bFlashHistoryBook = 1;
+                bFlashHistoryBook = true;
                 PlayAwardSound();
             }
         }
@@ -4643,7 +4643,7 @@ void Player::SetVariable(VariableType var_type, signed int var_value) {
             return;
         case VAR_QBits_QuestsDone:
             if (!_449B57_test_bit(pParty->_quest_bits, var_value) && pQuestTable[var_value]) {
-                bFlashQuestBook = 1;
+                bFlashQuestBook = true;
                 spell_fx_renderer->SetPlayerBuffAnim(BECOME_MAGIC_GUILD_MEMBER, GetPlayerIndex());
                 PlayAwardSound();
                 this->playReaction(SPEECH_QuestGot);
@@ -4901,7 +4901,7 @@ void Player::SetVariable(VariableType var_type, signed int var_value) {
             if (!_449B57_test_bit(pParty->_autonote_bits, var_value) && pAutonoteTxt[var_value - 1].pText) {
                 spell_fx_renderer->SetPlayerBuffAnim(BECOME_MAGIC_GUILD_MEMBER, GetPlayerIndex());
                 this->playReaction(SPEECH_AwardGot);
-                bFlashAutonotesBook = 1;
+                bFlashAutonotesBook = true;
                 _506568_autonote_type = pAutonoteTxt[var_value - 1].eType;  // dword_72371C[2 * a3];
             }
             _449B7E_toggle_bit(pParty->_autonote_bits, var_value, 1u);
@@ -5156,7 +5156,7 @@ void Player::AddVariable(VariableType var_type, signed int val) {
         if (!pParty->PartyTimes.HistoryEventTimes[var_type - VAR_History_0]) {
             pParty->PartyTimes.HistoryEventTimes[var_type - VAR_History_0] = pParty->GetPlayingTime();
             if (pStorylineText->StoreLine[var_type - VAR_History_0].pText) {
-                bFlashHistoryBook = 1;
+                bFlashHistoryBook = true;
                 PlayAwardSound();
             }
         }
@@ -5231,7 +5231,7 @@ void Player::AddVariable(VariableType var_type, signed int val) {
             return;
         case VAR_QBits_QuestsDone:
             if (!_449B57_test_bit(pParty->_quest_bits, val) && pQuestTable[val]) {
-                bFlashQuestBook = 1;
+                bFlashQuestBook = true;
                 PlayAwardSound_Anim97_Face(SPEECH_QuestGot);
             }
             _449B7E_toggle_bit(pParty->_quest_bits, val, 1);
@@ -5475,7 +5475,7 @@ void Player::AddVariable(VariableType var_type, signed int val) {
             if (!_449B57_test_bit(pParty->_autonote_bits, val) &&
                 pAutonoteTxt[val].pText) {
                 this->playReaction(SPEECH_AwardGot);
-                bFlashAutonotesBook = 1;
+                bFlashAutonotesBook = true;
                 _506568_autonote_type = pAutonoteTxt[val].eType;
                 spell_fx_renderer->SetPlayerBuffAnim(SPELL_QUEST_COMPLETED, GetPlayerIndex());
             }
