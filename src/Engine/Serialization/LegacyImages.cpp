@@ -10,9 +10,12 @@
 #include "Engine/Graphics/Sprites.h"
 #include "Engine/Objects/Actor.h"
 #include "Engine/Objects/NPC.h"
+#include "Engine/Objects/SpriteObject.h"
 #include "Engine/Party.h"
 #include "Engine/Tables/IconFrameTable.h"
 #include "Engine/Time.h"
+
+#include "GUI/GUIFont.h"
 
 #include "Utility/Color.h"
 #include "Utility/Memory/MemSet.h"
@@ -1054,6 +1057,25 @@ void Deserialize(const MonsterDesc_MM7 &src, MonsterDesc *dst) {
     Deserialize(src.pSpriteNames, &dst->pSpriteNames, 8);
 }
 
+void Serialize(const ActorJob &src, ActorJob_MM7 *dst) {
+    memzero(dst);
+    dst->vPos = src.vPos;
+    dst->uAttributes = src.uAttributes;
+    dst->uAction = src.uAction;
+    dst->uHour = src.uHour;
+    dst->uDay = src.uDay;
+    dst->uMonth = src.uMonth;
+}
+
+void Deserialize(const ActorJob_MM7 &src, ActorJob *dst) {
+    dst->vPos = src.vPos;
+    dst->uAttributes = src.uAttributes;
+    dst->uAction = src.uAction;
+    dst->uHour = src.uHour;
+    dst->uDay = src.uDay;
+    dst->uMonth = src.uMonth;
+}
+
 void Serialize(const Actor &src, Actor_MM7 *dst) {
     memzero(dst);
 
@@ -1361,6 +1383,19 @@ void Deserialize(const BLVSector_MM7 &src, BLVSector *dst) {
     dst->uFirstBSPNode = src.uFirstBSPNode;
     dst->exit_tag = src.exit_tag;
     dst->pBounding = src.pBounding;
+}
+
+void Serialize(const GUICharMetric &src, GUICharMetric_MM7 *dst) {
+    memzero(dst);
+    dst->uLeftSpacing = src.uLeftSpacing;
+    dst->uWidth = src.uWidth;
+    dst->uRightSpacing = src.uRightSpacing;
+}
+
+void Deserialize(const GUICharMetric_MM7 &src, GUICharMetric *dst) {
+    dst->uLeftSpacing = src.uLeftSpacing;
+    dst->uWidth = src.uWidth;
+    dst->uRightSpacing = src.uRightSpacing;
 }
 
 void Serialize(const FontData &src, FontData_MM7 *dst) {

@@ -45,8 +45,6 @@ struct AIDirection {
 };
 #pragma pack(pop)
 
-/*   71 */
-#pragma pack(push, 1)
 struct ActorJob {
     Vec3s vPos;
     uint16_t uAttributes = 0;
@@ -55,12 +53,9 @@ struct ActorJob {
     uint8_t uDay = 0;
     uint8_t uMonth = 0;
 };
-#pragma pack(pop)
 
 class GUIWindow;
 
-/*   66 */
-#pragma pack(push, 1)
 class Actor {
  public:
     Actor() {}
@@ -234,7 +229,6 @@ class Actor {
     std::array<char, 12> field_338 = {{}};
     bool donebloodsplat{ false };
 };
-#pragma pack(pop)
 
 // extern Actor pMonsterInfoUI_Doll;
 
