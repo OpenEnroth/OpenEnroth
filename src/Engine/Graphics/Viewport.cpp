@@ -359,7 +359,7 @@ void Engine::OnGameViewportClick() {
             }
         } else if (pParty->bTurnBasedModeOn && pTurnEngine->turn_stage == TE_MOVEMENT) {
             pParty->setAirborne(true);
-        } else if (pParty->hasActiveCharacter() && IsSpellQuickCastableOnShiftClick(pPlayers[pParty->activeCharacterIndex()]->uQuickSpell)) {
+        } else if (pParty->hasActiveCharacter() && IsSpellQuickCastableOnShiftClick(pParty->activeCharacter().uQuickSpell)) {
             pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_CastQuickSpell, 0, 0);
         }
     } else if (PID_TYPE(pid) == OBJECT_Decoration) {

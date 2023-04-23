@@ -319,8 +319,8 @@ void Mouse::UI_OnMouseLeftClick() {
 
     ObjectType type = PID_TYPE(picked_object.object_pid);
     if (type == OBJECT_Actor && pParty->hasActiveCharacter() && picked_object.depth < 0x200 &&
-        pPlayers[pParty->activeCharacterIndex()]->CanAct() &&
-        pPlayers[pParty->activeCharacterIndex()]->CanSteal()) {
+        pParty->activeCharacter().CanAct() &&
+        pParty->activeCharacter().CanSteal()) {
         pCurrentFrameMessageQueue->AddGUIMessage(
             UIMSG_STEALFROMACTOR,
             PID_ID(picked_object.object_pid),

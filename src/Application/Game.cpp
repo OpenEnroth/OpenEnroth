@@ -1405,7 +1405,7 @@ void Game::processQueuedMessages() {
                         pAudioPlayer->playUISound(SOUND_error);
                         continue;
                     }
-                    if (!pParty->activeCharacterIndex() ||
+                    if (!pParty->hasActiveCharacter() ||
                         (pPlayer2 = pPlayers[pParty->activeCharacterIndex()],
                          pPlayer2->uTimeToRecovery))
                         continue;
@@ -1426,7 +1426,7 @@ void Game::processQueuedMessages() {
                 }
                 case UIMSG_1C:
                     __debugbreak();
-                    if (!pParty->activeCharacterIndex() || current_screen_type != CURRENT_SCREEN::SCREEN_GAME)
+                    if (!pParty->hasActiveCharacter() || current_screen_type != CURRENT_SCREEN::SCREEN_GAME)
                         continue;
                     __debugbreak();  // ptr_507BC8 = GUIWindow::Create(0, 0,
                                      // window->GetWidth(), window->GetHeight(),
@@ -1435,7 +1435,7 @@ void Game::processQueuedMessages() {
                     pEventTimer->Pause();
                     continue;
                 case UIMSG_STEALFROMACTOR:
-                    if (!pParty->activeCharacterIndex()) continue;
+                    if (!pParty->hasActiveCharacter()) continue;
                     if (!pParty->bTurnBasedModeOn) {
                         if (pActors[uMessageParam].uAIState == AIState::Dead)
                             pActors[uMessageParam].LootActor();
@@ -1526,8 +1526,8 @@ void Game::processQueuedMessages() {
                         else
                             GameUI_SetStatusBar(LSTR_HOSTILE_ENEMIES_NEARBY);
 
-                        if (!pParty->activeCharacterIndex()) continue;
-                        pPlayers[pParty->activeCharacterIndex()]->playReaction(SPEECH_CantRestHere);
+                        if (!pParty->hasActiveCharacter()) continue;
+                        pParty->activeCharacter().playReaction(SPEECH_CantRestHere);
                         continue;
                     }
                     if (pParty->bTurnBasedModeOn) {
@@ -1555,8 +1555,8 @@ void Game::processQueuedMessages() {
                     else
                         GameUI_SetStatusBar(LSTR_HOSTILE_ENEMIES_NEARBY);
 
-                    if (!pParty->activeCharacterIndex()) continue;
-                    pPlayers[pParty->activeCharacterIndex()]->playReaction(SPEECH_CantRestHere);
+                    if (!pParty->hasActiveCharacter()) continue;
+                    pParty->activeCharacter().playReaction(SPEECH_CantRestHere);
                     continue;
                 case UIMSG_Rest8Hour:
                     pCurrentFrameMessageQueue->Clear(); // TODO: sometimes it is called twice, prevent that for now and investigate why later
@@ -1567,8 +1567,8 @@ void Game::processQueuedMessages() {
                     }
                     if (pParty->GetFood() < foodRequiredToRest) {
                         GameUI_SetStatusBar(LSTR_NOT_ENOUGH_FOOD);
-                        if (pParty->hasActiveCharacter() && pPlayers[pParty->activeCharacterIndex()]->CanAct()) {
-                            pPlayers[pParty->activeCharacterIndex()]->playReaction(SPEECH_NotEnoughFood);
+                        if (pParty->hasActiveCharacter() && pParty->activeCharacter().CanAct()) {
+                            pParty->activeCharacter().playReaction(SPEECH_NotEnoughFood);
                         }
                     } else {
                         for (Player &player : pParty->pPlayers) {
@@ -1632,9 +1632,9 @@ void Game::processQueuedMessages() {
                         GameUI_StatusBar_Set(localization->FormatString(
                             LSTR_FMT_SET_S_AS_READY_SPELL,
                             pSpellStats->pInfos[static_cast<SPELL_TYPE>(quick_spell_at_page +
-                                         11 * pPlayers[pParty->activeCharacterIndex()]->lastOpenedSpellbookPage)].pName));
+                                         11 * pParty->activeCharacter().lastOpenedSpellbookPage)].pName));
                     } else {
-                        if (pPlayers[pParty->activeCharacterIndex()]->uQuickSpell != SPELL_NONE)
+                        if (pParty->activeCharacter().uQuickSpell != SPELL_NONE)
                             GameUI_StatusBar_Set(localization->GetString(LSTR_CLICK_TO_REMOVE_QUICKSPELL));
                         else
                             GameUI_StatusBar_Set(localization->GetString(LSTR_CLICK_TO_SET_QUICKSPELL));
@@ -1643,7 +1643,7 @@ void Game::processQueuedMessages() {
                 }
 
                 case UIMSG_SPellbook_ShowHightlightedSpellInfo: {
-                    if (!pParty->activeCharacterIndex())  // || (uNumSeconds = (unsigned
+                    if (!pParty->hasActiveCharacter())  // || (uNumSeconds = (unsigned
                                             // int)pPlayers[pParty->activeCharacterIndex()],!*(char
                                             // *)(uNumSeconds + 11 * *(char
                                             // *)(uNumSeconds + 6734) +
@@ -1653,7 +1653,7 @@ void Game::processQueuedMessages() {
 
                     if (sub_4637E0_is_there_popup_onscreen())
                         dword_507B00_spell_info_to_draw_in_popup = uMessageParam + 1;
-                    int lastOpened = pPlayers[pParty->activeCharacterIndex()]->lastOpenedSpellbookPage;
+                    int lastOpened = pParty->activeCharacter().lastOpenedSpellbookPage;
                     if (quick_spell_at_page - 1 == uMessageParam) {
                         GameUI_StatusBar_Set(localization->FormatString(LSTR_CAST_S,
                                     pSpellStats->pInfos[static_cast<SPELL_TYPE>(uMessageParam + 11 * lastOpened + 1)].pName));
@@ -1666,8 +1666,8 @@ void Game::processQueuedMessages() {
 
                 case UIMSG_ClickInstallRemoveQuickSpellBtn: {
                     new OnButtonClick2({pBtn_InstallRemoveSpell->uX, pBtn_InstallRemoveSpell->uY}, {0, 0}, pBtn_InstallRemoveSpell);
-                    if (!pParty->activeCharacterIndex()) continue;
-                    Player *player = pPlayers[pParty->activeCharacterIndex()];
+                    if (!pParty->hasActiveCharacter()) continue;
+                    Player *player = &pParty->activeCharacter();
                     if (!byte_506550 || !quick_spell_at_page) {
                         player->uQuickSpell = SPELL_NONE;
                         quick_spell_at_page = 0;
@@ -1675,8 +1675,8 @@ void Game::processQueuedMessages() {
                         continue;
                     }
                     // TODO(captainurist): encapsulate the arithmetic below
-                    pPlayers[pParty->activeCharacterIndex()]->uQuickSpell = static_cast<SPELL_TYPE>(
-                        quick_spell_at_page + 11 * pPlayers[pParty->activeCharacterIndex()]->lastOpenedSpellbookPage);
+                    pParty->activeCharacter().uQuickSpell = static_cast<SPELL_TYPE>(
+                        quick_spell_at_page + 11 * pParty->activeCharacter().lastOpenedSpellbookPage);
                     if (pParty->hasActiveCharacter()) {
                         player->playReaction(SPEECH_SetQuickSpell);
                     }
@@ -1687,13 +1687,13 @@ void Game::processQueuedMessages() {
                 case UIMSG_SpellBook_PressTab:  //перелистывание страниц
                                                 //клавишей Tab
                 {
-                    if (!pParty->activeCharacterIndex()) continue;
+                    if (!pParty->hasActiveCharacter()) continue;
                     int skill_count = 0;
                     int uAction = 0;
                     int page = 0;
                     for (PLAYER_SKILL_TYPE i : MagicSkills()) {
-                        if (pPlayers[pParty->activeCharacterIndex()]->pActiveSkills[i] || _engine->config->debug.AllMagic.value()) {
-                            if (pPlayers[pParty->activeCharacterIndex()]->lastOpenedSpellbookPage == page)
+                        if (pParty->activeCharacter().pActiveSkills[i] || _engine->config->debug.AllMagic.value()) {
+                            if (pParty->activeCharacter().lastOpenedSpellbookPage == page)
                                 uAction = skill_count;
                             spellbookPages[skill_count++] = page;
                         }
@@ -1718,8 +1718,8 @@ void Game::processQueuedMessages() {
                 }
                 case UIMSG_OpenSpellbookPage:
                     if (pTurnEngine->turn_stage == TE_MOVEMENT ||
-                        !pParty->activeCharacterIndex() ||
-                        uMessageParam == pPlayers[pParty->activeCharacterIndex()]->lastOpenedSpellbookPage) {
+                        !pParty->hasActiveCharacter() ||
+                        uMessageParam == pParty->activeCharacter().lastOpenedSpellbookPage) {
                         continue;
                     }
                     ((GUIWindow_Spellbook *)pGUIWindow_CurrentMenu)->OpenSpellbookPage(uMessageParam);
@@ -1728,12 +1728,12 @@ void Game::processQueuedMessages() {
                     if (pTurnEngine->turn_stage == TE_MOVEMENT) {
                         continue;
                     }
-                    if (!pParty->activeCharacterIndex()) {
+                    if (!pParty->hasActiveCharacter()) {
                         continue;
                     }
 
                     //  uNumSeconds = (unsigned int)pPlayers[pParty->activeCharacterIndex()];
-                    Player *player = pPlayers[pParty->activeCharacterIndex()];
+                    Player *player = &pParty->activeCharacter();
                     if (player->spellbook.pChapters[player->lastOpenedSpellbookPage].bIsSpellAvailable[uMessageParam]
                         || _engine->config->debug.AllMagic.value()) {
                         if (quick_spell_at_page - 1 == uMessageParam) {
@@ -1784,7 +1784,7 @@ void Game::processQueuedMessages() {
                     } else {
                         pCurrentFrameMessageQueue->Flush();
                         if (pParty->hasActiveCharacter()) {
-                            if (!pPlayers[pParty->activeCharacterIndex()]->uTimeToRecovery) {
+                            if (!pParty->activeCharacter().uTimeToRecovery) {
                                 // toggle
                                 if (current_screen_type == CURRENT_SCREEN::SCREEN_SPELL_BOOK) {
                                     pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 0, 0);
@@ -1878,7 +1878,7 @@ void Game::processQueuedMessages() {
                 case UIMSG_SkillUp:
                 {
                     PLAYER_SKILL_TYPE skill = static_cast<PLAYER_SKILL_TYPE>(uMessageParam);
-                    Player *player = pPlayers[pParty->activeCharacterIndex()];
+                    Player *player = &pParty->activeCharacter();
                     PLAYER_SKILL_LEVEL skill_level = player->GetSkillLevel(skill);
                     const char *statusString;
                     if (player->uSkillPoints < skill_level + 1) {
@@ -2029,13 +2029,13 @@ void Game::processQueuedMessages() {
 
                 case UIMSG_CHEST_ClickItem:
                     if (current_screen_type == CURRENT_SCREEN::SCREEN_CHEST_INVENTORY) {
-                        pPlayers[pParty->activeCharacterIndex()]->OnInventoryLeftClick();
+                        pParty->activeCharacter().OnInventoryLeftClick();
                         continue;
                     }
                     Chest::OnChestLeftClick();
                     continue;
                 case UIMSG_InventoryLeftClick:
-                    pPlayers[pParty->activeCharacterIndex()]->OnInventoryLeftClick();
+                    pParty->activeCharacter().OnInventoryLeftClick();
                     continue;
                 case UIMSG_MouseLeftClickInGame:
                     pCurrentFrameMessageQueue->Flush();
@@ -2118,7 +2118,7 @@ void Game::processQueuedMessages() {
                     for(size_t attempt = 0; attempt < 500; attempt++) {
                         ITEM_TYPE pItemID = grng->randomSample(SpawnableItems());
                         if (pItemTable->pItems[pItemID].uItemID_Rep_St > 6) {
-                            if (!pPlayers[pParty->activeCharacterIndex()]->AddItem(-1, pItemID)) {
+                            if (!pParty->activeCharacter().AddItem(-1, pItemID)) {
                                 pAudioPlayer->playUISound(SOUND_error);
                             }
                             break;
@@ -2136,7 +2136,7 @@ void Game::processQueuedMessages() {
                         ITEM_TYPE pItemID = grng->randomSample(SpawnableItems());
                         // if (pItemTable->pItems[pItemID].uItemID_Rep_St ==
                         //   (item_id - 40015 + 1)) {
-                        if (!pPlayers[pParty->activeCharacterIndex()]->AddItem(-1, pItemID)) {
+                        if (!pParty->activeCharacter().AddItem(-1, pItemID)) {
                             pAudioPlayer->playUISound(SOUND_error);
                         }
                         break;
@@ -2149,21 +2149,21 @@ void Game::processQueuedMessages() {
                 case UIMSG_DebugKillChar:
                     if (!pParty->hasActiveCharacter())
                         continue;
-                    pPlayers[pParty->activeCharacterIndex()]->SetCondition(Condition_Dead, 0);
+                    pParty->activeCharacter().SetCondition(Condition_Dead, 0);
                     continue;
                 case UIMSG_DebugEradicate:
                     if (!pParty->hasActiveCharacter())
                         continue;
-                    pPlayers[pParty->activeCharacterIndex()]->SetCondition(Condition_Eradicated, 0);
+                    pParty->activeCharacter().SetCondition(Condition_Eradicated, 0);
                     continue;
                 case UIMSG_DebugFullHeal:
                     if (!pParty->hasActiveCharacter())
                         continue;
-                    pPlayers[pParty->activeCharacterIndex()]->conditions.ResetAll();
-                    pPlayers[pParty->activeCharacterIndex()]->sHealth =
-                        pPlayers[pParty->activeCharacterIndex()]->GetMaxHealth();
-                    pPlayers[pParty->activeCharacterIndex()]->sMana =
-                        pPlayers[pParty->activeCharacterIndex()]->GetMaxMana();
+                    pParty->activeCharacter().conditions.ResetAll();
+                    pParty->activeCharacter().sHealth =
+                        pParty->activeCharacter().GetMaxHealth();
+                    pParty->activeCharacter().sMana =
+                        pParty->activeCharacter().GetMaxMana();
                     pAudioPlayer->playUISound(SOUND_heal);
                     continue;
                 case UIMSG_DebugCycleAlign:

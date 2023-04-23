@@ -489,7 +489,7 @@ void GUIWindow::HouseDialogManager() {
         pNPCPortraits_y[0][0] / 480.0f,
         pDialogueNPCPortraits[v4]);
     if (current_screen_type == CURRENT_SCREEN::SCREEN_SHOP_INVENTORY) {
-        CharacterUI_InventoryTab_Draw(pPlayers[pParty->activeCharacterIndex()], true);
+        CharacterUI_InventoryTab_Draw(&pParty->activeCharacter(), true);
         if (pDialogueNPCCount == uNumDialogueNPCPortraits && uHouse_ExitPic) {
             render->DrawTextureNew(556 / 640.0f, 451 / 480.0f,
                 dialogue_ui_x_x_u);
@@ -1366,8 +1366,8 @@ void ClickNPCTopic(DIALOGUE_TYPE topic) {
                 if (guild_membership_approved) {
                     pParty->TakeGold(gold_transaction_amount);
                     if (pParty->hasActiveCharacter()) {
-                        pPlayers[pParty->activeCharacterIndex()]->SetSkillMastery(dword_F8B1AC_skill_being_taught, dword_F8B1B0_MasteryBeingTaught);
-                        pPlayers[pParty->activeCharacterIndex()]->playReaction(SPEECH_SkillMasteryInc);
+                        pParty->activeCharacter().SetSkillMastery(dword_F8B1AC_skill_being_taught, dword_F8B1B0_MasteryBeingTaught);
+                        pParty->activeCharacter().playReaction(SPEECH_SkillMasteryInc);
                     }
                     pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 1, 0);
                 }
@@ -1414,7 +1414,7 @@ void ClickNPCTopic(DIALOGUE_TYPE topic) {
                     }
                     pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 1, 0);
                     if (pParty->hasActiveCharacter()) {
-                        pPlayers[pParty->activeCharacterIndex()]->playReaction(SPEECH_JoinedGuild);
+                        pParty->activeCharacter().playReaction(SPEECH_JoinedGuild);
                         BackToHouseMenu();
                         return;
                     }
@@ -1446,7 +1446,7 @@ void ClickNPCTopic(DIALOGUE_TYPE topic) {
                 pNPCStats->pProfessions[pCurrentNPCInfo->profession].pJoinText,
                 pParty->activeCharacterIndex() - 1, 0, 0, 0);
             if (pParty->hasActiveCharacter()) {
-                pPlayers[pParty->activeCharacterIndex()]->playReaction(SPEECH_NotEnoughGold);
+                pParty->activeCharacter().playReaction(SPEECH_NotEnoughGold);
             }
             GameUI_SetStatusBar(LSTR_NOT_ENOUGH_GOLD);
             BackToHouseMenu();
@@ -1473,7 +1473,7 @@ void ClickNPCTopic(DIALOGUE_TYPE topic) {
 
     pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 1, 0);
     if (pParty->hasActiveCharacter()) {
-        pPlayers[pParty->activeCharacterIndex()]->playReaction(SPEECH_HireNPC);
+        pParty->activeCharacter().playReaction(SPEECH_HireNPC);
     }
 
     BackToHouseMenu();
@@ -1560,7 +1560,7 @@ void OracleDialogue() {
 std::string _4B254D_SkillMasteryTeacher(int trainerInfo) {
     uint8_t teacherLevel = (trainerInfo - 200) % 3;
     PLAYER_SKILL_TYPE skillBeingTaught = static_cast<PLAYER_SKILL_TYPE>((trainerInfo - 200) / 3);
-    Player *activePlayer = pPlayers[pParty->activeCharacterIndex()];
+    Player *activePlayer = &pParty->activeCharacter();
     PLAYER_CLASS_TYPE pClassType = activePlayer->classType;
     PLAYER_SKILL_MASTERY currClassMaxMastery = skillMaxMasteryPerClass[pClassType][skillBeingTaught];
     PLAYER_SKILL_MASTERY masteryLevelBeingTaught = dword_F8B1B0_MasteryBeingTaught = static_cast<PLAYER_SKILL_MASTERY>(teacherLevel + 2);
@@ -2360,7 +2360,7 @@ static std::string SeekKnowledgeElswhereString(Player *player) {
 }
 
 void SeekKnowledgeElswhereDialogueOption(GUIWindow *dialogue, Player *player) {
-    std::string str = SeekKnowledgeElswhereString(pPlayers[pParty->activeCharacterIndex()]);
+    std::string str = SeekKnowledgeElswhereString(&pParty->activeCharacter());
     int text_height = pFontArrus->CalcTextHeight(str, dialogue->uFrameWidth, 0);
 
     dialogue->DrawTitleText(pFontArrus, 0, (174 - text_height) / 2 + 138, colorTable.PaleCanary.c16(), str, 3);
@@ -2374,11 +2374,7 @@ void SkillTrainingDialogue(
      int skill_price
 ) {
     if (!num_skills_avaiable) {
-        SeekKnowledgeElswhereDialogueOption(
-            dialogue,
-            pPlayers[pParty->activeCharacterIndex()]
-        );
-
+        SeekKnowledgeElswhereDialogueOption(dialogue, &pParty->activeCharacter());
         return;
     }
 
@@ -2420,8 +2416,8 @@ void SkillTrainingDialogue(
                 (DIALOGUE_TYPE)pButton->msg_param
             );
 
-            if (skillMaxMasteryPerClass[pPlayers[pParty->activeCharacterIndex()]->classType][skill_id] == PLAYER_SKILL_MASTERY_NONE
-                || pPlayers[pParty->activeCharacterIndex()]->pActiveSkills[skill_id]) {
+            if (skillMaxMasteryPerClass[pParty->activeCharacter().classType][skill_id] == PLAYER_SKILL_MASTERY_NONE
+                || pParty->activeCharacter().pActiveSkills[skill_id]) {
                 pButton->uW = 0;
                 pButton->uHeight = 0;
                 pButton->uY = 0;
@@ -2461,8 +2457,8 @@ const char *GetJoinGuildDialogueOption(GUILD_ID guild_id) {
     if (!pParty->hasActiveCharacter())
         pParty->setActiveToFirstCanAct();  // avoid nzi
 
-    if (pPlayers[pParty->activeCharacterIndex()]->CanAct()) {
-        if (_449B57_test_bit(pPlayers[pParty->activeCharacterIndex()]->_achieved_awards_bits, dword_F8B1AC_award_bit_number)) {
+    if (pParty->activeCharacter().CanAct()) {
+        if (_449B57_test_bit(pParty->activeCharacter()._achieved_awards_bits, dword_F8B1AC_award_bit_number)) {
             return pNPCTopics[dialogue_base + 13].pText;
         } else {
             if (gold_transaction_amount <= pParty->GetGold()) {

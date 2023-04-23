@@ -612,7 +612,7 @@ int Player::CreateItemInInventory(unsigned int uSlot, ITEM_TYPE uItemID) {
 
     if (freeSlot == -1) {  // no room
         if (pParty->hasActiveCharacter()) {
-            pPlayers[pParty->activeCharacterIndex()]->playReaction(SPEECH_NoRoom);
+            pParty->activeCharacter().playReaction(SPEECH_NoRoom);
         }
 
         return 0;
@@ -2366,7 +2366,7 @@ void Player::SetRecoveryTime(signed int rec) {
 
     if (rec > uTimeToRecovery) uTimeToRecovery = rec;
 
-    if (pParty->hasActiveCharacter() && pPlayers[pParty->activeCharacterIndex()] == this &&
+    if (pParty->hasActiveCharacter() && &pParty->activeCharacter() == this &&
         !enchantingActiveCharacter)
         pParty->switchToNextActiveCharacter();
 }
@@ -6232,21 +6232,21 @@ void Player::EquipBody(ITEM_EQUIP_TYPE uEquipType) {
 
     tempPickedItem.Reset();
     itemAnchor = pEquipTypeToBodyAnchor[uEquipType];
-    itemInvLocation = pPlayers[pParty->activeCharacterIndex()]->pEquipment.pIndices[itemAnchor];
+    itemInvLocation = pParty->activeCharacter().pEquipment.pIndices[itemAnchor];
     if (itemInvLocation) {  //переодеться в другую вещь
         tempPickedItem = pParty->pPickedItem;
-        pPlayers[pParty->activeCharacterIndex()]->pInventoryItemList[itemInvLocation - 1].uBodyAnchor = ITEM_SLOT_INVALID;
+        pParty->activeCharacter().pInventoryItemList[itemInvLocation - 1].uBodyAnchor = ITEM_SLOT_INVALID;
         pParty->pPickedItem.Reset();
-        pParty->setHoldingItem(&pPlayers[pParty->activeCharacterIndex()]->pInventoryItemList[itemInvLocation - 1]);
+        pParty->setHoldingItem(&pParty->activeCharacter().pInventoryItemList[itemInvLocation - 1]);
         tempPickedItem.uBodyAnchor = itemAnchor;
-        pPlayers[pParty->activeCharacterIndex()]->pInventoryItemList[itemInvLocation - 1] = tempPickedItem;
-        pPlayers[pParty->activeCharacterIndex()]->pEquipment.pIndices[itemAnchor] = itemInvLocation;
+        pParty->activeCharacter().pInventoryItemList[itemInvLocation - 1] = tempPickedItem;
+        pParty->activeCharacter().pEquipment.pIndices[itemAnchor] = itemInvLocation;
     } else {  // одеть вещь
-        freeSlot = pPlayers[pParty->activeCharacterIndex()]->findFreeInventoryListSlot();
+        freeSlot = pParty->activeCharacter().findFreeInventoryListSlot();
         if (freeSlot >= 0) {
             pParty->pPickedItem.uBodyAnchor = itemAnchor;
-            pPlayers[pParty->activeCharacterIndex()]->pInventoryItemList[freeSlot] = pParty->pPickedItem;
-            pPlayers[pParty->activeCharacterIndex()]->pEquipment.pIndices[itemAnchor] = freeSlot + 1;
+            pParty->activeCharacter().pInventoryItemList[freeSlot] = pParty->pPickedItem;
+            pParty->activeCharacter().pEquipment.pIndices[itemAnchor] = freeSlot + 1;
             mouse->RemoveHoldingItem();
         }
     }
@@ -7076,8 +7076,8 @@ void Player::_42ECB5_PlayerAttacksActor() {
     //  unsigned int v12; // eax@47
     //  SoundID v24; // [sp-4h] [bp-40h]@58
 
-    // result = pParty->pPlayers[pParty->activeCharacterIndex()-1].CanAct();
-    Player *player = &pParty->pPlayers[pParty->activeCharacterIndex() - 1];
+    // result = pParty->activeCharacter().CanAct();
+    Player *player = &pParty->activeCharacter();
     if (!player->CanAct()) return;
 
     CastSpellInfoHelpers::cancelSpellCastInProgress();

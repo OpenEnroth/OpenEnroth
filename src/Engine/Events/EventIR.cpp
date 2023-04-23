@@ -1181,7 +1181,7 @@ bool doForChosenPlayer(PLAYER_CHOOSE_POLICY who, RandomEngine *rng, std::functio
         return func(pParty->pPlayers[std::to_underlying(who)]);
     } else if (who == CHOOSE_ACTIVE) {
         if (pParty->hasActiveCharacter()) {
-            return func(pParty->pPlayers[pParty->getActiveCharacter() - 1]);
+            return func(pParty->activeCharacter());
         }
         return false;
     } else if (who == CHOOSE_PARTY) {

@@ -180,7 +180,7 @@ void KeyboardInputHandler::GenerateGameplayActions() {
         case InputAction::Yell:
             if (current_screen_type == CURRENT_SCREEN::SCREEN_GAME && pParty->hasActiveCharacter()) {
                 pParty->yell();
-                pPlayers[pParty->activeCharacterIndex()]->playReaction(SPEECH_Yell);
+                pParty->activeCharacter().playReaction(SPEECH_Yell);
             }
             break;
 
@@ -192,10 +192,10 @@ void KeyboardInputHandler::GenerateGameplayActions() {
                 break;
             }
             if (pParty->hasActiveCharacter()) {
-                if (pPlayers[pParty->activeCharacterIndex()]->uTimeToRecovery == 0) {
+                if (pParty->activeCharacter().uTimeToRecovery == 0) {
                     if (!pParty->bTurnBasedModeOn) {
-                        pPlayers[pParty->activeCharacterIndex()]->SetRecoveryTime(
-                            debug_non_combat_recovery_mul * (double)pPlayers[pParty->activeCharacterIndex()]->GetAttackRecoveryTime(false) * flt_debugrecmod3
+                        pParty->activeCharacter().SetRecoveryTime(
+                            debug_non_combat_recovery_mul * (double)pParty->activeCharacter().GetAttackRecoveryTime(false) * flt_debugrecmod3
                         );
                     }
                     CastSpellInfoHelpers::cancelSpellCastInProgress();
@@ -233,16 +233,16 @@ void KeyboardInputHandler::GenerateGameplayActions() {
                 break;
             }
 
-            SPELL_TYPE quickSpellNumber = pPlayers[pParty->activeCharacterIndex()]->uQuickSpell;
+            SPELL_TYPE quickSpellNumber = pParty->activeCharacter().uQuickSpell;
 
             int uRequiredMana = 0;
             if (quickSpellNumber != SPELL_NONE && !engine->config->debug.AllMagic.value()) {
-                PLAYER_SKILL_MASTERY skill_mastery = pPlayers[pParty->activeCharacterIndex()]->GetActualSkillMastery(getSkillTypeForSpell(quickSpellNumber));
+                PLAYER_SKILL_MASTERY skill_mastery = pParty->activeCharacter().GetActualSkillMastery(getSkillTypeForSpell(quickSpellNumber));
 
                 uRequiredMana = pSpellDatas[quickSpellNumber].mana_per_skill[std::to_underlying(skill_mastery) - 1];
             }
 
-            bool enoughMana = pPlayers[pParty->activeCharacterIndex()]->sMana >= uRequiredMana;
+            bool enoughMana = pParty->activeCharacter().sMana >= uRequiredMana;
 
             if (quickSpellNumber == SPELL_NONE || engine->IsUnderwater() || !enoughMana) {
                 pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Attack, 0, 0);

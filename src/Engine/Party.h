@@ -485,7 +485,10 @@ struct Party {
     inline bool hasActiveCharacter() const {
         return _activeCharacter > 0;
     }
-    // TODO(pskelton): function for returning ref pPlayers[pParty->getActiveCharacter()]
+    inline Player &activeCharacter() {
+        assert(hasActiveCharacter());
+        return pPlayers[_activeCharacter - 1];
+    }
 
  private:
      // TODO(pskelton): change to signed int - make 0 based with -1 for none??
