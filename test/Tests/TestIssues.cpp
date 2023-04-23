@@ -627,16 +627,20 @@ GAME_TEST(Issue, Issue645) {
     EXPECT_EQ(pParty->pPlayers[3].conditions.Has(Condition_Unconscious), true);
 }
 
+GAME_TEST(Issues, Issue661) {
+    // HP/SP regen from items is too high
+    test->playTraceFromTestData("issue_661.mm7", "issue_661.json");
+    EXPECT_EQ(pParty->pPlayers[0].sHealth, 417);
+    EXPECT_EQ(pParty->pPlayers[0].sMana, 268);
+}
+
 GAME_TEST(Issues, Issue662) {
-    // "of Air magic" should give floor(skill / 2) skill level bonus (like all
-    // other such bonuses)
+    // "of Air magic" should give floor(skill / 2) skill level bonus (like all other such bonuses)
     test->loadGameFromTestData("issue_662.mm7");
     // currently air magic is (expert) 6
-    EXPECT_EQ(pParty->pPlayers[3].GetItemsBonus(CHARACTER_ATTRIBUTE_SKILL_AIR),
-              3);
+    EXPECT_EQ(pParty->pPlayers[3].GetItemsBonus(CHARACTER_ATTRIBUTE_SKILL_AIR), 3);
     pParty->pPlayers[3].skillAir = 5;
-    EXPECT_EQ(pParty->pPlayers[3].GetItemsBonus(CHARACTER_ATTRIBUTE_SKILL_AIR),
-              2);
+    EXPECT_EQ(pParty->pPlayers[3].GetItemsBonus(CHARACTER_ATTRIBUTE_SKILL_AIR), 2);
 }
 
 GAME_TEST(Issues, Issue663) {
