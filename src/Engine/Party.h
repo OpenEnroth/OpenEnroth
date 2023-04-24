@@ -276,31 +276,31 @@ struct Party {
     void giveFallDamage(int distance);
 
     inline bool wizardEyeActive() const {
-        return pPartyBuffs[PARTY_BUFF_WIZARD_EYE].expire_time.value > 0;
+        return pPartyBuffs[PARTY_BUFF_WIZARD_EYE].expireTime.value > 0;
     }
     inline PLAYER_SKILL_MASTERY wizardEyeSkillLevel() const {
-        return pPartyBuffs[PARTY_BUFF_WIZARD_EYE].uSkillMastery;
+        return pPartyBuffs[PARTY_BUFF_WIZARD_EYE].skillMastery;
     }
     inline bool TorchlightActive() const {
-        return pPartyBuffs[PARTY_BUFF_TORCHLIGHT].expire_time.value > 0;
+        return pPartyBuffs[PARTY_BUFF_TORCHLIGHT].expireTime.value > 0;
     }
     inline bool FlyActive() const {
-        return pPartyBuffs[PARTY_BUFF_FLY].expire_time.value > 0;
+        return pPartyBuffs[PARTY_BUFF_FLY].expireTime.value > 0;
     }
     inline bool WaterWalkActive() const {
-        return pPartyBuffs[PARTY_BUFF_WATER_WALK].expire_time.value > 0;
+        return pPartyBuffs[PARTY_BUFF_WATER_WALK].expireTime.value > 0;
     }
     inline bool ImmolationActive() const {
-        return pPartyBuffs[PARTY_BUFF_IMMOLATION].expire_time.value > 0;
+        return pPartyBuffs[PARTY_BUFF_IMMOLATION].expireTime.value > 0;
     }
     inline PLAYER_SKILL_MASTERY ImmolationSkillLevel() const {
-        return pPartyBuffs[PARTY_BUFF_IMMOLATION].uSkillMastery;
+        return pPartyBuffs[PARTY_BUFF_IMMOLATION].skillMastery;
     }
     inline bool FeatherFallActive() const {
-        return pPartyBuffs[PARTY_BUFF_FEATHER_FALL].expire_time.value > 0;
+        return pPartyBuffs[PARTY_BUFF_FEATHER_FALL].expireTime.value > 0;
     }
     inline bool Invisible() const {
-        return pPartyBuffs[PARTY_BUFF_INVISIBILITY].expire_time.value > 0;
+        return pPartyBuffs[PARTY_BUFF_INVISIBILITY].expireTime.value > 0;
     }
 
     inline bool GetRedAlert() const {

@@ -828,7 +828,7 @@ void GUIWindow_CharacterRecord::CharacterUI_SkillsTab_Draw(Player *player) {
     auto str = fmt::format(
         "{} \f{:05}{}\f00000\r177{}: \f{:05}{}\f00000",  // ^Pv[]
                      localization->GetString(LSTR_SKILLS_FOR),
-                     ui_character_header_text_color, player->pName.c_str(),
+                     ui_character_header_text_color, player->name.c_str(),
                      localization->GetString(LSTR_SKILL_POINTS),
                      player->uSkillPoints ? ui_character_bonus_text_color
                                           : ui_character_default_text_color,
@@ -868,7 +868,7 @@ void GUIWindow_CharacterRecord::CharacterUI_AwardsTab_Draw(Player *player) {
     std::string str = fmt::format(
         "{} \f{:05}{}\f00000",
         localization->GetString(LSTR_AWARDS_FOR), ui_character_header_text_color,
-        NameAndTitle(player->pName, player->classType));
+        NameAndTitle(player->name, player->classType));
 
     pGUIWindow_CurrentMenu->DrawText(pFontArrus, {24, 18}, 0, str, 0, 0, 0);
     items_per_page = books_primary_item_per_page;
@@ -1531,7 +1531,7 @@ void GUIWindow_CharacterRecord::CharacterUI_StatsTab_Draw(Player *player) {
     auto str1 =
         fmt::format("\f{:05}{}\f00000\r180{}: \f{:05}{}\f00000\n\n\n",
                     ui_character_header_text_color,
-                    NameAndTitle(player->pName, player->classType),
+                    NameAndTitle(player->name, player->classType),
                     localization->GetString(LSTR_SKILL_POINTS),
                     player->uSkillPoints ? ui_character_bonus_text_color : ui_character_default_text_color,
                     player->uSkillPoints);
@@ -1580,11 +1580,11 @@ void GUIWindow_CharacterRecord::CharacterUI_StatsTab_Draw(Player *player) {
 
     pY += 2 * pFontArrus->GetHeight() + 5;
     pGUIWindow_CurrentMenu->DrawText(pFontArrus, {26, pY}, 0,
-                                     formatLeftCol(LSTR_HIT_POINTS, player->sHealth, player->GetMaxHealth()));
+                                     formatLeftCol(LSTR_HIT_POINTS, player->health, player->GetMaxHealth()));
 
     pY += pFontArrus->GetHeight() - 2;
     pGUIWindow_CurrentMenu->DrawText(pFontArrus, {26, pY}, 0,
-                                     formatLeftCol(LSTR_SPELL_POINTS, player->sMana, player->GetMaxMana()));
+                                     formatLeftCol(LSTR_SPELL_POINTS, player->mana, player->GetMaxMana()));
 
     pY += pFontArrus->GetHeight() - 2;
     pGUIWindow_CurrentMenu->DrawText(pFontArrus, {26, pY}, 0,
@@ -1631,8 +1631,8 @@ void GUIWindow_CharacterRecord::CharacterUI_StatsTab_Draw(Player *player) {
     pY += pFontArrus->GetHeight() - 2;
     auto str16 =
         fmt::format("{}\r180\f{:05}{}\f00000\n\n",
-                    localization->GetString(player->uExperience <= 9999999 ? LSTR_EXPERIENCE : LSTR_EXP),
-                    player->GetExperienceDisplayColor(), player->uExperience);
+                    localization->GetString(player->experience <= 9999999 ? LSTR_EXPERIENCE : LSTR_EXP),
+                    player->GetExperienceDisplayColor(), player->experience);
     pGUIWindow_CurrentMenu->DrawText(pFontArrus, {266, pY}, 0, str16);
 
     pY += 2 * pFontArrus->GetHeight();

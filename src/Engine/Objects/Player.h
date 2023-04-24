@@ -238,9 +238,9 @@ struct Player {
     unsigned int GetSpellSchool(SPELL_TYPE uSpellID);
     int GetAttackRecoveryTime(bool bRangedAttack);
 
-    int GetHealth() const { return this->sHealth; }
+    int GetHealth() const { return this->health; }
     int GetMaxHealth();
-    int GetMana() const { return this->sMana; }
+    int GetMana() const { return this->mana; }
     int GetMaxMana();
 
     int GetBaseAC();
@@ -453,12 +453,11 @@ struct Player {
     void SetSkillMastery(PLAYER_SKILL_TYPE skill, PLAYER_SKILL_MASTERY mastery);
 
     PlayerConditions conditions;
-    uint64_t uExperience;
-    std::string pName;
+    uint64_t experience;
+    std::string name;
     PLAYER_SEX uSex;
     PLAYER_CLASS_TYPE classType;
     uint8_t uCurrentFace;
-    char field_BB;
     uint16_t uMight;
     uint16_t uMightBonus;
     uint16_t uIntelligence;
@@ -577,12 +576,12 @@ struct Player {
     int uPrevFace;
     int field_192C;
     int field_1930;
-    uint16_t uTimeToRecovery;
+    uint16_t timeToRecovery;
     char field_1936;
     char field_1937;
     unsigned int uSkillPoints;
-    int sHealth;
-    int sMana;
+    int health;
+    int mana;
     unsigned int uBirthYear;
     PlayerEquipment pEquipment;
     std::array<int, 49> field_1988;

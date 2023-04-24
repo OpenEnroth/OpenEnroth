@@ -63,7 +63,7 @@ void GUIWindow_QuickReference::Update() {
         if (i == 0)
             pGUIWindow_CurrentMenu->DrawTextInRect(pFontArrus, {22, 18}, 0, localization->GetString(LSTR_NAME), 60, 0
             );
-        pGUIWindow_CurrentMenu->DrawTextInRect(pFontArrus, {94 * i + 89, 18}, ui_character_header_text_color, player->pName, 84, 0);
+        pGUIWindow_CurrentMenu->DrawTextInRect(pFontArrus, {94 * i + 89, 18}, ui_character_header_text_color, player->name, 84, 0);
 
         if (i == 0)
             pGUIWindow_CurrentMenu->DrawTextInRect(pFontArrus, {22, 47}, 0, localization->GetString(LSTR_LEVEL), 60, 0);
@@ -83,16 +83,16 @@ void GUIWindow_QuickReference::Update() {
         if (i == 0)
             pGUIWindow_CurrentMenu->DrawTextInRect(pFontArrus, {22, pY}, 0, localization->GetString(LSTR_HP), 60, 0);
         pTextColor = UI_GetHealthManaAndOtherQualitiesStringColor(
-            player->sHealth, player->GetMaxHealth());
-        pTempString = fmt::format("{}", player->sHealth);
+            player->health, player->GetMaxHealth());
+        pTempString = fmt::format("{}", player->health);
         pGUIWindow_CurrentMenu->DrawTextInRect(pFontArrus, {pX, pY}, pTextColor, pTempString, 84, 0);
         pY = pFontHeight + pY;
 
         if (i == 0)
             pGUIWindow_CurrentMenu->DrawTextInRect(pFontArrus, {22, pY}, 0, localization->GetString(LSTR_SP), 60, 0);
         pTextColor = UI_GetHealthManaAndOtherQualitiesStringColor(
-            player->sMana, player->GetMaxMana());
-        pTempString = fmt::format("{}", player->sMana);
+            player->mana, player->GetMaxMana());
+        pTempString = fmt::format("{}", player->mana);
         pGUIWindow_CurrentMenu->DrawTextInRect(pFontArrus, {pX, pY}, pTextColor, pTempString, 84, 0);
         pY = pFontHeight + pY;
 

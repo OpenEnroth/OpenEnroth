@@ -128,7 +128,7 @@ void GUIWindow_Rest::Update() {
 
     int liveCharacters = 0;
     for (Player &player : pParty->pPlayers) {
-        if (!player.IsDead() && !player.IsEradicated() && player.sHealth > 0) {
+        if (!player.IsDead() && !player.IsEradicated() && player.health > 0) {
             ++liveCharacters;
         }
     }

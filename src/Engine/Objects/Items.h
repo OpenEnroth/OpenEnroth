@@ -128,7 +128,7 @@ struct ItemDesc {  // 30h
     /// ID/Rep/St|Not identified name|Sprite Index|VarA|VarB|Equip X|Equip
     /// Y|Notes
     char *iconName = nullptr;              // 0 4
-    char *pName = nullptr;                  // 4 8
+    char *name = nullptr;                  // 4 8
     char *pUnidentifiedName = nullptr;      // 8 c
     char *pDescription = nullptr;           // 0c 10
     uint32_t uValue = 0;          // 10 14

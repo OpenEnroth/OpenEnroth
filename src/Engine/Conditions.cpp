@@ -74,11 +74,11 @@ bool ConditionProcessor::IsPlayerAffected(Player *inPlayer, Condition condToChec
     if (!blockable) return true;
     ConditionProcessor *thisProc = &conditionArray[condToCheck];
     if (thisProc->m_IsBlockedByProtFromMagic &&
-        pParty->pPartyBuffs[PARTY_BUFF_PROTECTION_FROM_MAGIC].expire_time) {
+        pParty->pPartyBuffs[PARTY_BUFF_PROTECTION_FROM_MAGIC].expireTime) {
         if (!(thisProc->m_DoesNeedGmProtFromMagic &&
-              pParty->pPartyBuffs[PARTY_BUFF_PROTECTION_FROM_MAGIC].uSkillMastery < PLAYER_SKILL_MASTERY_GRANDMASTER)) {
-            --pParty->pPartyBuffs[PARTY_BUFF_PROTECTION_FROM_MAGIC].uPower;
-            if (pParty->pPartyBuffs[PARTY_BUFF_PROTECTION_FROM_MAGIC].uPower < 1)
+              pParty->pPartyBuffs[PARTY_BUFF_PROTECTION_FROM_MAGIC].skillMastery < PLAYER_SKILL_MASTERY_GRANDMASTER)) {
+            --pParty->pPartyBuffs[PARTY_BUFF_PROTECTION_FROM_MAGIC].power;
+            if (pParty->pPartyBuffs[PARTY_BUFF_PROTECTION_FROM_MAGIC].power < 1)
                 pParty->pPartyBuffs[PARTY_BUFF_PROTECTION_FROM_MAGIC].Reset();
             return false;
         }

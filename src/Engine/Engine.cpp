@@ -323,7 +323,7 @@ void Engine::StackPartyTorchLight() {
             // max is 800 * torchlight
             // min is 800
             int MinTorch = TorchLightDistance;
-            int MaxTorch = TorchLightDistance * pParty->pPartyBuffs[PARTY_BUFF_TORCHLIGHT].uPower;
+            int MaxTorch = TorchLightDistance * pParty->pPartyBuffs[PARTY_BUFF_TORCHLIGHT].power;
 
             int torchLightFlicker = engine->config->graphics.TorchlightFlicker.value();
             if (torchLightFlicker > 0) {
@@ -1474,7 +1474,7 @@ void _494035_timed_effects__water_walking_damage__etc() {
                 pParty->TakeFood(1);
             } else {
                 for (Player &player : pParty->pPlayers) {
-                    player.sHealth = player.sHealth / (pParty->days_played_without_rest + 1) + 1;
+                    player.health = player.health / (pParty->days_played_without_rest + 1) + 1;
                 }
             }
 
@@ -1505,7 +1505,7 @@ void _494035_timed_effects__water_walking_damage__etc() {
         for (Player &player : pParty->pPlayers) {
             if (player.WearsItem(ITEM_RELIC_HARECKS_LEATHER, ITEM_SLOT_ARMOUR) ||
                 player.HasEnchantedItemEquipped(ITEM_ENCHANTMENT_OF_WATER_WALKING) ||
-                player.pPlayerBuffs[PLAYER_BUFF_WATER_WALK].expire_time) {
+                player.pPlayerBuffs[PLAYER_BUFF_WATER_WALK].expireTime) {
                 player.playEmotion(CHARACTER_EXPRESSION_SMILE, 0);
             } else {
                 if (!player.hasUnderwaterSuitEquipped()) {
@@ -1545,13 +1545,13 @@ void _494035_timed_effects__water_walking_damage__etc() {
 
     uint numPlayersCouldAct = pParty->pPlayers.size();
     for (Player &player : pParty->pPlayers) {
-        if (player.uTimeToRecovery && recoveryTimeDt > 0)
+        if (player.timeToRecovery && recoveryTimeDt > 0)
             player.Recover(GameTime(recoveryTimeDt));
 
         if (player.GetItemsBonus(CHARACTER_ATTRIBUTE_ENDURANCE) +
-            player.sHealth + player.uEndurance >= 1 ||
+            player.health + player.uEndurance >= 1 ||
             player.pPlayerBuffs[PLAYER_BUFF_PRESERVATION].Active()) {
-            if (player.sHealth < 1)
+            if (player.health < 1)
                 player.SetCondition(Condition_Unconscious, 0);
         } else {
             player.SetCondition(Condition_Dead, 0);
@@ -1666,12 +1666,12 @@ void _494035_timed_effects__water_walking_damage__etc() {
     // Check if Fly/Water Walk caster can act
     for (PARTY_BUFF_INDEX buffIdx : {PARTY_BUFF_WATER_WALK, PARTY_BUFF_FLY}) {
         SpellBuff *pBuff = &pParty->pPartyBuffs[buffIdx];
-        if (!pBuff->expire_time.Valid()) {
+        if (!pBuff->expireTime.Valid()) {
             continue;
         }
 
         if (!pBuff->isGMBuff) {
-            if (!pPlayers[pBuff->uCaster]->CanAct()) {
+            if (!pPlayers[pBuff->caster]->CanAct()) {
                 pBuff->Reset();
                 if (buffIdx == PARTY_BUFF_FLY) {
                     pParty->bFlying = false;
@@ -1766,10 +1766,10 @@ void RegeneratePartyHealthMana() {
         // GM does not drain
         if (pParty->FlyActive() && !pParty->pPartyBuffs[PARTY_BUFF_FLY].isGMBuff) {
             if (pParty->bFlying) {
-                int caster = pParty->pPartyBuffs[PARTY_BUFF_FLY].uCaster - 1;
+                int caster = pParty->pPartyBuffs[PARTY_BUFF_FLY].caster - 1;
                 assert(caster >= 0);
-                if (pParty->pPlayers[caster].sMana > 0 && !engine->config->debug.AllMagic.value()) {
-                    pParty->pPlayers[caster].sMana -= 1;
+                if (pParty->pPlayers[caster].mana > 0 && !engine->config->debug.AllMagic.value()) {
+                    pParty->pPlayers[caster].mana -= 1;
                 }
             }
         }
@@ -1778,15 +1778,15 @@ void RegeneratePartyHealthMana() {
         // GM does not drain
         if (pParty->WaterWalkActive() && !pParty->pPartyBuffs[PARTY_BUFF_WATER_WALK].isGMBuff) {
             if (pParty->uFlags & PARTY_FLAGS_1_STANDING_ON_WATER) {
-                int caster = pParty->pPartyBuffs[PARTY_BUFF_WATER_WALK].uCaster - 1;
+                int caster = pParty->pPartyBuffs[PARTY_BUFF_WATER_WALK].caster - 1;
                 int mana_drain = 1;
                 assert(caster >= 0);
                 // Vanilla bug: Water Walk drains mana with the same speed as Fly
                 if (engine->config->gameplay.FixWaterWalkManaDrain.value() && ((cur_minutes % 20) != 0)) {
                     mana_drain = 0;
                 }
-                if (pParty->pPlayers[caster].sMana > 0 && !engine->config->debug.AllMagic.value()) {
-                    pParty->pPlayers[caster].sMana -= mana_drain;
+                if (pParty->pPlayers[caster].mana > 0 && !engine->config->debug.AllMagic.value()) {
+                    pParty->pPlayers[caster].mana -= mana_drain;
                 }
             }
         }
@@ -1800,7 +1800,7 @@ void RegeneratePartyHealthMana() {
 
             SpriteObject spellSprite;
             spellSprite.containing_item.Reset();
-            spellSprite.spell_level = pParty->pPartyBuffs[PARTY_BUFF_IMMOLATION].uPower;
+            spellSprite.spell_level = pParty->pPartyBuffs[PARTY_BUFF_IMMOLATION].power;
             spellSprite.spell_skill = pParty->ImmolationSkillLevel();
             spellSprite.uType = SPRITE_SPELL_FIRE_IMMOLATION;
             spellSprite.uSpellID = SPELL_FIRE_IMMOLATION;
@@ -1809,7 +1809,7 @@ void RegeneratePartyHealthMana() {
             spellSprite.uAttributes = 0;
             spellSprite.uSectorID = 0;
             spellSprite.uSpriteFrameID = 0;
-            spellSprite.spell_caster_pid = PID(OBJECT_Player, pParty->pPartyBuffs[PARTY_BUFF_IMMOLATION].uCaster);
+            spellSprite.spell_caster_pid = PID(OBJECT_Player, pParty->pPartyBuffs[PARTY_BUFF_IMMOLATION].caster);
             spellSprite.uFacing = 0;
             spellSprite.uSoundID = 0;
 
@@ -1870,27 +1870,27 @@ void RegeneratePartyHealthMana() {
                     }
 
                     if (recovery_HP && player.conditions.HasNone({Condition_Dead, Condition_Eradicated})) {
-                        if (player.sHealth < player.GetMaxHealth()) {
-                            player.sHealth++;
+                        if (player.health < player.GetMaxHealth()) {
+                            player.health++;
                         }
-                        if (player.conditions.Has(Condition_Unconscious) && player.sHealth > 0) {
+                        if (player.conditions.Has(Condition_Unconscious) && player.health > 0) {
                             player.conditions.Reset(Condition_Unconscious);
                         }
                     }
 
                     if (recovery_SP && player.conditions.HasNone({Condition_Dead, Condition_Eradicated})) {
-                        if (player.sMana < player.GetMaxMana()) {
-                            player.sMana++;
+                        if (player.mana < player.GetMaxMana()) {
+                            player.mana++;
                         }
                     }
 
                     if (decrease_HP && player.conditions.HasNone({Condition_Dead, Condition_Eradicated})) {
-                        player.sHealth--;
-                        if (!(player.conditions.Has(Condition_Unconscious)) && player.sHealth < 0) {
+                        player.health--;
+                        if (!(player.conditions.Has(Condition_Unconscious)) && player.health < 0) {
                             player.conditions.Set(Condition_Unconscious, pParty->GetPlayingTime());
                         }
-                        if (player.sHealth < 1) {
-                            int enduranceCheck = player.sHealth + player.uEndurance + player.GetItemsBonus(CHARACTER_ATTRIBUTE_ENDURANCE);
+                        if (player.health < 1) {
+                            int enduranceCheck = player.health + player.uEndurance + player.GetItemsBonus(CHARACTER_ATTRIBUTE_ENDURANCE);
                             if (enduranceCheck >= 1 || player.pPlayerBuffs[PLAYER_BUFF_PRESERVATION].Active()) {
                                 player.conditions.Set(Condition_Unconscious, pParty->GetPlayingTime());
                             } else if (!player.conditions.Has(Condition_Dead)) {
@@ -1903,19 +1903,19 @@ void RegeneratePartyHealthMana() {
 
             // regeneration buff
             if (player.pPlayerBuffs[PLAYER_BUFF_REGENERATION].Active() && player.conditions.HasNone({Condition_Dead, Condition_Eradicated})) {
-                player.sHealth += 5 * player.pPlayerBuffs[PLAYER_BUFF_REGENERATION].uPower;
-                if (player.sHealth > player.GetMaxHealth()) {
-                    player.sHealth = player.GetMaxHealth();
+                player.health += 5 * player.pPlayerBuffs[PLAYER_BUFF_REGENERATION].power;
+                if (player.health > player.GetMaxHealth()) {
+                    player.health = player.GetMaxHealth();
                 }
-                if (player.conditions.Has(Condition_Unconscious) && player.sHealth > 0) {
+                if (player.conditions.Has(Condition_Unconscious) && player.health > 0) {
                     player.conditions.Reset(Condition_Unconscious);
                 }
             }
 
             // for warlock
             if (PartyHasDragon() && player.classType == PLAYER_CLASS_WARLOCK) {
-                if (player.sMana < player.GetMaxMana()) {
-                    player.sMana++;
+                if (player.mana < player.GetMaxMana()) {
+                    player.mana++;
                 }
             }
 
@@ -1928,17 +1928,17 @@ void RegeneratePartyHealthMana() {
                 }
 
                 if (player.conditions.HasNone({Condition_Dead, Condition_Eradicated})) {
-                    if (player.sHealth > (player.GetMaxHealth() / 2)) {
-                        player.sHealth = player.sHealth - 2;
+                    if (player.health > (player.GetMaxHealth() / 2)) {
+                        player.health = player.health - 2;
                     }
-                    if (player.sMana > (player.GetMaxMana() / 2)) {
-                        player.sMana = player.sMana - 2;
+                    if (player.mana > (player.GetMaxMana() / 2)) {
+                        player.mana = player.mana - 2;
                     }
                 }
 
                 if (lich_has_jar) {
-                    if (player.sMana < player.GetMaxMana()) {
-                        player.sMana++;
+                    if (player.mana < player.GetMaxMana()) {
+                        player.mana++;
                     }
                 }
             }
@@ -1946,11 +1946,11 @@ void RegeneratePartyHealthMana() {
             // for zombie
             if (player.conditions.Has(Condition_Zombie) &&
                 player.conditions.HasNone({Condition_Dead, Condition_Eradicated})) {
-                if (player.sHealth > (player.GetMaxHealth() / 2)) {
-                    player.sHealth = player.sHealth--;
+                if (player.health > (player.GetMaxHealth() / 2)) {
+                    player.health = player.health--;
                 }
-                if (player.sMana > 0) {
-                    player.sMana = player.sMana--;
+                if (player.mana > 0) {
+                    player.mana = player.mana--;
                 }
             }
         }

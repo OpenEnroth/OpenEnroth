@@ -190,12 +190,12 @@ std::string ItemGen::GetIdentifiedName() {
     ITEM_EQUIP_TYPE equip_type = GetItemEquipType();
     if ((equip_type == EQUIP_REAGENT) || (equip_type == EQUIP_POTION) ||
         (equip_type == EQUIP_GOLD)) {
-        return pItemTable->pItems[uItemID].pName;
+        return pItemTable->pItems[uItemID].name;
     }
 
     if (uItemID == ITEM_QUEST_LICH_JAR_FULL) {  // Lich Jar
         if (uHolderPlayer >= 0 && uHolderPlayer < 4) {
-            const std::string &player_name = pPlayers[uHolderPlayer]->pName;
+            const std::string &player_name = pPlayers[uHolderPlayer]->name;
             if (player_name.back() == 's')
                 return localization->FormatString(
                     LSTR_FMT_JAR,
@@ -209,10 +209,10 @@ std::string ItemGen::GetIdentifiedName() {
 
     if (!pItemTable->IsMaterialNonCommon(this)) {
         if (uEnchantmentType) {
-            return std::string(pItemTable->pItems[uItemID].pName) + " " +
+            return std::string(pItemTable->pItems[uItemID].name) + " " +
                    pItemTable->standardEnchantments[uEnchantmentType - 1].pOfName;
         } else if (special_enchantment == ITEM_ENCHANTMENT_NULL) {
-            return pItemTable->pItems[uItemID].pName;
+            return pItemTable->pItems[uItemID].name;
         } else {
             if (special_enchantment == ITEM_ENCHANTMENT_VAMPIRIC
                 || special_enchantment == ITEM_ENCHANTMENT_DEMON_SLAYING
@@ -232,16 +232,16 @@ std::string ItemGen::GetIdentifiedName() {
                 return fmt::format(
                     "{} {}",
                     pItemTable->pSpecialEnchantments[special_enchantment].pNameAdd,
-                    pItemTable->pItems[uItemID].pName
+                    pItemTable->pItems[uItemID].name
                 );
             } else {
-                return std::string(pItemTable->pItems[uItemID].pName) + " " +
+                return std::string(pItemTable->pItems[uItemID].name) + " " +
                        pItemTable->pSpecialEnchantments[special_enchantment].pNameAdd;
             }
         }
     }
 
-    return pItemTable->pItems[uItemID].pName;
+    return pItemTable->pItems[uItemID].name;
 }
 
 //----- (004505CC) --------------------------------------------------------

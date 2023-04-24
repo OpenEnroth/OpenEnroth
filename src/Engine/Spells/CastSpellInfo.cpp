@@ -1797,7 +1797,7 @@ void CastSpellInfoHelpers::castSpell() {
 
                     pOtherOverlayList->_4418B1(5080, pCastSpell->uPlayerID_2 + 100, 0, 65536);
                     if (pParty->pPlayers[pCastSpell->uPlayerID_2].conditions.Has(Condition_Dead)) {
-                        pParty->pPlayers[pCastSpell->uPlayerID_2].sHealth = 1;
+                        pParty->pPlayers[pCastSpell->uPlayerID_2].health = 1;
                         if (spell_mastery == PLAYER_SKILL_MASTERY_GRANDMASTER) {
                             pParty->pPlayers[pCastSpell->uPlayerID_2].conditions.Reset(Condition_Dead);
                             pParty->pPlayers[pCastSpell->uPlayerID_2].conditions.Reset(Condition_Unconscious);
@@ -1823,18 +1823,18 @@ void CastSpellInfoHelpers::castSpell() {
                     int active_pl_num = 0;
                     for (const Player &player : pParty->pPlayers) {
                         if (player.conditions.HasNone({Condition_Dead, Condition_Petrified, Condition_Eradicated})) {
-                            shared_life_count += player.sHealth;
+                            shared_life_count += player.health;
                             active_pl_num++;
                         }
                     }
                     int mean_life = shared_life_count / active_pl_num;
                     for (size_t i = 0; i < pParty->pPlayers.size(); i++) {
                         if (pParty->pPlayers[i].conditions.HasNone({Condition_Dead, Condition_Petrified, Condition_Eradicated})) {
-                            pParty->pPlayers[i].sHealth = mean_life;
-                            if (pParty->pPlayers[i].sHealth > pParty->pPlayers[i].GetMaxHealth()) {
-                                pParty->pPlayers[i].sHealth = pParty->pPlayers[i].GetMaxHealth();
+                            pParty->pPlayers[i].health = mean_life;
+                            if (pParty->pPlayers[i].health > pParty->pPlayers[i].GetMaxHealth()) {
+                                pParty->pPlayers[i].health = pParty->pPlayers[i].GetMaxHealth();
                             }
-                            if (pParty->pPlayers[i].sHealth > 0) {
+                            if (pParty->pPlayers[i].health > 0) {
                                 pParty->pPlayers[i].SetUnconcious(GameTime(0));
                             }
                             spell_fx_renderer->SetPlayerBuffAnim(pCastSpell->uSpellID, i);
@@ -1883,7 +1883,7 @@ void CastSpellInfoHelpers::castSpell() {
                                 .DiscardConditionIfLastsLongerThan(Condition_Unconscious, pParty->GetPlayingTime() - spell_duration);
                         }
                         pParty->pPlayers[pCastSpell->uPlayerID_2].SetCondition(Condition_Weak, 1);
-                        pParty->pPlayers[pCastSpell->uPlayerID_2].sHealth = 1;
+                        pParty->pPlayers[pCastSpell->uPlayerID_2].health = 1;
                         spell_fx_renderer->SetPlayerBuffAnim(pCastSpell->uSpellID, pCastSpell->uPlayerID_2);
                     }
                     break;
@@ -2610,8 +2610,8 @@ void CastSpellInfoHelpers::castSpell() {
                     }
                     for (Player &player : pParty->pPlayers) {
                         player.conditions.ResetAll();
-                        player.sHealth = player.GetMaxHealth();
-                        player.sMana = player.GetMaxMana();
+                        player.health = player.GetMaxHealth();
+                        player.mana = player.GetMaxMana();
                     }
                     spell_fx_renderer->SetPartyBuffAnim(pCastSpell->uSpellID);
                     if (pPlayer->sAgeModifier + 10 >= 120) {
@@ -2822,8 +2822,8 @@ void CastSpellInfoHelpers::castSpell() {
                     npcData->dialogue_2_evt_id = 0;
                     npcData->dialogue_3_evt_id = pIconsFrameTable->GetIcon("spell96")->GetAnimLength();
                     for (Player &player : pParty->pPlayers) {
-                        player.sHealth = player.GetMaxHealth();
-                        player.sMana = player.GetMaxMana();
+                        player.health = player.GetMaxHealth();
+                        player.mana = player.GetMaxMana();
                     }
                     DDM_DLV_Header *ddm_dlv = &pOutdoor->ddm;
                     if (uCurrentlyLoadedLevelType != LEVEL_Outdoor) {
@@ -2885,9 +2885,9 @@ void CastSpellInfoHelpers::castSpell() {
                     }
                     for (size_t i = 0; i < pParty->pPlayers.size(); i++) {
                         if (pParty->pPlayers[i].CanAct()) {
-                            pParty->pPlayers[i].sHealth += drained_health / active_pl_num;
-                            if (pParty->pPlayers[i].sHealth > pParty->pPlayers[i].GetMaxHealth()) {
-                                pParty->pPlayers[i].sHealth = pParty->pPlayers[i].GetMaxHealth();
+                            pParty->pPlayers[i].health += drained_health / active_pl_num;
+                            if (pParty->pPlayers[i].health > pParty->pPlayers[i].GetMaxHealth()) {
+                                pParty->pPlayers[i].health = pParty->pPlayers[i].GetMaxHealth();
                             }
                             spell_fx_renderer->SetPlayerBuffAnim(pCastSpell->uSpellID, i);
                         }

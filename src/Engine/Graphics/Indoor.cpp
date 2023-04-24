@@ -1125,8 +1125,8 @@ void UpdateActors_BLV() {
             int moveSpeed = actor.uMovementSpeed;
 
             if (actor.pActorBuffs[ACTOR_BUFF_SLOWED].Active()) {
-                if (actor.pActorBuffs[ACTOR_BUFF_SLOWED].uPower)
-                    moveSpeed = actor.uMovementSpeed / actor.pActorBuffs[ACTOR_BUFF_SLOWED].uPower;
+                if (actor.pActorBuffs[ACTOR_BUFF_SLOWED].power)
+                    moveSpeed = actor.uMovementSpeed / actor.pActorBuffs[ACTOR_BUFF_SLOWED].power;
                 else
                     moveSpeed = actor.uMovementSpeed / 2;
             }

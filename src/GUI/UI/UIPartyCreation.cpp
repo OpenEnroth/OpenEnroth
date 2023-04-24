@@ -381,20 +381,20 @@ void GUIWindow_PartyCreation::Update() {
                         ++v126;
                 }
                 if (strlen(keyboardInputHandler->GetTextInput().c_str()) > 0 && v126 != strlen(keyboardInputHandler->GetTextInput().c_str()))
-                    pParty->pPlayers[i].pName = keyboardInputHandler->GetTextInput();
-                pGUIWindow_CurrentMenu->DrawTextInRect(pFontCreate, {pIntervalX, 124}, 0, pParty->pPlayers[i].pName, 130, 0);
+                    pParty->pPlayers[i].name = keyboardInputHandler->GetTextInput();
+                pGUIWindow_CurrentMenu->DrawTextInRect(pFontCreate, {pIntervalX, 124}, 0, pParty->pPlayers[i].name, 130, 0);
                 pParty->pPlayers[i].field_1988[27] = 1;
                 break;
             case WINDOW_INPUT_CANCELLED:  // press escape
                 pGUIWindow_CurrentMenu->keyboard_input_status = WINDOW_INPUT_NONE;
-                pGUIWindow_CurrentMenu->DrawTextInRect(pFontCreate, {pIntervalX, 124}, 0, pParty->pPlayers[i].pName, 130, 0);
+                pGUIWindow_CurrentMenu->DrawTextInRect(pFontCreate, {pIntervalX, 124}, 0, pParty->pPlayers[i].name, 130, 0);
                 SetCurrentMenuID(MENU_NAMEPANELESC);
                 break;
             default:
                 break;
             }
         } else {
-            pGUIWindow_CurrentMenu->DrawTextInRect(pFontCreate, {pIntervalX, 124}, 0, pParty->pPlayers[i].pName, 130, 0);
+            pGUIWindow_CurrentMenu->DrawTextInRect(pFontCreate, {pIntervalX, 124}, 0, pParty->pPlayers[i].name, 130, 0);
         }
 
         std::string pRaceName = pParty->pPlayers[i].GetRaceName();
@@ -813,7 +813,7 @@ bool PartyCreationUI_LoopInternal() {
     for (uint i = 0; i < 4; ++i) {
         if (pParty->pPlayers[i].classType == PLAYER_CLASS_KNIGHT)
             pParty->pPlayers[i].sResMagicBase = 10;
-        pParty->pPlayers[i].pPlayerBuffs[22].expire_time.Reset();
+        pParty->pPlayers[i].pPlayerBuffs[22].expireTime.Reset();
         int page = 0;
         for (PLAYER_SKILL_TYPE j : MagicSkills()) {
             if (pParty->pPlayers[i].pActiveSkills[j]) {
@@ -826,8 +826,8 @@ bool PartyCreationUI_LoopInternal() {
         pItemTable->generateItem(ITEM_TREASURE_LEVEL_2, 40, &item);
         pParty->pPlayers[i].AddItem2(-1, &item);
 
-        pParty->pPlayers[i].sHealth = pParty->pPlayers[i].GetMaxHealth();
-        pParty->pPlayers[i].sMana = pParty->pPlayers[i].GetMaxMana();
+        pParty->pPlayers[i].health = pParty->pPlayers[i].GetMaxHealth();
+        pParty->pPlayers[i].mana = pParty->pPlayers[i].GetMaxMana();
         for (PLAYER_SKILL_TYPE j : AllSkills()) {
             if (!pParty->pPlayers[i].pActiveSkills[j]) continue;
 
