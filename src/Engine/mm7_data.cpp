@@ -2618,7 +2618,6 @@ std::string p2DEventsTXT_Raw;
 int dword_5C35D4;
 char byte_5C45AF[777];
 
-std::array<char, 100> Journal_limitation_factor;
 int ui_current_text_color;
 int64_t qword_5C6DF0;
 char *pHealthPointsAttributeDescription;

@@ -222,7 +222,6 @@ extern std::string p2DEventsTXT_Raw;
 extern int dword_5C35D4;
 extern char byte_5C45AF[];
 extern std::array<char, 10000> pTmpBuf3;
-extern std::array<char, 100> Journal_limitation_factor;
 extern int ui_current_text_color;
 extern int64_t qword_5C6DF0;
 extern char *pHealthPointsAttributeDescription;
