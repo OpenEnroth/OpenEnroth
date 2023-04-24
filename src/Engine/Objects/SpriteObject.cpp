@@ -410,7 +410,7 @@ LABEL_25:
             // end loop2
 
             if (collision_state.adjusted_move_distance >= collision_state.move_distance) {
-                pSpriteObject->vPosition = (collision_state.new_position_lo - Vec3f(0, 0, collision_state.radius_lo - 1)).toIntTrunc();
+                pSpriteObject->vPosition = (collision_state.new_position_lo - Vec3f(0, 0, collision_state.radius_lo + 1)).toIntTrunc();
                 pSpriteObject->uSectorID = collision_state.uSectorID;
                 if (!(pObject->uFlags & OBJECT_DESC_TRIAL_PARTICLE)) {
                     return;
