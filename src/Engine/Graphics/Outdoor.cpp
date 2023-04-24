@@ -2316,7 +2316,7 @@ void ODM_ProcessPartyActions() {
             BSPModel *pModel = &pOutdoor->pBModels[(signed int)collision_state.pid >> 9];
             ODMFace *pODMFace = &pModel->pFaces[((signed int)collision_state.pid >> 3) & 0x3F];
             int bSmallZDelta = (pODMFace->pBoundingBox.z2 - pODMFace->pBoundingBox.z1) <= 32;
-            bool bFaceSlopeTooSteep = pODMFace->pFacePlaneOLD.vNormal.z < 46378;
+            bool bFaceSlopeTooSteep = pODMFace->facePlane_old.normal.z < 46378;
 
             if (engine->IsUnderwater())
                 bFaceSlopeTooSteep = false;
@@ -2343,23 +2343,23 @@ void ODM_ProcessPartyActions() {
                 partySlopeMod = true;
 
                 // push party away from the surface
-                int dot = abs(partyInputYSpeed * pODMFace->pFacePlaneOLD.vNormal.y +
-                           partyInputZSpeed * pODMFace->pFacePlaneOLD.vNormal.z +
-                           partyInputXSpeed * pODMFace->pFacePlaneOLD.vNormal.x) >> 16;
+                int dot = abs(partyInputYSpeed * pODMFace->facePlane_old.normal.y +
+                           partyInputZSpeed * pODMFace->facePlane_old.normal.z +
+                           partyInputXSpeed * pODMFace->facePlane_old.normal.x) >> 16;
                 if ((collision_state.speed / 8) > dot)
                     dot = collision_state.speed / 8;
-                partyInputXSpeed += fixpoint_mul(dot, pODMFace->pFacePlaneOLD.vNormal.x);
-                partyInputYSpeed += fixpoint_mul(dot, pODMFace->pFacePlaneOLD.vNormal.y);
+                partyInputXSpeed += fixpoint_mul(dot, pODMFace->facePlane_old.normal.x);
+                partyInputYSpeed += fixpoint_mul(dot, pODMFace->facePlane_old.normal.y);
                 int v54 = 0;
                 if (!bFaceSlopeTooSteep)
-                    v54 = fixpoint_mul(dot, pODMFace->pFacePlaneOLD.vNormal.z);
+                    v54 = fixpoint_mul(dot, pODMFace->facePlane_old.normal.z);
                 partyInputZSpeed += v54;
-                int v55 = collision_state.radius_lo - pODMFace->pFacePlaneOLD.signedDistanceTo(new_pos_low_x, new_pos_low_y, new_pos_low_z);
+                int v55 = collision_state.radius_lo - pODMFace->facePlane_old.signedDistanceTo(new_pos_low_x, new_pos_low_y, new_pos_low_z);
                 if (v55 > 0) {
-                    partyNewX = new_pos_low_x + fixpoint_mul(pODMFace->pFacePlaneOLD.vNormal.x, v55);
-                    partyNewY = new_pos_low_y + fixpoint_mul(pODMFace->pFacePlaneOLD.vNormal.y, v55);
+                    partyNewX = new_pos_low_x + fixpoint_mul(pODMFace->facePlane_old.normal.x, v55);
+                    partyNewY = new_pos_low_y + fixpoint_mul(pODMFace->facePlane_old.normal.y, v55);
                     if (!bFaceSlopeTooSteep)
-                        partyNewZ = new_pos_low_z + fixpoint_mul(pODMFace->pFacePlaneOLD.vNormal.z, v55);
+                        partyNewZ = new_pos_low_z + fixpoint_mul(pODMFace->facePlane_old.normal.z, v55);
                 }
             }
 
@@ -2368,14 +2368,14 @@ void ODM_ProcessPartyActions() {
                 pParty->uFlags &= ~PARTY_FLAGS_1_LANDING;
 
                 // this pushes party slightly up away from the surface so you can climb it
-                int dot = abs(partyInputYSpeed * pODMFace->pFacePlaneOLD.vNormal.y +
-                           partyInputZSpeed * pODMFace->pFacePlaneOLD.vNormal.z +
-                           partyInputXSpeed * pODMFace->pFacePlaneOLD.vNormal.x) >> 16;
+                int dot = abs(partyInputYSpeed * pODMFace->facePlane_old.normal.y +
+                           partyInputZSpeed * pODMFace->facePlane_old.normal.z +
+                           partyInputXSpeed * pODMFace->facePlane_old.normal.x) >> 16;
                 if ((collision_state.speed / 8) > dot)
                     dot = collision_state.speed / 8;
-                partyInputZSpeed += fixpoint_mul(dot, pODMFace->pFacePlaneOLD.vNormal.z);
-                partyInputXSpeed += fixpoint_mul(dot, pODMFace->pFacePlaneOLD.vNormal.x);
-                partyInputYSpeed += fixpoint_mul(dot, pODMFace->pFacePlaneOLD.vNormal.y);
+                partyInputZSpeed += fixpoint_mul(dot, pODMFace->facePlane_old.normal.z);
+                partyInputXSpeed += fixpoint_mul(dot, pODMFace->facePlane_old.normal.x);
+                partyInputYSpeed += fixpoint_mul(dot, pODMFace->facePlane_old.normal.y);
 
                 partySlopeMod = true;
             }

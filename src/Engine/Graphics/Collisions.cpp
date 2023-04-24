@@ -43,9 +43,9 @@ static bool CollideSphereWithFace(BLVFace *face, const Vec3f &pos, float radius,
         return false;
 
     // dot_product(dir, normal) is a cosine of an angle between them.
-    float cos_dir_normal = dot(dir, face->pFacePlane.vNormal);
+    float cos_dir_normal = dot(dir, face->facePlane.normal);
 
-    float pos_face_distance = face->pFacePlane.signedDistanceTo(pos);
+    float pos_face_distance = face->facePlane.signedDistanceTo(pos);
 
     // How deep into the model that the face belongs to we already are,
     // positive value => actor's sphere already intersects the model.
@@ -64,7 +64,7 @@ static bool CollideSphereWithFace(BLVFace *face, const Vec3f &pos, float radius,
     }
 
     Vec3f new_pos =
-        pos + move_distance * dir - overshoot * face->pFacePlane.vNormal;
+        pos + move_distance * dir - overshoot * face->facePlane.normal;
 
     if (!face->Contains(new_pos.toInt(), model_idx))
         return false; // We've just managed to slide past the face, so pretend no collision happened.
@@ -98,7 +98,7 @@ static bool CollidePointWithFace(BLVFace *face, const Vec3f &pos, const Vec3f &d
     // _fp suffix => that's a fixpoint number
 
     // dot_product(dir, normal) is a cosine of an angle between them.
-    float cos_dir_normal = dot(dir, face->pFacePlane.vNormal);
+    float cos_dir_normal = dot(dir, face->facePlane.normal);
 
     if (fuzzyIsNull(cos_dir_normal))
         return false; // dir is perpendicular to face normal.
@@ -109,7 +109,7 @@ static bool CollidePointWithFace(BLVFace *face, const Vec3f &pos, const Vec3f &d
     if (cos_dir_normal > 0 && !face->Portal())
         return false; // We're facing away && face is not a portal.
 
-    float pos_face_distance = face->pFacePlane.signedDistanceTo(pos);
+    float pos_face_distance = face->facePlane.signedDistanceTo(pos);
 
     if (cos_dir_normal < 0 && pos_face_distance < 0)
         return false; // Facing towards the face but already inside the model.
@@ -143,8 +143,8 @@ static bool CollidePointWithFace(BLVFace *face, const Vec3f &pos, const Vec3f &d
 */
 static void CollideBodyWithFace(BLVFace *face, int face_pid, bool ignore_ethereal, int model_idx) {
     auto collide_once = [&](const Vec3f &old_pos, const Vec3f &new_pos, const Vec3f &dir, int radius) {
-        float distance_old = face->pFacePlane.signedDistanceTo(old_pos);
-        float distance_new = face->pFacePlane.signedDistanceTo(new_pos);
+        float distance_old = face->facePlane.signedDistanceTo(old_pos);
+        float distance_new = face->facePlane.signedDistanceTo(new_pos);
         if (distance_old > 0 && (distance_old <= radius || distance_new <= radius) && distance_new <= distance_old) {
             bool have_collision = false;
             float move_distance = collision_state.move_distance;
@@ -297,7 +297,7 @@ void CollideIndoorWithGeometry(bool ignore_ethereal) {
         if (!collision_state.bbox.intersects(pFace->pBounding))
             continue;
 
-        float distance = abs(pFace->pFacePlane.signedDistanceTo(collision_state.position_lo));
+        float distance = abs(pFace->facePlane.signedDistanceTo(collision_state.position_lo));
         if(distance > collision_state.move_distance + 16)
             continue;
 
@@ -335,8 +335,8 @@ void CollideOutdoorWithModels(bool ignore_ethereal) {
 
             // TODO: we should really either merge two face classes, or template the functions down the chain call here.
             BLVFace face;
-            face.pFacePlane_old = mface.pFacePlaneOLD;
-            face.pFacePlane = mface.pFacePlane;
+            face.facePlane_old = mface.facePlane_old;
+            face.facePlane = mface.facePlane;
             face.uAttributes = mface.uAttributes;
             face.pBounding = mface.pBoundingBox;
             face.zCalc = mface.zCalc;
@@ -387,8 +387,8 @@ bool CollideIndoorWithPortals() {
         if (!collision_state.bbox.intersects(face->pBounding))
             continue;
 
-        float distance_lo_old = face->pFacePlane.signedDistanceTo(collision_state.position_lo);
-        float distance_lo_new = face->pFacePlane.signedDistanceTo(collision_state.new_position_lo);
+        float distance_lo_old = face->facePlane.signedDistanceTo(collision_state.position_lo);
+        float distance_lo_new = face->facePlane.signedDistanceTo(collision_state.new_position_lo);
         float move_distance = collision_state.move_distance;
         if ((distance_lo_old < collision_state.radius_lo || distance_lo_new < collision_state.radius_lo) &&
             (distance_lo_old > -collision_state.radius_lo || distance_lo_new > -collision_state.radius_lo) &&
@@ -589,13 +589,13 @@ void ProcessActorCollisionsBLV(Actor &actor, bool isAboveGround, bool isFlying) 
                     continue; // TODO(captainurist): drop this continue
                 }
             } else {
-                float velocityDotNormal = dot(face->pFacePlane.vNormal, actor.vVelocity.toFloat());
+                float velocityDotNormal = dot(face->facePlane.normal, actor.vVelocity.toFloat());
                 velocityDotNormal = std::max(std::abs(velocityDotNormal), collision_state.speed / 8);
-                actor.vVelocity += (velocityDotNormal * face->pFacePlane.vNormal).toShort();
+                actor.vVelocity += (velocityDotNormal * face->facePlane.normal).toShort();
                 if (face->uPolygonType != POLYGON_InBetweenFloorAndWall && face->uPolygonType != POLYGON_Floor) {
-                    float overshoot = collision_state.radius_lo - face->pFacePlane.signedDistanceTo(actor.vPosition.toFloat());
+                    float overshoot = collision_state.radius_lo - face->facePlane.signedDistanceTo(actor.vPosition.toFloat());
                     if (overshoot > 0)
-                        actor.vPosition += (overshoot * pIndoor->pFaces[id].pFacePlane.vNormal).toShort();
+                        actor.vPosition += (overshoot * pIndoor->pFaces[id].facePlane.normal).toShort();
                     actor.uYawAngle = TrigLUT.atan2(actor.vVelocity.x, actor.vVelocity.y);
                 }
             }
@@ -710,16 +710,16 @@ void ProcessActorCollisionsODM(Actor &actor, bool isFlying) {
                         actor.vVelocity.x = 0;
                     }
                 } else {
-                    float velocityDotNormal = dot(face->pFacePlane.vNormal, actor.vVelocity.toFloat());
+                    float velocityDotNormal = dot(face->facePlane.normal, actor.vVelocity.toFloat());
                     // TODO(captainurist): in BLV code we have std::abs(velocityDotNormal) here, and adding std::abs affects traces.
                     // Note that not all copies of this code have std::abs. Why?
                     velocityDotNormal = std::max(velocityDotNormal, collision_state.speed / 8);
 
-                    actor.vVelocity += (velocityDotNormal * face->pFacePlane.vNormal).toShort();
+                    actor.vVelocity += (velocityDotNormal * face->facePlane.normal).toShort();
                     if (face->uPolygonType != POLYGON_InBetweenFloorAndWall) {
-                        float overshoot = collision_state.radius_lo - face->pFacePlane.signedDistanceTo(actor.vPosition.toFloat());
+                        float overshoot = collision_state.radius_lo - face->facePlane.signedDistanceTo(actor.vPosition.toFloat());
                         if (overshoot > 0)
-                            actor.vPosition += (overshoot * face->pFacePlane.vNormal).toShort();
+                            actor.vPosition += (overshoot * face->facePlane.normal).toShort();
                         actor.uYawAngle = TrigLUT.atan2(actor.vVelocity.x, actor.vVelocity.y);
                     }
                 }

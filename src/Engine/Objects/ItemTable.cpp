@@ -177,7 +177,7 @@ void ItemTable::Initialize() {
         auto tokens = tokenize(lineContent, '\t');
 
         ITEM_TYPE item_counter = ITEM_TYPE(atoi(tokens[0]));
-        pItems[item_counter].pIconName = removeQuotes(tokens[1]);
+        pItems[item_counter].iconName = removeQuotes(tokens[1]);
         pItems[item_counter].pName = removeQuotes(tokens[2]);
         pItems[item_counter].uValue = atoi(tokens[3]);
         pItems[item_counter].uEquipType = valueOr(equipStatMap, tokens[4], EQUIP_NONE);
@@ -694,7 +694,7 @@ void ItemTable::PrintItemTypesEnum() {
 
     for(ITEM_TYPE i : pItems.indices()) {
         const ItemDesc &desc = pItems[i];
-        std::string icon = desc.pIconName;
+        std::string icon = desc.iconName;
         std::string name = desc.pName;
         std::string description = desc.pDescription;
 

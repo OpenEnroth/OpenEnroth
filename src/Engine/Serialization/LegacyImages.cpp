@@ -94,45 +94,43 @@ static void Deserialize(const std::array<T1, N> &src, IndexedArray<T2, L, H> *ds
 }
 
 void Deserialize(const SpriteFrame_MM7 &src, SpriteFrame *dst) {
-    dst->icon_name = src.pIconName.data();
+    dst->icon_name = src.iconName.data();
     std::transform(dst->icon_name.begin(), dst->icon_name.end(), dst->icon_name.begin(), ::tolower);
 
-    dst->texture_name = src.pTextureName.data();
+    dst->texture_name = src.textureName.data();
     std::transform(dst->texture_name.begin(), dst->texture_name.end(), dst->texture_name.begin(), ::tolower);
 
     for (unsigned int i = 0; i < 8; ++i)
         dst->hw_sprites[i] = nullptr;
 
     dst->scale = src.scale / 65536.0;
-    dst->uFlags = src.uFlags;
+    dst->uFlags = src.flags;
 
-    dst->uGlowRadius = src.uGlowRadius;
-    dst->uPaletteID = src.uPaletteID;
-    dst->ResetPaletteIndex(src.uPaletteIndex);
-    dst->uAnimTime = src.uAnimTime;
-    dst->uAnimLength = src.uAnimLength;
+    dst->uGlowRadius = src.glowRadius;
+    dst->uPaletteID = src.paletteId;
+    dst->ResetPaletteIndex(src.paletteIndex);
+    dst->uAnimTime = src.animTime;
+    dst->uAnimLength = src.animLength;
 }
 
 void Deserialize(const BLVFace_MM7 &src, BLVFace *dst) {
-    dst->pFacePlane = src.pFacePlane;
-    dst->pFacePlane_old = src.pFacePlane_old;
-    dst->zCalc.init(dst->pFacePlane_old);
-    dst->uAttributes = static_cast<FaceAttributes>(src.uAttributes);
+    dst->facePlane = src.facePlane;
+    dst->facePlane_old = src.facePlane_old;
+    dst->zCalc.init(dst->facePlane_old);
+    dst->uAttributes = static_cast<FaceAttributes>(src.attributes);
     dst->pVertexIDs = nullptr;
     dst->pXInterceptDisplacements = nullptr;
     dst->pYInterceptDisplacements = nullptr;
     dst->pZInterceptDisplacements = nullptr;
     dst->pVertexUIDs = nullptr;
     dst->pVertexVIDs = nullptr;
-    dst->uFaceExtraID = src.uFaceExtraID;
+    dst->uFaceExtraID = src.faceExtraId;
     dst->resource = nullptr;
-    dst->uSectorID = src.uSectorID;
-    dst->uBackSectorID = src.uBackSectorID;
-    dst->pBounding = src.pBounding;
-    dst->uPolygonType = static_cast<PolygonType>(src.uPolygonType);
-    dst->uNumVertices = src.uNumVertices;
-    dst->field_5E = src.field_5E;
-    dst->field_5F = src.field_5F;
+    dst->uSectorID = src.sectorId;
+    dst->uBackSectorID = src.backSectorId;
+    dst->pBounding = src.bounding;
+    dst->uPolygonType = static_cast<PolygonType>(src.polygonType);
+    dst->uNumVertices = src.numVertices;
 }
 
 void Serialize(const Timer &src, Timer_MM7 *dst) {
@@ -1433,14 +1431,14 @@ void Deserialize(const FontData_MM7 &src, size_t size, FontData *dst) {
 }
 
 void Deserialize(const ODMFace_MM7 &src, ODMFace *dst) {
-    dst->pFacePlaneOLD = src.pFacePlane;
-    dst->pFacePlane.vNormal.x = dst->pFacePlaneOLD.vNormal.x / 65536.0;
-    dst->pFacePlane.vNormal.y = dst->pFacePlaneOLD.vNormal.y / 65536.0;
-    dst->pFacePlane.vNormal.z = dst->pFacePlaneOLD.vNormal.z / 65536.0;
-    dst->pFacePlane.dist = dst->pFacePlaneOLD.dist / 65536.0;
+    dst->facePlane_old = src.facePlane;
+    dst->facePlane.normal.x = dst->facePlane_old.normal.x / 65536.0;
+    dst->facePlane.normal.y = dst->facePlane_old.normal.y / 65536.0;
+    dst->facePlane.normal.z = dst->facePlane_old.normal.z / 65536.0;
+    dst->facePlane.dist = dst->facePlane_old.dist / 65536.0;
 
-    dst->zCalc.init(dst->pFacePlaneOLD);
-    dst->uAttributes = FaceAttributes(src.uAttributes);
+    dst->zCalc.init(dst->facePlane_old);
+    dst->uAttributes = FaceAttributes(src.attributes);
     dst->pVertexIDs = src.pVertexIDs;
     dst->pTextureUIDs = src.pTextureUIDs;
     dst->pTextureVIDs = src.pTextureVIDs;

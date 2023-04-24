@@ -706,7 +706,7 @@ PLAYER_SKILL_TYPE ItemGen::GetPlayerSkillType() const {
 }
 
 char *ItemGen::GetIconName() const {
-    return pItemTable->pItems[this->uItemID].pIconName;
+    return pItemTable->pItems[this->uItemID].iconName;
 }
 
 uint8_t ItemGen::GetDamageDice() const {

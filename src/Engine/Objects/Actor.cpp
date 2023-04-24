@@ -4476,9 +4476,9 @@ bool Detect_Between_Objects(unsigned int uObjID, unsigned int uObj2ID) {
         portalverts = &pIndoor->pVertices[*portalface->pVertexIDs];
 
         // fixpoint   ray ob1 to portal dot normal
-        float obj1portaldot = portalface->pFacePlane.vNormal.z * (portalverts->z - obj1_z) +
-              portalface->pFacePlane.vNormal.y * (portalverts->y - obj1_y) +
-              portalface->pFacePlane.vNormal.x * (portalverts->x - obj1_x);
+        float obj1portaldot = portalface->facePlane.normal.z * (portalverts->z - obj1_z) +
+                              portalface->facePlane.normal.y * (portalverts->y - obj1_y) +
+                              portalface->facePlane.normal.x * (portalverts->x - obj1_x);
 
         // flip norm if we are not looking out from current sector
         if (current_sector != portalface->uSectorID) obj1portaldot = -obj1portaldot;
@@ -4495,18 +4495,18 @@ bool Detect_Between_Objects(unsigned int uObjID, unsigned int uObj2ID) {
         }
 
         // dot plane normal with obj ray
-        float v32 = portalface->pFacePlane.vNormal.x * rayxnorm;
-        float v34 = portalface->pFacePlane.vNormal.y * rayynorm;
-        float v33 = portalface->pFacePlane.vNormal.z * rayznorm;
+        float v32 = portalface->facePlane.normal.x * rayxnorm;
+        float v34 = portalface->facePlane.normal.y * rayynorm;
+        float v33 = portalface->facePlane.normal.z * rayznorm;
 
         // if face is parallel == 0 dont check LOS  -- add epsilon?
         float facenotparallel = v32 + v33 + v34;
         if (facenotparallel) {
             // point to plance distance
-            float pointplanedist = -(portalface->pFacePlane.dist +
-                  obj1_z * portalface->pFacePlane.vNormal.z +
-                  obj1_x * portalface->pFacePlane.vNormal.x +
-                  obj1_y * portalface->pFacePlane.vNormal.y);
+            float pointplanedist = -(portalface->facePlane.dist +
+                  obj1_z * portalface->facePlane.normal.z +
+                  obj1_x * portalface->facePlane.normal.x +
+                  obj1_y * portalface->facePlane.normal.y);
 
             // epsilon check?
             if (abs(pointplanedist) / 16384.0 > abs(facenotparallel)) continue;

@@ -299,16 +299,16 @@ void SpriteObject::updateObjectODM(unsigned int uLayingItemID) {
                     pSpriteObjects[uLayingItemID].vVelocity = Vec3s(0, 0, 0);
                 }
             } else {
-                int dotFix = abs(dot(face->pFacePlaneOLD.vNormal, pSpriteObjects[uLayingItemID].vVelocity)) >> 16;
+                int dotFix = abs(dot(face->facePlane_old.normal, pSpriteObjects[uLayingItemID].vVelocity)) >> 16;
                 if ((collision_state.speed / 8) > dotFix) {
                     dotFix = collision_state.speed / 8;
                 }
                 // v57 = fixpoint_mul(v56, face->pFacePlane.vNormal.x);
                 // v58 = fixpoint_mul(v56, face->pFacePlane.vNormal.y);
-                int newZVel = fixpoint_mul(dotFix, face->pFacePlaneOLD.vNormal.z);
-                pSpriteObjects[uLayingItemID].vVelocity.x += 2 * fixpoint_mul(dotFix, face->pFacePlaneOLD.vNormal.x);
-                pSpriteObjects[uLayingItemID].vVelocity.y += 2 * fixpoint_mul(dotFix, face->pFacePlaneOLD.vNormal.y);
-                if (face->pFacePlaneOLD.vNormal.z <= 32000) {
+                int newZVel = fixpoint_mul(dotFix, face->facePlane_old.normal.z);
+                pSpriteObjects[uLayingItemID].vVelocity.x += 2 * fixpoint_mul(dotFix, face->facePlane_old.normal.x);
+                pSpriteObjects[uLayingItemID].vVelocity.y += 2 * fixpoint_mul(dotFix, face->facePlane_old.normal.y);
+                if (face->facePlane_old.normal.z <= 32000) {
                     newZVel = 2 * newZVel;
                 } else {
                     pSpriteObjects[uLayingItemID].vVelocity.z += newZVel;
@@ -448,14 +448,14 @@ LABEL_25:
                 collision_state.ignored_face_id = PID_ID(collision_state.pid);
                 if (pIndoor->pFaces[pidId].uPolygonType != POLYGON_Floor) {
                     // Before this variable changed floor_lvl variable which is obviously invalid.
-                    int dotFix = abs(dot(pIndoor->pFaces[pidId].pFacePlane_old.vNormal, pSpriteObject->vVelocity)) >> 16;
+                    int dotFix = abs(dot(pIndoor->pFaces[pidId].facePlane_old.normal, pSpriteObject->vVelocity)) >> 16;
                     if ((collision_state.speed / 8) > dotFix) {
                         dotFix = collision_state.speed / 8;
                     }
-                    pSpriteObject->vVelocity.x += 2 * fixpoint_mul(dotFix, pIndoor->pFaces[pidId].pFacePlane_old.vNormal.x);
-                    pSpriteObject->vVelocity.y += 2 * fixpoint_mul(dotFix, pIndoor->pFaces[pidId].pFacePlane_old.vNormal.y);
-                    int newZVel = fixpoint_mul(dotFix, pIndoor->pFaces[pidId].pFacePlane_old.vNormal.z);
-                    if (pIndoor->pFaces[pidId].pFacePlane_old.vNormal.z <= 32000) {
+                    pSpriteObject->vVelocity.x += 2 * fixpoint_mul(dotFix, pIndoor->pFaces[pidId].facePlane_old.normal.x);
+                    pSpriteObject->vVelocity.y += 2 * fixpoint_mul(dotFix, pIndoor->pFaces[pidId].facePlane_old.normal.y);
+                    int newZVel = fixpoint_mul(dotFix, pIndoor->pFaces[pidId].facePlane_old.normal.z);
+                    if (pIndoor->pFaces[pidId].facePlane_old.normal.z <= 32000) {
                         newZVel = 2 * newZVel;
                     } else {
                         pSpriteObject->vVelocity.z += newZVel;
@@ -508,7 +508,7 @@ LABEL_25:
         if (pIndoor->pFaces[uFaceID].uPolygonType == POLYGON_Floor) {
             pSpriteObject->vVelocity.z = 0;
         } else {
-            if (pIndoor->pFaces[uFaceID].pFacePlane_old.vNormal.z < 45000) {
+            if (pIndoor->pFaces[uFaceID].facePlane_old.normal.z < 45000) {
                 pSpriteObject->vVelocity.z -= pEventTimer->uTimeElapsed * GetGravityStrength();
             }
         }

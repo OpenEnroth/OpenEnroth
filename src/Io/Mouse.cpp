@@ -34,7 +34,7 @@ void Mouse::RemoveHoldingItem() {
 }
 
 void Mouse::SetCursorBitmapFromItemID(ITEM_TYPE uItemID) {
-    SetCursorImage(pItemTable->pItems[uItemID].pIconName);
+    SetCursorImage(pItemTable->pItems[uItemID].iconName);
 }
 
 void Mouse::SetCurrentCursorBitmap() { SetCursorImage(this->cursor_name); }

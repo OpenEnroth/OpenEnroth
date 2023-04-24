@@ -39,21 +39,21 @@ struct Timer;
 #pragma pack(push, 1)
 
 struct SpriteFrame_MM6 {
-    std::array<char, 12> pIconName;
-    std::array<char, 12> pTextureName;    // c
-    std::array<int16_t, 8> pHwSpriteIDs;  // 18h
+    std::array<char, 12> iconName;
+    std::array<char, 12> textureName;    // c
+    std::array<int16_t, 8> hwSpriteIds;  // 18h
     int32_t scale;            // 28h
-    int32_t uFlags;               // 2c
-    int16_t uGlowRadius;      // 30
-    int16_t uPaletteID;       // 32
-    int16_t uPaletteIndex;
-    int16_t uAnimTime;
+    int32_t flags;               // 2c
+    int16_t glowRadius;      // 30
+    int16_t paletteId;       // 32
+    int16_t paletteIndex;
+    int16_t animTime;
 };
 static_assert(sizeof(SpriteFrame_MM6) == 56);
 
 
 struct SpriteFrame_MM7 : public SpriteFrame_MM6 {
-    int16_t uAnimLength;
+    int16_t animLength;
     int16_t _pad;
 };
 static_assert(sizeof(SpriteFrame_MM7) == 60);
@@ -62,27 +62,26 @@ void Deserialize(const SpriteFrame_MM7 &src, SpriteFrame *dst);
 
 
 struct BLVFace_MM7 {
-    Planef pFacePlane;
-    Planei pFacePlane_old;
+    Planef facePlane;
+    Planei facePlane_old;
     int32_t zCalc1;
     int32_t zCalc2;
     int32_t zCalc3;
-    uint32_t uAttributes;
-    int32_t pVertexIDs;
-    int32_t pXInterceptDisplacements;
-    int32_t pYInterceptDisplacements;
-    int32_t pZInterceptDisplacements;
-    int32_t pVertexUIDs;
-    int32_t pVertexVIDs;
-    uint16_t uFaceExtraID;
-    uint16_t uBitmapID;
-    uint16_t uSectorID;
-    int16_t uBackSectorID;
-    BBoxs pBounding;
-    uint8_t uPolygonType;
-    uint8_t uNumVertices;
-    char field_5E;
-    char field_5F;
+    uint32_t attributes;
+    int32_t vertexIDs;
+    int32_t xInterceptDisplacements;
+    int32_t yInterceptDisplacements;
+    int32_t zInterceptDisplacements;
+    int32_t vertexUIds;
+    int32_t vertexVIds;
+    uint16_t faceExtraId;
+    uint16_t bitmapId;
+    uint16_t sectorId;
+    int16_t backSectorId;
+    BBoxs bounding;
+    uint8_t polygonType;
+    uint8_t numVertices;
+    int16_t _pad;
 };
 static_assert(sizeof(BLVFace_MM7) == 0x60);
 
@@ -90,22 +89,22 @@ void Deserialize(const BLVFace_MM7 &src, BLVFace *dst);
 
 
 struct TileDesc_MM7 {
-    std::array<char, 16> pTileName;
-    uint16_t uTileID;
-    uint16_t uBitmapID;
-    uint16_t tileset;
-    uint16_t uSection;
-    uint16_t uAttributes;
+    std::array<char, 16> tileName;
+    uint16_t tileId;
+    uint16_t bitmapId;
+    uint16_t tileSet;
+    uint16_t section;
+    uint16_t attributes;
 };
 static_assert(sizeof(TileDesc_MM7) == 26);
 
 
 struct TextureFrame_MM7 {
-    std::array<char, 12> pTextureName;
-    int16_t uTextureID;
-    int16_t uAnimTime;
-    int16_t uAnimLength;
-    int16_t uFlags;
+    std::array<char, 12> textureName;
+    int16_t textureID;
+    int16_t animTime;
+    int16_t animLength;
+    int16_t flags;
 };
 static_assert(sizeof(TextureFrame_MM7) == 20);
 
@@ -812,11 +811,11 @@ void Deserialize(const FontData_MM7 &src, size_t size, FontData *dst);
 
 
 struct ODMFace_MM7 {
-    Planei pFacePlane;
+    Planei facePlane;
     int32_t zCalc1;
     int32_t zCalc2;
     int32_t zCalc3;
-    uint32_t uAttributes;
+    uint32_t attributes;
     std::array<uint16_t, 20> pVertexIDs;
     std::array<int16_t, 20> pTextureUIDs;
     std::array<int16_t, 20> pTextureVIDs;

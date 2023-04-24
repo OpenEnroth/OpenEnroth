@@ -576,7 +576,7 @@ void Player::SetCondition(Condition uConditionIdx, int blockable) {
 }
 
 bool Player::canFitItem(unsigned int uSlot, ITEM_TYPE uItemID) {
-    auto img = assets->GetImage_ColorKey(pItemTable->pItems[uItemID].pIconName);
+    auto img = assets->GetImage_ColorKey(pItemTable->pItems[uItemID].iconName);
     unsigned int slotWidth = GetSizeInInventorySlots(img->GetWidth());
     unsigned int slotHeight = GetSizeInInventorySlots(img->GetHeight());
 
@@ -720,7 +720,7 @@ void Player::PutItemArInventoryIndex(
     ITEM_TYPE uItemID, int itemListPos,
     int index) {  // originally accepted ItemGen *but needed only its uItemID
 
-    auto img = assets->GetImage_ColorKey(pItemTable->pItems[uItemID].pIconName);
+    auto img = assets->GetImage_ColorKey(pItemTable->pItems[uItemID].iconName);
     unsigned int slot_width = GetSizeInInventorySlots(img->GetWidth());
     unsigned int slot_height = GetSizeInInventorySlots(img->GetHeight());
 
@@ -6791,7 +6791,7 @@ void Player::OnInventoryLeftClick() {
                     memcpy(&pParty->pPickedItem, &this->pInventoryItemList[invItemIndex - 1], sizeof(pParty->pPickedItem));
                     this->RemoveItemAtInventoryIndex(invMatrixIndex);
                     pickedItemId = pParty->pPickedItem.uItemID;
-                    mouse->SetCursorImage(pItemTable->pItems[pickedItemId].pIconName);
+                    mouse->SetCursorImage(pItemTable->pItems[pickedItemId].iconName);
                     return;
                 }
             } else {  // hold item
