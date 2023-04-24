@@ -559,7 +559,7 @@ bool Vis::Intersect_Ray_Face(RenderVertexSoft *pRayStart,
     c2 = pFace->facePlane.normal.x *
          ray_dir_y  // get length of the line(Это дает нам длину линии)
          + pFace->facePlane.normal.y * ray_dir_x +
-         pFace->facePlane.normal.z * ray_dir_z;
+         pFace->facePlane.normal.z * ray_dir_z; // TODO(captainurist): x/y messed up here
     if (c2 > -EPSILON &&
         c2 < EPSILON)  // ray faces face's normal ( > 0) or parallel ( == 0)
         return false;
