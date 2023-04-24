@@ -136,29 +136,29 @@ void Deserialize(const BLVFace_MM7 &src, BLVFace *dst) {
 void Serialize(const Timer &src, Timer_MM7 *dst) {
     memzero(dst);
 
-    dst->bReady = src.bReady;
-    dst->bPaused = src.bPaused;
-    dst->bTackGameTime = src.bTackGameTime;
-    dst->uStartTime = src.uStartTime;
-    dst->uStopTime = src.uStopTime;
-    dst->uGameTimeStart = src.uGameTimeStart;
+    dst->ready = src.bReady;
+    dst->paused = src.bPaused;
+    dst->tackGameTime = src.bTackGameTime;
+    dst->startTime = src.uStartTime;
+    dst->stopTime = src.uStopTime;
+    dst->gameTimeStart = src.uGameTimeStart;
     dst->field_18 = src.field_18;
-    dst->uTimeElapsed = src.uTimeElapsed;
-    dst->dt_fixpoint = src.dt_fixpoint;
-    dst->uTotalGameTimeElapsed = src.uTotalGameTimeElapsed;
+    dst->timeElapsed = src.uTimeElapsed;
+    dst->dtFixpoint = src.dt_fixpoint;
+    dst->totalGameTimeElapsed = src.uTotalGameTimeElapsed;
 }
 
 void Deserialize(const Timer_MM7 &src, Timer *dst) {
-    dst->bReady = src.bReady;
-    dst->bPaused = src.bPaused;
-    dst->bTackGameTime = src.bTackGameTime;
-    dst->uStartTime = src.uStartTime;
-    dst->uStopTime = src.uStopTime;
-    dst->uGameTimeStart = src.uGameTimeStart;
+    dst->bReady = src.ready;
+    dst->bPaused = src.paused;
+    dst->bTackGameTime = src.tackGameTime;
+    dst->uStartTime = src.startTime;
+    dst->uStopTime = src.stopTime;
+    dst->uGameTimeStart = src.gameTimeStart;
     dst->field_18 = src.field_18;
-    dst->uTimeElapsed = src.uTimeElapsed;
-    dst->dt_fixpoint = src.dt_fixpoint;
-    dst->uTotalGameTimeElapsed = src.uTotalGameTimeElapsed;
+    dst->uTimeElapsed = src.timeElapsed;
+    dst->dt_fixpoint = src.dtFixpoint;
+    dst->uTotalGameTimeElapsed = src.totalGameTimeElapsed;
 }
 
 void Serialize(const NPCData &src, NPCData_MM7 *dst) {
@@ -214,10 +214,10 @@ void Serialize(const OtherOverlay &src, OtherOverlay_MM7 *dst) {
 
     dst->field_0 = src.field_0;
     dst->field_2 = src.field_2;
-    dst->sprite_frame_time = src.sprite_frame_time;
+    dst->spriteFrameTime = src.sprite_frame_time;
     dst->field_6 = src.field_6;
-    dst->screen_space_x = src.screen_space_x;
-    dst->screen_space_y = src.screen_space_y;
+    dst->screenSpaceX = src.screen_space_x;
+    dst->screenSpaceY = src.screen_space_y;
     dst->field_C = src.field_C;
     dst->field_E = src.field_E;
     dst->field_10 = src.field_10;
@@ -228,10 +228,10 @@ void Deserialize(const OtherOverlay_MM7 &src, OtherOverlay *dst) {
 
     dst->field_0 = src.field_0;
     dst->field_2 = src.field_2;
-    dst->sprite_frame_time = src.sprite_frame_time;
+    dst->sprite_frame_time = src.spriteFrameTime;
     dst->field_6 = src.field_6;
-    dst->screen_space_x = src.screen_space_x;
-    dst->screen_space_y = src.screen_space_y;
+    dst->screen_space_x = src.screenSpaceX;
+    dst->screen_space_y = src.screenSpaceY;
     dst->field_C = src.field_C;
     dst->field_E = src.field_E;
     dst->field_10 = src.field_10;
@@ -240,14 +240,14 @@ void Deserialize(const OtherOverlay_MM7 &src, OtherOverlay *dst) {
 void Serialize(const OtherOverlayList &src, OtherOverlayList_MM7 *dst) {
     memzero(dst);
 
-    dst->bRedraw = true;
+    dst->redraw = true;
     dst->field_3E8 = src.field_3E8;
-    Serialize(src.pOverlays, &dst->pOverlays);
+    Serialize(src.pOverlays, &dst->overlays);
 }
 
 void Deserialize(const OtherOverlayList_MM7 &src, OtherOverlayList *dst) {
     dst->field_3E8 = src.field_3E8;
-    Deserialize(src.pOverlays, &dst->pOverlays);
+    Deserialize(src.overlays, &dst->pOverlays);
 }
 
 void Serialize(const SpellBuff &src, SpellBuff_MM7 *dst) {
@@ -304,216 +304,216 @@ void Serialize(const Party &src, Party_MM7 *dst) {
     memzero(dst);
 
     dst->field_0 = src.field_0_set25_unused;
-    dst->uPartyHeight = src.uPartyHeight;
-    dst->uDefaultPartyHeight = src.uDefaultPartyHeight;
-    dst->sEyelevel = src.sEyelevel;
-    dst->uDefaultEyelevel = src.uDefaultEyelevel;
+    dst->partyHeight = src.uPartyHeight;
+    dst->defaultPartyHeight = src.uDefaultPartyHeight;
+    dst->eyeLevel = src.sEyelevel;
+    dst->defaultEyeLevel = src.uDefaultEyelevel;
     dst->radius = src.radius;
-    dst->_yawGranularity = src._yawGranularity;
-    dst->uWalkSpeed = src.uWalkSpeed;
-    dst->_yawRotationSpeed = src._yawRotationSpeed;
-    dst->jump_strength = src.jump_strength;
+    dst->yawGranularity = src._yawGranularity;
+    dst->walkSpeed = src.uWalkSpeed;
+    dst->yawRotationSpeed = src._yawRotationSpeed;
+    dst->jumpStrength = src.jump_strength;
     dst->field_28 = src.field_28_set0_unused;
-    dst->uTimePlayed = src.playing_time.value;
-    dst->uLastRegenerationTime = src.last_regenerated.value;
+    dst->timePlayed = src.playing_time.value;
+    dst->lastRegenerationTime = src.last_regenerated.value;
 
     // MM7 uses an array of size 10 here, but we only store 5 elements. So zero it first.
-    dst->PartyTimes.bountyHunting_next_generation_time.fill(0);
-    Serialize(src.PartyTimes.bountyHunting_next_generation_time, &dst->PartyTimes.bountyHunting_next_generation_time, 5);
+    dst->partyTimes.bountyHuntingNextGenerationTime.fill(0);
+    Serialize(src.PartyTimes.bountyHunting_next_generation_time, &dst->partyTimes.bountyHuntingNextGenerationTime, 5);
 
-    Serialize(src.PartyTimes.Shops_next_generation_time, &dst->PartyTimes.Shops_next_generation_time);
-    Serialize(src.PartyTimes._shop_ban_times, &dst->PartyTimes._shop_ban_times);
-    Serialize(src.PartyTimes.CounterEventValues, &dst->PartyTimes.CounterEventValues);
-    Serialize(src.PartyTimes.HistoryEventTimes, &dst->PartyTimes.HistoryEventTimes);
-    Serialize(src.PartyTimes._s_times, &dst->PartyTimes._s_times);
+    Serialize(src.PartyTimes.Shops_next_generation_time, &dst->partyTimes.shopsNextGenerationTime);
+    Serialize(src.PartyTimes._shop_ban_times, &dst->partyTimes.shopBanTimes);
+    Serialize(src.PartyTimes.CounterEventValues, &dst->partyTimes.counterEventValues);
+    Serialize(src.PartyTimes.HistoryEventTimes, &dst->partyTimes.historyEventTimes);
+    Serialize(src.PartyTimes._s_times, &dst->partyTimes.someOtherTimes);
 
-    dst->vPosition.x = src.vPosition.x;
-    dst->vPosition.y = src.vPosition.y;
-    dst->vPosition.z = src.vPosition.z;
-    dst->_viewYaw = src._viewYaw;
-    dst->_viewPitch = src._viewPitch;
-    dst->vPrevPosition.x = src.vPrevPosition.x;
-    dst->vPrevPosition.y = src.vPrevPosition.y;
-    dst->vPrevPosition.z = src.vPrevPosition.z;
-    dst->_viewPrevYaw = src._viewPrevYaw;
-    dst->_viewPrevPitch = src._viewPrevPitch;
-    dst->sPrevEyelevel = src.sPrevEyelevel;
+    dst->position.x = src.vPosition.x;
+    dst->position.y = src.vPosition.y;
+    dst->position.z = src.vPosition.z;
+    dst->viewYaw = src._viewYaw;
+    dst->viewPitch = src._viewPitch;
+    dst->prevPosition.x = src.vPrevPosition.x;
+    dst->prevPosition.y = src.vPrevPosition.y;
+    dst->prevPosition.z = src.vPrevPosition.z;
+    dst->viewPrevYaw = src._viewPrevYaw;
+    dst->viewPrevPitch = src._viewPrevPitch;
+    dst->prevEyeLevel = src.sPrevEyelevel;
     dst->field_6E0 = src.field_6E0_set0_unused;
     dst->field_6E4 = src.field_6E4_set0_unused;
-    dst->uFallSpeed = src.uFallSpeed;
+    dst->fallSpeed = src.uFallSpeed;
     dst->field_6EC = src.field_6EC_set0_unused;
     dst->field_6F0 = src.sPartySavedFlightZ;
-    dst->floor_face_pid = src.floor_face_pid;
-    dst->walk_sound_timer = 0; // zero walking sound timer, in OE it was removed and it is little meaning saving it
-    dst->_6FC_water_lava_timer = src._6FC_water_lava_timer;
-    dst->uFallStartZ = src.uFallStartZ;
-    dst->bFlying = src.bFlying;
+    dst->floorFacePid = src.floor_face_pid;
+    dst->walkSoundTimer = 0; // zero walking sound timer, in OE it was removed and it is little meaning saving it
+    dst->waterLavaTimer = src._6FC_water_lava_timer;
+    dst->fallStartZ = src.uFallStartZ;
+    dst->flying = src.bFlying;
     dst->field_708 = src.field_708_set15_unused;
     dst->hirelingScrollPosition = src.hirelingScrollPosition;
     dst->field_70A = src.cNonHireFollowers;
     dst->field_70B = src.field_70B_set0_unused;
-    dst->uCurrentYear = src.uCurrentYear;
-    dst->uCurrentMonth = src.uCurrentMonth;
-    dst->uCurrentMonthWeek = src.uCurrentMonthWeek;
-    dst->uCurrentDayOfMonth = src.uCurrentDayOfMonth;
-    dst->uCurrentHour = src.uCurrentHour;
-    dst->uCurrentMinute = src.uCurrentMinute;
-    dst->uCurrentTimeSecond = src.uCurrentTimeSecond;
-    dst->uNumFoodRations = src.GetFood();
+    dst->currentYear = src.uCurrentYear;
+    dst->currentMonth = src.uCurrentMonth;
+    dst->currentMonthWeek = src.uCurrentMonthWeek;
+    dst->currentDayOfMonth = src.uCurrentDayOfMonth;
+    dst->currentHour = src.uCurrentHour;
+    dst->currentMinute = src.uCurrentMinute;
+    dst->currentTimeSecond = src.uCurrentTimeSecond;
+    dst->numFoodRations = src.GetFood();
     dst->field_72C = src.field_72C_set0_unused;
     dst->field_730 = src.field_730_set0_unused;
-    dst->uNumGold = src.GetGold();
-    dst->uNumGoldInBank = src.uNumGoldInBank;
-    dst->uNumDeaths = src.uNumDeaths;
+    dst->numGold = src.GetGold();
+    dst->numGoldInBank = src.uNumGoldInBank;
+    dst->numDeaths = src.uNumDeaths;
     dst->field_740 = src.field_740_set0_unused;
-    dst->uNumPrisonTerms = src.uNumPrisonTerms;
-    dst->uNumBountiesCollected = src.uNumBountiesCollected;
+    dst->numPrisonTerms = src.uNumPrisonTerms;
+    dst->numBountiesCollected = src.uNumBountiesCollected;
     dst->field_74C = src.field_74C_set0_unused;
 
-    Serialize(src.monster_id_for_hunting, &dst->monster_id_for_hunting);
-    Serialize(src.monster_for_hunting_killed, &dst->monster_for_hunting_killed);
+    Serialize(src.monster_id_for_hunting, &dst->monsterIdForHunting);
+    Serialize(src.monster_for_hunting_killed, &dst->monsterForHuntingKilled);
 
-    dst->days_played_without_rest = src.days_played_without_rest;
+    dst->daysPlayedWithoutRest = src.days_played_without_rest;
 
-    Serialize(src._quest_bits, &dst->_quest_bits);
-    Serialize(src.pArcomageWins, &dst->pArcomageWins);
+    Serialize(src._quest_bits, &dst->questBits);
+    Serialize(src.pArcomageWins, &dst->arcomageWins);
 
     dst->field_7B5_in_arena_quest = src.field_7B5_in_arena_quest;
-    dst->uNumArenaWins = src.uNumArenaWins;
+    dst->numArenaWins = src.uNumArenaWins;
 
-    Serialize(src.pIsArtifactFound, &dst->pIsArtifactFound);
+    Serialize(src.pIsArtifactFound, &dst->isArtifactFound);
     Serialize(src.field_7d7_set0_unused, &dst->field_7d7);
-    Serialize(src._autonote_bits, &dst->_autonote_bits);
+    Serialize(src._autonote_bits, &dst->autonoteBits);
     Serialize(src.field_818_set0_unused, &dst->field_818);
     Serialize(src.random_order_num_unused, &dst->field_854);
 
-    dst->uNumArcomageWins = src.uNumArcomageWins;
-    dst->uNumArcomageLoses = src.uNumArcomageLoses;
-    dst->bTurnBasedModeOn = src.bTurnBasedModeOn;
+    dst->numArcomageWins = src.uNumArcomageWins;
+    dst->numArcomageLoses = src.uNumArcomageLoses;
+    dst->turnBasedModeOn = src.bTurnBasedModeOn;
     dst->field_880 = src.field_880_set0_unused;
-    dst->uFlags2 = src.uFlags2;
+    dst->flags2 = src.uFlags2;
 
     uint align = 0;
     if (src.alignment == PartyAlignment::PartyAlignment_Evil) align = 2;
     if (src.alignment == PartyAlignment::PartyAlignment_Neutral) align = 1;
     dst->alignment = align;
 
-    Serialize(src.pPartyBuffs, &dst->pPartyBuffs);
-    Serialize(src.pPlayers, &dst->pPlayers);
-    Serialize(src.pHirelings, &dst->pHirelings);
+    Serialize(src.pPartyBuffs, &dst->partyBuffs);
+    Serialize(src.pPlayers, &dst->players);
+    Serialize(src.pHirelings, &dst->hirelings);
 
-    Serialize(src.pPickedItem, &dst->pPickedItem);
+    Serialize(src.pPickedItem, &dst->pickedItem);
 
-    dst->uFlags = src.uFlags;
+    dst->flags = src.uFlags;
 
-    Serialize(src.StandartItemsInShops, &dst->StandartItemsInShops);
-    Serialize(src.SpecialItemsInShops, &dst->SpecialItemsInShops);
-    Serialize(src.SpellBooksInGuilds, &dst->SpellBooksInGuilds);
+    Serialize(src.StandartItemsInShops, &dst->standartItemsInShops);
+    Serialize(src.SpecialItemsInShops, &dst->specialItemsInShops);
+    Serialize(src.SpellBooksInGuilds, &dst->spellBooksInGuilds);
     Serialize(src.field_1605C_set0_unused, &dst->field_1605C);
 
-    Serialize(src.pHireling1Name, &dst->pHireling1Name);
-    Serialize(src.pHireling2Name, &dst->pHireling2Name);
+    Serialize(src.pHireling1Name, &dst->hireling1Name);
+    Serialize(src.pHireling2Name, &dst->hireling2Name);
 
-    dst->armageddon_timer = src.armageddon_timer;
+    dst->armageddonTimer = src.armageddon_timer;
     dst->armageddonDamage = src.armageddonDamage;
 
-    Serialize(src.pTurnBasedPlayerRecoveryTimes, &dst->pTurnBasedPlayerRecoveryTimes);
-    Serialize(src.InTheShopFlags, &dst->InTheShopFlags);
+    Serialize(src.pTurnBasedPlayerRecoveryTimes, &dst->turnBasedPlayerRecoveryTimes);
+    Serialize(src.InTheShopFlags, &dst->inTheShopFlags);
 
-    dst->uFine = src.uFine;
-    dst->flt_TorchlightColorR = src.flt_TorchlightColorR;
-    dst->flt_TorchlightColorG = src.flt_TorchlightColorG;
-    dst->flt_TorchlightColorB = src.flt_TorchlightColorB;
+    dst->fine = src.uFine;
+    dst->torchlightColorR = src.flt_TorchlightColorR;
+    dst->torchlightColorG = src.flt_TorchlightColorG;
+    dst->torchlightColorB = src.flt_TorchlightColorB;
 }
 
 void Deserialize(const Party_MM7 &src, Party *dst) {
     dst->field_0_set25_unused = src.field_0;
-    dst->uPartyHeight = src.uPartyHeight;
-    dst->uDefaultPartyHeight = src.uDefaultPartyHeight;
-    dst->sEyelevel = src.sEyelevel;
-    dst->uDefaultEyelevel = src.uDefaultEyelevel;
+    dst->uPartyHeight = src.partyHeight;
+    dst->uDefaultPartyHeight = src.defaultPartyHeight;
+    dst->sEyelevel = src.eyeLevel;
+    dst->uDefaultEyelevel = src.defaultEyeLevel;
     dst->radius = src.radius;
-    dst->_yawGranularity = src._yawGranularity;
-    dst->uWalkSpeed = src.uWalkSpeed;
-    dst->_yawRotationSpeed = src._yawRotationSpeed;
-    dst->jump_strength = src.jump_strength;
+    dst->_yawGranularity = src.yawGranularity;
+    dst->uWalkSpeed = src.walkSpeed;
+    dst->_yawRotationSpeed = src.yawRotationSpeed;
+    dst->jump_strength = src.jumpStrength;
     dst->field_28_set0_unused = src.field_28;
-    dst->playing_time.value = src.uTimePlayed;
-    dst->last_regenerated.value = src.uLastRegenerationTime;
+    dst->playing_time.value = src.timePlayed;
+    dst->last_regenerated.value = src.lastRegenerationTime;
 
-    Deserialize(src.PartyTimes.bountyHunting_next_generation_time, &dst->PartyTimes.bountyHunting_next_generation_time, 5);
-    Deserialize(src.PartyTimes.Shops_next_generation_time, &dst->PartyTimes.Shops_next_generation_time);
-    Deserialize(src.PartyTimes._shop_ban_times, &dst->PartyTimes._shop_ban_times);
-    Deserialize(src.PartyTimes.CounterEventValues, &dst->PartyTimes.CounterEventValues);
-    Deserialize(src.PartyTimes.HistoryEventTimes, &dst->PartyTimes.HistoryEventTimes);
-    Deserialize(src.PartyTimes._s_times, &dst->PartyTimes._s_times);
+    Deserialize(src.partyTimes.bountyHuntingNextGenerationTime, &dst->PartyTimes.bountyHunting_next_generation_time, 5);
+    Deserialize(src.partyTimes.shopsNextGenerationTime, &dst->PartyTimes.Shops_next_generation_time);
+    Deserialize(src.partyTimes.shopBanTimes, &dst->PartyTimes._shop_ban_times);
+    Deserialize(src.partyTimes.counterEventValues, &dst->PartyTimes.CounterEventValues);
+    Deserialize(src.partyTimes.historyEventTimes, &dst->PartyTimes.HistoryEventTimes);
+    Deserialize(src.partyTimes.someOtherTimes, &dst->PartyTimes._s_times);
 
-    dst->vPosition.x = src.vPosition.x;
-    dst->vPosition.y = src.vPosition.y;
-    dst->vPosition.z = src.vPosition.z;
-    dst->_viewYaw = src._viewYaw;
-    dst->_viewPitch = src._viewPitch;
-    dst->vPrevPosition.x = src.vPrevPosition.x;
-    dst->vPrevPosition.y = src.vPrevPosition.y;
-    dst->vPrevPosition.z = src.vPrevPosition.z;
-    dst->_viewPrevYaw = src._viewPrevYaw;
-    dst->_viewPrevPitch = src._viewPrevPitch;
-    dst->sPrevEyelevel = src.sPrevEyelevel;
+    dst->vPosition.x = src.position.x;
+    dst->vPosition.y = src.position.y;
+    dst->vPosition.z = src.position.z;
+    dst->_viewYaw = src.viewYaw;
+    dst->_viewPitch = src.viewPitch;
+    dst->vPrevPosition.x = src.prevPosition.x;
+    dst->vPrevPosition.y = src.prevPosition.y;
+    dst->vPrevPosition.z = src.prevPosition.z;
+    dst->_viewPrevYaw = src.viewPrevYaw;
+    dst->_viewPrevPitch = src.viewPrevPitch;
+    dst->sPrevEyelevel = src.prevEyeLevel;
     dst->field_6E0_set0_unused = src.field_6E0;
     dst->field_6E4_set0_unused = src.field_6E4;
-    dst->uFallSpeed = src.uFallSpeed;
+    dst->uFallSpeed = src.fallSpeed;
     dst->field_6EC_set0_unused = src.field_6EC;
     dst->sPartySavedFlightZ = src.field_6F0;
-    dst->floor_face_pid = src.floor_face_pid;
+    dst->floor_face_pid = src.floorFacePid;
     // Walking sound timer was removed from OE
     //dst->walk_sound_timer = src.walk_sound_timer;
-    dst->_6FC_water_lava_timer = src._6FC_water_lava_timer;
-    dst->uFallStartZ = src.uFallStartZ;
-    dst->bFlying = src.bFlying;
+    dst->_6FC_water_lava_timer = src.waterLavaTimer;
+    dst->uFallStartZ = src.fallStartZ;
+    dst->bFlying = src.flying;
     dst->field_708_set15_unused = src.field_708;
     dst->hirelingScrollPosition = src.hirelingScrollPosition;
     dst->cNonHireFollowers = src.field_70A;
     dst->field_70B_set0_unused = src.field_70B;
-    dst->uCurrentYear = src.uCurrentYear;
-    dst->uCurrentMonth = src.uCurrentMonth;
-    dst->uCurrentMonthWeek = src.uCurrentMonthWeek;
-    dst->uCurrentDayOfMonth = src.uCurrentDayOfMonth;
-    dst->uCurrentHour = src.uCurrentHour;
-    dst->uCurrentMinute = src.uCurrentMinute;
-    dst->uCurrentTimeSecond = src.uCurrentTimeSecond;
-    dst->uNumFoodRations = src.uNumFoodRations;
+    dst->uCurrentYear = src.currentYear;
+    dst->uCurrentMonth = src.currentMonth;
+    dst->uCurrentMonthWeek = src.currentMonthWeek;
+    dst->uCurrentDayOfMonth = src.currentDayOfMonth;
+    dst->uCurrentHour = src.currentHour;
+    dst->uCurrentMinute = src.currentMinute;
+    dst->uCurrentTimeSecond = src.currentTimeSecond;
+    dst->uNumFoodRations = src.numFoodRations;
     dst->field_72C_set0_unused = src.field_72C;
     dst->field_730_set0_unused = src.field_730;
-    dst->uNumGold = src.uNumGold;
-    dst->uNumGoldInBank = src.uNumGoldInBank;
-    dst->uNumDeaths = src.uNumDeaths;
+    dst->uNumGold = src.numGold;
+    dst->uNumGoldInBank = src.numGoldInBank;
+    dst->uNumDeaths = src.numDeaths;
     dst->field_740_set0_unused = src.field_740;
-    dst->uNumPrisonTerms = src.uNumPrisonTerms;
-    dst->uNumBountiesCollected = src.uNumBountiesCollected;
+    dst->uNumPrisonTerms = src.numPrisonTerms;
+    dst->uNumBountiesCollected = src.numBountiesCollected;
     dst->field_74C_set0_unused = src.field_74C;
 
-    Deserialize(src.monster_id_for_hunting, &dst->monster_id_for_hunting);
-    Deserialize(src.monster_for_hunting_killed, &dst->monster_for_hunting_killed);
+    Deserialize(src.monsterIdForHunting, &dst->monster_id_for_hunting);
+    Deserialize(src.monsterForHuntingKilled, &dst->monster_for_hunting_killed);
 
-    dst->days_played_without_rest = src.days_played_without_rest;
+    dst->days_played_without_rest = src.daysPlayedWithoutRest;
 
-    Deserialize(src._quest_bits, &dst->_quest_bits);
-    Deserialize(src.pArcomageWins, &dst->pArcomageWins);
+    Deserialize(src.questBits, &dst->_quest_bits);
+    Deserialize(src.arcomageWins, &dst->pArcomageWins);
 
     dst->field_7B5_in_arena_quest = src.field_7B5_in_arena_quest;
-    dst->uNumArenaWins = src.uNumArenaWins;
+    dst->uNumArenaWins = src.numArenaWins;
 
-    Deserialize(src.pIsArtifactFound, &dst->pIsArtifactFound);
+    Deserialize(src.isArtifactFound, &dst->pIsArtifactFound);
     Deserialize(src.field_7d7, &dst->field_7d7_set0_unused);
-    Deserialize(src._autonote_bits, &dst->_autonote_bits);
+    Deserialize(src.autonoteBits, &dst->_autonote_bits);
     Deserialize(src.field_818, &dst->field_818_set0_unused);
     Deserialize(src.field_854, &dst->random_order_num_unused);
 
-    dst->uNumArcomageWins = src.uNumArcomageWins;
-    dst->uNumArcomageLoses = src.uNumArcomageLoses;
-    dst->bTurnBasedModeOn = src.bTurnBasedModeOn;
+    dst->uNumArcomageWins = src.numArcomageWins;
+    dst->uNumArcomageLoses = src.numArcomageLoses;
+    dst->bTurnBasedModeOn = src.turnBasedModeOn;
     dst->field_880_set0_unused = src.field_880;
-    dst->uFlags2 = src.uFlags2;
+    dst->uFlags2 = src.flags2;
 
     switch (src.alignment) {
         case 0:
@@ -529,35 +529,35 @@ void Deserialize(const Party_MM7 &src, Party *dst) {
             Assert(false);
     }
 
-    Deserialize(src.pPartyBuffs, &dst->pPartyBuffs);
-    Deserialize(src.pPlayers, &dst->pPlayers);
-    Deserialize(src.pHirelings, &dst->pHirelings);
+    Deserialize(src.partyBuffs, &dst->pPartyBuffs);
+    Deserialize(src.players, &dst->pPlayers);
+    Deserialize(src.hirelings, &dst->pHirelings);
 
-    Deserialize(src.pPickedItem, &dst->pPickedItem);
+    Deserialize(src.pickedItem, &dst->pPickedItem);
 
-    dst->uFlags = src.uFlags;
+    dst->uFlags = src.flags;
 
-    Deserialize(src.StandartItemsInShops, &dst->StandartItemsInShops);
-    Deserialize(src.SpecialItemsInShops, &dst->SpecialItemsInShops);
-    Deserialize(src.SpellBooksInGuilds, &dst->SpellBooksInGuilds);
+    Deserialize(src.standartItemsInShops, &dst->StandartItemsInShops);
+    Deserialize(src.specialItemsInShops, &dst->SpecialItemsInShops);
+    Deserialize(src.spellBooksInGuilds, &dst->SpellBooksInGuilds);
 
     Deserialize(src.field_1605C, &dst->field_1605C_set0_unused);
 
-    Deserialize(src.pHireling1Name, &dst->pHireling1Name);
-    Deserialize(src.pHireling2Name, &dst->pHireling2Name);
+    Deserialize(src.hireling1Name, &dst->pHireling1Name);
+    Deserialize(src.hireling2Name, &dst->pHireling2Name);
 
-    dst->armageddon_timer = src.armageddon_timer;
+    dst->armageddon_timer = src.armageddonTimer;
     dst->armageddonDamage = src.armageddonDamage;
 
-    Deserialize(src.pTurnBasedPlayerRecoveryTimes, &dst->pTurnBasedPlayerRecoveryTimes);
-    Deserialize(src.InTheShopFlags, &dst->InTheShopFlags);
+    Deserialize(src.turnBasedPlayerRecoveryTimes, &dst->pTurnBasedPlayerRecoveryTimes);
+    Deserialize(src.inTheShopFlags, &dst->InTheShopFlags);
 
-    dst->uFine = src.uFine;
+    dst->uFine = src.fine;
 
     // is this correct / ever used??
-    dst->flt_TorchlightColorR = src.flt_TorchlightColorR;
-    dst->flt_TorchlightColorG = src.flt_TorchlightColorG;
-    dst->flt_TorchlightColorB = src.flt_TorchlightColorB;
+    dst->flt_TorchlightColorR = src.torchlightColorR;
+    dst->flt_TorchlightColorG = src.torchlightColorG;
+    dst->flt_TorchlightColorB = src.torchlightColorB;
 }
 
 void Serialize(const Player &src, Player_MM7 *dst) {
@@ -976,100 +976,100 @@ void Deserialize(const Player_MM7 &src, Player *dst) {
 void Serialize(const Icon &src, IconFrame_MM7 *dst) {
     memzero(dst);
 
-    strcpy(dst->pAnimationName.data(), src.GetAnimationName()); // TODO(captainurist): as unsafe as it gets
-    dst->uAnimLength = src.GetAnimLength();
+    strcpy(dst->animationName.data(), src.GetAnimationName()); // TODO(captainurist): as unsafe as it gets
+    dst->animLength = src.GetAnimLength();
 
-    strcpy(dst->pTextureName.data(), src.pTextureName);
-    dst->uAnimTime = src.GetAnimTime();
-    dst->uFlags = src.uFlags;
+    strcpy(dst->textureName.data(), src.pTextureName);
+    dst->animTime = src.GetAnimTime();
+    dst->flags = src.uFlags;
 }
 
 void Deserialize(const IconFrame_MM7 &src, Icon *dst) {
-    dst->SetAnimationName(src.pAnimationName.data());
-    dst->SetAnimLength(8 * src.uAnimLength);
+    dst->SetAnimationName(src.animationName.data());
+    dst->SetAnimLength(8 * src.animLength);
 
-    strcpy(dst->pTextureName, src.pTextureName.data());
-    dst->SetAnimTime(src.uAnimTime);
-    dst->uFlags = src.uFlags;
+    strcpy(dst->pTextureName, src.textureName.data());
+    dst->SetAnimTime(src.animTime);
+    dst->uFlags = src.flags;
 }
 
 void Serialize(const UIAnimation &src, UIAnimation_MM7 *dst) {
     memzero(dst);
 
-    /* 000 */ dst->uIconID = src.icon->id;
+    /* 000 */ dst->iconId = src.icon->id;
     /* 002 */ dst->field_2 = src.field_2;
-    /* 004 */ dst->uAnimTime = src.uAnimTime;
-    /* 006 */ dst->uAnimLength = src.uAnimLength;
+    /* 004 */ dst->animTime = src.uAnimTime;
+    /* 006 */ dst->animLength = src.uAnimLength;
     /* 008 */ dst->x = src.x;
     /* 00A */ dst->y = src.y;
     /* 00C */ dst->field_C = src.field_C;
 }
 
 void Deserialize(const UIAnimation_MM7 &src, UIAnimation *dst) {
-    dst->icon = pIconsFrameTable->GetIcon(src.uIconID);
+    dst->icon = pIconsFrameTable->GetIcon(src.iconId);
     ///* 000 */ anim->uIconID = src.uIconID;
     /* 002 */ dst->field_2 = src.field_2;
-    /* 004 */ dst->uAnimTime = src.uAnimTime;
-    /* 006 */ dst->uAnimLength = src.uAnimLength;
+    /* 004 */ dst->uAnimTime = src.animTime;
+    /* 006 */ dst->uAnimLength = src.animLength;
     /* 008 */ dst->x = src.x;
     /* 00A */ dst->y = src.y;
     /* 00C */ dst->field_C = src.field_C;
 }
 
 void Deserialize(const MonsterDesc_MM6 &src, MonsterDesc *dst) {
-    dst->uMonsterHeight = src.uMonsterHeight;
-    dst->uMonsterRadius = src.uMonsterRadius;
-    dst->uMovementSpeed = src.uMovementSpeed;
-    dst->uToHitRadius = src.uToHitRadius;
+    dst->uMonsterHeight = src.monsterHeight;
+    dst->uMonsterRadius = src.monsterRadius;
+    dst->uMovementSpeed = src.movementSpeed;
+    dst->uToHitRadius = src.toHitRadius;
     dst->sTintColor = colorTable.White.c32();
-    dst->pSoundSampleIDs = src.pSoundSampleIDs;
-    Deserialize(src.pMonsterName, &dst->pMonsterName);
-    Deserialize(src.pSpriteNames, &dst->pSpriteNames, 8);
+    dst->pSoundSampleIDs = src.soundSampleIds;
+    Deserialize(src.monsterName, &dst->pMonsterName);
+    Deserialize(src.spriteNames, &dst->pSpriteNames, 8);
 }
 
 void Serialize(const MonsterDesc &src, MonsterDesc_MM7 *dst) {
     memzero(dst);
 
-    dst->uMonsterHeight = src.uMonsterHeight;
-    dst->uMonsterRadius = src.uMonsterRadius;
-    dst->uMovementSpeed = src.uMovementSpeed;
-    dst->uToHitRadius = src.uToHitRadius;
-    dst->sTintColor = src.sTintColor;
-    dst->pSoundSampleIDs = src.pSoundSampleIDs;
-    Serialize(src.pMonsterName, &dst->pMonsterName);
-    Serialize(src.pSpriteNames, &dst->pSpriteNames, 8);
-    dst->pSpriteNames[8][0] = '\0';
-    dst->pSpriteNames[9][0] = '\0';
+    dst->monsterHeight = src.uMonsterHeight;
+    dst->monsterRadius = src.uMonsterRadius;
+    dst->movementSpeed = src.uMovementSpeed;
+    dst->toHitRadius = src.uToHitRadius;
+    dst->tintColor = src.sTintColor;
+    dst->soundSampleIds = src.pSoundSampleIDs;
+    Serialize(src.pMonsterName, &dst->monsterName);
+    Serialize(src.pSpriteNames, &dst->spriteNames, 8);
+    dst->spriteNames[8][0] = '\0';
+    dst->spriteNames[9][0] = '\0';
 }
 
 void Deserialize(const MonsterDesc_MM7 &src, MonsterDesc *dst) {
-    dst->uMonsterHeight = src.uMonsterHeight;
-    dst->uMonsterRadius = src.uMonsterRadius;
-    dst->uMovementSpeed = src.uMovementSpeed;
-    dst->uToHitRadius = src.uToHitRadius;
-    dst->sTintColor = src.sTintColor;
-    dst->pSoundSampleIDs = src.pSoundSampleIDs;
-    Deserialize(src.pMonsterName, &dst->pMonsterName);
-    Deserialize(src.pSpriteNames, &dst->pSpriteNames, 8);
+    dst->uMonsterHeight = src.monsterHeight;
+    dst->uMonsterRadius = src.monsterRadius;
+    dst->uMovementSpeed = src.movementSpeed;
+    dst->uToHitRadius = src.toHitRadius;
+    dst->sTintColor = src.tintColor;
+    dst->pSoundSampleIDs = src.soundSampleIds;
+    Deserialize(src.monsterName, &dst->pMonsterName);
+    Deserialize(src.spriteNames, &dst->pSpriteNames, 8);
 }
 
 void Serialize(const ActorJob &src, ActorJob_MM7 *dst) {
     memzero(dst);
-    dst->vPos = src.vPos;
-    dst->uAttributes = src.uAttributes;
-    dst->uAction = src.uAction;
-    dst->uHour = src.uHour;
-    dst->uDay = src.uDay;
-    dst->uMonth = src.uMonth;
+    dst->pos = src.vPos;
+    dst->attributes = src.uAttributes;
+    dst->action = src.uAction;
+    dst->hour = src.uHour;
+    dst->day = src.uDay;
+    dst->month = src.uMonth;
 }
 
 void Deserialize(const ActorJob_MM7 &src, ActorJob *dst) {
-    dst->vPos = src.vPos;
-    dst->uAttributes = src.uAttributes;
-    dst->uAction = src.uAction;
-    dst->uHour = src.uHour;
-    dst->uDay = src.uDay;
-    dst->uMonth = src.uMonth;
+    dst->vPos = src.pos;
+    dst->uAttributes = src.attributes;
+    dst->uAction = src.action;
+    dst->uHour = src.hour;
+    dst->uDay = src.day;
+    dst->uMonth = src.month;
 }
 
 void Serialize(const Actor &src, Actor_MM7 *dst) {
@@ -1082,62 +1082,62 @@ void Serialize(const Actor &src, Actor_MM7 *dst) {
     dst->uAttributes = std::to_underlying(src.uAttributes);
     dst->sCurrentHP = src.sCurrentHP;
 
-    dst->pMonsterInfo.uLevel = src.pMonsterInfo.uLevel;
-    dst->pMonsterInfo.uTreasureDropChance = src.pMonsterInfo.uTreasureDropChance;
-    dst->pMonsterInfo.uTreasureDiceRolls = src.pMonsterInfo.uTreasureDiceRolls;
-    dst->pMonsterInfo.uTreasureDiceSides = src.pMonsterInfo.uTreasureDiceSides;
-    dst->pMonsterInfo.uTreasureLevel = std::to_underlying(src.pMonsterInfo.uTreasureLevel);
-    dst->pMonsterInfo.uTreasureType = src.pMonsterInfo.uTreasureType;
-    dst->pMonsterInfo.uFlying = src.pMonsterInfo.uFlying;
-    dst->pMonsterInfo.uMovementType = src.pMonsterInfo.uMovementType;
-    dst->pMonsterInfo.uAIType = src.pMonsterInfo.uAIType;
-    dst->pMonsterInfo.uHostilityType = (uint8_t)src.pMonsterInfo.uHostilityType;
+    dst->pMonsterInfo.level = src.pMonsterInfo.uLevel;
+    dst->pMonsterInfo.treasureDropChance = src.pMonsterInfo.uTreasureDropChance;
+    dst->pMonsterInfo.treasureDiceRolls = src.pMonsterInfo.uTreasureDiceRolls;
+    dst->pMonsterInfo.treasureDiceSides = src.pMonsterInfo.uTreasureDiceSides;
+    dst->pMonsterInfo.treasureLevel = std::to_underlying(src.pMonsterInfo.uTreasureLevel);
+    dst->pMonsterInfo.treasureType = src.pMonsterInfo.uTreasureType;
+    dst->pMonsterInfo.flying = src.pMonsterInfo.uFlying;
+    dst->pMonsterInfo.movementType = src.pMonsterInfo.uMovementType;
+    dst->pMonsterInfo.aiType = src.pMonsterInfo.uAIType;
+    dst->pMonsterInfo.hostilityType = (uint8_t)src.pMonsterInfo.uHostilityType;
     dst->pMonsterInfo.field_12 = src.pMonsterInfo.field_12;
-    dst->pMonsterInfo.uSpecialAttackType = src.pMonsterInfo.uSpecialAttackType;
-    dst->pMonsterInfo.uSpecialAttackLevel = src.pMonsterInfo.uSpecialAttackLevel;
-    dst->pMonsterInfo.uAttack1Type = src.pMonsterInfo.uAttack1Type;
-    dst->pMonsterInfo.uAttack1DamageDiceRolls = src.pMonsterInfo.uAttack1DamageDiceRolls;
-    dst->pMonsterInfo.uAttack1DamageDiceSides = src.pMonsterInfo.uAttack1DamageDiceSides;
-    dst->pMonsterInfo.uAttack1DamageBonus = src.pMonsterInfo.uAttack1DamageBonus;
-    dst->pMonsterInfo.uMissleAttack1Type = src.pMonsterInfo.uMissleAttack1Type;
-    dst->pMonsterInfo.uAttack2Chance = src.pMonsterInfo.uAttack2Chance;
-    dst->pMonsterInfo.uAttack2Type = src.pMonsterInfo.uAttack2Type;
-    dst->pMonsterInfo.uAttack2DamageDiceRolls = src.pMonsterInfo.uAttack2DamageDiceRolls;
-    dst->pMonsterInfo.uAttack2DamageDiceSides = src.pMonsterInfo.uAttack2DamageDiceSides;
-    dst->pMonsterInfo.uAttack2DamageBonus = src.pMonsterInfo.uAttack2DamageBonus;
-    dst->pMonsterInfo.uMissleAttack2Type = src.pMonsterInfo.uMissleAttack2Type;
-    dst->pMonsterInfo.uSpell1UseChance = src.pMonsterInfo.uSpell1UseChance;
-    dst->pMonsterInfo.uSpell1ID = std::to_underlying(src.pMonsterInfo.uSpell1ID);
-    dst->pMonsterInfo.uSpell2UseChance = src.pMonsterInfo.uSpell2UseChance;
-    dst->pMonsterInfo.uSpell2ID = std::to_underlying(src.pMonsterInfo.uSpell2ID);
-    dst->pMonsterInfo.uResFire = src.pMonsterInfo.uResFire;
-    dst->pMonsterInfo.uResAir = src.pMonsterInfo.uResAir;
-    dst->pMonsterInfo.uResWater = src.pMonsterInfo.uResWater;
-    dst->pMonsterInfo.uResEarth = src.pMonsterInfo.uResEarth;
-    dst->pMonsterInfo.uResMind = src.pMonsterInfo.uResMind;
-    dst->pMonsterInfo.uResSpirit = src.pMonsterInfo.uResSpirit;
-    dst->pMonsterInfo.uResBody = src.pMonsterInfo.uResBody;
-    dst->pMonsterInfo.uResLight = src.pMonsterInfo.uResLight;
-    dst->pMonsterInfo.uResDark = src.pMonsterInfo.uResDark;
-    dst->pMonsterInfo.uResPhysical = src.pMonsterInfo.uResPhysical;
-    dst->pMonsterInfo.uSpecialAbilityType = src.pMonsterInfo.uSpecialAbilityType;
-    dst->pMonsterInfo.uSpecialAbilityDamageDiceRolls = src.pMonsterInfo.uSpecialAbilityDamageDiceRolls;
-    dst->pMonsterInfo.uSpecialAbilityDamageDiceSides = src.pMonsterInfo.uSpecialAbilityDamageDiceSides;
-    dst->pMonsterInfo.uSpecialAbilityDamageDiceBonus = src.pMonsterInfo.uSpecialAbilityDamageDiceBonus;
-    dst->pMonsterInfo.uNumCharactersAttackedPerSpecialAbility = src.pMonsterInfo.uNumCharactersAttackedPerSpecialAbility;
+    dst->pMonsterInfo.specialAttackType = src.pMonsterInfo.uSpecialAttackType;
+    dst->pMonsterInfo.specialAttackLevel = src.pMonsterInfo.uSpecialAttackLevel;
+    dst->pMonsterInfo.attack1Type = src.pMonsterInfo.uAttack1Type;
+    dst->pMonsterInfo.attack1DamageDiceRolls = src.pMonsterInfo.uAttack1DamageDiceRolls;
+    dst->pMonsterInfo.attack1DamageDiceSides = src.pMonsterInfo.uAttack1DamageDiceSides;
+    dst->pMonsterInfo.attack1DamageBonus = src.pMonsterInfo.uAttack1DamageBonus;
+    dst->pMonsterInfo.missileAttack1Type = src.pMonsterInfo.uMissleAttack1Type;
+    dst->pMonsterInfo.attack2Chance = src.pMonsterInfo.uAttack2Chance;
+    dst->pMonsterInfo.attack2Type = src.pMonsterInfo.uAttack2Type;
+    dst->pMonsterInfo.attack2DamageDiceRolls = src.pMonsterInfo.uAttack2DamageDiceRolls;
+    dst->pMonsterInfo.attack2DamageDiceSides = src.pMonsterInfo.uAttack2DamageDiceSides;
+    dst->pMonsterInfo.attack2DamageBonus = src.pMonsterInfo.uAttack2DamageBonus;
+    dst->pMonsterInfo.missileAttack2Type = src.pMonsterInfo.uMissleAttack2Type;
+    dst->pMonsterInfo.spell1UseChance = src.pMonsterInfo.uSpell1UseChance;
+    dst->pMonsterInfo.spell1Id = std::to_underlying(src.pMonsterInfo.uSpell1ID);
+    dst->pMonsterInfo.spell2UseChance = src.pMonsterInfo.uSpell2UseChance;
+    dst->pMonsterInfo.spell2Id = std::to_underlying(src.pMonsterInfo.uSpell2ID);
+    dst->pMonsterInfo.resFire = src.pMonsterInfo.uResFire;
+    dst->pMonsterInfo.resAir = src.pMonsterInfo.uResAir;
+    dst->pMonsterInfo.resWater = src.pMonsterInfo.uResWater;
+    dst->pMonsterInfo.resEarth = src.pMonsterInfo.uResEarth;
+    dst->pMonsterInfo.resMind = src.pMonsterInfo.uResMind;
+    dst->pMonsterInfo.resSpirit = src.pMonsterInfo.uResSpirit;
+    dst->pMonsterInfo.resBody = src.pMonsterInfo.uResBody;
+    dst->pMonsterInfo.resLight = src.pMonsterInfo.uResLight;
+    dst->pMonsterInfo.resDark = src.pMonsterInfo.uResDark;
+    dst->pMonsterInfo.resPhysical = src.pMonsterInfo.uResPhysical;
+    dst->pMonsterInfo.specialAbilityType = src.pMonsterInfo.uSpecialAbilityType;
+    dst->pMonsterInfo.specialAbilityDamageDiceRolls = src.pMonsterInfo.uSpecialAbilityDamageDiceRolls;
+    dst->pMonsterInfo.specialAbilityDamageDiceSides = src.pMonsterInfo.uSpecialAbilityDamageDiceSides;
+    dst->pMonsterInfo.specialAbilityDamageDiceBonus = src.pMonsterInfo.uSpecialAbilityDamageDiceBonus;
+    dst->pMonsterInfo.numCharactersAttackedPerSpecialAbility = src.pMonsterInfo.uNumCharactersAttackedPerSpecialAbility;
     dst->pMonsterInfo.field_33 = src.pMonsterInfo.field_33;
-    dst->pMonsterInfo.uID = src.pMonsterInfo.uID;
-    dst->pMonsterInfo.bBloodSplatOnDeath = src.pMonsterInfo.bBloodSplatOnDeath;
-    dst->pMonsterInfo.uSpellSkillAndMastery1 = src.pMonsterInfo.uSpellSkillAndMastery1;
-    dst->pMonsterInfo.uSpellSkillAndMastery2 = src.pMonsterInfo.uSpellSkillAndMastery2;
+    dst->pMonsterInfo.id = src.pMonsterInfo.uID;
+    dst->pMonsterInfo.bloodSplatOnDeath = src.pMonsterInfo.bBloodSplatOnDeath;
+    dst->pMonsterInfo.spellSkillAndMastery1 = src.pMonsterInfo.uSpellSkillAndMastery1;
+    dst->pMonsterInfo.spellSkillAndMastery2 = src.pMonsterInfo.uSpellSkillAndMastery2;
     dst->pMonsterInfo.field_3C_some_special_attack = src.pMonsterInfo.field_3C_some_special_attack;
     dst->pMonsterInfo.field_3E = src.pMonsterInfo.field_3E;
-    dst->pMonsterInfo.uHP = src.pMonsterInfo.uHP;
-    dst->pMonsterInfo.uAC = src.pMonsterInfo.uAC;
-    dst->pMonsterInfo.uExp = src.pMonsterInfo.uExp;
-    dst->pMonsterInfo.uBaseSpeed = src.pMonsterInfo.uBaseSpeed;
-    dst->pMonsterInfo.uRecoveryTime = src.pMonsterInfo.uRecoveryTime;
-    dst->pMonsterInfo.uAttackPreference = src.pMonsterInfo.uAttackPreference;
+    dst->pMonsterInfo.hp = src.pMonsterInfo.uHP;
+    dst->pMonsterInfo.ac = src.pMonsterInfo.uAC;
+    dst->pMonsterInfo.exp = src.pMonsterInfo.uExp;
+    dst->pMonsterInfo.baseSpeed = src.pMonsterInfo.uBaseSpeed;
+    dst->pMonsterInfo.recoveryTime = src.pMonsterInfo.uRecoveryTime;
+    dst->pMonsterInfo.attackPreference = src.pMonsterInfo.uAttackPreference;
     dst->word_000084_range_attack = src.word_000084_range_attack;
     dst->word_000086_some_monster_id = src.word_000086_some_monster_id;  // base monster class monsterlist id
     dst->uActorRadius = src.uActorRadius;
@@ -1183,62 +1183,62 @@ void Deserialize(const Actor_MM7 &src, Actor *dst) {
     dst->uAttributes = ActorAttributes(src.uAttributes);
     dst->sCurrentHP = src.sCurrentHP;
 
-    dst->pMonsterInfo.uLevel = src.pMonsterInfo.uLevel;
-    dst->pMonsterInfo.uTreasureDropChance = src.pMonsterInfo.uTreasureDropChance;
-    dst->pMonsterInfo.uTreasureDiceRolls = src.pMonsterInfo.uTreasureDiceRolls;
-    dst->pMonsterInfo.uTreasureDiceSides = src.pMonsterInfo.uTreasureDiceSides;
-    dst->pMonsterInfo.uTreasureLevel = static_cast<ITEM_TREASURE_LEVEL>(src.pMonsterInfo.uTreasureLevel);
-    dst->pMonsterInfo.uTreasureType = src.pMonsterInfo.uTreasureType;
-    dst->pMonsterInfo.uFlying = src.pMonsterInfo.uFlying;
-    dst->pMonsterInfo.uMovementType = src.pMonsterInfo.uMovementType;
-    dst->pMonsterInfo.uAIType = src.pMonsterInfo.uAIType;
-    dst->pMonsterInfo.uHostilityType = static_cast<MonsterInfo::HostilityRadius>(src.pMonsterInfo.uHostilityType);
+    dst->pMonsterInfo.uLevel = src.pMonsterInfo.level;
+    dst->pMonsterInfo.uTreasureDropChance = src.pMonsterInfo.treasureDropChance;
+    dst->pMonsterInfo.uTreasureDiceRolls = src.pMonsterInfo.treasureDiceRolls;
+    dst->pMonsterInfo.uTreasureDiceSides = src.pMonsterInfo.treasureDiceSides;
+    dst->pMonsterInfo.uTreasureLevel = static_cast<ITEM_TREASURE_LEVEL>(src.pMonsterInfo.treasureLevel);
+    dst->pMonsterInfo.uTreasureType = src.pMonsterInfo.treasureType;
+    dst->pMonsterInfo.uFlying = src.pMonsterInfo.flying;
+    dst->pMonsterInfo.uMovementType = src.pMonsterInfo.movementType;
+    dst->pMonsterInfo.uAIType = src.pMonsterInfo.aiType;
+    dst->pMonsterInfo.uHostilityType = static_cast<MonsterInfo::HostilityRadius>(src.pMonsterInfo.hostilityType);
     dst->pMonsterInfo.field_12 = src.pMonsterInfo.field_12;
-    dst->pMonsterInfo.uSpecialAttackType = static_cast<SPECIAL_ATTACK_TYPE>(src.pMonsterInfo.uSpecialAttackType);
-    dst->pMonsterInfo.uSpecialAttackLevel = src.pMonsterInfo.uSpecialAttackLevel;
-    dst->pMonsterInfo.uAttack1Type = src.pMonsterInfo.uAttack1Type;
-    dst->pMonsterInfo.uAttack1DamageDiceRolls = src.pMonsterInfo.uAttack1DamageDiceRolls;
-    dst->pMonsterInfo.uAttack1DamageDiceSides = src.pMonsterInfo.uAttack1DamageDiceSides;
-    dst->pMonsterInfo.uAttack1DamageBonus = src.pMonsterInfo.uAttack1DamageBonus;
-    dst->pMonsterInfo.uMissleAttack1Type = src.pMonsterInfo.uMissleAttack1Type;
-    dst->pMonsterInfo.uAttack2Chance = src.pMonsterInfo.uAttack2Chance;
-    dst->pMonsterInfo.uAttack2Type = src.pMonsterInfo.uAttack2Type;
-    dst->pMonsterInfo.uAttack2DamageDiceRolls = src.pMonsterInfo.uAttack2DamageDiceRolls;
-    dst->pMonsterInfo.uAttack2DamageDiceSides = src.pMonsterInfo.uAttack2DamageDiceSides;
-    dst->pMonsterInfo.uAttack2DamageBonus = src.pMonsterInfo.uAttack2DamageBonus;
-    dst->pMonsterInfo.uMissleAttack2Type = src.pMonsterInfo.uMissleAttack2Type;
-    dst->pMonsterInfo.uSpell1UseChance = src.pMonsterInfo.uSpell1UseChance;
-    dst->pMonsterInfo.uSpell1ID = static_cast<SPELL_TYPE>(src.pMonsterInfo.uSpell1ID);
-    dst->pMonsterInfo.uSpell2UseChance = src.pMonsterInfo.uSpell2UseChance;
-    dst->pMonsterInfo.uSpell2ID = static_cast<SPELL_TYPE>(src.pMonsterInfo.uSpell2ID);
-    dst->pMonsterInfo.uResFire = src.pMonsterInfo.uResFire;
-    dst->pMonsterInfo.uResAir = src.pMonsterInfo.uResAir;
-    dst->pMonsterInfo.uResWater = src.pMonsterInfo.uResWater;
-    dst->pMonsterInfo.uResEarth = src.pMonsterInfo.uResEarth;
-    dst->pMonsterInfo.uResMind = src.pMonsterInfo.uResMind;
-    dst->pMonsterInfo.uResSpirit = src.pMonsterInfo.uResSpirit;
-    dst->pMonsterInfo.uResBody = src.pMonsterInfo.uResBody;
-    dst->pMonsterInfo.uResLight = src.pMonsterInfo.uResLight;
-    dst->pMonsterInfo.uResDark = src.pMonsterInfo.uResDark;
-    dst->pMonsterInfo.uResPhysical = src.pMonsterInfo.uResPhysical;
-    dst->pMonsterInfo.uSpecialAbilityType = src.pMonsterInfo.uSpecialAbilityType;
-    dst->pMonsterInfo.uSpecialAbilityDamageDiceRolls = src.pMonsterInfo.uSpecialAbilityDamageDiceRolls;
-    dst->pMonsterInfo.uSpecialAbilityDamageDiceSides = src.pMonsterInfo.uSpecialAbilityDamageDiceSides;
-    dst->pMonsterInfo.uSpecialAbilityDamageDiceBonus = src.pMonsterInfo.uSpecialAbilityDamageDiceBonus;
-    dst->pMonsterInfo.uNumCharactersAttackedPerSpecialAbility = src.pMonsterInfo.uNumCharactersAttackedPerSpecialAbility;
+    dst->pMonsterInfo.uSpecialAttackType = static_cast<SPECIAL_ATTACK_TYPE>(src.pMonsterInfo.specialAttackType);
+    dst->pMonsterInfo.uSpecialAttackLevel = src.pMonsterInfo.specialAttackLevel;
+    dst->pMonsterInfo.uAttack1Type = src.pMonsterInfo.attack1Type;
+    dst->pMonsterInfo.uAttack1DamageDiceRolls = src.pMonsterInfo.attack1DamageDiceRolls;
+    dst->pMonsterInfo.uAttack1DamageDiceSides = src.pMonsterInfo.attack1DamageDiceSides;
+    dst->pMonsterInfo.uAttack1DamageBonus = src.pMonsterInfo.attack1DamageBonus;
+    dst->pMonsterInfo.uMissleAttack1Type = src.pMonsterInfo.missileAttack1Type;
+    dst->pMonsterInfo.uAttack2Chance = src.pMonsterInfo.attack2Chance;
+    dst->pMonsterInfo.uAttack2Type = src.pMonsterInfo.attack2Type;
+    dst->pMonsterInfo.uAttack2DamageDiceRolls = src.pMonsterInfo.attack2DamageDiceRolls;
+    dst->pMonsterInfo.uAttack2DamageDiceSides = src.pMonsterInfo.attack2DamageDiceSides;
+    dst->pMonsterInfo.uAttack2DamageBonus = src.pMonsterInfo.attack2DamageBonus;
+    dst->pMonsterInfo.uMissleAttack2Type = src.pMonsterInfo.missileAttack2Type;
+    dst->pMonsterInfo.uSpell1UseChance = src.pMonsterInfo.spell1UseChance;
+    dst->pMonsterInfo.uSpell1ID = static_cast<SPELL_TYPE>(src.pMonsterInfo.spell1Id);
+    dst->pMonsterInfo.uSpell2UseChance = src.pMonsterInfo.spell2UseChance;
+    dst->pMonsterInfo.uSpell2ID = static_cast<SPELL_TYPE>(src.pMonsterInfo.spell2Id);
+    dst->pMonsterInfo.uResFire = src.pMonsterInfo.resFire;
+    dst->pMonsterInfo.uResAir = src.pMonsterInfo.resAir;
+    dst->pMonsterInfo.uResWater = src.pMonsterInfo.resWater;
+    dst->pMonsterInfo.uResEarth = src.pMonsterInfo.resEarth;
+    dst->pMonsterInfo.uResMind = src.pMonsterInfo.resMind;
+    dst->pMonsterInfo.uResSpirit = src.pMonsterInfo.resSpirit;
+    dst->pMonsterInfo.uResBody = src.pMonsterInfo.resBody;
+    dst->pMonsterInfo.uResLight = src.pMonsterInfo.resLight;
+    dst->pMonsterInfo.uResDark = src.pMonsterInfo.resDark;
+    dst->pMonsterInfo.uResPhysical = src.pMonsterInfo.resPhysical;
+    dst->pMonsterInfo.uSpecialAbilityType = src.pMonsterInfo.specialAbilityType;
+    dst->pMonsterInfo.uSpecialAbilityDamageDiceRolls = src.pMonsterInfo.specialAbilityDamageDiceRolls;
+    dst->pMonsterInfo.uSpecialAbilityDamageDiceSides = src.pMonsterInfo.specialAbilityDamageDiceSides;
+    dst->pMonsterInfo.uSpecialAbilityDamageDiceBonus = src.pMonsterInfo.specialAbilityDamageDiceBonus;
+    dst->pMonsterInfo.uNumCharactersAttackedPerSpecialAbility = src.pMonsterInfo.numCharactersAttackedPerSpecialAbility;
     dst->pMonsterInfo.field_33 = src.pMonsterInfo.field_33;
-    dst->pMonsterInfo.uID = src.pMonsterInfo.uID;
-    dst->pMonsterInfo.bBloodSplatOnDeath = src.pMonsterInfo.bBloodSplatOnDeath;
-    dst->pMonsterInfo.uSpellSkillAndMastery1 = src.pMonsterInfo.uSpellSkillAndMastery1;
-    dst->pMonsterInfo.uSpellSkillAndMastery2 = src.pMonsterInfo.uSpellSkillAndMastery2;
+    dst->pMonsterInfo.uID = src.pMonsterInfo.id;
+    dst->pMonsterInfo.bBloodSplatOnDeath = src.pMonsterInfo.bloodSplatOnDeath;
+    dst->pMonsterInfo.uSpellSkillAndMastery1 = src.pMonsterInfo.spellSkillAndMastery1;
+    dst->pMonsterInfo.uSpellSkillAndMastery2 = src.pMonsterInfo.spellSkillAndMastery2;
     dst->pMonsterInfo.field_3C_some_special_attack = src.pMonsterInfo.field_3C_some_special_attack;
     dst->pMonsterInfo.field_3E = src.pMonsterInfo.field_3E;
-    dst->pMonsterInfo.uHP = src.pMonsterInfo.uHP;
-    dst->pMonsterInfo.uAC = src.pMonsterInfo.uAC;
-    dst->pMonsterInfo.uExp = src.pMonsterInfo.uExp;
-    dst->pMonsterInfo.uBaseSpeed = src.pMonsterInfo.uBaseSpeed;
-    dst->pMonsterInfo.uRecoveryTime = src.pMonsterInfo.uRecoveryTime;
-    dst->pMonsterInfo.uAttackPreference = src.pMonsterInfo.uAttackPreference;
+    dst->pMonsterInfo.uHP = src.pMonsterInfo.hp;
+    dst->pMonsterInfo.uAC = src.pMonsterInfo.ac;
+    dst->pMonsterInfo.uExp = src.pMonsterInfo.exp;
+    dst->pMonsterInfo.uBaseSpeed = src.pMonsterInfo.baseSpeed;
+    dst->pMonsterInfo.uRecoveryTime = src.pMonsterInfo.recoveryTime;
+    dst->pMonsterInfo.uAttackPreference = src.pMonsterInfo.attackPreference;
     dst->word_000084_range_attack = src.word_000084_range_attack;
     dst->word_000086_some_monster_id = src.word_000086_some_monster_id;  // base monster class monsterlist id
     dst->uActorRadius = src.uActorRadius;
