@@ -108,24 +108,16 @@ extern int dword_4FA9B4[];
 // extern HWND dword_4FAA28; // idb
 
 // extern std::array<unsigned int, 480> pSRZBufferLineOffsets;
-extern std::array<char, 777> books_num_items_per_page;
 // extern Texture_MM7 *dword_50640C[];
 extern int
     books_page_number;  // number for page in books(номер страницы в книгах)
 extern int
     books_primary_item_per_page;  // number primary item in book page(номер
                                   // начальной записи на странице)
-extern int Autonotes_Instructors_page_flag;  // dword_50652C
-extern int Autonotes_Misc_page_flag;         // dword_506530
-extern int Book_PageBtn6_flag;               // dword_506534
-extern int Book_PageBtn5_flag;               // dword_506538
-extern int Book_PageBtn4_flag;               // dword_50653C
-extern int Book_PageBtn3_flag;               // dword_506540
 extern int BtnDown_flag;                     // BtnDown_flag
 extern int BtnUp_flag;                       // BtnUp_flag
 extern int quick_spell_at_page;
 extern char byte_506550;
-extern AUTONOTE_TYPE _506568_autonote_type;  // 506568
 extern int uLastPointedObjectID;
 extern int dword_506980_uW;
 extern int dword_506984_uZ;
@@ -141,7 +133,6 @@ extern int dword_507B00_spell_info_to_draw_in_popup;
 extern int dword_507BF0_is_there_popup_onscreen;
 extern int awards_scroll_bar_created;
 extern int dword_507CC0_activ_ch;
-extern GameTime GameUI_RightPanel_BookFlashTimer;
 extern bool OpenedTelekinesis;
 extern std::array<int, 50> dword_50B570;
 extern std::array<int, 50> dword_50B638;

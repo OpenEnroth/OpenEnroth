@@ -102,7 +102,7 @@ void GUIWindow_JournalBook::Update() {
         render->DrawTextureNew((pViewport->uViewportTL_X + 398) / 640.0f, (pViewport->uViewportTL_Y + 1) / 480.0f, ui_book_button1_on);
     }
 
-    if (BtnDown_flag || (currentIdx + 1) >= journalIdx.size()) {
+    if ((bookButtonClicked && bookButtonAction == BOOK_PREV_PAGE) || (currentIdx + 1) >= journalIdx.size()) {
         render->DrawTextureNew((pViewport->uViewportTL_X + 407) / 640.0f, (pViewport->uViewportTL_Y + 38) / 480.0f, ui_book_button2_off);
     } else {
         render->DrawTextureNew((pViewport->uViewportTL_X + 398) / 640.0f, (pViewport->uViewportTL_Y + 38) / 480.0f, ui_book_button2_on);

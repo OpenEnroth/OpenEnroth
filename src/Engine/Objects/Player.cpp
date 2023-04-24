@@ -34,6 +34,7 @@
 #include "GUI/UI/UIGame.h"
 #include "GUI/UI/UIStatusBar.h"
 #include "GUI/UI/UIHouses.h"
+#include "GUI/UI/Books/AutonotesBook.h"
 
 #include "Utility/Memory/MemSet.h"
 #include "Utility/IndexedArray.h"
@@ -4902,7 +4903,7 @@ void Player::SetVariable(VariableType var_type, signed int var_value) {
                 spell_fx_renderer->SetPlayerBuffAnim(BECOME_MAGIC_GUILD_MEMBER, GetPlayerIndex());
                 this->playReaction(SPEECH_AwardGot);
                 bFlashAutonotesBook = true;
-                _506568_autonote_type = pAutonoteTxt[var_value - 1].eType;  // dword_72371C[2 * a3];
+                autonoteBookDisplayType = pAutonoteTxt[var_value - 1].eType;  // dword_72371C[2 * a3];
             }
             _449B7E_toggle_bit(pParty->_autonote_bits, var_value, 1u);
             PlayAwardSound();
@@ -5476,7 +5477,7 @@ void Player::AddVariable(VariableType var_type, signed int val) {
                 pAutonoteTxt[val].pText) {
                 this->playReaction(SPEECH_AwardGot);
                 bFlashAutonotesBook = true;
-                _506568_autonote_type = pAutonoteTxt[val].eType;
+                autonoteBookDisplayType = pAutonoteTxt[val].eType;
                 spell_fx_renderer->SetPlayerBuffAnim(SPELL_QUEST_COMPLETED, GetPlayerIndex());
             }
             _449B7E_toggle_bit(pParty->_autonote_bits, val, 1);

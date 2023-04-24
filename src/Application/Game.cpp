@@ -1912,52 +1912,42 @@ void Game::processQueuedMessages() {
                     new OnCancel2({pCharacterScreen_ExitBtn->uX, pCharacterScreen_ExitBtn->uY}, {0, 0}, pCharacterScreen_ExitBtn);
                     continue;
                 case UIMSG_ClickBooksBtn:
-                    switch (uMessageParam) {
-                        case 11:  // Page UP
-                            BtnUp_flag = 1;
-                            pButton = pBtn_Book_2;
-                            break;
-                        case 10:  // Page DOWN
-                            BtnDown_flag = 1;
+                    bookButtonClicked = true;
+                    bookButtonAction = BOOK_BUTTON_ACTION(uMessageParam);
+                    switch (bookButtonAction) {
+                        case BOOK_PREV_PAGE:
+                        case BOOK_ZOOM_IN:
                             pButton = pBtn_Book_1;
                             break;
-                        case 0:  // Zoom plus
-                            pButton = pBtn_Book_1;
-                            BtnDown_flag = 1;
-                            break;
-                        case 1:  // Zoom minus
+                        case BOOK_NEXT_PAGE:
+                        case BOOK_ZOOM_OUT:
                             pButton = pBtn_Book_2;
-                            BtnUp_flag = 1;
                             break;
-                        case 2:  // Potions
-                            Book_PageBtn3_flag = 1;
+                        case BOOK_SCROLL_UP:
+                        case BOOK_NOTES_POTION:
                             pButton = pBtn_Book_3;
                             break;
-                        case 3:  // fountains
-                            Book_PageBtn4_flag = 1;
+                        case BOOK_SCROLL_DOWN:
+                        case BOOK_NOTES_FOUNTAIN:
                             pButton = pBtn_Book_4;
                             break;
-                        case 4:  // obelisks
-                            Book_PageBtn5_flag = 1;  // Autonotes_Obelisks_page_flag
+                        case BOOK_SCROLL_RIGHT:
+                        case BOOK_NOTES_OBELISK:
                             pButton = pBtn_Book_5;
                             break;
-                        case 5:                      // seer
-                            Book_PageBtn6_flag = 1;  // Autonotes_Seer_page_flag
+                        case BOOK_SCROLL_LEFT:
+                        case BOOK_NOTES_SEER:
                             pButton = pBtn_Book_6;
                             break;
-                        case 6:  // misc
+                        case BOOK_NOTES_MISC:
                             pButton = pBtn_Autonotes_Misc;
-                            Autonotes_Misc_page_flag = 1;
                             break;
-                        case 7:  // Instructors
+                        case BOOK_NOTES_INSTRUCTORS:
                             pButton = pBtn_Autonotes_Instructors;
-                            Autonotes_Instructors_page_flag = 1;
                             break;
                         default:
                             continue;
                     }
-                    bookButtonClicked = true;
-                    bookButtonAction = BOOK_BUTTON_ACTION(uMessageParam);
                     new OnButtonClick({pButton->uX, pButton->uY}, {0, 0}, pButton, std::string(), false);
                     continue;
                 case UIMSG_SelectCharacter:

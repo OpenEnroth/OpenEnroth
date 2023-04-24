@@ -1,5 +1,6 @@
 #pragma once
 #include "GUI/UI/UIBooks.h"
+#include "Engine/Autonotes.h"
 
 struct GUIWindow_AutonotesBook : public GUIWindow_Book {
     GUIWindow_AutonotesBook();
@@ -7,3 +8,5 @@ struct GUIWindow_AutonotesBook : public GUIWindow_Book {
 
     virtual void Update();
 };
+
+extern AUTONOTE_TYPE autonoteBookDisplayType;

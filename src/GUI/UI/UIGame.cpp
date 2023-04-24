@@ -122,6 +122,9 @@ bool bFlashHistoryBook;
 bool bFlashAutonotesBook;
 bool bFlashQuestBook;
 
+static bool bookFlashState = false;
+static GameTime bookFlashTimer = GameTime(0);
+
 extern InputAction currently_selected_action_for_binding;  // 506E68
 extern std::map<InputAction, bool> key_map_conflicted;  // 506E6C
 extern std::map<InputAction, PlatformKey> curr_key_map;
@@ -859,26 +862,43 @@ void GameUI_CharacterQuickRecord_Draw(GUIWindow *window, Player *player) {
 
 //----- (0041AD6E) --------------------------------------------------------
 void GameUI_DrawRightPanelItems() {
-    if (GameUI_RightPanel_BookFlashTimer > pParty->GetPlayingTime())
-        GameUI_RightPanel_BookFlashTimer = GameTime(0);
-
-    static bool _50697C_book_flasher;
-
-    if (pParty->GetPlayingTime() - GameUI_RightPanel_BookFlashTimer > GameTime(128)) {
-        GameUI_RightPanel_BookFlashTimer = pParty->GetPlayingTime();
-        _50697C_book_flasher = !_50697C_book_flasher;
+    if (bookFlashTimer > pParty->GetPlayingTime()) {
+        bookFlashTimer = GameTime(0);
     }
 
-    if (_50697C_book_flasher && current_screen_type != CURRENT_SCREEN::SCREEN_REST) {
-        if (bFlashQuestBook)
-            render->DrawTextureNew(493 / 640.0f, 355 / 480.0f,
-                                        game_ui_tome_quests);
-        if (bFlashAutonotesBook)
-            render->DrawTextureNew(527 / 640.0f, 353 / 480.0f,
-                                        game_ui_tome_autonotes);
-        if (bFlashHistoryBook)
-            render->DrawTextureNew(600 / 640.0f, 361 / 480.0f,
-                                        game_ui_tome_storyline);
+    if (pParty->GetPlayingTime() - bookFlashTimer > GameTime(Timer::Second)) {
+        bookFlashTimer = pParty->GetPlayingTime();
+        bookFlashState = !bookFlashState;
+    }
+
+    if (bookFlashState && current_screen_type != CURRENT_SCREEN::SCREEN_REST) {
+        if (bFlashQuestBook) {
+            render->DrawTextureNew(493 / 640.0f, 355 / 480.0f, game_ui_tome_quests);
+        }
+        if (bFlashAutonotesBook) {
+            render->DrawTextureNew(527 / 640.0f, 353 / 480.0f, game_ui_tome_autonotes);
+        }
+        if (bFlashHistoryBook) {
+            render->DrawTextureNew(600 / 640.0f, 361 / 480.0f, game_ui_tome_storyline);
+        }
+    }
+
+    if (current_screen_type ==  CURRENT_SCREEN::SCREEN_BOOKS) {
+        if (pGUIWindow_CurrentMenu->eWindowType == WINDOW_QuestBook) {
+            render->DrawTextureNew(493 / 640.0f, 355 / 480.0f, game_ui_tome_quests);
+        }
+        if (pGUIWindow_CurrentMenu->eWindowType == WINDOW_AutonotesBook) {
+            render->DrawTextureNew(527 / 640.0f, 353 / 480.0f, game_ui_tome_autonotes);
+        }
+        if (pGUIWindow_CurrentMenu->eWindowType == WINDOW_JournalBook) {
+            render->DrawTextureNew(600 / 640.0f, 361 / 480.0f, game_ui_tome_storyline);
+        }
+        if (pGUIWindow_CurrentMenu->eWindowType == WINDOW_MapsBook) {
+            render->DrawTextureNew(546 / 640.0f, 353 / 480.0f, game_ui_tome_maps);
+        }
+        if (pGUIWindow_CurrentMenu->eWindowType == WINDOW_CalendarBook) {
+            render->DrawTextureNew(570 / 640.0f, 353 / 480.0f, game_ui_tome_calendar);
+        }
     }
 }
 
