@@ -12,6 +12,31 @@ void EventMap::add(int eventId, EventIR ir) {
     _eventsById[eventId].push_back(ir);
 }
 
+EventIR EventMap::get(int eventId, int step) {
+    for (const EventIR &ir : _eventsById.at(eventId)) {
+        if (ir.step == step) {
+            return ir;
+        }
+    }
+    assert(false);
+
+    return EventIR();
+}
+
+std::vector<EventTrigger> EventMap::enumerateTriggers(EventType triggerType) {
+    std::vector<EventTrigger> triggers;
+
+    for (const auto &mapElem : _eventsById) {
+        for (const EventIR &ir : mapElem.second) {
+            if (ir.type == triggerType) {
+                triggers.push_back(EventTrigger(mapElem.first, ir.step));
+            }
+        }
+    }
+
+    return triggers;
+}
+
 void EventMap::execute(int eventId, int startStep, bool canShowMessages) const {
     assert(_eventsById.contains(eventId));
     assert(startStep >= 0);
@@ -19,13 +44,13 @@ void EventMap::execute(int eventId, int startStep, bool canShowMessages) const {
     int step = startStep;
     bool stepFound;
     PLAYER_CHOOSE_POLICY who = !pParty->hasActiveCharacter() ? CHOOSE_RANDOM : CHOOSE_ACTIVE;
-    bool mapExitTriggered;
+    bool mapExitTriggered = false;
 
     do {
         stepFound = false;
         for (const EventIR &ir : _eventsById.at(eventId)) {
             if (ir.step == step) {
-                step = ir.execute(canShowMessages, &who, &mapExitTriggered);
+                step = ir.execute(eventId, canShowMessages, &who, &mapExitTriggered);
                 stepFound = true;
                 break;
             }
@@ -57,12 +82,12 @@ std::string EventMap::getHintString(int eventId) const {
 
 void EventMap::dump(int eventId) const {
     if (_eventsById.contains(eventId)) {
-        logger->verbose("Event: {}", eventId);
+        logger->warning("Event: {}", eventId);
         for (const EventIR &ir : _eventsById.at(eventId)) {
-            logger->verbose("{}", ir.toString());
+            logger->warning("{}", ir.toString());
         }
     } else {
-        logger->verbose("Event {} not found", eventId);
+        logger->warning("Event {} not found", eventId);
     }
 }
 
@@ -70,24 +95,4 @@ void EventMap::dumpAll() const {
     for (const auto &[id, _] : _eventsById) {
         dump(id);
     }
-}
-
-// TODO(Nik-RE-dev): move to separate location
-void eventProcessor(int eventId, int targetObj, int canShowMessages, int startStep) {
-    EvtTargetObj = targetObj; // TODO: pass as local
-    dword_5B65C4_cancelEventProcessing = 0; // TODO: rename and contain in this module or better remove it altogether
-
-    logger->verbose("Executing event starting from step {}", startStep);
-    if (activeLevelDecoration) {
-        engine->_globalEventMap.dump(eventId);
-        engine->_globalEventMap.execute(eventId, startStep, canShowMessages);
-    } else {
-        engine->_localEventMap.dump(eventId);
-        engine->_localEventMap.execute(eventId, startStep, canShowMessages);
-    }
-}
-
-// TODO(Nik-RE-dev): move to separate location
-std::string getEventHintString(int eventId) {
-    return engine->_localEventMap.getHintString(eventId);
 }

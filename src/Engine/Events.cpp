@@ -1,4 +1,5 @@
 #include "Engine/Events.h"
+#include "Engine/Events/Processor.h"
 #include "Engine/Engine.h"
 #include "Engine/EngineGlobals.h"
 #include "Engine/Events2D.h"
@@ -145,6 +146,8 @@ void LoadLevel_InitializeLevelEvt() {
         current_hdr = (raw_event_header *)&pLevelEVT[offset_in];
     }
     uLevelEVT_NumEvents = events_count;
+
+    registerEventTriggers();
 
     /*
     EmeraldIsle::Variables:

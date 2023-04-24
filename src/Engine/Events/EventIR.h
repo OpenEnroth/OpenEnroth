@@ -39,7 +39,7 @@ class EventIR {
  public:
     std::string toString() const;
     static EventIR parse(void *data, size_t maxSize);
-    int execute(bool canShowMessages, PLAYER_CHOOSE_POLICY *who, bool *mapExitTriggered) const;
+    int execute(int eventId, bool canShowMessages, PLAYER_CHOOSE_POLICY *who, bool *mapExitTriggered) const;
 
     EventType type;
     int step;

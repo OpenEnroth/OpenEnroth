@@ -20,6 +20,7 @@
 #include "Engine/EngineGlobals.h"
 #include "Engine/EngineFactory.h"
 #include "Engine/Events.h"
+#include "Engine/Events/Processor.h"
 #include "Engine/Graphics/DecalBuilder.h"
 #include "Engine/Graphics/IRender.h"
 #include "Engine/Graphics/IRenderFactory.h"
