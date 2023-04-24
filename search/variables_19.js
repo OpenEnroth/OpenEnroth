@@ -10,7 +10,8 @@ var searchData=
   ['yell_7',['Yell',['../classGameConfig_1_1Gamepad.html#a9ddbf0b834ae4eac40e7a2b0072c4992',1,'GameConfig::Gamepad::Yell()'],['../classGameConfig_1_1Keybindings.html#a8042ccfbe0fc5667eca414014cff4514',1,'GameConfig::Keybindings::Yell()']]],
   ['yellow_8',['Yellow',['../classColorTable.html#af212222751a310ffcd62a8f9755bfbd3',1,'ColorTable']]],
   ['yes_9',['Yes',['../classGameConfig_1_1Gamepad.html#a8c6f76cfd6c2a034073d44a69358d1c8',1,'GameConfig::Gamepad::Yes()'],['../classGameConfig_1_1Keybindings.html#a2e8bad2abfb7831a9dd3151f5cb2a074',1,'GameConfig::Keybindings::Yes()']]],
-  ['ymax_10',['ymax',['../structPCXHeader.html#ae7da24b0de134476f17b922e25987619',1,'PCXHeader']]],
-  ['ymin_11',['ymin',['../structPCXHeader.html#a37ffbcf2e56608f929895daa104721dd',1,'PCXHeader']]],
-  ['ypos_12',['Ypos',['../structSpellBookIconPos.html#aa94e5152a5ffcd7498f6abd26381fdc8',1,'SpellBookIconPos']]]
+  ['yinterceptdisplacements_10',['yInterceptDisplacements',['../structBLVFace__MM7.html#ae7daa1c0188a60fadacc7d3b802f302b',1,'BLVFace_MM7']]],
+  ['ymax_11',['ymax',['../structPCXHeader.html#ae7da24b0de134476f17b922e25987619',1,'PCXHeader']]],
+  ['ymin_12',['ymin',['../structPCXHeader.html#a37ffbcf2e56608f929895daa104721dd',1,'PCXHeader']]],
+  ['ypos_13',['Ypos',['../structSpellBookIconPos.html#aa94e5152a5ffcd7498f6abd26381fdc8',1,'SpellBookIconPos']]]
 ];
