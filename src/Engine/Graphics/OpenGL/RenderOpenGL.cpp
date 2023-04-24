@@ -2251,7 +2251,7 @@ void RenderOpenGL::DrawOutdoorTerrain() {
 
                 decal_builder->ApplyBloodSplatToTerrain(pTilePolygon, norm, &Light_tile_dist, VertexRenderList, i);
                 Planef plane;
-                plane.vNormal = *norm;
+                plane.normal = *norm;
                 plane.dist = Light_tile_dist;
                 if (decal_builder->uNumSplatsThisFace > 0)
                     decal_builder->BuildAndApplyDecals(31 - pTilePolygon->dimming_level, LocationTerrain, plane, 3, VertexRenderList, 0, -1);
@@ -2262,7 +2262,7 @@ void RenderOpenGL::DrawOutdoorTerrain() {
                 pTilePolygon->dimming_level = std::clamp((int)pTilePolygon->dimming_level, 0, 31);
 
                 decal_builder->ApplyBloodSplatToTerrain(pTilePolygon, norm2, &Light_tile_dist, (VertexRenderList + 3), i);
-                plane.vNormal = *norm2;
+                plane.normal = *norm2;
                 plane.dist = Light_tile_dist;
                 if (decal_builder->uNumSplatsThisFace > 0)
                     decal_builder->BuildAndApplyDecals(31 - pTilePolygon->dimming_level, LocationTerrain, plane, 3, (VertexRenderList + 3), 0, -1);
@@ -3928,9 +3928,9 @@ void RenderOpenGL::DrawOutdoorBuildings() {
                                     thisvert->v = face.pTextureVIDs[0] + face.sTextureDeltaV;
                                     thisvert->texunit = texunit;
                                     thisvert->texturelayer = texlayer;
-                                    thisvert->normx = face.pFacePlane.vNormal.x;
-                                    thisvert->normy = face.pFacePlane.vNormal.y;
-                                    thisvert->normz = face.pFacePlane.vNormal.z;
+                                    thisvert->normx = face.facePlane.normal.x;
+                                    thisvert->normy = face.facePlane.normal.y;
+                                    thisvert->normz = face.facePlane.normal.z;
                                     thisvert->attribs = attribflags;
                                     thisvert++;
 
@@ -3943,9 +3943,9 @@ void RenderOpenGL::DrawOutdoorBuildings() {
                                         thisvert->v = face.pTextureVIDs[z + i] + face.sTextureDeltaV;
                                         thisvert->texunit = texunit;
                                         thisvert->texturelayer = texlayer;
-                                        thisvert->normx = face.pFacePlane.vNormal.x;
-                                        thisvert->normy = face.pFacePlane.vNormal.y;
-                                        thisvert->normz = face.pFacePlane.vNormal.z;
+                                        thisvert->normx = face.facePlane.normal.x;
+                                        thisvert->normy = face.facePlane.normal.y;
+                                        thisvert->normz = face.facePlane.normal.z;
                                         thisvert->attribs = attribflags;
                                         thisvert++;
                                     }
@@ -4189,7 +4189,7 @@ void RenderOpenGL::DrawOutdoorBuildings() {
             poly->field_59 = 5;
 
 
-            float _f1 = face.pFacePlane.vNormal.x * pOutdoor->vSunlight.x + face.pFacePlane.vNormal.y * pOutdoor->vSunlight.y + face.pFacePlane.vNormal.z * pOutdoor->vSunlight.z;
+            float _f1 = face.facePlane.normal.x * pOutdoor->vSunlight.x + face.facePlane.normal.y * pOutdoor->vSunlight.y + face.facePlane.normal.z * pOutdoor->vSunlight.z;
             poly->dimming_level = 20.0 - floorf(20.0 * _f1 + 0.5f);
             poly->dimming_level = std::clamp((int)poly->dimming_level, 0, 31);
 
@@ -4211,7 +4211,7 @@ void RenderOpenGL::DrawOutdoorBuildings() {
             if (decal_builder->uNumSplatsThisFace > 0) {
                 decal_builder->BuildAndApplyDecals(
                     31 - poly->dimming_level, LocationBuildings,
-                    face.pFacePlane,
+                    face.facePlane,
                     face.uNumVertices, VertexRenderList, 0, -1);
             }
         }
@@ -4580,9 +4580,9 @@ void RenderOpenGL::DrawIndoorFaces() {
                                 }
                                 thisvert->texunit = texunit;
                                 thisvert->texturelayer = texlayer;
-                                thisvert->normx = face->pFacePlane.vNormal.x;
-                                thisvert->normy = face->pFacePlane.vNormal.y;
-                                thisvert->normz = face->pFacePlane.vNormal.z;
+                                thisvert->normx = face->facePlane.normal.x;
+                                thisvert->normy = face->facePlane.normal.y;
+                                thisvert->normz = face->facePlane.normal.z;
                                 thisvert->attribs = attribflags;
                                 thisvert->sector = face->uSectorID;
                                 thisvert++;
@@ -4600,9 +4600,9 @@ void RenderOpenGL::DrawIndoorFaces() {
                                     }
                                     thisvert->texunit = texunit;
                                     thisvert->texturelayer = texlayer;
-                                    thisvert->normx = face->pFacePlane.vNormal.x;
-                                    thisvert->normy = face->pFacePlane.vNormal.y;
-                                    thisvert->normz = face->pFacePlane.vNormal.z;
+                                    thisvert->normx = face->facePlane.normal.x;
+                                    thisvert->normy = face->facePlane.normal.y;
+                                    thisvert->normz = face->facePlane.normal.z;
                                     thisvert->attribs = attribflags;
                                     thisvert->sector = face->uSectorID;
                                     thisvert++;
@@ -4924,7 +4924,7 @@ void RenderOpenGL::DrawIndoorFaces() {
             }
 
             // blood draw
-            decal_builder->BuildAndApplyDecals(uCurrentAmbientLightLevel, LocationIndoors, pface->pFacePlane,
+            decal_builder->BuildAndApplyDecals(uCurrentAmbientLightLevel, LocationIndoors, pface->facePlane,
                 pface->uNumVertices, static_vertices_buff_in,
                 0, pface->uSectorID);
         }

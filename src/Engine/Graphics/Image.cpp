@@ -75,17 +75,18 @@ void TextureFrameTable::FromFile(const Blob &data_mm6, const Blob &data_mm7, con
     Assert(sNumTextures, 0);
     // Assert(!num_mm8_frames);
 
+    // TODO(captainurist): move serialization code to legacyimages
     TextureFrame_MM7 *frame_data =
         (TextureFrame_MM7 *)((unsigned char *)data_mm7.data() + 4);
     auto frames = new TextureFrame[this->sNumTextures];
     for (unsigned int i = 0; i < this->sNumTextures; ++i) {
-        frames[i].name = frame_data->pTextureName.data();
+        frames[i].name = frame_data->textureName.data();
         std::transform(frames[i].name.begin(), frames[i].name.end(),
                        frames[i].name.begin(), ::tolower);
 
-        frames[i].uAnimLength = frame_data->uAnimLength;
-        frames[i].uAnimTime = frame_data->uAnimTime;
-        frames[i].uFlags = frame_data->uFlags;
+        frames[i].uAnimLength = frame_data->animLength;
+        frames[i].uAnimTime = frame_data->animTime;
+        frames[i].uFlags = frame_data->flags;
 
         ++frame_data;
     }

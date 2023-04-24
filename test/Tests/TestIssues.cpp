@@ -14,7 +14,7 @@
 static int totalPartyHealth() {
     int result = 0;
     for (const Player &player : pParty->pPlayers)
-        result += player.sHealth;
+        result += player.health;
     return result;
 }
 
@@ -100,13 +100,13 @@ GAME_TEST(Issues, Issue198) {
     game->runGameRoutine([&] {
         forEachInventoryItem([](const ItemGen &item, int /*x*/, int /*y*/) {
             // Calling GetWidth forces the texture to be created.
-            assets->GetImage_ColorKey(pItemTable->pItems[item.uItemID].pIconName)->GetWidth();
+            assets->GetImage_ColorKey(pItemTable->pItems[item.uItemID].iconName)->GetWidth();
         });
     });
 
     // Then can safely check everything.
     forEachInventoryItem([](const ItemGen &item, int x, int y) {
-        Texture *image = assets->GetImage_ColorKey(pItemTable->pItems[item.uItemID].pIconName);
+        Texture *image = assets->GetImage_ColorKey(pItemTable->pItems[item.uItemID].iconName);
         int width = GetSizeInInventorySlots(image->GetWidth());
         int height = GetSizeInInventorySlots(image->GetHeight());
 
@@ -258,7 +258,7 @@ GAME_TEST(Issues, Issue294) {
     auto partyExperience = [&] {
         uint64_t result = 0;
         for (const Player &player : pParty->pPlayers)
-            result += player.uExperience;
+            result += player.experience;
         return result;
     };
 
@@ -329,7 +329,7 @@ GAME_TEST(Issues, Issue395) {
     // Check that learning skill works as intended
     auto checkExperience = [](std::initializer_list<std::pair<int, int>> experiencePairs) {
         for (auto pair : experiencePairs) {
-            EXPECT_EQ(pParty->pPlayers[pair.first].uExperience, pair.second);
+            EXPECT_EQ(pParty->pPlayers[pair.first].experience, pair.second);
         }
     };
 
@@ -444,8 +444,8 @@ GAME_TEST(Issues, Issue489) {
 
 GAME_TEST(Issues, Issue490) {
     // Check that Poison Spray sprites are moving and doing damage
-    test->playTraceFromTestData("issue_490.mm7", "issue_490.json", []() { EXPECT_EQ(pParty->pPlayers[0].uExperience, 279); });
-    EXPECT_EQ(pParty->pPlayers[0].uExperience, 285);
+    test->playTraceFromTestData("issue_490.mm7", "issue_490.json", []() { EXPECT_EQ(pParty->pPlayers[0].experience, 279); });
+    EXPECT_EQ(pParty->pPlayers[0].experience, 285);
 }
 
 GAME_TEST(Issues, Issue491) {
@@ -455,8 +455,8 @@ GAME_TEST(Issues, Issue491) {
 
 GAME_TEST(Issues, Issue492) {
     // Check that spells that target all visible actors work
-    test->playTraceFromTestData("issue_492.mm7", "issue_492.json", []() { EXPECT_EQ(pParty->pPlayers[0].uExperience, 279); });
-    EXPECT_EQ(pParty->pPlayers[0].uExperience, 287);
+    test->playTraceFromTestData("issue_492.mm7", "issue_492.json", []() { EXPECT_EQ(pParty->pPlayers[0].experience, 279); });
+    EXPECT_EQ(pParty->pPlayers[0].experience, 287);
 }
 
 // 500
@@ -468,7 +468,7 @@ GAME_TEST(Issues, Issue502) {
 
 static void check503health(std::initializer_list<std::pair<int, int>> playerhealthpairs) {
     for (auto pair : playerhealthpairs) {
-        EXPECT_EQ(pParty->pPlayers[pair.first].sHealth, pair.second);
+        EXPECT_EQ(pParty->pPlayers[pair.first].health, pair.second);
     }
 }
 
@@ -512,8 +512,8 @@ GAME_TEST(Issues, Issue527) {
 GAME_TEST(Issues, Issue528) {
     // Check that spells target single player or entire party depending on mastery drain mana
     // Use test for issue 427 which test the same spells
-    test->playTraceFromTestData("issue_427b.mm7", "issue_427b.json", []() { EXPECT_EQ(pParty->pPlayers[2].sMana, 100); });
-    EXPECT_EQ(pParty->pPlayers[2].sMana, 40);
+    test->playTraceFromTestData("issue_427b.mm7", "issue_427b.json", []() { EXPECT_EQ(pParty->pPlayers[2].mana, 100); });
+    EXPECT_EQ(pParty->pPlayers[2].mana, 40);
 }
 
 GAME_TEST(Issues, Issue540) {
@@ -540,8 +540,8 @@ GAME_TEST(Issues, Issue574) {
 
 GAME_TEST(Issues, Issue578) {
     // Check that rest & heal work after waiting
-    test->playTraceFromTestData("issue_578.mm7", "issue_578.json", []() { EXPECT_EQ(pParty->pPlayers[0].sHealth, 66); });
-    EXPECT_EQ(pParty->pPlayers[0].sHealth, 108);
+    test->playTraceFromTestData("issue_578.mm7", "issue_578.json", []() { EXPECT_EQ(pParty->pPlayers[0].health, 66); });
+    EXPECT_EQ(pParty->pPlayers[0].health, 108);
 }
 
 GAME_TEST(Issues, Issue598) {
@@ -555,7 +555,7 @@ GAME_TEST(Issues, Issue598) {
 static void check601Conds(std::array<Condition, 4> conds, std::array<int, 4> health) {
     for (int i = 0; i < conds.size(); i++) {
         EXPECT_EQ(pParty->pPlayers[i].GetMajorConditionIdx(), conds[i]);
-        EXPECT_EQ(pParty->pPlayers[i].sHealth, health[i]);
+        EXPECT_EQ(pParty->pPlayers[i].health, health[i]);
     }
 }
 
@@ -567,16 +567,16 @@ GAME_TEST(Issues, Issue601) {
 
 GAME_TEST(Issues, Issue608) {
     // Check that using Gate Master ability does not deplete mana of character
-    test->playTraceFromTestData("issue_608.mm7", "issue_608.json", []() { EXPECT_EQ(pParty->pPlayers[0].sMana, 35); });
-    EXPECT_EQ(pParty->pPlayers[0].sMana, 35);
+    test->playTraceFromTestData("issue_608.mm7", "issue_608.json", []() { EXPECT_EQ(pParty->pPlayers[0].mana, 35); });
+    EXPECT_EQ(pParty->pPlayers[0].mana, 35);
 }
 
 GAME_TEST(Issues, Issue611) {
     // Heal and reanimate dont work
     test->playTraceFromTestData("issue_611.mm7", "issue_611.json");
     // expect chars to be healed and zombies
-    EXPECT_EQ(pParty->pPlayers[0].sHealth, 45);
-    EXPECT_EQ(pParty->pPlayers[1].sHealth, 39);
+    EXPECT_EQ(pParty->pPlayers[0].health, 45);
+    EXPECT_EQ(pParty->pPlayers[1].health, 39);
     EXPECT_EQ(pParty->pPlayers[2].conditions.Has(Condition_Zombie), true);
     EXPECT_EQ(pParty->pPlayers[3].conditions.Has(Condition_Zombie), true);
 }

@@ -35,21 +35,21 @@ struct SpellBuff {
     /**
      * @offset 0x42EB31
      */
-    bool Active() const { return this->expire_time.value > 0; }
-    bool Expired() const { return this->expire_time.value < 0; }
+    bool Active() const { return this->expireTime.value > 0; }
+    bool Expired() const { return this->expireTime.value < 0; }
 
-    GameTime expire_time;
-    uint16_t uPower = 0; // Spell power, semantics are spell-specific.
-    PLAYER_SKILL_MASTERY uSkillMastery = PLAYER_SKILL_MASTERY_NONE; // 1-4, normal to grandmaster.
-    uint16_t uOverlayID = 0;
-    uint8_t uCaster = 0;
+    GameTime expireTime;
+    uint16_t power = 0; // Spell power, semantics are spell-specific.
+    PLAYER_SKILL_MASTERY skillMastery = PLAYER_SKILL_MASTERY_NONE; // 1-4, normal to grandmaster.
+    uint16_t overlayID = 0;
+    uint8_t caster = 0;
     bool isGMBuff = false; // Buff was casted at grandmaster mastery
 };
 #pragma pack(pop)
 
 #pragma pack(push, 1)
 struct SpellInfo {
-    char *pName;
+    char *name;
     char *pShortName;
     char *pDescription;
     char *pBasicSkillDesc;

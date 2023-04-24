@@ -584,7 +584,7 @@ void GameUI_OnPlayerPortraitLeftClick(unsigned int uPlayerID) {
     if (current_screen_type == CURRENT_SCREEN::SCREEN_GAME) {
         if (pParty->hasActiveCharacter()) {
             if (pParty->activeCharacterIndex() != uPlayerID) {
-                if (pPlayers[uPlayerID]->uTimeToRecovery || !pPlayers[uPlayerID]->CanAct()) {
+                if (pPlayers[uPlayerID]->timeToRecovery || !pPlayers[uPlayerID]->CanAct()) {
                     return;
                 }
 
@@ -607,7 +607,7 @@ void GameUI_OnPlayerPortraitLeftClick(unsigned int uPlayerID) {
             pParty->setActiveCharacterIndex(uPlayerID);
             return;
         }
-        if (pPlayers[uPlayerID]->uTimeToRecovery) {
+        if (pPlayers[uPlayerID]->timeToRecovery) {
             return;
         }
         pParty->setActiveCharacterIndex(uPlayerID);
@@ -632,7 +632,7 @@ void GameUI_OnPlayerPortraitLeftClick(unsigned int uPlayerID) {
             pParty->setActiveCharacterIndex(uPlayerID);
             return;
         }
-        if (pPlayers[uPlayerID]->uTimeToRecovery) {
+        if (pPlayers[uPlayerID]->timeToRecovery) {
             return;
         }
         pParty->setActiveCharacterIndex(uPlayerID);
@@ -809,16 +809,16 @@ void GameUI_CharacterQuickRecord_Draw(GUIWindow *window, Player *player) {
     // TODO(captainurist): do a 2nd rewrite here
     auto str =
         fmt::format("\f{:05}", ui_character_header_text_color)
-        + NameAndTitle(player->pName, player->classType)
+        + NameAndTitle(player->name, player->classType)
         + "\f00000\n"
         + fmt::format("{} : \f{:05}{}\f00000 / {}\n",
-                     localization->GetString(LSTR_HIT_POINTS),
-                     UI_GetHealthManaAndOtherQualitiesStringColor(player->sHealth, player->GetMaxHealth()),
-                     player->sHealth, player->GetMaxHealth())
+                      localization->GetString(LSTR_HIT_POINTS),
+                      UI_GetHealthManaAndOtherQualitiesStringColor(player->health, player->GetMaxHealth()),
+                      player->health, player->GetMaxHealth())
         + fmt::format("{} : \f{:05}{}\f00000 / {}\n",
-                     localization->GetString(LSTR_SPELL_POINTS),
-                     UI_GetHealthManaAndOtherQualitiesStringColor(player->sMana, player->GetMaxMana()),
-                     player->sMana, player->GetMaxMana())
+                      localization->GetString(LSTR_SPELL_POINTS),
+                      UI_GetHealthManaAndOtherQualitiesStringColor(player->mana, player->GetMaxMana()),
+                      player->mana, player->GetMaxMana())
         + fmt::format("{}: \f{:05}{}\f00000\n",
                      localization->GetString(LSTR_CONDITION),
                      GetConditionDrawColor(player->GetMajorConditionIdx()),
@@ -842,7 +842,7 @@ void GameUI_CharacterQuickRecord_Draw(GUIWindow *window, Player *player) {
                              ui_game_character_record_playerbuff_colors[i],
                              localization->GetSpellName(20 + i), 0, 0, 0);
             DrawBuff_remaining_time_string(
-                v36, window, buff->expire_time - pParty->GetPlayingTime(),
+                v36, window, buff->expireTime - pParty->GetPlayingTime(),
                 pFontComic);
         }
     }
@@ -898,10 +898,10 @@ void GameUI_DrawLifeManaBars() {
     double v7;  // st7@25
 
     for (uint i = 0; i < 4; ++i) {
-        if (pParty->pPlayers[i].sHealth > 0) {
+        if (pParty->pPlayers[i].health > 0) {
             int v17 = 0;
             if (i == 2 || i == 3) v17 = 2;
-            v3 = (double)pParty->pPlayers[i].sHealth /
+            v3 = (double)pParty->pPlayers[i].health /
                  (double)pParty->pPlayers[i].GetMaxHealth();
 
             auto pTextureHealth = game_ui_bar_green;
@@ -924,8 +924,8 @@ void GameUI_DrawLifeManaBars() {
                 render->ResetUIClipRect();
             }
         }
-        if (pParty->pPlayers[i].sMana > 0) {
-            v7 = pParty->pPlayers[i].sMana /
+        if (pParty->pPlayers[i].mana > 0) {
+            v7 = pParty->pPlayers[i].mana /
                  (double)pParty->pPlayers[i].GetMaxMana();
             if (v7 > 1.0) v7 = 1.0;
             int v17 = 0;
@@ -1568,7 +1568,7 @@ void GameUI_DrawPortraits() {
     } else {
         for (uint i = 0; i < 4; ++i) {
             if (pParty->pPlayers[i].CanAct() &&
-                !pParty->pPlayers[i].uTimeToRecovery) {
+                !pParty->pPlayers[i].timeToRecovery) {
                 auto alert_texture = game_ui_player_alert_green;
                 if (pParty->GetRedAlert())
                     alert_texture = game_ui_player_alert_red;

@@ -94,45 +94,43 @@ static void Deserialize(const std::array<T1, N> &src, IndexedArray<T2, L, H> *ds
 }
 
 void Deserialize(const SpriteFrame_MM7 &src, SpriteFrame *dst) {
-    dst->icon_name = src.pIconName.data();
+    dst->icon_name = src.iconName.data();
     std::transform(dst->icon_name.begin(), dst->icon_name.end(), dst->icon_name.begin(), ::tolower);
 
-    dst->texture_name = src.pTextureName.data();
+    dst->texture_name = src.textureName.data();
     std::transform(dst->texture_name.begin(), dst->texture_name.end(), dst->texture_name.begin(), ::tolower);
 
     for (unsigned int i = 0; i < 8; ++i)
         dst->hw_sprites[i] = nullptr;
 
     dst->scale = src.scale / 65536.0;
-    dst->uFlags = src.uFlags;
+    dst->uFlags = src.flags;
 
-    dst->uGlowRadius = src.uGlowRadius;
-    dst->uPaletteID = src.uPaletteID;
-    dst->ResetPaletteIndex(src.uPaletteIndex);
-    dst->uAnimTime = src.uAnimTime;
-    dst->uAnimLength = src.uAnimLength;
+    dst->uGlowRadius = src.glowRadius;
+    dst->uPaletteID = src.paletteId;
+    dst->ResetPaletteIndex(src.paletteIndex);
+    dst->uAnimTime = src.animTime;
+    dst->uAnimLength = src.animLength;
 }
 
 void Deserialize(const BLVFace_MM7 &src, BLVFace *dst) {
-    dst->pFacePlane = src.pFacePlane;
-    dst->pFacePlane_old = src.pFacePlane_old;
-    dst->zCalc.init(dst->pFacePlane_old);
-    dst->uAttributes = static_cast<FaceAttributes>(src.uAttributes);
+    dst->facePlane = src.facePlane;
+    dst->facePlane_old = src.facePlane_old;
+    dst->zCalc.init(dst->facePlane_old);
+    dst->uAttributes = static_cast<FaceAttributes>(src.attributes);
     dst->pVertexIDs = nullptr;
     dst->pXInterceptDisplacements = nullptr;
     dst->pYInterceptDisplacements = nullptr;
     dst->pZInterceptDisplacements = nullptr;
     dst->pVertexUIDs = nullptr;
     dst->pVertexVIDs = nullptr;
-    dst->uFaceExtraID = src.uFaceExtraID;
+    dst->uFaceExtraID = src.faceExtraId;
     dst->resource = nullptr;
-    dst->uSectorID = src.uSectorID;
-    dst->uBackSectorID = src.uBackSectorID;
-    dst->pBounding = src.pBounding;
-    dst->uPolygonType = static_cast<PolygonType>(src.uPolygonType);
-    dst->uNumVertices = src.uNumVertices;
-    dst->field_5E = src.field_5E;
-    dst->field_5F = src.field_5F;
+    dst->uSectorID = src.sectorId;
+    dst->uBackSectorID = src.backSectorId;
+    dst->pBounding = src.bounding;
+    dst->uPolygonType = static_cast<PolygonType>(src.polygonType);
+    dst->uNumVertices = src.numVertices;
 }
 
 void Serialize(const Timer &src, Timer_MM7 *dst) {
@@ -167,13 +165,13 @@ void Serialize(const NPCData &src, NPCData_MM7 *dst) {
     memzero(dst);
 
     // dst->pName = src.pName;
-    dst->pName = !src.pName.empty();
-    dst->uPortraitID = src.uPortraitID;
-    dst->uFlags = src.uFlags;
+    dst->name = !src.pName.empty();
+    dst->portraitId = src.uPortraitID;
+    dst->flags = src.uFlags;
     dst->fame = src.fame;
     dst->rep = src.rep;
-    dst->Location2D = src.Location2D;
-    dst->uProfession = std::to_underlying(src.profession);
+    dst->location2d = src.Location2D;
+    dst->profession = std::to_underlying(src.profession);
     dst->greet = src.greet;
     dst->joins = src.is_joinable;
     dst->field_24 = src.field_24;
@@ -183,20 +181,20 @@ void Serialize(const NPCData &src, NPCData_MM7 *dst) {
     dst->evt_D = src.dialogue_4_evt_id;
     dst->evt_E = src.dialogue_5_evt_id;
     dst->evt_F = src.dialogue_6_evt_id;
-    dst->uSex = src.uSex;
-    dst->bHasUsedTheAbility = src.bHasUsedTheAbility;
-    dst->news_topic = src.news_topic;
+    dst->sex = src.uSex;
+    dst->hasUsedAbility = src.bHasUsedTheAbility;
+    dst->newsTopic = src.news_topic;
 }
 
 void Deserialize(const NPCData_MM7 &src, NPCData *dst) {
     // dst->pName = src.pName;
-    dst->pName = src.pName ? "Dummy" : "";
-    dst->uPortraitID = src.uPortraitID;
-    dst->uFlags = src.uFlags;
+    dst->pName = src.name ? "Dummy" : "";
+    dst->uPortraitID = src.portraitId;
+    dst->uFlags = src.flags;
     dst->fame = src.fame;
     dst->rep = src.rep;
-    dst->Location2D = src.Location2D;
-    dst->profession = static_cast<NPCProf>(src.uProfession);
+    dst->Location2D = src.location2d;
+    dst->profession = static_cast<NPCProf>(src.profession);
     dst->greet = src.greet;
     dst->is_joinable = src.joins;
     dst->field_24 = src.field_24;
@@ -206,9 +204,9 @@ void Deserialize(const NPCData_MM7 &src, NPCData *dst) {
     dst->dialogue_4_evt_id = src.evt_D;
     dst->dialogue_5_evt_id = src.evt_E;
     dst->dialogue_6_evt_id = src.evt_F;
-    dst->uSex = src.uSex;
-    dst->bHasUsedTheAbility = src.bHasUsedTheAbility;
-    dst->news_topic = src.news_topic;
+    dst->uSex = src.sex;
+    dst->bHasUsedTheAbility = src.hasUsedAbility;
+    dst->news_topic = src.newsTopic;
 }
 
 void Serialize(const OtherOverlay &src, OtherOverlay_MM7 *dst) {
@@ -255,51 +253,51 @@ void Deserialize(const OtherOverlayList_MM7 &src, OtherOverlayList *dst) {
 void Serialize(const SpellBuff &src, SpellBuff_MM7 *dst) {
     memzero(dst);
 
-    dst->uExpireTime = src.expire_time.value;
-    dst->uPower = src.uPower;
-    dst->uSkillMastery = std::to_underlying(src.uSkillMastery);
-    dst->uOverlayID = src.uOverlayID;
-    dst->uCaster = src.uCaster;
-    dst->uFlags = src.isGMBuff;
+    dst->expireTime = src.expireTime.value;
+    dst->power = src.power;
+    dst->skillMastery = std::to_underlying(src.skillMastery);
+    dst->overlayId = src.overlayID;
+    dst->caster = src.caster;
+    dst->flags = src.isGMBuff;
 }
 
 void Deserialize(const SpellBuff_MM7 &src, SpellBuff *dst) {
-    dst->expire_time.value = src.uExpireTime;
-    dst->uPower = src.uPower;
-    dst->uSkillMastery = static_cast<PLAYER_SKILL_MASTERY>(src.uSkillMastery);
-    dst->uOverlayID = src.uOverlayID;
-    dst->uCaster = src.uCaster;
-    dst->isGMBuff = src.uFlags;
+    dst->expireTime.value = src.expireTime;
+    dst->power = src.power;
+    dst->skillMastery = static_cast<PLAYER_SKILL_MASTERY>(src.skillMastery);
+    dst->overlayID = src.overlayId;
+    dst->caster = src.caster;
+    dst->isGMBuff = src.flags;
 }
 
 void Serialize(const ItemGen &src, ItemGen_MM7 *dst) {
     memzero(dst);
 
-    dst->uItemID = std::to_underlying(src.uItemID);
-    dst->uEnchantmentType = src.uEnchantmentType;
-    dst->m_enchantmentStrength = src.m_enchantmentStrength;
-    dst->special_enchantment = src.special_enchantment;
-    dst->uNumCharges = src.uNumCharges;
-    dst->uAttributes = std::to_underlying(src.uAttributes);
-    dst->uBodyAnchor = std::to_underlying(src.uBodyAnchor);
-    dst->uMaxCharges = src.uMaxCharges;
-    dst->uHolderPlayer = src.uHolderPlayer;
+    dst->itemID = std::to_underlying(src.uItemID);
+    dst->enchantmentType = src.uEnchantmentType;
+    dst->enchantmentStrength = src.m_enchantmentStrength;
+    dst->specialEnchantment = src.special_enchantment;
+    dst->numCharges = src.uNumCharges;
+    dst->attributes = std::to_underlying(src.uAttributes);
+    dst->bodyAnchor = std::to_underlying(src.uBodyAnchor);
+    dst->maxCharges = src.uMaxCharges;
+    dst->holderPlayer = src.uHolderPlayer;
     dst->placedInChest = src.placedInChest;
-    dst->uExpireTime = src.uExpireTime.value;
+    dst->expireTime = src.uExpireTime.value;
 }
 
 void Deserialize(const ItemGen_MM7 &src, ItemGen *dst) {
-    dst->uItemID = static_cast<ITEM_TYPE>(src.uItemID);
-    dst->uEnchantmentType = src.uEnchantmentType;
-    dst->m_enchantmentStrength = src.m_enchantmentStrength;
-    dst->special_enchantment = static_cast<ITEM_ENCHANTMENT>(src.special_enchantment);
-    dst->uNumCharges = src.uNumCharges;
-    dst->uAttributes = static_cast<ITEM_FLAGS>(src.uAttributes);
-    dst->uBodyAnchor = static_cast<ITEM_SLOT>(src.uBodyAnchor);
-    dst->uMaxCharges = src.uMaxCharges;
-    dst->uHolderPlayer = src.uHolderPlayer;
+    dst->uItemID = static_cast<ITEM_TYPE>(src.itemID);
+    dst->uEnchantmentType = src.enchantmentType;
+    dst->m_enchantmentStrength = src.enchantmentStrength;
+    dst->special_enchantment = static_cast<ITEM_ENCHANTMENT>(src.specialEnchantment);
+    dst->uNumCharges = src.numCharges;
+    dst->uAttributes = static_cast<ITEM_FLAGS>(src.attributes);
+    dst->uBodyAnchor = static_cast<ITEM_SLOT>(src.bodyAnchor);
+    dst->uMaxCharges = src.maxCharges;
+    dst->uHolderPlayer = src.holderPlayer;
     dst->placedInChest = src.placedInChest;
-    dst->uExpireTime.value = src.uExpireTime;
+    dst->uExpireTime.value = src.expireTime;
 }
 
 void Serialize(const Party &src, Party_MM7 *dst) {
@@ -566,34 +564,33 @@ void Serialize(const Player &src, Player_MM7 *dst) {
     memzero(dst);
 
     for (unsigned int i = 0; i < 20; ++i)
-        dst->pConditions[i] = src.conditions.Get(static_cast<Condition>(i)).value;
+        dst->conditions[i] = src.conditions.Get(static_cast<Condition>(i)).value;
 
-    dst->uExperience = src.uExperience;
+    dst->experience = src.experience;
 
-    Serialize(src.pName, &dst->pName);
+    Serialize(src.name, &dst->name);
 
-    dst->uSex = src.uSex;
+    dst->sex = src.uSex;
     dst->classType = src.classType;
-    dst->uCurrentFace = src.uCurrentFace;
-    dst->field_BB = src.field_BB;
-    dst->uMight = src.uMight;
-    dst->uMightBonus = src.uMightBonus;
-    dst->uIntelligence = src.uIntelligence;
-    dst->uIntelligenceBonus = src.uIntelligenceBonus;
-    dst->uWillpower = src.uWillpower;
-    dst->uWillpowerBonus = src.uWillpowerBonus;
-    dst->uEndurance = src.uEndurance;
-    dst->uEnduranceBonus = src.uEnduranceBonus;
-    dst->uSpeed = src.uSpeed;
-    dst->uSpeedBonus = src.uSpeedBonus;
-    dst->uAccuracy = src.uAccuracy;
-    dst->uAccuracyBonus = src.uAccuracyBonus;
-    dst->uLuck = src.uLuck;
-    dst->uLuckBonus = src.uLuckBonus;
-    dst->sACModifier = src.sACModifier;
-    dst->uLevel = src.uLevel;
-    dst->sLevelModifier = src.sLevelModifier;
-    dst->sAgeModifier = src.sAgeModifier;
+    dst->currentFace = src.uCurrentFace;
+    dst->might = src.uMight;
+    dst->mightBonus = src.uMightBonus;
+    dst->intelligence = src.uIntelligence;
+    dst->intelligenceBonus = src.uIntelligenceBonus;
+    dst->willpower = src.uWillpower;
+    dst->willpowerBonus = src.uWillpowerBonus;
+    dst->endurance = src.uEndurance;
+    dst->enduranceBonus = src.uEnduranceBonus;
+    dst->speed = src.uSpeed;
+    dst->speedBonus = src.uSpeedBonus;
+    dst->accuracy = src.uAccuracy;
+    dst->accuracyBonus = src.uAccuracyBonus;
+    dst->luck = src.uLuck;
+    dst->luckBonus = src.uLuckBonus;
+    dst->acModifier = src.sACModifier;
+    dst->level = src.uLevel;
+    dst->levelModifier = src.sLevelModifier;
+    dst->ageModifier = src.sAgeModifier;
     dst->field_E0 = src.field_E0;
     dst->field_E4 = src.field_E4;
     dst->field_E8 = src.field_E8;
@@ -605,85 +602,85 @@ void Serialize(const Player &src, Player_MM7 *dst) {
     dst->field_100 = src.field_100;
     dst->field_104 = src.field_104;
 
-    Serialize(src.pActiveSkills, &dst->pActiveSkills, 37);
-    Serialize(src._achieved_awards_bits, &dst->_achieved_awards_bits);
-    Serialize(src.spellbook.bHaveSpell, &dst->spellbook.bHaveSpell);
+    Serialize(src.pActiveSkills, &dst->activeSkills, 37);
+    Serialize(src._achieved_awards_bits, &dst->achievedAwardsBits);
+    Serialize(src.spellbook.bHaveSpell, &dst->spellbook.haveSpell);
 
-    dst->pure_luck_used = src.pure_luck_used;
-    dst->pure_speed_used = src.pure_speed_used;
-    dst->pure_intellect_used = src.pure_intellect_used;
-    dst->pure_endurance_used = src.pure_endurance_used;
-    dst->pure_willpower_used = src.pure_willpower_used;
-    dst->pure_accuracy_used = src.pure_accuracy_used;
-    dst->pure_might_used = src.pure_might_used;
+    dst->pureLuckUsed = src.pure_luck_used;
+    dst->pureSpeedUsed = src.pure_speed_used;
+    dst->pureIntellectUsed = src.pure_intellect_used;
+    dst->pureEnduranceUsed = src.pure_endurance_used;
+    dst->pureWillpowerUsed = src.pure_willpower_used;
+    dst->pureAccuracyUsed = src.pure_accuracy_used;
+    dst->pureMightUsed = src.pure_might_used;
 
-    Serialize(src.pOwnItems, &dst->pOwnItems);
-    Serialize(src.pInventoryMatrix, &dst->pInventoryMatrix);
+    Serialize(src.pOwnItems, &dst->ownItems);
+    Serialize(src.pInventoryMatrix, &dst->inventoryMatrix);
 
-    dst->sResFireBase = src.sResFireBase;
-    dst->sResAirBase = src.sResAirBase;
-    dst->sResWaterBase = src.sResWaterBase;
-    dst->sResEarthBase = src.sResEarthBase;
-    dst->sResPhysicalBase = src.sResPhysicalBase;
-    dst->sResMagicBase = src.sResMagicBase;
-    dst->sResSpiritBase = src.sResSpiritBase;
-    dst->sResMindBase = src.sResMindBase;
-    dst->sResBodyBase = src.sResBodyBase;
-    dst->sResLightBase = src.sResLightBase;
-    dst->sResDarkBase = src.sResDarkBase;
-    dst->sResFireBonus = src.sResFireBonus;
-    dst->sResAirBonus = src.sResAirBonus;
-    dst->sResWaterBonus = src.sResWaterBonus;
-    dst->sResEarthBonus = src.sResEarthBonus;
-    dst->sResPhysicalBonus = src.sResPhysicalBonus;
-    dst->sResMagicBonus = src.sResMagicBonus;
-    dst->sResSpiritBonus = src.sResSpiritBonus;
-    dst->sResMindBonus = src.sResMindBonus;
-    dst->sResBodyBonus = src.sResBodyBonus;
-    dst->sResLightBonus = src.sResLightBonus;
-    dst->sResDarkBonus = src.sResDarkBonus;
+    dst->resFireBase = src.sResFireBase;
+    dst->resAirBase = src.sResAirBase;
+    dst->resWaterBase = src.sResWaterBase;
+    dst->resEarthBase = src.sResEarthBase;
+    dst->resPhysicalBase = src.sResPhysicalBase;
+    dst->resMagicBase = src.sResMagicBase;
+    dst->resSpiritBase = src.sResSpiritBase;
+    dst->resMindBase = src.sResMindBase;
+    dst->resBodyBase = src.sResBodyBase;
+    dst->resLightBase = src.sResLightBase;
+    dst->resDarkBase = src.sResDarkBase;
+    dst->resFireBonus = src.sResFireBonus;
+    dst->resAirBonus = src.sResAirBonus;
+    dst->resWaterBonus = src.sResWaterBonus;
+    dst->resEarthBonus = src.sResEarthBonus;
+    dst->resPhysicalBonus = src.sResPhysicalBonus;
+    dst->resMagicBonus = src.sResMagicBonus;
+    dst->resSpiritBonus = src.sResSpiritBonus;
+    dst->resMindBonus = src.sResMindBonus;
+    dst->resBodyBonus = src.sResBodyBonus;
+    dst->resLightBonus = src.sResLightBonus;
+    dst->resDarkBonus = src.sResDarkBonus;
 
-    Serialize(src.pPlayerBuffs, &dst->pPlayerBuffs);
+    Serialize(src.pPlayerBuffs, &dst->playerBuffs);
 
-    dst->uVoiceID = src.uVoiceID;
-    dst->uPrevVoiceID = src.uPrevVoiceID;
-    dst->uPrevFace = src.uPrevFace;
+    dst->voiceId = src.uVoiceID;
+    dst->prevVoiceId = src.uPrevVoiceID;
+    dst->prevFace = src.uPrevFace;
     dst->field_192C = src.field_192C;
     dst->field_1930 = src.field_1930;
-    dst->uTimeToRecovery = src.uTimeToRecovery;
+    dst->timeToRecovery = src.timeToRecovery;
     dst->field_1936 = src.field_1936;
     dst->field_1937 = src.field_1937;
-    dst->uSkillPoints = src.uSkillPoints;
-    dst->sHealth = src.sHealth;
-    dst->sMana = src.sMana;
-    dst->uBirthYear = src.uBirthYear;
+    dst->skillPoints = src.uSkillPoints;
+    dst->health = src.health;
+    dst->mana = src.mana;
+    dst->birthYear = src.uBirthYear;
 
-    Serialize(src.pEquipment.pIndices, &dst->pEquipment.pIndices);
+    Serialize(src.pEquipment.pIndices, &dst->equipment.indices);
 
     Serialize(src.field_1988, &dst->field_1988);
 
     dst->field_1A4C = src.field_1A4C;
     dst->field_1A4D = src.field_1A4D;
     dst->lastOpenedSpellbookPage = src.lastOpenedSpellbookPage;
-    dst->uQuickSpell = std::to_underlying(src.uQuickSpell);
+    dst->quickSpell = std::to_underlying(src.uQuickSpell);
 
     Serialize(src.playerEventBits, &dst->playerEventBits);
 
-    dst->_some_attack_bonus = src._some_attack_bonus;
+    dst->someAttackBonus = src._some_attack_bonus;
     dst->field_1A91 = src.field_1A91;
-    dst->_melee_dmg_bonus = src._melee_dmg_bonus;
+    dst->meleeDmgBonus = src._melee_dmg_bonus;
     dst->field_1A93 = src.field_1A93;
-    dst->_ranged_atk_bonus = src._ranged_atk_bonus;
+    dst->rangedAttackBonus = src._ranged_atk_bonus;
     dst->field_1A95 = src.field_1A95;
-    dst->_ranged_dmg_bonus = src._ranged_dmg_bonus;
+    dst->rangedDmgBonus = src._ranged_dmg_bonus;
     dst->field_1A97 = src.field_1A97_set0_unused;
-    dst->uFullHealthBonus = src.uFullHealthBonus;
-    dst->_health_related = src._health_related;
-    dst->uFullManaBonus = src.uFullManaBonus;
-    dst->_mana_related = src._mana_related;
+    dst->fullHealthBonus = src.uFullHealthBonus;
+    dst->healthRelated = src._health_related;
+    dst->fullManaBonus = src.uFullManaBonus;
+    dst->manaRelated = src._mana_related;
     dst->expression = src.expression;
-    dst->uExpressionTimePassed = src.uExpressionTimePassed;
-    dst->uExpressionTimeLength = src.uExpressionTimeLength;
+    dst->expressionTimePassed = src.uExpressionTimePassed;
+    dst->expressionTimeLength = src.uExpressionTimeLength;
     dst->field_1AA2 = src.uExpressionImageIndex;
     dst->_expression21_animtime = src._expression21_animtime;
     dst->_expression21_frameset = src._expression21_frameset;
@@ -692,30 +689,30 @@ void Serialize(const Player &src, Player_MM7 *dst) {
         if (i >= src.vBeacons.size()) {
             continue;
         }
-        dst->pInstalledBeacons[i].uBeaconTime = src.vBeacons[i].uBeaconTime.value;
-        dst->pInstalledBeacons[i].PartyPos_X = src.vBeacons[i].PartyPos_X;
-        dst->pInstalledBeacons[i].PartyPos_Y = src.vBeacons[i].PartyPos_Y;
-        dst->pInstalledBeacons[i].PartyPos_Z = src.vBeacons[i].PartyPos_Z;
-        dst->pInstalledBeacons[i]._partyViewYaw = src.vBeacons[i]._partyViewYaw;
-        dst->pInstalledBeacons[i]._partyViewPitch = src.vBeacons[i]._partyViewPitch;
-        dst->pInstalledBeacons[i].SaveFileID = src.vBeacons[i].SaveFileID;
+        dst->installedBeacons[i].beaconTime = src.vBeacons[i].uBeaconTime.value;
+        dst->installedBeacons[i].partyPosX = src.vBeacons[i].PartyPos_X;
+        dst->installedBeacons[i].partyPosY = src.vBeacons[i].PartyPos_Y;
+        dst->installedBeacons[i].partyPosZ = src.vBeacons[i].PartyPos_Z;
+        dst->installedBeacons[i].partyViewYaw = src.vBeacons[i]._partyViewYaw;
+        dst->installedBeacons[i].partyViewPitch = src.vBeacons[i]._partyViewPitch;
+        dst->installedBeacons[i].saveFileId = src.vBeacons[i].SaveFileID;
     }
 
-    dst->uNumDivineInterventionCastsThisDay = src.uNumDivineInterventionCastsThisDay;
-    dst->uNumArmageddonCasts = src.uNumArmageddonCasts;
-    dst->uNumFireSpikeCasts = src.uNumFireSpikeCasts;
+    dst->numDivineInterventionCasts = src.uNumDivineInterventionCastsThisDay;
+    dst->numArmageddonCasts = src.uNumArmageddonCasts;
+    dst->numFireSpikeCasts = src.uNumFireSpikeCasts;
     dst->field_1B3B = src.field_1B3B_set0_unused;
 }
 
 void Deserialize(const Player_MM7 &src, Player *dst) {
     for (unsigned int i = 0; i < 20; ++i)
-        dst->conditions.Set(static_cast<Condition>(i), GameTime(src.pConditions[i]));
+        dst->conditions.Set(static_cast<Condition>(i), GameTime(src.conditions[i]));
 
-    dst->uExperience = src.uExperience;
+    dst->experience = src.experience;
 
-    Deserialize(src.pName, &dst->pName);
+    Deserialize(src.name, &dst->name);
 
-    switch (src.uSex) {
+    switch (src.sex) {
     case 0:
         dst->uSex = SEX_MALE;
         break;
@@ -839,26 +836,25 @@ void Deserialize(const Player_MM7 &src, Player *dst) {
         Assert(false);
     }
 
-    dst->uCurrentFace = src.uCurrentFace;
-    dst->field_BB = src.field_BB;
-    dst->uMight = src.uMight;
-    dst->uMightBonus = src.uMightBonus;
-    dst->uIntelligence = src.uIntelligence;
-    dst->uIntelligenceBonus = src.uIntelligenceBonus;
-    dst->uWillpower = src.uWillpower;
-    dst->uWillpowerBonus = src.uWillpowerBonus;
-    dst->uEndurance = src.uEndurance;
-    dst->uEnduranceBonus = src.uEnduranceBonus;
-    dst->uSpeed = src.uSpeed;
-    dst->uSpeedBonus = src.uSpeedBonus;
-    dst->uAccuracy = src.uAccuracy;
-    dst->uAccuracyBonus = src.uAccuracyBonus;
-    dst->uLuck = src.uLuck;
-    dst->uLuckBonus = src.uLuckBonus;
-    dst->sACModifier = src.sACModifier;
-    dst->uLevel = src.uLevel;
-    dst->sLevelModifier = src.sLevelModifier;
-    dst->sAgeModifier = src.sAgeModifier;
+    dst->uCurrentFace = src.currentFace;
+    dst->uMight = src.might;
+    dst->uMightBonus = src.mightBonus;
+    dst->uIntelligence = src.intelligence;
+    dst->uIntelligenceBonus = src.intelligenceBonus;
+    dst->uWillpower = src.willpower;
+    dst->uWillpowerBonus = src.willpowerBonus;
+    dst->uEndurance = src.endurance;
+    dst->uEnduranceBonus = src.enduranceBonus;
+    dst->uSpeed = src.speed;
+    dst->uSpeedBonus = src.speedBonus;
+    dst->uAccuracy = src.accuracy;
+    dst->uAccuracyBonus = src.accuracyBonus;
+    dst->uLuck = src.luck;
+    dst->uLuckBonus = src.luckBonus;
+    dst->sACModifier = src.acModifier;
+    dst->uLevel = src.level;
+    dst->sLevelModifier = src.levelModifier;
+    dst->sAgeModifier = src.ageModifier;
     dst->field_E0 = src.field_E0;
     dst->field_E4 = src.field_E4;
     dst->field_E8 = src.field_E8;
@@ -870,85 +866,85 @@ void Deserialize(const Player_MM7 &src, Player *dst) {
     dst->field_100 = src.field_100;
     dst->field_104 = src.field_104;
 
-    Deserialize(src.pActiveSkills, &dst->pActiveSkills, 37);
-    Deserialize(src._achieved_awards_bits, &dst->_achieved_awards_bits);
-    Deserialize(src.spellbook.bHaveSpell, &dst->spellbook.bHaveSpell);
+    Deserialize(src.activeSkills, &dst->pActiveSkills, 37);
+    Deserialize(src.achievedAwardsBits, &dst->_achieved_awards_bits);
+    Deserialize(src.spellbook.haveSpell, &dst->spellbook.bHaveSpell);
 
-    dst->pure_luck_used = src.pure_luck_used;
-    dst->pure_speed_used = src.pure_speed_used;
-    dst->pure_intellect_used = src.pure_intellect_used;
-    dst->pure_endurance_used = src.pure_endurance_used;
-    dst->pure_willpower_used = src.pure_willpower_used;
-    dst->pure_accuracy_used = src.pure_accuracy_used;
-    dst->pure_might_used = src.pure_might_used;
+    dst->pure_luck_used = src.pureLuckUsed;
+    dst->pure_speed_used = src.pureSpeedUsed;
+    dst->pure_intellect_used = src.pureIntellectUsed;
+    dst->pure_endurance_used = src.pureEnduranceUsed;
+    dst->pure_willpower_used = src.pureWillpowerUsed;
+    dst->pure_accuracy_used = src.pureAccuracyUsed;
+    dst->pure_might_used = src.pureMightUsed;
 
-    Deserialize(src.pOwnItems, &dst->pOwnItems);
-    Deserialize(src.pInventoryMatrix, &dst->pInventoryMatrix);
+    Deserialize(src.ownItems, &dst->pOwnItems);
+    Deserialize(src.inventoryMatrix, &dst->pInventoryMatrix);
 
-    dst->sResFireBase = src.sResFireBase;
-    dst->sResAirBase = src.sResAirBase;
-    dst->sResWaterBase = src.sResWaterBase;
-    dst->sResEarthBase = src.sResEarthBase;
-    dst->sResPhysicalBase = src.sResPhysicalBase;
-    dst->sResMagicBase = src.sResMagicBase;
-    dst->sResSpiritBase = src.sResSpiritBase;
-    dst->sResMindBase = src.sResMindBase;
-    dst->sResBodyBase = src.sResBodyBase;
-    dst->sResLightBase = src.sResLightBase;
-    dst->sResDarkBase = src.sResDarkBase;
-    dst->sResFireBonus = src.sResFireBonus;
-    dst->sResAirBonus = src.sResAirBonus;
-    dst->sResWaterBonus = src.sResWaterBonus;
-    dst->sResEarthBonus = src.sResEarthBonus;
-    dst->sResPhysicalBonus = src.sResPhysicalBonus;
-    dst->sResMagicBonus = src.sResMagicBonus;
-    dst->sResSpiritBonus = src.sResSpiritBonus;
-    dst->sResMindBonus = src.sResMindBonus;
-    dst->sResBodyBonus = src.sResBodyBonus;
-    dst->sResLightBonus = src.sResLightBonus;
-    dst->sResDarkBonus = src.sResDarkBonus;
+    dst->sResFireBase = src.resFireBase;
+    dst->sResAirBase = src.resAirBase;
+    dst->sResWaterBase = src.resWaterBase;
+    dst->sResEarthBase = src.resEarthBase;
+    dst->sResPhysicalBase = src.resPhysicalBase;
+    dst->sResMagicBase = src.resMagicBase;
+    dst->sResSpiritBase = src.resSpiritBase;
+    dst->sResMindBase = src.resMindBase;
+    dst->sResBodyBase = src.resBodyBase;
+    dst->sResLightBase = src.resLightBase;
+    dst->sResDarkBase = src.resDarkBase;
+    dst->sResFireBonus = src.resFireBonus;
+    dst->sResAirBonus = src.resAirBonus;
+    dst->sResWaterBonus = src.resWaterBonus;
+    dst->sResEarthBonus = src.resEarthBonus;
+    dst->sResPhysicalBonus = src.resPhysicalBonus;
+    dst->sResMagicBonus = src.resMagicBonus;
+    dst->sResSpiritBonus = src.resSpiritBonus;
+    dst->sResMindBonus = src.resMindBonus;
+    dst->sResBodyBonus = src.resBodyBonus;
+    dst->sResLightBonus = src.resLightBonus;
+    dst->sResDarkBonus = src.resDarkBonus;
 
-    Deserialize(src.pPlayerBuffs, &dst->pPlayerBuffs);
+    Deserialize(src.playerBuffs, &dst->pPlayerBuffs);
 
-    dst->uVoiceID = src.uVoiceID;
-    dst->uPrevVoiceID = src.uPrevVoiceID;
-    dst->uPrevFace = src.uPrevFace;
+    dst->uVoiceID = src.voiceId;
+    dst->uPrevVoiceID = src.prevVoiceId;
+    dst->uPrevFace = src.prevFace;
     dst->field_192C = src.field_192C;
     dst->field_1930 = src.field_1930;
-    dst->uTimeToRecovery = src.uTimeToRecovery;
+    dst->timeToRecovery = src.timeToRecovery;
     dst->field_1936 = src.field_1936;
     dst->field_1937 = src.field_1937;
-    dst->uSkillPoints = src.uSkillPoints;
-    dst->sHealth = src.sHealth;
-    dst->sMana = src.sMana;
-    dst->uBirthYear = src.uBirthYear;
+    dst->uSkillPoints = src.skillPoints;
+    dst->health = src.health;
+    dst->mana = src.mana;
+    dst->uBirthYear = src.birthYear;
 
-    Deserialize(src.pEquipment.pIndices, &dst->pEquipment.pIndices);
+    Deserialize(src.equipment.indices, &dst->pEquipment.pIndices);
 
     Deserialize(src.field_1988, &dst->field_1988);
 
     dst->field_1A4C = src.field_1A4C;
     dst->field_1A4D = src.field_1A4D;
     dst->lastOpenedSpellbookPage = src.lastOpenedSpellbookPage;
-    dst->uQuickSpell = static_cast<SPELL_TYPE>(src.uQuickSpell);
+    dst->uQuickSpell = static_cast<SPELL_TYPE>(src.quickSpell);
 
     Deserialize(src.playerEventBits, &dst->playerEventBits);
 
-    dst->_some_attack_bonus = src._some_attack_bonus;
+    dst->_some_attack_bonus = src.someAttackBonus;
     dst->field_1A91 = src.field_1A91;
-    dst->_melee_dmg_bonus = src._melee_dmg_bonus;
+    dst->_melee_dmg_bonus = src.meleeDmgBonus;
     dst->field_1A93 = src.field_1A93;
-    dst->_ranged_atk_bonus = src._ranged_atk_bonus;
+    dst->_ranged_atk_bonus = src.rangedAttackBonus;
     dst->field_1A95 = src.field_1A95;
-    dst->_ranged_dmg_bonus = src._ranged_dmg_bonus;
+    dst->_ranged_dmg_bonus = src.rangedDmgBonus;
     dst->field_1A97_set0_unused = src.field_1A97;
-    dst->uFullHealthBonus = src.uFullHealthBonus;
-    dst->_health_related = src._health_related;
-    dst->uFullManaBonus = src.uFullManaBonus;
-    dst->_mana_related = src._mana_related;
+    dst->uFullHealthBonus = src.fullHealthBonus;
+    dst->_health_related = src.healthRelated;
+    dst->uFullManaBonus = src.fullManaBonus;
+    dst->_mana_related = src.manaRelated;
     dst->expression = (CHARACTER_EXPRESSION_ID)src.expression;
-    dst->uExpressionTimePassed = src.uExpressionTimePassed;
-    dst->uExpressionTimeLength = src.uExpressionTimeLength;
+    dst->uExpressionTimePassed = src.expressionTimePassed;
+    dst->uExpressionTimeLength = src.expressionTimeLength;
     dst->uExpressionImageIndex = src.field_1AA2;
     dst->_expression21_animtime = src._expression21_animtime;
     dst->_expression21_frameset = src._expression21_frameset;
@@ -958,22 +954,22 @@ void Deserialize(const Player_MM7 &src, Player *dst) {
     dst->vBeacons.clear();
 
     for (unsigned int i = 0; i < 5; ++i) {
-        if (src.pInstalledBeacons[i].uBeaconTime != 0) {
+        if (src.installedBeacons[i].beaconTime != 0) {
             LloydBeacon beacon;
-            beacon.uBeaconTime = GameTime(src.pInstalledBeacons[i].uBeaconTime);
-            beacon.PartyPos_X = src.pInstalledBeacons[i].PartyPos_X;
-            beacon.PartyPos_Y = src.pInstalledBeacons[i].PartyPos_Y;
-            beacon.PartyPos_Z = src.pInstalledBeacons[i].PartyPos_Z;
-            beacon._partyViewYaw = src.pInstalledBeacons[i]._partyViewYaw;
-            beacon._partyViewPitch = src.pInstalledBeacons[i]._partyViewPitch;
-            beacon.SaveFileID = src.pInstalledBeacons[i].SaveFileID;
+            beacon.uBeaconTime = GameTime(src.installedBeacons[i].beaconTime);
+            beacon.PartyPos_X = src.installedBeacons[i].partyPosX;
+            beacon.PartyPos_Y = src.installedBeacons[i].partyPosY;
+            beacon.PartyPos_Z = src.installedBeacons[i].partyPosZ;
+            beacon._partyViewYaw = src.installedBeacons[i].partyViewYaw;
+            beacon._partyViewPitch = src.installedBeacons[i].partyViewPitch;
+            beacon.SaveFileID = src.installedBeacons[i].saveFileId;
             dst->vBeacons.push_back(beacon);
         }
     }
 
-    dst->uNumDivineInterventionCastsThisDay = src.uNumDivineInterventionCastsThisDay;
-    dst->uNumArmageddonCasts = src.uNumArmageddonCasts;
-    dst->uNumFireSpikeCasts = src.uNumFireSpikeCasts;
+    dst->uNumDivineInterventionCastsThisDay = src.numDivineInterventionCasts;
+    dst->uNumArmageddonCasts = src.numArmageddonCasts;
+    dst->uNumFireSpikeCasts = src.numFireSpikeCasts;
     dst->field_1B3B_set0_unused = src.field_1B3B;
 }
 
@@ -1433,14 +1429,14 @@ void Deserialize(const FontData_MM7 &src, size_t size, FontData *dst) {
 }
 
 void Deserialize(const ODMFace_MM7 &src, ODMFace *dst) {
-    dst->pFacePlaneOLD = src.pFacePlane;
-    dst->pFacePlane.vNormal.x = dst->pFacePlaneOLD.vNormal.x / 65536.0;
-    dst->pFacePlane.vNormal.y = dst->pFacePlaneOLD.vNormal.y / 65536.0;
-    dst->pFacePlane.vNormal.z = dst->pFacePlaneOLD.vNormal.z / 65536.0;
-    dst->pFacePlane.dist = dst->pFacePlaneOLD.dist / 65536.0;
+    dst->facePlane_old = src.facePlane;
+    dst->facePlane.normal.x = dst->facePlane_old.normal.x / 65536.0;
+    dst->facePlane.normal.y = dst->facePlane_old.normal.y / 65536.0;
+    dst->facePlane.normal.z = dst->facePlane_old.normal.z / 65536.0;
+    dst->facePlane.dist = dst->facePlane_old.dist / 65536.0;
 
-    dst->zCalc.init(dst->pFacePlaneOLD);
-    dst->uAttributes = FaceAttributes(src.uAttributes);
+    dst->zCalc.init(dst->facePlane_old);
+    dst->uAttributes = FaceAttributes(src.attributes);
     dst->pVertexIDs = src.pVertexIDs;
     dst->pTextureUIDs = src.pTextureUIDs;
     dst->pTextureVIDs = src.pTextureVIDs;

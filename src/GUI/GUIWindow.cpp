@@ -208,7 +208,7 @@ void GUIWindow::_41D73D_draw_buff_tooltip() {
     for (int i = 0; i < 20; ++i) {
         if (pParty->pPartyBuffs[i].Active()) {
             auto remaing_time =
-                pParty->pPartyBuffs[i].expire_time - pParty->GetPlayingTime();
+                pParty->pPartyBuffs[i].expireTime - pParty->GetPlayingTime();
             Y_pos = string_count * pFontComic->GetHeight() + 40;
             text_color = color16(spell_tooltip_colors[i].R, spell_tooltip_colors[i].G, spell_tooltip_colors[i].B);
             DrawText(pFontComic, {52, Y_pos}, text_color,
@@ -956,7 +956,7 @@ void CreateScrollWindow() {
     a1.uFrameZ = a1.uFrameWidth + a1.uFrameX - 1;
     a1.uFrameW = a1.uFrameHeight + a1.uFrameY - 1;
 
-    char *v1 = pItemTable->pItems[pGUIWindow_ScrollWindow->scroll_type].pName;
+    char *v1 = pItemTable->pItems[pGUIWindow_ScrollWindow->scroll_type].name;
 
     a1.DrawTitleText(pFontCreate, 0, 0, 0, fmt::format("\f{:05}{}\f00000\n", colorTable.PaleCanary.c16(), v1), 3);
     a1.DrawText(pFontSmallnum, {1, pFontCreate->GetHeight() - 3}, 0, pScrolls[pGUIWindow_ScrollWindow->scroll_type], 0, 0, 0);
@@ -1893,7 +1893,7 @@ std::string BuildDialogueString(std::string &str, uint8_t uPlayerID, ItemGen *a3
                 result += npc->pName;
                 break;
             case 2:
-                result += pPlayer->pName;
+                result += pPlayer->name;
                 i += 2;
                 break;
             case 3:
@@ -1967,7 +1967,7 @@ std::string BuildDialogueString(std::string &str, uint8_t uPlayerID, ItemGen *a3
                 result += GetReputationString(npc->rep);
                 break;
             case 13:
-                result += pNPCStats->sub_495366_MispronounceName(pPlayer->pName[0], pPlayer->uSex);
+                result += pNPCStats->sub_495366_MispronounceName(pPlayer->name[0], pPlayer->uSex);
                 break;
             case 14:
                 if (npc->uSex)
@@ -2099,7 +2099,7 @@ std::string BuildDialogueString(std::string &str, uint8_t uPlayerID, ItemGen *a3
             case 32:
             case 33:
             case 34:
-                result += pParty->pPlayers[mask - 31].pName;
+                result += pParty->pPlayers[mask - 31].name;
                 break;
             default:
                 if (mask <= 50 || mask > 70) {
@@ -2352,7 +2352,7 @@ std::string GetDisplayName(Actor *actor) {
 static std::string SeekKnowledgeElswhereString(Player *player) {
     return localization->FormatString(
         LSTR_FMT_SEEK_KNOWLEDGE_ELSEWHERE,
-        player->pName.c_str(),
+        player->name.c_str(),
         localization->GetClassName(player->classType)
     )
     + "\n \n"

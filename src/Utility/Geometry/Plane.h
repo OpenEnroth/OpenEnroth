@@ -5,7 +5,7 @@
 #include "Vec.h"
 
 struct Planei {
-    Vec3i vNormal; // Plane normal, unit vector stored as fixpoint.
+    Vec3i normal; // Plane normal, unit vector stored as fixpoint.
     int dist = 0;  // D in A*x + B*y + C*z + D = 0 (basically D = -A*x_0 - B*y_0 - C*z_0), stored as fixpoint.
 
     /**
@@ -46,7 +46,7 @@ struct Planei {
      * @see signedDistanceToAsFixpoint(const Vec3i &)
      */
     int signedDistanceToAsFixpoint(int x, int y, int z) {
-        return this->dist + this->vNormal.x * x + this->vNormal.y * y + this->vNormal.z * z;
+        return this->dist + this->normal.x * x + this->normal.y * y + this->normal.z * z;
     }
 };
 
@@ -54,7 +54,7 @@ static_assert(sizeof(Planei) == 16);
 
 
 struct Planef {
-    Vec3f vNormal;
+    Vec3f normal;
     float dist = 0.0f;
 
     /**
@@ -64,7 +64,7 @@ struct Planef {
      *                                  and this usually is "outside" the model that the face belongs to.
      */
     float signedDistanceTo(const Vec3f &point) {
-        return this->dist + this->vNormal.x * point.x + this->vNormal.y * point.y + this->vNormal.z * point.z;
+        return this->dist + this->normal.x * point.x + this->normal.y * point.y + this->normal.z * point.z;
     }
 };
 
@@ -88,12 +88,12 @@ struct PlaneZCalcll {
     }
 
     void init(const Planei &plane) {
-        if (plane.vNormal.z == 0) {
+        if (plane.normal.z == 0) {
             this->a = this->b = this->c = 0;
         } else {
-            this->a = -fixpoint_div(plane.vNormal.x, plane.vNormal.z);
-            this->b = -fixpoint_div(plane.vNormal.y, plane.vNormal.z);
-            this->c = -fixpoint_div(plane.dist, plane.vNormal.z);
+            this->a = -fixpoint_div(plane.normal.x, plane.normal.z);
+            this->b = -fixpoint_div(plane.normal.y, plane.normal.z);
+            this->c = -fixpoint_div(plane.dist, plane.normal.z);
         }
     }
 };

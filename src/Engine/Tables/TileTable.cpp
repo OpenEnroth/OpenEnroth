@@ -87,10 +87,11 @@ void TileTable::FromFile(const Blob &data_mm6, const Blob &data_mm7, const Blob 
     this->sNumTiles = num_mm7_tiles /*+ num_mm6_tiles + num_mm8_tiles*/;
     Assert(sNumTiles);
 
+    // TODO(captainurist): serialization code belongs to legacyimages
     auto tiles = new TileDesc[sNumTiles];
     auto tile_data = (TileDesc_MM7 *)((unsigned char *)data_mm7.data() + 4);
     for (unsigned int i = 0; i < num_mm7_tiles; ++i) {
-        tiles[i].name = tile_data->pTileName.data();
+        tiles[i].name = tile_data->tileName.data();
         std::transform(tiles[i].name.begin(), tiles[i].name.end(),
                        tiles[i].name.begin(), ::tolower);
         if (tiles[i].name.find("wtrdr") == 0) {
@@ -99,10 +100,10 @@ void TileTable::FromFile(const Blob &data_mm6, const Blob &data_mm7, const Blob 
                 'h');  // mm7 uses hd water tiles with legacy names
         }
 
-        tiles[i].uTileID = tile_data->uTileID;
-        tiles[i].tileset = (Tileset)tile_data->tileset;
-        tiles[i].uSection = tile_data->uSection;
-        tiles[i].uAttributes = tile_data->uAttributes;
+        tiles[i].uTileID = tile_data->tileId;
+        tiles[i].tileset = (Tileset)tile_data->tileSet;
+        tiles[i].uSection = tile_data->section;
+        tiles[i].uAttributes = tile_data->attributes;
 
         tile_data++;
     }

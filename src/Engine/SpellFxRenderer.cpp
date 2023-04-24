@@ -622,7 +622,7 @@ float SpellFxRenderer::_4A806F_get_mass_distortion_value(Actor *pActor) {
     double v4;  // st7@2
 
     v3 = *(int *)&pActor->pActorBuffs[ACTOR_BUFF_MASS_DISTORTION]
-              .expire_time.value -
+              .expireTime.value -
          pMiscTimer->uTotalGameTimeElapsed;
     if (v3 > 64) {
         v2 = (v3 - 64) * (v3 - 64);

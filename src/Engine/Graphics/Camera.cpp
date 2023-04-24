@@ -131,9 +131,9 @@ bool Camera3D::is_face_faced_to_cameraBLV(BLVFace *pFace) {
     float y = pIndoor->pVertices[pFace->pVertexIDs[0]].y;
     float z = pIndoor->pVertices[pFace->pVertexIDs[0]].z;
 
-    if ((z - pCamera3D->vCameraPos.z) * pFace->pFacePlane.vNormal.z +
-        (y - pCamera3D->vCameraPos.y) * pFace->pFacePlane.vNormal.y +
-        (x - pCamera3D->vCameraPos.x) * pFace->pFacePlane.vNormal.x <
+    if ((z - pCamera3D->vCameraPos.z) * pFace->facePlane.normal.z +
+        (y - pCamera3D->vCameraPos.y) * pFace->facePlane.normal.y +
+        (x - pCamera3D->vCameraPos.x) * pFace->facePlane.normal.x <
         0.0f)
         return true;
 
@@ -143,9 +143,9 @@ bool Camera3D::is_face_faced_to_cameraBLV(BLVFace *pFace) {
 bool Camera3D::is_face_faced_to_cameraODM(ODMFace *pFace, RenderVertexSoft *a2) {
     // if (pFace->Portal()) return false;
 
-    if ((a2->vWorldPosition.z - pCamera3D->vCameraPos.z) * pFace->pFacePlane.vNormal.z +
-        (a2->vWorldPosition.y - pCamera3D->vCameraPos.y) * pFace->pFacePlane.vNormal.y +
-        (a2->vWorldPosition.x - pCamera3D->vCameraPos.x) * pFace->pFacePlane.vNormal.x <
+    if ((a2->vWorldPosition.z - pCamera3D->vCameraPos.z) * pFace->facePlane.normal.z +
+        (a2->vWorldPosition.y - pCamera3D->vCameraPos.y) * pFace->facePlane.normal.y +
+        (a2->vWorldPosition.x - pCamera3D->vCameraPos.x) * pFace->facePlane.normal.x <
         0.0f)
         return true;
 

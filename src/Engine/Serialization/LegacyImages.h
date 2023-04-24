@@ -39,21 +39,21 @@ struct Timer;
 #pragma pack(push, 1)
 
 struct SpriteFrame_MM6 {
-    std::array<char, 12> pIconName;
-    std::array<char, 12> pTextureName;    // c
-    std::array<int16_t, 8> pHwSpriteIDs;  // 18h
+    std::array<char, 12> iconName;
+    std::array<char, 12> textureName;    // c
+    std::array<int16_t, 8> hwSpriteIds;  // 18h
     int32_t scale;            // 28h
-    int32_t uFlags;               // 2c
-    int16_t uGlowRadius;      // 30
-    int16_t uPaletteID;       // 32
-    int16_t uPaletteIndex;
-    int16_t uAnimTime;
+    int32_t flags;               // 2c
+    int16_t glowRadius;      // 30
+    int16_t paletteId;       // 32
+    int16_t paletteIndex;
+    int16_t animTime;
 };
 static_assert(sizeof(SpriteFrame_MM6) == 56);
 
 
 struct SpriteFrame_MM7 : public SpriteFrame_MM6 {
-    int16_t uAnimLength;
+    int16_t animLength;
     int16_t _pad;
 };
 static_assert(sizeof(SpriteFrame_MM7) == 60);
@@ -62,27 +62,26 @@ void Deserialize(const SpriteFrame_MM7 &src, SpriteFrame *dst);
 
 
 struct BLVFace_MM7 {
-    Planef pFacePlane;
-    Planei pFacePlane_old;
+    Planef facePlane;
+    Planei facePlane_old;
     int32_t zCalc1;
     int32_t zCalc2;
     int32_t zCalc3;
-    uint32_t uAttributes;
-    int32_t pVertexIDs;
-    int32_t pXInterceptDisplacements;
-    int32_t pYInterceptDisplacements;
-    int32_t pZInterceptDisplacements;
-    int32_t pVertexUIDs;
-    int32_t pVertexVIDs;
-    uint16_t uFaceExtraID;
-    uint16_t uBitmapID;
-    uint16_t uSectorID;
-    int16_t uBackSectorID;
-    BBoxs pBounding;
-    uint8_t uPolygonType;
-    uint8_t uNumVertices;
-    char field_5E;
-    char field_5F;
+    uint32_t attributes;
+    int32_t vertexIDs;
+    int32_t xInterceptDisplacements;
+    int32_t yInterceptDisplacements;
+    int32_t zInterceptDisplacements;
+    int32_t vertexUIds;
+    int32_t vertexVIds;
+    uint16_t faceExtraId;
+    uint16_t bitmapId;
+    uint16_t sectorId;
+    int16_t backSectorId;
+    BBoxs bounding;
+    uint8_t polygonType;
+    uint8_t numVertices;
+    int16_t _pad;
 };
 static_assert(sizeof(BLVFace_MM7) == 0x60);
 
@@ -90,34 +89,34 @@ void Deserialize(const BLVFace_MM7 &src, BLVFace *dst);
 
 
 struct TileDesc_MM7 {
-    std::array<char, 16> pTileName;
-    uint16_t uTileID;
-    uint16_t uBitmapID;
-    uint16_t tileset;
-    uint16_t uSection;
-    uint16_t uAttributes;
+    std::array<char, 16> tileName;
+    uint16_t tileId;
+    uint16_t bitmapId;
+    uint16_t tileSet;
+    uint16_t section;
+    uint16_t attributes;
 };
 static_assert(sizeof(TileDesc_MM7) == 26);
 
 
 struct TextureFrame_MM7 {
-    std::array<char, 12> pTextureName;
-    int16_t uTextureID;
-    int16_t uAnimTime;
-    int16_t uAnimLength;
-    int16_t uFlags;
+    std::array<char, 12> textureName;
+    int16_t textureID;
+    int16_t animTime;
+    int16_t animLength;
+    int16_t flags;
 };
 static_assert(sizeof(TextureFrame_MM7) == 20);
 
 
 struct NPCData_MM7 {
-    /* 00 */ int32_t pName;  // char *pName;
-    /* 04 */ uint32_t uPortraitID;
-    /* 08 */ uint32_t uFlags;  // & 0x80    no greeting on dialogue start; looks like hired
+    /* 00 */ int32_t name;  // char *pName;
+    /* 04 */ uint32_t portraitId;
+    /* 08 */ uint32_t flags;  // & 0x80    no greeting on dialogue start; looks like hired
     /* 0C */ int32_t fame;
     /* 10 */ int32_t rep;
-    /* 14 */ uint32_t Location2D;
-    /* 18 */ uint32_t uProfession;
+    /* 14 */ uint32_t location2d;
+    /* 18 */ uint32_t profession;
     /* 1C */ int32_t greet;
     /* 20 */ int32_t joins;
     /* 24 */ int32_t field_24;
@@ -127,9 +126,9 @@ struct NPCData_MM7 {
     /* 34 */ uint32_t evt_D;
     /* 38 */ uint32_t evt_E;
     /* 3C */ uint32_t evt_F;
-    /* 40 */ uint32_t uSex;
-    /* 44 */ int32_t bHasUsedTheAbility;
-    /* 48 */ int32_t news_topic;
+    /* 40 */ uint32_t sex;
+    /* 44 */ int32_t hasUsedAbility;
+    /* 48 */ int32_t newsTopic;
     /* 4C */
 };
 static_assert(sizeof(NPCData_MM7) == 0x4C);
@@ -139,17 +138,17 @@ void Deserialize(const NPCData_MM7 &src, NPCData *dst);
 
 
 struct ItemGen_MM7 {
-    /* 00 */ int32_t uItemID;
-    /* 04 */ int32_t uEnchantmentType;
-    /* 08 */ int32_t m_enchantmentStrength;
-    /* 0C */ int32_t special_enchantment;
-    /* 10 */ int32_t uNumCharges;
-    /* 14 */ uint32_t uAttributes;
-    /* 18 */ uint8_t uBodyAnchor;
-    /* 19 */ uint8_t uMaxCharges;
-    /* 1A */ uint8_t uHolderPlayer;
+    /* 00 */ int32_t itemID;
+    /* 04 */ int32_t enchantmentType;
+    /* 08 */ int32_t enchantmentStrength;
+    /* 0C */ int32_t specialEnchantment;
+    /* 10 */ int32_t numCharges;
+    /* 14 */ uint32_t attributes;
+    /* 18 */ uint8_t bodyAnchor;
+    /* 19 */ uint8_t maxCharges;
+    /* 1A */ uint8_t holderPlayer;
     /* 1B */ uint8_t placedInChest; // unknown unused 8-bit field, was repurposed
-    /* 1C */ uint64_t uExpireTime;
+    /* 1C */ uint64_t expireTime;
 };
 static_assert(sizeof(ItemGen_MM7) == 0x24);
 
@@ -158,12 +157,12 @@ void Deserialize(const ItemGen_MM7 &src, ItemGen *dst);
 
 
 struct SpellBuff_MM7 {
-    /* 00 */ int64_t uExpireTime;
-    /* 08 */ uint16_t uPower;
-    /* 0A */ uint16_t uSkillMastery;
-    /* 0C */ uint16_t uOverlayID;
-    /* 0E */ uint8_t uCaster;
-    /* 0F */ uint8_t uFlags;
+    /* 00 */ int64_t expireTime;
+    /* 08 */ uint16_t power;
+    /* 0A */ uint16_t skillMastery;
+    /* 0C */ uint16_t overlayId;
+    /* 0E */ uint8_t caster;
+    /* 0F */ uint8_t flags;
     /* 10 */
 };
 static_assert(sizeof(SpellBuff_MM7) == 0x10);
@@ -173,7 +172,7 @@ void Deserialize(const SpellBuff_MM7 &src, SpellBuff *dst);
 
 
 struct PlayerSpellbookChapter_MM7 {
-    /* 00 */ std::array<char, 11> bIsSpellAvailable;
+    /* 00 */ std::array<char, 11> isSpellAvailable;
     /* 0B */
 };
 static_assert(sizeof(PlayerSpellbookChapter_MM7) == 0xB);
@@ -182,12 +181,12 @@ static_assert(sizeof(PlayerSpellbookChapter_MM7) == 0xB);
 struct PlayerSpells_MM7 {
     union {
         struct {
-            /* 00 */ std::array<PlayerSpellbookChapter_MM7, 9> pChapters;
+            /* 00 */ std::array<PlayerSpellbookChapter_MM7, 9> chapters;
             /* 63 */ char _pad1;
             /* 64 */
         };
         struct {
-            /* 00 */ std::array<char, 99> bHaveSpell;
+            /* 00 */ std::array<char, 99> haveSpell;
             /* 63 */ char _pad2;
             /* 64 */
         };
@@ -197,67 +196,51 @@ static_assert(sizeof(PlayerSpells_MM7) == 0x64);
 
 
 union PlayerEquipment_MM7 {
-    union {
-        struct {
-            /* 00 */ uint32_t uOffHand;
-            /* 04 */ uint32_t uMainHand;
-            /* 08 */ uint32_t uBow;
-            /* 0C */ uint32_t uArmor;
-            /* 10 */ uint32_t uHelm;
-            /* 14 */ uint32_t uBelt;
-            /* 18 */ uint32_t uCloak;
-            /* 1C */ uint32_t uGlove;
-            /* 20 */ uint32_t uBoot;
-            /* 24 */ uint32_t uAmulet;
-            /* 28 */ std::array<uint32_t, 6> uRings;
-            /* 40 */
-        };
-        std::array<uint32_t, 16> pIndices;
-    };
+    std::array<uint32_t, 16> indices;
 };
 static_assert(sizeof(PlayerEquipment_MM7) == 0x40);
 
 
 struct LloydBeacon_MM7 {
-    /* 00 */ uint64_t uBeaconTime;
-    /* 08 */ int32_t PartyPos_X;
-    /* 0C */ int32_t PartyPos_Y;
-    /* 10 */ int32_t PartyPos_Z;
-    /* 14 */ int16_t _partyViewYaw;
-    /* 16 */ int16_t _partyViewPitch;
-    /* 18 */ uint16_t unknown;
-    /* 1A */ uint16_t SaveFileID;
+    /* 00 */ uint64_t beaconTime;
+    /* 08 */ int32_t partyPosX;
+    /* 0C */ int32_t partyPosY;
+    /* 10 */ int32_t partyPosZ;
+    /* 14 */ int16_t partyViewYaw;
+    /* 16 */ int16_t partyViewPitch;
+    /* 18 */ uint16_t field_18;
+    /* 1A */ uint16_t saveFileId;
     /* 1C */
 };
 static_assert(sizeof(LloydBeacon_MM7) == 0x1C);
 
 
 struct Player_MM7 {
-    /* 0000 */ std::array<int64_t, 20> pConditions;
-    /* 00A0 */ uint64_t uExperience;
-    /* 00A8 */ std::array<char, 16> pName;
-    /* 00B8 */ uint8_t uSex;
+    /* 0000 */ std::array<int64_t, 20> conditions;
+    /* 00A0 */ uint64_t experience;
+    /* 00A8 */ std::array<char, 16> name;
+    /* 00B8 */ uint8_t sex;
     /* 00B9 */ uint8_t classType;
-    /* 00BA */ uint8_t uCurrentFace;
-    /* 00BB */ char field_BB;
-    /* 00BC */ uint16_t uMight;
-    /* 00BE */ uint16_t uMightBonus;
-    /* 00C0 */ uint16_t uIntelligence;
-    /* 00C2 */ uint16_t uIntelligenceBonus;
-    /* 00C4 */ uint16_t uWillpower;
-    /* 00C6 */ uint16_t uWillpowerBonus;
-    /* 00C8 */ uint16_t uEndurance;
-    /* 00CA */ uint16_t uEnduranceBonus;
-    /* 00CC */ uint16_t uSpeed;
-    /* 00CE */ uint16_t uSpeedBonus;
-    /* 00D0 */ uint16_t uAccuracy;
-    /* 00D2 */ uint16_t uAccuracyBonus;
-    /* 00D4 */ uint16_t uLuck;
-    /* 00D6 */ uint16_t uLuckBonus;
-    /* 00D8 */ int16_t sACModifier;
-    /* 00DA */ uint16_t uLevel;
-    /* 00DC */ int16_t sLevelModifier;
-    /* 00DE */ int16_t sAgeModifier;
+    /* 00BA */ uint8_t currentFace;
+    /* 00BB */ uint8_t _pad;
+    /* 00BC */ uint16_t might;
+    /* 00BE */ uint16_t mightBonus;
+    /* 00C0 */ uint16_t intelligence;
+    /* 00C2 */ uint16_t intelligenceBonus;
+    /* 00C4 */ uint16_t willpower;
+    /* 00C6 */ uint16_t willpowerBonus;
+    /* 00C8 */ uint16_t endurance;
+    /* 00CA */ uint16_t enduranceBonus;
+    /* 00CC */ uint16_t speed;
+    /* 00CE */ uint16_t speedBonus;
+    /* 00D0 */ uint16_t accuracy;
+    /* 00D2 */ uint16_t accuracyBonus;
+    /* 00D4 */ uint16_t luck;
+    /* 00D6 */ uint16_t luckBonus;
+    /* 00D8 */ int16_t acModifier;
+    /* 00DA */ uint16_t level;
+    /* 00DC */ int16_t levelModifier;
+    /* 00DE */ int16_t ageModifier;
     /* 00E0 */ int32_t field_E0;
     /* 00E4 */ int32_t field_E4;
     /* 00E8 */ int32_t field_E8;
@@ -268,91 +251,83 @@ struct Player_MM7 {
     /* 00FC */ int32_t field_FC;
     /* 0100 */ int32_t field_100;
     /* 0104 */ int32_t field_104;
-    /* 0108 */ std::array<uint16_t, 37> pActiveSkills;
-    /* 0152 */ std::array<uint8_t, 64> _achieved_awards_bits;
+    /* 0108 */ std::array<uint16_t, 37> activeSkills;
+    /* 0152 */ std::array<uint8_t, 64> achievedAwardsBits;
     /* 0192 */ PlayerSpells_MM7 spellbook;
-    /* 01F6 */ std::array<char, 2> _1F6_pad;
-    /* 01F8 */ int32_t pure_luck_used;
-    /* 01FC */ int32_t pure_speed_used;
-    /* 0200 */ int32_t pure_intellect_used;
-    /* 0204 */ int32_t pure_endurance_used;
-    /* 0208 */ int32_t pure_willpower_used;
-    /* 020C */ int32_t pure_accuracy_used;
-    /* 0210 */ int32_t pure_might_used;
-    /* 0214 */ union {
-        struct {
-            std::array<ItemGen_MM7, 126> pInventoryItemList;
-            std::array<ItemGen_MM7, 12> pEquippedItems;
-        };
-        struct {
-            std::array<ItemGen_MM7, 138> pOwnItems;
-        };
-    };
-    /* 157C */ std::array<int32_t, 126> pInventoryMatrix;
-    /* 1774 */ int16_t sResFireBase;
-    /* 1776 */ int16_t sResAirBase;
-    /* 1778 */ int16_t sResWaterBase;
-    /* 177A */ int16_t sResEarthBase;
-    /* 177C */ int16_t sResPhysicalBase;
-    /* 177E */ int16_t sResMagicBase;
-    /* 1780 */ int16_t sResSpiritBase;
-    /* 1782 */ int16_t sResMindBase;
-    /* 1784 */ int16_t sResBodyBase;
-    /* 1786 */ int16_t sResLightBase;
-    /* 1788 */ int16_t sResDarkBase;
-    /* 178A */ int16_t sResFireBonus;
-    /* 178C */ int16_t sResAirBonus;
-    /* 178E */ int16_t sResWaterBonus;
-    /* 1790 */ int16_t sResEarthBonus;
-    /* 1792 */ int16_t sResPhysicalBonus;
-    /* 1794 */ int16_t sResMagicBonus;
-    /* 1796 */ int16_t sResSpiritBonus;
-    /* 1798 */ int16_t sResMindBonus;
-    /* 179A */ int16_t sResBodyBonus;
-    /* 179C */ int16_t sResLightBonus;
-    /* 179E */ int16_t sResDarkBonus;
-    /* 17A0 */ std::array<SpellBuff_MM7, 24> pPlayerBuffs;
-    /* 1920 */ uint32_t uVoiceID;
-    /* 1924 */ int32_t uPrevVoiceID;
-    /* 1928 */ int32_t uPrevFace;
+    /* 01F6 */ uint16_t _pad2;
+    /* 01F8 */ int32_t pureLuckUsed;
+    /* 01FC */ int32_t pureSpeedUsed;
+    /* 0200 */ int32_t pureIntellectUsed;
+    /* 0204 */ int32_t pureEnduranceUsed;
+    /* 0208 */ int32_t pureWillpowerUsed;
+    /* 020C */ int32_t pureAccuracyUsed;
+    /* 0210 */ int32_t pureMightUsed;
+    /* 0214 */ std::array<ItemGen_MM7, 138> ownItems;
+    /* 157C */ std::array<int32_t, 126> inventoryMatrix;
+    /* 1774 */ int16_t resFireBase;
+    /* 1776 */ int16_t resAirBase;
+    /* 1778 */ int16_t resWaterBase;
+    /* 177A */ int16_t resEarthBase;
+    /* 177C */ int16_t resPhysicalBase;
+    /* 177E */ int16_t resMagicBase;
+    /* 1780 */ int16_t resSpiritBase;
+    /* 1782 */ int16_t resMindBase;
+    /* 1784 */ int16_t resBodyBase;
+    /* 1786 */ int16_t resLightBase;
+    /* 1788 */ int16_t resDarkBase;
+    /* 178A */ int16_t resFireBonus;
+    /* 178C */ int16_t resAirBonus;
+    /* 178E */ int16_t resWaterBonus;
+    /* 1790 */ int16_t resEarthBonus;
+    /* 1792 */ int16_t resPhysicalBonus;
+    /* 1794 */ int16_t resMagicBonus;
+    /* 1796 */ int16_t resSpiritBonus;
+    /* 1798 */ int16_t resMindBonus;
+    /* 179A */ int16_t resBodyBonus;
+    /* 179C */ int16_t resLightBonus;
+    /* 179E */ int16_t resDarkBonus;
+    /* 17A0 */ std::array<SpellBuff_MM7, 24> playerBuffs;
+    /* 1920 */ uint32_t voiceId;
+    /* 1924 */ int32_t prevVoiceId;
+    /* 1928 */ int32_t prevFace;
     /* 192C */ int32_t field_192C;
     /* 1930 */ int32_t field_1930;
-    /* 1934 */ uint16_t uTimeToRecovery;
+    /* 1934 */ uint16_t timeToRecovery;
     /* 1936 */ char field_1936;
     /* 1937 */ char field_1937;
-    /* 1938 */ uint32_t uSkillPoints;
-    /* 193C */ int32_t sHealth;
-    /* 1940 */ int32_t sMana;
-    /* 1944 */ uint32_t uBirthYear;
-    /* 1948 */ PlayerEquipment_MM7 pEquipment;
+    /* 1938 */ uint32_t skillPoints;
+    /* 193C */ int32_t health;
+    /* 1940 */ int32_t mana;
+    /* 1944 */ uint32_t birthYear;
+    /* 1948 */ PlayerEquipment_MM7 equipment;
     /* 1988 */ std::array<int32_t, 49> field_1988;
     /* 1A4C */ char field_1A4C;
     /* 1A4D */ char field_1A4D;
     /* 1A4E */ char lastOpenedSpellbookPage;
-    /* 1A4F */ uint8_t uQuickSpell;
+    /* 1A4F */ uint8_t quickSpell;
     /* 1A50 */ std::array<uint8_t, 64> playerEventBits;
-    /* 1A90 */ char _some_attack_bonus;
+    /* 1A90 */ char someAttackBonus;
     /* 1A91 */ char field_1A91;
-    /* 1A92 */ char _melee_dmg_bonus;
+    /* 1A92 */ char meleeDmgBonus;
     /* 1A93 */ char field_1A93;
-    /* 1A94 */ char _ranged_atk_bonus;
+    /* 1A94 */ char rangedAttackBonus;
     /* 1A95 */ char field_1A95;
-    /* 1A96 */ char _ranged_dmg_bonus;
+    /* 1A96 */ char rangedDmgBonus;
     /* 1A97 */ char field_1A97;
-    /* 1A98 */ char uFullHealthBonus;
-    /* 1A99 */ char _health_related;
-    /* 1A9A */ char uFullManaBonus;
-    /* 1A9B */ char _mana_related;
+    /* 1A98 */ char fullHealthBonus;
+    /* 1A99 */ char healthRelated;
+    /* 1A9A */ char fullManaBonus;
+    /* 1A9B */ char manaRelated;
     /* 1A9C */ uint16_t expression;
-    /* 1A9E */ uint16_t uExpressionTimePassed;
-    /* 1AA0 */ uint16_t uExpressionTimeLength;
+    /* 1A9E */ uint16_t expressionTimePassed;
+    /* 1AA0 */ uint16_t expressionTimeLength;
     /* 1AA2 */ int16_t field_1AA2;
     /* 1AA4 */ int32_t _expression21_animtime;
     /* 1AA8 */ int32_t _expression21_frameset;
-    /* 1AAC */ std::array<LloydBeacon_MM7, 5> pInstalledBeacons;
-    /* 1B38 */ char uNumDivineInterventionCastsThisDay;
-    /* 1B39 */ char uNumArmageddonCasts;
-    /* 1B3A */ char uNumFireSpikeCasts;
+    /* 1AAC */ std::array<LloydBeacon_MM7, 5> installedBeacons;
+    /* 1B38 */ char numDivineInterventionCasts;
+    /* 1B39 */ char numArmageddonCasts;
+    /* 1B3A */ char numFireSpikeCasts;
     /* 1B3B */ char field_1B3B;
     /* 1B3C */
 };
@@ -812,11 +787,11 @@ void Deserialize(const FontData_MM7 &src, size_t size, FontData *dst);
 
 
 struct ODMFace_MM7 {
-    Planei pFacePlane;
+    Planei facePlane;
     int32_t zCalc1;
     int32_t zCalc2;
     int32_t zCalc3;
-    uint32_t uAttributes;
+    uint32_t attributes;
     std::array<uint16_t, 20> pVertexIDs;
     std::array<int16_t, 20> pTextureUIDs;
     std::array<int16_t, 20> pTextureVIDs;

@@ -789,7 +789,7 @@ bool HouseUI_CheckIfPlayerCanInteract() {
 
         std::string str = localization->FormatString(
             LSTR_FMT_S_IS_IN_NO_CODITION_TO_S,
-            pParty->activeCharacter().pName.c_str(),
+            pParty->activeCharacter().name.c_str(),
             localization->GetString(LSTR_DO_ANYTHING));
         window.DrawTitleText(
             pFontArrus, 0,
@@ -862,7 +862,7 @@ bool enterHouse(HOUSE_ID uHouseID) {
             ++pParty->uNumPrisonTerms;
             pParty->uFine = 0;
             for (uint i = 0; i < 4; ++i) {
-                pParty->pPlayers[i].uTimeToRecovery = 0;
+                pParty->pPlayers[i].timeToRecovery = 0;
                 pParty->pPlayers[i].uNumDivineInterventionCastsThisDay = 0;
                 pParty->pPlayers[i].SetVariable(VAR_Award, Award_PrisonTerms);
             }
@@ -988,7 +988,7 @@ void OnSelectShopDialogueOption(DIALOGUE_TYPE option) {
                 if (pParty->activeCharacter().uLevel <
                     pMaxLevelPerTrainingHallType
                     [window_SpeakInHouse->wData.val - 89] &&
-                    (int64_t)pParty->activeCharacter().uExperience <
+                    (int64_t)pParty->activeCharacter().experience <
                     1000 * experience_for_next_level)  // test experience
                     return;
             }
@@ -2003,9 +2003,9 @@ void TempleDialog() {
         pParty->TakeGold(pPrice);
 
         pParty->activeCharacter().conditions.ResetAll();
-        pParty->activeCharacter().sHealth =
+        pParty->activeCharacter().health =
             pParty->activeCharacter().GetMaxHealth();
-        pParty->activeCharacter().sMana =
+        pParty->activeCharacter().mana =
             pParty->activeCharacter().GetMaxMana();
 
         if (window_SpeakInHouse->wData.val != 78 &&
@@ -2192,10 +2192,10 @@ void TrainingDialog(const char *s) {
                                 pShopOptions[index] = shop_option_str_container.c_str();
 
                             } else {
-                                if (pParty->activeCharacter().uExperience < expForNextLevel)
+                                if (pParty->activeCharacter().experience < expForNextLevel)
                                     shop_option_str_container = localization->FormatString(
                                         LSTR_XP_UNTIL_NEXT_LEVEL,
-                                        (uint)(expForNextLevel - pParty->activeCharacter().uExperience),
+                                        (uint)(expForNextLevel - pParty->activeCharacter().experience),
                                         pParty->activeCharacter().uLevel + 1);
                                 else
                                     shop_option_str_container = localization->FormatString(
@@ -2259,7 +2259,7 @@ void TrainingDialog(const char *s) {
                 pMaxLevelPerTrainingHallType
                 [window_SpeakInHouse->wData.val -
                 HOUSE_TRAINING_HALL_EMERALD_ISLE]) {
-                if ((int64_t)pParty->activeCharacter().uExperience >=
+                if ((int64_t)pParty->activeCharacter().experience >=
                     expForNextLevel) {
                     if (pParty->GetGold() >= pPrice) {
                         pParty->TakeGold(pPrice);
@@ -2269,9 +2269,9 @@ void TrainingDialog(const char *s) {
                         ++pParty->activeCharacter().uLevel;
                         pParty->activeCharacter().uSkillPoints +=
                             pParty->activeCharacter().uLevel / 10 + 5;
-                        pParty->activeCharacter().sHealth =
+                        pParty->activeCharacter().health =
                             pParty->activeCharacter().GetMaxHealth();
-                        pParty->activeCharacter().sMana =
+                        pParty->activeCharacter().mana =
                             pParty->activeCharacter().GetMaxMana();
                         uint max_level_in_party = player_levels[0];
                         for (uint _it = 1; _it < 4; ++_it) {
@@ -2293,7 +2293,7 @@ void TrainingDialog(const char *s) {
 
                         GameUI_SetStatusBar(
                             LSTR_FMT_S_NOW_LEVEL_D,
-                            pParty->activeCharacter().pName.c_str(),
+                            pParty->activeCharacter().name.c_str(),
                             pParty->activeCharacter().uLevel,
                             pParty->activeCharacter().uLevel / 10 + 5
                         );
@@ -2309,7 +2309,7 @@ void TrainingDialog(const char *s) {
                 }
                 label = localization->FormatString(
                     LSTR_XP_UNTIL_NEXT_LEVEL,
-                    (unsigned int)(expForNextLevel - pParty->activeCharacter().uExperience),
+                    (unsigned int)(expForNextLevel - pParty->activeCharacter().experience),
                     pParty->activeCharacter().uLevel + 1);
                 v36 = (212 - pFontArrus->CalcTextHeight(
                         label, training_dialog_window.uFrameWidth, 0)) / 2 + 88;

@@ -89,7 +89,7 @@ void stru262_TurnBased::SortTurnQueue() {
     for (i = 0; i < uActorQueueSize; ++i) {
         if (PID_TYPE(pQueue[i].uPackedID) ==
             OBJECT_Player)  // set recovery times
-            pParty->pPlayers[PID_ID(pQueue[i].uPackedID)].uTimeToRecovery =
+            pParty->pPlayers[PID_ID(pQueue[i].uPackedID)].timeToRecovery =
                 (uint16_t)((double)pQueue[i].actor_initiative *
                                    0.46875);
     }
@@ -164,12 +164,12 @@ void stru262_TurnBased::Start() {
         // set initial initiative for turn actors
         if (PID_TYPE(this->pQueue[k].uPackedID) == OBJECT_Player) {
             if (pPlayers[PID_ID(this->pQueue[k].uPackedID) + 1]
-                ->uTimeToRecovery != 0) {
+                ->timeToRecovery != 0) {
                 this->pQueue[k].actor_initiative =
                     (int)((double)pPlayers
                         [PID_ID(this->pQueue[k].uPackedID) + 1]
-                ->uTimeToRecovery *
-                    0.46875);
+                ->timeToRecovery *
+                          0.46875);
             } else {
                 activ_players[a_players_count] = k;
                 ++a_players_count;
@@ -233,7 +233,7 @@ void stru262_TurnBased::End(bool bPlaySound) {
         objType = (ObjectType)PID_TYPE(pQueue[i].uPackedID);
         objID = PID_ID(pQueue[i].uPackedID);
         if (objType == OBJECT_Player)
-            pPlayers[objID + 1]->uTimeToRecovery =
+            pPlayers[objID + 1]->timeToRecovery =
                 (uint16_t)((double)pQueue[i].actor_initiative *
                                    flt_debugrecmod3);
         else if (objType == OBJECT_Actor)
