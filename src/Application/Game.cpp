@@ -2111,6 +2111,15 @@ void Game::processQueuedMessages() {
                     }
 
                     break;
+
+                case UIMSG_OpenInventory: {
+                    if (pParty->hasActiveCharacter()) {
+                        pGUIWindow_CurrentMenu = new GUIWindow_CharacterRecord(pParty->activeCharacterIndex(), CURRENT_SCREEN::SCREEN_CHARACTERS);
+                        ((GUIWindow_CharacterRecord *)pGUIWindow_CurrentMenu)->ShowInventoryTab();
+                    }
+                    break;
+                }
+
                 case UIMSG_DebugSpecialItem: {
                     if (!pParty->hasActiveCharacter())
                         continue;

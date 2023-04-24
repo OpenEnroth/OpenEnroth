@@ -332,6 +332,12 @@ void KeyboardInputHandler::GenerateGameplayActions() {
             // pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, window_SpeakInHouse != 0, 0);
             break;
 
+        case InputAction::Inventory:
+            if (current_screen_type == CURRENT_SCREEN::SCREEN_GAME) {
+                pNextFrameMessageQueue->AddGUIMessage(UIMSG_OpenInventory, 0, 0);
+            }
+            break;
+
         default:
             break;
         }
