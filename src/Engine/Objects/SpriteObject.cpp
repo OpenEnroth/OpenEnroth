@@ -1,5 +1,6 @@
 #include "Engine/Objects/SpriteObject.h"
 
+#include <algorithm>
 #include <memory>
 #include <utility>
 
@@ -299,20 +300,16 @@ void SpriteObject::updateObjectODM(unsigned int uLayingItemID) {
                     pSpriteObjects[uLayingItemID].vVelocity = Vec3s(0, 0, 0);
                 }
             } else {
-                int dotFix = abs(dot(face->facePlane_old.normal, pSpriteObjects[uLayingItemID].vVelocity)) >> 16;
-                if ((collision_state.speed / 8) > dotFix) {
-                    dotFix = collision_state.speed / 8;
-                }
-                // v57 = fixpoint_mul(v56, face->pFacePlane.vNormal.x);
-                // v58 = fixpoint_mul(v56, face->pFacePlane.vNormal.y);
-                int newZVel = fixpoint_mul(dotFix, face->facePlane_old.normal.z);
-                pSpriteObjects[uLayingItemID].vVelocity.x += 2 * fixpoint_mul(dotFix, face->facePlane_old.normal.x);
-                pSpriteObjects[uLayingItemID].vVelocity.y += 2 * fixpoint_mul(dotFix, face->facePlane_old.normal.y);
-                if (face->facePlane_old.normal.z <= 32000) {
+                float dotFix = abs(dot(face->facePlane.normal, pSpriteObjects[uLayingItemID].vVelocity.toFloat()));
+                dotFix = std::max(dotFix, collision_state.speed / 8);
+                float newZVel = dotFix * face->facePlane.normal.z;
+                pSpriteObjects[uLayingItemID].vVelocity.x += 2 * dotFix * face->facePlane.normal.x;
+                pSpriteObjects[uLayingItemID].vVelocity.y += 2 * dotFix * face->facePlane.normal.y;
+                if (face->facePlane.normal.z <= 0.48828125f) { // was 32000 fixpoint, 32000/65536=0.488...
                     newZVel = 2 * newZVel;
                 } else {
                     pSpriteObjects[uLayingItemID].vVelocity.z += newZVel;
-                    newZVel = fixpoint_mul(32000, newZVel);
+                    newZVel = 0.48828125f * newZVel;
                 }
                 pSpriteObjects[uLayingItemID].vVelocity.z += newZVel;
                 if (face->uAttributes & FACE_TriggerByObject) {
@@ -448,18 +445,16 @@ LABEL_25:
                 collision_state.ignored_face_id = PID_ID(collision_state.pid);
                 if (pIndoor->pFaces[pidId].uPolygonType != POLYGON_Floor) {
                     // Before this variable changed floor_lvl variable which is obviously invalid.
-                    int dotFix = abs(dot(pIndoor->pFaces[pidId].facePlane_old.normal, pSpriteObject->vVelocity)) >> 16;
-                    if ((collision_state.speed / 8) > dotFix) {
-                        dotFix = collision_state.speed / 8;
-                    }
-                    pSpriteObject->vVelocity.x += 2 * fixpoint_mul(dotFix, pIndoor->pFaces[pidId].facePlane_old.normal.x);
-                    pSpriteObject->vVelocity.y += 2 * fixpoint_mul(dotFix, pIndoor->pFaces[pidId].facePlane_old.normal.y);
-                    int newZVel = fixpoint_mul(dotFix, pIndoor->pFaces[pidId].facePlane_old.normal.z);
-                    if (pIndoor->pFaces[pidId].facePlane_old.normal.z <= 32000) {
+                    float dotFix = abs(dot(pIndoor->pFaces[pidId].facePlane.normal, pSpriteObject->vVelocity.toFloat()));
+                    dotFix = std::max(dotFix, collision_state.speed / 8);
+                    pSpriteObject->vVelocity.x += 2 * dotFix * pIndoor->pFaces[pidId].facePlane.normal.x;
+                    pSpriteObject->vVelocity.y += 2 * dotFix * pIndoor->pFaces[pidId].facePlane.normal.y;
+                    float newZVel = dotFix * pIndoor->pFaces[pidId].facePlane.normal.z;
+                    if (pIndoor->pFaces[pidId].facePlane.normal.z <= 0.48828125f) { // was 32000 fixpoint
                         newZVel = 2 * newZVel;
                     } else {
                         pSpriteObject->vVelocity.z += newZVel;
-                        newZVel = fixpoint_mul(32000, newZVel);
+                        newZVel = 0.48828125f * newZVel;
                     }
                     pSpriteObject->vVelocity.z += newZVel;
                     if (pIndoor->pFaces[pidId].uAttributes & FACE_TriggerByObject) {
@@ -508,7 +503,7 @@ LABEL_25:
         if (pIndoor->pFaces[uFaceID].uPolygonType == POLYGON_Floor) {
             pSpriteObject->vVelocity.z = 0;
         } else {
-            if (pIndoor->pFaces[uFaceID].facePlane_old.normal.z < 45000) {
+            if (pIndoor->pFaces[uFaceID].facePlane.normal.z < 0.68664550781f) { // was 45000 fixpoint
                 pSpriteObject->vVelocity.z -= pEventTimer->uTimeElapsed * GetGravityStrength();
             }
         }

@@ -2368,14 +2368,14 @@ void ODM_ProcessPartyActions() {
                 pParty->uFlags &= ~PARTY_FLAGS_1_LANDING;
 
                 // this pushes party slightly up away from the surface so you can climb it
-                int dot = abs(partyInputYSpeed * pODMFace->facePlane_old.normal.y +
-                           partyInputZSpeed * pODMFace->facePlane_old.normal.z +
-                           partyInputXSpeed * pODMFace->facePlane_old.normal.x) >> 16;
+                float dot = abs(partyInputYSpeed * pODMFace->facePlane.normal.y +
+                           partyInputZSpeed * pODMFace->facePlane.normal.z +
+                           partyInputXSpeed * pODMFace->facePlane.normal.x);
                 if ((collision_state.speed / 8) > dot)
                     dot = collision_state.speed / 8;
-                partyInputZSpeed += fixpoint_mul(dot, pODMFace->facePlane_old.normal.z);
-                partyInputXSpeed += fixpoint_mul(dot, pODMFace->facePlane_old.normal.x);
-                partyInputYSpeed += fixpoint_mul(dot, pODMFace->facePlane_old.normal.y);
+                partyInputZSpeed += dot * pODMFace->facePlane.normal.z;
+                partyInputXSpeed += dot * pODMFace->facePlane.normal.x;
+                partyInputYSpeed += dot * pODMFace->facePlane.normal.y;
 
                 partySlopeMod = true;
             }
