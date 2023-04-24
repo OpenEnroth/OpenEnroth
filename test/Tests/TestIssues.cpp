@@ -631,11 +631,11 @@ GAME_TEST(Issues, Issue661) {
     // HP/SP regen from items is too high
     int oldHealth = 0;
     int oldMana = 0;
-    test->playTraceFromTestData("issue_661.mm7", "issue_661.json", [&] { oldHealth = pParty->pPlayers[0].sHealth; oldMana = pParty->pPlayers[0].sMana; });
+    test->playTraceFromTestData("issue_661.mm7", "issue_661.json", [&] { oldHealth = pParty->pPlayers[0].health; oldMana = pParty->pPlayers[0].mana; });
     // two hour wait period is 24 blocks of 5 mins
     // one item that heals hp, three items heal mana
-    EXPECT_EQ(pParty->pPlayers[0].sHealth, oldHealth + 24);
-    EXPECT_EQ(pParty->pPlayers[0].sMana, oldMana + 24*3);
+    EXPECT_EQ(pParty->pPlayers[0].health, oldHealth + 24);
+    EXPECT_EQ(pParty->pPlayers[0].mana, oldMana + 24*3);
 }
 
 GAME_TEST(Issues, Issue662) {
@@ -652,7 +652,7 @@ GAME_TEST(Issues, Issue663) {
     test->playTraceFromTestData("issue_663.mm7", "issue_663.json");
     // should switch to char 2 inv
     EXPECT_EQ(pParty->activeCharacterIndex(), 2);
-    EXPECT_GT(pParty->activeCharacter().uTimeToRecovery, 0);
+    EXPECT_GT(pParty->activeCharacter().timeToRecovery, 0);
 }
 
 GAME_TEST(Issues, Issue664) {
