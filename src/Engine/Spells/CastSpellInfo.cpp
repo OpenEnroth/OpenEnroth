@@ -1124,6 +1124,7 @@ void CastSpellInfoHelpers::castSpell() {
                     }
                     pParty->uFlags |= PARTY_FLAGS_1_LANDING;
                     pParty->uFallSpeed = 1000;
+                    pParty->vPosition.z += 5;
                     break;
                 }
 
