@@ -6,5 +6,6 @@ var searchData=
   ['journal_5flimitation_5ffactor_3',['Journal_limitation_factor',['../mm7__data_8cpp.html#ad205251143e8030a5ad4fecd95f17b31',1,'Journal_limitation_factor():&#160;mm7_data.cpp'],['../mm7__data_8h.html#ad205251143e8030a5ad4fecd95f17b31',1,'Journal_limitation_factor():&#160;mm7_data.cpp']]],
   ['json_4',['json',['../Json__ut_8cpp.html#a4c3566a3ad94ebebe2ea64e7a5c445f9',1,'Json_ut.cpp']]],
   ['jump_5',['Jump',['../classGameConfig_1_1Gamepad.html#ade63a0c7d485ff10cce7bc53c31a06c7',1,'GameConfig::Gamepad::Jump()'],['../classGameConfig_1_1Keybindings.html#a3301a2f11424af52b6d5fb8a92d2526f',1,'GameConfig::Keybindings::Jump()']]],
-  ['jump_5fstrength_6',['jump_strength',['../structParty.html#a1efcbe6f1717323a6d81a69ded63b472',1,'Party::jump_strength()'],['../structParty__MM7.html#a5b84f9390c4ddc7b2de132ddfc8cd57f',1,'Party_MM7::jump_strength()']]]
+  ['jump_5fstrength_6',['jump_strength',['../structParty.html#a1efcbe6f1717323a6d81a69ded63b472',1,'Party']]],
+  ['jumpstrength_7',['jumpStrength',['../structParty__MM7.html#a5d8b56ab0a5907d71c5e84186673bfcc',1,'Party_MM7']]]
 ];
