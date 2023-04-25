@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;8ffac21</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;868a382</span>
    </div>
   </td>
  </tr>
@@ -71,6 +71,7 @@ $(function() {
 <div class="header">
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
+<a href="#pri-attribs">Private Attributes</a> &#124;
 <a href="structGUIWindow__QuestBook-members.html">List of all members</a>  </div>
   <div class="headertitle"><div class="title">GUIWindow_QuestBook Struct Reference</div></div>
 </div><!--header-->
@@ -151,6 +152,19 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a2b1d4de6cf7d5d5d70c46c4c915ec25a inherit pub_methods_classGUIWindow"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGUIWindow.html#a2b1d4de6cf7d5d5d70c46c4c915ec25a">Init</a> ()</td></tr>
 <tr class="separator:a2b1d4de6cf7d5d5d70c46c4c915ec25a inherit pub_methods_classGUIWindow"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pri-attribs" name="pri-attribs"></a>
+Private Attributes</h2></td></tr>
+<tr class="memitem:a92679d67939318d2611d13456b99bd32"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structGUIWindow__QuestBook.html#a92679d67939318d2611d13456b99bd32">_startingQuestIdx</a></td></tr>
+<tr class="separator:a92679d67939318d2611d13456b99bd32"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a49ca9c0b2c37eab9bcf56cefb4539355"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structGUIWindow__QuestBook.html#a49ca9c0b2c37eab9bcf56cefb4539355">_currentPage</a></td></tr>
+<tr class="separator:a49ca9c0b2c37eab9bcf56cefb4539355"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6bdf8576d6635394936e42dbf2dc5ca9"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structGUIWindow__QuestBook.html#a6bdf8576d6635394936e42dbf2dc5ca9">_currentPageQuests</a></td></tr>
+<tr class="separator:a6bdf8576d6635394936e42dbf2dc5ca9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad1cb9c24504ee7a4a4d6b196c515af40"><td class="memItemLeft" align="right" valign="top">std::vector&lt; int &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structGUIWindow__QuestBook.html#ad1cb9c24504ee7a4a4d6b196c515af40">_activeQuestsIdx</a></td></tr>
+<tr class="separator:ad1cb9c24504ee7a4a4d6b196c515af40"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aaeaf180f6d366dee776bc46472b1d3b6"><td class="memItemLeft" align="right" valign="top">std::unordered_map&lt; int, int &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structGUIWindow__QuestBook.html#aaeaf180f6d366dee776bc46472b1d3b6">_questsPerPage</a></td></tr>
+<tr class="separator:aaeaf180f6d366dee776bc46472b1d3b6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="inherited" name="inherited"></a>
 Additional Inherited Members</h2></td></tr>
 <tr class="inherit_header pub_static_methods_classGUIWindow"><td colspan="2" onclick="javascript:toggleInherit('pub_static_methods_classGUIWindow')"><img src="closed.png" alt="-"/>&#160;Static Public Member Functions inherited from <a class="el" href="classGUIWindow.html">GUIWindow</a></td></tr>
@@ -197,9 +211,6 @@ Additional Inherited Members</h2></td></tr>
 <tr class="separator:a57386681fee8334f1dff3438577e6a7a inherit pub_attribs_classGUIWindow"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6d53bb27736b3e45712cd6c1937e2247 inherit pub_attribs_classGUIWindow"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classLogger.html">Logger</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGUIWindow.html#a6d53bb27736b3e45712cd6c1937e2247">log</a> = nullptr</td></tr>
 <tr class="separator:a6d53bb27736b3e45712cd6c1937e2247 inherit pub_attribs_classGUIWindow"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="inherit_header pro_methods_classGUIWindow__Book"><td colspan="2" onclick="javascript:toggleInherit('pro_methods_classGUIWindow__Book')"><img src="closed.png" alt="-"/>&#160;Protected Member Functions inherited from <a class="el" href="classGUIWindow__Book.html">GUIWindow_Book</a></td></tr>
-<tr class="memitem:ab1adfe3c80158dbd7a31930707d7cf95 inherit pro_methods_classGUIWindow__Book"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGUIWindow__Book.html#ab1adfe3c80158dbd7a31930707d7cf95">BasicBookInitialization</a> ()</td></tr>
-<tr class="separator:ab1adfe3c80158dbd7a31930707d7cf95 inherit pro_methods_classGUIWindow__Book"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pro_attribs_classGUIWindow__Book"><td colspan="2" onclick="javascript:toggleInherit('pro_attribs_classGUIWindow__Book')"><img src="closed.png" alt="-"/>&#160;Protected Attributes inherited from <a class="el" href="classGUIWindow__Book.html">GUIWindow_Book</a></td></tr>
 <tr class="memitem:ad42ee2c871273c1c421d301e3590e3a3 inherit pro_attribs_classGUIWindow__Book"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classGUIWindow.html">GUIWindow</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGUIWindow__Book.html#ad42ee2c871273c1c421d301e3590e3a3">pChildBooksOverlay</a> { nullptr }</td></tr>
 <tr class="separator:ad42ee2c871273c1c421d301e3590e3a3 inherit pro_attribs_classGUIWindow__Book"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -272,6 +283,117 @@ Additional Inherited Members</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Reimplemented from <a class="el" href="classGUIWindow.html#afe1bc204d71ec7dbce72fc1c84638c5c">GUIWindow</a>.</p>
+
+</div>
+</div>
+<h2 class="groupheader">Member Data Documentation</h2>
+<a id="ad1cb9c24504ee7a4a4d6b196c515af40" name="ad1cb9c24504ee7a4a4d6b196c515af40"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad1cb9c24504ee7a4a4d6b196c515af40">&#9670;&#160;</a></span>_activeQuestsIdx</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::vector&lt;int&gt; GUIWindow_QuestBook::_activeQuestsIdx</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a49ca9c0b2c37eab9bcf56cefb4539355" name="a49ca9c0b2c37eab9bcf56cefb4539355"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a49ca9c0b2c37eab9bcf56cefb4539355">&#9670;&#160;</a></span>_currentPage</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">int GUIWindow_QuestBook::_currentPage</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a6bdf8576d6635394936e42dbf2dc5ca9" name="a6bdf8576d6635394936e42dbf2dc5ca9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6bdf8576d6635394936e42dbf2dc5ca9">&#9670;&#160;</a></span>_currentPageQuests</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">int GUIWindow_QuestBook::_currentPageQuests</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="aaeaf180f6d366dee776bc46472b1d3b6" name="aaeaf180f6d366dee776bc46472b1d3b6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aaeaf180f6d366dee776bc46472b1d3b6">&#9670;&#160;</a></span>_questsPerPage</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::unordered_map&lt;int, int&gt; GUIWindow_QuestBook::_questsPerPage</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a92679d67939318d2611d13456b99bd32" name="a92679d67939318d2611d13456b99bd32"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a92679d67939318d2611d13456b99bd32">&#9670;&#160;</a></span>_startingQuestIdx</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">int GUIWindow_QuestBook::_startingQuestIdx</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
 
 </div>
 </div>
