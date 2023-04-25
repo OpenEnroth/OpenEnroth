@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;b758072</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;e7f772e</span>
    </div>
   </td>
  </tr>
@@ -71,7 +71,6 @@ $(function() {
 <div class="header">
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
-<a href="#pub-static-attribs">Static Public Attributes</a> &#124;
 <a href="#pri-methods">Private Member Functions</a> &#124;
 <a href="#pri-attribs">Private Attributes</a> &#124;
 <a href="#friends">Friends</a> &#124;
@@ -98,21 +97,12 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:acfcd0ad13e5d85562ca37a93c2010480"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a10852e0704904fef89c35d4100a5b861"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEngineDeterministicComponent.html#a10852e0704904fef89c35d4100a5b861">~EngineDeterministicComponent</a> ()</td></tr>
 <tr class="separator:a10852e0704904fef89c35d4100a5b861"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9b737b19f24da3055336908cc584fe11"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEngineDeterministicComponent.html#a9b737b19f24da3055336908cc584fe11">enterDeterministicMode</a> ()</td></tr>
-<tr class="separator:a9b737b19f24da3055336908cc584fe11"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a66b4013dc5e4d5c0e0ced4b3fa5b52da"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEngineDeterministicComponent.html#a66b4013dc5e4d5c0e0ced4b3fa5b52da">resetDeterministicState</a> ()</td></tr>
-<tr class="separator:a66b4013dc5e4d5c0e0ced4b3fa5b52da"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac0908c41e977790594fbbed8eed7e319"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEngineDeterministicComponent.html#ac0908c41e977790594fbbed8eed7e319">leaveDeterministicMode</a> ()</td></tr>
-<tr class="separator:ac0908c41e977790594fbbed8eed7e319"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4df9cb851acfea802ab8ed42720427c8"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEngineDeterministicComponent.html#a4df9cb851acfea802ab8ed42720427c8">isInDeterministicMode</a> () const</td></tr>
-<tr class="separator:a4df9cb851acfea802ab8ed42720427c8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-static-attribs" name="pub-static-attribs"></a>
-Static Public Attributes</h2></td></tr>
-<tr class="memitem:a9f1ccb16dcab2aaca876b86196c70da7"><td class="memItemLeft" align="right" valign="top">static constexpr int64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEngineDeterministicComponent.html#a9f1ccb16dcab2aaca876b86196c70da7">FRAME_TIME_MS</a> = 16</td></tr>
-<tr class="separator:a9f1ccb16dcab2aaca876b86196c70da7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a387770770fad1146f36d3d48fcd34065"><td class="memItemLeft" align="right" valign="top">static constexpr int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEngineDeterministicComponent.html#a387770770fad1146f36d3d48fcd34065">TARGET_FPS</a> = (1000 + <a class="el" href="classEngineDeterministicComponent.html#a9f1ccb16dcab2aaca876b86196c70da7">FRAME_TIME_MS</a> - 1) / <a class="el" href="classEngineDeterministicComponent.html#a9f1ccb16dcab2aaca876b86196c70da7">FRAME_TIME_MS</a></td></tr>
-<tr class="separator:a387770770fad1146f36d3d48fcd34065"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8b2c12b55e1084b53bd295198536bfb6"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEngineDeterministicComponent.html#a8b2c12b55e1084b53bd295198536bfb6">startDeterministicSegment</a> (int frameTimeMs)</td></tr>
+<tr class="separator:a8b2c12b55e1084b53bd295198536bfb6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abe8828fbdd4ee0207d0d5e7a6c2d0b15"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEngineDeterministicComponent.html#abe8828fbdd4ee0207d0d5e7a6c2d0b15">finish</a> ()</td></tr>
+<tr class="separator:abe8828fbdd4ee0207d0d5e7a6c2d0b15"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a22e8d6916c347d64a45dc9034ccdb38e"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEngineDeterministicComponent.html#a22e8d6916c347d64a45dc9034ccdb38e">isActive</a> () const</td></tr>
+<tr class="separator:a22e8d6916c347d64a45dc9034ccdb38e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pri-methods" name="pri-methods"></a>
 Private Member Functions</h2></td></tr>
@@ -213,10 +203,10 @@ Private Member Functions</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pri-attribs" name="pri-attribs"></a>
 Private Attributes</h2></td></tr>
-<tr class="memitem:ac535c74d7ba837d9cd421154f02d478e"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEngineDeterministicComponent.html#ac535c74d7ba837d9cd421154f02d478e">_deterministicCounter</a> = 0</td></tr>
-<tr class="separator:ac535c74d7ba837d9cd421154f02d478e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:acd815e14c227b930c0f166f9c3f61d2d"><td class="memItemLeft" align="right" valign="top">int64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEngineDeterministicComponent.html#acd815e14c227b930c0f166f9c3f61d2d">_tickCount</a> = 0</td></tr>
 <tr class="separator:acd815e14c227b930c0f166f9c3f61d2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a57f2b41946a9d850fcff736bfc928dc5"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEngineDeterministicComponent.html#a57f2b41946a9d850fcff736bfc928dc5">_frameTimeMs</a> = 0</td></tr>
+<tr class="separator:a57f2b41946a9d850fcff736bfc928dc5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aeb24477eb50c99e6879eaa0ebd7b2a09"><td class="memItemLeft" align="right" valign="top">std::unique_ptr&lt; <a class="el" href="classRandomEngine.html">RandomEngine</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEngineDeterministicComponent.html#aeb24477eb50c99e6879eaa0ebd7b2a09">_oldRandomEngine</a></td></tr>
 <tr class="separator:aeb24477eb50c99e6879eaa0ebd7b2a09"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
@@ -233,7 +223,7 @@ Additional Inherited Members</h2></td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p >This component can be used to make the engine more deterministic. It replaces the system timer with a fake one that advances by 16ms on each frame, and also resets the global random number generator.</p>
-<p >Note that this component is intentionally very dumb. All the methods just do exactly what you would expect right away, so where you're calling them from becomes very important. E.g. calling <code>enterDeterministicMode</code> from an event handler would probably make little sense. </p>
+<p >Note that this component is intentionally very dumb. All the methods just do exactly what you would expect right away, so where you're calling them from becomes very important. E.g. calling <code>startDeterministicSegment</code> from an event handler would probably make little sense. </p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="acfcd0ad13e5d85562ca37a93c2010480" name="acfcd0ad13e5d85562ca37a93c2010480"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#acfcd0ad13e5d85562ca37a93c2010480">&#9670;&#160;</a></span>EngineDeterministicComponent()</h2>
@@ -286,27 +276,26 @@ Additional Inherited Members</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a id="a9b737b19f24da3055336908cc584fe11" name="a9b737b19f24da3055336908cc584fe11"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a9b737b19f24da3055336908cc584fe11">&#9670;&#160;</a></span>enterDeterministicMode()</h2>
+<a id="abe8828fbdd4ee0207d0d5e7a6c2d0b15" name="abe8828fbdd4ee0207d0d5e7a6c2d0b15"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abe8828fbdd4ee0207d0d5e7a6c2d0b15">&#9670;&#160;</a></span>finish()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">void EngineDeterministicComponent::enterDeterministicMode </td>
+          <td class="memname">void EngineDeterministicComponent::finish </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
         </tr>
       </table>
 </div><div class="memdoc">
-<p >Enters deterministic mode.</p>
-<p >Note that this method works akin to a recursive mutex - it can be called several times, and to leave deterministic mode <code>leaveDeterministicMode</code> should then be called the same number of times. </p>
+<p >Leaves deterministic mode if currently is in it, does nothing otherwise. </p>
 
 </div>
 </div>
-<a id="a4df9cb851acfea802ab8ed42720427c8" name="a4df9cb851acfea802ab8ed42720427c8"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a4df9cb851acfea802ab8ed42720427c8">&#9670;&#160;</a></span>isInDeterministicMode()</h2>
+<a id="a22e8d6916c347d64a45dc9034ccdb38e" name="a22e8d6916c347d64a45dc9034ccdb38e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a22e8d6916c347d64a45dc9034ccdb38e">&#9670;&#160;</a></span>isActive()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -315,7 +304,7 @@ Additional Inherited Members</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">bool EngineDeterministicComponent::isInDeterministicMode </td>
+          <td class="memname">bool EngineDeterministicComponent::isActive </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td> const</td>
@@ -330,39 +319,30 @@ Additional Inherited Members</h2></td></tr>
 
 </div>
 </div>
-<a id="ac0908c41e977790594fbbed8eed7e319" name="ac0908c41e977790594fbbed8eed7e319"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ac0908c41e977790594fbbed8eed7e319">&#9670;&#160;</a></span>leaveDeterministicMode()</h2>
+<a id="a8b2c12b55e1084b53bd295198536bfb6" name="a8b2c12b55e1084b53bd295198536bfb6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8b2c12b55e1084b53bd295198536bfb6">&#9670;&#160;</a></span>startDeterministicSegment()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">void EngineDeterministicComponent::leaveDeterministicMode </td>
+          <td class="memname">void EngineDeterministicComponent::startDeterministicSegment </td>
           <td>(</td>
-          <td class="paramname"></td><td>)</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>frameTimeMs</em></td><td>)</td>
           <td></td>
         </tr>
       </table>
 </div><div class="memdoc">
-<p >Leaves deterministic mode. See the note in <code>enterDeterministicMode</code>. </p>
-
-</div>
-</div>
-<a id="a66b4013dc5e4d5c0e0ced4b3fa5b52da" name="a66b4013dc5e4d5c0e0ced4b3fa5b52da"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a66b4013dc5e4d5c0e0ced4b3fa5b52da">&#9670;&#160;</a></span>resetDeterministicState()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void EngineDeterministicComponent::resetDeterministicState </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p >Resets deterministic state - rolls the tick count back to zero, and resets <code>grng</code>. Must already be in deterministic mode. </p>
+<p >Starts a new deterministic segment, resetting all state - rolls the tick count back to zero, and resets <code>grng</code>.</p>
+<p >Note on why we're passing frame time in milliseconds here and not setting the target fps directly.</p>
+<p >It is possible to target e.g. 60fps, but since the platform API is in milliseconds, this will result in staggered frame times, with every 1st and 2nd frame taking 17ms, and every 3rd one taking 16ms. This might result in some non-determinism down the line, e.g. changing the code in level loading will change the number of frames it takes to load a level, and this will shift the timing sequence for the actual game frames after the level is loaded. Unlikely to really affect anything, but we'd rather not find out.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">frameTimeMs</td><td>Frame time to use inside the segment, in milliseconds. </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
@@ -445,8 +425,8 @@ Additional Inherited Members</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Data Documentation</h2>
-<a id="ac535c74d7ba837d9cd421154f02d478e" name="ac535c74d7ba837d9cd421154f02d478e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ac535c74d7ba837d9cd421154f02d478e">&#9670;&#160;</a></span>_deterministicCounter</h2>
+<a id="a57f2b41946a9d850fcff736bfc928dc5" name="a57f2b41946a9d850fcff736bfc928dc5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a57f2b41946a9d850fcff736bfc928dc5">&#9670;&#160;</a></span>_frameTimeMs</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -455,7 +435,7 @@ Additional Inherited Members</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">int EngineDeterministicComponent::_deterministicCounter = 0</td>
+          <td class="memname">int EngineDeterministicComponent::_frameTimeMs = 0</td>
         </tr>
       </table>
   </td>
@@ -505,52 +485,6 @@ Additional Inherited Members</h2></td></tr>
   </td>
   <td class="mlabels-right">
 <span class="mlabels"><span class="mlabel">private</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a9f1ccb16dcab2aaca876b86196c70da7" name="a9f1ccb16dcab2aaca876b86196c70da7"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a9f1ccb16dcab2aaca876b86196c70da7">&#9670;&#160;</a></span>FRAME_TIME_MS</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">constexpr int64_t EngineDeterministicComponent::FRAME_TIME_MS = 16</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">static</span><span class="mlabel">constexpr</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-<p >16ms translates to 62.5fps.</p>
-<p >It is possible to target 60fps and use double here (or store microseconds / nanoseconds in state), but since the platform API is in milliseconds, this will result in staggered frame times, with every 1st and 2nd frame taking 17ms, and every 3rd one taking 16ms. This might result in some non-determinism down the line, e.g. changing the code in level loading will change the number of frames it takes to load a level, and this will shift the timing sequence for the actual game frames after the level is loaded. Unlikely to really affect anything, but we'd rather not find out. </p>
-
-</div>
-</div>
-<a id="a387770770fad1146f36d3d48fcd34065" name="a387770770fad1146f36d3d48fcd34065"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a387770770fad1146f36d3d48fcd34065">&#9670;&#160;</a></span>TARGET_FPS</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">constexpr int EngineDeterministicComponent::TARGET_FPS = (1000 + <a class="el" href="classEngineDeterministicComponent.html#a9f1ccb16dcab2aaca876b86196c70da7">FRAME_TIME_MS</a> - 1) / <a class="el" href="classEngineDeterministicComponent.html#a9f1ccb16dcab2aaca876b86196c70da7">FRAME_TIME_MS</a></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">static</span><span class="mlabel">constexpr</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
