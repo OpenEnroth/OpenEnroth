@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['a_0',['a',['../structforcepersverts.html#a097658bcd729ee81c271bda89e3a4a3b',1,'forcepersverts::a()'],['../structlinesverts.html#ae6d7d067e9ed26506f8c13d1be41322b',1,'linesverts::a()'],['../structPlaneZCalcll.html#ae8b25f6908692974f4319c8391066358',1,'PlaneZCalcll::a()'],['../structTestPair.html#a3adb5b0569d0c1e1b453df4d1b511bac',1,'TestPair::a()'],['../structbillbverts.html#aa4d690423304fd86d2bc9fda56d8cb88',1,'billbverts::a()'],['../structtwodverts.html#af8d1b73307d9b7bd2ec3478dbf3ff8a0',1,'twodverts::a()'],['../structParticle.html#a8820cc4b7d902fc100a7c4d23dee99ef',1,'Particle::a()']]],
+  ['a_0',['a',['../structforcepersverts.html#a097658bcd729ee81c271bda89e3a4a3b',1,'forcepersverts::a()'],['../structlinesverts.html#ae6d7d067e9ed26506f8c13d1be41322b',1,'linesverts::a()'],['../structPlaneZCalcf.html#a2082baffd8c41e8eb152fd714aadb8eb',1,'PlaneZCalcf::a()'],['../structTestPair.html#a3adb5b0569d0c1e1b453df4d1b511bac',1,'TestPair::a()'],['../structbillbverts.html#aa4d690423304fd86d2bc9fda56d8cb88',1,'billbverts::a()'],['../structtwodverts.html#af8d1b73307d9b7bd2ec3478dbf3ff8a0',1,'twodverts::a()'],['../structParticle.html#a8820cc4b7d902fc100a7c4d23dee99ef',1,'Particle::a()']]],
   ['ac_1',['ac',['../structMonsterInfo__MM7.html#a71c3ac27f4c27738852c90bbf09d495e',1,'MonsterInfo_MM7']]],
   ['accuracy_2',['accuracy',['../structPlayer__MM7.html#a6cb285de0a761e3f0fb9a089f7dca642',1,'Player_MM7']]],
   ['accuracybonus_3',['accuracyBonus',['../structPlayer__MM7.html#a9e331c310f01a711cbce620e2d43274d',1,'Player_MM7']]],

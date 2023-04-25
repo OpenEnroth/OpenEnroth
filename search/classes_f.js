@@ -17,7 +17,7 @@ var searchData=
   ['pcxheader_14',['PCXHeader',['../structPCXHeader.html',1,'']]],
   ['planef_15',['Planef',['../structPlanef.html',1,'']]],
   ['planei_16',['Planei',['../structPlanei.html',1,'']]],
-  ['planezcalcll_17',['PlaneZCalcll',['../structPlaneZCalcll.html',1,'']]],
+  ['planezcalcf_17',['PlaneZCalcf',['../structPlaneZCalcf.html',1,'']]],
   ['platform_18',['Platform',['../classPlatform.html',1,'']]],
   ['platformapplication_19',['PlatformApplication',['../classPlatformApplication.html',1,'']]],
   ['platformapplicationaware_20',['PlatformApplicationAware',['../classPlatformApplicationAware.html',1,'']]],

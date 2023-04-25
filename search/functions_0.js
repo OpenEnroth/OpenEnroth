@@ -55,7 +55,7 @@ var searchData=
   ['_5f4b3fe5_5ftraining_5fdialogue_52',['_4B3FE5_training_dialogue',['../GUIWindow_8cpp.html#adc59f2d8e738930ab8071ad3c16e6570',1,'_4B3FE5_training_dialogue(int eventId):&#160;GUIWindow.cpp'],['../GUIWindow_8h.html#ae5cd6e9d5abc01da6627f5600fd99faf',1,'_4B3FE5_training_dialogue(int a4):&#160;GUIWindow.cpp']]],
   ['_5f4b4224_5fupdatenpctopics_53',['_4B4224_UpdateNPCTopics',['../NPC_8cpp.html#a58a376999ccce3cb142578b812b47124',1,'_4B4224_UpdateNPCTopics(int _this):&#160;NPC.cpp'],['../NPC_8h.html#a58a376999ccce3cb142578b812b47124',1,'_4B4224_UpdateNPCTopics(int _this):&#160;NPC.cpp']]],
   ['_5f4c1a02_54',['_4C1A02',['../classVis.html#ac74818a45056f1abd89639ed9ebc7295',1,'Vis']]],
-  ['_5fget_5fnormals_55',['_get_normals',['../structBLVFace.html#ab27716d0cb0283e356a4a2291217c282',1,'BLVFace']]],
+  ['_5fget_5fnormals_55',['_get_normals',['../structBLVFace.html#aef30e1e4346c3357d0b6b9e3fde1819e',1,'BLVFace']]],
   ['_5fgetdirectoryheaderimgsize_56',['_getDirectoryHeaderImgSize',['../LodReader_8cpp.html#a1f0b52a199dcdbab50d2c94f36ce24a3',1,'LodReader.cpp']]],
   ['_5finlined_5fsub0_57',['_inlined_sub0',['../classLODFile__Sprites.html#a880e1d26583c11f3501ff4163b85737e',1,'LODFile_Sprites::_inlined_sub0()'],['../classLODFile__IconsBitmaps.html#a605e364b2daffc34eb94216d609fd00c',1,'LODFile_IconsBitmaps::_inlined_sub0()']]],
   ['_5finlined_5fsub1_58',['_inlined_sub1',['../classLODFile__Sprites.html#aa43c4b0a0490b8ed62bef44f8c52711e',1,'LODFile_Sprites::_inlined_sub1()'],['../classLODFile__IconsBitmaps.html#a867b930246771e0c360cf66cd039b6f1',1,'LODFile_IconsBitmaps::_inlined_sub1()']]],

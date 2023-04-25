@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['c_0',['c',['../structPlaneZCalcll.html#a2d46a23237e7d4cf8cc986814b2cc89b',1,'PlaneZCalcll']]],
+  ['c_0',['c',['../structPlaneZCalcf.html#a45ba365e2225fdf0f7d1420ae6193ae0',1,'PlaneZCalcf']]],
   ['callback_1',['callback',['../structhotkey.html#af88570706966c57eff85a6b0f5b9c6da',1,'hotkey']]],
   ['camfrontdot_2',['CamFrontDot',['../structSkyBillboardStruct.html#a26100c475d402d987dcc84f7dfbddfea',1,'SkyBillboardStruct']]],
   ['camleftdot_3',['CamLeftDot',['../structSkyBillboardStruct.html#af4bf3b6b15bae3fc719727263f65b87d',1,'SkyBillboardStruct']]],
@@ -88,8 +88,8 @@ var searchData=
   ['converter_85',['converter',['../classAVAudioStream.html#ab8bce71cf01032ee907285a000942e59',1,'AVAudioStream::converter()'],['../classAVVideoStream.html#a0a4658d12b7f666308465944a909bd78',1,'AVVideoStream::converter()']]],
   ['cornflowerblue_86',['CornFlowerBlue',['../classColorTable.html#a7f86dab334d142cb89066cd76e792d7f',1,'ColorTable']]],
   ['count_87',['count',['../classEventIR.html#aae52be0d773d7dfdf7c1c58d7a74a3b5',1,'EventIR::count()'],['../classFlatHirelings.html#afe7d0540ee80af97a3a0599dd376263e',1,'FlatHirelings::count()']]],
-  ['countereventvalues_88',['counterEventValues',['../structPartyTimeStruct__MM7.html#ac2395df08e650175d8ef762a536a5255',1,'PartyTimeStruct_MM7']]],
-  ['countereventvalues_89',['CounterEventValues',['../structPartyTimeStruct.html#abc95a39d551e3477dfb99c4aa588e85a',1,'PartyTimeStruct']]],
+  ['countereventvalues_88',['CounterEventValues',['../structPartyTimeStruct.html#abc95a39d551e3477dfb99c4aa588e85a',1,'PartyTimeStruct']]],
+  ['countereventvalues_89',['counterEventValues',['../structPartyTimeStruct__MM7.html#ac2395df08e650175d8ef762a536a5255',1,'PartyTimeStruct_MM7']]],
   ['create_5fper_5fframe_90',['create_per_frame',['../structeffect__params__struct.html#afbf9839938a541ab2ed8e7127d7d8674',1,'effect_params_struct']]],
   ['cred_5ftexture_91',['cred_texture',['../classGUICredits.html#a76153f23b2c2282d971df8c3cbeb7954',1,'GUICredits']]],
   ['credits_92',['Credits',['../classGameConfig_1_1Keybindings.html#a2e4f1a40311cd6106aae833c283b1287',1,'GameConfig::Keybindings::Credits()'],['../classGameConfig_1_1Gamepad.html#a16a9e36ae66d73023bea03ed8c047708',1,'GameConfig::Gamepad::Credits()']]],
