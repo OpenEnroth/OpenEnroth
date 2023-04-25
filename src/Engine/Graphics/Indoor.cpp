@@ -892,31 +892,12 @@ bool BLVFaceExtra::HasEventHint() {
 
 //----- (0046F228) --------------------------------------------------------
 void BLV_UpdateDoors() {
-    // signed int v20;      // eax@24
-    int v24;             // esi@25
-    int v25;             // eax@25
-    int64_t v27 {};  // qtt@27
-    BLVFaceExtra *v28;   // esi@32
     int v32;             // eax@34
-    Vec3s *v34;    // eax@35
-    int v35;             // ecx@35
-    int v36;             // edx@35
-    signed int v37;      // eax@35
-    signed int v38;      // edx@35
-    int v39;             // eax@35
-    int v40;             // edx@35
-    Vec3s *v43;    // edi@36
     int v57;             // eax@58
-    Vec3i v67;
-    Vec3i v70;
     int v75;               // [sp+28h] [bp-3Ch]@36
     int v76;               // [sp+2Ch] [bp-38h]@36
     int v77;               // [sp+30h] [bp-34h]@36
-    int v82;               // [sp+44h] [bp-20h]@35
     int v83;               // [sp+48h] [bp-1Ch]@34
-    int v84;               // [sp+4Ch] [bp-18h]@34
-    int j;               // [sp+5Ch] [bp-8h]@18
-    int open_distance;     // [sp+60h] [bp-4h]@6
 
     SoundID eDoorSoundID = (SoundID)pDoorSoundIDsByLocationID[dword_6BE13C_uCurrentlyLoadedLocationID];
 
@@ -929,66 +910,59 @@ void BLV_UpdateDoors() {
             door->uAttributes &= ~DOOR_SETTING_UP;
             continue;
         }
+        bool shouldPlaySound = !(door->uAttributes & (DOOR_SETTING_UP | DOOR_NOSOUND)) && door->uNumVertices != 0;
 
         door->uTimeSinceTriggered += pEventTimer->uTimeElapsed;
+
+        int openDistance;     // [sp+60h] [bp-4h]@6
         if (door->uState == BLVDoor::Opening) {
-            open_distance = (door->uTimeSinceTriggered * door->uCloseSpeed) / 128;
-            if (open_distance >= door->uMoveLength) {
-                open_distance = door->uMoveLength;
+            openDistance = (door->uTimeSinceTriggered * door->uCloseSpeed) / 128;
+
+            if (openDistance >= door->uMoveLength) {
+                openDistance = door->uMoveLength;
                 door->uState = BLVDoor::Open;
-                if (!(door->uAttributes & (DOOR_SETTING_UP | DOOR_NOSOUND)) && door->uNumVertices != 0)
+                if (shouldPlaySound)
                     pAudioPlayer->playSound((SoundID)((int)eDoorSoundID + 1), PID(OBJECT_Door, i));
-            } else if (!(door->uAttributes & (DOOR_SETTING_UP | DOOR_NOSOUND)) && door->uNumVertices != 0) {
+            } else if (shouldPlaySound) {
                 pAudioPlayer->playSound(eDoorSoundID, PID(OBJECT_Door, i), 1);
             }
-        } else {  // door closing
-            signed int v5 = (signed int)(door->uTimeSinceTriggered * door->uOpenSpeed) / 128;
-            if (v5 >= door->uMoveLength) {
-                open_distance = 0;
+        } else {
+            assert(door->uState == BLVDoor::Closing);
+
+            int closeDistance = (door->uTimeSinceTriggered * door->uOpenSpeed) / 128;
+            if (closeDistance >= door->uMoveLength) {
+                openDistance = 0;
                 door->uState = BLVDoor::Closed;
-                if (!(door->uAttributes & (DOOR_SETTING_UP | DOOR_NOSOUND)) && door->uNumVertices != 0)
+                if (shouldPlaySound)
                     pAudioPlayer->playSound((SoundID)((int)eDoorSoundID + 1), PID(OBJECT_Door, i));
             } else {
-                open_distance = door->uMoveLength - v5;
-                if (!(door->uAttributes & (DOOR_SETTING_UP | DOOR_NOSOUND)) && door->uNumVertices != 0)
+                openDistance = door->uMoveLength - closeDistance;
+                if (shouldPlaySound)
                     pAudioPlayer->playSound(eDoorSoundID, PID(OBJECT_Door, i), 1);
             }
         }
 
         // adjust verts to how open the door is
-        for (uint j = 0; j < door->uNumVertices; ++j) {
+        for (int j = 0; j < door->uNumVertices; ++j) {
             pIndoor->pVertices[door->pVertexIDs[j]].x =
-                fixpoint_mul(door->vDirection.x, open_distance) + door->pXOffsets[j];
+                fixpoint_mul(door->vDirection.x, openDistance) + door->pXOffsets[j];
             pIndoor->pVertices[door->pVertexIDs[j]].y =
-                fixpoint_mul(door->vDirection.y, open_distance) + door->pYOffsets[j];
+                fixpoint_mul(door->vDirection.y, openDistance) + door->pYOffsets[j];
             pIndoor->pVertices[door->pVertexIDs[j]].z =
-                fixpoint_mul(door->vDirection.z, open_distance) + door->pZOffsets[j];
+                fixpoint_mul(door->vDirection.z, openDistance) + door->pZOffsets[j];
         }
 
-
-        for (j = 0; j < door->uNumFaces; ++j) {
+        for (int j = 0; j < door->uNumFaces; ++j) {
             BLVFace *face = &pIndoor->pFaces[door->pFaceIDs[j]];
-            Vec3s *v17 = &pIndoor->pVertices[face->pVertexIDs[0]];
-            face->facePlane_old.dist = -dot(*v17, face->facePlane_old.normal);
-            face->facePlane.dist = -dot(v17->toFloat(), face->facePlane.normal);
-            if (face->facePlane_old.normal.z) {
-                v24 = abs(face->facePlane_old.dist >> 15);
-                v25 = abs(face->facePlane_old.normal.z);
-                if (v24 > v25)
-                    Error(
-                        "Door Error\ndoor id: %i\nfacet no: %i\n\nOverflow "
-                        "dividing facet->d [%i] by facet->nz [%i]",
-                        door->uDoorID, door->pFaceIDs[j],
-                        face->facePlane_old.dist,
-                        face->facePlane_old.normal.z);
-                HEXRAYS_LODWORD(v27) = face->facePlane_old.dist << 16;
-                HEXRAYS_HIDWORD(v27) = face->facePlane_old.dist >> 16;
-                face->zCalc.c = -v27 / face->facePlane_old.normal.z;
-            }
-            // if ( face->uAttributes & FACE_TexMoveByDoor || render->pRenderD3D
-            // )
-            face->_get_normals(&v70, &v67);
-            v28 = &pIndoor->pFaceExtras[face->uFaceExtraID];
+            const Vec3s &point = pIndoor->pVertices[face->pVertexIDs[0]];
+            face->facePlane_old.dist = -dot(point, face->facePlane_old.normal);
+            face->facePlane.dist = -dot(point.toFloat(), face->facePlane.normal);
+            face->zCalc.init(face->facePlane);
+            // if ( face->uAttributes & FACE_TexMoveByDoor || render->pRenderD3D )
+            Vec3i v;
+            Vec3i u;
+            face->_get_normals(&u, &v);
+            BLVFaceExtra *extras = &pIndoor->pFaceExtras[face->uFaceExtraID];
             /*if ( !render->pRenderD3D )
             {
             if ( !(face->uAttributes & FACE_TexMoveByDoor) )
@@ -1009,27 +983,27 @@ void BLV_UpdateDoors() {
             v28->sTextureDeltaV = v57 + door->pDeltaVs[j];
             continue;
             }*/
-            v28->sTextureDeltaU = 0;
-            v28->sTextureDeltaV = 0;
-            v34 = &pIndoor->pVertices[face->pVertexIDs[0]];
-            v35 = v34->z;
-            v36 = v34->y;
-            v82 = v34->x;
-            v37 = v70.x * v82 + v70.y * v36 + v70.z * v35;
-            v38 = v67.x * v82 + v67.y * v36 + v67.z * v35;
-            v39 = v37 >> 16;
+            extras->sTextureDeltaU = 0;
+            extras->sTextureDeltaV = 0;
+            Vec3s* v34 = &pIndoor->pVertices[face->pVertexIDs[0]];
+            int v35 = v34->z;
+            int v36 = v34->y;
+            int v82 = v34->x;
+            int v37 = u.x * v82 + u.y * v36 + u.z * v35;
+            int v38 = v.x * v82 + v.y * v36 + v.z * v35;
+            int v39 = v37 >> 16;
             *face->pVertexUIDs = v39;
-            v40 = v38 >> 16;
+            int v40 = v38 >> 16;
             *face->pVertexVIDs = v40;
-            v84 = v39;
+            int v84 = v39;
             v82 = v40;
             for (uint j = 1; j < face->uNumVertices; ++j) {
-                v43 = &pIndoor->pVertices[face->pVertexIDs[j]];
-                v76 = ((int64_t)v70.z * v43->z + (int64_t)v70.x * v43->x +
-                       (int64_t)v70.y * v43->y) >>
+                Vec3s *v43 = &pIndoor->pVertices[face->pVertexIDs[j]];
+                v76 = ((int64_t)u.z * v43->z + (int64_t)u.x * v43->x +
+                       (int64_t)u.y * v43->y) >>
                       16;
-                v77 = ((int64_t)v67.x * v43->x + (int64_t)v67.y * v43->y +
-                       (int64_t)v43->z * v67.z) >>
+                v77 = ((int64_t)v.x * v43->x + (int64_t)v.y * v43->y +
+                       (int64_t)v43->z * v.z) >>
                       16;
                 if (v76 < v39) v39 = v76;
                 if (v77 < v40) v40 = v77;
@@ -1039,22 +1013,22 @@ void BLV_UpdateDoors() {
                 face->pVertexVIDs[j] = v77;
             }
             if (face->uAttributes & FACE_TexAlignLeft) {
-                v28->sTextureDeltaU -= v39;
+                extras->sTextureDeltaU -= v39;
             } else {
                 if (face->uAttributes & FACE_TexAlignRight) {
                     if (face->resource) {
                         // v28->sTextureDeltaU -= v84 +
                         // pBitmaps_LOD->pTextures[face->uBitmapID].uTextureWidth;
-                        v28->sTextureDeltaU -=
+                        extras->sTextureDeltaU -=
                             v84 + ((Texture *)face->resource)->GetWidth();
                     }
                 }
             }
             if (face->uAttributes & FACE_TexAlignDown) {
-                v28->sTextureDeltaV -= v40;
+                extras->sTextureDeltaV -= v40;
             } else {
                 if (face->uAttributes & FACE_TexAlignBottom) {
-                    v28->sTextureDeltaV -=
+                    extras->sTextureDeltaV -=
                         v84 + ((Texture *)face->resource)->GetHeight();
                     // if (face->uBitmapID != -1)
                     //    v28->sTextureDeltaV -= v82 +
@@ -1062,21 +1036,21 @@ void BLV_UpdateDoors() {
                 }
             }
             if (face->uAttributes & FACE_TexMoveByDoor) {
-                v84 = fixpoint_mul(door->vDirection.x, v70.x);
-                v82 = fixpoint_mul(door->vDirection.y, v70.y);
-                v83 = fixpoint_mul(door->vDirection.z, v70.z);
+                v84 = fixpoint_mul(door->vDirection.x, u.x);
+                v82 = fixpoint_mul(door->vDirection.y, u.y);
+                v83 = fixpoint_mul(door->vDirection.z, u.z);
                 v75 = v84 + v82 + v83;
-                v82 = fixpoint_mul(v75, open_distance);
-                v28->sTextureDeltaU = -v82;
-                v84 = fixpoint_mul(door->vDirection.x, v67.x);
-                v82 = fixpoint_mul(door->vDirection.y, v67.y);
-                v83 = fixpoint_mul(door->vDirection.z, v67.z);
+                v82 = fixpoint_mul(v75, openDistance);
+                extras->sTextureDeltaU = -v82;
+                v84 = fixpoint_mul(door->vDirection.x, v.x);
+                v82 = fixpoint_mul(door->vDirection.y, v.y);
+                v83 = fixpoint_mul(door->vDirection.z, v.z);
                 v75 = v84 + v82 + v83;
-                v32 = fixpoint_mul(v75, open_distance);
+                v32 = fixpoint_mul(v75, openDistance);
                 v57 = -v32;
-                v28->sTextureDeltaV = v57;
-                v28->sTextureDeltaU += door->pDeltaUs[j];
-                v28->sTextureDeltaV = v57 + door->pDeltaVs[j];
+                extras->sTextureDeltaV = v57;
+                extras->sTextureDeltaU += door->pDeltaUs[j];
+                extras->sTextureDeltaV = v57 + door->pDeltaVs[j];
             }
         }
     }
