@@ -1594,9 +1594,9 @@ bool Check_LOS_Obscurred_Indoors(const Vec3i &target, const Vec3i &from) {  // t
                     continue;
             }
 
-            // TODO(captainurist): what is this check for?
-            if (abs(NegFacePlaceDist) * 8 <= abs(dirDotNormal)) {
-                float IntersectionDist = NegFacePlaceDist /  dirDotNormal;
+            // TODO(captainurist): what's going on in this check?
+            if (abs(NegFacePlaceDist) / 16384.0f <= abs(dirDotNormal)) {
+                float IntersectionDist = NegFacePlaceDist / dirDotNormal;
                 // less than zero means intersection is behind target point
                 if (IntersectionDist >= 0) {
                     Vec3i pos = target + (IntersectionDist * dir).toInt();
