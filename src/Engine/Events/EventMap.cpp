@@ -50,7 +50,7 @@ bool EventMap::execute(int eventId, int startStep, bool canShowMessages) const {
         stepFound = false;
         for (const EventIR &ir : _eventsById.at(eventId)) {
             if (ir.step == step) {
-                step = ir.execute(eventId, canShowMessages, &who, &mapExitTriggered);
+                step = ir.execute(eventId, canShowMessages, &who, &mapExitTriggered, nullptr);
                 stepFound = true;
                 break;
             }
@@ -58,6 +58,32 @@ bool EventMap::execute(int eventId, int startStep, bool canShowMessages) const {
     } while (stepFound && step != -1 && dword_5B65C4_cancelEventProcessing == 0);
 
     return mapExitTriggered;
+}
+
+bool EventMap::executeNpcDialogue(int eventId, int startStep) const {
+    assert(_eventsById.contains(eventId));
+    assert(startStep >= 0);
+
+    int step = startStep;
+    bool stepFound;
+    bool canShowOption = true;
+    bool readyToExit = false;
+    PLAYER_CHOOSE_POLICY who = CHOOSE_PARTY;
+
+    do {
+        stepFound = false;
+        for (const EventIR &ir : _eventsById.at(eventId)) {
+            if (ir.step == step) {
+                step = ir.execute(eventId, false, &who, nullptr, &canShowOption);
+                readyToExit = readyToExit || ir.type == EVENT_OnCanShowDialogItemCmp || ir.type == EVENT_SetCanShowDialogItem;
+                stepFound = true;
+                break;
+            }
+        }
+    } while (stepFound && step != -1);
+
+    // Originally was: "readyToExit ? (canShowOption != 0) : 2"
+    return !readyToExit || canShowOption;
 }
 
 std::string EventMap::getHintString(int eventId) const {
@@ -80,12 +106,12 @@ std::string EventMap::getHintString(int eventId) const {
 
 void EventMap::dump(int eventId) const {
     if (_eventsById.contains(eventId)) {
-        logger->warning("Event: {}", eventId);
+        logger->verbose("Event: {}", eventId);
         for (const EventIR &ir : _eventsById.at(eventId)) {
-            logger->warning("{}", ir.toString());
+            logger->verbose("{}", ir.toString());
         }
     } else {
-        logger->warning("Event {} not found", eventId);
+        logger->verbose("Event {} not found", eventId);
     }
 }
 

@@ -39,7 +39,7 @@ class EventIR {
  public:
     std::string toString() const;
     static EventIR parse(void *data, size_t maxSize);
-    int execute(int eventId, bool canShowMessages, PLAYER_CHOOSE_POLICY *who, bool *mapExitTriggered) const;
+    int execute(int eventId, bool canShowMessages, PLAYER_CHOOSE_POLICY *who, bool *mapExitTriggered, bool *canShowOption) const;
 
     EventType type;
     int step;
@@ -55,6 +55,7 @@ class EventIR {
         SEASON season;
         int event_id;
         int movie_unknown_field;
+        int can_show_npc_dialogue;
         struct {
             std::array<int, 6> random_goto;
             int random_goto_len;

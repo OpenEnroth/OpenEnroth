@@ -11,6 +11,10 @@ static std::vector<EventTrigger> onMapLoadTriggers;
 static std::vector<EventTrigger> onMapLeaveTriggers;
 
 void eventProcessor(int eventId, int targetObj, bool canShowMessages, int startStep) {
+    if (!eventId) {
+        return;
+    }
+
     EvtTargetObj = targetObj; // TODO: pass as local
     dword_5B65C4_cancelEventProcessing = 0; // TODO: rename and contain in this module or better remove it altogether
 
@@ -19,7 +23,7 @@ void eventProcessor(int eventId, int targetObj, bool canShowMessages, int startS
     return;
 
     bool mapExitTriggered = false;
-    logger->warning("Executing event starting from step {}", startStep);
+    logger->verbose("Executing regular event starting from step {}", startStep);
     if (activeLevelDecoration) {
         engine->_globalEventMap.dump(eventId);
         mapExitTriggered = engine->_globalEventMap.execute(eventId, startStep, canShowMessages);
@@ -31,6 +35,16 @@ void eventProcessor(int eventId, int targetObj, bool canShowMessages, int startS
     if (mapExitTriggered) {
         onMapLeave();
     }
+}
+
+bool npcDialogueEventProcessor(int eventId, int startStep) {
+    if (!eventId) {
+        return false;
+    }
+
+    logger->verbose("Executing NPC dialogue event starting from step {}", startStep);
+    engine->_globalEventMap.dump(eventId);
+    return engine->_globalEventMap.executeNpcDialogue(eventId, startStep);
 }
 
 std::string getEventHintString(int eventId) {

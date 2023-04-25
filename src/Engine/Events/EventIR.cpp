@@ -781,14 +781,11 @@ std::string EventIR::toString() const {
         case EVENT_CheckSkill:
              return fmt::format("{}: CheckSkill({}, {}, {}) -> {}", step, std::to_underlying(data.check_skill_descr.skill_type), std::to_underlying(data.check_skill_descr.skill_mastery), data.check_skill_descr.skill_level, target_step);
         case EVENT_OnCanShowDialogItemCmp:
-            // TODO
-            break;
+            return fmt::format("{}: OnCanShowDialogItemCmp({}) -> {}", step, getVariableCompareStr(data.variable_descr.type, data.variable_descr.value), target_step);
         case EVENT_EndCanShowDialogItem:
-            // TODO
-            break;
+            return fmt::format("{}: EndCanShowDialogItem", step);
         case EVENT_SetCanShowDialogItem:
-            // TODO
-            break;
+            return fmt::format("{}: SetCanShowDialogItem({})", step, data.can_show_npc_dialogue);
         case EVENT_SetNPCGroupNews:
             return fmt::format("{}: SetNPCGroupNews({}, {})", step, data.npc_groups_descr.groups_id, data.npc_groups_descr.group);
         case EVENT_SetActorGroup:
@@ -801,8 +798,7 @@ std::string EventIR::toString() const {
         case EVENT_IsActorAlive:
             return fmt::format("{}: IsActorAlive({}, {}, {}) -> {}", step, data.actor_descr.type, data.actor_descr.param, data.actor_descr.num, target_step);
         case EVENT_IsActorAssasinated:
-            // TODO
-            break;
+            return fmt::format("{}: IsActorAssasinated({}, {}, {}) -> {}", step, data.actor_descr.type, data.actor_descr.param, data.actor_descr.num, target_step);
         case EVENT_OnMapLeave:
             return fmt::format("{}: OnMapLeave", step);
         case EVENT_ChangeGroup:
@@ -1053,13 +1049,14 @@ EventIR EventIR::parse(void *data, size_t maxSize) {
             ir.target_step = _evt->v11;
             break;
         case EVENT_OnCanShowDialogItemCmp:
-            // TODO
+            ir.target_step = _evt->v11;
+            ir.data.variable_descr.type = (enum VariableType)EVT_WORD(_evt->v5);
+            ir.data.variable_descr.value = EVT_DWORD(_evt->v7);
             break;
         case EVENT_EndCanShowDialogItem:
-            // TODO
             break;
         case EVENT_SetCanShowDialogItem:
-            // TODO
+            ir.data.can_show_npc_dialogue = EVT_BYTE(_evt->v5);
             break;
         case EVENT_SetNPCGroupNews:
             ir.data.npc_groups_descr.groups_id = EVT_DWORD(_evt->v5);
@@ -1081,9 +1078,13 @@ EventIR EventIR::parse(void *data, size_t maxSize) {
             ir.data.actor_descr.type = _evt->v5;
             ir.data.actor_descr.param = EVT_DWORD(_evt->v6);
             ir.data.actor_descr.num = _evt->v10;
+            ir.target_step = _evt->v11;
             break;
         case EVENT_IsActorAssasinated:
-            // TODO
+            ir.data.actor_descr.type = _evt->v5;
+            ir.data.actor_descr.param = EVT_DWORD(_evt->v6);
+            ir.data.actor_descr.num = _evt->v10;
+            ir.target_step = _evt->v11;
             break;
         case EVENT_OnMapLeave:
             // Nothing?
@@ -1203,7 +1204,7 @@ bool doForChosenPlayer(PLAYER_CHOOSE_POLICY who, RandomEngine *rng, std::functio
     return false;
 }
 
-int EventIR::execute(int eventId, bool canShowMessages, PLAYER_CHOOSE_POLICY *who, bool *mapExitTriggered) const {
+int EventIR::execute(int eventId, bool canShowMessages, PLAYER_CHOOSE_POLICY *who, bool *mapExitTriggered, bool *canShowOption) const {
     *mapExitTriggered = false;
 
     switch (type) {
@@ -1533,13 +1534,16 @@ int EventIR::execute(int eventId, bool canShowMessages, PLAYER_CHOOSE_POLICY *wh
             break;
         }
         case EVENT_OnCanShowDialogItemCmp:
-            // TODO
+            for (Player &player : pParty->pPlayers) {
+                if (player.CompareVariable(data.variable_descr.type, data.variable_descr.value)) {
+                    return target_step;
+                }
+            }
             break;
         case EVENT_EndCanShowDialogItem:
-            // TODO
-            break;
+            return -1;
         case EVENT_SetCanShowDialogItem:
-            // TODO
+            *canShowOption = data.can_show_npc_dialogue;
             break;
         case EVENT_SetNPCGroupNews:
             pNPCStats->pGroups_copy[data.npc_groups_descr.groups_id] = data.npc_groups_descr.group;
@@ -1567,7 +1571,9 @@ int EventIR::execute(int eventId, bool canShowMessages, PLAYER_CHOOSE_POLICY *wh
             }
             break;
         case EVENT_IsActorAssasinated:
-            // TODO
+            if (!isActorAlive(data.actor_descr.type, data.actor_descr.param, data.actor_descr.num)) {
+                return target_step;
+            }
             break;
         case EVENT_OnMapLeave:
             assert(false); // Trigger, must be skipped

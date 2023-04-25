@@ -1077,6 +1077,7 @@ void _4B4224_UpdateNPCTopics(int _this) {
 //          line3=3
 //          line4=34
 //          line5=187
+//  TODO(Nik-RE-dev): remove when new event processor is active
 int NPCDialogueEventProcessor(int npc_event_id, int entry_line) {
     if (!npc_event_id) return 0;
 

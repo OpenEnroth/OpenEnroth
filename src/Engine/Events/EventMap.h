@@ -20,6 +20,7 @@ class EventMap {
     std::vector<EventTrigger> enumerateTriggers(EventType triggerType);
 
     bool execute(int eventId, int startStep, bool canShowMessages) const;
+    bool executeNpcDialogue(int eventId, int startStep) const;
     std::string getHintString(int eventId) const;
 
     void dumpAll() const;
