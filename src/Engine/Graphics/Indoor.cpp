@@ -895,8 +895,6 @@ void BLV_UpdateDoors() {
     int v32;             // eax@34
     int v57;             // eax@58
     int v75;               // [sp+28h] [bp-3Ch]@36
-    int v76;               // [sp+2Ch] [bp-38h]@36
-    int v77;               // [sp+30h] [bp-34h]@36
     int v83;               // [sp+48h] [bp-1Ch]@34
 
     SoundID eDoorSoundID = (SoundID)pDoorSoundIDsByLocationID[dword_6BE13C_uCurrentlyLoadedLocationID];
@@ -954,9 +952,9 @@ void BLV_UpdateDoors() {
 
         for (int j = 0; j < door->uNumFaces; ++j) {
             BLVFace *face = &pIndoor->pFaces[door->pFaceIDs[j]];
-            const Vec3s &point = pIndoor->pVertices[face->pVertexIDs[0]];
-            face->facePlane_old.dist = -dot(point, face->facePlane_old.normal);
-            face->facePlane.dist = -dot(point.toFloat(), face->facePlane.normal);
+            const Vec3s &facePoint = pIndoor->pVertices[face->pVertexIDs[0]];
+            face->facePlane_old.dist = -dot(facePoint, face->facePlane_old.normal);
+            face->facePlane.dist = -dot(facePoint.toFloat(), face->facePlane.normal);
             face->zCalc.init(face->facePlane);
             // if ( face->uAttributes & FACE_TexMoveByDoor || render->pRenderD3D )
             Vec3i v;
@@ -985,67 +983,57 @@ void BLV_UpdateDoors() {
             }*/
             extras->sTextureDeltaU = 0;
             extras->sTextureDeltaV = 0;
-            Vec3s* v34 = &pIndoor->pVertices[face->pVertexIDs[0]];
-            int v35 = v34->z;
-            int v36 = v34->y;
-            int v82 = v34->x;
-            int v37 = u.x * v82 + u.y * v36 + u.z * v35;
-            int v38 = v.x * v82 + v.y * v36 + v.z * v35;
-            int v39 = v37 >> 16;
-            *face->pVertexUIDs = v39;
-            int v40 = v38 >> 16;
-            *face->pVertexVIDs = v40;
-            int v84 = v39;
-            v82 = v40;
-            for (uint j = 1; j < face->uNumVertices; ++j) {
-                Vec3s *v43 = &pIndoor->pVertices[face->pVertexIDs[j]];
-                v76 = ((int64_t)u.z * v43->z + (int64_t)u.x * v43->x +
-                       (int64_t)u.y * v43->y) >>
-                      16;
-                v77 = ((int64_t)v.x * v43->x + (int64_t)v.y * v43->y +
-                       (int64_t)v43->z * v.z) >>
-                      16;
-                if (v76 < v39) v39 = v76;
-                if (v77 < v40) v40 = v77;
-                if (v76 > v84) v84 = v76;
-                if (v77 > v82) v82 = v77;
-                face->pVertexUIDs[j] = v76;
-                face->pVertexVIDs[j] = v77;
+
+            int minU = INT_MAX;
+            int minV = INT_MAX;
+            int maxU = INT_MIN;
+            int maxV = INT_MIN;
+            for (uint k = 0; k < face->uNumVertices; ++k) {
+                const Vec3s &point = pIndoor->pVertices[face->pVertexIDs[k]];
+                int pointU = ((int64_t)u.z * point.z + (int64_t)u.x * point.x + (int64_t)u.y * point.y) >> 16;
+                int pointV = ((int64_t)v.x * point.x + (int64_t)v.y * point.y + (int64_t)point.z * v.z) >> 16;
+                minU = std::min(minU, pointU);
+                minV = std::min(minV, pointV);
+                maxU = std::max(maxU, pointU);
+                maxV = std::max(maxV, pointV);
+                face->pVertexUIDs[k] = pointU;
+                face->pVertexVIDs[k] = pointV;
             }
+            
             if (face->uAttributes & FACE_TexAlignLeft) {
-                extras->sTextureDeltaU -= v39;
+                extras->sTextureDeltaU -= minU;
             } else {
                 if (face->uAttributes & FACE_TexAlignRight) {
                     if (face->resource) {
                         // v28->sTextureDeltaU -= v84 +
                         // pBitmaps_LOD->pTextures[face->uBitmapID].uTextureWidth;
                         extras->sTextureDeltaU -=
-                            v84 + ((Texture *)face->resource)->GetWidth();
+                            maxU + ((Texture *)face->resource)->GetWidth();
                     }
                 }
             }
             if (face->uAttributes & FACE_TexAlignDown) {
-                extras->sTextureDeltaV -= v40;
+                extras->sTextureDeltaV -= minV;
             } else {
                 if (face->uAttributes & FACE_TexAlignBottom) {
                     extras->sTextureDeltaV -=
-                        v84 + ((Texture *)face->resource)->GetHeight();
+                        maxU + ((Texture *)face->resource)->GetHeight();
                     // if (face->uBitmapID != -1)
                     //    v28->sTextureDeltaV -= v82 +
                     //    pBitmaps_LOD->GetTexture(face->uBitmapID)->uTextureHeight;
                 }
             }
             if (face->uAttributes & FACE_TexMoveByDoor) {
-                v84 = fixpoint_mul(door->vDirection.x, u.x);
-                v82 = fixpoint_mul(door->vDirection.y, u.y);
+                maxU = fixpoint_mul(door->vDirection.x, u.x);
+                maxV = fixpoint_mul(door->vDirection.y, u.y);
                 v83 = fixpoint_mul(door->vDirection.z, u.z);
-                v75 = v84 + v82 + v83;
-                v82 = fixpoint_mul(v75, openDistance);
-                extras->sTextureDeltaU = -v82;
-                v84 = fixpoint_mul(door->vDirection.x, v.x);
-                v82 = fixpoint_mul(door->vDirection.y, v.y);
+                v75 = maxU + maxV + v83;
+                maxV = fixpoint_mul(v75, openDistance);
+                extras->sTextureDeltaU = -maxV;
+                maxU = fixpoint_mul(door->vDirection.x, v.x);
+                maxV = fixpoint_mul(door->vDirection.y, v.y);
                 v83 = fixpoint_mul(door->vDirection.z, v.z);
-                v75 = v84 + v82 + v83;
+                v75 = maxU + maxV + v83;
                 v32 = fixpoint_mul(v75, openDistance);
                 v57 = -v32;
                 extras->sTextureDeltaV = v57;
@@ -1135,7 +1123,7 @@ void UpdateActors_BLV() {
                     actor.vVelocity.z = 0;
             } else {
                 // fixpoint(45000) = 0.68664550781, no idea what the actual semantics here is.
-                if (pIndoor->pFaces[uFaceID].facePlane_old.normal.z < 45000)
+                if (pIndoor->pFaces[uFaceID].facePlane.normal.z < 0.68664550781f) // was 45000 fixpoint
                     actor.vVelocity.z -= pEventTimer->uTimeElapsed * GetGravityStrength();
             }
         } else {
