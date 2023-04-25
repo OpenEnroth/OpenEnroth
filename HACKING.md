@@ -153,7 +153,9 @@ As typing out all the events to send inside the test code can be pretty tedious,
 * Rename them into something more suiting (e.g. `issue_XXX.json` and `issue_XXX.mm7`) and create a PR to the [OpenEnroth_TestData](https://github.com/OpenEnroth/OpenEnroth_TestData) repo. 
 * Once it's merged update the reference tag in the corresponding [CMakeLists.txt](https://github.com/OpenEnroth/OpenEnroth/blob/master/test/Bin/GameTest/CMakeLists.txt#L21) in the main repo.
 * Create a new test case in one of the game test files in [the game tests folder](https://github.com/OpenEnroth/OpenEnroth/tree/master/test/Tests).
-* Use `TestController::playTraceFromTestData` to play back your trace, and add the necessary checks around it. If you're simply testing that the test doesn't crash, then just playing back the trace shall be enough.
+* Use `TestController::playTraceFromTestData` to play back your trace, and add the necessary checks around it.
+
+If you need to record a trace with non-standard FPS (e.g. if an issue doesn't reproduce on lower FPS values), set `debug.trace_frame_time_ms` config value before starting OpenEnroth for recording.
 
 To run all unit tests locally, build a `UnitTest` cmake target, or build & run `OpenEnroth_UnitTest`.
 

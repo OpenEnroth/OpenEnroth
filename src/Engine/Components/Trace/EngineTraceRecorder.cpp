@@ -36,16 +36,19 @@ void EngineTraceRecorder::startRecording(EngineController *game, const std::stri
 
     _trace->header.config = EngineTraceConfigurator::makeConfigPatch(engine->config.get());
 
+    int frameTimeMs = engine->config->debug.TraceFrameTimeMs.value();
+    int traceFpsLimit = 1000 / frameTimeMs;
+
     _oldFpsLimit = engine->config->graphics.FPSLimit.value();
-    engine->config->graphics.FPSLimit.setValue(1000); // Load game real quick!
+    engine->config->graphics.FPSLimit.setValue(0); // Load game real quick!
     game->saveGame(savePath);
-    _deterministicComponent->enterDeterministicMode();
+    _deterministicComponent->startDeterministicSegment(frameTimeMs);
     game->loadGame(savePath);
-    _deterministicComponent->resetDeterministicState();
+    _deterministicComponent->startDeterministicSegment(frameTimeMs);
     _keyboardController->reset(); // Reset all pressed buttons.
 
     _traceComponent->start();
-    engine->config->graphics.FPSLimit.setValue(EngineDeterministicComponent::TARGET_FPS); // But don't turn the party into a wall-running doomguy.
+    engine->config->graphics.FPSLimit.setValue(traceFpsLimit);
 
     logger->info("Tracing started.");
 }
@@ -53,7 +56,7 @@ void EngineTraceRecorder::startRecording(EngineController *game, const std::stri
 void EngineTraceRecorder::finishRecording(EngineController *game) {
     assert(isRecording());
 
-    _deterministicComponent->leaveDeterministicMode();
+    _deterministicComponent->finish();
     engine->config->graphics.FPSLimit.setValue(_oldFpsLimit);
 
     _trace->events = _traceComponent->finish();

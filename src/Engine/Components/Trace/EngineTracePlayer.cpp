@@ -53,11 +53,11 @@ void EngineTracePlayer::prepareTrace(EngineController *game, const std::string &
     game->tick();
 
     EngineTraceConfigurator::patchConfig(engine->config.get(), trace->header.config);
+    int frameTimeMs = engine->config->debug.TraceFrameTimeMs.value();
 
-    _deterministicComponent->enterDeterministicMode();
-
+    _deterministicComponent->startDeterministicSegment(frameTimeMs);
     game->loadGame(savePath);
-    _deterministicComponent->resetDeterministicState();
+    _deterministicComponent->startDeterministicSegment(frameTimeMs);
     _keyboardController->reset(); // Reset all pressed buttons.
 
     _tracePath = tracePath;
@@ -68,7 +68,7 @@ void EngineTracePlayer::playPreparedTrace(EngineController *game, EngineTracePla
     assert(_trace);
 
     MM_AT_SCOPE_EXIT({
-        _deterministicComponent->leaveDeterministicMode();
+        _deterministicComponent->finish();
         _trace.reset();
         _tracePath.clear();
     });

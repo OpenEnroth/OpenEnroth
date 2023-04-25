@@ -5,7 +5,6 @@
 
 #include "Engine/Components/Control/EngineControlComponent.h"
 #include "Engine/Components/Control/EngineController.h"
-#include "Engine/Components/Deterministic/EngineDeterministicComponent.h"
 
 #include "Testing/Game/GameTest.h"
 #include "Testing/Game/TestController.h"
@@ -42,7 +41,6 @@ int platformMain(int argc, char **argv) {
             TestController test(game, opts.testPath);
 
             GameTest::init(game, &test);
-            starter.application()->get<EngineDeterministicComponent>()->enterDeterministicMode(); // And never leave it.
             game->tick(10); // Let the game thread initialize everything.
 
             exitCode = RUN_ALL_TESTS();

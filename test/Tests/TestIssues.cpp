@@ -267,7 +267,7 @@ GAME_TEST(Issues, Issue294) {
     test->playTraceFromTestData("issue_294.mm7", "issue_294.json", [&] { oldExperience = partyExperience(); });
     uint64_t newExperience = partyExperience();
     // EXPECT_GT(newExperience, oldExperience); // Expect the giant rat to be dead after four shrapnel casts from character #4.
-    // TODO(captainurist): ^fails now
+    // TODO(captainurist): ^passes now, but for the wrong reason - the rat decided to move after recent patches
 }
 
 // 300
@@ -349,22 +349,37 @@ GAME_TEST(Issues, Issue403) {
     test->playTraceFromTestData("issue_403.mm7", "issue_403.json");
 }
 
-// This cant be tested properly using the current framework
-//GAME_TEST(Issues, Issue405) {
-//    // FPS affects effective recovery time
-//    // play trace at 60fps
-//    engine->config->graphics.FPSLimit.Set(63);
-//    test->playTraceFromTestData("issue_405.mm7", "issue_405.json");
-//    int remainingtime60{ pPlayers[1]->uTimeToRecovery };
-//
-//    // play trace at max fps
-//    engine->config->graphics.FPSLimit.Set(0);
-//    test->playTraceFromTestData("issue_405.mm7", "issue_405.json");
-//    int remainingtimemax{ pPlayers[1]->uTimeToRecovery };
-//
-//    // recovered amount should match
-//    EXPECT_EQ(remainingtime60, remainingtimemax);
-//}
+GAME_TEST(Issues, Issue405) {
+    // FPS affects effective recovery time.
+    auto runTrace = [&] {
+        test->loadGameFromTestData("issue_405.mm7");
+        game->pressGuiButton("Game_Character1");
+        game->tick(1);
+        game->pressGuiButton("Game_CastSpell");
+        game->tick(1);
+        game->pressGuiButton("SpellBook_Spell7"); // 7 is immolation.
+        game->tick(1);
+        game->pressGuiButton("SpellBook_Spell7"); // Confirm.
+        game->tick(1);
+    };
+    engine->config->debug.AllMagic.setValue(true);
+
+    // 30ms/frame
+    test->startDeterministicSegment(30);
+    runTrace();
+    game->tick(10);
+    EXPECT_TRUE(pParty->pPartyBuffs[PARTY_BUFF_IMMOLATION].Active());
+    int firstRemainingRecovery = pPlayers[1]->timeToRecovery;
+
+    // 2ms/frame
+    test->startDeterministicSegment(2);
+    runTrace();
+    game->tick(150);
+    EXPECT_TRUE(pParty->pPartyBuffs[PARTY_BUFF_IMMOLATION].Active());
+    int secondRemainingRecovery = pPlayers[1]->timeToRecovery;
+
+    EXPECT_EQ(firstRemainingRecovery, secondRemainingRecovery);
+}
 
 GAME_TEST(Issues, Issue408) {
     // testing that the gameover loop works
