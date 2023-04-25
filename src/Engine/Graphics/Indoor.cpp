@@ -1987,7 +1987,7 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
             pParty->uFallStartZ = party_z;
         }
     } else {
-        if (pIndoor->pFaces[uFaceID].facePlane_old.normal.z < 0x8000) {
+        if (pIndoor->pFaces[uFaceID].facePlane.normal.z < 0.5) {
             pParty->uFallSpeed -= pEventTimer->uTimeElapsed * GetGravityStrength();
             pParty->uFallStartZ = party_z;
         } else {
@@ -2092,25 +2092,25 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
                     uFaceEvent = pIndoor->pFaceExtras[pFace->uFaceExtraID].uEventID;
             } else { // Not floor
                 int speed_dot_normal = abs(
-                    party_dx * pFace->facePlane_old.normal.x +
-                    party_dy * pFace->facePlane_old.normal.y +
-                    pParty->uFallSpeed * pFace->facePlane_old.normal.z) >> 16;
+                    party_dx * pFace->facePlane.normal.x +
+                    party_dy * pFace->facePlane.normal.y +
+                    pParty->uFallSpeed * pFace->facePlane.normal.z);
 
                 if ((collision_state.speed / 8) > speed_dot_normal)
                     speed_dot_normal = collision_state.speed / 8;
 
-                party_dx += fixpoint_mul(speed_dot_normal, pFace->facePlane_old.normal.x);
-                party_dy += fixpoint_mul(speed_dot_normal, pFace->facePlane_old.normal.y);
-                pParty->uFallSpeed += fixpoint_mul(speed_dot_normal, pFace->facePlane_old.normal.z);
+                party_dx += speed_dot_normal * pFace->facePlane.normal.x;
+                party_dy += speed_dot_normal * pFace->facePlane.normal.y;
+                pParty->uFallSpeed += speed_dot_normal * pFace->facePlane.normal.z;
 
                 if (pFace->uPolygonType != POLYGON_InBetweenFloorAndWall) { // wall / ceiling
-                    int distance_to_face = pFace->facePlane_old.signedDistanceTo(new_party_x, new_party_y, new_party_z_tmp) -
+                    int distance_to_face = pFace->facePlane.signedDistanceTo(Vec3f(new_party_x, new_party_y, new_party_z_tmp)) -
                                            collision_state.radius_lo;
                     if (distance_to_face < 0) {
                         // We're too close to the face, push back.
-                        new_party_x += fixpoint_mul(-distance_to_face, pFace->facePlane_old.normal.x);
-                        new_party_y += fixpoint_mul(-distance_to_face, pFace->facePlane_old.normal.y);
-                        new_party_z_tmp += fixpoint_mul(-distance_to_face, pFace->facePlane_old.normal.z);
+                        new_party_x += -distance_to_face * pFace->facePlane.normal.x;
+                        new_party_y += -distance_to_face * pFace->facePlane.normal.y;
+                        new_party_z_tmp += -distance_to_face * pFace->facePlane.normal.z;
                     }
                     if (pParty->floor_face_pid != PID_ID(collision_state.pid) && pFace->Pressure_Plate())
                         uFaceEvent = pIndoor->pFaceExtras[pFace->uFaceExtraID].uEventID;
