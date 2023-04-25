@@ -59,6 +59,11 @@ void registerEventTriggers() {
 }
 
 void onMapLoad() {
+
+    // TODO(Nik-RE-dev): linked to old function for now
+    OnMapLoad();
+    return;
+
     for (EventTrigger &triggers : onMapLoadTriggers) {
         eventProcessor(triggers.eventId, 0, false, triggers.eventStep + 1);
     }
