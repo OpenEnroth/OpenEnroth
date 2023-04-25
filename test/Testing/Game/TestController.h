@@ -21,6 +21,8 @@ class TestController {
 
     void prepareForNextTest();
 
+    void startDeterministicSegment(int frameTimeMs);
+
  private:
     EngineController *_controller;
     std::filesystem::path _testDataPath;

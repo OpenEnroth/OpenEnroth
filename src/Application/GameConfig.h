@@ -85,6 +85,14 @@ class GameConfig : public Config {
         Bool NoMargaret = {this, "no_margareth", false, "Disable Margaret's tour messages on Emerald Island."};
 
         Bool VerboseLogging = {this, "verbose_logging", false, "Verbose logging to debug console. Can be extremely spammy."};
+
+        Int TraceFrameTimeMs = {this, "trace_frame_time_ms", 16, &ValidateFrameTime,
+                                "Number of milliseconds per frame when recording game traces."};
+
+     private:
+        static int ValidateFrameTime(int frameTime) {
+            return std::clamp(frameTime, 1, 1000);
+        }
     };
 
     Debug debug{ this };

@@ -9,36 +9,28 @@
 EngineDeterministicComponent::EngineDeterministicComponent() = default;
 EngineDeterministicComponent::~EngineDeterministicComponent() = default;
 
-void EngineDeterministicComponent::enterDeterministicMode() {
-    _deterministicCounter++;
+void EngineDeterministicComponent::startDeterministicSegment(int frameTimeMs) {
+    assert(frameTimeMs >= 1 && frameTimeMs <= 1000);
 
-    if (_deterministicCounter == 1) {
-        _tickCount = 0;
+    if (!isActive())
         _oldRandomEngine = std::move(grng);
-        grng = std::make_unique<NonRandomEngine>();
-    } else {
-        resetDeterministicState();
-    }
-}
-
-void EngineDeterministicComponent::resetDeterministicState() {
-    assert(_deterministicCounter > 0);
 
     _tickCount = 0;
-    grng->seed(0); // Equivalent to just recreating a NonRandomEngine.
+    _frameTimeMs = frameTimeMs;
+    grng = std::make_unique<NonRandomEngine>();
+    assert(isActive());
 }
 
-void EngineDeterministicComponent::leaveDeterministicMode() {
-    assert(_deterministicCounter > 0);
+void EngineDeterministicComponent::finish() {
+    if (!isActive())
+        return;
 
-    _deterministicCounter--;
-
-    if (_deterministicCounter == 0)
-        grng = std::move(_oldRandomEngine);
+    grng = std::move(_oldRandomEngine);
+    assert(!isActive());
 }
 
 int64_t EngineDeterministicComponent::tickCount() const {
-    if (_deterministicCounter > 0) {
+    if (isActive()) {
         return _tickCount;
     } else {
         return ProxyPlatform::tickCount();
@@ -46,8 +38,8 @@ int64_t EngineDeterministicComponent::tickCount() const {
 }
 
 void EngineDeterministicComponent::swapBuffers() {
-    if (_deterministicCounter > 0)
-        _tickCount += FRAME_TIME_MS;
+    if (isActive())
+        _tickCount += _frameTimeMs;
 
     // Tail calling is good practice - this way users can reason about the order of proxy execution.
     ProxyOpenGLContext::swapBuffers();

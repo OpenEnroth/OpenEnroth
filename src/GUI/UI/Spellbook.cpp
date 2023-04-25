@@ -95,7 +95,8 @@ void GUIWindow_Spellbook::OpenSpellbook() {
         v4 = pPlayer->lastOpenedSpellbookPage;
         // v4 = (12 * pPlayer->lastOpenedSpellbookPage +
         // pSpellbookSpellIndices[pPlayer->lastOpenedSpellbookPage][i + 1]);
-        CreateButton({pViewport->uViewportTL_X + pIconPos[v4][pSpellbookSpellIndices[v4][i + 1]].Xpos,
+        CreateButton(fmt::format("SpellBook_Spell{}", i),
+                     {pViewport->uViewportTL_X + pIconPos[v4][pSpellbookSpellIndices[v4][i + 1]].Xpos,
                      pViewport->uViewportTL_Y + pIconPos[v4][pSpellbookSpellIndices[v4][i + 1]].Ypos},  // dword_4E20D0
                      {SBPageSSpellsTextureList[i + 1]->GetWidth(), SBPageSSpellsTextureList[i + 1]->GetHeight()}, 1, 79,
                      UIMSG_SelectSpell, i);

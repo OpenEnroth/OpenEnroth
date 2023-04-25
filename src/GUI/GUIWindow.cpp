@@ -2223,10 +2223,10 @@ void UI_Create() {
     pPrimaryWindow = new GUIWindow(WINDOW_GameUI, {0, 0}, render->GetRenderDimensions(), 0);
     pPrimaryWindow->CreateButton({7, 8}, {460, 343}, 1, 0, UIMSG_MouseLeftClickInGame, 0);
 
-    pPrimaryWindow->CreateButton({61, 424}, {31, 40}, 2, 94, UIMSG_SelectCharacter, 1, InputAction::SelectChar1);  // buttons for portraits
-    pPrimaryWindow->CreateButton({177, 424}, {31, 40}, 2, 94, UIMSG_SelectCharacter, 2, InputAction::SelectChar2);
-    pPrimaryWindow->CreateButton({292, 424}, {31, 40}, 2, 94, UIMSG_SelectCharacter, 3, InputAction::SelectChar3);
-    pPrimaryWindow->CreateButton({407, 424}, {31, 40}, 2, 94, UIMSG_SelectCharacter, 4, InputAction::SelectChar4);
+    pPrimaryWindow->CreateButton("Game_Character1", {61, 424}, {31, 40}, 2, 94, UIMSG_SelectCharacter, 1, InputAction::SelectChar1);  // buttons for portraits
+    pPrimaryWindow->CreateButton("Game_Character2", {177, 424}, {31, 40}, 2, 94, UIMSG_SelectCharacter, 2, InputAction::SelectChar2);
+    pPrimaryWindow->CreateButton("Game_Character3", {292, 424}, {31, 40}, 2, 94, UIMSG_SelectCharacter, 3, InputAction::SelectChar3);
+    pPrimaryWindow->CreateButton("Game_Character4", {407, 424}, {31, 40}, 2, 94, UIMSG_SelectCharacter, 4, InputAction::SelectChar4);
 
     pPrimaryWindow->CreateButton({24, 404}, {5, 49}, 1, 93, UIMSG_0, 1);  // buttons for HP
     pPrimaryWindow->CreateButton({139, 404}, {5, 49}, 1, 93, UIMSG_0, 2);
@@ -2283,7 +2283,7 @@ void UI_Create() {
     pPrimaryWindow->CreateButton({476, 322}, {77, 17}, 1, 100, UIMSG_0, 0);
     pPrimaryWindow->CreateButton({555, 322}, {77, 17}, 1, 101, UIMSG_0, 0);
 
-    pBtn_CastSpell = pPrimaryWindow->CreateButton({476, 450}, {game_ui_btn_cast->GetWidth(), game_ui_btn_cast->GetHeight()}, 1, 0,
+    pBtn_CastSpell = pPrimaryWindow->CreateButton("Game_CastSpell", {476, 450}, {game_ui_btn_cast->GetWidth(), game_ui_btn_cast->GetHeight()}, 1, 0,
         UIMSG_SpellBookWindow, 0, InputAction::Cast,
         localization->GetString(LSTR_CAST_SPELL), { game_ui_btn_cast });
     pBtn_Rest = pPrimaryWindow->CreateButton({518, 450}, {game_ui_btn_rest->GetWidth(), game_ui_btn_rest->GetHeight()}, 1, 0,
