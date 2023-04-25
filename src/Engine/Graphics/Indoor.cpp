@@ -693,6 +693,7 @@ int IndoorLocation::GetSector(int sX, int sY, int sZ) {
 
 //----- (00498A41) --------------------------------------------------------
 void BLVFace::_get_normals(Vec3i *a2, Vec3i *a3) {
+    // TODO(captainurist): code looks very similar to Camera3D::GetFacetOrientation
     if (this->uPolygonType == POLYGON_VerticalWall) {
         a2->x = -this->facePlane_old.normal.y;
         a2->y = this->facePlane_old.normal.x;
