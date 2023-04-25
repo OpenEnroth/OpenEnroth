@@ -705,7 +705,7 @@ void BLVFace::_get_normals(Vec3f *outU, Vec3f *outV) {
 
     } else if (this->uPolygonType == POLYGON_Floor ||
                this->uPolygonType == POLYGON_Ceiling) {
-        outU->x = 0x10000u;
+        outU->x = 1;
         outU->y = 0;
         outU->z = 0;
 
@@ -721,7 +721,7 @@ void BLVFace::_get_normals(Vec3f *outU, Vec3f *outV) {
             outU->normalize();
 
             outV->y = 0;
-            outV->z = 0xFFFF0000u;
+            outV->z = -1;
             outV->x = 0;
         } else {
             outU->x = 1;
