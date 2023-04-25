@@ -2264,9 +2264,9 @@ void UI_Create() {
         localization->GetString(LSTR_HISTORY), { game_ui_tome_storyline }
     );
 
-    bFlashAutonotesBook = 0;
-    bFlashQuestBook = 0;
-    bFlashHistoryBook = 0;
+    bFlashAutonotesBook = false;
+    bFlashQuestBook = false;
+    bFlashHistoryBook = false;
 
     pBtn_ZoomIn = pPrimaryWindow->CreateButton({519, 136}, {game_ui_btn_zoomin->GetWidth(), game_ui_btn_zoomin->GetHeight()}, 2, 0,
         UIMSG_ClickZoomInBtn, 0, InputAction::ZoomIn,

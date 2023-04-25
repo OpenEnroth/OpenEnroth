@@ -4,6 +4,24 @@
 
 #include "GUI/GUIWindow.h"
 
+enum class BOOK_BUTTON_ACTION {
+    BOOK_ZOOM_IN = 0,
+    BOOK_ZOOM_OUT = 1,
+    BOOK_SCROLL_UP = 2,
+    BOOK_SCROLL_DOWN = 3,
+    BOOK_SCROLL_RIGHT = 4,
+    BOOK_SCROLL_LEFT = 5,
+    BOOK_NOTES_POTION = 6,
+    BOOK_NOTES_FOUNTAIN = 7,
+    BOOK_NOTES_OBELISK = 8,
+    BOOK_NOTES_SEER = 9,
+    BOOK_NOTES_MISC = 10,
+    BOOK_NOTES_INSTRUCTORS = 11,
+    BOOK_NEXT_PAGE = 12,
+    BOOK_PREV_PAGE = 13
+};
+using enum BOOK_BUTTON_ACTION;
+
 class GUIWindow_Book : public GUIWindow {
  public:
     GUIWindow_Book();
@@ -12,7 +30,6 @@ class GUIWindow_Book : public GUIWindow {
     virtual void Release();
 
  protected:
-    void BasicBookInitialization();
     GUIWindow *pChildBooksOverlay{ nullptr };
 
  private:
@@ -50,3 +67,6 @@ extern Image *ui_book_button1_on;
 
 extern Image *ui_book_map_frame;
 extern Image *ui_book_quest_div_bar;
+
+extern bool bookButtonClicked;
+extern BOOK_BUTTON_ACTION bookButtonAction;

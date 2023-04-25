@@ -2512,22 +2512,15 @@ char byte_4FAA24;  // turn over break??
 // HWND dword_4FAA28; // idb
 
 // std::array<unsigned int, 480> pSRZBufferLineOffsets;
-std::array<char, 777> books_num_items_per_page;
-int MapBookOpen;
+
+// TODO(Nik-RE-dev): rename and move to UICharacter.cpp or refactor out
 int books_page_number;
 int books_primary_item_per_page;
-int Autonotes_Instructors_page_flag;  // dword_50652C
-int Autonotes_Misc_page_flag;         // dword_506530
-int Book_PageBtn6_flag;               // dword_506534
-int Book_PageBtn5_flag;               // dword_506538
-int Book_PageBtn4_flag;               // dword_50653C
-int Book_PageBtn3_flag;               // dword_506540
-int BtnDown_flag;                     // BtnDown_flag
-int BtnUp_flag;                       // BtnUp_flag
+int BtnDown_flag;
+int BtnUp_flag;
+
 int quick_spell_at_page;
 char byte_506550;
-AUTONOTE_TYPE _506568_autonote_type;
-bool bRecallingBeacon;
 int uLastPointedObjectID;
 int dword_506980_uW;
 int dword_506984_uZ;
@@ -2535,9 +2528,6 @@ int dword_506988_uY;
 int dword_50698C_uX;
 int KeyboardPageNum;
 //int dword_506F1C;
-char bFlashHistoryBook;
-char bFlashAutonotesBook;
-char bFlashQuestBook;
 GUIButton *pBtn_ZoomOut;  // idb
 GUIButton *pBtn_ZoomIn;  // idb
 unsigned int uGameUIFontShadow;
@@ -2546,7 +2536,6 @@ int dword_507B00_spell_info_to_draw_in_popup;
 int dword_507BF0_is_there_popup_onscreen;
 int awards_scroll_bar_created;
 int dword_507CC0_activ_ch;
-GameTime GameUI_RightPanel_BookFlashTimer;
 bool OpenedTelekinesis;
 std::array<int, 50> dword_50B570;
 std::array<int, 50> dword_50B638;
@@ -2623,7 +2612,6 @@ std::string p2DEventsTXT_Raw;
 int dword_5C35D4;
 char byte_5C45AF[777];
 
-std::array<char, 100> Journal_limitation_factor;
 int ui_current_text_color;
 int64_t qword_5C6DF0;
 char *pHealthPointsAttributeDescription;

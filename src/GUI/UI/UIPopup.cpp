@@ -1502,15 +1502,15 @@ void UI_OnMouseRightClick(int mouse_x, int mouse_y) {
             break;
         }
         case CURRENT_SCREEN::SCREEN_BOOKS: {
-            if (!MapBookOpen ||
+            if (pGUIWindow_CurrentMenu->eWindowType != WINDOW_MapsBook ||
                 (signed int)pX < (signed int)pViewport->uViewportTL_X ||
                 (signed int)pX > (signed int)pViewport->uViewportBR_X ||
                 (signed int)pY < (signed int)pViewport->uViewportTL_Y ||
                 (signed int)pY > (signed int)pViewport->uViewportBR_Y ||
-                ((popup_window.sHint = GetMapBookHintText(mouse_x, mouse_y)).empty()))
+                ((popup_window.sHint = GetMapBookHintText(mouse_x, mouse_y)).empty())) {
                 break;
-            popup_window.uFrameWidth =
-                (pFontArrus->GetLineWidth(popup_window.sHint) + 32) + 0.5f;
+            }
+            popup_window.uFrameWidth = (pFontArrus->GetLineWidth(popup_window.sHint) + 32) + 0.5f;
             popup_window.uFrameX = pX + 5;
             popup_window.uFrameY = pY + 5;
             popup_window.uFrameHeight = 64;

@@ -13,8 +13,6 @@
 
 #include "Media/Audio/AudioPlayer.h"
 
-
-
 Image *ui_book_button8_off = nullptr;
 Image *ui_book_button8_on = nullptr;
 Image *ui_book_button7_off = nullptr;
@@ -36,6 +34,9 @@ Image *ui_book_map_frame = nullptr;
 
 Image *ui_book_quest_div_bar = nullptr;
 
+bool bookButtonClicked;
+BOOK_BUTTON_ACTION bookButtonAction;
+
 //----- (00411597) --------------------------------------------------------
 void GUIWindow_Book::Release() {
     // -----------------------------------------
@@ -55,26 +56,20 @@ void GUIWindow_Book::Release() {
     }
 
     pAudioPlayer->playUISound(SOUND_closebook);
-    MapBookOpen = 0;
 
-    if (pChildBooksOverlay)
+    if (pChildBooksOverlay) {
         pChildBooksOverlay->Release();
-
+    }
 
     GUIWindow::Release();
 }
 
-GUIWindow_Book::GUIWindow_Book()
-    : GUIWindow(WINDOW_Book, {0, 0}, render->GetRenderDimensions(), 0) {}
-
-void GUIWindow_Book::BasicBookInitialization() {
+GUIWindow_Book::GUIWindow_Book() : GUIWindow(WINDOW_Book, {0, 0}, render->GetRenderDimensions(), 0) {
     InitializeFonts();
     CreateButton({475, 445}, {158, 34}, 1, 0, UIMSG_Escape, 0, InputAction::Invalid, localization->GetString(LSTR_DIALOGUE_EXIT));
     current_screen_type = CURRENT_SCREEN::SCREEN_BOOKS;
-    full_num_items_in_book = 0;
-    books_primary_item_per_page = 0;
-    books_page_number = 0;
-    num_achieved_awards = 0;
+    bookButtonClicked = false;
+    pEventTimer->Pause();
 }
 
 //----- (00411AAA) --------------------------------------------------------

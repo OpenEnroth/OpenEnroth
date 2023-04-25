@@ -12,10 +12,10 @@
 
 #include "Io/Mouse.h"
 
-static int pTownPortalBook_xs[TOWN_PORTAL_DESTINATION_COUNT] = {260, 324, 147, 385, 390, 19};
-static int pTownPortalBook_ys[TOWN_PORTAL_DESTINATION_COUNT] = {206, 84, 182, 239, 17, 283};
-static int pTownPortalBook_ws[TOWN_PORTAL_DESTINATION_COUNT] = {80, 66, 68, 72, 67, 74};
-static int pTownPortalBook_hs[TOWN_PORTAL_DESTINATION_COUNT] = {55, 56, 65, 67, 67, 59};
+static std::array<int, TOWN_PORTAL_DESTINATION_COUNT> pTownPortalBook_xs = {260, 324, 147, 385, 390, 19};
+static std::array<int, TOWN_PORTAL_DESTINATION_COUNT> pTownPortalBook_ys = {206, 84, 182, 239, 17, 283};
+static std::array<int, TOWN_PORTAL_DESTINATION_COUNT> pTownPortalBook_ws = {80, 66, 68, 72, 67, 74};
+static std::array<int, TOWN_PORTAL_DESTINATION_COUNT> pTownPortalBook_hs = {55, 56, 65, 67, 67, 59};
 
 static std::array<Image *, TOWN_PORTAL_DESTINATION_COUNT> ui_book_townportal_icons;
 
@@ -31,13 +31,10 @@ Image *ui_book_townportal_background = nullptr;
 
 int townPortalCasterPid;
 
-GUIWindow_TownPortalBook::GUIWindow_TownPortalBook(int casterPid)  // const char *a1)
-    : GUIWindow_Book() {
-    // this->sHint = a1;  // inherited from GUIWindow::GUIWindow
-    this->wData.val = WINDOW_TownPortal;  // inherited from GUIWindow::GUIWindow
-    BasicBookInitialization();
+GUIWindow_TownPortalBook::GUIWindow_TownPortalBook(int casterPid) : GUIWindow_Book() {
+    this->eWindowType = WindowType::WINDOW_TownPortal;
+    this->wData.val = WINDOW_TownPortal;
 
-    pEventTimer->Pause();
     townPortalCasterPid = casterPid;
 
     // ----------------------------------------------
@@ -72,19 +69,18 @@ void GUIWindow_TownPortalBook::Update() {
     // ----- (00411150) --------------------------------------------------------
     // void BookUI_DrawTownPortalMap()
     // {
-    int v3;                      // edi@17
-    GUIWindow TownPortalWindow;  // [sp+Ch] [bp-64h]@1
+    GUIWindow townPortalWindow;
 
     render->ClearZBuffer();
     render->DrawTextureNew(8 / 640.0f, 8 / 480.0f, ui_book_townportal_background);
     render->DrawTextureNew(471 / 640.0f, 445 / 480.0f, ui_exit_cancel_button_background);
 
-    TownPortalWindow.uFrameX = game_viewport_x;
-    TownPortalWindow.uFrameY = game_viewport_y;
-    TownPortalWindow.uFrameWidth = game_viewport_width;
-    TownPortalWindow.uFrameHeight = game_viewport_height;
-    TownPortalWindow.uFrameZ = game_viewport_z;
-    TownPortalWindow.uFrameW = game_viewport_w;
+    townPortalWindow.uFrameX = game_viewport_x;
+    townPortalWindow.uFrameY = game_viewport_y;
+    townPortalWindow.uFrameWidth = game_viewport_width;
+    townPortalWindow.uFrameHeight = game_viewport_height;
+    townPortalWindow.uFrameZ = game_viewport_z;
+    townPortalWindow.uFrameW = game_viewport_w;
 
     for (uint i = 0; i < TOWN_PORTAL_DESTINATION_COUNT; ++i) {
         if (_449B57_test_bit(pParty->_quest_bits, townPortalQuestBits[i]) || engine->config->debug.TownPortal.value()) {
@@ -93,13 +89,13 @@ void GUIWindow_TownPortalBook::Update() {
     }
 
     Pointi pt = mouse->GetCursorPos();
-    v3 = render->pActiveZBuffer[pt.x + pt.y * render->GetRenderDimensions().w] & 0xFFFF;
+    int iconPointing = render->pActiveZBuffer[pt.x + pt.y * render->GetRenderDimensions().w] & 0xFFFF;
 
-    if (v3) {
-        if (_449B57_test_bit(pParty->_quest_bits, townPortalQuestBits[v3 - 1]) || engine->config->debug.TownPortal.value()) {
-            render->DrawTextureNew(pTownPortalBook_xs[v3 - 1] / 640.0f, pTownPortalBook_ys[v3 - 1] / 480.0f, ui_book_townportal_icons[v3 - 1]);
+    if (iconPointing) {
+        if (_449B57_test_bit(pParty->_quest_bits, townPortalQuestBits[iconPointing - 1]) || engine->config->debug.TownPortal.value()) {
+            render->DrawTextureNew(pTownPortalBook_xs[iconPointing - 1] / 640.0f, pTownPortalBook_ys[iconPointing - 1] / 480.0f, ui_book_townportal_icons[iconPointing - 1]);
         }
     }
-    TownPortalWindow.DrawTitleText(
-        pBook2Font, 0, 22, 0, localization->GetString(LSTR_TOWN_PORTAL), 3);
+
+    townPortalWindow.DrawTitleText(pBook2Font, 0, 22, 0, localization->GetString(LSTR_TOWN_PORTAL), 3);
 }

@@ -11,22 +11,21 @@
 
 #include "GUI/GUIButton.h"
 #include "GUI/GUIFont.h"
+#include "GUI/UI/UIGame.h"
 #include "GUI/UI/Books/QuestBook.h"
 
 #include "Media/Audio/AudioPlayer.h"
 
 Image *ui_book_quests_background = nullptr;
 
-GUIWindow_QuestBook::GUIWindow_QuestBook() : GUIWindow_Book() {
+GUIWindow_QuestBook::GUIWindow_QuestBook() : _startingQuestIdx(0), _currentPage(0), _currentPageQuests(0), GUIWindow_Book() {
     this->wData.val = WINDOW_QuestBook;  // inherited from GUIWindow::GUIWindow
     this->eWindowType = WindowType::WINDOW_QuestBook;
-    BasicBookInitialization();
 
     // --------------------------------
     // 004304E7 Game_EventLoop --- part
-    pEventTimer->Pause();
     pChildBooksOverlay = new GUIWindow_BooksButtonOverlay({493, 355}, {0, 0}, pBtn_Quests);
-    bFlashQuestBook = 0;
+    bFlashQuestBook = false;
 
     // ----------------------------------------------
     // 00411BFC GUIWindow::InitializeBookView -- part
@@ -38,20 +37,16 @@ GUIWindow_QuestBook::GUIWindow_QuestBook() : GUIWindow_Book() {
     ui_book_button1_off = assets->GetImage_Alpha("tab-an-6a");
     ui_book_button2_off = assets->GetImage_Alpha("tab-an-7a");
 
-    pBtn_Book_1 = CreateButton({pViewport->uViewportTL_X + 398, pViewport->uViewportTL_Y + 1}, {ui_book_button1_on->GetWidth(), ui_book_button1_on->GetWidth()}, 1, 0,
-        UIMSG_ClickBooksBtn, 11, InputAction::Invalid, localization->GetString(LSTR_SCROLL_UP), {ui_book_button1_on});
+    pBtn_Book_1 = CreateButton({pViewport->uViewportTL_X + 398, pViewport->uViewportTL_Y + 1}, {ui_book_button1_on->GetWidth(), ui_book_button1_on->GetHeight()}, 1, 0,
+                               UIMSG_ClickBooksBtn, std::to_underlying(BOOK_PREV_PAGE), InputAction::Invalid, localization->GetString(LSTR_SCROLL_UP), {ui_book_button1_on});
     pBtn_Book_2 = CreateButton({pViewport->uViewportTL_X + 398, pViewport->uViewportTL_Y + 38}, {ui_book_button2_on->GetWidth(), ui_book_button2_on->GetHeight()}, 1, 0,
-        UIMSG_ClickBooksBtn, 10, InputAction::Invalid, localization->GetString(LSTR_SCROLL_DOWN), {ui_book_button2_on});
-    num_achieved_awards = 0;
-    memset(achieved_awards.data(), 0, 4000);
-    for (uint i = books_primary_item_per_page; i < 512; ++i) {
+                               UIMSG_ClickBooksBtn, std::to_underlying(BOOK_NEXT_PAGE), InputAction::Invalid, localization->GetString(LSTR_SCROLL_DOWN), {ui_book_button2_on});
+
+    for (int i = 1; i <= (pParty->_quest_bits.size() * 8); ++i) {
         if (_449B57_test_bit(pParty->_quest_bits, i) && pQuestTable[i]) {
-            achieved_awards[num_achieved_awards] = (AwardType)i;
-            ++num_achieved_awards;
+            _activeQuestsIdx.push_back(i);
         }
     }
-    full_num_items_in_book = num_achieved_awards;
-    num_achieved_awards = 0;
 }
 
 void GUIWindow_QuestBook::Update() {
@@ -74,29 +69,19 @@ void GUIWindow_QuestBook::Update() {
     int pTextHeight;             // eax@19
     GUIWindow questbook_window;  // [sp+Ch] [bp-54h]@9
 
-    render->DrawTextureNew(pViewport->uViewportTL_X / 640.0f,
-                           pViewport->uViewportTL_Y / 480.0f,
-                           ui_book_quests_background);
-    if (BtnUp_flag ||
-        !books_primary_item_per_page)  // Bookmark Up(Закладка вверх)
-        render->DrawTextureNew((pViewport->uViewportTL_X + 407) / 640.0f,
-                                    (pViewport->uViewportTL_Y + 2) / 480.0f,
-                                    ui_book_button1_off);
-    else
-        render->DrawTextureNew((pViewport->uViewportTL_X + 398) / 640.0f,
-                                    (pViewport->uViewportTL_Y + 1) / 480.0f,
-                                    ui_book_button1_on);
+    render->DrawTextureNew(pViewport->uViewportTL_X / 640.0f, pViewport->uViewportTL_Y / 480.0f, ui_book_quests_background);
 
-    if (BtnDown_flag ||
-        books_primary_item_per_page + num_achieved_awards >=
-            full_num_items_in_book)  // Bookmark Down(Закладка вниз)
-        render->DrawTextureNew((pViewport->uViewportTL_X + 407) / 640.0f,
-                                    (pViewport->uViewportTL_Y + 38) / 480.0f,
-                                    ui_book_button2_off);
-    else
-        render->DrawTextureNew((pViewport->uViewportTL_X + 398) / 640.0f,
-                                    (pViewport->uViewportTL_Y + 38) / 480.0f,
-                                    ui_book_button2_on);
+    if ((bookButtonClicked && bookButtonAction == BOOK_PREV_PAGE) || !_startingQuestIdx) {
+        render->DrawTextureNew((pViewport->uViewportTL_X + 407) / 640.0f, (pViewport->uViewportTL_Y + 2) / 480.0f, ui_book_button1_off);
+    } else {
+        render->DrawTextureNew((pViewport->uViewportTL_X + 398) / 640.0f, (pViewport->uViewportTL_Y + 1) / 480.0f, ui_book_button1_on);
+    }
+
+    if ((bookButtonClicked && bookButtonAction == BOOK_NEXT_PAGE) || (_startingQuestIdx + _currentPageQuests) >= _activeQuestsIdx.size()) {
+        render->DrawTextureNew((pViewport->uViewportTL_X + 407) / 640.0f, (pViewport->uViewportTL_Y + 38) / 480.0f, ui_book_button2_off);
+    } else {
+        render->DrawTextureNew((pViewport->uViewportTL_X + 398) / 640.0f, (pViewport->uViewportTL_Y + 38) / 480.0f, ui_book_button2_on);
+    }
 
     // for title
     questbook_window.uFrameWidth = game_viewport_width;
@@ -105,9 +90,7 @@ void GUIWindow_QuestBook::Update() {
     questbook_window.uFrameY = game_viewport_y;
     questbook_window.uFrameZ = game_viewport_z;
     questbook_window.uFrameW = game_viewport_w;
-    questbook_window.DrawTitleText(
-        pBook2Font, 0, 22, ui_book_quests_title_color,
-        localization->GetString(LSTR_CURRENT_QUESTS), 3);
+    questbook_window.DrawTitleText(pBook2Font, 0, 22, ui_book_quests_title_color, localization->GetString(LSTR_CURRENT_QUESTS), 3);
 
     // for other text
     questbook_window.uFrameX = 48;
@@ -116,35 +99,31 @@ void GUIWindow_QuestBook::Update() {
     questbook_window.uFrameHeight = 264;
     questbook_window.uFrameZ = 407;
     questbook_window.uFrameW = 333;
-    if (BtnDown_flag &&
-        books_primary_item_per_page + num_achieved_awards <
-            full_num_items_in_book) {  // Click Bookmark Down(нажатие закладки
-                                       // вниз)
+
+    if (bookButtonClicked && bookButtonAction == BOOK_NEXT_PAGE && (_startingQuestIdx + _currentPageQuests) < _activeQuestsIdx.size()) {
         pAudioPlayer->playUISound(SOUND_openbook);
-        books_primary_item_per_page += num_achieved_awards;
-        books_num_items_per_page[books_page_number++] = num_achieved_awards;
+        _startingQuestIdx += _currentPageQuests;
+        _questsPerPage[_currentPage] = _currentPageQuests;
+        _currentPage++;
     }
-    if (BtnUp_flag &&
-        books_page_number) {  // Click Bookmark Up(Нажатие закладки вверх)
+
+    if (bookButtonClicked && bookButtonAction == BOOK_PREV_PAGE && _startingQuestIdx) {
         pAudioPlayer->playUISound(SOUND_openbook);
-        --books_page_number;
-        books_primary_item_per_page -=
-            (uint8_t)books_num_items_per_page[books_page_number];
+        _currentPage--;
+        _startingQuestIdx -= _questsPerPage[_currentPage];
     }
-    if (!num_achieved_awards || !books_primary_item_per_page) {
-        books_page_number = 0;
-        books_primary_item_per_page = 0;
-    }
-    BtnDown_flag = 0;
-    BtnUp_flag = 0;
-    num_achieved_awards = 0;
-    for (uint i = books_primary_item_per_page; i < full_num_items_in_book;
-         ++i) {
-        ++num_achieved_awards;
-        questbook_window.DrawText(pAutonoteFont, {1, 0}, ui_book_quests_text_color, pQuestTable[achieved_awards[i]], 0, 0, 0);
-        pTextHeight = pAutonoteFont->CalcTextHeight(pQuestTable[achieved_awards[i]], questbook_window.uFrameWidth, 1);
-        if ((signed int)(questbook_window.uFrameY + pTextHeight) > (signed int)questbook_window.uFrameHeight)
+
+    bookButtonClicked = false;
+    _currentPageQuests = 0;
+
+    for (int i = _startingQuestIdx; i < _activeQuestsIdx.size(); ++i) {
+        _currentPageQuests++;
+
+        questbook_window.DrawText(pAutonoteFont, {1, 0}, ui_book_quests_text_color, pQuestTable[_activeQuestsIdx[i]], 0, 0, 0);
+        pTextHeight = pAutonoteFont->CalcTextHeight(pQuestTable[_activeQuestsIdx[i]], questbook_window.uFrameWidth, 1);
+        if ((questbook_window.uFrameY + pTextHeight) > questbook_window.uFrameHeight) {
             break;
+        }
 
         render->DrawTextureNew(100 / 640.0f, ((questbook_window.uFrameY + pTextHeight) + 12) / 480.0f, ui_book_quest_div_bar);
         questbook_window.uFrameY = (questbook_window.uFrameY + pTextHeight) + 24;

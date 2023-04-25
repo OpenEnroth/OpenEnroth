@@ -694,6 +694,15 @@ GAME_TEST(Issues, Issue691) {
     EXPECT_EQ(current_screen_type, CURRENT_SCREEN::SCREEN_GAME);
 }
 
+// 700
+
+GAME_TEST(Issues, Issue720) {
+    // Test that quest book is opening fine
+    test->playTraceFromTestData("issue_720.mm7", "issue_720.json");
+    EXPECT_EQ(current_screen_type, CURRENT_SCREEN::SCREEN_BOOKS);
+    EXPECT_EQ(pGUIWindow_CurrentMenu->eWindowType, WINDOW_QuestBook);
+}
+
 GAME_TEST(Issues, Issue728) {
     // mousing over facets with nonexisting events shouldn't crash the game
     test->playTraceFromTestData("issue_728.mm7", "issue_728.json");

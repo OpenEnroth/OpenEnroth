@@ -114,3 +114,7 @@ extern Image *game_ui_playerbuff_pain_reflection;
 extern Image *game_ui_playerbuff_hammerhands;
 extern Image *game_ui_playerbuff_preservation;
 extern Image *game_ui_playerbuff_bless;
+
+extern bool bFlashHistoryBook;
+extern bool bFlashAutonotesBook;
+extern bool bFlashQuestBook;
