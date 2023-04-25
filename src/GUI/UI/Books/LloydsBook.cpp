@@ -22,7 +22,6 @@ bool bRecallingBeacon;
 bool isLloydsBeaconBeingInstalled;
 int lloydsBeaconCasterId;
 int lloydsBeaconSpellDuration;
-int maxBeacons;
 
 Image *ui_book_lloyds_border = nullptr;
 std::array<Image *, 2> ui_book_lloyds_backgrounds;
@@ -46,18 +45,18 @@ GUIWindow_LloydsBook::GUIWindow_LloydsBook() : GUIWindow_Book() {
 
     PLAYER_SKILL_MASTERY water_mastery = pParty->pPlayers[lloydsBeaconCasterId].GetActualSkillMastery(PLAYER_SKILL_WATER);
 
-    maxBeacons = 1;
+    _maxBeacons = 1;
     if (water_mastery == PLAYER_SKILL_MASTERY_GRANDMASTER || water_mastery == PLAYER_SKILL_MASTERY_MASTER) {
-        maxBeacons = 5;
+        _maxBeacons = 5;
     } else if (water_mastery == PLAYER_SKILL_MASTERY_EXPERT) {
-        maxBeacons = 3;
+        _maxBeacons = 3;
     }
 
     if (engine->config->debug.AllMagic.value()) {
-        maxBeacons = 5;
+        _maxBeacons = 5;
     }
 
-    for (int i = 0; i < maxBeacons; ++i) {
+    for (int i = 0; i < _maxBeacons; ++i) {
         CreateButton({pLloydsBeaconsPreviewXs[i], pLloydsBeaconsPreviewYs[i]}, {92, 68}, 1, UIMSG_HintBeaconSlot, UIMSG_InstallBeacon, i);
     }
 
@@ -92,7 +91,7 @@ void GUIWindow_LloydsBook::Update() {
         render->DrawTextureNew(pBtn_Book_2->uX / 640.0f, pBtn_Book_2->uY / 480.0f, ui_book_button1_on);
     }
 
-    for (size_t BeaconID = 0; BeaconID < maxBeacons; BeaconID++) {
+    for (size_t BeaconID = 0; BeaconID < _maxBeacons; BeaconID++) {
         if ((BeaconID >= pPlayer->vBeacons.size()) && bRecallingBeacon) {
             break;
         }

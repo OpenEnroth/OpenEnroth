@@ -6,6 +6,8 @@ struct GUIWindow_LloydsBook : public GUIWindow_Book {
     virtual ~GUIWindow_LloydsBook() {}
 
     virtual void Update();
+ private:
+    int _maxBeacons;
 };
 
 extern bool bRecallingBeacon;

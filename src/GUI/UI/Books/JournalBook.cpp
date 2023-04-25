@@ -1,5 +1,4 @@
 #include <string>
-#include <vector>
 
 #include "Engine/AssetsManager.h"
 #include "Engine/Awards.h"
@@ -25,11 +24,7 @@
 
 Image *ui_book_journal_background = nullptr;
 
-static int currentIdx;
-static std::vector<int> journalIdx;
-static std::vector<int> journalEntryPage;
-
-GUIWindow_JournalBook::GUIWindow_JournalBook() : GUIWindow_Book() {
+GUIWindow_JournalBook::GUIWindow_JournalBook() : _currentIdx(0), GUIWindow_Book() {
     eWindowType = WINDOW_JournalBook;
     this->wData.val = WINDOW_JournalBook;  // inherited from GUIWindow::GUIWindow
 
@@ -58,9 +53,6 @@ GUIWindow_JournalBook::GUIWindow_JournalBook() : GUIWindow_Book() {
     journal_window.uFrameHeight = (pAutonoteFont->GetHeight() - 3) * 264 / pAutonoteFont->GetHeight() - 3;
     journal_window.uFrameW = journal_window.uFrameHeight + 69;
 
-    currentIdx = 0;
-    journalIdx.clear();
-    journalEntryPage.clear();
     for (int i = 0; i < pParty->PartyTimes.HistoryEventTimes.size(); i++) {
         if (pParty->PartyTimes.HistoryEventTimes[i].Valid()) {
             if (pStorylineText->StoreLine[i + 1].pText) {
@@ -68,8 +60,8 @@ GUIWindow_JournalBook::GUIWindow_JournalBook() : GUIWindow_Book() {
                 int pTextHeight = pAutonoteFont->CalcTextHeight(str, journal_window.uFrameWidth, 1);
                 int pages = ((pTextHeight - (pAutonoteFont->GetHeight() - 3)) / (signed int)journal_window.uFrameHeight) + 1;
                 for (int j = 0; j < pages; ++j) {
-                    journalIdx.push_back(i + 1);
-                    journalEntryPage.push_back(j);
+                    _journalIdx.push_back(i + 1);
+                    _journalEntryPage.push_back(j);
                 }
             }
         }
@@ -96,27 +88,27 @@ void GUIWindow_JournalBook::Update() {
     GUIWindow journal_window;
 
     render->DrawTextureNew(pViewport->uViewportTL_X / 640.0f, pViewport->uViewportTL_Y / 480.0f, ui_book_journal_background);
-    if ((bookButtonClicked && bookButtonAction == BOOK_NEXT_PAGE) || !currentIdx) {
+    if ((bookButtonClicked && bookButtonAction == BOOK_NEXT_PAGE) || !_currentIdx) {
         render->DrawTextureNew((pViewport->uViewportTL_X + 407) / 640.0f, (pViewport->uViewportTL_Y + 2) / 480.0f, ui_book_button1_off);
     } else {
         render->DrawTextureNew((pViewport->uViewportTL_X + 398) / 640.0f, (pViewport->uViewportTL_Y + 1) / 480.0f, ui_book_button1_on);
     }
 
-    if ((bookButtonClicked && bookButtonAction == BOOK_PREV_PAGE) || (currentIdx + 1) >= journalIdx.size()) {
+    if ((bookButtonClicked && bookButtonAction == BOOK_PREV_PAGE) || (_currentIdx + 1) >= _journalIdx.size()) {
         render->DrawTextureNew((pViewport->uViewportTL_X + 407) / 640.0f, (pViewport->uViewportTL_Y + 38) / 480.0f, ui_book_button2_off);
     } else {
         render->DrawTextureNew((pViewport->uViewportTL_X + 398) / 640.0f, (pViewport->uViewportTL_Y + 38) / 480.0f, ui_book_button2_on);
     }
 
-    if (journalIdx.size() && !journalEntryPage[currentIdx]) {  // for title
+    if (_journalIdx.size() && !_journalEntryPage[_currentIdx]) {  // for title
         journal_window.uFrameWidth = game_viewport_width;
         journal_window.uFrameX = game_viewport_x;
         journal_window.uFrameY = game_viewport_y;
         journal_window.uFrameHeight = game_viewport_height;
         journal_window.uFrameZ = game_viewport_z;
         journal_window.uFrameW = game_viewport_w;
-        if (pStorylineText->StoreLine[journalIdx[currentIdx]].pPageTitle) {
-            journal_window.DrawTitleText(pBook2Font, 0, 22, ui_book_journal_title_color, pStorylineText->StoreLine[journalIdx[currentIdx]].pPageTitle, 3);
+        if (pStorylineText->StoreLine[_journalIdx[_currentIdx]].pPageTitle) {
+            journal_window.DrawTitleText(pBook2Font, 0, 22, ui_book_journal_title_color, pStorylineText->StoreLine[_journalIdx[_currentIdx]].pPageTitle, 3);
         }
     }
 
@@ -128,21 +120,21 @@ void GUIWindow_JournalBook::Update() {
     journal_window.uFrameZ = 407;
     journal_window.uFrameW = journal_window.uFrameHeight + 69;
 
-    if (bookButtonClicked && bookButtonAction == BOOK_NEXT_PAGE && (currentIdx + 1) < journalIdx.size()) {
+    if (bookButtonClicked && bookButtonAction == BOOK_NEXT_PAGE && (_currentIdx + 1) < _journalIdx.size()) {
         pAudioPlayer->playUISound(SOUND_openbook);
-        currentIdx++;
+        _currentIdx++;
     }
-    if (bookButtonClicked && bookButtonAction == BOOK_PREV_PAGE && currentIdx) {
+    if (bookButtonClicked && bookButtonAction == BOOK_PREV_PAGE && _currentIdx) {
         pAudioPlayer->playUISound(SOUND_openbook);
-        currentIdx--;
+        _currentIdx--;
     }
 
     bookButtonClicked = false;
 
-    if (journalIdx.size()) {
-        std::string str = BuildDialogueString(pStorylineText->StoreLine[journalIdx[currentIdx]].pText,
-                                              0, 0, 0, 0, &pParty->PartyTimes.HistoryEventTimes[journalIdx[currentIdx] - 1]);
-        std::string pStringOnPage = pAutonoteFont->GetPageTop(str.c_str(), &journal_window, 1, journalEntryPage[currentIdx]);
+    if (_journalIdx.size()) {
+        std::string str = BuildDialogueString(pStorylineText->StoreLine[_journalIdx[_currentIdx]].pText,
+                                              0, 0, 0, 0, &pParty->PartyTimes.HistoryEventTimes[_journalIdx[_currentIdx] - 1]);
+        std::string pStringOnPage = pAutonoteFont->GetPageTop(str.c_str(), &journal_window, 1, _journalEntryPage[_currentIdx]);
         journal_window.DrawText(pAutonoteFont, {1, 0}, ui_book_journal_text_color, pStringOnPage, 0,
                                 journal_window.uFrameY + journal_window.uFrameHeight, ui_book_journal_text_shadow);
     }

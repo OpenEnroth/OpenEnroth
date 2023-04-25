@@ -1,6 +1,3 @@
-#include <vector>
-#include <map>
-
 #include "Engine/AssetsManager.h"
 #include "Engine/Awards.h"
 #include "Engine/Engine.h"
@@ -23,21 +20,15 @@ Image *ui_book_autonotes_background = nullptr;
 
 AUTONOTE_TYPE autonoteBookDisplayType;
 
-static int startingNotesIdx;
-static int currentPage;
-static int currentPageNotes;
-static std::vector<int> activeNotesIdx;
-static std::map<int, int> notesPerPage;
-
-static void recalculateCurrentNotesTypePages() {
-    startingNotesIdx = 0;
-    currentPage = 0;
-    currentPageNotes = 0;
-    activeNotesIdx.clear();
+void GUIWindow_AutonotesBook::recalculateCurrentNotesTypePages() {
+    _startingNotesIdx = 0;
+    _currentPage = 0;
+    _currentPageNotes = 0;
+    _activeNotesIdx.clear();
     for (int i = 1; i < pAutonoteTxt.size(); ++i) {
         if (autonoteBookDisplayType == pAutonoteTxt[i].eType) {
             if (_449B57_test_bit(pParty->_autonote_bits, i) && pAutonoteTxt[i].pText) {
-                activeNotesIdx.push_back(i);
+                _activeNotesIdx.push_back(i);
             }
         }
     }
@@ -116,13 +107,13 @@ void GUIWindow_AutonotesBook::Update() {
     GUIWindow autonotes_window;
 
     render->DrawTextureNew(pViewport->uViewportTL_X / 640.0f, pViewport->uViewportTL_Y / 480.0f, ui_book_autonotes_background);
-    if ((bookButtonClicked && bookButtonAction == BOOK_PREV_PAGE) || !startingNotesIdx) {
+    if ((bookButtonClicked && bookButtonAction == BOOK_PREV_PAGE) || !_startingNotesIdx) {
         render->DrawTextureNew((pViewport->uViewportTL_X + 407) / 640.0f, (pViewport->uViewportTL_Y + 2) / 480.0f, ui_book_button1_off);
     } else {
         render->DrawTextureNew((pViewport->uViewportTL_X + 398) / 640.0f, (pViewport->uViewportTL_Y + 1) / 480.0f, ui_book_button1_on);
     }
 
-    if ((bookButtonClicked && bookButtonAction == BOOK_NEXT_PAGE) || (startingNotesIdx + currentPageNotes) >= activeNotesIdx.size()) {
+    if ((bookButtonClicked && bookButtonAction == BOOK_NEXT_PAGE) || (_startingNotesIdx + _currentPageNotes) >= _activeNotesIdx.size()) {
         render->DrawTextureNew((pViewport->uViewportTL_X + 407) / 640.0f, (pViewport->uViewportTL_Y + 38) / 480.0f, ui_book_button2_off);
     } else {
         render->DrawTextureNew((pViewport->uViewportTL_X + 398) / 640.0f, (pViewport->uViewportTL_Y + 38) / 480.0f, ui_book_button2_on);
@@ -253,28 +244,28 @@ void GUIWindow_AutonotesBook::Update() {
                 recalculateCurrentNotesTypePages();
             }
         } else {
-            if (bookButtonAction == BOOK_NEXT_PAGE && (startingNotesIdx + currentPageNotes) < activeNotesIdx.size()) {
+            if (bookButtonAction == BOOK_NEXT_PAGE && (_startingNotesIdx + _currentPageNotes) < _activeNotesIdx.size()) {
                 pAudioPlayer->playUISound(SOUND_openbook);
-                startingNotesIdx += currentPageNotes;
-                notesPerPage[currentPage] = currentPageNotes;
-                currentPage++;
+                _startingNotesIdx += _currentPageNotes;
+                _notesPerPage[_currentPage] = _currentPageNotes;
+                _currentPage++;
             }
-            if (bookButtonAction == BOOK_PREV_PAGE && startingNotesIdx) {
+            if (bookButtonAction == BOOK_PREV_PAGE && _startingNotesIdx) {
                 pAudioPlayer->playUISound(SOUND_openbook);
-                currentPage--;
-                startingNotesIdx -= notesPerPage[currentPage];
+                _currentPage--;
+                _startingNotesIdx -= _notesPerPage[_currentPage];
             }
         }
     }
 
     bookButtonClicked = false;
-    currentPageNotes = 0;
+    _currentPageNotes = 0;
 
-    for (int i = startingNotesIdx; i < activeNotesIdx.size(); ++i) {
-        currentPageNotes++;
+    for (int i = _startingNotesIdx; i < _activeNotesIdx.size(); ++i) {
+        _currentPageNotes++;
 
-        autonotes_window.DrawText(pAutonoteFont, {1, 0}, ui_book_autonotes_text_color, pAutonoteTxt[activeNotesIdx[i]].pText, 0, 0, 0);
-        pTextHeight = pAutonoteFont->CalcTextHeight(pAutonoteTxt[activeNotesIdx[i]].pText, autonotes_window.uFrameWidth, 1);
+        autonotes_window.DrawText(pAutonoteFont, {1, 0}, ui_book_autonotes_text_color, pAutonoteTxt[_activeNotesIdx[i]].pText, 0, 0, 0);
+        pTextHeight = pAutonoteFont->CalcTextHeight(pAutonoteTxt[_activeNotesIdx[i]].pText, autonotes_window.uFrameWidth, 1);
         if ((autonotes_window.uFrameY + pTextHeight) > autonotes_window.uFrameHeight) {
             break;
         }

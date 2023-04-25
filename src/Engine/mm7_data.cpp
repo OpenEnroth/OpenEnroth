@@ -2512,10 +2512,13 @@ char byte_4FAA24;  // turn over break??
 // HWND dword_4FAA28; // idb
 
 // std::array<unsigned int, 480> pSRZBufferLineOffsets;
+
+// TODO(Nik-RE-dev): rename and move to UICharacter.cpp or refactor out
 int books_page_number;
 int books_primary_item_per_page;
-int BtnDown_flag;                     // BtnDown_flag
-int BtnUp_flag;                       // BtnUp_flag
+int BtnDown_flag;
+int BtnUp_flag;
+
 int quick_spell_at_page;
 char byte_506550;
 int uLastPointedObjectID;

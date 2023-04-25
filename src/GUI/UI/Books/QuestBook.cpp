@@ -1,6 +1,3 @@
-#include <vector>
-#include <map>
-
 #include "Engine/AssetsManager.h"
 #include "Engine/Awards.h"
 #include "Engine/Engine.h"
@@ -21,13 +18,7 @@
 
 Image *ui_book_quests_background = nullptr;
 
-static int startingQuestIdx;
-static int currentPage;
-static int currentPageQuests;
-static std::vector<int> activeQuestsIdx;
-static std::map<int, int> questsPerPage;
-
-GUIWindow_QuestBook::GUIWindow_QuestBook() : GUIWindow_Book() {
+GUIWindow_QuestBook::GUIWindow_QuestBook() : _startingQuestIdx(0), _currentPage(0), _currentPageQuests(0), GUIWindow_Book() {
     this->wData.val = WINDOW_QuestBook;  // inherited from GUIWindow::GUIWindow
     this->eWindowType = WindowType::WINDOW_QuestBook;
 
@@ -51,13 +42,9 @@ GUIWindow_QuestBook::GUIWindow_QuestBook() : GUIWindow_Book() {
     pBtn_Book_2 = CreateButton({pViewport->uViewportTL_X + 398, pViewport->uViewportTL_Y + 38}, {ui_book_button2_on->GetWidth(), ui_book_button2_on->GetHeight()}, 1, 0,
                                UIMSG_ClickBooksBtn, std::to_underlying(BOOK_NEXT_PAGE), InputAction::Invalid, localization->GetString(LSTR_SCROLL_DOWN), {ui_book_button2_on});
 
-    startingQuestIdx = 0;
-    currentPage = 0;
-    currentPageQuests = 0;
-    activeQuestsIdx.clear();
-    for (int i = 1; i < (pParty->_quest_bits.size() * 8); ++i) {
+    for (int i = 1; i <= (pParty->_quest_bits.size() * 8); ++i) {
         if (_449B57_test_bit(pParty->_quest_bits, i) && pQuestTable[i]) {
-            activeQuestsIdx.push_back(i);
+            _activeQuestsIdx.push_back(i);
         }
     }
 }
@@ -84,13 +71,13 @@ void GUIWindow_QuestBook::Update() {
 
     render->DrawTextureNew(pViewport->uViewportTL_X / 640.0f, pViewport->uViewportTL_Y / 480.0f, ui_book_quests_background);
 
-    if ((bookButtonClicked && bookButtonAction == BOOK_PREV_PAGE) || !startingQuestIdx) {
+    if ((bookButtonClicked && bookButtonAction == BOOK_PREV_PAGE) || !_startingQuestIdx) {
         render->DrawTextureNew((pViewport->uViewportTL_X + 407) / 640.0f, (pViewport->uViewportTL_Y + 2) / 480.0f, ui_book_button1_off);
     } else {
         render->DrawTextureNew((pViewport->uViewportTL_X + 398) / 640.0f, (pViewport->uViewportTL_Y + 1) / 480.0f, ui_book_button1_on);
     }
 
-    if ((bookButtonClicked && bookButtonAction == BOOK_NEXT_PAGE) || (startingQuestIdx + currentPageQuests) >= activeQuestsIdx.size()) {
+    if ((bookButtonClicked && bookButtonAction == BOOK_NEXT_PAGE) || (_startingQuestIdx + _currentPageQuests) >= _activeQuestsIdx.size()) {
         render->DrawTextureNew((pViewport->uViewportTL_X + 407) / 640.0f, (pViewport->uViewportTL_Y + 38) / 480.0f, ui_book_button2_off);
     } else {
         render->DrawTextureNew((pViewport->uViewportTL_X + 398) / 640.0f, (pViewport->uViewportTL_Y + 38) / 480.0f, ui_book_button2_on);
@@ -113,27 +100,27 @@ void GUIWindow_QuestBook::Update() {
     questbook_window.uFrameZ = 407;
     questbook_window.uFrameW = 333;
 
-    if (bookButtonClicked && bookButtonAction == BOOK_NEXT_PAGE && (startingQuestIdx + currentPageQuests) < activeQuestsIdx.size()) {
+    if (bookButtonClicked && bookButtonAction == BOOK_NEXT_PAGE && (_startingQuestIdx + _currentPageQuests) < _activeQuestsIdx.size()) {
         pAudioPlayer->playUISound(SOUND_openbook);
-        startingQuestIdx += currentPageQuests;
-        questsPerPage[currentPage] = currentPageQuests;
-        currentPage++;
+        _startingQuestIdx += _currentPageQuests;
+        _questsPerPage[_currentPage] = _currentPageQuests;
+        _currentPage++;
     }
 
-    if (bookButtonClicked && bookButtonAction == BOOK_PREV_PAGE && startingQuestIdx) {
+    if (bookButtonClicked && bookButtonAction == BOOK_PREV_PAGE && _startingQuestIdx) {
         pAudioPlayer->playUISound(SOUND_openbook);
-        currentPage--;
-        startingQuestIdx -= questsPerPage[currentPage];
+        _currentPage--;
+        _startingQuestIdx -= _questsPerPage[_currentPage];
     }
 
     bookButtonClicked = false;
-    currentPageQuests = 0;
+    _currentPageQuests = 0;
 
-    for (int i = startingQuestIdx; i < activeQuestsIdx.size(); ++i) {
-        currentPageQuests++;
+    for (int i = _startingQuestIdx; i < _activeQuestsIdx.size(); ++i) {
+        _currentPageQuests++;
 
-        questbook_window.DrawText(pAutonoteFont, {1, 0}, ui_book_quests_text_color, pQuestTable[activeQuestsIdx[i]], 0, 0, 0);
-        pTextHeight = pAutonoteFont->CalcTextHeight(pQuestTable[activeQuestsIdx[i]], questbook_window.uFrameWidth, 1);
+        questbook_window.DrawText(pAutonoteFont, {1, 0}, ui_book_quests_text_color, pQuestTable[_activeQuestsIdx[i]], 0, 0, 0);
+        pTextHeight = pAutonoteFont->CalcTextHeight(pQuestTable[_activeQuestsIdx[i]], questbook_window.uFrameWidth, 1);
         if ((questbook_window.uFrameY + pTextHeight) > questbook_window.uFrameHeight) {
             break;
         }
