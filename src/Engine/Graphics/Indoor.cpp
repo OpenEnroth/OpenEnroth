@@ -1550,17 +1550,8 @@ bool Check_LineOfSight(const Vec3i &target, const Vec3i &from) {  // target from
 }
 
 bool Check_LOS_Obscurred_Indoors(const Vec3i &target, const Vec3i &from) {  // true if obscurred
-    int dist_x = from.x - target.x;
-    int dist_y = from.y - target.y;
-    int dist_z = from.z - target.z;
-
-    int distance = integer_sqrt(dist_x * dist_x + dist_y * dist_y + dist_z * dist_z);
-    int fp_normalisation = 65536;
-    if (distance) fp_normalisation = 65536 / distance;
-
-    int fp_dist_x_normed = dist_x * fp_normalisation;
-    int fp_dist_y_normed = dist_y * fp_normalisation;
-    int fp_dist_z_normed = dist_z * fp_normalisation;
+    Vec3f dir = (from - target).toFloat();
+    dir.normalize();
 
     int max_x = std::max(from.x, target.x);
     int min_x = std::min(from.x, target.x);
@@ -1583,11 +1574,8 @@ bool Check_LOS_Obscurred_Indoors(const Vec3i &target, const Vec3i &from) {  // t
             BLVFace *face = &pIndoor->pFaces[pIndoor->pSectors[SectargetrID].pFaceIDs[FaceLoop]];
 
             // dot product
-            int x_dot = fixpoint_mul(fp_dist_x_normed, face->facePlane_old.normal.x);
-            int y_dot = fixpoint_mul(fp_dist_y_normed, face->facePlane_old.normal.y);
-            int z_dot = fixpoint_mul(fp_dist_z_normed, face->facePlane_old.normal.z);
-            int sumdot = x_dot + y_dot + z_dot;
-            bool FaceIsParallel = (sumdot == 0);
+            float dirDotNormal = dot(dir, face->facePlane.normal);
+            bool FaceIsParallel = fuzzyIsNull(dirDotNormal);
 
             // skip further checks
             if (face->Portal() || min_x > face->pBounding.x2 ||
@@ -1596,9 +1584,9 @@ bool Check_LOS_Obscurred_Indoors(const Vec3i &target, const Vec3i &from) {  // t
                 max_z < face->pBounding.z1 || FaceIsParallel)
                 continue;
 
-            int NegFacePlaceDist = -face->facePlane_old.signedDistanceToAsFixpoint(target.x, target.y, target.z);
+            float NegFacePlaceDist = -face->facePlane.signedDistanceTo(target.toFloat());
             // are we on same side of plane
-            if (sumdot <= 0) {
+            if (dirDotNormal <= 0) {
                 if (NegFacePlaceDist > 0)
                     continue;
             } else {
@@ -1606,15 +1594,12 @@ bool Check_LOS_Obscurred_Indoors(const Vec3i &target, const Vec3i &from) {  // t
                     continue;
             }
 
-            int EpsilonCheck = abs(NegFacePlaceDist) >> 14;
-            if (EpsilonCheck <= abs(sumdot)) {
-                int IntersectionDist = fixpoint_div(NegFacePlaceDist, sumdot);
+            // TODO(captainurist): what is this check for?
+            if (abs(NegFacePlaceDist) * 8 <= abs(dirDotNormal)) {
+                float IntersectionDist = NegFacePlaceDist /  dirDotNormal;
                 // less than zero means intersection is behind target point
                 if (IntersectionDist >= 0) {
-                    Vec3i pos = Vec3i(
-                        target.x + ((signed int)(fixpoint_mul(IntersectionDist, fp_dist_x_normed) + 0x8000) >> 16),
-                        target.y + ((signed int)(fixpoint_mul(IntersectionDist, fp_dist_y_normed) + 0x8000) >> 16),
-                        target.z + ((signed int)(fixpoint_mul(IntersectionDist, fp_dist_z_normed) + 0x8000) >> 16));
+                    Vec3i pos = target + (IntersectionDist * dir).toInt();
                     if (face->Contains(pos, MODEL_INDOOR)) {
                         return true;
                     }
