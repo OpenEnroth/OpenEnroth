@@ -627,16 +627,41 @@ GAME_TEST(Issue, Issue645) {
     EXPECT_EQ(pParty->pPlayers[3].conditions.Has(Condition_Unconscious), true);
 }
 
+GAME_TEST(Issues, Issue661) {
+    // HP/SP regen from items is too high
+    int oldHealth = 0;
+    int oldMana = 0;
+    test->playTraceFromTestData("issue_661.mm7", "issue_661.json", [&] { oldHealth = pParty->pPlayers[0].health; oldMana = pParty->pPlayers[0].mana; });
+    // two hour wait period is 24 blocks of 5 mins
+    // one item that heals hp, three items heal mana
+    EXPECT_EQ(pParty->pPlayers[0].health, oldHealth + 24);
+    EXPECT_EQ(pParty->pPlayers[0].mana, oldMana + 24*3);
+}
+
 GAME_TEST(Issues, Issue662) {
-    // "of Air magic" should give floor(skill / 2) skill level bonus (like all
-    // other such bonuses)
+    // "of Air magic" should give floor(skill / 2) skill level bonus (like all other such bonuses)
     test->loadGameFromTestData("issue_662.mm7");
     // currently air magic is (expert) 6
-    EXPECT_EQ(pParty->pPlayers[3].GetItemsBonus(CHARACTER_ATTRIBUTE_SKILL_AIR),
-              3);
+    EXPECT_EQ(pParty->pPlayers[3].GetItemsBonus(CHARACTER_ATTRIBUTE_SKILL_AIR), 3);
     pParty->pPlayers[3].skillAir = 5;
-    EXPECT_EQ(pParty->pPlayers[3].GetItemsBonus(CHARACTER_ATTRIBUTE_SKILL_AIR),
-              2);
+    EXPECT_EQ(pParty->pPlayers[3].GetItemsBonus(CHARACTER_ATTRIBUTE_SKILL_AIR), 2);
+}
+
+GAME_TEST(Issues, Issue663) {
+    // Cant switch between inactive char inventory in chests
+    test->playTraceFromTestData("issue_663.mm7", "issue_663.json");
+    // should switch to char 2 inv
+    EXPECT_EQ(pParty->activeCharacterIndex(), 2);
+    EXPECT_GT(pParty->activeCharacter().timeToRecovery, 0);
+}
+
+GAME_TEST(Issues, Issue664) {
+    // Party sliding down shallow slopes outdoors
+    test->playTraceFromTestData("issue_664.mm7", "issue_664.json");
+    // shouldnt move
+    EXPECT_EQ(pParty->vPosition.x, 7323);
+    EXPECT_EQ(pParty->vPosition.y, 10375);
+    EXPECT_EQ(pParty->vPosition.z, 309);
 }
 
 GAME_TEST(Issues, Issue675) {
