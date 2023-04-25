@@ -1612,18 +1612,8 @@ bool Check_LOS_Obscurred_Indoors(const Vec3i &target, const Vec3i &from) {  // t
 }
 
 bool Check_LOS_Obscurred_Outdoors_Bmodels(const Vec3i &target, const Vec3i &from) {  // true is obscurred
-    int dist_x = from.x - target.x;
-    int dist_y = from.y - target.y;
-    int dist_z = from.z - target.z;
-
-    int distance = integer_sqrt(dist_x * dist_x + dist_y * dist_y + dist_z * dist_z);
-    int fp_normalisation = 65536;
-    if (distance) fp_normalisation = 65536 / distance;
-
-    // normalising
-    int fp_dist_x_normed = dist_x * fp_normalisation;
-    int fp_dist_y_normed = dist_y * fp_normalisation;
-    int fp_dist_z_normed = dist_z * fp_normalisation;
+    Vec3f dir = (from - target).toFloat();
+    dir.normalize();
 
     int max_x = std::max(from.x, target.x);
     int min_x = std::min(from.x, target.x);
@@ -1637,12 +1627,8 @@ bool Check_LOS_Obscurred_Outdoors_Bmodels(const Vec3i &target, const Vec3i &from
     for (BSPModel &model : pOutdoor->pBModels) {
         if (CalcDistPointToLine(target.x, target.y, from.x, from.y, model.vPosition.x, model.vPosition.y) <= model.sBoundingRadius + 128) {
             for (ODMFace &face : model.pFaces) {
-                // dot product
-                int x_dot = fixpoint_mul(fp_dist_x_normed, face.facePlane_old.normal.x);
-                int y_dot = fixpoint_mul(fp_dist_z_normed, face.facePlane_old.normal.y);
-                int z_dot = fixpoint_mul(fp_dist_y_normed, face.facePlane_old.normal.z);
-                int sumdot = x_dot + y_dot + z_dot;
-                bool FaceIsParallel = (sumdot == 0);
+                float dirDotNormal = dot(dir, face.facePlane.normal);
+                bool FaceIsParallel = fuzzyIsNull(dirDotNormal);
 
                 // bounds check
                 if (min_x > face.pBoundingBox.x2 ||
@@ -1654,10 +1640,10 @@ bool Check_LOS_Obscurred_Outdoors_Bmodels(const Vec3i &target, const Vec3i &from
                     continue;
 
                 // point target plane distacne
-                int NegFacePlaceDist = -face.facePlane_old.signedDistanceToAsFixpoint(target.x, target.y, target.z);
+                float NegFacePlaceDist = -face.facePlane.signedDistanceTo(target.toFloat());
 
                 // are we on same side of plane
-                if (sumdot <= 0) {
+                if (dirDotNormal <= 0) {
                     // angle obtuse - is target underneath plane
                     if (NegFacePlaceDist > 0)
                         continue;  // can never hit
@@ -1667,16 +1653,12 @@ bool Check_LOS_Obscurred_Outdoors_Bmodels(const Vec3i &target, const Vec3i &from
                         continue;  // can never hit
                 }
 
-                int EpsilonCheck = abs(NegFacePlaceDist) >> 14;
-                if (EpsilonCheck <= abs(sumdot)) {
+                if (abs(NegFacePlaceDist) / 16384.0f <= abs(dirDotNormal)) {
                     // calc how far along line interesction is
-                    int IntersectionDist = fixpoint_div(NegFacePlaceDist, sumdot);
+                    float IntersectionDist = NegFacePlaceDist /  dirDotNormal;
                     // less than zero means intersection is behind target point
                     if (IntersectionDist >= 0) {
-                        Vec3i pos = Vec3i(
-                            target.x + ((signed int)(fixpoint_mul(IntersectionDist, fp_dist_x_normed) + 0x8000) >> 16),
-                            target.y + ((signed int)(fixpoint_mul(IntersectionDist, fp_dist_y_normed) + 0x8000) >> 16),
-                            target.z + ((signed int)(fixpoint_mul(IntersectionDist, fp_dist_z_normed) + 0x8000) >> 16));
+                        Vec3i pos = target + (IntersectionDist * dir).toInt();
                         if (face.Contains(pos, model.index)) {
                             return true;
                         }
