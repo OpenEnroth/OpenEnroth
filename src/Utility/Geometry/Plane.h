@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Utility/Math/FixPoint.h"
+#include "Utility/Math/Float.h"
 
 #include "Vec.h"
 
@@ -75,25 +76,33 @@ static_assert(sizeof(Planef) == 16);
 /**
  * Helper structure for calculating Z-coordinate of a point on a plane given x and y, basically a storage for
  * coefficients in `z = ax + by + c` equation.
- *
- * Coefficients are stored in fixpoint format (16 fraction bits).
  */
-struct PlaneZCalcll {
-    int64_t a = 0;
-    int64_t b = 0;
-    int64_t c = 0;
+struct PlaneZCalcf {
+    float a = 0;
+    float b = 0;
+    float c = 0;
 
-    int32_t calculate(int32_t x, int32_t y) const {
-        return static_cast<int32_t>((a * x + b * y + c + 0x8000) >> 16);
+    [[nodiscard]] float calculate(float x, float y) const {
+        return a * x + b * y + c;
     }
 
     void init(const Planei &plane) {
         if (plane.normal.z == 0) {
-            this->a = this->b = this->c = 0;
+            a = b = c = 0;
         } else {
-            this->a = -fixpoint_div(plane.normal.x, plane.normal.z);
-            this->b = -fixpoint_div(plane.normal.y, plane.normal.z);
-            this->c = -fixpoint_div(plane.dist, plane.normal.z);
+            a = -fixpoint_to_float(plane.normal.x) / fixpoint_to_float(plane.normal.z);
+            b = -fixpoint_to_float(plane.normal.y) / fixpoint_to_float(plane.normal.z);
+            c = -fixpoint_to_float(plane.dist) / fixpoint_to_float(plane.normal.z);
+        }
+    }
+
+    void init(const Planef &plane) {
+        if (fuzzyIsNull(plane.normal.z)) {
+            a = b = c = 0;
+        } else {
+            a = -plane.normal.x / plane.normal.z;
+            b = -plane.normal.y / plane.normal.z;
+            c = -plane.dist / plane.normal.z;
         }
     }
 };

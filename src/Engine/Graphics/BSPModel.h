@@ -162,7 +162,7 @@ struct ODMFace {
     unsigned int index = 0;
     Planef facePlane;
     Planei facePlane_old;
-    PlaneZCalcll zCalc;
+    PlaneZCalcf zCalc;
     FaceAttributes uAttributes = 0;
     std::array<uint16_t, 20> pVertexIDs = {{}};
     std::array<int16_t, 20> pTextureUIDs = {{}};

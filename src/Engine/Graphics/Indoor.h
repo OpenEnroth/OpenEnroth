@@ -230,7 +230,7 @@ struct BLVFace {  // 60h
 
     Planef facePlane;
     Planei facePlane_old;
-    PlaneZCalcll zCalc;
+    PlaneZCalcf zCalc;
     FaceAttributes uAttributes;
     uint16_t *pVertexIDs = nullptr;
     int16_t *pXInterceptDisplacements;
