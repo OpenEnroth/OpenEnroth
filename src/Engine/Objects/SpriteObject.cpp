@@ -8,6 +8,7 @@
 #include "Engine/SpellFxRenderer.h"
 #include "Engine/Time.h"
 #include "Engine/Events.h"
+#include "Engine/Events/Processor.h"
 #include "Engine/LOD.h"
 #include "Engine/OurMath.h"
 #include "Engine/Party.h"
@@ -294,7 +295,7 @@ void SpriteObject::updateObjectODM(unsigned int uLayingItemID) {
                 pSpriteObjects[uLayingItemID].vPosition.z = bmodel->pVertices[face->pVertexIDs[0]].z + 1;
                 if (pSpriteObjects[uLayingItemID].vVelocity.getXY().lengthSqr() >= 400) {
                     if (face->uAttributes & FACE_TriggerByObject) {
-                        EventProcessor(face->sCogTriggeredID, 0, 1);
+                        eventProcessor(face->sCogTriggeredID, 0, 1);
                     }
                 } else {
                     pSpriteObjects[uLayingItemID].vVelocity = Vec3s(0, 0, 0);
@@ -313,7 +314,7 @@ void SpriteObject::updateObjectODM(unsigned int uLayingItemID) {
                 }
                 pSpriteObjects[uLayingItemID].vVelocity.z += newZVel;
                 if (face->uAttributes & FACE_TriggerByObject) {
-                    EventProcessor(face->sCogTriggeredID, 0, 1);
+                    eventProcessor(face->sCogTriggeredID, 0, 1);
                 }
             }
         }
@@ -458,7 +459,7 @@ LABEL_25:
                     }
                     pSpriteObject->vVelocity.z += newZVel;
                     if (pIndoor->pFaces[pidId].uAttributes & FACE_TriggerByObject) {
-                        EventProcessor(pIndoor->pFaceExtras[pIndoor->pFaces[pidId].uFaceExtraID].uEventID, 0, 1);
+                        eventProcessor(pIndoor->pFaceExtras[pIndoor->pFaces[pidId].uFaceExtraID].uEventID, 0, 1);
                     }
                     pSpriteObject->vVelocity.x = fixpoint_mul(58500, pSpriteObject->vVelocity.x);
                     pSpriteObject->vVelocity.y = fixpoint_mul(58500, pSpriteObject->vVelocity.y);
@@ -471,7 +472,7 @@ LABEL_25:
                         pSpriteObject->vVelocity.z = 0;
                     }
                     if (pIndoor->pFaces[pidId].uAttributes & FACE_TriggerByObject) {
-                        EventProcessor(pIndoor->pFaceExtras[pIndoor->pFaces[pidId].uFaceExtraID].uEventID, 0, 1);
+                        eventProcessor(pIndoor->pFaceExtras[pIndoor->pFaces[pidId].uFaceExtraID].uEventID, 0, 1);
                     }
                     pSpriteObject->vVelocity.x = fixpoint_mul(58500, pSpriteObject->vVelocity.x);
                     pSpriteObject->vVelocity.y = fixpoint_mul(58500, pSpriteObject->vVelocity.y);
@@ -481,7 +482,7 @@ LABEL_25:
                 pSpriteObject->vVelocity.z = 0;
                 if (pSpriteObject->vVelocity.getXY().lengthSqr() >= 400) {
                     if (pIndoor->pFaces[pidId].uAttributes & FACE_TriggerByObject) {
-                        EventProcessor(pIndoor->pFaceExtras[pIndoor->pFaces[pidId].uFaceExtraID].uEventID, 0, 1);
+                        eventProcessor(pIndoor->pFaceExtras[pIndoor->pFaces[pidId].uFaceExtraID].uEventID, 0, 1);
                     }
                     pSpriteObject->vVelocity.x = fixpoint_mul(58500, pSpriteObject->vVelocity.x);
                     pSpriteObject->vVelocity.y = fixpoint_mul(58500, pSpriteObject->vVelocity.y);

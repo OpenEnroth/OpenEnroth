@@ -6,6 +6,7 @@
 #include "Engine/Engine.h"
 #include "Engine/EngineGlobals.h"
 #include "Engine/Events.h"
+#include "Engine/Events/Processor.h"
 #include "Engine/Graphics/Camera.h"
 #include "Engine/Graphics/Level/Decoration.h"
 #include "Engine/Graphics/Outdoor.h"
@@ -2197,12 +2198,12 @@ void CastSpellInfoHelpers::castSpell() {
                     if (PID_TYPE(spell_targeted_at) == OBJECT_Decoration) {
                         OpenedTelekinesis = true;
                         if (pLevelDecorations[obj_id].uEventID) {
-                            EventProcessor(pLevelDecorations[obj_id].uEventID, spell_targeted_at, 1);
+                            eventProcessor(pLevelDecorations[obj_id].uEventID, spell_targeted_at, 1);
                         }
                         // TODO(captainurist): investigate, that's a very weird std::to_underlying call.
                         if (pLevelDecorations[std::to_underlying(pSpriteObjects[obj_id].containing_item.uItemID)].IsInteractive()) {
                             activeLevelDecoration = &pLevelDecorations[obj_id];
-                            EventProcessor(mapEventVariables.decorVars[pLevelDecorations[obj_id]._idx_in_stru123 - 75] + 380, 0, 1);
+                            eventProcessor(mapEventVariables.decorVars[pLevelDecorations[obj_id]._idx_in_stru123 - 75] + 380, 0, 1);
                             activeLevelDecoration = nullptr;
                         }
                     }
@@ -2214,7 +2215,7 @@ void CastSpellInfoHelpers::castSpell() {
                         } else {
                             event = pOutdoor->pBModels[spell_targeted_at >> 9].pFaces[obj_id & 0x3F].sCogTriggeredID;
                         }
-                        EventProcessor(event, spell_targeted_at, 1);
+                        eventProcessor(event, spell_targeted_at, 1);
                     }
                     break;
                 }

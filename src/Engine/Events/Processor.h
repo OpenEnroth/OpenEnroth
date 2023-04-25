@@ -2,7 +2,7 @@
 
 #include <string>
 
-void eventProcessor(int eventId, int targetObj, bool canShowMessages, int startStep);
+void eventProcessor(int eventId, int targetObj, bool canShowMessages, int startStep = 0);
 std::string getEventHintString(int eventId);
 
 void registerEventTriggers();

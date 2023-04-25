@@ -37,7 +37,7 @@ std::vector<EventTrigger> EventMap::enumerateTriggers(EventType triggerType) {
     return triggers;
 }
 
-void EventMap::execute(int eventId, int startStep, bool canShowMessages) const {
+bool EventMap::execute(int eventId, int startStep, bool canShowMessages) const {
     assert(_eventsById.contains(eventId));
     assert(startStep >= 0);
 
@@ -57,9 +57,7 @@ void EventMap::execute(int eventId, int startStep, bool canShowMessages) const {
         }
     } while (stepFound && step != -1 && dword_5B65C4_cancelEventProcessing == 0);
 
-    if (mapExitTriggered) {
-        OnMapLeave();
-    }
+    return mapExitTriggered;
 }
 
 std::string EventMap::getHintString(int eventId) const {

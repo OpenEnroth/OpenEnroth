@@ -19,7 +19,7 @@ class EventMap {
 
     std::vector<EventTrigger> enumerateTriggers(EventType triggerType);
 
-    void execute(int eventId, int startStep, bool canShowMessages) const;
+    bool execute(int eventId, int startStep, bool canShowMessages) const;
     std::string getHintString(int eventId) const;
 
     void dumpAll() const;

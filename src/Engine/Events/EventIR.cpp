@@ -916,7 +916,7 @@ EventIR EventIR::parse(void *data, size_t maxSize) {
             break;
         case EVENT_SetSprite:
             ir.data.sprite_texture_descr.cog = EVT_DWORD(_evt->v5);
-            ir.data.sprite_texture_descr.hide = _evt->v6;
+            ir.data.sprite_texture_descr.hide = _evt->v9;
             ir.str = (char *)&_evt->v10;
             break;
         case EVENT_Compare:
