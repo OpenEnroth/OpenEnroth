@@ -172,7 +172,7 @@ struct BLVFace {  // 60h
         this->pXInterceptDisplacements = nullptr;
     }
 
-    void _get_normals(Vec3i *a2, Vec3i *a3);
+    void _get_normals(Vec3f *outU, Vec3f *outV);
     void FromODM(struct ODMFace *face);
 
     void SetTexture(const std::string &filename);

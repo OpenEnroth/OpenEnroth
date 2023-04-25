@@ -1,6 +1,7 @@
 #include "Engine/Graphics/Indoor.h"
 
 #include <algorithm>
+#include <limits>
 
 #include "Engine/Engine.h"
 #include "Engine/EngineGlobals.h"
@@ -692,64 +693,57 @@ int IndoorLocation::GetSector(int sX, int sY, int sZ) {
 }
 
 //----- (00498A41) --------------------------------------------------------
-void BLVFace::_get_normals(Vec3i *a2, Vec3i *a3) {
+void BLVFace::_get_normals(Vec3f *outU, Vec3f *outV) {
     // TODO(captainurist): code looks very similar to Camera3D::GetFacetOrientation
     if (this->uPolygonType == POLYGON_VerticalWall) {
-        a2->x = -this->facePlane_old.normal.y;
-        a2->y = this->facePlane_old.normal.x;
-        a2->z = 0;
+        outU->x = -this->facePlane.normal.y;
+        outU->y = this->facePlane.normal.x;
+        outU->z = 0;
 
-        a3->x = 0;
-        a3->y = 0;
-        a3->z = 0xFFFF0000u;
+        outV->x = 0;
+        outV->y = 0;
+        outV->z = -1;
 
     } else if (this->uPolygonType == POLYGON_Floor ||
                this->uPolygonType == POLYGON_Ceiling) {
-        a2->x = 0x10000u;
-        a2->y = 0;
-        a2->z = 0;
+        outU->x = 0x10000u;
+        outU->y = 0;
+        outU->z = 0;
 
-        a3->x = 0;
-        a3->y = 0xFFFF0000u;
-        a3->z = 0;
+        outV->x = 0;
+        outV->y = -1;
+        outV->z = 0;
 
-    } else if (this->uPolygonType == POLYGON_InBetweenFloorAndWall ||
-               this->uPolygonType == POLYGON_InBetweenCeilingAndWall) {
-        if (abs(this->facePlane_old.normal.z) < 46441) {
-            Vec3f a1;
-            a1.x = (double)-this->facePlane_old.normal.y;
-            a1.y = (double)this->facePlane_old.normal.x;
-            a1.z = 0.0;
-            a1.normalize();
+    } else if (this->uPolygonType == POLYGON_InBetweenFloorAndWall || this->uPolygonType == POLYGON_InBetweenCeilingAndWall) {
+        if (abs(this->facePlane.normal.z) < 0.70863342285f) { // Was 46441 fixpoint
+            outU->x = -this->facePlane.normal.y;
+            outU->y = this->facePlane.normal.x;
+            outU->z = 0;
+            outU->normalize();
 
-            a2->x = (int64_t)(a1.x * 65536.0);
-            a2->y = (int64_t)(a1.y * 65536.0);
-            a2->z = 0;
-
-            a3->y = 0;
-            a3->z = 0xFFFF0000u;
-            a3->x = 0;
-
+            outV->y = 0;
+            outV->z = 0xFFFF0000u;
+            outV->x = 0;
         } else {
-            a2->x = 0x10000u;
-            a2->y = 0;
-            a2->z = 0;
+            outU->x = 1;
+            outU->y = 0;
+            outU->z = 0;
 
-            a3->x = 0;
-            a3->y = 0xFFFF0000u;
-            a3->z = 0;
+            outV->x = 0;
+            outV->y = -1;
+            outV->z = 0;
         }
     }
     // LABEL_12:
     if (this->uAttributes & FACE_FlipNormalU) {
-        a2->x = -a2->x;
-        a2->y = -a2->y;
-        a2->z = -a2->z;
+        outU->x = -outU->x;
+        outU->y = -outU->y;
+        outU->z = -outU->z;
     }
     if (this->uAttributes & FACE_FlipNormalV) {
-        a3->x = -a3->x;
-        a3->y = -a3->y;
-        a3->z = -a3->z;
+        outV->x = -outV->x;
+        outV->y = -outV->y;
+        outV->z = -outV->z;
     }
     return;
 }
@@ -951,42 +945,22 @@ void BLV_UpdateDoors() {
             face->facePlane_old.dist = -dot(facePoint, face->facePlane_old.normal);
             face->facePlane.dist = -dot(facePoint.toFloat(), face->facePlane.normal);
             face->zCalc.init(face->facePlane);
-            // if ( face->uAttributes & FACE_TexMoveByDoor || render->pRenderD3D )
-            Vec3i v;
-            Vec3i u;
+
+            Vec3f v;
+            Vec3f u;
             face->_get_normals(&u, &v);
             BLVFaceExtra *extras = &pIndoor->pFaceExtras[face->uFaceExtraID];
-            /*if ( !render->pRenderD3D )
-            {
-            if ( !(face->uAttributes & FACE_TexMoveByDoor) )
-            continue;
-            v83 = (uint64_t)(door->vDirection.x * (int64_t)v70.x)
-            >> 16; v85 = (uint64_t)(door->vDirection.y * (signed
-            int64_t)v70.y) >> 16; v84 = (uint64_t)(door->vDirection.z *
-            (int64_t)v70.z) >> 16; v29 = open_distance; v28->sTextureDeltaU =
-            -((v83 + v85 + v84) * (int64_t)open_distance) >> 16; v85 = (unsigned
-            int64_t)(door->vDirection.x * (int64_t)v67.x) >> 16; v83 =
-            (uint64_t)(door->vDirection.y * (int64_t)v67.y) >>
-            16; v84 = (uint64_t)(door->vDirection.z * (signed
-            int64_t)v67.z) >> 16; v31 = (v85 + v83 + v84) * (int64_t)v29;
-            v32 = v31 >> 16;
-            v57 = -v32;
-            v28->sTextureDeltaV = v57;
-            v28->sTextureDeltaU += door->pDeltaUs[j];
-            v28->sTextureDeltaV = v57 + door->pDeltaVs[j];
-            continue;
-            }*/
             extras->sTextureDeltaU = 0;
             extras->sTextureDeltaV = 0;
 
-            int minU = INT_MAX;
-            int minV = INT_MAX;
-            int maxU = INT_MIN;
-            int maxV = INT_MIN;
+            float minU = std::numeric_limits<float>::max();
+            float minV = std::numeric_limits<float>::max();
+            float maxU = std::numeric_limits<float>::min();
+            float maxV = std::numeric_limits<float>::min();
             for (uint k = 0; k < face->uNumVertices; ++k) {
-                const Vec3s &point = pIndoor->pVertices[face->pVertexIDs[k]];
-                int pointU = ((int64_t)u.z * point.z + (int64_t)u.x * point.x + (int64_t)u.y * point.y) >> 16;
-                int pointV = ((int64_t)v.x * point.x + (int64_t)v.y * point.y + (int64_t)point.z * v.z) >> 16;
+                Vec3f point = pIndoor->pVertices[face->pVertexIDs[k]].toFloat();
+                float pointU = dot(point, u);
+                float pointV = dot(point, v);
                 minU = std::min(minU, pointU);
                 minV = std::min(minV, pointV);
                 maxU = std::max(maxU, pointU);
@@ -1008,10 +982,10 @@ void BLV_UpdateDoors() {
             }
 
             if (face->uAttributes & FACE_TexMoveByDoor) {
-                int udot = fixpoint_mul(door->vDirection.x, u.x) + fixpoint_mul(door->vDirection.y, u.y) + fixpoint_mul(door->vDirection.z, u.z);
-                int vdot = fixpoint_mul(door->vDirection.x, v.x) + fixpoint_mul(door->vDirection.y, v.y) + fixpoint_mul(door->vDirection.z, v.z);
-                extras->sTextureDeltaU = -fixpoint_mul(udot, openDistance) + door->pDeltaUs[j];
-                extras->sTextureDeltaV = -fixpoint_mul(vdot, openDistance) + door->pDeltaVs[j];
+                float udot = dot(door->vDirection.toFloatFromFixpoint(), u);
+                float vdot = dot(door->vDirection.toFloatFromFixpoint(), v);
+                extras->sTextureDeltaU = -udot * openDistance + door->pDeltaUs[j];
+                extras->sTextureDeltaV = -vdot * openDistance + door->pDeltaVs[j];
             }
         }
     }
