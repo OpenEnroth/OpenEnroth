@@ -41,6 +41,10 @@ std::string EventMap::getHintString(int eventId) const {
     std::string result = "";
     bool mouseOverFound = false;
 
+    if (!_eventsById.contains(eventId)) { // no entry in .evt file
+        return result;
+    }
+
     for (const EventIR &ir : _eventsById.at(eventId)) {
         if (ir.type == EVENT_MouseOver) {
             mouseOverFound = true;
