@@ -29,7 +29,11 @@ std::vector<EventTrigger> EventMap::enumerateTriggers(EventType triggerType) {
     for (const auto &mapElem : _eventsById) {
         for (const EventIR &ir : mapElem.second) {
             if (ir.type == triggerType) {
-                triggers.push_back(EventTrigger(mapElem.first, ir.step));
+                EventTrigger trigger;
+                trigger.eventId = mapElem.first;
+                trigger.eventStep = ir.step;
+
+                triggers.push_back(trigger);
             }
         }
     }

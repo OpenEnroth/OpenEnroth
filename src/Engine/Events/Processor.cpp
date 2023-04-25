@@ -59,7 +59,6 @@ void registerEventTriggers() {
 }
 
 void onMapLoad() {
-
     // TODO(Nik-RE-dev): linked to old function for now
     OnMapLoad();
     return;
