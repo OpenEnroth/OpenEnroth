@@ -228,8 +228,8 @@ struct BLVFace {  // 60h
      */
     bool Contains(const Vec3i &pos, int model_idx, int slack = 0, FaceAttributes override_plane = 0) const;
 
-    struct Planef pFacePlane;
-    struct Planei pFacePlane_old;
+    Planef facePlane;
+    Planei facePlane_old;
     PlaneZCalcll zCalc;
     FaceAttributes uAttributes;
     uint16_t *pVertexIDs = nullptr;
@@ -249,8 +249,6 @@ struct BLVFace {  // 60h
     BBoxs pBounding;
     PolygonType uPolygonType{ POLYGON_Invalid };
     uint8_t uNumVertices;
-    char field_5E = 0;
-    char field_5F = 0;
 };
 
 /*   94 */

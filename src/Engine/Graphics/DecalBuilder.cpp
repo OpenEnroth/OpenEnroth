@@ -61,7 +61,7 @@ char DecalBuilder::BuildAndApplyDecals(int light_level, LocationFlags locationFl
     if (!NumFaceVerts) return 0;
 
     static stru314 static_FacePlane;
-    static_FacePlane.Normal = FacePlane.vNormal;
+    static_FacePlane.Normal = FacePlane.normal;
     static_FacePlane.dist = FacePlane.dist;
     Camera3D::GetFacetOrientation(static_FacePlane.Normal, &static_FacePlane.field_10, &static_FacePlane.field_1C);
 
@@ -190,7 +190,7 @@ bool DecalBuilder::ApplyBloodsplatDecals_IndoorFace(unsigned int uFaceID) {
     for (uint i = 0; i < bloodsplat_container->uNumBloodsplats; ++i) {
         Bloodsplat *pBloodsplat = &bloodsplat_container->pBloodsplats_to_apply[i];
         if (pFace->pBounding.intersectsCube(pBloodsplat->pos.toShort(), pBloodsplat->radius)) {
-            double dotdist = dot(pFace->pFacePlane.vNormal, pBloodsplat->pos) + pFace->pFacePlane.dist;
+            double dotdist = dot(pFace->facePlane.normal, pBloodsplat->pos) + pFace->facePlane.dist;
             if (dotdist <= pBloodsplat->radius) {
                 // store splat
                 pBloodsplat->faceDist = dotdist;
@@ -212,7 +212,7 @@ bool DecalBuilder::ApplyBloodSplat_OutdoorFace(ODMFace *pFace) {
         for (int i = 0; i < bloodsplat_container->uNumBloodsplats; i++) {
             Bloodsplat *pBloodsplat = &bloodsplat_container->pBloodsplats_to_apply[i];
             if (pFace->pBoundingBox.intersectsCube(pBloodsplat->pos.toShort(), pBloodsplat->radius)) {
-                float dotdist = pFace->pFacePlane.signedDistanceTo(pBloodsplat->pos);
+                float dotdist = pFace->facePlane.signedDistanceTo(pBloodsplat->pos);
                 if (dotdist <= pBloodsplat->radius) {
                     // store splat
                     pBloodsplat->faceDist = dotdist;

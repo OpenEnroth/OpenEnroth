@@ -210,7 +210,7 @@ int PriceCalculator::tavernFoodCostForPlayer(const Player *player, const _2deven
 int PriceCalculator::trainingCostForPlayer(const Player *player, const _2devent &house) {
     int trainPrice = 0;
     uint64_t expForNextLevel = 1000ull * player->uLevel * (player->uLevel + 1) / 2;
-    if (player->uExperience >= expForNextLevel) { // can train
+    if (player->experience >= expForNextLevel) { // can train
         int playerClassTier = player->classType % 4 + 1;
         if (playerClassTier == 4) {
             playerClassTier = 3;

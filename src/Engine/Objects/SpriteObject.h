@@ -9,7 +9,6 @@
 class SpriteFrame;
 
 /*   72 */
-#pragma pack(push, 1)
 struct SpriteObject {
     inline bool attachedToActor() const {
         return uAttributes & SPRITE_ATTACHED_TO_HEAD;
@@ -88,7 +87,6 @@ struct SpriteObject {
     int _lastParticleTime{};
     int _ticksPerParticle{ 2 }; // how many 1/128ths between particles
 };
-#pragma pack(pop)
 
 void CompactLayingItemsList();
 

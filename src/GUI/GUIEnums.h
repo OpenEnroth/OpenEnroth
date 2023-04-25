@@ -32,6 +32,8 @@ enum UIMessageType : uint32_t {
 
     UIMSG_ChangeCursor = 17,
 
+    UIMSG_OpenInventory = 20,
+
     UIMSG_Attack = 23,
 
     UIMSG_CastQuickSpell = 25,

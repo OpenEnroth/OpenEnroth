@@ -611,9 +611,8 @@ void AudioPlayer::Initialize() {
 
     SetMasterVolume(engine->config->settings.SoundLevel.value());
     SetVoiceVolume(engine->config->settings.VoiceLevel.value());
-    if (bPlayerReady) {
-        SetMusicVolume(engine->config->settings.MusicLevel.value());
-    }
+    SetMusicVolume(engine->config->settings.MusicLevel.value());
+
     LoadAudioSnd();
 
     bPlayerReady = true;

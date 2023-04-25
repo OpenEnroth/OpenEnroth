@@ -6,15 +6,12 @@
 
 #include "Utility/Geometry/Point.h"
 
-#pragma pack(push, 1)
 struct GUICharMetric {
     int32_t uLeftSpacing;
     int32_t uWidth;
     int32_t uRightSpacing;
 };
-#pragma pack(pop)
 
-#pragma pack(push, 1)
 struct FontData {
     uint8_t cFirstChar = 0;  // 0
     uint8_t cLastChar = 0;   // 1
@@ -30,7 +27,6 @@ struct FontData {
     std::vector<uint8_t> pFontData;  // array of font pixels
 //    uint8_t pFontData[0];  // array of font pixels
 };
-#pragma pack(pop)
 
 class GUIWindow;
 class Image;

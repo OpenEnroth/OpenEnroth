@@ -165,8 +165,8 @@ bool stru10::CalcFaceBounding(BLVFace *pFace, RenderVertexSoft *pFaceLimits,
     float var_24;
     switch (pFace->uPolygonType) {
         case POLYGON_VerticalWall:
-            a1.x = -pFace->pFacePlane.vNormal.y;  // направление полигона
-            a1.y = pFace->pFacePlane.vNormal.x;
+            a1.x = -pFace->facePlane.normal.y;  // направление полигона
+            a1.y = pFace->facePlane.normal.x;
             a1.z = 0.0f;
             a1.normalize();
 
@@ -290,9 +290,9 @@ bool stru10::CalcFaceBounding(BLVFace *pFace, RenderVertexSoft *pFaceLimits,
     // if (!FindFacePlaneNormalAndDot(pOutBounding, &a1, &a3)) return false;
 
     // testing
-    a1.x = pFace->pFacePlane.vNormal.x;
-    a1.y = pFace->pFacePlane.vNormal.y;
-    a1.z = pFace->pFacePlane.vNormal.z;
+    a1.x = pFace->facePlane.normal.x;
+    a1.y = pFace->facePlane.normal.y;
+    a1.z = pFace->facePlane.normal.z;
 
 
     RenderVertexSoft v25 = pOutBounding[0];  // [sp+10h] [bp-90h]@20
@@ -367,7 +367,7 @@ bool stru10::CalcPortalShapePoly(BLVFace *pFace, RenderVertexSoft *pVertices,
         bool test = CalcPortalFrustum(pOutBounding, pOutFrustum);
 
         // if normal in z - portals dont work out so use camera
-        if (pFace->pFacePlane.vNormal.z == 1.0 || pFace->pFacePlane.vNormal.z == -1.0) {
+        if (pFace->facePlane.normal.z == 1.0 || pFace->facePlane.normal.z == -1.0) {
             for (int i = 0; i < 4; i++) {
                 pOutFrustum[i].x = pCamera3D->FrustumPlanes[i].x;
                 pOutFrustum[i].y = pCamera3D->FrustumPlanes[i].y;

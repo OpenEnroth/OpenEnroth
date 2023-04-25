@@ -1568,10 +1568,10 @@ void OutdoorLocation::PrepareActorsDrawList() {
                         pBillboardRenderList[uNumBillboardsToDraw - 1].screenspace_projection_factor_y = proj_scale;
 
                         if (pActors[i].pActorBuffs[ACTOR_BUFF_SHRINK].Active() &&
-                            pActors[i].pActorBuffs[ACTOR_BUFF_SHRINK].uPower > 0) {
+                            pActors[i].pActorBuffs[ACTOR_BUFF_SHRINK].power > 0) {
                             pBillboardRenderList[uNumBillboardsToDraw - 1]
-                                .screenspace_projection_factor_y = 1.0f / pActors[i].pActorBuffs[ACTOR_BUFF_SHRINK].uPower *
-                                pBillboardRenderList[uNumBillboardsToDraw - 1]
+                                .screenspace_projection_factor_y = 1.0f / pActors[i].pActorBuffs[ACTOR_BUFF_SHRINK].power *
+                                                                   pBillboardRenderList[uNumBillboardsToDraw - 1]
                                 .screenspace_projection_factor_y;
                         } else if (pActors[i].pActorBuffs[ACTOR_BUFF_MASS_DISTORTION].Active()) {
                             pBillboardRenderList[uNumBillboardsToDraw - 1].screenspace_projection_factor_y =
@@ -1805,9 +1805,9 @@ void ODM_ProcessPartyActions() {
     pParty->uFlags &= ~PARTY_FLAGS_1_STANDING_ON_WATER;
     if (pParty->WaterWalkActive()) {
         waterWalkActive = true;
-        mapEventVariables.decorVars[20 * pParty->pPartyBuffs[PARTY_BUFF_WATER_WALK].uOverlayID + 119] |= 1;
+        mapEventVariables.decorVars[20 * pParty->pPartyBuffs[PARTY_BUFF_WATER_WALK].overlayID + 119] |= 1;
         if (!pParty->pPartyBuffs[PARTY_BUFF_WATER_WALK].isGMBuff &&
-            pParty->pPlayers[pParty->pPartyBuffs[PARTY_BUFF_WATER_WALK].uCaster - 1].sMana <= 0)
+            pParty->pPlayers[pParty->pPartyBuffs[PARTY_BUFF_WATER_WALK].caster - 1].mana <= 0)
             waterWalkActive = false;
     }
 
@@ -1893,7 +1893,7 @@ void ODM_ProcessPartyActions() {
                 pParty->bFlying = false;
                 if (engine->IsUnderwater() ||
                     pParty->pPartyBuffs[PARTY_BUFF_FLY].isGMBuff ||
-                    (pParty->pPlayers[pParty->pPartyBuffs[PARTY_BUFF_FLY].uCaster - 1].sMana > 0 || engine->config->debug.AllMagic.value())) {
+                    (pParty->pPlayers[pParty->pPartyBuffs[PARTY_BUFF_FLY].caster - 1].mana > 0 || engine->config->debug.AllMagic.value())) {
                     if (pParty->sPartySavedFlightZ < engine->config->gameplay.MaxFlightHeight.value() || partyNotTouchingFloor) {
                         pParty->bFlying = true;
                         pParty->uFallSpeed = 0;
@@ -1912,7 +1912,7 @@ void ODM_ProcessPartyActions() {
                     pParty->bFlying = false;
                     if (engine->IsUnderwater() ||
                         pParty->pPartyBuffs[PARTY_BUFF_FLY].isGMBuff ||
-                        (pParty->pPlayers[pParty->pPartyBuffs[PARTY_BUFF_FLY].uCaster - 1].sMana > 0 || engine->config->debug.AllMagic.value())) {
+                        (pParty->pPlayers[pParty->pPartyBuffs[PARTY_BUFF_FLY].caster - 1].mana > 0 || engine->config->debug.AllMagic.value())) {
                         partyOldFlightZ = pParty->vPosition.z;
                         pParty->uFallSpeed = 0;
                         partyInputZSpeed = -pParty->uWalkSpeed * 4;
@@ -2138,7 +2138,7 @@ void ODM_ProcessPartyActions() {
         }
 
         if (pParty->FlyActive())
-            mapEventVariables.decorVars[20 * pParty->pPartyBuffs[PARTY_BUFF_FLY].uOverlayID + 119] &= 0xFE;
+            mapEventVariables.decorVars[20 * pParty->pPartyBuffs[PARTY_BUFF_FLY].overlayID + 119] &= 0xFE;
         pParty->uFallStartZ = partyNewZ;
     } else if (partyNewZ < currentGroundLevel) {
         if (partyIsOnWater && partyInputZSpeed)
@@ -2148,11 +2148,11 @@ void ODM_ProcessPartyActions() {
         pParty->uFallStartZ = currentGroundLevel;
         partyOldFlightZ = partyNewZ;
         if (pParty->FlyActive())
-            mapEventVariables.decorVars[20 * pParty->pPartyBuffs[PARTY_BUFF_FLY].uOverlayID + 119] |= 1;
+            mapEventVariables.decorVars[20 * pParty->pPartyBuffs[PARTY_BUFF_FLY].overlayID + 119] |= 1;
     } else {
         partyOldFlightZ = partyNewZ;
         if (pParty->FlyActive())
-            mapEventVariables.decorVars[20 * pParty->pPartyBuffs[PARTY_BUFF_FLY].uOverlayID + 119] |= 1;
+            mapEventVariables.decorVars[20 * pParty->pPartyBuffs[PARTY_BUFF_FLY].overlayID + 119] |= 1;
     }
     //------------------------------------------
 
@@ -2316,7 +2316,7 @@ void ODM_ProcessPartyActions() {
             BSPModel *pModel = &pOutdoor->pBModels[(signed int)collision_state.pid >> 9];
             ODMFace *pODMFace = &pModel->pFaces[((signed int)collision_state.pid >> 3) & 0x3F];
             int bSmallZDelta = (pODMFace->pBoundingBox.z2 - pODMFace->pBoundingBox.z1) <= 32;
-            bool bFaceSlopeTooSteep = pODMFace->pFacePlaneOLD.vNormal.z < 46378;
+            bool bFaceSlopeTooSteep = pODMFace->facePlane_old.normal.z < 46378;
 
             if (engine->IsUnderwater())
                 bFaceSlopeTooSteep = false;
@@ -2343,23 +2343,23 @@ void ODM_ProcessPartyActions() {
                 partySlopeMod = true;
 
                 // push party away from the surface
-                int dot = abs(partyInputYSpeed * pODMFace->pFacePlaneOLD.vNormal.y +
-                           partyInputZSpeed * pODMFace->pFacePlaneOLD.vNormal.z +
-                           partyInputXSpeed * pODMFace->pFacePlaneOLD.vNormal.x) >> 16;
+                int dot = abs(partyInputYSpeed * pODMFace->facePlane_old.normal.y +
+                           partyInputZSpeed * pODMFace->facePlane_old.normal.z +
+                           partyInputXSpeed * pODMFace->facePlane_old.normal.x) >> 16;
                 if ((collision_state.speed / 8) > dot)
                     dot = collision_state.speed / 8;
-                partyInputXSpeed += fixpoint_mul(dot, pODMFace->pFacePlaneOLD.vNormal.x);
-                partyInputYSpeed += fixpoint_mul(dot, pODMFace->pFacePlaneOLD.vNormal.y);
+                partyInputXSpeed += fixpoint_mul(dot, pODMFace->facePlane_old.normal.x);
+                partyInputYSpeed += fixpoint_mul(dot, pODMFace->facePlane_old.normal.y);
                 int v54 = 0;
                 if (!bFaceSlopeTooSteep)
-                    v54 = fixpoint_mul(dot, pODMFace->pFacePlaneOLD.vNormal.z);
+                    v54 = fixpoint_mul(dot, pODMFace->facePlane_old.normal.z);
                 partyInputZSpeed += v54;
-                int v55 = collision_state.radius_lo - pODMFace->pFacePlaneOLD.signedDistanceTo(new_pos_low_x, new_pos_low_y, new_pos_low_z);
+                int v55 = collision_state.radius_lo - pODMFace->facePlane_old.signedDistanceTo(new_pos_low_x, new_pos_low_y, new_pos_low_z);
                 if (v55 > 0) {
-                    partyNewX = new_pos_low_x + fixpoint_mul(pODMFace->pFacePlaneOLD.vNormal.x, v55);
-                    partyNewY = new_pos_low_y + fixpoint_mul(pODMFace->pFacePlaneOLD.vNormal.y, v55);
+                    partyNewX = new_pos_low_x + fixpoint_mul(pODMFace->facePlane_old.normal.x, v55);
+                    partyNewY = new_pos_low_y + fixpoint_mul(pODMFace->facePlane_old.normal.y, v55);
                     if (!bFaceSlopeTooSteep)
-                        partyNewZ = new_pos_low_z + fixpoint_mul(pODMFace->pFacePlaneOLD.vNormal.z, v55);
+                        partyNewZ = new_pos_low_z + fixpoint_mul(pODMFace->facePlane_old.normal.z, v55);
                 }
             }
 
@@ -2368,14 +2368,14 @@ void ODM_ProcessPartyActions() {
                 pParty->uFlags &= ~PARTY_FLAGS_1_LANDING;
 
                 // this pushes party slightly up away from the surface so you can climb it
-                int dot = abs(partyInputYSpeed * pODMFace->pFacePlaneOLD.vNormal.y +
-                           partyInputZSpeed * pODMFace->pFacePlaneOLD.vNormal.z +
-                           partyInputXSpeed * pODMFace->pFacePlaneOLD.vNormal.x) >> 16;
+                float dot = abs(partyInputYSpeed * pODMFace->facePlane.normal.y +
+                           partyInputZSpeed * pODMFace->facePlane.normal.z +
+                           partyInputXSpeed * pODMFace->facePlane.normal.x);
                 if ((collision_state.speed / 8) > dot)
                     dot = collision_state.speed / 8;
-                partyInputZSpeed += fixpoint_mul(dot, pODMFace->pFacePlaneOLD.vNormal.z);
-                partyInputXSpeed += fixpoint_mul(dot, pODMFace->pFacePlaneOLD.vNormal.x);
-                partyInputYSpeed += fixpoint_mul(dot, pODMFace->pFacePlaneOLD.vNormal.y);
+                partyInputZSpeed += dot * pODMFace->facePlane.normal.z;
+                partyInputXSpeed += dot * pODMFace->facePlane.normal.x;
+                partyInputYSpeed += dot * pODMFace->facePlane.normal.y;
 
                 partySlopeMod = true;
             }
@@ -2454,11 +2454,11 @@ void ODM_ProcessPartyActions() {
         if (waterMoveY || waterMoveX) {
             if (waterWalkActive) {
                 pParty->uFlags &= ~PARTY_FLAGS_1_STANDING_ON_WATER;
-                mapEventVariables.decorVars[20 * pParty->pPartyBuffs[PARTY_BUFF_WATER_WALK].uOverlayID + 119] |= 1;
+                mapEventVariables.decorVars[20 * pParty->pPartyBuffs[PARTY_BUFF_WATER_WALK].overlayID + 119] |= 1;
                 if (!partyNewXOnLand || !partyNewYOnLand) {
                     if (!pParty->bFlying) {
                         pParty->uFlags |= PARTY_FLAGS_1_STANDING_ON_WATER;
-                        mapEventVariables.decorVars[20 * pParty->pPartyBuffs[PARTY_BUFF_WATER_WALK].uOverlayID + 119] &= 0xFFFE;
+                        mapEventVariables.decorVars[20 * pParty->pPartyBuffs[PARTY_BUFF_WATER_WALK].overlayID + 119] &= 0xFFFE;
                     }
                 }
             }

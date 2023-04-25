@@ -549,17 +549,17 @@ bool Vis::Intersect_Ray_Face(RenderVertexSoft *pRayStart,
         ray_dir_z = pRayEnd->vWorldPosition.z - pRayStart->vWorldPosition.z;
 
     // c1 = -d-(n*p0)
-    c1 = -pFace->pFacePlane.dist -
-         (pFace->pFacePlane.vNormal.x * pRayStart->vWorldPosition.x +
-          pFace->pFacePlane.vNormal.y * pRayStart->vWorldPosition.y +
-          pFace->pFacePlane.vNormal.z * pRayStart->vWorldPosition.z);
+    c1 = -pFace->facePlane.dist -
+         (pFace->facePlane.normal.x * pRayStart->vWorldPosition.x +
+          pFace->facePlane.normal.y * pRayStart->vWorldPosition.y +
+          pFace->facePlane.normal.z * pRayStart->vWorldPosition.z);
     if (c1 > 0) return false;
 #define EPSILON 1e-6
     // c2 = n*u
-    c2 = pFace->pFacePlane.vNormal.x *
-             ray_dir_y  // get length of the line(Это дает нам длину линии)
-         + pFace->pFacePlane.vNormal.y * ray_dir_x +
-         pFace->pFacePlane.vNormal.z * ray_dir_z;
+    c2 = pFace->facePlane.normal.x *
+         ray_dir_y  // get length of the line(Это дает нам длину линии)
+         + pFace->facePlane.normal.y * ray_dir_x +
+         pFace->facePlane.normal.z * ray_dir_z; // TODO(captainurist): x/y messed up here
     if (c2 > -EPSILON &&
         c2 < EPSILON)  // ray faces face's normal ( > 0) or parallel ( == 0)
         return false;

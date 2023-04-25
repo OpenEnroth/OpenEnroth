@@ -192,7 +192,7 @@ void KeyboardInputHandler::GenerateGameplayActions() {
                 break;
             }
             if (pParty->hasActiveCharacter()) {
-                if (pParty->activeCharacter().uTimeToRecovery == 0) {
+                if (pParty->activeCharacter().timeToRecovery == 0) {
                     if (!pParty->bTurnBasedModeOn) {
                         pParty->activeCharacter().SetRecoveryTime(
                             debug_non_combat_recovery_mul * (double)pParty->activeCharacter().GetAttackRecoveryTime(false) * flt_debugrecmod3
@@ -242,7 +242,7 @@ void KeyboardInputHandler::GenerateGameplayActions() {
                 uRequiredMana = pSpellDatas[quickSpellNumber].mana_per_skill[std::to_underlying(skill_mastery) - 1];
             }
 
-            bool enoughMana = pParty->activeCharacter().sMana >= uRequiredMana;
+            bool enoughMana = pParty->activeCharacter().mana >= uRequiredMana;
 
             if (quickSpellNumber == SPELL_NONE || engine->IsUnderwater() || !enoughMana) {
                 pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Attack, 0, 0);
@@ -330,6 +330,12 @@ void KeyboardInputHandler::GenerateGameplayActions() {
 
         case InputAction::Escape:
             // pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, window_SpeakInHouse != 0, 0);
+            break;
+
+        case InputAction::Inventory:
+            if (current_screen_type == CURRENT_SCREEN::SCREEN_GAME) {
+                pNextFrameMessageQueue->AddGUIMessage(UIMSG_OpenInventory, 0, 0);
+            }
             break;
 
         default:

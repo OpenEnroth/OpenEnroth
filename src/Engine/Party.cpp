@@ -253,7 +253,7 @@ void Party::setActiveToFirstCanAct() {  // added to fix some nzi problems enteri
 void Party::switchToNextActiveCharacter() {
     // avoid switching away from char that can act
     if (hasActiveCharacter() && this->pPlayers[_activeCharacter - 1].CanAct() &&
-        this->pPlayers[_activeCharacter - 1].uTimeToRecovery < 1)
+        this->pPlayers[_activeCharacter - 1].timeToRecovery < 1)
         return;
 
     if (pParty->bTurnBasedModeOn) {
@@ -271,7 +271,7 @@ void Party::switchToNextActiveCharacter() {
 
     for (int i = 0; i < this->pPlayers.size(); i++) {
         if (!this->pPlayers[i].CanAct() ||
-            this->pPlayers[i].uTimeToRecovery > 0) {
+            this->pPlayers[i].timeToRecovery > 0) {
             playerAlreadyPicked[i] = true;
         } else if (!playerAlreadyPicked[i]) {
             playerAlreadyPicked[i] = true;
@@ -288,7 +288,7 @@ void Party::switchToNextActiveCharacter() {
     uint v8{};
     for (int i = 0; i < this->pPlayers.size(); i++) {
         if (this->pPlayers[i].CanAct() &&
-            this->pPlayers[i].uTimeToRecovery == 0) {
+            this->pPlayers[i].timeToRecovery == 0) {
             if (v12 == 0 || this->pPlayers[i].uSpeedBonus > v8) {
                 v8 = this->pPlayers[i].uSpeedBonus;
                 v12 = i + 1;
@@ -420,7 +420,7 @@ void Party::TakeFine(int amount) {
 unsigned int Party::getPartyFame() {
     uint64_t total_exp = 0;
     for (Player &player : this->pPlayers) {
-        total_exp += player.uExperience;
+        total_exp += player.experience;
     }
     return std::min(
         (unsigned int)(total_exp / 1000),
@@ -436,7 +436,7 @@ void Party::createDefaultParty(bool bDebugGiveItems) {
     this->hirelingScrollPosition = 0;
     pHirelings.fill(NPCData());
 
-    this->pPlayers[0].pName = localization->GetString(LSTR_PC_NAME_ZOLTAN);
+    this->pPlayers[0].name = localization->GetString(LSTR_PC_NAME_ZOLTAN);
     this->pPlayers[0].uPrevFace = 17;
     this->pPlayers[0].uCurrentFace = 17;
     this->pPlayers[0].uPrevVoiceID = 17;
@@ -453,7 +453,7 @@ void Party::createDefaultParty(bool bDebugGiveItems) {
     this->pPlayers[0].pActiveSkills[PLAYER_SKILL_BOW] = 1;
     this->pPlayers[0].pActiveSkills[PLAYER_SKILL_SWORD] = 1;
 
-    this->pPlayers[1].pName = localization->GetString(LSTR_PC_NAME_RODERIC);
+    this->pPlayers[1].name = localization->GetString(LSTR_PC_NAME_RODERIC);
     this->pPlayers[1].uPrevFace = 3;
     this->pPlayers[1].uCurrentFace = 3;
     this->pPlayers[1].uPrevVoiceID = 3;
@@ -470,7 +470,7 @@ void Party::createDefaultParty(bool bDebugGiveItems) {
     this->pPlayers[1].pActiveSkills[PLAYER_SKILL_DAGGER] = 1;
     this->pPlayers[1].pActiveSkills[PLAYER_SKILL_TRAP_DISARM] = 1;
 
-    this->pPlayers[2].pName = localization->GetString(LSTR_PC_NAME_SERENA);
+    this->pPlayers[2].name = localization->GetString(LSTR_PC_NAME_SERENA);
     this->pPlayers[2].uPrevFace = 14;
     this->pPlayers[2].uCurrentFace = 14;
     this->pPlayers[2].uPrevVoiceID = 14;
@@ -487,7 +487,7 @@ void Party::createDefaultParty(bool bDebugGiveItems) {
     this->pPlayers[2].pActiveSkills[PLAYER_SKILL_BODY] = 1;
     this->pPlayers[2].pActiveSkills[PLAYER_SKILL_MACE] = 1;
 
-    this->pPlayers[3].pName = localization->GetString(LSTR_PC_NAME_ALEXIS);
+    this->pPlayers[3].name = localization->GetString(LSTR_PC_NAME_ALEXIS);
     this->pPlayers[3].uPrevFace = 10;
     this->pPlayers[3].uCurrentFace = 10;
     this->pPlayers[3].uEndurance = 13;
@@ -616,8 +616,8 @@ void Party::createDefaultParty(bool bDebugGiveItems) {
             }
         }
 
-        pCharacter.sHealth = pCharacter.GetMaxHealth();
-        pCharacter.sMana = pCharacter.GetMaxMana();
+        pCharacter.health = pCharacter.GetMaxHealth();
+        pCharacter.mana = pCharacter.GetMaxMana();
     }
 }
 
@@ -651,7 +651,7 @@ void Party::Reset() {
     pPlayers[0].uVoiceID = 17;
     pPlayers[0].SetInitialStats();
     pPlayers[0].uSex = pPlayers[0].GetSexByVoice();
-    pPlayers[0].pName = localization->GetString(LSTR_PC_NAME_ZOLTAN);
+    pPlayers[0].name = localization->GetString(LSTR_PC_NAME_ZOLTAN);
 
     pPlayers[1].Reset(PLAYER_CLASS_THIEF);
     pPlayers[1].uCurrentFace = 3;
@@ -659,7 +659,7 @@ void Party::Reset() {
     pPlayers[1].uVoiceID = 3;
     pPlayers[1].SetInitialStats();
     pPlayers[1].uSex = pPlayers[1].GetSexByVoice();
-    pPlayers[1].pName = localization->GetString(LSTR_PC_NAME_RODERIC);
+    pPlayers[1].name = localization->GetString(LSTR_PC_NAME_RODERIC);
 
     pPlayers[2].Reset(PLAYER_CLASS_CLERIC);
     pPlayers[2].uCurrentFace = 14;
@@ -667,7 +667,7 @@ void Party::Reset() {
     pPlayers[2].uVoiceID = 14;
     pPlayers[2].SetInitialStats();
     pPlayers[2].uSex = pPlayers[3].GetSexByVoice();
-    pPlayers[2].pName = localization->GetString(LSTR_PC_NAME_SERENA);
+    pPlayers[2].name = localization->GetString(LSTR_PC_NAME_SERENA);
 
     pPlayers[3].Reset(PLAYER_CLASS_SORCERER);
     pPlayers[3].uCurrentFace = 10;
@@ -675,10 +675,10 @@ void Party::Reset() {
     pPlayers[3].uVoiceID = 10;
     pPlayers[3].SetInitialStats();
     pPlayers[3].uSex = pPlayers[3].GetSexByVoice();
-    pPlayers[3].pName = localization->GetString(LSTR_PC_NAME_ALEXIS);
+    pPlayers[3].name = localization->GetString(LSTR_PC_NAME_ALEXIS);
 
     for (Player &player : this->pPlayers) {
-        player.uTimeToRecovery = 0;
+        player.timeToRecovery = 0;
         player.conditions.ResetAll();
 
         for (SpellBuff &buff : player.pPlayerBuffs) {
@@ -882,9 +882,9 @@ void Party::RestAndHeal() {
         pPlayer->conditions.Reset(Condition_Sleep);
         pPlayer->conditions.Reset(Condition_Weak);
 
-        pPlayer->uTimeToRecovery = 0;
-        pPlayer->sHealth = pPlayer->GetMaxHealth();
-        pPlayer->sMana = pPlayer->GetMaxMana();
+        pPlayer->timeToRecovery = 0;
+        pPlayer->health = pPlayer->GetMaxHealth();
+        pPlayer->mana = pPlayer->GetMaxMana();
         if (pPlayer->classType == PLAYER_CLASS_LICH) {
             have_vessels_soul = false;
             for (uint i = 0; i < Player::INVENTORY_SLOT_COUNT; i++) {
@@ -892,26 +892,26 @@ void Party::RestAndHeal() {
                     have_vessels_soul = true;
             }
             if (!have_vessels_soul) {
-                pPlayer->sHealth = pPlayer->GetMaxHealth() / 2;
-                pPlayer->sMana = pPlayer->GetMaxMana() / 2;
+                pPlayer->health = pPlayer->GetMaxHealth() / 2;
+                pPlayer->mana = pPlayer->GetMaxMana() / 2;
             }
         }
 
         if (pPlayer->conditions.Has(Condition_Zombie)) {
-            pPlayer->sMana = 0;
-            pPlayer->sHealth /= 2;
+            pPlayer->mana = 0;
+            pPlayer->health /= 2;
         } else if (pPlayer->conditions.HasAny({Condition_Poison_Severe, Condition_Disease_Severe})) {
-            pPlayer->sHealth /= 4;
-            pPlayer->sMana /= 4;
+            pPlayer->health /= 4;
+            pPlayer->mana /= 4;
         } else if (pPlayer->conditions.HasAny({Condition_Poison_Medium, Condition_Disease_Medium})) {
-            pPlayer->sHealth /= 3;
-            pPlayer->sMana /= 3;
+            pPlayer->health /= 3;
+            pPlayer->mana /= 3;
         } else if (pPlayer->conditions.HasAny({Condition_Poison_Weak, Condition_Disease_Weak})) {
-            pPlayer->sHealth /= 2;
-            pPlayer->sMana /= 2;
+            pPlayer->health /= 2;
+            pPlayer->mana /= 2;
         }
         if (pPlayer->conditions.Has(Condition_Insane))
-            pPlayer->sMana = 0;
+            pPlayer->mana = 0;
         updatePlayersAndHirelingsEmotions();
     }
     pParty->days_played_without_rest = 0;
@@ -948,7 +948,7 @@ void RestAndHeal(int minutes) {
     pParty->RestAndHeal();
 
     for (Player &player : pParty->pPlayers) {
-        player.uTimeToRecovery = 0;
+        player.timeToRecovery = 0;
         player.uNumDivineInterventionCastsThisDay = 0;
         player.uNumArmageddonCasts = 0;
         player.uNumFireSpikeCasts = 0;
@@ -1022,9 +1022,9 @@ void Party::GivePartyExp(unsigned int pEXPNum) {
                 if (player.conditions.HasNone({Condition_Unconscious, Condition_Dead, Condition_Petrified, Condition_Eradicated})) {
                     pLearningPercent = player.getLearningPercent();
                     playermodexp = pEXPNum + pEXPNum * pLearningPercent / 100;
-                    player.uExperience += playermodexp;
-                    if (player.uExperience > 4000000000) {
-                        player.uExperience = 0;
+                    player.experience += playermodexp;
+                    if (player.experience > 4000000000) {
+                        player.experience = 0;
                     }
                 }
             }
@@ -1115,7 +1115,7 @@ bool Party::addItemToParty(ItemGen *pItem, bool isSilent) {
         pItem->SetIdentified();
     }
 
-    char *iconName = pItemTable->pItems[pItem->uItemID].pIconName;
+    char *iconName = pItemTable->pItems[pItem->uItemID].iconName;
     if (iconName) {
         auto texture = assets->GetImage_ColorKey(iconName);
         int playerId = hasActiveCharacter() ? (pParty->_activeCharacter - 1) : 0;

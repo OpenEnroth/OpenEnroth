@@ -1407,7 +1407,7 @@ void Game::processQueuedMessages() {
                     }
                     if (!pParty->hasActiveCharacter() ||
                         (pPlayer2 = pPlayers[pParty->activeCharacterIndex()],
-                         pPlayer2->uTimeToRecovery))
+                         pPlayer2->timeToRecovery))
                         continue;
                     pushSpellOrRangedAttack(pPlayer2->uQuickSpell, pParty->activeCharacterIndex() - 1,
                                             0, 0, pParty->activeCharacterIndex());
@@ -1632,7 +1632,7 @@ void Game::processQueuedMessages() {
                         GameUI_StatusBar_Set(localization->FormatString(
                             LSTR_FMT_SET_S_AS_READY_SPELL,
                             pSpellStats->pInfos[static_cast<SPELL_TYPE>(quick_spell_at_page +
-                                         11 * pParty->activeCharacter().lastOpenedSpellbookPage)].pName));
+                                         11 * pParty->activeCharacter().lastOpenedSpellbookPage)].name));
                     } else {
                         if (pParty->activeCharacter().uQuickSpell != SPELL_NONE)
                             GameUI_StatusBar_Set(localization->GetString(LSTR_CLICK_TO_REMOVE_QUICKSPELL));
@@ -1656,10 +1656,10 @@ void Game::processQueuedMessages() {
                     int lastOpened = pParty->activeCharacter().lastOpenedSpellbookPage;
                     if (quick_spell_at_page - 1 == uMessageParam) {
                         GameUI_StatusBar_Set(localization->FormatString(LSTR_CAST_S,
-                                    pSpellStats->pInfos[static_cast<SPELL_TYPE>(uMessageParam + 11 * lastOpened + 1)].pName));
+                                    pSpellStats->pInfos[static_cast<SPELL_TYPE>(uMessageParam + 11 * lastOpened + 1)].name));
                     } else {
                         GameUI_StatusBar_Set(localization->FormatString(LSTR_SELECT_S,
-                                    pSpellStats->pInfos[static_cast<SPELL_TYPE>(uMessageParam + 11 * lastOpened + 1)].pName));
+                                    pSpellStats->pInfos[static_cast<SPELL_TYPE>(uMessageParam + 11 * lastOpened + 1)].name));
                     }
                     continue;
                 }
@@ -1784,7 +1784,7 @@ void Game::processQueuedMessages() {
                     } else {
                         pCurrentFrameMessageQueue->Flush();
                         if (pParty->hasActiveCharacter()) {
-                            if (!pParty->activeCharacter().uTimeToRecovery) {
+                            if (!pParty->activeCharacter().timeToRecovery) {
                                 // toggle
                                 if (current_screen_type == CURRENT_SCREEN::SCREEN_SPELL_BOOK) {
                                     pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 0, 0);
@@ -1991,7 +1991,7 @@ void Game::processQueuedMessages() {
                 case UIMSG_ShowStatus_Player: {
                     Player *player = pPlayers[uMessageParam];
 
-                    auto status = NameAndTitle(player->pName, player->classType)
+                    auto status = NameAndTitle(player->name, player->classType)
                         + ": "
                         + std::string(localization->GetCharacterConditionName(player->GetMajorConditionIdx()));
                     GameUI_StatusBar_Set(status);
@@ -2098,6 +2098,15 @@ void Game::processQueuedMessages() {
                     }
 
                     break;
+
+                case UIMSG_OpenInventory: {
+                    if (pParty->hasActiveCharacter()) {
+                        pGUIWindow_CurrentMenu = new GUIWindow_CharacterRecord(pParty->activeCharacterIndex(), CURRENT_SCREEN::SCREEN_CHARACTERS);
+                        ((GUIWindow_CharacterRecord *)pGUIWindow_CurrentMenu)->ShowInventoryTab();
+                    }
+                    break;
+                }
+
                 case UIMSG_DebugSpecialItem: {
                     if (!pParty->hasActiveCharacter())
                         continue;
@@ -2147,9 +2156,9 @@ void Game::processQueuedMessages() {
                     if (!pParty->hasActiveCharacter())
                         continue;
                     pParty->activeCharacter().conditions.ResetAll();
-                    pParty->activeCharacter().sHealth =
+                    pParty->activeCharacter().health =
                         pParty->activeCharacter().GetMaxHealth();
-                    pParty->activeCharacter().sMana =
+                    pParty->activeCharacter().mana =
                         pParty->activeCharacter().GetMaxMana();
                     pAudioPlayer->playUISound(SOUND_heal);
                     continue;
@@ -2439,7 +2448,7 @@ void Game::gameLoop() {
                                        // 0, 0xA0u);//(pConditions, 0, 160)
                                        // memset(pParty->pPlayers[i].pPlayerBuffs.data(),
                                        // 0, 0x180u);//(pPlayerBuffs[0], 0, 384)
-                    player.sHealth = 1;
+                    player.health = 1;
                 }
                 pParty->setActiveCharacterIndex(1);
 

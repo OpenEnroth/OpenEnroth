@@ -182,7 +182,6 @@ void AddNodeBSPFaces(unsigned int node_id, unsigned int uFirstNode) {
     BLVSector *pSector;       // esi@2
     BSPNode *pNode;           // edi@2
     BLVFace *pFace;           // eax@2
-    int v5;                   // ecx@2
     int16_t v6;               // ax@6
     int v7;                   // ebp@10
     int v8;                   // ebx@10
@@ -195,10 +194,10 @@ void AddNodeBSPFaces(unsigned int node_id, unsigned int uFirstNode) {
         pNode = &pIndoor->pNodes[uFirstNode];
         pFace = &pIndoor->pFaces[pSector->pFaceIDs[pNode->uBSPFaceIDOffset]];
         // check if we are in front or behind face
-        v5 = pFace->pFacePlane_old.dist +
-             pCamera3D->vCameraPos.x * pFace->pFacePlane_old.vNormal.x +
-             pCamera3D->vCameraPos.y * pFace->pFacePlane_old.vNormal.y +
-             pCamera3D->vCameraPos.z * pFace->pFacePlane_old.vNormal.z;  // plane equation
+        float v5 = pFace->facePlane.dist +
+             pCamera3D->vCameraPos.x * pFace->facePlane.normal.x +
+             pCamera3D->vCameraPos.y * pFace->facePlane.normal.y +
+             pCamera3D->vCameraPos.z * pFace->facePlane.normal.z;  // plane equation
         if (pFace->Portal() && pFace->uSectorID != node->uSectorID) v5 = -v5;
 
         if (v5 <= 0)

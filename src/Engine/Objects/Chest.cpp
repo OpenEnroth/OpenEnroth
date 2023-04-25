@@ -257,7 +257,7 @@ bool Chest::CanPlaceItemAt(int test_cell_position, ITEM_TYPE item_id, int uChest
     int chest_cell_heght = pChestHeightsByType[vChests[uChestID].uChestBitmapID];
     int chest_cell_width = pChestWidthsByType[vChests[uChestID].uChestBitmapID];
 
-    auto img = assets->GetImage_ColorKey(pItemTable->pItems[item_id].pIconName);
+    auto img = assets->GetImage_ColorKey(pItemTable->pItems[item_id].iconName);
     unsigned int slot_width = GetSizeInInventorySlots(img->GetWidth());
     unsigned int slot_height = GetSizeInInventorySlots(img->GetHeight());
 
@@ -358,7 +358,7 @@ void Chest::PlaceItemAt(unsigned int put_cell_pos, unsigned int item_at_cell, in
         vChests[uChestID].igChestItems[item_at_cell].uMaxCharges = v6;
     }
 
-    auto img = assets->GetImage_Alpha(pItemTable->pItems[uItemID].pIconName);
+    auto img = assets->GetImage_Alpha(pItemTable->pItems[uItemID].iconName);
 
     int v9 = img->GetWidth();
     if (v9 < 14) v9 = 14;

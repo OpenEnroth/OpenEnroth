@@ -1300,11 +1300,11 @@ int Actor::_43B3E0_CalcDamage(ABILITY_INDEX dmgSource) {
     switch (dmgSource) {
         case ABILITY_ATTACK1:
             if (this->pActorBuffs[ACTOR_BUFF_HOUR_OF_POWER].Active())
-                spellPower = this->pActorBuffs[ACTOR_BUFF_HOUR_OF_POWER].uPower;
-            if (this->pActorBuffs[ACTOR_BUFF_HEROISM].Active() && this->pActorBuffs[ACTOR_BUFF_HEROISM].uPower > spellPower)
-                spellPower = this->pActorBuffs[ACTOR_BUFF_HEROISM].uPower;
+                spellPower = this->pActorBuffs[ACTOR_BUFF_HOUR_OF_POWER].power;
+            if (this->pActorBuffs[ACTOR_BUFF_HEROISM].Active() && this->pActorBuffs[ACTOR_BUFF_HEROISM].power > spellPower)
+                spellPower = this->pActorBuffs[ACTOR_BUFF_HEROISM].power;
             if (this->pActorBuffs[ACTOR_BUFF_PAIN_HAMMERHANDS].Active())
-                spellPower += this->pActorBuffs[ACTOR_BUFF_PAIN_HAMMERHANDS].uPower;
+                spellPower += this->pActorBuffs[ACTOR_BUFF_PAIN_HAMMERHANDS].power;
             damageDiceRolls = this->pMonsterInfo.uAttack1DamageDiceRolls;
             damageDiceSides = this->pMonsterInfo.uAttack1DamageDiceSides;
             damageBonus = this->pMonsterInfo.uAttack1DamageBonus;
@@ -1958,7 +1958,7 @@ void Actor::playSound(unsigned int uActorID, unsigned int uSoundID) {
         if (!pActors[uActorID].pActorBuffs[ACTOR_BUFF_SHRINK].Active()) {
             pAudioPlayer->playSound(sound_sample_id, PID(OBJECT_Actor, uActorID));
         } else {
-            switch (pActors[uActorID].pActorBuffs[ACTOR_BUFF_SHRINK].uPower) {
+            switch (pActors[uActorID].pActorBuffs[ACTOR_BUFF_SHRINK].power) {
                 case 1:
                     pAudioPlayer->playSound(sound_sample_id, PID(OBJECT_Actor, uActorID), 0, 0, 0);
                     break;
@@ -2470,11 +2470,11 @@ void Actor::ActorDamageFromMonster(signed int attacker_id,
                         .Active()) {
                     if (pActors[PID_ID(attacker_id)]
                             .pActorBuffs[ACTOR_BUFF_SHRINK]
-                            .uPower > 0)
+                            .power > 0)
                         dmgToRecv =
                             dmgToRecv / pActors[PID_ID(attacker_id)]
                                             .pActorBuffs[ACTOR_BUFF_SHRINK]
-                                            .uPower;
+                                            .power;
                 }
                 if (pActors[actor_id].pActorBuffs[ACTOR_BUFF_STONED].Active())
                     dmgToRecv = 0;
@@ -3292,7 +3292,7 @@ void Actor::DamageMonsterFromParty(signed int a1, unsigned int uActorID_Monster,
         player->pPlayerBuffs[PLAYER_BUFF_HAMMERHANDS].Active()) {
         v61 += pMonster->CalcMagicalDamageToActor(
             DMGT_BODY,
-            player->pPlayerBuffs[PLAYER_BUFF_HAMMERHANDS].uPower);
+            player->pPlayerBuffs[PLAYER_BUFF_HAMMERHANDS].power);
     }
     uDamageAmount = v61;
     if (IsAdditionalDamagePossible) {
@@ -3301,9 +3301,9 @@ void Actor::DamageMonsterFromParty(signed int a1, unsigned int uActorID_Monster,
                 projectileSprite->containing_item._439DF3_get_additional_damage(
                     &attackElement, &isLifeStealing);
             if (isLifeStealing && pMonster->sCurrentHP > 0) {
-                player->sHealth += v61 / 5;
-                if (player->sHealth > player->GetMaxHealth())
-                    player->sHealth = player->GetMaxHealth();
+                player->health += v61 / 5;
+                if (player->health > player->GetMaxHealth())
+                    player->health = player->GetMaxHealth();
             }
             uDamageAmount +=
                 pMonster->CalcMagicalDamageToActor(attackElement, skillLevel);
@@ -3318,9 +3318,9 @@ void Actor::DamageMonsterFromParty(signed int a1, unsigned int uActorID_Monster,
                     skillLevel = item->_439DF3_get_additional_damage(&attackElement,
                                                              &isLifeStealing);
                     if (isLifeStealing && pMonster->sCurrentHP > 0) {
-                        player->sHealth += v61 / 5;
-                        if (player->sHealth > player->GetMaxHealth())
-                            player->sHealth = player->GetMaxHealth();
+                        player->health += v61 / 5;
+                        if (player->health > player->GetMaxHealth())
+                            player->health = player->GetMaxHealth();
                     }
                     uDamageAmount +=
                         pMonster->CalcMagicalDamageToActor(attackElement, skillLevel);
@@ -3340,14 +3340,14 @@ void Actor::DamageMonsterFromParty(signed int a1, unsigned int uActorID_Monster,
             if (projectileSprite)
                 GameUI_SetStatusBar(
                     LSTR_FMT_S_SHOOTS_S_FOR_U,
-                    player->pName.c_str(),
+                    player->name.c_str(),
                     pMonster->pActorName.c_str(),
                     uDamageAmount
                 );
             else
                 GameUI_SetStatusBar(
                     LSTR_FMT_S_HITS_S_FOR_U,
-                    player->pName.c_str(),
+                    player->name.c_str(),
                     pMonster->pActorName.c_str(),
                     uDamageAmount
                 );
@@ -3367,7 +3367,7 @@ void Actor::DamageMonsterFromParty(signed int a1, unsigned int uActorID_Monster,
         if (engine->config->settings.ShowHits.value()) {
             GameUI_SetStatusBar(
                 LSTR_FMT_S_INFLICTS_U_KILLING_S,
-                player->pName.c_str(),
+                player->name.c_str(),
                 uDamageAmount,
                 pMonster->pActorName.c_str()
             );
@@ -3386,7 +3386,7 @@ void Actor::DamageMonsterFromParty(signed int a1, unsigned int uActorID_Monster,
         if (engine->config->settings.ShowHits.value()) {
             GameUI_SetStatusBar(
                 LSTR_FMT_S_STUNS_S,
-                player->pName.c_str(),
+                player->name.c_str(),
                 pMonster
             );
         }
@@ -3400,7 +3400,7 @@ void Actor::DamageMonsterFromParty(signed int a1, unsigned int uActorID_Monster,
         if (engine->config->settings.ShowHits.value()) {
             GameUI_SetStatusBar(
                 LSTR_FMT_S_PARALYZES_S,
-                player->pName.c_str(),
+                player->name.c_str(),
                 pMonster
             );
         }
@@ -3962,18 +3962,18 @@ bool Actor::_4273BB_DoesHitOtherActor(Actor *defender, int a3, int a4) {
     if (defender->pActorBuffs[ACTOR_BUFF_SOMETHING_THAT_HALVES_AC].Active())
         v6 /= 2;
     if (defender->pActorBuffs[ACTOR_BUFF_HOUR_OF_POWER].Active())
-        v7 = defender->pActorBuffs[ACTOR_BUFF_HOUR_OF_POWER].uPower;
+        v7 = defender->pActorBuffs[ACTOR_BUFF_HOUR_OF_POWER].power;
     if (defender->pActorBuffs[ACTOR_BUFF_STONESKIN].Active() &&
-        defender->pActorBuffs[ACTOR_BUFF_STONESKIN].uPower > v7)
-        v7 = defender->pActorBuffs[ACTOR_BUFF_STONESKIN].uPower;
+        defender->pActorBuffs[ACTOR_BUFF_STONESKIN].power > v7)
+        v7 = defender->pActorBuffs[ACTOR_BUFF_STONESKIN].power;
     armorSum = v7 + v6;
     if (this->pActorBuffs[ACTOR_BUFF_HOUR_OF_POWER].Active())
-        a2a = this->pActorBuffs[ACTOR_BUFF_HOUR_OF_POWER].uPower;
+        a2a = this->pActorBuffs[ACTOR_BUFF_HOUR_OF_POWER].power;
     if (this->pActorBuffs[ACTOR_BUFF_BLESS].Active() &&
-        this->pActorBuffs[ACTOR_BUFF_BLESS].uPower > a2a)
-        a2a = this->pActorBuffs[ACTOR_BUFF_BLESS].uPower;
+        this->pActorBuffs[ACTOR_BUFF_BLESS].power > a2a)
+        a2a = this->pActorBuffs[ACTOR_BUFF_BLESS].power;
     if (this->pActorBuffs[ACTOR_BUFF_FATE].Active()) {
-        a2a += this->pActorBuffs[ACTOR_BUFF_FATE].uPower;
+        a2a += this->pActorBuffs[ACTOR_BUFF_FATE].power;
         this->pActorBuffs[ACTOR_BUFF_FATE].Reset();
     }
     return grng->random(armorSum + 2 * this->pMonsterInfo.uLevel + 10) + a2a + 1 >
@@ -3988,12 +3988,12 @@ bool Actor::ActorHitOrMiss(Player *pPlayer) {
 
     v3 = 0;
     if (this->pActorBuffs[ACTOR_BUFF_HOUR_OF_POWER].Active())
-        v3 = this->pActorBuffs[ACTOR_BUFF_HOUR_OF_POWER].uPower;
+        v3 = this->pActorBuffs[ACTOR_BUFF_HOUR_OF_POWER].power;
     if (this->pActorBuffs[ACTOR_BUFF_BLESS].Active() &&
-        this->pActorBuffs[ACTOR_BUFF_BLESS].uPower > v3)
-        v3 = this->pActorBuffs[ACTOR_BUFF_BLESS].uPower;
+        this->pActorBuffs[ACTOR_BUFF_BLESS].power > v3)
+        v3 = this->pActorBuffs[ACTOR_BUFF_BLESS].power;
     if (this->pActorBuffs[ACTOR_BUFF_FATE].Active()) {
-        v3 += this->pActorBuffs[ACTOR_BUFF_FATE].uPower;
+        v3 += this->pActorBuffs[ACTOR_BUFF_FATE].power;
         this->pActorBuffs[ACTOR_BUFF_FATE].Reset();
     }
     v4 = pPlayer->GetActualAC() + 2 * this->pMonsterInfo.uLevel + 10;
@@ -4013,7 +4013,7 @@ int Actor::CalcMagicalDamageToActor(DAMAGE_TYPE dmgType,
     v4 = 0;
     v5 = 0;
     if (this->pActorBuffs[ACTOR_BUFF_HOUR_OF_POWER].Active())
-        v5 = this->pActorBuffs[ACTOR_BUFF_HOUR_OF_POWER].uPower;
+        v5 = this->pActorBuffs[ACTOR_BUFF_HOUR_OF_POWER].power;
     switch (dmgType) {
         case DMGT_FIRE:
             v6 = this->pMonsterInfo.uResFire;
@@ -4476,9 +4476,9 @@ bool Detect_Between_Objects(unsigned int uObjID, unsigned int uObj2ID) {
         portalverts = &pIndoor->pVertices[*portalface->pVertexIDs];
 
         // fixpoint   ray ob1 to portal dot normal
-        float obj1portaldot = portalface->pFacePlane.vNormal.z * (portalverts->z - obj1_z) +
-              portalface->pFacePlane.vNormal.y * (portalverts->y - obj1_y) +
-              portalface->pFacePlane.vNormal.x * (portalverts->x - obj1_x);
+        float obj1portaldot = portalface->facePlane.normal.z * (portalverts->z - obj1_z) +
+                              portalface->facePlane.normal.y * (portalverts->y - obj1_y) +
+                              portalface->facePlane.normal.x * (portalverts->x - obj1_x);
 
         // flip norm if we are not looking out from current sector
         if (current_sector != portalface->uSectorID) obj1portaldot = -obj1portaldot;
@@ -4495,18 +4495,18 @@ bool Detect_Between_Objects(unsigned int uObjID, unsigned int uObj2ID) {
         }
 
         // dot plane normal with obj ray
-        float v32 = portalface->pFacePlane.vNormal.x * rayxnorm;
-        float v34 = portalface->pFacePlane.vNormal.y * rayynorm;
-        float v33 = portalface->pFacePlane.vNormal.z * rayznorm;
+        float v32 = portalface->facePlane.normal.x * rayxnorm;
+        float v34 = portalface->facePlane.normal.y * rayynorm;
+        float v33 = portalface->facePlane.normal.z * rayznorm;
 
         // if face is parallel == 0 dont check LOS  -- add epsilon?
         float facenotparallel = v32 + v33 + v34;
         if (facenotparallel) {
             // point to plance distance
-            float pointplanedist = -(portalface->pFacePlane.dist +
-                  obj1_z * portalface->pFacePlane.vNormal.z +
-                  obj1_x * portalface->pFacePlane.vNormal.x +
-                  obj1_y * portalface->pFacePlane.vNormal.y);
+            float pointplanedist = -(portalface->facePlane.dist +
+                  obj1_z * portalface->facePlane.normal.z +
+                  obj1_x * portalface->facePlane.normal.x +
+                  obj1_y * portalface->facePlane.normal.y);
 
             // epsilon check?
             if (abs(pointplanedist) / 16384.0 > abs(facenotparallel)) continue;

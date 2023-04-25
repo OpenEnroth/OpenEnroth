@@ -1519,7 +1519,7 @@ void sub_4B1523_showSpellbookInfo(ITEM_TYPE spellItemId) {
     a1.DrawMessageBox(0);
     a1.uFrameWidth -= 12;
     a1.uFrameHeight -= 12;
-    v7 = pSpellStats->pInfos[spellId].pName;
+    v7 = pSpellStats->pInfos[spellId].name;
     a1.uFrameZ = a1.uFrameX + a1.uFrameWidth - 1;
     a1.uFrameW = a1.uFrameHeight + a1.uFrameY - 1;
     v8 = colorTable.PaleCanary.c16();

@@ -1167,7 +1167,7 @@ void CharacterUI_StatsTab_ShowHint() {
         {
             v15 = pParty->activeCharacter().uLevel;
             do {
-                if (pParty->activeCharacter().uExperience < GetExperienceRequiredForLevel(v15))
+                if (pParty->activeCharacter().experience < GetExperienceRequiredForLevel(v15))
                     break;
                 ++v15;
             } while (v15 <= 10000);
@@ -1179,7 +1179,7 @@ void CharacterUI_StatsTab_ShowHint() {
                     LSTR_ELIGIBLE_TO_LEVELUP, v15);
             str2 = localization->FormatString(
                 LSTR_XP_UNTIL_NEXT_LEVEL,
-                (int)(GetExperienceRequiredForLevel(v15) - pParty->activeCharacter().uExperience),
+                (int)(GetExperienceRequiredForLevel(v15) - pParty->activeCharacter().experience),
                 v15 + 1);
             str1 += "\n" + str2;
 
@@ -1327,7 +1327,7 @@ void DrawSpellDescriptionPopup(int spell_index_in_book) {
     spell_info_window.uFrameZ = spell_info_window.uFrameX + spell_info_window.uFrameWidth - 1;
     spell_info_window.uFrameW = spell_info_window.uFrameHeight + spell_info_window.uFrameY - 1;
     spell_info_window.DrawTitleText(
-        pFontArrus, 0x78u, 0xCu, colorTable.PaleCanary.c16(), spell->pName, 3);
+        pFontArrus, 0x78u, 0xCu, colorTable.PaleCanary.c16(), spell->name, 3);
     spell_info_window.DrawText(pFontSmallnum, {120, 44}, 0, str, 0, 0, 0);
     spell_info_window.uFrameWidth = 108;
     spell_info_window.uFrameZ = spell_info_window.uFrameX + 107;
@@ -1391,7 +1391,7 @@ void UI_OnMouseRightClick(int mouse_x, int mouse_y) {
                 static std::string hint_reference;
                 hint_reference = localization->FormatString(
                     LSTR_FMT_S_IS_IN_NO_CODITION_TO_S,
-                    pParty->activeCharacter().pName.c_str(),
+                    pParty->activeCharacter().name.c_str(),
                     localization->GetString(LSTR_IDENTIFY_ITEMS)
                 );
 
@@ -1615,7 +1615,7 @@ void UI_OnMouseRightClick(int mouse_x, int mouse_y) {
                             break;
                         case UIMSG_PlayerCreation_SelectAttribute:  // Character
                                                                     // info
-                            pStr = pParty->pPlayers[pButton->msg_param].pName.c_str();
+                            pStr = pParty->pPlayers[pButton->msg_param].name.c_str();
                             popup_window
                                 .sHint = localization->GetClassDescription(
                                 pParty->pPlayers[pButton->msg_param].classType);
@@ -1793,7 +1793,7 @@ void Inventory_ItemPopupAndAlchemy() {  // needs cleaning
         static std::string hint_reference;
         hint_reference = localization->FormatString(
             LSTR_FMT_S_IS_IN_NO_CODITION_TO_S,
-            pParty->activeCharacter().pName.c_str(),
+            pParty->activeCharacter().name.c_str(),
             localization->GetString(LSTR_IDENTIFY_ITEMS)
         );
 

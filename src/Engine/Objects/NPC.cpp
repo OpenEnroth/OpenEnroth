@@ -1188,13 +1188,13 @@ int UseNPCSkill(NPCProf profession, int id) {
     switch (profession) {
         case Healer: {
             for (Player &player : pParty->pPlayers) {
-                player.sHealth = player.GetMaxHealth();
+                player.health = player.GetMaxHealth();
             }
         } break;
 
         case ExpertHealer: {
             for (Player &player : pParty->pPlayers) {
-                player.sHealth = player.GetMaxHealth();
+                player.health = player.GetMaxHealth();
 
                 for (Condition condition : standardConditionsExcludeDead) {
                     player.conditions.Reset(condition);
@@ -1204,7 +1204,7 @@ int UseNPCSkill(NPCProf profession, int id) {
 
         case MasterHealer: {
             for (Player &player : pParty->pPlayers) {
-                player.sHealth = player.GetMaxHealth();
+                player.health = player.GetMaxHealth();
 
                 for (Condition condition : standardConditionsIncludeDead) {
                     // Master healer heals all except Eradicated and zombie
