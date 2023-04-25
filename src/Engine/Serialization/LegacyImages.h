@@ -63,7 +63,7 @@ void Deserialize(const SpriteFrame_MM7 &src, SpriteFrame *dst);
 
 struct BLVFace_MM7 {
     Planef facePlane;
-    Planei facePlane_old;
+    Planei facePlaneOld;
     int32_t zCalc1;
     int32_t zCalc2;
     int32_t zCalc3;

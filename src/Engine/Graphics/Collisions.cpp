@@ -335,7 +335,6 @@ void CollideOutdoorWithModels(bool ignore_ethereal) {
 
             // TODO: we should really either merge two face classes, or template the functions down the chain call here.
             BLVFace face;
-            face.facePlane_old = mface.facePlane_old;
             face.facePlane = mface.facePlane;
             face.uAttributes = mface.uAttributes;
             face.pBounding = mface.pBoundingBox;

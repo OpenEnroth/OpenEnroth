@@ -1,6 +1,7 @@
 #include "Engine/Graphics/Indoor.h"
 
 #include <algorithm>
+#include <limits>
 
 #include "Engine/Engine.h"
 #include "Engine/EngineGlobals.h"
@@ -155,7 +156,6 @@ void IndoorLocation::Draw() {
 
 //----- (004C0EF2) --------------------------------------------------------
 void BLVFace::FromODM(ODMFace *face) {
-    this->facePlane_old = face->facePlane_old;
     this->facePlane = face->facePlane;
     this->uAttributes = face->uAttributes;
     this->pBounding = face->pBoundingBox;
@@ -692,63 +692,57 @@ int IndoorLocation::GetSector(int sX, int sY, int sZ) {
 }
 
 //----- (00498A41) --------------------------------------------------------
-void BLVFace::_get_normals(Vec3i *a2, Vec3i *a3) {
+void BLVFace::_get_normals(Vec3f *outU, Vec3f *outV) {
+    // TODO(captainurist): code looks very similar to Camera3D::GetFacetOrientation
     if (this->uPolygonType == POLYGON_VerticalWall) {
-        a2->x = -this->facePlane_old.normal.y;
-        a2->y = this->facePlane_old.normal.x;
-        a2->z = 0;
+        outU->x = -this->facePlane.normal.y;
+        outU->y = this->facePlane.normal.x;
+        outU->z = 0;
 
-        a3->x = 0;
-        a3->y = 0;
-        a3->z = 0xFFFF0000u;
+        outV->x = 0;
+        outV->y = 0;
+        outV->z = -1;
 
     } else if (this->uPolygonType == POLYGON_Floor ||
                this->uPolygonType == POLYGON_Ceiling) {
-        a2->x = 0x10000u;
-        a2->y = 0;
-        a2->z = 0;
+        outU->x = 1;
+        outU->y = 0;
+        outU->z = 0;
 
-        a3->x = 0;
-        a3->y = 0xFFFF0000u;
-        a3->z = 0;
+        outV->x = 0;
+        outV->y = -1;
+        outV->z = 0;
 
-    } else if (this->uPolygonType == POLYGON_InBetweenFloorAndWall ||
-               this->uPolygonType == POLYGON_InBetweenCeilingAndWall) {
-        if (abs(this->facePlane_old.normal.z) < 46441) {
-            Vec3f a1;
-            a1.x = (double)-this->facePlane_old.normal.y;
-            a1.y = (double)this->facePlane_old.normal.x;
-            a1.z = 0.0;
-            a1.normalize();
+    } else if (this->uPolygonType == POLYGON_InBetweenFloorAndWall || this->uPolygonType == POLYGON_InBetweenCeilingAndWall) {
+        if (abs(this->facePlane.normal.z) < 0.70863342285f) { // Was 46441 fixpoint
+            outU->x = -this->facePlane.normal.y;
+            outU->y = this->facePlane.normal.x;
+            outU->z = 0;
+            outU->normalize();
 
-            a2->x = (int64_t)(a1.x * 65536.0);
-            a2->y = (int64_t)(a1.y * 65536.0);
-            a2->z = 0;
-
-            a3->y = 0;
-            a3->z = 0xFFFF0000u;
-            a3->x = 0;
-
+            outV->y = 0;
+            outV->z = -1;
+            outV->x = 0;
         } else {
-            a2->x = 0x10000u;
-            a2->y = 0;
-            a2->z = 0;
+            outU->x = 1;
+            outU->y = 0;
+            outU->z = 0;
 
-            a3->x = 0;
-            a3->y = 0xFFFF0000u;
-            a3->z = 0;
+            outV->x = 0;
+            outV->y = -1;
+            outV->z = 0;
         }
     }
     // LABEL_12:
     if (this->uAttributes & FACE_FlipNormalU) {
-        a2->x = -a2->x;
-        a2->y = -a2->y;
-        a2->z = -a2->z;
+        outU->x = -outU->x;
+        outU->y = -outU->y;
+        outU->z = -outU->z;
     }
     if (this->uAttributes & FACE_FlipNormalV) {
-        a3->x = -a3->x;
-        a3->y = -a3->y;
-        a3->z = -a3->z;
+        outV->x = -outV->x;
+        outV->y = -outV->y;
+        outV->z = -outV->z;
     }
     return;
 }
@@ -891,32 +885,6 @@ bool BLVFaceExtra::HasEventHint() {
 
 //----- (0046F228) --------------------------------------------------------
 void BLV_UpdateDoors() {
-    // signed int v20;      // eax@24
-    int v24;             // esi@25
-    int v25;             // eax@25
-    int64_t v27 {};  // qtt@27
-    BLVFaceExtra *v28;   // esi@32
-    int v32;             // eax@34
-    Vec3s *v34;    // eax@35
-    int v35;             // ecx@35
-    int v36;             // edx@35
-    signed int v37;      // eax@35
-    signed int v38;      // edx@35
-    int v39;             // eax@35
-    int v40;             // edx@35
-    Vec3s *v43;    // edi@36
-    int v57;             // eax@58
-    Vec3i v67;
-    Vec3i v70;
-    int v75;               // [sp+28h] [bp-3Ch]@36
-    int v76;               // [sp+2Ch] [bp-38h]@36
-    int v77;               // [sp+30h] [bp-34h]@36
-    int v82;               // [sp+44h] [bp-20h]@35
-    int v83;               // [sp+48h] [bp-1Ch]@34
-    int v84;               // [sp+4Ch] [bp-18h]@34
-    int j;               // [sp+5Ch] [bp-8h]@18
-    int open_distance;     // [sp+60h] [bp-4h]@6
-
     SoundID eDoorSoundID = (SoundID)pDoorSoundIDsByLocationID[dword_6BE13C_uCurrentlyLoadedLocationID];
 
     // loop over all doors
@@ -928,154 +896,94 @@ void BLV_UpdateDoors() {
             door->uAttributes &= ~DOOR_SETTING_UP;
             continue;
         }
+        bool shouldPlaySound = !(door->uAttributes & (DOOR_SETTING_UP | DOOR_NOSOUND)) && door->uNumVertices != 0;
 
         door->uTimeSinceTriggered += pEventTimer->uTimeElapsed;
+
+        int openDistance;     // [sp+60h] [bp-4h]@6
         if (door->uState == BLVDoor::Opening) {
-            open_distance = (door->uTimeSinceTriggered * door->uCloseSpeed) / 128;
-            if (open_distance >= door->uMoveLength) {
-                open_distance = door->uMoveLength;
+            openDistance = (door->uTimeSinceTriggered * door->uCloseSpeed) / 128;
+
+            if (openDistance >= door->uMoveLength) {
+                openDistance = door->uMoveLength;
                 door->uState = BLVDoor::Open;
-                if (!(door->uAttributes & (DOOR_SETTING_UP | DOOR_NOSOUND)) && door->uNumVertices != 0)
+                if (shouldPlaySound)
                     pAudioPlayer->playSound((SoundID)((int)eDoorSoundID + 1), PID(OBJECT_Door, i));
-            } else if (!(door->uAttributes & (DOOR_SETTING_UP | DOOR_NOSOUND)) && door->uNumVertices != 0) {
+            } else if (shouldPlaySound) {
                 pAudioPlayer->playSound(eDoorSoundID, PID(OBJECT_Door, i), 1);
             }
-        } else {  // door closing
-            signed int v5 = (signed int)(door->uTimeSinceTriggered * door->uOpenSpeed) / 128;
-            if (v5 >= door->uMoveLength) {
-                open_distance = 0;
+        } else {
+            assert(door->uState == BLVDoor::Closing);
+
+            int closeDistance = (door->uTimeSinceTriggered * door->uOpenSpeed) / 128;
+            if (closeDistance >= door->uMoveLength) {
+                openDistance = 0;
                 door->uState = BLVDoor::Closed;
-                if (!(door->uAttributes & (DOOR_SETTING_UP | DOOR_NOSOUND)) && door->uNumVertices != 0)
+                if (shouldPlaySound)
                     pAudioPlayer->playSound((SoundID)((int)eDoorSoundID + 1), PID(OBJECT_Door, i));
             } else {
-                open_distance = door->uMoveLength - v5;
-                if (!(door->uAttributes & (DOOR_SETTING_UP | DOOR_NOSOUND)) && door->uNumVertices != 0)
+                openDistance = door->uMoveLength - closeDistance;
+                if (shouldPlaySound)
                     pAudioPlayer->playSound(eDoorSoundID, PID(OBJECT_Door, i), 1);
             }
         }
 
         // adjust verts to how open the door is
-        for (uint j = 0; j < door->uNumVertices; ++j) {
+        for (int j = 0; j < door->uNumVertices; ++j) {
             pIndoor->pVertices[door->pVertexIDs[j]].x =
-                fixpoint_mul(door->vDirection.x, open_distance) + door->pXOffsets[j];
+                fixpoint_mul(door->vDirection.x, openDistance) + door->pXOffsets[j];
             pIndoor->pVertices[door->pVertexIDs[j]].y =
-                fixpoint_mul(door->vDirection.y, open_distance) + door->pYOffsets[j];
+                fixpoint_mul(door->vDirection.y, openDistance) + door->pYOffsets[j];
             pIndoor->pVertices[door->pVertexIDs[j]].z =
-                fixpoint_mul(door->vDirection.z, open_distance) + door->pZOffsets[j];
+                fixpoint_mul(door->vDirection.z, openDistance) + door->pZOffsets[j];
         }
 
-
-        for (j = 0; j < door->uNumFaces; ++j) {
+        for (int j = 0; j < door->uNumFaces; ++j) {
             BLVFace *face = &pIndoor->pFaces[door->pFaceIDs[j]];
-            Vec3s *v17 = &pIndoor->pVertices[face->pVertexIDs[0]];
-            face->facePlane_old.dist = -dot(*v17, face->facePlane_old.normal);
-            face->facePlane.dist = -dot(v17->toFloat(), face->facePlane.normal);
-            if (face->facePlane_old.normal.z) {
-                v24 = abs(face->facePlane_old.dist >> 15);
-                v25 = abs(face->facePlane_old.normal.z);
-                if (v24 > v25)
-                    Error(
-                        "Door Error\ndoor id: %i\nfacet no: %i\n\nOverflow "
-                        "dividing facet->d [%i] by facet->nz [%i]",
-                        door->uDoorID, door->pFaceIDs[j],
-                        face->facePlane_old.dist,
-                        face->facePlane_old.normal.z);
-                HEXRAYS_LODWORD(v27) = face->facePlane_old.dist << 16;
-                HEXRAYS_HIDWORD(v27) = face->facePlane_old.dist >> 16;
-                face->zCalc.c = -v27 / face->facePlane_old.normal.z;
+            const Vec3s &facePoint = pIndoor->pVertices[face->pVertexIDs[0]];
+            face->facePlane.dist = -dot(facePoint.toFloat(), face->facePlane.normal);
+            face->zCalc.init(face->facePlane);
+
+            Vec3f v;
+            Vec3f u;
+            face->_get_normals(&u, &v);
+            BLVFaceExtra *extras = &pIndoor->pFaceExtras[face->uFaceExtraID];
+            extras->sTextureDeltaU = 0;
+            extras->sTextureDeltaV = 0;
+
+            float minU = std::numeric_limits<float>::max();
+            float minV = std::numeric_limits<float>::max();
+            float maxU = std::numeric_limits<float>::min();
+            float maxV = std::numeric_limits<float>::min();
+            for (uint k = 0; k < face->uNumVertices; ++k) {
+                Vec3f point = pIndoor->pVertices[face->pVertexIDs[k]].toFloat();
+                float pointU = dot(point, u);
+                float pointV = dot(point, v);
+                minU = std::min(minU, pointU);
+                minV = std::min(minV, pointV);
+                maxU = std::max(maxU, pointU);
+                maxV = std::max(maxV, pointV);
+                face->pVertexUIDs[k] = pointU;
+                face->pVertexVIDs[k] = pointV;
             }
-            // if ( face->uAttributes & FACE_TexMoveByDoor || render->pRenderD3D
-            // )
-            face->_get_normals(&v70, &v67);
-            v28 = &pIndoor->pFaceExtras[face->uFaceExtraID];
-            /*if ( !render->pRenderD3D )
-            {
-            if ( !(face->uAttributes & FACE_TexMoveByDoor) )
-            continue;
-            v83 = (uint64_t)(door->vDirection.x * (int64_t)v70.x)
-            >> 16; v85 = (uint64_t)(door->vDirection.y * (signed
-            int64_t)v70.y) >> 16; v84 = (uint64_t)(door->vDirection.z *
-            (int64_t)v70.z) >> 16; v29 = open_distance; v28->sTextureDeltaU =
-            -((v83 + v85 + v84) * (int64_t)open_distance) >> 16; v85 = (unsigned
-            int64_t)(door->vDirection.x * (int64_t)v67.x) >> 16; v83 =
-            (uint64_t)(door->vDirection.y * (int64_t)v67.y) >>
-            16; v84 = (uint64_t)(door->vDirection.z * (signed
-            int64_t)v67.z) >> 16; v31 = (v85 + v83 + v84) * (int64_t)v29;
-            v32 = v31 >> 16;
-            v57 = -v32;
-            v28->sTextureDeltaV = v57;
-            v28->sTextureDeltaU += door->pDeltaUs[j];
-            v28->sTextureDeltaV = v57 + door->pDeltaVs[j];
-            continue;
-            }*/
-            v28->sTextureDeltaU = 0;
-            v28->sTextureDeltaV = 0;
-            v34 = &pIndoor->pVertices[face->pVertexIDs[0]];
-            v35 = v34->z;
-            v36 = v34->y;
-            v82 = v34->x;
-            v37 = v70.x * v82 + v70.y * v36 + v70.z * v35;
-            v38 = v67.x * v82 + v67.y * v36 + v67.z * v35;
-            v39 = v37 >> 16;
-            *face->pVertexUIDs = v39;
-            v40 = v38 >> 16;
-            *face->pVertexVIDs = v40;
-            v84 = v39;
-            v82 = v40;
-            for (uint j = 1; j < face->uNumVertices; ++j) {
-                v43 = &pIndoor->pVertices[face->pVertexIDs[j]];
-                v76 = ((int64_t)v70.z * v43->z + (int64_t)v70.x * v43->x +
-                       (int64_t)v70.y * v43->y) >>
-                      16;
-                v77 = ((int64_t)v67.x * v43->x + (int64_t)v67.y * v43->y +
-                       (int64_t)v43->z * v67.z) >>
-                      16;
-                if (v76 < v39) v39 = v76;
-                if (v77 < v40) v40 = v77;
-                if (v76 > v84) v84 = v76;
-                if (v77 > v82) v82 = v77;
-                face->pVertexUIDs[j] = v76;
-                face->pVertexVIDs[j] = v77;
-            }
+
             if (face->uAttributes & FACE_TexAlignLeft) {
-                v28->sTextureDeltaU -= v39;
-            } else {
-                if (face->uAttributes & FACE_TexAlignRight) {
-                    if (face->resource) {
-                        // v28->sTextureDeltaU -= v84 +
-                        // pBitmaps_LOD->pTextures[face->uBitmapID].uTextureWidth;
-                        v28->sTextureDeltaU -=
-                            v84 + ((Texture *)face->resource)->GetWidth();
-                    }
-                }
+                extras->sTextureDeltaU -= minU;
+            } else if (face->uAttributes & FACE_TexAlignRight && face->resource) {
+                extras->sTextureDeltaU -= maxU + ((Texture *)face->resource)->GetWidth();
             }
+
             if (face->uAttributes & FACE_TexAlignDown) {
-                v28->sTextureDeltaV -= v40;
-            } else {
-                if (face->uAttributes & FACE_TexAlignBottom) {
-                    v28->sTextureDeltaV -=
-                        v84 + ((Texture *)face->resource)->GetHeight();
-                    // if (face->uBitmapID != -1)
-                    //    v28->sTextureDeltaV -= v82 +
-                    //    pBitmaps_LOD->GetTexture(face->uBitmapID)->uTextureHeight;
-                }
+                extras->sTextureDeltaV -= minV;
+            } else if (face->uAttributes & FACE_TexAlignBottom && face->resource) {
+                extras->sTextureDeltaV -= maxU + ((Texture *)face->resource)->GetHeight();
             }
+
             if (face->uAttributes & FACE_TexMoveByDoor) {
-                v84 = fixpoint_mul(door->vDirection.x, v70.x);
-                v82 = fixpoint_mul(door->vDirection.y, v70.y);
-                v83 = fixpoint_mul(door->vDirection.z, v70.z);
-                v75 = v84 + v82 + v83;
-                v82 = fixpoint_mul(v75, open_distance);
-                v28->sTextureDeltaU = -v82;
-                v84 = fixpoint_mul(door->vDirection.x, v67.x);
-                v82 = fixpoint_mul(door->vDirection.y, v67.y);
-                v83 = fixpoint_mul(door->vDirection.z, v67.z);
-                v75 = v84 + v82 + v83;
-                v32 = fixpoint_mul(v75, open_distance);
-                v57 = -v32;
-                v28->sTextureDeltaV = v57;
-                v28->sTextureDeltaU += door->pDeltaUs[j];
-                v28->sTextureDeltaV = v57 + door->pDeltaVs[j];
+                float udot = dot(door->vDirection.toFloatFromFixpoint(), u);
+                float vdot = dot(door->vDirection.toFloatFromFixpoint(), v);
+                extras->sTextureDeltaU = -udot * openDistance + door->pDeltaUs[j];
+                extras->sTextureDeltaV = -vdot * openDistance + door->pDeltaVs[j];
             }
         }
     }
@@ -1160,7 +1068,7 @@ void UpdateActors_BLV() {
                     actor.vVelocity.z = 0;
             } else {
                 // fixpoint(45000) = 0.68664550781, no idea what the actual semantics here is.
-                if (pIndoor->pFaces[uFaceID].facePlane_old.normal.z < 45000)
+                if (pIndoor->pFaces[uFaceID].facePlane.normal.z < 0.68664550781f) // was 45000 fixpoint
                     actor.vVelocity.z -= pEventTimer->uTimeElapsed * GetGravityStrength();
             }
         } else {
@@ -1642,17 +1550,8 @@ bool Check_LineOfSight(const Vec3i &target, const Vec3i &from) {  // target from
 }
 
 bool Check_LOS_Obscurred_Indoors(const Vec3i &target, const Vec3i &from) {  // true if obscurred
-    int dist_x = from.x - target.x;
-    int dist_y = from.y - target.y;
-    int dist_z = from.z - target.z;
-
-    int distance = integer_sqrt(dist_x * dist_x + dist_y * dist_y + dist_z * dist_z);
-    int fp_normalisation = 65536;
-    if (distance) fp_normalisation = 65536 / distance;
-
-    int fp_dist_x_normed = dist_x * fp_normalisation;
-    int fp_dist_y_normed = dist_y * fp_normalisation;
-    int fp_dist_z_normed = dist_z * fp_normalisation;
+    Vec3f dir = (from - target).toFloat();
+    dir.normalize();
 
     int max_x = std::max(from.x, target.x);
     int min_x = std::min(from.x, target.x);
@@ -1675,11 +1574,8 @@ bool Check_LOS_Obscurred_Indoors(const Vec3i &target, const Vec3i &from) {  // t
             BLVFace *face = &pIndoor->pFaces[pIndoor->pSectors[SectargetrID].pFaceIDs[FaceLoop]];
 
             // dot product
-            int x_dot = fixpoint_mul(fp_dist_x_normed, face->facePlane_old.normal.x);
-            int y_dot = fixpoint_mul(fp_dist_y_normed, face->facePlane_old.normal.y);
-            int z_dot = fixpoint_mul(fp_dist_z_normed, face->facePlane_old.normal.z);
-            int sumdot = x_dot + y_dot + z_dot;
-            bool FaceIsParallel = (sumdot == 0);
+            float dirDotNormal = dot(dir, face->facePlane.normal);
+            bool FaceIsParallel = fuzzyIsNull(dirDotNormal);
 
             // skip further checks
             if (face->Portal() || min_x > face->pBounding.x2 ||
@@ -1688,9 +1584,9 @@ bool Check_LOS_Obscurred_Indoors(const Vec3i &target, const Vec3i &from) {  // t
                 max_z < face->pBounding.z1 || FaceIsParallel)
                 continue;
 
-            int NegFacePlaceDist = -face->facePlane_old.signedDistanceToAsFixpoint(target.x, target.y, target.z);
+            float NegFacePlaceDist = -face->facePlane.signedDistanceTo(target.toFloat());
             // are we on same side of plane
-            if (sumdot <= 0) {
+            if (dirDotNormal <= 0) {
                 if (NegFacePlaceDist > 0)
                     continue;
             } else {
@@ -1698,15 +1594,12 @@ bool Check_LOS_Obscurred_Indoors(const Vec3i &target, const Vec3i &from) {  // t
                     continue;
             }
 
-            int EpsilonCheck = abs(NegFacePlaceDist) >> 14;
-            if (EpsilonCheck <= abs(sumdot)) {
-                int IntersectionDist = fixpoint_div(NegFacePlaceDist, sumdot);
+            // TODO(captainurist): what's going on in this check?
+            if (abs(NegFacePlaceDist) / 16384.0f <= abs(dirDotNormal)) {
+                float IntersectionDist = NegFacePlaceDist / dirDotNormal;
                 // less than zero means intersection is behind target point
                 if (IntersectionDist >= 0) {
-                    Vec3i pos = Vec3i(
-                        target.x + ((signed int)(fixpoint_mul(IntersectionDist, fp_dist_x_normed) + 0x8000) >> 16),
-                        target.y + ((signed int)(fixpoint_mul(IntersectionDist, fp_dist_y_normed) + 0x8000) >> 16),
-                        target.z + ((signed int)(fixpoint_mul(IntersectionDist, fp_dist_z_normed) + 0x8000) >> 16));
+                    Vec3i pos = target + (IntersectionDist * dir).toInt();
                     if (face->Contains(pos, MODEL_INDOOR)) {
                         return true;
                     }
@@ -1719,18 +1612,8 @@ bool Check_LOS_Obscurred_Indoors(const Vec3i &target, const Vec3i &from) {  // t
 }
 
 bool Check_LOS_Obscurred_Outdoors_Bmodels(const Vec3i &target, const Vec3i &from) {  // true is obscurred
-    int dist_x = from.x - target.x;
-    int dist_y = from.y - target.y;
-    int dist_z = from.z - target.z;
-
-    int distance = integer_sqrt(dist_x * dist_x + dist_y * dist_y + dist_z * dist_z);
-    int fp_normalisation = 65536;
-    if (distance) fp_normalisation = 65536 / distance;
-
-    // normalising
-    int fp_dist_x_normed = dist_x * fp_normalisation;
-    int fp_dist_y_normed = dist_y * fp_normalisation;
-    int fp_dist_z_normed = dist_z * fp_normalisation;
+    Vec3f dir = (from - target).toFloat();
+    dir.normalize();
 
     int max_x = std::max(from.x, target.x);
     int min_x = std::min(from.x, target.x);
@@ -1744,12 +1627,8 @@ bool Check_LOS_Obscurred_Outdoors_Bmodels(const Vec3i &target, const Vec3i &from
     for (BSPModel &model : pOutdoor->pBModels) {
         if (CalcDistPointToLine(target.x, target.y, from.x, from.y, model.vPosition.x, model.vPosition.y) <= model.sBoundingRadius + 128) {
             for (ODMFace &face : model.pFaces) {
-                // dot product
-                int x_dot = fixpoint_mul(fp_dist_x_normed, face.facePlane_old.normal.x);
-                int y_dot = fixpoint_mul(fp_dist_z_normed, face.facePlane_old.normal.y);
-                int z_dot = fixpoint_mul(fp_dist_y_normed, face.facePlane_old.normal.z);
-                int sumdot = x_dot + y_dot + z_dot;
-                bool FaceIsParallel = (sumdot == 0);
+                float dirDotNormal = dot(dir, face.facePlane.normal);
+                bool FaceIsParallel = fuzzyIsNull(dirDotNormal);
 
                 // bounds check
                 if (min_x > face.pBoundingBox.x2 ||
@@ -1761,10 +1640,10 @@ bool Check_LOS_Obscurred_Outdoors_Bmodels(const Vec3i &target, const Vec3i &from
                     continue;
 
                 // point target plane distacne
-                int NegFacePlaceDist = -face.facePlane_old.signedDistanceToAsFixpoint(target.x, target.y, target.z);
+                float NegFacePlaceDist = -face.facePlane.signedDistanceTo(target.toFloat());
 
                 // are we on same side of plane
-                if (sumdot <= 0) {
+                if (dirDotNormal <= 0) {
                     // angle obtuse - is target underneath plane
                     if (NegFacePlaceDist > 0)
                         continue;  // can never hit
@@ -1774,16 +1653,12 @@ bool Check_LOS_Obscurred_Outdoors_Bmodels(const Vec3i &target, const Vec3i &from
                         continue;  // can never hit
                 }
 
-                int EpsilonCheck = abs(NegFacePlaceDist) >> 14;
-                if (EpsilonCheck <= abs(sumdot)) {
+                if (abs(NegFacePlaceDist) / 16384.0f <= abs(dirDotNormal)) {
                     // calc how far along line interesction is
-                    int IntersectionDist = fixpoint_div(NegFacePlaceDist, sumdot);
+                    float IntersectionDist = NegFacePlaceDist /  dirDotNormal;
                     // less than zero means intersection is behind target point
                     if (IntersectionDist >= 0) {
-                        Vec3i pos = Vec3i(
-                            target.x + ((signed int)(fixpoint_mul(IntersectionDist, fp_dist_x_normed) + 0x8000) >> 16),
-                            target.y + ((signed int)(fixpoint_mul(IntersectionDist, fp_dist_y_normed) + 0x8000) >> 16),
-                            target.z + ((signed int)(fixpoint_mul(IntersectionDist, fp_dist_z_normed) + 0x8000) >> 16));
+                        Vec3i pos = target + (IntersectionDist * dir).toInt();
                         if (face.Contains(pos, model.index)) {
                             return true;
                         }
@@ -2112,7 +1987,7 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
             pParty->uFallStartZ = party_z;
         }
     } else {
-        if (pIndoor->pFaces[uFaceID].facePlane_old.normal.z < 0x8000) {
+        if (pIndoor->pFaces[uFaceID].facePlane.normal.z < 0.5) {
             pParty->uFallSpeed -= pEventTimer->uTimeElapsed * GetGravityStrength();
             pParty->uFallStartZ = party_z;
         } else {
@@ -2217,25 +2092,25 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
                     uFaceEvent = pIndoor->pFaceExtras[pFace->uFaceExtraID].uEventID;
             } else { // Not floor
                 int speed_dot_normal = abs(
-                    party_dx * pFace->facePlane_old.normal.x +
-                    party_dy * pFace->facePlane_old.normal.y +
-                    pParty->uFallSpeed * pFace->facePlane_old.normal.z) >> 16;
+                    party_dx * pFace->facePlane.normal.x +
+                    party_dy * pFace->facePlane.normal.y +
+                    pParty->uFallSpeed * pFace->facePlane.normal.z);
 
                 if ((collision_state.speed / 8) > speed_dot_normal)
                     speed_dot_normal = collision_state.speed / 8;
 
-                party_dx += fixpoint_mul(speed_dot_normal, pFace->facePlane_old.normal.x);
-                party_dy += fixpoint_mul(speed_dot_normal, pFace->facePlane_old.normal.y);
-                pParty->uFallSpeed += fixpoint_mul(speed_dot_normal, pFace->facePlane_old.normal.z);
+                party_dx += speed_dot_normal * pFace->facePlane.normal.x;
+                party_dy += speed_dot_normal * pFace->facePlane.normal.y;
+                pParty->uFallSpeed += speed_dot_normal * pFace->facePlane.normal.z;
 
                 if (pFace->uPolygonType != POLYGON_InBetweenFloorAndWall) { // wall / ceiling
-                    int distance_to_face = pFace->facePlane_old.signedDistanceTo(new_party_x, new_party_y, new_party_z_tmp) -
+                    int distance_to_face = pFace->facePlane.signedDistanceTo(Vec3f(new_party_x, new_party_y, new_party_z_tmp)) -
                                            collision_state.radius_lo;
                     if (distance_to_face < 0) {
                         // We're too close to the face, push back.
-                        new_party_x += fixpoint_mul(-distance_to_face, pFace->facePlane_old.normal.x);
-                        new_party_y += fixpoint_mul(-distance_to_face, pFace->facePlane_old.normal.y);
-                        new_party_z_tmp += fixpoint_mul(-distance_to_face, pFace->facePlane_old.normal.z);
+                        new_party_x += -distance_to_face * pFace->facePlane.normal.x;
+                        new_party_y += -distance_to_face * pFace->facePlane.normal.y;
+                        new_party_z_tmp += -distance_to_face * pFace->facePlane.normal.z;
                     }
                     if (pParty->floor_face_pid != PID_ID(collision_state.pid) && pFace->Pressure_Plate())
                         uFaceEvent = pIndoor->pFaceExtras[pFace->uFaceExtraID].uEventID;

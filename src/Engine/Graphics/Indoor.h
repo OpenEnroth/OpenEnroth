@@ -117,7 +117,7 @@ struct BLVDoor {  // 50h
     DoorAttributes uAttributes;
     uint32_t uDoorID;
     uint32_t uTimeSinceTriggered;
-    Vec3i vDirection;
+    Vec3i vDirection; // Fixpoint direction vector
     int32_t uMoveLength;
     int32_t uOpenSpeed;
     int32_t uCloseSpeed;
@@ -172,7 +172,7 @@ struct BLVFace {  // 60h
         this->pXInterceptDisplacements = nullptr;
     }
 
-    void _get_normals(Vec3i *a2, Vec3i *a3);
+    void _get_normals(Vec3f *outU, Vec3f *outV);
     void FromODM(struct ODMFace *face);
 
     void SetTexture(const std::string &filename);
@@ -229,8 +229,7 @@ struct BLVFace {  // 60h
     bool Contains(const Vec3i &pos, int model_idx, int slack = 0, FaceAttributes override_plane = 0) const;
 
     Planef facePlane;
-    Planei facePlane_old;
-    PlaneZCalcll zCalc;
+    PlaneZCalcf zCalc;
     FaceAttributes uAttributes;
     uint16_t *pVertexIDs = nullptr;
     int16_t *pXInterceptDisplacements;
@@ -239,7 +238,7 @@ struct BLVFace {  // 60h
     int16_t *pVertexUIDs = nullptr;
     int16_t *pVertexVIDs = nullptr;
     uint16_t uFaceExtraID;
-    void *resource{nullptr};  // uint16_t  uBitmapID;
+    void *resource = nullptr;  // uint16_t  uBitmapID;
     int texunit = -1;
     int texlayer = -1;
 
