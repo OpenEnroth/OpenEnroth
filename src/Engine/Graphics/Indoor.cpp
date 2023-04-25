@@ -156,7 +156,6 @@ void IndoorLocation::Draw() {
 
 //----- (004C0EF2) --------------------------------------------------------
 void BLVFace::FromODM(ODMFace *face) {
-    this->facePlane_old = face->facePlane_old;
     this->facePlane = face->facePlane;
     this->uAttributes = face->uAttributes;
     this->pBounding = face->pBoundingBox;
@@ -942,7 +941,6 @@ void BLV_UpdateDoors() {
         for (int j = 0; j < door->uNumFaces; ++j) {
             BLVFace *face = &pIndoor->pFaces[door->pFaceIDs[j]];
             const Vec3s &facePoint = pIndoor->pVertices[face->pVertexIDs[0]];
-            face->facePlane_old.dist = -dot(facePoint, face->facePlane_old.normal);
             face->facePlane.dist = -dot(facePoint.toFloat(), face->facePlane.normal);
             face->zCalc.init(face->facePlane);
 

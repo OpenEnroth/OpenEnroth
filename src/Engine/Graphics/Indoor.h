@@ -229,7 +229,6 @@ struct BLVFace {  // 60h
     bool Contains(const Vec3i &pos, int model_idx, int slack = 0, FaceAttributes override_plane = 0) const;
 
     Planef facePlane;
-    Planei facePlane_old;
     PlaneZCalcf zCalc;
     FaceAttributes uAttributes;
     uint16_t *pVertexIDs = nullptr;

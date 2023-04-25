@@ -115,8 +115,7 @@ void Deserialize(const SpriteFrame_MM7 &src, SpriteFrame *dst) {
 
 void Deserialize(const BLVFace_MM7 &src, BLVFace *dst) {
     dst->facePlane = src.facePlane;
-    dst->facePlane_old = src.facePlane_old;
-    dst->zCalc.init(dst->facePlane_old);
+    dst->zCalc.init(dst->facePlane);
     dst->uAttributes = static_cast<FaceAttributes>(src.attributes);
     dst->pVertexIDs = nullptr;
     dst->pXInterceptDisplacements = nullptr;
@@ -1429,13 +1428,12 @@ void Deserialize(const FontData_MM7 &src, size_t size, FontData *dst) {
 }
 
 void Deserialize(const ODMFace_MM7 &src, ODMFace *dst) {
-    dst->facePlane_old = src.facePlane;
-    dst->facePlane.normal.x = dst->facePlane_old.normal.x / 65536.0;
-    dst->facePlane.normal.y = dst->facePlane_old.normal.y / 65536.0;
-    dst->facePlane.normal.z = dst->facePlane_old.normal.z / 65536.0;
-    dst->facePlane.dist = dst->facePlane_old.dist / 65536.0;
+    dst->facePlane.normal.x = src.facePlane.normal.x / 65536.0;
+    dst->facePlane.normal.y = src.facePlane.normal.y / 65536.0;
+    dst->facePlane.normal.z = src.facePlane.normal.z / 65536.0;
+    dst->facePlane.dist = src.facePlane.dist / 65536.0;
 
-    dst->zCalc.init(dst->facePlane_old);
+    dst->zCalc.init(dst->facePlane);
     dst->uAttributes = FaceAttributes(src.attributes);
     dst->pVertexIDs = src.pVertexIDs;
     dst->pTextureUIDs = src.pTextureUIDs;
