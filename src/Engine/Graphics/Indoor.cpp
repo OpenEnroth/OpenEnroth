@@ -892,11 +892,6 @@ bool BLVFaceExtra::HasEventHint() {
 
 //----- (0046F228) --------------------------------------------------------
 void BLV_UpdateDoors() {
-    int v32;             // eax@34
-    int v57;             // eax@58
-    int v75;               // [sp+28h] [bp-3Ch]@36
-    int v83;               // [sp+48h] [bp-1Ch]@34
-
     SoundID eDoorSoundID = (SoundID)pDoorSoundIDsByLocationID[dword_6BE13C_uCurrentlyLoadedLocationID];
 
     // loop over all doors
@@ -999,46 +994,24 @@ void BLV_UpdateDoors() {
                 face->pVertexUIDs[k] = pointU;
                 face->pVertexVIDs[k] = pointV;
             }
-            
+
             if (face->uAttributes & FACE_TexAlignLeft) {
                 extras->sTextureDeltaU -= minU;
-            } else {
-                if (face->uAttributes & FACE_TexAlignRight) {
-                    if (face->resource) {
-                        // v28->sTextureDeltaU -= v84 +
-                        // pBitmaps_LOD->pTextures[face->uBitmapID].uTextureWidth;
-                        extras->sTextureDeltaU -=
-                            maxU + ((Texture *)face->resource)->GetWidth();
-                    }
-                }
+            } else if (face->uAttributes & FACE_TexAlignRight && face->resource) {
+                extras->sTextureDeltaU -= maxU + ((Texture *)face->resource)->GetWidth();
             }
+
             if (face->uAttributes & FACE_TexAlignDown) {
                 extras->sTextureDeltaV -= minV;
-            } else {
-                if (face->uAttributes & FACE_TexAlignBottom) {
-                    extras->sTextureDeltaV -=
-                        maxU + ((Texture *)face->resource)->GetHeight();
-                    // if (face->uBitmapID != -1)
-                    //    v28->sTextureDeltaV -= v82 +
-                    //    pBitmaps_LOD->GetTexture(face->uBitmapID)->uTextureHeight;
-                }
+            } else if (face->uAttributes & FACE_TexAlignBottom && face->resource) {
+                extras->sTextureDeltaV -= maxU + ((Texture *)face->resource)->GetHeight();
             }
+
             if (face->uAttributes & FACE_TexMoveByDoor) {
-                maxU = fixpoint_mul(door->vDirection.x, u.x);
-                maxV = fixpoint_mul(door->vDirection.y, u.y);
-                v83 = fixpoint_mul(door->vDirection.z, u.z);
-                v75 = maxU + maxV + v83;
-                maxV = fixpoint_mul(v75, openDistance);
-                extras->sTextureDeltaU = -maxV;
-                maxU = fixpoint_mul(door->vDirection.x, v.x);
-                maxV = fixpoint_mul(door->vDirection.y, v.y);
-                v83 = fixpoint_mul(door->vDirection.z, v.z);
-                v75 = maxU + maxV + v83;
-                v32 = fixpoint_mul(v75, openDistance);
-                v57 = -v32;
-                extras->sTextureDeltaV = v57;
-                extras->sTextureDeltaU += door->pDeltaUs[j];
-                extras->sTextureDeltaV = v57 + door->pDeltaVs[j];
+                int udot = fixpoint_mul(door->vDirection.x, u.x) + fixpoint_mul(door->vDirection.y, u.y) + fixpoint_mul(door->vDirection.z, u.z);
+                int vdot = fixpoint_mul(door->vDirection.x, v.x) + fixpoint_mul(door->vDirection.y, v.y) + fixpoint_mul(door->vDirection.z, v.z);
+                extras->sTextureDeltaU = -fixpoint_mul(udot, openDistance) + door->pDeltaUs[j];
+                extras->sTextureDeltaV = -fixpoint_mul(vdot, openDistance) + door->pDeltaVs[j];
             }
         }
     }

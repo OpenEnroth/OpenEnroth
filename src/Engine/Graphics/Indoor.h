@@ -239,7 +239,7 @@ struct BLVFace {  // 60h
     int16_t *pVertexUIDs = nullptr;
     int16_t *pVertexVIDs = nullptr;
     uint16_t uFaceExtraID;
-    void *resource{nullptr};  // uint16_t  uBitmapID;
+    void *resource = nullptr;  // uint16_t  uBitmapID;
     int texunit = -1;
     int texlayer = -1;
 
