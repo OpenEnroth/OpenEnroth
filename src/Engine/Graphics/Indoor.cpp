@@ -1449,7 +1449,9 @@ int BLV_GetFloorLevel(const Vec3i &pos, unsigned int uSectorID, unsigned int *pF
     // one face found
     if (FacesFound == 1) {
         *pFaceID = blv_floor_id[0];
-        if (blv_floor_z[0] <= -29000) __debugbreak();
+        if (blv_floor_z[0] <= -29000) {
+            /*__debugbreak();*/
+        }
         return blv_floor_z[0];
     }
 

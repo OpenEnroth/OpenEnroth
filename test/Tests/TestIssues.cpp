@@ -693,3 +693,8 @@ GAME_TEST(Issues, Issue691) {
     test->playTraceFromTestData("issue_691.mm7", "issue_691.json");
     EXPECT_EQ(current_screen_type, CURRENT_SCREEN::SCREEN_GAME);
 }
+
+GAME_TEST(Issues, Issue728) {
+    // mousing over facets with nonexisting events shouldn't crash the game
+    test->playTraceFromTestData("issue_728.mm7", "issue_728.json");
+}
