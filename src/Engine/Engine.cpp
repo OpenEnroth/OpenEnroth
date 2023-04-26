@@ -2,6 +2,7 @@
 #include "Engine/EngineGlobals.h"
 
 #include "Engine/Events.h"
+#include "Engine/Events/Processor.h"
 #include "Engine/Graphics/Camera.h"
 #include "Engine/Graphics/DecalBuilder.h"
 #include "Engine/Graphics/DecorationList.h"
@@ -810,7 +811,7 @@ void DoPrepareWorld(bool bLoading, int _1_fullscreen_loading_2_box) {
         }
     }
     bDialogueUI_InitializeActor_NPC_ID = 0;
-    OnMapLoad();
+    onMapLoad();
     pGameLoadingUI_ProgressBar->Progress();
     memset(&render->pBillboardRenderListD3D, 0,
            sizeof(render->pBillboardRenderListD3D));
@@ -2013,6 +2014,7 @@ void LoadLevel_InitializeLevelStr() {
 }
 
 //----- (00443F95) --------------------------------------------------------
+// TODO(Nik-RE-dev): remove when new even processor is fully active
 void OnMapLeave() {
     _evt_raw *test_event;
     if (uLevelEVT_NumEvents > 0) {
@@ -2031,6 +2033,7 @@ void OnMapLeave() {
 }
 
 //----- (00443FDC) --------------------------------------------------------
+// TODO(Nik-RE-dev): remove when new even processor is fully active
 void OnMapLoad() {
     int v6;                // eax@9
     int hours;             // ebx@26

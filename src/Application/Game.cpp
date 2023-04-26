@@ -20,6 +20,7 @@
 #include "Engine/EngineGlobals.h"
 #include "Engine/EngineFactory.h"
 #include "Engine/Events.h"
+#include "Engine/Events/Processor.h"
 #include "Engine/Graphics/DecalBuilder.h"
 #include "Engine/Graphics/IRender.h"
 #include "Engine/Graphics/IRenderFactory.h"
@@ -931,13 +932,11 @@ void Game::processQueuedMessages() {
                                 Party_Teleport_Z_Pos |
                                 Party_Teleport_Cam_Yaw |
                                 Party_Teleport_Cam_Pitch | v38;
-                            OnMapLeave();
-                            Transition_StopSound_Autosave(
-                                Party_Teleport_Map_Name,
-                                MapStartPoint_Party);
+                            onMapLeave();
+                            Transition_StopSound_Autosave(Party_Teleport_Map_Name, MapStartPoint_Party);
                         }
                     } else {
-                        EventProcessor(savedEventID, 0, 1, savedEventStep);
+                        eventProcessor(savedEventID, 0, 1, savedEventStep);
                     }
                     if (iequals(s_SavedMapName.data(), "d05.blv"))
                         pParty->GetPlayingTime().AddDays(4);
@@ -1020,7 +1019,7 @@ void Game::processQueuedMessages() {
                             bNoNPCHiring = 1;
                         PrepareToLoadODM(1u, (ODMRenderParams *)1);
                         bDialogueUI_InitializeActor_NPC_ID = 0;
-                        OnMapLoad();
+                        onMapLoad();
                         pOutdoor->SetFog();
                         TeleportToStartingPoint(uLevel_StartingPointType);
                         bool bOnWater = false;
@@ -1194,7 +1193,7 @@ void Game::processQueuedMessages() {
                     if (bRecallingBeacon) {
                         if (pCurrentMapName != pGames_LOD->GetSubNodeName(player.vBeacons[uMessageParam].SaveFileID)) {
                             SaveGame(1, 0);
-                            OnMapLeave();
+                            onMapLeave();
                             pCurrentMapName = pGames_LOD->GetSubNodeName(player.vBeacons[uMessageParam].SaveFileID);
                             dword_6BE364_game_settings_1 |= GAME_SETTINGS_0001;
                             uGameState = GAME_STATE_CHANGE_LOCATION;
@@ -1237,7 +1236,7 @@ void Game::processQueuedMessages() {
                         pParty->_viewYaw = TownPortalList[uMessageParam]._viewYaw;
                         pParty->_viewPitch = TownPortalList[uMessageParam]._viewPitch;
                     } else {  // if change map
-                        OnMapLeave();
+                        onMapLeave();
                         dword_6BE364_game_settings_1 |= GAME_SETTINGS_0001;
                         uGameState = GAME_STATE_CHANGE_LOCATION;
                         pCurrentMapName = pMapStats->pInfos[TownPortalList[uMessageParam].uMapInfoID].pFilename;
@@ -1367,7 +1366,7 @@ void Game::processQueuedMessages() {
                             pCurrentMapName = map_name;
                             dword_6BE364_game_settings_1 |= GAME_SETTINGS_0001;
                             uGameState = GAME_STATE_CHANGE_LOCATION;
-                            OnMapLeave();
+                            onMapLeave();
                             continue;
                         }
                         status_string = fmt::format("No map found for {}", pMapStats->pInfos[map_index].pName);

@@ -15,15 +15,19 @@
 #include "Engine/Objects/SpriteObject.h"
 #include "Engine/Objects/ItemTable.h"
 #include "Engine/Engine.h"
+#include "Engine/LOD.h"
 #include "Engine/mm7_data.h"
 
 #include "Media/Audio/AudioPlayer.h"
 #include "Media/MediaPlayer.h"
 
+#include "Utility/Math/TrigLut.h"
+
 #include "GUI/GUIWindow.h"
 #include "GUI/GUIProgressBar.h"
 #include "GUI/UI/UIHouses.h"
 #include "GUI/UI/UIDialogue.h"
+#include "GUI/UI/UITransition.h"
 #include "GUI/UI/UIStatusBar.h"
 
 static std::string getVariableSetStr(VariableType type, int value) {
@@ -777,14 +781,11 @@ std::string EventIR::toString() const {
         case EVENT_CheckSkill:
              return fmt::format("{}: CheckSkill({}, {}, {}) -> {}", step, std::to_underlying(data.check_skill_descr.skill_type), std::to_underlying(data.check_skill_descr.skill_mastery), data.check_skill_descr.skill_level, target_step);
         case EVENT_OnCanShowDialogItemCmp:
-            // TODO
-            break;
+            return fmt::format("{}: OnCanShowDialogItemCmp({}) -> {}", step, getVariableCompareStr(data.variable_descr.type, data.variable_descr.value), target_step);
         case EVENT_EndCanShowDialogItem:
-            // TODO
-            break;
+            return fmt::format("{}: EndCanShowDialogItem", step);
         case EVENT_SetCanShowDialogItem:
-            // TODO
-            break;
+            return fmt::format("{}: SetCanShowDialogItem({})", step, data.can_show_npc_dialogue);
         case EVENT_SetNPCGroupNews:
             return fmt::format("{}: SetNPCGroupNews({}, {})", step, data.npc_groups_descr.groups_id, data.npc_groups_descr.group);
         case EVENT_SetActorGroup:
@@ -797,8 +798,7 @@ std::string EventIR::toString() const {
         case EVENT_IsActorAlive:
             return fmt::format("{}: IsActorAlive({}, {}, {}) -> {}", step, data.actor_descr.type, data.actor_descr.param, data.actor_descr.num, target_step);
         case EVENT_IsActorAssasinated:
-            // TODO
-            break;
+            return fmt::format("{}: IsActorAssasinated({}, {}, {}) -> {}", step, data.actor_descr.type, data.actor_descr.param, data.actor_descr.num, target_step);
         case EVENT_OnMapLeave:
             return fmt::format("{}: OnMapLeave", step);
         case EVENT_ChangeGroup:
@@ -912,7 +912,7 @@ EventIR EventIR::parse(void *data, size_t maxSize) {
             break;
         case EVENT_SetSprite:
             ir.data.sprite_texture_descr.cog = EVT_DWORD(_evt->v5);
-            ir.data.sprite_texture_descr.hide = _evt->v6;
+            ir.data.sprite_texture_descr.hide = _evt->v9;
             ir.str = (char *)&_evt->v10;
             break;
         case EVENT_Compare:
@@ -1049,13 +1049,14 @@ EventIR EventIR::parse(void *data, size_t maxSize) {
             ir.target_step = _evt->v11;
             break;
         case EVENT_OnCanShowDialogItemCmp:
-            // TODO
+            ir.target_step = _evt->v11;
+            ir.data.variable_descr.type = (enum VariableType)EVT_WORD(_evt->v5);
+            ir.data.variable_descr.value = EVT_DWORD(_evt->v7);
             break;
         case EVENT_EndCanShowDialogItem:
-            // TODO
             break;
         case EVENT_SetCanShowDialogItem:
-            // TODO
+            ir.data.can_show_npc_dialogue = EVT_BYTE(_evt->v5);
             break;
         case EVENT_SetNPCGroupNews:
             ir.data.npc_groups_descr.groups_id = EVT_DWORD(_evt->v5);
@@ -1077,9 +1078,13 @@ EventIR EventIR::parse(void *data, size_t maxSize) {
             ir.data.actor_descr.type = _evt->v5;
             ir.data.actor_descr.param = EVT_DWORD(_evt->v6);
             ir.data.actor_descr.num = _evt->v10;
+            ir.target_step = _evt->v11;
             break;
         case EVENT_IsActorAssasinated:
-            // TODO
+            ir.data.actor_descr.type = _evt->v5;
+            ir.data.actor_descr.param = EVT_DWORD(_evt->v6);
+            ir.data.actor_descr.num = _evt->v10;
+            ir.target_step = _evt->v11;
             break;
         case EVENT_OnMapLeave:
             // Nothing?
@@ -1199,7 +1204,7 @@ bool doForChosenPlayer(PLAYER_CHOOSE_POLICY who, RandomEngine *rng, std::functio
     return false;
 }
 
-int EventIR::execute(bool canShowMessages, PLAYER_CHOOSE_POLICY *who, bool *mapExitTriggered) const {
+int EventIR::execute(int eventId, bool canShowMessages, PLAYER_CHOOSE_POLICY *who, bool *mapExitTriggered, bool *canShowOption) const {
     *mapExitTriggered = false;
 
     switch (type) {
@@ -1219,14 +1224,78 @@ int EventIR::execute(bool canShowMessages, PLAYER_CHOOSE_POLICY *who, bool *mapE
             pAudioPlayer->playSound(data.sound_descr.sound_id, 0, 0, data.sound_descr.x, data.sound_descr.y, 0);
             break;
         case EVENT_MouseOver:
-            // TODO
+            assert(false); // Must be filtered by step in decoder
             break;
         case EVENT_LocationName:
-            // TODO
+            assert(false); // Must be filtered by step in decoder
             break;
         case EVENT_MoveToMap:
-            // TODO
+        {
+            if (data.move_map_descr.anim_id || data.move_map_descr.exit_pic_id) {
+                pDialogueWindow = new GUIWindow_Transition(data.move_map_descr.anim_id, data.move_map_descr.exit_pic_id,
+                                                           data.move_map_descr.x, data.move_map_descr.y, data.move_map_descr.z,
+                                                           data.move_map_descr.yaw, data.move_map_descr.pitch, data.move_map_descr.zspeed, str.c_str());
+                savedEventID = eventId;
+                savedEventStep = step + 1;
+                return -1;
+            }
+            Party_Teleport_X_Pos = data.move_map_descr.x;
+            Party_Teleport_Y_Pos = data.move_map_descr.y;
+            Party_Teleport_Z_Pos = data.move_map_descr.z;
+            if (data.move_map_descr.yaw != -1) {
+                Party_Teleport_Cam_Yaw = data.move_map_descr.yaw & TrigLUT.uDoublePiMask;
+            }
+            Party_Teleport_Cam_Pitch = data.move_map_descr.pitch;
+            Party_Teleport_Z_Speed = data.move_map_descr.zspeed;
+            Start_Party_Teleport_Flag = Party_Teleport_X_Pos | Party_Teleport_Y_Pos | Party_Teleport_Z_Pos |
+                Party_Teleport_Cam_Yaw | Party_Teleport_Cam_Pitch | Party_Teleport_Z_Speed;
+            if (str[0] == '0') { // teleport within map
+                if (Start_Party_Teleport_Flag) {
+                    pParty->vPosition.x = data.move_map_descr.x;
+                    pParty->vPosition.y = data.move_map_descr.y;
+                    pParty->vPosition.z = data.move_map_descr.z;
+                    pParty->uFallStartZ = data.move_map_descr.z;
+                    if (Party_Teleport_Cam_Yaw != -1) {
+                        pParty->_viewYaw = Party_Teleport_Cam_Yaw;
+                    }
+                    pParty->_viewPitch = data.move_map_descr.pitch;
+                    pParty->uFallSpeed = data.move_map_descr.zspeed;
+
+                    Start_Party_Teleport_Flag = 0;
+                    Party_Teleport_Cam_Yaw = -1;
+                    Party_Teleport_Cam_Pitch = 0;
+                    Party_Teleport_Z_Speed = 0;
+                    Party_Teleport_Z_Pos = 0;
+                    Party_Teleport_Y_Pos = 0;
+                    Party_Teleport_X_Pos = 0;
+                    pAudioPlayer->playUISound(SOUND_teleport);
+                }
+            } else {
+                pGameLoadingUI_ProgressBar->Initialize((GUIProgressBar::Type)((activeLevelDecoration == NULL) + 1));
+                Transition_StopSound_Autosave(str.c_str(), MapStartPoint_Party);
+                *mapExitTriggered = true;
+                if (current_screen_type == CURRENT_SCREEN::SCREEN_HOUSE) {
+                    if (uGameState == GAME_STATE_CHANGE_LOCATION) {
+                        dialog_menu_id = DIALOGUE_NULL;
+                        while (HouseDialogPressCloseBtn()) {}
+                        pMediaPlayer->Unload();
+                        window_SpeakInHouse->Release();
+                        window_SpeakInHouse = nullptr;
+                        pCurrentFrameMessageQueue->Flush();
+                        current_screen_type = CURRENT_SCREEN::SCREEN_GAME;
+                        pDialogueNPCCount = 0;
+                        if (pDialogueWindow) {
+                            pDialogueWindow->Release();
+                            pDialogueWindow = 0;
+                        }
+                        dialog_menu_id = DIALOGUE_NULL;
+                        pIcons_LOD->SyncLoadedFilesCount();
+                    }
+                    return -1;
+                }
+            }
             break;
+        }
         case EVENT_OpenChest:
             if (!Chest::open(data.chest_id)) {
                 return -1;
@@ -1340,11 +1409,13 @@ int EventIR::execute(bool canShowMessages, PLAYER_CHOOSE_POLICY *who, bool *mapE
             Actor::toggleFlag(data.actor_flag_descr.id, data.actor_flag_descr.attr, data.actor_flag_descr.is_set);
             break;
         case EVENT_RandomGoTo:
-            // TODO
-            break;
+            return data.random_goto_descr.random_goto[grng->random(data.random_goto_descr.random_goto_len)];
         case EVENT_InputString:
-            // TODO
-            break;
+            // Originally starting step was checked to ensure skipping this command when returning from dialogue.
+            // Changed to using "step + 1" to go to next event
+            game_ui_status_bar_event_string = &pLevelStr[pLevelStrOffsets[data.text_id]];
+            StartBranchlessDialogue(eventId, step + 1, (int)EVENT_InputString);
+            return -1;
         case EVENT_StatusText:
             if (activeLevelDecoration) {
                 if (activeLevelDecoration == (LevelDecoration *)1) {
@@ -1368,14 +1439,14 @@ int EventIR::execute(bool canShowMessages, PLAYER_CHOOSE_POLICY *who, bool *mapE
             }
             break;
         case EVENT_OnTimer:
-            // TODO
+            // TODO: trigger
             break;
         case EVENT_ToggleIndoorLight:
             pIndoor->toggleLight(data.light_descr.light_id, data.light_descr.is_enable);
             break;
         case EVENT_PressAnyKey:
-            // TODO
-            break;
+            StartBranchlessDialogue(eventId, step + 1, (int)EVENT_PressAnyKey);
+            return -1;
         case EVENT_SummonItem:
             SpriteObject::dropItemAt(data.summon_item_descr.sprite, Vec3i(data.summon_item_descr.x, data.summon_item_descr.y, data.summon_item_descr.z),
                                      data.summon_item_descr.speed, data.summon_item_descr.count, data.summon_item_descr.random_rotate);
@@ -1386,10 +1457,10 @@ int EventIR::execute(bool canShowMessages, PLAYER_CHOOSE_POLICY *who, bool *mapE
         case EVENT_Jmp:
             return target_step;
         case EVENT_OnMapReload:
-            // TODO
+            assert(false); // Trigger, must be skipped
             break;
         case EVENT_OnLongTimer:
-            // TODO
+            // TODO: trigger
             break;
         case EVENT_SetNPCTopic:
         {
@@ -1450,22 +1521,42 @@ int EventIR::execute(bool canShowMessages, PLAYER_CHOOSE_POLICY *who, bool *mapE
             }
             break;
         case EVENT_CheckSkill:
-            // TODO
+        {
+            assert(*who != CHOOSE_PARTY); // TODO(Nik-RE-dev): original code for this option is dubious
+            bool res = doForChosenPlayer(*who, grng.get(), [&] (Player &player) {
+                                         PLAYER_SKILL_LEVEL level = player.GetSkillLevel(data.check_skill_descr.skill_type);
+                                         PLAYER_SKILL_MASTERY mastery = player.GetSkillMastery(data.check_skill_descr.skill_type);
+                                         return level >= data.check_skill_descr.skill_level && mastery == data.check_skill_descr.skill_mastery;
+                                         });
+            if (res) {
+                return target_step;
+            }
             break;
+        }
         case EVENT_OnCanShowDialogItemCmp:
-            // TODO
+            for (Player &player : pParty->pPlayers) {
+                if (player.CompareVariable(data.variable_descr.type, data.variable_descr.value)) {
+                    return target_step;
+                }
+            }
             break;
         case EVENT_EndCanShowDialogItem:
-            // TODO
-            break;
+            return -1;
         case EVENT_SetCanShowDialogItem:
-            // TODO
+            *canShowOption = data.can_show_npc_dialogue;
             break;
         case EVENT_SetNPCGroupNews:
             pNPCStats->pGroups_copy[data.npc_groups_descr.groups_id] = data.npc_groups_descr.group;
             break;
         case EVENT_SetActorGroup:
-            // TODO
+            // TODO: enconunter and process
+            __debugbreak();
+#if 0
+            *(&pActors[0].uGroup + 0x11000000 * _evt->v8 +
+              209 * (_evt->v5 +
+                     ((_evt->v6 + ((uint)_evt->v7 << 8)) << 8))) =
+                EVT_DWORD(_evt->v9);
+#endif
             break;
         case EVENT_NPCSetItem:
             npcSetItem(data.npc_item_descr.id, data.npc_item_descr.item, data.npc_item_descr.is_give);
@@ -1480,16 +1571,36 @@ int EventIR::execute(bool canShowMessages, PLAYER_CHOOSE_POLICY *who, bool *mapE
             }
             break;
         case EVENT_IsActorAssasinated:
-            // TODO
+            if (!isActorAlive(data.actor_descr.type, data.actor_descr.param, data.actor_descr.num)) {
+                return target_step;
+            }
             break;
         case EVENT_OnMapLeave:
-            // TODO
+            assert(false); // Trigger, must be skipped
             break;
         case EVENT_ChangeGroup:
-            // TODO
+            // TODO: enconunter and process
+            __debugbreak();
+#if 0
+            v38 = EVT_DWORD(_evt->v5);
+            v39 = EVT_DWORD(_evt->v9);
+            for (uint actor_id = 0; actor_id < pActors.size(); actor_id++) {
+                if (pActors[actor_id].uGroup == v38)
+                    pActors[actor_id].uGroup = v39;
+            }
+#endif
             break;
         case EVENT_ChangeGroupAlly:
-            // TODO
+            // TODO: enconunter and process
+            __debugbreak();
+#if 0
+            v42 = EVT_DWORD(_evt->v5);
+            v43 = EVT_DWORD(_evt->v9);
+            for (uint actor_id = 0; actor_id < pActors.size(); actor_id++) {
+                if (pActors[actor_id].uGroup == v42)
+                    pActors[actor_id].uAlly = v43;
+            }
+#endif
             break;
         case EVENT_CheckSeason:
             if (checkSeason(data.season)) {
@@ -1509,28 +1620,36 @@ int EventIR::execute(bool canShowMessages, PLAYER_CHOOSE_POLICY *who, bool *mapE
             Actor::giveItem(data.npc_item_descr.id, data.npc_item_descr.item, data.npc_item_descr.is_give);
             break;
         case EVENT_OnDateTimer:
-            // TODO
+            // TODO: seems unused
+            assert(false);
             break;
         case EVENT_EnableDateTimer:
-            // TODO
+            // TODO: seems unused
+            assert(false);
             break;
         case EVENT_StopAnimation:
-            // TODO
+            // TODO: seems unused
+            assert(false);
             break;
         case EVENT_CheckItemsCount:
-            // TODO
+            // TODO: seems unused
+            assert(false);
             break;
         case EVENT_RemoveItems:
-            // TODO
+            // TODO: seems unused
+            assert(false);
             break;
         case EVENT_SpecialJump:
-            // TODO
+            // TODO: seems unused
+            assert(false);
             break;
         case EVENT_IsTotalBountyHuntingAwardInRange:
-            // TODO
+            // TODO: seems unused
+            assert(false);
             break;
         case EVENT_IsNPCInParty:
-            // TODO
+            // TODO: seems unused
+            assert(false);
             break;
         default:
             break;

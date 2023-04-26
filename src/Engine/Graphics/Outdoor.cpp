@@ -6,6 +6,7 @@
 #include "Engine/Engine.h"
 #include "Engine/EngineGlobals.h"
 #include "Engine/Events.h"
+#include "Engine/Events/Processor.h"
 #include "Engine/Graphics/Camera.h"
 #include "Engine/Graphics/Collisions.h"
 #include "Engine/Graphics/DecalBuilder.h"
@@ -2492,7 +2493,7 @@ void ODM_ProcessPartyActions() {
 
     // Falling damage
     if (!triggerID ||
-        (EventProcessor(triggerID, 0, 1), pParty->vPosition.x == partyNewX) &&
+        (eventProcessor(triggerID, 0, 1), pParty->vPosition.x == partyNewX) &&
         pParty->vPosition.y == partyNewY && pParty->vPosition.z == partyNewZ) {
         if (((pParty->vPosition.z <= newGroundLevel || partyHasHitModel) && partyInputZSpeed <= 0)) {
             pParty->uFallSpeed = 0;

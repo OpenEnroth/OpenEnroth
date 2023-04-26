@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <limits>
 
+#include "Engine/Events/Processor.h"
 #include "Engine/Graphics/DecorationList.h"
 #include "Engine/Graphics/Level/Decoration.h"
 #include "Engine/Graphics/Outdoor.h"
@@ -599,7 +600,7 @@ void ProcessActorCollisionsBLV(Actor &actor, bool isAboveGround, bool isFlying) 
                 }
             }
             if (pIndoor->pFaces[id].uAttributes & FACE_TriggerByMonster)
-                EventProcessor(pIndoor->pFaceExtras[pIndoor->pFaces[id].uFaceExtraID].uEventID, 0, 1);
+                eventProcessor(pIndoor->pFaceExtras[pIndoor->pFaces[id].uFaceExtraID].uEventID, 0, 1);
         }
 
         actor.vVelocity.x = fixpoint_mul(58500, actor.vVelocity.x);

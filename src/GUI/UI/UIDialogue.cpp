@@ -1,6 +1,7 @@
 #include "GUI/UI/UIDialogue.h"
 
 #include "Engine/Events.h"
+#include "Engine/Events/Processor.h"
 #include "Engine/EngineGlobals.h"
 #include "Engine/Graphics/IRender.h"
 #include "Engine/Graphics/Image.h"
@@ -540,7 +541,7 @@ void ReleaseBranchlessDialogue() {
         // Do not run event engine whith no event, it may happen when you close talk window
         // with NPC that only say catch phrases
         activeLevelDecoration = savedDecoration;
-        EventProcessor(savedEventID, 0, 1, savedEventStep);
+        eventProcessor(savedEventID, 0, 1, savedEventStep);
     }
     activeLevelDecoration = nullptr;
     pEventTimer->Resume();
@@ -710,7 +711,7 @@ void OnSelectNPCDialogueOption(DIALOGUE_TYPE option) {
                 default:
                     activeLevelDecoration = (LevelDecoration *)1;
                     current_npc_text.clear();
-                    EventProcessor(npc_event_id, 0, 1);
+                    eventProcessor(npc_event_id, 0, 1);
                     activeLevelDecoration = nullptr;
                     break;
             }

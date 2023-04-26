@@ -10,6 +10,7 @@
 #include "Engine/Autonotes.h"
 #include "Engine/Awards.h"
 #include "Engine/Events.h"
+#include "Engine/Events/Processor.h"
 #include "Engine/Graphics/Level/Decoration.h"
 #include "Engine/Graphics/PaletteManager.h"
 #include "Engine/Graphics/IRender.h"
@@ -1329,7 +1330,7 @@ void ClickNPCTopic(DIALOGUE_TYPE topic) {
                     } else {
                         current_npc_text.clear();
                         activeLevelDecoration = (LevelDecoration *)1;
-                        EventProcessor(pEventNumber, 0, 1);
+                        eventProcessor(pEventNumber, 0, 1);
                         activeLevelDecoration = nullptr;
                     }
                 }

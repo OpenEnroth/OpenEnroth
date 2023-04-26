@@ -10,6 +10,7 @@
 #include "Engine/Engine.h"
 #include "Engine/EngineGlobals.h"
 #include "Engine/Events.h"
+#include "Engine/Events/Processor.h"
 #include "Engine/Graphics/BSPModel.h"
 #include "Engine/Graphics/DecorationList.h"
 #include "Engine/Graphics/Image.h"

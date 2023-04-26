@@ -2,6 +2,7 @@
 
 #include "Engine/Engine.h"
 #include "Engine/Events.h"
+#include "Engine/Events/Processor.h"
 #include "Engine/Graphics/DecorationList.h"
 #include "Engine/Graphics/Level/Decoration.h"
 #include "Engine/Graphics/Outdoor.h"
@@ -264,12 +265,12 @@ void InteractWithActor(unsigned int id) {
 
 void DecorationInteraction(unsigned int id, unsigned int pid) {
     if (pLevelDecorations[id].uEventID) {
-        EventProcessor(pLevelDecorations[id].uEventID, pid, 1);
+        eventProcessor(pLevelDecorations[id].uEventID, pid, 1);
         pLevelDecorations[id].uFlags |= LEVEL_DECORATION_VISIBLE_ON_MAP;
     } else {
         if (pLevelDecorations[id].IsInteractive()) {
             activeLevelDecoration = &pLevelDecorations[id];
-            EventProcessor(mapEventVariables.decorVars[pLevelDecorations[id]._idx_in_stru123 - 75] + 380, 0, 1);
+            eventProcessor(mapEventVariables.decorVars[pLevelDecorations[id]._idx_in_stru123 - 75] + 380, 0, 1);
             activeLevelDecoration = nullptr;
         }
     }
@@ -375,7 +376,7 @@ void Engine::onGameViewportClick() {
         }
 
         if (pParty->hasActiveCharacter()) {
-            EventProcessor(eventId, pid, 1);
+            eventProcessor(eventId, pid, 1);
         } else {
             // Do not interact with faces with no active character
             GameUI_SetStatusBar(localization->GetString(LSTR_NOBODY_IS_IN_CONDITION));

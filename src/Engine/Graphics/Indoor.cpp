@@ -6,6 +6,7 @@
 #include "Engine/Engine.h"
 #include "Engine/EngineGlobals.h"
 #include "Engine/Events.h"
+#include "Engine/Events/Processor.h"
 #include "Engine/Graphics/BspRenderer.h"
 #include "Engine/Graphics/Collisions.h"
 #include "Engine/Graphics/DecalBuilder.h"
@@ -1737,7 +1738,7 @@ char DoInteractionWithTopmostZObject(int pid) {
                 }
 
                 if (pParty->hasActiveCharacter()) {
-                    EventProcessor(pOutdoor->pBModels[bmodel_id].pFaces[face_id].sCogTriggeredID, pid, 1);
+                    eventProcessor(pOutdoor->pBModels[bmodel_id].pFaces[face_id].sCogTriggeredID, pid, 1);
                 } else {
                     GameUI_SetStatusBar(localization->GetString(LSTR_NOBODY_IS_IN_CONDITION));
                 }
@@ -1751,7 +1752,7 @@ char DoInteractionWithTopmostZObject(int pid) {
                 }
 
                 if (pParty->hasActiveCharacter()) {
-                    EventProcessor((int16_t)pIndoor->pFaceExtras[pIndoor->pFaces[id].uFaceExtraID].uEventID, pid, 1);
+                    eventProcessor((int16_t)pIndoor->pFaceExtras[pIndoor->pFaces[id].uFaceExtraID].uEventID, pid, 1);
                 } else {
                     GameUI_SetStatusBar(localization->GetString(LSTR_NOBODY_IS_IN_CONDITION));
                 }
@@ -2205,7 +2206,7 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
         pParty->uFlags |= PARTY_FLAGS_1_BURNING;
 
     if (uFaceEvent)
-        EventProcessor(uFaceEvent, 0, 1);
+        eventProcessor(uFaceEvent, 0, 1);
 }
 
 void switchDoorAnimation(unsigned int uDoorID, int a2) {
