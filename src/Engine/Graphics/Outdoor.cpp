@@ -2116,6 +2116,20 @@ void ODM_ProcessPartyActions() {
         }
     }
 
+    if (pParty->uFlags & PARTY_FLAGS_1_LANDING) {
+        pParty->bFlying = false;
+        if (pParty->FlyActive() || engine->IsUnderwater()) {
+            if (engine->IsUnderwater() || pParty->pPartyBuffs[PARTY_BUFF_FLY].isGMBuff ||
+                (pParty->pPlayers[pParty->pPartyBuffs[PARTY_BUFF_FLY].caster - 1].mana > 0 || engine->config->debug.AllMagic.value())) {
+                partyOldFlightZ = pParty->vPosition.z;
+                pParty->uFallSpeed = 0;
+                partyInputZSpeed = -pParty->uWalkSpeed * 4;
+                pParty->bFlying = true;
+                noFlightBob = true;
+            }
+        }
+    }
+
     if (partyInputXSpeed * partyInputXSpeed + partyInputYSpeed * partyInputYSpeed < 400 && !partyAtHighSlope) {
         partyInputYSpeed = 0;
         partyInputXSpeed = 0;
@@ -2495,7 +2509,7 @@ void ODM_ProcessPartyActions() {
     if (!triggerID ||
         (eventProcessor(triggerID, 0, 1), pParty->vPosition.x == partyNewX) &&
         pParty->vPosition.y == partyNewY && pParty->vPosition.z == partyNewZ) {
-        if (((pParty->vPosition.z <= newGroundLevel || partyHasHitModel) && partyInputZSpeed <= 0)) {
+        if (((pParty->vPosition.z <= newGroundLevel || partyHasHitModel) && partyInputZSpeed < 0)) {
             pParty->uFallSpeed = 0;
             if (!partyHasHitModel)
                 pParty->vPosition.z = newGroundLevel;
