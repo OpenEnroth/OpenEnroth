@@ -25,6 +25,7 @@ var searchData=
   ['eventtrace_22',['EventTrace',['../structEventTrace.html',1,'']]],
   ['eventtraceconfigline_23',['EventTraceConfigLine',['../structEventTraceConfigLine.html',1,'']]],
   ['eventtraceheader_24',['EventTraceHeader',['../structEventTraceHeader.html',1,'']]],
-  ['exception_25',['Exception',['../classException.html',1,'']]],
-  ['explosion_5feffect_5fstruct_26',['explosion_effect_struct',['../structexplosion__effect__struct.html',1,'']]]
+  ['eventtrigger_25',['EventTrigger',['../structEventTrigger.html',1,'']]],
+  ['exception_26',['Exception',['../classException.html',1,'']]],
+  ['explosion_5feffect_5fstruct_27',['explosion_effect_struct',['../structexplosion__effect__struct.html',1,'']]]
 ];
