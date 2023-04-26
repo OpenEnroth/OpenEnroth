@@ -4,6 +4,7 @@
 #include <string>
 
 #include "Engine/Events.h"
+#include "Engine/Events/EventEnums.h"
 #include "GUI/UI/UIHouseEnums.h"
 #include "Engine/Objects/PlayerEnums.h"
 #include "Engine/Objects/ItemEnums.h"
@@ -12,34 +13,10 @@
 #include "Engine/Graphics/BSPModel.h"
 #include "Media/Audio/AudioPlayer.h"
 
-// TODO(Nik-RE-dev): move to EventEnums.h
-enum class SEASON {
-    SPRING = 0,
-    SUMMER = 1,
-    AUTUMN = 2,
-    WINTER = 3
-};
-using enum SEASON;
-
-// TODO(Nik-RE-dev): currently exclusive for MM7, need to be independent from players number
-// TODO(Nik-RE-dev): move to EventEnums.h
-enum class PLAYER_CHOOSE_POLICY {
-    CHOOSE_PLAYER1 = 0,
-    CHOOSE_PLAYER2 = 1,
-    CHOOSE_PLAYER3 = 2,
-    CHOOSE_PLAYER4 = 3,
-
-    CHOOSE_ACTIVE = 4,
-    CHOOSE_PARTY = 5,
-    CHOOSE_RANDOM = 6
-};
-using enum PLAYER_CHOOSE_POLICY;
-
 class EventIR {
  public:
     std::string toString() const;
     static EventIR parse(void *data, size_t maxSize);
-    int execute(int eventId, bool canShowMessages, PLAYER_CHOOSE_POLICY *who, bool *mapExitTriggered, bool *canShowOption) const;
 
     EventType type;
     int step;

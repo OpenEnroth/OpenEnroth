@@ -14,13 +14,13 @@ struct EventTrigger {
 class EventMap {
  public:
     void add(int eventId, EventIR ir);
-    EventIR get(int eventId, int step);
+    bool isHaveEvents(int eventId) const { return _eventsById.contains(eventId); }
+    EventIR get(int eventId, int step) const;
+    const std::vector<EventIR>& getEvents(int eventId) const;
     void clear() { _eventsById.clear(); }
 
     std::vector<EventTrigger> enumerateTriggers(EventType triggerType);
 
-    bool execute(int eventId, int startStep, bool canShowMessages) const;
-    bool executeNpcDialogue(int eventId, int startStep) const;
     std::string getHintString(int eventId) const;
 
     void dumpAll() const;

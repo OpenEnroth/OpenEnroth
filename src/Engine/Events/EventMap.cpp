@@ -12,7 +12,7 @@ void EventMap::add(int eventId, EventIR ir) {
     _eventsById[eventId].push_back(ir);
 }
 
-EventIR EventMap::get(int eventId, int step) {
+EventIR EventMap::get(int eventId, int step) const {
     for (const EventIR &ir : _eventsById.at(eventId)) {
         if (ir.step == step) {
             return ir;
@@ -21,6 +21,10 @@ EventIR EventMap::get(int eventId, int step) {
     assert(false);
 
     return EventIR();
+}
+
+const std::vector<EventIR>& EventMap::getEvents(int eventId) const {
+    return _eventsById.at(eventId);
 }
 
 std::vector<EventTrigger> EventMap::enumerateTriggers(EventType triggerType) {
@@ -39,55 +43,6 @@ std::vector<EventTrigger> EventMap::enumerateTriggers(EventType triggerType) {
     }
 
     return triggers;
-}
-
-bool EventMap::execute(int eventId, int startStep, bool canShowMessages) const {
-    assert(_eventsById.contains(eventId));
-    assert(startStep >= 0);
-
-    int step = startStep;
-    bool stepFound;
-    PLAYER_CHOOSE_POLICY who = !pParty->hasActiveCharacter() ? CHOOSE_RANDOM : CHOOSE_ACTIVE;
-    bool mapExitTriggered = false;
-
-    do {
-        stepFound = false;
-        for (const EventIR &ir : _eventsById.at(eventId)) {
-            if (ir.step == step) {
-                step = ir.execute(eventId, canShowMessages, &who, &mapExitTriggered, nullptr);
-                stepFound = true;
-                break;
-            }
-        }
-    } while (stepFound && step != -1 && dword_5B65C4_cancelEventProcessing == 0);
-
-    return mapExitTriggered;
-}
-
-bool EventMap::executeNpcDialogue(int eventId, int startStep) const {
-    assert(_eventsById.contains(eventId));
-    assert(startStep >= 0);
-
-    int step = startStep;
-    bool stepFound;
-    bool canShowOption = true;
-    bool readyToExit = false;
-    PLAYER_CHOOSE_POLICY who = CHOOSE_PARTY;
-
-    do {
-        stepFound = false;
-        for (const EventIR &ir : _eventsById.at(eventId)) {
-            if (ir.step == step) {
-                step = ir.execute(eventId, false, &who, nullptr, &canShowOption);
-                readyToExit = readyToExit || ir.type == EVENT_OnCanShowDialogItemCmp || ir.type == EVENT_SetCanShowDialogItem;
-                stepFound = true;
-                break;
-            }
-        }
-    } while (stepFound && step != -1);
-
-    // Originally was: "readyToExit ? (canShowOption != 0) : 2"
-    return !readyToExit || canShowOption;
 }
 
 std::string EventMap::getHintString(int eventId) const {

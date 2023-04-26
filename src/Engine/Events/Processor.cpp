@@ -4,6 +4,7 @@
 #include "Engine/mm7_data.h"
 #include "Engine/Graphics/Level/Decoration.h"
 #include "Engine/Events/EventMap.h"
+#include "Engine/Events/EventInterpreter.h"
 #include "Engine/Events/Processor.h"
 #include "Engine/Events.h"
 
@@ -22,17 +23,18 @@ void eventProcessor(int eventId, int targetObj, bool canShowMessages, int startS
     EventProcessor(eventId, targetObj, canShowMessages, startStep);
     return;
 
+    EventInterpreter interpreter;
     bool mapExitTriggered = false;
     logger->verbose("Executing regular event starting from step {}", startStep);
     if (activeLevelDecoration) {
         engine->_globalEventMap.dump(eventId);
-        mapExitTriggered = engine->_globalEventMap.execute(eventId, startStep, canShowMessages);
+        interpreter.prepare(engine->_globalEventMap, eventId, canShowMessages);
     } else {
         engine->_localEventMap.dump(eventId);
-        mapExitTriggered = engine->_localEventMap.execute(eventId, startStep, canShowMessages);
+        interpreter.prepare(engine->_localEventMap, eventId, canShowMessages);
     }
 
-    if (mapExitTriggered) {
+    if (interpreter.executeRegular(startStep)) {
         onMapLeave();
     }
 }
@@ -42,9 +44,12 @@ bool npcDialogueEventProcessor(int eventId, int startStep) {
         return false;
     }
 
+    EventInterpreter interpreter;
+
     logger->verbose("Executing NPC dialogue event starting from step {}", startStep);
     engine->_globalEventMap.dump(eventId);
-    return engine->_globalEventMap.executeNpcDialogue(eventId, startStep);
+    interpreter.prepare(engine->_globalEventMap, eventId, false);
+    return interpreter.executeNpcDialogue(startStep);
 }
 
 std::string getEventHintString(int eventId) {

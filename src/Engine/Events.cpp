@@ -643,7 +643,7 @@ LABEL_47:
                             pParty->activeCharacter().SubtractVariable((enum VariableType)EVT_WORD(_evt->v5), pValue);
                         }
                     } else if (player_choose == 5) {  // all
-                        if (EVT_WORD(_evt->v5) == VAR_PlayerItemInHands) {
+                        if (EVT_WORD(_evt->v5) == std::to_underlying(VAR_PlayerItemInHands)) {
                             for (Player &player : pParty->pPlayers) {
                                 if (player.hasItem(ITEM_TYPE(pValue), 1)) {
                                     player.SubtractVariable((enum VariableType)EVT_WORD(_evt->v5), pValue);
