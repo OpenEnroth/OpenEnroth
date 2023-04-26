@@ -425,6 +425,7 @@ int EventInterpreter::executeOneEvent(int step) {
             break;
         }
         case EVENT_OnCanShowDialogItemCmp:
+            _readyToExit = true;
             for (Player &player : pParty->pPlayers) {
                 if (player.CompareVariable(ir.data.variable_descr.type, ir.data.variable_descr.value)) {
                     return ir.target_step;
@@ -434,6 +435,7 @@ int EventInterpreter::executeOneEvent(int step) {
         case EVENT_EndCanShowDialogItem:
             return -1;
         case EVENT_SetCanShowDialogItem:
+            _readyToExit = true;
             _canShowOption = ir.data.can_show_npc_dialogue;
             break;
         case EVENT_SetNPCGroupNews:
