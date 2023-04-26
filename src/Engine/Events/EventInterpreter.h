@@ -1,5 +1,7 @@
 #pragma once
 
+#include <vector>
+
 #include "Engine/Events/EventIR.h"
 #include "Engine/Events/EventMap.h"
 
