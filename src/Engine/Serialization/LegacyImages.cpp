@@ -88,7 +88,7 @@ static void Serialize(const std::bitset<N2> &src, std::array<T, N1> *dst) {
     size_t i = 1, j = 0;
     while (i < src.size()) {
         T val = 0;
-        for (size_t k = 0; k < (sizeof(T) * 8); k++,i++) {
+        for (size_t k = 0; k < (sizeof(T) * 8); k++, i++) {
             val |= src[i] << ((sizeof(T) * 8) - k - 1);
         }
         Serialize(val, &(*dst)[j]);
@@ -105,7 +105,7 @@ static void Deserialize(const std::array<T, N1> &src, std::bitset<N2> *dst) {
     while (i < dst->size()) {
         T val = 0;
         Deserialize(src[j], &val);
-        for (size_t k = 0; k < (sizeof(T) * 8); k++,i++) {
+        for (size_t k = 0; k < (sizeof(T) * 8); k++, i++) {
             dst->set(i, !!(val & (1 << ((sizeof(T) * 8) - k - 1))));
         }
         j++;

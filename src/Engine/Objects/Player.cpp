@@ -6127,9 +6127,9 @@ void Player::SubtractVariable(VariableType VarNum, signed int pValue) {
             PlayAwardSound_Anim98();
             return;
         case VAR_AutoNotes:
-            // TODO(Nik-RE-dev): decreasing 2 seems wrong, also bits indexing was changed
+            // TODO(Nik-RE-dev): decreasing 1 seems wrong, also bits indexing was changed
             assert(false);
-            //pParty->_autonoteBits.reset(pValue - 2);
+            //pParty->_autonoteBits.reset(pValue - 1);
             return;
         case VAR_NPCs2:
             npcIndex = 0;
