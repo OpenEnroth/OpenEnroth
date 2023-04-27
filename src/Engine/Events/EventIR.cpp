@@ -1,54 +1,35 @@
 #include <string>
 #include <utility>
-#include <vector>
-#include <functional>
 
 #include <magic_enum.hpp> // TODO: temporary
 
 #include "Engine/Events/EventIR.h"
-#include "Engine/Events2D.h"
-#include "Engine/Graphics/IRender.h"
-#include "Engine/Graphics/Indoor.h"
-#include "Engine/Graphics/Weather.h"
+#include "Engine/Events/EventEnums.h"
 #include "Engine/Graphics/Level/Decoration.h"
 #include "Engine/Objects/NPC.h"
-#include "Engine/Objects/SpriteObject.h"
-#include "Engine/Objects/ItemTable.h"
+#include "Engine/Events2D.h"
 #include "Engine/Engine.h"
-#include "Engine/LOD.h"
 #include "Engine/mm7_data.h"
-
-#include "Media/Audio/AudioPlayer.h"
-#include "Media/MediaPlayer.h"
-
-#include "Utility/Math/TrigLut.h"
-
-#include "GUI/GUIWindow.h"
-#include "GUI/GUIProgressBar.h"
-#include "GUI/UI/UIHouses.h"
-#include "GUI/UI/UIDialogue.h"
-#include "GUI/UI/UITransition.h"
-#include "GUI/UI/UIStatusBar.h"
 
 static std::string getVariableSetStr(VariableType type, int value) {
     if (type >= VAR_MapPersistentVariable_0 && type <= VAR_MapPersistentVariable_74) {
-        return fmt::format("MapVars[{}], {}", type - VAR_MapPersistentVariable_0, value);
+        return fmt::format("MapVars[{}], {}", std::to_underlying(type) - std::to_underlying(VAR_MapPersistentVariable_0), value);
     }
 
     if (type >= VAR_MapPersistentDecorVariable_0 && type <= VAR_MapPersistentDecorVariable_24) {
-        return fmt::format("MapVarsDecor[{}], {}", type - VAR_MapPersistentDecorVariable_0, value);
+        return fmt::format("MapVarsDecor[{}], {}", std::to_underlying(type) - std::to_underlying(VAR_MapPersistentDecorVariable_0), value);
     }
 
     if (type >= VAR_Counter1 && type <= VAR_Counter10) {
-        return fmt::format("Counter[{}], PlayingTime", type - VAR_Counter1);
+        return fmt::format("Counter[{}], PlayingTime", std::to_underlying(type) - std::to_underlying(VAR_Counter1));
     }
 
     if (type >= VAR_UnknownTimeEvent0 && type <= VAR_UnknownTimeEvent19) {
-        return fmt::format("UnkTimeEvent[{}], PlayingTime", type - VAR_UnknownTimeEvent0);
+        return fmt::format("UnkTimeEvent[{}], PlayingTime", std::to_underlying(type) - std::to_underlying(VAR_UnknownTimeEvent0));
     }
 
     if (type >= VAR_History_0 && type <= VAR_History_28) {
-        return fmt::format("History[{}]", type - VAR_History_0);
+        return fmt::format("History[{}]", std::to_underlying(type) - std::to_underlying(VAR_History_0));
     }
 
     switch (type) {
@@ -355,23 +336,23 @@ static std::string getVariableSetStr(VariableType type, int value) {
 
 static std::string getVariableCompareStr(VariableType type, int value) {
     if (type >= VAR_MapPersistentVariable_0 && type <= VAR_MapPersistentVariable_74) {
-        return fmt::format("MapVars[{}] >= {}", type - VAR_MapPersistentVariable_0, value);
+        return fmt::format("MapVars[{}] >= {}", std::to_underlying(type) - std::to_underlying(VAR_MapPersistentVariable_0), value);
     }
 
     if (type >= VAR_MapPersistentDecorVariable_0 && type <= VAR_MapPersistentDecorVariable_24) {
-        return fmt::format("MapVarsDecor[{}] >= {}", type - VAR_MapPersistentDecorVariable_0, value);
+        return fmt::format("MapVarsDecor[{}] >= {}", std::to_underlying(type) - std::to_underlying(VAR_MapPersistentDecorVariable_0), value);
     }
 
     if (type >= VAR_Counter1 && type <= VAR_Counter10) {
-        return fmt::format("Counter[{}] + Hours({}) <= PlayingTime", type - VAR_Counter1, value);
+        return fmt::format("Counter[{}] + Hours({}) <= PlayingTime", std::to_underlying(type) - std::to_underlying(VAR_Counter1), value);
     }
 
     if (type >= VAR_UnknownTimeEvent0 && type <= VAR_UnknownTimeEvent19) {
-        return fmt::format("ERROR: UnknownTimeEvent[{}], {}", type - VAR_UnknownTimeEvent0, value);
+        return fmt::format("ERROR: UnknownTimeEvent[{}], {}", std::to_underlying(type) - std::to_underlying(VAR_UnknownTimeEvent0), value);
     }
 
     if (type >= VAR_History_0 && type <= VAR_History_28) {
-        return fmt::format("ERROR: History[{}], {}", type - VAR_History_0, value);
+        return fmt::format("ERROR: History[{}], {}", std::to_underlying(type) - std::to_underlying(VAR_History_0), value);
     }
 
     switch (type) {
@@ -1147,513 +1128,4 @@ EventIR EventIR::parse(void *data, size_t maxSize) {
     }
 
     return ir;
-}
-
-static bool checkSeason(SEASON season) {
-    int monthPlusOne = pParty->uCurrentMonth + 1;
-    int daysPlusOne = pParty->uCurrentDayOfMonth + 1;
-
-    switch (season) {
-        case WINTER:  // winter 12.21 -> 3.20
-            return (monthPlusOne == 12 && daysPlusOne >= 21 ||
-                    monthPlusOne == 1 || monthPlusOne == 2 ||
-                    monthPlusOne == 3 && daysPlusOne <= 20);
-
-        case AUTUMN:  // autumn/fall 9.21 -> 12.20
-            return (monthPlusOne == 9 && daysPlusOne >= 21 ||
-                    monthPlusOne == 10 || monthPlusOne == 11 ||
-                    monthPlusOne == 12 && daysPlusOne <= 20);
-
-        case SUMMER:  // summer 6.21 -> 9.20
-            return (monthPlusOne == 6 && daysPlusOne >= 21 ||
-                    monthPlusOne == 7 || monthPlusOne == 8 ||
-                    monthPlusOne == 9 && daysPlusOne <= 20);
-
-        case SPRING:  // spring 3.21 -> 6.20
-            return (monthPlusOne == 3 && daysPlusOne >= 21 ||
-                    monthPlusOne == 4 || monthPlusOne == 5 ||
-                    monthPlusOne == 6 && daysPlusOne <= 20);
-
-        default:
-            Error("Unknown season");
-    }
-
-    return false;
-}
-
-bool doForChosenPlayer(PLAYER_CHOOSE_POLICY who, RandomEngine *rng, std::function<int(Player&)> func) {
-    if (who >= CHOOSE_PLAYER1 && who <= CHOOSE_PLAYER4) {
-        return func(pParty->pPlayers[std::to_underlying(who)]);
-    } else if (who == CHOOSE_ACTIVE) {
-        if (pParty->hasActiveCharacter()) {
-            return func(pParty->activeCharacter());
-        }
-        return false;
-    } else if (who == CHOOSE_PARTY) {
-        for (Player &player : pParty->pPlayers) {
-            if (func(player)) {
-                return true;
-            }
-        }
-        return false;
-    } else if (who == CHOOSE_RANDOM) {
-        return func(pParty->pPlayers[rng->random(4)]);
-    }
-
-    assert(false);
-    return false;
-}
-
-int EventIR::execute(int eventId, bool canShowMessages, PLAYER_CHOOSE_POLICY *who, bool *mapExitTriggered, bool *canShowOption) const {
-    *mapExitTriggered = false;
-
-    switch (type) {
-        case EVENT_Exit:
-            return -1;
-        case EVENT_SpeakInHouse:
-            if (enterHouse(data.house_id)) {
-                pAudioPlayer->playHouseSound(SOUND_enter, false);
-                HOUSE_ID houseId = HOUSE_JAIL;
-                if (uCurrentHouse_Animation != 167) { // TODO: magic number
-                    houseId = data.house_id;
-                }
-                createHouseUI(houseId);
-            }
-            break;
-        case EVENT_PlaySound:
-            pAudioPlayer->playSound(data.sound_descr.sound_id, 0, 0, data.sound_descr.x, data.sound_descr.y, 0);
-            break;
-        case EVENT_MouseOver:
-            assert(false); // Must be filtered by step in decoder
-            break;
-        case EVENT_LocationName:
-            assert(false); // Must be filtered by step in decoder
-            break;
-        case EVENT_MoveToMap:
-        {
-            if (data.move_map_descr.anim_id || data.move_map_descr.exit_pic_id) {
-                pDialogueWindow = new GUIWindow_Transition(data.move_map_descr.anim_id, data.move_map_descr.exit_pic_id,
-                                                           data.move_map_descr.x, data.move_map_descr.y, data.move_map_descr.z,
-                                                           data.move_map_descr.yaw, data.move_map_descr.pitch, data.move_map_descr.zspeed, str.c_str());
-                savedEventID = eventId;
-                savedEventStep = step + 1;
-                return -1;
-            }
-            Party_Teleport_X_Pos = data.move_map_descr.x;
-            Party_Teleport_Y_Pos = data.move_map_descr.y;
-            Party_Teleport_Z_Pos = data.move_map_descr.z;
-            if (data.move_map_descr.yaw != -1) {
-                Party_Teleport_Cam_Yaw = data.move_map_descr.yaw & TrigLUT.uDoublePiMask;
-            }
-            Party_Teleport_Cam_Pitch = data.move_map_descr.pitch;
-            Party_Teleport_Z_Speed = data.move_map_descr.zspeed;
-            Start_Party_Teleport_Flag = Party_Teleport_X_Pos | Party_Teleport_Y_Pos | Party_Teleport_Z_Pos |
-                Party_Teleport_Cam_Yaw | Party_Teleport_Cam_Pitch | Party_Teleport_Z_Speed;
-            if (str[0] == '0') { // teleport within map
-                if (Start_Party_Teleport_Flag) {
-                    pParty->vPosition.x = data.move_map_descr.x;
-                    pParty->vPosition.y = data.move_map_descr.y;
-                    pParty->vPosition.z = data.move_map_descr.z;
-                    pParty->uFallStartZ = data.move_map_descr.z;
-                    if (Party_Teleport_Cam_Yaw != -1) {
-                        pParty->_viewYaw = Party_Teleport_Cam_Yaw;
-                    }
-                    pParty->_viewPitch = data.move_map_descr.pitch;
-                    pParty->uFallSpeed = data.move_map_descr.zspeed;
-
-                    Start_Party_Teleport_Flag = 0;
-                    Party_Teleport_Cam_Yaw = -1;
-                    Party_Teleport_Cam_Pitch = 0;
-                    Party_Teleport_Z_Speed = 0;
-                    Party_Teleport_Z_Pos = 0;
-                    Party_Teleport_Y_Pos = 0;
-                    Party_Teleport_X_Pos = 0;
-                    pAudioPlayer->playUISound(SOUND_teleport);
-                }
-            } else {
-                pGameLoadingUI_ProgressBar->Initialize((GUIProgressBar::Type)((activeLevelDecoration == NULL) + 1));
-                Transition_StopSound_Autosave(str.c_str(), MapStartPoint_Party);
-                *mapExitTriggered = true;
-                if (current_screen_type == CURRENT_SCREEN::SCREEN_HOUSE) {
-                    if (uGameState == GAME_STATE_CHANGE_LOCATION) {
-                        dialog_menu_id = DIALOGUE_NULL;
-                        while (HouseDialogPressCloseBtn()) {}
-                        pMediaPlayer->Unload();
-                        window_SpeakInHouse->Release();
-                        window_SpeakInHouse = nullptr;
-                        pCurrentFrameMessageQueue->Flush();
-                        current_screen_type = CURRENT_SCREEN::SCREEN_GAME;
-                        pDialogueNPCCount = 0;
-                        if (pDialogueWindow) {
-                            pDialogueWindow->Release();
-                            pDialogueWindow = 0;
-                        }
-                        dialog_menu_id = DIALOGUE_NULL;
-                        pIcons_LOD->SyncLoadedFilesCount();
-                    }
-                    return -1;
-                }
-            }
-            break;
-        }
-        case EVENT_OpenChest:
-            if (!Chest::open(data.chest_id)) {
-                return -1;
-            }
-            break;
-        case EVENT_ShowFace:
-            doForChosenPlayer(this->who, vrng.get(), [&] (Player &player) { player.playEmotion(data.expr_id, 0); return false; });
-            break;
-        case EVENT_ReceiveDamage:
-            doForChosenPlayer(this->who, grng.get(), [&] (Player &player) { player.receiveDamage(data.damage_descr.damage, data.damage_descr.damage_type); return false; });
-            break;
-        case EVENT_SetSnow:
-            if (!data.snow_descr.is_nop) {
-                pWeather->bRenderSnow = data.snow_descr.is_enable;
-            }
-            break;
-        case EVENT_SetTexture:
-            setTexture(data.sprite_texture_descr.cog, str.c_str());
-            break;
-        case EVENT_ShowMovie:
-        {
-            std::string movieName = trimRemoveQuotes(str);
-            if (movieName.length() == 0) {
-                break;
-            }
-            if (pMediaPlayer->IsMoviePlaying()) {
-                pMediaPlayer->Unload();
-            }
-
-            pMediaPlayer->PlayFullscreenMovie(movieName);
-
-            if (!movieName.compare("arbiter good")) { // change alignment to good
-                pParty->alignment = PartyAlignment::PartyAlignment_Good;
-                SetUserInterface(pParty->alignment, true);
-            } else if (!movieName.compare("arbiter evil")) { // change alignment to evil
-                pParty->alignment = PartyAlignment::PartyAlignment_Evil;
-                SetUserInterface(pParty->alignment, true);
-            } else if (!movieName.compare("pcout01")) { // moving to harmondale from emerald isle
-                Rest(GameTime::FromDays(7));
-                pParty->RestAndHeal();
-                pParty->days_played_without_rest = 0;
-            }
-
-            // is this block is needed anymore?
-            if (!data.movie_unknown_field || current_screen_type == CURRENT_SCREEN::SCREEN_BOOKS) {
-                if (current_screen_type == CURRENT_SCREEN::SCREEN_BOOKS) {
-                    pGameLoadingUI_ProgressBar->Initialize(GUIProgressBar::TYPE_Fullscreen);
-                }
-
-                if (current_screen_type == CURRENT_SCREEN::SCREEN_HOUSE) {
-                    pMediaPlayer->OpenHouseMovie(pAnimatedRooms[uCurrentHouse_Animation].video_name, 1);
-                }
-            }
-            break;
-        }
-        case EVENT_SetSprite:
-            setDecorationSprite(data.sprite_texture_descr.cog, data.sprite_texture_descr.hide, str.c_str());
-            break;
-        case EVENT_Compare:
-        {
-            bool res = doForChosenPlayer(*who, grng.get(), [&] (Player &player) { return player.CompareVariable(data.variable_descr.type, data.variable_descr.value); });
-            if (res) {
-                return target_step;
-            }
-            break;
-        }
-        case EVENT_ChangeDoorState:
-            switchDoorAnimation(data.door_descr.door_id, data.door_descr.door_new_state);
-            break;
-        case EVENT_Add:
-            doForChosenPlayer(*who, grng.get(), [&] (Player &player) { player.AddVariable(data.variable_descr.type, data.variable_descr.value); return false; });
-            break;
-        case EVENT_Substract:
-            if (data.variable_descr.type == VAR_PlayerItemInHands && *who == CHOOSE_PARTY) {
-                for (Player &player : pParty->pPlayers) {
-                    if (player.hasItem((ITEM_TYPE)data.variable_descr.value, 1)) {
-                        player.SubtractVariable(data.variable_descr.type, data.variable_descr.value);
-                        break;  // only take one item
-                    }
-                }
-            } else {
-                doForChosenPlayer(*who, grng.get(), [&] (Player &player) { player.SubtractVariable(data.variable_descr.type, data.variable_descr.value); return false; });
-            }
-            break;
-        case EVENT_Set:
-            doForChosenPlayer(*who, grng.get(), [&] (Player &player) { player.SetVariable(data.variable_descr.type, data.variable_descr.value); return false; });
-            break;
-        case EVENT_SummonMonsters:
-            spawnMonsters(data.monster_descr.type, data.monster_descr.level, data.monster_descr.count,
-                          data.monster_descr.x, data.monster_descr.y, data.monster_descr.z,
-                          data.monster_descr.group, data.monster_descr.name_id);
-            break;
-        case EVENT_CastSpell:
-            eventCastSpell(data.spell_descr.spell_id, data.spell_descr.spell_mastery, data.spell_descr.spell_level,
-                           data.spell_descr.fromx, data.spell_descr.fromy, data.spell_descr.fromz,
-                           data.spell_descr.tox, data.spell_descr.toy, data.spell_descr.toz);
-            break;
-        case EVENT_SpeakNPC:
-            if (canShowMessages) {
-                Actor actor = Actor();
-                actor.sNPC_ID = data.npc_descr.npc_id;
-                GameUI_InitializeDialogue(&actor, false);
-            } else {
-                bDialogueUI_InitializeActor_NPC_ID = data.npc_descr.npc_id;
-            }
-            break;
-        case EVENT_SetFacesBit:
-            setFacesBit(data.faces_bit_descr.cog, data.faces_bit_descr.face_bit, data.faces_bit_descr.is_on);
-            break;
-        case EVENT_ToggleActorFlag:
-            Actor::toggleFlag(data.actor_flag_descr.id, data.actor_flag_descr.attr, data.actor_flag_descr.is_set);
-            break;
-        case EVENT_RandomGoTo:
-            return data.random_goto_descr.random_goto[grng->random(data.random_goto_descr.random_goto_len)];
-        case EVENT_InputString:
-            // Originally starting step was checked to ensure skipping this command when returning from dialogue.
-            // Changed to using "step + 1" to go to next event
-            game_ui_status_bar_event_string = &pLevelStr[pLevelStrOffsets[data.text_id]];
-            StartBranchlessDialogue(eventId, step + 1, (int)EVENT_InputString);
-            return -1;
-        case EVENT_StatusText:
-            if (activeLevelDecoration) {
-                if (activeLevelDecoration == (LevelDecoration *)1) {
-                    current_npc_text = pNPCTopics[data.text_id - 1].pText;
-                }
-                if (canShowMessages == 1) {
-                    GameUI_SetStatusBar(pNPCTopics[data.text_id - 1].pText);
-                }
-            } else {
-                if (canShowMessages == 1) {
-                    GameUI_SetStatusBar(&pLevelStr[pLevelStrOffsets[data.text_id]]);
-                }
-            }
-            break;
-        case EVENT_ShowMessage:
-            if (activeLevelDecoration) {
-                current_npc_text = pNPCTopics[data.text_id - 1].pText;
-                branchless_dialogue_str.clear();
-            } else {
-                branchless_dialogue_str = &pLevelStr[pLevelStrOffsets[data.text_id]];
-            }
-            break;
-        case EVENT_OnTimer:
-            // TODO: trigger
-            break;
-        case EVENT_ToggleIndoorLight:
-            pIndoor->toggleLight(data.light_descr.light_id, data.light_descr.is_enable);
-            break;
-        case EVENT_PressAnyKey:
-            StartBranchlessDialogue(eventId, step + 1, (int)EVENT_PressAnyKey);
-            return -1;
-        case EVENT_SummonItem:
-            SpriteObject::dropItemAt(data.summon_item_descr.sprite, Vec3i(data.summon_item_descr.x, data.summon_item_descr.y, data.summon_item_descr.z),
-                                     data.summon_item_descr.speed, data.summon_item_descr.count, data.summon_item_descr.random_rotate);
-            break;
-        case EVENT_ForPartyMember:
-            *who = this->who;
-            break;
-        case EVENT_Jmp:
-            return target_step;
-        case EVENT_OnMapReload:
-            assert(false); // Trigger, must be skipped
-            break;
-        case EVENT_OnLongTimer:
-            // TODO: trigger
-            break;
-        case EVENT_SetNPCTopic:
-        {
-            NPCData *npc = &pNPCStats->pNewNPCData[data.npc_topic_descr.npc_id];
-            if (data.npc_topic_descr.index == 0) npc->dialogue_1_evt_id = data.npc_topic_descr.event_id;
-            if (data.npc_topic_descr.index == 1) npc->dialogue_2_evt_id = data.npc_topic_descr.event_id;
-            if (data.npc_topic_descr.index == 2) npc->dialogue_3_evt_id = data.npc_topic_descr.event_id;
-            if (data.npc_topic_descr.index == 3) npc->dialogue_4_evt_id = data.npc_topic_descr.event_id;
-            if (data.npc_topic_descr.index == 4) npc->dialogue_5_evt_id = data.npc_topic_descr.event_id;
-            if (data.npc_topic_descr.index == 5) npc->dialogue_6_evt_id = data.npc_topic_descr.event_id;
-            if (data.npc_topic_descr.npc_id == 8) {
-                if (data.npc_topic_descr.event_id == 78) {
-                    HouseDialogPressCloseBtn();
-                    window_SpeakInHouse->Release();
-                    pParty->uFlags &= ~PARTY_FLAGS_1_ForceRedraw;
-                    if (enterHouse(HOUSE_DARK_GUILD_PIT)) {
-                        createHouseUI(HOUSE_DARK_GUILD_PIT);
-                        current_npc_text = pNPCTopics[90].pText;
-                    }
-                }
-            }
-            break;
-        }
-        case EVENT_MoveNPC:
-            pNPCStats->pNewNPCData[data.npc_move_descr.npc_id].Location2D = data.npc_move_descr.location_id;
-            if (window_SpeakInHouse) {
-                if (window_SpeakInHouse->wData.val == HOUSE_BODY_GUILD_ERATHIA) {
-                    HouseDialogPressCloseBtn();
-                    pMediaPlayer->Unload();
-                    window_SpeakInHouse->Release();
-                    pParty->uFlags &= ~PARTY_FLAGS_1_ForceRedraw;
-                    activeLevelDecoration = (LevelDecoration *)1;
-                    if (enterHouse(HOUSE_BODY_GUILD_ERATHIA)) {
-                        pAudioPlayer->playUISound(SOUND_Invalid);
-                        window_SpeakInHouse = new GUIWindow_House({0, 0}, render->GetRenderDimensions(), HOUSE_BODY_GUILD_ERATHIA, "");
-                        window_SpeakInHouse->DeleteButtons();
-                    }
-                }
-            }
-            break;
-        case EVENT_GiveItem:
-        {
-            ItemGen item;
-            item.Reset();
-            pItemTable->generateItem(data.give_item_descr.treasure_level, data.give_item_descr.treasure_type, &item);
-            if (data.give_item_descr.item_id != ITEM_NULL) {
-                item.uItemID = data.give_item_descr.item_id;
-            }
-            pParty->setHoldingItem(&item);
-            break;
-        }
-        case EVENT_ChangeEvent:
-            if (data.event_id) {
-                mapEventVariables.decorVars[activeLevelDecoration->_idx_in_stru123 - 75] = data.event_id - 124;
-            } else {
-                mapEventVariables.decorVars[activeLevelDecoration->_idx_in_stru123 - 75] = 0;
-                activeLevelDecoration->uFlags |= LEVEL_DECORATION_INVISIBLE;
-            }
-            break;
-        case EVENT_CheckSkill:
-        {
-            assert(*who != CHOOSE_PARTY); // TODO(Nik-RE-dev): original code for this option is dubious
-            bool res = doForChosenPlayer(*who, grng.get(), [&] (Player &player) {
-                                         PLAYER_SKILL_LEVEL level = player.GetSkillLevel(data.check_skill_descr.skill_type);
-                                         PLAYER_SKILL_MASTERY mastery = player.GetSkillMastery(data.check_skill_descr.skill_type);
-                                         return level >= data.check_skill_descr.skill_level && mastery == data.check_skill_descr.skill_mastery;
-                                         });
-            if (res) {
-                return target_step;
-            }
-            break;
-        }
-        case EVENT_OnCanShowDialogItemCmp:
-            for (Player &player : pParty->pPlayers) {
-                if (player.CompareVariable(data.variable_descr.type, data.variable_descr.value)) {
-                    return target_step;
-                }
-            }
-            break;
-        case EVENT_EndCanShowDialogItem:
-            return -1;
-        case EVENT_SetCanShowDialogItem:
-            *canShowOption = data.can_show_npc_dialogue;
-            break;
-        case EVENT_SetNPCGroupNews:
-            pNPCStats->pGroups_copy[data.npc_groups_descr.groups_id] = data.npc_groups_descr.group;
-            break;
-        case EVENT_SetActorGroup:
-            // TODO: enconunter and process
-            __debugbreak();
-#if 0
-            *(&pActors[0].uGroup + 0x11000000 * _evt->v8 +
-              209 * (_evt->v5 +
-                     ((_evt->v6 + ((uint)_evt->v7 << 8)) << 8))) =
-                EVT_DWORD(_evt->v9);
-#endif
-            break;
-        case EVENT_NPCSetItem:
-            npcSetItem(data.npc_item_descr.id, data.npc_item_descr.item, data.npc_item_descr.is_give);
-            break;
-        case EVENT_SetNPCGreeting:
-            pNPCStats->pNewNPCData[data.npc_descr.npc_id].uFlags &= 0xFFFFFFFCu;
-            pNPCStats->pNewNPCData[data.npc_descr.npc_id].greet = data.npc_descr.greeting;
-            break;
-        case EVENT_IsActorAlive:
-            if (isActorAlive(data.actor_descr.type, data.actor_descr.param, data.actor_descr.num)) {
-                return target_step;
-            }
-            break;
-        case EVENT_IsActorAssasinated:
-            if (!isActorAlive(data.actor_descr.type, data.actor_descr.param, data.actor_descr.num)) {
-                return target_step;
-            }
-            break;
-        case EVENT_OnMapLeave:
-            assert(false); // Trigger, must be skipped
-            break;
-        case EVENT_ChangeGroup:
-            // TODO: enconunter and process
-            __debugbreak();
-#if 0
-            v38 = EVT_DWORD(_evt->v5);
-            v39 = EVT_DWORD(_evt->v9);
-            for (uint actor_id = 0; actor_id < pActors.size(); actor_id++) {
-                if (pActors[actor_id].uGroup == v38)
-                    pActors[actor_id].uGroup = v39;
-            }
-#endif
-            break;
-        case EVENT_ChangeGroupAlly:
-            // TODO: enconunter and process
-            __debugbreak();
-#if 0
-            v42 = EVT_DWORD(_evt->v5);
-            v43 = EVT_DWORD(_evt->v9);
-            for (uint actor_id = 0; actor_id < pActors.size(); actor_id++) {
-                if (pActors[actor_id].uGroup == v42)
-                    pActors[actor_id].uAlly = v43;
-            }
-#endif
-            break;
-        case EVENT_CheckSeason:
-            if (checkSeason(data.season)) {
-                return target_step;
-            }
-            break;
-        case EVENT_ToggleActorGroupFlag:
-            toggleActorGroupFlag(data.actor_flag_descr.id, data.actor_flag_descr.attr, data.actor_flag_descr.is_set);
-            break;
-        case EVENT_ToggleChestFlag:
-            Chest::toggleFlag(data.chest_flag_descr.chest_id, data.chest_flag_descr.flag, data.chest_flag_descr.is_set);
-            break;
-        case EVENT_CharacterAnimation:
-            doForChosenPlayer(this->who, vrng.get(), [&] (Player &player) { player.playReaction(data.speech_id); return false; });
-            break;
-        case EVENT_SetActorItem:
-            Actor::giveItem(data.npc_item_descr.id, data.npc_item_descr.item, data.npc_item_descr.is_give);
-            break;
-        case EVENT_OnDateTimer:
-            // TODO: seems unused
-            assert(false);
-            break;
-        case EVENT_EnableDateTimer:
-            // TODO: seems unused
-            assert(false);
-            break;
-        case EVENT_StopAnimation:
-            // TODO: seems unused
-            assert(false);
-            break;
-        case EVENT_CheckItemsCount:
-            // TODO: seems unused
-            assert(false);
-            break;
-        case EVENT_RemoveItems:
-            // TODO: seems unused
-            assert(false);
-            break;
-        case EVENT_SpecialJump:
-            // TODO: seems unused
-            assert(false);
-            break;
-        case EVENT_IsTotalBountyHuntingAwardInRange:
-            // TODO: seems unused
-            assert(false);
-            break;
-        case EVENT_IsNPCInParty:
-            // TODO: seems unused
-            assert(false);
-            break;
-        default:
-            break;
-    }
-
-    return step + 1;
 }

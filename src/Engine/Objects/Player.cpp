@@ -4090,7 +4090,7 @@ void Player::useItem(int targetCharacter, bool isPortraitClick) {
             //v5 = PID(OBJECT_Player, player_num + 49);
             //pAudioPlayer->playSound(SOUND_quest, v5);
             pAudioPlayer->playUISound(SOUND_quest);
-            playerAffected->AddVariable(VAR_NumSkillPoints, 2);
+            playerAffected->uSkillPoints += 2;
         } else if (pParty->pPickedItem.uItemID == ITEM_TEMPLE_IN_A_BOTTLE) {
             TeleportToNWCDungeon();
             return;
@@ -4130,11 +4130,11 @@ bool Player::CompareVariable(VariableType VarNum, int pValue) {
     int baseStat;                          // eax@161
 
     if (VarNum >= VAR_MapPersistentVariable_0 && VarNum <= VAR_MapPersistentVariable_74)
-        return (uint8_t)mapEventVariables.mapVars[VarNum - VAR_MapPersistentVariable_0] >= pValue;  // originally (uint8_t)byte_5E4C15[VarNum];
+        return (uint8_t)mapEventVariables.mapVars[std::to_underlying(VarNum) - std::to_underlying(VAR_MapPersistentVariable_0)] >= pValue;  // originally (uint8_t)byte_5E4C15[VarNum];
 
     // not really sure whether the number gets up to 99, but can't ignore the possibility
     if (VarNum >= VAR_MapPersistentDecorVariable_0 && VarNum <= VAR_MapPersistentDecorVariable_24)
-        return (uint8_t)mapEventVariables.decorVars[VarNum - VAR_MapPersistentDecorVariable_0] >= pValue;
+        return (uint8_t)mapEventVariables.decorVars[std::to_underlying(VarNum) - std::to_underlying(VAR_MapPersistentDecorVariable_0)] >= pValue;
 
     switch (VarNum) {
         case VAR_Sex:
@@ -4479,14 +4479,13 @@ bool Player::CompareVariable(VariableType VarNum, int pValue) {
         case VAR_Counter8:
         case VAR_Counter9:
         case VAR_Counter10:
-            if (pParty->PartyTimes.CounterEventValues[VarNum - VAR_Counter1]
-                    .Valid()) {
-                return (pParty->PartyTimes
-                            .CounterEventValues[VarNum - VAR_Counter1] +
-                        GameTime::FromHours(pValue)) <=
-                       pParty->GetPlayingTime();
+        {
+            int idx = std::to_underlying(VarNum) - std::to_underlying(VAR_Counter1);
+            if (pParty->PartyTimes.CounterEventValues[idx ].Valid()) {
+                return (pParty->PartyTimes.CounterEventValues[idx] + GameTime::FromHours(pValue)) <= pParty->GetPlayingTime();
             }
             return false;
+        }
 
         case VAR_ReputationInCurrentLocation:
             v19 = &pOutdoor->ddm;
@@ -4539,9 +4538,9 @@ void Player::SetVariable(VariableType var_type, signed int var_value) {
     ItemGen item;
 
     if (var_type >= VAR_History_0 && var_type <= VAR_History_28) {
-        if (!pParty->PartyTimes.HistoryEventTimes[var_type - VAR_History_0]) {
-            pParty->PartyTimes.HistoryEventTimes[var_type - VAR_History_0] = pParty->GetPlayingTime();
-            if (pStorylineText->StoreLine[var_type - VAR_History_0].pText) {
+        if (!pParty->PartyTimes.HistoryEventTimes[std::to_underlying(var_type) - std::to_underlying(VAR_History_0)]) {
+            pParty->PartyTimes.HistoryEventTimes[std::to_underlying(var_type) - std::to_underlying(VAR_History_0)] = pParty->GetPlayingTime();
+            if (pStorylineText->StoreLine[std::to_underlying(var_type) - std::to_underlying(VAR_History_0)].pText) {
                 bFlashHistoryBook = true;
                 PlayAwardSound();
             }
@@ -4550,18 +4549,18 @@ void Player::SetVariable(VariableType var_type, signed int var_value) {
     }
 
     if (var_type >= VAR_MapPersistentVariable_0 && var_type <= VAR_MapPersistentVariable_74) {
-        mapEventVariables.mapVars[var_type - VAR_MapPersistentVariable_0] = (char)var_value;
+        mapEventVariables.mapVars[std::to_underlying(var_type) - std::to_underlying(VAR_MapPersistentVariable_0)] = (char)var_value;
         return;
     }
 
     // not really sure whether the number gets up to 99, but can't ignore the possibility
     if (var_type >= VAR_MapPersistentDecorVariable_0 && var_type <= VAR_MapPersistentDecorVariable_24) {
-        mapEventVariables.decorVars[var_type - VAR_MapPersistentDecorVariable_0] = (unsigned char)var_value;
+        mapEventVariables.decorVars[std::to_underlying(var_type) - std::to_underlying(VAR_MapPersistentDecorVariable_0)] = (unsigned char)var_value;
         return;
     }
 
     if (var_type >= VAR_UnknownTimeEvent0 && var_type <= VAR_UnknownTimeEvent19) {
-        pParty->PartyTimes._s_times[var_type - VAR_UnknownTimeEvent0] = pParty->GetPlayingTime();
+        pParty->PartyTimes._s_times[std::to_underlying(var_type) - std::to_underlying(VAR_UnknownTimeEvent0)] = pParty->GetPlayingTime();
         PlayAwardSound();
         return;
     }
@@ -4930,8 +4929,7 @@ void Player::SetVariable(VariableType var_type, signed int var_value) {
         case VAR_Counter8:
         case VAR_Counter9:
         case VAR_Counter10:
-            pParty->PartyTimes.CounterEventValues[var_type - VAR_Counter1] =
-                pParty->GetPlayingTime();
+            pParty->PartyTimes.CounterEventValues[std::to_underlying(var_type) - std::to_underlying(VAR_Counter1)] = pParty->GetPlayingTime();
             return;
 
         case VAR_ReputationInCurrentLocation:
@@ -5126,37 +5124,37 @@ void Player::AddVariable(VariableType var_type, signed int val) {
     ItemGen item;
 
     if (var_type >= VAR_Counter1 && var_type <= VAR_Counter10) {
-        pParty->PartyTimes.CounterEventValues[var_type - VAR_Counter1] = pParty->GetPlayingTime();
+        pParty->PartyTimes.CounterEventValues[std::to_underlying(var_type) - std::to_underlying(VAR_Counter1)] = pParty->GetPlayingTime();
         return;
     }
 
     if (var_type >= VAR_UnknownTimeEvent0 && var_type <= VAR_UnknownTimeEvent19) {
-        pParty->PartyTimes._s_times[var_type - VAR_UnknownTimeEvent0] = pParty->GetPlayingTime();
+        pParty->PartyTimes._s_times[std::to_underlying(var_type) - std::to_underlying(VAR_UnknownTimeEvent0)] = pParty->GetPlayingTime();
         PlayAwardSound();
         return;
     }
 
     if (var_type >= VAR_MapPersistentVariable_0 && var_type <= VAR_MapPersistentVariable_74) {
-        if (255 - val > mapEventVariables.mapVars[var_type - VAR_MapPersistentVariable_0]) {
-            mapEventVariables.mapVars[var_type - VAR_MapPersistentVariable_0] += val;
+        if (255 - val > mapEventVariables.mapVars[std::to_underlying(var_type) - std::to_underlying(VAR_MapPersistentVariable_0)]) {
+            mapEventVariables.mapVars[std::to_underlying(var_type) - std::to_underlying(VAR_MapPersistentVariable_0)] += val;
         } else {
-            mapEventVariables.mapVars[var_type - VAR_MapPersistentVariable_0] = 255;
+            mapEventVariables.mapVars[std::to_underlying(var_type) - std::to_underlying(VAR_MapPersistentVariable_0)] = 255;
         }
         return;
     }
     if (var_type >= VAR_MapPersistentDecorVariable_0 && var_type <= VAR_MapPersistentDecorVariable_24) {
-        if (255 - val > mapEventVariables.decorVars[var_type - VAR_MapPersistentDecorVariable_0]) {
-            mapEventVariables.decorVars[var_type - VAR_MapPersistentDecorVariable_0] += val;
+        if (255 - val > mapEventVariables.decorVars[std::to_underlying(var_type) - std::to_underlying(VAR_MapPersistentDecorVariable_0)]) {
+            mapEventVariables.decorVars[std::to_underlying(var_type) - std::to_underlying(VAR_MapPersistentDecorVariable_0)] += val;
         } else {
-            mapEventVariables.decorVars[var_type - VAR_MapPersistentDecorVariable_0] = 255;
+            mapEventVariables.decorVars[std::to_underlying(var_type) - std::to_underlying(VAR_MapPersistentDecorVariable_0)] = 255;
         }
         return;
     }
 
     if (var_type >= VAR_History_0 && var_type <= VAR_History_28) {
-        if (!pParty->PartyTimes.HistoryEventTimes[var_type - VAR_History_0]) {
-            pParty->PartyTimes.HistoryEventTimes[var_type - VAR_History_0] = pParty->GetPlayingTime();
-            if (pStorylineText->StoreLine[var_type - VAR_History_0].pText) {
+        if (!pParty->PartyTimes.HistoryEventTimes[std::to_underlying(var_type) - std::to_underlying(VAR_History_0)]) {
+            pParty->PartyTimes.HistoryEventTimes[std::to_underlying(var_type) - std::to_underlying(VAR_History_0)] = pParty->GetPlayingTime();
+            if (pStorylineText->StoreLine[std::to_underlying(var_type) - std::to_underlying(VAR_History_0)].pText) {
                 bFlashHistoryBook = true;
                 PlayAwardSound();
             }
@@ -5679,11 +5677,11 @@ void Player::SubtractVariable(VariableType VarNum, signed int pValue) {
     int npcIndex;
 
     if (VarNum >= VAR_MapPersistentVariable_0 && VarNum <= VAR_MapPersistentVariable_74) {
-        mapEventVariables.mapVars[VarNum - VAR_MapPersistentVariable_0] -= pValue;
+        mapEventVariables.mapVars[std::to_underlying(VarNum) - std::to_underlying(VAR_MapPersistentVariable_0)] -= pValue;
         return;
     }
     if (VarNum >= VAR_MapPersistentDecorVariable_0 && VarNum <= VAR_MapPersistentDecorVariable_24) {
-        mapEventVariables.decorVars[VarNum - VAR_MapPersistentDecorVariable_0] -= pValue;
+        mapEventVariables.decorVars[std::to_underlying(VarNum) - std::to_underlying(VAR_MapPersistentDecorVariable_0)] -= pValue;
         return;
     }
 
