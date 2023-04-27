@@ -1324,12 +1324,11 @@ void TravelByTransport() {
             dialog_menu_id <= DIALOGUE_TRANSPORT_SCHEDULE_4) {
             if (pParty->GetGold() < pPrice) {
                 GameUI_SetStatusBar(LSTR_NOT_ENOUGH_GOLD);
+                // TODO(pskelton): correct sound but wrong label - travel house sounds might need different enum
                 PlayHouseSound(window_SpeakInHouse->wData.val, HouseSound_Greeting_2);
                 pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 1, 0);
                 return;
             }
-
-            pParty->TakeGold(pPrice);
 
             int choice_id = dialog_menu_id - DIALOGUE_TRANSPORT_SCHEDULE_1;
             stru365_travel_info *pTravel = &transport_schedule[transport_routes[route_id][choice_id]];
@@ -1361,6 +1360,8 @@ void TravelByTransport() {
                     pParty->_viewYaw = pTravel->arrival_view_yaw;
                 }
 
+                pParty->TakeGold(pPrice);
+                // TODO(pskelton): correct sound but wrong label - travel house sounds might need different enum
                 PlayHouseSound(window_SpeakInHouse->wData.val, HouseSound_NotEnoughMoney);
                 int traveltimedays = GetTravelTimeTransportDays(transport_routes[route_id][choice_id]);
 
