@@ -230,10 +230,10 @@ void ItemInteraction(unsigned int item_id) {
 
         // TODO: WTF? 184 / 185 qbits are associated with Tatalia's Mercenery Guild Harmondale raids. Are these about castle's tapestries ?
         if (pSpriteObjects[item_id].containing_item.uItemID == ITEM_ARTIFACT_SPLITTER) {
-            _449B7E_toggle_bit(pParty->_quest_bits, QBIT_SPLITTER_FOUND, 1);
+            pParty->_questBits.set(QBIT_SPLITTER_FOUND);
         }
         if (pSpriteObjects[item_id].containing_item.uItemID == ITEM_SPELLBOOK_REMOVE_FEAR) {
-            _449B7E_toggle_bit(pParty->_quest_bits, 185, 1);
+            pParty->_questBits.set(185);
         }
         if (!pParty->addItemToParty(&pSpriteObjects[item_id].containing_item)) {
             pParty->setHoldingItem(&pSpriteObjects[item_id].containing_item);

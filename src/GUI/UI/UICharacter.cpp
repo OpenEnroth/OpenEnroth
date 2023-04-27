@@ -1713,8 +1713,9 @@ void FillAwardsData() {
     books_page_number = 0;
     books_primary_item_per_page = 0;
     for (int i = 1; i < 105; ++i) {
-        if (_449B57_test_bit(pPlayer->_achieved_awards_bits, i) && pAwards[i].pText)
+        if (pPlayer->_achievedAwardsBits[i] && pAwards[i].pText) {
             achieved_awards[num_achieved_awards++] = (AwardType)i;
+        }
     }
     full_num_items_in_book = num_achieved_awards;
     num_achieved_awards = 0;

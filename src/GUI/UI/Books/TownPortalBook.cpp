@@ -83,7 +83,7 @@ void GUIWindow_TownPortalBook::Update() {
     townPortalWindow.uFrameW = game_viewport_w;
 
     for (uint i = 0; i < TOWN_PORTAL_DESTINATION_COUNT; ++i) {
-        if (_449B57_test_bit(pParty->_quest_bits, townPortalQuestBits[i]) || engine->config->debug.TownPortal.value()) {
+        if (pParty->_questBits[townPortalQuestBits[i]] || engine->config->debug.TownPortal.value()) {
             render->ZDrawTextureAlpha(pTownPortalBook_xs[i] / 640.0f, pTownPortalBook_ys[i] / 480.0f, ui_book_townportal_icons[i], i + 1);
         }
     }
@@ -92,7 +92,7 @@ void GUIWindow_TownPortalBook::Update() {
     int iconPointing = render->pActiveZBuffer[pt.x + pt.y * render->GetRenderDimensions().w] & 0xFFFF;
 
     if (iconPointing) {
-        if (_449B57_test_bit(pParty->_quest_bits, townPortalQuestBits[iconPointing - 1]) || engine->config->debug.TownPortal.value()) {
+        if (pParty->_questBits[townPortalQuestBits[iconPointing - 1]] || engine->config->debug.TownPortal.value()) {
             render->DrawTextureNew(pTownPortalBook_xs[iconPointing - 1] / 640.0f, pTownPortalBook_ys[iconPointing - 1] / 480.0f, ui_book_townportal_icons[iconPointing - 1]);
         }
     }

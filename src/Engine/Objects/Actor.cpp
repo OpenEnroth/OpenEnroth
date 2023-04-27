@@ -1223,8 +1223,9 @@ void Actor::ApplyFineForKillingPeasant(unsigned int uActorID) {
 
     if (pParty->uFine) {
         for (Player &player : pParty->pPlayers) {
-            if (!_449B57_test_bit(player._achieved_awards_bits, Award_Fine))
-                _449B7E_toggle_bit(player._achieved_awards_bits, Award_Fine, 1);
+            if (!player._achievedAwardsBits[Award_Fine]) {
+                player._achievedAwardsBits.set(Award_Fine);
+            }
         }
     }
 }

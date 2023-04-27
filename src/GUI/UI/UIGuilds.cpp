@@ -42,10 +42,9 @@ void GuildDialog() {
                                                              p2DEvents[window_SpeakInHouse->wData.val - 1]);
 
     if (dialog_menu_id == DIALOGUE_MAIN) {  // change to switch??
-        if (!_449B57_test_bit(pParty->activeCharacter()._achieved_awards_bits, guild_membership_flags[window_SpeakInHouse->wData.val - HOUSE_FIRE_GUILD_INITIATE_EMERALD_ISLE])) {
+        if (!pParty->activeCharacter()._achievedAwardsBits[guild_membership_flags[window_SpeakInHouse->wData.val - HOUSE_FIRE_GUILD_INITIATE_EMERALD_ISLE]]) {
             // you must be a member
-            pTextHeight = pFontArrus->CalcTextHeight(
-                pNPCTopics[121].pText, working_window.uFrameWidth, 0);
+            pTextHeight = pFontArrus->CalcTextHeight(pNPCTopics[121].pText, working_window.uFrameWidth, 0);
             working_window.DrawTitleText(pFontArrus, 0, (212 - pTextHeight) / 2 + 101, colorTable.PaleCanary.c16(), pNPCTopics[121].pText, 3);
             pDialogueWindow->pNumPresenceButton = 0;
             return;
@@ -169,7 +168,7 @@ void SpellBookGenerator() {  // for GuildDialogs
         }
 
         if (pItemNum == ITEM_SPELLBOOK_DIVINE_INTERVENTION) {
-            if (!_449B57_test_bit(pParty->_quest_bits, QBIT_DIVINE_INTERVENTION_RETRIEVED))
+            if (!pParty->_questBits[QBIT_DIVINE_INTERVENTION_RETRIEVED])
                 pItemNum = ITEM_SPELLBOOK_SUNRAY;
         }
 

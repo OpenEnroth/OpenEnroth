@@ -130,13 +130,13 @@ void Party::Zero() {
     monster_id_for_hunting.fill(0);
     monster_for_hunting_killed.fill(0);
     days_played_without_rest = 0;
-    _quest_bits.fill(0);
+    _questBits.reset();
     pArcomageWins.fill(0);
     field_7B5_in_arena_quest = 0;
     uNumArenaWins.fill(0);
-    pIsArtifactFound.fill(0);
+    pIsArtifactFound.fill(false);
     field_7d7_set0_unused.fill(0);
-    _autonote_bits.fill(0);
+    _autonoteBits.reset();
     field_818_set0_unused.fill(0);
     random_order_num_unused.fill(0);
     uNumArcomageWins = 0;
@@ -696,9 +696,9 @@ void Party::Reset() {
 
     current_character_screen_window = WINDOW_CharacterWindow_Stats;  // default character ui - stats
     uFlags = 0;
-    _autonote_bits.fill(0);
-    _quest_bits.fill(0);
-    pIsArtifactFound.fill(0);
+    _autonoteBits.reset();
+    _questBits.reset();
+    pIsArtifactFound.fill(false);
 
     PartyTimes._shop_ban_times.fill(GameTime(0));
 
@@ -986,7 +986,7 @@ void Party::restOneFrame() {
 }
 
 bool TestPartyQuestBit(PARTY_QUEST_BITS bit) {
-    return _449B57_test_bit(pParty->_quest_bits, bit);
+    return pParty->_questBits[bit];
 }
 
 //----- (0047752B) --------------------------------------------------------
@@ -1147,9 +1147,9 @@ bool Party::addItemToParty(ItemGen *pItem, bool isSilent) {
     return false;
 }
 
-bool Party::isPartyEvil() { return _449B57_test_bit(_quest_bits, QBIT_DARK_PATH); }
+bool Party::isPartyEvil() { return _questBits[QBIT_DARK_PATH]; }
 
-bool Party::isPartyGood() { return _449B57_test_bit(_quest_bits, QBIT_LIGHT_PATH); }
+bool Party::isPartyGood() { return _questBits[QBIT_LIGHT_PATH]; }
 
 size_t Party::immolationAffectedActors(int *affected, size_t affectedArrSize, size_t effectRange) {
     int x, y, z;
@@ -1188,26 +1188,6 @@ int getTravelTime() {
     return new_travel_time;
 }
 // 6BD07C: using guessed type int uDefaultTravelTime_ByFoot;
-
-//----- (00449B57) --------------------------------------------------------
-bool _449B57_test_bit(std::span<const uint8_t> bits, int index) {
-    assert(index > 0 && index <= bits.size() * 8);
-    index--;
-
-    return bits[index / 8] & (0x80 >> index % 8);
-}
-
-//----- (00449B7E) --------------------------------------------------------
-void _449B7E_toggle_bit(std::span<uint8_t> bits, int index, bool value) {
-    assert(index > 0 && index <= bits.size() * 8);
-    index--;
-
-    uint8_t mask = 0x80 >> index % 8;
-    if (value)
-        bits[index / 8] |= mask;
-    else
-        bits[index / 8] &= ~mask;
-}
 
 //----- (004760D5) --------------------------------------------------------
 PartyAction ActionQueue::Next() {

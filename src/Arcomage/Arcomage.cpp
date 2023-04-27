@@ -2867,20 +2867,23 @@ void GameResultsApply() {
             if (!pParty->pArcomageWins[i - 108]) break;
             tavern_num++;
         }
-        if (tavern_num == 13)
-            _449B7E_toggle_bit(pParty->_quest_bits, QBIT_ARCOMAGE_CHAMPION, 1);
+        if (tavern_num == 13) {
+            pParty->_questBits.set(QBIT_ARCOMAGE_CHAMPION);
+        }
 
         for (int i = 0; i < 4; ++i) {
-            if (!_449B57_test_bit(pParty->pPlayers[i]._achieved_awards_bits, Award_Fine))
-                _449B7E_toggle_bit(pParty->pPlayers[i]._achieved_awards_bits, Award_ArcomageWins, 1);
+            if (!pParty->pPlayers[i]._achievedAwardsBits[Award_Fine]) {
+                pParty->pPlayers[i]._achievedAwardsBits.set(Award_ArcomageWins);
+            }
         }
         ++pParty->uNumArcomageWins;
         if (pParty->uNumArcomageWins > 1000000)
             pParty->uNumArcomageWins = 1000000;
     } else {  //проигрыш
         for (int i = 0; i < 4; ++i) {
-            if (!_449B57_test_bit(pParty->pPlayers[i]._achieved_awards_bits, Award_Fine))
-                _449B7E_toggle_bit(pParty->pPlayers[i]._achieved_awards_bits, Award_ArcomageLoses, 1);
+            if (!pParty->pPlayers[i]._achievedAwardsBits[Award_Fine]) {
+                pParty->pPlayers[i]._achievedAwardsBits.set(Award_ArcomageLoses);
+            }
         }
         ++pParty->uNumArcomageLoses;
         if (pParty->uNumArcomageLoses > 1000000)

@@ -92,7 +92,7 @@ static void calculateRequiredFood() {
     if (foodRequiredToRest < 1) {
         foodRequiredToRest = 1;
     }
-    if (pCurrentMapName == "d29.blv" && _449B57_test_bit(pParty->_quest_bits, QBIT_HARMONDALE_REBUILT)) {
+    if (pCurrentMapName == "d29.blv" && pParty->_questBits[QBIT_HARMONDALE_REBUILT]) {
         foodRequiredToRest = 0;
     }
 }

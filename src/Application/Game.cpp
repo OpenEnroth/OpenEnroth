@@ -273,7 +273,7 @@ bool Game::loop() {
             pMediaPlayer->PlayFullscreenMovie("Intro Post");
             SaveNewGame();
             if (_engine->config->debug.NoMargaret.value()) {
-                _449B7E_toggle_bit(pParty->_quest_bits, QBIT_EMERALD_ISLAND_MARGARETH_OFF, 1);
+                pParty->_questBits.set(QBIT_EMERALD_ISLAND_MARGARETH_OFF);
             }
 
             gameLoop();
@@ -1223,7 +1223,7 @@ void Game::processQueuedMessages() {
                     //if (uGameState == GAME_STATE_CHANGE_LOCATION) continue;
 
                     // check if tp location is unlocked
-                    if (!_449B57_test_bit(pParty->_quest_bits, townPortalQuestBits[uMessageParam]) && !_engine->config->debug.TownPortal.value()) {
+                    if (!pParty->_questBits[townPortalQuestBits[uMessageParam]] && !_engine->config->debug.TownPortal.value()) {
                         continue;
                     }
 
@@ -1279,7 +1279,7 @@ void Game::processQueuedMessages() {
                     continue;
                 }
                 case UIMSG_HintTownPortal: {
-                    if (!_449B57_test_bit(pParty->_quest_bits, townPortalQuestBits[uMessageParam]) && !_engine->config->debug.TownPortal.value()) {
+                    if (!pParty->_questBits[townPortalQuestBits[uMessageParam]] && !_engine->config->debug.TownPortal.value()) {
                         _render->DrawTextureNew(0, 352 / 480.0f, game_ui_statusbar);
                         continue;
                     }
@@ -2451,7 +2451,7 @@ void Game::gameLoop() {
                 }
                 pParty->setActiveCharacterIndex(1);
 
-                if (_449B57_test_bit(pParty->_quest_bits, QBIT_ESCAPED_EMERALD_ISLE)) {
+                if (pParty->_questBits[QBIT_ESCAPED_EMERALD_ISLE]) {
                     pParty->vPosition.x = -17331;  // respawn in harmondale
                     pParty->vPosition.y = 12547;
                     pParty->vPosition.z = 465;
