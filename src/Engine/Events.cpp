@@ -147,6 +147,8 @@ void LoadLevel_InitializeLevelEvt() {
     }
     uLevelEVT_NumEvents = events_count;
 
+    engine->_localEventMap.dumpAll();
+
     registerEventTriggers();
 
     /*
