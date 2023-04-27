@@ -135,7 +135,7 @@ var searchData=
   ['winplatform_2eh_132',['WinPlatform.h',['../WinPlatform_8h.html',1,'']]],
   ['winqueryregistry_133',['winQueryRegistry',['../classWinPlatform.html#abcb3860ccf83067d3f1abc69c7a67fac',1,'WinPlatform::winQueryRegistry()'],['../classPlatform.html#acdfbc0c9e3d47458f994a82b6b32be15',1,'Platform::winQueryRegistry()'],['../classProxyPlatform.html#ae61f25f602b5e8e4143cd7d3ea1d803d',1,'ProxyPlatform::winQueryRegistry()'],['../classSdlPlatform.html#a10934ab7426ceae5f5bfeb77e3a94071',1,'SdlPlatform::winQueryRegistry()']]],
   ['wins_134',['wins',['../Nuklear_8cpp.html#a702c632a67022953484b487b5d0686e5',1,'Nuklear.cpp']]],
-  ['winter_135',['WINTER',['../EventIR_8h.html#aece5c30085f26d71a51cad4202ed50d8a832294ab11474e3f807c5eaa92b63058',1,'EventIR.h']]],
+  ['winter_135',['WINTER',['../EventEnums_8h.html#aece5c30085f26d71a51cad4202ed50d8a832294ab11474e3f807c5eaa92b63058',1,'EventEnums.h']]],
   ['wintype_136',['winType',['../structhotkey.html#a1e74f3b3b53b6a9286a4e352517787af',1,'hotkey::winType()'],['../structcontext.html#ae0834c166c749041fb2cbd4fa9de6973',1,'context::winType()']]],
   ['wizardeye_137',['WizardEye',['../classGameConfig_1_1Debug.html#a7b3e8716898305a8516d4026e9580cdd',1,'GameConfig::Debug']]],
   ['wizardeyeactive_138',['wizardEyeActive',['../structParty.html#a2e483a4058778f48165e9e2bf3dbc587',1,'Party']]],

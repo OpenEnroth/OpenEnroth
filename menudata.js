@@ -263,7 +263,6 @@ var menudata={children:[
 {text:"s",url:"globals_eval_s.html#index_s"},
 {text:"t",url:"globals_eval_t.html#index_t"},
 {text:"u",url:"globals_eval_u.html#index_u"},
-{text:"v",url:"globals_eval_v.html#index_v"},
 {text:"w",url:"globals_eval_w.html#index_w"}]},
 {text:"Macros",url:"globals_defs.html",children:[
 {text:"_",url:"globals_defs.html#index__5F"},
