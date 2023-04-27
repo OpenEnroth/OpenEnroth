@@ -560,7 +560,6 @@ bool EventInterpreter::executeRegular(int startStep) {
 
     int step = startStep;
 
-    _mapExitTriggered = false;
     _who = !pParty->hasActiveCharacter() ? CHOOSE_RANDOM : CHOOSE_ACTIVE;
 
     while (step != -1 && dword_5B65C4_cancelEventProcessing == 0) {
@@ -579,8 +578,6 @@ bool EventInterpreter::executeNpcDialogue(int startStep) {
 
     int step = startStep;
 
-    _canShowOption = true;
-    _readyToExit = false;
     _who = CHOOSE_PARTY;
 
     while (step != -1) {

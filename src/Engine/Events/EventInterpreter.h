@@ -16,11 +16,11 @@ class EventInterpreter {
      int executeOneEvent(int step);
 
  private:
-     int _eventId;
+     int _eventId = 0;
      std::vector<EventIR> _events;
-     bool _canShowMessages;
-     bool _canShowOption;
-     bool _readyToExit;
-     bool _mapExitTriggered;
-     PLAYER_CHOOSE_POLICY _who;
+     bool _canShowMessages = false;
+     bool _canShowOption = true;
+     bool _readyToExit = false;
+     bool _mapExitTriggered = false;
+     PLAYER_CHOOSE_POLICY _who = CHOOSE_PARTY;
 };
