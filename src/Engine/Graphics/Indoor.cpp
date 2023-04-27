@@ -2063,7 +2063,7 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
 
         new_party_x += collision_state.adjusted_move_distance * collision_state.direction.x;
         new_party_y += collision_state.adjusted_move_distance * collision_state.direction.y;
-        unsigned long long new_party_z_tmp = new_party_z +
+        int new_party_z_tmp = new_party_z +
             collision_state.adjusted_move_distance * collision_state.direction.z;
 
         if (PID_TYPE(collision_state.pid) == OBJECT_Actor) {
