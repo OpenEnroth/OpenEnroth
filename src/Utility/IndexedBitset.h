@@ -21,10 +21,6 @@ class IndexedBitset {
         _bitset.set();
     }
 
-    void set(key_type index) {
-        set(index, true);
-    }
-
     void reset() {
         _bitset.reset();
     }
@@ -33,7 +29,7 @@ class IndexedBitset {
         set(index, false);
     }
 
-    void set(key_type index, bool value) {
+    void set(key_type index, bool value = true) {
         checkIndex(index);
         _bitset.set(index - FirstIndex, value);
     }
