@@ -625,9 +625,8 @@ LABEL_47:
                     ++curr_seq_num;
                     v4 = -1;
                     break;
-                case EVENT_IsActorAlive:
-                    if (isActorAlive(EVT_BYTE(_evt->v5), EVT_DWORD(_evt->v6),
-                                     EVT_BYTE(_evt->v10))) {
+                case EVENT_IsActorKilled:
+                    if (Actor::isActorKilled((ACTOR_KILL_CHECK_POLICY)EVT_BYTE(_evt->v5), EVT_DWORD(_evt->v6), EVT_BYTE(_evt->v10))) {
                         // v124 = -1;
                         curr_seq_num = _evt->v11 - 1;
                     }

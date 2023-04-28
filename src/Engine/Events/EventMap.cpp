@@ -69,12 +69,12 @@ std::string EventMap::getHintString(int eventId) const {
 
 void EventMap::dump(int eventId) const {
     if (_eventsById.contains(eventId)) {
-        logger->verbose("Event: {}", eventId);
+        logger->warning("Event: {}", eventId);
         for (const EventIR &ir : _eventsById.at(eventId)) {
-            logger->verbose("{}", ir.toString());
+            logger->warning("{}", ir.toString());
         }
     } else {
-        logger->verbose("Event {} not found", eventId);
+        logger->warning("Event {} not found", eventId);
     }
 }
 

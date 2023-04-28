@@ -458,15 +458,19 @@ int EventInterpreter::executeOneEvent(int step) {
             pNPCStats->pNewNPCData[ir.data.npc_descr.npc_id].uFlags &= 0xFFFFFFFCu;
             pNPCStats->pNewNPCData[ir.data.npc_descr.npc_id].greet = ir.data.npc_descr.greeting;
             break;
-        case EVENT_IsActorAlive:
-            if (isActorAlive(ir.data.actor_descr.type, ir.data.actor_descr.param, ir.data.actor_descr.num)) {
+        case EVENT_IsActorKilled:
+            if (Actor::isActorKilled(ir.data.actor_descr.policy, ir.data.actor_descr.param, ir.data.actor_descr.num)) {
                 return ir.target_step;
             }
             break;
-        case EVENT_IsActorAssasinated:
-            if (!isActorAlive(ir.data.actor_descr.type, ir.data.actor_descr.param, ir.data.actor_descr.num)) {
+        case EVENT_CanShowTopic_IsActorKilled:
+            // TODO: enconunter and process
+            __debugbreak();
+#if 0
+            if (Actor::isActorKilled(ir.data.actor_descr.policy, ir.data.actor_descr.param, ir.data.actor_descr.num)) {
                 return ir.target_step;
             }
+#endif
             break;
         case EVENT_OnMapLeave:
             assert(false); // Trigger, must be skipped

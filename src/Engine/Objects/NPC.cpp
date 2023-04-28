@@ -1126,10 +1126,10 @@ int NPCDialogueEventProcessor(int npc_event_id, int entry_line) {
                     npc_activity = EVT_BYTE(_evt->v5);
                     break;
 
-                case EVENT_IsActorAssasinated:
+                case EVENT_CanShowTopic_IsActorKilled:
                     // TODO(Nik-RE-dev): Looks like cause of #700, conditiona probably must be inverted
-                    if (isActorAlive(
-                            EVT_BYTE(_evt->v5), EVT_DWORD(_evt->v6),
+                    if (Actor::isActorKilled(
+                            (ACTOR_KILL_CHECK_POLICY)EVT_BYTE(_evt->v5), EVT_DWORD(_evt->v6),
                             EVT_BYTE(_evt->v10))) {  // drop linear sequence,
                                                      // going to new seq
                         event_index = -1;

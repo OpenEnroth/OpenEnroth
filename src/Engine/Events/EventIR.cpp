@@ -776,10 +776,10 @@ std::string EventIR::toString() const {
             return fmt::format("{}: NPCSetItem({}, {}, {})", step, data.npc_item_descr.id, std::to_underlying(data.npc_item_descr.item), data.npc_item_descr.is_give);
         case EVENT_SetNPCGreeting:
             return fmt::format("{}: SetNpcGreeting({}, {})", step, data.npc_descr.npc_id, data.npc_descr.greeting);
-        case EVENT_IsActorAlive:
-            return fmt::format("{}: IsActorAlive({}, {}, {}) -> {}", step, data.actor_descr.type, data.actor_descr.param, data.actor_descr.num, target_step);
-        case EVENT_IsActorAssasinated:
-            return fmt::format("{}: IsActorAssasinated({}, {}, {}) -> {}", step, data.actor_descr.type, data.actor_descr.param, data.actor_descr.num, target_step);
+        case EVENT_IsActorKilled:
+            return fmt::format("{}: IsActorKilled({}, {}, {}) -> {}", step, std::to_underlying(data.actor_descr.policy), data.actor_descr.param, data.actor_descr.num, target_step);
+        case EVENT_CanShowTopic_IsActorKilled:
+            return fmt::format("{}: CanShowTopic_IsActorKilled({}, {}, {}) -> {}", step, std::to_underlying(data.actor_descr.policy), data.actor_descr.param, data.actor_descr.num, target_step);
         case EVENT_OnMapLeave:
             return fmt::format("{}: OnMapLeave", step);
         case EVENT_ChangeGroup:
@@ -1055,14 +1055,14 @@ EventIR EventIR::parse(void *data, size_t maxSize) {
             ir.data.npc_descr.npc_id = EVT_DWORD(_evt->v5);
             ir.data.npc_descr.greeting = EVT_DWORD(_evt->v9);
             break;
-        case EVENT_IsActorAlive:
-            ir.data.actor_descr.type = _evt->v5;
+        case EVENT_IsActorKilled:
+            ir.data.actor_descr.policy = (ACTOR_KILL_CHECK_POLICY)_evt->v5;
             ir.data.actor_descr.param = EVT_DWORD(_evt->v6);
             ir.data.actor_descr.num = _evt->v10;
             ir.target_step = _evt->v11;
             break;
-        case EVENT_IsActorAssasinated:
-            ir.data.actor_descr.type = _evt->v5;
+        case EVENT_CanShowTopic_IsActorKilled:
+            ir.data.actor_descr.policy = (ACTOR_KILL_CHECK_POLICY)_evt->v5;
             ir.data.actor_descr.param = EVT_DWORD(_evt->v6);
             ir.data.actor_descr.num = _evt->v10;
             ir.target_step = _evt->v11;
