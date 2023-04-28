@@ -886,7 +886,6 @@ bool Engine::MM7_Initialize() {
 
     MM6_Initialize();
 
-    //onTimer(true);
     GameUI_StatusBar_Update(true);
 
     MM7_LoadLods();

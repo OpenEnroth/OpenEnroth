@@ -12,10 +12,11 @@
 #include "Engine/Events.h"
 
 struct MapTimer {
-    GameTime interval;
-    GameTime alarmTime;
-    int eventId;
-    int eventStep;
+    GameTime interval = GameTime(0);
+    GameTime altInterval = GameTime(0);
+    GameTime alarmTime = GameTime(0);
+    int eventId = 0;
+    int eventStep = 0;
 };
 
 static std::vector<EventTrigger> onMapLoadTriggers;
@@ -41,22 +42,25 @@ static void registerTimerTriggers(EventType triggerType, std::vector<MapTimer> *
     for (EventTrigger &trigger : timerTriggers) {
         MapTimer timer;
         EventIR ir = engine->_localEventMap.get(trigger.eventId, trigger.eventStep);
-        timer.interval = GameTime(ir.data.timer_descr.seconds, ir.data.timer_descr.minutes, ir.data.timer_descr.hours,
-                                  ir.data.timer_descr.weeks, ir.data.timer_descr.months, ir.data.timer_descr.years);
 
-        // TODO(Nik-RE-dev): need to check is it even used
-        assert(ir.data.timer_descr.alternative_interval == 0);
-
-        if (levelLastVisit) {
-            GameTime timeFromLastVisit = pParty->GetPlayingTime() - levelLastVisit;
-
-            if (timeFromLastVisit > timer.interval) {
-                timer.alarmTime = pParty->GetPlayingTime();
-            } else {
-                timer.alarmTime = pParty->GetPlayingTime() + timer.interval - timeFromLastVisit;
-            }
+        if (ir.data.timer_descr.alternative_interval) {
+            // Alternative interval is defined in terms of half-minutes
+            timer.altInterval = GameTime::FromSeconds(ir.data.timer_descr.alternative_interval * 30);
         } else {
-            timer.alarmTime = pParty->GetPlayingTime() + timer.interval;
+            timer.interval = GameTime(ir.data.timer_descr.seconds, ir.data.timer_descr.minutes, ir.data.timer_descr.hours,
+                                      ir.data.timer_descr.weeks, ir.data.timer_descr.months, ir.data.timer_descr.years);
+
+            if (levelLastVisit) {
+                GameTime timeFromLastVisit = pParty->GetPlayingTime() - levelLastVisit;
+
+                if (timeFromLastVisit > timer.interval) {
+                    timer.alarmTime = pParty->GetPlayingTime();
+                } else {
+                    timer.alarmTime = pParty->GetPlayingTime() + timer.interval - timeFromLastVisit;
+                }
+            } else {
+                timer.alarmTime = pParty->GetPlayingTime() + timer.interval;
+            }
         }
         timer.eventId = trigger.eventId;
         timer.eventStep = trigger.eventStep;
@@ -111,8 +115,6 @@ std::string getEventHintString(int eventId) {
 }
 
 void registerEventTriggers() {
-    std::vector<EventTrigger> timerTriggers;
-
     onMapLoadTriggers.clear();
     onMapLoadTriggers = engine->_localEventMap.enumerateTriggers(EVENT_OnMapReload);
     onMapLeaveTriggers.clear();
@@ -134,26 +136,29 @@ void onMapLeave() {
     }
 }
 
+static void checkTimer(MapTimer &timer) {
+    if (pParty->GetPlayingTime() >= timer.alarmTime) {
+        eventProcessor(timer.eventId, 0, true, timer.eventStep + 1);
+        if (timer.altInterval) {
+            timer.alarmTime = pParty->GetPlayingTime() + timer.altInterval;
+        } else {
+            while (pParty->GetPlayingTime() >= timer.alarmTime) {
+                timer.alarmTime += timer.interval;
+            }
+        }
+    }
+}
+
 void onTimer() {
     if (pEventTimer->bPaused) {
         return;
     }
 
     for (MapTimer &timer : onTimerTriggers) {
-        if (pParty->GetPlayingTime() > timer.alarmTime) {
-            eventProcessor(timer.eventId, 0, true, timer.eventStep + 1);
-            while (pParty->GetPlayingTime() > timer.alarmTime) {
-                timer.alarmTime += timer.interval;
-            }
-        }
+        checkTimer(timer);
     }
 
     for (MapTimer &timer : onLongTimerTriggers) {
-        if (pParty->GetPlayingTime() > timer.alarmTime) {
-            eventProcessor(timer.eventId, 0, true, timer.eventStep + 1);
-            while (pParty->GetPlayingTime() > timer.alarmTime) {
-                timer.alarmTime += timer.interval;
-            }
-        }
+        checkTimer(timer);
     }
 }
