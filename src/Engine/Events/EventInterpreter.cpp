@@ -330,7 +330,7 @@ int EventInterpreter::executeOneEvent(int step) {
             }
             break;
         case EVENT_OnTimer:
-            // TODO: trigger
+            assert(false); // Trigger, must be skipped
             break;
         case EVENT_ToggleIndoorLight:
             pIndoor->toggleLight(ir.data.light_descr.light_id, ir.data.light_descr.is_enable);
@@ -351,7 +351,7 @@ int EventInterpreter::executeOneEvent(int step) {
             assert(false); // Trigger, must be skipped
             break;
         case EVENT_OnLongTimer:
-            // TODO: trigger
+            assert(false); // Trigger, must be skipped
             break;
         case EVENT_SetNPCTopic:
         {
