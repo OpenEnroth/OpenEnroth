@@ -20,6 +20,7 @@
 
 #include "Utility/Color.h"
 #include "Utility/Memory/MemSet.h"
+#include "Utility/IndexedBitset.h"
 
 template<class T>
 static void Serialize(const T &src, T *dst) {
@@ -81,10 +82,9 @@ static void Deserialize(const std::array<T1, N1> &src, std::array<T2, N2> *dst) 
 }
 
 // Bits inside each array element indexed backwards
-// Also bits in bitset indexing from 1 as opposed to vanilla
-template<class T, size_t N1, size_t N2>
-static void Serialize(const std::bitset<N2> &src, std::array<T, N1> *dst) {
-    assert(dst->size() * sizeof(T) * 8 == (src.size() - 1));
+template<class T, size_t N, auto L, auto H>
+static void Serialize(const IndexedBitset<L, H> &src, std::array<T, N> *dst) {
+    assert(dst->size() * sizeof(T) * 8 == src.size());
     size_t i = 1, j = 0;
     while (i < src.size()) {
         T val = 0;
@@ -97,10 +97,9 @@ static void Serialize(const std::bitset<N2> &src, std::array<T, N1> *dst) {
 }
 
 // Bits inside each array element indexed backwards
-// Also bits in bitset indexing from 1 as opposed to vanilla
-template<class T, size_t N1, size_t N2>
-static void Deserialize(const std::array<T, N1> &src, std::bitset<N2> *dst) {
-    assert((dst->size() - 1) == src.size() * sizeof(T) * 8);
+template<class T, size_t N, auto L, auto H>
+static void Deserialize(const std::array<T, N> &src, IndexedBitset<L, H> *dst) {
+    assert(dst->size() == src.size() * sizeof(T) * 8);
     size_t i = 1, j = 0;
     while (i < dst->size()) {
         T val = 0;

@@ -2,7 +2,6 @@
 
 #include <vector>
 #include <string>
-#include <bitset>
 #include <utility>
 
 #include "Engine/Engine.h"
@@ -17,6 +16,7 @@
 #include "Engine/Spells/Spells.h"
 
 #include "Utility/IndexedArray.h"
+#include "Utility/IndexedBitset.h"
 
 struct LloydBeacon {
     LloydBeacon() {
@@ -530,7 +530,7 @@ struct Player {
         };
         IndexedArray<PLAYER_SKILL, PLAYER_SKILL_FIRST, PLAYER_SKILL_LAST> pActiveSkills;
     };
-    std::bitset<513> _achievedAwardsBits;
+    IndexedBitset<1, 512> _achievedAwardsBits;
     PlayerSpells spellbook;
     char _1F6_padding[2];
     int pure_luck_used;
@@ -590,7 +590,7 @@ struct Player {
     char field_1A4D;
     char lastOpenedSpellbookPage;
     SPELL_TYPE uQuickSpell;
-    std::bitset<513> _playerEventBits;
+    IndexedBitset<1, 512> _playerEventBits;
     char _some_attack_bonus;
     char field_1A91;
     char _melee_dmg_bonus;
