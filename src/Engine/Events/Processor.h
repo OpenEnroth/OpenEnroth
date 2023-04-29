@@ -9,3 +9,4 @@ std::string getEventHintString(int eventId);
 void registerEventTriggers();
 void onMapLoad();
 void onMapLeave();
+void onTimer();

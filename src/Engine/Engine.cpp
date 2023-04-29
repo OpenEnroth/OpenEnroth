@@ -886,7 +886,6 @@ bool Engine::MM7_Initialize() {
 
     MM6_Initialize();
 
-    OnTimer(1);
     GameUI_StatusBar_Update(true);
 
     MM7_LoadLods();
@@ -2080,27 +2079,17 @@ void OnMapLoad() {
 
             v6 = ((unsigned short)_evt->v12 << 8) + _evt->v11;
 
-            MapsLongTimersList[MapsLongTimers_count].time_left_to_fire =
-                ((unsigned short)_evt->v12 << 8) + _evt->v11;
-            MapsLongTimersList[MapsLongTimers_count].IntervalHalfMins =
-                ((unsigned short)_evt->v12 << 8) + _evt->v11;
-            if (MapsLongTimersList[MapsLongTimers_count].timer_evt_type ==
-                    EVENT_OnLongTimer &&
-                !(short)v6) {
+            MapsLongTimersList[MapsLongTimers_count].time_left_to_fire = ((unsigned short)_evt->v12 << 8) + _evt->v11;
+            MapsLongTimersList[MapsLongTimers_count].IntervalHalfMins = ((unsigned short)_evt->v12 << 8) + _evt->v11;
+            if (MapsLongTimersList[MapsLongTimers_count].timer_evt_type == EVENT_OnLongTimer && !(short)v6) {
                 if (v20)
                     v18 = pParty->GetPlayingTime() - v20;
                 else
                     v18 = GameTime(0);
 
-                if (v18.GetYears() != 0 &&
-                        MapsLongTimersList[MapsLongTimers_count]
-                            .YearsInterval ||
-                    v18.GetMonths() != 0 &&
-                        MapsLongTimersList[MapsLongTimers_count]
-                                .MonthsInterval != 0 ||
-                    v18.GetWeeks() != 0 &&
-                        MapsLongTimersList[MapsLongTimers_count]
-                                .WeeksInterval != 0 ||
+                if (v18.GetYears() != 0 && MapsLongTimersList[MapsLongTimers_count].YearsInterval ||
+                    v18.GetMonths() != 0 && MapsLongTimersList[MapsLongTimers_count].MonthsInterval != 0 ||
+                    v18.GetWeeks() != 0 && MapsLongTimersList[MapsLongTimers_count].WeeksInterval != 0 ||
                     v18.GetDays() != 0 || !v20) {
                     ++MapsLongTimers_count;
                     MapsLongTimersList[MapsLongTimers_count].NextStartTime = GameTime(0);
@@ -2117,23 +2106,17 @@ void OnMapLoad() {
 
                 if (MapsLongTimersList[MapsLongTimers_count].YearsInterval) {
                     ++years;
-                } else if (MapsLongTimersList[MapsLongTimers_count]
-                    .MonthsInterval) {
+                } else if (MapsLongTimersList[MapsLongTimers_count].MonthsInterval) {
                     ++months;
                 } else if (MapsLongTimersList[MapsLongTimers_count].WeeksInterval) {
                     ++weeks;
                 } else {
                     ++days;
-                    hours =
-                        MapsLongTimersList[MapsLongTimers_count].HoursInterval;
-                    minutes = MapsLongTimersList[MapsLongTimers_count]
-                                  .MinutesInterval;
-                    seconds = MapsLongTimersList[MapsLongTimers_count]
-                                  .SecondsInterval;
+                    hours = MapsLongTimersList[MapsLongTimers_count].HoursInterval;
+                    minutes = MapsLongTimersList[MapsLongTimers_count].MinutesInterval;
+                    seconds = MapsLongTimersList[MapsLongTimers_count].SecondsInterval;
                 }
-                MapsLongTimersList[MapsLongTimers_count].NextStartTime =
-                    GameTime(seconds, minutes, hours, days, weeks, months,
-                             years);
+                MapsLongTimersList[MapsLongTimers_count].NextStartTime = GameTime(seconds, minutes, hours, days, weeks, months, years);
                 ++MapsLongTimers_count;
             }
         }
@@ -2171,6 +2154,7 @@ void Transition_StopSound_Autosave(const char *pMapName,
     uLevel_StartingPointType = start_point;
 }
 
+// TODO(Nik-RE-dev): remove
 void OnTimer(int) {
     if (pEventTimer->bPaused) {
         return;
@@ -2188,8 +2172,7 @@ void OnTimer(int) {
                 timer->time_left_to_fire -= v13;
             } else {
                 timer->time_left_to_fire = timer->IntervalHalfMins;
-                EventProcessor(timer->timer_evt_ID, 0, 1,
-                               timer->timer_evt_seq_num);
+                EventProcessor(timer->timer_evt_ID, 0, 1, timer->timer_evt_seq_num);
             }
         } else {
             if (timer->NextStartTime < pParty->GetPlayingTime()) {

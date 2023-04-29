@@ -2354,7 +2354,7 @@ void Game::gameLoop() {
             pEventTimer->Update();
             pMiscTimer->Update();
 
-            OnTimer(0);
+            onTimer();
             GameUI_StatusBar_Update();
             if (pMiscTimer->bPaused && !pEventTimer->bPaused)
                 pMiscTimer->Resume();
