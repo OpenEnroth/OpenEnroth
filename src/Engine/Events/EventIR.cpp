@@ -736,7 +736,7 @@ std::string EventIR::toString() const {
                 return fmt::format("{}: ShowMessage(\"{}\")", step, &pLevelStr[pLevelStrOffsets[data.text_id]]);
             }
         case EVENT_OnTimer:
-            return fmt::format("{}: OnTimer({}yr, {}m, {}w, {}hr, {}min, {}sec, {})", step, data.timer_descr.years, data.timer_descr.months, data.timer_descr.weeks, data.timer_descr.hours, data.timer_descr.minutes, data.timer_descr.seconds, data.timer_descr.alternative_interval);
+            return fmt::format("{}: OnTimer(Year({}), Month({}), Week({}), Day({}hr, {}min, {}sec), {})", step, data.timer_descr.is_yearly, data.timer_descr.is_monthly, data.timer_descr.is_weekly, data.timer_descr.daily_start_hour, data.timer_descr.daily_start_minute, data.timer_descr.daily_start_second, data.timer_descr.alt_halfmin_interval);
         case EVENT_ToggleIndoorLight:
             return fmt::format("{}: ToggleIndoorLight({}, {})", step, data.light_descr.light_id, data.light_descr.is_enable);
         case EVENT_PressAnyKey:
@@ -750,7 +750,7 @@ std::string EventIR::toString() const {
         case EVENT_OnMapReload:
             return fmt::format("{}: OnMapReload", step);
         case EVENT_OnLongTimer:
-            return fmt::format("{}: OnLongTimer({}yr, {}m, {}w, {}hr, {}min, {}sec, {})", step, data.timer_descr.years, data.timer_descr.months, data.timer_descr.weeks, data.timer_descr.hours, data.timer_descr.minutes, data.timer_descr.seconds, data.timer_descr.alternative_interval);
+            return fmt::format("{}: OnLongTimer(Year({}), Month({}), Week({}), Day({}hr, {}min, {}sec), {})", step, data.timer_descr.is_yearly, data.timer_descr.is_monthly, data.timer_descr.is_weekly, data.timer_descr.daily_start_hour, data.timer_descr.daily_start_minute, data.timer_descr.daily_start_second, data.timer_descr.alt_halfmin_interval);
         case EVENT_SetNPCTopic:
             return fmt::format("{}: SetNPCTopic({}, {}, {})", step, data.npc_topic_descr.npc_id, data.npc_topic_descr.index, data.npc_topic_descr.event_id);
         case EVENT_MoveNPC:
@@ -964,13 +964,13 @@ EventIR EventIR::parse(void *data, size_t maxSize) {
             ir.data.text_id = EVT_DWORD(_evt->v5);
             break;
         case EVENT_OnTimer:
-            ir.data.timer_descr.years = _evt->v5;
-            ir.data.timer_descr.months = _evt->v6;
-            ir.data.timer_descr.weeks = _evt->v7;
-            ir.data.timer_descr.hours = _evt->v8;
-            ir.data.timer_descr.minutes = _evt->v9;
-            ir.data.timer_descr.seconds = _evt->v10;
-            ir.data.timer_descr.alternative_interval = _evt->v11 + (_evt->v12 << 8);
+            ir.data.timer_descr.is_yearly = _evt->v5;
+            ir.data.timer_descr.is_monthly = _evt->v6;
+            ir.data.timer_descr.is_weekly = _evt->v7;
+            ir.data.timer_descr.daily_start_hour = _evt->v8;
+            ir.data.timer_descr.daily_start_minute = _evt->v9;
+            ir.data.timer_descr.daily_start_second = _evt->v10;
+            ir.data.timer_descr.alt_halfmin_interval = _evt->v11 + (_evt->v12 << 8);
             break;
         case EVENT_ToggleIndoorLight:
             ir.data.light_descr.light_id = EVT_DWORD(_evt->v5);
@@ -998,13 +998,13 @@ EventIR EventIR::parse(void *data, size_t maxSize) {
             // Nothing?
             break;
         case EVENT_OnLongTimer:
-            ir.data.timer_descr.years = _evt->v5;
-            ir.data.timer_descr.months = _evt->v6;
-            ir.data.timer_descr.weeks = _evt->v7;
-            ir.data.timer_descr.hours = _evt->v8;
-            ir.data.timer_descr.minutes = _evt->v9;
-            ir.data.timer_descr.seconds = _evt->v10;
-            ir.data.timer_descr.alternative_interval = _evt->v11 + (_evt->v12 << 8);
+            ir.data.timer_descr.is_yearly = _evt->v5;
+            ir.data.timer_descr.is_monthly = _evt->v6;
+            ir.data.timer_descr.is_weekly = _evt->v7;
+            ir.data.timer_descr.daily_start_hour = _evt->v8;
+            ir.data.timer_descr.daily_start_minute = _evt->v9;
+            ir.data.timer_descr.daily_start_second = _evt->v10;
+            ir.data.timer_descr.alt_halfmin_interval = _evt->v11 + (_evt->v12 << 8);
             break;
         case EVENT_SetNPCTopic:
             ir.data.npc_topic_descr.npc_id = EVT_DWORD(_evt->v5);

@@ -14,6 +14,7 @@
 
 struct MapTimer {
     GameTime interval = GameTime(0);
+    GameTime timeInsideDay = GameTime(0);
     GameTime altInterval = GameTime(0);
     GameTime alarmTime = GameTime(0);
     int eventId = 0;
@@ -33,6 +34,7 @@ static void registerTimerTriggers(EventType triggerType, std::vector<MapTimer> *
     // TODO(Nik-RE-dev): using time of last visit will help timers only slightly when transiting indoor<->outdoor
     //                   "once" because each saving reset these times.
     //                   To support fair timers they needed to be saved in save game and for each map separately.
+    //                   Until then timers with long interval may just never fire because of time resetting on transitions and save/loads.
     if (uCurrentlyLoadedLevelType == LEVEL_Indoor) {
         levelLastVisit = pIndoor->stru1.last_visit;
     } else {
@@ -44,19 +46,55 @@ static void registerTimerTriggers(EventType triggerType, std::vector<MapTimer> *
         MapTimer timer;
         EventIR ir = engine->_localEventMap.get(trigger.eventId, trigger.eventStep);
 
-        if (ir.data.timer_descr.alternative_interval) {
+        if (ir.data.timer_descr.alt_halfmin_interval) {
             // Alternative interval is defined in terms of half-minutes
-            timer.altInterval = GameTime::FromSeconds(ir.data.timer_descr.alternative_interval * 30);
+            timer.altInterval = GameTime::FromSeconds(ir.data.timer_descr.alt_halfmin_interval * 30);
             timer.alarmTime = pParty->GetPlayingTime() + timer.altInterval;
-            assert(timer.altInterval.Valid());
         } else {
-            timer.interval = GameTime(ir.data.timer_descr.seconds, ir.data.timer_descr.minutes, ir.data.timer_descr.hours,
-                                      ir.data.timer_descr.weeks, ir.data.timer_descr.months, ir.data.timer_descr.years);
+            GameTime timeSinceLastVisit = pParty->GetPlayingTime() - levelLastVisit;
+            if (!levelLastVisit.Valid()) {
+                timeSinceLastVisit = GameTime(0);
+            }
 
-            if (levelLastVisit) {
-                timer.alarmTime = std::max(levelLastVisit + timer.interval, pParty->GetPlayingTime());
+            if (ir.data.timer_descr.is_yearly) {
+                timer.interval = GameTime::FromYears(1);
+            } else if (ir.data.timer_descr.is_monthly) {
+                timer.interval = GameTime::FromDays(28);
+            } else if (ir.data.timer_descr.is_weekly) {
+                timer.interval = GameTime::FromDays(7);
             } else {
-                timer.alarmTime = pParty->GetPlayingTime() + timer.interval;
+                // Interval is daily with exact time of day
+                timer.interval = GameTime::FromDays(1);
+                timer.timeInsideDay = GameTime::FromHours(ir.data.timer_descr.daily_start_hour);
+                timer.timeInsideDay = timer.timeInsideDay.AddMinutes(ir.data.timer_descr.daily_start_minute);
+                timer.timeInsideDay = timer.timeInsideDay.AddSeconds(ir.data.timer_descr.daily_start_second);
+            }
+
+            if (timer.timeInsideDay) {
+                if (timeSinceLastVisit) {
+                    // Calculate alarm time inside last visit day
+                    int last_seconds = levelLastVisit.GetSecondsFraction();
+                    int last_minutes = levelLastVisit.GetMinutesFraction();
+                    int last_hours = levelLastVisit.GetHoursOfDay();
+                    timer.alarmTime = levelLastVisit - GameTime(last_seconds, last_minutes, last_hours) + timer.timeInsideDay;
+                    if (timer.alarmTime < levelLastVisit) {
+                        // Last visit time already passed alarm time inside that day so move alarm to next day
+                        timer.alarmTime = timer.alarmTime + GameTime::FromDays(1);
+                    }
+                } else {
+                    // Set alarm time on the time of the previous day because it must fire
+                    int seconds = pParty->GetPlayingTime().GetSecondsFraction();
+                    int minutes = pParty->GetPlayingTime().GetMinutesFraction();
+                    int hours = pParty->GetPlayingTime().GetHoursOfDay();
+                    timer.alarmTime = pParty->GetPlayingTime() - GameTime(seconds, minutes, hours) + timer.timeInsideDay - GameTime::FromDays(1);
+                }
+            } else {
+                if (timeSinceLastVisit) {
+                    timer.alarmTime = levelLastVisit + timer.interval;
+                } else {
+                    // Without time since last visit all timers must fire immediately
+                    timer.alarmTime = pParty->GetPlayingTime();
+                }
             }
             assert(timer.interval.Valid());
         }
