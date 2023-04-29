@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;9748626</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;8907a8b</span>
    </div>
   </td>
  </tr>
@@ -74,22 +74,34 @@ $(function() {
 </div><!-- top -->
 <div class="header">
   <div class="summary">
+<a href="#nested-classes">Classes</a> &#124;
 <a href="#func-members">Functions</a> &#124;
 <a href="#var-members">Variables</a>  </div>
   <div class="headertitle"><div class="title">Processor.cpp File Reference</div></div>
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><code>#include &lt;vector&gt;</code><br />
+<code>#include &lt;algorithm&gt;</code><br />
 <code>#include &quot;<a class="el" href="Engine_8h.html">Engine/Engine.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="mm7__data_8h.html">Engine/mm7_data.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="Indoor_8h.html">Engine/Graphics/Indoor.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="Outdoor_8h.html">Engine/Graphics/Outdoor.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Decoration_8h.html">Engine/Graphics/Level/Decoration.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="EventMap_8h.html">Engine/Events/EventMap.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="EventIR_8h.html">Engine/Events/EventIR.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="EventInterpreter_8h.html">Engine/Events/EventInterpreter.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Processor_8h.html">Engine/Events/Processor.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Events_8h.html">Engine/Events.h</a>&quot;</code><br />
 </div><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
+Classes</h2></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structMapTimer.html">MapTimer</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
+<tr class="memitem:a11522256028bcaf836cd64e95d83b69f"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Processor_8cpp.html#a11522256028bcaf836cd64e95d83b69f">registerTimerTriggers</a> (<a class="el" href="EventEnums_8h.html#afdf2c10d40c582d9884ac5635a374a34">EventType</a> triggerType, std::vector&lt; <a class="el" href="structMapTimer.html">MapTimer</a> &gt; *triggers)</td></tr>
+<tr class="separator:a11522256028bcaf836cd64e95d83b69f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afa4248a80c375171f143c245c523f76b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Processor_8cpp.html#afa4248a80c375171f143c245c523f76b">eventProcessor</a> (int eventId, int targetObj, bool canShowMessages, int startStep)</td></tr>
 <tr class="separator:afa4248a80c375171f143c245c523f76b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac06c4d3aa516284a85bd00ae363b5a2d"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Processor_8cpp.html#ac06c4d3aa516284a85bd00ae363b5a2d">npcDialogueEventProcessor</a> (int eventId, int startStep)</td></tr>
@@ -102,6 +114,10 @@ Functions</h2></td></tr>
 <tr class="separator:aaf0e540855f5f6f822a03c27feabe5f5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa64ebd79375dd046d0e54a883a1fa1b3"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Processor_8cpp.html#aa64ebd79375dd046d0e54a883a1fa1b3">onMapLeave</a> ()</td></tr>
 <tr class="separator:aa64ebd79375dd046d0e54a883a1fa1b3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abba8dbba72723e7a2af64078e0020ead"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Processor_8cpp.html#abba8dbba72723e7a2af64078e0020ead">checkTimer</a> (<a class="el" href="structMapTimer.html">MapTimer</a> &amp;timer)</td></tr>
+<tr class="separator:abba8dbba72723e7a2af64078e0020ead"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a68b68e72a8323bb91995b38e98cf7d3e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Processor_8cpp.html#a68b68e72a8323bb91995b38e98cf7d3e">onTimer</a> ()</td></tr>
+<tr class="separator:a68b68e72a8323bb91995b38e98cf7d3e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="var-members" name="var-members"></a>
 Variables</h2></td></tr>
@@ -109,8 +125,38 @@ Variables</h2></td></tr>
 <tr class="separator:a721ada95ac103068a9e454be04be04e7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af4bb75b65fca941a36c9da1ea08478f4"><td class="memItemLeft" align="right" valign="top">static std::vector&lt; <a class="el" href="structEventTrigger.html">EventTrigger</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Processor_8cpp.html#af4bb75b65fca941a36c9da1ea08478f4">onMapLeaveTriggers</a></td></tr>
 <tr class="separator:af4bb75b65fca941a36c9da1ea08478f4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7d5e45ce6ac370dbd1d441c363bb65bb"><td class="memItemLeft" align="right" valign="top">static std::vector&lt; <a class="el" href="structMapTimer.html">MapTimer</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Processor_8cpp.html#a7d5e45ce6ac370dbd1d441c363bb65bb">onLongTimerTriggers</a></td></tr>
+<tr class="separator:a7d5e45ce6ac370dbd1d441c363bb65bb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a81fc084c7b91783ca317b99566b4beaa"><td class="memItemLeft" align="right" valign="top">static std::vector&lt; <a class="el" href="structMapTimer.html">MapTimer</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Processor_8cpp.html#a81fc084c7b91783ca317b99566b4beaa">onTimerTriggers</a></td></tr>
+<tr class="separator:a81fc084c7b91783ca317b99566b4beaa"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Function Documentation</h2>
+<a id="abba8dbba72723e7a2af64078e0020ead" name="abba8dbba72723e7a2af64078e0020ead"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abba8dbba72723e7a2af64078e0020ead">&#9670;&#160;</a></span>checkTimer()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void checkTimer </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structMapTimer.html">MapTimer</a> &amp;&#160;</td>
+          <td class="paramname"><em>timer</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="afa4248a80c375171f143c245c523f76b" name="afa4248a80c375171f143c245c523f76b"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#afa4248a80c375171f143c245c523f76b">&#9670;&#160;</a></span>eventProcessor()</h2>
 
@@ -231,6 +277,23 @@ Variables</h2></td></tr>
 
 </div>
 </div>
+<a id="a68b68e72a8323bb91995b38e98cf7d3e" name="a68b68e72a8323bb91995b38e98cf7d3e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a68b68e72a8323bb91995b38e98cf7d3e">&#9670;&#160;</a></span>onTimer()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void onTimer </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="a87bd18eff43cf77cc217265b1265123c" name="a87bd18eff43cf77cc217265b1265123c"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a87bd18eff43cf77cc217265b1265123c">&#9670;&#160;</a></span>registerEventTriggers()</h2>
 
@@ -248,7 +311,65 @@ Variables</h2></td></tr>
 
 </div>
 </div>
+<a id="a11522256028bcaf836cd64e95d83b69f" name="a11522256028bcaf836cd64e95d83b69f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a11522256028bcaf836cd64e95d83b69f">&#9670;&#160;</a></span>registerTimerTriggers()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void registerTimerTriggers </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="EventEnums_8h.html#afdf2c10d40c582d9884ac5635a374a34">EventType</a>&#160;</td>
+          <td class="paramname"><em>triggerType</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::vector&lt; <a class="el" href="structMapTimer.html">MapTimer</a> &gt; *&#160;</td>
+          <td class="paramname"><em>triggers</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <h2 class="groupheader">Variable Documentation</h2>
+<a id="a7d5e45ce6ac370dbd1d441c363bb65bb" name="a7d5e45ce6ac370dbd1d441c363bb65bb"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7d5e45ce6ac370dbd1d441c363bb65bb">&#9670;&#160;</a></span>onLongTimerTriggers</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::vector&lt;<a class="el" href="structMapTimer.html">MapTimer</a>&gt; onLongTimerTriggers</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="af4bb75b65fca941a36c9da1ea08478f4" name="af4bb75b65fca941a36c9da1ea08478f4"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#af4bb75b65fca941a36c9da1ea08478f4">&#9670;&#160;</a></span>onMapLeaveTriggers</h2>
 
@@ -282,6 +403,28 @@ Variables</h2></td></tr>
       <table class="memname">
         <tr>
           <td class="memname">std::vector&lt;<a class="el" href="structEventTrigger.html">EventTrigger</a>&gt; onMapLoadTriggers</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a81fc084c7b91783ca317b99566b4beaa" name="a81fc084c7b91783ca317b99566b4beaa"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a81fc084c7b91783ca317b99566b4beaa">&#9670;&#160;</a></span>onTimerTriggers</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::vector&lt;<a class="el" href="structMapTimer.html">MapTimer</a>&gt; onTimerTriggers</td>
         </tr>
       </table>
   </td>
