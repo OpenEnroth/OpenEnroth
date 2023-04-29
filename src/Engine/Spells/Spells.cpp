@@ -701,7 +701,7 @@ void SpellBuff::Reset() {
 
 bool SpellBuff::IsBuffExpiredToTime(GameTime time) {
     if (this->expireTime && (this->expireTime < time)) {
-        expireTime.Reset();
+        expireTime.SetExpired();
         power = 0;
         skillMastery = PLAYER_SKILL_MASTERY_NONE;
         overlayID = 0;

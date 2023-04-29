@@ -64,6 +64,7 @@ struct GameTime {
         return *this;
     }
 
+    void SetExpired() { this->value = -1;  }
     void Reset() { this->value = 0; }
     bool Valid() const { return this->value > 0; }
 

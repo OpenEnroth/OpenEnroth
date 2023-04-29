@@ -1643,12 +1643,12 @@ void _494035_timed_effects__water_walking_damage__etc() {
         }
 
         for (uint k = 0; k < 24; ++k) {
-            player.pPlayerBuffs[k].IsBuffExpiredToTime(
-                pParty->GetPlayingTime());
+            player.pPlayerBuffs[k].IsBuffExpiredToTime(pParty->GetPlayingTime());
         }
 
         if (player.pPlayerBuffs[PLAYER_BUFF_HASTE].Expired()) {
             player.SetCondition(Condition_Weak, 0);
+            player.pPlayerBuffs[PLAYER_BUFF_HASTE].Reset();
         }
     }
 
@@ -1661,6 +1661,7 @@ void _494035_timed_effects__water_walking_damage__etc() {
     if (pParty->pPartyBuffs[PARTY_BUFF_HASTE].Expired()) {
         for (Player &player : pParty->pPlayers)
             player.SetCondition(Condition_Weak, 0);
+        pParty->pPartyBuffs[PARTY_BUFF_HASTE].Reset();
     }
 
     // Check if Fly/Water Walk caster can act
