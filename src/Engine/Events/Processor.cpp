@@ -1,4 +1,5 @@
 #include <vector>
+#include <algorithm>
 
 #include "Engine/Engine.h"
 #include "Engine/mm7_data.h"
@@ -46,21 +47,18 @@ static void registerTimerTriggers(EventType triggerType, std::vector<MapTimer> *
         if (ir.data.timer_descr.alternative_interval) {
             // Alternative interval is defined in terms of half-minutes
             timer.altInterval = GameTime::FromSeconds(ir.data.timer_descr.alternative_interval * 30);
+            timer.alarmTime = pParty->GetPlayingTime() + timer.altInterval;
+            assert(timer.altInterval.Valid());
         } else {
             timer.interval = GameTime(ir.data.timer_descr.seconds, ir.data.timer_descr.minutes, ir.data.timer_descr.hours,
                                       ir.data.timer_descr.weeks, ir.data.timer_descr.months, ir.data.timer_descr.years);
 
             if (levelLastVisit) {
-                GameTime timeFromLastVisit = pParty->GetPlayingTime() - levelLastVisit;
-
-                if (timeFromLastVisit > timer.interval) {
-                    timer.alarmTime = pParty->GetPlayingTime();
-                } else {
-                    timer.alarmTime = pParty->GetPlayingTime() + timer.interval - timeFromLastVisit;
-                }
+                timer.alarmTime = std::max(levelLastVisit + timer.interval, pParty->GetPlayingTime());
             } else {
                 timer.alarmTime = pParty->GetPlayingTime() + timer.interval;
             }
+            assert(timer.interval.Valid());
         }
         timer.eventId = trigger.eventId;
         timer.eventStep = trigger.eventStep;
