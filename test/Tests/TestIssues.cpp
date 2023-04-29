@@ -711,6 +711,12 @@ GAME_TEST(Issues, Issue691) {
 
 // 700
 
+GAME_TEST(Issues, Issue700) {
+    // Test that event check for killed monsters work
+    test->playTraceFromTestData("issue_700.mm7", "issue_700.json", [] { EXPECT_EQ(pParty->uNumGold, 21541); });
+    EXPECT_EQ(pParty->uNumGold, 21541);
+}
+
 GAME_TEST(Issues, Issue720) {
     // Test that quest book is opening fine
     test->playTraceFromTestData("issue_720.mm7", "issue_720.json");

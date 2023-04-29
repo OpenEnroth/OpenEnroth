@@ -172,13 +172,34 @@ class Actor {
     static int MakeActorAIList_BLV();
     static void UpdateActorAI();
     static void InitializeActors();
-    static unsigned int SearchAliveActors(unsigned int *pTotalActors);
-    static unsigned int SearchActorByMonsterID(unsigned int *pTotalActors,
-                                               int uMonsterID);
-    static unsigned int SearchActorByGroup(unsigned int *pTotalActors,
-                                           unsigned int uGroup);
-    static unsigned int SearchActorByID(unsigned int *pTotalActors,
-                                        unsigned int a2);
+
+    /**
+     * @param policy    Determines type for actors check.
+     * @param param     Parameter determined by check policy.
+     * @param count     Killed count or 0 if all must be killed
+     * @offset 0x44665D
+     */
+    static bool isActorKilled(ACTOR_KILL_CHECK_POLICY policy, int param, int count);
+
+    /**
+     * @offset 0x408A27
+     */
+    static int searchDeadActors(int *pTotalActors);
+
+    /**
+     * @offset 0x408A7E
+     */
+    static int searchDeadActorsByMonsterID(int *pTotalActors, int monsterID);
+
+    /**
+     * @offset 0x408AE7
+     */
+    static int searchDeadActorsByGroup(int *pTotalActors, int group);
+
+    /**
+     * @offset 0x408B54
+     */
+    static int searchDeadActorsByID(int *pTotalActors, int id);
 
     void LootActor();
     bool _427102_IsOkToCastSpell(SPELL_TYPE spell);
@@ -235,11 +256,6 @@ class Actor {
 extern std::vector<Actor> pActors;
 
 bool CheckActors_proximity();
-
-/**
- * @offset 0x44665D
- */
-int isActorAlive(unsigned int uType, unsigned int uParam, unsigned int uNumAlive);  // idb
 
 /**
  * @offset 0x448518
