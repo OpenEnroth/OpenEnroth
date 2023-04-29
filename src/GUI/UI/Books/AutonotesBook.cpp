@@ -27,7 +27,7 @@ void GUIWindow_AutonotesBook::recalculateCurrentNotesTypePages() {
     _activeNotesIdx.clear();
     for (int i = 1; i < pAutonoteTxt.size(); ++i) {
         if (autonoteBookDisplayType == pAutonoteTxt[i].eType) {
-            if (_449B57_test_bit(pParty->_autonote_bits, i) && pAutonoteTxt[i].pText) {
+            if (pParty->_autonoteBits[i] && pAutonoteTxt[i].pText) {
                 _activeNotesIdx.push_back(i);
             }
         }

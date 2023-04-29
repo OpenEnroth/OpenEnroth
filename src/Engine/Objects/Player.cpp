@@ -3315,7 +3315,7 @@ void Player::Reset(PLAYER_CLASS_TYPE cls) {
     pActiveSkills.fill(0);
     pActiveSkills[PLAYER_SKILL_CLUB] = 1; // Hidden skills, always at 1.
     pActiveSkills[PLAYER_SKILL_MISC] = 1;
-    _achieved_awards_bits.fill(0);
+    _achievedAwardsBits.reset();
     memset(&spellbook, 0, sizeof(spellbook));
     uQuickSpell = SPELL_NONE;
 
@@ -4162,11 +4162,11 @@ bool Player::CompareVariable(VariableType VarNum, int pValue) {
         case VAR_Age:
             return GetActualAge() >= (unsigned int)pValue;
         case VAR_Award:
-            return _449B57_test_bit(_achieved_awards_bits, pValue);
+            return _achievedAwardsBits[pValue];
         case VAR_Experience:
             return this->experience >= pValue;  // TODO(_) change pValue to long long
         case VAR_QBits_QuestsDone:
-            return _449B57_test_bit(pParty->_quest_bits, pValue);
+            return pParty->_questBits[pValue];
         case VAR_PlayerItemInHands:
             // for (int i = 0; i < 138; i++)
             for (int i = 0; i < INVENTORY_SLOT_COUNT; i++) {
@@ -4391,11 +4391,11 @@ bool Player::CompareVariable(VariableType VarNum, int pValue) {
             }
             return true;
         }
-        case VAR_AutoNotes:  // TODO(_): find out why the double subtraction. or
-                             // whether this is even used
-            test_bit_value = 0x80u >> (pValue - 2) % 8;
-            byteWithRequestedBit = pParty->_autonote_bits[(pValue - 2) / 8];
-            return (test_bit_value & byteWithRequestedBit) != 0;
+        case VAR_AutoNotes:
+            // TODO(_): find out why the double subtraction. or whether this is even used
+            // also bit indexing was changed
+            assert(false);
+            return pParty->_autonoteBits[pValue - 2];
         case VAR_IsMightMoreThanBase:
             actStat = GetActualMight();
             baseStat = GetBaseStrength();
@@ -4425,10 +4425,7 @@ bool Player::CompareVariable(VariableType VarNum, int pValue) {
             baseStat = GetBaseLuck();
             return (actStat >= baseStat);
         case VAR_PlayerBits:
-            test_bit_value = 0x80u >> ((int16_t)pValue - 1) % 8;
-            byteWithRequestedBit =
-                this->playerEventBits[((int16_t)pValue - 1) / 8];
-            return (test_bit_value & byteWithRequestedBit) != 0;
+            return this->_playerEventBits[pValue];
         case VAR_NPCs2:
             return pNPCStats->pNewNPCData[pValue].Hired();
         case VAR_IsFlying:
@@ -4630,25 +4627,24 @@ void Player::SetVariable(VariableType var_type, signed int var_value) {
             this->sAgeModifier = var_value;
             return;
         case VAR_Award:
-            if (!_449B57_test_bit(this->_achieved_awards_bits, var_value) &&
-                pAwards[var_value].pText) {
+            if (!this->_achievedAwardsBits[var_value] && pAwards[var_value].pText) {
                 PlayAwardSound_Anim();
                 this->playReaction(SPEECH_AwardGot);
             }
-            _449B7E_toggle_bit(this->_achieved_awards_bits, var_value, 1u);
+            this->_achievedAwardsBits.set(var_value);
             return;
         case VAR_Experience:
             this->experience = var_value;
             PlayAwardSound_Anim();
             return;
         case VAR_QBits_QuestsDone:
-            if (!_449B57_test_bit(pParty->_quest_bits, var_value) && pQuestTable[var_value]) {
+            if (!pParty->_questBits[var_value] && pQuestTable[var_value]) {
                 bFlashQuestBook = true;
                 spell_fx_renderer->SetPlayerBuffAnim(BECOME_MAGIC_GUILD_MEMBER, GetPlayerIndex());
                 PlayAwardSound();
                 this->playReaction(SPEECH_QuestGot);
             }
-            _449B7E_toggle_bit(pParty->_quest_bits, var_value, 1u);
+            pParty->_questBits.set(var_value);
             return;
         case VAR_PlayerItemInHands:
             item.Reset();
@@ -4656,7 +4652,7 @@ void Player::SetVariable(VariableType var_type, signed int var_value) {
             item.uAttributes = ITEM_IDENTIFIED;
             pParty->setHoldingItem(&item);
             if (IsSpawnableArtifact(ITEM_TYPE(var_value)))
-                pParty->pIsArtifactFound[ITEM_TYPE(var_value)] = 1;
+                pParty->pIsArtifactFound[ITEM_TYPE(var_value)] = true;
             return;
         case VAR_FixedGold:
             pParty->SetGold(var_value);
@@ -4898,17 +4894,17 @@ void Player::SetVariable(VariableType var_type, signed int var_value) {
             return;
         case VAR_AutoNotes:
             assert(var_value > 0);
-            if (!_449B57_test_bit(pParty->_autonote_bits, var_value) && pAutonoteTxt[var_value - 1].pText) {
+            if (!pParty->_autonoteBits[var_value] && pAutonoteTxt[var_value].pText) {
                 spell_fx_renderer->SetPlayerBuffAnim(BECOME_MAGIC_GUILD_MEMBER, GetPlayerIndex());
                 this->playReaction(SPEECH_AwardGot);
                 bFlashAutonotesBook = true;
-                autonoteBookDisplayType = pAutonoteTxt[var_value - 1].eType;  // dword_72371C[2 * a3];
+                autonoteBookDisplayType = pAutonoteTxt[var_value].eType;  // dword_72371C[2 * a3];
             }
-            _449B7E_toggle_bit(pParty->_autonote_bits, var_value, 1u);
+            pParty->_autonoteBits.set(var_value);
             PlayAwardSound();
             return;
         case VAR_PlayerBits:
-            _449B7E_toggle_bit(playerEventBits, var_value, 1u);
+            _playerEventBits.set(var_value);
             return;
         case VAR_NPCs2:
             pParty->hirelingScrollPosition = 0;
@@ -5218,29 +5214,28 @@ void Player::AddVariable(VariableType var_type, signed int val) {
             this->sAgeModifier += val;
             return;
         case VAR_Award:
-            if (_449B57_test_bit(this->_achieved_awards_bits, val) &&
-                pAwards[val].pText) {
+            if (this->_achievedAwardsBits[val] && pAwards[val].pText) {
                 PlayAwardSound_Anim97_Face(SPEECH_AwardGot);
             }
-            _449B7E_toggle_bit(this->_achieved_awards_bits, val, 1);
+            this->_achievedAwardsBits.set(val);
             return;
         case VAR_Experience:
             this->experience = std::min((uint64_t)(this->experience + val), UINT64_C(4000000000));
             PlayAwardSound_Anim97();
             return;
         case VAR_QBits_QuestsDone:
-            if (!_449B57_test_bit(pParty->_quest_bits, val) && pQuestTable[val]) {
+            if (!pParty->_questBits[val] && pQuestTable[val]) {
                 bFlashQuestBook = true;
                 PlayAwardSound_Anim97_Face(SPEECH_QuestGot);
             }
-            _449B7E_toggle_bit(pParty->_quest_bits, val, 1);
+            pParty->_questBits.set(val);
             return;
         case VAR_PlayerItemInHands:
             item.Reset();
             item.uAttributes = ITEM_IDENTIFIED;
             item.uItemID = ITEM_TYPE(val);
             if (IsSpawnableArtifact(ITEM_TYPE(val))) {
-                pParty->pIsArtifactFound[ITEM_TYPE(val)] = 1;
+                pParty->pIsArtifactFound[ITEM_TYPE(val)] = true;
             } else if (IsWand(ITEM_TYPE(val))) {
                 item.uNumCharges = grng->random(6) + item.GetDamageMod() + 1;
                 item.uMaxCharges = item.uNumCharges;
@@ -5471,18 +5466,18 @@ void Player::AddVariable(VariableType var_type, signed int val) {
             PlayAwardSound_Anim97();
             return;
         case VAR_AutoNotes:
-            if (!_449B57_test_bit(pParty->_autonote_bits, val) &&
-                pAutonoteTxt[val].pText) {
+            assert(val > 0);
+            if (!pParty->_autonoteBits[val] && pAutonoteTxt[val].pText) {
                 this->playReaction(SPEECH_AwardGot);
                 bFlashAutonotesBook = true;
                 autonoteBookDisplayType = pAutonoteTxt[val].eType;
                 spell_fx_renderer->SetPlayerBuffAnim(SPELL_QUEST_COMPLETED, GetPlayerIndex());
             }
-            _449B7E_toggle_bit(pParty->_autonote_bits, val, 1);
+            pParty->_autonoteBits.set(val);
             PlayAwardSound();
             return;
         case VAR_PlayerBits:
-            _449B7E_toggle_bit(playerEventBits, val, 1u);
+            _playerEventBits.set(val);
             return;
         case VAR_NPCs2:
             pParty->hirelingScrollPosition = 0;
@@ -5710,15 +5705,14 @@ void Player::SubtractVariable(VariableType VarNum, signed int pValue) {
             this->sAgeModifier -= (int16_t)pValue;
             return;
         case VAR_Award:
-            _449B7E_toggle_bit(this->_achieved_awards_bits,
-                               (int16_t)pValue, 0);
+            this->_achievedAwardsBits.reset(pValue);
             return;
         case VAR_Experience:
             this->experience -= pValue;
             PlayAwardSound_Anim98();
             return;
         case VAR_QBits_QuestsDone:
-            _449B7E_toggle_bit(pParty->_quest_bits, (int16_t)pValue, 0);
+            pParty->_questBits.reset(pValue);
             this->playReaction(SPEECH_AwardGot);
             return;
         case VAR_PlayerItemInHands:
@@ -6133,7 +6127,9 @@ void Player::SubtractVariable(VariableType VarNum, signed int pValue) {
             PlayAwardSound_Anim98();
             return;
         case VAR_AutoNotes:
-            _449B7E_toggle_bit(pParty->_autonote_bits, pValue - 1, 0);
+            // TODO(Nik-RE-dev): decreasing 1 seems wrong, also bits indexing was changed
+            assert(false);
+            //pParty->_autonoteBits.reset(pValue - 1);
             return;
         case VAR_NPCs2:
             npcIndex = 0;
@@ -7375,13 +7371,13 @@ bool Player::isClass(PLAYER_CLASS_TYPE class_type, bool check_honorary) {
 
     switch (class_type) {
     case PLAYER_CLASS_PRIEST_OF_SUN:
-        return _449B57_test_bit(_achieved_awards_bits, Award_Promotion_PriestOfLight_Honorary);
+        return _achievedAwardsBits[Award_Promotion_PriestOfLight_Honorary];
     case PLAYER_CLASS_PRIEST_OF_MOON:
-        return _449B57_test_bit(_achieved_awards_bits, Award_Promotion_PriestOfDark_Honorary);
+        return _achievedAwardsBits[Award_Promotion_PriestOfDark_Honorary];
     case PLAYER_CLASS_ARCHMAGE:
-        return _449B57_test_bit(_achieved_awards_bits, Award_Promotion_Archmage_Honorary);
+        return _achievedAwardsBits[Award_Promotion_Archmage_Honorary];
     case PLAYER_CLASS_LICH:
-        return _449B57_test_bit(_achieved_awards_bits, Award_Promotion_Lich_Honorary);
+        return _achievedAwardsBits[Award_Promotion_Lich_Honorary];
         break;
     default:
         Error("Should not be able to get here (%u)", class_type);
@@ -7552,7 +7548,7 @@ Player::Player() {
     uNumFireSpikeCasts = 0;
 
     field_1988.fill(0);
-    playerEventBits.fill(0);
+    _playerEventBits.reset();
 
     field_E0 = 0;
     field_E4 = 0;

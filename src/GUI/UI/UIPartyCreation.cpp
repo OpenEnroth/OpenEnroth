@@ -260,12 +260,12 @@ bool PartyCreationUI_Loop() {
     pParty->Reset();
     pParty->createDefaultParty();
 
-    _449B7E_toggle_bit(pParty->_quest_bits, QBIT_EMERALD_ISLAND_RED_POTION_ACTIVE, 1);
-    _449B7E_toggle_bit(pParty->_quest_bits, QBIT_EMERALD_ISLAND_SEASHELL_ACTIVE, 1);
-    _449B7E_toggle_bit(pParty->_quest_bits, QBIT_EMERALD_ISLAND_LONGBOW_ACTIVE, 1);
-    _449B7E_toggle_bit(pParty->_quest_bits, QBIT_EMERALD_ISLAND_PLATE_ACTIVE, 1);
-    _449B7E_toggle_bit(pParty->_quest_bits, QBIT_EMERALD_ISLAND_LUTE_ACTIVE, 1);
-    _449B7E_toggle_bit(pParty->_quest_bits, QBIT_EMERALD_ISLAND_HAT_ACTIVE, 1);
+    pParty->_questBits.set(QBIT_EMERALD_ISLAND_RED_POTION_ACTIVE);
+    pParty->_questBits.set(QBIT_EMERALD_ISLAND_SEASHELL_ACTIVE);
+    pParty->_questBits.set(QBIT_EMERALD_ISLAND_LONGBOW_ACTIVE);
+    pParty->_questBits.set(QBIT_EMERALD_ISLAND_PLATE_ACTIVE);
+    pParty->_questBits.set(QBIT_EMERALD_ISLAND_LUTE_ACTIVE);
+    pParty->_questBits.set(QBIT_EMERALD_ISLAND_HAT_ACTIVE);
 
     pGUIWindow_CurrentMenu = new GUIWindow_PartyCreation();
     if (PartyCreationUI_LoopInternal()) {

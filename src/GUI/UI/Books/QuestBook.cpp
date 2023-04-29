@@ -42,8 +42,8 @@ GUIWindow_QuestBook::GUIWindow_QuestBook() : _startingQuestIdx(0), _currentPage(
     pBtn_Book_2 = CreateButton({pViewport->uViewportTL_X + 398, pViewport->uViewportTL_Y + 38}, {ui_book_button2_on->GetWidth(), ui_book_button2_on->GetHeight()}, 1, 0,
                                UIMSG_ClickBooksBtn, std::to_underlying(BOOK_NEXT_PAGE), InputAction::Invalid, localization->GetString(LSTR_SCROLL_DOWN), {ui_book_button2_on});
 
-    for (int i = 1; i <= (pParty->_quest_bits.size() * 8); ++i) {
-        if (_449B57_test_bit(pParty->_quest_bits, i) && pQuestTable[i]) {
+    for (int i = 1; i < pQuestTable.size(); ++i) {
+        if (pParty->_questBits[i] && pQuestTable[i]) {
             _activeQuestsIdx.push_back(i);
         }
     }

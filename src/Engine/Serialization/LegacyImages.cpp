@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <type_traits>
 #include <string>
+#include <bitset>
 
 #include "Engine/Engine.h"
 #include "Engine/Graphics/Indoor.h"
@@ -19,6 +20,7 @@
 
 #include "Utility/Color.h"
 #include "Utility/Memory/MemSet.h"
+#include "Utility/IndexedBitset.h"
 
 template<class T>
 static void Serialize(const T &src, T *dst) {
@@ -77,6 +79,36 @@ static void Deserialize(const std::array<T1, N1> &src, std::array<T2, N2> *dst) 
     static_assert(N1 == N2, "Expected arrays of equal size.");
     for (size_t i = 0; i < N1; i++)
         Deserialize(src[i], &(*dst)[i]);
+}
+
+// Bits inside each array element indexed backwards
+template<class T, size_t N, auto L, auto H>
+static void Serialize(const IndexedBitset<L, H> &src, std::array<T, N> *dst) {
+    assert(dst->size() * sizeof(T) * 8 == src.size());
+    size_t i = 1, j = 0;
+    while (i < src.size()) {
+        T val = 0;
+        for (size_t k = 0; k < (sizeof(T) * 8); k++, i++) {
+            val |= src[i] << ((sizeof(T) * 8) - k - 1);
+        }
+        Serialize(val, &(*dst)[j]);
+        j++;
+    }
+}
+
+// Bits inside each array element indexed backwards
+template<class T, size_t N, auto L, auto H>
+static void Deserialize(const std::array<T, N> &src, IndexedBitset<L, H> *dst) {
+    assert(dst->size() == src.size() * sizeof(T) * 8);
+    size_t i = 1, j = 0;
+    while (i < dst->size()) {
+        T val = 0;
+        Deserialize(src[j], &val);
+        for (size_t k = 0; k < (sizeof(T) * 8); k++, i++) {
+            dst->set(i, !!(val & (1 << ((sizeof(T) * 8) - k - 1))));
+        }
+        j++;
+    }
 }
 
 template<class T1, size_t N, class T2, auto L, auto H>
@@ -374,7 +406,7 @@ void Serialize(const Party &src, Party_MM7 *dst) {
 
     dst->daysPlayedWithoutRest = src.days_played_without_rest;
 
-    Serialize(src._quest_bits, &dst->questBits);
+    Serialize(src._questBits, &dst->questBits);
     Serialize(src.pArcomageWins, &dst->arcomageWins);
 
     dst->field_7B5_in_arena_quest = src.field_7B5_in_arena_quest;
@@ -382,7 +414,7 @@ void Serialize(const Party &src, Party_MM7 *dst) {
 
     Serialize(src.pIsArtifactFound, &dst->isArtifactFound);
     Serialize(src.field_7d7_set0_unused, &dst->field_7d7);
-    Serialize(src._autonote_bits, &dst->autonoteBits);
+    Serialize(src._autonoteBits, &dst->autonoteBits);
     Serialize(src.field_818_set0_unused, &dst->field_818);
     Serialize(src.random_order_num_unused, &dst->field_854);
 
@@ -496,7 +528,7 @@ void Deserialize(const Party_MM7 &src, Party *dst) {
 
     dst->days_played_without_rest = src.daysPlayedWithoutRest;
 
-    Deserialize(src.questBits, &dst->_quest_bits);
+    Deserialize(src.questBits, &dst->_questBits);
     Deserialize(src.arcomageWins, &dst->pArcomageWins);
 
     dst->field_7B5_in_arena_quest = src.field_7B5_in_arena_quest;
@@ -504,7 +536,7 @@ void Deserialize(const Party_MM7 &src, Party *dst) {
 
     Deserialize(src.isArtifactFound, &dst->pIsArtifactFound);
     Deserialize(src.field_7d7, &dst->field_7d7_set0_unused);
-    Deserialize(src.autonoteBits, &dst->_autonote_bits);
+    Deserialize(src.autonoteBits, &dst->_autonoteBits);
     Deserialize(src.field_818, &dst->field_818_set0_unused);
     Deserialize(src.field_854, &dst->random_order_num_unused);
 
@@ -602,7 +634,7 @@ void Serialize(const Player &src, Player_MM7 *dst) {
     dst->field_104 = src.field_104;
 
     Serialize(src.pActiveSkills, &dst->activeSkills, 37);
-    Serialize(src._achieved_awards_bits, &dst->achievedAwardsBits);
+    Serialize(src._achievedAwardsBits, &dst->achievedAwardsBits);
     Serialize(src.spellbook.bHaveSpell, &dst->spellbook.haveSpell);
 
     dst->pureLuckUsed = src.pure_luck_used;
@@ -663,7 +695,7 @@ void Serialize(const Player &src, Player_MM7 *dst) {
     dst->lastOpenedSpellbookPage = src.lastOpenedSpellbookPage;
     dst->quickSpell = std::to_underlying(src.uQuickSpell);
 
-    Serialize(src.playerEventBits, &dst->playerEventBits);
+    Serialize(src._playerEventBits, &dst->playerEventBits);
 
     dst->someAttackBonus = src._some_attack_bonus;
     dst->field_1A91 = src.field_1A91;
@@ -866,7 +898,7 @@ void Deserialize(const Player_MM7 &src, Player *dst) {
     dst->field_104 = src.field_104;
 
     Deserialize(src.activeSkills, &dst->pActiveSkills, 37);
-    Deserialize(src.achievedAwardsBits, &dst->_achieved_awards_bits);
+    Deserialize(src.achievedAwardsBits, &dst->_achievedAwardsBits);
     Deserialize(src.spellbook.haveSpell, &dst->spellbook.bHaveSpell);
 
     dst->pure_luck_used = src.pureLuckUsed;
@@ -927,7 +959,7 @@ void Deserialize(const Player_MM7 &src, Player *dst) {
     dst->lastOpenedSpellbookPage = src.lastOpenedSpellbookPage;
     dst->uQuickSpell = static_cast<SPELL_TYPE>(src.quickSpell);
 
-    Deserialize(src.playerEventBits, &dst->playerEventBits);
+    Deserialize(src.playerEventBits, &dst->_playerEventBits);
 
     dst->_some_attack_bonus = src.someAttackBonus;
     dst->field_1A91 = src.field_1A91;

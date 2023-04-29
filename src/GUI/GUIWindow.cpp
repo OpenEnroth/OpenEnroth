@@ -1512,7 +1512,7 @@ void OracleDialogue() {
     // only items with special subquest in range 212-237 and also 241 are recoverable
     for (auto pair : _4F0882_evt_VAR_PlayerItemInHands_vals) {
         int quest_id = pair.first;
-        if (_449B57_test_bit(pParty->_quest_bits, quest_id)) {
+        if (pParty->_questBits[quest_id]) {
             ITEM_TYPE search_item_id = pair.second;
             if (!pParty->hasItem(search_item_id) && pParty->pPickedItem.uItemID != search_item_id) {
                 item_id = search_item_id;
@@ -1688,7 +1688,7 @@ std::string _4B254D_SkillMasteryTeacher(int trainerInfo) {
             gold_transaction_amount = 2000;
             break;
         case PLAYER_SKILL_MASTERY_MASTER:
-            if (!_449B57_test_bit(pParty->_quest_bits, 114))
+            if (!pParty->_questBits[114])
                 return std::string(pNPCTopics[127].pText);
             gold_transaction_amount = 5000;
             break;
@@ -1707,7 +1707,7 @@ std::string _4B254D_SkillMasteryTeacher(int trainerInfo) {
             gold_transaction_amount = 2000;
             break;
         case PLAYER_SKILL_MASTERY_MASTER:
-            if (!_449B57_test_bit(pParty->_quest_bits, 110))
+            if (!pParty->_questBits[110])
                 return std::string(pNPCTopics[127].pText);
             gold_transaction_amount = 5000;
             break;
@@ -1932,7 +1932,7 @@ std::string BuildDialogueString(std::string &str, uint8_t uPlayerID, ItemGen *a3
             case 8:
                 v63 = 0;
                 for (uint _i = 0; _i < 28; ++_i) {
-                    if (_449B57_test_bit(pPlayer->_achieved_awards_bits, word_4EE150[i])) {
+                    if (pPlayer->_achievedAwardsBits[word_4EE150[i]]) {
                         v21 = v63;
                         ++v63;
                         v55[v63] = word_4EE150[i];
@@ -2459,7 +2459,7 @@ const char *GetJoinGuildDialogueOption(GUILD_ID guild_id) {
         pParty->setActiveToFirstCanAct();  // avoid nzi
 
     if (pParty->activeCharacter().CanAct()) {
-        if (_449B57_test_bit(pParty->activeCharacter()._achieved_awards_bits, dword_F8B1AC_award_bit_number)) {
+        if (pParty->activeCharacter()._achievedAwardsBits[dword_F8B1AC_award_bit_number]) {
             return pNPCTopics[dialogue_base + 13].pText;
         } else {
             if (gold_transaction_amount <= pParty->GetGold()) {

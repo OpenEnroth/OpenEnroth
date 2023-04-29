@@ -889,7 +889,7 @@ bool enterHouse(HOUSE_ID uHouseID) {
             if (!pParty->hasActiveCharacter())  // avoid nzi
                 pParty->setActiveToFirstCanAct();
 
-            if (!_449B57_test_bit(pParty->activeCharacter()._achieved_awards_bits, membership)) {
+            if (!pParty->activeCharacter()._achievedAwardsBits[membership]) {
                 PlayHouseSound(uHouseID, HouseSound_Greeting_2);
                 return 1;
             }
@@ -915,7 +915,7 @@ void PrepareHouse(HOUSE_ID house) {
     if (uHouse_ExitPic) {
         uExitMapID = p2DEvents[house - HOUSE_SMITH_EMERALD_ISLE]._quest_bit;
         if (uExitMapID > 0) {
-            if (_449B57_test_bit(pParty->_quest_bits, uExitMapID)) {
+            if (pParty->_questBits[uExitMapID]) {
                 uHouse_ExitPic = 0;
             }
         }
@@ -1280,8 +1280,7 @@ void TravelByTransport() {
                 lastsched = schedule_id;
 
                 if (schedule_id != 255 && route_active &&
-                    (!transport_schedule[schedule_id].uQuestBit ||
-                        _449B57_test_bit(pParty->_quest_bits, transport_schedule[schedule_id].uQuestBit))) {
+                    (!transport_schedule[schedule_id].uQuestBit || pParty->_questBits[transport_schedule[schedule_id].uQuestBit])) {
                     uint16_t color{};
                     if (pDialogueWindow->pCurrentPosActiveItem == pCurrentButton)
                         color = colorTable.PaleCanary.c16();
@@ -1389,9 +1388,9 @@ bool IsTravelAvailable(int a1) {
     for (uint i = 0; i < 4; ++i) {
         if (transport_schedule[transport_routes[a1][i]]
             .pSchedule[pParty->uCurrentDayOfMonth % 7]) {
-            if (!transport_schedule[transport_routes[a1][i]].uQuestBit ||
-                _449B57_test_bit(pParty->_quest_bits, transport_schedule[transport_routes[a1][i]].uQuestBit))
+            if (!transport_schedule[transport_routes[a1][i]].uQuestBit || pParty->_questBits[transport_schedule[transport_routes[a1][i]].uQuestBit]) {
                 return true;
+            }
         }
     }
     return false;
@@ -2390,7 +2389,7 @@ void MercenaryGuildDialog() {
     int pPrice = PriceCalculator::skillLearningCostForPlayer(&pParty->activeCharacter(), p2DEvents[window_SpeakInHouse->wData.val - 1]);
 
     if (dialog_menu_id == DIALOGUE_MAIN) {
-        if (!_449B57_test_bit(pParty->activeCharacter()._achieved_awards_bits, word_4F0754[2 * window_SpeakInHouse->wData.val])) {
+        if (!pParty->activeCharacter()._achievedAwardsBits[word_4F0754[2 * window_SpeakInHouse->wData.val]]) {
             // 171 looks like Mercenary Stronghold message from NPCNews.txt in MM6
             pTextHeight = pFontArrus->CalcTextHeight(pNPCTopics[171].pText, dialog_window.uFrameWidth, 0);
             dialog_window.DrawTitleText(pFontArrus, 0, (212 - pTextHeight) / 2 + 101, colorTable.PaleCanary.c16(), pNPCTopics[171].pText, 3);

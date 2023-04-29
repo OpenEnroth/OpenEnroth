@@ -16,6 +16,7 @@
 #include "Engine/Spells/Spells.h"
 
 #include "Utility/IndexedArray.h"
+#include "Utility/IndexedBitset.h"
 
 struct LloydBeacon {
     LloydBeacon() {
@@ -529,7 +530,7 @@ struct Player {
         };
         IndexedArray<PLAYER_SKILL, PLAYER_SKILL_FIRST, PLAYER_SKILL_LAST> pActiveSkills;
     };
-    std::array<unsigned char, 64> _achieved_awards_bits;
+    IndexedBitset<1, 512> _achievedAwardsBits;
     PlayerSpells spellbook;
     char _1F6_padding[2];
     int pure_luck_used;
@@ -589,7 +590,7 @@ struct Player {
     char field_1A4D;
     char lastOpenedSpellbookPage;
     SPELL_TYPE uQuickSpell;
-    std::array<unsigned char, 64> playerEventBits;
+    IndexedBitset<1, 512> _playerEventBits;
     char _some_attack_bonus;
     char field_1A91;
     char _melee_dmg_bonus;

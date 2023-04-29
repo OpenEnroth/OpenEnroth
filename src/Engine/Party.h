@@ -13,6 +13,7 @@
 #include "GUI/UI/UIHouseEnums.h"
 #include "Library/Random/Random.h"
 #include "Media/Audio/AudioPlayer.h"
+#include "Utility/IndexedBitset.h"
 
 #define PARTY_AUTONOTES_BIT__EMERALD_FIRE_FOUNTAIN 2
 
@@ -441,13 +442,13 @@ struct Party {
     IndexedArray<int16_t, HOUSE_FIRST_TOWNHALL, HOUSE_LAST_TOWNHALL> monster_id_for_hunting;
     IndexedArray<int16_t, HOUSE_FIRST_TOWNHALL, HOUSE_LAST_TOWNHALL> monster_for_hunting_killed; // TODO(captainurist): bool
     unsigned char days_played_without_rest;
-    std::array<uint8_t, 64> _quest_bits;
+    IndexedBitset<1, 512> _questBits;
     std::array<uint8_t, 16> pArcomageWins;
     char field_7B5_in_arena_quest; // 0, DIALOGUE_ARENA_SELECT_PAGE..DIALOGUE_ARENA_SELECT_CHAMPION, or -1 for win
     std::array<char, 4> uNumArenaWins; // 0=page, 1=squire, 2=knight, 3=lord
     IndexedArray<bool, ITEM_FIRST_SPAWNABLE_ARTIFACT, ITEM_LAST_SPAWNABLE_ARTIFACT> pIsArtifactFound;  // 7ba
     std::array<char, 39> field_7d7_set0_unused;
-    std::array<unsigned char, 26> _autonote_bits;
+    IndexedBitset<1, 208> _autonoteBits;
     std::array<char, 60> field_818_set0_unused;
     std::array<char, 32> random_order_num_unused;
     int uNumArcomageWins;
@@ -519,6 +520,3 @@ void RestAndHeal(int uNumMinutes);  // idb
  * @offset 0x444D80
  */
 int getTravelTime();
-
-bool _449B57_test_bit(std::span<const uint8_t> bits, int index);
-void _449B7E_toggle_bit(std::span<uint8_t> bits, int index, bool value);  // idb
