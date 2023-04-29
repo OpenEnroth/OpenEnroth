@@ -140,6 +140,10 @@ struct Vec3 {
         return std::sqrt(lengthSqr());
     }
 
+    friend bool operator==(const Vec3 &l, const Vec3 &r) {
+        return (l.x == r.x) && (l.y == r.y) && (l.z == r.z);
+    }
+
     friend Vec3 operator+(const Vec3 &l, const Vec3 &r) {
         return Vec3(l.x + r.x, l.y + r.y, l.z + r.z);
     }
