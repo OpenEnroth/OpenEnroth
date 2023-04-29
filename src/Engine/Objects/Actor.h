@@ -174,7 +174,9 @@ class Actor {
     static void InitializeActors();
 
     /**
-     * @param count     killed count or 0 if all must be killed
+     * @param policy    Determines type for actors check.
+     * @param param     Parameter determined by check policy.
+     * @param count     Killed count or 0 if all must be killed
      * @offset 0x44665D
      */
     static bool isActorKilled(ACTOR_KILL_CHECK_POLICY policy, int param, int count);
