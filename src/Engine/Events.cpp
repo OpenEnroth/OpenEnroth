@@ -147,8 +147,6 @@ void LoadLevel_InitializeLevelEvt() {
     }
     uLevelEVT_NumEvents = events_count;
 
-    registerEventTriggers();
-
     /*
     EmeraldIsle::Variables:
     [0] ???
@@ -357,7 +355,7 @@ void EventProcessor(int uEventID, int targetObj, int canShowMessages,
 
     for (v4 = 0; v4 < uSomeEVT_NumEvents; ++v4) {
         if (dword_5B65C4_cancelEventProcessing) {
-            if (v133 == 1) OnMapLeave();
+            if (v133 == 1) onMapLeave();
             return;
         }
         if (pSomeEVT_Events[v4].event_id == uEventID &&
@@ -706,7 +704,7 @@ LABEL_47:
                         game_ui_status_bar_event_string =
                             &pLevelStr[pLevelStrOffsets[EVT_DWORD(_evt->v5)]];
                         StartBranchlessDialogue(uEventID, curr_seq_num, (int)EVENT_InputString);
-                        if (v133 == 1) OnMapLeave();
+                        if (v133 == 1) onMapLeave();
                         return;
                     }
                     v84 = EVT_DWORD(_evt->v13);
@@ -838,7 +836,7 @@ LABEL_47:
                     break;
                 case EVENT_OpenChest:
                     if (!Chest::open(_evt->v5)) {
-                        if (v133 == 1) OnMapLeave();
+                        if (v133 == 1) onMapLeave();
                         return;
                     }
                     ++curr_seq_num;
@@ -860,7 +858,7 @@ LABEL_47:
                             trans_partyzspeed, (char *)&_evt->v31);
                         savedEventID = uEventID;
                         savedEventStep = curr_seq_num + 1;
-                        if (v133 == 1) OnMapLeave();
+                        if (v133 == 1) onMapLeave();
                         return;
                     }
                     Party_Teleport_Y_Pos =
@@ -920,7 +918,7 @@ LABEL_47:
                                 dialog_menu_id = DIALOGUE_NULL;
                                 pIcons_LOD->SyncLoadedFilesCount();
                             }
-                            OnMapLeave();
+                            onMapLeave();
                             return;
                         }
                     }
@@ -961,10 +959,10 @@ LABEL_47:
                     break;
                 case EVENT_PressAnyKey:
                     StartBranchlessDialogue(uEventID, curr_seq_num + 1, (int)EVENT_PressAnyKey);
-                    if (v133 == 1) OnMapLeave();
+                    if (v133 == 1) onMapLeave();
                     return;
                 case EVENT_Exit:
-                    if (v133 == 1) OnMapLeave();
+                    if (v133 == 1) onMapLeave();
                     return;
                 case EVENT_ShowMovie:
                     movieName = trimRemoveQuotes((char *) &_evt->v7);
@@ -1008,7 +1006,7 @@ LABEL_47:
             }
         }
     }
-    if (v133 == 1) OnMapLeave();
+    if (v133 == 1) onMapLeave();
     return;
 }
 

@@ -31,10 +31,8 @@ static void registerTimerTriggers(EventType triggerType, std::vector<MapTimer> *
     std::vector<EventTrigger> timerTriggers = engine->_localEventMap.enumerateTriggers(triggerType);
     GameTime levelLastVisit{};
 
-    // TODO(Nik-RE-dev): using time of last visit will help timers only slightly when transiting indoor<->outdoor
-    //                   "once" because each saving reset these times.
-    //                   To support fair timers they needed to be saved in save game and for each map separately.
-    //                   Until then timers with long interval may just never fire because of time resetting on transitions and save/loads.
+    // TODO(Nik-RE-dev): using time of last visit will help timers only slightly because each map leaving resets it.
+    //                   To support fair timers they need to be saved directly.
     if (uCurrentlyLoadedLevelType == LEVEL_Indoor) {
         levelLastVisit = pIndoor->stru1.last_visit;
     } else {
@@ -51,11 +49,6 @@ static void registerTimerTriggers(EventType triggerType, std::vector<MapTimer> *
             timer.altInterval = GameTime::FromSeconds(ir.data.timer_descr.alt_halfmin_interval * 30);
             timer.alarmTime = pParty->GetPlayingTime() + timer.altInterval;
         } else {
-            GameTime timeSinceLastVisit = pParty->GetPlayingTime() - levelLastVisit;
-            if (!levelLastVisit.Valid()) {
-                timeSinceLastVisit = GameTime(0);
-            }
-
             if (ir.data.timer_descr.is_yearly) {
                 timer.interval = GameTime::FromYears(1);
             } else if (ir.data.timer_descr.is_monthly) {
@@ -71,7 +64,7 @@ static void registerTimerTriggers(EventType triggerType, std::vector<MapTimer> *
             }
 
             if (timer.timeInsideDay) {
-                if (timeSinceLastVisit) {
+                if (levelLastVisit) {
                     // Calculate alarm time inside last visit day
                     int last_seconds = levelLastVisit.GetSecondsFraction();
                     int last_minutes = levelLastVisit.GetMinutesFraction();
@@ -89,10 +82,10 @@ static void registerTimerTriggers(EventType triggerType, std::vector<MapTimer> *
                     timer.alarmTime = pParty->GetPlayingTime() - GameTime(seconds, minutes, hours) + timer.timeInsideDay - GameTime::FromDays(1);
                 }
             } else {
-                if (timeSinceLastVisit) {
+                if (levelLastVisit) {
                     timer.alarmTime = levelLastVisit + timer.interval;
                 } else {
-                    // Without time since last visit all timers must fire immediately
+                    // Without last visit all timers must fire immediately
                     timer.alarmTime = pParty->GetPlayingTime();
                 }
             }
@@ -150,7 +143,7 @@ std::string getEventHintString(int eventId) {
     return engine->_localEventMap.getHintString(eventId);
 }
 
-void registerEventTriggers() {
+static void registerEventTriggers() {
     onMapLoadTriggers.clear();
     onMapLoadTriggers = engine->_localEventMap.enumerateTriggers(EVENT_OnMapReload);
     onMapLeaveTriggers.clear();
@@ -161,6 +154,9 @@ void registerEventTriggers() {
 }
 
 void onMapLoad() {
+    // Register triggers all triggers when map done loading
+    registerEventTriggers();
+
     for (EventTrigger &triggers : onMapLoadTriggers) {
         eventProcessor(triggers.eventId, 0, false, triggers.eventStep + 1);
     }
@@ -170,6 +166,10 @@ void onMapLeave() {
     for (EventTrigger &triggers : onMapLeaveTriggers) {
         eventProcessor(triggers.eventId, 0, true, triggers.eventStep + 1);
     }
+
+    // Cleanup timers to avoid firing when on transitions
+    onLongTimerTriggers.clear();
+    onTimerTriggers.clear();
 }
 
 static void checkTimer(MapTimer &timer) {
