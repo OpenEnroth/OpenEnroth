@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;a525fb1</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;9748626</span>
    </div>
   </td>
  </tr>
@@ -135,10 +135,10 @@ $(function() {
 <li>SdlPlatform()&#160;:&#160;<a class="el" href="classSdlPlatform.html#a60d689ef44ba9dc2d76b37af441e39cb">SdlPlatform</a>, <a class="el" href="classWinPlatform.html#a60d689ef44ba9dc2d76b37af441e39cb">WinPlatform</a></li>
 <li>SdlPlatformSharedState()&#160;:&#160;<a class="el" href="classSdlPlatformSharedState.html#a84d54ef2ade6ce4323c102510126a32a">SdlPlatformSharedState</a></li>
 <li>SdlWindow()&#160;:&#160;<a class="el" href="classSdlWindow.html#a8a8abe55d4da6417ddf8884427b2f749">SdlWindow</a></li>
-<li>SearchActorByGroup()&#160;:&#160;<a class="el" href="classActor.html#aa9485197a9a8207f739d680acf676bf3">Actor</a></li>
-<li>SearchActorByID()&#160;:&#160;<a class="el" href="classActor.html#a287856fa99b5a5987a2a7f2fe5543a69">Actor</a></li>
-<li>SearchActorByMonsterID()&#160;:&#160;<a class="el" href="classActor.html#a4a410852de2ff0a9fb39e217f1afa37f">Actor</a></li>
-<li>SearchAliveActors()&#160;:&#160;<a class="el" href="classActor.html#a57d6c35542b1bc6e48f7d50e71c88335">Actor</a></li>
+<li>searchDeadActors()&#160;:&#160;<a class="el" href="classActor.html#afa0a024c111b0f9bbd4934a554729296">Actor</a></li>
+<li>searchDeadActorsByGroup()&#160;:&#160;<a class="el" href="classActor.html#ad8d0c18658e0793740b6a5b3a60aba93">Actor</a></li>
+<li>searchDeadActorsByID()&#160;:&#160;<a class="el" href="classActor.html#ad5ab8ee31ea0942b0e83f5300287326c">Actor</a></li>
+<li>searchDeadActorsByMonsterID()&#160;:&#160;<a class="el" href="classActor.html#a597415cec1dee3bb6719f56af3344678">Actor</a></li>
 <li>season&#160;:&#160;<a class="el" href="classEventIR.html#a8dd4266befcc5a715ebf336889144340">EventIR</a></li>
 <li>SeasonsChange&#160;:&#160;<a class="el" href="classGameConfig_1_1Graphics.html#ab8da2dbdaa497f026ecb0675b74be357">GameConfig::Graphics</a></li>
 <li>Second&#160;:&#160;<a class="el" href="structTimer.html#a3375bd275268b2057c96bf6a94adfb39">Timer</a></li>
@@ -152,7 +152,7 @@ $(function() {
 <li>seed()&#160;:&#160;<a class="el" href="classMersenneTwisterRandomEngine.html#a652eb0b97faec2c4d976d1b159567bb8">MersenneTwisterRandomEngine</a>, <a class="el" href="classNonRandomEngine.html#a170afad0fc772644feab2bf73187be28">NonRandomEngine</a>, <a class="el" href="classRandomEngine.html#a6e0e20ed7fab2988e7ece98aeb2fcadf">RandomEngine</a></li>
 <li>Seek()&#160;:&#160;<a class="el" href="classAudioBufferDataSource.html#a109a3e5e5264c99a300aed2b3e13c7bf">AudioBufferDataSource</a></li>
 <li>seek()&#160;:&#160;<a class="el" href="classAudioBufferDataSource.html#aa51f80eeaa73428667f3c5cda50f5e94">AudioBufferDataSource</a>, <a class="el" href="classFileInputStream.html#a80c62a09ec6ce40e41e81e56582b2ff0">FileInputStream</a>, <a class="el" href="classMovie.html#a3240461c15319133f62213b061dd6353">Movie</a></li>
-<li>Segment()&#160;:&#160;<a class="el" href="classSegment.html#a36700f5f8292779c89dc120ecde49115">Segment&lt; T &gt;</a></li>
+<li>Segment()&#160;:&#160;<a class="el" href="classSegment.html#a283468b6bfde0017fd713d5ed554ed05">Segment&lt; T &gt;</a></li>
 <li>select_flags&#160;:&#160;<a class="el" href="structVis__SelectionFilter.html#a084b79d3cbb84a281a3ef74d6521bc77">Vis_SelectionFilter</a></li>
 <li>SelectChar1&#160;:&#160;<a class="el" href="classGameConfig_1_1Gamepad.html#a3ccd9104455259a628c5f9db99cb5fa8">GameConfig::Gamepad</a>, <a class="el" href="classGameConfig_1_1Keybindings.html#a673793d2c75a210728b2c810ba3430d7">GameConfig::Keybindings</a></li>
 <li>SelectChar2&#160;:&#160;<a class="el" href="classGameConfig_1_1Gamepad.html#ae50585a972afd219f86c7ef5de6e0c9d">GameConfig::Gamepad</a>, <a class="el" href="classGameConfig_1_1Keybindings.html#ac310367f4f409cf75e5ca76c82605ef2">GameConfig::Keybindings</a></li>
@@ -455,7 +455,7 @@ $(function() {
 <li>spellbook&#160;:&#160;<a class="el" href="structPlayer.html#a8f83c72001393057fbab034a7bc4fb50">Player</a>, <a class="el" href="structPlayer__MM7.html#aaeab13e658b0072c858c5f8dbbb126df">Player_MM7</a></li>
 <li>SpellBooksInGuilds&#160;:&#160;<a class="el" href="structParty.html#a2e18139a51e8bd400cc242949bc7f410">Party</a></li>
 <li>spellBooksInGuilds&#160;:&#160;<a class="el" href="structParty__MM7.html#aa4be16c94ff42821bf1bd2372f415111">Party_MM7</a></li>
-<li>SpellData()&#160;:&#160;<a class="el" href="classSpellData.html#a914f1fa2708d96346a3973b03c7f2794">SpellData</a></li>
+<li>SpellData()&#160;:&#160;<a class="el" href="classSpellData.html#a185432e72a2e3b6ebc6a90151597c521">SpellData</a></li>
 <li>SpellFailureRecoveryMod&#160;:&#160;<a class="el" href="classGameConfig_1_1Gameplay.html#a772135d093576e53485ca3d8bc0a9297">GameConfig::Gameplay</a></li>
 <li>SpellFX_Billboard()&#160;:&#160;<a class="el" href="structSpellFX__Billboard.html#a13ea9126a0e33534005b2ae8716c7ef7">SpellFX_Billboard</a></li>
 <li>SpellFXFarClipAdjust()&#160;:&#160;<a class="el" href="structSpellFX__Billboard.html#ae3003bbeba0eba0c486d72fdf5001073">SpellFX_Billboard</a></li>
