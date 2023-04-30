@@ -6,8 +6,6 @@
 
 #include "Utility/Memory/Blob.h"
 
-/*  282 */
-#pragma pack(push, 1)
 struct OtherOverlay {
     OtherOverlay();
     void Reset();
@@ -22,10 +20,7 @@ struct OtherOverlay {
     int16_t field_E;
     int field_10;
 };
-#pragma pack(pop)
 
-/*   63 */
-#pragma pack(push, 1)
 struct OtherOverlayList {
     void Reset();
     int _4418B1(int a2, int a3, int a4, int a5);
@@ -35,7 +30,6 @@ struct OtherOverlayList {
     std::array<OtherOverlay, 50> pOverlays;
     int field_3E8 = 0;
 };
-#pragma pack(pop)
 
 struct OverlayDesc {
     uint16_t uOverlayID = 0;
