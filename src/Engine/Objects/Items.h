@@ -121,8 +121,6 @@ struct ItemGen {  // 0x24
 };
 #pragma pack(pop)
 
-/*  175 */
-#pragma pack(push, 1)
 struct ItemDesc {  // 30h
     // Item # |Pic File|Name|Value|Equip Stat|Skill Group|Mod1|Mod2|material|
     /// ID/Rep/St|Not identified name|Sprite Index|VarA|VarB|Equip X|Equip
@@ -152,7 +150,6 @@ struct ItemDesc {  // 30h
     unsigned char uItemID_Rep_St = 0;  // 2e 32
     char field_2f = 0;
 };
-#pragma pack(pop)
 
 /*  391 */
 #pragma pack(push, 1)
