@@ -1642,8 +1642,8 @@ void _494035_timed_effects__water_walking_damage__etc() {
             --numPlayersCouldAct;
         }
 
-        for (uint k = 0; k < 24; ++k) {
-            player.pPlayerBuffs[k].IsBuffExpiredToTime(pParty->GetPlayingTime());
+        for (auto &playerBuff : player.pPlayerBuffs) {
+            playerBuff.IsBuffExpiredToTime(pParty->GetPlayingTime());
         }
 
         if (player.pPlayerBuffs[PLAYER_BUFF_HASTE].Expired()) {
@@ -1652,8 +1652,8 @@ void _494035_timed_effects__water_walking_damage__etc() {
         }
     }
 
-    for (uint i = 0; i < 20; ++i) {
-        if (pParty->pPartyBuffs[i].IsBuffExpiredToTime(pParty->GetPlayingTime()) == 1) {
+    for (auto &partyBuff : pParty->pPartyBuffs) {
+        if (partyBuff.IsBuffExpiredToTime(pParty->GetPlayingTime()) == 1) {
             /* Do nothing, check above has side effects. */
         }
     }

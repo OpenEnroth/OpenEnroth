@@ -1884,6 +1884,8 @@ void ODM_ProcessPartyActions() {
     int partyViewNewYaw = pParty->_viewYaw;
     int partyViewNewPitch = pParty->_viewPitch;
 
+    bool flyDown{ false };
+
     int64_t dturn = ((int64_t) pEventTimer->dt_fixpoint * pParty->_yawRotationSpeed * TrigLUT.uIntegerPi / 180) >> 16;
     while (pPartyActionQueue->uNumActions) {
         switch (pPartyActionQueue->Next()) {
@@ -1909,19 +1911,8 @@ void ODM_ProcessPartyActions() {
             } break;
 
             case PARTY_FlyDown:
-                if (pParty->FlyActive() || engine->IsUnderwater()) {
-                    pParty->bFlying = false;
-                    if (engine->IsUnderwater() ||
-                        pParty->pPartyBuffs[PARTY_BUFF_FLY].isGMBuff ||
-                        (pParty->pPlayers[pParty->pPartyBuffs[PARTY_BUFF_FLY].caster - 1].mana > 0 || engine->config->debug.AllMagic.value())) {
-                        partyOldFlightZ = pParty->vPosition.z;
-                        pParty->uFallSpeed = 0;
-                        partyInputZSpeed = -pParty->uWalkSpeed * 4;
-                        pParty->bFlying = true;
-                        noFlightBob = true;
-                        pParty->uFlags &= ~PARTY_FLAGS_1_LANDING;
-                    }
-                }
+                // Fly down behaviour is now handled below with landing
+                flyDown = true;
                 break;
 
             case PARTY_TurnLeft:
@@ -2105,9 +2096,7 @@ void ODM_ProcessPartyActions() {
             case PARTY_Land:
                 if (pParty->bFlying) {
                     pParty->uFlags |= PARTY_FLAGS_1_LANDING;
-                    pParty->uFallSpeed = 0;
                 }
-                pParty->bFlying = false;
                 pPartyActionQueue->uNumActions = 0;
                 break;
 
@@ -2116,16 +2105,20 @@ void ODM_ProcessPartyActions() {
         }
     }
 
-    if (pParty->uFlags & PARTY_FLAGS_1_LANDING) {
-        pParty->bFlying = false;
+    // Behaviour divergence from vanilla - now treat landing process as flying down for consistency
+    if (pParty->uFlags & PARTY_FLAGS_1_LANDING || flyDown) {
         if (pParty->FlyActive() || engine->IsUnderwater()) {
-            if (engine->IsUnderwater() || pParty->pPartyBuffs[PARTY_BUFF_FLY].isGMBuff ||
+            pParty->bFlying = false;
+            if (engine->IsUnderwater() ||
+                pParty->pPartyBuffs[PARTY_BUFF_FLY].isGMBuff ||
                 (pParty->pPlayers[pParty->pPartyBuffs[PARTY_BUFF_FLY].caster - 1].mana > 0 || engine->config->debug.AllMagic.value())) {
                 partyOldFlightZ = pParty->vPosition.z;
                 pParty->uFallSpeed = 0;
                 partyInputZSpeed = -pParty->uWalkSpeed * 4;
                 pParty->bFlying = true;
                 noFlightBob = true;
+                if (flyDown)
+                    pParty->uFlags &= ~PARTY_FLAGS_1_LANDING;
             }
         }
     }
