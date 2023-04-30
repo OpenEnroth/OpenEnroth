@@ -14,11 +14,10 @@
 
 
 void BSPModelList::Load(Deserializer *stream) {
-    static_assert(sizeof(BSPModelData) == 188, "Wrong type size");
     static_assert(sizeof(Vec3i) == 12, "Wrong type size");
 
     std::vector<BSPModelData> models;
-    stream->ReadVector(&models);
+    stream->ReadLegacyVector<BSPModelData_MM7>(&models);
 
     unsigned int model_index = 0;
     for (BSPModelData &model : models) {

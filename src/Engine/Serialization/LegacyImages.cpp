@@ -1742,3 +1742,35 @@ void Deserialize(const ObjectDesc_MM7 &src, ObjectDesc *dst) {
     dst->uParticleTrailColorG = src.uParticleTrailColorG;
     dst->uParticleTrailColorB = src.uParticleTrailColorB;
 }
+
+void Deserialize(const BSPModelData_MM7 &src, BSPModelData *dst) {
+    Deserialize(src.pModelName, &dst->pModelName);
+    Deserialize(src.pModelName2, &dst->pModelName2);
+    dst->field_40 = src.field_40;
+    dst->uNumVertices = src.uNumVertices;
+    dst->ppVertices = src.ppVertices;
+    dst->uNumFaces = src.uNumFaces;
+    dst->uNumConvexFaces = src.uNumConvexFaces;
+    dst->ppFaces = src.ppFaces;
+    dst->ppFacesOrdering = src.ppFacesOrdering;
+    dst->uNumNodes = src.uNumNodes;
+    dst->ppNodes = src.ppNodes;
+    dst->uNumDecorations = src.uNumDecorations;
+    dst->sCenterX = src.sCenterX;
+    dst->sCenterY = src.sCenterY;
+    dst->vPosition = src.vPosition;
+    dst->sMinX = src.sMinX;
+    dst->sMinY = src.sMinY;
+    dst->sMinZ = src.sMinZ;
+    dst->sMaxX = src.sMaxX;
+    dst->sMaxY = src.sMaxY;
+    dst->sMaxZ = src.sMaxZ;
+    dst->sSomeOtherMinX = src.sSomeOtherMinX;
+    dst->sSomeOtherMinY = src.sSomeOtherMinY;
+    dst->sSomeOtherMinZ = src.sSomeOtherMinZ;
+    dst->sSomeOtherMaxX = src.sSomeOtherMaxX;
+    dst->sSomeOtherMaxY = src.sSomeOtherMaxY;
+    dst->sSomeOtherMaxZ = src.sSomeOtherMaxZ;
+    dst->vBoundingCenter = src.vBoundingCenter;
+    dst->sBoundingRadius = src.sBoundingRadius;
+}

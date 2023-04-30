@@ -26,6 +26,7 @@ struct BLVFaceExtra;
 struct BLVLight;
 struct BLVMapOutline;
 struct BLVSector;
+struct BSPModelData;
 struct BSPNode;
 struct Chest;
 struct ChestDesc;
@@ -1096,5 +1097,42 @@ static_assert(sizeof(ObjectDesc_MM7) == 56);
 
 void Deserialize(const ObjectDesc_MM6 &src, ObjectDesc *dst);
 void Deserialize(const ObjectDesc_MM7 &src, ObjectDesc *dst);
+
+
+struct BSPModelData_MM7 {
+    std::array<char, 32> pModelName;
+    std::array<char, 32> pModelName2;
+    int32_t field_40;
+    uint32_t uNumVertices;
+    uint32_t ppVertices;
+    uint32_t uNumFaces;
+    uint32_t uNumConvexFaces;
+    uint32_t ppFaces;
+    uint32_t ppFacesOrdering;
+    uint32_t uNumNodes;
+    uint32_t ppNodes;
+    uint32_t uNumDecorations;
+    int32_t sCenterX;
+    int32_t sCenterY;
+    Vec3i vPosition;
+    int32_t sMinX;
+    int32_t sMinY;
+    int32_t sMinZ;
+    int32_t sMaxX;
+    int32_t sMaxY;
+    int32_t sMaxZ;
+    int32_t sSomeOtherMinX;
+    int32_t sSomeOtherMinY;
+    int32_t sSomeOtherMinZ;
+    int32_t sSomeOtherMaxX;
+    int32_t sSomeOtherMaxY;
+    int32_t sSomeOtherMaxZ;
+    Vec3i vBoundingCenter;
+    int32_t sBoundingRadius;
+};
+static_assert(sizeof(BSPModelData_MM7) == 188);
+
+void Deserialize(const BSPModelData_MM7 &src, BSPModelData *dst);
+
 
 #pragma pack(pop)

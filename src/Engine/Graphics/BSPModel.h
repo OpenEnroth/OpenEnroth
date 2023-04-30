@@ -81,11 +81,9 @@ struct BSPNode {
     int16_t uNumBSPFaces;
 };
 
-#pragma pack(push, 1)
-// TODO(captainurist): introduce BSPModelData_MM7 in legacyimages
 struct BSPModelData {
-    char pModelName[32] {};
-    char pModelName2[32] {};
+    std::string pModelName;
+    std::string pModelName2;
     int32_t field_40 = 0;
     uint32_t uNumVertices = 0;
     uint32_t ppVertices = 0;
@@ -114,7 +112,6 @@ struct BSPModelData {
     Vec3i vBoundingCenter {};
     int32_t sBoundingRadius = 0;
 };
-#pragma pack(pop)
 
 class Texture;
 

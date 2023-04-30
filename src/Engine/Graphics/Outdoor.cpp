@@ -864,8 +864,6 @@ bool OutdoorLocation::Load(const std::string &filename, int days_played,
 
     _6807E0_num_decorations_with_sounds_6807B8 = 0;
 
-    static_assert(sizeof(BSPModelData) == 188);
-
     if (!pGames_LOD->DoesContainerExist(filename)) {
         Error("Unable to find %s in Games.LOD", filename.c_str());
     }
