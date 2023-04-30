@@ -39,7 +39,7 @@ var searchData=
   ['alarmtime_36',['alarmTime',['../structMapTimer.html#a8b4c6709bf630a83a0fa7e035001cf1f',1,'MapTimer']]],
   ['alignment_37',['alignment',['../structParty.html#a0333a828cb051d9f86e142230644cce3',1,'Party::alignment()'],['../structParty__MM7.html#a4ee29b014a71830b5760cb706c851124',1,'Party_MM7::alignment()']]],
   ['allmagic_38',['AllMagic',['../classGameConfig_1_1Debug.html#adefe89229ba3df692b47f1cc2101e9fd',1,'GameConfig::Debug']]],
-  ['alternative_5finterval_39',['alternative_interval',['../classEventIR.html#a10b8cc0e6ec23bfd9d38a74c6887398b',1,'EventIR']]],
+  ['alt_5fhalfmin_5finterval_39',['alt_halfmin_interval',['../classEventIR.html#a840d9b7901f6e8d8885e0410654c5ad8',1,'EventIR']]],
   ['alternativeconditionpriorities_40',['AlternativeConditionPriorities',['../classGameConfig_1_1Gameplay.html#a5749525be4764f4a0091acfa9fb01e98',1,'GameConfig::Gameplay']]],
   ['altinterval_41',['altInterval',['../structMapTimer.html#a7065b2013c82729979bdd5b47b67d548',1,'MapTimer']]],
   ['alwaysrun_42',['AlwaysRun',['../classGameConfig_1_1Settings.html#a9cbe8a25ae7a9244458bbe6e6dad9678',1,'GameConfig::Settings::AlwaysRun()'],['../classGameConfig_1_1Keybindings.html#ade9a010086b0b30bda5b913ee87b096b',1,'GameConfig::Keybindings::AlwaysRun()'],['../classGameConfig_1_1Gamepad.html#a8bc96bdd519ddeebdcf3ff92809e94bf',1,'GameConfig::Gamepad::AlwaysRun()']]],

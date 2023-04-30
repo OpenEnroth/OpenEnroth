@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;f8b6b43</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;2712dc8</span>
    </div>
   </td>
  </tr>
@@ -108,8 +108,8 @@ Functions</h2></td></tr>
 <tr class="separator:ac06c4d3aa516284a85bd00ae363b5a2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aaf2f53a5f88690c1b597e3159ac36483"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Processor_8cpp.html#aaf2f53a5f88690c1b597e3159ac36483">getEventHintString</a> (int eventId)</td></tr>
 <tr class="separator:aaf2f53a5f88690c1b597e3159ac36483"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a87bd18eff43cf77cc217265b1265123c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Processor_8cpp.html#a87bd18eff43cf77cc217265b1265123c">registerEventTriggers</a> ()</td></tr>
-<tr class="separator:a87bd18eff43cf77cc217265b1265123c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a50a85ee182ad581ee3ea1485eb39e17b"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Processor_8cpp.html#a50a85ee182ad581ee3ea1485eb39e17b">registerEventTriggers</a> ()</td></tr>
+<tr class="separator:a50a85ee182ad581ee3ea1485eb39e17b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aaf0e540855f5f6f822a03c27feabe5f5"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Processor_8cpp.html#aaf0e540855f5f6f822a03c27feabe5f5">onMapLoad</a> ()</td></tr>
 <tr class="separator:aaf0e540855f5f6f822a03c27feabe5f5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa64ebd79375dd046d0e54a883a1fa1b3"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Processor_8cpp.html#aa64ebd79375dd046d0e54a883a1fa1b3">onMapLeave</a> ()</td></tr>
@@ -129,6 +129,8 @@ Variables</h2></td></tr>
 <tr class="separator:a7d5e45ce6ac370dbd1d441c363bb65bb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a81fc084c7b91783ca317b99566b4beaa"><td class="memItemLeft" align="right" valign="top">static std::vector&lt; <a class="el" href="structMapTimer.html">MapTimer</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Processor_8cpp.html#a81fc084c7b91783ca317b99566b4beaa">onTimerTriggers</a></td></tr>
 <tr class="separator:a81fc084c7b91783ca317b99566b4beaa"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8b2e5b1d5e17fde7ec66c1a57b0c4b97"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="structGameTime.html">GameTime</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Processor_8cpp.html#a8b2e5b1d5e17fde7ec66c1a57b0c4b97">timerGuard</a> = <a class="el" href="structGameTime.html">GameTime</a>(0)</td></tr>
+<tr class="separator:a8b2e5b1d5e17fde7ec66c1a57b0c4b97"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Function Documentation</h2>
 <a id="abba8dbba72723e7a2af64078e0020ead" name="abba8dbba72723e7a2af64078e0020ead"></a>
@@ -294,19 +296,27 @@ Variables</h2></td></tr>
 
 </div>
 </div>
-<a id="a87bd18eff43cf77cc217265b1265123c" name="a87bd18eff43cf77cc217265b1265123c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a87bd18eff43cf77cc217265b1265123c">&#9670;&#160;</a></span>registerEventTriggers()</h2>
+<a id="a50a85ee182ad581ee3ea1485eb39e17b" name="a50a85ee182ad581ee3ea1485eb39e17b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a50a85ee182ad581ee3ea1485eb39e17b">&#9670;&#160;</a></span>registerEventTriggers()</h2>
 
 <div class="memitem">
 <div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">void registerEventTriggers </td>
+          <td class="memname">static void registerEventTriggers </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 
 </div>
@@ -425,6 +435,28 @@ Variables</h2></td></tr>
       <table class="memname">
         <tr>
           <td class="memname">std::vector&lt;<a class="el" href="structMapTimer.html">MapTimer</a>&gt; onTimerTriggers</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a8b2e5b1d5e17fde7ec66c1a57b0c4b97" name="a8b2e5b1d5e17fde7ec66c1a57b0c4b97"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8b2e5b1d5e17fde7ec66c1a57b0c4b97">&#9670;&#160;</a></span>timerGuard</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structGameTime.html">GameTime</a> timerGuard = <a class="el" href="structGameTime.html">GameTime</a>(0)</td>
         </tr>
       </table>
   </td>

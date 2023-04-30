@@ -1,8 +1,8 @@
 var searchData=
 [
-  ['g_0',['g',['../structGame__Bloodsplat.html#a9881a0c510c0362031426eda97eb0d9e',1,'Game_Bloodsplat']]],
+  ['g_0',['g',['../structBloodsplat.html#a1c1c8a0b0edcbaadc72a9d4349df49f8',1,'Bloodsplat::g()'],['../structGame__Bloodsplat.html#a9881a0c510c0362031426eda97eb0d9e',1,'Game_Bloodsplat::g()']]],
   ['g_1',['G',['../struct__RGBColor.html#a66e936b07f437827b803a27a884de912',1,'_RGBColor']]],
-  ['g_2',['g',['../classColorTable_1_1Color.html#a3a1404377b543b6ddbb292a2741e0649',1,'ColorTable::Color::g()'],['../structFormat.html#a6c5f81301108803e53203a83aa32bf91',1,'Format::g()'],['../structParticle.html#a3f6dd15bd44813e567f41599de2b36d2',1,'Particle::g()'],['../structParticle__sw.html#a40047b52ad61460c7680a0fcf8656ca1',1,'Particle_sw::g()'],['../structtwodverts.html#a3c78fffa76d7b3abe7f3e4c4560b75c7',1,'twodverts::g()'],['../structforcepersverts.html#a3018b295f30cb6d35b01f8dbf8643f26',1,'forcepersverts::g()'],['../structlinesverts.html#a4f083501b162b2c0ba39d383f3256a1c',1,'linesverts::g()'],['../structBloodsplat.html#a1c1c8a0b0edcbaadc72a9d4349df49f8',1,'Bloodsplat::g()'],['../structbillbverts.html#a257bf6c7deeca9af27dd804f0f66b515',1,'billbverts::g()']]],
+  ['g_2',['g',['../classColorTable_1_1Color.html#a3a1404377b543b6ddbb292a2741e0649',1,'ColorTable::Color::g()'],['../structFormat.html#a6c5f81301108803e53203a83aa32bf91',1,'Format::g()'],['../structParticle.html#a3f6dd15bd44813e567f41599de2b36d2',1,'Particle::g()'],['../structbillbverts.html#a257bf6c7deeca9af27dd804f0f66b515',1,'billbverts::g()'],['../structtwodverts.html#a3c78fffa76d7b3abe7f3e4c4560b75c7',1,'twodverts::g()'],['../structforcepersverts.html#a3018b295f30cb6d35b01f8dbf8643f26',1,'forcepersverts::g()'],['../structlinesverts.html#a4f083501b162b2c0ba39d383f3256a1c',1,'linesverts::g()'],['../structParticle__sw.html#a40047b52ad61460c7680a0fcf8656ca1',1,'Particle_sw::g()']]],
   ['game_3',['game',['../classGameTest.html#aa0244276a149f58d175c4d42da1dba03',1,'GameTest']]],
   ['game_5fstarting_5fyear_4',['game_starting_year',['../Time_8h.html#a2ad26c3f2b5e54993203668a354ea997',1,'Time.h']]],
   ['game_5fui_5fbar_5fblue_5',['game_ui_bar_blue',['../UIGame_8h.html#aa64270865de863a05c528015cae4ab66',1,'game_ui_bar_blue():&#160;UIGame.cpp'],['../UIGame_8cpp.html#aa64270865de863a05c528015cae4ab66',1,'game_ui_bar_blue():&#160;UIGame.cpp']]],
@@ -77,8 +77,8 @@ var searchData=
   ['gameroutine_74',['gameRoutine',['../classEngineControlState.html#a992b1a686ba49610613a0a3665f008b2',1,'EngineControlState']]],
   ['gametimestart_75',['gameTimeStart',['../structTimer__MM7.html#adb4125207891f74acaab9edd5cbff8b0',1,'Timer_MM7']]],
   ['gamewindowhandler_76',['gameWindowHandler',['../classGameIocContainer.html#a6c27a56629d669beddc02e55d604c42e',1,'GameIocContainer']]],
-  ['gamma_77',['gamma',['../classRenderOpenGL.html#aefccfc22c2fc8d17b67eb92069cfdb3b',1,'RenderOpenGL']]],
-  ['gamma_78',['Gamma',['../classGameConfig_1_1Graphics.html#a4002848c7dfdbcbca04849cb6438f5ad',1,'GameConfig::Graphics']]],
+  ['gamma_77',['Gamma',['../classGameConfig_1_1Graphics.html#a4002848c7dfdbcbca04849cb6438f5ad',1,'GameConfig::Graphics']]],
+  ['gamma_78',['gamma',['../classRenderOpenGL.html#aefccfc22c2fc8d17b67eb92069cfdb3b',1,'RenderOpenGL']]],
   ['gamma_5fpreview_5fimage_79',['gamma_preview_image',['../Game_8h.html#ae0d7c78f764d67256a5bcf2351b2bda1',1,'gamma_preview_image():&#160;Game.cpp'],['../Game_8cpp.html#ac6f4e0c573a089ef4ae9dcec20e4d531',1,'gamma_preview_image():&#160;Game.cpp']]],
   ['gems_5famount_80',['gems_amount',['../structArcomageStartConditions.html#a25723a754e76e76e5ec3d2357802c9a4',1,'ArcomageStartConditions']]],
   ['gender_81',['gender',['../structGenderTableEntry.html#a01a9af90782f16840ed9dd4058bddf5b',1,'GenderTableEntry']]],
