@@ -178,6 +178,15 @@ void Deserialize(const TileDesc_MM7 &src, TileDesc *dst) {
     dst->uAttributes = src.attributes;
 }
 
+void Deserialize(const TextureFrame_MM7 &src, TextureFrame *dst) {
+    Deserialize(src.textureName, &dst->name);
+    dst->name = toLower(dst->name);
+
+    dst->uAnimLength = src.animLength;
+    dst->uAnimTime = src.animTime;
+    dst->uFlags = src.flags;
+}
+
 void Serialize(const Timer &src, Timer_MM7 *dst) {
     memzero(dst);
 

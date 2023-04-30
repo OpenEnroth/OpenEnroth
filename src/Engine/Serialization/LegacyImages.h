@@ -16,6 +16,7 @@
 class Actor;
 class Icon;
 class SpriteFrame;
+class TextureFrame;
 class TileDesc;
 class UIAnimation;
 struct ActorJob;
@@ -110,6 +111,8 @@ struct TextureFrame_MM7 {
     int16_t flags;
 };
 static_assert(sizeof(TextureFrame_MM7) == 20);
+
+void Deserialize(const TextureFrame_MM7 &src, TextureFrame *dst);
 
 
 struct NPCData_MM7 {
