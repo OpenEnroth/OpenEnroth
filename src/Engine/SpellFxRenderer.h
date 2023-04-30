@@ -2,6 +2,7 @@
 
 #include <Utility/Color.h>
 
+#include <array>
 #include <memory>
 #include <cstdint>
 
@@ -163,8 +164,8 @@ struct SpellFxRenderer {
 
     int field_204;  // fireball sphere tally
 
-    PlayerBuffAnim pPlayerBuffs[4];
-    ProjectileAnim pProjectiles[32];
+    std::array<PlayerBuffAnim, 4> pPlayerBuffs;
+    std::array<ProjectileAnim, 32> pProjectiles;
     int uNumProjectiles;
     SpellFX_Billboard *pStru1;
     int field_5D0;
