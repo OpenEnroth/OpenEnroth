@@ -1640,3 +1640,10 @@ void Deserialize(const BLVLight_MM7 &src, BLVLight *dst) {
     dst->uAtributes = src.uAtributes;
     dst->uBrightness = src.uBrightness;
 }
+
+void Deserialize(const OverlayDesc_MM7 &src, OverlayDesc *dst) {
+    dst->uOverlayID = src.uOverlayID;
+    dst->uOverlayType = src.uOverlayType;
+    dst->uSpriteFramesetID = src.uSpriteFramesetID;
+    dst->field_6 = src.field_6;
+}
