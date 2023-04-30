@@ -62,14 +62,6 @@ struct BLVHeader {
 };
 #pragma pack(pop)
 
-/*   96 */
-#pragma pack(push, 1)
-// TODO(captainurist): move to legacyimages
-struct BLVSectorMM8 {
-    int dword_000074;
-};
-#pragma pack(pop)
-
 /*   97 */
 #pragma pack(push, 1)
 // TODO(captainurist): move to legacyimages
