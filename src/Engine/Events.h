@@ -104,13 +104,6 @@ extern int savedEventID;
 extern int savedEventStep;
 extern struct LevelDecoration *savedDecoration;
 
-/*  312 */
-#pragma pack(push, 1)
-struct ByteArray {
-    char f[65535];
-};
-#pragma pack(pop)
-
 // TODO(captainurist): add legacyimages equiv
 struct MapEventVariables {
     std::array<unsigned char, 75> mapVars;
