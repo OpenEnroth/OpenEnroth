@@ -391,13 +391,6 @@ void MonsterList::FromFile(const Blob &data_mm6, const Blob &data_mm7, const Blo
     Assert(!pMonsters.empty());
 }
 
-//----- (00459860) --------------------------------------------------------
-void MonsterList::ToFile() {
-    FileSerializer stream(MakeDataPath("data", "dmonlist.bin"));
-    stream.WriteLegacyVector<MonsterDesc_MM7>(this->pMonsters);
-    stream.Close();
-}
-
 //----- (004563FF) --------------------------------------------------------
 signed int MonsterStats::FindMonsterByTextureName(
     const char *monster_textr_name) {
