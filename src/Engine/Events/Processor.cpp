@@ -158,7 +158,7 @@ static void registerEventTriggers() {
 }
 
 void onMapLoad() {
-    // Register triggers all triggers when map done loading
+    // Register all triggers when map done loading
     registerEventTriggers();
 
     timerGuard = pParty->GetPlayingTime();
@@ -173,7 +173,7 @@ void onMapLeave() {
         eventProcessor(triggers.eventId, 0, true, triggers.eventStep + 1);
     }
 
-    // Cleanup timers to avoid firing when on transitions
+    // Cleanup timers to avoid firing while map transition is in process
     onLongTimerTriggers.clear();
     onTimerTriggers.clear();
 }
