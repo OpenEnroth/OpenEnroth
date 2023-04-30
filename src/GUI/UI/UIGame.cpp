@@ -1050,7 +1050,7 @@ void GameUI_WritePointedObjectStatusString() {
                     if (pLevelDecorations[pickedObjectID].IsInteractive())
                         pText = pNPCTopics[mapEventVariables.decorVars[pLevelDecorations[pickedObjectID]._idx_in_stru123 - 75] + 380].pTopic; // campfire
                     else
-                        pText = pDecorationList->GetDecoration(pLevelDecorations[pickedObjectID].uDecorationDescID)->field_20;
+                        pText = pDecorationList->GetDecoration(pLevelDecorations[pickedObjectID].uDecorationDescID)->field_20.data();
                     GameUI_StatusBar_Set(pText);
                 } else {
                     std::string hintString = getEventHintString(pLevelDecorations[pickedObjectID].uEventID);

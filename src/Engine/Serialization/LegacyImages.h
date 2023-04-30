@@ -24,6 +24,7 @@ struct BLVDoor;
 struct BLVFace;
 struct BLVSector;
 struct ChestDesc;
+struct DecorationDesc;
 struct FontData;
 struct GUICharMetric;
 struct ItemGen;
@@ -892,5 +893,31 @@ struct ChestDesc_MM7 {
 static_assert(sizeof(ChestDesc_MM7) == 36);
 
 void Deserialize(const ChestDesc_MM7 &src, ChestDesc *dst);
+
+
+struct DecorationDesc_MM6 {
+    std::array<char, 32> pName;
+    std::array<char, 32> field_20;
+    int16_t uType;
+    uint16_t uDecorationHeight;
+    int16_t uRadius;
+    int16_t uLightRadius;
+    uint16_t uSpriteID;
+    uint16_t uFlags;
+    int16_t uSoundID;
+    int16_t _pad;
+};
+static_assert(sizeof(DecorationDesc_MM6) == 80);
+
+struct DecorationDesc_MM7 : public DecorationDesc_MM6 {
+    uint8_t uColoredLightRed;
+    uint8_t uColoredLightGreen;
+    uint8_t uColoredLightBlue;
+    uint8_t _pad;
+};
+static_assert(sizeof(DecorationDesc_MM7) == 84);
+
+void Deserialize(const DecorationDesc_MM6 &src, DecorationDesc *dst);
+void Deserialize(const DecorationDesc_MM7 &src, DecorationDesc *dst);
 
 #pragma pack(pop)

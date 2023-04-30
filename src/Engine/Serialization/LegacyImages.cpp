@@ -1591,3 +1591,27 @@ void Deserialize(const ChestDesc_MM7 &src, ChestDesc *dst) {
     dst->uHeight = src.uHeight;
     dst->uTextureID = src.uTextureID;
 }
+
+void Deserialize(const DecorationDesc_MM6 &src, DecorationDesc *dst) {
+    Deserialize(src.pName, &dst->pName);
+    Deserialize(src.field_20, &dst->field_20);
+    dst->uType = src.uType;
+    dst->uDecorationHeight = src.uDecorationHeight;
+    dst->uRadius = src.uRadius;
+    dst->uLightRadius = src.uLightRadius;
+    dst->uSpriteID = src.uSpriteID;
+    dst->uFlags = DECORATION_DESC_FLAGS(src.uFlags);
+    dst->uSoundID = src.uSoundID;
+
+    dst->uColoredLightRed = 255;
+    dst->uColoredLightGreen = 255;
+    dst->uColoredLightBlue = 255;
+}
+
+void Deserialize(const DecorationDesc_MM7 &src, DecorationDesc *dst) {
+    Deserialize(static_cast<const DecorationDesc_MM6 &>(src), dst);
+
+    dst->uColoredLightRed = src.uColoredLightRed;
+    dst->uColoredLightGreen = src.uColoredLightGreen;
+    dst->uColoredLightBlue = src.uColoredLightBlue;
+}
