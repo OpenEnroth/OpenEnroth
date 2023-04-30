@@ -91,13 +91,13 @@ class EventIR {
             int name_id;
         } monster_descr;
         struct {
-            int years;
-            int months;
-            int weeks;
-            int hours;
-            int minutes;
-            int seconds;
-            int alternative_interval;
+            bool is_yearly;
+            bool is_monthly;
+            bool is_weekly;
+            int daily_start_hour;
+            int daily_start_minute;
+            int daily_start_second;
+            int alt_halfmin_interval;
         } timer_descr;
         struct {
             bool is_nop;

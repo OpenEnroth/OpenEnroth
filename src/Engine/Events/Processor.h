@@ -6,7 +6,6 @@ void eventProcessor(int eventId, int targetObj, bool canShowMessages, int startS
 bool npcDialogueEventProcessor(int eventId, int startStep = 0);
 std::string getEventHintString(int eventId);
 
-void registerEventTriggers();
 void onMapLoad();
 void onMapLeave();
 void onTimer();
