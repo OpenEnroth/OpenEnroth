@@ -156,7 +156,7 @@ struct OutdoorLocation {
     char field_F8[968];
     std::vector<SpawnPoint> pSpawnPoints;
     struct DDM_DLV_Header ddm;
-    LocationTime_stru1 loc_time;
+    LocationTime loc_time;
     unsigned char
         uFullyRevealedCellOnMap[88][11];  // 968         the inner array is 11
                                           // bytes long, because every bit is

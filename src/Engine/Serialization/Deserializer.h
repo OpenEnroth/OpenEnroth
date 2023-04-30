@@ -48,6 +48,13 @@ class Deserializer {
         ReadBytes(dst, sizeof(T));
     }
 
+    template<class LegacyT, class T>
+    void ReadLegacy(T *dst) {
+        LegacyT tmp;
+        ReadRaw(&tmp);
+        Deserialize(tmp, dst);
+    }
+
     template<class T>
     void ReadRawArray(T *dst, size_t size) {
         ReadBytes(dst, sizeof(T) * size);

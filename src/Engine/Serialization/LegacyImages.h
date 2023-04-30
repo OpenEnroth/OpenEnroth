@@ -35,6 +35,7 @@ struct FontData;
 struct GUICharMetric;
 struct ItemGen;
 struct LevelDecoration;
+struct LocationTime;
 struct MonsterDesc;
 struct NPCData;
 struct ObjectDesc;
@@ -1133,6 +1134,20 @@ struct BSPModelData_MM7 {
 static_assert(sizeof(BSPModelData_MM7) == 188);
 
 void Deserialize(const BSPModelData_MM7 &src, BSPModelData *dst);
+
+
+struct LocationTime_MM7 {
+    int64_t last_visit;
+    std::array<char, 12> sky_texture_name;
+    int32_t day_attrib;
+    int32_t day_fogrange_1;
+    int32_t day_fogrange_2;
+    std::array<char, 24> field_2F4;
+};
+static_assert(sizeof(LocationTime_MM7) == 0x38);
+
+void Serialize(const LocationTime &src, LocationTime_MM7 *dst);
+void Deserialize(const LocationTime_MM7 &src, LocationTime *dst);
 
 
 #pragma pack(pop)

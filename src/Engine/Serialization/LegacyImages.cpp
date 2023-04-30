@@ -1774,3 +1774,21 @@ void Deserialize(const BSPModelData_MM7 &src, BSPModelData *dst) {
     dst->vBoundingCenter = src.vBoundingCenter;
     dst->sBoundingRadius = src.sBoundingRadius;
 }
+
+void Serialize(const LocationTime &src, LocationTime_MM7 *dst) {
+    memzero(dst);
+
+    Serialize(src.last_visit, &dst->last_visit);
+    Serialize(src.sky_texture_name, &dst->sky_texture_name);
+    dst->day_attrib = src.day_attrib;
+    dst->day_fogrange_1 = src.day_fogrange_1;
+    dst->day_fogrange_2 = src.day_fogrange_2;
+}
+
+void Deserialize(const LocationTime_MM7 &src, LocationTime *dst) {
+    Deserialize(src.last_visit, &dst->last_visit);
+    Deserialize(src.sky_texture_name, &dst->sky_texture_name);
+    dst->day_attrib = src.day_attrib;
+    dst->day_fogrange_1 = src.day_fogrange_1;
+    dst->day_fogrange_2 = src.day_fogrange_2;
+}

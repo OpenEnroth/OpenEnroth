@@ -588,7 +588,7 @@ bool IndoorLocation::Load(const std::string &filename, int num_days_played,
 
     pGameLoadingUI_ProgressBar->Progress();
 
-    stream.ReadRaw(&stru1);
+    stream.ReadLegacy<LocationTime_MM7>(&stru1);
 
     return 0;
 }

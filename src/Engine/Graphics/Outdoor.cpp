@@ -1054,8 +1054,7 @@ bool OutdoorLocation::Load(const std::string &filename, int days_played,
 
     pGameLoadingUI_ProgressBar->Progress();  // прогресс загрузки
 
-    static_assert(sizeof(loc_time) == 0x38);
-    stream.ReadRaw(&loc_time);
+    stream.ReadLegacy<LocationTime_MM7>(&loc_time);
 
     pTileTable->InitializeTileset(Tileset_Dirt);
     pTileTable->InitializeTileset(Tileset_Snow);
@@ -1076,7 +1075,7 @@ bool OutdoorLocation::Load(const std::string &filename, int days_played,
 
     // LABEL_150:
     if (pWeather->bRenderSnow) {  // Ritor1: it's include for snow
-        strcpy(loc_time.sky_texture_name, "sky19");
+        loc_time.sky_texture_name = "sky19";
     } else if (loc_time.last_visit) {
         if (loc_time.last_visit.GetDays() % 28 != pParty->uCurrentDayOfMonth) {
             int sky_to_use;
@@ -1084,10 +1083,10 @@ bool OutdoorLocation::Load(const std::string &filename, int days_played,
                 sky_to_use = dword_4EC268[vrng->random(dword_4EC2A8)];
             else
                 sky_to_use = dword_4EC28C[vrng->random(dword_4EC2AC)];
-            sprintf(loc_time.sky_texture_name, "plansky%d", sky_to_use);
+            loc_time.sky_texture_name = fmt::format("plansky{}", sky_to_use);
         }
     } else {
-        strcpy(loc_time.sky_texture_name, "plansky3");
+        loc_time.sky_texture_name = "plansky3";
     }
 
     this->sky_texture = assets->GetBitmap(loc_time.sky_texture_name);

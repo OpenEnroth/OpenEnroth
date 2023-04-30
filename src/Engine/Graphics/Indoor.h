@@ -31,18 +31,13 @@ struct DDM_DLV_Header {
 static_assert(sizeof(DDM_DLV_Header) == 40, "Wrong type size");
 #pragma pack(pop)
 
-#pragma pack(push, 1)
-// TODO(captainurist): introduce  LocationTime_MM7 in legacyimages
-struct LocationTime_stru1 {
+struct LocationTime {
     GameTime last_visit {};
-    char sky_texture_name[12] {};
+    std::string sky_texture_name;
     int day_attrib = 0;
     int day_fogrange_1 = 0;
     int day_fogrange_2 = 0;
-    char field_2F4[24] {};
 };
-static_assert(sizeof(LocationTime_stru1) == 0x38);
-#pragma pack(pop)
 
 /*  319 */
 enum class LEVEL_TYPE {
@@ -348,7 +343,7 @@ struct IndoorLocation {
     std::vector<uint16_t> ptr_0002B8_sector_lrdata;
     std::vector<SpawnPoint> pSpawnPoints;
     DDM_DLV_Header dlv;
-    LocationTime_stru1 stru1;
+    LocationTime stru1;
     std::array<char, 875> _visible_outlines;
     char padding;
 
