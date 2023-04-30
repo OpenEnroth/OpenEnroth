@@ -823,7 +823,7 @@ void Party::updatePlayersAndHirelingsEmotions() {
                     player.expression = CHARACTER_EXPRESSION_PURSE_LIPS_2;
             }
 
-            for (unsigned int j = 0; j < pPlayerFrameTable->uNumFrames; ++j) {
+            for (size_t j = 0; j < pPlayerFrameTable->pFrames.size(); ++j) {
                 PlayerFrame *frame = &pPlayerFrameTable->pFrames[j];
                 if (frame->expression == player.expression) {
                     player.uExpressionTimeLength = 8 * frame->uAnimLength;

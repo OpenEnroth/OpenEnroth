@@ -10,6 +10,7 @@
 #include "Engine/Graphics/Overlays.h"
 #include "Engine/Graphics/Sprites.h"
 #include "Engine/Tables/TileFrameTable.h"
+#include "Engine/Tables/PlayerFrameTable.h"
 #include "Engine/Objects/Actor.h"
 #include "Engine/Objects/NPC.h"
 #include "Engine/Objects/SpriteObject.h"
@@ -1534,6 +1535,8 @@ void Deserialize(const SpawnPoint_MM7 &src, SpawnPoint *dst) {
 }
 
 void Serialize(const SpriteObject &src, SpriteObject_MM7 *dst) {
+    memzero(dst);
+
     dst->uType = src.uType;
     dst->uObjectDescID = src.uObjectDescID;
     dst->vPosition = src.vPosition;
@@ -1617,6 +1620,8 @@ void Deserialize(const DecorationDesc_MM7 &src, DecorationDesc *dst) {
 }
 
 void Serialize(const Chest &src, Chest_MM7 *dst) {
+    memzero(dst);
+
     dst->uChestBitmapID = src.uChestBitmapID;
     dst->uFlags = std::to_underlying(src.uFlags);
     Serialize(src.igChestItems, &dst->igChestItems);
@@ -1646,4 +1651,12 @@ void Deserialize(const OverlayDesc_MM7 &src, OverlayDesc *dst) {
     dst->uOverlayType = src.uOverlayType;
     dst->uSpriteFramesetID = src.uSpriteFramesetID;
     dst->field_6 = src.field_6;
+}
+
+void Deserialize(const PlayerFrame_MM7 &src, PlayerFrame *dst) {
+    dst->expression = static_cast<CHARACTER_EXPRESSION_ID>(src.expression);
+    dst->uTextureID = src.uTextureID;
+    dst->uAnimTime = src.uAnimTime;
+    dst->uAnimLength = src.uAnimLength;
+    dst->uFlags = src.uFlags;
 }

@@ -1518,7 +1518,7 @@ void GameUI_DrawPortraits() {
             continue;
         }
         face_expression_ID = 0;
-        for (uint j = 0; j < pPlayerFrameTable->uNumFrames; ++j)
+        for (size_t j = 0; j < pPlayerFrameTable->pFrames.size(); ++j)
             if (pPlayerFrameTable->pFrames[j].expression ==
                 pPlayer->expression) {
                 face_expression_ID = j;

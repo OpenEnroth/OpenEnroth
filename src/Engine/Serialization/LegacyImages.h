@@ -38,6 +38,7 @@ struct OtherOverlayList;
 struct OverlayDesc;
 struct Party;
 struct Player;
+struct PlayerFrame;
 struct SpawnPoint;
 struct SpellBuff;
 struct SpriteObject;
@@ -968,5 +969,18 @@ struct OverlayDesc_MM7 {
 static_assert(sizeof(OverlayDesc_MM7) == 8);
 
 void Deserialize(const OverlayDesc_MM7 &src, OverlayDesc *dst);
+
+
+struct PlayerFrame_MM7 {
+    uint16_t expression;
+    uint16_t uTextureID;
+    int16_t uAnimTime;
+    int16_t uAnimLength;
+    int16_t uFlags;
+};
+static_assert(sizeof(PlayerFrame_MM7) == 10);
+
+void Deserialize(const PlayerFrame_MM7 &src, PlayerFrame *dst);
+
 
 #pragma pack(pop)
