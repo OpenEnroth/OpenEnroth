@@ -38,9 +38,8 @@ class GUIWindow_CharacterRecord : public GUIWindow {
     void scrollAwardsDown(GUIWindow &window);
 
  private:
-    int characterAwardsId = -1;
+    int awardsCharacterId = -1;
     int startAwardElem = 0;
-    int currentlyDisplayedElems = 0;
     bool awardLimitReached = false;
     std::vector<int> achievedAwardsList;
 };

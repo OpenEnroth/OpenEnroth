@@ -985,7 +985,7 @@ void GUIWindow_CharacterRecord::CharacterUI_AwardsTab_Draw(Player *player) {
     awards_window.uFrameZ = 435;
     awards_window.uFrameW = 337;
 
-    if (characterAwardsId != pParty->activeCharacterIndex()) {
+    if (awardsCharacterId != pParty->activeCharacterIndex()) {
         fillAwardsData();
     }
 
@@ -1009,7 +1009,7 @@ void GUIWindow_CharacterRecord::CharacterUI_AwardsTab_Draw(Player *player) {
     awardScrollUpClicked = false;
     awardScrollDownClicked = false;
 
-    currentlyDisplayedElems = 0;
+    int currentlyDisplayedElems = 0;
     for (int i = startAwardElem; i < achievedAwardsList.size(); ++i) {
         std::string str = getAchievedAwardsString(i);
 
@@ -1771,13 +1771,12 @@ bool awardSort(int i, int j) {
 void GUIWindow_CharacterRecord::fillAwardsData() {
     Player *pPlayer = &pParty->activeCharacter();
 
-    characterAwardsId = pParty->activeCharacterIndex();
+    awardsCharacterId = pParty->activeCharacterIndex();
     awardButtonUpClicked = false;
     awardButtonDownClicked = false;
     awardScrollUpClicked = false;
     awardScrollDownClicked = false;
     startAwardElem = 0;
-    currentlyDisplayedElems = 0;
     awardLimitReached = false;
 
     achievedAwardsList.clear();
