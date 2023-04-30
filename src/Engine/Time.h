@@ -150,9 +150,9 @@ struct Timer {
     unsigned int uStopTime;
     int uGameTimeStart;
     int field_18;
-    int uTimeElapsed; // dt in 1/128th of a second.
+    int uTimeElapsed; // dt in 1/128th of a second (real time, not game time).
     int dt_fixpoint; // dt in seconds in fixpoint format
-    unsigned int uTotalGameTimeElapsed;
+    unsigned int uTotalGameTimeElapsed; // total time elapsed since the last Initialize() call, in 1/128th of a second.
 
     // Real-world time intervals in timer quants
     static const unsigned int Second = 128;

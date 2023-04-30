@@ -133,7 +133,7 @@ class TextureFrame {
 struct TextureFrameTable {
     void FromFile(const Blob &data_mm6, const Blob &data_mm7, const Blob &data_mm8);
     void LoadAnimationSequenceAndPalettes(int uIconID);
-    Texture *GetFrameTexture(int uFrameID, int time);
+    Texture *GetFrameTexture(int frameId, int time);
     int64_t FindTextureByName(const char *Str2);
 
     std::vector<TextureFrame> textures;

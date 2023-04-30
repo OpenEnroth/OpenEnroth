@@ -85,23 +85,18 @@ int64_t TextureFrameTable::FindTextureByName(const char *Str2) {
     return -1;
 }
 
-Texture *TextureFrameTable::GetFrameTexture(int uFrameID, signed int a3) {
-    int v3 = uFrameID;
-    TextureFrame *v4 = textures.data();
-    TextureFrame *v5 = &v4[uFrameID];
-    int v6 = v5->uAnimLength;
-    if (v5->uFlags & 1 && (v6 != 0)) {
-        int v7 = (a3 >> 3) % v6;
-        for (char *i = (char *)&v5->uAnimTime;; i += 20) { // TODO(captainurist): this looks pretty fucked, sizeof(TextureFrame) != 20
-            int v9 = *(short *)i;
-            if (v7 <= v9) break;
-            v7 -= v9;
-            ++v3;
+Texture *TextureFrameTable::GetFrameTexture(int frameId, int time) {
+    int animLength = textures[frameId].uAnimLength;
+
+    if (textures[frameId].uFlags & 1 && animLength != 0) {
+        int step = (time >> 3) % animLength;
+        while (textures[frameId].uAnimTime < step) {
+            step -= textures[frameId].uAnimTime;
+            ++frameId;
         }
-        return v4[v3].GetTexture();
-    } else {
-        return v5->GetTexture();
     }
+
+    return textures[frameId].GetTexture();
 }
 
 void Texture_MM7::Release() {
