@@ -445,21 +445,6 @@ void ChestList::FromFile(const Blob &data_mm6, const Blob &data_mm7, const Blob 
     assert(!vChests.empty());
 }
 
-size_t ChestsSerialize(char *pData) {
-    static_assert(sizeof(Chest) == 5324, "Wrong type size");
-
-    // TODO(captainurist): belongs to legacyimages
-
-    uint32_t uNumChests = vChests.size();
-    memcpy(pData, &uNumChests, 4);
-    Chest *pChests = (Chest*)(pData + 4);
-    for (int i = 0; i < uNumChests; i++) {
-        memcpy(pChests + i, &vChests[i], sizeof(Chest));
-    }
-
-    return 4 + uNumChests * sizeof(Chest);
-}
-
 void RemoveItemAtChestIndex(int index) {
     Chest *chest = &vChests[pGUIWindow_CurrentMenu->wData.val];
 

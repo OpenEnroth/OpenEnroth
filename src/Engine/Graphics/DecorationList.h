@@ -2,6 +2,7 @@
 
 #include <cstdint>
 #include <vector>
+#include <string>
 
 #include "Utility/String.h"
 #include "Utility/Flags.h"

@@ -26,6 +26,7 @@
 #include "Engine/Objects/SpriteObject.h"
 
 #include "Engine/Serialization/LegacyImages.h"
+#include "Engine/Serialization/Serializer.h"
 
 #include "GUI/GUIFont.h"
 #include "GUI/GUIWindow.h"
@@ -341,77 +342,36 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld) {
         }
     }
 
-    char *uncompressed_buff = (char *)malloc(1000000);
+    BlobSerializer stream;
     if (!NotSaveWorld) {  // autosave for change location
         CompactLayingItemsList();
 
-        char *data_write_pos = uncompressed_buff;
         if (uCurrentlyLoadedLevelType == LEVEL_Indoor) {
             pIndoor->dlv.uNumFacesInBModels = pIndoor->pFaces.size();
             pIndoor->dlv.uNumBModels = 0;
             pIndoor->dlv.uNumDecorations = pLevelDecorations.size();
-            memcpy(data_write_pos, &pIndoor->dlv, sizeof(DDM_DLV_Header));  // 0x28
-            data_write_pos += sizeof(DDM_DLV_Header);
-            memcpy(data_write_pos, &pIndoor->_visible_outlines, 0x36B);
-            data_write_pos += 875;
-            for (int i = 0; i < (signed int)pIndoor->pFaces.size(); ++i) {
-                memcpy(data_write_pos, &pIndoor->pFaces[i].uAttributes, 4);
-                data_write_pos += 4;
+
+            stream.WriteRaw(&pIndoor->dlv);
+            stream.WriteRaw(&pIndoor->_visible_outlines);
+            for (size_t i = 0; i < pIndoor->pFaces.size(); ++i) {
+                stream.WriteRaw(&pIndoor->pFaces[i].uAttributes);
+                static_assert(sizeof(pIndoor->pFaces[i].uAttributes) == 4);
             }
 
-            for (int i = 0; i < (signed int)pLevelDecorations.size(); ++i) {
-                memcpy(data_write_pos, &pLevelDecorations[i].uFlags, 2);
-                data_write_pos += 2;
+            for (size_t i = 0; i < pLevelDecorations.size(); ++i) {
+                stream.WriteRaw(&pLevelDecorations[i].uFlags);
+                static_assert(sizeof(pLevelDecorations[i].uFlags) == 2);
             }
 
-            uint32_t uNumActors = pActors.size();
-            memcpy(data_write_pos, &uNumActors, 4);
-            data_write_pos += 4;
+            stream.WriteLegacyVector<Actor_MM7>(pActors);
+            stream.WriteLegacyVector<SpriteObject_MM7>(pSpriteObjects);
+            stream.WriteVector(vChests);
+            stream.WriteSizedLegacyVector<BLVDoor_MM7>(pIndoor->pDoors);
 
-            // memcpy(data_write_pos, &pActors, uNumActors * sizeof(Actor));
-            // data_write_pos += uNumActors * sizeof(Actor);
-            Actor_MM7 *tmp_actor = (Actor_MM7*)malloc(sizeof(Actor_MM7));
-
-            for (int i = 0; i < uNumActors; ++i) {
-                Serialize(pActors[i], tmp_actor);
-                memcpy(data_write_pos + i * sizeof(Actor_MM7), tmp_actor, sizeof(Actor_MM7));
-            }
-            free(tmp_actor);
-            data_write_pos += uNumActors * sizeof(Actor_MM7);
-
-            uint32_t uNumSpriteObjects = pSpriteObjects.size();
-            memcpy(data_write_pos, &uNumSpriteObjects, 4);
-            data_write_pos += 4;
-            // memcpy(data_write_pos, pSpriteObjects.data(), 112 * uNumSpriteObjects);
-            // data_write_pos += 112 * uNumSpriteObjects;
-            SpriteObject_MM7 *tmp_sprite = (SpriteObject_MM7*)malloc(sizeof(SpriteObject_MM7));
-
-            for (int i = 0; i < uNumSpriteObjects; ++i) {
-                Serialize(pSpriteObjects[i], tmp_sprite);
-                memcpy(data_write_pos + i * sizeof(SpriteObject_MM7), tmp_sprite, sizeof(SpriteObject_MM7));
-            }
-            free(tmp_sprite);
-            data_write_pos += uNumSpriteObjects * sizeof(SpriteObject_MM7);
-
-            data_write_pos += ChestsSerialize(data_write_pos);
-
-            // memcpy(data_write_pos, pIndoor->pDoors, sizeof(BLVDoor) * 200);
-            // data_write_pos += 16000;
-            BLVDoor_MM7 *tmp_door = (BLVDoor_MM7*)malloc(sizeof(BLVDoor_MM7));
-            for (int i = 0; i < pIndoor->pDoors.size(); ++i) {
-                Serialize(pIndoor->pDoors[i], tmp_door);
-                memcpy(data_write_pos + i * sizeof(BLVDoor_MM7), tmp_door, sizeof(BLVDoor_MM7));
-            }
-            free(tmp_door);
-            data_write_pos += pIndoor->pDoors.size() * sizeof(BLVDoor_MM7);
-
-            memcpy(data_write_pos, pIndoor->ptr_0002B4_doors_ddata.data(), pIndoor->blv.uDoors_ddata_Size);
-            data_write_pos += pIndoor->blv.uDoors_ddata_Size;
-            memcpy(data_write_pos, &mapEventVariables, 0xC8);
-            data_write_pos += 200;
-            memcpy(data_write_pos, &pIndoor->stru1, 0x38);
-            data_write_pos += 56;
-
+            // TODO(captainurist): ptr_0002B4_doors_ddata has an additional zero element at end, added in IndoorLocation::Load
+            stream.WriteRawArray(pIndoor->ptr_0002B4_doors_ddata.data(), pIndoor->blv.uDoors_ddata_Size / sizeof(uint16_t));
+            stream.WriteRaw(&mapEventVariables);
+            stream.WriteRaw(&pIndoor->stru1);
         } else {  // for Outdoor
             pOutdoor->ddm.uNumFacesInBModels = 0;
             for (BSPModel &model : pOutdoor->pBModels) {
@@ -419,59 +379,28 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld) {
             }
             pOutdoor->ddm.uNumBModels = pOutdoor->pBModels.size();
             pOutdoor->ddm.uNumDecorations = pLevelDecorations.size();
-            memcpy(data_write_pos, &pOutdoor->ddm, sizeof(DDM_DLV_Header));  // 0x28
-            data_write_pos += sizeof(DDM_DLV_Header);
-            memcpy(data_write_pos, pOutdoor->uFullyRevealedCellOnMap, 0x3C8);
-            data_write_pos += 968;
-            memcpy(data_write_pos, pOutdoor->uPartiallyRevealedCellOnMap, 0x3C8);
-            data_write_pos += 968;
+
+            stream.WriteRaw(&pOutdoor->ddm);
+            stream.WriteRaw(&pOutdoor->uFullyRevealedCellOnMap);
+            stream.WriteRaw(&pOutdoor->uPartiallyRevealedCellOnMap);
+
             for (BSPModel &model : pOutdoor->pBModels) {
                 for (ODMFace &face : model.pFaces) {
-                    memcpy(data_write_pos, &(face.uAttributes), 4);
-                    data_write_pos += 4;
+                    stream.WriteRaw(&face.uAttributes);
+                    static_assert(sizeof(face.uAttributes) == 4);
                 }
             }
 
             for (size_t i = 0; i < pLevelDecorations.size(); ++i) {
-                memcpy(data_write_pos, &pLevelDecorations[i].uFlags, 2);
-                data_write_pos += 2;
+                stream.WriteRaw(&pLevelDecorations[i].uFlags);
+                static_assert(sizeof(pLevelDecorations[i].uFlags) == 2);
             }
-            uint32_t uNumActors = pActors.size();
-            memcpy(data_write_pos, &uNumActors, 4);
-            data_write_pos += 4;
 
-            // memcpy(data_write_pos, &pActors, uNumActors * sizeof(Actor));
-            // data_write_pos += uNumActors * sizeof(Actor);
-            Actor_MM7 *tmp_actor = (Actor_MM7*)malloc(sizeof(Actor_MM7));
-
-            for (int i = 0; i < uNumActors; ++i) {
-                Serialize(pActors[i], tmp_actor);
-                memcpy(data_write_pos + i * sizeof(Actor_MM7), tmp_actor, sizeof(Actor_MM7));
-            }
-            free(tmp_actor);
-            data_write_pos += uNumActors * sizeof(Actor_MM7);
-
-            uint32_t uNumSpriteObjects = pSpriteObjects.size();
-            memcpy(data_write_pos, &uNumSpriteObjects, 4);
-            data_write_pos += 4;
-
-            // memcpy(data_write_pos, pSpriteObjects.data(), uNumSpriteObjects * sizeof(SpriteObject));
-            // data_write_pos += uNumSpriteObjects * sizeof(SpriteObject);
-            SpriteObject_MM7 *tmp_sprite = (SpriteObject_MM7*)malloc(sizeof(SpriteObject_MM7));
-
-            for (int i = 0; i < uNumSpriteObjects; ++i) {
-                Serialize(pSpriteObjects[i], tmp_sprite);
-                memcpy(data_write_pos + i * sizeof(SpriteObject_MM7), tmp_sprite, sizeof(SpriteObject_MM7));
-            }
-            free(tmp_sprite);
-            data_write_pos += uNumSpriteObjects * sizeof(SpriteObject_MM7);
-
-            data_write_pos += ChestsSerialize(data_write_pos);
-
-            memcpy(data_write_pos, &mapEventVariables, 0xC8);
-            data_write_pos += 200;
-            memcpy(data_write_pos, &pOutdoor->loc_time, 0x38);
-            data_write_pos += 56;
+            stream.WriteLegacyVector<Actor_MM7>(pActors);
+            stream.WriteLegacyVector<SpriteObject_MM7>(pSpriteObjects);
+            stream.WriteVector(vChests);
+            stream.WriteRaw(&mapEventVariables);
+            stream.WriteRaw(&pOutdoor->loc_time);
         }
 
         ODMHeader odm_data;
@@ -481,13 +410,13 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld) {
         odm_data.pMagic[2] = 'i';
         odm_data.pMagic[3] = 'i';
 
-        size_t Size = data_write_pos - uncompressed_buff;
-        Blob bytes = zlib::Compress(Blob::view(uncompressed_buff, Size));
+        Blob uncompressed = stream.Close();
+        Blob compressed = zlib::Compress(uncompressed);
 
-        odm_data.uCompressedSize = bytes.size();
-        odm_data.uDecompressedSize = Size;
+        odm_data.uCompressedSize = compressed.size();
+        odm_data.uDecompressedSize = uncompressed.size();
 
-        Blob mapBlob = Blob::concat(Blob::view(&odm_data, sizeof(ODMHeader)), bytes);
+        Blob mapBlob = Blob::concat(Blob::view(&odm_data, sizeof(ODMHeader)), compressed);
 
         std::string file_name = pCurrentMapName;
         size_t pos = file_name.find_last_of(".");
@@ -496,7 +425,6 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld) {
             logger->warning("{}", localization->FormatString(LSTR_FMT_SAVEGAME_CORRUPTED, 208));
         }
     }
-    free(uncompressed_buff);
 
     if (IsAutoSAve) {
         std::string src = MakeDataPath("data", "new.lod");

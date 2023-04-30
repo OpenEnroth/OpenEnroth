@@ -111,10 +111,12 @@ struct ByteArray {
 };
 #pragma pack(pop)
 
+// TODO(captainurist): add legacyimages equiv
 struct MapEventVariables {
     std::array<unsigned char, 75> mapVars;
     std::array<unsigned char, 125> decorVars;
 };
+static_assert(sizeof(MapEventVariables) == 0xC8);
 
 extern MapEventVariables mapEventVariables;
 

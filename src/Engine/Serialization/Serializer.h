@@ -3,10 +3,12 @@
 #include <cassert>
 #include <string>
 #include <vector>
+#include <utility>
 
 #include "Utility/Embedded.h"
 #include "Utility/Streams/FileOutputStream.h"
 #include "Utility/Streams/OutputStream.h"
+#include "Utility/Streams/StringOutputStream.h"
 
 class Serializer {
  public:
@@ -50,7 +52,7 @@ class Serializer {
     }
 
     template<class LegacyT, class T>
-    void ReadSizedLegacyVector(const std::vector<T> &src) {
+    void WriteSizedLegacyVector(const std::vector<T> &src) {
         WriteVectorInternal<LegacyT>(src, false);
     }
 
@@ -82,12 +84,21 @@ class Serializer {
 class FileSerializer : private Embedded<FileOutputStream>, public Serializer {
     using StreamBase = Embedded<FileOutputStream>;
  public:
-    explicit FileSerializer(const std::string &path):
-        StreamBase(path),
-        Serializer(&StreamBase::get())
-    {}
+    explicit FileSerializer(const std::string &path): StreamBase(path), Serializer(&StreamBase::get()) {}
 
     void Close() {
         StreamBase::get().close();
+    }
+};
+
+class BlobSerializer : private Embedded<std::string>, private Embedded<StringOutputStream>, public Serializer {
+    using StringBase = Embedded<std::string>;
+    using StreamBase = Embedded<StringOutputStream>;
+ public:
+    BlobSerializer(): StreamBase(&StringBase::get()), Serializer(&StreamBase::get()) {}
+
+    Blob Close() {
+        StreamBase::get().close();
+        return Blob::fromString(std::move(StringBase::get()));
     }
 };

@@ -39,6 +39,7 @@ struct LocationTime_stru1 {
     int day_fogrange_2 = 0;
     char field_2F4[24] {};
 };
+static_assert(sizeof(LocationTime_stru1) == 0x38);
 #pragma pack(pop)
 
 /*  319 */
@@ -52,6 +53,7 @@ extern LEVEL_TYPE uCurrentlyLoadedLevelType;
 
 /*   90 */
 #pragma pack(push, 1)
+// TODO(captainurist): move to legacyimages
 struct BLVHeader {
     char field_0[104];
     unsigned int uFaces_fdata_Size;
