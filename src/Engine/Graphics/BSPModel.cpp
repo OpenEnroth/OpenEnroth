@@ -15,7 +15,6 @@
 
 void BSPModelList::Load(Deserializer *stream) {
     static_assert(sizeof(BSPModelData) == 188, "Wrong type size");
-    static_assert(sizeof(BSPNode) == 8, "Wrong type size");
     static_assert(sizeof(Vec3i) == 12, "Wrong type size");
 
     std::vector<BSPModelData> models;
@@ -55,7 +54,7 @@ void BSPModelList::Load(Deserializer *stream) {
             new_model.pFaces[i].index = i;
 
         stream->ReadSizedVector(&new_model.pFacesOrdering, model.uNumFaces);
-        stream->ReadSizedVector(&new_model.pNodes, model.uNumNodes);
+        stream->ReadSizedLegacyVector<BSPNode_MM7>(&new_model.pNodes, model.uNumNodes);
 
         std::string textureName;
         for (size_t i = 0; i < model.uNumFaces; ++i) {

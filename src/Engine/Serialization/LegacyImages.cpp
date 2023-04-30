@@ -1695,3 +1695,10 @@ void Deserialize(const BLVFaceExtra_MM7 &src, BLVFaceExtra *dst) {
     dst->field_20 = src.field_20;
     dst->field_22 = src.field_22;
 }
+
+void Deserialize(const BSPNode_MM7 &src, BSPNode *dst) {
+    dst->uFront = src.uFront;
+    dst->uBack = src.uBack;
+    dst->uBSPFaceIDOffset = src.uBSPFaceIDOffset;
+    dst->uNumBSPFaces = src.uNumBSPFaces;
+}

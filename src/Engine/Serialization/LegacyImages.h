@@ -25,6 +25,7 @@ struct BLVFace;
 struct BLVFaceExtra;
 struct BLVLight;
 struct BLVSector;
+struct BSPNode;
 struct Chest;
 struct ChestDesc;
 struct DecorationDesc;
@@ -45,6 +46,12 @@ struct SpawnPoint;
 struct SpellBuff;
 struct SpriteObject;
 struct Timer;
+
+static_assert(sizeof(Vec3s) == 6);
+static_assert(sizeof(Vec3i) == 12);
+static_assert(sizeof(Planei) == 16);
+static_assert(sizeof(Planef) == 16);
+static_assert(sizeof(BBoxs) == 12);
 
 #pragma pack(push, 1)
 
@@ -1025,6 +1032,17 @@ struct BLVFaceExtra_MM7 {
 static_assert(sizeof(BLVFaceExtra_MM7) == 36);
 
 void Deserialize(const BLVFaceExtra_MM7 &src, BLVFaceExtra *dst);
+
+
+struct BSPNode_MM7 {
+    int16_t uFront;
+    int16_t uBack;
+    int16_t uBSPFaceIDOffset;
+    int16_t uNumBSPFaces;
+};
+static_assert(sizeof(BSPNode_MM7) == 8);
+
+void Deserialize(const BSPNode_MM7 &src, BSPNode *dst);
 
 
 #pragma pack(pop)
