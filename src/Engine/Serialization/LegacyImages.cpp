@@ -15,6 +15,7 @@
 #include "Engine/Objects/Actor.h"
 #include "Engine/Objects/NPC.h"
 #include "Engine/Objects/SpriteObject.h"
+#include "Engine/Objects/ObjectList.h"
 #include "Engine/Party.h"
 #include "Engine/Tables/IconFrameTable.h"
 #include "Engine/Time.h"
@@ -1710,4 +1711,34 @@ void Deserialize(const BLVMapOutline_MM7 &src, BLVMapOutline *dst) {
     dst->uFace2ID = src.uFace2ID;
     dst->sZ = src.sZ;
     dst->uFlags = src.uFlags;
+}
+
+void Deserialize(const ObjectDesc_MM6 &src, ObjectDesc *dst) {
+    dst->field_0 =  src.field_0;
+    dst->uObjectID = src.uObjectID;
+    dst->uRadius = src.uRadius;
+    dst->uHeight = src.uHeight;
+    dst->uFlags = OBJECT_DESC_FLAGS(src.uFlags);
+    dst->uSpriteID = src.uSpriteID;
+    dst->uLifetime = src.uLifetime;
+    dst->uParticleTrailColor = src.uParticleTrailColor;
+    dst->uSpeed = src.uSpeed;
+    dst->uParticleTrailColorR = src.uParticleTrailColorR;
+    dst->uParticleTrailColorG = src.uParticleTrailColorG;
+    dst->uParticleTrailColorB = src.uParticleTrailColorB;
+}
+
+void Deserialize(const ObjectDesc_MM7 &src, ObjectDesc *dst) {
+    dst->field_0 = src.field_0;
+    dst->uObjectID = src.uObjectID;
+    dst->uRadius = src.uRadius;
+    dst->uHeight = src.uHeight;
+    dst->uFlags = OBJECT_DESC_FLAGS(src.uFlags);
+    dst->uSpriteID = src.uSpriteID;
+    dst->uLifetime = src.uLifetime;
+    dst->uParticleTrailColor = src.uParticleTrailColor;
+    dst->uSpeed = src.uSpeed;
+    dst->uParticleTrailColorR = src.uParticleTrailColorR;
+    dst->uParticleTrailColorG = src.uParticleTrailColorG;
+    dst->uParticleTrailColorB = src.uParticleTrailColorB;
 }

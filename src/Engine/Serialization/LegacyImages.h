@@ -36,6 +36,7 @@ struct ItemGen;
 struct LevelDecoration;
 struct MonsterDesc;
 struct NPCData;
+struct ObjectDesc;
 struct ODMFace;
 struct OtherOverlay;
 struct OtherOverlayList;
@@ -1057,5 +1058,43 @@ struct BLVMapOutline_MM7 {
 static_assert(sizeof(BLVMapOutline_MM7) == 12);
 
 void Deserialize(const BLVMapOutline_MM7 &src, BLVMapOutline *dst);
+
+
+struct ObjectDesc_MM6 {
+    std::array<char, 32> field_0;
+    int16_t uObjectID;
+    int16_t uRadius;
+    int16_t uHeight;
+    int16_t uFlags;
+    uint16_t uSpriteID;
+    int16_t uLifetime;
+    uint16_t uParticleTrailColor;
+    int16_t uSpeed;
+    uint8_t uParticleTrailColorR;
+    uint8_t uParticleTrailColorG;
+    uint8_t uParticleTrailColorB;
+    char _pad;
+};
+static_assert(sizeof(ObjectDesc_MM6) == 52);
+
+struct ObjectDesc_MM7 {
+    std::array<char, 32> field_0;
+    int16_t uObjectID;
+    int16_t uRadius;
+    int16_t uHeight;
+    uint16_t uFlags;
+    uint16_t uSpriteID;
+    int16_t uLifetime;
+    uint32_t uParticleTrailColor;
+    int16_t uSpeed;
+    uint8_t uParticleTrailColorR;
+    uint8_t uParticleTrailColorG;
+    uint8_t uParticleTrailColorB;
+    std::array<char, 3> _pad;
+};
+static_assert(sizeof(ObjectDesc_MM7) == 56);
+
+void Deserialize(const ObjectDesc_MM6 &src, ObjectDesc *dst);
+void Deserialize(const ObjectDesc_MM7 &src, ObjectDesc *dst);
 
 #pragma pack(pop)
