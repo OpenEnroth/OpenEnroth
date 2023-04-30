@@ -119,6 +119,3 @@ enum AwardType : uint32_t {
     Award_ArcomageWins = 103,
     Award_ArcomageLoses = 104
 };
-extern std::array<AwardType, 1000> achieved_awards;
-extern int num_achieved_awards;
-extern int full_num_items_in_book;

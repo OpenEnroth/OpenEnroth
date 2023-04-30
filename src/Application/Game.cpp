@@ -1855,18 +1855,21 @@ void Game::processQueuedMessages() {
                     pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 0, 0);
                     continue;
                 case UIMSG_ClickAwardScrollBar: {
-                    books_page_number = 1;
                     Pointi pt = _mouse->GetCursorPos();
-                    if (pt.y > 178) books_page_number = -1;
+                    if (pt.y > 178) {
+                        awardScrollDownClicked = true;
+                    } else {
+                        awardScrollUpClicked = true;
+                    }
                     continue;
                 }
                 case UIMSG_ClickAwardsUpBtn:
                     new OnButtonClick3(WINDOW_CharacterWindow_Awards, {pBtn_Up->uX, pBtn_Up->uY}, {0, 0}, pBtn_Up);
-                    BtnUp_flag = 1;
+                    awardButtonUpClicked = true;
                     continue;
                 case UIMSG_ClickAwardsDownBtn:
                     new OnButtonClick3(WINDOW_CharacterWindow_Awards, {pBtn_Down->uX, pBtn_Down->uY}, {0, 0}, pBtn_Down);
-                    BtnDown_flag = 1;
+                    awardButtonDownClicked = true;
                     continue;
                 case UIMSG_ChangeDetaliz:
                     ((GUIWindow_CharacterRecord *)pGUIWindow_CurrentMenu)->ToggleRingsOverlay();
