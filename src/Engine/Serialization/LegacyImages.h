@@ -30,6 +30,7 @@ struct DecorationDesc;
 struct FontData;
 struct GUICharMetric;
 struct ItemGen;
+struct LevelDecoration;
 struct MonsterDesc;
 struct NPCData;
 struct ODMFace;
@@ -981,6 +982,23 @@ struct PlayerFrame_MM7 {
 static_assert(sizeof(PlayerFrame_MM7) == 10);
 
 void Deserialize(const PlayerFrame_MM7 &src, PlayerFrame *dst);
+
+
+struct LevelDecoration_MM7 {
+    uint16_t uDecorationDescID;
+    uint16_t uFlags;
+    Vec3i vPosition;
+    int32_t _yawAngle;
+    uint16_t uCog;
+    uint16_t uEventID;
+    uint16_t uTriggerRange;
+    int16_t field_1A;
+    int16_t _idx_in_stru123;
+    int16_t field_1E;
+};
+static_assert(sizeof(LevelDecoration_MM7) == 32);
+
+void Deserialize(const LevelDecoration_MM7 &src, LevelDecoration *dst);
 
 
 #pragma pack(pop)

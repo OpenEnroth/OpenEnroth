@@ -395,7 +395,7 @@ bool IndoorLocation::Load(const std::string &filename, int num_days_played,
     pGameLoadingUI_ProgressBar->Progress();
     pGameLoadingUI_ProgressBar->Progress();
 
-    stream.ReadVector(&pLevelDecorations);
+    stream.ReadLegacyVector<LevelDecoration_MM7>(&pLevelDecorations);
 
     for (uint i = 0; i < pLevelDecorations.size(); ++i) {
         std::string name;

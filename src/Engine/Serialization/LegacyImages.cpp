@@ -9,6 +9,7 @@
 #include "Engine/Graphics/Indoor.h"
 #include "Engine/Graphics/Overlays.h"
 #include "Engine/Graphics/Sprites.h"
+#include "Engine/Graphics/Level/Decoration.h"
 #include "Engine/Tables/TileFrameTable.h"
 #include "Engine/Tables/PlayerFrameTable.h"
 #include "Engine/Objects/Actor.h"
@@ -1659,4 +1660,17 @@ void Deserialize(const PlayerFrame_MM7 &src, PlayerFrame *dst) {
     dst->uAnimTime = src.uAnimTime;
     dst->uAnimLength = src.uAnimLength;
     dst->uFlags = src.uFlags;
+}
+
+void Deserialize(const LevelDecoration_MM7 &src, LevelDecoration *dst) {
+    dst->uDecorationDescID = src.uDecorationDescID;
+    dst->uFlags = LevelDecorationFlags(src.uFlags);
+    dst->vPosition = src.vPosition;
+    dst->_yawAngle = src._yawAngle;
+    dst->uCog = src.uCog;
+    dst->uEventID = src.uEventID;
+    dst->uTriggerRange = src.uTriggerRange;
+    dst->field_1A = src.field_1A;
+    dst->_idx_in_stru123 = src._idx_in_stru123;
+    dst->field_1E = src.field_1E;
 }

@@ -915,8 +915,7 @@ bool OutdoorLocation::Load(const std::string &filename, int days_played,
     pGameLoadingUI_ProgressBar->Progress();  // прогресс загрузки
 
     // ******************Decorations**********************//
-    static_assert(sizeof(LevelDecoration) == 32);
-    stream.ReadVector(&pLevelDecorations);
+    stream.ReadLegacyVector<LevelDecoration_MM7>(&pLevelDecorations);
 
     pGameLoadingUI_ProgressBar->Progress();
 
