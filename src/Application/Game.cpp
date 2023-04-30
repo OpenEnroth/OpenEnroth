@@ -94,7 +94,6 @@
 
 
 void ShowMM7IntroVideo_and_LoadingScreen();
-void IntegrityTest();
 
 using Graphics::IRenderFactory;
 
@@ -159,8 +158,6 @@ Game::~Game() {
 }
 
 int Game::run() {
-    IntegrityTest();
-
     _render = IRenderFactory().Create(_config);
     ::render = _render;
 
