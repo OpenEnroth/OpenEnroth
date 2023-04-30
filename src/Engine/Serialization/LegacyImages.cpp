@@ -1584,3 +1584,10 @@ void Deserialize(const SpriteObject_MM7 &src, SpriteObject *dst) {
     dst->field_62[1] = src.field_62[1];
     dst->initialPosition = src.initialPosition;
 }
+
+void Deserialize(const ChestDesc_MM7 &src, ChestDesc *dst) {
+    Deserialize(src.pName, &dst->sName);
+    dst->uWidth = src.uWidth;
+    dst->uHeight = src.uHeight;
+    dst->uTextureID = src.uTextureID;
+}

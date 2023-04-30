@@ -23,6 +23,7 @@ struct ActorJob;
 struct BLVDoor;
 struct BLVFace;
 struct BLVSector;
+struct ChestDesc;
 struct FontData;
 struct GUICharMetric;
 struct ItemGen;
@@ -880,5 +881,16 @@ static_assert(sizeof(SpriteObject_MM7) == 0x70);
 
 void Serialize(const SpriteObject &src, SpriteObject_MM7 *dst);
 void Deserialize(const SpriteObject_MM7 &src, SpriteObject *dst);
+
+
+struct ChestDesc_MM7 {
+    std::array<char, 32> pName;
+    uint8_t uWidth;
+    uint8_t uHeight;
+    int16_t uTextureID;
+};
+static_assert(sizeof(ChestDesc_MM7) == 36);
+
+void Deserialize(const ChestDesc_MM7 &src, ChestDesc *dst);
 
 #pragma pack(pop)

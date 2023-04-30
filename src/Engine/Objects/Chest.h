@@ -18,12 +18,10 @@ MM_DECLARE_FLAGS(CHEST_FLAGS, CHEST_FLAG)
 MM_DECLARE_OPERATORS_FOR_FLAGS(CHEST_FLAGS)
 
 struct ChestDesc {
-    explicit ChestDesc(struct ChestDesc_mm7 *pChest);
-
     std::string sName;
-    unsigned int uWidth;
-    unsigned int uHeight;
-    unsigned int uTextureID;
+    int uWidth = 0;
+    int uHeight = 0;
+    int uTextureID = 0;
 };
 
 class ChestList {
