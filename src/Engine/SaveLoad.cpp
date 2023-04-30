@@ -365,7 +365,7 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld) {
 
             stream.WriteLegacyVector<Actor_MM7>(pActors);
             stream.WriteLegacyVector<SpriteObject_MM7>(pSpriteObjects);
-            stream.WriteVector(vChests);
+            stream.WriteLegacyVector<Chest_MM7>(vChests);
             stream.WriteSizedLegacyVector<BLVDoor_MM7>(pIndoor->pDoors);
 
             // TODO(captainurist): ptr_0002B4_doors_ddata has an additional zero element at end, added in IndoorLocation::Load
@@ -398,7 +398,7 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld) {
 
             stream.WriteLegacyVector<Actor_MM7>(pActors);
             stream.WriteLegacyVector<SpriteObject_MM7>(pSpriteObjects);
-            stream.WriteVector(vChests);
+            stream.WriteLegacyVector<Chest_MM7>(vChests);
             stream.WriteRaw(&mapEventVariables);
             stream.WriteRaw(&pOutdoor->loc_time);
         }

@@ -34,10 +34,7 @@ class ChestList {
     std::vector<ChestDesc> vChests;
 };
 
-/*   65 */
-#pragma pack(push, 1)
-// TODO(captainurist): create Chest_MM7 in legacyimages
-struct Chest {  // 0x14cc
+struct Chest {
     inline bool Initialized() const {
         return uFlags & CHEST_ITEMS_PLACED;
     }
@@ -60,13 +57,11 @@ struct Chest {  // 0x14cc
     static void OnChestLeftClick();
     static void GrabItem(bool all = false);
 
-    uint16_t uChestBitmapID{};        // 0
-    CHEST_FLAGS uFlags;                // 2
-    struct ItemGen igChestItems[140];       // 4
-    int16_t pInventoryIndices[140]{};  // 0x13b4 why is this a short?
+    uint16_t uChestBitmapID = 0;
+    CHEST_FLAGS uFlags;
+    std::array<ItemGen, 140> igChestItems;
+    std::array<int16_t, 140> pInventoryIndices = {{}};  // 0x13b4 why is this a short?
 };
-static_assert(sizeof(Chest) == 5324, "Wrong type size"); // TODO(captainurist): belongs to legacyimages
-#pragma pack(pop)
 
 void RemoveItemAtChestIndex(int index);
 void GenerateItemsInChest();

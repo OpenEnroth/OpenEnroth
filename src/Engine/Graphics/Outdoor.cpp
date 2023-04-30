@@ -1048,7 +1048,7 @@ bool OutdoorLocation::Load(const std::string &filename, int days_played,
 
     pGameLoadingUI_ProgressBar->Progress();  // прогресс загрузки
 
-    stream.ReadVector(&vChests);
+    stream.ReadLegacyVector<Chest_MM7>(&vChests);
 
     pGameLoadingUI_ProgressBar->Progress();  // прогресс загрузки
 

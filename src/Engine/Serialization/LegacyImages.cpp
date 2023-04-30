@@ -1615,3 +1615,17 @@ void Deserialize(const DecorationDesc_MM7 &src, DecorationDesc *dst) {
     dst->uColoredLightGreen = src.uColoredLightGreen;
     dst->uColoredLightBlue = src.uColoredLightBlue;
 }
+
+void Serialize(const Chest &src, Chest_MM7 *dst) {
+    dst->uChestBitmapID = src.uChestBitmapID;
+    dst->uFlags = std::to_underlying(src.uFlags);
+    Serialize(src.igChestItems, &dst->igChestItems);
+    Serialize(src.pInventoryIndices, &dst->pInventoryIndices);
+}
+
+void Deserialize(const Chest_MM7 &src, Chest *dst) {
+    dst->uChestBitmapID = src.uChestBitmapID;
+    dst->uFlags = CHEST_FLAGS(src.uFlags);
+    Deserialize(src.igChestItems, &dst->igChestItems);
+    Deserialize(src.pInventoryIndices, &dst->pInventoryIndices);
+}

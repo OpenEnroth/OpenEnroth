@@ -23,6 +23,7 @@ struct ActorJob;
 struct BLVDoor;
 struct BLVFace;
 struct BLVSector;
+struct Chest;
 struct ChestDesc;
 struct DecorationDesc;
 struct FontData;
@@ -919,5 +920,18 @@ static_assert(sizeof(DecorationDesc_MM7) == 84);
 
 void Deserialize(const DecorationDesc_MM6 &src, DecorationDesc *dst);
 void Deserialize(const DecorationDesc_MM7 &src, DecorationDesc *dst);
+
+
+struct Chest_MM7 {
+    uint16_t uChestBitmapID;
+    uint16_t uFlags;
+    std::array<ItemGen_MM7, 140> igChestItems;
+    std::array<int16_t, 140> pInventoryIndices;
+};
+static_assert(sizeof(Chest_MM7) == 5324);
+
+void Serialize(const Chest &src, Chest_MM7 *dst);
+void Deserialize(const Chest_MM7 &src, Chest *dst);
+
 
 #pragma pack(pop)
