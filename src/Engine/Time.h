@@ -82,6 +82,7 @@ struct GameTime {
         return *this;
     }
 
+    bool operator==(const GameTime &rhs) const { return this->value == rhs.value; }
     bool operator>(const GameTime &rhs) const { return this->value > rhs.value; }
     bool operator>=(const GameTime &rhs) const { return this->value >= rhs.value; }
     bool operator<(const GameTime &rhs) const { return this->value < rhs.value; }

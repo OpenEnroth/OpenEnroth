@@ -27,8 +27,8 @@ static std::vector<EventTrigger> onMapLeaveTriggers;
 static std::vector<MapTimer> onLongTimerTriggers;
 static std::vector<MapTimer> onTimerTriggers;
 
-// TODO(Nik-RE-dev): Was in original code and ensures that timers are checked not more often than 30 game seconds.
-//                   Do not needed in practice now but without it random state in some tests is desynchronized.
+// Was in original code and ensures that timers are checked not more often than 30 game seconds.
+// Do not needed in practice but can be considered optimization to avoid checking timers too often.
 static GameTime timerGuard = GameTime(0);
 
 static void registerTimerTriggers(EventType triggerType, std::vector<MapTimer> *triggers) {
@@ -67,23 +67,17 @@ static void registerTimerTriggers(EventType triggerType, std::vector<MapTimer> *
                 timer.timeInsideDay = timer.timeInsideDay.AddSeconds(ir.data.timer_descr.daily_start_second);
             }
 
-            if (timer.timeInsideDay) {
+            if (timer.interval == GameTime::FromDays(1)) {
                 if (levelLastVisit) {
                     // Calculate alarm time inside last visit day
-                    int last_seconds = levelLastVisit.GetSecondsFraction();
-                    int last_minutes = levelLastVisit.GetMinutesFraction();
-                    int last_hours = levelLastVisit.GetHoursOfDay();
-                    timer.alarmTime = levelLastVisit - GameTime(last_seconds, last_minutes, last_hours) + timer.timeInsideDay;
+                    timer.alarmTime = GameTime::FromDays(levelLastVisit.GetDays()) + timer.timeInsideDay;
                     if (timer.alarmTime < levelLastVisit) {
                         // Last visit time already passed alarm time inside that day so move alarm to next day
                         timer.alarmTime = timer.alarmTime + GameTime::FromDays(1);
                     }
                 } else {
-                    // Set alarm time on the time of the previous day because it must fire
-                    int seconds = pParty->GetPlayingTime().GetSecondsFraction();
-                    int minutes = pParty->GetPlayingTime().GetMinutesFraction();
-                    int hours = pParty->GetPlayingTime().GetHoursOfDay();
-                    timer.alarmTime = pParty->GetPlayingTime() - GameTime(seconds, minutes, hours) + timer.timeInsideDay - GameTime::FromDays(1);
+                    // Set alarm time to zero because it must always fire
+                    timer.alarmTime = GameTime(0);
                 }
             } else {
                 if (levelLastVisit) {
@@ -184,6 +178,10 @@ static void checkTimer(MapTimer &timer) {
         if (timer.altInterval) {
             timer.alarmTime = pParty->GetPlayingTime() + timer.altInterval;
         } else {
+            if (timer.alarmTime == GameTime(0) && timer.interval == GameTime::FromDays(1)) {
+                // Initial firing of daily timers, next alarm must be configured to fire on exact time of day
+                timer.alarmTime = timer.timeInsideDay;
+            }
             while (pParty->GetPlayingTime() >= timer.alarmTime) {
                 timer.alarmTime += timer.interval;
             }
