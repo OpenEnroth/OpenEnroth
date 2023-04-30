@@ -6,7 +6,9 @@
 #include "GUI/GUIProgressBar.h"
 
 #include "Engine/Objects/ItemTable.h"
+#include "Engine/Objects/SpriteObject.h"
 #include "Engine/SaveLoad.h"
+#include "Engine/Graphics/Indoor.h"
 
 #include "Utility/DataPath.h"
 #include "Utility/ScopeGuard.h"
@@ -703,6 +705,27 @@ GAME_TEST(Issues, Issue675) {
     }
 }
 
+GAME_TEST(Issues, Issue676) {
+    // Jump spell doesn't work
+    test->playTraceFromTestData("issue_676.mm7", "issue_676.json");
+    EXPECT_EQ(pParty->vPosition, Vec3i(11943, 11586, 857));
+}
+
+GAME_TEST(Issues, Issue677) {
+    // Haste doesn't impose weakness after it ends
+    test->playTraceFromTestData("issue_677.mm7", "issue_677.json");
+    for (auto &player : pParty->pPlayers) {
+        EXPECT_EQ(player.conditions.Has(Condition_Weak), true);
+    }
+}
+
+GAME_TEST(Issues, Issue679) {
+    // Loading autosave after travelling by stables / boat results in gold loss
+    int prevGold = -1;
+    test->playTraceFromTestData("issue_679.mm7", "issue_679.json", [&] { prevGold = pParty->GetGold(); });
+    EXPECT_EQ(prevGold, pParty->GetGold());
+}
+
 GAME_TEST(Issues, Issue691) {
     // Test that hitting escape when in transition window does not crash
     test->playTraceFromTestData("issue_691.mm7", "issue_691.json");
@@ -727,4 +750,18 @@ GAME_TEST(Issues, Issue720) {
 GAME_TEST(Issues, Issue728) {
     // mousing over facets with nonexisting events shouldn't crash the game
     test->playTraceFromTestData("issue_728.mm7", "issue_728.json");
+}
+
+GAME_TEST(Issues, Issue730) {
+    // Thrown items are throwing a party of their own
+    test->playTraceFromTestData("issue_730.mm7", "issue_730.json");
+    for (uint i = 0; i < pSpriteObjects.size(); ++i) {
+        EXPECT_EQ(pSpriteObjects[i].vVelocity, Vec3s(0, 0, 0));
+    }
+}
+
+GAME_TEST(Issues, Issue741) {
+    // Game crashing when walking into a wall in Temple of the moon
+    test->playTraceFromTestData("issue_741.mm7", "issue_741.json");
+    EXPECT_NE(pBLVRenderParams->uPartySectorID, 0);
 }

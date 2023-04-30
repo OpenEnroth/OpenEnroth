@@ -180,12 +180,13 @@ void AudioPlayer::MusicResume() {
 }
 
 void AudioPlayer::SetMusicVolume(int level) {
+    level = std::clamp(level, 0, 9);
+    uMusicVolume = pSoundVolumeLevels[level] * maxVolumeGain;
+
     if (!pCurrentMusicTrack) {
         return;
     }
 
-    level = std::clamp(level, 0, 9);
-    uMusicVolume = pSoundVolumeLevels[level] * maxVolumeGain;
     pCurrentMusicTrack->SetVolume(uMusicVolume);
     if (level == 0) {
         MusicPause();

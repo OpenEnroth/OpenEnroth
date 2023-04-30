@@ -3912,7 +3912,7 @@ void RenderOpenGL::DrawOutdoorBuildings() {
                                 else if (face.uAttributes & FACE_FlowLeft)
                                     attribflags |= 0x1000;
 
-                                if (face.uAttributes & (FACE_OUTLINED | FACE_IsSecret))
+                                if (face.uAttributes & FACE_OUTLINED || (face.uAttributes & FACE_IsSecret) && engine->is_saturate_faces)
                                     attribflags |= 0x00010000;
 
                                 // load up verts here
@@ -4540,7 +4540,7 @@ void RenderOpenGL::DrawIndoorFaces() {
                             else if (face->uAttributes & FACE_FlowLeft)
                                 attribflags |= 0x1000;
 
-                            if (face->uAttributes & (FACE_OUTLINED | FACE_IsSecret))
+                            if (face->uAttributes & FACE_OUTLINED || (face->uAttributes & FACE_IsSecret) && engine->is_saturate_faces)
                                 attribflags |= 0x00010000;
 
                             texlayer = face->texlayer;
