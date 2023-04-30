@@ -24,6 +24,7 @@ struct SavegameHeader {
     GameTime playing_time{};  // uint64_t uWordTime;
     char field_30[52]{};
 };
+static_assert(sizeof(SavegameHeader) == 0x64, "Wrong type size");
 #pragma pack(pop)
 
 void LoadGame(unsigned int uSlot);

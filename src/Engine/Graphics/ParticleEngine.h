@@ -160,9 +160,7 @@ class ParticleEngine {
 };
 #pragma pack(pop)
 
-/*  160 */
-#pragma pack(push, 1)
-struct TrailParticle {  // stru167
+struct TrailParticle {
     inline TrailParticle() {
         x = 0;
         y = 0;
@@ -191,10 +189,7 @@ struct TrailParticle {  // stru167
     char field_16 = 0;
     char field_17 = 0;
 };
-#pragma pack(pop)
 
-/*  363 */
-#pragma pack(push, 1)
 struct TrailParticleGenerator {  // stru167_wrap
  public:
     inline TrailParticleGenerator() { num_particles = 0; }
@@ -209,5 +204,5 @@ struct TrailParticleGenerator {  // stru167_wrap
     int num_particles;
     int field_964 = 0;
 };
-#pragma pack(pop)
+
 extern TrailParticleGenerator trail_particle_generator;  // 005118E8
