@@ -1674,3 +1674,24 @@ void Deserialize(const LevelDecoration_MM7 &src, LevelDecoration *dst) {
     dst->_idx_in_stru123 = src._idx_in_stru123;
     dst->field_1E = src.field_1E;
 }
+
+void Deserialize(const BLVFaceExtra_MM7 &src, BLVFaceExtra *dst) {
+    dst->field_0 = src.field_0;
+    dst->field_2 = src.field_2;
+    dst->field_4 = src.field_4;
+    dst->field_6 = src.field_6;
+    dst->field_8 = src.field_8;
+    dst->field_A = src.field_A;
+    dst->face_id = src.face_id;
+    dst->uAdditionalBitmapID = src.uAdditionalBitmapID;
+    dst->field_10 = src.field_10;
+    dst->field_12 = src.field_12;
+    dst->sTextureDeltaU = src.sTextureDeltaU;
+    dst->sTextureDeltaV = src.sTextureDeltaV;
+    dst->sCogNumber = src.sCogNumber;
+    dst->uEventID = src.uEventID;
+    dst->field_1C = src.field_1C;
+    dst->field_1E = src.field_1E;
+    dst->field_20 = src.field_20;
+    dst->field_22 = src.field_22;
+}

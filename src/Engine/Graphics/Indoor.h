@@ -221,10 +221,7 @@ struct BLVFace {  // 60h
     uint8_t uNumVertices;
 };
 
-/*   94 */
-#pragma pack(push, 1)
-// TODO(captainurist): introduce BLVFaceExtra_MM7
-struct BLVFaceExtra {  // 24h
+struct BLVFaceExtra {
     bool HasEventHint();
 
     int16_t field_0;
@@ -246,7 +243,6 @@ struct BLVFaceExtra {  // 24h
     int16_t field_20;
     int16_t field_22;
 };
-#pragma pack(pop)
 
 /*   95 */
 struct BLVSector {  // 0x74

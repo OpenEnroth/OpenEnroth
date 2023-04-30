@@ -22,6 +22,7 @@ class UIAnimation;
 struct ActorJob;
 struct BLVDoor;
 struct BLVFace;
+struct BLVFaceExtra;
 struct BLVLight;
 struct BLVSector;
 struct Chest;
@@ -999,6 +1000,31 @@ struct LevelDecoration_MM7 {
 static_assert(sizeof(LevelDecoration_MM7) == 32);
 
 void Deserialize(const LevelDecoration_MM7 &src, LevelDecoration *dst);
+
+
+struct BLVFaceExtra_MM7 {
+    int16_t field_0;
+    int16_t field_2;
+    int16_t field_4;
+    int16_t field_6;
+    int16_t field_8;
+    int16_t field_A;
+    int16_t face_id;
+    uint16_t uAdditionalBitmapID;
+    int16_t field_10;
+    int16_t field_12;
+    int16_t sTextureDeltaU;
+    int16_t sTextureDeltaV;
+    int16_t sCogNumber;
+    uint16_t uEventID;
+    int16_t field_1C;
+    int16_t field_1E;
+    int16_t field_20;
+    int16_t field_22;
+};
+static_assert(sizeof(BLVFaceExtra_MM7) == 36);
+
+void Deserialize(const BLVFaceExtra_MM7 &src, BLVFaceExtra *dst);
 
 
 #pragma pack(pop)
