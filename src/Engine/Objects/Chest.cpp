@@ -437,9 +437,12 @@ void ChestList::FromFile(const Blob &data_mm6, const Blob &data_mm7, const Blob 
 
     if (data_mm6)
         BlobDeserializer(data_mm6).ReadLegacyVector<ChestDesc_MM7>(&vChests, Deserializer::Append);
-    BlobDeserializer(data_mm7).ReadLegacyVector<ChestDesc_MM7>(&vChests, Deserializer::Append);
+    if (data_mm7)
+        BlobDeserializer(data_mm7).ReadLegacyVector<ChestDesc_MM7>(&vChests, Deserializer::Append);
     if (data_mm8)
         BlobDeserializer(data_mm8).ReadLegacyVector<ChestDesc_MM7>(&vChests, Deserializer::Append);
+
+    assert(!vChests.empty());
 }
 
 size_t ChestsSerialize(char *pData) {

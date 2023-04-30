@@ -17,9 +17,12 @@ void DecorationList::FromFile(const Blob &data_mm6, const Blob &data_mm7, const 
 
     if (data_mm6)
         BlobDeserializer(data_mm6).ReadLegacyVector<DecorationDesc_MM6>(&pDecorations, Deserializer::Append);
-    BlobDeserializer(data_mm7).ReadLegacyVector<DecorationDesc_MM7>(&pDecorations, Deserializer::Append);
+    if (data_mm7)
+        BlobDeserializer(data_mm7).ReadLegacyVector<DecorationDesc_MM7>(&pDecorations, Deserializer::Append);
     if (data_mm8)
         BlobDeserializer(data_mm8).ReadLegacyVector<DecorationDesc_MM7>(&pDecorations, Deserializer::Append);
+
+    assert(!pDecorations.empty());
 }
 
 void DecorationList::InitializeDecorationSprite(unsigned int uDecID) {

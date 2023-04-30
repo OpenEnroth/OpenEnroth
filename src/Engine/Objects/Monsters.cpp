@@ -371,24 +371,16 @@ bool MonsterList::FromFileTxt(const char *Args) {
 
 //----- (004598AF) --------------------------------------------------------
 void MonsterList::FromFile(const Blob &data_mm6, const Blob &data_mm7, const Blob &data_mm8) {
-    Assert(!data_mm8);
+    pMonsters.clear();
 
-    if (data_mm7) {
-        BlobDeserializer stream(data_mm7);
-        stream.ReadLegacyVector<MonsterDesc_MM7>(&pMonsters);
-    }
+    if (data_mm6)
+        BlobDeserializer(data_mm6).ReadLegacyVector<MonsterDesc_MM6>(&pMonsters, Deserializer::Append);
+    if (data_mm7)
+        BlobDeserializer(data_mm7).ReadLegacyVector<MonsterDesc_MM7>(&pMonsters, Deserializer::Append);
+    if (data_mm8)
+        BlobDeserializer(data_mm8).ReadLegacyVector<MonsterDesc_MM7>(&pMonsters, Deserializer::Append);
 
-    if (data_mm6) {
-        BlobDeserializer stream(data_mm6);
-        stream.ReadLegacyVector<MonsterDesc_MM6>(&pMonsters, Deserializer::Append);
-    }
-
-    if (data_mm8) {
-        BlobDeserializer stream(data_mm8);
-        stream.ReadLegacyVector<MonsterDesc_MM7>(&pMonsters, Deserializer::Append);
-    }
-
-    Assert(!pMonsters.empty());
+    assert(!pMonsters.empty());
 }
 
 //----- (004563FF) --------------------------------------------------------
