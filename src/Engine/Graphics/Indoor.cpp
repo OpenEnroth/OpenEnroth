@@ -421,7 +421,7 @@ bool IndoorLocation::Load(const std::string &filename, int num_days_played,
     pGameLoadingUI_ProgressBar->Progress();
     pGameLoadingUI_ProgressBar->Progress();
 
-    stream.ReadVector(&pMapOutlines);
+    stream.ReadLegacyVector<BLVMapOutline_MM7>(&pMapOutlines);
 
     std::string dlv_filename = std::string(filename);
     dlv_filename.replace(dlv_filename.length() - 4, 4, ".dlv");

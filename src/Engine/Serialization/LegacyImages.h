@@ -24,6 +24,7 @@ struct BLVDoor;
 struct BLVFace;
 struct BLVFaceExtra;
 struct BLVLight;
+struct BLVMapOutline;
 struct BLVSector;
 struct BSPNode;
 struct Chest;
@@ -1044,5 +1045,17 @@ static_assert(sizeof(BSPNode_MM7) == 8);
 
 void Deserialize(const BSPNode_MM7 &src, BSPNode *dst);
 
+
+struct BLVMapOutline_MM7 {
+    uint16_t uVertex1ID;
+    uint16_t uVertex2ID;
+    uint16_t uFace1ID;
+    uint16_t uFace2ID;
+    int16_t sZ;
+    uint16_t uFlags;
+};
+static_assert(sizeof(BLVMapOutline_MM7) == 12);
+
+void Deserialize(const BLVMapOutline_MM7 &src, BLVMapOutline *dst);
 
 #pragma pack(pop)

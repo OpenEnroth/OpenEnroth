@@ -15,6 +15,7 @@
 struct IndoorLocation;
 
 #pragma pack(push, 1)
+// TODO(captainurist): belongs to legacyimages
 struct DDM_DLV_Header {
     int uNumRespawns = 0;
     int uLastRepawnDay = 0;
@@ -27,10 +28,11 @@ struct DDM_DLV_Header {
     int field_20 = 0;
     int field_24 = 0;
 };
+static_assert(sizeof(DDM_DLV_Header) == 40, "Wrong type size");
 #pragma pack(pop)
 
 #pragma pack(push, 1)
-// TODO(captainurist): introduce  LocationTime_MM7
+// TODO(captainurist): introduce  LocationTime_MM7 in legacyimages
 struct LocationTime_stru1 {
     GameTime last_visit {};
     char sky_texture_name[12] {};
@@ -108,9 +110,6 @@ struct BLVDoor {  // 50h
     int16_t field_4E;
 };
 
-/*  101 */
-#pragma pack(push, 1)
-// TODO(captainurist): introduce BLVMapOutline_MM7
 struct BLVMapOutline {  // 0C
     uint16_t uVertex1ID;
     uint16_t uVertex2ID;
@@ -119,7 +118,6 @@ struct BLVMapOutline {  // 0C
     int16_t sZ;
     uint16_t uFlags;
 };
-#pragma pack(pop)
 
 struct FlatFace {
     std::array<int32_t, 104> u;

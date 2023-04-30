@@ -1702,3 +1702,12 @@ void Deserialize(const BSPNode_MM7 &src, BSPNode *dst) {
     dst->uBSPFaceIDOffset = src.uBSPFaceIDOffset;
     dst->uNumBSPFaces = src.uNumBSPFaces;
 }
+
+void Deserialize(const BLVMapOutline_MM7 &src, BLVMapOutline *dst) {
+    dst->uVertex1ID = src.uVertex1ID;
+    dst->uVertex2ID = src.uVertex2ID;
+    dst->uFace1ID = src.uFace1ID;
+    dst->uFace2ID = src.uFace2ID;
+    dst->sZ = src.sZ;
+    dst->uFlags = src.uFlags;
+}
