@@ -27,6 +27,10 @@ static std::vector<EventTrigger> onMapLeaveTriggers;
 static std::vector<MapTimer> onLongTimerTriggers;
 static std::vector<MapTimer> onTimerTriggers;
 
+// TODO(Nik-RE-dev): Was in original code and ensures that timers are checked not more often than 30 game seconds.
+//                   Do not needed in practice now but without it random state in some tests is desynchronized.
+static GameTime timerGuard = GameTime(0);
+
 static void registerTimerTriggers(EventType triggerType, std::vector<MapTimer> *triggers) {
     std::vector<EventTrigger> timerTriggers = engine->_localEventMap.enumerateTriggers(triggerType);
     GameTime levelLastVisit{};
@@ -157,6 +161,8 @@ void onMapLoad() {
     // Register triggers all triggers when map done loading
     registerEventTriggers();
 
+    timerGuard = pParty->GetPlayingTime();
+
     for (EventTrigger &triggers : onMapLoadTriggers) {
         eventProcessor(triggers.eventId, 0, false, triggers.eventStep + 1);
     }
@@ -189,6 +195,12 @@ void onTimer() {
     if (pEventTimer->bPaused) {
         return;
     }
+
+    if ((pParty->GetPlayingTime() - timerGuard) < GameTime::FromSeconds(TIME_SECONDS_PER_QUANT)) {
+        return;
+    }
+
+    timerGuard = pParty->GetPlayingTime();
 
     for (MapTimer &timer : onTimerTriggers) {
         checkTimer(timer);
