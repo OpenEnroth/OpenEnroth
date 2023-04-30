@@ -1629,3 +1629,14 @@ void Deserialize(const Chest_MM7 &src, Chest *dst) {
     Deserialize(src.igChestItems, &dst->igChestItems);
     Deserialize(src.pInventoryIndices, &dst->pInventoryIndices);
 }
+
+void Deserialize(const BLVLight_MM7 &src, BLVLight *dst) {
+    dst->vPosition = src.vPosition;
+    dst->uRadius = src.uRadius;
+    dst->uRed = src.uRed;
+    dst->uGreen = src.uGreen;
+    dst->uBlue = src.uBlue;
+    dst->uType = src.uType;
+    dst->uAtributes = src.uAtributes;
+    dst->uBrightness = src.uBrightness;
+}

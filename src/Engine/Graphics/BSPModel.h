@@ -75,7 +75,7 @@ enum class PolygonType : uint8_t {
 using enum PolygonType;
 
 #pragma pack(push, 1)
-// TODO(captainurist): introduce BSPNode_MM7
+// TODO(captainurist): introduce BSPNode_MM7 in legacyimages
 struct BSPNode {
     int16_t uFront;
     int16_t uBack;
@@ -85,7 +85,7 @@ struct BSPNode {
 #pragma pack(pop)
 
 #pragma pack(push, 1)
-// TODO(captainurist): introduce BSPModelData_MM7
+// TODO(captainurist): introduce BSPModelData_MM7 in legacyimages
 struct BSPModelData {
     char pModelName[32] {};
     char pModelName2[32] {};

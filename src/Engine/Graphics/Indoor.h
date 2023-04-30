@@ -64,39 +64,16 @@ struct BLVHeader {
 };
 #pragma pack(pop)
 
-/*   97 */
-#pragma pack(push, 1)
-// TODO(captainurist): move to legacyimages
-struct BLVLightMM6 {
+struct BLVLight {
     Vec3s vPosition;
-    int16_t uRadius;
-    int16_t uAttributes;
-    uint16_t uBrightness;
+    int16_t uRadius = 0;
+    char uRed = 0;
+    char uGreen = 0;
+    char uBlue = 0;
+    char uType = 0;
+    int16_t uAtributes = 0;  // & 0x08    doesn't light faces
+    int16_t uBrightness = 0;
 };
-#pragma pack(pop)
-
-/*   98 */
-#pragma pack(push, 1)
-// TODO(captainurist): move to legacyimages
-struct BLVLightMM7 {  // 10h
-    Vec3s vPosition;
-    int16_t uRadius;
-    char uRed;
-    char uGreen;
-    char uBlue;
-    char uType;
-    int16_t uAtributes;  // & 0x08    doesn't light faces
-    int16_t uBrightness;
-};
-#pragma pack(pop)
-
-/*   99 */
-#pragma pack(push, 1)
-// TODO(captainurist): move to legacyimages
-struct BLVLightMM8 {
-    int uID;
-};
-#pragma pack(pop)
 
 /*  100 */
 struct BLVDoor {  // 50h
@@ -367,7 +344,7 @@ struct IndoorLocation {
     std::vector<BLVFace> pFaces;
     std::vector<BLVFaceExtra> pFaceExtras;
     std::vector<BLVSector> pSectors;
-    std::vector<BLVLightMM7> pLights;
+    std::vector<BLVLight> pLights;
     std::vector<BLVDoor> pDoors;
     std::vector<BSPNode> pNodes;
     std::vector<BLVMapOutline> pMapOutlines;

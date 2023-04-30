@@ -406,7 +406,7 @@ bool IndoorLocation::Load(const std::string &filename, int num_days_played,
 
     pGameLoadingUI_ProgressBar->Progress();
 
-    stream.ReadVector(&pLights);
+    stream.ReadLegacyVector<BLVLight_MM7>(&pLights);
 
     pGameLoadingUI_ProgressBar->Progress();
     pGameLoadingUI_ProgressBar->Progress();

@@ -22,6 +22,7 @@ class UIAnimation;
 struct ActorJob;
 struct BLVDoor;
 struct BLVFace;
+struct BLVLight;
 struct BLVSector;
 struct Chest;
 struct ChestDesc;
@@ -932,6 +933,29 @@ static_assert(sizeof(Chest_MM7) == 5324);
 
 void Serialize(const Chest &src, Chest_MM7 *dst);
 void Deserialize(const Chest_MM7 &src, Chest *dst);
+
+
+struct BLVLight_MM6 {
+    Vec3s vPosition;
+    int16_t uRadius;
+    int16_t uAttributes;
+    uint16_t uBrightness;
+};
+static_assert(sizeof(BLVLight_MM6) == 12);
+
+struct BLVLight_MM7 {
+    Vec3s vPosition;
+    int16_t uRadius;
+    char uRed;
+    char uGreen;
+    char uBlue;
+    char uType;
+    int16_t uAtributes;
+    int16_t uBrightness;
+};
+static_assert(sizeof(BLVLight_MM7) == 16);
+
+void Deserialize(const BLVLight_MM7 &src, BLVLight *dst);
 
 
 #pragma pack(pop)
