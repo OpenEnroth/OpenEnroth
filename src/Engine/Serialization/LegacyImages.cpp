@@ -9,6 +9,7 @@
 #include "Engine/Graphics/Indoor.h"
 #include "Engine/Graphics/Overlays.h"
 #include "Engine/Graphics/Sprites.h"
+#include "Engine/Tables/TileFrameTable.h"
 #include "Engine/Objects/Actor.h"
 #include "Engine/Objects/NPC.h"
 #include "Engine/Objects/SpriteObject.h"
@@ -162,6 +163,19 @@ void Deserialize(const BLVFace_MM7 &src, BLVFace *dst) {
     dst->pBounding = src.bounding;
     dst->uPolygonType = static_cast<PolygonType>(src.polygonType);
     dst->uNumVertices = src.numVertices;
+}
+
+void Deserialize(const TileDesc_MM7 &src, TileDesc *dst) {
+    Deserialize(src.tileName, &dst->name);
+    dst->name = toLower(dst->name);
+
+    if (istarts_with(dst->name, "wtrdr"))
+        dst->name.insert(0, "h");  // mm7 uses hd water tiles with legacy names
+
+    dst->uTileID = src.tileId;
+    dst->tileset = static_cast<Tileset>(src.tileSet);
+    dst->uSection = src.section;
+    dst->uAttributes = src.attributes;
 }
 
 void Serialize(const Timer &src, Timer_MM7 *dst) {

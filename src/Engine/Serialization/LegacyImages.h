@@ -16,6 +16,7 @@
 class Actor;
 class Icon;
 class SpriteFrame;
+class TileDesc;
 class UIAnimation;
 struct ActorJob;
 struct BLVDoor;
@@ -97,6 +98,8 @@ struct TileDesc_MM7 {
     uint16_t attributes;
 };
 static_assert(sizeof(TileDesc_MM7) == 26);
+
+void Deserialize(const TileDesc_MM7 &src, TileDesc *dst);
 
 
 struct TextureFrame_MM7 {

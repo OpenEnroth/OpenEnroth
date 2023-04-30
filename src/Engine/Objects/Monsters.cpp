@@ -28,7 +28,6 @@ SPELL_TYPE ParseSpellType(struct FrameTableTxtLine *tbl, int *next_token) {
         ++*next_token;
         return SPELL_NONE;
     }
-    // TODO(captainurist): I bet this parse routine fails now, likely need istarts_with here.
     if (iequals(tbl->pProperties[0], "Dispel")) {  // dispel magic
         ++*next_token;
         return SPELL_LIGHT_DISPEL_MAGIC;

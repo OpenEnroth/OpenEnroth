@@ -1178,7 +1178,7 @@ TileDesc *OutdoorLocation::getTileDescByGrid(int sX, int sY) {
         }
     }
 
-    return &pTileTable->pTiles[v3];
+    return &pTileTable->tiles[v3];
 }
 
 int OutdoorLocation::getTileMapIdByGrid(signed int gridX, signed int gridY) {
@@ -1195,7 +1195,7 @@ int OutdoorLocation::getTileAttribByGrid(int gridX, int gridY) {
     int v3 = this->pTerrain.pTilemap[gridY * 128 + gridX];
     if (v3 >= 90)
         v3 = v3 + this->pTileTypes[(v3 - 90) / 36].uTileID - 36 * ((v3 - 90) / 36) - 90;
-    return pTileTable->pTiles[v3].uAttributes;
+    return pTileTable->tiles[v3].uAttributes;
 }
 
 //----- (0047EE16) --------------------------------------------------------
