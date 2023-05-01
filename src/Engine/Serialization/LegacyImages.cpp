@@ -1807,3 +1807,13 @@ void Deserialize(const SoundInfo_MM6 &src, SoundInfo *dst) {
 void Deserialize(const SoundInfo_MM7 &src, SoundInfo *dst) {
     Deserialize(static_cast<const SoundInfo_MM6 &>(src), dst);
 }
+
+void Serialize(const MapEventVariables &src, MapEventVariables_MM7 *dst) {
+    dst->mapVars = src.mapVars;
+    dst->decorVars = src.decorVars;
+}
+
+void Deserialize(const MapEventVariables_MM7 &src, MapEventVariables *dst) {
+    dst->mapVars = src.mapVars;
+    dst->decorVars = src.decorVars;
+}

@@ -1049,8 +1049,7 @@ bool OutdoorLocation::Load(const std::string &filename, int days_played,
 
     pGameLoadingUI_ProgressBar->Progress();  // прогресс загрузки
 
-    static_assert(sizeof(mapEventVariables) == 0xC8);
-    stream.ReadRaw(&mapEventVariables);
+    stream.ReadLegacy<MapEventVariables_MM7>(&mapEventVariables);
 
     pGameLoadingUI_ProgressBar->Progress();  // прогресс загрузки
 

@@ -370,7 +370,7 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld) {
 
             // TODO(captainurist): ptr_0002B4_doors_ddata has an additional zero element at end, added in IndoorLocation::Load
             stream.WriteRawArray(pIndoor->ptr_0002B4_doors_ddata.data(), pIndoor->blv.uDoors_ddata_Size / sizeof(uint16_t));
-            stream.WriteRaw(&mapEventVariables);
+            stream.WriteLegacy<MapEventVariables_MM7>(&mapEventVariables);
             stream.WriteLegacy<LocationTime_MM7>(&pIndoor->stru1);
         } else {  // for Outdoor
             pOutdoor->ddm.uNumFacesInBModels = 0;
@@ -399,7 +399,7 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld) {
             stream.WriteLegacyVector<Actor_MM7>(pActors);
             stream.WriteLegacyVector<SpriteObject_MM7>(pSpriteObjects);
             stream.WriteLegacyVector<Chest_MM7>(vChests);
-            stream.WriteRaw(&mapEventVariables);
+            stream.WriteLegacy<MapEventVariables_MM7>(&mapEventVariables);
             stream.WriteLegacy<LocationTime_MM7>(&pOutdoor->loc_time);
         }
 

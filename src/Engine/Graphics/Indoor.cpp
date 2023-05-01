@@ -584,7 +584,7 @@ bool IndoorLocation::Load(const std::string &filename, int num_days_played,
 
     pGameLoadingUI_ProgressBar->Progress();
 
-    stream.ReadRaw(&mapEventVariables);
+    stream.ReadLegacy<MapEventVariables_MM7>(&mapEventVariables);
 
     pGameLoadingUI_ProgressBar->Progress();
 

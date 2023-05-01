@@ -37,6 +37,7 @@ struct GUICharMetric;
 struct ItemGen;
 struct LevelDecoration;
 struct LocationTime;
+struct MapEventVariables;
 struct MonsterDesc;
 struct NPCData;
 struct ObjectDesc;
@@ -1184,6 +1185,16 @@ struct LocationHeader_MM7 {
 };
 static_assert(sizeof(LocationHeader_MM7) == 40);
 // TODO(captainurist): introduce engine equivalent
+
+
+struct MapEventVariables_MM7 {
+    std::array<unsigned char, 75> mapVars;
+    std::array<unsigned char, 125> decorVars;
+};
+static_assert(sizeof(MapEventVariables_MM7) == 0xC8);
+
+void Serialize(const MapEventVariables &src, MapEventVariables_MM7 *dst);
+void Deserialize(const MapEventVariables_MM7 &src, MapEventVariables *dst);
 
 
 #pragma pack(pop)
