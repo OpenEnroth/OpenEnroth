@@ -1035,19 +1035,21 @@ void Deserialize(const Player_MM7 &src, Player *dst) {
 void Serialize(const Icon &src, IconFrame_MM7 *dst) {
     memzero(dst);
 
-    strcpy(dst->animationName.data(), src.GetAnimationName()); // TODO(captainurist): as unsafe as it gets
+    Serialize(src.GetAnimationName(), &dst->animationName);
     dst->animLength = src.GetAnimLength();
 
-    strcpy(dst->textureName.data(), src.pTextureName);
+    Serialize(src.pTextureName, &dst->textureName);
     dst->animTime = src.GetAnimTime();
     dst->flags = src.uFlags;
 }
 
 void Deserialize(const IconFrame_MM7 &src, Icon *dst) {
-    dst->SetAnimationName(src.animationName.data());
+    std::string name;
+    Deserialize(src.animationName, &name);
+    dst->SetAnimationName(name);
     dst->SetAnimLength(8 * src.animLength);
 
-    strcpy(dst->pTextureName, src.textureName.data());
+    Deserialize(src.textureName, &dst->pTextureName);
     dst->SetAnimTime(src.animTime);
     dst->uFlags = src.flags;
 }

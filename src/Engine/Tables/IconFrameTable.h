@@ -13,10 +13,10 @@ class Icon {
  public:
     inline Icon() : img(nullptr) {}
 
-    inline void SetAnimationName(const char *name) {
-        strcpy(this->anim_name, name);
+    inline void SetAnimationName(const std::string &name) {
+        anim_name = name;
     }
-    inline const char *GetAnimationName() const { return anim_name; }
+    inline const std::string &GetAnimationName() const { return anim_name; }
 
     inline void SetAnimLength(unsigned int anim_length) {
         this->anim_length = anim_length;
@@ -30,23 +30,14 @@ class Icon {
 
     Texture *GetTexture();
 
-    ///* 000 */ char pAnimationName[12];
-    /* 00C */ char pTextureName[12]{}; // TODO: std::string
-    ///* 018 */ int16_t uAnimTime;
-    ///* 01A */ int16_t uAnimLength;
-    /* 01C */ int16_t uFlags = 0;
-    ///* 01E */ uint16_t uTextureID;
+    std::string pTextureName;
+    int16_t uFlags = 0;
     int id = 0;
 
  protected:
-     char anim_name[64]{}; // TODO: std::string
-    // char texture_name[64];
-    // unsigned int anim_time;
+    std::string anim_name;
     unsigned int anim_length = 0;
     unsigned int anim_time = 0;
-    // unsigned int flags;
-    // unsigned int texture_id;
-
     Texture *img = nullptr;
 };
 

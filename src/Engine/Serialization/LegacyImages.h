@@ -522,12 +522,12 @@ void Deserialize(const OtherOverlayList_MM7 &src, OtherOverlayList *dst);
 
 
 struct IconFrame_MM7 {
-    /* 000 */ std::array<char, 12> animationName;
-    /* 00C */ std::array<char, 12> textureName;
-    /* 018 */ int16_t animTime;
-    /* 01A */ int16_t animLength;
-    /* 01C */ int16_t flags;  // 0x01 - more icons in this animation
-    /* 01E */ uint16_t textureId;
+    std::array<char, 12> animationName;
+    std::array<char, 12> textureName;
+    int16_t animTime;
+    int16_t animLength;
+    int16_t flags;  // 0x01 - more icons in this animation
+    uint16_t textureId;
 };
 static_assert(sizeof(IconFrame_MM7) == 0x20);
 
