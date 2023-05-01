@@ -293,21 +293,20 @@ void Serialize(const IndoorSave_MM7 &src, Blob *dst) {
 void Deserialize(const Blob &src, IndoorSave_MM7 *dst, const IndoorLocation_MM7 &ctx, std::function<void()> progress) {
     BlobDeserializer stream(src);
     stream.ReadRaw(&dst->header);
-    progress();
     stream.ReadRaw(&dst->visibleOutlines);
-    progress();
     stream.ReadSizedVector(&dst->faceAttributes, ctx.faces.size());
     progress();
     stream.ReadSizedVector(&dst->decorationFlags, ctx.decorations.size());
     progress();
     stream.ReadVector(&dst->actors);
     progress();
+    progress();
     stream.ReadVector(&dst->spriteObjects);
     progress();
     stream.ReadVector(&dst->chests);
     progress();
-    stream.ReadSizedVector(&dst->doors, ctx.doorCount);
     progress();
+    stream.ReadSizedVector(&dst->doors, ctx.doorCount);
     stream.ReadSizedVector(&dst->doorsData, ctx.header.uDoors_ddata_Size / sizeof(int16_t));
     progress();
     stream.ReadRaw(&dst->eventVariables);

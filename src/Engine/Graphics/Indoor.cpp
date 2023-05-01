@@ -275,48 +275,45 @@ bool IndoorLocation::Load(const std::string &filename, int num_days_played,
     std::string dlv_filename = filename;
     dlv_filename.replace(dlv_filename.length() - 4, 4, ".dlv");
 
-    bool respawnInitial = true; // Perform initial location respawn?
+    bool respawnInitial = false; // Perform initial location respawn?
     bool respawnTimed = false; // Perform timed location respawn?
 
     IndoorSave_MM7 save;
     if (Blob blob = pSave_LOD->LoadCompressed(dlv_filename)) {
         try {
             Deserialize(blob, &save, location, progressCallback);
-            respawnInitial = false;
+
+            // Level was changed externally and we have a save there? Don't crash, just respawn.
+            if (save.header.uNumFacesInBModels > 0 && save.header.uNumDecorations > 0)
+                if (save.header.uNumFacesInBModels != pFaces.size() || save.header.uNumDecorations != pLevelDecorations.size())
+                    respawnInitial = true;
+
+            // Entering the level for the 1st time?
+            if (save.header.uLastRepawnDay == 0)
+                respawnInitial = true;
+
+            if (dword_6BE364_game_settings_1 & GAME_SETTINGS_LOADING_SAVEGAME_SKIP_RESPAWN)
+                respawn_interval_days = 0x1BAF800;
+
+            if (!respawnInitial && num_days_played - save.header.uLastRepawnDay >= respawn_interval_days && pCurrentMapName != "d29.dlv")
+                respawnTimed = true;
         } catch (const Exception &e) {
             logger->error("Failed to load '{}', respawning location: {}", dlv_filename, e.what());
-        }
-    }
-
-    if (save.header.uNumFacesInBModels > 0 && save.header.uNumDecorations > 0) {
-        if (save.header.uNumFacesInBModels != pFaces.size() || save.header.uNumDecorations != pLevelDecorations.size()) {
-            // Level was changed externally and we have a save there. Don't crash, just respawn.
             respawnInitial = true;
         }
     }
 
-    if (save.header.uLastRepawnDay == 0) {
-        respawnInitial = true; // Entering the level for the 1st time.
-    }
+    assert(respawnInitial + respawnTimed <= 1);
 
-    if (dword_6BE364_game_settings_1 & GAME_SETTINGS_LOADING_SAVEGAME_SKIP_RESPAWN) {
-        respawn_interval_days = 0x1BAF800;
-    }
-
-    if (num_days_played - save.header.uLastRepawnDay >= respawn_interval_days && (pCurrentMapName != "d29.dlv")) {
-        respawnTimed = true;
-    }
-
-    if (respawnInitial || respawnTimed) {
-        IndoorSave_MM7 referenceSave;
-        Deserialize(pGames_LOD->LoadCompressed(dlv_filename), &referenceSave, location, progressCallback);
-
-        std::swap(referenceSave, save);
-        if (respawnTimed) {
-            save.header = referenceSave.header;
-            save.visibleOutlines = referenceSave.visibleOutlines; // Preserve visible outlines on timed respawn.
-        }
-
+    if (respawnInitial) {
+        Deserialize(pGames_LOD->LoadCompressed(dlv_filename), &save, location, [] {});
+        *pDest = 1;
+    } else if (respawnTimed) {
+        auto header = save.header;
+        auto visibleOutlines = save.visibleOutlines;
+        Deserialize(pGames_LOD->LoadCompressed(dlv_filename), &save, location, [] {});
+        save.header = header;
+        save.visibleOutlines = visibleOutlines;
         *pDest = 1;
     } else {
         *pDest = 0;
