@@ -264,7 +264,7 @@ struct Player {
     PLAYER_SKILL_TYPE GetSkillIdxByOrder(signed int order);
     void DecreaseAttribute(int eAttribute);
     void IncreaseAttribute(int eAttribute);
-    void Zero();
+    void resetTempBonuses();
     unsigned int GetStatColor(int uStat);
     bool DiscardConditionIfLastsLongerThan(Condition uCondition, GameTime time);
     MERCHANT_PHRASE SelectPhrasesTransaction(ItemGen *pItem, BuildingType building_type, int BuildID_2Events, int ShopMenuType);

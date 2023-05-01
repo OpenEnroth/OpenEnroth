@@ -178,7 +178,7 @@ void Party::Zero() {
 
     // players
     for (Player &player : this->pPlayers) {
-        player.Zero();
+        player.resetTempBonuses();
         player.sResFireBase = 0;
         player.sResAirBase = 0;
         player.sResWaterBase = 0;
@@ -871,7 +871,7 @@ void Party::RestAndHeal() {
         pPlayer = &pParty->pPlayers[pPlayerID];
         for (uint i = 0; i < 20; ++i) pPlayer->pPlayerBuffs[i].Reset();
 
-        pPlayer->Zero();
+        pPlayer->resetTempBonuses();
         if (pPlayer->conditions.HasAny({Condition_Dead, Condition_Petrified, Condition_Eradicated})) {
             continue;
         }
