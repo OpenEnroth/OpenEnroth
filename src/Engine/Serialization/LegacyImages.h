@@ -17,6 +17,7 @@ class Actor;
 class Icon;
 class SpriteFrame;
 class TextureFrame;
+class SoundInfo;
 class TileDesc;
 class UIAnimation;
 struct ActorJob;
@@ -1148,6 +1149,25 @@ static_assert(sizeof(LocationTime_MM7) == 0x38);
 
 void Serialize(const LocationTime &src, LocationTime_MM7 *dst);
 void Deserialize(const LocationTime_MM7 &src, LocationTime *dst);
+
+
+struct SoundInfo_MM6 {
+    std::array<char, 32> pSoundName;
+    uint32_t uSoundID;
+    uint32_t eType;
+    uint32_t uFlags;
+    std::array<uint32_t, 17> pSoundDataID;
+};
+static_assert(sizeof(SoundInfo_MM6) == 112);
+
+struct SoundInfo_MM7 : public SoundInfo_MM6 {
+    uint32_t p3DSoundID;
+    uint32_t bDecompressed;
+};
+static_assert(sizeof(SoundInfo_MM7) == 120);
+
+void Deserialize(const SoundInfo_MM6 &src, SoundInfo *dst);
+void Deserialize(const SoundInfo_MM7 &src, SoundInfo *dst);
 
 
 #pragma pack(pop)

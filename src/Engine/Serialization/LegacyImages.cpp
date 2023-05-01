@@ -20,6 +20,8 @@
 #include "Engine/Tables/IconFrameTable.h"
 #include "Engine/Time.h"
 
+#include "Media/Audio/SoundInfo.h"
+
 #include "GUI/GUIFont.h"
 
 #include "Utility/Color.h"
@@ -1791,4 +1793,15 @@ void Deserialize(const LocationTime_MM7 &src, LocationTime *dst) {
     dst->day_attrib = src.day_attrib;
     dst->day_fogrange_1 = src.day_fogrange_1;
     dst->day_fogrange_2 = src.day_fogrange_2;
+}
+
+void Deserialize(const SoundInfo_MM6 &src, SoundInfo *dst) {
+    Deserialize(src.pSoundName, &dst->sName);
+    dst->uSoundID = src.uSoundID;
+    dst->eType = static_cast<SOUND_TYPE>(src.eType);
+    dst->uFlags = src.uFlags;
+}
+
+void Deserialize(const SoundInfo_MM7 &src, SoundInfo *dst) {
+    Deserialize(static_cast<const SoundInfo_MM6 &>(src), dst);
 }
