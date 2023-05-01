@@ -178,6 +178,24 @@ void Deserialize(const Blob &src, IndoorLocation_MM7 *dst, std::function<void()>
 }
 
 void Serialize(const IndoorLocation &src, IndoorSave_MM7 *dst) {
+    Serialize(src.dlv, &dst->header);
+    Serialize(src._visible_outlines, &dst->visibleOutlines);
+
+    dst->faceAttributes.clear();
+    for (const BLVFace &pFace : pIndoor->pFaces)
+        dst->faceAttributes.push_back(std::to_underlying(pFace.uAttributes));
+
+    dst->decorationFlags.clear();
+    for (const LevelDecoration &pLevelDecoration : pLevelDecorations)
+        dst->decorationFlags.push_back(std::to_underlying(pLevelDecoration.uFlags));
+
+    Serialize(pActors, &dst->actors);
+    Serialize(pSpriteObjects, &dst->spriteObjects);
+    Serialize(vChests, &dst->chests);
+    Serialize(src.pDoors, &dst->doors);
+    Serialize(src.ptr_0002B4_doors_ddata, &dst->doorsData);
+    Serialize(mapEventVariables, &dst->eventVariables);
+    Serialize(src.stru1, &dst->locationTime);
 }
 
 void Deserialize(const IndoorSave_MM7 &src, IndoorLocation *dst) {

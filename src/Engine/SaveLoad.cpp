@@ -27,6 +27,7 @@
 
 #include "Engine/Serialization/LegacyImages.h"
 #include "Engine/Serialization/Serializer.h"
+#include "Engine/Serialization/CompositeImages.h"
 
 #include "GUI/GUIFont.h"
 #include "GUI/GUIWindow.h"
@@ -342,7 +343,7 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld) {
         }
     }
 
-    BlobSerializer stream;
+    Blob uncompressed;
     if (!NotSaveWorld) {  // autosave for change location
         CompactLayingItemsList();
 
@@ -351,28 +352,12 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld) {
             pIndoor->dlv.uNumBModels = 0;
             pIndoor->dlv.uNumDecorations = pLevelDecorations.size();
 
-            stream.WriteRaw(&pIndoor->dlv);
-            stream.WriteRaw(&pIndoor->_visible_outlines);
-            for (size_t i = 0; i < pIndoor->pFaces.size(); ++i) {
-                stream.WriteRaw(&pIndoor->pFaces[i].uAttributes);
-                static_assert(sizeof(pIndoor->pFaces[i].uAttributes) == 4);
-            }
-
-            for (size_t i = 0; i < pLevelDecorations.size(); ++i) {
-                stream.WriteRaw(&pLevelDecorations[i].uFlags);
-                static_assert(sizeof(pLevelDecorations[i].uFlags) == 2);
-            }
-
-            stream.WriteLegacyVector<Actor_MM7>(pActors);
-            stream.WriteLegacyVector<SpriteObject_MM7>(pSpriteObjects);
-            stream.WriteLegacyVector<Chest_MM7>(vChests);
-            stream.WriteSizedLegacyVector<BLVDoor_MM7>(pIndoor->pDoors);
-
-            // TODO(captainurist): ptr_0002B4_doors_ddata has an additional zero element at end, added in IndoorLocation::Load
-            stream.WriteRawArray(pIndoor->ptr_0002B4_doors_ddata.data(), pIndoor->blv.uDoors_ddata_Size / sizeof(uint16_t));
-            stream.WriteLegacy<MapEventVariables_MM7>(&mapEventVariables);
-            stream.WriteLegacy<LocationTime_MM7>(&pIndoor->stru1);
+            IndoorSave_MM7 save;
+            Serialize(*pIndoor, &save);
+            Serialize(save, &uncompressed);
         } else {  // for Outdoor
+            BlobSerializer stream;
+
             pOutdoor->ddm.uNumFacesInBModels = 0;
             for (BSPModel &model : pOutdoor->pBModels) {
                 pOutdoor->ddm.uNumFacesInBModels += model.pFaces.size();
@@ -401,6 +386,8 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld) {
             stream.WriteLegacyVector<Chest_MM7>(vChests);
             stream.WriteLegacy<MapEventVariables_MM7>(&mapEventVariables);
             stream.WriteLegacy<LocationTime_MM7>(&pOutdoor->loc_time);
+
+            uncompressed = stream.Close();
         }
 
         ODMHeader odm_data;
@@ -410,7 +397,6 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld) {
         odm_data.pMagic[2] = 'i';
         odm_data.pMagic[3] = 'i';
 
-        Blob uncompressed = stream.Close();
         Blob compressed = zlib::Compress(uncompressed);
 
         odm_data.uCompressedSize = compressed.size();
