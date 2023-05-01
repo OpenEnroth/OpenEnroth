@@ -2624,7 +2624,7 @@ void UpdateActors_ODM() {
         }
 
         // ARMAGEDDON PANIC
-        if (pParty->armageddon_timer != 0 && pActors[Actor_ITR].CanAct()) {
+        if (pParty->armageddon_timer != 0 && pActors[Actor_ITR].CanAct() && pParty->armageddonForceCount > 0) {
             pActors[Actor_ITR].vVelocity.x += grng->random(100) - 50;
             pActors[Actor_ITR].vVelocity.y += grng->random(100) - 50;
             pActors[Actor_ITR].vVelocity.z += grng->random(100) - 20;
@@ -2633,6 +2633,7 @@ void UpdateActors_ODM() {
             pActors[Actor_ITR].UpdateAnimation();
         }
 
+        // TODO(pskelton): this cancels out the above - is this intended
         // MOVING TOO SLOW
         if (pActors[Actor_ITR].vVelocity.getXY().lengthSqr() < 400 && Slope_High == 0) {
             pActors[Actor_ITR].vVelocity.y = 0;

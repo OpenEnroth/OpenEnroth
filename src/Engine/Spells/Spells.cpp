@@ -1101,6 +1101,7 @@ void armageddonProgress() {
     pParty->uFlags |= PARTY_FLAGS_1_ForceRedraw;
     pParty->armageddon_timer -= pEventTimer->uTimeElapsed; // Was pMiscTimer
 
+    --pParty->armageddonForceCount;
     if (pParty->armageddon_timer > 0) {
         return; // Deal damage only when timer gets to 0.
     }

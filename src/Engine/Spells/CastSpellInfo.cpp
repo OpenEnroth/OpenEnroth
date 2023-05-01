@@ -2918,6 +2918,7 @@ void CastSpellInfoHelpers::castSpell() {
                     }
                     pParty->armageddon_timer = 256;
                     pParty->armageddonDamage = spell_level;
+                    pParty->armageddonForceCount = 60;
                     ++pPlayer->uNumArmageddonCasts;
                     if (pParty->bTurnBasedModeOn) {
                         ++pTurnEngine->pending_actions;

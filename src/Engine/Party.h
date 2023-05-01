@@ -467,6 +467,7 @@ struct Party {
     std::string pHireling2Name;
     int armageddon_timer;
     int armageddonDamage;
+    int armageddonForceCount{ 0 };
     std::array<int, 4> pTurnBasedPlayerRecoveryTimes;
     std::array<int, 53> InTheShopFlags;
     int uFine;

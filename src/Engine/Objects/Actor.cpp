@@ -2699,7 +2699,7 @@ void Actor::UpdateActorAI() {
         }
 
         // If actor Paralyzed or Stoned: skip
-        if (pActor->pActorBuffs[ACTOR_BUFF_PARALYZED].Active() || pActor->pActorBuffs[ACTOR_BUFF_STONED].Active())
+        if (pActor->pActorBuffs[ACTOR_BUFF_PARALYZED].Active() || pActor->pActorBuffs[ACTOR_BUFF_STONED].Active() || pActor->uAIState == AIState::Stunned)
             continue;
 
         // Calculate RecoveryTime
