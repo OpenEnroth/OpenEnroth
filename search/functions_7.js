@@ -219,7 +219,7 @@ var searchData=
   ['getlifetime_216',['GetLifetime',['../structSpriteObject.html#ad532b4986fb8b77ef0b67bb05913ef50',1,'SpriteObject']]],
   ['getlightlevelatpoint_217',['GetLightLevelAtPoint',['../LightmapBuilder_8cpp.html#ada8b47667f42abfcc781e1435aaf5b39',1,'GetLightLevelAtPoint(unsigned int uBaseLightLevel, int uSectorID, float x, float y, float z):&#160;LightmapBuilder.cpp'],['../IRender_8h.html#ada8b47667f42abfcc781e1435aaf5b39',1,'GetLightLevelAtPoint(unsigned int uBaseLightLevel, int uSectorID, float x, float y, float z):&#160;LightmapBuilder.cpp']]],
   ['getlinewidth_218',['GetLineWidth',['../classGUIFont.html#abbfcc7f54422228ab7e05af85a2a2e67',1,'GUIFont']]],
-  ['getlocationindex_219',['GetLocationIndex',['../structIndoorLocation.html#a43e0ab2d9d8edc279b3f17ba4888d383',1,'IndoorLocation']]],
+  ['getlocationindex_219',['GetLocationIndex',['../structIndoorLocation.html#a4aabcafb02b29de26377eea959e0acac',1,'IndoorLocation']]],
   ['getmagicalbonus_220',['GetMagicalBonus',['../structPlayer.html#ab4a2df4d50965c105e7ca6b822aaff60',1,'Player']]],
   ['getmainhanditem_221',['GetMainHandItem',['../structPlayer.html#a2fe2e69c33d03d97a7ef57af845489be',1,'Player::GetMainHandItem()'],['../structPlayer.html#ad961c46ee26a9aa05fb27beeb4ebca52',1,'Player::GetMainHandItem() const']]],
   ['getmajorconditionidx_222',['GetMajorConditionIdx',['../structPlayer.html#a50a06792e6c9c8150dea732e78c55cf5',1,'Player']]],
@@ -418,6 +418,6 @@ var searchData=
   ['guiwindow_5fscroll_415',['GUIWindow_Scroll',['../classGUIWindow__Scroll.html#a43d5b1beab740f185c06022ff9cc4773',1,'GUIWindow_Scroll']]],
   ['guiwindow_5fspellbook_416',['GUIWindow_Spellbook',['../classGUIWindow__Spellbook.html#aedd1a6437965e3d9206ce75c032c81e5',1,'GUIWindow_Spellbook']]],
   ['guiwindow_5ftownportalbook_417',['GUIWindow_TownPortalBook',['../structGUIWindow__TownPortalBook.html#a5d4207b75593974e4a96c37b5f5c9617',1,'GUIWindow_TownPortalBook']]],
-  ['guiwindow_5ftransition_418',['GUIWindow_Transition',['../classGUIWindow__Transition.html#a1f9fc2d6f47f3dda64faf6d6c854f51a',1,'GUIWindow_Transition']]],
+  ['guiwindow_5ftransition_418',['GUIWindow_Transition',['../classGUIWindow__Transition.html#abfad0b56326977cf0b3053c8e4a9d61f',1,'GUIWindow_Transition']]],
   ['guiwindow_5ftravel_419',['GUIWindow_Travel',['../classGUIWindow__Travel.html#a1f3b9024a3c831df4cb83c043ab8e725',1,'GUIWindow_Travel']]]
 ];
