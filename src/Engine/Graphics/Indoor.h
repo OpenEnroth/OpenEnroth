@@ -166,7 +166,7 @@ struct BLVFace {  // 60h
     Planef facePlane;
     PlaneZCalcf zCalc;
     FaceAttributes uAttributes;
-    uint16_t *pVertexIDs = nullptr;
+    int16_t *pVertexIDs = nullptr;
     int16_t *pXInterceptDisplacements;
     int16_t *pYInterceptDisplacements;
     int16_t *pZInterceptDisplacements;
@@ -308,7 +308,7 @@ struct IndoorLocation {
     std::vector<BLVDoor> pDoors;
     std::vector<BSPNode> pNodes;
     std::vector<BLVMapOutline> pMapOutlines;
-    std::vector<uint16_t> pLFaces;
+    std::vector<int16_t> pLFaces;
     std::vector<uint16_t> ptr_0002B0_sector_rdata;
     std::vector<uint16_t> ptr_0002B4_doors_ddata;
     std::vector<uint16_t> ptr_0002B8_sector_lrdata;

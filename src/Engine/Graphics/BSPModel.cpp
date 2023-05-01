@@ -125,6 +125,6 @@ bool ODMFace::Contains(const Vec3i &pos, int model_idx, int slack, FaceAttribute
     BLVFace face;
     face.uAttributes = this->uAttributes;
     face.uNumVertices = this->uNumVertices;
-    face.pVertexIDs = const_cast<uint16_t *>(this->pVertexIDs.data());
+    face.pVertexIDs = const_cast<int16_t *>(this->pVertexIDs.data());
     return face.Contains(pos, model_idx, slack, override_plane);
 }

@@ -33,6 +33,7 @@
 #include "Engine/Party.h"
 #include "Engine/Serialization/LegacyImages.h"
 #include "Engine/Serialization/Deserializer.h"
+#include "Engine/Serialization/CompositeImages.h"
 #include "Engine/SpellFxRenderer.h"
 #include "Engine/Time.h"
 #include "Engine/TurnEngine/TurnEngine.h"
@@ -258,170 +259,15 @@ bool IndoorLocation::Load(const std::string &filename, int num_days_played,
 
     Release();
 
-    BlobDeserializer stream(pGames_LOD->LoadCompressed(blv_filename));
-
     bLoaded = true;
 
-    pGameLoadingUI_ProgressBar->Progress();
+    IndoorLocation_MM7 location;
+    Deserialize(pGames_LOD->LoadCompressed(blv_filename), &location, [] {
+        pGameLoadingUI_ProgressBar->Progress();
+    });
+    Deserialize(location, this);
 
-    stream.ReadRaw(&blv);
-    stream.ReadVector(&pVertices);
-
-    pGameLoadingUI_ProgressBar->Progress();
-    pGameLoadingUI_ProgressBar->Progress();
-
-    stream.ReadLegacyVector<BLVFace_MM7>(&pFaces);
-    stream.ReadSizedVector(&pLFaces, blv.uFaces_fdata_Size / sizeof(uint16_t));
-
-    for (uint i = 0, j = 0; i < pFaces.size(); ++i) {
-        BLVFace *pFace = &pFaces[i];
-
-        pFace->pVertexIDs = &pLFaces[j];
-
-        j += pFace->uNumVertices + 1;
-        pFace->pXInterceptDisplacements = (int16_t *)(&pLFaces[j]);
-
-        j += pFace->uNumVertices + 1;
-        pFace->pYInterceptDisplacements = (int16_t *)(&pLFaces[j]);
-
-        j += pFace->uNumVertices + 1;
-        pFace->pZInterceptDisplacements = (int16_t *)(&pLFaces[j]);
-
-        j += pFace->uNumVertices + 1;
-        pFace->pVertexUIDs = (int16_t *)(&pLFaces[j]);
-
-        j += pFace->uNumVertices + 1;
-        pFace->pVertexVIDs = (int16_t *)(&pLFaces[j]);
-
-        j += pFace->uNumVertices + 1;
-    }
-
-    pGameLoadingUI_ProgressBar->Progress();
-
-    for (uint i = 0; i < pFaces.size(); ++i) {
-        BLVFace *pFace = &pFaces[i];
-
-        std::string texName;
-        stream.ReadSizedString(&texName, 10);
-        pFace->SetTexture(texName);
-    }
-
-    pGameLoadingUI_ProgressBar->Progress();
-
-    stream.ReadLegacyVector<BLVFaceExtra_MM7>(&pFaceExtras);
-
-    pGameLoadingUI_ProgressBar->Progress();
-
-    // v108 = (char *)v107 + 36 * uNumFaceExtras;
-    // v245 = 0;
-    // *(int *)((char *)&uSourceLen + 1) = 0;
-    for (uint i = 0; i < pFaceExtras.size(); ++i) {
-        std::string texName;
-        stream.ReadSizedString(&texName, 10);
-
-        if (texName.empty())
-            pFaceExtras[i].uAdditionalBitmapID = -1;
-        else
-            pFaceExtras[i].uAdditionalBitmapID = pBitmaps_LOD->LoadTexture(texName);
-    }
-
-    for (uint i = 0; i < pFaces.size(); ++i) {
-        BLVFace *pFace = &pFaces[i];
-        BLVFaceExtra *pFaceExtra = &pFaceExtras[pFace->uFaceExtraID];
-
-        if (pFaceExtra->uEventID) {
-            if (pFaceExtra->HasEventHint())
-                pFace->uAttributes |= FACE_HAS_EVENT;
-            else
-                pFace->uAttributes &= ~FACE_HAS_EVENT;
-        }
-    }
-
-    pGameLoadingUI_ProgressBar->Progress();
-
-    stream.ReadLegacyVector<BLVSector_MM7>(&pSectors);
-
-    pGameLoadingUI_ProgressBar->Progress();
-
-    stream.ReadSizedVector(&ptr_0002B0_sector_rdata, blv.uSector_rdata_Size / sizeof(uint16_t));
-    ptr_0002B0_sector_rdata.push_back(0); // make the element past the end addressable.
-
-    for (uint i = 0, j = 0; i < pSectors.size(); ++i) {
-        BLVSector *pSector = &pSectors[i];
-
-        pSector->pFloors = &ptr_0002B0_sector_rdata[j];
-        j += pSector->uNumFloors;
-
-        pSector->pWalls = &ptr_0002B0_sector_rdata[j];
-        j += pSector->uNumWalls;
-
-        pSector->pCeilings = &ptr_0002B0_sector_rdata[j];
-        j += pSector->uNumCeilings;
-
-        pSector->pFluids = &ptr_0002B0_sector_rdata[j];
-        j += pSector->uNumFluids;
-
-        pSector->pPortals = &ptr_0002B0_sector_rdata[j];
-        j += pSector->uNumPortals;
-
-        pSector->pFaceIDs = &ptr_0002B0_sector_rdata[j];
-        j += pSector->uNumFaces;
-
-        pSector->pCogs = &ptr_0002B0_sector_rdata[j];
-        j += pSector->uNumCogs;
-
-        pSector->pDecorationIDs = &ptr_0002B0_sector_rdata[j];
-        j += pSector->uNumDecorations;
-
-        pSector->pMarkers = &ptr_0002B0_sector_rdata[j];
-        j += pSector->uNumMarkers;
-    }
-
-    stream.ReadSizedVector(&ptr_0002B8_sector_lrdata, blv.uSector_lrdata_Size / sizeof(uint16_t));
-    ptr_0002B8_sector_lrdata.push_back(0); // make the element past the end addressable.
-
-    pGameLoadingUI_ProgressBar->Progress();
-
-    for (uint i = 0, j = 0; i < pSectors.size(); ++i) {
-        pSectors[i].pLights = &ptr_0002B8_sector_lrdata[j];
-        j += pSectors[i].uNumLights;
-    }
-
-    pGameLoadingUI_ProgressBar->Progress();
-
-    uint32_t uNumDoors;
-    stream.ReadRaw(&uNumDoors);
-
-    pGameLoadingUI_ProgressBar->Progress();
-    pGameLoadingUI_ProgressBar->Progress();
-
-    stream.ReadLegacyVector<LevelDecoration_MM7>(&pLevelDecorations);
-
-    for (uint i = 0; i < pLevelDecorations.size(); ++i) {
-        std::string name;
-        stream.ReadSizedString(&name, 32);
-
-        pLevelDecorations[i].uDecorationDescID = pDecorationList->GetDecorIdByName(name);
-    }
-
-    pGameLoadingUI_ProgressBar->Progress();
-
-    stream.ReadLegacyVector<BLVLight_MM7>(&pLights);
-
-    pGameLoadingUI_ProgressBar->Progress();
-    pGameLoadingUI_ProgressBar->Progress();
-
-    stream.ReadLegacyVector<BSPNode_MM7>(&pNodes);
-
-    pGameLoadingUI_ProgressBar->Progress();
-    pGameLoadingUI_ProgressBar->Progress();
-
-    stream.ReadLegacyVector<SpawnPoint_MM7>(&pSpawnPoints);
-
-    pGameLoadingUI_ProgressBar->Progress();
-    pGameLoadingUI_ProgressBar->Progress();
-
-    stream.ReadLegacyVector<BLVMapOutline_MM7>(&pMapOutlines);
+    BlobDeserializer stream;
 
     std::string dlv_filename = std::string(filename);
     dlv_filename.replace(dlv_filename.length() - 4, 4, ".dlv");
@@ -528,7 +374,7 @@ bool IndoorLocation::Load(const std::string &filename, int num_days_played,
     pGameLoadingUI_ProgressBar->Progress();
     pGameLoadingUI_ProgressBar->Progress();
 
-    stream.ReadSizedLegacyVector<BLVDoor_MM7>(&pDoors, uNumDoors);
+    stream.ReadSizedLegacyVector<BLVDoor_MM7>(&pDoors, location.doorCount);
 
     // v201 = (const char *)blv.uDoors_ddata_Size;
     // v200 = (size_t)ptr_0002B4_doors_ddata;
@@ -541,7 +387,7 @@ bool IndoorLocation::Load(const std::string &filename, int num_days_played,
     // v172 = 0;
     // v245 = 0;
     // if (uNumDoors > 0)
-    for (uint i = 0, j = 0; i < uNumDoors; ++i) {
+    for (uint i = 0, j = 0; i < location.doorCount; ++i) {
         BLVDoor *pDoor = &pDoors[i];
 
         pDoor->pVertexIDs = &ptr_0002B4_doors_ddata[j];
@@ -570,7 +416,7 @@ bool IndoorLocation::Load(const std::string &filename, int num_days_played,
     }
     // v190 = 0;
     // v245 = 0;
-    for (uint i = 0; i < uNumDoors; ++i) {
+    for (uint i = 0; i < location.doorCount; ++i) {
         BLVDoor *pDoor = &pDoors[i];
 
         for (uint j = 0; j < pDoor->uNumFaces; ++j) {

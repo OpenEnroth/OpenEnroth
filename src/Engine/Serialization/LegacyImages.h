@@ -819,7 +819,7 @@ struct ODMFace_MM7 {
     int32_t zCalc2;
     int32_t zCalc3;
     uint32_t attributes;
-    std::array<uint16_t, 20> pVertexIDs;
+    std::array<int16_t, 20> pVertexIDs;
     std::array<int16_t, 20> pTextureUIDs;
     std::array<int16_t, 20> pTextureVIDs;
     std::array<int16_t, 20> pXInterceptDisplacements;

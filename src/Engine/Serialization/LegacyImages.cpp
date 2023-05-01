@@ -28,15 +28,7 @@
 #include "Utility/Memory/MemSet.h"
 #include "Utility/IndexedBitset.h"
 
-template<class T>
-static void Serialize(const T &src, T *dst) {
-    *dst = src;
-}
-
-template<class T>
-static void Deserialize(const T &src, T *dst) {
-    *dst = src;
-}
+#include "CommonImages.h"
 
 static void Serialize(const GameTime &src, int64_t *dst) {
     *dst = src.value;
@@ -44,19 +36,6 @@ static void Serialize(const GameTime &src, int64_t *dst) {
 
 static void Deserialize(int64_t src, GameTime *dst) {
     dst->value = src;
-}
-
-template<size_t N>
-static void Serialize(const std::string &src, std::array<char, N> *dst) {
-    memset(dst->data(), 0, N);
-    memcpy(dst->data(), src.data(), std::min(src.size(), N - 1));
-}
-
-template<size_t N>
-static void Deserialize(const std::array<char, N> &src, std::string *dst) {
-    const char *end = static_cast<const char *>(memchr(src.data(), 0, N));
-    size_t size = end == nullptr ? N : end - src.data();
-    *dst = std::string(src.data(), size);
 }
 
 template<class T1, size_t N, class T2, auto L, auto H>

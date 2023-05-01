@@ -9,6 +9,7 @@
 #include "Utility/Streams/FileOutputStream.h"
 #include "Utility/Streams/OutputStream.h"
 #include "Utility/Streams/StringOutputStream.h"
+#include "Utility/Memory/Blob.h"
 
 class Serializer {
  public:
