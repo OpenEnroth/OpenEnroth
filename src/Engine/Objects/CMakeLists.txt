@@ -3,6 +3,7 @@ cmake_minimum_required(VERSION 3.20.4 FATAL_ERROR)
 set(ENGINE_OBJECTS_SOURCES
         Actor.cpp
         Chest.cpp
+        CombinedSkillValue.cpp
         ItemTable.cpp
         Items.cpp
         Monsters.cpp
@@ -15,6 +16,7 @@ set(ENGINE_OBJECTS_HEADERS
         Actor.h
         ActorEnums.h
         Chest.h
+        CombinedSkillValue.h
         ItemEnchantment.h
         ItemEnums.h
         ItemTable.h

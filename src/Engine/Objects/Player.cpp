@@ -2931,6 +2931,10 @@ PLAYER_SKILL_MASTERY Player::GetActualSkillMastery(PLAYER_SKILL_TYPE uSkillType)
     return GetSkillMastery(uSkillType);
 }
 
+CombinedSkillValue Player::getActualSkillValue(PLAYER_SKILL_TYPE skillType) const {
+    return CombinedSkillValue(GetActualSkillLevel(skillType), GetActualSkillMastery(skillType));
+}
+
 //----- (0048FC00) --------------------------------------------------------
 int Player::GetSkillBonus(CHARACTER_ATTRIBUTE_TYPE inSkill) {
                     // TODO(_): move the individual implementations to attribute
@@ -7279,12 +7283,20 @@ PLAYER_SKILL_MASTERY Player::GetSkillMastery(PLAYER_SKILL_TYPE skill) const {
     return ::GetSkillMastery(pActiveSkills[skill]);
 }
 
+CombinedSkillValue Player::getSkillValue(PLAYER_SKILL_TYPE skill) const {
+    return CombinedSkillValue(pActiveSkills[skill]);
+}
+
 void Player::SetSkillLevel(PLAYER_SKILL_TYPE skill, PLAYER_SKILL_LEVEL level) {
     ::SetSkillLevel(&pActiveSkills[skill], level);
 }
 
 void Player::SetSkillMastery(PLAYER_SKILL_TYPE skill, PLAYER_SKILL_MASTERY mastery) {
     ::SetSkillMastery(&pActiveSkills[skill], mastery);
+}
+
+void Player::setSkillValue(PLAYER_SKILL_TYPE skill, const CombinedSkillValue &value) {
+    pActiveSkills[skill] = value.join();
 }
 
 void Player::playReaction(PlayerSpeech speech, int a3) {
