@@ -1911,7 +1911,7 @@ void TempleDialog() {
     int pPrice;                   // edi@1
     int pTextHeight;              // eax@11
     uint16_t pTextColor;  // ax@21
-    DDM_DLV_Header *ddm;          // edi@29
+    LocationHeader_MM7 *ddm;          // edi@29
     GUIButton *pButton;           // edi@64
     uint8_t index;        // [sp+1B7h] [bp-Dh]@64
     int v64;                      // [sp+1B8h] [bp-Ch]@6

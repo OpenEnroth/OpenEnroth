@@ -466,7 +466,7 @@ bool IndoorLocation::Load(const std::string &filename, int num_days_played,
         *(int *)pDest = 1;
 
         stream.Reset(pGames_LOD->LoadCompressed(dlv_filename));
-        stream.SkipBytes(sizeof(DDM_DLV_Header));
+        stream.SkipBytes(sizeof(LocationHeader_MM7));
     } else {
         *(int*)pDest = 0;
     }

@@ -991,7 +991,7 @@ bool TestPartyQuestBit(PARTY_QUEST_BITS bit) {
 
 //----- (0047752B) --------------------------------------------------------
 int Party::GetPartyReputation() {
-    DDM_DLV_Header *ddm_dlv = &pOutdoor->ddm;
+    LocationHeader_MM7 *ddm_dlv = &pOutdoor->ddm;
     if (uCurrentlyLoadedLevelType != LEVEL_Outdoor) ddm_dlv = &pIndoor->dlv;
 
     int npcRep = 0;

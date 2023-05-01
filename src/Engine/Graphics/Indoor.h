@@ -8,28 +8,12 @@
 #include "Engine/mm7_data.h"
 #include "Engine/EngineIocContainer.h"
 #include "Engine/SpawnPoint.h"
+#include "Engine/Serialization/LegacyImages.h"
 
 #include "Engine/Graphics/BSPModel.h"
 #include "Engine/Graphics/IRender.h"
 
 struct IndoorLocation;
-
-#pragma pack(push, 1)
-// TODO(captainurist): belongs to legacyimages
-struct DDM_DLV_Header {
-    int uNumRespawns = 0;
-    int uLastRepawnDay = 0;
-    int uReputation = 0;
-    int field_C_alert = 0; // Actually bool
-    unsigned int uNumFacesInBModels = 0;
-    unsigned int uNumDecorations = 0;
-    unsigned int uNumBModels = 0;
-    int field_1C = 0;
-    int field_20 = 0;
-    int field_24 = 0;
-};
-static_assert(sizeof(DDM_DLV_Header) == 40, "Wrong type size");
-#pragma pack(pop)
 
 struct LocationTime {
     GameTime last_visit {};
@@ -342,7 +326,7 @@ struct IndoorLocation {
     std::vector<uint16_t> ptr_0002B4_doors_ddata;
     std::vector<uint16_t> ptr_0002B8_sector_lrdata;
     std::vector<SpawnPoint> pSpawnPoints;
-    DDM_DLV_Header dlv;
+    LocationHeader_MM7 dlv;
     LocationTime stru1;
     std::array<char, 875> _visible_outlines;
     char padding;

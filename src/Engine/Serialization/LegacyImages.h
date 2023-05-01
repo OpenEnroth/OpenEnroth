@@ -1170,4 +1170,20 @@ void Deserialize(const SoundInfo_MM6 &src, SoundInfo *dst);
 void Deserialize(const SoundInfo_MM7 &src, SoundInfo *dst);
 
 
+struct LocationHeader_MM7 {
+    int32_t uNumRespawns = 0;
+    int32_t uLastRepawnDay = 0;
+    int32_t uReputation = 0;
+    int32_t field_C_alert = 0; // Actually bool
+    uint32_t uNumFacesInBModels = 0;
+    uint32_t uNumDecorations = 0;
+    uint32_t uNumBModels = 0;
+    int32_t field_1C = 0;
+    int32_t field_20 = 0;
+    int32_t field_24 = 0;
+};
+static_assert(sizeof(LocationHeader_MM7) == 40);
+// TODO(captainurist): introduce engine equivalent
+
+
 #pragma pack(pop)

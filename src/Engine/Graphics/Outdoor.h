@@ -6,6 +6,7 @@
 #include <glm.hpp>
 
 #include "Engine/Tables/TileFrameTable.h"
+#include "Engine/Serialization/LegacyImages.h"
 
 #include "Engine/Graphics/BSPModel.h"
 #include "Engine/Graphics/Indoor.h"
@@ -155,7 +156,7 @@ struct OutdoorLocation {
     int field_F4;
     char field_F8[968];
     std::vector<SpawnPoint> pSpawnPoints;
-    struct DDM_DLV_Header ddm;
+    LocationHeader_MM7 ddm;
     LocationTime loc_time;
     unsigned char
         uFullyRevealedCellOnMap[88][11];  // 968         the inner array is 11

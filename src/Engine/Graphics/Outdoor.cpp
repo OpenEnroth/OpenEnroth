@@ -947,7 +947,7 @@ bool OutdoorLocation::Load(const std::string &filename, int days_played,
     if (blob) {
         stream.Reset(blob);
 
-        static_assert(sizeof(DDM_DLV_Header) == 40, "Wrong type size");
+        static_assert(sizeof(LocationHeader_MM7) == 40, "Wrong type size");
         stream.ReadRaw(&ddm);
     }
     uint actualNumFacesInLevel = 0;
@@ -991,7 +991,7 @@ bool OutdoorLocation::Load(const std::string &filename, int days_played,
 
         *outdoors_was_respawned = true;
         stream.Reset(pGames_LOD->LoadCompressed(ddm_filename));
-        stream.SkipBytes(sizeof(DDM_DLV_Header));
+        stream.SkipBytes(sizeof(LocationHeader_MM7));
     } else {
         *outdoors_was_respawned = 0;
     }
