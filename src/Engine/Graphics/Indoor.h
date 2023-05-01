@@ -358,7 +358,7 @@ struct IndoorLocation {
      */
     void toggleLight(signed int uLightID, unsigned int bToggle);
 
-    static unsigned int GetLocationIndex(const char *Str1);
+    static unsigned int GetLocationIndex(const std::string &locationName);
     void DrawIndoorFaces(bool bD3D);
     void PrepareActorRenderList_BLV();
     void PrepareDecorationsRenderList_BLV(unsigned int uDecorationID, unsigned int uSectorID);

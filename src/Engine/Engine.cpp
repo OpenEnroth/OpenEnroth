@@ -1358,7 +1358,7 @@ void sub_44861E_set_texture_outdoor(unsigned int uFaceCog,
     }
 }
 
-void setTexture(unsigned int uFaceCog, const char *pFilename) {
+void setTexture(unsigned int uFaceCog, const std::string &pFilename) {
     if (uFaceCog) {
         // unsigned int texture = pBitmaps_LOD->LoadTexture(pFilename);
         // if (texture != -1)
@@ -1408,10 +1408,10 @@ void setFacesBit(int sCogNumber, FaceAttribute bit, int on) {
     }
 }
 
-void setDecorationSprite(uint16_t uCog, bool bHide, const char *pFileName) {
+void setDecorationSprite(uint16_t uCog, bool bHide, const std::string &pFileName) {
     for (size_t i = 0; i < pLevelDecorations.size(); i++) {
         if (pLevelDecorations[i].uCog == uCog) {
-            if (pFileName && strcmp(pFileName, "0")) {
+            if (!pFileName.empty() && pFileName != "0") {
                 pLevelDecorations[i].uDecorationDescID = pDecorationList->GetDecorIdByName(pFileName);
                 pDecorationList->InitializeDecorationSprite(pLevelDecorations[i].uDecorationDescID);
             }
@@ -2140,7 +2140,7 @@ bool _44100D_should_alter_right_panel() {
            current_screen_type == CURRENT_SCREEN::SCREEN_CASTING;
 }
 
-void Transition_StopSound_Autosave(const char *pMapName,
+void Transition_StopSound_Autosave(const std::string &pMapName,
                                    MapStartPoint start_point) {
     pAudioPlayer->stopSounds();
 

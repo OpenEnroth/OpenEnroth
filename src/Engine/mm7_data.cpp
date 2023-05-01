@@ -2573,7 +2573,7 @@ struct Actor *pDialogue_SpeakingActor;
 DIALOGUE_TYPE uDialogueType;
 int sDialogue_SpeakingActorNPC_ID;
 int uCurrentHouse_Animation;
-char *Party_Teleport_Map_Name;
+std::string Party_Teleport_Map_Name;
 // int Party_Teleport_Z_Speed;
 // int Party_Teleport_Cam_Pitch;
 // int Party_Teleport_Cam_Yaw;

@@ -924,7 +924,7 @@ void Game::processQueuedMessages() {
                         } else {
                             v38 = Party_Teleport_Z_Speed;
                         }
-                        if (*Party_Teleport_Map_Name != 48) {
+                        if (Party_Teleport_Map_Name[0] != '0') {
                             //pGameLoadingUI_ProgressBar->Initialize(GUIProgressBar::TYPE_Box);
                             Start_Party_Teleport_Flag =
                                 Party_Teleport_X_Pos |

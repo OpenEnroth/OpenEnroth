@@ -67,7 +67,7 @@ void GUIWindow_Transition::Release() {
 GUIWindow_Transition::GUIWindow_Transition(uint anim_id, uint exit_pic_id,
                                            int x, int y, int z, int directiony,
                                            int directionx, int a8,
-                                           const char *pLocationName)
+                                           const std::string &locationName)
     : GUIWindow(WINDOW_Transition, {0, 0}, render->GetRenderDimensions(), 0) {
     Party_Teleport_X_Pos = x;
     Party_Teleport_Y_Pos = y;
@@ -75,59 +75,59 @@ GUIWindow_Transition::GUIWindow_Transition(uint anim_id, uint exit_pic_id,
     Party_Teleport_Cam_Yaw = directiony;
     Party_Teleport_Cam_Pitch = directionx;
     Party_Teleport_Z_Speed = a8;
-    Party_Teleport_Map_Name = (char *)pLocationName;
+    Party_Teleport_Map_Name = locationName;
     uCurrentHouse_Animation = anim_id;
     pEventTimer->Pause();
     current_screen_type = CURRENT_SCREEN::SCREEN_CHANGE_LOCATION;
 
     mapid = pMapStats->GetMapInfo(pCurrentMapName);
-    mapname = pLocationName;
+    _mapName = locationName;
 
     game_ui_dialogue_background = assets->GetImage_Solid(DialogueBackgroundResourceByAlignment[pParty->alignment]);
 
     transition_ui_icon = assets->GetImage_Solid(pHouse_ExitPictures[exit_pic_id]);
 
     // animation or special transfer message
-    if (anim_id || IndoorLocation::GetLocationIndex(pLocationName)) {
-        if (!IndoorLocation::GetLocationIndex(pLocationName))
+    if (anim_id || IndoorLocation::GetLocationIndex(locationName)) {
+        if (!IndoorLocation::GetLocationIndex(locationName))
             pMediaPlayer->OpenHouseMovie(pAnimatedRooms[p2DEvents[anim_id - 1].uAnimationID].video_name, 1);
 
-        std::string v15 = pLocationName;
-        if (*pLocationName == '0') {
+        std::string v15 = locationName;
+        if (locationName[0] == '0') {
             v15 = pCurrentMapName;
         }
         if (pMapStats->GetMapInfo(v15)) {
             transition_button_label = localization->FormatString(LSTR_FMT_ENTER_S, pMapStats->pInfos[pMapStats->GetMapInfo(v15)].pName.c_str());
             if (uCurrentlyLoadedLevelType == LEVEL_Indoor && pParty->hasActiveCharacter() && pParty->GetRedOrYellowAlert())
                 pParty->activeCharacter().playReaction(SPEECH_LeaveDungeon);
-            if (IndoorLocation::GetLocationIndex(pLocationName))
-                uCurrentHouse_Animation = IndoorLocation::GetLocationIndex(pLocationName);
+            if (IndoorLocation::GetLocationIndex(locationName))
+                uCurrentHouse_Animation = IndoorLocation::GetLocationIndex(locationName);
         } else {
             transition_button_label = localization->FormatString(LSTR_FMT_ENTER_S, pMapStats->pInfos[pMapStats->GetMapInfo(v15)].pName.c_str());
             if (pAnimatedRooms[p2DEvents[anim_id].uAnimationID].uRoomSoundId)
                 PlayHouseSound(anim_id, HouseSound_Greeting);
             if (uCurrentlyLoadedLevelType == LEVEL_Indoor && pParty->hasActiveCharacter() && pParty->GetRedOrYellowAlert())
                 pParty->activeCharacter().playReaction(SPEECH_LeaveDungeon);
-            if (IndoorLocation::GetLocationIndex(pLocationName))
-                uCurrentHouse_Animation = IndoorLocation::GetLocationIndex(pLocationName);
+            if (IndoorLocation::GetLocationIndex(locationName))
+                uCurrentHouse_Animation = IndoorLocation::GetLocationIndex(locationName);
         }
-    } else if (!IndoorLocation::GetLocationIndex(pLocationName)) { // transfer to outdoors - no special message
+    } else if (!IndoorLocation::GetLocationIndex(locationName)) { // transfer to outdoors - no special message
         if (pMapStats->GetMapInfo(pCurrentMapName)) {
             transition_button_label = localization->FormatString(LSTR_FMT_LEAVE_S, pMapStats->pInfos[pMapStats->GetMapInfo(pCurrentMapName)].pName.c_str());
             if (pAnimatedRooms[p2DEvents[anim_id].uAnimationID].uRoomSoundId)
                 PlayHouseSound(anim_id, HouseSound_Greeting);
             if (uCurrentlyLoadedLevelType == LEVEL_Indoor && pParty->hasActiveCharacter() && pParty->GetRedOrYellowAlert())
                 pParty->activeCharacter().playReaction(SPEECH_LeaveDungeon);
-            if (IndoorLocation::GetLocationIndex(pLocationName))
-                uCurrentHouse_Animation = IndoorLocation::GetLocationIndex(pLocationName);
+            if (IndoorLocation::GetLocationIndex(locationName))
+                uCurrentHouse_Animation = IndoorLocation::GetLocationIndex(locationName);
         } else {
             transition_button_label = localization->GetString(LSTR_DIALOGUE_EXIT);
             if ( pAnimatedRooms[p2DEvents[anim_id].uAnimationID].uRoomSoundId)
                 PlayHouseSound(anim_id, HouseSound_Greeting);
             if (uCurrentlyLoadedLevelType == LEVEL_Indoor && pParty->hasActiveCharacter() && pParty->GetRedOrYellowAlert())
                 pParty->activeCharacter().playReaction(SPEECH_LeaveDungeon);
-            if (IndoorLocation::GetLocationIndex(pLocationName))
-                uCurrentHouse_Animation = IndoorLocation::GetLocationIndex(pLocationName);
+            if (IndoorLocation::GetLocationIndex(locationName))
+                uCurrentHouse_Animation = IndoorLocation::GetLocationIndex(locationName);
         }
     }
 
@@ -218,8 +218,7 @@ void GUIWindow_Travel::Update() {
 }
 
 void GUIWindow_Transition::Update() {
-    unsigned int v9 =
-        IndoorLocation::GetLocationIndex(mapname.c_str());
+    unsigned int v9 = IndoorLocation::GetLocationIndex(_mapName.c_str());
     render->DrawTextureNew(477 / 640.0f, 0, game_ui_dialogue_background);
     render->DrawTextureNew((pNPCPortraits_x[0][0] - 4) / 640.0f,
                                 (pNPCPortraits_y[0][0] - 4) / 480.0f,
@@ -231,8 +230,8 @@ void GUIWindow_Transition::Update() {
     render->DrawTextureNew(556 / 640.0f, 451 / 480.0f, dialogue_ui_x_x_u);
     render->DrawTextureNew(476 / 640.0f, 451 / 480.0f, dialogue_ui_x_ok_u);
     unsigned int map_id = mapid;
-    if ((pMovie_Track || v9) && *Party_Teleport_Map_Name != ' ') {
-        map_id = pMapStats->GetMapInfo(mapname);
+    if ((pMovie_Track || v9) && Party_Teleport_Map_Name[0] != ' ') {
+        map_id = pMapStats->GetMapInfo(_mapName);
     }
 
     GUIWindow transition_window = *pPrimaryWindow;
