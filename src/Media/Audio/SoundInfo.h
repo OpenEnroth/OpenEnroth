@@ -10,10 +10,10 @@
 #include "SoundEnums.h"
 
 class SoundInfo {
-public:
+ public:
     bool Is3D() { return ((uFlags & SOUND_FLAG_3D) == SOUND_FLAG_3D); }
 
-public:
+ public:
     std::string sName;
     SOUND_TYPE eType;
     uint32_t uSoundID;

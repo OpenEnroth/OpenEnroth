@@ -3,6 +3,7 @@
 #include <array>
 #include <cstring>
 #include <cstdint>
+#include <string>
 #include <vector>
 
 #include "Utility/Memory/Blob.h"
