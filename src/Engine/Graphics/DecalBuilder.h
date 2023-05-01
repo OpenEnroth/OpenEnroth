@@ -96,7 +96,7 @@ struct DecalBuilder {
      * 
      * Attemps to apply a certain bloodsplat onto the supplied terrain triangle.
      * 
-     * @param terrpoly                      Polygon used to pass flags through - TODO(pskelton): Just pass flags
+     * @param terrainFlags                  Terrain flags
      * @param terrnorm                      Normal vector of supplied triangle.
      * @param[out] tridotdist               Plane dot distance of supplied vertices.
      * @param triverts                      Vertices of terrain triangle to apply splat onto.
@@ -104,8 +104,8 @@ struct DecalBuilder {
      * 
      * @return                              True if bloodsplat_container->uNumBloodsplats > 0, false otherwise.
      */
-    bool ApplyBloodSplatToTerrain(struct Polygon *terrpoly, Vec3f *terrnorm, float *tridotdist,
-                                RenderVertexSoft *triverts, int whichsplat);
+    bool ApplyBloodSplatToTerrain(const int terrainFlags, Vec3f *terrnorm, float *tridotdist,
+                                RenderVertexSoft *triverts, const int whichsplat);
     void DrawDecals(float z_bias);
     void DrawBloodsplats();
     void DrawDecalDebugOutlines();
