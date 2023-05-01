@@ -45,10 +45,11 @@
 
 #include "Media/Audio/AudioPlayer.h"
 
+#include "Library/Random/Random.h"
 
 #include "Utility/Memory/FreeDeleter.h"
 #include "Utility/Math/TrigLut.h"
-#include "Library/Random/Random.h"
+#include "Utility/Memory/MemSet.h"
 
 // TODO(pskelton): make this neater
 static DecalBuilder *decal_builder = EngineIocContainer::ResolveDecalBuilder();
@@ -239,7 +240,7 @@ void IndoorLocation::toggleLight(signed int sLightID, unsigned int bToggle) {
 
 //----- (00498E0A) --------------------------------------------------------
 bool IndoorLocation::Load(const std::string &filename, int num_days_played,
-                          int respawn_interval_days, char *pDest) {
+                          int respawn_interval_days, int *pDest) {
     decal_builder->Reset(0);
 
     _6807E0_num_decorations_with_sounds_6807B8 = 0;
@@ -259,182 +260,74 @@ bool IndoorLocation::Load(const std::string &filename, int num_days_played,
 
     Release();
 
+    auto progressCallback = [] {
+        pGameLoadingUI_ProgressBar->Progress();
+    };
+
     bLoaded = true;
 
     IndoorLocation_MM7 location;
-    Deserialize(pGames_LOD->LoadCompressed(blv_filename), &location, [] {
-        pGameLoadingUI_ProgressBar->Progress();
-    });
+    Deserialize(pGames_LOD->LoadCompressed(blv_filename), &location, progressCallback);
     Deserialize(location, this);
 
     BlobDeserializer stream;
 
-    std::string dlv_filename = std::string(filename);
+    std::string dlv_filename = filename;
     dlv_filename.replace(dlv_filename.length() - 4, 4, ".dlv");
 
-    bool bResetSpawn = false;
-    Blob blob = pSave_LOD->LoadCompressed(dlv_filename);
-    if (blob) {
-        stream.Reset(blob);
-        stream.ReadRaw(&dlv);
-    } else {
-        bResetSpawn = true;
+    bool respawnInitial = true; // Perform initial location respawn?
+    bool respawnTimed = false; // Perform timed location respawn?
+
+    IndoorSave_MM7 save;
+    if (Blob blob = pSave_LOD->LoadCompressed(dlv_filename)) {
+        try {
+            Deserialize(blob, &save, location, progressCallback);
+            respawnInitial = false;
+        } catch (const Exception &e) {
+            logger->error("Failed to load '{}', respawning location: {}", dlv_filename, e.what());
+        }
     }
 
-    if (dlv.uNumFacesInBModels > 0) {
-        if (dlv.uNumDecorations > 0) {
-            if (dlv.uNumFacesInBModels != pFaces.size() ||
-                dlv.uNumDecorations != pLevelDecorations.size())
-                bResetSpawn = true;
+    if (save.header.uNumFacesInBModels > 0 && save.header.uNumDecorations > 0) {
+        if (save.header.uNumFacesInBModels != pFaces.size() || save.header.uNumDecorations != pLevelDecorations.size()) {
+            // Level was changed externally and we have a save there. Don't crash, just respawn.
+            respawnInitial = true;
         }
+    }
+
+    if (save.header.uLastRepawnDay == 0) {
+        respawnInitial = true; // Entering the level for the 1st time.
     }
 
     if (dword_6BE364_game_settings_1 & GAME_SETTINGS_LOADING_SAVEGAME_SKIP_RESPAWN) {
         respawn_interval_days = 0x1BAF800;
     }
 
-    bool bRespawnLocation = false;
-    if (num_days_played - dlv.uLastRepawnDay >= respawn_interval_days &&
-        (pCurrentMapName != "d29.dlv")) {
-        bRespawnLocation = true;
+    if (num_days_played - save.header.uLastRepawnDay >= respawn_interval_days && (pCurrentMapName != "d29.dlv")) {
+        respawnTimed = true;
     }
 
-    std::array<char, 875> SavedOutlines = {{}};
-    if (bResetSpawn || (bRespawnLocation || !dlv.uLastRepawnDay)) {
-        if (bResetSpawn) {
-            // do nothing, SavedOutlines are already filled with zeros.
-        } else if (bRespawnLocation || !dlv.uLastRepawnDay) {
-            stream.ReadRaw(&SavedOutlines);
+    if (respawnInitial || respawnTimed) {
+        IndoorSave_MM7 referenceSave;
+        Deserialize(pGames_LOD->LoadCompressed(dlv_filename), &referenceSave, location, progressCallback);
+
+        std::swap(referenceSave, save);
+        if (respawnTimed) {
+            save.header = referenceSave.header;
+            save.visibleOutlines = referenceSave.visibleOutlines; // Preserve visible outlines on timed respawn.
         }
 
-        dlv.uLastRepawnDay = num_days_played;
-        if (!bResetSpawn) ++dlv.uNumRespawns;
-        *(int *)pDest = 1;
-
-        stream.Reset(pGames_LOD->LoadCompressed(dlv_filename));
-        stream.SkipBytes(sizeof(LocationHeader_MM7));
+        *pDest = 1;
     } else {
-        *(int*)pDest = 0;
+        *pDest = 0;
     }
 
-    stream.ReadRaw(&_visible_outlines);
+    Deserialize(save, this);
 
-    if (*(int *)pDest)
-        _visible_outlines = SavedOutlines;
-
-    for (uint i = 0; i < pMapOutlines.size(); ++i) {
-        BLVMapOutline *pVertex = &pMapOutlines[i];
-        if ((uint8_t)(1 << (7 - i % 8)) & _visible_outlines[i / 8])
-            pVertex->uFlags |= 1;
-    }
-
-    for (uint i = 0; i < pFaces.size(); ++i) {
-        BLVFace *pFace = &pFaces[i];
-        BLVFaceExtra *pFaceExtra = &pFaceExtras[pFace->uFaceExtraID];
-
-        stream.ReadRaw(&pFace->uAttributes);
-
-        if (pFaceExtra->uEventID) {
-            if (pFaceExtra->HasEventHint())
-                pFace->uAttributes |= FACE_HAS_EVENT;
-            else
-                pFace->uAttributes &= ~FACE_HAS_EVENT;
-        }
-    }
-
-    pGameLoadingUI_ProgressBar->Progress();
-
-    for (uint i = 0; i < pLevelDecorations.size(); ++i)
-        stream.ReadRaw(&pLevelDecorations[i].uFlags);
-
-    pGameLoadingUI_ProgressBar->Progress();
-
-    stream.ReadLegacyVector<Actor_MM7>(&pActors);
-    for(size_t i = 0; i < pActors.size(); i++)
-        pActors[i].id = i;
-
-    pGameLoadingUI_ProgressBar->Progress();
-    pGameLoadingUI_ProgressBar->Progress();
-
-    stream.ReadLegacyVector<SpriteObject_MM7>(&pSpriteObjects);
-
-    pGameLoadingUI_ProgressBar->Progress();
-
-    for (uint i = 0; i < pSpriteObjects.size(); ++i) {
-        if (pSpriteObjects[i].containing_item.uItemID != ITEM_NULL && !(pSpriteObjects[i].uAttributes & SPRITE_MISSILE)) {
-            pSpriteObjects[i].uType = (SPRITE_OBJECT_TYPE)pItemTable->pItems[pSpriteObjects[i].containing_item.uItemID].uSpriteID;
-            pSpriteObjects[i].uObjectDescID = pObjectList->ObjectIDByItemID(pSpriteObjects[i].uType);
-        }
-    }
-
-    pGameLoadingUI_ProgressBar->Progress();
-
-    stream.ReadLegacyVector<Chest_MM7>(&vChests);
-
-    pGameLoadingUI_ProgressBar->Progress();
-    pGameLoadingUI_ProgressBar->Progress();
-
-    stream.ReadSizedLegacyVector<BLVDoor_MM7>(&pDoors, location.doorCount);
-
-    // v201 = (const char *)blv.uDoors_ddata_Size;
-    // v200 = (size_t)ptr_0002B4_doors_ddata;
-    // v170 = malloc(ptr_0002B4_doors_ddata, blv.uDoors_ddata_Size, "L.DData");
-    // v171 = blv.uDoors_ddata_Size;
-    stream.ReadSizedVector(&ptr_0002B4_doors_ddata, blv.uDoors_ddata_Size / sizeof(uint16_t));
-    ptr_0002B4_doors_ddata.push_back(0); // make the element past the end addressable.
-
-    // Src = (BLVFace *)((char *)Src + v171);
-    // v172 = 0;
-    // v245 = 0;
-    // if (uNumDoors > 0)
-    for (uint i = 0, j = 0; i < location.doorCount; ++i) {
-        BLVDoor *pDoor = &pDoors[i];
-
-        pDoor->pVertexIDs = &ptr_0002B4_doors_ddata[j];
-        j += pDoor->uNumVertices;
-
-        pDoor->pFaceIDs = &ptr_0002B4_doors_ddata[j];
-        j += pDoor->uNumFaces;
-
-        pDoor->pSectorIDs = &ptr_0002B4_doors_ddata[j];
-        j += pDoor->uNumSectors;
-
-        pDoor->pDeltaUs = (int16_t *)(&ptr_0002B4_doors_ddata[j]);
-        j += pDoor->uNumFaces;
-
-        pDoor->pDeltaVs = (int16_t *)(&ptr_0002B4_doors_ddata[j]);
-        j += pDoor->uNumFaces;
-
-        pDoor->pXOffsets = (int16_t *)(&ptr_0002B4_doors_ddata[j]);
-        j += pDoor->uNumOffsets;
-
-        pDoor->pYOffsets = (int16_t *)(&ptr_0002B4_doors_ddata[j]);
-        j += pDoor->uNumOffsets;
-
-        pDoor->pZOffsets = (int16_t *)(&ptr_0002B4_doors_ddata[j]);
-        j += pDoor->uNumOffsets;
-    }
-    // v190 = 0;
-    // v245 = 0;
-    for (uint i = 0; i < location.doorCount; ++i) {
-        BLVDoor *pDoor = &pDoors[i];
-
-        for (uint j = 0; j < pDoor->uNumFaces; ++j) {
-            BLVFace *pFace = &pFaces[pDoor->pFaceIDs[j]];
-            BLVFaceExtra *pFaceExtra = &pFaceExtras[pFace->uFaceExtraID];
-
-            pDoor->pDeltaUs[j] = pFaceExtra->sTextureDeltaU;
-            pDoor->pDeltaVs[j] = pFaceExtra->sTextureDeltaV;
-        }
-    }
-
-    pGameLoadingUI_ProgressBar->Progress();
-
-    stream.ReadLegacy<MapEventVariables_MM7>(&mapEventVariables);
-
-    pGameLoadingUI_ProgressBar->Progress();
-
-    stream.ReadLegacy<LocationTime_MM7>(&stru1);
+    if (respawnTimed || respawnInitial)
+        dlv.uLastRepawnDay = num_days_played;
+    if (respawnTimed)
+        dlv.uNumRespawns++;
 
     return 0;
 }
@@ -977,7 +870,7 @@ void PrepareToLoadBLV(bool bLoading) {
 
     pStationaryLightsStack->uNumLightsActive = 0;
     v4 = pIndoor->Load(pCurrentMapName, pParty->GetPlayingTime().GetDays() + 1,
-                       respawn_interval, (char *)&pDest) - 1;
+                       respawn_interval, &pDest) - 1;
     if (v4 == 0) Error("Unable to open %s", pCurrentMapName.c_str());
     if (v4 == 1) Error("File %s is not a BLV File", pCurrentMapName.c_str()); // TODO(captainurist): these checks never trigger.
     if (v4 == 2) Error("Attempt to open new level before clearing old");

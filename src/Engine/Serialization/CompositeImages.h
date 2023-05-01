@@ -31,6 +31,7 @@ struct IndoorLocation_MM7 {
 void Deserialize(const IndoorLocation_MM7 &src, IndoorLocation *dst);
 void Deserialize(const Blob &src, IndoorLocation_MM7 *dst, std::function<void()> progress);
 
+
 struct IndoorSave_MM7 {
     LocationHeader_MM7 header;
     std::array<char, 875> visibleOutlines;
@@ -40,7 +41,7 @@ struct IndoorSave_MM7 {
     std::vector<SpriteObject_MM7> spriteObjects;
     std::vector<Chest_MM7> chests;
     std::vector<BLVDoor_MM7> doors;
-    std::vector<uint16_t> doorsData;
+    std::vector<int16_t> doorsData;
     MapEventVariables_MM7 eventVariables;
     LocationTime_MM7 locationTime;
 };
@@ -48,7 +49,8 @@ struct IndoorSave_MM7 {
 void Serialize(const IndoorLocation &src, IndoorSave_MM7 *dst);
 void Deserialize(const IndoorSave_MM7 &src, IndoorLocation *dst);
 void Serialize(const IndoorSave_MM7 &src, Blob *dst);
-void Deserialize(const Blob &src, IndoorSave_MM7 *dst, size_t doorCount, size_t doorDataCount, std::function<void()> progress);
+void Deserialize(const Blob &src, IndoorSave_MM7 *dst, const IndoorLocation_MM7 &ctx, std::function<void()> progress);
+
 
 struct OutdoorSave_MM7 {
     LocationHeader_MM7 header;

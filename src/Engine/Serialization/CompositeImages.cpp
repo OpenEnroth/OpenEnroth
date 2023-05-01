@@ -5,6 +5,9 @@
 #include "Engine/Graphics/Indoor.h"
 #include "Engine/Graphics/Level/Decoration.h"
 #include "Engine/Graphics/DecorationList.h"
+#include "Engine/Objects/SpriteObject.h"
+#include "Engine/Objects/ItemTable.h"
+#include "Engine/Objects/ObjectList.h"
 #include "Engine/LOD.h"
 
 #include "Serializer.h"
@@ -178,11 +181,99 @@ void Serialize(const IndoorLocation &src, IndoorSave_MM7 *dst) {
 }
 
 void Deserialize(const IndoorSave_MM7 &src, IndoorLocation *dst) {
+    Deserialize(src.header, &dst->dlv);
+    Deserialize(src.visibleOutlines, &dst->_visible_outlines);
+
+    for (size_t i = 0; i < dst->pMapOutlines.size(); ++i) {
+        BLVMapOutline *pVertex = &dst->pMapOutlines[i];
+        if ((uint8_t)(1 << (7 - i % 8)) & dst->_visible_outlines[i / 8])
+            pVertex->uFlags |= 1;
+    }
+
+    for (size_t i = 0; i < dst->pFaces.size(); ++i) {
+        BLVFace *pFace = &dst->pFaces[i];
+        BLVFaceExtra *pFaceExtra = &dst->pFaceExtras[pFace->uFaceExtraID];
+
+        pFace->uAttributes = FaceAttributes(src.faceAttributes[i]);
+
+        if (pFaceExtra->uEventID) {
+            if (pFaceExtra->HasEventHint())
+                pFace->uAttributes |= FACE_HAS_EVENT;
+            else
+                pFace->uAttributes &= ~FACE_HAS_EVENT;
+        }
+    }
+
+    for (size_t i = 0; i < pLevelDecorations.size(); ++i)
+        pLevelDecorations[i].uFlags = LevelDecorationFlags(src.decorationFlags[i]);
+
+    Deserialize(src.actors, &pActors);
+
+    for(size_t i = 0; i < pActors.size(); i++)
+        pActors[i].id = i;
+
+    Deserialize(src.spriteObjects, &pSpriteObjects);
+
+    for (size_t i = 0; i < pSpriteObjects.size(); ++i) {
+        if (pSpriteObjects[i].containing_item.uItemID != ITEM_NULL && !(pSpriteObjects[i].uAttributes & SPRITE_MISSILE)) {
+            pSpriteObjects[i].uType = static_cast<SPRITE_OBJECT_TYPE>(pItemTable->pItems[pSpriteObjects[i].containing_item.uItemID].uSpriteID);
+            pSpriteObjects[i].uObjectDescID = pObjectList->ObjectIDByItemID(pSpriteObjects[i].uType);
+        }
+    }
+
+    Deserialize(src.chests, &vChests);
+    Deserialize(src.doors, &dst->pDoors);
+    Deserialize(src.doorsData, &dst->ptr_0002B4_doors_ddata);
+
+    for (uint i = 0, j = 0; i < dst->pDoors.size(); ++i) {
+        BLVDoor *pDoor = &dst->pDoors[i];
+
+        pDoor->pVertexIDs = dst->ptr_0002B4_doors_ddata.data() + j;
+        j += pDoor->uNumVertices;
+
+        pDoor->pFaceIDs = dst->ptr_0002B4_doors_ddata.data() + j;
+        j += pDoor->uNumFaces;
+
+        pDoor->pSectorIDs = dst->ptr_0002B4_doors_ddata.data() + j;
+        j += pDoor->uNumSectors;
+
+        pDoor->pDeltaUs = dst->ptr_0002B4_doors_ddata.data() + j;
+        j += pDoor->uNumFaces;
+
+        pDoor->pDeltaVs = dst->ptr_0002B4_doors_ddata.data() + j;
+        j += pDoor->uNumFaces;
+
+        pDoor->pXOffsets = dst->ptr_0002B4_doors_ddata.data() + j;
+        j += pDoor->uNumOffsets;
+
+        pDoor->pYOffsets = dst->ptr_0002B4_doors_ddata.data() + j;
+        j += pDoor->uNumOffsets;
+
+        pDoor->pZOffsets = dst->ptr_0002B4_doors_ddata.data() + j;
+        j += pDoor->uNumOffsets;
+
+        assert(j <= dst->ptr_0002B4_doors_ddata.size());
+    }
+
+    for (size_t i = 0; i < dst->pDoors.size(); ++i) {
+        BLVDoor *pDoor = &dst->pDoors[i];
+
+        for (uint j = 0; j < pDoor->uNumFaces; ++j) {
+            BLVFace *pFace = &dst->pFaces[pDoor->pFaceIDs[j]];
+            BLVFaceExtra *pFaceExtra = &dst->pFaceExtras[pFace->uFaceExtraID];
+
+            pDoor->pDeltaUs[j] = pFaceExtra->sTextureDeltaU;
+            pDoor->pDeltaVs[j] = pFaceExtra->sTextureDeltaV;
+        }
+    }
+
+    Deserialize(src.eventVariables, &mapEventVariables);
+    Deserialize(src.locationTime, &dst->stru1);
 }
 
 void Serialize(const IndoorSave_MM7 &src, Blob *dst) {
-    assert(src.faceAttributes.size() == src.header.uNumFacesInBModels);
-    assert(src.decorationFlags.size() == src.header.uNumDecorations);
+    //assert(src.faceAttributes.size() == src.header.uNumFacesInBModels);
+    //assert(src.decorationFlags.size() == src.header.uNumDecorations);
 
     BlobSerializer stream;
     stream.WriteRaw(&src.header);
@@ -199,15 +290,15 @@ void Serialize(const IndoorSave_MM7 &src, Blob *dst) {
     *dst = stream.Close();
 }
 
-void Deserialize(const Blob &src, IndoorSave_MM7 *dst, size_t doorCount, size_t doorDataCount, std::function<void()> progress) {
+void Deserialize(const Blob &src, IndoorSave_MM7 *dst, const IndoorLocation_MM7 &ctx, std::function<void()> progress) {
     BlobDeserializer stream(src);
     stream.ReadRaw(&dst->header);
     progress();
     stream.ReadRaw(&dst->visibleOutlines);
     progress();
-    stream.ReadSizedVector(&dst->faceAttributes, dst->header.uNumFacesInBModels);
+    stream.ReadSizedVector(&dst->faceAttributes, ctx.faces.size());
     progress();
-    stream.ReadSizedVector(&dst->decorationFlags, dst->header.uNumDecorations);
+    stream.ReadSizedVector(&dst->decorationFlags, ctx.decorations.size());
     progress();
     stream.ReadVector(&dst->actors);
     progress();
@@ -215,9 +306,9 @@ void Deserialize(const Blob &src, IndoorSave_MM7 *dst, size_t doorCount, size_t 
     progress();
     stream.ReadVector(&dst->chests);
     progress();
-    stream.ReadSizedVector(&dst->doors, doorCount);
+    stream.ReadSizedVector(&dst->doors, ctx.doorCount);
     progress();
-    stream.ReadSizedVector(&dst->doorsData, doorDataCount);
+    stream.ReadSizedVector(&dst->doorsData, ctx.header.uDoors_ddata_Size / sizeof(int16_t));
     progress();
     stream.ReadRaw(&dst->eventVariables);
     progress();

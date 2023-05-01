@@ -60,9 +60,9 @@ struct BLVDoor {  // 50h
     int32_t uMoveLength;
     int32_t uOpenSpeed;
     int32_t uCloseSpeed;
-    uint16_t *pVertexIDs;
-    uint16_t *pFaceIDs;
-    uint16_t *pSectorIDs;
+    int16_t *pVertexIDs;
+    int16_t *pFaceIDs;
+    int16_t *pSectorIDs;
     int16_t *pDeltaUs;
     int16_t *pDeltaVs;
     int16_t *pXOffsets;
@@ -281,7 +281,7 @@ struct IndoorLocation {
 
     void Release();
     bool Load(const std::string &filename, int num_days_played,
-              int respawn_interval_days, char *pDest);
+              int respawn_interval_days, int *pDest);
     void Draw();
 
     /**
@@ -310,7 +310,7 @@ struct IndoorLocation {
     std::vector<BLVMapOutline> pMapOutlines;
     std::vector<int16_t> pLFaces;
     std::vector<uint16_t> ptr_0002B0_sector_rdata;
-    std::vector<uint16_t> ptr_0002B4_doors_ddata;
+    std::vector<int16_t> ptr_0002B4_doors_ddata;
     std::vector<uint16_t> ptr_0002B8_sector_lrdata;
     std::vector<SpawnPoint> pSpawnPoints;
     LocationHeader_MM7 dlv;
