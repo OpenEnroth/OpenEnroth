@@ -1571,7 +1571,7 @@ Texture *RenderOpenGL::CreateTexture_PCXFromIconsLOD(const std::string &name) {
 }
 
 Texture *RenderOpenGL::CreateTexture_PCXFromNewLOD(const std::string &name) {
-    return TextureOpenGL::Create(new PCX_LOD_Compressed_Loader(pNew_LOD, name));
+    return TextureOpenGL::Create(new PCX_LOD_Compressed_Loader(pSave_LOD, name));
 }
 
 Texture *RenderOpenGL::CreateTexture_PCXFromFile(const std::string &name) {

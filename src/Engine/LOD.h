@@ -247,5 +247,5 @@ extern LODFile_Sprites *pSprites_LOD;
 extern LODFile_Sprites *pSprites_LOD_mm6;
 extern LODFile_Sprites *pSprites_LOD_mm8;
 
-extern LOD::WriteableFile *pNew_LOD;
+extern LOD::WriteableFile *pSave_LOD;
 extern LOD::File *pGames_LOD;

@@ -58,7 +58,7 @@ void LoadGame(unsigned int uSlot) {
 
     pParty->Reset();
 
-    pNew_LOD->CloseWriteFile();
+    pSave_LOD->CloseWriteFile();
     // uCurrentlyLoadedLevelType = LEVEL_null;
 
     std::string filename = MakeDataPath("saves", pSavegameList->pFileList[uSlot]);
@@ -68,17 +68,17 @@ void LoadGame(unsigned int uSlot) {
     if (!std::filesystem::copy_file(filename, to_file_path, std::filesystem::copy_options::overwrite_existing, ec))
         Error("Failed to copy: %s", filename.c_str());
 
-    pNew_LOD->LoadFile(to_file_path, 0);
+    pSave_LOD->LoadFile(to_file_path, 0);
 
     static_assert(sizeof(SavegameHeader) == 100, "Wrong type size");
-    Blob headerBlob = pNew_LOD->LoadRaw("header.bin");
+    Blob headerBlob = pSave_LOD->LoadRaw("header.bin");
     SavegameHeader *header = (SavegameHeader*)headerBlob.data();
     if (header == nullptr) {
         logger->warning("{}", localization->FormatString(LSTR_FMT_SAVEGAME_CORRUPTED, 100));
     }
 
     {
-        Blob partyBlob = pNew_LOD->LoadRaw("party.bin");
+        Blob partyBlob = pSave_LOD->LoadRaw("party.bin");
         Party_MM7 *serialization = (Party_MM7*)partyBlob.data();
         if (serialization == nullptr) {
             logger->warning("{}", localization->FormatString(LSTR_FMT_SAVEGAME_CORRUPTED, 101));
@@ -96,7 +96,7 @@ void LoadGame(unsigned int uSlot) {
                     LloydBeacon &beacon = player->vBeacons[j];
                     std::string str = fmt::format("lloyd{}{}.pcx", i + 1, j + 1);
                     //beacon.image = Image::Create(new PCX_LOD_Raw_Loader(pNew_LOD, str));
-                    beacon.image = render->CreateTexture_PCXFromLOD(pNew_LOD, str);
+                    beacon.image = render->CreateTexture_PCXFromLOD(pSave_LOD, str);
                     beacon.image->GetWidth();
                 }
             }
@@ -104,7 +104,7 @@ void LoadGame(unsigned int uSlot) {
     }
 
     {
-        Blob timerBlob = pNew_LOD->LoadRaw("clock.bin");
+        Blob timerBlob = pSave_LOD->LoadRaw("clock.bin");
         Timer_MM7 *serialization = (Timer_MM7*)timerBlob.data();
         if (serialization == nullptr) {
             logger->warning("{}", localization->FormatString(LSTR_FMT_SAVEGAME_CORRUPTED, 102));
@@ -114,7 +114,7 @@ void LoadGame(unsigned int uSlot) {
     }
 
     {
-        Blob blob = pNew_LOD->LoadRaw("overlay.bin");
+        Blob blob = pSave_LOD->LoadRaw("overlay.bin");
         OtherOverlayList_MM7 *serialization = (OtherOverlayList_MM7*)blob.data();
         if (serialization == nullptr) {
             logger->warning("{}", localization->FormatString(LSTR_FMT_SAVEGAME_CORRUPTED, 103));
@@ -124,7 +124,7 @@ void LoadGame(unsigned int uSlot) {
     }
 
     {
-        Blob blob = pNew_LOD->LoadRaw("npcdata.bin");
+        Blob blob = pSave_LOD->LoadRaw("npcdata.bin");
         NPCData_MM7 *serialization = (NPCData_MM7*)blob.data();
         if (serialization == nullptr) {
             logger->warning("{}", localization->FormatString(LSTR_FMT_SAVEGAME_CORRUPTED, 104));
@@ -137,7 +137,7 @@ void LoadGame(unsigned int uSlot) {
     }
 
     {
-        Blob blob = pNew_LOD->LoadRaw("npcgroup.bin");
+        Blob blob = pSave_LOD->LoadRaw("npcgroup.bin");
         const void *npcgroup = blob.data();
         if (npcgroup == nullptr) {
             logger->warning("{}", localization->FormatString(LSTR_FMT_SAVEGAME_CORRUPTED, 105));
@@ -263,7 +263,7 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld) {
     //}
 
     Blob packedScreenshot{ render->PackScreenshot(150, 112) };  // создание скриншота
-    if (pNew_LOD->Write("image.pcx", packedScreenshot.data(), packedScreenshot.size(), 0)) {
+    if (pSave_LOD->Write("image.pcx", packedScreenshot.data(), packedScreenshot.size(), 0)) {
         logger->warning("{}", localization->FormatString(LSTR_FMT_SAVEGAME_CORRUPTED, 200));
     }
 
@@ -274,7 +274,7 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld) {
     memset(save_header.field_30, 0, 52);
     strcpy(save_header.pLocationName, pCurrentMapName.c_str());
     save_header.playing_time = pParty->GetPlayingTime();
-    if (pNew_LOD->Write("header.bin", &save_header, sizeof(SavegameHeader), 0)) {
+    if (pSave_LOD->Write("header.bin", &save_header, sizeof(SavegameHeader), 0)) {
         logger->warning("{}", localization->FormatString(LSTR_FMT_SAVEGAME_CORRUPTED, 201));
     }
 
@@ -282,7 +282,7 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld) {
         Party_MM7 serialization;
         Serialize(*pParty, &serialization);
 
-        if (pNew_LOD->Write("party.bin", &serialization, sizeof(serialization), 0)) {
+        if (pSave_LOD->Write("party.bin", &serialization, sizeof(serialization), 0)) {
             logger->warning("{}", localization->FormatString(LSTR_FMT_SAVEGAME_CORRUPTED, 202));
         }
     }
@@ -291,7 +291,7 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld) {
         Timer_MM7 serialization;
         Serialize(*pEventTimer, &serialization);
 
-        if (pNew_LOD->Write("clock.bin", &serialization, sizeof(serialization), 0)) {
+        if (pSave_LOD->Write("clock.bin", &serialization, sizeof(serialization), 0)) {
             logger->warning("{}", localization->FormatString(LSTR_FMT_SAVEGAME_CORRUPTED, 203));
         }
     }
@@ -300,7 +300,7 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld) {
         OtherOverlayList_MM7 serialization;
         Serialize(*pOtherOverlayList, &serialization);
 
-        if (pNew_LOD->Write("overlay.bin", &serialization, sizeof(serialization), 0)) {
+        if (pSave_LOD->Write("overlay.bin", &serialization, sizeof(serialization), 0)) {
             logger->warning("{}", localization->FormatString(LSTR_FMT_SAVEGAME_CORRUPTED, 204));
         }
     }
@@ -311,12 +311,12 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld) {
             Serialize(pNPCStats->pNewNPCData[i], &serialization[i]);
         }
 
-        if (pNew_LOD->Write("npcdata.bin", serialization, sizeof(serialization), 0)) {
+        if (pSave_LOD->Write("npcdata.bin", serialization, sizeof(serialization), 0)) {
             logger->warning("{}", localization->FormatString(LSTR_FMT_SAVEGAME_CORRUPTED, 205));
         }
     }
 
-    if (pNew_LOD->Write("npcgroup.bin", pNPCStats->pGroups_copy.data(), sizeof(pNPCStats->pGroups_copy), 0)) {
+    if (pSave_LOD->Write("npcgroup.bin", pNPCStats->pGroups_copy.data(), sizeof(pNPCStats->pGroups_copy), 0)) {
         logger->warning("{}", localization->FormatString(LSTR_FMT_SAVEGAME_CORRUPTED, 206));
     }
 
@@ -335,7 +335,7 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld) {
 
                 Blob packedPCX{ PCX::Encode(pixels, image->GetWidth(), image->GetHeight()) };
                 std::string str = fmt::format("lloyd{}{}.pcx", i + 1, j + 1);
-                if (pNew_LOD->Write(str, packedPCX.data(), packedPCX.size(), 0)) {
+                if (pSave_LOD->Write(str, packedPCX.data(), packedPCX.size(), 0)) {
                     logger->warning("{}", localization->FormatString(LSTR_FMT_SAVEGAME_CORRUPTED, 207));
                 }
             }
@@ -421,7 +421,7 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld) {
         std::string file_name = pCurrentMapName;
         size_t pos = file_name.find_last_of(".");
         file_name[pos + 1] = 'd';
-        if (pNew_LOD->Write(file_name, mapBlob.data(), mapBlob.size(), 0)) {
+        if (pSave_LOD->Write(file_name, mapBlob.data(), mapBlob.size(), 0)) {
             logger->warning("{}", localization->FormatString(LSTR_FMT_SAVEGAME_CORRUPTED, 208));
         }
     }
@@ -446,8 +446,8 @@ void DoSavegame(unsigned int uSlot) {
         SaveGame(0, 0);
         strcpy(pSavegameHeader[uSlot].pLocationName, pCurrentMapName.c_str());
         pSavegameHeader[uSlot].playing_time = pParty->GetPlayingTime();
-        pNew_LOD->Write("header.bin", &pSavegameHeader[uSlot], sizeof(SavegameHeader), 0);
-        pNew_LOD->CloseWriteFile();  //закрыть
+        pSave_LOD->Write("header.bin", &pSavegameHeader[uSlot], sizeof(SavegameHeader), 0);
+        pSave_LOD->CloseWriteFile();  //закрыть
         std::string src = MakeDataPath("data", "new.lod");
         std::string dst = MakeDataPath("saves", fmt::format("save{:03}.mm7", uSlot));
         std::error_code ec;
@@ -468,7 +468,7 @@ void DoSavegame(unsigned int uSlot) {
     }
 
     if (pCurrentMapName != "d05.blv")
-        pNew_LOD->_4621A7();
+        pSave_LOD->_4621A7();
     else
         GameUI_SetStatusBar(LSTR_NO_SAVING_IN_ARENA);
 
@@ -506,8 +506,8 @@ void SavegameList::Reset() {
 }
 
 void SaveNewGame() {
-    if (pNew_LOD != nullptr) {
-        pNew_LOD->CloseWriteFile();
+    if (pSave_LOD != nullptr) {
+        pSave_LOD->CloseWriteFile();
     }
 
     std::string file_path = MakeDataPath("data", "new.lod");
@@ -519,21 +519,21 @@ void SaveNewGame() {
     header.LODSize = 100;
     header.dword_0000A8 = 0;
 
-    pNew_LOD->CreateNewLod(&header, "current", file_path);  // создаётся new.lod в дирректории
-    if (pNew_LOD->LoadFile(file_path, false)) {  // загрузить файл new.lod(isFileOpened = true)
-        pNew_LOD->CreateTempFile();  // создаётся временный файл OutputFileHandle
-        pNew_LOD->ClearSubNodes();
+    pSave_LOD->CreateNewLod(&header, "current", file_path);  // создаётся new.lod в дирректории
+    if (pSave_LOD->LoadFile(file_path, false)) {  // загрузить файл new.lod(isFileOpened = true)
+        pSave_LOD->CreateTempFile();  // создаётся временный файл OutputFileHandle
+        pSave_LOD->ClearSubNodes();
 
         for (size_t i = pGames_LOD->GetSubNodesCount() / 2; i < pGames_LOD->GetSubNodesCount(); ++i) {  // копирование файлов с 76 по 151
             std::string name = pGames_LOD->GetSubNodeName(i);
             Blob data = pGames_LOD->LoadRaw(name);
-            pNew_LOD->AppendDirectory(name, data.data(), data.size());
+            pSave_LOD->AppendDirectory(name, data.data(), data.size());
         }
 
         strcpy(pSavegameHeader[0].pLocationName, "out01.odm");
-        pNew_LOD->AppendDirectory("header.bin", &pSavegameHeader[0], sizeof(SavegameHeader));
+        pSave_LOD->AppendDirectory("header.bin", &pSavegameHeader[0], sizeof(SavegameHeader));
 
-        pNew_LOD->FixDirectoryOffsets();
+        pSave_LOD->FixDirectoryOffsets();
 
         pParty->vPrevPosition.x = 12552;
         pParty->vPrevPosition.y = 1816;

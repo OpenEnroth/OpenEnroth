@@ -942,7 +942,7 @@ bool OutdoorLocation::Load(const std::string &filename, int days_played,
 
     std::string ddm_filename = filename;
     ddm_filename = ddm_filename.replace(ddm_filename.length() - 4, 4, ".ddm");
-    Blob blob = pNew_LOD->LoadCompressed(ddm_filename);
+    Blob blob = pSave_LOD->LoadCompressed(ddm_filename);
 
     if (blob) {
         stream.Reset(blob);

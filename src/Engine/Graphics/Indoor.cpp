@@ -427,7 +427,7 @@ bool IndoorLocation::Load(const std::string &filename, int num_days_played,
     dlv_filename.replace(dlv_filename.length() - 4, 4, ".dlv");
 
     bool bResetSpawn = false;
-    Blob blob = pNew_LOD->LoadCompressed(dlv_filename);
+    Blob blob = pSave_LOD->LoadCompressed(dlv_filename);
     if (blob) {
         stream.Reset(blob);
         stream.ReadRaw(&dlv);

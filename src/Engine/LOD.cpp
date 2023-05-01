@@ -27,8 +27,8 @@ LODFile_Sprites *pSprites_LOD = nullptr;
 LODFile_Sprites *pSprites_LOD_mm6 = nullptr;
 LODFile_Sprites *pSprites_LOD_mm8 = nullptr;
 
-LOD::WriteableFile *pNew_LOD = nullptr;
-LOD::File *pGames_LOD = nullptr;
+LOD::WriteableFile *pSave_LOD = nullptr; // LOD pointing to the savegame file currently being processed
+LOD::File *pGames_LOD = nullptr; // LOD pointing to data/games.lod
 
 int _6A0CA4_lod_binary_search;
 int _6A0CA8_lod_unused;
@@ -1152,8 +1152,8 @@ Texture_MM7 *LODFile_IconsBitmaps::GetTexture(int idx) {
 bool Initialize_GamesLOD_NewLOD() {
     pGames_LOD = new LOD::File();
     if (pGames_LOD->Open(MakeDataPath("data", "games.lod"))) {
-        pNew_LOD = new LOD::WriteableFile;
-        pNew_LOD->AllocSubIndicesAndIO(300, 100000);
+        pSave_LOD = new LOD::WriteableFile;
+        pSave_LOD->AllocSubIndicesAndIO(300, 100000);
         return true;
     }
     return false;
