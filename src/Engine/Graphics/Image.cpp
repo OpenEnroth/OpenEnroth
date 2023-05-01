@@ -56,6 +56,8 @@ void TextureFrameTable::FromFile(const Blob &data_mm6, const Blob &data_mm7, con
     (void) data_mm8;
 
     BlobDeserializer(data_mm7).ReadLegacyVector<TextureFrame_MM7>(&textures);
+
+    assert(!textures.empty());
 }
 
 void TextureFrameTable::LoadAnimationSequenceAndPalettes(int uFrameID) {

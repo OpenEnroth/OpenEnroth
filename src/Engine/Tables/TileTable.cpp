@@ -65,6 +65,8 @@ void TileTable::FromFile(const Blob &data_mm6, const Blob &data_mm7, const Blob 
     (void) data_mm8;
 
     BlobDeserializer(data_mm7).ReadLegacyVector<TileDesc_MM7>(&tiles);
+
+    assert(!tiles.empty());
 }
 
 //----- (00488047) --------------------------------------------------------
