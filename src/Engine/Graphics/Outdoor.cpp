@@ -1001,8 +1001,8 @@ bool OutdoorLocation::Load(const std::string &filename, int days_played,
     pGameLoadingUI_ProgressBar->Progress();  // прогресс загрузки
 
     if (*outdoors_was_respawned) {
-        memcpy(uFullyRevealedCellOnMap, &Dst, 968);
-        memcpy(uPartiallyRevealedCellOnMap, &Src, 968);
+        memcpy(&uFullyRevealedCellOnMap, &Dst, 968);
+        memcpy(&uPartiallyRevealedCellOnMap, &Src, 968);
     }
 
     for (BSPModel &model : pBModels) {

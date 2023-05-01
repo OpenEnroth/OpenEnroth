@@ -158,12 +158,12 @@ struct OutdoorLocation {
     std::vector<SpawnPoint> pSpawnPoints;
     LocationHeader_MM7 ddm;
     LocationTime loc_time;
-    unsigned char
-        uFullyRevealedCellOnMap[88][11];  // 968         the inner array is 11
+    std::array<std::array<uint8_t, 11>, 88> uFullyRevealedCellOnMap;
+                                          // 968         the inner array is 11
                                           // bytes long, because every bit is
                                           // used for a separate cell, so in the
                                           // end it's 11 * 8 bits = 88 values
-    unsigned char uPartiallyRevealedCellOnMap[88][11];  // [968]
+    std::array<std::array<uint8_t, 11>, 88> uPartiallyRevealedCellOnMap;  // [968]
     int field_CB8;
     int max_terrain_dimming_level;
     int field_CC0;
