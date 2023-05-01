@@ -3,6 +3,7 @@
 #include <array>
 #include <cstring>
 #include <cstdint>
+#include <vector>
 
 #include "Utility/Memory/Blob.h"
 
@@ -49,25 +50,18 @@ class Icon {
     Texture *img = nullptr;
 };
 
-/*   45 */
-#pragma pack(push, 1)
 struct IconFrameTable {
-    inline IconFrameTable() : uNumIcons(0), pIcons(nullptr) {}
-
     Icon *GetIcon(unsigned int idx);
     Icon *GetIcon(const char *pIconName);
     unsigned int FindIcon(const char *pIconName);
     Icon *GetFrame(unsigned int uIconID, unsigned int frame_time);
     void InitializeAnimation(unsigned int uIconID);
-    void ToFile();
     void FromFile(const Blob &data_mm6, const Blob &data_mm7, const Blob &data_mm8);
     int FromFileTxt(const char *Args);
     // int GetIconAnimLength(unsigned int uIconID);
 
-    unsigned int uNumIcons;
-    Icon *pIcons;
+    std::vector<Icon> pIcons;
 };
-#pragma pack(pop)
 
 class UIAnimation {
  public:

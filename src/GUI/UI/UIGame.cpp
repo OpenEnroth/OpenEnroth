@@ -1964,8 +1964,8 @@ void GameUI_DrawHiredNPCs() {
             if (!buf.IsFollower(i) && buf.Get(i)->dialogue_1_evt_id == 1) {
                 uFrameID = buf.Get(i)->dialogue_2_evt_id;
                 v13 = 0;
-                if (pIconsFrameTable->uNumIcons) {
-                    for (v13 = 0; v13 < pIconsFrameTable->uNumIcons; ++v13) {
+                if (!pIconsFrameTable->pIcons.empty()) {
+                    for (v13 = 0; v13 < pIconsFrameTable->pIcons.size(); ++v13) {
                         if (iequals("spell96", pIconsFrameTable->pIcons[v13].GetAnimationName()))
                             break;
                     }

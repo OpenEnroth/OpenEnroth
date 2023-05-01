@@ -269,19 +269,19 @@ void SpriteFrameTable::FromFile(const Blob &data_mm6, const Blob &data_mm7, cons
     (void) data_mm6;
     (void) data_mm8;
 
-    if (data_mm7) {
-        BlobDeserializer stream(data_mm7);
+    BlobDeserializer stream(data_mm7);
+    uint32_t frameCount = 0;
+    uint32_t eframeCount = 0;
+    stream.ReadRaw(&frameCount);
+    stream.ReadRaw(&eframeCount);
+    stream.ReadSizedLegacyVector<SpriteFrame_MM7>(&pSpriteSFrames, frameCount);
+    stream.ReadSizedVector(&pSpriteEFrames, eframeCount);
 
-        uint32_t frameCount = 0;
-        uint32_t eframeCount = 0;
-        stream.ReadRaw(&frameCount);
-        stream.ReadRaw(&eframeCount);
-        stream.ReadSizedLegacyVector<SpriteFrame_MM7>(&pSpriteSFrames, frameCount);
-        stream.ReadSizedVector(&pSpriteEFrames, eframeCount);
-    }
-
+    pSpritePFrames.clear();
     for (uint16_t index : pSpriteEFrames)
         pSpritePFrames.push_back(&pSpriteSFrames[index]);
+
+    assert(!pSpriteSFrames.empty());
 }
 
 SpriteFrame *LevelDecorationChangeSeason(const DecorationDesc *desc, int t, int month) {
