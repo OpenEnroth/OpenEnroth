@@ -32,19 +32,6 @@ enum class LEVEL_TYPE {
 using enum LEVEL_TYPE;
 extern LEVEL_TYPE uCurrentlyLoadedLevelType;
 
-/*   90 */
-#pragma pack(push, 1)
-// TODO(captainurist): move to legacyimages
-struct BLVHeader {
-    char field_0[104];
-    unsigned int uFaces_fdata_Size;
-    unsigned int uSector_rdata_Size;
-    unsigned int uSector_lrdata_Size;
-    unsigned int uDoors_ddata_Size;
-    char field_78[16];
-};
-#pragma pack(pop)
-
 struct BLVLight {
     Vec3s vPosition;
     int16_t uRadius = 0;
@@ -312,7 +299,7 @@ struct IndoorLocation {
     char field_20[48];
     unsigned int bLoaded = 0;
     char field_54[404];
-    BLVHeader blv;
+    BLVHeader_MM7 blv;
     std::vector<Vec3s> pVertices;
     std::vector<BLVFace> pFaces;
     std::vector<BLVFaceExtra> pFaceExtras;

@@ -1197,4 +1197,16 @@ void Serialize(const MapEventVariables &src, MapEventVariables_MM7 *dst);
 void Deserialize(const MapEventVariables_MM7 &src, MapEventVariables *dst);
 
 
+struct BLVHeader_MM7 {
+    char field_0[104];
+    unsigned int uFaces_fdata_Size;
+    unsigned int uSector_rdata_Size;
+    unsigned int uSector_lrdata_Size;
+    unsigned int uDoors_ddata_Size;
+    char field_78[16];
+};
+static_assert(sizeof(BLVHeader_MM7) == 136);
+// TODO(captainurist): introduce engine equivalent
+
+
 #pragma pack(pop)
