@@ -125,7 +125,7 @@ int EventInterpreter::executeOneEvent(int step) {
             if (ir.data.move_map_descr.anim_id || ir.data.move_map_descr.exit_pic_id) {
                 pDialogueWindow = new GUIWindow_Transition(ir.data.move_map_descr.anim_id, ir.data.move_map_descr.exit_pic_id,
                                                            ir.data.move_map_descr.x, ir.data.move_map_descr.y, ir.data.move_map_descr.z,
-                                                           ir.data.move_map_descr.yaw, ir.data.move_map_descr.pitch, ir.data.move_map_descr.zspeed, ir.str.c_str());
+                                                           ir.data.move_map_descr.yaw, ir.data.move_map_descr.pitch, ir.data.move_map_descr.zspeed, ir.str);
                 savedEventID = _eventId;
                 savedEventStep = step + 1;
                 return -1;
@@ -163,7 +163,7 @@ int EventInterpreter::executeOneEvent(int step) {
                 }
             } else {
                 pGameLoadingUI_ProgressBar->Initialize((GUIProgressBar::Type)((activeLevelDecoration == NULL) + 1));
-                Transition_StopSound_Autosave(ir.str.c_str(), MapStartPoint_Party);
+                Transition_StopSound_Autosave(ir.str, MapStartPoint_Party);
                 _mapExitTriggered = true;
                 if (current_screen_type == CURRENT_SCREEN::SCREEN_HOUSE) {
                     if (uGameState == GAME_STATE_CHANGE_LOCATION) {
@@ -204,7 +204,7 @@ int EventInterpreter::executeOneEvent(int step) {
             }
             break;
         case EVENT_SetTexture:
-            setTexture(ir.data.sprite_texture_descr.cog, ir.str.c_str());
+            setTexture(ir.data.sprite_texture_descr.cog, ir.str);
             break;
         case EVENT_ShowMovie:
         {
@@ -243,7 +243,7 @@ int EventInterpreter::executeOneEvent(int step) {
             break;
         }
         case EVENT_SetSprite:
-            setDecorationSprite(ir.data.sprite_texture_descr.cog, ir.data.sprite_texture_descr.hide, ir.str.c_str());
+            setDecorationSprite(ir.data.sprite_texture_descr.cog, ir.data.sprite_texture_descr.hide, ir.str);
             break;
         case EVENT_Compare:
         {
