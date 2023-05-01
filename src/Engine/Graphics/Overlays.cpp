@@ -28,9 +28,6 @@ void OtherOverlayList::Reset() {
     for (uint i = 0; i < 50; ++i) pOverlays[i].Reset();
 }
 
-//----- (004418B1) --------------------------------------------------------
-int OtherOverlayList::_4418B1(int a2, int a3, int a4, int a5) { return 0; }
-
 //----- (004418B6) --------------------------------------------------------
 int OtherOverlayList::_4418B6(int uOverlayID, int16_t a3, int a4, int a5,
                               int16_t a6) {

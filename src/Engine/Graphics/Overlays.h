@@ -23,7 +23,6 @@ struct OtherOverlay {
 
 struct OtherOverlayList {
     void Reset();
-    int _4418B1(int a2, int a3, int a4, int a5);
     int _4418B6(int uOverlayID, int16_t a3, int a4, int a5, int16_t a6);
     void DrawTurnBasedIcon();
 

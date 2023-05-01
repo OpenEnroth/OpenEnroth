@@ -1160,10 +1160,9 @@ int UseNPCSkill(NPCProf profession, int id) {
                 GameUI_SetStatusBar(LSTR_CANT_FLY_INDOORS);
                 pAudioPlayer->playUISound(SOUND_fizzle);
             } else {
-                int v19 = pOtherOverlayList->_4418B1(10008, 203, 0, 65536);
                 // Spell power was changed to 0 because it does not have meaning for this buff
                 pParty->pPartyBuffs[PARTY_BUFF_FLY]
-                    .Apply(pParty->GetPlayingTime() + GameTime::FromHours(2), PLAYER_SKILL_MASTERY_MASTER, 0, v19, 0);
+                    .Apply(pParty->GetPlayingTime() + GameTime::FromHours(2), PLAYER_SKILL_MASTERY_MASTER, 0, 0, 0);
                 // Mark buff as GM because NPC buff does not drain mana
                 pParty->pPartyBuffs[PARTY_BUFF_FLY].isGMBuff = true;
                 pAudioPlayer->playSpellSound(SPELL_AIR_FLY, 0, false);
@@ -1171,9 +1170,8 @@ int UseNPCSkill(NPCProf profession, int id) {
         } break;
 
         case WaterMaster: {
-            int v20 = pOtherOverlayList->_4418B1(10005, 201, 0, 65536);
             pParty->pPartyBuffs[PARTY_BUFF_WATER_WALK]
-                .Apply(pParty->GetPlayingTime() + GameTime::FromHours(3), PLAYER_SKILL_MASTERY_MASTER, 0, v20, 0);
+                .Apply(pParty->GetPlayingTime() + GameTime::FromHours(3), PLAYER_SKILL_MASTERY_MASTER, 0, 0, 0);
             // Mark buff as GM because NPC buff does not drain mana
             pParty->pPartyBuffs[PARTY_BUFF_WATER_WALK].isGMBuff = true;
             pAudioPlayer->playSpellSound(SPELL_WATER_WATER_WALK, 0, false);

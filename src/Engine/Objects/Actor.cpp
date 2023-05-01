@@ -543,7 +543,6 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
                     for (SpellBuff &buff : pParty->pPlayers[i].pPlayerBuffs) {
                         buff.Reset();
                     }
-                    pOtherOverlayList->_4418B1(11210, i + 100, 0, 65536);
                 }
             }
             pAudioPlayer->playSpellSound(uSpellID, PID(OBJECT_Actor, uActorID));
