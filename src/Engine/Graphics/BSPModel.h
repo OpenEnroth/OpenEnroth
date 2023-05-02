@@ -79,38 +79,6 @@ struct BSPNode {
     int16_t uNumBSPFaces;
 };
 
-struct BSPModelData {
-    std::string pModelName;
-    std::string pModelName2;
-    int32_t field_40 = 0;
-    uint32_t uNumVertices = 0;
-    uint32_t ppVertices = 0;
-    uint32_t uNumFaces = 0;
-    uint32_t uNumConvexFaces = 0;
-    uint32_t ppFaces = 0;
-    uint32_t ppFacesOrdering = 0;
-    uint32_t uNumNodes = 0;
-    uint32_t ppNodes = 0;
-    uint32_t uNumDecorations = 0;
-    int32_t sCenterX = 0;
-    int32_t sCenterY = 0;
-    Vec3i vPosition {};
-    int32_t sMinX = 0;
-    int32_t sMinY = 0;
-    int32_t sMinZ = 0;
-    int32_t sMaxX = 0;
-    int32_t sMaxY = 0;
-    int32_t sMaxZ = 0;
-    int32_t sSomeOtherMinX = 0;
-    int32_t sSomeOtherMinY = 0;
-    int32_t sSomeOtherMinZ = 0;
-    int32_t sSomeOtherMaxX = 0;
-    int32_t sSomeOtherMaxY = 0;
-    int32_t sSomeOtherMaxZ = 0;
-    Vec3i vBoundingCenter {};
-    int32_t sBoundingRadius = 0;
-};
-
 class Texture;
 
 struct ODMFace {

@@ -27,7 +27,6 @@ struct BLVFaceExtra;
 struct BLVLight;
 struct BLVMapOutline;
 struct BLVSector;
-struct BSPModelData;
 struct BSPNode;
 struct Chest;
 struct ChestDesc;
@@ -1135,9 +1134,7 @@ struct BSPModelData_MM7 {
     int32_t sBoundingRadius;
 };
 static_assert(sizeof(BSPModelData_MM7) == 188);
-
-void Deserialize(const BSPModelData_MM7 &src, BSPModelData *dst);
-
+// Note: serialization code is in CompositeImages.h
 
 struct LocationTime_MM7 {
     int64_t last_visit;
