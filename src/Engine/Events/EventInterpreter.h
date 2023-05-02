@@ -13,7 +13,7 @@ class EventInterpreter {
      void prepare(const EventMap &eventMap, int eventId, bool canShowMessages);
 
  protected:
-     int executeOneEvent(int step);
+     int executeOneEvent(int step, bool isNpc);
 
  private:
      int _eventId = 0;

@@ -112,7 +112,7 @@ static bool doForChosenPlayer(PLAYER_CHOOSE_POLICY who, RandomEngine *rng, std::
     return false;
 }
 
-int EventInterpreter::executeOneEvent(int step) {
+int EventInterpreter::executeOneEvent(int step, bool isNpc) {
     EventIR ir;
     bool stepFound = false;
 
@@ -126,6 +126,40 @@ int EventInterpreter::executeOneEvent(int step) {
 
     if (!stepFound) {
         return -1;
+    }
+
+    // In NPC mode must process only NPC dialogue related events plus Exit
+    if (isNpc) {
+        switch (ir.type) {
+            case EVENT_Exit:
+                return -1;
+            case EVENT_OnCanShowDialogItemCmp:
+                _readyToExit = true;
+                for (Player &player : pParty->pPlayers) {
+                    if (player.CompareVariable(ir.data.variable_descr.type, ir.data.variable_descr.value)) {
+                        return ir.target_step;
+                    }
+                }
+                break;
+            case EVENT_EndCanShowDialogItem:
+                return -1;
+            case EVENT_SetCanShowDialogItem:
+                _readyToExit = true;
+                _canShowOption = ir.data.can_show_npc_dialogue;
+                break;
+            case EVENT_CanShowTopic_IsActorKilled:
+                // TODO: enconunter and process
+                __debugbreak();
+#if 0
+                if (Actor::isActorKilled(ir.data.actor_descr.policy, ir.data.actor_descr.param, ir.data.actor_descr.num)) {
+                    return ir.target_step;
+                }
+#endif
+                break;
+            default:
+                break;
+        }
+        return step + 1;
     }
 
     switch (ir.type) {
@@ -454,20 +488,6 @@ int EventInterpreter::executeOneEvent(int step) {
             }
             break;
         }
-        case EVENT_OnCanShowDialogItemCmp:
-            _readyToExit = true;
-            for (Player &player : pParty->pPlayers) {
-                if (player.CompareVariable(ir.data.variable_descr.type, ir.data.variable_descr.value)) {
-                    return ir.target_step;
-                }
-            }
-            break;
-        case EVENT_EndCanShowDialogItem:
-            return -1;
-        case EVENT_SetCanShowDialogItem:
-            _readyToExit = true;
-            _canShowOption = ir.data.can_show_npc_dialogue;
-            break;
         case EVENT_SetNPCGroupNews:
             pNPCStats->pGroups_copy[ir.data.npc_groups_descr.groups_id] = ir.data.npc_groups_descr.group;
             break;
@@ -492,15 +512,6 @@ int EventInterpreter::executeOneEvent(int step) {
             if (Actor::isActorKilled(ir.data.actor_descr.policy, ir.data.actor_descr.param, ir.data.actor_descr.num)) {
                 return ir.target_step;
             }
-            break;
-        case EVENT_CanShowTopic_IsActorKilled:
-            // TODO: enconunter and process
-            __debugbreak();
-#if 0
-            if (Actor::isActorKilled(ir.data.actor_descr.policy, ir.data.actor_descr.param, ir.data.actor_descr.num)) {
-                return ir.target_step;
-            }
-#endif
             break;
         case EVENT_OnMapLeave:
             assert(false); // Trigger, must be skipped
@@ -597,7 +608,7 @@ bool EventInterpreter::executeRegular(int startStep) {
     _who = !pParty->hasActiveCharacter() ? CHOOSE_RANDOM : CHOOSE_ACTIVE;
 
     while (step != -1 && dword_5B65C4_cancelEventProcessing == 0) {
-        step = executeOneEvent(step);
+        step = executeOneEvent(step, false);
     }
 
     return _mapExitTriggered;
@@ -615,7 +626,7 @@ bool EventInterpreter::executeNpcDialogue(int startStep) {
     _who = CHOOSE_PARTY;
 
     while (step != -1) {
-        step = executeOneEvent(step);
+        step = executeOneEvent(step, true);
     }
 
     // Originally was: "readyToExit ? (canShowOption != 0) : 2"
