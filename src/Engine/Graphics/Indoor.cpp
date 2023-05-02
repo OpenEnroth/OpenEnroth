@@ -237,24 +237,20 @@ void IndoorLocation::toggleLight(signed int sLightID, unsigned int bToggle) {
 }
 
 //----- (00498E0A) --------------------------------------------------------
-bool IndoorLocation::Load(const std::string &filename, int num_days_played,
-                          int respawn_interval_days, int *pDest) {
+void IndoorLocation::Load(const std::string &filename, int num_days_played, int respawn_interval_days, bool *indoor_was_respawned) {
     decal_builder->Reset(0);
 
     _6807E0_num_decorations_with_sounds_6807B8 = 0;
 
-    if (bLoaded) {
-        log->warning("BLV is already loaded");
-        return true;
-    }
+    if (bLoaded)
+        Error("BLV is already loaded");
 
     auto blv_filename = std::string(filename);
     blv_filename.replace(blv_filename.length() - 4, 4, ".blv");
 
     this->filename = std::string(filename);
-    if (!pGames_LOD->DoesContainerExist(blv_filename)) {
+    if (!pGames_LOD->DoesContainerExist(blv_filename))
         Error("Unable to find %s in Games.LOD", blv_filename.c_str());
-    }
 
     Release();
 
@@ -302,16 +298,16 @@ bool IndoorLocation::Load(const std::string &filename, int num_days_played,
 
     if (respawnInitial) {
         Deserialize(pGames_LOD->LoadCompressed(dlv_filename), &save, location, [] {});
-        *pDest = 1;
+        *indoor_was_respawned = true;
     } else if (respawnTimed) {
         auto header = save.header;
         auto visibleOutlines = save.visibleOutlines;
         Deserialize(pGames_LOD->LoadCompressed(dlv_filename), &save, location, [] {});
         save.header = header;
         save.visibleOutlines = visibleOutlines;
-        *pDest = 1;
+        *indoor_was_respawned = true;
     } else {
-        *pDest = 0;
+        *indoor_was_respawned = false;
     }
 
     Deserialize(save, this);
@@ -320,8 +316,6 @@ bool IndoorLocation::Load(const std::string &filename, int num_days_played,
         dlv.uLastRepawnDay = num_days_played;
     if (respawnTimed)
         dlv.uNumRespawns++;
-
-    return 0;
 }
 
 //----- (0049AC17) --------------------------------------------------------
@@ -825,16 +819,14 @@ void PrepareToLoadBLV(bool bLoading) {
     unsigned int respawn_interval;  // ebx@1
     unsigned int map_id;            // eax@8
     MapInfo *map_info;              // edi@9
-    int v4;                         // eax@11
     bool v28;                       // zf@81
     int v35;                        // [sp+3F8h] [bp-1Ch]@1
     bool v38;                        // [sp+404h] [bp-10h]@1
-    int pDest;                      // [sp+40Ch] [bp-8h]@1
+    bool indoor_was_respawned = true;                      // [sp+40Ch] [bp-8h]@1
 
     respawn_interval = 0;
     pGameLoadingUI_ProgressBar->Reset(0x20u);
     bNoNPCHiring = false;
-    pDest = 1;
     uCurrentlyLoadedLevelType = LEVEL_Indoor;
     pBLVRenderParams->uPartySectorID = 0;
     pBLVRenderParams->uPartyEyeSectorID = 0;
@@ -861,21 +853,16 @@ void PrepareToLoadBLV(bool bLoading) {
     dword_6BE13C_uCurrentlyLoadedLocationID = map_id;
 
     pStationaryLightsStack->uNumLightsActive = 0;
-    v4 = pIndoor->Load(pCurrentMapName, pParty->GetPlayingTime().GetDays() + 1,
-                       respawn_interval, &pDest) - 1;
-    if (v4 == 0) Error("Unable to open %s", pCurrentMapName.c_str());
-    if (v4 == 1) Error("File %s is not a BLV File", pCurrentMapName.c_str()); // TODO(captainurist): these checks never trigger.
-    if (v4 == 2) Error("Attempt to open new level before clearing old");
-    if (v4 == 3) Error("Out of memory loading indoor level");
+    pIndoor->Load(pCurrentMapName, pParty->GetPlayingTime().GetDays() + 1, respawn_interval, &indoor_was_respawned);
     if (!(dword_6BE364_game_settings_1 & GAME_SETTINGS_LOADING_SAVEGAME_SKIP_RESPAWN)) {
         Actor::InitializeActors();
         SpriteObject::InitializeSpriteObjects();
     }
     dword_6BE364_game_settings_1 &= ~GAME_SETTINGS_LOADING_SAVEGAME_SKIP_RESPAWN;
     if (!map_id)
-        pDest = 0;
+        indoor_was_respawned = false;
 
-    if (pDest == 1) {
+    if (indoor_was_respawned) {
         for (uint i = 0; i < pIndoor->pSpawnPoints.size(); ++i) {
             auto spawn = &pIndoor->pSpawnPoints[i];
             if (spawn->uKind == OBJECT_Actor)
@@ -1017,7 +1004,7 @@ void PrepareToLoadBLV(bool bLoading) {
     PlayLevelMusic();
 
     // Active character speaks.
-    if (!bLoading && pDest) {
+    if (!bLoading && indoor_was_respawned) {
         int id = pParty->getRandomActiveCharacterId(vrng.get());
 
         if (id != -1) {

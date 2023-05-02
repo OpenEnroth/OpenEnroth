@@ -75,8 +75,7 @@ struct OutdoorLocation {
     void PrepareActorsDrawList();
     void CreateDebugLocation();
     void Release();
-    bool Load(const std::string &filename, int days_played,
-              int respawn_interval_days, bool *outdoors_was_respawned);
+    void Load(const std::string &filename, int days_played, int respawn_interval_days, bool *outdoors_was_respawned);
     int getTileIdByTileMapId(signed int a2);
 
     /**

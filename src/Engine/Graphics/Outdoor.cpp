@@ -254,10 +254,7 @@ bool OutdoorLocation::Initialize(const std::string &filename, int days_played,
         // pSprites_LOD->DeleteSomeOtherSprites();
         // pSpriteFrameTable->ResetLoadedFlags();
 
-        if (!this->Load(filename, days_played, respawn_interval_days, outdoors_was_respawned)) {
-            logger->warning("Couldn't Load Map!");
-            CreateDebugLocation();
-        }
+        Load(filename, days_played, respawn_interval_days, outdoors_was_respawned);
 
         ::day_attrib = this->loc_time.day_attrib;
         ::day_fogrange_1 = this->loc_time.day_fogrange_1;
@@ -837,9 +834,7 @@ void OutdoorLocation::Release() {
     render->ReleaseTerrain();
 }
 
-bool OutdoorLocation::Load(const std::string &filename, int days_played,
-                           int respawn_interval_days,
-                           bool *outdoors_was_respawned) {
+void OutdoorLocation::Load(const std::string &filename, int days_played, int respawn_interval_days, bool *outdoors_was_respawned) {
     //if (engine->IsUnderwater()) {
     //    pPaletteManager->pPalette_tintColor[0] = 0x10;
     //    pPaletteManager->pPalette_tintColor[1] = 0xC2;
@@ -859,9 +854,8 @@ bool OutdoorLocation::Load(const std::string &filename, int days_played,
 
     _6807E0_num_decorations_with_sounds_6807B8 = 0;
 
-    if (!pGames_LOD->DoesContainerExist(filename)) {
+    if (!pGames_LOD->DoesContainerExist(filename))
         Error("Unable to find %s in Games.LOD", filename.c_str());
-    }
 
     std::string minimap_filename = filename.substr(0, filename.length() - 4);
     viewparams->location_minimap = assets->GetImage_Solid(minimap_filename);
@@ -964,10 +958,6 @@ bool OutdoorLocation::Load(const std::string &filename, int days_played,
     }
 
     this->sky_texture = assets->GetBitmap(loc_time.sky_texture_name);
-
-    //pPaletteManager->RecalculateAll();
-
-    return true;
 }
 
 int OutdoorLocation::getTileIdByTileMapId(int mapId) {

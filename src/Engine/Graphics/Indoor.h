@@ -280,8 +280,7 @@ struct IndoorLocation {
     }
 
     void Release();
-    bool Load(const std::string &filename, int num_days_played,
-              int respawn_interval_days, int *pDest);
+    void Load(const std::string &filename, int num_days_played, int respawn_interval_days, bool *indoor_was_respawned);
     void Draw();
 
     /**
