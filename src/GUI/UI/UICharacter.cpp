@@ -114,11 +114,6 @@ unsigned int ui_game_dialogue_option_normal_color;
 
 unsigned int ui_house_player_cant_interact_color;
 
-bool awardButtonUpClicked = false;
-bool awardButtonDownClicked = false;
-bool awardScrollUpClicked = false;
-bool awardScrollDownClicked = false;
-
 void set_default_ui_skin() {
     ui_mainmenu_copyright_color = colorTable.White.c16();
 
@@ -861,60 +856,90 @@ void GUIWindow_CharacterRecord::CharacterUI_SkillsTab_Draw(Player *player) {
         localization->GetString(LSTR_MISC));
 }
 
+GUIWindow GUIWindow_CharacterRecord::prepareAwardsWindow() {
+    GUIWindow awardsWindow;
+
+    awardsWindow.uFrameX = 12;
+    awardsWindow.uFrameY = 48;
+    awardsWindow.uFrameWidth = 424;
+    awardsWindow.uFrameHeight = 290;
+    awardsWindow.uFrameZ = 435;
+    awardsWindow.uFrameW = 337;
+
+    return awardsWindow;
+}
+
 std::string GUIWindow_CharacterRecord::getAchievedAwardsString(int idx) {
     std::string str;
 
     // TODO(captainurist): fmt can throw
-    switch (achievedAwardsList[idx]) {
+    switch (_achievedAwardsList[idx]) {
       case Award_Arena_PageWins:
-        str = fmt::sprintf(pAwards[achievedAwardsList[idx]].pText, pParty->uNumArenaWins[0]);
+        str = fmt::sprintf(pAwards[_achievedAwardsList[idx]].pText, pParty->uNumArenaWins[0]);
         break;
       case Award_Arena_SquireWins:
-        str = fmt::sprintf(pAwards[achievedAwardsList[idx]].pText, pParty->uNumArenaWins[1]);
+        str = fmt::sprintf(pAwards[_achievedAwardsList[idx]].pText, pParty->uNumArenaWins[1]);
         break;
       case Award_Arena_KnightWins:
-        str = fmt::sprintf(pAwards[achievedAwardsList[idx]].pText, pParty->uNumArenaWins[2]);
+        str = fmt::sprintf(pAwards[_achievedAwardsList[idx]].pText, pParty->uNumArenaWins[2]);
         break;
       case Award_Arena_LordWins:
-        str = fmt::sprintf(pAwards[achievedAwardsList[idx]].pText, pParty->uNumArenaWins[3]);
+        str = fmt::sprintf(pAwards[_achievedAwardsList[idx]].pText, pParty->uNumArenaWins[3]);
         break;
       case Award_ArcomageWins:
-        str = fmt::sprintf(pAwards[achievedAwardsList[idx]].pText, pParty->uNumArcomageWins);
+        str = fmt::sprintf(pAwards[_achievedAwardsList[idx]].pText, pParty->uNumArcomageWins);
         break;
       case Award_ArcomageLoses:
-        str = fmt::sprintf(pAwards[achievedAwardsList[idx]].pText, pParty->uNumArcomageLoses);
+        str = fmt::sprintf(pAwards[_achievedAwardsList[idx]].pText, pParty->uNumArcomageLoses);
         break;
       case Award_Deaths:
-        str = fmt::sprintf(pAwards[achievedAwardsList[idx]].pText, pParty->uNumDeaths);
+        str = fmt::sprintf(pAwards[_achievedAwardsList[idx]].pText, pParty->uNumDeaths);
         break;
       case Award_BountiesCollected:
-        str = fmt::sprintf(pAwards[achievedAwardsList[idx]].pText, pParty->uNumBountiesCollected);
+        str = fmt::sprintf(pAwards[_achievedAwardsList[idx]].pText, pParty->uNumBountiesCollected);
         break;
       case Award_Fine:
-        str = fmt::sprintf(pAwards[achievedAwardsList[idx]].pText, pParty->uFine);
+        str = fmt::sprintf(pAwards[_achievedAwardsList[idx]].pText, pParty->uFine);
         break;
       case Award_PrisonTerms:
-        str = fmt::sprintf(pAwards[achievedAwardsList[idx]].pText, pParty->uNumPrisonTerms);
+        str = fmt::sprintf(pAwards[_achievedAwardsList[idx]].pText, pParty->uNumPrisonTerms);
         break;
       default:
         break;
     }
 
     if (str.empty()) {
-        str = std::string(pAwards[achievedAwardsList[idx]].pText);
+        str = std::string(pAwards[_achievedAwardsList[idx]].pText);
     }
 
     return str;
 }
 
-void GUIWindow_CharacterRecord::scrollAwardsUp(GUIWindow &window) {
-    int initStartElem = startAwardElem;
+void GUIWindow_CharacterRecord::clickAwardsUp() {
+    if (_startAwardElem) {
+        _startAwardElem--;
+    }
+}
 
-    while (startAwardElem) {
+void GUIWindow_CharacterRecord::clickAwardsDown() {
+    if (!_awardLimitReached) {
+        _startAwardElem++;
+    }
+}
+
+void GUIWindow_CharacterRecord::scrollAwardsUp() {
+    if (!_startAwardElem) {
+        return;
+    }
+
+    GUIWindow window = prepareAwardsWindow();
+    int initStartElem = _startAwardElem;
+
+    while (_startAwardElem) {
         int y = window.uFrameY;
         int lastDisplayedAward = -1;
 
-        for (int i = startAwardElem; i < achievedAwardsList.size(); ++i) {
+        for (int i = _startAwardElem; i < _achievedAwardsList.size(); ++i) {
             std::string str = getAchievedAwardsString(i);
 
             y += pFontArrus->CalcTextHeight(str, window.uFrameWidth, 0) + 8;
@@ -927,15 +952,20 @@ void GUIWindow_CharacterRecord::scrollAwardsUp(GUIWindow &window) {
         if (lastDisplayedAward == initStartElem) {
             break;
         }
-        startAwardElem--;
+        _startAwardElem--;
     }
 }
 
-void GUIWindow_CharacterRecord::scrollAwardsDown(GUIWindow &window) {
+void GUIWindow_CharacterRecord::scrollAwardsDown() {
+    if (_awardLimitReached) {
+        return;
+    }
+
+    GUIWindow window = prepareAwardsWindow();
     int lastDisplayedAwardPrev = -1;
     int y = window.uFrameY;
 
-    for (int i = startAwardElem; i < achievedAwardsList.size(); ++i) {
+    for (int i = _startAwardElem; i < _achievedAwardsList.size(); ++i) {
         std::string str = getAchievedAwardsString(i);
 
         y += pFontArrus->CalcTextHeight(str, window.uFrameWidth, 0) + 8;
@@ -945,14 +975,14 @@ void GUIWindow_CharacterRecord::scrollAwardsDown(GUIWindow &window) {
         }
     }
 
-    assert(lastDisplayedAwardPrev + 1 < achievedAwardsList.size());
+    assert(lastDisplayedAwardPrev + 1 < _achievedAwardsList.size());
 
     while (true) {
         int y = window.uFrameY;
         bool endReached = false;
         int lastDisplayedAward;
 
-        for (int i = startAwardElem; i < achievedAwardsList.size(); ++i) {
+        for (int i = _startAwardElem; i < _achievedAwardsList.size(); ++i) {
             std::string str = getAchievedAwardsString(i);
 
             y += pFontArrus->CalcTextHeight(str, window.uFrameWidth, 0) + 8;
@@ -962,15 +992,15 @@ void GUIWindow_CharacterRecord::scrollAwardsDown(GUIWindow &window) {
             }
         }
 
-        if ((lastDisplayedAward + 1 == achievedAwardsList.size()) || startAwardElem == lastDisplayedAwardPrev) {
+        if ((lastDisplayedAward + 1 == _achievedAwardsList.size()) || _startAwardElem == lastDisplayedAwardPrev) {
             break;
         }
-        startAwardElem++;
+        _startAwardElem++;
     }
 }
 
 void GUIWindow_CharacterRecord::CharacterUI_AwardsTab_Draw(Player *player) {
-    GUIWindow awards_window;
+    GUIWindow window = prepareAwardsWindow();
 
     render->DrawTextureNew(8 / 640.0f, 8 / 480.0f, ui_character_awards_background);
 
@@ -978,50 +1008,25 @@ void GUIWindow_CharacterRecord::CharacterUI_AwardsTab_Draw(Player *player) {
                                   ui_character_header_text_color, NameAndTitle(player->name, player->classType));
 
     pGUIWindow_CurrentMenu->DrawText(pFontArrus, {24, 18}, 0, str, 0, 0, 0);
-    awards_window.uFrameX = 12;
-    awards_window.uFrameY = 48;
-    awards_window.uFrameWidth = 424;
-    awards_window.uFrameHeight = 290;
-    awards_window.uFrameZ = 435;
-    awards_window.uFrameW = 337;
 
-    if (awardsCharacterId != pParty->activeCharacterIndex()) {
+
+    if (_awardsCharacterId != pParty->activeCharacterIndex()) {
         fillAwardsData();
     }
 
-    if (awardButtonDownClicked && !awardLimitReached) {
-        startAwardElem++;
-    }
-    if (awardButtonUpClicked && startAwardElem) {
-        startAwardElem--;
-    }
-
-    if (awardScrollDownClicked && !awardLimitReached) {
-        scrollAwardsDown(awards_window);
-    }
-
-    if (awardScrollUpClicked && startAwardElem) {
-        scrollAwardsUp(awards_window);
-    }
-
-    awardButtonUpClicked = false;
-    awardButtonDownClicked = false;
-    awardScrollUpClicked = false;
-    awardScrollDownClicked = false;
-
     int currentlyDisplayedElems = 0;
-    for (int i = startAwardElem; i < achievedAwardsList.size(); ++i) {
+    for (int i = _startAwardElem; i < _achievedAwardsList.size(); ++i) {
         std::string str = getAchievedAwardsString(i);
 
-        awards_window.DrawText(pFontArrus, {0, 0}, ui_character_award_color[pAwards[achievedAwardsList[i]].uPriority % 6], str, 0, 0, 0);
-        awards_window.uFrameY = pFontArrus->CalcTextHeight(str, awards_window.uFrameWidth, 0) + awards_window.uFrameY + 8;
+        window.DrawText(pFontArrus, {0, 0}, ui_character_award_color[pAwards[_achievedAwardsList[i]].uPriority % 6], str, 0, 0, 0);
+        window.uFrameY = pFontArrus->CalcTextHeight(str, window.uFrameWidth, 0) + window.uFrameY + 8;
         currentlyDisplayedElems++;
-        if (awards_window.uFrameY > awards_window.uFrameHeight) {
+        if (window.uFrameY > window.uFrameHeight) {
             break;
         }
     }
 
-    awardLimitReached = (startAwardElem + currentlyDisplayedElems) == achievedAwardsList.size();
+    _awardLimitReached = (_startAwardElem + currentlyDisplayedElems) == _achievedAwardsList.size();
 }
 
 //----- (0041A2C1) --------------------------------------------------------
@@ -1749,44 +1754,21 @@ void GUIWindow_CharacterRecord::CharacterUI_StatsTab_Draw(Player *player) {
                                                     player->GetBaseResistance(CHARACTER_ATTRIBUTE_RESIST_BODY), immuneToBody));
 }
 
-#if 0
-bool awardSort(int i, int j) {
-    if (pAwards[i].uPriority == 0)  // none
-        return false;
-    else if (pAwards[j].uPriority == 0)
-        return true;
-    else if (pAwards[i].uPriority == 1)  // fines,arena stuff,etc
-        return false;
-    else if (pAwards[j].uPriority == 1)
-        return true;
-    else if (pAwards[i].uPriority == 5)  // joined guilds
-        return false;
-    else if (pAwards[j].uPriority == 5)
-        return true;
-    else
-        return (pAwards[i].uPriority < pAwards[j].uPriority);
-}
-#endif
-
 void GUIWindow_CharacterRecord::fillAwardsData() {
     Player *pPlayer = &pParty->activeCharacter();
 
-    awardsCharacterId = pParty->activeCharacterIndex();
-    awardButtonUpClicked = false;
-    awardButtonDownClicked = false;
-    awardScrollUpClicked = false;
-    awardScrollDownClicked = false;
-    startAwardElem = 0;
-    awardLimitReached = false;
+    _awardsCharacterId = pParty->activeCharacterIndex();
+    _startAwardElem = 0;
+    _awardLimitReached = false;
 
-    achievedAwardsList.clear();
+    _achievedAwardsList.clear();
     for (int i = 1; i < pAwards.size(); ++i) {
         if (pPlayer->_achievedAwardsBits[i] && pAwards[i].pText) {
-            achievedAwardsList.push_back(i);
+            _achievedAwardsList.push_back(i);
         }
     }
 
-    std::sort(achievedAwardsList.begin(), achievedAwardsList.end(), [&] (int a, int b) { return pAwards[a].uPriority < pAwards[b].uPriority; });
+    std::stable_sort(_achievedAwardsList.begin(), _achievedAwardsList.end(), [&] (int a, int b) { return pAwards[a].uPriority < pAwards[b].uPriority; });
 }
 
 void WetsuitOn(unsigned int uPlayerID) {

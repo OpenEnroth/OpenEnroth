@@ -17,6 +17,11 @@ class GUIWindow_CharacterRecord : public GUIWindow {
     void ShowAwardsTab();
     void ToggleRingsOverlay();
 
+    void clickAwardsUp();
+    void clickAwardsDown();
+    void scrollAwardsUp();
+    void scrollAwardsDown();
+
  protected:
     void CharacterUI_StatsTab_Draw(struct Player *);
     void CharacterUI_SkillsTab_Draw(struct Player *);
@@ -34,14 +39,13 @@ class GUIWindow_CharacterRecord : public GUIWindow {
     void fillAwardsData();
 
     std::string getAchievedAwardsString(int idx);
-    void scrollAwardsUp(GUIWindow &window);
-    void scrollAwardsDown(GUIWindow &window);
+    GUIWindow prepareAwardsWindow();
 
  private:
-    int awardsCharacterId = -1;
-    int startAwardElem = 0;
-    bool awardLimitReached = false;
-    std::vector<int> achievedAwardsList;
+    int _awardsCharacterId = -1;
+    int _startAwardElem = 0;
+    bool _awardLimitReached = false;
+    std::vector<int> _achievedAwardsList;
 };
 
 bool ringscreenactive();
@@ -56,7 +60,3 @@ extern Image *ui_character_inventory_background_strip;
 extern Image *ui_character_inventory_paperdoll_background;
 
 extern std::array<Image *, 16> paperdoll_dbrds;
-extern bool awardButtonUpClicked;
-extern bool awardButtonDownClicked;
-extern bool awardScrollUpClicked;
-extern bool awardScrollDownClicked;

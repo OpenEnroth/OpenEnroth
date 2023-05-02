@@ -1856,20 +1856,21 @@ void Game::processQueuedMessages() {
                     continue;
                 case UIMSG_ClickAwardScrollBar: {
                     Pointi pt = _mouse->GetCursorPos();
+                    // TODO: add scroll bar
                     if (pt.y > 178) {
-                        awardScrollDownClicked = true;
+                        ((GUIWindow_CharacterRecord *)pGUIWindow_CurrentMenu)->scrollAwardsDown();
                     } else {
-                        awardScrollUpClicked = true;
+                        ((GUIWindow_CharacterRecord *)pGUIWindow_CurrentMenu)->scrollAwardsUp();
                     }
                     continue;
                 }
                 case UIMSG_ClickAwardsUpBtn:
                     new OnButtonClick3(WINDOW_CharacterWindow_Awards, {pBtn_Up->uX, pBtn_Up->uY}, {0, 0}, pBtn_Up);
-                    awardButtonUpClicked = true;
+                    ((GUIWindow_CharacterRecord *)pGUIWindow_CurrentMenu)->clickAwardsUp();
                     continue;
                 case UIMSG_ClickAwardsDownBtn:
                     new OnButtonClick3(WINDOW_CharacterWindow_Awards, {pBtn_Down->uX, pBtn_Down->uY}, {0, 0}, pBtn_Down);
-                    awardButtonDownClicked = true;
+                    ((GUIWindow_CharacterRecord *)pGUIWindow_CurrentMenu)->clickAwardsDown();
                     continue;
                 case UIMSG_ChangeDetaliz:
                     ((GUIWindow_CharacterRecord *)pGUIWindow_CurrentMenu)->ToggleRingsOverlay();
