@@ -202,7 +202,6 @@ struct LODSpriteHeader {
 };
 #pragma pack(pop)
 
-#pragma pack(push, 1)
 struct LODSprite : public LODSpriteHeader {
     inline LODSprite() {
         bitmap = nullptr;
@@ -214,7 +213,6 @@ struct LODSprite : public LODSpriteHeader {
 
     uint8_t *bitmap;
 };
-#pragma pack(pop)
 
 class LODFile_Sprites : public LOD::File {
  public:

@@ -7,9 +7,6 @@ struct ODMFace;
 struct Span;
 struct Edge;
 
-/*  141 */
-// stru148
-#pragma pack(push, 1)
 struct Polygon {
     inline Polygon() { uNumVertices = 0; }
 
@@ -61,6 +58,5 @@ struct Polygon {
     char field_10A = 0;
     char field_10B = 0;
 };
-#pragma pack(pop)
 
 extern std::array<struct Polygon, 2000 + 18000> array_77EC08;

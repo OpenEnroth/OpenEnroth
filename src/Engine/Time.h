@@ -114,8 +114,6 @@ struct GameTime {
     int64_t value;
 };
 
-/*   61 */
-#pragma pack(push, 1)
 struct Timer {
     static Timer *Create() { return new Timer; }
 
@@ -163,7 +161,6 @@ struct Timer {
     static const unsigned int Month = 4 * Week;
     static const unsigned int Year = 12 * Month;
 };
-#pragma pack(pop)
 
 extern Timer *pMiscTimer;
 extern Timer *pEventTimer;

@@ -4,8 +4,6 @@
 
 #include "Engine/Graphics/Sprites.h"
 
-/*  148 */
-#pragma pack(push, 1)
 struct PaletteManager {
     PaletteManager();
 
@@ -43,7 +41,6 @@ struct PaletteManager {
     uint32_t p32ARGBpalette[50][256]{};
     bool palettestorechanged{ true };
 };
-#pragma pack(pop)
 
 bool HSV2RGB(float *redo, float *greeno, float *blueo, float hin, float sin, float vin);
 void RGB2HSV(float redin, float greenin, float bluein, float *outh, float *outs, float *outv);

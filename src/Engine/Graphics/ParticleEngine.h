@@ -22,8 +22,6 @@ MM_DECLARE_FLAGS(ParticleFlags, ParticleFlag)
 MM_DECLARE_OPERATORS_FOR_FLAGS(ParticleFlags)
 
 // TODO(pskelton): eliminate this one
-/*  305 */
-#pragma pack(push, 1)
 struct Particle_sw {
     ParticleFlags type{ ParticleType_Invalid };
     float x{};
@@ -42,10 +40,7 @@ struct Particle_sw {
     int field_34{};
     int field_38[12]{};
 };
-#pragma pack(pop)
 
-/*  109 */
-#pragma pack(push, 1)
 struct Particle {
     ParticleFlags type = ParticleType_Invalid;
     float x = 0;
@@ -87,19 +82,13 @@ struct Particle {
     float fov_y = 0;
     int uLightColor_bgr = 0;
 };
-#pragma pack(pop)
 
-/*  111 */
-#pragma pack(push, 1)
 struct stru2_LineList {
     unsigned int uNumLines = 0;
     RenderVertexD3D3 pLineVertices[48] {};
     char field_604[60] {};
 };
-#pragma pack(pop)
 
-/*  110 */
-#pragma pack(push, 1)
 class ParticleEngine {
  public:
     static const int PARTICLES_ARRAY_SIZE = 500;
@@ -158,7 +147,6 @@ class ParticleEngine {
     int uEndParticle;
     int uTimeElapsed;
 };
-#pragma pack(pop)
 
 struct TrailParticle {
     inline TrailParticle() {
