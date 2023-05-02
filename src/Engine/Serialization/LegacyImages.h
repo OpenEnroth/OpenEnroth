@@ -1196,12 +1196,12 @@ void Deserialize(const MapEventVariables_MM7 &src, MapEventVariables *dst);
 
 
 struct BLVHeader_MM7 {
-    char field_0[104];
+    std::array<char, 104> field_0;
     unsigned int uFaces_fdata_Size;
     unsigned int uSector_rdata_Size;
     unsigned int uSector_lrdata_Size;
     unsigned int uDoors_ddata_Size;
-    char field_78[16];
+    std::array<char, 16> field_78;
 };
 static_assert(sizeof(BLVHeader_MM7) == 136);
 // TODO(captainurist): introduce engine equivalent

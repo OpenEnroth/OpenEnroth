@@ -32,13 +32,6 @@ class Serializer {
         WriteBytes(src, sizeof(T));
     }
 
-    template<class LegacyT, class T>
-    void WriteLegacy(const T *src) {
-        LegacyT tmp;
-        Serialize(*src, &tmp);
-        WriteRaw(&tmp);
-    }
-
     template<class T>
     void WriteRawArray(const T *src, size_t size) {
         WriteBytes(src, sizeof(T) * size);
@@ -98,6 +91,7 @@ class FileSerializer : private Embedded<FileOutputStream>, public Serializer {
         StreamBase::get().close();
     }
 };
+
 
 class BlobSerializer : private Embedded<std::string>, private Embedded<StringOutputStream>, public Serializer {
     using StringBase = Embedded<std::string>;
