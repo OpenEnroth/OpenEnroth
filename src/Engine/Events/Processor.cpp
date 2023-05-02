@@ -13,7 +13,6 @@
 #include "Engine/Events/EventIR.h"
 #include "Engine/Events/EventInterpreter.h"
 #include "Engine/Events/Processor.h"
-#include "Engine/Events.h"
 #include "GUI/UI/UIStatusBar.h"
 
 struct MapTimer {

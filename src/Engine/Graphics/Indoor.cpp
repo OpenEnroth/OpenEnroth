@@ -5,7 +5,6 @@
 
 #include "Engine/Engine.h"
 #include "Engine/EngineGlobals.h"
-#include "Engine/Events.h"
 #include "Engine/Events/Processor.h"
 #include "Engine/Graphics/BspRenderer.h"
 #include "Engine/Graphics/Collisions.h"

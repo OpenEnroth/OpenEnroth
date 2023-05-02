@@ -7,7 +7,6 @@
 #include "Engine/Engine.h"
 #include "Engine/SpellFxRenderer.h"
 #include "Engine/Time.h"
-#include "Engine/Events.h"
 #include "Engine/Events/Processor.h"
 #include "Engine/LOD.h"
 #include "Engine/OurMath.h"

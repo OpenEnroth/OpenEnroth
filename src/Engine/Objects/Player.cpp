@@ -5,7 +5,6 @@
 #include "Engine/Autonotes.h"
 #include "Engine/Awards.h"
 #include "Engine/Engine.h"
-#include "Engine/Events.h"
 #include "Engine/Events2D.h"
 #include "Engine/Spells/CastSpellInfo.h"
 #include "Engine/Graphics/DecalBuilder.h"

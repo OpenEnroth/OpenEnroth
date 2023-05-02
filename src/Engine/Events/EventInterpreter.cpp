@@ -617,8 +617,14 @@ bool EventInterpreter::executeRegular(int startStep) {
 bool EventInterpreter::executeNpcDialogue(int startStep) {
     assert(startStep >= 0);
 
-    if (!_eventId || !_events.size()) {
+    if (!_eventId) {
         return false;
+    }
+
+    if (!_events.size()) {
+        // No event commands found for current eventId
+        // In this case dialogue elements can be showed
+        return true;
     }
 
     int step = startStep;
