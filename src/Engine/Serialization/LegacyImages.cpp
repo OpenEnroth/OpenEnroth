@@ -7,18 +7,19 @@
 
 #include "Engine/Engine.h"
 #include "Engine/Graphics/Indoor.h"
+#include "Engine/Graphics/Level/Decoration.h"
 #include "Engine/Graphics/Outdoor.h"
 #include "Engine/Graphics/Overlays.h"
 #include "Engine/Graphics/Sprites.h"
-#include "Engine/Graphics/Level/Decoration.h"
-#include "Engine/Tables/TileFrameTable.h"
-#include "Engine/Tables/PlayerFrameTable.h"
 #include "Engine/Objects/Actor.h"
 #include "Engine/Objects/NPC.h"
-#include "Engine/Objects/SpriteObject.h"
 #include "Engine/Objects/ObjectList.h"
+#include "Engine/Objects/SpriteObject.h"
 #include "Engine/Party.h"
+#include "Engine/SaveLoad.h"
 #include "Engine/Tables/IconFrameTable.h"
+#include "Engine/Tables/PlayerFrameTable.h"
+#include "Engine/Tables/TileFrameTable.h"
 #include "Engine/Time.h"
 
 #include "Media/Audio/SoundInfo.h"
@@ -1410,6 +1411,7 @@ void Deserialize(const BLVSector_MM7 &src, BLVSector *dst) {
 
 void Serialize(const GUICharMetric &src, GUICharMetric_MM7 *dst) {
     memzero(dst);
+
     dst->uLeftSpacing = src.uLeftSpacing;
     dst->uWidth = src.uWidth;
     dst->uRightSpacing = src.uRightSpacing;
@@ -1743,6 +1745,8 @@ void Deserialize(const SoundInfo_MM7 &src, SoundInfo *dst) {
 }
 
 void Serialize(const MapEventVariables &src, MapEventVariables_MM7 *dst) {
+    memzero(dst);
+
     dst->mapVars = src.mapVars;
     dst->decorVars = src.decorVars;
 }
@@ -1757,3 +1761,17 @@ void Deserialize(const OutdoorLocationTileType_MM7 &src, OutdoorLocationTileType
     dst->uTileID = src.uTileID;
 }
 
+void Serialize(const SaveGameHeader &src, SaveGameHeader_MM7 *dst) {
+    memzero(dst);
+
+    Serialize(src.pName, &dst->pName);
+    Serialize(src.pLocationName, &dst->pLocationName);
+    Serialize(src.playing_time, &dst->playing_time);
+}
+
+void Deserialize(const SaveGameHeader_MM7 &src, SaveGameHeader *dst) {
+    Deserialize(src.pName, &dst->pName);
+    Deserialize(src.pLocationName, &dst->pLocationName);
+    Deserialize(src.playing_time, &dst->playing_time);
+    // field_30 is ignored.
+}

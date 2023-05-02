@@ -48,6 +48,7 @@ struct OverlayDesc;
 struct Party;
 struct Player;
 struct PlayerFrame;
+struct SaveGameHeader;
 struct SpawnPoint;
 struct SpellBuff;
 struct SpriteObject;
@@ -1213,6 +1214,18 @@ struct OutdoorLocationTileType_MM7 {
 };
 
 void Deserialize(const OutdoorLocationTileType_MM7 &src, OutdoorLocationTileType *dst);
+
+
+struct SaveGameHeader_MM7 {
+    std::array<char, 20> pName;
+    std::array<char, 20> pLocationName;
+    int64_t playing_time;
+    std::array<char, 52> field_30;
+};
+static_assert(sizeof(SaveGameHeader_MM7) == 0x64, "Wrong type size");
+
+void Serialize(const SaveGameHeader &src, SaveGameHeader_MM7 *dst);
+void Deserialize(const SaveGameHeader_MM7 &src, SaveGameHeader *dst);
 
 
 #pragma pack(pop)

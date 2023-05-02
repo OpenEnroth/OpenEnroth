@@ -269,24 +269,24 @@ void IndoorLocation::Load(const std::string &filename, int num_days_played, int 
 
     bool respawnInitial = false; // Perform initial location respawn?
     bool respawnTimed = false; // Perform timed location respawn?
-    IndoorSave_MM7 save;
+    IndoorDelta_MM7 delta;
     if (Blob blob = pSave_LOD->LoadCompressed(dlv_filename)) {
         try {
-            Deserialize(blob, &save, location, progressCallback);
+            Deserialize(blob, &delta, location, progressCallback);
 
             // Level was changed externally and we have a save there? Don't crash, just respawn.
-            if (save.header.uNumFacesInBModels > 0 && save.header.uNumDecorations > 0 &&
-                (save.header.uNumFacesInBModels != pFaces.size() || save.header.uNumDecorations != pLevelDecorations.size()))
+            if (delta.header.uNumFacesInBModels > 0 && delta.header.uNumDecorations > 0 &&
+                (delta.header.uNumFacesInBModels != pFaces.size() || delta.header.uNumDecorations != pLevelDecorations.size()))
                 respawnInitial = true;
 
             // Entering the level for the 1st time?
-            if (save.header.uLastRepawnDay == 0)
+            if (delta.header.uLastRepawnDay == 0)
                 respawnInitial = true;
 
             if (dword_6BE364_game_settings_1 & GAME_SETTINGS_LOADING_SAVEGAME_SKIP_RESPAWN)
                 respawn_interval_days = 0x1BAF800;
 
-            if (!respawnInitial && num_days_played - save.header.uLastRepawnDay >= respawn_interval_days && pCurrentMapName != "d29.dlv")
+            if (!respawnInitial && num_days_played - delta.header.uLastRepawnDay >= respawn_interval_days && pCurrentMapName != "d29.dlv")
                 respawnTimed = true;
         } catch (const Exception &e) {
             logger->error("Failed to load '{}', respawning location: {}", dlv_filename, e.what());
@@ -297,20 +297,20 @@ void IndoorLocation::Load(const std::string &filename, int num_days_played, int 
     assert(respawnInitial + respawnTimed <= 1);
 
     if (respawnInitial) {
-        Deserialize(pGames_LOD->LoadCompressed(dlv_filename), &save, location, [] {});
+        Deserialize(pGames_LOD->LoadCompressed(dlv_filename), &delta, location, [] {});
         *indoor_was_respawned = true;
     } else if (respawnTimed) {
-        auto header = save.header;
-        auto visibleOutlines = save.visibleOutlines;
-        Deserialize(pGames_LOD->LoadCompressed(dlv_filename), &save, location, [] {});
-        save.header = header;
-        save.visibleOutlines = visibleOutlines;
+        auto header = delta.header;
+        auto visibleOutlines = delta.visibleOutlines;
+        Deserialize(pGames_LOD->LoadCompressed(dlv_filename), &delta, location, [] {});
+        delta.header = header;
+        delta.visibleOutlines = visibleOutlines;
         *indoor_was_respawned = true;
     } else {
         *indoor_was_respawned = false;
     }
 
-    Deserialize(save, this);
+    Deserialize(delta, this);
 
     if (respawnTimed || respawnInitial)
         dlv.uLastRepawnDay = num_days_played;

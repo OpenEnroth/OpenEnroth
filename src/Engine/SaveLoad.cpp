@@ -22,6 +22,9 @@
 #include "Engine/Objects/SpriteObject.h"
 
 #include "Engine/Serialization/CompositeImages.h"
+#include "Engine/Serialization/CommonImages.h"
+#include "Engine/Serialization/Deserializer.h"
+#include "Engine/Serialization/Serializer.h"
 
 #include "GUI/GUIFont.h"
 #include "GUI/GUIWindow.h"
@@ -35,7 +38,7 @@ struct SavegameList *pSavegameList = new SavegameList;
 unsigned int uNumSavegameFiles;
 std::array<unsigned int, MAX_SAVE_SLOTS> pSavegameUsedSlots;
 std::array<Image *, MAX_SAVE_SLOTS> pSavegameThumbnails;
-std::array<SavegameHeader, MAX_SAVE_SLOTS> pSavegameHeader;
+std::array<SaveGameHeader, MAX_SAVE_SLOTS> pSavegameHeader;
 
 // TODO(pskelton): move to save game list
 int pSaveListPosition = 0;
@@ -64,82 +67,25 @@ void LoadGame(unsigned int uSlot) {
 
     pSave_LOD->LoadFile(to_file_path, 0);
 
-    static_assert(sizeof(SavegameHeader) == 100, "Wrong type size");
-    Blob headerBlob = pSave_LOD->LoadRaw("header.bin");
-    SavegameHeader *header = (SavegameHeader*)headerBlob.data();
-    if (header == nullptr) {
-        logger->warning("{}", localization->FormatString(LSTR_FMT_SAVEGAME_CORRUPTED, 100));
-    }
+    SaveGame_MM7 save;
+    Deserialize(*pSave_LOD, &save);
 
-    {
-        Blob partyBlob = pSave_LOD->LoadRaw("party.bin");
-        Party_MM7 *serialization = (Party_MM7*)partyBlob.data();
-        if (serialization == nullptr) {
-            logger->warning("{}", localization->FormatString(LSTR_FMT_SAVEGAME_CORRUPTED, 101));
-        } else {
-            Deserialize(*serialization, pParty);
+    SaveGameHeader header;
+    Deserialize(save, &header);
 
-            pParty->bTurnBasedModeOn = false;  // We always start in realtime after loading a game.
-
-            for (size_t i = 0; i < 4; i++) {
-                Player *player = &pParty->pPlayers[i];
-                for (size_t j = 0; j < 5; j++) {
-                    if (j >= player->vBeacons.size()) {
-                        continue;
-                    }
-                    LloydBeacon &beacon = player->vBeacons[j];
-                    std::string str = fmt::format("lloyd{}{}.pcx", i + 1, j + 1);
-                    //beacon.image = Image::Create(new PCX_LOD_Raw_Loader(pNew_LOD, str));
-                    beacon.image = render->CreateTexture_PCXFromLOD(pSave_LOD, str);
-                    beacon.image->GetWidth();
-                }
+    // TODO(captainurist): incapsulate this too
+    pParty->bTurnBasedModeOn = false;  // We always start in realtime after loading a game.
+    for (size_t i = 0; i < 4; i++) {
+        Player *player = &pParty->pPlayers[i];
+        for (size_t j = 0; j < 5; j++) {
+            if (j >= player->vBeacons.size()) {
+                continue;
             }
-        }
-    }
-
-    {
-        Blob timerBlob = pSave_LOD->LoadRaw("clock.bin");
-        Timer_MM7 *serialization = (Timer_MM7*)timerBlob.data();
-        if (serialization == nullptr) {
-            logger->warning("{}", localization->FormatString(LSTR_FMT_SAVEGAME_CORRUPTED, 102));
-        } else {
-            Deserialize(*serialization, pEventTimer);
-        }
-    }
-
-    {
-        Blob blob = pSave_LOD->LoadRaw("overlay.bin");
-        OtherOverlayList_MM7 *serialization = (OtherOverlayList_MM7*)blob.data();
-        if (serialization == nullptr) {
-            logger->warning("{}", localization->FormatString(LSTR_FMT_SAVEGAME_CORRUPTED, 103));
-        } else {
-            Deserialize(*serialization, pOtherOverlayList);
-        }
-    }
-
-    {
-        Blob blob = pSave_LOD->LoadRaw("npcdata.bin");
-        NPCData_MM7 *serialization = (NPCData_MM7*)blob.data();
-        if (serialization == nullptr) {
-            logger->warning("{}", localization->FormatString(LSTR_FMT_SAVEGAME_CORRUPTED, 104));
-        } else {
-            for (unsigned int i = 0; i < 501; ++i) {
-                Deserialize(serialization[i], &pNPCStats->pNewNPCData[i]);
-            }
-            pNPCStats->OnLoadSetNPC_Names();
-        }
-    }
-
-    {
-        Blob blob = pSave_LOD->LoadRaw("npcgroup.bin");
-        const void *npcgroup = blob.data();
-        if (npcgroup == nullptr) {
-            logger->warning("{}", localization->FormatString(LSTR_FMT_SAVEGAME_CORRUPTED, 105));
-            __debugbreak();
-        } else if (sizeof(pNPCStats->pGroups_copy) != 102) {
-            logger->warning("NPCStats: deserialization warning");
-        } else {
-            memcpy(pNPCStats->pGroups_copy.data(), npcgroup, sizeof(pNPCStats->pGroups_copy));
+            LloydBeacon &beacon = player->vBeacons[j];
+            std::string str = fmt::format("lloyd{}{}.pcx", i + 1, j + 1);
+            //beacon.image = Image::Create(new PCX_LOD_Raw_Loader(pNew_LOD, str));
+            beacon.image = render->CreateTexture_PCXFromLOD(pSave_LOD, str);
+            beacon.image->GetWidth();
         }
     }
 
@@ -177,11 +123,11 @@ void LoadGame(unsigned int uSlot) {
     pEventTimer->Resume();
     pEventTimer->StopGameTime();
 
-    if (!pGames_LOD->DoesContainerExist(header->pLocationName)) {
-        Error("Unable to find: %s!", header->pLocationName);
+    if (!pGames_LOD->DoesContainerExist(header.pLocationName)) {
+        Error("Unable to find: %s!", header.pLocationName.c_str());
     }
 
-    pCurrentMapName = header->pLocationName;
+    pCurrentMapName = header.pLocationName;
 
     dword_6BE364_game_settings_1 |= GAME_SETTINGS_LOADING_SAVEGAME_SKIP_RESPAWN | GAME_SETTINGS_0001;
 
@@ -261,59 +207,15 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld) {
         logger->warning("{}", localization->FormatString(LSTR_FMT_SAVEGAME_CORRUPTED, 200));
     }
 
-    static_assert(sizeof(SavegameHeader) == 100, "Wrong type size");
-    SavegameHeader save_header;
-    memset(save_header.pName, 0, 20);
-    memset(save_header.pLocationName, 0, 20);
-    memset(save_header.field_30, 0, 52);
-    strcpy(save_header.pLocationName, pCurrentMapName.c_str());
+    SaveGameHeader save_header;
+    save_header.pLocationName = pCurrentMapName;
     save_header.playing_time = pParty->GetPlayingTime();
-    if (pSave_LOD->Write("header.bin", &save_header, sizeof(SavegameHeader), 0)) {
-        logger->warning("{}", localization->FormatString(LSTR_FMT_SAVEGAME_CORRUPTED, 201));
-    }
 
-    {
-        Party_MM7 serialization;
-        Serialize(*pParty, &serialization);
+    SaveGame_MM7 save;
+    Serialize(save_header, &save);
+    Serialize(save, pSave_LOD);
 
-        if (pSave_LOD->Write("party.bin", &serialization, sizeof(serialization), 0)) {
-            logger->warning("{}", localization->FormatString(LSTR_FMT_SAVEGAME_CORRUPTED, 202));
-        }
-    }
-
-    {
-        Timer_MM7 serialization;
-        Serialize(*pEventTimer, &serialization);
-
-        if (pSave_LOD->Write("clock.bin", &serialization, sizeof(serialization), 0)) {
-            logger->warning("{}", localization->FormatString(LSTR_FMT_SAVEGAME_CORRUPTED, 203));
-        }
-    }
-
-    {
-        OtherOverlayList_MM7 serialization;
-        Serialize(*pOtherOverlayList, &serialization);
-
-        if (pSave_LOD->Write("overlay.bin", &serialization, sizeof(serialization), 0)) {
-            logger->warning("{}", localization->FormatString(LSTR_FMT_SAVEGAME_CORRUPTED, 204));
-        }
-    }
-
-    {
-        NPCData_MM7 serialization[501];
-        for (unsigned int i = 0; i < 501; ++i) {
-            Serialize(pNPCStats->pNewNPCData[i], &serialization[i]);
-        }
-
-        if (pSave_LOD->Write("npcdata.bin", serialization, sizeof(serialization), 0)) {
-            logger->warning("{}", localization->FormatString(LSTR_FMT_SAVEGAME_CORRUPTED, 205));
-        }
-    }
-
-    if (pSave_LOD->Write("npcgroup.bin", pNPCStats->pGroups_copy.data(), sizeof(pNPCStats->pGroups_copy), 0)) {
-        logger->warning("{}", localization->FormatString(LSTR_FMT_SAVEGAME_CORRUPTED, 206));
-    }
-
+    // TODO(captainurist): incapsulate this too
     for (size_t i = 0; i < 4; ++i) {  // 4 - players
         Player *player = &pParty->pPlayers[i];
         for (size_t j = 0; j < 5; ++j) {  // 5 - images
@@ -345,9 +247,9 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld) {
             pIndoor->dlv.uNumBModels = 0;
             pIndoor->dlv.uNumDecorations = pLevelDecorations.size();
 
-            IndoorSave_MM7 save;
-            Serialize(*pIndoor, &save);
-            Serialize(save, &uncompressed);
+            IndoorDelta_MM7 delta;
+            Serialize(*pIndoor, &delta);
+            Serialize(delta, &uncompressed);
         } else {
             assert(uCurrentlyLoadedLevelType == LEVEL_Outdoor);
 
@@ -358,9 +260,9 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld) {
             pOutdoor->ddm.uNumBModels = pOutdoor->pBModels.size();
             pOutdoor->ddm.uNumDecorations = pLevelDecorations.size();
 
-            OutdoorSave_MM7 save;
-            Serialize(*pOutdoor, &save);
-            Serialize(save, &uncompressed);
+            OutdoorDelta_MM7 delta;
+            Serialize(*pOutdoor, &delta);
+            Serialize(delta, &uncompressed);
         }
 
         LOD::CompressedHeader odm_data;
@@ -403,9 +305,14 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld) {
 void DoSavegame(unsigned int uSlot) {
     if (pCurrentMapName != "d05.blv") {  // Not Arena(не Арена)
         SaveGame(0, 0);
-        strcpy(pSavegameHeader[uSlot].pLocationName, pCurrentMapName.c_str());
+        pSavegameHeader[uSlot].pLocationName = pCurrentMapName;
         pSavegameHeader[uSlot].playing_time = pParty->GetPlayingTime();
-        pSave_LOD->Write("header.bin", &pSavegameHeader[uSlot], sizeof(SavegameHeader), 0);
+
+        // TODO(captainurist): ooof
+        SaveGameHeader_MM7 headerMm7;
+        Serialize(pSavegameHeader[uSlot], &headerMm7);
+
+        pSave_LOD->Write("header.bin", &headerMm7, sizeof(headerMm7), 0);
         pSave_LOD->CloseWriteFile();  //закрыть
         std::string src = MakeDataPath("data", "new.lod");
         std::string dst = MakeDataPath("saves", fmt::format("save{:03}.mm7", uSlot));
@@ -489,8 +396,13 @@ void SaveNewGame() {
             pSave_LOD->AppendDirectory(name, data.data(), data.size());
         }
 
-        strcpy(pSavegameHeader[0].pLocationName, "out01.odm");
-        pSave_LOD->AppendDirectory("header.bin", &pSavegameHeader[0], sizeof(SavegameHeader));
+        pSavegameHeader[0].pLocationName = "out01.odm";
+
+        // TODO(captainurist): encapsulate
+        SaveGameHeader_MM7 headerMm7;
+        Serialize(pSavegameHeader[0], &headerMm7);
+
+        pSave_LOD->AppendDirectory("header.bin", &headerMm7, sizeof(headerMm7));
 
         pSave_LOD->FixDirectoryOffsets();
 

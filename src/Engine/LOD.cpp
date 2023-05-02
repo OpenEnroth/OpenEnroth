@@ -684,6 +684,10 @@ unsigned int LOD::WriteableFile::Write(const std::string &file_name, const void 
     return 0;
 }
 
+unsigned int LOD::WriteableFile::Write(const std::string &file_name, const Blob &data) {
+    return Write(file_name, data.data(), data.size(), 0);
+}
+
 LOD::WriteableFile::WriteableFile() {
     pIOBuffer = nullptr;
     uIOBufferSize = 0;
@@ -860,7 +864,7 @@ int LODFile_Sprites::_461397() {
     return this->uNumLoadedSprites;
 }
 
-FILE *LOD::File::FindContainer(const std::string &pContainer_Name, size_t *data_size) {
+FILE *LOD::File::FindContainer(const std::string &pContainer_Name, size_t *data_size) const {
     if (!isFileOpened) {
         return nullptr;
     }
@@ -906,7 +910,7 @@ void LODFile_IconsBitmaps::SetupPalettes(unsigned int uTargetRBits,
     }
 }
 
-Blob LOD::File::LoadRaw(const std::string &pContainer) {
+Blob LOD::File::LoadRaw(const std::string &pContainer) const {
     size_t size = 0;
     FILE *File = FindContainer(pContainer, &size);
     if (!File) {

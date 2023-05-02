@@ -9,6 +9,8 @@
 #include "Engine/Graphics/IRender.h"
 #include "Engine/Graphics/ImageLoader.h"
 #include "Engine/Graphics/Viewport.h"
+#include "Engine/Serialization/LegacyImages.h"
+#include "Engine/Serialization/Deserializer.h"
 #include "Engine/Localization.h"
 #include "Engine/LOD.h"
 #include "Engine/MapInfo.h"
@@ -53,17 +55,16 @@ GUIWindow_Save::GUIWindow_Save() :
         std::string str = MakeDataPath("saves", file_name);
         if (!std::filesystem::exists(str)) {
             pSavegameUsedSlots[i] = 0;
-            strcpy(pSavegameHeader[i].pName, localization->GetString(LSTR_EMPTY_SAVESLOT));
+            pSavegameHeader[i].pName = localization->GetString(LSTR_EMPTY_SAVESLOT);
         } else {
             pLODFile.Open(str);
-            Blob data = pLODFile.LoadRaw("header.bin");
-            memcpy(&pSavegameHeader[i], data.data(), sizeof(SavegameHeader));
+            BlobDeserializer(pLODFile.LoadRaw("header.bin")).ReadLegacy<SaveGameHeader_MM7>(&pSavegameHeader[i]);
 
-            if (pSavegameHeader[i].pName[0] == '\0') {
+            if (pSavegameHeader[i].pName.empty()) {
                 // blank so add something - suspect quicksaves
                 std::string newname = pSavegameList->pFileList[i];
                 std::string test = newname.substr(0, newname.size() - 4);
-                strcpy(pSavegameHeader[i].pName, test.c_str());
+                pSavegameHeader[i].pName = test;
             }
 
             pSavegameThumbnails[i] = render->CreateTexture_PCXFromLOD(&pLODFile, "image.pcx");
@@ -154,27 +155,26 @@ GUIWindow_Load::GUIWindow_Load(bool ingame) :
     pSavegameList->Initialize();
 
     LOD::File pLODFile;
-    Assert(sizeof(SavegameHeader) == 100);
     for (uint i = 0; i < uNumSavegameFiles; ++i) {
         std::string str = MakeDataPath("saves", pSavegameList->pFileList[i]);
         if (!std::filesystem::exists(str)) {
             pSavegameUsedSlots[i] = 0;
-            strcpy(pSavegameHeader[i].pName, localization->GetString(LSTR_EMPTY_SAVESLOT));
+            pSavegameHeader[i].pName = localization->GetString(LSTR_EMPTY_SAVESLOT);
             continue;
         }
 
         if (!pLODFile.Open(str)) __debugbreak();
-        Blob data = pLODFile.LoadRaw("header.bin");
-        memcpy(&pSavegameHeader[i], data.data(), sizeof(SavegameHeader));
+        BlobDeserializer(pLODFile.LoadRaw("header.bin")).ReadLegacy<SaveGameHeader_MM7>(&pSavegameHeader[i]);
+
         if (iequals(pSavegameList->pFileList[i], localization->GetString(LSTR_AUTOSAVE_MM7))) {
-            strcpy(pSavegameHeader[i].pName, localization->GetString(LSTR_AUTOSAVE));
+            pSavegameHeader[i].pName = localization->GetString(LSTR_AUTOSAVE);
         }
 
-        if (pSavegameHeader[i].pName[0] == '\0') {
+        if (pSavegameHeader[i].pName.empty()) {
             // blank so add something - suspect quicksaves
             std::string newname = pSavegameList->pFileList[i];
             std::string test = newname.substr(0, newname.size() - 4);
-            strcpy(pSavegameHeader[i].pName, test.c_str());
+            pSavegameHeader[i].pName = test;
         }
 
         // pSavegameThumbnails[i] = Image::Create(new PCX_LOD_Raw_Loader(&pLODFile, "image.pcx"));
@@ -278,7 +278,7 @@ static void UI_DrawSaveLoad(bool save) {
 
     if (pGUIWindow_CurrentMenu->keyboard_input_status == WINDOW_INPUT_CONFIRMED) {
         pGUIWindow_CurrentMenu->keyboard_input_status = WINDOW_INPUT_NONE;
-        strcpy(pSavegameHeader[uLoadGameUI_SelectedSlot].pName, keyboardInputHandler->GetTextInput().c_str());
+        pSavegameHeader[uLoadGameUI_SelectedSlot].pName = keyboardInputHandler->GetTextInput();
         pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_SaveGame, 0, 0);
     } else {
         if (pGUIWindow_CurrentMenu->keyboard_input_status == WINDOW_INPUT_CANCELLED)

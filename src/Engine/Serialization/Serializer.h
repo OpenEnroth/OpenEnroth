@@ -57,6 +57,13 @@ class Serializer {
         WriteVectorInternal<LegacyT>(src, false);
     }
 
+    template<class LegacyT, class T>
+    void WriteLegacy(const T *src) {
+        LegacyT tmp;
+        Serialize(*src, &tmp);
+        WriteRaw(&tmp);
+    }
+
  private:
     template<class LegacyT = void, class T>
     void WriteVectorInternal(const std::vector<T> &src, bool writeSize = true) {
@@ -99,8 +106,9 @@ class BlobSerializer : private Embedded<std::string>, private Embedded<StringOut
  public:
     BlobSerializer(): StreamBase(&StringBase::get()), Serializer(&StreamBase::get()) {}
 
-    Blob Close() {
-        StreamBase::get().close();
-        return Blob::fromString(std::move(StringBase::get()));
+    Blob Reset() {
+        Blob result = Blob::fromString(std::move(StringBase::get()));
+        StringBase::get().clear();
+        return result;
     }
 };

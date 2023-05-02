@@ -10,6 +10,11 @@ class Blob;
 class BSPModel;
 struct IndoorLocation;
 struct OutdoorLocation;
+namespace LOD {
+class WriteableFile;
+class File;
+} // namespace LOD
+
 
 struct IndoorLocation_MM7 {
     BLVHeader_MM7 header;
@@ -35,7 +40,7 @@ void Deserialize(const IndoorLocation_MM7 &src, IndoorLocation *dst);
 void Deserialize(const Blob &src, IndoorLocation_MM7 *dst, std::function<void()> progress);
 
 
-struct IndoorSave_MM7 {
+struct IndoorDelta_MM7 {
     LocationHeader_MM7 header;
     std::array<char, 875> visibleOutlines;
     std::vector<uint32_t> faceAttributes;
@@ -49,10 +54,10 @@ struct IndoorSave_MM7 {
     LocationTime_MM7 locationTime;
 };
 
-void Serialize(const IndoorLocation &src, IndoorSave_MM7 *dst);
-void Deserialize(const IndoorSave_MM7 &src, IndoorLocation *dst);
-void Serialize(const IndoorSave_MM7 &src, Blob *dst);
-void Deserialize(const Blob &src, IndoorSave_MM7 *dst, const IndoorLocation_MM7 &ctx, std::function<void()> progress);
+void Serialize(const IndoorLocation &src, IndoorDelta_MM7 *dst);
+void Deserialize(const IndoorDelta_MM7 &src, IndoorLocation *dst);
+void Serialize(const IndoorDelta_MM7 &src, Blob *dst);
+void Deserialize(const Blob &src, IndoorDelta_MM7 *dst, const IndoorLocation_MM7 &ctx, std::function<void()> progress);
 
 
 struct BSPModelExtras_MM7 {
@@ -92,7 +97,7 @@ struct OutdoorLocation_MM7 {
 void Deserialize(const OutdoorLocation_MM7 &src, OutdoorLocation *dst);
 void Deserialize(const Blob &src, OutdoorLocation_MM7 *dst, std::function<void()> progress);
 
-struct OutdoorSave_MM7 {
+struct OutdoorDelta_MM7 {
     LocationHeader_MM7 header;
     std::array<std::array<uint8_t, 11>, 88> fullyRevealedCells;
     std::array<std::array<uint8_t, 11>, 88> partiallyRevealedCells;
@@ -105,7 +110,23 @@ struct OutdoorSave_MM7 {
     LocationTime_MM7 locationTime;
 };
 
-void Serialize(const OutdoorLocation &src, OutdoorSave_MM7 *dst);
-void Deserialize(const OutdoorSave_MM7 &src, OutdoorLocation *dst);
-void Serialize(const OutdoorSave_MM7 &src, Blob *dst);
-void Deserialize(const Blob &src, OutdoorSave_MM7 *dst, const OutdoorLocation_MM7 &ctx, std::function<void()> progress);
+void Serialize(const OutdoorLocation &src, OutdoorDelta_MM7 *dst);
+void Deserialize(const OutdoorDelta_MM7 &src, OutdoorLocation *dst);
+void Serialize(const OutdoorDelta_MM7 &src, Blob *dst);
+void Deserialize(const Blob &src, OutdoorDelta_MM7 *dst, const OutdoorLocation_MM7 &ctx, std::function<void()> progress);
+
+
+struct SaveGame_MM7 {
+    SaveGameHeader_MM7 header; // In header.bin.
+    Party_MM7 party; // In party.bin.
+    Timer_MM7 eventTimer; // In clock.bin.
+    OtherOverlayList_MM7 overlays; // In overlay.bin.
+    std::array<NPCData_MM7, 501> npcData; // in npcdata.bin.
+    std::array<uint16_t, 51> npcGroup; // in npcgroup.bin.
+};
+
+// TODO(captainurist): header here is essentially the whole savegame. Redo properly.
+void Serialize(const SaveGameHeader &src, SaveGame_MM7 *dst);
+void Deserialize(const SaveGame_MM7 &src, SaveGameHeader *dst);
+void Serialize(const SaveGame_MM7 &src, LOD::WriteableFile *dst);
+void Deserialize(const LOD::File &src, SaveGame_MM7 *dst);

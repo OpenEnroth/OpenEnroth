@@ -67,6 +67,13 @@ class Deserializer {
         ReadVectorInternal<LegacyT>(dst, mode, size);
     }
 
+    template<class LegacyT, class T>
+    void ReadLegacy(T *dst) {
+        LegacyT tmp;
+        ReadRaw(&tmp);
+        Deserialize(tmp, dst);
+    }
+
  private:
     template<class LegacyT = void, class T>
     void ReadVectorInternal(std::vector<T> *dst, VectorStoreMode mode, size_t explicitSize = static_cast<size_t>(-1)) {

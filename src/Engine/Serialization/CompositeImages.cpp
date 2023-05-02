@@ -6,6 +6,7 @@
 #include "Engine/Graphics/Outdoor.h"
 #include "Engine/Graphics/Level/Decoration.h"
 #include "Engine/Graphics/DecorationList.h"
+#include "Engine/Graphics/Overlays.h"
 #include "Engine/Objects/SpriteObject.h"
 #include "Engine/Objects/ItemTable.h"
 #include "Engine/Objects/ObjectList.h"
@@ -178,7 +179,7 @@ void Deserialize(const Blob &src, IndoorLocation_MM7 *dst, std::function<void()>
     stream.ReadVector(&dst->mapOutlines);
 }
 
-void Serialize(const IndoorLocation &src, IndoorSave_MM7 *dst) {
+void Serialize(const IndoorLocation &src, IndoorDelta_MM7 *dst) {
     Serialize(src.dlv, &dst->header);
     Serialize(src._visible_outlines, &dst->visibleOutlines);
 
@@ -199,7 +200,7 @@ void Serialize(const IndoorLocation &src, IndoorSave_MM7 *dst) {
     Serialize(src.stru1, &dst->locationTime);
 }
 
-void Deserialize(const IndoorSave_MM7 &src, IndoorLocation *dst) {
+void Deserialize(const IndoorDelta_MM7 &src, IndoorLocation *dst) {
     Deserialize(src.header, &dst->dlv);
     Deserialize(src.visibleOutlines, &dst->_visible_outlines);
 
@@ -289,7 +290,7 @@ void Deserialize(const IndoorSave_MM7 &src, IndoorLocation *dst) {
     Deserialize(src.locationTime, &dst->stru1);
 }
 
-void Serialize(const IndoorSave_MM7 &src, Blob *dst) {
+void Serialize(const IndoorDelta_MM7 &src, Blob *dst) {
     BlobSerializer stream;
     stream.WriteRaw(&src.header);
     stream.WriteRaw(&src.visibleOutlines);
@@ -302,10 +303,10 @@ void Serialize(const IndoorSave_MM7 &src, Blob *dst) {
     stream.WriteSizedVector(src.doorsData);
     stream.WriteRaw(&src.eventVariables);
     stream.WriteRaw(&src.locationTime);
-    *dst = stream.Close();
+    *dst = stream.Reset();
 }
 
-void Deserialize(const Blob &src, IndoorSave_MM7 *dst, const IndoorLocation_MM7 &ctx, std::function<void()> progress) {
+void Deserialize(const Blob &src, IndoorDelta_MM7 *dst, const IndoorLocation_MM7 &ctx, std::function<void()> progress) {
     BlobDeserializer stream(src);
     stream.ReadRaw(&dst->header);
     stream.ReadRaw(&dst->visibleOutlines);
@@ -464,7 +465,7 @@ void Deserialize(const Blob &src, OutdoorLocation_MM7 *dst, std::function<void()
     progress();
 }
 
-void Serialize(const OutdoorLocation &src, OutdoorSave_MM7 *dst) {
+void Serialize(const OutdoorLocation &src, OutdoorDelta_MM7 *dst) {
     Serialize(src.ddm, &dst->header);
     Serialize(src.uFullyRevealedCellOnMap, &dst->fullyRevealedCells);
     Serialize(src.uPartiallyRevealedCellOnMap, &dst->partiallyRevealedCells);
@@ -485,7 +486,7 @@ void Serialize(const OutdoorLocation &src, OutdoorSave_MM7 *dst) {
     Serialize(src.loc_time, &dst->locationTime);
 }
 
-void Deserialize(const OutdoorSave_MM7 &src, OutdoorLocation *dst) {
+void Deserialize(const OutdoorDelta_MM7 &src, OutdoorLocation *dst) {
     Deserialize(src.header, &dst->ddm);
     Deserialize(src.fullyRevealedCells, &dst->uFullyRevealedCellOnMap);
     Deserialize(src.partiallyRevealedCells, &dst->uPartiallyRevealedCellOnMap);
@@ -526,7 +527,7 @@ void Deserialize(const OutdoorSave_MM7 &src, OutdoorLocation *dst) {
     Deserialize(src.locationTime, &dst->loc_time);
 }
 
-void Serialize(const OutdoorSave_MM7 &src, Blob *dst) {
+void Serialize(const OutdoorDelta_MM7 &src, Blob *dst) {
     BlobSerializer stream;
     stream.WriteRaw(&src.header);
     stream.WriteRaw(&src.fullyRevealedCells);
@@ -538,10 +539,10 @@ void Serialize(const OutdoorSave_MM7 &src, Blob *dst) {
     stream.WriteVector(src.chests);
     stream.WriteRaw(&src.eventVariables);
     stream.WriteRaw(&src.locationTime);
-    *dst = stream.Close();
+    *dst = stream.Reset();
 }
 
-void Deserialize(const Blob &src, OutdoorSave_MM7 *dst, const OutdoorLocation_MM7 &ctx, std::function<void()> progress) {
+void Deserialize(const Blob &src, OutdoorDelta_MM7 *dst, const OutdoorLocation_MM7 &ctx, std::function<void()> progress) {
     size_t totalFaces = 0;
     for (const BSPModelData_MM7 &model : ctx.models)
         totalFaces += model.uNumFaces;
@@ -566,4 +567,54 @@ void Deserialize(const Blob &src, OutdoorSave_MM7 *dst, const OutdoorLocation_MM
     stream.ReadRaw(&dst->eventVariables);
     progress();
     stream.ReadRaw(&dst->locationTime);
+}
+
+void Serialize(const SaveGameHeader &src, SaveGame_MM7 *dst) {
+    Serialize(src, &dst->header);
+    Serialize(*pParty, &dst->party);
+    Serialize(*pEventTimer, &dst->eventTimer);
+    Serialize(*pOtherOverlayList, &dst->overlays);
+    Serialize(pNPCStats->pNewNPCData, &dst->npcData);
+    Serialize(pNPCStats->pGroups_copy, &dst->npcGroup);
+}
+
+void Deserialize(const SaveGame_MM7 &src, SaveGameHeader *dst) {
+    Deserialize(src.header, dst);
+    Deserialize(src.party, pParty);
+    Deserialize(src.eventTimer, pEventTimer);
+    Deserialize(src.overlays, pOtherOverlayList);
+    Deserialize(src.npcData, &pNPCStats->pNewNPCData);
+    Deserialize(src.npcGroup, &pNPCStats->pGroups_copy);
+}
+
+void Serialize(const SaveGame_MM7 &src, LOD::WriteableFile *dst) {
+    BlobSerializer stream;
+    stream.WriteRaw(&src.header);
+    dst->Write("header.bin", stream.Reset());
+    stream.WriteRaw(&src.party);
+    dst->Write("party.bin", stream.Reset());
+    stream.WriteRaw(&src.eventTimer);
+    dst->Write("clock.bin", stream.Reset());
+    stream.WriteRaw(&src.overlays);
+    dst->Write("overlay.bin", stream.Reset());
+    stream.WriteRaw(&src.npcData);
+    dst->Write("npcdata.bin", stream.Reset());
+    stream.WriteRaw(&src.npcGroup);
+    dst->Write("npcgroup.bin", stream.Reset());
+}
+
+void Deserialize(const LOD::File &src, SaveGame_MM7 *dst) {
+    BlobDeserializer stream;
+    stream.Reset(src.LoadRaw("header.bin"));
+    stream.ReadRaw(&dst->header);
+    stream.Reset(src.LoadRaw("party.bin"));
+    stream.ReadRaw(&dst->party);
+    stream.Reset(src.LoadRaw("clock.bin"));
+    stream.ReadRaw(&dst->eventTimer);
+    stream.Reset(src.LoadRaw("overlay.bin"));
+    stream.ReadRaw(&dst->overlays);
+    stream.Reset(src.LoadRaw("npcdata.bin"));
+    stream.ReadRaw(&dst->npcData);
+    stream.Reset(src.LoadRaw("npcgroup.bin"));
+    stream.ReadRaw(&dst->npcGroup);
 }
