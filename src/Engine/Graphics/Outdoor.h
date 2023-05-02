@@ -142,7 +142,6 @@ struct OutdoorLocation {
     std::string location_filename;
     std::string location_file_description;
     std::string sky_texture_filename;
-    std::string ground_tileset;
     std::array<OutdoorLocationTileType, 4> pTileTypes;  // [3]  road tileset
     struct OutdoorLocationTerrain pTerrain;
     std::array<uint16_t, 128 * 128> pCmap; // Unused

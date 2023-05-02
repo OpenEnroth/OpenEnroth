@@ -817,8 +817,6 @@ void OutdoorLocation::CreateDebugLocation() {
     this->pFaceIDLIST.clear();
     this->sky_texture_filename = pDefaultSkyTexture.data();
     this->sky_texture = assets->GetBitmap(this->sky_texture_filename);
-
-    this->ground_tileset = byte_6BE124_cfg_textures_DefaultGroundTexture.data();
 }
 
 //----- (0047CF9C) --------------------------------------------------------
@@ -827,7 +825,6 @@ void OutdoorLocation::Release() {
     this->location_filename = "default.odm";
     this->location_file_description = "MM6 Outdoor v1.00";
     this->sky_texture_filename = "sky043";
-    this->ground_tileset = "hm005";
 
     pBModels.clear();
     pSpawnPoints.clear();
@@ -877,14 +874,15 @@ bool OutdoorLocation::Load(const std::string &filename, int days_played,
     stream.ReadSizedString(&this->location_filename, 32);
     stream.ReadSizedString(&this->location_file_description, 32);
     stream.ReadSizedString(&this->sky_texture_filename, 32);
-    stream.ReadSizedString(&this->ground_tileset, 32);
+
+    std::string ground_tileset;
+    stream.ReadSizedString(&ground_tileset, 32);
 
     static_assert(sizeof(pTileTypes) == 16, "Wrong type size");
     stream.ReadRaw(&pTileTypes);
 
     LoadTileGroupIds();
     LoadRoadTileset();
-    this->ground_tileset = "grastyl";
 
     pGameLoadingUI_ProgressBar->Progress();  // прогресс загрузки
 
@@ -1058,7 +1056,6 @@ bool OutdoorLocation::Load(const std::string &filename, int days_played,
     pTileTable->InitializeTileset(pTileTypes[1].tileset);
     pTileTable->InitializeTileset(pTileTypes[2].tileset);
     pTileTable->InitializeTileset(pTileTypes[3].tileset);
-    this->ground_tileset = byte_6BE124_cfg_textures_DefaultGroundTexture.data();
 
     _47F0E2();
 
