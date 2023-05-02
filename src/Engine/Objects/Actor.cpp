@@ -1238,46 +1238,46 @@ void Actor::AddBloodsplatOnDamageOverlay(unsigned int uActorID, int a2,
     switch (a2) {
         case 1:
             if (a3)
-                pOtherOverlayList->_4418B6(904, v4, 0,
+                pActiveOverlayList->_4418B6(904, v4, 0,
                                            (int)(sub_43AE12(a3) * 65536.0), 0);
             return;
         case 2:
             if (a3)
-                pOtherOverlayList->_4418B6(905, v4, 0,
+                pActiveOverlayList->_4418B6(905, v4, 0,
                                            (int)(sub_43AE12(a3) * 65536.0), 0);
             return;
         case 3:
             if (a3)
-                pOtherOverlayList->_4418B6(906, v4, 0,
+                pActiveOverlayList->_4418B6(906, v4, 0,
                                            (int)(sub_43AE12(a3) * 65536.0), 0);
             return;
         case 4:
             if (a3)
-                pOtherOverlayList->_4418B6(907, v4, 0,
+                pActiveOverlayList->_4418B6(907, v4, 0,
                                            (int)(sub_43AE12(a3) * 65536.0), 0);
             return;
         case 5:
-            pOtherOverlayList->_4418B6(901, v4, 0, PID(OBJECT_Actor, uActorID),
+            pActiveOverlayList->_4418B6(901, v4, 0, PID(OBJECT_Actor, uActorID),
                                        0);
             return;
         case 6:
-            pOtherOverlayList->_4418B6(902, v4, 0, PID(OBJECT_Actor, uActorID),
+            pActiveOverlayList->_4418B6(902, v4, 0, PID(OBJECT_Actor, uActorID),
                                        0);
             return;
         case 7:
-            pOtherOverlayList->_4418B6(903, v4, 0, PID(OBJECT_Actor, uActorID),
+            pActiveOverlayList->_4418B6(903, v4, 0, PID(OBJECT_Actor, uActorID),
                                        0);
             return;
         case 8:
-            pOtherOverlayList->_4418B6(900, v4, 0, PID(OBJECT_Actor, uActorID),
+            pActiveOverlayList->_4418B6(900, v4, 0, PID(OBJECT_Actor, uActorID),
                                        0);
             return;
         case 9:
-            pOtherOverlayList->_4418B6(909, v4, 0, PID(OBJECT_Actor, uActorID),
+            pActiveOverlayList->_4418B6(909, v4, 0, PID(OBJECT_Actor, uActorID),
                                        0);
             return;
         case 10:
-            pOtherOverlayList->_4418B6(908, v4, 0, PID(OBJECT_Actor, uActorID),
+            pActiveOverlayList->_4418B6(908, v4, 0, PID(OBJECT_Actor, uActorID),
                                        0);
             return;
         default:

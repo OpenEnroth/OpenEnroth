@@ -6,8 +6,8 @@
 
 #include "Utility/Memory/Blob.h"
 
-struct OtherOverlay {
-    OtherOverlay();
+struct ActiveOverlay {
+    ActiveOverlay();
     void Reset();
 
     int16_t field_0;
@@ -21,12 +21,12 @@ struct OtherOverlay {
     int field_10;
 };
 
-struct OtherOverlayList {
+struct ActiveOverlayList {
     void Reset();
     int _4418B6(int uOverlayID, int16_t a3, int a4, int a5, int16_t a6);
     void DrawTurnBasedIcon();
 
-    std::array<OtherOverlay, 50> pOverlays;
+    std::array<ActiveOverlay, 50> pOverlays;
     int field_3E8 = 0;
 };
 
@@ -45,5 +45,5 @@ struct OverlayList {
     std::vector<OverlayDesc> pOverlays;
 };
 
-extern struct OtherOverlayList *pOtherOverlayList;  // idb
+extern struct ActiveOverlayList *pActiveOverlayList;  // idb
 extern struct OverlayList *pOverlayList;

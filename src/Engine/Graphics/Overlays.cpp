@@ -19,17 +19,17 @@
 #include "Sprites.h"
 
 
-struct OtherOverlayList *pOtherOverlayList = new OtherOverlayList;  // idb
+struct ActiveOverlayList *pActiveOverlayList = new ActiveOverlayList;  // idb
 struct OverlayList *pOverlayList = new OverlayList;
 
 // inlined
 //----- (mm6c::0045BD50) --------------------------------------------------
-void OtherOverlayList::Reset() {
+void ActiveOverlayList::Reset() {
     for (uint i = 0; i < 50; ++i) pOverlays[i].Reset();
 }
 
 //----- (004418B6) --------------------------------------------------------
-int OtherOverlayList::_4418B6(int uOverlayID, int16_t a3, int a4, int a5,
+int ActiveOverlayList::_4418B6(int uOverlayID, int16_t a3, int a4, int a5,
                               int16_t a6) {
     signed int v9;  // esi@6
     int16_t v11;    // dx@11
@@ -63,7 +63,7 @@ int OtherOverlayList::_4418B6(int uOverlayID, int16_t a3, int a4, int a5,
 }
 
 //----- (00441964) --------------------------------------------------------
-void OtherOverlayList::DrawTurnBasedIcon() {
+void ActiveOverlayList::DrawTurnBasedIcon() {
     Icon *frame = nullptr;      // eax@12
     unsigned int v5;  // [sp-8h] [bp-Ch]@4
 
@@ -172,7 +172,7 @@ bool OverlayList::FromFileTxt(const char *Args) {
 }
 
 //----- (0045855F) --------------------------------------------------------
-void OtherOverlay::Reset() {
+void ActiveOverlay::Reset() {
     this->field_0 = 0;
     this->field_2 = 0;
     this->sprite_frame_time = 0;
@@ -185,4 +185,4 @@ void OtherOverlay::Reset() {
 }
 
 //----- (004584B8) --------------------------------------------------------
-OtherOverlay::OtherOverlay() { this->Reset(); }
+ActiveOverlay::ActiveOverlay() { this->Reset(); }

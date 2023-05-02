@@ -220,7 +220,7 @@ void Engine::DrawGUI() {
 
     if (!pMovie_Track) {
         spell_fx_renedrer->DrawPlayerBuffAnims();
-        pOtherOverlayList->DrawTurnBasedIcon();
+        pActiveOverlayList->DrawTurnBasedIcon();
         GameUI_DrawTorchlightAndWizardEye();
     }
 

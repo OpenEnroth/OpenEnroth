@@ -120,7 +120,7 @@ struct SaveGame_MM7 {
     SaveGameHeader_MM7 header; // In header.bin.
     Party_MM7 party; // In party.bin.
     Timer_MM7 eventTimer; // In clock.bin.
-    OtherOverlayList_MM7 overlays; // In overlay.bin.
+    ActiveOverlayList_MM7 overlays; // In overlay.bin.
     std::array<NPCData_MM7, 501> npcData; // in npcdata.bin.
     std::array<uint16_t, 51> npcGroup; // in npcgroup.bin.
 };

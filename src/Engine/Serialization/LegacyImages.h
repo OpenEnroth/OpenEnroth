@@ -46,10 +46,10 @@ struct MonsterDesc;
 struct NPCData;
 struct ObjectDesc;
 struct ODMFace;
-struct OtherOverlay;
-struct OtherOverlayList;
 struct OutdoorLocationTileType;
 struct OverlayDesc;
+struct ActiveOverlay;
+struct ActiveOverlayList;
 struct Party;
 struct Player;
 struct PlayerFrame;
@@ -521,7 +521,7 @@ void serialize(const Timer &src, Timer_MM7 *dst);
 void deserialize(const Timer_MM7 &src, Timer *dst);
 
 
-struct OtherOverlay_MM7 {
+struct ActiveOverlay_MM7 {
     /* 00 */ int16_t field_0;
     /* 02 */ int16_t field_2;
     /* 04 */ int16_t spriteFrameTime;
@@ -536,12 +536,12 @@ struct OtherOverlay_MM7 {
 static_assert(sizeof(OtherOverlay_MM7) == 0x14);
 MM_DECLARE_MEMCOPY_SERIALIZABLE(OtherOverlay_MM7)
 
-void serialize(const OtherOverlay &src, OtherOverlay_MM7 *dst);
-void deserialize(const OtherOverlay_MM7 &src, OtherOverlay *dst);
+void Serialize(const ActiveOverlay &src, ActiveOverlay_MM7 *dst);
+void Deserialize(const ActiveOverlay_MM7 &src, ActiveOverlay *dst);
 
 
-struct OtherOverlayList_MM7 {
-    /* 000 */ std::array<OtherOverlay_MM7, 50> overlays;
+struct ActiveOverlayList_MM7 {
+    /* 000 */ std::array<ActiveOverlay_MM7, 50> overlays;
     /* 3E8 */ int32_t field_3E8;
     /* 3EC */ int32_t redraw;
     /* 3F0 */
@@ -549,8 +549,8 @@ struct OtherOverlayList_MM7 {
 static_assert(sizeof(OtherOverlayList_MM7) == 0x3F0);
 MM_DECLARE_MEMCOPY_SERIALIZABLE(OtherOverlayList_MM7)
 
-void serialize(const OtherOverlayList &src, OtherOverlayList_MM7 *dst);
-void deserialize(const OtherOverlayList_MM7 &src, OtherOverlayList *dst);
+void Serialize(const ActiveOverlayList &src, ActiveOverlayList_MM7 *dst);
+void Deserialize(const ActiveOverlayList_MM7 &src, ActiveOverlayList *dst);
 
 
 struct IconFrame_MM7 {
