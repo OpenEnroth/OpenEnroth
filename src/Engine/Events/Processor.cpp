@@ -179,7 +179,10 @@ bool npcDialogueEventProcessor(int eventId, int startStep) {
     EventInterpreter interpreter;
 
     logger->verbose("Executing NPC dialogue event starting from step {}", startStep);
+    LevelDecoration *oldDecoration = activeLevelDecoration;
+    activeLevelDecoration = (LevelDecoration *)1; // Required for correct printing of messages
     engine->_globalEventMap.dump(eventId);
+    activeLevelDecoration = oldDecoration;
     interpreter.prepare(engine->_globalEventMap, eventId, false);
     return interpreter.executeNpcDialogue(startStep);
 }
