@@ -187,8 +187,8 @@ void Serialize(const IndoorLocation &src, IndoorSave_MM7 *dst) {
         dst->faceAttributes.push_back(std::to_underlying(pFace.uAttributes));
 
     dst->decorationFlags.clear();
-    for (const LevelDecoration &pLevelDecoration : pLevelDecorations)
-        dst->decorationFlags.push_back(std::to_underlying(pLevelDecoration.uFlags));
+    for (const LevelDecoration &decoration : pLevelDecorations)
+        dst->decorationFlags.push_back(std::to_underlying(decoration.uFlags));
 
     Serialize(pActors, &dst->actors);
     Serialize(pSpriteObjects, &dst->spriteObjects);
@@ -227,7 +227,6 @@ void Deserialize(const IndoorSave_MM7 &src, IndoorLocation *dst) {
         pLevelDecorations[i].uFlags = LevelDecorationFlags(src.decorationFlags[i]);
 
     Deserialize(src.actors, &pActors);
-
     for(size_t i = 0; i < pActors.size(); i++)
         pActors[i].id = i;
 
@@ -463,4 +462,108 @@ void Deserialize(const Blob &src, OutdoorLocation_MM7 *dst, std::function<void()
     progress();
     stream.ReadVector<SpawnPoint_MM7>(&dst->spawnPoints);
     progress();
+}
+
+void Serialize(const OutdoorLocation &src, OutdoorSave_MM7 *dst) {
+    Serialize(src.ddm, &dst->header);
+    Serialize(src.uFullyRevealedCellOnMap, &dst->fullyRevealedCells);
+    Serialize(src.uPartiallyRevealedCellOnMap, &dst->partiallyRevealedCells);
+
+    dst->faceAttributes.clear();
+    for (const BSPModel &model : src.pBModels)
+        for (const ODMFace &face : model.pFaces)
+            dst->faceAttributes.push_back(std::to_underlying(face.uAttributes));
+
+    dst->decorationFlags.clear();
+    for (const LevelDecoration &decoration : pLevelDecorations)
+        dst->decorationFlags.push_back(std::to_underlying(decoration.uFlags));
+
+    Serialize(pActors, &dst->actors);
+    Serialize(pSpriteObjects, &dst->spriteObjects);
+    Serialize(vChests, &dst->chests);
+    Serialize(mapEventVariables, &dst->eventVariables);
+    Serialize(src.loc_time, &dst->locationTime);
+}
+
+void Deserialize(const OutdoorSave_MM7 &src, OutdoorLocation *dst) {
+    Deserialize(src.header, &dst->ddm);
+    Deserialize(src.fullyRevealedCells, &dst->uFullyRevealedCellOnMap);
+    Deserialize(src.partiallyRevealedCells, &dst->uPartiallyRevealedCellOnMap);
+
+    size_t attributeIndex = 0;
+    for (BSPModel &model : dst->pBModels) {
+        for (ODMFace &face : model.pFaces)
+            face.uAttributes = FaceAttributes(src.faceAttributes[attributeIndex++]);
+
+        for (ODMFace &face : model.pFaces) {
+            if (face.sCogTriggeredID) {
+                if (face.HasEventHint()) {
+                    face.uAttributes |= FACE_HAS_EVENT;
+                } else {
+                    face.uAttributes &= ~FACE_HAS_EVENT;
+                }
+            }
+        }
+
+        // TODO(captainurist): this actually belongs to level loading code, not save loading
+        // calculate bounding sphere for model
+        Vec3f topLeft = Vec3f(model.pBoundingBox.x1, model.pBoundingBox.y1, model.pBoundingBox.z1);
+        Vec3f bottomRight = Vec3f(model.pBoundingBox.x2, model.pBoundingBox.y2, model.pBoundingBox.z2);
+        model.vBoundingCenter = ((topLeft + bottomRight) / 2.0f).toInt();
+        model.sBoundingRadius = (topLeft - model.vBoundingCenter.toFloat()).length();
+    }
+
+    for (size_t i = 0; i < pLevelDecorations.size(); ++i)
+        pLevelDecorations[i].uFlags = LevelDecorationFlags(src.decorationFlags[i]);
+
+    Deserialize(src.actors, &pActors);
+    for(size_t i = 0; i < pActors.size(); i++)
+        pActors[i].id = i;
+
+    Deserialize(src.spriteObjects, &pSpriteObjects);
+    Deserialize(src.chests, &vChests);
+    Deserialize(src.eventVariables, &mapEventVariables);
+    Deserialize(src.locationTime, &dst->loc_time);
+}
+
+void Serialize(const OutdoorSave_MM7 &src, Blob *dst) {
+    BlobSerializer stream;
+    stream.WriteRaw(&src.header);
+    stream.WriteRaw(&src.fullyRevealedCells);
+    stream.WriteRaw(&src.partiallyRevealedCells);
+    stream.WriteSizedVector(src.faceAttributes);
+    stream.WriteSizedVector(src.decorationFlags);
+    stream.WriteVector(src.actors);
+    stream.WriteVector(src.spriteObjects);
+    stream.WriteVector(src.chests);
+    stream.WriteRaw(&src.eventVariables);
+    stream.WriteRaw(&src.locationTime);
+    *dst = stream.Close();
+}
+
+void Deserialize(const Blob &src, OutdoorSave_MM7 *dst, const OutdoorLocation_MM7 &ctx, std::function<void()> progress) {
+    size_t totalFaces = 0;
+    for (const BSPModelData_MM7 &model : ctx.models)
+        totalFaces += model.uNumFaces;
+
+    BlobDeserializer stream(src);
+    stream.ReadRaw(&dst->header);
+    stream.ReadRaw(&dst->fullyRevealedCells);
+    stream.ReadRaw(&dst->partiallyRevealedCells);
+    progress();
+    stream.ReadSizedVector(&dst->faceAttributes, totalFaces);
+    progress();
+    stream.ReadSizedVector(&dst->decorationFlags, ctx.decorations.size());
+    progress();
+    progress();
+    stream.ReadVector(&dst->actors);
+    progress();
+    progress();
+    stream.ReadVector(&dst->spriteObjects);
+    progress();
+    stream.ReadVector(&dst->chests);
+    progress();
+    stream.ReadRaw(&dst->eventVariables);
+    progress();
+    stream.ReadRaw(&dst->locationTime);
 }

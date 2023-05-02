@@ -879,122 +879,64 @@ bool OutdoorLocation::Load(const std::string &filename, int days_played,
 
     // ****************.ddm file*********************//
 
-    BlobDeserializer stream;
-
     std::string ddm_filename = filename;
     ddm_filename = ddm_filename.replace(ddm_filename.length() - 4, 4, ".ddm");
-    Blob blob = pSave_LOD->LoadCompressed(ddm_filename);
 
-    if (blob) {
-        stream.Reset(blob);
+    bool respawnInitial = false; // Perform initial location respawn?
+    bool respawnTimed = false; // Perform timed location respawn?
+    OutdoorSave_MM7 save;
+    if (Blob blob = pSave_LOD->LoadCompressed(ddm_filename)) {
+        try {
+            Deserialize(blob, &save, location, progressCallback);
 
-        static_assert(sizeof(LocationHeader_MM7) == 40, "Wrong type size");
-        stream.ReadRaw(&ddm);
-    }
-    uint actualNumFacesInLevel = 0;
-    for (BSPModel &model : pBModels) {
-        actualNumFacesInLevel += model.pFaces.size();
-    }
+            size_t totalFaces = 0;
+            for (BSPModel &model : pBModels)
+                totalFaces += model.pFaces.size();
 
-    //  The ddm.uNumX values are only written in SaveLoad::Save, and
-    //  only used for this check. Is it for forwards compatibility?
-    bool object_count_in_level_changed_since_save =
-        ddm.uNumFacesInBModels &&
-        ddm.uNumBModels &&
-        ddm.uNumDecorations &&
-        (ddm.uNumFacesInBModels != actualNumFacesInLevel ||
-         ddm.uNumBModels != pBModels.size() ||
-         ddm.uNumDecorations != pLevelDecorations.size());
+            // Level was changed externally and we have a save there? Don't crash, just respawn.
+            if (save.header.uNumFacesInBModels && save.header.uNumBModels && save.header.uNumDecorations &&
+                (save.header.uNumFacesInBModels != totalFaces || save.header.uNumBModels != pBModels.size() || save.header.uNumDecorations != pLevelDecorations.size()))
+                respawnInitial = true;
 
-    if (dword_6BE364_game_settings_1 & GAME_SETTINGS_LOADING_SAVEGAME_SKIP_RESPAWN)
-        respawn_interval_days = 0x1BAF800;
+            // Entering the level for the 1st time?
+            if (save.header.uLastRepawnDay == 0)
+                respawnInitial = true;
 
-    bool should_respawn =
-        days_played - ddm.uLastRepawnDay >= respawn_interval_days ||
-        !ddm.uLastRepawnDay;
+            if (dword_6BE364_game_settings_1 & GAME_SETTINGS_LOADING_SAVEGAME_SKIP_RESPAWN)
+                respawn_interval_days = 0x1BAF800;
 
-    std::array<char, 968> Src {};
-    std::array<char, 968> Dst {};
-
-    if (object_count_in_level_changed_since_save || should_respawn) {
-        if (object_count_in_level_changed_since_save) {
-            Dst.fill(0);
-            Src.fill(0);
+            if (!respawnInitial && days_played - save.header.uLastRepawnDay >= respawn_interval_days)
+                respawnTimed = true;
+        } catch (const Exception &e) {
+            logger->error("Failed to load '{}', respawning location: {}", ddm_filename, e.what());
+            respawnInitial = true;
         }
-        if (should_respawn) {
-            stream.ReadRaw(&Dst);
-            stream.ReadRaw(&Src);
-        }
+    }
 
-        ddm.uLastRepawnDay = days_played;
-        if (!object_count_in_level_changed_since_save)
-            ++ddm.uNumRespawns;
+    assert(respawnInitial + respawnTimed <= 1);
 
+    if (respawnInitial) {
+        Deserialize(pGames_LOD->LoadCompressed(ddm_filename), &save, location, [] {});
         *outdoors_was_respawned = true;
-        stream.Reset(pGames_LOD->LoadCompressed(ddm_filename));
-        stream.SkipBytes(sizeof(LocationHeader_MM7));
+    } else if (respawnTimed) {
+        auto header = save.header;
+        auto fullyRevealedCells = save.fullyRevealedCells;
+        auto partiallyRevealedCells = save.partiallyRevealedCells;
+        Deserialize(pGames_LOD->LoadCompressed(ddm_filename), &save, location, [] {});
+        save.header = header;
+        save.fullyRevealedCells = fullyRevealedCells;
+        save.partiallyRevealedCells = partiallyRevealedCells;
+        *outdoors_was_respawned = true;
     } else {
-        *outdoors_was_respawned = 0;
-    }
-    stream.ReadRaw(&uFullyRevealedCellOnMap);
-    stream.ReadRaw(&uPartiallyRevealedCellOnMap);
-
-    pGameLoadingUI_ProgressBar->Progress();  // прогресс загрузки
-
-    if (*outdoors_was_respawned) {
-        memcpy(&uFullyRevealedCellOnMap, &Dst, 968);
-        memcpy(&uPartiallyRevealedCellOnMap, &Src, 968);
+        *outdoors_was_respawned = false;
     }
 
-    for (BSPModel &model : pBModels) {
-        for (ODMFace &face : model.pFaces)
-            stream.ReadRaw(&face.uAttributes);
+    Deserialize(save, this);
 
-        for (ODMFace &face : model.pFaces) {
-            if (face.sCogTriggeredID) {
-                if (face.HasEventHint()) {
-                    face.uAttributes |= FACE_HAS_EVENT;
-                } else {
-                    face.uAttributes &= ~FACE_HAS_EVENT;
-                }
-            }
-        }
-
-        // calculate bounding sphere for model
-        Vec3f topLeft = Vec3f(model.pBoundingBox.x1, model.pBoundingBox.y1, model.pBoundingBox.z1);
-        Vec3f bottomRight = Vec3f(model.pBoundingBox.x2, model.pBoundingBox.y2, model.pBoundingBox.z2);
-        model.vBoundingCenter = ((topLeft + bottomRight) / 2.0f).toInt();
-        model.sBoundingRadius = (topLeft - model.vBoundingCenter.toFloat()).length();
-    }
-
-    pGameLoadingUI_ProgressBar->Progress();  // прогресс загрузки
-
-    for (uint i = 0; i < pLevelDecorations.size(); ++i)
-        stream.ReadRaw(&pLevelDecorations[i].uFlags);
-
-    pGameLoadingUI_ProgressBar->Progress();  // прогресс загрузки
-    pGameLoadingUI_ProgressBar->Progress();  // прогресс загрузки
-
-    stream.ReadLegacyVector<Actor_MM7>(&pActors);
-    for(size_t i = 0; i < pActors.size(); i++)
-        pActors[i].id = i;
-
-    pGameLoadingUI_ProgressBar->Progress();  // прогресс загрузки
-    pGameLoadingUI_ProgressBar->Progress();  // прогресс загрузки
-
-    stream.ReadLegacyVector<SpriteObject_MM7>(&pSpriteObjects);
-
-    pGameLoadingUI_ProgressBar->Progress();  // прогресс загрузки
-
-    stream.ReadLegacyVector<Chest_MM7>(&vChests);
-
-    pGameLoadingUI_ProgressBar->Progress();  // прогресс загрузки
-
-    stream.ReadLegacy<MapEventVariables_MM7>(&mapEventVariables);
-
-    pGameLoadingUI_ProgressBar->Progress();  // прогресс загрузки
-
-    stream.ReadLegacy<LocationTime_MM7>(&loc_time);
+    if (respawnTimed || respawnInitial)
+        ddm.uLastRepawnDay = days_played;
+    if (respawnTimed)
+        ddm.uNumRespawns++;
 
     pTileTable->InitializeTileset(Tileset_Dirt);
     pTileTable->InitializeTileset(Tileset_Snow);

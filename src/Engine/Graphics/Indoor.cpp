@@ -269,24 +269,21 @@ bool IndoorLocation::Load(const std::string &filename, int num_days_played,
     IndoorLocation_MM7 location;
     Deserialize(pGames_LOD->LoadCompressed(blv_filename), &location, progressCallback);
     Deserialize(location, this);
-
-    BlobDeserializer stream;
-
+    
     std::string dlv_filename = filename;
     dlv_filename.replace(dlv_filename.length() - 4, 4, ".dlv");
 
     bool respawnInitial = false; // Perform initial location respawn?
     bool respawnTimed = false; // Perform timed location respawn?
-
     IndoorSave_MM7 save;
     if (Blob blob = pSave_LOD->LoadCompressed(dlv_filename)) {
         try {
             Deserialize(blob, &save, location, progressCallback);
 
             // Level was changed externally and we have a save there? Don't crash, just respawn.
-            if (save.header.uNumFacesInBModels > 0 && save.header.uNumDecorations > 0)
-                if (save.header.uNumFacesInBModels != pFaces.size() || save.header.uNumDecorations != pLevelDecorations.size())
-                    respawnInitial = true;
+            if (save.header.uNumFacesInBModels > 0 && save.header.uNumDecorations > 0 &&
+                (save.header.uNumFacesInBModels != pFaces.size() || save.header.uNumDecorations != pLevelDecorations.size()))
+                respawnInitial = true;
 
             // Entering the level for the 1st time?
             if (save.header.uLastRepawnDay == 0)

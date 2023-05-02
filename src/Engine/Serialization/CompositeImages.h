@@ -105,3 +105,7 @@ struct OutdoorSave_MM7 {
     LocationTime_MM7 locationTime;
 };
 
+void Serialize(const OutdoorLocation &src, OutdoorSave_MM7 *dst);
+void Deserialize(const OutdoorSave_MM7 &src, OutdoorLocation *dst);
+void Serialize(const OutdoorSave_MM7 &src, Blob *dst);
+void Deserialize(const Blob &src, OutdoorSave_MM7 *dst, const OutdoorLocation_MM7 &ctx, std::function<void()> progress);

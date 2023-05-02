@@ -355,8 +355,8 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld) {
             IndoorSave_MM7 save;
             Serialize(*pIndoor, &save);
             Serialize(save, &uncompressed);
-        } else {  // for Outdoor
-            BlobSerializer stream;
+        } else {
+            assert(uCurrentlyLoadedLevelType == LEVEL_Outdoor);
 
             pOutdoor->ddm.uNumFacesInBModels = 0;
             for (BSPModel &model : pOutdoor->pBModels) {
@@ -365,29 +365,9 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld) {
             pOutdoor->ddm.uNumBModels = pOutdoor->pBModels.size();
             pOutdoor->ddm.uNumDecorations = pLevelDecorations.size();
 
-            stream.WriteRaw(&pOutdoor->ddm);
-            stream.WriteRaw(&pOutdoor->uFullyRevealedCellOnMap);
-            stream.WriteRaw(&pOutdoor->uPartiallyRevealedCellOnMap);
-
-            for (BSPModel &model : pOutdoor->pBModels) {
-                for (ODMFace &face : model.pFaces) {
-                    stream.WriteRaw(&face.uAttributes);
-                    static_assert(sizeof(face.uAttributes) == 4);
-                }
-            }
-
-            for (size_t i = 0; i < pLevelDecorations.size(); ++i) {
-                stream.WriteRaw(&pLevelDecorations[i].uFlags);
-                static_assert(sizeof(pLevelDecorations[i].uFlags) == 2);
-            }
-
-            stream.WriteLegacyVector<Actor_MM7>(pActors);
-            stream.WriteLegacyVector<SpriteObject_MM7>(pSpriteObjects);
-            stream.WriteLegacyVector<Chest_MM7>(vChests);
-            stream.WriteLegacy<MapEventVariables_MM7>(&mapEventVariables);
-            stream.WriteLegacy<LocationTime_MM7>(&pOutdoor->loc_time);
-
-            uncompressed = stream.Close();
+            OutdoorSave_MM7 save;
+            Serialize(*pOutdoor, &save);
+            Serialize(save, &uncompressed);
         }
 
         ODMHeader odm_data;
