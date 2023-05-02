@@ -1,6 +1,6 @@
 #include "Engine/SaveLoad.h"
 
-#include <stdlib.h>
+#include <cstdlib>
 #include <filesystem>
 #include <algorithm>
 #include <string>
@@ -12,27 +12,20 @@
 #include "Engine/Localization.h"
 #include "Engine/Party.h"
 #include "Engine/Time.h"
-#include "Engine/Events.h"
 
 #include "Engine/Graphics/ImageLoader.h"
 #include "Engine/Graphics/Level/Decoration.h"
 #include "Engine/Graphics/Outdoor.h"
 #include "Engine/Graphics/Overlays.h"
 #include "Engine/Graphics/PCX.h"
-#include "Engine/Graphics/Viewport.h"
 
-#include "Engine/Objects/Actor.h"
-#include "Engine/Objects/Chest.h"
 #include "Engine/Objects/SpriteObject.h"
 
-#include "Engine/Serialization/LegacyImages.h"
-#include "Engine/Serialization/Serializer.h"
 #include "Engine/Serialization/CompositeImages.h"
 
 #include "GUI/GUIFont.h"
 #include "GUI/GUIWindow.h"
 #include "GUI/UI/UIGame.h"
-#include "GUI/UI/UISaveLoad.h"
 #include "GUI/UI/UIStatusBar.h"
 
 #include "Media/Audio/AudioPlayer.h"

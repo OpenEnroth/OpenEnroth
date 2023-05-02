@@ -31,8 +31,6 @@
 #include "Engine/Objects/SpriteObject.h"
 #include "Engine/OurMath.h"
 #include "Engine/Party.h"
-#include "Engine/Serialization/LegacyImages.h"
-#include "Engine/Serialization/Deserializer.h"
 #include "Engine/Serialization/CompositeImages.h"
 #include "Engine/SpellFxRenderer.h"
 #include "Engine/Time.h"
@@ -49,7 +47,7 @@
 
 #include "Utility/Memory/FreeDeleter.h"
 #include "Utility/Math/TrigLut.h"
-#include "Utility/Memory/MemSet.h"
+#include "Utility/Exception.h"
 
 // TODO(pskelton): make this neater
 static DecalBuilder *decal_builder = EngineIocContainer::ResolveDecalBuilder();
@@ -269,7 +267,7 @@ bool IndoorLocation::Load(const std::string &filename, int num_days_played,
     IndoorLocation_MM7 location;
     Deserialize(pGames_LOD->LoadCompressed(blv_filename), &location, progressCallback);
     Deserialize(location, this);
-    
+
     std::string dlv_filename = filename;
     dlv_filename.replace(dlv_filename.length() - 4, 4, ".dlv");
 

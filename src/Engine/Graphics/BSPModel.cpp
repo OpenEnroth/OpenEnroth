@@ -1,16 +1,9 @@
 #include "Engine/Graphics/BSPModel.h"
 
-#include <cstring>
-#include <cstdlib>
-#include <algorithm>
-
-#include "Engine/AssetsManager.h"
 #include "Engine/Events.h"
 #include "Engine/Graphics/Image.h"
 #include "Engine/Time.h"
 #include "Engine/Graphics/Indoor.h"
-#include "Engine/Serialization/Deserializer.h"
-#include "Engine/Serialization/LegacyImages.h"
 
 // ODMFace
 

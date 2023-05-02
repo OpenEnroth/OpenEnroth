@@ -8,8 +8,6 @@
 #include "Utility/Geometry/Plane.h"
 #include "Utility/Geometry/BBox.h"
 
-class Deserializer;
-
 enum class FaceAttribute : uint32_t {
     FACE_IsPortal          = 0x00000001,
     FACE_IsSecret          = 0x00000002,

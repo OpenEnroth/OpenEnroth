@@ -26,8 +26,6 @@
 #include "Engine/Objects/SpriteObject.h"
 #include "Engine/OurMath.h"
 #include "Engine/Party.h"
-#include "Engine/Serialization/LegacyImages.h"
-#include "Engine/Serialization/Deserializer.h"
 #include "Engine/Serialization/CompositeImages.h"
 #include "Engine/SpellFxRenderer.h"
 #include "Engine/Tables/TileFrameTable.h"
@@ -41,9 +39,11 @@
 #include "GUI/UI/UIRest.h"
 #include "GUI/UI/UITransition.h"
 
+#include "Library/Random/Random.h"
+
 #include "Utility/Memory/FreeDeleter.h"
 #include "Utility/Math/TrigLut.h"
-#include "Library/Random/Random.h"
+#include "Utility/Exception.h"
 
 // TODO(pskelton): make this neater
 static DecalBuilder *decal_builder = EngineIocContainer::ResolveDecalBuilder();
