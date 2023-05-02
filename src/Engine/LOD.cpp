@@ -935,18 +935,7 @@ Blob LOD::File::LoadCompressedTexture(const std::string &pContainer) {
     }
 }
 
-#pragma pack(push, 1)
-struct CompressedHeader { // TODO(captainurist): merge with ODMHeader? This one is written as ODMHeader, but read as CompressedHeader.
-    uint32_t uVersion;
-    char pMagic[4];
-    uint32_t uCompressedSize;
-    uint32_t uDecompressedSize;
-};
-#pragma pack(pop)
-
 Blob LOD::File::LoadCompressed(const std::string &pContainer) {
-    static_assert(sizeof(CompressedHeader) == 16, "Wrong type size");
-
     FILE *File = FindContainer(pContainer, 0);
     if (!File) {
         Error("Unable to load %s", pContainer.c_str());

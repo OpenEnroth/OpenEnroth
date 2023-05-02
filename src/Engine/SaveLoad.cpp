@@ -363,7 +363,7 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld) {
             Serialize(save, &uncompressed);
         }
 
-        ODMHeader odm_data;
+        LOD::CompressedHeader odm_data;
         odm_data.uVersion = 91969;
         odm_data.pMagic[0] = 'm';
         odm_data.pMagic[1] = 'v';
@@ -375,7 +375,7 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld) {
         odm_data.uCompressedSize = compressed.size();
         odm_data.uDecompressedSize = uncompressed.size();
 
-        Blob mapBlob = Blob::concat(Blob::view(&odm_data, sizeof(ODMHeader)), compressed);
+        Blob mapBlob = Blob::concat(Blob::view(&odm_data, sizeof(odm_data)), compressed);
 
         std::string file_name = pCurrentMapName;
         size_t pos = file_name.find_last_of(".");

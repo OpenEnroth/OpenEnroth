@@ -82,8 +82,6 @@ struct FogProbabilityTableEntry {
 // for future sky textures?
 std::array<int, 9> dword_4EC268 = {{3, 3, 3, 3, 3, 3, 3, 3, 3}};
 std::array<int, 7> dword_4EC28C = {{3, 3, 3, 3, 3, 3, 3}};
-int dword_4EC2A8 = 9;
-int dword_4EC2AC = 7;
 
 //----- (0047A59E) --------------------------------------------------------
 void OutdoorLocation::ExecDraw(unsigned int bRedraw) {
@@ -948,9 +946,9 @@ void OutdoorLocation::Load(const std::string &filename, int days_played, int res
         if (loc_time.last_visit.GetDays() % 28 != pParty->uCurrentDayOfMonth) {
             int sky_to_use;
             if (vrng->random(100) >= 20)
-                sky_to_use = dword_4EC268[vrng->random(dword_4EC2A8)];
+                sky_to_use = dword_4EC268[vrng->random(9)];
             else
-                sky_to_use = dword_4EC28C[vrng->random(dword_4EC2AC)];
+                sky_to_use = dword_4EC28C[vrng->random(7)];
             loc_time.sky_texture_name = fmt::format("plansky{}", sky_to_use);
         }
     } else {

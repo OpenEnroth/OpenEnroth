@@ -57,6 +57,16 @@ struct Directory {
 };
 #pragma pack(pop)
 
+#pragma pack(push, 1)
+struct CompressedHeader {
+    uint32_t uVersion;
+    char pMagic[4];
+    uint32_t uCompressedSize;
+    uint32_t uDecompressedSize;
+};
+static_assert(sizeof(CompressedHeader) == 16);
+#pragma pack(pop)
+
 class File {
  public:
     File();

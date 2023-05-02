@@ -15,31 +15,16 @@
 
 #define DAY_ATTRIB_FOG 1
 
-#pragma pack(push, 1)
-struct ODMHeader {
-    uint32_t uVersion;
-    char pMagic[4];
-    uint32_t uCompressedSize;
-    uint32_t uDecompressedSize;
-};
-#pragma pack(pop)
-
-#pragma pack(push, 1)
 struct OutdoorLocationTileType {
     Tileset tileset;
     uint16_t uTileID;
 };
-#pragma pack(pop)
 
-#pragma pack(push, 1)
 struct DMap {
     uint8_t field0;
     uint8_t field1;
 };
-#pragma pack(pop)
 
-/*   79 */
-#pragma pack(push, 1)
 struct OutdoorLocationTerrain {
     //----- (0047C794) --------------------------------------------------------
     inline OutdoorLocationTerrain() {
@@ -65,7 +50,6 @@ struct OutdoorLocationTerrain {
     int field_18 = 0;
     int field_1C = 0;
 };
-#pragma pack(pop)
 
 struct OutdoorLocation {
     OutdoorLocation();
