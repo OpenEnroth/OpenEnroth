@@ -819,9 +819,6 @@ void OutdoorLocation::CreateDebugLocation() {
     this->sky_texture = assets->GetBitmap(this->sky_texture_filename);
 
     this->ground_tileset = byte_6BE124_cfg_textures_DefaultGroundTexture.data();
-    // this->sMainTile_BitmapID =
-    // pBitmaps_LOD->LoadTexture(this->ground_tileset.c_str());
-    this->main_tile_texture = assets->GetBitmap(this->ground_tileset);
 }
 
 //----- (0047CF9C) --------------------------------------------------------
@@ -1062,13 +1059,6 @@ bool OutdoorLocation::Load(const std::string &filename, int days_played,
     pTileTable->InitializeTileset(pTileTypes[2].tileset);
     pTileTable->InitializeTileset(pTileTypes[3].tileset);
     this->ground_tileset = byte_6BE124_cfg_textures_DefaultGroundTexture.data();
-    TileDesc *v98 = pTileTable->GetTileById(pTileTypes[0].uTileID);
-
-    main_tile_texture = v98->GetTexture();
-    // sMainTile_BitmapID = pBitmaps_LOD->LoadTexture(v98->pTileName,
-    // TEXTURE_DEFAULT); if (sMainTile_BitmapID != -1)
-    //    pBitmaps_LOD->pTextures[sMainTile_BitmapID].palette_id2 =
-    //    pPaletteManager->LoadPalette(pBitmaps_LOD->pTextures[sMainTile_BitmapID].palette_id1);
 
     _47F0E2();
 
