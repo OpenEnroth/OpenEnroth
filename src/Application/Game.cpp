@@ -1007,7 +1007,6 @@ void Game::processQueuedMessages() {
                         pCurrentMapName = pOut;
                         Level_LoadEvtAndStr(pCurrentMapName.substr(0, pCurrentMapName.rfind('.')));
                         _decalBuilder->Reset(0);
-                        LoadLevel_InitializeLevelEvt();
                         uLevelMapStatsID = pMapStats->GetMapInfo(pCurrentMapName);
 
                         bNoNPCHiring = 0;

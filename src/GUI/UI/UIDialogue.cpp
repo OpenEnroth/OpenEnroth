@@ -135,7 +135,7 @@ GUIWindow_Dialogue::GUIWindow_Dialogue(Pointi position, Sizei dimensions, Window
             #define AddScriptedDialogueLine(DIALOGUE_EVENT_ID, MSG_PARAM) \
                 if (DIALOGUE_EVENT_ID) { \
                     if (num_dialugue_options < 4) { \
-                        int res = NPCDialogueEventProcessor(DIALOGUE_EVENT_ID); \
+                        int res = npcDialogueEventProcessor(DIALOGUE_EVENT_ID); \
                         if (res == 1 || res == 2) \
                             CreateButton({480, 130 + num_dialugue_options++ * text_line_height}, {140, text_line_height}, 1, 0, \
                                 UIMSG_SelectNPCDialogueOption, MSG_PARAM \

@@ -1761,7 +1761,7 @@ void ODM_UpdateUserInputAndOther() {
         }
     }
     UpdateActors_ODM();
-    check_event_triggers();
+    checkDecorationEvents();
 }
 //----- (0041F54A) --------------------------------------------------------
 void OutdoorLocation::LoadActualSkyFrame() {

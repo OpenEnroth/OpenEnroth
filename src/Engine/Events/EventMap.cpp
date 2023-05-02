@@ -45,6 +45,14 @@ std::vector<EventTrigger> EventMap::enumerateTriggers(EventType triggerType) {
     return triggers;
 }
 
+bool EventMap::hasHint(int eventId) const {
+    if (!_eventsById.contains(eventId)) {
+        return false;
+    }
+
+    return _eventsById.at(eventId)[0].type == EVENT_MouseOver;
+}
+
 std::string EventMap::getHintString(int eventId) const {
     std::string result = "";
     bool mouseOverFound = false;

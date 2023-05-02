@@ -3,6 +3,7 @@
 
 #include "Engine/Events.h"
 #include "Engine/Events/Processor.h"
+#include "Engine/Events/Loader.h"
 #include "Engine/Graphics/Camera.h"
 #include "Engine/Graphics/DecalBuilder.h"
 #include "Engine/Graphics/DecorationList.h"
@@ -23,7 +24,6 @@
 #include "Engine/Graphics/ClippingFunctions.h"
 #include "Engine/LOD.h"
 #include "Engine/Localization.h"
-#include "Engine/MapsLongTimer.h"
 #include "Engine/Objects/Actor.h"
 #include "Engine/Objects/Chest.h"
 #include "Engine/Objects/ItemTable.h"
@@ -782,7 +782,6 @@ void DoPrepareWorld(bool bLoading, int _1_fullscreen_loading_2_box) {
                                                       // maxExt == pCurrentMapName.
 
     Level_LoadEvtAndStr(mapName);
-    LoadLevel_InitializeLevelEvt();
 
     v5 = pMapStats->GetMapInfo(pCurrentMapName);
 
@@ -1031,7 +1030,7 @@ void Engine::SecondaryInitialization() {
     pNPCStats->pNPCData.fill(NPCData());
     pNPCStats->Initialize();
 
-    Initialize_GlobalEVT();
+    initGlobalEvents();
     pBitmaps_LOD->_inlined_sub0();
     pSprites_LOD->_inlined_sub0();
 
@@ -1286,7 +1285,7 @@ void Engine::_461103_load_level_sub() {
         pActors.clear();
     if (engine->config->debug.NoDecorations.value())
         pLevelDecorations.clear();
-    init_event_triggers();
+    initDecorationEvents();
 
     pGameLoadingUI_ProgressBar->Progress();
 
@@ -2013,121 +2012,20 @@ void LoadLevel_InitializeLevelStr() {
     }
 }
 
-//----- (00443F95) --------------------------------------------------------
-// TODO(Nik-RE-dev): remove when new even processor is fully active
-void OnMapLeave() {
-    _evt_raw *test_event;
-    if (uLevelEVT_NumEvents > 0) {
-        for (uint i = 0; i < uLevelEVT_NumEvents; ++i) {
-            test_event = (_evt_raw *)&pLevelEVT[pLevelEVT_Index[i].uEventOffsetInEVT];
-            if (test_event->_e_type == EVENT_OnMapLeave) {
-                EventProcessor(
-                    pLevelEVT_Index[i].event_id,
-                    0,
-                    1,
-                    pLevelEVT_Index[i].event_step
-                );
-            }
-        }
-    }
-}
-
-//----- (00443FDC) --------------------------------------------------------
-// TODO(Nik-RE-dev): remove when new even processor is fully active
-void OnMapLoad() {
-    int v6;                // eax@9
-    int hours;             // ebx@26
-    GameTime v18;          // [sp+Ch] [bp-44h]@12
-    unsigned int seconds;  // [sp+14h] [bp-3Ch]@26
-    GameTime v20;          // [sp+1Ch] [bp-34h]@7
-    unsigned int minutes;  // [sp+2Ch] [bp-24h]@26
-    unsigned int years;    // [sp+34h] [bp-1Ch]@26
-    unsigned int weeks;    // [sp+38h] [bp-18h]@26
-    unsigned int days;     // [sp+3Ch] [bp-14h]@26
-    unsigned int months;   // [sp+40h] [bp-10h]@26
-
-    // TODO(captainurist): if we don't set this one here, then some events might fire on map load in OnTimer()
-    // because delta time is calculated there using this variable. Redo this properly.
-    _5773B8_event_timer = pParty->GetPlayingTime();
-
-    for (uint i = 0; i < uLevelEVT_NumEvents; ++i) {
-        EventIndex pEvent = pLevelEVT_Index[i];
-
-        _evt_raw *_evt = (_evt_raw *)(&pLevelEVT[pEvent.uEventOffsetInEVT]);
-
-        //        if (_evt->_e_type == EVENT_PlaySound)
-        //            pSoundList->LoadSound(EVT_DWORD(_evt->v5), 0);
-        //        else
-        if (_evt->_e_type == EVENT_OnMapReload) {
-            EventProcessor(pEvent.event_id, 0, 0, pEvent.event_step);
-        } else if (_evt->_e_type == EVENT_OnTimer ||
-                 _evt->_e_type == EVENT_OnLongTimer) {
-            // v3 = &MapsLongTimersList[MapsLongTimers_count];
-            v20 = pOutdoor->loc_time.last_visit;
-            if (uCurrentlyLoadedLevelType == LEVEL_Indoor)
-                v20 = pIndoor->stru1.last_visit;
-
-            MapsLongTimersList[MapsLongTimers_count].timer_evt_type = _evt->_e_type;
-            MapsLongTimersList[MapsLongTimers_count].timer_evt_ID = pEvent.event_id;
-            MapsLongTimersList[MapsLongTimers_count].timer_evt_seq_num = pEvent.event_step;
-
-            MapsLongTimersList[MapsLongTimers_count].YearsInterval = _evt->v5;
-            MapsLongTimersList[MapsLongTimers_count].MonthsInterval = _evt->v6;
-            MapsLongTimersList[MapsLongTimers_count].WeeksInterval = _evt->v7;
-            MapsLongTimersList[MapsLongTimers_count].HoursInterval = _evt->v8;
-            MapsLongTimersList[MapsLongTimers_count].MinutesInterval = _evt->v9;
-            MapsLongTimersList[MapsLongTimers_count].SecondsInterval = _evt->v10;
-
-            v6 = ((unsigned short)_evt->v12 << 8) + _evt->v11;
-
-            MapsLongTimersList[MapsLongTimers_count].time_left_to_fire = ((unsigned short)_evt->v12 << 8) + _evt->v11;
-            MapsLongTimersList[MapsLongTimers_count].IntervalHalfMins = ((unsigned short)_evt->v12 << 8) + _evt->v11;
-            if (MapsLongTimersList[MapsLongTimers_count].timer_evt_type == EVENT_OnLongTimer && !(short)v6) {
-                if (v20)
-                    v18 = pParty->GetPlayingTime() - v20;
-                else
-                    v18 = GameTime(0);
-
-                if (v18.GetYears() != 0 && MapsLongTimersList[MapsLongTimers_count].YearsInterval ||
-                    v18.GetMonths() != 0 && MapsLongTimersList[MapsLongTimers_count].MonthsInterval != 0 ||
-                    v18.GetWeeks() != 0 && MapsLongTimersList[MapsLongTimers_count].WeeksInterval != 0 ||
-                    v18.GetDays() != 0 || !v20) {
-                    ++MapsLongTimers_count;
-                    MapsLongTimersList[MapsLongTimers_count].NextStartTime = GameTime(0);
-                    continue;
-                }
-            } else {
-                seconds = pParty->GetPlayingTime().GetSecondsFraction();
-                minutes = pParty->GetPlayingTime().GetMinutesFraction();
-                hours = pParty->GetPlayingTime().GetHoursOfDay();
-                days = pParty->GetPlayingTime().GetDaysOfWeek();
-                weeks = pParty->GetPlayingTime().GetWeeksOfMonth();
-                months = pParty->GetPlayingTime().GetMonthsOfYear();
-                years = pParty->GetPlayingTime().GetYears();
-
-                if (MapsLongTimersList[MapsLongTimers_count].YearsInterval) {
-                    ++years;
-                } else if (MapsLongTimersList[MapsLongTimers_count].MonthsInterval) {
-                    ++months;
-                } else if (MapsLongTimersList[MapsLongTimers_count].WeeksInterval) {
-                    ++weeks;
-                } else {
-                    ++days;
-                    hours = MapsLongTimersList[MapsLongTimers_count].HoursInterval;
-                    minutes = MapsLongTimersList[MapsLongTimers_count].MinutesInterval;
-                    seconds = MapsLongTimersList[MapsLongTimers_count].SecondsInterval;
-                }
-                MapsLongTimersList[MapsLongTimers_count].NextStartTime = GameTime(seconds, minutes, hours, days, weeks, months, years);
-                ++MapsLongTimers_count;
-            }
-        }
-    }
-}
-
 void Level_LoadEvtAndStr(const std::string &pLevelName) {
-    uLevelEVT_Size = LoadEventsToBuffer(pLevelName + ".evt", pLevelEVT.data(), 9216);
-    uLevelStrFileSize = LoadEventsToBuffer(pLevelName + ".str", pLevelStr.data(), 9216);
-    if (uLevelStrFileSize) LoadLevel_InitializeLevelStr();
+    Blob blob = pEvents_LOD->LoadCompressedTexture(pLevelName + ".str");
+    if (!blob || (blob.size() > 9216)) {
+        Error("File %s Size %lu - Buffer size %lu", (pLevelName + ".str").c_str(), blob.size(), 9216);
+    }
+
+    memcpy(pLevelStr.data(), blob.data(), blob.size());
+    uLevelStrFileSize = blob.size();
+
+    if (uLevelStrFileSize) {
+        LoadLevel_InitializeLevelStr();
+    }
+
+    initLocalEvents(pLevelName);
 }
 
 bool _44100D_should_alter_right_panel() {
@@ -2153,50 +2051,6 @@ void Transition_StopSound_Autosave(const std::string &pMapName,
     uGameState = GAME_STATE_CHANGE_LOCATION;
     pCurrentMapName = pMapName;
     uLevel_StartingPointType = start_point;
-}
-
-// TODO(Nik-RE-dev): remove
-void OnTimer(int) {
-    if (pEventTimer->bPaused) {
-        return;
-    }
-
-    int64_t v13 = (pParty->GetPlayingTime() - _5773B8_event_timer).value / 128;
-    if (!v13) return;
-
-    _5773B8_event_timer = pParty->GetPlayingTime();
-
-    for (uint i = 0; i < MapsLongTimers_count; ++i) {
-        MapsLongTimer *timer = &MapsLongTimersList[i];
-        if (timer->time_left_to_fire) {
-            if (v13 < timer->time_left_to_fire) {
-                timer->time_left_to_fire -= v13;
-            } else {
-                timer->time_left_to_fire = timer->IntervalHalfMins;
-                EventProcessor(timer->timer_evt_ID, 0, 1, timer->timer_evt_seq_num);
-            }
-        } else {
-            if (timer->NextStartTime < pParty->GetPlayingTime()) {
-                uint next_trigger_time = 1 * 60 * 60 * 24;  // 1 day
-                if (timer->YearsInterval)
-                    next_trigger_time = 336 * 60 * 60 * 24;  // 1 year
-                else if (timer->MonthsInterval)
-                    next_trigger_time = 28 * 60 * 60 * 24;  // 1 month
-                else if (timer->WeeksInterval)
-                    next_trigger_time = 7 * 60 * 60 * 24;  // 1 week
-
-                timer->NextStartTime.value += (next_trigger_time * 128) / 3.0f;
-                if (timer->NextStartTime <
-                    pParty->GetPlayingTime())  // make sure in wont fire several
-                                               // times in a row if big time
-                                               // interval has lapsed
-                    timer->NextStartTime = pParty->GetPlayingTime();
-
-                EventProcessor(timer->timer_evt_ID, 0, 1,
-                               timer->timer_evt_seq_num);
-            }
-        }
-    }
 }
 
 //----- (0044C28F) --------------------------------------------------------

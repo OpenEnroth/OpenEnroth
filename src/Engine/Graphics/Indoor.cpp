@@ -863,25 +863,7 @@ bool BLVFace::Contains(const Vec3i &pos, int model_idx, int slack, FaceAttribute
 
 //----- (0044C23B) --------------------------------------------------------
 bool BLVFaceExtra::HasEventHint() {
-    int event_index = 0;
-    if ((uLevelEVT_NumEvents - 1) <= 0) {
-        return false;
-    }
-    while (pLevelEVT_Index[event_index].event_id != this->uEventID) {
-        ++event_index;
-        if (event_index >= (signed int)(uLevelEVT_NumEvents - 1)) return false;
-    }
-    _evt_raw *end_evt =
-        (_evt_raw
-             *)&pLevelEVT[pLevelEVT_Index[event_index + 1].uEventOffsetInEVT];
-    _evt_raw *start_evt =
-        (_evt_raw *)&pLevelEVT[pLevelEVT_Index[event_index].uEventOffsetInEVT];
-    if ((end_evt->_e_type != EVENT_Exit) ||
-        (start_evt->_e_type != EVENT_MouseOver)) {
-        return false;
-    } else {
-        return true;
-    }
+    return hasEventHint(this->uEventID);
 }
 
 //----- (0046F228) --------------------------------------------------------
@@ -1773,7 +1755,7 @@ void BLV_UpdateUserInputAndOther() {
     BLV_ProcessPartyActions();
     UpdateActors_BLV();
     BLV_UpdateDoors();
-    check_event_triggers();
+    checkDecorationEvents();
 }
 
 //----- (00472866) --------------------------------------------------------

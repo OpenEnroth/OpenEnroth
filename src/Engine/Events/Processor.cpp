@@ -2,15 +2,19 @@
 #include <algorithm>
 
 #include "Engine/Engine.h"
+#include "Engine/Localization.h"
 #include "Engine/mm7_data.h"
 #include "Engine/Graphics/Indoor.h"
 #include "Engine/Graphics/Outdoor.h"
+#include "Engine/Graphics/DecorationList.h"
 #include "Engine/Graphics/Level/Decoration.h"
+#include "Engine/Objects/SpriteObject.h"
 #include "Engine/Events/EventMap.h"
 #include "Engine/Events/EventIR.h"
 #include "Engine/Events/EventInterpreter.h"
 #include "Engine/Events/Processor.h"
 #include "Engine/Events.h"
+#include "GUI/UI/UIStatusBar.h"
 
 struct MapTimer {
     GameTime interval = GameTime(0);
@@ -27,9 +31,50 @@ static std::vector<EventTrigger> onMapLeaveTriggers;
 static std::vector<MapTimer> onLongTimerTriggers;
 static std::vector<MapTimer> onTimerTriggers;
 
+static std::vector<int> decorationsWithEvents;
+
 // Was in original code and ensures that timers are checked not more often than 30 game seconds.
 // Do not needed in practice but can be considered optimization to avoid checking timers too often.
 static GameTime timerGuard = GameTime(0);
+
+void initDecorationEvents() {
+    int id = pDecorationList->GetDecorIdByName("Event Trigger");
+
+    decorationsWithEvents.clear();
+    for (int i = 0; i < pLevelDecorations.size(); ++i) {
+        if (pLevelDecorations[i].uDecorationDescID == id) {
+            decorationsWithEvents.push_back(i);            
+        }
+    }
+}
+
+void checkDecorationEvents() {
+    for (int decorationId : decorationsWithEvents) {
+        const LevelDecoration &decoration = pLevelDecorations[decorationId];
+
+        if (decoration.uFlags & LEVEL_DECORATION_TRIGGERED_BY_TOUCH) {
+            if ((decoration.vPosition - pParty->vPosition).length() < decoration.uTriggerRange) {
+                eventProcessor(decoration.uEventID, PID(OBJECT_Decoration, decorationId), 1);
+            }
+        }
+
+        if (decoration.uFlags & LEVEL_DECORATION_TRIGGERED_BY_MONSTER) {
+            for (int i = 0; i < pActors.size(); i++) {
+                if ((decoration.vPosition - pActors[i].vPosition).length() < decoration.uTriggerRange) {
+                    eventProcessor(decoration.uEventID, 0, 1);
+                }
+            }
+        }
+
+        if (decoration.uFlags & LEVEL_DECORATION_TRIGGERED_BY_OBJECT) {
+            for (int i = 0; i < pSpriteObjects.size(); i++) {
+                if ((decoration.vPosition - pSpriteObjects[i].vPosition).length() < decoration.uTriggerRange) {
+                    eventProcessor(decoration.uEventID, 0, 1);
+                }
+            }
+        }
+    }
+}
 
 static void registerTimerTriggers(EventType triggerType, std::vector<MapTimer> *triggers) {
     std::vector<EventTrigger> timerTriggers = engine->_localEventMap.enumerateTriggers(triggerType);
@@ -104,9 +149,12 @@ void eventProcessor(int eventId, int targetObj, bool canShowMessages, int startS
     EvtTargetObj = targetObj; // TODO: pass as local
     dword_5B65C4_cancelEventProcessing = 0; // TODO: rename and contain in this module or better remove it altogether
 
-    // TODO(Nik-RE-dev): linked to old processor for now
-    EventProcessor(eventId, targetObj, canShowMessages, startStep);
-    return;
+    if (!eventId) {
+        if (!game_ui_status_bar_event_string_time_left) {
+            GameUI_SetStatusBar(LSTR_NOTHING_HERE);
+        }
+        return;
+    }
 
     EventInterpreter interpreter;
     bool mapExitTriggered = false;
@@ -135,6 +183,10 @@ bool npcDialogueEventProcessor(int eventId, int startStep) {
     engine->_globalEventMap.dump(eventId);
     interpreter.prepare(engine->_globalEventMap, eventId, false);
     return interpreter.executeNpcDialogue(startStep);
+}
+
+bool hasEventHint(int eventId) {
+    return engine->_localEventMap.hasHint(eventId);
 }
 
 std::string getEventHintString(int eventId) {
