@@ -62,7 +62,6 @@ Image *_591428_endcap = nullptr;
 void GenerateStandartShopItems();
 void GenerateSpecialShopItems();
 
-#pragma pack(push, 1)
 struct stru365_travel_info {
     unsigned char uMapInfoID;
     unsigned char pSchedule[7];
@@ -74,7 +73,6 @@ struct stru365_travel_info {
     unsigned int uQuestBit;  // quest bit required to set for this travel option
                              // to be enabled; otherwise 0
 };
-#pragma pack(pop)
 stru365_travel_info transport_schedule[35] = {  // 004F09B0
                                                 // location name   days    x        y       z
     { MAP_STEADWICK, { 1, 0, 1, 0, 1, 0, 0 }, 2, -18048, 4636, 833, 1536, 0 },  // for stable
