@@ -1,4 +1,7 @@
 #pragma once
+#include <vector>
+#include <string>
+
 #include "GUI/GUIWindow.h"
 
 class GUIWindow_CharacterRecord : public GUIWindow {
@@ -14,12 +17,35 @@ class GUIWindow_CharacterRecord : public GUIWindow {
     void ShowAwardsTab();
     void ToggleRingsOverlay();
 
+    void clickAwardsUp();
+    void clickAwardsDown();
+    void scrollAwardsUp();
+    void scrollAwardsDown();
+
  protected:
     void CharacterUI_StatsTab_Draw(struct Player *);
     void CharacterUI_SkillsTab_Draw(struct Player *);
+
+    /**
+     * @offset 0x41A000
+     */
     void CharacterUI_AwardsTab_Draw(struct Player *);
 
     void CharacterUI_SkillsTab_CreateButtons();
+
+    /**
+     * @offset 0x419100
+     */
+    void fillAwardsData();
+
+    std::string getAchievedAwardsString(int idx);
+    GUIWindow prepareAwardsWindow();
+
+ private:
+    int _awardsCharacterId = -1;
+    int _startAwardElem = 0;
+    bool _awardLimitReached = false;
+    std::vector<int> _achievedAwardsList;
 };
 
 bool ringscreenactive();

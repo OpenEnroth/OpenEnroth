@@ -348,7 +348,6 @@ void DrawPopupWindow(unsigned int uX, unsigned int uY, unsigned int uWidth,
 void DrawMM7CopyrightWindow();
 void GUI_UpdateWindows();
 int GetConditionDrawColor(Condition uConditionIdx);  // idb
-void FillAwardsData();
 void CreateAwardsScrollBar();
 void ReleaseAwardsScrollBar();
 void Inventory_ItemPopupAndAlchemy();

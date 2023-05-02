@@ -15,9 +15,6 @@ Viewport *pViewport = new Viewport;
 ViewingParams *viewparams = new ViewingParams;
 std::array<Autonote, 196> pAutonoteTxt;
 std::array<Award, 105> pAwards;
-std::array<AwardType, 1000> achieved_awards;
-int num_achieved_awards;
-int full_num_items_in_book;
 
 std::array<stru160, 66> array_4EB8B8 = {  // vertices for spheres
     {stru160(0.0000000f, 0.0000000f, 1.0000000f),
@@ -2512,12 +2509,6 @@ char byte_4FAA24;  // turn over break??
 // HWND dword_4FAA28; // idb
 
 // std::array<unsigned int, 480> pSRZBufferLineOffsets;
-
-// TODO(Nik-RE-dev): rename and move to UICharacter.cpp or refactor out
-int books_page_number;
-int books_primary_item_per_page;
-int BtnDown_flag;
-int BtnUp_flag;
 
 int quick_spell_at_page;
 char byte_506550;

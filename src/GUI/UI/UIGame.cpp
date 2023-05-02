@@ -628,10 +628,6 @@ void GameUI_OnPlayerPortraitLeftClick(unsigned int uPlayerID) {
         }
         if (current_screen_type != CURRENT_SCREEN::SCREEN_CHEST_INVENTORY) {
             pParty->setActiveCharacterIndex(uPlayerID);
-            if (current_character_screen_window ==
-                WINDOW_CharacterWindow_Awards) {
-                FillAwardsData();
-            }
             return;
         }
         if (pParty->activeCharacterIndex() == uPlayerID) {

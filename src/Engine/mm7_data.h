@@ -109,13 +109,6 @@ extern int dword_4FA9B4[];
 
 // extern std::array<unsigned int, 480> pSRZBufferLineOffsets;
 // extern Texture_MM7 *dword_50640C[];
-extern int
-    books_page_number;  // number for page in books(номер страницы в книгах)
-extern int
-    books_primary_item_per_page;  // number primary item in book page(номер
-                                  // начальной записи на странице)
-extern int BtnDown_flag;                     // BtnDown_flag
-extern int BtnUp_flag;                       // BtnUp_flag
 extern int quick_spell_at_page;
 extern char byte_506550;
 extern int uLastPointedObjectID;
