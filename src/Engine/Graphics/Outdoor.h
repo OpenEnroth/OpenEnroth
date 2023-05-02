@@ -145,7 +145,7 @@ struct OutdoorLocation {
     std::array<OutdoorLocationTileType, 4> pTileTypes;  // [3]  road tileset
     struct OutdoorLocationTerrain pTerrain;
     std::array<uint16_t, 128 * 128> pCmap; // Unused
-    BSPModelList pBModels;
+    std::vector<BSPModel> pBModels;
     std::vector<uint16_t> pFaceIDLIST;
     std::array<uint32_t, 128 * 128> pOMAP;
     Texture *sky_texture = nullptr;        // signed int sSky_TextureID;

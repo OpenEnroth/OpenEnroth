@@ -33,6 +33,20 @@ void Deserialize(const std::vector<T1> &src, std::vector<T2> *dst) {
         Deserialize(element, &dst->emplace_back());
 }
 
+template<class T1, size_t N1, class T2, size_t N2> requires (!std::is_same_v<T1, T2>)
+static void Serialize(const std::array<T1, N1> &src, std::array<T2, N2> *dst) {
+    static_assert(N1 == N2, "Expected arrays of equal size.");
+    for (size_t i = 0; i < N1; i++)
+        Serialize(src[i], &(*dst)[i]);
+}
+
+template<class T1, size_t N1, class T2, size_t N2> requires (!std::is_same_v<T1, T2>)
+static void Deserialize(const std::array<T1, N1> &src, std::array<T2, N2> *dst) {
+    static_assert(N1 == N2, "Expected arrays of equal size.");
+    for (size_t i = 0; i < N1; i++)
+        Deserialize(src[i], &(*dst)[i]);
+}
+
 template<size_t N>
 void Serialize(const std::string &src, std::array<char, N> *dst) {
     memset(dst->data(), 0, N);

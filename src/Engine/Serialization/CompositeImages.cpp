@@ -3,6 +3,7 @@
 #include <string>
 
 #include "Engine/Graphics/Indoor.h"
+#include "Engine/Graphics/Outdoor.h"
 #include "Engine/Graphics/Level/Decoration.h"
 #include "Engine/Graphics/DecorationList.h"
 #include "Engine/Objects/SpriteObject.h"
@@ -54,14 +55,14 @@ void Deserialize(const IndoorLocation_MM7 &src, IndoorLocation *dst) {
 
     Deserialize(src.faceExtras, &dst->pFaceExtras);
 
+    std::string textureName;
     for (uint i = 0; i < dst->pFaceExtras.size(); ++i) {
-        std::string texName;
-        Deserialize(src.faceExtraTextures[i], &texName);
+        Deserialize(src.faceExtraTextures[i], &textureName);
 
-        if (texName.empty())
+        if (textureName.empty())
             dst->pFaceExtras[i].uAdditionalBitmapID = -1;
         else
-            dst->pFaceExtras[i].uAdditionalBitmapID = pBitmaps_LOD->LoadTexture(texName);
+            dst->pFaceExtras[i].uAdditionalBitmapID = pBitmaps_LOD->LoadTexture(textureName);
     }
 
     for (size_t i = 0; i < dst->pFaces.size(); ++i) {
@@ -125,10 +126,10 @@ void Deserialize(const IndoorLocation_MM7 &src, IndoorLocation *dst) {
 
     Deserialize(src.decorations, &pLevelDecorations);
 
+    std::string decorationName;
     for (size_t i = 0; i < pLevelDecorations.size(); ++i) {
-        std::string name;
-        Deserialize(src.decorationNames[i], &name);
-        pLevelDecorations[i].uDecorationDescID = pDecorationList->GetDecorIdByName(name);
+        Deserialize(src.decorationNames[i], &decorationName);
+        pLevelDecorations[i].uDecorationDescID = pDecorationList->GetDecorIdByName(decorationName);
     }
 
     Deserialize(src.lights, &dst->pLights);
@@ -290,9 +291,6 @@ void Deserialize(const IndoorSave_MM7 &src, IndoorLocation *dst) {
 }
 
 void Serialize(const IndoorSave_MM7 &src, Blob *dst) {
-    //assert(src.faceAttributes.size() == src.header.uNumFacesInBModels);
-    //assert(src.decorationFlags.size() == src.header.uNumDecorations);
-
     BlobSerializer stream;
     stream.WriteRaw(&src.header);
     stream.WriteRaw(&src.visibleOutlines);
@@ -333,3 +331,136 @@ void Deserialize(const Blob &src, IndoorSave_MM7 *dst, const IndoorLocation_MM7 
     progress();
 }
 
+void Deserialize(std::tuple<const BSPModelData_MM7 &, const BSPModelExtras_MM7 &> src, BSPModel *dst) {
+    const auto &[srcData, srcExtras] = src;
+
+    // dst->index is set externally.
+    Deserialize(srcData.pModelName, &dst->pModelName);
+    Deserialize(srcData.pModelName2, &dst->pModelName2);
+    dst->field_40 = srcData.field_40;
+    dst->sCenterX = srcData.sCenterX;
+    dst->sCenterY = srcData.sCenterY;
+    dst->vPosition = srcData.vPosition;
+    dst->pBoundingBox.x1 = srcData.sMinX;
+    dst->pBoundingBox.y1 = srcData.sMinY;
+    dst->pBoundingBox.z1 = srcData.sMinZ;
+    dst->pBoundingBox.x2 = srcData.sMaxX;
+    dst->pBoundingBox.y2 = srcData.sMaxY;
+    dst->pBoundingBox.z2 = srcData.sMaxZ;
+    dst->sSomeOtherMinX = srcData.sSomeOtherMinX;
+    dst->sSomeOtherMinY = srcData.sSomeOtherMinY;
+    dst->sSomeOtherMinZ = srcData.sSomeOtherMinZ;
+    dst->sSomeOtherMaxX = srcData.sSomeOtherMaxX;
+    dst->sSomeOtherMaxY = srcData.sSomeOtherMaxY;
+    dst->sSomeOtherMaxZ = srcData.sSomeOtherMaxZ;
+    dst->vBoundingCenter = srcData.vBoundingCenter;
+    dst->sBoundingRadius = srcData.sBoundingRadius;
+
+    dst->pVertices = srcExtras.vertices;
+    Deserialize(srcExtras.faces, &dst->pFaces);
+
+    for (size_t i = 0; i < dst->pFaces.size(); i++)
+        dst->pFaces[i].index = i;
+
+    dst->pFacesOrdering = srcExtras.faceOrdering;
+
+    Deserialize(srcExtras.bspNodes, &dst->pNodes);
+
+    std::string textureName;
+    for (size_t i = 0; i < dst->pFaces.size(); ++i) {
+        Deserialize(srcExtras.faceTextures[i], &textureName);
+        dst->pFaces[i].SetTexture(textureName);
+
+        if (dst->pFaces[i].sCogTriggeredID) {
+            if (dst->pFaces[i].HasEventHint())
+                dst->pFaces[i].uAttributes |= FACE_HAS_EVENT;
+            else
+                dst->pFaces[i].uAttributes &= ~FACE_HAS_EVENT;
+        }
+    }
+}
+
+void Deserialize(const OutdoorLocation_MM7 &src, OutdoorLocation *dst) {
+    Deserialize(src.name, &dst->level_filename);
+    Deserialize(src.fileName, &dst->location_filename);
+    Deserialize(src.desciption, &dst->location_file_description);
+    Deserialize(src.skyTexture, &dst->sky_texture_filename);
+    // src.groundTileset is just dropped
+    Deserialize(src.tileTypes, &dst->pTileTypes);
+
+    dst->LoadTileGroupIds();
+    dst->LoadRoadTileset();
+
+    Deserialize(src.heightMap, &dst->pTerrain.pHeightmap);
+    Deserialize(src.tileMap, &dst->pTerrain.pTilemap);
+    Deserialize(src.attributeMap, &dst->pTerrain.pAttributemap);
+
+    dst->pTerrain.FillDMap(0, 0, 128, 128);
+
+    Deserialize(src.someOtherMap, &pTerrainSomeOtherData);
+    Deserialize(src.normalMap, &pTerrainNormalIndices);
+    Deserialize(src.normals, &pTerrainNormals);
+
+    dst->pBModels.clear();
+    for (size_t i = 0; i < src.models.size(); i++) {
+        BSPModel &dstModel = dst->pBModels.emplace_back();
+        dstModel.index = i;
+        Deserialize(std::forward_as_tuple(src.models[i], src.modelExtras[i]), &dstModel);
+    }
+
+    Deserialize(src.decorations, &pLevelDecorations);
+
+    std::string decorationName;
+    for (size_t i = 0; i < pLevelDecorations.size(); ++i) {
+        Deserialize(src.decorationNames[i], &decorationName);
+        pLevelDecorations[i].uDecorationDescID = pDecorationList->GetDecorIdByName(decorationName);
+    }
+
+    Deserialize(src.decorationPidList, &dst->pFaceIDLIST);
+    Deserialize(src.decorationMap, &dst->pOMAP);
+    Deserialize(src.spawnPoints, &dst->pSpawnPoints);
+}
+
+void Deserialize(const Blob &src, OutdoorLocation_MM7 *dst, std::function<void()> progress) {
+    BlobDeserializer stream(src);
+    stream.ReadRaw(&dst->name);
+    stream.ReadRaw(&dst->fileName);
+    stream.ReadRaw(&dst->desciption);
+    stream.ReadRaw(&dst->skyTexture);
+    stream.ReadRaw(&dst->groundTileset);
+    stream.ReadRaw(&dst->tileTypes);
+    progress();
+    stream.ReadRaw(&dst->heightMap);
+    stream.ReadRaw(&dst->tileMap);
+    stream.ReadRaw(&dst->attributeMap);
+    progress();
+    stream.ReadRaw(&dst->normalCount);
+    stream.ReadRaw(&dst->someOtherMap);
+    stream.ReadRaw(&dst->normalMap);
+    stream.ReadSizedVector(&dst->normals, dst->normalCount);
+    progress();
+    stream.ReadVector(&dst->models);
+
+    dst->modelExtras.clear();
+    for (const BSPModelData_MM7 &model : dst->models) {
+        BSPModelExtras_MM7 &extra = dst->modelExtras.emplace_back();
+        stream.ReadSizedVector(&extra.vertices, model.uNumVertices);
+        stream.ReadSizedVector(&extra.faces, model.uNumFaces);
+        stream.ReadSizedVector(&extra.faceOrdering, model.uNumFaces);
+        stream.ReadSizedVector(&extra.bspNodes, model.uNumNodes);
+        stream.ReadSizedVector(&extra.faceTextures, model.uNumFaces);
+    }
+
+    progress();
+    stream.ReadVector(&dst->decorations);
+    progress();
+    stream.ReadSizedVector(&dst->decorationNames, dst->decorations.size());
+    progress();
+    stream.ReadVector(&dst->decorationPidList);
+    progress();
+    stream.ReadRaw(&dst->decorationMap);
+    progress();
+    progress();
+    stream.ReadVector<SpawnPoint_MM7>(&dst->spawnPoints);
+    progress();
+}

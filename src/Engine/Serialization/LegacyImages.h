@@ -44,6 +44,7 @@ struct ObjectDesc;
 struct ODMFace;
 struct OtherOverlay;
 struct OtherOverlayList;
+struct OutdoorLocationTileType;
 struct OverlayDesc;
 struct Party;
 struct Player;
@@ -1207,6 +1208,14 @@ struct BLVHeader_MM7 {
 };
 static_assert(sizeof(BLVHeader_MM7) == 136);
 // TODO(captainurist): introduce engine equivalent
+
+
+struct OutdoorLocationTileType_MM7 {
+    uint16_t tileset;
+    uint16_t uTileID;
+};
+
+void Deserialize(const OutdoorLocationTileType_MM7 &src, OutdoorLocationTileType *dst);
 
 
 #pragma pack(pop)

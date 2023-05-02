@@ -7,6 +7,7 @@
 
 #include "Engine/Engine.h"
 #include "Engine/Graphics/Indoor.h"
+#include "Engine/Graphics/Outdoor.h"
 #include "Engine/Graphics/Overlays.h"
 #include "Engine/Graphics/Sprites.h"
 #include "Engine/Graphics/Level/Decoration.h"
@@ -50,20 +51,6 @@ static void Deserialize(const std::array<T1, N> &src, IndexedArray<T2, L, H> *ds
     static_assert(IndexedArray<T2, L, H>::SIZE == N, "Expected arrays of equal size.");
     for (size_t i = 0; auto index : dst->indices())
         Deserialize(src[i++], &(*dst)[index]);
-}
-
-template<class T1, size_t N1, class T2, size_t N2> requires (!std::is_same_v<T1, T2>)
-static void Serialize(const std::array<T1, N1> &src, std::array<T2, N2> *dst) {
-    static_assert(N1 == N2, "Expected arrays of equal size.");
-    for (size_t i = 0; i < N1; i++)
-        Serialize(src[i], &(*dst)[i]);
-}
-
-template<class T1, size_t N1, class T2, size_t N2> requires (!std::is_same_v<T1, T2>)
-static void Deserialize(const std::array<T1, N1> &src, std::array<T2, N2> *dst) {
-    static_assert(N1 == N2, "Expected arrays of equal size.");
-    for (size_t i = 0; i < N1; i++)
-        Deserialize(src[i], &(*dst)[i]);
 }
 
 // Bits inside each array element indexed backwards
@@ -1795,4 +1782,9 @@ void Serialize(const MapEventVariables &src, MapEventVariables_MM7 *dst) {
 void Deserialize(const MapEventVariables_MM7 &src, MapEventVariables *dst) {
     dst->mapVars = src.mapVars;
     dst->decorVars = src.decorVars;
+}
+
+void Deserialize(const OutdoorLocationTileType_MM7 &src, OutdoorLocationTileType *dst) {
+    dst->tileset = static_cast<Tileset>(src.tileset);
+    dst->uTileID = src.uTileID;
 }

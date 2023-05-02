@@ -28,6 +28,7 @@
 #include "Engine/Party.h"
 #include "Engine/Serialization/LegacyImages.h"
 #include "Engine/Serialization/Deserializer.h"
+#include "Engine/Serialization/CompositeImages.h"
 #include "Engine/SpellFxRenderer.h"
 #include "Engine/Tables/TileFrameTable.h"
 #include "Engine/Time.h"
@@ -868,72 +869,17 @@ bool OutdoorLocation::Load(const std::string &filename, int days_played,
     std::string odm_filename = std::string(filename);
     odm_filename.replace(odm_filename.length() - 4, 4, ".odm");
 
-    BlobDeserializer stream(pGames_LOD->LoadCompressed(odm_filename));
+    auto progressCallback = [] {
+        pGameLoadingUI_ProgressBar->Progress();
+    };
 
-    stream.ReadSizedString(&this->level_filename, 32);
-    stream.ReadSizedString(&this->location_filename, 32);
-    stream.ReadSizedString(&this->location_file_description, 32);
-    stream.ReadSizedString(&this->sky_texture_filename, 32);
-
-    std::string ground_tileset;
-    stream.ReadSizedString(&ground_tileset, 32);
-
-    static_assert(sizeof(pTileTypes) == 16, "Wrong type size");
-    stream.ReadRaw(&pTileTypes);
-
-    LoadTileGroupIds();
-    LoadRoadTileset();
-
-    pGameLoadingUI_ProgressBar->Progress();  // прогресс загрузки
-
-    // *******************Terrain**************************//
-    stream.ReadRaw(&pTerrain.pHeightmap);  // карта высот
-    stream.ReadRaw(&pTerrain.pTilemap);  // карта тайлов
-    stream.ReadRaw(&pTerrain.pAttributemap);  // карта аттрибутов
-
-    pTerrain.FillDMap(0, 0, 128, 128);
-
-    pGameLoadingUI_ProgressBar->Progress();  // прогресс загрузки
-
-    uint32_t uNumTerrainNormals;
-    stream.ReadRaw(&uNumTerrainNormals);  // количество нормалей
-    stream.ReadRaw(&pTerrainSomeOtherData);
-    stream.ReadRaw(&pTerrainNormalIndices);  // индексы нормалей
-    stream.ReadSizedVector(&pTerrainNormals, uNumTerrainNormals);
-
-    pGameLoadingUI_ProgressBar->Progress();  // прогресс загрузки
-
-    // ************BModels************************//
-    pBModels.Load(&stream);
-    pGameLoadingUI_ProgressBar->Progress();  // прогресс загрузки
-
-    // ******************Decorations**********************//
-    stream.ReadLegacyVector<LevelDecoration_MM7>(&pLevelDecorations);
-
-    pGameLoadingUI_ProgressBar->Progress();
-
-    for (uint i = 0; i < pLevelDecorations.size(); ++i) {
-        std::string name;
-        stream.ReadSizedString(&name, 32);
-        pLevelDecorations[i].uDecorationDescID = pDecorationList->GetDecorIdByName(name);
-    }
-
-    pGameLoadingUI_ProgressBar->Progress();  // прогресс загрузки
-
-    stream.ReadVector(&pFaceIDLIST);
-
-    pGameLoadingUI_ProgressBar->Progress();  // прогресс загрузки
-
-    stream.ReadRaw(&pOMAP);
-
-    pGameLoadingUI_ProgressBar->Progress();
-    pGameLoadingUI_ProgressBar->Progress();  // прогресс загрузки
-
-    stream.ReadLegacyVector<SpawnPoint_MM7>(&pSpawnPoints);
-
-    pGameLoadingUI_ProgressBar->Progress();  // прогресс загрузки
+    OutdoorLocation_MM7 location;
+    Deserialize(pGames_LOD->LoadCompressed(odm_filename), &location, progressCallback);
+    Deserialize(location, this);
 
     // ****************.ddm file*********************//
+
+    BlobDeserializer stream;
 
     std::string ddm_filename = filename;
     ddm_filename = ddm_filename.replace(ddm_filename.length() - 4, 4, ".ddm");

@@ -214,8 +214,3 @@ class BSPModel {
     std::vector<uint16_t> pFacesOrdering;
     std::vector<BSPNode> pNodes;
 };
-
-class BSPModelList : public std::vector<BSPModel> {
- public:
-    void Load(Deserializer *stream);
-};
