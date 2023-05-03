@@ -49,7 +49,6 @@ extern std::array<unsigned int, 4> pManaBarPos;
 // extern std::array<char, 80> _4E2B21_buff_spell_tooltip_colors;
 extern std::array<int8_t, 88> monster_popup_y_offsets;
 
-extern int dword_4E455C;
 extern std::array<int, 6> dword_4E4560;
 extern std::array<int, 6> dword_4E4578;
 extern std::array<int, 6> dword_4E4590;
@@ -123,7 +122,6 @@ extern GUIButton *pBtn_ZoomIn;  // idb
 extern unsigned int uGameUIFontShadow;
 extern unsigned int uGameUIFontMain;
 extern int dword_507B00_spell_info_to_draw_in_popup;
-extern int dword_507BF0_is_there_popup_onscreen;
 extern int awards_scroll_bar_created;
 extern int dword_507CC0_activ_ch;
 extern bool OpenedTelekinesis;

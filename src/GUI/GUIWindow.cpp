@@ -926,7 +926,7 @@ void GUI_UpdateWindows() {
         GameUI_DrawFoodAndGold();
     }
 
-    if (sub_4637E0_is_there_popup_onscreen()) {
+    if (isHoldingMouseRightButton()) {
         std::shared_ptr<Mouse> mouse = EngineIocContainer::ResolveMouse();
         UI_OnMouseRightClick(mouse->GetCursorPos().x, mouse->GetCursorPos().y);
     }
@@ -1259,8 +1259,8 @@ void GUIMessageQueue::AddMessageImpl(UIMessageType msg, int param,
     qMessages.push(message);
 }
 
-char sub_4637E0_is_there_popup_onscreen() {
-    return dword_507BF0_is_there_popup_onscreen == 1;
+bool isHoldingMouseRightButton() {
+    return holdingMouseRightButton;
 }
 
 unsigned int GetSkillColor(PLAYER_CLASS_TYPE uPlayerClass, PLAYER_SKILL_TYPE uPlayerSkillType, PLAYER_SKILL_MASTERY skill_mastery) {

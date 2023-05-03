@@ -44,6 +44,7 @@
 #include "GUI/GUIProgressBar.h"
 #include "GUI/GUIWindow.h"
 #include "GUI/UI/UIStatusBar.h"
+#include "GUI/UI/UIPopup.h"
 
 #include "Io/Mouse.h"
 
@@ -385,7 +386,7 @@ bool Engine::_44EEA7() {  // cursor picking - particle update
 
     // x = cursor.y;
     // y = cursor.x;
-    if (sub_4637E0_is_there_popup_onscreen()) {
+    if (isHoldingMouseRightButton()) {
         face_filter = &vis_face_filter;
         sprite_filter = &vis_sprite_filter_2;
         depth = pCamera3D->GetMouseInfoDepth();
@@ -1428,11 +1429,9 @@ void setDecorationSprite(uint16_t uCog, bool bHide, const std::string &pFileName
 
 //----- (004356FF) --------------------------------------------------------
 void back_to_game() {
-    dword_507BF0_is_there_popup_onscreen = 0;
-    dword_4E455C = 1;
-
-    extern int no_rightlick_in_inventory;
-    no_rightlick_in_inventory = false;
+    holdingMouseRightButton = false;
+    rightClickItemActionPerformed = false;
+    identifyReactionPlayed = false;
 
     if (pGUIWindow_ScrollWindow) free_book_subwindow();
     if (current_screen_type == CURRENT_SCREEN::SCREEN_GAME && !pGUIWindow_CastTargetedSpell)

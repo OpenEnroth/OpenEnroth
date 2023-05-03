@@ -256,8 +256,7 @@ void Mouse::SetMouseClick(int x, int y) {
 }
 
 void Mouse::UI_OnMouseLeftClick() {
-    if (current_screen_type == CURRENT_SCREEN::SCREEN_VIDEO ||
-        sub_4637E0_is_there_popup_onscreen())
+    if (current_screen_type == CURRENT_SCREEN::SCREEN_VIDEO || isHoldingMouseRightButton())
         return;
 
     if (pGUIWindow_BranchlessDialogue && pGUIWindow_BranchlessDialogue->wData.val == (int)EVENT_PressAnyKey) {

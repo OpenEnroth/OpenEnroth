@@ -16,3 +16,7 @@ extern Image *messagebox_border_top;     // 507698
 extern Image *messagebox_border_bottom;  // 5076A4
 extern Image *messagebox_border_left;    // 50769C
 extern Image *messagebox_border_right;   // 5076A0
+
+extern bool holdingMouseRightButton;
+extern bool rightClickItemActionPerformed;
+extern bool identifyReactionPlayed;

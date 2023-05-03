@@ -1650,7 +1650,7 @@ void Game::processQueuedMessages() {
                         continue;  // this used to check if player had the spell
                                    // activated - no longer rquired here ??
 
-                    if (sub_4637E0_is_there_popup_onscreen())
+                    if (isHoldingMouseRightButton())
                         dword_507B00_spell_info_to_draw_in_popup = uMessageParam + 1;
                     int lastOpened = pParty->activeCharacter().lastOpenedSpellbookPage;
                     if (quick_spell_at_page - 1 == uMessageParam) {
