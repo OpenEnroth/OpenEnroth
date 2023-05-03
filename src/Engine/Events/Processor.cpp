@@ -42,7 +42,7 @@ void initDecorationEvents() {
     decorationsWithEvents.clear();
     for (int i = 0; i < pLevelDecorations.size(); ++i) {
         if (pLevelDecorations[i].uDecorationDescID == id) {
-            decorationsWithEvents.push_back(i);            
+            decorationsWithEvents.push_back(i);
         }
     }
 }
