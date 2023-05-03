@@ -50,7 +50,13 @@ bool EventMap::hasHint(int eventId) const {
         return false;
     }
 
-    return _eventsById.at(eventId)[0].type == EVENT_MouseOver;
+    const std::vector<EventIR>& eventInsn = _eventsById.at(eventId);
+
+    if (eventInsn.size() < 2) {
+        return false;
+    }
+
+    return eventInsn[0].type == EVENT_MouseOver && eventInsn[1].type == EVENT_Exit;
 }
 
 std::string EventMap::getHintString(int eventId) const {
