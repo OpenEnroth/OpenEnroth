@@ -152,6 +152,9 @@ GUIWindow_Load::GUIWindow_Load(bool ingame) :
     render->Present();
 
     pSavegameList->Initialize();
+    // Reset position in case that last loaded save will not be found
+    pSavegameList->selectedSlot = 0;
+    pSavegameList->saveListPosition = 0;
 
     LOD::File pLODFile;
     for (uint i = 0; i < pSavegameList->numSavegameFiles; ++i) {
