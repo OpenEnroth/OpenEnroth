@@ -405,7 +405,6 @@ void EventProcessor(int uEventID, int targetObj, int canShowMessages,
                                 break;
                             }
 LABEL_47:
-                            // v10 = (ByteArray *)&v5[v9];
                             v24 = pParty->pPlayers[grng->random(4)].pActiveSkills[static_cast<PLAYER_SKILL_TYPE>(_evt->v5)];
                         }
                     }

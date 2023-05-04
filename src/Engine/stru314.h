@@ -1,7 +1,5 @@
 #pragma once
 
-/*  179 */
-#pragma pack(push, 1)
 struct stru314 {  // facet normals face / wall / celings
     //----- (00489B60) --------------------------------------------------------
     stru314() {
@@ -28,4 +26,3 @@ struct stru314 {  // facet normals face / wall / celings
     Vec3f field_1C; // For decal application: v vector, perpendicular to Normal and u
     float dist = 0;
 };
-#pragma pack(pop)

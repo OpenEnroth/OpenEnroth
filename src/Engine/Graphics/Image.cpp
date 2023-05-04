@@ -3,13 +3,13 @@
 #include <algorithm>
 
 #include "Engine/Engine.h"
-#include "Engine/OurMath.h"
 
 #include "Engine/Graphics/ImageFormatConverter.h"
 #include "Engine/Graphics/ImageLoader.h"
 #include "Engine/Graphics/Texture.h"
 
 #include "Engine/Serialization/LegacyImages.h"
+#include "Engine/Serialization/Deserializer.h"
 
 #include "Library/Serialization/EnumSerialization.h"
 
@@ -51,58 +51,17 @@ Texture *TextureFrame::GetTexture() {
     return this->tex;
 }
 
-void TextureFrameTable::ToFile() {
-    FILE *file = fopen(MakeDataPath("data", "dtft.bin").c_str(), "wb");
-    if (file == nullptr)
-        Error("Unable to save dtft.bin!", 0);
-
-    // TODO the code below won't work because this static_assert fails
-    // static_assert(sizeof(TextureFrameTable) == 0x14u);
-    __debugbreak();
-
-    fwrite(&this->sNumTextures, 4u, 1u, file);
-    fwrite(this->pTextures, 0x14u, this->sNumTextures, file);
-    fclose(file);
-}
-
 void TextureFrameTable::FromFile(const Blob &data_mm6, const Blob &data_mm7, const Blob &data_mm8) {
-    uint num_mm6_frames = data_mm6 ? *(int *)data_mm6.data() : 0,
-         num_mm7_frames = data_mm7 ? *(int *)data_mm7.data() : 0,
-         num_mm8_frames = data_mm8 ? *(int *)data_mm8.data() : 0;
+    (void) data_mm6;
+    (void) data_mm8;
 
-    this->sNumTextures =
-        /*num_mm6_frames + */ num_mm7_frames /*+ num_mm8_frames*/;
-    Assert(sNumTextures, 0);
-    // Assert(!num_mm8_frames);
+    BlobDeserializer(data_mm7).ReadLegacyVector<TextureFrame_MM7>(&textures);
 
-    // TODO(captainurist): move serialization code to legacyimages
-    TextureFrame_MM7 *frame_data =
-        (TextureFrame_MM7 *)((unsigned char *)data_mm7.data() + 4);
-    auto frames = new TextureFrame[this->sNumTextures];
-    for (unsigned int i = 0; i < this->sNumTextures; ++i) {
-        frames[i].name = frame_data->textureName.data();
-        std::transform(frames[i].name.begin(), frames[i].name.end(),
-                       frames[i].name.begin(), ::tolower);
-
-        frames[i].uAnimLength = frame_data->animLength;
-        frames[i].uAnimTime = frame_data->animTime;
-        frames[i].uFlags = frame_data->flags;
-
-        ++frame_data;
-    }
-
-    // pTextures = (TextureFrame *)malloc(sNumTextures * sizeof(TextureFrame));
-    // memcpy(pTextures,                                   (char *)data_mm7 + 4,
-    // num_mm7_frames * sizeof(TextureFrame)); memcpy(pTextures + num_mm7_frames,
-    // (char *)data_mm6 + 4, num_mm6_frames * sizeof(TextureFrame));
-    // memcpy(pTextures + num_mm6_frames + num_mm7_frames, (char *)data_mm8 + 4,
-    // num_mm8_frames * sizeof(TextureFrame));
-
-    this->pTextures = frames;
+    assert(!textures.empty());
 }
 
 void TextureFrameTable::LoadAnimationSequenceAndPalettes(int uFrameID) {
-    if (uFrameID <= this->sNumTextures && uFrameID >= 0) {
+    if (uFrameID <= textures.size() && uFrameID >= 0) {
         for (unsigned int i = uFrameID;; ++i) {
             // this->pTextures[i].uTextureID =
             // pBitmaps_LOD->LoadTexture(this->pTextures[i].pTextureName,
@@ -113,39 +72,33 @@ void TextureFrameTable::LoadAnimationSequenceAndPalettes(int uFrameID) {
             //    =
             //    pPaletteManager->LoadPalette(pBitmaps_LOD->pTextures[this->pTextures[i].uTextureID].palette_id1);
 
-            if (this->pTextures[i].uFlags & 1) break;
+            if (textures[i].uFlags & 1) break;
         }
     }
     return;
 }
 
 int64_t TextureFrameTable::FindTextureByName(const char *Str2) {
-    std::string name = Str2;
-    std::transform(name.begin(), name.end(), name.begin(), ::tolower);
+    std::string name = toLower(Str2);
 
-    for (unsigned int i = 0; i < this->sNumTextures; ++i) {
-        if (this->pTextures[i].name == name) return i;
-    }
+    for (size_t i = 0; i < textures.size(); ++i)
+        if (textures[i].name == name)
+            return i;
     return -1;
 }
 
-Texture *TextureFrameTable::GetFrameTexture(int uFrameID, signed int a3) {
-    int v3 = uFrameID;
-    TextureFrame *v4 = this->pTextures;
-    TextureFrame *v5 = &v4[uFrameID];
-    int v6 = v5->uAnimLength;
-    if (v5->uFlags & 1 && (v6 != 0)) {
-        int v7 = (a3 >> 3) % v6;
-        for (char *i = (char *)&v5->uAnimTime;; i += 20) {
-            int v9 = *(short *)i;
-            if (v7 <= v9) break;
-            v7 -= v9;
-            ++v3;
+Texture *TextureFrameTable::GetFrameTexture(int frameId, int time) {
+    int animLength = textures[frameId].uAnimLength;
+
+    if (textures[frameId].uFlags & 1 && animLength != 0) {
+        int step = (time >> 3) % animLength;
+        while (textures[frameId].uAnimTime < step) {
+            step -= textures[frameId].uAnimTime;
+            ++frameId;
         }
-        return v4[v3].GetTexture();
-    } else {
-        return v5->GetTexture();
     }
+
+    return textures[frameId].GetTexture();
 }
 
 void Texture_MM7::Release() {

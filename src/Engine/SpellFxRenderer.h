@@ -2,6 +2,7 @@
 
 #include <Utility/Color.h>
 
+#include <array>
 #include <memory>
 #include <cstdint>
 
@@ -11,8 +12,6 @@ class Actor;
 class Texture;
 class ParticleEngine;
 
-/*  120 */
-#pragma pack(push, 1)
 struct SpellFX_Billboard {
     /**
      * @offset 0x4775B1
@@ -59,10 +58,7 @@ struct SpellFX_Billboard {
     local_01 field_B4[5]{};  // clipped view coords
     local_01 field_104[5]{};  // projected billboard coords
 };
-#pragma pack(pop)
 
-/*  122 */
-#pragma pack(push, 1)
 struct PlayerBuffAnim {
     int16_t bRender = false;
     int16_t field_2 = 0;
@@ -70,10 +66,7 @@ struct PlayerBuffAnim {
     int uSpellAnimTime = 0;
     int uSpellIconID = 0;
 };
-#pragma pack(pop)
 
-/*  307 */
-#pragma pack(push, 1)
 struct ProjectileAnim {
     float srcX;
     float srcY;
@@ -83,10 +76,7 @@ struct ProjectileAnim {
     float dstZ;
     Texture *texture;  // int uTextureID;
 };
-#pragma pack(pop)
 
-/*  306 */
-#pragma pack(push, 1)
 struct stru6_stru2 {
     // int field_0;
     float flt_0_x;
@@ -94,10 +84,7 @@ struct stru6_stru2 {
     float flt_8_z;
     int field_C;
 };
-#pragma pack(pop)
 
-/* stru6 121 */
-#pragma pack(push, 1)
 struct SpellFxRenderer {
     /**
      * @offset 0x4A7155
@@ -163,8 +150,8 @@ struct SpellFxRenderer {
 
     int field_204;  // fireball sphere tally
 
-    PlayerBuffAnim pPlayerBuffs[4];
-    ProjectileAnim pProjectiles[32];
+    std::array<PlayerBuffAnim, 4> pPlayerBuffs;
+    std::array<ProjectileAnim, 32> pProjectiles;
     int uNumProjectiles;
     SpellFX_Billboard *pStru1;
     int field_5D0;
@@ -180,4 +167,3 @@ struct SpellFxRenderer {
 
     std::shared_ptr<ParticleEngine> particle_engine = nullptr;
 };
-#pragma pack(pop)

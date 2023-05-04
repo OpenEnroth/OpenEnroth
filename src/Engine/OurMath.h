@@ -19,7 +19,6 @@ inline int round_to_int(float x) { return (int)floor(x + 0.5f); }
 uint32_t int_get_vector_length(int32_t x, int32_t y, int32_t z);
 
 
-// #pragma pack(push, 1)
 // struct fixed {  // fixed-point decimal
 //    inline fixed() : _internal(0) {}
 //    explicit fixed(int _bits) : _internal(_bits) {}
@@ -74,7 +73,6 @@ uint32_t int_get_vector_length(int32_t x, int32_t y, int32_t z);
 //
 //    int32_t _internal;
 // };
-// #pragma pack(pop)
 
 template <typename FloatType>
 inline int bankersRounding(const FloatType &value) {

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cstdint>
+#include <array>
 #include <vector>
 
 #include "Utility/Memory/Blob.h"
@@ -20,11 +21,10 @@ enum OBJECT_DESC_FLAGS : int16_t {
     OBJECT_DESC_TRIAL_LINE = 0x400,
 };
 
-#pragma pack(push, 1)
 struct ObjectDesc {
     inline bool NoSprite() const { return uFlags & OBJECT_DESC_NO_SPRITE; }
 
-    char field_0[32];
+    std::array<char, 32> field_0;
     int16_t uObjectID;
     int16_t uRadius;
     int16_t uHeight;
@@ -36,11 +36,7 @@ struct ObjectDesc {
     uint8_t uParticleTrailColorR;
     uint8_t uParticleTrailColorG;
     uint8_t uParticleTrailColorB;
-    char field_35_clr;
-    char field_36_clr;
-    char field_37_clr;
 };
-#pragma pack(pop)
 
 class ObjectList {
  public:

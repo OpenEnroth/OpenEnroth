@@ -8,8 +8,6 @@
 #include "Utility/Geometry/Plane.h"
 #include "Utility/Geometry/BBox.h"
 
-class Deserializer;
-
 enum class FaceAttribute : uint32_t {
     FACE_IsPortal          = 0x00000001,
     FACE_IsSecret          = 0x00000002,
@@ -74,50 +72,12 @@ enum class PolygonType : uint8_t {
 };
 using enum PolygonType;
 
-#pragma pack(push, 1)
-// TODO(captainurist): introduce BSPNode_MM7
 struct BSPNode {
     int16_t uFront;
     int16_t uBack;
     int16_t uBSPFaceIDOffset;
     int16_t uNumBSPFaces;
 };
-#pragma pack(pop)
-
-#pragma pack(push, 1)
-// TODO(captainurist): introduce BSPModelData_MM7
-struct BSPModelData {
-    char pModelName[32] {};
-    char pModelName2[32] {};
-    int32_t field_40 = 0;
-    uint32_t uNumVertices = 0;
-    uint32_t ppVertices = 0;
-    uint32_t uNumFaces = 0;
-    uint32_t uNumConvexFaces = 0;
-    uint32_t ppFaces = 0;
-    uint32_t ppFacesOrdering = 0;
-    uint32_t uNumNodes = 0;
-    uint32_t ppNodes = 0;
-    uint32_t uNumDecorations = 0;
-    int32_t sCenterX = 0;
-    int32_t sCenterY = 0;
-    Vec3i vPosition {};
-    int32_t sMinX = 0;
-    int32_t sMinY = 0;
-    int32_t sMinZ = 0;
-    int32_t sMaxX = 0;
-    int32_t sMaxY = 0;
-    int32_t sMaxZ = 0;
-    int32_t sSomeOtherMinX = 0;
-    int32_t sSomeOtherMinY = 0;
-    int32_t sSomeOtherMinZ = 0;
-    int32_t sSomeOtherMaxX = 0;
-    int32_t sSomeOtherMaxY = 0;
-    int32_t sSomeOtherMaxZ = 0;
-    Vec3i vBoundingCenter {};
-    int32_t sBoundingRadius = 0;
-};
-#pragma pack(pop)
 
 class Texture;
 
@@ -163,7 +123,7 @@ struct ODMFace {
     Planef facePlane;
     PlaneZCalcf zCalc;
     FaceAttributes uAttributes = 0;
-    std::array<uint16_t, 20> pVertexIDs = {{}};
+    std::array<int16_t, 20> pVertexIDs = {{}};
     std::array<int16_t, 20> pTextureUIDs = {{}};
     std::array<int16_t, 20> pTextureVIDs = {{}};
     std::array<int16_t, 20> pXInterceptDisplacements = {{}};
@@ -219,9 +179,4 @@ class BSPModel {
     std::vector<ODMFace> pFaces;
     std::vector<uint16_t> pFacesOrdering;
     std::vector<BSPNode> pNodes;
-};
-
-class BSPModelList : public std::vector<BSPModel> {
- public:
-    void Load(Deserializer *stream);
 };

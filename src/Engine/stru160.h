@@ -1,7 +1,5 @@
 #pragma once
 
-/*  153 */
-#pragma pack(push, 1)
 struct stru160 {
     inline stru160() {}
     inline stru160(float a, float b, float c)
@@ -11,13 +9,10 @@ struct stru160 {
     float field_4 = 0;
     float field_8 = 0;
 };
-#pragma pack(pop)
 
-#pragma pack(push, 1)
 struct stru16x : public stru160 {
     float field_C = 0;
 };
-#pragma pack(pop)
 
 extern std::array<stru160, 66> array_4EB8B8;
 extern std::array<stru160, 128> array_4EBBD0;

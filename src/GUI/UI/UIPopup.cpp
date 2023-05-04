@@ -44,15 +44,12 @@ Image *messagebox_border_bottom = nullptr;  // 5076A4
 Image *messagebox_border_left = nullptr;    // 50769C
 Image *messagebox_border_right = nullptr;   // 5076A0
 
-/*  374 */
-#pragma pack(push, 1)
 struct stat_coord {
     int16_t x;
     int16_t y;
     int16_t width;
     int16_t height;
 };
-#pragma pack(pop)
 
 std::array<stat_coord, 26> stat_string_coord =  // 4E2940
 {{

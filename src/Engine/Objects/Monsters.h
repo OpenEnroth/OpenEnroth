@@ -115,8 +115,6 @@ enum SPECIAL_ATTACK_TYPE : uint8_t {
     SPECIAL_ATTACK_FEAR = 23,
 };
 
-/*  187 */
-#pragma pack(push, 1)
 struct MonsterInfo {
     enum HostilityRadius {
         Hostility_Friendly = 0,
@@ -188,10 +186,7 @@ struct MonsterInfo {
     signed int uRecoveryTime = 0;
     unsigned int uAttackPreference = 0;
 };
-#pragma pack(pop)
 
-/*  189 */
-#pragma pack(push, 1)
 struct MonsterStats {
     void Initialize();
     void InitializePlacements();
@@ -206,9 +201,7 @@ struct MonsterStats {
     unsigned int uNumPlacements;  // 5B98h
     int field_5B9C;
 };
-#pragma pack(pop)
 
-#pragma pack(push, 1)
 struct MonsterDesc {
     uint16_t uMonsterHeight;
     uint16_t uMonsterRadius;
@@ -219,11 +212,9 @@ struct MonsterDesc {
     std::string pMonsterName;
     IndexedArray<std::string, ANIM_Count> pSpriteNames;
 };
-#pragma pack(pop)
 
 struct MonsterList {
     int16_t GetMonsterIDByName(const char *pMonsterName);
-    void ToFile();
     void FromFile(const Blob &data_mm6, const Blob &data_mm7, const Blob &data_mm8);
     bool FromFileTxt(const char *Args);
 

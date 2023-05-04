@@ -3,7 +3,7 @@
 #include "Engine/Engine.h"
 #include "Engine/Graphics/IRender.h"
 #include "Engine/Serialization/LegacyImages.h"
-
+#include "Engine/Serialization/Deserializer.h"
 
 #include "../LOD.h"
 
@@ -17,12 +17,12 @@ Texture *Icon::GetTexture() {
 }
 
 Icon *IconFrameTable::GetIcon(unsigned int idx) {
-    if (idx < this->uNumIcons) return &this->pIcons[idx];
+    if (idx < pIcons.size()) return &this->pIcons[idx];
     return nullptr;
 }
 
 Icon *IconFrameTable::GetIcon(const char *pIconName) {
-    for (unsigned int i = 0; i < this->uNumIcons; i++) {
+    for (unsigned int i = 0; i < pIcons.size(); i++) {
         if (iequals(pIconName, this->pIcons[i].GetAnimationName()))
             return &this->pIcons[i];
     }
@@ -31,7 +31,7 @@ Icon *IconFrameTable::GetIcon(const char *pIconName) {
 
 //----- (00494F3A) --------------------------------------------------------
 unsigned int IconFrameTable::FindIcon(const char *pIconName) {
-    for (uint i = 0; i < (signed int)this->uNumIcons; i++) {
+    for (uint i = 0; i < pIcons.size(); i++) {
         if (iequals(pIconName, this->pIcons[i].GetAnimationName()))
             return i;
     }
@@ -60,7 +60,7 @@ Icon *IconFrameTable::GetFrame(unsigned int uIconID, unsigned int frame_time) {
 
 //----- (00494FBF) --------------------------------------------------------
 void IconFrameTable::InitializeAnimation(unsigned int uIconID) {
-    if (uIconID && (signed int)uIconID <= (signed int)this->uNumIcons) {
+    if (uIconID && uIconID <= pIcons.size()) {
         for (uint i = uIconID;; ++i) {
             if (!(this->pIcons[i].uFlags & 1)) {
                 break;
@@ -69,47 +69,19 @@ void IconFrameTable::InitializeAnimation(unsigned int uIconID) {
     }
 }
 
-//----- (0049500A) --------------------------------------------------------
-void IconFrameTable::ToFile() {
-    FILE *v2 = fopen(MakeDataPath("data", "dift.bin").c_str(), "wb");
-    if (!v2)
-        Error("Unable to save dift.bin!");
-    fwrite(&this->uNumIcons, 4, 1, v2);
-    fwrite(this->pIcons, 0x20u, this->uNumIcons, v2);
-    fclose(v2);
-}
-
 //----- (00495056) --------------------------------------------------------
 void IconFrameTable::FromFile(const Blob &data_mm6, const Blob &data_mm7, const Blob &data_mm8) {
-    uint num_mm6_frames = data_mm6 ? *(int *)data_mm6.data() : 0,
-         num_mm7_frames = data_mm7 ? *(int *)data_mm7.data() : 0,
-         num_mm8_frames = data_mm8 ? *(int *)data_mm8.data() : 0;
+    (void) data_mm6;
+    (void) data_mm8;
 
-    uNumIcons = num_mm6_frames + num_mm7_frames + num_mm8_frames;
-    Assert(uNumIcons);
-    Assert(!num_mm6_frames);
-    Assert(!num_mm8_frames);
+    pIcons.clear();
 
-    IconFrame_MM7 *pIcons =
-        (IconFrame_MM7 *)malloc(uNumIcons * sizeof(IconFrame_MM7));
-    if (pIcons == nullptr) {
-        logger->warning("Malloc error");
-        Error("Malloc");  // is this recoverable
-    }
+    BlobDeserializer(data_mm7).ReadLegacyVector<IconFrame_MM7>(&pIcons);
 
-    memcpy(pIcons, (char *)data_mm7.data() + 4,
-           num_mm7_frames * sizeof(IconFrame_MM7));
-    // memcpy(pIcons + num_mm7_frames,                  (char *)data_mm6 + 4,
-    // num_mm6_frames * sizeof(IconFrame_MM7)); memcpy(pIcons + num_mm6_frames +
-    // num_mm7_frames, (char *)data_mm8 + 4, num_mm8_frames *
-    // sizeof(IconFrame_MM7));
+    for (size_t i = 0; i < pIcons.size(); ++i)
+        pIcons[i].id = i;
 
-    this->pIcons = new Icon[uNumIcons];
-    for (unsigned int i = 0; i < uNumIcons; ++i) {
-        Deserialize(pIcons[i], &this->pIcons[i]);
-
-        this->pIcons[i].id = i;
-    }
+    assert(!pIcons.empty());
 }
 
 /*

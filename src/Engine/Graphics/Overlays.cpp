@@ -12,8 +12,10 @@
 
 #include "Engine/TurnEngine/TurnEngine.h"
 
-#include "GUI/GUIWindow.h"
+#include "Engine/Serialization/LegacyImages.h"
+#include "Engine/Serialization/Deserializer.h"
 
+#include "GUI/GUIWindow.h"
 
 #include "Sprites.h"
 
@@ -43,7 +45,7 @@ int OtherOverlayList::_4418B6(int uOverlayID, int16_t a3, int a4, int a5,
             this->pOverlays[i].screen_space_x = 0;
             this->pOverlays[i].field_C = a3;
             v9 = 0;
-            for (; v9 < (signed int)pOverlayList->uNumOverlays; ++v9) {
+            for (; v9 < (signed int)pOverlayList->pOverlays.size(); ++v9) {
                 if (uOverlayID == pOverlayList->pOverlays[v9].uOverlayID) break;
             }
             this->pOverlays[i].field_2 = v9;
@@ -102,42 +104,26 @@ void OtherOverlayList::DrawTurnBasedIcon() {
 
 //----- (00458D97) --------------------------------------------------------
 void OverlayList::InitializeSprites() {
-    for (uint i = 0; i < uNumOverlays; ++i)
+    for (size_t i = 0; i < pOverlays.size(); ++i)
         pSpriteFrameTable->InitializeSprite(pOverlays[i].uSpriteFramesetID);
-}
-
-//----- (00458DBC) --------------------------------------------------------
-void OverlayList::ToFile() {
-    FILE *v2 = fopen(MakeDataPath("data", "doverlay.bin").c_str(), "wb");
-    if (!v2)
-        Error("Unable to save doverlay.bin!");
-    fwrite(this, 4, 1, v2);
-    fwrite(this->pOverlays, 8, this->uNumOverlays, v2);
-    fclose(v2);
 }
 
 //----- (00458E08) --------------------------------------------------------
 void OverlayList::FromFile(const Blob &data_mm6, const Blob &data_mm7, const Blob &data_mm8) {
-    uint num_mm6_overlays = data_mm6 ? *(int *)data_mm6.data() : 0,
-         num_mm7_overlays = data_mm7 ? *(int *)data_mm7.data() : 0,
-         num_mm8_overlays = data_mm8 ? *(int *)data_mm8.data() : 0;
+    pOverlays.clear();
 
-    uNumOverlays = num_mm6_overlays + num_mm7_overlays + num_mm8_overlays;
-    Assert(uNumOverlays);
-    Assert(!num_mm8_overlays);
+    if (data_mm6)
+        BlobDeserializer(data_mm6).ReadLegacyVector<OverlayDesc_MM7>(&pOverlays, Deserializer::Append);
+    if (data_mm7)
+        BlobDeserializer(data_mm7).ReadLegacyVector<OverlayDesc_MM7>(&pOverlays, Deserializer::Append);
+    if (data_mm8)
+        BlobDeserializer(data_mm8).ReadLegacyVector<OverlayDesc_MM7>(&pOverlays, Deserializer::Append);
 
-    pOverlays = (OverlayDesc *)malloc(uNumOverlays * sizeof(OverlayDesc));
-    memcpy(pOverlays, (char *)data_mm7.data() + 4,
-           num_mm7_overlays * sizeof(OverlayDesc));
-    memcpy(pOverlays + num_mm7_overlays, (char *)data_mm6.data() + 4,
-           num_mm6_overlays * sizeof(OverlayDesc));
-    memcpy(pOverlays + num_mm6_overlays + num_mm7_overlays,
-           (char *)data_mm8.data() + 4, num_mm8_overlays * sizeof(OverlayDesc));
+    assert(!pOverlays.empty());
 }
 
 //----- (00458E4F) --------------------------------------------------------
 bool OverlayList::FromFileTxt(const char *Args) {
-    int32_t v3;       // edi@1
     FILE *v4;         // eax@1
     unsigned int v5;  // esi@3
     void *v7;         // eax@9
@@ -149,10 +135,7 @@ bool OverlayList::FromFileTxt(const char *Args) {
     FILE *File;             // [sp+2FCh] [bp-4h]@1
     unsigned int Argsa;     // [sp+308h] [bp+8h]@3
 
-    free(this->pOverlays);
-    v3 = 0;
-    this->pOverlays = nullptr;
-    this->uNumOverlays = 0;
+    pOverlays.clear();
     v4 = fopen(Args, "r");
     File = v4;
     if (!v4) Error("ObjectDescriptionList::load - Unable to open file: %s.");
@@ -166,34 +149,26 @@ bool OverlayList::FromFileTxt(const char *Args) {
             if (v19.uPropCount && *v19.pProperties[0] != 47) ++Argsa;
         } while (fgets(Buf, sizeof(Buf), File));
         v5 = Argsa;
-        v3 = 0;
     }
-    this->uNumOverlays = v5;
-    v7 = malloc(sizeof(OverlayDesc) * v5);
-    this->pOverlays = (OverlayDesc *)v7;
-    if (v7 == NULL)
-        Error("OverlayDescriptionList::load - Out of Memory!");
+    pOverlays.reserve(v5);
 
-    memset(v7, v3, sizeof(OverlayDesc) * this->uNumOverlays);
-    // v8 = File;
-    this->uNumOverlays = v3;
-    fseek(File, v3, v3);
+    fseek(File, 0, 0);
     for (i = fgets(Buf, sizeof(Buf), File); i; i = fgets(Buf, sizeof(Buf), File)) {
         *strchr(Buf, 10) = 0;
         memcpy(&v19, txt_file_frametable_parser(Buf, &v18), sizeof(v19));
         if (v19.uPropCount && *v19.pProperties[0] != 47) {
-            this->pOverlays[this->uNumOverlays].uOverlayID =
-                atoi(v19.pProperties[0]);
+            OverlayDesc &overlay = pOverlays.emplace_back();
+
+            overlay.uOverlayID = atoi(v19.pProperties[0]);
             if (!iequals(v19.pProperties[1], "center")) {
                 if (iequals(v19.pProperties[1], "transparent"))
-                    this->pOverlays[this->uNumOverlays].uOverlayType = 2;
+                    overlay.uOverlayType = 2;
                 else
-                    this->pOverlays[this->uNumOverlays].uOverlayType = 1;
+                    overlay.uOverlayType = 1;
             } else {
-                this->pOverlays[this->uNumOverlays].uOverlayType = 0;
+                overlay.uOverlayType = 0;
             }
-            this->pOverlays[this->uNumOverlays++].uSpriteFramesetID =
-                pSpriteFrameTable->FastFindSprite(v19.pProperties[2]);
+            overlay.uSpriteFramesetID = pSpriteFrameTable->FastFindSprite(v19.pProperties[2]);
         }
     }
     fclose(File);

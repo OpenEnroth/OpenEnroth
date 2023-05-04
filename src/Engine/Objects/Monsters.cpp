@@ -5,7 +5,6 @@
 
 #include "Engine/Engine.h"
 #include "Engine/Serialization/Deserializer.h"
-#include "Engine/Serialization/Serializer.h"
 #include "Engine/Serialization/LegacyImages.h"
 
 
@@ -28,7 +27,6 @@ SPELL_TYPE ParseSpellType(struct FrameTableTxtLine *tbl, int *next_token) {
         ++*next_token;
         return SPELL_NONE;
     }
-    // TODO(captainurist): I bet this parse routine fails now, likely need istarts_with here.
     if (iequals(tbl->pProperties[0], "Dispel")) {  // dispel magic
         ++*next_token;
         return SPELL_LIGHT_DISPEL_MAGIC;
@@ -372,31 +370,16 @@ bool MonsterList::FromFileTxt(const char *Args) {
 
 //----- (004598AF) --------------------------------------------------------
 void MonsterList::FromFile(const Blob &data_mm6, const Blob &data_mm7, const Blob &data_mm8) {
-    Assert(!data_mm8);
+    pMonsters.clear();
 
-    if (data_mm7) {
-        BlobDeserializer stream(data_mm7);
-        stream.ReadLegacyVector<MonsterDesc_MM7>(&pMonsters);
-    }
+    if (data_mm6)
+        BlobDeserializer(data_mm6).ReadLegacyVector<MonsterDesc_MM6>(&pMonsters, Deserializer::Append);
+    if (data_mm7)
+        BlobDeserializer(data_mm7).ReadLegacyVector<MonsterDesc_MM7>(&pMonsters, Deserializer::Append);
+    if (data_mm8)
+        BlobDeserializer(data_mm8).ReadLegacyVector<MonsterDesc_MM7>(&pMonsters, Deserializer::Append);
 
-    if (data_mm6) {
-        BlobDeserializer stream(data_mm6);
-        stream.ReadLegacyVector<MonsterDesc_MM6>(&pMonsters, Deserializer::Append);
-    }
-
-    if (data_mm8) {
-        BlobDeserializer stream(data_mm8);
-        stream.ReadLegacyVector<MonsterDesc_MM7>(&pMonsters, Deserializer::Append);
-    }
-
-    Assert(!pMonsters.empty());
-}
-
-//----- (00459860) --------------------------------------------------------
-void MonsterList::ToFile() {
-    FileSerializer stream(MakeDataPath("data", "dmonlist.bin"));
-    stream.WriteLegacyVector<MonsterDesc_MM7>(this->pMonsters);
-    stream.Close();
+    assert(!pMonsters.empty());
 }
 
 //----- (004563FF) --------------------------------------------------------
