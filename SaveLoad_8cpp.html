@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;60832d4</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;fbac3b4</span>
    </div>
   </td>
  </tr>
@@ -80,7 +80,7 @@ $(function() {
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><code>#include &quot;<a class="el" href="SaveLoad_8h.html">Engine/SaveLoad.h</a>&quot;</code><br />
-<code>#include &lt;stdlib.h&gt;</code><br />
+<code>#include &lt;cstdlib&gt;</code><br />
 <code>#include &lt;filesystem&gt;</code><br />
 <code>#include &lt;algorithm&gt;</code><br />
 <code>#include &lt;string&gt;</code><br />
@@ -90,21 +90,19 @@ $(function() {
 <code>#include &quot;<a class="el" href="Localization_8h.html">Engine/Localization.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Party_8h.html">Engine/Party.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Time_8h.html">Engine/Time.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="Events_8h.html">Engine/Events.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="ImageLoader_8h.html">Engine/Graphics/ImageLoader.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Decoration_8h.html">Engine/Graphics/Level/Decoration.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Outdoor_8h.html">Engine/Graphics/Outdoor.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Overlays_8h.html">Engine/Graphics/Overlays.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="PCX_8h.html">Engine/Graphics/PCX.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="Viewport_8h.html">Engine/Graphics/Viewport.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="Actor_8h.html">Engine/Objects/Actor.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="Chest_8h.html">Engine/Objects/Chest.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="SpriteObject_8h.html">Engine/Objects/SpriteObject.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="LegacyImages_8h.html">Engine/Serialization/LegacyImages.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="CompositeImages_8h.html">Engine/Serialization/CompositeImages.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="CommonImages_8h.html">Engine/Serialization/CommonImages.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="Deserializer_8h.html">Engine/Serialization/Deserializer.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="Serializer_8h.html">Engine/Serialization/Serializer.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="GUIFont_8h.html">GUI/GUIFont.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="GUIWindow_8h.html">GUI/GUIWindow.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="UIGame_8h.html">GUI/UI/UIGame.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="UISaveLoad_8h.html">GUI/UI/UISaveLoad.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="UIStatusBar_8h.html">GUI/UI/UIStatusBar.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="AudioPlayer_8h.html">Media/Audio/AudioPlayer.h</a>&quot;</code><br />
 </div><table class="memberdecls">
@@ -129,8 +127,8 @@ Variables</h2></td></tr>
 <tr class="separator:a4fb8a51afce2e5a598706c1f4820d6b1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a075d49ecfaa98693083d42393d861311"><td class="memItemLeft" align="right" valign="top">std::array&lt; <a class="el" href="classImage.html">Image</a> *, <a class="el" href="SaveLoad_8h.html#a057d24aa837c1a458ebddedc4b21bea3">MAX_SAVE_SLOTS</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="SaveLoad_8cpp.html#a075d49ecfaa98693083d42393d861311">pSavegameThumbnails</a></td></tr>
 <tr class="separator:a075d49ecfaa98693083d42393d861311"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2717bc6f95074a0dfef7748ec3cd5d3a"><td class="memItemLeft" align="right" valign="top">std::array&lt; <a class="el" href="structSavegameHeader.html">SavegameHeader</a>, <a class="el" href="SaveLoad_8h.html#a057d24aa837c1a458ebddedc4b21bea3">MAX_SAVE_SLOTS</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="SaveLoad_8cpp.html#a2717bc6f95074a0dfef7748ec3cd5d3a">pSavegameHeader</a></td></tr>
-<tr class="separator:a2717bc6f95074a0dfef7748ec3cd5d3a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1a61b5e253fd5e4c810d1bef4d3c630b"><td class="memItemLeft" align="right" valign="top">std::array&lt; <a class="el" href="structSaveGameHeader.html">SaveGameHeader</a>, <a class="el" href="SaveLoad_8h.html#a057d24aa837c1a458ebddedc4b21bea3">MAX_SAVE_SLOTS</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="SaveLoad_8cpp.html#a1a61b5e253fd5e4c810d1bef4d3c630b">pSavegameHeader</a></td></tr>
+<tr class="separator:a1a61b5e253fd5e4c810d1bef4d3c630b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2902daf982cfe3d75b7d7606ad796b2b"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="SaveLoad_8cpp.html#a2902daf982cfe3d75b7d7606ad796b2b">pSaveListPosition</a> = 0</td></tr>
 <tr class="separator:a2902daf982cfe3d75b7d7606ad796b2b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae37d75004c2bd97e6d661e73730ed2ee"><td class="memItemLeft" align="right" valign="top">unsigned int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="SaveLoad_8cpp.html#ae37d75004c2bd97e6d661e73730ed2ee">uLoadGameUI_SelectedSlot</a> = 0</td></tr>
@@ -219,14 +217,14 @@ Variables</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Variable Documentation</h2>
-<a id="a2717bc6f95074a0dfef7748ec3cd5d3a" name="a2717bc6f95074a0dfef7748ec3cd5d3a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a2717bc6f95074a0dfef7748ec3cd5d3a">&#9670;&#160;</a></span>pSavegameHeader</h2>
+<a id="a1a61b5e253fd5e4c810d1bef4d3c630b" name="a1a61b5e253fd5e4c810d1bef4d3c630b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1a61b5e253fd5e4c810d1bef4d3c630b">&#9670;&#160;</a></span>pSavegameHeader</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">std::array&lt;<a class="el" href="structSavegameHeader.html">SavegameHeader</a>, <a class="el" href="SaveLoad_8h.html#a057d24aa837c1a458ebddedc4b21bea3">MAX_SAVE_SLOTS</a>&gt; pSavegameHeader</td>
+          <td class="memname">std::array&lt;<a class="el" href="structSaveGameHeader.html">SaveGameHeader</a>, <a class="el" href="SaveLoad_8h.html#a057d24aa837c1a458ebddedc4b21bea3">MAX_SAVE_SLOTS</a>&gt; pSavegameHeader</td>
         </tr>
       </table>
 </div><div class="memdoc">

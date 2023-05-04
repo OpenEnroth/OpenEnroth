@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;60832d4</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;fbac3b4</span>
    </div>
   </td>
  </tr>
@@ -105,8 +105,6 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a9b9a9072a8e5b62745672eabe24571e2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5c4e559beabce1dc2e5177e398194aa6"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDeserializer.html#a5c4e559beabce1dc2e5177e398194aa6">ReadBytes</a> (void *dst, size_t size)</td></tr>
 <tr class="separator:a5c4e559beabce1dc2e5177e398194aa6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aeae6e3d28330972b43bd24e51c695568"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDeserializer.html#aeae6e3d28330972b43bd24e51c695568">SkipBytes</a> (size_t size)</td></tr>
-<tr class="separator:aeae6e3d28330972b43bd24e51c695568"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae78da1858f1fd167fa1df2f9c247a0ca"><td class="memTemplParams" colspan="2">template&lt;class T &gt; </td></tr>
 <tr class="memitem:ae78da1858f1fd167fa1df2f9c247a0ca"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classDeserializer.html#ae78da1858f1fd167fa1df2f9c247a0ca">ReadRaw</a> (T *dst)</td></tr>
 <tr class="separator:ae78da1858f1fd167fa1df2f9c247a0ca"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -125,8 +123,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a975a9e8eacdf5a5e6b05684ee60ff303"><td class="memTemplParams" colspan="2">template&lt;class LegacyT , class T &gt; </td></tr>
 <tr class="memitem:a975a9e8eacdf5a5e6b05684ee60ff303"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classDeserializer.html#a975a9e8eacdf5a5e6b05684ee60ff303">ReadSizedLegacyVector</a> (std::vector&lt; T &gt; *dst, size_t size, <a class="el" href="classDeserializer.html#a43d54839cc1f0c162d5636455b354530">VectorStoreMode</a> mode=<a class="el" href="classDeserializer.html#a43d54839cc1f0c162d5636455b354530a9bbda914cc9b1acd40209a3cab5d56b4">Overwrite</a>)</td></tr>
 <tr class="separator:a975a9e8eacdf5a5e6b05684ee60ff303"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a13e459ec0c48ac74de38f80562192a49"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDeserializer.html#a13e459ec0c48ac74de38f80562192a49">ReadSizedString</a> (std::string *dst, size_t size)</td></tr>
-<tr class="separator:a13e459ec0c48ac74de38f80562192a49"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aee5be6607c8814b23513a3ac97676bfc"><td class="memTemplParams" colspan="2">template&lt;class LegacyT , class T &gt; </td></tr>
+<tr class="memitem:aee5be6607c8814b23513a3ac97676bfc"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classDeserializer.html#aee5be6607c8814b23513a3ac97676bfc">ReadLegacy</a> (T *dst)</td></tr>
+<tr class="separator:aee5be6607c8814b23513a3ac97676bfc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pri-methods" name="pri-methods"></a>
 Private Member Functions</h2></td></tr>
@@ -211,6 +210,34 @@ Private Attributes</h2></td></tr>
           <td></td>
           <td>)</td>
           <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="aee5be6607c8814b23513a3ac97676bfc" name="aee5be6607c8814b23513a3ac97676bfc"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aee5be6607c8814b23513a3ac97676bfc">&#9670;&#160;</a></span>ReadLegacy()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class LegacyT , class T &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void Deserializer::ReadLegacy </td>
+          <td>(</td>
+          <td class="paramtype">T *&#160;</td>
+          <td class="paramname"><em>dst</em></td><td>)</td>
+          <td></td>
         </tr>
       </table>
   </td>
@@ -370,42 +397,6 @@ template&lt;class LegacyT , class T &gt; </div>
 
 </div>
 </div>
-<a id="a13e459ec0c48ac74de38f80562192a49" name="a13e459ec0c48ac74de38f80562192a49"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a13e459ec0c48ac74de38f80562192a49">&#9670;&#160;</a></span>ReadSizedString()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">void Deserializer::ReadSizedString </td>
-          <td>(</td>
-          <td class="paramtype">std::string *&#160;</td>
-          <td class="paramname"><em>dst</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">size_t&#160;</td>
-          <td class="paramname"><em>size</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
 <a id="ae566799e63b57d9881b5b0060a4d74aa" name="ae566799e63b57d9881b5b0060a4d74aa"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ae566799e63b57d9881b5b0060a4d74aa">&#9670;&#160;</a></span>ReadSizedVector()</h2>
 
@@ -546,32 +537,6 @@ template&lt;class LegacyT  = void, class T &gt; </div>
           <td>(</td>
           <td class="paramtype"><a class="el" href="classInputStream.html">InputStream</a> *&#160;</td>
           <td class="paramname"><em>inputStream</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="aeae6e3d28330972b43bd24e51c695568" name="aeae6e3d28330972b43bd24e51c695568"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aeae6e3d28330972b43bd24e51c695568">&#9670;&#160;</a></span>SkipBytes()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">void Deserializer::SkipBytes </td>
-          <td>(</td>
-          <td class="paramtype">size_t&#160;</td>
-          <td class="paramname"><em>size</em></td><td>)</td>
           <td></td>
         </tr>
       </table>

@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;60832d4</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;fbac3b4</span>
    </div>
   </td>
  </tr>
@@ -106,8 +106,7 @@ $(function() {
 <code>#include &quot;<a class="el" href="SpriteObject_8h.html">Engine/Objects/SpriteObject.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="OurMath_8h.html">Engine/OurMath.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Party_8h.html">Engine/Party.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="LegacyImages_8h.html">Engine/Serialization/LegacyImages.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="Deserializer_8h.html">Engine/Serialization/Deserializer.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="CompositeImages_8h.html">Engine/Serialization/CompositeImages.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="SpellFxRenderer_8h.html">Engine/SpellFxRenderer.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="TileFrameTable_8h.html">Engine/Tables/TileFrameTable.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Time_8h.html">Engine/Time.h</a>&quot;</code><br />
@@ -118,9 +117,10 @@ $(function() {
 <code>#include &quot;<a class="el" href="GUIWindow_8h.html">GUI/GUIWindow.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="UIRest_8h.html">GUI/UI/UIRest.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="UITransition_8h.html">GUI/UI/UITransition.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="Random_8h.html">Library/Random/Random.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="FreeDeleter_8h.html">Utility/Memory/FreeDeleter.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="TrigLut_8h.html">Utility/Math/TrigLut.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="Random_8h.html">Library/Random/Random.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="Exception_8h.html">Utility/Exception.h</a>&quot;</code><br />
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Classes</h2></td></tr>
@@ -186,10 +186,6 @@ Variables</h2></td></tr>
 <tr class="separator:a932382d17ed9ece6083a519eb588d9ec"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7f39c7bb5135fcb2d8891531fab43c28"><td class="memItemLeft" align="right" valign="top">std::array&lt; int, 7 &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Outdoor_8cpp.html#a7f39c7bb5135fcb2d8891531fab43c28">dword_4EC28C</a> = {{3, 3, 3, 3, 3, 3, 3}}</td></tr>
 <tr class="separator:a7f39c7bb5135fcb2d8891531fab43c28"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:adc11b5a34766e922c596df97097b7e72"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Outdoor_8cpp.html#adc11b5a34766e922c596df97097b7e72">dword_4EC2A8</a> = 9</td></tr>
-<tr class="separator:adc11b5a34766e922c596df97097b7e72"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3f34c83b51f16f63fc9bd07d42c382d0"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Outdoor_8cpp.html#a3f34c83b51f16f63fc9bd07d42c382d0">dword_4EC2AC</a> = 7</td></tr>
-<tr class="separator:a3f34c83b51f16f63fc9bd07d42c382d0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0e18f3a579badbe06e7b6a4e53ea6605"><td class="memItemLeft" align="right" valign="top">char&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Outdoor_8cpp.html#a0e18f3a579badbe06e7b6a4e53ea6605">foot_travel_destinations</a> [15][4]</td></tr>
 <tr class="separator:a0e18f3a579badbe06e7b6a4e53ea6605"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6e3940abde59241f23bb27475dca4eaf"><td class="memItemLeft" align="right" valign="top">unsigned char&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Outdoor_8cpp.html#a6e3940abde59241f23bb27475dca4eaf">foot_travel_times</a> [15][4]</td></tr>
@@ -698,34 +694,6 @@ Variables</h2></td></tr>
       <table class="memname">
         <tr>
           <td class="memname">std::array&lt;int, 7&gt; dword_4EC28C = {{3, 3, 3, 3, 3, 3, 3}}</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="adc11b5a34766e922c596df97097b7e72" name="adc11b5a34766e922c596df97097b7e72"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#adc11b5a34766e922c596df97097b7e72">&#9670;&#160;</a></span>dword_4EC2A8</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">int dword_4EC2A8 = 9</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a3f34c83b51f16f63fc9bd07d42c382d0" name="a3f34c83b51f16f63fc9bd07d42c382d0"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a3f34c83b51f16f63fc9bd07d42c382d0">&#9670;&#160;</a></span>dword_4EC2AC</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">int dword_4EC2AC = 7</td>
         </tr>
       </table>
 </div><div class="memdoc">

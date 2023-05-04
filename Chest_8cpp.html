@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;60832d4</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;fbac3b4</span>
    </div>
   </td>
  </tr>
@@ -74,7 +74,6 @@ $(function() {
 </div><!-- top -->
 <div class="header">
   <div class="summary">
-<a href="#nested-classes">Classes</a> &#124;
 <a href="#func-members">Functions</a> &#124;
 <a href="#var-members">Variables</a>  </div>
   <div class="headertitle"><div class="title">Chest.cpp File Reference</div></div>
@@ -94,6 +93,8 @@ $(function() {
 <code>#include &quot;<a class="el" href="ItemTable_8h.html">Engine/Objects/ItemTable.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="ObjectList_8h.html">Engine/Objects/ObjectList.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="SpriteObject_8h.html">Engine/Objects/SpriteObject.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="Deserializer_8h.html">Engine/Serialization/Deserializer.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="LegacyImages_8h.html">Engine/Serialization/LegacyImages.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="OurMath_8h.html">Engine/OurMath.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Party_8h.html">Engine/Party.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="UIChest_8h.html">GUI/UI/UIChest.h</a>&quot;</code><br />
@@ -103,15 +104,8 @@ $(function() {
 <code>#include &quot;<a class="el" href="Random_8h.html">Library/Random/Random.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="TrigLut_8h.html">Utility/Math/TrigLut.h</a>&quot;</code><br />
 </div><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
-Classes</h2></td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structChestDesc__mm7.html">ChestDesc_mm7</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:ab6f74860cc33c22a440b82e4cd3be84e"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Chest_8cpp.html#ab6f74860cc33c22a440b82e4cd3be84e">ChestsSerialize</a> (char *pData)</td></tr>
-<tr class="separator:ab6f74860cc33c22a440b82e4cd3be84e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5d5df27af9a0319f240d34f83a27abda"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Chest_8cpp.html#a5d5df27af9a0319f240d34f83a27abda">RemoveItemAtChestIndex</a> (int index)</td></tr>
 <tr class="separator:a5d5df27af9a0319f240d34f83a27abda"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a605ec4a4eb2b8920c9e67e57f44a9f85"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Chest_8cpp.html#a605ec4a4eb2b8920c9e67e57f44a9f85">GenerateItemsInChest</a> ()</td></tr>
@@ -125,24 +119,6 @@ Variables</h2></td></tr>
 <tr class="separator:a69b8af73220304518033692198679e17"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Function Documentation</h2>
-<a id="ab6f74860cc33c22a440b82e4cd3be84e" name="ab6f74860cc33c22a440b82e4cd3be84e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab6f74860cc33c22a440b82e4cd3be84e">&#9670;&#160;</a></span>ChestsSerialize()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">size_t ChestsSerialize </td>
-          <td>(</td>
-          <td class="paramtype">char *&#160;</td>
-          <td class="paramname"><em>pData</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
 <a id="a605ec4a4eb2b8920c9e67e57f44a9f85" name="a605ec4a4eb2b8920c9e67e57f44a9f85"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a605ec4a4eb2b8920c9e67e57f44a9f85">&#9670;&#160;</a></span>GenerateItemsInChest()</h2>
 

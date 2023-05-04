@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;60832d4</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;fbac3b4</span>
    </div>
   </td>
  </tr>
@@ -116,6 +116,8 @@ Static Public Member Functions</h2></td></tr>
 <tr class="separator:a08c54b538e212d9e2cea406770b3a18f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6596e8e6cefe9db2a5066f15af2f48cf"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="classBlob.html">Blob</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classBlob.html#a6596e8e6cefe9db2a5066f15af2f48cf">fromFile</a> (std::string_view path)</td></tr>
 <tr class="separator:a6596e8e6cefe9db2a5066f15af2f48cf"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad2c8698283bc7bc821f714302ee17128"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="classBlob.html">Blob</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classBlob.html#ad2c8698283bc7bc821f714302ee17128">fromString</a> (std::string string)</td></tr>
+<tr class="separator:ad2c8698283bc7bc821f714302ee17128"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a144644a3b6f9444b1c6a40b98364151e"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="classBlob.html">Blob</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classBlob.html#a144644a3b6f9444b1c6a40b98364151e">copy</a> (const void *<a class="el" href="classBlob.html#a177116f40a530c74dbfd7db661ecbe4b">data</a>, size_t <a class="el" href="classBlob.html#a5a1c073c88e0aa47eb45f46d30e53de8">size</a>)</td></tr>
 <tr class="separator:a144644a3b6f9444b1c6a40b98364151e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a14c523d7452abe45c8d25bd7db76f41d"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="classBlob.html">Blob</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classBlob.html#a14c523d7452abe45c8d25bd7db76f41d">view</a> (const void *<a class="el" href="classBlob.html#a177116f40a530c74dbfd7db661ecbe4b">data</a>, size_t <a class="el" href="classBlob.html#a5a1c073c88e0aa47eb45f46d30e53de8">size</a>)</td></tr>
@@ -508,6 +510,39 @@ Friends</h2></td></tr>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd><a class="el" href="classBlob.html">Blob</a> that takes ownership of the provided memory region. </dd></dl>
+
+</div>
+</div>
+<a id="ad2c8698283bc7bc821f714302ee17128" name="ad2c8698283bc7bc821f714302ee17128"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad2c8698283bc7bc821f714302ee17128">&#9670;&#160;</a></span>fromString()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classBlob.html">Blob</a> Blob::fromString </td>
+          <td>(</td>
+          <td class="paramtype">std::string&#160;</td>
+          <td class="paramname"><em>string</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">string</td><td>String to create a blob from. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="classBlob.html">Blob</a> that wraps the provided string. </dd></dl>
 
 </div>
 </div>

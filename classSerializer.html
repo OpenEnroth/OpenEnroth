@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;60832d4</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;fbac3b4</span>
    </div>
   </td>
  </tr>
@@ -85,7 +85,8 @@ Inheritance diagram for Serializer:</div>
  <div class="center">
   <img src="classSerializer.png" usemap="#Serializer_map" alt=""/>
   <map id="Serializer_map" name="Serializer_map">
-<area href="classFileSerializer.html" alt="FileSerializer" shape="rect" coords="0,56,87,80"/>
+<area href="classBlobSerializer.html" alt="BlobSerializer" shape="rect" coords="0,56,91,80"/>
+<area href="classFileSerializer.html" alt="FileSerializer" shape="rect" coords="101,56,192,80"/>
   </map>
 </div></div>
 <table class="memberdecls">
@@ -112,9 +113,12 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a933c71a2facf2b375a02c133852cce1a"><td class="memTemplParams" colspan="2">template&lt;class T &gt; </td></tr>
 <tr class="memitem:a933c71a2facf2b375a02c133852cce1a"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classSerializer.html#a933c71a2facf2b375a02c133852cce1a">WriteSizedVector</a> (const std::vector&lt; T &gt; &amp;src)</td></tr>
 <tr class="separator:a933c71a2facf2b375a02c133852cce1a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8e044ee354903825a355b76cfa35eadd"><td class="memTemplParams" colspan="2">template&lt;class LegacyT , class T &gt; </td></tr>
-<tr class="memitem:a8e044ee354903825a355b76cfa35eadd"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classSerializer.html#a8e044ee354903825a355b76cfa35eadd">ReadSizedLegacyVector</a> (const std::vector&lt; T &gt; &amp;src)</td></tr>
-<tr class="separator:a8e044ee354903825a355b76cfa35eadd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a92a016dfdd4adbb5fa6088f333b13ef3"><td class="memTemplParams" colspan="2">template&lt;class LegacyT , class T &gt; </td></tr>
+<tr class="memitem:a92a016dfdd4adbb5fa6088f333b13ef3"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classSerializer.html#a92a016dfdd4adbb5fa6088f333b13ef3">WriteSizedLegacyVector</a> (const std::vector&lt; T &gt; &amp;src)</td></tr>
+<tr class="separator:a92a016dfdd4adbb5fa6088f333b13ef3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6daac36da4ad0d26d3bb2f4f0d8b2e2f"><td class="memTemplParams" colspan="2">template&lt;class LegacyT , class T &gt; </td></tr>
+<tr class="memitem:a6daac36da4ad0d26d3bb2f4f0d8b2e2f"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classSerializer.html#a6daac36da4ad0d26d3bb2f4f0d8b2e2f">WriteLegacy</a> (const T *src)</td></tr>
+<tr class="separator:a6daac36da4ad0d26d3bb2f4f0d8b2e2f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pri-methods" name="pri-methods"></a>
 Private Member Functions</h2></td></tr>
@@ -155,34 +159,6 @@ Private Attributes</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a id="a8e044ee354903825a355b76cfa35eadd" name="a8e044ee354903825a355b76cfa35eadd"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a8e044ee354903825a355b76cfa35eadd">&#9670;&#160;</a></span>ReadSizedLegacyVector()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;class LegacyT , class T &gt; </div>
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">void Serializer::ReadSizedLegacyVector </td>
-          <td>(</td>
-          <td class="paramtype">const std::vector&lt; T &gt; &amp;&#160;</td>
-          <td class="paramname"><em>src</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
 <a id="a57b4b020467117191a559be4942e1337" name="a57b4b020467117191a559be4942e1337"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a57b4b020467117191a559be4942e1337">&#9670;&#160;</a></span>Reset()</h2>
 
@@ -234,6 +210,34 @@ template&lt;class LegacyT , class T &gt; </div>
           <td></td>
           <td>)</td>
           <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a6daac36da4ad0d26d3bb2f4f0d8b2e2f" name="a6daac36da4ad0d26d3bb2f4f0d8b2e2f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6daac36da4ad0d26d3bb2f4f0d8b2e2f">&#9670;&#160;</a></span>WriteLegacy()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class LegacyT , class T &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void Serializer::WriteLegacy </td>
+          <td>(</td>
+          <td class="paramtype">const T *&#160;</td>
+          <td class="paramname"><em>src</em></td><td>)</td>
+          <td></td>
         </tr>
       </table>
   </td>
@@ -328,6 +332,34 @@ template&lt;class T &gt; </div>
           <td></td>
           <td>)</td>
           <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a92a016dfdd4adbb5fa6088f333b13ef3" name="a92a016dfdd4adbb5fa6088f333b13ef3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a92a016dfdd4adbb5fa6088f333b13ef3">&#9670;&#160;</a></span>WriteSizedLegacyVector()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class LegacyT , class T &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void Serializer::WriteSizedLegacyVector </td>
+          <td>(</td>
+          <td class="paramtype">const std::vector&lt; T &gt; &amp;&#160;</td>
+          <td class="paramname"><em>src</em></td><td>)</td>
+          <td></td>
         </tr>
       </table>
   </td>

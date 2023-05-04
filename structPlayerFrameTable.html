@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;60832d4</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;fbac3b4</span>
    </div>
   </td>
  </tr>
@@ -81,16 +81,12 @@ $(function() {
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a3d8c9ab2452d82e0b5e54697df62621e"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structPlayerFrameTable.html#a3d8c9ab2452d82e0b5e54697df62621e">PlayerFrameTable</a> ()</td></tr>
-<tr class="separator:a3d8c9ab2452d82e0b5e54697df62621e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:acbcb4c393c5c6df89180f1650d3dc052"><td class="memItemLeft" align="right" valign="top">unsigned int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structPlayerFrameTable.html#acbcb4c393c5c6df89180f1650d3dc052">GetFrameIdByExpression</a> (<a class="el" href="PlayerEnums_8h.html#a5b65af143478e3a184dda249e34cedf2">CHARACTER_EXPRESSION_ID</a> expression)</td></tr>
 <tr class="separator:acbcb4c393c5c6df89180f1650d3dc052"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a63fa5a6d7efc4efed7a53492d170751e"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structPlayerFrame.html">PlayerFrame</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structPlayerFrameTable.html#a63fa5a6d7efc4efed7a53492d170751e">GetFrameBy_x</a> (unsigned int uFramesetID, unsigned int uFrameID)</td></tr>
 <tr class="separator:a63fa5a6d7efc4efed7a53492d170751e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a11a95a8201e9471f894ab3220f59221c"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structPlayerFrame.html">PlayerFrame</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structPlayerFrameTable.html#a11a95a8201e9471f894ab3220f59221c">GetFrameBy_y</a> (int *a2, int *a3, int a4)</td></tr>
 <tr class="separator:a11a95a8201e9471f894ab3220f59221c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae10ecd4d039450fe217119d749e70b39"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structPlayerFrameTable.html#ae10ecd4d039450fe217119d749e70b39">ToFile</a> ()</td></tr>
-<tr class="separator:ae10ecd4d039450fe217119d749e70b39"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a150d5a41a088ef22fd220b7af85075bc"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structPlayerFrameTable.html#a150d5a41a088ef22fd220b7af85075bc">FromFile</a> (const <a class="el" href="classBlob.html">Blob</a> &amp;data_mm6, const <a class="el" href="classBlob.html">Blob</a> &amp;data_mm7, const <a class="el" href="classBlob.html">Blob</a> &amp;data_mm8)</td></tr>
 <tr class="separator:a150d5a41a088ef22fd220b7af85075bc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a97105a0d9ef59cf0baf4b255a0944e8c"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structPlayerFrameTable.html#a97105a0d9ef59cf0baf4b255a0944e8c">FromFileTxt</a> (const char *Args)</td></tr>
@@ -98,37 +94,9 @@ Public Member Functions</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
-<tr class="memitem:ab822b18473e2b546b6baa52da26b2bc2"><td class="memItemLeft" align="right" valign="top">unsigned int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structPlayerFrameTable.html#ab822b18473e2b546b6baa52da26b2bc2">uNumFrames</a></td></tr>
-<tr class="separator:ab822b18473e2b546b6baa52da26b2bc2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a596742400e0b84fe0f67071e52fff3c3"><td class="memItemLeft" align="right" valign="top">struct <a class="el" href="structPlayerFrame.html">PlayerFrame</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structPlayerFrameTable.html#a596742400e0b84fe0f67071e52fff3c3">pFrames</a></td></tr>
-<tr class="separator:a596742400e0b84fe0f67071e52fff3c3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a55c308fc369d62e1701b681974561124"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="structPlayerFrame.html">PlayerFrame</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structPlayerFrameTable.html#a55c308fc369d62e1701b681974561124">pFrames</a></td></tr>
+<tr class="separator:a55c308fc369d62e1701b681974561124"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a id="a3d8c9ab2452d82e0b5e54697df62621e" name="a3d8c9ab2452d82e0b5e54697df62621e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a3d8c9ab2452d82e0b5e54697df62621e">&#9670;&#160;</a></span>PlayerFrameTable()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">PlayerFrameTable::PlayerFrameTable </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
 <h2 class="groupheader">Member Function Documentation</h2>
 <a id="a150d5a41a088ef22fd220b7af85075bc" name="a150d5a41a088ef22fd220b7af85075bc"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a150d5a41a088ef22fd220b7af85075bc">&#9670;&#160;</a></span>FromFile()</h2>
@@ -262,46 +230,15 @@ Public Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="ae10ecd4d039450fe217119d749e70b39" name="ae10ecd4d039450fe217119d749e70b39"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae10ecd4d039450fe217119d749e70b39">&#9670;&#160;</a></span>ToFile()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void PlayerFrameTable::ToFile </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
 <h2 class="groupheader">Member Data Documentation</h2>
-<a id="a596742400e0b84fe0f67071e52fff3c3" name="a596742400e0b84fe0f67071e52fff3c3"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a596742400e0b84fe0f67071e52fff3c3">&#9670;&#160;</a></span>pFrames</h2>
+<a id="a55c308fc369d62e1701b681974561124" name="a55c308fc369d62e1701b681974561124"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a55c308fc369d62e1701b681974561124">&#9670;&#160;</a></span>pFrames</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">struct <a class="el" href="structPlayerFrame.html">PlayerFrame</a>* PlayerFrameTable::pFrames</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="ab822b18473e2b546b6baa52da26b2bc2" name="ab822b18473e2b546b6baa52da26b2bc2"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab822b18473e2b546b6baa52da26b2bc2">&#9670;&#160;</a></span>uNumFrames</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">unsigned int PlayerFrameTable::uNumFrames</td>
+          <td class="memname">std::vector&lt;<a class="el" href="structPlayerFrame.html">PlayerFrame</a>&gt; PlayerFrameTable::pFrames</td>
         </tr>
       </table>
 </div><div class="memdoc">

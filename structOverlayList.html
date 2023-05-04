@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;60832d4</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;fbac3b4</span>
    </div>
   </td>
  </tr>
@@ -81,10 +81,6 @@ $(function() {
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a1db7dcb70d351a42f5762d7194593836"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structOverlayList.html#a1db7dcb70d351a42f5762d7194593836">OverlayList</a> ()</td></tr>
-<tr class="separator:a1db7dcb70d351a42f5762d7194593836"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8ee5df622cc90fb45ae84a52d1babe20"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structOverlayList.html#a8ee5df622cc90fb45ae84a52d1babe20">ToFile</a> ()</td></tr>
-<tr class="separator:a8ee5df622cc90fb45ae84a52d1babe20"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa9baf3ffc65e2b0badf18db62f7c6685"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structOverlayList.html#aa9baf3ffc65e2b0badf18db62f7c6685">FromFile</a> (const <a class="el" href="classBlob.html">Blob</a> &amp;data_mm6, const <a class="el" href="classBlob.html">Blob</a> &amp;data_mm7, const <a class="el" href="classBlob.html">Blob</a> &amp;data_mm8)</td></tr>
 <tr class="separator:aa9baf3ffc65e2b0badf18db62f7c6685"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a721ba36c7767efaf8d5a21a920136190"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structOverlayList.html#a721ba36c7767efaf8d5a21a920136190">FromFileTxt</a> (const char *Args)</td></tr>
@@ -94,37 +90,9 @@ Public Member Functions</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
-<tr class="memitem:ab6845da54dd15901191380e1328e3493"><td class="memItemLeft" align="right" valign="top">unsigned int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structOverlayList.html#ab6845da54dd15901191380e1328e3493">uNumOverlays</a></td></tr>
-<tr class="separator:ab6845da54dd15901191380e1328e3493"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a29f04f3bae043d5f8ec976ef1c9d8c0e"><td class="memItemLeft" align="right" valign="top">struct <a class="el" href="structOverlayDesc.html">OverlayDesc</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structOverlayList.html#a29f04f3bae043d5f8ec976ef1c9d8c0e">pOverlays</a></td></tr>
-<tr class="separator:a29f04f3bae043d5f8ec976ef1c9d8c0e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a99696142d0df15ed27956f62bedbcd3b"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="structOverlayDesc.html">OverlayDesc</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structOverlayList.html#a99696142d0df15ed27956f62bedbcd3b">pOverlays</a></td></tr>
+<tr class="separator:a99696142d0df15ed27956f62bedbcd3b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a id="a1db7dcb70d351a42f5762d7194593836" name="a1db7dcb70d351a42f5762d7194593836"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a1db7dcb70d351a42f5762d7194593836">&#9670;&#160;</a></span>OverlayList()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">OverlayList::OverlayList </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
 <h2 class="groupheader">Member Function Documentation</h2>
 <a id="aa9baf3ffc65e2b0badf18db62f7c6685" name="aa9baf3ffc65e2b0badf18db62f7c6685"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#aa9baf3ffc65e2b0badf18db62f7c6685">&#9670;&#160;</a></span>FromFile()</h2>
@@ -195,46 +163,15 @@ Public Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="a8ee5df622cc90fb45ae84a52d1babe20" name="a8ee5df622cc90fb45ae84a52d1babe20"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a8ee5df622cc90fb45ae84a52d1babe20">&#9670;&#160;</a></span>ToFile()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void OverlayList::ToFile </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
 <h2 class="groupheader">Member Data Documentation</h2>
-<a id="a29f04f3bae043d5f8ec976ef1c9d8c0e" name="a29f04f3bae043d5f8ec976ef1c9d8c0e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a29f04f3bae043d5f8ec976ef1c9d8c0e">&#9670;&#160;</a></span>pOverlays</h2>
+<a id="a99696142d0df15ed27956f62bedbcd3b" name="a99696142d0df15ed27956f62bedbcd3b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a99696142d0df15ed27956f62bedbcd3b">&#9670;&#160;</a></span>pOverlays</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">struct <a class="el" href="structOverlayDesc.html">OverlayDesc</a>* OverlayList::pOverlays</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="ab6845da54dd15901191380e1328e3493" name="ab6845da54dd15901191380e1328e3493"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab6845da54dd15901191380e1328e3493">&#9670;&#160;</a></span>uNumOverlays</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">unsigned int OverlayList::uNumOverlays</td>
+          <td class="memname">std::vector&lt;<a class="el" href="structOverlayDesc.html">OverlayDesc</a>&gt; OverlayList::pOverlays</td>
         </tr>
       </table>
 </div><div class="memdoc">

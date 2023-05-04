@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;60832d4</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;fbac3b4</span>
    </div>
   </td>
  </tr>
@@ -81,52 +81,20 @@ $(function() {
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:ac98f9e3f7a11d95b08fdb989546b5578"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structTextureFrameTable.html#ac98f9e3f7a11d95b08fdb989546b5578">TextureFrameTable</a> ()</td></tr>
-<tr class="separator:ac98f9e3f7a11d95b08fdb989546b5578"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6add257b8c9af80c93ed4a042a03ec51"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structTextureFrameTable.html#a6add257b8c9af80c93ed4a042a03ec51">ToFile</a> ()</td></tr>
-<tr class="separator:a6add257b8c9af80c93ed4a042a03ec51"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3394d266a2ec79ae3f087277d566d96b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structTextureFrameTable.html#a3394d266a2ec79ae3f087277d566d96b">FromFile</a> (const <a class="el" href="classBlob.html">Blob</a> &amp;data_mm6, const <a class="el" href="classBlob.html">Blob</a> &amp;data_mm7, const <a class="el" href="classBlob.html">Blob</a> &amp;data_mm8)</td></tr>
 <tr class="separator:a3394d266a2ec79ae3f087277d566d96b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af2df089cb4be440776739a5986323286"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structTextureFrameTable.html#af2df089cb4be440776739a5986323286">LoadAnimationSequenceAndPalettes</a> (int uIconID)</td></tr>
 <tr class="separator:af2df089cb4be440776739a5986323286"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3b51764eda67472b56fa913b4b709b86"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classTexture.html">Texture</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structTextureFrameTable.html#a3b51764eda67472b56fa913b4b709b86">GetFrameTexture</a> (int uFrameID, int time)</td></tr>
-<tr class="separator:a3b51764eda67472b56fa913b4b709b86"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8af48a9248f0d28ddcc213e738a39c05"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classTexture.html">Texture</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structTextureFrameTable.html#a8af48a9248f0d28ddcc213e738a39c05">GetFrameTexture</a> (int frameId, int time)</td></tr>
+<tr class="separator:a8af48a9248f0d28ddcc213e738a39c05"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac58201b44361d82a1e977c1448754c24"><td class="memItemLeft" align="right" valign="top">int64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structTextureFrameTable.html#ac58201b44361d82a1e977c1448754c24">FindTextureByName</a> (const char *Str2)</td></tr>
 <tr class="separator:ac58201b44361d82a1e977c1448754c24"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
-<tr class="memitem:a37ae781356bdc738c2c34914e4e1f6b4"><td class="memItemLeft" align="right" valign="top">uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structTextureFrameTable.html#a37ae781356bdc738c2c34914e4e1f6b4">sNumTextures</a></td></tr>
-<tr class="separator:a37ae781356bdc738c2c34914e4e1f6b4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5825d86d92d6add5438738812c6c0e7b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classTextureFrame.html">TextureFrame</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structTextureFrameTable.html#a5825d86d92d6add5438738812c6c0e7b">pTextures</a></td></tr>
-<tr class="separator:a5825d86d92d6add5438738812c6c0e7b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa688506ff932bd69470934d14e4b996e"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="classTextureFrame.html">TextureFrame</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structTextureFrameTable.html#aa688506ff932bd69470934d14e4b996e">textures</a></td></tr>
+<tr class="separator:aa688506ff932bd69470934d14e4b996e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a id="ac98f9e3f7a11d95b08fdb989546b5578" name="ac98f9e3f7a11d95b08fdb989546b5578"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ac98f9e3f7a11d95b08fdb989546b5578">&#9670;&#160;</a></span>TextureFrameTable()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">TextureFrameTable::TextureFrameTable </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
 <h2 class="groupheader">Member Function Documentation</h2>
 <a id="ac58201b44361d82a1e977c1448754c24" name="ac58201b44361d82a1e977c1448754c24"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ac58201b44361d82a1e977c1448754c24">&#9670;&#160;</a></span>FindTextureByName()</h2>
@@ -180,8 +148,8 @@ Public Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="a3b51764eda67472b56fa913b4b709b86" name="a3b51764eda67472b56fa913b4b709b86"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a3b51764eda67472b56fa913b4b709b86">&#9670;&#160;</a></span>GetFrameTexture()</h2>
+<a id="a8af48a9248f0d28ddcc213e738a39c05" name="a8af48a9248f0d28ddcc213e738a39c05"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8af48a9248f0d28ddcc213e738a39c05">&#9670;&#160;</a></span>GetFrameTexture()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -190,7 +158,7 @@ Public Attributes</h2></td></tr>
           <td class="memname"><a class="el" href="classTexture.html">Texture</a> * TextureFrameTable::GetFrameTexture </td>
           <td>(</td>
           <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>uFrameID</em>, </td>
+          <td class="paramname"><em>frameId</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -226,46 +194,15 @@ Public Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="a6add257b8c9af80c93ed4a042a03ec51" name="a6add257b8c9af80c93ed4a042a03ec51"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a6add257b8c9af80c93ed4a042a03ec51">&#9670;&#160;</a></span>ToFile()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void TextureFrameTable::ToFile </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
 <h2 class="groupheader">Member Data Documentation</h2>
-<a id="a5825d86d92d6add5438738812c6c0e7b" name="a5825d86d92d6add5438738812c6c0e7b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a5825d86d92d6add5438738812c6c0e7b">&#9670;&#160;</a></span>pTextures</h2>
+<a id="aa688506ff932bd69470934d14e4b996e" name="aa688506ff932bd69470934d14e4b996e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa688506ff932bd69470934d14e4b996e">&#9670;&#160;</a></span>textures</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="classTextureFrame.html">TextureFrame</a>* TextureFrameTable::pTextures</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a37ae781356bdc738c2c34914e4e1f6b4" name="a37ae781356bdc738c2c34914e4e1f6b4"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a37ae781356bdc738c2c34914e4e1f6b4">&#9670;&#160;</a></span>sNumTextures</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">uint32_t TextureFrameTable::sNumTextures</td>
+          <td class="memname">std::vector&lt;<a class="el" href="classTextureFrame.html">TextureFrame</a>&gt; TextureFrameTable::textures</td>
         </tr>
       </table>
 </div><div class="memdoc">

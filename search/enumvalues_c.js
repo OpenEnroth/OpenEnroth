@@ -136,8 +136,8 @@ var searchData=
   ['monster_5fzombie_5f3_133',['MONSTER_ZOMBIE_3',['../Monsters_8h.html#a40319983e674274211bc156688920fdea9366ebbfda04b4638f0a703cd4922bef',1,'Monsters.h']]],
   ['movebackwards_134',['MoveBackwards',['../namespaceIo.html#a547e2ba6c6a5bb3a0b5987131e62a90caebd4ca6cacc8ae4fad939d0c1c9c2dcf',1,'Io']]],
   ['moveforward_135',['MoveForward',['../namespaceIo.html#a547e2ba6c6a5bb3a0b5987131e62a90ca122077e11a3cc3a56a2d82f1d15dbd32',1,'Io']]],
-  ['music_5fcredits_136',['MUSIC_Credits',['../AudioPlayer_8h.html#a68946471db0c45b6ce503ef14572f078ac8fa77ddc75ad59d7541dd78916ad82a',1,'AudioPlayer.h']]],
-  ['music_5finvalid_137',['MUSIC_Invalid',['../AudioPlayer_8h.html#a68946471db0c45b6ce503ef14572f078af01f5b7db978038eed674a668a36783c',1,'AudioPlayer.h']]],
-  ['music_5fmainmenu_138',['MUSIC_MainMenu',['../AudioPlayer_8h.html#a68946471db0c45b6ce503ef14572f078a56b078091103d2c6a626a8bdef7bc595',1,'AudioPlayer.h']]],
+  ['music_5fcredits_136',['MUSIC_Credits',['../SoundEnums_8h.html#a68946471db0c45b6ce503ef14572f078ac8fa77ddc75ad59d7541dd78916ad82a',1,'SoundEnums.h']]],
+  ['music_5finvalid_137',['MUSIC_Invalid',['../SoundEnums_8h.html#a68946471db0c45b6ce503ef14572f078af01f5b7db978038eed674a668a36783c',1,'SoundEnums.h']]],
+  ['music_5fmainmenu_138',['MUSIC_MainMenu',['../SoundEnums_8h.html#a68946471db0c45b6ce503ef14572f078a56b078091103d2c6a626a8bdef7bc595',1,'SoundEnums.h']]],
   ['mystic_139',['Mystic',['../NPCEnums_8h.html#ae6501f571f97d74c2c78fddcb371bad4a7b28158d613ea1869441676fa32a3b5a',1,'NPCEnums.h']]]
 ];
