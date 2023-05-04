@@ -5,6 +5,7 @@
 #include <memory>
 #include <string>
 #include <climits>
+#include <vector>
 
 #include "Engine/Events/EventMap.h"
 #include "Engine/AssetsManager.h"
@@ -250,7 +251,7 @@ std::string GetReputationString(int reputation);
 unsigned int _494820_training_time(unsigned int a1);
 
 /**
- * @ofsset 0x443E31
+ * @offset 0x443E31
  */
 void initLevelStrings(Blob &blob);
 void Level_LoadEvtAndStr(const std::string &pLevelName);
