@@ -70,7 +70,7 @@ GAME_TEST(Issues, Issue163) {
 
     game->pressGuiButton("MainMenu_LoadGame"); // Shouldn't crash.
     game->tick(10);
-    for (bool used : pSavegameUsedSlots)
+    for (bool used : pSavegameList->pSavegameUsedSlots)
         EXPECT_FALSE(used); // All slots unused.
 
     game->pressGuiButton("LoadMenu_Load");
@@ -632,7 +632,7 @@ GAME_TEST(Issues, Issue626) {
     test->playTraceFromTestData("issue_626.mm7", "issue_626.json", TRACE_PLAYBACK_SKIP_RANDOM_CHECKS);
 
     // TODO(captainurist): this will fail if we don't have any saves in saves folder
-    EXPECT_EQ(uLoadGameUI_SelectedSlot, 5);
+    EXPECT_EQ(pSavegameList->selectedSlot, 5);
 }
 
 GAME_TEST(Issue, Issue645) {

@@ -2306,7 +2306,7 @@ void Game::gameLoop() {
     SetCurrentMenuID((MENU_STATE)-1);
     if (bLoading) {
         uGameState = GAME_STATE_PLAYING;
-        LoadGame(uLoadGameUI_SelectedSlot);
+        LoadGame(pSavegameList->selectedSlot);
     }
 
     extern bool use_music_folder;
