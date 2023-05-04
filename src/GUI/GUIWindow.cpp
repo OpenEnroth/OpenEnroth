@@ -964,7 +964,7 @@ void CreateScrollWindow() {
 
 //----- (00467F48) --------------------------------------------------------
 void CreateMsgScrollWindow(ITEM_TYPE mscroll_id) {
-    if (!pGUIWindow_ScrollWindow && IsMessageScroll(mscroll_id)) {
+    if (!pGUIWindow_ScrollWindow && isMessageScroll(mscroll_id)) {
         pGUIWindow_ScrollWindow = new GUIWindow_Scroll({0, 0}, render->GetRenderDimensions(), mscroll_id, "");
     }
 }

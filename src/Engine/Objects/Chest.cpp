@@ -354,7 +354,7 @@ int Chest::PutItemInChest(int position, ItemGen *put_item, int uChestID) {
 void Chest::PlaceItemAt(unsigned int put_cell_pos, unsigned int item_at_cell, int uChestID) {  // only used for setup?
     ITEM_TYPE uItemID = vChests[uChestID].igChestItems[item_at_cell].uItemID;
     pItemTable->SetSpecialBonus(&vChests[uChestID].igChestItems[item_at_cell]);
-    if (IsWand(uItemID) && !vChests[uChestID].igChestItems[item_at_cell].uNumCharges) {
+    if (isWand(uItemID) && !vChests[uChestID].igChestItems[item_at_cell].uNumCharges) {
         int v6 = grng->random(21) + 10;
         vChests[uChestID].igChestItems[item_at_cell].uNumCharges = v6;
         vChests[uChestID].igChestItems[item_at_cell].uMaxCharges = v6;
@@ -571,12 +571,12 @@ void GenerateItemsInChest() {
     for (int i = 0; i < 20; ++i) {
         for (int j = 0; j < 140; ++j) {
             ItemGen *currItem = &vChests[i].igChestItems[j];
-            if (IsRandomItem(currItem->uItemID)) {
+            if (isRandomItem(currItem->uItemID)) {
                 currItem->placedInChest = false;
                 int additionaItemCount = grng->random(5);  // additional items in chect
                 additionaItemCount++;  // + 1 because it's the item at pChests[i].igChestItems[j] and the additional ones
                 ITEM_TREASURE_LEVEL resultTreasureLevel = grng->randomSample(
-                    RemapTreasureLevel(RandomItemTreasureLevel(currItem->uItemID), currMapInfo->Treasure_prob));
+                    RemapTreasureLevel(randomItemTreasureLevel(currItem->uItemID), currMapInfo->Treasure_prob));
                 if (resultTreasureLevel != ITEM_TREASURE_LEVEL_GUARANTEED_ARTIFACT) {
                     for (int k = 0; k < additionaItemCount; k++) {
                         int whatToGenerateProb = grng->random(100);
