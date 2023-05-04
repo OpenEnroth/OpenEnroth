@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;b719634</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;77120c6</span>
    </div>
   </td>
  </tr>
@@ -81,8 +81,8 @@ $(function() {
 <div class="contents">
 <div class="textblock"><code>#include &quot;<a class="el" href="Engine_8h.html">Engine/Engine.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="EngineGlobals_8h.html">Engine/EngineGlobals.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="Events_8h.html">Engine/Events.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Processor_8h.html">Engine/Events/Processor.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="Loader_8h.html">Engine/Events/Loader.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Camera_8h.html">Engine/Graphics/Camera.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="DecalBuilder_8h.html">Engine/Graphics/DecalBuilder.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="DecorationList_8h.html">Engine/Graphics/DecorationList.h</a>&quot;</code><br />
@@ -103,7 +103,6 @@ $(function() {
 <code>#include &quot;<a class="el" href="ClippingFunctions_8h.html">Engine/Graphics/ClippingFunctions.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="LOD_8h.html">Engine/LOD.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Localization_8h.html">Engine/Localization.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="MapsLongTimer_8h.html">Engine/MapsLongTimer.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Actor_8h.html">Engine/Objects/Actor.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Chest_8h.html">Engine/Objects/Chest.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="ItemTable_8h.html">Engine/Objects/ItemTable.h</a>&quot;</code><br />
@@ -177,18 +176,12 @@ Functions</h2></td></tr>
 <tr class="separator:a71f422c794782ae4f373062f0060e45b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a307e766275f63939943556583b762149"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Engine_8cpp.html#a307e766275f63939943556583b762149">LoadLevel_InitializeLevelStr</a> ()</td></tr>
 <tr class="separator:a307e766275f63939943556583b762149"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae7f8027f55be72ffd24ef6904a4a19fa"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Engine_8cpp.html#ae7f8027f55be72ffd24ef6904a4a19fa">OnMapLeave</a> ()</td></tr>
-<tr class="separator:ae7f8027f55be72ffd24ef6904a4a19fa"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a509d2bef33e8d17041d5920e9f16cb36"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Engine_8cpp.html#a509d2bef33e8d17041d5920e9f16cb36">OnMapLoad</a> ()</td></tr>
-<tr class="separator:a509d2bef33e8d17041d5920e9f16cb36"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1ec9273d2cd901e48e54eedaecd87b1b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Engine_8cpp.html#a1ec9273d2cd901e48e54eedaecd87b1b">Level_LoadEvtAndStr</a> (const std::string &amp;pLevelName)</td></tr>
 <tr class="separator:a1ec9273d2cd901e48e54eedaecd87b1b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4c7c70729a3af9d53e1c4fe25879f2cb"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Engine_8cpp.html#a4c7c70729a3af9d53e1c4fe25879f2cb">_44100D_should_alter_right_panel</a> ()</td></tr>
 <tr class="separator:a4c7c70729a3af9d53e1c4fe25879f2cb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8e8fac3d8a00188e5f6d7c61fbaf3620"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Engine_8cpp.html#a8e8fac3d8a00188e5f6d7c61fbaf3620">Transition_StopSound_Autosave</a> (const std::string &amp;pMapName, <a class="el" href="MapInfo_8h.html#adad43ef8fbf56e2a3bc00fd08cca312f">MapStartPoint</a> start_point)</td></tr>
 <tr class="separator:a8e8fac3d8a00188e5f6d7c61fbaf3620"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa23f204fc47791b8d9e7e554c349eb8d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Engine_8cpp.html#aa23f204fc47791b8d9e7e554c349eb8d">OnTimer</a> (int)</td></tr>
-<tr class="separator:aa23f204fc47791b8d9e7e554c349eb8d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac081aee5cb02b8e5dfb077674a160d68"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Engine_8cpp.html#ac081aee5cb02b8e5dfb077674a160d68">TeleportToNWCDungeon</a> ()</td></tr>
 <tr class="separator:ac081aee5cb02b8e5dfb077674a160d68"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
@@ -463,58 +456,6 @@ Variables</h2></td></tr>
         <tr>
           <td class="memname">void MM7Initialization </td>
           <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="ae7f8027f55be72ffd24ef6904a4a19fa" name="ae7f8027f55be72ffd24ef6904a4a19fa"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae7f8027f55be72ffd24ef6904a4a19fa">&#9670;&#160;</a></span>OnMapLeave()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void OnMapLeave </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a509d2bef33e8d17041d5920e9f16cb36" name="a509d2bef33e8d17041d5920e9f16cb36"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a509d2bef33e8d17041d5920e9f16cb36">&#9670;&#160;</a></span>OnMapLoad()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void OnMapLoad </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="aa23f204fc47791b8d9e7e554c349eb8d" name="aa23f204fc47791b8d9e7e554c349eb8d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa23f204fc47791b8d9e7e554c349eb8d">&#9670;&#160;</a></span>OnTimer()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void OnTimer </td>
-          <td>(</td>
-          <td class="paramtype">int&#160;</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
         </tr>

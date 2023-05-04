@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;b719634</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;77120c6</span>
    </div>
   </td>
  </tr>
@@ -85,7 +85,7 @@ $(function() {
 <code>#include &quot;<a class="el" href="Engine_8h.html">Engine/Engine.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="EngineGlobals_8h.html">Engine/EngineGlobals.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Awards_8h.html">Engine/Awards.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="Events_8h.html">Engine/Events.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="Processor_8h.html">Engine/Events/Processor.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Indoor_8h.html">Engine/Graphics/Indoor.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Overlays_8h.html">Engine/Graphics/Overlays.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Localization_8h.html">Engine/Localization.h</a>&quot;</code><br />
@@ -134,8 +134,6 @@ Functions</h2></td></tr>
 <tr class="separator:a0d9b50c44576de7da3caff7d301ddab1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a58a376999ccce3cb142578b812b47124"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="NPC_8cpp.html#a58a376999ccce3cb142578b812b47124">_4B4224_UpdateNPCTopics</a> (int _this)</td></tr>
 <tr class="separator:a58a376999ccce3cb142578b812b47124"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac25757143328dd4d862cb5cbc5861da8"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="NPC_8cpp.html#ac25757143328dd4d862cb5cbc5861da8">NPCDialogueEventProcessor</a> (int npc_event_id, int entry_line)</td></tr>
-<tr class="separator:ac25757143328dd4d862cb5cbc5861da8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac86fab3323cdfca65990849099e87551"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="NPC_8cpp.html#ac86fab3323cdfca65990849099e87551">GetGreetType</a> (signed int SpeakingNPC_ID)</td></tr>
 <tr class="separator:ac86fab3323cdfca65990849099e87551"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abcced0757c52caa3a575af2b433994fd"><td class="memItemLeft" align="right" valign="top">const char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="NPC_8cpp.html#abcced0757c52caa3a575af2b433994fd">GetProfessionActionText</a> (<a class="el" href="NPCEnums_8h.html#ae6501f571f97d74c2c78fddcb371bad4">NPCProf</a> prof)</td></tr>
@@ -186,15 +184,15 @@ Variables</h2></td></tr>
 </div><div class="memdoc">
 <b>Value:</b><div class="fragment"><div class="line">                <span class="keywordflow">if</span> (EVENT_ID) { \</div>
 <div class="line">                    if (num_menu_buttons &lt; 4) { \</div>
-<div class="line">                        <span class="keywordtype">int</span> res = <a class="code hl_function" href="NPC_8cpp.html#ac25757143328dd4d862cb5cbc5861da8">NPCDialogueEventProcessor</a>(EVENT_ID); \</div>
+<div class="line">                        <span class="keywordtype">int</span> res = <a class="code hl_function" href="Processor_8cpp.html#ac06c4d3aa516284a85bd00ae363b5a2d">npcDialogueEventProcessor</a>(EVENT_ID); \</div>
 <div class="line">                        if (res == 1 || res == 2) \</div>
 <div class="line">                            <a class="code hl_variable" href="GUIWindow_8cpp.html#a4b874ab8ae0f632bb61c5cf097f5f708">pDialogueWindow</a>-&gt;<a class="code hl_function" href="classGUIWindow.html#aca36ee6638714a15664662b9d3c42e81">CreateButton</a>({480, 160 + 30 * num_menu_buttons++}, {140, 30}, 1, 0, <a class="code hl_enumvalue" href="GUIEnums_8h.html#a2519966952faeb9397447ce89e9bcb02ae33d9248d1ac21febe896703ab5d94ed">UIMSG_ClickNPCTopic</a>, MSG_PARAM); \</div>
 <div class="line">                    } \</div>
 <div class="line">                }</div>
 <div class="ttc" id="aGUIEnums_8h_html_a2519966952faeb9397447ce89e9bcb02ae33d9248d1ac21febe896703ab5d94ed"><div class="ttname"><a href="GUIEnums_8h.html#a2519966952faeb9397447ce89e9bcb02ae33d9248d1ac21febe896703ab5d94ed">UIMSG_ClickNPCTopic</a></div><div class="ttdeci">@ UIMSG_ClickNPCTopic</div><div class="ttdef"><b>Definition:</b> GUIEnums.h:152</div></div>
-<div class="ttc" id="aGUIWindow_8cpp_html_a4b874ab8ae0f632bb61c5cf097f5f708"><div class="ttname"><a href="GUIWindow_8cpp.html#a4b874ab8ae0f632bb61c5cf097f5f708">pDialogueWindow</a></div><div class="ttdeci">GUIWindow * pDialogueWindow</div><div class="ttdef"><b>Definition:</b> GUIWindow.cpp:59</div></div>
-<div class="ttc" id="aNPC_8cpp_html_ac25757143328dd4d862cb5cbc5861da8"><div class="ttname"><a href="NPC_8cpp.html#ac25757143328dd4d862cb5cbc5861da8">NPCDialogueEventProcessor</a></div><div class="ttdeci">int NPCDialogueEventProcessor(int npc_event_id, int entry_line)</div><div class="ttdef"><b>Definition:</b> NPC.cpp:1081</div></div>
-<div class="ttc" id="aclassGUIWindow_html_aca36ee6638714a15664662b9d3c42e81"><div class="ttname"><a href="classGUIWindow.html#aca36ee6638714a15664662b9d3c42e81">GUIWindow::CreateButton</a></div><div class="ttdeci">GUIButton * CreateButton(Pointi position, Sizei dimensions, int uButtonType, int uData, UIMessageType msg, unsigned int msg_param, InputAction action=InputAction::Invalid, const std::string &amp;label={}, const std::vector&lt; Image * &gt; &amp;textures={})</div><div class="ttdef"><b>Definition:</b> GUIWindow.cpp:681</div></div>
+<div class="ttc" id="aGUIWindow_8cpp_html_a4b874ab8ae0f632bb61c5cf097f5f708"><div class="ttname"><a href="GUIWindow_8cpp.html#a4b874ab8ae0f632bb61c5cf097f5f708">pDialogueWindow</a></div><div class="ttdeci">GUIWindow * pDialogueWindow</div><div class="ttdef"><b>Definition:</b> GUIWindow.cpp:58</div></div>
+<div class="ttc" id="aProcessor_8cpp_html_ac06c4d3aa516284a85bd00ae363b5a2d"><div class="ttname"><a href="Processor_8cpp.html#ac06c4d3aa516284a85bd00ae363b5a2d">npcDialogueEventProcessor</a></div><div class="ttdeci">bool npcDialogueEventProcessor(int eventId, int startStep)</div><div class="ttdef"><b>Definition:</b> Processor.cpp:174</div></div>
+<div class="ttc" id="aclassGUIWindow_html_aca36ee6638714a15664662b9d3c42e81"><div class="ttname"><a href="classGUIWindow.html#aca36ee6638714a15664662b9d3c42e81">GUIWindow::CreateButton</a></div><div class="ttdeci">GUIButton * CreateButton(Pointi position, Sizei dimensions, int uButtonType, int uData, UIMessageType msg, unsigned int msg_param, InputAction action=InputAction::Invalid, const std::string &amp;label={}, const std::vector&lt; Image * &gt; &amp;textures={})</div><div class="ttdef"><b>Definition:</b> GUIWindow.cpp:680</div></div>
 </div><!-- fragment -->
 </div>
 </div>
@@ -441,34 +439,6 @@ Variables</h2></td></tr>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="ac25757143328dd4d862cb5cbc5861da8" name="ac25757143328dd4d862cb5cbc5861da8"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ac25757143328dd4d862cb5cbc5861da8">&#9670;&#160;</a></span>NPCDialogueEventProcessor()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">int NPCDialogueEventProcessor </td>
-          <td>(</td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>npc_event_id</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>entry_line</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
         </tr>
       </table>
 </div><div class="memdoc">

@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;b719634</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;77120c6</span>
    </div>
   </td>
  </tr>
@@ -81,7 +81,6 @@ $(function() {
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><code>#include &quot;<a class="el" href="UIDialogue_8h.html">GUI/UI/UIDialogue.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="Events_8h.html">Engine/Events.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Processor_8h.html">Engine/Events/Processor.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="EngineGlobals_8h.html">Engine/EngineGlobals.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="IRender_8h.html">Engine/Graphics/IRender.h</a>&quot;</code><br />
@@ -152,7 +151,7 @@ Variables</h2></td></tr>
 </div><div class="memdoc">
 <b>Value:</b><div class="fragment"><div class="line">                <span class="keywordflow">if</span> (DIALOGUE_EVENT_ID) { \</div>
 <div class="line">                    if (num_dialugue_options &lt; 4) { \</div>
-<div class="line">                        <span class="keywordtype">int</span> res = <a class="code hl_function" href="NPC_8cpp.html#ac25757143328dd4d862cb5cbc5861da8">NPCDialogueEventProcessor</a>(DIALOGUE_EVENT_ID); \</div>
+<div class="line">                        <span class="keywordtype">int</span> res = <a class="code hl_function" href="Processor_8cpp.html#ac06c4d3aa516284a85bd00ae363b5a2d">npcDialogueEventProcessor</a>(DIALOGUE_EVENT_ID); \</div>
 <div class="line">                        if (res == 1 || res == 2) \</div>
 <div class="line">                            CreateButton({480, 130 + num_dialugue_options++ * text_line_height}, {140, text_line_height}, 1, 0, \</div>
 <div class="line">                                <a class="code hl_enumvalue" href="GUIEnums_8h.html#a2519966952faeb9397447ce89e9bcb02a5a718dd0452e52b71df691945bd9fe44">UIMSG_SelectNPCDialogueOption</a>, MSG_PARAM \</div>
@@ -160,7 +159,7 @@ Variables</h2></td></tr>
 <div class="line">                    } \</div>
 <div class="line">                }</div>
 <div class="ttc" id="aGUIEnums_8h_html_a2519966952faeb9397447ce89e9bcb02a5a718dd0452e52b71df691945bd9fe44"><div class="ttname"><a href="GUIEnums_8h.html#a2519966952faeb9397447ce89e9bcb02a5a718dd0452e52b71df691945bd9fe44">UIMSG_SelectNPCDialogueOption</a></div><div class="ttdeci">@ UIMSG_SelectNPCDialogueOption</div><div class="ttdef"><b>Definition:</b> GUIEnums.h:128</div></div>
-<div class="ttc" id="aNPC_8cpp_html_ac25757143328dd4d862cb5cbc5861da8"><div class="ttname"><a href="NPC_8cpp.html#ac25757143328dd4d862cb5cbc5861da8">NPCDialogueEventProcessor</a></div><div class="ttdeci">int NPCDialogueEventProcessor(int npc_event_id, int entry_line)</div><div class="ttdef"><b>Definition:</b> NPC.cpp:1081</div></div>
+<div class="ttc" id="aProcessor_8cpp_html_ac06c4d3aa516284a85bd00ae363b5a2d"><div class="ttname"><a href="Processor_8cpp.html#ac06c4d3aa516284a85bd00ae363b5a2d">npcDialogueEventProcessor</a></div><div class="ttdeci">bool npcDialogueEventProcessor(int eventId, int startStep)</div><div class="ttdef"><b>Definition:</b> Processor.cpp:174</div></div>
 </div><!-- fragment -->
 </div>
 </div>
