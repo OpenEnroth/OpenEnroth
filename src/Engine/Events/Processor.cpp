@@ -36,6 +36,10 @@ static std::vector<int> decorationsWithEvents;
 // Do not needed in practice but can be considered optimization to avoid checking timers too often.
 static GameTime timerGuard = GameTime(0);
 
+int savedEventID;
+int savedEventStep;
+struct LevelDecoration *savedDecoration;
+
 void initDecorationEvents() {
     int id = pDecorationList->GetDecorIdByName("Event Trigger");
 

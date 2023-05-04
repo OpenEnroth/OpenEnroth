@@ -20,3 +20,7 @@ std::string getEventHintString(int eventId);
 void onMapLoad();
 void onMapLeave();
 void onTimer();
+
+extern int savedEventID;
+extern int savedEventStep;
+extern struct LevelDecoration *savedDecoration;

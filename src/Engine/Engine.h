@@ -197,6 +197,7 @@ class Engine {
     std::shared_ptr<KeyboardActionMapping> keyboardActionMapping = nullptr;
     EventMap _globalEventMap;
     EventMap _localEventMap;
+    std::vector<std::string> _levelStrings;
 };
 
 extern std::shared_ptr<Engine> engine;
@@ -242,12 +243,16 @@ void _494035_timed_effects__water_walking_damage__etc();
 /**
  * Modify party health or mana based on party or players conditions/buffs.
  *
- * @offset 0x00493938.
+ * @offset 0x493938.
  */
 void RegeneratePartyHealthMana();
 std::string GetReputationString(int reputation);
 unsigned int _494820_training_time(unsigned int a1);
-void LoadLevel_InitializeLevelStr();
+
+/**
+ * @ofsset 0x443E31
+ */
+void initLevelStrings(Blob &blob);
 void Level_LoadEvtAndStr(const std::string &pLevelName);
 bool _44100D_should_alter_right_panel();
 void Transition_StopSound_Autosave(const std::string &pMapName, MapStartPoint point);  // sub_44987B idb
