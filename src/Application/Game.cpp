@@ -19,7 +19,6 @@
 #include "Engine/Engine.h"
 #include "Engine/EngineGlobals.h"
 #include "Engine/EngineFactory.h"
-#include "Engine/Events.h"
 #include "Engine/Events/Processor.h"
 #include "Engine/Graphics/DecalBuilder.h"
 #include "Engine/Graphics/IRender.h"
@@ -1004,7 +1003,6 @@ void Game::processQueuedMessages() {
                         pCurrentMapName = pOut;
                         Level_LoadEvtAndStr(pCurrentMapName.substr(0, pCurrentMapName.rfind('.')));
                         _decalBuilder->Reset(0);
-                        LoadLevel_InitializeLevelEvt();
                         uLevelMapStatsID = pMapStats->GetMapInfo(pCurrentMapName);
 
                         bNoNPCHiring = 0;

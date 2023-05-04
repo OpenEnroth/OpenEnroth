@@ -4,7 +4,7 @@
 #include "Engine/Engine.h"
 #include "Engine/EngineGlobals.h"
 #include "Engine/Awards.h"
-#include "Engine/Events.h"
+#include "Engine/Events/Processor.h"
 #include "Engine/Graphics/Indoor.h"
 #include "Engine/Graphics/Overlays.h"
 #include "Engine/Localization.h"
@@ -1044,7 +1044,7 @@ void _4B4224_UpdateNPCTopics(int _this) {
             #define AddScriptedDialogueLine(EVENT_ID, MSG_PARAM) \
                 if (EVENT_ID) { \
                     if (num_menu_buttons < 4) { \
-                        int res = NPCDialogueEventProcessor(EVENT_ID); \
+                        int res = npcDialogueEventProcessor(EVENT_ID); \
                         if (res == 1 || res == 2) \
                             pDialogueWindow->CreateButton({480, 160 + 30 * num_menu_buttons++}, {140, 30}, 1, 0, UIMSG_ClickNPCTopic, MSG_PARAM); \
                     } \
@@ -1064,89 +1064,6 @@ void _4B4224_UpdateNPCTopics(int _this) {
     }
 }
 
-//----- (004466C4) --------------------------------------------------------
-// Quest NPC dialogue processor:
-//      Margareth (id=504)
-//          line1=7  Greetings
-//          line2=9  Contest
-//          line3=43 Tour On / Tour Off
-//          line4=line5=line6=0
-//      Lord Markham/Emerald Island
-//          line1=1
-//          line2=2
-//          line3=3
-//          line4=34
-//          line5=187
-// TODO(Nik-RE-dev): remove when new event processor is active
-int NPCDialogueEventProcessor(int npc_event_id, int entry_line) {
-    if (!npc_event_id) return 0;
-
-    int event_index = 0;
-    int evt_seq_num = entry_line;
-    pSomeOtherEVT = pGlobalEVT.data();
-    uSomeOtherEVT_NumEvents = uGlobalEVT_NumEvents;
-    pSomeOtherEVT_Events = pGlobalEVT_Index;
-
-    if (uSomeOtherEVT_NumEvents <= 0) {
-        return 2;
-    }
-
-    int npc_activity = 1;
-    bool ready_to_exit = false;
-    do {
-        auto &evt = pSomeOtherEVT_Events[event_index];
-        if (evt.event_id == npc_event_id && evt.event_step == evt_seq_num) {
-            _evt_raw *_evt = (_evt_raw *)&pSomeOtherEVT[evt.uEventOffsetInEVT];
-            switch (_evt->_e_type) {
-                case EVENT_Exit:
-                    if (ready_to_exit)
-                        return npc_activity != 0;
-                    else
-                        return 2;
-
-                case EVENT_OnCanShowDialogItemCmp:
-                    ready_to_exit = true;
-                    for (Player &player : pParty->pPlayers) {
-                        if (player.CompareVariable((enum VariableType)EVT_WORD(_evt->v5), EVT_DWORD(_evt->v7))) {
-                            event_index = -1;
-                            evt_seq_num = EVT_BYTE(_evt->v11) - 1;
-                            break;
-                        }
-                    }
-                    break;
-
-                case EVENT_EndCanShowDialogItem:
-                    if (ready_to_exit)
-                        return npc_activity != 0;
-                    else
-                        return 2;
-
-                case EVENT_SetCanShowDialogItem:
-                    ready_to_exit = true;
-                    npc_activity = EVT_BYTE(_evt->v5);
-                    break;
-
-                case EVENT_CanShowTopic_IsActorKilled:
-                    // TODO(Nik-RE-dev): Looks like cause of #700, conditiona probably must be inverted
-                    if (Actor::isActorKilled(
-                            (ACTOR_KILL_CHECK_POLICY)EVT_BYTE(_evt->v5), EVT_DWORD(_evt->v6),
-                            EVT_BYTE(_evt->v10))) {  // drop linear sequence,
-                                                     // going to new seq
-                        event_index = -1;
-                        evt_seq_num = EVT_BYTE(_evt->v11) - 1;
-                    }
-                    break;
-            }
-            ++evt_seq_num;
-        }
-        ++event_index;
-    } while (event_index < uSomeOtherEVT_NumEvents);
-
-    if (ready_to_exit)
-        return npc_activity != 0;
-    else
-        return 2;
-}
 //----- (00445C8B) --------------------------------------------------------
 int GetGreetType(signed int SpeakingNPC_ID) {
     if (SpeakingNPC_ID >= 0) {

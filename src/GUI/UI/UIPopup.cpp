@@ -4,7 +4,6 @@
 #include <string>
 
 #include "Engine/Engine.h"
-#include "Engine/Events.h"
 #include "Engine/Graphics/PaletteManager.h"
 #include "Engine/Graphics/Sprites.h"
 #include "Engine/Graphics/Texture.h"

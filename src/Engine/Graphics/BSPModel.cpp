@@ -1,5 +1,11 @@
 #include "Engine/Graphics/BSPModel.h"
 
+#include <cstring>
+#include <cstdlib>
+#include <algorithm>
+
+#include "Engine/AssetsManager.h"
+#include "Engine/Events/Processor.h"
 #include "Engine/Events.h"
 #include "Engine/Graphics/Image.h"
 #include "Engine/Time.h"
@@ -32,26 +38,7 @@ void ODMFace::SetTexture(const std::string &filename) {
 }
 
 bool ODMFace::HasEventHint() {
-    signed int event_index;  // eax@1
-    _evt_raw *start_evt;
-    _evt_raw *end_evt;
-
-    event_index = 0;
-    if ((uLevelEVT_NumEvents - 1) <= 0) return false;
-    while (pLevelEVT_Index[event_index].event_id!= this->sCogTriggeredID) {
-        ++event_index;
-        if (event_index >= (signed int)(uLevelEVT_NumEvents - 1)) return false;
-    }
-    end_evt =
-        (_evt_raw
-             *)&pLevelEVT[pLevelEVT_Index[event_index + 1].uEventOffsetInEVT];
-    start_evt =
-        (_evt_raw *)&pLevelEVT[pLevelEVT_Index[event_index].uEventOffsetInEVT];
-    if ((end_evt->_e_type != EVENT_Exit) ||
-        (start_evt->_e_type != EVENT_MouseOver))
-        return false;
-    else
-        return true;
+    return hasEventHint(this->sCogTriggeredID);
 }
 
 bool ODMFace::Contains(const Vec3i &pos, int model_idx, int slack, FaceAttributes override_plane) const {

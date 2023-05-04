@@ -2,8 +2,6 @@
 
 #include "Arcomage/Arcomage.h"
 
-#include "Engine/Events.h"
-#include "Engine/MapsLongTimer.h"
 #include "Engine/Party.h"
 #include "Engine/SaveLoad.h"
 #include "Engine/SpellFxRenderer.h"

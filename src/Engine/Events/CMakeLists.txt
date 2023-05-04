@@ -4,6 +4,7 @@ set(ENGINE_EVENTS_SOURCES
         EventIR.cpp
         EventMap.cpp
         EventInterpreter.cpp
+        Loader.cpp
         Processor.cpp)
 
 set(ENGINE_EVENTS_HEADERS
@@ -11,6 +12,7 @@ set(ENGINE_EVENTS_HEADERS
         EventMap.h
         EventInterpreter.h
         EventEnums.h
+        Loader.h
         Processor.h)
 
 add_library(engine_events STATIC ${ENGINE_EVENTS_SOURCES} ${ENGINE_EVENTS_HEADERS})

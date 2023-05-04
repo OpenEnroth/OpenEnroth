@@ -3,7 +3,6 @@
 #include <string>
 
 #include "Engine/Engine.h"
-#include "Engine/Events.h"
 #include "Engine/Graphics/Sprites.h"
 #include "Engine/Graphics/Outdoor.h"
 #include "Engine/Graphics/Viewport.h"

@@ -829,7 +829,7 @@ std::string EventIR::toString() const {
     return fmt::format("{}: UNPROCESSED/{}", step, magic_enum::enum_name(type));
 }
 
-EventIR EventIR::parse(void *data, size_t maxSize) {
+EventIR EventIR::parse(const void *data, size_t maxSize) {
     _evt_raw *_evt = (_evt_raw*)data;
     int id = _evt->v1 + (_evt->v2 << 8);
     EventIR ir;

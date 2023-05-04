@@ -132,7 +132,6 @@ const char *GetProfessionActionText(NPCProf prof);
 struct NPCData *GetNPCData(signed int npcid);
 struct NPCData *GetNewNPCData(signed int npcid, int *npc_indx);
 int GetGreetType(signed int SpeakingNPC_ID);
-int NPCDialogueEventProcessor(int npc_event_id, int entry_line = 0);
 
 class FlatHirelings {
  public:

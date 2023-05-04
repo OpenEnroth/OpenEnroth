@@ -237,7 +237,6 @@ extern char *pPotionNotesTXT_Raw;
 
 extern std::array<int, 777> _6807B8_level_decorations_ids;  // idb
 extern int _6807E0_num_decorations_with_sounds_6807B8;
-extern std::array<int, 3000> event_triggers;  // 6807E8
 extern size_t num_event_triggers;             // 6836C8
 extern std::array<int, 64> dword_69B010;
 extern float flt_69B138_dist;

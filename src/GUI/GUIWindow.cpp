@@ -9,7 +9,6 @@
 #include "Engine/AssetsManager.h"
 #include "Engine/Autonotes.h"
 #include "Engine/Awards.h"
-#include "Engine/Events.h"
 #include "Engine/Events/Processor.h"
 #include "Engine/Graphics/Level/Decoration.h"
 #include "Engine/Graphics/PaletteManager.h"

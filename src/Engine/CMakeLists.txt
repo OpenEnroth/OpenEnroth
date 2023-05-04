@@ -39,7 +39,6 @@ set(ENGINE_HEADERS
         Localization.h
         MM7.h
         MapInfo.h
-        MapsLongTimer.h
         OurMath.h
         Party.h
         PriceCalculator.h

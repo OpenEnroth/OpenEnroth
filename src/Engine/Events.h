@@ -69,33 +69,10 @@ struct _evt_raw {
 #define EVT_STRING(x) (unsigned char *)&x
 #define EVT_BYTE(x) (unsigned char)x
 
-extern std::array<EventIndex, 4400> pSomeOtherEVT_Events;
-extern signed int uSomeOtherEVT_NumEvents;
-extern char *pSomeOtherEVT;
-extern std::array<EventIndex, 4400> pSomeEVT_Events;
-extern signed int uSomeEVT_NumEvents;
-extern char *pSomeEVT;
-
-extern unsigned int uGlobalEVT_NumEvents;
-extern unsigned int uGlobalEVT_Size;
-extern std::array<char, 46080> pGlobalEVT;
-extern std::array<EventIndex, 4400> pGlobalEVT_Index;
-
 extern std::array<unsigned int, 500> pLevelStrOffsets;
 extern unsigned int uLevelStrNumStrings;
 extern unsigned int uLevelStrFileSize;
-extern signed int uLevelEVT_NumEvents;
-extern unsigned int uLevelEVT_Size;
 extern std::array<char, 9216> pLevelStr;
-extern std::array<char, 9216> pLevelEVT;
-extern std::array<EventIndex, 4400> pLevelEVT_Index;
-
-unsigned int LoadEventsToBuffer(const std::string &pContainerName, char *pBuffer,
-                                unsigned int uBufferSize);
-void Initialize_GlobalEVT();
-void LoadLevel_InitializeLevelEvt();
-void EventProcessor(int uEventID, int a2, int a3, int entry_line = 0);
-std::string GetEventHintString(unsigned int uEventID);  // idb
 
 extern int savedEventID;
 extern int savedEventStep;
@@ -107,14 +84,3 @@ struct MapEventVariables {
 };
 
 extern MapEventVariables mapEventVariables;
-
-void init_event_triggers();
-void check_event_triggers();
-bool sub_4465DF_check_season(int a1);
-
-/**
- * @offset 0x448CF4
- */
-void spawnMonsters(int16_t typeindex, int16_t level, int count,
-                   int x, int y, int z, int group,
-                   unsigned int uUniqueName);

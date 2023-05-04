@@ -150,9 +150,6 @@ std::array<int32_t, 128 * 3> array_4EBBD0_x = {  // indicies for triangle in sph
      0x00000026, 0x00000028, 0x00000041, 0x00000028, 0x00000031, 0x00000041,
      0x00000028, 0x0000000B, 0x00000031, 0x00000031, 0x0000002D, 0x00000041}};
 
-#include "MapsLongTimer.h"
-std::array<MapsLongTimer, 100> MapsLongTimersList;
-
 #include "Engine/Tables/IconFrameTable.h"
 struct IconFrameTable *pIconsFrameTable;
 
@@ -2638,7 +2635,6 @@ char *pPotionNotesTXT_Raw = nullptr;
 
 std::array<int, 777> _6807B8_level_decorations_ids;  // idb -level decoratiosn sound
 int _6807E0_num_decorations_with_sounds_6807B8;
-std::array<int, 3000> event_triggers;  // 6807E8
 size_t num_event_triggers;             // 6836C8
 std::array<int, 64> dword_69B010;
 float flt_69B138_dist;

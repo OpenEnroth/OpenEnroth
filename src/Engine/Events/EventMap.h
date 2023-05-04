@@ -21,6 +21,7 @@ class EventMap {
 
     std::vector<EventTrigger> enumerateTriggers(EventType triggerType);
 
+    bool hasHint(int eventId) const;
     std::string getHintString(int eventId) const;
 
     void dumpAll() const;
