@@ -6,6 +6,7 @@
 #include <glm.hpp>
 
 #include "Engine/Tables/TileFrameTable.h"
+#include "Engine/Serialization/LegacyImages.h"
 
 #include "Engine/Graphics/BSPModel.h"
 #include "Engine/Graphics/Indoor.h"
@@ -14,31 +15,16 @@
 
 #define DAY_ATTRIB_FOG 1
 
-#pragma pack(push, 1)
-struct ODMHeader {
-    uint32_t uVersion;
-    char pMagic[4];
-    uint32_t uCompressedSize;
-    uint32_t uDecompressedSize;
-};
-#pragma pack(pop)
-
-#pragma pack(push, 1)
 struct OutdoorLocationTileType {
     Tileset tileset;
     uint16_t uTileID;
 };
-#pragma pack(pop)
 
-#pragma pack(push, 1)
 struct DMap {
     uint8_t field0;
     uint8_t field1;
 };
-#pragma pack(pop)
 
-/*   79 */
-#pragma pack(push, 1)
 struct OutdoorLocationTerrain {
     //----- (0047C794) --------------------------------------------------------
     inline OutdoorLocationTerrain() {
@@ -64,7 +50,6 @@ struct OutdoorLocationTerrain {
     int field_18 = 0;
     int field_1C = 0;
 };
-#pragma pack(pop)
 
 struct OutdoorLocation {
     OutdoorLocation();
@@ -74,8 +59,7 @@ struct OutdoorLocation {
     void PrepareActorsDrawList();
     void CreateDebugLocation();
     void Release();
-    bool Load(const std::string &filename, int days_played,
-              int respawn_interval_days, bool *outdoors_was_respawned);
+    void Load(const std::string &filename, int days_played, int respawn_interval_days, bool *outdoors_was_respawned);
     int getTileIdByTileMapId(signed int a2);
 
     /**
@@ -141,28 +125,26 @@ struct OutdoorLocation {
     std::string location_filename;
     std::string location_file_description;
     std::string sky_texture_filename;
-    std::string ground_tileset;
     std::array<OutdoorLocationTileType, 4> pTileTypes;  // [3]  road tileset
     struct OutdoorLocationTerrain pTerrain;
     std::array<uint16_t, 128 * 128> pCmap; // Unused
-    BSPModelList pBModels;
+    std::vector<BSPModel> pBModels;
     std::vector<uint16_t> pFaceIDLIST;
     std::array<uint32_t, 128 * 128> pOMAP;
     Texture *sky_texture = nullptr;        // signed int sSky_TextureID;
-    Texture *main_tile_texture;  // signed int sMainTile_BitmapID;
     int16_t field_F0;
     int16_t field_F2;
     int field_F4;
     char field_F8[968];
     std::vector<SpawnPoint> pSpawnPoints;
-    struct DDM_DLV_Header ddm;
-    LocationTime_stru1 loc_time;
-    unsigned char
-        uFullyRevealedCellOnMap[88][11];  // 968         the inner array is 11
+    LocationHeader_MM7 ddm;
+    LocationTime loc_time;
+    std::array<std::array<uint8_t, 11>, 88> uFullyRevealedCellOnMap;
+                                          // 968         the inner array is 11
                                           // bytes long, because every bit is
                                           // used for a separate cell, so in the
                                           // end it's 11 * 8 bits = 88 values
-    unsigned char uPartiallyRevealedCellOnMap[88][11];  // [968]
+    std::array<std::array<uint8_t, 11>, 88> uPartiallyRevealedCellOnMap;  // [968]
     int field_CB8;
     int max_terrain_dimming_level;
     int field_CC0;

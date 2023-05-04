@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <vector>
 
 #include "Engine/AssetsManager.h"
 
@@ -91,7 +92,7 @@ class TileDesc {
  public:
     inline TileDesc() : texture(nullptr) {}
 
-    std::string name = "";
+    std::string name;
     uint16_t uTileID = 0;
     Tileset tileset = Tileset_NULL;
     uint16_t uSection = 0;
@@ -116,25 +117,13 @@ class TileDesc {
     Texture *texture;
 };
 
-/*   49 */
-#pragma pack(push, 1)
 struct TileTable {
-    //----- (00487E13) --------------------------------------------------------
-    TileTable() {
-        this->pTiles = nullptr;
-        this->sNumTiles = 0;
-    }
-    ~TileTable();
-
     TileDesc *GetTileById(unsigned int uTileID);
     void InitializeTileset(Tileset tileset);
     int GetTileForTerrainType(signed int a1, bool a2);
     unsigned int GetTileId(unsigned int uTerrainType, unsigned int uSection);
-    void ToFile();
     void FromFile(const Blob &data_mm6, const Blob &data_mm7, const Blob &data_mm8);
     int FromFileTxt(const char *pFilename);
 
-    int sNumTiles;
-    TileDesc *pTiles;
+    std::vector<TileDesc> tiles;
 };
-#pragma pack(pop)

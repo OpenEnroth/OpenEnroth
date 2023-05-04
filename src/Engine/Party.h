@@ -132,8 +132,6 @@ enum PartyAction : uint32_t {
     PARTY_dword = 0xFFFFFFFF
 };
 
-/*  135 */
-#pragma pack(push, 1)
 struct ActionQueue {
     inline ActionQueue() : uNumActions(0) {}
 
@@ -144,7 +142,6 @@ struct ActionQueue {
     unsigned int uNumActions;
     PartyAction pActions[30]{};
 };
-#pragma pack(pop)
 
 enum class PartyAlignment: int32_t {
     PartyAlignment_Good = 0,

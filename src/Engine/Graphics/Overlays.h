@@ -2,11 +2,10 @@
 
 #include <cstdint>
 #include <array>
+#include <vector>
 
 #include "Utility/Memory/Blob.h"
 
-/*  282 */
-#pragma pack(push, 1)
 struct OtherOverlay {
     OtherOverlay();
     void Reset();
@@ -21,10 +20,7 @@ struct OtherOverlay {
     int16_t field_E;
     int field_10;
 };
-#pragma pack(pop)
 
-/*   63 */
-#pragma pack(push, 1)
 struct OtherOverlayList {
     void Reset();
     int _4418B1(int a2, int a3, int a4, int a5);
@@ -34,34 +30,21 @@ struct OtherOverlayList {
     std::array<OtherOverlay, 50> pOverlays;
     int field_3E8 = 0;
 };
-#pragma pack(pop)
 
-/*   52 */
-#pragma pack(push, 1)
 struct OverlayDesc {
-    uint16_t uOverlayID;
-    uint16_t uOverlayType;
-    uint16_t uSpriteFramesetID;
-    int16_t field_6;
+    uint16_t uOverlayID = 0;
+    uint16_t uOverlayType = 0;
+    uint16_t uSpriteFramesetID = 0;
+    int16_t field_6 = 0;
 };
-#pragma pack(pop)
 
-#pragma pack(push, 1)
 struct OverlayList {
-    inline OverlayList()
-        :  //----- (00458474)
-          uNumOverlays(0),
-          pOverlays(nullptr) {}
-
-    void ToFile();
     void FromFile(const Blob &data_mm6, const Blob &data_mm7, const Blob &data_mm8);
     bool FromFileTxt(const char *Args);
     void InitializeSprites();
 
-    unsigned int uNumOverlays;
-    struct OverlayDesc *pOverlays;
+    std::vector<OverlayDesc> pOverlays;
 };
-#pragma pack(pop)
 
 extern struct OtherOverlayList *pOtherOverlayList;  // idb
 extern struct OverlayList *pOverlayList;

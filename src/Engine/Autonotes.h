@@ -12,11 +12,9 @@ enum class AUTONOTE_TYPE : uint32_t {
 };
 using enum AUTONOTE_TYPE;
 
-/*  350 */
-#pragma pack(push, 1)
 struct Autonote {
     const char *pText;
     AUTONOTE_TYPE eType;
 };
-#pragma pack(pop)
+
 extern std::array<Autonote, 196> pAutonoteTxt;

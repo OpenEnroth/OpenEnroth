@@ -16,25 +16,49 @@
 class Actor;
 class Icon;
 class SpriteFrame;
+class TextureFrame;
+class SoundInfo;
+class TileDesc;
 class UIAnimation;
 struct ActorJob;
 struct BLVDoor;
 struct BLVFace;
+struct BLVFaceExtra;
+struct BLVLight;
+struct BLVMapOutline;
 struct BLVSector;
+struct BSPNode;
+struct Chest;
+struct ChestDesc;
+struct DecorationDesc;
 struct FontData;
 struct GUICharMetric;
 struct ItemGen;
+struct LevelDecoration;
+struct LocationTime;
+struct MapEventVariables;
 struct MonsterDesc;
 struct NPCData;
+struct ObjectDesc;
 struct ODMFace;
 struct OtherOverlay;
 struct OtherOverlayList;
+struct OutdoorLocationTileType;
+struct OverlayDesc;
 struct Party;
 struct Player;
+struct PlayerFrame;
+struct SaveGameHeader;
 struct SpawnPoint;
 struct SpellBuff;
 struct SpriteObject;
 struct Timer;
+
+static_assert(sizeof(Vec3s) == 6);
+static_assert(sizeof(Vec3i) == 12);
+static_assert(sizeof(Planei) == 16);
+static_assert(sizeof(Planef) == 16);
+static_assert(sizeof(BBoxs) == 12);
 
 #pragma pack(push, 1)
 
@@ -98,6 +122,8 @@ struct TileDesc_MM7 {
 };
 static_assert(sizeof(TileDesc_MM7) == 26);
 
+void Deserialize(const TileDesc_MM7 &src, TileDesc *dst);
+
 
 struct TextureFrame_MM7 {
     std::array<char, 12> textureName;
@@ -107,6 +133,8 @@ struct TextureFrame_MM7 {
     int16_t flags;
 };
 static_assert(sizeof(TextureFrame_MM7) == 20);
+
+void Deserialize(const TextureFrame_MM7 &src, TextureFrame *dst);
 
 
 struct NPCData_MM7 {
@@ -496,12 +524,12 @@ void Deserialize(const OtherOverlayList_MM7 &src, OtherOverlayList *dst);
 
 
 struct IconFrame_MM7 {
-    /* 000 */ std::array<char, 12> animationName;
-    /* 00C */ std::array<char, 12> textureName;
-    /* 018 */ int16_t animTime;
-    /* 01A */ int16_t animLength;
-    /* 01C */ int16_t flags;  // 0x01 - more icons in this animation
-    /* 01E */ uint16_t textureId;
+    std::array<char, 12> animationName;
+    std::array<char, 12> textureName;
+    int16_t animTime;
+    int16_t animLength;
+    int16_t flags;  // 0x01 - more icons in this animation
+    uint16_t textureId;
 };
 static_assert(sizeof(IconFrame_MM7) == 0x20);
 
@@ -792,7 +820,7 @@ struct ODMFace_MM7 {
     int32_t zCalc2;
     int32_t zCalc3;
     uint32_t attributes;
-    std::array<uint16_t, 20> pVertexIDs;
+    std::array<int16_t, 20> pVertexIDs;
     std::array<int16_t, 20> pTextureUIDs;
     std::array<int16_t, 20> pTextureVIDs;
     std::array<int16_t, 20> pXInterceptDisplacements;
@@ -874,5 +902,330 @@ static_assert(sizeof(SpriteObject_MM7) == 0x70);
 
 void Serialize(const SpriteObject &src, SpriteObject_MM7 *dst);
 void Deserialize(const SpriteObject_MM7 &src, SpriteObject *dst);
+
+
+struct ChestDesc_MM7 {
+    std::array<char, 32> pName;
+    uint8_t uWidth;
+    uint8_t uHeight;
+    int16_t uTextureID;
+};
+static_assert(sizeof(ChestDesc_MM7) == 36);
+
+void Deserialize(const ChestDesc_MM7 &src, ChestDesc *dst);
+
+
+struct DecorationDesc_MM6 {
+    std::array<char, 32> pName;
+    std::array<char, 32> field_20;
+    int16_t uType;
+    uint16_t uDecorationHeight;
+    int16_t uRadius;
+    int16_t uLightRadius;
+    uint16_t uSpriteID;
+    uint16_t uFlags;
+    int16_t uSoundID;
+    int16_t _pad;
+};
+static_assert(sizeof(DecorationDesc_MM6) == 80);
+
+struct DecorationDesc_MM7 : public DecorationDesc_MM6 {
+    uint8_t uColoredLightRed;
+    uint8_t uColoredLightGreen;
+    uint8_t uColoredLightBlue;
+    uint8_t _pad;
+};
+static_assert(sizeof(DecorationDesc_MM7) == 84);
+
+void Deserialize(const DecorationDesc_MM6 &src, DecorationDesc *dst);
+void Deserialize(const DecorationDesc_MM7 &src, DecorationDesc *dst);
+
+
+struct Chest_MM7 {
+    uint16_t uChestBitmapID;
+    uint16_t uFlags;
+    std::array<ItemGen_MM7, 140> igChestItems;
+    std::array<int16_t, 140> pInventoryIndices;
+};
+static_assert(sizeof(Chest_MM7) == 5324);
+
+void Serialize(const Chest &src, Chest_MM7 *dst);
+void Deserialize(const Chest_MM7 &src, Chest *dst);
+
+
+struct BLVLight_MM6 {
+    Vec3s vPosition;
+    int16_t uRadius;
+    int16_t uAttributes;
+    uint16_t uBrightness;
+};
+static_assert(sizeof(BLVLight_MM6) == 12);
+
+struct BLVLight_MM7 {
+    Vec3s vPosition;
+    int16_t uRadius;
+    char uRed;
+    char uGreen;
+    char uBlue;
+    char uType;
+    int16_t uAtributes;
+    int16_t uBrightness;
+};
+static_assert(sizeof(BLVLight_MM7) == 16);
+
+void Deserialize(const BLVLight_MM7 &src, BLVLight *dst);
+
+
+struct OverlayDesc_MM7 {
+    uint16_t uOverlayID;
+    uint16_t uOverlayType;
+    uint16_t uSpriteFramesetID;
+    int16_t field_6;
+};
+static_assert(sizeof(OverlayDesc_MM7) == 8);
+
+void Deserialize(const OverlayDesc_MM7 &src, OverlayDesc *dst);
+
+
+struct PlayerFrame_MM7 {
+    uint16_t expression;
+    uint16_t uTextureID;
+    int16_t uAnimTime;
+    int16_t uAnimLength;
+    int16_t uFlags;
+};
+static_assert(sizeof(PlayerFrame_MM7) == 10);
+
+void Deserialize(const PlayerFrame_MM7 &src, PlayerFrame *dst);
+
+
+struct LevelDecoration_MM7 {
+    uint16_t uDecorationDescID;
+    uint16_t uFlags;
+    Vec3i vPosition;
+    int32_t _yawAngle;
+    uint16_t uCog;
+    uint16_t uEventID;
+    uint16_t uTriggerRange;
+    int16_t field_1A;
+    int16_t _idx_in_stru123;
+    int16_t field_1E;
+};
+static_assert(sizeof(LevelDecoration_MM7) == 32);
+
+void Deserialize(const LevelDecoration_MM7 &src, LevelDecoration *dst);
+
+
+struct BLVFaceExtra_MM7 {
+    int16_t field_0;
+    int16_t field_2;
+    int16_t field_4;
+    int16_t field_6;
+    int16_t field_8;
+    int16_t field_A;
+    int16_t face_id;
+    uint16_t uAdditionalBitmapID;
+    int16_t field_10;
+    int16_t field_12;
+    int16_t sTextureDeltaU;
+    int16_t sTextureDeltaV;
+    int16_t sCogNumber;
+    uint16_t uEventID;
+    int16_t field_1C;
+    int16_t field_1E;
+    int16_t field_20;
+    int16_t field_22;
+};
+static_assert(sizeof(BLVFaceExtra_MM7) == 36);
+
+void Deserialize(const BLVFaceExtra_MM7 &src, BLVFaceExtra *dst);
+
+
+struct BSPNode_MM7 {
+    int16_t uFront;
+    int16_t uBack;
+    int16_t uBSPFaceIDOffset;
+    int16_t uNumBSPFaces;
+};
+static_assert(sizeof(BSPNode_MM7) == 8);
+
+void Deserialize(const BSPNode_MM7 &src, BSPNode *dst);
+
+
+struct BLVMapOutline_MM7 {
+    uint16_t uVertex1ID;
+    uint16_t uVertex2ID;
+    uint16_t uFace1ID;
+    uint16_t uFace2ID;
+    int16_t sZ;
+    uint16_t uFlags;
+};
+static_assert(sizeof(BLVMapOutline_MM7) == 12);
+
+void Deserialize(const BLVMapOutline_MM7 &src, BLVMapOutline *dst);
+
+
+struct ObjectDesc_MM6 {
+    std::array<char, 32> field_0;
+    int16_t uObjectID;
+    int16_t uRadius;
+    int16_t uHeight;
+    int16_t uFlags;
+    uint16_t uSpriteID;
+    int16_t uLifetime;
+    uint16_t uParticleTrailColor;
+    int16_t uSpeed;
+    uint8_t uParticleTrailColorR;
+    uint8_t uParticleTrailColorG;
+    uint8_t uParticleTrailColorB;
+    char _pad;
+};
+static_assert(sizeof(ObjectDesc_MM6) == 52);
+
+struct ObjectDesc_MM7 {
+    std::array<char, 32> field_0;
+    int16_t uObjectID;
+    int16_t uRadius;
+    int16_t uHeight;
+    uint16_t uFlags;
+    uint16_t uSpriteID;
+    int16_t uLifetime;
+    uint32_t uParticleTrailColor;
+    int16_t uSpeed;
+    uint8_t uParticleTrailColorR;
+    uint8_t uParticleTrailColorG;
+    uint8_t uParticleTrailColorB;
+    std::array<char, 3> _pad;
+};
+static_assert(sizeof(ObjectDesc_MM7) == 56);
+
+void Deserialize(const ObjectDesc_MM6 &src, ObjectDesc *dst);
+void Deserialize(const ObjectDesc_MM7 &src, ObjectDesc *dst);
+
+
+struct BSPModelData_MM7 {
+    std::array<char, 32> pModelName;
+    std::array<char, 32> pModelName2;
+    int32_t field_40;
+    uint32_t uNumVertices;
+    uint32_t ppVertices;
+    uint32_t uNumFaces;
+    uint32_t uNumConvexFaces;
+    uint32_t ppFaces;
+    uint32_t ppFacesOrdering;
+    uint32_t uNumNodes;
+    uint32_t ppNodes;
+    uint32_t uNumDecorations;
+    int32_t sCenterX;
+    int32_t sCenterY;
+    Vec3i vPosition;
+    int32_t sMinX;
+    int32_t sMinY;
+    int32_t sMinZ;
+    int32_t sMaxX;
+    int32_t sMaxY;
+    int32_t sMaxZ;
+    int32_t sSomeOtherMinX;
+    int32_t sSomeOtherMinY;
+    int32_t sSomeOtherMinZ;
+    int32_t sSomeOtherMaxX;
+    int32_t sSomeOtherMaxY;
+    int32_t sSomeOtherMaxZ;
+    Vec3i vBoundingCenter;
+    int32_t sBoundingRadius;
+};
+static_assert(sizeof(BSPModelData_MM7) == 188);
+// Note: serialization code is in CompositeImages.h
+
+struct LocationTime_MM7 {
+    int64_t last_visit;
+    std::array<char, 12> sky_texture_name;
+    int32_t day_attrib;
+    int32_t day_fogrange_1;
+    int32_t day_fogrange_2;
+    std::array<char, 24> field_2F4;
+};
+static_assert(sizeof(LocationTime_MM7) == 0x38);
+
+void Serialize(const LocationTime &src, LocationTime_MM7 *dst);
+void Deserialize(const LocationTime_MM7 &src, LocationTime *dst);
+
+
+struct SoundInfo_MM6 {
+    std::array<char, 32> pSoundName;
+    uint32_t uSoundID;
+    uint32_t eType;
+    uint32_t uFlags;
+    std::array<uint32_t, 17> pSoundDataID;
+};
+static_assert(sizeof(SoundInfo_MM6) == 112);
+
+struct SoundInfo_MM7 : public SoundInfo_MM6 {
+    uint32_t p3DSoundID;
+    uint32_t bDecompressed;
+};
+static_assert(sizeof(SoundInfo_MM7) == 120);
+
+void Deserialize(const SoundInfo_MM6 &src, SoundInfo *dst);
+void Deserialize(const SoundInfo_MM7 &src, SoundInfo *dst);
+
+
+struct LocationHeader_MM7 {
+    int32_t uNumRespawns = 0;
+    int32_t uLastRepawnDay = 0;
+    int32_t uReputation = 0;
+    int32_t field_C_alert = 0; // Actually bool
+    uint32_t uNumFacesInBModels = 0;
+    uint32_t uNumDecorations = 0;
+    uint32_t uNumBModels = 0;
+    int32_t field_1C = 0;
+    int32_t field_20 = 0;
+    int32_t field_24 = 0;
+};
+static_assert(sizeof(LocationHeader_MM7) == 40);
+// TODO(captainurist): introduce engine equivalent
+
+
+struct MapEventVariables_MM7 {
+    std::array<unsigned char, 75> mapVars;
+    std::array<unsigned char, 125> decorVars;
+};
+static_assert(sizeof(MapEventVariables_MM7) == 0xC8);
+
+void Serialize(const MapEventVariables &src, MapEventVariables_MM7 *dst);
+void Deserialize(const MapEventVariables_MM7 &src, MapEventVariables *dst);
+
+
+struct BLVHeader_MM7 {
+    std::array<char, 104> field_0;
+    unsigned int uFaces_fdata_Size;
+    unsigned int uSector_rdata_Size;
+    unsigned int uSector_lrdata_Size;
+    unsigned int uDoors_ddata_Size;
+    std::array<char, 16> field_78;
+};
+static_assert(sizeof(BLVHeader_MM7) == 136);
+// TODO(captainurist): introduce engine equivalent
+
+
+struct OutdoorLocationTileType_MM7 {
+    uint16_t tileset;
+    uint16_t uTileID;
+};
+
+void Deserialize(const OutdoorLocationTileType_MM7 &src, OutdoorLocationTileType *dst);
+
+
+struct SaveGameHeader_MM7 {
+    std::array<char, 20> pName;
+    std::array<char, 20> pLocationName;
+    int64_t playing_time;
+    std::array<char, 52> field_30;
+};
+static_assert(sizeof(SaveGameHeader_MM7) == 0x64, "Wrong type size");
+
+void Serialize(const SaveGameHeader &src, SaveGameHeader_MM7 *dst);
+void Deserialize(const SaveGameHeader_MM7 &src, SaveGameHeader *dst);
+
 
 #pragma pack(pop)

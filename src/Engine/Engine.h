@@ -51,28 +51,19 @@ using enum GAME_STATE;
 
 extern GAME_STATE uGameState;
 
-/*  105 */
-#pragma pack(push, 1)
 struct Game__StationaryLight {
     Vec3f vPosition;
     Vec3f vRGBColor;
     float flt_18;
 };
-#pragma pack(pop)
 
-/*  108 */
-#pragma pack(push, 1)
 struct Game_stru0 {
     int field_0;
     uint8_t *ptr_4;
     int field_8;
     int field_C;
 };
-#pragma pack(pop)
 
-/*  279 */
-#pragma pack(push, 1)
-// Game_stru1
 struct Game_Bloodsplat {
     float x;
     float y;
@@ -82,7 +73,6 @@ struct Game_Bloodsplat {
     float b;
     float radius;
 };
-#pragma pack(pop)
 
 class Vis;
 class ParticleEngine;
@@ -91,8 +81,6 @@ class GammaController;
 struct ClippingFunctions;
 struct stru10;
 
-/*  104 */
-#pragma pack(push, 1)
 class Engine {
  public:
     explicit Engine(std::shared_ptr<GameConfig> config);
@@ -210,7 +198,6 @@ class Engine {
     EventMap _globalEventMap;
     EventMap _localEventMap;
 };
-#pragma pack(pop)
 
 extern std::shared_ptr<Engine> engine;
 

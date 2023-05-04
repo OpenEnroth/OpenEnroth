@@ -11,6 +11,7 @@
 #include "Engine/Objects/Actor.h"
 
 #include "Engine/Serialization/LegacyImages.h"
+#include "Engine/Serialization/Deserializer.h"
 
 #include "Engine/Graphics/DecorationList.h"
 #include "Engine/Graphics/PaletteManager.h"
@@ -18,25 +19,17 @@
 
 struct SpriteFrameTable *pSpriteFrameTable;
 
-//----- (0044D4D8) --------------------------------------------------------
-void SpriteFrameTable::ReleaseSFrames() {
-    free(this->pSpriteSFrames);
-    this->pSpriteSFrames = nullptr;
-    this->uNumSpriteFrames = 0;
-}
-
 //----- (0044D4F6) --------------------------------------------------------
 void SpriteFrameTable::ResetLoadedFlags() {
-    for (int i = 0; i < this->uNumSpriteFrames; ++i) {
-        this->pSpriteSFrames[i].uFlags &= ~0x80;
-    }
+    for (SpriteFrame &spriteFrame : pSpriteSFrames)
+        spriteFrame.uFlags &= ~0x80;
 }
 
 //----- (0044D513) --------------------------------------------------------
 void SpriteFrameTable::InitializeSprite(signed int uSpriteID) {
     std::string spriteName;
 
-    if (uSpriteID <= this->uNumSpriteFrames) {
+    if (uSpriteID <= pSpriteSFrames.size()) {
         if (uSpriteID >= 0) {
             uint iter_uSpriteID = uSpriteID;
             //if (iter_uSpriteID == 603) __debugbreak();
@@ -185,14 +178,14 @@ int SpriteFrameTable::FastFindSprite(std::string_view pSpriteName) {
 
 //----- (0044D83A) --------------------------------------------------------
 int SpriteFrameTable::BinarySearch(std::string_view pSpriteName) {
-    SpriteFrame **result = std::lower_bound(this->pSpritePFrames, this->pSpritePFrames + uNumEFrames, pSpriteName,
+    auto pos = std::lower_bound(pSpritePFrames.begin(), pSpritePFrames.end(), pSpriteName,
         [](SpriteFrame *l, std::string_view r) {
             return iless(l->icon_name, r);
         }
     );
 
-    if (iequals((*result)->icon_name, pSpriteName)) {
-        return std::distance(this->pSpritePFrames, result);
+    if (iequals((*pos)->icon_name, pSpriteName)) {
+        return pos - pSpritePFrames.begin();
     } else {
         return -1;
     }
@@ -201,8 +194,8 @@ int SpriteFrameTable::BinarySearch(std::string_view pSpriteName) {
 //----- (0044D8D0) --------------------------------------------------------
 SpriteFrame *SpriteFrameTable::GetFrame(unsigned int uSpriteID, unsigned int uTime) {
     SpriteFrame *v4 = &pSpriteSFrames[uSpriteID];
-    if (~v4->uFlags & 1 || !v4->uAnimLength) return pSpriteSFrames + uSpriteID;
-
+    if (~v4->uFlags & 1 || !v4->uAnimLength)
+        return v4;
 
     // uAnimLength / uAnimTime = actual number of frames in sprite
     for (uint t = (uTime / 8) % v4->uAnimLength; t > v4->uAnimTime; ++v4)
@@ -233,8 +226,7 @@ SpriteFrame *SpriteFrameTable::GetFrame(unsigned int uSpriteID, unsigned int uTi
 }
 
 //----- (0044D91F) --------------------------------------------------------
-SpriteFrame *SpriteFrameTable::GetFrameBy_x(unsigned int uSpriteID,
-                                            signed int a3) {
+SpriteFrame *SpriteFrameTable::GetFrameBy_x(unsigned int uSpriteID, signed int time) {
     SpriteFrame *v3;      // edi@1
     SpriteFrame *v4;      // esi@1
     int16_t v5;           // ax@2
@@ -246,11 +238,11 @@ SpriteFrame *SpriteFrameTable::GetFrameBy_x(unsigned int uSpriteID,
     int v11;              // esi@5
     SpriteFrame *result;  // eax@6
 
-    v3 = this->pSpriteSFrames;
+    v3 = this->pSpriteSFrames.data();
     v4 = &v3[uSpriteID];
     if (v4->uFlags & 1 && (v5 = v4->uAnimLength) != 0) {
         v6 = v5;
-        v7 = a3 % v5;
+        v7 = time % v5;
         v8 = uSpriteID;
         v9 = v6 - v7;
         for (i = (char *)&v4->uAnimTime;; i += 60) {
@@ -268,85 +260,28 @@ SpriteFrame *SpriteFrameTable::GetFrameBy_x(unsigned int uSpriteID,
 
 // new
 void SpriteFrameTable::ResetPaletteIndexes() {
-    for (int i = 0; i < this->uNumSpriteFrames; i++  ) {
-        this->pSpriteSFrames[i].ResetPaletteIndex();
-    }
-}
-
-void SpriteFrameTable::ToFile() {
-    FILE *file = fopen(MakeDataPath("data", "dsft.bin").c_str(), "wb");
-    if (file == nullptr) {
-        Error("Unable to save dsft.bin!");
-    }
-    fwrite(&uNumSpriteFrames, 4, 1, file);
-    fwrite(&uNumEFrames, 4, 1, file);
-    fwrite(pSpriteSFrames, 0x3C, uNumSpriteFrames, file);
-    fwrite(pSpriteEFrames, 2, uNumEFrames, file);
-    fclose(file);
+    for (SpriteFrame &spriteFrame : pSpriteSFrames)
+        spriteFrame.ResetPaletteIndex();
 }
 
 //----- (0044D9D7) --------------------------------------------------------
 void SpriteFrameTable::FromFile(const Blob &data_mm6, const Blob &data_mm7, const Blob &data_mm8) {
-    uint num_mm6_frames = 0;
-    uint num_mm6_eframes = 0;
-    if (data_mm6) {
-        num_mm6_frames = *(int *)data_mm6.data();
-        num_mm6_eframes = *((int *)data_mm6.data() + 1);
-    }
+    (void) data_mm6;
+    (void) data_mm8;
 
-    uint num_mm7_frames = 0;
-    uint num_mm7_eframes = 0;
-    if (data_mm7) {
-        num_mm7_frames = *(int *)data_mm7.data();
-        num_mm7_eframes = *((int *)data_mm7.data() + 1);
-    }
+    BlobDeserializer stream(data_mm7);
+    uint32_t frameCount = 0;
+    uint32_t eframeCount = 0;
+    stream.ReadRaw(&frameCount);
+    stream.ReadRaw(&eframeCount);
+    stream.ReadSizedLegacyVector<SpriteFrame_MM7>(&pSpriteSFrames, frameCount);
+    stream.ReadSizedVector(&pSpriteEFrames, eframeCount);
 
-    uint num_mm8_frames = 0;
-    uint num_mm8_eframes = 0;
-    if (data_mm8) {
-        num_mm8_frames = *(int *)data_mm8.data();
-        num_mm8_eframes = *((int *)data_mm8.data() + 1);
-    }
+    pSpritePFrames.clear();
+    for (uint16_t index : pSpriteEFrames)
+        pSpritePFrames.push_back(&pSpriteSFrames[index]);
 
-    this->uNumSpriteFrames =
-        num_mm7_frames /*+ num_mm6_frames + num_mm8_frames*/;
-
-    this->pSpriteSFrames = new SpriteFrame[this->uNumSpriteFrames];
-    for (unsigned int i = 0; i < this->uNumSpriteFrames; ++i) {
-        Deserialize(*((SpriteFrame_MM7 *)((char *)data_mm7.data() + 8) + i), &this->pSpriteSFrames[i]);
-    }
-
-    this->uNumEFrames = num_mm7_eframes /*+ num_mm6_eframes + num_mm8_eframes*/;
-    this->pSpriteEFrames = (int16_t *)malloc(uNumSpriteFrames * sizeof(short));
-
-    uint mm7_frames_size = num_mm7_frames * sizeof(SpriteFrame_MM7);
-    memcpy(pSpriteEFrames, (char *)data_mm7.data() + 8 + mm7_frames_size,
-           2 * num_mm7_eframes);
-
-    pSpritePFrames = (SpriteFrame **)malloc(sizeof(void *) * uNumSpriteFrames);
-
-    /*uint mm6_frames_size = num_mm6_frames * sizeof(SpriteFrame_mm6);
-    for (uint i = 0; i < num_mm6_frames; ++i)
-    {
-        memcpy(pSpriteSFrames + num_mm7_frames + i, (char *)data_mm6 + 8 + i *
-    sizeof(SpriteFrame_mm6), sizeof(SpriteFrame_mm6));
-        pSpriteSFrames[num_mm7_frames + i].uAnimLength = 0;
-    }
-    memcpy(pSpriteEFrames + num_mm7_frames, (char *)data_mm6 + 8 +
-    mm6_frames_size, 2 * num_mm6_eframes);*/
-
-    /*uint mm8_frames_size = num_mm8_frames * sizeof(SpriteFrame);
-    memcpy(pSpriteSFrames + num_mm6_frames + num_mm7_frames, (char *)data_mm8 +
-    8, mm8_frames_size); memcpy(pSpriteEFrames + num_mm6_frames +
-    num_mm7_frames, (char *)data_mm8 + 8 + mm8_frames_size, 2 *
-    num_mm8_eframes);*/
-
-    // the original was using num_mmx_frames, but never accessed any element
-    // beyond num_mmx_eframes, but boing beyong eframes caused invalid memory
-    // accesses
-    for (uint i = 0;
-         i < num_mm7_eframes /*+ num_mm6_eframes + num_mm8_eframes*/; ++i)
-        pSpritePFrames[i] = &pSpriteSFrames[pSpriteEFrames[i]];
+    assert(!pSpriteSFrames.empty());
 }
 
 SpriteFrame *LevelDecorationChangeSeason(const DecorationDesc *desc, int t, int month) {

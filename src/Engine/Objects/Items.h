@@ -13,8 +13,6 @@
 
 struct Player;
 
-/*   64 */
-#pragma pack(push, 1)
 struct ItemGen {  // 0x24
     static void PopulateSpecialBonusMap();
     static void PopulateRegularBonusMap();
@@ -119,10 +117,7 @@ struct ItemGen {  // 0x24
     bool placedInChest = false;        // 1B (was unused, repurposed)
     GameTime uExpireTime;        // uint64_t uExpireTime; //1C
 };
-#pragma pack(pop)
 
-/*  175 */
-#pragma pack(push, 1)
 struct ItemDesc {  // 30h
     // Item # |Pic File|Name|Value|Equip Stat|Skill Group|Mod1|Mod2|material|
     /// ID/Rep/St|Not identified name|Sprite Index|VarA|VarB|Equip X|Equip
@@ -152,10 +147,7 @@ struct ItemDesc {  // 30h
     unsigned char uItemID_Rep_St = 0;  // 2e 32
     char field_2f = 0;
 };
-#pragma pack(pop)
 
-/*  391 */
-#pragma pack(push, 1)
 struct SummonedItem {
     //----- (00493F79) --------------------------------------------------------
     void Initialize(GameTime duration) {
@@ -176,7 +168,6 @@ struct SummonedItem {
     int field_14_exprie_month = 0;
     int field_18_expire_year = 0;
 };
-#pragma pack(pop)
 
 
 class EquipemntPair {

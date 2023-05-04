@@ -42,8 +42,6 @@ enum class BuildingType: uint16_t {
 };
 using enum BuildingType;
 
-/*  168 */
-#pragma pack(push, 1)
 struct _2devent {
     BuildingType uType;
     uint16_t uAnimationID;
@@ -66,6 +64,5 @@ struct _2devent {
     int16_t _quest_bit;
     int16_t field_32;
 };
-#pragma pack(pop)
 
 extern _2devent p2DEvents[525];

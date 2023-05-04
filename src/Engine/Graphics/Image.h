@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <vector>
 
 #include "Utility/IndexedArray.h"
 #include "Utility/Memory/Blob.h"
@@ -129,23 +130,14 @@ class TextureFrame {
     Texture *tex;
 };
 
-/*   40 */
-#pragma pack(push, 1)
 struct TextureFrameTable {
-    inline TextureFrameTable() {
-        pTextures = 0;
-        sNumTextures = 0;
-    }
-    void ToFile();
     void FromFile(const Blob &data_mm6, const Blob &data_mm7, const Blob &data_mm8);
     void LoadAnimationSequenceAndPalettes(int uIconID);
-    Texture *GetFrameTexture(int uFrameID, int time);
+    Texture *GetFrameTexture(int frameId, int time);
     int64_t FindTextureByName(const char *Str2);
 
-    uint32_t sNumTextures;
-    TextureFrame *pTextures;
+    std::vector<TextureFrame> textures;
 };
-#pragma pack(pop)
 
 extern TextureFrameTable *pTextureFrameTable;
 

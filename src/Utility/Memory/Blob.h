@@ -5,6 +5,7 @@
 #include <utility>
 #include <memory>
 #include <string_view>
+#include <string>
 
 class FileInputStream;
 
@@ -65,6 +66,12 @@ class Blob final {
      * @throws std::runtime_error       On error.
      */
     static Blob fromFile(std::string_view path);
+
+    /**
+     * @param string                    String to create a blob from.
+     * @return                          Blob that wraps the provided string.
+     */
+    static Blob fromString(std::string string);
 
     /**
      * @param data                      Memory region pointer.

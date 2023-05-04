@@ -15,8 +15,6 @@
 class Actor;
 struct SpawnPoint;
 
-/*  357 */
-#pragma pack(push, 1)
 struct stru319 {
     inline stru319() {
         this->vis = EngineIocContainer::ResolveVis();
@@ -30,12 +28,9 @@ struct stru319 {
 
     Vis *vis = nullptr;
 };
-#pragma pack(pop)
 
 extern stru319 stru_50C198;  // idb
 
-/*  247 */
-#pragma pack(push, 1)
 struct AIDirection {
     Vec3i vDirection{};
     unsigned int uDistance = 0;
@@ -43,7 +38,6 @@ struct AIDirection {
     unsigned int uYawAngle = 0;
     /*un*/signed int uPitchAngle = 0;
 };
-#pragma pack(pop)
 
 struct ActorJob {
     Vec3s vPos;

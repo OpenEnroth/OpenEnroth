@@ -2930,6 +2930,10 @@ PLAYER_SKILL_MASTERY Player::GetActualSkillMastery(PLAYER_SKILL_TYPE uSkillType)
     return GetSkillMastery(uSkillType);
 }
 
+CombinedSkillValue Player::getActualSkillValue(PLAYER_SKILL_TYPE skillType) const {
+    return CombinedSkillValue(GetActualSkillLevel(skillType), GetActualSkillMastery(skillType));
+}
+
 //----- (0048FC00) --------------------------------------------------------
 int Player::GetSkillBonus(CHARACTER_ATTRIBUTE_TYPE inSkill) {
                     // TODO(_): move the individual implementations to attribute
@@ -4123,8 +4127,8 @@ bool Player::CompareVariable(VariableType VarNum, int pValue) {
     signed int v4;                         // edi@1
     uint8_t test_bit_value;        // eax@25
     uint8_t byteWithRequestedBit;  // cl@25
-    DDM_DLV_Header *v19;                   // eax@122
-    DDM_DLV_Header *v21;                   // eax@126
+    LocationHeader_MM7 *v19;                   // eax@122
+    LocationHeader_MM7 *v21;                   // eax@126
     int actStat;                           // ebx@161
     int baseStat;                          // eax@161
 
@@ -4530,7 +4534,7 @@ bool Player::CompareVariable(VariableType VarNum, int pValue) {
 //----- (0044A5CB) --------------------------------------------------------
 void Player::SetVariable(VariableType var_type, signed int var_value) {
     int gold{}, food{};
-    DDM_DLV_Header *ddm;
+    LocationHeader_MM7 *ddm;
     ItemGen item;
 
     if (var_type >= VAR_History_0 && var_type <= VAR_History_28) {
@@ -5115,7 +5119,7 @@ void Player::SetSkillByEvent(uint16_t Player::*skillToSet,
 //----- (0044AFFB) --------------------------------------------------------
 void Player::AddVariable(VariableType var_type, signed int val) {
     int food{};
-    DDM_DLV_Header *ddm;
+    LocationHeader_MM7 *ddm;
     ItemGen item;
 
     if (var_type >= VAR_Counter1 && var_type <= VAR_Counter10) {
@@ -5665,7 +5669,7 @@ void Player::AddSkillByEvent(uint16_t Player::*skillToSet,
 
 //----- (0044B9C4) --------------------------------------------------------
 void Player::SubtractVariable(VariableType VarNum, signed int pValue) {
-    DDM_DLV_Header *locationHeader;  // eax@90
+    LocationHeader_MM7 *locationHeader;  // eax@90
     int randGold;
     int randFood;
     int npcIndex;
@@ -7278,12 +7282,20 @@ PLAYER_SKILL_MASTERY Player::GetSkillMastery(PLAYER_SKILL_TYPE skill) const {
     return ::GetSkillMastery(pActiveSkills[skill]);
 }
 
+CombinedSkillValue Player::getSkillValue(PLAYER_SKILL_TYPE skill) const {
+    return CombinedSkillValue(pActiveSkills[skill]);
+}
+
 void Player::SetSkillLevel(PLAYER_SKILL_TYPE skill, PLAYER_SKILL_LEVEL level) {
     ::SetSkillLevel(&pActiveSkills[skill], level);
 }
 
 void Player::SetSkillMastery(PLAYER_SKILL_TYPE skill, PLAYER_SKILL_MASTERY mastery) {
     ::SetSkillMastery(&pActiveSkills[skill], mastery);
+}
+
+void Player::setSkillValue(PLAYER_SKILL_TYPE skill, const CombinedSkillValue &value) {
+    pActiveSkills[skill] = value.join();
 }
 
 void Player::playReaction(PlayerSpeech speech, int a3) {

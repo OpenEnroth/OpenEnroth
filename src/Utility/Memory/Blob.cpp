@@ -35,6 +35,22 @@ class MemoryMapBlobHandler : public BlobHandler {
     mio::mmap_source _mmap;
 };
 
+class StringBlobHandler : public BlobHandler {
+ public:
+    explicit StringBlobHandler(std::string string) : _string(std::move(string)) {}
+
+    virtual void destroy(const void *data, size_t) override {
+        delete this;
+    }
+
+    std::string_view view() const {
+        return _string;
+    }
+
+ private:
+    std::string _string;
+};
+
 constinit FreeBlobHandler staticFreeBlobHandler = {};
 constinit NonOwningBlobHandler staticNonOwningBlobHandler = {};
 
@@ -48,6 +64,12 @@ Blob Blob::fromFile(std::string_view path) {
     const void *data = mmap.data();
     size_t size = mmap.size();
     return Blob(data, size, new MemoryMapBlobHandler(std::move(mmap)));
+}
+
+Blob Blob::fromString(std::string string) {
+    std::unique_ptr<StringBlobHandler> handler = std::make_unique<StringBlobHandler>(std::move(string));
+    std::string_view view = handler->view();
+    return Blob(view.data(), view.size(), handler.release());
 }
 
 Blob Blob::copy(const void *data, size_t size) { // NOLINT: this is not std::copy

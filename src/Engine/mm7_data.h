@@ -250,8 +250,6 @@ extern int day_fogrange_1;
 extern int day_fogrange_2;
 extern struct TileTable *pTileTable;              // idb
 extern std::array<char, 777> pDefaultSkyTexture;  // idb
-extern std::array<char, 16>
-    byte_6BE124_cfg_textures_DefaultGroundTexture;  // idb
 extern int _6BE134_odm_main_tile_group;
 extern int dword_6BE138;
 extern int dword_6BE13C_uCurrentlyLoadedLocationID;

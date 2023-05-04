@@ -2826,7 +2826,7 @@ void CastSpellInfoHelpers::castSpell() {
                         player.health = player.GetMaxHealth();
                         player.mana = player.GetMaxMana();
                     }
-                    DDM_DLV_Header *ddm_dlv = &pOutdoor->ddm;
+                    LocationHeader_MM7 *ddm_dlv = &pOutdoor->ddm;
                     if (uCurrentlyLoadedLevelType != LEVEL_Outdoor) {
                         ddm_dlv = &pIndoor->dlv;
                     }

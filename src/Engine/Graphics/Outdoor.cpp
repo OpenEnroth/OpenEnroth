@@ -25,8 +25,7 @@
 #include "Engine/Objects/SpriteObject.h"
 #include "Engine/OurMath.h"
 #include "Engine/Party.h"
-#include "Engine/Serialization/LegacyImages.h"
-#include "Engine/Serialization/Deserializer.h"
+#include "Engine/Serialization/CompositeImages.h"
 #include "Engine/SpellFxRenderer.h"
 #include "Engine/Tables/TileFrameTable.h"
 #include "Engine/Time.h"
@@ -39,9 +38,11 @@
 #include "GUI/UI/UIRest.h"
 #include "GUI/UI/UITransition.h"
 
+#include "Library/Random/Random.h"
+
 #include "Utility/Memory/FreeDeleter.h"
 #include "Utility/Math/TrigLut.h"
-#include "Library/Random/Random.h"
+#include "Utility/Exception.h"
 
 // TODO(pskelton): make this neater
 static DecalBuilder *decal_builder = EngineIocContainer::ResolveDecalBuilder();
@@ -80,8 +81,6 @@ struct FogProbabilityTableEntry {
 // for future sky textures?
 std::array<int, 9> dword_4EC268 = {{3, 3, 3, 3, 3, 3, 3, 3, 3}};
 std::array<int, 7> dword_4EC28C = {{3, 3, 3, 3, 3, 3, 3}};
-int dword_4EC2A8 = 9;
-int dword_4EC2AC = 7;
 
 //----- (0047A59E) --------------------------------------------------------
 void OutdoorLocation::ExecDraw(unsigned int bRedraw) {
@@ -252,10 +251,7 @@ bool OutdoorLocation::Initialize(const std::string &filename, int days_played,
         // pSprites_LOD->DeleteSomeOtherSprites();
         // pSpriteFrameTable->ResetLoadedFlags();
 
-        if (!this->Load(filename, days_played, respawn_interval_days, outdoors_was_respawned)) {
-            logger->warning("Couldn't Load Map!");
-            CreateDebugLocation();
-        }
+        Load(filename, days_played, respawn_interval_days, outdoors_was_respawned);
 
         ::day_attrib = this->loc_time.day_attrib;
         ::day_fogrange_1 = this->loc_time.day_fogrange_1;
@@ -816,11 +812,6 @@ void OutdoorLocation::CreateDebugLocation() {
     this->pFaceIDLIST.clear();
     this->sky_texture_filename = pDefaultSkyTexture.data();
     this->sky_texture = assets->GetBitmap(this->sky_texture_filename);
-
-    this->ground_tileset = byte_6BE124_cfg_textures_DefaultGroundTexture.data();
-    // this->sMainTile_BitmapID =
-    // pBitmaps_LOD->LoadTexture(this->ground_tileset.c_str());
-    this->main_tile_texture = assets->GetBitmap(this->ground_tileset);
 }
 
 //----- (0047CF9C) --------------------------------------------------------
@@ -829,7 +820,6 @@ void OutdoorLocation::Release() {
     this->location_filename = "default.odm";
     this->location_file_description = "MM6 Outdoor v1.00";
     this->sky_texture_filename = "sky043";
-    this->ground_tileset = "hm005";
 
     pBModels.clear();
     pSpawnPoints.clear();
@@ -841,9 +831,7 @@ void OutdoorLocation::Release() {
     render->ReleaseTerrain();
 }
 
-bool OutdoorLocation::Load(const std::string &filename, int days_played,
-                           int respawn_interval_days,
-                           bool *outdoors_was_respawned) {
+void OutdoorLocation::Load(const std::string &filename, int days_played, int respawn_interval_days, bool *outdoors_was_respawned) {
     //if (engine->IsUnderwater()) {
     //    pPaletteManager->pPalette_tintColor[0] = 0x10;
     //    pPaletteManager->pPalette_tintColor[1] = 0xC2;
@@ -863,11 +851,8 @@ bool OutdoorLocation::Load(const std::string &filename, int days_played,
 
     _6807E0_num_decorations_with_sounds_6807B8 = 0;
 
-    static_assert(sizeof(BSPModelData) == 188);
-
-    if (!pGames_LOD->DoesContainerExist(filename)) {
+    if (!pGames_LOD->DoesContainerExist(filename))
         Error("Unable to find %s in Games.LOD", filename.c_str());
-    }
 
     std::string minimap_filename = filename.substr(0, filename.length() - 4);
     viewparams->location_minimap = assets->GetImage_Solid(minimap_filename);
@@ -875,189 +860,74 @@ bool OutdoorLocation::Load(const std::string &filename, int days_played,
     std::string odm_filename = std::string(filename);
     odm_filename.replace(odm_filename.length() - 4, 4, ".odm");
 
-    BlobDeserializer stream(pGames_LOD->LoadCompressed(odm_filename));
+    auto progressCallback = [] {
+        pGameLoadingUI_ProgressBar->Progress();
+    };
 
-    stream.ReadSizedString(&this->level_filename, 32);
-    stream.ReadSizedString(&this->location_filename, 32);
-    stream.ReadSizedString(&this->location_file_description, 32);
-    stream.ReadSizedString(&this->sky_texture_filename, 32);
-    stream.ReadSizedString(&this->ground_tileset, 32);
-
-    static_assert(sizeof(pTileTypes) == 16, "Wrong type size");
-    stream.ReadRaw(&pTileTypes);
-
-    LoadTileGroupIds();
-    LoadRoadTileset();
-    this->ground_tileset = "grastyl";
-
-    pGameLoadingUI_ProgressBar->Progress();  // прогресс загрузки
-
-    // *******************Terrain**************************//
-    stream.ReadRaw(&pTerrain.pHeightmap);  // карта высот
-    stream.ReadRaw(&pTerrain.pTilemap);  // карта тайлов
-    stream.ReadRaw(&pTerrain.pAttributemap);  // карта аттрибутов
-
-    pTerrain.FillDMap(0, 0, 128, 128);
-
-    pGameLoadingUI_ProgressBar->Progress();  // прогресс загрузки
-
-    uint32_t uNumTerrainNormals;
-    stream.ReadRaw(&uNumTerrainNormals);  // количество нормалей
-    stream.ReadRaw(&pTerrainSomeOtherData);
-    stream.ReadRaw(&pTerrainNormalIndices);  // индексы нормалей
-    stream.ReadSizedVector(&pTerrainNormals, uNumTerrainNormals);
-
-    pGameLoadingUI_ProgressBar->Progress();  // прогресс загрузки
-
-    // ************BModels************************//
-    pBModels.Load(&stream);
-    pGameLoadingUI_ProgressBar->Progress();  // прогресс загрузки
-
-    // ******************Decorations**********************//
-    static_assert(sizeof(LevelDecoration) == 32);
-    stream.ReadVector(&pLevelDecorations);
-
-    pGameLoadingUI_ProgressBar->Progress();
-
-    for (uint i = 0; i < pLevelDecorations.size(); ++i) {
-        std::string name;
-        stream.ReadSizedString(&name, 32);
-        pLevelDecorations[i].uDecorationDescID = pDecorationList->GetDecorIdByName(name);
-    }
-
-    pGameLoadingUI_ProgressBar->Progress();  // прогресс загрузки
-
-    stream.ReadVector(&pFaceIDLIST);
-
-    pGameLoadingUI_ProgressBar->Progress();  // прогресс загрузки
-
-    stream.ReadRaw(&pOMAP);
-
-    pGameLoadingUI_ProgressBar->Progress();
-    pGameLoadingUI_ProgressBar->Progress();  // прогресс загрузки
-
-    stream.ReadLegacyVector<SpawnPoint_MM7>(&pSpawnPoints);
-
-    pGameLoadingUI_ProgressBar->Progress();  // прогресс загрузки
+    OutdoorLocation_MM7 location;
+    Deserialize(pGames_LOD->LoadCompressed(odm_filename), &location, progressCallback);
+    Deserialize(location, this);
 
     // ****************.ddm file*********************//
 
     std::string ddm_filename = filename;
     ddm_filename = ddm_filename.replace(ddm_filename.length() - 4, 4, ".ddm");
-    Blob blob = pNew_LOD->LoadCompressed(ddm_filename);
 
-    if (blob) {
-        stream.Reset(blob);
+    bool respawnInitial = false; // Perform initial location respawn?
+    bool respawnTimed = false; // Perform timed location respawn?
+    OutdoorDelta_MM7 delta;
+    if (Blob blob = pSave_LOD->LoadCompressed(ddm_filename)) {
+        try {
+            Deserialize(blob, &delta, location, progressCallback);
 
-        static_assert(sizeof(DDM_DLV_Header) == 40, "Wrong type size");
-        stream.ReadRaw(&ddm);
-    }
-    uint actualNumFacesInLevel = 0;
-    for (BSPModel &model : pBModels) {
-        actualNumFacesInLevel += model.pFaces.size();
-    }
+            size_t totalFaces = 0;
+            for (BSPModel &model : pBModels)
+                totalFaces += model.pFaces.size();
 
-    //  The ddm.uNumX values are only written in SaveLoad::Save, and
-    //  only used for this check. Is it for forwards compatibility?
-    bool object_count_in_level_changed_since_save =
-        ddm.uNumFacesInBModels &&
-        ddm.uNumBModels &&
-        ddm.uNumDecorations &&
-        (ddm.uNumFacesInBModels != actualNumFacesInLevel ||
-         ddm.uNumBModels != pBModels.size() ||
-         ddm.uNumDecorations != pLevelDecorations.size());
+            // Level was changed externally and we have a save there? Don't crash, just respawn.
+            if (delta.header.uNumFacesInBModels && delta.header.uNumBModels && delta.header.uNumDecorations &&
+                (delta.header.uNumFacesInBModels != totalFaces || delta.header.uNumBModels != pBModels.size() || delta.header.uNumDecorations != pLevelDecorations.size()))
+                respawnInitial = true;
 
-    if (dword_6BE364_game_settings_1 & GAME_SETTINGS_LOADING_SAVEGAME_SKIP_RESPAWN)
-        respawn_interval_days = 0x1BAF800;
+            // Entering the level for the 1st time?
+            if (delta.header.uLastRepawnDay == 0)
+                respawnInitial = true;
 
-    bool should_respawn =
-        days_played - ddm.uLastRepawnDay >= respawn_interval_days ||
-        !ddm.uLastRepawnDay;
+            if (dword_6BE364_game_settings_1 & GAME_SETTINGS_LOADING_SAVEGAME_SKIP_RESPAWN)
+                respawn_interval_days = 0x1BAF800;
 
-    std::array<char, 968> Src {};
-    std::array<char, 968> Dst {};
-
-    if (object_count_in_level_changed_since_save || should_respawn) {
-        if (object_count_in_level_changed_since_save) {
-            Dst.fill(0);
-            Src.fill(0);
+            if (!respawnInitial && days_played - delta.header.uLastRepawnDay >= respawn_interval_days)
+                respawnTimed = true;
+        } catch (const Exception &e) {
+            logger->error("Failed to load '{}', respawning location: {}", ddm_filename, e.what());
+            respawnInitial = true;
         }
-        if (should_respawn) {
-            stream.ReadRaw(&Dst);
-            stream.ReadRaw(&Src);
-        }
+    }
 
-        ddm.uLastRepawnDay = days_played;
-        if (!object_count_in_level_changed_since_save)
-            ++ddm.uNumRespawns;
+    assert(respawnInitial + respawnTimed <= 1);
 
+    if (respawnInitial) {
+        Deserialize(pGames_LOD->LoadCompressed(ddm_filename), &delta, location, [] {});
         *outdoors_was_respawned = true;
-        stream.Reset(pGames_LOD->LoadCompressed(ddm_filename));
-        stream.SkipBytes(sizeof(DDM_DLV_Header));
+    } else if (respawnTimed) {
+        auto header = delta.header;
+        auto fullyRevealedCells = delta.fullyRevealedCells;
+        auto partiallyRevealedCells = delta.partiallyRevealedCells;
+        Deserialize(pGames_LOD->LoadCompressed(ddm_filename), &delta, location, [] {});
+        delta.header = header;
+        delta.fullyRevealedCells = fullyRevealedCells;
+        delta.partiallyRevealedCells = partiallyRevealedCells;
+        *outdoors_was_respawned = true;
     } else {
-        *outdoors_was_respawned = 0;
-    }
-    stream.ReadRaw(&uFullyRevealedCellOnMap);
-    stream.ReadRaw(&uPartiallyRevealedCellOnMap);
-
-    pGameLoadingUI_ProgressBar->Progress();  // прогресс загрузки
-
-    if (*outdoors_was_respawned) {
-        memcpy(uFullyRevealedCellOnMap, &Dst, 968);
-        memcpy(uPartiallyRevealedCellOnMap, &Src, 968);
+        *outdoors_was_respawned = false;
     }
 
-    for (BSPModel &model : pBModels) {
-        for (ODMFace &face : model.pFaces)
-            stream.ReadRaw(&face.uAttributes);
+    Deserialize(delta, this);
 
-        for (ODMFace &face : model.pFaces) {
-            if (face.sCogTriggeredID) {
-                if (face.HasEventHint()) {
-                    face.uAttributes |= FACE_HAS_EVENT;
-                } else {
-                    face.uAttributes &= ~FACE_HAS_EVENT;
-                }
-            }
-        }
-
-        // calculate bounding sphere for model
-        Vec3f topLeft = Vec3f(model.pBoundingBox.x1, model.pBoundingBox.y1, model.pBoundingBox.z1);
-        Vec3f bottomRight = Vec3f(model.pBoundingBox.x2, model.pBoundingBox.y2, model.pBoundingBox.z2);
-        model.vBoundingCenter = ((topLeft + bottomRight) / 2.0f).toInt();
-        model.sBoundingRadius = (topLeft - model.vBoundingCenter.toFloat()).length();
-    }
-
-    pGameLoadingUI_ProgressBar->Progress();  // прогресс загрузки
-
-    for (uint i = 0; i < pLevelDecorations.size(); ++i)
-        stream.ReadRaw(&pLevelDecorations[i].uFlags);
-
-    pGameLoadingUI_ProgressBar->Progress();  // прогресс загрузки
-    pGameLoadingUI_ProgressBar->Progress();  // прогресс загрузки
-
-    stream.ReadLegacyVector<Actor_MM7>(&pActors);
-    for(size_t i = 0; i < pActors.size(); i++)
-        pActors[i].id = i;
-
-    pGameLoadingUI_ProgressBar->Progress();  // прогресс загрузки
-    pGameLoadingUI_ProgressBar->Progress();  // прогресс загрузки
-
-    stream.ReadLegacyVector<SpriteObject_MM7>(&pSpriteObjects);
-
-    pGameLoadingUI_ProgressBar->Progress();  // прогресс загрузки
-
-    stream.ReadVector(&vChests);
-
-    pGameLoadingUI_ProgressBar->Progress();  // прогресс загрузки
-
-    static_assert(sizeof(mapEventVariables) == 0xC8);
-    stream.ReadRaw(&mapEventVariables);
-
-    pGameLoadingUI_ProgressBar->Progress();  // прогресс загрузки
-
-    static_assert(sizeof(loc_time) == 0x38);
-    stream.ReadRaw(&loc_time);
+    if (respawnTimed || respawnInitial)
+        ddm.uLastRepawnDay = days_played;
+    if (respawnTimed)
+        ddm.uNumRespawns++;
 
     pTileTable->InitializeTileset(Tileset_Dirt);
     pTileTable->InitializeTileset(Tileset_Snow);
@@ -1065,38 +935,26 @@ bool OutdoorLocation::Load(const std::string &filename, int days_played,
     pTileTable->InitializeTileset(pTileTypes[1].tileset);
     pTileTable->InitializeTileset(pTileTypes[2].tileset);
     pTileTable->InitializeTileset(pTileTypes[3].tileset);
-    this->ground_tileset = byte_6BE124_cfg_textures_DefaultGroundTexture.data();
-    TileDesc *v98 = pTileTable->GetTileById(pTileTypes[0].uTileID);
-
-    main_tile_texture = v98->GetTexture();
-    // sMainTile_BitmapID = pBitmaps_LOD->LoadTexture(v98->pTileName,
-    // TEXTURE_DEFAULT); if (sMainTile_BitmapID != -1)
-    //    pBitmaps_LOD->pTextures[sMainTile_BitmapID].palette_id2 =
-    //    pPaletteManager->LoadPalette(pBitmaps_LOD->pTextures[sMainTile_BitmapID].palette_id1);
 
     _47F0E2();
 
     // LABEL_150:
     if (pWeather->bRenderSnow) {  // Ritor1: it's include for snow
-        strcpy(loc_time.sky_texture_name, "sky19");
+        loc_time.sky_texture_name = "sky19";
     } else if (loc_time.last_visit) {
         if (loc_time.last_visit.GetDays() % 28 != pParty->uCurrentDayOfMonth) {
             int sky_to_use;
             if (vrng->random(100) >= 20)
-                sky_to_use = dword_4EC268[vrng->random(dword_4EC2A8)];
+                sky_to_use = dword_4EC268[vrng->random(9)];
             else
-                sky_to_use = dword_4EC28C[vrng->random(dword_4EC2AC)];
-            sprintf(loc_time.sky_texture_name, "plansky%d", sky_to_use);
+                sky_to_use = dword_4EC28C[vrng->random(7)];
+            loc_time.sky_texture_name = fmt::format("plansky{}", sky_to_use);
         }
     } else {
-        strcpy(loc_time.sky_texture_name, "plansky3");
+        loc_time.sky_texture_name = "plansky3";
     }
 
     this->sky_texture = assets->GetBitmap(loc_time.sky_texture_name);
-
-    //pPaletteManager->RecalculateAll();
-
-    return true;
 }
 
 int OutdoorLocation::getTileIdByTileMapId(int mapId) {
@@ -1177,7 +1035,7 @@ TileDesc *OutdoorLocation::getTileDescByGrid(int sX, int sY) {
         }
     }
 
-    return &pTileTable->pTiles[v3];
+    return &pTileTable->tiles[v3];
 }
 
 int OutdoorLocation::getTileMapIdByGrid(signed int gridX, signed int gridY) {
@@ -1194,7 +1052,7 @@ int OutdoorLocation::getTileAttribByGrid(int gridX, int gridY) {
     int v3 = this->pTerrain.pTilemap[gridY * 128 + gridX];
     if (v3 >= 90)
         v3 = v3 + this->pTileTypes[(v3 - 90) / 36].uTileID - 36 * ((v3 - 90) / 36) - 90;
-    return pTileTable->pTiles[v3].uAttributes;
+    return pTileTable->tiles[v3].uAttributes;
 }
 
 //----- (0047EE16) --------------------------------------------------------

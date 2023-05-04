@@ -12,14 +12,11 @@
 #define EVT_ID_JOIN_AIR_GUILD_DIALOGUE      402
 
 
-/*  167 */
-#pragma pack(push, 1)
 struct EventIndex {
     int event_id;
     int event_step;
     unsigned int uEventOffsetInEVT;
 };
-#pragma pack(pop)
 
 // raw event struct
 // header
@@ -80,13 +77,6 @@ extern std::array<char, 9216> pLevelStr;
 extern int savedEventID;
 extern int savedEventStep;
 extern struct LevelDecoration *savedDecoration;
-
-/*  312 */
-#pragma pack(push, 1)
-struct ByteArray {
-    char f[65535];
-};
-#pragma pack(pop)
 
 struct MapEventVariables {
     std::array<unsigned char, 75> mapVars;

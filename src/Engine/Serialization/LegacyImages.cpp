@@ -7,14 +7,22 @@
 
 #include "Engine/Engine.h"
 #include "Engine/Graphics/Indoor.h"
+#include "Engine/Graphics/Level/Decoration.h"
+#include "Engine/Graphics/Outdoor.h"
 #include "Engine/Graphics/Overlays.h"
 #include "Engine/Graphics/Sprites.h"
 #include "Engine/Objects/Actor.h"
 #include "Engine/Objects/NPC.h"
+#include "Engine/Objects/ObjectList.h"
 #include "Engine/Objects/SpriteObject.h"
 #include "Engine/Party.h"
+#include "Engine/SaveLoad.h"
 #include "Engine/Tables/IconFrameTable.h"
+#include "Engine/Tables/PlayerFrameTable.h"
+#include "Engine/Tables/TileFrameTable.h"
 #include "Engine/Time.h"
+
+#include "Media/Audio/SoundInfo.h"
 
 #include "GUI/GUIFont.h"
 
@@ -22,15 +30,7 @@
 #include "Utility/Memory/MemSet.h"
 #include "Utility/IndexedBitset.h"
 
-template<class T>
-static void Serialize(const T &src, T *dst) {
-    *dst = src;
-}
-
-template<class T>
-static void Deserialize(const T &src, T *dst) {
-    *dst = src;
-}
+#include "CommonImages.h"
 
 static void Serialize(const GameTime &src, int64_t *dst) {
     *dst = src.value;
@@ -38,19 +38,6 @@ static void Serialize(const GameTime &src, int64_t *dst) {
 
 static void Deserialize(int64_t src, GameTime *dst) {
     dst->value = src;
-}
-
-template<size_t N>
-static void Serialize(const std::string &src, std::array<char, N> *dst) {
-    memset(dst->data(), 0, N);
-    memcpy(dst->data(), src.data(), std::min(src.size(), N - 1));
-}
-
-template<size_t N>
-static void Deserialize(const std::array<char, N> &src, std::string *dst) {
-    const char *end = static_cast<const char *>(memchr(src.data(), 0, N));
-    size_t size = end == nullptr ? N : end - src.data();
-    *dst = std::string(src.data(), size);
 }
 
 template<class T1, size_t N, class T2, auto L, auto H>
@@ -65,20 +52,6 @@ static void Deserialize(const std::array<T1, N> &src, IndexedArray<T2, L, H> *ds
     static_assert(IndexedArray<T2, L, H>::SIZE == N, "Expected arrays of equal size.");
     for (size_t i = 0; auto index : dst->indices())
         Deserialize(src[i++], &(*dst)[index]);
-}
-
-template<class T1, size_t N1, class T2, size_t N2> requires (!std::is_same_v<T1, T2>)
-static void Serialize(const std::array<T1, N1> &src, std::array<T2, N2> *dst) {
-    static_assert(N1 == N2, "Expected arrays of equal size.");
-    for (size_t i = 0; i < N1; i++)
-        Serialize(src[i], &(*dst)[i]);
-}
-
-template<class T1, size_t N1, class T2, size_t N2> requires (!std::is_same_v<T1, T2>)
-static void Deserialize(const std::array<T1, N1> &src, std::array<T2, N2> *dst) {
-    static_assert(N1 == N2, "Expected arrays of equal size.");
-    for (size_t i = 0; i < N1; i++)
-        Deserialize(src[i], &(*dst)[i]);
 }
 
 // Bits inside each array element indexed backwards
@@ -162,6 +135,28 @@ void Deserialize(const BLVFace_MM7 &src, BLVFace *dst) {
     dst->pBounding = src.bounding;
     dst->uPolygonType = static_cast<PolygonType>(src.polygonType);
     dst->uNumVertices = src.numVertices;
+}
+
+void Deserialize(const TileDesc_MM7 &src, TileDesc *dst) {
+    Deserialize(src.tileName, &dst->name);
+    dst->name = toLower(dst->name);
+
+    if (istarts_with(dst->name, "wtrdr"))
+        dst->name.insert(0, "h");  // mm7 uses hd water tiles with legacy names
+
+    dst->uTileID = src.tileId;
+    dst->tileset = static_cast<Tileset>(src.tileSet);
+    dst->uSection = src.section;
+    dst->uAttributes = src.attributes;
+}
+
+void Deserialize(const TextureFrame_MM7 &src, TextureFrame *dst) {
+    Deserialize(src.textureName, &dst->name);
+    dst->name = toLower(dst->name);
+
+    dst->uAnimLength = src.animLength;
+    dst->uAnimTime = src.animTime;
+    dst->uFlags = src.flags;
 }
 
 void Serialize(const Timer &src, Timer_MM7 *dst) {
@@ -1007,19 +1002,21 @@ void Deserialize(const Player_MM7 &src, Player *dst) {
 void Serialize(const Icon &src, IconFrame_MM7 *dst) {
     memzero(dst);
 
-    strcpy(dst->animationName.data(), src.GetAnimationName()); // TODO(captainurist): as unsafe as it gets
+    Serialize(src.GetAnimationName(), &dst->animationName);
     dst->animLength = src.GetAnimLength();
 
-    strcpy(dst->textureName.data(), src.pTextureName);
+    Serialize(src.pTextureName, &dst->textureName);
     dst->animTime = src.GetAnimTime();
     dst->flags = src.uFlags;
 }
 
 void Deserialize(const IconFrame_MM7 &src, Icon *dst) {
-    dst->SetAnimationName(src.animationName.data());
+    std::string name;
+    Deserialize(src.animationName, &name);
+    dst->SetAnimationName(name);
     dst->SetAnimLength(8 * src.animLength);
 
-    strcpy(dst->pTextureName, src.textureName.data());
+    Deserialize(src.textureName, &dst->pTextureName);
     dst->SetAnimTime(src.animTime);
     dst->uFlags = src.flags;
 }
@@ -1414,6 +1411,7 @@ void Deserialize(const BLVSector_MM7 &src, BLVSector *dst) {
 
 void Serialize(const GUICharMetric &src, GUICharMetric_MM7 *dst) {
     memzero(dst);
+
     dst->uLeftSpacing = src.uLeftSpacing;
     dst->uWidth = src.uWidth;
     dst->uRightSpacing = src.uRightSpacing;
@@ -1511,6 +1509,8 @@ void Deserialize(const SpawnPoint_MM7 &src, SpawnPoint *dst) {
 }
 
 void Serialize(const SpriteObject &src, SpriteObject_MM7 *dst) {
+    memzero(dst);
+
     dst->uType = src.uType;
     dst->uObjectDescID = src.uObjectDescID;
     dst->vPosition = src.vPosition;
@@ -1560,4 +1560,218 @@ void Deserialize(const SpriteObject_MM7 &src, SpriteObject *dst) {
     dst->field_62[0] = src.field_62[0];
     dst->field_62[1] = src.field_62[1];
     dst->initialPosition = src.initialPosition;
+}
+
+void Deserialize(const ChestDesc_MM7 &src, ChestDesc *dst) {
+    Deserialize(src.pName, &dst->sName);
+    dst->uWidth = src.uWidth;
+    dst->uHeight = src.uHeight;
+    dst->uTextureID = src.uTextureID;
+}
+
+void Deserialize(const DecorationDesc_MM6 &src, DecorationDesc *dst) {
+    Deserialize(src.pName, &dst->pName);
+    Deserialize(src.field_20, &dst->field_20);
+    dst->uType = src.uType;
+    dst->uDecorationHeight = src.uDecorationHeight;
+    dst->uRadius = src.uRadius;
+    dst->uLightRadius = src.uLightRadius;
+    dst->uSpriteID = src.uSpriteID;
+    dst->uFlags = DECORATION_DESC_FLAGS(src.uFlags);
+    dst->uSoundID = src.uSoundID;
+
+    dst->uColoredLightRed = 255;
+    dst->uColoredLightGreen = 255;
+    dst->uColoredLightBlue = 255;
+}
+
+void Deserialize(const DecorationDesc_MM7 &src, DecorationDesc *dst) {
+    Deserialize(static_cast<const DecorationDesc_MM6 &>(src), dst);
+
+    dst->uColoredLightRed = src.uColoredLightRed;
+    dst->uColoredLightGreen = src.uColoredLightGreen;
+    dst->uColoredLightBlue = src.uColoredLightBlue;
+}
+
+void Serialize(const Chest &src, Chest_MM7 *dst) {
+    memzero(dst);
+
+    dst->uChestBitmapID = src.uChestBitmapID;
+    dst->uFlags = std::to_underlying(src.uFlags);
+    Serialize(src.igChestItems, &dst->igChestItems);
+    Serialize(src.pInventoryIndices, &dst->pInventoryIndices);
+}
+
+void Deserialize(const Chest_MM7 &src, Chest *dst) {
+    dst->uChestBitmapID = src.uChestBitmapID;
+    dst->uFlags = CHEST_FLAGS(src.uFlags);
+    Deserialize(src.igChestItems, &dst->igChestItems);
+    Deserialize(src.pInventoryIndices, &dst->pInventoryIndices);
+}
+
+void Deserialize(const BLVLight_MM7 &src, BLVLight *dst) {
+    dst->vPosition = src.vPosition;
+    dst->uRadius = src.uRadius;
+    dst->uRed = src.uRed;
+    dst->uGreen = src.uGreen;
+    dst->uBlue = src.uBlue;
+    dst->uType = src.uType;
+    dst->uAtributes = src.uAtributes;
+    dst->uBrightness = src.uBrightness;
+}
+
+void Deserialize(const OverlayDesc_MM7 &src, OverlayDesc *dst) {
+    dst->uOverlayID = src.uOverlayID;
+    dst->uOverlayType = src.uOverlayType;
+    dst->uSpriteFramesetID = src.uSpriteFramesetID;
+    dst->field_6 = src.field_6;
+}
+
+void Deserialize(const PlayerFrame_MM7 &src, PlayerFrame *dst) {
+    dst->expression = static_cast<CHARACTER_EXPRESSION_ID>(src.expression);
+    dst->uTextureID = src.uTextureID;
+    dst->uAnimTime = src.uAnimTime;
+    dst->uAnimLength = src.uAnimLength;
+    dst->uFlags = src.uFlags;
+}
+
+void Deserialize(const LevelDecoration_MM7 &src, LevelDecoration *dst) {
+    dst->uDecorationDescID = src.uDecorationDescID;
+    dst->uFlags = LevelDecorationFlags(src.uFlags);
+    dst->vPosition = src.vPosition;
+    dst->_yawAngle = src._yawAngle;
+    dst->uCog = src.uCog;
+    dst->uEventID = src.uEventID;
+    dst->uTriggerRange = src.uTriggerRange;
+    dst->field_1A = src.field_1A;
+    dst->_idx_in_stru123 = src._idx_in_stru123;
+    dst->field_1E = src.field_1E;
+}
+
+void Deserialize(const BLVFaceExtra_MM7 &src, BLVFaceExtra *dst) {
+    dst->field_0 = src.field_0;
+    dst->field_2 = src.field_2;
+    dst->field_4 = src.field_4;
+    dst->field_6 = src.field_6;
+    dst->field_8 = src.field_8;
+    dst->field_A = src.field_A;
+    dst->face_id = src.face_id;
+    dst->uAdditionalBitmapID = src.uAdditionalBitmapID;
+    dst->field_10 = src.field_10;
+    dst->field_12 = src.field_12;
+    dst->sTextureDeltaU = src.sTextureDeltaU;
+    dst->sTextureDeltaV = src.sTextureDeltaV;
+    dst->sCogNumber = src.sCogNumber;
+    dst->uEventID = src.uEventID;
+    dst->field_1C = src.field_1C;
+    dst->field_1E = src.field_1E;
+    dst->field_20 = src.field_20;
+    dst->field_22 = src.field_22;
+}
+
+void Deserialize(const BSPNode_MM7 &src, BSPNode *dst) {
+    dst->uFront = src.uFront;
+    dst->uBack = src.uBack;
+    dst->uBSPFaceIDOffset = src.uBSPFaceIDOffset;
+    dst->uNumBSPFaces = src.uNumBSPFaces;
+}
+
+void Deserialize(const BLVMapOutline_MM7 &src, BLVMapOutline *dst) {
+    dst->uVertex1ID = src.uVertex1ID;
+    dst->uVertex2ID = src.uVertex2ID;
+    dst->uFace1ID = src.uFace1ID;
+    dst->uFace2ID = src.uFace2ID;
+    dst->sZ = src.sZ;
+    dst->uFlags = src.uFlags;
+}
+
+void Deserialize(const ObjectDesc_MM6 &src, ObjectDesc *dst) {
+    dst->field_0 =  src.field_0;
+    dst->uObjectID = src.uObjectID;
+    dst->uRadius = src.uRadius;
+    dst->uHeight = src.uHeight;
+    dst->uFlags = OBJECT_DESC_FLAGS(src.uFlags);
+    dst->uSpriteID = src.uSpriteID;
+    dst->uLifetime = src.uLifetime;
+    dst->uParticleTrailColor = src.uParticleTrailColor;
+    dst->uSpeed = src.uSpeed;
+    dst->uParticleTrailColorR = src.uParticleTrailColorR;
+    dst->uParticleTrailColorG = src.uParticleTrailColorG;
+    dst->uParticleTrailColorB = src.uParticleTrailColorB;
+}
+
+void Deserialize(const ObjectDesc_MM7 &src, ObjectDesc *dst) {
+    dst->field_0 = src.field_0;
+    dst->uObjectID = src.uObjectID;
+    dst->uRadius = src.uRadius;
+    dst->uHeight = src.uHeight;
+    dst->uFlags = OBJECT_DESC_FLAGS(src.uFlags);
+    dst->uSpriteID = src.uSpriteID;
+    dst->uLifetime = src.uLifetime;
+    dst->uParticleTrailColor = src.uParticleTrailColor;
+    dst->uSpeed = src.uSpeed;
+    dst->uParticleTrailColorR = src.uParticleTrailColorR;
+    dst->uParticleTrailColorG = src.uParticleTrailColorG;
+    dst->uParticleTrailColorB = src.uParticleTrailColorB;
+}
+
+void Serialize(const LocationTime &src, LocationTime_MM7 *dst) {
+    memzero(dst);
+
+    Serialize(src.last_visit, &dst->last_visit);
+    Serialize(src.sky_texture_name, &dst->sky_texture_name);
+    dst->day_attrib = src.day_attrib;
+    dst->day_fogrange_1 = src.day_fogrange_1;
+    dst->day_fogrange_2 = src.day_fogrange_2;
+}
+
+void Deserialize(const LocationTime_MM7 &src, LocationTime *dst) {
+    Deserialize(src.last_visit, &dst->last_visit);
+    Deserialize(src.sky_texture_name, &dst->sky_texture_name);
+    dst->day_attrib = src.day_attrib;
+    dst->day_fogrange_1 = src.day_fogrange_1;
+    dst->day_fogrange_2 = src.day_fogrange_2;
+}
+
+void Deserialize(const SoundInfo_MM6 &src, SoundInfo *dst) {
+    Deserialize(src.pSoundName, &dst->sName);
+    dst->uSoundID = src.uSoundID;
+    dst->eType = static_cast<SOUND_TYPE>(src.eType);
+    dst->uFlags = src.uFlags;
+}
+
+void Deserialize(const SoundInfo_MM7 &src, SoundInfo *dst) {
+    Deserialize(static_cast<const SoundInfo_MM6 &>(src), dst);
+}
+
+void Serialize(const MapEventVariables &src, MapEventVariables_MM7 *dst) {
+    memzero(dst);
+
+    dst->mapVars = src.mapVars;
+    dst->decorVars = src.decorVars;
+}
+
+void Deserialize(const MapEventVariables_MM7 &src, MapEventVariables *dst) {
+    dst->mapVars = src.mapVars;
+    dst->decorVars = src.decorVars;
+}
+
+void Deserialize(const OutdoorLocationTileType_MM7 &src, OutdoorLocationTileType *dst) {
+    dst->tileset = static_cast<Tileset>(src.tileset);
+    dst->uTileID = src.uTileID;
+}
+
+void Serialize(const SaveGameHeader &src, SaveGameHeader_MM7 *dst) {
+    memzero(dst);
+
+    Serialize(src.pName, &dst->pName);
+    Serialize(src.pLocationName, &dst->pLocationName);
+    Serialize(src.playing_time, &dst->playing_time);
+}
+
+void Deserialize(const SaveGameHeader_MM7 &src, SaveGameHeader *dst) {
+    Deserialize(src.pName, &dst->pName);
+    Deserialize(src.pLocationName, &dst->pLocationName);
+    Deserialize(src.playing_time, &dst->playing_time);
+    // field_30 is ignored.
 }

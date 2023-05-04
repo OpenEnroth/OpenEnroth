@@ -6,8 +6,6 @@
 
 #include "Utility/Geometry/Vec.h"
 
-/*  257 */
-#pragma pack(push, 1)
 struct StationaryLight {
     Vec3f vPosition {};
     int16_t uRadius = 0;
@@ -17,9 +15,7 @@ struct StationaryLight {
     char uLightType = 0;
     int16_t uSectorID = 0;
 };
-#pragma pack(pop)
 
-#pragma pack(push, 1)
 struct MobileLight {
     Vec3f vPosition {};
     int16_t uRadius = 0;
@@ -31,20 +27,16 @@ struct MobileLight {
     int16_t uSectorID = 0;
     int16_t field_10 = 0;
 };
-#pragma pack(pop)
 
 /*
-#pragma pack(push, 1)
 struct LightStack<T>
 {
   int field_0;
   char T[400];
   unsigned int uNumLightsActive;
 };
-#pragma pack(pop)*/
+*/
 
-/*  260 */
-#pragma pack(push, 1)
 struct LightsStack_StationaryLight_ {
     //----- (004AD385) --------------------------------------------------------
     LightsStack_StationaryLight_() {
@@ -67,10 +59,7 @@ struct LightsStack_StationaryLight_ {
 
     Logger *log;
 };
-#pragma pack(pop)
 
-/*  261 */
-#pragma pack(push, 1)
 struct LightsStack_MobileLight_ {
     //----- (00467D45) --------------------------------------------------------
     inline LightsStack_MobileLight_() {
@@ -88,4 +77,3 @@ struct LightsStack_MobileLight_ {
     unsigned int uNumLightsActive;
     Logger *log;
 };
-#pragma pack(pop)

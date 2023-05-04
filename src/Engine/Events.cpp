@@ -17,3 +17,4 @@ MapEventVariables mapEventVariables;
 int savedEventID;
 int savedEventStep;
 struct LevelDecoration *savedDecoration;
+

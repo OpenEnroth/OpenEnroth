@@ -1,8 +1,7 @@
-#include <algorithm>
-
 #include "Engine/Engine.h"
 
 #include "Engine/Serialization/LegacyImages.h"
+#include "Engine/Serialization/Deserializer.h"
 
 #include "Library/Random/Random.h"
 
@@ -10,30 +9,22 @@
 #include "TileFrameTable.h"
 
 
-//----- (00487E1D) --------------------------------------------------------
-TileTable::~TileTable() {
-    free(pTiles);
-    pTiles = nullptr;
-    sNumTiles = 0;
-}
-
 //----- (00487E3B) --------------------------------------------------------
 TileDesc *TileTable::GetTileById(unsigned int uTileID) {
-    Assert(uTileID < sNumTiles);
-    return &pTiles[uTileID];
+    return &tiles[uTileID];
 }
 
 //----- (00487E58) --------------------------------------------------------
 void TileTable::InitializeTileset(Tileset tileset) {
-    for (int i = 0; i < sNumTiles; ++i) {
-        if (pTiles[i].tileset == tileset && !pTiles[i].name.empty()) {
+    //for (int i = 0; i < sNumTiles; ++i) {
+        //if (pTiles[i].tileset == tileset && !pTiles[i].name.empty()) {
             // pTiles[i].uBitmapID =
             // pBitmaps_LOD->LoadTexture(pTiles[i].pTileName); if
             // (pTiles[i].uBitmapID != -1)
             //    pBitmaps_LOD->pTextures[pTiles[i].uBitmapID].palette_id2 =
             //    pPaletteManager->LoadPalette(pBitmaps_LOD->pTextures[pTiles[i].uBitmapID].palette_id1);
-        }
-    }
+        //}
+    //}
 }
 
 //----- (00487ED6) --------------------------------------------------------
@@ -59,61 +50,23 @@ int TileTable::GetTileForTerrainType(signed int terrain_type, bool not_random) {
 }
 
 //----- (00487F84) --------------------------------------------------------
-unsigned int TileTable::GetTileId(unsigned int uTerrainType,
-                                  unsigned int uSection) {
-    for (int i = 0; i < sNumTiles; ++i) {
-        if ((pTiles[i].tileset == uTerrainType) &&
-            (pTiles[i].uSection == uSection))
+unsigned int TileTable::GetTileId(unsigned int uTerrainType, unsigned int uSection) {
+    for (size_t i = 0; i < tiles.size(); ++i) {
+        if ((tiles[i].tileset == uTerrainType) &&
+            (tiles[i].uSection == uSection))
             return i;
     }
     return 0;
 }
 
-//----- (00487FB4) --------------------------------------------------------
-void TileTable::ToFile() {
-    FILE *v2 = fopen(MakeDataPath("data", "dtile.bin").c_str(), "wb");
-    if (!v2)
-        Error("Unable to save dtile.bin!");
-    fwrite(&this->sNumTiles, 4u, 1u, v2);
-    fwrite(this->pTiles, 0x1Au, this->sNumTiles, v2);
-    fclose(v2);
-}
-
 //----- (00488000) --------------------------------------------------------
 void TileTable::FromFile(const Blob &data_mm6, const Blob &data_mm7, const Blob &data_mm8) {
-    uint num_mm6_tiles = data_mm6 ? *(int *)data_mm6.data() : 0,
-         num_mm7_tiles = data_mm7 ? *(int *)data_mm7.data() : 0,
-         num_mm8_tiles = data_mm8 ? *(int *)data_mm8.data() : 0;
-    this->sNumTiles = num_mm7_tiles /*+ num_mm6_tiles + num_mm8_tiles*/;
-    Assert(sNumTiles);
+    (void) data_mm6;
+    (void) data_mm8;
 
-    // TODO(captainurist): serialization code belongs to legacyimages
-    auto tiles = new TileDesc[sNumTiles];
-    auto tile_data = (TileDesc_MM7 *)((unsigned char *)data_mm7.data() + 4);
-    for (unsigned int i = 0; i < num_mm7_tiles; ++i) {
-        tiles[i].name = tile_data->tileName.data();
-        std::transform(tiles[i].name.begin(), tiles[i].name.end(),
-                       tiles[i].name.begin(), ::tolower);
-        if (tiles[i].name.find("wtrdr") == 0) {
-            tiles[i].name.insert(
-                tiles[i].name.begin(),
-                'h');  // mm7 uses hd water tiles with legacy names
-        }
+    BlobDeserializer(data_mm7).ReadLegacyVector<TileDesc_MM7>(&tiles);
 
-        tiles[i].uTileID = tile_data->tileId;
-        tiles[i].tileset = (Tileset)tile_data->tileSet;
-        tiles[i].uSection = tile_data->section;
-        tiles[i].uAttributes = tile_data->attributes;
-
-        tile_data++;
-    }
-    // pTiles = (TileDesc *)malloc(sNumTiles * sizeof(TileDesc));
-    // memcpy(pTiles, (char *)data_mm7 + 4, num_mm7_tiles * sizeof(TileDesc));
-    // memcpy(pTiles + num_mm7_tiles, (char *)data_mm6 + 4, num_mm6_tiles *
-    // sizeof(TileDesc)); memcpy(pTiles + num_mm6_tiles + num_mm7_tiles, (char
-    // *)data_mm8 + 4, num_mm8_tiles * sizeof(TileDesc));
-
-    this->pTiles = tiles;
+    assert(!tiles.empty());
 }
 
 //----- (00488047) --------------------------------------------------------
@@ -145,12 +98,8 @@ int TileTable::FromFileTxt(const char *pFilename) {
         memcpy(&v84, txt_file_frametable_parser(Buf, &v85), sizeof(v84));
         if (v84.uPropCount && *v84.pProperties[0] != 47) ++v4;
     }
-    v2->sNumTiles = v4;
-    v5 = malloc(sizeof(TileDesc) * v4);
-    v2->pTiles = (TileDesc *)v5;
-    if (!v5) Error("TileTable::Load - Out of Memory!");
-    memset(v5, 0, sizeof(TileDesc) * v2->sNumTiles);
-    v2->sNumTiles = 0;
+    v2->tiles.reserve(v4);
+    v2->tiles.resize(0);
     fseek(File, 0, 0);
 
     while (fgets(Buf, sizeof(Buf), File)) {
@@ -158,68 +107,70 @@ int TileTable::FromFileTxt(const char *pFilename) {
         memcpy(&v84, txt_file_frametable_parser(Buf, &v85), sizeof(v84));
         if (v84.uPropCount) {
             if (*v84.pProperties[0] != 47) {
-                // strcpy(v2->pTiles[v2->sNumTiles].pTileName, v84.pProperties[0]);
+                TileDesc &tile = v2->tiles.emplace_back();
+
+                // strcpy(tile.pTileName, v84.pProperties[0]);
                 v6 = atoi(v84.pProperties[1]);
                 v7 = v84.pProperties[2];
-                v2->pTiles[v2->sNumTiles].uTileID = v6;
+                tile.uTileID = v6;
                 v8 = atoi(v7);
                 v9 = v84.pProperties[3];
-                // v2->pTiles[v2->sNumTiles].uBitmapID = v8;
+                // tile.uBitmapID = v8;
 
                 if (iequals(v9, "TTtype_NULL")) {
-                    v2->pTiles[v2->sNumTiles].tileset = Tileset_NULL;
+                    tile.tileset = Tileset_NULL;
                 } else if (iequals(v9, "TTtype_Start")) {
-                    v2->pTiles[v2->sNumTiles].tileset = Tileset_Start;
+                    tile.tileset = Tileset_Start;
                 } else if (iequals(v9, "TTtype_Grass")) {
-                    v2->pTiles[v2->sNumTiles].tileset = Tileset_Grass;
+                    tile.tileset = Tileset_Grass;
                 } else if (iequals(v9, "TTtype_Snow")) {
-                    v2->pTiles[v2->sNumTiles].tileset = Tileset_Snow;
+                    tile.tileset = Tileset_Snow;
                 } else if (iequals(v9, "TTtype_Sand")) {
-                    v2->pTiles[v2->sNumTiles].tileset = Tileset_Desert;
+                    tile.tileset = Tileset_Desert;
                 } else if (iequals(v9, "TTtype_Volcano")) {
-                    v2->pTiles[v2->sNumTiles].tileset = Tileset_CooledLava;
+                    tile.tileset = Tileset_CooledLava;
                 } else if (iequals(v9, "TTtype_Dirt")) {
-                    v2->pTiles[v2->sNumTiles].tileset = Tileset_Dirt;
+                    tile.tileset = Tileset_Dirt;
                 } else if (iequals(v9, "TTtype_Water")) {
-                    v2->pTiles[v2->sNumTiles].tileset = Tileset_Water;
+                    tile.tileset = Tileset_Water;
                 } else if (iequals(v9, "TTtype_Cracked")) {
-                    v2->pTiles[v2->sNumTiles].tileset = Tileset_Badlands;
+                    tile.tileset = Tileset_Badlands;
                 } else if (iequals(v9, "TTtype_Swamp")) {
-                    v2->pTiles[v2->sNumTiles].tileset = Tileset_Swamp;
+                    tile.tileset = Tileset_Swamp;
                 } else if (iequals(v9, "TTtype_Tropical")) {
-                    v2->pTiles[v2->sNumTiles].tileset = Tileset_Tropical;
+                    tile.tileset = Tileset_Tropical;
                 } else if (iequals(v9, "TTtype_City")) {
-                    v2->pTiles[v2->sNumTiles].tileset = Tileset_City;
+                    tile.tileset = Tileset_City;
                 } else if (iequals(v9, "TTtype_RoadGrassCobble")) {
-                    v2->pTiles[v2->sNumTiles].tileset = Tileset_RoadGrassCobble;
+                    tile.tileset = Tileset_RoadGrassCobble;
                 } else if (iequals(v9, "TTtype_RoadGrassDirt")) {
-                    v2->pTiles[v2->sNumTiles].tileset = Tileset_RoadGrassDirt;
+                    tile.tileset = Tileset_RoadGrassDirt;
                 } else if (iequals(v9, "TTtype_RoadSnowCobble")) {
-                    v2->pTiles[v2->sNumTiles].tileset = Tileset_RoadSnowCobble;
+                    tile.tileset = Tileset_RoadSnowCobble;
                 } else if (iequals(v9, "TTtype_RoadSnowDirt")) {
-                    v2->pTiles[v2->sNumTiles].tileset = Tileset_RoadSnowDirt;
+                    tile.tileset = Tileset_RoadSnowDirt;
                 } else if (iequals(v9, "TTtype_RoadSandCobble")) {
-                    v2->pTiles[v2->sNumTiles].tileset = Tileset_RoadSandCobble;
+                    tile.tileset = Tileset_RoadSandCobble;
                 } else if (iequals(v9, "TTtype_RoadSandDirt")) {
-                    v2->pTiles[v2->sNumTiles].tileset = Tileset_RoadSandDirt;
+                    tile.tileset = Tileset_RoadSandDirt;
                 } else if (iequals(v9, "TTtype_RoadVolcanoCobble")) {
-                    v2->pTiles[v2->sNumTiles].tileset = Tileset_RoadVolcanoCobble;
+                    tile.tileset = Tileset_RoadVolcanoCobble;
                 } else if (iequals(v9, "TTtype_RoadVolcanoDirt")) {
-                    v2->pTiles[v2->sNumTiles].tileset = Tileset_RoadVolcanoDirt;
+                    tile.tileset = Tileset_RoadVolcanoDirt;
                 } else if (iequals(v9, "TTtype_RoadCrackedCobble")) {
-                    v2->pTiles[v2->sNumTiles].tileset = Tileset_RoadCrackedCobble;
+                    tile.tileset = Tileset_RoadCrackedCobble;
                 } else if (iequals(v9, "TTtype_RoadCrackedDirt")) {
-                    v2->pTiles[v2->sNumTiles].tileset = Tileset_RoadCrackedDirt;
+                    tile.tileset = Tileset_RoadCrackedDirt;
                 } else if (iequals(v9, "TTtype_RoadSwampCobble")) {
-                    v2->pTiles[v2->sNumTiles].tileset = Tileset_RoadSwampCobble;
+                    tile.tileset = Tileset_RoadSwampCobble;
                 } else if (iequals(v9, "TTtype_RoadSwampDirt")) {
-                    v2->pTiles[v2->sNumTiles].tileset = Tileset_RoadSwampDir;
+                    tile.tileset = Tileset_RoadSwampDir;
                 } else if (iequals(v9, "TTtype_RoadTropicalCobble")) {
-                    v2->pTiles[v2->sNumTiles].tileset = Tileset_RoadTropicalCobble;
+                    tile.tileset = Tileset_RoadTropicalCobble;
                 } else if (iequals(v9, "TTtype_RoadTropicalDirt")) {
-                    v2->pTiles[v2->sNumTiles].tileset = Tileset_RoadTropicalDirt;
+                    tile.tileset = Tileset_RoadTropicalDirt;
                 } else if (iequals(v9, "TTtype_RoadCityStone")) {
-                    v2->pTiles[v2->sNumTiles].tileset = Tileset_RoadCityStone;
+                    tile.tileset = Tileset_RoadCityStone;
                 } else {
                     logger->warning("Unknown tile type {}", v9);
                 }
@@ -227,170 +178,169 @@ int TileTable::FromFileTxt(const char *pFilename) {
                 v35 = v84.pProperties[4];
 
                 // Default
-                v2->pTiles[v2->sNumTiles].uSection = 0;
-                v2->pTiles[v2->sNumTiles].uAttributes = 0;
+                tile.uSection = 0;
+                tile.uAttributes = 0;
 
                 if (iequals(v35, "TTsect_NULL")) {
-                    v2->pTiles[v2->sNumTiles].uSection |= TILE_SECT_NULL;
+                    tile.uSection |= TILE_SECT_NULL;
                 } else if (iequals(v35, "TTsect_Start")) {
-                    v2->pTiles[v2->sNumTiles].uSection |= TILE_SECT_Start;
+                    tile.uSection |= TILE_SECT_Start;
                 } else if (iequals(v35, "TTsect_Base1")) {
-                    v2->pTiles[v2->sNumTiles].uSection = TILE_SECT_Base1;
+                    tile.uSection = TILE_SECT_Base1;
                 } else if (iequals(v35, "TTsect_Base2")) {
-                    v2->pTiles[v2->sNumTiles].uSection = TILE_SECT_Base2_NS;
+                    tile.uSection = TILE_SECT_Base2_NS;
                 } else if (iequals(v35, "TTsect_Base3")) {
-                    v2->pTiles[v2->sNumTiles].uSection = TILE_SECT_Base3_EW;
+                    tile.uSection = TILE_SECT_Base3_EW;
                 } else if (iequals(v35, "TTsect_Base4")) {
-                    v2->pTiles[v2->sNumTiles].uSection = TILE_SECT_Base4_N_E;
+                    tile.uSection = TILE_SECT_Base4_N_E;
                 } else if (iequals(v35, "TTsect_Special1")) {
-                    v2->pTiles[v2->sNumTiles].uSection = TILE_SECT_Special1_N_W;
+                    tile.uSection = TILE_SECT_Special1_N_W;
                 } else if (iequals(v35, "TTsect_Special2")) {
-                    v2->pTiles[v2->sNumTiles].uSection = TILE_SECT_Special2_S_E;
+                    tile.uSection = TILE_SECT_Special2_S_E;
                 } else if (iequals(v35, "TTsect_Special3")) {
-                    v2->pTiles[v2->sNumTiles].uSection = TILE_SECT_Special3_S_W;
+                    tile.uSection = TILE_SECT_Special3_S_W;
                 } else if (iequals(v35, "TTsect_Special4")) {
-                    v2->pTiles[v2->sNumTiles].uSection = TILE_SECT_Special4_NS_E;
+                    tile.uSection = TILE_SECT_Special4_NS_E;
                 } else if (iequals(v35, "TTsect_Special5")) {
-                    v2->pTiles[v2->sNumTiles].uSection = TILE_SECT_Special5_NS_W;
+                    tile.uSection = TILE_SECT_Special5_NS_W;
                 } else if (iequals(v35, "TTsect_Special6")) {
-                    v2->pTiles[v2->sNumTiles].uSection = TILE_SECT_Special6_EW_N;
+                    tile.uSection = TILE_SECT_Special6_EW_N;
                 } else if (iequals(v35, "TTsect_Special7")) {
-                    v2->pTiles[v2->sNumTiles].uSection = TILE_SECT_Special7_EW_S;
+                    tile.uSection = TILE_SECT_Special7_EW_S;
                 } else if (iequals(v35, "TTsect_Special8")) {
-                    v2->pTiles[v2->sNumTiles].uSection = TILE_SECT_Special8_NCAP;
+                    tile.uSection = TILE_SECT_Special8_NCAP;
                 } else if (iequals(v35, "TTsect_NE1")) {
-                    v2->pTiles[v2->sNumTiles].uSection = TILE_SECT_NE1_SE1_ECAP;
-                    v2->pTiles[v2->sNumTiles].uAttributes |= TILE_DESC_TRANSITION;
+                    tile.uSection = TILE_SECT_NE1_SE1_ECAP;
+                    tile.uAttributes |= TILE_DESC_TRANSITION;
                 } else if (iequals(v35, "TTsect_NW1")) {
-                    v2->pTiles[v2->sNumTiles].uSection = TILE_SECT_NW1_SW1_WCAP;
-                    v2->pTiles[v2->sNumTiles].uAttributes |= TILE_DESC_TRANSITION;
+                    tile.uSection = TILE_SECT_NW1_SW1_WCAP;
+                    tile.uAttributes |= TILE_DESC_TRANSITION;
                 } else if (iequals(v35, "TTsect_SE1")) {
-                    v2->pTiles[v2->sNumTiles].uSection = TILE_SECT_NE1_SE1_ECAP;
-                    v2->pTiles[v2->sNumTiles].uAttributes |= TILE_DESC_TRANSITION;
+                    tile.uSection = TILE_SECT_NE1_SE1_ECAP;
+                    tile.uAttributes |= TILE_DESC_TRANSITION;
                 } else if (iequals(v35, "TTsect_SW1")) {
-                    v2->pTiles[v2->sNumTiles].uSection = TILE_SECT_NW1_SW1_WCAP;
-                    v2->pTiles[v2->sNumTiles].uAttributes |= TILE_DESC_TRANSITION;
+                    tile.uSection = TILE_SECT_NW1_SW1_WCAP;
+                    tile.uAttributes |= TILE_DESC_TRANSITION;
                 } else if (iequals(v35, "TTsect_E1")) {
-                    v2->pTiles[v2->sNumTiles].uSection = TILE_SECT_E1_DS;
-                    v2->pTiles[v2->sNumTiles].uAttributes |= TILE_DESC_TRANSITION;
+                    tile.uSection = TILE_SECT_E1_DS;
+                    tile.uAttributes |= TILE_DESC_TRANSITION;
                 } else if (iequals(v35, "TTsect_W1")) {
-                    v2->pTiles[v2->sNumTiles].uSection = TILE_SECT_W1_DW;
-                    v2->pTiles[v2->sNumTiles].uAttributes |= TILE_DESC_TRANSITION;
+                    tile.uSection = TILE_SECT_W1_DW;
+                    tile.uAttributes |= TILE_DESC_TRANSITION;
                 } else if (iequals(v35, "TTsect_N1")) {
-                    v2->pTiles[v2->sNumTiles].uSection = TILE_SECT_N1_DE;
-                    v2->pTiles[v2->sNumTiles].uAttributes |= TILE_DESC_TRANSITION;
+                    tile.uSection = TILE_SECT_N1_DE;
+                    tile.uAttributes |= TILE_DESC_TRANSITION;
                 } else if (iequals(v35, "TTsect_S1")) {
-                    v2->pTiles[v2->sNumTiles].uSection = TILE_SECT_S1_DSW;
-                    v2->pTiles[v2->sNumTiles].uAttributes |= TILE_DESC_TRANSITION;
+                    tile.uSection = TILE_SECT_S1_DSW;
+                    tile.uAttributes |= TILE_DESC_TRANSITION;
                 } else if (iequals(v35, "TTsect_XNE1")) {
-                    v2->pTiles[v2->sNumTiles].uSection = TILE_SECT_XNE1_XSE1_DNE;
-                    v2->pTiles[v2->sNumTiles].uAttributes |= TILE_DESC_TRANSITION;
+                    tile.uSection = TILE_SECT_XNE1_XSE1_DNE;
+                    tile.uAttributes |= TILE_DESC_TRANSITION;
                 } else if (iequals(v35, "TTsect_XNW1")) {
-                    v2->pTiles[v2->sNumTiles].uSection = TILE_SECT_XNW1_XSW1_DNW;
-                    v2->pTiles[v2->sNumTiles].uAttributes = TILE_DESC_TRANSITION;
+                    tile.uSection = TILE_SECT_XNW1_XSW1_DNW;
+                    tile.uAttributes = TILE_DESC_TRANSITION;
                 } else if (iequals(v35, "TTsect_XSE1")) {
-                    v2->pTiles[v2->sNumTiles].uSection = TILE_SECT_XNE1_XSE1_DNE;
-                    v2->pTiles[v2->sNumTiles].uAttributes |= TILE_DESC_TRANSITION;
+                    tile.uSection = TILE_SECT_XNE1_XSE1_DNE;
+                    tile.uAttributes |= TILE_DESC_TRANSITION;
                 } else if (iequals(v35, "TTsect_XSW1")) {
-                    v2->pTiles[v2->sNumTiles].uSection = TILE_SECT_XNW1_XSW1_DNW;
-                    v2->pTiles[v2->sNumTiles].uAttributes = TILE_DESC_TRANSITION;
-                    v2->pTiles[v2->sNumTiles].uAttributes |= TILE_DESC_TRANSITION;
+                    tile.uSection = TILE_SECT_XNW1_XSW1_DNW;
+                    tile.uAttributes = TILE_DESC_TRANSITION;
+                    tile.uAttributes |= TILE_DESC_TRANSITION;
                 } else if (iequals(v35, "TTsect_CROS")) {
-                    v2->pTiles[v2->sNumTiles].uSection = TILE_SECT_Base1;
-                    v2->pTiles[v2->sNumTiles].uAttributes |= TILE_DESC_TRANSITION;
+                    tile.uSection = TILE_SECT_Base1;
+                    tile.uAttributes |= TILE_DESC_TRANSITION;
                 } else if (iequals(v35, "TTsect_NS")) {
-                    v2->pTiles[v2->sNumTiles].uSection = TILE_SECT_Base2_NS;
-                    v2->pTiles[v2->sNumTiles].uAttributes |= TILE_DESC_TRANSITION;
+                    tile.uSection = TILE_SECT_Base2_NS;
+                    tile.uAttributes |= TILE_DESC_TRANSITION;
                 } else if (iequals(v35, "TTsect_EW")) {
-                    v2->pTiles[v2->sNumTiles].uSection = TILE_SECT_Base3_EW;
-                    v2->pTiles[v2->sNumTiles].uAttributes |= TILE_DESC_TRANSITION;
+                    tile.uSection = TILE_SECT_Base3_EW;
+                    tile.uAttributes |= TILE_DESC_TRANSITION;
                 } else if (iequals(v35, "TTsect_N_E")) {
-                    v2->pTiles[v2->sNumTiles].uSection = TILE_SECT_Base4_N_E;
-                    v2->pTiles[v2->sNumTiles].uAttributes |= TILE_DESC_TRANSITION;
+                    tile.uSection = TILE_SECT_Base4_N_E;
+                    tile.uAttributes |= TILE_DESC_TRANSITION;
                 } else if (iequals(v35, "TTsect_N_W")) {
-                    v2->pTiles[v2->sNumTiles].uSection = TILE_SECT_Special1_N_W;
-                    v2->pTiles[v2->sNumTiles].uAttributes |= TILE_DESC_TRANSITION;
+                    tile.uSection = TILE_SECT_Special1_N_W;
+                    tile.uAttributes |= TILE_DESC_TRANSITION;
                 } else if (iequals(v35, "TTsect_S_E")) {
-                    v2->pTiles[v2->sNumTiles].uSection = TILE_SECT_Special2_S_E;
-                    v2->pTiles[v2->sNumTiles].uAttributes |= TILE_DESC_TRANSITION;
+                    tile.uSection = TILE_SECT_Special2_S_E;
+                    tile.uAttributes |= TILE_DESC_TRANSITION;
                 } else if (iequals(v35, "TTsect_S_W")) {
-                    v2->pTiles[v2->sNumTiles].uSection = TILE_SECT_Special3_S_W;
-                    v2->pTiles[v2->sNumTiles].uAttributes |= TILE_DESC_TRANSITION;
+                    tile.uSection = TILE_SECT_Special3_S_W;
+                    tile.uAttributes |= TILE_DESC_TRANSITION;
                 } else if (iequals(v35, "TTsect_NS_E")) {
-                    v2->pTiles[v2->sNumTiles].uSection = TILE_SECT_Special4_NS_E;
-                    v2->pTiles[v2->sNumTiles].uAttributes |= TILE_DESC_TRANSITION;
+                    tile.uSection = TILE_SECT_Special4_NS_E;
+                    tile.uAttributes |= TILE_DESC_TRANSITION;
                 } else if (iequals(v35, "TTsect_NS_W")) {
-                    v2->pTiles[v2->sNumTiles].uSection = TILE_SECT_Special5_NS_W;
-                    v2->pTiles[v2->sNumTiles].uAttributes |= TILE_DESC_TRANSITION;
+                    tile.uSection = TILE_SECT_Special5_NS_W;
+                    tile.uAttributes |= TILE_DESC_TRANSITION;
                 } else if (iequals(v35, "TTsect_EW_N")) {
-                    v2->pTiles[v2->sNumTiles].uSection = TILE_SECT_Special6_EW_N;
-                    v2->pTiles[v2->sNumTiles].uAttributes |= TILE_DESC_TRANSITION;
+                    tile.uSection = TILE_SECT_Special6_EW_N;
+                    tile.uAttributes |= TILE_DESC_TRANSITION;
                 } else if (iequals(v35, "TTsect_EW_S")) {
-                    v2->pTiles[v2->sNumTiles].uSection = TILE_SECT_Special7_EW_S;
-                    v2->pTiles[v2->sNumTiles].uAttributes |= TILE_DESC_TRANSITION;
+                    tile.uSection = TILE_SECT_Special7_EW_S;
+                    tile.uAttributes |= TILE_DESC_TRANSITION;
                 } else if (iequals(v35, "TTsect_NCAP")) {
-                    v2->pTiles[v2->sNumTiles].uSection = TILE_SECT_Special8_NCAP;
-                    v2->pTiles[v2->sNumTiles].uAttributes |= TILE_DESC_TRANSITION;
+                    tile.uSection = TILE_SECT_Special8_NCAP;
+                    tile.uAttributes |= TILE_DESC_TRANSITION;
                 } else if (iequals(v35, "TTsect_ECAP")) {
-                    v2->pTiles[v2->sNumTiles].uSection = TILE_SECT_NE1_SE1_ECAP;
-                    v2->pTiles[v2->sNumTiles].uAttributes |= TILE_DESC_TRANSITION;
+                    tile.uSection = TILE_SECT_NE1_SE1_ECAP;
+                    tile.uAttributes |= TILE_DESC_TRANSITION;
                 } else if (iequals(v35, "TTsect_SCAP")) {
-                    v2->pTiles[v2->sNumTiles].uSection = TILE_SECT_SCAP;
-                    v2->pTiles[v2->sNumTiles].uAttributes |= TILE_DESC_TRANSITION;
+                    tile.uSection = TILE_SECT_SCAP;
+                    tile.uAttributes |= TILE_DESC_TRANSITION;
                 } else if (iequals(v35, "TTsect_WCAP")) {
-                    v2->pTiles[v2->sNumTiles].uSection = TILE_SECT_NW1_SW1_WCAP;
-                    v2->pTiles[v2->sNumTiles].uAttributes |= TILE_DESC_TRANSITION;
+                    tile.uSection = TILE_SECT_NW1_SW1_WCAP;
+                    tile.uAttributes |= TILE_DESC_TRANSITION;
                 } else if (iequals(v35, "TTsect_DN")) {
-                    v2->pTiles[v2->sNumTiles].uSection = TILE_SECT_DN;
-                    v2->pTiles[v2->sNumTiles].uAttributes |= TILE_DESC_TRANSITION;
+                    tile.uSection = TILE_SECT_DN;
+                    tile.uAttributes |= TILE_DESC_TRANSITION;
                 } else if (iequals(v35, "TTsect_DS")) {
-                    v2->pTiles[v2->sNumTiles].uSection = TILE_SECT_E1_DS;
-                    v2->pTiles[v2->sNumTiles].uAttributes |= TILE_DESC_TRANSITION;
+                    tile.uSection = TILE_SECT_E1_DS;
+                    tile.uAttributes |= TILE_DESC_TRANSITION;
                 } else if (iequals(v35, "TTsect_DW")) {
-                    v2->pTiles[v2->sNumTiles].uSection = TILE_SECT_W1_DW;
-                    v2->pTiles[v2->sNumTiles].uAttributes |= TILE_DESC_TRANSITION;
+                    tile.uSection = TILE_SECT_W1_DW;
+                    tile.uAttributes |= TILE_DESC_TRANSITION;
                 } else if (iequals(v35, "TTsect_DE")) {
-                    v2->pTiles[v2->sNumTiles].uSection = TILE_SECT_N1_DE;
-                    v2->pTiles[v2->sNumTiles].uAttributes |= TILE_DESC_TRANSITION;
+                    tile.uSection = TILE_SECT_N1_DE;
+                    tile.uAttributes |= TILE_DESC_TRANSITION;
                 } else if (iequals(v35, "TTsect_DSW")) {
-                    v2->pTiles[v2->sNumTiles].uSection = TILE_SECT_S1_DSW;
-                    v2->pTiles[v2->sNumTiles].uAttributes |= TILE_DESC_TRANSITION;
+                    tile.uSection = TILE_SECT_S1_DSW;
+                    tile.uAttributes |= TILE_DESC_TRANSITION;
                 } else if (iequals(v35, "TTsect_DNE")) {
-                    v2->pTiles[v2->sNumTiles].uSection = TILE_SECT_XNE1_XSE1_DNE;
-                    v2->pTiles[v2->sNumTiles].uAttributes |= TILE_DESC_TRANSITION;
+                    tile.uSection = TILE_SECT_XNE1_XSE1_DNE;
+                    tile.uAttributes |= TILE_DESC_TRANSITION;
                 } else if (iequals(v35, "TTsect_DSE")) {
-                    v2->pTiles[v2->sNumTiles].uSection = TILE_SECT_DSE;
-                    v2->pTiles[v2->sNumTiles].uAttributes |= TILE_DESC_TRANSITION;
+                    tile.uSection = TILE_SECT_DSE;
+                    tile.uAttributes |= TILE_DESC_TRANSITION;
                 } else if (iequals(v35, "TTsect_DNW")) {
-                    v2->pTiles[v2->sNumTiles].uSection = TILE_SECT_XNW1_XSW1_DNW;
-                    v2->pTiles[v2->sNumTiles].uAttributes |= TILE_DESC_TRANSITION;
+                    tile.uSection = TILE_SECT_XNW1_XSW1_DNW;
+                    tile.uAttributes |= TILE_DESC_TRANSITION;
                 }
 
                 for (j = 5; j < v84.uPropCount; ++j) {
                     v72 = v84.pProperties[j];
                     if (iequals(v84.pProperties[j], "TTattr_Burn")) {
-                        v2->pTiles[v2->sNumTiles].uAttributes |= TILE_DESC_BURN;
+                        tile.uAttributes |= TILE_DESC_BURN;
                     } else if (iequals(v72, "TTattr_Water")) {
-                        v2->pTiles[v2->sNumTiles].uAttributes |= TILE_DESC_WATER;
+                        tile.uAttributes |= TILE_DESC_WATER;
                     } else if (iequals(v72, "TTattr_Water2")) {
-                        v2->pTiles[v2->sNumTiles].uAttributes |= TILE_DESC_WATER_2;
+                        tile.uAttributes |= TILE_DESC_WATER_2;
                     } else if (iequals(v72, "TTattr_Block")) {
-                        v2->pTiles[v2->sNumTiles].uAttributes |= TILE_DESC_BLOCK;
+                        tile.uAttributes |= TILE_DESC_BLOCK;
                     } else if (iequals(v72, "TTattr_Repulse")) {
-                        v2->pTiles[v2->sNumTiles].uAttributes |= TILE_DESC_REPULSE;
+                        tile.uAttributes |= TILE_DESC_REPULSE;
                     } else if (iequals(v72, "TTattr_Flat")) {
-                        v2->pTiles[v2->sNumTiles].uAttributes |= TILE_DESC_FLAT;
+                        tile.uAttributes |= TILE_DESC_FLAT;
                     } else if (iequals(v72, "TTattr_Wave")) {
-                        v2->pTiles[v2->sNumTiles].uAttributes |= TILE_DESC_WAVY;
+                        tile.uAttributes |= TILE_DESC_WAVY;
                     } else if (iequals(v72, "TTattr_NoDraw")) {
-                        v2->pTiles[v2->sNumTiles].uAttributes |= TILE_DESC_DONT_DRAW;
+                        tile.uAttributes |= TILE_DESC_DONT_DRAW;
                     } else if (iequals(v72, "TTattr_Transition")) {
-                        v2->pTiles[v2->sNumTiles].uAttributes |= TILE_DESC_TRANSITION;
+                        tile.uAttributes |= TILE_DESC_TRANSITION;
                     } else {
                         logger->warning("Unknown tile attribute {}", v72);
                     }
                 }
-                ++v2->sNumTiles;
             }
         }
     }

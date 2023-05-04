@@ -2,6 +2,7 @@
 
 #include <cstdint>
 #include <vector>
+#include <string>
 
 #include "Utility/String.h"
 #include "Utility/Flags.h"
@@ -25,10 +26,20 @@ using enum DECORATION_DESC_FLAG;
 MM_DECLARE_FLAGS(DECORATION_DESC_FLAGS, DECORATION_DESC_FLAG)
 MM_DECLARE_OPERATORS_FOR_FLAGS(DECORATION_DESC_FLAGS)
 
-/*   54 */
-#pragma pack(push, 1)
-// TODO(captainurist): move to legacyimages
-struct DecorationDesc_mm6 {
+struct DecorationDesc {
+    std::string pName;
+    std::string field_20;
+    int16_t uType;
+    uint16_t uDecorationHeight;
+    int16_t uRadius;
+    int16_t uLightRadius;
+    uint16_t uSpriteID;
+    DECORATION_DESC_FLAGS uFlags;
+    int16_t uSoundID;
+    uint8_t uColoredLightRed;
+    uint8_t uColoredLightGreen;
+    uint8_t uColoredLightBlue;
+
     inline bool CanMoveThrough() const {
         return uFlags & DECORATION_DESC_MOVE_THROUGH;
     }
@@ -39,26 +50,7 @@ struct DecorationDesc_mm6 {
     inline bool SoundOnDusk() const {
         return uFlags & DECORATION_DESC_SOUND_ON_DUSK;
     }
-
-    char pName[32];
-    char field_20[32];
-    int16_t uType;
-    uint16_t uDecorationHeight;
-    int16_t uRadius;
-    int16_t uLightRadius;
-    uint16_t uSpriteID;
-    DECORATION_DESC_FLAGS uFlags;
-    int16_t uSoundID;
-    int16_t _pad;
 };
-
-struct DecorationDesc : public DecorationDesc_mm6 {
-    uint8_t uColoredLightRed;
-    uint8_t uColoredLightGreen;
-    uint8_t uColoredLightBlue;
-    uint8_t __padding;
-};
-#pragma pack(pop)
 
 class DecorationList {
  public:

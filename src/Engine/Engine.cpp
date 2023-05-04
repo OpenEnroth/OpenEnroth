@@ -460,8 +460,8 @@ void Engine::Deinitialize() {
     if (pNPCStats)
         pNPCStats->Release();
 
-    if (pNew_LOD)
-        pNew_LOD->FreeSubIndexAndIO();
+    if (pSave_LOD)
+        pSave_LOD->FreeSubIndexAndIO();
 
     delete pEventTimer;
 }

@@ -9,6 +9,7 @@
 #include "Engine/Conditions.h"
 #include "Engine/Graphics/Image.h"
 #include "Engine/Objects/Actor.h"
+#include "Engine/Objects/CombinedSkillValue.h"
 #include "Engine/Objects/Items.h"
 #include "Engine/Objects/ItemEnums.h"
 #include "Engine/Objects/PlayerEnums.h"
@@ -49,13 +50,10 @@ struct LloydBeacon {
     Image *image;
 };
 
-#pragma pack(push, 1)
 struct PlayerSpellbookChapter {
     std::array<char, 11> bIsSpellAvailable;
 };
-#pragma pack(pop)
 
-#pragma pack(push, 1)
 struct PlayerSpells {
     union {
         struct {
@@ -80,9 +78,7 @@ struct PlayerSpells {
         };
     };
 };
-#pragma pack(pop)
 
-#pragma pack(push, 1)
 union PlayerEquipment {
     union {
         struct {
@@ -108,7 +104,6 @@ union PlayerEquipment {
 
     PlayerEquipment() : pIndices() {}
 };
-#pragma pack(pop)
 
 
 // TODO(captainurist): ENUM!
@@ -258,6 +253,7 @@ struct Player {
     int GetMagicalBonus(CHARACTER_ATTRIBUTE_TYPE a2);
     PLAYER_SKILL_LEVEL GetActualSkillLevel(PLAYER_SKILL_TYPE uSkillType) const;
     PLAYER_SKILL_MASTERY GetActualSkillMastery(PLAYER_SKILL_TYPE uSkillType) const;
+    CombinedSkillValue getActualSkillValue(PLAYER_SKILL_TYPE skillType) const;
     int GetSkillBonus(CHARACTER_ATTRIBUTE_TYPE a2);
     CHARACTER_RACE GetRace() const;
     std::string GetRaceName() const;
@@ -449,8 +445,11 @@ struct Player {
 
     PLAYER_SKILL_LEVEL GetSkillLevel(PLAYER_SKILL_TYPE skill) const;
     PLAYER_SKILL_MASTERY GetSkillMastery(PLAYER_SKILL_TYPE skill) const;
+    CombinedSkillValue getSkillValue(PLAYER_SKILL_TYPE skill) const;
+
     void SetSkillLevel(PLAYER_SKILL_TYPE skill, PLAYER_SKILL_LEVEL level);
     void SetSkillMastery(PLAYER_SKILL_TYPE skill, PLAYER_SKILL_MASTERY mastery);
+    void setSkillValue(PLAYER_SKILL_TYPE skill, const CombinedSkillValue &value);
 
     PlayerConditions conditions;
     uint64_t experience;

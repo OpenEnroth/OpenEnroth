@@ -1,11 +1,12 @@
+#include "AudioPlayer.h"
+
 #include <algorithm>
 #include <map>
 #include <string>
 #include <filesystem>
 #include <utility>
+#include <vector>
 #include <thread>
-
-#include "Media/Audio/AudioPlayer.h"
 
 #include "Library/Compression/Compression.h"
 
@@ -14,8 +15,12 @@
 #include "Engine/Objects/Actor.h"
 #include "Engine/Objects/SpriteObject.h"
 #include "Engine/Party.h"
+#include "Engine/Serialization/LegacyImages.h"
+#include "Engine/Serialization/Deserializer.h"
 
 #include "Media/Audio/OpenALSoundProvider.h"
+
+#include "SoundInfo.h"
 
 int sLastTrackLengthMS;
 AudioPlayer *pAudioPlayer;
@@ -25,19 +30,6 @@ std::array<float, 10> pSoundVolumeLevels = {
     {0.0000000f, 0.1099999f, 0.2199999f, 0.3300000f, 0.4399999f, 0.5500000f,
      0.6600000f, 0.7699999f, 0.8799999f, 0.9700000f}};
 
-enum SOUND_TYPE {
-    SOUND_TYPE_LEVEL = 0,
-    SOUND_TYPE_SYSTEM = 1,
-    SOUND_TYPE_SWAP = 2,
-    SOUND_TYPE_UNKNOWN = 3,
-    SOUND_TYPE_LOCK = 4,
-};
-
-enum SOUND_FLAG {
-    SOUND_FLAG_LOCKED = 0x1,
-    SOUND_FLAG_3D = 0x2,
-};
-
 // Max value used for volume control
 // TODO(Nik-RE-dev): originally it was 2.0f, but OpenAL support gains from [0.0f, 1.0f] only
 static const float maxVolumeGain = 1.0f;
@@ -45,71 +37,24 @@ static const float maxVolumeGain = 1.0f;
 // TODO(Nik-RE-dev): investigate importance of applying scaling to position coordinates
 static const float positionScaling = 50.0f;
 
-class SoundInfo {
- public:
-    bool Is3D() { return ((uFlags & SOUND_FLAG_3D) == SOUND_FLAG_3D); }
-
- public:
-    std::string sName;
-    SOUND_TYPE eType;
-    uint32_t uSoundID;
-    uint32_t uFlags;
-    std::shared_ptr<Blob> buffer;
-    PAudioDataSource dataSource;
-};
-
 std::map<uint32_t, SoundInfo> mapSounds;
-
-#pragma pack(push, 1)
-struct SoundDesc_mm6 {
-    uint8_t pSoundName[32];
-    uint32_t uSoundID;
-    uint32_t eType;
-    uint32_t uFlags;
-    uint32_t pSoundDataID[17];
-};
-#pragma pack(pop)
-
-#pragma pack(push, 1)
-struct SoundDesc : public SoundDesc_mm6 {
-    uint32_t p3DSoundID;
-    uint32_t bDecompressed;
-};
-#pragma pack(pop)
 
 void SoundList::Initialize() {}
 
 void SoundList::FromFile(const Blob &data_mm6, const Blob &data_mm7, const Blob &data_mm8) {
-    static_assert(sizeof(SoundDesc_mm6) == 112, "Wrong type size");
-    static_assert(sizeof(SoundDesc) == 120, "Wrong type size");
+    std::vector<SoundInfo> sounds;
 
-    size_t num_mm6_sounds = data_mm6 ? *(uint32_t *)data_mm6.data() : 0;
-    size_t num_mm7_sounds = data_mm7 ? *(uint32_t *)data_mm7.data() : 0;
-    size_t num_mm8_sounds = data_mm8 ? *(uint32_t *)data_mm8.data() : 0;
+    if (data_mm6)
+        BlobDeserializer(data_mm6).ReadLegacyVector<SoundInfo_MM6>(&sounds, Deserializer::Append);
+    if (data_mm7)
+        BlobDeserializer(data_mm7).ReadLegacyVector<SoundInfo_MM7>(&sounds, Deserializer::Append);
+    if (data_mm8)
+        BlobDeserializer(data_mm8).ReadLegacyVector<SoundInfo_MM7>(&sounds, Deserializer::Append);
 
-    unsigned int sNumSounds = num_mm6_sounds + num_mm7_sounds + num_mm8_sounds;
-    assert(sNumSounds);
-    assert(!num_mm8_sounds);
+    assert(!sounds.empty());
 
-    SoundDesc *sounds = (SoundDesc *)((char *)data_mm7.data() + 4);
-    for (size_t i = 0; i < num_mm7_sounds; i++) {
-        SoundInfo si;
-        si.sName = (char *)sounds[i].pSoundName;
-        si.uSoundID = sounds[i].uSoundID;
-        si.eType = (SOUND_TYPE)sounds[i].eType;
-        si.uFlags = sounds[i].uFlags;
-        mapSounds[si.uSoundID] = si;
-    }
-
-    SoundDesc_mm6 *sounds_mm6 = (SoundDesc_mm6 *)((char *)data_mm6.data() + 4);
-    for (size_t i = 0; i < num_mm6_sounds; i++) {
-        SoundInfo si;
-        si.sName = (char *)sounds_mm6[i].pSoundName;
-        si.uSoundID = sounds_mm6[i].uSoundID;
-        si.eType = (SOUND_TYPE)sounds_mm6[i].eType;
-        si.uFlags = sounds_mm6[i].uFlags;
-        mapSounds[si.uSoundID] = si;
-    }
+    for (const SoundInfo &sound : sounds)
+        mapSounds[sound.uSoundID] = sound;
 }
 
 extern OpenALSoundProvider *provider;

@@ -1049,7 +1049,7 @@ void GameUI_WritePointedObjectStatusString() {
                     if (pLevelDecorations[pickedObjectID].IsInteractive())
                         pText = pNPCTopics[mapEventVariables.decorVars[pLevelDecorations[pickedObjectID]._idx_in_stru123 - 75] + 380].pTopic; // campfire
                     else
-                        pText = pDecorationList->GetDecoration(pLevelDecorations[pickedObjectID].uDecorationDescID)->field_20;
+                        pText = pDecorationList->GetDecoration(pLevelDecorations[pickedObjectID].uDecorationDescID)->field_20.data();
                     GameUI_StatusBar_Set(pText);
                 } else {
                     std::string hintString = getEventHintString(pLevelDecorations[pickedObjectID].uEventID);
@@ -1517,7 +1517,7 @@ void GameUI_DrawPortraits() {
             continue;
         }
         face_expression_ID = 0;
-        for (uint j = 0; j < pPlayerFrameTable->uNumFrames; ++j)
+        for (size_t j = 0; j < pPlayerFrameTable->pFrames.size(); ++j)
             if (pPlayerFrameTable->pFrames[j].expression ==
                 pPlayer->expression) {
                 face_expression_ID = j;
@@ -1963,8 +1963,8 @@ void GameUI_DrawHiredNPCs() {
             if (!buf.IsFollower(i) && buf.Get(i)->dialogue_1_evt_id == 1) {
                 uFrameID = buf.Get(i)->dialogue_2_evt_id;
                 v13 = 0;
-                if (pIconsFrameTable->uNumIcons) {
-                    for (v13 = 0; v13 < pIconsFrameTable->uNumIcons; ++v13) {
+                if (!pIconsFrameTable->pIcons.empty()) {
+                    for (v13 = 0; v13 < pIconsFrameTable->pIcons.size(); ++v13) {
                         if (iequals("spell96", pIconsFrameTable->pIcons[v13].GetAnimationName()))
                             break;
                     }

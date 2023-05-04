@@ -8,38 +8,20 @@
 #include "Engine/mm7_data.h"
 #include "Engine/EngineIocContainer.h"
 #include "Engine/SpawnPoint.h"
+#include "Engine/Serialization/LegacyImages.h"
 
 #include "Engine/Graphics/BSPModel.h"
 #include "Engine/Graphics/IRender.h"
 
 struct IndoorLocation;
 
-#pragma pack(push, 1)
-struct DDM_DLV_Header {
-    int uNumRespawns = 0;
-    int uLastRepawnDay = 0;
-    int uReputation = 0;
-    int field_C_alert = 0; // Actually bool
-    unsigned int uNumFacesInBModels = 0;
-    unsigned int uNumDecorations = 0;
-    unsigned int uNumBModels = 0;
-    int field_1C = 0;
-    int field_20 = 0;
-    int field_24 = 0;
-};
-#pragma pack(pop)
-
-#pragma pack(push, 1)
-// TODO(captainurist): introduce  LocationTime_MM7
-struct LocationTime_stru1 {
+struct LocationTime {
     GameTime last_visit {};
-    char sky_texture_name[12] {};
-    int day_attrib = 0;
+    std::string sky_texture_name;
+    int day_attrib = 0; // TODO(caprainurist): actually WeatherFlags, see DAY_ATTRIB_FOG.
     int day_fogrange_1 = 0;
     int day_fogrange_2 = 0;
-    char field_2F4[24] {};
 };
-#pragma pack(pop)
 
 /*  319 */
 enum class LEVEL_TYPE {
@@ -50,59 +32,16 @@ enum class LEVEL_TYPE {
 using enum LEVEL_TYPE;
 extern LEVEL_TYPE uCurrentlyLoadedLevelType;
 
-/*   90 */
-#pragma pack(push, 1)
-struct BLVHeader {
-    char field_0[104];
-    unsigned int uFaces_fdata_Size;
-    unsigned int uSector_rdata_Size;
-    unsigned int uSector_lrdata_Size;
-    unsigned int uDoors_ddata_Size;
-    char field_78[16];
-};
-#pragma pack(pop)
-
-/*   96 */
-#pragma pack(push, 1)
-// TODO(captainurist): move to legacyimages
-struct BLVSectorMM8 {
-    int dword_000074;
-};
-#pragma pack(pop)
-
-/*   97 */
-#pragma pack(push, 1)
-// TODO(captainurist): move to legacyimages
-struct BLVLightMM6 {
+struct BLVLight {
     Vec3s vPosition;
-    int16_t uRadius;
-    int16_t uAttributes;
-    uint16_t uBrightness;
+    int16_t uRadius = 0;
+    char uRed = 0;
+    char uGreen = 0;
+    char uBlue = 0;
+    char uType = 0;
+    int16_t uAtributes = 0;  // & 0x08    doesn't light faces
+    int16_t uBrightness = 0;
 };
-#pragma pack(pop)
-
-/*   98 */
-#pragma pack(push, 1)
-// TODO(captainurist): move to legacyimages
-struct BLVLightMM7 {  // 10h
-    Vec3s vPosition;
-    int16_t uRadius;
-    char uRed;
-    char uGreen;
-    char uBlue;
-    char uType;
-    int16_t uAtributes;  // & 0x08    doesn't light faces
-    int16_t uBrightness;
-};
-#pragma pack(pop)
-
-/*   99 */
-#pragma pack(push, 1)
-// TODO(captainurist): move to legacyimages
-struct BLVLightMM8 {
-    int uID;
-};
-#pragma pack(pop)
 
 /*  100 */
 struct BLVDoor {  // 50h
@@ -121,9 +60,9 @@ struct BLVDoor {  // 50h
     int32_t uMoveLength;
     int32_t uOpenSpeed;
     int32_t uCloseSpeed;
-    uint16_t *pVertexIDs;
-    uint16_t *pFaceIDs;
-    uint16_t *pSectorIDs;
+    int16_t *pVertexIDs;
+    int16_t *pFaceIDs;
+    int16_t *pSectorIDs;
     int16_t *pDeltaUs;
     int16_t *pDeltaVs;
     int16_t *pXOffsets;
@@ -137,9 +76,6 @@ struct BLVDoor {  // 50h
     int16_t field_4E;
 };
 
-/*  101 */
-#pragma pack(push, 1)
-// TODO(captainurist): introduce BLVMapOutline_MM7
 struct BLVMapOutline {  // 0C
     uint16_t uVertex1ID;
     uint16_t uVertex2ID;
@@ -148,7 +84,6 @@ struct BLVMapOutline {  // 0C
     int16_t sZ;
     uint16_t uFlags;
 };
-#pragma pack(pop)
 
 struct FlatFace {
     std::array<int32_t, 104> u;
@@ -231,7 +166,7 @@ struct BLVFace {  // 60h
     Planef facePlane;
     PlaneZCalcf zCalc;
     FaceAttributes uAttributes;
-    uint16_t *pVertexIDs = nullptr;
+    int16_t *pVertexIDs = nullptr;
     int16_t *pXInterceptDisplacements;
     int16_t *pYInterceptDisplacements;
     int16_t *pZInterceptDisplacements;
@@ -250,10 +185,7 @@ struct BLVFace {  // 60h
     uint8_t uNumVertices;
 };
 
-/*   94 */
-#pragma pack(push, 1)
-// TODO(captainurist): introduce BLVFaceExtra_MM7
-struct BLVFaceExtra {  // 24h
+struct BLVFaceExtra {
     bool HasEventHint();
 
     int16_t field_0;
@@ -275,7 +207,6 @@ struct BLVFaceExtra {  // 24h
     int16_t field_20;
     int16_t field_22;
 };
-#pragma pack(pop)
 
 /*   95 */
 struct BLVSector {  // 0x74
@@ -349,8 +280,7 @@ struct IndoorLocation {
     }
 
     void Release();
-    bool Load(const std::string &filename, int num_days_played,
-              int respawn_interval_days, char *pDest);
+    void Load(const std::string &filename, int num_days_played, int respawn_interval_days, bool *indoor_was_respawned);
     void Draw();
 
     /**
@@ -368,22 +298,22 @@ struct IndoorLocation {
     char field_20[48];
     unsigned int bLoaded = 0;
     char field_54[404];
-    BLVHeader blv;
+    BLVHeader_MM7 blv;
     std::vector<Vec3s> pVertices;
     std::vector<BLVFace> pFaces;
     std::vector<BLVFaceExtra> pFaceExtras;
     std::vector<BLVSector> pSectors;
-    std::vector<BLVLightMM7> pLights;
+    std::vector<BLVLight> pLights;
     std::vector<BLVDoor> pDoors;
     std::vector<BSPNode> pNodes;
     std::vector<BLVMapOutline> pMapOutlines;
-    std::vector<uint16_t> pLFaces;
+    std::vector<int16_t> pLFaces;
     std::vector<uint16_t> ptr_0002B0_sector_rdata;
-    std::vector<uint16_t> ptr_0002B4_doors_ddata;
+    std::vector<int16_t> ptr_0002B4_doors_ddata;
     std::vector<uint16_t> ptr_0002B8_sector_lrdata;
     std::vector<SpawnPoint> pSpawnPoints;
-    DDM_DLV_Header dlv;
-    LocationTime_stru1 stru1;
+    LocationHeader_MM7 dlv;
+    LocationTime stru1;
     std::array<char, 875> _visible_outlines;
     char padding;
 

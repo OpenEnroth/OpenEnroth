@@ -13,8 +13,6 @@
 #include "Utility/IndexedArray.h"
 #include "Utility/Geometry/Vec.h"
 
-/*   68 */
-#pragma pack(push, 1)
 struct SpellBuff {
     /**
      * @offset 0x4584E0
@@ -45,9 +43,7 @@ struct SpellBuff {
     uint8_t caster = 0;
     bool isGMBuff = false; // Buff was casted at grandmaster mastery
 };
-#pragma pack(pop)
 
-#pragma pack(push, 1)
 struct SpellInfo {
     char *name;
     char *pShortName;
@@ -59,7 +55,6 @@ struct SpellInfo {
     SPELL_SCHOOL uSchool;
     int field_20;
 };
-#pragma pack(pop)
 
 struct SpellStats {
     /**
@@ -70,8 +65,6 @@ struct SpellStats {
     IndexedArray<SpellInfo, SPELL_FIRST_REGULAR, SPELL_LAST_REGULAR> pInfos;
 };
 
-/*  151 */
-#pragma pack(push, 1)
 class SpellData {
  public:
     SpellData():SpellData(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, PLAYER_SKILL_MASTERY_NONE) {}
@@ -107,17 +100,12 @@ class SpellData {
     // char field_13;
     // int16_t field_14;
 };
-#pragma pack(pop)
 
-#pragma pack(push, 1)
 struct SpellBookIconPos {
     int32_t Xpos;
     int32_t Ypos;
 };
-#pragma pack(pop)
 
-/*  154 */
-#pragma pack(push, 1)
 struct TownPortalData {
     Vec3i pos;
     int16_t _viewYaw;
@@ -125,7 +113,6 @@ struct TownPortalData {
     uint16_t uMapInfoID;
     int16_t field_12;
 };
-#pragma pack(pop)
 
 extern std::array<TownPortalData, 6> TownPortalList;  // 4ECBB8
 

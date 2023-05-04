@@ -1365,7 +1365,7 @@ void Actor::StealFrom(unsigned int uActorID) {
     Player *pPlayer;     // edi@1
     int v4;              // ebx@2
     unsigned int v5;     // eax@2
-    DDM_DLV_Header *v6;  // esi@4
+    LocationHeader_MM7 *v6;  // esi@4
     int v8;              // [sp+8h] [bp-4h]@6
 
     pPlayer = &pParty->pPlayers[pParty->activeCharacterIndex() - 1];

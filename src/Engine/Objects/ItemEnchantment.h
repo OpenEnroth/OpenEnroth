@@ -15,8 +15,6 @@ struct CEnchantment {
     int statBonus = 0;
 };
 
-/*  177 */
-#pragma pack(push, 1)
 struct ItemEnchantment {  // Bonus|Sta|Of
                           // Name|Arm|Shld|Helm|Belt|Cape|Gaunt|Boot|Ring|Amul
     char *pBonusStat;
@@ -36,10 +34,7 @@ struct ItemEnchantment {  // Bonus|Sta|Of
     IndexedArray<unsigned char, EQUIP_FIRST_NORMAL_ENCHANTABLE, EQUIP_LAST_NORMAL_ENCHANTABLE> chancesByItemType;
     // };
 };
-#pragma pack(pop)
 
-/*  178 */
-#pragma pack(push, 1)
 struct ItemSpecialEnchantment {  // 1Ch
                                  // Bonus Stat|Name
     // Add|W1|W2|Miss|Arm|Shld|Helm|Belt|Cape|Gaunt|Boot|Ring|Amul|Value|Lvl|Description
@@ -51,4 +46,3 @@ struct ItemSpecialEnchantment {  // 1Ch
     int iValue;              // 14
     int iTreasureLevel;      // 18
 };
-#pragma pack(pop)
