@@ -44,6 +44,10 @@ Image *messagebox_border_bottom = nullptr;  // 5076A4
 Image *messagebox_border_left = nullptr;    // 50769C
 Image *messagebox_border_right = nullptr;   // 5076A0
 
+bool holdingMouseRightButton = false;
+bool rightClickItemActionPerformed = false;
+bool identifyReactionPlayed = false;
+
 struct stat_coord {
     int16_t x;
     int16_t y;
@@ -252,9 +256,9 @@ void GameUI_DrawItemInfo(struct ItemGen *inspect_item) {
                     speech = SPEECH_IndentifyItemWeak;
                 }
             }
-            if (dword_4E455C) {
+            if (!identifyReactionPlayed) {
                 pParty->activeCharacter().playReaction(speech);
-                dword_4E455C = 0;
+                identifyReactionPlayed = true;
             }
         }
         inspect_item->UpdateTempBonus(pParty->GetPlayingTime());
@@ -267,9 +271,9 @@ void GameUI_DrawItemInfo(struct ItemGen *inspect_item) {
                 speech = SPEECH_RepairSuccess;
             else
                 GameUI_SetStatusBar(LSTR_REPAIR_FAILED);
-            if (dword_4E455C) {
+            if (!identifyReactionPlayed) {
                 pParty->activeCharacter().playReaction(speech);
-                dword_4E455C = 0;
+                identifyReactionPlayed = true;
             }
         }
     }
@@ -657,43 +661,40 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
     PLAYER_SKILL_MASTERY skill_mastery = PLAYER_SKILL_MASTERY_NONE;
 
     pMonsterInfoUI_Doll.uCurrentActionTime += pMiscTimer->uTimeElapsed;
-    if (pParty->activeCharacter().GetActualSkillLevel(
-            PLAYER_SKILL_MONSTER_ID)) {
+    if (pParty->activeCharacter().GetActualSkillLevel(PLAYER_SKILL_MONSTER_ID)) {
         skill_points = pParty->activeCharacter().GetActualSkillLevel(PLAYER_SKILL_MONSTER_ID);
         skill_mastery = pParty->activeCharacter().GetActualSkillMastery(PLAYER_SKILL_MONSTER_ID);
         if (skill_mastery == PLAYER_SKILL_MASTERY_NOVICE) {
-            if (skill_points + 10 >= pActors[uActorID].pMonsterInfo.uLevel)
-                normal_level = 1;
+            if (skill_points + 10 >= pActors[uActorID].pMonsterInfo.uLevel) {
+                normal_level = true;
+            }
         } else if (skill_mastery == PLAYER_SKILL_MASTERY_EXPERT) {
-            if (2 * skill_points + 10 >=
-                pActors[uActorID].pMonsterInfo.uLevel) {
-                normal_level = 1;
-                expert_level = 1;
+            if (2 * skill_points + 10 >= pActors[uActorID].pMonsterInfo.uLevel) {
+                normal_level = true;
+                expert_level = true;
             }
         } else if (skill_mastery == PLAYER_SKILL_MASTERY_MASTER) {
-            if (3 * skill_points + 10 >=
-                pActors[uActorID].pMonsterInfo.uLevel) {
-                normal_level = 1;
-                expert_level = 1;
-                master_level = 1;
+            if (3 * skill_points + 10 >= pActors[uActorID].pMonsterInfo.uLevel) {
+                normal_level = true;
+                expert_level = true;
+                master_level = true;
+                for_effects = true;
             }
         } else if (skill_mastery == PLAYER_SKILL_MASTERY_GRANDMASTER) {
-            normal_level = 1;
-            expert_level = 1;
-            master_level = 1;
-            grandmaster_level = 1;
+            normal_level = true;
+            expert_level = true;
+            master_level = true;
+            grandmaster_level = true;
+            for_effects = true;
         }
     }
 
-    PlayerSpeech speech;
-    if (pActors[uActorID].uAIState != Dead &&
-        pActors[uActorID].uAIState != Dying &&
-        !dword_507BF0_is_there_popup_onscreen &&
-        pParty->activeCharacter().GetActualSkillLevel(
-            PLAYER_SKILL_MONSTER_ID)) {
+    // Only play reaction when right click on actor initially
+    if (pActors[uActorID].uAIState != Dead && pActors[uActorID].uAIState != Dying &&
+        !holdingMouseRightButton && skill_mastery != PLAYER_SKILL_MASTERY_NONE) {
+        PlayerSpeech speech;
         if (normal_level || expert_level || master_level || grandmaster_level) {
-            if (pActors[uActorID].pMonsterInfo.uLevel >=
-                pParty->activeCharacter().uLevel - 5)
+            if (pActors[uActorID].pMonsterInfo.uLevel >= pParty->activeCharacter().uLevel - 5)
                 speech = SPEECH_IDMonsterStrong;
             else
                 speech = SPEECH_IDMonsterWeak;
@@ -703,15 +704,13 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
         pParty->activeCharacter().playReaction(speech);
     }
 
-    if ((signed int)(pParty->activeCharacter().GetActualSkillMastery(PLAYER_SKILL_MONSTER_ID)) >= 3)
-        for_effects = 1;
-
+    // TODO(Nik-RE-dev): debug option?
     if (monster_full_informations == true) {
-        normal_level = 1;       //
-        expert_level = 1;       //
-        master_level = 1;       //
-        grandmaster_level = 1;  //
-        for_effects = 1;
+        normal_level = true;       //
+        expert_level = true;       //
+        master_level = true;       //
+        grandmaster_level = true;  //
+        for_effects = true;
     }
 
     int pTextHeight = 0;
@@ -1359,24 +1358,27 @@ void UI_OnMouseRightClick(int mouse_x, int mouse_y) {
 
     // if ( render->bWindowMode )
     {
+        // Reset right click mode and restart timer if cursor went to the very edge of screen
+        // To enter it again need to release right mouse button and press it again inside game screen
         Pointi pt = Pointi(pX, pY);
         if (pt.x < 1 || pt.y < 1 || pt.x > 638 || pt.y > 478) {
             back_to_game();
             return;
         }
     }
+
     if (pParty->pPickedItem.uItemID != ITEM_NULL) {
         // Use item on character portrait
         for (int i = 0; i < pParty->pPlayers.size(); ++i) {
-            if ((signed int)pX > RightClickPortraitXmin[i] &&
-                (signed int)pX < RightClickPortraitXmax[i] &&
-                (signed int)pY > 375 && (signed int)pY < 466) {
+            if (pX > RightClickPortraitXmin[i] && pX < RightClickPortraitXmax[i] && pY > 375 && pY < 466) {
                 pParty->activeCharacter().useItem(i, true);
+                // Do not enter right click mode
                 return;
             }
         }
     }
 
+    // Otherwise pause game and enter right click mode until button will be released
     pEventTimer->Pause();
     switch (current_screen_type) {
         case CURRENT_SCREEN::SCREEN_CASTING: {
@@ -1676,24 +1678,20 @@ void UI_OnMouseRightClick(int mouse_x, int mouse_y) {
         default:
             break;
     }
-    dword_507BF0_is_there_popup_onscreen = 1;
+    holdingMouseRightButton = true;
 }
 
-int no_rightlick_in_inventory = false;  // 0050CDCC
 //----- (00416196) --------------------------------------------------------
 void Inventory_ItemPopupAndAlchemy() {  // needs cleaning
-    ITEM_TYPE potionID;        // edx@27
-    // unsigned int pOut_y;        // edx@57
-    GUIWindow message_window;   // [sp+Ch] [bp-84h]@137
-    unsigned int damage_level;  // [sp+8Ch] [bp-4h]@23
+    if (rightClickItemActionPerformed) {
+        // Forbid doing anything until right click has beed released
+        return;
+    }
 
-    if (no_rightlick_in_inventory) return;
+    int inventoryXCoord;
+    int inventoryYCoord;
 
-    signed int inventoryXCoord;  // ecx@2
-    int inventoryYCoord;         // eax@2
-
-    int pY;  // [sp+3Ch] [bp-Ch]@2
-    int pX;
+    int pX, pY;
     // Pointi cursor = pMouse->GetCursorPos();
 
     ItemGen *item = nullptr;
@@ -1716,8 +1714,7 @@ void Inventory_ItemPopupAndAlchemy() {  // needs cleaning
     mouse->GetClickPos(&pX, &pY);
     inventoryYCoord = (pY - 17) / 32;
     inventoryXCoord = (pX - 14) / 32;
-    int invMatrixIndex =
-        inventoryXCoord + (14 * inventoryYCoord);  // INVETORYSLOTSWIDTH
+    int invMatrixIndex = inventoryXCoord + (14 * inventoryYCoord);  // INVETORYSLOTSWIDTH
 
     if (pX <= 13 || pX >= 462) {  // items out of inventory(вещи вне инвентаря)
                                   // this is for player ragdoll items??
@@ -1794,6 +1791,7 @@ void Inventory_ItemPopupAndAlchemy() {  // needs cleaning
             localization->GetString(LSTR_IDENTIFY_ITEMS)
         );
 
+        GUIWindow message_window;
         message_window.sHint = hint_reference;
         message_window.uFrameWidth = 384;
         message_window.uFrameHeight = 180;
@@ -1834,7 +1832,7 @@ void Inventory_ItemPopupAndAlchemy() {  // needs cleaning
             ItemEnchantmentTimer = Timer::Second * 2;
             pAudioPlayer->playSpellSound(SPELL_WATER_RECHARGE_ITEM, 0, false);
             mouse->RemoveHoldingItem();
-            no_rightlick_in_inventory = 1;
+            rightClickItemActionPerformed = true;
             return;
         }
         GameUI_DrawItemInfo(item);
@@ -1846,7 +1844,7 @@ void Inventory_ItemPopupAndAlchemy() {  // needs cleaning
                 item->uItemID >= ITEM_ARTIFACT_PUCK ||  // cant harden artifacts
                 (!item->isWeapon() && !item->isPassiveEquipment() && !item->isWand())) {
                 mouse->RemoveHoldingItem();
-                no_rightlick_in_inventory = true;
+                rightClickItemActionPerformed = true;
                 return;
             }
 
@@ -1856,7 +1854,7 @@ void Inventory_ItemPopupAndAlchemy() {  // needs cleaning
 
             ItemEnchantmentTimer = Timer::Second * 2;
             mouse->RemoveHoldingItem();
-            no_rightlick_in_inventory = true;
+            rightClickItemActionPerformed = true;
             return;
         }
         GameUI_DrawItemInfo(item);
@@ -1872,7 +1870,7 @@ void Inventory_ItemPopupAndAlchemy() {  // needs cleaning
                 item->special_enchantment || item->uEnchantmentType ||
                 !item->isWeapon()) {
                 mouse->RemoveHoldingItem();
-                no_rightlick_in_inventory = true;
+                rightClickItemActionPerformed = true;
                 return;
             }
 
@@ -1898,7 +1896,7 @@ void Inventory_ItemPopupAndAlchemy() {  // needs cleaning
 
             ItemEnchantmentTimer = Timer::Second * 2;
             mouse->RemoveHoldingItem();
-            no_rightlick_in_inventory = true;
+            rightClickItemActionPerformed = true;
             return;
         }
         GameUI_DrawItemInfo(item);
@@ -1909,8 +1907,7 @@ void Inventory_ItemPopupAndAlchemy() {  // needs cleaning
     if (pParty->pPickedItem.uItemID >= ITEM_REAGENT_WIDOWSWEEP_BERRIES &&
         pParty->pPickedItem.uItemID <= ITEM_REAGENT_PHILOSOPHERS_STONE &&
         item->uItemID == ITEM_POTION_BOTTLE) {
-        item->uEnchantmentType =
-            alchemy_skill_points + pParty->pPickedItem.GetDamageDice();
+        item->uEnchantmentType = alchemy_skill_points + pParty->pPickedItem.GetDamageDice();
         switch (pParty->pPickedItem.uItemID) {
             case ITEM_REAGENT_WIDOWSWEEP_BERRIES:
             case ITEM_REAGENT_CRUSHED_ROSE_PETALS:
@@ -1946,12 +1943,9 @@ void Inventory_ItemPopupAndAlchemy() {  // needs cleaning
             default:
                 break;
         }
+        pParty->activeCharacter().playReaction(SPEECH_PotionSuccess);
         mouse->RemoveHoldingItem();
-        no_rightlick_in_inventory = 1;
-        if (dword_4E455C) {
-            pParty->activeCharacter().playReaction(SPEECH_PotionSuccess);
-            dword_4E455C = 0;
-        }
+        rightClickItemActionPerformed = true;
         return;
     }
 
@@ -1978,7 +1972,7 @@ void Inventory_ItemPopupAndAlchemy() {  // needs cleaning
             alchemy_skill_level = PLAYER_SKILL_MASTERY_NONE;
         }
 
-        damage_level = 0;
+        int damage_level = 0;
         if (!IsPotion(potionID)) {
             // In this case potionID represent damage level
             damage_level = std::to_underlying(potionID);
@@ -2038,15 +2032,12 @@ void Inventory_ItemPopupAndAlchemy() {  // needs cleaning
             int _viewPitch, _viewYaw, rot_z;
             Vec3i::rotate(64, pParty->_viewYaw, pParty->_viewPitch, pParty->vPosition + Vec3i(0, 0, pParty->sEyelevel), &_viewPitch, &_viewYaw, &rot_z);
             SpriteObject::dropItemAt(SPRITE_SPELL_FIRE_FIREBALL_IMPACT, {_viewPitch, _viewYaw, rot_z}, 0);
-            if (dword_4E455C) {
-                if (pParty->activeCharacter().CanAct()) {
-                    pParty->activeCharacter().playReaction(SPEECH_PotionExplode);
-                }
-                GameUI_SetStatusBar(LSTR_OOPS);
-                dword_4E455C = 0;
+            if (pParty->activeCharacter().CanAct()) {
+                pParty->activeCharacter().playReaction(SPEECH_PotionExplode);
             }
+            GameUI_SetStatusBar(LSTR_OOPS);
             mouse->RemoveHoldingItem();
-            no_rightlick_in_inventory = 1;
+            rightClickItemActionPerformed = true;
             return;
         } else {  // if ( damage_level == 0 )
             if (item->uItemID == ITEM_POTION_CATALYST && pParty->pPickedItem.uItemID == ITEM_POTION_CATALYST) {
@@ -2068,22 +2059,22 @@ void Inventory_ItemPopupAndAlchemy() {  // needs cleaning
                     pParty->activeCharacter().SetVariable(VAR_AutoNotes, pItemTable->potionNotes[potionSrc1][potionSrc2]);
                 }
             }
-            int bottle = pParty->activeCharacter().AddItem(-1, ITEM_POTION_BOTTLE);
-            if (bottle) {
-                pParty->activeCharacter().pOwnItems[bottle - 1].uAttributes = ITEM_IDENTIFIED;
-            }
             if (!(pItemTable->pItems[item->uItemID].uItemID_Rep_St)) {
                 item->uAttributes |= ITEM_IDENTIFIED;
             }
-            if (!dword_4E455C) {
-                mouse->RemoveHoldingItem();
-                no_rightlick_in_inventory = 1;
-                return;
-            }
             pParty->activeCharacter().playReaction(SPEECH_PotionSuccess);
-            dword_4E455C = 0;
             mouse->RemoveHoldingItem();
-            no_rightlick_in_inventory = 1;
+            rightClickItemActionPerformed = true;
+            int bottleId = pParty->activeCharacter().AddItem(-1, ITEM_POTION_BOTTLE);
+            if (bottleId) {
+                pParty->activeCharacter().pOwnItems[bottleId - 1].uAttributes = ITEM_IDENTIFIED;
+            } else {
+                // Can't fit bottle in inventory - place it in hand
+                ItemGen bottle;
+                bottle.uItemID = ITEM_POTION_BOTTLE;
+                bottle.uAttributes = ITEM_IDENTIFIED;
+                pParty->setHoldingItem(&bottle);
+            }
             return;
         }
     }

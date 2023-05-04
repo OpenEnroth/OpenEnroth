@@ -207,7 +207,6 @@ std::array<int8_t, 88> monster_popup_y_offsets = {
      10,  10, -90, -60, -40, -20, -20, -80, -10, 0,   0,   -40, 0,   0,   0,
      -20, 10, 0,   0,   0,   0,   0,   0,   -60, 0,   0,   0,   0}};
 
-int dword_4E455C;
 std::array<int, 6> dword_4E4560;
 std::array<int, 6> dword_4E4578;
 std::array<int, 6> dword_4E4590;
@@ -2524,7 +2523,6 @@ GUIButton *pBtn_ZoomIn;  // idb
 unsigned int uGameUIFontShadow;
 unsigned int uGameUIFontMain;
 int dword_507B00_spell_info_to_draw_in_popup;
-int dword_507BF0_is_there_popup_onscreen;
 int awards_scroll_bar_created;
 int dword_507CC0_activ_ch;
 bool OpenedTelekinesis;

@@ -229,7 +229,7 @@ void GameWindowHandler::OnMouseRightClick(Pointi position) {
 void GameWindowHandler::OnMouseLeftUp() {
     if (pArcomageGame->bGameInProgress) {
         ArcomageGame::OnMouseClick(0, 0);
-    } else {
+    } else if (!isHoldingMouseRightButton()) {
         back_to_game();
     }
 }

@@ -368,7 +368,11 @@ void OnPaperdollLeftClick();
 void DrawJoinGuildWindow(GUILD_ID guild_id);
 const char *GetJoinGuildDialogueOption(GUILD_ID guild_id);
 void DialogueEnding();
-char sub_4637E0_is_there_popup_onscreen();
+
+/**
+ * @offset 0x4637E0
+ */
+bool isHoldingMouseRightButton();
 void ClickNPCTopic(DIALOGUE_TYPE topic);
 void _4B3FE5_training_dialogue(int a4);
 void OracleDialogue();
