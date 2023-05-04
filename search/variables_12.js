@@ -87,12 +87,13 @@ var searchData=
   ['reswaterbonus_84',['resWaterBonus',['../structPlayer__MM7.html#a8728274faea6eb216629f93ac1213f56',1,'Player_MM7']]],
   ['retrace_85',['retrace',['../structGameOptions.html#ab258fb21e793646e0358e7224364dc53',1,'GameOptions']]],
   ['return_86',['Return',['../classGameConfig_1_1Keybindings.html#a55b39dfacbc37f2f442d93304d6c4965',1,'GameConfig::Keybindings::Return()'],['../classGameConfig_1_1Gamepad.html#a312339e61d60b8f331b6a25f5a9ddb4b',1,'GameConfig::Gamepad::Return()']]],
-  ['returntogame_87',['ReturnToGame',['../classGameConfig_1_1Gamepad.html#ae8b3d4244a53ff98bb37b0b8870eaab8',1,'GameConfig::Gamepad::ReturnToGame()'],['../classGameConfig_1_1Keybindings.html#a3c0b4f19f99896ac5fbf29556ba6675a',1,'GameConfig::Keybindings::ReturnToGame()']]],
+  ['returntogame_87',['ReturnToGame',['../classGameConfig_1_1Keybindings.html#a3c0b4f19f99896ac5fbf29556ba6675a',1,'GameConfig::Keybindings::ReturnToGame()'],['../classGameConfig_1_1Gamepad.html#ae8b3d4244a53ff98bb37b0b8870eaab8',1,'GameConfig::Gamepad::ReturnToGame()']]],
   ['rhw_88',['rhw',['../structRenderVertexD3D3.html#a20896950efa27111b72e1f8f1ab8faab',1,'RenderVertexD3D3']]],
   ['right_89',['right',['../structMargins.html#ae968561a502e7a0d35a1a2cd29e0a83d',1,'Margins']]],
   ['right_90',['Right',['../classGameConfig_1_1Keybindings.html#aadb44b250dd1f51a368522dc1a98de1f',1,'GameConfig::Keybindings::Right()'],['../classGameConfig_1_1Gamepad.html#a337e2749f5267e8c193d01630e156b4a',1,'GameConfig::Gamepad::Right()']]],
-  ['rightclickportraitxmax_91',['RightClickPortraitXmax',['../mm7__data_8cpp.html#a1e0bb2e5df8caceb874ccbac8afb592b',1,'RightClickPortraitXmax():&#160;mm7_data.cpp'],['../mm7__data_8h.html#a1e0bb2e5df8caceb874ccbac8afb592b',1,'RightClickPortraitXmax():&#160;mm7_data.cpp']]],
-  ['rightclickportraitxmin_92',['RightClickPortraitXmin',['../mm7__data_8cpp.html#a271bcf3fdc5ff14473042faddbd0cfa3',1,'RightClickPortraitXmin():&#160;mm7_data.cpp'],['../mm7__data_8h.html#a271bcf3fdc5ff14473042faddbd0cfa3',1,'RightClickPortraitXmin():&#160;mm7_data.cpp']]],
-  ['riogrande_93',['RioGrande',['../classColorTable.html#a81f2d91c73ff2c302ee544bfa2b43c0f',1,'ColorTable']]],
-  ['rotation_5fspeed_94',['rotation_speed',['../structParticle.html#afc3be85262f36cb5f78cf3a51d8e61b3',1,'Particle']]]
+  ['rightclickitemactionperformed_91',['rightClickItemActionPerformed',['../UIPopup_8cpp.html#ab6fe7188ec00c055299f079ae3bca994',1,'rightClickItemActionPerformed():&#160;UIPopup.cpp'],['../UIPopup_8h.html#ab6fe7188ec00c055299f079ae3bca994',1,'rightClickItemActionPerformed():&#160;UIPopup.cpp']]],
+  ['rightclickportraitxmax_92',['RightClickPortraitXmax',['../mm7__data_8cpp.html#a1e0bb2e5df8caceb874ccbac8afb592b',1,'RightClickPortraitXmax():&#160;mm7_data.cpp'],['../mm7__data_8h.html#a1e0bb2e5df8caceb874ccbac8afb592b',1,'RightClickPortraitXmax():&#160;mm7_data.cpp']]],
+  ['rightclickportraitxmin_93',['RightClickPortraitXmin',['../mm7__data_8cpp.html#a271bcf3fdc5ff14473042faddbd0cfa3',1,'RightClickPortraitXmin():&#160;mm7_data.cpp'],['../mm7__data_8h.html#a271bcf3fdc5ff14473042faddbd0cfa3',1,'RightClickPortraitXmin():&#160;mm7_data.cpp']]],
+  ['riogrande_94',['RioGrande',['../classColorTable.html#a81f2d91c73ff2c302ee544bfa2b43c0f',1,'ColorTable']]],
+  ['rotation_5fspeed_95',['rotation_speed',['../structParticle.html#afc3be85262f36cb5f78cf3a51d8e61b3',1,'Particle']]]
 ];
