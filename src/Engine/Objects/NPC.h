@@ -15,8 +15,6 @@ struct NPCTopic {
 
 extern std::array<NPCTopic, 789> pNPCTopics;
 
-/*  136 */
-#pragma pack(push, 1)
 struct NPCData {  // 4Ch
     inline bool Hired() { return (uFlags & 0x80) != 0; }
 
@@ -41,10 +39,7 @@ struct NPCData {  // 4Ch
     int bHasUsedTheAbility = 0;  // 44
     int news_topic = 0;          // 48
 };
-#pragma pack(pop)
 
-/*  138 */
-#pragma pack(push, 1)
 struct NPCProfession {
     inline NPCProfession()
         : uHirePrice(0),
@@ -59,18 +54,12 @@ struct NPCProfession {
     char *pJoinText;
     char *pDismissText;
 };
-#pragma pack(pop)
 
-/*  139 */
-#pragma pack(push, 1)
 struct NPCProfessionChance {
     unsigned int uTotalprofChance{};     // summ
     char professionChancePerArea[60]{};  // prof position
 };
-#pragma pack(pop)
 
-/*  140 */
-#pragma pack(push, 1)
 struct NPCGreeting {
     union {
         struct {
@@ -80,10 +69,7 @@ struct NPCGreeting {
         char *pGreetings[2];
     };
 };
-#pragma pack(pop)
 
-/*  137 */
-#pragma pack(push, 1)
 struct NPCStats {
     inline NPCStats() {
         uNumNPCNames[0] = uNumNPCNames[1] = 0;
@@ -130,7 +116,6 @@ struct NPCStats {
     static int dword_AE336C_LastMispronouncedNameFirstLetter;
     static int dword_AE3370_LastMispronouncedNameResult;
 };
-#pragma pack(pop)
 
 extern int pDialogueNPCCount;
 extern std::array<class Image *, 6> pDialogueNPCPortraits;

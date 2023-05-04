@@ -37,12 +37,6 @@ class Deserializer {
             throw Exception("Deserialization failed, no more data in stream.");
     }
 
-    void SkipBytes(size_t size) {
-        size_t skippedBytes = inputStream_->skip(size);
-        if (skippedBytes != size)
-            throw Exception("Deserialization failed, no more data in stream.");
-    }
-
     template<class T>
     void ReadRaw(T *dst) {
         ReadBytes(dst, sizeof(T));
@@ -73,10 +67,11 @@ class Deserializer {
         ReadVectorInternal<LegacyT>(dst, mode, size);
     }
 
-    void ReadSizedString(std::string *dst, size_t size) {
-        dst->resize(size, '\0');
-        ReadRawArray(dst->data(), size);
-        dst->resize(strlen(dst->data()));
+    template<class LegacyT, class T>
+    void ReadLegacy(T *dst) {
+        LegacyT tmp;
+        ReadRaw(&tmp);
+        Deserialize(tmp, dst);
     }
 
  private:

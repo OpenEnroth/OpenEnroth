@@ -3,8 +3,6 @@
 
 #include "Engine/OurMath.h"
 
-/*  152 */
-#pragma pack(push, 1)
 struct stru367 {
     bool direction;  // is portal faced to camera
     std::array<int, 13> field_4;
@@ -14,6 +12,5 @@ struct stru367 {
     std::array<int, 60> _screen_space_y;
     std::array<int, 60> _screen_space_x;
 };
-#pragma pack(pop)
 
 // extern  const stru367 stru_367;

@@ -4128,8 +4128,8 @@ bool Player::CompareVariable(VariableType VarNum, int pValue) {
     signed int v4;                         // edi@1
     uint8_t test_bit_value;        // eax@25
     uint8_t byteWithRequestedBit;  // cl@25
-    DDM_DLV_Header *v19;                   // eax@122
-    DDM_DLV_Header *v21;                   // eax@126
+    LocationHeader_MM7 *v19;                   // eax@122
+    LocationHeader_MM7 *v21;                   // eax@126
     int actStat;                           // ebx@161
     int baseStat;                          // eax@161
 
@@ -4535,7 +4535,7 @@ bool Player::CompareVariable(VariableType VarNum, int pValue) {
 //----- (0044A5CB) --------------------------------------------------------
 void Player::SetVariable(VariableType var_type, signed int var_value) {
     int gold{}, food{};
-    DDM_DLV_Header *ddm;
+    LocationHeader_MM7 *ddm;
     ItemGen item;
 
     if (var_type >= VAR_History_0 && var_type <= VAR_History_28) {
@@ -5120,7 +5120,7 @@ void Player::SetSkillByEvent(uint16_t Player::*skillToSet,
 //----- (0044AFFB) --------------------------------------------------------
 void Player::AddVariable(VariableType var_type, signed int val) {
     int food{};
-    DDM_DLV_Header *ddm;
+    LocationHeader_MM7 *ddm;
     ItemGen item;
 
     if (var_type >= VAR_Counter1 && var_type <= VAR_Counter10) {
@@ -5670,7 +5670,7 @@ void Player::AddSkillByEvent(uint16_t Player::*skillToSet,
 
 //----- (0044B9C4) --------------------------------------------------------
 void Player::SubtractVariable(VariableType VarNum, signed int pValue) {
-    DDM_DLV_Header *locationHeader;  // eax@90
+    LocationHeader_MM7 *locationHeader;  // eax@90
     int randGold;
     int randFood;
     int npcIndex;

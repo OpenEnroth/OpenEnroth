@@ -57,6 +57,16 @@ struct Directory {
 };
 #pragma pack(pop)
 
+#pragma pack(push, 1)
+struct CompressedHeader {
+    uint32_t uVersion;
+    char pMagic[4];
+    uint32_t uCompressedSize;
+    uint32_t uDecompressedSize;
+};
+static_assert(sizeof(CompressedHeader) == 16);
+#pragma pack(pop)
+
 class File {
  public:
     File();
@@ -65,7 +75,7 @@ class File {
     bool Open(const std::string &pFilename);
     void Close();
 
-    Blob LoadRaw(const std::string &pContainer);
+    Blob LoadRaw(const std::string &pContainer) const;
     Blob LoadCompressedTexture(const std::string &pContainer);
     Blob LoadCompressed(const std::string &pContainer);
     bool DoesContainerExist(const std::string &filename);
@@ -75,7 +85,7 @@ class File {
     int GetSubNodeIndex(const std::string &name) const;
 
  protected:
-    FILE *FindContainer(const std::string &filename, size_t *data_size = nullptr);
+    FILE *FindContainer(const std::string &filename, size_t *data_size = nullptr) const;
     virtual bool OpenFile(const std::string &filePath);
     bool LoadHeader();
     bool LoadSubIndices(const std::string &sFolder);
@@ -101,6 +111,7 @@ class WriteableFile : public File {
     WriteableFile();
     bool LoadFile(const std::string &filePath, bool bWriting);
     unsigned int Write(const std::string &file_name, const void *pDirData, size_t size, int a4);
+    unsigned int Write(const std::string &file_name, const Blob &data);
     void CloseWriteFile();
     int CreateTempFile();
     bool FixDirectoryOffsets();
@@ -191,7 +202,6 @@ struct LODSpriteHeader {
 };
 #pragma pack(pop)
 
-#pragma pack(push, 1)
 struct LODSprite : public LODSpriteHeader {
     inline LODSprite() {
         bitmap = nullptr;
@@ -203,7 +213,6 @@ struct LODSprite : public LODSpriteHeader {
 
     uint8_t *bitmap;
 };
-#pragma pack(pop)
 
 class LODFile_Sprites : public LOD::File {
  public:
@@ -247,5 +256,5 @@ extern LODFile_Sprites *pSprites_LOD;
 extern LODFile_Sprites *pSprites_LOD_mm6;
 extern LODFile_Sprites *pSprites_LOD_mm8;
 
-extern LOD::WriteableFile *pNew_LOD;
+extern LOD::WriteableFile *pSave_LOD;
 extern LOD::File *pGames_LOD;

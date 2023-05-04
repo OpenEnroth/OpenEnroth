@@ -21,9 +21,6 @@ MM_DECLARE_FLAGS(LevelDecorationFlags, LevelDecorationFlag)
 MM_DECLARE_OPERATORS_FOR_FLAGS(LevelDecorationFlags)
 
 
-/*   74 */
-#pragma pack(push, 1)
-// TODO(captainurist): need to introduce LevelDecoration_MM7
 struct LevelDecoration {
     LevelDecoration();
     int GetGlobalEvent();
@@ -44,4 +41,3 @@ struct LevelDecoration {
 
 extern std::vector<LevelDecoration> pLevelDecorations;
 extern LevelDecoration *activeLevelDecoration;  // 5C3420
-#pragma pack(pop)

@@ -39,7 +39,7 @@ class TypedHandler : public AnyHandler {
 };
 
 template<class T>
-constinit TypedHandler<T> globalTypedSerializer;
+constinit TypedHandler<T> globalTypedSerializer; // TODO(captainurist): handler, not serializer
 } // namespace detail
 
 template<class T>

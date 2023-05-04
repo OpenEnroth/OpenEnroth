@@ -18,12 +18,10 @@ MM_DECLARE_FLAGS(CHEST_FLAGS, CHEST_FLAG)
 MM_DECLARE_OPERATORS_FOR_FLAGS(CHEST_FLAGS)
 
 struct ChestDesc {
-    explicit ChestDesc(struct ChestDesc_mm7 *pChest);
-
     std::string sName;
-    unsigned int uWidth;
-    unsigned int uHeight;
-    unsigned int uTextureID;
+    int uWidth = 0;
+    int uHeight = 0;
+    int uTextureID = 0;
 };
 
 class ChestList {
@@ -36,9 +34,7 @@ class ChestList {
     std::vector<ChestDesc> vChests;
 };
 
-/*   65 */
-#pragma pack(push, 1)
-struct Chest {  // 0x14cc
+struct Chest {
     inline bool Initialized() const {
         return uFlags & CHEST_ITEMS_PLACED;
     }
@@ -61,17 +57,14 @@ struct Chest {  // 0x14cc
     static void OnChestLeftClick();
     static void GrabItem(bool all = false);
 
-    uint16_t uChestBitmapID{};        // 0
-    CHEST_FLAGS uFlags;                // 2
-    struct ItemGen igChestItems[140];       // 4
-    int16_t pInventoryIndices[140]{};  // 0x13b4 why is this a short?
+    uint16_t uChestBitmapID = 0;
+    CHEST_FLAGS uFlags;
+    std::array<ItemGen, 140> igChestItems;
+    std::array<int16_t, 140> pInventoryIndices = {{}};  // 0x13b4 why is this a short?
 };
-#pragma pack(pop)
 
 void RemoveItemAtChestIndex(int index);
 void GenerateItemsInChest();
-
-size_t ChestsSerialize(char *pData);
 
 extern ChestList *pChestList;
 extern std::vector<Chest> vChests;

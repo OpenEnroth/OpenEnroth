@@ -10,6 +10,8 @@ set(MEDIA_SOURCES
 set(MEDIA_HEADERS
         Audio/AudioPlayer.h
         Audio/OpenALSoundProvider.h
+        Audio/SoundEnums.h
+        Audio/SoundInfo.h
         Media.h
         MediaLogger.h
         MediaPlayer.h)

@@ -27,8 +27,8 @@ LODFile_Sprites *pSprites_LOD = nullptr;
 LODFile_Sprites *pSprites_LOD_mm6 = nullptr;
 LODFile_Sprites *pSprites_LOD_mm8 = nullptr;
 
-LOD::WriteableFile *pNew_LOD = nullptr;
-LOD::File *pGames_LOD = nullptr;
+LOD::WriteableFile *pSave_LOD = nullptr; // LOD pointing to the savegame file currently being processed
+LOD::File *pGames_LOD = nullptr; // LOD pointing to data/games.lod
 
 int _6A0CA4_lod_binary_search;
 int _6A0CA8_lod_unused;
@@ -684,6 +684,10 @@ unsigned int LOD::WriteableFile::Write(const std::string &file_name, const void 
     return 0;
 }
 
+unsigned int LOD::WriteableFile::Write(const std::string &file_name, const Blob &data) {
+    return Write(file_name, data.data(), data.size(), 0);
+}
+
 LOD::WriteableFile::WriteableFile() {
     pIOBuffer = nullptr;
     uIOBufferSize = 0;
@@ -860,7 +864,7 @@ int LODFile_Sprites::_461397() {
     return this->uNumLoadedSprites;
 }
 
-FILE *LOD::File::FindContainer(const std::string &pContainer_Name, size_t *data_size) {
+FILE *LOD::File::FindContainer(const std::string &pContainer_Name, size_t *data_size) const {
     if (!isFileOpened) {
         return nullptr;
     }
@@ -906,7 +910,7 @@ void LODFile_IconsBitmaps::SetupPalettes(unsigned int uTargetRBits,
     }
 }
 
-Blob LOD::File::LoadRaw(const std::string &pContainer) {
+Blob LOD::File::LoadRaw(const std::string &pContainer) const {
     size_t size = 0;
     FILE *File = FindContainer(pContainer, &size);
     if (!File) {
@@ -935,18 +939,7 @@ Blob LOD::File::LoadCompressedTexture(const std::string &pContainer) {
     }
 }
 
-#pragma pack(push, 1)
-struct CompressedHeader { // TODO(captainurist): merge with ODMHeader? This one is written as ODMHeader, but read as CompressedHeader.
-    uint32_t uVersion;
-    char pMagic[4];
-    uint32_t uCompressedSize;
-    uint32_t uDecompressedSize;
-};
-#pragma pack(pop)
-
 Blob LOD::File::LoadCompressed(const std::string &pContainer) {
-    static_assert(sizeof(CompressedHeader) == 16, "Wrong type size");
-
     FILE *File = FindContainer(pContainer, 0);
     if (!File) {
         Error("Unable to load %s", pContainer.c_str());
@@ -1152,8 +1145,8 @@ Texture_MM7 *LODFile_IconsBitmaps::GetTexture(int idx) {
 bool Initialize_GamesLOD_NewLOD() {
     pGames_LOD = new LOD::File();
     if (pGames_LOD->Open(MakeDataPath("data", "games.lod"))) {
-        pNew_LOD = new LOD::WriteableFile;
-        pNew_LOD->AllocSubIndicesAndIO(300, 100000);
+        pSave_LOD = new LOD::WriteableFile;
+        pSave_LOD->AllocSubIndicesAndIO(300, 100000);
         return true;
     }
     return false;

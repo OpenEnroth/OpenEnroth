@@ -29,8 +29,6 @@ enum class TURN_ENGINE_TURN_STAGE {
 };
 using enum TURN_ENGINE_TURN_STAGE;
 
-/*  299 */
-#pragma pack(push, 1)
 struct TurnBased_QueueElem {
     inline TurnBased_QueueElem() {
         uPackedID = 0;
@@ -43,10 +41,7 @@ struct TurnBased_QueueElem {
     int uActionLength;
     TURN_ENGINE_AI_ACTION AI_action_type;
 };
-#pragma pack(pop)
 
-/*  254 */
-#pragma pack(push, 1)
 struct stru262_TurnBased {
     inline stru262_TurnBased() {
         turns_count = 0;
@@ -88,6 +83,5 @@ struct stru262_TurnBased {
     int pending_actions;
     TurnBased_QueueElem pQueue[530];  // 20
 };
-#pragma pack(pop)
 
 extern struct stru262_TurnBased *pTurnEngine;

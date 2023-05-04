@@ -51,13 +51,10 @@ struct LloydBeacon {
     Image *image;
 };
 
-#pragma pack(push, 1)
 struct PlayerSpellbookChapter {
     std::array<char, 11> bIsSpellAvailable;
 };
-#pragma pack(pop)
 
-#pragma pack(push, 1)
 struct PlayerSpells {
     union {
         struct {
@@ -82,9 +79,7 @@ struct PlayerSpells {
         };
     };
 };
-#pragma pack(pop)
 
-#pragma pack(push, 1)
 union PlayerEquipment {
     union {
         struct {
@@ -110,7 +105,6 @@ union PlayerEquipment {
 
     PlayerEquipment() : pIndices() {}
 };
-#pragma pack(pop)
 
 
 // TODO(captainurist): ENUM!

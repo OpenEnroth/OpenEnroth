@@ -2650,7 +2650,6 @@ int day_fogrange_1; // fog start dist
 int day_fogrange_2; // fog end dist
 struct TileTable *pTileTable;                                        // idb
 std::array<char, 777> pDefaultSkyTexture;                            // idb
-std::array<char, 16> byte_6BE124_cfg_textures_DefaultGroundTexture;  // idb
 int _6BE134_odm_main_tile_group;
 int dword_6BE138;  // are you sure check game menu - load slots
 int dword_6BE13C_uCurrentlyLoadedLocationID;

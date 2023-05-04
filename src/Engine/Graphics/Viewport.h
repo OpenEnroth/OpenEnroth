@@ -5,8 +5,6 @@
 // TODO(pskelton): combined viewport and viewing params?? or at least not have multiple places
 // where screen coords and viewport coords are held
 
-/*  149 */
-#pragma pack(push, 1)
 struct Viewport {
     inline Viewport() {
         SetScreen(0, 0, 639, 479);
@@ -32,7 +30,6 @@ struct Viewport {
     int uScreenCenterX;
     int uScreenCenterY;
 };
-#pragma pack(pop)
 
 extern struct Viewport *pViewport;
 

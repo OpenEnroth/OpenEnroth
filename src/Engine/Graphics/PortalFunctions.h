@@ -2,8 +2,6 @@
 
 #include "Utility/Geometry/Vec.h"
 
-/*  127 */
-#pragma pack(push, 1)
 struct stru10 {
     stru10();
     virtual ~stru10();
@@ -24,4 +22,3 @@ struct stru10 {
     void _49CE9E(struct BLVFace *pFace, struct RenderVertexSoft *pVertices,
                  unsigned int uNumVertices, RenderVertexSoft *pOutLimits);
 };
-#pragma pack(pop)

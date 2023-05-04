@@ -85,8 +85,6 @@ struct ODMRenderParams {
 };
 extern ODMRenderParams *pODMRenderParams;
 
-/*  119 */
-#pragma pack(push, 1)
 struct RenderVertexSoft {
     Vec3f vWorldPosition {};
     Vec3f vWorldViewPosition {};
@@ -97,10 +95,7 @@ struct RenderVertexSoft {
     float v = 0;
     float flt_2C = 0;
 };
-#pragma pack(pop)
 
-/*  112 */
-#pragma pack(push, 1)
 struct RenderVertexD3D3 {
     Vec3f pos {};
     float rhw = 0;
@@ -108,7 +103,6 @@ struct RenderVertexD3D3 {
     unsigned int specular = 0;
     Vec2f texcoord {};
 };
-#pragma pack(pop)
 
 struct RenderBillboardD3D {
     inline RenderBillboardD3D()
@@ -406,8 +400,6 @@ extern RenderVertexD3D3 d3d_vertex_buffer[50];
 int ODM_NearClip(unsigned int uVertexID);
 int ODM_FarClip(unsigned int uNumVertices);
 
-/*  142 */
-#pragma pack(push, 1)
 struct SkyBillboardStruct {
     void CalcSkyFrustumVec(int a2, int a3, int a4, int a5, int a6, int a7);
 
@@ -423,7 +415,7 @@ struct SkyBillboardStruct {
     float CamLeftDot;
     float CamFrontDot;
 };
-#pragma pack(pop)
+
 extern SkyBillboardStruct SkyBillboard;
 
 unsigned int _452442_color_cvt(uint16_t a1, uint16_t a2, int a3, int a4);

@@ -6,15 +6,11 @@
 #include "Engine/Objects/Items.h"
 #include "Utility/IndexedArray.h"
 
-#pragma pack(push, 1)
 struct BonusRange {
     unsigned int minR;
     unsigned int maxR;
 }; // TODO(captainurist): Segment<int>?
-#pragma pack(pop)
 
-/*  176 */
-#pragma pack(push, 1)
 struct ItemTable {
     void Initialize();
     void LoadPotions();
@@ -58,6 +54,5 @@ struct ItemTable {
     char field_1179E;
     char field_1179F;
 };
-#pragma pack(pop)
 
 extern struct ItemTable *pItemTable;

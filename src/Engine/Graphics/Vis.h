@@ -26,8 +26,6 @@ using enum VisSelectFlag;
 MM_DECLARE_FLAGS(VisSelectFlags, VisSelectFlag)
 MM_DECLARE_OPERATORS_FOR_FLAGS(VisSelectFlags)
 
-/*  150 */
-#pragma pack(push, 1)
 // NOTE: The variable names here are correct when the filter is used for VisObjectType_Sprite, but wrong for VisObjectType_Face
 struct Vis_SelectionFilter {  // stru157
     VisObjectType vis_object_type;
@@ -36,7 +34,7 @@ struct Vis_SelectionFilter {  // stru157
     int no_at_ai_state;
     VisSelectFlags select_flags;
 };
-#pragma pack(pop)
+
 extern Vis_SelectionFilter vis_sprite_filter_1;  // 00F93E1C
 extern Vis_SelectionFilter vis_sprite_filter_2;  // 00F93E30
 extern Vis_SelectionFilter vis_face_filter;      // 00F93E44
@@ -44,25 +42,20 @@ extern Vis_SelectionFilter vis_door_filter;      // 00F93E58
 extern Vis_SelectionFilter vis_sprite_filter_3;  // 00F93E6C
 extern Vis_SelectionFilter vis_sprite_filter_4;  // static to sub_44EEA7
 
-#pragma pack(push, 1)
 struct Vis_PIDAndDepth {
     uint16_t object_pid;
     int16_t depth;
 };
-#pragma pack(pop)
 
 using Vis_Object = std::variant<std::monostate, int /* index */, ODMFace *, BLVFace *>;
 
-#pragma pack(push, 1)
 struct Vis_ObjectInfo {
     Vis_Object object;
     uint16_t object_pid = PID_INVALID;
     int16_t depth = -1;
     VisObjectType object_type = VisObjectType_Any;
 };
-#pragma pack(pop)
 
-#pragma pack(push, 1)
 struct Vis_SelectionList {
     enum class PointerCreationType { All = 0, Unique = 1 };
     using enum PointerCreationType;
@@ -83,10 +76,7 @@ struct Vis_SelectionList {
     std::array<Vis_ObjectInfo*, 512> object_pointers = {{}};
     unsigned int uSize = 0;
 };
-#pragma pack(pop)
 
-/*  116 */
-#pragma pack(push, 1)
 class Vis {
  public:
     Vis();
@@ -167,7 +157,6 @@ class Vis {
 
     Logger *log = nullptr;
 };
-#pragma pack(pop)
 
 
 /**
