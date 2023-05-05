@@ -2,7 +2,6 @@
 
 #include "Engine/Engine.h"
 #include "Engine/Serialization/LegacyImages.h"
-#include "Engine/Serialization/Deserializer.h"
 
 #include "Library/Random/Random.h"
 
@@ -65,11 +64,11 @@ void PlayerFrameTable::FromFile(const Blob &data_mm6, const Blob &data_mm7, cons
     pFrames.clear();
 
     if (data_mm6)
-        BlobDeserializer(data_mm6).ReadLegacyVector<PlayerFrame_MM7>(&pFrames, Deserializer::Append);
+        Deserialize(data_mm6, appendVia<PlayerFrame_MM7>(&pFrames));
     if (data_mm7)
-        BlobDeserializer(data_mm7).ReadLegacyVector<PlayerFrame_MM7>(&pFrames, Deserializer::Append);
+        Deserialize(data_mm7, appendVia<PlayerFrame_MM7>(&pFrames));
     if (data_mm8)
-        BlobDeserializer(data_mm8).ReadLegacyVector<PlayerFrame_MM7>(&pFrames, Deserializer::Append);
+        Deserialize(data_mm8, appendVia<PlayerFrame_MM7>(&pFrames));
 
     assert(!pFrames.empty());
 }

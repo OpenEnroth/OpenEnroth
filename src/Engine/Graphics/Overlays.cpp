@@ -13,7 +13,6 @@
 #include "Engine/TurnEngine/TurnEngine.h"
 
 #include "Engine/Serialization/LegacyImages.h"
-#include "Engine/Serialization/Deserializer.h"
 
 #include "GUI/GUIWindow.h"
 
@@ -113,11 +112,11 @@ void OverlayList::FromFile(const Blob &data_mm6, const Blob &data_mm7, const Blo
     pOverlays.clear();
 
     if (data_mm6)
-        BlobDeserializer(data_mm6).ReadLegacyVector<OverlayDesc_MM7>(&pOverlays, Deserializer::Append);
+        Deserialize(data_mm6, appendVia<OverlayDesc_MM7>(&pOverlays));
     if (data_mm7)
-        BlobDeserializer(data_mm7).ReadLegacyVector<OverlayDesc_MM7>(&pOverlays, Deserializer::Append);
+        Deserialize(data_mm7, appendVia<OverlayDesc_MM7>(&pOverlays));
     if (data_mm8)
-        BlobDeserializer(data_mm8).ReadLegacyVector<OverlayDesc_MM7>(&pOverlays, Deserializer::Append);
+        Deserialize(data_mm8, appendVia<OverlayDesc_MM7>(&pOverlays));
 
     assert(!pOverlays.empty());
 }

@@ -12,8 +12,6 @@
 #include "Engine/Objects/ObjectList.h"
 #include "Engine/LOD.h"
 
-#include "Serializer.h"
-#include "Deserializer.h"
 #include "CommonImages.h"
 
 void Deserialize(const IndoorLocation_MM7 &src, IndoorLocation *dst) {
@@ -139,44 +137,43 @@ void Deserialize(const IndoorLocation_MM7 &src, IndoorLocation *dst) {
     Deserialize(src.mapOutlines, &dst->pMapOutlines);
 }
 
-void Deserialize(const Blob &src, IndoorLocation_MM7 *dst, std::function<void()> progress) {
-    BlobDeserializer stream(src);
+void Deserialize(InputStream &src, IndoorLocation_MM7 *dst, std::function<void()> progress) {
     progress();
-    stream.ReadRaw(&dst->header);
-    stream.ReadVector(&dst->vertices);
-    progress();
-    progress();
-    stream.ReadVector(&dst->faces);
-    stream.ReadSizedVector(&dst->faceData, dst->header.uFaces_fdata_Size / sizeof(uint16_t));
-    progress();
-    stream.ReadSizedVector(&dst->faceTextures, dst->faces.size());
-    progress();
-    stream.ReadVector(&dst->faceExtras);
-    progress();
-    stream.ReadSizedVector(&dst->faceExtraTextures, dst->faceExtras.size());
-    progress();
-    stream.ReadVector(&dst->sectors);
-    progress();
-    stream.ReadSizedVector(&dst->sectorData, dst->header.uSector_rdata_Size / sizeof(uint16_t));
-    stream.ReadSizedVector(&dst->sectorLightData, dst->header.uSector_lrdata_Size / sizeof(uint16_t));
+    Deserialize(src, &dst->header);
+    Deserialize(src, &dst->vertices);
     progress();
     progress();
-    stream.ReadRaw(&dst->doorCount);
+    Deserialize(src, &dst->faces);
+    Deserialize(src, presized(dst->header.uFaces_fdata_Size / sizeof(uint16_t), &dst->faceData));
+    progress();
+    Deserialize(src, presized(dst->faces.size(), &dst->faceTextures));
+    progress();
+    Deserialize(src, &dst->faceExtras);
+    progress();
+    Deserialize(src, presized(dst->faceExtras.size(), &dst->faceExtraTextures));
+    progress();
+    Deserialize(src, &dst->sectors);
+    progress();
+    Deserialize(src, presized(dst->header.uSector_rdata_Size / sizeof(uint16_t), &dst->sectorData));
+    Deserialize(src, presized(dst->header.uSector_lrdata_Size / sizeof(uint16_t), &dst->sectorLightData));
     progress();
     progress();
-    stream.ReadVector(&dst->decorations);
-    stream.ReadSizedVector(&dst->decorationNames, dst->decorations.size());
-    progress();
-    stream.ReadVector(&dst->lights);
+    Deserialize(src, &dst->doorCount);
     progress();
     progress();
-    stream.ReadVector(&dst->bspNodes);
+    Deserialize(src, &dst->decorations);
+    Deserialize(src, presized(dst->decorations.size(), &dst->decorationNames));
+    progress();
+    Deserialize(src, &dst->lights);
     progress();
     progress();
-    stream.ReadVector(&dst->spawnPoints);
+    Deserialize(src, &dst->bspNodes);
     progress();
     progress();
-    stream.ReadVector(&dst->mapOutlines);
+    Deserialize(src, &dst->spawnPoints);
+    progress();
+    progress();
+    Deserialize(src, &dst->mapOutlines);
 }
 
 void Serialize(const IndoorLocation &src, IndoorDelta_MM7 *dst) {
@@ -290,44 +287,41 @@ void Deserialize(const IndoorDelta_MM7 &src, IndoorLocation *dst) {
     Deserialize(src.locationTime, &dst->stru1);
 }
 
-void Serialize(const IndoorDelta_MM7 &src, Blob *dst) {
-    BlobSerializer stream;
-    stream.WriteRaw(&src.header);
-    stream.WriteRaw(&src.visibleOutlines);
-    stream.WriteSizedVector(src.faceAttributes);
-    stream.WriteSizedVector(src.decorationFlags);
-    stream.WriteVector(src.actors);
-    stream.WriteVector(src.spriteObjects);
-    stream.WriteVector(src.chests);
-    stream.WriteSizedVector(src.doors);
-    stream.WriteSizedVector(src.doorsData);
-    stream.WriteRaw(&src.eventVariables);
-    stream.WriteRaw(&src.locationTime);
-    *dst = stream.Reset();
+void Serialize(const IndoorDelta_MM7 &src, OutputStream *dst) {
+    Serialize(src.header, dst);
+    Serialize(src.visibleOutlines, dst);
+    Serialize(unsized(src.faceAttributes), dst);
+    Serialize(unsized(src.decorationFlags), dst);
+    Serialize(src.actors, dst);
+    Serialize(src.spriteObjects, dst);
+    Serialize(src.chests, dst);
+    Serialize(unsized(src.doors), dst);
+    Serialize(unsized(src.doorsData), dst);
+    Serialize(src.eventVariables, dst);
+    Serialize(src.locationTime, dst);
 }
 
-void Deserialize(const Blob &src, IndoorDelta_MM7 *dst, const IndoorLocation_MM7 &ctx, std::function<void()> progress) {
-    BlobDeserializer stream(src);
-    stream.ReadRaw(&dst->header);
-    stream.ReadRaw(&dst->visibleOutlines);
-    stream.ReadSizedVector(&dst->faceAttributes, ctx.faces.size());
+void Deserialize(InputStream &src, IndoorDelta_MM7 *dst, const IndoorLocation_MM7 &ctx, std::function<void()> progress) {
+    Deserialize(src, &dst->header);
+    Deserialize(src, &dst->visibleOutlines);
+    Deserialize(src, presized(ctx.faces.size(), &dst->faceAttributes));
     progress();
-    stream.ReadSizedVector(&dst->decorationFlags, ctx.decorations.size());
+    Deserialize(src, presized(ctx.decorations.size(), &dst->decorationFlags));
     progress();
-    stream.ReadVector(&dst->actors);
-    progress();
-    progress();
-    stream.ReadVector(&dst->spriteObjects);
-    progress();
-    stream.ReadVector(&dst->chests);
+    Deserialize(src, &dst->actors);
     progress();
     progress();
-    stream.ReadSizedVector(&dst->doors, ctx.doorCount);
-    stream.ReadSizedVector(&dst->doorsData, ctx.header.uDoors_ddata_Size / sizeof(int16_t));
+    Deserialize(src, &dst->spriteObjects);
     progress();
-    stream.ReadRaw(&dst->eventVariables);
+    Deserialize(src, &dst->chests);
     progress();
-    stream.ReadRaw(&dst->locationTime);
+    progress();
+    Deserialize(src, presized(ctx.doorCount, &dst->doors));
+    Deserialize(src, presized(ctx.header.uDoors_ddata_Size / sizeof(int16_t), &dst->doorsData));
+    progress();
+    Deserialize(src, &dst->eventVariables);
+    progress();
+    Deserialize(src, &dst->locationTime);
     progress();
 }
 
@@ -421,47 +415,46 @@ void Deserialize(const OutdoorLocation_MM7 &src, OutdoorLocation *dst) {
     Deserialize(src.spawnPoints, &dst->pSpawnPoints);
 }
 
-void Deserialize(const Blob &src, OutdoorLocation_MM7 *dst, std::function<void()> progress) {
-    BlobDeserializer stream(src);
-    stream.ReadRaw(&dst->name);
-    stream.ReadRaw(&dst->fileName);
-    stream.ReadRaw(&dst->desciption);
-    stream.ReadRaw(&dst->skyTexture);
-    stream.ReadRaw(&dst->groundTileset);
-    stream.ReadRaw(&dst->tileTypes);
+void Deserialize(InputStream &src, OutdoorLocation_MM7 *dst, std::function<void()> progress) {
+    Deserialize(src, &dst->name);
+    Deserialize(src, &dst->fileName);
+    Deserialize(src, &dst->desciption);
+    Deserialize(src, &dst->skyTexture);
+    Deserialize(src, &dst->groundTileset);
+    Deserialize(src, &dst->tileTypes);
     progress();
-    stream.ReadRaw(&dst->heightMap);
-    stream.ReadRaw(&dst->tileMap);
-    stream.ReadRaw(&dst->attributeMap);
+    Deserialize(src, &dst->heightMap);
+    Deserialize(src, &dst->tileMap);
+    Deserialize(src, &dst->attributeMap);
     progress();
-    stream.ReadRaw(&dst->normalCount);
-    stream.ReadRaw(&dst->someOtherMap);
-    stream.ReadRaw(&dst->normalMap);
-    stream.ReadSizedVector(&dst->normals, dst->normalCount);
+    Deserialize(src, &dst->normalCount);
+    Deserialize(src, &dst->someOtherMap);
+    Deserialize(src, &dst->normalMap);
+    Deserialize(src, presized(dst->normalCount, &dst->normals));
     progress();
-    stream.ReadVector(&dst->models);
+    Deserialize(src, &dst->models);
 
     dst->modelExtras.clear();
     for (const BSPModelData_MM7 &model : dst->models) {
         BSPModelExtras_MM7 &extra = dst->modelExtras.emplace_back();
-        stream.ReadSizedVector(&extra.vertices, model.uNumVertices);
-        stream.ReadSizedVector(&extra.faces, model.uNumFaces);
-        stream.ReadSizedVector(&extra.faceOrdering, model.uNumFaces);
-        stream.ReadSizedVector(&extra.bspNodes, model.uNumNodes);
-        stream.ReadSizedVector(&extra.faceTextures, model.uNumFaces);
+        Deserialize(src, presized(model.uNumVertices, &extra.vertices));
+        Deserialize(src, presized(model.uNumFaces, &extra.faces));
+        Deserialize(src, presized(model.uNumFaces, &extra.faceOrdering));
+        Deserialize(src, presized(model.uNumNodes, &extra.bspNodes));
+        Deserialize(src, presized(model.uNumFaces, &extra.faceTextures));
     }
 
     progress();
-    stream.ReadVector(&dst->decorations);
+    Deserialize(src, &dst->decorations);
     progress();
-    stream.ReadSizedVector(&dst->decorationNames, dst->decorations.size());
+    Deserialize(src, presized(dst->decorations.size(), &dst->decorationNames));
     progress();
-    stream.ReadVector(&dst->decorationPidList);
+    Deserialize(src, &dst->decorationPidList);
     progress();
-    stream.ReadRaw(&dst->decorationMap);
+    Deserialize(src, &dst->decorationMap);
     progress();
     progress();
-    stream.ReadVector<SpawnPoint_MM7>(&dst->spawnPoints);
+    Deserialize(src, &dst->spawnPoints);
     progress();
 }
 
@@ -527,46 +520,43 @@ void Deserialize(const OutdoorDelta_MM7 &src, OutdoorLocation *dst) {
     Deserialize(src.locationTime, &dst->loc_time);
 }
 
-void Serialize(const OutdoorDelta_MM7 &src, Blob *dst) {
-    BlobSerializer stream;
-    stream.WriteRaw(&src.header);
-    stream.WriteRaw(&src.fullyRevealedCells);
-    stream.WriteRaw(&src.partiallyRevealedCells);
-    stream.WriteSizedVector(src.faceAttributes);
-    stream.WriteSizedVector(src.decorationFlags);
-    stream.WriteVector(src.actors);
-    stream.WriteVector(src.spriteObjects);
-    stream.WriteVector(src.chests);
-    stream.WriteRaw(&src.eventVariables);
-    stream.WriteRaw(&src.locationTime);
-    *dst = stream.Reset();
+void Serialize(const OutdoorDelta_MM7 &src, OutputStream *dst) {
+    Serialize(src.header, dst);
+    Serialize(src.fullyRevealedCells, dst);
+    Serialize(src.partiallyRevealedCells, dst);
+    Serialize(unsized(src.faceAttributes), dst);
+    Serialize(unsized(src.decorationFlags), dst);
+    Serialize(src.actors, dst);
+    Serialize(src.spriteObjects, dst);
+    Serialize(src.chests, dst);
+    Serialize(src.eventVariables, dst);
+    Serialize(src.locationTime, dst);
 }
 
-void Deserialize(const Blob &src, OutdoorDelta_MM7 *dst, const OutdoorLocation_MM7 &ctx, std::function<void()> progress) {
+void Deserialize(InputStream &src, OutdoorDelta_MM7 *dst, const OutdoorLocation_MM7 &ctx, std::function<void()> progress) {
     size_t totalFaces = 0;
     for (const BSPModelData_MM7 &model : ctx.models)
         totalFaces += model.uNumFaces;
 
-    BlobDeserializer stream(src);
-    stream.ReadRaw(&dst->header);
-    stream.ReadRaw(&dst->fullyRevealedCells);
-    stream.ReadRaw(&dst->partiallyRevealedCells);
+    Deserialize(src, &dst->header);
+    Deserialize(src, &dst->fullyRevealedCells);
+    Deserialize(src, &dst->partiallyRevealedCells);
     progress();
-    stream.ReadSizedVector(&dst->faceAttributes, totalFaces);
+    Deserialize(src, presized(totalFaces, &dst->faceAttributes));
     progress();
-    stream.ReadSizedVector(&dst->decorationFlags, ctx.decorations.size());
-    progress();
-    progress();
-    stream.ReadVector(&dst->actors);
+    Deserialize(src, presized(ctx.decorations.size(), &dst->decorationFlags));
     progress();
     progress();
-    stream.ReadVector(&dst->spriteObjects);
+    Deserialize(src, &dst->actors);
     progress();
-    stream.ReadVector(&dst->chests);
     progress();
-    stream.ReadRaw(&dst->eventVariables);
+    Deserialize(src, &dst->spriteObjects);
     progress();
-    stream.ReadRaw(&dst->locationTime);
+    Deserialize(src, &dst->chests);
+    progress();
+    Deserialize(src, &dst->eventVariables);
+    progress();
+    Deserialize(src, &dst->locationTime);
 }
 
 void Serialize(const SaveGameHeader &src, SaveGame_MM7 *dst) {
@@ -588,33 +578,19 @@ void Deserialize(const SaveGame_MM7 &src, SaveGameHeader *dst) {
 }
 
 void Serialize(const SaveGame_MM7 &src, LOD::WriteableFile *dst) {
-    BlobSerializer stream;
-    stream.WriteRaw(&src.header);
-    dst->Write("header.bin", stream.Reset());
-    stream.WriteRaw(&src.party);
-    dst->Write("party.bin", stream.Reset());
-    stream.WriteRaw(&src.eventTimer);
-    dst->Write("clock.bin", stream.Reset());
-    stream.WriteRaw(&src.overlays);
-    dst->Write("overlay.bin", stream.Reset());
-    stream.WriteRaw(&src.npcData);
-    dst->Write("npcdata.bin", stream.Reset());
-    stream.WriteRaw(&src.npcGroup);
-    dst->Write("npcgroup.bin", stream.Reset());
+    dst->Write("header.bin", toBlob(src.header));
+    dst->Write("party.bin", toBlob(src.party));
+    dst->Write("clock.bin", toBlob(src.eventTimer));
+    dst->Write("overlay.bin", toBlob(src.overlays));
+    dst->Write("npcdata.bin", toBlob(src.npcData));
+    dst->Write("npcgroup.bin", toBlob(src.npcGroup));
 }
 
 void Deserialize(const LOD::File &src, SaveGame_MM7 *dst) {
-    BlobDeserializer stream;
-    stream.Reset(src.LoadRaw("header.bin"));
-    stream.ReadRaw(&dst->header);
-    stream.Reset(src.LoadRaw("party.bin"));
-    stream.ReadRaw(&dst->party);
-    stream.Reset(src.LoadRaw("clock.bin"));
-    stream.ReadRaw(&dst->eventTimer);
-    stream.Reset(src.LoadRaw("overlay.bin"));
-    stream.ReadRaw(&dst->overlays);
-    stream.Reset(src.LoadRaw("npcdata.bin"));
-    stream.ReadRaw(&dst->npcData);
-    stream.Reset(src.LoadRaw("npcgroup.bin"));
-    stream.ReadRaw(&dst->npcGroup);
+    Deserialize(src.LoadRaw("header.bin"), &dst->header);
+    Deserialize(src.LoadRaw("party.bin"), &dst->party);
+    Deserialize(src.LoadRaw("clock.bin"), &dst->eventTimer);
+    Deserialize(src.LoadRaw("overlay.bin"), &dst->overlays);
+    Deserialize(src.LoadRaw("npcdata.bin"), &dst->npcData);
+    Deserialize(src.LoadRaw("npcgroup.bin"), &dst->npcGroup);
 }

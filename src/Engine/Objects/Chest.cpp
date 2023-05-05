@@ -13,7 +13,6 @@
 #include "Engine/Objects/ItemTable.h"
 #include "Engine/Objects/ObjectList.h"
 #include "Engine/Objects/SpriteObject.h"
-#include "Engine/Serialization/Deserializer.h"
 #include "Engine/Serialization/LegacyImages.h"
 #include "Engine/OurMath.h"
 #include "Engine/Party.h"
@@ -436,11 +435,11 @@ void ChestList::FromFile(const Blob &data_mm6, const Blob &data_mm7, const Blob 
     vChests.clear();
 
     if (data_mm6)
-        BlobDeserializer(data_mm6).ReadLegacyVector<ChestDesc_MM7>(&vChests, Deserializer::Append);
+        Deserialize(data_mm6, appendVia<ChestDesc_MM7>(&vChests));
     if (data_mm7)
-        BlobDeserializer(data_mm7).ReadLegacyVector<ChestDesc_MM7>(&vChests, Deserializer::Append);
+        Deserialize(data_mm7, appendVia<ChestDesc_MM7>(&vChests));
     if (data_mm8)
-        BlobDeserializer(data_mm8).ReadLegacyVector<ChestDesc_MM7>(&vChests, Deserializer::Append);
+        Deserialize(data_mm8, appendVia<ChestDesc_MM7>(&vChests));
 
     assert(!vChests.empty());
 }

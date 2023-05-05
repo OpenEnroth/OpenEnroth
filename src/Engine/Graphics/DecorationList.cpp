@@ -5,7 +5,6 @@
 #include "Engine/Events.h"
 #include "Engine/Engine.h"
 #include "Engine/Serialization/LegacyImages.h"
-#include "Engine/Serialization/Deserializer.h"
 #include "Level/Decoration.h"
 #include "Sprites.h"
 
@@ -16,11 +15,11 @@ void DecorationList::FromFile(const Blob &data_mm6, const Blob &data_mm7, const 
     pDecorations.clear();
 
     if (data_mm6)
-        BlobDeserializer(data_mm6).ReadLegacyVector<DecorationDesc_MM6>(&pDecorations, Deserializer::Append);
+        Deserialize(data_mm6, appendVia<DecorationDesc_MM6>(&pDecorations));
     if (data_mm7)
-        BlobDeserializer(data_mm7).ReadLegacyVector<DecorationDesc_MM7>(&pDecorations, Deserializer::Append);
+        Deserialize(data_mm7, appendVia<DecorationDesc_MM7>(&pDecorations));
     if (data_mm8)
-        BlobDeserializer(data_mm8).ReadLegacyVector<DecorationDesc_MM7>(&pDecorations, Deserializer::Append);
+        Deserialize(data_mm8, appendVia<DecorationDesc_MM7>(&pDecorations));
 
     assert(!pDecorations.empty());
 }

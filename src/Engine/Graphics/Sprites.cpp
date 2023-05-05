@@ -11,7 +11,7 @@
 #include "Engine/Objects/Actor.h"
 
 #include "Engine/Serialization/LegacyImages.h"
-#include "Engine/Serialization/Deserializer.h"
+#include "Engine/Serialization/CommonImages.h"
 
 #include "Engine/Graphics/DecorationList.h"
 #include "Engine/Graphics/PaletteManager.h"
@@ -269,13 +269,16 @@ void SpriteFrameTable::FromFile(const Blob &data_mm6, const Blob &data_mm7, cons
     (void) data_mm6;
     (void) data_mm8;
 
-    BlobDeserializer stream(data_mm7);
+    MemoryInputStream src(data_mm7.data(), data_mm7.size()); // TODO(captainurist): encapsulate
     uint32_t frameCount = 0;
     uint32_t eframeCount = 0;
-    stream.ReadRaw(&frameCount);
-    stream.ReadRaw(&eframeCount);
-    stream.ReadSizedLegacyVector<SpriteFrame_MM7>(&pSpriteSFrames, frameCount);
-    stream.ReadSizedVector(&pSpriteEFrames, eframeCount);
+    Deserialize(src, &frameCount);
+    Deserialize(src, &eframeCount);
+
+    std::vector<SpriteFrame_MM7> tmp;
+    Deserialize(src, presized(frameCount, &tmp));
+    Deserialize(tmp, &pSpriteSFrames);
+    Deserialize(src, presized(eframeCount, &pSpriteEFrames));
 
     pSpritePFrames.clear();
     for (uint16_t index : pSpriteEFrames)

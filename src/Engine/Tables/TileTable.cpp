@@ -1,7 +1,6 @@
 #include "Engine/Engine.h"
 
 #include "Engine/Serialization/LegacyImages.h"
-#include "Engine/Serialization/Deserializer.h"
 
 #include "Library/Random/Random.h"
 
@@ -64,7 +63,7 @@ void TileTable::FromFile(const Blob &data_mm6, const Blob &data_mm7, const Blob 
     (void) data_mm6;
     (void) data_mm8;
 
-    BlobDeserializer(data_mm7).ReadLegacyVector<TileDesc_MM7>(&tiles);
+    Deserialize(data_mm7, appendVia<TileDesc_MM7>(&tiles));
 
     assert(!tiles.empty());
 }

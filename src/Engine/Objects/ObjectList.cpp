@@ -3,7 +3,6 @@
 #include "Engine/Graphics/Sprites.h"
 
 #include "Engine/Serialization/LegacyImages.h"
-#include "Engine/Serialization/Deserializer.h"
 
 struct ObjectList *pObjectList;
 
@@ -33,11 +32,11 @@ void ObjectList::FromFile(const Blob &data_mm6, const Blob &data_mm7, const Blob
     pObjects.clear();
 
     if (data_mm6)
-        BlobDeserializer(data_mm6).ReadLegacyVector<ObjectDesc_MM6>(&pObjects, Deserializer::Append);
+        Deserialize(data_mm6, appendVia<ObjectDesc_MM6>(&pObjects));
     if (data_mm7)
-        BlobDeserializer(data_mm7).ReadLegacyVector<ObjectDesc_MM7>(&pObjects, Deserializer::Append);
+        Deserialize(data_mm7, appendVia<ObjectDesc_MM7>(&pObjects));
     if (data_mm8)
-        BlobDeserializer(data_mm8).ReadLegacyVector<ObjectDesc_MM7>(&pObjects, Deserializer::Append);
+        Deserialize(data_mm8, appendVia<ObjectDesc_MM7>(&pObjects));
 
     assert(!pObjects.empty());
 }
