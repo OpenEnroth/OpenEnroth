@@ -1,3 +1,5 @@
+#include <cstring>
+
 #include "Engine/Engine.h"
 #include "Engine/EngineGlobals.h"
 
@@ -1975,12 +1977,19 @@ void initLevelStrings(Blob &blob) {
 
     int offs = 0;
     while (offs < blob.size()) {
-        std::string str = &blob.string_view()[offs];
+        const char *nextNullTerm = (const char*)memchr(&blob.string_view()[offs], '\0', blob.size() - offs);
+        size_t stringSize = nextNullTerm ? (nextNullTerm - &blob.string_view()[offs]) : (blob.size() - offs);
+        std::string str = std::string(&blob.string_view()[offs], stringSize);
         if (str[0] == '"') {
-            str.erase(0, 1);
+            assert(str[str.length() - 1] == '"');
+            if (str.size() > 2) {
+                str = str.substr(1, str.size() - 2);
+            } else {
+                str = "";
+            }
         }
         engine->_levelStrings.push_back(str);
-        offs += str.size() + 1;
+        offs += stringSize + 1;
     }
 }
 
