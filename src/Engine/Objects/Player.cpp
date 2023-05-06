@@ -365,7 +365,7 @@ void Player::ItemsPotionDmgBreak(int enchant_count) {
     memset(item_index_tabl, 0, sizeof(item_index_tabl));  // set to zero
 
     for (int i = 0; i < TOTAL_ITEM_SLOT_COUNT; ++i)  // scan through and log in table
-        if (IsRegular(pOwnItems[i].uItemID))
+        if (isRegular(pOwnItems[i].uItemID))
             item_index_tabl[avalible_items++] = i;
 
     if (avalible_items) {  // is there anything to break
@@ -1266,7 +1266,7 @@ std::string Player::GetRangedDamageString() {
 
     ItemGen *mainHandItem = GetMainHandItem();
 
-    if (mainHandItem != nullptr && IsWand(mainHandItem->uItemID)) {
+    if (mainHandItem != nullptr && isWand(mainHandItem->uItemID)) {
         return std::string(localization->GetString(LSTR_WAND));
     } else if (mainHandItem != nullptr &&
                (mainHandItem->uItemID == ITEM_BLASTER ||
@@ -1702,7 +1702,7 @@ int Player::ReceiveSpecialAttackEffect(
                     itemtocheck = &this->pEquippedItems[i - INVENTORY_SLOT_COUNT];
                 }
 
-                if (IsRegular(itemtocheck->uItemID) && !itemtocheck->IsBroken()) {
+                if (isRegular(itemtocheck->uItemID) && !itemtocheck->IsBroken()) {
                     itemstobreaklist[itemstobreakcounter++] = i;
                 }
             }
@@ -1772,7 +1772,7 @@ int Player::ReceiveSpecialAttackEffect(
                 if (ItemPosInList > 0) {
                     itemtocheck = &this->pInventoryItemList[ItemPosInList - 1];
 
-                    if (IsRegular(itemtocheck->uItemID)) {
+                    if (isRegular(itemtocheck->uItemID)) {
                         itemstobreaklist[itemstobreakcounter++] = i;
                     }
                 }
@@ -4654,7 +4654,7 @@ void Player::SetVariable(VariableType var_type, signed int var_value) {
             item.uItemID = ITEM_TYPE(var_value);
             item.uAttributes = ITEM_IDENTIFIED;
             pParty->setHoldingItem(&item);
-            if (IsSpawnableArtifact(ITEM_TYPE(var_value)))
+            if (isSpawnableArtifact(ITEM_TYPE(var_value)))
                 pParty->pIsArtifactFound[ITEM_TYPE(var_value)] = true;
             return;
         case VAR_FixedGold:
@@ -5237,9 +5237,9 @@ void Player::AddVariable(VariableType var_type, signed int val) {
             item.Reset();
             item.uAttributes = ITEM_IDENTIFIED;
             item.uItemID = ITEM_TYPE(val);
-            if (IsSpawnableArtifact(ITEM_TYPE(val))) {
+            if (isSpawnableArtifact(ITEM_TYPE(val))) {
                 pParty->pIsArtifactFound[ITEM_TYPE(val)] = true;
-            } else if (IsWand(ITEM_TYPE(val))) {
+            } else if (isWand(ITEM_TYPE(val))) {
                 item.uNumCharges = grng->random(6) + item.GetDamageMod() + 1;
                 item.uMaxCharges = item.uNumCharges;
             }
@@ -7432,7 +7432,7 @@ MERCHANT_PHRASE Player::SelectPhrasesTransaction(ItemGen *pItem, BuildingType bu
                 return MERCHANT_PHRASE_INCOMPATIBLE_ITEM;
             break;
         case BuildingType_AlchemistShop:
-            if (idemId >= ITEM_ARTIFACT_HERMES_SANDALS && !IsRecipe(idemId))
+            if (idemId >= ITEM_ARTIFACT_HERMES_SANDALS && !isRecipe(idemId))
                 return MERCHANT_PHRASE_INVALID_ACTION;
             if (equipType != EQUIP_REAGENT && equipType != EQUIP_POTION && equipType != EQUIP_MESSAGE_SCROLL)
                 return MERCHANT_PHRASE_INCOMPATIBLE_ITEM;

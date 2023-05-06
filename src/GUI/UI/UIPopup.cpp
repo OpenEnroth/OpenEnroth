@@ -45,7 +45,7 @@ Image *messagebox_border_right = nullptr;   // 5076A0
 
 bool holdingMouseRightButton = false;
 bool rightClickItemActionPerformed = false;
-bool identifyReactionPlayed = false;
+bool identifyOrRepairReactionPlayed = false;
 
 struct stat_coord {
     int16_t x;
@@ -255,24 +255,23 @@ void GameUI_DrawItemInfo(struct ItemGen *inspect_item) {
                     speech = SPEECH_IndentifyItemWeak;
                 }
             }
-            if (!identifyReactionPlayed) {
+            if (!identifyOrRepairReactionPlayed) {
                 pParty->activeCharacter().playReaction(speech);
-                identifyReactionPlayed = true;
+                identifyOrRepairReactionPlayed = true;
             }
         }
         inspect_item->UpdateTempBonus(pParty->GetPlayingTime());
         if (inspect_item->IsBroken()) {
             if (pParty->activeCharacter().CanRepair(inspect_item) == 1)
-                inspect_item->uAttributes =
-                    inspect_item->uAttributes & ~ITEM_BROKEN | ITEM_IDENTIFIED;
+                inspect_item->uAttributes = inspect_item->uAttributes & ~ITEM_BROKEN | ITEM_IDENTIFIED;
             PlayerSpeech speech = SPEECH_RepairFail;
             if (!inspect_item->IsBroken())
                 speech = SPEECH_RepairSuccess;
             else
                 GameUI_SetStatusBar(LSTR_REPAIR_FAILED);
-            if (!identifyReactionPlayed) {
+            if (!identifyOrRepairReactionPlayed) {
                 pParty->activeCharacter().playReaction(speech);
-                identifyReactionPlayed = true;
+                identifyOrRepairReactionPlayed = true;
             }
         }
     }
@@ -1681,123 +1680,95 @@ void UI_OnMouseRightClick(int mouse_x, int mouse_y) {
 }
 
 //----- (00416196) --------------------------------------------------------
-void Inventory_ItemPopupAndAlchemy() {  // needs cleaning
+void Inventory_ItemPopupAndAlchemy() {
     if (rightClickItemActionPerformed) {
         // Forbid doing anything until right click has beed released
         return;
     }
 
-    int inventoryXCoord;
-    int inventoryYCoord;
-
-    int pX, pY;
-    // Pointi cursor = pMouse->GetCursorPos();
-
     ItemGen *item = nullptr;
 
-    int mousex = mouse->uMouseX;  // condense
-    int mousey = mouse->uMouseY;  // condense
+    static const std::array<int, 6> ringsX = {0x1EA, 0x21A, 0x248, 0x1EA, 0x21A, 0x248};
+    static const std::array<int, 6> ringsY = {0x0CA, 0x0CA, 0x0CA, 0x0FA, 0x0FA, 0x0FA};
 
-    static int RingsX[6] = {0x1EA, 0x21A, 0x248, 0x1EA, 0x21A, 0x248};
-    static int RingsY[6] = {0x0CA, 0x0CA, 0x0CA, 0x0FA, 0x0FA, 0x0FA};
-
-    static int glovex = 586;
-    static int glovey = 88;
-
-    static int amuletx = 493;
-    static int amulety = 91;
-
-    int slot = 32;
-    ITEM_SLOT pos = ITEM_SLOT_INVALID;
-
+    int pX, pY;
     mouse->GetClickPos(&pX, &pY);
-    inventoryYCoord = (pY - 17) / 32;
-    inventoryXCoord = (pX - 14) / 32;
+
+    int inventoryYCoord = (pY - 17) / 32;
+    int inventoryXCoord = (pX - 14) / 32;
     int invMatrixIndex = inventoryXCoord + (14 * inventoryYCoord);  // INVETORYSLOTSWIDTH
 
-    if (pX <= 13 || pX >= 462) {  // items out of inventory(вещи вне инвентаря)
-                                  // this is for player ragdoll items??
-        // popup checks if ringscreen up here
+    if (pX <= 13 || pX >= 462) {   // items on the player ragdoll
+        static const int glovex = 586;
+        static const int glovey = 88;
 
-        if (!ringscreenactive()) {  // rings not displayd
+        static const int amuletx = 493;
+        static const int amulety = 91;
+
+        static const int slotSize = 32;
+
+        if (!ringscreenactive()) { // rings not displayed
             int item_pid = (render->pActiveZBuffer[pX + pY * render->GetRenderDimensions().w] & 0xFFFF) - 1;
             // zbuffer still used for paperdolls
 
-            if (item_pid == -1) return;
-
-            item = &pParty->activeCharacter().pInventoryItemList[item_pid];
-            GameUI_DrawItemInfo(item);
-            return;
+            if (item_pid != -1) {
+                item = &pParty->activeCharacter().pInventoryItemList[item_pid];
+            }
         } else {  // rings displayed
-            if (mousex < 490 || mousex > 618) return;
+            ITEM_SLOT pos = ITEM_SLOT_INVALID;
 
-            if (mousey < 88 || mousey > 282) return;
+            if (mouse->uMouseX < 490 || mouse->uMouseX > 618) {
+                return;
+            }
 
-            if (mousex >= amuletx && mousex <= (amuletx + slot) &&
-                mousey >= amulety && mousey <= (amulety + 2 * slot)) {
-                // amulet
-                // pitem = pParty->activeCharacter().GetAmuletItem(); //9
+            if (mouse->uMouseY < 88 || mouse->uMouseY > 282) {
+                return;
+            }
+
+            if (mouse->uMouseX >= amuletx && mouse->uMouseX <= (amuletx + slotSize) &&
+                mouse->uMouseY >= amulety && mouse->uMouseY <= (amulety + 2 * slotSize)) {
                 pos = ITEM_SLOT_AMULET;
             }
 
-            if (mousex >= glovex && mousex <= (glovex + slot) &&
-                mousey >= glovey && mousey <= (glovey + 2 * slot)) {
-                // glove
-                // pitem = pParty->activeCharacter().GetGloveItem(); //7
+            if (mouse->uMouseX >= glovex && mouse->uMouseX <= (glovex + slotSize) &&
+                mouse->uMouseY >= glovey && mouse->uMouseY <= (glovey + 2 * slotSize)) {
                 pos = ITEM_SLOT_GAUTNLETS;
             }
 
             for (int i = 0; i < 6; ++i) {
-                if (mousex >= RingsX[i] && mousex <= (RingsX[i] + slot) &&
-                    mousey >= RingsY[i] && mousey <= (RingsY[i] + slot)) {
-                    // ring
-                    // pitem = pParty->activeCharacter().GetNthRingItem(i);
-                    // //10+i
+                if (mouse->uMouseX >= ringsX[i] && mouse->uMouseX <= (ringsX[i] + slotSize) &&
+                    mouse->uMouseY >= ringsY[i] && mouse->uMouseY <= (ringsY[i] + slotSize)) {
                     pos = RingSlot(i);
                 }
             }
 
-            if (pos != ITEM_SLOT_INVALID)
+            if (pos != ITEM_SLOT_INVALID) {
                 item = pParty->activeCharacter().GetNthEquippedIndexItem(pos);
-
-            if (!item) return;
-
-            GameUI_DrawItemInfo(item);
-
-            return;
+            }
         }
+    } else {
+        item = pParty->activeCharacter().GetItemAtInventoryIndex(invMatrixIndex);
     }
-
-    // limits check ?
-    // if (inventoryYCoord >= 0 && inventoryYCoord < INVETORYSLOTSHEIGHT &&
-    // inventoryXCoord >= 0 && inventoryXCoord < INVETORYSLOTSWIDTH) {
-
-    item = pParty->activeCharacter().GetItemAtInventoryIndex(invMatrixIndex);
 
     if (!item) {  // no item
         return;
     }
 
-    // if (item_pid == -1) //added here to avoid crash
-    //    return;
-
-    // check character condition(проверка состояния персонажа)
+    // check character condition
     if (!pParty->activeCharacter().CanAct()) {
         static std::string hint_reference;
-        hint_reference = localization->FormatString(
-            LSTR_FMT_S_IS_IN_NO_CODITION_TO_S,
-            pParty->activeCharacter().name.c_str(),
-            localization->GetString(LSTR_IDENTIFY_ITEMS)
-        );
+        hint_reference = localization->FormatString(LSTR_FMT_S_IS_IN_NO_CODITION_TO_S, pParty->activeCharacter().name.c_str(),
+                                                    localization->GetString(LSTR_IDENTIFY_ITEMS));
 
         GUIWindow message_window;
         message_window.sHint = hint_reference;
         message_window.uFrameWidth = 384;
         message_window.uFrameHeight = 180;
-        if (pX <= 320)
+        if (pX <= 320) {
             message_window.uFrameX = pX + 30;
-        else
+        } else {
             message_window.uFrameX = pX - 414;
+        }
         message_window.uFrameY = 40;
         message_window.DrawMessageBox(0);
         return;
@@ -1811,145 +1782,7 @@ void Inventory_ItemPopupAndAlchemy() {  // needs cleaning
         return;
     }
 
-    if (pParty->pPickedItem.uItemID == ITEM_POTION_RECHARGE_ITEM) {
-        if (item->uItemID < ITEM_POTION_BOTTLE ||
-            item->uItemID > ITEM_POTION_REJUVENATION) {  // all potions
-            if (!item->isWand()) {  // can recharge only wands
-                pAudioPlayer->playUISound(SOUND_error);
-                return;
-            }
-
-            int maxChargesDecreasePercent = 70 - pParty->pPickedItem.uEnchantmentType;
-            if (maxChargesDecreasePercent < 0) {
-                maxChargesDecreasePercent = 0;
-            }
-            float invMaxChargesDecrease = (100 - maxChargesDecreasePercent) * 0.01;
-            item->uMaxCharges = item->uNumCharges = item->uMaxCharges * invMaxChargesDecrease;
-
-            // Effect and sound was not present previously
-            item->uAttributes |= ITEM_AURA_EFFECT_GREEN;
-            ItemEnchantmentTimer = Timer::Second * 2;
-            pAudioPlayer->playSpellSound(SPELL_WATER_RECHARGE_ITEM, 0, false);
-            mouse->RemoveHoldingItem();
-            rightClickItemActionPerformed = true;
-            return;
-        }
-        GameUI_DrawItemInfo(item);
-        return;
-    } else if (pParty->pPickedItem.uItemID == ITEM_POTION_HARDEN_ITEM) {
-      if (item->uItemID < ITEM_POTION_BOTTLE ||
-            item->uItemID > ITEM_POTION_REJUVENATION) {  // bottle and all potions
-            if (item->IsBroken() ||  // cant harden broken items
-                item->uItemID >= ITEM_ARTIFACT_PUCK ||  // cant harden artifacts
-                (!item->isWeapon() && !item->isPassiveEquipment() && !item->isWand())) {
-                mouse->RemoveHoldingItem();
-                rightClickItemActionPerformed = true;
-                return;
-            }
-
-            item->uAttributes |= ITEM_AURA_EFFECT_RED | ITEM_HARDENED;
-            // Sound was missing previously
-            pAudioPlayer->playSpellSound(SPELL_WATER_ENCHANT_ITEM, 0, false);
-
-            ItemEnchantmentTimer = Timer::Second * 2;
-            mouse->RemoveHoldingItem();
-            rightClickItemActionPerformed = true;
-            return;
-        }
-        GameUI_DrawItemInfo(item);
-        return;
-    } else if (pParty->pPickedItem.uItemID >= ITEM_POTION_FLAMING && pParty->pPickedItem.uItemID <= ITEM_POTION_SWIFT ||
-             pParty->pPickedItem.uItemID == ITEM_POTION_SLAYING) {
-        // different enchanting potions
-        if (item->uItemID < ITEM_POTION_BOTTLE ||
-            item->uItemID > ITEM_POTION_REJUVENATION) {  // all potions
-            if (item->uItemID >= ITEM_BLASTER &&
-                item->uItemID <= ITEM_BLASTER_RIFLE ||
-                item->uItemID >= ITEM_ARTIFACT_PUCK || item->IsBroken() ||
-                item->special_enchantment || item->uEnchantmentType ||
-                !item->isWeapon()) {
-                mouse->RemoveHoldingItem();
-                rightClickItemActionPerformed = true;
-                return;
-            }
-
-            GameTime effectTime = GameTime::FromMinutes(30 * pParty->pPickedItem.uEnchantmentType);
-            item->UpdateTempBonus(pParty->GetPlayingTime());
-            if (pParty->pPickedItem.uItemID == ITEM_POTION_SLAYING) {
-                item->special_enchantment = ITEM_ENCHANTMENT_DRAGON_SLAYING;
-            } else {
-                static constinit IndexedArray<ITEM_ENCHANTMENT, ITEM_FIRST_ENCHANTING_POTION, ITEM_LAST_ENCHANTING_POTION> _4E2904_enchantment_by_potion_lut = {
-                    {ITEM_POTION_FLAMING, ITEM_ENCHANTMENT_OF_FLAME},
-                    {ITEM_POTION_FREEZING, ITEM_ENCHANTMENT_OF_FROST},
-                    {ITEM_POTION_NOXIOUS, ITEM_ENCHANTMENT_OF_POISON},
-                    {ITEM_POTION_SHOCKING, ITEM_ENCHANTMENT_OF_SPARKS},
-                    {ITEM_POTION_SWIFT, ITEM_ENCHANTMENT_SWIFT}
-                };
-                item->special_enchantment = _4E2904_enchantment_by_potion_lut[pParty->pPickedItem.uItemID];
-            }
-
-            item->uExpireTime = GameTime(pParty->GetPlayingTime() + effectTime);
-            // Sound was missing previously
-            item->uAttributes |= ITEM_TEMP_BONUS | ITEM_AURA_EFFECT_RED;
-            pAudioPlayer->playSpellSound(SPELL_WATER_ENCHANT_ITEM, 0, false);
-
-            ItemEnchantmentTimer = Timer::Second * 2;
-            mouse->RemoveHoldingItem();
-            rightClickItemActionPerformed = true;
-            return;
-        }
-        GameUI_DrawItemInfo(item);
-        return;
-    }
-
-    // use reagents(применение реагентов)
-    if (pParty->pPickedItem.uItemID >= ITEM_REAGENT_WIDOWSWEEP_BERRIES &&
-        pParty->pPickedItem.uItemID <= ITEM_REAGENT_PHILOSOPHERS_STONE &&
-        item->uItemID == ITEM_POTION_BOTTLE) {
-        item->uEnchantmentType = alchemy_skill_points + pParty->pPickedItem.GetDamageDice();
-        switch (pParty->pPickedItem.uItemID) {
-            case ITEM_REAGENT_WIDOWSWEEP_BERRIES:
-            case ITEM_REAGENT_CRUSHED_ROSE_PETALS:
-            case ITEM_REAGENT_VIAL_OF_TROLL_BLOOD:
-            case ITEM_REAGENT_RUBY:
-            case ITEM_REAGENT_DRAGONS_EYE:
-                item->uItemID = ITEM_POTION_CURE_WOUNDS;
-                break;
-
-            case ITEM_REAGENT_PHIRNA_ROOT:
-            case ITEM_REAGENT_METEORITE_FRAGMENT:
-            case ITEM_REAGENT_HARPY_FEATHER:
-            case ITEM_REAGENT_MOONSTONE:
-            case ITEM_REAGENT_ELVISH_TOADSTOOL:
-                item->uItemID = ITEM_POTION_MAGIC;
-                break;
-
-            case ITEM_REAGENT_POPPYSNAPS:
-            case ITEM_REAGENT_FAE_DUST:
-            case ITEM_REAGENT_SULFUR:
-            case ITEM_REAGENT_GARNET:
-            case ITEM_REAGENT_VIAL_OF_DEVIL_ICHOR:
-                item->uItemID = ITEM_POTION_CURE_WEAKNESS;
-                break;
-
-            case ITEM_REAGENT_MUSHROOM:
-            case ITEM_REAGENT_OBSIDIAN:
-            case ITEM_REAGENT_VIAL_OF_OOZE_ENDOPLASM:
-            case ITEM_REAGENT_MERCURY:
-            case ITEM_REAGENT_PHILOSOPHERS_STONE:
-                item->uItemID = ITEM_POTION_CATALYST;
-                break;
-            default:
-                break;
-        }
-        pParty->activeCharacter().playReaction(SPEECH_PotionSuccess);
-        mouse->RemoveHoldingItem();
-        rightClickItemActionPerformed = true;
-        return;
-    }
-
-    // potions mixing
-    if (IsPotion(pParty->pPickedItem.uItemID) && IsPotion(item->uItemID)) {
+    if (isPotion(pParty->pPickedItem.uItemID) && isPotion(item->uItemID)) { // potion mixing
         ITEM_TYPE potionSrc1 = item->uItemID;
         ITEM_TYPE potionSrc2 = pParty->pPickedItem.uItemID;
 
@@ -1972,7 +1805,7 @@ void Inventory_ItemPopupAndAlchemy() {  // needs cleaning
         }
 
         int damage_level = 0;
-        if (!IsPotion(potionID)) {
+        if (!isPotion(potionID)) {
             // In this case potionID represent damage level
             damage_level = std::to_underlying(potionID);
         } else {
@@ -1998,19 +1831,8 @@ void Inventory_ItemPopupAndAlchemy() {  // needs cleaning
             }
         }
 
-        int item_pid = pParty->activeCharacter().GetItemListAtInventoryIndex(invMatrixIndex);
-        // int pOut_x = item_pid + 1;
-        // for (uint i = 0; i < 126; ++i)
-        //{
-        //  if (pParty->activeCharacter().pInventoryMatrix[i] == pOut_x)
-        // {
-        //    pOut_y = i;
-        //   break;
-        //}
-        //}
-
         if (damage_level > 0) {
-            pParty->activeCharacter().RemoveItemAtInventoryIndex(invMatrixIndex);  // pOut_y); ?? quickfix needs checking
+            pParty->activeCharacter().RemoveItemAtInventoryIndex(invMatrixIndex);
 
             if (damage_level == 1) {
                 pParty->activeCharacter().receiveDamage(grng->random(11) + 10, DMGT_FIRE);
@@ -2078,8 +1900,141 @@ void Inventory_ItemPopupAndAlchemy() {  // needs cleaning
         }
     }
 
+    if (pParty->pPickedItem.uItemID == ITEM_POTION_RECHARGE_ITEM) {
+        if (item->isWand()) { // can recharge only wands
+            int maxChargesDecreasePercent = 70 - pParty->pPickedItem.uEnchantmentType;
+            if (maxChargesDecreasePercent < 0) {
+                maxChargesDecreasePercent = 0;
+            }
+
+            float invMaxChargesDecrease = (100 - maxChargesDecreasePercent) * 0.01;
+            item->uMaxCharges = item->uNumCharges = item->uMaxCharges * invMaxChargesDecrease;
+
+            // Effect and sound was not present previously
+            item->uAttributes |= ITEM_AURA_EFFECT_GREEN;
+            ItemEnchantmentTimer = Timer::Second * 2;
+            pAudioPlayer->playSpellSound(SPELL_WATER_RECHARGE_ITEM, 0, false);
+            mouse->RemoveHoldingItem();
+            rightClickItemActionPerformed = true;
+            return;
+        }
+        GameUI_DrawItemInfo(item);
+        return;
+    }
+
+    if (pParty->pPickedItem.uItemID == ITEM_POTION_HARDEN_ITEM) {
+        if (item->IsBroken() || isArtifact(item->uItemID)) {
+            // Sound error and stop right click item actions until button is released
+            pAudioPlayer->playUISound(SOUND_error);
+            rightClickItemActionPerformed = true;
+            return;
+        }
+        if (item->isWeapon() || item->isPassiveEquipment() || item->isWand()) {
+            item->uAttributes |= ITEM_AURA_EFFECT_RED | ITEM_HARDENED;
+
+            // Sound was missing previously
+            pAudioPlayer->playSpellSound(SPELL_WATER_ENCHANT_ITEM, 0, false);
+
+            ItemEnchantmentTimer = Timer::Second * 2;
+            mouse->RemoveHoldingItem();
+            rightClickItemActionPerformed = true;
+            return;
+        }
+        GameUI_DrawItemInfo(item);
+        return;
+    }
+
+    if (isEnchantingPotion(pParty->pPickedItem.uItemID)) {
+        if (item->IsBroken() || isArtifact(item->uItemID) ||
+            item->isPassiveEquipment() || item->isWand() ||
+            item->uItemID == ITEM_BLASTER || item->uItemID == ITEM_BLASTER_RIFLE) {
+            // Sound error and stop right click item actions until button is released
+            pAudioPlayer->playUISound(SOUND_error);
+            rightClickItemActionPerformed = true;
+            return;
+        }
+        if (item->isWeapon()) {
+            if (item->special_enchantment || item->uEnchantmentType) {
+                // Sound error and stop right click item actions until button is released
+                pAudioPlayer->playUISound(SOUND_error);
+                rightClickItemActionPerformed = true;
+                return;
+            }
+
+            GameTime effectTime = GameTime::FromMinutes(30 * pParty->pPickedItem.uEnchantmentType);
+            item->UpdateTempBonus(pParty->GetPlayingTime());
+            if (pParty->pPickedItem.uItemID == ITEM_POTION_SLAYING) {
+                item->special_enchantment = ITEM_ENCHANTMENT_DRAGON_SLAYING;
+            } else {
+                static constinit IndexedArray<ITEM_ENCHANTMENT, ITEM_FIRST_ENCHANTING_POTION, ITEM_LAST_ENCHANTING_POTION> potionToEnchantment = {
+                    {ITEM_POTION_FLAMING, ITEM_ENCHANTMENT_OF_FLAME},
+                    {ITEM_POTION_FREEZING, ITEM_ENCHANTMENT_OF_FROST},
+                    {ITEM_POTION_NOXIOUS, ITEM_ENCHANTMENT_OF_POISON},
+                    {ITEM_POTION_SHOCKING, ITEM_ENCHANTMENT_OF_SPARKS},
+                    {ITEM_POTION_SWIFT, ITEM_ENCHANTMENT_SWIFT}
+                };
+                item->special_enchantment = potionToEnchantment[pParty->pPickedItem.uItemID];
+            }
+
+            item->uExpireTime = GameTime(pParty->GetPlayingTime() + effectTime);
+            // Sound was missing previously
+            item->uAttributes |= ITEM_TEMP_BONUS | ITEM_AURA_EFFECT_RED;
+            pAudioPlayer->playSpellSound(SPELL_WATER_ENCHANT_ITEM, 0, false);
+
+            ItemEnchantmentTimer = Timer::Second * 2;
+            mouse->RemoveHoldingItem();
+            rightClickItemActionPerformed = true;
+            return;
+        }
+        GameUI_DrawItemInfo(item);
+        return;
+    }
+
+    if (isReagent(pParty->pPickedItem.uItemID) && item->uItemID == ITEM_POTION_BOTTLE) {
+        item->uEnchantmentType = alchemy_skill_points + pParty->pPickedItem.GetDamageDice();
+        switch (pParty->pPickedItem.uItemID) {
+            case ITEM_REAGENT_WIDOWSWEEP_BERRIES:
+            case ITEM_REAGENT_CRUSHED_ROSE_PETALS:
+            case ITEM_REAGENT_VIAL_OF_TROLL_BLOOD:
+            case ITEM_REAGENT_RUBY:
+            case ITEM_REAGENT_DRAGONS_EYE:
+                item->uItemID = ITEM_POTION_CURE_WOUNDS;
+                break;
+
+            case ITEM_REAGENT_PHIRNA_ROOT:
+            case ITEM_REAGENT_METEORITE_FRAGMENT:
+            case ITEM_REAGENT_HARPY_FEATHER:
+            case ITEM_REAGENT_MOONSTONE:
+            case ITEM_REAGENT_ELVISH_TOADSTOOL:
+                item->uItemID = ITEM_POTION_MAGIC;
+                break;
+
+            case ITEM_REAGENT_POPPYSNAPS:
+            case ITEM_REAGENT_FAE_DUST:
+            case ITEM_REAGENT_SULFUR:
+            case ITEM_REAGENT_GARNET:
+            case ITEM_REAGENT_VIAL_OF_DEVIL_ICHOR:
+                item->uItemID = ITEM_POTION_CURE_WEAKNESS;
+                break;
+
+            case ITEM_REAGENT_MUSHROOM:
+            case ITEM_REAGENT_OBSIDIAN:
+            case ITEM_REAGENT_VIAL_OF_OOZE_ENDOPLASM:
+            case ITEM_REAGENT_MERCURY:
+            case ITEM_REAGENT_PHILOSOPHERS_STONE:
+                item->uItemID = ITEM_POTION_CATALYST;
+                break;
+            default:
+                break;
+        }
+
+        pParty->activeCharacter().playReaction(SPEECH_PotionSuccess);
+        mouse->RemoveHoldingItem();
+        rightClickItemActionPerformed = true;
+        return;
+    }
+
     GameUI_DrawItemInfo(item);
-    return;
 }
 
 //----- (0045828B) --------------------------------------------------------

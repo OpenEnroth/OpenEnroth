@@ -983,6 +983,9 @@ enum class ITEM_TYPE : int32_t {
     ITEM_FIRST_REGULAR = ITEM_CRUDE_LONGSWORD,
     ITEM_LAST_REGULAR = ITEM_SUN_AMULET,
 
+    ITEM_FIRST_ARTIFACT = ITEM_ARTIFACT_PUCK,
+    ITEM_LAST_ARTIFACT = ITEM_RARE_GROGNARDS_CUTLASS,
+
     ITEM_FIRST_SPAWNABLE_ARTIFACT = ITEM_ARTIFACT_PUCK,
     ITEM_LAST_SPAWNABLE_ARTIFACT = ITEM_RELIC_MEKORIGS_HAMMER,
 
@@ -991,6 +994,9 @@ enum class ITEM_TYPE : int32_t {
 
     ITEM_FIRST_RECIPE = ITEM_RECIPE_REJUVENATION,
     ITEM_LAST_RECIPE = ITEM_RECIPE_BODY_RESISTANCE,
+
+    ITEM_FIRST_REAGENT = ITEM_REAGENT_WIDOWSWEEP_BERRIES,
+    ITEM_LAST_REAGENT = ITEM_REAGENT_PHILOSOPHERS_STONE,
 
     ITEM_FIRST_REAL_POTION = ITEM_POTION_CURE_WOUNDS,
     ITEM_LAST_REAL_POTION = ITEM_POTION_REJUVENATION,
@@ -1024,40 +1030,52 @@ using enum ITEM_TYPE;
  * @param type                          Item type to check.
  * @return                              Whether the provided item is a regular item.
  */
-inline bool IsRegular(ITEM_TYPE type) {
+inline bool isRegular(ITEM_TYPE type) {
     return type >= ITEM_FIRST_REGULAR && type <= ITEM_LAST_REGULAR;
 }
 
-inline bool IsRecipe(ITEM_TYPE type) {
+inline bool isRecipe(ITEM_TYPE type) {
     return type >= ITEM_FIRST_RECIPE && type <= ITEM_LAST_RECIPE;
 }
 
-inline bool IsWand(ITEM_TYPE type) {
+inline bool isWand(ITEM_TYPE type) {
     return type >= ITEM_FIRST_WAND && type <= ITEM_LAST_WAND;
 }
 
-inline bool IsPotion(ITEM_TYPE type) {
+inline bool isPotion(ITEM_TYPE type) {
     return type >= ITEM_FIRST_POTION && type <= ITEM_LAST_POTION;
 }
 
-inline bool IsMessageScroll(ITEM_TYPE type) {
+inline bool isReagent(ITEM_TYPE type) {
+    return type >= ITEM_FIRST_REAGENT && type <= ITEM_LAST_REAGENT;
+}
+
+inline bool isEnchantingPotion(ITEM_TYPE type) {
+    return type >= ITEM_FIRST_ENCHANTING_POTION && type <= ITEM_LAST_ENCHANTING_POTION || type == ITEM_POTION_SLAYING;
+}
+
+inline bool isMessageScroll(ITEM_TYPE type) {
     return type >= ITEM_FIRST_MESSAGE_SCROLL && type <= ITEM_LAST_MESSAGE_SCROLL;
 }
 
-inline bool IsSpawnableArtifact(ITEM_TYPE type) {
+inline bool isArtifact(ITEM_TYPE type) {
+    return type >= ITEM_FIRST_ARTIFACT && type <= ITEM_LAST_ARTIFACT;
+}
+
+inline bool isSpawnableArtifact(ITEM_TYPE type) {
     return type >= ITEM_FIRST_SPAWNABLE_ARTIFACT && type <= ITEM_LAST_SPAWNABLE_ARTIFACT;
 }
 
-inline bool IsRandomItem(ITEM_TYPE type) {
+inline bool isRandomItem(ITEM_TYPE type) {
     return type >= ITEM_FIRST_RANDOM && type <= ITEM_LAST_RANDOM;
 }
 
-inline ITEM_TREASURE_LEVEL RandomItemTreasureLevel(ITEM_TYPE type) {
-    Assert(IsRandomItem(type));
+inline ITEM_TREASURE_LEVEL randomItemTreasureLevel(ITEM_TYPE type) {
+    Assert(isRandomItem(type));
     return ITEM_TREASURE_LEVEL(-std::to_underlying(type));
 }
 
-inline Segment<ITEM_TYPE> RecipeScrolls() {
+inline Segment<ITEM_TYPE> recipeScrolls() {
     return Segment(ITEM_FIRST_RECIPE, ITEM_LAST_RECIPE);
 }
 

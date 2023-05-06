@@ -750,7 +750,7 @@ bool ItemGen::MerchandiseTest(int _2da_idx) {
     bool test;
 
     // TODO(captainurist): move these checks into functions in ItemEnums.h?
-    if ((p2DEvents[_2da_idx - 1].uType != BuildingType_AlchemistShop || !IsRecipe(this->uItemID)) &&
+    if ((p2DEvents[_2da_idx - 1].uType != BuildingType_AlchemistShop || !isRecipe(this->uItemID)) &&
         (this->uItemID >= ITEM_QUEST_HEART_OF_THE_WOOD || this->uItemID >= ITEM_ARTIFACT_HERMES_SANDALS && this->uItemID <= ITEM_599) ||
         this->IsStolen())
         return false;
@@ -771,7 +771,7 @@ bool ItemGen::MerchandiseTest(int _2da_idx) {
         case BuildingType_AlchemistShop: {
             test = this->isReagent() ||
                    this->isPotion() ||
-                   (this->isMessageScroll() && IsRecipe(this->uItemID));
+                   (this->isMessageScroll() && isRecipe(this->uItemID));
             break;
         }
         default: {

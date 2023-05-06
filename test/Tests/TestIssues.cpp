@@ -693,7 +693,7 @@ GAME_TEST(Issues, Issue675) {
     for (int i = 0; i < 200; i++) {
         for (ITEM_TREASURE_LEVEL level : levels) {
             pItemTable->generateItem(level, 0, &item);
-            if (IsPotion(item.uItemID)) {
+            if (isPotion(item.uItemID)) {
                 // For potions, uEnchantmentType is potion strength.
                 EXPECT_GE(item.uEnchantmentType, 1);
             } else {

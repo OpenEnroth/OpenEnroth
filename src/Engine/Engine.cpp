@@ -1431,7 +1431,7 @@ void setDecorationSprite(uint16_t uCog, bool bHide, const std::string &pFileName
 void back_to_game() {
     holdingMouseRightButton = false;
     rightClickItemActionPerformed = false;
-    identifyReactionPlayed = false;
+    identifyOrRepairReactionPlayed = false;
 
     if (pGUIWindow_ScrollWindow) free_book_subwindow();
     if (current_screen_type == CURRENT_SCREEN::SCREEN_GAME && !pGUIWindow_CastTargetedSpell)
@@ -1837,7 +1837,7 @@ void RegeneratePartyHealthMana() {
                     if (player.HasItemEquipped(idx)) {
                         uint _idx = player.pEquipment.pIndices[idx];
                         ItemGen equppedItem = player.pInventoryItemList[_idx - 1];
-                        if (!IsRegular(equppedItem.uItemID)) {
+                        if (!isRegular(equppedItem.uItemID)) {
                             if (equppedItem.uItemID == ITEM_RELIC_ETHRICS_STAFF) {
                                 decrease_HP = true;
                             }
