@@ -8,7 +8,7 @@ var searchData=
   ['id_5',['id',['../classActor.html#a0d2b93f5baefded4573b9f89aa5bda9a',1,'Actor::id()'],['../classEventIR.html#a4e3a73c846e10a32c952307eb6d1d42d',1,'EventIR::id()']]],
   ['id_6',['ID',['../classGLShader.html#abc5e80c1895af424b40f86131337101f',1,'GLShader']]],
   ['id_7',['id',['../structAudioSamplePoolEntry.html#a63e1d63a34fd6c1ee9cf78fdf19e3f3f',1,'AudioSamplePoolEntry::id()'],['../classGUIButton.html#a6273ca66e0d450d4915342911dd8f718',1,'GUIButton::id()'],['../classIcon.html#a5df8df867f5e2d240d9c1bff2633a8ab',1,'Icon::id()'],['../structMonsterInfo__MM7.html#a86713fa21521b6352af440ed3d84a6fe',1,'MonsterInfo_MM7::id()']]],
-  ['identifyreactionplayed_8',['identifyReactionPlayed',['../UIPopup_8h.html#aa1de74edaa8bfb80b8ab252c7603e7c7',1,'identifyReactionPlayed():&#160;UIPopup.cpp'],['../UIPopup_8cpp.html#aa1de74edaa8bfb80b8ab252c7603e7c7',1,'identifyReactionPlayed():&#160;UIPopup.cpp']]],
+  ['identifyorrepairreactionplayed_8',['identifyOrRepairReactionPlayed',['../UIPopup_8h.html#a2754ec59c015b1e7039bd99f7780c5d2',1,'identifyOrRepairReactionPlayed():&#160;UIPopup.cpp'],['../UIPopup_8cpp.html#a2754ec59c015b1e7039bd99f7780c5d2',1,'identifyOrRepairReactionPlayed():&#160;UIPopup.cpp']]],
   ['ids_9',['ids',['../classFlatHirelings.html#a85da3f1ad2ff0809947dc07f6ba03488',1,'FlatHirelings']]],
   ['igchestitems_10',['igChestItems',['../structChest.html#a5cb6b29dc3abcfcb3bf384445c97ff43',1,'Chest::igChestItems()'],['../structChest__MM7.html#aee6476908cae5362e6203f205e53fd71',1,'Chest_MM7::igChestItems()']]],
   ['ignored_5fface_5fid_11',['ignored_face_id',['../structCollisionState.html#a3c350446a9665e00bc6af1cea8ea99cf',1,'CollisionState']]],
