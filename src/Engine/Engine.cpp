@@ -1,3 +1,5 @@
+#include <cstring>
+
 #include "Engine/Engine.h"
 #include "Engine/EngineGlobals.h"
 
@@ -1970,43 +1972,15 @@ unsigned int _494820_training_time(unsigned int a1) {
     return v1 - a1 % 24;
 }
 
-//----- (00443E31) --------------------------------------------------------
-void LoadLevel_InitializeLevelStr() {
-    //  char Args[100];
-    int string_num;
-    int max_string_length;
-    //  int current_string_length;
-    int prev_string_offset;
+void initLevelStrings(Blob &blob) {
+    engine->_levelStrings.clear();
 
-    if (sizeof(pLevelStrOffsets) != 2000)
-        logger->warning("pLevelStrOffsets: deserialization warning");
-    memset(pLevelStrOffsets.data(), 0, 2000);
-
-    max_string_length = 0;
-    string_num = 1;
-    prev_string_offset = 0;
-    pLevelStrOffsets[0] = 0;
-    for (uint i = 0; i < uLevelStrFileSize; ++i) {
-        if (!pLevelStr[i]) {
-            pLevelStrOffsets[string_num] = i + 1;
-            ++string_num;
-            if (i - prev_string_offset > max_string_length)
-                max_string_length = i - prev_string_offset;
-            prev_string_offset = i;
-        }
-    }
-
-    uLevelStrNumStrings = string_num - 1;
-    if (max_string_length > 800)
-        Error("MAX_EVENT_TEXT_LENGTH needs to be increased to %lu",
-              max_string_length + 1);
-
-    if (uLevelStrNumStrings > 0) {
-        for (uint i = 0; i < uLevelStrNumStrings; ++i) {
-            if (removeQuotes(&pLevelStr[pLevelStrOffsets[i]]) !=
-                &pLevelStr[pLevelStrOffsets[i]])
-                ++pLevelStrOffsets[i];
-        }
+    int offs = 0;
+    while (offs < blob.size()) {
+        const char *nextNullTerm = (const char*)memchr(&blob.string_view()[offs], '\0', blob.size() - offs);
+        size_t stringSize = nextNullTerm ? (nextNullTerm - &blob.string_view()[offs]) : (blob.size() - offs);
+        engine->_levelStrings.push_back(trimRemoveQuotes(std::string(&blob.string_view()[offs], stringSize)));
+        offs += stringSize + 1;
     }
 }
 
@@ -2016,13 +1990,7 @@ void Level_LoadEvtAndStr(const std::string &pLevelName) {
         Error("File %s Size %lu - Buffer size %lu", (pLevelName + ".str").c_str(), blob.size(), 9216);
     }
 
-    memcpy(pLevelStr.data(), blob.data(), blob.size());
-    uLevelStrFileSize = blob.size();
-
-    if (uLevelStrFileSize) {
-        LoadLevel_InitializeLevelStr();
-    }
-
+    initLevelStrings(blob);
     initLocalEvents(pLevelName);
 }
 

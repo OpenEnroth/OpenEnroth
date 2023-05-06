@@ -70,7 +70,9 @@ std::string EventMap::getHintString(int eventId) const {
     for (const EventIR &ir : _eventsById.at(eventId)) {
         if (ir.type == EVENT_MouseOver) {
             mouseOverFound = true;
-            result = &pLevelStr[pLevelStrOffsets[ir.data.text_id]];
+            if (ir.data.text_id < engine->_levelStrings.size()) {
+                result = engine->_levelStrings[ir.data.text_id];
+            }
         }
         if (mouseOverFound && ir.type == EVENT_SpeakInHouse) {
             result = p2DEvents[ir.data.house_id - 1].pName;
