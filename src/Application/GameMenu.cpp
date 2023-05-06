@@ -93,14 +93,16 @@ void Menu::EventLoop() {
                 continue;
 
             case UIMSG_ArrowUp:
-                --pSaveListPosition;
-                if (pSaveListPosition < 0) pSaveListPosition = 0;
+                --pSavegameList->saveListPosition;
+                if (pSavegameList->saveListPosition < 0)
+                    pSavegameList->saveListPosition = 0;
                 new OnButtonClick2({215, 199}, {17, 17}, pBtnArrowUp);
                 continue;
 
             case UIMSG_DownArrow:
-                ++pSaveListPosition;
-                if (pSaveListPosition > (param - 7) ) pSaveListPosition = (param - 7);
+                if (pSavegameList->saveListPosition + 7 < param) {
+                    ++pSavegameList->saveListPosition;
+                }
                 new OnButtonClick2({215, 323}, {17, 17}, pBtnDownArrow);
                 continue;
 
@@ -115,26 +117,26 @@ void Menu::EventLoop() {
                 if (pGUIWindow_CurrentMenu->keyboard_input_status == WINDOW_INPUT_IN_PROGRESS)
                     keyboardInputHandler->SetWindowInputStatus(WINDOW_INPUT_NONE);
 
-                int v10 = pSaveListPosition + param;
+                int v10 = pSavegameList->saveListPosition + param;
                 if (current_screen_type != CURRENT_SCREEN::SCREEN_SAVEGAME ||
-                    uLoadGameUI_SelectedSlot != v10) {
-                    if (dword_6BE138 == pSaveListPosition + param) {
+                    pSavegameList->selectedSlot != v10) {
+                    if (dword_6BE138 == pSavegameList->saveListPosition + param) {
                         pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_SaveLoadBtn, 0, 0);
                         pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_LoadGame, 0, 0);
                     }
-                    uLoadGameUI_SelectedSlot = v10;
+                    pSavegameList->selectedSlot = v10;
                     dword_6BE138 = v10;
                 } else {
                     keyboardInputHandler->StartTextInput(TextInputType::Text, 19, pGUIWindow_CurrentMenu);
-                    if (pSavegameHeader[uLoadGameUI_SelectedSlot].pName == localization->GetString(LSTR_EMPTY_SAVESLOT)) {
-                        keyboardInputHandler->SetTextInput(pSavegameHeader[uLoadGameUI_SelectedSlot].pName);
+                    if (pSavegameList->pSavegameHeader[pSavegameList->selectedSlot].pName == localization->GetString(LSTR_EMPTY_SAVESLOT)) {
+                        keyboardInputHandler->SetTextInput(pSavegameList->pSavegameHeader[pSavegameList->selectedSlot].pName);
                     }
                 }
             }
                 continue;
             case UIMSG_LoadGame:
-                if (pSavegameUsedSlots[uLoadGameUI_SelectedSlot]) {
-                    LoadGame(uLoadGameUI_SelectedSlot);
+                if (pSavegameList->pSavegameUsedSlots[pSavegameList->selectedSlot]) {
+                    LoadGame(pSavegameList->selectedSlot);
                     uGameState = GAME_STATE_LOADING_GAME;
                 }
                 continue;
@@ -142,9 +144,9 @@ void Menu::EventLoop() {
                 pAudioPlayer->playUISound(SOUND_StartMainChoice02);
                 if (pGUIWindow_CurrentMenu->keyboard_input_status == WINDOW_INPUT_IN_PROGRESS) {
                     keyboardInputHandler->SetWindowInputStatus(WINDOW_INPUT_NONE);
-                    pSavegameHeader[uLoadGameUI_SelectedSlot].pName = keyboardInputHandler->GetTextInput();
+                    pSavegameList->pSavegameHeader[pSavegameList->selectedSlot].pName = keyboardInputHandler->GetTextInput();
                 }
-                DoSavegame(uLoadGameUI_SelectedSlot);
+                DoSavegame(pSavegameList->selectedSlot);
                 continue;
             case UIMSG_Game_OpenSaveGameDialog: {
                 pGUIWindow_CurrentMenu->Release();
@@ -156,7 +158,10 @@ void Menu::EventLoop() {
             }
             case UIMSG_SaveLoadScroll: {
                 // pskelton add for scroll click
-                int pSaveFiles{ static_cast<int>(uNumSavegameFiles) };
+                if (param < 7) {
+                    // Too few saves to scroll yet
+                    break;
+                }
                 int mx{}, my{};
                 mouse->GetClickPos(&mx, &my);
                 // 216 is offset down from top (216)
@@ -165,7 +170,7 @@ void Menu::EventLoop() {
                 float fmy = static_cast<float>(my) / 107.0f;
                 int newlistpost = std::round((param - 7) * fmy);
                 newlistpost = std::clamp(newlistpost, 0, (param - 7));
-                pSaveListPosition = newlistpost;
+                pSavegameList->saveListPosition = newlistpost;
                 new OnButtonClick2({pGUIWindow_CurrentMenu->uFrameX + 215, pGUIWindow_CurrentMenu->uFrameY + 197}, {0, 0}, pBtnArrowUp);
                 continue;
             }
@@ -259,9 +264,8 @@ void Menu::EventLoop() {
                 render->SaveScreenshot("gamma.pcx", 155, 117);
                 gamma_preview_image = assets->GetImage_PCXFromFile("gamma.pcx");
 
-
                 continue;
-                }
+            }
             case UIMSG_ToggleBloodsplats:
                 engine->config->graphics.BloodSplats.toggle();
                 continue;

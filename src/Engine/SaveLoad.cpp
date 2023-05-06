@@ -34,24 +34,16 @@
 #include "Media/Audio/AudioPlayer.h"
 
 struct SavegameList *pSavegameList = new SavegameList;
-// TODO(pskelton): combine these all into savegamelist
-unsigned int uNumSavegameFiles;
-std::array<unsigned int, MAX_SAVE_SLOTS> pSavegameUsedSlots;
-std::array<Image *, MAX_SAVE_SLOTS> pSavegameThumbnails;
-std::array<SaveGameHeader, MAX_SAVE_SLOTS> pSavegameHeader;
-
-// TODO(pskelton): move to save game list
-int pSaveListPosition = 0;
-unsigned int uLoadGameUI_SelectedSlot = 0;
 
 void LoadGame(unsigned int uSlot) {
     MapsLongTimers_count = 0;
-    if (!pSavegameUsedSlots[uSlot]) {
+    if (!pSavegameList->pSavegameUsedSlots[uSlot]) {
         pAudioPlayer->playUISound(SOUND_error);
         logger->warning("LoadGame: slot {} is empty", uSlot);
         return;
     }
-    uLoadGameUI_SelectedSlot = uSlot;
+    pSavegameList->selectedSlot = uSlot;
+    pSavegameList->lastLoadedSave = pSavegameList->pFileList[uSlot];
 
     pParty->Reset();
 
@@ -131,10 +123,10 @@ void LoadGame(unsigned int uSlot) {
 
     dword_6BE364_game_settings_1 |= GAME_SETTINGS_LOADING_SAVEGAME_SKIP_RESPAWN | GAME_SETTINGS_0001;
 
-    for (uint i = 0; i < uNumSavegameFiles; ++i) {
-        if (pSavegameThumbnails[i] != nullptr) {
-            pSavegameThumbnails[i]->Release();
-            pSavegameThumbnails[i] = nullptr;
+    for (int i = 0; i < pSavegameList->numSavegameFiles; ++i) {
+        if (pSavegameList->pSavegameThumbnails[i] != nullptr) {
+            pSavegameList->pSavegameThumbnails[i]->Release();
+            pSavegameList->pSavegameThumbnails[i] = nullptr;
         }
     }
 
@@ -181,24 +173,14 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld) {
     // saving - please wait
 
     // if (current_screen_type == SCREEN_SAVEGAME) {
-    //    render->DrawTextureNew(8 / 640.0f, 8 / 480.0f,
-    //        saveload_ui_loadsave);
-    //    render->DrawTextureNew(18 / 640.0f, 141 / 480.0f,
-    //        saveload_ui_loadsave);
+    //    render->DrawTextureNew(8 / 640.0f, 8 / 480.0f, saveload_ui_loadsave);
+    //    render->DrawTextureNew(18 / 640.0f, 141 / 480.0f, saveload_ui_loadsave);
     //    int text_pos = pFontSmallnum->AlignText_Center(186, localization->GetString(190));
-    //    pGUIWindow_CurrentMenu->DrawText(pFontSmallnum, text_pos + 25, 219, 0,
-    //        localization->GetString(190), 0, 0,
-    //        0);  // Сохранение
-    //    text_pos = pFontSmallnum->AlignText_Center(
-    //        186, pSavegameHeader[uLoadGameUI_SelectedSlot].pName);
-    //    pGUIWindow_CurrentMenu->DrawTextInRect(
-    //        pFontSmallnum, text_pos + 25, 259, 0,
-    //        pSavegameHeader[uLoadGameUI_SelectedSlot].pName, 185, 0);
-    //    text_pos =
-    //        pFontSmallnum->AlignText_Center(186, localization->GetString(LSTR_PLEASE_WAIT));
-    //    pGUIWindow_CurrentMenu->DrawText(pFontSmallnum, text_pos + 25, 299, 0,
-    //        localization->GetString(LSTR_PLEASE_WAIT), 0, 0,
-    //        0);  // Пожалуйста, подождите
+    //    pGUIWindow_CurrentMenu->DrawText(pFontSmallnum, text_pos + 25, 219, 0, localization->GetString(190), 0, 0, 0);  // Сохранение
+    //    text_pos = pFontSmallnum->AlignText_Center(186, pSavegameList->pSavegameHeader[pSavegameList->selectedSlot].pName);
+    //    pGUIWindow_CurrentMenu->DrawTextInRect(pFontSmallnum, text_pos + 25, 259, 0, pSavegameList->pSavegameHeader[pSavegameList->selectedSlot].pName, 185, 0);
+    //    text_pos = pFontSmallnum->AlignText_Center(186, localization->GetString(LSTR_PLEASE_WAIT));
+    //    pGUIWindow_CurrentMenu->DrawText(pFontSmallnum, text_pos + 25, 299, 0, localization->GetString(LSTR_PLEASE_WAIT), 0, 0, 0);  // Пожалуйста, подождите
     //    render->Present();
     //}
 
@@ -305,12 +287,12 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld) {
 void DoSavegame(unsigned int uSlot) {
     if (pCurrentMapName != "d05.blv") {  // Not Arena(не Арена)
         SaveGame(0, 0);
-        pSavegameHeader[uSlot].pLocationName = pCurrentMapName;
-        pSavegameHeader[uSlot].playing_time = pParty->GetPlayingTime();
+        pSavegameList->pSavegameHeader[uSlot].pLocationName = pCurrentMapName;
+        pSavegameList->pSavegameHeader[uSlot].playing_time = pParty->GetPlayingTime();
 
         // TODO(captainurist): ooof
         SaveGameHeader_MM7 headerMm7;
-        Serialize(pSavegameHeader[uSlot], &headerMm7);
+        Serialize(pSavegameList->pSavegameHeader[uSlot], &headerMm7);
 
         pSave_LOD->Write("header.bin", &headerMm7, sizeof(headerMm7), 0);
         pSave_LOD->CloseWriteFile();  //закрыть
@@ -320,16 +302,16 @@ void DoSavegame(unsigned int uSlot) {
         if (!std::filesystem::copy_file(src, dst, std::filesystem::copy_options::overwrite_existing, ec))
             Error("Failed to copy: %s", src.c_str());
     }
-    uLoadGameUI_SelectedSlot = uSlot;
+    pSavegameList->selectedSlot = uSlot;
 
     GUI_UpdateWindows();
     pGUIWindow_CurrentMenu->Release();
     current_screen_type = CURRENT_SCREEN::SCREEN_GAME;
 
-    for (uint i = 0; i < MAX_SAVE_SLOTS; i++) {
-        if (pSavegameThumbnails[i] != nullptr) {
-            pSavegameThumbnails[i]->Release();
-            pSavegameThumbnails[i] = nullptr;
+    for (int i = 0; i < MAX_SAVE_SLOTS; i++) {
+        if (pSavegameList->pSavegameThumbnails[i] != nullptr) {
+            pSavegameList->pSavegameThumbnails[i]->Release();
+            pSavegameList->pSavegameThumbnails[i] = nullptr;
         }
     }
 
@@ -344,23 +326,25 @@ void DoSavegame(unsigned int uSlot) {
 
 void SavegameList::Initialize() {
     pSavegameList->Reset();
-    uNumSavegameFiles = 0;
 
     std::string saves_dir = MakeDataPath("saves");
 
     if (std::filesystem::exists(saves_dir)) {
         for (const auto &entry : std::filesystem::directory_iterator(saves_dir)) {
             if (entry.path().extension() == ".mm7") {
-                pSavegameList->pFileList[uNumSavegameFiles++] = entry.path().filename().string();
-                if (uNumSavegameFiles == MAX_SAVE_SLOTS) break;
+                pSavegameList->pFileList[pSavegameList->numSavegameFiles++] = entry.path().filename().string();
+                if (pSavegameList->numSavegameFiles == MAX_SAVE_SLOTS) {
+                    break;
+                }
             }
         }
     } else {
         logger->warning("Couldn't find saves directory!");
     }
 
-    if (uNumSavegameFiles)
-        std::sort(pSavegameList->pFileList.begin(), pSavegameList->pFileList.begin() + uNumSavegameFiles);
+    if (pSavegameList->numSavegameFiles) {
+        std::sort(pSavegameList->pFileList.begin(), pSavegameList->pFileList.begin() + pSavegameList->numSavegameFiles);
+    }
 }
 
 SavegameList::SavegameList() { Reset(); }
@@ -369,6 +353,8 @@ void SavegameList::Reset() {
     for (int j = 0; j < MAX_SAVE_SLOTS; j++) {
         this->pFileList[j].clear();
     }
+
+    numSavegameFiles = 0;
 }
 
 void SaveNewGame() {
@@ -396,11 +382,11 @@ void SaveNewGame() {
             pSave_LOD->AppendDirectory(name, data.data(), data.size());
         }
 
-        pSavegameHeader[0].pLocationName = "out01.odm";
+        pSavegameList->pSavegameHeader[0].pLocationName = "out01.odm";
 
         // TODO(captainurist): encapsulate
         SaveGameHeader_MM7 headerMm7;
-        Serialize(pSavegameHeader[0], &headerMm7);
+        Serialize(pSavegameList->pSavegameHeader[0], &headerMm7);
 
         pSave_LOD->AppendDirectory("header.bin", &headerMm7, sizeof(headerMm7));
 
