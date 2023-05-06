@@ -1979,16 +1979,7 @@ void initLevelStrings(Blob &blob) {
     while (offs < blob.size()) {
         const char *nextNullTerm = (const char*)memchr(&blob.string_view()[offs], '\0', blob.size() - offs);
         size_t stringSize = nextNullTerm ? (nextNullTerm - &blob.string_view()[offs]) : (blob.size() - offs);
-        std::string str = std::string(&blob.string_view()[offs], stringSize);
-        if (str[0] == '"') {
-            assert(str[str.length() - 1] == '"');
-            if (str.size() > 2) {
-                str = str.substr(1, str.size() - 2);
-            } else {
-                str = "";
-            }
-        }
-        engine->_levelStrings.push_back(str);
+        engine->_levelStrings.push_back(trimRemoveQuotes(std::string(&blob.string_view()[offs], stringSize)));
         offs += stringSize + 1;
     }
 }
