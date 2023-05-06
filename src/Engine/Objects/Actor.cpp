@@ -1230,55 +1230,46 @@ void Actor::ApplyFineForKillingPeasant(unsigned int uActorID) {
 }
 
 //----- (0043AE80) --------------------------------------------------------
-void Actor::AddBloodsplatOnDamageOverlay(unsigned int uActorID, int a2,
-                                         signed int a3) {
-    unsigned int v4;  // esi@1
-
-    v4 = PID(OBJECT_Actor, uActorID);
-    switch (a2) {
+void Actor::AddOnDamageOverlay(unsigned int uActorID, int overlayType, signed int damage) {
+    unsigned int actorPID = PID(OBJECT_Actor, uActorID);
+    switch (overlayType) {
         case 1:
-            if (a3)
-                pActiveOverlayList->_4418B6(904, v4, 0,
-                                           (int)(sub_43AE12(a3) * 65536.0), 0);
+            if (damage)
+                pActiveOverlayList->_4418B6(904, actorPID, 0,
+                                           (int)(sub_43AE12(damage) * 65536.0), 0);
             return;
         case 2:
-            if (a3)
-                pActiveOverlayList->_4418B6(905, v4, 0,
-                                           (int)(sub_43AE12(a3) * 65536.0), 0);
+            if (damage)
+                pActiveOverlayList->_4418B6(905, actorPID, 0,
+                                           (int)(sub_43AE12(damage) * 65536.0), 0);
             return;
         case 3:
-            if (a3)
-                pActiveOverlayList->_4418B6(906, v4, 0,
-                                           (int)(sub_43AE12(a3) * 65536.0), 0);
+            if (damage)
+                pActiveOverlayList->_4418B6(906, actorPID, 0,
+                                           (int)(sub_43AE12(damage) * 65536.0), 0);
             return;
         case 4:
-            if (a3)
-                pActiveOverlayList->_4418B6(907, v4, 0,
-                                           (int)(sub_43AE12(a3) * 65536.0), 0);
+            if (damage)
+                pActiveOverlayList->_4418B6(907, actorPID, 0,
+                                           (int)(sub_43AE12(damage) * 65536.0), 0);
             return;
         case 5:
-            pActiveOverlayList->_4418B6(901, v4, 0, PID(OBJECT_Actor, uActorID),
-                                       0);
+            pActiveOverlayList->_4418B6(901, actorPID, 0, actorPID, 0);
             return;
         case 6:
-            pActiveOverlayList->_4418B6(902, v4, 0, PID(OBJECT_Actor, uActorID),
-                                       0);
+            pActiveOverlayList->_4418B6(902, actorPID, 0, actorPID, 0);
             return;
         case 7:
-            pActiveOverlayList->_4418B6(903, v4, 0, PID(OBJECT_Actor, uActorID),
-                                       0);
+            pActiveOverlayList->_4418B6(903, actorPID, 0, actorPID, 0);
             return;
         case 8:
-            pActiveOverlayList->_4418B6(900, v4, 0, PID(OBJECT_Actor, uActorID),
-                                       0);
+            pActiveOverlayList->_4418B6(900, actorPID, 0, actorPID, 0);
             return;
         case 9:
-            pActiveOverlayList->_4418B6(909, v4, 0, PID(OBJECT_Actor, uActorID),
-                                       0);
+            pActiveOverlayList->_4418B6(909, actorPID, 0, actorPID, 0);
             return;
         case 10:
-            pActiveOverlayList->_4418B6(908, v4, 0, PID(OBJECT_Actor, uActorID),
-                                       0);
+            pActiveOverlayList->_4418B6(908, actorPID, 0, actorPID, 0);
             return;
         default:
             return;
@@ -2530,7 +2521,7 @@ void Actor::ActorDamageFromMonster(signed int attacker_id,
                         pActors[actor_id].vVelocity.z =
                             50 * (short)pVelocity->z;
                     }
-                    Actor::AddBloodsplatOnDamageOverlay(actor_id, 1, finalDmg);
+                    Actor::AddOnDamageOverlay(actor_id, 1, finalDmg);
                 } else {
                     Actor::AI_Stun(actor_id, attacker_id, 0);
                 }
@@ -3411,7 +3402,7 @@ void Actor::DamageMonsterFromParty(signed int a1, unsigned int uActorID_Monster,
         pMonster->vVelocity.y = 50 * (short)pVelocity->y;
         pMonster->vVelocity.z = 50 * (short)pVelocity->z;
     }
-    Actor::AddBloodsplatOnDamageOverlay(uActorID_Monster, 1, v61);
+    Actor::AddOnDamageOverlay(uActorID_Monster, 1, v61);
 }
 
 //----- (004BBF61) --------------------------------------------------------
@@ -5089,7 +5080,7 @@ void ItemDamageFromActor(unsigned int uObjID, unsigned int uActorID,
                         pActors[uActorID].vVelocity.z =
                             50 * (short)pVelocity->z;
                     }
-                    Actor::AddBloodsplatOnDamageOverlay(uActorID, 1, damage);
+                    Actor::AddOnDamageOverlay(uActorID, 1, damage);
                 } else {
                     Actor::AI_Stun(uActorID, uObjID, 0);
                 }
