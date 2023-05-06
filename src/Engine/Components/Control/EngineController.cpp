@@ -165,11 +165,11 @@ void EngineController::loadGame(const std::string &path) {
     std::string dst = MakeDataPath("saves", saveName);
     std::filesystem::copy_file(path, dst, std::filesystem::copy_options::overwrite_existing); // This might throw.
 
-    pSavegameList->saveListPosition = 0; // Make sure we start at the top of the list.
-
     goToMainMenu();
     pressGuiButton("MainMenu_LoadGame");
     tick(3);
+    pSavegameList->saveListPosition = 0; // Make sure we start at the top of the list.
+    tick(1);
 
     // TODO(captainurist): the tricks above might fail if we have more than 45 save files
     assert(pSavegameList->pSavegameUsedSlots[0]);
