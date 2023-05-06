@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;e0c5627</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;620544c</span>
    </div>
   </td>
  </tr>
@@ -96,6 +96,20 @@ Static Public Member Functions</h2></td></tr>
 Public Attributes</h2></td></tr>
 <tr class="memitem:aaa4bd2c9ae057d442cb4d30722111191"><td class="memItemLeft" align="right" valign="top">std::array&lt; std::string, <a class="el" href="SaveLoad_8h.html#a057d24aa837c1a458ebddedc4b21bea3">MAX_SAVE_SLOTS</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structSavegameList.html#aaa4bd2c9ae057d442cb4d30722111191">pFileList</a></td></tr>
 <tr class="separator:aaa4bd2c9ae057d442cb4d30722111191"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acf9bafb4d533f9c9325dd6cc25497464"><td class="memItemLeft" align="right" valign="top">std::array&lt; bool, <a class="el" href="SaveLoad_8h.html#a057d24aa837c1a458ebddedc4b21bea3">MAX_SAVE_SLOTS</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structSavegameList.html#acf9bafb4d533f9c9325dd6cc25497464">pSavegameUsedSlots</a></td></tr>
+<tr class="separator:acf9bafb4d533f9c9325dd6cc25497464"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a727582e4498ceaa0bb1bf1a44e6512f7"><td class="memItemLeft" align="right" valign="top">std::array&lt; <a class="el" href="structSaveGameHeader.html">SaveGameHeader</a>, <a class="el" href="SaveLoad_8h.html#a057d24aa837c1a458ebddedc4b21bea3">MAX_SAVE_SLOTS</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structSavegameList.html#a727582e4498ceaa0bb1bf1a44e6512f7">pSavegameHeader</a></td></tr>
+<tr class="separator:a727582e4498ceaa0bb1bf1a44e6512f7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:addd418f0940c28f5b74998c5d2005aec"><td class="memItemLeft" align="right" valign="top">std::array&lt; class <a class="el" href="classImage.html">Image</a> *, <a class="el" href="SaveLoad_8h.html#a057d24aa837c1a458ebddedc4b21bea3">MAX_SAVE_SLOTS</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structSavegameList.html#addd418f0940c28f5b74998c5d2005aec">pSavegameThumbnails</a></td></tr>
+<tr class="separator:addd418f0940c28f5b74998c5d2005aec"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8280443eae2241a5c0d540b1e4641f34"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structSavegameList.html#a8280443eae2241a5c0d540b1e4641f34">numSavegameFiles</a> = 0</td></tr>
+<tr class="separator:a8280443eae2241a5c0d540b1e4641f34"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae7fe51f1d78d24f7029bb73f7f44e531"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structSavegameList.html#ae7fe51f1d78d24f7029bb73f7f44e531">selectedSlot</a> = 0</td></tr>
+<tr class="separator:ae7fe51f1d78d24f7029bb73f7f44e531"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab783cfb0137600a6a79da813a1650b6d"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structSavegameList.html#ab783cfb0137600a6a79da813a1650b6d">saveListPosition</a> = 0</td></tr>
+<tr class="separator:ab783cfb0137600a6a79da813a1650b6d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a107398d947c07888d14d58eef37bb70c"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structSavegameList.html#a107398d947c07888d14d58eef37bb70c">lastLoadedSave</a> {}</td></tr>
+<tr class="separator:a107398d947c07888d14d58eef37bb70c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="aae508c1b56dd1083c75f2ba6a731667a" name="aae508c1b56dd1083c75f2ba6a731667a"></a>
@@ -159,6 +173,34 @@ Public Attributes</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Data Documentation</h2>
+<a id="a107398d947c07888d14d58eef37bb70c" name="a107398d947c07888d14d58eef37bb70c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a107398d947c07888d14d58eef37bb70c">&#9670;&#160;</a></span>lastLoadedSave</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::string SavegameList::lastLoadedSave {}</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a8280443eae2241a5c0d540b1e4641f34" name="a8280443eae2241a5c0d540b1e4641f34"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8280443eae2241a5c0d540b1e4641f34">&#9670;&#160;</a></span>numSavegameFiles</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int SavegameList::numSavegameFiles = 0</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="aaa4bd2c9ae057d442cb4d30722111191" name="aaa4bd2c9ae057d442cb4d30722111191"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#aaa4bd2c9ae057d442cb4d30722111191">&#9670;&#160;</a></span>pFileList</h2>
 
@@ -167,6 +209,76 @@ Public Attributes</h2></td></tr>
       <table class="memname">
         <tr>
           <td class="memname">std::array&lt;std::string, <a class="el" href="SaveLoad_8h.html#a057d24aa837c1a458ebddedc4b21bea3">MAX_SAVE_SLOTS</a>&gt; SavegameList::pFileList</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a727582e4498ceaa0bb1bf1a44e6512f7" name="a727582e4498ceaa0bb1bf1a44e6512f7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a727582e4498ceaa0bb1bf1a44e6512f7">&#9670;&#160;</a></span>pSavegameHeader</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::array&lt;<a class="el" href="structSaveGameHeader.html">SaveGameHeader</a>, <a class="el" href="SaveLoad_8h.html#a057d24aa837c1a458ebddedc4b21bea3">MAX_SAVE_SLOTS</a>&gt; SavegameList::pSavegameHeader</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="addd418f0940c28f5b74998c5d2005aec" name="addd418f0940c28f5b74998c5d2005aec"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#addd418f0940c28f5b74998c5d2005aec">&#9670;&#160;</a></span>pSavegameThumbnails</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::array&lt;class <a class="el" href="classImage.html">Image</a> *, <a class="el" href="SaveLoad_8h.html#a057d24aa837c1a458ebddedc4b21bea3">MAX_SAVE_SLOTS</a>&gt; SavegameList::pSavegameThumbnails</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="acf9bafb4d533f9c9325dd6cc25497464" name="acf9bafb4d533f9c9325dd6cc25497464"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#acf9bafb4d533f9c9325dd6cc25497464">&#9670;&#160;</a></span>pSavegameUsedSlots</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::array&lt;bool, <a class="el" href="SaveLoad_8h.html#a057d24aa837c1a458ebddedc4b21bea3">MAX_SAVE_SLOTS</a>&gt; SavegameList::pSavegameUsedSlots</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ab783cfb0137600a6a79da813a1650b6d" name="ab783cfb0137600a6a79da813a1650b6d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab783cfb0137600a6a79da813a1650b6d">&#9670;&#160;</a></span>saveListPosition</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int SavegameList::saveListPosition = 0</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ae7fe51f1d78d24f7029bb73f7f44e531" name="ae7fe51f1d78d24f7029bb73f7f44e531"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae7fe51f1d78d24f7029bb73f7f44e531">&#9670;&#160;</a></span>selectedSlot</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int SavegameList::selectedSlot = 0</td>
         </tr>
       </table>
 </div><div class="memdoc">
