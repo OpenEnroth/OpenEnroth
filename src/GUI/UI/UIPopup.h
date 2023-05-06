@@ -19,4 +19,4 @@ extern Image *messagebox_border_right;   // 5076A0
 
 extern bool holdingMouseRightButton;
 extern bool rightClickItemActionPerformed;
-extern bool identifyReactionPlayed;
+extern bool identifyOrRepairReactionPlayed;

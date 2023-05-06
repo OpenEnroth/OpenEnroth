@@ -5,6 +5,7 @@
 
 #include "Engine/Events/EventIR.h"
 #include "Engine/Events/EventEnums.h"
+#include "Engine/Events/Loader.h"
 #include "Engine/Graphics/Level/Decoration.h"
 #include "Engine/Objects/NPC.h"
 #include "Engine/Events2D.h"
@@ -670,7 +671,11 @@ std::string EventIR::toString() const {
         case EVENT_PlaySound:
             return fmt::format("{}: PlaySound({}, ({}, {}))", step, std::to_underlying(data.sound_descr.sound_id), data.sound_descr.x, data.sound_descr.y);
         case EVENT_MouseOver:
-            return fmt::format("{}: MouseOver(\"{}\")", step, &pLevelStr[pLevelStrOffsets[data.text_id]]);
+            if (data.text_id < engine->_levelStrings.size()) {
+                return fmt::format("{}: MouseOver(\"{}\")", step, engine->_levelStrings[data.text_id]);
+            } else {
+                return fmt::format("{}: MouseOver({})", step, data.text_id);
+            }
         case EVENT_LocationName:
             return fmt::format("{}: LocationName", step);
         case EVENT_MoveToMap:
@@ -722,18 +727,26 @@ std::string EventIR::toString() const {
                 return fmt::format("{}: RandomJmp -> ({})", step, jmps);
             }
         case EVENT_InputString:
-            return fmt::format("{}: InputString(\"{}\")", step, &pLevelStr[pLevelStrOffsets[data.text_id]]);
+            if (data.text_id < engine->_levelStrings.size()) {
+                 return fmt::format("{}: InputString(\"{}\")", step, engine->_levelStrings[data.text_id]);
+            } else {
+                return fmt::format("{}: InputString({})", step, data.text_id);
+            }
         case EVENT_StatusText:
             if (activeLevelDecoration) {
                 return fmt::format("{}: StatusMessage(\"{}\")", step, pNPCTopics[data.text_id - 1].pText);
+            } else if (data.text_id < engine->_levelStrings.size()) {
+                return fmt::format("{}: StatusMessage(\"{}\")", step, engine->_levelStrings[data.text_id]);
             } else {
-                return fmt::format("{}: StatusMessage(\"{}\")", step, &pLevelStr[pLevelStrOffsets[data.text_id]]);
+                return fmt::format("{}: StatusMessage({})", step, data.text_id);
             }
         case EVENT_ShowMessage:
             if (activeLevelDecoration) {
                 return fmt::format("{}: ShowMessage(\"{}\")", step, pNPCTopics[data.text_id - 1].pText);
+            } else if (data.text_id < engine->_levelStrings.size()) {
+                return fmt::format("{}: ShowMessage(\"{}\")", step, engine->_levelStrings[data.text_id]);
             } else {
-                return fmt::format("{}: ShowMessage(\"{}\")", step, &pLevelStr[pLevelStrOffsets[data.text_id]]);
+                return fmt::format("{}: ShowMessage({})", step, data.text_id);
             }
         case EVENT_OnTimer:
             return fmt::format("{}: OnTimer(Year({}), Month({}), Week({}), Day({}hr, {}min, {}sec), {})", step, data.timer_descr.is_yearly, data.timer_descr.is_monthly, data.timer_descr.is_weekly, data.timer_descr.daily_start_hour, data.timer_descr.daily_start_minute, data.timer_descr.daily_start_second, data.timer_descr.alt_halfmin_interval);

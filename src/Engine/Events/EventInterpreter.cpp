@@ -5,6 +5,7 @@
 
 #include "Engine/Events/EventInterpreter.h"
 #include "Engine/Events/EventIR.h"
+#include "Engine/Events/Processor.h"
 #include "Engine/Party.h"
 #include "Engine/Graphics/IRender.h"
 #include "Engine/Graphics/Indoor.h"
@@ -368,7 +369,7 @@ int EventInterpreter::executeOneEvent(int step, bool isNpc) {
         case EVENT_InputString:
             // Originally starting step was checked to ensure skipping this command when returning from dialogue.
             // Changed to using "step + 1" to go to next event
-            game_ui_status_bar_event_string = &pLevelStr[pLevelStrOffsets[ir.data.text_id]];
+            game_ui_status_bar_event_string = (ir.data.text_id < engine->_levelStrings.size()) ? engine->_levelStrings[ir.data.text_id] : "";
             StartBranchlessDialogue(_eventId, step + 1, (int)EVENT_InputString);
             return -1;
         case EVENT_StatusText:
@@ -381,16 +382,16 @@ int EventInterpreter::executeOneEvent(int step, bool isNpc) {
                 }
             } else {
                 if (_canShowMessages) {
-                    GameUI_SetStatusBar(&pLevelStr[pLevelStrOffsets[ir.data.text_id]]);
+                    GameUI_SetStatusBar((ir.data.text_id < engine->_levelStrings.size()) ? engine->_levelStrings[ir.data.text_id] : "");
                 }
             }
             break;
         case EVENT_ShowMessage:
+            branchless_dialogue_str.clear();
             if (activeLevelDecoration) {
                 current_npc_text = pNPCTopics[ir.data.text_id - 1].pText;
-                branchless_dialogue_str.clear();
-            } else {
-                branchless_dialogue_str = &pLevelStr[pLevelStrOffsets[ir.data.text_id]];
+            } else if (ir.data.text_id < engine->_levelStrings.size()) {
+                branchless_dialogue_str = engine->_levelStrings[ir.data.text_id];
             }
             break;
         case EVENT_OnTimer:

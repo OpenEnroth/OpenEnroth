@@ -107,7 +107,7 @@ class GUIWindow_Scroll : public GUIWindow {
  public:
     GUIWindow_Scroll(Pointi position, Sizei dimensions, ITEM_TYPE scroll_type, const std::string &hint = std::string()) :
         GUIWindow(WINDOW_Scroll, position, dimensions, 0, hint) {
-        Assert(IsMessageScroll(scroll_type));
+        Assert(isMessageScroll(scroll_type));
 
         this->scroll_type = scroll_type;
         CreateButton({61, 424}, {31, 0}, 2, 94, UIMSG_SelectCharacter, 1, InputAction::SelectChar1, "");

@@ -1414,7 +1414,7 @@ void CastSpellInfoHelpers::castSpell() {
                     }
 
                     if ((spell_mastery == PLAYER_SKILL_MASTERY_MASTER || spell_mastery == PLAYER_SKILL_MASTERY_GRANDMASTER) &&
-                            IsRegular(spell_item_to_enchant->uItemID) &&
+                            isRegular(spell_item_to_enchant->uItemID) &&
                             spell_item_to_enchant->special_enchantment == ITEM_ENCHANTMENT_NULL &&
                             spell_item_to_enchant->uEnchantmentType == 0 &&
                             spell_item_to_enchant->m_enchantmentStrength == 0 &&
