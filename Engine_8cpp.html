@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;77120c6</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;e0c5627</span>
    </div>
   </td>
  </tr>
@@ -79,7 +79,8 @@ $(function() {
   <div class="headertitle"><div class="title">Engine.cpp File Reference</div></div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><code>#include &quot;<a class="el" href="Engine_8h.html">Engine/Engine.h</a>&quot;</code><br />
+<div class="textblock"><code>#include &lt;cstring&gt;</code><br />
+<code>#include &quot;<a class="el" href="Engine_8h.html">Engine/Engine.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="EngineGlobals_8h.html">Engine/EngineGlobals.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Processor_8h.html">Engine/Events/Processor.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Loader_8h.html">Engine/Events/Loader.h</a>&quot;</code><br />
@@ -174,8 +175,8 @@ Functions</h2></td></tr>
 <tr class="separator:a4658b592373a5425bedc65fe7647cc93"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a71f422c794782ae4f373062f0060e45b"><td class="memItemLeft" align="right" valign="top">unsigned int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Engine_8cpp.html#a71f422c794782ae4f373062f0060e45b">_494820_training_time</a> (unsigned int a1)</td></tr>
 <tr class="separator:a71f422c794782ae4f373062f0060e45b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a307e766275f63939943556583b762149"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Engine_8cpp.html#a307e766275f63939943556583b762149">LoadLevel_InitializeLevelStr</a> ()</td></tr>
-<tr class="separator:a307e766275f63939943556583b762149"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aaf682cc15410630fec7db62b970f087c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Engine_8cpp.html#aaf682cc15410630fec7db62b970f087c">initLevelStrings</a> (<a class="el" href="classBlob.html">Blob</a> &amp;blob)</td></tr>
+<tr class="separator:aaf682cc15410630fec7db62b970f087c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1ec9273d2cd901e48e54eedaecd87b1b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Engine_8cpp.html#a1ec9273d2cd901e48e54eedaecd87b1b">Level_LoadEvtAndStr</a> (const std::string &amp;pLevelName)</td></tr>
 <tr class="separator:a1ec9273d2cd901e48e54eedaecd87b1b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4c7c70729a3af9d53e1c4fe25879f2cb"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Engine_8cpp.html#a4c7c70729a3af9d53e1c4fe25879f2cb">_44100D_should_alter_right_panel</a> ()</td></tr>
@@ -378,6 +379,25 @@ Variables</h2></td></tr>
 
 </div>
 </div>
+<a id="aaf682cc15410630fec7db62b970f087c" name="aaf682cc15410630fec7db62b970f087c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aaf682cc15410630fec7db62b970f087c">&#9670;&#160;</a></span>initLevelStrings()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void initLevelStrings </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classBlob.html">Blob</a> &amp;&#160;</td>
+          <td class="paramname"><em>blob</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<dl class="section user"><dt>Original binary offset:</dt><dd>0x443E31 </dd></dl>
+
+</div>
+</div>
 <a id="a1ec9273d2cd901e48e54eedaecd87b1b" name="a1ec9273d2cd901e48e54eedaecd87b1b"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a1ec9273d2cd901e48e54eedaecd87b1b">&#9670;&#160;</a></span>Level_LoadEvtAndStr()</h2>
 
@@ -389,23 +409,6 @@ Variables</h2></td></tr>
           <td>(</td>
           <td class="paramtype">const std::string &amp;&#160;</td>
           <td class="paramname"><em>pLevelName</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a307e766275f63939943556583b762149" name="a307e766275f63939943556583b762149"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a307e766275f63939943556583b762149">&#9670;&#160;</a></span>LoadLevel_InitializeLevelStr()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void LoadLevel_InitializeLevelStr </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
           <td></td>
         </tr>
       </table>
@@ -543,7 +546,7 @@ Variables</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <p >Modify party health or mana based on party or players conditions/buffs.</p>
-<dl class="section user"><dt>Original binary offset:</dt><dd>0x00493938. </dd></dl>
+<dl class="section user"><dt>Original binary offset:</dt><dd>0x493938. </dd></dl>
 
 </div>
 </div>

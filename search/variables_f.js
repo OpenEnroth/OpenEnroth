@@ -38,8 +38,8 @@ var searchData=
   ['outputpresent_35',['outputPresent',['../RenderOpenGL_8cpp.html#afff3b3efd76e25649c87a86515ba4508',1,'RenderOpenGL.cpp']]],
   ['outputrender_36',['outputRender',['../RenderOpenGL_8cpp.html#af1f1163a9c8376b96a86751db3256db9',1,'RenderOpenGL.cpp']]],
   ['outputstream_5f_37',['outputStream_',['../classSerializer.html#a49268472e8fa4751356d0f2d11103da4',1,'Serializer']]],
-  ['overlayid_38',['overlayId',['../structSpellBuff__MM7.html#a0b20ebfff0491f10f19c2e4769ccca66',1,'SpellBuff_MM7']]],
-  ['overlayid_39',['overlayID',['../structSpellBuff.html#a71246715e120b97bffc46a7f6941ce6e',1,'SpellBuff']]],
+  ['overlayid_38',['overlayID',['../structSpellBuff.html#a71246715e120b97bffc46a7f6941ce6e',1,'SpellBuff']]],
+  ['overlayid_39',['overlayId',['../structSpellBuff__MM7.html#a0b20ebfff0491f10f19c2e4769ccca66',1,'SpellBuff_MM7']]],
   ['overlays_40',['overlays',['../structOtherOverlayList__MM7.html#af7965da99dae2a4ebc5e7ea1cef9b9a8',1,'OtherOverlayList_MM7::overlays()'],['../structSaveGame__MM7.html#aeeebe4cd1e2dda5d574b812be982efaf',1,'SaveGame_MM7::overlays()']]],
   ['ownitems_41',['ownItems',['../structPlayer__MM7.html#ae9d0dd7b371e0cc07448636882f11b92',1,'Player_MM7']]]
 ];
