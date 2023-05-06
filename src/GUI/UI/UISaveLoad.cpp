@@ -169,7 +169,7 @@ GUIWindow_Load::GUIWindow_Load(bool ingame) :
             pSavegameList->selectedSlot = i;
             pSavegameList->saveListPosition = i;
             if (pSavegameList->saveListPosition + 7 > pSavegameList->numSavegameFiles) {
-                pSavegameList->saveListPosition = pSavegameList->numSavegameFiles - 7;
+                pSavegameList->saveListPosition = std::max(0, pSavegameList->numSavegameFiles - 7);
             }
         }
 
