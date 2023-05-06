@@ -29,33 +29,28 @@ void ActiveOverlayList::Reset() {
 }
 
 //----- (004418B6) --------------------------------------------------------
-int ActiveOverlayList::_4418B6(int uOverlayID, int16_t a3, int a4, int a5,
-                              int16_t a6) {
-    signed int v9;  // esi@6
+int ActiveOverlayList::_4418B6(int uOverlayID, int16_t pid, int animLength, int fpDamageMod, int16_t projSize) {
     int16_t v11;    // dx@11
 
     for (uint i = 0; i < 50; ++i) {
-        if (this->pOverlays[i].field_6 <= 0) {
+        if (this->pOverlays[i].animLength <= 0) {
             this->pOverlays[i].field_0 = 0;
-            this->pOverlays[i].screen_space_y = 0;
-            this->pOverlays[i].screen_space_x = 0;
-            this->pOverlays[i].field_C = a3;
-            v9 = 0;
-            for (; v9 < (signed int)pOverlayList->pOverlays.size(); ++v9) {
-                if (uOverlayID == pOverlayList->pOverlays[v9].uOverlayID) break;
+            this->pOverlays[i].screenSpaceY = 0;
+            this->pOverlays[i].screenSpaceX = 0;
+            this->pOverlays[i].pid = pid;
+            int indexer = 0;
+            for (; indexer < (signed int)pOverlayList->pOverlays.size(); ++indexer) {
+                if (uOverlayID == pOverlayList->pOverlays[indexer].uOverlayID) break;
             }
-            this->pOverlays[i].field_2 = v9;
-            this->pOverlays[i].sprite_frame_time = 0;
-            if (a4)
-                v11 = a4;
+            this->pOverlays[i].indexToOverlayList = indexer;
+            this->pOverlays[i].spriteFrameTime = 0;
+            if (animLength)
+                v11 = animLength;
             else
-                v11 = 8 * pSpriteFrameTable
-                              ->pSpriteSFrames[pOverlayList->pOverlays[v9]
-                                                   .uSpriteFramesetID]
-                              .uAnimLength;
-            this->pOverlays[i].field_6 = v11;
-            this->pOverlays[i].field_10 = a5;
-            this->pOverlays[i].field_E = a6;
+                v11 = 8 * pSpriteFrameTable->pSpriteSFrames[pOverlayList->pOverlays[indexer].uSpriteFramesetID].uAnimLength;
+            this->pOverlays[i].animLength = v11;
+            this->pOverlays[i].fpDamageMod = fpDamageMod;
+            this->pOverlays[i].projSize = projSize;
             return true;
         }
     }
@@ -174,14 +169,14 @@ bool OverlayList::FromFileTxt(const char *Args) {
 //----- (0045855F) --------------------------------------------------------
 void ActiveOverlay::Reset() {
     this->field_0 = 0;
-    this->field_2 = 0;
-    this->sprite_frame_time = 0;
-    this->field_6 = 0;
-    this->screen_space_x = 0;
-    this->screen_space_y = 0;
-    this->field_C = 0;
-    this->field_E = 0;
-    this->field_10 = 65536;
+    this->indexToOverlayList = 0;
+    this->spriteFrameTime = 0;
+    this->animLength = 0;
+    this->screenSpaceX = 0;
+    this->screenSpaceY = 0;
+    this->pid = 0;
+    this->projSize = 0;
+    this->fpDamageMod = 65536;
 }
 
 //----- (004584B8) --------------------------------------------------------

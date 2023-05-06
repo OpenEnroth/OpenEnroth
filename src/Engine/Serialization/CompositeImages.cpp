@@ -559,22 +559,22 @@ void deserialize(InputStream &src, OutdoorDelta_MM7 *dst, const OutdoorLocation_
     deserialize(src, &dst->locationTime);
 }
 
-void serialize(const SaveGameHeader &src, SaveGame_MM7 *dst) {
-    serialize(src, &dst->header);
-    serialize(*pParty, &dst->party);
-    serialize(*pEventTimer, &dst->eventTimer);
-    serialize(*pOtherOverlayList, &dst->overlays);
-    serialize(pNPCStats->pNewNPCData, &dst->npcData);
-    serialize(pNPCStats->pGroups_copy, &dst->npcGroup);
+void Serialize(const SaveGameHeader &src, SaveGame_MM7 *dst) {
+    Serialize(src, &dst->header);
+    Serialize(*pParty, &dst->party);
+    Serialize(*pEventTimer, &dst->eventTimer);
+    Serialize(*pActiveOverlayList, &dst->overlays);
+    Serialize(pNPCStats->pNewNPCData, &dst->npcData);
+    Serialize(pNPCStats->pGroups_copy, &dst->npcGroup);
 }
 
-void deserialize(const SaveGame_MM7 &src, SaveGameHeader *dst) {
-    deserialize(src.header, dst);
-    deserialize(src.party, pParty);
-    deserialize(src.eventTimer, pEventTimer);
-    deserialize(src.overlays, pOtherOverlayList);
-    deserialize(src.npcData, &pNPCStats->pNewNPCData);
-    deserialize(src.npcGroup, &pNPCStats->pGroups_copy);
+void Deserialize(const SaveGame_MM7 &src, SaveGameHeader *dst) {
+    Deserialize(src.header, dst);
+    Deserialize(src.party, pParty);
+    Deserialize(src.eventTimer, pEventTimer);
+    Deserialize(src.overlays, pActiveOverlayList);
+    Deserialize(src.npcData, &pNPCStats->pNewNPCData);
+    Deserialize(src.npcGroup, &pNPCStats->pGroups_copy);
 }
 
 void serialize(const SaveGame_MM7 &src, LOD::WriteableFile *dst) {

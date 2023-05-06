@@ -523,14 +523,14 @@ void deserialize(const Timer_MM7 &src, Timer *dst);
 
 struct ActiveOverlay_MM7 {
     /* 00 */ int16_t field_0;
-    /* 02 */ int16_t field_2;
+    /* 02 */ int16_t indexToOverlayList;
     /* 04 */ int16_t spriteFrameTime;
-    /* 06 */ int16_t field_6;
+    /* 06 */ int16_t animLength;
     /* 08 */ int16_t screenSpaceX;
     /* 0A */ int16_t screenSpaceY;
-    /* 0C */ int16_t field_C;
-    /* 0E */ int16_t field_E;
-    /* 10 */ int32_t field_10;
+    /* 0C */ int16_t pid;
+    /* 0E */ int16_t projSize;
+    /* 10 */ int32_t fpDamageMod;
     /* 14 */
 };
 static_assert(sizeof(OtherOverlay_MM7) == 0x14);
@@ -1031,7 +1031,7 @@ struct OverlayDesc_MM7 {
     uint16_t uOverlayID;
     uint16_t uOverlayType;
     uint16_t uSpriteFramesetID;
-    int16_t field_6;
+    int16_t spriteFramesetGroup;
 };
 static_assert(sizeof(OverlayDesc_MM7) == 8);
 MM_DECLARE_MEMCOPY_SERIALIZABLE(OverlayDesc_MM7)

@@ -239,28 +239,28 @@ void Serialize(const ActiveOverlay &src, ActiveOverlay_MM7 *dst) {
     memzero(dst);
 
     dst->field_0 = src.field_0;
-    dst->field_2 = src.field_2;
-    dst->spriteFrameTime = src.sprite_frame_time;
-    dst->field_6 = src.field_6;
-    dst->screenSpaceX = src.screen_space_x;
-    dst->screenSpaceY = src.screen_space_y;
-    dst->field_C = src.field_C;
-    dst->field_E = src.field_E;
-    dst->field_10 = src.field_10;
+    dst->indexToOverlayList = src.indexToOverlayList;
+    dst->spriteFrameTime = src.spriteFrameTime;
+    dst->animLength = src.animLength;
+    dst->screenSpaceX = src.screenSpaceX;
+    dst->screenSpaceY = src.screenSpaceY;
+    dst->pid = src.pid;
+    dst->projSize = src.projSize;
+    dst->fpDamageMod = src.fpDamageMod;
 }
 
 void Deserialize(const ActiveOverlay_MM7 &src, ActiveOverlay *dst) {
     memzero(dst);
 
     dst->field_0 = src.field_0;
-    dst->field_2 = src.field_2;
-    dst->sprite_frame_time = src.spriteFrameTime;
-    dst->field_6 = src.field_6;
-    dst->screen_space_x = src.screenSpaceX;
-    dst->screen_space_y = src.screenSpaceY;
-    dst->field_C = src.field_C;
-    dst->field_E = src.field_E;
-    dst->field_10 = src.field_10;
+    dst->indexToOverlayList = src.indexToOverlayList;
+    dst->spriteFrameTime = src.spriteFrameTime;
+    dst->animLength = src.animLength;
+    dst->screenSpaceX = src.screenSpaceX;
+    dst->screenSpaceY = src.screenSpaceY;
+    dst->pid = src.pid;
+    dst->projSize = src.projSize;
+    dst->fpDamageMod = src.fpDamageMod;
 }
 
 void Serialize(const ActiveOverlayList &src, ActiveOverlayList_MM7 *dst) {
@@ -1624,7 +1624,7 @@ void deserialize(const OverlayDesc_MM7 &src, OverlayDesc *dst) {
     dst->uOverlayID = src.uOverlayID;
     dst->uOverlayType = src.uOverlayType;
     dst->uSpriteFramesetID = src.uSpriteFramesetID;
-    dst->field_6 = src.field_6;
+    dst->spriteFramesetGroup = src.spriteFramesetGroup;
 }
 
 void deserialize(const PlayerFrame_MM7 &src, PlayerFrame *dst) {
