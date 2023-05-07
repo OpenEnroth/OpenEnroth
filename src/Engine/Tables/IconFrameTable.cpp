@@ -3,7 +3,6 @@
 #include "Engine/Engine.h"
 #include "Engine/Graphics/IRender.h"
 #include "Engine/Serialization/LegacyImages.h"
-#include "Engine/Serialization/Deserializer.h"
 
 #include "../LOD.h"
 
@@ -75,8 +74,7 @@ void IconFrameTable::FromFile(const Blob &data_mm6, const Blob &data_mm7, const 
     (void) data_mm8;
 
     pIcons.clear();
-
-    BlobDeserializer(data_mm7).ReadLegacyVector<IconFrame_MM7>(&pIcons);
+    Deserialize(data_mm7, appendVia<IconFrame_MM7>(&pIcons));
 
     for (size_t i = 0; i < pIcons.size(); ++i)
         pIcons[i].id = i;

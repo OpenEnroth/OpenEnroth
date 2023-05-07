@@ -16,7 +16,6 @@
 #include "Engine/Objects/SpriteObject.h"
 #include "Engine/Party.h"
 #include "Engine/Serialization/LegacyImages.h"
-#include "Engine/Serialization/Deserializer.h"
 
 #include "Media/Audio/OpenALSoundProvider.h"
 
@@ -45,11 +44,11 @@ void SoundList::FromFile(const Blob &data_mm6, const Blob &data_mm7, const Blob 
     std::vector<SoundInfo> sounds;
 
     if (data_mm6)
-        BlobDeserializer(data_mm6).ReadLegacyVector<SoundInfo_MM6>(&sounds, Deserializer::Append);
+        Deserialize(data_mm6, appendVia<SoundInfo_MM6>(&sounds));
     if (data_mm7)
-        BlobDeserializer(data_mm7).ReadLegacyVector<SoundInfo_MM7>(&sounds, Deserializer::Append);
+        Deserialize(data_mm7, appendVia<SoundInfo_MM7>(&sounds));
     if (data_mm8)
-        BlobDeserializer(data_mm8).ReadLegacyVector<SoundInfo_MM7>(&sounds, Deserializer::Append);
+        Deserialize(data_mm8, appendVia<SoundInfo_MM7>(&sounds));
 
     assert(!sounds.empty());
 

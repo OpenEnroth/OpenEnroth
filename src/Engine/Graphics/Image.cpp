@@ -9,7 +9,6 @@
 #include "Engine/Graphics/Texture.h"
 
 #include "Engine/Serialization/LegacyImages.h"
-#include "Engine/Serialization/Deserializer.h"
 
 #include "Library/Serialization/EnumSerialization.h"
 
@@ -55,7 +54,7 @@ void TextureFrameTable::FromFile(const Blob &data_mm6, const Blob &data_mm7, con
     (void) data_mm6;
     (void) data_mm8;
 
-    BlobDeserializer(data_mm7).ReadLegacyVector<TextureFrame_MM7>(&textures);
+    Deserialize(data_mm7, appendVia<TextureFrame_MM7>(&textures));
 
     assert(!textures.empty());
 }

@@ -4,7 +4,6 @@
 #include <utility>
 
 #include "Engine/Engine.h"
-#include "Engine/Serialization/Deserializer.h"
 #include "Engine/Serialization/LegacyImages.h"
 
 
@@ -373,11 +372,11 @@ void MonsterList::FromFile(const Blob &data_mm6, const Blob &data_mm7, const Blo
     pMonsters.clear();
 
     if (data_mm6)
-        BlobDeserializer(data_mm6).ReadLegacyVector<MonsterDesc_MM6>(&pMonsters, Deserializer::Append);
+        Deserialize(data_mm6, appendVia<MonsterDesc_MM6>(&pMonsters));
     if (data_mm7)
-        BlobDeserializer(data_mm7).ReadLegacyVector<MonsterDesc_MM7>(&pMonsters, Deserializer::Append);
+        Deserialize(data_mm7, appendVia<MonsterDesc_MM7>(&pMonsters));
     if (data_mm8)
-        BlobDeserializer(data_mm8).ReadLegacyVector<MonsterDesc_MM7>(&pMonsters, Deserializer::Append);
+        Deserialize(data_mm8, appendVia<MonsterDesc_MM7>(&pMonsters));
 
     assert(!pMonsters.empty());
 }

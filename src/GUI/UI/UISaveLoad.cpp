@@ -10,7 +10,6 @@
 #include "Engine/Graphics/ImageLoader.h"
 #include "Engine/Graphics/Viewport.h"
 #include "Engine/Serialization/LegacyImages.h"
-#include "Engine/Serialization/Deserializer.h"
 #include "Engine/Localization.h"
 #include "Engine/LOD.h"
 #include "Engine/MapInfo.h"
@@ -61,7 +60,7 @@ GUIWindow_Save::GUIWindow_Save() :
             pSavegameList->pSavegameHeader[i].pName = localization->GetString(LSTR_EMPTY_SAVESLOT);
         } else {
             pLODFile.Open(str);
-            BlobDeserializer(pLODFile.LoadRaw("header.bin")).ReadLegacy<SaveGameHeader_MM7>(&pSavegameList->pSavegameHeader[i]);
+            Deserialize(pLODFile.LoadRaw("header.bin"), via<SaveGameHeader_MM7>(&pSavegameList->pSavegameHeader[i]));
 
             if (pSavegameList->pSavegameHeader[i].pName.empty()) {
                 // blank so add something - suspect quicksaves
@@ -174,7 +173,7 @@ GUIWindow_Load::GUIWindow_Load(bool ingame) :
         }
 
         if (!pLODFile.Open(str)) __debugbreak();
-        BlobDeserializer(pLODFile.LoadRaw("header.bin")).ReadLegacy<SaveGameHeader_MM7>(&pSavegameList->pSavegameHeader[i]);
+        Deserialize(pLODFile.LoadRaw("header.bin"), via<SaveGameHeader_MM7>(&pSavegameList->pSavegameHeader[i]));
 
         if (iequals(pSavegameList->pFileList[i], localization->GetString(LSTR_AUTOSAVE_MM7))) {
             pSavegameList->pSavegameHeader[i].pName = localization->GetString(LSTR_AUTOSAVE);

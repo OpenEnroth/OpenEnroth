@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 3.20.4 FATAL_ERROR)
 
 add_subdirectory(Application)
+add_subdirectory(Binary)
 add_subdirectory(Compression)
 add_subdirectory(Config)
 add_subdirectory(Json)
