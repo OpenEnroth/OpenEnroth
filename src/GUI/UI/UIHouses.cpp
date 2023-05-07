@@ -2070,24 +2070,24 @@ void TempleDialog() {
             else
                 ddm = &pOutdoor->ddm;
 
-            if (ddm->uReputation > -5) {
-                ddm->uReputation = ddm->uReputation - 1;
-                if (ddm->uReputation - 1 < -5) ddm->uReputation = -5;
+            if (ddm->reputation > -5) {
+                ddm->reputation = ddm->reputation - 1;
+                if (ddm->reputation - 1 < -5) ddm->reputation = -5;
             }
             if ((uint8_t)byte_F8B1EF[pParty->activeCharacterIndex()] == pParty->uCurrentDayOfMonth % 7) {
-                if (ddm->uReputation <= -5) {
+                if (ddm->reputation <= -5) {
                     pushTempleSpell(SPELL_AIR_WIZARD_EYE);
                 }
-                if (ddm->uReputation <= -10) {
+                if (ddm->reputation <= -10) {
                     pushTempleSpell(SPELL_SPIRIT_PRESERVATION);
                 }
-                if (ddm->uReputation <= -15) {
+                if (ddm->reputation <= -15) {
                     pushTempleSpell(SPELL_BODY_PROTECTION_FROM_MAGIC);
                 }
-                if (ddm->uReputation <= -20) {
+                if (ddm->reputation <= -20) {
                     pushTempleSpell(SPELL_LIGHT_HOUR_OF_POWER);
                 }
-                if (ddm->uReputation <= -25) {
+                if (ddm->reputation <= -25) {
                     pushTempleSpell(SPELL_LIGHT_DAY_OF_PROTECTION);
                 }
             }

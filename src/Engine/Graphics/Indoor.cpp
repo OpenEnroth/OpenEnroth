@@ -274,18 +274,18 @@ void IndoorLocation::Load(const std::string &filename, int num_days_played, int 
             deserialize(blob, &delta, location, progressCallback);
 
             // Level was changed externally and we have a save there? Don't crash, just respawn.
-            if (delta.header.uNumFacesInBModels > 0 && delta.header.uNumDecorations > 0 &&
-                (delta.header.uNumFacesInBModels != pFaces.size() || delta.header.uNumDecorations != pLevelDecorations.size()))
+            if (delta.header.totalFacesCount > 0 && delta.header.decorationCount > 0 &&
+                (delta.header.totalFacesCount != pFaces.size() || delta.header.decorationCount != pLevelDecorations.size()))
                 respawnInitial = true;
 
             // Entering the level for the 1st time?
-            if (delta.header.uLastRepawnDay == 0)
+            if (delta.header.lastRepawnDay == 0)
                 respawnInitial = true;
 
             if (dword_6BE364_game_settings_1 & GAME_SETTINGS_LOADING_SAVEGAME_SKIP_RESPAWN)
                 respawn_interval_days = 0x1BAF800;
 
-            if (!respawnInitial && num_days_played - delta.header.uLastRepawnDay >= respawn_interval_days && pCurrentMapName != "d29.dlv")
+            if (!respawnInitial && num_days_played - delta.header.lastRepawnDay >= respawn_interval_days && pCurrentMapName != "d29.dlv")
                 respawnTimed = true;
         } catch (const Exception &e) {
             logger->error("Failed to load '{}', respawning location: {}", dlv_filename, e.what());
@@ -312,9 +312,9 @@ void IndoorLocation::Load(const std::string &filename, int num_days_played, int 
     deserialize(delta, this);
 
     if (respawnTimed || respawnInitial)
-        dlv.uLastRepawnDay = num_days_played;
+        dlv.lastRepawnDay = num_days_played;
     if (respawnTimed)
-        dlv.uNumRespawns++;
+        dlv.respawnCount++;
 }
 
 //----- (0049AC17) --------------------------------------------------------

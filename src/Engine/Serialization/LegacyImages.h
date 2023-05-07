@@ -1234,13 +1234,13 @@ void deserialize(const SoundInfo_MM7 &src, SoundInfo *dst);
 
 
 struct LocationHeader_MM7 {
-    int32_t uNumRespawns = 0;
-    int32_t uLastRepawnDay = 0;
-    int32_t uReputation = 0;
-    int32_t field_C_alert = 0; // Actually bool
-    uint32_t uNumFacesInBModels = 0;
-    uint32_t uNumDecorations = 0;
-    uint32_t uNumBModels = 0;
+    int32_t respawnCount = 0; // Number of times a location was respawned, including the initial spawn.
+    int32_t lastRepawnDay = 0; // Day of the last respawn (days since GameTime zero to last respawn).
+    int32_t reputation = 0; // Party reputation in this location.
+    int32_t field_C_alert = 0; // bool, ???
+    uint32_t totalFacesCount = 0; // Outdoor: total number of faces in all bmodels in the level. Indoor: total number of faces in the level.
+    uint32_t decorationCount = 0; // Total number of decorations.
+    uint32_t bmodelCount = 0; // Outdoor only: total number of bmodels.
     int32_t field_1C = 0;
     int32_t field_20 = 0;
     int32_t field_24 = 0;
@@ -1276,7 +1276,7 @@ MM_DECLARE_MEMCOPY_SERIALIZABLE(BLVHeader_MM7)
 
 struct OutdoorLocationTileType_MM7 {
     uint16_t tileset;
-    uint16_t uTileID;
+    uint16_t tileId;
 };
 static_assert(sizeof(OutdoorLocationTileType_MM7) == 4);
 MM_DECLARE_MEMCOPY_SERIALIZABLE(OutdoorLocationTileType_MM7)
@@ -1285,12 +1285,12 @@ void deserialize(const OutdoorLocationTileType_MM7 &src, OutdoorLocationTileType
 
 
 struct SaveGameHeader_MM7 {
-    std::array<char, 20> pName;
-    std::array<char, 20> pLocationName;
-    int64_t playing_time;
+    std::array<char, 20> name;
+    std::array<char, 20> locationName;
+    int64_t playingTime;
     std::array<char, 52> field_30;
 };
-static_assert(sizeof(SaveGameHeader_MM7) == 0x64, "Wrong type size");
+static_assert(sizeof(SaveGameHeader_MM7) == 0x64);
 MM_DECLARE_MEMCOPY_SERIALIZABLE(SaveGameHeader_MM7)
 
 void serialize(const SaveGameHeader &src, SaveGameHeader_MM7 *dst);

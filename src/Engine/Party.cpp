@@ -1000,7 +1000,7 @@ int Party::GetPartyReputation() {
     if (CheckHiredNPCSpeciality(Gypsy)) npcRep += 5;
     if (CheckHiredNPCSpeciality(Duper)) npcRep += 5;
     if (CheckHiredNPCSpeciality(FallenWizard)) npcRep += 5;
-    return npcRep + ddm_dlv->uReputation;
+    return npcRep + ddm_dlv->reputation;
 }
 
 //----- (004269A2) --------------------------------------------------------

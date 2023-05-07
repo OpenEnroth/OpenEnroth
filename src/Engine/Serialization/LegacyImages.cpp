@@ -1758,20 +1758,20 @@ void deserialize(const MapEventVariables_MM7 &src, MapEventVariables *dst) {
 
 void deserialize(const OutdoorLocationTileType_MM7 &src, OutdoorLocationTileType *dst) {
     dst->tileset = static_cast<Tileset>(src.tileset);
-    dst->uTileID = src.uTileID;
+    dst->uTileID = src.tileId;
 }
 
 void serialize(const SaveGameHeader &src, SaveGameHeader_MM7 *dst) {
     memzero(dst);
 
-    serialize(src.pName, &dst->pName);
-    serialize(src.pLocationName, &dst->pLocationName);
-    serialize(src.playing_time, &dst->playing_time);
+    serialize(src.name, &dst->name);
+    serialize(src.locationName, &dst->locationName);
+    serialize(src.playingTime, &dst->playingTime);
 }
 
 void deserialize(const SaveGameHeader_MM7 &src, SaveGameHeader *dst) {
-    deserialize(src.pName, &dst->pName);
-    deserialize(src.pLocationName, &dst->pLocationName);
-    deserialize(src.playing_time, &dst->playing_time);
+    deserialize(src.name, &dst->name);
+    deserialize(src.locationName, &dst->locationName);
+    deserialize(src.playingTime, &dst->playingTime);
     // field_30 is ignored.
 }

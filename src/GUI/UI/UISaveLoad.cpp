@@ -58,16 +58,16 @@ GUIWindow_Save::GUIWindow_Save() :
         std::string str = MakeDataPath("saves", file_name);
         if (!std::filesystem::exists(str)) {
             pSavegameList->pSavegameUsedSlots[i] = false;
-            pSavegameList->pSavegameHeader[i].pName = localization->GetString(LSTR_EMPTY_SAVESLOT);
+            pSavegameList->pSavegameHeader[i].name = localization->GetString(LSTR_EMPTY_SAVESLOT);
         } else {
             pLODFile.Open(str);
             deserialize(pLODFile.LoadRaw("header.bin"), via<SaveGameHeader_MM7>(&pSavegameList->pSavegameHeader[i]));
 
-            if (pSavegameList->pSavegameHeader[i].pName.empty()) {
+            if (pSavegameList->pSavegameHeader[i].name.empty()) {
                 // blank so add something - suspect quicksaves
                 std::string newname = pSavegameList->pFileList[i];
                 std::string test = newname.substr(0, newname.size() - 4);
-                pSavegameList->pSavegameHeader[i].pName = test;
+                pSavegameList->pSavegameHeader[i].name = test;
             }
 
             pSavegameList->pSavegameThumbnails[i] = render->CreateTexture_PCXFromLOD(&pLODFile, "image.pcx");
@@ -161,7 +161,7 @@ GUIWindow_Load::GUIWindow_Load(bool ingame) :
         std::string str = MakeDataPath("saves", pSavegameList->pFileList[i]);
         if (!std::filesystem::exists(str)) {
             pSavegameList->pSavegameUsedSlots[i] = false;
-            pSavegameList->pSavegameHeader[i].pName = localization->GetString(LSTR_EMPTY_SAVESLOT);
+            pSavegameList->pSavegameHeader[i].name = localization->GetString(LSTR_EMPTY_SAVESLOT);
             continue;
         }
 
@@ -177,14 +177,14 @@ GUIWindow_Load::GUIWindow_Load(bool ingame) :
         deserialize(pLODFile.LoadRaw("header.bin"), via<SaveGameHeader_MM7>(&pSavegameList->pSavegameHeader[i]));
 
         if (iequals(pSavegameList->pFileList[i], localization->GetString(LSTR_AUTOSAVE_MM7))) {
-            pSavegameList->pSavegameHeader[i].pName = localization->GetString(LSTR_AUTOSAVE);
+            pSavegameList->pSavegameHeader[i].name = localization->GetString(LSTR_AUTOSAVE);
         }
 
-        if (pSavegameList->pSavegameHeader[i].pName.empty()) {
+        if (pSavegameList->pSavegameHeader[i].name.empty()) {
             // blank so add something - suspect quicksaves
             std::string newname = pSavegameList->pFileList[i];
             std::string test = newname.substr(0, newname.size() - 4);
-            pSavegameList->pSavegameHeader[i].pName = test;
+            pSavegameList->pSavegameHeader[i].name = test;
         }
 
         pSavegameList->pSavegameThumbnails[i] = render->CreateTexture_PCXFromLOD(&pLODFile, "image.pcx");
@@ -257,10 +257,10 @@ static void UI_DrawSaveLoad(bool save) {
         }
         // Draw map name
         save_load_window.DrawTitleText(pFontSmallnum, 0, 0, 0,
-                                       pMapStats->pInfos[pMapStats->GetMapInfo(pSavegameList->pSavegameHeader[pSavegameList->selectedSlot].pLocationName)].pName, 3);
+                                       pMapStats->pInfos[pMapStats->GetMapInfo(pSavegameList->pSavegameHeader[pSavegameList->selectedSlot].locationName)].pName, 3);
 
         // Draw date
-        GameTime savegame_time = pSavegameList->pSavegameHeader[pSavegameList->selectedSlot].playing_time;
+        GameTime savegame_time = pSavegameList->pSavegameHeader[pSavegameList->selectedSlot].playingTime;
         auto savegame_hour = savegame_time.GetHoursOfDay();
 
         save_load_window.uFrameY = pGUIWindow_CurrentMenu->uFrameY + 261;
@@ -290,7 +290,7 @@ static void UI_DrawSaveLoad(bool save) {
 
     if (pGUIWindow_CurrentMenu->keyboard_input_status == WINDOW_INPUT_CONFIRMED) {
         pGUIWindow_CurrentMenu->keyboard_input_status = WINDOW_INPUT_NONE;
-        pSavegameList->pSavegameHeader[pSavegameList->selectedSlot].pName = keyboardInputHandler->GetTextInput();
+        pSavegameList->pSavegameHeader[pSavegameList->selectedSlot].name = keyboardInputHandler->GetTextInput();
         pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_SaveGame, 0, 0);
     } else {
         if (pGUIWindow_CurrentMenu->keyboard_input_status == WINDOW_INPUT_CANCELLED)
@@ -302,8 +302,8 @@ static void UI_DrawSaveLoad(bool save) {
             {pFontSmallnum->AlignText_Center(186, localization->GetString(LSTR_LOADING)) + 25, 220}, 0,
             localization->GetString(LSTR_LOADING), 0, 0, 0);
         pGUIWindow_CurrentMenu->DrawTextInRect(pFontSmallnum,
-            {pFontSmallnum->AlignText_Center(186, pSavegameList->pSavegameHeader[pSavegameList->selectedSlot].pName) + 25, 262}, 0,
-            pSavegameList->pSavegameHeader[pSavegameList->selectedSlot].pName, 185, 0);
+                                               {pFontSmallnum->AlignText_Center(186, pSavegameList->pSavegameHeader[pSavegameList->selectedSlot].name) + 25, 262}, 0,
+                                               pSavegameList->pSavegameHeader[pSavegameList->selectedSlot].name, 185, 0);
         pGUIWindow_CurrentMenu->DrawText(pFontSmallnum,
             {pFontSmallnum->AlignText_Center(186, localization->GetString(LSTR_PLEASE_WAIT)) + 25, 304}, 0,
             localization->GetString(LSTR_PLEASE_WAIT), 0, 0, 0);
@@ -337,7 +337,7 @@ static void UI_DrawSaveLoad(bool save) {
             }
             if (pGUIWindow_CurrentMenu->keyboard_input_status != WINDOW_INPUT_IN_PROGRESS || i != pSavegameList->selectedSlot) {
                 pGUIWindow_CurrentMenu->DrawTextInRect(pFontSmallnum, {27, slot_Y}, i == pSavegameList->selectedSlot ? colorTable.LaserLemon.c16() : 0,
-                                                       pSavegameList->pSavegameHeader[i].pName, 185, 0);
+                                                       pSavegameList->pSavegameHeader[i].name, 185, 0);
             } else {
                 pGUIWindow_CurrentMenu->DrawFlashingInputCursor(pGUIWindow_CurrentMenu->DrawTextInRect(pFontSmallnum, {27, slot_Y},
                     i == pSavegameList->selectedSlot ? colorTable.LaserLemon.c16() : 0, keyboardInputHandler->GetTextInput().c_str(), 175, 1) + 27, slot_Y, pFontSmallnum);
@@ -378,7 +378,7 @@ void MainMenuLoad_EventLoop() {
             } else {
                 // typing in the line
                 keyboardInputHandler->StartTextInput(TextInputType::Text, 19, pGUIWindow_CurrentMenu);
-                keyboardInputHandler->SetTextInput(pSavegameList->pSavegameHeader[pSavegameList->selectedSlot].pName);
+                keyboardInputHandler->SetTextInput(pSavegameList->pSavegameHeader[pSavegameList->selectedSlot].name);
             }
             break;
         }

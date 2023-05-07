@@ -1214,9 +1214,9 @@ void Actor::ApplyFineForKillingPeasant(unsigned int uActorID) {
     if (pParty->uFine > 4000000) pParty->uFine = 4000000;
 
     if (uCurrentlyLoadedLevelType == LEVEL_Outdoor) {
-        if (pOutdoor->ddm.uReputation < 10000) pOutdoor->ddm.uReputation++;
+        if (pOutdoor->ddm.reputation < 10000) pOutdoor->ddm.reputation++;
     } else if (uCurrentlyLoadedLevelType == LEVEL_Indoor) {
-        if (pIndoor->dlv.uReputation < 10000) pIndoor->dlv.uReputation++;
+        if (pIndoor->dlv.reputation < 10000) pIndoor->dlv.reputation++;
     } else {
         assert(false);
     }
@@ -1376,7 +1376,7 @@ void Actor::StealFrom(unsigned int uActorID) {
         if (v5) v4 = pMapStats->pInfos[v5]._steal_perm;
         v6 = &pOutdoor->ddm;
         if (uCurrentlyLoadedLevelType != LEVEL_Outdoor) v6 = &pIndoor->dlv;
-        pPlayer->StealFromActor(uActorID, v4, v6->uReputation++);
+        pPlayer->StealFromActor(uActorID, v4, v6->reputation++);
         v8 = pPlayer->GetAttackRecoveryTime(false);
         if (v8 < engine->config->gameplay.MinRecoveryMelee.value()) v8 = engine->config->gameplay.MinRecoveryMelee.value();
         if (!pParty->bTurnBasedModeOn)

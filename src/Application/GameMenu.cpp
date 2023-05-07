@@ -128,8 +128,8 @@ void Menu::EventLoop() {
                     dword_6BE138 = v10;
                 } else {
                     keyboardInputHandler->StartTextInput(TextInputType::Text, 19, pGUIWindow_CurrentMenu);
-                    if (pSavegameList->pSavegameHeader[pSavegameList->selectedSlot].pName == localization->GetString(LSTR_EMPTY_SAVESLOT)) {
-                        keyboardInputHandler->SetTextInput(pSavegameList->pSavegameHeader[pSavegameList->selectedSlot].pName);
+                    if (pSavegameList->pSavegameHeader[pSavegameList->selectedSlot].name == localization->GetString(LSTR_EMPTY_SAVESLOT)) {
+                        keyboardInputHandler->SetTextInput(pSavegameList->pSavegameHeader[pSavegameList->selectedSlot].name);
                     }
                 }
             }
@@ -144,7 +144,7 @@ void Menu::EventLoop() {
                 pAudioPlayer->playUISound(SOUND_StartMainChoice02);
                 if (pGUIWindow_CurrentMenu->keyboard_input_status == WINDOW_INPUT_IN_PROGRESS) {
                     keyboardInputHandler->SetWindowInputStatus(WINDOW_INPUT_NONE);
-                    pSavegameList->pSavegameHeader[pSavegameList->selectedSlot].pName = keyboardInputHandler->GetTextInput();
+                    pSavegameList->pSavegameHeader[pSavegameList->selectedSlot].name = keyboardInputHandler->GetTextInput();
                 }
                 DoSavegame(pSavegameList->selectedSlot);
                 continue;
