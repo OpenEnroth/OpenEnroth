@@ -141,9 +141,9 @@ GUIWindow_GameMenu::GUIWindow_GameMenu()
 
     pBtn_NewGame = CreateButton({0x13u, 0x9Bu}, {0xD6u, 0x28u}, 1, 0,
         UIMSG_StartNewGame, 0, InputAction::NewGame, localization->GetString(LSTR_NEW_GAME), {game_ui_menu_new});
-    pBtn_SaveGame = CreateButton({0x13u, 0xD1u}, {0xD6u, 0x28u}, 1, 0,
+    pBtn_SaveGame = CreateButton("GameMenu_SaveGame", {0x13u, 0xD1u}, {0xD6u, 0x28u}, 1, 0,
         UIMSG_Game_OpenSaveGameDialog, 0, InputAction::SaveGame, localization->GetString(LSTR_SAVE_GAME), {game_ui_menu_save});
-    pBtn_LoadGame = CreateButton({19, 263}, {0xD6u, 0x28u}, 1, 0,
+    pBtn_LoadGame = CreateButton("GameMenu_LoadGame", {19, 263}, {0xD6u, 0x28u}, 1, 0,
         UIMSG_Game_OpenLoadGameDialog, 0, InputAction::LoadGame, localization->GetString(LSTR_LOAD_GAME), {game_ui_menu_load});
     pBtn_GameControls = CreateButton({241, 155}, {214, 40}, 1, 0,
         UIMSG_Game_OpenOptionsDialog, 0, InputAction::Options, localization->GetString(LSTR_OPTIONS), {game_ui_menu_controls});
