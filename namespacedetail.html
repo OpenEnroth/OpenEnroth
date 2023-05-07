@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;0471b08</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;540f74d</span>
    </div>
   </td>
  </tr>
@@ -80,9 +80,19 @@ $(function() {
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Classes</h2></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structdetail_1_1AppendDstVector.html">AppendDstVector</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structdetail_1_1AppendViaDstVector.html">AppendViaDstVector</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structdetail_1_1BlobDeserializer.html">BlobDeserializer</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structdetail_1_1BlobSerializer.html">BlobSerializer</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdetail_1_1EnumSerializationTable.html">EnumSerializationTable</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdetail_1_1EnumSerializer.html">EnumSerializer</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structdetail_1_1PresizedDstVector.html">PresizedDstVector</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdetail_1_1RangeIterator.html">RangeIterator</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -95,6 +105,10 @@ Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structdetail_1_1StringSerializer.html">StringSerializer</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdetail_1_1TypedHandler.html">TypedHandler</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structdetail_1_1UnsizedSrcVector.html">UnsizedSrcVector</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structdetail_1_1ViaDst.html">ViaDst</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="enum-members" name="enum-members"></a>
@@ -109,6 +123,15 @@ Functions</h2></td></tr>
 <tr class="separator:a7268102572d1b3c5e091ea5b0ade1182"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab1892a4a5733ec83f0734ad3b41ad4f6"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacedetail.html#ab1892a4a5733ec83f0734ad3b41ad4f6">globalWaitForMessages</a> ()</td></tr>
 <tr class="separator:ab1892a4a5733ec83f0734ad3b41ad4f6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a85ceb129de2d8df4c58ab6a2b408950a"><td class="memTemplParams" colspan="2">template&lt;class T , size_t N&gt; </td></tr>
+<tr class="memitem:a85ceb129de2d8df4c58ab6a2b408950a"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacedetail.html#a85ceb129de2d8df4c58ab6a2b408950a">DeserializeSpan</a> (<a class="el" href="classInputStream.html">InputStream</a> &amp;src, std::span&lt; T, <a class="el" href="PlatformEnums_8h.html#a2ba59747730ab559dd1191f51081eecca8d9c307cb7f3c4a32822a51922d1ceaa">N</a> &gt; dst)</td></tr>
+<tr class="separator:a85ceb129de2d8df4c58ab6a2b408950a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab714d07970c2130fa9f5be673609ca1b"><td class="memTemplParams" colspan="2">template&lt;class T , size_t N&gt; </td></tr>
+<tr class="memitem:ab714d07970c2130fa9f5be673609ca1b"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacedetail.html#ab714d07970c2130fa9f5be673609ca1b">SerializeSpan</a> (std::span&lt; const T, <a class="el" href="PlatformEnums_8h.html#a2ba59747730ab559dd1191f51081eecca8d9c307cb7f3c4a32822a51922d1ceaa">N</a> &gt; src, <a class="el" href="classOutputStream.html">OutputStream</a> *dst)</td></tr>
+<tr class="separator:ab714d07970c2130fa9f5be673609ca1b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5dc59543dedbdd59c6609debb9f92aa8"><td class="memTemplParams" colspan="2">template&lt;class T &gt; </td></tr>
+<tr class="memitem:a5dc59543dedbdd59c6609debb9f92aa8"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacedetail.html#a5dc59543dedbdd59c6609debb9f92aa8">DeserializeAppend</a> (<a class="el" href="classInputStream.html">InputStream</a> &amp;src, std::vector&lt; T &gt; *dst, size_t size)</td></tr>
+<tr class="separator:a5dc59543dedbdd59c6609debb9f92aa8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abc7d0567dd4f86b4f4589749e91bd294"><td class="memTemplParams" colspan="2">template&lt;class T &gt; </td></tr>
 <tr class="memitem:abc7d0567dd4f86b4f4589749e91bd294"><td class="memTemplItemLeft" align="right" valign="top">const char *&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacedetail.html#abc7d0567dd4f86b4f4589749e91bd294">typeName</a> ()</td></tr>
 <tr class="separator:abc7d0567dd4f86b4f4589749e91bd294"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -146,6 +169,72 @@ Variables</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Function Documentation</h2>
+<a id="a5dc59543dedbdd59c6609debb9f92aa8" name="a5dc59543dedbdd59c6609debb9f92aa8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5dc59543dedbdd59c6609debb9f92aa8">&#9670;&#160;</a></span>DeserializeAppend()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class T &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">void detail::DeserializeAppend </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classInputStream.html">InputStream</a> &amp;&#160;</td>
+          <td class="paramname"><em>src</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::vector&lt; T &gt; *&#160;</td>
+          <td class="paramname"><em>dst</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>size</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a85ceb129de2d8df4c58ab6a2b408950a" name="a85ceb129de2d8df4c58ab6a2b408950a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a85ceb129de2d8df4c58ab6a2b408950a">&#9670;&#160;</a></span>DeserializeSpan()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class T , size_t N&gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">void detail::DeserializeSpan </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classInputStream.html">InputStream</a> &amp;&#160;</td>
+          <td class="paramname"><em>src</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::span&lt; T, <a class="el" href="PlatformEnums_8h.html#a2ba59747730ab559dd1191f51081eecca8d9c307cb7f3c4a32822a51922d1ceaa">N</a> &gt;&#160;</td>
+          <td class="paramname"><em>dst</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="a7268102572d1b3c5e091ea5b0ade1182" name="a7268102572d1b3c5e091ea5b0ade1182"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a7268102572d1b3c5e091ea5b0ade1182">&#9670;&#160;</a></span>globalProcessMessages()</h2>
 
@@ -174,6 +263,36 @@ Variables</h2></td></tr>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ab714d07970c2130fa9f5be673609ca1b" name="ab714d07970c2130fa9f5be673609ca1b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab714d07970c2130fa9f5be673609ca1b">&#9670;&#160;</a></span>SerializeSpan()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class T , size_t N&gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">void detail::SerializeSpan </td>
+          <td>(</td>
+          <td class="paramtype">std::span&lt; const T, <a class="el" href="PlatformEnums_8h.html#a2ba59747730ab559dd1191f51081eecca8d9c307cb7f3c4a32822a51922d1ceaa">N</a> &gt;&#160;</td>
+          <td class="paramname"><em>src</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classOutputStream.html">OutputStream</a> *&#160;</td>
+          <td class="paramname"><em>dst</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
         </tr>
       </table>
 </div><div class="memdoc">

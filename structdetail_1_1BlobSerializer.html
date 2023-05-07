@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.9.5"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>OpenEnroth: src/Engine/Serialization/Deserializer.h File Reference</title>
+<title>OpenEnroth: detail::BlobSerializer Struct Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;0471b08</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;540f74d</span>
    </div>
   </td>
  </tr>
@@ -69,34 +69,57 @@ $(function() {
 
 <div id="nav-path" class="navpath">
   <ul>
-<li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li><li class="navelem"><a class="el" href="dir_3072bc1f55ed1280fe4fbe6b21c78379.html">Engine</a></li><li class="navelem"><a class="el" href="dir_6795a471b3be4bfaa0b0a47008154f6f.html">Serialization</a></li>  </ul>
+<li class="navelem"><a class="el" href="namespacedetail.html">detail</a></li><li class="navelem"><a class="el" href="structdetail_1_1BlobSerializer.html">BlobSerializer</a></li>  </ul>
 </div>
 </div><!-- top -->
 <div class="header">
   <div class="summary">
-<a href="#nested-classes">Classes</a>  </div>
-  <div class="headertitle"><div class="title">Deserializer.h File Reference</div></div>
+<a href="#pub-methods">Public Member Functions</a> &#124;
+<a href="structdetail_1_1BlobSerializer-members.html">List of all members</a>  </div>
+  <div class="headertitle"><div class="title">detail::BlobSerializer Struct Reference</div></div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><code>#include &lt;cassert&gt;</code><br />
-<code>#include &lt;memory&gt;</code><br />
-<code>#include &lt;string&gt;</code><br />
-<code>#include &lt;type_traits&gt;</code><br />
-<code>#include &lt;utility&gt;</code><br />
-<code>#include &lt;vector&gt;</code><br />
-<code>#include &quot;<a class="el" href="Blob_8h.html">Utility/Memory/Blob.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="InputStream_8h.html">Utility/Streams/InputStream.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="MemoryInputStream_8h.html">Utility/Streams/MemoryInputStream.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="Embedded_8h.html">Utility/Embedded.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="Exception_8h.html">Utility/Exception.h</a>&quot;</code><br />
-</div><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
-Classes</h2></td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDeserializer.html">Deserializer</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classBlobDeserializer.html">BlobDeserializer</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+
+<p><code>#include &lt;BinarySerialization.h&gt;</code></p>
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
+Public Member Functions</h2></td></tr>
+<tr class="memitem:a388ed7f4e280eb5f496c0fd4ae629f45"><td class="memTemplParams" colspan="2">template&lt;class T &gt; </td></tr>
+<tr class="memitem:a388ed7f4e280eb5f496c0fd4ae629f45"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="classBlob.html">Blob</a>&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="structdetail_1_1BlobSerializer.html#a388ed7f4e280eb5f496c0fd4ae629f45">operator()</a> (const T &amp;value) const</td></tr>
+<tr class="separator:a388ed7f4e280eb5f496c0fd4ae629f45"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<h2 class="groupheader">Member Function Documentation</h2>
+<a id="a388ed7f4e280eb5f496c0fd4ae629f45" name="a388ed7f4e280eb5f496c0fd4ae629f45"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a388ed7f4e280eb5f496c0fd4ae629f45">&#9670;&#160;</a></span>operator()()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class T &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classBlob.html">Blob</a> detail::BlobSerializer::operator() </td>
+          <td>(</td>
+          <td class="paramtype">const T &amp;&#160;</td>
+          <td class="paramname"><em>value</em></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<hr/>The documentation for this struct was generated from the following file:<ul>
+<li>src/Library/Binary/<a class="el" href="BinarySerialization_8h.html">BinarySerialization.h</a></li>
+</ul>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>

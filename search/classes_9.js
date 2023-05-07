@@ -53,12 +53,13 @@ var searchData=
   ['inputstream_50',['InputStream',['../classInputStream.html',1,'']]],
   ['irender_51',['IRender',['../classIRender.html',1,'']]],
   ['irenderfactory_52',['IRenderFactory',['../classGraphics_1_1IRenderFactory.html',1,'Graphics']]],
-  ['item_5fvariation_53',['ITEM_VARIATION',['../structITEM__VARIATION.html',1,'']]],
-  ['itemdesc_54',['ItemDesc',['../structItemDesc.html',1,'']]],
-  ['itemenchantment_55',['ItemEnchantment',['../structItemEnchantment.html',1,'']]],
-  ['itemgen_56',['ItemGen',['../structItemGen.html',1,'']]],
-  ['itemgen_5fmm7_57',['ItemGen_MM7',['../structItemGen__MM7.html',1,'']]],
-  ['itemspecialenchantment_58',['ItemSpecialEnchantment',['../structItemSpecialEnchantment.html',1,'']]],
-  ['itemtable_59',['ItemTable',['../structItemTable.html',1,'']]],
-  ['ivideodatasource_60',['IVideoDataSource',['../classIVideoDataSource.html',1,'']]]
+  ['is_5fmemcopy_5fserializable_53',['is_memcopy_serializable',['../structis__memcopy__serializable.html',1,'']]],
+  ['item_5fvariation_54',['ITEM_VARIATION',['../structITEM__VARIATION.html',1,'']]],
+  ['itemdesc_55',['ItemDesc',['../structItemDesc.html',1,'']]],
+  ['itemenchantment_56',['ItemEnchantment',['../structItemEnchantment.html',1,'']]],
+  ['itemgen_57',['ItemGen',['../structItemGen.html',1,'']]],
+  ['itemgen_5fmm7_58',['ItemGen_MM7',['../structItemGen__MM7.html',1,'']]],
+  ['itemspecialenchantment_59',['ItemSpecialEnchantment',['../structItemSpecialEnchantment.html',1,'']]],
+  ['itemtable_60',['ItemTable',['../structItemTable.html',1,'']]],
+  ['ivideodatasource_61',['IVideoDataSource',['../classIVideoDataSource.html',1,'']]]
 ];
