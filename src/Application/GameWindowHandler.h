@@ -10,8 +10,6 @@
 #include "Io/Mouse.h"
 #include "Utility/Geometry/Size.h"
 
-#include "GameKeyboardController.h"
-
 using Io::Mouse;
 
 class GameConfig;
@@ -20,10 +18,6 @@ class GameWindowHandler : public PlatformEventFilter {
  public:
     GameWindowHandler();
     virtual ~GameWindowHandler();
-
-    GameKeyboardController *KeyboardController() const {
-        return keyboardController_.get();
-    }
 
     // TODO(captainurist): this probably doesn't even belong here. Find a place to move to.
     void UpdateWindowFromConfig(const GameConfig *config);
@@ -74,5 +68,4 @@ class GameWindowHandler : public PlatformEventFilter {
 
  private:
     std::shared_ptr<Mouse> mouse = nullptr;
-    std::unique_ptr<GameKeyboardController> keyboardController_;
 };

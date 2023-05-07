@@ -4,23 +4,22 @@
 
 #include "Utility/IndexedArray.h"
 
-#include "Library/Application/PlatformApplicationAware.h"
+#include "Platform/Filters/PlatformEventFilter.h"
 
 #include "Io/IKeyboardController.h"
 
-// TODO(captainurist): deriving from PlatformApplicationAware is a temporary (and ugly!) measure.
-// We need it so that `EngineTracer` can call reset. Just turn this one into an event filter!
-class GameKeyboardController: public Io::IKeyboardController, public PlatformApplicationAware {
+class GameKeyboardController: public Io::IKeyboardController, public PlatformEventFilter {
  public:
     GameKeyboardController();
 
     virtual bool ConsumeKeyPress(PlatformKey key) override;
     virtual bool IsKeyDown(PlatformKey key) const override;
 
-    void ProcessKeyPressEvent(PlatformKey key);
-    void ProcessKeyReleaseEvent(PlatformKey key);
-
     void reset();
+
+ private:
+    virtual bool keyPressEvent(const PlatformKeyEvent *event) override;
+    virtual bool keyReleaseEvent(const PlatformKeyEvent *event) override;
 
  private:
     IndexedArray<bool, PlatformKey::Count> isKeyDown_ = {{}};
