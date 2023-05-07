@@ -5,6 +5,6 @@
 
 // TODO(Nik-RE-dev): move remaining globals
 
-_2devent p2DEvents[525];
+std::array<_2devent, 525> p2DEvents;
 
 MapEventVariables mapEventVariables;
