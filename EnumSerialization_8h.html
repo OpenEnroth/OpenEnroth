@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;5f94fea</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;b00c96c</span>
    </div>
   </td>
  </tr>
@@ -301,17 +301,17 @@ Macros</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<b>Value:</b><div class="fragment"><div class="line">    <span class="keywordtype">void</span> <a class="code hl_function" href="StandardSerialization_8cpp.html#abecef40087fb695953bb50dda6b9fbd0">serialize</a>(<span class="keyword">const</span> TYPE &amp;src, std::string *dst) {                                                                 \</div>
+<b>Value:</b><div class="fragment"><div class="line">    <span class="keywordtype">void</span> <a class="code hl_function" href="CommonImages_8h.html#aedf504c97b0477f0cf4a72341191773b">serialize</a>(<span class="keyword">const</span> TYPE &amp;src, std::string *dst) {                                                                 \</div>
 <div class="line">        if (!<a class="code hl_function" href="StandardSerialization_8cpp.html#a2e030070a47872390fb1f3ec08447b5e">trySerialize</a>(src, dst))                                                                                    \</div>
 <div class="line">            throwEnumSerializationError(src, #TYPE);                                                                    \</div>
 <div class="line">    }                                                                                                                   \</div>
 <div class="line">                                                                                                                        \</div>
-<div class="line">    <span class="keywordtype">void</span> <a class="code hl_function" href="StandardSerialization_8cpp.html#a969d299d395d3e6959278443a4cf7cf9">deserialize</a>(std::string_view src, TYPE *dst) {                                                                 \</div>
+<div class="line">    <span class="keywordtype">void</span> <a class="code hl_function" href="CommonImages_8h.html#a554f780aa7e3cee149be4ece79aa928e">deserialize</a>(std::string_view src, TYPE *dst) {                                                                 \</div>
 <div class="line">        if (!<a class="code hl_function" href="StandardSerialization_8cpp.html#a897b4104dc916637eb6e69bd81724456">tryDeserialize</a>(src, dst))                                                                                  \</div>
 <div class="line">            throwDeserializationError(src, #TYPE);                                                                      \</div>
 <div class="line">    }</div>
-<div class="ttc" id="aStandardSerialization_8cpp_html_a969d299d395d3e6959278443a4cf7cf9"><div class="ttname"><a href="StandardSerialization_8cpp.html#a969d299d395d3e6959278443a4cf7cf9">deserialize</a></div><div class="ttdeci">void deserialize(std::string_view src, bool *dst)</div><div class="ttdef"><b>Definition:</b> StandardSerialization.cpp:53</div></div>
-<div class="ttc" id="aStandardSerialization_8cpp_html_abecef40087fb695953bb50dda6b9fbd0"><div class="ttname"><a href="StandardSerialization_8cpp.html#abecef40087fb695953bb50dda6b9fbd0">serialize</a></div><div class="ttdeci">void serialize(const bool &amp;src, std::string *dst)</div><div class="ttdef"><b>Definition:</b> StandardSerialization.cpp:49</div></div>
+<div class="ttc" id="aCommonImages_8h_html_a554f780aa7e3cee149be4ece79aa928e"><div class="ttname"><a href="CommonImages_8h.html#a554f780aa7e3cee149be4ece79aa928e">deserialize</a></div><div class="ttdeci">static void deserialize(const T &amp;src, T *dst)</div><div class="ttdef"><b>Definition:</b> CommonImages.h:16</div></div>
+<div class="ttc" id="aCommonImages_8h_html_aedf504c97b0477f0cf4a72341191773b"><div class="ttname"><a href="CommonImages_8h.html#aedf504c97b0477f0cf4a72341191773b">serialize</a></div><div class="ttdeci">static void serialize(const T &amp;src, T *dst)</div><div class="ttdef"><b>Definition:</b> CommonImages.h:11</div></div>
 </div><!-- fragment -->
 </div>
 </div>

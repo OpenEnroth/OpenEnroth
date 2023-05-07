@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;5f94fea</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;b00c96c</span>
    </div>
   </td>
  </tr>
@@ -126,6 +126,10 @@ template&lt;class T &gt; </div>
   </tr>
 </table>
 </div><div class="memdoc">
+<p >Ranges-friendly binary deserialization object.</p>
+<p >Can be used directly as <code>return fromBlob&lt;T&gt;(blob)</code>, or passed into <code>std::views::transform</code>.</p>
+<p >Under the hood it's calling the <code>deserialize</code> function using argument-dependent lookup.</p>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="BinarySerialization_8h.html#abcfed470c1f1b659a4e6f01096272792">toBlob</a> </dd></dl>
 
 </div>
 </div>
@@ -148,6 +152,10 @@ template&lt;class T &gt; </div>
   </tr>
 </table>
 </div><div class="memdoc">
+<p >Ranges-friendly binary serialization object.</p>
+<p >Can be used directly as <code>return <a class="el" href="BinarySerialization_8h.html#abcfed470c1f1b659a4e6f01096272792">toBlob(someStruct)</a></code>, or passed into <code>std::views::transform</code>.</p>
+<p >Under the hood it's calling the <code>serialize</code> function using argument-dependent lookup.</p>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="BinarySerialization_8h.html#aef8c61524d13a175df462d251dc85156">fromBlob</a> </dd></dl>
 
 </div>
 </div>

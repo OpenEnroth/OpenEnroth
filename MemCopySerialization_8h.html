@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;5f94fea</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;b00c96c</span>
    </div>
   </td>
  </tr>
@@ -102,14 +102,14 @@ Functions</h2></td></tr>
 <tr class="memitem:a9f79293cdcf50ae91bb23b4799c9821f"><td class="memTemplParams" colspan="2">template&lt;class T &gt; </td></tr>
 <tr class="memitem:a9f79293cdcf50ae91bb23b4799c9821f"><td class="memTemplItemLeft" align="right" valign="top">constexpr std::is_arithmetic&lt; T &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="MemCopySerialization_8h.html#a9f79293cdcf50ae91bb23b4799c9821f">isMemCopySerializable</a> (std::type_identity&lt; T &gt;)</td></tr>
 <tr class="separator:a9f79293cdcf50ae91bb23b4799c9821f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad8875689ceca36fe604b654268ede190"><td class="memTemplParams" colspan="2">template&lt;class T &gt; <br />
+<tr class="memitem:a10f1523217d3404f3478eacb12cb78dc"><td class="memTemplParams" colspan="2">template&lt;class T &gt; <br />
 requires <a class="el" href="MemCopySerialization_8h.html#a1020e86d4a3a2f3646c53d69404efd48">is_memcopy_serializable_v</a>&lt;T&gt;</td></tr>
-<tr class="memitem:ad8875689ceca36fe604b654268ede190"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="MemCopySerialization_8h.html#ad8875689ceca36fe604b654268ede190">Serialize</a> (const T &amp;src, <a class="el" href="classOutputStream.html">OutputStream</a> *dst)</td></tr>
-<tr class="separator:ad8875689ceca36fe604b654268ede190"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a29ef59629f34567ee13aabbb7255bd0b"><td class="memTemplParams" colspan="2">template&lt;class T &gt; <br />
+<tr class="memitem:a10f1523217d3404f3478eacb12cb78dc"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="MemCopySerialization_8h.html#a10f1523217d3404f3478eacb12cb78dc">serialize</a> (const T &amp;src, <a class="el" href="classOutputStream.html">OutputStream</a> *dst)</td></tr>
+<tr class="separator:a10f1523217d3404f3478eacb12cb78dc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4f4ba790a7f18369cb03d5387ea3d9fd"><td class="memTemplParams" colspan="2">template&lt;class T &gt; <br />
 requires <a class="el" href="MemCopySerialization_8h.html#a1020e86d4a3a2f3646c53d69404efd48">is_memcopy_serializable_v</a>&lt;T&gt;</td></tr>
-<tr class="memitem:a29ef59629f34567ee13aabbb7255bd0b"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="MemCopySerialization_8h.html#a29ef59629f34567ee13aabbb7255bd0b">Deserialize</a> (<a class="el" href="classInputStream.html">InputStream</a> &amp;src, T *dst)</td></tr>
-<tr class="separator:a29ef59629f34567ee13aabbb7255bd0b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4f4ba790a7f18369cb03d5387ea3d9fd"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="MemCopySerialization_8h.html#a4f4ba790a7f18369cb03d5387ea3d9fd">deserialize</a> (<a class="el" href="classInputStream.html">InputStream</a> &amp;src, T *dst)</td></tr>
+<tr class="separator:a4f4ba790a7f18369cb03d5387ea3d9fd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="var-members" name="var-members"></a>
 Variables</h2></td></tr>
@@ -148,8 +148,8 @@ Variables</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Function Documentation</h2>
-<a id="a29ef59629f34567ee13aabbb7255bd0b" name="a29ef59629f34567ee13aabbb7255bd0b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a29ef59629f34567ee13aabbb7255bd0b">&#9670;&#160;</a></span>Deserialize()</h2>
+<a id="a4f4ba790a7f18369cb03d5387ea3d9fd" name="a4f4ba790a7f18369cb03d5387ea3d9fd"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4f4ba790a7f18369cb03d5387ea3d9fd">&#9670;&#160;</a></span>deserialize()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -158,7 +158,7 @@ template&lt;class T &gt; <br />
 requires <a class="el" href="MemCopySerialization_8h.html#a1020e86d4a3a2f3646c53d69404efd48">is_memcopy_serializable_v</a>&lt;T&gt;</div>
       <table class="memname">
         <tr>
-          <td class="memname">void Deserialize </td>
+          <td class="memname">void deserialize </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="classInputStream.html">InputStream</a> &amp;&#160;</td>
           <td class="paramname"><em>src</em>, </td>
@@ -207,8 +207,8 @@ template&lt;class T &gt; </div>
 
 </div>
 </div>
-<a id="ad8875689ceca36fe604b654268ede190" name="ad8875689ceca36fe604b654268ede190"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ad8875689ceca36fe604b654268ede190">&#9670;&#160;</a></span>Serialize()</h2>
+<a id="a10f1523217d3404f3478eacb12cb78dc" name="a10f1523217d3404f3478eacb12cb78dc"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a10f1523217d3404f3478eacb12cb78dc">&#9670;&#160;</a></span>serialize()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -217,7 +217,7 @@ template&lt;class T &gt; <br />
 requires <a class="el" href="MemCopySerialization_8h.html#a1020e86d4a3a2f3646c53d69404efd48">is_memcopy_serializable_v</a>&lt;T&gt;</div>
       <table class="memname">
         <tr>
-          <td class="memname">void Serialize </td>
+          <td class="memname">void serialize </td>
           <td>(</td>
           <td class="paramtype">const T &amp;&#160;</td>
           <td class="paramname"><em>src</em>, </td>

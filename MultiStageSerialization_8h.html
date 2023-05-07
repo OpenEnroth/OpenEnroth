@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;5f94fea</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;b00c96c</span>
    </div>
   </td>
  </tr>
@@ -100,15 +100,15 @@ Functions</h2></td></tr>
 <tr class="memitem:aaa237078f4f837266b965b2d875624c4"><td class="memTemplParams" colspan="2">template&lt;class Via , class T &gt; </td></tr>
 <tr class="memitem:aaa237078f4f837266b965b2d875624c4"><td class="memTemplItemLeft" align="right" valign="top">auto&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="MultiStageSerialization_8h.html#aaa237078f4f837266b965b2d875624c4">appendVia</a> (std::vector&lt; T &gt; *dst)</td></tr>
 <tr class="separator:aaa237078f4f837266b965b2d875624c4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a183f8672c5b6adb0f863d58d92f26b83"><td class="memTemplParams" colspan="2">template&lt;class Via , class T &gt; </td></tr>
-<tr class="memitem:a183f8672c5b6adb0f863d58d92f26b83"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="MultiStageSerialization_8h.html#a183f8672c5b6adb0f863d58d92f26b83">Deserialize</a> (<a class="el" href="classInputStream.html">InputStream</a> &amp;src, <a class="el" href="structdetail_1_1AppendViaDstVector.html">detail::AppendViaDstVector</a>&lt; Via, T &gt; dst)</td></tr>
-<tr class="separator:a183f8672c5b6adb0f863d58d92f26b83"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aaf588e694097ed4f1e5385b70e481e8d"><td class="memTemplParams" colspan="2">template&lt;class Via , class T &gt; </td></tr>
+<tr class="memitem:aaf588e694097ed4f1e5385b70e481e8d"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="MultiStageSerialization_8h.html#aaf588e694097ed4f1e5385b70e481e8d">deserialize</a> (<a class="el" href="classInputStream.html">InputStream</a> &amp;src, <a class="el" href="structdetail_1_1AppendViaDstVector.html">detail::AppendViaDstVector</a>&lt; Via, T &gt; dst)</td></tr>
+<tr class="separator:aaf588e694097ed4f1e5385b70e481e8d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a020bb72f6aa44db6e7e8eca032cb4ef2"><td class="memTemplParams" colspan="2">template&lt;class Via , class T &gt; </td></tr>
 <tr class="memitem:a020bb72f6aa44db6e7e8eca032cb4ef2"><td class="memTemplItemLeft" align="right" valign="top">auto&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="MultiStageSerialization_8h.html#a020bb72f6aa44db6e7e8eca032cb4ef2">via</a> (T *dst)</td></tr>
 <tr class="separator:a020bb72f6aa44db6e7e8eca032cb4ef2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a71555e1609130ca2ec81d8ac092c6043"><td class="memTemplParams" colspan="2">template&lt;class Via , class T &gt; </td></tr>
-<tr class="memitem:a71555e1609130ca2ec81d8ac092c6043"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="MultiStageSerialization_8h.html#a71555e1609130ca2ec81d8ac092c6043">Deserialize</a> (<a class="el" href="classInputStream.html">InputStream</a> &amp;src, <a class="el" href="structdetail_1_1ViaDst.html">detail::ViaDst</a>&lt; Via, T &gt; dst)</td></tr>
-<tr class="separator:a71555e1609130ca2ec81d8ac092c6043"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2825a3d9be45c434dff8825b4e193ede"><td class="memTemplParams" colspan="2">template&lt;class Via , class T &gt; </td></tr>
+<tr class="memitem:a2825a3d9be45c434dff8825b4e193ede"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="MultiStageSerialization_8h.html#a2825a3d9be45c434dff8825b4e193ede">deserialize</a> (<a class="el" href="classInputStream.html">InputStream</a> &amp;src, <a class="el" href="structdetail_1_1ViaDst.html">detail::ViaDst</a>&lt; Via, T &gt; dst)</td></tr>
+<tr class="separator:a2825a3d9be45c434dff8825b4e193ede"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Function Documentation</h2>
 <a id="aaa237078f4f837266b965b2d875624c4" name="aaa237078f4f837266b965b2d875624c4"></a>
@@ -128,11 +128,25 @@ template&lt;class Via , class T &gt; </div>
         </tr>
       </table>
 </div><div class="memdoc">
+<p >Creates a deserialization wrapper for a vector pointer that instructs the binary serialization framework to read a vector of <code>Via</code> objects from the stream, and then deserialize them into game objects &amp; append those to the target vector.</p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">Via</td><td>Intermediate type to read from the stream. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">dst</td><td>Target vector to append to. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Wrapper object to be passed into <code>deserialize</code> call. </dd></dl>
 
 </div>
 </div>
-<a id="a183f8672c5b6adb0f863d58d92f26b83" name="a183f8672c5b6adb0f863d58d92f26b83"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a183f8672c5b6adb0f863d58d92f26b83">&#9670;&#160;</a></span>Deserialize() <span class="overload">[1/2]</span></h2>
+<a id="aaf588e694097ed4f1e5385b70e481e8d" name="aaf588e694097ed4f1e5385b70e481e8d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aaf588e694097ed4f1e5385b70e481e8d">&#9670;&#160;</a></span>deserialize() <span class="overload">[1/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -140,7 +154,7 @@ template&lt;class Via , class T &gt; </div>
 template&lt;class Via , class T &gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname">void Deserialize </td>
+          <td class="memname">void deserialize </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="classInputStream.html">InputStream</a> &amp;&#160;</td>
           <td class="paramname"><em>src</em>, </td>
@@ -161,8 +175,8 @@ template&lt;class Via , class T &gt; </div>
 
 </div>
 </div>
-<a id="a71555e1609130ca2ec81d8ac092c6043" name="a71555e1609130ca2ec81d8ac092c6043"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a71555e1609130ca2ec81d8ac092c6043">&#9670;&#160;</a></span>Deserialize() <span class="overload">[2/2]</span></h2>
+<a id="a2825a3d9be45c434dff8825b4e193ede" name="a2825a3d9be45c434dff8825b4e193ede"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2825a3d9be45c434dff8825b4e193ede">&#9670;&#160;</a></span>deserialize() <span class="overload">[2/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -170,7 +184,7 @@ template&lt;class Via , class T &gt; </div>
 template&lt;class Via , class T &gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname">void Deserialize </td>
+          <td class="memname">void deserialize </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="classInputStream.html">InputStream</a> &amp;&#160;</td>
           <td class="paramname"><em>src</em>, </td>
@@ -208,6 +222,20 @@ template&lt;class Via , class T &gt; </div>
         </tr>
       </table>
 </div><div class="memdoc">
+<p >Creates a deserialization wrapper that instructs the binary serialization framework to first read a <code>Via</code> object from a stream, and then deserialize it into a game object pointed to by <code>dst</code>.</p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">Via</td><td>Intermediate type to read from the stream. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">dst</td><td>Target object to deserialize. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Wrapper object to be passed into <code>deserialize</code> call. </dd></dl>
 
 </div>
 </div>
