@@ -112,11 +112,11 @@ void OverlayList::FromFile(const Blob &data_mm6, const Blob &data_mm7, const Blo
     pOverlays.clear();
 
     if (data_mm6)
-        Deserialize(data_mm6, appendVia<OverlayDesc_MM7>(&pOverlays));
+        deserialize(data_mm6, appendVia<OverlayDesc_MM7>(&pOverlays));
     if (data_mm7)
-        Deserialize(data_mm7, appendVia<OverlayDesc_MM7>(&pOverlays));
+        deserialize(data_mm7, appendVia<OverlayDesc_MM7>(&pOverlays));
     if (data_mm8)
-        Deserialize(data_mm8, appendVia<OverlayDesc_MM7>(&pOverlays));
+        deserialize(data_mm8, appendVia<OverlayDesc_MM7>(&pOverlays));
 
     assert(!pOverlays.empty());
 }

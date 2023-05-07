@@ -32,11 +32,11 @@ void ObjectList::FromFile(const Blob &data_mm6, const Blob &data_mm7, const Blob
     pObjects.clear();
 
     if (data_mm6)
-        Deserialize(data_mm6, appendVia<ObjectDesc_MM6>(&pObjects));
+        deserialize(data_mm6, appendVia<ObjectDesc_MM6>(&pObjects));
     if (data_mm7)
-        Deserialize(data_mm7, appendVia<ObjectDesc_MM7>(&pObjects));
+        deserialize(data_mm7, appendVia<ObjectDesc_MM7>(&pObjects));
     if (data_mm8)
-        Deserialize(data_mm8, appendVia<ObjectDesc_MM7>(&pObjects));
+        deserialize(data_mm8, appendVia<ObjectDesc_MM7>(&pObjects));
 
     assert(!pObjects.empty());
 }

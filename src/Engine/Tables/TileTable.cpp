@@ -63,7 +63,7 @@ void TileTable::FromFile(const Blob &data_mm6, const Blob &data_mm7, const Blob 
     (void) data_mm6;
     (void) data_mm8;
 
-    Deserialize(data_mm7, appendVia<TileDesc_MM7>(&tiles));
+    deserialize(data_mm7, appendVia<TileDesc_MM7>(&tiles));
 
     assert(!tiles.empty());
 }

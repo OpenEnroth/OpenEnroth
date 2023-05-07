@@ -34,6 +34,8 @@ struct StringDeserializer {
  * Can be used as `range | std::views::transform(ToString)`. Or directly, as `return ToString(some_integer);`.
  *
  * Under the hood it's just calling the `serialize` function using argument-dependent lookup.
+ *
+ * @see fromString
  */
 constexpr detail::StringSerializer toString;
 

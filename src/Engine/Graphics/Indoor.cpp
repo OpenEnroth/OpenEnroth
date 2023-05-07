@@ -260,8 +260,8 @@ void IndoorLocation::Load(const std::string &filename, int num_days_played, int 
     bLoaded = true;
 
     IndoorLocation_MM7 location;
-    Deserialize(pGames_LOD->LoadCompressed(blv_filename), &location, progressCallback);
-    Deserialize(location, this);
+    deserialize(pGames_LOD->LoadCompressed(blv_filename), &location, progressCallback);
+    deserialize(location, this);
 
     std::string dlv_filename = filename;
     dlv_filename.replace(dlv_filename.length() - 4, 4, ".dlv");
@@ -271,7 +271,7 @@ void IndoorLocation::Load(const std::string &filename, int num_days_played, int 
     IndoorDelta_MM7 delta;
     if (Blob blob = pSave_LOD->LoadCompressed(dlv_filename)) {
         try {
-            Deserialize(blob, &delta, location, progressCallback);
+            deserialize(blob, &delta, location, progressCallback);
 
             // Level was changed externally and we have a save there? Don't crash, just respawn.
             if (delta.header.uNumFacesInBModels > 0 && delta.header.uNumDecorations > 0 &&
@@ -296,12 +296,12 @@ void IndoorLocation::Load(const std::string &filename, int num_days_played, int 
     assert(respawnInitial + respawnTimed <= 1);
 
     if (respawnInitial) {
-        Deserialize(pGames_LOD->LoadCompressed(dlv_filename), &delta, location, [] {});
+        deserialize(pGames_LOD->LoadCompressed(dlv_filename), &delta, location, [] {});
         *indoor_was_respawned = true;
     } else if (respawnTimed) {
         auto header = delta.header;
         auto visibleOutlines = delta.visibleOutlines;
-        Deserialize(pGames_LOD->LoadCompressed(dlv_filename), &delta, location, [] {});
+        deserialize(pGames_LOD->LoadCompressed(dlv_filename), &delta, location, [] {});
         delta.header = header;
         delta.visibleOutlines = visibleOutlines;
         *indoor_was_respawned = true;
@@ -309,7 +309,7 @@ void IndoorLocation::Load(const std::string &filename, int num_days_played, int 
         *indoor_was_respawned = false;
     }
 
-    Deserialize(delta, this);
+    deserialize(delta, this);
 
     if (respawnTimed || respawnInitial)
         dlv.uLastRepawnDay = num_days_played;

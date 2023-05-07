@@ -865,8 +865,8 @@ void OutdoorLocation::Load(const std::string &filename, int days_played, int res
     };
 
     OutdoorLocation_MM7 location;
-    Deserialize(pGames_LOD->LoadCompressed(odm_filename), &location, progressCallback);
-    Deserialize(location, this);
+    deserialize(pGames_LOD->LoadCompressed(odm_filename), &location, progressCallback);
+    deserialize(location, this);
 
     // ****************.ddm file*********************//
 
@@ -878,7 +878,7 @@ void OutdoorLocation::Load(const std::string &filename, int days_played, int res
     OutdoorDelta_MM7 delta;
     if (Blob blob = pSave_LOD->LoadCompressed(ddm_filename)) {
         try {
-            Deserialize(blob, &delta, location, progressCallback);
+            deserialize(blob, &delta, location, progressCallback);
 
             size_t totalFaces = 0;
             for (BSPModel &model : pBModels)
@@ -907,13 +907,13 @@ void OutdoorLocation::Load(const std::string &filename, int days_played, int res
     assert(respawnInitial + respawnTimed <= 1);
 
     if (respawnInitial) {
-        Deserialize(pGames_LOD->LoadCompressed(ddm_filename), &delta, location, [] {});
+        deserialize(pGames_LOD->LoadCompressed(ddm_filename), &delta, location, [] {});
         *outdoors_was_respawned = true;
     } else if (respawnTimed) {
         auto header = delta.header;
         auto fullyRevealedCells = delta.fullyRevealedCells;
         auto partiallyRevealedCells = delta.partiallyRevealedCells;
-        Deserialize(pGames_LOD->LoadCompressed(ddm_filename), &delta, location, [] {});
+        deserialize(pGames_LOD->LoadCompressed(ddm_filename), &delta, location, [] {});
         delta.header = header;
         delta.fullyRevealedCells = fullyRevealedCells;
         delta.partiallyRevealedCells = partiallyRevealedCells;
@@ -922,7 +922,7 @@ void OutdoorLocation::Load(const std::string &filename, int days_played, int res
         *outdoors_was_respawned = false;
     }
 
-    Deserialize(delta, this);
+    deserialize(delta, this);
 
     if (respawnTimed || respawnInitial)
         ddm.uLastRepawnDay = days_played;

@@ -13,6 +13,16 @@ constexpr std::is_arithmetic<T> isMemCopySerializable(std::type_identity<T>) {
     return {}; // By default only arithmetic (floating point or integral) types are memcopy-serializable.
 }
 
+/**
+ * Type trait that's used by the binary serialization framework to check if a type can be binary-serialized with a
+ * simple `memcpy` call.
+ *
+ * Instead of specializing this trait directly for your class, use `MM_DECLARE_MEMCOPY_SERIALIZABLE`.
+ *
+ * @tparam T                            Type to get the trait value for.
+ * @see is_memcopy_serializable_v
+ * @see MM_DECLARE_MEMCOPY_SERIALIZABLE
+ */
 template<class T>
 struct is_memcopy_serializable : decltype(isMemCopySerializable(std::type_identity<T>())) {};
 
@@ -31,12 +41,12 @@ constexpr std::true_type isMemCopySerializable(std::type_identity<T>) {         
 
 
 template<class T> requires is_memcopy_serializable_v<T>
-void Serialize(const T &src, OutputStream *dst) {
+void serialize(const T &src, OutputStream *dst) {
     dst->write(&src, sizeof(T));
 }
 
 template<class T> requires is_memcopy_serializable_v<T>
-void Deserialize(InputStream &src, T *dst) {
+void deserialize(InputStream &src, T *dst) {
     size_t bytes = src.read(dst, sizeof(T));
     if (bytes != sizeof(T))
         throwBinarySerializationNoMoreDataError(bytes, sizeof(T), typeid(T).name());
