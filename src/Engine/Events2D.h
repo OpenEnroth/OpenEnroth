@@ -1,5 +1,7 @@
 #pragma once
+
 #include <cstdint>
+#include <array>
 
 /*  296 */
 enum class BuildingType: uint16_t {
@@ -65,4 +67,4 @@ struct _2devent {
     int16_t field_32;
 };
 
-extern _2devent p2DEvents[525];
+extern std::array<_2devent, 525> p2DEvents;
