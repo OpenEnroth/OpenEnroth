@@ -2689,7 +2689,12 @@ void Actor::UpdateActorAI() {
         }
 
         // If actor Paralyzed or Stoned: skip
-        if (pActor->pActorBuffs[ACTOR_BUFF_PARALYZED].Active() || pActor->pActorBuffs[ACTOR_BUFF_STONED].Active() || pActor->uAIState == AIState::Stunned)
+        if (pActor->pActorBuffs[ACTOR_BUFF_PARALYZED].Active() || pActor->pActorBuffs[ACTOR_BUFF_STONED].Active())
+            continue;
+
+        // If actor is stunned: skip - vanilla bug that causes stunned background actors to recover to idle motions
+        // Most apparent during armageddon spell, falling background actors will occasionally hover to perform action
+        if (pActor->uAIState == AIState::Stunned)
             continue;
 
         // Calculate RecoveryTime
