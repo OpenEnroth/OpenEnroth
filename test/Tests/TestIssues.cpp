@@ -825,8 +825,8 @@ GAME_TEST(Issues, Issue720) {
 GAME_TEST(Issues, Issue724) {
     // Test that item potion can be applied to equipped items
     test->playTraceFromTestData("issue_724.mm7", "issue_724.json",
-                                [] { EXPECT_NE((pParty->activeCharacter().GetNthEquippedIndexItem(ITEM_SLOT_MAIN_HAND)->uAttributes & ITEM_HARDENED), ITEM_HARDENED); });
-    EXPECT_EQ((pParty->activeCharacter().GetNthEquippedIndexItem(ITEM_SLOT_MAIN_HAND)->uAttributes & ITEM_HARDENED), ITEM_HARDENED);
+                                [] { EXPECT_NE((pParty->pPlayers[3].GetNthEquippedIndexItem(ITEM_SLOT_MAIN_HAND)->uAttributes & ITEM_HARDENED), ITEM_HARDENED); });
+    EXPECT_EQ((pParty->pPlayers[3].GetNthEquippedIndexItem(ITEM_SLOT_MAIN_HAND)->uAttributes & ITEM_HARDENED), ITEM_HARDENED);
 }
 
 GAME_TEST(Issues, Issue728) {
