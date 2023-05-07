@@ -39,10 +39,10 @@ class TypedHandler : public AnyHandler {
 };
 
 template<class T>
-constinit TypedHandler<T> globalTypedSerializer; // TODO(captainurist): handler, not serializer
+constinit TypedHandler<T> globalTypedHandler;
 } // namespace detail
 
 template<class T>
 AnyHandler *AnyHandler::forType() {
-    return &detail::globalTypedSerializer<T>;
+    return &detail::globalTypedHandler<T>;
 }
