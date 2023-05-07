@@ -372,11 +372,11 @@ void MonsterList::FromFile(const Blob &data_mm6, const Blob &data_mm7, const Blo
     pMonsters.clear();
 
     if (data_mm6)
-        Deserialize(data_mm6, appendVia<MonsterDesc_MM6>(&pMonsters));
+        deserialize(data_mm6, appendVia<MonsterDesc_MM6>(&pMonsters));
     if (data_mm7)
-        Deserialize(data_mm7, appendVia<MonsterDesc_MM7>(&pMonsters));
+        deserialize(data_mm7, appendVia<MonsterDesc_MM7>(&pMonsters));
     if (data_mm8)
-        Deserialize(data_mm8, appendVia<MonsterDesc_MM7>(&pMonsters));
+        deserialize(data_mm8, appendVia<MonsterDesc_MM7>(&pMonsters));
 
     assert(!pMonsters.empty());
 }

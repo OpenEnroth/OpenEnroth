@@ -74,7 +74,7 @@ void IconFrameTable::FromFile(const Blob &data_mm6, const Blob &data_mm7, const 
     (void) data_mm8;
 
     pIcons.clear();
-    Deserialize(data_mm7, appendVia<IconFrame_MM7>(&pIcons));
+    deserialize(data_mm7, appendVia<IconFrame_MM7>(&pIcons));
 
     for (size_t i = 0; i < pIcons.size(); ++i)
         pIcons[i].id = i;

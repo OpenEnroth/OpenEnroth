@@ -15,11 +15,11 @@ void DecorationList::FromFile(const Blob &data_mm6, const Blob &data_mm7, const 
     pDecorations.clear();
 
     if (data_mm6)
-        Deserialize(data_mm6, appendVia<DecorationDesc_MM6>(&pDecorations));
+        deserialize(data_mm6, appendVia<DecorationDesc_MM6>(&pDecorations));
     if (data_mm7)
-        Deserialize(data_mm7, appendVia<DecorationDesc_MM7>(&pDecorations));
+        deserialize(data_mm7, appendVia<DecorationDesc_MM7>(&pDecorations));
     if (data_mm8)
-        Deserialize(data_mm8, appendVia<DecorationDesc_MM7>(&pDecorations));
+        deserialize(data_mm8, appendVia<DecorationDesc_MM7>(&pDecorations));
 
     assert(!pDecorations.empty());
 }

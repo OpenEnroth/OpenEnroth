@@ -19,35 +19,52 @@ struct ViaDst {
 };
 } // namespace detail
 
+/**
+ * Creates a deserialization wrapper for a vector pointer that instructs the binary serialization framework to read
+ * a vector of `Via` objects from the stream, and then deserialize them into game objects & append those to the target
+ * vector.
+ *
+ * @tparam Via                          Intermediate type to read from the stream.
+ * @param dst                           Target vector to append to.
+ * @return                              Wrapper object to be passed into `deserialize` call.
+ */
 template<class Via, class T>
 auto appendVia(std::vector<T> *dst) {
     return detail::AppendViaDstVector<Via, T>(dst);
 }
 
 template<class Via, class T>
-void Deserialize(InputStream &src, detail::AppendViaDstVector<Via, T> dst) {
+void deserialize(InputStream &src, detail::AppendViaDstVector<Via, T> dst) {
     static_assert(!std::is_same_v<Via, T>, "Intermediate and target types must be different.");
 
     uint32_t size;
-    Deserialize(src, &size);
+    deserialize(src, &size);
 
     Via tmp;
     for (size_t i = 0; i < size; i++) {
-        Deserialize(src, &tmp);
-        Deserialize(tmp, &dst.dst->emplace_back());
+        deserialize(src, &tmp);
+        deserialize(tmp, &dst.dst->emplace_back());
     }
 }
 
+/**
+ * Creates a deserialization wrapper that instructs the binary serialization framework to first read a `Via` object
+ * from a stream, and then deserialize it into a game object pointed to by `dst`.
+ *
+ * @tparam Via                          Intermediate type to read from the stream.
+ * @param dst                           Target object to deserialize.
+ * @return                              Wrapper object to be passed into `deserialize` call.
+ */
 template<class Via, class T>
 auto via(T *dst) {
     return detail::ViaDst<Via, T>(dst);
 }
 
 template<class Via, class T>
-void Deserialize(InputStream &src, detail::ViaDst<Via, T> dst) {
+void deserialize(InputStream &src, detail::ViaDst<Via, T> dst) {
     static_assert(!std::is_same_v<Via, T>, "Intermediate and target types must be different.");
 
     Via tmp;
-    Deserialize(src, &tmp);
-    Deserialize(tmp, dst.dst);
+    deserialize(src, &tmp);
+    deserialize(tmp, dst.dst);
 }

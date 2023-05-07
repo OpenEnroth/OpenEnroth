@@ -54,7 +54,7 @@ void TextureFrameTable::FromFile(const Blob &data_mm6, const Blob &data_mm7, con
     (void) data_mm6;
     (void) data_mm8;
 
-    Deserialize(data_mm7, appendVia<TextureFrame_MM7>(&textures));
+    deserialize(data_mm7, appendVia<TextureFrame_MM7>(&textures));
 
     assert(!textures.empty());
 }

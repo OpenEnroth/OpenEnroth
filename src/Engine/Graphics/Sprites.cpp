@@ -272,13 +272,13 @@ void SpriteFrameTable::FromFile(const Blob &data_mm6, const Blob &data_mm7, cons
     MemoryInputStream src(data_mm7.data(), data_mm7.size()); // TODO(captainurist): encapsulate
     uint32_t frameCount = 0;
     uint32_t eframeCount = 0;
-    Deserialize(src, &frameCount);
-    Deserialize(src, &eframeCount);
+    deserialize(src, &frameCount);
+    deserialize(src, &eframeCount);
 
     std::vector<SpriteFrame_MM7> tmp;
-    Deserialize(src, presized(frameCount, &tmp));
-    Deserialize(tmp, &pSpriteSFrames);
-    Deserialize(src, presized(eframeCount, &pSpriteEFrames));
+    deserialize(src, presized(frameCount, &tmp));
+    deserialize(tmp, &pSpriteSFrames);
+    deserialize(src, presized(eframeCount, &pSpriteEFrames));
 
     pSpritePFrames.clear();
     for (uint16_t index : pSpriteEFrames)

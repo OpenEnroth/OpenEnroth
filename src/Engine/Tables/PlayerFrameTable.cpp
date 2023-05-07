@@ -64,11 +64,11 @@ void PlayerFrameTable::FromFile(const Blob &data_mm6, const Blob &data_mm7, cons
     pFrames.clear();
 
     if (data_mm6)
-        Deserialize(data_mm6, appendVia<PlayerFrame_MM7>(&pFrames));
+        deserialize(data_mm6, appendVia<PlayerFrame_MM7>(&pFrames));
     if (data_mm7)
-        Deserialize(data_mm7, appendVia<PlayerFrame_MM7>(&pFrames));
+        deserialize(data_mm7, appendVia<PlayerFrame_MM7>(&pFrames));
     if (data_mm8)
-        Deserialize(data_mm8, appendVia<PlayerFrame_MM7>(&pFrames));
+        deserialize(data_mm8, appendVia<PlayerFrame_MM7>(&pFrames));
 
     assert(!pFrames.empty());
 }
