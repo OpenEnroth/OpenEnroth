@@ -8,12 +8,6 @@
 
 #include "Arcomage/Arcomage.h"
 
-#include "GameMenu.h"
-
-#include "Application/GameWindowHandler.h"
-#include "Application/GamePathResolver.h"
-#include "Application/GameTraceHandler.h"
-
 #include "Engine/AssetsManager.h"
 #include "Engine/Awards.h"
 #include "Engine/Engine.h"
@@ -91,6 +85,11 @@
 #include "Utility/Format.h"
 #include "Library/Random/Random.h"
 
+#include "GameKeyboardController.h"
+#include "GameWindowHandler.h"
+#include "GamePathResolver.h"
+#include "GameTraceHandler.h"
+#include "GameMenu.h"
 
 void ShowMM7IntroVideo_and_LoadingScreen();
 
@@ -139,18 +138,17 @@ Game::Game(PlatformApplication *application, std::shared_ptr<GameConfig> config)
     // But the trace component should go after the deterministic component - deterministic component updates tick count,
     // and then trace component stores the updated value in a recorded `PaintEvent`.
     _windowHandler.reset(GameIocContainer::ResolveGameWindowHandler());
-    application->install(_windowHandler.get()); // TODO(captainurist): actually move ownership into PlatformApplication?
-    application->install(_windowHandler->KeyboardController()); // TODO(captainurist): do this properly
-    application->install(std::make_unique<EngineControlComponent>());
-    application->install(std::make_unique<EngineTraceComponent>());
-    application->install(std::make_unique<EngineDeterministicComponent>());
-    application->install(std::make_unique<EngineTracePlayer>());
-    application->install(std::make_unique<EngineTraceRecorder>());
-    application->install(std::make_unique<GameTraceHandler>());
+    _application->install(std::make_unique<GameKeyboardController>()); // This one should go before the window handler.
+    _application->install(_windowHandler.get()); // TODO(captainurist): actually move ownership into PlatformApplication?
+    _application->install(std::make_unique<EngineControlComponent>());
+    _application->install(std::make_unique<EngineTraceComponent>());
+    _application->install(std::make_unique<EngineDeterministicComponent>());
+    _application->install(std::make_unique<EngineTracePlayer>());
+    _application->install(std::make_unique<EngineTraceRecorder>());
+    _application->install(std::make_unique<GameTraceHandler>());
 }
 
 Game::~Game() {
-    _application->remove(_windowHandler->KeyboardController()); // TODO(captainurist): do this properly
     _application->remove(_windowHandler.get());
     if (_nuklearHandler)
         _application->remove(_nuklearHandler.get());
@@ -184,7 +182,7 @@ int Game::run() {
     ::keyboardActionMapping = keyboardActionMapping;
 
     keyboardInputHandler = std::make_shared<KeyboardInputHandler>(
-        _windowHandler->KeyboardController(),
+        _application->get<GameKeyboardController>(),
         keyboardActionMapping
     );
 

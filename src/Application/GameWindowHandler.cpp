@@ -1,7 +1,6 @@
 #include "GameWindowHandler.h"
 
 #include <algorithm>
-#include <string>
 #include <vector>
 
 #include "Arcomage/Arcomage.h"
@@ -11,10 +10,7 @@
 #include "Engine/Graphics/Camera.h"
 #include "Engine/Graphics/Viewport.h"
 #include "Engine/Graphics/Vis.h"
-#include "Engine/Graphics/Nuklear.h"
-#include "Engine/Graphics/NuklearEventHandler.h"
 #include "Engine/EngineIocContainer.h"
-#include "Engine/Party.h"
 #include "Engine/Time.h"
 
 #include "GUI/GUIWindow.h"
@@ -48,7 +44,6 @@ static char PlatformKeyToChar(PlatformKey key, PlatformModifiers mods) {
 
 GameWindowHandler::GameWindowHandler() : PlatformEventFilter(EVENTS_ALL) {
     this->mouse = EngineIocContainer::ResolveMouse();
-    this->keyboardController_ = std::make_unique<GameKeyboardController>();
 }
 
 GameWindowHandler::~GameWindowHandler() {}
@@ -474,8 +469,6 @@ void GameWindowHandler::OnMouseGrabToggle() {
 }
 
 void GameWindowHandler::handleKeyPress(PlatformKey key, PlatformModifiers mods, bool isAutoRepeat) {
-    keyboardController_->ProcessKeyPressEvent(key);
-
     if (isAutoRepeat)
         return;
 
@@ -489,7 +482,7 @@ void GameWindowHandler::handleKeyPress(PlatformKey key, PlatformModifiers mods, 
 }
 
 void GameWindowHandler::handleKeyRelease(PlatformKey key) {
-    keyboardController_->ProcessKeyReleaseEvent(key);
+    (void) key;
 }
 
 bool GameWindowHandler::keyPressEvent(const PlatformKeyEvent *event) {
