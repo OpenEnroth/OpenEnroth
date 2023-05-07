@@ -75,7 +75,9 @@ std::string EventMap::getHintString(int eventId) const {
             }
         }
         if (mouseOverFound && ir.type == EVENT_SpeakInHouse) {
-            result = p2DEvents[ir.data.house_id - 1].pName;
+            if ((ir.data.house_id - 1) < p2DEvents.size()) {
+                result = p2DEvents[ir.data.house_id - 1].pName;
+            }
             break;
         }
     }
