@@ -8,9 +8,9 @@
 constexpr unsigned int MAX_SAVE_SLOTS = 45;
 
 struct SaveGameHeader {
-    std::string pName;
-    std::string pLocationName;
-    GameTime playing_time;
+    std::string name; // Save name, as displayed in the save list in-game.
+    std::string locationName; // Name of the map, e.g. "out01.odm".
+    GameTime playingTime; // Game time of the save.
 };
 
 struct SavegameList {

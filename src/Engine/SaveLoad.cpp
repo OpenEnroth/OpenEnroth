@@ -112,11 +112,11 @@ void LoadGame(unsigned int uSlot) {
     pEventTimer->Resume();
     pEventTimer->StopGameTime();
 
-    if (!pGames_LOD->DoesContainerExist(header.pLocationName)) {
-        Error("Unable to find: %s!", header.pLocationName.c_str());
+    if (!pGames_LOD->DoesContainerExist(header.locationName)) {
+        Error("Unable to find: %s!", header.locationName.c_str());
     }
 
-    pCurrentMapName = header.pLocationName;
+    pCurrentMapName = header.locationName;
 
     dword_6BE364_game_settings_1 |= GAME_SETTINGS_LOADING_SAVEGAME_SKIP_RESPAWN | GAME_SETTINGS_0001;
 
@@ -187,8 +187,8 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld) {
     }
 
     SaveGameHeader save_header;
-    save_header.pLocationName = pCurrentMapName;
-    save_header.playing_time = pParty->GetPlayingTime();
+    save_header.locationName = pCurrentMapName;
+    save_header.playingTime = pParty->GetPlayingTime();
 
     SaveGame_MM7 save;
     serialize(save_header, &save);
@@ -222,9 +222,9 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld) {
         CompactLayingItemsList();
 
         if (uCurrentlyLoadedLevelType == LEVEL_Indoor) {
-            pIndoor->dlv.uNumFacesInBModels = pIndoor->pFaces.size();
-            pIndoor->dlv.uNumBModels = 0;
-            pIndoor->dlv.uNumDecorations = pLevelDecorations.size();
+            pIndoor->dlv.totalFacesCount = pIndoor->pFaces.size();
+            pIndoor->dlv.bmodelCount = 0;
+            pIndoor->dlv.decorationCount = pLevelDecorations.size();
 
             IndoorDelta_MM7 delta;
             serialize(*pIndoor, &delta);
@@ -232,12 +232,12 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld) {
         } else {
             assert(uCurrentlyLoadedLevelType == LEVEL_Outdoor);
 
-            pOutdoor->ddm.uNumFacesInBModels = 0;
+            pOutdoor->ddm.totalFacesCount = 0;
             for (BSPModel &model : pOutdoor->pBModels) {
-                pOutdoor->ddm.uNumFacesInBModels += model.pFaces.size();
+                pOutdoor->ddm.totalFacesCount += model.pFaces.size();
             }
-            pOutdoor->ddm.uNumBModels = pOutdoor->pBModels.size();
-            pOutdoor->ddm.uNumDecorations = pLevelDecorations.size();
+            pOutdoor->ddm.bmodelCount = pOutdoor->pBModels.size();
+            pOutdoor->ddm.decorationCount = pLevelDecorations.size();
 
             OutdoorDelta_MM7 delta;
             serialize(*pOutdoor, &delta);
@@ -284,8 +284,8 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld) {
 void DoSavegame(unsigned int uSlot) {
     if (pCurrentMapName != "d05.blv") {  // Not Arena(не Арена)
         SaveGame(0, 0);
-        pSavegameList->pSavegameHeader[uSlot].pLocationName = pCurrentMapName;
-        pSavegameList->pSavegameHeader[uSlot].playing_time = pParty->GetPlayingTime();
+        pSavegameList->pSavegameHeader[uSlot].locationName = pCurrentMapName;
+        pSavegameList->pSavegameHeader[uSlot].playingTime = pParty->GetPlayingTime();
 
         // TODO(captainurist): ooof
         SaveGameHeader_MM7 headerMm7;
@@ -379,7 +379,7 @@ void SaveNewGame() {
             pSave_LOD->AppendDirectory(name, data.data(), data.size());
         }
 
-        pSavegameList->pSavegameHeader[0].pLocationName = "out01.odm";
+        pSavegameList->pSavegameHeader[0].locationName = "out01.odm";
 
         // TODO(captainurist): encapsulate
         SaveGameHeader_MM7 headerMm7;

@@ -2830,9 +2830,9 @@ void CastSpellInfoHelpers::castSpell() {
                     if (uCurrentlyLoadedLevelType != LEVEL_Outdoor) {
                         ddm_dlv = &pIndoor->dlv;
                     }
-                    ddm_dlv->uReputation += 15;
-                    if (ddm_dlv->uReputation > 10000) {
-                        ddm_dlv->uReputation = 10000;
+                    ddm_dlv->reputation += 15;
+                    if (ddm_dlv->reputation > 10000) {
+                        ddm_dlv->reputation = 10000;
                     }
                     break;
                 }

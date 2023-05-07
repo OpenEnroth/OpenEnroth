@@ -4490,7 +4490,7 @@ bool Player::CompareVariable(VariableType VarNum, int pValue) {
         case VAR_ReputationInCurrentLocation:
             v19 = &pOutdoor->ddm;
             if (uCurrentlyLoadedLevelType != LEVEL_Outdoor) v19 = &pIndoor->dlv;
-            return (v19->uReputation >= pValue);
+            return (v19->reputation >= pValue);
 
         case VAR_Unknown1:
             v21 = &pOutdoor->ddm;
@@ -4937,9 +4937,9 @@ void Player::SetVariable(VariableType var_type, signed int var_value) {
             else
                 ddm = &pOutdoor->ddm;
 
-            ddm->uReputation = var_value;
+            ddm->reputation = var_value;
             if (var_value > 10000)
-                ddm->uReputation = 10000;
+                ddm->reputation = 10000;
             return;
         case VAR_GoldInBank:
             pParty->uNumGoldInBank = var_value;
@@ -5496,9 +5496,9 @@ void Player::AddVariable(VariableType var_type, signed int val) {
             else
                 ddm = &pOutdoor->ddm;
 
-            ddm->uReputation += val;
-            if (ddm->uReputation > 10000)
-                ddm->uReputation = 10000;
+            ddm->reputation += val;
+            if (ddm->reputation > 10000)
+                ddm->reputation = 10000;
             return;
         case VAR_GoldInBank:
             pParty->uNumGoldInBank += val;
@@ -6172,9 +6172,9 @@ void Player::SubtractVariable(VariableType VarNum, signed int pValue) {
             locationHeader = &pOutdoor->ddm;
             if (uCurrentlyLoadedLevelType != LEVEL_Outdoor)
                 locationHeader = &pIndoor->dlv;
-            locationHeader->uReputation -= pValue;
-            if (locationHeader->uReputation < -10000)
-                locationHeader->uReputation = -10000;
+            locationHeader->reputation -= pValue;
+            if (locationHeader->reputation < -10000)
+                locationHeader->reputation = -10000;
             return;
         case VAR_GoldInBank:
             if ((unsigned int)pValue <= pParty->uNumGoldInBank) {
