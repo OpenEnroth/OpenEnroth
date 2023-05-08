@@ -1485,13 +1485,6 @@ void GameUI_DrawPortraits() {
                      1) /
                         640.0f,
                     387 / 480.0f, pPortrait); // was 388
-            if (pPlayer->pPlayerBuffs[PLAYER_BUFF_BLESS].Active() ||
-                pPlayer->pPlayerBuffs[PLAYER_BUFF_HASTE].Active() ||
-                pPlayer->pPlayerBuffs[PLAYER_BUFF_HEROISM].Active() ||
-                pPlayer->pPlayerBuffs[PLAYER_BUFF_SHIELD].Active() ||
-                pPlayer->pPlayerBuffs[PLAYER_BUFF_STONESKIN].Active()) {
-                _441A4E_overlay_on_portrait(i);
-            }
             continue;
         }
         if (pPlayer->IsDead()) {
@@ -1507,13 +1500,6 @@ void GameUI_DrawPortraits() {
                      1) /
                         640.0f,
                     388 / 480.0f, pPortrait);
-            if (pPlayer->pPlayerBuffs[PLAYER_BUFF_BLESS].Active() ||
-                pPlayer->pPlayerBuffs[PLAYER_BUFF_HASTE].Active() ||
-                pPlayer->pPlayerBuffs[PLAYER_BUFF_HEROISM].Active() ||
-                pPlayer->pPlayerBuffs[PLAYER_BUFF_SHIELD].Active() ||
-                pPlayer->pPlayerBuffs[PLAYER_BUFF_STONESKIN].Active()) {
-                _441A4E_overlay_on_portrait(i);
-            }
             continue;
         }
         face_expression_ID = 0;
@@ -1549,13 +1535,6 @@ void GameUI_DrawPortraits() {
                      1) /
                         640.0f,
                     388 / 480.0f, pPortrait);
-            if (pPlayer->pPlayerBuffs[PLAYER_BUFF_BLESS].Active() ||
-                pPlayer->pPlayerBuffs[PLAYER_BUFF_HASTE].Active() ||
-                pPlayer->pPlayerBuffs[PLAYER_BUFF_HEROISM].Active() ||
-                pPlayer->pPlayerBuffs[PLAYER_BUFF_SHIELD].Active() ||
-                pPlayer->pPlayerBuffs[PLAYER_BUFF_STONESKIN].Active()) {
-                _441A4E_overlay_on_portrait(i);
-            }
             continue;
         }
     }
@@ -2045,83 +2024,6 @@ std::string GetReputationString(int reputation) {
     else
         return localization->GetString(LSTR_REPUTATION_RESPECTED);
 }
-
-int16_t _441A4E_overlay_on_portrait(int a1) {  // for blessing
-    int16_t result;                            // ax@1
-    int v2;                                    // ebx@1
-    bool v5;                                   // ecx@4
-    SpriteFrame *pFrame;                       // eax@6
-    int v8;                                    // eax@6
-    SoftwareBillboard v10 {};                     // [sp+Ch] [bp-5Ch]@1
-    int v11;                                   // [sp+5Ch] [bp-Ch]@6
-    int v12;                                   // [sp+60h] [bp-8h]@1
-    Sizei renDims = render->GetPresentDimensions();
-
-    v10.sParentBillboardID = -1;
-    v10.pTargetZ = render->pActiveZBuffer;
-    v10.uTargetPitch = renDims.w;
-    result = 0;
-    v2 = a1;
-    v10.uViewportX = 0;
-    v10.uViewportY = 0;
-    v10.uViewportZ = renDims.w - 1;
-    v10.uViewportW = renDims.h - 1;
-    v12 = 0;
-    // v3 = (char *)&pOtherOverlayList->pOverlays[0].field_C;
-    // do
-    for (uint i = 0; i < 50; ++i) {
-        if (pOtherOverlayList->pOverlays[i].field_6 > 0) {
-            result = pOtherOverlayList->pOverlays[i].field_0;
-            if (pOtherOverlayList->pOverlays[i].field_0 >= 300) {
-                // v4 = result;
-                v5 = pOtherOverlayList->pOverlays[i].field_0 == v2 + 320 ||
-                     pOtherOverlayList->pOverlays[i].field_0 == v2 + 330 ||
-                     pOtherOverlayList->pOverlays[i].field_0 == v2 + 340 ||
-                     pOtherOverlayList->pOverlays[i].field_0 == v2 + 350;
-                pOtherOverlayList->pOverlays[i].field_0 = v2 + 310;
-                if (pOtherOverlayList->pOverlays[i].field_0 == v2 + 310 || v5) {
-                    if (!pOtherOverlayList->pOverlays[i].field_0) {
-                        pFrame = pSpriteFrameTable->GetFrame(
-                            pOverlayList
-                                ->pOverlays[pOtherOverlayList->pOverlays[i]
-                                                .field_2]
-                                .uSpriteFramesetID,
-                            pOtherOverlayList->pOverlays[i].sprite_frame_time);
-                        // v7 = v6;
-                        v11 = pOtherOverlayList->pOverlays[i].field_E;
-                        // v13 = pFrame->scale;
-                        // v13 = fixpoint_mul(v11, pFrame->scale);
-                        v10.screen_space_x =
-                            pOtherOverlayList->pOverlays[i].screen_space_x;
-                        v10.screen_space_y =
-                            pOtherOverlayList->pOverlays[i].screen_space_y;
-                        v10.screenspace_projection_factor_x = v11 * pFrame->scale;
-                        v10.screenspace_projection_factor_y = v11 * pFrame->scale;
-                        // TODO (pskelton): what is this?
-                        v10.pPalette = 0; /*PaletteManager::Get_Dark_or_Red_LUT(pFrame->uPaletteIndex, 0, 1);*/
-                        v8 = pOtherOverlayList->pOverlays[i].field_2;
-                        v10.screen_space_z = 0;
-                        v10.object_pid = 0;
-                        v10.uFlags = 0;
-                        // v9 = pOverlayList->pOverlays[v8].uOverlayType;
-                        if (!pOverlayList->pOverlays[v8].uOverlayType ||
-                            pOverlayList->pOverlays[v8].uOverlayType == 2)
-                            v10.screen_space_y +=
-                                pFrame->hw_sprites[0]->sprite_header->uHeight /
-                                2;
-                        result = (int64_t)pFrame->hw_sprites[0]->sprite_header->_4AD2D1_overlays(&v10, 0);
-                        ++v12;
-                        if (v12 == 5) break;
-                    }
-                }
-            }
-        }
-        // v3 += 20;
-    }
-    // while ( (signed int)v3 < (signed int)&pOverlayList->pOverlays );
-    return result;
-}
-
 
 GUIWindow_DebugMenu::GUIWindow_DebugMenu()
     : GUIWindow(WINDOW_DebugMenu, {0, 0}, render->GetRenderDimensions(), 0) {

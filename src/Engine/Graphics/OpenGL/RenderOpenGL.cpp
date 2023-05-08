@@ -2249,7 +2249,7 @@ void RenderOpenGL::DrawOutdoorTerrain() {
                 pTilePolygon->dimming_level = 20.0f - floorf(20.0f * _f1 + 0.5f);
                 pTilePolygon->dimming_level = std::clamp((int)pTilePolygon->dimming_level, 0, 31);
 
-                decal_builder->ApplyBloodSplatToTerrain(pTilePolygon, norm, &Light_tile_dist, VertexRenderList, i);
+                decal_builder->ApplyBloodSplatToTerrain(pTilePolygon->flags, norm, &Light_tile_dist, VertexRenderList, i);
                 Planef plane;
                 plane.normal = *norm;
                 plane.dist = Light_tile_dist;
@@ -2261,7 +2261,7 @@ void RenderOpenGL::DrawOutdoorTerrain() {
                 pTilePolygon->dimming_level = 20.0 - floorf(20.0 * _f + 0.5f);
                 pTilePolygon->dimming_level = std::clamp((int)pTilePolygon->dimming_level, 0, 31);
 
-                decal_builder->ApplyBloodSplatToTerrain(pTilePolygon, norm2, &Light_tile_dist, (VertexRenderList + 3), i);
+                decal_builder->ApplyBloodSplatToTerrain(pTilePolygon->flags, norm2, &Light_tile_dist, (VertexRenderList + 3), i);
                 plane.normal = *norm2;
                 plane.dist = Light_tile_dist;
                 if (decal_builder->uNumSplatsThisFace > 0)

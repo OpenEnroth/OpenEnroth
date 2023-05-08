@@ -255,7 +255,7 @@ bool Game::loop() {
             }
             break;
         } else if (GetCurrentMenuID() == MENU_NEWGAME) {
-            pOtherOverlayList->Reset();
+            pActiveOverlayList->Reset();
             if (!PartyCreationUI_Loop()) {
                 break;
             }
@@ -2429,7 +2429,7 @@ void Game::gameLoop() {
                 pParty->GetPlayingTime().AddDays(7);  // += 2580480
                 HEXRAYS_LOWORD(pParty->uFlags) &= ~0x204;
                 pParty->SetGold(0);
-                pOtherOverlayList->Reset();
+                pActiveOverlayList->Reset();
                 pParty->pPartyBuffs.fill(SpellBuff());
 
                 if (pParty->bTurnBasedModeOn) {

@@ -220,7 +220,7 @@ void Engine::DrawGUI() {
 
     if (!pMovie_Track) {
         spell_fx_renedrer->DrawPlayerBuffAnims();
-        pOtherOverlayList->DrawTurnBasedIcon();
+        pActiveOverlayList->DrawTurnBasedIcon();
         GameUI_DrawTorchlightAndWizardEye();
     }
 
@@ -1480,8 +1480,7 @@ void _494035_timed_effects__water_walking_damage__etc() {
             // players go insane without rest
             if (pParty->days_played_without_rest > 3) {
                 for (Player &player : pParty->pPlayers) {
-                    // TODO(pskelton): rename Zero to ResetBonuses
-                    player.Zero();
+                    player.resetTempBonuses();
                     if (!player.IsPertified() && !player.IsEradicated() && !player.IsDead()) {
                         if (grng->random(100) < 5 * pParty->days_played_without_rest)
                             player.SetCondDeadWithBlockCheck(0);

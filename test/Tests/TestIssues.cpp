@@ -506,6 +506,14 @@ GAME_TEST(Issues, Issue506) {
     test->playTraceFromTestData("issue_506.mm7", "issue_506.json");
 }
 
+GAME_TEST(Issue, Issue518) {
+    // Armageddon yeets the actors way too far into the sky & actors take stops when falling down
+    test->playTraceFromTestData("issue_518.mm7", "issue_518.json");
+    for (auto &actor : pActors) {
+        EXPECT_LT(actor.vPosition.z, 3500);
+    }
+}
+
 GAME_TEST(Issues, Issue520) {
     // Party should take fall damage
     uint64_t oldHealth = 0;

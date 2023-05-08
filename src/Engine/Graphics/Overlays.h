@@ -6,28 +6,29 @@
 
 #include "Utility/Memory/Blob.h"
 
-struct OtherOverlay {
-    OtherOverlay();
+// TODO(pskelton): Overlays in MM7/ MM8 are blank so most of this isnt used. MM6 does have overlays - investigate if needed
+
+struct ActiveOverlay {
+    ActiveOverlay();
     void Reset();
 
     int16_t field_0;
-    int16_t field_2;
-    int16_t sprite_frame_time;  // int16_t field_4;
-    int16_t field_6;
-    int16_t screen_space_x;  // int16_t field_8;
-    int16_t screen_space_y;  // int16_t field_A;
-    int16_t field_C;
-    int16_t field_E;
-    int field_10;
+    int16_t indexToOverlayList;
+    int16_t spriteFrameTime;
+    int16_t animLength;
+    int16_t screenSpaceX;
+    int16_t screenSpaceY;
+    int16_t pid;
+    int16_t projSize;
+    int fpDamageMod;
 };
 
-struct OtherOverlayList {
+struct ActiveOverlayList {
     void Reset();
-    int _4418B1(int a2, int a3, int a4, int a5);
-    int _4418B6(int uOverlayID, int16_t a3, int a4, int a5, int16_t a6);
+    int _4418B6(int uOverlayID, int16_t pid, int animLength, int fpDamageMod, int16_t projSize);
     void DrawTurnBasedIcon();
 
-    std::array<OtherOverlay, 50> pOverlays;
+    std::array<ActiveOverlay, 50> pOverlays;
     int field_3E8 = 0;
 };
 
@@ -35,7 +36,7 @@ struct OverlayDesc {
     uint16_t uOverlayID = 0;
     uint16_t uOverlayType = 0;
     uint16_t uSpriteFramesetID = 0;
-    int16_t field_6 = 0;
+    int16_t spriteFramesetGroup = 0;
 };
 
 struct OverlayList {
@@ -46,5 +47,5 @@ struct OverlayList {
     std::vector<OverlayDesc> pOverlays;
 };
 
-extern struct OtherOverlayList *pOtherOverlayList;  // idb
+extern struct ActiveOverlayList *pActiveOverlayList;
 extern struct OverlayList *pOverlayList;

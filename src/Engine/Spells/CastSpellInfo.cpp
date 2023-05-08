@@ -851,14 +851,12 @@ void CastSpellInfoHelpers::castSpell() {
                     int spell_power = spell_level + 5;
                     if (spell_mastery == PLAYER_SKILL_MASTERY_NOVICE) {
                         spell_fx_renderer->SetPlayerBuffAnim(pCastSpell->uSpellID, pCastSpell->uPlayerID_2);
-                        int spell_overlay_id = pOtherOverlayList->_4418B1(10000, pCastSpell->uPlayerID_2 + 310, 0, 65536);
                         pParty->pPlayers[pCastSpell->uPlayerID_2].pPlayerBuffs[PLAYER_BUFF_BLESS]
-                            .Apply(pParty->GetPlayingTime() + spell_duration, spell_mastery, spell_power, spell_overlay_id, 0);
+                            .Apply(pParty->GetPlayingTime() + spell_duration, spell_mastery, spell_power, 0, 0);
                     } else {
                         for (size_t i = 0; i < pParty->pPlayers.size(); i++) {
-                            int spell_overlay_id = pOtherOverlayList->_4418B1(10000, i + 310, 0, 65536);
                             pParty->pPlayers[i].pPlayerBuffs[PLAYER_BUFF_BLESS]
-                                .Apply(pParty->GetPlayingTime() + spell_duration, spell_mastery, spell_power, spell_overlay_id, 0);
+                                .Apply(pParty->GetPlayingTime() + spell_duration, spell_mastery, spell_power, 0, 0);
                         }
                         spell_fx_renderer->SetPartyBuffAnim(pCastSpell->uSpellID);
                     }
@@ -1030,13 +1028,8 @@ void CastSpellInfoHelpers::castSpell() {
 
                 case SPELL_AIR_WIZARD_EYE:
                 {
-                    // TODO(Nik-RE-dev): it picks overlay for last character?
-                    int spell_overlay_id;
-                    for (size_t i = 0; i < pParty->pPlayers.size(); i++) {
-                        spell_overlay_id = pOtherOverlayList->_4418B1(2000, i + 100, 0, 65536);
-                    }
                     pParty->pPartyBuffs[PARTY_BUFF_WIZARD_EYE]
-                        .Apply(pParty->GetPlayingTime() + GameTime::FromHours(spell_level), spell_mastery, 0, spell_overlay_id, 0);
+                        .Apply(pParty->GetPlayingTime() + GameTime::FromHours(spell_level), spell_mastery, 0, 0, 0);
                     break;
                 }
 
@@ -1057,9 +1050,6 @@ void CastSpellInfoHelpers::castSpell() {
                             break;
                         default:
                             assert(false);
-                    }
-                    for (size_t i = 0; i < pParty->pPlayers.size(); i++) {
-                        pOtherOverlayList->_4418B1(2010, i + 100, 0, 65536);
                     }
                     spell_fx_renderer->SetPartyBuffAnim(pCastSpell->uSpellID);
 
@@ -1118,9 +1108,6 @@ void CastSpellInfoHelpers::castSpell() {
                         setSpellRecovery(pCastSpell, failureRecoveryTime);
                         continue;
                     }
-                    for (size_t i = 0; i < pParty->pPlayers.size(); i++) {
-                        pOtherOverlayList->_4418B1(2040, i + 100, 0, 65536);
-                    }
                     pParty->uFlags |= PARTY_FLAGS_1_LANDING;
                     pParty->uFallSpeed = 1000;
                     pParty->vPosition.z += 5;
@@ -1169,13 +1156,9 @@ void CastSpellInfoHelpers::castSpell() {
                         setSpellRecovery(pCastSpell, failureRecoveryTime);
                         continue;
                     }
-                    for (size_t i = 0; i < pParty->pPlayers.size(); i++) {
-                        pOtherOverlayList->_4418B1(2090, i + 100, 0, 65536);
-                    }
-                    int spell_overlay_id = pOtherOverlayList->_4418B1(10008, 203, 0, 65536);
                     pParty->pPartyBuffs[PARTY_BUFF_FLY].Apply(
                             pParty->GetPlayingTime() + GameTime::FromHours(spell_level),
-                            spell_mastery, 0, spell_overlay_id,
+                            spell_mastery, 0, 0,
                             pCastSpell->uPlayerID + 1);
                     pParty->pPartyBuffs[PARTY_BUFF_FLY].isGMBuff = (spell_mastery == PLAYER_SKILL_MASTERY_GRANDMASTER);
                     break;
@@ -1339,10 +1322,9 @@ void CastSpellInfoHelpers::castSpell() {
                             assert(false);
                     }
 
-                    int spell_overlay_id = pOtherOverlayList->_4418B1(10005, 201, 0, 65536);
                     spell_fx_renderer->SetPartyBuffAnim(pCastSpell->uSpellID);
                     pParty->pPartyBuffs[PARTY_BUFF_WATER_WALK]
-                        .Apply(pParty->GetPlayingTime() + spell_duration, spell_mastery, 0, spell_overlay_id, pCastSpell->uPlayerID + 1);
+                        .Apply(pParty->GetPlayingTime() + spell_duration, spell_mastery, 0, 0, pCastSpell->uPlayerID + 1);
                     pParty->pPartyBuffs[PARTY_BUFF_WATER_WALK].isGMBuff = (spell_mastery == PLAYER_SKILL_MASTERY_GRANDMASTER);
                     break;
                 }
@@ -1796,7 +1778,6 @@ void CastSpellInfoHelpers::castSpell() {
                             assert(false);
                     }
 
-                    pOtherOverlayList->_4418B1(5080, pCastSpell->uPlayerID_2 + 100, 0, 65536);
                     if (pParty->pPlayers[pCastSpell->uPlayerID_2].conditions.Has(Condition_Dead)) {
                         pParty->pPlayers[pCastSpell->uPlayerID_2].health = 1;
                         if (spell_mastery == PLAYER_SKILL_MASTERY_GRANDMASTER) {
@@ -2918,6 +2899,7 @@ void CastSpellInfoHelpers::castSpell() {
                     }
                     pParty->armageddon_timer = 256;
                     pParty->armageddonDamage = spell_level;
+                    pParty->armageddonForceCount = 60;
                     ++pPlayer->uNumArmageddonCasts;
                     if (pParty->bTurnBasedModeOn) {
                         ++pTurnEngine->pending_actions;

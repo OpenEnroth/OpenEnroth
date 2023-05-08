@@ -235,35 +235,35 @@ void deserialize(const NPCData_MM7 &src, NPCData *dst) {
     dst->news_topic = src.newsTopic;
 }
 
-void serialize(const OtherOverlay &src, OtherOverlay_MM7 *dst) {
+void serialize(const ActiveOverlay &src, ActiveOverlay_MM7 *dst) {
     memzero(dst);
 
     dst->field_0 = src.field_0;
-    dst->field_2 = src.field_2;
-    dst->spriteFrameTime = src.sprite_frame_time;
-    dst->field_6 = src.field_6;
-    dst->screenSpaceX = src.screen_space_x;
-    dst->screenSpaceY = src.screen_space_y;
-    dst->field_C = src.field_C;
-    dst->field_E = src.field_E;
-    dst->field_10 = src.field_10;
+    dst->indexToOverlayList = src.indexToOverlayList;
+    dst->spriteFrameTime = src.spriteFrameTime;
+    dst->animLength = src.animLength;
+    dst->screenSpaceX = src.screenSpaceX;
+    dst->screenSpaceY = src.screenSpaceY;
+    dst->pid = src.pid;
+    dst->projSize = src.projSize;
+    dst->fpDamageMod = src.fpDamageMod;
 }
 
-void deserialize(const OtherOverlay_MM7 &src, OtherOverlay *dst) {
+void deserialize(const ActiveOverlay_MM7 &src, ActiveOverlay *dst) {
     memzero(dst);
 
     dst->field_0 = src.field_0;
-    dst->field_2 = src.field_2;
-    dst->sprite_frame_time = src.spriteFrameTime;
-    dst->field_6 = src.field_6;
-    dst->screen_space_x = src.screenSpaceX;
-    dst->screen_space_y = src.screenSpaceY;
-    dst->field_C = src.field_C;
-    dst->field_E = src.field_E;
-    dst->field_10 = src.field_10;
+    dst->indexToOverlayList = src.indexToOverlayList;
+    dst->spriteFrameTime = src.spriteFrameTime;
+    dst->animLength = src.animLength;
+    dst->screenSpaceX = src.screenSpaceX;
+    dst->screenSpaceY = src.screenSpaceY;
+    dst->pid = src.pid;
+    dst->projSize = src.projSize;
+    dst->fpDamageMod = src.fpDamageMod;
 }
 
-void serialize(const OtherOverlayList &src, OtherOverlayList_MM7 *dst) {
+void serialize(const ActiveOverlayList &src, ActiveOverlayList_MM7 *dst) {
     memzero(dst);
 
     dst->redraw = true;
@@ -271,7 +271,7 @@ void serialize(const OtherOverlayList &src, OtherOverlayList_MM7 *dst) {
     serialize(src.pOverlays, &dst->overlays);
 }
 
-void deserialize(const OtherOverlayList_MM7 &src, OtherOverlayList *dst) {
+void deserialize(const ActiveOverlayList_MM7 &src, ActiveOverlayList *dst) {
     dst->field_3E8 = src.field_3E8;
     deserialize(src.overlays, &dst->pOverlays);
 }
@@ -1624,7 +1624,7 @@ void deserialize(const OverlayDesc_MM7 &src, OverlayDesc *dst) {
     dst->uOverlayID = src.uOverlayID;
     dst->uOverlayType = src.uOverlayType;
     dst->uSpriteFramesetID = src.uSpriteFramesetID;
-    dst->field_6 = src.field_6;
+    dst->spriteFramesetGroup = src.spriteFramesetGroup;
 }
 
 void deserialize(const PlayerFrame_MM7 &src, PlayerFrame *dst) {

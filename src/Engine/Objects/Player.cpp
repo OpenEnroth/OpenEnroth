@@ -3469,7 +3469,7 @@ void Player::IncreaseAttribute(int eAttribute) {
 }
 
 //----- (0049070F) --------------------------------------------------------
-void Player::Zero() {
+void Player::resetTempBonuses() {
     // this is also used during party rest and heal so only buffs and bonuses are reset
     this->sLevelModifier = 0;
     this->sACModifier = 0;

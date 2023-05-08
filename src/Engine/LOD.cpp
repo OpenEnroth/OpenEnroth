@@ -218,23 +218,6 @@ void LODFile_Sprites::ReleaseAll() {}
 
 void LODFile_Sprites::MoveSpritesToVideoMemory() {}
 
-SoftwareBillboard *LODSprite::_4AD2D1_overlays(struct SoftwareBillboard *a2, int a3) {
-    SoftwareBillboard *result = a2;
-    unsigned int v4 = a2->uTargetPitch;
-
-    uint16_t *pTarget = (uint16_t*)a2->pTarget;
-    uint16_t *pPalette = a2->pPalette;
-    for (int y = 0; y < uHeight; y++) {
-        for (int x = 0; x < uWidth; x++) {
-            uint8_t color = bitmap[y * uWidth + x];
-            if (color != 0) {
-                pTarget[((a2->screen_space_y + y) * a2->uTargetPitch) + a2->screen_space_x + x] = pPalette[color];
-            }
-        }
-    }
-    return result;
-}
-
 void LODFile_IconsBitmaps::ReleaseAll2() {
     for (uint i = (uint)this->dword_11B84; i < this->uNumLoadedFiles; i++) {
         this->pTextures[i].Release();

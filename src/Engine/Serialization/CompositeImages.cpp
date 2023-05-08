@@ -563,7 +563,7 @@ void serialize(const SaveGameHeader &src, SaveGame_MM7 *dst) {
     serialize(src, &dst->header);
     serialize(*pParty, &dst->party);
     serialize(*pEventTimer, &dst->eventTimer);
-    serialize(*pOtherOverlayList, &dst->overlays);
+    serialize(*pActiveOverlayList, &dst->overlays);
     serialize(pNPCStats->pNewNPCData, &dst->npcData);
     serialize(pNPCStats->pGroups_copy, &dst->npcGroup);
 }
@@ -572,7 +572,7 @@ void deserialize(const SaveGame_MM7 &src, SaveGameHeader *dst) {
     deserialize(src.header, dst);
     deserialize(src.party, pParty);
     deserialize(src.eventTimer, pEventTimer);
-    deserialize(src.overlays, pOtherOverlayList);
+    deserialize(src.overlays, pActiveOverlayList);
     deserialize(src.npcData, &pNPCStats->pNewNPCData);
     deserialize(src.npcGroup, &pNPCStats->pGroups_copy);
 }

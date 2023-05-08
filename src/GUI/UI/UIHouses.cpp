@@ -2020,7 +2020,6 @@ void TempleDialog() {
             }
             pAudioPlayer->playExclusiveSound(SOUND_heal);
             pParty->activeCharacter().playReaction(SPEECH_TempleHeal);
-            pOtherOverlayList->_4418B1(20, pParty->activeCharacterIndex() + 99, 0, 65536);
             pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 1, 0);
             return;
         }
@@ -2032,7 +2031,6 @@ void TempleDialog() {
             if (pParty->activeCharacter().conditions.HasNone({Condition_Eradicated, Condition_Petrified, Condition_Dead})) {
                 pAudioPlayer->playExclusiveSound(SOUND_heal);
                 pParty->activeCharacter().playReaction(SPEECH_TempleHeal);
-                pOtherOverlayList->_4418B1(20, pParty->activeCharacterIndex() + 99, 0, 65536);
                 pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 1, 0);
                 return;
             }
@@ -2056,7 +2054,6 @@ void TempleDialog() {
         pParty->activeCharacter().conditions.Set(Condition_Zombie, pParty->GetPlayingTime());
         pAudioPlayer->playExclusiveSound(SOUND_heal);
         pParty->activeCharacter().playReaction(SPEECH_TempleHeal);
-        pOtherOverlayList->_4418B1(20, pParty->activeCharacterIndex() + 99, 0, 65536);
         pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 1, 0);
         return;
     }
