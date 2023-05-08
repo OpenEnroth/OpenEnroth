@@ -469,13 +469,14 @@ void GameWindowHandler::OnMouseGrabToggle() {
 }
 
 void GameWindowHandler::handleKeyPress(PlatformKey key, PlatformModifiers mods, bool isAutoRepeat) {
-    if (isAutoRepeat)
-        return;
+    OnChar(key, -1);
+
+    if (!isAutoRepeat) {
+        // Do not use autorepeat for game actions, only for text input
+        OnKey(key);
+    }
 
     char c = PlatformKeyToChar(key, mods);
-
-    OnChar(key, -1);
-    OnKey(key);
 
     if (c != 0)
         OnChar(key, c);
