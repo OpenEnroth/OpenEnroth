@@ -235,7 +235,7 @@ void deserialize(const NPCData_MM7 &src, NPCData *dst) {
     dst->news_topic = src.newsTopic;
 }
 
-void Serialize(const ActiveOverlay &src, ActiveOverlay_MM7 *dst) {
+void serialize(const ActiveOverlay &src, ActiveOverlay_MM7 *dst) {
     memzero(dst);
 
     dst->field_0 = src.field_0;
@@ -249,7 +249,7 @@ void Serialize(const ActiveOverlay &src, ActiveOverlay_MM7 *dst) {
     dst->fpDamageMod = src.fpDamageMod;
 }
 
-void Deserialize(const ActiveOverlay_MM7 &src, ActiveOverlay *dst) {
+void deserialize(const ActiveOverlay_MM7 &src, ActiveOverlay *dst) {
     memzero(dst);
 
     dst->field_0 = src.field_0;
@@ -263,7 +263,7 @@ void Deserialize(const ActiveOverlay_MM7 &src, ActiveOverlay *dst) {
     dst->fpDamageMod = src.fpDamageMod;
 }
 
-void Serialize(const ActiveOverlayList &src, ActiveOverlayList_MM7 *dst) {
+void serialize(const ActiveOverlayList &src, ActiveOverlayList_MM7 *dst) {
     memzero(dst);
 
     dst->redraw = true;
@@ -271,7 +271,7 @@ void Serialize(const ActiveOverlayList &src, ActiveOverlayList_MM7 *dst) {
     serialize(src.pOverlays, &dst->overlays);
 }
 
-void Deserialize(const ActiveOverlayList_MM7 &src, ActiveOverlayList *dst) {
+void deserialize(const ActiveOverlayList_MM7 &src, ActiveOverlayList *dst) {
     dst->field_3E8 = src.field_3E8;
     deserialize(src.overlays, &dst->pOverlays);
 }

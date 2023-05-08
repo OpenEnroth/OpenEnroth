@@ -533,11 +533,11 @@ struct ActiveOverlay_MM7 {
     /* 10 */ int32_t fpDamageMod;
     /* 14 */
 };
-static_assert(sizeof(OtherOverlay_MM7) == 0x14);
-MM_DECLARE_MEMCOPY_SERIALIZABLE(OtherOverlay_MM7)
+static_assert(sizeof(ActiveOverlay_MM7) == 0x14);
+MM_DECLARE_MEMCOPY_SERIALIZABLE(ActiveOverlay_MM7)
 
-void Serialize(const ActiveOverlay &src, ActiveOverlay_MM7 *dst);
-void Deserialize(const ActiveOverlay_MM7 &src, ActiveOverlay *dst);
+void serialize(const ActiveOverlay &src, ActiveOverlay_MM7 *dst);
+void deserialize(const ActiveOverlay_MM7 &src, ActiveOverlay *dst);
 
 
 struct ActiveOverlayList_MM7 {
@@ -546,11 +546,11 @@ struct ActiveOverlayList_MM7 {
     /* 3EC */ int32_t redraw;
     /* 3F0 */
 };
-static_assert(sizeof(OtherOverlayList_MM7) == 0x3F0);
-MM_DECLARE_MEMCOPY_SERIALIZABLE(OtherOverlayList_MM7)
+static_assert(sizeof(ActiveOverlayList_MM7) == 0x3F0);
+MM_DECLARE_MEMCOPY_SERIALIZABLE(ActiveOverlayList_MM7)
 
-void Serialize(const ActiveOverlayList &src, ActiveOverlayList_MM7 *dst);
-void Deserialize(const ActiveOverlayList_MM7 &src, ActiveOverlayList *dst);
+void serialize(const ActiveOverlayList &src, ActiveOverlayList_MM7 *dst);
+void deserialize(const ActiveOverlayList_MM7 &src, ActiveOverlayList *dst);
 
 
 struct IconFrame_MM7 {
