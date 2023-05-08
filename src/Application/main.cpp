@@ -5,6 +5,7 @@
 #include "Engine/Components/Control/EngineController.h"
 #include "Engine/Components/Trace/EngineTracePlayer.h"
 #include "Engine/Components/Trace/EngineTraceComponent.h"
+#include "Engine/Components/Trace/EngineTraceStateAccessor.h"
 
 #include "Library/Application/PlatformApplication.h"
 #include "Library/Trace/EventTrace.h"
@@ -28,11 +29,14 @@ int runRetrace(GameOptions options) {
 
             game->goToMainMenu();
 
+            // TODO(captainurist): encapsulate.
             EventTrace trace = EventTrace::loadFromFile(tracePath, application->window());
             application->get<EngineTracePlayer>()->prepareTrace(game, savePath, tracePath);
+            trace.header.startState = EngineTraceStateAccessor::makeGameState();
             application->get<EngineTraceComponent>()->start();
-            application->get<EngineTracePlayer>()->playPreparedTrace(game, TRACE_PLAYBACK_SKIP_RANDOM_CHECKS);
+            application->get<EngineTracePlayer>()->playPreparedTrace(game, TRACE_PLAYBACK_SKIP_RANDOM_CHECKS | TRACE_PLAYBACK_SKIP_STATE_CHECKS);
             trace.events = application->get<EngineTraceComponent>()->finish();
+            trace.header.endState = EngineTraceStateAccessor::makeGameState();
             EventTrace::saveToFile(tracePath, trace);
         }
 

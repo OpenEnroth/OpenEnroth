@@ -14,6 +14,8 @@ class EngineController;
 class EngineDeterministicComponent;
 class GameKeyboardController;
 class EventTrace;
+class EventTraceGameState;
+class PaintEvent;
 
 /**
  * Component that exposes a trace playback interface.
@@ -49,6 +51,10 @@ class EngineTracePlayer : private PlatformApplicationAware {
 
  private:
     friend class PlatformIntrospection;
+
+    void checkTime(EngineTracePlaybackFlags flags, const PaintEvent *paintEvent);
+    void checkRng(EngineTracePlaybackFlags flags, const PaintEvent *paintEvent);
+    void checkState(EngineTracePlaybackFlags flags, const EventTraceGameState &expectedState, bool isStart);
 
     virtual void installNotify() override;
     virtual void removeNotify() override;

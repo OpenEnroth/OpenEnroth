@@ -13,6 +13,22 @@
 
 #include "PaintEvent.h"
 
+MM_DEFINE_JSON_STRUCT_SERIALIZATION_FUNCTIONS(Pointi, (
+    (x, "x"),
+    (y, "y")
+))
+
+MM_DEFINE_JSON_STRUCT_SERIALIZATION_FUNCTIONS(Sizei, (
+    (w, "w"),
+    (h, "h")
+))
+
+MM_DEFINE_JSON_STRUCT_SERIALIZATION_FUNCTIONS(Vec3i, (
+    (x, "x"),
+    (y, "y"),
+    (z, "z")
+))
+
 MM_DEFINE_ENUM_SERIALIZATION_FUNCTIONS(PlatformEventType, CASE_SENSITIVE, {
     {EVENT_KEY_PRESS,               "keyPress"},
     {EVENT_KEY_RELEASE,             "keyRelease"},
@@ -52,16 +68,6 @@ MM_DEFINE_FLAGS_SERIALIZATION_FUNCTIONS(PlatformModifiers)
 MM_DEFINE_JSON_LEXICAL_SERIALIZATION_FUNCTIONS(PlatformModifiers)
 
 MM_DEFINE_JSON_LEXICAL_SERIALIZATION_FUNCTIONS(PlatformKey)
-
-MM_DEFINE_JSON_STRUCT_SERIALIZATION_FUNCTIONS(Pointi, (
-    (x, "x"),
-    (y, "y")
-))
-
-MM_DEFINE_JSON_STRUCT_SERIALIZATION_FUNCTIONS(Sizei, (
-    (w, "w"),
-    (h, "h")
-))
 
 MM_DEFINE_JSON_STRUCT_SERIALIZATION_FUNCTIONS(PlatformEvent, (
     (type, "type")
@@ -169,9 +175,16 @@ MM_DEFINE_JSON_STRUCT_SERIALIZATION_FUNCTIONS(EventTraceConfigLine, (
     (value, "value")
 ))
 
+MM_DEFINE_JSON_STRUCT_SERIALIZATION_FUNCTIONS(EventTraceGameState, (
+    (locationName, "locationName"),
+    (partyPosition, "partyPosition")
+))
+
 MM_DEFINE_JSON_STRUCT_SERIALIZATION_FUNCTIONS(EventTraceHeader, (
     (saveFileSize, "saveFileSize"),
-    (config, "config")
+    (config, "config"),
+    (startState, "startState"),
+    (endState, "endState")
 ))
 
 MM_DEFINE_JSON_STRUCT_SERIALIZATION_FUNCTIONS(EventTrace, (

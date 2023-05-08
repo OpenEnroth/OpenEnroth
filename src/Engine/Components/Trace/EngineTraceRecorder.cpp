@@ -16,7 +16,7 @@
 #include "Library/Trace/EventTrace.h"
 
 #include "EngineTraceComponent.h"
-#include "EngineTraceConfigurator.h"
+#include "EngineTraceStateAccessor.h"
 
 EngineTraceRecorder::EngineTraceRecorder() {}
 
@@ -34,7 +34,8 @@ void EngineTraceRecorder::startRecording(EngineController *game, const std::stri
     game->resizeWindow(640, 480);
     game->tick();
 
-    _trace->header.config = EngineTraceConfigurator::makeConfigPatch(engine->config.get());
+    _trace->header.config = EngineTraceStateAccessor::makeConfigPatch(engine->config.get());
+    _trace->header.startState = EngineTraceStateAccessor::makeGameState();
 
     int frameTimeMs = engine->config->debug.TraceFrameTimeMs.value();
     int traceFpsLimit = 1000 / frameTimeMs;
@@ -61,6 +62,7 @@ void EngineTraceRecorder::finishRecording(EngineController *game) {
 
     _trace->events = _traceComponent->finish();
     _trace->header.saveFileSize = std::filesystem::file_size(_saveFilePath); // This function can throw.
+    _trace->header.endState = EngineTraceStateAccessor::makeGameState();
     EventTrace::saveToFile(_traceFilePath, *_trace);
 
     logger->info("Trace saved to {} and {}",
