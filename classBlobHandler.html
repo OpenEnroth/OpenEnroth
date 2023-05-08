@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;ddc5423</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;c4e67df</span>
    </div>
   </td>
  </tr>
@@ -83,21 +83,53 @@ Inheritance diagram for BlobHandler:</div>
  <div class="center">
   <img src="classBlobHandler.png" usemap="#BlobHandler_map" alt=""/>
   <map id="BlobHandler_map" name="BlobHandler_map">
-<area href="classFreeBlobHandler.html" alt="FreeBlobHandler" shape="rect" coords="0,56,153,80"/>
-<area href="classMemoryMapBlobHandler.html" alt="MemoryMapBlobHandler" shape="rect" coords="163,56,316,80"/>
-<area href="classNonOwningBlobHandler.html" alt="NonOwningBlobHandler" shape="rect" coords="326,56,479,80"/>
-<area href="classStringBlobHandler.html" alt="StringBlobHandler" shape="rect" coords="489,56,642,80"/>
+<area href="classNonOwningBlobHandler.html" alt="NonOwningBlobHandler" shape="rect" coords="0,56,153,80"/>
+<area href="classSharableBlobHandler.html" alt="SharableBlobHandler" shape="rect" coords="163,56,316,80"/>
+<area href="classSharedBlobHandler.html" alt="SharedBlobHandler" shape="rect" coords="326,56,479,80"/>
+<area href="classFreeBlobHandler.html" alt="FreeBlobHandler" shape="rect" coords="0,112,153,136"/>
+<area href="classMemoryMapBlobHandler.html" alt="MemoryMapBlobHandler" shape="rect" coords="163,112,316,136"/>
+<area href="classStringBlobHandler.html" alt="StringBlobHandler" shape="rect" coords="326,112,479,136"/>
   </map>
 </div></div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a83c7b1d42fd9ce2c620c0f8fb9adba04"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classBlobHandler.html#a83c7b1d42fd9ce2c620c0f8fb9adba04">destroy</a> (const void *data, size_t size)=0</td></tr>
-<tr class="separator:a83c7b1d42fd9ce2c620c0f8fb9adba04"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a87448321699c18d1f977f9c96aa4fd2a"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classBlobHandler.html#a87448321699c18d1f977f9c96aa4fd2a">~BlobHandler</a> ()=default</td></tr>
+<tr class="separator:a87448321699c18d1f977f9c96aa4fd2a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6cd2df2b650bb79ee7d510ef9a20ac05"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classBlobHandler.html#a6cd2df2b650bb79ee7d510ef9a20ac05">destroy</a> (<a class="el" href="classBlob.html">Blob</a> &amp;self)=0</td></tr>
+<tr class="separator:a6cd2df2b650bb79ee7d510ef9a20ac05"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aab414e88d222731402d3b1ca0673181f"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classBlob.html">Blob</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classBlobHandler.html#aab414e88d222731402d3b1ca0673181f">share</a> (<a class="el" href="classBlob.html">Blob</a> &amp;self)=0</td></tr>
+<tr class="separator:aab414e88d222731402d3b1ca0673181f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a id="a87448321699c18d1f977f9c96aa4fd2a" name="a87448321699c18d1f977f9c96aa4fd2a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a87448321699c18d1f977f9c96aa4fd2a">&#9670;&#160;</a></span>~BlobHandler()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual BlobHandler::~BlobHandler </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">virtual</span><span class="mlabel">default</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a id="a83c7b1d42fd9ce2c620c0f8fb9adba04" name="a83c7b1d42fd9ce2c620c0f8fb9adba04"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a83c7b1d42fd9ce2c620c0f8fb9adba04">&#9670;&#160;</a></span>destroy()</h2>
+<a id="a6cd2df2b650bb79ee7d510ef9a20ac05" name="a6cd2df2b650bb79ee7d510ef9a20ac05"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6cd2df2b650bb79ee7d510ef9a20ac05">&#9670;&#160;</a></span>destroy()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -108,19 +140,9 @@ Public Member Functions</h2></td></tr>
         <tr>
           <td class="memname">virtual void BlobHandler::destroy </td>
           <td>(</td>
-          <td class="paramtype">const void *&#160;</td>
-          <td class="paramname"><em>data</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
+          <td class="paramtype"><a class="el" href="classBlob.html">Blob</a> &amp;&#160;</td>
+          <td class="paramname"><em>self</em></td><td>)</td>
           <td></td>
-          <td class="paramtype">size_t&#160;</td>
-          <td class="paramname"><em>size</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
         </tr>
       </table>
   </td>
@@ -130,7 +152,35 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Implemented in <a class="el" href="classNonOwningBlobHandler.html#a1c7cf5d2da6c55454a96641253573cf8">NonOwningBlobHandler</a>, <a class="el" href="classFreeBlobHandler.html#ab9f444bcd47ad4d9b658d10b29dca9c0">FreeBlobHandler</a>, <a class="el" href="classMemoryMapBlobHandler.html#a9fe58d7cb426e7ebf109e611ff7215c1">MemoryMapBlobHandler</a>, and <a class="el" href="classStringBlobHandler.html#aa9e7946b3b8119f1b39954de109660fb">StringBlobHandler</a>.</p>
+<p>Implemented in <a class="el" href="classNonOwningBlobHandler.html#a45b3cc705d576ec4d93db737ca642ba6">NonOwningBlobHandler</a>, <a class="el" href="classSharedBlobHandler.html#a91c289697458ba5f4c626fea9d899b24">SharedBlobHandler</a>, <a class="el" href="classFreeBlobHandler.html#ae612743c8dcc95a1b2c74edccfcd0e18">FreeBlobHandler</a>, <a class="el" href="classMemoryMapBlobHandler.html#ad4ed371d6d798df8e5443ec2f78dad6e">MemoryMapBlobHandler</a>, and <a class="el" href="classStringBlobHandler.html#a253b1064ec6b73bf8dfd494b909592eb">StringBlobHandler</a>.</p>
+
+</div>
+</div>
+<a id="aab414e88d222731402d3b1ca0673181f" name="aab414e88d222731402d3b1ca0673181f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aab414e88d222731402d3b1ca0673181f">&#9670;&#160;</a></span>share()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual <a class="el" href="classBlob.html">Blob</a> BlobHandler::share </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classBlob.html">Blob</a> &amp;&#160;</td>
+          <td class="paramname"><em>self</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Implemented in <a class="el" href="classNonOwningBlobHandler.html#a6d08ec75d722897080acb32b607e3726">NonOwningBlobHandler</a>, <a class="el" href="classSharedBlobHandler.html#aae755615a19cd45ea08efc3686dd25c6">SharedBlobHandler</a>, and <a class="el" href="classSharableBlobHandler.html#aec6f5c6413c7e199b80007ad8f56f79e">SharableBlobHandler</a>.</p>
 
 </div>
 </div>
