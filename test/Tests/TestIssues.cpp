@@ -549,6 +549,12 @@ GAME_TEST(Issues, Issue563) {
     test->playTraceFromTestData("issue_563.mm7", "issue_563.json");
 }
 
+GAME_TEST(Issues, Issue571) {
+    // Check that item potion cannot be wastefully applied to unrelated item
+    test->playTraceFromTestData("issue_571.mm7", "issue_571.json");
+    EXPECT_NE(pParty->pPickedItem.uItemID, ITEM_NULL);
+}
+
 GAME_TEST(Issues, Issue574) {
     // Check that applying recharge item potion produces correct number of charges
     test->playTraceFromTestData("issue_574.mm7", "issue_574.json");
@@ -681,6 +687,13 @@ GAME_TEST(Issues, Issue664) {
     EXPECT_EQ(pParty->vPosition.z, 309);
 }
 
+GAME_TEST(Issues, Issue674) {
+    // Check that map timers are working
+    int oldHealth;
+    test->playTraceFromTestData("issue_674.mm7", "issue_674.json", [&] { oldHealth = pParty->pPlayers[0].health; });
+    EXPECT_EQ(pParty->pPlayers[0].health, oldHealth + 5);
+}
+
 GAME_TEST(Issues, Issue675) {
     // generateItem used to generate invalid enchantments outside of the [0, 24] range in some cases.
     // Also, generateItem used to assert.
@@ -726,6 +739,68 @@ GAME_TEST(Issues, Issue679) {
     EXPECT_EQ(prevGold, pParty->GetGold());
 }
 
+GAME_TEST(Issues, Issue689) {
+    // Testing that clicking on load game scroll is not crashing the game then there's small amount of saves present.
+    std::string savesDir = MakeDataPath("saves");
+    std::string savesDirMoved;
+
+    MM_AT_SCOPE_EXIT({
+        std::error_code ec;
+        std::filesystem::remove_all(savesDir);
+        if (!savesDirMoved.empty()) {
+            std::filesystem::rename(savesDirMoved, savesDir, ec); // Using std::error_code here, so can't throw.
+        }
+    });
+
+    if (std::filesystem::exists(savesDir)) {
+        savesDirMoved = savesDir + "_moved_for_testing";
+        ASSERT_FALSE(std::filesystem::exists(savesDirMoved)); // Throws on failure.
+        std::filesystem::rename(savesDir, savesDirMoved);
+    }
+
+    std::filesystem::create_directory(savesDir);
+
+    game->pressGuiButton("MainMenu_NewGame");
+    game->tick(2);
+    game->pressGuiButton("PartyCreation_OK");
+    game->skipLoadingScreen();
+    game->tick(2);
+
+    game->pressAndReleaseKey(PlatformKey::Escape);
+    game->tick(2);
+    game->pressGuiButton("GameMenu_SaveGame");
+    game->tick(10);
+    game->pressGuiButton("SaveMenu_Slot0");
+    game->tick(2);
+    game->pressAndReleaseKey(PlatformKey::Digit0);
+    game->tick(2);
+    game->pressGuiButton("SaveMenu_Save");
+    game->tick(10);
+
+    game->pressAndReleaseKey(PlatformKey::Escape);
+    game->tick(2);
+    game->pressGuiButton("GameMenu_LoadGame");
+    game->tick(10);
+    game->pressGuiButton("LoadMenu_Scroll"); // Sould not crash
+    game->tick(2);
+    game->pressGuiButton("LoadMenu_Slot0");
+    game->tick(2);
+    game->pressGuiButton("LoadMenu_Load");
+    game->tick(2);
+    game->skipLoadingScreen();
+    game->tick(2);
+
+    game->pressAndReleaseKey(PlatformKey::Escape);
+    game->tick(2);
+    game->pressGuiButton("GameMenu_Quit");
+    game->tick(2);
+    game->pressGuiButton("GameMenu_Quit");
+    game->tick(10);
+    game->pressGuiButton("MainMenu_LoadGame"); // Should not crash because of last loaded save
+    game->tick(10);
+    game->pressGuiButton("LoadMenu_Scroll"); // Sould not crash
+}
+
 GAME_TEST(Issues, Issue691) {
     // Test that hitting escape when in transition window does not crash
     test->playTraceFromTestData("issue_691.mm7", "issue_691.json");
@@ -747,6 +822,13 @@ GAME_TEST(Issues, Issue720) {
     EXPECT_EQ(pGUIWindow_CurrentMenu->eWindowType, WINDOW_QuestBook);
 }
 
+GAME_TEST(Issues, Issue724) {
+    // Test that item potion can be applied to equipped items
+    test->playTraceFromTestData("issue_724.mm7", "issue_724.json",
+                                [] { EXPECT_NE((pParty->pPlayers[3].GetNthEquippedIndexItem(ITEM_SLOT_MAIN_HAND)->uAttributes & ITEM_HARDENED), ITEM_HARDENED); });
+    EXPECT_EQ((pParty->pPlayers[3].GetNthEquippedIndexItem(ITEM_SLOT_MAIN_HAND)->uAttributes & ITEM_HARDENED), ITEM_HARDENED);
+}
+
 GAME_TEST(Issues, Issue728) {
     // mousing over facets with nonexisting events shouldn't crash the game
     test->playTraceFromTestData("issue_728.mm7", "issue_728.json");
@@ -764,4 +846,10 @@ GAME_TEST(Issues, Issue741) {
     // Game crashing when walking into a wall in Temple of the moon
     test->playTraceFromTestData("issue_741.mm7", "issue_741.json");
     EXPECT_NE(pBLVRenderParams->uPartySectorID, 0);
+}
+
+GAME_TEST(Issues, Issue760) {
+    // Check that mixing potions when character inventory is full does not discards empty bottle
+    test->playTraceFromTestData("issue_760.mm7", "issue_760.json");
+    EXPECT_EQ(pParty->pPickedItem.uItemID, ITEM_POTION_BOTTLE);
 }

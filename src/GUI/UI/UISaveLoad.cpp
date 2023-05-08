@@ -88,15 +88,15 @@ GUIWindow_Save::GUIWindow_Save() :
     scrollstop = assets->GetImage_ColorKey("con_x");
 
     // GUIWindow_Save c-tor --- part
-    CreateButton({21, 198}, {191, 18}, 1, 0, UIMSG_SelectLoadSlot, 0);
-    CreateButton({21, 218}, {191, 18}, 1, 0, UIMSG_SelectLoadSlot, 1);
-    CreateButton({21, 238}, {191, 18}, 1, 0, UIMSG_SelectLoadSlot, 2);
-    CreateButton({21, 258}, {191, 18}, 1, 0, UIMSG_SelectLoadSlot, 3);
-    CreateButton({21, 278}, {191, 18}, 1, 0, UIMSG_SelectLoadSlot, 4);
-    CreateButton({21, 298}, {191, 18}, 1, 0, UIMSG_SelectLoadSlot, 5);
-    CreateButton({21, 318}, {191, 18}, 1, 0, UIMSG_SelectLoadSlot, 6);
+    CreateButton("SaveMenu_Slot0", {21, 198}, {191, 18}, 1, 0, UIMSG_SelectLoadSlot, 0);
+    CreateButton("SaveMenu_Slot1", {21, 218}, {191, 18}, 1, 0, UIMSG_SelectLoadSlot, 1);
+    CreateButton("SaveMenu_Slot2", {21, 238}, {191, 18}, 1, 0, UIMSG_SelectLoadSlot, 2);
+    CreateButton("SaveMenu_Slot3", {21, 258}, {191, 18}, 1, 0, UIMSG_SelectLoadSlot, 3);
+    CreateButton("SaveMenu_Slot4", {21, 278}, {191, 18}, 1, 0, UIMSG_SelectLoadSlot, 4);
+    CreateButton("SaveMenu_Slot5", {21, 298}, {191, 18}, 1, 0, UIMSG_SelectLoadSlot, 5);
+    CreateButton("SaveMenu_Slot6", {21, 318}, {191, 18}, 1, 0, UIMSG_SelectLoadSlot, 6);
 
-    pBtnLoadSlot = CreateButton({241, 302}, {105, 40}, 1, 0, UIMSG_SaveLoadBtn, 0, InputAction::Invalid, "", {saveload_ui_ls_saved});
+    pBtnLoadSlot = CreateButton("SaveMenu_Save", {241, 302}, {105, 40}, 1, 0, UIMSG_SaveLoadBtn, 0, InputAction::Invalid, "", {saveload_ui_ls_saved});
     pBtnCancel = CreateButton({350, 302}, {105, 40}, 1, 0, UIMSG_Cancel, 0, InputAction::Invalid, "", {saveload_ui_x_d});
     pBtnArrowUp = CreateButton({215, 199}, {17, 17}, 1, 0, UIMSG_ArrowUp, 0, InputAction::Invalid, "", {ui_ar_up_dn});
     pBtnDownArrow = CreateButton({215, 323}, {17, 17}, 1, 0, UIMSG_DownArrow, MAX_SAVE_SLOTS, InputAction::Invalid, "", {ui_ar_dn_dn});
@@ -223,7 +223,7 @@ GUIWindow_Load::GUIWindow_Load(bool ingame) :
     pBtnArrowUp = CreateButton({215, 199}, {17, 17}, 1, 0, UIMSG_ArrowUp, 0, InputAction::Invalid, "", {ui_ar_up_dn});
     pBtnDownArrow = CreateButton({215, 323}, {17, 17}, 1, 0, UIMSG_DownArrow, pSavegameList->numSavegameFiles, InputAction::Invalid, "", {ui_ar_dn_dn});
 
-    CreateButton({215, 216}, {17, 107}, 1, 0, UIMSG_SaveLoadScroll, pSavegameList->numSavegameFiles);
+    CreateButton("LoadMenu_Scroll", {215, 216}, {17, 107}, 1, 0, UIMSG_SaveLoadScroll, pSavegameList->numSavegameFiles);
 }
 
 void GUIWindow_Load::Update() {
