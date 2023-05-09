@@ -869,7 +869,7 @@ void Party::RestAndHeal() {
 
     for (int pPlayerID = 0; pPlayerID < this->pPlayers.size(); ++pPlayerID) {
         pPlayer = &pParty->pPlayers[pPlayerID];
-        for (uint i = 0; i < 20; ++i) pPlayer->pPlayerBuffs[i].Reset();
+        for (uint i = 0; i < 24; ++i) pPlayer->pPlayerBuffs[i].Reset();
 
         pPlayer->resetTempBonuses();
         if (pPlayer->conditions.HasAny({Condition_Dead, Condition_Petrified, Condition_Eradicated})) {

@@ -28,6 +28,32 @@ static int partyItemCount() {
     return result;
 }
 
+static std::initializer_list<PLAYER_BUFFS> allPotionBuffs() {
+    static constinit std::initializer_list<PLAYER_BUFFS> result = {
+        PLAYER_BUFF_RESIST_AIR,
+        PLAYER_BUFF_BLESS,
+        PLAYER_BUFF_RESIST_BODY,
+        PLAYER_BUFF_RESIST_EARTH,
+        PLAYER_BUFF_RESIST_FIRE,
+        PLAYER_BUFF_HASTE,
+        PLAYER_BUFF_HEROISM,
+        PLAYER_BUFF_RESIST_MIND,
+        PLAYER_BUFF_PRESERVATION,
+        PLAYER_BUFF_SHIELD,
+        PLAYER_BUFF_STONESKIN,
+        PLAYER_BUFF_ACCURACY,
+        PLAYER_BUFF_ENDURANCE,
+        PLAYER_BUFF_INTELLIGENCE,
+        PLAYER_BUFF_LUCK,
+        PLAYER_BUFF_STRENGTH,
+        PLAYER_BUFF_WILLPOWER,
+        PLAYER_BUFF_SPEED,
+        PLAYER_BUFF_RESIST_WATER,
+        PLAYER_BUFF_WATER_WALK
+    };
+    return result;
+}
+
 // 100
 
 GAME_TEST(Issues, Issue123) {
@@ -862,39 +888,35 @@ GAME_TEST(Issues, Issue760) {
     EXPECT_EQ(pParty->pPickedItem.uItemID, ITEM_POTION_BOTTLE);
 }
 
-void check783Buffs(bool haveBuffs) {
-    std::initializer_list<PLAYER_BUFFS> buffs = {
-        PLAYER_BUFF_RESIST_AIR,
-        PLAYER_BUFF_BLESS,
-        PLAYER_BUFF_RESIST_BODY,
-        PLAYER_BUFF_RESIST_EARTH,
-        PLAYER_BUFF_RESIST_FIRE,
-        PLAYER_BUFF_HASTE,
-        PLAYER_BUFF_HEROISM,
-        PLAYER_BUFF_RESIST_MIND,
-        PLAYER_BUFF_PRESERVATION,
-        PLAYER_BUFF_SHIELD,
-        PLAYER_BUFF_STONESKIN,
-        PLAYER_BUFF_ACCURACY,
-        PLAYER_BUFF_ENDURANCE,
-        PLAYER_BUFF_INTELLIGENCE,
-        PLAYER_BUFF_LUCK,
-        PLAYER_BUFF_STRENGTH,
-        PLAYER_BUFF_WILLPOWER,
-        PLAYER_BUFF_SPEED,
-        PLAYER_BUFF_RESIST_WATER,
-        PLAYER_BUFF_WATER_WALK
-    };
-    for (PLAYER_BUFFS buff : buffs)
+void check783784Buffs(bool haveBuffs) {
+    for (PLAYER_BUFFS buff : allPotionBuffs())
         EXPECT_EQ(pParty->pPlayers[0].pPlayerBuffs[buff].Active(), haveBuffs) << "buff=" << static_cast<int>(buff);
+}
+
+GAME_TEST(Issues, Issue783) {
+    // Check that all player buffs expire after rest.
+    GameTime startTime;
+    test->playTraceFromTestData("issue_783.mm7", "issue_783.json", [&] {
+        startTime = pParty->GetPlayingTime();
+        check783784Buffs(true); // Should have all buffs at start.
+
+        // And all buffs should expire way in the future.
+        for (PLAYER_BUFFS buff : allPotionBuffs())
+            EXPECT_GT(pParty->pPlayers[0].pPlayerBuffs[buff].expireTime, startTime + GameTime::FromHours(10));
+    });
+
+    GameTime endTime = pParty->GetPlayingTime();
+    EXPECT_GT(endTime, startTime + GameTime::FromHours(8)); // Check that we did rest.
+    EXPECT_LT(endTime, startTime + GameTime::FromHours(10)); // Check that we didn't wait out the buff expire times.
+    check783784Buffs(false); // Check that the buffs still expired.
 }
 
 GAME_TEST(Issues, Issue784) {
     // Check that buff potions actually work.
     test->playTraceFromTestData("issue_784.mm7", "issue_784.json", [] {
-        check783Buffs(false);
+        check783784Buffs(false);
     });
-    check783Buffs(true);
+    check783784Buffs(true);
 
     // Check that buffs have effect.
     // Potions were at power 75, that's 75*3=225 points for attribute bonuses.
