@@ -1271,7 +1271,8 @@ struct BLVHeader_MM7 {
 };
 static_assert(sizeof(BLVHeader_MM7) == 136);
 MM_DECLARE_MEMCOPY_SERIALIZABLE(BLVHeader_MM7)
-// TODO(captainurist): introduce engine equivalent
+// BLVHeader_MM7 is only used during deserialization and doesn't have a runtime equivalent,
+// so no deserialize() overloads for it.
 
 
 struct OutdoorLocationTileType_MM7 {

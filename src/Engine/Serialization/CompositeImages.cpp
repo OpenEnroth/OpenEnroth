@@ -15,7 +15,6 @@
 #include "CommonImages.h"
 
 void deserialize(const IndoorLocation_MM7 &src, IndoorLocation *dst) {
-    deserialize(src.header, &dst->blv);
     deserialize(src.vertices, &dst->pVertices);
     deserialize(src.faces, &dst->pFaces);
     deserialize(src.faceData, &dst->pLFaces);

@@ -295,10 +295,7 @@ struct IndoorLocation {
     void PrepareItemsRenderList_BLV();
 
     std::string filename;
-    char field_20[48];
     unsigned int bLoaded = 0;
-    char field_54[404];
-    BLVHeader_MM7 blv;
     std::vector<Vec3s> pVertices;
     std::vector<BLVFace> pFaces;
     std::vector<BLVFaceExtra> pFaceExtras;
