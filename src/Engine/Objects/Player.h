@@ -180,26 +180,26 @@ struct Player {
     bool AddItem(ItemGen *pItem);
     int GetActualAttribute(CHARACTER_ATTRIBUTE_TYPE attrId,
                            unsigned short Player::*attrValue,
-                           unsigned short Player::*attrBonus);
-    int GetBaseStrength();
-    int GetBaseIntelligence();
-    int GetBaseWillpower();
-    int GetBaseEndurance();
-    int GetBaseAccuracy();
-    int GetBaseSpeed();
-    int GetBaseLuck();
-    int GetBaseLevel();
-    int GetActualLevel();
-    int GetActualMight();
-    int GetActualIntelligence();
-    int GetActualWillpower();
-    int GetActualEndurance();
-    int GetActualAccuracy();
-    int GetActualSpeed();
-    int GetActualLuck();
-    int GetActualAttack(bool onlyMainHandDmg);
-    int GetMeleeDamageMinimal();
-    int GetMeleeDamageMaximal();
+                           unsigned short Player::*attrBonus) const;
+    int GetBaseStrength() const;
+    int GetBaseIntelligence() const;
+    int GetBaseWillpower() const;
+    int GetBaseEndurance() const;
+    int GetBaseAccuracy() const;
+    int GetBaseSpeed() const;
+    int GetBaseLuck() const;
+    int GetBaseLevel() const;
+    int GetActualLevel() const;
+    int GetActualMight() const;
+    int GetActualIntelligence() const;
+    int GetActualWillpower() const;
+    int GetActualEndurance() const;
+    int GetActualAccuracy() const;
+    int GetActualSpeed() const;
+    int GetActualLuck() const;
+    int GetActualAttack(bool onlyMainHandDmg) const;
+    int GetMeleeDamageMinimal() const;
+    int GetMeleeDamageMaximal() const;
     int CalculateMeleeDamageTo(bool ignoreSkillBonus, bool ignoreOffhand,
                                unsigned int uTargetActorID);
     int GetRangedAttack();
@@ -212,7 +212,7 @@ struct Player {
     unsigned int GetExperienceDisplayColor();
     int CalculateIncommingDamage(DAMAGE_TYPE dmg_type, int amount);
     ITEM_EQUIP_TYPE GetEquippedItemEquipType(ITEM_SLOT uEquipSlot) const;
-    PLAYER_SKILL_TYPE GetEquippedItemSkillType(ITEM_SLOT uEquipSlot);
+    PLAYER_SKILL_TYPE GetEquippedItemSkillType(ITEM_SLOT uEquipSlot) const;
     bool IsUnarmed() const;
     bool HasItemEquipped(ITEM_SLOT uEquipIndex) const;
     bool HasEnchantedItemEquipped(int uEnchantment) const;
@@ -230,34 +230,34 @@ struct Player {
 
     // TODO(captainurist): actually returns DAMAGE_TYPE / SPELL_SCHOOL
     // TODO(captainurist): move to SpellEnums.h
-    unsigned int GetSpellSchool(SPELL_TYPE uSpellID);
-    int GetAttackRecoveryTime(bool bRangedAttack);
+    unsigned int GetSpellSchool(SPELL_TYPE uSpellID) const;
+    int GetAttackRecoveryTime(bool bRangedAttack) const;
 
     int GetHealth() const { return this->health; }
-    int GetMaxHealth();
+    int GetMaxHealth() const;
     int GetMana() const { return this->mana; }
-    int GetMaxMana();
+    int GetMaxMana() const;
 
-    int GetBaseAC();
-    int GetActualAC();
-    unsigned int GetBaseAge();
-    unsigned int GetActualAge();
-    int GetBaseResistance(CHARACTER_ATTRIBUTE_TYPE a2);
-    int GetActualResistance(CHARACTER_ATTRIBUTE_TYPE a2);
+    int GetBaseAC() const;
+    int GetActualAC() const;
+    unsigned int GetBaseAge() const;
+    unsigned int GetActualAge() const;
+    int GetBaseResistance(CHARACTER_ATTRIBUTE_TYPE a2) const;
+    int GetActualResistance(CHARACTER_ATTRIBUTE_TYPE resistance) const;
     void SetRecoveryTime(signed int sRecoveryTime);
     void RandomizeName();
     Condition GetMajorConditionIdx() const;
-    int GetParameterBonus(int player_parameter);
-    int GetSpecialItemBonus(ITEM_ENCHANTMENT enchantment);
+    int GetParameterBonus(int player_parameter) const;
+    int GetSpecialItemBonus(ITEM_ENCHANTMENT enchantment) const;
     int GetItemsBonus(CHARACTER_ATTRIBUTE_TYPE attr, bool getOnlyMainHandDmg = false) const;
-    int GetMagicalBonus(CHARACTER_ATTRIBUTE_TYPE a2);
+    int GetMagicalBonus(CHARACTER_ATTRIBUTE_TYPE a2) const;
     PLAYER_SKILL_LEVEL GetActualSkillLevel(PLAYER_SKILL_TYPE uSkillType) const;
     PLAYER_SKILL_MASTERY GetActualSkillMastery(PLAYER_SKILL_TYPE uSkillType) const;
     CombinedSkillValue getActualSkillValue(PLAYER_SKILL_TYPE skillType) const;
-    int GetSkillBonus(CHARACTER_ATTRIBUTE_TYPE a2);
+    int GetSkillBonus(CHARACTER_ATTRIBUTE_TYPE a2) const;
     CHARACTER_RACE GetRace() const;
     std::string GetRaceName() const;
-    PLAYER_SEX GetSexByVoice();
+    PLAYER_SEX GetSexByVoice() const;
     void SetInitialStats();
     void SetSexByVoice();
     void Reset(PLAYER_CLASS_TYPE classType);
@@ -265,34 +265,34 @@ struct Player {
     void DecreaseAttribute(int eAttribute);
     void IncreaseAttribute(int eAttribute);
     void resetTempBonuses();
-    unsigned int GetStatColor(int uStat);
+    unsigned int GetStatColor(int uStat) const;
     bool DiscardConditionIfLastsLongerThan(Condition uCondition, GameTime time);
     MERCHANT_PHRASE SelectPhrasesTransaction(ItemGen *pItem, BuildingType building_type, int BuildID_2Events, int ShopMenuType);
-    int GetBodybuilding();
-    int GetMeditation();
-    bool CanIdentify(ItemGen *pItem);
-    bool CanRepair(ItemGen *pItem);
-    int GetPerception();
-    int GetDisarmTrap();
+    int GetBodybuilding() const;
+    int GetMeditation() const;
+    bool CanIdentify(ItemGen *pItem) const;
+    bool CanRepair(ItemGen *pItem) const;
+    int GetPerception() const;
+    int GetDisarmTrap() const;
 
     /**
      * Get percentage bonus for character EXP received.
      *
      * @offset 0x491317
      */
-    char getLearningPercent();
+    char getLearningPercent() const;
 
     /**
      * @offset 0x492528
      */
-    bool canFitItem(unsigned int uSlot, ITEM_TYPE uItemID);
+    bool canFitItem(unsigned int uSlot, ITEM_TYPE uItemID) const;
 
     /**
      * @offset 0x4925E6
      */
-    int findFreeInventoryListSlot();
+    int findFreeInventoryListSlot() const;
     int CreateItemInInventory(unsigned int uSlot, ITEM_TYPE uItemID);
-    int HasSkill(PLAYER_SKILL_TYPE uSkillType);
+    int HasSkill(PLAYER_SKILL_TYPE uSkillType) const;
     void WearItem(ITEM_TYPE uItemID);
     int AddItem(int uSlot, ITEM_TYPE uItemID);
     int AddItem2(int uSlot, ItemGen *Src);
@@ -300,14 +300,14 @@ struct Player {
     void PutItemArInventoryIndex(ITEM_TYPE uItemID, int itemListPos, int uSlot);
     void RemoveItemAtInventoryIndex(unsigned int uSlot);
     bool CanAct() const;
-    bool CanSteal();
-    bool CanEquip_RaceAndAlignmentCheck(ITEM_TYPE uItemID);
+    bool CanSteal() const;
+    bool CanEquip_RaceAndAlignmentCheck(ITEM_TYPE uItemID) const;
     void SetCondition(Condition uConditionIdx, int blockable);
 
     /**
      * @offset 0x49327B
      */
-    bool isClass(PLAYER_CLASS_TYPE class_type, bool check_honorary = true);
+    bool isClass(PLAYER_CLASS_TYPE class_type, bool check_honorary = true) const;
 
     /**
      * @offset 0x4948B1
@@ -322,9 +322,9 @@ struct Player {
     unsigned int GetItemListAtInventoryIndex(int inout_item_cell);
     unsigned int GetItemMainInventoryIndex(int inout_item_cell);
     struct ItemGen *GetItemAtInventoryIndex(int inout_item_cell);
-    bool IsPlayerHealableByTemple();
+    bool IsPlayerHealableByTemple() const;
     int GetConditionDaysPassed(Condition condition) const;
-    bool NothingOrJustBlastersEquipped();
+    bool NothingOrJustBlastersEquipped() const;
     void SalesProcess(unsigned int inventory_idnx, int item_index, int _2devent_idx);  // 0x4BE2DD
     bool Recover(GameTime dt);
     bool CanCastSpell(unsigned int uRequiredMana);
@@ -350,7 +350,7 @@ struct Player {
                                            unsigned int uTargetActorID,
                                            bool addOneDice);
     bool wearsItemAnywhere(ITEM_TYPE item_id) const;
-    float GetArmorRecoveryMultiplierFromSkillLevel(PLAYER_SKILL_TYPE armour_skill_type, float param2, float param3, float param4, float param5);
+    float GetArmorRecoveryMultiplierFromSkillLevel(PLAYER_SKILL_TYPE armour_skill_type, float param2, float param3, float param4, float param5) const;
     void SetSkillByEvent(uint16_t Player::*skillToSet,
                          uint16_t skillValue);
     void AddSkillByEvent(uint16_t Player::*skillToSet,
@@ -397,13 +397,13 @@ struct Player {
     void SetCondDeadWithBlockCheck(int blockable);
     void SetCondUnconsciousWithBlockCheck(int blockable);
 
-    inline bool IsRaceHuman() { return GetRace() == CHARACTER_RACE_HUMAN; }
-    inline bool IsRaceDwarf() { return GetRace() == CHARACTER_RACE_DWARF; }
-    inline bool IsRaceElf() { return GetRace() == CHARACTER_RACE_ELF; }
-    inline bool IsRaceGoblin() { return GetRace() == CHARACTER_RACE_GOBLIN; }
+    inline bool IsRaceHuman() const { return GetRace() == CHARACTER_RACE_HUMAN; }
+    inline bool IsRaceDwarf() const { return GetRace() == CHARACTER_RACE_DWARF; }
+    inline bool IsRaceElf() const { return GetRace() == CHARACTER_RACE_ELF; }
+    inline bool IsRaceGoblin() const { return GetRace() == CHARACTER_RACE_GOBLIN; }
 
-    inline bool IsMale() { return GetSexByVoice() == SEX_MALE; }
-    inline bool IsFemale() { return !IsMale(); }
+    inline bool IsMale() const { return GetSexByVoice() == SEX_MALE; }
+    inline bool IsFemale() const { return !IsMale(); }
 
     ItemGen *GetMainHandItem();
     ItemGen *GetOffHandItem();
