@@ -41,7 +41,7 @@ var searchData=
   ['bisspellavailable_38',['bIsSpellAvailable',['../structPlayerSpellbookChapter.html#a7cc7d65550b2f29c4ba2ccc6de4817a6',1,'PlayerSpellbookChapter']]],
   ['bitmap_39',['bitmap',['../structLODSprite.html#a05a06f7027ea857f4ccc1737a49462a0',1,'LODSprite']]],
   ['bitmapid_40',['bitmapId',['../structBLVFace__MM7.html#a1b53aecf5b50100c33c273d7d8cbc94a',1,'BLVFace_MM7::bitmapId()'],['../structTileDesc__MM7.html#a4870e85c37c6c76464ab5a34d1aaa035',1,'TileDesc_MM7::bitmapId()']]],
-  ['bitmaps_41',['bitmaps',['../classAssetsManager.html#afa262a6e2b3260d03ec3e60bdf84abf0',1,'AssetsManager']]],
+  ['bitmaps_41',['bitmaps',['../classAssetsManager.html#a1fb46037500b669eab5fc95d5c7ed531',1,'AssetsManager']]],
   ['bits_42',['bits',['../structColorFormat.html#a155a8da4324a7bd1f3c4283edd5152ea',1,'ColorFormat']]],
   ['black_43',['Black',['../classColorTable.html#aa17b5f4a07cde1919610b7cbc08e4370',1,'ColorTable']]],
   ['blend_44',['blend',['../structbillbverts.html#af93be8514de386ad2e54a1cb1360dc5d',1,'billbverts']]],

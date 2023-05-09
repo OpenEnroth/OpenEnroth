@@ -85,7 +85,7 @@ var searchData=
   ['bisspellavailable_82',['bIsSpellAvailable',['../structPlayerSpellbookChapter.html#a7cc7d65550b2f29c4ba2ccc6de4817a6',1,'PlayerSpellbookChapter']]],
   ['bitmap_83',['bitmap',['../structLODSprite.html#a05a06f7027ea857f4ccc1737a49462a0',1,'LODSprite']]],
   ['bitmapid_84',['bitmapId',['../structBLVFace__MM7.html#a1b53aecf5b50100c33c273d7d8cbc94a',1,'BLVFace_MM7::bitmapId()'],['../structTileDesc__MM7.html#a4870e85c37c6c76464ab5a34d1aaa035',1,'TileDesc_MM7::bitmapId()']]],
-  ['bitmaps_85',['bitmaps',['../classAssetsManager.html#afa262a6e2b3260d03ec3e60bdf84abf0',1,'AssetsManager']]],
+  ['bitmaps_85',['bitmaps',['../classAssetsManager.html#a1fb46037500b669eab5fc95d5c7ed531',1,'AssetsManager']]],
   ['bitmaps_5flod_5floader_86',['Bitmaps_LOD_Loader',['../classBitmaps__LOD__Loader.html#afc1217e31b2722abedd6bc3b0573d3bf',1,'Bitmaps_LOD_Loader::Bitmaps_LOD_Loader()'],['../classBitmaps__LOD__Loader.html',1,'Bitmaps_LOD_Loader']]],
   ['bits_87',['bits',['../structColorFormat.html#a155a8da4324a7bd1f3c4283edd5152ea',1,'ColorFormat']]],
   ['black_88',['Black',['../classColorTable.html#aa17b5f4a07cde1919610b7cbc08e4370',1,'ColorTable']]],

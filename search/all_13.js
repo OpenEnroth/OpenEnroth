@@ -1265,7 +1265,7 @@ var searchData=
   ['spriteobject_5fmm7_1262',['SpriteObject_MM7',['../structSpriteObject__MM7.html',1,'']]],
   ['spriteobjects_1263',['spriteObjects',['../structIndoorDelta__MM7.html#aeca9ff0a0ae92aa88cfde8a27c4bcdfe',1,'IndoorDelta_MM7::spriteObjects()'],['../structOutdoorDelta__MM7.html#a0a1732107f986c395780b140528254d7',1,'OutdoorDelta_MM7::spriteObjects()']]],
   ['spriteobjecttype_2eh_1264',['SpriteObjectType.h',['../SpriteObjectType_8h.html',1,'']]],
-  ['sprites_1265',['sprites',['../classAssetsManager.html#aeb2053fcb020da15248677cebd40658e',1,'AssetsManager']]],
+  ['sprites_1265',['sprites',['../classAssetsManager.html#afb30ef39638a77820dab63aeeb63c4dd',1,'AssetsManager']]],
   ['sprites_2ecpp_1266',['Sprites.cpp',['../Sprites_8cpp.html',1,'']]],
   ['sprites_2eh_1267',['Sprites.h',['../Sprites_8h.html',1,'']]],
   ['sprites_5flod_5floader_1268',['Sprites_LOD_Loader',['../classSprites__LOD__Loader.html#a9107a791ec33b2fd9944a087c0cfd158',1,'Sprites_LOD_Loader::Sprites_LOD_Loader()'],['../classSprites__LOD__Loader.html',1,'Sprites_LOD_Loader']]],

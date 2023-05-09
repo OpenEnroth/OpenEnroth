@@ -267,7 +267,7 @@ var searchData=
   ['spriteframetime_264',['spriteFrameTime',['../structActiveOverlay.html#a7199a1c983c3cf012064fa027578528e',1,'ActiveOverlay::spriteFrameTime()'],['../structActiveOverlay__MM7.html#a18b16a3665bd1ae2d6ffcd9133d3e278',1,'ActiveOverlay_MM7::spriteFrameTime()']]],
   ['spritenames_265',['spriteNames',['../structMonsterDesc__MM6.html#a3e54a39d339e5dae1c4999f3e7d97c9a',1,'MonsterDesc_MM6::spriteNames()'],['../structMonsterDesc__MM7.html#abff63b251d6ad58822ffb5069fb88274',1,'MonsterDesc_MM7::spriteNames()']]],
   ['spriteobjects_266',['spriteObjects',['../structIndoorDelta__MM7.html#aeca9ff0a0ae92aa88cfde8a27c4bcdfe',1,'IndoorDelta_MM7::spriteObjects()'],['../structOutdoorDelta__MM7.html#a0a1732107f986c395780b140528254d7',1,'OutdoorDelta_MM7::spriteObjects()']]],
-  ['sprites_267',['sprites',['../classAssetsManager.html#aeb2053fcb020da15248677cebd40658e',1,'AssetsManager']]],
+  ['sprites_267',['sprites',['../classAssetsManager.html#afb30ef39638a77820dab63aeeb63c4dd',1,'AssetsManager']]],
   ['src_268',['src',['../structdetail_1_1UnsizedSrcVector.html#abd920fde727fb983bc213d57823ee49a',1,'detail::UnsizedSrcVector']]],
   ['srcx_269',['srcX',['../structProjectileAnim.html#a8cd11d6af5372adae81cc043252a7957',1,'ProjectileAnim']]],
   ['srcy_270',['srcY',['../structProjectileAnim.html#ae78e9dec32a70751dd40dd51a05a99bc',1,'ProjectileAnim']]],
