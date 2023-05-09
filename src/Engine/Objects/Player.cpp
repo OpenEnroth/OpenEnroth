@@ -8,6 +8,7 @@
 #include "Engine/Spells/CastSpellInfo.h"
 #include "Engine/Graphics/DecalBuilder.h"
 #include "Engine/Graphics/Outdoor.h"
+#include "Engine/Graphics/Indoor.h"
 #include "Engine/Graphics/Viewport.h"
 #include "Engine/Localization.h"
 #include "Engine/LOD.h"
@@ -4127,8 +4128,8 @@ bool Player::CompareVariable(VariableType VarNum, int pValue) {
     signed int v4;                         // edi@1
     uint8_t test_bit_value;        // eax@25
     uint8_t byteWithRequestedBit;  // cl@25
-    LocationHeader_MM7 *v19;                   // eax@122
-    LocationHeader_MM7 *v21;                   // eax@126
+    LocationInfo *v19;                   // eax@122
+    LocationInfo *v21;                   // eax@126
     int actStat;                           // ebx@161
     int baseStat;                          // eax@161
 
@@ -4495,7 +4496,7 @@ bool Player::CompareVariable(VariableType VarNum, int pValue) {
         case VAR_Unknown1:
             v21 = &pOutdoor->ddm;
             if (uCurrentlyLoadedLevelType != LEVEL_Outdoor) v21 = &pIndoor->dlv;
-            return (v21->field_C_alert == pValue);  // yes, equality, not >=
+            return (v21->alertStatus == pValue);  // yes, equality, not >=
 
         case VAR_GoldInBank:
             return pParty->uNumGoldInBank >= (unsigned int)pValue;
@@ -4534,7 +4535,7 @@ bool Player::CompareVariable(VariableType VarNum, int pValue) {
 //----- (0044A5CB) --------------------------------------------------------
 void Player::SetVariable(VariableType var_type, signed int var_value) {
     int gold{}, food{};
-    LocationHeader_MM7 *ddm;
+    LocationInfo *ddm;
     ItemGen item;
 
     if (var_type >= VAR_History_0 && var_type <= VAR_History_28) {
@@ -5119,7 +5120,7 @@ void Player::SetSkillByEvent(uint16_t Player::*skillToSet,
 //----- (0044AFFB) --------------------------------------------------------
 void Player::AddVariable(VariableType var_type, signed int val) {
     int food{};
-    LocationHeader_MM7 *ddm;
+    LocationInfo *ddm;
     ItemGen item;
 
     if (var_type >= VAR_Counter1 && var_type <= VAR_Counter10) {
@@ -5669,7 +5670,7 @@ void Player::AddSkillByEvent(uint16_t Player::*skillToSet,
 
 //----- (0044B9C4) --------------------------------------------------------
 void Player::SubtractVariable(VariableType VarNum, signed int pValue) {
-    LocationHeader_MM7 *locationHeader;  // eax@90
+    LocationInfo *locationHeader;  // eax@90
     int randGold;
     int randFood;
     int npcIndex;

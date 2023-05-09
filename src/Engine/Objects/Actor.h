@@ -239,12 +239,10 @@ class Actor {
     std::array<ActorJob, 8> pScheduledJobs;
     unsigned int uSummonerID = 0;
     unsigned int uLastCharacterIDToHit = 0;
-    int dword_000334_unique_name = 0;
+    int dword_000334_unique_name = 0; // Index into pMonsterStats->pPlaceStrings for a unique monster name.
     std::array<char, 12> field_338 = {{}};
     bool donebloodsplat{ false };
 };
-
-// extern Actor pMonsterInfoUI_Doll;
 
 extern std::vector<Actor> pActors;
 

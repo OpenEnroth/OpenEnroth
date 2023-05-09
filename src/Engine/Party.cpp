@@ -7,6 +7,7 @@
 
 #include "Engine/Engine.h"
 #include "Engine/Graphics/Outdoor.h"
+#include "Engine/Graphics/Indoor.h"
 #include "Engine/Graphics/Viewport.h"
 #include "Engine/Localization.h"
 #include "Engine/LOD.h"
@@ -992,7 +993,7 @@ bool TestPartyQuestBit(PARTY_QUEST_BITS bit) {
 
 //----- (0047752B) --------------------------------------------------------
 int Party::GetPartyReputation() {
-    LocationHeader_MM7 *ddm_dlv = &pOutdoor->ddm;
+    LocationInfo *ddm_dlv = &pOutdoor->ddm;
     if (uCurrentlyLoadedLevelType != LEVEL_Outdoor) ddm_dlv = &pIndoor->dlv;
 
     int npcRep = 0;

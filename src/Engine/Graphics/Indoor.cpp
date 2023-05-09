@@ -275,13 +275,13 @@ void IndoorLocation::Load(const std::string &filename, int num_days_played, int 
                 respawnInitial = true;
 
             // Entering the level for the 1st time?
-            if (delta.header.lastRepawnDay == 0)
+            if (delta.header.info.lastRespawnDay == 0)
                 respawnInitial = true;
 
             if (dword_6BE364_game_settings_1 & GAME_SETTINGS_LOADING_SAVEGAME_SKIP_RESPAWN)
                 respawn_interval_days = 0x1BAF800;
 
-            if (!respawnInitial && num_days_played - delta.header.lastRepawnDay >= respawn_interval_days && pCurrentMapName != "d29.dlv")
+            if (!respawnInitial && num_days_played - delta.header.info.lastRespawnDay >= respawn_interval_days && pCurrentMapName != "d29.dlv")
                 respawnTimed = true;
         } catch (const Exception &e) {
             logger->error("Failed to load '{}', respawning location: {}", dlv_filename, e.what());
@@ -308,7 +308,7 @@ void IndoorLocation::Load(const std::string &filename, int num_days_played, int 
     deserialize(delta, this);
 
     if (respawnTimed || respawnInitial)
-        dlv.lastRepawnDay = num_days_played;
+        dlv.lastRespawnDay = num_days_played;
     if (respawnTimed)
         dlv.respawnCount++;
 }
@@ -794,11 +794,10 @@ void UpdateActors_BLV() {
 //----- (00460A78) --------------------------------------------------------
 void PrepareToLoadBLV(bool bLoading) {
     unsigned int respawn_interval;  // ebx@1
-    unsigned int map_id;            // eax@8
     MapInfo *map_info;              // edi@9
     bool v28;                       // zf@81
     int v35;                        // [sp+3F8h] [bp-1Ch]@1
-    bool v38;                        // [sp+404h] [bp-10h]@1
+    bool alertStatus;                        // [sp+404h] [bp-10h]@1
     bool indoor_was_respawned = true;                      // [sp+40Ch] [bp-8h]@1
 
     respawn_interval = 0;
@@ -819,11 +818,11 @@ void PrepareToLoadBLV(bool bLoading) {
     //pPaletteManager->RecalculateAll();
     if (_A750D8_player_speech_timer)
         _A750D8_player_speech_timer = 0;
-    map_id = pMapStats->GetMapInfo(pCurrentMapName);
+    MAP_TYPE map_id = pMapStats->GetMapInfo(pCurrentMapName);
     if (map_id) {
         map_info = &pMapStats->pInfos[map_id];
         respawn_interval = pMapStats->pInfos[map_id].uRespawnIntervalDays;
-        v38 = GetAlertStatus();
+        alertStatus = GetAlertStatus();
     } else {
         map_info = nullptr;
     }
@@ -931,7 +930,7 @@ void PrepareToLoadBLV(bool bLoading) {
     }
 
     // INDOOR initialize actors
-    v38 = false;
+    alertStatus = false;
 
     for (uint i = 0; i < pActors.size(); ++i) {
         if (pActors[i].uAttributes & ACTOR_UNKNOW7) {
@@ -940,9 +939,9 @@ void PrepareToLoadBLV(bool bLoading) {
                 pActors[i].uAttributes |= ACTOR_UNKNOW11;
                 continue;
             }
-            v28 = !v38;
+            v28 = !alertStatus;
         } else {
-            v28 = v38;
+            v28 = alertStatus;
         }
 
         if (!v28) {
@@ -2016,10 +2015,11 @@ int CalcDistPointToLine(int x1, int y1, int x2, int y2, int x3, int y3) {
 bool GetAlertStatus() {
     int result;
 
+    // TODO(captainurist): indoor & outdoor messed up, is this a bug?
     if (uCurrentlyLoadedLevelType == LEVEL_Indoor)
-        result = pOutdoor->ddm.field_C_alert;
+        result = pOutdoor->ddm.alertStatus;
     else
-        result = uCurrentlyLoadedLevelType == LEVEL_Outdoor ? pIndoor->dlv.field_C_alert : 0;
+        result = uCurrentlyLoadedLevelType == LEVEL_Outdoor ? pIndoor->dlv.alertStatus : 0;
 
     return result;
 }

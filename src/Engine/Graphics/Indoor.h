@@ -10,18 +10,12 @@
 #include "Engine/SpawnPoint.h"
 #include "Engine/Serialization/LegacyImages.h"
 
-#include "Engine/Graphics/BSPModel.h"
-#include "Engine/Graphics/IRender.h"
+#include "BSPModel.h"
+#include "IRender.h"
+#include "LocationInfo.h"
+#include "LocationTime.h"
 
 struct IndoorLocation;
-
-struct LocationTime {
-    GameTime last_visit {};
-    std::string sky_texture_name;
-    int day_attrib = 0; // TODO(caprainurist): actually WeatherFlags, see DAY_ATTRIB_FOG.
-    int day_fogrange_1 = 0;
-    int day_fogrange_2 = 0;
-};
 
 /*  319 */
 enum class LEVEL_TYPE {
@@ -309,7 +303,7 @@ struct IndoorLocation {
     std::vector<int16_t> ptr_0002B4_doors_ddata;
     std::vector<uint16_t> ptr_0002B8_sector_lrdata;
     std::vector<SpawnPoint> pSpawnPoints;
-    LocationHeader_MM7 dlv;
+    LocationInfo dlv;
     LocationTime stru1;
     std::array<char, 875> _visible_outlines;
     char padding;

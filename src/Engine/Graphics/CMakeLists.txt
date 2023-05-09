@@ -53,6 +53,8 @@ set(ENGINE_GRAPHICS_HEADERS
         Level/Decoration.h
         LightmapBuilder.h
         LightsStack.h
+        LocationInfo.h
+        LocationTime.h
         Nuklear.h
         NuklearEventHandler.h
         OpenGL/GLShaderLoader.h

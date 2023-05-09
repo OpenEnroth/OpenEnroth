@@ -16,8 +16,10 @@
 #include "Engine/Graphics/ImageLoader.h"
 #include "Engine/Graphics/Level/Decoration.h"
 #include "Engine/Graphics/Outdoor.h"
+#include "Engine/Graphics/Indoor.h"
 #include "Engine/Graphics/Overlays.h"
 #include "Engine/Graphics/PCX.h"
+#include "Engine/Graphics/IRender.h"
 
 #include "Engine/Objects/SpriteObject.h"
 
@@ -222,23 +224,11 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld) {
         CompactLayingItemsList();
 
         if (uCurrentlyLoadedLevelType == LEVEL_Indoor) {
-            pIndoor->dlv.totalFacesCount = pIndoor->pFaces.size();
-            pIndoor->dlv.bmodelCount = 0;
-            pIndoor->dlv.decorationCount = pLevelDecorations.size();
-
             IndoorDelta_MM7 delta;
             serialize(*pIndoor, &delta);
             serialize(delta, &uncompressed);
         } else {
             assert(uCurrentlyLoadedLevelType == LEVEL_Outdoor);
-
-            pOutdoor->ddm.totalFacesCount = 0;
-            for (BSPModel &model : pOutdoor->pBModels) {
-                pOutdoor->ddm.totalFacesCount += model.pFaces.size();
-            }
-            pOutdoor->ddm.bmodelCount = pOutdoor->pBModels.size();
-            pOutdoor->ddm.decorationCount = pLevelDecorations.size();
-
             OutdoorDelta_MM7 delta;
             serialize(*pOutdoor, &delta);
             serialize(delta, &uncompressed);

@@ -1744,6 +1744,20 @@ void deserialize(const SoundInfo_MM7 &src, SoundInfo *dst) {
     deserialize(static_cast<const SoundInfo_MM6 &>(src), dst);
 }
 
+void serialize(const LocationInfo &src, LocationInfo_MM7 *dst) {
+    dst->respawnCount = src.respawnCount;
+    dst->lastRespawnDay = src.lastRespawnDay;
+    dst->reputation = src.reputation;
+    dst->alertStatus = src.alertStatus;
+}
+
+void deserialize(const LocationInfo_MM7 &src, LocationInfo *dst) {
+    dst->respawnCount = src.respawnCount;
+    dst->lastRespawnDay = src.lastRespawnDay;
+    dst->reputation = src.reputation;
+    dst->alertStatus = src.alertStatus;
+}
+
 void serialize(const PersistentVariables &src, MapEventVariables_MM7 *dst) {
     memzero(dst);
 

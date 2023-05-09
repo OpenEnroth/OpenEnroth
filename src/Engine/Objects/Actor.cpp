@@ -11,6 +11,7 @@
 #include "Engine/Graphics/DecalBuilder.h"
 #include "Engine/Graphics/Level/Decoration.h"
 #include "Engine/Graphics/Outdoor.h"
+#include "Engine/Graphics/Indoor.h"
 #include "Engine/Graphics/Overlays.h"
 #include "Engine/Graphics/PaletteManager.h"
 #include "Engine/Graphics/Sprites.h"
@@ -1355,7 +1356,7 @@ void Actor::StealFrom(unsigned int uActorID) {
     Player *pPlayer;     // edi@1
     int v4;              // ebx@2
     unsigned int v5;     // eax@2
-    LocationHeader_MM7 *v6;  // esi@4
+    LocationInfo *v6;  // esi@4
     int v8;              // [sp+8h] [bp-4h]@6
 
     pPlayer = &pParty->pPlayers[pParty->activeCharacterIndex() - 1];
@@ -2590,7 +2591,7 @@ void Actor::SummonMinion(int summonerId) {
 
     v9 = &pMonsterStats->pInfos[v7 + 1];
     actor->pActorName = v9->pName;
-    actor->sCurrentHP = (short)v9->uHP;
+    actor->sCurrentHP = v9->uHP;
     actor->pMonsterInfo = *v9;
     actor->word_000086_some_monster_id = summonMonsterBaseType;
     actor->uActorRadius = pMonsterList->pMonsters[v7].uMonsterRadius;
@@ -4660,7 +4661,6 @@ void SpawnEncounter(MapInfo *pMapInfo, SpawnPoint *spawn, int a3, int a4, int a5
     // a4 count
     Assert(spawn->uKind == OBJECT_Actor);
 
-    int v7;                // eax@2
     char v8;               // zf@5
     int v12;               // edx@9
     // int v18;               // esi@31
@@ -4693,12 +4693,7 @@ void SpawnEncounter(MapInfo *pMapInfo, SpawnPoint *spawn, int a3, int a4, int a5
     v57 = 0;
     // v5 = pMapInfo;
     // v6 = spawn;
-    if (uCurrentlyLoadedLevelType == LEVEL_Indoor)
-        v7 = pOutdoor->ddm.field_C_alert;
-    else if (uCurrentlyLoadedLevelType == LEVEL_Outdoor)
-        v7 = pIndoor->dlv.field_C_alert;
-    else
-        v7 = 0;
+    int v7 = GetAlertStatus();
 
     if (v7)
         v8 = (spawn->uAttributes & 1) == 0;

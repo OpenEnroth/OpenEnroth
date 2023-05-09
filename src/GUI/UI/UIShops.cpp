@@ -1584,7 +1584,7 @@ void GetHouseGoodbyeSpeech() {
 void sub_4B1447_party_fine(int shopId, int stealingResult,
                            int fineToAdd) {  // not working properly??
     int v3;       // esi@1
-    LocationHeader_MM7 *v7;  // eax@14
+    LocationInfo *v7;  // eax@14
 
     if (stealingResult == 0 || stealingResult == 1) {  // got caught
         if (pParty->uFine < 4000000) {

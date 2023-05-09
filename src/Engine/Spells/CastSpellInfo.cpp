@@ -9,6 +9,7 @@
 #include "Engine/Graphics/Camera.h"
 #include "Engine/Graphics/Level/Decoration.h"
 #include "Engine/Graphics/Outdoor.h"
+#include "Engine/Graphics/Indoor.h"
 #include "Engine/Graphics/Overlays.h"
 #include "Engine/Graphics/Viewport.h"
 #include "Engine/LOD.h"
@@ -2807,7 +2808,7 @@ void CastSpellInfoHelpers::castSpell() {
                         player.health = player.GetMaxHealth();
                         player.mana = player.GetMaxMana();
                     }
-                    LocationHeader_MM7 *ddm_dlv = &pOutdoor->ddm;
+                    LocationInfo *ddm_dlv = &pOutdoor->ddm;
                     if (uCurrentlyLoadedLevelType != LEVEL_Outdoor) {
                         ddm_dlv = &pIndoor->dlv;
                     }

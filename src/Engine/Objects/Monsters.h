@@ -124,8 +124,8 @@ struct MonsterInfo {
         Hostility_Long = 4
     };
 
-    char *pName = nullptr;
-    char *pPictureName = nullptr;
+    std::string pName;
+    std::string pPictureName;
     uint8_t uLevel = 0;
     uint8_t uTreasureDropChance = 0;
     uint8_t uTreasureDiceRolls = 0;

@@ -157,7 +157,11 @@ void deserialize(InputStream &src, IndoorLocation_MM7 *dst) {
 }
 
 void serialize(const IndoorLocation &src, IndoorDelta_MM7 *dst) {
-    serialize(src.dlv, &dst->header);
+    serialize(src.dlv, &dst->header.info);
+    dst->header.totalFacesCount = src.pFaces.size();
+    dst->header.bmodelCount = 0;
+    dst->header.decorationCount = pLevelDecorations.size();
+
     serialize(src._visible_outlines, &dst->visibleOutlines);
 
     dst->faceAttributes.clear();
@@ -178,7 +182,7 @@ void serialize(const IndoorLocation &src, IndoorDelta_MM7 *dst) {
 }
 
 void deserialize(const IndoorDelta_MM7 &src, IndoorLocation *dst) {
-    deserialize(src.header, &dst->dlv);
+    deserialize(src.header.info, &dst->dlv); // XXX
     deserialize(src.visibleOutlines, &dst->_visible_outlines);
 
     for (size_t i = 0; i < dst->pMapOutlines.size(); ++i) {
@@ -419,7 +423,13 @@ void deserialize(InputStream &src, OutdoorLocation_MM7 *dst) {
 }
 
 void serialize(const OutdoorLocation &src, OutdoorDelta_MM7 *dst) {
-    serialize(src.ddm, &dst->header);
+    serialize(src.ddm, &dst->header.info);
+    dst->header.totalFacesCount = 0;
+    for (const BSPModel &model : src.pBModels)
+        dst->header.totalFacesCount += model.pFaces.size();
+    dst->header.bmodelCount = src.pBModels.size();
+    dst->header.decorationCount = pLevelDecorations.size();
+
     serialize(src.uFullyRevealedCellOnMap, &dst->fullyRevealedCells);
     serialize(src.uPartiallyRevealedCellOnMap, &dst->partiallyRevealedCells);
 
@@ -440,7 +450,7 @@ void serialize(const OutdoorLocation &src, OutdoorDelta_MM7 *dst) {
 }
 
 void deserialize(const OutdoorDelta_MM7 &src, OutdoorLocation *dst) {
-    deserialize(src.header, &dst->ddm);
+    deserialize(src.header.info, &dst->ddm);
     deserialize(src.fullyRevealedCells, &dst->uFullyRevealedCellOnMap);
     deserialize(src.partiallyRevealedCells, &dst->uPartiallyRevealedCellOnMap);
 
