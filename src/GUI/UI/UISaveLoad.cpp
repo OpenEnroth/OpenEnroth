@@ -118,7 +118,6 @@ GUIWindow_Load::GUIWindow_Load(bool ingame) :
     GUIWindow(WINDOW_Load, {0, 0}, {0, 0}, 0) {
     current_screen_type = CURRENT_SCREEN::SCREEN_LOADGAME;
 
-    dword_6BE138 = -1;
     pIcons_LOD->_inlined_sub2();
 
     pSavegameList->pSavegameUsedSlots.fill(false);
@@ -365,20 +364,13 @@ void MainMenuLoad_EventLoop() {
             // main menu save/load wnd   clicking on savegame lines
             if (pGUIWindow_CurrentMenu->keyboard_input_status == WINDOW_INPUT_IN_PROGRESS)
                 keyboardInputHandler->SetWindowInputStatus(WINDOW_INPUT_NONE);
-            if (current_screen_type != CURRENT_SCREEN::SCREEN_SAVEGAME || pSavegameList->selectedSlot != param + pSavegameList->saveListPosition) {
-                // load clicked line
-                int v26 = param + pSavegameList->saveListPosition;
-                if (dword_6BE138 == v26) {
-                    pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_SaveLoadBtn, 0, 0);
-                    // Breaks UI interaction after save load
-                    // pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_LoadGame, 0, 0);
-                }
-                pSavegameList->selectedSlot = v26;
-                dword_6BE138 = v26;
+            assert(current_screen_type != CURRENT_SCREEN::SCREEN_SAVEGAME); // No savegame in main menu
+            if (pSavegameList->selectedSlot == param + pSavegameList->saveListPosition) {
+                pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_SaveLoadBtn, 0, 0);
+                // Breaks UI interaction after save load
+                // pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_LoadGame, 0, 0);
             } else {
-                // typing in the line
-                keyboardInputHandler->StartTextInput(TextInputType::Text, 19, pGUIWindow_CurrentMenu);
-                keyboardInputHandler->SetTextInput(pSavegameList->pSavegameHeader[pSavegameList->selectedSlot].name);
+                pSavegameList->selectedSlot = param + pSavegameList->saveListPosition;
             }
             break;
         }

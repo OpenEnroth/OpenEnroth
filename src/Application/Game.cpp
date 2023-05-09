@@ -253,7 +253,7 @@ bool Game::loop() {
                 uGameState = GAME_STATE_PLAYING;
                 gameLoop();
             }
-            break;
+            continue;
         } else if (GetCurrentMenuID() == MENU_NEWGAME) {
             pActiveOverlayList->Reset();
             if (!PartyCreationUI_Loop()) {
@@ -658,7 +658,6 @@ void Game::processQueuedMessages() {
                     _render->ClearZBuffer();
                     if (current_screen_type == CURRENT_SCREEN::SCREEN_GAME) {
                         if (!pGUIWindow_CastTargetedSpell) {  // Draw Menu
-                            dword_6BE138 = -1;
                             new OnButtonClick2({602, 450}, {0, 0}, pBtn_GameSettings, std::string(), false);
 
                             pCurrentFrameMessageQueue->Flush();

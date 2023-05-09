@@ -2647,7 +2647,6 @@ int day_fogrange_2; // fog end dist
 struct TileTable *pTileTable;                                        // idb
 std::array<char, 777> pDefaultSkyTexture;                            // idb
 int _6BE134_odm_main_tile_group;
-int dword_6BE138;  // are you sure check game menu - load slots
 int dword_6BE13C_uCurrentlyLoadedLocationID;
 float fWalkSpeedMultiplier = 1.0f;
 float fBackwardWalkSpeedMultiplier = 1.0f;
