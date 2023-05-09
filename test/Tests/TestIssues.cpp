@@ -889,9 +889,9 @@ void check783Buffs(bool haveBuffs) {
         EXPECT_EQ(pParty->pPlayers[0].pPlayerBuffs[buff].Active(), haveBuffs) << "buff=" << static_cast<int>(buff);
 }
 
-GAME_TEST(Issues, Issue783a) {
+GAME_TEST(Issues, Issue784) {
     // Check that buff potions actually work.
-    test->playTraceFromTestData("issue_783a.mm7", "issue_783a.json", [] {
+    test->playTraceFromTestData("issue_784.mm7", "issue_784.json", [] {
         check783Buffs(false);
     });
     check783Buffs(true);
