@@ -381,14 +381,14 @@ void GUIWindow::HouseDialogManager() {
     render->DrawTextureNew(468 / 640.0f, 0, game_ui_right_panel_frame);
 
     if (pDialogueNPCCount != uNumDialogueNPCPortraits || !uHouse_ExitPic) {
-        const char *pHouseName = p2DEvents[window_SpeakInHouse->wData.val - 1].pName;
+        const char *pHouseName = buildingTable[window_SpeakInHouse->wData.val - 1].pName;
         if (pHouseName) {
             if (current_screen_type != CURRENT_SCREEN::SCREEN_SHOP_INVENTORY) {
                 int v3 = 2 * pFontCreate->GetHeight() - 6 -
                     pFontCreate->CalcTextHeight(pHouseName, 130, 0);
                 if (v3 < 0) v3 = 0;
                 pWindow.DrawTitleText(pFontCreate, 0x1EAu, v3 / 2 + 4, colorTable.White.c16(),
-                    p2DEvents[window_SpeakInHouse->wData.val - 1].pName, 3);
+                    buildingTable[window_SpeakInHouse->wData.val - 1].pName, 3);
             }
         }
     }
@@ -458,7 +458,7 @@ void GUIWindow::HouseDialogManager() {
                     v9 = 94 * v8 + 113;
                 } else {
                     if (!v8 && dword_591080) {
-                        pTitleText = (char*)p2DEvents[window_SpeakInHouse->wData.val - 1].pProprieterTitle;
+                        pTitleText = (char*)buildingTable[window_SpeakInHouse->wData.val - 1].pProprieterTitle;
                         pWindow.DrawTitleText(pFontCreate, 0x1E3u, 113, colorTable.EasternBlue.c16(), pTitleText, 3);
                         continue;
                     }
@@ -508,8 +508,8 @@ void GUIWindow::HouseDialogManager() {
     } else {
         pWindow.DrawTitleText(
             pFontCreate, 483, 113, colorTable.EasternBlue.c16(), NameAndTitle(
-                p2DEvents[window_SpeakInHouse->wData.val - 1].pProprieterName,
-                p2DEvents[window_SpeakInHouse->wData.val - 1].pProprieterTitle
+                buildingTable[window_SpeakInHouse->wData.val - 1].pProprieterName,
+                buildingTable[window_SpeakInHouse->wData.val - 1].pProprieterTitle
             ), 3);
         switch (in_current_building_type) {
         case BuildingType_WeaponShop:
@@ -2015,19 +2015,19 @@ std::string BuildDialogueString(std::string &str, uint8_t uPlayerID, ItemGen *a3
                 break;
 
             case 25:  // base prices
-                v29 = PriceCalculator::baseItemBuyingPrice(a3->GetValue(), p2DEvents[eventId - 1].fPriceMultiplier);
+                v29 = PriceCalculator::baseItemBuyingPrice(a3->GetValue(), buildingTable[eventId - 1].fPriceMultiplier);
                 switch (shop_screen) {
                 case 3:
-                        v29 = PriceCalculator::baseItemSellingPrice(a3->GetValue(), p2DEvents[eventId - 1].fPriceMultiplier);
+                        v29 = PriceCalculator::baseItemSellingPrice(a3->GetValue(), buildingTable[eventId - 1].fPriceMultiplier);
                     break;
                 case 4:
-                    v29 = PriceCalculator::baseItemIdentifyPrice(p2DEvents[eventId - 1].fPriceMultiplier);
+                    v29 = PriceCalculator::baseItemIdentifyPrice(buildingTable[eventId - 1].fPriceMultiplier);
                     break;
                 case 5:
-                    v29 = PriceCalculator::baseItemRepairPrice(a3->GetValue(), p2DEvents[eventId - 1].fPriceMultiplier);
+                    v29 = PriceCalculator::baseItemRepairPrice(a3->GetValue(), buildingTable[eventId - 1].fPriceMultiplier);
                     break;
                 case 6:
-                    v29 = PriceCalculator::baseItemSellingPrice(a3->GetValue(), p2DEvents[eventId - 1].fPriceMultiplier) / 2;
+                    v29 = PriceCalculator::baseItemSellingPrice(a3->GetValue(), buildingTable[eventId - 1].fPriceMultiplier) / 2;
                     break;
                 }
                 sprintf(v1, "%u", v29);
@@ -2035,11 +2035,11 @@ std::string BuildDialogueString(std::string &str, uint8_t uPlayerID, ItemGen *a3
                 break;
 
             case 27:  // actual price
-                v29 = PriceCalculator::itemBuyingPriceForPlayer(pPlayer, a3->GetValue(), p2DEvents[eventId - 1].fPriceMultiplier);
+                v29 = PriceCalculator::itemBuyingPriceForPlayer(pPlayer, a3->GetValue(), buildingTable[eventId - 1].fPriceMultiplier);
                 if (shop_screen == 3) {
                     // v29 = PriceCalculator::getItemSellingPriceForPlayer(pPlayer, a3->GetValue(),
-                    // p2DEvents[(signed int)eventId - 1].fPriceMultiplier);
-                    v29 = PriceCalculator::itemSellingPriceForPlayer(pPlayer, *a3, p2DEvents[eventId - 1].fPriceMultiplier);
+                    // buildingTable[(signed int)eventId - 1].fPriceMultiplier);
+                    v29 = PriceCalculator::itemSellingPriceForPlayer(pPlayer, *a3, buildingTable[eventId - 1].fPriceMultiplier);
                     // if (a3->IsBroken())
                     // v29 = 1;
                     sprintf(v1, "%u", v29);
@@ -2050,13 +2050,13 @@ std::string BuildDialogueString(std::string &str, uint8_t uPlayerID, ItemGen *a3
                     if (shop_screen == 5) {
                     v29 = PriceCalculator::itemRepairPriceForPlayer(
                         pPlayer, a3->GetValue(),
-                        p2DEvents[eventId - 1].fPriceMultiplier);
+                        buildingTable[eventId - 1].fPriceMultiplier);
                     } else {
                         if (shop_screen == 6) {
                             // v29 = PriceCalculator::getItemSellingPriceForPlayer(pPlayer, a3->GetValue(),
-                            // p2DEvents[(signed int)eventId -
+                            // buildingTable[(signed int)eventId -
                             // 1].fPriceMultiplier) / 2;
-                            v29 = PriceCalculator::itemSellingPriceForPlayer(pPlayer, *a3, p2DEvents[eventId - 1].fPriceMultiplier) / 2;
+                            v29 = PriceCalculator::itemSellingPriceForPlayer(pPlayer, *a3, buildingTable[eventId - 1].fPriceMultiplier) / 2;
                             // if (a3->IsBroken())
                             // v29 = 1;
                             if (!v29)  // cannot be 0
@@ -2070,16 +2070,16 @@ std::string BuildDialogueString(std::string &str, uint8_t uPlayerID, ItemGen *a3
                     result += v1;
                     break;
                 }
-                sprintf(v1, "%u", PriceCalculator::itemIdentificationPriceForPlayer(pPlayer, p2DEvents[eventId - 1].fPriceMultiplier));
+                sprintf(v1, "%u", PriceCalculator::itemIdentificationPriceForPlayer(pPlayer, buildingTable[eventId - 1].fPriceMultiplier));
                 result += v1;
                 break;
 
             case 28:  // shop type - blacksmith ect..
-                result += p2DEvents[eventId - 1].pProprieterTitle;
+                result += buildingTable[eventId - 1].pProprieterTitle;
                 break;
 
             case 29:  // identify cost
-                sprintf(v1, "%u", PriceCalculator::itemIdentificationPriceForPlayer(pPlayer, p2DEvents[eventId - 1].fPriceMultiplier));
+                sprintf(v1, "%u", PriceCalculator::itemIdentificationPriceForPlayer(pPlayer, buildingTable[eventId - 1].fPriceMultiplier));
                 result += v1;
                 break;
             case 30:

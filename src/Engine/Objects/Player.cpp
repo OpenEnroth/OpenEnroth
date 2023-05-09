@@ -5,7 +5,6 @@
 #include "Engine/Autonotes.h"
 #include "Engine/Awards.h"
 #include "Engine/Engine.h"
-#include "Engine/Events2D.h"
 #include "Engine/Spells/CastSpellInfo.h"
 #include "Engine/Graphics/DecalBuilder.h"
 #include "Engine/Graphics/Outdoor.h"
@@ -257,8 +256,8 @@ void Player::SpendMana(unsigned int uRequiredMana) {
 }
 
 //----- (004BE2DD) --------------------------------------------------------
-void Player::SalesProcess(unsigned int inventory_idnx, int item_index, int _2devent_idx) {
-    float shop_mult = p2DEvents[_2devent_idx - 1].fPriceMultiplier;
+void Player::SalesProcess(unsigned int inventory_idnx, int item_index, int BuildingDescr_idx) {
+    float shop_mult = buildingTable[BuildingDescr_idx - 1].fPriceMultiplier;
     int sell_price = PriceCalculator::itemSellingPriceForPlayer(this, pOwnItems[item_index], shop_mult);
 
     // remove item and add gold
@@ -7444,7 +7443,7 @@ MERCHANT_PHRASE Player::SelectPhrasesTransaction(ItemGen *pItem, BuildingType bu
     if (pItem->IsStolen())
         return MERCAHNT_PHRASE_STOLEN_ITEM;
 
-    multiplier = p2DEvents[BuildID_2Events - 1].fPriceMultiplier;
+    multiplier = buildingTable[BuildID_2Events - 1].fPriceMultiplier;
     switch (ShopMenuType) {
         case 2:
             price = PriceCalculator::itemBuyingPriceForPlayer(this, itemValue, multiplier);

@@ -5,7 +5,6 @@
 #include <utility>
 
 #include "Engine/Engine.h"
-#include "Engine/Events2D.h"
 #include "Engine/Conditions.h"
 #include "Engine/Graphics/Image.h"
 #include "Engine/Objects/Actor.h"
@@ -14,6 +13,7 @@
 #include "Engine/Objects/ItemEnums.h"
 #include "Engine/Objects/PlayerEnums.h"
 #include "Engine/Spells/Spells.h"
+#include "Engine/Tables/BuildingTable.h"
 
 #include "Utility/IndexedArray.h"
 #include "Utility/IndexedBitset.h"
@@ -325,7 +325,7 @@ struct Player {
     bool IsPlayerHealableByTemple();
     int GetConditionDaysPassed(Condition condition) const;
     bool NothingOrJustBlastersEquipped();
-    void SalesProcess(unsigned int inventory_idnx, int item_index, int _2devent_idx);  // 0x4BE2DD
+    void SalesProcess(unsigned int inventory_idnx, int item_index, int BuildingDescr_idx);  // 0x4BE2DD
     bool Recover(GameTime dt);
     bool CanCastSpell(unsigned int uRequiredMana);
     void SpendMana(unsigned int uRequiredMana);

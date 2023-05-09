@@ -33,7 +33,6 @@ set(ENGINE_HEADERS
         EngineGlobals.h
         ErrorHandling.h
         Events.h
-        Events2D.h
         EngineIocContainer.h
         LOD.h
         Localization.h
