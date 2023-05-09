@@ -3656,7 +3656,7 @@ void Player::useItem(int targetCharacter, bool isPortraitClick) {
                 break;
 
             case ITEM_POTION_HEROISM:
-                playerAffected->pPlayerBuffs[PLAYER_BUFF_HASTE].Apply(pParty->GetPlayingTime() + buffDuration, PLAYER_SKILL_MASTERY_MASTER, 5, 0, 0);
+                playerAffected->pPlayerBuffs[PLAYER_BUFF_HEROISM].Apply(pParty->GetPlayingTime() + buffDuration, PLAYER_SKILL_MASTERY_MASTER, 5, 0, 0);
                 break;
 
             case ITEM_POTION_BLESS:
