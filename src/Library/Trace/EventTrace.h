@@ -7,18 +7,26 @@
 
 #include "Platform/PlatformEvents.h"
 
+#include "Utility/Geometry/Vec.h"
+
 struct EventTraceConfigLine {
     std::string section;
     std::string key;
     std::string value;
 };
 
+struct EventTraceGameState {
+    std::string locationName;
+    Vec3i partyPosition;
+};
+
 struct EventTraceHeader {
     int saveFileSize = -1;
     std::vector<EventTraceConfigLine> config;
+    EventTraceGameState startState;
+    EventTraceGameState endState;
 
     // TODO(captainurist): std::string saveFileChecksum;
-    // TODO(captainurist): now that we can easily retrace everything, it would make sense to add starting/ending pos & map here.
 };
 
 struct EventTrace {
