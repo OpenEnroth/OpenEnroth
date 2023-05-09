@@ -861,3 +861,65 @@ GAME_TEST(Issues, Issue760) {
     test->playTraceFromTestData("issue_760.mm7", "issue_760.json");
     EXPECT_EQ(pParty->pPickedItem.uItemID, ITEM_POTION_BOTTLE);
 }
+
+void check783Buffs(bool haveBuffs) {
+    std::initializer_list<PLAYER_BUFFS> buffs = {
+        PLAYER_BUFF_RESIST_AIR,
+        PLAYER_BUFF_BLESS,
+        PLAYER_BUFF_RESIST_BODY,
+        PLAYER_BUFF_RESIST_EARTH,
+        PLAYER_BUFF_RESIST_FIRE,
+        PLAYER_BUFF_HASTE,
+        PLAYER_BUFF_HEROISM,
+        PLAYER_BUFF_RESIST_MIND,
+        PLAYER_BUFF_PRESERVATION,
+        PLAYER_BUFF_SHIELD,
+        PLAYER_BUFF_STONESKIN,
+        PLAYER_BUFF_ACCURACY,
+        PLAYER_BUFF_ENDURANCE,
+        PLAYER_BUFF_INTELLIGENCE,
+        PLAYER_BUFF_LUCK,
+        PLAYER_BUFF_STRENGTH,
+        PLAYER_BUFF_WILLPOWER,
+        PLAYER_BUFF_SPEED,
+        PLAYER_BUFF_RESIST_WATER,
+        PLAYER_BUFF_WATER_WALK
+    };
+    for (PLAYER_BUFFS buff : buffs)
+        EXPECT_EQ(pParty->pPlayers[0].pPlayerBuffs[buff].Active(), haveBuffs) << "buff=" << static_cast<int>(buff);
+}
+
+GAME_TEST(Issues, Issue783a) {
+    // Check that buff potions actually work.
+    test->playTraceFromTestData("issue_783a.mm7", "issue_783a.json", [] {
+        check783Buffs(false);
+    });
+    check783Buffs(true);
+
+    // Check that buffs have effect.
+    // Potions were at power 75, that's 75*3=225 points for attribute bonuses.
+    const Player &player0 = pParty->pPlayers[0];
+
+    EXPECT_EQ(225, player0.GetMagicalBonus(CHARACTER_ATTRIBUTE_RESIST_AIR));
+    EXPECT_EQ(5, player0.GetMagicalBonus(CHARACTER_ATTRIBUTE_ATTACK)); // PLAYER_BUFF_BLESS.
+    EXPECT_EQ(5, player0.GetMagicalBonus(CHARACTER_ATTRIBUTE_RANGED_ATTACK)); // PLAYER_BUFF_BLESS.
+    EXPECT_EQ(225, player0.GetMagicalBonus(CHARACTER_ATTRIBUTE_RESIST_BODY));
+    EXPECT_EQ(225, player0.GetMagicalBonus(CHARACTER_ATTRIBUTE_RESIST_EARTH));
+    EXPECT_EQ(225, player0.GetMagicalBonus(CHARACTER_ATTRIBUTE_RESIST_FIRE));
+    EXPECT_EQ(58, player0.GetAttackRecoveryTime(false)); // PLAYER_BUFF_HASTE.
+    EXPECT_EQ(59, player0.GetAttackRecoveryTime(true)); // PLAYER_BUFF_HASTE.
+    EXPECT_EQ(5, player0.GetMagicalBonus(CHARACTER_ATTRIBUTE_MELEE_DMG_BONUS)); // PLAYER_BUFF_HEROISM.
+    EXPECT_EQ(225, player0.GetMagicalBonus(CHARACTER_ATTRIBUTE_RESIST_MIND));
+    // No check for PLAYER_BUFF_PRESERVATION.
+    // No check for PLAYER_BUFF_SHIELD.
+    EXPECT_EQ(5, player0.GetMagicalBonus(CHARACTER_ATTRIBUTE_AC_BONUS)); // PLAYER_BUFF_STONESKIN.
+    EXPECT_EQ(225, player0.GetMagicalBonus(CHARACTER_ATTRIBUTE_ACCURACY));
+    EXPECT_EQ(225, player0.GetMagicalBonus(CHARACTER_ATTRIBUTE_ENDURANCE));
+    EXPECT_EQ(225, player0.GetMagicalBonus(CHARACTER_ATTRIBUTE_INTELLIGENCE));
+    EXPECT_EQ(225, player0.GetMagicalBonus(CHARACTER_ATTRIBUTE_LUCK));
+    EXPECT_EQ(225, player0.GetMagicalBonus(CHARACTER_ATTRIBUTE_STRENGTH));
+    EXPECT_EQ(225, player0.GetMagicalBonus(CHARACTER_ATTRIBUTE_WILLPOWER));
+    EXPECT_EQ(225, player0.GetMagicalBonus(CHARACTER_ATTRIBUTE_SPEED));
+    EXPECT_EQ(225, player0.GetMagicalBonus(CHARACTER_ATTRIBUTE_RESIST_WATER));
+    // No check for PLAYER_BUFF_WATER_WALK
+}
