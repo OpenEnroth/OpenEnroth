@@ -29,7 +29,7 @@ static int partyItemCount() {
 }
 
 static std::initializer_list<PLAYER_BUFFS> allPotionBuffs() {
-    static constinit std::initializer_list<PLAYER_BUFFS> result = {
+    static constexpr std::initializer_list<PLAYER_BUFFS> result = {
         PLAYER_BUFF_RESIST_AIR,
         PLAYER_BUFF_BLESS,
         PLAYER_BUFF_RESIST_BODY,
