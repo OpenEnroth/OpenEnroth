@@ -1,7 +1,7 @@
 #pragma once
 
-#include <map>
 #include <string>
+#include <unordered_map>
 
 #include "Utility/Color.h"
 
@@ -38,9 +38,9 @@ class AssetsManager {
     Texture *WinnerCert{ nullptr };
 
  protected:
-    std::map<std::string, Texture *> bitmaps;
-    std::map<std::string, Texture *> sprites;
-    std::map<std::string, Texture *> images;
+    std::unordered_map<std::string, Texture *> bitmaps;
+    std::unordered_map<std::string, Texture *> sprites;
+    std::unordered_map<std::string, Texture *> images;
 };
 
 extern AssetsManager *assets;
