@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cstdint>
+#include <cassert>
 #include <utility>
 
 #include "Engine/ErrorHandling.h"
@@ -1001,9 +1002,6 @@ enum class ITEM_TYPE : int32_t {
     ITEM_FIRST_REAL_POTION = ITEM_POTION_CURE_WOUNDS,
     ITEM_LAST_REAL_POTION = ITEM_POTION_REJUVENATION,
 
-    ITEM_FIRST_ENCHANTING_POTION = ITEM_POTION_FLAMING,
-    ITEM_LAST_ENCHANTING_POTION = ITEM_POTION_SWIFT,
-
     ITEM_FIRST_WAND = ITEM_WAND_OF_FIRE,
     ITEM_LAST_WAND = ITEM_MYSTIC_WAND_OF_INCINERATION,
 
@@ -1051,7 +1049,7 @@ inline bool isReagent(ITEM_TYPE type) {
 }
 
 inline bool isEnchantingPotion(ITEM_TYPE type) {
-    return type >= ITEM_FIRST_ENCHANTING_POTION && type <= ITEM_LAST_ENCHANTING_POTION || type == ITEM_POTION_SLAYING;
+    return type >= ITEM_POTION_FLAMING && type <= ITEM_POTION_SWIFT || type == ITEM_POTION_SLAYING;
 }
 
 inline bool isMessageScroll(ITEM_TYPE type) {
@@ -1107,6 +1105,22 @@ inline std::initializer_list<ITEM_TYPE> Level1Reagents() {
         ITEM_REAGENT_POPPYSNAPS
     };
     return result;
+}
+
+inline ITEM_ENCHANTMENT potionEnchantment(ITEM_TYPE enchantingPotion) {
+    assert(isEnchantingPotion(enchantingPotion));
+
+    switch (enchantingPotion) {
+    case ITEM_POTION_SLAYING: return ITEM_ENCHANTMENT_DRAGON_SLAYING;
+    case ITEM_POTION_FLAMING: return ITEM_ENCHANTMENT_OF_FLAME;
+    case ITEM_POTION_FREEZING: return ITEM_ENCHANTMENT_OF_FROST;
+    case ITEM_POTION_NOXIOUS: return ITEM_ENCHANTMENT_OF_POISON;
+    case ITEM_POTION_SHOCKING: return ITEM_ENCHANTMENT_OF_SPARKS;
+    case ITEM_POTION_SWIFT: return ITEM_ENCHANTMENT_SWIFT;
+    default:
+        assert(false);
+        return ITEM_ENCHANTMENT_NULL;
+    }
 }
 
 // TODO(captainurist): this is actually ITEM_TYPE / ITEM_CLASS, and current ITEM_TYPE is ITEM_ID
@@ -1207,7 +1221,7 @@ inline Segment<ITEM_SLOT> RingSlots() {
 }
 
 inline ITEM_SLOT RingSlot(int index) {
-    Assert(index >= 0 && index <= 5);
+    assert(index >= 0 && index <= 5);
     return static_cast<ITEM_SLOT>(std::to_underlying(ITEM_SLOT_RING1) + index);
 }
 

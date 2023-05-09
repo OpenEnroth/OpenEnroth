@@ -1963,19 +1963,7 @@ void Inventory_ItemPopupAndAlchemy() {
 
             GameTime effectTime = GameTime::FromMinutes(30 * pParty->pPickedItem.uEnchantmentType);
             item->UpdateTempBonus(pParty->GetPlayingTime());
-            if (pParty->pPickedItem.uItemID == ITEM_POTION_SLAYING) {
-                item->special_enchantment = ITEM_ENCHANTMENT_DRAGON_SLAYING;
-            } else {
-                static constinit IndexedArray<ITEM_ENCHANTMENT, ITEM_FIRST_ENCHANTING_POTION, ITEM_LAST_ENCHANTING_POTION> potionToEnchantment = {
-                    {ITEM_POTION_FLAMING, ITEM_ENCHANTMENT_OF_FLAME},
-                    {ITEM_POTION_FREEZING, ITEM_ENCHANTMENT_OF_FROST},
-                    {ITEM_POTION_NOXIOUS, ITEM_ENCHANTMENT_OF_POISON},
-                    {ITEM_POTION_SHOCKING, ITEM_ENCHANTMENT_OF_SPARKS},
-                    {ITEM_POTION_SWIFT, ITEM_ENCHANTMENT_SWIFT}
-                };
-                item->special_enchantment = potionToEnchantment[pParty->pPickedItem.uItemID];
-            }
-
+            item->special_enchantment = potionEnchantment(pParty->pPickedItem.uItemID);
             item->uExpireTime = GameTime(pParty->GetPlayingTime() + effectTime);
             // Sound was missing previously
             item->uAttributes |= ITEM_TEMP_BONUS | ITEM_AURA_EFFECT_RED;
