@@ -11,9 +11,9 @@ var searchData=
   ['enginefactory_8',['EngineFactory',['../classEngineFactory.html',1,'']]],
   ['engineioccontainer_9',['EngineIocContainer',['../classEngineIocContainer.html',1,'']]],
   ['enginetracecomponent_10',['EngineTraceComponent',['../classEngineTraceComponent.html',1,'']]],
-  ['enginetraceconfigurator_11',['EngineTraceConfigurator',['../structEngineTraceConfigurator.html',1,'']]],
-  ['enginetraceplayer_12',['EngineTracePlayer',['../classEngineTracePlayer.html',1,'']]],
-  ['enginetracerecorder_13',['EngineTraceRecorder',['../classEngineTraceRecorder.html',1,'']]],
+  ['enginetraceplayer_11',['EngineTracePlayer',['../classEngineTracePlayer.html',1,'']]],
+  ['enginetracerecorder_12',['EngineTraceRecorder',['../classEngineTraceRecorder.html',1,'']]],
+  ['enginetracestateaccessor_13',['EngineTraceStateAccessor',['../structEngineTraceStateAccessor.html',1,'']]],
   ['enumserializationtable_14',['EnumSerializationTable',['../classdetail_1_1EnumSerializationTable.html',1,'detail']]],
   ['enumserializer_15',['EnumSerializer',['../classdetail_1_1EnumSerializer.html',1,'detail']]],
   ['equipemntpair_16',['EquipemntPair',['../classEquipemntPair.html',1,'']]],
@@ -22,8 +22,9 @@ var searchData=
   ['eventmap_19',['EventMap',['../classEventMap.html',1,'']]],
   ['eventtrace_20',['EventTrace',['../structEventTrace.html',1,'']]],
   ['eventtraceconfigline_21',['EventTraceConfigLine',['../structEventTraceConfigLine.html',1,'']]],
-  ['eventtraceheader_22',['EventTraceHeader',['../structEventTraceHeader.html',1,'']]],
-  ['eventtrigger_23',['EventTrigger',['../structEventTrigger.html',1,'']]],
-  ['exception_24',['Exception',['../classException.html',1,'']]],
-  ['explosion_5feffect_5fstruct_25',['explosion_effect_struct',['../structexplosion__effect__struct.html',1,'']]]
+  ['eventtracegamestate_22',['EventTraceGameState',['../structEventTraceGameState.html',1,'']]],
+  ['eventtraceheader_23',['EventTraceHeader',['../structEventTraceHeader.html',1,'']]],
+  ['eventtrigger_24',['EventTrigger',['../structEventTrigger.html',1,'']]],
+  ['exception_25',['Exception',['../classException.html',1,'']]],
+  ['explosion_5feffect_5fstruct_26',['explosion_effect_struct',['../structexplosion__effect__struct.html',1,'']]]
 ];
