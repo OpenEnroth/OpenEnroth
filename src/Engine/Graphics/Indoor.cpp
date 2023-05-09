@@ -54,8 +54,6 @@ static DecalBuilder *decal_builder = EngineIocContainer::ResolveDecalBuilder();
 IndoorLocation *pIndoor = new IndoorLocation;
 BLVRenderParams *pBLVRenderParams = new BLVRenderParams;
 
-LEVEL_TYPE uCurrentlyLoadedLevelType = LEVEL_null;
-
 uint16_t pDoorSoundIDsByLocationID[78] = {
     300, 300, 300, 300, 300, 300, 300, 300, 300, 300, 300, 300, 300,
     300, 300, 300, 404, 302, 306, 308, 304, 308, 302, 400, 302, 300,
@@ -2007,19 +2005,6 @@ int CalcDistPointToLine(int x1, int y1, int x2, int y2, int x3, int y3) {
     // orthogonal projection from line to point
     if (result)
         result = abs(((x2 - x1) * (y1 - y3) - (y2 - y1) * (x1 - x3)) / result);
-
-    return result;
-}
-
-//----- (00450DA3) --------------------------------------------------------
-bool GetAlertStatus() {
-    int result;
-
-    // TODO(captainurist): indoor & outdoor messed up, is this a bug?
-    if (uCurrentlyLoadedLevelType == LEVEL_Indoor)
-        result = pOutdoor->ddm.alertStatus;
-    else
-        result = uCurrentlyLoadedLevelType == LEVEL_Outdoor ? pIndoor->dlv.alertStatus : 0;
 
     return result;
 }

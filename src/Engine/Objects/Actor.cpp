@@ -10,12 +10,10 @@
 #include "Engine/Graphics/Camera.h"
 #include "Engine/Graphics/DecalBuilder.h"
 #include "Engine/Graphics/Level/Decoration.h"
-#include "Engine/Graphics/Outdoor.h"
 #include "Engine/Graphics/Indoor.h"
 #include "Engine/Graphics/Overlays.h"
 #include "Engine/Graphics/PaletteManager.h"
 #include "Engine/Graphics/Sprites.h"
-#include "Engine/Graphics/Viewport.h"
 #include "Engine/Graphics/Vis.h"
 #include "Engine/Localization.h"
 #include "Engine/LOD.h"
@@ -1213,13 +1211,8 @@ void Actor::ApplyFineForKillingPeasant(unsigned int uActorID) {
     if (pParty->uFine < 0) pParty->uFine = 0;
     if (pParty->uFine > 4000000) pParty->uFine = 4000000;
 
-    if (uCurrentlyLoadedLevelType == LEVEL_Outdoor) {
-        if (pOutdoor->ddm.reputation < 10000) pOutdoor->ddm.reputation++;
-    } else if (uCurrentlyLoadedLevelType == LEVEL_Indoor) {
-        if (pIndoor->dlv.reputation < 10000) pIndoor->dlv.reputation++;
-    } else {
-        assert(false);
-    }
+    if (currentLocationInfo().reputation < 10000)
+        currentLocationInfo().reputation++;
 
     if (pParty->uFine) {
         for (Player &player : pParty->pPlayers) {
@@ -1365,8 +1358,7 @@ void Actor::StealFrom(unsigned int uActorID) {
         v4 = 0;
         v5 = pMapStats->GetMapInfo(pCurrentMapName);
         if (v5) v4 = pMapStats->pInfos[v5]._steal_perm;
-        v6 = &pOutdoor->ddm;
-        if (uCurrentlyLoadedLevelType != LEVEL_Outdoor) v6 = &pIndoor->dlv;
+        v6 = &currentLocationInfo();
         pPlayer->StealFromActor(uActorID, v4, v6->reputation++);
         v8 = pPlayer->GetAttackRecoveryTime(false);
         if (v8 < engine->config->gameplay.MinRecoveryMelee.value()) v8 = engine->config->gameplay.MinRecoveryMelee.value();

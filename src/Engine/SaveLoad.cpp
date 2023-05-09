@@ -164,10 +164,7 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld) {
 
     pParty->_viewYaw = pParty->_viewPrevYaw;
     pParty->_viewPitch = pParty->_viewPrevPitch;
-    if (uCurrentlyLoadedLevelType == LEVEL_Indoor)
-        pIndoor->stru1.last_visit = pParty->GetPlayingTime();
-    else
-        pOutdoor->loc_time.last_visit = pParty->GetPlayingTime();
+    currentLocationTime().last_visit = pParty->GetPlayingTime();
 
     // saving - please wait
 

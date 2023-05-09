@@ -7,7 +7,6 @@
 #include "Engine/Engine.h"
 #include "Engine/Spells/CastSpellInfo.h"
 #include "Engine/Graphics/DecalBuilder.h"
-#include "Engine/Graphics/Outdoor.h"
 #include "Engine/Graphics/Indoor.h"
 #include "Engine/Graphics/Viewport.h"
 #include "Engine/Localization.h"
@@ -4489,13 +4488,11 @@ bool Player::CompareVariable(VariableType VarNum, int pValue) {
         }
 
         case VAR_ReputationInCurrentLocation:
-            v19 = &pOutdoor->ddm;
-            if (uCurrentlyLoadedLevelType != LEVEL_Outdoor) v19 = &pIndoor->dlv;
+            v19 = &currentLocationInfo();
             return (v19->reputation >= pValue);
 
         case VAR_Unknown1:
-            v21 = &pOutdoor->ddm;
-            if (uCurrentlyLoadedLevelType != LEVEL_Outdoor) v21 = &pIndoor->dlv;
+            v21 = &currentLocationInfo();
             return (v21->alertStatus == pValue);  // yes, equality, not >=
 
         case VAR_GoldInBank:
@@ -4933,11 +4930,7 @@ void Player::SetVariable(VariableType var_type, signed int var_value) {
             return;
 
         case VAR_ReputationInCurrentLocation:
-            if (uCurrentlyLoadedLevelType != LEVEL_Outdoor)
-                ddm = &pIndoor->dlv;
-            else
-                ddm = &pOutdoor->ddm;
-
+            ddm = &currentLocationInfo();
             ddm->reputation = var_value;
             if (var_value > 10000)
                 ddm->reputation = 10000;
@@ -5492,11 +5485,7 @@ void Player::AddVariable(VariableType var_type, signed int val) {
             this->uSkillPoints += val;
             return;
         case VAR_ReputationInCurrentLocation:
-            if (uCurrentlyLoadedLevelType != LEVEL_Outdoor)
-                ddm = &pIndoor->dlv;
-            else
-                ddm = &pOutdoor->ddm;
-
+            ddm = &currentLocationInfo();
             ddm->reputation += val;
             if (ddm->reputation > 10000)
                 ddm->reputation = 10000;
@@ -6170,9 +6159,7 @@ void Player::SubtractVariable(VariableType VarNum, signed int pValue) {
             }
             return;
         case VAR_ReputationInCurrentLocation:
-            locationHeader = &pOutdoor->ddm;
-            if (uCurrentlyLoadedLevelType != LEVEL_Outdoor)
-                locationHeader = &pIndoor->dlv;
+            locationHeader = &currentLocationInfo();
             locationHeader->reputation -= pValue;
             if (locationHeader->reputation < -10000)
                 locationHeader->reputation = -10000;

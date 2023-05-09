@@ -6,8 +6,7 @@
 #include "Engine/Engine.h"
 #include "Engine/Graphics/IRender.h"
 #include "Engine/Graphics/Image.h"
-#include "Engine/Graphics/Indoor.h"
-#include "Engine/Graphics/Outdoor.h"
+#include "Engine/Graphics/LocationFunctions.h"
 #include "Engine/Graphics/Viewport.h"
 #include "Engine/Localization.h"
 #include "Engine/MapInfo.h"
@@ -1614,8 +1613,7 @@ void sub_4B1447_party_fine(int shopId, int stealingResult,
     }
 
     pParty->InTheShopFlags[shopId] = 1;
-    v7 = &pOutdoor->ddm;
-    if (uCurrentlyLoadedLevelType != LEVEL_Outdoor) v7 = &pIndoor->dlv;
+    v7 = &currentLocationInfo();
     v7->reputation += v3;
     if (v7->reputation > 10000) v7->reputation = 10000;
 }

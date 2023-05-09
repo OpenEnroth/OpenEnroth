@@ -14,17 +14,10 @@
 #include "IRender.h"
 #include "LocationInfo.h"
 #include "LocationTime.h"
+#include "LocationEnums.h"
+#include "LocationFunctions.h"
 
 struct IndoorLocation;
-
-/*  319 */
-enum class LEVEL_TYPE {
-    LEVEL_null = 0,
-    LEVEL_Indoor = 0x1,
-    LEVEL_Outdoor = 0x2,
-};
-using enum LEVEL_TYPE;
-extern LEVEL_TYPE uCurrentlyLoadedLevelType;
 
 struct BLVLight {
     Vec3s vPosition;
@@ -82,10 +75,6 @@ struct BLVMapOutline {  // 0C
 struct FlatFace {
     std::array<int32_t, 104> u;
     std::array<int32_t, 104> v;
-};
-
-enum {
-    MODEL_INDOOR = -1
 };
 
 /*   93 */
@@ -371,7 +360,6 @@ void switchDoorAnimation(unsigned int uDoorID, int a2);
 int CalcDistPointToLine(int a1, int a2, int a3, int a4, int a5, int a6);
 void PrepareDrawLists_BLV();
 void PrepareToLoadBLV(bool bLoading);
-bool GetAlertStatus();
 int SpawnEncounterMonsters(struct MapInfo *a1, int a2);
 int DropTreasureAt(ITEM_TREASURE_LEVEL trs_level, signed int trs_type, int x, int y, int z, uint16_t facing);
 

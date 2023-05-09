@@ -14,13 +14,13 @@
 #include "BSPModel.h"
 #include "LocationInfo.h"
 #include "LocationTime.h"
+#include "LocationEnums.h"
+#include "LocationFunctions.h"
 
 class Logger;
 class DecalBuilder;
 class SpellFxRenderer;
 class LightmapBuilder;
-
-#define DAY_ATTRIB_FOG 1
 
 struct OutdoorLocationTileType {
     Tileset tileset;

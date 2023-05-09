@@ -993,8 +993,7 @@ bool TestPartyQuestBit(PARTY_QUEST_BITS bit) {
 
 //----- (0047752B) --------------------------------------------------------
 int Party::GetPartyReputation() {
-    LocationInfo *ddm_dlv = &pOutdoor->ddm;
-    if (uCurrentlyLoadedLevelType != LEVEL_Outdoor) ddm_dlv = &pIndoor->dlv;
+    LocationInfo *ddm_dlv = &currentLocationInfo();
 
     int npcRep = 0;
     if (CheckHiredNPCSpeciality(Pirate)) npcRep += 5;
