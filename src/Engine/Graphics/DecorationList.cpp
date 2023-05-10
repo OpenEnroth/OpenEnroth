@@ -2,7 +2,6 @@
 
 #include <cstdlib>
 
-#include "Engine/Events.h"
 #include "Engine/Engine.h"
 #include "Engine/Serialization/LegacyImages.h"
 #include "Level/Decoration.h"
@@ -43,7 +42,7 @@ uint16_t DecorationList::GetDecorIdByName(std::string_view pName) {
 }
 
 void RespawnGlobalDecorations() {
-    mapEventVariables.decorVars.fill(0);
+    engine->_persistentVariables.decorVars.fill(0);
 
     uint decorEventIdx = 0;
     for (uint i = 0; i < pLevelDecorations.size(); ++i) {
@@ -52,8 +51,8 @@ void RespawnGlobalDecorations() {
         if (!decor->uEventID) {
             if (decor->IsInteractive()) {
                 if (decorEventIdx < 124) {
-                    decor->_idx_in_stru123 = decorEventIdx + 75;
-                    mapEventVariables.decorVars[decorEventIdx++] = decor->GetGlobalEvent();
+                    decor->eventVarId = decorEventIdx;
+                    engine->_persistentVariables.decorVars[decorEventIdx++] = decor->GetGlobalEvent();
                 }
             }
         }

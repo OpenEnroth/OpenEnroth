@@ -174,7 +174,7 @@ void serialize(const IndoorLocation &src, IndoorDelta_MM7 *dst) {
     serialize(vChests, &dst->chests);
     serialize(src.pDoors, &dst->doors);
     serialize(src.ptr_0002B4_doors_ddata, &dst->doorsData);
-    serialize(mapEventVariables, &dst->eventVariables);
+    serialize(engine->_persistentVariables, &dst->eventVariables);
     serialize(src.stru1, &dst->locationTime);
 }
 
@@ -264,7 +264,7 @@ void deserialize(const IndoorDelta_MM7 &src, IndoorLocation *dst) {
         }
     }
 
-    deserialize(src.eventVariables, &mapEventVariables);
+    deserialize(src.eventVariables, &engine->_persistentVariables);
     deserialize(src.locationTime, &dst->stru1);
 }
 
@@ -436,7 +436,7 @@ void serialize(const OutdoorLocation &src, OutdoorDelta_MM7 *dst) {
     serialize(pActors, &dst->actors);
     serialize(pSpriteObjects, &dst->spriteObjects);
     serialize(vChests, &dst->chests);
-    serialize(mapEventVariables, &dst->eventVariables);
+    serialize(engine->_persistentVariables, &dst->eventVariables);
     serialize(src.loc_time, &dst->locationTime);
 }
 
@@ -477,7 +477,7 @@ void deserialize(const OutdoorDelta_MM7 &src, OutdoorLocation *dst) {
 
     deserialize(src.spriteObjects, &pSpriteObjects);
     deserialize(src.chests, &vChests);
-    deserialize(src.eventVariables, &mapEventVariables);
+    deserialize(src.eventVariables, &engine->_persistentVariables);
     deserialize(src.locationTime, &dst->loc_time);
 }
 

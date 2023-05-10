@@ -3,7 +3,6 @@
 #include <array>
 #include <string>
 
-#include "Engine/Events.h"
 #include "Engine/Events/EventEnums.h"
 #include "GUI/UI/UIHouseEnums.h"
 #include "Engine/Objects/PlayerEnums.h"

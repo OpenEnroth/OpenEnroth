@@ -1644,7 +1644,7 @@ void deserialize(const LevelDecoration_MM7 &src, LevelDecoration *dst) {
     dst->uEventID = src.uEventID;
     dst->uTriggerRange = src.uTriggerRange;
     dst->field_1A = src.field_1A;
-    dst->_idx_in_stru123 = src._idx_in_stru123;
+    dst->eventVarId = src.eventVarId - 75; // Was changed because all current usages are without this 75 shift
     dst->field_1E = src.field_1E;
 }
 
@@ -1744,14 +1744,14 @@ void deserialize(const SoundInfo_MM7 &src, SoundInfo *dst) {
     deserialize(static_cast<const SoundInfo_MM6 &>(src), dst);
 }
 
-void serialize(const MapEventVariables &src, MapEventVariables_MM7 *dst) {
+void serialize(const PersistentVariables &src, MapEventVariables_MM7 *dst) {
     memzero(dst);
 
     dst->mapVars = src.mapVars;
     dst->decorVars = src.decorVars;
 }
 
-void deserialize(const MapEventVariables_MM7 &src, MapEventVariables *dst) {
+void deserialize(const MapEventVariables_MM7 &src, PersistentVariables *dst) {
     dst->mapVars = src.mapVars;
     dst->decorVars = src.decorVars;
 }

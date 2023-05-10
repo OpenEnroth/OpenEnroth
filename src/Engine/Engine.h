@@ -6,6 +6,7 @@
 #include <string>
 #include <climits>
 #include <vector>
+#include <array>
 
 #include "Engine/Events/EventMap.h"
 #include "Engine/AssetsManager.h"
@@ -73,6 +74,11 @@ struct Game_Bloodsplat {
     float g;
     float b;
     float radius;
+};
+
+struct PersistentVariables {
+    std::array<unsigned char, 75> mapVars;
+    std::array<unsigned char, 125> decorVars;
 };
 
 class Vis;
@@ -199,6 +205,7 @@ class Engine {
     EventMap _globalEventMap;
     EventMap _localEventMap;
     std::vector<std::string> _levelStrings;
+    PersistentVariables _persistentVariables;
 };
 
 extern std::shared_ptr<Engine> engine;

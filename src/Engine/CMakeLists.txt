@@ -8,7 +8,6 @@ set(ENGINE_SOURCES
         EngineFactory.cpp
         EngineGlobals.cpp
         ErrorHandling.cpp
-        Events.cpp
         EngineIocContainer.cpp
         LOD.cpp
         Localization.cpp
@@ -32,7 +31,6 @@ set(ENGINE_HEADERS
         EngineFactory.h
         EngineGlobals.h
         ErrorHandling.h
-        Events.h
         EngineIocContainer.h
         LOD.h
         Localization.h

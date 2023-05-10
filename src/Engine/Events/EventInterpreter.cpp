@@ -470,9 +470,9 @@ int EventInterpreter::executeOneEvent(int step, bool isNpc) {
         }
         case EVENT_ChangeEvent:
             if (ir.data.event_id) {
-                mapEventVariables.decorVars[activeLevelDecoration->_idx_in_stru123 - 75] = ir.data.event_id - 124;
+                engine->_persistentVariables.decorVars[activeLevelDecoration->eventVarId] = ir.data.event_id - 124;
             } else {
-                mapEventVariables.decorVars[activeLevelDecoration->_idx_in_stru123 - 75] = 0;
+                engine->_persistentVariables.decorVars[activeLevelDecoration->eventVarId] = 0;
                 activeLevelDecoration->uFlags |= LEVEL_DECORATION_INVISIBLE;
             }
             break;
