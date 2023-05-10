@@ -18,12 +18,16 @@ static bool shouldSkip(const GameConfig *config, const AnyConfigEntry *entry) {
     return entry == &config->debug.VerboseLogging;
 }
 
+static bool shouldTake(const GameConfig *config, const AnyConfigEntry *entry) {
+    return entry == &config->debug.TraceFrameTimeMs;
+}
+
 std::vector<EventTraceConfigLine> EngineTraceStateAccessor::makeConfigPatch(const GameConfig *config) {
     std::vector<EventTraceConfigLine> result;
     for (const ConfigSection *section : config->sections())
         if (!shouldSkip(config, section))
             for (const AnyConfigEntry *entry : section->entries())
-                if (!shouldSkip(config, entry) && entry->string() != entry->defaultString())
+                if (!shouldSkip(config, entry) && (entry->string() != entry->defaultString() || shouldTake(config, entry)))
                     result.push_back({section->name(), entry->name(), entry->string()});
     return result;
 }
