@@ -1102,6 +1102,9 @@ void armageddonProgress() {
     pParty->armageddon_timer -= pEventTimer->uTimeElapsed; // Was pMiscTimer
 
     // TODO(pskelton): ignore if pEventTimer->uTimeElapsed is zero?
+    // TODO(captainurist): See the logic in Outdoor.cpp, right now the force is applied in fixed amounts per frame,
+    // while it should be applied in amounts relative to frame time --- basically, armageddon should provide some
+    // acceleration, and then this acceleration should be applied to actors over a brief period of time.
     --pParty->armageddonForceCount;
     if (pParty->armageddon_timer > 0) {
         return; // Deal damage only when timer gets to 0.
