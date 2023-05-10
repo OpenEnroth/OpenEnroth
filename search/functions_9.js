@@ -49,7 +49,7 @@ var searchData=
   ['initializeattributenames_46',['InitializeAttributeNames',['../classLocalization.html#a3c8ff9cc7f527a8daf3cd2116ab14263',1,'Localization']]],
   ['initializeautonotes_47',['InitializeAutonotes',['../NPC_8cpp.html#af053ca5ac93568183e07c36118ccf9ab',1,'NPC.cpp']]],
   ['initializeawards_48',['InitializeAwards',['../NPC_8cpp.html#a043f76dfc0d8c3e9f3d074f78cda3747',1,'NPC.cpp']]],
-  ['initializebuildingresidents_49',['InitializeBuildingResidents',['../UIHouses_8h.html#aa1ffa34217d6e8c77a5d011259a493e6',1,'InitializeBuildingResidents():&#160;UIHouses.cpp'],['../UIHouses_8cpp.html#aa1ffa34217d6e8c77a5d011259a493e6',1,'InitializeBuildingResidents():&#160;UIHouses.cpp']]],
+  ['initializebuildings_49',['initializeBuildings',['../BuildingTable_8h.html#a5b1daa4fe9c838a13a01931d8bbf85cd',1,'initializeBuildings():&#160;BuildingTable.cpp'],['../BuildingTable_8cpp.html#a5b1daa4fe9c838a13a01931d8bbf85cd',1,'initializeBuildings():&#160;BuildingTable.cpp']]],
   ['initializecharacterconditionnames_50',['InitializeCharacterConditionNames',['../classLocalization.html#ab3e791a282ebae99241ae5cdc21d1122',1,'Localization']]],
   ['initializeclassnames_51',['InitializeClassNames',['../classLocalization.html#a5b837383ba0ecb6f66e0d82a59b8fb4e',1,'Localization']]],
   ['initializecolors_52',['InitializeColors',['../classObjectList.html#a62ca9f442a9fef379f2b86cd9a004e0b',1,'ObjectList']]],

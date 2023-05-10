@@ -36,5 +36,6 @@ var searchData=
   ['bspnode_5fmm7_33',['BSPNode_MM7',['../structBSPNode__MM7.html',1,'']]],
   ['bsprenderer_34',['BspRenderer',['../structBspRenderer.html',1,'']]],
   ['bsprenderer_5fviewportnode_35',['BspRenderer_ViewportNode',['../structBspRenderer__ViewportNode.html',1,'']]],
-  ['bstreamer_36',['bstreamer',['../structbstreamer.html',1,'']]]
+  ['bstreamer_36',['bstreamer',['../structbstreamer.html',1,'']]],
+  ['buildingdesc_37',['BuildingDesc',['../structBuildingDesc.html',1,'']]]
 ];
