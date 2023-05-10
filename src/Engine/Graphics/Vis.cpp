@@ -23,7 +23,7 @@ static Vis_SelectionList Vis_static_sub_4C1944_stru_F8BDE8;
 Vis_SelectionFilter vis_sprite_filter_1 = {
     VisObjectType_Sprite, OBJECT_Decoration, 0, 0, ExcludeType};  // 00F93E1C
 Vis_SelectionFilter vis_sprite_filter_2 = {
-    VisObjectType_Sprite, OBJECT_Decoration, 0, 0, ExcludeType};  // 00F93E30
+    VisObjectType_Sprite, OBJECT_None, 0, 0, ExcludeType};  // 00F93E30
 Vis_SelectionFilter vis_face_filter = {
     VisObjectType_Face, OBJECT_None, -1, 0, None};  // 00F93E44
 Vis_SelectionFilter vis_door_filter = {
@@ -890,8 +890,7 @@ bool Vis::PickMouse(float fDepth, float fMouseX, float fMouseY,
     if (uCurrentlyLoadedLevelType == LEVEL_Indoor) {
         PickIndoorFaces_Mouse(fDepth, pMouseRay, &default_list, face_filter);
     } else if (uCurrentlyLoadedLevelType == LEVEL_Outdoor) {
-        PickOutdoorFaces_Mouse(fDepth, pMouseRay, &default_list, face_filter,
-            false);
+        PickOutdoorFaces_Mouse(fDepth, pMouseRay, &default_list, face_filter, false);
     } else {
         log->warning("Picking mouse in undefined level");  // picking in main menu is
                                                   // default (buggy) game
