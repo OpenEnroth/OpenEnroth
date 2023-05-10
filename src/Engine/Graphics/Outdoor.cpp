@@ -860,12 +860,8 @@ void OutdoorLocation::Load(const std::string &filename, int days_played, int res
     std::string odm_filename = std::string(filename);
     odm_filename.replace(odm_filename.length() - 4, 4, ".odm");
 
-    auto progressCallback = [] {
-        pGameLoadingUI_ProgressBar->Progress();
-    };
-
     OutdoorLocation_MM7 location;
-    deserialize(pGames_LOD->LoadCompressed(odm_filename), &location, progressCallback);
+    deserialize(pGames_LOD->LoadCompressed(odm_filename), &location);
     deserialize(location, this);
 
     // ****************.ddm file*********************//
@@ -878,7 +874,7 @@ void OutdoorLocation::Load(const std::string &filename, int days_played, int res
     OutdoorDelta_MM7 delta;
     if (Blob blob = pSave_LOD->LoadCompressed(ddm_filename)) {
         try {
-            deserialize(blob, &delta, location, progressCallback);
+            deserialize(blob, &delta, location);
 
             size_t totalFaces = 0;
             for (BSPModel &model : pBModels)
@@ -907,13 +903,13 @@ void OutdoorLocation::Load(const std::string &filename, int days_played, int res
     assert(respawnInitial + respawnTimed <= 1);
 
     if (respawnInitial) {
-        deserialize(pGames_LOD->LoadCompressed(ddm_filename), &delta, location, [] {});
+        deserialize(pGames_LOD->LoadCompressed(ddm_filename), &delta, location);
         *outdoors_was_respawned = true;
     } else if (respawnTimed) {
         auto header = delta.header;
         auto fullyRevealedCells = delta.fullyRevealedCells;
         auto partiallyRevealedCells = delta.partiallyRevealedCells;
-        deserialize(pGames_LOD->LoadCompressed(ddm_filename), &delta, location, [] {});
+        deserialize(pGames_LOD->LoadCompressed(ddm_filename), &delta, location);
         delta.header = header;
         delta.fullyRevealedCells = fullyRevealedCells;
         delta.partiallyRevealedCells = partiallyRevealedCells;
