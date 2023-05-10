@@ -40,7 +40,8 @@ enum class CurrentConfirmationState {
 };
 using enum CurrentConfirmationState;
 
-bool initialLoadSlotSelection = false;
+// TODO(Nik-RE-dev): drop variable and load game only on double click
+static bool isLoadSlotClicked = false;
 
 CurrentConfirmationState confirmationState = CONFIRM_NONE;
 
@@ -84,7 +85,7 @@ void Game_OpenLoadGameDialog() {
     // LoadUI_Load(1);
     current_screen_type = CURRENT_SCREEN::SCREEN_LOADGAME;
     pGUIWindow_CurrentMenu = new GUIWindow_Load(true);
-    initialLoadSlotSelection = false;
+    isLoadSlotClicked = false;
 }
 
 void Menu::EventLoop() {
@@ -139,9 +140,9 @@ void Menu::EventLoop() {
                         }
                     }
                 } else {
-                    if (!initialLoadSlotSelection || pSavegameList->selectedSlot != pSavegameList->saveListPosition + param) {
+                    if (!isLoadSlotClicked || pSavegameList->selectedSlot != pSavegameList->saveListPosition + param) {
                         pSavegameList->selectedSlot = pSavegameList->saveListPosition + param;
-                        initialLoadSlotSelection = true;
+                        isLoadSlotClicked = true;
                     } else {
                         pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_SaveLoadBtn, 0, 0);
                         pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_LoadGame, 0, 0);

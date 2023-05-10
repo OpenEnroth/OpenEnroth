@@ -30,7 +30,8 @@ Image *saveload_ui_ls_saved = nullptr;
 Image *saveload_ui_x_d = nullptr;
 Image *scrollstop = nullptr;
 
-bool initialSlotSelection = false;
+// TODO(Nik-RE-dev): drop variable and load game only on double click
+static bool isLoadSlotClicked = false;
 
 GUIWindow_Save::GUIWindow_Save() :
     GUIWindow(WINDOW_Save, {0, 0}, render->GetRenderDimensions(), 0) {
@@ -365,13 +366,13 @@ void MainMenuLoad_EventLoop() {
             if (pGUIWindow_CurrentMenu->keyboard_input_status == WINDOW_INPUT_IN_PROGRESS)
                 keyboardInputHandler->SetWindowInputStatus(WINDOW_INPUT_NONE);
             assert(current_screen_type != CURRENT_SCREEN::SCREEN_SAVEGAME); // No savegame in main menu
-            if (initialSlotSelection && pSavegameList->selectedSlot == param + pSavegameList->saveListPosition) {
+            if (isLoadSlotClicked && pSavegameList->selectedSlot == param + pSavegameList->saveListPosition) {
                 pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_SaveLoadBtn, 0, 0);
                 // Breaks UI interaction after save load
                 // pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_LoadGame, 0, 0);
             } else {
                 pSavegameList->selectedSlot = param + pSavegameList->saveListPosition;
-                initialSlotSelection = true;
+                isLoadSlotClicked = true;
             }
             break;
         }
@@ -436,7 +437,7 @@ void MainMenuLoad_EventLoop() {
 void MainMenuLoad_Loop() {
     current_screen_type = CURRENT_SCREEN::SCREEN_LOADGAME;
     pGUIWindow_CurrentMenu = new GUIWindow_Load(false);
-    initialSlotSelection = false;
+    isLoadSlotClicked = false;
 
     while (GetCurrentMenuID() == MENU_SAVELOAD && current_screen_type == CURRENT_SCREEN::SCREEN_LOADGAME) {
         MessageLoopWithWait();
