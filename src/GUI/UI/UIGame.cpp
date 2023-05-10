@@ -1047,7 +1047,7 @@ void GameUI_WritePointedObjectStatusString() {
                 if (!pLevelDecorations[pickedObjectID].uEventID) {
                     const char *pText;                 // ecx@79
                     if (pLevelDecorations[pickedObjectID].IsInteractive())
-                        pText = pNPCTopics[mapEventVariables.decorVars[pLevelDecorations[pickedObjectID]._idx_in_stru123 - 75] + 380].pTopic; // campfire
+                        pText = pNPCTopics[engine->_persistentVariables.decorVars[pLevelDecorations[pickedObjectID].eventVarId] + 380].pTopic; // campfire
                     else
                         pText = pDecorationList->GetDecoration(pLevelDecorations[pickedObjectID].uDecorationDescID)->field_20.data();
                     GameUI_StatusBar_Set(pText);

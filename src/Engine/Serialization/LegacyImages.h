@@ -41,7 +41,7 @@ struct GUICharMetric;
 struct ItemGen;
 struct LevelDecoration;
 struct LocationTime;
-struct MapEventVariables;
+struct PersistentVariables;
 struct MonsterDesc;
 struct NPCData;
 struct ObjectDesc;
@@ -1061,7 +1061,7 @@ struct LevelDecoration_MM7 {
     uint16_t uEventID;
     uint16_t uTriggerRange;
     int16_t field_1A;
-    int16_t _idx_in_stru123;
+    int16_t eventVarId;
     int16_t field_1E;
 };
 static_assert(sizeof(LevelDecoration_MM7) == 32);
@@ -1257,8 +1257,8 @@ struct MapEventVariables_MM7 {
 static_assert(sizeof(MapEventVariables_MM7) == 0xC8);
 MM_DECLARE_MEMCOPY_SERIALIZABLE(MapEventVariables_MM7)
 
-void serialize(const MapEventVariables &src, MapEventVariables_MM7 *dst);
-void deserialize(const MapEventVariables_MM7 &src, MapEventVariables *dst);
+void serialize(const PersistentVariables &src, MapEventVariables_MM7 *dst);
+void deserialize(const MapEventVariables_MM7 &src, PersistentVariables *dst);
 
 
 struct BLVHeader_MM7 {

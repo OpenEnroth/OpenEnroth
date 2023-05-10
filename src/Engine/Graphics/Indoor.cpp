@@ -907,8 +907,8 @@ void PrepareToLoadBLV(bool bLoading) {
         if (!pLevelDecorations[i].uEventID) {
             if (pLevelDecorations[i].IsInteractive()) {
                 if (v35 < 124) {
-                    pLevelDecorations[i]._idx_in_stru123 = v35 + 75;
-                    if (!mapEventVariables.decorVars[v35])
+                    pLevelDecorations[i].eventVarId = v35;
+                    if (!engine->_persistentVariables.decorVars[v35])
                         pLevelDecorations[i].uFlags |= LEVEL_DECORATION_INVISIBLE;
                     v35++;
                 }

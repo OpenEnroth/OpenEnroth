@@ -35,7 +35,7 @@ struct LevelDecoration {
     uint16_t uEventID;
     uint16_t uTriggerRange;
     int16_t field_1A;
-    int16_t _idx_in_stru123;
+    int16_t eventVarId;
     int16_t field_1E;
 };
 
