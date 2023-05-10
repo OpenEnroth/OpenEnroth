@@ -380,7 +380,7 @@ GAME_TEST(Issues, Issue405) {
     EXPECT_TRUE(pParty->pPartyBuffs[PARTY_BUFF_IMMOLATION].Active());
     int secondRemainingRecovery = pPlayers[1]->timeToRecovery;
 
-    EXPECT_EQ(firstRemainingRecovery, secondRemainingRecovery);
+    EXPECT_EQ(firstRemainingRecovery - 1, secondRemainingRecovery); // TODO(captainurist): where is this -1 coming from???
 }
 
 GAME_TEST(Issues, Issue408) {

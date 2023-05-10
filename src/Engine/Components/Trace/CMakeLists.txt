@@ -2,13 +2,13 @@ cmake_minimum_required(VERSION 3.20.4 FATAL_ERROR)
 
 set(ENGINE_COMPONENTS_TRACE_SOURCES
         EngineTraceComponent.cpp
-        EngineTraceConfigurator.cpp
+        EngineTraceStateAccessor.cpp
         EngineTracePlayer.cpp
         EngineTraceRecorder.cpp)
 
 set(ENGINE_COMPONENTS_TRACE_HEADERS
         EngineTraceComponent.h
-        EngineTraceConfigurator.h
+        EngineTraceStateAccessor.h
         EngineTracePlaybackFlags.h
         EngineTracePlayer.h
         EngineTraceRecorder.h)

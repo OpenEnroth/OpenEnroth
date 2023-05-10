@@ -1,7 +1,6 @@
 #pragma once
 
 #include <vector>
-#include <functional>
 #include <tuple>
 
 #include "LegacyImages.h"
@@ -37,7 +36,7 @@ struct IndoorLocation_MM7 {
 };
 
 void deserialize(const IndoorLocation_MM7 &src, IndoorLocation *dst);
-void deserialize(InputStream &src, IndoorLocation_MM7 *dst, std::function<void()> progress);
+void deserialize(InputStream &src, IndoorLocation_MM7 *dst);
 
 
 struct IndoorDelta_MM7 {
@@ -57,7 +56,7 @@ struct IndoorDelta_MM7 {
 void serialize(const IndoorLocation &src, IndoorDelta_MM7 *dst);
 void deserialize(const IndoorDelta_MM7 &src, IndoorLocation *dst);
 void serialize(const IndoorDelta_MM7 &src, OutputStream *dst);
-void deserialize(InputStream &src, IndoorDelta_MM7 *dst, const IndoorLocation_MM7 &ctx, std::function<void()> progress);
+void deserialize(InputStream &src, IndoorDelta_MM7 *dst, const IndoorLocation_MM7 &ctx);
 
 
 struct BSPModelExtras_MM7 {
@@ -95,7 +94,7 @@ struct OutdoorLocation_MM7 {
 };
 
 void deserialize(const OutdoorLocation_MM7 &src, OutdoorLocation *dst);
-void deserialize(InputStream &src, OutdoorLocation_MM7 *dst, std::function<void()> progress);
+void deserialize(InputStream &src, OutdoorLocation_MM7 *dst);
 
 struct OutdoorDelta_MM7 {
     LocationHeader_MM7 header;
@@ -113,7 +112,7 @@ struct OutdoorDelta_MM7 {
 void serialize(const OutdoorLocation &src, OutdoorDelta_MM7 *dst);
 void deserialize(const OutdoorDelta_MM7 &src, OutdoorLocation *dst);
 void serialize(const OutdoorDelta_MM7 &src, OutputStream *dst);
-void deserialize(InputStream &src, OutdoorDelta_MM7 *dst, const OutdoorLocation_MM7 &ctx, std::function<void()> progress);
+void deserialize(InputStream &src, OutdoorDelta_MM7 *dst, const OutdoorLocation_MM7 &ctx);
 
 
 struct SaveGame_MM7 {

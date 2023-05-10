@@ -2,12 +2,12 @@
 
 #include <algorithm>
 
-#include "Engine/LOD.h"
-
 #include "Engine/Graphics/IRender.h"
 #include "Engine/Graphics/ImageLoader.h"
 #include "Engine/Graphics/Texture.h"
 #include "GUI/GUIFont.h"
+
+#include "Utility/String.h"
 
 AssetsManager *assets = new AssetsManager();
 
@@ -162,9 +162,7 @@ Texture *AssetsManager::GetImage_PCXFromFile(const std::string &name) {
 }
 
 Texture *AssetsManager::GetBitmap(const std::string &name) {
-    auto filename = name;
-    std::transform(filename.begin(), filename.end(), filename.begin(),
-                   ::tolower);
+    std::string filename = toLower(name);
 
     auto i = bitmaps.find(filename);
     if (i == bitmaps.end()) {

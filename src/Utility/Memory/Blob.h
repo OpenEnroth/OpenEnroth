@@ -2,19 +2,21 @@
 
 #include <cassert>
 #include <cstdlib>
+#include <array>
 #include <utility>
 #include <memory>
 #include <string_view>
 #include <string>
 
 class FileInputStream;
-
+class Blob;
 
 class BlobHandler {
  public:
-    virtual void destroy(const void *data, size_t size) = 0;
+    virtual ~BlobHandler() = default;
+    virtual void destroy(Blob &self) = 0;
+    virtual Blob share(Blob &self) = 0;
 };
-
 
 /**
  * `Blob` is an abstraction that couples a contiguous memory region with the knowledge of how to deallocate it.
@@ -43,7 +45,7 @@ class Blob final {
 
     ~Blob() {
         if (_handler)
-            _handler->destroy(_data, _size);
+            _handler->destroy(*this);
     }
 
     Blob &operator=(const Blob &) = delete; // Blobs are non-copyable.
@@ -52,6 +54,22 @@ class Blob final {
         swap(*this, other);
         return *this;
     }
+
+    /**
+     * Pretty much like `substr`, but for `Blob`s.
+     *
+     * Important difference from `substr` is that the underlying memory is not copied and is instead shared between
+     * the two blobs. It will be freed when both are destroyed, so cases where a small subblob holds a 100Mb chunk
+     * of memory are possible, be careful.
+     *
+     * Also, this function doesn't throw `std::out_of_range` if `offset` is larger than the blob's size, returning
+     * an empty blob in this case instead.
+     *
+     * @param offset                    Offset in the blob.
+     * @param size                      Size of the subblob.
+     * @return                          Subblob that shares the ownership of the underlying memory with this blob.
+     */
+    Blob subBlob(size_t offset, size_t size = -1);
 
     /**
      * @param data                      Pointer to a `malloc`-allocated memory region.
@@ -139,6 +157,10 @@ class Blob final {
 
     std::string_view string_view() const {
         return std::string_view(static_cast<const char *>(_data), _size);
+    }
+
+    BlobHandler *handler() const {
+        return _handler;
     }
 
  private:

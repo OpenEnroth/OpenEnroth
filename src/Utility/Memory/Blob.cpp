@@ -12,22 +12,60 @@
 
 class NonOwningBlobHandler : public BlobHandler {
  public:
-    virtual void destroy(const void *, size_t) override {}
+    virtual void destroy(Blob &self) override {
+        assert(self.handler() == this);
+    }
+
+    virtual Blob share(Blob &self) override {
+        assert(self.handler() == this);
+        return Blob(self.data(), self.size(), this);
+    }
 };
 
-class FreeBlobHandler : public BlobHandler {
+class SharedBlobHandler : public BlobHandler {
  public:
-    virtual void destroy(const void *data, size_t) override {
-        free(const_cast<void *>(data));
+    explicit SharedBlobHandler(std::shared_ptr<Blob> base): _base(std::move(base)) {}
+
+    virtual void destroy(Blob &self) override {
+        assert(self.handler() == this);
+        delete this;
+    }
+
+    virtual Blob share(Blob &self) override {
+        assert(self.handler() == this);
+        return Blob(self.data(), self.size(), new SharedBlobHandler(_base));
+    }
+
+ private:
+    std::shared_ptr<Blob> _base;
+};
+
+class SharableBlobHandler : public BlobHandler {
+ public:
+    virtual Blob share(Blob &self) override {
+        assert(self.handler() == this);
+
+        std::shared_ptr<Blob> base = std::make_shared<Blob>(std::move(self));
+        self = Blob(base->data(), base->size(), new SharedBlobHandler(base));
+        return Blob(base->data(), base->size(), new SharedBlobHandler(base));
+    }
+};
+
+class FreeBlobHandler : public SharableBlobHandler {
+ public:
+    virtual void destroy(Blob &self) override {
+        assert(self.handler() == this);
+        free(const_cast<void *>(self.data()));
         // Note that we don't call `delete this` here.
     }
 };
 
-class MemoryMapBlobHandler : public BlobHandler {
+class MemoryMapBlobHandler : public SharableBlobHandler {
  public:
     explicit MemoryMapBlobHandler(mio::mmap_source mmap) : _mmap(std::move(mmap)) {}
 
-    virtual void destroy(const void *data, size_t) override {
+    virtual void destroy(Blob &self) override {
+        assert(self.handler() == this);
         delete this;
     }
 
@@ -35,11 +73,12 @@ class MemoryMapBlobHandler : public BlobHandler {
     mio::mmap_source _mmap;
 };
 
-class StringBlobHandler : public BlobHandler {
+class StringBlobHandler : public SharableBlobHandler {
  public:
     explicit StringBlobHandler(std::string string) : _string(std::move(string)) {}
 
-    virtual void destroy(const void *data, size_t) override {
+    virtual void destroy(Blob &self) override {
+        assert(self.handler() == this);
         delete this;
     }
 
@@ -53,6 +92,17 @@ class StringBlobHandler : public BlobHandler {
 
 constinit FreeBlobHandler staticFreeBlobHandler = {};
 constinit NonOwningBlobHandler staticNonOwningBlobHandler = {};
+
+Blob Blob::subBlob(size_t offset, size_t size) {
+    if (!_handler || offset >= _size || size == 0)
+        return Blob();
+
+    Blob result = _handler->share(*this);
+    assert(result._data == _data && result._size == _size); // Just a sanity check.
+    result._size = std::min(size, _size - offset);
+    result._data = static_cast<const char *>(_data) + offset;
+    return result;
+}
 
 Blob Blob::fromMalloc(const void *data, size_t size) {
     return Blob(data, size, &staticFreeBlobHandler);

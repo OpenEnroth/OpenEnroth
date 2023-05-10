@@ -2351,13 +2351,14 @@ void Game::gameLoop() {
             pEventTimer->Update();
             pMiscTimer->Update();
 
-            onTimer();
             GameUI_StatusBar_Update();
             if (pMiscTimer->bPaused && !pEventTimer->bPaused)
                 pMiscTimer->Resume();
             if (pEventTimer->bTackGameTime && !pParty->bTurnBasedModeOn)
                 pEventTimer->bTackGameTime = 0;
             if (!pEventTimer->bPaused && uGameState == GAME_STATE_PLAYING) {
+                onTimer();
+
                 if (!pEventTimer->bTackGameTime)
                     _494035_timed_effects__water_walking_damage__etc();
 

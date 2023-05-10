@@ -20,7 +20,7 @@
 #include "Utility/Exception.h"
 
 #include "EngineTraceComponent.h"
-#include "EngineTraceConfigurator.h"
+#include "EngineTraceStateAccessor.h"
 
 EngineTracePlayer::EngineTracePlayer() {}
 
@@ -52,7 +52,7 @@ void EngineTracePlayer::prepareTrace(EngineController *game, const std::string &
     game->resizeWindow(640, 480);
     game->tick();
 
-    EngineTraceConfigurator::patchConfig(engine->config.get(), trace->header.config);
+    EngineTraceStateAccessor::patchConfig(engine->config.get(), trace->header.config);
     int frameTimeMs = engine->config->debug.TraceFrameTimeMs.value();
 
     _deterministicComponent->startDeterministicSegment(frameTimeMs);
@@ -73,26 +73,62 @@ void EngineTracePlayer::playPreparedTrace(EngineController *game, EngineTracePla
         _tracePath.clear();
     });
 
+    checkState(flags, _trace->header.startState, true);
+
     for (std::unique_ptr<PlatformEvent> &event : _trace->events) {
         if (event->type == EVENT_PAINT) {
             game->tick(1);
 
             const PaintEvent *paintEvent = static_cast<const PaintEvent *>(event.get());
-
-            int64_t tickCount = application()->platform()->tickCount();
-            if (!(flags & TRACE_PLAYBACK_SKIP_TIME_CHECKS) && tickCount != paintEvent->tickCount) {
-                throw Exception("Tick count desynchronized when playing back trace '{}': expected {}, got {}",
-                                _tracePath, paintEvent->tickCount, tickCount);
-            }
-
-            int randomState = grng->peek(1024);
-            if (!(flags & TRACE_PLAYBACK_SKIP_RANDOM_CHECKS) && randomState != paintEvent->randomState) {
-                throw Exception("Random state desynchronized when playing back trace '{}' at {}ms: expected {}, got {}",
-                                _tracePath, tickCount, paintEvent->randomState, randomState);
-            }
+            checkTime(flags, paintEvent);
+            checkRng(flags, paintEvent);
         } else {
             game->postEvent(std::move(event));
         }
+    }
+
+    checkState(flags, _trace->header.endState, false);
+}
+
+void EngineTracePlayer::checkTime(EngineTracePlaybackFlags flags, const PaintEvent *paintEvent) {
+    if (flags & TRACE_PLAYBACK_SKIP_TIME_CHECKS)
+        return;
+
+    int64_t tickCount = application()->platform()->tickCount();
+    if (tickCount != paintEvent->tickCount) {
+        throw Exception("Tick count desynchronized when playing back trace '{}': expected {}, got {}",
+                        _tracePath, paintEvent->tickCount, tickCount);
+    }
+}
+
+void EngineTracePlayer::checkRng(EngineTracePlaybackFlags flags, const PaintEvent *paintEvent) {
+    if (flags & TRACE_PLAYBACK_SKIP_RANDOM_CHECKS)
+        return;
+
+    int randomState = grng->peek(1024);
+    int64_t tickCount = application()->platform()->tickCount();
+    if (randomState != paintEvent->randomState) {
+        throw Exception("Random state desynchronized when playing back trace '{}' at {}ms: expected {}, got {}",
+                        _tracePath, tickCount, paintEvent->randomState, randomState);
+    }
+}
+
+void EngineTracePlayer::checkState(EngineTracePlaybackFlags flags, const EventTraceGameState &expectedState, bool isStart) {
+    if (flags & TRACE_PLAYBACK_SKIP_STATE_CHECKS)
+        return;
+
+    std::string_view where = isStart ? "start" : "end";
+
+    EventTraceGameState state = EngineTraceStateAccessor::makeGameState();
+    if (state.locationName != expectedState.locationName) {
+        throw Exception("Unexpected location name at the {} of trace '{}': expected '{}', got '{}'",
+                        where, _tracePath, expectedState.locationName, state.locationName);
+    }
+    if (state.partyPosition != expectedState.partyPosition) {
+        throw Exception("Unexpected party position at the {} of trace '{}': expected ({}, {}, {}), got ({}, {}, {})",
+                        where, _tracePath,
+                        expectedState.partyPosition.x, expectedState.partyPosition.y, expectedState.partyPosition.z,
+                        state.partyPosition.x, state.partyPosition.y, state.partyPosition.z);
     }
 }
 
