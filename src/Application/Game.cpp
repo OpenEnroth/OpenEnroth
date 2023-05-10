@@ -2357,10 +2357,10 @@ void Game::gameLoop() {
             if (pEventTimer->bTackGameTime && !pParty->bTurnBasedModeOn)
                 pEventTimer->bTackGameTime = 0;
             if (!pEventTimer->bPaused && uGameState == GAME_STATE_PLAYING) {
+                onTimer();
+
                 if (!pEventTimer->bTackGameTime)
                     _494035_timed_effects__water_walking_damage__etc();
-
-                onTimer();
 
                 if (dword_6BE364_game_settings_1 & GAME_SETTINGS_0001) {
                     dword_6BE364_game_settings_1 &= ~GAME_SETTINGS_0001;
