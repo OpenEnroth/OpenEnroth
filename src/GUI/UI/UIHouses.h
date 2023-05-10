@@ -4,7 +4,6 @@
 
 #include "GUI/GUIWindow.h"
 
-#include "Engine/Events2D.h"
 
 #include "UIHouseEnums.h"
 
@@ -49,7 +48,6 @@ void BackToHouseMenu();
 void InitializaDialogueOptions_Tavern(BuildingType type);  // idb
 void InitializaDialogueOptions_Shops(BuildingType type);
 void InitializaDialogueOptions(BuildingType type);
-void InitializeBuildingResidents();
 
 extern int uHouse_ExitPic;
 extern int dword_591080;

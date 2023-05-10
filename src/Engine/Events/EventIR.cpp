@@ -8,7 +8,7 @@
 #include "Engine/Events/Loader.h"
 #include "Engine/Graphics/Level/Decoration.h"
 #include "Engine/Objects/NPC.h"
-#include "Engine/Events2D.h"
+#include "Engine/Tables/BuildingTable.h"
 #include "Engine/Engine.h"
 #include "Engine/mm7_data.h"
 
@@ -663,8 +663,8 @@ std::string EventIR::toString() const {
         case EVENT_Exit:
             return fmt::format("{}: Exit", step);
         case EVENT_SpeakInHouse:
-            if ((data.house_id - 1) < p2DEvents.size() && p2DEvents[data.house_id - 1].pName != NULL) {
-                return fmt::format("{}: SpeakInHouse({}, \"{}\")", step, data.house_id, p2DEvents[data.house_id - 1].pName);
+            if ((data.house_id - 1) < buildingTable.size() && buildingTable[data.house_id - 1].pName != NULL) {
+                return fmt::format("{}: SpeakInHouse({}, \"{}\")", step, data.house_id, buildingTable[data.house_id - 1].pName);
             } else {
                 return fmt::format("{}: SpeakInHouse({})", step, data.house_id);
             }

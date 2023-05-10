@@ -1,9 +1,7 @@
 #pragma once
-
-#include <cstdint>
+#include <string>
 #include <array>
 
-/*  296 */
 enum class BuildingType: uint16_t {
     BuildingType_Invalid = 0,
     BuildingType_WeaponShop = 1,
@@ -44,7 +42,7 @@ enum class BuildingType: uint16_t {
 };
 using enum BuildingType;
 
-struct _2devent {
+struct BuildingDesc {
     BuildingType uType;
     uint16_t uAnimationID;
     char *pName;
@@ -67,4 +65,7 @@ struct _2devent {
     int16_t field_32;
 };
 
-extern std::array<_2devent, 525> p2DEvents;
+void initializeBuildings();
+
+extern std::array<BuildingDesc, 525> buildingTable;
+extern std::string buildingTableTXT_Raw;

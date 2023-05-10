@@ -167,7 +167,7 @@ void ItemTable::Initialize() {
 
     pSpecialEnchantments_count = 72;
 
-    InitializeBuildingResidents();
+    initializeBuildings();
 
     pItemsTXT_Raw = pEvents_LOD->LoadCompressedTexture("items.txt").string_view();
     (void)strtok(pItemsTXT_Raw.data(), "\r");

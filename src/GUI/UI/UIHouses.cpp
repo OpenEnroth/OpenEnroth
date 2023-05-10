@@ -25,6 +25,7 @@
 #include "Engine/PriceCalculator.h"
 #include "Engine/SaveLoad.h"
 #include "Engine/Spells/CastSpellInfo.h"
+#include "Engine/Tables/BuildingTable.h"
 
 #include "GUI/GUIBountyHunting.h"
 #include "GUI/GUIButton.h"
@@ -810,8 +811,8 @@ bool enterHouse(HOUSE_ID uHouseID) {
         return 0;
     }
 
-    int uOpenTime = p2DEvents[uHouseID - HOUSE_SMITH_EMERALD_ISLE].uOpenTime;
-    int uCloseTime = p2DEvents[uHouseID - HOUSE_SMITH_EMERALD_ISLE].uCloseTime;
+    int uOpenTime = buildingTable[uHouseID - HOUSE_SMITH_EMERALD_ISLE].uOpenTime;
+    int uCloseTime = buildingTable[uHouseID - HOUSE_SMITH_EMERALD_ISLE].uCloseTime;
     current_npc_text.clear();
     dword_F8B1E4 = 0;
     memset(player_levels.data(), 0, 16);
@@ -849,13 +850,13 @@ bool enterHouse(HOUSE_ID uHouseID) {
             }
         }
 
-        uCurrentHouse_Animation = p2DEvents[uHouseID - HOUSE_SMITH_EMERALD_ISLE].uAnimationID;
+        uCurrentHouse_Animation = buildingTable[uHouseID - HOUSE_SMITH_EMERALD_ISLE].uAnimationID;
         in_current_building_type = pAnimatedRooms[uCurrentHouse_Animation].uBuildingType;
         if (in_current_building_type == BuildingType_Throne_Room && pParty->uFine) {  // going to jail
-            uCurrentHouse_Animation = (int16_t)p2DEvents[186].uAnimationID;
+            uCurrentHouse_Animation = (int16_t)buildingTable[186].uAnimationID;
             uHouseID = HOUSE_JAIL;
             pParty->GetPlayingTime().AddYears(1);  // += 123863040;
-            in_current_building_type = pAnimatedRooms[p2DEvents[HOUSE_LORD_AND_JUDGE_EMERALD_ISLE].uAnimationID].uBuildingType;
+            in_current_building_type = pAnimatedRooms[buildingTable[HOUSE_LORD_AND_JUDGE_EMERALD_ISLE].uAnimationID].uBuildingType;
             ++pParty->uNumPrisonTerms;
             pParty->uFine = 0;
             for (uint i = 0; i < 4; ++i) {
@@ -905,12 +906,12 @@ void PrepareHouse(HOUSE_ID house) {
     int npc_id_arr[6];   // [sp+34h] [bp-2Ch]@1
     int uAnimationID;    // [sp+50h] [bp-10h]@1
 
-    uAnimationID = p2DEvents[house - HOUSE_SMITH_EMERALD_ISLE].uAnimationID;
+    uAnimationID = buildingTable[house - HOUSE_SMITH_EMERALD_ISLE].uAnimationID;
     memset(npc_id_arr, 0, sizeof(npc_id_arr));
     uNumDialogueNPCPortraits = 0;
-    uHouse_ExitPic = p2DEvents[house - HOUSE_SMITH_EMERALD_ISLE].uExitPicID;
+    uHouse_ExitPic = buildingTable[house - HOUSE_SMITH_EMERALD_ISLE].uExitPicID;
     if (uHouse_ExitPic) {
-        uExitMapID = p2DEvents[house - HOUSE_SMITH_EMERALD_ISLE]._quest_bit;
+        uExitMapID = buildingTable[house - HOUSE_SMITH_EMERALD_ISLE]._quest_bit;
         if (uExitMapID > 0) {
             if (pParty->_questBits[uExitMapID]) {
                 uHouse_ExitPic = 0;
@@ -950,15 +951,15 @@ void PrepareHouse(HOUSE_ID house) {
         pDialogueNPCPortraits[uNumDialogueNPCPortraits] =
             assets->GetImage_ColorKey(pHouse_ExitPictures[uHouse_ExitPic]);
         ++uNumDialogueNPCPortraits;
-        uHouse_ExitPic = p2DEvents[house - HOUSE_SMITH_EMERALD_ISLE].uExitMapID;
+        uHouse_ExitPic = buildingTable[house - HOUSE_SMITH_EMERALD_ISLE].uExitMapID;
     }
 }
 
 //----- (004B1E92) --------------------------------------------------------
 void PlayHouseSound(unsigned int uHouseID, HouseSoundID sound) {
     if (uHouseID > 0) {
-        if (pAnimatedRooms[p2DEvents[uHouseID - HOUSE_SMITH_EMERALD_ISLE].uAnimationID].uRoomSoundId) {
-            int roomSoundId = pAnimatedRooms[p2DEvents[uHouseID - HOUSE_SMITH_EMERALD_ISLE].uAnimationID].uRoomSoundId;
+        if (pAnimatedRooms[buildingTable[uHouseID - HOUSE_SMITH_EMERALD_ISLE].uAnimationID].uRoomSoundId) {
+            int roomSoundId = pAnimatedRooms[buildingTable[uHouseID - HOUSE_SMITH_EMERALD_ISLE].uAnimationID].uRoomSoundId;
             pAudioPlayer->playHouseSound((SoundID)(sound + 100 * (roomSoundId + 300)), true);
         }
     }
@@ -1046,7 +1047,7 @@ void OnSelectShopDialogueOption(DIALOGUE_TYPE option) {
         } else {  // generation new books
             SpellBookGenerator();
             pParty->PartyTimes.Shops_next_generation_time[window_SpeakInHouse->wData.val - HOUSE_FIRE_GUILD_INITIATE_EMERALD_ISLE] = GameTime(pParty->GetPlayingTime() + GameTime::FromDays(
-                    p2DEvents[window_SpeakInHouse->wData.val - 1].generation_interval_days));
+                    buildingTable[window_SpeakInHouse->wData.val - 1].generation_interval_days));
         }
         break;
     }
@@ -1123,12 +1124,12 @@ void OnSelectShopDialogueOption(DIALOGUE_TYPE option) {
                 .Shops_next_generation_time[window_SpeakInHouse->wData.val] =
                 GameTime(pParty->GetPlayingTime() +
                 GameTime::FromDays(
-                    p2DEvents[window_SpeakInHouse->wData.val - 1]
+                    buildingTable[window_SpeakInHouse->wData.val - 1]
                     .generation_interval_days));
         }
         if (option == DIALOGUE_SHOP_BUY_STANDARD) {
-            if (ItemAmountForShop(p2DEvents[window_SpeakInHouse->wData.val - HOUSE_SMITH_EMERALD_ISLE].uType)) {
-                for (uint i = 0; i < ItemAmountForShop(p2DEvents[window_SpeakInHouse->wData.val - HOUSE_SMITH_EMERALD_ISLE].uType); ++i) {
+            if (ItemAmountForShop(buildingTable[window_SpeakInHouse->wData.val - HOUSE_SMITH_EMERALD_ISLE].uType)) {
+                for (uint i = 0; i < ItemAmountForShop(buildingTable[window_SpeakInHouse->wData.val - HOUSE_SMITH_EMERALD_ISLE].uType); ++i) {
                     if (pParty
                         ->StandartItemsInShops[window_SpeakInHouse
                         ->wData.val][i].uItemID != ITEM_NULL)
@@ -1137,8 +1138,8 @@ void OnSelectShopDialogueOption(DIALOGUE_TYPE option) {
                 }
             }
             if (in_current_building_type == BuildingType_WeaponShop) {
-                if (ItemAmountForShop(p2DEvents[window_SpeakInHouse->wData.val - HOUSE_SMITH_EMERALD_ISLE].uType)) {
-                    for (uint i = 0; i < ItemAmountForShop(p2DEvents[window_SpeakInHouse->wData.val - HOUSE_SMITH_EMERALD_ISLE].uType); ++i) {
+                if (ItemAmountForShop(buildingTable[window_SpeakInHouse->wData.val - HOUSE_SMITH_EMERALD_ISLE].uType)) {
+                    for (uint i = 0; i < ItemAmountForShop(buildingTable[window_SpeakInHouse->wData.val - HOUSE_SMITH_EMERALD_ISLE].uType); ++i) {
                         if (pParty
                             ->StandartItemsInShops
                             [window_SpeakInHouse->wData.val][i]
@@ -1151,8 +1152,8 @@ void OnSelectShopDialogueOption(DIALOGUE_TYPE option) {
             }
         }
         if (option == DIALOGUE_SHOP_BUY_SPECIAL) {
-            if (ItemAmountForShop(p2DEvents[window_SpeakInHouse->wData.val - HOUSE_SMITH_EMERALD_ISLE].uType)) {
-                for (uint i = 0; i < ItemAmountForShop(p2DEvents[window_SpeakInHouse->wData.val - HOUSE_SMITH_EMERALD_ISLE].uType); ++i) {
+            if (ItemAmountForShop(buildingTable[window_SpeakInHouse->wData.val - HOUSE_SMITH_EMERALD_ISLE].uType)) {
+                for (uint i = 0; i < ItemAmountForShop(buildingTable[window_SpeakInHouse->wData.val - HOUSE_SMITH_EMERALD_ISLE].uType); ++i) {
                     if (pParty->SpecialItemsInShops[
                         window_SpeakInHouse->wData.val][i].uItemID != ITEM_NULL)
                         shop_ui_items_in_store[i] = assets->GetImage_ColorKey(
@@ -1161,8 +1162,8 @@ void OnSelectShopDialogueOption(DIALOGUE_TYPE option) {
                 }
             }
             if (in_current_building_type == BuildingType_WeaponShop) {
-                if (ItemAmountForShop(p2DEvents[window_SpeakInHouse->wData.val - HOUSE_SMITH_EMERALD_ISLE].uType)) {
-                    for (uint i = 0; i < ItemAmountForShop(p2DEvents[window_SpeakInHouse->wData.val - HOUSE_SMITH_EMERALD_ISLE].uType); ++i) {
+                if (ItemAmountForShop(buildingTable[window_SpeakInHouse->wData.val - HOUSE_SMITH_EMERALD_ISLE].uType)) {
+                    for (uint i = 0; i < ItemAmountForShop(buildingTable[window_SpeakInHouse->wData.val - HOUSE_SMITH_EMERALD_ISLE].uType); ++i) {
                         if (pParty->SpecialItemsInShops[
                             window_SpeakInHouse->wData.val][i].uItemID != ITEM_NULL) {
                             // Note that we're using grng here for a reason - we want recorded mouse clicks to work.
@@ -1193,7 +1194,7 @@ void OnSelectShopDialogueOption(DIALOGUE_TYPE option) {
     {
         if (IsSkillLearningDialogue(option)) {
             int pPrice = PriceCalculator::skillLearningCostForPlayer(&pParty->activeCharacter(),
-                                                                         p2DEvents[window_SpeakInHouse->wData.val - 1]);  // ecx@227
+                                                                         buildingTable[window_SpeakInHouse->wData.val - 1]);  // ecx@227
             auto skill = GetLearningDialogueSkill(option);
             if (skillMaxMasteryPerClass[pParty->activeCharacter().classType][skill] != PLAYER_SKILL_MASTERY_NONE) {
                 if (!pParty->activeCharacter().pActiveSkills[skill]) {
@@ -1244,7 +1245,7 @@ void TravelByTransport() {
     assert(pParty->hasActiveCharacter()); // code in this function couldn't handle pParty->activeCharacterIndex() = 0 and crash
 
     int pPrice = PriceCalculator::transportCostForPlayer(&pParty->activeCharacter(),
-                                                         p2DEvents[window_SpeakInHouse->wData.val - 1]);
+                                                         buildingTable[window_SpeakInHouse->wData.val - 1]);
     int route_id = window_SpeakInHouse->wData.val - HOUSE_STABLES_HARMONDALE;
 
     if (dialog_menu_id == DIALOGUE_MAIN) {
@@ -1637,7 +1638,7 @@ void TavernDialog() {
     if (!pParty->hasActiveCharacter())  // avoid nzi
         pParty->setActiveToFirstCanAct();
 
-    const _2devent &house = p2DEvents[window_SpeakInHouse->wData.val - 1];
+    const BuildingDesc &house = buildingTable[window_SpeakInHouse->wData.val - 1];
 
     int pPriceRoom = PriceCalculator::tavernRoomCostForPlayer(&pParty->activeCharacter(), house);
     int pPriceFood = PriceCalculator::tavernFoodCostForPlayer(&pParty->activeCharacter(), house);
@@ -1662,7 +1663,7 @@ void TavernDialog() {
             + localization->FormatString(
                 LSTR_FMT_BUY_D_FOOD_FOR_D_GOLD,
                 (unsigned int)
-                p2DEvents[window_SpeakInHouse->wData.val - 1].fPriceMultiplier,
+                buildingTable[window_SpeakInHouse->wData.val - 1].fPriceMultiplier,
                 pPriceFood);
         pTopic2Height = pFontArrus->CalcTextHeight(topic2, dialog_window.uFrameWidth, 0);
 
@@ -1837,7 +1838,7 @@ void TavernDialog() {
     case DIALOGUE_TAVERN_BUY_FOOD:
     {
         if ((double)pParty->GetFood() >=
-            p2DEvents[window_SpeakInHouse->wData.val - 1].fPriceMultiplier) {
+            buildingTable[window_SpeakInHouse->wData.val - 1].fPriceMultiplier) {
             GameUI_SetStatusBar(LSTR_RATIONS_FULL);
             if (pParty->hasActiveCharacter())
                 pParty->activeCharacter().playReaction(SPEECH_PacksFull);
@@ -1846,7 +1847,7 @@ void TavernDialog() {
         }
         if (pParty->GetGold() >= pPriceFood) {
             pParty->TakeGold(pPriceFood);
-            pParty->SetFood(p2DEvents[window_SpeakInHouse->wData.val - 1].fPriceMultiplier);
+            pParty->SetFood(buildingTable[window_SpeakInHouse->wData.val - 1].fPriceMultiplier);
             PlayHouseSound(window_SpeakInHouse->wData.val, HouseSound_Greeting_2);
             pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 1, 0);
             return;
@@ -1926,7 +1927,7 @@ void TempleDialog() {
     }
 
     pPrice = PriceCalculator::templeHealingCostForPlayer(&pParty->activeCharacter(),
-                                                         p2DEvents[window_SpeakInHouse->wData.val - 1].fPriceMultiplier);
+                                                         buildingTable[window_SpeakInHouse->wData.val - 1].fPriceMultiplier);
     if (dialog_menu_id == DIALOGUE_MAIN) {
         index = 1;
         pButton = pDialogueWindow->GetControl(
@@ -2059,7 +2060,7 @@ void TempleDialog() {
     }
     //---------------------------------------------------
     if (dialog_menu_id == DIALOGUE_TEMPLE_DONATE) {
-        pPrice = p2DEvents[window_SpeakInHouse->wData.val - 1].fPriceMultiplier;
+        pPrice = buildingTable[window_SpeakInHouse->wData.val - 1].fPriceMultiplier;
         if (pParty->GetGold() >= pPrice) {
             pParty->TakeGold(pPrice);
             if (uCurrentlyLoadedLevelType != LEVEL_Outdoor)
@@ -2105,7 +2106,7 @@ void TempleDialog() {
         if (HouseUI_CheckIfPlayerCanInteract()) {
             all_text_height = 0;
             v64 = PriceCalculator::skillLearningCostForPlayer(&pParty->activeCharacter(),
-                                                              p2DEvents[window_SpeakInHouse->wData.val - 1]);
+                                                              buildingTable[window_SpeakInHouse->wData.val - 1]);
             pCurrentItem = 0;
             for (int i = pDialogueWindow->pStartingPosActiveItem;
                 i < pDialogueWindow->pNumPresenceButton +
@@ -2153,7 +2154,7 @@ void TrainingDialog(const char *s) {
         pParty->setActiveToFirstCanAct();
 
     int pPrice = PriceCalculator::trainingCostForPlayer(&pParty->activeCharacter(),
-                                                        p2DEvents[window_SpeakInHouse->wData.val - 1]);
+                                                        buildingTable[window_SpeakInHouse->wData.val - 1]);
     expForNextLevel = 1000ull * pParty->activeCharacter().uLevel * (pParty->activeCharacter().uLevel + 1) / 2;
     //-------------------------------------------------------
     all_text_height = 0;
@@ -2328,7 +2329,7 @@ void TrainingDialog(const char *s) {
     if (dialog_menu_id == DIALOGUE_LEARN_SKILLS) {
         if (HouseUI_CheckIfPlayerCanInteract()) {
             pPrice = PriceCalculator::skillLearningCostForPlayer(&pParty->activeCharacter(),
-                                                                 p2DEvents[window_SpeakInHouse->wData.val - 1]);
+                                                                 buildingTable[window_SpeakInHouse->wData.val - 1]);
             index = 0;
             for (int i = pDialogueWindow->pStartingPosActiveItem;
                 (signed int)i < pDialogueWindow->pNumPresenceButton +
@@ -2376,12 +2377,12 @@ void MercenaryGuildDialog() {
      * I believe it is 250 gold cost for mercenary guild from mm6 and 100 for all other skill-learning house types in mm6
      * but they aren't used in mm7, so I'm gonna assume 250 gold cost in price calculator
      *
-     *  v32 = (uint8_t)(((p2DEvents[window_SpeakInHouse->wData.val - 1].uType != BuildingType_MercenaryGuild) - 1) & 0x96) + 100;
-     *  v3 = (int64_t)((double)v32 * p2DEvents[window_SpeakInHouse->wData.val - 1].fPriceMultiplier);
+     *  v32 = (uint8_t)(((buildingTable[window_SpeakInHouse->wData.val - 1].uType != BuildingType_MercenaryGuild) - 1) & 0x96) + 100;
+     *  v3 = (int64_t)((double)v32 * buildingTable[window_SpeakInHouse->wData.val - 1].fPriceMultiplier);
      *  pPrice = v3 * (100 - PriceCalculator::playerMerchant(&pParty->activeCharacter())) / 100;
      *  if (pPrice < v3 / 3) pPrice = v3 / 3;
      */
-    int pPrice = PriceCalculator::skillLearningCostForPlayer(&pParty->activeCharacter(), p2DEvents[window_SpeakInHouse->wData.val - 1]);
+    int pPrice = PriceCalculator::skillLearningCostForPlayer(&pParty->activeCharacter(), buildingTable[window_SpeakInHouse->wData.val - 1]);
 
     if (dialog_menu_id == DIALOGUE_MAIN) {
         if (!pParty->activeCharacter()._achievedAwardsBits[word_4F0754[2 * window_SpeakInHouse->wData.val]]) {
@@ -2676,199 +2677,6 @@ void JailDialog() {
         (310 - pFontArrus->CalcTextHeight(localization->GetString(LSTR_ONE_YEAR_SENTENCE),
             jail_dialogue_window.uFrameWidth,
             0)) / 2 + 18, colorTable.PaleCanary.c16(), localization->GetString(LSTR_ONE_YEAR_SENTENCE), 3);
-}
-
-void InitializeBuildingResidents() {
-    int i;
-    char *test_string;
-    unsigned char c;
-    bool break_loop;
-    unsigned int temp_str_len;
-    char *tmp_pos;
-    int decode_step;
-
-    p2DEventsTXT_Raw = pEvents_LOD->LoadCompressedTexture("2dEvents.txt").string_view();
-    strtok(p2DEventsTXT_Raw.data(), "\r");
-    strtok(NULL, "\r");
-
-    for (i = 0; i < 525; ++i) {
-        test_string = strtok(NULL, "\r") + 1;
-        break_loop = false;
-        decode_step = 0;
-        do {
-            c = *(unsigned char *)test_string;
-            temp_str_len = 0;
-            while ((c != '\t') && (c > 0)) {
-                ++temp_str_len;
-                c = test_string[temp_str_len];
-            }
-            tmp_pos = test_string + temp_str_len;
-            if (*tmp_pos == 0) break_loop = true;
-            *tmp_pos = 0;
-            if (temp_str_len) {
-                switch (decode_step) {
-                case 2:
-                {
-                    if (istarts_with(test_string, "wea")) {
-                        p2DEvents[i].uType = BuildingType_WeaponShop;
-                        break;
-                    }
-                    if (istarts_with(test_string, "arm")) {
-                        p2DEvents[i].uType = BuildingType_ArmorShop;
-                        break;
-                    }
-                    if (istarts_with(test_string, "mag")) {
-                        p2DEvents[i].uType = BuildingType_MagicShop;
-                        break;
-                    }
-                    if (istarts_with(test_string, "alc")) {
-                        p2DEvents[i].uType = BuildingType_AlchemistShop;
-                        break;
-                    }
-                    if (istarts_with(test_string, "sta")) {
-                        p2DEvents[i].uType = BuildingType_Stables;
-                        break;
-                    }
-                    if (istarts_with(test_string, "boa")) {
-                        p2DEvents[i].uType = BuildingType_Boats;
-                        break;
-                    }
-                    if (istarts_with(test_string, "tem")) {
-                        p2DEvents[i].uType = BuildingType_Temple;
-                        break;
-                    }
-                    if (istarts_with(test_string, "tra")) {
-                        p2DEvents[i].uType = BuildingType_Training;
-                        break;
-                    }
-                    if (istarts_with(test_string, "tow")) {
-                        p2DEvents[i].uType = BuildingType_TownHall;
-                        break;
-                    }
-
-                    if (istarts_with(test_string, "tav")) {
-                        p2DEvents[i].uType = BuildingType_Tavern;
-                        break;
-                    }
-                    if (istarts_with(test_string, "ban")) {
-                        p2DEvents[i].uType = BuildingType_Bank;
-                        break;
-                    }
-                    if (istarts_with(test_string, "fir")) {
-                        p2DEvents[i].uType = BuildingType_FireGuild;
-                        break;
-                    }
-                    if (istarts_with(test_string, "air")) {
-                        p2DEvents[i].uType = BuildingType_AirGuild;
-                        break;
-                    }
-                    if (istarts_with(test_string, "wat")) {
-                        p2DEvents[i].uType = BuildingType_WaterGuild;
-                        break;
-                    }
-                    if (istarts_with(test_string, "ear")) {
-                        p2DEvents[i].uType = BuildingType_EarthGuild;
-                        break;
-                    }
-                    if (istarts_with(test_string, "spi")) {
-                        p2DEvents[i].uType = BuildingType_SpiritGuild;
-                        break;
-                    }
-                    if (istarts_with(test_string, "min")) {
-                        p2DEvents[i].uType = BuildingType_MindGuild;
-                        break;
-                    }
-                    if (istarts_with(test_string, "bod")) {
-                        p2DEvents[i].uType = BuildingType_BodyGuild;
-                        break;
-                    }
-                    if (istarts_with(test_string, "lig")) {
-                        p2DEvents[i].uType = BuildingType_LightGuild;
-                        break;
-                    }
-                    if (istarts_with(test_string, "dar")) {
-                        p2DEvents[i].uType = BuildingType_DarkGuild;
-                        break;
-                    }
-                    if (istarts_with(test_string, "ele")) { // "Element Guild" from mm6
-                        p2DEvents[i].uType = BuildingType_ElementalGuild;
-                        break;
-                    }
-                    if (istarts_with(test_string, "sel")) {
-                        p2DEvents[i].uType = BuildingType_SelfGuild;
-                        break;
-                    }
-                    if (istarts_with(test_string, "mir")) {
-                        p2DEvents[i].uType = BuildingType_MirroredPath;
-                        break;
-                    }
-                    if (istarts_with(test_string, "mer")) { // "Thieves Guild" from mm6
-                        p2DEvents[i].uType = BuildingType_TownHall; //TODO: Is this right and not Merc Guild (18)?
-                        break;
-                    }
-                    p2DEvents[i].uType = BuildingType_MercenaryGuild;
-                } break;
-
-                case 4:
-                    p2DEvents[i].uAnimationID = atoi(test_string);
-                    break;
-                case 5:
-                    p2DEvents[i].pName = removeQuotes(test_string);
-                    break;
-                case 6:
-                    p2DEvents[i].pProprieterName =
-                        removeQuotes(test_string);
-                    break;
-                case 7:
-                    p2DEvents[i].pProprieterTitle =
-                        removeQuotes(test_string);
-                    break;
-                case 8:
-                    p2DEvents[i].field_14 = atoi(test_string);
-                    break;
-                case 9:
-                    p2DEvents[i]._state = atoi(test_string);
-                    break;
-                case 10:
-                    p2DEvents[i]._rep = atoi(test_string);
-                    break;
-                case 11:
-                    p2DEvents[i]._per = atoi(test_string);
-                    break;
-                case 12:
-                    p2DEvents[i].fPriceMultiplier = atof(test_string);
-                    break;
-                case 13:
-                    p2DEvents[i].flt_24 = atof(test_string);
-                    break;
-                case 15:
-                    p2DEvents[i].generation_interval_days =
-                        atoi(test_string);
-                    break;
-                case 18:
-                    p2DEvents[i].uOpenTime = atoi(test_string);
-                    break;
-                case 19:
-                    p2DEvents[i].uCloseTime = atoi(test_string);
-                    break;
-                case 20:
-                    p2DEvents[i].uExitPicID = atoi(test_string);
-                    break;
-                case 21:
-                    p2DEvents[i].uExitMapID = atoi(test_string);
-                    break;
-                case 22:
-                    p2DEvents[i]._quest_bit = atoi(test_string);
-                    break;
-                case 23:
-                    p2DEvents[i].pEnterText = removeQuotes(test_string);
-                    break;
-                }
-            }
-            ++decode_step;
-            test_string = tmp_pos + 1;
-        } while ((decode_step < 24) && !break_loop);
-    }
 }
 
 int HouseDialogPressCloseBtn() {
@@ -3185,8 +2993,8 @@ void GenerateSpecialShopItems() {
     int mdf;
 
     shop_index = window_SpeakInHouse->wData.val;
-    if (ItemAmountForShop(p2DEvents[shop_index - 1].uType)) {
-        for (item_count = 0; item_count < ItemAmountForShop(p2DEvents[shop_index - 1].uType); ++item_count) {
+    if (ItemAmountForShop(buildingTable[shop_index - 1].uType)) {
+        for (item_count = 0; item_count < ItemAmountForShop(buildingTable[shop_index - 1].uType); ++item_count) {
             if (shop_index <= 14) {  // weapon shop
                 treasure_lvl =
                     shopWeap_variation_spc[shop_index].treasure_level;
@@ -3230,8 +3038,8 @@ void GenerateStandartShopItems() {
     int mdf;
 
     shop_index = window_SpeakInHouse->wData.val;
-    if (ItemAmountForShop(p2DEvents[shop_index - 1].uType)) {
-        for (item_count = 0; item_count < ItemAmountForShop(p2DEvents[shop_index - 1].uType); ++item_count) {
+    if (ItemAmountForShop(buildingTable[shop_index - 1].uType)) {
+        for (item_count = 0; item_count < ItemAmountForShop(buildingTable[shop_index - 1].uType); ++item_count) {
             if (shop_index <= 14) {  // weapon shop
                 treasure_lvl =
                     shopWeap_variation_ord[shop_index].treasure_level;
@@ -3284,7 +3092,7 @@ GUIWindow_House::GUIWindow_House(Pointi position, Sizei dimensions, HOUSE_ID hou
             if (v26 || !dword_591080)
                 v30 = HouseNPCData[v26 + 1 - ((dword_591080 != 0) ? 1 : 0)]->pName;
             else
-                v30 = p2DEvents[houseId - 1].pProprieterName;
+                v30 = buildingTable[houseId - 1].pProprieterName;
             v29 = localization->GetString(LSTR_FMT_CONVERSE_WITH_S);
         }
         sprintf(byte_591180[v26].data(), v29, v30.c_str());
