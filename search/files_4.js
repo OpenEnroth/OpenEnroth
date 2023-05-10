@@ -38,10 +38,8 @@ var searchData=
   ['eventir_2eh_35',['EventIR.h',['../EventIR_8h.html',1,'']]],
   ['eventmap_2ecpp_36',['EventMap.cpp',['../EventMap_8cpp.html',1,'']]],
   ['eventmap_2eh_37',['EventMap.h',['../EventMap_8h.html',1,'']]],
-  ['events_2ecpp_38',['Events.cpp',['../Events_8cpp.html',1,'']]],
-  ['events_2eh_39',['Events.h',['../Events_8h.html',1,'']]],
-  ['eventtrace_2ecpp_40',['EventTrace.cpp',['../EventTrace_8cpp.html',1,'']]],
-  ['eventtrace_2eh_41',['EventTrace.h',['../EventTrace_8h.html',1,'']]],
-  ['exception_2ecpp_42',['Exception.cpp',['../Exception_8cpp.html',1,'']]],
-  ['exception_2eh_43',['Exception.h',['../Exception_8h.html',1,'']]]
+  ['eventtrace_2ecpp_38',['EventTrace.cpp',['../EventTrace_8cpp.html',1,'']]],
+  ['eventtrace_2eh_39',['EventTrace.h',['../EventTrace_8h.html',1,'']]],
+  ['exception_2ecpp_40',['Exception.cpp',['../Exception_8cpp.html',1,'']]],
+  ['exception_2eh_41',['Exception.h',['../Exception_8h.html',1,'']]]
 ];
