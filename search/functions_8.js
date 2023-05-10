@@ -18,7 +18,7 @@ var searchData=
   ['hasitemequipped_15',['HasItemEquipped',['../structPlayer.html#ad5927988c1d361953fb76ba8b5c330ce',1,'Player']]],
   ['hasnone_16',['HasNone',['../classPlayerConditions.html#ae6ff774635b20eddf9654ea15eadf758',1,'PlayerConditions']]],
   ['hasplaying_17',['hasPlaying',['../classAudioSamplePool.html#a7812571d8ad051a8f37406398c0a5841',1,'AudioSamplePool']]],
-  ['hasskill_18',['HasSkill',['../structPlayer.html#af540a355a9f2a7cbed4184f2a561d2e4',1,'Player']]],
+  ['hasskill_18',['HasSkill',['../structPlayer.html#a216bd7d2abaf2db727539917f54c4b0d',1,'Player']]],
   ['hassprite_19',['HasSprite',['../structSpriteObject.html#a0637a976da5ca21e412bf7e12df85d37',1,'SpriteObject']]],
   ['hasunderwatersuitequipped_20',['hasUnderwaterSuitEquipped',['../structPlayer.html#a0950077c4a5c1d6cebdf0ded9ad7306f',1,'Player']]],
   ['heal_21',['Heal',['../structPlayer.html#aa8cd993b330fecc5f4d1d888b2d7e492',1,'Player']]],

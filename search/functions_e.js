@@ -11,7 +11,7 @@ var searchData=
   ['normalize_8',['normalize',['../structVec3.html#a4e0b64da632764dff526787fe3a4a3ac',1,'Vec3']]],
   ['normalize_5fto_5ffixpoint_9',['normalize_to_fixpoint',['../FixPoint_8h.html#a8f838fe0aefa3fbd3985207608846e9d',1,'FixPoint.h']]],
   ['nosprite_10',['NoSprite',['../structObjectDesc.html#ac6e8fa8fc9ad62582f1213a242735b36',1,'ObjectDesc']]],
-  ['nothingorjustblastersequipped_11',['NothingOrJustBlastersEquipped',['../structPlayer.html#acbac49bd56895674025d7999808bbf0c',1,'Player']]],
+  ['nothingorjustblastersequipped_11',['NothingOrJustBlastersEquipped',['../structPlayer.html#a6f0325fc1c4e15939993f76afb8c85f4',1,'Player']]],
   ['nowns_12',['nowNs',['../FrameLimiter_8cpp.html#acdaf100b33c34b33e1e5f464b63d0442',1,'FrameLimiter.cpp']]],
   ['npcdialogueeventprocessor_13',['npcDialogueEventProcessor',['../Processor_8cpp.html#ac06c4d3aa516284a85bd00ae363b5a2d',1,'npcDialogueEventProcessor(int eventId, int startStep):&#160;Processor.cpp'],['../Processor_8h.html#a4b5f9fbe789b0893b843ec636b7fc415',1,'npcDialogueEventProcessor(int eventId, int startStep=0):&#160;Processor.cpp']]],
   ['npchireabledialogprepare_14',['NPCHireableDialogPrepare',['../NPC_8cpp.html#a0d9b50c44576de7da3caff7d301ddab1',1,'NPCHireableDialogPrepare():&#160;NPC.cpp'],['../NPC_8h.html#a0d9b50c44576de7da3caff7d301ddab1',1,'NPCHireableDialogPrepare():&#160;NPC.cpp']]],

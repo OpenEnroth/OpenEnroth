@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;553dcc1</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;0f9bf3c</span>
    </div>
   </td>
  </tr>
@@ -80,6 +80,7 @@ $(function() {
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><code>#include &lt;cstdint&gt;</code><br />
+<code>#include &lt;cassert&gt;</code><br />
 <code>#include &lt;utility&gt;</code><br />
 <code>#include &quot;<a class="el" href="ErrorHandling_8h.html">Engine/ErrorHandling.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Flags_8h.html">Utility/Flags.h</a>&quot;</code><br />
@@ -1274,21 +1275,18 @@ Enumerations</h2></td></tr>
 , <a class="el" href="ItemEnums_8h.html#a3423a9b7221dd99ce926bcad62ae96a5a859de30d9a0e47025d29cb2b29837c23">ITEM_FIRST_REAL_POTION</a> = ITEM_POTION_CURE_WOUNDS
 , <br />
 &#160;&#160;<a class="el" href="ItemEnums_8h.html#a3423a9b7221dd99ce926bcad62ae96a5a4676c1c7cc21c228872c51ba9ba10320">ITEM_LAST_REAL_POTION</a> = ITEM_POTION_REJUVENATION
-, <a class="el" href="ItemEnums_8h.html#a3423a9b7221dd99ce926bcad62ae96a5a1d1d66b17c655523c1b95d0a19ea097a">ITEM_FIRST_ENCHANTING_POTION</a> = ITEM_POTION_FLAMING
-, <a class="el" href="ItemEnums_8h.html#a3423a9b7221dd99ce926bcad62ae96a5adc502aee7fddb45bbe48dfa68241cd6b">ITEM_LAST_ENCHANTING_POTION</a> = ITEM_POTION_SWIFT
 , <a class="el" href="ItemEnums_8h.html#a3423a9b7221dd99ce926bcad62ae96a5ae12ad2fa1c22d08f1b9d32f44008603e">ITEM_FIRST_WAND</a> = ITEM_WAND_OF_FIRE
-, <br />
-&#160;&#160;<a class="el" href="ItemEnums_8h.html#a3423a9b7221dd99ce926bcad62ae96a5aaa08704e5f1ed6255a3a2f225f6358cd">ITEM_LAST_WAND</a> = ITEM_MYSTIC_WAND_OF_INCINERATION
+, <a class="el" href="ItemEnums_8h.html#a3423a9b7221dd99ce926bcad62ae96a5aaa08704e5f1ed6255a3a2f225f6358cd">ITEM_LAST_WAND</a> = ITEM_MYSTIC_WAND_OF_INCINERATION
 , <a class="el" href="ItemEnums_8h.html#a3423a9b7221dd99ce926bcad62ae96a5aa5e671f65a5d3ff28654f82be3e25ecf">ITEM_FIRST_SPELL_SCROLL</a> = ITEM_SCROLL_TORCH_LIGHT
-, <a class="el" href="ItemEnums_8h.html#a3423a9b7221dd99ce926bcad62ae96a5a3249047f2eec93afdde27f57fd1b7d31">ITEM_LAST_SPELL_SCROLL</a> = ITEM_SCROLL_SOULDRINKER
+, <br />
+&#160;&#160;<a class="el" href="ItemEnums_8h.html#a3423a9b7221dd99ce926bcad62ae96a5a3249047f2eec93afdde27f57fd1b7d31">ITEM_LAST_SPELL_SCROLL</a> = ITEM_SCROLL_SOULDRINKER
 , <a class="el" href="ItemEnums_8h.html#a3423a9b7221dd99ce926bcad62ae96a5a37763236d9e494d2379d07104e321194">ITEM_FIRST_SPELL_BOOK</a> = ITEM_SPELLBOOK_TORCH_LIGHT
-, <br />
-&#160;&#160;<a class="el" href="ItemEnums_8h.html#a3423a9b7221dd99ce926bcad62ae96a5a08fc927a7a7b07163d3b83ad68e7a253">ITEM_LAST_SPELL_BOOK</a> = ITEM_SPELLBOOK_SOULDRINKER
+, <a class="el" href="ItemEnums_8h.html#a3423a9b7221dd99ce926bcad62ae96a5a08fc927a7a7b07163d3b83ad68e7a253">ITEM_LAST_SPELL_BOOK</a> = ITEM_SPELLBOOK_SOULDRINKER
 , <a class="el" href="ItemEnums_8h.html#a3423a9b7221dd99ce926bcad62ae96a5ad627edad39a83de809e6a5e385f28c81">ITEM_FIRST_POTION</a> = ITEM_POTION_CATALYST
-, <a class="el" href="ItemEnums_8h.html#a3423a9b7221dd99ce926bcad62ae96a5ab7e1fbc4619507ab6f24ad407655faa9">ITEM_LAST_POTION</a> = ITEM_POTION_REJUVENATION
-, <a class="el" href="ItemEnums_8h.html#a3423a9b7221dd99ce926bcad62ae96a5a4babb8c6cc11aaf403ad7a4da49a3baa">ITEM_FIRST_SPAWNABLE</a> = ITEM_CRUDE_LONGSWORD
 , <br />
-&#160;&#160;<a class="el" href="ItemEnums_8h.html#a3423a9b7221dd99ce926bcad62ae96a5a94251c8e4681c535e363c68cb02f9450">ITEM_LAST_SPAWNABLE</a> = ITEM_499
+&#160;&#160;<a class="el" href="ItemEnums_8h.html#a3423a9b7221dd99ce926bcad62ae96a5ab7e1fbc4619507ab6f24ad407655faa9">ITEM_LAST_POTION</a> = ITEM_POTION_REJUVENATION
+, <a class="el" href="ItemEnums_8h.html#a3423a9b7221dd99ce926bcad62ae96a5a4babb8c6cc11aaf403ad7a4da49a3baa">ITEM_FIRST_SPAWNABLE</a> = ITEM_CRUDE_LONGSWORD
+, <a class="el" href="ItemEnums_8h.html#a3423a9b7221dd99ce926bcad62ae96a5a94251c8e4681c535e363c68cb02f9450">ITEM_LAST_SPAWNABLE</a> = ITEM_499
 <br />
  }</td></tr>
 <tr class="separator:a3423a9b7221dd99ce926bcad62ae96a5"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -1392,6 +1390,8 @@ Functions</h2></td></tr>
 <tr class="separator:a95c0617df3ec5a654df8124c8418625e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab21efc0cda5178acc18e8b50deefeb0f"><td class="memItemLeft" align="right" valign="top">std::initializer_list&lt; <a class="el" href="ItemEnums_8h.html#a3423a9b7221dd99ce926bcad62ae96a5">ITEM_TYPE</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ItemEnums_8h.html#ab21efc0cda5178acc18e8b50deefeb0f">Level1Reagents</a> ()</td></tr>
 <tr class="separator:ab21efc0cda5178acc18e8b50deefeb0f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad0a51da692662c79a6607a5984583f10"><td class="memItemLeft" align="right" valign="top"><a class="el" href="ItemEnums_8h.html#a32eb1d58cce67b93f07281e8a3464d19">ITEM_ENCHANTMENT</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ItemEnums_8h.html#ad0a51da692662c79a6607a5984583f10">potionEnchantment</a> (<a class="el" href="ItemEnums_8h.html#a3423a9b7221dd99ce926bcad62ae96a5">ITEM_TYPE</a> enchantingPotion)</td></tr>
+<tr class="separator:ad0a51da692662c79a6607a5984583f10"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae25a25bf904bfae4ebd5befcc33e3854"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ItemEnums_8h.html#ae25a25bf904bfae4ebd5befcc33e3854">IsPassiveEquipment</a> (<a class="el" href="ItemEnums_8h.html#a6efba91e38f0848b5e0d1d4cc6011a2d">ITEM_EQUIP_TYPE</a> type)</td></tr>
 <tr class="separator:ae25a25bf904bfae4ebd5befcc33e3854"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a373ced6e6e8db1f1e3ae20abd8e636cb"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ItemEnums_8h.html#a373ced6e6e8db1f1e3ae20abd8e636cb">IsArmor</a> (<a class="el" href="ItemEnums_8h.html#a6efba91e38f0848b5e0d1d4cc6011a2d">ITEM_EQUIP_TYPE</a> type)</td></tr>
@@ -2574,8 +2574,6 @@ Functions</h2></td></tr>
 <tr><td class="fieldname"><a id="a3423a9b7221dd99ce926bcad62ae96a5a53877ef3b02e0c29f408e497b3b2f7a1" name="a3423a9b7221dd99ce926bcad62ae96a5a53877ef3b02e0c29f408e497b3b2f7a1"></a>ITEM_LAST_REAGENT&#160;</td><td class="fielddoc"></td></tr>
 <tr><td class="fieldname"><a id="a3423a9b7221dd99ce926bcad62ae96a5a859de30d9a0e47025d29cb2b29837c23" name="a3423a9b7221dd99ce926bcad62ae96a5a859de30d9a0e47025d29cb2b29837c23"></a>ITEM_FIRST_REAL_POTION&#160;</td><td class="fielddoc"></td></tr>
 <tr><td class="fieldname"><a id="a3423a9b7221dd99ce926bcad62ae96a5a4676c1c7cc21c228872c51ba9ba10320" name="a3423a9b7221dd99ce926bcad62ae96a5a4676c1c7cc21c228872c51ba9ba10320"></a>ITEM_LAST_REAL_POTION&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a3423a9b7221dd99ce926bcad62ae96a5a1d1d66b17c655523c1b95d0a19ea097a" name="a3423a9b7221dd99ce926bcad62ae96a5a1d1d66b17c655523c1b95d0a19ea097a"></a>ITEM_FIRST_ENCHANTING_POTION&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a3423a9b7221dd99ce926bcad62ae96a5adc502aee7fddb45bbe48dfa68241cd6b" name="a3423a9b7221dd99ce926bcad62ae96a5adc502aee7fddb45bbe48dfa68241cd6b"></a>ITEM_LAST_ENCHANTING_POTION&#160;</td><td class="fielddoc"></td></tr>
 <tr><td class="fieldname"><a id="a3423a9b7221dd99ce926bcad62ae96a5ae12ad2fa1c22d08f1b9d32f44008603e" name="a3423a9b7221dd99ce926bcad62ae96a5ae12ad2fa1c22d08f1b9d32f44008603e"></a>ITEM_FIRST_WAND&#160;</td><td class="fielddoc"></td></tr>
 <tr><td class="fieldname"><a id="a3423a9b7221dd99ce926bcad62ae96a5aaa08704e5f1ed6255a3a2f225f6358cd" name="a3423a9b7221dd99ce926bcad62ae96a5aaa08704e5f1ed6255a3a2f225f6358cd"></a>ITEM_LAST_WAND&#160;</td><td class="fielddoc"></td></tr>
 <tr><td class="fieldname"><a id="a3423a9b7221dd99ce926bcad62ae96a5aa5e671f65a5d3ff28654f82be3e25ecf" name="a3423a9b7221dd99ce926bcad62ae96a5aa5e671f65a5d3ff28654f82be3e25ecf"></a>ITEM_FIRST_SPELL_SCROLL&#160;</td><td class="fielddoc"></td></tr>
@@ -3033,6 +3031,32 @@ Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 <dl class="section return"><dt>Returns</dt><dd>List of lowest level (power=1) alchemical reagents. </dd></dl>
+
+</div>
+</div>
+<a id="ad0a51da692662c79a6607a5984583f10" name="ad0a51da692662c79a6607a5984583f10"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad0a51da692662c79a6607a5984583f10">&#9670;&#160;</a></span>potionEnchantment()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="ItemEnums_8h.html#a32eb1d58cce67b93f07281e8a3464d19">ITEM_ENCHANTMENT</a> potionEnchantment </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="ItemEnums_8h.html#a3423a9b7221dd99ce926bcad62ae96a5">ITEM_TYPE</a>&#160;</td>
+          <td class="paramname"><em>enchantingPotion</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
 
 </div>
 </div>

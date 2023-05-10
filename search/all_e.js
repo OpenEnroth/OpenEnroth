@@ -65,7 +65,7 @@ var searchData=
   ['normz_62',['normz',['../structGLshaderverts.html#a504360344af8c7c209c051739880c2d7',1,'GLshaderverts']]],
   ['nosound_63',['NoSound',['../classGameConfig_1_1Debug.html#af2f2e89b15bc8eded90109526b6d4d13',1,'GameConfig::Debug']]],
   ['nosprite_64',['NoSprite',['../structObjectDesc.html#ac6e8fa8fc9ad62582f1213a242735b36',1,'ObjectDesc']]],
-  ['nothingorjustblastersequipped_65',['NothingOrJustBlastersEquipped',['../structPlayer.html#acbac49bd56895674025d7999808bbf0c',1,'Player']]],
+  ['nothingorjustblastersequipped_65',['NothingOrJustBlastersEquipped',['../structPlayer.html#a6f0325fc1c4e15939993f76afb8c85f4',1,'Player']]],
   ['novideo_66',['NoVideo',['../classGameConfig_1_1Debug.html#ad79feec38df1b7ac177a76b80831ebb6',1,'GameConfig::Debug']]],
   ['nowns_67',['nowNs',['../FrameLimiter_8cpp.html#acdaf100b33c34b33e1e5f464b63d0442',1,'FrameLimiter.cpp']]],
   ['npc_2ecpp_68',['NPC.cpp',['../NPC_8cpp.html',1,'']]],
