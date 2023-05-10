@@ -33,12 +33,24 @@ using Io::TextInputType;
 using Io::KeyToggleType;
 using Io::InputAction;
 
+enum class CurrentConfirmationState {
+    CONFIRM_NONE,
+    CONFIRM_NEW_GAME,
+    CONFIRM_QUIT
+};
+using enum CurrentConfirmationState;
+
+// TODO(Nik-RE-dev): drop variable and load game only on double click
+static bool isLoadSlotClicked = false;
+
+CurrentConfirmationState confirmationState = CONFIRM_NONE;
+
 InputAction currently_selected_action_for_binding = InputAction::Invalid;  // 506E68
 std::map<InputAction, bool> key_map_conflicted;  // 506E6C
 std::map<InputAction, PlatformKey> curr_key_map;
 
 void Game_StartNewGameWhilePlaying(bool force_start) {
-    if (dword_6BE138 == 124 || force_start) {
+    if (confirmationState == CONFIRM_NEW_GAME || force_start) {
         pCurrentFrameMessageQueue->Flush();
         // pGUIWindow_CurrentMenu->Release();
         uGameState = GAME_STATE_NEWGAME_OUT_GAMEMENU;
@@ -46,12 +58,12 @@ void Game_StartNewGameWhilePlaying(bool force_start) {
     } else {
         GameUI_SetStatusBar(LSTR_START_NEW_GAME_PROMPT);
         pAudioPlayer->playUISound(SOUND_quest);
-        dword_6BE138 = 124;
+        confirmationState = CONFIRM_NEW_GAME;
     }
 }
 
 void Game_QuitGameWhilePlaying(bool force_quit) {
-    if (dword_6BE138 == 132 || force_quit) {
+    if (confirmationState == CONFIRM_QUIT || force_quit) {
         pCurrentFrameMessageQueue->Flush();
         // pGUIWindow_CurrentMenu->Release();
         current_screen_type = CURRENT_SCREEN::SCREEN_GAME;
@@ -61,7 +73,7 @@ void Game_QuitGameWhilePlaying(bool force_quit) {
     } else {
         GameUI_SetStatusBar(LSTR_EXIT_GAME_PROMPT);
         pAudioPlayer->playUISound(SOUND_quest);
-        dword_6BE138 = 132;
+        confirmationState = CONFIRM_QUIT;
     }
 }
 
@@ -73,6 +85,7 @@ void Game_OpenLoadGameDialog() {
     // LoadUI_Load(1);
     current_screen_type = CURRENT_SCREEN::SCREEN_LOADGAME;
     pGUIWindow_CurrentMenu = new GUIWindow_Load(true);
+    isLoadSlotClicked = false;
 }
 
 void Menu::EventLoop() {
@@ -113,26 +126,28 @@ void Menu::EventLoop() {
             case UIMSG_SaveLoadBtn:
                 new OnSaveLoad({241, 302}, {106, 42}, pBtnLoadSlot);
                 continue;
-            case UIMSG_SelectLoadSlot: {
+            case UIMSG_SelectLoadSlot:
                 if (pGUIWindow_CurrentMenu->keyboard_input_status == WINDOW_INPUT_IN_PROGRESS)
                     keyboardInputHandler->SetWindowInputStatus(WINDOW_INPUT_NONE);
 
-                int v10 = pSavegameList->saveListPosition + param;
-                if (current_screen_type != CURRENT_SCREEN::SCREEN_SAVEGAME ||
-                    pSavegameList->selectedSlot != v10) {
-                    if (dword_6BE138 == pSavegameList->saveListPosition + param) {
+                if (current_screen_type == CURRENT_SCREEN::SCREEN_SAVEGAME) {
+                    if (pSavegameList->selectedSlot != pSavegameList->saveListPosition + param) {
+                        pSavegameList->selectedSlot = pSavegameList->saveListPosition + param;
+                    } else {
+                        keyboardInputHandler->StartTextInput(TextInputType::Text, 19, pGUIWindow_CurrentMenu);
+                        if (pSavegameList->pSavegameHeader[pSavegameList->selectedSlot].name == localization->GetString(LSTR_EMPTY_SAVESLOT)) {
+                            keyboardInputHandler->SetTextInput(pSavegameList->pSavegameHeader[pSavegameList->selectedSlot].name);
+                        }
+                    }
+                } else {
+                    if (!isLoadSlotClicked || pSavegameList->selectedSlot != pSavegameList->saveListPosition + param) {
+                        pSavegameList->selectedSlot = pSavegameList->saveListPosition + param;
+                        isLoadSlotClicked = true;
+                    } else {
                         pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_SaveLoadBtn, 0, 0);
                         pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_LoadGame, 0, 0);
                     }
-                    pSavegameList->selectedSlot = v10;
-                    dword_6BE138 = v10;
-                } else {
-                    keyboardInputHandler->StartTextInput(TextInputType::Text, 19, pGUIWindow_CurrentMenu);
-                    if (pSavegameList->pSavegameHeader[pSavegameList->selectedSlot].name == localization->GetString(LSTR_EMPTY_SAVESLOT)) {
-                        keyboardInputHandler->SetTextInput(pSavegameList->pSavegameHeader[pSavegameList->selectedSlot].name);
-                    }
                 }
-            }
                 continue;
             case UIMSG_LoadGame:
                 if (pSavegameList->pSavegameUsedSlots[pSavegameList->selectedSlot]) {
@@ -369,6 +384,7 @@ void Menu::EventLoop() {
                     continue;
                 }
                 render->ClearZBuffer();
+                confirmationState = CONFIRM_NONE;
 
                 if (current_screen_type == CURRENT_SCREEN::SCREEN_MENU) {
                     pEventTimer->Resume();
@@ -434,6 +450,7 @@ void Menu::MenuLoop() {
     current_screen_type = CURRENT_SCREEN::SCREEN_MENU;
 
     pGUIWindow_CurrentMenu = new GUIWindow_GameMenu();
+    confirmationState = CONFIRM_NONE;
 
     if (gamma_preview_image) {
         gamma_preview_image->Release();
