@@ -17,6 +17,5 @@ var searchData=
   ['format_14',['Format',['../structFormat.html',1,'']]],
   ['framelimiter_15',['FrameLimiter',['../classFrameLimiter.html',1,'']]],
   ['frametabletxtline_16',['FrameTableTxtLine',['../structFrameTableTxtLine.html',1,'']]],
-  ['freeblobhandler_17',['FreeBlobHandler',['../classFreeBlobHandler.html',1,'']]],
-  ['freedeleter_18',['FreeDeleter',['../structFreeDeleter.html',1,'']]]
+  ['freedeleter_17',['FreeDeleter',['../structFreeDeleter.html',1,'']]]
 ];
