@@ -40,6 +40,8 @@ enum class CurrentConfirmationState {
 };
 using enum CurrentConfirmationState;
 
+bool initialLoadSlotSelection = false;
+
 CurrentConfirmationState confirmationState = CONFIRM_NONE;
 
 InputAction currently_selected_action_for_binding = InputAction::Invalid;  // 506E68
@@ -82,6 +84,7 @@ void Game_OpenLoadGameDialog() {
     // LoadUI_Load(1);
     current_screen_type = CURRENT_SCREEN::SCREEN_LOADGAME;
     pGUIWindow_CurrentMenu = new GUIWindow_Load(true);
+    initialLoadSlotSelection = false;
 }
 
 void Menu::EventLoop() {
@@ -126,16 +129,23 @@ void Menu::EventLoop() {
                 if (pGUIWindow_CurrentMenu->keyboard_input_status == WINDOW_INPUT_IN_PROGRESS)
                     keyboardInputHandler->SetWindowInputStatus(WINDOW_INPUT_NONE);
 
-                if (pSavegameList->selectedSlot != pSavegameList->saveListPosition + param) {
-                    pSavegameList->selectedSlot = pSavegameList->saveListPosition + param;
-                } else if (current_screen_type == CURRENT_SCREEN::SCREEN_SAVEGAME) {
-                    keyboardInputHandler->StartTextInput(TextInputType::Text, 19, pGUIWindow_CurrentMenu);
-                    if (pSavegameList->pSavegameHeader[pSavegameList->selectedSlot].name == localization->GetString(LSTR_EMPTY_SAVESLOT)) {
-                        keyboardInputHandler->SetTextInput(pSavegameList->pSavegameHeader[pSavegameList->selectedSlot].name);
+                if (current_screen_type == CURRENT_SCREEN::SCREEN_SAVEGAME) {
+                    if (pSavegameList->selectedSlot != pSavegameList->saveListPosition + param) {
+                        pSavegameList->selectedSlot = pSavegameList->saveListPosition + param;
+                    } else {
+                        keyboardInputHandler->StartTextInput(TextInputType::Text, 19, pGUIWindow_CurrentMenu);
+                        if (pSavegameList->pSavegameHeader[pSavegameList->selectedSlot].name == localization->GetString(LSTR_EMPTY_SAVESLOT)) {
+                            keyboardInputHandler->SetTextInput(pSavegameList->pSavegameHeader[pSavegameList->selectedSlot].name);
+                        }
                     }
                 } else {
-                    pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_SaveLoadBtn, 0, 0);
-                    pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_LoadGame, 0, 0);
+                    if (!initialLoadSlotSelection || pSavegameList->selectedSlot != pSavegameList->saveListPosition + param) {
+                        pSavegameList->selectedSlot = pSavegameList->saveListPosition + param;
+                        initialLoadSlotSelection = true;
+                    } else {
+                        pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_SaveLoadBtn, 0, 0);
+                        pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_LoadGame, 0, 0);
+                    }
                 }
                 continue;
             case UIMSG_LoadGame:
