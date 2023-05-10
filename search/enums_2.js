@@ -7,5 +7,6 @@ var searchData=
   ['chest_5fflag_4',['CHEST_FLAG',['../Chest_8h.html#a8f7fde712c696f88932a1416622a983c',1,'Chest.h']]],
   ['class_5fskill_5',['CLASS_SKILL',['../PlayerEnums_8h.html#a41cfcbb7cd5d9e8279582963908f8250',1,'PlayerEnums.h']]],
   ['condition_6',['Condition',['../Conditions_8h.html#a1675b922b385cf7d28bd256fd487a681',1,'Conditions.h']]],
-  ['current_5fscreen_7',['CURRENT_SCREEN',['../GUIWindow_8h.html#af188298480c77be8835d6760fa6edfd7',1,'GUIWindow.h']]]
+  ['current_5fscreen_7',['CURRENT_SCREEN',['../GUIWindow_8h.html#af188298480c77be8835d6760fa6edfd7',1,'GUIWindow.h']]],
+  ['currentconfirmationstate_8',['CurrentConfirmationState',['../GameMenu_8cpp.html#a022ecaa914df30a139424afef28c4928',1,'GameMenu.cpp']]]
 ];

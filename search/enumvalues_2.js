@@ -148,11 +148,14 @@ var searchData=
   ['condition_5funconscious_145',['Condition_Unconscious',['../Conditions_8h.html#a1675b922b385cf7d28bd256fd487a681a19cf6da6bb40f6e877a2fb35a1b23ca2',1,'Conditions.h']]],
   ['condition_5fweak_146',['Condition_Weak',['../Conditions_8h.html#a1675b922b385cf7d28bd256fd487a681a8461a24e643fe671695d31cbc7f75a6d',1,'Conditions.h']]],
   ['condition_5fzombie_147',['Condition_Zombie',['../Conditions_8h.html#a1675b922b385cf7d28bd256fd487a681afc7f9b9b287229a1ff184d550dfb4827',1,'Conditions.h']]],
-  ['console_148',['Console',['../namespaceIo.html#a547e2ba6c6a5bb3a0b5987131e62a90cabccaa4aa80831b76c11240a16447975f',1,'Io']]],
-  ['control_149',['Control',['../PlatformEnums_8h.html#a2ba59747730ab559dd1191f51081eeccaa1595abbb4c3a326636dd178757cd6c1',1,'PlatformEnums.h']]],
-  ['controls_150',['Controls',['../namespaceIo.html#a547e2ba6c6a5bb3a0b5987131e62a90ca24b6472fcfa59cddd3f7bbc326582b5f',1,'Io']]],
-  ['cook_151',['Cook',['../NPCEnums_8h.html#ae6501f571f97d74c2c78fddcb371bad4a1bf70a91b0b28b92dc52e03d45abf61a',1,'NPCEnums.h']]],
-  ['count_152',['Count',['../namespaceIo.html#a547e2ba6c6a5bb3a0b5987131e62a90cae93f994f01c537c4e2f7d8528c3eb5e9',1,'Io::Count()'],['../PlatformEnums_8h.html#a2ba59747730ab559dd1191f51081eeccae93f994f01c537c4e2f7d8528c3eb5e9',1,'Count():&#160;PlatformEnums.h']]],
-  ['credits_153',['Credits',['../namespaceIo.html#a547e2ba6c6a5bb3a0b5987131e62a90ca948a2e3548aaf7f9941a3192fa607d51',1,'Io']]],
-  ['cyclefilter_154',['CycleFilter',['../namespaceIo.html#a547e2ba6c6a5bb3a0b5987131e62a90cafb76dc41ca56f4e090cf65021285c8a9',1,'Io']]]
+  ['confirm_5fnew_5fgame_148',['CONFIRM_NEW_GAME',['../GameMenu_8cpp.html#a022ecaa914df30a139424afef28c4928a5f9a1d8936a8bfa56834cbd6dfdb5dd1',1,'GameMenu.cpp']]],
+  ['confirm_5fnone_149',['CONFIRM_NONE',['../GameMenu_8cpp.html#a022ecaa914df30a139424afef28c4928ae26e2ad9e8cd8de2bc57f6f37f45195f',1,'GameMenu.cpp']]],
+  ['confirm_5fquit_150',['CONFIRM_QUIT',['../GameMenu_8cpp.html#a022ecaa914df30a139424afef28c4928a1cf7f16083a6c5dd7fcd828b816bbfbe',1,'GameMenu.cpp']]],
+  ['console_151',['Console',['../namespaceIo.html#a547e2ba6c6a5bb3a0b5987131e62a90cabccaa4aa80831b76c11240a16447975f',1,'Io']]],
+  ['control_152',['Control',['../PlatformEnums_8h.html#a2ba59747730ab559dd1191f51081eeccaa1595abbb4c3a326636dd178757cd6c1',1,'PlatformEnums.h']]],
+  ['controls_153',['Controls',['../namespaceIo.html#a547e2ba6c6a5bb3a0b5987131e62a90ca24b6472fcfa59cddd3f7bbc326582b5f',1,'Io']]],
+  ['cook_154',['Cook',['../NPCEnums_8h.html#ae6501f571f97d74c2c78fddcb371bad4a1bf70a91b0b28b92dc52e03d45abf61a',1,'NPCEnums.h']]],
+  ['count_155',['Count',['../namespaceIo.html#a547e2ba6c6a5bb3a0b5987131e62a90cae93f994f01c537c4e2f7d8528c3eb5e9',1,'Io::Count()'],['../PlatformEnums_8h.html#a2ba59747730ab559dd1191f51081eeccae93f994f01c537c4e2f7d8528c3eb5e9',1,'Count():&#160;PlatformEnums.h']]],
+  ['credits_156',['Credits',['../namespaceIo.html#a547e2ba6c6a5bb3a0b5987131e62a90ca948a2e3548aaf7f9941a3192fa607d51',1,'Io']]],
+  ['cyclefilter_157',['CycleFilter',['../namespaceIo.html#a547e2ba6c6a5bb3a0b5987131e62a90cafb76dc41ca56f4e090cf65021285c8a9',1,'Io']]]
 ];
