@@ -1,8 +1,10 @@
-#include "EngineTraceConfigurator.h"
+#include "EngineTraceStateAccessor.h"
 
 #include <string>
 
 #include "Application/GameConfig.h"
+
+#include "Engine/Party.h"
 
 #include "Library/Trace/EventTrace.h"
 
@@ -16,17 +18,21 @@ static bool shouldSkip(const GameConfig *config, const AnyConfigEntry *entry) {
     return entry == &config->debug.VerboseLogging;
 }
 
-std::vector<EventTraceConfigLine> EngineTraceConfigurator::makeConfigPatch(const GameConfig *config) {
+static bool shouldTake(const GameConfig *config, const AnyConfigEntry *entry) {
+    return entry == &config->debug.TraceFrameTimeMs;
+}
+
+std::vector<EventTraceConfigLine> EngineTraceStateAccessor::makeConfigPatch(const GameConfig *config) {
     std::vector<EventTraceConfigLine> result;
     for (const ConfigSection *section : config->sections())
         if (!shouldSkip(config, section))
             for (const AnyConfigEntry *entry : section->entries())
-                if (!shouldSkip(config, entry) && entry->string() != entry->defaultString())
+                if (!shouldSkip(config, entry) && (entry->string() != entry->defaultString() || shouldTake(config, entry)))
                     result.push_back({section->name(), entry->name(), entry->string()});
     return result;
 }
 
-void EngineTraceConfigurator::patchConfig(GameConfig *config, const std::vector<EventTraceConfigLine>& patch) {
+void EngineTraceStateAccessor::patchConfig(GameConfig *config, const std::vector<EventTraceConfigLine>& patch) {
     for (ConfigSection *section : config->sections())
         if (!shouldSkip(config, section))
             for (AnyConfigEntry *entry : section->entries())
@@ -45,4 +51,11 @@ void EngineTraceConfigurator::patchConfig(GameConfig *config, const std::vector<
 
         entry->setString(line.value);
     }
+}
+
+EventTraceGameState EngineTraceStateAccessor::makeGameState() {
+    EventTraceGameState result;
+    result.locationName = toLower(pCurrentMapName);
+    result.partyPosition = pParty->vPosition;
+    return result;
 }

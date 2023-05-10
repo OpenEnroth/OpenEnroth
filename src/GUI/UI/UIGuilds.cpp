@@ -3,7 +3,7 @@
 #include <string>
 
 #include "Engine/Engine.h"
-#include "Engine/Events2D.h"
+#include "Engine/Tables/BuildingTable.h"
 #include "Engine/Graphics/IRender.h"
 #include "Engine/Graphics/Image.h"
 #include "Engine/LOD.h"
@@ -39,7 +39,7 @@ void GuildDialog() {
     working_window.uFrameZ = 334;
 
     int pPrice = PriceCalculator::skillLearningCostForPlayer(&pParty->activeCharacter(),
-                                                             p2DEvents[window_SpeakInHouse->wData.val - 1]);
+                                                             buildingTable[window_SpeakInHouse->wData.val - 1]);
 
     if (dialog_menu_id == DIALOGUE_MAIN) {  // change to switch??
         if (!pParty->activeCharacter()._achievedAwardsBits[guild_membership_flags[window_SpeakInHouse->wData.val - HOUSE_FIRE_GUILD_INITIATE_EMERALD_ISLE]]) {
@@ -148,19 +148,19 @@ void SpellBookGenerator() {  // for GuildDialogs
 
     for (int i = 0; i < 12; ++i) {
         // TODO(captainurist): clean up these ITEM_TYPE casts.
-        if (p2DEvents[window_SpeakInHouse->wData.val - 1].uType >= BuildingType_FireGuild) {
-            if (p2DEvents[window_SpeakInHouse->wData.val - 1].uType <= BuildingType_DarkGuild) {
+        if (buildingTable[window_SpeakInHouse->wData.val - 1].uType >= BuildingType_FireGuild) {
+            if (buildingTable[window_SpeakInHouse->wData.val - 1].uType <= BuildingType_DarkGuild) {
                 pItemNum = ITEM_TYPE(grng->random(word_4F0F30[window_SpeakInHouse->wData.val - HOUSE_FIRE_GUILD_INITIATE_EMERALD_ISLE]) +
-                    11 * std::to_underlying(p2DEvents[window_SpeakInHouse->wData.val - 1].uType) +
+                    11 * std::to_underlying(buildingTable[window_SpeakInHouse->wData.val - 1].uType) +
                                      345);
             } else {
-                if (p2DEvents[window_SpeakInHouse->wData.val - 1].uType == BuildingType_ElementalGuild)
+                if (buildingTable[window_SpeakInHouse->wData.val - 1].uType == BuildingType_ElementalGuild)
                     randomnum = grng->random(4);
-                else if (p2DEvents[window_SpeakInHouse->wData.val - 1].uType == BuildingType_SelfGuild)
+                else if (buildingTable[window_SpeakInHouse->wData.val - 1].uType == BuildingType_SelfGuild)
                     randomnum = grng->random(3) + 4;
-                else if (p2DEvents[window_SpeakInHouse->wData.val - 1].uType == BuildingType_MirroredPath)
+                else if (buildingTable[window_SpeakInHouse->wData.val - 1].uType == BuildingType_MirroredPath)
                     randomnum = grng->random(2) + 7;
-                if (p2DEvents[window_SpeakInHouse->wData.val - 1].uType <= BuildingType_MirroredPath)
+                if (buildingTable[window_SpeakInHouse->wData.val - 1].uType <= BuildingType_MirroredPath)
                     pItemNum = ITEM_TYPE(grng->random(word_4F0F30[window_SpeakInHouse->wData.val - HOUSE_FIRE_GUILD_INITIATE_EMERALD_ISLE]) +
                         11 * randomnum +
                                          400);

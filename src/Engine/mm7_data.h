@@ -199,7 +199,6 @@ extern unsigned int game_ui_status_bar_event_string_time_left;
 extern int bForceDrawFooter;
 extern int _5C35C0_force_party_death;
 extern int bDialogueUI_InitializeActor_NPC_ID;
-extern std::string p2DEventsTXT_Raw;
 
 extern int dword_5C35D4;
 extern char byte_5C45AF[];

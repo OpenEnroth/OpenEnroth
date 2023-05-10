@@ -4,7 +4,6 @@
 
 #include "Engine/Awards.h"
 #include "Engine/Engine.h"
-#include "Engine/Events2D.h"
 #include "Engine/Graphics/IRender.h"
 #include "Engine/Graphics/Image.h"
 #include "Engine/Graphics/Indoor.h"
@@ -237,7 +236,7 @@ void ShopDialogLearn(GUIWindow dialogwin) {
     uint item_num = 0;
     int all_text_height = 0;
 
-    int pPrice = PriceCalculator::skillLearningCostForPlayer(&pParty->activeCharacter(), p2DEvents[window_SpeakInHouse->wData.val - 1]);
+    int pPrice = PriceCalculator::skillLearningCostForPlayer(&pParty->activeCharacter(), buildingTable[window_SpeakInHouse->wData.val - 1]);
 
     for (int i = pDialogueWindow->pStartingPosActiveItem;
         i < pDialogueWindow->pNumPresenceButton +
@@ -839,7 +838,7 @@ void UIShop_Buy_Identify_Repair() {
                     if (pt.x >= testpos && pt.x <= testpos + shop_ui_items_in_store[testx]->GetWidth()) {
                         if ((pt.y >= 90 && pt.y <= (90 + shop_ui_items_in_store[testx]->GetHeight())) ||
                             (pt.y >= 250 && pt.y <= (250 + shop_ui_items_in_store[testx]->GetHeight()))) {
-                            pPriceMultiplier = p2DEvents[window_SpeakInHouse->wData.val - 1].fPriceMultiplier;
+                            pPriceMultiplier = buildingTable[window_SpeakInHouse->wData.val - 1].fPriceMultiplier;
                             uPriceItemService = PriceCalculator::itemBuyingPriceForPlayer(&pParty->activeCharacter(),
                                                                                           bought_item->GetValue(), pPriceMultiplier);
 
@@ -906,7 +905,7 @@ void UIShop_Buy_Identify_Repair() {
                 return;
 
             uPriceItemService = PriceCalculator::itemIdentificationPriceForPlayer(
-                &pParty->activeCharacter(), p2DEvents[window_SpeakInHouse->wData.val - 1].fPriceMultiplier);
+                &pParty->activeCharacter(), buildingTable[window_SpeakInHouse->wData.val - 1].fPriceMultiplier);
             item = &pParty->activeCharacter().pInventoryItemList[pItemID - 1];
 
             if (!(item->uAttributes & ITEM_IDENTIFIED)) {
@@ -944,7 +943,7 @@ void UIShop_Buy_Identify_Repair() {
 
             item = &pParty->activeCharacter().pInventoryItemList[pItemID - 1];
             pPriceMultiplier =
-                p2DEvents[window_SpeakInHouse->wData.val - 1]
+                buildingTable[window_SpeakInHouse->wData.val - 1]
                     .fPriceMultiplier;
             uPriceItemService = PriceCalculator::itemRepairPriceForPlayer(&pParty->activeCharacter(), item->GetValue(), pPriceMultiplier);
 
@@ -1138,7 +1137,7 @@ void UIShop_Buy_Identify_Repair() {
             }
 
             uPriceItemService = PriceCalculator::itemBuyingPriceForPlayer(&pParty->activeCharacter(), bought_item->GetValue(),
-                                                                          p2DEvents[window_SpeakInHouse->wData.val - 1].fPriceMultiplier);
+                                                                          buildingTable[window_SpeakInHouse->wData.val - 1].fPriceMultiplier);
             uNumSeconds = 0;
             a3 = 0;
             if (pMapStats->GetMapInfo(pCurrentMapName))
@@ -1191,7 +1190,7 @@ void UIShop_Buy_Identify_Repair() {
                 PLAYER_SKILL_TYPE skill = GetLearningDialogueSkill(dialog_menu_id);
                 uPriceItemService =
                     PriceCalculator::skillLearningCostForPlayer(&pParty->activeCharacter(),
-                                                                                p2DEvents[window_SpeakInHouse->wData.val - 1]);
+                                                                                buildingTable[window_SpeakInHouse->wData.val - 1]);
                 if (skillMaxMasteryPerClass[pParty->activeCharacter().classType][skill] != PLAYER_SKILL_MASTERY_NONE) {
                     pSkill = &pParty->activeCharacter().pActiveSkills[skill];
                     if (!*pSkill) {

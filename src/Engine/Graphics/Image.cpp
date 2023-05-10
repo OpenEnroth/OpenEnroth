@@ -77,7 +77,7 @@ void TextureFrameTable::LoadAnimationSequenceAndPalettes(int uFrameID) {
     return;
 }
 
-int64_t TextureFrameTable::FindTextureByName(const char *Str2) {
+int64_t TextureFrameTable::FindTextureByName(const std::string &Str2) {
     std::string name = toLower(Str2);
 
     for (size_t i = 0; i < textures.size(); ++i)

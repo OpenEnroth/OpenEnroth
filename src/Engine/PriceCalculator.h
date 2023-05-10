@@ -2,7 +2,7 @@
 
 struct Player;
 struct ItemGen;
-struct _2devent;
+struct BuildingDesc;
 
 // Class to calculate various prices and overall deal with them
 class PriceCalculator {
@@ -127,33 +127,33 @@ class PriceCalculator {
      * @param player Player to calculate cost for.
      * @param house House in which player tries to learn skill.
      */
-    static int skillLearningCostForPlayer(const Player *player, const _2devent &house);
+    static int skillLearningCostForPlayer(const Player *player, const BuildingDesc &house);
 
     /**
      * @brief Calculates transport (stable/boat) cost for player.
      * @param player Player to calculate cost for.
      * @param house Stable/boat building in which player travels.
      */
-    static int transportCostForPlayer(const Player *player, const _2devent &house);
+    static int transportCostForPlayer(const Player *player, const BuildingDesc &house);
 
     /**
      * @brief Calculates tavern room cost for player.
      * @param player Player to calculate cost for.
      * @param house Tavern in which player tries to buy room.
      */
-    static int tavernRoomCostForPlayer(const Player *player, const _2devent &house);
+    static int tavernRoomCostForPlayer(const Player *player, const BuildingDesc &house);
 
     /**
      * @brief Calculates tavern food cost for player.
      * @param player Player to calculate cost for.
      * @param house Tavern in which player tries to buy food.
      */
-    static int tavernFoodCostForPlayer(const Player *player, const _2devent &house);
+    static int tavernFoodCostForPlayer(const Player *player, const BuildingDesc &house);
 
     /**
      * @brief Calculates training cost for player.
      * @param player Player to calculate cost for.
      * @param house Training hall in which player tries to train.
      */
-    static int trainingCostForPlayer(const Player *player, const _2devent &house);
+    static int trainingCostForPlayer(const Player *player, const BuildingDesc &house);
 };

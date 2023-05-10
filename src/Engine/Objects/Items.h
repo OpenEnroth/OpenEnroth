@@ -64,7 +64,7 @@ struct ItemGen {  // 0x24
     uint8_t GetDamageMod() const;
     bool MerchandiseTest(int _2da_idx);
 
-    bool isGold() {
+    bool isGold() const {
         return GetItemEquipType() == EQUIP_GOLD;
     }
     bool isShield() const {
@@ -73,32 +73,32 @@ struct ItemGen {  // 0x24
     bool isWand() const {
         return GetItemEquipType() == EQUIP_WAND;
     }
-    bool isPotion() {
+    bool isPotion() const {
         return GetItemEquipType() == EQUIP_POTION;
     }
-    bool isBook() {
+    bool isBook() const {
         return GetItemEquipType() == EQUIP_BOOK;
     }
-    bool isReagent() {
+    bool isReagent() const {
         return GetItemEquipType() == EQUIP_REAGENT;
     }
-    bool isSpellScroll() {
+    bool isSpellScroll() const {
         return GetItemEquipType() == EQUIP_SPELL_SCROLL;
     }
-    bool isMessageScroll() {
+    bool isMessageScroll() const {
         return GetItemEquipType() == EQUIP_MESSAGE_SCROLL;
     }
 
-    bool isMeleeWeapon() {
+    bool isMeleeWeapon() const {
         return GetItemEquipType() == EQUIP_SINGLE_HANDED || GetItemEquipType() == EQUIP_TWO_HANDED;
     }
-    bool isWeapon() {
+    bool isWeapon() const {
         return IsWeapon(GetItemEquipType());
     }
-    bool isArmor() {
+    bool isArmor() const {
         return IsArmor(GetItemEquipType());
     }
-    bool isPassiveEquipment() {
+    bool isPassiveEquipment() const {
         return IsPassiveEquipment(GetItemEquipType());
     }
 

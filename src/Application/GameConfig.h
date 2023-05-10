@@ -86,7 +86,7 @@ class GameConfig : public Config {
 
         Bool VerboseLogging = {this, "verbose_logging", false, "Verbose logging to debug console. Can be extremely spammy."};
 
-        Int TraceFrameTimeMs = {this, "trace_frame_time_ms", 16, &ValidateFrameTime,
+        Int TraceFrameTimeMs = {this, "trace_frame_time_ms", 50, &ValidateFrameTime,
                                 "Number of milliseconds per frame when recording game traces."};
 
      private:

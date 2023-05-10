@@ -5,7 +5,6 @@
 #include "Engine/Autonotes.h"
 #include "Engine/Awards.h"
 #include "Engine/Engine.h"
-#include "Engine/Events2D.h"
 #include "Engine/Spells/CastSpellInfo.h"
 #include "Engine/Graphics/DecalBuilder.h"
 #include "Engine/Graphics/Outdoor.h"
@@ -257,8 +256,8 @@ void Player::SpendMana(unsigned int uRequiredMana) {
 }
 
 //----- (004BE2DD) --------------------------------------------------------
-void Player::SalesProcess(unsigned int inventory_idnx, int item_index, int _2devent_idx) {
-    float shop_mult = p2DEvents[_2devent_idx - 1].fPriceMultiplier;
+void Player::SalesProcess(unsigned int inventory_idnx, int item_index, int BuildingDesc_idx) {
+    float shop_mult = buildingTable[BuildingDesc_idx - 1].fPriceMultiplier;
     int sell_price = PriceCalculator::itemSellingPriceForPlayer(this, pOwnItems[item_index], shop_mult);
 
     // remove item and add gold
@@ -267,7 +266,7 @@ void Player::SalesProcess(unsigned int inventory_idnx, int item_index, int _2dev
 }
 
 //----- (0043EEF3) --------------------------------------------------------
-bool Player::NothingOrJustBlastersEquipped() {
+bool Player::NothingOrJustBlastersEquipped() const {
     signed int item_idx;
     ITEM_TYPE item_id;
 
@@ -304,7 +303,7 @@ int Player::GetConditionDaysPassed(Condition condition) const {
 }
 
 //----- (004B6FF9) --------------------------------------------------------
-bool Player::IsPlayerHealableByTemple() {
+bool Player::IsPlayerHealableByTemple() const {
     if (this->health >= GetMaxHealth() && this->mana >= GetMaxMana() &&
         GetMajorConditionIdx() == Condition_Good) {
         return false;  // fully healthy
@@ -399,12 +398,12 @@ bool Player::CanAct() const {
 }
 
 //----- (00492C40) --------------------------------------------------------
-bool Player::CanSteal() {
+bool Player::CanSteal() const {
     return GetActualSkillLevel(PLAYER_SKILL_STEALING) != 0;
 }
 
 //----- (00492C4E) --------------------------------------------------------
-bool Player::CanEquip_RaceAndAlignmentCheck(ITEM_TYPE uItemID) {
+bool Player::CanEquip_RaceAndAlignmentCheck(ITEM_TYPE uItemID) const {
     switch (uItemID) {
         case ITEM_RELIC_ETHRICS_STAFF:
         case ITEM_RELIC_OLD_NICK:
@@ -575,7 +574,7 @@ void Player::SetCondition(Condition uConditionIdx, int blockable) {
     return;
 }
 
-bool Player::canFitItem(unsigned int uSlot, ITEM_TYPE uItemID) {
+bool Player::canFitItem(unsigned int uSlot, ITEM_TYPE uItemID) const {
     auto img = assets->GetImage_ColorKey(pItemTable->pItems[uItemID].iconName);
     unsigned int slotWidth = GetSizeInInventorySlots(img->GetWidth());
     unsigned int slotHeight = GetSizeInInventorySlots(img->GetHeight());
@@ -596,7 +595,7 @@ bool Player::canFitItem(unsigned int uSlot, ITEM_TYPE uItemID) {
     return false;
 }
 
-int Player::findFreeInventoryListSlot() {
+int Player::findFreeInventoryListSlot() const {
     for (int i = 0; i < INVENTORY_SLOT_COUNT; i++) {
         if (pInventoryItemList[i].uItemID == ITEM_NULL) {
             return i;  // space at i
@@ -625,10 +624,11 @@ int Player::CreateItemInInventory(unsigned int uSlot, ITEM_TYPE uItemID) {
 }
 
 //----- (00492700) --------------------------------------------------------
-int Player::HasSkill(PLAYER_SKILL_TYPE uSkillType) {
+int Player::HasSkill(PLAYER_SKILL_TYPE uSkillType) const {
     if (this->pActiveSkills[uSkillType]) {
         return 1;
     } else {
+        // TODO(captainurist): this doesn't belong to a getter!!!
         GameUI_SetStatusBar(
             LSTR_FMT_S_DOES_NOT_HAVE_SKILL,
             this->name.c_str()
@@ -763,7 +763,7 @@ void Player::RemoveItemAtInventoryIndex(unsigned int index) {
 }
 
 //----- (0049107D) --------------------------------------------------------
-int Player::GetBodybuilding() {
+int Player::GetBodybuilding() const {
     PLAYER_SKILL_LEVEL skill = GetActualSkillLevel(PLAYER_SKILL_BODYBUILDING);
     int multiplier =
         GetMultiplierForSkillLevel(PLAYER_SKILL_BODYBUILDING, 1, 2, 3, 5);
@@ -772,7 +772,7 @@ int Player::GetBodybuilding() {
 }
 
 //----- (004910A8) --------------------------------------------------------
-int Player::GetMeditation() {
+int Player::GetMeditation() const {
     PLAYER_SKILL_LEVEL skill = GetActualSkillLevel(PLAYER_SKILL_MEDITATION);
     int multiplier =
         GetMultiplierForSkillLevel(PLAYER_SKILL_MEDITATION, 1, 2, 3, 5);
@@ -781,7 +781,7 @@ int Player::GetMeditation() {
 }
 
 //----- (004910D3) --------------------------------------------------------
-bool Player::CanIdentify(ItemGen *pItem) {
+bool Player::CanIdentify(ItemGen *pItem) const {
     PLAYER_SKILL_LEVEL skill = GetActualSkillLevel(PLAYER_SKILL_ITEM_ID);
     PLAYER_SKILL_MASTERY skillmaster = GetActualSkillMastery(PLAYER_SKILL_ITEM_ID);
     int multiplier =
@@ -798,7 +798,7 @@ bool Player::CanIdentify(ItemGen *pItem) {
 }
 
 //----- (00491151) --------------------------------------------------------
-bool Player::CanRepair(ItemGen *pItem) {
+bool Player::CanRepair(ItemGen *pItem) const {
     PLAYER_SKILL_LEVEL skill = GetActualSkillLevel(PLAYER_SKILL_REPAIR);
     PLAYER_SKILL_MASTERY skillmaster = GetActualSkillMastery(PLAYER_SKILL_REPAIR);
     int multiplier = GetMultiplierForSkillLevel(PLAYER_SKILL_REPAIR, 1, 2, 3, 5);
@@ -820,7 +820,7 @@ bool Player::CanRepair(ItemGen *pItem) {
 }
 
 //----- (0049125A) --------------------------------------------------------
-int Player::GetPerception() {
+int Player::GetPerception() const {
     PLAYER_SKILL_LEVEL skill = GetActualSkillLevel(PLAYER_SKILL_PERCEPTION);
     PLAYER_SKILL_MASTERY skillmaster = GetActualSkillMastery(PLAYER_SKILL_PERCEPTION);
     int multiplier =
@@ -833,7 +833,7 @@ int Player::GetPerception() {
 }
 
 //----- (004912B0) --------------------------------------------------------
-int Player::GetDisarmTrap() {
+int Player::GetDisarmTrap() const {
     PLAYER_SKILL_LEVEL skill = GetActualSkillLevel(PLAYER_SKILL_TRAP_DISARM);
     PLAYER_SKILL_MASTERY skillmaster = GetActualSkillMastery(PLAYER_SKILL_TRAP_DISARM);
     int multiplier =
@@ -848,7 +848,7 @@ int Player::GetDisarmTrap() {
     return multiplier * skill;
 }
 
-char Player::getLearningPercent() {
+char Player::getLearningPercent() const {
     PLAYER_SKILL_LEVEL skill = GetActualSkillLevel(PLAYER_SKILL_LEARNING);
 
     if (skill) {
@@ -861,92 +861,92 @@ char Player::getLearningPercent() {
 }
 
 //----- (0048C855) --------------------------------------------------------
-int Player::GetBaseStrength() {
+int Player::GetBaseStrength() const {
     return this->uMight + GetItemsBonus(CHARACTER_ATTRIBUTE_STRENGTH);
 }
 
 //----- (0048C86C) --------------------------------------------------------
-int Player::GetBaseIntelligence() {
+int Player::GetBaseIntelligence() const {
     return this->uIntelligence +
            GetItemsBonus(CHARACTER_ATTRIBUTE_INTELLIGENCE);
 }
 
 //----- (0048C883) --------------------------------------------------------
-int Player::GetBaseWillpower() {
+int Player::GetBaseWillpower() const {
     return this->uWillpower + GetItemsBonus(CHARACTER_ATTRIBUTE_WILLPOWER);
 }
 
 //----- (0048C89A) --------------------------------------------------------
-int Player::GetBaseEndurance() {
+int Player::GetBaseEndurance() const {
     return this->uEndurance + GetItemsBonus(CHARACTER_ATTRIBUTE_ENDURANCE);
 }
 
 //----- (0048C8B1) --------------------------------------------------------
-int Player::GetBaseAccuracy() {
+int Player::GetBaseAccuracy() const {
     return this->uAccuracy + GetItemsBonus(CHARACTER_ATTRIBUTE_ACCURACY);
 }
 
 //----- (0048C8C8) --------------------------------------------------------
-int Player::GetBaseSpeed() {
+int Player::GetBaseSpeed() const {
     return this->uSpeed + GetItemsBonus(CHARACTER_ATTRIBUTE_SPEED);
 }
 
 //----- (0048C8DF) --------------------------------------------------------
-int Player::GetBaseLuck() {
+int Player::GetBaseLuck() const {
     return this->uLuck + GetItemsBonus(CHARACTER_ATTRIBUTE_LUCK);
 }
 
 //----- (0048C8F6) --------------------------------------------------------
-int Player::GetBaseLevel() {
+int Player::GetBaseLevel() const {
     return this->uLevel + GetItemsBonus(CHARACTER_ATTRIBUTE_LEVEL);
 }
 
 //----- (0048C90D) --------------------------------------------------------
-int Player::GetActualLevel() {
+int Player::GetActualLevel() const {
     return uLevel + sLevelModifier +
            GetMagicalBonus(CHARACTER_ATTRIBUTE_LEVEL) +
            GetItemsBonus(CHARACTER_ATTRIBUTE_LEVEL);
 }
 
 //----- (0048C93C) --------------------------------------------------------
-int Player::GetActualMight() {
+int Player::GetActualMight() const {
     return GetActualAttribute(CHARACTER_ATTRIBUTE_STRENGTH, &Player::uMight,
                               &Player::uMightBonus);
 }
 
 //----- (0048C9C2) --------------------------------------------------------
-int Player::GetActualIntelligence() {
+int Player::GetActualIntelligence() const {
     return GetActualAttribute(CHARACTER_ATTRIBUTE_INTELLIGENCE,
                               &Player::uIntelligence,
                               &Player::uIntelligenceBonus);
 }
 
 //----- (0048CA3F) --------------------------------------------------------
-int Player::GetActualWillpower() {
+int Player::GetActualWillpower() const {
     return GetActualAttribute(CHARACTER_ATTRIBUTE_WILLPOWER,
                               &Player::uWillpower, &Player::uWillpowerBonus);
 }
 
 //----- (0048CABC) --------------------------------------------------------
-int Player::GetActualEndurance() {
+int Player::GetActualEndurance() const {
     return GetActualAttribute(CHARACTER_ATTRIBUTE_ENDURANCE,
                               &Player::uEndurance, &Player::uEnduranceBonus);
 }
 
 //----- (0048CB39) --------------------------------------------------------
-int Player::GetActualAccuracy() {
+int Player::GetActualAccuracy() const {
     return GetActualAttribute(CHARACTER_ATTRIBUTE_ACCURACY, &Player::uAccuracy,
                               &Player::uAccuracyBonus);
 }
 
 //----- (0048CBB6) --------------------------------------------------------
-int Player::GetActualSpeed() {
+int Player::GetActualSpeed() const {
     return GetActualAttribute(CHARACTER_ATTRIBUTE_SPEED, &Player::uSpeed,
                               &Player::uSpeedBonus);
 }
 
 //----- (0048CC33) --------------------------------------------------------
-int Player::GetActualLuck() {
+int Player::GetActualLuck() const {
     signed int npc_luck_bonus = 0;
 
     if (CheckHiredNPCSpeciality(Fool)) npc_luck_bonus = 5;
@@ -963,7 +963,7 @@ int Player::GetActualLuck() {
 //----- (new function) --------------------------------------------------------
 int Player::GetActualAttribute(CHARACTER_ATTRIBUTE_TYPE attrId,
                                unsigned short Player::*attrValue,
-                               unsigned short Player::*attrBonus) {
+                               unsigned short Player::*attrBonus) const {
     uint uActualAge = this->sAgeModifier + GetBaseAge();
     uint uAgeingMultiplier = 100;
 
@@ -985,7 +985,7 @@ int Player::GetActualAttribute(CHARACTER_ATTRIBUTE_TYPE attrId,
 }
 
 //----- (0048CCF5) --------------------------------------------------------
-int Player::GetActualAttack(bool onlyMainHandDmg) {
+int Player::GetActualAttack(bool onlyMainHandDmg) const {
     int parbonus = GetParameterBonus(
         GetActualAccuracy());  // bonus points for steps of accuracy level
     int atkskillbonus = GetSkillBonus(
@@ -999,7 +999,7 @@ int Player::GetActualAttack(bool onlyMainHandDmg) {
 }
 
 //----- (0048CD45) --------------------------------------------------------
-int Player::GetMeleeDamageMinimal() {
+int Player::GetMeleeDamageMinimal() const {
     int parbonus = GetParameterBonus(GetActualMight());
     int weapbonus = GetItemsBonus(CHARACTER_ATTRIBUTE_MELEE_DMG_MIN) + parbonus;
     int atkskillbonus =
@@ -1015,7 +1015,7 @@ int Player::GetMeleeDamageMinimal() {
 }
 
 //----- (0048CD90) --------------------------------------------------------
-int Player::GetMeleeDamageMaximal() {
+int Player::GetMeleeDamageMaximal() const {
     int parbonus = GetParameterBonus(GetActualMight());
     int weapbonus = GetItemsBonus(CHARACTER_ATTRIBUTE_MELEE_DMG_MAX) + parbonus;
     int atkskillbonus =
@@ -1384,7 +1384,7 @@ ITEM_EQUIP_TYPE Player::GetEquippedItemEquipType(ITEM_SLOT uEquipSlot) const {
 }
 
 //----- (0048D651) --------------------------------------------------------
-PLAYER_SKILL_TYPE Player::GetEquippedItemSkillType(ITEM_SLOT uEquipSlot) {
+PLAYER_SKILL_TYPE Player::GetEquippedItemSkillType(ITEM_SLOT uEquipSlot) const {
     return GetNthEquippedIndexItem(uEquipSlot)->GetPlayerSkillType();
 }
 
@@ -1979,13 +1979,13 @@ int Player::ReceiveSpecialAttackEffect(
 // 48DCF6: using guessed type char var_94[140];
 
 //----- (0048E1A3) --------------------------------------------------------
-unsigned int Player::GetSpellSchool(SPELL_TYPE uSpellID) {
+unsigned int Player::GetSpellSchool(SPELL_TYPE uSpellID) const {
     return pSpellStats->pInfos[uSpellID].uSchool;
 }
 
 //----- (0048E1B5) --------------------------------------------------------
-int Player::GetAttackRecoveryTime(bool bRangedAttack) {
-    ItemGen *weapon = nullptr;
+int Player::GetAttackRecoveryTime(bool bRangedAttack) const {
+    const ItemGen *weapon = nullptr;
     uint weapon_recovery = base_recovery_times_per_weapon_type[PLAYER_SKILL_STAFF];
     if (bRangedAttack) {
         if (HasItemEquipped(ITEM_SLOT_BOW)) {
@@ -2100,7 +2100,7 @@ int Player::GetAttackRecoveryTime(bool bRangedAttack) {
 }
 
 //----- new --------------------------------------------------------
-float Player::GetArmorRecoveryMultiplierFromSkillLevel(PLAYER_SKILL_TYPE armour_skill_type, float mult1, float mult2, float mult3, float mult4) {
+float Player::GetArmorRecoveryMultiplierFromSkillLevel(PLAYER_SKILL_TYPE armour_skill_type, float mult1, float mult2, float mult3, float mult4) const {
     PLAYER_SKILL_MASTERY skillMastery = GetSkillMastery(armour_skill_type);
 
     switch (skillMastery) {
@@ -2125,7 +2125,7 @@ float Player::GetArmorRecoveryMultiplierFromSkillLevel(PLAYER_SKILL_TYPE armour_
 }
 
 //----- (0048E4F8) --------------------------------------------------------
-int Player::GetMaxHealth() {
+int Player::GetMaxHealth() const {
     int endbonus = GetParameterBonus(GetActualEndurance());
     int healthbylevel =
         pBaseHealthPerLevelByClass[classType] * (GetActualLevel() + endbonus);
@@ -2140,7 +2140,7 @@ int Player::GetMaxHealth() {
 }
 
 //----- (0048E565) --------------------------------------------------------
-int Player::GetMaxMana() {
+int Player::GetMaxMana() const {
     int mainmanastat;
     int statbonus;
     int addmanastat;
@@ -2210,7 +2210,7 @@ int Player::GetMaxMana() {
 }
 
 //----- (0048E656) --------------------------------------------------------
-int Player::GetBaseAC() {
+int Player::GetBaseAC() const {
     int acc = GetActualAccuracy();
     int accbonus = GetParameterBonus(acc);
     int itembonus = GetItemsBonus(CHARACTER_ATTRIBUTE_AC_BONUS) + accbonus;
@@ -2223,7 +2223,7 @@ int Player::GetBaseAC() {
 }
 
 //----- (0048E68F) --------------------------------------------------------
-int Player::GetActualAC() {
+int Player::GetActualAC() const {
     int acc = GetActualAccuracy();
     int accbonus = GetParameterBonus(acc);
     int itembonus = GetItemsBonus(CHARACTER_ATTRIBUTE_AC_BONUS) + accbonus;
@@ -2239,20 +2239,20 @@ int Player::GetActualAC() {
 }
 
 //----- (0048E6DC) --------------------------------------------------------
-unsigned int Player::GetBaseAge() {
+unsigned int Player::GetBaseAge() const {
     return pParty->GetPlayingTime().GetYears() - this->uBirthYear + game_starting_year;
 }
 
 //----- (0048E72C) --------------------------------------------------------
-unsigned int Player::GetActualAge() {
+unsigned int Player::GetActualAge() const {
     return this->sAgeModifier + GetBaseAge();
 }
 
 //----- (0048E73F) --------------------------------------------------------
-int Player::GetBaseResistance(CHARACTER_ATTRIBUTE_TYPE a2) {
+int Player::GetBaseResistance(CHARACTER_ATTRIBUTE_TYPE a2) const {
     int v7;  // esi@20
     int racialBonus = 0;
-    int16_t *resStat;
+    const int16_t *resStat;
     int result;
 
     switch (a2) {
@@ -2293,25 +2293,25 @@ int Player::GetBaseResistance(CHARACTER_ATTRIBUTE_TYPE a2) {
 }
 
 //----- (0048E7D0) --------------------------------------------------------
-int Player::GetActualResistance(CHARACTER_ATTRIBUTE_TYPE a2) {
+int Player::GetActualResistance(CHARACTER_ATTRIBUTE_TYPE resistance) const {
     signed int v10 = 0;  // [sp+14h] [bp-4h]@1
-    int16_t *resStat;
+    const int16_t *resStat;
     int result;
     int baseRes;
 
     int leatherArmorSkillLevel = GetActualSkillLevel(PLAYER_SKILL_LEATHER);
 
     if (CheckHiredNPCSpeciality(Enchanter)) v10 = 20;
-    if ((a2 == CHARACTER_ATTRIBUTE_RESIST_FIRE ||
-         a2 == CHARACTER_ATTRIBUTE_RESIST_AIR ||
-         a2 == CHARACTER_ATTRIBUTE_RESIST_WATER ||
-         a2 == CHARACTER_ATTRIBUTE_RESIST_EARTH) &&
+    if ((resistance == CHARACTER_ATTRIBUTE_RESIST_FIRE ||
+         resistance == CHARACTER_ATTRIBUTE_RESIST_AIR ||
+         resistance == CHARACTER_ATTRIBUTE_RESIST_WATER ||
+         resistance == CHARACTER_ATTRIBUTE_RESIST_EARTH) &&
         GetActualSkillMastery(PLAYER_SKILL_LEATHER) == PLAYER_SKILL_MASTERY_GRANDMASTER &&
         HasItemEquipped(ITEM_SLOT_ARMOUR) &&
         GetEquippedItemSkillType(ITEM_SLOT_ARMOUR) == PLAYER_SKILL_LEATHER)
         v10 += leatherArmorSkillLevel;  // &0x3F;
 
-    switch (a2) {
+    switch (resistance) {
         case CHARACTER_ATTRIBUTE_RESIST_FIRE:
             resStat = &sResFireBonus;
             break;
@@ -2334,8 +2334,8 @@ int Player::GetActualResistance(CHARACTER_ATTRIBUTE_TYPE a2) {
         default:
             Error("Unexpected attribute");
     }
-    baseRes = GetBaseResistance(a2);
-    result = v10 + GetMagicalBonus(a2) + baseRes + *(resStat);
+    baseRes = GetBaseResistance(resistance);
+    result = v10 + GetMagicalBonus(resistance) + baseRes + *(resStat);
     if (classType == PLAYER_CLASS_LICH) {
         if (result > 200) result = 200;
     }
@@ -2388,7 +2388,7 @@ Condition Player::GetMajorConditionIdx() const {
 }
 
 //----- (0048EA1B) --------------------------------------------------------
-int Player::GetParameterBonus(int player_parameter) {
+int Player::GetParameterBonus(int player_parameter) const {
     int i;  // eax@1
     i = 0;
     while (param_to_bonus_table[i]) {
@@ -2399,7 +2399,7 @@ int Player::GetParameterBonus(int player_parameter) {
 }
 
 //----- (0048EA46) --------------------------------------------------------
-int Player::GetSpecialItemBonus(ITEM_ENCHANTMENT enchantment) {
+int Player::GetSpecialItemBonus(ITEM_ENCHANTMENT enchantment) const {
     for (ITEM_SLOT i : AllItemSlots()) {
         if (HasItemEquipped(i)) {
             if (enchantment == ITEM_ENCHANTMENT_OF_RECOVERY) {
@@ -2694,7 +2694,7 @@ int Player::GetItemsBonus(CHARACTER_ATTRIBUTE_TYPE attr, bool getOnlyMainHandDmg
 }
 
 //----- (0048F73C) --------------------------------------------------------
-int Player::GetMagicalBonus(CHARACTER_ATTRIBUTE_TYPE a2) {
+int Player::GetMagicalBonus(CHARACTER_ATTRIBUTE_TYPE a2) const {
     int v3 = 0;  // eax@4
     int v4 = 0;  // ecx@5
 
@@ -2935,7 +2935,7 @@ CombinedSkillValue Player::getActualSkillValue(PLAYER_SKILL_TYPE skillType) cons
 }
 
 //----- (0048FC00) --------------------------------------------------------
-int Player::GetSkillBonus(CHARACTER_ATTRIBUTE_TYPE inSkill) {
+int Player::GetSkillBonus(CHARACTER_ATTRIBUTE_TYPE inSkill) const {
                     // TODO(_): move the individual implementations to attribute
                     // classes once possible ?? check
     int armsMasterBonus;
@@ -2980,7 +2980,7 @@ int Player::GetSkillBonus(CHARACTER_ATTRIBUTE_TYPE inSkill) {
             unsigned int ACSum = 0;
 
             for (ITEM_SLOT j : AllItemSlots()) {
-                ItemGen *currItem = GetNthEquippedIndexItem(j);
+                const ItemGen *currItem = GetNthEquippedIndexItem(j);
                 if (currItem != nullptr && (!currItem->IsBroken())) {
                     PLAYER_SKILL_TYPE itemSkillType =
                         (PLAYER_SKILL_TYPE)currItem->GetPlayerSkillType();
@@ -3057,7 +3057,7 @@ int Player::GetSkillBonus(CHARACTER_ATTRIBUTE_TYPE inSkill) {
             }
             for (ITEM_SLOT i : AllItemSlots()) {  // ?? what eh check behaviour
                 if (this->HasItemEquipped(i)) {
-                    ItemGen *currItem = GetNthEquippedIndexItem(i);
+                    const ItemGen *currItem = GetNthEquippedIndexItem(i);
                     if (currItem->isMeleeWeapon()) {
                         PLAYER_SKILL_TYPE currItemSkillType = currItem->GetPlayerSkillType();
                         int currentItemSkillLevel = this->GetActualSkillLevel(currItemSkillType);
@@ -3080,7 +3080,7 @@ int Player::GetSkillBonus(CHARACTER_ATTRIBUTE_TYPE inSkill) {
         case CHARACTER_ATTRIBUTE_RANGED_ATTACK:
             for (ITEM_SLOT i : AllItemSlots()) {
                 if (this->HasItemEquipped(i)) {
-                    ItemGen *currItemPtr = GetNthEquippedIndexItem(i);
+                    const ItemGen *currItemPtr = GetNthEquippedIndexItem(i);
                     // TODO(Nik-RE-dev): melee?
                     if (currItemPtr->isMeleeWeapon()) {
                         PLAYER_SKILL_TYPE currentItemSkillType = GetNthEquippedIndexItem(i)->GetPlayerSkillType();
@@ -3109,7 +3109,7 @@ int Player::GetSkillBonus(CHARACTER_ATTRIBUTE_TYPE inSkill) {
             }
             for (ITEM_SLOT i : AllItemSlots()) {
                 if (this->HasItemEquipped(i)) {
-                    ItemGen *currItemPtr = GetNthEquippedIndexItem(i);
+                    const ItemGen *currItemPtr = GetNthEquippedIndexItem(i);
                     if (currItemPtr->isMeleeWeapon()) {
                         PLAYER_SKILL_TYPE currItemSkillType = currItemPtr->GetPlayerSkillType();
                         PLAYER_SKILL_LEVEL currItemSkillLevel = this->GetActualSkillLevel(currItemSkillType);
@@ -3215,7 +3215,7 @@ std::string Player::GetRaceName() const {
 }
 
 //----- (00490141) --------------------------------------------------------
-PLAYER_SEX Player::GetSexByVoice() {
+PLAYER_SEX Player::GetSexByVoice() const {
     switch (this->uVoiceID) {
         case 0u:
         case 1u:
@@ -3516,7 +3516,7 @@ void Player::resetTempBonuses() {
 }
 
 //----- (004907E7) --------------------------------------------------------
-unsigned int Player::GetStatColor(int uStat) {
+unsigned int Player::GetStatColor(int uStat) const {
     int attribute_value;  // edx@1
 
     int base_attribute_value = StatTable[GetRace()][uStat].uBaseValue;
@@ -3655,7 +3655,7 @@ void Player::useItem(int targetCharacter, bool isPortraitClick) {
                 break;
 
             case ITEM_POTION_HEROISM:
-                playerAffected->pPlayerBuffs[PLAYER_BUFF_HASTE].Apply(pParty->GetPlayingTime() + buffDuration, PLAYER_SKILL_MASTERY_MASTER, 5, 0, 0);
+                playerAffected->pPlayerBuffs[PLAYER_BUFF_HEROISM].Apply(pParty->GetPlayingTime() + buffDuration, PLAYER_SKILL_MASTERY_MASTER, 5, 0, 0);
                 break;
 
             case ITEM_POTION_BLESS:
@@ -7371,7 +7371,7 @@ void Player::playEmotion(CHARACTER_EXPRESSION_ID new_expression, int duration) {
     expression = new_expression;
 }
 
-bool Player::isClass(PLAYER_CLASS_TYPE class_type, bool check_honorary) {
+bool Player::isClass(PLAYER_CLASS_TYPE class_type, bool check_honorary) const {
     if (classType == class_type) {
         return true;
     }
@@ -7444,7 +7444,7 @@ MERCHANT_PHRASE Player::SelectPhrasesTransaction(ItemGen *pItem, BuildingType bu
     if (pItem->IsStolen())
         return MERCAHNT_PHRASE_STOLEN_ITEM;
 
-    multiplier = p2DEvents[BuildID_2Events - 1].fPriceMultiplier;
+    multiplier = buildingTable[BuildID_2Events - 1].fPriceMultiplier;
     switch (ShopMenuType) {
         case 2:
             price = PriceCalculator::itemBuyingPriceForPlayer(this, itemValue, multiplier);
