@@ -325,7 +325,7 @@ struct Player {
     bool IsPlayerHealableByTemple();
     int GetConditionDaysPassed(Condition condition) const;
     bool NothingOrJustBlastersEquipped();
-    void SalesProcess(unsigned int inventory_idnx, int item_index, int BuildingDescr_idx);  // 0x4BE2DD
+    void SalesProcess(unsigned int inventory_idnx, int item_index, int BuildingDesc_idx);  // 0x4BE2DD
     bool Recover(GameTime dt);
     bool CanCastSpell(unsigned int uRequiredMana);
     void SpendMana(unsigned int uRequiredMana);

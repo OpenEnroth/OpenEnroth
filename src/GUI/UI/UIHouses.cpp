@@ -1638,7 +1638,7 @@ void TavernDialog() {
     if (!pParty->hasActiveCharacter())  // avoid nzi
         pParty->setActiveToFirstCanAct();
 
-    const BuildingDescr &house = buildingTable[window_SpeakInHouse->wData.val - 1];
+    const BuildingDesc &house = buildingTable[window_SpeakInHouse->wData.val - 1];
 
     int pPriceRoom = PriceCalculator::tavernRoomCostForPlayer(&pParty->activeCharacter(), house);
     int pPriceFood = PriceCalculator::tavernFoodCostForPlayer(&pParty->activeCharacter(), house);

@@ -256,8 +256,8 @@ void Player::SpendMana(unsigned int uRequiredMana) {
 }
 
 //----- (004BE2DD) --------------------------------------------------------
-void Player::SalesProcess(unsigned int inventory_idnx, int item_index, int BuildingDescr_idx) {
-    float shop_mult = buildingTable[BuildingDescr_idx - 1].fPriceMultiplier;
+void Player::SalesProcess(unsigned int inventory_idnx, int item_index, int BuildingDesc_idx) {
+    float shop_mult = buildingTable[BuildingDesc_idx - 1].fPriceMultiplier;
     int sell_price = PriceCalculator::itemSellingPriceForPlayer(this, pOwnItems[item_index], shop_mult);
 
     // remove item and add gold

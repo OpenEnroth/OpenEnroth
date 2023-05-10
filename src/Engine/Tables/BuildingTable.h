@@ -42,7 +42,7 @@ enum class BuildingType: uint16_t {
 };
 using enum BuildingType;
 
-struct BuildingDescr {
+struct BuildingDesc {
     BuildingType uType;
     uint16_t uAnimationID;
     char *pName;
@@ -67,5 +67,5 @@ struct BuildingDescr {
 
 void initializeBuildings();
 
-extern std::array<BuildingDescr, 525> buildingTable;
+extern std::array<BuildingDesc, 525> buildingTable;
 extern std::string buildingTableTXT_Raw;

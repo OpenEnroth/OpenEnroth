@@ -3,7 +3,7 @@
 #include "Utility/String.h"
 
 std::string buildingTableTXT_Raw;
-std::array<BuildingDescr, 525> buildingTable;
+std::array<BuildingDesc, 525> buildingTable;
 
 void initializeBuildings() {
     int i;
