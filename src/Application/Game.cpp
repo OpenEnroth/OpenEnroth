@@ -253,7 +253,12 @@ bool Game::loop() {
                 uGameState = GAME_STATE_PLAYING;
                 gameLoop();
             }
-            continue;
+            if (uGameState == GAME_STATE_NEWGAME_OUT_GAMEMENU) {
+                SetCurrentMenuID(MENU_NEWGAME);
+                uGameState = GAME_STATE_PLAYING;
+                continue;
+            }
+            break;
         } else if (GetCurrentMenuID() == MENU_NEWGAME) {
             pActiveOverlayList->Reset();
             if (!PartyCreationUI_Loop()) {
