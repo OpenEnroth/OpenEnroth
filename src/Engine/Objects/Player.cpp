@@ -43,8 +43,6 @@ static SpellFxRenderer *spell_fx_renderer = EngineIocContainer::ResolveSpellFxRe
 
 IndexedArray<Player *, 1, 4> pPlayers;
 
-PlayerSpeech PlayerSpeechID;
-
 // Race Stat Points Bonus/ Penalty
 struct PlayerCreation_AttributeProps {
     unsigned char uBaseValue;
@@ -6366,13 +6364,6 @@ void DamagePlayerFromMonster(unsigned int uObjID, ABILITY_INDEX dmgSource, Vec3i
 
         unsigned int uActorID = PID_ID(uObjID);
 
-        // test
-        // if (/*uActorType == OBJECT_Player &&*/ !_A750D8_player_speech_timer) {
-        //    _A750D8_player_speech_timer = 256;
-        //    PlayerSpeechID = SPEECH_DoorLocked;
-        //    uSpeakingCharacter = 1;
-        // }
-        // test
         Player *playerPtr = &pParty->pPlayers[targetchar];
         Actor *actorPtr = &pActors[uActorID];
         healthBeforeRecvdDamage = playerPtr->health;
@@ -6556,10 +6547,8 @@ void DamagePlayerFromMonster(unsigned int uObjID, ABILITY_INDEX dmgSource, Vec3i
                 damagetype = 0;
             }
             playerPtr->receiveDamage(damage, (DAMAGE_TYPE)damagetype);
-            if (uActorType == OBJECT_Player && !_A750D8_player_speech_timer) {
-                _A750D8_player_speech_timer = 256;
-                PlayerSpeechID = SPEECH_DamagedParty;
-                uSpeakingCharacter = uActorID;
+            if (uActorType == OBJECT_Player) {
+                pParty->setDelayedReaction(SPEECH_DamagedParty, uActorID);
             }
             return;
         } else if (uActorType == OBJECT_Actor) {  // missile fired by actor
@@ -6703,10 +6692,8 @@ void DamagePlayerFromMonster(unsigned int uObjID, ABILITY_INDEX dmgSource, Vec3i
             }
 
             playerPtr->receiveDamage(damage, (DAMAGE_TYPE)damagetype);
-            if (uActorType == OBJECT_Player && !_A750D8_player_speech_timer) {
-                _A750D8_player_speech_timer = 256;
-                PlayerSpeechID = SPEECH_DamagedParty;
-                uSpeakingCharacter = uActorID;
+            if (uActorType == OBJECT_Player) {
+                pParty->setDelayedReaction(SPEECH_DamagedParty, uActorID);
             }
 
             return;

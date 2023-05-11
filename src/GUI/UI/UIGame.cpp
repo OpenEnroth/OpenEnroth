@@ -1461,80 +1461,52 @@ void GameUI_DrawPortraits() {
     PlayerFrame *pFrame;              // eax@21
     Image *pPortrait;                 // [sp-4h] [bp-1Ch]@27
 
-    if (_A750D8_player_speech_timer) {
-        _A750D8_player_speech_timer -= (signed int)pMiscTimer->uTimeElapsed;
-        if (_A750D8_player_speech_timer <= 0) {
-            if (pParty->pPlayers[uSpeakingCharacter].CanAct()) {
-                pParty->pPlayers[uSpeakingCharacter].playReaction(PlayerSpeechID);
-            }
-            _A750D8_player_speech_timer = 0;
-        }
-    }
+    pParty->updateDelayedReaction();
 
-    for (uint i = 0; i < 4; ++i) {
+    for (int i = 0; i < pParty->pPlayers.size(); ++i) {
         Player *pPlayer = &pParty->pPlayers[i];
         if (pPlayer->IsEradicated()) {
             pPortrait = game_ui_player_face_eradicated;
             if (pParty->pPartyBuffs[PARTY_BUFF_INVISIBILITY].Active())
-                render->DrawTextureGrayShade(
-                    pPlayerPortraitsXCoords_For_PlayerBuffAnimsDrawing[i] /
-                        640.0f,
-                    387 / 480.0f, pPortrait); // was 388
+                render->DrawTextureGrayShade(pPlayerPortraitsXCoords_For_PlayerBuffAnimsDrawing[i] / 640.0f, 387 / 480.0f, pPortrait); // was 388
             else
-                render->DrawTextureNew(
-                    (pPlayerPortraitsXCoords_For_PlayerBuffAnimsDrawing[i] +
-                     1) /
-                        640.0f,
-                    387 / 480.0f, pPortrait); // was 388
+                render->DrawTextureNew((pPlayerPortraitsXCoords_For_PlayerBuffAnimsDrawing[i] + 1) / 640.0f, 387 / 480.0f, pPortrait); // was 388
             continue;
         }
         if (pPlayer->IsDead()) {
             pPortrait = game_ui_player_face_dead;
             if (pParty->pPartyBuffs[PARTY_BUFF_INVISIBILITY].Active())
                 render->DrawTextureGrayShade(
-                    pPlayerPortraitsXCoords_For_PlayerBuffAnimsDrawing[i] /
-                        640.0f,
+                    pPlayerPortraitsXCoords_For_PlayerBuffAnimsDrawing[i] / 640.0f,
                     388 / 480.0f, pPortrait);
             else
                 render->DrawTextureNew(
-                    (pPlayerPortraitsXCoords_For_PlayerBuffAnimsDrawing[i] +
-                     1) /
-                        640.0f,
+                    (pPlayerPortraitsXCoords_For_PlayerBuffAnimsDrawing[i] + 1) / 640.0f,
                     388 / 480.0f, pPortrait);
             continue;
         }
         face_expression_ID = 0;
         for (size_t j = 0; j < pPlayerFrameTable->pFrames.size(); ++j)
-            if (pPlayerFrameTable->pFrames[j].expression ==
-                pPlayer->expression) {
+            if (pPlayerFrameTable->pFrames[j].expression == pPlayer->expression) {
                 face_expression_ID = j;
                 break;
             }
-        if (face_expression_ID == 0) face_expression_ID = 1;
+        if (face_expression_ID == 0)
+            face_expression_ID = 1;
         if (pPlayer->expression == CHARACTER_EXPRESSION_TALK)
-            pFrame = pPlayerFrameTable->GetFrameBy_y(
-                &pPlayer->_expression21_frameset,
-                &pPlayer->_expression21_animtime, pMiscTimer->uTimeElapsed);
+            pFrame = pPlayerFrameTable->GetFrameBy_y(&pPlayer->_expression21_frameset, &pPlayer->_expression21_animtime, pMiscTimer->uTimeElapsed);
         else
-            pFrame = pPlayerFrameTable->GetFrameBy_x(
-                face_expression_ID, pPlayer->uExpressionTimePassed);
+            pFrame = pPlayerFrameTable->GetFrameBy_x(face_expression_ID, pPlayer->uExpressionTimePassed);
         if (true /* || pPlayer->uExpressionImageIndex != pFrame->uTextureID - 1*/) {
             pPlayer->uExpressionImageIndex = pFrame->uTextureID - 1;
-            pPortrait = game_ui_player_faces
-                [i]
-                [pPlayer
-                     ->uExpressionImageIndex];  // pFace = (Texture_MM7
-                                     // *)game_ui_player_faces[i][pFrame->uTextureID];
+            pPortrait = game_ui_player_faces[i][pPlayer->uExpressionImageIndex];  // pFace = (Texture_MM7*)game_ui_player_faces[i][pFrame->uTextureID];
             if (pParty->pPartyBuffs[PARTY_BUFF_INVISIBILITY].Active())
                 render->DrawTextureGrayShade(
-                    pPlayerPortraitsXCoords_For_PlayerBuffAnimsDrawing[i] /
-                        640.0f,
+                    pPlayerPortraitsXCoords_For_PlayerBuffAnimsDrawing[i] / 640.0f,
                     388 / 480.0f, pPortrait);
             else
                 render->DrawTextureNew(
-                    (pPlayerPortraitsXCoords_For_PlayerBuffAnimsDrawing[i] +
-                     1) /
-                        640.0f,
+                    (pPlayerPortraitsXCoords_For_PlayerBuffAnimsDrawing[i] + 1) / 640.0f,
                     388 / 480.0f, pPortrait);
             continue;
         }
@@ -1543,10 +1515,8 @@ void GameUI_DrawPortraits() {
         if (pTurnEngine->turn_stage != TE_WAIT) {
             if (PID_TYPE(pTurnEngine->pQueue[0].uPackedID) == OBJECT_Player) {
                 if (pTurnEngine->uActorQueueSize > 0) {
-                    for (uint i = 0; i < (uint)pTurnEngine->uActorQueueSize;
-                         ++i) {
-                        if (PID_TYPE(pTurnEngine->pQueue[i].uPackedID) !=
-                            OBJECT_Player)
+                    for (uint i = 0; i < (uint)pTurnEngine->uActorQueueSize; ++i) {
+                        if (PID_TYPE(pTurnEngine->pQueue[i].uPackedID) != OBJECT_Player)
                             break;
 
                         auto alert_texture = game_ui_player_alert_green;
@@ -1556,19 +1526,15 @@ void GameUI_DrawPortraits() {
                             alert_texture = game_ui_player_alert_yellow;
 
                         render->DrawTextureNew(
-                            (pPlayerPortraitsXCoords_For_PlayerBuffAnimsDrawing
-                                 [PID_ID(pTurnEngine->pQueue[i].uPackedID)] -
-                             4) /
-                                640.0f,
+                            (pPlayerPortraitsXCoords_For_PlayerBuffAnimsDrawing[PID_ID(pTurnEngine->pQueue[i].uPackedID)] - 4) / 640.0f,
                             384 / 480.0f, alert_texture); // was 385
                     }
                 }
             }
         }
     } else {
-        for (uint i = 0; i < 4; ++i) {
-            if (pParty->pPlayers[i].CanAct() &&
-                !pParty->pPlayers[i].timeToRecovery) {
+        for (int i = 0; i < pParty->pPlayers.size(); ++i) {
+            if (pParty->pPlayers[i].CanAct() && !pParty->pPlayers[i].timeToRecovery) {
                 auto alert_texture = game_ui_player_alert_green;
                 if (pParty->GetRedAlert())
                     alert_texture = game_ui_player_alert_red;
@@ -1576,9 +1542,7 @@ void GameUI_DrawPortraits() {
                     alert_texture = game_ui_player_alert_yellow;
 
                 render->DrawTextureNew(
-                    (pPlayerPortraitsXCoords_For_PlayerBuffAnimsDrawing[i] -
-                     4) /
-                        640.0f,
+                    (pPlayerPortraitsXCoords_For_PlayerBuffAnimsDrawing[i] - 4) / 640.0f,
                     384 / 480.0f, alert_texture); // was 385
             }
         }

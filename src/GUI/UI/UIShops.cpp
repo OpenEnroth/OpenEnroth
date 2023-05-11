@@ -1552,26 +1552,21 @@ void GetHouseGoodbyeSpeech() {
                 PlayHouseSound(window_SpeakInHouse->wData.val, HouseSound_Goodbye);
                 return;
             }
-            PlayHouseSound(window_SpeakInHouse->wData.val,
-                           (HouseSoundID)(dword_F8B1E4 + 3));
-            if (!dword_F8B1E4 && !_A750D8_player_speech_timer) {
+            PlayHouseSound(window_SpeakInHouse->wData.val, (HouseSoundID)(dword_F8B1E4 + 3));
+            if (!dword_F8B1E4 && !pParty->_delayedReactionTimer) {
                 int id = pParty->getRandomActiveCharacterId(vrng.get());
 
                 if (id != -1) {
-                    _A750D8_player_speech_timer = 256;
-                    PlayerSpeechID = SPEECH_ShopRude;
-                    uSpeakingCharacter = id;
+                    pParty->setDelayedReaction(SPEECH_ShopRude, id);
                     return;
                 }
             }
         } else {  // caught stealing
-            if (!_A750D8_player_speech_timer) {
+            if (!pParty->_delayedReactionTimer) {
                 int id = pParty->getRandomActiveCharacterId(vrng.get());
 
                 if (id != -1) {
-                    _A750D8_player_speech_timer = 256;
-                    PlayerSpeechID = SPEECH_ShopRude;
-                    uSpeakingCharacter = id;
+                    pParty->setDelayedReaction(SPEECH_ShopRude, id);
                     return;
                 }
             }

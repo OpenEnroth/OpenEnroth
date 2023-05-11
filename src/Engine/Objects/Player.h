@@ -662,5 +662,3 @@ int CycleCharacter(bool backwards);
 // Players indexed array
 // TODO(pskelton): drop this
 extern IndexedArray<Player *, 1, 4> pPlayers;
-
-extern enum PlayerSpeech PlayerSpeechID;

@@ -1169,8 +1169,6 @@ void Game::processQueuedMessages() {
                         continue;
                     }
 
-                    isLloydsBeaconBeingInstalled = true;
-
                     assert(pSpellDatas[SPELL_WATER_LLOYDS_BEACON].uNormalLevelMana == pSpellDatas[SPELL_WATER_LLOYDS_BEACON].uExpertLevelMana);
                     assert(pSpellDatas[SPELL_WATER_LLOYDS_BEACON].uNormalLevelMana == pSpellDatas[SPELL_WATER_LLOYDS_BEACON].uMasterLevelMana);
                     assert(pSpellDatas[SPELL_WATER_LLOYDS_BEACON].uNormalLevelMana == pSpellDatas[SPELL_WATER_LLOYDS_BEACON].uMagisterLevelMana);
@@ -1214,6 +1212,7 @@ void Game::processQueuedMessages() {
                         pGUIWindow_CurrentMenu = 0;
                     } else {
                         player.SetBeacon(uMessageParam, lloydsBeaconSpellDuration);
+                        pNextFrameMessageQueue->AddGUIMessage(UIMSG_CloseAfterInstallBeacon, 0, 0);
                     }
                     continue;
                 }

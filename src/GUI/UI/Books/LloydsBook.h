@@ -11,6 +11,5 @@ struct GUIWindow_LloydsBook : public GUIWindow_Book {
 };
 
 extern bool bRecallingBeacon;
-extern bool isLloydsBeaconBeingInstalled;
 extern int lloydsBeaconCasterId;
 extern int lloydsBeaconSpellDuration;
