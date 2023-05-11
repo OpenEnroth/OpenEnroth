@@ -412,10 +412,10 @@ class Movie : public IMovie {
         }
 
         auto current_time = std::chrono::system_clock::now();
-        std::chrono::duration<double, std::ratio<1>> diff = current_time - start_time;
-        std::chrono::milliseconds diff_ms = std::chrono::duration_cast<std::chrono::milliseconds>(diff);
-        playback_time += diff_ms.count();
-        start_time = std::chrono::system_clock::now();
+        auto diff = std::chrono::time_point_cast<std::chrono::milliseconds>(current_time) - std::chrono::time_point_cast<std::chrono::milliseconds>(start_time);
+
+        playback_time += std::chrono::duration_cast<std::chrono::milliseconds>(diff).count();
+        start_time = current_time;
 
         int desired_frame_number = (int)((playback_time / video.frame_len) + 0.5);
         if (last_resampled_frame_num == desired_frame_number) {
