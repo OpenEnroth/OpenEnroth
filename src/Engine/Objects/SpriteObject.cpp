@@ -22,6 +22,7 @@
 #include "Engine/Graphics/BSPModel.h"
 #include "Engine/Graphics/Level/Decoration.h"
 #include "Engine/Graphics/Outdoor.h"
+#include "Engine/Graphics/Indoor.h"
 #include "Engine/Graphics/ParticleEngine.h"
 #include "Engine/Graphics/Sprites.h"
 

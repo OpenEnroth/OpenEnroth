@@ -2,9 +2,8 @@
 
 #include "Engine/AssetsManager.h"
 #include "Engine/Engine.h"
-#include "Engine/EngineGlobals.h"
 #include "Engine/Graphics/Outdoor.h"
-#include "Engine/Graphics/Viewport.h"
+#include "Engine/Graphics/Indoor.h"
 #include "Engine/LOD.h"
 #include "Engine/Localization.h"
 #include "Engine/Party.h"
@@ -13,8 +12,6 @@
 #include "GUI/GUIButton.h"
 #include "GUI/UI/UIRest.h"
 #include "GUI/GUIFont.h"
-
-#include "Media/Audio/AudioPlayer.h"
 
 Image *rest_ui_btn_4 = nullptr;
 Image *rest_ui_btn_exit = nullptr;

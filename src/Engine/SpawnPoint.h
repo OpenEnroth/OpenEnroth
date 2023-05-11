@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Engine/Objects/ActorEnums.h"
+#include "Engine/Objects/ItemEnums.h"
 
 struct SpawnPoint {
     Vec3i vPosition;

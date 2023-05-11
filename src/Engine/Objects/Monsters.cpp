@@ -382,11 +382,9 @@ void MonsterList::FromFile(const Blob &data_mm6, const Blob &data_mm7, const Blo
 }
 
 //----- (004563FF) --------------------------------------------------------
-signed int MonsterStats::FindMonsterByTextureName(
-    const char *monster_textr_name) {
+signed int MonsterStats::FindMonsterByTextureName(const char *monster_textr_name) {
     for (int i = 1; i < uNumMonsters; ++i) {
-        if ((pInfos[i].pName) &&
-            (iequals(pInfos[i].pPictureName, monster_textr_name)))
+        if (!pInfos[i].pName.empty() && iequals(pInfos[i].pPictureName, monster_textr_name))
             return i;
     }
     return -1;

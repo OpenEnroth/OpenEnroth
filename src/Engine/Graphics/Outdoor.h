@@ -8,12 +8,19 @@
 #include "Engine/Tables/TileFrameTable.h"
 #include "Engine/Serialization/LegacyImages.h"
 
-#include "Engine/Graphics/BSPModel.h"
-#include "Engine/Graphics/Indoor.h"
 #include "Engine/SpawnPoint.h"
 #include "Media/Audio/AudioPlayer.h"
 
-#define DAY_ATTRIB_FOG 1
+#include "BSPModel.h"
+#include "LocationInfo.h"
+#include "LocationTime.h"
+#include "LocationEnums.h"
+#include "LocationFunctions.h"
+
+class Logger;
+class DecalBuilder;
+class SpellFxRenderer;
+class LightmapBuilder;
 
 struct OutdoorLocationTileType {
     Tileset tileset;
@@ -126,7 +133,7 @@ struct OutdoorLocation {
     std::string location_file_description;
     std::string sky_texture_filename;
     std::array<OutdoorLocationTileType, 4> pTileTypes;  // [3]  road tileset
-    struct OutdoorLocationTerrain pTerrain;
+    OutdoorLocationTerrain pTerrain;
     std::array<uint16_t, 128 * 128> pCmap; // Unused
     std::vector<BSPModel> pBModels;
     std::vector<uint16_t> pFaceIDLIST;
@@ -137,7 +144,7 @@ struct OutdoorLocation {
     int field_F4;
     char field_F8[968];
     std::vector<SpawnPoint> pSpawnPoints;
-    LocationHeader_MM7 ddm;
+    LocationInfo ddm;
     LocationTime loc_time;
     std::array<std::array<uint8_t, 11>, 88> uFullyRevealedCellOnMap;
                                           // 968         the inner array is 11

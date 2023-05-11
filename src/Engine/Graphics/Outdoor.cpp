@@ -18,6 +18,7 @@
 #include "Engine/Graphics/Sprites.h"
 #include "Engine/Graphics/Viewport.h"
 #include "Engine/Graphics/Weather.h"
+#include "Engine/Graphics/Indoor.h"
 #include "Engine/LOD.h"
 #include "Engine/Objects/Actor.h"
 #include "Engine/Objects/Chest.h"
@@ -886,13 +887,13 @@ void OutdoorLocation::Load(const std::string &filename, int days_played, int res
                 respawnInitial = true;
 
             // Entering the level for the 1st time?
-            if (delta.header.lastRepawnDay == 0)
+            if (delta.header.info.lastRespawnDay == 0)
                 respawnInitial = true;
 
             if (dword_6BE364_game_settings_1 & GAME_SETTINGS_LOADING_SAVEGAME_SKIP_RESPAWN)
                 respawn_interval_days = 0x1BAF800;
 
-            if (!respawnInitial && days_played - delta.header.lastRepawnDay >= respawn_interval_days)
+            if (!respawnInitial && days_played - delta.header.info.lastRespawnDay >= respawn_interval_days)
                 respawnTimed = true;
         } catch (const Exception &e) {
             logger->error("Failed to load '{}', respawning location: {}", ddm_filename, e.what());
@@ -921,7 +922,7 @@ void OutdoorLocation::Load(const std::string &filename, int days_played, int res
     deserialize(delta, this);
 
     if (respawnTimed || respawnInitial)
-        ddm.lastRepawnDay = days_played;
+        ddm.lastRespawnDay = days_played;
     if (respawnTimed)
         ddm.respawnCount++;
 

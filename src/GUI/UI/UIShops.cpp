@@ -6,8 +6,7 @@
 #include "Engine/Engine.h"
 #include "Engine/Graphics/IRender.h"
 #include "Engine/Graphics/Image.h"
-#include "Engine/Graphics/Indoor.h"
-#include "Engine/Graphics/Outdoor.h"
+#include "Engine/Graphics/LocationFunctions.h"
 #include "Engine/Graphics/Viewport.h"
 #include "Engine/Localization.h"
 #include "Engine/MapInfo.h"
@@ -1584,7 +1583,7 @@ void GetHouseGoodbyeSpeech() {
 void sub_4B1447_party_fine(int shopId, int stealingResult,
                            int fineToAdd) {  // not working properly??
     int v3;       // esi@1
-    LocationHeader_MM7 *v7;  // eax@14
+    LocationInfo *v7;  // eax@14
 
     if (stealingResult == 0 || stealingResult == 1) {  // got caught
         if (pParty->uFine < 4000000) {
@@ -1614,8 +1613,7 @@ void sub_4B1447_party_fine(int shopId, int stealingResult,
     }
 
     pParty->InTheShopFlags[shopId] = 1;
-    v7 = &pOutdoor->ddm;
-    if (uCurrentlyLoadedLevelType != LEVEL_Outdoor) v7 = &pIndoor->dlv;
+    v7 = &currentLocationInfo();
     v7->reputation += v3;
     if (v7->reputation > 10000) v7->reputation = 10000;
 }

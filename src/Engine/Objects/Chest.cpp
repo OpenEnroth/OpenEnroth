@@ -4,6 +4,7 @@
 #include "Engine/Graphics/DecorationList.h"
 #include "Engine/Graphics/Level/Decoration.h"
 #include "Engine/Graphics/Outdoor.h"
+#include "Engine/Graphics/Indoor.h"
 #include "Engine/Graphics/Viewport.h"
 #include "Engine/LOD.h"
 #include "Engine/Localization.h"

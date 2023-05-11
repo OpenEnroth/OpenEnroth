@@ -10,6 +10,7 @@
 
 #include "Engine/Graphics/LightsStack.h"
 #include "Engine/Graphics/Outdoor.h"
+#include "Engine/Graphics/Indoor.h"
 #include "Engine/Graphics/ClippingFunctions.h"
 #include "Engine/Graphics/Weather.h"
 

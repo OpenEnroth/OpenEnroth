@@ -40,6 +40,7 @@ struct FontData;
 struct GUICharMetric;
 struct ItemGen;
 struct LevelDecoration;
+struct LocationInfo;
 struct LocationTime;
 struct PersistentVariables;
 struct MonsterDesc;
@@ -1233,23 +1234,35 @@ void deserialize(const SoundInfo_MM6 &src, SoundInfo *dst);
 void deserialize(const SoundInfo_MM7 &src, SoundInfo *dst);
 
 
+struct LocationInfo_MM7 {
+    int32_t respawnCount;
+    int32_t lastRespawnDay;
+    int32_t reputation;
+    int32_t alertStatus;
+};
+static_assert(sizeof(LocationInfo_MM7) == 16);
+MM_DECLARE_MEMCOPY_SERIALIZABLE(LocationInfo_MM7)
+
+void serialize(const LocationInfo &src, LocationInfo_MM7 *dst);
+void deserialize(const LocationInfo_MM7 &src, LocationInfo *dst);
+
+
 struct LocationHeader_MM7 {
-    int32_t respawnCount = 0; // Number of times a location was respawned, including the initial spawn.
-    int32_t lastRepawnDay = 0; // Day of the last respawn (days since GameTime zero to last respawn).
-    int32_t reputation = 0; // Party reputation in this location.
-    int32_t field_C_alert = 0; // bool, ???
-    uint32_t totalFacesCount = 0; // Outdoor: total number of faces in all bmodels in the level. Indoor: total number of faces in the level.
-    uint32_t decorationCount = 0; // Total number of decorations.
-    uint32_t bmodelCount = 0; // Outdoor only: total number of bmodels.
-    int32_t field_1C = 0;
-    int32_t field_20 = 0;
-    int32_t field_24 = 0;
+    LocationInfo_MM7 info;
+    uint32_t totalFacesCount; // Outdoor: total number of faces in all bmodels in the level. Indoor: total number of faces in the level.
+    uint32_t decorationCount;
+    uint32_t bmodelCount;
+    int32_t field_1C;
+    int32_t field_20;
+    int32_t field_24;
 };
 static_assert(sizeof(LocationHeader_MM7) == 40);
 MM_DECLARE_MEMCOPY_SERIALIZABLE(LocationHeader_MM7)
-// TODO(captainurist): introduce engine equivalent
+// LocationHeader_MM7 is only used during deserialization and doesn't have a runtime equivalent,
+// so no deserialize() overloads for it.
 
 
+// TODO(captainurist): PersistentVariables_MM7
 struct MapEventVariables_MM7 {
     std::array<unsigned char, 75> mapVars;
     std::array<unsigned char, 125> decorVars;
@@ -1271,7 +1284,8 @@ struct BLVHeader_MM7 {
 };
 static_assert(sizeof(BLVHeader_MM7) == 136);
 MM_DECLARE_MEMCOPY_SERIALIZABLE(BLVHeader_MM7)
-// TODO(captainurist): introduce engine equivalent
+// BLVHeader_MM7 is only used during deserialization and doesn't have a runtime equivalent,
+// so no deserialize() overloads for it.
 
 
 struct OutdoorLocationTileType_MM7 {

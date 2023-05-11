@@ -2,8 +2,6 @@
 
 #include <cstdlib>
 
-#include "Application/GameOver.h"
-
 #include "Arcomage/Arcomage.h"
 
 #include "Engine/AssetsManager.h"
@@ -13,14 +11,13 @@
 #include "Engine/Graphics/Camera.h"
 #include "Engine/Graphics/Image.h"
 #include "Engine/Graphics/Level/Decoration.h"
+#include "Engine/Graphics/Indoor.h"
 #include "Engine/Graphics/Outdoor.h"
-#include "Engine/Graphics/Overlays.h"
 #include "Engine/Graphics/Viewport.h"
 #include "Engine/LOD.h"
 #include "Engine/Localization.h"
 #include "Engine/MapInfo.h"
 #include "Engine/Objects/ItemTable.h"
-#include "Engine/Objects/Monsters.h"
 #include "Engine/Party.h"
 #include "Engine/PriceCalculator.h"
 #include "Engine/SaveLoad.h"
@@ -1909,7 +1906,7 @@ void TempleDialog() {
     int pPrice;                   // edi@1
     int pTextHeight;              // eax@11
     uint16_t pTextColor;  // ax@21
-    LocationHeader_MM7 *ddm;          // edi@29
+    LocationInfo *ddm;          // edi@29
     GUIButton *pButton;           // edi@64
     uint8_t index;        // [sp+1B7h] [bp-Dh]@64
     int v64;                      // [sp+1B8h] [bp-Ch]@6
@@ -2063,10 +2060,7 @@ void TempleDialog() {
         pPrice = buildingTable[window_SpeakInHouse->wData.val - 1].fPriceMultiplier;
         if (pParty->GetGold() >= pPrice) {
             pParty->TakeGold(pPrice);
-            if (uCurrentlyLoadedLevelType != LEVEL_Outdoor)
-                ddm = &pIndoor->dlv;
-            else
-                ddm = &pOutdoor->ddm;
+            ddm = &currentLocationInfo();
 
             if (ddm->reputation > -5) {
                 ddm->reputation = ddm->reputation - 1;

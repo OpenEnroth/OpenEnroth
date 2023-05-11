@@ -10,27 +10,14 @@
 #include "Engine/SpawnPoint.h"
 #include "Engine/Serialization/LegacyImages.h"
 
-#include "Engine/Graphics/BSPModel.h"
-#include "Engine/Graphics/IRender.h"
+#include "BSPModel.h"
+#include "IRender.h"
+#include "LocationInfo.h"
+#include "LocationTime.h"
+#include "LocationEnums.h"
+#include "LocationFunctions.h"
 
 struct IndoorLocation;
-
-struct LocationTime {
-    GameTime last_visit {};
-    std::string sky_texture_name;
-    int day_attrib = 0; // TODO(caprainurist): actually WeatherFlags, see DAY_ATTRIB_FOG.
-    int day_fogrange_1 = 0;
-    int day_fogrange_2 = 0;
-};
-
-/*  319 */
-enum class LEVEL_TYPE {
-    LEVEL_null = 0,
-    LEVEL_Indoor = 0x1,
-    LEVEL_Outdoor = 0x2,
-};
-using enum LEVEL_TYPE;
-extern LEVEL_TYPE uCurrentlyLoadedLevelType;
 
 struct BLVLight {
     Vec3s vPosition;
@@ -88,10 +75,6 @@ struct BLVMapOutline {  // 0C
 struct FlatFace {
     std::array<int32_t, 104> u;
     std::array<int32_t, 104> v;
-};
-
-enum {
-    MODEL_INDOOR = -1
 };
 
 /*   93 */
@@ -295,10 +278,7 @@ struct IndoorLocation {
     void PrepareItemsRenderList_BLV();
 
     std::string filename;
-    char field_20[48];
     unsigned int bLoaded = 0;
-    char field_54[404];
-    BLVHeader_MM7 blv;
     std::vector<Vec3s> pVertices;
     std::vector<BLVFace> pFaces;
     std::vector<BLVFaceExtra> pFaceExtras;
@@ -312,7 +292,7 @@ struct IndoorLocation {
     std::vector<int16_t> ptr_0002B4_doors_ddata;
     std::vector<uint16_t> ptr_0002B8_sector_lrdata;
     std::vector<SpawnPoint> pSpawnPoints;
-    LocationHeader_MM7 dlv;
+    LocationInfo dlv;
     LocationTime stru1;
     std::array<char, 875> _visible_outlines;
     char padding;
@@ -380,7 +360,6 @@ void switchDoorAnimation(unsigned int uDoorID, int a2);
 int CalcDistPointToLine(int a1, int a2, int a3, int a4, int a5, int a6);
 void PrepareDrawLists_BLV();
 void PrepareToLoadBLV(bool bLoading);
-bool GetAlertStatus();
 int SpawnEncounterMonsters(struct MapInfo *a1, int a2);
 int DropTreasureAt(ITEM_TREASURE_LEVEL trs_level, signed int trs_type, int x, int y, int z, uint16_t facing);
 

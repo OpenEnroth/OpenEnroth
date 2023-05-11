@@ -17,6 +17,7 @@ set(ENGINE_GRAPHICS_SOURCES
         Level/Decoration.cpp
         LightmapBuilder.cpp
         LightsStack.cpp
+        LocationFunctions.cpp
         Nuklear.cpp
         NuklearEventHandler.cpp
         OpenGL/GLShaderLoader.cpp
@@ -53,6 +54,10 @@ set(ENGINE_GRAPHICS_HEADERS
         Level/Decoration.h
         LightmapBuilder.h
         LightsStack.h
+        LocationEnums.h
+        LocationFunctions.h
+        LocationInfo.h
+        LocationTime.h
         Nuklear.h
         NuklearEventHandler.h
         OpenGL/GLShaderLoader.h

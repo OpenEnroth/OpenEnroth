@@ -4,8 +4,7 @@
 #include "Engine/Engine.h"
 #include "Engine/Localization.h"
 #include "Engine/mm7_data.h"
-#include "Engine/Graphics/Indoor.h"
-#include "Engine/Graphics/Outdoor.h"
+#include "Engine/Graphics/LocationFunctions.h"
 #include "Engine/Graphics/DecorationList.h"
 #include "Engine/Graphics/Level/Decoration.h"
 #include "Engine/Objects/SpriteObject.h"
@@ -13,6 +12,7 @@
 #include "Engine/Events/EventIR.h"
 #include "Engine/Events/EventInterpreter.h"
 #include "Engine/Events/Processor.h"
+#include "Engine/Party.h"
 #include "GUI/UI/UIStatusBar.h"
 
 struct MapTimer {
@@ -81,15 +81,10 @@ void checkDecorationEvents() {
 
 static void registerTimerTriggers(EventType triggerType, std::vector<MapTimer> *triggers) {
     std::vector<EventTrigger> timerTriggers = engine->_localEventMap.enumerateTriggers(triggerType);
-    GameTime levelLastVisit{};
 
     // TODO(Nik-RE-dev): using time of last visit will help timers only slightly because each map leaving resets it.
     //                   To support fair timers they need to be saved directly.
-    if (uCurrentlyLoadedLevelType == LEVEL_Indoor) {
-        levelLastVisit = pIndoor->stru1.last_visit;
-    } else {
-        levelLastVisit = pOutdoor->loc_time.last_visit;
-    }
+    GameTime levelLastVisit = currentLocationTime().last_visit;
 
     triggers->clear();
     for (EventTrigger &trigger : timerTriggers) {
