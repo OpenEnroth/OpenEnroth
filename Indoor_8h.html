@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;2ba5643</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;be18c66</span>
    </div>
   </td>
  </tr>
@@ -75,7 +75,6 @@ $(function() {
 <div class="header">
   <div class="summary">
 <a href="#nested-classes">Classes</a> &#124;
-<a href="#enum-members">Enumerations</a> &#124;
 <a href="#func-members">Functions</a> &#124;
 <a href="#var-members">Variables</a>  </div>
   <div class="headertitle"><div class="title">Indoor.h File Reference</div></div>
@@ -89,13 +88,15 @@ $(function() {
 <code>#include &quot;<a class="el" href="EngineIocContainer_8h.html">Engine/EngineIocContainer.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="SpawnPoint_8h.html">Engine/SpawnPoint.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="LegacyImages_8h.html">Engine/Serialization/LegacyImages.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="BSPModel_8h.html">Engine/Graphics/BSPModel.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="IRender_8h.html">Engine/Graphics/IRender.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="BSPModel_8h.html">BSPModel.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="IRender_8h.html">IRender.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="LocationInfo_8h.html">LocationInfo.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="LocationTime_8h.html">LocationTime.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="LocationEnums_8h.html">LocationEnums.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="LocationFunctions_8h.html">LocationFunctions.h</a>&quot;</code><br />
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Classes</h2></td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structLocationTime.html">LocationTime</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structBLVLight.html">BLVLight</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structBLVDoor.html">BLVDoor</a></td></tr>
@@ -114,17 +115,6 @@ Classes</h2></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structBLVRenderParams.html">BLVRenderParams</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="enum-members" name="enum-members"></a>
-Enumerations</h2></td></tr>
-<tr class="memitem:a24bf8802234f411139f3a641894c3f70"><td class="memItemLeft" align="right" valign="top">enum class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Indoor_8h.html#a24bf8802234f411139f3a641894c3f70">LEVEL_TYPE</a> { <a class="el" href="Indoor_8h.html#a24bf8802234f411139f3a641894c3f70a9bff669c235015694f2b138eb20b0db4">LEVEL_null</a> = 0
-, <a class="el" href="Indoor_8h.html#a24bf8802234f411139f3a641894c3f70ab587f8bb22e6a811dada125c1610b1a9">LEVEL_Indoor</a> = 0x1
-, <a class="el" href="Indoor_8h.html#a24bf8802234f411139f3a641894c3f70a187569101acfd86b198c0874e8d8a11e">LEVEL_Outdoor</a> = 0x2
- }</td></tr>
-<tr class="separator:a24bf8802234f411139f3a641894c3f70"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae4d5251432e1a9e6803c0240cc492e18"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom">{ <a class="el" href="Indoor_8h.html#ae4d5251432e1a9e6803c0240cc492e18a08100875ef7374b310de5c908192348e">MODEL_INDOOR</a> = -1
- }</td></tr>
-<tr class="separator:ae4d5251432e1a9e6803c0240cc492e18"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
@@ -148,8 +138,6 @@ Functions</h2></td></tr>
 <tr class="separator:ab7663442878fb1d9ce8c4293f7206c0e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a47ac13ac7daaac0c541dbff213117ccf"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Indoor_8h.html#a47ac13ac7daaac0c541dbff213117ccf">PrepareToLoadBLV</a> (bool bLoading)</td></tr>
 <tr class="separator:a47ac13ac7daaac0c541dbff213117ccf"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a688425e44bc5ef16328f44901226df8b"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Indoor_8h.html#a688425e44bc5ef16328f44901226df8b">GetAlertStatus</a> ()</td></tr>
-<tr class="separator:a688425e44bc5ef16328f44901226df8b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7485f5a906e79001ccf1f12e3e5d5783"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Indoor_8h.html#a7485f5a906e79001ccf1f12e3e5d5783">SpawnEncounterMonsters</a> (struct <a class="el" href="structMapInfo.html">MapInfo</a> *a1, int a2)</td></tr>
 <tr class="separator:a7485f5a906e79001ccf1f12e3e5d5783"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a432e8194ed9df808841895f55a83325a"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Indoor_8h.html#a432e8194ed9df808841895f55a83325a">DropTreasureAt</a> (<a class="el" href="ItemEnums_8h.html#ad20c3ee7b5967d80cee8e0ec3e061a9c">ITEM_TREASURE_LEVEL</a> trs_level, signed int trs_type, int x, int y, int z, uint16_t facing)</td></tr>
@@ -169,8 +157,6 @@ Functions</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="var-members" name="var-members"></a>
 Variables</h2></td></tr>
-<tr class="memitem:af7004771e2f64ebae04197860cd1f3d3"><td class="memItemLeft" align="right" valign="top"><a class="el" href="Indoor_8h.html#a24bf8802234f411139f3a641894c3f70">LEVEL_TYPE</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Indoor_8h.html#af7004771e2f64ebae04197860cd1f3d3">uCurrentlyLoadedLevelType</a></td></tr>
-<tr class="separator:af7004771e2f64ebae04197860cd1f3d3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9b7a8d8a38babff41b0d4655a053ca75"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structIndoorLocation.html">IndoorLocation</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Indoor_8h.html#a9b7a8d8a38babff41b0d4655a053ca75">pIndoor</a></td></tr>
 <tr class="separator:a9b7a8d8a38babff41b0d4655a053ca75"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac0fb829e03a912f8cfee4431c86ddce9"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structBLVRenderParams.html">BLVRenderParams</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Indoor_8h.html#ac0fb829e03a912f8cfee4431c86ddce9">pBLVRenderParams</a></td></tr>
@@ -178,51 +164,6 @@ Variables</h2></td></tr>
 <tr class="memitem:ae3d61ee9e0c23bc4cadeb64369690a1f"><td class="memItemLeft" align="right" valign="top">struct <a class="el" href="structBspRenderer.html">BspRenderer</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Indoor_8h.html#ae3d61ee9e0c23bc4cadeb64369690a1f">pBspRenderer</a></td></tr>
 <tr class="separator:ae3d61ee9e0c23bc4cadeb64369690a1f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Enumeration Type Documentation</h2>
-<a id="ae4d5251432e1a9e6803c0240cc492e18" name="ae4d5251432e1a9e6803c0240cc492e18"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae4d5251432e1a9e6803c0240cc492e18">&#9670;&#160;</a></span>anonymous enum</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">anonymous enum</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<table class="fieldtable">
-<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="ae4d5251432e1a9e6803c0240cc492e18a08100875ef7374b310de5c908192348e" name="ae4d5251432e1a9e6803c0240cc492e18a08100875ef7374b310de5c908192348e"></a>MODEL_INDOOR&#160;</td><td class="fielddoc"></td></tr>
-</table>
-
-</div>
-</div>
-<a id="a24bf8802234f411139f3a641894c3f70" name="a24bf8802234f411139f3a641894c3f70"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a24bf8802234f411139f3a641894c3f70">&#9670;&#160;</a></span>LEVEL_TYPE</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">enum class <a class="el" href="Indoor_8h.html#a24bf8802234f411139f3a641894c3f70">LEVEL_TYPE</a></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">strong</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-<table class="fieldtable">
-<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a24bf8802234f411139f3a641894c3f70a9bff669c235015694f2b138eb20b0db4" name="a24bf8802234f411139f3a641894c3f70a9bff669c235015694f2b138eb20b0db4"></a>LEVEL_null&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a24bf8802234f411139f3a641894c3f70ab587f8bb22e6a811dada125c1610b1a9" name="a24bf8802234f411139f3a641894c3f70ab587f8bb22e6a811dada125c1610b1a9"></a>LEVEL_Indoor&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a24bf8802234f411139f3a641894c3f70a187569101acfd86b198c0874e8d8a11e" name="a24bf8802234f411139f3a641894c3f70a187569101acfd86b198c0874e8d8a11e"></a>LEVEL_Outdoor&#160;</td><td class="fielddoc"></td></tr>
-</table>
-
-</div>
-</div>
 <h2 class="groupheader">Function Documentation</h2>
 <a id="a22f20848f1052b5e1c7195cfca4fdb7d" name="a22f20848f1052b5e1c7195cfca4fdb7d"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a22f20848f1052b5e1c7195cfca4fdb7d">&#9670;&#160;</a></span>BLV_GetFloorLevel()</h2>
@@ -565,23 +506,6 @@ Variables</h2></td></tr>
 
 </div>
 </div>
-<a id="a688425e44bc5ef16328f44901226df8b" name="a688425e44bc5ef16328f44901226df8b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a688425e44bc5ef16328f44901226df8b">&#9670;&#160;</a></span>GetAlertStatus()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">bool GetAlertStatus </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
 <a id="a1b4a74619c3ad3ab687e32d739155932" name="a1b4a74619c3ad3ab687e32d739155932"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a1b4a74619c3ad3ab687e32d739155932">&#9670;&#160;</a></span>GetApproximateIndoorFloorZ()</h2>
 
@@ -828,28 +752,6 @@ Variables</h2></td></tr>
       <table class="memname">
         <tr>
           <td class="memname"><a class="el" href="structIndoorLocation.html">IndoorLocation</a>* pIndoor</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">extern</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="af7004771e2f64ebae04197860cd1f3d3" name="af7004771e2f64ebae04197860cd1f3d3"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#af7004771e2f64ebae04197860cd1f3d3">&#9670;&#160;</a></span>uCurrentlyLoadedLevelType</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="Indoor_8h.html#a24bf8802234f411139f3a641894c3f70">LEVEL_TYPE</a> uCurrentlyLoadedLevelType</td>
         </tr>
       </table>
   </td>
