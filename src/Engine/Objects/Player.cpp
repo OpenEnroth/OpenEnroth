@@ -549,11 +549,11 @@ void Player::SetCondition(Condition uConditionIdx, int blockable) {
     }
 
     int playersBefore = 0;
-    for (Player &player : pParty->pPlayers) {  // count active players befre activating condition
+    for (Player &player : pParty->pPlayers) {  // count active players before activating condition
         playersBefore += player.CanAct() ? 1 : 0;
     }
 
-    conditions.Set(uConditionIdx, pParty->GetPlayingTime());  // set ocndition
+    conditions.Set(uConditionIdx, pParty->GetPlayingTime());  // set condition
 
     int playersAfter = 0;
     Player *remainingPlayer = nullptr;
