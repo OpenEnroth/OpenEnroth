@@ -397,14 +397,14 @@ GAME_TEST(Issues, Issue405) {
     runTrace();
     game->tick(10);
     EXPECT_TRUE(pParty->pPartyBuffs[PARTY_BUFF_IMMOLATION].Active());
-    int firstRemainingRecovery = pPlayers[1]->timeToRecovery;
+    int firstRemainingRecovery = pParty->pPlayers[0].timeToRecovery;
 
     // 2ms/frame
     test->startDeterministicSegment(2);
     runTrace();
     game->tick(150);
     EXPECT_TRUE(pParty->pPartyBuffs[PARTY_BUFF_IMMOLATION].Active());
-    int secondRemainingRecovery = pPlayers[1]->timeToRecovery;
+    int secondRemainingRecovery = pParty->pPlayers[0].timeToRecovery;
 
     EXPECT_EQ(firstRemainingRecovery - 1, secondRemainingRecovery); // TODO(captainurist): where is this -1 coming from???
 }

@@ -575,8 +575,7 @@ void GameUI_OnPlayerPortraitLeftClick(unsigned int uPlayerID) {
     Player *player = &pParty->pPlayers[uPlayerID - 1];
     if (pParty->pPickedItem.uItemID != ITEM_NULL) {
         if (int slot = player->AddItem(-1, pParty->pPickedItem.uItemID)) {
-            memcpy(&player->pInventoryItemList[slot - 1], &pParty->pPickedItem,
-                   0x24u);
+            player->pInventoryItemList[slot - 1] = pParty->pPickedItem;
             mouse->RemoveHoldingItem();
             return;
         }
@@ -592,30 +591,30 @@ void GameUI_OnPlayerPortraitLeftClick(unsigned int uPlayerID) {
     if (current_screen_type == CURRENT_SCREEN::SCREEN_GAME) {
         if (pParty->hasActiveCharacter()) {
             if (pParty->activeCharacterIndex() != uPlayerID) {
-                if (pPlayers[uPlayerID]->timeToRecovery || !pPlayers[uPlayerID]->CanAct()) {
+                if (player->timeToRecovery || !player->CanAct()) {
                     return;
                 }
 
                 pParty->setActiveCharacterIndex(uPlayerID);
                 return;
             }
-            pGUIWindow_CurrentMenu = new GUIWindow_CharacterRecord(
-                pParty->activeCharacterIndex(),
-                CURRENT_SCREEN::SCREEN_CHARACTERS);  // CharacterUI_Initialize(SCREEN_CHARACTERS);
+            pGUIWindow_CurrentMenu = new GUIWindow_CharacterRecord(pParty->activeCharacterIndex(), CURRENT_SCREEN::SCREEN_CHARACTERS);
             return;
         }
         return;
     }
 
-    if (current_screen_type == CURRENT_SCREEN::SCREEN_SPELL_BOOK) return;
+    if (current_screen_type == CURRENT_SCREEN::SCREEN_SPELL_BOOK) {
+        return;
+    }
+
     if (current_screen_type == CURRENT_SCREEN::SCREEN_CHEST) {
         if (pParty->activeCharacterIndex() == uPlayerID) {
             current_character_screen_window = WINDOW_CharacterWindow_Inventory;
             current_screen_type = CURRENT_SCREEN::SCREEN_CHEST_INVENTORY;
-            pParty->setActiveCharacterIndex(uPlayerID);
             return;
         }
-        if (pPlayers[uPlayerID]->timeToRecovery) {
+        if (player->timeToRecovery) {
             return;
         }
         pParty->setActiveCharacterIndex(uPlayerID);
@@ -636,7 +635,7 @@ void GameUI_OnPlayerPortraitLeftClick(unsigned int uPlayerID) {
             pParty->setActiveCharacterIndex(uPlayerID);
             return;
         }
-        if (pPlayers[uPlayerID]->timeToRecovery) {
+        if (player->timeToRecovery) {
             return;
         }
         pParty->setActiveCharacterIndex(uPlayerID);
@@ -653,8 +652,7 @@ void GameUI_OnPlayerPortraitLeftClick(unsigned int uPlayerID) {
 
     if (dialog_menu_id == DIALOGUE_SHOP_BUY_STANDARD || dialog_menu_id == DIALOGUE_SHOP_BUY_SPECIAL) {
         current_character_screen_window = WINDOW_CharacterWindow_Inventory;
-        pGUIWindow_CurrentMenu = new GUIWindow_CharacterRecord(
-            pParty->activeCharacterIndex(), CURRENT_SCREEN::SCREEN_SHOP_INVENTORY);  // CharacterUI_Initialize(SCREEN_SHOP_INVENTORY);
+        pGUIWindow_CurrentMenu = new GUIWindow_CharacterRecord(pParty->activeCharacterIndex(), CURRENT_SCREEN::SCREEN_SHOP_INVENTORY);
         return;
     }
 }
@@ -915,50 +913,45 @@ void GameUI_DrawFoodAndGold() {
 
 //----- (0041B0C9) --------------------------------------------------------
 void GameUI_DrawLifeManaBars() {
-    double v3;  // st7@3
-    double v7;  // st7@25
-
-    for (uint i = 0; i < 4; ++i) {
+    for (int i = 0; i < pParty->pPlayers.size(); ++i) {
         if (pParty->pPlayers[i].health > 0) {
             int v17 = 0;
             if (i == 2 || i == 3) v17 = 2;
-            v3 = (double)pParty->pPlayers[i].health /
-                 (double)pParty->pPlayers[i].GetMaxHealth();
+            double hpFillRatio = (double)pParty->pPlayers[i].health / (double)pParty->pPlayers[i].GetMaxHealth();
 
             auto pTextureHealth = game_ui_bar_green;
-            if (v3 > 0.5) {
-                if (v3 > 1.0) v3 = 1.0;
-            } else if (v3 > 0.25) {
+            if (hpFillRatio > 0.5) {
+                if (hpFillRatio > 1.0) {
+                    hpFillRatio = 1.0;
+                }
+            } else if (hpFillRatio > 0.25) {
                 pTextureHealth = game_ui_bar_yellow;
-            } else if (v3 > 0.0) {
+            } else if (hpFillRatio > 0.0) {
                 pTextureHealth = game_ui_bar_red;
             }
-            if (v3 > 0.0) {
+            if (hpFillRatio > 0.0) {
                 render->SetUIClipRect(
                     v17 + pHealthBarPos[i],
-                    (int64_t)((1.0 - v3) * pTextureHealth->GetHeight()) +
-                        402,
+                    (int64_t)((1.0 - hpFillRatio) * pTextureHealth->GetHeight()) + 402,
                     v17 + pHealthBarPos[i] + pTextureHealth->GetWidth(),
                     pTextureHealth->GetHeight() + 402);
-                render->DrawTextureNew((v17 + pHealthBarPos[i]) / 640.0f,
-                                            402 / 480.0f, pTextureHealth);
+                render->DrawTextureNew((v17 + pHealthBarPos[i]) / 640.0f, 402 / 480.0f, pTextureHealth);
                 render->ResetUIClipRect();
             }
         }
         if (pParty->pPlayers[i].mana > 0) {
-            v7 = pParty->pPlayers[i].mana /
-                 (double)pParty->pPlayers[i].GetMaxMana();
-            if (v7 > 1.0) v7 = 1.0;
+            double mpFillRatio = (double)pParty->pPlayers[i].mana / (double)pParty->pPlayers[i].GetMaxMana();
+            if (mpFillRatio > 1.0) {
+                mpFillRatio = 1.0;
+            }
             int v17 = 0;
             if (i == 2) v17 = 1;
             render->SetUIClipRect(
                 v17 + pManaBarPos[i],
-                (int64_t)((1.0 - v7) * game_ui_bar_blue->GetHeight()) +
-                    402,
+                (int64_t)((1.0 - mpFillRatio) * game_ui_bar_blue->GetHeight()) + 402,
                 v17 + pManaBarPos[i] + game_ui_bar_blue->GetWidth(),
                 game_ui_bar_blue->GetHeight() + 402);
-            render->DrawTextureNew((v17 + pManaBarPos[i]) / 640.0f,
-                                        402 / 480.0f, game_ui_bar_blue);
+            render->DrawTextureNew((v17 + pManaBarPos[i]) / 640.0f, 402 / 480.0f, game_ui_bar_blue);
             render->ResetUIClipRect();
         }
     }

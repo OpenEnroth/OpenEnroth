@@ -1670,7 +1670,7 @@ void _494035_timed_effects__water_walking_damage__etc() {
         }
 
         if (!pBuff->isGMBuff) {
-            if (!pPlayers[pBuff->caster]->CanAct()) {
+            if (!pParty->pPlayers[pBuff->caster - 1].CanAct()) {
                 pBuff->Reset();
                 if (buffIdx == PARTY_BUFF_FLY) {
                     pParty->bFlying = false;

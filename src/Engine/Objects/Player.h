@@ -657,7 +657,11 @@ void DamagePlayerFromMonster(unsigned int uObjID, ABILITY_INDEX dmgSource, Vec3i
 bool IsDwarfPresentInParty(bool b);
 bool ShouldLoadTexturesForRaceAndGender(unsigned int _this);
 int PlayerCreation_GetUnspentAttributePointCount();
-int CycleCharacter(bool backwards);
+
+/**
+ * @offset 0x49387A
+ */
+int cycleCharacter(bool backwards);
 
 // Players indexed array
 // TODO(pskelton): drop this
