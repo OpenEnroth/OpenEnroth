@@ -253,7 +253,7 @@ int EventInterpreter::executeOneEvent(int step, bool isNpc) {
             break;
         }
         case EVENT_OpenChest:
-            if (!Chest::open(ir.data.chest_id)) {
+            if (!Chest::open(ir.data.chest_id, _objectPid)) {
                 return -1;
             }
             break;
@@ -640,9 +640,10 @@ bool EventInterpreter::executeNpcDialogue(int startStep) {
     return !_readyToExit || _canShowOption;
 }
 
-void EventInterpreter::prepare(const EventMap &eventMap, int eventId, bool canShowMessages) {
+void EventInterpreter::prepare(const EventMap &eventMap, int eventId, int objectPid, bool canShowMessages) {
     _eventId = eventId;
     _canShowMessages = canShowMessages;
+    _objectPid = objectPid;
 
     _events.clear();
     if (eventMap.isHaveEvents(eventId)) {

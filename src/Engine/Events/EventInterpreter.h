@@ -2,6 +2,7 @@
 
 #include <vector>
 
+#include "Engine/MM7.h"
 #include "Engine/Events/EventIR.h"
 #include "Engine/Events/EventMap.h"
 
@@ -10,7 +11,7 @@ class EventInterpreter {
      bool executeRegular(int startStep);
      bool executeNpcDialogue(int startStep);
 
-     void prepare(const EventMap &eventMap, int eventId, bool canShowMessages);
+     void prepare(const EventMap &eventMap, int eventId, int objectPid, bool canShowMessages);
 
  protected:
      int executeOneEvent(int step, bool isNpc);
@@ -18,6 +19,7 @@ class EventInterpreter {
  private:
      int _eventId = 0;
      std::vector<EventIR> _events;
+     int _objectPid = PID_INVALID;
      bool _canShowMessages = false;
      bool _canShowOption = true;
      bool _readyToExit = false;
