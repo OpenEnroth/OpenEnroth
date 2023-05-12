@@ -35,7 +35,6 @@
 struct SavegameList *pSavegameList = new SavegameList;
 
 void LoadGame(unsigned int uSlot) {
-    MapsLongTimers_count = 0;
     if (!pSavegameList->pSavegameUsedSlots[uSlot]) {
         pAudioPlayer->playUISound(SOUND_error);
         logger->warning("LoadGame: slot {} is empty", uSlot);

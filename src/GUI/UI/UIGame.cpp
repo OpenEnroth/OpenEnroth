@@ -51,6 +51,39 @@
 
 using Io::InputAction;
 
+std::array<unsigned int, 4> pHealthBarPos = {{23, 138, 251, 366}}; // was 22, 137
+std::array<unsigned int, 4> pManaBarPos = {{102, 217, 331, 447}};
+
+std::array<unsigned int, 2> pHiredNPCsIconsOffsetsX = {{489, 559}};
+std::array<unsigned int, 2> pHiredNPCsIconsOffsetsY = {{152, 152}};
+
+std::array<std::array<int, 2>, 14> pPartySpellbuffsUI_XYs = {{
+    {{477, 247}},
+    {{497, 247}},
+    {{522, 247}},
+    {{542, 247}},
+    {{564, 247}},
+    {{581, 247}},
+    {{614, 247}},
+    {{477, 279}},
+    {{497, 279}},
+    {{522, 279}},
+    {{542, 279}},
+    {{564, 279}},
+    {{589, 279}},
+    {{612, 279}}
+}};
+
+std::array<uint8_t, 14> pPartySpellbuffsUI_smthns = {
+    {14, 1, 10, 4, 7, 2, 9, 3, 6, 15, 8, 3, 12, 0}};
+
+std::array<PARTY_BUFF_INDEX, 14> spellBuffsAtRightPanel = {
+    {PARTY_BUFF_FEATHER_FALL, PARTY_BUFF_RESIST_FIRE, PARTY_BUFF_RESIST_AIR,
+     PARTY_BUFF_RESIST_WATER, PARTY_BUFF_RESIST_MIND, PARTY_BUFF_RESIST_EARTH,
+     PARTY_BUFF_RESIST_BODY, PARTY_BUFF_HEROISM, PARTY_BUFF_HASTE,
+     PARTY_BUFF_SHIELD, PARTY_BUFF_STONE_SKIN, PARTY_BUFF_PROTECTION_FROM_MAGIC,
+     PARTY_BUFF_IMMOLATION, PARTY_BUFF_DAY_OF_GODS}};
+
 Image *game_ui_statusbar = nullptr;
 Image *game_ui_rightframe = nullptr;
 Image *game_ui_topframe = nullptr;
@@ -169,10 +202,7 @@ void GameUI_LoadPlayerPortraintsAndVoices() {
     for (uint i = 0; i < 4; ++i) {
         for (uint j = 0; j < 56; ++j) {
             game_ui_player_faces[i][j] = assets->GetImage_ColorKey(
-                fmt::format(
-                    "{}{:02}",
-                    pPlayerPortraitsNames[pParty->pPlayers[i].uCurrentFace],
-                    j + 1));
+                fmt::format("{}{:02}", pPlayerPortraitsNames[pParty->pPlayers[i].uCurrentFace], j + 1));
         }
     }
 
@@ -204,7 +234,6 @@ void GameUI_ReloadPlayerPortraits(
     }
 }
 
-extern std::map<InputAction, bool> key_map_conflicted;  // 506E6C
 //----- (00414D24) --------------------------------------------------------
 static unsigned int GameMenuUI_GetKeyBindingColor(InputAction action) {
     if (currently_selected_action_for_binding == action) {
@@ -1385,14 +1414,13 @@ void GameUI_DrawCharacterSelectionFrame() {
 //----- (0044162D) --------------------------------------------------------
 void GameUI_DrawPartySpells() {
     // TODO(pskelton): check tickcount usage here
-    unsigned int v0 = platform->tickCount() / 20;
+    unsigned int frameNum = platform->tickCount() / 20;
     Image *spell_texture;  // [sp-4h] [bp-1Ch]@12
 
-    for (uint i = 0; i < 14; ++i) {
-        if (pParty->pPartyBuffs[byte_4E5DD8[i]].Active()) {
-            render->TexturePixelRotateDraw(pPartySpellbuffsUI_XYs[i][0] / 640.,
-                pPartySpellbuffsUI_XYs[i][1] / 480., party_buff_icons[i],
-                v0 + 20 * pPartySpellbuffsUI_smthns[i]);
+    for (int i = 0; i < spellBuffsAtRightPanel.size(); ++i) {
+        if (pParty->pPartyBuffs[spellBuffsAtRightPanel[i]].Active()) {
+            render->TexturePixelRotateDraw(pPartySpellbuffsUI_XYs[i][0] / 640., pPartySpellbuffsUI_XYs[i][1] / 480.,
+                                           party_buff_icons[i], frameNum + 20 * pPartySpellbuffsUI_smthns[i]);
         }
     }
 
@@ -1400,51 +1428,29 @@ void GameUI_DrawPartySpells() {
         current_screen_type == CURRENT_SCREEN::SCREEN_NPC_DIALOGUE) {
         if (pParty->FlyActive()) {
             if (pParty->bFlying)
-                spell_texture =
-                    pIconsFrameTable->GetFrame(uIconIdx_FlySpell, v0)
-                        ->GetTexture();
+                spell_texture = pIconsFrameTable->GetFrame(uIconIdx_FlySpell, frameNum)->GetTexture();
             else
-                spell_texture = pIconsFrameTable->GetFrame(uIconIdx_FlySpell, 0)
-                                    ->GetTexture();
+                spell_texture = pIconsFrameTable->GetFrame(uIconIdx_FlySpell, 0)->GetTexture();
             render->DrawTextureNew(8 / 640.0f, 8 / 480.0f, spell_texture);
         }
         if (pParty->WaterWalkActive()) {
             if (pParty->uFlags & PARTY_FLAGS_1_STANDING_ON_WATER)
-                spell_texture =
-                    pIconsFrameTable->GetFrame(uIconIdx_WaterWalk, v0)
-                        ->GetTexture();
+                spell_texture = pIconsFrameTable->GetFrame(uIconIdx_WaterWalk, frameNum)->GetTexture();
             else
-                spell_texture =
-                    pIconsFrameTable->GetFrame(uIconIdx_WaterWalk, 0)
-                        ->GetTexture();
-            render->DrawTextureNew(396 / 640.0f, 8 / 480.0f,
-                                        spell_texture);
+                spell_texture = pIconsFrameTable->GetFrame(uIconIdx_WaterWalk, 0)->GetTexture();
+            render->DrawTextureNew(396 / 640.0f, 8 / 480.0f, spell_texture);
         }
     }
 
-    for (uint i = 0; i < 4; ++i) {
+    for (int i = 0; i < pParty->pPlayers.size(); ++i) {
         if (pParty->pPlayers[i].pPlayerBuffs[PLAYER_BUFF_HAMMERHANDS].Active())
-            render->DrawTextureNew(
-                (pPlayerPortraitsXCoords_For_PlayerBuffAnimsDrawing[i] + 72) /
-                    640.0f,
-                427 / 480.0f, game_ui_playerbuff_hammerhands);
+            render->DrawTextureNew((pPlayerPortraitsXCoords_For_PlayerBuffAnimsDrawing[i] + 72) / 640.0f, 427 / 480.0f, game_ui_playerbuff_hammerhands);
         if (pParty->pPlayers[i].pPlayerBuffs[PLAYER_BUFF_BLESS].Active())
-            render->DrawTextureNew(
-                (pPlayerPortraitsXCoords_For_PlayerBuffAnimsDrawing[i] + 72) /
-                    640.0f,
-                393 / 480.0f, game_ui_playerbuff_bless);
+            render->DrawTextureNew((pPlayerPortraitsXCoords_For_PlayerBuffAnimsDrawing[i] + 72) / 640.0f, 393 / 480.0f, game_ui_playerbuff_bless);
         if (pParty->pPlayers[i].pPlayerBuffs[PLAYER_BUFF_PRESERVATION].Active())
-            render->DrawTextureNew(
-                (pPlayerPortraitsXCoords_For_PlayerBuffAnimsDrawing[i] + 72) /
-                    640.0f,
-                410 / 480.0f, game_ui_playerbuff_preservation);
-        if (pParty->pPlayers[i]
-                .pPlayerBuffs[PLAYER_BUFF_PAIN_REFLECTION]
-                .Active())
-            render->DrawTextureNew(
-                (pPlayerPortraitsXCoords_For_PlayerBuffAnimsDrawing[i] + 72) /
-                    640.0f,
-                444 / 480.0f, game_ui_playerbuff_pain_reflection);
+            render->DrawTextureNew((pPlayerPortraitsXCoords_For_PlayerBuffAnimsDrawing[i] + 72) / 640.0f, 410 / 480.0f, game_ui_playerbuff_preservation);
+        if (pParty->pPlayers[i].pPlayerBuffs[PLAYER_BUFF_PAIN_REFLECTION].Active())
+            render->DrawTextureNew((pPlayerPortraitsXCoords_For_PlayerBuffAnimsDrawing[i] + 72) / 640.0f, 444 / 480.0f, game_ui_playerbuff_pain_reflection);
     }
 }
 

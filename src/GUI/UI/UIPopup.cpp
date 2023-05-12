@@ -71,6 +71,16 @@ std::array<stat_coord, 26> stat_string_coord =  // 4E2940
      {0x111, 0x129, 0xBA, 0x12}, {0x13E, 0x12, 0x89, 0x12},
 }};
 
+std::array<int16_t, 4> RightClickPortraitXmin = {{20, 131, 242, 357}};
+std::array<int16_t, 4> RightClickPortraitXmax = {{83, 198, 312, 423}};
+
+std::array<int8_t, 88> monster_popup_y_offsets = {
+    {-20, 20, 0,   -40, 0,   0,   0,   0,   0,   0,   -50, 20,  0,   -10, -10,
+     -20, 10, -10, 0,   0,   0,   -20, 10,  -10, 0,   0,   0,   -20, -10, 0,
+     0,   0,  -40, -20, 0,   0,   0,   -50, -30, -30, -30, -30, -30, -30, 0,
+     0,   0,  0,   0,   0,   -20, -20, -20, 20,  20,  20,  10,  10,  10,  10,
+     10,  10, -90, -60, -40, -20, -20, -80, -10, 0,   0,   -40, 0,   0,   0,
+     -20, 10, 0,   0,   0,   0,   0,   0,   -60, 0,   0,   0,   0}};
 
 //----- (004179BC) --------------------------------------------------------
 void CharacterUI_DrawTooltip(const char *title, std::string &content) {
@@ -572,24 +582,21 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
         pParty->setActiveToFirstCanAct();
     }
 
-    int Popup_Y_Offset =
-        monster_popup_y_offsets[(pActors[uActorID].pMonsterInfo.uID - 1) / 3] -
-        40;
+    int Popup_Y_Offset = monster_popup_y_offsets[(pActors[uActorID].pMonsterInfo.uID - 1) / 3] - 40;
 
-    uint16_t v9 = 0;
-    if (pActors[uActorID].pMonsterInfo.uID ==
-        pMonsterInfoUI_Doll.pMonsterInfo.uID) {
-        v9 = pMonsterInfoUI_Doll.uCurrentActionLength;
+    uint16_t actionLen = 0;
+    if (pActors[uActorID].pMonsterInfo.uID == pMonsterInfoUI_Doll.pMonsterInfo.uID) {
+        actionLen = pMonsterInfoUI_Doll.uCurrentActionLength;
     } else {
         // copy actor info if different
         pMonsterInfoUI_Doll = pActors[uActorID];
         pMonsterInfoUI_Doll.uCurrentActionAnimation = ANIM_Bored;
         pMonsterInfoUI_Doll.uCurrentActionTime = 0;
-        v9 = vrng->random(256) + 128;
-        pMonsterInfoUI_Doll.uCurrentActionLength = v9;
+        actionLen = vrng->random(256) + 128;
+        pMonsterInfoUI_Doll.uCurrentActionLength = actionLen;
     }
 
-    if (pMonsterInfoUI_Doll.uCurrentActionTime > v9) {
+    if (pMonsterInfoUI_Doll.uCurrentActionTime > actionLen) {
         pMonsterInfoUI_Doll.uCurrentActionTime = 0;
         if (pMonsterInfoUI_Doll.uCurrentActionAnimation == ANIM_Bored ||
             pMonsterInfoUI_Doll.uCurrentActionAnimation == ANIM_AtkMelee) {
