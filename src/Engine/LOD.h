@@ -176,10 +176,6 @@ class LODFile_IconsBitmaps : public LOD::File {
     int uTexturePacksCount;
     int pFacesLock;
     int _011BA4_debug_paletted_pixels_uncompressed;
-    // int can_load_hardware_sprites;
-    struct IDirectDrawSurface **pHardwareSurfaces;
-    struct IDirect3DTexture2 **pHardwareTextures;
-    char *ptr_011BB4;
 };
 
 #pragma pack(push, 1)
@@ -236,9 +232,7 @@ class LODFile_Sprites : public LOD::File {
     int field_ECA0;  // reserved sprites -522
     int field_ECA4;  // 2nd init sprites
     int field_ECA8;
-    // int can_load_hardware_sprites;
     Sprite *pHardwareSprites;
-    int field_ECB4;
 };
 
 extern LODFile_IconsBitmaps *pEvents_LOD;
