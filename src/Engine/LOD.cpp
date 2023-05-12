@@ -387,8 +387,6 @@ LODFile_Sprites::LODFile_Sprites() : LOD::File() {
     field_ECA4 = 0;
     field_ECA0 = 0;
     pHardwareSprites = 0;
-    // can_load_hardware_sprites = 0;
-    field_ECB4 = 0;
     uNumLoadedSprites = 0;
     field_ECA8 = 0;
 }
@@ -397,10 +395,6 @@ LODFile_IconsBitmaps::~LODFile_IconsBitmaps() {
     for (uint i = 0; i < this->uNumLoadedFiles; i++) {
         this->pTextures[i].Release();
     }
-    free(this->pHardwareSurfaces);
-    free(this->pHardwareTextures);
-    free(this->ptr_011BB4);
-    // LOD::File::vdtor((LOD::File *)v1);
 }
 
 LODFile_IconsBitmaps::LODFile_IconsBitmaps() : LOD::File() {
@@ -419,10 +413,6 @@ LODFile_IconsBitmaps::LODFile_IconsBitmaps() : LOD::File() {
     this->dword_11B80 = 0;
     this->uNumLoadedFiles = 0;
     this->_011BA4_debug_paletted_pixels_uncompressed = false;
-    // this->can_load_hardware_sprites = 0;
-    this->pHardwareSurfaces = 0;
-    this->pHardwareTextures = 0;
-    this->ptr_011BB4 = 0;
     this->uTextureRedBits = 0;
     this->uTextureGreenBits = 0;
     this->uTextureBlueBits = 0;
@@ -1011,20 +1001,6 @@ int LODFile_IconsBitmaps::LoadTextureFromLOD(Texture_MM7 *pOutTex, const std::st
         return -1;
     strncpy(header->pName, pContainer.c_str(), 16);
     data_size -= sizeof(TextureHeader);
-
-    // BITMAPS
-    if ((header->pBits & 2) && pContainer != "sptext01") {
-        if (!pHardwareSurfaces || !pHardwareTextures) {
-            pHardwareSurfaces = new IDirectDrawSurface *[1000];
-            memset(pHardwareSurfaces, 0, 1000 * sizeof(IDirectDrawSurface *));
-
-            pHardwareTextures = new IDirect3DTexture2 *[1000];
-            memset(pHardwareTextures, 0, 1000 * sizeof(IDirect3DTexture2 *));
-
-            ptr_011BB4 = new char[1000];
-            memset(ptr_011BB4, 0, 1000);
-        }
-    }
 
     // ICONS
     if (!header->uDecompressedSize || _011BA4_debug_paletted_pixels_uncompressed) {

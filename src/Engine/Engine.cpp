@@ -980,7 +980,6 @@ void Engine::SecondaryInitialization() {
     pItemTable = new ItemTable;
     pItemTable->Initialize();
 
-    // pBitmaps_LOD->can_load_hardware_sprites = 1;
     // pBitmaps_LOD->SetupPalettes(render->uTargetRBits, render->uTargetGBits,
     // render->uTargetBBits);
     pBitmaps_LOD->SetupPalettes(5, 6, 5);
@@ -993,7 +992,6 @@ void Engine::SecondaryInitialization() {
 
     //pPaletteManager->SetMistColor(128, 128, 128);
     //pPaletteManager->RecalculateAll();
-    // pSprites_LOD->can_load_hardware_sprites = 1;
     pObjectList->InitializeSprites();
     pOverlayList->InitializeSprites();
 
