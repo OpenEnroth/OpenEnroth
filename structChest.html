@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;15a7685</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;eeab988</span>
    </div>
   </td>
  </tr>
@@ -101,8 +101,8 @@ Static Public Member Functions</h2></td></tr>
 <tr class="separator:ab1f451279007eb5cda35c0d3c2b81444"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9f6bb82d50b588a3ff3dd99a829a28be"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structChest.html#a9f6bb82d50b588a3ff3dd99a829a28be">PlaceItems</a> (int uChestID)</td></tr>
 <tr class="separator:a9f6bb82d50b588a3ff3dd99a829a28be"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5d817226e918717cdaf2d357da601ffa"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structChest.html#a5d817226e918717cdaf2d357da601ffa">open</a> (int uChestID)</td></tr>
-<tr class="separator:a5d817226e918717cdaf2d357da601ffa"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aecf28728543b6797e1031490175f3546"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structChest.html#aecf28728543b6797e1031490175f3546">open</a> (int uChestID, int objectPid)</td></tr>
+<tr class="separator:aecf28728543b6797e1031490175f3546"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9770c22661be3c0baa1ff8e7b1e0f0a6"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structChest.html#a9770c22661be3c0baa1ff8e7b1e0f0a6">toggleFlag</a> (int uChestID, <a class="el" href="Chest_8h.html#a8f7fde712c696f88932a1416622a983c">CHEST_FLAG</a> uFlag, bool bValue)</td></tr>
 <tr class="separator:a9770c22661be3c0baa1ff8e7b1e0f0a6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afc09b9527a9960368cc4982e245b0924"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structChest.html#afc09b9527a9960368cc4982e245b0924">ChestUI_WritePointedObjectStatusString</a> ()</td></tr>
@@ -293,8 +293,8 @@ Public Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="a5d817226e918717cdaf2d357da601ffa" name="a5d817226e918717cdaf2d357da601ffa"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a5d817226e918717cdaf2d357da601ffa">&#9670;&#160;</a></span>open()</h2>
+<a id="aecf28728543b6797e1031490175f3546" name="aecf28728543b6797e1031490175f3546"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aecf28728543b6797e1031490175f3546">&#9670;&#160;</a></span>open()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -306,8 +306,18 @@ Public Attributes</h2></td></tr>
           <td class="memname">bool Chest::open </td>
           <td>(</td>
           <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>uChestID</em></td><td>)</td>
+          <td class="paramname"><em>uChestID</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>objectPid</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
         </tr>
       </table>
   </td>

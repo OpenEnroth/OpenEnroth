@@ -1,7 +1,7 @@
 var searchData=
 [
-  ['h_0',['H',['../PlatformEnums_8h.html#a2ba59747730ab559dd1191f51081eeccac1d9f50f86825a1a2302ec2449c17196',1,'PlatformEnums.h']]],
-  ['h_1',['h',['../structSize.html#a33719b3600ba6eb4a880c79577cac8d6',1,'Size::h()'],['../structRect.html#a78ae244d7142df714716f083db77533f',1,'Rect::h()'],['../EventTrace_8cpp.html#a5e36941b3d856737e81516acd45edc50',1,'h():&#160;EventTrace.cpp']]],
+  ['h_0',['h',['../EventTrace_8cpp.html#a5e36941b3d856737e81516acd45edc50',1,'h():&#160;EventTrace.cpp'],['../structSize.html#a33719b3600ba6eb4a880c79577cac8d6',1,'Size::h()'],['../structRect.html#a78ae244d7142df714716f083db77533f',1,'Rect::h()']]],
+  ['h_1',['H',['../PlatformEnums_8h.html#a2ba59747730ab559dd1191f51081eeccac1d9f50f86825a1a2302ec2449c17196',1,'PlatformEnums.h']]],
   ['hacking_2emd_2',['HACKING.md',['../HACKING_8md.html',1,'']]],
   ['handle_3',['handle',['../classFileInputStream.html#aa8cb3043641b9ec541bd2a79f9cbd7b2',1,'FileInputStream::handle()'],['../classFileOutputStream.html#a7b1bd2a44a3192e2bf97e30552b204fa',1,'FileOutputStream::handle()']]],
   ['handlekeypress_4',['handleKeyPress',['../classGameWindowHandler.html#ab9d73c683893346ac74dc63f5f377f5f',1,'GameWindowHandler']]],

@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;15a7685</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;eeab988</span>
    </div>
   </td>
  </tr>
@@ -86,8 +86,8 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a915c18aa0d45f23b8bfaf00337ce2436"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aae872b2236c2b0c121f96c66cfc8dea6"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEventInterpreter.html#aae872b2236c2b0c121f96c66cfc8dea6">executeNpcDialogue</a> (int startStep)</td></tr>
 <tr class="separator:aae872b2236c2b0c121f96c66cfc8dea6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a339ac594cf73c8e53767543bce6794e4"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEventInterpreter.html#a339ac594cf73c8e53767543bce6794e4">prepare</a> (const <a class="el" href="classEventMap.html">EventMap</a> &amp;eventMap, int eventId, bool canShowMessages)</td></tr>
-<tr class="separator:a339ac594cf73c8e53767543bce6794e4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af0fbe0aeb0a408feea273f1f9cdf5cb4"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEventInterpreter.html#af0fbe0aeb0a408feea273f1f9cdf5cb4">prepare</a> (const <a class="el" href="classEventMap.html">EventMap</a> &amp;eventMap, int eventId, int objectPid, bool canShowMessages)</td></tr>
+<tr class="separator:af0fbe0aeb0a408feea273f1f9cdf5cb4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pro-methods" name="pro-methods"></a>
 Protected Member Functions</h2></td></tr>
@@ -100,6 +100,8 @@ Private Attributes</h2></td></tr>
 <tr class="separator:af26ca96d50f3defae91dc3af163e3541"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:accadfb0f0b484abede956f8adbf90ee7"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="classEventIR.html">EventIR</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEventInterpreter.html#accadfb0f0b484abede956f8adbf90ee7">_events</a></td></tr>
 <tr class="separator:accadfb0f0b484abede956f8adbf90ee7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a95bda09686b2db256d1a80fbc7192abf"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEventInterpreter.html#a95bda09686b2db256d1a80fbc7192abf">_objectPid</a> = <a class="el" href="MM7_8h.html#a51fcc1ce2e7a0c1f057fc1e2d54b5e2d">PID_INVALID</a></td></tr>
+<tr class="separator:a95bda09686b2db256d1a80fbc7192abf"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1c68ee1b5790a36f82f4aa682d21f9bd"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEventInterpreter.html#a1c68ee1b5790a36f82f4aa682d21f9bd">_canShowMessages</a> = false</td></tr>
 <tr class="separator:a1c68ee1b5790a36f82f4aa682d21f9bd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1b3954f7558f3c8a2cc32f2888abf142"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEventInterpreter.html#a1b3954f7558f3c8a2cc32f2888abf142">_canShowOption</a> = true</td></tr>
@@ -184,8 +186,8 @@ Private Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="a339ac594cf73c8e53767543bce6794e4" name="a339ac594cf73c8e53767543bce6794e4"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a339ac594cf73c8e53767543bce6794e4">&#9670;&#160;</a></span>prepare()</h2>
+<a id="af0fbe0aeb0a408feea273f1f9cdf5cb4" name="af0fbe0aeb0a408feea273f1f9cdf5cb4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af0fbe0aeb0a408feea273f1f9cdf5cb4">&#9670;&#160;</a></span>prepare()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -201,6 +203,12 @@ Private Attributes</h2></td></tr>
           <td></td>
           <td class="paramtype">int&#160;</td>
           <td class="paramname"><em>eventId</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>objectPid</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -318,6 +326,28 @@ Private Attributes</h2></td></tr>
       <table class="memname">
         <tr>
           <td class="memname">bool EventInterpreter::_mapExitTriggered = false</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a95bda09686b2db256d1a80fbc7192abf" name="a95bda09686b2db256d1a80fbc7192abf"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a95bda09686b2db256d1a80fbc7192abf">&#9670;&#160;</a></span>_objectPid</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">int EventInterpreter::_objectPid = <a class="el" href="MM7_8h.html#a51fcc1ce2e7a0c1f057fc1e2d54b5e2d">PID_INVALID</a></td>
         </tr>
       </table>
   </td>
