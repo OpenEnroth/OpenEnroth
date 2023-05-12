@@ -166,10 +166,6 @@ int game_viewport_y;
 int game_viewport_z;
 int game_viewport_w;
 
-std::array<unsigned int, 2> saveload_dlg_xs = {{82, 0}};
-std::array<unsigned int, 2> saveload_dlg_ys = {{60, 0}};
-std::array<unsigned int, 2> saveload_dlg_zs = {{460, 640}};
-std::array<unsigned int, 2> saveload_dlg_ws = {{344, 480}};
 int pWindowList_at_506F50_minus1_indexing[1];
 int dword_4C9890[10];
 int dword_4C9920[16];
@@ -190,19 +186,6 @@ std::array<int, 8> BtnTurnCoord = {{
     0x7,
     0x3B,
 }};
-std::array<int16_t, 4> RightClickPortraitXmin = {{20, 131, 242, 357}};
-std::array<int16_t, 4> RightClickPortraitXmax = {{83, 198, 312, 423}};
-
-std::array<unsigned int, 4> pHealthBarPos = {{23, 138, 251, 366}}; //was 22, 137
-std::array<unsigned int, 4> pManaBarPos = {{102, 217, 331, 447}};
-
-std::array<int8_t, 88> monster_popup_y_offsets = {
-    {-20, 20, 0,   -40, 0,   0,   0,   0,   0,   0,   -50, 20,  0,   -10, -10,
-     -20, 10, -10, 0,   0,   0,   -20, 10,  -10, 0,   0,   0,   -20, -10, 0,
-     0,   0,  -40, -20, 0,   0,   0,   -50, -30, -30, -30, -30, -30, -30, 0,
-     0,   0,  0,   0,   0,   -20, -20, -20, 20,  20,  20,  10,  10,  10,  10,
-     10,  10, -90, -60, -40, -20, -20, -80, -10, 0,   0,   -40, 0,   0,   0,
-     -20, 10, 0,   0,   0,   0,   0,   0,   -60, 0,   0,   0,   0}};
 
 std::array<int, 6> dword_4E4560;
 std::array<int, 6> dword_4E4578;
@@ -213,31 +196,6 @@ std::array<float, 10> flt_4E4A80 = {{
     0.60000002f,  1.0f,  6.0f,        25.0f,
     50.0f,        100.0f
 }};
-
-std::array<std::array<int, 2>, 14> pPartySpellbuffsUI_XYs = {{
-    {{477, 247}},
-    {{497, 247}},
-    {{522, 247}},
-    {{542, 247}},
-    {{564, 247}},
-    {{581, 247}},
-    {{614, 247}},
-    {{477, 279}},
-    {{497, 279}},
-    {{522, 279}},
-    {{542, 279}},
-    {{564, 279}},
-    {{589, 279}},
-    {{612, 279}}
-}};
-std::array<unsigned char, 14> byte_4E5DD8 = {
-    {PARTY_BUFF_FEATHER_FALL, PARTY_BUFF_RESIST_FIRE, PARTY_BUFF_RESIST_AIR,
-     PARTY_BUFF_RESIST_WATER, PARTY_BUFF_RESIST_MIND, PARTY_BUFF_RESIST_EARTH,
-     PARTY_BUFF_RESIST_BODY, PARTY_BUFF_HEROISM, PARTY_BUFF_HASTE,
-     PARTY_BUFF_SHIELD, PARTY_BUFF_STONE_SKIN, PARTY_BUFF_PROTECTION_FROM_MAGIC,
-     PARTY_BUFF_IMMOLATION, PARTY_BUFF_DAY_OF_GODS}};
-std::array<uint8_t, 14> pPartySpellbuffsUI_smthns = {
-    {14, 1, 10, 4, 7, 2, 9, 3, 6, 15, 8, 3, 12, 0}};
 
 std::array<std::array<int, 6>, 6> pNPCPortraits_x = {{
     {{521, 0, 0, 0, 0, 0}},
@@ -2446,8 +2404,6 @@ IndexedArray<IndexedArray<PLAYER_SKILL_MASTERY, PLAYER_SKILL_FIRST, PLAYER_SKILL
         {PLAYER_SKILL_MISC, PLAYER_SKILL_MASTERY_NOVICE}
     }}
 }};
-std::array<unsigned int, 2> pHiredNPCsIconsOffsetsX = {{489, 559}};
-std::array<unsigned int, 2> pHiredNPCsIconsOffsetsY = {{152, 152}};
 std::array<short, 28> word_4EE150 = {{1,  2,  3,  4,  5,  7,  32, 33, 36, 37,
                                       38, 40, 41, 42, 43, 45, 46, 47, 48, 49,
                                       50, 51, 52, 53, 54, 55, 56, 60}};
@@ -2553,19 +2509,12 @@ std::array<uint16_t, 50> pBlueFacesInBLVMinimapIDs;
 std::array<class Image *, 14> party_buff_icons;
 unsigned int uIconIdx_FlySpell;
 unsigned int uIconIdx_WaterWalk;
-GameTime _5773B8_event_timer;
 
 struct Actor *pDialogue_SpeakingActor;
 DIALOGUE_TYPE uDialogueType;
 int sDialogue_SpeakingActorNPC_ID;
 int uCurrentHouse_Animation;
 std::string Party_Teleport_Map_Name;
-// int Party_Teleport_Z_Speed;
-// int Party_Teleport_Cam_Pitch;
-// int Party_Teleport_Cam_Yaw;
-// int Party_Teleport_Z_Pos;
-// int Party_Teleport_Y_Pos;
-// int Party_Teleport_X_Pos;
 std::array<std::array<char, 100>, 6> byte_591180;  // idb
 std::array<struct NPCData *, 7> HouseNPCData;  // 0 zero element holds standart house npc
 GUIButton *HouseNPCPortraitsButtonsList[6];  // dword_5913F4
@@ -2579,8 +2528,6 @@ int Party_Teleport_Cam_Pitch;
 int Party_Teleport_Z_Speed;
 int Start_Party_Teleport_Flag;
 int dword_5B65C4_cancelEventProcessing;
-int MapsLongTimers_count;  // dword_5B65C8 счётчик таймеров для колодцев,
-                           // фаерволов-ловушек
 int npcIdToDismissAfterDialogue;
 // std::array<char, 777> byte_5C3427;
 
@@ -2684,7 +2631,6 @@ std::vector<Vec3f> pTerrainNormals;
 std::array<unsigned short, 128 * 128 * 2> pTerrainNormalIndices;
 std::array<unsigned int, 128 * 128 * 2> pTerrainSomeOtherData;
 int dword_A74C88;
-int uPlayerCreationUI_ArrowAnim;
 unsigned int uPlayerCreationUI_SelectedCharacter;
 int dword_A74CDC;
 char byte_AE5B91;

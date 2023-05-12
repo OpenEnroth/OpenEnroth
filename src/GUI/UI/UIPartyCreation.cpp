@@ -47,8 +47,10 @@ Image *ui_partycreation_buttmake = nullptr;
 std::array<Image *, 9> ui_partycreation_class_icons;
 std::array<Image *, 22> ui_partycreation_portraits;
 
-std::array<Image *, 20> ui_partycreation_arrow_r;
-std::array<Image *, 20> ui_partycreation_arrow_l;
+std::array<Image *, 19> ui_partycreation_arrow_r;
+std::array<Image *, 19> ui_partycreation_arrow_l;
+
+static const int ARROW_SPIN_PERIOD_MS = 475;
 
 bool PartyCreationUI_LoopInternal();
 void PartyCreationUI_DeleteFont();
@@ -345,10 +347,10 @@ void GUIWindow_PartyCreation::Update() {
     pFrame = pIconsFrameTable->GetFrame(uIconID_CharacterFrame, pEventTimer->uStartTime);
     render->DrawTextureNew(pX / oldDims.w, 29 / oldDims.h, pFrame->GetTexture());
     uPosActiveItem = pGUIWindow_CurrentMenu->GetControl(pGUIWindow_CurrentMenu->pCurrentPosActiveItem);
-    // TODO(pskelton): check tickcount usage here
-    uPlayerCreationUI_ArrowAnim = 18 - (platform->tickCount() % 450) / 25;
-    render->DrawTextureNew((uPosActiveItem->uZ - 4) / oldDims.w, uPosActiveItem->uY / oldDims.h, ui_partycreation_arrow_l[uPlayerCreationUI_ArrowAnim + 1]);
-    render->DrawTextureNew((uPosActiveItem->uX - 12) / oldDims.w, uPosActiveItem->uY / oldDims.h, ui_partycreation_arrow_r[uPlayerCreationUI_ArrowAnim + 1]);
+    // cycle arrows backwards
+    int arrowAnimTextureNum = ui_partycreation_arrow_l.size() - 1 - (platform->tickCount() % ARROW_SPIN_PERIOD_MS) / (ARROW_SPIN_PERIOD_MS / ui_partycreation_arrow_l.size());
+    render->DrawTextureNew((uPosActiveItem->uZ - 4) / oldDims.w, uPosActiveItem->uY / oldDims.h, ui_partycreation_arrow_l[arrowAnimTextureNum]);
+    render->DrawTextureNew((uPosActiveItem->uX - 12) / oldDims.w, uPosActiveItem->uY / oldDims.h, ui_partycreation_arrow_r[arrowAnimTextureNum]);
 
     memset(pText, 0, sizeof(pText));
     strcpy(pText, localization->GetString(LSTR_SKILLS));
@@ -615,7 +617,6 @@ GUIWindow_PartyCreation::GUIWindow_PartyCreation() :
     main_menu_background = assets->GetImage_PCXFromIconsLOD("makeme.pcx");
 
     current_screen_type = CURRENT_SCREEN::SCREEN_PARTY_CREATION;
-    uPlayerCreationUI_ArrowAnim = 0;
     uPlayerCreationUI_SelectedCharacter = 0;
     int v0 = pFontCreate->GetHeight() - 2;
 
@@ -641,9 +642,12 @@ GUIWindow_PartyCreation::GUIWindow_PartyCreation() :
     ui_partycreation_right = assets->GetImage_ColorKey("presrigh");
     ui_partycreation_left = assets->GetImage_ColorKey("presleft");
 
-    for (int i = 1; i < 20; ++i) {
-        ui_partycreation_arrow_l[i] = assets->GetImage_Alpha(fmt::format("arrowl{}", i));
-        ui_partycreation_arrow_r[i] = assets->GetImage_Alpha(fmt::format("arrowr{}", i));
+    // sprites number go from (1 to 19)
+    assert(ui_partycreation_arrow_l.size() == 19);
+    assert(ui_partycreation_arrow_r.size() == 19);
+    for (int i = 0; i < ui_partycreation_arrow_l.size(); ++i) {
+        ui_partycreation_arrow_l[i] = assets->GetImage_Alpha(fmt::format("arrowl{}", i + 1));
+        ui_partycreation_arrow_r[i] = assets->GetImage_Alpha(fmt::format("arrowr{}", i + 1));
     }
 
     // pGUIWindow_CurrentMenu = new GUIWindow(0, 0, window->GetWidth(), window->GetHeight(), 0);

@@ -26,6 +26,11 @@ using Io::TextInputType;
 
 static void UI_DrawSaveLoad(bool save);
 
+std::array<unsigned int, 2> saveload_dlg_xs = {{82, 0}};
+std::array<unsigned int, 2> saveload_dlg_ys = {{60, 0}};
+std::array<unsigned int, 2> saveload_dlg_zs = {{460, 640}};
+std::array<unsigned int, 2> saveload_dlg_ws = {{344, 480}};
+
 Image *saveload_ui_ls_saved = nullptr;
 Image *saveload_ui_x_d = nullptr;
 Image *scrollstop = nullptr;

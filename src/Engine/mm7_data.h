@@ -42,10 +42,6 @@ extern float flt_4D84E8;
 
 extern unsigned int uGammaPos;
 extern std::array<int, 8> BtnTurnCoord;
-extern std::array<int16_t, 4> RightClickPortraitXmin;
-extern std::array<int16_t, 4> RightClickPortraitXmax;
-extern std::array<unsigned int, 4> pHealthBarPos;
-extern std::array<unsigned int, 4> pManaBarPos;
 // extern std::array<char, 80> _4E2B21_buff_spell_tooltip_colors;
 extern std::array<int8_t, 88> monster_popup_y_offsets;
 
@@ -55,9 +51,6 @@ extern std::array<int, 6> dword_4E4590;
 extern std::array<int, 6> dword_4E45A8;
 extern std::array<float, 10> flt_4E4A80;
 
-extern std::array<std::array<int, 2>, 14> pPartySpellbuffsUI_XYs;
-extern std::array<unsigned char, 14> byte_4E5DD8;
-extern std::array<uint8_t, 14> pPartySpellbuffsUI_smthns;
 extern std::array<std::array<int, 6>, 6> pNPCPortraits_x;  // 004E5E50
 extern std::array<std::array<int, 6>, 6> pNPCPortraits_y;  // 004E5EE0
 extern std::array<const char *, 11> pHouse_ExitPictures;
@@ -66,10 +59,6 @@ extern std::array<int16_t, 11> word_4E8152;
 extern char _4E94D0_light_type;
 extern char _4E94D2_light_type;
 extern char _4E94D3_light_type;
-extern std::array<unsigned int, 2> saveload_dlg_xs;
-extern std::array<unsigned int, 2> saveload_dlg_ys;
-extern std::array<unsigned int, 2> saveload_dlg_zs;
-extern std::array<unsigned int, 2> saveload_dlg_ws;
 extern std::array<const char *, 465> pTransitionStrings;  // 4EB080
 extern std::array<int, 9> dword_4EC268;
 extern std::array<int, 7> dword_4EC28C;
@@ -83,8 +72,6 @@ extern IndexedArray<PLAYER_SKILL_LEVEL, PLAYER_SKILL_FIRST, PLAYER_SKILL_LAST> s
 extern IndexedArray<uint, PLAYER_SKILL_FIRST, PLAYER_SKILL_LAST> base_recovery_times_per_weapon_type;
 extern std::array<IndexedArray<CLASS_SKILL, PLAYER_SKILL_FIRST, PLAYER_SKILL_LAST>, 9> pSkillAvailabilityPerClass;
 extern IndexedArray<IndexedArray<PLAYER_SKILL_MASTERY, PLAYER_SKILL_FIRST, PLAYER_SKILL_LAST>, PLAYER_CLASS_FIRST, PLAYER_CLASS_LAST> skillMaxMasteryPerClass;
-extern std::array<unsigned int, 2> pHiredNPCsIconsOffsetsX;
-extern std::array<unsigned int, 2> pHiredNPCsIconsOffsetsY;
 extern std::array<short, 28> word_4EE150;
 extern int16_t word_4F0576[];
 
@@ -156,7 +143,6 @@ extern std::array<uint16_t, 50> pBlueFacesInBLVMinimapIDs;
 extern std::array<class Image *, 14> party_buff_icons;
 extern unsigned int uIconIdx_FlySpell;
 extern unsigned int uIconIdx_WaterWalk;
-extern GameTime _5773B8_event_timer;  // 5773B8
 
 extern Actor *pDialogue_SpeakingActor;
 extern DIALOGUE_TYPE uDialogueType;
@@ -189,7 +175,6 @@ extern int Party_Teleport_Z_Speed;
 extern int Start_Party_Teleport_Flag;
 
 extern int dword_5B65C4_cancelEventProcessing;
-extern int MapsLongTimers_count;  // dword_5B65C8
 extern int npcIdToDismissAfterDialogue;
 // extern std::array<char, 777> byte_5C3427;
 extern std::string game_ui_status_bar_event_string;
@@ -316,7 +301,6 @@ extern std::vector<Vec3f> pTerrainNormals;
 extern std::array<unsigned short, 128 * 128 * 2> pTerrainNormalIndices;
 extern std::array<unsigned int, 128 * 128 * 2> pTerrainSomeOtherData;
 extern int dword_A74C88;
-extern int uPlayerCreationUI_ArrowAnim;
 extern unsigned int uPlayerCreationUI_SelectedCharacter;
 extern int dword_A74CDC;
 extern char byte_AE5B91;
