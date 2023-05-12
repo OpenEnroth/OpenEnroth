@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;eeab988</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;d6cd9a7</span>
    </div>
   </td>
  </tr>
@@ -207,6 +207,10 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a5e11b4fe9a6cc42a3649dc948d28af81"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:adb81d3f92b512ec82e542b13b10f926d"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structParty.html#adb81d3f92b512ec82e542b13b10f926d">immolationAffectedActors</a> (int *affected, size_t affectedArrSize, size_t effectRange)</td></tr>
 <tr class="separator:adb81d3f92b512ec82e542b13b10f926d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9f398acc83c5b3b7625d31184e3ffe4c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structParty.html#a9f398acc83c5b3b7625d31184e3ffe4c">setDelayedReaction</a> (<a class="el" href="PlayerEnums_8h.html#ab50a2a71840e11476f69875990dc7265">PlayerSpeech</a> speech, int id)</td></tr>
+<tr class="separator:a9f398acc83c5b3b7625d31184e3ffe4c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae0f610ef63383e0a74e2c08ea0e61bee"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structParty.html#ae0f610ef63383e0a74e2c08ea0e61bee">updateDelayedReaction</a> ()</td></tr>
+<tr class="separator:ae0f610ef63383e0a74e2c08ea0e61bee"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aac0a6a15baf3bfe7d242523542a1ee5e"><td class="memItemLeft" align="right" valign="top"><a class="el" href="MM7_8h.html#a91ad9478d81a7aaf2593e8d9c3d06a14">uint</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structParty.html#aac0a6a15baf3bfe7d242523542a1ee5e">activeCharacterIndex</a> () const</td></tr>
 <tr class="separator:aac0a6a15baf3bfe7d242523542a1ee5e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8c589f3e977a6708bc51693010388124"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structParty.html#a8c589f3e977a6708bc51693010388124">setActiveCharacterIndex</a> (<a class="el" href="MM7_8h.html#a91ad9478d81a7aaf2593e8d9c3d06a14">uint</a> id)</td></tr>
@@ -407,6 +411,12 @@ Public Attributes</h2></td></tr>
 <tr class="separator:acd2e7a1ac436451ca354e474e6a1df94"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aac52ea92d59248e53f47dee91e769068"><td class="memItemLeft" align="right" valign="top"><a class="el" href="MM7_8h.html#a91ad9478d81a7aaf2593e8d9c3d06a14">uint</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structParty.html#aac52ea92d59248e53f47dee91e769068">_roundingDt</a> { 0 }</td></tr>
 <tr class="separator:aac52ea92d59248e53f47dee91e769068"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a31f95e538557a7e73c6050aecdcd886f"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structParty.html#a31f95e538557a7e73c6050aecdcd886f">_delayedReactionTimer</a></td></tr>
+<tr class="separator:a31f95e538557a7e73c6050aecdcd886f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a63474cea87c9b5d9d7ac7c4d90ceeb51"><td class="memItemLeft" align="right" valign="top"><a class="el" href="PlayerEnums_8h.html#ab50a2a71840e11476f69875990dc7265">PlayerSpeech</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structParty.html#a63474cea87c9b5d9d7ac7c4d90ceeb51">_delayedReactionSpeech</a></td></tr>
+<tr class="separator:a63474cea87c9b5d9d7ac7c4d90ceeb51"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adca91f2dd150802a8d6d1434d24a502d"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structParty.html#adca91f2dd150802a8d6d1434d24a502d">_delayedReactionCharacterId</a></td></tr>
+<tr class="separator:adca91f2dd150802a8d6d1434d24a502d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pri-attribs" name="pri-attribs"></a>
 Private Attributes</h2></td></tr>
@@ -1466,6 +1476,42 @@ Private Attributes</h2></td></tr>
 
 </div>
 </div>
+<a id="a9f398acc83c5b3b7625d31184e3ffe4c" name="a9f398acc83c5b3b7625d31184e3ffe4c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9f398acc83c5b3b7625d31184e3ffe4c">&#9670;&#160;</a></span>setDelayedReaction()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void Party::setDelayedReaction </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="PlayerEnums_8h.html#ab50a2a71840e11476f69875990dc7265">PlayerSpeech</a>&#160;</td>
+          <td class="paramname"><em>speech</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>id</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="adda81a0e7a98449c63481d3dfcbaac86" name="adda81a0e7a98449c63481d3dfcbaac86"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#adda81a0e7a98449c63481d3dfcbaac86">&#9670;&#160;</a></span>SetFine()</h2>
 
@@ -1724,6 +1770,31 @@ Private Attributes</h2></td></tr>
 
 </div>
 </div>
+<a id="ae0f610ef63383e0a74e2c08ea0e61bee" name="ae0f610ef63383e0a74e2c08ea0e61bee"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae0f610ef63383e0a74e2c08ea0e61bee">&#9670;&#160;</a></span>updateDelayedReaction()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void Party::updateDelayedReaction </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="ac79b72eacd793b9fd01069346b87156b" name="ac79b72eacd793b9fd01069346b87156b"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ac79b72eacd793b9fd01069346b87156b">&#9670;&#160;</a></span>updatePlayersAndHirelingsEmotions()</h2>
 
@@ -1930,6 +2001,48 @@ Private Attributes</h2></td></tr>
       <table class="memname">
         <tr>
           <td class="memname"><a class="el" href="classIndexedBitset.html">IndexedBitset</a>&lt;1, 208&gt; Party::_autonoteBits</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="adca91f2dd150802a8d6d1434d24a502d" name="adca91f2dd150802a8d6d1434d24a502d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#adca91f2dd150802a8d6d1434d24a502d">&#9670;&#160;</a></span>_delayedReactionCharacterId</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int Party::_delayedReactionCharacterId</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a63474cea87c9b5d9d7ac7c4d90ceeb51" name="a63474cea87c9b5d9d7ac7c4d90ceeb51"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a63474cea87c9b5d9d7ac7c4d90ceeb51">&#9670;&#160;</a></span>_delayedReactionSpeech</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="PlayerEnums_8h.html#ab50a2a71840e11476f69875990dc7265">PlayerSpeech</a> Party::_delayedReactionSpeech</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a31f95e538557a7e73c6050aecdcd886f" name="a31f95e538557a7e73c6050aecdcd886f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a31f95e538557a7e73c6050aecdcd886f">&#9670;&#160;</a></span>_delayedReactionTimer</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int Party::_delayedReactionTimer</td>
         </tr>
       </table>
 </div><div class="memdoc">
