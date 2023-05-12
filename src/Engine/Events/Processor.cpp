@@ -144,7 +144,6 @@ void eventProcessor(int eventId, int targetObj, bool canShowMessages, int startS
         return;
     }
 
-    EvtTargetObj = targetObj; // TODO: pass as local
     dword_5B65C4_cancelEventProcessing = 0; // TODO: rename and contain in this module or better remove it altogether
 
     if (!eventId) {
@@ -159,10 +158,10 @@ void eventProcessor(int eventId, int targetObj, bool canShowMessages, int startS
     logger->verbose("Executing regular event starting from step {}", startStep);
     if (activeLevelDecoration) {
         engine->_globalEventMap.dump(eventId);
-        interpreter.prepare(engine->_globalEventMap, eventId, canShowMessages);
+        interpreter.prepare(engine->_globalEventMap, eventId, targetObj, canShowMessages);
     } else {
         engine->_localEventMap.dump(eventId);
-        interpreter.prepare(engine->_localEventMap, eventId, canShowMessages);
+        interpreter.prepare(engine->_localEventMap, eventId, targetObj, canShowMessages);
     }
 
     if (interpreter.executeRegular(startStep)) {
@@ -182,7 +181,7 @@ bool npcDialogueEventProcessor(int eventId, int startStep) {
     activeLevelDecoration = (LevelDecoration *)1; // Required for correct printing of messages
     engine->_globalEventMap.dump(eventId);
     activeLevelDecoration = oldDecoration;
-    interpreter.prepare(engine->_globalEventMap, eventId, false);
+    interpreter.prepare(engine->_globalEventMap, eventId, PID_INVALID, false);
     return interpreter.executeNpcDialogue(startStep);
 }
 

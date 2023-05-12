@@ -51,7 +51,7 @@ struct Chest {
     static int PutItemInChest(int a1, struct ItemGen *a2, int uChestID);
     static void PlaceItemAt(unsigned int put_cell_pos, unsigned int uItemIdx, int uChestID);
     static void PlaceItems(int uChestID);
-    static bool open(int uChestID);
+    static bool open(int uChestID, int objectPid);
     static void toggleFlag(int uChestID, CHEST_FLAG uFlag, bool bValue);
     static bool ChestUI_WritePointedObjectStatusString();
     static void OnChestLeftClick();

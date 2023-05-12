@@ -177,7 +177,6 @@ extern std::array<struct NPCData *, 7>
                    // work aroud house overflow
 extern GUIButton *HouseNPCPortraitsButtonsList[6];
 extern std::string branchless_dialogue_str;
-extern int EvtTargetObj;
 extern int _unused_5B5924_is_travel_ui_drawn;  // 005B5924
 
 extern std::string Party_Teleport_Map_Name;

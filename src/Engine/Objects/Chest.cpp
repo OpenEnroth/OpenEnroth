@@ -31,71 +31,61 @@
 ChestList *pChestList;
 std::vector<Chest> vChests;
 
-bool Chest::open(int uChestID) {
-    ODMFace *pODMFace;                // eax@19
-    BLVFace *pBLVFace;                // eax@20
-    int pObjectX = 0;                     // ebx@21
-    int pObjectZ = 0;                     // edi@21
-    double dir_x;                     // st7@23
-    double dir_y;                     // st6@23
-    double length_vector;             // st7@23
-    int pDepth;                       // ecx@26
-    Vec3i v;                      // ST4C_12@28
-    bool flag_shout;                  // edi@28
-    SPRITE_OBJECT_TYPE pSpriteID[4];  // [sp+84h] [bp-40h]@16
-    Vec3i pOut;                   // [sp+A0h] [bp-24h]@28
-    int pObjectY = 0;                     // [sp+B0h] [bp-14h]@21
-    int yawAngle{};                        // [sp+B4h] [bp-10h]@23
-    float dir_z;                      // [sp+BCh] [bp-8h]@23
-    int pitchAngle{};                        // [sp+C0h] [bp-4h]@8
-    SpriteObject pSpellObject;        // [sp+14h] [bp-B0h]@28
+bool Chest::open(int uChestID, int objectPid) {
+    ODMFace *pODMFace;
+    BLVFace *pBLVFace;
+    int pObjectX = 0;
+    int pObjectY = 0;
+    int pObjectZ = 0;
+    double dir_x;
+    double dir_y;
+    double dir_z;
+    double length_vector;
+    int pDepth;
+    bool flag_shout;
+    SPRITE_OBJECT_TYPE pSpriteID[4];
+    Vec3i pOut;
+    int yawAngle{};
+    int pitchAngle{};
+    SpriteObject pSpellObject;
 
     assert(uChestID < 20);
-    if ((uChestID < 0) && (uChestID >= 20)) return false;
+    if ((uChestID < 0) && (uChestID >= 20))
+        return false;
     Chest *chest = &vChests[uChestID];
 
     if (!chest->Initialized() || engine->config->gameplay.ChestTryPlaceItems.value() == 1)
         Chest::PlaceItems(uChestID);
 
-    if (!pParty->hasActiveCharacter()) return false;
+    if (!pParty->hasActiveCharacter())
+        return false;
     flag_shout = false;
     unsigned int pMapID = pMapStats->GetMapInfo(pCurrentMapName);
     if (chest->Trapped() && pMapID) {
-        if (pParty->activeCharacter().GetDisarmTrap() <
-            2 * pMapStats->pInfos[pMapID].LockX5) {
+        if (pParty->activeCharacter().GetDisarmTrap() < 2 * pMapStats->pInfos[pMapID].LockX5) {
             pSpriteID[0] = SPRITE_TRAP_FIRE;
             pSpriteID[1] = SPRITE_TRAP_LIGHTNING;
             pSpriteID[2] = SPRITE_TRAP_COLD;
             pSpriteID[3] = SPRITE_TRAP_BODY;
             int pRandom = grng->random(4); // Not sure if this should be grng or vrng, so we'd rather err on the side of safety.
-            int v6 = PID_ID(EvtTargetObj);
-            if (PID_TYPE(EvtTargetObj) == OBJECT_Decoration) {
-                pObjectX = pLevelDecorations[v6].vPosition.x;
-                pObjectY = pLevelDecorations[v6].vPosition.y;
-                pObjectZ = pLevelDecorations[v6].vPosition.z +
-                    (pDecorationList->GetDecoration(pLevelDecorations[v6].uDecorationDescID)->uDecorationHeight / 2);
+            int objId = PID_ID(objectPid);
+            if (PID_TYPE(objectPid) == OBJECT_Decoration) {
+                pObjectX = pLevelDecorations[objId].vPosition.x;
+                pObjectY = pLevelDecorations[objId].vPosition.y;
+                pObjectZ = pLevelDecorations[objId].vPosition.z +
+                    (pDecorationList->GetDecoration(pLevelDecorations[objId].uDecorationDescID)->uDecorationHeight / 2);
             }
-            if (PID_TYPE(EvtTargetObj) == OBJECT_Face) {
+            if (PID_TYPE(objectPid) == OBJECT_Face) {
                 if (uCurrentlyLoadedLevelType == LEVEL_Outdoor) {
-                    pODMFace = &pOutdoor->pBModels[EvtTargetObj >> 9]
-                                    .pFaces[(EvtTargetObj >> 3) & 0x3F];
-                    pObjectX = (pODMFace->pBoundingBox.x1 +
-                                pODMFace->pBoundingBox.x2) /
-                               2;
-                    pObjectY = (pODMFace->pBoundingBox.y1 +
-                                pODMFace->pBoundingBox.y2) /
-                               2;
-                    pObjectZ = (pODMFace->pBoundingBox.z1 +
-                                pODMFace->pBoundingBox.z2) /
-                               2;
+                    pODMFace = &pOutdoor->pBModels[objectPid >> 9].pFaces[(objectPid >> 3) & 0x3F];
+                    pObjectX = (pODMFace->pBoundingBox.x1 + pODMFace->pBoundingBox.x2) / 2;
+                    pObjectY = (pODMFace->pBoundingBox.y1 + pODMFace->pBoundingBox.y2) / 2;
+                    pObjectZ = (pODMFace->pBoundingBox.z1 + pODMFace->pBoundingBox.z2) / 2;
                 } else {  // Indoor
-                    pBLVFace = &pIndoor->pFaces[v6];
-                    pObjectX =
-                        (pBLVFace->pBounding.x1 + pBLVFace->pBounding.x2) / 2;
-                    pObjectY =
-                        (pBLVFace->pBounding.y1 + pBLVFace->pBounding.y2) / 2;
-                    pObjectZ =
-                        (pBLVFace->pBounding.z1 + pBLVFace->pBounding.z2) / 2;
+                    pBLVFace = &pIndoor->pFaces[objId];
+                    pObjectX = (pBLVFace->pBounding.x1 + pBLVFace->pBounding.x2) / 2;
+                    pObjectY = (pBLVFace->pBounding.y1 + pBLVFace->pBounding.y2) / 2;
+                    pObjectZ = (pBLVFace->pBounding.z1 + pBLVFace->pBounding.z2) / 2;
                 }
             }
             dir_x = (double)pParty->vPosition.x - (double)pObjectX;
@@ -113,12 +103,8 @@ bool Chest::open(int uChestID) {
             pDepth = 256;
             if (length_vector < 256.0)
                 pDepth = (int64_t)length_vector / 4;
-            v.x = pObjectX;
-            v.y = pObjectY;
-            v.z = pObjectZ;
-            // TODO(Nik-RE-dev): y and z usage seems backwards
-            Vec3i::rotate(pDepth, yawAngle, pitchAngle, v, &pOut.x, &pOut.z, &pOut.y);
-            SpriteObject::dropItemAt(pSpriteID[pRandom], {pOut.x, pOut.z, pOut.y}, 0, 1, false, SPRITE_IGNORE_RANGE | SPRITE_NO_Z_BUFFER);
+            Vec3i::rotate(pDepth, yawAngle, pitchAngle, Vec3i(pObjectX, pObjectY, pObjectZ), &pOut.x, &pOut.y, &pOut.z);
+            SpriteObject::dropItemAt(pSpriteID[pRandom], pOut, 0, 1, false, SPRITE_IGNORE_RANGE | SPRITE_NO_Z_BUFFER);
             pSpellObject.containing_item.Reset();
             pSpellObject.spell_skill = PLAYER_SKILL_MASTERY_NONE;
             pSpellObject.spell_level = 0;
@@ -126,9 +112,7 @@ bool Chest::open(int uChestID) {
             pSpellObject.field_54 = 0;
             pSpellObject.uType = pSpriteID[pRandom];
             pSpellObject.uObjectDescID = pObjectList->ObjectIDByItemID(pSpellObject.uType);
-            pSpellObject.vPosition.y = pOut.z;
-            pSpellObject.vPosition.x = pOut.x;
-            pSpellObject.vPosition.z = pOut.y;
+            pSpellObject.vPosition = pOut;
             pSpellObject.uSoundID = 0;
             pSpellObject.uAttributes = SPRITE_IGNORE_RANGE | SPRITE_NO_Z_BUFFER;
             pSpellObject.uSectorID = pIndoor->GetSector(pOut);
