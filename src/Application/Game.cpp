@@ -952,7 +952,9 @@ void Game::processQueuedMessages() {
                     onEscape();
                     continue;
                 case UIMSG_CycleCharacters:
-                    pParty->setActiveCharacterIndex(cycleCharacter(keyboardInputHandler->IsAdventurerBackcycleToggled()));
+                    if (pParty->hasActiveCharacter()) {
+                        pParty->setActiveCharacterIndex(cycleCharacter(keyboardInputHandler->IsAdventurerBackcycleToggled()));
+                    }
                     continue;
                 case UIMSG_OnTravelByFoot:
                     pCurrentFrameMessageQueue->Flush();
