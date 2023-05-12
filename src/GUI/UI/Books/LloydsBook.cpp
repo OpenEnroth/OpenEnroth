@@ -19,7 +19,6 @@ std::array<int, 5> pLloydsBeacons_SomeXs = {{59, 279, 59, 279, 169}};
 std::array<int, 5> pLloydsBeacons_SomeYs = {{82, 82, 226, 226, 153}};
 
 bool bRecallingBeacon;
-bool isLloydsBeaconBeingInstalled;
 int lloydsBeaconCasterId;
 int lloydsBeaconSpellDuration;
 
@@ -30,7 +29,6 @@ GUIWindow_LloydsBook::GUIWindow_LloydsBook() : GUIWindow_Book() {
     this->eWindowType = WindowType::WINDOW_LloydsBeacon;
     this->wData.val = WINDOW_LloydsBeacon;
 
-    isLloydsBeaconBeingInstalled = false;
     if (!ui_book_lloyds_border) {
         ui_book_lloyds_border = assets->GetImage_ColorKey("lb_bordr");
     }
@@ -131,9 +129,5 @@ void GUIWindow_LloydsBook::Update() {
             unsigned int pTextHeight = pSpellFont->CalcTextHeight(localization->GetString(LSTR_AVAILABLE), pWindow.uFrameWidth, 0);
             pWindow.DrawTitleText(pSpellFont, 0, (int)pWindow.uFrameHeight / 2 - pTextHeight / 2, 1, localization->GetString(LSTR_AVAILABLE), 3);
         }
-    }
-
-    if (isLloydsBeaconBeingInstalled) {
-        pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_CloseAfterInstallBeacon, 0, 0);
     }
 }

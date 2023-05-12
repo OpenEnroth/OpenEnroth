@@ -814,8 +814,7 @@ void PrepareToLoadBLV(bool bLoading) {
     //pPaletteManager->pPalette_tintColor[1] = 0;
     //pPaletteManager->pPalette_tintColor[2] = 0;
     //pPaletteManager->RecalculateAll();
-    if (_A750D8_player_speech_timer)
-        _A750D8_player_speech_timer = 0;
+    pParty->_delayedReactionTimer = 0;
     MAP_TYPE map_id = pMapStats->GetMapInfo(pCurrentMapName);
     if (map_id) {
         map_info = &pMapStats->pInfos[map_id];
@@ -982,9 +981,7 @@ void PrepareToLoadBLV(bool bLoading) {
         int id = pParty->getRandomActiveCharacterId(vrng.get());
 
         if (id != -1) {
-            _A750D8_player_speech_timer = 256;
-            PlayerSpeechID = SPEECH_EnterDungeon;
-            uSpeakingCharacter = id;
+            pParty->setDelayedReaction(SPEECH_EnterDungeon, id);
         }
     }
 }

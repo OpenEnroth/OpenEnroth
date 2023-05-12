@@ -2702,7 +2702,7 @@ void ODM_LoadAndInitialize(const std::string &pFilename, ODMRenderParams *thisa)
     render->ClearZBuffer();
     // thisa = (ODMRenderParams *)1;
     GetAlertStatus(); // Result unused.
-    if (_A750D8_player_speech_timer) _A750D8_player_speech_timer = 0;
+    pParty->_delayedReactionTimer = 0;
     int map_id = pMapStats->GetMapInfo(pCurrentMapName);
     unsigned int respawn_interval = 0;
     if (map_id) {

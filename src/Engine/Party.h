@@ -384,6 +384,26 @@ struct Party {
      */
     size_t immolationAffectedActors(int *affected, size_t affectedArrSize, size_t effectRange);
 
+    void setDelayedReaction(PlayerSpeech speech, int id) {
+        if (!_delayedReactionTimer) {
+            _delayedReactionTimer = Timer::Second * 2;
+            _delayedReactionSpeech = speech;
+            _delayedReactionCharacterId = id;
+        }
+    }
+
+    void updateDelayedReaction() {
+        if (_delayedReactionTimer) {
+            _delayedReactionTimer -= pMiscTimer->uTimeElapsed;
+            if (_delayedReactionTimer <= 0) {
+                if (pPlayers[_delayedReactionCharacterId].CanAct()) {
+                    pPlayers[_delayedReactionCharacterId].playReaction(_delayedReactionSpeech);
+                }
+                _delayedReactionTimer = 0;
+            }
+        }
+    }
+
     int field_0_set25_unused;
     int uPartyHeight;
     int uDefaultPartyHeight;
@@ -479,6 +499,10 @@ struct Party {
     float TorchLightLastIntensity;
 
     uint _roundingDt{ 0 };  // keeps track of rounding remainder for recovery
+
+    int _delayedReactionTimer;
+    PlayerSpeech _delayedReactionSpeech;
+    int _delayedReactionCharacterId;
 
     inline uint activeCharacterIndex() const {
         assert(hasActiveCharacter());

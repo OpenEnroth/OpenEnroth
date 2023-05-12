@@ -663,4 +663,3 @@ int PlayerCreation_GetUnspentAttributePointCount();
  */
 int cycleCharacter(bool backwards);
 
-extern enum PlayerSpeech PlayerSpeechID;
