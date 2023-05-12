@@ -434,7 +434,6 @@ void Game::processQueuedMessages() {
     int v56;                    // edx@432
     int v57;                    // eax@432
     unsigned int pMapNum;       // eax@445
-    Player *pPlayer2;           // ecx@549
     GUIButton *pButton;         // eax@578
     int v91;                    // edx@605
     int v92;                    // eax@605
@@ -953,7 +952,7 @@ void Game::processQueuedMessages() {
                     onEscape();
                     continue;
                 case UIMSG_CycleCharacters:
-                    pParty->setActiveCharacterIndex(CycleCharacter(keyboardInputHandler->IsAdventurerBackcycleToggled()));
+                    pParty->setActiveCharacterIndex(cycleCharacter(keyboardInputHandler->IsAdventurerBackcycleToggled()));
                     continue;
                 case UIMSG_OnTravelByFoot:
                     pCurrentFrameMessageQueue->Flush();
@@ -1401,12 +1400,10 @@ void Game::processQueuedMessages() {
                         pAudioPlayer->playUISound(SOUND_error);
                         continue;
                     }
-                    if (!pParty->hasActiveCharacter() ||
-                        (pPlayer2 = pPlayers[pParty->activeCharacterIndex()],
-                         pPlayer2->timeToRecovery))
+                    if (!pParty->hasActiveCharacter() || pParty->activeCharacter().timeToRecovery) {
                         continue;
-                    pushSpellOrRangedAttack(pPlayer2->uQuickSpell, pParty->activeCharacterIndex() - 1,
-                                            0, 0, pParty->activeCharacterIndex());
+                    }
+                    pushSpellOrRangedAttack(pParty->activeCharacter().uQuickSpell, pParty->activeCharacterIndex() - 1, 0, 0, pParty->activeCharacterIndex());
                     continue;
                 }
 
@@ -1989,28 +1986,21 @@ void Game::processQueuedMessages() {
                 }
 
                 case UIMSG_ShowStatus_Player: {
-                    Player *player = pPlayers[uMessageParam];
+                    Player *player = &pParty->pPlayers[uMessageParam - 1];
 
-                    auto status = NameAndTitle(player->name, player->classType)
-                        + ": "
-                        + std::string(localization->GetCharacterConditionName(player->GetMajorConditionIdx()));
-                    GameUI_StatusBar_Set(status);
+                    GameUI_StatusBar_Set(fmt::format("{}: {}", NameAndTitle(player->name, player->classType),
+                                                     localization->GetCharacterConditionName(player->GetMajorConditionIdx())));
 
-                    _mouse->uPointingObjectID =
-                        PID(OBJECT_Player,
-                            (unsigned char)(8 * uMessageParam - 8) | 4);
+                    _mouse->uPointingObjectID = PID(OBJECT_Player, (unsigned char)(8 * uMessageParam - 8) | 4);
                     continue;
                 }
 
                 case UIMSG_ShowStatus_ManaHP: {
-                    GameUI_StatusBar_Set(
-                        fmt::format("{} / {} {}    {} / {} {}",
-                                     pPlayers[uMessageParam]->GetHealth(),
-                                     pPlayers[uMessageParam]->GetMaxHealth(),
-                                     localization->GetString(LSTR_HIT_POINTS),
-                                     pPlayers[uMessageParam]->GetMana(),
-                                     pPlayers[uMessageParam]->GetMaxMana(),
-                                     localization->GetString(LSTR_SPELL_POINTS)));
+                    Player *player = &pParty->pPlayers[uMessageParam - 1];
+
+                    GameUI_StatusBar_Set(fmt::format("{} / {} {}    {} / {} {}",
+                                                     player->GetHealth(), player->GetMaxHealth(), localization->GetString(LSTR_HIT_POINTS),
+                                                     player->GetMana(), player->GetMaxMana(), localization->GetString(LSTR_SPELL_POINTS)));
                     continue;
                 }
 
@@ -2193,11 +2183,11 @@ void Game::processQueuedMessages() {
                     for (Player &player : pParty->pPlayers) {
                         player.uSkillPoints += 50;
                     }
-                    pPlayers[std::max(pParty->activeCharacterIndex(), 1u)]->PlayAwardSound_Anim();
+                    pParty->pPlayers[std::max(pParty->activeCharacterIndex(), 1u) - 1].PlayAwardSound_Anim();
                     continue;
                 case UIMSG_DebugGiveEXP:
                     pParty->GivePartyExp(20000);
-                    pPlayers[std::max(pParty->activeCharacterIndex(), 1u)]->PlayAwardSound_Anim();
+                    pParty->pPlayers[std::max(pParty->activeCharacterIndex(), 1u) - 1].PlayAwardSound_Anim();
                     continue;
                 case UIMSG_DebugGiveGold:
                     pParty->AddGold(10000);

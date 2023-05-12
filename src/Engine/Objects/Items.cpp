@@ -194,8 +194,8 @@ std::string ItemGen::GetIdentifiedName() {
     }
 
     if (uItemID == ITEM_QUEST_LICH_JAR_FULL) {  // Lich Jar
-        if (uHolderPlayer >= 0 && uHolderPlayer < 4) {
-            const std::string &player_name = pPlayers[uHolderPlayer]->name;
+        if (uHolderPlayer >= 0 && uHolderPlayer < pParty->pPlayers.size()) {
+            const std::string &player_name = pParty->pPlayers[uHolderPlayer].name;
             if (player_name.back() == 's')
                 return localization->FormatString(
                     LSTR_FMT_JAR,

@@ -41,8 +41,6 @@
 static DecalBuilder *decal_builder = EngineIocContainer::ResolveDecalBuilder();
 static SpellFxRenderer *spell_fx_renderer = EngineIocContainer::ResolveSpellFxRenderer();
 
-IndexedArray<Player *, 1, 4> pPlayers;
-
 // Race Stat Points Bonus/ Penalty
 struct PlayerCreation_AttributeProps {
     unsigned char uBaseValue;
@@ -548,26 +546,25 @@ void Player::SetCondition(Condition uConditionIdx, int blockable) {
             break;
     }
 
-    int players_before = 0;
-    for (int i = 1; i < 5; ++i) {  // count active players veofre activating condition
-        if (pPlayers[i]->CanAct()) ++players_before;
+    int playersBefore = 0;
+    for (Player &player : pParty->pPlayers) {  // count active players before activating condition
+        playersBefore += player.CanAct() ? 1 : 0;
     }
 
-    conditions.Set(uConditionIdx, pParty->GetPlayingTime());  // set ocndition
+    conditions.Set(uConditionIdx, pParty->GetPlayingTime());  // set condition
 
-    int remainig_player = 0;  // who is left now
-    int players_after = 0;
-    for (int i = 1; i < 5; ++i) {
-        if (pPlayers[i]->CanAct()) {
-            remainig_player = i;
-            ++players_after;
+    int playersAfter = 0;
+    Player *remainingPlayer = nullptr;
+    for (Player &player : pParty->pPlayers) {
+        if (player.CanAct()) {
+            remainingPlayer = &player;
+            playersAfter++;
         }
     }
 
-    if ((players_before == 2) && (players_after == 1)) { // if was 2 and now down to 1 - "its just you and me now"
-        pPlayers[remainig_player]->playReaction(SPEECH_LastManStanding);
+    if ((playersBefore == 2) && (playersAfter == 1)) { // if was 2 and now down to 1 - "its just you and me now"
+        remainingPlayer->playReaction(SPEECH_LastManStanding);
     }
-    // ^ скорее всего обнадёжывающий возглас последнего
 
     return;
 }
@@ -6237,19 +6234,22 @@ void Player::EquipBody(ITEM_EQUIP_TYPE uEquipType) {
     }
 }
 
-//----- (0049387A) --------------------------------------------------------
-int CycleCharacter(bool backwards) {
-    const int PARTYSIZE = 4;
-    int valToAdd = backwards ? (PARTYSIZE - 2) : 0;
-    int mult = backwards ? -1 : 1;
+int cycleCharacter(bool backwards) {
+    int currentId = pParty->activeCharacterIndex() - 1;
 
-    for (int i = 0; i < (PARTYSIZE - 1); i++) {
-        int currCharId =
-            ((pParty->activeCharacterIndex() + mult * i + valToAdd) % PARTYSIZE) + 1;
-        if (pPlayers[currCharId]->timeToRecovery == 0) {
-            return currCharId;
+    for (int i = 0; i < pParty->pPlayers.size(); i++) {
+        currentId += (backwards ? -1 : 1);
+
+        if (currentId < 0) {
+            currentId = pParty->pPlayers.size() - 1;
+        } else if (currentId >= pParty->pPlayers.size()) {
+            currentId = 0;
+        }
+        if (pParty->pPlayers[currentId].timeToRecovery == 0) {
+            return currentId + 1;
         }
     }
+
     return pParty->activeCharacterIndex();
 }
 

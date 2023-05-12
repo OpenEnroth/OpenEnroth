@@ -32,8 +32,8 @@ Image *shop_ui_background = nullptr;
 
 std::array<Image *, 12> shop_ui_items_in_store;
 
-bool StealingMode(int adventurerId) {
-    return keyboardInputHandler->IsStealingToggled() && pPlayers[adventurerId]->CanSteal();
+bool isStealingModeActive() {
+    return keyboardInputHandler->IsStealingToggled() && pParty->activeCharacter().CanSteal();
 }
 
 void ShopDialogMain(GUIWindow dialogwin) {
@@ -295,12 +295,10 @@ void WeaponShopWares(GUIWindow dialogwin, bool special) {
             }
         }
 
-        if (StealingMode(pParty->activeCharacterIndex()))
-            GameUI_StatusBar_DrawImmediate(
-                localization->GetString(LSTR_STEAL_ITEM), 0);
+        if (isStealingModeActive())
+            GameUI_StatusBar_DrawImmediate(localization->GetString(LSTR_STEAL_ITEM), 0);
         else
-            GameUI_StatusBar_DrawImmediate(
-                localization->GetString(LSTR_SELECT_ITEM_TO_BUY), 0);
+            GameUI_StatusBar_DrawImmediate(localization->GetString(LSTR_SELECT_ITEM_TO_BUY), 0);
 
         if (item_num) {  // this shoudl go into func??
             Pointi pt = EngineIocContainer::ResolveMouse()->GetCursorPos();
@@ -326,7 +324,7 @@ void WeaponShopWares(GUIWindow dialogwin, bool special) {
                         if (pt.y >= weapons_Ypos[testx] + 30 &&
                             pt.y < (weapons_Ypos[testx] + 30 + shop_ui_items_in_store[testx]->GetHeight())) {
                             std::string str;
-                            if (!StealingMode(pParty->activeCharacterIndex())) {
+                            if (!isStealingModeActive()) {
                                 str = BuildDialogueString(
                                     pMerchantsBuyPhrases[pParty->activeCharacter().SelectPhrasesTransaction(
                                                  item, BuildingType_WeaponShop,
@@ -445,12 +443,10 @@ void ArmorShopWares(GUIWindow dialogwin, bool special) {
                 ++pItemCount;
         }
 
-        if (!StealingMode(pParty->activeCharacterIndex())) {
-            GameUI_StatusBar_DrawImmediate(
-                localization->GetString(LSTR_SELECT_ITEM_TO_BUY), 0);
+        if (!isStealingModeActive()) {
+            GameUI_StatusBar_DrawImmediate(localization->GetString(LSTR_SELECT_ITEM_TO_BUY), 0);
         } else {
-            GameUI_StatusBar_DrawImmediate(
-                localization->GetString(LSTR_STEAL_ITEM), 0);
+            GameUI_StatusBar_DrawImmediate(localization->GetString(LSTR_STEAL_ITEM), 0);
         }
 
         if (pItemCount) {  // this should go into func??
@@ -491,7 +487,7 @@ void ArmorShopWares(GUIWindow dialogwin, bool special) {
                             // y is 126 to 126 + height low or 98-height to 98
 
                             std::string str;
-                            if (!StealingMode(pParty->activeCharacterIndex())) {
+                            if (!isStealingModeActive()) {
                                 str = BuildDialogueString(
                                     pMerchantsBuyPhrases
                                         [pParty->activeCharacter().SelectPhrasesTransaction(
@@ -621,7 +617,7 @@ void AlchemyMagicShopWares(GUIWindow dialogwin, BuildingType building,
                 ++item_num;
         }
 
-        if (StealingMode(pParty->activeCharacterIndex())) {
+        if (isStealingModeActive()) {
             GameUI_StatusBar_DrawImmediate(localization->GetString(LSTR_STEAL_ITEM), 0);
         } else {
             GameUI_StatusBar_DrawImmediate(localization->GetString(LSTR_SELECT_ITEM_TO_BUY), 0);
@@ -661,7 +657,7 @@ void AlchemyMagicShopWares(GUIWindow dialogwin, BuildingType building,
                             // y is 152-h to 152 or 308-height to 308
 
                             std::string str;
-                            if (!StealingMode(pParty->activeCharacterIndex())) {
+                            if (!isStealingModeActive()) {
                                 str = BuildDialogueString(pMerchantsBuyPhrases[pParty->activeCharacter().SelectPhrasesTransaction(
                                                               item, building, window_SpeakInHouse->wData.val, 2)],
                                     pParty->activeCharacterIndex() - 1, item,
@@ -850,9 +846,7 @@ void UIShop_Buy_Identify_Repair() {
                             taken_item = pParty->activeCharacter().AddItem(-1, bought_item->uItemID);
                             if (taken_item) {
                                 bought_item->SetIdentified();
-                                memcpy(
-                                    &pParty->activeCharacter().pInventoryItemList[taken_item - 1],
-                                    bought_item, 0x24u);
+                                pParty->activeCharacter().pInventoryItemList[taken_item - 1] = *bought_item;
                                 dword_F8B1E4 = 1;
                                 pParty->TakeGold(uPriceItemService);
                                 bought_item->Reset();
@@ -1143,9 +1137,8 @@ void UIShop_Buy_Identify_Repair() {
                 a3 = pMapStats->pInfos[pMapStats->GetMapInfo(pCurrentMapName)]
                          ._steal_perm;
             party_reputation = pParty->GetPartyReputation();
-            if (StealingMode(pParty->activeCharacterIndex())) {
-                uNumSeconds = pParty->activeCharacter().StealFromShop(
-                    bought_item, a3, party_reputation, 0, &a6);
+            if (isStealingModeActive()) {
+                uNumSeconds = pParty->activeCharacter().StealFromShop(bought_item, a3, party_reputation, 0, &a6);
                 if (!uNumSeconds) {
                     // caught stealing no item
                     sub_4B1447_party_fine(window_SpeakInHouse->wData.val, 0, a6);
@@ -1160,14 +1153,10 @@ void UIShop_Buy_Identify_Repair() {
             v39 = pParty->activeCharacter().AddItem(-1, bought_item->uItemID);
             if (v39) {
                 bought_item->SetIdentified();
-                memcpy(&pParty->activeCharacter().pInventoryItemList[v39 - 1],
-                       bought_item, sizeof(ItemGen));
+                pParty->activeCharacter().pInventoryItemList[v39 - 1] = *bought_item;
                 if (uNumSeconds != 0) {  // stolen
-                    pPlayers[pParty->activeCharacterIndex()]
-                        ->pInventoryItemList[v39 - 1]
-                        .SetStolen();
-                    sub_4B1447_party_fine(window_SpeakInHouse->wData.val,
-                                          uNumSeconds, a6);
+                    pParty->activeCharacter().pInventoryItemList[v39 - 1].SetStolen();
+                    sub_4B1447_party_fine(window_SpeakInHouse->wData.val, uNumSeconds, a6);
                 } else {
                     dword_F8B1E4 = 1;
                     pParty->TakeGold(uPriceItemService);

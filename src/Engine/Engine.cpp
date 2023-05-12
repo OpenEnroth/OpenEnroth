@@ -980,7 +980,6 @@ void Engine::SecondaryInitialization() {
     pItemTable = new ItemTable;
     pItemTable->Initialize();
 
-    // pBitmaps_LOD->can_load_hardware_sprites = 1;
     // pBitmaps_LOD->SetupPalettes(render->uTargetRBits, render->uTargetGBits,
     // render->uTargetBBits);
     pBitmaps_LOD->SetupPalettes(5, 6, 5);
@@ -993,7 +992,6 @@ void Engine::SecondaryInitialization() {
 
     //pPaletteManager->SetMistColor(128, 128, 128);
     //pPaletteManager->RecalculateAll();
-    // pSprites_LOD->can_load_hardware_sprites = 1;
     pObjectList->InitializeSprites();
     pOverlayList->InitializeSprites();
 
@@ -1670,7 +1668,7 @@ void _494035_timed_effects__water_walking_damage__etc() {
         }
 
         if (!pBuff->isGMBuff) {
-            if (!pPlayers[pBuff->caster]->CanAct()) {
+            if (!pParty->pPlayers[pBuff->caster - 1].CanAct()) {
                 pBuff->Reset();
                 if (buffIdx == PARTY_BUFF_FLY) {
                     pParty->bFlying = false;
