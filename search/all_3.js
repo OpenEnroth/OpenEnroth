@@ -533,7 +533,7 @@ var searchData=
   ['currentyear_530',['currentYear',['../structParty__MM7.html#a99168e05d7b662f0b4d85bd08ca4b32e',1,'Party_MM7']]],
   ['cursor_5fimg_531',['cursor_img',['../classIo_1_1Mouse.html#a0d6622acd1d7962b030f194849cb2f30',1,'Io::Mouse']]],
   ['cursor_5fname_532',['cursor_name',['../classIo_1_1Mouse.html#ad661c8a8930e20fa093e78957b934758',1,'Io::Mouse']]],
-  ['cyclecharacter_533',['CycleCharacter',['../Player_8cpp.html#ad7e09b8a7424641c671575c02f59f228',1,'CycleCharacter(bool backwards):&#160;Player.cpp'],['../Player_8h.html#ad7e09b8a7424641c671575c02f59f228',1,'CycleCharacter(bool backwards):&#160;Player.cpp']]],
+  ['cyclecharacter_533',['cycleCharacter',['../Player_8cpp.html#aa1f5ad27e0dd8e297ddd9b87f90aa9a8',1,'cycleCharacter(bool backwards):&#160;Player.cpp'],['../Player_8h.html#aa1f5ad27e0dd8e297ddd9b87f90aa9a8',1,'cycleCharacter(bool backwards):&#160;Player.cpp']]],
   ['cycledecrement_534',['cycleDecrement',['../classConfigEntry.html#a4d5c7be93e08dc45411dab48c27d1c17',1,'ConfigEntry']]],
   ['cyclefilter_535',['CycleFilter',['../namespaceIo.html#a547e2ba6c6a5bb3a0b5987131e62a90cafb76dc41ca56f4e090cf65021285c8a9',1,'Io::CycleFilter()'],['../classGameConfig_1_1Gamepad.html#a0ebbb15f19839fdb4655a7710c06cd19',1,'GameConfig::Gamepad::CycleFilter()'],['../classGameConfig_1_1Keybindings.html#a642fe5d374260085b618631502210c9e',1,'GameConfig::Keybindings::CycleFilter()']]],
   ['cycleincrement_536',['cycleIncrement',['../classConfigEntry.html#a6b1eb52a52ebd5c13fcd9d667e02c8a1',1,'ConfigEntry']]]
