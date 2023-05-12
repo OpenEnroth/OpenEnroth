@@ -4,7 +4,7 @@
 
 #include "Engine/Graphics/IRender.h"
 #include "Engine/Localization.h"
-#include "Engine/Awards.h"
+#include "Engine/Tables/AwardTable.h"
 
 #include "GUI/UI/UIHouses.h"
 

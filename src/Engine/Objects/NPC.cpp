@@ -1,9 +1,7 @@
 #include "Engine/Objects/NPC.h"
 
-#include "Engine/Autonotes.h"
 #include "Engine/Engine.h"
 #include "Engine/EngineGlobals.h"
-#include "Engine/Awards.h"
 #include "Engine/Events/Processor.h"
 #include "Engine/Graphics/Indoor.h"
 #include "Engine/Graphics/Overlays.h"
@@ -13,6 +11,8 @@
 #include "Engine/Objects/Actor.h"
 #include "Engine/Party.h"
 #include "Engine/Spells/CastSpellInfo.h"
+#include "Engine/Tables/AwardTable.h"
+#include "Engine/Tables/AutonoteTable.h"
 
 #include "GUI/GUIButton.h"
 #include "GUI/UI/UIHouses.h"
@@ -33,11 +33,9 @@ struct NPCStats *pNPCStats = nullptr;
 int NPCStats::dword_AE336C_LastMispronouncedNameFirstLetter = -1;
 int NPCStats::dword_AE3370_LastMispronouncedNameResult = -1;
 
-void InitializeAwards();
 void InitializeScrolls();
 void InitializeMerchants();
 void InitializeTransitions();
-void InitializeAutonotes();
 void InitializeQuests();
 bool CheckPortretAgainstSex(int portret_num, int sex);
 
@@ -400,8 +398,8 @@ void NPCStats::Initialize() {
     InitializeNPCData();
     InitializeNPCText();
     InitializeQuests();
-    InitializeAutonotes();
-    InitializeAwards();
+    initializeAutonotes();
+    initializeAwards();
     InitializeTransitions();
     InitializeMerchants();
     InitializeScrolls();
@@ -699,48 +697,6 @@ bool CheckHiredNPCSpeciality(NPCProf prof) {
         || pParty->pHirelings[1].profession == prof;
 }
 
-//----- (004763E0) --------------------------------------------------------
-void InitializeAwards() {
-    int i;
-    char *test_string;
-    unsigned char c;
-    bool break_loop;
-    unsigned int temp_str_len;
-    char *tmp_pos;
-    int decode_step;
-
-    pAwardsTXT_Raw = pEvents_LOD->LoadCompressedTexture("awards.txt").string_view();
-    strtok(pAwardsTXT_Raw.data(), "\r");
-
-    for (i = 1; i < 105; ++i) {
-        test_string = strtok(NULL, "\r") + 1;
-        break_loop = false;
-        decode_step = 0;
-        do {
-            c = *(unsigned char *)test_string;
-            temp_str_len = 0;
-            while ((c != '\t') && (c > 0)) {
-                ++temp_str_len;
-                c = test_string[temp_str_len];
-            }
-            tmp_pos = test_string + temp_str_len;
-            if (*tmp_pos == 0) break_loop = true;
-            *tmp_pos = 0;
-            if (temp_str_len) {
-                if (decode_step == 1)
-                    pAwards[i].pText = removeQuotes(test_string);
-                else if (decode_step == 2)
-                    pAwards[i].uPriority = atoi(test_string);
-            } else {
-                break_loop = true;
-            }
-            ++decode_step;
-            test_string = tmp_pos + 1;
-        } while ((decode_step < 3) && !break_loop);
-    }
-}
-// 7241C8: using guessed type int dword_7241C8;
-
 //----- (004764C2) --------------------------------------------------------
 void InitializeScrolls() {
     char *test_string;
@@ -863,72 +819,6 @@ void InitializeTransitions() {
             ++decode_step;
             test_string = tmp_pos + 1;
         } while ((decode_step < 2) && !break_loop);
-    }
-}
-
-//----- (00476750) --------------------------------------------------------
-void InitializeAutonotes() {
-    int i;
-    char *test_string;
-    unsigned char c;
-    bool break_loop;
-    unsigned int temp_str_len;
-    char *tmp_pos;
-    int decode_step;
-
-    pAutonoteTXT_Raw = pEvents_LOD->LoadCompressedTexture("autonote.txt").string_view();
-    strtok(pAutonoteTXT_Raw.data(), "\r");
-
-    for (i = 0; i < 195; ++i) {
-        test_string = strtok(NULL, "\r") + 1;
-        break_loop = false;
-        decode_step = 0;
-        do {
-            c = *(unsigned char *)test_string;
-            temp_str_len = 0;
-            while ((c != '\t') && (c > 0)) {
-                ++temp_str_len;
-                c = test_string[temp_str_len];
-            }
-            tmp_pos = test_string + temp_str_len;
-            if (*tmp_pos == 0) break_loop = true;
-            *tmp_pos = 0;
-            if (temp_str_len) {
-                switch (decode_step) {
-                    case 1:
-                        pAutonoteTxt[i + 1].pText = removeQuotes(test_string);
-                        break;
-                    case 2: {
-                        if (iequals(test_string, "potion")) {
-                            pAutonoteTxt[i + 1].eType = AUTONOTE_POTION_RECEPIE;
-                            break;
-                        }
-                        if (iequals(test_string, "stat")) {
-                            pAutonoteTxt[i + 1].eType = AUTONOTE_STAT_HINT;
-                            break;
-                        }
-                        if (iequals(test_string, "seer")) {
-                            pAutonoteTxt[i + 1].eType = AUTONOTE_SEER;
-                            break;
-                        }
-                        if (iequals(test_string, "obelisk")) {
-                            pAutonoteTxt[i + 1].eType = AUTONOTE_OBELISK;
-                            break;
-                        }
-                        if (iequals(test_string, "teacher")) {
-                            pAutonoteTxt[i + 1].eType = AUTONOTE_TEACHER;
-                            break;
-                        }
-                        pAutonoteTxt[i + 1].eType = AUTONOTE_MISC;
-                        break;
-                    }
-                }
-            } else {
-                break_loop = true;
-            }
-            ++decode_step;
-            test_string = tmp_pos + 1;
-        } while ((decode_step < 3) && !break_loop);
     }
 }
 

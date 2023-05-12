@@ -2,7 +2,6 @@
 #include <algorithm>
 #include <string>
 
-#include "Engine/Awards.h"
 #include "Engine/Engine.h"
 #include "Engine/Graphics/IRender.h"
 #include "Engine/Graphics/Image.h"
@@ -13,6 +12,7 @@
 #include "Engine/Objects/Items.h"
 #include "Engine/Party.h"
 #include "Engine/PriceCalculator.h"
+#include "Engine/Tables/AwardTable.h"
 
 #include "GUI/GUIWindow.h"
 #include "GUI/GUIButton.h"

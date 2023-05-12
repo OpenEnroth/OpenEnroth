@@ -7,7 +7,6 @@
 
 #include "Engine/Time.h"
 #include "Engine/MM7.h"
-#include "Engine/Autonotes.h"
 #include "Engine/Objects/ItemEnums.h"
 #include "Engine/Objects/NPCEnums.h"
 #include "Engine/Objects/PlayerEnums.h"
@@ -302,7 +301,6 @@ extern char *dword_723718_autonote_related;  // idb
 extern IndexedArray<const char *, ITEM_FIRST_MESSAGE_SCROLL, ITEM_LAST_MESSAGE_SCROLL> pScrolls;
 extern int dword_7241C8;
 
-extern std::string pAwardsTXT_Raw;
 extern std::string pScrollsTXT_Raw;
 extern std::string pMerchantsTXT_Raw;
 extern IndexedArray<const char *, MERCHANT_PHRASE_COUNT> pMerchantsBuyPhrases;
@@ -310,7 +308,6 @@ extern IndexedArray<const char *, MERCHANT_PHRASE_COUNT> pMerchantsSellPhrases;
 extern IndexedArray<const char *, MERCHANT_PHRASE_COUNT> pMerchantsRepairPhrases;
 extern IndexedArray<const char *, MERCHANT_PHRASE_COUNT> pMerchantsIdentifyPhrases;
 extern std::string pTransitionsTXT_Raw;
-extern std::string pAutonoteTXT_Raw;
 extern std::string pQuestsTXT_Raw;
 extern std::vector<Vec3f> pTerrainNormals;
 extern std::array<unsigned short, 128 * 128 * 2> pTerrainNormalIndices;
