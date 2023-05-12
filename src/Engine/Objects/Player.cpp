@@ -4390,10 +4390,7 @@ bool Player::CompareVariable(VariableType VarNum, int pValue) {
             return true;
         }
         case VAR_AutoNotes:
-            // TODO(_): find out why the double subtraction. or whether this is even used
-            // also bit indexing was changed
-            assert(false);
-            return pParty->_autonoteBits[pValue - 2];
+            return pParty->_autonoteBits[pValue];
         case VAR_IsMightMoreThanBase:
             actStat = GetActualMight();
             baseStat = GetBaseStrength();
@@ -6118,6 +6115,9 @@ void Player::SubtractVariable(VariableType VarNum, signed int pValue) {
             // TODO(Nik-RE-dev): decreasing 1 seems wrong, also bits indexing was changed
             assert(false);
             //pParty->_autonoteBits.reset(pValue - 1);
+            return;
+        case VAR_PlayerBits:
+            _playerEventBits.reset(pValue);
             return;
         case VAR_NPCs2:
             npcIndex = 0;
