@@ -113,7 +113,7 @@ struct ItemGen {  // 0x24
     ITEM_FLAGS uAttributes = 0;          // 14
     ITEM_SLOT uBodyAnchor = ITEM_SLOT_INVALID; // 18
     uint8_t uMaxCharges = 0;           // 19
-    uint8_t uHolderPlayer = 0;         // 1A
+    uint8_t uHolderPlayer = -1;        // 1A
     bool placedInChest = false;        // 1B (was unused, repurposed)
     GameTime uExpireTime;        // uint64_t uExpireTime; //1C
 };

@@ -1530,6 +1530,8 @@ void OracleDialogue() {
     }
 
     // missing item is lich jar and we need to bind soul vessel to lich class character
+    // TODO(Nik-RE-dev): this code is walking only through inventory, but item was added to hand, so it will not bind new item if it was acquired
+    //                   rather this code will bind jars that already present in inventory to liches that currently do not have binded jars
     if (item_id == ITEM_QUEST_LICH_JAR_FULL) {
         for (int i = 0; i < pParty->pPlayers.size(); i++) {
             if (pParty->pPlayers[i].classType == PLAYER_CLASS_LICH) {
@@ -1537,7 +1539,7 @@ void OracleDialogue() {
                 for (Player &player : pParty->pPlayers) {
                     for (int idx = 0; idx < Player::INVENTORY_SLOT_COUNT; idx++) {
                         if (player.pInventoryItemList[idx].uItemID == ITEM_QUEST_LICH_JAR_FULL) {
-                            if (!player.pInventoryItemList[idx].uHolderPlayer) {
+                            if (player.pInventoryItemList[idx].uHolderPlayer == -1) {
                                 item = &player.pInventoryItemList[idx];
                             }
                             if (player.pInventoryItemList[idx].uHolderPlayer == i) {
