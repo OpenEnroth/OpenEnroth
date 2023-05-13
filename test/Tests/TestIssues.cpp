@@ -665,14 +665,78 @@ GAME_TEST(Issues, Issue625) {
     EXPECT_FALSE(pParty->hasItem(ITEM_CLUB));
 }
 
+GAME_TEST(Issues, Issue624) {
+    // Test that key repeating work
+    test->playTraceFromTestData("issue_624.mm7", "issue_624.json");
+    EXPECT_EQ(keyboardInputHandler->GetTextInput(), "");
+}
+
 GAME_TEST(Issues, Issue626) {
     // Last loaded save is not remembered
+    std::string savesDir = MakeDataPath("saves");
+    std::string savesDirMoved;
 
-    // Skipping random checks because we're essentially loading a random savegame inside this trace.
-    test->playTraceFromTestData("issue_626.mm7", "issue_626.json", TRACE_PLAYBACK_SKIP_RANDOM_CHECKS);
+    MM_AT_SCOPE_EXIT({
+        std::error_code ec;
+        std::filesystem::remove_all(savesDir);
+        if (!savesDirMoved.empty()) {
+            std::filesystem::rename(savesDirMoved, savesDir, ec); // Using std::error_code here, so can't throw.
+        }
+    });
 
-    // TODO(captainurist): this will fail if we don't have any saves in saves folder
-    EXPECT_EQ(pSavegameList->selectedSlot, 5);
+    if (std::filesystem::exists(savesDir)) {
+        savesDirMoved = savesDir + "_moved_for_testing";
+        ASSERT_FALSE(std::filesystem::exists(savesDirMoved)); // Throws on failure.
+        std::filesystem::rename(savesDir, savesDirMoved);
+    }
+
+    std::filesystem::create_directory(savesDir);
+
+    game->pressGuiButton("MainMenu_NewGame");
+    game->tick(2);
+    game->pressGuiButton("PartyCreation_OK");
+    game->skipLoadingScreen();
+    game->tick(2);
+
+    game->pressAndReleaseKey(PlatformKey::Escape);
+    game->tick(2);
+    game->pressGuiButton("GameMenu_SaveGame");
+    game->tick(10);
+    game->pressGuiButton("SaveMenu_Slot0");
+    game->tick(2);
+    game->pressAndReleaseKey(PlatformKey::Digit0);
+    game->tick(2);
+    game->pressGuiButton("SaveMenu_Save");
+    game->tick(10);
+
+    game->pressAndReleaseKey(PlatformKey::Escape);
+    game->tick(2);
+    game->pressGuiButton("GameMenu_SaveGame");
+    game->tick(10);
+    game->pressGuiButton("SaveMenu_Slot1");
+    game->tick(2);
+    game->pressAndReleaseKey(PlatformKey::Digit1);
+    game->tick(2);
+    game->pressGuiButton("SaveMenu_Save");
+    game->tick(10);
+
+    game->pressAndReleaseKey(PlatformKey::Escape);
+    game->tick(2);
+    game->pressGuiButton("GameMenu_LoadGame");
+    game->tick(10);
+    game->pressGuiButton("LoadMenu_Slot1");
+    game->tick(2);
+    game->pressGuiButton("LoadMenu_Load");
+    game->tick(2);
+    game->skipLoadingScreen();
+    game->tick(2);
+
+    game->pressAndReleaseKey(PlatformKey::Escape);
+    game->tick(2);
+    game->pressGuiButton("GameMenu_LoadGame");
+    game->tick(10);
+
+    EXPECT_EQ(pSavegameList->selectedSlot, 1);
 }
 
 GAME_TEST(Issue, Issue645) {
@@ -893,6 +957,12 @@ void check783784Buffs(bool haveBuffs) {
         EXPECT_EQ(pParty->pPlayers[0].pPlayerBuffs[buff].Active(), haveBuffs) << "buff=" << static_cast<int>(buff);
 }
 
+GAME_TEST(Issues, Issue779) {
+    // Test that you can't load game from save menu
+    test->playTraceFromTestData("issue_779.mm7", "issue_779.json");
+    EXPECT_EQ(current_screen_type, CURRENT_SCREEN::SCREEN_SAVEGAME);
+}
+
 GAME_TEST(Issues, Issue783) {
     // Check that all player buffs expire after rest.
     GameTime startTime;
@@ -944,4 +1014,40 @@ GAME_TEST(Issues, Issue784) {
     EXPECT_EQ(225, player0.GetMagicalBonus(CHARACTER_ATTRIBUTE_SPEED));
     EXPECT_EQ(225, player0.GetMagicalBonus(CHARACTER_ATTRIBUTE_RESIST_WATER));
     // No check for PLAYER_BUFF_WATER_WALK
+}
+
+GAME_TEST(Issues, Issue790) {
+    // Test that pressing New Game button in game menu works
+    test->playTraceFromTestData("issue_790.mm7", "issue_790.json");
+    EXPECT_EQ(current_screen_type, CURRENT_SCREEN::SCREEN_PARTY_CREATION);
+}
+
+GAME_TEST(Issues, Issue792) {
+    // Test that event timers do not fire in-between game loading process
+    test->playTraceFromTestData("issue_792.mm7", "issue_792.json"); // Should not assert
+    EXPECT_EQ(current_screen_type, CURRENT_SCREEN::SCREEN_GAME);
+}
+
+// 800
+
+GAME_TEST(Issues, Issue808) {
+    // Test that cycling characters with TAB do not assert when all characters are recovering
+    test->playTraceFromTestData("issue_808.mm7", "issue_808.json"); // Should not assert
+}
+
+GAME_TEST(Issues, Issue814) {
+    // Test that compare variable for autonotes do not assert
+    test->playTraceFromTestData("issue_814.mm7", "issue_814.json"); // Should not assert
+    EXPECT_EQ(pParty->pPlayers[0].uIntelligenceBonus, 25);
+}
+
+GAME_TEST(Issues, Issue815) {
+    // Test that subtract variable for player bits work
+    test->playTraceFromTestData("issue_815.mm7", "issue_815.json");
+    EXPECT_EQ(pParty->pPlayers[0].uIntelligenceBonus, 25);
+}
+
+GAME_TEST(Issues, Issue816) {
+    // Test that encountering trigger event instruction does not assert
+    test->playTraceFromTestData("issue_816.mm7", "issue_816.json"); // Should not assert
 }
