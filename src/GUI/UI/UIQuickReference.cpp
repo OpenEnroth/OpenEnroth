@@ -29,7 +29,7 @@ GUIWindow_QuickReference::GUIWindow_QuickReference()
     // paperdoll_dbrds[2] = assets->GetImage_16BitAlpha(L"BUTTEXI1");
 
     if (!ui_game_quickref_background)
-        ui_game_quickref_background = assets->GetImage_ColorKey("quikref");
+        ui_game_quickref_background = assets->getImage_ColorKey("quikref");
 
     pBtn_ExitCancel = CreateButton({0x187u, 0x13Cu}, {0x4Bu, 0x21u}, 1, 0,
         UIMSG_Escape, 0, InputAction::Invalid, localization->GetString(LSTR_DIALOGUE_EXIT), {ui_buttdesc2});

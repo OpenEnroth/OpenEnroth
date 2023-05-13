@@ -146,7 +146,7 @@ void RenderBase::DrawSpriteObjects() {
             ((object->uType < 1000 || object->uType >= 10000) &&
                 (object->uType < 500 || object->uType >= 600) &&
                 (object->uType < SPRITE_TRAP_FIRE || object->uType > SPRITE_TRAP_BODY))) {
-            SpriteFrame *frame = object->GetSpriteFrame();
+            SpriteFrame *frame = object->getSpriteFrame();
             if (frame->icon_name == "null" || frame->texture_name == "null") {
                 logger->verbose("Trying to draw sprite with null frame");
                 continue;

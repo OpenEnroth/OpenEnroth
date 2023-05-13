@@ -39,14 +39,14 @@ GUIWindow_TownPortalBook::GUIWindow_TownPortalBook(int casterPid) : GUIWindow_Bo
 
     // ----------------------------------------------
     // 00411BFC GUIWindow::InitializeBookView -- part
-    ui_book_townportal_background = assets->GetImage_Solid("townport");
+    ui_book_townportal_background = assets->getImage_Solid("townport");
 
-    ui_book_townportal_icons[0] = assets->GetImage_ColorKey("tpharmndy");
-    ui_book_townportal_icons[1] = assets->GetImage_ColorKey("tpelf");
-    ui_book_townportal_icons[2] = assets->GetImage_ColorKey("tpwarlock");
-    ui_book_townportal_icons[3] = assets->GetImage_ColorKey("tpisland");
-    ui_book_townportal_icons[4] = assets->GetImage_ColorKey("tpheaven");
-    ui_book_townportal_icons[5] = assets->GetImage_ColorKey("tphell");
+    ui_book_townportal_icons[0] = assets->getImage_ColorKey("tpharmndy");
+    ui_book_townportal_icons[1] = assets->getImage_ColorKey("tpelf");
+    ui_book_townportal_icons[2] = assets->getImage_ColorKey("tpwarlock");
+    ui_book_townportal_icons[3] = assets->getImage_ColorKey("tpisland");
+    ui_book_townportal_icons[4] = assets->getImage_ColorKey("tpheaven");
+    ui_book_townportal_icons[5] = assets->getImage_ColorKey("tphell");
 
     for (uint i = 0; i < TOWN_PORTAL_DESTINATION_COUNT; ++i) {
         CreateButton({pTownPortalBook_xs[i], pTownPortalBook_ys[i]}, {pTownPortalBook_ws[i], pTownPortalBook_hs[i]}, 1, 182, UIMSG_ClickTownInTP, i);

@@ -45,13 +45,13 @@ void GameUI_InitializeDialogue(Actor *actor, int bPlayerSaysHello) {
     }
 
     std::string filename = DialogueBackgroundResourceByAlignment[pParty->alignment];
-    game_ui_dialogue_background = assets->GetImage_Solid(filename);
+    game_ui_dialogue_background = assets->getImage_Solid(filename);
 
     pDialogueNPCCount = 0;
     uNumDialogueNPCPortraits = 1;
 
     filename = fmt::format("npc{:03}", pNPCInfo->uPortraitID);
-    pDialogueNPCPortraits[0] = assets->GetImage_ColorKey(filename);
+    pDialogueNPCPortraits[0] = assets->getImage_ColorKey(filename);
 
     int pNumberContacts = 0;
     int v9 = 0;

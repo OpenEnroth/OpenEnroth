@@ -614,40 +614,40 @@ GUIWindow_PartyCreation::GUIWindow_PartyCreation() :
     GUIWindow(WINDOW_CharacterCreation, {0, 0}, render->GetRenderDimensions(), 0) {
     pCurrentFrameMessageQueue->Flush();
 
-    main_menu_background = assets->GetImage_PCXFromIconsLOD("makeme.pcx");
+    main_menu_background = assets->getImage_PCXFromIconsLOD("makeme.pcx");
 
     current_screen_type = CURRENT_SCREEN::SCREEN_PARTY_CREATION;
     uPlayerCreationUI_SelectedCharacter = 0;
     int v0 = pFontCreate->GetHeight() - 2;
 
-    ui_partycreation_class_icons[0] = assets->GetImage_ColorKey("IC_KNIGHT");
-    ui_partycreation_class_icons[1] = assets->GetImage_ColorKey("IC_THIEF");
-    ui_partycreation_class_icons[2] = assets->GetImage_ColorKey("IC_MONK");
-    ui_partycreation_class_icons[3] = assets->GetImage_ColorKey("IC_PALAD");
-    ui_partycreation_class_icons[4] = assets->GetImage_ColorKey("IC_ARCH");
-    ui_partycreation_class_icons[5] = assets->GetImage_ColorKey("IC_RANGER");
-    ui_partycreation_class_icons[6] = assets->GetImage_ColorKey("IC_CLER");
-    ui_partycreation_class_icons[7] = assets->GetImage_ColorKey("IC_DRUID");
-    ui_partycreation_class_icons[8] = assets->GetImage_ColorKey("IC_SORC");
+    ui_partycreation_class_icons[0] = assets->getImage_ColorKey("IC_KNIGHT");
+    ui_partycreation_class_icons[1] = assets->getImage_ColorKey("IC_THIEF");
+    ui_partycreation_class_icons[2] = assets->getImage_ColorKey("IC_MONK");
+    ui_partycreation_class_icons[3] = assets->getImage_ColorKey("IC_PALAD");
+    ui_partycreation_class_icons[4] = assets->getImage_ColorKey("IC_ARCH");
+    ui_partycreation_class_icons[5] = assets->getImage_ColorKey("IC_RANGER");
+    ui_partycreation_class_icons[6] = assets->getImage_ColorKey("IC_CLER");
+    ui_partycreation_class_icons[7] = assets->getImage_ColorKey("IC_DRUID");
+    ui_partycreation_class_icons[8] = assets->getImage_ColorKey("IC_SORC");
 
-    ui_partycreation_top = assets->GetImage_Alpha("MAKETOP");
-    ui_partycreation_sky_scroller = assets->GetImage_Solid("MAKESKY");
+    ui_partycreation_top = assets->getImage_Alpha("MAKETOP");
+    ui_partycreation_sky_scroller = assets->getImage_Solid("MAKESKY");
 
     for (int uX = 0; uX < 22; ++uX) {
-        ui_partycreation_portraits[uX] = assets->GetImage_ColorKey(fmt::format("{}01", pPlayerPortraitsNames[uX]));
+        ui_partycreation_portraits[uX] = assets->getImage_ColorKey(fmt::format("{}01", pPlayerPortraitsNames[uX]));
     }
 
-    ui_partycreation_minus = assets->GetImage_ColorKey("buttminu");
-    ui_partycreation_plus = assets->GetImage_ColorKey("buttplus");
-    ui_partycreation_right = assets->GetImage_ColorKey("presrigh");
-    ui_partycreation_left = assets->GetImage_ColorKey("presleft");
+    ui_partycreation_minus = assets->getImage_ColorKey("buttminu");
+    ui_partycreation_plus = assets->getImage_ColorKey("buttplus");
+    ui_partycreation_right = assets->getImage_ColorKey("presrigh");
+    ui_partycreation_left = assets->getImage_ColorKey("presleft");
 
     // sprites number go from (1 to 19)
     assert(ui_partycreation_arrow_l.size() == 19);
     assert(ui_partycreation_arrow_r.size() == 19);
     for (int i = 0; i < ui_partycreation_arrow_l.size(); ++i) {
-        ui_partycreation_arrow_l[i] = assets->GetImage_Alpha(fmt::format("arrowl{}", i + 1));
-        ui_partycreation_arrow_r[i] = assets->GetImage_Alpha(fmt::format("arrowr{}", i + 1));
+        ui_partycreation_arrow_l[i] = assets->getImage_Alpha(fmt::format("arrowl{}", i + 1));
+        ui_partycreation_arrow_r[i] = assets->getImage_Alpha(fmt::format("arrowr{}", i + 1));
     }
 
     // pGUIWindow_CurrentMenu = new GUIWindow(0, 0, window->GetWidth(), window->GetHeight(), 0);
@@ -733,8 +733,8 @@ GUIWindow_PartyCreation::GUIWindow_PartyCreation() :
         ++uControlParam;
     } while (uControlParam < 9);
 
-    ui_partycreation_buttmake = assets->GetImage_Solid("BUTTMAKE");
-    ui_partycreation_buttmake2 = assets->GetImage_Solid("BUTTMAKE2");
+    ui_partycreation_buttmake = assets->getImage_Solid("BUTTMAKE");
+    ui_partycreation_buttmake2 = assets->getImage_Solid("BUTTMAKE2");
 
     pPlayerCreationUI_BtnOK = CreateButton("PartyCreation_OK", {580, 431}, {51, 39}, 1, 0, UIMSG_PlayerCreationClickOK, 0, InputAction::Return, "", {ui_partycreation_buttmake});
     pPlayerCreationUI_BtnReset = CreateButton("PartyCreation_Clear", {527, 431}, {51, 39}, 1, 0, UIMSG_PlayerCreationClickReset, 0, InputAction::Clear, "", {ui_partycreation_buttmake2});

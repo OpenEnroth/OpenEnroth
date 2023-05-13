@@ -24,8 +24,8 @@ GUIWindow_GameOver::GUIWindow_GameOver(UIMessageType on_release_event)
 
 void GUIWindow_GameOver::Update() {
     // draw winners certificate background
-    assert(assets->WinnerCert);
-    render->DrawTextureNew(0, 0, assets->WinnerCert);
+    assert(assets->winnerCert);
+    render->DrawTextureNew(0, 0, assets->winnerCert);
     // check exit timer
     if (!bGameOverWindowCheckExit)
         if (platform->tickCount() > _tickcount) bGameOverWindowCheckExit = true;

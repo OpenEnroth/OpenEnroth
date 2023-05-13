@@ -577,7 +577,7 @@ unsigned int SpriteObject::GetLifetime() {
     return pObjectDesc->uLifetime;
 }
 
-SpriteFrame *SpriteObject::GetSpriteFrame() {
+SpriteFrame *SpriteObject::getSpriteFrame() {
     ObjectDesc *pObjectDesc = &pObjectList->pObjects[uObjectDescID];
     return pSpriteFrameTable->GetFrame(pObjectDesc->uSpriteID, uSpriteFrameID);
 }

@@ -128,13 +128,13 @@ GAME_TEST(Issues, Issue198) {
     game->runGameRoutine([&] {
         forEachInventoryItem([](const ItemGen &item, int /*x*/, int /*y*/) {
             // Calling GetWidth forces the texture to be created.
-            assets->GetImage_ColorKey(pItemTable->pItems[item.uItemID].iconName)->GetWidth();
+            assets->getImage_ColorKey(pItemTable->pItems[item.uItemID].iconName)->GetWidth();
         });
     });
 
     // Then can safely check everything.
     forEachInventoryItem([](const ItemGen &item, int x, int y) {
-        Texture *image = assets->GetImage_ColorKey(pItemTable->pItems[item.uItemID].iconName);
+        Texture *image = assets->getImage_ColorKey(pItemTable->pItems[item.uItemID].iconName);
         int width = GetSizeInInventorySlots(image->GetWidth());
         int height = GetSizeInInventorySlots(image->GetHeight());
 
@@ -419,7 +419,7 @@ GAME_TEST(Issues, Issue408) {
     // windowlist size should be 1
     EXPECT_EQ(lWindowList.size(), 1);
     // should have save a winner cert tex
-    EXPECT_NE(assets->WinnerCert, nullptr);
+    EXPECT_NE(assets->winnerCert, nullptr);
     // we should be teleported to harmondale
     EXPECT_EQ(pCurrentMapName, "out02.odm");
 }

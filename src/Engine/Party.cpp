@@ -1115,7 +1115,7 @@ bool Party::addItemToParty(ItemGen *pItem, bool isSilent) {
 
     char *iconName = pItemTable->pItems[pItem->uItemID].iconName;
     if (iconName) {
-        auto texture = assets->GetImage_ColorKey(iconName);
+        auto texture = assets->getImage_ColorKey(iconName);
         int playerId = hasActiveCharacter() ? (pParty->_activeCharacter - 1) : 0;
         for (int i = 0; i < pPlayers.size(); i++, playerId++) {
             if (playerId >= pPlayers.size()) {

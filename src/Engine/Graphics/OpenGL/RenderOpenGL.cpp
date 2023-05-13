@@ -221,7 +221,7 @@ void RenderOpenGL::SaveWinnersCertificate(const std::string &filePath) {
         int revindex = 4 * (outputRender.h - y - 1) * outputRender.w;
         memcpy(rev + index, pq + revindex, 4 * outputRender.w);
     }
-    assets->WinnerCert = CreateTexture_Blank(outputRender.w, outputRender.h, IMAGE_FORMAT::IMAGE_FORMAT_A8B8G8R8, rev);
+    assets->winnerCert = CreateTexture_Blank(outputRender.w, outputRender.h, IMAGE_FORMAT::IMAGE_FORMAT_A8B8G8R8, rev);
 
     // save to disk
     SavePCXImage32(filePath, (uint32_t *)rev, outputRender.w, outputRender.h);
@@ -615,7 +615,7 @@ void RenderOpenGL::ScreenFade(unsigned int color, float t) {
     float drawz = static_cast<float>(pViewport->uViewportBR_X);
     float draww = static_cast<float>(pViewport->uViewportBR_Y);
 
-    static Texture *effpar03 = assets->GetBitmap("effpar03");
+    static Texture *effpar03 = assets->getBitmap("effpar03");
     auto texture = (TextureOpenGL *)effpar03;
     float gltexid = static_cast<float>(texture->GetOpenGlTexture());
 
@@ -1240,7 +1240,7 @@ int numdecalverts{ 0 };
 
 
 void RenderOpenGL::BeginDecals() {
-    auto texture = (TextureOpenGL*)assets->GetBitmap("hwsplat04");
+    auto texture = (TextureOpenGL*)assets->getBitmap("hwsplat04");
     glBindTexture(GL_TEXTURE_2D, texture->GetOpenGlTexture());
 
     glDisable(GL_CULL_FACE);
@@ -1320,7 +1320,7 @@ void RenderOpenGL::EndDecals() {
     glUniform1i(glGetUniformLocation(decalshader.ID, "texture0"), GLint(0));
     glActiveTexture(GL_TEXTURE0);
 
-    auto texture = (TextureOpenGL *)assets->GetBitmap("hwsplat04");
+    auto texture = (TextureOpenGL *)assets->getBitmap("hwsplat04");
     glBindTexture(GL_TEXTURE_2D, texture->GetOpenGlTexture());
 
     glBindVertexArray(decalVAO);
@@ -1784,7 +1784,7 @@ void RenderOpenGL::DrawOutdoorTerrain() {
                     tilelayer = 0;
                 } else {
                     // else need to add it
-                    auto thistexture = assets->GetBitmap(tile->name);
+                    auto thistexture = assets->getBitmap(tile->name);
                     int width = thistexture->GetWidth();
                     // check size to see what unit it needs
                     int i;
@@ -1954,7 +1954,7 @@ void RenderOpenGL::DrawOutdoorTerrain() {
 
                 if (tunit == unit) {
                     // get texture
-                    auto texture = assets->GetBitmap(it->first);
+                    auto texture = assets->getBitmap(it->first);
                     // send texture data to gpu
                     glTexSubImage3D(GL_TEXTURE_2D_ARRAY,
                         0,
@@ -2310,7 +2310,7 @@ void RenderOpenGL::DrawOutdoorSky() {
     // (int)&pBitmaps_LOD->pTextures[pSkyPolygon.uTileBitmapID] : 0);
 
     if (!pOutdoor->sky_texture)
-        pOutdoor->sky_texture = assets->GetBitmap("plansky3");
+        pOutdoor->sky_texture = assets->getBitmap("plansky3");
 
     pSkyPolygon.texture = pOutdoor->sky_texture;
     if (pSkyPolygon.texture) {
@@ -2413,7 +2413,7 @@ void RenderOpenGL::DrawOutdoorSkyPolygon(struct Polygon *pSkyPolygon) {
     auto texture = (TextureOpenGL *)pSkyPolygon->texture;
     auto texid = texture->GetOpenGlTexture();
 
-    static Texture *effpar03 = assets->GetBitmap("effpar03");
+    static Texture *effpar03 = assets->getBitmap("effpar03");
     auto texturesolid = (TextureOpenGL*)effpar03;
     float texidsolid = static_cast<float>(texturesolid->GetOpenGlTexture());
 
@@ -2766,7 +2766,7 @@ void RenderOpenGL::DoRenderBillboards_D3D() {
             auto texture = (TextureOpenGL *)pBillboardRenderListD3D[i].texture;
             gltexid = texture->GetOpenGlTexture();
         } else {
-            static Texture *effpar03 = assets->GetBitmap("effpar03");
+            static Texture *effpar03 = assets->getBitmap("effpar03");
             auto texture = (TextureOpenGL *)effpar03;
             gltexid = static_cast<float>(texture->GetOpenGlTexture());
         }
@@ -3730,7 +3730,7 @@ void RenderOpenGL::DrawOutdoorBuildings() {
                             texlayer = 0;
                         } else {
                             // else need to add it
-                            auto thistexture = assets->GetBitmap(*texname);
+                            auto thistexture = assets->getBitmap(*texname);
                             int width = thistexture->GetWidth();
                             int height = thistexture->GetHeight();
                             // check size to see what unit it needs
@@ -3831,7 +3831,7 @@ void RenderOpenGL::DrawOutdoorBuildings() {
 
                 if (tunit == unit) {
                     // get texture
-                    auto texture = assets->GetBitmap(it->first);
+                    auto texture = assets->getBitmap(it->first);
 
                     glTexSubImage3D(GL_TEXTURE_2D_ARRAY,
                         0,
@@ -4329,7 +4329,7 @@ void RenderOpenGL::DrawIndoorFaces() {
                     texlayer = 0;
                 } else {
                     // else need to add it
-                    auto thistexture = assets->GetBitmap(*texname);
+                    auto thistexture = assets->getBitmap(*texname);
                     int width = thistexture->GetWidth();
                     int height = thistexture->GetHeight();
                     // check size to see what unit it needs
@@ -4421,7 +4421,7 @@ void RenderOpenGL::DrawIndoorFaces() {
 
                     if (tunit == unit) {
                         // get texture
-                        auto texture = assets->GetBitmap(it->first);
+                        auto texture = assets->getBitmap(it->first);
 
                         glTexSubImage3D(GL_TEXTURE_2D_ARRAY,
                             0,
@@ -5022,7 +5022,7 @@ void RenderOpenGL::FillRectFast(unsigned int uX, unsigned int uY, unsigned int u
     // check for overlap
     if (!(this->clip_x < z && this->clip_z > x && this->clip_y < w && this->clip_w > y)) return;
 
-    static Texture *effpar03 = assets->GetBitmap("effpar03");
+    static Texture *effpar03 = assets->getBitmap("effpar03");
     auto texture = (TextureOpenGL*)effpar03;
     float gltexid = static_cast<float>(texture->GetOpenGlTexture());
 
@@ -5309,7 +5309,7 @@ bool RenderOpenGL::Reinitialize(bool firstInit) {
         // Added config option for this - may not always be required - #199 no longer replicates on windows??
         // TODO: invalidate all previously loaded textures and then load them again as they can be no longer alive on GPU (issue #199).
         // TODO(pskelton): Needs testings on other platforms
-        assets->ReleaseAllTextures();
+        assets->releaseAllTextures();
         ReleaseTerrain();
         ReleaseBSP();
     }

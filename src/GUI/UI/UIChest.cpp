@@ -49,7 +49,7 @@ void GUIWindow_Chest::Update() {
         int chestWidthCells = pChestWidthsByType[chestBitmapId];
         int chestHeghtCells = pChestHeightsByType[chestBitmapId];
 
-        Image *chest_background = assets->GetImage_ColorKey(
+        Image *chest_background = assets->getImage_ColorKey(
             fmt::format("chest{:02}", pChestList->vChests[chestBitmapId].uTextureID));
         render->DrawTextureNew(8 / 640.0f, 8 / 480.0f, chest_background);
 
@@ -57,7 +57,7 @@ void GUIWindow_Chest::Update() {
              item_counter < chestWidthCells * chestHeghtCells; ++item_counter) {
             int chest_item_index = vChests[uChestID].pInventoryIndices[item_counter];
             if (chest_item_index > 0) {
-                auto item_texture = assets->GetImage_ColorKey(
+                auto item_texture = assets->getImage_ColorKey(
                     vChests[uChestID].igChestItems[chest_item_index - 1].GetIconName());
 
                 int itemPixelWidth = item_texture->GetWidth();

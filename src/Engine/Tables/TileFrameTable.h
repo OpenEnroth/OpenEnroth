@@ -100,7 +100,7 @@ class TileDesc {
 
     inline Texture *GetTexture() {
         if (!this->texture) {
-            this->texture = assets->GetBitmap(this->name);
+            this->texture = assets->getBitmap(this->name);
         }
         return this->texture;
     }

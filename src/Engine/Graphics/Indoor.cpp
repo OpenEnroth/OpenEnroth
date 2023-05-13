@@ -187,7 +187,7 @@ void BLVFace::SetTexture(const std::string &filename) {
         this->ToggleIsTextureFrameTable();
     }
 
-    this->resource = assets->GetBitmap(filename);
+    this->resource = assets->getBitmap(filename);
     this->texlayer = -1;
     this->texunit = -1;
 }

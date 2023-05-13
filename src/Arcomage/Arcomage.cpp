@@ -558,7 +558,7 @@ bool ArcomageGame::MsgLoop(int a1, ArcomageGame_InputMSG *a2) {
 
 bool ArcomageGame::LoadSprites() {
     // load layout sprite
-    pArcomageGame->pSprites = assets->GetImage_PCXFromIconsLOD("sprites.pcx");
+    pArcomageGame->pSprites = assets->getImage_PCXFromIconsLOD("sprites.pcx");
 
     // mask out blue
     uint32_t *pix = (uint32_t *)pArcomageGame->pSprites->GetPixels(IMAGE_FORMAT_A8B8G8R8);
@@ -2898,7 +2898,7 @@ void ArcomageGame::PrepareArcomage() {
 
     // load in background pic and render
     render->BeginScene2D();
-    pArcomageGame->pGameBackground = assets->GetImage_PCXFromIconsLOD("layout.pcx");
+    pArcomageGame->pGameBackground = assets->getImage_PCXFromIconsLOD("layout.pcx");
     render->DrawTextureNew(0, 0, pArcomageGame->pGameBackground);
     render->Present();
 
