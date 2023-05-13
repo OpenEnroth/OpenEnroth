@@ -395,8 +395,8 @@ int EventInterpreter::executeOneEvent(int step, bool isNpc) {
             }
             break;
         case EVENT_OnTimer:
-            assert(false); // Trigger, must be skipped
-            break;
+            // Trigger, must be skipped but can be encountered in vanilla
+            return -1;
         case EVENT_ToggleIndoorLight:
             pIndoor->toggleLight(ir.data.light_descr.light_id, ir.data.light_descr.is_enable);
             break;
@@ -413,11 +413,11 @@ int EventInterpreter::executeOneEvent(int step, bool isNpc) {
         case EVENT_Jmp:
             return ir.target_step;
         case EVENT_OnMapReload:
-            assert(false); // Trigger, must be skipped
-            break;
+            // Trigger, must be skipped but can be encountered in vanilla
+            return -1;
         case EVENT_OnLongTimer:
-            assert(false); // Trigger, must be skipped
-            break;
+            // Trigger, must be skipped but can be encountered in vanilla
+            return -1;
         case EVENT_SetNPCTopic:
         {
             NPCData *npc = &pNPCStats->pNewNPCData[ir.data.npc_topic_descr.npc_id];
@@ -515,8 +515,8 @@ int EventInterpreter::executeOneEvent(int step, bool isNpc) {
             }
             break;
         case EVENT_OnMapLeave:
-            assert(false); // Trigger, must be skipped
-            break;
+            // Trigger, must be skipped but can be encountered in vanilla
+            return -1;
         case EVENT_ChangeGroup:
             // TODO: enconunter and process
             __debugbreak();
