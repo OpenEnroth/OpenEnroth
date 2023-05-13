@@ -129,7 +129,7 @@ var searchData=
   ['windowmanager_126',['WindowManager',['../classWindowManager.html#a3a283b34c19aaa20296befaabad4d29b',1,'WindowManager']]],
   ['windowmode_127',['windowMode',['../classSdlWindow.html#a1914652e87aef27eab846a1f2f65c25b',1,'SdlWindow::windowMode()'],['../classProxyWindow.html#a96f07192973e7cc0318e7c48544941f2',1,'ProxyWindow::windowMode()'],['../classPlatformWindow.html#abd6ec415b73871b3fdc8ebbc2400a568',1,'PlatformWindow::windowMode()']]],
   ['windowtype_128',['WindowType',['../GUIEnums_8h.html#a476342970f954b62d70552bcbb5ee509',1,'GUIEnums.h']]],
-  ['winnercert_129',['WinnerCert',['../classAssetsManager.html#aad89739a6fe718b7742bb0dc4756ca21',1,'AssetsManager']]],
+  ['winnercert_129',['winnerCert',['../classAssetsManager.html#a135478a8343734e75a65a865927f75b5',1,'AssetsManager']]],
   ['winplatform_130',['WinPlatform',['../classWinPlatform.html',1,'']]],
   ['winplatform_2ecpp_131',['WinPlatform.cpp',['../WinPlatform_8cpp.html',1,'']]],
   ['winplatform_2eh_132',['WinPlatform.h',['../WinPlatform_8h.html',1,'']]],
