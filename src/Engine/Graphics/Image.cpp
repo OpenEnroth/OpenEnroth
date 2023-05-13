@@ -341,8 +341,9 @@ std::string *Image::GetName() {
 
 bool Image::Release() {
     if (loader) {
-        assets->ReleaseImage(loader->GetResourceName());
-        assets->ReleaseSprite(loader->GetResourceName());
+        if (!assets->ReleaseSprite(loader->GetResourceName()))
+            if (!assets->ReleaseImage(loader->GetResourceName()))
+                assets->ReleaseBitmap(loader->GetResourceName());     
     }
 
     if (initialized) {

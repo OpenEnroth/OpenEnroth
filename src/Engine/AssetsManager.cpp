@@ -49,14 +49,14 @@ bool AssetsManager::ReleaseImage(const std::string &name) {
         return false;
     }
 
+    render->DeleteTexture(i->second);
     images.erase(filename);
     return true;
 }
 
 Texture *AssetsManager::GetImage_Paletted(const std::string &name) {
     auto filename = name;
-    std::transform(filename.begin(), filename.end(), filename.begin(),
-        ::tolower);
+    std::transform(filename.begin(), filename.end(), filename.begin(), ::tolower);
 
     auto i = images.find(filename);
     if (i == images.end()) {
@@ -71,8 +71,7 @@ Texture *AssetsManager::GetImage_Paletted(const std::string &name) {
 
 Texture *AssetsManager::GetImage_ColorKey(const std::string &name, uint16_t colorkey) {
     auto filename = name;
-    std::transform(filename.begin(), filename.end(), filename.begin(),
-        ::tolower);
+    std::transform(filename.begin(), filename.end(), filename.begin(), ::tolower);
 
     auto i = images.find(filename);
     if (i == images.end()) {
@@ -88,8 +87,7 @@ Texture *AssetsManager::GetImage_ColorKey(const std::string &name, uint16_t colo
 
 Texture *AssetsManager::GetImage_Solid(const std::string &name) {
     auto filename = name;
-    std::transform(filename.begin(), filename.end(), filename.begin(),
-                   ::tolower);
+    std::transform(filename.begin(), filename.end(), filename.begin(), ::tolower);
 
     auto i = images.find(filename);
     if (i == images.end()) {
@@ -103,8 +101,7 @@ Texture *AssetsManager::GetImage_Solid(const std::string &name) {
 
 Texture *AssetsManager::GetImage_Alpha(const std::string &name) {
     auto filename = name;
-    std::transform(filename.begin(), filename.end(), filename.begin(),
-                   ::tolower);
+    std::transform(filename.begin(), filename.end(), filename.begin(), ::tolower);
 
     auto i = images.find(filename);
     if (i == images.end()) {
@@ -118,8 +115,7 @@ Texture *AssetsManager::GetImage_Alpha(const std::string &name) {
 
 Texture *AssetsManager::GetImage_PCXFromIconsLOD(const std::string &name) {
     auto filename = name;
-    std::transform(filename.begin(), filename.end(), filename.begin(),
-                   ::tolower);
+    std::transform(filename.begin(), filename.end(), filename.begin(), ::tolower);
 
     auto i = images.find(filename);
     if (i == images.end()) {
@@ -133,8 +129,7 @@ Texture *AssetsManager::GetImage_PCXFromIconsLOD(const std::string &name) {
 
 Texture *AssetsManager::GetImage_PCXFromNewLOD(const std::string &name) {
     auto filename = name;
-    std::transform(filename.begin(), filename.end(), filename.begin(),
-                   ::tolower);
+    std::transform(filename.begin(), filename.end(), filename.begin(), ::tolower);
 
     auto i = images.find(filename);
     if (i == images.end()) {
@@ -148,8 +143,7 @@ Texture *AssetsManager::GetImage_PCXFromNewLOD(const std::string &name) {
 
 Texture *AssetsManager::GetImage_PCXFromFile(const std::string &name) {
     auto filename = name;
-    std::transform(filename.begin(), filename.end(), filename.begin(),
-                   ::tolower);
+    std::transform(filename.begin(), filename.end(), filename.begin(), ::tolower);
 
     auto i = images.find(filename);
     if (i == images.end()) {
@@ -174,16 +168,40 @@ Texture *AssetsManager::GetBitmap(const std::string &name) {
     return i->second;
 }
 
+bool AssetsManager::ReleaseBitmap(const std::string &name) {
+    auto filename = name;
+    std::transform(filename.begin(), filename.end(), filename.begin(), ::tolower);
+
+    auto i = bitmaps.find(filename);
+    if (i == bitmaps.end()) {
+        return false;
+    }
+
+    render->DeleteTexture(i->second);
+    bitmaps.erase(filename);
+    return true;
+}
+
+bool AssetsManager::ReleaseAllBitmaps() {
+    return true;
+
+    // this will dereference things
+    for (auto it = bitmaps.cbegin(), next = it; it != bitmaps.cend(); it = next) {
+        next++;
+        it->second->Release();
+    }
+    return true;
+}
+
+
 Texture *AssetsManager::GetSprite(const std::string &name, unsigned int palette_id,
                                   unsigned int lod_sprite_id) {
     auto filename = name;
-    std::transform(filename.begin(), filename.end(), filename.begin(),
-                   ::tolower);
+    std::transform(filename.begin(), filename.end(), filename.begin(), ::tolower);
 
     auto i = sprites.find(filename);
     if (i == sprites.end()) {
-        auto texture =
-            render->CreateSprite(filename, palette_id, lod_sprite_id);
+        auto texture = render->CreateSprite(filename, palette_id, lod_sprite_id);
         sprites[filename] = texture;
         return texture;
     }
@@ -200,6 +218,7 @@ bool AssetsManager::ReleaseSprite(const std::string &name) {
         return false;
     }
 
+    render->DeleteTexture(i->second);
     sprites.erase(filename);
     return true;
 }
