@@ -7,6 +7,6 @@ var searchData=
   ['actorattribute_4',['ActorAttribute',['../ActorEnums_8h.html#a0449589ea79a89a7e564d1cf1b0a9b5f',1,'ActorEnums.h']]],
   ['aistate_5',['AIState',['../ActorEnums_8h.html#a75a2677e7281dc615368b0814c395fed',1,'ActorEnums.h']]],
   ['arcomagemessagetype_6',['ArcomageMessageType',['../Arcomage_8h.html#a56d38dcb51bcfc543b0d26aea6641232',1,'Arcomage.h']]],
-  ['autonote_5ftype_7',['AUTONOTE_TYPE',['../Autonotes_8h.html#ac492beabbce596a9d1992e7828d21b99',1,'Autonotes.h']]],
-  ['awardtype_8',['AwardType',['../Awards_8h.html#affb7937911d9f95cf70e26a581d989c7',1,'Awards.h']]]
+  ['autonote_5ftype_7',['AUTONOTE_TYPE',['../AutonoteTable_8h.html#ac492beabbce596a9d1992e7828d21b99',1,'AutonoteTable.h']]],
+  ['awardtype_8',['AwardType',['../AwardTable_8h.html#affb7937911d9f95cf70e26a581d989c7',1,'AwardTable.h']]]
 ];

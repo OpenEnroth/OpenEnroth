@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;c8ae9a0</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;abc02f3</span>
    </div>
   </td>
  </tr>
@@ -81,10 +81,8 @@ $(function() {
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><code>#include &quot;<a class="el" href="NPC_8h.html">Engine/Objects/NPC.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="Autonotes_8h.html">Engine/Autonotes.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Engine_8h.html">Engine/Engine.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="EngineGlobals_8h.html">Engine/EngineGlobals.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="Awards_8h.html">Engine/Awards.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Processor_8h.html">Engine/Events/Processor.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Indoor_8h.html">Engine/Graphics/Indoor.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Overlays_8h.html">Engine/Graphics/Overlays.h</a>&quot;</code><br />
@@ -94,6 +92,8 @@ $(function() {
 <code>#include &quot;<a class="el" href="Actor_8h.html">Engine/Objects/Actor.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Party_8h.html">Engine/Party.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="CastSpellInfo_8h.html">Engine/Spells/CastSpellInfo.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="AwardTable_8h.html">Engine/Tables/AwardTable.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="AutonoteTable_8h.html">Engine/Tables/AutonoteTable.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="GUIButton_8h.html">GUI/GUIButton.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="UIHouses_8h.html">GUI/UI/UIHouses.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="UIStatusBar_8h.html">GUI/UI/UIStatusBar.h</a>&quot;</code><br />
@@ -108,16 +108,12 @@ Macros</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:a043f76dfc0d8c3e9f3d074f78cda3747"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="NPC_8cpp.html#a043f76dfc0d8c3e9f3d074f78cda3747">InitializeAwards</a> ()</td></tr>
-<tr class="separator:a043f76dfc0d8c3e9f3d074f78cda3747"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aafaea893b03e3c55735bdabdb076b606"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="NPC_8cpp.html#aafaea893b03e3c55735bdabdb076b606">InitializeScrolls</a> ()</td></tr>
 <tr class="separator:aafaea893b03e3c55735bdabdb076b606"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aec1aa7ddd3e7865d9cb11dece846217f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="NPC_8cpp.html#aec1aa7ddd3e7865d9cb11dece846217f">InitializeMerchants</a> ()</td></tr>
 <tr class="separator:aec1aa7ddd3e7865d9cb11dece846217f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae41fb23005c98d9bbb14a9b0e4339f57"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="NPC_8cpp.html#ae41fb23005c98d9bbb14a9b0e4339f57">InitializeTransitions</a> ()</td></tr>
 <tr class="separator:ae41fb23005c98d9bbb14a9b0e4339f57"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af053ca5ac93568183e07c36118ccf9ab"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="NPC_8cpp.html#af053ca5ac93568183e07c36118ccf9ab">InitializeAutonotes</a> ()</td></tr>
-<tr class="separator:af053ca5ac93568183e07c36118ccf9ab"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5a4adf1abc138e731cd95454968eb157"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="NPC_8cpp.html#a5a4adf1abc138e731cd95454968eb157">InitializeQuests</a> ()</td></tr>
 <tr class="separator:a5a4adf1abc138e731cd95454968eb157"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac02f307e9fa837b11c38cb77e5637682"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="NPC_8cpp.html#ac02f307e9fa837b11c38cb77e5637682">CheckPortretAgainstSex</a> (int portret_num, int sex)</td></tr>
@@ -336,40 +332,6 @@ Variables</h2></td></tr>
           <td>(</td>
           <td class="paramtype"><a class="el" href="NPCEnums_8h.html#ae6501f571f97d74c2c78fddcb371bad4">NPCProf</a>&#160;</td>
           <td class="paramname"><em>prof</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="af053ca5ac93568183e07c36118ccf9ab" name="af053ca5ac93568183e07c36118ccf9ab"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#af053ca5ac93568183e07c36118ccf9ab">&#9670;&#160;</a></span>InitializeAutonotes()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void InitializeAutonotes </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a043f76dfc0d8c3e9f3d074f78cda3747" name="a043f76dfc0d8c3e9f3d074f78cda3747"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a043f76dfc0d8c3e9f3d074f78cda3747">&#9670;&#160;</a></span>InitializeAwards()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void InitializeAwards </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
           <td></td>
         </tr>
       </table>

@@ -18,8 +18,10 @@ var searchData=
   ['attacklist_2eh_15',['AttackList.h',['../AttackList_8h.html',1,'']]],
   ['audioplayer_2ecpp_16',['AudioPlayer.cpp',['../AudioPlayer_8cpp.html',1,'']]],
   ['audioplayer_2eh_17',['AudioPlayer.h',['../AudioPlayer_8h.html',1,'']]],
-  ['autonotes_2eh_18',['Autonotes.h',['../Autonotes_8h.html',1,'']]],
-  ['autonotesbook_2ecpp_19',['AutonotesBook.cpp',['../AutonotesBook_8cpp.html',1,'']]],
-  ['autonotesbook_2eh_20',['AutonotesBook.h',['../AutonotesBook_8h.html',1,'']]],
-  ['awards_2eh_21',['Awards.h',['../Awards_8h.html',1,'']]]
+  ['autonotesbook_2ecpp_18',['AutonotesBook.cpp',['../AutonotesBook_8cpp.html',1,'']]],
+  ['autonotesbook_2eh_19',['AutonotesBook.h',['../AutonotesBook_8h.html',1,'']]],
+  ['autonotetable_2ecpp_20',['AutonoteTable.cpp',['../AutonoteTable_8cpp.html',1,'']]],
+  ['autonotetable_2eh_21',['AutonoteTable.h',['../AutonoteTable_8h.html',1,'']]],
+  ['awardtable_2ecpp_22',['AwardTable.cpp',['../AwardTable_8cpp.html',1,'']]],
+  ['awardtable_2eh_23',['AwardTable.h',['../AwardTable_8h.html',1,'']]]
 ];

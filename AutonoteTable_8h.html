@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.9.5"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>OpenEnroth: src/Engine/Autonotes.h File Reference</title>
+<title>OpenEnroth: src/Engine/Tables/AutonoteTable.h File Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;c8ae9a0</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;abc02f3</span>
    </div>
   </td>
  </tr>
@@ -69,18 +69,20 @@ $(function() {
 
 <div id="nav-path" class="navpath">
   <ul>
-<li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li><li class="navelem"><a class="el" href="dir_3072bc1f55ed1280fe4fbe6b21c78379.html">Engine</a></li>  </ul>
+<li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li><li class="navelem"><a class="el" href="dir_3072bc1f55ed1280fe4fbe6b21c78379.html">Engine</a></li><li class="navelem"><a class="el" href="dir_1ffd5d9cbf2cf27fe69ac5a09184dea7.html">Tables</a></li>  </ul>
 </div>
 </div><!-- top -->
 <div class="header">
   <div class="summary">
 <a href="#nested-classes">Classes</a> &#124;
 <a href="#enum-members">Enumerations</a> &#124;
+<a href="#func-members">Functions</a> &#124;
 <a href="#var-members">Variables</a>  </div>
-  <div class="headertitle"><div class="title">Autonotes.h File Reference</div></div>
+  <div class="headertitle"><div class="title">AutonoteTable.h File Reference</div></div>
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><code>#include &lt;array&gt;</code><br />
+<code>#include &lt;string&gt;</code><br />
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Classes</h2></td></tr>
@@ -89,22 +91,29 @@ Classes</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="enum-members" name="enum-members"></a>
 Enumerations</h2></td></tr>
-<tr class="memitem:ac492beabbce596a9d1992e7828d21b99"><td class="memItemLeft" align="right" valign="top">enum class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Autonotes_8h.html#ac492beabbce596a9d1992e7828d21b99">AUTONOTE_TYPE</a> : uint32_t { <br />
-&#160;&#160;<a class="el" href="Autonotes_8h.html#ac492beabbce596a9d1992e7828d21b99a1d5bf31938038e42d3eb0df26fe8ffcc">AUTONOTE_POTION_RECEPIE</a> = 0
-, <a class="el" href="Autonotes_8h.html#ac492beabbce596a9d1992e7828d21b99a5419f4e68dd2e690fe4f5f1d6f907a00">AUTONOTE_STAT_HINT</a> = 1
-, <a class="el" href="Autonotes_8h.html#ac492beabbce596a9d1992e7828d21b99a27594a70f27669ae86829357fce6c3bb">AUTONOTE_OBELISK</a> = 2
-, <a class="el" href="Autonotes_8h.html#ac492beabbce596a9d1992e7828d21b99ad14fce159aa5b610db240eeeebacb351">AUTONOTE_SEER</a> = 3
+<tr class="memitem:ac492beabbce596a9d1992e7828d21b99"><td class="memItemLeft" align="right" valign="top">enum class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="AutonoteTable_8h.html#ac492beabbce596a9d1992e7828d21b99">AUTONOTE_TYPE</a> : uint32_t { <br />
+&#160;&#160;<a class="el" href="AutonoteTable_8h.html#ac492beabbce596a9d1992e7828d21b99a1d5bf31938038e42d3eb0df26fe8ffcc">AUTONOTE_POTION_RECEPIE</a> = 0
+, <a class="el" href="AutonoteTable_8h.html#ac492beabbce596a9d1992e7828d21b99a5419f4e68dd2e690fe4f5f1d6f907a00">AUTONOTE_STAT_HINT</a> = 1
+, <a class="el" href="AutonoteTable_8h.html#ac492beabbce596a9d1992e7828d21b99a27594a70f27669ae86829357fce6c3bb">AUTONOTE_OBELISK</a> = 2
+, <a class="el" href="AutonoteTable_8h.html#ac492beabbce596a9d1992e7828d21b99ad14fce159aa5b610db240eeeebacb351">AUTONOTE_SEER</a> = 3
 , <br />
-&#160;&#160;<a class="el" href="Autonotes_8h.html#ac492beabbce596a9d1992e7828d21b99a9a347a3b1bb0169f6f611e6512f711ee">AUTONOTE_MISC</a> = 4
-, <a class="el" href="Autonotes_8h.html#ac492beabbce596a9d1992e7828d21b99ac5692cae7c86999bfc753e423cdecc71">AUTONOTE_TEACHER</a> = 5
+&#160;&#160;<a class="el" href="AutonoteTable_8h.html#ac492beabbce596a9d1992e7828d21b99a9a347a3b1bb0169f6f611e6512f711ee">AUTONOTE_MISC</a> = 4
+, <a class="el" href="AutonoteTable_8h.html#ac492beabbce596a9d1992e7828d21b99ac5692cae7c86999bfc753e423cdecc71">AUTONOTE_TEACHER</a> = 5
 <br />
  }</td></tr>
 <tr class="separator:ac492beabbce596a9d1992e7828d21b99"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
+Functions</h2></td></tr>
+<tr class="memitem:adc05d4d5251d8c556d052c90d837c618"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="AutonoteTable_8h.html#adc05d4d5251d8c556d052c90d837c618">initializeAutonotes</a> ()</td></tr>
+<tr class="separator:adc05d4d5251d8c556d052c90d837c618"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="var-members" name="var-members"></a>
 Variables</h2></td></tr>
-<tr class="memitem:a5c1c6ca1c42182fd7f8c721f23a2cf96"><td class="memItemLeft" align="right" valign="top">std::array&lt; <a class="el" href="structAutonote.html">Autonote</a>, 196 &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Autonotes_8h.html#a5c1c6ca1c42182fd7f8c721f23a2cf96">pAutonoteTxt</a></td></tr>
+<tr class="memitem:a5c1c6ca1c42182fd7f8c721f23a2cf96"><td class="memItemLeft" align="right" valign="top">std::array&lt; <a class="el" href="structAutonote.html">Autonote</a>, 196 &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="AutonoteTable_8h.html#a5c1c6ca1c42182fd7f8c721f23a2cf96">pAutonoteTxt</a></td></tr>
 <tr class="separator:a5c1c6ca1c42182fd7f8c721f23a2cf96"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8d134f2855344ddf28c9fcbfcc5bb69a"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="AutonoteTable_8h.html#a8d134f2855344ddf28c9fcbfcc5bb69a">pAutonoteTXT_Raw</a></td></tr>
+<tr class="separator:a8d134f2855344ddf28c9fcbfcc5bb69a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Enumeration Type Documentation</h2>
 <a id="ac492beabbce596a9d1992e7828d21b99" name="ac492beabbce596a9d1992e7828d21b99"></a>
@@ -117,7 +126,7 @@ Variables</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">enum class <a class="el" href="Autonotes_8h.html#ac492beabbce596a9d1992e7828d21b99">AUTONOTE_TYPE</a> : uint32_t</td>
+          <td class="memname">enum class <a class="el" href="AutonoteTable_8h.html#ac492beabbce596a9d1992e7828d21b99">AUTONOTE_TYPE</a> : uint32_t</td>
         </tr>
       </table>
   </td>
@@ -137,6 +146,25 @@ Variables</h2></td></tr>
 
 </div>
 </div>
+<h2 class="groupheader">Function Documentation</h2>
+<a id="adc05d4d5251d8c556d052c90d837c618" name="adc05d4d5251d8c556d052c90d837c618"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#adc05d4d5251d8c556d052c90d837c618">&#9670;&#160;</a></span>initializeAutonotes()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void initializeAutonotes </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<dl class="section user"><dt>Original binary offset:</dt><dd>0x476750 </dd></dl>
+
+</div>
+</div>
 <h2 class="groupheader">Variable Documentation</h2>
 <a id="a5c1c6ca1c42182fd7f8c721f23a2cf96" name="a5c1c6ca1c42182fd7f8c721f23a2cf96"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a5c1c6ca1c42182fd7f8c721f23a2cf96">&#9670;&#160;</a></span>pAutonoteTxt</h2>
@@ -149,6 +177,28 @@ Variables</h2></td></tr>
       <table class="memname">
         <tr>
           <td class="memname">std::array&lt;<a class="el" href="structAutonote.html">Autonote</a>, 196&gt; pAutonoteTxt</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">extern</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a8d134f2855344ddf28c9fcbfcc5bb69a" name="a8d134f2855344ddf28c9fcbfcc5bb69a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8d134f2855344ddf28c9fcbfcc5bb69a">&#9670;&#160;</a></span>pAutonoteTXT_Raw</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::string pAutonoteTXT_Raw</td>
         </tr>
       </table>
   </td>
