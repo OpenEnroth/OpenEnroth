@@ -2,8 +2,6 @@
 
 #include "Party.h"
 
-#include "Engine/Autonotes.h"
-#include "Engine/Awards.h"
 #include "Engine/Graphics/Viewport.h"
 #include "Engine/stru160.h"
 #include "Engine/stru367.h"
@@ -13,8 +11,6 @@
 MapStats *pMapStats;
 Viewport *pViewport = new Viewport;
 ViewingParams *viewparams = new ViewingParams;
-std::array<Autonote, 196> pAutonoteTxt;
-std::array<Award, 105> pAwards;
 
 std::array<stru160, 66> array_4EB8B8 = {  // vertices for spheres
     {stru160(0.0000000f, 0.0000000f, 1.0000000f),
@@ -2617,7 +2613,6 @@ std::array<const char *, 513> pQuestTable;
 char *dword_723718_autonote_related;  // idb
 IndexedArray<const char *, ITEM_FIRST_MESSAGE_SCROLL, ITEM_LAST_MESSAGE_SCROLL> pScrolls;
 int dword_7241C8;
-std::string pAwardsTXT_Raw;
 std::string pScrollsTXT_Raw;
 std::string pMerchantsTXT_Raw;
 IndexedArray<const char *, MERCHANT_PHRASE_COUNT> pMerchantsBuyPhrases;
@@ -2625,7 +2620,6 @@ IndexedArray<const char *, MERCHANT_PHRASE_COUNT> pMerchantsSellPhrases;
 IndexedArray<const char *, MERCHANT_PHRASE_COUNT> pMerchantsRepairPhrases;
 IndexedArray<const char *, MERCHANT_PHRASE_COUNT> pMerchantsIdentifyPhrases;
 std::string pTransitionsTXT_Raw;
-std::string pAutonoteTXT_Raw;
 std::string pQuestsTXT_Raw;
 std::vector<Vec3f> pTerrainNormals;
 std::array<unsigned short, 128 * 128 * 2> pTerrainNormalIndices;

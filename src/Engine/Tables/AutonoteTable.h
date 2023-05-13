@@ -1,5 +1,6 @@
 #pragma once
 #include <array>
+#include <string>
 
 /*  351 */
 enum class AUTONOTE_TYPE : uint32_t {
@@ -17,4 +18,10 @@ struct Autonote {
     AUTONOTE_TYPE eType;
 };
 
+/**
+ * @offset 0x476750
+ */
+void initializeAutonotes();
+
 extern std::array<Autonote, 196> pAutonoteTxt;
+extern std::string pAutonoteTXT_Raw;

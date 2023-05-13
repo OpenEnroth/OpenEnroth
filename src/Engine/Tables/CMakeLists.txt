@@ -7,7 +7,9 @@ set(ENGINE_TABLES_SOURCES
         PlayerFrameTable.cpp
         StorylineTextTable.cpp
         TileTable.cpp
-        BuildingTable.cpp)
+        BuildingTable.cpp
+        AwardTable.cpp
+        AutonoteTable.cpp)
 
 set(ENGINE_TABLES_HEADERS
         FactionTable.h
@@ -16,7 +18,9 @@ set(ENGINE_TABLES_HEADERS
         PlayerFrameTable.h
         StorylineTextTable.h
         TileFrameTable.h
-        BuildingTable.h)
+        BuildingTable.h
+        AwardTable.h
+        AutonoteTable.h)
 
 add_library(engine_tables STATIC ${ENGINE_TABLES_SOURCES} ${ENGINE_TABLES_HEADERS})
 target_link_libraries(engine_tables engine)

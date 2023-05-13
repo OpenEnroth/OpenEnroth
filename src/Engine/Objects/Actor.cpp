@@ -5,7 +5,6 @@
 #include <utility>
 #include <vector>
 
-#include "Engine/Awards.h"
 #include "Engine/Engine.h"
 #include "Engine/Graphics/Camera.h"
 #include "Engine/Graphics/DecalBuilder.h"
@@ -27,6 +26,7 @@
 #include "Engine/Spells/CastSpellInfo.h"
 #include "Engine/AttackList.h"
 #include "Engine/Tables/FactionTable.h"
+#include "Engine/Tables/AwardTable.h"
 #include "Engine/Time.h"
 #include "Engine/TurnEngine/TurnEngine.h"
 

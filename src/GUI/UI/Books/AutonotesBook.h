@@ -3,7 +3,7 @@
 #include <unordered_map>
 
 #include "GUI/UI/UIBooks.h"
-#include "Engine/Autonotes.h"
+#include "Engine/Tables/AutonoteTable.h"
 
 struct GUIWindow_AutonotesBook : public GUIWindow_Book {
     GUIWindow_AutonotesBook();

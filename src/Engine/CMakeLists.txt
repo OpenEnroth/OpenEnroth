@@ -24,8 +24,6 @@ set(ENGINE_SOURCES
 set(ENGINE_HEADERS
         AssetsManager.h
         AttackList.h
-        Autonotes.h
-        Awards.h
         Conditions.h
         Engine.h
         EngineFactory.h

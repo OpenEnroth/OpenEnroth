@@ -1,6 +1,5 @@
 #include "Arcomage/Arcomage.h"
 
-#include "Engine/Awards.h"
 #include "Engine/Engine.h"
 #include "Engine/EngineGlobals.h"
 #include "Engine/Graphics/IRender.h"
@@ -9,6 +8,7 @@
 #include "Engine/Localization.h"
 #include "Engine/Party.h"
 #include "Engine/Time.h"
+#include "Engine/Tables/AwardTable.h"
 
 #include "GUI/GUIFont.h"
 #include "GUI/GUIWindow.h"

@@ -7,8 +7,6 @@
 #include "Engine/Engine.h"
 #include "Engine/EngineGlobals.h"
 #include "Engine/AssetsManager.h"
-#include "Engine/Autonotes.h"
-#include "Engine/Awards.h"
 #include "Engine/Events/Processor.h"
 #include "Engine/Graphics/Level/Decoration.h"
 #include "Engine/Graphics/PaletteManager.h"
@@ -26,6 +24,8 @@
 #include "Engine/EngineIocContainer.h"
 #include "Engine/Tables/IconFrameTable.h"
 #include "Engine/Tables/StorylineTextTable.h"
+#include "Engine/Tables/AwardTable.h"
+#include "Engine/Tables/AutonoteTable.h"
 #include "Engine/Time.h"
 
 #include "GUI/GUIButton.h"

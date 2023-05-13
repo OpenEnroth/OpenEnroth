@@ -9,7 +9,6 @@
 #include "Arcomage/Arcomage.h"
 
 #include "Engine/AssetsManager.h"
-#include "Engine/Awards.h"
 #include "Engine/Engine.h"
 #include "Engine/EngineGlobals.h"
 #include "Engine/EngineFactory.h"
@@ -43,6 +42,7 @@
 #include "Engine/SaveLoad.h"
 #include "Engine/Spells/CastSpellInfo.h"
 #include "Engine/Tables/FrameTableInc.h"
+#include "Engine/Tables/AwardTable.h"
 #include "Engine/Time.h"
 #include "Engine/TurnEngine/TurnEngine.h"
 

@@ -6,7 +6,6 @@
 #include <unordered_map>
 
 #include "Engine/AssetsManager.h"
-#include "Engine/Awards.h"
 #include "Engine/Engine.h"
 #include "Engine/EngineGlobals.h"
 #include "Engine/Graphics/IRender.h"
@@ -17,6 +16,7 @@
 #include "Engine/Party.h"
 #include "Engine/Spells/CastSpellInfo.h"
 #include "Engine/Time.h"
+#include "Engine/Tables/AwardTable.h"
 
 #include "GUI/GUIWindow.h"
 #include "GUI/GUIButton.h"

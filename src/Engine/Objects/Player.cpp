@@ -2,8 +2,6 @@
 
 #include <algorithm>
 
-#include "Engine/Autonotes.h"
-#include "Engine/Awards.h"
 #include "Engine/Engine.h"
 #include "Engine/Spells/CastSpellInfo.h"
 #include "Engine/Graphics/DecalBuilder.h"
@@ -22,6 +20,8 @@
 #include "Engine/AttackList.h"
 #include "Engine/Tables/PlayerFrameTable.h"
 #include "Engine/Tables/StorylineTextTable.h"
+#include "Engine/Tables/AwardTable.h"
+#include "Engine/Tables/AutonoteTable.h"
 #include "Engine/TurnEngine/TurnEngine.h"
 
 #include "Io/Mouse.h"

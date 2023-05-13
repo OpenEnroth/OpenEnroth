@@ -2,13 +2,7 @@
 
 #include <cstdint>
 #include <array>
-
-struct Award {
-    const char *pText;
-    unsigned int uPriority;
-};
-
-extern std::array<Award, 105> pAwards;
+#include <string>
 
 enum AwardType : uint32_t {
     Award_Invalid = 0,
@@ -117,3 +111,16 @@ enum AwardType : uint32_t {
     Award_ArcomageWins = 103,
     Award_ArcomageLoses = 104
 };
+
+struct Award {
+    const char *pText;
+    unsigned int uPriority;
+};
+
+/**
+ * @offset 0x4763E0
+ */
+void initializeAwards();
+
+extern std::array<Award, 105> pAwards;
+extern std::string pAwardsTXT_Raw;
