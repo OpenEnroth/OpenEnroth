@@ -75,7 +75,7 @@ GUIWindow_Book::GUIWindow_Book() : GUIWindow(WINDOW_Book, {0, 0}, render->GetRen
 void GUIWindow_Book::InitializeFonts() {
     pAudioPlayer->playUISound(SOUND_openbook);
 
-    ui_book_map_frame = assets->GetImage_Alpha("mapbordr");
+    ui_book_map_frame = assets->getImage_Alpha("mapbordr");
 
     pBookFont = GUIFont::LoadFont("book.fnt", "FONTPAL");
     pBook2Font = GUIFont::LoadFont("book2.fnt", "FONTPAL");

@@ -43,10 +43,10 @@ GUIWindow_Save::GUIWindow_Save() :
     pSavegameList->pSavegameUsedSlots.fill(false);
     pSavegameList->pSavegameThumbnails.fill(nullptr);
 
-    saveload_ui_loadsave = assets->GetImage_ColorKey("loadsave");
-    saveload_ui_save_up = assets->GetImage_ColorKey("save_up");
-    saveload_ui_saveu = assets->GetImage_ColorKey("LS_saveU");
-    saveload_ui_x_u = assets->GetImage_ColorKey("x_u");
+    saveload_ui_loadsave = assets->getImage_ColorKey("loadsave");
+    saveload_ui_save_up = assets->getImage_ColorKey("save_up");
+    saveload_ui_saveu = assets->getImage_ColorKey("LS_saveU");
+    saveload_ui_x_u = assets->getImage_ColorKey("x_u");
 
     pSavegameList->Initialize();
     // Reset positions for save UI
@@ -86,12 +86,12 @@ GUIWindow_Save::GUIWindow_Save() :
         }
     }
 
-    saveload_ui_x_d = assets->GetImage_Alpha("x_d");
-    saveload_ui_ls_saved = assets->GetImage_Alpha("LS_saveD");
-    ui_ar_up_dn = assets->GetImage_Alpha("ar_up_dn");
-    ui_ar_dn_dn = assets->GetImage_Alpha("ar_dn_dn");
+    saveload_ui_x_d = assets->getImage_Alpha("x_d");
+    saveload_ui_ls_saved = assets->getImage_Alpha("LS_saveD");
+    ui_ar_up_dn = assets->getImage_Alpha("ar_up_dn");
+    ui_ar_dn_dn = assets->getImage_Alpha("ar_dn_dn");
 
-    scrollstop = assets->GetImage_ColorKey("con_x");
+    scrollstop = assets->getImage_ColorKey("con_x");
 
     // GUIWindow_Save c-tor --- part
     CreateButton("SaveMenu_Slot0", {21, 198}, {191, 18}, 1, 0, UIMSG_SelectLoadSlot, 0);
@@ -129,14 +129,14 @@ GUIWindow_Load::GUIWindow_Load(bool ingame) :
     pSavegameList->pSavegameUsedSlots.fill(false);
     pSavegameList->pSavegameThumbnails.fill(nullptr);
 
-    saveload_ui_loadsave = assets->GetImage_ColorKey("loadsave");
-    saveload_ui_load_up = assets->GetImage_ColorKey("load_up");
-    saveload_ui_loadu = assets->GetImage_ColorKey("LS_loadU");
-    saveload_ui_x_u = assets->GetImage_ColorKey("x_u");
+    saveload_ui_loadsave = assets->getImage_ColorKey("loadsave");
+    saveload_ui_load_up = assets->getImage_ColorKey("load_up");
+    saveload_ui_loadu = assets->getImage_ColorKey("LS_loadU");
+    saveload_ui_x_u = assets->getImage_ColorKey("x_u");
 
     main_menu_background = nullptr;
     if (!ingame) {
-        main_menu_background = assets->GetImage_PCXFromIconsLOD("lsave640.pcx");
+        main_menu_background = assets->getImage_PCXFromIconsLOD("lsave640.pcx");
         render->DrawTextureNew(0, 0, main_menu_background);
     } else {
         render->DrawTextureNew(8 / 640.0f, 8 / 480.0f, saveload_ui_loadsave);
@@ -208,12 +208,12 @@ GUIWindow_Load::GUIWindow_Load(bool ingame) :
         //}
     }
 
-    saveload_ui_x_d = assets->GetImage_Alpha("x_d");
-    saveload_ui_ls_saved = assets->GetImage_Alpha("LS_loadD");
-    ui_ar_up_dn = assets->GetImage_Alpha("AR_UP_DN");
-    ui_ar_dn_dn = assets->GetImage_Alpha("AR_DN_DN");
+    saveload_ui_x_d = assets->getImage_Alpha("x_d");
+    saveload_ui_ls_saved = assets->getImage_Alpha("LS_loadD");
+    ui_ar_up_dn = assets->getImage_Alpha("AR_UP_DN");
+    ui_ar_dn_dn = assets->getImage_Alpha("AR_DN_DN");
 
-    scrollstop = assets->GetImage_ColorKey("con_x");
+    scrollstop = assets->getImage_ColorKey("con_x");
 
     CreateButton("LoadMenu_Slot0", {21, 198}, {191, 18}, 1, 0, UIMSG_SelectLoadSlot, 0);
     CreateButton("LoadMenu_Slot1", {21, 219}, {191, 18}, 1, 0, UIMSG_SelectLoadSlot, 1);

@@ -35,19 +35,19 @@ GUIWindow_MapBook::GUIWindow_MapBook() : GUIWindow_Book() {
     viewparams->sViewCenterY = pParty->vPosition.y;
     pChildBooksOverlay = new GUIWindow_BooksButtonOverlay({546, 353}, {0, 0}, pBtn_Maps);
 
-    ui_book_map_background = assets->GetImage_ColorKey("sbmap");
-    ui_book_button1_on = assets->GetImage_Alpha("zoom-on");
-    ui_book_button2_on = assets->GetImage_Alpha("zoot-on");
-    ui_book_button3_on = assets->GetImage_Alpha("tabNon");
-    ui_book_button4_on = assets->GetImage_Alpha("tabSon");
-    ui_book_button5_on = assets->GetImage_Alpha("tabEon");
-    ui_book_button6_on = assets->GetImage_Alpha("tabWon");
-    ui_book_button1_off = assets->GetImage_Alpha("zoom-off");
-    ui_book_button2_off = assets->GetImage_Alpha("zoot-off");
-    ui_book_button3_off = assets->GetImage_Alpha("tabNoff");
-    ui_book_button4_off = assets->GetImage_Alpha("tabSoff");
-    ui_book_button5_off = assets->GetImage_Alpha("tabEoff");
-    ui_book_button6_off = assets->GetImage_Alpha("tabWoff");
+    ui_book_map_background = assets->getImage_ColorKey("sbmap");
+    ui_book_button1_on = assets->getImage_Alpha("zoom-on");
+    ui_book_button2_on = assets->getImage_Alpha("zoot-on");
+    ui_book_button3_on = assets->getImage_Alpha("tabNon");
+    ui_book_button4_on = assets->getImage_Alpha("tabSon");
+    ui_book_button5_on = assets->getImage_Alpha("tabEon");
+    ui_book_button6_on = assets->getImage_Alpha("tabWon");
+    ui_book_button1_off = assets->getImage_Alpha("zoom-off");
+    ui_book_button2_off = assets->getImage_Alpha("zoot-off");
+    ui_book_button3_off = assets->getImage_Alpha("tabNoff");
+    ui_book_button4_off = assets->getImage_Alpha("tabSoff");
+    ui_book_button5_off = assets->getImage_Alpha("tabEoff");
+    ui_book_button6_off = assets->getImage_Alpha("tabWoff");
 
     pBtn_Book_1 = CreateButton({pViewport->uViewportTL_X + 398, pViewport->uViewportTL_Y + 1}, {50, 34}, 1, 0, UIMSG_ClickBooksBtn,
          std::to_underlying(BOOK_ZOOM_IN), InputAction::Invalid, localization->GetString(LSTR_ZOOM_IN), {ui_book_button1_on});

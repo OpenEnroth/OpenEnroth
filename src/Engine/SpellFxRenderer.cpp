@@ -410,7 +410,7 @@ void SpellFxRenderer::_4A7948_mind_blast_after_effect(SpriteObject *a1) {
     Dst.x = (float)a1->vPosition.x;
     Dst.y = (float)a1->vPosition.y;
     Dst.z = (float)a1->vPosition.z;
-    Dst.texture = a1->GetSpriteFrame()->hw_sprites[0]->texture;
+    Dst.texture = a1->getSpriteFrame()->hw_sprites[0]->texture;
     Dst.particle_size = 1.0;
     Dst.timeToLive = vrng->random(0x80) + 128;
     for (int i = 0; i < 10; i++) {
@@ -512,8 +512,8 @@ void SpellFxRenderer::_4A7C07_stun_spell_fx(SpriteObject *a2) {
 
         local_0.particle_size = 3.0;
         local_0.timeToLive = vrng->random(0x40) + 64;
-        local_0.texture = a2->GetSpriteFrame()->hw_sprites[0]->texture;
-        local_0.paletteID = a2->GetSpriteFrame()->uPaletteID;
+        local_0.texture = a2->getSpriteFrame()->hw_sprites[0]->texture;
+        local_0.paletteID = a2->getSpriteFrame()->uPaletteID;
         particle_engine->AddParticle(&local_0);
         local_0.particle_size = 2.0;  // was 4.0 - reduce size of stun ring;
         local_0.x = (float)a2->vPosition.x;
@@ -539,8 +539,8 @@ void SpellFxRenderer::_4A7C07_stun_spell_fx(SpriteObject *a2) {
         local_0.g = 0.0f;
         local_0.b = 0.0f;
         local_0.timeToLive = vrng->random(0x40) + 64;
-        local_0.texture = a2->GetSpriteFrame()->hw_sprites[0]->texture;
-        local_0.paletteID = a2->GetSpriteFrame()->uPaletteID;
+        local_0.texture = a2->getSpriteFrame()->hw_sprites[0]->texture;
+        local_0.paletteID = a2->getSpriteFrame()->uPaletteID;
         particle_engine->AddParticle(&local_0);
     }
 }
@@ -887,7 +887,7 @@ bool SpellFxRenderer::RenderAsSprite(SpriteObject *a2) {
         case SPRITE_SPELL_AIR_LIGHTNING_BOLT:
             // if ( !render->pRenderD3D )
             //  return true;
-            AddProjectile(a2, 100, assets->GetBitmap(fmt::format("sp18h{}", vrng->randomInSegment(1, 6))));
+            AddProjectile(a2, 100, assets->getBitmap(fmt::format("sp18h{}", vrng->randomInSegment(1, 6))));
             return false;
         case SPRITE_SPELL_AIR_LIGHTNING_BOLT_IMPACT:
             _4A7A66_miltiple_spell_collision_partifles___like_after_sparks_or_lightning(a2, colorTable.MustardYellow.c32(), effpar02, 200.0);
@@ -1264,9 +1264,9 @@ void SpellFxRenderer::DrawPlayerBuffAnims() {
 
 //----- (004A90A0) --------------------------------------------------------
 void SpellFxRenderer::LoadAnimations() {
-    effpar01 = assets->GetBitmap("effpar01");  // pBitmaps_LOD->LoadTexture("effpar01");
-    effpar02 = assets->GetBitmap("effpar02");  // pBitmaps_LOD->LoadTexture("effpar02");
-    effpar03 = assets->GetBitmap("effpar03");  // pBitmaps_LOD->LoadTexture("effpar03");
+    effpar01 = assets->getBitmap("effpar01");  // pBitmaps_LOD->LoadTexture("effpar01");
+    effpar02 = assets->getBitmap("effpar02");  // pBitmaps_LOD->LoadTexture("effpar02");
+    effpar03 = assets->getBitmap("effpar03");  // pBitmaps_LOD->LoadTexture("effpar03");
 
     // spell not implemented in the game
     // uSpriteID_sp57c = pSprites_LOD->LoadSprite("sp57c", 6);

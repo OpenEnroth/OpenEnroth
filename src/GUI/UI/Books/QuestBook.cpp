@@ -28,13 +28,13 @@ GUIWindow_QuestBook::GUIWindow_QuestBook() : _startingQuestIdx(0), _currentPage(
 
     // ----------------------------------------------
     // 00411BFC GUIWindow::InitializeBookView -- part
-    ui_book_quests_background = assets->GetImage_Solid("sbquiknot");
-    ui_book_quest_div_bar = assets->GetImage_Alpha("divbar");
+    ui_book_quests_background = assets->getImage_Solid("sbquiknot");
+    ui_book_quest_div_bar = assets->getImage_Alpha("divbar");
 
-    ui_book_button1_on = assets->GetImage_Alpha("tab-an-6b");
-    ui_book_button2_on = assets->GetImage_Alpha("tab-an-7b");
-    ui_book_button1_off = assets->GetImage_Alpha("tab-an-6a");
-    ui_book_button2_off = assets->GetImage_Alpha("tab-an-7a");
+    ui_book_button1_on = assets->getImage_Alpha("tab-an-6b");
+    ui_book_button2_on = assets->getImage_Alpha("tab-an-7b");
+    ui_book_button1_off = assets->getImage_Alpha("tab-an-6a");
+    ui_book_button2_off = assets->getImage_Alpha("tab-an-7a");
 
     pBtn_Book_1 = CreateButton({pViewport->uViewportTL_X + 398, pViewport->uViewportTL_Y + 1}, {ui_book_button1_on->GetWidth(), ui_book_button1_on->GetHeight()}, 1, 0,
                                UIMSG_ClickBooksBtn, std::to_underlying(BOOK_PREV_PAGE), InputAction::Invalid, localization->GetString(LSTR_SCROLL_UP), {ui_book_button1_on});

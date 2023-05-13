@@ -3154,9 +3154,9 @@ static int lua_nk_load_image(lua_State *L) {
         }
     } else {
         if (!strcmp(type, "pcx"))
-            im->asset = assets->GetImage_PCXFromIconsLOD(name);
+            im->asset = assets->getImage_PCXFromIconsLOD(name);
         else if (!strcmp(type, "bmp"))
-            im->asset = assets->GetImage_ColorKey(name, mask);
+            im->asset = assets->getImage_ColorKey(name, mask);
     }
 
     if (!im->asset)

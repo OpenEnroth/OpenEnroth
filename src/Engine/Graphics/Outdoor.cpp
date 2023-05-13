@@ -811,7 +811,7 @@ void OutdoorLocation::CreateDebugLocation() {
     this->pOMAP.fill(0);
     this->pFaceIDLIST.clear();
     this->sky_texture_filename = pDefaultSkyTexture.data();
-    this->sky_texture = assets->GetBitmap(this->sky_texture_filename);
+    this->sky_texture = assets->getBitmap(this->sky_texture_filename);
 }
 
 //----- (0047CF9C) --------------------------------------------------------
@@ -855,7 +855,7 @@ void OutdoorLocation::Load(const std::string &filename, int days_played, int res
         Error("Unable to find %s in Games.LOD", filename.c_str());
 
     std::string minimap_filename = filename.substr(0, filename.length() - 4);
-    viewparams->location_minimap = assets->GetImage_Solid(minimap_filename);
+    viewparams->location_minimap = assets->getImage_Solid(minimap_filename);
 
     std::string odm_filename = std::string(filename);
     odm_filename.replace(odm_filename.length() - 4, 4, ".odm");
@@ -950,7 +950,7 @@ void OutdoorLocation::Load(const std::string &filename, int days_played, int res
         loc_time.sky_texture_name = "plansky3";
     }
 
-    this->sky_texture = assets->GetBitmap(loc_time.sky_texture_name);
+    this->sky_texture = assets->getBitmap(loc_time.sky_texture_name);
 }
 
 int OutdoorLocation::getTileIdByTileMapId(int mapId) {
@@ -1627,7 +1627,7 @@ void OutdoorLocation::LoadActualSkyFrame() {
         rest_ui_hourglass_frame_current = nullptr;
     }
 
-    rest_ui_sky_frame_current = assets->GetImage_ColorKey(
+    rest_ui_sky_frame_current = assets->getImage_ColorKey(
         fmt::format("TERRA{:03}", pParty->uCurrentMinute / 6 + 10 * pParty->uCurrentHour));
 }
 

@@ -82,9 +82,9 @@ GUIWindow_Transition::GUIWindow_Transition(uint anim_id, uint exit_pic_id,
     mapid = pMapStats->GetMapInfo(pCurrentMapName);
     _mapName = locationName;
 
-    game_ui_dialogue_background = assets->GetImage_Solid(DialogueBackgroundResourceByAlignment[pParty->alignment]);
+    game_ui_dialogue_background = assets->getImage_Solid(DialogueBackgroundResourceByAlignment[pParty->alignment]);
 
-    transition_ui_icon = assets->GetImage_Solid(pHouse_ExitPictures[exit_pic_id]);
+    transition_ui_icon = assets->getImage_Solid(pHouse_ExitPictures[exit_pic_id]);
 
     // animation or special transfer message
     if (anim_id || IndoorLocation::GetLocationIndex(locationName)) {
@@ -144,9 +144,9 @@ GUIWindow_Transition::GUIWindow_Transition(uint anim_id, uint exit_pic_id,
 GUIWindow_Travel::GUIWindow_Travel() : GUIWindow(WINDOW_ChangeLocation, {0, 0}, render->GetRenderDimensions(), 0) {
     pEventTimer->Pause();
 
-    game_ui_dialogue_background = assets->GetImage_Solid(DialogueBackgroundResourceByAlignment[pParty->alignment]);
+    game_ui_dialogue_background = assets->getImage_Solid(DialogueBackgroundResourceByAlignment[pParty->alignment]);
 
-    transition_ui_icon = assets->GetImage_Solid("outside");
+    transition_ui_icon = assets->getImage_Solid("outside");
     if (pMapStats->GetMapInfo(pCurrentMapName))
         transition_button_label = localization->FormatString(
             LSTR_FMT_LEAVE_S,

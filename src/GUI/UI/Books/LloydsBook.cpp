@@ -30,13 +30,13 @@ GUIWindow_LloydsBook::GUIWindow_LloydsBook() : GUIWindow_Book() {
     this->wData.val = WINDOW_LloydsBeacon;
 
     if (!ui_book_lloyds_border) {
-        ui_book_lloyds_border = assets->GetImage_ColorKey("lb_bordr");
+        ui_book_lloyds_border = assets->getImage_ColorKey("lb_bordr");
     }
 
-    ui_book_lloyds_backgrounds[0] = assets->GetImage_ColorKey("sbmap");
-    ui_book_lloyds_backgrounds[1] = assets->GetImage_ColorKey("sbmap");
-    ui_book_button1_on = assets->GetImage_Alpha("tab-an-6b");
-    ui_book_button1_off = assets->GetImage_Alpha("tab-an-6a");
+    ui_book_lloyds_backgrounds[0] = assets->getImage_ColorKey("sbmap");
+    ui_book_lloyds_backgrounds[1] = assets->getImage_ColorKey("sbmap");
+    ui_book_button1_on = assets->getImage_Alpha("tab-an-6b");
+    ui_book_button1_off = assets->getImage_Alpha("tab-an-6a");
 
     pBtn_Book_1 = CreateButton({415, 13}, {39, 36}, 1, 0, UIMSG_LloydsBeacon_FlippingBtn, 0, InputAction::Invalid, localization->GetString(LSTR_SET_BEACON));
     pBtn_Book_2 = CreateButton({415, 48}, {39, 36}, 1, 0, UIMSG_LloydsBeacon_FlippingBtn, 1, InputAction::Invalid, localization->GetString(LSTR_RECALL_BEACON));

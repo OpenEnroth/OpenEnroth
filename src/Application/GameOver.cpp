@@ -45,7 +45,7 @@ void GameOver_Loop(int v15) {
 void CreateWinnerCertificate() {
     render->Present();
     render->BeginScene2D();
-    Image *background = assets->GetImage_PCXFromIconsLOD("winbg.pcx");
+    Image *background = assets->getImage_PCXFromIconsLOD("winbg.pcx");
     render->DrawTextureNew(0, 0, background);
 
     GUIWindow *tempwindow_SpeakInHouse = new GUIWindow(WINDOW_Unknown, { 0, 0 }, render->GetRenderDimensions(), 0);

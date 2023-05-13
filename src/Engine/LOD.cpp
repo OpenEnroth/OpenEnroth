@@ -180,7 +180,7 @@ int LODFile_Sprites::LoadSprite(const char *pContainerName, unsigned int uPalett
     pHardwareSprites[uNumLoadedSprites].uAreaWidth = header->uWidth;
     pHardwareSprites[uNumLoadedSprites].uAreaHeight = header->uHeight;
     pHardwareSprites[uNumLoadedSprites].uPaletteID = uPaletteID;
-    pHardwareSprites[uNumLoadedSprites].texture = assets->GetSprite(pContainerName, uPaletteID, uNumLoadedSprites);
+    pHardwareSprites[uNumLoadedSprites].texture = assets->getSprite(pContainerName, uPaletteID, uNumLoadedSprites);
     pHardwareSprites[uNumLoadedSprites].sprite_header = header;
 
     if (engine->config->graphics.HWLSprites.value()) {
@@ -202,7 +202,7 @@ int LODFile_Sprites::LoadSprite(const char *pContainerName, unsigned int uPalett
     return uNumLoadedSprites - 1;
 }
 
-Sprite *LODFile_Sprites::GetSprite(std::string_view pContainerName) {
+Sprite *LODFile_Sprites::getSprite(std::string_view pContainerName) {
     for (int i = 0; i < uNumLoadedSprites; ++i) {
         if (pHardwareSprites[i].pName == pContainerName) {
             return &pHardwareSprites[i];

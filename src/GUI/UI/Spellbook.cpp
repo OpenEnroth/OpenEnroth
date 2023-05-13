@@ -283,12 +283,12 @@ void LoadSpellbook(unsigned int spell_school) {
             sprintf(pContainer, "SB%sS%02d",
                     spellbook_texture_filename_suffices[spell_school],
                     pSpellbookSpellIndices[spell_school][i]);
-            SBPageSSpellsTextureList[i] = assets->GetImage_Solid(pContainer);
+            SBPageSSpellsTextureList[i] = assets->getImage_Solid(pContainer);
 
             sprintf(pContainer, "SB%sC%02d",
                     spellbook_texture_filename_suffices[spell_school],
                     pSpellbookSpellIndices[spell_school][i]);
-            SBPageCSpellsTextureList[i] = assets->GetImage_Solid(pContainer);
+            SBPageCSpellsTextureList[i] = assets->getImage_Solid(pContainer);
         }
     }
 }
@@ -310,21 +310,21 @@ static void BookUI_Spellbook_DrawCurrentSchoolBackground() {
 void InitializeSpellBookTextures() {
     pAudioPlayer->playUISound(SOUND_openbook);
 
-    ui_spellbook_btn_close = assets->GetImage_Solid("ib-m5-u");
-    ui_spellbook_btn_close_click = assets->GetImage_Solid("ib-m5-d");
-    ui_spellbook_btn_quckspell = assets->GetImage_Solid("ib-m6-u");
-    ui_spellbook_btn_quckspell_click = assets->GetImage_Solid("ib-m6-d");
+    ui_spellbook_btn_close = assets->getImage_Solid("ib-m5-u");
+    ui_spellbook_btn_close_click = assets->getImage_Solid("ib-m5-d");
+    ui_spellbook_btn_quckspell = assets->getImage_Solid("ib-m6-u");
+    ui_spellbook_btn_quckspell_click = assets->getImage_Solid("ib-m6-d");
 
     static const char *texNames[9] = {"SBFB00", "SBAB00", "SBWB00",
                                       "SBEB00", "SBSB00", "SBMB00",
                                       "SBBB00", "SBLB00", "SBDB00"};
 
     for (unsigned int i = 0; i < 9; ++i) {
-        ui_spellbook_school_backgrounds[i] = assets->GetImage_ColorKey(texNames[i]);
+        ui_spellbook_school_backgrounds[i] = assets->getImage_ColorKey(texNames[i]);
         ui_spellbook_school_tabs[i][0] =
-            assets->GetImage_Alpha(fmt::format("tab{}a", i + 1));
+            assets->getImage_Alpha(fmt::format("tab{}a", i + 1));
         ui_spellbook_school_tabs[i][1] =
-            assets->GetImage_Alpha(fmt::format("tab{}b", i + 1));
+            assets->getImage_Alpha(fmt::format("tab{}b", i + 1));
     }
 }
 

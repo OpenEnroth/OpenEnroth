@@ -9,7 +9,7 @@
 
 Texture *Icon::GetTexture() {
     if (!this->img) {
-        this->img = assets->GetImage_ColorKey(this->pTextureName);
+        this->img = assets->getImage_ColorKey(this->pTextureName);
     }
 
     return this->img;

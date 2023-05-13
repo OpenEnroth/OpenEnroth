@@ -56,7 +56,7 @@ void Mouse::SetCursorImage(const std::string &name) {
         platform->setCursorShown(true);
         this->cursor_img = nullptr;
     } else {  // cursor is item or another bitmap
-        this->cursor_img = assets->GetImage_ColorKey(name, 0/*colorTable.TealMask.C16()*/);
+        this->cursor_img = assets->getImage_ColorKey(name, 0/*colorTable.TealMask.C16()*/);
         this->AllocCursorSystemMem();
         this->field_C = 0;
         this->bRedraw = true;
@@ -236,7 +236,7 @@ void Mouse::DrawPickedItem() {
     if (pParty->pPickedItem.uItemID == ITEM_NULL)
         return;
 
-    Image *pTexture = assets->GetImage_Alpha(pParty->pPickedItem.GetIconName());
+    Image *pTexture = assets->getImage_Alpha(pParty->pPickedItem.GetIconName());
     if (!pTexture) return;
 
     if (pParty->pPickedItem.IsBroken()) {

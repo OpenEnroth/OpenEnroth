@@ -45,7 +45,7 @@ unsigned int IMAGE_FORMAT_BytesPerPixel(IMAGE_FORMAT format) {
 
 Texture *TextureFrame::GetTexture() {
     if (!this->tex) {
-        this->tex = assets->GetBitmap(this->name);
+        this->tex = assets->getBitmap(this->name);
     }
     return this->tex;
 }
@@ -341,9 +341,9 @@ std::string *Image::GetName() {
 
 bool Image::Release() {
     if (loader) {
-        if (!assets->ReleaseSprite(loader->GetResourceName()))
-            if (!assets->ReleaseImage(loader->GetResourceName()))
-                assets->ReleaseBitmap(loader->GetResourceName());     
+        if (!assets->releaseSprite(loader->GetResourceName()))
+            if (!assets->releaseImage(loader->GetResourceName()))
+                assets->releaseBitmap(loader->GetResourceName());
     }
 
     if (initialized) {

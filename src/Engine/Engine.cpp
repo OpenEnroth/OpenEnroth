@@ -1023,7 +1023,7 @@ void Engine::SecondaryInitialization() {
         sprintf(container_name, "HDWTR%03u", i);
         render->pHDWaterBitmapIDs[i] =
             pBitmaps_LOD->LoadTexture(container_name);
-        render->hd_water_tile_anim[i] = assets->GetBitmap(container_name);
+        render->hd_water_tile_anim[i] = assets->getBitmap(container_name);
     }
 
     pNPCStats = new NPCStats;

@@ -14,7 +14,7 @@ GUICredits::GUICredits() :
     pFontQuick = GUIFont::LoadFont("quick.fnt", "FONTPAL");
     pFontCChar = GUIFont::LoadFont("cchar.fnt", "FONTPAL");
 
-    mm6title = assets->GetImage_PCXFromIconsLOD("mm6title.pcx");
+    mm6title = assets->getImage_PCXFromIconsLOD("mm6title.pcx");
 
     std::string text{ pEvents_LOD->LoadCompressedTexture("credits.txt").string_view() };
 

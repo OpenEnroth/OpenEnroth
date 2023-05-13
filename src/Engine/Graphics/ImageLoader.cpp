@@ -421,7 +421,7 @@ bool Sprites_LOD_Loader::Load(unsigned int *width, unsigned int *height,
     *format = IMAGE_INVALID_FORMAT;
 
     if (!this->use_hwl) {
-        Sprite *pSprite = lod->GetSprite(this->resource_name);
+        Sprite *pSprite = lod->getSprite(this->resource_name);
         //Assert(thissprite->texture-> tex->paletted_pixels);
         //Assert(tex->pPalette24);
 

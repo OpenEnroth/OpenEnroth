@@ -12,28 +12,28 @@ class AssetsManager {
  public:
     AssetsManager() {}
 
-    void ReleaseAllTextures();
+    void releaseAllTextures();
 
-    bool ReleaseImage(const std::string &name);
-    bool ReleaseSprite(const std::string &name);
-    bool ReleaseBitmap(const std::string &name);
+    bool releaseImage(const std::string &name);
+    bool releaseSprite(const std::string &name);
+    bool releaseBitmap(const std::string &name);
 
-    Texture *GetImage_ColorKey(const std::string &name, uint16_t colorkey = colorTable.TealMask.c16());
-    Texture *GetImage_Paletted(const std::string &name);
-    Texture *GetImage_Solid(const std::string &name);
-    Texture *GetImage_Alpha(const std::string &name);
+    Texture *getImage_ColorKey(const std::string &name, uint16_t colorkey = colorTable.TealMask.c16());
+    Texture *getImage_Paletted(const std::string &name);
+    Texture *getImage_Solid(const std::string &name);
+    Texture *getImage_Alpha(const std::string &name);
 
-    Texture *GetImage_PCXFromFile(const std::string &name);
-    Texture *GetImage_PCXFromIconsLOD(const std::string &name);
-    Texture *GetImage_PCXFromNewLOD(const std::string &name);
+    Texture *getImage_PCXFromFile(const std::string &name);
+    Texture *getImage_PCXFromIconsLOD(const std::string &name);
+    Texture *getImage_PCXFromNewLOD(const std::string &name);
 
-    Texture *GetBitmap(const std::string &name);
-    Texture *GetSprite(const std::string &name, unsigned int palette_id,
+    Texture *getBitmap(const std::string &name);
+    Texture *getSprite(const std::string &name, unsigned int palette_id,
                        unsigned int lod_sprite_id);
 
     // TODO(pskelton): Contain better
     // TODO(pskelton): Manager should have a ref to all loose textures created throuh CreateTexture_Blank also
-    Texture *WinnerCert{ nullptr };
+    Texture *winnerCert{ nullptr };
 
  protected:
     std::unordered_map<std::string, Texture *> bitmaps;

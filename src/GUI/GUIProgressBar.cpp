@@ -44,7 +44,7 @@ bool GUIProgressBar::Initialize(Type type) {
     uType = type;
 
     if (uType == TYPE_Fullscreen) {
-        loading_bg = assets->GetImage_PCXFromIconsLOD(fmt::format("loading{}.pcx", vrng->random(5) + 1));
+        loading_bg = assets->getImage_PCXFromIconsLOD(fmt::format("loading{}.pcx", vrng->random(5) + 1));
 
         uProgressCurrent = 0;
         uX = 122;
@@ -53,11 +53,11 @@ bool GUIProgressBar::Initialize(Type type) {
         uHeight = 56;
         uProgressMax = 26;
 
-        progressbar_loading = assets->GetImage_Alpha("loadprog");
+        progressbar_loading = assets->getImage_Alpha("loadprog");
         Draw();
         return true;
     } else {
-        progressbar_dungeon = assets->GetImage_ColorKey(ProgressBarResourceByAlignment[pParty->alignment]);
+        progressbar_dungeon = assets->getImage_ColorKey(ProgressBarResourceByAlignment[pParty->alignment]);
     }
 
     uProgressCurrent = 0;

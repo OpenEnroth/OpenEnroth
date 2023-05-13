@@ -866,7 +866,7 @@ bool enterHouse(HOUSE_ID uHouseID) {
         std::string pContainer = DialogueBackgroundResourceByAlignment[pParty->alignment];
 
         pDialogueNPCCount = 0;
-        game_ui_dialogue_background = assets->GetImage_Solid(pContainer);
+        game_ui_dialogue_background = assets->getImage_Solid(pContainer);
 
         PrepareHouse(uHouseID);
 
@@ -940,13 +940,13 @@ void PrepareHouse(HOUSE_ID house) {
     }
 
     for (int i = 0; i < uNumDialogueNPCPortraits; ++i) {
-        pDialogueNPCPortraits[i] = assets->GetImage_ColorKey(
+        pDialogueNPCPortraits[i] = assets->getImage_ColorKey(
             fmt::format("npc{:03}", npc_id_arr[i]));
     }
 
     if (uHouse_ExitPic) {
         pDialogueNPCPortraits[uNumDialogueNPCPortraits] =
-            assets->GetImage_ColorKey(pHouse_ExitPictures[uHouse_ExitPic]);
+            assets->getImage_ColorKey(pHouse_ExitPictures[uHouse_ExitPic]);
         ++uNumDialogueNPCPortraits;
         uHouse_ExitPic = buildingTable[house - HOUSE_SMITH_EMERALD_ISLE].uExitMapID;
     }
@@ -1014,7 +1014,7 @@ void OnSelectShopDialogueOption(DIALOGUE_TYPE option) {
         }
         dialog_menu_id = option;
         if (in_current_building_type < BuildingType_TownHall_MM6) {
-            shop_ui_background = assets->GetImage_ColorKey(
+            shop_ui_background = assets->getImage_ColorKey(
                 _4F03B8_shop_background_names[(int)in_current_building_type]);
         }
     }
@@ -1037,7 +1037,7 @@ void OnSelectShopDialogueOption(DIALOGUE_TYPE option) {
         if (pParty->PartyTimes.Shops_next_generation_time[window_SpeakInHouse->wData.val - HOUSE_FIRE_GUILD_INITIATE_EMERALD_ISLE] >= pParty->GetPlayingTime()) {
             for (uint i = 0; i < 12; ++i) {
                 if (pParty->SpellBooksInGuilds[window_SpeakInHouse->wData.val - HOUSE_FIRE_GUILD_INITIATE_EMERALD_ISLE][i].uItemID != ITEM_NULL)
-                    shop_ui_items_in_store[i] = assets->GetImage_ColorKey(
+                    shop_ui_items_in_store[i] = assets->getImage_ColorKey(
                         pParty->SpellBooksInGuilds
                         [window_SpeakInHouse->wData.val - HOUSE_FIRE_GUILD_INITIATE_EMERALD_ISLE][i].GetIconName());
             }
@@ -1130,7 +1130,7 @@ void OnSelectShopDialogueOption(DIALOGUE_TYPE option) {
                     if (pParty
                         ->StandartItemsInShops[window_SpeakInHouse
                         ->wData.val][i].uItemID != ITEM_NULL)
-                        shop_ui_items_in_store[i] = assets->GetImage_ColorKey(
+                        shop_ui_items_in_store[i] = assets->getImage_ColorKey(
                             pParty->StandartItemsInShops[window_SpeakInHouse->wData.val][i].GetIconName());
                 }
             }
@@ -1153,7 +1153,7 @@ void OnSelectShopDialogueOption(DIALOGUE_TYPE option) {
                 for (uint i = 0; i < ItemAmountForShop(buildingTable[window_SpeakInHouse->wData.val - HOUSE_SMITH_EMERALD_ISLE].uType); ++i) {
                     if (pParty->SpecialItemsInShops[
                         window_SpeakInHouse->wData.val][i].uItemID != ITEM_NULL)
-                        shop_ui_items_in_store[i] = assets->GetImage_ColorKey(
+                        shop_ui_items_in_store[i] = assets->getImage_ColorKey(
                             pParty->SpecialItemsInShops
                             [window_SpeakInHouse->wData.val][i].GetIconName());
                 }
