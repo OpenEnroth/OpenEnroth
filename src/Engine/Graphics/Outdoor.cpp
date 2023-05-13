@@ -247,7 +247,6 @@ bool OutdoorLocation::Initialize(const std::string &filename, int days_played,
 
     if (!filename.empty()) {
         Release();
-        assets->ReleaseAllImages();  // dummy
 
         // pSprites_LOD->DeleteSomeOtherSprites();
         // pSpriteFrameTable->ResetLoadedFlags();

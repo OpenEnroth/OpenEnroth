@@ -29,17 +29,6 @@ void AssetsManager::ReleaseAllTextures() {
     return;
 }
 
-bool AssetsManager::ReleaseAllImages() {
-    return true;
-
-    // this will dereference things
-    for (auto it = images.cbegin(), next = it; it != images.cend(); it = next) {
-        next++;
-        it->second->Release();
-    }
-    return true;
-}
-
 bool AssetsManager::ReleaseImage(const std::string &name) {
     auto filename = name;
     std::transform(filename.begin(), filename.end(), filename.begin(), ::tolower);
@@ -182,18 +171,6 @@ bool AssetsManager::ReleaseBitmap(const std::string &name) {
     return true;
 }
 
-bool AssetsManager::ReleaseAllBitmaps() {
-    return true;
-
-    // this will dereference things
-    for (auto it = bitmaps.cbegin(), next = it; it != bitmaps.cend(); it = next) {
-        next++;
-        it->second->Release();
-    }
-    return true;
-}
-
-
 Texture *AssetsManager::GetSprite(const std::string &name, unsigned int palette_id,
                                   unsigned int lod_sprite_id) {
     auto filename = name;
@@ -223,13 +200,3 @@ bool AssetsManager::ReleaseSprite(const std::string &name) {
     return true;
 }
 
-bool AssetsManager::ReleaseAllSprites() {
-    return true;
-
-    // this will dereference things
-    for (auto it = sprites.cbegin(), next = it; it != sprites.cend(); it = next) {
-        next++;
-        it->second->Release();
-    }
-    return true;
-}

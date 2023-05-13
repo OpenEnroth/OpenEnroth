@@ -14,10 +14,6 @@ class AssetsManager {
 
     void ReleaseAllTextures();
 
-    bool ReleaseAllImages();
-    bool ReleaseAllSprites();
-    bool ReleaseAllBitmaps();
-
     bool ReleaseImage(const std::string &name);
     bool ReleaseSprite(const std::string &name);
     bool ReleaseBitmap(const std::string &name);
