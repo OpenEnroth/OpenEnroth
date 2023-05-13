@@ -135,7 +135,7 @@ void Menu::EventLoop() {
                         pSavegameList->selectedSlot = pSavegameList->saveListPosition + param;
                     } else {
                         keyboardInputHandler->StartTextInput(TextInputType::Text, 19, pGUIWindow_CurrentMenu);
-                        if (pSavegameList->pSavegameHeader[pSavegameList->selectedSlot].name == localization->GetString(LSTR_EMPTY_SAVESLOT)) {
+                        if (pSavegameList->pSavegameHeader[pSavegameList->selectedSlot].name != localization->GetString(LSTR_EMPTY_SAVESLOT)) {
                             keyboardInputHandler->SetTextInput(pSavegameList->pSavegameHeader[pSavegameList->selectedSlot].name);
                         }
                     }
