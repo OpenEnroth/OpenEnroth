@@ -3688,14 +3688,17 @@ void RenderOpenGL::DrawOutdoorBuildings() {
             if (!model.pFaces.empty()) {
                 for (ODMFace &face : model.pFaces) {
                     if (!face.Invisible()) {
-                        //v53 = 0;
-                        //auto poly = &array_77EC08[pODMRenderParams->uNumPolygons];
+                        // TODO(pskelton): Same as indoors. When ODM and BLV face is combined - seperate out function
 
-                        //poly->flags = 0;
-                        //poly->field_32 = 0;
                         TextureOpenGL *tex = (TextureOpenGL*)face.GetTexture();
-
                         std::string *texname = tex->GetName();
+
+                        int animLength = 0, frame = 0;
+                        if (face.IsTextureFrameTable()) {
+                            tex = (TextureOpenGL *)pTextureFrameTable->GetFrameTexture((int64_t)face.resource, frame);
+                            animLength = pTextureFrameTable->textureFrameAnimLength((int64_t)face.resource);
+                            texname = tex->GetName();
+                        }
                         // gather up all texture and shaderverts data
 
                         //auto tile = pOutdoor->getTileDescByGrid(x, y);
@@ -3717,55 +3720,66 @@ void RenderOpenGL::DrawOutdoorBuildings() {
                         else if (face.uAttributes & FACE_FlowLeft)
                             attribflags |= 0x1000;
 
-                        // check if tile->name is already in list
-                        auto mapiter = outbuildtexmap.find(*texname);
-                        if (mapiter != outbuildtexmap.end()) {
-                            // if so, extract unit and layer
-                            int unitlayer = mapiter->second;
-                            texlayer = unitlayer & 0xFF;
-                            texunit = (unitlayer & 0xFF00) >> 8;
-                        } else if (*texname == "wtrtyl") {
-                            // water tile
-                            texunit = 0;
-                            texlayer = 0;
-                        } else {
-                            // else need to add it
-                            auto thistexture = assets->getBitmap(*texname);
-                            int width = thistexture->GetWidth();
-                            int height = thistexture->GetHeight();
-                            // check size to see what unit it needs
-                            int i;
-                            for (i = 0; i < 16; i++) {
-                                if ((outbuildtexturewidths[i] == width && outbuildtextureheights[i] == height) || outbuildtexturewidths[i] == 0) break;
-                            }
-
-                            if (i == 16) {
-                                logger->warning("Texture unit full - draw building!");
+                        // loop while running down animlength with frame animtimes
+                        do {
+                            // check if tile->name is already in list
+                            auto mapiter = outbuildtexmap.find(*texname);
+                            if (mapiter != outbuildtexmap.end()) {
+                                // if so, extract unit and layer
+                                int unitlayer = mapiter->second;
+                                texlayer = unitlayer & 0xFF;
+                                texunit = (unitlayer & 0xFF00) >> 8;
+                            } else if (*texname == "wtrtyl") {
+                                // water tile
                                 texunit = 0;
                                 texlayer = 0;
                             } else {
-                                if (outbuildtexturewidths[i] == 0) {
-                                    outbuildtexturewidths[i] = width;
-                                    outbuildtextureheights[i] = height;
+                                // else need to add it
+                                auto thistexture = assets->getBitmap(*texname);
+                                int width = thistexture->GetWidth();
+                                int height = thistexture->GetHeight();
+                                // check size to see what unit it needs
+                                int i;
+                                for (i = 0; i < 16; i++) {
+                                    if ((outbuildtexturewidths[i] == width && outbuildtextureheights[i] == height) || outbuildtexturewidths[i] == 0) break;
                                 }
 
-                                texunit = i;
-                                texlayer = numoutbuildtexloaded[i];
-
-                                // encode unit and layer together
-                                int encode = (texunit << 8) | texlayer;
-
-                                if (numoutbuildtexloaded[i] < 256) {
-                                    // intsert into tex map
-                                    outbuildtexmap.insert(std::make_pair(*texname, encode));
-                                    numoutbuildtexloaded[i]++;
-                                } else {
-                                    logger->warning("Texture layer full - draw building!");
+                                if (i == 16) {
+                                    logger->warning("Texture unit full - draw building!");
                                     texunit = 0;
                                     texlayer = 0;
+                                } else {
+                                    if (outbuildtexturewidths[i] == 0) {
+                                        outbuildtexturewidths[i] = width;
+                                        outbuildtextureheights[i] = height;
+                                    }
+
+                                    texunit = i;
+                                    texlayer = numoutbuildtexloaded[i];
+
+                                    // encode unit and layer together
+                                    int encode = (texunit << 8) | texlayer;
+
+                                    if (numoutbuildtexloaded[i] < 256) {
+                                        // intsert into tex map
+                                        outbuildtexmap.insert(std::make_pair(*texname, encode));
+                                        numoutbuildtexloaded[i]++;
+                                    } else {
+                                        logger->warning("Texture layer full - draw building!");
+                                        texunit = 0;
+                                        texlayer = 0;
+                                    }
                                 }
                             }
-                        }
+
+                            if (face.IsTextureFrameTable()) {
+                                // TODO(pskelton): any instances where animTime is not consistent would need checking
+                                frame += pTextureFrameTable->textureFrameAnimTime((int64_t)face.resource);
+                                // 'frame * 8' as input gets divided in function
+                                tex = (TextureOpenGL *)pTextureFrameTable->GetFrameTexture((int64_t)face.resource, frame * 8);
+                                texname = tex->GetName();
+                            }
+                        } while (animLength > frame);
 
                         face.texunit = texunit;
                         face.texlayer = texlayer;
@@ -3878,8 +3892,16 @@ void RenderOpenGL::DrawOutdoorBuildings() {
                             array_73D150[0].vWorldPosition = model.pVertices[face.pVertexIDs[0]].toFloat();
 
                             if (pCamera3D->is_face_faced_to_cameraODM(&face, &array_73D150[0])) {
-                                int texunit = face.texunit;
-                                int texlayer = face.texlayer;
+                                int texunit = 0;
+                                int texlayer = 0;
+
+                                if (face.IsTextureFrameTable()) {
+                                    texlayer = -1;
+                                    texunit = -1;
+                                } else {
+                                    texlayer = face.texlayer;
+                                    texunit = face.texunit;
+                                }
 
                                 if (texlayer == -1) { // texture has been reset - see if its in the map
                                     TextureOpenGL *tex = (TextureOpenGL *)face.GetTexture();
@@ -4293,6 +4315,7 @@ void RenderOpenGL::DrawIndoorFaces() {
                 if (!face->GetTexture()) continue;
                 //if (face->uAttributes & FACE_IS_DOOR) continue;
 
+                // TODO(pskelton): Same as outdoors. When ODM and BLV face is combined - seperate out function
                 TextureOpenGL *tex = (TextureOpenGL*)face->GetTexture();
                 std::string *texname = tex->GetName();
 
