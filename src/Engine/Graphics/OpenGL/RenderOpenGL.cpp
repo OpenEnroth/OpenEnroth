@@ -4296,6 +4296,13 @@ void RenderOpenGL::DrawIndoorFaces() {
                 TextureOpenGL *tex = (TextureOpenGL*)face->GetTexture();
                 std::string *texname = tex->GetName();
 
+                int animLength = 0, frame = 0;
+                if (face->IsTextureFrameTable()) {
+                    tex = (TextureOpenGL *)pTextureFrameTable->GetFrameTexture((int64_t)face->resource, frame);
+                    animLength = pTextureFrameTable->textureFrameAnimLength((int64_t)face->resource);
+                    texname = tex->GetName();
+                }
+
                 int texunit = 0;
                 int texlayer = 0;
                 int attribflags = 0;
@@ -4316,55 +4323,66 @@ void RenderOpenGL::DrawIndoorFaces() {
                 if (face->uAttributes & (FACE_OUTLINED | FACE_IsSecret))
                     attribflags |= 0x00010000;
 
-                // check if tile->name is already in list
-                auto mapiter = bsptexmap.find(*texname);
-                if (mapiter != bsptexmap.end()) {
-                    // if so, extract unit and layer
-                    int unitlayer = mapiter->second;
-                    texlayer = unitlayer & 0xFF;
-                    texunit = (unitlayer & 0xFF00) >> 8;
-                } else if (*texname == "wtrtyl") {
-                    // water tile
-                    texunit = 0;
-                    texlayer = 0;
-                } else {
-                    // else need to add it
-                    auto thistexture = assets->getBitmap(*texname);
-                    int width = thistexture->GetWidth();
-                    int height = thistexture->GetHeight();
-                    // check size to see what unit it needs
-                    int i;
-                    for (i = 0; i < 16; i++) {
-                        if ((bsptexturewidths[i] == width && bsptextureheights[i] == height) || bsptexturewidths[i] == 0) break;
-                    }
-
-                    if (i == 16) {
-                        logger->warning("Texture unit full - draw Indoor faces!");
+                // loop while running down animlength with frame animtimes
+                do {
+                    // check if tile->name is already in list
+                    auto mapiter = bsptexmap.find(*texname);
+                    if (mapiter != bsptexmap.end()) {
+                        // if so, extract unit and layer
+                        int unitlayer = mapiter->second;
+                        // TODO(pskelton): make this a pair/struct rather than encoding
+                        texlayer = unitlayer & 0xFF;
+                        texunit = (unitlayer & 0xFF00) >> 8;
+                    } else if (*texname == "wtrtyl") {
+                        // water tile
                         texunit = 0;
                         texlayer = 0;
                     } else {
-                        if (bsptexturewidths[i] == 0) {
-                            bsptexturewidths[i] = width;
-                            bsptextureheights[i] = height;
+                        // else need to add it
+                        auto thistexture = assets->getBitmap(*texname);
+                        int width = thistexture->GetWidth();
+                        int height = thistexture->GetHeight();
+                        // check size to see what unit it needs
+                        int i;
+                        for (i = 0; i < 16; i++) {
+                            if ((bsptexturewidths[i] == width && bsptextureheights[i] == height) || bsptexturewidths[i] == 0) break;
                         }
 
-                        texunit = i;
-                        texlayer = bsptexloaded[i];
-
-                        // encode unit and layer together
-                        int encode = (texunit << 8) | texlayer;
-
-                        if (bsptexloaded[i] < 256) {
-                            // intsert into tex map
-                            bsptexmap.insert(std::make_pair(*texname, encode));
-                            bsptexloaded[i]++;
-                        } else {
-                            logger->warning("Texture layer full - draw indoor faces!");
+                        if (i == 16) {
+                            logger->warning("Texture unit full - draw Indoor faces!");
                             texunit = 0;
                             texlayer = 0;
+                        } else {
+                            if (bsptexturewidths[i] == 0) {
+                                bsptexturewidths[i] = width;
+                                bsptextureheights[i] = height;
+                            }
+
+                            texunit = i;
+                            texlayer = bsptexloaded[i];
+
+                            // encode unit and layer together
+                            int encode = (texunit << 8) | texlayer;
+
+                            if (bsptexloaded[i] < 256) {
+                                // intsert into tex map
+                                bsptexmap.insert(std::make_pair(*texname, encode));
+                                bsptexloaded[i]++;
+                            } else {
+                                logger->warning("Texture layer full - draw indoor faces!");
+                                texunit = 0;
+                                texlayer = 0;
+                            }
                         }
                     }
-                }
+
+                    if (face->IsTextureFrameTable()) {
+                        // TODO(pskelton): any instances where animTime is not consistent would need checking
+                        frame += pTextureFrameTable->textureFrameAnimTime((int64_t)face->resource);
+                        tex = (TextureOpenGL *)pTextureFrameTable->GetFrameTexture((int64_t)face->resource, frame * 8);
+                        texname = tex->GetName();
+                    }
+                } while (animLength > frame);
 
                 face->texunit = texunit;
                 face->texlayer = texlayer;
@@ -4544,8 +4562,13 @@ void RenderOpenGL::DrawIndoorFaces() {
                             if (face->uAttributes & FACE_OUTLINED || (face->uAttributes & FACE_IsSecret) && engine->is_saturate_faces)
                                 attribflags |= 0x00010000;
 
-                            texlayer = face->texlayer;
-                            texunit = face->texunit;
+                            if (face->IsTextureFrameTable()) {
+                                texlayer = -1;
+                                texunit = -1;
+                            } else {
+                                texlayer = face->texlayer;
+                                texunit = face->texunit;
+                            }
 
                             if (texlayer == -1) { // texture has been reset - see if its in the map
                                 TextureOpenGL *tex = (TextureOpenGL *)face->GetTexture();

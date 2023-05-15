@@ -134,6 +134,8 @@ struct TextureFrameTable {
     void FromFile(const Blob &data_mm6, const Blob &data_mm7, const Blob &data_mm8);
     void LoadAnimationSequenceAndPalettes(int uIconID);
     Texture *GetFrameTexture(int frameId, int time);
+    int textureFrameAnimLength(int frameID);
+    int textureFrameAnimTime(int frameID);
     int64_t FindTextureByName(const std::string &Str2);
 
     std::vector<TextureFrame> textures;

@@ -316,7 +316,7 @@ struct BLVRenderParams {
 
     void Reset();
 
-    int field_0_timer_ = 0;
+    int textureFrameTableTimer = 0;
     int uPartySectorID = 0;
     int uPartyEyeSectorID = 0;
 
