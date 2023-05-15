@@ -316,6 +316,7 @@ struct BLVRenderParams {
 
     void Reset();
 
+    // TODO(pskelton): Can this be dropped? - outdoors just uses pEventTimer->uTotalGameTimeElapsed
     int textureFrameTableTimer = 0;
     int uPartySectorID = 0;
     int uPartyEyeSectorID = 0;

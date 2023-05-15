@@ -4379,6 +4379,7 @@ void RenderOpenGL::DrawIndoorFaces() {
                     if (face->IsTextureFrameTable()) {
                         // TODO(pskelton): any instances where animTime is not consistent would need checking
                         frame += pTextureFrameTable->textureFrameAnimTime((int64_t)face->resource);
+                        // 'frame * 8' as input gets divided in function
                         tex = (TextureOpenGL *)pTextureFrameTable->GetFrameTexture((int64_t)face->resource, frame * 8);
                         texname = tex->GetName();
                     }
