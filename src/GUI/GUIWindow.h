@@ -348,8 +348,6 @@ void DrawPopupWindow(unsigned int uX, unsigned int uY, unsigned int uWidth,
 void DrawMM7CopyrightWindow();
 void GUI_UpdateWindows();
 int GetConditionDrawColor(Condition uConditionIdx);  // idb
-void CreateAwardsScrollBar();
-void ReleaseAwardsScrollBar();
 void Inventory_ItemPopupAndAlchemy();
 unsigned int UI_GetHealthManaAndOtherQualitiesStringColor(int current_pos,
                                                           int base_pos);

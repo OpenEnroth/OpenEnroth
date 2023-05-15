@@ -70,7 +70,7 @@ GUIButton *pMMT_MainMenu_BtnExit;
 
 GUIButton *pBtn_Up;
 GUIButton *pBtn_Down;
-GUIButton *ptr_507BA4;
+GUIButton *pBtn_Scroll;
 
 GUIButton *pBtn_Resume;
 GUIButton *pBtn_QuitGame;
@@ -114,50 +114,6 @@ bool GUIButton::Contains(unsigned int x, unsigned int y) {
 
 void CreateShopDialogueButtonAtRow(int row, DIALOGUE_TYPE type) {
     pDialogueWindow->CreateButton({480, 146 + 30 * row}, {140, 30}, 1, 0, UIMSG_SelectShopDialogueOption, type, InputAction::Invalid, "");
-}
-
-void ReleaseAwardsScrollBar() {
-    if (awards_scroll_bar_created) {
-        awards_scroll_bar_created = false;
-        ptr_507BA4->Release();
-        pBtn_Up->Release();
-        pBtn_Down->Release();
-        pBtn_Down = 0;
-        pBtn_Up = 0;
-        for (GUIButton *pButton : pGUIWindow_CurrentMenu->vButtons) {
-            if (pButton->msg == UIMSG_InventoryLeftClick) {
-                pButton->uX = dword_50698C_uX;
-                pButton->uY = dword_506988_uY;
-                pButton->uZ = dword_506984_uZ;
-                pButton->uW = dword_506980_uW;
-                pGUIWindow_CurrentMenu->_41D08F_set_keyboard_control_group(
-                    1, 0, 0, 0);
-            }
-        }
-    }
-}
-
-void CreateAwardsScrollBar() {
-    if (!awards_scroll_bar_created) {
-        awards_scroll_bar_created = 1;
-        for (GUIButton *pButton : pGUIWindow_CurrentMenu->vButtons) {
-            if (pButton->msg == UIMSG_InventoryLeftClick) {
-                dword_50698C_uX = pButton->uX;
-                dword_506988_uY = pButton->uY;
-                dword_506984_uZ = pButton->uZ;
-                dword_506980_uW = pButton->uW;
-                pButton->uW = 0;
-                pButton->uZ = 0;
-                pButton->uY = 0;
-                pButton->uX = 0;
-            }
-        }
-        pBtn_Up = pGUIWindow_CurrentMenu->CreateButton({438, 46}, {ui_ar_up_up->GetWidth(), ui_ar_up_up->GetHeight()}, 1, 0,
-            UIMSG_ClickAwardsUpBtn, 0, InputAction::Invalid, "", {{ui_ar_up_up, ui_ar_up_dn}});
-        pBtn_Down = pGUIWindow_CurrentMenu->CreateButton({438, 292}, {ui_ar_dn_up->GetWidth(), ui_ar_dn_up->GetHeight()}, 1, 0,
-            UIMSG_ClickAwardsDownBtn, 0, InputAction::Invalid, "", {{ui_ar_dn_up, ui_ar_dn_dn}});
-        ptr_507BA4 = pGUIWindow_CurrentMenu->CreateButton({440, 62}, {16, 232}, 1, 0, UIMSG_ClickAwardScrollBar, 0, InputAction::Invalid, "");
-    }
 }
 
 void UI_CreateEndConversationButton() {

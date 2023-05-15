@@ -33,7 +33,8 @@ std::array<unsigned int, 2> saveload_dlg_ws = {{344, 480}};
 
 Image *saveload_ui_ls_saved = nullptr;
 Image *saveload_ui_x_d = nullptr;
-Image *scrollstop = nullptr;
+
+static Image *scrollstop = nullptr;
 
 // TODO(Nik-RE-dev): drop variable and load game only on double click
 static bool isLoadSlotClicked = false;
@@ -246,7 +247,6 @@ void GUIWindow_Load::Update() {
 
 static void UI_DrawSaveLoad(bool save) {
     GUIWindow save_load_window;
-    int pSaveFiles;
 
     if (pSavegameList->pSavegameUsedSlots[pSavegameList->selectedSlot]) {
         save_load_window.Init();
@@ -313,30 +313,26 @@ static void UI_DrawSaveLoad(bool save) {
             {pFontSmallnum->AlignText_Center(186, localization->GetString(LSTR_PLEASE_WAIT)) + 25, 304}, 0,
             localization->GetString(LSTR_PLEASE_WAIT), 0, 0, 0);
     } else {
-        if (save) {
-            pSaveFiles = MAX_SAVE_SLOTS;
+        int maxSaveFiles = MAX_SAVE_SLOTS;
+        int framex = 0, framey = 0;
+        int stopPos = 0;
 
-            // ingame save scroll bar
-            int ypos{ 0 };
-            if (pSaveFiles > 7)
-                ypos = (float(pSavegameList->saveListPosition) / (pSaveFiles - 7)) * 89.0f;
-            if (pSavegameList->saveListPosition > pSaveFiles - 7)
-                ypos = 89;
-            render->DrawTextureNew(216 / 640.f, (217 + ypos) / 480.f, scrollstop);
-        } else {
-            pSaveFiles = pSavegameList->numSavegameFiles;
-
-            // load scroll bar
-            int ypos{ 0 };
-            if (pSaveFiles > 7)
-                ypos = (float(pSavegameList->saveListPosition) / (pSaveFiles - 7)) * 89.0f;
-            if (pSavegameList->saveListPosition > pSaveFiles - 7)
-                ypos = 89;
-            render->DrawTextureNew((216+ pGUIWindow_CurrentMenu->uFrameX) / 640.f, (217 + pGUIWindow_CurrentMenu->uFrameY + ypos) / 480.f, scrollstop);
+        if (!save) {
+            maxSaveFiles = pSavegameList->numSavegameFiles;
+            framex = pGUIWindow_CurrentMenu->uFrameX;
+            framey = pGUIWindow_CurrentMenu->uFrameY;
         }
 
+        if (maxSaveFiles > 7) {
+            stopPos = (float(pSavegameList->saveListPosition) / (maxSaveFiles - 7)) * 89.0f;
+        }
+        if (pSavegameList->saveListPosition > maxSaveFiles - 7) {
+            stopPos = 89;
+        }
+        render->DrawTextureNew((216 + framex) / 640.f, (217 + framey + stopPos) / 480.f, scrollstop);
+
         int slot_Y = 199;
-        for (int i = pSavegameList->saveListPosition; i < pSaveFiles; ++i) {
+        for (int i = pSavegameList->saveListPosition; i < maxSaveFiles; ++i) {
             if (slot_Y >= 346) {
                 break;
             }
@@ -430,7 +426,7 @@ void MainMenuLoad_EventLoop() {
             int newlistpost = std::round((param - 7) * fmy);
             newlistpost = std::clamp(newlistpost, 0, (param - 7));
             pSavegameList->saveListPosition = newlistpost;
-            new OnButtonClick2({pGUIWindow_CurrentMenu->uFrameX + 215, pGUIWindow_CurrentMenu->uFrameY + 197}, {0, 0}, pBtnArrowUp);
+            pAudioPlayer->playUISound(SOUND_StartMainChoice02);
             break;
         }
         default:

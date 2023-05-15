@@ -96,7 +96,7 @@ extern GUIButton *pMMT_MainMenu_BtnExit;
 
 extern GUIButton *pBtn_Up;
 extern GUIButton *pBtn_Down;
-extern GUIButton *ptr_507BA4;
+extern GUIButton *pBtn_Scroll;
 
 extern GUIButton *pBtn_Resume;
 extern GUIButton *pBtn_QuitGame;

@@ -837,7 +837,7 @@ void Game::processQueuedMessages() {
                                         continue;
                                     case CURRENT_SCREEN::SCREEN_CHARACTERS:
                                         CharacterUI_ReleaseButtons();
-                                        ReleaseAwardsScrollBar();
+                                        ((GUIWindow_CharacterRecord *)pGUIWindow_CurrentMenu)->releaseAwardsScrollBar();
                                         onEscape();
                                         continue;
                                     case CURRENT_SCREEN::SCREEN_SPELL_BOOK:
@@ -856,7 +856,7 @@ void Game::processQueuedMessages() {
                             }
                             __debugbreak();  // which GAME_MENU is this?
                             CharacterUI_ReleaseButtons();
-                            ReleaseAwardsScrollBar();
+                            //ReleaseAwardsScrollBar();
                         }
                         // __debugbreak();  // which GAME_MENU is this? debug / fallback
                         onEscape();
@@ -1850,16 +1850,10 @@ void Game::processQueuedMessages() {
                     ++pCurrentFrameMessageQueue->uNumMessages;*/
                     pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 0, 0);
                     continue;
-                case UIMSG_ClickAwardScrollBar: {
-                    Pointi pt = _mouse->GetCursorPos();
-                    // TODO: add scroll bar
-                    if (pt.y > 178) {
-                        ((GUIWindow_CharacterRecord *)pGUIWindow_CurrentMenu)->scrollAwardsDown();
-                    } else {
-                        ((GUIWindow_CharacterRecord *)pGUIWindow_CurrentMenu)->scrollAwardsUp();
-                    }
+                case UIMSG_ClickAwardScrollBar:
+                    ((GUIWindow_CharacterRecord *)pGUIWindow_CurrentMenu)->clickAwardsScroll(_mouse->GetCursorPos().y);
+                    pAudioPlayer->playUISound(SOUND_StartMainChoice02);
                     continue;
-                }
                 case UIMSG_ClickAwardsUpBtn:
                     new OnButtonClick3(WINDOW_CharacterWindow_Awards, {pBtn_Up->uX, pBtn_Up->uY}, {0, 0}, pBtn_Up);
                     ((GUIWindow_CharacterRecord *)pGUIWindow_CurrentMenu)->clickAwardsUp();

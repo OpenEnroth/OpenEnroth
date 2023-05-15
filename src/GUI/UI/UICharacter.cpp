@@ -561,7 +561,14 @@ Image *ui_character_inventory_paperdoll_background = nullptr;
 Image *ui_character_inventory_paperdoll_rings_background = nullptr;
 Image *ui_character_inventory_paperdoll_rings_close = nullptr;
 
+static Image *scrollstop = nullptr;
+
 std::array<Image *, 16> paperdoll_dbrds;
+
+int savedInventoryLeftClickButtonW;
+int savedInventoryLeftClickButtonZ;
+int savedInventoryLeftClickButtonY;
+int savedInventoryLeftClickButtonX;
 
 GUIWindow_CharacterRecord::GUIWindow_CharacterRecord(
     unsigned int uActiveCharacter, CURRENT_SCREEN screen)
@@ -610,6 +617,51 @@ GUIWindow_CharacterRecord::GUIWindow_CharacterRecord(
     ui_character_awards_background = assets->getImage_ColorKey("fr_award");
     ui_character_stats_background = assets->getImage_ColorKey("fr_stats");
     ui_character_inventory_background_strip = assets->getImage_ColorKey("fr_strip");
+
+    scrollstop = assets->getImage_ColorKey("con_x");
+}
+
+void GUIWindow_CharacterRecord::releaseAwardsScrollBar() {
+    if (_awardsScrollBarCreated) {
+        _awardsScrollBarCreated = false;
+        pBtn_Scroll->Release();
+        pBtn_Up->Release();
+        pBtn_Down->Release();
+        pBtn_Down = 0;
+        pBtn_Up = 0;
+        for (GUIButton *pButton : pGUIWindow_CurrentMenu->vButtons) {
+            if (pButton->msg == UIMSG_InventoryLeftClick) {
+                pButton->uX = savedInventoryLeftClickButtonX;
+                pButton->uY = savedInventoryLeftClickButtonY;
+                pButton->uZ = savedInventoryLeftClickButtonZ;
+                pButton->uW = savedInventoryLeftClickButtonW;
+                pGUIWindow_CurrentMenu->_41D08F_set_keyboard_control_group(1, 0, 0, 0);
+            }
+        }
+    }
+}
+
+void GUIWindow_CharacterRecord::createAwardsScrollBar() {
+    if (!_awardsScrollBarCreated) {
+        _awardsScrollBarCreated = true;
+        for (GUIButton *pButton : pGUIWindow_CurrentMenu->vButtons) {
+            if (pButton->msg == UIMSG_InventoryLeftClick) {
+                savedInventoryLeftClickButtonX = pButton->uX;
+                savedInventoryLeftClickButtonY = pButton->uY;
+                savedInventoryLeftClickButtonZ = pButton->uZ;
+                savedInventoryLeftClickButtonW = pButton->uW;
+                pButton->uW = 0;
+                pButton->uZ = 0;
+                pButton->uY = 0;
+                pButton->uX = 0;
+            }
+        }
+        pBtn_Up = pGUIWindow_CurrentMenu->CreateButton({438, 46}, {ui_ar_up_up->GetWidth(), ui_ar_up_up->GetHeight()}, 1, 0,
+            UIMSG_ClickAwardsUpBtn, 0, InputAction::Invalid, "", {{ui_ar_up_up, ui_ar_up_dn}});
+        pBtn_Down = pGUIWindow_CurrentMenu->CreateButton({438, 292}, {ui_ar_dn_up->GetWidth(), ui_ar_dn_up->GetHeight()}, 1, 0,
+            UIMSG_ClickAwardsDownBtn, 0, InputAction::Invalid, "", {{ui_ar_dn_up, ui_ar_dn_dn}});
+        pBtn_Scroll = pGUIWindow_CurrentMenu->CreateButton({440, 62}, {16, 232}, 1, 0, UIMSG_ClickAwardScrollBar, 0, InputAction::Invalid, "");
+    }
 }
 
 void GUIWindow_CharacterRecord::Update() {
@@ -619,12 +671,9 @@ void GUIWindow_CharacterRecord::Update() {
     switch (current_character_screen_window) {
         case WINDOW_CharacterWindow_Stats: {
             CharacterUI_ReleaseButtons();
-            ReleaseAwardsScrollBar();
+            releaseAwardsScrollBar();
             CharacterUI_StatsTab_Draw(player);
-            render->DrawTextureNew(
-                pCharacterScreen_StatsBtn->uX / 640.0f,
-                pCharacterScreen_StatsBtn->uY / 480.0f,
-                assets->getImage_ColorKey("ib-cd1-d"));
+            render->DrawTextureNew(pCharacterScreen_StatsBtn->uX / 640.0f, pCharacterScreen_StatsBtn->uY / 480.0f, assets->getImage_ColorKey("ib-cd1-d"));
             break;
         }
         case WINDOW_CharacterWindow_Skills: {
@@ -632,32 +681,23 @@ void GUIWindow_CharacterRecord::Update() {
                 CharacterUI_ReleaseButtons();
                 CharacterUI_SkillsTab_CreateButtons();
             }
-            ReleaseAwardsScrollBar();
+            releaseAwardsScrollBar();
             CharacterUI_SkillsTab_Draw(player);
-            render->DrawTextureNew(
-                pCharacterScreen_SkillsBtn->uX / 640.0f,
-                pCharacterScreen_SkillsBtn->uY / 480.0f,
-                assets->getImage_ColorKey("ib-cd2-d"));
+            render->DrawTextureNew(pCharacterScreen_SkillsBtn->uX / 640.0f, pCharacterScreen_SkillsBtn->uY / 480.0f, assets->getImage_ColorKey("ib-cd2-d"));
             break;
         }
         case WINDOW_CharacterWindow_Awards: {
             CharacterUI_ReleaseButtons();
-            CreateAwardsScrollBar();
+            createAwardsScrollBar();
             CharacterUI_AwardsTab_Draw(player);
-            render->DrawTextureNew(
-                pCharacterScreen_AwardsBtn->uX / 640.0f,
-                pCharacterScreen_AwardsBtn->uY / 480.0f,
-                assets->getImage_ColorKey("ib-cd4-d"));
+            render->DrawTextureNew(pCharacterScreen_AwardsBtn->uX / 640.0f, pCharacterScreen_AwardsBtn->uY / 480.0f, assets->getImage_ColorKey("ib-cd4-d"));
             break;
         }
         case WINDOW_CharacterWindow_Inventory: {
             CharacterUI_ReleaseButtons();
-            ReleaseAwardsScrollBar();
+            releaseAwardsScrollBar();
             CharacterUI_InventoryTab_Draw(player, false);
-            render->DrawTextureNew(
-                pCharacterScreen_InventoryBtn->uX / 640.0f,
-                pCharacterScreen_InventoryBtn->uY / 480.0f,
-                assets->getImage_ColorKey("ib-cd3-d"));
+            render->DrawTextureNew(pCharacterScreen_InventoryBtn->uX / 640.0f, pCharacterScreen_InventoryBtn->uY / 480.0f,assets->getImage_ColorKey("ib-cd3-d"));
             break;
         }
         default:
@@ -674,7 +714,7 @@ void GUIWindow_CharacterRecord::Update() {
 void GUIWindow_CharacterRecord::ShowStatsTab() {
     current_character_screen_window = WINDOW_CharacterWindow_Stats;
     CharacterUI_ReleaseButtons();
-    ReleaseAwardsScrollBar();
+    releaseAwardsScrollBar();
     new OnButtonClick3(WINDOW_CharacterWindow_Stats,
         {pCharacterScreen_StatsBtn->uX, pCharacterScreen_StatsBtn->uY}, {0, 0}, pCharacterScreen_StatsBtn);
 }
@@ -682,7 +722,7 @@ void GUIWindow_CharacterRecord::ShowStatsTab() {
 void GUIWindow_CharacterRecord::ShowSkillsTab() {
     current_character_screen_window = WINDOW_CharacterWindow_Skills;
     CharacterUI_ReleaseButtons();
-    ReleaseAwardsScrollBar();
+    releaseAwardsScrollBar();
     CharacterUI_SkillsTab_CreateButtons();
     new OnButtonClick3(WINDOW_CharacterWindow_Skills,
         {pCharacterScreen_SkillsBtn->uX, pCharacterScreen_SkillsBtn->uY}, {0, 0}, pCharacterScreen_SkillsBtn);
@@ -690,16 +730,16 @@ void GUIWindow_CharacterRecord::ShowSkillsTab() {
 
 void GUIWindow_CharacterRecord::ShowInventoryTab() {
     current_character_screen_window = WINDOW_CharacterWindow_Inventory;
-    ReleaseAwardsScrollBar();
+    releaseAwardsScrollBar();
     CharacterUI_ReleaseButtons();
     new OnButtonClick3(WINDOW_CharacterWindow_Inventory,
         {pCharacterScreen_InventoryBtn->uX, pCharacterScreen_InventoryBtn->uY}, {0, 0}, pCharacterScreen_InventoryBtn);
 }
 
 void GUIWindow_CharacterRecord::ShowAwardsTab() {
-    ReleaseAwardsScrollBar();
+    releaseAwardsScrollBar();
     CharacterUI_ReleaseButtons();
-    CreateAwardsScrollBar();
+    createAwardsScrollBar();
     current_character_screen_window = WINDOW_CharacterWindow_Awards;
     new OnButtonClick3(WINDOW_CharacterWindow_Awards,
         {pCharacterScreen_AwardsBtn->uX, pCharacterScreen_AwardsBtn->uY}, {0, 0}, pCharacterScreen_AwardsBtn);
@@ -822,8 +862,7 @@ static int CharacterUI_SkillsTab_Draw__DrawSkillTable(
 
 //----- (00419719) --------------------------------------------------------
 void GUIWindow_CharacterRecord::CharacterUI_SkillsTab_Draw(Player *player) {
-    render->DrawTextureNew(8 / 640.0f, 8 / 480.0f,
-                                ui_character_skills_background);
+    render->DrawTextureNew(8 / 640.0f, 8 / 480.0f, ui_character_skills_background);
 
     auto str = fmt::format(
         "{} \f{:05}{}\f00000\r177{}: \f{:05}{}\f00000",  // ^Pv[]
@@ -836,24 +875,16 @@ void GUIWindow_CharacterRecord::CharacterUI_SkillsTab_Draw(Player *player) {
     pGUIWindow_CurrentMenu->DrawText(pFontArrus, {24, 18}, 0, str, 0, 0, 0);
 
     int y = 2 * pFontLucida->GetHeight() + 13;
-    y = CharacterUI_SkillsTab_Draw__DrawSkillTable(
-        player, 24, y, WeaponSkills(), 400,
-        localization->GetString(LSTR_WEAPONS));
+    y = CharacterUI_SkillsTab_Draw__DrawSkillTable(player, 24, y, WeaponSkills(), 400, localization->GetString(LSTR_WEAPONS));
 
     y += 2 * pFontLucida->GetHeight() - 10;
-    CharacterUI_SkillsTab_Draw__DrawSkillTable(
-        player, 24, y, MagicSkills(), 400,
-        localization->GetString(LSTR_MAGIC));
+    CharacterUI_SkillsTab_Draw__DrawSkillTable(player, 24, y, MagicSkills(), 400, localization->GetString(LSTR_MAGIC));
 
     y = 2 * pFontLucida->GetHeight() + 13;
-    y = CharacterUI_SkillsTab_Draw__DrawSkillTable(
-        player, 248, y, ArmorSkills(), 177,
-        localization->GetString(LSTR_ARMOR));
+    y = CharacterUI_SkillsTab_Draw__DrawSkillTable(player, 248, y, ArmorSkills(), 177, localization->GetString(LSTR_ARMOR));
 
     y += 2 * pFontLucida->GetHeight() - 10;
-    y = CharacterUI_SkillsTab_Draw__DrawSkillTable(
-        player, 248, y, MiscSkills(), 177,
-        localization->GetString(LSTR_MISC));
+    y = CharacterUI_SkillsTab_Draw__DrawSkillTable(player, 248, y, MiscSkills(), 177, localization->GetString(LSTR_MISC));
 }
 
 GUIWindow GUIWindow_CharacterRecord::prepareAwardsWindow() {
@@ -927,80 +958,19 @@ void GUIWindow_CharacterRecord::clickAwardsDown() {
     }
 }
 
-void GUIWindow_CharacterRecord::scrollAwardsUp() {
-    if (!_startAwardElem) {
+void GUIWindow_CharacterRecord::clickAwardsScroll(int yPos) {
+    if (!_scrollableAwardSteps) {
         return;
     }
 
-    GUIWindow window = prepareAwardsWindow();
-    int initStartElem = _startAwardElem;
+    int segmentHeight = pBtn_Scroll->uHeight / _scrollableAwardSteps;
 
-    while (_startAwardElem) {
-        int y = window.uFrameY;
-        int lastDisplayedAward = -1;
-
-        for (int i = _startAwardElem; i < _achievedAwardsList.size(); ++i) {
-            std::string str = getAchievedAwardsString(i);
-
-            y += pFontArrus->CalcTextHeight(str, window.uFrameWidth, 0) + 8;
-            if (y > window.uFrameHeight) {
-                lastDisplayedAward = i;
-                break;
-            }
-        }
-
-        if (lastDisplayedAward == initStartElem) {
-            break;
-        }
-        _startAwardElem--;
-    }
-}
-
-void GUIWindow_CharacterRecord::scrollAwardsDown() {
-    if (_awardLimitReached) {
-        return;
-    }
-
-    GUIWindow window = prepareAwardsWindow();
-    int lastDisplayedAwardPrev = -1;
-    int y = window.uFrameY;
-
-    for (int i = _startAwardElem; i < _achievedAwardsList.size(); ++i) {
-        std::string str = getAchievedAwardsString(i);
-
-        y += pFontArrus->CalcTextHeight(str, window.uFrameWidth, 0) + 8;
-        if (y > window.uFrameHeight) {
-            lastDisplayedAwardPrev = i;
-            break;
-        }
-    }
-
-    assert(lastDisplayedAwardPrev + 1 < _achievedAwardsList.size());
-
-    while (true) {
-        int y = window.uFrameY;
-        bool endReached = false;
-        int lastDisplayedAward;
-
-        for (int i = _startAwardElem; i < _achievedAwardsList.size(); ++i) {
-            std::string str = getAchievedAwardsString(i);
-
-            y += pFontArrus->CalcTextHeight(str, window.uFrameWidth, 0) + 8;
-            if (y > window.uFrameHeight) {
-                lastDisplayedAward = i;
-                break;
-            }
-        }
-
-        if ((lastDisplayedAward + 1 == _achievedAwardsList.size()) || _startAwardElem == lastDisplayedAwardPrev) {
-            break;
-        }
-        _startAwardElem++;
-    }
+    _startAwardElem = std::round((float)(yPos - pBtn_Scroll->uY) / segmentHeight);
 }
 
 void GUIWindow_CharacterRecord::CharacterUI_AwardsTab_Draw(Player *player) {
     GUIWindow window = prepareAwardsWindow();
+    int stopPos = 0;
 
     render->DrawTextureNew(8 / 640.0f, 8 / 480.0f, ui_character_awards_background);
 
@@ -1027,6 +997,15 @@ void GUIWindow_CharacterRecord::CharacterUI_AwardsTab_Draw(Player *player) {
     }
 
     _awardLimitReached = (_startAwardElem + currentlyDisplayedElems) == _achievedAwardsList.size();
+
+    if (_startAwardElem) {
+        if (!_awardLimitReached) {
+            stopPos = (float(_startAwardElem) / _scrollableAwardSteps) * 211.0f;
+        } else {
+            stopPos = 211;
+        }
+    }
+    render->DrawTextureNew(439 / 640.f, (65 + stopPos) / 480.f, scrollstop);
 }
 
 //----- (0041A2C1) --------------------------------------------------------
@@ -1400,8 +1379,7 @@ static void CharacterUI_DrawItem(int x, int y, ItemGen *item, int id, Texture *i
 void CharacterUI_DrawPaperdollWithRingOverlay(Player *player) {
     CharacterUI_DrawPaperdoll(player);
 
-    render->DrawTextureNew(
-        473 / 640.0f, 0, ui_character_inventory_paperdoll_rings_background);
+    render->DrawTextureNew(473 / 640.0f, 0, ui_character_inventory_paperdoll_rings_background);
     render->DrawTextureNew(468 / 640.0f, 0, game_ui_right_panel_frame);
     render->DrawTextureNew(pCharacterScreen_DetalizBtn->uX / 640.0f,
                                 pCharacterScreen_DetalizBtn->uY / 480.0f,
@@ -1528,10 +1506,10 @@ void GUIWindow_CharacterRecord::CharacterUI_SkillsTab_CreateButtons() {
     dword_507CC0_activ_ch = pParty->activeCharacterIndex();
     for (GUIButton *pButton : pGUIWindow_CurrentMenu->vButtons) {
         if (pButton->msg == UIMSG_InventoryLeftClick) {
-            dword_50698C_uX = pButton->uX;
-            dword_506988_uY = pButton->uY;
-            dword_506984_uZ = pButton->uZ;
-            dword_506980_uW = pButton->uW;
+            savedInventoryLeftClickButtonX = pButton->uX;
+            savedInventoryLeftClickButtonY = pButton->uY;
+            savedInventoryLeftClickButtonZ = pButton->uZ;
+            savedInventoryLeftClickButtonW = pButton->uW;
             pButton->uW = 0;
             pButton->uZ = 0;
             pButton->uY = 0;
@@ -1759,6 +1737,7 @@ void GUIWindow_CharacterRecord::fillAwardsData() {
 
     _awardsCharacterId = pParty->activeCharacterIndex();
     _startAwardElem = 0;
+    _scrollableAwardSteps = 0;
     _awardLimitReached = false;
 
     _achievedAwardsList.clear();
@@ -1769,6 +1748,19 @@ void GUIWindow_CharacterRecord::fillAwardsData() {
     }
 
     std::stable_sort(_achievedAwardsList.begin(), _achievedAwardsList.end(), [&] (int a, int b) { return pAwards[a].uPriority < pAwards[b].uPriority; });
+
+    GUIWindow window = prepareAwardsWindow();
+    int y = 0;
+
+    for (int i = (_achievedAwardsList.size() - 1); i >= 0; --i) {
+        std::string str = getAchievedAwardsString(i);
+
+        y += pFontArrus->CalcTextHeight(str, window.uFrameWidth, 0) + 8;
+        if (y > window.uFrameHeight) {
+            _scrollableAwardSteps = i + 2;
+            break;
+        }
+    }
 }
 
 void WetsuitOn(unsigned int uPlayerID) {
@@ -1930,8 +1922,7 @@ void OnPaperdollLeftClick() {
 
                 return;
 
-                // ------------------------dress rings(одевание
-                // колец)----------------------------------
+                // ------------------------dress rings(одевание колец)----------------------------------
             case EQUIP_RING:
                 if (pParty->activeCharacter().hasUnderwaterSuitEquipped()) {  // cant put anything
                                                                                         // on wearing wetsuit
@@ -2006,8 +1997,7 @@ void OnPaperdollLeftClick() {
                     return;  // shouldnt get here but in case??
                 }
 
-                // ------------------dress shield(одеть
-                // щит)------------------------------------------------------
+                // ------------------dress shield(одеть щит)------------------------------------------------------
             case EQUIP_SHIELD:  //Щит
                 if (pParty->activeCharacter().hasUnderwaterSuitEquipped()) {  // в акваланге
                     pAudioPlayer->playUISound(SOUND_error);
@@ -2052,8 +2042,7 @@ void OnPaperdollLeftClick() {
                 }
                 pParty->activeCharacter().pEquipment.uMainHand = 0;
                 return;
-                // -------------------------taken in hand(взять в
-                // руку)-------------------------------------------
+                // -------------------------taken in hand(взять в руку)-------------------------------------------
             case EQUIP_SINGLE_HANDED:
             case EQUIP_WAND:
                 if (pParty->activeCharacter().hasUnderwaterSuitEquipped() &&
@@ -2343,12 +2332,11 @@ void CharacterUI_ReleaseButtons() {
         }
         for (GUIButton *pButton : pGUIWindow_CurrentMenu->vButtons) {
             if (pButton->msg == UIMSG_InventoryLeftClick) {
-                pButton->uX = dword_50698C_uX;
-                pButton->uY = dword_506988_uY;
-                pButton->uZ = dword_506984_uZ;
-                pButton->uW = dword_506980_uW;
-                pGUIWindow_CurrentMenu->_41D08F_set_keyboard_control_group(
-                    1, 0, 0, 0);
+                pButton->uX = savedInventoryLeftClickButtonX;
+                pButton->uY = savedInventoryLeftClickButtonY;
+                pButton->uZ = savedInventoryLeftClickButtonZ;
+                pButton->uW = savedInventoryLeftClickButtonW;
+                pGUIWindow_CurrentMenu->_41D08F_set_keyboard_control_group(1, 0, 0, 0);
             }
         }
     }

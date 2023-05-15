@@ -97,10 +97,6 @@ extern int dword_4FA9B4[];
 extern int quick_spell_at_page;
 extern char byte_506550;
 extern int uLastPointedObjectID;
-extern int dword_506980_uW;
-extern int dword_506984_uZ;
-extern int dword_506988_uY;
-extern int dword_50698C_uX;
 extern int KeyboardPageNum;
 //extern int dword_506F1C;
 extern GUIButton *pBtn_ZoomOut;  // idb
@@ -108,7 +104,6 @@ extern GUIButton *pBtn_ZoomIn;  // idb
 extern unsigned int uGameUIFontShadow;
 extern unsigned int uGameUIFontMain;
 extern int dword_507B00_spell_info_to_draw_in_popup;
-extern int awards_scroll_bar_created;
 extern int dword_507CC0_activ_ch;
 extern bool OpenedTelekinesis;
 extern std::array<int, 50> dword_50B570;
