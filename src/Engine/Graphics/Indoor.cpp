@@ -237,8 +237,6 @@ void IndoorLocation::toggleLight(signed int sLightID, unsigned int bToggle) {
 void IndoorLocation::Load(const std::string &filename, int num_days_played, int respawn_interval_days, bool *indoor_was_respawned) {
     decal_builder->Reset(0);
 
-    _6807E0_num_decorations_with_sounds_6807B8 = 0;
-
     if (bLoaded)
         Error("BLV is already loaded");
 
@@ -794,7 +792,6 @@ void PrepareToLoadBLV(bool bLoading) {
     unsigned int respawn_interval;  // ebx@1
     MapInfo *map_info;              // edi@9
     bool v28;                       // zf@81
-    int v35;                        // [sp+3F8h] [bp-1Ch]@1
     bool alertStatus;                        // [sp+404h] [bp-10h]@1
     bool indoor_was_respawned = true;                      // [sp+40Ch] [bp-8h]@1
 
@@ -872,16 +869,16 @@ void PrepareToLoadBLV(bool bLoading) {
     }*/
 
     pGameLoadingUI_ProgressBar->Progress();
+    decorationsWithSound.clear();
 
-    v35 = 0;
+    int interactiveDecorationsNum = 0;
     for (uint i = 0; i < pLevelDecorations.size(); ++i) {
         pDecorationList->InitializeDecorationSprite(pLevelDecorations[i].uDecorationDescID);
 
         const DecorationDesc *decoration = pDecorationList->GetDecoration(pLevelDecorations[i].uDecorationDescID);
 
-        if (decoration->uSoundID && _6807E0_num_decorations_with_sounds_6807B8 < 9) {
-            // pSoundList->LoadSound(decoration->uSoundID, 0);
-            _6807B8_level_decorations_ids[_6807E0_num_decorations_with_sounds_6807B8++] = i;
+        if (decoration->uSoundID) {
+            decorationsWithSound.push_back(i);
         }
 
         if (!(pLevelDecorations[i].uFlags & LEVEL_DECORATION_INVISIBLE)) {
@@ -902,11 +899,11 @@ void PrepareToLoadBLV(bool bLoading) {
 
         if (!pLevelDecorations[i].uEventID) {
             if (pLevelDecorations[i].IsInteractive()) {
-                if (v35 < 124) {
-                    pLevelDecorations[i].eventVarId = v35;
-                    if (!engine->_persistentVariables.decorVars[v35])
+                if (interactiveDecorationsNum < 124) {
+                    pLevelDecorations[i].eventVarId = interactiveDecorationsNum;
+                    if (!engine->_persistentVariables.decorVars[interactiveDecorationsNum])
                         pLevelDecorations[i].uFlags |= LEVEL_DECORATION_INVISIBLE;
-                    v35++;
+                    interactiveDecorationsNum++;
                 }
             }
         }
@@ -914,7 +911,7 @@ void PrepareToLoadBLV(bool bLoading) {
 
     pGameLoadingUI_ProgressBar->Progress();
 
-    for (uint i = 0; i < pSpriteObjects.size(); ++i) {
+    for (int i = 0; i < pSpriteObjects.size(); ++i) {
         if (pSpriteObjects[i].uObjectDescID) {
             if (pSpriteObjects[i].containing_item.uItemID != ITEM_NULL) {
                 if (pSpriteObjects[i].containing_item.uItemID != ITEM_POTION_BOTTLE &&

@@ -162,9 +162,6 @@ int game_viewport_y;
 int game_viewport_z;
 int game_viewport_w;
 
-int pWindowList_at_506F50_minus1_indexing[1];
-int dword_4C9890[10];
-int dword_4C9920[16];
 char _4D864C_force_sw_render_rules;
 float flt_4D86CC = 1.0f;  // spot light scale??
 int dword_4D86D8 = 0x40000000;
@@ -2475,11 +2472,7 @@ int dword_507B00_spell_info_to_draw_in_popup;
 int awards_scroll_bar_created;
 int dword_507CC0_activ_ch;
 bool OpenedTelekinesis;
-std::array<int, 50> dword_50B570;
-std::array<int, 50> dword_50B638;
 stru367 PortalFace;
-std::array<int, 100> dword_50BC10;
-std::array<int, 100> dword_50BDA0;
 int enchantingActiveCharacter;
 std::array<unsigned int, 5> pIconIDs_Turn;
 unsigned int uIconID_TurnStop;
@@ -2496,7 +2489,6 @@ int AfterEnchClickEventSecondParam;
 int AfterEnchClickEventTimeout;
 // int dword_50C9E8; // idb
 // int dword_50C9EC[120];
-int dword_50CDC8;
 std::array<char, 54> party_has_equipment;
 
 unsigned int uNumBlueFacesInBLVMinimap;
@@ -2515,7 +2507,6 @@ std::array<std::array<char, 100>, 6> byte_591180;  // idb
 std::array<struct NPCData *, 7> HouseNPCData;  // 0 zero element holds standart house npc
 GUIButton *HouseNPCPortraitsButtonsList[6];  // dword_5913F4
 std::string branchless_dialogue_str;
-int _unused_5B5924_is_travel_ui_drawn = false;  // 005B5924
 int Party_Teleport_X_Pos;
 int Party_Teleport_Y_Pos;
 int Party_Teleport_Z_Pos;
@@ -2537,29 +2528,9 @@ int _5C35C0_force_party_death = false;
 int bDialogueUI_InitializeActor_NPC_ID;
 
 int dword_5C35D4;
-char byte_5C45AF[777];
 
 int ui_current_text_color;
 int64_t qword_5C6DF0;
-char *pHealthPointsAttributeDescription;
-char *pSpellPointsAttributeDescription;
-char *pArmourClassAttributeDescription;
-char *pPlayerConditionAttributeDescription;  // idb
-char *pFastSpellAttributeDescription;
-char *pPlayerAgeAttributeDescription;
-char *pPlayerLevelAttributeDescription;
-char *pPlayerExperienceAttributeDescription;
-char *pAttackBonusAttributeDescription;
-char *pAttackDamageAttributeDescription;
-char *pMissleBonusAttributeDescription;
-char *pMissleDamageAttributeDescription;
-char *pFireResistanceAttributeDescription;
-char *pAirResistanceAttributeDescription;
-char *pWaterResistanceAttributeDescription;
-char *pEarthResistanceAttributeDescription;
-char *pMindResistanceAttributeDescription;
-char *pBodyResistanceAttributeDescription;
-char *pSkillPointsAttributeDescription;
 
 struct FactionTable *pFactionTable;
 // std::array<char, 777> byte_5C8D1A;
@@ -2574,20 +2545,11 @@ std::string pHostileTXT_Raw;
 char *pPotionsTXT_Raw = nullptr;
 char *pPotionNotesTXT_Raw = nullptr;
 
-std::array<int, 777> _6807B8_level_decorations_ids;  // idb -level decoratiosn sound
-int _6807E0_num_decorations_with_sounds_6807B8;
-size_t num_event_triggers;             // 6836C8
-std::array<int, 64> dword_69B010;
-float flt_69B138_dist;
-char byte_69BD41_unused;
-char cMM7GameCDDriveLetter;  // idb
 int uDefaultTravelTime_ByFoot;
 int day_attrib;
 int day_fogrange_1; // fog start dist
 int day_fogrange_2; // fog end dist
 struct TileTable *pTileTable;                                        // idb
-std::array<char, 777> pDefaultSkyTexture;                            // idb
-int _6BE134_odm_main_tile_group;
 int dword_6BE13C_uCurrentlyLoadedLocationID;
 float fWalkSpeedMultiplier = 1.0f;
 float fBackwardWalkSpeedMultiplier = 1.0f;
@@ -2609,26 +2571,17 @@ std::array<int16_t, 104> odm_floor_face_vert_coord_Y;  // word_720F70
 std::array<int16_t, 104> odm_floor_face_vert_coord_X;  // word_721040
 Vec3i blv_prev_party_pos;
 std::array<NPCTopic, 789> pNPCTopics;
-std::array<const char *, 513> pQuestTable;
-char *dword_723718_autonote_related;  // idb
-IndexedArray<const char *, ITEM_FIRST_MESSAGE_SCROLL, ITEM_LAST_MESSAGE_SCROLL> pScrolls;
-int dword_7241C8;
-std::string pScrollsTXT_Raw;
 std::string pMerchantsTXT_Raw;
 IndexedArray<const char *, MERCHANT_PHRASE_COUNT> pMerchantsBuyPhrases;
 IndexedArray<const char *, MERCHANT_PHRASE_COUNT> pMerchantsSellPhrases;
 IndexedArray<const char *, MERCHANT_PHRASE_COUNT> pMerchantsRepairPhrases;
 IndexedArray<const char *, MERCHANT_PHRASE_COUNT> pMerchantsIdentifyPhrases;
 std::string pTransitionsTXT_Raw;
-std::string pQuestsTXT_Raw;
 std::vector<Vec3f> pTerrainNormals;
 std::array<unsigned short, 128 * 128 * 2> pTerrainNormalIndices;
 std::array<unsigned int, 128 * 128 * 2> pTerrainSomeOtherData;
-int dword_A74C88;
 unsigned int uPlayerCreationUI_SelectedCharacter;
 int dword_A74CDC;
-char byte_AE5B91;
-std::array<int, 32> dword_F1B430;
 // int dword_F8B144; // nexindex [-1] to the following
 std::array<int, 4> player_levels = {{1, 1, 1, 1}};
 std::array<int16_t, 6> weapons_Ypos;           // word_F8B158

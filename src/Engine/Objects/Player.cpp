@@ -22,6 +22,7 @@
 #include "Engine/Tables/StorylineTextTable.h"
 #include "Engine/Tables/AwardTable.h"
 #include "Engine/Tables/AutonoteTable.h"
+#include "Engine/Tables/QuestTable.h"
 #include "Engine/TurnEngine/TurnEngine.h"
 
 #include "Io/Mouse.h"

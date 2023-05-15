@@ -212,7 +212,6 @@ void GUIWindow_Travel::Update() {
                     2 +
                 101,
             0, str, 3);
-        _unused_5B5924_is_travel_ui_drawn = 1;
     }
 }
 
@@ -263,6 +262,4 @@ void GUIWindow_Transition::Update() {
     } else {
         Error("Troubles in da house");
     }
-
-    _unused_5B5924_is_travel_ui_drawn = true;
 }

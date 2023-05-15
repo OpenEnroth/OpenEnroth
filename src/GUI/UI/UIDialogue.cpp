@@ -589,7 +589,6 @@ void OnSelectNPCDialogueOption(DIALOGUE_TYPE option) {
             pParty->hirelingScrollPosition = 0;
             pParty->CountHirelings();
             pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 1, 0);
-            dword_7241C8 = 0;
             return;
         }
         if (!pParty->pHirelings[0].pName.empty() && !pParty->pHirelings[1].pName.empty()) {
@@ -604,10 +603,7 @@ void OnSelectNPCDialogueOption(DIALOGUE_TYPE option) {
                     if (pParty->hasActiveCharacter()) {
                         pParty->activeCharacter().playReaction(SPEECH_NotEnoughGold);
                     }
-                    if (!dword_7241C8) {
-                        engine->Draw();
-                    }
-                    dword_7241C8 = 0;
+                    engine->Draw();
                     return;
                 }
                 pParty->TakeGold(pNPCStats->pProfessions[speakingNPC->profession].uHirePrice);
@@ -665,7 +661,6 @@ void OnSelectNPCDialogueOption(DIALOGUE_TYPE option) {
             pParty->hirelingScrollPosition = 0;
             pParty->CountHirelings();
             pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 1, 0);
-            dword_7241C8 = 0;
             return;
         }
     } else if (option >= DIALOGUE_SCRIPTED_LINE_1 && option <= DIALOGUE_SCRIPTED_LINE_6) {
@@ -716,6 +711,5 @@ void OnSelectNPCDialogueOption(DIALOGUE_TYPE option) {
             }
         }
     }
-    if (!dword_7241C8) engine->Draw();
-    dword_7241C8 = 0;
+    engine->Draw();
 }

@@ -454,61 +454,61 @@ void Localization::InitializeAttributeNames() {
                 this->attribute_descriptions[i] = removeQuotes(tokens[1]);
                 break;
             case 7:
-                pHealthPointsAttributeDescription = removeQuotes(tokens[1]);
+                this->hp_description = removeQuotes(tokens[1]);
                 break;
             case 8:
-                pArmourClassAttributeDescription = removeQuotes(tokens[1]);
+                this->sp_description = removeQuotes(tokens[1]);
                 break;
             case 9:
-                pSpellPointsAttributeDescription = removeQuotes(tokens[1]);
+                this->armour_class_description = removeQuotes(tokens[1]);
                 break;
             case 10:
-                pPlayerConditionAttributeDescription = removeQuotes(tokens[1]);
+                this->character_condition_description = removeQuotes(tokens[1]);
                 break;
             case 11:
-                pFastSpellAttributeDescription = removeQuotes(tokens[1]);
+                this->fast_spell_description = removeQuotes(tokens[1]);
                 break;
             case 12:
-                pPlayerAgeAttributeDescription = removeQuotes(tokens[1]);
+                this->age_description = removeQuotes(tokens[1]);
                 break;
             case 13:
-                pPlayerLevelAttributeDescription = removeQuotes(tokens[1]);
+                this->level_description = removeQuotes(tokens[1]);
                 break;
             case 14:
-                pPlayerExperienceAttributeDescription = removeQuotes(tokens[1]);
+                this->exp_description = removeQuotes(tokens[1]);
                 break;
             case 15:
-                pAttackBonusAttributeDescription = removeQuotes(tokens[1]);
+                this->melee_attack_description = removeQuotes(tokens[1]);
                 break;
             case 16:
-                pAttackDamageAttributeDescription = removeQuotes(tokens[1]);
+                this->melee_damage_description = removeQuotes(tokens[1]);
                 break;
             case 17:
-                pMissleBonusAttributeDescription = removeQuotes(tokens[1]);
+                this->ranged_attack_description = removeQuotes(tokens[1]);
                 break;
             case 18:
-                pMissleDamageAttributeDescription = removeQuotes(tokens[1]);
+                this->ranged_damage_description = removeQuotes(tokens[1]);
                 break;
             case 19:
-                pFireResistanceAttributeDescription = removeQuotes(tokens[1]);
+                this->fire_res_description = removeQuotes(tokens[1]);
                 break;
             case 20:
-                pAirResistanceAttributeDescription = removeQuotes(tokens[1]);
+                this->air_res_description = removeQuotes(tokens[1]);
                 break;
             case 21:
-                pWaterResistanceAttributeDescription = removeQuotes(tokens[1]);
+                this->water_res_description = removeQuotes(tokens[1]);
                 break;
             case 22:
-                pEarthResistanceAttributeDescription = removeQuotes(tokens[1]);
+                this->earth_res_description = removeQuotes(tokens[1]);
                 break;
             case 23:
-                pMindResistanceAttributeDescription = removeQuotes(tokens[1]);
+                this->mind_res_description = removeQuotes(tokens[1]);
                 break;
             case 24:
-                pBodyResistanceAttributeDescription = removeQuotes(tokens[1]);
+                this->body_res_description = removeQuotes(tokens[1]);
                 break;
             case 25:
-                pSkillPointsAttributeDescription = removeQuotes(tokens[1]);
+                this->skill_points_description = removeQuotes(tokens[1]);
                 break;
         }
     }

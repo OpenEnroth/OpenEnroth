@@ -870,7 +870,8 @@ bool enterHouse(HOUSE_ID uHouseID) {
 
         PrepareHouse(uHouseID);
 
-        if (uNumDialogueNPCPortraits == 1) pDialogueNPCCount = 1;
+        if (uNumDialogueNPCPortraits == 1)
+            pDialogueNPCCount = 1;
         pMediaPlayer->OpenHouseMovie(pAnimatedRooms[uCurrentHouse_Animation].video_name, 1u);
         dword_5C35D4 = 1;
         if ((signed int)uHouseID < HOUSE_FIRE_GUILD_INITIATE_EMERALD_ISLE || (signed int)uHouseID > HOUSE_SELF_GUILD_2) {

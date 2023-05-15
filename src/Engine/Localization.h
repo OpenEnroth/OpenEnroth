@@ -540,6 +540,82 @@ class Localization {
         return this->npc_profession_names[prof];
     }
 
+    const char *getHPDescription() const {
+        return this->hp_description;
+    }
+
+    const char *getSPDescription() const {
+        return this->sp_description;
+    }
+
+    const char *getArmourClassDescription() const {
+        return this->armour_class_description;
+    }
+
+    const char *getCharacterConditionDescription() const {
+        return this->character_condition_description;
+    }
+
+    const char *getFastSpellDescription() const {
+        return this->fast_spell_description;
+    }
+
+    const char *getAgeDescription() const {
+        return this->age_description;
+    }
+
+    const char *getLevelDescription() const {
+        return this->level_description;
+    }
+
+    const char *getExpDescription() const {
+        return this->exp_description;
+    }
+
+    const char *getMeleeAttackDescription() const {
+        return this->melee_attack_description;
+    }
+
+    const char *getMeleeDamageDescription() const {
+        return this->melee_damage_description;
+    }
+
+    const char *getRangedAttackDescription() const {
+        return this->ranged_attack_description;
+    }
+
+    const char *getRangedDamageDescription() const {
+        return this->ranged_damage_description;
+    }
+
+    const char *getFireResistanceDescription() const {
+        return this->fire_res_description;
+    }
+
+    const char *getAirResistanceDescription() const {
+        return this->air_res_description;
+    }
+
+    const char *getWaterResistanceDescription() const {
+        return this->water_res_description;
+    }
+
+    const char *getEarthResistanceDescription() const {
+        return this->earth_res_description;
+    }
+
+    const char *getMindResistanceDescription() const {
+        return this->mind_res_description;
+    }
+
+    const char *getBodyResistanceDescription() const {
+        return this->body_res_description;
+    }
+
+    const char *getSkillPointsDescription() const {
+        return this->skill_points_description;
+    }
+
  public:
     Localization() {}
 
@@ -585,6 +661,25 @@ class Localization {
     IndexedArray<const char *, PLAYER_SKILL_INVALID, PLAYER_SKILL_LAST_VISIBLE> skill_descriptions_grand = {{}};
     const char *character_conditions[19]{};
     IndexedArray<const char *, NPC_PROFESSION_FIRST, NPC_PROFESSION_LAST> npc_profession_names = {{}};
+    const char *hp_description{};
+    const char *sp_description{};
+    const char *armour_class_description{};
+    const char *character_condition_description{};
+    const char *fast_spell_description{};
+    const char *age_description{};
+    const char *level_description{};
+    const char *exp_description{};
+    const char *melee_attack_description{};
+    const char *melee_damage_description{};
+    const char *ranged_attack_description{};
+    const char *ranged_damage_description{};
+    const char *fire_res_description{};
+    const char *air_res_description{};
+    const char *water_res_description{};
+    const char *earth_res_description{};
+    const char *mind_res_description{};
+    const char *body_res_description{};
+    const char *skill_points_description{};
 };
 
 extern Localization *localization;
