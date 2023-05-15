@@ -697,7 +697,7 @@ void GUIWindow_CharacterRecord::Update() {
             CharacterUI_ReleaseButtons();
             releaseAwardsScrollBar();
             CharacterUI_InventoryTab_Draw(player, false);
-            render->DrawTextureNew(pCharacterScreen_InventoryBtn->uX / 640.0f, pCharacterScreen_InventoryBtn->uY / 480.0f,assets->getImage_ColorKey("ib-cd3-d"));
+            render->DrawTextureNew(pCharacterScreen_InventoryBtn->uX / 640.0f, pCharacterScreen_InventoryBtn->uY / 480.0f, assets->getImage_ColorKey("ib-cd3-d"));
             break;
         }
         default:
