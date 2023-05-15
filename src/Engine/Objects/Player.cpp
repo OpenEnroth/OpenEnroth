@@ -396,7 +396,7 @@ bool Player::CanAct() const {
 
 //----- (00492C40) --------------------------------------------------------
 bool Player::CanSteal() const {
-    return GetActualSkillLevel(PLAYER_SKILL_STEALING) != 0;
+    return getActualSkillValue(PLAYER_SKILL_STEALING).level() != 0;
 }
 
 //----- (00492C4E) --------------------------------------------------------
@@ -760,34 +760,31 @@ void Player::RemoveItemAtInventoryIndex(unsigned int index) {
 
 //----- (0049107D) --------------------------------------------------------
 int Player::GetBodybuilding() const {
-    PLAYER_SKILL_LEVEL skill = GetActualSkillLevel(PLAYER_SKILL_BODYBUILDING);
     int multiplier =
         GetMultiplierForSkillLevel(PLAYER_SKILL_BODYBUILDING, 1, 2, 3, 5);
 
-    return multiplier * skill;
+    return multiplier * getActualSkillValue(PLAYER_SKILL_BODYBUILDING).level();
 }
 
 //----- (004910A8) --------------------------------------------------------
 int Player::GetMeditation() const {
-    PLAYER_SKILL_LEVEL skill = GetActualSkillLevel(PLAYER_SKILL_MEDITATION);
     int multiplier =
         GetMultiplierForSkillLevel(PLAYER_SKILL_MEDITATION, 1, 2, 3, 5);
 
-    return multiplier * skill;
+    return multiplier * getActualSkillValue(PLAYER_SKILL_MEDITATION).level();
 }
 
 //----- (004910D3) --------------------------------------------------------
 bool Player::CanIdentify(ItemGen *pItem) const {
-    PLAYER_SKILL_LEVEL skill = GetActualSkillLevel(PLAYER_SKILL_ITEM_ID);
-    PLAYER_SKILL_MASTERY skillmaster = GetActualSkillMastery(PLAYER_SKILL_ITEM_ID);
+    CombinedSkillValue val = getActualSkillValue(PLAYER_SKILL_ITEM_ID);
     int multiplier =
         GetMultiplierForSkillLevel(PLAYER_SKILL_ITEM_ID, 1, 2, 3, 5);
 
-    if (CheckHiredNPCSpeciality(Scholar) || skillmaster == PLAYER_SKILL_MASTERY_GRANDMASTER)  // always identify
+    if (CheckHiredNPCSpeciality(Scholar) || val.mastery() == PLAYER_SKILL_MASTERY_GRANDMASTER)  // always identify
         return true;
 
     // check item level against skill
-    bool result = (multiplier * skill) >=
+    bool result = (multiplier * val.level()) >=
                   pItemTable->pItems[pItem->uItemID].uItemID_Rep_St;
 
     return result;
@@ -795,8 +792,7 @@ bool Player::CanIdentify(ItemGen *pItem) const {
 
 //----- (00491151) --------------------------------------------------------
 bool Player::CanRepair(ItemGen *pItem) const {
-    PLAYER_SKILL_LEVEL skill = GetActualSkillLevel(PLAYER_SKILL_REPAIR);
-    PLAYER_SKILL_MASTERY skillmaster = GetActualSkillMastery(PLAYER_SKILL_REPAIR);
+    CombinedSkillValue val = getActualSkillValue(PLAYER_SKILL_REPAIR);
     int multiplier = GetMultiplierForSkillLevel(PLAYER_SKILL_REPAIR, 1, 2, 3, 5);
 
     // TODO(Nik-RE-dev): is check for boots correct?
@@ -805,11 +801,11 @@ bool Player::CanRepair(ItemGen *pItem) const {
         CheckHiredNPCSpeciality(Alchemist) && pItem->GetItemEquipType() >= EQUIP_BOOTS)
         return true;  // check against hired help
 
-    if (skillmaster == PLAYER_SKILL_MASTERY_GRANDMASTER)  // gm repair
+    if (val.mastery() == PLAYER_SKILL_MASTERY_GRANDMASTER)  // gm repair
         return true;
 
     // check item level against skill
-    bool result = (multiplier * skill) >=
+    bool result = (multiplier * val.level()) >=
                   pItemTable->pItems[pItem->uItemID].uItemID_Rep_St;
 
     return result;
@@ -817,35 +813,33 @@ bool Player::CanRepair(ItemGen *pItem) const {
 
 //----- (0049125A) --------------------------------------------------------
 int Player::GetPerception() const {
-    PLAYER_SKILL_LEVEL skill = GetActualSkillLevel(PLAYER_SKILL_PERCEPTION);
-    PLAYER_SKILL_MASTERY skillmaster = GetActualSkillMastery(PLAYER_SKILL_PERCEPTION);
+    CombinedSkillValue val = getActualSkillValue(PLAYER_SKILL_PERCEPTION);
     int multiplier =
         GetMultiplierForSkillLevel(PLAYER_SKILL_PERCEPTION, 1, 2, 3, 5);
 
-    if (skillmaster == PLAYER_SKILL_MASTERY_GRANDMASTER)  // gm percept
+    if (val.mastery() == PLAYER_SKILL_MASTERY_GRANDMASTER)  // gm percept
         return 10000;
 
-    return multiplier * skill;
+    return multiplier * val.level();
 }
 
 //----- (004912B0) --------------------------------------------------------
 int Player::GetDisarmTrap() const {
-    PLAYER_SKILL_LEVEL skill = GetActualSkillLevel(PLAYER_SKILL_TRAP_DISARM);
-    PLAYER_SKILL_MASTERY skillmaster = GetActualSkillMastery(PLAYER_SKILL_TRAP_DISARM);
+    CombinedSkillValue val = getActualSkillValue(PLAYER_SKILL_TRAP_DISARM);
     int multiplier =
         GetMultiplierForSkillLevel(PLAYER_SKILL_TRAP_DISARM, 1, 2, 3, 5);
 
-    if (skillmaster == PLAYER_SKILL_MASTERY_GRANDMASTER)  // gm disarm
+    if (val.mastery() == PLAYER_SKILL_MASTERY_GRANDMASTER)  // gm disarm
         return 10000;
 
     if (HasEnchantedItemEquipped(ITEM_ENCHANTMENT_OF_THIEVERY))  // item has increased disarm
         multiplier++;
 
-    return multiplier * skill;
+    return multiplier * val.level();
 }
 
 char Player::getLearningPercent() const {
-    PLAYER_SKILL_LEVEL skill = GetActualSkillLevel(PLAYER_SKILL_LEARNING);
+    PLAYER_SKILL_LEVEL skill = getActualSkillValue(PLAYER_SKILL_LEARNING).level();
 
     if (skill) {
         int multiplier = GetMultiplierForSkillLevel(PLAYER_SKILL_LEARNING, 1, 2, 3, 5);
@@ -1436,14 +1430,13 @@ int Player::StealFromShop(
     if (!itemToSteal || !CanAct()) {
         return 0;  // no item or cant act - no stealing
     } else {
-        PLAYER_SKILL_LEVEL stealskill = this->GetActualSkillLevel(PLAYER_SKILL_STEALING);
-        PLAYER_SKILL_MASTERY stealmaster = this->GetActualSkillMastery(PLAYER_SKILL_STEALING);
+        CombinedSkillValue val = this->getActualSkillValue(PLAYER_SKILL_STEALING);
         unsigned int itemvalue = itemToSteal->GetValue();
 
         if (itemToSteal->isWeapon())
             itemvalue *= 3;
 
-        int currMaxItemValue = StealingRandomBonuses[grng->random(5)] + stealskill * StealingMasteryBonuses[stealmaster];
+        int currMaxItemValue = StealingRandomBonuses[grng->random(5)] + val.level() * StealingMasteryBonuses[val.mastery()];
         *fineIfFailed = 100 * (reputation + extraStealDifficulty) + itemvalue;
 
         if (extraStealFine) {
@@ -1988,7 +1981,7 @@ int Player::GetAttackRecoveryTime(bool bRangedAttack) const {
             weapon = GetBowItem();
             weapon_recovery = base_recovery_times_per_weapon_type[weapon->GetPlayerSkillType()];
         }
-    } else if (IsUnarmed() && GetActualSkillLevel(PLAYER_SKILL_UNARMED) > 0) {
+    } else if (IsUnarmed() && getActualSkillValue(PLAYER_SKILL_UNARMED).level() > 0) {
         // TODO(captainurist): just set unarmed recovery properly in the table.
         weapon_recovery = base_recovery_times_per_weapon_type[PLAYER_SKILL_DAGGER];
     } else if (HasItemEquipped(ITEM_SLOT_MAIN_HAND)) {
@@ -2039,13 +2032,14 @@ int Player::GetAttackRecoveryTime(bool bRangedAttack) const {
 
     uint sword_axe_bow_recovery_reduction = 0;
     if (weapon != nullptr) {
-        if (GetActualSkillLevel(weapon->GetPlayerSkillType()) &&
+        CombinedSkillValue weaponSkill = getActualSkillValue(weapon->GetPlayerSkillType());
+        if (weaponSkill.level() > 0 &&
             (weapon->GetPlayerSkillType() == PLAYER_SKILL_SWORD ||
              weapon->GetPlayerSkillType() == PLAYER_SKILL_AXE ||
              weapon->GetPlayerSkillType() == PLAYER_SKILL_BOW)) {
             // Expert Sword, Axe & Bow reduce recovery
-            if (GetActualSkillMastery(weapon->GetPlayerSkillType()) >= PLAYER_SKILL_MASTERY_EXPERT)
-                sword_axe_bow_recovery_reduction = GetActualSkillLevel(weapon->GetPlayerSkillType());
+            if (weaponSkill.mastery() >= PLAYER_SKILL_MASTERY_EXPERT)
+                sword_axe_bow_recovery_reduction = weaponSkill.level();
         }
     }
 
@@ -2054,10 +2048,10 @@ int Player::GetAttackRecoveryTime(bool bRangedAttack) const {
 
     uint armsmaster_recovery_reduction = 0;
     if (!bRangedAttack && !shooting_laser) {
-        PLAYER_SKILL_LEVEL armsmaster_level = GetActualSkillLevel(PLAYER_SKILL_ARMSMASTER);
-        if (armsmaster_level > 0) {
-            armsmaster_recovery_reduction = armsmaster_level;
-            if (GetActualSkillMastery(PLAYER_SKILL_ARMSMASTER) >= PLAYER_SKILL_MASTERY_GRANDMASTER)
+        CombinedSkillValue armsmasterSkill = getActualSkillValue(PLAYER_SKILL_ARMSMASTER);
+        if (armsmasterSkill.level() > 0) {
+            armsmaster_recovery_reduction = armsmasterSkill.level();
+            if (armsmasterSkill.mastery() >= PLAYER_SKILL_MASTERY_GRANDMASTER)
                 armsmaster_recovery_reduction *= 2;
         }
     }
@@ -2295,17 +2289,17 @@ int Player::GetActualResistance(CHARACTER_ATTRIBUTE_TYPE resistance) const {
     int result;
     int baseRes;
 
-    int leatherArmorSkillLevel = GetActualSkillLevel(PLAYER_SKILL_LEATHER);
+    CombinedSkillValue leatherSkill = getActualSkillValue(PLAYER_SKILL_LEATHER);
 
     if (CheckHiredNPCSpeciality(Enchanter)) v10 = 20;
     if ((resistance == CHARACTER_ATTRIBUTE_RESIST_FIRE ||
          resistance == CHARACTER_ATTRIBUTE_RESIST_AIR ||
          resistance == CHARACTER_ATTRIBUTE_RESIST_WATER ||
          resistance == CHARACTER_ATTRIBUTE_RESIST_EARTH) &&
-        GetActualSkillMastery(PLAYER_SKILL_LEATHER) == PLAYER_SKILL_MASTERY_GRANDMASTER &&
+        leatherSkill.mastery() == PLAYER_SKILL_MASTERY_GRANDMASTER &&
         HasItemEquipped(ITEM_SLOT_ARMOUR) &&
         GetEquippedItemSkillType(ITEM_SLOT_ARMOUR) == PLAYER_SKILL_LEATHER)
-        v10 += leatherArmorSkillLevel;  // &0x3F;
+        v10 += leatherSkill.level();  // &0x3F;
 
     switch (resistance) {
         case CHARACTER_ATTRIBUTE_RESIST_FIRE:
@@ -2984,42 +2978,36 @@ int Player::GetSkillBonus(CHARACTER_ATTRIBUTE_TYPE inSkill) const {
                     int multiplier = 0;
                     switch (itemSkillType) {
                         case PLAYER_SKILL_STAFF:
-                            currArmorSkillLevel =
-                                GetActualSkillLevel(itemSkillType);
+                            currArmorSkillLevel = getActualSkillValue(itemSkillType).level();
                             multiplier = GetMultiplierForSkillLevel(
                                 itemSkillType, 0, 1, 1, 1);
                             break;
                         case PLAYER_SKILL_SWORD:
                         case PLAYER_SKILL_SPEAR:
-                            currArmorSkillLevel =
-                                GetActualSkillLevel(itemSkillType);
+                            currArmorSkillLevel = getActualSkillValue(itemSkillType).level();
                             multiplier = GetMultiplierForSkillLevel(
                                 itemSkillType, 0, 0, 0, 1);
                             break;
                         case PLAYER_SKILL_SHIELD:
-                            currArmorSkillLevel =
-                                GetActualSkillLevel(itemSkillType);
+                            currArmorSkillLevel = getActualSkillValue(itemSkillType).level();
                             wearingArmor = true;
                             multiplier = GetMultiplierForSkillLevel(
                                 itemSkillType, 1, 1, 2, 2);
                             break;
                         case PLAYER_SKILL_LEATHER:
-                            currArmorSkillLevel =
-                                GetActualSkillLevel(itemSkillType);
+                            currArmorSkillLevel = getActualSkillValue(itemSkillType).level();
                             wearingLeather = true;
                             multiplier = GetMultiplierForSkillLevel(
                                 itemSkillType, 1, 1, 2, 2);
                             break;
                         case PLAYER_SKILL_CHAIN:
-                            currArmorSkillLevel =
-                                GetActualSkillLevel(itemSkillType);
+                            currArmorSkillLevel = getActualSkillValue(itemSkillType).level();
                             wearingArmor = true;
                             multiplier = GetMultiplierForSkillLevel(
                                 itemSkillType, 1, 1, 1, 1);
                             break;
                         case PLAYER_SKILL_PLATE:
-                            currArmorSkillLevel =
-                                GetActualSkillLevel(itemSkillType);
+                            currArmorSkillLevel = getActualSkillValue(itemSkillType).level();
                             wearingArmor = true;
                             multiplier = GetMultiplierForSkillLevel(
                                 itemSkillType, 1, 1, 1, 1);
@@ -3031,19 +3019,18 @@ int Player::GetSkillBonus(CHARACTER_ATTRIBUTE_TYPE inSkill) const {
                 }
             }
 
-            PLAYER_SKILL_LEVEL dodgeSkillLevel = GetActualSkillLevel(PLAYER_SKILL_DODGE);
-            PLAYER_SKILL_MASTERY dodgeMastery = GetActualSkillMastery(PLAYER_SKILL_DODGE);
+            CombinedSkillValue dodgeValue = getActualSkillValue(PLAYER_SKILL_DODGE);
             int multiplier =
                 GetMultiplierForSkillLevel(PLAYER_SKILL_DODGE, 1, 2, 3, 3);
-            if (!wearingArmor && (!wearingLeather || dodgeMastery == PLAYER_SKILL_MASTERY_GRANDMASTER)) {
-                ACSum += multiplier * (dodgeSkillLevel & 0x3F);
+            if (!wearingArmor && (!wearingLeather || dodgeValue.mastery() == PLAYER_SKILL_MASTERY_GRANDMASTER)) {
+                ACSum += multiplier * (dodgeValue.level() & 0x3F);
             }
             return ACSum;
         } break;
         case CHARACTER_ATTRIBUTE_ATTACK:
             if (this->IsUnarmed()) {
                 int unarmedSkill =
-                    this->GetActualSkillLevel(PLAYER_SKILL_UNARMED);
+                    this->getActualSkillValue(PLAYER_SKILL_UNARMED).level();
                 if (!unarmedSkill) {
                     return 0;
                 }
@@ -3056,12 +3043,12 @@ int Player::GetSkillBonus(CHARACTER_ATTRIBUTE_TYPE inSkill) const {
                     const ItemGen *currItem = GetNthEquippedIndexItem(i);
                     if (currItem->isMeleeWeapon()) {
                         PLAYER_SKILL_TYPE currItemSkillType = currItem->GetPlayerSkillType();
-                        int currentItemSkillLevel = this->GetActualSkillLevel(currItemSkillType);
+                        int currentItemSkillLevel = this->getActualSkillValue(currItemSkillType).level();
                         if (currItemSkillType == PLAYER_SKILL_BLASTER) {
                             int multiplier = GetMultiplierForSkillLevel(currItemSkillType, 1, 2, 3, 5);
                             return multiplier * (currentItemSkillLevel & 0x3F);
                         } else if (currItemSkillType == PLAYER_SKILL_STAFF && this->GetActualSkillLevel(PLAYER_SKILL_UNARMED) > 0) {
-                            int unarmedSkillLevel = this->GetActualSkillLevel(PLAYER_SKILL_UNARMED);
+                            int unarmedSkillLevel = this->getActualSkillValue(PLAYER_SKILL_UNARMED).level();
                             int multiplier = GetMultiplierForSkillLevel(PLAYER_SKILL_UNARMED, 1, 1, 2, 2);
                             return multiplier * (unarmedSkillLevel & 0x3F) + armsMasterBonus + (currentItemSkillLevel & 0x3F);
                         } else {
@@ -3080,7 +3067,7 @@ int Player::GetSkillBonus(CHARACTER_ATTRIBUTE_TYPE inSkill) const {
                     // TODO(Nik-RE-dev): melee?
                     if (currItemPtr->isMeleeWeapon()) {
                         PLAYER_SKILL_TYPE currentItemSkillType = GetNthEquippedIndexItem(i)->GetPlayerSkillType();
-                        PLAYER_SKILL_LEVEL currentItemSkillLevel = this->GetActualSkillLevel(currentItemSkillType);
+                        int currentItemSkillLevel = this->getActualSkillValue(currentItemSkillType).level();
                         if (currentItemSkillType == PLAYER_SKILL_BOW) {
                             int multiplier = GetMultiplierForSkillLevel(PLAYER_SKILL_BOW, 1, 1, 1, 1);
                             return multiplier * currentItemSkillLevel;
@@ -3096,7 +3083,7 @@ int Player::GetSkillBonus(CHARACTER_ATTRIBUTE_TYPE inSkill) const {
 
         case CHARACTER_ATTRIBUTE_MELEE_DMG_BONUS:
             if (this->IsUnarmed()) {
-                PLAYER_SKILL_LEVEL unarmedSkillLevel = this->GetActualSkillLevel(PLAYER_SKILL_UNARMED);
+                int unarmedSkillLevel = this->getActualSkillValue(PLAYER_SKILL_UNARMED).level();
                 if (!unarmedSkillLevel) {
                     return 0;
                 }
@@ -3108,14 +3095,15 @@ int Player::GetSkillBonus(CHARACTER_ATTRIBUTE_TYPE inSkill) const {
                     const ItemGen *currItemPtr = GetNthEquippedIndexItem(i);
                     if (currItemPtr->isMeleeWeapon()) {
                         PLAYER_SKILL_TYPE currItemSkillType = currItemPtr->GetPlayerSkillType();
-                        PLAYER_SKILL_LEVEL currItemSkillLevel = this->GetActualSkillLevel(currItemSkillType);
+                        int currItemSkillLevel = this->getActualSkillValue(currItemSkillType).level();
                         int baseSkillBonus;
                         int multiplier;
                         switch (currItemSkillType) {
                             case PLAYER_SKILL_STAFF:
-                                if (this->GetActualSkillMastery(PLAYER_SKILL_STAFF) >= PLAYER_SKILL_MASTERY_GRANDMASTER &&
-                                    this->GetActualSkillLevel(PLAYER_SKILL_UNARMED) > 0) {
-                                    PLAYER_SKILL_LEVEL unarmedSkillLevel = this->GetActualSkillLevel(PLAYER_SKILL_UNARMED);
+
+                                if (this->getActualSkillValue(PLAYER_SKILL_STAFF).mastery() >= PLAYER_SKILL_MASTERY_GRANDMASTER &&
+                                    this->getActualSkillValue(PLAYER_SKILL_UNARMED).level() > 0) {
+                                    int unarmedSkillLevel = this->getActualSkillValue(PLAYER_SKILL_UNARMED).level();
                                     int multiplier = GetMultiplierForSkillLevel(PLAYER_SKILL_UNARMED, 0, 1, 2, 2);
                                     return multiplier * unarmedSkillLevel;
                                 } else {

@@ -23,11 +23,11 @@ using enum PLAYER_SKILL_MASTERY;
 
 inline Segment<PLAYER_SKILL_MASTERY> SkillMasteries() {
     return Segment(PLAYER_SKILL_MASTERY_FIRST, PLAYER_SKILL_MASTERY_LAST);
-}
+    }
 
 inline PLAYER_SKILL_LEVEL GetSkillLevel(PLAYER_SKILL skill_value) {
     return skill_value & 0x3F;
-}
+    }
 
 /**
  * @offset 0x00458244.
@@ -50,11 +50,11 @@ inline PLAYER_SKILL_MASTERY GetSkillMastery(PLAYER_SKILL skill_value) {
 
     assert(false);  // should not get here
     return PLAYER_SKILL_MASTERY_NONE;
-}
+    }
 
 inline void SetSkillLevel(PLAYER_SKILL *skill_value, PLAYER_SKILL_LEVEL level) {
     *skill_value = (*skill_value & ~0x3F) | (level & 0x3F);
-}
+    }
 
 inline void SetSkillMastery(PLAYER_SKILL *skill_value, PLAYER_SKILL_MASTERY mastery) {
     assert(mastery <= PLAYER_SKILL_MASTERY_GRANDMASTER);
@@ -74,7 +74,7 @@ inline void SetSkillMastery(PLAYER_SKILL *skill_value, PLAYER_SKILL_MASTERY mast
         default:
             return;
     }
-}
+    }
 
 /**
  * Construct player skill value using skill mastery and skill level
@@ -86,7 +86,7 @@ inline PLAYER_SKILL ConstructSkillValue(PLAYER_SKILL_MASTERY mastery, PLAYER_SKI
     SetSkillLevel(&skill, level);
 
     return skill;
-}
+    }
 
 // Simple POD-like class for storing full skill value (level and mastery)
 class CombinedSkillValue {
