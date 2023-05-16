@@ -2090,7 +2090,7 @@ int Player::GetAttackRecoveryTime(bool bRangedAttack) const {
 
 //----- new --------------------------------------------------------
 float Player::GetArmorRecoveryMultiplierFromSkillLevel(PLAYER_SKILL_TYPE armour_skill_type, float mult1, float mult2, float mult3, float mult4) const {
-    PLAYER_SKILL_MASTERY skillMastery = GetSkillMastery(armour_skill_type);
+    PLAYER_SKILL_MASTERY skillMastery = getSkillValue(armour_skill_type).mastery();
 
     switch (skillMastery) {
         case PLAYER_SKILL_MASTERY_NOVICE:
@@ -2916,7 +2916,7 @@ PLAYER_SKILL_LEVEL Player::GetActualSkillLevel(PLAYER_SKILL_TYPE uSkillType) con
 }
 
 PLAYER_SKILL_MASTERY Player::GetActualSkillMastery(PLAYER_SKILL_TYPE uSkillType) const {
-    return GetSkillMastery(uSkillType);
+    return getSkillValue(uSkillType).mastery();
 }
 
 CombinedSkillValue Player::getActualSkillValue(PLAYER_SKILL_TYPE skillType) const {
@@ -3911,10 +3911,9 @@ void Player::useItem(int targetCharacter, bool isPortraitClick) {
 
         PLAYER_SKILL_MASTERY requiredMastery = pSpellDatas[bookSpellId].skillMastery;
         PLAYER_SKILL_TYPE skill = getSkillTypeForSpell(bookSpellId);
-        PLAYER_SKILL_LEVEL level = playerAffected->GetSkillLevel(skill);
-        PLAYER_SKILL_MASTERY mastery = playerAffected->GetSkillMastery(skill);
+        CombinedSkillValue val = playerAffected->getSkillValue(skill);
 
-        if (requiredMastery > mastery || level == 0) {
+        if (requiredMastery > val.mastery() || val.level() == 0) {
             GameUI_SetStatusBar(LSTR_FMT_DONT_HAVE_SKILL_TO_LEAN_S, pParty->pPickedItem.GetDisplayName().c_str());
             playerAffected->playReaction(SPEECH_CantLearnSpell);
             return;

@@ -3151,7 +3151,7 @@ void Actor::DamageMonsterFromParty(signed int a1, unsigned int uActorID_Monster,
         IsAdditionalDamagePossible = true;
         if (player->HasItemEquipped(ITEM_SLOT_MAIN_HAND)) {
             PLAYER_SKILL_TYPE main_hand_skill = player->GetMainHandItem()->GetPlayerSkillType();
-            PLAYER_SKILL_MASTERY main_hand_mastery = player->GetSkillMastery(main_hand_skill);
+            PLAYER_SKILL_MASTERY main_hand_mastery = player->getSkillValue(main_hand_skill).mastery();
             switch (main_hand_skill) {
                 case PLAYER_SKILL_STAFF:
                     if (main_hand_mastery >= PLAYER_SKILL_MASTERY_MASTER) {
@@ -3198,7 +3198,7 @@ void Actor::DamageMonsterFromParty(signed int a1, unsigned int uActorID_Monster,
             case SPELL_LASER_PROJECTILE:
                 // TODO: should be changed to GetActual* equivalents?
                 v61 = 1;
-                if (player->GetSkillMastery(PLAYER_SKILL_BLASTER) >= PLAYER_SKILL_MASTERY_MASTER)
+                if (player->getSkillValue(PLAYER_SKILL_BLASTER).mastery() >= PLAYER_SKILL_MASTERY_MASTER)
                     skillLevel = player->getSkillValue(PLAYER_SKILL_BLASTER).level();
                 attackElement = DMGT_PHISYCAL;
                 uDamageAmount = player->CalculateMeleeDamageTo(true, true, 0);

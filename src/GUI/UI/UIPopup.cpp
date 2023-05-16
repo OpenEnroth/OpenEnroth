@@ -1284,7 +1284,7 @@ void DrawSpellDescriptionPopup(int spell_index_in_book) {
     spell_info_window.uFrameWidth = 108;
     spell_info_window.uFrameZ = spell_info_window.uFrameX + 107;
     PLAYER_SKILL_TYPE skill = static_cast<PLAYER_SKILL_TYPE>(pParty->activeCharacter().lastOpenedSpellbookPage + 12);
-    PLAYER_SKILL_MASTERY skill_mastery = pParty->activeCharacter().GetSkillMastery(skill);
+    PLAYER_SKILL_MASTERY skill_mastery = pParty->activeCharacter().getSkillValue(skill).mastery();
     spell_info_window.DrawTitleText(pFontComic, 12, 75, 0, localization->GetSkillName(skill), 3);
 
     auto str2 = fmt::format(

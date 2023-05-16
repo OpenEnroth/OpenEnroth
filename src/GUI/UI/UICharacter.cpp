@@ -829,7 +829,7 @@ static int CharacterUI_SkillsTab_Draw__DrawSkillTable(
                 skill_color = skill_mastery_color;
             }
 
-            PLAYER_SKILL_MASTERY skill_mastery = player->GetSkillMastery(skill);
+            PLAYER_SKILL_MASTERY skill_mastery = player->getSkillValue(skill).mastery();
             if (skill_mastery == PLAYER_SKILL_MASTERY_NOVICE) {
                 std::string Strsk;
                 if (skills_max_level[skill] == 1) { // Non-investable skill
@@ -1524,7 +1524,7 @@ void GUIWindow_CharacterRecord::CharacterUI_SkillsTab_CreateButtons() {
     int current_Y = 2 * uCurrFontHeght + 13;
     int width = 204;
     for (PLAYER_SKILL_TYPE skill : WeaponSkills()) {
-        if (curr_player->GetSkillLevel(skill)) {
+        if (curr_player->getSkillValue(skill).level()) {
             current_Y += uCurrFontHeght - 3;
             ++buttons_count;
             ++first_rows;
@@ -1535,7 +1535,7 @@ void GUIWindow_CharacterRecord::CharacterUI_SkillsTab_CreateButtons() {
     if (!first_rows) current_Y += uCurrFontHeght - 3;
     current_Y += 2 * uCurrFontHeght - 6;
     for (PLAYER_SKILL_TYPE skill : MagicSkills()) {
-        if (curr_player->GetSkillLevel(skill)/*&& buttons_count < 15*/) {
+        if (curr_player->getSkillValue(skill).level() /*&& buttons_count < 15*/) {
             current_Y += uCurrFontHeght - 3;
             ++buttons_count;
             uint skill_id = std::to_underlying(skill);
@@ -1545,7 +1545,7 @@ void GUIWindow_CharacterRecord::CharacterUI_SkillsTab_CreateButtons() {
     first_rows = 0;
     current_Y = 2 * uCurrFontHeght + 13;
     for (PLAYER_SKILL_TYPE skill : ArmorSkills()) {
-        if (curr_player->GetSkillLevel(skill)) {
+        if (curr_player->getSkillValue(skill).level()) {
             current_Y += uCurrFontHeght - 3;
             ++buttons_count;
             ++first_rows;
@@ -1556,7 +1556,7 @@ void GUIWindow_CharacterRecord::CharacterUI_SkillsTab_CreateButtons() {
     if (!first_rows) current_Y += uCurrFontHeght - 3;
     current_Y += 2 * uCurrFontHeght - 6;
     for (PLAYER_SKILL_TYPE skill : MiscSkills()) {
-        if (curr_player->GetSkillLevel(skill)) {
+        if (curr_player->getSkillValue(skill).level()) {
             current_Y += uCurrFontHeght - 3;
             ++buttons_count;
             uint skill_id = std::to_underlying(skill);
