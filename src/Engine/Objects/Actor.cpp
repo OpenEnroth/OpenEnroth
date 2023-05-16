@@ -3199,7 +3199,7 @@ void Actor::DamageMonsterFromParty(signed int a1, unsigned int uActorID_Monster,
                 // TODO: should be changed to GetActual* equivalents?
                 v61 = 1;
                 if (player->GetSkillMastery(PLAYER_SKILL_BLASTER) >= PLAYER_SKILL_MASTERY_MASTER)
-                    skillLevel = player->GetSkillLevel(PLAYER_SKILL_BLASTER);
+                    skillLevel = player->getSkillValue(PLAYER_SKILL_BLASTER).level();
                 attackElement = DMGT_PHISYCAL;
                 uDamageAmount = player->CalculateMeleeDamageTo(true, true, 0);
                 if (!player->PlayerHitOrMiss(pMonster, v61, skillLevel)) {

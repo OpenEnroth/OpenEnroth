@@ -1116,7 +1116,7 @@ int Player::CalculateMeleeDmgToEnemyWithWeapon(ItemGen *weapon,
     }
 
     // master dagger triple damage backstab
-    if (GetActualSkillMastery(PLAYER_SKILL_DAGGER) >= PLAYER_SKILL_MASTERY_MASTER &&
+    if (getActualSkillValue(PLAYER_SKILL_DAGGER).mastery() >= PLAYER_SKILL_MASTERY_MASTER &&
         pItemTable->pItems[itemId].uSkillType == PLAYER_SKILL_DAGGER && grng->random(100) < 10)
         totalDmg *= 3;
 
@@ -1353,13 +1353,13 @@ int Player::CalculateIncommingDamage(DAMAGE_TYPE dmg_type, int dmg) {
 
             // master and above half incoming damage
             if (armor_skill == PLAYER_SKILL_PLATE) {
-                if (GetActualSkillMastery(PLAYER_SKILL_PLATE) >= PLAYER_SKILL_MASTERY_MASTER)
+                if (getActualSkillValue(PLAYER_SKILL_PLATE).mastery() >= PLAYER_SKILL_MASTERY_MASTER)
                     return dmg / 2;
             }
 
             // grandmaster and chain damage reduce
             if (armor_skill == PLAYER_SKILL_CHAIN) {
-                if (GetActualSkillMastery(PLAYER_SKILL_CHAIN) == PLAYER_SKILL_MASTERY_GRANDMASTER)
+                if (getActualSkillValue(PLAYER_SKILL_CHAIN).mastery() == PLAYER_SKILL_MASTERY_GRANDMASTER)
                     return dmg * 2 / 3;
             }
         }
@@ -2761,8 +2761,8 @@ int Player::GetMagicalBonus(CHARACTER_ATTRIBUTE_TYPE a2) const {
 
 //----- (0048F882) --------------------------------------------------------
 PLAYER_SKILL_LEVEL Player::GetActualSkillLevel(PLAYER_SKILL_TYPE uSkillType) const {
-    PLAYER_SKILL_LEVEL bonus_value = 0;
-    PLAYER_SKILL_LEVEL result;
+    int bonus_value = 0;
+    int result;
 
     bonus_value = 0;
     switch (uSkillType) {
@@ -2904,9 +2904,9 @@ PLAYER_SKILL_LEVEL Player::GetActualSkillLevel(PLAYER_SKILL_TYPE uSkillType) con
     }
 
     // Vanilla returned 0 for PLAYER_SKILL_MISC here, we return 1.
-    PLAYER_SKILL_LEVEL skill_value = GetSkillLevel(uSkillType);
+    int skill_level = getSkillValue(uSkillType).level();
 
-    result = bonus_value + skill_value;
+    result = bonus_value + skill_level;
 
     // cap skill and bonus at 60
     if (result > 60)
@@ -3143,7 +3143,7 @@ int Player::GetSkillBonus(CHARACTER_ATTRIBUTE_TYPE inSkill) const {
 unsigned int Player::GetMultiplierForSkillLevel(
     PLAYER_SKILL_TYPE uSkillType, int mult1, int mult2, int mult3,
     int mult4) const {  // ?? needs changing - check behavious
-    PLAYER_SKILL_MASTERY masteryLvl = GetActualSkillMastery(uSkillType);
+    PLAYER_SKILL_MASTERY masteryLvl = getActualSkillValue(uSkillType).mastery();
     switch (masteryLvl) {
         case PLAYER_SKILL_MASTERY_NOVICE:
             return mult1;
@@ -6359,7 +6359,7 @@ void DamagePlayerFromMonster(unsigned int uObjID, ABILITY_INDEX dmgSource, Vec3i
             return;
 
         // GM unarmed 1% chance to evade attacks per skill point
-        if (playerPtr->GetActualSkillMastery(PLAYER_SKILL_UNARMED) >= PLAYER_SKILL_MASTERY_GRANDMASTER &&
+        if (playerPtr->getActualSkillValue(PLAYER_SKILL_UNARMED).mastery() >= PLAYER_SKILL_MASTERY_GRANDMASTER &&
             grng->random(100) < playerPtr->getActualSkillValue(PLAYER_SKILL_UNARMED).level()) {
             GameUI_SetStatusBar(LSTR_FMT_S_EVADES_DAMAGE, playerPtr->name.c_str());
             playerPtr->playReaction(SPEECH_AvoidDamage);
@@ -6548,7 +6548,7 @@ void DamagePlayerFromMonster(unsigned int uObjID, ABILITY_INDEX dmgSource, Vec3i
 
             if (spritefrom->uType == SPRITE_ARROW_PROJECTILE) {  // arrows
                 // GM unarmed 1% chance to evade attack per skill point
-                if (playerPtr->GetActualSkillMastery(PLAYER_SKILL_UNARMED) >= PLAYER_SKILL_MASTERY_GRANDMASTER &&
+                if (playerPtr->getActualSkillValue(PLAYER_SKILL_UNARMED).mastery() >= PLAYER_SKILL_MASTERY_GRANDMASTER &&
                     grng->random(100) < playerPtr->getActualSkillValue(PLAYER_SKILL_UNARMED).level()) {
                     GameUI_SetStatusBar(LSTR_FMT_S_EVADES_DAMAGE, playerPtr->name.c_str());
                     playerPtr->playReaction(SPEECH_AvoidDamage);
@@ -6576,14 +6576,14 @@ void DamagePlayerFromMonster(unsigned int uObjID, ABILITY_INDEX dmgSource, Vec3i
                     ItemGen *mainHandItem = playerPtr->GetMainHandItem();
                     if (mainHandItem->uItemID == ITEM_RELIC_KELEBRIM ||
                         mainHandItem->uItemID == ITEM_ARTIFACT_ELFBANE ||
-                        (mainHandItem->isShield() && playerPtr->GetActualSkillMastery(PLAYER_SKILL_SHIELD) == PLAYER_SKILL_MASTERY_GRANDMASTER))
+                        (mainHandItem->isShield() && playerPtr->getActualSkillValue(PLAYER_SKILL_SHIELD).mastery() == PLAYER_SKILL_MASTERY_GRANDMASTER))
                         dmgToReceive >>= 1;
                 }
                 if (playerPtr->HasItemEquipped(ITEM_SLOT_OFF_HAND)) {
                     ItemGen *offHandItem = playerPtr->GetOffHandItem();
                     if (offHandItem->uItemID == ITEM_RELIC_KELEBRIM ||
                         offHandItem->uItemID == ITEM_ARTIFACT_ELFBANE ||
-                        (offHandItem->isShield() && playerPtr->GetActualSkillMastery(PLAYER_SKILL_SHIELD) == PLAYER_SKILL_MASTERY_GRANDMASTER))
+                        (offHandItem->isShield() && playerPtr->getActualSkillValue(PLAYER_SKILL_SHIELD).mastery() == PLAYER_SKILL_MASTERY_GRANDMASTER))
                         dmgToReceive >>= 1;
                 }
             }

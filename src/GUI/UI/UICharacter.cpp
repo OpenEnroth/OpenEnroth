@@ -812,7 +812,7 @@ static int CharacterUI_SkillsTab_Draw__DrawSkillTable(
             ++num_skills_drawn;
             y_offset = button->uY;
 
-            PLAYER_SKILL_LEVEL skill_level = player->GetSkillLevel(skill);
+            int skill_level = player->getSkillValue(skill).level();
 
             uint skill_color = 0;
             uint skill_mastery_color = 0;
@@ -1864,7 +1864,7 @@ void OnPaperdollLeftClick() {
         if (pSkillType == PLAYER_SKILL_SPEAR) {
             if (shieldequip) {
                 // cant use spear in one hand till master
-                if (pParty->activeCharacter().GetActualSkillMastery(PLAYER_SKILL_SPEAR) < PLAYER_SKILL_MASTERY_MASTER) {
+                if (pParty->activeCharacter().getActualSkillValue(PLAYER_SKILL_SPEAR).mastery() < PLAYER_SKILL_MASTERY_MASTER) {
                     pParty->activeCharacter().playReaction(SPEECH_CantEquip);
 
                     return;
@@ -1876,7 +1876,7 @@ void OnPaperdollLeftClick() {
             if ((pSkillType == PLAYER_SKILL_SHIELD || pSkillType == PLAYER_SKILL_SWORD || pSkillType == PLAYER_SKILL_DAGGER) && mainhandequip &&
                 pParty->activeCharacter().pInventoryItemList[mainhandequip - 1].GetPlayerSkillType() == PLAYER_SKILL_SPEAR) {
                 // cant use spear in one hand till master
-                if (pParty->activeCharacter().GetActualSkillMastery(PLAYER_SKILL_SPEAR) < PLAYER_SKILL_MASTERY_MASTER) {
+                if (pParty->activeCharacter().getActualSkillValue(PLAYER_SKILL_SPEAR).mastery() < PLAYER_SKILL_MASTERY_MASTER) {
                     pParty->activeCharacter().playReaction(SPEECH_CantEquip);
                     return;
                 }
@@ -2057,8 +2057,8 @@ void OnPaperdollLeftClick() {
                 }
                 v50 = ITEM_NULL;
                 // dagger at expert or sword at master in left hand
-                if (pSkillType == PLAYER_SKILL_DAGGER && (pParty->activeCharacter().GetActualSkillMastery(PLAYER_SKILL_DAGGER) >= PLAYER_SKILL_MASTERY_EXPERT)
-                    || pSkillType == PLAYER_SKILL_SWORD && (pParty->activeCharacter().GetActualSkillMastery(PLAYER_SKILL_SWORD) >= PLAYER_SKILL_MASTERY_MASTER)) {
+                if (pSkillType == PLAYER_SKILL_DAGGER && (pParty->activeCharacter().getActualSkillValue(PLAYER_SKILL_DAGGER).mastery() >= PLAYER_SKILL_MASTERY_EXPERT)
+                    || pSkillType == PLAYER_SKILL_SWORD && (pParty->activeCharacter().getActualSkillValue(PLAYER_SKILL_SWORD).mastery() >= PLAYER_SKILL_MASTERY_MASTER)) {
                     if ((signed int)mouse->uMouseX >= 560) {
                         if (!twohandedequip) {
                             if (shieldequip) {
