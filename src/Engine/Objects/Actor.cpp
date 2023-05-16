@@ -3155,18 +3155,18 @@ void Actor::DamageMonsterFromParty(signed int a1, unsigned int uActorID_Monster,
             switch (main_hand_skill) {
                 case PLAYER_SKILL_STAFF:
                     if (main_hand_mastery >= PLAYER_SKILL_MASTERY_MASTER) {
-                        if (grng->random(100) < player->GetActualSkillLevel(PLAYER_SKILL_STAFF))
+                        if (grng->random(100) < player->getActualSkillValue(PLAYER_SKILL_STAFF).level())
                             hit_will_stun = true;
                     }
                     break;
 
                 case PLAYER_SKILL_MACE:
                     if (main_hand_mastery >= PLAYER_SKILL_MASTERY_MASTER) {
-                        if (grng->random(100) < player->GetActualSkillLevel(PLAYER_SKILL_MACE))
+                        if (grng->random(100) < player->getActualSkillValue(PLAYER_SKILL_MACE).level())
                             hit_will_stun = true;
                     }
                     if (main_hand_mastery >= PLAYER_SKILL_MASTERY_GRANDMASTER) {
-                        if (grng->random(100) < player->GetActualSkillLevel(PLAYER_SKILL_MACE))
+                        if (grng->random(100) < player->getActualSkillValue(PLAYER_SKILL_MACE).level())
                             hit_will_paralyze = true;
                     }
                     break;
@@ -3378,10 +3378,9 @@ void Actor::DamageMonsterFromParty(signed int a1, unsigned int uActorID_Monster,
     }
     if (hit_will_paralyze && pMonster->CanAct() &&
         pMonster->DoesDmgTypeDoDamage(DMGT_EARTH)) {
-        PLAYER_SKILL_LEVEL skillLevel = player->GetActualSkillLevel(PLAYER_SKILL_MACE);
-        PLAYER_SKILL_MASTERY skillMastery = player->GetActualSkillMastery(PLAYER_SKILL_MACE);
-        GameTime v46 = GameTime(0, skillLevel);  // ??
-        pMonster->pActorBuffs[ACTOR_BUFF_PARALYZED].Apply((pParty->GetPlayingTime() + v46), skillMastery, 0, 0, 0);
+        CombinedSkillValue maceSkill = player->getActualSkillValue(PLAYER_SKILL_MACE);
+        GameTime v46 = GameTime(0, maceSkill.level());  // ??
+        pMonster->pActorBuffs[ACTOR_BUFF_PARALYZED].Apply((pParty->GetPlayingTime() + v46), maceSkill.mastery(), 0, 0, 0);
         if (engine->config->settings.ShowHits.value()) {
             GameUI_SetStatusBar(
                 LSTR_FMT_S_PARALYZES_S,

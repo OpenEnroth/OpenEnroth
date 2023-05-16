@@ -1474,9 +1474,8 @@ int Player::StealFromActor(
     if (!actroPtr->ActorHasItem())  // if actor does not have an item
         actroPtr->SetRandomGoldIfTheresNoItem();  // add some gold
 
-    PLAYER_SKILL_LEVEL stealskill = this->GetActualSkillLevel(PLAYER_SKILL_STEALING);
-    PLAYER_SKILL_MASTERY stealingMastery = this->GetActualSkillMastery(PLAYER_SKILL_STEALING);
-    int currMaxItemValue = StealingRandomBonuses[grng->random(5)] + stealskill * StealingMasteryBonuses[stealingMastery];
+    CombinedSkillValue stealingSkill = this->getActualSkillValue(PLAYER_SKILL_STEALING);
+    int currMaxItemValue = StealingRandomBonuses[grng->random(5)] + stealingSkill.level() * StealingMasteryBonuses[stealingSkill.mastery()];
     int fineIfFailed = actroPtr->pMonsterInfo.uLevel + 100 * (_steal_perm + reputation);
 
     if (grng->random(100) < 5 || fineIfFailed > currMaxItemValue ||
@@ -1500,7 +1499,7 @@ int Player::StealFromActor(
                 return STEAL_NOTHING;
             }
 
-            unsigned int enchBonusSum = grng->randomDice(stealskill, StealingEnchantmentBonusForSkill[stealingMastery]);
+            unsigned int enchBonusSum = grng->randomDice(stealingSkill.level(), StealingEnchantmentBonusForSkill[stealingSkill.mastery()]);
 
             int *enchTypePtr = (int*)&actroPtr->ActorHasItems[3].special_enchantment;  // actor has this amount of gold
 
@@ -2931,7 +2930,7 @@ int Player::GetSkillBonus(CHARACTER_ATTRIBUTE_TYPE inSkill) const {
     int armsMasterBonus;
 
     armsMasterBonus = 0;
-    int armmaster_skill = GetActualSkillLevel(PLAYER_SKILL_ARMSMASTER);
+    int armmaster_skill = getActualSkillValue(PLAYER_SKILL_ARMSMASTER).level();
     if (armmaster_skill > 0) {
         int multiplier = 0;
         if (inSkill == CHARACTER_ATTRIBUTE_MELEE_DMG_BONUS) {
@@ -2947,7 +2946,7 @@ int Player::GetSkillBonus(CHARACTER_ATTRIBUTE_TYPE inSkill) const {
     switch (inSkill) {
         case CHARACTER_ATTRIBUTE_RANGED_DMG_BONUS:
             if (HasItemEquipped(ITEM_SLOT_BOW)) {
-                int bowSkillLevel = GetActualSkillLevel(PLAYER_SKILL_BOW);
+                int bowSkillLevel = getActualSkillValue(PLAYER_SKILL_BOW).level();
                 int multiplier =
                     GetMultiplierForSkillLevel(PLAYER_SKILL_BOW, 0, 0, 0, 1);
                 return multiplier * (bowSkillLevel & 0x3F);
@@ -3047,7 +3046,7 @@ int Player::GetSkillBonus(CHARACTER_ATTRIBUTE_TYPE inSkill) const {
                         if (currItemSkillType == PLAYER_SKILL_BLASTER) {
                             int multiplier = GetMultiplierForSkillLevel(currItemSkillType, 1, 2, 3, 5);
                             return multiplier * (currentItemSkillLevel & 0x3F);
-                        } else if (currItemSkillType == PLAYER_SKILL_STAFF && this->GetActualSkillLevel(PLAYER_SKILL_UNARMED) > 0) {
+                        } else if (currItemSkillType == PLAYER_SKILL_STAFF && this->getActualSkillValue(PLAYER_SKILL_UNARMED).level() > 0) {
                             int unarmedSkillLevel = this->getActualSkillValue(PLAYER_SKILL_UNARMED).level();
                             int multiplier = GetMultiplierForSkillLevel(PLAYER_SKILL_UNARMED, 1, 1, 2, 2);
                             return multiplier * (unarmedSkillLevel & 0x3F) + armsMasterBonus + (currentItemSkillLevel & 0x3F);
@@ -6361,7 +6360,7 @@ void DamagePlayerFromMonster(unsigned int uObjID, ABILITY_INDEX dmgSource, Vec3i
 
         // GM unarmed 1% chance to evade attacks per skill point
         if (playerPtr->GetActualSkillMastery(PLAYER_SKILL_UNARMED) >= PLAYER_SKILL_MASTERY_GRANDMASTER &&
-            grng->random(100) < playerPtr->GetActualSkillLevel(PLAYER_SKILL_UNARMED)) {
+            grng->random(100) < playerPtr->getActualSkillValue(PLAYER_SKILL_UNARMED).level()) {
             GameUI_SetStatusBar(LSTR_FMT_S_EVADES_DAMAGE, playerPtr->name.c_str());
             playerPtr->playReaction(SPEECH_AvoidDamage);
             return;
@@ -6550,7 +6549,7 @@ void DamagePlayerFromMonster(unsigned int uObjID, ABILITY_INDEX dmgSource, Vec3i
             if (spritefrom->uType == SPRITE_ARROW_PROJECTILE) {  // arrows
                 // GM unarmed 1% chance to evade attack per skill point
                 if (playerPtr->GetActualSkillMastery(PLAYER_SKILL_UNARMED) >= PLAYER_SKILL_MASTERY_GRANDMASTER &&
-                    grng->random(100) < playerPtr->GetActualSkillLevel(PLAYER_SKILL_UNARMED)) {
+                    grng->random(100) < playerPtr->getActualSkillValue(PLAYER_SKILL_UNARMED).level()) {
                     GameUI_SetStatusBar(LSTR_FMT_S_EVADES_DAMAGE, playerPtr->name.c_str());
                     playerPtr->playReaction(SPEECH_AvoidDamage);
                     return;
@@ -7371,7 +7370,7 @@ MERCHANT_PHRASE Player::SelectPhrasesTransaction(ItemGen *pItem, BuildingType bu
     int merchantLevel;     // [sp+10h] [bp-8h]@1
     int itemValue;
 
-    merchantLevel = GetActualSkillLevel(PLAYER_SKILL_MERCHANT);
+    merchantLevel = getActualSkillValue(PLAYER_SKILL_MERCHANT).level();
     idemId = pItem->uItemID;
     equipType = pItem->GetItemEquipType();
     itemValue = pItem->GetValue();

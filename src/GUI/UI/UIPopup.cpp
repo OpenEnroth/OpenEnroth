@@ -666,9 +666,9 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
     PLAYER_SKILL_MASTERY skill_mastery = PLAYER_SKILL_MASTERY_NONE;
 
     pMonsterInfoUI_Doll.uCurrentActionTime += pMiscTimer->uTimeElapsed;
-    if (pParty->activeCharacter().GetActualSkillLevel(PLAYER_SKILL_MONSTER_ID)) {
-        skill_points = pParty->activeCharacter().GetActualSkillLevel(PLAYER_SKILL_MONSTER_ID);
-        skill_mastery = pParty->activeCharacter().GetActualSkillMastery(PLAYER_SKILL_MONSTER_ID);
+    CombinedSkillValue idMonsterSkill = pParty->activeCharacter().getActualSkillValue(PLAYER_SKILL_MONSTER_ID);
+    if ((skill_points = idMonsterSkill.level()) > 0) {
+        skill_mastery = idMonsterSkill.mastery();
         if (skill_mastery == PLAYER_SKILL_MASTERY_NOVICE) {
             if (skill_points + 10 >= pActors[uActorID].pMonsterInfo.uLevel) {
                 normal_level = true;
