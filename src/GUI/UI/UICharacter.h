@@ -19,8 +19,10 @@ class GUIWindow_CharacterRecord : public GUIWindow {
 
     void clickAwardsUp();
     void clickAwardsDown();
-    void scrollAwardsUp();
-    void scrollAwardsDown();
+    void clickAwardsScroll(int yPos);
+
+    void createAwardsScrollBar();
+    void releaseAwardsScrollBar();
 
  protected:
     void CharacterUI_StatsTab_Draw(struct Player *);
@@ -42,8 +44,10 @@ class GUIWindow_CharacterRecord : public GUIWindow {
     GUIWindow prepareAwardsWindow();
 
  private:
+    bool _awardsScrollBarCreated = false;
     int _awardsCharacterId = -1;
     int _startAwardElem = 0;
+    int _scrollableAwardSteps = 0;
     bool _awardLimitReached = false;
     std::vector<int> _achievedAwardsList;
 };

@@ -2458,10 +2458,6 @@ char byte_4FAA24;  // turn over break??
 int quick_spell_at_page;
 char byte_506550;
 int uLastPointedObjectID;
-int dword_506980_uW;
-int dword_506984_uZ;
-int dword_506988_uY;
-int dword_50698C_uX;
 int KeyboardPageNum;
 //int dword_506F1C;
 GUIButton *pBtn_ZoomOut;  // idb
@@ -2469,7 +2465,6 @@ GUIButton *pBtn_ZoomIn;  // idb
 unsigned int uGameUIFontShadow;
 unsigned int uGameUIFontMain;
 int dword_507B00_spell_info_to_draw_in_popup;
-int awards_scroll_bar_created;
 int dword_507CC0_activ_ch;
 bool OpenedTelekinesis;
 stru367 PortalFace;

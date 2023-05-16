@@ -186,7 +186,7 @@ void Menu::EventLoop() {
                 int newlistpost = std::round((param - 7) * fmy);
                 newlistpost = std::clamp(newlistpost, 0, (param - 7));
                 pSavegameList->saveListPosition = newlistpost;
-                new OnButtonClick2({pGUIWindow_CurrentMenu->uFrameX + 215, pGUIWindow_CurrentMenu->uFrameY + 197}, {0, 0}, pBtnArrowUp);
+                pAudioPlayer->playUISound(SOUND_StartMainChoice02);
                 continue;
             }
             case UIMSG_Game_OpenOptionsDialog:  // Open
