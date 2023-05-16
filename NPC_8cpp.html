@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;2d69301</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;00088dc</span>
    </div>
   </td>
  </tr>
@@ -94,6 +94,8 @@ $(function() {
 <code>#include &quot;<a class="el" href="CastSpellInfo_8h.html">Engine/Spells/CastSpellInfo.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="AwardTable_8h.html">Engine/Tables/AwardTable.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="AutonoteTable_8h.html">Engine/Tables/AutonoteTable.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="QuestTable_8h.html">Engine/Tables/QuestTable.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="MessageScrollTable_8h.html">Engine/Tables/MessageScrollTable.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="GUIButton_8h.html">GUI/GUIButton.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="UIHouses_8h.html">GUI/UI/UIHouses.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="UIStatusBar_8h.html">GUI/UI/UIStatusBar.h</a>&quot;</code><br />
@@ -108,14 +110,10 @@ Macros</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:aafaea893b03e3c55735bdabdb076b606"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="NPC_8cpp.html#aafaea893b03e3c55735bdabdb076b606">InitializeScrolls</a> ()</td></tr>
-<tr class="separator:aafaea893b03e3c55735bdabdb076b606"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aec1aa7ddd3e7865d9cb11dece846217f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="NPC_8cpp.html#aec1aa7ddd3e7865d9cb11dece846217f">InitializeMerchants</a> ()</td></tr>
 <tr class="separator:aec1aa7ddd3e7865d9cb11dece846217f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae41fb23005c98d9bbb14a9b0e4339f57"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="NPC_8cpp.html#ae41fb23005c98d9bbb14a9b0e4339f57">InitializeTransitions</a> ()</td></tr>
 <tr class="separator:ae41fb23005c98d9bbb14a9b0e4339f57"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5a4adf1abc138e731cd95454968eb157"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="NPC_8cpp.html#a5a4adf1abc138e731cd95454968eb157">InitializeQuests</a> ()</td></tr>
-<tr class="separator:a5a4adf1abc138e731cd95454968eb157"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac02f307e9fa837b11c38cb77e5637682"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="NPC_8cpp.html#ac02f307e9fa837b11c38cb77e5637682">CheckPortretAgainstSex</a> (int portret_num, int sex)</td></tr>
 <tr class="separator:ac02f307e9fa837b11c38cb77e5637682"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8f4517f2a0e834d6f33d1a06c3a6e00a"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structNPCData.html">NPCData</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="NPC_8cpp.html#a8f4517f2a0e834d6f33d1a06c3a6e00a">GetNPCData</a> (signed int npcid)</td></tr>
@@ -186,9 +184,9 @@ Variables</h2></td></tr>
 <div class="line">                    } \</div>
 <div class="line">                }</div>
 <div class="ttc" id="aGUIEnums_8h_html_a2519966952faeb9397447ce89e9bcb02ae33d9248d1ac21febe896703ab5d94ed"><div class="ttname"><a href="GUIEnums_8h.html#a2519966952faeb9397447ce89e9bcb02ae33d9248d1ac21febe896703ab5d94ed">UIMSG_ClickNPCTopic</a></div><div class="ttdeci">@ UIMSG_ClickNPCTopic</div><div class="ttdef"><b>Definition:</b> GUIEnums.h:152</div></div>
-<div class="ttc" id="aGUIWindow_8cpp_html_a4b874ab8ae0f632bb61c5cf097f5f708"><div class="ttname"><a href="GUIWindow_8cpp.html#a4b874ab8ae0f632bb61c5cf097f5f708">pDialogueWindow</a></div><div class="ttdeci">GUIWindow * pDialogueWindow</div><div class="ttdef"><b>Definition:</b> GUIWindow.cpp:58</div></div>
+<div class="ttc" id="aGUIWindow_8cpp_html_a4b874ab8ae0f632bb61c5cf097f5f708"><div class="ttname"><a href="GUIWindow_8cpp.html#a4b874ab8ae0f632bb61c5cf097f5f708">pDialogueWindow</a></div><div class="ttdeci">GUIWindow * pDialogueWindow</div><div class="ttdef"><b>Definition:</b> GUIWindow.cpp:59</div></div>
 <div class="ttc" id="aProcessor_8cpp_html_ac06c4d3aa516284a85bd00ae363b5a2d"><div class="ttname"><a href="Processor_8cpp.html#ac06c4d3aa516284a85bd00ae363b5a2d">npcDialogueEventProcessor</a></div><div class="ttdeci">bool npcDialogueEventProcessor(int eventId, int startStep)</div><div class="ttdef"><b>Definition:</b> Processor.cpp:172</div></div>
-<div class="ttc" id="aclassGUIWindow_html_aca36ee6638714a15664662b9d3c42e81"><div class="ttname"><a href="classGUIWindow.html#aca36ee6638714a15664662b9d3c42e81">GUIWindow::CreateButton</a></div><div class="ttdeci">GUIButton * CreateButton(Pointi position, Sizei dimensions, int uButtonType, int uData, UIMessageType msg, unsigned int msg_param, InputAction action=InputAction::Invalid, const std::string &amp;label={}, const std::vector&lt; Image * &gt; &amp;textures={})</div><div class="ttdef"><b>Definition:</b> GUIWindow.cpp:680</div></div>
+<div class="ttc" id="aclassGUIWindow_html_aca36ee6638714a15664662b9d3c42e81"><div class="ttname"><a href="classGUIWindow.html#aca36ee6638714a15664662b9d3c42e81">GUIWindow::CreateButton</a></div><div class="ttdeci">GUIButton * CreateButton(Pointi position, Sizei dimensions, int uButtonType, int uData, UIMessageType msg, unsigned int msg_param, InputAction action=InputAction::Invalid, const std::string &amp;label={}, const std::vector&lt; Image * &gt; &amp;textures={})</div><div class="ttdef"><b>Definition:</b> GUIWindow.cpp:681</div></div>
 </div><!-- fragment -->
 </div>
 </div>
@@ -347,40 +345,6 @@ Variables</h2></td></tr>
       <table class="memname">
         <tr>
           <td class="memname">void InitializeMerchants </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a5a4adf1abc138e731cd95454968eb157" name="a5a4adf1abc138e731cd95454968eb157"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a5a4adf1abc138e731cd95454968eb157">&#9670;&#160;</a></span>InitializeQuests()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void InitializeQuests </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="aafaea893b03e3c55735bdabdb076b606" name="aafaea893b03e3c55735bdabdb076b606"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aafaea893b03e3c55735bdabdb076b606">&#9670;&#160;</a></span>InitializeScrolls()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void InitializeScrolls </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>

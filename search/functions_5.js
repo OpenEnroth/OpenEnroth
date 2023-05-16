@@ -1,8 +1,8 @@
 var searchData=
 [
   ['embedded_0',['Embedded',['../classEmbedded.html#a2e9b0e98f38c0e35df943ce77d972680',1,'Embedded']]],
-  ['empty_1',['Empty',['../structGUIMessageQueue.html#a7c71ce717335eeb08baed38ddaf6f049',1,'GUIMessageQueue']]],
-  ['empty_2',['empty',['../classBlob.html#aaf67d6a801da2bf0faf119b112f206cd',1,'Blob']]],
+  ['empty_1',['empty',['../classBlob.html#aaf67d6a801da2bf0faf119b112f206cd',1,'Blob']]],
+  ['empty_2',['Empty',['../structGUIMessageQueue.html#a7c71ce717335eeb08baed38ddaf6f049',1,'GUIMessageQueue']]],
   ['encode_3',['Encode',['../namespacePCX.html#af512f20aee50cd1de2ab85ea0fcd96e3',1,'PCX']]],
   ['encodeoneline_4',['EncodeOneLine',['../PCX_8cpp.html#af682432ae244888229408506e20dacc7',1,'PCX.cpp']]],
   ['end_5',['end',['../classSegment.html#a491ead7cde5157612d2b36f7df63c872',1,'Segment::end()'],['../classdetail_1_1ReversedRange.html#ac6a9b469119deba87cf90b8d0a257ed7',1,'detail::ReversedRange::end() const'],['../classdetail_1_1ReversedRange.html#afb74b9fc807b84060b5dada3045b6fb9',1,'detail::ReversedRange::end()']]],
@@ -38,8 +38,8 @@ var searchData=
   ['event_35',['event',['../classPlatformEventHandler.html#aafaf9bd185374c0dc80312afc09861ba',1,'PlatformEventHandler::event()'],['../classPlatformEventFilter.html#a20f3364e0560c2df3e3199e61673bcc8',1,'PlatformEventFilter::event()'],['../classFilteringEventHandler.html#a4cfe381b1c6959584ecc3ae39b36b3e0',1,'FilteringEventHandler::event()'],['../classEngineTraceComponent.html#ad444fb66f1e19a05e8387eaa81898471',1,'EngineTraceComponent::event()']]],
   ['eventcastspell_36',['eventCastSpell',['../Spells_8h.html#a131ff67a50ad64658f8e6dbc9741faa5',1,'eventCastSpell(SPELL_TYPE uSpellID, PLAYER_SKILL_MASTERY skillMastery, PLAYER_SKILL_LEVEL skillLevel, int fromx, int fromy, int fromz, int tox, int toy, int toz):&#160;Spells.cpp'],['../Spells_8cpp.html#a131ff67a50ad64658f8e6dbc9741faa5',1,'eventCastSpell(SPELL_TYPE uSpellID, PLAYER_SKILL_MASTERY skillMastery, PLAYER_SKILL_LEVEL skillLevel, int fromx, int fromy, int fromz, int tox, int toy, int toz):&#160;Spells.cpp']]],
   ['eventhandler_37',['eventHandler',['../classPlatformApplication.html#a7c0278c18eb1a98f3e2d877ca3c1efcd',1,'PlatformApplication']]],
-  ['eventloop_38',['eventLoop',['../classPlatformApplication.html#a9fd9570f8ed29d67a0977cf5e8146868',1,'PlatformApplication']]],
-  ['eventloop_39',['EventLoop',['../classGUIWindow__MainMenu.html#a3a60ce7f0e258d5cf1d17037b19bc9a1',1,'GUIWindow_MainMenu::EventLoop()'],['../classGUICredits.html#a30b60853cb3a00520add1a9556261193',1,'GUICredits::EventLoop()'],['../classMenu.html#aac9ec557a30f1ba7bf6746aa62f70764',1,'Menu::EventLoop()']]],
+  ['eventloop_38',['EventLoop',['../classGUIWindow__MainMenu.html#a3a60ce7f0e258d5cf1d17037b19bc9a1',1,'GUIWindow_MainMenu::EventLoop()'],['../classGUICredits.html#a30b60853cb3a00520add1a9556261193',1,'GUICredits::EventLoop()'],['../classMenu.html#aac9ec557a30f1ba7bf6746aa62f70764',1,'Menu::EventLoop()']]],
+  ['eventloop_39',['eventLoop',['../classPlatformApplication.html#a9fd9570f8ed29d67a0977cf5e8146868',1,'PlatformApplication']]],
   ['eventprocessor_40',['eventProcessor',['../Processor_8cpp.html#afa4248a80c375171f143c245c523f76b',1,'eventProcessor(int eventId, int targetObj, bool canShowMessages, int startStep):&#160;Processor.cpp'],['../Processor_8h.html#ac292f326c67e441f1ea481ced9d2b5ee',1,'eventProcessor(int eventId, int targetObj, bool canShowMessages, int startStep=0):&#160;Processor.cpp']]],
   ['eventtypes_41',['eventTypes',['../classPlatformEventFilter.html#ad77f244ba003bacccfe8fa8910ccb3db',1,'PlatformEventFilter']]],
   ['exception_42',['Exception',['../classException.html#aba529ddf4247a8e6c7cb9119416960b1',1,'Exception']]],
