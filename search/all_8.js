@@ -1,13 +1,13 @@
 var searchData=
 [
-  ['h_0',['H',['../PlatformEnums_8h.html#a2ba59747730ab559dd1191f51081eeccac1d9f50f86825a1a2302ec2449c17196',1,'PlatformEnums.h']]],
-  ['h_1',['h',['../structSize.html#a33719b3600ba6eb4a880c79577cac8d6',1,'Size::h()'],['../structRect.html#a78ae244d7142df714716f083db77533f',1,'Rect::h()'],['../EventTrace_8cpp.html#a5e36941b3d856737e81516acd45edc50',1,'h():&#160;EventTrace.cpp']]],
+  ['h_0',['h',['../EventTrace_8cpp.html#a5e36941b3d856737e81516acd45edc50',1,'h():&#160;EventTrace.cpp'],['../structSize.html#a33719b3600ba6eb4a880c79577cac8d6',1,'Size::h()'],['../structRect.html#a78ae244d7142df714716f083db77533f',1,'Rect::h()']]],
+  ['h_1',['H',['../PlatformEnums_8h.html#a2ba59747730ab559dd1191f51081eeccac1d9f50f86825a1a2302ec2449c17196',1,'PlatformEnums.h']]],
   ['hacking_2emd_2',['HACKING.md',['../HACKING_8md.html',1,'']]],
   ['handle_3',['handle',['../classFileInputStream.html#aa8cb3043641b9ec541bd2a79f9cbd7b2',1,'FileInputStream::handle()'],['../classFileOutputStream.html#a7b1bd2a44a3192e2bf97e30552b204fa',1,'FileOutputStream::handle()']]],
   ['handlekeypress_4',['handleKeyPress',['../classGameWindowHandler.html#ab9d73c683893346ac74dc63f5f377f5f',1,'GameWindowHandler']]],
   ['handlekeyrelease_5',['handleKeyRelease',['../classGameWindowHandler.html#ae5ad79967bc910b013c64b06b84ece33',1,'GameWindowHandler']]],
-  ['has_6',['has',['../classPlatformApplication.html#ac32241998a863bb01d954d2cabc73d55',1,'PlatformApplication']]],
-  ['has_7',['Has',['../classPlayerConditions.html#a975bd4575245d9c6084d929baed41155',1,'PlayerConditions']]],
+  ['has_6',['Has',['../classPlayerConditions.html#a975bd4575245d9c6084d929baed41155',1,'PlayerConditions']]],
+  ['has_7',['has',['../classPlatformApplication.html#ac32241998a863bb01d954d2cabc73d55',1,'PlatformApplication']]],
   ['hasactivecharacter_8',['hasActiveCharacter',['../structParty.html#a2a4da48f7351874326b968334d5c8668',1,'Party']]],
   ['hasany_9',['HasAny',['../classPlayerConditions.html#af3f611e57d7a62c241d64821f789a033',1,'PlayerConditions']]],
   ['hascontrolroutine_10',['hasControlRoutine',['../classEngineControlComponent.html#a880c5671c72fdf1f950f75c9339c71fb',1,'EngineControlComponent']]],
