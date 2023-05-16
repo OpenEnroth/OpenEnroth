@@ -965,7 +965,7 @@ void GUIWindow_CharacterRecord::clickAwardsScroll(int yPos) {
 
     int segmentHeight = pBtn_Scroll->uHeight / _scrollableAwardSteps;
 
-    _startAwardElem = std::round((float)(yPos - pBtn_Scroll->uY) / segmentHeight);
+    _startAwardElem = std::clamp((int)std::round((float)(yPos - pBtn_Scroll->uY) / segmentHeight), 0, _scrollableAwardSteps);
 }
 
 void GUIWindow_CharacterRecord::CharacterUI_AwardsTab_Draw(Player *player) {
