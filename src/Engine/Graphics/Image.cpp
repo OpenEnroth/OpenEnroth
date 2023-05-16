@@ -100,6 +100,18 @@ Texture *TextureFrameTable::GetFrameTexture(int frameId, int time) {
     return textures[frameId].GetTexture();
 }
 
+int TextureFrameTable::textureFrameAnimLength(int frameID) {
+    int animLength = textures[frameID].uAnimLength;
+    if (textures[frameID].uFlags & 1 && animLength != 0) {
+        return animLength;
+    }
+    return 1;
+}
+
+int TextureFrameTable::textureFrameAnimTime(int frameID) {
+    return textures[frameID].uAnimTime;
+}
+
 void Texture_MM7::Release() {
     header.pName[0] = 0;
 
