@@ -80,8 +80,8 @@ struct FogProbabilityTableEntry {
 };
 
 // for future sky textures?
-std::array<int, 9> dword_4EC268 = {{3, 3, 3, 3, 3, 3, 3, 3, 3}};
-std::array<int, 7> dword_4EC28C = {{3, 3, 3, 3, 3, 3, 3}};
+std::array<int, 9> skyTexturesIds1 = {{3, 3, 3, 3, 3, 3, 3, 3, 3}};
+std::array<int, 7> skyTexturesIds2 = {{3, 3, 3, 3, 3, 3, 3}};
 
 //----- (0047A59E) --------------------------------------------------------
 void OutdoorLocation::ExecDraw(unsigned int bRedraw) {
@@ -256,8 +256,8 @@ bool OutdoorLocation::Initialize(const std::string &filename, int days_played,
         ::day_attrib = this->loc_time.day_attrib;
         ::day_fogrange_1 = this->loc_time.day_fogrange_1;
         ::day_fogrange_2 = this->loc_time.day_fogrange_2;
-        if (Is_out15odm_underwater()) SetUnderwaterFog();
-        _6BE134_odm_main_tile_group = this->pTileTypes[0].tileset;
+        if (Is_out15odm_underwater())
+            SetUnderwaterFog();
 
         return true;
     }
@@ -810,7 +810,7 @@ void OutdoorLocation::CreateDebugLocation() {
 
     this->pOMAP.fill(0);
     this->pFaceIDLIST.clear();
-    this->sky_texture_filename = pDefaultSkyTexture.data();
+    this->sky_texture_filename = "plansky1";
     this->sky_texture = assets->getBitmap(this->sky_texture_filename);
 }
 
@@ -848,8 +848,6 @@ void OutdoorLocation::Load(const std::string &filename, int days_played, int res
     //        //pPaletteManager->RecalculateAll();
     //    }
     //}
-
-    _6807E0_num_decorations_with_sounds_6807B8 = 0;
 
     if (!pGames_LOD->DoesContainerExist(filename))
         Error("Unable to find %s in Games.LOD", filename.c_str());
@@ -941,9 +939,9 @@ void OutdoorLocation::Load(const std::string &filename, int days_played, int res
         if (loc_time.last_visit.GetDays() % 28 != pParty->uCurrentDayOfMonth) {
             int sky_to_use;
             if (vrng->random(100) >= 20)
-                sky_to_use = dword_4EC268[vrng->random(9)];
+                sky_to_use = skyTexturesIds1[vrng->random(9)];
             else
-                sky_to_use = dword_4EC28C[vrng->random(7)];
+                sky_to_use = skyTexturesIds2[vrng->random(7)];
             loc_time.sky_texture_name = fmt::format("plansky{}", sky_to_use);
         }
     } else {
@@ -1165,15 +1163,17 @@ bool OutdoorLocation::PrepareDecorations() {
         v8 = 1;
     }
 
+    decorationsWithSound.clear();
     for (uint i = 0; i < pLevelDecorations.size(); ++i) {
         LevelDecoration *decor = &pLevelDecorations[i];
 
         pDecorationList->InitializeDecorationSprite(decor->uDecorationDescID);
         const DecorationDesc *decoration = pDecorationList->GetDecoration(decor->uDecorationDescID);
-        if (decoration->uSoundID && _6807E0_num_decorations_with_sounds_6807B8 < 9) {
-            // pSoundList->LoadSound(decoration.uSoundID, 0);
-            _6807B8_level_decorations_ids[_6807E0_num_decorations_with_sounds_6807B8++] = i;
+
+        if (decoration->uSoundID) {
+            decorationsWithSound.push_back(i);
         }
+
         if (v8 && decor->uCog == 20)
             decor->uFlags |= LEVEL_DECORATION_OBELISK_CHEST;
         if (!decor->uEventID) {

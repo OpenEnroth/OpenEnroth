@@ -40,4 +40,5 @@ struct LevelDecoration {
 };
 
 extern std::vector<LevelDecoration> pLevelDecorations;
+extern std::vector<int> decorationsWithSound;
 extern LevelDecoration *activeLevelDecoration;  // 5C3420

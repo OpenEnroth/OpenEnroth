@@ -179,7 +179,6 @@ void Engine::Draw() {
         DrawGUI();
         GUI_UpdateWindows();
         pParty->updatePlayersAndHirelingsEmotions();
-        _unused_5B5924_is_travel_ui_drawn = false;
 
         // if (v4)
     }
@@ -1054,10 +1053,6 @@ void Engine::Initialize() {
 
 //----- (00466082) --------------------------------------------------------
 void MM6_Initialize() {
-    size_t v3;                       // ebx@32
-    size_t v4;                       // edi@36
-    char pDefaultGroundTexture[16];  // [sp+FCh] [bp-8Ch]@32
-
     viewparams = new ViewingParams;
     Sizei wsize = window->size();
     game_viewport_x = viewparams->uScreen_topL_X = engine->config->graphics.ViewPortX1.value(); //8
@@ -1086,9 +1081,6 @@ void MM6_Initialize() {
 
     // pODMRenderParams->shading_dist_mist = 0x2000;//drawing dist 0x2000
 
-    sprintf(pDefaultSkyTexture.data(), "%s", "plansky1");
-    sprintf(pDefaultGroundTexture, "%s", "dirt");
-
     debug_non_combat_recovery_mul = 1.0f;
     debug_combat_recovery_mul = 1.0f;
 
@@ -1096,21 +1088,6 @@ void MM6_Initialize() {
     debug_turn_based_monster_movespeed_mul = debug_non_combat_recovery_mul * 1.666666666666667f;
 
     flt_debugrecmod3 = 2.133333333333333f;
-
-    v3 = 0;
-    if (strlen(pDefaultSkyTexture.data())) {
-        do {
-            if (pDefaultSkyTexture[v3] == ' ') pDefaultSkyTexture[v3] = 0;
-            ++v3;
-        } while (v3 < strlen(pDefaultSkyTexture.data()));
-    }
-    v4 = 0;
-    if (strlen(pDefaultGroundTexture)) {
-        do {
-            if (pDefaultGroundTexture[v4] == ' ') pDefaultGroundTexture[v4] = 0;
-            ++v4;
-        } while (v4 < strlen(pDefaultGroundTexture));
-    }
 
     MM7Initialization();
 }
@@ -1156,13 +1133,9 @@ void PrepareToLoadODM(bool bLoading, ODMRenderParams *a2) {
     PlayLevelMusic();
 
     //  level decoration sound
-    if (_6807E0_num_decorations_with_sounds_6807B8) {
-        for (int i = 0; i < _6807E0_num_decorations_with_sounds_6807B8; i++) {
-            int ind = _6807B8_level_decorations_ids[i];
-            LevelDecoration dec = pLevelDecorations[ind];
-            const DecorationDesc *decoration = pDecorationList->GetDecoration(dec.uDecorationDescID);
-            pAudioPlayer->playSound(SoundID(decoration->uSoundID), PID(OBJECT_Decoration, ind), 0, 0, 0);
-        }
+    for (int decorIdx : decorationsWithSound) {
+        const DecorationDesc *decoration = pDecorationList->GetDecoration(pLevelDecorations[decorIdx].uDecorationDescID);
+        pAudioPlayer->playSound(SoundID(decoration->uSoundID), PID(OBJECT_Decoration, decorIdx), 0, 0, 0);
     }
 }
 

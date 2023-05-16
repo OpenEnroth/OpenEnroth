@@ -13,6 +13,8 @@
 #include "Engine/Spells/CastSpellInfo.h"
 #include "Engine/Tables/AwardTable.h"
 #include "Engine/Tables/AutonoteTable.h"
+#include "Engine/Tables/QuestTable.h"
+#include "Engine/Tables/MessageScrollTable.h"
 
 #include "GUI/GUIButton.h"
 #include "GUI/UI/UIHouses.h"
@@ -33,10 +35,8 @@ struct NPCStats *pNPCStats = nullptr;
 int NPCStats::dword_AE336C_LastMispronouncedNameFirstLetter = -1;
 int NPCStats::dword_AE3370_LastMispronouncedNameResult = -1;
 
-void InitializeScrolls();
 void InitializeMerchants();
 void InitializeTransitions();
-void InitializeQuests();
 bool CheckPortretAgainstSex(int portret_num, int sex);
 
 // All conditions for alive character excluding zombie
@@ -397,12 +397,12 @@ void NPCStats::Initialize() {
 
     InitializeNPCData();
     InitializeNPCText();
-    InitializeQuests();
+    initializeQuests();
     initializeAutonotes();
     initializeAwards();
     InitializeTransitions();
     InitializeMerchants();
-    InitializeScrolls();
+    initializeMessageScrolls();
 
     pNPCNamesTXT_Raw = pEvents_LOD->LoadCompressedTexture("npcnames.txt").string_view();
     strtok(pNPCNamesTXT_Raw.data(), "\r");
@@ -697,42 +697,6 @@ bool CheckHiredNPCSpeciality(NPCProf prof) {
         || pParty->pHirelings[1].profession == prof;
 }
 
-//----- (004764C2) --------------------------------------------------------
-void InitializeScrolls() {
-    char *test_string;
-    unsigned char c;
-    bool break_loop;
-    unsigned int temp_str_len;
-    char *tmp_pos;
-    int decode_step;
-
-    pScrollsTXT_Raw = pEvents_LOD->LoadCompressedTexture("scroll.txt").string_view();
-    strtok(pScrollsTXT_Raw.data(), "\r");
-    for (ITEM_TYPE i : pScrolls.indices()) {
-        test_string = strtok(NULL, "\r") + 1;
-        break_loop = false;
-        decode_step = 0;
-        do {
-            c = *(unsigned char *)test_string;
-            temp_str_len = 0;
-            while ((c != '\t') && (c > 0)) {
-                ++temp_str_len;
-                c = test_string[temp_str_len];
-            }
-            tmp_pos = test_string + temp_str_len;
-            if (*tmp_pos == 0) break_loop = true;
-            *tmp_pos = 0;
-            if (temp_str_len) {
-                if (decode_step == 1) pScrolls[i] = removeQuotes(test_string);
-            } else {
-                break_loop = true;
-            }
-            ++decode_step;
-            test_string = tmp_pos + 1;
-        } while ((decode_step < 2) && !break_loop);
-    }
-}
-
 //----- (00476590) --------------------------------------------------------
 void InitializeMerchants() {
     char *test_string;
@@ -813,45 +777,6 @@ void InitializeTransitions() {
             if (temp_str_len) {
                 if (decode_step == 1)
                     pTransitionStrings[i + 1] = removeQuotes(test_string);
-            } else {
-                break_loop = true;
-            }
-            ++decode_step;
-            test_string = tmp_pos + 1;
-        } while ((decode_step < 2) && !break_loop);
-    }
-}
-
-//----- (004768A9) --------------------------------------------------------
-void InitializeQuests() {
-    int i;
-    char *test_string;
-    unsigned char c;
-    bool break_loop;
-    unsigned int temp_str_len;
-    char *tmp_pos;
-    int decode_step;
-
-    pQuestsTXT_Raw = pEvents_LOD->LoadCompressedTexture("quests.txt").string_view();
-    strtok(pQuestsTXT_Raw.data(), "\r");
-    memset(pQuestTable.data(), 0, sizeof(pQuestTable));
-    for (i = 0; i < 512; ++i) {
-        test_string = strtok(NULL, "\r") + 1;
-        break_loop = false;
-        decode_step = 0;
-        do {
-            c = *(unsigned char *)test_string;
-            temp_str_len = 0;
-            while ((c != '\t') && (c > 0)) {
-                ++temp_str_len;
-                c = test_string[temp_str_len];
-            }
-            tmp_pos = test_string + temp_str_len;
-            if (*tmp_pos == 0) break_loop = true;
-            *tmp_pos = 0;
-            if (temp_str_len) {
-                if (decode_step == 1)
-                    pQuestTable[i + 1] = removeQuotes(test_string);
             } else {
                 break_loop = true;
             }

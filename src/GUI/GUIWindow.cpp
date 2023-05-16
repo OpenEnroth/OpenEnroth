@@ -26,6 +26,7 @@
 #include "Engine/Tables/StorylineTextTable.h"
 #include "Engine/Tables/AwardTable.h"
 #include "Engine/Tables/AutonoteTable.h"
+#include "Engine/Tables/MessageScrollTable.h"
 #include "Engine/Time.h"
 
 #include "GUI/GUIButton.h"
@@ -938,7 +939,7 @@ void CreateScrollWindow() {
     a1.uFrameY = 1;
     a1.uFrameWidth = 468;
     unsigned int v0 =
-        pFontSmallnum->CalcTextHeight(pScrolls[pGUIWindow_ScrollWindow->scroll_type],
+        pFontSmallnum->CalcTextHeight(pMessageScrolls[pGUIWindow_ScrollWindow->scroll_type],
             a1.uFrameWidth, 0) +
         2 * (unsigned char)pFontCreate->GetHeight() + 24;
     a1.uFrameHeight = v0;
@@ -959,7 +960,7 @@ void CreateScrollWindow() {
     char *v1 = pItemTable->pItems[pGUIWindow_ScrollWindow->scroll_type].name;
 
     a1.DrawTitleText(pFontCreate, 0, 0, 0, fmt::format("\f{:05}{}\f00000\n", colorTable.PaleCanary.c16(), v1), 3);
-    a1.DrawText(pFontSmallnum, {1, pFontCreate->GetHeight() - 3}, 0, pScrolls[pGUIWindow_ScrollWindow->scroll_type], 0, 0, 0);
+    a1.DrawText(pFontSmallnum, {1, pFontCreate->GetHeight() - 3}, 0, pMessageScrolls[pGUIWindow_ScrollWindow->scroll_type], 0, 0, 0);
 }
 
 //----- (00467F48) --------------------------------------------------------

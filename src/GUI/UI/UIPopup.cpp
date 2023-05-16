@@ -1059,9 +1059,7 @@ void CharacterUI_SkillsTab_ShowHint() {
             }
         }
     } else {
-        CharacterUI_DrawTooltip(
-            localization->GetString(LSTR_SKILL_POINTS),
-            pSkillPointsAttributeDescription);
+        CharacterUI_DrawTooltip(localization->GetString(LSTR_SKILL_POINTS), localization->getSkillPointsDescription());
     }
 }
 
@@ -1071,7 +1069,6 @@ void CharacterUI_StatsTab_ShowHint() {
     signed int pTextColor;  // eax@15
     const char *pHourWord;  // ecx@17
     const char *pDayWord;   // eax@20
-    int v15;                // ebx@28
     int pHour;              // [sp+14h] [bp-1Ch]@15
     unsigned int pDay;      // [sp+24h] [bp-Ch]@15
 
@@ -1100,30 +1097,22 @@ void CharacterUI_StatsTab_ShowHint() {
                 localization->GetAttributeDescription(pStringNum));
             break;
         case 7:  // Health Points
-            if (pHealthPointsAttributeDescription)
-                CharacterUI_DrawTooltip(localization->GetString(LSTR_HIT_POINTS),
-                                        pHealthPointsAttributeDescription);
+            CharacterUI_DrawTooltip(localization->GetString(LSTR_HIT_POINTS), localization->getHPDescription());
             break;
         case 8:  // Spell Points
-            if (pSpellPointsAttributeDescription)
-                CharacterUI_DrawTooltip(
-                    localization->GetString(LSTR_SPELL_POINTS), pSpellPointsAttributeDescription
-                );
+            CharacterUI_DrawTooltip(localization->GetString(LSTR_SPELL_POINTS), localization->getSPDescription());
             break;
-        case 9:
-            if (pArmourClassAttributeDescription)
-                CharacterUI_DrawTooltip(localization->GetString(LSTR_ARMOR_CLASS),
-                                        pArmourClassAttributeDescription);
+        case 9:  // Armour class
+            CharacterUI_DrawTooltip(localization->GetString(LSTR_ARMOR_CLASS), localization->getArmourClassDescription());
             break;
         case 10:  // Player Condition
         {
-            auto str = std::string(pPlayerConditionAttributeDescription) + "\n";
+            std::string str = std::string(localization->getArmourClassDescription()) + "\n";
 
             for (Condition condition : conditionImportancyTable()) {
                 if (pParty->activeCharacter().conditions.Has(condition)) {
                     str += " \n";
-                    GameTime condition_time =
-                        pParty->GetPlayingTime() - pParty->activeCharacter().conditions.Get(condition);
+                    GameTime condition_time = pParty->GetPlayingTime() - pParty->activeCharacter().conditions.Get(condition);
                     pHour = condition_time.GetHoursOfDay();
                     pDay = condition_time.GetDays();
                     pTextColor = GetConditionDrawColor(condition);
@@ -1132,12 +1121,9 @@ void CharacterUI_StatsTab_ShowHint() {
                         pHourWord = localization->GetString(LSTR_HOUR);
                     else
                         pHourWord = localization->GetString(LSTR_HOURS);
-                    if (!pDay ||
-                        (pDayWord = localization->GetString(LSTR_DAY_CAPITALIZED), pDay > 1))
+                    if (!pDay || (pDayWord = localization->GetString(LSTR_DAY_CAPITALIZED), pDay > 1))
                         pDayWord = localization->GetString(LSTR_DAYS);
-                    str += fmt::format(
-                        "{} {}, {} {}", pDay, pDayWord, pHour, pHourWord
-                    );
+                    str += fmt::format("{} {}, {} {}", pDay, pDayWord, pHour, pHourWord);
                 }
             }
 
@@ -1147,132 +1133,97 @@ void CharacterUI_StatsTab_ShowHint() {
         }
 
         case 11:  // Fast Spell
-            if (pFastSpellAttributeDescription)
-                CharacterUI_DrawTooltip(localization->GetString(LSTR_QUICK_SPELL),
-                                        pFastSpellAttributeDescription);
+            CharacterUI_DrawTooltip(localization->GetString(LSTR_QUICK_SPELL), localization->getFastSpellDescription());
             break;
 
-        case 12:  // Player Age
-            if (pPlayerAgeAttributeDescription)
-                CharacterUI_DrawTooltip(localization->GetString(LSTR_AGE),
-                                        pPlayerAgeAttributeDescription);
+        case 12:  // Character Age
+            CharacterUI_DrawTooltip(localization->GetString(LSTR_AGE), localization->getAgeDescription());
             break;
 
-        case 13:  // Player Level
-            if (pPlayerLevelAttributeDescription)
-                CharacterUI_DrawTooltip(localization->GetString(LSTR_LEVEL),
-                                        pPlayerLevelAttributeDescription);
+        case 13:  // Character Level
+            CharacterUI_DrawTooltip(localization->GetString(LSTR_LEVEL), localization->getLevelDescription());
             break;
 
         case 14:  // Experience
         {
-            v15 = pParty->activeCharacter().uLevel;
+            int eligbleLevel = pParty->activeCharacter().uLevel;
             do {
-                if (pParty->activeCharacter().experience < GetExperienceRequiredForLevel(v15))
+                if (pParty->activeCharacter().experience < GetExperienceRequiredForLevel(eligbleLevel)) {
                     break;
-                ++v15;
-            } while (v15 <= 10000);
+                }
+                ++eligbleLevel;
+            } while (eligbleLevel <= 10000);
 
-            std::string str1;
-            std::string str2;
-            if (v15 > pParty->activeCharacter().uLevel)
-                str1 = localization->FormatString(
-                    LSTR_ELIGIBLE_TO_LEVELUP, v15);
-            str2 = localization->FormatString(
-                LSTR_XP_UNTIL_NEXT_LEVEL,
-                (int)(GetExperienceRequiredForLevel(v15) - pParty->activeCharacter().experience),
-                v15 + 1);
-            str1 += "\n" + str2;
+            std::string str;
+            if (eligbleLevel > pParty->activeCharacter().uLevel) {
+                str = localization->FormatString(LSTR_ELIGIBLE_TO_LEVELUP, eligbleLevel);
+            }
+            int nextLevelExp = GetExperienceRequiredForLevel(eligbleLevel) - pParty->activeCharacter().experience;
+            str += "\n" + localization->FormatString(LSTR_XP_UNTIL_NEXT_LEVEL, nextLevelExp, eligbleLevel + 1);
+            str = std::string(localization->getExpDescription()) + "\n \n" + str;
 
-            str2 = std::string(pPlayerExperienceAttributeDescription) + "\n \n" + str1;
-
-            CharacterUI_DrawTooltip(localization->GetString(LSTR_EXPERIENCE), str2);
+            CharacterUI_DrawTooltip(localization->GetString(LSTR_EXPERIENCE), str);
             break;
         }
 
         case 15:  // Attack Bonus
-            if (pAttackBonusAttributeDescription) {
-                int meleerecov = pParty->activeCharacter().GetAttackRecoveryTime(false);
-                // TODO(captainurist): fmt can throw
-                std::string description = fmt::sprintf(localization->GetString(LSTR_FMT_RECOVERY_TIME_D), meleerecov);
-                description = fmt::format("{}\n\n{}", pAttackBonusAttributeDescription, description.c_str());
-                CharacterUI_DrawTooltip(localization->GetString(LSTR_ATTACK_BONUS), description);
-            }
+        {
+            int meleerecov = pParty->activeCharacter().GetAttackRecoveryTime(false);
+            // TODO(captainurist): fmt can throw
+            std::string description = fmt::sprintf(localization->GetString(LSTR_FMT_RECOVERY_TIME_D), meleerecov);
+            description = fmt::format("{}\n\n{}", localization->getMeleeAttackDescription(), description.c_str());
+            CharacterUI_DrawTooltip(localization->GetString(LSTR_ATTACK_BONUS), description);
             break;
-
+        }
         case 16:  // Attack Damage
-            if (pAttackDamageAttributeDescription)
-                CharacterUI_DrawTooltip(
-                    localization->GetString(LSTR_ATTACK_DAMAGE),
-                    pAttackDamageAttributeDescription
-                );
+            CharacterUI_DrawTooltip(localization->GetString(LSTR_ATTACK_DAMAGE), localization->getMeleeDamageDescription());
             break;
 
         case 17:  // Missle Bonus
-            if (pMissleBonusAttributeDescription) {
-                int missrecov = pParty->activeCharacter().GetAttackRecoveryTime(true);
-                // TODO(captainurist): fmt can throw
-                std::string description = fmt::sprintf(localization->GetString(LSTR_FMT_RECOVERY_TIME_D), missrecov);
-                description = fmt::format("{}\n\n{}", pAttackBonusAttributeDescription, description);
-                CharacterUI_DrawTooltip(localization->GetString(LSTR_SHOOT_BONUS), description);
-            }
+        {
+            int missrecov = pParty->activeCharacter().GetAttackRecoveryTime(true);
+            // TODO(captainurist): fmt can throw
+            std::string description = fmt::sprintf(localization->GetString(LSTR_FMT_RECOVERY_TIME_D), missrecov);
+            description = fmt::format("{}\n\n{}", localization->getRangedAttackDescription(), description);
+            CharacterUI_DrawTooltip(localization->GetString(LSTR_SHOOT_BONUS), description);
             break;
-
+        }
         case 18:  // Missle Damage
-            if (pMissleDamageAttributeDescription)
-                CharacterUI_DrawTooltip(localization->GetString(LSTR_SHOOT_DAMAGE),
-                                        pMissleDamageAttributeDescription);
+            CharacterUI_DrawTooltip(localization->GetString(LSTR_SHOOT_DAMAGE), localization->getRangedDamageDescription());
             break;
 
         case 19:  // Fire Resistance
-            if (pFireResistanceAttributeDescription)
-                CharacterUI_DrawTooltip(localization->GetString(LSTR_FIRE),
-                                        pFireResistanceAttributeDescription);
+            CharacterUI_DrawTooltip(localization->GetString(LSTR_FIRE), localization->getFireResistanceDescription());
             break;
 
         case 20:  // Air Resistance
-            if (pAirResistanceAttributeDescription)
-                CharacterUI_DrawTooltip(localization->GetString(LSTR_AIR),
-                                        pAirResistanceAttributeDescription);
+            CharacterUI_DrawTooltip(localization->GetString(LSTR_AIR), localization->getAirResistanceDescription());
             break;
 
         case 21:  // Water Resistance
-            if (pWaterResistanceAttributeDescription)
-                CharacterUI_DrawTooltip(localization->GetString(LSTR_WATER),
-                                        pWaterResistanceAttributeDescription);
+            CharacterUI_DrawTooltip(localization->GetString(LSTR_WATER), localization->getWaterResistanceDescription());
             break;
 
         case 22:  // Earth Resistance
-            if (pEarthResistanceAttributeDescription)
-                CharacterUI_DrawTooltip(localization->GetString(LSTR_EARTH),
-                                        pEarthResistanceAttributeDescription);
+            CharacterUI_DrawTooltip(localization->GetString(LSTR_EARTH), localization->getEarthResistanceDescription());
             break;
 
         case 23:  // Mind Resistance
-            if (pMindResistanceAttributeDescription)
-                CharacterUI_DrawTooltip(localization->GetString(LSTR_MIND),
-                                        pMindResistanceAttributeDescription);
+            CharacterUI_DrawTooltip(localization->GetString(LSTR_MIND), localization->getMindResistanceDescription());
             break;
 
         case 24:  // Body Resistance
-            if (pBodyResistanceAttributeDescription)
-                CharacterUI_DrawTooltip(localization->GetString(LSTR_BODY),
-                                        pBodyResistanceAttributeDescription);
+            CharacterUI_DrawTooltip(localization->GetString(LSTR_BODY), localization->getBodyResistanceDescription());
             break;
 
         case 25:  // Skill Points
-            if (pSkillPointsAttributeDescription)
-                CharacterUI_DrawTooltip(localization->GetString(LSTR_SKILL_POINTS),
-                                        pSkillPointsAttributeDescription);
+            CharacterUI_DrawTooltip(localization->GetString(LSTR_SKILL_POINTS), localization->getSkillPointsDescription());
             break;
 
         case 26:  // Class description
-        {
-            CharacterUI_DrawTooltip(localization->GetClassName(
-                                        pParty->activeCharacter().classType),
-                                    localization->GetClassDescription(
-                                        pParty->activeCharacter().classType));
-        } break;
+            CharacterUI_DrawTooltip(localization->GetClassName(pParty->activeCharacter().classType),
+                                    localization->GetClassDescription(pParty->activeCharacter().classType));
+            break;
 
         default:
             break;

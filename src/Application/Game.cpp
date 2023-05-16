@@ -448,8 +448,8 @@ void Game::processQueuedMessages() {
     char pOut[32];                // [sp+BCh] [bp-540h]@370
     int spellbookPages[9] {};                  // [sp+158h] [bp-4A4h]@652
     int currHour;
+    bool playButtonSoundOnEscape = true;
 
-    dword_50CDC8 = 0;
     if (!pEventTimer->bPaused) {
         pParty->sEyelevel = pParty->uDefaultEyelevel;
         pParty->uPartyHeight = pParty->uDefaultPartyHeight;
@@ -636,12 +636,13 @@ void Game::processQueuedMessages() {
                         case CURRENT_SCREEN::SCREEN_CHANGE_LOCATION:
                         case CURRENT_SCREEN::SCREEN_INPUT_BLV:
                         case CURRENT_SCREEN::SCREEN_QUICK_REFERENCE:
-                            if (dword_50CDC8) break;
-                            PlayButtonClickSound();
-                            uMessageParam = 1;
+                            if (playButtonSoundOnEscape) {
+                                PlayButtonClickSound();
+                                uMessageParam = 1;
+                            }
                             break;
                         case CURRENT_SCREEN::SCREEN_HOUSE:
-                            if (!dword_50CDC8) {
+                            if (playButtonSoundOnEscape) {
                                 PlayButtonClickSound();
                                 uMessageParam = 1;
                                 break;
@@ -886,7 +887,7 @@ void Game::processQueuedMessages() {
 
                 case UIMSG_TransitionUI_Confirm:
                     pCurrentFrameMessageQueue->Flush();
-                    dword_50CDC8 = 1;
+                    playButtonSoundOnEscape = false;
                     // PID_INVALID was used (exclusive sound)
                     pAudioPlayer->playUISound(SOUND_StartMainChoice02);
 
@@ -958,7 +959,7 @@ void Game::processQueuedMessages() {
                     continue;
                 case UIMSG_OnTravelByFoot:
                     pCurrentFrameMessageQueue->Flush();
-                    dword_50CDC8 = 1;
+                    playButtonSoundOnEscape = false;
 
                     pAudioPlayer->playUISound(SOUND_StartMainChoice02);
                     // encounter_index = (NPCData *)getTravelTime();
@@ -1091,7 +1092,7 @@ void Game::processQueuedMessages() {
 
                 case UIMSG_BF:
                     __debugbreak();
-                    dword_50CDC8 = 1;
+                    playButtonSoundOnEscape = false;
                     pAudioPlayer->playUISound(SOUND_StartMainChoice02);
                     SaveGame(1, 0);
                     pCurrentMapName = pMapStats->pInfos[uHouse_ExitPic].pFilename;
@@ -1161,7 +1162,7 @@ void Game::processQueuedMessages() {
                     continue;
                 }
                 case UIMSG_CloseAfterInstallBeacon:
-                    dword_50CDC8 = 1;
+                    playButtonSoundOnEscape = false;
                     pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 0, 0);
                     continue;
                 case UIMSG_InstallBeacon: {

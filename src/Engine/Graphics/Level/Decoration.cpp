@@ -9,6 +9,7 @@
 #include "Library/Random/Random.h"
 
 std::vector<LevelDecoration> pLevelDecorations;
+std::vector<int> decorationsWithSound;
 LevelDecoration *activeLevelDecoration;
 
 //----- (004583B0) --------------------------------------------------------
