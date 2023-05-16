@@ -116,7 +116,7 @@ class Vis {
                                                float pick_depth);
     bool IsPolygonOccludedByBillboard(struct RenderVertexSoft *vertices,
                                       int num_vertices, float x, float y);
-    void GetPolygonCenter(struct RenderVertexD3D3 *pVertices,
+    void GetPolygonCenter(RenderVertexD3D3 *pVertices,
                           unsigned int uNumVertices, float *pCenterX,
                           float *pCenterY);
     void GetPolygonScreenSpaceCenter(struct RenderVertexSoft *vertices,
