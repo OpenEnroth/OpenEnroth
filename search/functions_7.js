@@ -287,7 +287,7 @@ var searchData=
   ['getplayerindex_284',['GetPlayerIndex',['../structPlayer.html#aa69875308b81b4a8013fcb06b7c32965',1,'Player']]],
   ['getplayerskilltype_285',['GetPlayerSkillType',['../structItemGen.html#a7bd88a2e3fdc2fe31df84e013c0ce4dc',1,'ItemGen']]],
   ['getplayingtime_286',['GetPlayingTime',['../structParty.html#a3b0a12cfdb91764789ff432acdd062c0',1,'Party']]],
-  ['getpolygoncenter_287',['GetPolygonCenter',['../classVis.html#a076a53e422b5d120765e31efc8d241ed',1,'Vis']]],
+  ['getpolygoncenter_287',['GetPolygonCenter',['../classVis.html#a87b0ec3f0173e18fc200bd881289572b',1,'Vis']]],
   ['getpolygonmaxz_288',['GetPolygonMaxZ',['../structCamera3D.html#ac601bccaa4a36ce50aeb5471766822e1',1,'Camera3D::GetPolygonMaxZ()'],['../structOutdoorLocation.html#a84b82beeab2ad4714638fe2c0a31fe65',1,'OutdoorLocation::GetPolygonMaxZ(struct RenderVertexSoft *pVertex, unsigned int unumverts)']]],
   ['getpolygonminz_289',['GetPolygonMinZ',['../structOutdoorLocation.html#a0e1c8c90e39855e4501d8305d490ba95',1,'OutdoorLocation::GetPolygonMinZ()'],['../structCamera3D.html#aced78b765112b1fa636ac6bfd215754a',1,'Camera3D::GetPolygonMinZ()']]],
   ['getpolygonscreenspacecenter_290',['GetPolygonScreenSpaceCenter',['../classVis.html#ae7954e70b4aa1f2e6fe2aea110b2282e',1,'Vis']]],
