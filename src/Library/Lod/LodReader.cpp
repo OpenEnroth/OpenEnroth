@@ -7,15 +7,10 @@
 // TODO(captainurist): errorhandling should be moved to utility/library out of the engine
 #include "Engine/ErrorHandling.h"
 #include "Library/Compression/Compression.h"
-#include "Library/Lod/Internal/LodDirectory.h"
-#include "Library/Lod/Internal/LodDirectoryHeader.h"
-#include "Library/Lod/Internal/LodFile.h"
-#include "Library/Lod/Internal/LodFileHeader.h"
-#include "Library/Lod/Internal/LodHeader.h"
+#include "Library/Lod/LodDefinitions.h"
 #include "Utility/String.h"
 
-
-static inline size_t _getDirectoryHeaderImgSize(LodVersion lod_version) {
+static size_t getDirectoryHeaderImgSize(LodVersion lod_version) {
     switch (lod_version) {
     case LOD_VERSION_MM6:
     case LOD_VERSION_MM6_GAME:
@@ -25,176 +20,169 @@ static inline size_t _getDirectoryHeaderImgSize(LodVersion lod_version) {
     }
 
     Error("Unknown LOD version: %u", lod_version);
+    return 0;
 }
 
-
-static bool _lodHeaderParseVersion(const LodHeader_Mm6 &header, LodVersion &out_version) {
-    static std::map<std::string, LodVersion> version_map = {
+static bool lodHeaderParseVersion(const LodHeader_Mm6 &header, LodVersion &out_version) {
+    static std::map<std::string, LodVersion> versionMap = {
         {"MMVI",     LOD_VERSION_MM6},
         {"GameMMVI", LOD_VERSION_MM6_GAME},
         {"MMVII",    LOD_VERSION_MM7},
         {"MMVIII",   LOD_VERSION_MM8},
     };
 
-    auto it = version_map.find((const char *)header.version.data());
-    if (it != version_map.end()) {
+    auto it = versionMap.find((const char *)header.version.data());
+    if (it != versionMap.end()) {
         out_version = it->second;
         return true;
     }
 
-    Warn("Unknown LOD version: %s", (const char *)header.version.data());
     return false;
 }
 
+bool LodReader::parseDirectoryFiles(DirectoryDesc &desc) {
+    fseek(_fp, desc.offs, SEEK_SET);
+    for (size_t i = 0; i < desc.numFiles; ++i) {
+        FileEntryDesc fileEntry;
+        std::string dirPrefix = "/";
 
-static bool _lodParseHeader(FILE *fp, LodVersion &out_version, std::string &out_description, size_t &out_num_expected_directories) {
+        if (desc.dirName.size()) {
+            dirPrefix += desc.dirName + "/"; 
+        }
+
+        switch (_version) {
+            case LOD_VERSION_MM6:
+            case LOD_VERSION_MM6_GAME:
+            case LOD_VERSION_MM7: {
+                LodFileHeader_Mm6 header;
+                if (!fread(&header, sizeof(header), 1, _fp)) {
+                    return false;
+                }
+
+                fileEntry.flatName = dirPrefix + std::string((char *)header.name.data());
+                fileEntry.offset = desc.offs + header.dataOffset;
+                fileEntry.size = header.size;
+                break;
+            }
+
+            case LOD_VERSION_MM8: {
+                LodFileHeader_Mm8 header;
+                if (!fread(&header, sizeof(header), 1, _fp)) {
+                    return false;
+                }
+
+                fileEntry.flatName = dirPrefix + std::string((char *)header.name.data());
+                fileEntry.offset = desc.offs + header.dataOffset;
+                fileEntry.size = header.dataSize;
+                break;
+            }
+        }
+
+        _files.push_back(fileEntry);
+    }
+
+    return true;
+}
+
+bool LodReader::parseDirectories(size_t numDirectories) {
+    std::vector<DirectoryDesc> dirs;
+    size_t dirSize = getDirectoryHeaderImgSize(_version);
+
+    assert(dirSize == sizeof(LodDirectoryHeader_Mm6));
+
+    _files.clear();
+    for (size_t i = 0; i < numDirectories; ++i) {
+        LodDirectoryHeader_Mm6 head;
+        DirectoryDesc desc;
+
+        if (!fread(&head, dirSize, 1, _fp)) {
+            return false;
+        }
+
+        desc.dirName = std::string((const char *)head.filename.data());
+        desc.offs = head.dataOffset;
+        desc.numFiles = head.numFiles;
+
+        dirs.push_back(desc);
+    }
+
+    for (DirectoryDesc &desc : dirs) {
+        if (!parseDirectoryFiles(desc)) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+std::unique_ptr<LodReader> LodReader::open(const std::string &filename, const std::string &defaultDirectory) {
     LodHeader_Mm6 header;
-    if (1 != fread(&header, sizeof(header), 1, fp)) {
-        return false;
-    }
-
-    if (memcmp(header.signature.data(), "LOD\0", sizeof(header.signature))) {
-        Warn("Not a LOD file");
-        return false;
-    }
-
-    LodVersion version;
-    if (!_lodHeaderParseVersion(header, version)) {
-        return false;
-    }
-
-    out_version = version;
-    out_description = std::string((const char *)header.description.data());
-    out_num_expected_directories = header.numDirectories;
-    return true;
-}
-
-
-static inline void _lodParseDirectoryFiles(
-    FILE *fp,
-    LodVersion version,
-    LodDirectory &dir,
-    size_t num_expected_files
-) {
-    dir.files.clear();
-
-    fseek(fp, dir.fileHeadersOffset, SEEK_SET);
-    for (size_t i = 0; i < num_expected_files; ++i) {
-        switch (version) {
-        case LOD_VERSION_MM6:
-        case LOD_VERSION_MM6_GAME:
-        case LOD_VERSION_MM7: {
-            LodFileHeader_Mm6 header;
-            assert(1 == fread(&header, sizeof(header), 1, fp));
-
-            LodFile file;
-            file.name = std::string((char *)header.name.data());
-            file.dataOffset = dir.fileHeadersOffset + header.dataOffset;
-            file.dataSize = header.size;
-            dir.files.push_back(file);
-            break;
-        }
-
-        case LOD_VERSION_MM8: {
-            LodFileHeader_Mm8 header;
-            assert(1 == fread(&header, sizeof(header), 1, fp));
-
-            LodFile file;
-            file.name = std::string((char *)header.name.data());
-            file.dataOffset = dir.fileHeadersOffset + header.dataOffset;
-            file.dataSize = header.dataSize;
-            dir.files.push_back(file);
-            break;
-        }
-        }
-    }
-}
-
-
-static bool _lodParseDirectories(FILE *fp, LodVersion version, size_t num_expected_directories, std::vector<LodDirectory> &out_index) {
-    std::vector<LodDirectory> dirs;
-
-    size_t read_size = _getDirectoryHeaderImgSize(version);
-    size_t items_read = 0;
-
-    size_t dir_read_ptr = ftell(fp);
-    for (size_t i = 0; i < num_expected_directories; ++i) {
-        LodDirectoryHeader_Mm6 img;
-        fseek(fp, dir_read_ptr, SEEK_SET);
-        items_read += fread(&img, read_size, 1, fp);
-        dir_read_ptr += read_size;
-
-        LodDirectory dir;
-        dir.name = std::string((const char *)img.filename.data());
-        dir.fileHeadersOffset = img.dataOffset;
-        _lodParseDirectoryFiles(fp, version, dir, img.numFiles);
-
-        dirs.push_back(dir);
-    }
-
-    out_index = dirs;
-    return true;
-}
-
-
-std::unique_ptr<LodReader> LodReader::open(const std::string &filename) {
     auto lod = std::make_unique<LodReader>();
+
     if (nullptr == lod) {
         Warn("LodReader::open: out of memory loading: %s", filename.c_str());
         return nullptr;
     }
 
-    auto fp = fopen(filename.c_str(), "rb");
-    if (nullptr == fp) {
+    lod->_fp = fopen(filename.c_str(), "rb");
+    if (nullptr == lod->_fp) {
         Warn("LodReader::open: file not found: %s", filename.c_str());
         return nullptr;
     }
 
-    size_t num_expected_directories = 0;
-    bool is_lod = _lodParseHeader(fp, lod->_version, lod->_description, num_expected_directories);
-    if (!is_lod) {
+    if (1 != fread(&header, sizeof(header), 1, lod->_fp)) {
         Warn("LodReader::open: invalid LOD file: %s", filename.c_str());
-        fclose(fp);
         return nullptr;
     }
 
-    bool is_index_ok = _lodParseDirectories(fp, lod->_version, num_expected_directories, lod->_index);
-    if (is_index_ok) {
-        lod->_fp = fp;
-        return lod;
+    if (memcmp(header.signature.data(), "LOD\0", sizeof(header.signature))) {
+        Warn("LodReader::open: invalid LOD file: %s", filename.c_str());
+        return nullptr;
     }
 
-    Warn("LodReader::open: corrupt directory index: %s", filename.c_str());
-    fclose(fp);
-    return nullptr;
-}
+    if (!lodHeaderParseVersion(header, lod->_version)) {
+        Warn("LodReader::open: unknown LOD version: %s", (const char *)header.version.data());
+        return nullptr;
+    }
 
+    if (!lod->parseDirectories(header.numDirectories)) {
+        Warn("LodReader::open: corrupt directory index: %s", filename.c_str());
+        return nullptr;
+    }
+
+    lod->_description = std::string((const char *)header.description.data());
+    lod->_pwd = "/";
+
+    lod->cd(defaultDirectory);
+    return lod;
+}
 
 bool LodReader::exists(const std::string &filename) const {
-    const auto &dir = _index.front(); // only first dir is ever used, no matter names
-    return dir.files.cend() != std::find_if(
-        dir.files.cbegin(),
-        dir.files.cend(),
-        [&](const LodFile &file) {return iequals(file.name, filename); }
-    );
+    std::string checkName = _pwd + filename;
+
+    if (filename[0] == '/') {
+        checkName = filename;
+    }
+
+    return _files.cend() != std::find_if(_files.cbegin(), _files.cend(), [&](const FileEntryDesc &file) { return iequals(file.flatName, checkName); });
 }
 
-
 Blob LodReader::read(const std::string &filename) {
-    const auto &dir = _index.front(); // only first dir is ever used, no matter names
-    const auto &file = std::find_if(
-        dir.files.cbegin(),
-        dir.files.cend(),
-        [&](const LodFile &file) {return iequals(file.name, filename); }
-    );
+    std::string checkName = _pwd + filename;
 
-    if (dir.files.cend() == file) {
+    if (filename[0] == '/') {
+        checkName = filename;
+    }
+
+    const auto &file = std::find_if(_files.cbegin(), _files.cend(), [&](const FileEntryDesc &file) { return iequals(file.flatName, checkName); });
+
+    if (_files.cend() == file) {
         Warn("LodReader::read: file not found: %s", filename.c_str());
         return Blob();
     }
 
-    fseek(_fp, file->dataOffset, SEEK_SET);
-    if (_isFileCompressed(*file)) {
+    fseek(_fp, file->offset, SEEK_SET);
+    if (isFileCompressed(*file)) {
         LodFileCompressionHeader_Mm6 header;
         assert(1 == fread(&header, sizeof(header), 1, _fp));
 
@@ -205,17 +193,56 @@ Blob LodReader::read(const std::string &filename) {
         }
     }
 
-    return Blob::read(_fp, file->dataSize);
+    return Blob::read(_fp, file->size);
 }
 
+void LodReader::cd(const std::string &filename) {
+    if (!filename.size() || filename == ".") {
+        return;
+    }
 
-bool LodReader::_isFileCompressed(const LodFile &file) {
-    if (file.dataSize <= sizeof(LodFileCompressionHeader_Mm6)) {
+    if (filename == ".." && _pwd != "/") {
+        size_t pos = _pwd.rfind('/', _pwd.size() - 1);
+        _pwd.erase();
+        return;
+    }
+
+    std::string filenameTmp = filename;
+    if (filenameTmp[0] == '/') {
+        while (filenameTmp.size() > 1 && filenameTmp[1] == '/') {
+            filenameTmp.erase(0, 1);
+        }
+    } else {
+        filenameTmp = _pwd + filenameTmp;
+    }
+
+    if (filenameTmp.back() != '/') {
+        filenameTmp += "/";
+    }
+
+    for (FileEntryDesc &desc : _files) {
+        if (!desc.flatName.compare(0, filenameTmp.size(), filenameTmp)) {
+            _pwd = filenameTmp;
+            return;
+        }
+    }
+
+    Warn("Cannot cd to '%s', current dir = '%s'", filename.c_str(), _pwd.c_str());
+}
+
+void LodReader::ls() const {
+    for (const FileEntryDesc &desc : _files) {
+        printf("\"%s\": 0x%lx:%ld\n", desc.flatName.c_str(), desc.offset, desc.size);
+    }
+}
+
+bool LodReader::isFileCompressed(const FileEntryDesc &desc) {
+    if (desc.size <= sizeof(LodFileCompressionHeader_Mm6)) {
         return false;
     }
 
     size_t prev_pos = ftell(_fp);
-    fseek(_fp, file.dataOffset, SEEK_SET);
+    fseek(_fp, desc.offset, SEEK_SET);
 
     LodFileCompressionHeader_Mm6 header;
     assert(1 == fread(&header, sizeof(header), 1, _fp));

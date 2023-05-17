@@ -11,7 +11,6 @@
 #include "Engine/Events/EventMap.h"
 #include "Engine/AssetsManager.h"
 #include "Engine/ErrorHandling.h"
-#include "Library/Logger/Logger.h"
 #include "Engine/MM7.h"
 #include "Engine/MapInfo.h"
 #include "Engine/EngineIocContainer.h"
@@ -25,8 +24,12 @@
 #include "Io/Mouse.h"
 
 #include "Application/GameConfig.h"
+
 #include "Utility/DataPath.h"
 #include "Utility/String.h"
+
+#include "Library/Logger/Logger.h"
+#include "Library/Lod/LodReader.h"
 
 class Nuklear;
 using Io::KeyboardActionMapping;
@@ -206,6 +209,8 @@ class Engine {
     EventMap _localEventMap;
     std::vector<std::string> _levelStrings;
     PersistentVariables _persistentVariables;
+
+    std::unique_ptr<LodReader> _eventsLod = nullptr;
 };
 
 extern std::shared_ptr<Engine> engine;

@@ -53,6 +53,7 @@
 #include "Media/MediaPlayer.h"
 
 #include "Library/Random/Random.h"
+#include "Library/Lod/LodReader.h"
 
 using Graphics::IRenderFactory;
 
@@ -847,6 +848,13 @@ bool MM7_LoadLods() {
         Error("Some files are missing\n\nPlease Reinstall.");
         return false;
     }
+
+    engine->_eventsLod = LodReader::open(MakeDataPath("data", "events.lod"), "icons");
+    if (!engine->_eventsLod) {
+        Error("Some files are missing\n\nPlease Reinstall.");
+        return false;
+    }
+    engine->_eventsLod->ls();
 
     pBitmaps_LOD = new LODFile_IconsBitmaps;
     if (!pBitmaps_LOD->Load(MakeDataPath("data", "bitmaps.lod"), "bitmaps")) {

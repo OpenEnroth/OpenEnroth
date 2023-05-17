@@ -5,10 +5,7 @@
 #include <vector>
 
 #include "Library/Lod/LodVersion.h"
-#include "Library/Lod/Internal/LodDirectory.h"
-#include "Library/Lod/Internal/LodFile.h"
 #include "Utility/Memory/Blob.h"
-
 
 /**
  * A single stop shop to read LOD files.
@@ -19,7 +16,7 @@
  */
 class LodReader final {
  public:
-    static std::unique_ptr<LodReader> open(const std::string &filename);
+    static std::unique_ptr<LodReader> open(const std::string &filename, const std::string &defaultDirectory = ".");
 
     inline ~LodReader() {
         if (nullptr != _fp) {
@@ -30,11 +27,31 @@ class LodReader final {
     bool exists(const std::string &filename) const;
     Blob read(const std::string &filename);
 
- private:
-    bool _isFileCompressed(const LodFile &file);
+    void cd(const std::string &filename);
+    void ls() const;
 
-    FILE *_fp;
-    LodVersion _version;
-    std::string _description;
-    std::vector<LodDirectory> _index;
+ private:
+    struct FileEntryDesc {
+        std::string flatName{};
+        size_t offset = 0;
+        size_t size = 0;
+    };
+
+    struct DirectoryDesc {
+        std::string dirName{};
+        size_t offs{};
+        int numFiles{};
+    };
+
+    bool parseDirectories(size_t numDirectories);
+    bool parseDirectoryFiles(DirectoryDesc &desc);
+
+    bool isFileCompressed(const FileEntryDesc &desc);
+
+    FILE *_fp = nullptr;
+    LodVersion _version = LOD_VERSION_MM6;
+    std::string _description = "";
+    std::string _pwd = "";
+
+    std::vector<FileEntryDesc> _files{};
 };
