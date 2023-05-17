@@ -2,6 +2,7 @@
 #include <memory>
 #include <string>
 #include <vector>
+#include <array>
 
 #include "Engine/Graphics/Image.h"
 #include "Engine/Graphics/Nuklear.h"
@@ -127,7 +128,7 @@ struct RenderBillboardD3D {
 
     Texture *texture;  // void *gapi_texture;//IDirect3DTexture2 *pTexture; for d3d
     unsigned int uNumVertices;
-    RenderVertexD3D3 pQuads[4];
+    std::array<RenderVertexD3D3, 4> pQuads;
     float z_order;
     OpacityType opacity;
     int field_90;
