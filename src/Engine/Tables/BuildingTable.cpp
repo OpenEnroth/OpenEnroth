@@ -3,7 +3,7 @@
 #include "Utility/String.h"
 
 std::array<BuildingDesc, 525> buildingTable;
-std::string pBuildingsTXT_Raw;
+std::string buildingTableTXT_Raw;
 
 void initializeBuildings() {
     int i;
@@ -14,8 +14,9 @@ void initializeBuildings() {
     char *tmp_pos;
     int decode_step;
 
-    pBuildingsTXT_Raw = engine->_gameResourceManager->getEventsFile("2dEvents.txt").string_view();
-    strtok(pBuildingsTXT_Raw.data(), "\r");
+    buildingTableTXT_Raw = engine->_gameResourceManager->getEventsFile("2dEvents.txt").string_view();
+    strtok(buildingTableTXT_Raw.data(), "\r");
+    strtok(NULL, "\r");
 
     for (i = 0; i < 525; ++i) {
         test_string = strtok(NULL, "\r") + 1;

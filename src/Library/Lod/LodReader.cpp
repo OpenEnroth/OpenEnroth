@@ -47,7 +47,7 @@ bool LodReader::parseDirectoryFiles(DirectoryDesc &desc) {
         std::string dirPrefix = "/";
 
         if (desc.dirName.size()) {
-            dirPrefix += desc.dirName + "/"; 
+            dirPrefix += desc.dirName + "/";
         }
 
         switch (_version) {

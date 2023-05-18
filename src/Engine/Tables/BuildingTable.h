@@ -68,3 +68,4 @@ struct BuildingDesc {
 void initializeBuildings();
 
 extern std::array<BuildingDesc, 525> buildingTable;
+extern std::string buildingTableTXT_Raw;
