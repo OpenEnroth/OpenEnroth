@@ -1297,6 +1297,58 @@ void DrawSpellDescriptionPopup(int spell_index_in_book) {
     dword_507B00_spell_info_to_draw_in_popup = 0;
 }
 
+/**
+ * @offset 0x41D73D
+ */
+static void drawBuffPopupWindow() {
+    GUIWindow popupWindow;
+    int stringCount;
+
+    static const std::array<uint16_t, 20> spellTooltipColors = { {
+        colorTable.Anakiwa.c16(),       colorTable.FlushOrange.c16(),
+        colorTable.PaleCanary.c16(),    colorTable.Mercury.c16(),
+        colorTable.Gray.c16(),          colorTable.Anakiwa.c16(),
+        colorTable.DarkOrange.c16(),    colorTable.Anakiwa.c16(),
+        colorTable.DarkOrange.c16(),    colorTable.Mercury.c16(),
+        colorTable.DarkOrange.c16(),    colorTable.Anakiwa.c16(),
+        colorTable.PurplePink.c16(),    colorTable.FlushOrange.c16(),
+        colorTable.Anakiwa.c16(),       colorTable.Gray.c16(),
+        colorTable.DarkOrange.c16(),    colorTable.AzureRadiance.c16(),
+        colorTable.AzureRadiance.c16(), colorTable.Anakiwa.c16()
+    } };
+
+    popupWindow.sHint.clear();
+    popupWindow.uFrameWidth = 400;
+    popupWindow.uFrameX = 38;
+    popupWindow.uFrameY = 60;
+
+    stringCount = 0;
+    for (SpellBuff &spellBuff : pParty->pPartyBuffs) {
+        stringCount += (spellBuff.Active()) ? 1 : 0;
+    }
+
+    popupWindow.uFrameHeight = pFontArrus->GetHeight() + 72;
+    popupWindow.uFrameHeight += (stringCount - 1) * pFontArrus->GetHeight();
+    popupWindow.uFrameZ = popupWindow.uFrameWidth + popupWindow.uFrameX - 1;
+    popupWindow.uFrameW = popupWindow.uFrameY + popupWindow.uFrameHeight - 1;
+    popupWindow.DrawMessageBox(0);
+    popupWindow.DrawTitleText(pFontArrus, 0, 12, 0, localization->GetString(LSTR_ACTIVE_PARTY_SPELLS), 3);
+    if (!stringCount) {
+        popupWindow.DrawTitleText(pFontComic, 0, 40, 0, localization->GetString(LSTR_NONE), 3);
+    }
+
+    stringCount = 0;
+    for (int i = 0; i < pParty->pPartyBuffs.size(); i++) {
+        if (pParty->pPartyBuffs[i].Active()) {
+            GameTime remaingTime = pParty->pPartyBuffs[i].expireTime - pParty->GetPlayingTime();
+            int yPos = stringCount * pFontComic->GetHeight() + 40;
+            popupWindow.DrawText(pFontComic, {52, yPos}, spellTooltipColors[i], localization->GetSpellName(i), 0, 0, 0);
+            DrawBuff_remaining_time_string(yPos, &popupWindow, remaingTime, pFontComic);
+            stringCount++;
+        }
+    }
+}
+
 //----- (00416D62) --------------------------------------------------------
 void UI_OnMouseRightClick(int mouse_x, int mouse_y) {
     int v5;                  // esi@62
@@ -1406,15 +1458,9 @@ void UI_OnMouseRightClick(int mouse_x, int mouse_y) {
             } else if ((int)pX > pViewport->uViewportBR_X) {
                 if (pY >= 130) {
                     if (pX >= 476 && pX <= 636 && pY >= 240 && pY <= 300) {  // buff_tooltip zone
-                        popup_window.sHint.clear();
-                        popup_window.uFrameWidth = 400;
-                        popup_window.uFrameHeight = 200;
-                        popup_window.uFrameX = 38;
-                        popup_window.uFrameY = 60;
-                        popup_window._41D73D_draw_buff_tooltip();
+                        drawBuffPopupWindow();
                     } else if ((int)pX < 485 || (int)pX > 548 ||
-                               (int)pY < 156 ||
-                               (int)pY > 229) {  // NPC zone
+                               (int)pY < 156 || (int)pY > 229) {  // NPC zone
                         if (!((signed int)pX < 566 || (signed int)pX > 629 ||
                               (signed int)pY < 156 || (signed int)pY > 229)) {
                             GameUI_DrawNPCPopup((void *)1);  // NPC 2
