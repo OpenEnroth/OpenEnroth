@@ -4,7 +4,6 @@ set(ENGINE_OBJECTS_SOURCES
         Actor.cpp
         Chest.cpp
         CombinedSkillValue.cpp
-        ItemTable.cpp
         Items.cpp
         Monsters.cpp
         NPC.cpp
@@ -19,7 +18,6 @@ set(ENGINE_OBJECTS_HEADERS
         CombinedSkillValue.h
         ItemEnchantment.h
         ItemEnums.h
-        ItemTable.h
         Items.h
         Monsters.h
         NPC.h

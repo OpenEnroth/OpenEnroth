@@ -5,7 +5,7 @@
 #include "GUI/GUIWindow.h"
 #include "GUI/GUIProgressBar.h"
 
-#include "Engine/Objects/ItemTable.h"
+#include "Engine/Tables/ItemTable.h"
 #include "Engine/Objects/SpriteObject.h"
 #include "Engine/SaveLoad.h"
 #include "Engine/Graphics/Indoor.h"

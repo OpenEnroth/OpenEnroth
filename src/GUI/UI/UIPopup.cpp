@@ -13,9 +13,9 @@
 #include "Engine/Localization.h"
 #include "Engine/Objects/Actor.h"
 #include "Engine/Objects/Chest.h"
-#include "Engine/Objects/ItemTable.h"
 #include "Engine/Objects/ObjectList.h"
 #include "Engine/Objects/SpriteObject.h"
+#include "Engine/Tables/ItemTable.h"
 #include "Engine/Party.h"
 #include "Engine/Time.h"
 
