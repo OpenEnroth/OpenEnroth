@@ -16,7 +16,7 @@
  */
 class LodReader final {
  public:
-    static std::unique_ptr<LodReader> open(const std::string &filename, const std::string &defaultDirectory = ".");
+    static std::shared_ptr<LodReader> open(const std::string &filename, const std::string &defaultDirectory = ".");
 
     inline ~LodReader() {
         if (nullptr != _fp) {

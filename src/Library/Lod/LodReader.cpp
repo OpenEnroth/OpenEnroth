@@ -115,9 +115,9 @@ bool LodReader::parseDirectories(size_t numDirectories) {
     return true;
 }
 
-std::unique_ptr<LodReader> LodReader::open(const std::string &filename, const std::string &defaultDirectory) {
+std::shared_ptr<LodReader> LodReader::open(const std::string &filename, const std::string &defaultDirectory) {
     LodHeader_Mm6 header;
-    auto lod = std::make_unique<LodReader>();
+    std::shared_ptr<LodReader> lod = std::make_shared<LodReader>();
 
     if (nullptr == lod) {
         Warn("LodReader::open: out of memory loading: %s", filename.c_str());

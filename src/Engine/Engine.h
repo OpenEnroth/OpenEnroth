@@ -15,6 +15,7 @@
 #include "Engine/MapInfo.h"
 #include "Engine/EngineIocContainer.h"
 #include "Engine/mm7_data.h"
+#include "Engine/GameResourceManager.h"
 
 #include "Engine/Graphics/Polygon.h"
 #include "Engine/Graphics/BSPModel.h"
@@ -29,7 +30,6 @@
 #include "Utility/String.h"
 
 #include "Library/Logger/Logger.h"
-#include "Library/Lod/LodReader.h"
 
 class Nuklear;
 using Io::KeyboardActionMapping;
@@ -210,7 +210,7 @@ class Engine {
     std::vector<std::string> _levelStrings;
     PersistentVariables _persistentVariables;
 
-    std::unique_ptr<LodReader> _eventsLod = nullptr;
+    std::shared_ptr<GameResourceManager> _gameResourceManager = nullptr;
 };
 
 extern std::shared_ptr<Engine> engine;

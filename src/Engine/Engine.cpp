@@ -836,41 +836,31 @@ void FinalInitialization() {
 }
 
 bool MM7_LoadLods() {
+    engine->_gameResourceManager = std::make_shared<GameResourceManager>();
+    engine->_gameResourceManager->openGameResources();
+
     pIcons_LOD = new LODFile_IconsBitmaps;
     if (!pIcons_LOD->Load(MakeDataPath("data", "icons.lod"), "icons")) {
-        Error("Some files are missing\n\nPlease Reinstall.");
+        Error(localization->GetString(LSTR_PLEASE_REINSTALL), localization->GetString(LSTR_REINSTALL_NECESSARY));
         return false;
     }
     pIcons_LOD->_011BA4_debug_paletted_pixels_uncompressed = false;
 
     pEvents_LOD = new LODFile_IconsBitmaps;
     if (!pEvents_LOD->Load(MakeDataPath("data", "events.lod"), "icons")) {
-        Error("Some files are missing\n\nPlease Reinstall.");
+        Error(localization->GetString(LSTR_PLEASE_REINSTALL), localization->GetString(LSTR_REINSTALL_NECESSARY));
         return false;
     }
-
-    engine->_eventsLod = LodReader::open(MakeDataPath("data", "events.lod"), "icons");
-    if (!engine->_eventsLod) {
-        Error("Some files are missing\n\nPlease Reinstall.");
-        return false;
-    }
-    engine->_eventsLod->ls();
 
     pBitmaps_LOD = new LODFile_IconsBitmaps;
     if (!pBitmaps_LOD->Load(MakeDataPath("data", "bitmaps.lod"), "bitmaps")) {
-        Error(
-            localization->GetString(LSTR_PLEASE_REINSTALL),
-            localization->GetString(LSTR_REINSTALL_NECESSARY)
-        );
+        Error(localization->GetString(LSTR_PLEASE_REINSTALL), localization->GetString(LSTR_REINSTALL_NECESSARY));
         return false;
     }
 
     pSprites_LOD = new LODFile_Sprites;
     if (!pSprites_LOD->Load(MakeDataPath("data", "sprites.lod"), "sprites08")) {
-        Error(
-            localization->GetString(LSTR_PLEASE_REINSTALL),
-            localization->GetString(LSTR_REINSTALL_NECESSARY)
-        );
+        Error(localization->GetString(LSTR_PLEASE_REINSTALL), localization->GetString(LSTR_REINSTALL_NECESSARY));
         return false;
     }
 
