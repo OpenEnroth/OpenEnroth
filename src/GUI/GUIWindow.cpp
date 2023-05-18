@@ -65,22 +65,6 @@ GUIWindow *pGameOverWindow; // UIMSG_ShowGameOverWindow
 bool bGameOverWindowCheckExit{ false }; // TODO(pskelton): contain
 GUIWindow *pGUIWindow_BranchlessDialogue; // branchless dialougue
 
-typedef struct _RGBColor {
-    unsigned char R;
-    unsigned char B;
-    unsigned char G;
-} RGBColor;
-
-std::array<RGBColor, 20> spell_tooltip_colors = { {
-    { 0x96, 0xD4, 0xFF }, { 0xFF, 0x80, 0x00 }, { 0xFF, 0xFF, 0x9B },
-    { 0xE1, 0xE1, 0xE1 }, { 0x80, 0x80, 0x80 }, { 0x96, 0xD4, 0xFF },
-    { 0xFF, 0x55, 0x00 }, { 0x96, 0xD4, 0xFF }, { 0xFF, 0x55, 0x00 },
-    { 0xE1, 0xE1, 0xE1 }, { 0xFF, 0x55, 0x00 }, { 0x96, 0xD4, 0xFF },
-    { 0xEB, 0x0F, 0xFF }, { 0xFF, 0x80, 0x00 }, { 0x96, 0xD4, 0xFF },
-    { 0x80, 0x80, 0x80 }, { 0xFF, 0x55, 0x00 }, { 0x00, 0x80, 0xFF },
-    { 0x00, 0x80, 0xFF }, { 0x96, 0xD4, 0xFF }
-} };
-
 enum WindowType current_character_screen_window;
 std::list<GUIWindow*> lWindowList;
 
@@ -183,42 +167,6 @@ GUIButton *GUI_HandleHotkey(PlatformKey hotkey) {
         }
     }
     return 0;
-}
-
-//----- (0041D73D) --------------------------------------------------------
-void GUIWindow::_41D73D_draw_buff_tooltip() {
-    unsigned short text_color;
-    int Y_pos;         // esi@11
-    int string_count;  // [sp+20h] [bp-4h]@7
-
-    string_count = 0;
-    for (int i = 0; i < 20; ++i) {
-        if (pParty->pPartyBuffs[i].Active()) ++string_count;
-    }
-
-    uFrameHeight = pFontArrus->GetHeight() + 72;
-    uFrameHeight += (string_count - 1) * pFontArrus->GetHeight();
-    uFrameZ = uFrameWidth + uFrameX - 1;
-    uFrameW = uFrameY + uFrameHeight - 1;
-    DrawMessageBox(0);
-    DrawTitleText(pFontArrus, 0, 12, 0, localization->GetString(LSTR_ACTIVE_PARTY_SPELLS), 3);
-    if (!string_count)
-        DrawTitleText(pFontComic, 0, 40, 0, localization->GetString(LSTR_NONE), 3);
-
-    string_count = 0;
-    for (int i = 0; i < 20; ++i) {
-        if (pParty->pPartyBuffs[i].Active()) {
-            auto remaing_time =
-                pParty->pPartyBuffs[i].expireTime - pParty->GetPlayingTime();
-            Y_pos = string_count * pFontComic->GetHeight() + 40;
-            text_color = color16(spell_tooltip_colors[i].R, spell_tooltip_colors[i].G, spell_tooltip_colors[i].B);
-            DrawText(pFontComic, {52, Y_pos}, text_color,
-                localization->GetSpellName(i), 0, 0, 0);
-            DrawBuff_remaining_time_string(Y_pos, this, remaing_time,
-                pFontComic);
-            ++string_count;
-        }
-    }
 }
 
 //----- (0041D08F) --------------------------------------------------------
