@@ -12,7 +12,6 @@ void GameResourceManager::openGameResources() {
     if (!_eventsLodReader) {
         Error(localization->GetString(LSTR_PLEASE_REINSTALL), localization->GetString(LSTR_REINSTALL_NECESSARY));
     }
-    _eventsLodReader->ls();
 }
 
 Blob GameResourceManager::getEventsFile(const std::string &filename) {
