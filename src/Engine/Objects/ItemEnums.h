@@ -5,6 +5,7 @@
 #include <utility>
 
 #include "Engine/ErrorHandling.h"
+#include "Engine/Objects/CombinedSkillValue.h"
 
 #include "Utility/Flags.h"
 #include "Utility/Segment.h"
@@ -1071,6 +1072,30 @@ inline bool isRandomItem(ITEM_TYPE type) {
 inline ITEM_TREASURE_LEVEL randomItemTreasureLevel(ITEM_TYPE type) {
     Assert(isRandomItem(type));
     return ITEM_TREASURE_LEVEL(-std::to_underlying(type));
+}
+
+inline Segment<ITEM_TYPE> spellsOfSchool(DAMAGE_TYPE damage, PLAYER_SKILL_MASTERY maxMastery = PLAYER_SKILL_MASTERY_GRANDMASTER) {
+    assert(damage != DMGT_PHISYCAL && damage != DMGT_MAGICAL);
+    int damageTypeSequential = (damage >= DMGT_SPIRIT) ? std::to_underlying(damage) - 2 : std::to_underlying(damage);
+    int firstSpell = std::to_underlying(ITEM_FIRST_SPELL_BOOK);
+    int numSpells = 11;
+    switch(maxMastery) {
+      case PLAYER_SKILL_MASTERY_NOVICE:
+        numSpells = 4;
+        break;
+      case PLAYER_SKILL_MASTERY_EXPERT:
+        numSpells = 7;
+        break;
+      case PLAYER_SKILL_MASTERY_MASTER:
+        numSpells = 10;
+        break;
+      case PLAYER_SKILL_MASTERY_GRANDMASTER:
+        numSpells = 11;
+        break;
+    }
+    int firstSpellInSchool = firstSpell + 11 * damageTypeSequential;
+    int lastSpellInSchool = firstSpellInSchool + numSpells - 1;
+    return Segment(ITEM_TYPE(firstSpellInSchool), ITEM_TYPE(lastSpellInSchool));
 }
 
 inline Segment<ITEM_TYPE> recipeScrolls() {

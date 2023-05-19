@@ -26,6 +26,55 @@
 
 #include "Library/Random/Random.h"
 
+#include "Utility/IndexedArray.h"
+
+IndexedArray<DAMAGE_TYPE, BuildingType_FireGuild, BuildingType_DarkGuild> guildSpellsSchool = {
+    {BuildingType_FireGuild,   DMGT_FIRE},
+    {BuildingType_AirGuild,    DMGT_ELECTR},
+    {BuildingType_WaterGuild,  DMGT_COLD},
+    {BuildingType_EarthGuild,  DMGT_EARTH},
+    {BuildingType_SpiritGuild, DMGT_SPIRIT},
+    {BuildingType_MindGuild,   DMGT_MIND},
+    {BuildingType_BodyGuild,   DMGT_BODY},
+    {BuildingType_LightGuild,  DMGT_LIGHT},
+    {BuildingType_DarkGuild,   DMGT_DARK}
+};
+
+IndexedArray<PLAYER_SKILL_MASTERY, HOUSE_FIRE_GUILD_INITIATE_EMERALD_ISLE, HOUSE_DARK_GUILD_PARAMOUNT_PIT> guildSpellsMastery = {
+    {HOUSE_FIRE_GUILD_INITIATE_EMERALD_ISLE,   PLAYER_SKILL_MASTERY_NOVICE},
+    {HOUSE_FIRE_GUILD_ADEPT_HARMONDALE,        PLAYER_SKILL_MASTERY_EXPERT},
+    {HOUSE_FIRE_GUILD_MASTER_TULAREAN_FOREST,  PLAYER_SKILL_MASTERY_MASTER},
+    {HOUSE_FIRE_GUILD_PARAMOUNT_NIGHON,        PLAYER_SKILL_MASTERY_GRANDMASTER},
+    {HOUSE_AIR_GUILD_INITIATE_EMERALD_ISLE,    PLAYER_SKILL_MASTERY_NOVICE},
+    {HOUSE_AIR_GUILD_ADEPT_HARMONDALE,         PLAYER_SKILL_MASTERY_EXPERT},
+    {HOUSE_AIR_GUILD_MASTER_TULAREAN_FOREST,   PLAYER_SKILL_MASTERY_MASTER},
+    {HOUSE_AIR_GUILD_PARAMOUNT_CELESTE,        PLAYER_SKILL_MASTERY_GRANDMASTER},
+    {HOUSE_WATER_GUILD_INITIATE_HARMONDALE,    PLAYER_SKILL_MASTERY_NOVICE},
+    {HOUSE_WATER_GUILD_ADEPT_TULAREAN_FOREST,  PLAYER_SKILL_MASTERY_EXPERT},
+    {HOUSE_WATER_GUILD_MASTER_BRACADA_DESERT,  PLAYER_SKILL_MASTERY_MASTER},
+    {HOUSE_WATER_GUILD_PARAMOUNT_EVENMORN,     PLAYER_SKILL_MASTERY_GRANDMASTER},
+    {HOUSE_EARTH_GUILD_INITIATE_HARMONDALE,    PLAYER_SKILL_MASTERY_NOVICE},
+    {HOUSE_EARTH_GUILD_ADEPT_TULAREAN_FOREST,  PLAYER_SKILL_MASTERY_EXPERT},
+    {HOUSE_EARTH_GUILD_MASTER_STONE_CITY,      PLAYER_SKILL_MASTERY_MASTER},
+    {HOUSE_EARTH_GUILD_PARAMOUNT_PIT,          PLAYER_SKILL_MASTERY_GRANDMASTER},
+    {HOUSE_SPIRIT_GUILD_INITIATE_EMERALD_ISLE, PLAYER_SKILL_MASTERY_NOVICE},
+    {HOUSE_SPIRIT_GUILD_ADEPT_HARMONDALE,      PLAYER_SKILL_MASTERY_EXPERT},
+    {HOUSE_SPIRIT_GUILD_MASTER_DEYJA,          PLAYER_SKILL_MASTERY_MASTER},
+    {HOUSE_SPIRIT_GUILD_PARAMOUNT_ERATHIA,     PLAYER_SKILL_MASTERY_GRANDMASTER},
+    {HOUSE_MIND_GUILD_INITIATE_HARMONDALE,     PLAYER_SKILL_MASTERY_NOVICE},
+    {HOUSE_MIND_GUILD_ADEPT_ERATHIA,           PLAYER_SKILL_MASTERY_EXPERT},
+    {HOUSE_MIND_GUILD_MASTER_TATALIA,          PLAYER_SKILL_MASTERY_MASTER},
+    {HOUSE_MIND_GUILD_PARAMOUNT_AVLEE,         PLAYER_SKILL_MASTERY_GRANDMASTER},
+    {HOUSE_BODY_GUILD_INITIATE_EMERALD_ISLE,   PLAYER_SKILL_MASTERY_NOVICE},
+    {HOUSE_BODY_GUILD_ADEPT_HARMONDALE,        PLAYER_SKILL_MASTERY_EXPERT},
+    {HOUSE_BODY_GUILD_MASTER_ERATHIA,          PLAYER_SKILL_MASTERY_MASTER},
+    {HOUSE_BODY_GUILD_PARAMOUNT_AVLEE,         PLAYER_SKILL_MASTERY_GRANDMASTER},
+    {HOUSE_LIGHT_GUILD_ADEPT_BRACADA_DESERT,   PLAYER_SKILL_MASTERY_EXPERT},
+    {HOUSE_LIGHT_GUILD_PARAMOUNT_CELESTE,      PLAYER_SKILL_MASTERY_GRANDMASTER},
+    {HOUSE_DARK_GUILD_ADEPT_DEYJA,             PLAYER_SKILL_MASTERY_EXPERT},
+    {HOUSE_DARK_GUILD_PARAMOUNT_PIT,           PLAYER_SKILL_MASTERY_GRANDMASTER}
+};
+
 void GuildDialog() {
     int pTextHeight;              // eax@55
     int dialogopts;               // [sp+2E0h] [bp-Ch]@35
@@ -141,41 +190,29 @@ void GuildDialog() {
     pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 1, 0);
 }
 
-//----- (004BC8D5) --------------------------------------------------------
-void SpellBookGenerator() {  // for GuildDialogs
-    ITEM_TYPE pItemNum;   // esi@1
-    int randomnum;  // esi@7
+void generateSpellBooksForGuild() {
+    BuildingType guildType = buildingTable[window_SpeakInHouse->wData.val - 1].uType;
+
+    // Combined guilds exist only in MM6/MM8 and need to be processed separately
+    assert(guildType >= BuildingType_FireGuild && guildType <= BuildingType_DarkGuild);
+
+    DAMAGE_TYPE schoolType = guildSpellsSchool[guildType];
+    PLAYER_SKILL_MASTERY maxMastery = guildSpellsMastery[HOUSE_ID(window_SpeakInHouse->wData.val)];
+    Segment<ITEM_TYPE> spellsForGuild = spellsOfSchool(schoolType, maxMastery);
 
     for (int i = 0; i < 12; ++i) {
-        // TODO(captainurist): clean up these ITEM_TYPE casts.
-        if (buildingTable[window_SpeakInHouse->wData.val - 1].uType >= BuildingType_FireGuild) {
-            if (buildingTable[window_SpeakInHouse->wData.val - 1].uType <= BuildingType_DarkGuild) {
-                pItemNum = ITEM_TYPE(grng->random(word_4F0F30[window_SpeakInHouse->wData.val - HOUSE_FIRE_GUILD_INITIATE_EMERALD_ISLE]) +
-                    11 * std::to_underlying(buildingTable[window_SpeakInHouse->wData.val - 1].uType) +
-                                     345);
-            } else {
-                if (buildingTable[window_SpeakInHouse->wData.val - 1].uType == BuildingType_ElementalGuild)
-                    randomnum = grng->random(4);
-                else if (buildingTable[window_SpeakInHouse->wData.val - 1].uType == BuildingType_SelfGuild)
-                    randomnum = grng->random(3) + 4;
-                else if (buildingTable[window_SpeakInHouse->wData.val - 1].uType == BuildingType_MirroredPath)
-                    randomnum = grng->random(2) + 7;
-                if (buildingTable[window_SpeakInHouse->wData.val - 1].uType <= BuildingType_MirroredPath)
-                    pItemNum = ITEM_TYPE(grng->random(word_4F0F30[window_SpeakInHouse->wData.val - HOUSE_FIRE_GUILD_INITIATE_EMERALD_ISLE]) +
-                        11 * randomnum +
-                                         400);
+        ITEM_TYPE pItemNum = grng->randomSample(spellsForGuild);
+
+        if (pItemNum == ITEM_SPELLBOOK_DIVINE_INTERVENTION) {
+            if (!pParty->_questBits[QBIT_DIVINE_INTERVENTION_RETRIEVED]) {
+                pItemNum = ITEM_SPELLBOOK_SUNRAY;
             }
         }
 
-        if (pItemNum == ITEM_SPELLBOOK_DIVINE_INTERVENTION) {
-            if (!pParty->_questBits[QBIT_DIVINE_INTERVENTION_RETRIEVED])
-                pItemNum = ITEM_SPELLBOOK_SUNRAY;
-        }
-
-        ItemGen *item_spellbook = &pParty->SpellBooksInGuilds[window_SpeakInHouse->wData.val - HOUSE_FIRE_GUILD_INITIATE_EMERALD_ISLE][i];
-        item_spellbook->Reset();
-        pParty->SpellBooksInGuilds[window_SpeakInHouse->wData.val - HOUSE_FIRE_GUILD_INITIATE_EMERALD_ISLE][i].uItemID = pItemNum;
-        pParty->SpellBooksInGuilds[window_SpeakInHouse->wData.val - HOUSE_FIRE_GUILD_INITIATE_EMERALD_ISLE][i].SetIdentified();
+        ItemGen *itemSpellbook = &pParty->SpellBooksInGuilds[window_SpeakInHouse->wData.val - HOUSE_FIRE_GUILD_INITIATE_EMERALD_ISLE][i];
+        itemSpellbook->Reset();
+        itemSpellbook->uItemID = pItemNum;
+        itemSpellbook->SetIdentified();
 
         shop_ui_items_in_store[i] = assets->getImage_ColorKey(pItemTable->pItems[pItemNum].iconName);
     }

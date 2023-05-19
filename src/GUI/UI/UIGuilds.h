@@ -1,2 +1,6 @@
 #pragma once
-void SpellBookGenerator();
+
+/**
+ * @offset 0x4BC8D5
+ */
+void generateSpellBooksForGuild();

@@ -432,8 +432,8 @@ int EventInterpreter::executeOneEvent(int step, bool isNpc) {
                     HouseDialogPressCloseBtn();
                     window_SpeakInHouse->Release();
                     pParty->uFlags &= ~PARTY_FLAGS_1_ForceRedraw;
-                    if (enterHouse(HOUSE_DARK_GUILD_PIT)) {
-                        createHouseUI(HOUSE_DARK_GUILD_PIT);
+                    if (enterHouse(HOUSE_DARK_GUILD_PARAMOUNT_PIT)) {
+                        createHouseUI(HOUSE_DARK_GUILD_PARAMOUNT_PIT);
                         current_npc_text = pNPCTopics[90].pText;
                     }
                 }
@@ -442,20 +442,23 @@ int EventInterpreter::executeOneEvent(int step, bool isNpc) {
         }
         case EVENT_MoveNPC:
             pNPCStats->pNewNPCData[ir.data.npc_move_descr.npc_id].Location2D = ir.data.npc_move_descr.location_id;
+            // Looks like it's artifact of MM6
+#if 0
             if (window_SpeakInHouse) {
-                if (window_SpeakInHouse->wData.val == HOUSE_BODY_GUILD_ERATHIA) {
+                if (window_SpeakInHouse->wData.val == HOUSE_BODY_GUILD_MASTER_ERATHIA) {
                     HouseDialogPressCloseBtn();
                     pMediaPlayer->Unload();
                     window_SpeakInHouse->Release();
                     pParty->uFlags &= ~PARTY_FLAGS_1_ForceRedraw;
                     activeLevelDecoration = (LevelDecoration *)1;
-                    if (enterHouse(HOUSE_BODY_GUILD_ERATHIA)) {
+                    if (enterHouse(HOUSE_BODY_GUILD_MASTER_ERATHIA)) {
                         pAudioPlayer->playUISound(SOUND_Invalid);
-                        window_SpeakInHouse = new GUIWindow_House({0, 0}, render->GetRenderDimensions(), HOUSE_BODY_GUILD_ERATHIA, "");
+                        window_SpeakInHouse = new GUIWindow_House({0, 0}, render->GetRenderDimensions(), HOUSE_BODY_GUILD_MASTER_ERATHIA, "");
                         window_SpeakInHouse->DeleteButtons();
                     }
                 }
             }
+#endif
             break;
         case EVENT_GiveItem:
         {
