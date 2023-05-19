@@ -4129,117 +4129,66 @@ void toggleActorGroupFlag(unsigned int uGroupID, ActorAttribute uFlag,
 
 //----- (004014E6) --------------------------------------------------------
 void Actor::MakeActorAIList_ODM() {
-    int v1;           // eax@4
-    unsigned int v7;  // ST20_4@10
-    int distance;     // edi@10
-                      //  int v10; // ebx@14
-    int v21;          // [sp+Ch] [bp-14h]@4
-    int v22;          // [sp+10h] [bp-10h]@4
+    std::vector<std::pair<int, int>> activeActorsDistances;
 
-    pParty->uFlags &= 0xFFFFFFCF;  // ~0x30
+    pParty->uFlags &= ~PARTY_FLAGS_1_ALERT_RED_OR_YELLOW;
 
-    ai_arrays_size = 0;
-    for (uint i = 0; i < pActors.size(); ++i) {
-        Actor *actor = &pActors[i];
-
-        actor->ResetFullAiState();  // ~0x400
-        if (!actor->CanAct()) {
-            actor->ResetActive();
+    for (int i = 0; i < pActors.size(); ++i) {
+        pActors[i].ResetFullAiState();
+        if (!pActors[i].CanAct()) {
+            pActors[i].ResetActive();
             continue;
         }
 
-        v22 = abs(pParty->vPosition.z - actor->vPosition.z);
-        v21 = abs(pParty->vPosition.y - actor->vPosition.y);
-        v1 = abs(pParty->vPosition.x - actor->vPosition.x);
-        v7 = int_get_vector_length(v22, v21, v1);
-        distance = v7 - actor->uActorRadius;
-        if (distance < 0) distance = 0;
+        int delta_x = abs(pParty->vPosition.x - pActors[i].vPosition.x);
+        int delta_y = abs(pParty->vPosition.y - pActors[i].vPosition.y);
+        int delta_z = abs(pParty->vPosition.z - pActors[i].vPosition.z);
+
+        int distance = int_get_vector_length(delta_x, delta_y, delta_z) - pActors[i].uActorRadius;
+        if (distance < 0)
+            distance = 0;
 
         if (distance < 5632) {
-            actor->ResetHostile();
-            if (actor->ActorEnemy() || actor->GetActorsRelation(0)) {
-                // v11 = (pParty->uFlags & 0x10) == 0;
-                actor->uAttributes |= ACTOR_HOSTILE;
-                if (distance < 5120) pParty->SetYellowAlert();
-                if (distance < 307) pParty->SetRedAlert();
+            pActors[i].ResetHostile();
+            if (pActors[i].ActorEnemy() || pActors[i].GetActorsRelation(0)) {
+                pActors[i].uAttributes |= ACTOR_HOSTILE;
+                if (distance < 5120)
+                    pParty->SetYellowAlert();
+                if (distance < 307)
+                    pParty->SetRedAlert();
             }
-            actor->uAttributes |= ACTOR_ACTIVE;
-            ai_near_actors_distances[ai_arrays_size] = distance;
-            ai_near_actors_ids[ai_arrays_size++] = i;
+            pActors[i].uAttributes |= ACTOR_ACTIVE;
+            activeActorsDistances.push_back({i, distance});
         } else {
-            actor->ResetActive();
+            pActors[i].ResetActive();
         }
     }
 
-    /*
-    result = v27;
-    if ( v27 > 0 )
-    {
-      v14 = 0;
-      v15 = 1;
-      v26 = 1;
-      do
-      {
-        while ( 1 )
-        {
-          v24 = v15;
-          if ( v15 >= result )
-            break;
-          v16 = ai_near_actors_distances[v14];
-          if ( v16 > ai_near_actors_distances[v15] )
-          {
-            v17 = &ai_near_actors_ids[v15];
-            v18 = ai_near_actors_ids[v14];
-            ai_near_actors_ids[v14] = *v17;
-            *v17 = v18;
-            v15 = v24;
-            ai_near_actors_distances[v14] = ai_near_actors_distances[v24];
-            ai_near_actors_distances[v24] = v16;
-          }
-          result = v27;
-          ++v15;
-        }
-        ++v14;
-        v15 = v26 + 1;
-        v26 = v15;
-      }
-      while ( v15 - 1 < result );
-    }*/
+    // sort active actors by distance
+    std::sort(activeActorsDistances.begin(), activeActorsDistances.end(), [] (std::pair<int, int> a, std::pair<int, int> b) {
+              return a.second < b.second; });
 
-
-    // bubble sort nearest actors
-    for (int i = 0; i < ai_arrays_size; ++i) {
-        for (int j = 0; j < i; ++j) {
-            if (ai_near_actors_distances[j] > ai_near_actors_distances[i]) {
-                int tmp = ai_near_actors_distances[j];
-                ai_near_actors_distances[j] = ai_near_actors_distances[i];
-                ai_near_actors_distances[i] = tmp;
-
-                tmp = ai_near_actors_ids[j];
-                ai_near_actors_ids[j] = ai_near_actors_ids[i];
-                ai_near_actors_ids[i] = tmp;
-            }
-        }
+    // and takes nearest 30
+    for (int i = 0; (i < 30) && (i < activeActorsDistances.size()); i++) {
+        ai_near_actors_ids[i] = activeActorsDistances[i].first;
+        pActors[ai_near_actors_ids[i]].uAttributes |= ACTOR_FULL_AI_STATE;
     }
 
-    if (ai_arrays_size > 30) ai_arrays_size = 30;
-
-    for (int i = 0; i < ai_arrays_size; ++i)
-        pActors[ai_near_actors_ids[i]].uAttributes |= ACTOR_FULL_AI_STATE;  // 0x400
+    ai_arrays_size = std::min(30, (int)activeActorsDistances.size());
 }
 
 //----- (004016FA) --------------------------------------------------------
 int Actor::MakeActorAIList_BLV() {
-    //  __debugbreak(); // refactor for blv ai
+    std::vector<std::pair<int, int>> activeActorsDistances;
+    std::vector<std::pair<int, int>> pickedActors;
+    std::vector<int> pickedActorIds;
 
     // reset party alert level
-    pParty->uFlags &= ~PARTY_FLAGS_1_ALERT_RED_OR_YELLOW;  // ~0x30
-    int party_sector = pBLVRenderParams->uPartySectorID;
+    pParty->uFlags &= ~PARTY_FLAGS_1_ALERT_RED_OR_YELLOW;
 
     // find actors that are in range and can act
-    uint active_actor_count = 0;
-    for (uint i = 0; i < pActors.size(); ++i) {
-        pActors[i].ResetFullAiState();  // ~0x0400
+    for (int i = 0; i < pActors.size(); ++i) {
+        pActors[i].ResetFullAiState();
 
         if (!pActors[i].CanAct()) {
             pActors[i].ResetActive();
@@ -4250,12 +4199,13 @@ int Actor::MakeActorAIList_BLV() {
         int delta_y = abs(pParty->vPosition.y - pActors[i].vPosition.y);
         int delta_z = abs(pParty->vPosition.z - pActors[i].vPosition.z);
 
-        int distance = int_get_vector_length(delta_z, delta_y, delta_x) - pActors[i].uActorRadius;
-        if (distance < 0) distance = 0;
+        int distance = int_get_vector_length(delta_x, delta_y, delta_z) - pActors[i].uActorRadius;
+        if (distance < 0)
+            distance = 0;
 
         // actor is in range
         if (distance < 10240) {
-            pActors[i].ResetHostile();  // ~0x01000000
+            pActors[i].ResetHostile();
             if (pActors[i].ActorEnemy() || pActors[i].GetActorsRelation(0)) {
                 pActors[i].uAttributes |= ACTOR_HOSTILE;
                 if (!(pParty->GetRedAlert()) && (double)distance < 307.2)
@@ -4263,96 +4213,58 @@ int Actor::MakeActorAIList_BLV() {
                 if (!(pParty->GetYellowAlert()) && distance < 5120)
                     pParty->SetYellowAlert();
             }
-            ai_near_actors_distances[active_actor_count] = distance;
-            ai_near_actors_ids[active_actor_count] = i;
-            active_actor_count++;
+            activeActorsDistances.push_back({i, distance});
         } else {
             // otherwise idle
             pActors[i].ResetActive();
         }
     }
 
-    // bubble sorting active actors by distance
-    if (active_actor_count > 0) {
-        for (uint i = 0; i < active_actor_count; i++) {
-            int change = 0;
-            for (uint j = 0; j < active_actor_count - i - 1; j++) {
-                if (ai_near_actors_distances[j] > ai_near_actors_distances[j + 1]) {
-                    std::swap(ai_near_actors_ids[j], ai_near_actors_ids[j + 1]);
-                    std::swap(ai_near_actors_distances[j], ai_near_actors_distances[j + 1]);
-                    change = 1;
-                }
-            }
-            // if no change the list is sorted
-            if (!change) break;
-        }
-    }
+    // sort active actors by distance
+    std::sort(activeActorsDistances.begin(), activeActorsDistances.end(), [] (std::pair<int, int> a, std::pair<int, int> b) {
+              return a.second < b.second; });
 
-    // checks nearby actors can detect player and takes nearest 30
-    int num_actors_detect_player = 0;
-    for (int i = 0; i < active_actor_count; i++) {
-        if (pActors[ai_near_actors_ids[i]].ActorNearby() ||
-            Detect_Between_Objects(
-                PID(OBJECT_Actor, ai_near_actors_ids[i]), PID(OBJECT_Player, 0))) {
-            pActors[ai_near_actors_ids[i]].uAttributes |= ACTOR_NEARBY;
-            ai_array_detected_actor_ids[num_actors_detect_player] = ai_near_actors_ids[i];
-            ai_array_detected_actor_dist[num_actors_detect_player++] = ai_near_actors_distances[i];
-            if (num_actors_detect_player >= 30) break;
-        }
-    }
+    // checks nearby actors can detect player
+    std::copy_if(activeActorsDistances.begin(), activeActorsDistances.end(), std::back_inserter(pickedActors), [&] (std::pair<int, int> val) {
+                 return pActors[val.first].ActorNearby() || Detect_Between_Objects(PID(OBJECT_Actor, val.first), PID(OBJECT_Player, 0)); });
 
-    ai_arrays_size = num_actors_detect_player;
+    // and takes nearest 30
+    for (int i = 0; (i < 30) && (i < pickedActors.size()); i++) {
+        pickedActorIds.push_back(pickedActors[i].first);
+        pActors[pickedActors[i].first].uAttributes |= ACTOR_NEARBY;
+    }
 
     // add any actors than can act and are in the same sector
-    for (uint i = 0; i < (signed int)pActors.size(); ++i) {
-        if (pActors[i].CanAct() && pActors[i].uSectorID == party_sector) {
-            int v25 = 0;
-            if (num_actors_detect_player <= 0) {
+    for (int i = 0; i < pActors.size(); ++i) {
+        if (pActors[i].CanAct() && pActors[i].uSectorID == pBLVRenderParams->uPartySectorID) {
+            auto found = std::find_if(pickedActorIds.begin(), pickedActorIds.end(), [&] (int id) { return id == i; });
+            if (found == pickedActorIds.end()) {
                 pActors[i].uAttributes |= ACTOR_ACTIVE;
-                ai_array_detected_actor_ids[ai_arrays_size++] = i;
-            } else {
-                // convoluted way of checking that this actor is not already on the list
-                while (ai_array_detected_actor_ids[v25] != i) {
-                    ++v25;
-                    if (v25 >= num_actors_detect_player) {
-                        pActors[i].uAttributes |= ACTOR_ACTIVE;
-                        ai_array_detected_actor_ids[ai_arrays_size++] = i;
-                        break;
-                    }
-                }
+                pickedActorIds.push_back(i);
             }
         }
     }
 
     // add any actors that are active and have previosuly detected the player
-    for (int j = 0; j < active_actor_count; ++j) {
-        if (pActors[ai_near_actors_ids[j]].uAttributes & (ACTOR_ACTIVE | ACTOR_NEARBY) && pActors[ai_near_actors_ids[j]].CanAct()) {
-            int v30 = 0;
-            if (ai_arrays_size <= 0) {
-                ai_array_detected_actor_ids[ai_arrays_size++] = ai_near_actors_ids[j];
-            } else {
-                // convoluted way of checking that this actor is not already on the list
-                while (ai_array_detected_actor_ids[v30] != ai_near_actors_ids[j]) {
-                    ++v30;
-                    if (v30 >= ai_arrays_size) {
-                        ai_array_detected_actor_ids[ai_arrays_size++] = ai_near_actors_ids[j];
-                        break;
-                    }
-                }
+    for (std::pair<int, int> &val : activeActorsDistances) {
+        if (pActors[val.first].uAttributes & (ACTOR_ACTIVE | ACTOR_NEARBY) && pActors[val.first].CanAct()) {
+            auto found = std::find_if(pickedActorIds.begin(), pickedActorIds.end(), [&] (int id) { return id == val.first; });
+            if (found == pickedActorIds.end()) {
+                pActors[val.first].uAttributes |= ACTOR_ACTIVE;
+                pickedActorIds.push_back(val.first);
             }
         }
     }
 
-    // take the first 30 from list
-    if (ai_arrays_size > 30) ai_arrays_size = 30;
-    memcpy(ai_near_actors_ids.data(), ai_array_detected_actor_ids.data(), 4 * ai_arrays_size);
-    memcpy(ai_near_actors_distances.data(), ai_array_detected_actor_dist.data(), 4 * ai_arrays_size);
+    // activate ai state for first 30 actors from list
+    for (int i = 0; (i < 30) && (i < pickedActorIds.size()); i++) {
+        ai_near_actors_ids[i] = pickedActorIds[i];
+        pActors[pickedActorIds[i]].uAttributes |= ACTOR_FULL_AI_STATE;
+    }
 
-    // activate ai state for these actors
-    for (int i = 0; i < ai_arrays_size; i++)
-        pActors[ai_near_actors_ids[i]].uAttributes |= ACTOR_FULL_AI_STATE;  // 0x400
+    ai_arrays_size = std::min(30, (int)pickedActorIds.size());
 
-    return ai_arrays_size;
+    return std::min(30, (int)pickedActorIds.size());
 }
 
 //----- (004070EF) --------------------------------------------------------

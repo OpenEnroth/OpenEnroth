@@ -74,12 +74,9 @@ extern std::array<std::pair<int16_t, ITEM_TYPE>, 27> _4F0882_evt_VAR_PlayerItemI
 extern std::array<unsigned short, 6> pMaxLevelPerTrainingHallType;
 extern std::array<int, 11> price_for_membership;
 extern std::array<int16_t, 32> word_4F0F30;
-extern std::array<int, 500> ai_array_detected_actor_dist;
-extern std::array<int, 500> ai_array_detected_actor_ids;
 extern std::array<int, 500> ai_near_actors_targets_pid;
-extern int ai_arrays_size;
-extern std::array<int, 500> ai_near_actors_distances;
 extern std::array<unsigned int, 500> ai_near_actors_ids;
+extern int ai_arrays_size;
 
 // extern std::array<unsigned int, 480> pSRZBufferLineOffsets;
 // extern Texture_MM7 *dword_50640C[];
