@@ -184,8 +184,9 @@ void CastSpellInfoHelpers::castSpell() {
         } else {
             which_skill = getSkillTypeForSpell(pCastSpell->uSpellID);
 
-            spell_level = pPlayer->GetActualSkillLevel(which_skill);
-            spell_mastery = pPlayer->GetActualSkillMastery(which_skill);
+            CombinedSkillValue val = pPlayer->getActualSkillValue(which_skill);
+            spell_level = val.level();
+            spell_mastery = val.mastery();
 
             if (engine->config->debug.AllMagic.value()) {
                 spell_level = 10;
