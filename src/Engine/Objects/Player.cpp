@@ -2298,7 +2298,7 @@ int Player::GetActualResistance(CHARACTER_ATTRIBUTE_TYPE resistance) const {
         leatherSkill.mastery() == PLAYER_SKILL_MASTERY_GRANDMASTER &&
         HasItemEquipped(ITEM_SLOT_ARMOUR) &&
         GetEquippedItemSkillType(ITEM_SLOT_ARMOUR) == PLAYER_SKILL_LEATHER)
-        v10 += leatherSkill.level();  // &0x3F;
+        v10 += leatherSkill.level();
 
     switch (resistance) {
         case CHARACTER_ATTRIBUTE_RESIST_FIRE:
@@ -2940,7 +2940,7 @@ int Player::GetSkillBonus(CHARACTER_ATTRIBUTE_TYPE inSkill) const {
             multiplier =
                 GetMultiplierForSkillLevel(PLAYER_SKILL_ARMSMASTER, 0, 1, 1, 2);
         }
-        armsMasterBonus = multiplier * (armmaster_skill);  //& 0x3F);
+        armsMasterBonus = multiplier * armmaster_skill;
     }
 
     switch (inSkill) {
@@ -2949,7 +2949,7 @@ int Player::GetSkillBonus(CHARACTER_ATTRIBUTE_TYPE inSkill) const {
                 int bowSkillLevel = getActualSkillValue(PLAYER_SKILL_BOW).level();
                 int multiplier =
                     GetMultiplierForSkillLevel(PLAYER_SKILL_BOW, 0, 0, 0, 1);
-                return multiplier * (bowSkillLevel & 0x3F);
+                return multiplier * bowSkillLevel;
             }
             return 0;
             break;
@@ -3014,7 +3014,7 @@ int Player::GetSkillBonus(CHARACTER_ATTRIBUTE_TYPE inSkill) const {
                         default:
                             break;
                     }
-                    ACSum += multiplier * (currArmorSkillLevel & 0x3F);
+                    ACSum += multiplier * currArmorSkillLevel;
                 }
             }
 
@@ -3022,7 +3022,7 @@ int Player::GetSkillBonus(CHARACTER_ATTRIBUTE_TYPE inSkill) const {
             int multiplier =
                 GetMultiplierForSkillLevel(PLAYER_SKILL_DODGE, 1, 2, 3, 3);
             if (!wearingArmor && (!wearingLeather || dodgeValue.mastery() == PLAYER_SKILL_MASTERY_GRANDMASTER)) {
-                ACSum += multiplier * (dodgeValue.level() & 0x3F);
+                ACSum += multiplier * dodgeValue.level();
             }
             return ACSum;
         } break;
@@ -3035,7 +3035,7 @@ int Player::GetSkillBonus(CHARACTER_ATTRIBUTE_TYPE inSkill) const {
                 }
                 int multiplier = GetMultiplierForSkillLevel(
                     PLAYER_SKILL_UNARMED, 0, 1, 2, 2);
-                return armsMasterBonus + multiplier * (unarmedSkill & 0x3F);
+                return armsMasterBonus + multiplier * unarmedSkill;
             }
             for (ITEM_SLOT i : AllItemSlots()) {  // ?? what eh check behaviour
                 if (this->HasItemEquipped(i)) {
@@ -3045,13 +3045,13 @@ int Player::GetSkillBonus(CHARACTER_ATTRIBUTE_TYPE inSkill) const {
                         int currentItemSkillLevel = this->getActualSkillValue(currItemSkillType).level();
                         if (currItemSkillType == PLAYER_SKILL_BLASTER) {
                             int multiplier = GetMultiplierForSkillLevel(currItemSkillType, 1, 2, 3, 5);
-                            return multiplier * (currentItemSkillLevel & 0x3F);
+                            return multiplier * currentItemSkillLevel;
                         } else if (currItemSkillType == PLAYER_SKILL_STAFF && this->getActualSkillValue(PLAYER_SKILL_UNARMED).level() > 0) {
                             int unarmedSkillLevel = this->getActualSkillValue(PLAYER_SKILL_UNARMED).level();
                             int multiplier = GetMultiplierForSkillLevel(PLAYER_SKILL_UNARMED, 1, 1, 2, 2);
-                            return multiplier * (unarmedSkillLevel & 0x3F) + armsMasterBonus + (currentItemSkillLevel & 0x3F);
+                            return multiplier * unarmedSkillLevel + armsMasterBonus + currentItemSkillLevel;
                         } else {
-                            return armsMasterBonus + (currentItemSkillLevel & 0x3F);
+                            return armsMasterBonus + currentItemSkillLevel;
                         }
                     }
                 }

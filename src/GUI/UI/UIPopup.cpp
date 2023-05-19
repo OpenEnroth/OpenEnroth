@@ -1018,7 +1018,7 @@ std::string CharacterUI_GetSkillDescText(unsigned int uPlayerID, PLAYER_SKILL_TY
         pFontSmallnum->GetLineWidth(localization->GetString(LSTR_BONUS_2))
     });
 
-    int base_skill = pParty->pPlayers[uPlayerID].pActiveSkills[uPlayerSkillType] & 0x3F;
+    int base_skill = pParty->pPlayers[uPlayerID].getSkillValue(uPlayerSkillType).level();
     int actual_skill = pParty->pPlayers[uPlayerID].getActualSkillValue(uPlayerSkillType).level();
 
     const char *desc = localization->GetSkillDescription(uPlayerSkillType);
