@@ -16,11 +16,11 @@
 #include "Engine/LOD.h"
 #include "Engine/Localization.h"
 #include "Engine/MapInfo.h"
-#include "Engine/Objects/ItemTable.h"
 #include "Engine/Party.h"
 #include "Engine/PriceCalculator.h"
 #include "Engine/SaveLoad.h"
 #include "Engine/Spells/CastSpellInfo.h"
+#include "Engine/Tables/ItemTable.h"
 #include "Engine/Tables/BuildingTable.h"
 #include "Engine/Tables/AwardTable.h"
 

@@ -2,6 +2,7 @@
 
 #include <cstdint>
 #include <array>
+#include <string>
 
 #include "SpellEnums.h"
 
@@ -126,6 +127,8 @@ extern IndexedArray<SPELL_TYPE, ITEM_FIRST_WAND, ITEM_LAST_WAND> wandSpellIds;
 extern IndexedArray<SPELL_TYPE, ITEM_FIRST_SPELL_SCROLL, ITEM_LAST_SPELL_SCROLL> scrollSpellIds;
 extern IndexedArray<SPELL_TYPE, ITEM_FIRST_SPELL_BOOK, ITEM_LAST_SPELL_BOOK> bookSpellIds;
 extern IndexedArray<uint16_t, SPELL_FIRST_WITH_SPRITE, SPELL_LAST_WITH_SPRITE> SpellSoundIds;
+
+extern std::string pSpellsTXT_Raw;
 
 /**
  * @offset 0x43AFE3

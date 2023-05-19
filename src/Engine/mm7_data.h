@@ -156,11 +156,6 @@ extern struct FactionTable *pFactionTable;
 
 extern std::string pMonstersTXT_Raw;
 extern std::string pMonsterPlacementTXT_Raw;
-extern std::string pSpellsTXT_Raw;
-extern char *pMapStatsTXT_Raw;
-extern std::string pHostileTXT_Raw;
-extern char *pPotionsTXT_Raw;
-extern char *pPotionNotesTXT_Raw;
 
 extern int uDefaultTravelTime_ByFoot;
 extern int day_attrib;

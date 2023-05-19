@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 3.20.4 FATAL_ERROR)
 
 set(ENGINE_TABLES_SOURCES
+        ItemTable.cpp
         FactionTable.cpp
         FrameTableInc.cpp
         IconFrameTable.cpp
@@ -14,6 +15,7 @@ set(ENGINE_TABLES_SOURCES
         MessageScrollTable.cpp)
 
 set(ENGINE_TABLES_HEADERS
+        ItemTable.h
         FactionTable.h
         FrameTableInc.h
         IconFrameTable.h
