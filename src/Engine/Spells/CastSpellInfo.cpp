@@ -1109,7 +1109,7 @@ void CastSpellInfoHelpers::castSpell() {
                         setSpellRecovery(pCastSpell, failureRecoveryTime);
                         continue;
                     }
-                    pParty->uFlags |= PARTY_FLAGS_1_LANDING;
+                    pParty->uFlags |= PARTY_FLAGS_1_JUMPING;
                     pParty->uFallSpeed = 1000;
                     pParty->vPosition.z += 5;
                     break;

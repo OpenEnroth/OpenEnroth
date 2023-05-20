@@ -1494,7 +1494,8 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
     blv_prev_party_pos = pParty->vPosition;
 
     int fall_start;
-    if (pParty->FeatherFallActive() || pParty->wearsItemAnywhere(ITEM_ARTIFACT_LADYS_ESCORT)) {
+    if (pParty->FeatherFallActive() || pParty->wearsItemAnywhere(ITEM_ARTIFACT_LADYS_ESCORT)
+        || pParty->uFlags & (PARTY_FLAGS_1_LANDING | PARTY_FLAGS_1_JUMPING)) {
         fall_start = floor_z;
         bFeatherFall = true;
         pParty->uFallStartZ = floor_z;
@@ -1504,9 +1505,9 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
     }
 
     if (fall_start - party_z > 512 && !bFeatherFall && party_z <= floor_z + 1) {  // fall damage
-        if (pParty->uFlags & PARTY_FLAGS_1_LANDING) {
-            __debugbreak(); // why land in indoor?
-            pParty->uFlags &= ~PARTY_FLAGS_1_LANDING;
+        if (pParty->uFlags & (PARTY_FLAGS_1_LANDING | PARTY_FLAGS_1_JUMPING)) {
+            // flying was previously used to prevent fall damage from jump spell
+            pParty->uFlags &= ~(PARTY_FLAGS_1_LANDING | PARTY_FLAGS_1_JUMPING);
         } else {
             pParty->giveFallDamage(pParty->uFallStartZ - party_z);
         }
