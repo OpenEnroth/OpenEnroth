@@ -75,9 +75,12 @@ enum PARTY_FLAGS_1 : int32_t {
     PARTY_FLAGS_1_ALERT_YELLOW = 0x0020,
     PARTY_FLAGS_1_ALERT_RED_OR_YELLOW = 0x0030,
     PARTY_FLAGS_1_STANDING_ON_WATER = 0x0080,
+    // In vanilla landing flag used to control for no damage landings
+    // OE now uses this as a flag for landing from flight
     PARTY_FLAGS_1_LANDING = 0x0100,
     PARTY_FLAGS_1_BURNING = 0x0200,
 
+    // New to OE - flag used to negate landing damage after jumping
     PARTY_FLAGS_1_JUMPING = 0x0400
 };
 enum PARTY_FLAGS_2 : int32_t {
