@@ -2318,21 +2318,13 @@ void SeekKnowledgeElswhereDialogueOption(GUIWindow *dialogue, Player *player) {
 }
 
 
-void SkillTrainingDialogue(
-    GUIWindow *dialogue,
-    int num_skills_avaiable,
-    int all_text_height,
-     int skill_price
-) {
+void SkillTrainingDialogue(GUIWindow *dialogue, int num_skills_avaiable, int all_text_height, int skill_price) {
     if (!num_skills_avaiable) {
         SeekKnowledgeElswhereDialogueOption(dialogue, &pParty->activeCharacter());
         return;
     }
 
-    auto skill_price_label = localization->FormatString(
-        LSTR_FMT_SKILL_COST_D, skill_price
-    );
-    dialogue->DrawTitleText(pFontArrus, 0, 146, 0, skill_price_label, 3);
+    bool drawnPrice = false;
 
     int textspacings = (149 - all_text_height) / num_skills_avaiable;
     if (textspacings > 32) textspacings = 32;
@@ -2357,15 +2349,9 @@ void SkillTrainingDialogue(
             if (pDialogueWindow->pCurrentPosActiveItem != i) {
                 text_color = colorTable.White.c16();
             }
-            dialogue->DrawTitleText(
-                pFontArrus, 0, pButton->uY, text_color,
-                localization->GetString(LSTR_BUY_SPELLS),
-                3
-            );
+            dialogue->DrawTitleText(pFontArrus, 0, pButton->uY, text_color, localization->GetString(LSTR_BUY_SPELLS), 3);
         } else {
-            auto skill_id = GetLearningDialogueSkill(
-                (DIALOGUE_TYPE)pButton->msg_param
-            );
+            auto skill_id = GetLearningDialogueSkill((DIALOGUE_TYPE)pButton->msg_param);
 
             if (skillMaxMasteryPerClass[pParty->activeCharacter().classType][skill_id] == PLAYER_SKILL_MASTERY_NONE
                 || pParty->activeCharacter().pActiveSkills[skill_id]) {
@@ -2373,12 +2359,13 @@ void SkillTrainingDialogue(
                 pButton->uHeight = 0;
                 pButton->uY = 0;
             } else {
+                if (!drawnPrice) {
+                    auto skill_price_label = localization->FormatString(LSTR_FMT_SKILL_COST_D, skill_price);
+                    dialogue->DrawTitleText(pFontArrus, 0, 146, 0, skill_price_label, 3);
+                    drawnPrice = true;
+                }
                 auto skill_name_label = localization->GetSkillName(skill_id);
-                int line_height = pFontArrus->CalcTextHeight(
-                    skill_name_label,
-                    dialogue->uFrameWidth,
-                    0
-                );
+                int line_height = pFontArrus->CalcTextHeight(skill_name_label, dialogue->uFrameWidth, 0);
                 pButton->uY = textspacings + textoffset;
                 pButton->uHeight = line_height;
                 pButton->uW = pButton->uY + line_height + 6 - 1;
@@ -2386,11 +2373,7 @@ void SkillTrainingDialogue(
                 int text_color = colorTable.Sunflower.c16();
                 if (pDialogueWindow->pCurrentPosActiveItem != i)
                     text_color = colorTable.White.c16();
-                dialogue->DrawTitleText(
-                    pFontArrus, 0, pButton->uY, text_color,
-                    skill_name_label,
-                    3
-                );
+                dialogue->DrawTitleText(pFontArrus, 0, pButton->uY, text_color, skill_name_label, 3);
             }
         }
     }
