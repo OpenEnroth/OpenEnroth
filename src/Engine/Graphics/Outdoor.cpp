@@ -22,12 +22,12 @@
 #include "Engine/LOD.h"
 #include "Engine/Objects/Actor.h"
 #include "Engine/Objects/Chest.h"
-#include "Engine/Objects/ItemTable.h"
 #include "Engine/Objects/SpriteObject.h"
 #include "Engine/OurMath.h"
 #include "Engine/Party.h"
 #include "Engine/Serialization/CompositeImages.h"
 #include "Engine/SpellFxRenderer.h"
+#include "Engine/Tables/ItemTable.h"
 #include "Engine/Tables/TileFrameTable.h"
 #include "Engine/Time.h"
 #include "Engine/TurnEngine/TurnEngine.h"
@@ -1673,7 +1673,8 @@ void ODM_ProcessPartyActions() {
     int partyNotOnModel = modelStandingOnPID == 0;
     int currentGroundLevel = currentFloorLevel + 1;
 
-    bool partyHasFeatherFall = pParty->FeatherFallActive() || pParty->wearsItemAnywhere(ITEM_ARTIFACT_LADYS_ESCORT);
+    bool partyHasFeatherFall = pParty->FeatherFallActive() || pParty->wearsItemAnywhere(ITEM_ARTIFACT_LADYS_ESCORT)
+                                    || pParty->uFlags & (PARTY_FLAGS_1_LANDING | PARTY_FLAGS_1_JUMPING);
     if (partyHasFeatherFall)
         pParty->uFallStartZ = currentFloorLevel;
     else
@@ -1692,7 +1693,7 @@ void ODM_ProcessPartyActions() {
     if (pParty->vPosition.z <= currentGroundLevel) {  // landing from flight
         ceilingHeight = -1;
         pParty->bFlying = false;
-        pParty->uFlags &= ~PARTY_FLAGS_1_LANDING;
+        pParty->uFlags &= ~(PARTY_FLAGS_1_LANDING | PARTY_FLAGS_1_JUMPING);
     } else {
         partyNotTouchingFloor = true;
     }
@@ -1754,7 +1755,7 @@ void ODM_ProcessPartyActions() {
                         pParty->bFlying = true;
                         pParty->uFallSpeed = 0;
                         noFlightBob = true;
-                        pParty->uFlags &= ~PARTY_FLAGS_1_LANDING;
+                        pParty->uFlags &= ~(PARTY_FLAGS_1_LANDING | PARTY_FLAGS_1_JUMPING);
                         if (pParty->sPartySavedFlightZ < engine->config->gameplay.MaxFlightHeight.value()) {
                             partyInputZSpeed = pParty->uWalkSpeed * 4;
                             partyOldFlightZ = pParty->vPosition.z;
@@ -1966,12 +1967,11 @@ void ODM_ProcessPartyActions() {
                 pParty->pPartyBuffs[PARTY_BUFF_FLY].isGMBuff ||
                 (pParty->pPlayers[pParty->pPartyBuffs[PARTY_BUFF_FLY].caster - 1].mana > 0 || engine->config->debug.AllMagic.value())) {
                 partyOldFlightZ = pParty->vPosition.z;
-                pParty->uFallSpeed = 0;
                 partyInputZSpeed = -pParty->uWalkSpeed * 4;
                 pParty->bFlying = true;
                 noFlightBob = true;
                 if (flyDown)
-                    pParty->uFlags &= ~PARTY_FLAGS_1_LANDING;
+                    pParty->uFlags &= ~(PARTY_FLAGS_1_LANDING | PARTY_FLAGS_1_JUMPING);
             }
         }
     }
@@ -2046,7 +2046,7 @@ void ODM_ProcessPartyActions() {
             if (partyInputZSpeed < -500 && !pParty->bFlying &&
                 pParty->vPosition.z - currentGroundLevel > 1000 &&
                 !pParty->FeatherFallActive() &&
-                !(pParty->uFlags & PARTY_FLAGS_1_LANDING)) {  // falling scream
+                !(pParty->uFlags & (PARTY_FLAGS_1_LANDING | PARTY_FLAGS_1_JUMPING))) {  // falling scream
                 for (int i = 0; i < 4; ++i) {
                     if (!pParty->pPlayers[i].HasEnchantedItemEquipped(ITEM_ENCHANTMENT_OF_FEATHER_FALLING) &&
                         !pParty->pPlayers[i].WearsItem(ITEM_ARTIFACT_HERMES_SANDALS, ITEM_SLOT_BOOTS) &&
@@ -2195,7 +2195,7 @@ void ODM_ProcessPartyActions() {
             // TODO(pskelton): these should probably be if else for polygon types
             if (pODMFace->uPolygonType == POLYGON_Floor) {
                 pParty->bFlying = false;
-                pParty->uFlags &= ~PARTY_FLAGS_1_LANDING;
+                pParty->uFlags &= ~(PARTY_FLAGS_1_LANDING | PARTY_FLAGS_1_JUMPING);
                 if (partyInputZSpeed < 0) partyInputZSpeed = 0;
                 partyNewZ = pModel->pVertices[pODMFace->pVertexIDs[0]].z + 1;
             }
@@ -2226,7 +2226,7 @@ void ODM_ProcessPartyActions() {
 
             if (pODMFace->uPolygonType == POLYGON_InBetweenFloorAndWall) {
                 pParty->bFlying = false;
-                pParty->uFlags &= ~PARTY_FLAGS_1_LANDING;
+                pParty->uFlags &= ~(PARTY_FLAGS_1_LANDING | PARTY_FLAGS_1_JUMPING);
 
                 // this pushes party slightly up away from the surface so you can climb it
                 float dot = abs(partyInputYSpeed * pODMFace->facePlane.normal.y +
@@ -2362,8 +2362,8 @@ void ODM_ProcessPartyActions() {
             if (pParty->uFallStartZ - partyNewZ > 512 && !partyHasFeatherFall &&
                 (partyNewZ <= newGroundLevel || partyHasHitModel) &&
                 !engine->IsUnderwater()) {
-                if (pParty->uFlags & PARTY_FLAGS_1_LANDING) {
-                    pParty->uFlags &= ~PARTY_FLAGS_1_LANDING;
+                if (pParty->uFlags & (PARTY_FLAGS_1_LANDING | PARTY_FLAGS_1_JUMPING)) {
+                    pParty->uFlags &= ~(PARTY_FLAGS_1_LANDING | PARTY_FLAGS_1_JUMPING);
                 } else {
                     pParty->giveFallDamage(pParty->uFallStartZ - pParty->vPosition.z);
                 }

@@ -14,12 +14,12 @@
 #include "Engine/LOD.h"
 #include "Engine/Localization.h"
 #include "Engine/Objects/Actor.h"
-#include "Engine/Objects/ItemTable.h"
 #include "Engine/Objects/ObjectList.h"
 #include "Engine/Objects/SpriteObject.h"
 #include "Engine/OurMath.h"
 #include "Engine/Party.h"
 #include "Engine/SpellFxRenderer.h"
+#include "Engine/Tables/ItemTable.h"
 #include "Engine/Tables/IconFrameTable.h"
 #include "Engine/Time.h"
 #include "Engine/TurnEngine/TurnEngine.h"
@@ -184,8 +184,9 @@ void CastSpellInfoHelpers::castSpell() {
         } else {
             which_skill = getSkillTypeForSpell(pCastSpell->uSpellID);
 
-            spell_level = pPlayer->GetActualSkillLevel(which_skill);
-            spell_mastery = pPlayer->GetActualSkillMastery(which_skill);
+            CombinedSkillValue val = pPlayer->getActualSkillValue(which_skill);
+            spell_level = val.level();
+            spell_mastery = val.mastery();
 
             if (engine->config->debug.AllMagic.value()) {
                 spell_level = 10;
@@ -1108,7 +1109,7 @@ void CastSpellInfoHelpers::castSpell() {
                         setSpellRecovery(pCastSpell, failureRecoveryTime);
                         continue;
                     }
-                    pParty->uFlags |= PARTY_FLAGS_1_LANDING;
+                    pParty->uFlags |= PARTY_FLAGS_1_JUMPING;
                     pParty->uFallSpeed = 1000;
                     pParty->vPosition.z += 5;
                     break;

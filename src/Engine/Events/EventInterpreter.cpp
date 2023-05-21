@@ -7,14 +7,14 @@
 #include "Engine/Events/EventIR.h"
 #include "Engine/Events/Processor.h"
 #include "Engine/Party.h"
+#include "Engine/LOD.h"
 #include "Engine/Graphics/IRender.h"
 #include "Engine/Graphics/Indoor.h"
 #include "Engine/Graphics/Weather.h"
 #include "Engine/Graphics/Level/Decoration.h"
 #include "Engine/Objects/NPC.h"
 #include "Engine/Objects/SpriteObject.h"
-#include "Engine/Objects/ItemTable.h"
-#include "Engine/LOD.h"
+#include "Engine/Tables/ItemTable.h"
 
 #include "Media/Audio/AudioPlayer.h"
 #include "Media/MediaPlayer.h"
@@ -483,9 +483,8 @@ int EventInterpreter::executeOneEvent(int step, bool isNpc) {
         {
             assert(_who != CHOOSE_PARTY); // TODO(Nik-RE-dev): original code for this option is dubious
             bool res = doForChosenPlayer(_who, grng.get(), [&] (Player &player) {
-                                         PLAYER_SKILL_LEVEL level = player.GetSkillLevel(ir.data.check_skill_descr.skill_type);
-                                         PLAYER_SKILL_MASTERY mastery = player.GetSkillMastery(ir.data.check_skill_descr.skill_type);
-                                         return level >= ir.data.check_skill_descr.skill_level && mastery == ir.data.check_skill_descr.skill_mastery;
+                                         CombinedSkillValue val = player.getSkillValue(ir.data.check_skill_descr.skill_type);
+                                         return val.level() >= ir.data.check_skill_descr.skill_level && val.mastery() == ir.data.check_skill_descr.skill_mastery;
                                          });
             if (res) {
                 return ir.target_step;

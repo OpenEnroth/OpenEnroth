@@ -2529,11 +2529,6 @@ std::array<char, 777> byte_5E4C15;
 
 std::string pMonstersTXT_Raw;
 std::string pMonsterPlacementTXT_Raw;
-std::string pSpellsTXT_Raw;
-char *pMapStatsTXT_Raw = nullptr;
-std::string pHostileTXT_Raw;
-char *pPotionsTXT_Raw = nullptr;
-char *pPotionNotesTXT_Raw = nullptr;
 
 int uDefaultTravelTime_ByFoot;
 int day_attrib;

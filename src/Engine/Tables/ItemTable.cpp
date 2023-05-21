@@ -1,11 +1,10 @@
-#include "ItemTable.h"
-
 #include <map>
 #include <vector>
 #include <string>
 #include <unordered_map>
 #include <utility>
 
+#include "Engine/Tables/ItemTable.h"
 #include "Engine/Tables/StorylineTextTable.h"
 #include "Engine/Tables/FactionTable.h"
 #include "Engine/Spells/Spells.h"
@@ -30,10 +29,8 @@ void ItemTable::Release() {
     pItemsTXT_Raw.clear();
     pHostileTXT_Raw.clear();
     pHistoryTXT_Raw.clear();
-    free(pPotionsTXT_Raw);
-    free(pPotionNotesTXT_Raw);
-    pPotionsTXT_Raw = nullptr;
-    pPotionNotesTXT_Raw = nullptr;
+    pPotionsTXT_Raw.clear();
+    pPotionNotesTXT_Raw.clear();
 }
 
 static void strtokSkipLines(int n) {
@@ -322,9 +319,8 @@ void ItemTable::LoadPotions() {
     char *test_string;
     uint8_t potion_value;
 
-    free(pPotionNotesTXT_Raw);
     std::vector<char *> tokens;
-    std::string pPotionsTXT_Raw = std::string(pEvents_LOD->LoadCompressedTexture("potion.txt").string_view());
+    pPotionsTXT_Raw = std::string(pEvents_LOD->LoadCompressedTexture("potion.txt").string_view());
     test_string = strtok(pPotionsTXT_Raw.data(), "\r") + 1;
     while (test_string) {
         tokens = tokenize(test_string, '\t');
@@ -367,9 +363,8 @@ void ItemTable::LoadPotionNotes() {
     char *test_string;
     uint8_t potion_note;
 
-    free(pPotionNotesTXT_Raw);
     std::vector<char *> tokens;
-    std::string pPotionNotesTXT_Raw = std::string(pEvents_LOD->LoadCompressedTexture("potnotes.txt").string_view());
+    pPotionNotesTXT_Raw = std::string(pEvents_LOD->LoadCompressedTexture("potnotes.txt").string_view());
     test_string = strtok(pPotionNotesTXT_Raw.data(), "\r") + 1;
     while (test_string) {
         tokens = tokenize(test_string, '\t');
