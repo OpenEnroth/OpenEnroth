@@ -1624,7 +1624,7 @@ void TavernDialog() {
     uint8_t pTopic3Height;  // [sp+253h] [bp-21h]@59
     uint8_t pTopic4Height = 0;
     int pTextHeight;
-    int all_text_height;  // [sp+260h] [bp-14h]@18
+    int all_text_height = 0;  // [sp+260h] [bp-14h]@18
     GUIFont *pOutString;
 
     GUIWindow dialog_window = *window_SpeakInHouse;
@@ -1867,15 +1867,11 @@ void TavernDialog() {
                 pOptionsCount = 3;
             }
             for (i = 0; i < pOptionsCount; ++i)
-                all_text_height = pFontArrus->CalcTextHeight(
-                    pShopOptions[i], dialog_window.uFrameWidth, 0);
+                all_text_height += pFontArrus->CalcTextHeight(pShopOptions[i], dialog_window.uFrameWidth, 0);
             all_text_height = (174 - all_text_height) / pOptionsCount;
 
-            int v54 = (174 -
-                pOptionsCount * (174 - all_text_height) / pOptionsCount -
-                all_text_height) /
-                2 -
-                (174 - all_text_height) / pOptionsCount / 2 + 138;
+            int v54 = (174 - pOptionsCount * all_text_height - all_text_height) /
+                2 - all_text_height / 2 + 138;
             pNumString = 0;
             for (pItemNum = pDialogueWindow->pStartingPosActiveItem;
                 pItemNum < pDialogueWindow->pNumPresenceButton +
