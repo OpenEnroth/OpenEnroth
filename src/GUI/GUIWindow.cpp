@@ -2314,7 +2314,7 @@ void SeekKnowledgeElswhereDialogueOption(GUIWindow *dialogue, Player *player) {
     std::string str = SeekKnowledgeElswhereString(&pParty->activeCharacter());
     int text_height = pFontArrus->CalcTextHeight(str, dialogue->uFrameWidth, 0);
 
-    dialogue->DrawTitleText(pFontArrus, 0, (174 - text_height) / 2 + 138, colorTable.PaleCanary.c16(), str, 3);
+    dialogue->DrawTitleText(pFontArrus, 0, (sideTextBoxBodyTextHeight - text_height) / 2 + sideTextBoxBodyTextOffset, colorTable.PaleCanary.c16(), str, 3);
 }
 
 
@@ -2327,7 +2327,7 @@ void SkillTrainingDialogue(GUIWindow *dialogue, int num_skills_avaiable, int all
     bool drawnPrice = false;
 
     int textspacings = (149 - all_text_height) / num_skills_avaiable;
-    if (textspacings > 32) textspacings = 32;
+    if (textspacings > sideTextBoxMaxSpacing) textspacings = sideTextBoxMaxSpacing;
     int textoffset = (149 - num_skills_avaiable * textspacings - all_text_height) / 2
             - textspacings / 2 + 162;
     for (int i = pDialogueWindow->pStartingPosActiveItem;

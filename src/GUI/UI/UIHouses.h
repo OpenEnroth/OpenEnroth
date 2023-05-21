@@ -5,10 +5,14 @@
 #include "GUI/GUIWindow.h"
 #include "UIHouseEnums.h"
 
+// Right hand side dialogue writing constants
 const int sideTextBoxWidth = 143;
 const int sideTextBoxPosX = 483;
 const int sideTextBoxPosZ = 334;
 const int sideTextBoxPosY = 113;
+const int sideTextBoxBodyTextHeight = 174;
+const int sideTextBoxBodyTextOffset = 138;
+const int sideTextBoxMaxSpacing = 32;
 
 bool HouseUI_CheckIfPlayerCanInteract();
 void TrainingDialog(const char *s);

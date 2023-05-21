@@ -1311,7 +1311,7 @@ void TravelByTransport() {
                 travel_window.DrawTitleText(pFontArrus, 0, 146, 0,
                     fmt::format("{}\n \n{}{}{}{}{}", travelcost, pTopicArray[0], pTopicArray[1], pTopicArray[2], pTopicArray[3], pTopicArray[4]), 3);
             } else {
-                travel_window.DrawTitleText(pFontArrus, 0, (174 - pFontArrus->CalcTextHeight(localization->GetString(LSTR_COME_BACK_ANOTHER_DAY), travel_window.uFrameWidth, 0)) / 2 + 138,
+                travel_window.DrawTitleText(pFontArrus, 0, (sideTextBoxBodyTextHeight - pFontArrus->CalcTextHeight(localization->GetString(LSTR_COME_BACK_ANOTHER_DAY), travel_window.uFrameWidth, 0)) / 2 + sideTextBoxBodyTextOffset,
                                             colorTable.White.c16(), localization->GetString(LSTR_COME_BACK_ANOTHER_DAY), 3);
             }
         }
@@ -1780,10 +1780,10 @@ void TavernDialog() {
         }
         dialog_window.DrawTitleText(
             pFontArrus, 0,
-            (174 - pFontArrus->CalcTextHeight(
+            (sideTextBoxBodyTextHeight - pFontArrus->CalcTextHeight(
                 pText, dialog_window.uFrameWidth, 0)) /
             2 +
-            138, colorTable.PaleCanary.c16(), pText, 3);
+            sideTextBoxBodyTextOffset, colorTable.PaleCanary.c16(), pText, 3);
         break;
     }
     case DIALOGUE_TAVERN_REST:
@@ -1868,10 +1868,10 @@ void TavernDialog() {
             }
             for (i = 0; i < pOptionsCount; ++i)
                 all_text_height += pFontArrus->CalcTextHeight(pShopOptions[i], dialog_window.uFrameWidth, 0);
-            all_text_height = (174 - all_text_height) / pOptionsCount;
+            all_text_height = (sideTextBoxBodyTextHeight - all_text_height) / pOptionsCount;
 
-            int v54 = (174 - pOptionsCount * all_text_height - all_text_height) /
-                2 - all_text_height / 2 + 138;
+            int v54 = (sideTextBoxBodyTextHeight - pOptionsCount * all_text_height - all_text_height) /
+                2 - all_text_height / 2 + sideTextBoxBodyTextOffset;
             pNumString = 0;
             for (pItemNum = pDialogueWindow->pStartingPosActiveItem;
                 pItemNum < pDialogueWindow->pNumPresenceButton +
@@ -1948,14 +1948,14 @@ void TempleDialog() {
                 i++;
             }
         }
-        v64 = (174 - (signed int)all_text_height) /
+        v64 = (sideTextBoxBodyTextHeight - (signed int)all_text_height) /
             (pDialogueWindow->pNumPresenceButton - index);
-        if (v64 > 32) v64 = 32;
+        if (v64 > sideTextBoxMaxSpacing) v64 = sideTextBoxMaxSpacing;
         all_text_height =
-            (174 - v64 * (pDialogueWindow->pNumPresenceButton - index) -
+            (sideTextBoxBodyTextHeight - v64 * (pDialogueWindow->pNumPresenceButton - index) -
             (signed int)all_text_height) /
             2 -
-            v64 / 2 + 138;
+            v64 / 2 + sideTextBoxBodyTextOffset;
         if (index + pDialogueWindow->pStartingPosActiveItem <
             pDialogueWindow->pStartingPosActiveItem +
             pDialogueWindow->pNumPresenceButton) {
@@ -2198,9 +2198,9 @@ void TrainingDialog(const char *s) {
                     }
                 }
                 v49 =
-                    (2 * (87 - (174 - all_text_height) / 2) - all_text_height) /
+                    (2 * (87 - (sideTextBoxBodyTextHeight - all_text_height) / 2) - all_text_height) /
                     2 -
-                    (174 - all_text_height) / 2 / 2 + 138;
+                    (sideTextBoxBodyTextHeight - all_text_height) / 2 / 2 + sideTextBoxBodyTextOffset;
                 if (pDialogueWindow->pStartingPosActiveItem <
                     pDialogueWindow->pStartingPosActiveItem +
                     pDialogueWindow->pNumPresenceButton) {
@@ -2210,7 +2210,7 @@ void TrainingDialog(const char *s) {
                         pDialogueWindow->pNumPresenceButton;
                         ++i) {
                         pButton = pDialogueWindow->GetControl(i);
-                        pButton->uY = (174 - all_text_height) / 2 + v49;
+                        pButton->uY = (sideTextBoxBodyTextHeight - all_text_height) / 2 + v49;
                         pTextHeight = pFontArrus->CalcTextHeight(
                             pShopOptions[index],
                             training_dialog_window.uFrameWidth, 0);
@@ -2616,9 +2616,9 @@ void SimpleHouseDialog() {
         index++;
     }
     if (index) {
-        v36 = (174 - all_text_height) / index;
-        if (v36 > 32) v36 = 32;
-        v40 = (174 - v36 * index - all_text_height) / 2 - v36 / 2 + 138;
+        v36 = (sideTextBoxBodyTextHeight - all_text_height) / index;
+        if (v36 > sideTextBoxMaxSpacing) v36 = sideTextBoxMaxSpacing;
+        v40 = (sideTextBoxBodyTextHeight - v36 * index - all_text_height) / 2 - v36 / 2 + sideTextBoxBodyTextOffset;
         for (int i = pDialogueWindow->pStartingPosActiveItem;
             i < pDialogueWindow->pNumPresenceButton +
             pDialogueWindow->pStartingPosActiveItem;

@@ -128,7 +128,7 @@ void GuildDialog() {
                                              item, BuildingType_MagicShop, window_SpeakInHouse->wData.val, 2)],
                                 pParty->activeCharacterIndex() - 1, item, window_SpeakInHouse->wData.val, 2);
                             pTextHeight = pFontArrus->CalcTextHeight(str, working_window.uFrameWidth, 0);
-                            working_window.DrawTitleText(pFontArrus, 0, (174 - pTextHeight) / 2 + 138, colorTable.White.c16(), str, 3);
+                            working_window.DrawTitleText(pFontArrus, 0, (sideTextBoxBodyTextHeight - pTextHeight) / 2 + sideTextBoxBodyTextOffset, colorTable.White.c16(), str, 3);
                             return;
                         }
                     }

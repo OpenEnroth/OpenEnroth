@@ -411,9 +411,9 @@ void GUIWindow_Dialogue::Update() {
     }
 
     if (index) {
-        int v45 = (174 - all_text_height) / index;
-        if (v45 > 32) v45 = 32;
-        int v42 = (174 - v45 * index - all_text_height) / 2 - v45 / 2 + 138;
+        int v45 = (sideTextBoxBodyTextHeight - all_text_height) / index;
+        if (v45 > sideTextBoxMaxSpacing) v45 = sideTextBoxMaxSpacing;
+        int v42 = (sideTextBoxBodyTextHeight - v45 * index - all_text_height) / 2 - v45 / 2 + sideTextBoxBodyTextOffset;
         for (int i = pDialogueWindow->pStartingPosActiveItem;
              i < pDialogueWindow->pNumPresenceButton +
                      pDialogueWindow->pStartingPosActiveItem;
