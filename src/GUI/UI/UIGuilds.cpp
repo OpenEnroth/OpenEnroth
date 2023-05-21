@@ -198,10 +198,10 @@ void generateSpellBooksForGuild() {
 
     DAMAGE_TYPE schoolType = guildSpellsSchool[guildType];
     PLAYER_SKILL_MASTERY maxMastery = guildSpellsMastery[HOUSE_ID(window_SpeakInHouse->wData.val)];
-    Segment<ITEM_TYPE> spellsForGuild = spellsOfSchool(schoolType, maxMastery);
+    Segment<ITEM_TYPE> spellbooksForGuild = spellbooksOfSchool(schoolType, maxMastery);
 
     for (int i = 0; i < 12; ++i) {
-        ITEM_TYPE pItemNum = grng->randomSample(spellsForGuild);
+        ITEM_TYPE pItemNum = grng->randomSample(spellbooksForGuild);
 
         if (pItemNum == ITEM_SPELLBOOK_DIVINE_INTERVENTION) {
             if (!pParty->_questBits[QBIT_DIVINE_INTERVENTION_RETRIEVED]) {

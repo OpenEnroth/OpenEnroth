@@ -2760,7 +2760,7 @@ void createHouseUI(HOUSE_ID houseId) {
 void BackToHouseMenu() {
     auto pMouse = EngineIocContainer::ResolveMouse();
     pMouse->ClearPickedItem();
-    // Looks like it's artifact of MM6
+    // TODO(Nik-RE-dev): Looks like it's artifact of MM6
 #if 0
     if (window_SpeakInHouse && window_SpeakInHouse->wData.val == 165 &&
         !pMovie_Track) {

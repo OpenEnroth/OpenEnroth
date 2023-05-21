@@ -442,7 +442,7 @@ int EventInterpreter::executeOneEvent(int step, bool isNpc) {
         }
         case EVENT_MoveNPC:
             pNPCStats->pNewNPCData[ir.data.npc_move_descr.npc_id].Location2D = ir.data.npc_move_descr.location_id;
-            // Looks like it's artifact of MM6
+            // TODO(Nik-RE-dev): Looks like it's artifact of MM6
 #if 0
             if (window_SpeakInHouse) {
                 if (window_SpeakInHouse->wData.val == HOUSE_BODY_GUILD_MASTER_ERATHIA) {
