@@ -35,7 +35,7 @@ void GuildDialog() {
 
     GUIWindow working_window = *window_SpeakInHouse;
     working_window.uFrameX = 483;
-    working_window.uFrameWidth = 148;
+    working_window.uFrameWidth = 143;
     working_window.uFrameZ = 334;
 
     int pPrice = PriceCalculator::skillLearningCostForPlayer(&pParty->activeCharacter(),
