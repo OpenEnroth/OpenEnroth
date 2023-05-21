@@ -778,9 +778,9 @@ bool HouseUI_CheckIfPlayerCanInteract() {
     } else {
         pDialogueWindow->pNumPresenceButton = 0;
         GUIWindow window = *pPrimaryWindow;
-        window.uFrameX = 483;
-        window.uFrameWidth = 143;
-        window.uFrameZ = 334;
+        window.uFrameX = sideTextBoxPosX;
+        window.uFrameWidth = sideTextBoxWidth;
+        window.uFrameZ = sideTextBoxPosZ;
 
         std::string str = localization->FormatString(
             LSTR_FMT_S_IS_IN_NO_CODITION_TO_S,
@@ -1236,9 +1236,9 @@ int GetTravelTimeTransportDays(int schedule_id) {
 
 void TravelByTransport() {
     GUIWindow travel_window = *window_SpeakInHouse;
-    travel_window.uFrameX = 483;
-    travel_window.uFrameWidth = 143;
-    travel_window.uFrameZ = 334;
+    travel_window.uFrameX = sideTextBoxPosX;
+    travel_window.uFrameWidth = sideTextBoxWidth;
+    travel_window.uFrameZ = sideTextBoxPosZ;
 
     assert(pParty->hasActiveCharacter()); // code in this function couldn't handle pParty->activeCharacterIndex() = 0 and crash
 
@@ -1408,9 +1408,9 @@ void TownHallDialog() {
     GUIFont *pOutString;          // [sp+118h] [bp-4h]@21
 
     GUIWindow townHall_window = *window_SpeakInHouse;
-    townHall_window.uFrameX = 483;
-    townHall_window.uFrameWidth = 143;
-    townHall_window.uFrameZ = 334;
+    townHall_window.uFrameX = sideTextBoxPosX;
+    townHall_window.uFrameWidth = sideTextBoxWidth;
+    townHall_window.uFrameZ = sideTextBoxPosZ;
 
     std::string fine_str = fmt::format("{}: {}", localization->GetString(LSTR_CURRENT_FINE), pParty->uFine);
     townHall_window.DrawTitleText(pFontArrus, 0, 260, colorTable.PaleCanary.c16(), fine_str, 3);
@@ -1514,9 +1514,9 @@ void TownHallDialog() {
 
 void BankDialog() {
     GUIWindow bank_window = *window_SpeakInHouse;
-    bank_window.uFrameX = 483;
-    bank_window.uFrameWidth = 143;
-    bank_window.uFrameZ = 334;
+    bank_window.uFrameX = sideTextBoxPosX;
+    bank_window.uFrameWidth = sideTextBoxWidth;
+    bank_window.uFrameZ = sideTextBoxPosZ;
     bank_window.DrawTitleText(
         pFontArrus, 0, 220, colorTable.PaleCanary.c16(),
         fmt::format("{}: {}", localization->GetString(LSTR_BALANCE), pParty->uNumGoldInBank),
@@ -1628,9 +1628,9 @@ void TavernDialog() {
     GUIFont *pOutString;
 
     GUIWindow dialog_window = *window_SpeakInHouse;
-    dialog_window.uFrameX = 483;
-    dialog_window.uFrameWidth = 143;
-    dialog_window.uFrameZ = 334;
+    dialog_window.uFrameX = sideTextBoxPosX;
+    dialog_window.uFrameWidth = sideTextBoxWidth;
+    dialog_window.uFrameZ = sideTextBoxPosZ;
 
     // TODO(pskelton): check this behaviour
     if (!pParty->hasActiveCharacter())  // avoid nzi
@@ -1911,9 +1911,9 @@ void TempleDialog() {
     int all_text_height;          // [sp+1C0h] [bp-4h]@6
 
     GUIWindow tample_window = *window_SpeakInHouse;
-    tample_window.uFrameX = 483;
-    tample_window.uFrameWidth = 143;
-    tample_window.uFrameZ = 334;
+    tample_window.uFrameX = sideTextBoxPosX;
+    tample_window.uFrameWidth = sideTextBoxWidth;
+    tample_window.uFrameZ = sideTextBoxPosZ;
 
     // TODO(pskelton): check this behaviour
     if (!pParty->hasActiveCharacter()) {  // avoid nzi
@@ -2136,9 +2136,9 @@ void TrainingDialog(const char *s) {
     int pTextHeight;              // eax@71
 
     GUIWindow training_dialog_window = *window_SpeakInHouse;
-    training_dialog_window.uFrameX = 483;
-    training_dialog_window.uFrameWidth = 143;
-    training_dialog_window.uFrameZ = 334;
+    training_dialog_window.uFrameX = sideTextBoxPosX;
+    training_dialog_window.uFrameWidth = sideTextBoxWidth;
+    training_dialog_window.uFrameZ = sideTextBoxPosZ;
 
     // TODO(pskelton): check this behaviour
     if (!pParty->hasActiveCharacter())  // avoid nzi
@@ -2359,9 +2359,9 @@ void MercenaryGuildDialog() {
     int index;                    // [sp+74h] [bp-8h]@17
 
     GUIWindow dialog_window = *window_SpeakInHouse;
-    dialog_window.uFrameX = 483;
-    dialog_window.uFrameWidth = 143;
-    dialog_window.uFrameZ = 334;
+    dialog_window.uFrameX = sideTextBoxPosX;
+    dialog_window.uFrameWidth = sideTextBoxWidth;
+    dialog_window.uFrameZ = sideTextBoxPosZ;
 
     /*
      * archiving this code just in case
@@ -2454,9 +2454,9 @@ void SimpleHouseDialog() {
         house_window.uFrameZ = 366;
         house_window.DrawTitleText(pFontCreate, 0, 2, 0,
             pMapStats->pInfos[uHouse_ExitPic].pName, 3);
-        house_window.uFrameX = 483;
-        house_window.uFrameWidth = 143;
-        house_window.uFrameZ = 334;
+        house_window.uFrameX = sideTextBoxPosX;
+        house_window.uFrameWidth = sideTextBoxWidth;
+        house_window.uFrameZ = sideTextBoxPosZ;
         if (!pTransitionStrings[uHouse_ExitPic]) {
             auto str = localization->FormatString(
                 LSTR_FMT_ENTER_S,
@@ -2486,7 +2486,7 @@ void SimpleHouseDialog() {
     house_window.uFrameZ -= 10;
     pNPC = HouseNPCData[pDialogueNPCCount + -(dword_591080 != 0)];  //- 1
 
-    house_window.DrawTitleText(pFontCreate, 483, 113, colorTable.EasternBlue.c16(), NameAndTitle(pNPC), 3);
+    house_window.DrawTitleText(pFontCreate, sideTextBoxPosX, sideTextBoxPosY, colorTable.EasternBlue.c16(), NameAndTitle(pNPC), 3);
 
     if (!dword_591080) {
         if (uDialogueType == DIALOGUE_NULL) {
@@ -2514,9 +2514,9 @@ void SimpleHouseDialog() {
     }
     // for right panel
     GUIWindow right_panel_window = *pDialogueWindow;
-    right_panel_window.uFrameX = 483;
-    right_panel_window.uFrameWidth = 143;
-    right_panel_window.uFrameZ = 334;
+    right_panel_window.uFrameX = sideTextBoxPosX;
+    right_panel_window.uFrameWidth = sideTextBoxWidth;
+    right_panel_window.uFrameZ = sideTextBoxPosZ;
     for (int i = right_panel_window.pStartingPosActiveItem;
         i < right_panel_window.pStartingPosActiveItem +
         right_panel_window.pNumPresenceButton;
@@ -2660,9 +2660,9 @@ void SimpleHouseDialog() {
 
 void JailDialog() {
     GUIWindow jail_dialogue_window = *window_SpeakInHouse;
-    jail_dialogue_window.uFrameX = 483;
-    jail_dialogue_window.uFrameWidth = 143;
-    jail_dialogue_window.uFrameZ = 334;
+    jail_dialogue_window.uFrameX = sideTextBoxPosX;
+    jail_dialogue_window.uFrameWidth = sideTextBoxWidth;
+    jail_dialogue_window.uFrameZ = sideTextBoxPosZ;
     jail_dialogue_window.DrawTitleText(
         pFontArrus, 0,
         (310 - pFontArrus->CalcTextHeight(localization->GetString(LSTR_ONE_YEAR_SENTENCE),

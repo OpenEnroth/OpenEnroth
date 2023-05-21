@@ -3,9 +3,12 @@
 #include <string>
 
 #include "GUI/GUIWindow.h"
-
-
 #include "UIHouseEnums.h"
+
+const int sideTextBoxWidth = 143;
+const int sideTextBoxPosX = 483;
+const int sideTextBoxPosZ = 334;
+const int sideTextBoxPosY = 113;
 
 bool HouseUI_CheckIfPlayerCanInteract();
 void TrainingDialog(const char *s);

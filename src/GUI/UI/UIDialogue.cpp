@@ -205,7 +205,7 @@ void GUIWindow_Dialogue::Update() {
                                 pDialogueNPCPortraits[0]);
 
     window.DrawTitleText(
-        pFontArrus, 483, 112, ui_game_dialogue_npc_name_color, NameAndTitle(pNPC), 3
+        pFontArrus, sideTextBoxPosX, sideTextBoxPosY, ui_game_dialogue_npc_name_color, NameAndTitle(pNPC), 3
     );
 
     pParty->getPartyFame();
@@ -295,9 +295,9 @@ void GUIWindow_Dialogue::Update() {
 
     // Right panel(Правая панель)-------
     window = *pDialogueWindow;
-    window.uFrameX = 483;
-    window.uFrameWidth = 148;
-    window.uFrameZ = 334;
+    window.uFrameX = sideTextBoxPosX;
+    window.uFrameWidth = sideTextBoxWidth;
+    window.uFrameZ = sideTextBoxPosZ;
     for (int i = window.pStartingPosActiveItem;
          i < window.pStartingPosActiveItem + window.pNumPresenceButton; ++i) {
         GUIButton *pButton = window.GetControl(i);

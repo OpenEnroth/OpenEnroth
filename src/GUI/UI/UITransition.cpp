@@ -184,9 +184,9 @@ void GUIWindow_Travel::Update() {
             pFontCreate, 0, 4, 0,
             pMapStats->pInfos[pMapStats->GetMapInfo(pDestinationMapName)].pName,
             3);
-        travel_window.uFrameX = 483;
-        travel_window.uFrameWidth = 148;
-        travel_window.uFrameZ = 334;
+        travel_window.uFrameX = sideTextBoxPosX;
+        travel_window.uFrameWidth = sideTextBoxWidth;
+        travel_window.uFrameZ = sideTextBoxPosZ;
 
         std::string str;
         if (getTravelTime() == 1) {
@@ -238,9 +238,9 @@ void GUIWindow_Transition::Update() {
     transition_window.uFrameZ = 366;
     transition_window.DrawTitleText(pFontCreate, 0, 5, 0,
                                     pMapStats->pInfos[map_id].pName, 3);
-    transition_window.uFrameX = 483;
-    transition_window.uFrameWidth = 148;
-    transition_window.uFrameZ = 334;
+    transition_window.uFrameX = sideTextBoxPosX;
+    transition_window.uFrameWidth = sideTextBoxWidth;
+    transition_window.uFrameZ = sideTextBoxPosZ;
 
     if (uCurrentHouse_Animation) {
         unsigned int v4 =

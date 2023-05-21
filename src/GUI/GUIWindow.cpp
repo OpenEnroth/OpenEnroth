@@ -404,18 +404,18 @@ void GUIWindow::HouseDialogManager() {
                 int v9 = 0;
                 if (v8 + 1 == uNumDialogueNPCPortraits && uHouse_ExitPic) {
                     pTitleText = pMapStats->pInfos[uHouse_ExitPic].pName;
-                    v9 = 94 * v8 + 113;
+                    v9 = 94 * v8 + sideTextBoxPosY;
                 } else {
                     if (!v8 && dword_591080) {
                         pTitleText = (char*)buildingTable[window_SpeakInHouse->wData.val - 1].pProprieterTitle;
-                        pWindow.DrawTitleText(pFontCreate, 0x1E3u, 113, colorTable.EasternBlue.c16(), pTitleText, 3);
+                        pWindow.DrawTitleText(pFontCreate, sideTextBoxPosX, sideTextBoxPosY, colorTable.EasternBlue.c16(), pTitleText, 3);
                         continue;
                     }
                     pTitleText = HouseNPCData[v8 + 1 - (dword_591080 != 0)]->pName;
                     v9 = pNPCPortraits_y[uNumDialogueNPCPortraits - 1][v8] + pDialogueNPCPortraits[v8]->GetHeight() + 2;
                 }
                 v10 = v9;
-                pWindow.DrawTitleText(pFontCreate, 483, v10, colorTable.EasternBlue.c16(), pTitleText, 3);
+                pWindow.DrawTitleText(pFontCreate, sideTextBoxPosX, v10, colorTable.EasternBlue.c16(), pTitleText, 3);
             }
         }
         if (pDialogueNPCCount == uNumDialogueNPCPortraits && uHouse_ExitPic) {
@@ -456,7 +456,7 @@ void GUIWindow::HouseDialogManager() {
         SimpleHouseDialog();
     } else {
         pWindow.DrawTitleText(
-            pFontCreate, 483, 113, colorTable.EasternBlue.c16(), NameAndTitle(
+            pFontCreate, sideTextBoxPosX, sideTextBoxPosY, colorTable.EasternBlue.c16(), NameAndTitle(
                 buildingTable[window_SpeakInHouse->wData.val - 1].pProprieterName,
                 buildingTable[window_SpeakInHouse->wData.val - 1].pProprieterTitle
             ), 3);
