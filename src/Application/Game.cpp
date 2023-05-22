@@ -1003,7 +1003,6 @@ void Game::processQueuedMessages() {
                                 player.SetCondition(Condition_Weak, 0);
                             ++pParty->days_played_without_rest;
                         }
-                        pPaletteManager->Reset();
                         pSpriteFrameTable->ResetLoadedFlags();
                         pCurrentMapName = pOut;
                         Level_LoadEvtAndStr(pCurrentMapName.substr(0, pCurrentMapName.rfind('.')));
