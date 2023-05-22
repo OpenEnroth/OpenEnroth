@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;d923991</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;0ec356d</span>
    </div>
   </td>
  </tr>
@@ -74,7 +74,8 @@ $(function() {
 </div><!-- top -->
 <div class="header">
   <div class="summary">
-<a href="#func-members">Functions</a>  </div>
+<a href="#func-members">Functions</a> &#124;
+<a href="#var-members">Variables</a>  </div>
   <div class="headertitle"><div class="title">UIGuilds.cpp File Reference</div></div>
 </div><!--header-->
 <div class="contents">
@@ -99,15 +100,41 @@ $(function() {
 <code>#include &quot;<a class="el" href="Mouse_8h.html">Io/Mouse.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="AudioPlayer_8h.html">Media/Audio/AudioPlayer.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Random_8h.html">Library/Random/Random.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="IndexedArray_8h.html">Utility/IndexedArray.h</a>&quot;</code><br />
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
 <tr class="memitem:a7fbb26f3fd48a15ffdcb709219220a74"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="UIGuilds_8cpp.html#a7fbb26f3fd48a15ffdcb709219220a74">GuildDialog</a> ()</td></tr>
 <tr class="separator:a7fbb26f3fd48a15ffdcb709219220a74"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a352a9ffa01b93621b9ba9623f1f6222d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="UIGuilds_8cpp.html#a352a9ffa01b93621b9ba9623f1f6222d">SpellBookGenerator</a> ()</td></tr>
-<tr class="separator:a352a9ffa01b93621b9ba9623f1f6222d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa84fd5e1d6d256ecf86aa1ecec2c4ea4"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="UIGuilds_8cpp.html#aa84fd5e1d6d256ecf86aa1ecec2c4ea4">generateSpellBooksForGuild</a> ()</td></tr>
+<tr class="separator:aa84fd5e1d6d256ecf86aa1ecec2c4ea4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="var-members" name="var-members"></a>
+Variables</h2></td></tr>
+<tr class="memitem:ae0bde2ea84732c02b465d4caac563abd"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classIndexedArray.html">IndexedArray</a>&lt; <a class="el" href="ItemEnums_8h.html#a55231e9660ce1c5b6f7613a3f9d66891">DAMAGE_TYPE</a>, <a class="el" href="BuildingTable_8h.html#a1e6330273dfb88062f9ac99d61322e80a55e39214ba87e217c58b8c10bdb3f0b6">BuildingType_FireGuild</a>, <a class="el" href="BuildingTable_8h.html#a1e6330273dfb88062f9ac99d61322e80a69e60971fc82c5be31e7fc0ef884db1c">BuildingType_DarkGuild</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="UIGuilds_8cpp.html#ae0bde2ea84732c02b465d4caac563abd">guildSpellsSchool</a></td></tr>
+<tr class="separator:ae0bde2ea84732c02b465d4caac563abd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1ee6a02bc29affad40c3e2f10f985a70"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classIndexedArray.html">IndexedArray</a>&lt; <a class="el" href="CombinedSkillValue_8h.html#ae7fdd356d1b4ddbdd59bcba036e6f942">PLAYER_SKILL_MASTERY</a>, <a class="el" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fa2c6d0bbdcc6940409be4a3fd9c277129">HOUSE_FIRE_GUILD_INITIATE_EMERALD_ISLE</a>, <a class="el" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fa1bf70be8d15aaf01aa0a6563fbcdb794">HOUSE_DARK_GUILD_PARAMOUNT_PIT</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="UIGuilds_8cpp.html#a1ee6a02bc29affad40c3e2f10f985a70">guildSpellsMastery</a></td></tr>
+<tr class="separator:a1ee6a02bc29affad40c3e2f10f985a70"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Function Documentation</h2>
+<a id="aa84fd5e1d6d256ecf86aa1ecec2c4ea4" name="aa84fd5e1d6d256ecf86aa1ecec2c4ea4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa84fd5e1d6d256ecf86aa1ecec2c4ea4">&#9670;&#160;</a></span>generateSpellBooksForGuild()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void generateSpellBooksForGuild </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<dl class="section user"><dt>Original binary offset:</dt><dd>0x4BC8D5 </dd></dl>
+
+</div>
+</div>
 <a id="a7fbb26f3fd48a15ffdcb709219220a74" name="a7fbb26f3fd48a15ffdcb709219220a74"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a7fbb26f3fd48a15ffdcb709219220a74">&#9670;&#160;</a></span>GuildDialog()</h2>
 
@@ -125,21 +152,62 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="a352a9ffa01b93621b9ba9623f1f6222d" name="a352a9ffa01b93621b9ba9623f1f6222d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a352a9ffa01b93621b9ba9623f1f6222d">&#9670;&#160;</a></span>SpellBookGenerator()</h2>
+<h2 class="groupheader">Variable Documentation</h2>
+<a id="a1ee6a02bc29affad40c3e2f10f985a70" name="a1ee6a02bc29affad40c3e2f10f985a70"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1ee6a02bc29affad40c3e2f10f985a70">&#9670;&#160;</a></span>guildSpellsMastery</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">void SpellBookGenerator </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
+          <td class="memname"><a class="el" href="classIndexedArray.html">IndexedArray</a>&lt;<a class="el" href="CombinedSkillValue_8h.html#ae7fdd356d1b4ddbdd59bcba036e6f942">PLAYER_SKILL_MASTERY</a>, <a class="el" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fa2c6d0bbdcc6940409be4a3fd9c277129">HOUSE_FIRE_GUILD_INITIATE_EMERALD_ISLE</a>, <a class="el" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fa1bf70be8d15aaf01aa0a6563fbcdb794">HOUSE_DARK_GUILD_PARAMOUNT_PIT</a>&gt; guildSpellsMastery</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
+</div>
+</div>
+<a id="ae0bde2ea84732c02b465d4caac563abd" name="ae0bde2ea84732c02b465d4caac563abd"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae0bde2ea84732c02b465d4caac563abd">&#9670;&#160;</a></span>guildSpellsSchool</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classIndexedArray.html">IndexedArray</a>&lt;<a class="el" href="ItemEnums_8h.html#a55231e9660ce1c5b6f7613a3f9d66891">DAMAGE_TYPE</a>, <a class="el" href="BuildingTable_8h.html#a1e6330273dfb88062f9ac99d61322e80a55e39214ba87e217c58b8c10bdb3f0b6">BuildingType_FireGuild</a>, <a class="el" href="BuildingTable_8h.html#a1e6330273dfb88062f9ac99d61322e80a69e60971fc82c5be31e7fc0ef884db1c">BuildingType_DarkGuild</a>&gt; guildSpellsSchool</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<b>Initial value:</b><div class="fragment"><div class="line">= {</div>
+<div class="line">    {<a class="code hl_enumvalue" href="BuildingTable_8h.html#a1e6330273dfb88062f9ac99d61322e80a55e39214ba87e217c58b8c10bdb3f0b6">BuildingType_FireGuild</a>,   <a class="code hl_enumvalue" href="ItemEnums_8h.html#a55231e9660ce1c5b6f7613a3f9d66891aa9c007ed02cde831d351b9d9534528bf">DMGT_FIRE</a>},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="BuildingTable_8h.html#a1e6330273dfb88062f9ac99d61322e80a71a97b6e7e4309bb3a1670d628ba1b53">BuildingType_AirGuild</a>,    <a class="code hl_enumvalue" href="ItemEnums_8h.html#a55231e9660ce1c5b6f7613a3f9d66891a35224331d667278ee0e24ebaca3f0158">DMGT_ELECTR</a>},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="BuildingTable_8h.html#a1e6330273dfb88062f9ac99d61322e80a59f18c87bb570c8fed9412e9668f74fa">BuildingType_WaterGuild</a>,  <a class="code hl_enumvalue" href="ItemEnums_8h.html#a55231e9660ce1c5b6f7613a3f9d66891a1289c3412b20d31767a56454c4a8f733">DMGT_COLD</a>},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="BuildingTable_8h.html#a1e6330273dfb88062f9ac99d61322e80a81d8b018b34a8223dbf84d5ba1281766">BuildingType_EarthGuild</a>,  <a class="code hl_enumvalue" href="ItemEnums_8h.html#a55231e9660ce1c5b6f7613a3f9d66891a6793f75b6f72999db447835db8874abf">DMGT_EARTH</a>},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="BuildingTable_8h.html#a1e6330273dfb88062f9ac99d61322e80a9d3dc12cf5c1358613d120025fac12d8">BuildingType_SpiritGuild</a>, <a class="code hl_enumvalue" href="ItemEnums_8h.html#a55231e9660ce1c5b6f7613a3f9d66891aea04d53fa8bea0ffa86d3e1a5b01d555">DMGT_SPIRIT</a>},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="BuildingTable_8h.html#a1e6330273dfb88062f9ac99d61322e80aad6af8b421b4486a1e735df1fb34cdbe">BuildingType_MindGuild</a>,   <a class="code hl_enumvalue" href="ItemEnums_8h.html#a55231e9660ce1c5b6f7613a3f9d66891a084127c13a0861151fd238ed8a438431">DMGT_MIND</a>},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="BuildingTable_8h.html#a1e6330273dfb88062f9ac99d61322e80ae870ff3d50a8cce73995dfbf608f3be9">BuildingType_BodyGuild</a>,   <a class="code hl_enumvalue" href="ItemEnums_8h.html#a55231e9660ce1c5b6f7613a3f9d66891a346567df5b073bce44e6b361e3cb7c98">DMGT_BODY</a>},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="BuildingTable_8h.html#a1e6330273dfb88062f9ac99d61322e80ad7491abc992cb25893f1d6f8eace5a77">BuildingType_LightGuild</a>,  <a class="code hl_enumvalue" href="ItemEnums_8h.html#a55231e9660ce1c5b6f7613a3f9d66891a62762cad957121241f40a3a9458f3565">DMGT_LIGHT</a>},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="BuildingTable_8h.html#a1e6330273dfb88062f9ac99d61322e80a69e60971fc82c5be31e7fc0ef884db1c">BuildingType_DarkGuild</a>,   <a class="code hl_enumvalue" href="ItemEnums_8h.html#a55231e9660ce1c5b6f7613a3f9d66891ae0c84bd6591ead469dd6882c15d4f181">DMGT_DARK</a>}</div>
+<div class="line">}</div>
+<div class="ttc" id="aBuildingTable_8h_html_a1e6330273dfb88062f9ac99d61322e80a55e39214ba87e217c58b8c10bdb3f0b6"><div class="ttname"><a href="BuildingTable_8h.html#a1e6330273dfb88062f9ac99d61322e80a55e39214ba87e217c58b8c10bdb3f0b6">BuildingType::BuildingType_FireGuild</a></div><div class="ttdeci">@ BuildingType_FireGuild</div></div>
+<div class="ttc" id="aBuildingTable_8h_html_a1e6330273dfb88062f9ac99d61322e80a59f18c87bb570c8fed9412e9668f74fa"><div class="ttname"><a href="BuildingTable_8h.html#a1e6330273dfb88062f9ac99d61322e80a59f18c87bb570c8fed9412e9668f74fa">BuildingType::BuildingType_WaterGuild</a></div><div class="ttdeci">@ BuildingType_WaterGuild</div></div>
+<div class="ttc" id="aBuildingTable_8h_html_a1e6330273dfb88062f9ac99d61322e80a69e60971fc82c5be31e7fc0ef884db1c"><div class="ttname"><a href="BuildingTable_8h.html#a1e6330273dfb88062f9ac99d61322e80a69e60971fc82c5be31e7fc0ef884db1c">BuildingType::BuildingType_DarkGuild</a></div><div class="ttdeci">@ BuildingType_DarkGuild</div></div>
+<div class="ttc" id="aBuildingTable_8h_html_a1e6330273dfb88062f9ac99d61322e80a71a97b6e7e4309bb3a1670d628ba1b53"><div class="ttname"><a href="BuildingTable_8h.html#a1e6330273dfb88062f9ac99d61322e80a71a97b6e7e4309bb3a1670d628ba1b53">BuildingType::BuildingType_AirGuild</a></div><div class="ttdeci">@ BuildingType_AirGuild</div></div>
+<div class="ttc" id="aBuildingTable_8h_html_a1e6330273dfb88062f9ac99d61322e80a81d8b018b34a8223dbf84d5ba1281766"><div class="ttname"><a href="BuildingTable_8h.html#a1e6330273dfb88062f9ac99d61322e80a81d8b018b34a8223dbf84d5ba1281766">BuildingType::BuildingType_EarthGuild</a></div><div class="ttdeci">@ BuildingType_EarthGuild</div></div>
+<div class="ttc" id="aBuildingTable_8h_html_a1e6330273dfb88062f9ac99d61322e80a9d3dc12cf5c1358613d120025fac12d8"><div class="ttname"><a href="BuildingTable_8h.html#a1e6330273dfb88062f9ac99d61322e80a9d3dc12cf5c1358613d120025fac12d8">BuildingType::BuildingType_SpiritGuild</a></div><div class="ttdeci">@ BuildingType_SpiritGuild</div></div>
+<div class="ttc" id="aBuildingTable_8h_html_a1e6330273dfb88062f9ac99d61322e80aad6af8b421b4486a1e735df1fb34cdbe"><div class="ttname"><a href="BuildingTable_8h.html#a1e6330273dfb88062f9ac99d61322e80aad6af8b421b4486a1e735df1fb34cdbe">BuildingType::BuildingType_MindGuild</a></div><div class="ttdeci">@ BuildingType_MindGuild</div></div>
+<div class="ttc" id="aBuildingTable_8h_html_a1e6330273dfb88062f9ac99d61322e80ad7491abc992cb25893f1d6f8eace5a77"><div class="ttname"><a href="BuildingTable_8h.html#a1e6330273dfb88062f9ac99d61322e80ad7491abc992cb25893f1d6f8eace5a77">BuildingType::BuildingType_LightGuild</a></div><div class="ttdeci">@ BuildingType_LightGuild</div></div>
+<div class="ttc" id="aBuildingTable_8h_html_a1e6330273dfb88062f9ac99d61322e80ae870ff3d50a8cce73995dfbf608f3be9"><div class="ttname"><a href="BuildingTable_8h.html#a1e6330273dfb88062f9ac99d61322e80ae870ff3d50a8cce73995dfbf608f3be9">BuildingType::BuildingType_BodyGuild</a></div><div class="ttdeci">@ BuildingType_BodyGuild</div></div>
+<div class="ttc" id="aItemEnums_8h_html_a55231e9660ce1c5b6f7613a3f9d66891a084127c13a0861151fd238ed8a438431"><div class="ttname"><a href="ItemEnums_8h.html#a55231e9660ce1c5b6f7613a3f9d66891a084127c13a0861151fd238ed8a438431">DAMAGE_TYPE::DMGT_MIND</a></div><div class="ttdeci">@ DMGT_MIND</div></div>
+<div class="ttc" id="aItemEnums_8h_html_a55231e9660ce1c5b6f7613a3f9d66891a1289c3412b20d31767a56454c4a8f733"><div class="ttname"><a href="ItemEnums_8h.html#a55231e9660ce1c5b6f7613a3f9d66891a1289c3412b20d31767a56454c4a8f733">DAMAGE_TYPE::DMGT_COLD</a></div><div class="ttdeci">@ DMGT_COLD</div></div>
+<div class="ttc" id="aItemEnums_8h_html_a55231e9660ce1c5b6f7613a3f9d66891a346567df5b073bce44e6b361e3cb7c98"><div class="ttname"><a href="ItemEnums_8h.html#a55231e9660ce1c5b6f7613a3f9d66891a346567df5b073bce44e6b361e3cb7c98">DAMAGE_TYPE::DMGT_BODY</a></div><div class="ttdeci">@ DMGT_BODY</div></div>
+<div class="ttc" id="aItemEnums_8h_html_a55231e9660ce1c5b6f7613a3f9d66891a35224331d667278ee0e24ebaca3f0158"><div class="ttname"><a href="ItemEnums_8h.html#a55231e9660ce1c5b6f7613a3f9d66891a35224331d667278ee0e24ebaca3f0158">DAMAGE_TYPE::DMGT_ELECTR</a></div><div class="ttdeci">@ DMGT_ELECTR</div></div>
+<div class="ttc" id="aItemEnums_8h_html_a55231e9660ce1c5b6f7613a3f9d66891a62762cad957121241f40a3a9458f3565"><div class="ttname"><a href="ItemEnums_8h.html#a55231e9660ce1c5b6f7613a3f9d66891a62762cad957121241f40a3a9458f3565">DAMAGE_TYPE::DMGT_LIGHT</a></div><div class="ttdeci">@ DMGT_LIGHT</div></div>
+<div class="ttc" id="aItemEnums_8h_html_a55231e9660ce1c5b6f7613a3f9d66891a6793f75b6f72999db447835db8874abf"><div class="ttname"><a href="ItemEnums_8h.html#a55231e9660ce1c5b6f7613a3f9d66891a6793f75b6f72999db447835db8874abf">DAMAGE_TYPE::DMGT_EARTH</a></div><div class="ttdeci">@ DMGT_EARTH</div></div>
+<div class="ttc" id="aItemEnums_8h_html_a55231e9660ce1c5b6f7613a3f9d66891aa9c007ed02cde831d351b9d9534528bf"><div class="ttname"><a href="ItemEnums_8h.html#a55231e9660ce1c5b6f7613a3f9d66891aa9c007ed02cde831d351b9d9534528bf">DAMAGE_TYPE::DMGT_FIRE</a></div><div class="ttdeci">@ DMGT_FIRE</div></div>
+<div class="ttc" id="aItemEnums_8h_html_a55231e9660ce1c5b6f7613a3f9d66891ae0c84bd6591ead469dd6882c15d4f181"><div class="ttname"><a href="ItemEnums_8h.html#a55231e9660ce1c5b6f7613a3f9d66891ae0c84bd6591ead469dd6882c15d4f181">DAMAGE_TYPE::DMGT_DARK</a></div><div class="ttdeci">@ DMGT_DARK</div></div>
+<div class="ttc" id="aItemEnums_8h_html_a55231e9660ce1c5b6f7613a3f9d66891aea04d53fa8bea0ffa86d3e1a5b01d555"><div class="ttname"><a href="ItemEnums_8h.html#a55231e9660ce1c5b6f7613a3f9d66891aea04d53fa8bea0ffa86d3e1a5b01d555">DAMAGE_TYPE::DMGT_SPIRIT</a></div><div class="ttdeci">@ DMGT_SPIRIT</div></div>
+</div><!-- fragment -->
 </div>
 </div>
 </div><!-- contents -->
