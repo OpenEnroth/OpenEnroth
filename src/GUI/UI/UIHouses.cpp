@@ -1015,8 +1015,7 @@ void OnSelectShopDialogueOption(DIALOGUE_TYPE option) {
         }
         dialog_menu_id = option;
         if (in_current_building_type < BuildingType_TownHall_MM6) {
-            shop_ui_background = assets->getImage_ColorKey(
-                _4F03B8_shop_background_names[(int)in_current_building_type]);
+            shop_ui_background = assets->getImage_ColorKey(_4F03B8_shop_background_names[(int)in_current_building_type]);
         }
     }
 
@@ -1039,11 +1038,10 @@ void OnSelectShopDialogueOption(DIALOGUE_TYPE option) {
             for (uint i = 0; i < 12; ++i) {
                 if (pParty->SpellBooksInGuilds[window_SpeakInHouse->wData.val - HOUSE_FIRE_GUILD_INITIATE_EMERALD_ISLE][i].uItemID != ITEM_NULL)
                     shop_ui_items_in_store[i] = assets->getImage_ColorKey(
-                        pParty->SpellBooksInGuilds
-                        [window_SpeakInHouse->wData.val - HOUSE_FIRE_GUILD_INITIATE_EMERALD_ISLE][i].GetIconName());
+                        pParty->SpellBooksInGuilds[window_SpeakInHouse->wData.val - HOUSE_FIRE_GUILD_INITIATE_EMERALD_ISLE][i].GetIconName());
             }
-        } else {  // generation new books
-            SpellBookGenerator();
+        } else {
+            generateSpellBooksForGuild();
             pParty->PartyTimes.Shops_next_generation_time[window_SpeakInHouse->wData.val - HOUSE_FIRE_GUILD_INITIATE_EMERALD_ISLE] = GameTime(pParty->GetPlayingTime() + GameTime::FromDays(
                     buildingTable[window_SpeakInHouse->wData.val - 1].generation_interval_days));
         }
@@ -2762,18 +2760,21 @@ void createHouseUI(HOUSE_ID houseId) {
 void BackToHouseMenu() {
     auto pMouse = EngineIocContainer::ResolveMouse();
     pMouse->ClearPickedItem();
+    // TODO(Nik-RE-dev): Looks like it's artifact of MM6
+#if 0
     if (window_SpeakInHouse && window_SpeakInHouse->wData.val == 165 &&
         !pMovie_Track) {
         bGameoverLoop = true;
         HouseDialogPressCloseBtn();
         window_SpeakInHouse->Release();
         pParty->uFlags &= 0xFFFFFFFD;
-        if (enterHouse(HOUSE_BODY_GUILD_ERATHIA)) {
+        if (enterHouse(HOUSE_BODY_GUILD_MASTER_ERATHIA)) {
             pAudioPlayer->playUISound(SOUND_Invalid);
-            createHouseUI(HOUSE_BODY_GUILD_ERATHIA);
+            createHouseUI(HOUSE_BODY_GUILD_MASTER_ERATHIA);
         }
         bGameoverLoop = false;
     }
+#endif
 }
 
 //----- (004BE571) --------------------------------------------------------
