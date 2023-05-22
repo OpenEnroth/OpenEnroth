@@ -1,11 +1,9 @@
-#include "Engine/Graphics/PCX.h"
+#include "PCX.h"
 
 #include <algorithm>
 #include <cstdint>
 #include <cstdlib>
 #include <cstring>
-
-// TODO: this is not big-endian compatible!
 
 enum {
     PCX_VERSION_2_5 = 0,
@@ -94,8 +92,8 @@ static int pcx_rle_decode(bstreamer *bs, uint8_t *dst, unsigned int bytes_per_sc
     return 0;
 }
 
-uint8_t *PCX::Decode(const void *pcx_data, size_t filesize, unsigned int *width, unsigned int *height, IMAGE_FORMAT *format, IMAGE_FORMAT requested_format) {
-    PCXHeader *header = (PCXHeader *)pcx_data;
+std::unique_ptr<uint8_t[]> PCX::Decode(const void *data, size_t size, size_t *width, size_t *height, IMAGE_FORMAT *format, IMAGE_FORMAT requestedFormat) {
+    PCXHeader *header = (PCXHeader *)data;
 
     // check that's PCX and its version
     if (header->manufacturer != 0x0a || header->version < PCX_VERSION_2_5 || header->version == PCX_VERSION_NOT_VALID || header->version > PCX_VERSION_3_0) {
@@ -109,13 +107,13 @@ uint8_t *PCX::Decode(const void *pcx_data, size_t filesize, unsigned int *width,
 
     //corruption check
     if (bytes_per_scanline < (*width * header->bpp * header->nplanes + 7) / 8 ||
-        (!header->compression && bytes_per_scanline > (filesize - sizeof(PCXHeader)) / *height)) {
+        (!header->compression && bytes_per_scanline > (size - sizeof(PCXHeader)) / *height)) {
         return nullptr;
     }
 
     switch ((header->nplanes << 8) + header->bpp) {
         case 0x0308:
-            if (requested_format == IMAGE_FORMAT_R5G6B5)
+            if (requestedFormat == IMAGE_FORMAT_R5G6B5)
                 *format = IMAGE_FORMAT_R5G6B5;
             else
                 *format = IMAGE_FORMAT_A8B8G8R8;
@@ -141,25 +139,22 @@ uint8_t *PCX::Decode(const void *pcx_data, size_t filesize, unsigned int *width,
     else
         pixel_count = *width * *height * 4;
 
-    uint8_t *pixels = new uint8_t[pixel_count];
+    std::unique_ptr<uint8_t[]> pixels(new uint8_t[pixel_count]);
     if (!pixels)
         return nullptr;
 
-    memset(pixels, 0, pixel_count * sizeof(uint8_t));
+    memset(pixels.get(), 0, pixel_count * sizeof(uint8_t));
 
     bstreamer bs;
     unsigned int stride = 0;
-    uint8_t *scanline = (uint8_t *)malloc(bytes_per_scanline + 32);
-    bs_init(&bs, (uint8_t*)pcx_data + sizeof(PCXHeader), filesize - sizeof(PCXHeader));
+    std::unique_ptr<uint8_t[], FreeDeleter> scanline(static_cast<uint8_t *>(malloc(bytes_per_scanline + 32)));
+    bs_init(&bs, (uint8_t*)data + sizeof(PCXHeader), size - sizeof(PCXHeader));
 
     if (header->nplanes == 3 && header->bpp == 8) {
         for (unsigned int y = 0; y < *height; y++) {
-            int ret = pcx_rle_decode(&bs, scanline, bytes_per_scanline, header->compression);
-            if (ret < 0) {
-                free(scanline);
-                delete[] pixels;
+            int ret = pcx_rle_decode(&bs, scanline.get(), bytes_per_scanline, header->compression);
+            if (ret < 0)
                 return nullptr;
-            }
 
             for (unsigned int x = 0; x < *width; x++) {
                 if (*format == IMAGE_FORMAT_R5G6B5) {
@@ -192,12 +187,8 @@ uint8_t *PCX::Decode(const void *pcx_data, size_t filesize, unsigned int *width,
         }
     } else {
         // TODO: other planes/bpp variants
-        free(scanline);
-        delete[] pixels;
         return nullptr;
     }
-
-    free(scanline);
 
     return pixels;
 }
@@ -285,8 +276,8 @@ struct Format {
     ColorFormat b;
 };
 
-Blob PCX::Encode(const void *picture_data, const unsigned int width, const unsigned int height) {
-    assert(picture_data != nullptr && width != 0 & height != 0);
+Blob PCX::Encode(const void *data, size_t width, size_t height) {
+    assert(data != nullptr && width != 0 & height != 0);
     Format f(32, 0x000000FF, 0x0000FF00, 0x00FF0000);
 
     // pcx lines are padded to next even byte boundary
@@ -298,15 +289,15 @@ Blob PCX::Encode(const void *picture_data, const unsigned int width, const unsig
     // pcx file can be larger than uncompressed
     // pcx header and no compression @24bit worst case doubles in size
     size_t worstCase = sizeof(PCXHeader) + 3 * pitch * height * 2;
-    uint8_t *pcx_data = (uint8_t*)malloc(worstCase);
+    std::unique_ptr<uint8_t[], FreeDeleter> pcx_data(static_cast<uint8_t *>(malloc(worstCase)));
 
-    uint8_t *output = (uint8_t *)WritePCXHeader(pcx_data, width, height);
+    uint8_t *output = (uint8_t *)WritePCXHeader(pcx_data.get(), width, height);
 
-    uint8_t *lineRGB = new uint8_t[3 * pitch];
-    uint8_t *lineR = (uint8_t *)lineRGB;
-    uint8_t *lineG = (uint8_t *)lineRGB + pitch;
-    uint8_t *lineB = (uint8_t *)lineRGB + 2 * pitch;
-    uint8_t *input = (uint8_t *)picture_data;
+    std::unique_ptr<uint8_t[]> lineRGB(new uint8_t[3 * pitch]);
+    uint8_t *lineR = lineRGB.get();
+    uint8_t *lineG = lineRGB.get() + pitch;
+    uint8_t *lineB = lineRGB.get() + 2 * pitch;
+    const uint8_t *input = static_cast<const uint8_t *>(data);
 
     for (int y = 0; y < height; y++) {
         for (unsigned int x = 0; x < width; x++) {
@@ -317,16 +308,14 @@ Blob PCX::Encode(const void *picture_data, const unsigned int width, const unsig
             lineG[x] = ((pixel >> f.g.shift) & f.g.mask) << (8 - f.g.bits);
             lineB[x] = ((pixel >> f.b.shift) & f.b.mask) << (8 - f.b.bits);
         }
-        uint8_t *line = lineRGB;
+        uint8_t *line = lineRGB.get();
         for (int p = 0; p < 3; p++) {
             output = (uint8_t *)EncodeOneLine(output, line, pitch);
             line += pitch;
         }
     }
 
-    delete[] lineRGB;
-
-    size_t packed_size = output - (uint8_t*)pcx_data;
+    size_t packed_size = output - pcx_data.get();
     assert(packed_size <= worstCase);
-    return Blob::fromMalloc(pcx_data, packed_size);
+    return Blob::fromMalloc(pcx_data.release(), packed_size);
 }
