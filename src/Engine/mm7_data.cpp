@@ -4,7 +4,6 @@
 
 #include "Engine/Graphics/Viewport.h"
 #include "Engine/stru160.h"
-#include "Engine/stru367.h"
 #include "MapInfo.h"
 #include "OurMath.h"
 
@@ -2462,7 +2461,6 @@ unsigned int uGameUIFontMain;
 int dword_507B00_spell_info_to_draw_in_popup;
 int dword_507CC0_activ_ch;
 bool OpenedTelekinesis;
-stru367 PortalFace;
 int enchantingActiveCharacter;
 std::array<unsigned int, 5> pIconIDs_Turn;
 unsigned int uIconID_TurnStop;
