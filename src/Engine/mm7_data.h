@@ -73,7 +73,6 @@ extern std::array<int16_t, 49> word_4F0754;
 extern std::array<std::pair<int16_t, ITEM_TYPE>, 27> _4F0882_evt_VAR_PlayerItemInHands_vals;
 extern std::array<unsigned short, 6> pMaxLevelPerTrainingHallType;
 extern std::array<int, 11> price_for_membership;
-extern std::array<int16_t, 32> word_4F0F30;
 extern std::array<int, 500> ai_near_actors_targets_pid;
 extern std::array<unsigned int, 500> ai_near_actors_ids;
 extern int ai_arrays_size;
@@ -153,11 +152,6 @@ extern struct FactionTable *pFactionTable;
 
 extern std::string pMonstersTXT_Raw;
 extern std::string pMonsterPlacementTXT_Raw;
-extern std::string pSpellsTXT_Raw;
-extern char *pMapStatsTXT_Raw;
-extern std::string pHostileTXT_Raw;
-extern char *pPotionsTXT_Raw;
-extern char *pPotionNotesTXT_Raw;
 
 extern int uDefaultTravelTime_ByFoot;
 extern int day_attrib;
@@ -204,10 +198,6 @@ extern float flt_debugrecmod3;
 
 extern std::string s_SavedMapName;
 extern char bNoNPCHiring;
-extern std::array<int, 100> dword_720020_zvalues;
-extern std::array<int, 299> dword_7201B0_zvalues;
-extern std::array<int16_t, 104> odm_floor_face_vert_coord_Y;  // word_720F70
-extern std::array<int16_t, 104> odm_floor_face_vert_coord_X;  // word_721040
 extern Vec3i blv_prev_party_pos;
 
 extern std::string pMerchantsTXT_Raw;

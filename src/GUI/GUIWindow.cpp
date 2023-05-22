@@ -16,12 +16,12 @@
 #include "Engine/Localization.h"
 #include "Engine/Objects/Actor.h"
 #include "Engine/Objects/Chest.h"
-#include "Engine/Objects/ItemTable.h"
 #include "Engine/Objects/PlayerEnums.h"
 #include "Engine/OurMath.h"
 #include "Engine/Party.h"
 #include "Engine/PriceCalculator.h"
 #include "Engine/EngineIocContainer.h"
+#include "Engine/Tables/ItemTable.h"
 #include "Engine/Tables/IconFrameTable.h"
 #include "Engine/Tables/StorylineTextTable.h"
 #include "Engine/Tables/AwardTable.h"
@@ -1539,12 +1539,12 @@ std::string _4B254D_SkillMasteryTeacher(int trainerInfo) {
         return std::string(pNPCTopics[122].pText);
 
     // You must know the skill before you can become an expert in it!
-    PLAYER_SKILL_LEVEL skillLevel = activePlayer->GetSkillLevel(skillBeingTaught);
+    int skillLevel = activePlayer->getSkillValue(skillBeingTaught).level();
     if (!skillLevel)
         return std::string(pNPCTopics[131].pText);
 
     // You are already have this mastery in this skill.
-    PLAYER_SKILL_MASTERY skillMastery = activePlayer->GetSkillMastery(skillBeingTaught);
+    PLAYER_SKILL_MASTERY skillMastery = activePlayer->getSkillValue(skillBeingTaught).mastery();
     if (std::to_underlying(skillMastery) > teacherLevel + 1)
         return std::string(pNPCTopics[teacherLevel + 128].pText);
 

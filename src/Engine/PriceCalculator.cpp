@@ -127,16 +127,15 @@ int PriceCalculator::templeHealingCostForPlayer(const Player *player, float pric
 }
 
 int PriceCalculator::playerMerchant(const Player *player) {
-    PLAYER_SKILL_LEVEL level = player->GetActualSkillLevel(PLAYER_SKILL_MERCHANT);
-    PLAYER_SKILL_MASTERY mastery = player->GetActualSkillMastery(PLAYER_SKILL_MERCHANT);
+    CombinedSkillValue merchantSkill = player->getActualSkillValue(PLAYER_SKILL_MERCHANT);
     int multiplier = player->GetMultiplierForSkillLevel(PLAYER_SKILL_MERCHANT, 1, 2, 3, 5);
 
-    if (mastery == PLAYER_SKILL_MASTERY_GRANDMASTER) {  // gm merchant
+    if (merchantSkill.mastery() == PLAYER_SKILL_MASTERY_GRANDMASTER) {  // gm merchant
         return 10000;
     }
 
     int rep = pParty->GetPartyReputation();
-    int bonus = multiplier * level;
+    int bonus = multiplier * merchantSkill.level();
 
     if (bonus == 0) {  // no skill so trading on rep alone
         return -rep;

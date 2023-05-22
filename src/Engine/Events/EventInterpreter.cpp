@@ -7,14 +7,14 @@
 #include "Engine/Events/EventIR.h"
 #include "Engine/Events/Processor.h"
 #include "Engine/Party.h"
+#include "Engine/LOD.h"
 #include "Engine/Graphics/IRender.h"
 #include "Engine/Graphics/Indoor.h"
 #include "Engine/Graphics/Weather.h"
 #include "Engine/Graphics/Level/Decoration.h"
 #include "Engine/Objects/NPC.h"
 #include "Engine/Objects/SpriteObject.h"
-#include "Engine/Objects/ItemTable.h"
-#include "Engine/LOD.h"
+#include "Engine/Tables/ItemTable.h"
 
 #include "Media/Audio/AudioPlayer.h"
 #include "Media/MediaPlayer.h"
@@ -432,8 +432,8 @@ int EventInterpreter::executeOneEvent(int step, bool isNpc) {
                     HouseDialogPressCloseBtn();
                     window_SpeakInHouse->Release();
                     pParty->uFlags &= ~PARTY_FLAGS_1_ForceRedraw;
-                    if (enterHouse(HOUSE_DARK_GUILD_PIT)) {
-                        createHouseUI(HOUSE_DARK_GUILD_PIT);
+                    if (enterHouse(HOUSE_DARK_GUILD_PARAMOUNT_PIT)) {
+                        createHouseUI(HOUSE_DARK_GUILD_PARAMOUNT_PIT);
                         current_npc_text = pNPCTopics[90].pText;
                     }
                 }
@@ -442,20 +442,23 @@ int EventInterpreter::executeOneEvent(int step, bool isNpc) {
         }
         case EVENT_MoveNPC:
             pNPCStats->pNewNPCData[ir.data.npc_move_descr.npc_id].Location2D = ir.data.npc_move_descr.location_id;
+            // TODO(Nik-RE-dev): Looks like it's artifact of MM6
+#if 0
             if (window_SpeakInHouse) {
-                if (window_SpeakInHouse->wData.val == HOUSE_BODY_GUILD_ERATHIA) {
+                if (window_SpeakInHouse->wData.val == HOUSE_BODY_GUILD_MASTER_ERATHIA) {
                     HouseDialogPressCloseBtn();
                     pMediaPlayer->Unload();
                     window_SpeakInHouse->Release();
                     pParty->uFlags &= ~PARTY_FLAGS_1_ForceRedraw;
                     activeLevelDecoration = (LevelDecoration *)1;
-                    if (enterHouse(HOUSE_BODY_GUILD_ERATHIA)) {
+                    if (enterHouse(HOUSE_BODY_GUILD_MASTER_ERATHIA)) {
                         pAudioPlayer->playUISound(SOUND_Invalid);
-                        window_SpeakInHouse = new GUIWindow_House({0, 0}, render->GetRenderDimensions(), HOUSE_BODY_GUILD_ERATHIA, "");
+                        window_SpeakInHouse = new GUIWindow_House({0, 0}, render->GetRenderDimensions(), HOUSE_BODY_GUILD_MASTER_ERATHIA, "");
                         window_SpeakInHouse->DeleteButtons();
                     }
                 }
             }
+#endif
             break;
         case EVENT_GiveItem:
         {
@@ -480,9 +483,8 @@ int EventInterpreter::executeOneEvent(int step, bool isNpc) {
         {
             assert(_who != CHOOSE_PARTY); // TODO(Nik-RE-dev): original code for this option is dubious
             bool res = doForChosenPlayer(_who, grng.get(), [&] (Player &player) {
-                                         PLAYER_SKILL_LEVEL level = player.GetSkillLevel(ir.data.check_skill_descr.skill_type);
-                                         PLAYER_SKILL_MASTERY mastery = player.GetSkillMastery(ir.data.check_skill_descr.skill_type);
-                                         return level >= ir.data.check_skill_descr.skill_level && mastery == ir.data.check_skill_descr.skill_mastery;
+                                         CombinedSkillValue val = player.getSkillValue(ir.data.check_skill_descr.skill_type);
+                                         return val.level() >= ir.data.check_skill_descr.skill_level && val.mastery() == ir.data.check_skill_descr.skill_mastery;
                                          });
             if (res) {
                 return ir.target_step;

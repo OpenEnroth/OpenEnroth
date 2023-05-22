@@ -6,7 +6,7 @@
 #include "Engine/Engine.h"
 #include "Engine/Graphics/Indoor.h"
 #include "Engine/LOD.h"
-#include "Engine/Objects/ItemTable.h"
+#include "Engine/Tables/ItemTable.h"
 #include "Engine/Objects/ObjectList.h"
 #include "Engine/Objects/SpriteObject.h"
 #include "Engine/Graphics/DecorationList.h"

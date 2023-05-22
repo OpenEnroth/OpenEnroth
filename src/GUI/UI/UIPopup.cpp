@@ -13,9 +13,9 @@
 #include "Engine/Localization.h"
 #include "Engine/Objects/Actor.h"
 #include "Engine/Objects/Chest.h"
-#include "Engine/Objects/ItemTable.h"
 #include "Engine/Objects/ObjectList.h"
 #include "Engine/Objects/SpriteObject.h"
+#include "Engine/Tables/ItemTable.h"
 #include "Engine/Party.h"
 #include "Engine/Time.h"
 
@@ -666,9 +666,9 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
     PLAYER_SKILL_MASTERY skill_mastery = PLAYER_SKILL_MASTERY_NONE;
 
     pMonsterInfoUI_Doll.uCurrentActionTime += pMiscTimer->uTimeElapsed;
-    if (pParty->activeCharacter().GetActualSkillLevel(PLAYER_SKILL_MONSTER_ID)) {
-        skill_points = pParty->activeCharacter().GetActualSkillLevel(PLAYER_SKILL_MONSTER_ID);
-        skill_mastery = pParty->activeCharacter().GetActualSkillMastery(PLAYER_SKILL_MONSTER_ID);
+    CombinedSkillValue idMonsterSkill = pParty->activeCharacter().getActualSkillValue(PLAYER_SKILL_MONSTER_ID);
+    if ((skill_points = idMonsterSkill.level()) > 0) {
+        skill_mastery = idMonsterSkill.mastery();
         if (skill_mastery == PLAYER_SKILL_MASTERY_NOVICE) {
             if (skill_points + 10 >= pActors[uActorID].pMonsterInfo.uLevel) {
                 normal_level = true;
@@ -1018,8 +1018,8 @@ std::string CharacterUI_GetSkillDescText(unsigned int uPlayerID, PLAYER_SKILL_TY
         pFontSmallnum->GetLineWidth(localization->GetString(LSTR_BONUS_2))
     });
 
-    int base_skill = pParty->pPlayers[uPlayerID].pActiveSkills[uPlayerSkillType] & 0x3F;
-    int actual_skill = pParty->pPlayers[uPlayerID].GetActualSkillLevel(uPlayerSkillType) & 0x3F;
+    int base_skill = pParty->pPlayers[uPlayerID].getSkillValue(uPlayerSkillType).level();
+    int actual_skill = pParty->pPlayers[uPlayerID].getActualSkillValue(uPlayerSkillType).level();
 
     const char *desc = localization->GetSkillDescription(uPlayerSkillType);
     std::string Description = desc ? desc : "";
@@ -1284,7 +1284,7 @@ void DrawSpellDescriptionPopup(int spell_index_in_book) {
     spell_info_window.uFrameWidth = 108;
     spell_info_window.uFrameZ = spell_info_window.uFrameX + 107;
     PLAYER_SKILL_TYPE skill = static_cast<PLAYER_SKILL_TYPE>(pParty->activeCharacter().lastOpenedSpellbookPage + 12);
-    PLAYER_SKILL_MASTERY skill_mastery = pParty->activeCharacter().GetSkillMastery(skill);
+    PLAYER_SKILL_MASTERY skill_mastery = pParty->activeCharacter().getSkillValue(skill).mastery();
     spell_info_window.DrawTitleText(pFontComic, 12, 75, 0, localization->GetSkillName(skill), 3);
 
     auto str2 = fmt::format(
@@ -1778,8 +1778,7 @@ void Inventory_ItemPopupAndAlchemy() {
         return;
     }
 
-    PLAYER_SKILL_LEVEL alchemy_skill_points = pParty->activeCharacter().GetActualSkillLevel(PLAYER_SKILL_ALCHEMY);
-    PLAYER_SKILL_MASTERY alchemy_skill_level = pParty->activeCharacter().GetActualSkillMastery(PLAYER_SKILL_ALCHEMY);
+    CombinedSkillValue alchemySkill = pParty->activeCharacter().getActualSkillValue(PLAYER_SKILL_ALCHEMY);
 
     if (pParty->pPickedItem.uItemID == ITEM_POTION_BOTTLE) {
         GameUI_DrawItemInfo(item);
@@ -1804,8 +1803,8 @@ void Inventory_ItemPopupAndAlchemy() {
         }
 
         // TODO(Nik-RE-dev): need to allow GetSkillMastery return PLAYER_SKILL_MASTERY_NONE
-        if (!alchemy_skill_points) {
-            alchemy_skill_level = PLAYER_SKILL_MASTERY_NONE;
+        if (!alchemySkill.level()) {
+            alchemySkill.setMastery(PLAYER_SKILL_MASTERY_NONE);
         }
 
         int damage_level = 0;
@@ -1816,21 +1815,21 @@ void Inventory_ItemPopupAndAlchemy() {
             // potionID >= ITEM_POTION_CURE_WOUNDS && potionID <= ITEM_POTION_CURE_WEAKNESS does not require skill
             if (potionID >= ITEM_POTION_CURE_DISEASE &&
                     potionID <= ITEM_POTION_AWAKEN &&
-                    alchemy_skill_level == PLAYER_SKILL_MASTERY_NONE) {
+                    alchemySkill.mastery() == PLAYER_SKILL_MASTERY_NONE) {
                 damage_level = 1;
             }
             if (potionID >= ITEM_POTION_HASTE &&
                     potionID <= ITEM_POTION_CURE_INSANITY &&
-                    alchemy_skill_level <= PLAYER_SKILL_MASTERY_NOVICE) {
+                    alchemySkill.mastery() <= PLAYER_SKILL_MASTERY_NOVICE) {
                 damage_level = 2;
             }
             if (potionID >= ITEM_POTION_MIGHT_BOOST &&
                     potionID <= ITEM_POTION_BODY_RESISTANCE &&
-                    alchemy_skill_level <= PLAYER_SKILL_MASTERY_EXPERT) {
+                    alchemySkill.mastery() <= PLAYER_SKILL_MASTERY_EXPERT) {
                 damage_level = 3;
             }
             if (potionID >= ITEM_POTION_STONE_TO_FLESH &&
-                    alchemy_skill_level <= PLAYER_SKILL_MASTERY_MASTER) {
+                    alchemySkill.mastery() <= PLAYER_SKILL_MASTERY_MASTER) {
                 damage_level = 4;
             }
         }
@@ -1983,7 +1982,7 @@ void Inventory_ItemPopupAndAlchemy() {
     }
 
     if (isReagent(pParty->pPickedItem.uItemID) && item->uItemID == ITEM_POTION_BOTTLE) {
-        item->uEnchantmentType = alchemy_skill_points + pParty->pPickedItem.GetDamageDice();
+        item->uEnchantmentType = alchemySkill.level() + pParty->pPickedItem.GetDamageDice();
         switch (pParty->pPickedItem.uItemID) {
             case ITEM_REAGENT_WIDOWSWEEP_BERRIES:
             case ITEM_REAGENT_CRUSHED_ROSE_PETALS:

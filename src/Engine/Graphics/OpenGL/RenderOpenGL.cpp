@@ -2928,29 +2928,21 @@ void RenderOpenGL::DrawBillboards() {
 
     if (palbuf == 0) {
         // generate palette buffer texture
+        std::span<uint32_t> palettes = pPaletteManager->paletteData();
         glGenBuffers(1, &palbuf);
         glBindBuffer(GL_TEXTURE_BUFFER, palbuf);
-        glBufferData(GL_TEXTURE_BUFFER, pPaletteManager->GetGLPaletteSize(), pPaletteManager->GetGLPalettePtr(), GL_STATIC_DRAW);
+        glBufferData(GL_TEXTURE_BUFFER, palettes.size_bytes(), palettes.data(), GL_STATIC_DRAW);
 
         glGenTextures(1, &paltex);
         glBindTexture(GL_TEXTURE_BUFFER, paltex);
         glTexBuffer(GL_TEXTURE_BUFFER, GL_RGBA8UI, palbuf);
         glBindBuffer(GL_TEXTURE_BUFFER, 0);
-
-        pPaletteManager->GLPaletteReset();
     }
 
     // update buffer
     glBindBuffer(GL_ARRAY_BUFFER, billbVBO);
     glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(billbverts) * billbstorecnt, billbstore);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-    if (pPaletteManager->GetGLPaletteNeedsUpdate()) {
-        glBindBuffer(GL_TEXTURE_BUFFER, palbuf);
-        glBufferData(GL_TEXTURE_BUFFER, pPaletteManager->GetGLPaletteSize(), pPaletteManager->GetGLPalettePtr(), GL_STATIC_DRAW);
-        glBindBuffer(GL_TEXTURE_BUFFER, 0);
-        pPaletteManager->GLPaletteReset();
-    }
 
     glBindVertexArray(billbVAO);
     glEnableVertexAttribArray(0);
@@ -5565,29 +5557,21 @@ void RenderOpenGL::DrawTwodVerts() {
 
     if (palbuf == 0) {
         // generate palette buffer texture
+        std::span<uint32_t> palettes = pPaletteManager->paletteData();
         glGenBuffers(1, &palbuf);
         glBindBuffer(GL_TEXTURE_BUFFER, palbuf);
-        glBufferData(GL_TEXTURE_BUFFER, pPaletteManager->GetGLPaletteSize(), pPaletteManager->GetGLPalettePtr(), GL_STATIC_DRAW);
+        glBufferData(GL_TEXTURE_BUFFER, palettes.size_bytes(), palettes.data(), GL_STATIC_DRAW);
 
         glGenTextures(1, &paltex);
         glBindTexture(GL_TEXTURE_BUFFER, paltex);
         glTexBuffer(GL_TEXTURE_BUFFER, GL_RGBA8UI, palbuf);
         glBindBuffer(GL_TEXTURE_BUFFER, 0);
-
-        pPaletteManager->GLPaletteReset();
     }
 
     // update buffer
     glBindBuffer(GL_ARRAY_BUFFER, twodVBO);
     glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(twodverts) * twodvertscnt, twodshaderstore);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-    if (pPaletteManager->GetGLPaletteNeedsUpdate()) {
-        glBindBuffer(GL_TEXTURE_BUFFER, palbuf);
-        glBufferData(GL_TEXTURE_BUFFER, pPaletteManager->GetGLPaletteSize(), pPaletteManager->GetGLPalettePtr(), GL_STATIC_DRAW);
-        glBindBuffer(GL_TEXTURE_BUFFER, 0);
-        pPaletteManager->GLPaletteReset();
-    }
 
     glBindVertexArray(twodVAO);
     glEnableVertexAttribArray(0);

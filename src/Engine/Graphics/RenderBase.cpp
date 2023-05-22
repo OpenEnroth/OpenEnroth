@@ -547,7 +547,7 @@ void RenderBase::MakeParticleBillboardAndPush(SoftwareBillboard *a2,
     billboard->texture = texture;
     billboard->z_order = a2->screen_space_z;
     billboard->uNumVertices = 4;
-    billboard->PaletteIndex = pPaletteManager->GetPaletteIndex(a2->paletteID);
+    billboard->PaletteIndex = pPaletteManager->paletteIndex(a2->paletteID);
 
     float screenspace_projection_factor = a2->screenspace_projection_factor_x;
 

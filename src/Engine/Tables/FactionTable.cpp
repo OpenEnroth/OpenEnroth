@@ -1,8 +1,9 @@
 #include "Engine/Tables/FactionTable.h"
 
 #include "Engine/Engine.h"
+#include "Engine/LOD.h"
 
-#include "../LOD.h"
+std::string pHostileTXT_Raw;
 
 //----- (004547E4) --------------------------------------------------------
 void FactionTable::Initialize() {
