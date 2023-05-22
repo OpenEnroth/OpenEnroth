@@ -93,7 +93,6 @@ extern unsigned int uGameUIFontMain;
 extern int dword_507B00_spell_info_to_draw_in_popup;
 extern int dword_507CC0_activ_ch;
 extern bool OpenedTelekinesis;
-extern struct stru367 PortalFace;
 extern int enchantingActiveCharacter;
 extern std::array<unsigned int, 5> pIconIDs_Turn;
 extern unsigned int uIconID_TurnStop;

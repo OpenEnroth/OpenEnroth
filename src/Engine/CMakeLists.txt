@@ -42,8 +42,7 @@ set(ENGINE_HEADERS
         Time.h
         mm7_data.h
         stru160.h
-        stru314.h
-        stru367.h)
+        stru314.h)
 
 add_library(engine STATIC ${ENGINE_SOURCES} ${ENGINE_HEADERS})
 target_check_style(engine)
