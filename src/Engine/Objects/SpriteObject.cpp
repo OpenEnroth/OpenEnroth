@@ -923,9 +923,10 @@ bool processSpellImpact(unsigned int uLayingItemID, int pid) {
             object->vVelocity = Vec3s(0.0, 0.0, 0.0);
             int iceParticles = (object->spell_skill == PLAYER_SKILL_MASTERY_GRANDMASTER) ? 9 : 7;
             int yaw = object->uFacing - TrigLUT.uIntegerDoublePi;
+            SpriteObject temp = *object;
             for (int i = 0; i < iceParticles; i++) {
                 yaw += TrigLUT.uIntegerQuarterPi;
-                object->Create(yaw, 0, 1000, 0);
+                temp.Create(yaw, 0, 1000, 0);
             }
             SpriteObject::OnInteraction(uLayingItemID);
             // int v16 = 0;
@@ -938,7 +939,7 @@ bool processSpellImpact(unsigned int uLayingItemID, int pid) {
             //        word_4EE088_sound_ids[pSpriteObjects[uLayingItemID].spell_id
             //        - 1] + 1; pAudioPlayer->playSound((SoundID)v125, v124, 0,
             //        -1, 0, v16, 0, 0);
-            pAudioPlayer->playSpellSound(object->uSpellID, PID(OBJECT_Item, uLayingItemID), true);
+            pAudioPlayer->playSpellSound(temp.uSpellID, PID(OBJECT_Item, uLayingItemID), true);
             return 0;
         }
 
@@ -996,11 +997,12 @@ bool processSpellImpact(unsigned int uLayingItemID, int pid) {
             }
             object->vVelocity = Vec3s(0.0, 0.0, 0.0);
             int yaw = object->uFacing - TrigLUT.uIntegerDoublePi;
+            SpriteObject temp = *object;
             for (int i = 0; i < 8; i++) {
                 int yawRandomDelta = grng->randomInSegment(-128, 128);
                 int randomSpeed = grng->randomInSegment(5, 500);
                 yaw += TrigLUT.uIntegerQuarterPi;
-                object->Create(yaw + yawRandomDelta, 0, randomSpeed, 0);
+                temp.Create(yaw + yawRandomDelta, 0, randomSpeed, 0);
             }
             SpriteObject::OnInteraction(uLayingItemID);
             // int v16 = 0;
@@ -1013,7 +1015,7 @@ bool processSpellImpact(unsigned int uLayingItemID, int pid) {
             //        word_4EE088_sound_ids[pSpriteObjects[uLayingItemID].spell_id
             //        - 1] + 1; pAudioPlayer->playSound((SoundID)v125, v124, 0,
             //        -1, 0, v16, 0, 0);
-            pAudioPlayer->playSpellSound(object->uSpellID, PID(OBJECT_Item, uLayingItemID), true);
+            pAudioPlayer->playSpellSound(temp.uSpellID, PID(OBJECT_Item, uLayingItemID), true);
             return 0;
         }
 
