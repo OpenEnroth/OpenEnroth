@@ -64,7 +64,6 @@ var searchData=
   ['stru319_61',['stru319',['../structstru319.html',1,'']]],
   ['stru355_62',['stru355',['../structstru355.html',1,'']]],
   ['stru365_5ftravel_5finfo_63',['stru365_travel_info',['../structstru365__travel__info.html',1,'']]],
-  ['stru367_64',['stru367',['../structstru367.html',1,'']]],
-  ['stru6_5fstru2_65',['stru6_stru2',['../structstru6__stru2.html',1,'']]],
-  ['summoneditem_66',['SummonedItem',['../structSummonedItem.html',1,'']]]
+  ['stru6_5fstru2_64',['stru6_stru2',['../structstru6__stru2.html',1,'']]],
+  ['summoneditem_65',['SummonedItem',['../structSummonedItem.html',1,'']]]
 ];

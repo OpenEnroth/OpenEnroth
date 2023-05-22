@@ -53,6 +53,5 @@ var searchData=
   ['stringoutputstream_2ecpp_50',['StringOutputStream.cpp',['../StringOutputStream_8cpp.html',1,'']]],
   ['stringoutputstream_2eh_51',['StringOutputStream.h',['../StringOutputStream_8h.html',1,'']]],
   ['stru160_2eh_52',['stru160.h',['../stru160_8h.html',1,'']]],
-  ['stru314_2eh_53',['stru314.h',['../stru314_8h.html',1,'']]],
-  ['stru367_2eh_54',['stru367.h',['../stru367_8h.html',1,'']]]
+  ['stru314_2eh_53',['stru314.h',['../stru314_8h.html',1,'']]]
 ];
