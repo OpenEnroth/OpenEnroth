@@ -205,7 +205,7 @@ void GUIWindow_Dialogue::Update() {
                                 pDialogueNPCPortraits[0]);
 
     window.DrawTitleText(
-        pFontArrus, sideTextBoxPosX, sideTextBoxPosY, ui_game_dialogue_npc_name_color, NameAndTitle(pNPC), 3
+        pFontArrus, SIDE_TEXT_BOX_POS_X, SIDE_TEXT_BOX_POS_Y, ui_game_dialogue_npc_name_color, NameAndTitle(pNPC), 3
     );
 
     pParty->getPartyFame();
@@ -295,9 +295,9 @@ void GUIWindow_Dialogue::Update() {
 
     // Right panel(Правая панель)-------
     window = *pDialogueWindow;
-    window.uFrameX = sideTextBoxPosX;
-    window.uFrameWidth = sideTextBoxWidth;
-    window.uFrameZ = sideTextBoxPosZ;
+    window.uFrameX = SIDE_TEXT_BOX_POS_X;
+    window.uFrameWidth = SIDE_TEXT_BOX_WIDTH;
+    window.uFrameZ = SIDE_TEXT_BOX_POS_Z;
     for (int i = window.pStartingPosActiveItem;
          i < window.pStartingPosActiveItem + window.pNumPresenceButton; ++i) {
         GUIButton *pButton = window.GetControl(i);
@@ -411,9 +411,9 @@ void GUIWindow_Dialogue::Update() {
     }
 
     if (index) {
-        int v45 = (sideTextBoxBodyTextHeight - all_text_height) / index;
-        if (v45 > sideTextBoxMaxSpacing) v45 = sideTextBoxMaxSpacing;
-        int v42 = (sideTextBoxBodyTextHeight - v45 * index - all_text_height) / 2 - v45 / 2 + sideTextBoxBodyTextOffset;
+        int v45 = (SIDE_TEXT_BOX_BODY_TEXT_HEIGHT - all_text_height) / index;
+        if (v45 > SIDE_TEXT_BOX_MAX_SPACING) v45 = SIDE_TEXT_BOX_MAX_SPACING;
+        int v42 = (SIDE_TEXT_BOX_BODY_TEXT_HEIGHT - v45 * index - all_text_height) / 2 - v45 / 2 + SIDE_TEXT_BOX_BODY_TEXT_OFFSET;
         for (int i = pDialogueWindow->pStartingPosActiveItem;
              i < pDialogueWindow->pNumPresenceButton +
                      pDialogueWindow->pStartingPosActiveItem;

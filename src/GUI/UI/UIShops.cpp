@@ -48,8 +48,8 @@ void ShopDialogMain(GUIWindow dialogwin) {
             all_text_height += pFontArrus->CalcTextHeight(
                 pShopOptions[i], dialogwin.uFrameWidth, 0);
 
-        int textspacings = (sideTextBoxBodyTextHeight - all_text_height) / 4;
-        int textoffset = sideTextBoxBodyTextOffset - (textspacings / 2);
+        int textspacings = (SIDE_TEXT_BOX_BODY_TEXT_HEIGHT - all_text_height) / 4;
+        int textoffset = SIDE_TEXT_BOX_BODY_TEXT_OFFSET - (textspacings / 2);
 
         int pNumString = 0;
         GUIButton *pButton;
@@ -101,8 +101,8 @@ void ShopDialogDisplayEquip(GUIWindow dialogwin,
         all_text_height += pFontArrus->CalcTextHeight(pShopOptions[i],
                                                       dialogwin.uFrameWidth, 0);
 
-    int textspacings = (sideTextBoxBodyTextHeight - all_text_height) / options;
-    int textoffset = sideTextBoxBodyTextOffset - (textspacings / 2);
+    int textspacings = (SIDE_TEXT_BOX_BODY_TEXT_HEIGHT - all_text_height) / options;
+    int textoffset = SIDE_TEXT_BOX_BODY_TEXT_OFFSET - (textspacings / 2);
 
     int pNumString = 0;
     GUIButton *pButton;
@@ -155,10 +155,10 @@ void ShopDialogSellEquip(GUIWindow dialogwin, BuildingType building) {
                 pMerchantsSellPhrases[phrases_id], pParty->activeCharacterIndex() - 1, item,
                 window_SpeakInHouse->wData.val, 3);
             dialogwin.DrawTitleText(pFontArrus, 0,
-                                    (sideTextBoxBodyTextHeight - pFontArrus->CalcTextHeight(
+                                    (SIDE_TEXT_BOX_BODY_TEXT_HEIGHT - pFontArrus->CalcTextHeight(
                                                str, dialogwin.uFrameWidth, 0)) /
                                             2 +
-                                        sideTextBoxBodyTextOffset, colorTable.White.c16(), str, 3);
+                                        SIDE_TEXT_BOX_BODY_TEXT_OFFSET, colorTable.White.c16(), str, 3);
         }
     }
 }
@@ -193,7 +193,7 @@ void ShopDialogIdentify(GUIWindow dialogwin, BuildingType building) {
             }
 
             dialogwin.DrawTitleText(pFontArrus, 0,
-                (sideTextBoxBodyTextHeight - pFontArrus->CalcTextHeight(str, dialogwin.uFrameWidth, 0)) / 2 + sideTextBoxBodyTextOffset, colorTable.White.c16(), str, 3);
+                (SIDE_TEXT_BOX_BODY_TEXT_HEIGHT - pFontArrus->CalcTextHeight(str, dialogwin.uFrameWidth, 0)) / 2 + SIDE_TEXT_BOX_BODY_TEXT_OFFSET, colorTable.White.c16(), str, 3);
         }
     }
 }
@@ -224,7 +224,7 @@ void ShopDialogRepair(GUIWindow dialogwin, BuildingType building) {
                 pMerchantsRepairPhrases[phrases_id], pParty->activeCharacterIndex() - 1, item,
                 window_SpeakInHouse->wData.val, 5);
             dialogwin.DrawTitleText(pFontArrus, 0,
-                (sideTextBoxBodyTextHeight - pFontArrus->CalcTextHeight(str, dialogwin.uFrameWidth, 0)) / 2 + sideTextBoxBodyTextOffset, colorTable.White.c16(), str, 3);
+                (SIDE_TEXT_BOX_BODY_TEXT_HEIGHT - pFontArrus->CalcTextHeight(str, dialogwin.uFrameWidth, 0)) / 2 + SIDE_TEXT_BOX_BODY_TEXT_OFFSET, colorTable.White.c16(), str, 3);
         }
     }
 }
@@ -339,10 +339,10 @@ void WeaponShopWares(GUIWindow dialogwin, bool special) {
                             }
                             dialogwin.DrawTitleText(
                                 pFontArrus, 0,
-                                (sideTextBoxBodyTextHeight - pFontArrus->CalcTextHeight(
+                                (SIDE_TEXT_BOX_BODY_TEXT_HEIGHT - pFontArrus->CalcTextHeight(
                                            str, dialogwin.uFrameWidth, 0)) /
                                         2 +
-                                    sideTextBoxBodyTextOffset, colorTable.White.c16(), str, 3);
+                                    SIDE_TEXT_BOX_BODY_TEXT_OFFSET, colorTable.White.c16(), str, 3);
                         }
                     }
                 }
@@ -358,9 +358,9 @@ void WeaponShopWares(GUIWindow dialogwin, bool special) {
 
 void WeaponShopDialog() {
     GUIWindow dialog_window = *window_SpeakInHouse;
-    dialog_window.uFrameX = sideTextBoxPosX;
-    dialog_window.uFrameWidth = sideTextBoxWidth;
-    dialog_window.uFrameZ = sideTextBoxPosZ;
+    dialog_window.uFrameX = SIDE_TEXT_BOX_POS_X;
+    dialog_window.uFrameWidth = SIDE_TEXT_BOX_WIDTH;
+    dialog_window.uFrameZ = SIDE_TEXT_BOX_POS_Z;
 
     switch (dialog_menu_id) {
         case DIALOGUE_MAIN: {
@@ -502,7 +502,7 @@ void ArmorShopWares(GUIWindow dialogwin, bool special) {
                             }
                             dialogwin.DrawTitleText(
                                 pFontArrus, 0,
-                                (sideTextBoxBodyTextHeight - pFontArrus->CalcTextHeight(str, dialogwin.uFrameWidth, 0)) / 2 + sideTextBoxBodyTextOffset, colorTable.White.c16(), str, 3);
+                                (SIDE_TEXT_BOX_BODY_TEXT_HEIGHT - pFontArrus->CalcTextHeight(str, dialogwin.uFrameWidth, 0)) / 2 + SIDE_TEXT_BOX_BODY_TEXT_OFFSET, colorTable.White.c16(), str, 3);
                         }
                     }
                 }
@@ -518,9 +518,9 @@ void ArmorShopWares(GUIWindow dialogwin, bool special) {
 
 void ArmorShopDialog() {
     GUIWindow dialog_window = *window_SpeakInHouse;
-    dialog_window.uFrameX = sideTextBoxPosX;
-    dialog_window.uFrameWidth = sideTextBoxWidth;
-    dialog_window.uFrameZ = sideTextBoxPosZ;
+    dialog_window.uFrameX = SIDE_TEXT_BOX_POS_X;
+    dialog_window.uFrameWidth = SIDE_TEXT_BOX_WIDTH;
+    dialog_window.uFrameZ = SIDE_TEXT_BOX_POS_Z;
 
     switch (dialog_menu_id) {
         case DIALOGUE_MAIN: {
@@ -670,10 +670,10 @@ void AlchemyMagicShopWares(GUIWindow dialogwin, BuildingType building,
                             }
                             dialogwin.DrawTitleText(
                                 pFontArrus, 0,
-                                (sideTextBoxBodyTextHeight - pFontArrus->CalcTextHeight(
+                                (SIDE_TEXT_BOX_BODY_TEXT_HEIGHT - pFontArrus->CalcTextHeight(
                                            str, dialogwin.uFrameWidth, 0)) /
                                         2 +
-                                    sideTextBoxBodyTextOffset, colorTable.White.c16(), str, 3);
+                                    SIDE_TEXT_BOX_BODY_TEXT_OFFSET, colorTable.White.c16(), str, 3);
                         }
                     }
                 }
@@ -690,9 +690,9 @@ void AlchemyMagicShopWares(GUIWindow dialogwin, BuildingType building,
 
 void AlchemistDialog() {
     GUIWindow dialog_window = *window_SpeakInHouse;
-    dialog_window.uFrameX = sideTextBoxPosX;
-    dialog_window.uFrameWidth = sideTextBoxWidth;
-    dialog_window.uFrameZ = sideTextBoxPosZ;
+    dialog_window.uFrameX = SIDE_TEXT_BOX_POS_X;
+    dialog_window.uFrameWidth = SIDE_TEXT_BOX_WIDTH;
+    dialog_window.uFrameZ = SIDE_TEXT_BOX_POS_Z;
 
     switch (dialog_menu_id) {
         case DIALOGUE_MAIN: {
@@ -732,9 +732,9 @@ void AlchemistDialog() {
 
 void MagicShopDialog() {
     GUIWindow dialog_window = *window_SpeakInHouse;
-    dialog_window.uFrameX = sideTextBoxPosX;
-    dialog_window.uFrameWidth = sideTextBoxWidth;
-    dialog_window.uFrameZ = sideTextBoxPosZ;
+    dialog_window.uFrameX = SIDE_TEXT_BOX_POS_X;
+    dialog_window.uFrameWidth = SIDE_TEXT_BOX_WIDTH;
+    dialog_window.uFrameZ = SIDE_TEXT_BOX_POS_Z;
 
     switch (dialog_menu_id) {
         case DIALOGUE_MAIN: {

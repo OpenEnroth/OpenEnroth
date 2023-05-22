@@ -34,9 +34,9 @@ void GuildDialog() {
     int pX;
 
     GUIWindow working_window = *window_SpeakInHouse;
-    working_window.uFrameX = sideTextBoxPosX;
-    working_window.uFrameWidth = sideTextBoxWidth;
-    working_window.uFrameZ = sideTextBoxPosZ;
+    working_window.uFrameX = SIDE_TEXT_BOX_POS_X;
+    working_window.uFrameWidth = SIDE_TEXT_BOX_WIDTH;
+    working_window.uFrameZ = SIDE_TEXT_BOX_POS_Z;
 
     int pPrice = PriceCalculator::skillLearningCostForPlayer(&pParty->activeCharacter(),
                                                              buildingTable[window_SpeakInHouse->wData.val - 1]);
@@ -128,7 +128,7 @@ void GuildDialog() {
                                              item, BuildingType_MagicShop, window_SpeakInHouse->wData.val, 2)],
                                 pParty->activeCharacterIndex() - 1, item, window_SpeakInHouse->wData.val, 2);
                             pTextHeight = pFontArrus->CalcTextHeight(str, working_window.uFrameWidth, 0);
-                            working_window.DrawTitleText(pFontArrus, 0, (sideTextBoxBodyTextHeight - pTextHeight) / 2 + sideTextBoxBodyTextOffset, colorTable.White.c16(), str, 3);
+                            working_window.DrawTitleText(pFontArrus, 0, (SIDE_TEXT_BOX_BODY_TEXT_HEIGHT - pTextHeight) / 2 + SIDE_TEXT_BOX_BODY_TEXT_OFFSET, colorTable.White.c16(), str, 3);
                             return;
                         }
                     }
