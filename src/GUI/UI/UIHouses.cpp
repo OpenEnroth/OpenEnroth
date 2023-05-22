@@ -778,9 +778,9 @@ bool HouseUI_CheckIfPlayerCanInteract() {
     } else {
         pDialogueWindow->pNumPresenceButton = 0;
         GUIWindow window = *pPrimaryWindow;
-        window.uFrameX = 483;
-        window.uFrameWidth = 143;
-        window.uFrameZ = 334;
+        window.uFrameX = SIDE_TEXT_BOX_POS_X;
+        window.uFrameWidth = SIDE_TEXT_BOX_WIDTH;
+        window.uFrameZ = SIDE_TEXT_BOX_POS_Z;
 
         std::string str = localization->FormatString(
             LSTR_FMT_S_IS_IN_NO_CODITION_TO_S,
@@ -1234,9 +1234,9 @@ int GetTravelTimeTransportDays(int schedule_id) {
 
 void TravelByTransport() {
     GUIWindow travel_window = *window_SpeakInHouse;
-    travel_window.uFrameX = 483;
-    travel_window.uFrameWidth = 143;
-    travel_window.uFrameZ = 334;
+    travel_window.uFrameX = SIDE_TEXT_BOX_POS_X;
+    travel_window.uFrameWidth = SIDE_TEXT_BOX_WIDTH;
+    travel_window.uFrameZ = SIDE_TEXT_BOX_POS_Z;
 
     assert(pParty->hasActiveCharacter()); // code in this function couldn't handle pParty->activeCharacterIndex() = 0 and crash
 
@@ -1309,7 +1309,7 @@ void TravelByTransport() {
                 travel_window.DrawTitleText(pFontArrus, 0, 146, 0,
                     fmt::format("{}\n \n{}{}{}{}{}", travelcost, pTopicArray[0], pTopicArray[1], pTopicArray[2], pTopicArray[3], pTopicArray[4]), 3);
             } else {
-                travel_window.DrawTitleText(pFontArrus, 0, (174 - pFontArrus->CalcTextHeight(localization->GetString(LSTR_COME_BACK_ANOTHER_DAY), travel_window.uFrameWidth, 0)) / 2 + 138,
+                travel_window.DrawTitleText(pFontArrus, 0, (SIDE_TEXT_BOX_BODY_TEXT_HEIGHT - pFontArrus->CalcTextHeight(localization->GetString(LSTR_COME_BACK_ANOTHER_DAY), travel_window.uFrameWidth, 0)) / 2 + SIDE_TEXT_BOX_BODY_TEXT_OFFSET,
                                             colorTable.White.c16(), localization->GetString(LSTR_COME_BACK_ANOTHER_DAY), 3);
             }
         }
@@ -1406,9 +1406,9 @@ void TownHallDialog() {
     GUIFont *pOutString;          // [sp+118h] [bp-4h]@21
 
     GUIWindow townHall_window = *window_SpeakInHouse;
-    townHall_window.uFrameX = 483;
-    townHall_window.uFrameWidth = 143;
-    townHall_window.uFrameZ = 334;
+    townHall_window.uFrameX = SIDE_TEXT_BOX_POS_X;
+    townHall_window.uFrameWidth = SIDE_TEXT_BOX_WIDTH;
+    townHall_window.uFrameZ = SIDE_TEXT_BOX_POS_Z;
 
     std::string fine_str = fmt::format("{}: {}", localization->GetString(LSTR_CURRENT_FINE), pParty->uFine);
     townHall_window.DrawTitleText(pFontArrus, 0, 260, colorTable.PaleCanary.c16(), fine_str, 3);
@@ -1512,9 +1512,9 @@ void TownHallDialog() {
 
 void BankDialog() {
     GUIWindow bank_window = *window_SpeakInHouse;
-    bank_window.uFrameX = 483;
-    bank_window.uFrameWidth = 143;
-    bank_window.uFrameZ = 334;
+    bank_window.uFrameX = SIDE_TEXT_BOX_POS_X;
+    bank_window.uFrameWidth = SIDE_TEXT_BOX_WIDTH;
+    bank_window.uFrameZ = SIDE_TEXT_BOX_POS_Z;
     bank_window.DrawTitleText(
         pFontArrus, 0, 220, colorTable.PaleCanary.c16(),
         fmt::format("{}: {}", localization->GetString(LSTR_BALANCE), pParty->uNumGoldInBank),
@@ -1622,13 +1622,13 @@ void TavernDialog() {
     uint8_t pTopic3Height;  // [sp+253h] [bp-21h]@59
     uint8_t pTopic4Height = 0;
     int pTextHeight;
-    int all_text_height;  // [sp+260h] [bp-14h]@18
+    int all_text_height = 0;  // [sp+260h] [bp-14h]@18
     GUIFont *pOutString;
 
     GUIWindow dialog_window = *window_SpeakInHouse;
-    dialog_window.uFrameX = 483;
-    dialog_window.uFrameWidth = 143;
-    dialog_window.uFrameZ = 334;
+    dialog_window.uFrameX = SIDE_TEXT_BOX_POS_X;
+    dialog_window.uFrameWidth = SIDE_TEXT_BOX_WIDTH;
+    dialog_window.uFrameZ = SIDE_TEXT_BOX_POS_Z;
 
     // TODO(pskelton): check this behaviour
     if (!pParty->hasActiveCharacter())  // avoid nzi
@@ -1778,10 +1778,10 @@ void TavernDialog() {
         }
         dialog_window.DrawTitleText(
             pFontArrus, 0,
-            (174 - pFontArrus->CalcTextHeight(
+            (SIDE_TEXT_BOX_BODY_TEXT_HEIGHT - pFontArrus->CalcTextHeight(
                 pText, dialog_window.uFrameWidth, 0)) /
             2 +
-            138, colorTable.PaleCanary.c16(), pText, 3);
+            SIDE_TEXT_BOX_BODY_TEXT_OFFSET, colorTable.PaleCanary.c16(), pText, 3);
         break;
     }
     case DIALOGUE_TAVERN_REST:
@@ -1865,15 +1865,11 @@ void TavernDialog() {
                 pOptionsCount = 3;
             }
             for (i = 0; i < pOptionsCount; ++i)
-                all_text_height = pFontArrus->CalcTextHeight(
-                    pShopOptions[i], dialog_window.uFrameWidth, 0);
-            all_text_height = (174 - all_text_height) / pOptionsCount;
+                all_text_height += pFontArrus->CalcTextHeight(pShopOptions[i], dialog_window.uFrameWidth, 0);
+            all_text_height = (SIDE_TEXT_BOX_BODY_TEXT_HEIGHT - all_text_height) / pOptionsCount;
 
-            int v54 = (174 -
-                pOptionsCount * (174 - all_text_height) / pOptionsCount -
-                all_text_height) /
-                2 -
-                (174 - all_text_height) / pOptionsCount / 2 + 138;
+            int v54 = (SIDE_TEXT_BOX_BODY_TEXT_HEIGHT - pOptionsCount * all_text_height - all_text_height) /
+                2 - all_text_height / 2 + SIDE_TEXT_BOX_BODY_TEXT_OFFSET;
             pNumString = 0;
             for (pItemNum = pDialogueWindow->pStartingPosActiveItem;
                 pItemNum < pDialogueWindow->pNumPresenceButton +
@@ -1913,9 +1909,9 @@ void TempleDialog() {
     int all_text_height;          // [sp+1C0h] [bp-4h]@6
 
     GUIWindow tample_window = *window_SpeakInHouse;
-    tample_window.uFrameX = 483;
-    tample_window.uFrameWidth = 143;
-    tample_window.uFrameZ = 334;
+    tample_window.uFrameX = SIDE_TEXT_BOX_POS_X;
+    tample_window.uFrameWidth = SIDE_TEXT_BOX_WIDTH;
+    tample_window.uFrameZ = SIDE_TEXT_BOX_POS_Z;
 
     // TODO(pskelton): check this behaviour
     if (!pParty->hasActiveCharacter()) {  // avoid nzi
@@ -1950,14 +1946,14 @@ void TempleDialog() {
                 i++;
             }
         }
-        v64 = (174 - (signed int)all_text_height) /
+        v64 = (SIDE_TEXT_BOX_BODY_TEXT_HEIGHT - (signed int)all_text_height) /
             (pDialogueWindow->pNumPresenceButton - index);
-        if (v64 > 32) v64 = 32;
+        if (v64 > SIDE_TEXT_BOX_MAX_SPACING) v64 = SIDE_TEXT_BOX_MAX_SPACING;
         all_text_height =
-            (174 - v64 * (pDialogueWindow->pNumPresenceButton - index) -
+            (SIDE_TEXT_BOX_BODY_TEXT_HEIGHT - v64 * (pDialogueWindow->pNumPresenceButton - index) -
             (signed int)all_text_height) /
             2 -
-            v64 / 2 + 138;
+            v64 / 2 + SIDE_TEXT_BOX_BODY_TEXT_OFFSET;
         if (index + pDialogueWindow->pStartingPosActiveItem <
             pDialogueWindow->pStartingPosActiveItem +
             pDialogueWindow->pNumPresenceButton) {
@@ -2138,9 +2134,9 @@ void TrainingDialog(const char *s) {
     int pTextHeight;              // eax@71
 
     GUIWindow training_dialog_window = *window_SpeakInHouse;
-    training_dialog_window.uFrameX = 483;
-    training_dialog_window.uFrameWidth = 143;
-    training_dialog_window.uFrameZ = 334;
+    training_dialog_window.uFrameX = SIDE_TEXT_BOX_POS_X;
+    training_dialog_window.uFrameWidth = SIDE_TEXT_BOX_WIDTH;
+    training_dialog_window.uFrameZ = SIDE_TEXT_BOX_POS_Z;
 
     // TODO(pskelton): check this behaviour
     if (!pParty->hasActiveCharacter())  // avoid nzi
@@ -2200,9 +2196,9 @@ void TrainingDialog(const char *s) {
                     }
                 }
                 v49 =
-                    (2 * (87 - (174 - all_text_height) / 2) - all_text_height) /
+                    (2 * (87 - (SIDE_TEXT_BOX_BODY_TEXT_HEIGHT - all_text_height) / 2) - all_text_height) /
                     2 -
-                    (174 - all_text_height) / 2 / 2 + 138;
+                    (SIDE_TEXT_BOX_BODY_TEXT_HEIGHT - all_text_height) / 2 / 2 + SIDE_TEXT_BOX_BODY_TEXT_OFFSET;
                 if (pDialogueWindow->pStartingPosActiveItem <
                     pDialogueWindow->pStartingPosActiveItem +
                     pDialogueWindow->pNumPresenceButton) {
@@ -2212,7 +2208,7 @@ void TrainingDialog(const char *s) {
                         pDialogueWindow->pNumPresenceButton;
                         ++i) {
                         pButton = pDialogueWindow->GetControl(i);
-                        pButton->uY = (174 - all_text_height) / 2 + v49;
+                        pButton->uY = (SIDE_TEXT_BOX_BODY_TEXT_HEIGHT - all_text_height) / 2 + v49;
                         pTextHeight = pFontArrus->CalcTextHeight(
                             pShopOptions[index],
                             training_dialog_window.uFrameWidth, 0);
@@ -2361,9 +2357,9 @@ void MercenaryGuildDialog() {
     int index;                    // [sp+74h] [bp-8h]@17
 
     GUIWindow dialog_window = *window_SpeakInHouse;
-    dialog_window.uFrameX = 483;
-    dialog_window.uFrameWidth = 143;
-    dialog_window.uFrameZ = 334;
+    dialog_window.uFrameX = SIDE_TEXT_BOX_POS_X;
+    dialog_window.uFrameWidth = SIDE_TEXT_BOX_WIDTH;
+    dialog_window.uFrameZ = SIDE_TEXT_BOX_POS_Z;
 
     /*
      * archiving this code just in case
@@ -2456,9 +2452,9 @@ void SimpleHouseDialog() {
         house_window.uFrameZ = 366;
         house_window.DrawTitleText(pFontCreate, 0, 2, 0,
             pMapStats->pInfos[uHouse_ExitPic].pName, 3);
-        house_window.uFrameX = 483;
-        house_window.uFrameWidth = 143;
-        house_window.uFrameZ = 334;
+        house_window.uFrameX = SIDE_TEXT_BOX_POS_X;
+        house_window.uFrameWidth = SIDE_TEXT_BOX_WIDTH;
+        house_window.uFrameZ = SIDE_TEXT_BOX_POS_Z;
         if (!pTransitionStrings[uHouse_ExitPic]) {
             auto str = localization->FormatString(
                 LSTR_FMT_ENTER_S,
@@ -2488,7 +2484,7 @@ void SimpleHouseDialog() {
     house_window.uFrameZ -= 10;
     pNPC = HouseNPCData[pDialogueNPCCount + -(dword_591080 != 0)];  //- 1
 
-    house_window.DrawTitleText(pFontCreate, 483, 113, colorTable.EasternBlue.c16(), NameAndTitle(pNPC), 3);
+    house_window.DrawTitleText(pFontCreate, SIDE_TEXT_BOX_POS_X, SIDE_TEXT_BOX_POS_Y, colorTable.EasternBlue.c16(), NameAndTitle(pNPC), 3);
 
     if (!dword_591080) {
         if (uDialogueType == DIALOGUE_NULL) {
@@ -2516,9 +2512,9 @@ void SimpleHouseDialog() {
     }
     // for right panel
     GUIWindow right_panel_window = *pDialogueWindow;
-    right_panel_window.uFrameX = 483;
-    right_panel_window.uFrameWidth = 143;
-    right_panel_window.uFrameZ = 334;
+    right_panel_window.uFrameX = SIDE_TEXT_BOX_POS_X;
+    right_panel_window.uFrameWidth = SIDE_TEXT_BOX_WIDTH;
+    right_panel_window.uFrameZ = SIDE_TEXT_BOX_POS_Z;
     for (int i = right_panel_window.pStartingPosActiveItem;
         i < right_panel_window.pStartingPosActiveItem +
         right_panel_window.pNumPresenceButton;
@@ -2618,9 +2614,9 @@ void SimpleHouseDialog() {
         index++;
     }
     if (index) {
-        v36 = (174 - all_text_height) / index;
-        if (v36 > 32) v36 = 32;
-        v40 = (174 - v36 * index - all_text_height) / 2 - v36 / 2 + 138;
+        v36 = (SIDE_TEXT_BOX_BODY_TEXT_HEIGHT - all_text_height) / index;
+        if (v36 > SIDE_TEXT_BOX_MAX_SPACING) v36 = SIDE_TEXT_BOX_MAX_SPACING;
+        v40 = (SIDE_TEXT_BOX_BODY_TEXT_HEIGHT - v36 * index - all_text_height) / 2 - v36 / 2 + SIDE_TEXT_BOX_BODY_TEXT_OFFSET;
         for (int i = pDialogueWindow->pStartingPosActiveItem;
             i < pDialogueWindow->pNumPresenceButton +
             pDialogueWindow->pStartingPosActiveItem;
@@ -2662,9 +2658,9 @@ void SimpleHouseDialog() {
 
 void JailDialog() {
     GUIWindow jail_dialogue_window = *window_SpeakInHouse;
-    jail_dialogue_window.uFrameX = 483;
-    jail_dialogue_window.uFrameWidth = 143;
-    jail_dialogue_window.uFrameZ = 334;
+    jail_dialogue_window.uFrameX = SIDE_TEXT_BOX_POS_X;
+    jail_dialogue_window.uFrameWidth = SIDE_TEXT_BOX_WIDTH;
+    jail_dialogue_window.uFrameZ = SIDE_TEXT_BOX_POS_Z;
     jail_dialogue_window.DrawTitleText(
         pFontArrus, 0,
         (310 - pFontArrus->CalcTextHeight(localization->GetString(LSTR_ONE_YEAR_SENTENCE),
