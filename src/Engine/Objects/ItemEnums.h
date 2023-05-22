@@ -1075,27 +1075,19 @@ inline ITEM_TREASURE_LEVEL randomItemTreasureLevel(ITEM_TYPE type) {
 }
 
 inline int spellCountForMastery(PLAYER_SKILL_MASTERY maxMastery) {
-    int numSpells;
     switch(maxMastery) {
       case PLAYER_SKILL_MASTERY_NOVICE:
-        numSpells = 4;
-        break;
+        return 4;
       case PLAYER_SKILL_MASTERY_EXPERT:
-        numSpells = 7;
-        break;
+        return 7;
       case PLAYER_SKILL_MASTERY_MASTER:
-        numSpells = 10;
-        break;
+        return 10;
       case PLAYER_SKILL_MASTERY_GRANDMASTER:
-        numSpells = 11;
-        break;
+        return 11;
       default:
         assert(false);
-        numSpells = 0;
-        break;
+        return 0;
     }
-
-    return numSpells;
 }
 
 inline Segment<ITEM_TYPE> spellbooksOfSchool(DAMAGE_TYPE damage, PLAYER_SKILL_MASTERY maxMastery = PLAYER_SKILL_MASTERY_GRANDMASTER) {
