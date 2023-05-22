@@ -12,7 +12,7 @@ class GameResourceManager {
 
     Blob getEventsFile(const std::string &filename);
  private:
-    Blob uncompressPseudoTexture(Blob &input);
+    Blob uncompressPseudoTexture(const Blob &input);
 
-    std::shared_ptr<LodReader> _eventsLodReader = nullptr;
+    std::unique_ptr<LodReader> _eventsLodReader = nullptr;
 };

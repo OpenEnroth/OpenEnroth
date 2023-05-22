@@ -16,42 +16,36 @@
  */
 class LodReader final {
  public:
-    static std::shared_ptr<LodReader> open(const std::string &filename, const std::string &defaultDirectory = ".");
+    static std::unique_ptr<LodReader> open(const std::string &filename);
 
-    inline ~LodReader() {
-        if (nullptr != _fp) {
-            fclose(_fp);
-        }
-    }
+    inline ~LodReader() {}
 
     bool exists(const std::string &filename) const;
     Blob read(const std::string &filename);
 
-    void cd(const std::string &filename);
     void ls() const;
 
  private:
     struct FileEntryDesc {
-        std::string flatName{};
+        std::string name{};
         size_t offset = 0;
         size_t size = 0;
     };
 
-    struct DirectoryDesc {
-        std::string dirName{};
-        size_t offs{};
-        int numFiles{};
+    struct FileCompressionDesc {
+        size_t compressedSize;
+        size_t decompressedSize;
+        size_t compressedOffs;
     };
 
-    bool parseDirectories(size_t numDirectories);
-    bool parseDirectoryFiles(DirectoryDesc &desc);
+    bool parseDirectories(size_t numDirectories, size_t dirOffset);
+    bool parseDirectoryFiles(size_t numFiles, size_t filesOffset);
 
-    bool isFileCompressed(const FileEntryDesc &desc);
+    bool isFileCompressed(const FileEntryDesc &desc, FileCompressionDesc *compDesc);
 
-    FILE *_fp = nullptr;
+    Blob _lod = Blob();
     LodVersion _version = LOD_VERSION_MM6;
     std::string _description = "";
-    std::string _pwd = "";
 
     std::vector<FileEntryDesc> _files{};
 };

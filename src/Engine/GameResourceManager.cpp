@@ -4,11 +4,15 @@
 #include "Engine/Graphics/Image.h"
 
 #include "Utility/DataPath.h"
+#include "Utility/Streams/MemoryInputStream.h"
 
 #include "Library/Compression/Compression.h"
+#include "Library/Binary/BinarySerialization.h"
+
+MM_DECLARE_MEMCOPY_SERIALIZABLE(TextureHeader)
 
 void GameResourceManager::openGameResources() {
-    _eventsLodReader = LodReader::open(MakeDataPath("data", "events.lod"), "icons");
+    _eventsLodReader = LodReader::open(MakeDataPath("data", "events.lod"));
     if (!_eventsLodReader) {
         Error(localization->GetString(LSTR_PLEASE_REINSTALL), localization->GetString(LSTR_REINSTALL_NECESSARY));
     }
@@ -20,16 +24,17 @@ Blob GameResourceManager::getEventsFile(const std::string &filename) {
     return uncompressPseudoTexture(file);
 }
 
-Blob GameResourceManager::uncompressPseudoTexture(Blob &input) {
-    const TextureHeader *header = (const TextureHeader*)input.data();
-    int compressedSize = header->uTextureSize;
-    int uncompressedSize = header->uDecompressedSize;
-    if ((input.size() - sizeof(TextureHeader)) < header->uTextureSize) {
-        return Blob();
-    }
+Blob GameResourceManager::uncompressPseudoTexture(const Blob &input) {
+    MemoryInputStream stream(input.data(), input.size());
+    TextureHeader header;
+    deserialize(stream, &header);
+
+    int compressedSize = header.uTextureSize;
+    int uncompressedSize = header.uDecompressedSize;
+    assert((input.size() - sizeof(TextureHeader)) >= header.uTextureSize);
     if (uncompressedSize) {
-        return zlib::Uncompress(input.subBlob(sizeof(TextureHeader), header->uTextureSize), header->uDecompressedSize);
+        return zlib::Uncompress(input.subBlob(sizeof(TextureHeader), header.uTextureSize), header.uDecompressedSize);
     } else {
-        return input.subBlob(sizeof(TextureHeader), header->uTextureSize);
+        return input.subBlob(sizeof(TextureHeader), header.uTextureSize);
     }
 }

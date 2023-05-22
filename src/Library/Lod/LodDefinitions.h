@@ -3,6 +3,8 @@
 #include <array>
 #include <cstdint>
 
+#include "Library/Binary/BinarySerialization.h"
+
 #pragma pack(push, 1)
 struct LodHeader_Mm6 {
     std::array<std::uint8_t, 4> signature{};
@@ -66,3 +68,9 @@ struct LodFileCompressionHeader_Mm6 {
     std::uint32_t decompressedSize{};
 };
 #pragma pack(pop)
+
+MM_DECLARE_MEMCOPY_SERIALIZABLE(LodHeader_Mm6)
+MM_DECLARE_MEMCOPY_SERIALIZABLE(LodDirectoryHeader_Mm6)
+MM_DECLARE_MEMCOPY_SERIALIZABLE(LodFileHeader_Mm6)
+MM_DECLARE_MEMCOPY_SERIALIZABLE(LodFileHeader_Mm8)
+MM_DECLARE_MEMCOPY_SERIALIZABLE(LodFileCompressionHeader_Mm6)

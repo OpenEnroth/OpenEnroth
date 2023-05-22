@@ -836,7 +836,7 @@ void FinalInitialization() {
 }
 
 bool MM7_LoadLods() {
-    engine->_gameResourceManager = std::make_shared<GameResourceManager>();
+    engine->_gameResourceManager = std::make_unique<GameResourceManager>();
     engine->_gameResourceManager->openGameResources();
 
     pIcons_LOD = new LODFile_IconsBitmaps;

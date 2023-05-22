@@ -210,7 +210,7 @@ class Engine {
     std::vector<std::string> _levelStrings;
     PersistentVariables _persistentVariables;
 
-    std::shared_ptr<GameResourceManager> _gameResourceManager = nullptr;
+    std::unique_ptr<GameResourceManager> _gameResourceManager = nullptr;
 };
 
 extern std::shared_ptr<Engine> engine;
