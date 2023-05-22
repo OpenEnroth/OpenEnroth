@@ -44,6 +44,7 @@
 #include "Utility/String.h"
 #include "Library/Random/Random.h"
 #include "Utility/Math/TrigLut.h"
+#include "Utility/IndexedArray.h"
 
 using Io::TextInputType;
 
@@ -130,6 +131,19 @@ unsigned char transport_routes[20][4] = {
     { 24, 24, 24, 24 },      // HOUSE_BOATS_71
     { 255, 255, 255, 255 },  // HOUSE_BOATS_72
     { 255, 255, 255, 255 }   // HOUSE_BOATS_73
+};
+
+IndexedArray<int, HOUSE_TRAINING_HALL_EMERALD_ISLE, HOUSE_TRAINING_HALL_STONE_CITY> trainingHallMaxLevels = {
+    {HOUSE_TRAINING_HALL_EMERALD_ISLE, 5},
+    {HOUSE_TRAINING_HALL_HARMONDALE, 15},
+    {HOUSE_TRAINING_HALL_ERATHIA, 25},
+    {HOUSE_TRAINING_HALL_TULAREAN_FOREST, 25},
+    {HOUSE_TRAINING_HALL_CELESTE, 200},
+    {HOUSE_TRAINING_HALL_PIT, 200},
+    {HOUSE_TRAINING_HALL_NIGHON, std::numeric_limits<int>::max()}, // no limit
+    {HOUSE_TRAINING_HALL_TATALIA, 50},
+    {HOUSE_TRAINING_HALL_AVLEE, 50},
+    {HOUSE_TRAINING_HALL_STONE_CITY, 100},
 };
 
 std::array<const HouseAnimDescr, 196> pAnimatedRooms = { {  // 0x4E5F70
@@ -965,28 +979,23 @@ void PlayHouseSound(unsigned int uHouseID, HouseSoundID sound) {
 
 //----- (004BCACC) --------------------------------------------------------
 void OnSelectShopDialogueOption(DIALOGUE_TYPE option) {
-    int experience_for_next_level;  // eax@5
-    signed int v36;                 // esi@227
-
-    if (!pDialogueWindow->pNumPresenceButton) return;
+    if (!pDialogueWindow->pNumPresenceButton)
+        return;
     render->ClearZBuffer();
 
     if (dialog_menu_id == DIALOGUE_MAIN) {
         Sizei renDims = render->GetRenderDimensions();
         if (in_current_building_type == BuildingType_Training) {
             if (option == DIALOGUE_TRAINING_HALL_TRAIN) {
-                experience_for_next_level = 0;
-                if (pParty->activeCharacter().uLevel > 0) {
-                    for (uint i = 0; i < pParty->activeCharacter().uLevel;
-                        i++)
-                        experience_for_next_level += i + 1;
+                Player &player = pParty->activeCharacter();
+                uint64_t expForNextLevel = 0;
+                for (int i = 0; i < pParty->activeCharacter().uLevel; i++) {
+                    expForNextLevel += i + 1;
                 }
-                if (pParty->activeCharacter().uLevel <
-                    pMaxLevelPerTrainingHallType
-                    [window_SpeakInHouse->wData.val - 89] &&
-                    (int64_t)pParty->activeCharacter().experience <
-                    1000 * experience_for_next_level)  // test experience
+                expForNextLevel *= 1000;
+                if (player.uLevel < trainingHallMaxLevels[HOUSE_ID(window_SpeakInHouse->wData.val)] && player.experience < expForNextLevel) {
                     return;
+                }
             }
             pDialogueWindow->Release();
             pDialogueWindow = new GUIWindow(WINDOW_Dialogue, {0, 0}, {renDims.w, 345}, 0);
@@ -2157,28 +2166,17 @@ void TrainingDialog(const char *s) {
                 index = 0;
                 pShopOptions[0] = s;  // set first item to fucntion param - this
                                       // always gets overwritten below??
-                pShopOptions[1] =
-                    localization->GetString(LSTR_LEARN_SKILLS);
-                if (pDialogueWindow->pStartingPosActiveItem <
-                    pDialogueWindow->pStartingPosActiveItem +
-                    pDialogueWindow->pNumPresenceButton) {
-                    for (int i = pDialogueWindow->pStartingPosActiveItem;
-                        i < pDialogueWindow->pNumPresenceButton +
-                        pDialogueWindow->pStartingPosActiveItem;
-                        ++i) {
-                        if (pDialogueWindow->GetControl(i)->msg_param ==
-                            DIALOGUE_TRAINING_HALL_TRAIN) {
+                pShopOptions[1] = localization->GetString(LSTR_LEARN_SKILLS);
+                if (pDialogueWindow->pStartingPosActiveItem < pDialogueWindow->pStartingPosActiveItem + pDialogueWindow->pNumPresenceButton) {
+                    for (int i = pDialogueWindow->pStartingPosActiveItem; i < pDialogueWindow->pNumPresenceButton + pDialogueWindow->pStartingPosActiveItem; ++i) {
+                        if (pDialogueWindow->GetControl(i)->msg_param == DIALOGUE_TRAINING_HALL_TRAIN) {
                             static std::string shop_option_str_container;
-                            if (pParty->activeCharacter().uLevel >=
-                                pMaxLevelPerTrainingHallType
-                                [window_SpeakInHouse->wData.val -
-                                HOUSE_TRAINING_HALL_EMERALD_ISLE]) {
+                            if (pParty->activeCharacter().uLevel >= trainingHallMaxLevels[HOUSE_ID(window_SpeakInHouse->wData.val)]) {
                                 shop_option_str_container = fmt::format(
                                     "{}\n \n{}",
                                     localization->GetString(LSTR_TEACHER_LEVEL_TOO_LOW),
                                     localization->GetString(LSTR_CANT_TRAIN_FURTHER));
                                 pShopOptions[index] = shop_option_str_container.c_str();
-
                             } else {
                                 if (pParty->activeCharacter().experience < expForNextLevel)
                                     shop_option_str_container = localization->FormatString(
@@ -2193,9 +2191,7 @@ void TrainingDialog(const char *s) {
                                 pShopOptions[index] = shop_option_str_container.c_str();
                             }
                         }
-                        all_text_height += pFontArrus->CalcTextHeight(
-                            pShopOptions[index],
-                            training_dialog_window.uFrameWidth, 0);
+                        all_text_height += pFontArrus->CalcTextHeight(pShopOptions[index], training_dialog_window.uFrameWidth, 0);
                         ++index;
                     }
                 }
@@ -2235,41 +2231,28 @@ void TrainingDialog(const char *s) {
             std::string label;
 
             if (!HouseUI_CheckIfPlayerCanInteract()) {
-                v33 = pFontArrus->CalcTextHeight(
-                    pNPCTopics[122].pText, training_dialog_window.uFrameWidth,
-                    0);
-                training_dialog_window.DrawTitleText(
-                    pFontArrus, 0, (212 - v33) / 2 + 101, colorTable.Jonquil.c16(), pNPCTopics[122].pText, 3);
+                v33 = pFontArrus->CalcTextHeight(pNPCTopics[122].pText, training_dialog_window.uFrameWidth, 0);
+                training_dialog_window.DrawTitleText(pFontArrus, 0, (212 - v33) / 2 + 101, colorTable.Jonquil.c16(), pNPCTopics[122].pText, 3);
                 pDialogueWindow->pNumPresenceButton = 0;
                 return;
             }
-            if (pParty->activeCharacter().uLevel <
-                pMaxLevelPerTrainingHallType
-                [window_SpeakInHouse->wData.val -
-                HOUSE_TRAINING_HALL_EMERALD_ISLE]) {
-                if ((int64_t)pParty->activeCharacter().experience >=
-                    expForNextLevel) {
+            if (pParty->activeCharacter().uLevel < trainingHallMaxLevels[HOUSE_ID(window_SpeakInHouse->wData.val)]) {
+                if ((int64_t)pParty->activeCharacter().experience >= expForNextLevel) {
                     if (pParty->GetGold() >= pPrice) {
                         pParty->TakeGold(pPrice);
-                        PlayHouseSound(
-                            window_SpeakInHouse->wData.val,
-                            HouseSound_NotEnoughMoney);
+                        PlayHouseSound(window_SpeakInHouse->wData.val, HouseSound_NotEnoughMoney);
                         ++pParty->activeCharacter().uLevel;
-                        pParty->activeCharacter().uSkillPoints +=
-                            pParty->activeCharacter().uLevel / 10 + 5;
-                        pParty->activeCharacter().health =
-                            pParty->activeCharacter().GetMaxHealth();
-                        pParty->activeCharacter().mana =
-                            pParty->activeCharacter().GetMaxMana();
+                        pParty->activeCharacter().uSkillPoints += pParty->activeCharacter().uLevel / 10 + 5;
+                        pParty->activeCharacter().health = pParty->activeCharacter().GetMaxHealth();
+                        pParty->activeCharacter().mana = pParty->activeCharacter().GetMaxMana();
                         uint max_level_in_party = player_levels[0];
                         for (uint _it = 1; _it < 4; ++_it) {
                             if (player_levels[_it] > max_level_in_party)
                                 max_level_in_party = player_levels[_it];
                         }
                         ++player_levels[pParty->activeCharacterIndex() - 1];
-                        if (player_levels[pParty->activeCharacterIndex() - 1] >
-                            max_level_in_party) {  // if we reach new maximum party level feature is broken thou,
-                                                   // since this array is always zeroed in enterHouse
+                        if (player_levels[pParty->activeCharacterIndex() - 1] > max_level_in_party) { // if we reach new maximum party level feature is broken thou,
+                                                                                                      // since this array is always zeroed in enterHouse
                             v42 = 60 * (_494820_training_time(pParty->uCurrentHour) + 4) - pParty->uCurrentMinute;
                             if (window_SpeakInHouse->wData.val == HOUSE_TRAINING_HALL_PIT || window_SpeakInHouse->wData.val == HOUSE_TRAINING_HALL_NIGHON)
                                 v42 += 12 * 60;

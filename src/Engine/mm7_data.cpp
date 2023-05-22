@@ -2434,7 +2434,6 @@ std::array<std::pair<int16_t, ITEM_TYPE>, 27> _4F0882_evt_VAR_PlayerItemInHands_
     {0x0ED, ITEM_QUEST_LICH_JAR_FULL},
     {0x0F1, ITEM_RARE_THE_PERFECT_BOW}
 }};
-std::array<unsigned short, 6> pMaxLevelPerTrainingHallType = {{5, 15, 25, 25, 200, 200}};
 
 std::array<int, 11> price_for_membership = {{100, 100, 50, 50, 50, 50, 50, 50, 50, 1000, 1000}};
 

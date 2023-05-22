@@ -71,7 +71,6 @@ extern std::array<short, 28> word_4EE150;
 extern std::array<int, 32> guild_membership_flags;
 extern std::array<int16_t, 49> word_4F0754;
 extern std::array<std::pair<int16_t, ITEM_TYPE>, 27> _4F0882_evt_VAR_PlayerItemInHands_vals;
-extern std::array<unsigned short, 6> pMaxLevelPerTrainingHallType;
 extern std::array<int, 11> price_for_membership;
 extern std::array<int, 500> ai_array_detected_actor_dist;
 extern std::array<int, 500> ai_array_detected_actor_ids;
