@@ -15,8 +15,9 @@
 #include "Engine/AttackList.h"
 
 #include "Engine/Objects/Actor.h"
-#include "Engine/Objects/ItemTable.h"
 #include "Engine/Objects/ObjectList.h"
+
+#include "Engine/Tables/ItemTable.h"
 
 #include "Engine/Graphics/Collisions.h"
 #include "Engine/Graphics/BSPModel.h"

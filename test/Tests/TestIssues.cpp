@@ -5,7 +5,7 @@
 #include "GUI/GUIWindow.h"
 #include "GUI/GUIProgressBar.h"
 
-#include "Engine/Objects/ItemTable.h"
+#include "Engine/Tables/ItemTable.h"
 #include "Engine/Objects/SpriteObject.h"
 #include "Engine/SaveLoad.h"
 #include "Engine/Graphics/Indoor.h"
@@ -1026,6 +1026,13 @@ GAME_TEST(Issues, Issue792) {
     // Test that event timers do not fire in-between game loading process
     test->playTraceFromTestData("issue_792.mm7", "issue_792.json"); // Should not assert
     EXPECT_EQ(current_screen_type, CURRENT_SCREEN::SCREEN_GAME);
+}
+
+GAME_TEST(Issues, Issue797) {
+    // Jump spell not working - party should move and not take falling damage
+    uint64_t oldHealth = 0;
+    test->playTraceFromTestData("issue_797.mm7", "issue_797.json", [&] { oldHealth = totalPartyHealth(); });
+    EXPECT_EQ(totalPartyHealth(), oldHealth);
 }
 
 // 800

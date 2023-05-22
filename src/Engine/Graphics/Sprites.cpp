@@ -40,7 +40,7 @@ void SpriteFrameTable::InitializeSprite(signed int uSpriteID) {
                 pSpriteSFrames[iter_uSpriteID].uFlags |= 0x80;  // set loaded
 
                 while (1) {
-                    pSpriteSFrames[iter_uSpriteID].ResetPaletteIndex(pPaletteManager->LoadPalette(pSpriteSFrames[iter_uSpriteID].uPaletteID));
+                    pSpriteSFrames[iter_uSpriteID].ResetPaletteIndex(pPaletteManager->paletteIndex(pSpriteSFrames[iter_uSpriteID].uPaletteID));
 
                     if (uFlags & 0x10) {  // single frame per frame sequence
                         auto v8 = pSprites_LOD->LoadSprite(pSpriteSFrames[iter_uSpriteID].texture_name.c_str(), pSpriteSFrames[iter_uSpriteID].uPaletteID);
@@ -369,7 +369,7 @@ SpriteFrame *LevelDecorationChangeSeason(const DecorationDesc *desc, int t, int 
 int SpriteFrame::GetPaletteIndex() {
     if (!engine->config->graphics.HWLSprites.value()) {
         if (this->uPaletteIndex == 0)
-            this->uPaletteIndex = pPaletteManager->LoadPalette(this->uPaletteID);
+            this->uPaletteIndex = pPaletteManager->paletteIndex(this->uPaletteID);
         return this->uPaletteIndex;
     }
     return 0;

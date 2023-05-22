@@ -8,8 +8,8 @@
 #include "Engine/Graphics/DecorationList.h"
 #include "Engine/Graphics/Overlays.h"
 #include "Engine/Objects/SpriteObject.h"
-#include "Engine/Objects/ItemTable.h"
 #include "Engine/Objects/ObjectList.h"
+#include "Engine/Tables/ItemTable.h"
 #include "Engine/LOD.h"
 
 #include "CommonImages.h"

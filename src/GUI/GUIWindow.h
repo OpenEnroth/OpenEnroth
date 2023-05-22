@@ -71,7 +71,6 @@ class GUIWindow {
     void DrawMessageBox(bool inside_game_viewport);
     GUIButton *GetControl(unsigned int uID);
     void _41D08F_set_keyboard_control_group(int num_buttons, int a3, int a4, int a5);
-    void _41D73D_draw_buff_tooltip();
 
     virtual void Update() {}
     virtual void Release();

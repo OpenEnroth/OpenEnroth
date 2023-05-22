@@ -2438,11 +2438,6 @@ std::array<unsigned short, 6> pMaxLevelPerTrainingHallType = {{5, 15, 25, 25, 20
 
 std::array<int, 11> price_for_membership = {{100, 100, 50, 50, 50, 50, 50, 50, 50, 1000, 1000}};
 
-std::array<int16_t, 32> word_4F0F30 = {{
-    4, 7, 10, 11, 4, 7, 10, 11, 4, 7, 10, 11, 4, 7,  10, 11,
-    4, 7, 10, 11, 4, 7, 10, 11, 4, 7, 10, 11, 7, 11, 7,  11
-}};
-
 int ai_arrays_size;
 std::array<int, 500> ai_array_detected_actor_dist;
 std::array<int, 500> ai_array_detected_actor_ids;
@@ -2534,11 +2529,6 @@ std::array<char, 777> byte_5E4C15;
 
 std::string pMonstersTXT_Raw;
 std::string pMonsterPlacementTXT_Raw;
-std::string pSpellsTXT_Raw;
-char *pMapStatsTXT_Raw = nullptr;
-std::string pHostileTXT_Raw;
-char *pPotionsTXT_Raw = nullptr;
-char *pPotionNotesTXT_Raw = nullptr;
 
 int uDefaultTravelTime_ByFoot;
 int day_attrib;
@@ -2560,10 +2550,6 @@ float flt_debugrecmod3;
 
 std::string s_SavedMapName;  // idb
 char bNoNPCHiring = false;
-std::array<int, 100> dword_720020_zvalues;
-std::array<int, 299> dword_7201B0_zvalues;
-std::array<int16_t, 104> odm_floor_face_vert_coord_Y;  // word_720F70
-std::array<int16_t, 104> odm_floor_face_vert_coord_X;  // word_721040
 Vec3i blv_prev_party_pos;
 std::array<NPCTopic, 789> pNPCTopics;
 std::string pMerchantsTXT_Raw;

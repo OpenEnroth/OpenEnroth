@@ -27,7 +27,6 @@
 #include "Engine/Localization.h"
 #include "Engine/Objects/Actor.h"
 #include "Engine/Objects/Chest.h"
-#include "Engine/Objects/ItemTable.h"
 #include "Engine/Objects/ObjectList.h"
 #include "Engine/Objects/SpriteObject.h"
 #include "Engine/OurMath.h"
@@ -35,6 +34,7 @@
 #include "Engine/SaveLoad.h"
 #include "Engine/SpellFxRenderer.h"
 #include "Engine/Spells/CastSpellInfo.h"
+#include "Engine/Tables/ItemTable.h"
 #include "Engine/Tables/IconFrameTable.h"
 #include "Engine/Tables/PlayerFrameTable.h"
 #include "Engine/Time.h"
@@ -864,6 +864,8 @@ bool MM7_LoadLods() {
         return false;
     }
 
+    pPaletteManager->load(pBitmaps_LOD);
+
     return true;
 }
 
@@ -1142,7 +1144,6 @@ void Engine::ResetCursor_Palettes_LODs_Level_Audio_SFT_Windows() {
     if (mouse)
         mouse->SetCursorImage("MICON1");
 
-    pPaletteManager->Reset();
     pBitmaps_LOD->ReleaseAll2();
     pSprites_LOD->DeleteSomeOtherSprites();
     pIcons_LOD->ReleaseAll2();

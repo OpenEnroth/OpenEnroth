@@ -13,9 +13,9 @@
 #include "Engine/Localization.h"
 #include "Engine/Objects/Actor.h"
 #include "Engine/Objects/Chest.h"
-#include "Engine/Objects/ItemTable.h"
 #include "Engine/Objects/ObjectList.h"
 #include "Engine/Objects/SpriteObject.h"
+#include "Engine/Tables/ItemTable.h"
 #include "Engine/Party.h"
 #include "Engine/Time.h"
 
@@ -666,9 +666,9 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
     PLAYER_SKILL_MASTERY skill_mastery = PLAYER_SKILL_MASTERY_NONE;
 
     pMonsterInfoUI_Doll.uCurrentActionTime += pMiscTimer->uTimeElapsed;
-    if (pParty->activeCharacter().GetActualSkillLevel(PLAYER_SKILL_MONSTER_ID)) {
-        skill_points = pParty->activeCharacter().GetActualSkillLevel(PLAYER_SKILL_MONSTER_ID);
-        skill_mastery = pParty->activeCharacter().GetActualSkillMastery(PLAYER_SKILL_MONSTER_ID);
+    CombinedSkillValue idMonsterSkill = pParty->activeCharacter().getActualSkillValue(PLAYER_SKILL_MONSTER_ID);
+    if ((skill_points = idMonsterSkill.level()) > 0) {
+        skill_mastery = idMonsterSkill.mastery();
         if (skill_mastery == PLAYER_SKILL_MASTERY_NOVICE) {
             if (skill_points + 10 >= pActors[uActorID].pMonsterInfo.uLevel) {
                 normal_level = true;
@@ -1018,8 +1018,8 @@ std::string CharacterUI_GetSkillDescText(unsigned int uPlayerID, PLAYER_SKILL_TY
         pFontSmallnum->GetLineWidth(localization->GetString(LSTR_BONUS_2))
     });
 
-    int base_skill = pParty->pPlayers[uPlayerID].pActiveSkills[uPlayerSkillType] & 0x3F;
-    int actual_skill = pParty->pPlayers[uPlayerID].GetActualSkillLevel(uPlayerSkillType) & 0x3F;
+    int base_skill = pParty->pPlayers[uPlayerID].getSkillValue(uPlayerSkillType).level();
+    int actual_skill = pParty->pPlayers[uPlayerID].getActualSkillValue(uPlayerSkillType).level();
 
     const char *desc = localization->GetSkillDescription(uPlayerSkillType);
     std::string Description = desc ? desc : "";
@@ -1284,7 +1284,7 @@ void DrawSpellDescriptionPopup(int spell_index_in_book) {
     spell_info_window.uFrameWidth = 108;
     spell_info_window.uFrameZ = spell_info_window.uFrameX + 107;
     PLAYER_SKILL_TYPE skill = static_cast<PLAYER_SKILL_TYPE>(pParty->activeCharacter().lastOpenedSpellbookPage + 12);
-    PLAYER_SKILL_MASTERY skill_mastery = pParty->activeCharacter().GetSkillMastery(skill);
+    PLAYER_SKILL_MASTERY skill_mastery = pParty->activeCharacter().getSkillValue(skill).mastery();
     spell_info_window.DrawTitleText(pFontComic, 12, 75, 0, localization->GetSkillName(skill), 3);
 
     auto str2 = fmt::format(
@@ -1295,6 +1295,58 @@ void DrawSpellDescriptionPopup(int spell_index_in_book) {
         spell_info_window.uFrameHeight - pFontComic->GetHeight() - 16, 0, str2,
         3);
     dword_507B00_spell_info_to_draw_in_popup = 0;
+}
+
+/**
+ * @offset 0x41D73D
+ */
+static void drawBuffPopupWindow() {
+    GUIWindow popupWindow;
+    int stringCount;
+
+    static const std::array<uint16_t, 20> spellTooltipColors = { {
+        colorTable.Anakiwa.c16(),       colorTable.FlushOrange.c16(),
+        colorTable.PaleCanary.c16(),    colorTable.Mercury.c16(),
+        colorTable.Gray.c16(),          colorTable.Anakiwa.c16(),
+        colorTable.DarkOrange.c16(),    colorTable.Anakiwa.c16(),
+        colorTable.DarkOrange.c16(),    colorTable.Mercury.c16(),
+        colorTable.DarkOrange.c16(),    colorTable.Anakiwa.c16(),
+        colorTable.PurplePink.c16(),    colorTable.FlushOrange.c16(),
+        colorTable.Anakiwa.c16(),       colorTable.Gray.c16(),
+        colorTable.DarkOrange.c16(),    colorTable.AzureRadiance.c16(),
+        colorTable.AzureRadiance.c16(), colorTable.Anakiwa.c16()
+    } };
+
+    popupWindow.sHint.clear();
+    popupWindow.uFrameWidth = 400;
+    popupWindow.uFrameX = 38;
+    popupWindow.uFrameY = 60;
+
+    stringCount = 0;
+    for (SpellBuff &spellBuff : pParty->pPartyBuffs) {
+        stringCount += (spellBuff.Active()) ? 1 : 0;
+    }
+
+    popupWindow.uFrameHeight = pFontArrus->GetHeight() + 72;
+    popupWindow.uFrameHeight += (stringCount - 1) * pFontArrus->GetHeight();
+    popupWindow.uFrameZ = popupWindow.uFrameWidth + popupWindow.uFrameX - 1;
+    popupWindow.uFrameW = popupWindow.uFrameY + popupWindow.uFrameHeight - 1;
+    popupWindow.DrawMessageBox(0);
+    popupWindow.DrawTitleText(pFontArrus, 0, 12, 0, localization->GetString(LSTR_ACTIVE_PARTY_SPELLS), 3);
+    if (!stringCount) {
+        popupWindow.DrawTitleText(pFontComic, 0, 40, 0, localization->GetString(LSTR_NONE), 3);
+    }
+
+    stringCount = 0;
+    for (int i = 0; i < pParty->pPartyBuffs.size(); i++) {
+        if (pParty->pPartyBuffs[i].Active()) {
+            GameTime remaingTime = pParty->pPartyBuffs[i].expireTime - pParty->GetPlayingTime();
+            int yPos = stringCount * pFontComic->GetHeight() + 40;
+            popupWindow.DrawText(pFontComic, {52, yPos}, spellTooltipColors[i], localization->GetSpellName(i), 0, 0, 0);
+            DrawBuff_remaining_time_string(yPos, &popupWindow, remaingTime, pFontComic);
+            stringCount++;
+        }
+    }
 }
 
 //----- (00416D62) --------------------------------------------------------
@@ -1406,15 +1458,9 @@ void UI_OnMouseRightClick(int mouse_x, int mouse_y) {
             } else if ((int)pX > pViewport->uViewportBR_X) {
                 if (pY >= 130) {
                     if (pX >= 476 && pX <= 636 && pY >= 240 && pY <= 300) {  // buff_tooltip zone
-                        popup_window.sHint.clear();
-                        popup_window.uFrameWidth = 400;
-                        popup_window.uFrameHeight = 200;
-                        popup_window.uFrameX = 38;
-                        popup_window.uFrameY = 60;
-                        popup_window._41D73D_draw_buff_tooltip();
+                        drawBuffPopupWindow();
                     } else if ((int)pX < 485 || (int)pX > 548 ||
-                               (int)pY < 156 ||
-                               (int)pY > 229) {  // NPC zone
+                               (int)pY < 156 || (int)pY > 229) {  // NPC zone
                         if (!((signed int)pX < 566 || (signed int)pX > 629 ||
                               (signed int)pY < 156 || (signed int)pY > 229)) {
                             GameUI_DrawNPCPopup((void *)1);  // NPC 2
@@ -1732,8 +1778,7 @@ void Inventory_ItemPopupAndAlchemy() {
         return;
     }
 
-    PLAYER_SKILL_LEVEL alchemy_skill_points = pParty->activeCharacter().GetActualSkillLevel(PLAYER_SKILL_ALCHEMY);
-    PLAYER_SKILL_MASTERY alchemy_skill_level = pParty->activeCharacter().GetActualSkillMastery(PLAYER_SKILL_ALCHEMY);
+    CombinedSkillValue alchemySkill = pParty->activeCharacter().getActualSkillValue(PLAYER_SKILL_ALCHEMY);
 
     if (pParty->pPickedItem.uItemID == ITEM_POTION_BOTTLE) {
         GameUI_DrawItemInfo(item);
@@ -1758,8 +1803,8 @@ void Inventory_ItemPopupAndAlchemy() {
         }
 
         // TODO(Nik-RE-dev): need to allow GetSkillMastery return PLAYER_SKILL_MASTERY_NONE
-        if (!alchemy_skill_points) {
-            alchemy_skill_level = PLAYER_SKILL_MASTERY_NONE;
+        if (!alchemySkill.level()) {
+            alchemySkill.setMastery(PLAYER_SKILL_MASTERY_NONE);
         }
 
         int damage_level = 0;
@@ -1770,21 +1815,21 @@ void Inventory_ItemPopupAndAlchemy() {
             // potionID >= ITEM_POTION_CURE_WOUNDS && potionID <= ITEM_POTION_CURE_WEAKNESS does not require skill
             if (potionID >= ITEM_POTION_CURE_DISEASE &&
                     potionID <= ITEM_POTION_AWAKEN &&
-                    alchemy_skill_level == PLAYER_SKILL_MASTERY_NONE) {
+                    alchemySkill.mastery() == PLAYER_SKILL_MASTERY_NONE) {
                 damage_level = 1;
             }
             if (potionID >= ITEM_POTION_HASTE &&
                     potionID <= ITEM_POTION_CURE_INSANITY &&
-                    alchemy_skill_level <= PLAYER_SKILL_MASTERY_NOVICE) {
+                    alchemySkill.mastery() <= PLAYER_SKILL_MASTERY_NOVICE) {
                 damage_level = 2;
             }
             if (potionID >= ITEM_POTION_MIGHT_BOOST &&
                     potionID <= ITEM_POTION_BODY_RESISTANCE &&
-                    alchemy_skill_level <= PLAYER_SKILL_MASTERY_EXPERT) {
+                    alchemySkill.mastery() <= PLAYER_SKILL_MASTERY_EXPERT) {
                 damage_level = 3;
             }
             if (potionID >= ITEM_POTION_STONE_TO_FLESH &&
-                    alchemy_skill_level <= PLAYER_SKILL_MASTERY_MASTER) {
+                    alchemySkill.mastery() <= PLAYER_SKILL_MASTERY_MASTER) {
                 damage_level = 4;
             }
         }
@@ -1937,7 +1982,7 @@ void Inventory_ItemPopupAndAlchemy() {
     }
 
     if (isReagent(pParty->pPickedItem.uItemID) && item->uItemID == ITEM_POTION_BOTTLE) {
-        item->uEnchantmentType = alchemy_skill_points + pParty->pPickedItem.GetDamageDice();
+        item->uEnchantmentType = alchemySkill.level() + pParty->pPickedItem.GetDamageDice();
         switch (pParty->pPickedItem.uItemID) {
             case ITEM_REAGENT_WIDOWSWEEP_BERRIES:
             case ITEM_REAGENT_CRUSHED_ROSE_PETALS:

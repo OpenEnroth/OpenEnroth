@@ -35,12 +35,12 @@
 #include "Engine/LOD.h"
 #include "Engine/Objects/Actor.h"
 #include "Engine/Objects/Chest.h"
-#include "Engine/Objects/ItemTable.h"
 #include "Engine/Objects/ObjectList.h"
 #include "Engine/Objects/SpriteObject.h"
 #include "Engine/Party.h"
 #include "Engine/SaveLoad.h"
 #include "Engine/Spells/CastSpellInfo.h"
+#include "Engine/Tables/ItemTable.h"
 #include "Engine/Tables/FrameTableInc.h"
 #include "Engine/Tables/AwardTable.h"
 #include "Engine/Time.h"
@@ -1003,7 +1003,6 @@ void Game::processQueuedMessages() {
                                 player.SetCondition(Condition_Weak, 0);
                             ++pParty->days_played_without_rest;
                         }
-                        pPaletteManager->Reset();
                         pSpriteFrameTable->ResetLoadedFlags();
                         pCurrentMapName = pOut;
                         Level_LoadEvtAndStr(pCurrentMapName.substr(0, pCurrentMapName.rfind('.')));
@@ -1873,7 +1872,7 @@ void Game::processQueuedMessages() {
                 {
                     PLAYER_SKILL_TYPE skill = static_cast<PLAYER_SKILL_TYPE>(uMessageParam);
                     Player *player = &pParty->activeCharacter();
-                    PLAYER_SKILL_LEVEL skill_level = player->GetSkillLevel(skill);
+                    int skill_level = player->getSkillValue(skill).level();
                     const char *statusString;
                     if (player->uSkillPoints < skill_level + 1) {
                         statusString = localization->GetString(LSTR_NOT_ENOUGH_SKILL_POINTS);
@@ -2169,7 +2168,7 @@ void Game::processQueuedMessages() {
                         for (PLAYER_SKILL_TYPE ski : AllSkills()) {  // loop over skills
                             // if class can learn this skill
                             if (skillMaxMasteryPerClass[player.classType][ski] > PLAYER_SKILL_MASTERY_NONE) {
-                                if (player.GetSkillLevel(ski) == 0) {
+                                if (player.getSkillValue(ski).level() == 0) {
                                     player.SetSkillLevel(ski, 1);
                                 }
                             }
