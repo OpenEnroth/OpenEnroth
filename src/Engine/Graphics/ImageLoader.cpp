@@ -2,6 +2,7 @@
 
 #include <unordered_set>
 #include <string_view>
+#include <memory>
 
 #include "Engine/ErrorHandling.h"
 #include "Engine/Graphics/HWLContainer.h"
@@ -28,7 +29,7 @@ static const std::unordered_set<std::string_view> transparentTextures = {
     "hwtrdrxsw"
 };
 
-uint32_t *MakeImageSolid(unsigned int width, unsigned int height,
+uint32_t *MakeImageSolid(size_t width, size_t height,
                          uint8_t *pixels, uint8_t *palette) {
     uint32_t *res = new uint32_t[width * height];
 
@@ -45,7 +46,7 @@ uint32_t *MakeImageSolid(unsigned int width, unsigned int height,
     return res;
 }
 
-uint32_t *MakeImageAlpha(unsigned int width, unsigned int height,
+uint32_t *MakeImageAlpha(size_t width, size_t height,
                          uint8_t *pixels, uint8_t *palette) {
     uint32_t *res = new uint32_t[width * height];
 
@@ -66,7 +67,7 @@ uint32_t *MakeImageAlpha(unsigned int width, unsigned int height,
     return res;
 }
 
-uint32_t *MakeImageColorKey(unsigned int width, unsigned int height,
+uint32_t *MakeImageColorKey(size_t width, size_t height,
                             uint8_t *pixels, uint8_t *palette,
                             uint16_t color_key) {
     uint32_t *res = new uint32_t[width * height];
@@ -88,9 +89,8 @@ uint32_t *MakeImageColorKey(unsigned int width, unsigned int height,
     return res;
 }
 
-bool Paletted_Img_Loader::Load(unsigned int *out_width,
-    unsigned int *out_height, void **out_pixels,
-    IMAGE_FORMAT *out_format, void **out_palette, void **out_palettepixels) {
+bool Paletted_Img_Loader::Load(size_t *out_width, size_t *out_height, void **out_pixels,
+                               IMAGE_FORMAT *out_format, void **out_palette, void **out_palettepixels) {
     *out_width = 0;
     *out_height = 0;
     *out_pixels = nullptr;
@@ -130,8 +130,7 @@ bool Paletted_Img_Loader::Load(unsigned int *out_width,
     return true;
 }
 
-bool ColorKey_LOD_Loader::Load(unsigned int *out_width,
-                               unsigned int *out_height, void **out_pixels,
+bool ColorKey_LOD_Loader::Load(size_t *out_width, size_t *out_height, void **out_pixels,
                                IMAGE_FORMAT *out_format, void **out_palette, void **out_palettepixels) {
     *out_width = 0;
     *out_height = 0;
@@ -167,8 +166,7 @@ bool ColorKey_LOD_Loader::Load(unsigned int *out_width,
     return true;
 }
 
-bool Image16bit_LOD_Loader::Load(unsigned int *out_width,
-                                 unsigned int *out_height, void **out_pixels,
+bool Image16bit_LOD_Loader::Load(size_t *out_width, size_t *out_height, void **out_pixels,
                                  IMAGE_FORMAT *out_format, void **out_palette, void **out_palettepixels) {
     *out_width = 0;
     *out_height = 0;
@@ -204,7 +202,7 @@ bool Image16bit_LOD_Loader::Load(unsigned int *out_width,
     return true;
 }
 
-bool Alpha_LOD_Loader::Load(unsigned int *out_width, unsigned int *out_height,
+bool Alpha_LOD_Loader::Load(size_t *out_width, size_t *out_height,
                             void **out_pixels, IMAGE_FORMAT *out_format, void **out_palette, void **out_palettepixels) {
     *out_width = 0;
     *out_height = 0;
@@ -241,18 +239,19 @@ bool Alpha_LOD_Loader::Load(unsigned int *out_width, unsigned int *out_height,
 }
 
 bool PCX_Loader::InternalLoad(const void *file, size_t filesize,
-                                   unsigned int *width, unsigned int *height,
-                                   void **pixels, IMAGE_FORMAT *format) {
+                              size_t *width, size_t *height,
+                              void **pixels, IMAGE_FORMAT *format) {
     IMAGE_FORMAT request_format = IMAGE_FORMAT_A8B8G8R8;
 
-    *pixels = PCX::Decode(file, filesize, width, height, format, request_format);
-    if (*pixels)
-        return true;
+    std::unique_ptr<uint8_t[]> result = PCX::Decode(file, filesize, width, height, format, request_format);
+    if (!result)
+        return false;
 
-    return false;
+    *pixels = result.release();
+    return true;
 }
 
-bool PCX_File_Loader::Load(unsigned int *width, unsigned int *height,
+bool PCX_File_Loader::Load(size_t *width, size_t *height,
                            void **pixels, IMAGE_FORMAT *format, void **out_palette, void **out_palettepixels) {
     *width = 0;
     *height = 0;
@@ -264,7 +263,7 @@ bool PCX_File_Loader::Load(unsigned int *width, unsigned int *height,
     return InternalLoad(buffer.data(), buffer.size(), width, height, pixels, format);
 }
 
-bool PCX_LOD_Raw_Loader::Load(unsigned int *width, unsigned int *height,
+bool PCX_LOD_Raw_Loader::Load(size_t *width, size_t *height,
                               void **pixels, IMAGE_FORMAT *format, void **out_palette, void **out_palettepixels) {
     *width = 0;
     *height = 0;
@@ -281,7 +280,7 @@ bool PCX_LOD_Raw_Loader::Load(unsigned int *width, unsigned int *height,
     return InternalLoad(data.data(), data.size(), width, height, pixels, format);
 }
 
-bool PCX_LOD_Compressed_Loader::Load(unsigned int *width, unsigned int *height,
+bool PCX_LOD_Compressed_Loader::Load(size_t *width, size_t *height,
                                      void **pixels, IMAGE_FORMAT *format, void **out_palette, void **out_palettepixels) {
     *width = 0;
     *height = 0;
@@ -347,7 +346,7 @@ static void ProcessTransparentPixel(uint8_t *pixels, uint8_t *palette,
     rgba[3] = 0;
 }
 
-bool Bitmaps_LOD_Loader::Load(unsigned int *width, unsigned int *height,
+bool Bitmaps_LOD_Loader::Load(size_t *width, size_t *height,
                               void **out_pixels, IMAGE_FORMAT *format, void **out_palette, void **out_palettepixels) {
     Texture_MM7 *tex = lod->GetTexture(lod->LoadTexture(this->resource_name));
     int num_pixels = tex->header.uTextureWidth * tex->header.uTextureHeight;
@@ -412,7 +411,7 @@ bool Bitmaps_LOD_Loader::Load(unsigned int *width, unsigned int *height,
     }
 }
 
-bool Sprites_LOD_Loader::Load(unsigned int *width, unsigned int *height,
+bool Sprites_LOD_Loader::Load(size_t *width, size_t *height,
                               void **out_pixels, IMAGE_FORMAT *format, void **out_palette, void **out_palettepixels) {
     *width = 0;
     *height = 0;

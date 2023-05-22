@@ -47,8 +47,8 @@ class Image {
     bool initialized = false;
     ImageLoader *loader = nullptr;
 
-    unsigned int width = 0;
-    unsigned int height = 0;
+    size_t width = 0;
+    size_t height = 0;
     IMAGE_FORMAT native_format = IMAGE_INVALID_FORMAT;
     IndexedArray<void *, IMAGE_NUM_FORMATS> pixels = {{}};
     void *palette24 = nullptr;
