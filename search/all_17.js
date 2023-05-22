@@ -38,7 +38,7 @@ var searchData=
   ['whichsplatsonthisface_35',['WhichSplatsOnThisFace',['../structDecalBuilder.html#a5a4ac6d3c1624d8501b38015507c4650',1,'DecalBuilder']]],
   ['white_36',['White',['../classColorTable.html#af6c7e84d12ea137a56b1e489849c859b',1,'ColorTable']]],
   ['who_37',['who',['../classEventIR.html#a33236c3f0dd79349465565be68a49545',1,'EventIR']]],
-  ['width_38',['width',['../classGUICredits.html#a0ced87699ecd2845f4538475437266f5',1,'GUICredits::width()'],['../classImage.html#aaa2cc744ff3969ac6cb63ca05a40e5f6',1,'Image::width()'],['../structstat__coord.html#af2e9db3199db9f3ff9977c8134a1af9e',1,'stat_coord::width()'],['../classAVVideoStream.html#ad6da5b243af338a89d4962e79d910543',1,'AVVideoStream::width()'],['../classMovie.html#af055977ae062d94b4db9f053d87ae8e1',1,'Movie::width()']]],
+  ['width_38',['width',['../classGUICredits.html#a0ced87699ecd2845f4538475437266f5',1,'GUICredits::width()'],['../classImage.html#ae9cb9e1475f90ee290589d3aa953198d',1,'Image::width()'],['../structstat__coord.html#af2e9db3199db9f3ff9977c8134a1af9e',1,'stat_coord::width()'],['../classAVVideoStream.html#ad6da5b243af338a89d4962e79d910543',1,'AVVideoStream::width()'],['../classMovie.html#af055977ae062d94b4db9f053d87ae8e1',1,'Movie::width()']]],
   ['width_39',['Width',['../classGameConfig_1_1Window.html#a52ab9e6da91d34573426dd23cc54eb46',1,'GameConfig::Window']]],
   ['willpower_40',['willpower',['../structPlayer__MM7.html#a1375289cc12d8b9a398b762a6d80847e',1,'Player_MM7']]],
   ['willpowerbonus_41',['willpowerBonus',['../structPlayer__MM7.html#af3ff993c83bf1055cb49804127bfa2c0',1,'Player_MM7']]],

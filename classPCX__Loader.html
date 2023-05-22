@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;42b2887</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;267818c</span>
    </div>
   </td>
  </tr>
@@ -92,10 +92,10 @@ Inheritance diagram for PCX_Loader:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pro-methods" name="pro-methods"></a>
 Protected Member Functions</h2></td></tr>
-<tr class="memitem:a64c459b57d92a620f180892cd1d9a882"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPCX__Loader.html#a64c459b57d92a620f180892cd1d9a882">DecodePCX</a> (const void *pcx_data, uint16_t *pOutPixels, unsigned int *width, unsigned int *height)</td></tr>
-<tr class="separator:a64c459b57d92a620f180892cd1d9a882"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:acce669ce3aebb1b2693b93e8f2dd0087"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPCX__Loader.html#acce669ce3aebb1b2693b93e8f2dd0087">InternalLoad</a> (const void *file, size_t size, unsigned int *width, unsigned int *height, void **pixels, <a class="el" href="Image_8h.html#a9852684147e651e988ed71ddc71426d5">IMAGE_FORMAT</a> *format)</td></tr>
-<tr class="separator:acce669ce3aebb1b2693b93e8f2dd0087"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a83030202c232148dd666bee1b7652dc2"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPCX__Loader.html#a83030202c232148dd666bee1b7652dc2">DecodePCX</a> (const void *pcx_data, uint16_t *pOutPixels, size_t *width, size_t *height)</td></tr>
+<tr class="separator:a83030202c232148dd666bee1b7652dc2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a24e98ba2ff5f2840bbe9cda06ddba183"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPCX__Loader.html#a24e98ba2ff5f2840bbe9cda06ddba183">InternalLoad</a> (const void *file, size_t size, size_t *width, size_t *height, void **pixels, <a class="el" href="Image_8h.html#a9852684147e651e988ed71ddc71426d5">IMAGE_FORMAT</a> *format)</td></tr>
+<tr class="separator:a24e98ba2ff5f2840bbe9cda06ddba183"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="inherited" name="inherited"></a>
 Additional Inherited Members</h2></td></tr>
@@ -108,8 +108,8 @@ Additional Inherited Members</h2></td></tr>
 <tr class="separator:a26204014ed5d37559451410c2e104de1 inherit pub_methods_classImageLoader"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4cdb547d1dd5a7e53485ca2becbc9562 inherit pub_methods_classImageLoader"><td class="memItemLeft" align="right" valign="top">virtual std::string *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classImageLoader.html#a4cdb547d1dd5a7e53485ca2becbc9562">GetResourceNamePtr</a> ()</td></tr>
 <tr class="separator:a4cdb547d1dd5a7e53485ca2becbc9562 inherit pub_methods_classImageLoader"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3d77e65d27033a2783fae7b8920b85fe inherit pub_methods_classImageLoader"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classImageLoader.html#a3d77e65d27033a2783fae7b8920b85fe">Load</a> (unsigned int *width, unsigned int *height, void **pixels, <a class="el" href="Image_8h.html#a9852684147e651e988ed71ddc71426d5">IMAGE_FORMAT</a> *format, void **out_palette, void **out_pallettepixels=nullptr)=0</td></tr>
-<tr class="separator:a3d77e65d27033a2783fae7b8920b85fe inherit pub_methods_classImageLoader"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3dceb19c3097186704fd13410c988f5e inherit pub_methods_classImageLoader"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classImageLoader.html#a3dceb19c3097186704fd13410c988f5e">Load</a> (size_t *width, size_t *height, void **pixels, <a class="el" href="Image_8h.html#a9852684147e651e988ed71ddc71426d5">IMAGE_FORMAT</a> *format, void **out_palette, void **out_pallettepixels=nullptr)=0</td></tr>
+<tr class="separator:a3dceb19c3097186704fd13410c988f5e inherit pub_methods_classImageLoader"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pro_attribs_classImageLoader"><td colspan="2" onclick="javascript:toggleInherit('pro_attribs_classImageLoader')"><img src="closed.png" alt="-"/>&#160;Protected Attributes inherited from <a class="el" href="classImageLoader.html">ImageLoader</a></td></tr>
 <tr class="memitem:af01dd52a03f224e276fdedf8fd2a9976 inherit pro_attribs_classImageLoader"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classImageLoader.html#af01dd52a03f224e276fdedf8fd2a9976">resource_name</a></td></tr>
 <tr class="separator:af01dd52a03f224e276fdedf8fd2a9976 inherit pro_attribs_classImageLoader"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -117,8 +117,8 @@ Additional Inherited Members</h2></td></tr>
 <tr class="separator:a71e47dead27b76682013931384c3b893 inherit pro_attribs_classImageLoader"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a id="a64c459b57d92a620f180892cd1d9a882" name="a64c459b57d92a620f180892cd1d9a882"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a64c459b57d92a620f180892cd1d9a882">&#9670;&#160;</a></span>DecodePCX()</h2>
+<a id="a83030202c232148dd666bee1b7652dc2" name="a83030202c232148dd666bee1b7652dc2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a83030202c232148dd666bee1b7652dc2">&#9670;&#160;</a></span>DecodePCX()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -141,13 +141,13 @@ Additional Inherited Members</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">unsigned int *&#160;</td>
+          <td class="paramtype">size_t *&#160;</td>
           <td class="paramname"><em>width</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">unsigned int *&#160;</td>
+          <td class="paramtype">size_t *&#160;</td>
           <td class="paramname"><em>height</em>&#160;</td>
         </tr>
         <tr>
@@ -165,8 +165,8 @@ Additional Inherited Members</h2></td></tr>
 
 </div>
 </div>
-<a id="acce669ce3aebb1b2693b93e8f2dd0087" name="acce669ce3aebb1b2693b93e8f2dd0087"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#acce669ce3aebb1b2693b93e8f2dd0087">&#9670;&#160;</a></span>InternalLoad()</h2>
+<a id="a24e98ba2ff5f2840bbe9cda06ddba183" name="a24e98ba2ff5f2840bbe9cda06ddba183"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a24e98ba2ff5f2840bbe9cda06ddba183">&#9670;&#160;</a></span>InternalLoad()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -189,13 +189,13 @@ Additional Inherited Members</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">unsigned int *&#160;</td>
+          <td class="paramtype">size_t *&#160;</td>
           <td class="paramname"><em>width</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">unsigned int *&#160;</td>
+          <td class="paramtype">size_t *&#160;</td>
           <td class="paramname"><em>height</em>, </td>
         </tr>
         <tr>

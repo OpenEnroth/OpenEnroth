@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;42b2887</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;267818c</span>
    </div>
   </td>
  </tr>
@@ -77,40 +77,40 @@ $(function() {
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:af936c6b5be7bf44b68e869081f00d1e9"><td class="memItemLeft" align="right" valign="top">uint8_t *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacePCX.html#af936c6b5be7bf44b68e869081f00d1e9">Decode</a> (const void *pcx_data, size_t filesize, unsigned int *width, unsigned int *height, <a class="el" href="Image_8h.html#a9852684147e651e988ed71ddc71426d5">IMAGE_FORMAT</a> *format, <a class="el" href="Image_8h.html#a9852684147e651e988ed71ddc71426d5">IMAGE_FORMAT</a> requested_format)</td></tr>
-<tr class="separator:af936c6b5be7bf44b68e869081f00d1e9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af512f20aee50cd1de2ab85ea0fcd96e3"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classBlob.html">Blob</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacePCX.html#af512f20aee50cd1de2ab85ea0fcd96e3">Encode</a> (const void *picture_data, const unsigned int width, const unsigned int height)</td></tr>
-<tr class="separator:af512f20aee50cd1de2ab85ea0fcd96e3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0ca9529f40522c033ff4defd463efecf"><td class="memItemLeft" align="right" valign="top">std::unique_ptr&lt; uint8_t[]&gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacePCX.html#a0ca9529f40522c033ff4defd463efecf">Decode</a> (const void *data, size_t size, size_t *width, size_t *height, <a class="el" href="Image_8h.html#a9852684147e651e988ed71ddc71426d5">IMAGE_FORMAT</a> *format, <a class="el" href="Image_8h.html#a9852684147e651e988ed71ddc71426d5">IMAGE_FORMAT</a> requestedFormat)</td></tr>
+<tr class="separator:a0ca9529f40522c033ff4defd463efecf"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1129fb07ac2731418aa6185003c97ba1"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classBlob.html">Blob</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacePCX.html#a1129fb07ac2731418aa6185003c97ba1">Encode</a> (const void *picture_data, size_t width, size_t height)</td></tr>
+<tr class="separator:a1129fb07ac2731418aa6185003c97ba1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Function Documentation</h2>
-<a id="af936c6b5be7bf44b68e869081f00d1e9" name="af936c6b5be7bf44b68e869081f00d1e9"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#af936c6b5be7bf44b68e869081f00d1e9">&#9670;&#160;</a></span>Decode()</h2>
+<a id="a0ca9529f40522c033ff4defd463efecf" name="a0ca9529f40522c033ff4defd463efecf"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0ca9529f40522c033ff4defd463efecf">&#9670;&#160;</a></span>Decode()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">uint8_t * PCX::Decode </td>
+          <td class="memname">std::unique_ptr&lt; uint8_t[]&gt; PCX::Decode </td>
           <td>(</td>
           <td class="paramtype">const void *&#160;</td>
-          <td class="paramname"><em>pcx_data</em>, </td>
+          <td class="paramname"><em>data</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">size_t&#160;</td>
-          <td class="paramname"><em>filesize</em>, </td>
+          <td class="paramname"><em>size</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">unsigned int *&#160;</td>
+          <td class="paramtype">size_t *&#160;</td>
           <td class="paramname"><em>width</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">unsigned int *&#160;</td>
+          <td class="paramtype">size_t *&#160;</td>
           <td class="paramname"><em>height</em>, </td>
         </tr>
         <tr>
@@ -123,7 +123,7 @@ Functions</h2></td></tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype"><a class="el" href="Image_8h.html#a9852684147e651e988ed71ddc71426d5">IMAGE_FORMAT</a>&#160;</td>
-          <td class="paramname"><em>requested_format</em>&#160;</td>
+          <td class="paramname"><em>requestedFormat</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -135,8 +135,8 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="af512f20aee50cd1de2ab85ea0fcd96e3" name="af512f20aee50cd1de2ab85ea0fcd96e3"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#af512f20aee50cd1de2ab85ea0fcd96e3">&#9670;&#160;</a></span>Encode()</h2>
+<a id="a1129fb07ac2731418aa6185003c97ba1" name="a1129fb07ac2731418aa6185003c97ba1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1129fb07ac2731418aa6185003c97ba1">&#9670;&#160;</a></span>Encode()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -150,13 +150,13 @@ Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const unsigned int&#160;</td>
+          <td class="paramtype">size_t&#160;</td>
           <td class="paramname"><em>width</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const unsigned int&#160;</td>
+          <td class="paramtype">size_t&#160;</td>
           <td class="paramname"><em>height</em>&#160;</td>
         </tr>
         <tr>

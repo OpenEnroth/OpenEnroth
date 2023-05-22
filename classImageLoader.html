@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;42b2887</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;267818c</span>
    </div>
   </td>
  </tr>
@@ -107,8 +107,8 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a26204014ed5d37559451410c2e104de1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4cdb547d1dd5a7e53485ca2becbc9562"><td class="memItemLeft" align="right" valign="top">virtual std::string *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classImageLoader.html#a4cdb547d1dd5a7e53485ca2becbc9562">GetResourceNamePtr</a> ()</td></tr>
 <tr class="separator:a4cdb547d1dd5a7e53485ca2becbc9562"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3d77e65d27033a2783fae7b8920b85fe"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classImageLoader.html#a3d77e65d27033a2783fae7b8920b85fe">Load</a> (unsigned int *width, unsigned int *height, void **pixels, <a class="el" href="Image_8h.html#a9852684147e651e988ed71ddc71426d5">IMAGE_FORMAT</a> *format, void **out_palette, void **out_pallettepixels=nullptr)=0</td></tr>
-<tr class="separator:a3d77e65d27033a2783fae7b8920b85fe"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3dceb19c3097186704fd13410c988f5e"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classImageLoader.html#a3dceb19c3097186704fd13410c988f5e">Load</a> (size_t *width, size_t *height, void **pixels, <a class="el" href="Image_8h.html#a9852684147e651e988ed71ddc71426d5">IMAGE_FORMAT</a> *format, void **out_palette, void **out_pallettepixels=nullptr)=0</td></tr>
+<tr class="separator:a3dceb19c3097186704fd13410c988f5e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pro-attribs" name="pro-attribs"></a>
 Protected Attributes</h2></td></tr>
@@ -219,8 +219,8 @@ Protected Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="a3d77e65d27033a2783fae7b8920b85fe" name="a3d77e65d27033a2783fae7b8920b85fe"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a3d77e65d27033a2783fae7b8920b85fe">&#9670;&#160;</a></span>Load()</h2>
+<a id="a3dceb19c3097186704fd13410c988f5e" name="a3dceb19c3097186704fd13410c988f5e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3dceb19c3097186704fd13410c988f5e">&#9670;&#160;</a></span>Load()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -231,13 +231,13 @@ Protected Attributes</h2></td></tr>
         <tr>
           <td class="memname">virtual bool ImageLoader::Load </td>
           <td>(</td>
-          <td class="paramtype">unsigned int *&#160;</td>
+          <td class="paramtype">size_t *&#160;</td>
           <td class="paramname"><em>width</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">unsigned int *&#160;</td>
+          <td class="paramtype">size_t *&#160;</td>
           <td class="paramname"><em>height</em>, </td>
         </tr>
         <tr>
@@ -277,7 +277,7 @@ Protected Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Implemented in <a class="el" href="classPaletted__Img__Loader.html#ac727108cc2c53421717d8e6ea80e9b15">Paletted_Img_Loader</a>, <a class="el" href="classColorKey__LOD__Loader.html#a99457dfe76c189da6ef78a8bb6e2252f">ColorKey_LOD_Loader</a>, <a class="el" href="classImage16bit__LOD__Loader.html#a40d9b8ab6d8da0a1fea614f94b6a3c78">Image16bit_LOD_Loader</a>, <a class="el" href="classAlpha__LOD__Loader.html#ab6672b3f5dba5f4c9f63c5fffa175ec7">Alpha_LOD_Loader</a>, <a class="el" href="classPCX__File__Loader.html#a24935e4bff0bb53ee72d2770aca3c515">PCX_File_Loader</a>, <a class="el" href="classPCX__LOD__Raw__Loader.html#a882a01871a95ee3ffcd3039d019c01db">PCX_LOD_Raw_Loader</a>, <a class="el" href="classPCX__LOD__Compressed__Loader.html#ae5309bd58d279e2ca64582a8a91511b4">PCX_LOD_Compressed_Loader</a>, <a class="el" href="classBitmaps__LOD__Loader.html#a89c95ef983b6948142f35148989d3e94">Bitmaps_LOD_Loader</a>, and <a class="el" href="classSprites__LOD__Loader.html#aee45296527b88fd8519e9b688a91038c">Sprites_LOD_Loader</a>.</p>
+<p>Implemented in <a class="el" href="classPaletted__Img__Loader.html#a7133d78396aae8c404044760b5499e92">Paletted_Img_Loader</a>, <a class="el" href="classColorKey__LOD__Loader.html#aa05f2e71a6ed4c507a2e0c6d43bb64a5">ColorKey_LOD_Loader</a>, <a class="el" href="classImage16bit__LOD__Loader.html#a96c9b630b38840b33d1ae8ee665b1baf">Image16bit_LOD_Loader</a>, <a class="el" href="classAlpha__LOD__Loader.html#ab61f7f3138379a281d1d69791da0abaa">Alpha_LOD_Loader</a>, <a class="el" href="classPCX__File__Loader.html#ab68bbce8b9cd737f98d711c7bbb71e00">PCX_File_Loader</a>, <a class="el" href="classPCX__LOD__Raw__Loader.html#acbaba2742112bc97085f731489fd450d">PCX_LOD_Raw_Loader</a>, <a class="el" href="classPCX__LOD__Compressed__Loader.html#a30ee2e39b210d0a2a6cd03a3b92da281">PCX_LOD_Compressed_Loader</a>, <a class="el" href="classBitmaps__LOD__Loader.html#a63a83638705da4367102fc38927fd03a">Bitmaps_LOD_Loader</a>, and <a class="el" href="classSprites__LOD__Loader.html#a05e291795a5a1e7f3ebd248e89b889ed">Sprites_LOD_Loader</a>.</p>
 
 </div>
 </div>
