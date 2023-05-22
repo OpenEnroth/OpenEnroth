@@ -1,45 +1,40 @@
 #pragma once
 
-#include <cstdint>
+#include <span>
+#include <array>
+#include <vector>
 
 #include "Engine/Graphics/Sprites.h"
 
-struct PaletteManager {
-    PaletteManager();
+class LODFile_IconsBitmaps;
+
+struct Palette {
+    std::array<uint32_t, 256> colors;
+};
+
+class PaletteManager {
+ public:
+    void load(LODFile_IconsBitmaps *lod);
 
     /**
-     * Resets the currently loaded Palettes and clears sprite indexes.
+     * @param paletteId                 Palette identifier, a number in [0, 999].
+     * @return                          Index for the provided palette identifier. Returned index can then be used
+     *                                  for getting palette data from the return value of `paletteData` function.
      */
-    void Reset();
-
-    int LoadPalette(unsigned int uPaletteID);
-    int MakeBasePaletteLut(int uPaletteID, char *entries);
-    int GetPaletteIndex(int paletteID);
+    int paletteIndex(int paletteId);
 
     /**
-     * @return                              Returns true if palette needs reloading to shader.
+     * @return                          Span containing contiguous data for all loaded palettes.
      */
-    bool GetGLPaletteNeedsUpdate();
-    /**
-     * Resets the shader palette reload needed flag.
-     */
-    void GLPaletteReset();
-
-    /**
-     * @return                              Returns size of the shader palette store.
-     */
-    size_t GetGLPaletteSize();
-    /**
-     * @return                              Returns pointer to the palette data store for uploading to shader.
-     */
-    uint32_t *GetGLPalettePtr();
+    std::span<uint32_t> paletteData();
 
  private:
-    int pPaletteIDs[50];
-    // palette / colour / rgb
-    uint8_t pBaseColors[50][256][3];
-    uint32_t p32ARGBpalette[50][256]{};
-    bool palettestorechanged{ true };
+    static Palette createGrayscalePalette();
+    static Palette createLoadedPalette(uint8_t *data);
+
+ private:
+    std::vector<int> _paletteIds;
+    std::vector<Palette> _palettes;
 };
 
 bool HSV2RGB(float *redo, float *greeno, float *blueo, float hin, float sin, float vin);

@@ -4571,7 +4571,6 @@ bool SpawnActor(unsigned int uMonsterID) {
     actor->vPosition.z = pOut.z;
 
     pSprites_LOD->DeleteSomeSprites();
-    pPaletteManager->Reset();
 
     actor->PrepareSprites(1);
 

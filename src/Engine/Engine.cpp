@@ -866,6 +866,8 @@ bool MM7_LoadLods() {
         return false;
     }
 
+    pPaletteManager->load(pBitmaps_LOD);
+
     return true;
 }
 
@@ -1144,7 +1146,6 @@ void Engine::ResetCursor_Palettes_LODs_Level_Audio_SFT_Windows() {
     if (mouse)
         mouse->SetCursorImage("MICON1");
 
-    pPaletteManager->Reset();
     pBitmaps_LOD->ReleaseAll2();
     pSprites_LOD->DeleteSomeOtherSprites();
     pIcons_LOD->ReleaseAll2();
