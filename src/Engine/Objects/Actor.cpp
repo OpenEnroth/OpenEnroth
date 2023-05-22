@@ -4128,38 +4128,38 @@ void toggleActorGroupFlag(unsigned int uGroupID, ActorAttribute uFlag,
 
 //----- (004014E6) --------------------------------------------------------
 void Actor::MakeActorAIList_ODM() {
-    std::vector<std::pair<int, int>> activeActorsDistances;
+    std::vector<std::pair<int, int>> activeActorsDistances; // pair<id, distance>
 
     pParty->uFlags &= ~PARTY_FLAGS_1_ALERT_RED_OR_YELLOW;
 
-    for (int i = 0; i < pActors.size(); ++i) {
-        pActors[i].ResetFullAiState();
-        if (!pActors[i].CanAct()) {
-            pActors[i].ResetActive();
+    for (Actor &actor : pActors) {
+        actor.ResetFullAiState();
+        if (!actor.CanAct()) {
+            actor.ResetActive();
             continue;
         }
 
-        int delta_x = abs(pParty->vPosition.x - pActors[i].vPosition.x);
-        int delta_y = abs(pParty->vPosition.y - pActors[i].vPosition.y);
-        int delta_z = abs(pParty->vPosition.z - pActors[i].vPosition.z);
+        int delta_x = abs(pParty->vPosition.x - actor.vPosition.x);
+        int delta_y = abs(pParty->vPosition.y - actor.vPosition.y);
+        int delta_z = abs(pParty->vPosition.z - actor.vPosition.z);
 
-        int distance = int_get_vector_length(delta_x, delta_y, delta_z) - pActors[i].uActorRadius;
+        int distance = int_get_vector_length(delta_x, delta_y, delta_z) - actor.uActorRadius;
         if (distance < 0)
             distance = 0;
 
         if (distance < 5632) {
-            pActors[i].ResetHostile();
-            if (pActors[i].ActorEnemy() || pActors[i].GetActorsRelation(0)) {
-                pActors[i].uAttributes |= ACTOR_HOSTILE;
+            actor.ResetHostile();
+            if (actor.ActorEnemy() || actor.GetActorsRelation(0)) {
+                actor.uAttributes |= ACTOR_HOSTILE;
                 if (distance < 5120)
                     pParty->SetYellowAlert();
                 if (distance < 307)
                     pParty->SetRedAlert();
             }
-            pActors[i].uAttributes |= ACTOR_ACTIVE;
-            activeActorsDistances.push_back({i, distance});
+            actor.uAttributes |= ACTOR_ACTIVE;
+            activeActorsDistances.push_back({actor.id, distance});
         } else {
-            pActors[i].ResetActive();
+            actor.ResetActive();
         }
     }
 
@@ -4178,44 +4178,42 @@ void Actor::MakeActorAIList_ODM() {
 
 //----- (004016FA) --------------------------------------------------------
 int Actor::MakeActorAIList_BLV() {
-    std::vector<std::pair<int, int>> activeActorsDistances;
-    std::vector<std::pair<int, int>> pickedActors;
+    std::vector<std::pair<int, int>> activeActorsDistances; // pair<id, distance>
     std::vector<int> pickedActorIds;
 
     // reset party alert level
     pParty->uFlags &= ~PARTY_FLAGS_1_ALERT_RED_OR_YELLOW;
 
     // find actors that are in range and can act
-    for (int i = 0; i < pActors.size(); ++i) {
-        pActors[i].ResetFullAiState();
-
-        if (!pActors[i].CanAct()) {
-            pActors[i].ResetActive();
+    for (Actor &actor : pActors) {
+        actor.ResetFullAiState();
+        if (!actor.CanAct()) {
+            actor.ResetActive();
             continue;
         }
 
-        int delta_x = abs(pParty->vPosition.x - pActors[i].vPosition.x);
-        int delta_y = abs(pParty->vPosition.y - pActors[i].vPosition.y);
-        int delta_z = abs(pParty->vPosition.z - pActors[i].vPosition.z);
+        int delta_x = abs(pParty->vPosition.x - actor.vPosition.x);
+        int delta_y = abs(pParty->vPosition.y - actor.vPosition.y);
+        int delta_z = abs(pParty->vPosition.z - actor.vPosition.z);
 
-        int distance = int_get_vector_length(delta_x, delta_y, delta_z) - pActors[i].uActorRadius;
+        int distance = int_get_vector_length(delta_x, delta_y, delta_z) - actor.uActorRadius;
         if (distance < 0)
             distance = 0;
 
         // actor is in range
         if (distance < 10240) {
-            pActors[i].ResetHostile();
-            if (pActors[i].ActorEnemy() || pActors[i].GetActorsRelation(0)) {
-                pActors[i].uAttributes |= ACTOR_HOSTILE;
+            actor.ResetHostile();
+            if (actor.ActorEnemy() || actor.GetActorsRelation(0)) {
+                actor.uAttributes |= ACTOR_HOSTILE;
                 if (!(pParty->GetRedAlert()) && (double)distance < 307.2)
                     pParty->SetRedAlert();
                 if (!(pParty->GetYellowAlert()) && distance < 5120)
                     pParty->SetYellowAlert();
             }
-            activeActorsDistances.push_back({i, distance});
+            activeActorsDistances.push_back({actor.id, distance});
         } else {
             // otherwise idle
-            pActors[i].ResetActive();
+            actor.ResetActive();
         }
     }
 
@@ -4223,14 +4221,15 @@ int Actor::MakeActorAIList_BLV() {
     std::sort(activeActorsDistances.begin(), activeActorsDistances.end(), [] (std::pair<int, int> a, std::pair<int, int> b) {
               return a.second < b.second; });
 
-    // checks nearby actors can detect player
-    std::copy_if(activeActorsDistances.begin(), activeActorsDistances.end(), std::back_inserter(pickedActors), [&] (std::pair<int, int> val) {
-                 return pActors[val.first].ActorNearby() || Detect_Between_Objects(PID(OBJECT_Actor, val.first), PID(OBJECT_Player, 0)); });
-
-    // and takes nearest 30
-    for (int i = 0; (i < 30) && (i < pickedActors.size()); i++) {
-        pickedActorIds.push_back(pickedActors[i].first);
-        pActors[pickedActors[i].first].uAttributes |= ACTOR_NEARBY;
+    // checks nearby actors can detect player and take nearest 30
+    for (const auto &[actorId, _] : activeActorsDistances) {
+        if (pActors[actorId].ActorNearby() || Detect_Between_Objects(PID(OBJECT_Actor, actorId), PID(OBJECT_Player, 0))) {
+            pActors[actorId].uAttributes |= ACTOR_NEARBY;
+            pickedActorIds.push_back(actorId);
+            if (pickedActorIds.size() >= 30) {
+                break;
+            }
+        }
     }
 
     // add any actors than can act and are in the same sector
@@ -4245,12 +4244,12 @@ int Actor::MakeActorAIList_BLV() {
     }
 
     // add any actors that are active and have previosuly detected the player
-    for (std::pair<int, int> &val : activeActorsDistances) {
-        if (pActors[val.first].uAttributes & (ACTOR_ACTIVE | ACTOR_NEARBY) && pActors[val.first].CanAct()) {
-            auto found = std::find_if(pickedActorIds.begin(), pickedActorIds.end(), [&] (int id) { return id == val.first; });
+    for (const auto &[actorId, _] : activeActorsDistances) {
+        if (pActors[actorId].uAttributes & (ACTOR_ACTIVE | ACTOR_NEARBY) && pActors[actorId].CanAct()) {
+            auto found = std::find_if(pickedActorIds.begin(), pickedActorIds.end(), [&] (int id) { return id == actorId; });
             if (found == pickedActorIds.end()) {
-                pActors[val.first].uAttributes |= ACTOR_ACTIVE;
-                pickedActorIds.push_back(val.first);
+                pActors[actorId].uAttributes |= ACTOR_ACTIVE;
+                pickedActorIds.push_back(actorId);
             }
         }
     }
@@ -4263,7 +4262,7 @@ int Actor::MakeActorAIList_BLV() {
 
     ai_arrays_size = std::min(30, (int)pickedActorIds.size());
 
-    return std::min(30, (int)pickedActorIds.size());
+    return ai_arrays_size;
 }
 
 //----- (004070EF) --------------------------------------------------------
