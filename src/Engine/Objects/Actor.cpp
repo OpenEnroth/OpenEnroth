@@ -4246,7 +4246,7 @@ int Actor::MakeActorAIList_BLV() {
     // add any actors that are active and have previosuly detected the player
     for (const auto &[actorId, _] : activeActorsDistances) {
         if (pActors[actorId].uAttributes & (ACTOR_ACTIVE | ACTOR_NEARBY) && pActors[actorId].CanAct()) {
-            auto found = std::find_if(pickedActorIds.begin(), pickedActorIds.end(), [&] (int id) { return id == actorId; });
+            auto found = std::find_if(pickedActorIds.begin(), pickedActorIds.end(), [&actorId = actorId] (int id) { return id == actorId; });
             if (found == pickedActorIds.end()) {
                 pActors[actorId].uAttributes |= ACTOR_ACTIVE;
                 pickedActorIds.push_back(actorId);
