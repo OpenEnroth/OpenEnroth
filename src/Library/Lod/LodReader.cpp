@@ -168,6 +168,7 @@ std::unique_ptr<LodReader> LodReader::open(const std::string &filename) {
 }
 
 bool LodReader::exists(const std::string &filename) const {
+    // TODO(Nik-RE-dev): use std::unordered_map to avoid full vector search
     return _files.cend() != std::find_if(_files.cbegin(), _files.cend(), [&](const FileEntryDesc &file) { return iequals(file.name, filename); });
 }
 
@@ -191,10 +192,10 @@ Blob LodReader::read(const std::string &filename) {
     return _lod.subBlob(file->offset, file->size);
 }
 
-void LodReader::ls() const {
-    for (const FileEntryDesc &desc : _files) {
-        printf("\"%s\": 0x%lx:%ld\n", desc.name.c_str(), desc.offset, desc.size);
-    }
+std::vector<std::string> LodReader::ls() const {
+    std::vector<std::string> res;
+    std::transform(_files.begin(), _files.end(), std::back_inserter(res), [](const FileEntryDesc &f) { return f.name; });
+    return res;
 }
 
 bool LodReader::isFileCompressed(const FileEntryDesc &desc, FileCompressionDesc *compDesc) {

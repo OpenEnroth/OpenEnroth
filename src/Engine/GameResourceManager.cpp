@@ -7,9 +7,6 @@
 #include "Utility/Streams/MemoryInputStream.h"
 
 #include "Library/Compression/Compression.h"
-#include "Library/Binary/BinarySerialization.h"
-
-MM_DECLARE_MEMCOPY_SERIALIZABLE(TextureHeader)
 
 void GameResourceManager::openGameResources() {
     _eventsLodReader = LodReader::open(MakeDataPath("data", "events.lod"));

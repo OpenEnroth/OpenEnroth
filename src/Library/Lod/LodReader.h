@@ -23,7 +23,7 @@ class LodReader final {
     bool exists(const std::string &filename) const;
     Blob read(const std::string &filename);
 
-    void ls() const;
+    std::vector<std::string> ls() const;
 
  private:
     struct FileEntryDesc {
