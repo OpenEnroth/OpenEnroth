@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;5631ba4</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;72bc344</span>
    </div>
   </td>
  </tr>
@@ -82,31 +82,23 @@ $(function() {
 <code>#include &lt;algorithm&gt;</code><br />
 <code>#include &lt;cassert&gt;</code><br />
 <code>#include &lt;map&gt;</code><br />
+<code>#include &lt;iterator&gt;</code><br />
 <code>#include &quot;<a class="el" href="ErrorHandling_8h.html">Engine/ErrorHandling.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Compression_8h.html">Library/Compression/Compression.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="LodDirectory_8h.html">Library/Lod/Internal/LodDirectory.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="LodDirectoryHeader_8h.html">Library/Lod/Internal/LodDirectoryHeader.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="LodFile_8h.html">Library/Lod/Internal/LodFile.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="LodFileHeader_8h.html">Library/Lod/Internal/LodFileHeader.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="LodHeader_8h.html">Library/Lod/Internal/LodHeader.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="LodDefinitions_8h.html">Library/Lod/LodDefinitions.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="String_8h.html">Utility/String.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="MemoryInputStream_8h.html">Utility/Streams/MemoryInputStream.h</a>&quot;</code><br />
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:a1f0b52a199dcdbab50d2c94f36ce24a3"><td class="memItemLeft" align="right" valign="top">static size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="LodReader_8cpp.html#a1f0b52a199dcdbab50d2c94f36ce24a3">_getDirectoryHeaderImgSize</a> (<a class="el" href="LodVersion_8h.html#a63d4571b1e87db9efa0a36b67d764103">LodVersion</a> lod_version)</td></tr>
-<tr class="separator:a1f0b52a199dcdbab50d2c94f36ce24a3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9203f943c08f4926973400f32b3654d9"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="LodReader_8cpp.html#a9203f943c08f4926973400f32b3654d9">_lodHeaderParseVersion</a> (const <a class="el" href="structLodHeader__Mm6.html">LodHeader_Mm6</a> &amp;header, <a class="el" href="LodVersion_8h.html#a63d4571b1e87db9efa0a36b67d764103">LodVersion</a> &amp;out_version)</td></tr>
-<tr class="separator:a9203f943c08f4926973400f32b3654d9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a19910f78e612d1a7ec2f52dee4c2c838"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="LodReader_8cpp.html#a19910f78e612d1a7ec2f52dee4c2c838">_lodParseHeader</a> (FILE *fp, <a class="el" href="LodVersion_8h.html#a63d4571b1e87db9efa0a36b67d764103">LodVersion</a> &amp;out_version, std::string &amp;out_description, size_t &amp;out_num_expected_directories)</td></tr>
-<tr class="separator:a19910f78e612d1a7ec2f52dee4c2c838"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8ef3560fc227250a5ba19a46af2d94dc"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="LodReader_8cpp.html#a8ef3560fc227250a5ba19a46af2d94dc">_lodParseDirectoryFiles</a> (FILE *fp, <a class="el" href="LodVersion_8h.html#a63d4571b1e87db9efa0a36b67d764103">LodVersion</a> version, <a class="el" href="structLodDirectory.html">LodDirectory</a> &amp;dir, size_t num_expected_files)</td></tr>
-<tr class="separator:a8ef3560fc227250a5ba19a46af2d94dc"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae72b0e87cc1f1ead2ebbf59f6c86236c"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="LodReader_8cpp.html#ae72b0e87cc1f1ead2ebbf59f6c86236c">_lodParseDirectories</a> (FILE *fp, <a class="el" href="LodVersion_8h.html#a63d4571b1e87db9efa0a36b67d764103">LodVersion</a> version, size_t num_expected_directories, std::vector&lt; <a class="el" href="structLodDirectory.html">LodDirectory</a> &gt; &amp;out_index)</td></tr>
-<tr class="separator:ae72b0e87cc1f1ead2ebbf59f6c86236c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa7d115a10dc60ce2f191a09fe17c88b0"><td class="memItemLeft" align="right" valign="top">static size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="LodReader_8cpp.html#aa7d115a10dc60ce2f191a09fe17c88b0">getDirectoryHeaderImgSize</a> (<a class="el" href="LodVersion_8h.html#a63d4571b1e87db9efa0a36b67d764103">LodVersion</a> lod_version)</td></tr>
+<tr class="separator:aa7d115a10dc60ce2f191a09fe17c88b0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3d3a2a1c222ef0ab8297111501be9c3b"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="LodReader_8cpp.html#a3d3a2a1c222ef0ab8297111501be9c3b">lodHeaderParseVersion</a> (const <a class="el" href="structLodHeader__Mm6.html">LodHeader_Mm6</a> &amp;header, <a class="el" href="LodVersion_8h.html#a63d4571b1e87db9efa0a36b67d764103">LodVersion</a> &amp;out_version)</td></tr>
+<tr class="separator:a3d3a2a1c222ef0ab8297111501be9c3b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Function Documentation</h2>
-<a id="a1f0b52a199dcdbab50d2c94f36ce24a3" name="a1f0b52a199dcdbab50d2c94f36ce24a3"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a1f0b52a199dcdbab50d2c94f36ce24a3">&#9670;&#160;</a></span>_getDirectoryHeaderImgSize()</h2>
+<a id="aa7d115a10dc60ce2f191a09fe17c88b0" name="aa7d115a10dc60ce2f191a09fe17c88b0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa7d115a10dc60ce2f191a09fe17c88b0">&#9670;&#160;</a></span>getDirectoryHeaderImgSize()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -115,7 +107,7 @@ Functions</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">static size_t _getDirectoryHeaderImgSize </td>
+          <td class="memname">static size_t getDirectoryHeaderImgSize </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="LodVersion_8h.html#a63d4571b1e87db9efa0a36b67d764103">LodVersion</a>&#160;</td>
           <td class="paramname"><em>lod_version</em></td><td>)</td>
@@ -124,15 +116,15 @@ Functions</h2></td></tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
 
 </div>
 </div>
-<a id="a9203f943c08f4926973400f32b3654d9" name="a9203f943c08f4926973400f32b3654d9"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a9203f943c08f4926973400f32b3654d9">&#9670;&#160;</a></span>_lodHeaderParseVersion()</h2>
+<a id="a3d3a2a1c222ef0ab8297111501be9c3b" name="a3d3a2a1c222ef0ab8297111501be9c3b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3d3a2a1c222ef0ab8297111501be9c3b">&#9670;&#160;</a></span>lodHeaderParseVersion()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -141,7 +133,7 @@ Functions</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">static bool _lodHeaderParseVersion </td>
+          <td class="memname">static bool lodHeaderParseVersion </td>
           <td>(</td>
           <td class="paramtype">const <a class="el" href="structLodHeader__Mm6.html">LodHeader_Mm6</a> &amp;&#160;</td>
           <td class="paramname"><em>header</em>, </td>
@@ -151,150 +143,6 @@ Functions</h2></td></tr>
           <td></td>
           <td class="paramtype"><a class="el" href="LodVersion_8h.html#a63d4571b1e87db9efa0a36b67d764103">LodVersion</a> &amp;&#160;</td>
           <td class="paramname"><em>out_version</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">static</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="ae72b0e87cc1f1ead2ebbf59f6c86236c" name="ae72b0e87cc1f1ead2ebbf59f6c86236c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae72b0e87cc1f1ead2ebbf59f6c86236c">&#9670;&#160;</a></span>_lodParseDirectories()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">static bool _lodParseDirectories </td>
-          <td>(</td>
-          <td class="paramtype">FILE *&#160;</td>
-          <td class="paramname"><em>fp</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="LodVersion_8h.html#a63d4571b1e87db9efa0a36b67d764103">LodVersion</a>&#160;</td>
-          <td class="paramname"><em>version</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">size_t&#160;</td>
-          <td class="paramname"><em>num_expected_directories</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">std::vector&lt; <a class="el" href="structLodDirectory.html">LodDirectory</a> &gt; &amp;&#160;</td>
-          <td class="paramname"><em>out_index</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">static</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a8ef3560fc227250a5ba19a46af2d94dc" name="a8ef3560fc227250a5ba19a46af2d94dc"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a8ef3560fc227250a5ba19a46af2d94dc">&#9670;&#160;</a></span>_lodParseDirectoryFiles()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">static void _lodParseDirectoryFiles </td>
-          <td>(</td>
-          <td class="paramtype">FILE *&#160;</td>
-          <td class="paramname"><em>fp</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="LodVersion_8h.html#a63d4571b1e87db9efa0a36b67d764103">LodVersion</a>&#160;</td>
-          <td class="paramname"><em>version</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="structLodDirectory.html">LodDirectory</a> &amp;&#160;</td>
-          <td class="paramname"><em>dir</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">size_t&#160;</td>
-          <td class="paramname"><em>num_expected_files</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a19910f78e612d1a7ec2f52dee4c2c838" name="a19910f78e612d1a7ec2f52dee4c2c838"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a19910f78e612d1a7ec2f52dee4c2c838">&#9670;&#160;</a></span>_lodParseHeader()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">static bool _lodParseHeader </td>
-          <td>(</td>
-          <td class="paramtype">FILE *&#160;</td>
-          <td class="paramname"><em>fp</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="LodVersion_8h.html#a63d4571b1e87db9efa0a36b67d764103">LodVersion</a> &amp;&#160;</td>
-          <td class="paramname"><em>out_version</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">std::string &amp;&#160;</td>
-          <td class="paramname"><em>out_description</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">size_t &amp;&#160;</td>
-          <td class="paramname"><em>out_num_expected_directories</em>&#160;</td>
         </tr>
         <tr>
           <td></td>

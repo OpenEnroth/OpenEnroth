@@ -7,7 +7,7 @@ var searchData=
   ['object_5ftype_4',['object_type',['../structVis__SelectionFilter.html#a0cbe861a70212007149579c408f68795',1,'Vis_SelectionFilter::object_type()'],['../structVis__ObjectInfo.html#a1a87c2750a9f1a3bbc3071ffd7536b11',1,'Vis_ObjectInfo::object_type()']]],
   ['odm_5ffov_5fdeg_5',['odm_fov_deg',['../structCamera3D.html#a160b7b49996d1ad7039854b172404da6',1,'Camera3D']]],
   ['odm_5ffov_5frad_6',['odm_fov_rad',['../structCamera3D.html#a45ba0159fc825eabb2b3e2764a7ad4da',1,'Camera3D']]],
-  ['offset_7',['offset',['../structLODSpriteLine.html#a94a6b22607b280e45e89d3fccc4b6fd0',1,'LODSpriteLine::offset()'],['../structVideoList_1_1Node.html#ac8ecc73f90bc175960ef4564334bde9e',1,'VideoList::Node::offset()']]],
+  ['offset_7',['offset',['../structLodReader_1_1FileEntryDesc.html#a6c16ee2a0d83f74dfbed5dea43f5c096',1,'LodReader::FileEntryDesc::offset()'],['../structVideoList_1_1Node.html#ac8ecc73f90bc175960ef4564334bde9e',1,'VideoList::Node::offset()'],['../structLODSpriteLine.html#a94a6b22607b280e45e89d3fccc4b6fd0',1,'LODSpriteLine::offset()']]],
   ['ogl_5ftexture_8',['ogl_texture',['../classTextureOpenGL.html#a56ab006b37ad443252cc0771853154f9',1,'TextureOpenGL']]],
   ['onlongtimertriggers_9',['onLongTimerTriggers',['../Processor_8cpp.html#a7d5e45ce6ac370dbd1d441c363bb65bb',1,'Processor.cpp']]],
   ['onmapleavetriggers_10',['onMapLeaveTriggers',['../Processor_8cpp.html#af4bb75b65fca941a36c9da1ea08478f4',1,'Processor.cpp']]],
@@ -35,8 +35,8 @@ var searchData=
   ['outdoor_5fno_5fwavy_5fwater_32',['outdoor_no_wavy_water',['../structODMRenderParams.html#a6827cf3b9a8b9bd0c1fad130b639280e',1,'ODMRenderParams']]],
   ['outputpresent_33',['outputPresent',['../RenderOpenGL_8cpp.html#afff3b3efd76e25649c87a86515ba4508',1,'RenderOpenGL.cpp']]],
   ['outputrender_34',['outputRender',['../RenderOpenGL_8cpp.html#af1f1163a9c8376b96a86751db3256db9',1,'RenderOpenGL.cpp']]],
-  ['overlayid_35',['overlayId',['../structSpellBuff__MM7.html#a0b20ebfff0491f10f19c2e4769ccca66',1,'SpellBuff_MM7']]],
-  ['overlayid_36',['overlayID',['../structSpellBuff.html#a71246715e120b97bffc46a7f6941ce6e',1,'SpellBuff']]],
+  ['overlayid_35',['overlayID',['../structSpellBuff.html#a71246715e120b97bffc46a7f6941ce6e',1,'SpellBuff']]],
+  ['overlayid_36',['overlayId',['../structSpellBuff__MM7.html#a0b20ebfff0491f10f19c2e4769ccca66',1,'SpellBuff_MM7']]],
   ['overlays_37',['overlays',['../structActiveOverlayList__MM7.html#a0adcd441f7eec0513d8d911cd19059d8',1,'ActiveOverlayList_MM7::overlays()'],['../structSaveGame__MM7.html#a7554f18d1fb01cec9dfdb1c2f37db998',1,'SaveGame_MM7::overlays()']]],
   ['ownitems_38',['ownItems',['../structPlayer__MM7.html#ae9d0dd7b371e0cc07448636882f11b92',1,'Player_MM7']]]
 ];
