@@ -1,6 +1,8 @@
 #include "UIHouses.h"
 
 #include <cstdlib>
+#include <limits>
+#include <vector>
 
 #include "Arcomage/Arcomage.h"
 
@@ -535,6 +537,8 @@ const std::array<ITEM_VARIATION, 28> shopArmr_variation_spc = {{
     { ITEM_TREASURE_LEVEL_5, { 33, 33, 33, 33 } }
 }};
 
+std::vector<int> charactersTrainedLevels;
+
 void FillAviableSkillsToTeach(BuildingType type);
 
 //----- (004B3A72) --------------------------------------------------------
@@ -819,14 +823,15 @@ bool enterHouse(HOUSE_ID uHouseID) {
 
     if (uHouseID == HOUSE_THRONEROOM_WIN_GOOD || uHouseID == HOUSE_THRONEROOM_WIN_EVIL) {
         pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_ShowGameOverWindow, 0, 0);
-        return 0;
+        return false;
     }
 
     int uOpenTime = buildingTable[uHouseID - HOUSE_SMITH_EMERALD_ISLE].uOpenTime;
     int uCloseTime = buildingTable[uHouseID - HOUSE_SMITH_EMERALD_ISLE].uCloseTime;
     current_npc_text.clear();
     dword_F8B1E4 = 0;
-    memset(player_levels.data(), 0, 16);
+    charactersTrainedLevels.resize(pParty->pPlayers.size());
+    std::fill(charactersTrainedLevels.begin(), charactersTrainedLevels.end(), 0);
     render->ClearZBuffer();
 
     if (((uCloseTime - 1 <= uOpenTime) && ((pParty->uCurrentHour < uOpenTime) && (pParty->uCurrentHour >(uCloseTime - 1)))) ||
@@ -848,7 +853,7 @@ bool enterHouse(HOUSE_ID uHouseID) {
             pParty->activeCharacter().playReaction(SPEECH_StoreClosed);
         }
 
-        return 0;
+        return false;
     } else {
         if (uHouseID < 53) {  // entering shops and guilds
             if (!(pParty->PartyTimes._shop_ban_times[uHouseID]) ||
@@ -857,7 +862,7 @@ bool enterHouse(HOUSE_ID uHouseID) {
                 pParty->PartyTimes._shop_ban_times[uHouseID] = GameTime(0);
             } else {
                 GameUI_SetStatusBar(LSTR_BANNED_FROM_SHOP);
-                return 0;
+                return false;
             }
         }
 
@@ -890,7 +895,7 @@ bool enterHouse(HOUSE_ID uHouseID) {
         dword_5C35D4 = 1;
         if ((signed int)uHouseID < HOUSE_FIRE_GUILD_INITIATE_EMERALD_ISLE || (signed int)uHouseID > HOUSE_SELF_GUILD_2) {
             if ((signed int)uHouseID >= HOUSE_STABLES_HARMONDALE && (signed int)uHouseID <= HOUSE_BOATS_PLACEHOLDER_2 && !IsTravelAvailable(uHouseID - HOUSE_STABLES_HARMONDALE)) {
-                return 1;
+                return true;
             }
         } else {  // guilds
             int membership = guild_membership_flags[uHouseID - HOUSE_FIRE_GUILD_INITIATE_EMERALD_ISLE];
@@ -901,12 +906,12 @@ bool enterHouse(HOUSE_ID uHouseID) {
 
             if (!pParty->activeCharacter()._achievedAwardsBits[membership]) {
                 PlayHouseSound(uHouseID, HouseSound_Greeting_2);
-                return 1;
+                return true;
             }
         }
         PlayHouseSound(uHouseID, HouseSound_Greeting);
         dword_5C35D4 = 1;
-        return 1;
+        return true;
     }
 }
 
@@ -1375,7 +1380,7 @@ void TravelByTransport() {
                     pSpeech = SPEECH_TravelHorse;
                 }
 
-                RestAndHeal(24 * 60 * traveltimedays);
+                restAndHeal(GameTime::FromDays(traveltimedays));
                 pParty->activeCharacter().playReaction(pSpeech);
                 pAudioPlayer->soundDrain();
                 while (HouseDialogPressCloseBtn()) {}
@@ -2139,7 +2144,6 @@ void TrainingDialog(const char *s) {
     int v14;              // esi@14
     int v33;              // eax@36
     unsigned int v36;     // eax@38
-    unsigned int v42;     // eax@46
     int index;
     int all_text_height;          // eax@68
     int v49;                      // ebx@69
@@ -2241,22 +2245,19 @@ void TrainingDialog(const char *s) {
                     if (pParty->GetGold() >= pPrice) {
                         pParty->TakeGold(pPrice);
                         PlayHouseSound(window_SpeakInHouse->wData.val, HouseSound_NotEnoughMoney);
-                        ++pParty->activeCharacter().uLevel;
+                        pParty->activeCharacter().uLevel++;
                         pParty->activeCharacter().uSkillPoints += pParty->activeCharacter().uLevel / 10 + 5;
                         pParty->activeCharacter().health = pParty->activeCharacter().GetMaxHealth();
                         pParty->activeCharacter().mana = pParty->activeCharacter().GetMaxMana();
-                        uint max_level_in_party = player_levels[0];
-                        for (uint _it = 1; _it < 4; ++_it) {
-                            if (player_levels[_it] > max_level_in_party)
-                                max_level_in_party = player_levels[_it];
-                        }
-                        ++player_levels[pParty->activeCharacterIndex() - 1];
-                        if (player_levels[pParty->activeCharacterIndex() - 1] > max_level_in_party) { // if we reach new maximum party level feature is broken thou,
-                                                                                                      // since this array is always zeroed in enterHouse
-                            v42 = 60 * (_494820_training_time(pParty->uCurrentHour) + 4) - pParty->uCurrentMinute;
-                            if (window_SpeakInHouse->wData.val == HOUSE_TRAINING_HALL_PIT || window_SpeakInHouse->wData.val == HOUSE_TRAINING_HALL_NIGHON)
-                                v42 += 12 * 60;
-                            RestAndHeal(v42 + 7 * 24 * 60);
+                        int maxLevelStepsBefore = *std::max_element(charactersTrainedLevels.begin(), charactersTrainedLevels.end());
+                        charactersTrainedLevels[pParty->activeCharacterIndex() - 1]++;
+                        int maxLevelStepsAfter = *std::max_element(charactersTrainedLevels.begin(), charactersTrainedLevels.end());
+                        if (maxLevelStepsAfter > maxLevelStepsBefore) {
+                            GameTime trainingTime = GameTime::FromHours(_494820_training_time(pParty->uCurrentHour) + 4).SubtractMinutes(pParty->uCurrentMinute);
+                            if (window_SpeakInHouse->wData.val == HOUSE_TRAINING_HALL_PIT || window_SpeakInHouse->wData.val == HOUSE_TRAINING_HALL_NIGHON) {
+                                trainingTime.AddHours(12);
+                            }
+                            restAndHeal(trainingTime.AddDays(7));
                             if (uCurrentlyLoadedLevelType == LEVEL_Outdoor)
                                 pOutdoor->SetFog();
                         }
