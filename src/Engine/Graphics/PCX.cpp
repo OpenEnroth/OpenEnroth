@@ -92,8 +92,11 @@ static int pcx_rle_decode(bstreamer *bs, uint8_t *dst, unsigned int bytes_per_sc
     return 0;
 }
 
-std::unique_ptr<uint8_t[]> PCX::Decode(const void *data, size_t size, size_t *width, size_t *height, IMAGE_FORMAT *format, IMAGE_FORMAT requestedFormat) {
-    PCXHeader *header = (PCXHeader *)data;
+std::unique_ptr<uint8_t[]> PCX::Decode(const Blob &data, size_t *width, size_t *height, IMAGE_FORMAT *format) {
+    if (data.size() < sizeof(PCXHeader))
+        return nullptr;
+
+    const PCXHeader *header = static_cast<const PCXHeader *>(data.data());
 
     // check that's PCX and its version
     if (header->manufacturer != 0x0a || header->version < PCX_VERSION_2_5 || header->version == PCX_VERSION_NOT_VALID || header->version > PCX_VERSION_3_0) {
@@ -107,37 +110,29 @@ std::unique_ptr<uint8_t[]> PCX::Decode(const void *data, size_t size, size_t *wi
 
     //corruption check
     if (bytes_per_scanline < (*width * header->bpp * header->nplanes + 7) / 8 ||
-        (!header->compression && bytes_per_scanline > (size - sizeof(PCXHeader)) / *height)) {
+        (!header->compression && bytes_per_scanline > (data.size() - sizeof(PCXHeader)) / *height)) {
         return nullptr;
     }
 
     switch ((header->nplanes << 8) + header->bpp) {
-        case 0x0308:
-            if (requestedFormat == IMAGE_FORMAT_R5G6B5)
-                *format = IMAGE_FORMAT_R5G6B5;
-            else
-                *format = IMAGE_FORMAT_A8B8G8R8;
-
-            break;
-        case 0x0108:
-        case 0x0104:
-        case 0x0102:
-        case 0x0101:
-        case 0x0401:
-        case 0x0301:
-        case 0x0201:
-            // TODO: PAL8 color mode
-            // fall through
-        default:
-            *format = IMAGE_INVALID_FORMAT;
-            return nullptr;
+    case 0x0308:
+        *format = IMAGE_FORMAT_A8B8G8R8;
+        break;
+    case 0x0108:
+    case 0x0104:
+    case 0x0102:
+    case 0x0101:
+    case 0x0401:
+    case 0x0301:
+    case 0x0201:
+        // TODO: PAL8 color mode
+        // fall through
+    default:
+        *format = IMAGE_INVALID_FORMAT;
+        return nullptr;
     }
 
-    size_t pixel_count = 0;
-    if (*format == IMAGE_FORMAT_R5G6B5)
-        pixel_count = *width * *height * 2;
-    else
-        pixel_count = *width * *height * 4;
+    size_t pixel_count = *width * *height * 4;
 
     std::unique_ptr<uint8_t[]> pixels(new uint8_t[pixel_count]);
     if (!pixels)
@@ -148,7 +143,7 @@ std::unique_ptr<uint8_t[]> PCX::Decode(const void *data, size_t size, size_t *wi
     bstreamer bs;
     unsigned int stride = 0;
     std::unique_ptr<uint8_t[], FreeDeleter> scanline(static_cast<uint8_t *>(malloc(bytes_per_scanline + 32)));
-    bs_init(&bs, (uint8_t*)data + sizeof(PCXHeader), size - sizeof(PCXHeader));
+    bs_init(&bs, static_cast<const uint8_t *>(data.data()) + sizeof(PCXHeader), data.size() - sizeof(PCXHeader));
 
     if (header->nplanes == 3 && header->bpp == 8) {
         for (unsigned int y = 0; y < *height; y++) {
@@ -157,33 +152,13 @@ std::unique_ptr<uint8_t[]> PCX::Decode(const void *data, size_t size, size_t *wi
                 return nullptr;
 
             for (unsigned int x = 0; x < *width; x++) {
-                if (*format == IMAGE_FORMAT_R5G6B5) {
-                    unsigned int r_mask = 0xF800;
-                    unsigned int num_r_bits = 5;
-                    unsigned int g_mask = 0x07E0;
-                    unsigned int num_g_bits = 6;
-                    unsigned int b_mask = 0x001F;
-                    unsigned int num_b_bits = 5;
-                    uint16_t tmp = 0;
-
-                    tmp |= r_mask & (scanline[x] << (num_g_bits + num_r_bits + num_b_bits - 8));
-                    tmp |= g_mask & (uint16_t)(scanline[x + header->bytes_per_row] << (num_g_bits + num_b_bits - 8));
-                    tmp |= scanline[x + (header->bytes_per_row << 1)] >> (8 - num_b_bits);;
-
-                    pixels[stride + 2 * x] = tmp & 0xff;
-                    pixels[stride + 2 * x + 1] = tmp >> 8;
-                } else {
-                    pixels[stride + 4 * x + 0] = scanline[x];
-                    pixels[stride + 4 * x + 1] = scanline[x + header->bytes_per_row];
-                    pixels[stride + 4 * x + 2] = scanline[x + (header->bytes_per_row << 1)];
-                    pixels[stride + 4 * x + 3] = 255;
-                }
+                pixels[stride + 4 * x + 0] = scanline[x];
+                pixels[stride + 4 * x + 1] = scanline[x + header->bytes_per_row];
+                pixels[stride + 4 * x + 2] = scanline[x + (header->bytes_per_row << 1)];
+                pixels[stride + 4 * x + 3] = 255;
             }
 
-            if (*format == IMAGE_FORMAT_R5G6B5)
-                stride += *width * 2;
-            else
-                stride += *width * 4;
+            stride += *width * 4;
         }
     } else {
         // TODO: other planes/bpp variants
@@ -199,7 +174,7 @@ void *WritePCXHeader(void *pcx_data, int width, int height) {
         pitch = width + 1;
     }
 
-    PCXHeader *header = (PCXHeader *)pcx_data;
+    PCXHeader *header = static_cast<PCXHeader *>(pcx_data);
     memset(header, 0, sizeof(PCXHeader));
     header->xmin = 0;
     header->ymin = 0;
@@ -215,7 +190,7 @@ void *WritePCXHeader(void *pcx_data, int width, int height) {
     header->nplanes = 3;
     header->palette_info = 1;
 
-    return (uint8_t *)pcx_data + sizeof(PCXHeader);
+    return static_cast<uint8_t *>(pcx_data) + sizeof(PCXHeader);
 }
 
 void *EncodeOneLine(void *pcx_data, void *line, size_t line_size) {
@@ -240,45 +215,8 @@ void *EncodeOneLine(void *pcx_data, void *line, size_t line_size) {
     return output;
 }
 
-struct ColorFormat {
-    explicit ColorFormat(uint32_t m);
-    uint32_t mask;
-    uint32_t shift;
-    uint32_t bits;
-};
-
-ColorFormat::ColorFormat(uint32_t m) {
-    shift = 0;
-    for (int i = 0; i < 16; i++) {
-        if (m & 1) {
-            break;
-        }
-        shift++;
-        m >>= 1;
-    }
-    mask = m;
-    bits = 0;
-    for (int i = 0; i < 16; i++) {
-        if (!(m & 1)) {
-            break;
-        }
-        bits++;
-        m >>= 1;
-    }
-}
-
-struct Format {
-    Format(size_t bpp, uint32_t rm, uint32_t gm, uint32_t bm)
-        : bytes(bpp / 8), r(rm), g(gm), b(bm) {}
-    size_t bytes;
-    ColorFormat r;
-    ColorFormat g;
-    ColorFormat b;
-};
-
 Blob PCX::Encode(const void *data, size_t width, size_t height) {
     assert(data != nullptr && width != 0 & height != 0);
-    Format f(32, 0x000000FF, 0x0000FF00, 0x00FF0000);
 
     // pcx lines are padded to next even byte boundary
     int pitch = width;
@@ -302,11 +240,11 @@ Blob PCX::Encode(const void *data, size_t width, size_t height) {
     for (int y = 0; y < height; y++) {
         for (unsigned int x = 0; x < width; x++) {
             uint32_t pixel;
-            memcpy(&pixel, input, f.bytes);
-            input += f.bytes;
-            lineR[x] = ((pixel >> f.r.shift) & f.r.mask) << (8 - f.r.bits);
-            lineG[x] = ((pixel >> f.g.shift) & f.g.mask) << (8 - f.g.bits);
-            lineB[x] = ((pixel >> f.b.shift) & f.b.mask) << (8 - f.b.bits);
+            memcpy(&pixel, input, 4);
+            input += 4;
+            lineR[x] = pixel & 0xFF;
+            lineG[x] = (pixel >> 8) & 0xFF;
+            lineB[x] = (pixel >> 16) & 0xFF;
         }
         uint8_t *line = lineRGB.get();
         for (int p = 0; p < 3; p++) {

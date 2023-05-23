@@ -241,9 +241,7 @@ bool Alpha_LOD_Loader::Load(size_t *out_width, size_t *out_height,
 bool PCX_Loader::InternalLoad(const void *file, size_t filesize,
                               size_t *width, size_t *height,
                               void **pixels, IMAGE_FORMAT *format) {
-    IMAGE_FORMAT request_format = IMAGE_FORMAT_A8B8G8R8;
-
-    std::unique_ptr<uint8_t[]> result = PCX::Decode(file, filesize, width, height, format, request_format);
+    std::unique_ptr<uint8_t[]> result = PCX::Decode(Blob::view(file, filesize), width, height, format);
     if (!result)
         return false;
 
