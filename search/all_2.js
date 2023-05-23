@@ -21,7 +21,7 @@ var searchData=
   ['base_18',['base',['../classProxyBase.html#a597c0e1dff33350cfff9b02a61ee9b63',1,'ProxyBase']]],
   ['base_5f_19',['base_',['../classProxyBase.html#a24fd6fa6bad5b7ea47fd041927e6a9a8',1,'ProxyBase']]],
   ['base_5frecovery_5ftimes_5fper_5fweapon_5ftype_20',['base_recovery_times_per_weapon_type',['../mm7__data_8h.html#a486cbdbf871d6996a54b2a0472bd6779',1,'base_recovery_times_per_weapon_type():&#160;mm7_data.cpp'],['../mm7__data_8cpp.html#a486cbdbf871d6996a54b2a0472bd6779',1,'base_recovery_times_per_weapon_type():&#160;mm7_data.cpp']]],
-  ['base_5ftype_21',['base_type',['../classIndexedArray.html#a63ee9c4a641e976c11754e3a8b44cd8e',1,'IndexedArray']]],
+  ['base_5ftype_21',['base_type',['../classIndexedArray.html#ab01ebf0cf0199075545beebfeb14e79e',1,'IndexedArray']]],
   ['basedamage_22',['baseDamage',['../classSpellData.html#a904cc9f132b6786270f1a4e68f59e91b',1,'SpellData']]],
   ['baseitembuyingprice_23',['baseItemBuyingPrice',['../classPriceCalculator.html#a7ffa98a80bd3cc9a90b6af5c25bf5e09',1,'PriceCalculator']]],
   ['baseitemidentifyprice_24',['baseItemIdentifyPrice',['../classPriceCalculator.html#a6f6c77b10de0ae3ad8db801bf669116a',1,'PriceCalculator']]],

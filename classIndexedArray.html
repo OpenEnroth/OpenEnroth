@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.9.5"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>OpenEnroth: IndexedArray&lt; T, SizeOrFirstIndex, LastIndex, IsZeroBased, Size &gt; Class Template Reference</title>
+<title>OpenEnroth: IndexedArray&lt; T, FirstIndex, LastIndex, Size &gt; Class Template Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;ff2f04b</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;989a4bd</span>
    </div>
   </td>
  </tr>
@@ -75,15 +75,14 @@ $(function() {
 <a href="#pub-static-attribs">Static Public Attributes</a> &#124;
 <a href="#pri-types">Private Types</a> &#124;
 <a href="#pri-static-methods">Static Private Member Functions</a> &#124;
-<a href="#pri-static-attribs">Static Private Attributes</a> &#124;
 <a href="classIndexedArray-members.html">List of all members</a>  </div>
-  <div class="headertitle"><div class="title">IndexedArray&lt; T, SizeOrFirstIndex, LastIndex, IsZeroBased, Size &gt; Class Template Reference</div></div>
+  <div class="headertitle"><div class="title">IndexedArray&lt; T, FirstIndex, LastIndex, Size &gt; Class Template Reference</div></div>
 </div><!--header-->
 <div class="contents">
 
 <p><code>#include &lt;IndexedArray.h&gt;</code></p>
 <div class="dynheader">
-Inheritance diagram for IndexedArray&lt; T, SizeOrFirstIndex, LastIndex, IsZeroBased, Size &gt;:</div>
+Inheritance diagram for IndexedArray&lt; T, FirstIndex, LastIndex, Size &gt;:</div>
 <div class="dyncontent">
  <div class="center">
   <img src="classIndexedArray.png" alt=""/>
@@ -91,61 +90,52 @@ Inheritance diagram for IndexedArray&lt; T, SizeOrFirstIndex, LastIndex, IsZeroB
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-types" name="pub-types"></a>
 Public Types</h2></td></tr>
-<tr class="memitem:af5c5b34472590d5a46b82139f41857e1"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classIndexedArray.html#af5c5b34472590d5a46b82139f41857e1">key_type</a> = <a class="el" href="classIndexedArray.html#a43b19570c7cc05e0cffd8d34bf725cdc">index_type</a></td></tr>
-<tr class="separator:af5c5b34472590d5a46b82139f41857e1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8a6b0ed51017870cb505641ddf1b1cf7"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classIndexedArray.html#a8a6b0ed51017870cb505641ddf1b1cf7">key_type</a> = <a class="el" href="classIndexedArray.html#a38f2e79ce47a34b0ab0ac9b5341638dc">index_type</a></td></tr>
+<tr class="separator:a8a6b0ed51017870cb505641ddf1b1cf7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a526f72f9208d80e349ad2563c0b39a7b"><td class="memItemLeft" align="right" valign="top">constexpr&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classIndexedArray.html#a526f72f9208d80e349ad2563c0b39a7b">IndexedArray</a> ()</td></tr>
-<tr class="separator:a526f72f9208d80e349ad2563c0b39a7b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:adfd586182289b06806f5b15a23d86e64"><td class="memItemLeft" align="right" valign="top">constexpr&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classIndexedArray.html#adfd586182289b06806f5b15a23d86e64">IndexedArray</a> (std::initializer_list&lt; std::pair&lt; <a class="el" href="classIndexedArray.html#af5c5b34472590d5a46b82139f41857e1">key_type</a>, value_type &gt; &gt; init)</td></tr>
-<tr class="separator:adfd586182289b06806f5b15a23d86e64"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a297952753885a02c895ab6154dbbe8f8"><td class="memItemLeft" align="right" valign="top">constexpr <a class="el" href="classSegment.html">Segment</a>&lt; <a class="el" href="classIndexedArray.html#af5c5b34472590d5a46b82139f41857e1">key_type</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classIndexedArray.html#a297952753885a02c895ab6154dbbe8f8">indices</a> () const</td></tr>
-<tr class="separator:a297952753885a02c895ab6154dbbe8f8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5ecc1b27321416943cb56add73ddf300"><td class="memItemLeft" align="right" valign="top">constexpr reference&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classIndexedArray.html#a5ecc1b27321416943cb56add73ddf300">at</a> (<a class="el" href="classIndexedArray.html#af5c5b34472590d5a46b82139f41857e1">key_type</a> n)</td></tr>
-<tr class="separator:a5ecc1b27321416943cb56add73ddf300"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afef3fecd0fe041f7c62407f804585dbc"><td class="memItemLeft" align="right" valign="top">constexpr const_reference&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classIndexedArray.html#afef3fecd0fe041f7c62407f804585dbc">at</a> (<a class="el" href="classIndexedArray.html#af5c5b34472590d5a46b82139f41857e1">key_type</a> n) const</td></tr>
-<tr class="separator:afef3fecd0fe041f7c62407f804585dbc"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afceab05ddc1942c69e9663a6a1dcdad5"><td class="memItemLeft" align="right" valign="top">constexpr reference&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classIndexedArray.html#afceab05ddc1942c69e9663a6a1dcdad5">operator[]</a> (<a class="el" href="classIndexedArray.html#af5c5b34472590d5a46b82139f41857e1">key_type</a> n) noexcept</td></tr>
-<tr class="separator:afceab05ddc1942c69e9663a6a1dcdad5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a11b0069eebb4a5b762b640674c8ae6ad"><td class="memItemLeft" align="right" valign="top">constexpr const_reference&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classIndexedArray.html#a11b0069eebb4a5b762b640674c8ae6ad">operator[]</a> (<a class="el" href="classIndexedArray.html#af5c5b34472590d5a46b82139f41857e1">key_type</a> n) const noexcept</td></tr>
-<tr class="separator:a11b0069eebb4a5b762b640674c8ae6ad"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a46e8689392578b852911f556a9e7d2b3"><td class="memItemLeft" align="right" valign="top">constexpr&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classIndexedArray.html#a46e8689392578b852911f556a9e7d2b3">IndexedArray</a> ()</td></tr>
+<tr class="separator:a46e8689392578b852911f556a9e7d2b3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae05f74589b8562b698accc0017b0f243"><td class="memItemLeft" align="right" valign="top">constexpr&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classIndexedArray.html#ae05f74589b8562b698accc0017b0f243">IndexedArray</a> (std::initializer_list&lt; std::pair&lt; <a class="el" href="classIndexedArray.html#a8a6b0ed51017870cb505641ddf1b1cf7">key_type</a>, value_type &gt; &gt; init)</td></tr>
+<tr class="separator:ae05f74589b8562b698accc0017b0f243"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a081e95921b8dcd1035cd14b7261a367a"><td class="memItemLeft" align="right" valign="top">constexpr <a class="el" href="classSegment.html">Segment</a>&lt; <a class="el" href="classIndexedArray.html#a8a6b0ed51017870cb505641ddf1b1cf7">key_type</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classIndexedArray.html#a081e95921b8dcd1035cd14b7261a367a">indices</a> () const</td></tr>
+<tr class="separator:a081e95921b8dcd1035cd14b7261a367a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aebbfb18e0020892aa92e6e55f7ccfee6"><td class="memItemLeft" align="right" valign="top">constexpr reference&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classIndexedArray.html#aebbfb18e0020892aa92e6e55f7ccfee6">at</a> (<a class="el" href="classIndexedArray.html#a8a6b0ed51017870cb505641ddf1b1cf7">key_type</a> n)</td></tr>
+<tr class="separator:aebbfb18e0020892aa92e6e55f7ccfee6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a43ddffcebde37f2f753c4de2fa409830"><td class="memItemLeft" align="right" valign="top">constexpr const_reference&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classIndexedArray.html#a43ddffcebde37f2f753c4de2fa409830">at</a> (<a class="el" href="classIndexedArray.html#a8a6b0ed51017870cb505641ddf1b1cf7">key_type</a> n) const</td></tr>
+<tr class="separator:a43ddffcebde37f2f753c4de2fa409830"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa7e1ef39711cb7f5e2f1fa51c1220803"><td class="memItemLeft" align="right" valign="top">constexpr reference&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classIndexedArray.html#aa7e1ef39711cb7f5e2f1fa51c1220803">operator[]</a> (<a class="el" href="classIndexedArray.html#a8a6b0ed51017870cb505641ddf1b1cf7">key_type</a> n) noexcept</td></tr>
+<tr class="separator:aa7e1ef39711cb7f5e2f1fa51c1220803"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a70dbb0f4aa396c50b1a022be2e5fd372"><td class="memItemLeft" align="right" valign="top">constexpr const_reference&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classIndexedArray.html#a70dbb0f4aa396c50b1a022be2e5fd372">operator[]</a> (<a class="el" href="classIndexedArray.html#a8a6b0ed51017870cb505641ddf1b1cf7">key_type</a> n) const noexcept</td></tr>
+<tr class="separator:a70dbb0f4aa396c50b1a022be2e5fd372"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-static-attribs" name="pub-static-attribs"></a>
 Static Public Attributes</h2></td></tr>
-<tr class="memitem:a72100de0e8cc043770f6ef7ffd6e83e8"><td class="memItemLeft" align="right" valign="top">static constexpr size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classIndexedArray.html#a72100de0e8cc043770f6ef7ffd6e83e8">SIZE</a> = <a class="el" href="structSize.html">Size</a></td></tr>
-<tr class="separator:a72100de0e8cc043770f6ef7ffd6e83e8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af33ce0cadb7e8f3f5a229d9e83929074"><td class="memItemLeft" align="right" valign="top">static constexpr size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classIndexedArray.html#af33ce0cadb7e8f3f5a229d9e83929074">SIZE</a> = <a class="el" href="structSize.html">Size</a></td></tr>
+<tr class="separator:af33ce0cadb7e8f3f5a229d9e83929074"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pri-types" name="pri-types"></a>
 Private Types</h2></td></tr>
-<tr class="memitem:a63ee9c4a641e976c11754e3a8b44cd8e"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classIndexedArray.html#a63ee9c4a641e976c11754e3a8b44cd8e">base_type</a> = std::array&lt; T, <a class="el" href="structSize.html">Size</a> &gt;</td></tr>
-<tr class="separator:a63ee9c4a641e976c11754e3a8b44cd8e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a43b19570c7cc05e0cffd8d34bf725cdc"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classIndexedArray.html#a43b19570c7cc05e0cffd8d34bf725cdc">index_type</a> = decltype(SizeOrFirstIndex)</td></tr>
-<tr class="separator:a43b19570c7cc05e0cffd8d34bf725cdc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab01ebf0cf0199075545beebfeb14e79e"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classIndexedArray.html#ab01ebf0cf0199075545beebfeb14e79e">base_type</a> = std::array&lt; T, <a class="el" href="structSize.html">Size</a> &gt;</td></tr>
+<tr class="separator:ab01ebf0cf0199075545beebfeb14e79e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a38f2e79ce47a34b0ab0ac9b5341638dc"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classIndexedArray.html#a38f2e79ce47a34b0ab0ac9b5341638dc">index_type</a> = decltype(FirstIndex)</td></tr>
+<tr class="separator:a38f2e79ce47a34b0ab0ac9b5341638dc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pri-static-methods" name="pri-static-methods"></a>
 Static Private Member Functions</h2></td></tr>
-<tr class="memitem:a2b8da5e6cbea3b4cdcc864a59dce4ac3"><td class="memItemLeft" align="right" valign="top">static constexpr bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classIndexedArray.html#a2b8da5e6cbea3b4cdcc864a59dce4ac3">is_unique</a> (std::initializer_list&lt; std::pair&lt; <a class="el" href="classIndexedArray.html#af5c5b34472590d5a46b82139f41857e1">key_type</a>, value_type &gt; &gt; init)</td></tr>
-<tr class="separator:a2b8da5e6cbea3b4cdcc864a59dce4ac3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pri-static-attribs" name="pri-static-attribs"></a>
-Static Private Attributes</h2></td></tr>
-<tr class="memitem:ad483d4958eb140b4b3ecb5b15301b83d"><td class="memItemLeft" align="right" valign="top">static constexpr auto&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classIndexedArray.html#ad483d4958eb140b4b3ecb5b15301b83d">ActualFirstIndex</a></td></tr>
-<tr class="separator:ad483d4958eb140b4b3ecb5b15301b83d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa030946750e8681c365d3eaf0d311791"><td class="memItemLeft" align="right" valign="top">static constexpr auto&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classIndexedArray.html#aa030946750e8681c365d3eaf0d311791">ActualLastIndex</a></td></tr>
-<tr class="separator:aa030946750e8681c365d3eaf0d311791"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a532d671febdbb2fd866117bfc69d1565"><td class="memItemLeft" align="right" valign="top">static constexpr bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classIndexedArray.html#a532d671febdbb2fd866117bfc69d1565">is_unique</a> (std::initializer_list&lt; std::pair&lt; <a class="el" href="classIndexedArray.html#a8a6b0ed51017870cb505641ddf1b1cf7">key_type</a>, value_type &gt; &gt; init)</td></tr>
+<tr class="separator:a532d671febdbb2fd866117bfc69d1565"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><div class="compoundTemplParams">template&lt;class T, auto SizeOrFirstIndex, auto LastIndex = detail::INVALID_LAST_INDEX, bool IsZeroBased = std::is_same_v&lt;decltype(LastIndex), detail::LastIndex&gt;, ptrdiff_t Size = IsZeroBased ? static_cast&lt;ptrdiff_t&gt;(SizeOrFirstIndex) : static_cast&lt;ptrdiff_t&gt;(LastIndex) - static_cast&lt;ptrdiff_t&gt;(SizeOrFirstIndex) + 1&gt;<br />
-class IndexedArray&lt; T, SizeOrFirstIndex, LastIndex, IsZeroBased, Size &gt;</div><p >An <code>std::array</code>-like class that supports some additional features:</p><ul>
-<li>Can be indexed with an enum (type is inferred from the <code><a class="el" href="structSize.html">Size</a></code> parameter).</li>
+<div class="textblock"><div class="compoundTemplParams">template&lt;class T, auto FirstIndex, auto LastIndex, ptrdiff_t Size = static_cast&lt;ptrdiff_t&gt;(LastIndex) - static_cast&lt;ptrdiff_t&gt;(FirstIndex) + 1&gt;<br />
+class IndexedArray&lt; T, FirstIndex, LastIndex, Size &gt;</div><p >An <code>std::array</code>-like class that supports some additional features:</p><ul>
+<li>Can be indexed with an enum (type is inferred from the <code>FirstIndex</code> parameter).</li>
 <li>Supports an <code>std::map</code>-like initialization, so that the user doesn't have to manually double check that the order of the values in the initializer matches the order of the values of the enum that's used for indexing.</li>
 <li>Supports non-zero-based indexing (e.g. can be used to construct a Pascal-like array).</li>
 </ul>
-<p >The template itself is overloaded and can be used in several different ways:</p><ul>
-<li><code><a class="el" href="classIndexedArray.html">IndexedArray</a>&lt;int, 10&gt;</code> works the same as <code>std::array&lt;int, 10&gt;</code>.</li>
+<p >The template itself can be used in several different ways:</p><ul>
 <li><code><a class="el" href="classIndexedArray.html">IndexedArray</a>&lt;int, 1, 10&gt;</code> creates a Pascal-like array with a first index of 1, and last index of 10 (so the size is still 10 as in the previous example).</li>
-<li><code><a class="el" href="classIndexedArray.html">IndexedArray</a>&lt;int, SomeEnum_Count&gt;</code> creates an indexed array that's indexed with an enum. The main use case for this is using an <code>enum class</code> for indexing to make it fully type-safe.</li>
 <li><code><a class="el" href="classIndexedArray.html">IndexedArray</a>&lt;int, FirstWeaponItem, LastWeaponItem&gt;</code> creates a non-zero-based enum-indexed array.</li>
 </ul>
 <p >Some code examples: </p><div class="fragment"><div class="line"><span class="keyword">enum class</span> TriBool {</div>
@@ -175,33 +165,33 @@ class IndexedArray&lt; T, SizeOrFirstIndex, LastIndex, IsZeroBased, Size &gt;</d
 <div class="line">    value.clear();</div>
 <div class="line"> </div>
 <div class="line"><span class="comment">// ...or get a view of its indices and use it as you would use a traditional array.</span></div>
-<div class="line"><span class="keywordflow">for</span> (TriBool <a class="code hl_variable" href="Json__ut_8cpp.html#a7e98b8a17c0aad30ba64d47b74e2a6c1">i</a> : defaultMessageMap.<a class="code hl_function" href="classIndexedArray.html#a297952753885a02c895ab6154dbbe8f8">indices</a>())</div>
+<div class="line"><span class="keywordflow">for</span> (TriBool <a class="code hl_variable" href="Json__ut_8cpp.html#a7e98b8a17c0aad30ba64d47b74e2a6c1">i</a> : defaultMessageMap.<a class="code hl_function" href="classIndexedArray.html#a081e95921b8dcd1035cd14b7261a367a">indices</a>())</div>
 <div class="line">    userMessageMap[<a class="code hl_variable" href="Json__ut_8cpp.html#a7e98b8a17c0aad30ba64d47b74e2a6c1">i</a>] = defaultMessageMap[<a class="code hl_variable" href="Json__ut_8cpp.html#a7e98b8a17c0aad30ba64d47b74e2a6c1">i</a>];</div>
 <div class="ttc" id="aJson__ut_8cpp_html_a7e98b8a17c0aad30ba64d47b74e2a6c1"><div class="ttname"><a href="Json__ut_8cpp.html#a7e98b8a17c0aad30ba64d47b74e2a6c1">i</a></div><div class="ttdeci">i</div><div class="ttdef"><b>Definition:</b> Json_ut.cpp:79</div></div>
-<div class="ttc" id="aclassIndexedArray_html"><div class="ttname"><a href="classIndexedArray.html">IndexedArray</a></div><div class="ttdef"><b>Definition:</b> IndexedArray.h:84</div></div>
-<div class="ttc" id="aclassIndexedArray_html_a297952753885a02c895ab6154dbbe8f8"><div class="ttname"><a href="classIndexedArray.html#a297952753885a02c895ab6154dbbe8f8">IndexedArray::indices</a></div><div class="ttdeci">constexpr Segment&lt; key_type &gt; indices() const</div><div class="ttdef"><b>Definition:</b> IndexedArray.h:168</div></div>
+<div class="ttc" id="aclassIndexedArray_html"><div class="ttname"><a href="classIndexedArray.html">IndexedArray</a></div><div class="ttdef"><b>Definition:</b> IndexedArray.h:66</div></div>
+<div class="ttc" id="aclassIndexedArray_html_a081e95921b8dcd1035cd14b7261a367a"><div class="ttname"><a href="classIndexedArray.html#a081e95921b8dcd1035cd14b7261a367a">IndexedArray::indices</a></div><div class="ttdeci">constexpr Segment&lt; key_type &gt; indices() const</div><div class="ttdef"><b>Definition:</b> IndexedArray.h:145</div></div>
 </div><!-- fragment --><dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
     <tr><td class="paramname">T</td><td>Array element type. </td></tr>
-    <tr><td class="paramname">SizeOrFirstIndex</td><td>Either array size or index of the 1st element. Value must be of enum or integral type. </td></tr>
-    <tr><td class="paramname">LastIndex</td><td>Index of the last element. If this parameter is provided, then the size of the indexed array is <code>LastIndex - SizeOrFirstIndex + 1</code>. </td></tr>
+    <tr><td class="paramname">FirstIndex</td><td>Index of the first element. Value must be of enum or integral type. </td></tr>
+    <tr><td class="paramname">LastIndex</td><td>Index of the last element. The size of the indexed array is <code>LastIndex - FirstIndex + 1</code>. </td></tr>
   </table>
   </dd>
 </dl>
 </div><h2 class="groupheader">Member Typedef Documentation</h2>
-<a id="a63ee9c4a641e976c11754e3a8b44cd8e" name="a63ee9c4a641e976c11754e3a8b44cd8e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a63ee9c4a641e976c11754e3a8b44cd8e">&#9670;&#160;</a></span>base_type</h2>
+<a id="ab01ebf0cf0199075545beebfeb14e79e" name="ab01ebf0cf0199075545beebfeb14e79e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab01ebf0cf0199075545beebfeb14e79e">&#9670;&#160;</a></span>base_type</h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;class T , auto SizeOrFirstIndex, auto LastIndex = detail::INVALID_LAST_INDEX, bool IsZeroBased = std::is_same_v&lt;decltype(LastIndex), detail::LastIndex&gt;, ptrdiff_t Size = IsZeroBased ? static_cast&lt;ptrdiff_t&gt;(SizeOrFirstIndex) : static_cast&lt;ptrdiff_t&gt;(LastIndex) - static_cast&lt;ptrdiff_t&gt;(SizeOrFirstIndex) + 1&gt; </div>
+template&lt;class T , auto FirstIndex, auto LastIndex, ptrdiff_t Size = static_cast&lt;ptrdiff_t&gt;(LastIndex) - static_cast&lt;ptrdiff_t&gt;(FirstIndex) + 1&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">using <a class="el" href="classIndexedArray.html">IndexedArray</a>&lt; T, SizeOrFirstIndex, LastIndex, IsZeroBased, <a class="el" href="structSize.html">Size</a> &gt;::base_type =  std::array&lt;T, <a class="el" href="structSize.html">Size</a>&gt;</td>
+          <td class="memname">using <a class="el" href="classIndexedArray.html">IndexedArray</a>&lt; T, FirstIndex, LastIndex, <a class="el" href="structSize.html">Size</a> &gt;::base_type =  std::array&lt;T, <a class="el" href="structSize.html">Size</a>&gt;</td>
         </tr>
       </table>
   </td>
@@ -213,19 +203,19 @@ template&lt;class T , auto SizeOrFirstIndex, auto LastIndex = detail::INVALID_LA
 
 </div>
 </div>
-<a id="a43b19570c7cc05e0cffd8d34bf725cdc" name="a43b19570c7cc05e0cffd8d34bf725cdc"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a43b19570c7cc05e0cffd8d34bf725cdc">&#9670;&#160;</a></span>index_type</h2>
+<a id="a38f2e79ce47a34b0ab0ac9b5341638dc" name="a38f2e79ce47a34b0ab0ac9b5341638dc"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a38f2e79ce47a34b0ab0ac9b5341638dc">&#9670;&#160;</a></span>index_type</h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;class T , auto SizeOrFirstIndex, auto LastIndex = detail::INVALID_LAST_INDEX, bool IsZeroBased = std::is_same_v&lt;decltype(LastIndex), detail::LastIndex&gt;, ptrdiff_t Size = IsZeroBased ? static_cast&lt;ptrdiff_t&gt;(SizeOrFirstIndex) : static_cast&lt;ptrdiff_t&gt;(LastIndex) - static_cast&lt;ptrdiff_t&gt;(SizeOrFirstIndex) + 1&gt; </div>
+template&lt;class T , auto FirstIndex, auto LastIndex, ptrdiff_t Size = static_cast&lt;ptrdiff_t&gt;(LastIndex) - static_cast&lt;ptrdiff_t&gt;(FirstIndex) + 1&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">using <a class="el" href="classIndexedArray.html">IndexedArray</a>&lt; T, SizeOrFirstIndex, LastIndex, IsZeroBased, <a class="el" href="structSize.html">Size</a> &gt;::index_type =  decltype(SizeOrFirstIndex)</td>
+          <td class="memname">using <a class="el" href="classIndexedArray.html">IndexedArray</a>&lt; T, FirstIndex, LastIndex, <a class="el" href="structSize.html">Size</a> &gt;::index_type =  decltype(FirstIndex)</td>
         </tr>
       </table>
   </td>
@@ -237,16 +227,16 @@ template&lt;class T , auto SizeOrFirstIndex, auto LastIndex = detail::INVALID_LA
 
 </div>
 </div>
-<a id="af5c5b34472590d5a46b82139f41857e1" name="af5c5b34472590d5a46b82139f41857e1"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#af5c5b34472590d5a46b82139f41857e1">&#9670;&#160;</a></span>key_type</h2>
+<a id="a8a6b0ed51017870cb505641ddf1b1cf7" name="a8a6b0ed51017870cb505641ddf1b1cf7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8a6b0ed51017870cb505641ddf1b1cf7">&#9670;&#160;</a></span>key_type</h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;class T , auto SizeOrFirstIndex, auto LastIndex = detail::INVALID_LAST_INDEX, bool IsZeroBased = std::is_same_v&lt;decltype(LastIndex), detail::LastIndex&gt;, ptrdiff_t Size = IsZeroBased ? static_cast&lt;ptrdiff_t&gt;(SizeOrFirstIndex) : static_cast&lt;ptrdiff_t&gt;(LastIndex) - static_cast&lt;ptrdiff_t&gt;(SizeOrFirstIndex) + 1&gt; </div>
+template&lt;class T , auto FirstIndex, auto LastIndex, ptrdiff_t Size = static_cast&lt;ptrdiff_t&gt;(LastIndex) - static_cast&lt;ptrdiff_t&gt;(FirstIndex) + 1&gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname">using <a class="el" href="classIndexedArray.html">IndexedArray</a>&lt; T, SizeOrFirstIndex, LastIndex, IsZeroBased, <a class="el" href="structSize.html">Size</a> &gt;::key_type =  <a class="el" href="classIndexedArray.html#a43b19570c7cc05e0cffd8d34bf725cdc">index_type</a></td>
+          <td class="memname">using <a class="el" href="classIndexedArray.html">IndexedArray</a>&lt; T, FirstIndex, LastIndex, <a class="el" href="structSize.html">Size</a> &gt;::key_type =  <a class="el" href="classIndexedArray.html#a38f2e79ce47a34b0ab0ac9b5341638dc">index_type</a></td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -254,19 +244,19 @@ template&lt;class T , auto SizeOrFirstIndex, auto LastIndex = detail::INVALID_LA
 </div>
 </div>
 <h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a id="a526f72f9208d80e349ad2563c0b39a7b" name="a526f72f9208d80e349ad2563c0b39a7b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a526f72f9208d80e349ad2563c0b39a7b">&#9670;&#160;</a></span>IndexedArray() <span class="overload">[1/2]</span></h2>
+<a id="a46e8689392578b852911f556a9e7d2b3" name="a46e8689392578b852911f556a9e7d2b3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a46e8689392578b852911f556a9e7d2b3">&#9670;&#160;</a></span>IndexedArray() <span class="overload">[1/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;class T , auto SizeOrFirstIndex, auto LastIndex = detail::INVALID_LAST_INDEX, bool IsZeroBased = std::is_same_v&lt;decltype(LastIndex), detail::LastIndex&gt;, ptrdiff_t Size = IsZeroBased ? static_cast&lt;ptrdiff_t&gt;(SizeOrFirstIndex) : static_cast&lt;ptrdiff_t&gt;(LastIndex) - static_cast&lt;ptrdiff_t&gt;(SizeOrFirstIndex) + 1&gt; </div>
+template&lt;class T , auto FirstIndex, auto LastIndex, ptrdiff_t Size = static_cast&lt;ptrdiff_t&gt;(LastIndex) - static_cast&lt;ptrdiff_t&gt;(FirstIndex) + 1&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">constexpr <a class="el" href="classIndexedArray.html">IndexedArray</a>&lt; T, SizeOrFirstIndex, LastIndex, IsZeroBased, <a class="el" href="structSize.html">Size</a> &gt;<a class="el" href="classIndexedArray.html">::IndexedArray</a> </td>
+          <td class="memname">constexpr <a class="el" href="classIndexedArray.html">IndexedArray</a>&lt; T, FirstIndex, LastIndex, <a class="el" href="structSize.html">Size</a> &gt;<a class="el" href="classIndexedArray.html">::IndexedArray</a> </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
@@ -284,21 +274,21 @@ template&lt;class T , auto SizeOrFirstIndex, auto LastIndex = detail::INVALID_LA
 
 </div>
 </div>
-<a id="adfd586182289b06806f5b15a23d86e64" name="adfd586182289b06806f5b15a23d86e64"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#adfd586182289b06806f5b15a23d86e64">&#9670;&#160;</a></span>IndexedArray() <span class="overload">[2/2]</span></h2>
+<a id="ae05f74589b8562b698accc0017b0f243" name="ae05f74589b8562b698accc0017b0f243"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae05f74589b8562b698accc0017b0f243">&#9670;&#160;</a></span>IndexedArray() <span class="overload">[2/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;class T , auto SizeOrFirstIndex, auto LastIndex = detail::INVALID_LAST_INDEX, bool IsZeroBased = std::is_same_v&lt;decltype(LastIndex), detail::LastIndex&gt;, ptrdiff_t Size = IsZeroBased ? static_cast&lt;ptrdiff_t&gt;(SizeOrFirstIndex) : static_cast&lt;ptrdiff_t&gt;(LastIndex) - static_cast&lt;ptrdiff_t&gt;(SizeOrFirstIndex) + 1&gt; </div>
+template&lt;class T , auto FirstIndex, auto LastIndex, ptrdiff_t Size = static_cast&lt;ptrdiff_t&gt;(LastIndex) - static_cast&lt;ptrdiff_t&gt;(FirstIndex) + 1&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">constexpr <a class="el" href="classIndexedArray.html">IndexedArray</a>&lt; T, SizeOrFirstIndex, LastIndex, IsZeroBased, <a class="el" href="structSize.html">Size</a> &gt;<a class="el" href="classIndexedArray.html">::IndexedArray</a> </td>
+          <td class="memname">constexpr <a class="el" href="classIndexedArray.html">IndexedArray</a>&lt; T, FirstIndex, LastIndex, <a class="el" href="structSize.html">Size</a> &gt;<a class="el" href="classIndexedArray.html">::IndexedArray</a> </td>
           <td>(</td>
-          <td class="paramtype">std::initializer_list&lt; std::pair&lt; <a class="el" href="classIndexedArray.html#af5c5b34472590d5a46b82139f41857e1">key_type</a>, value_type &gt; &gt;&#160;</td>
+          <td class="paramtype">std::initializer_list&lt; std::pair&lt; <a class="el" href="classIndexedArray.html#a8a6b0ed51017870cb505641ddf1b1cf7">key_type</a>, value_type &gt; &gt;&#160;</td>
           <td class="paramname"><em>init</em></td><td>)</td>
           <td></td>
         </tr>
@@ -333,21 +323,21 @@ template&lt;class T , auto SizeOrFirstIndex, auto LastIndex = detail::INVALID_LA
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a id="a5ecc1b27321416943cb56add73ddf300" name="a5ecc1b27321416943cb56add73ddf300"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a5ecc1b27321416943cb56add73ddf300">&#9670;&#160;</a></span>at() <span class="overload">[1/2]</span></h2>
+<a id="aebbfb18e0020892aa92e6e55f7ccfee6" name="aebbfb18e0020892aa92e6e55f7ccfee6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aebbfb18e0020892aa92e6e55f7ccfee6">&#9670;&#160;</a></span>at() <span class="overload">[1/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;class T , auto SizeOrFirstIndex, auto LastIndex = detail::INVALID_LAST_INDEX, bool IsZeroBased = std::is_same_v&lt;decltype(LastIndex), detail::LastIndex&gt;, ptrdiff_t Size = IsZeroBased ? static_cast&lt;ptrdiff_t&gt;(SizeOrFirstIndex) : static_cast&lt;ptrdiff_t&gt;(LastIndex) - static_cast&lt;ptrdiff_t&gt;(SizeOrFirstIndex) + 1&gt; </div>
+template&lt;class T , auto FirstIndex, auto LastIndex, ptrdiff_t Size = static_cast&lt;ptrdiff_t&gt;(LastIndex) - static_cast&lt;ptrdiff_t&gt;(FirstIndex) + 1&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">constexpr reference <a class="el" href="classIndexedArray.html">IndexedArray</a>&lt; T, SizeOrFirstIndex, LastIndex, IsZeroBased, <a class="el" href="structSize.html">Size</a> &gt;::at </td>
+          <td class="memname">constexpr reference <a class="el" href="classIndexedArray.html">IndexedArray</a>&lt; T, FirstIndex, LastIndex, <a class="el" href="structSize.html">Size</a> &gt;::at </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="classIndexedArray.html#af5c5b34472590d5a46b82139f41857e1">key_type</a>&#160;</td>
+          <td class="paramtype"><a class="el" href="classIndexedArray.html#a8a6b0ed51017870cb505641ddf1b1cf7">key_type</a>&#160;</td>
           <td class="paramname"><em>n</em></td><td>)</td>
           <td></td>
         </tr>
@@ -361,21 +351,21 @@ template&lt;class T , auto SizeOrFirstIndex, auto LastIndex = detail::INVALID_LA
 
 </div>
 </div>
-<a id="afef3fecd0fe041f7c62407f804585dbc" name="afef3fecd0fe041f7c62407f804585dbc"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#afef3fecd0fe041f7c62407f804585dbc">&#9670;&#160;</a></span>at() <span class="overload">[2/2]</span></h2>
+<a id="a43ddffcebde37f2f753c4de2fa409830" name="a43ddffcebde37f2f753c4de2fa409830"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a43ddffcebde37f2f753c4de2fa409830">&#9670;&#160;</a></span>at() <span class="overload">[2/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;class T , auto SizeOrFirstIndex, auto LastIndex = detail::INVALID_LAST_INDEX, bool IsZeroBased = std::is_same_v&lt;decltype(LastIndex), detail::LastIndex&gt;, ptrdiff_t Size = IsZeroBased ? static_cast&lt;ptrdiff_t&gt;(SizeOrFirstIndex) : static_cast&lt;ptrdiff_t&gt;(LastIndex) - static_cast&lt;ptrdiff_t&gt;(SizeOrFirstIndex) + 1&gt; </div>
+template&lt;class T , auto FirstIndex, auto LastIndex, ptrdiff_t Size = static_cast&lt;ptrdiff_t&gt;(LastIndex) - static_cast&lt;ptrdiff_t&gt;(FirstIndex) + 1&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">constexpr const_reference <a class="el" href="classIndexedArray.html">IndexedArray</a>&lt; T, SizeOrFirstIndex, LastIndex, IsZeroBased, <a class="el" href="structSize.html">Size</a> &gt;::at </td>
+          <td class="memname">constexpr const_reference <a class="el" href="classIndexedArray.html">IndexedArray</a>&lt; T, FirstIndex, LastIndex, <a class="el" href="structSize.html">Size</a> &gt;::at </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="classIndexedArray.html#af5c5b34472590d5a46b82139f41857e1">key_type</a>&#160;</td>
+          <td class="paramtype"><a class="el" href="classIndexedArray.html#a8a6b0ed51017870cb505641ddf1b1cf7">key_type</a>&#160;</td>
           <td class="paramname"><em>n</em></td><td>)</td>
           <td> const</td>
         </tr>
@@ -389,19 +379,19 @@ template&lt;class T , auto SizeOrFirstIndex, auto LastIndex = detail::INVALID_LA
 
 </div>
 </div>
-<a id="a297952753885a02c895ab6154dbbe8f8" name="a297952753885a02c895ab6154dbbe8f8"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a297952753885a02c895ab6154dbbe8f8">&#9670;&#160;</a></span>indices()</h2>
+<a id="a081e95921b8dcd1035cd14b7261a367a" name="a081e95921b8dcd1035cd14b7261a367a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a081e95921b8dcd1035cd14b7261a367a">&#9670;&#160;</a></span>indices()</h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;class T , auto SizeOrFirstIndex, auto LastIndex = detail::INVALID_LAST_INDEX, bool IsZeroBased = std::is_same_v&lt;decltype(LastIndex), detail::LastIndex&gt;, ptrdiff_t Size = IsZeroBased ? static_cast&lt;ptrdiff_t&gt;(SizeOrFirstIndex) : static_cast&lt;ptrdiff_t&gt;(LastIndex) - static_cast&lt;ptrdiff_t&gt;(SizeOrFirstIndex) + 1&gt; </div>
+template&lt;class T , auto FirstIndex, auto LastIndex, ptrdiff_t Size = static_cast&lt;ptrdiff_t&gt;(LastIndex) - static_cast&lt;ptrdiff_t&gt;(FirstIndex) + 1&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">constexpr <a class="el" href="classSegment.html">Segment</a>&lt; <a class="el" href="classIndexedArray.html#af5c5b34472590d5a46b82139f41857e1">key_type</a> &gt; <a class="el" href="classIndexedArray.html">IndexedArray</a>&lt; T, SizeOrFirstIndex, LastIndex, IsZeroBased, <a class="el" href="structSize.html">Size</a> &gt;::indices </td>
+          <td class="memname">constexpr <a class="el" href="classSegment.html">Segment</a>&lt; <a class="el" href="classIndexedArray.html#a8a6b0ed51017870cb505641ddf1b1cf7">key_type</a> &gt; <a class="el" href="classIndexedArray.html">IndexedArray</a>&lt; T, FirstIndex, LastIndex, <a class="el" href="structSize.html">Size</a> &gt;::indices </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td> const</td>
@@ -420,21 +410,21 @@ template&lt;class T , auto SizeOrFirstIndex, auto LastIndex = detail::INVALID_LA
 
 </div>
 </div>
-<a id="a2b8da5e6cbea3b4cdcc864a59dce4ac3" name="a2b8da5e6cbea3b4cdcc864a59dce4ac3"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a2b8da5e6cbea3b4cdcc864a59dce4ac3">&#9670;&#160;</a></span>is_unique()</h2>
+<a id="a532d671febdbb2fd866117bfc69d1565" name="a532d671febdbb2fd866117bfc69d1565"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a532d671febdbb2fd866117bfc69d1565">&#9670;&#160;</a></span>is_unique()</h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;class T , auto SizeOrFirstIndex, auto LastIndex = detail::INVALID_LAST_INDEX, bool IsZeroBased = std::is_same_v&lt;decltype(LastIndex), detail::LastIndex&gt;, ptrdiff_t Size = IsZeroBased ? static_cast&lt;ptrdiff_t&gt;(SizeOrFirstIndex) : static_cast&lt;ptrdiff_t&gt;(LastIndex) - static_cast&lt;ptrdiff_t&gt;(SizeOrFirstIndex) + 1&gt; </div>
+template&lt;class T , auto FirstIndex, auto LastIndex, ptrdiff_t Size = static_cast&lt;ptrdiff_t&gt;(LastIndex) - static_cast&lt;ptrdiff_t&gt;(FirstIndex) + 1&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">static constexpr bool <a class="el" href="classIndexedArray.html">IndexedArray</a>&lt; T, SizeOrFirstIndex, LastIndex, IsZeroBased, <a class="el" href="structSize.html">Size</a> &gt;::is_unique </td>
+          <td class="memname">static constexpr bool <a class="el" href="classIndexedArray.html">IndexedArray</a>&lt; T, FirstIndex, LastIndex, <a class="el" href="structSize.html">Size</a> &gt;::is_unique </td>
           <td>(</td>
-          <td class="paramtype">std::initializer_list&lt; std::pair&lt; <a class="el" href="classIndexedArray.html#af5c5b34472590d5a46b82139f41857e1">key_type</a>, value_type &gt; &gt;&#160;</td>
+          <td class="paramtype">std::initializer_list&lt; std::pair&lt; <a class="el" href="classIndexedArray.html#a8a6b0ed51017870cb505641ddf1b1cf7">key_type</a>, value_type &gt; &gt;&#160;</td>
           <td class="paramname"><em>init</em></td><td>)</td>
           <td></td>
         </tr>
@@ -448,21 +438,21 @@ template&lt;class T , auto SizeOrFirstIndex, auto LastIndex = detail::INVALID_LA
 
 </div>
 </div>
-<a id="a11b0069eebb4a5b762b640674c8ae6ad" name="a11b0069eebb4a5b762b640674c8ae6ad"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a11b0069eebb4a5b762b640674c8ae6ad">&#9670;&#160;</a></span>operator[]() <span class="overload">[1/2]</span></h2>
+<a id="a70dbb0f4aa396c50b1a022be2e5fd372" name="a70dbb0f4aa396c50b1a022be2e5fd372"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a70dbb0f4aa396c50b1a022be2e5fd372">&#9670;&#160;</a></span>operator[]() <span class="overload">[1/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;class T , auto SizeOrFirstIndex, auto LastIndex = detail::INVALID_LAST_INDEX, bool IsZeroBased = std::is_same_v&lt;decltype(LastIndex), detail::LastIndex&gt;, ptrdiff_t Size = IsZeroBased ? static_cast&lt;ptrdiff_t&gt;(SizeOrFirstIndex) : static_cast&lt;ptrdiff_t&gt;(LastIndex) - static_cast&lt;ptrdiff_t&gt;(SizeOrFirstIndex) + 1&gt; </div>
+template&lt;class T , auto FirstIndex, auto LastIndex, ptrdiff_t Size = static_cast&lt;ptrdiff_t&gt;(LastIndex) - static_cast&lt;ptrdiff_t&gt;(FirstIndex) + 1&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">constexpr const_reference <a class="el" href="classIndexedArray.html">IndexedArray</a>&lt; T, SizeOrFirstIndex, LastIndex, IsZeroBased, <a class="el" href="structSize.html">Size</a> &gt;::operator[] </td>
+          <td class="memname">constexpr const_reference <a class="el" href="classIndexedArray.html">IndexedArray</a>&lt; T, FirstIndex, LastIndex, <a class="el" href="structSize.html">Size</a> &gt;::operator[] </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="classIndexedArray.html#af5c5b34472590d5a46b82139f41857e1">key_type</a>&#160;</td>
+          <td class="paramtype"><a class="el" href="classIndexedArray.html#a8a6b0ed51017870cb505641ddf1b1cf7">key_type</a>&#160;</td>
           <td class="paramname"><em>n</em></td><td>)</td>
           <td> const</td>
         </tr>
@@ -476,21 +466,21 @@ template&lt;class T , auto SizeOrFirstIndex, auto LastIndex = detail::INVALID_LA
 
 </div>
 </div>
-<a id="afceab05ddc1942c69e9663a6a1dcdad5" name="afceab05ddc1942c69e9663a6a1dcdad5"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#afceab05ddc1942c69e9663a6a1dcdad5">&#9670;&#160;</a></span>operator[]() <span class="overload">[2/2]</span></h2>
+<a id="aa7e1ef39711cb7f5e2f1fa51c1220803" name="aa7e1ef39711cb7f5e2f1fa51c1220803"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa7e1ef39711cb7f5e2f1fa51c1220803">&#9670;&#160;</a></span>operator[]() <span class="overload">[2/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;class T , auto SizeOrFirstIndex, auto LastIndex = detail::INVALID_LAST_INDEX, bool IsZeroBased = std::is_same_v&lt;decltype(LastIndex), detail::LastIndex&gt;, ptrdiff_t Size = IsZeroBased ? static_cast&lt;ptrdiff_t&gt;(SizeOrFirstIndex) : static_cast&lt;ptrdiff_t&gt;(LastIndex) - static_cast&lt;ptrdiff_t&gt;(SizeOrFirstIndex) + 1&gt; </div>
+template&lt;class T , auto FirstIndex, auto LastIndex, ptrdiff_t Size = static_cast&lt;ptrdiff_t&gt;(LastIndex) - static_cast&lt;ptrdiff_t&gt;(FirstIndex) + 1&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">constexpr reference <a class="el" href="classIndexedArray.html">IndexedArray</a>&lt; T, SizeOrFirstIndex, LastIndex, IsZeroBased, <a class="el" href="structSize.html">Size</a> &gt;::operator[] </td>
+          <td class="memname">constexpr reference <a class="el" href="classIndexedArray.html">IndexedArray</a>&lt; T, FirstIndex, LastIndex, <a class="el" href="structSize.html">Size</a> &gt;::operator[] </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="classIndexedArray.html#af5c5b34472590d5a46b82139f41857e1">key_type</a>&#160;</td>
+          <td class="paramtype"><a class="el" href="classIndexedArray.html#a8a6b0ed51017870cb505641ddf1b1cf7">key_type</a>&#160;</td>
           <td class="paramname"><em>n</em></td><td>)</td>
           <td></td>
         </tr>
@@ -505,72 +495,19 @@ template&lt;class T , auto SizeOrFirstIndex, auto LastIndex = detail::INVALID_LA
 </div>
 </div>
 <h2 class="groupheader">Member Data Documentation</h2>
-<a id="ad483d4958eb140b4b3ecb5b15301b83d" name="ad483d4958eb140b4b3ecb5b15301b83d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ad483d4958eb140b4b3ecb5b15301b83d">&#9670;&#160;</a></span>ActualFirstIndex</h2>
+<a id="af33ce0cadb7e8f3f5a229d9e83929074" name="af33ce0cadb7e8f3f5a229d9e83929074"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af33ce0cadb7e8f3f5a229d9e83929074">&#9670;&#160;</a></span>SIZE</h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;class T , auto SizeOrFirstIndex, auto LastIndex = detail::INVALID_LAST_INDEX, bool IsZeroBased = std::is_same_v&lt;decltype(LastIndex), detail::LastIndex&gt;, ptrdiff_t Size = IsZeroBased ? static_cast&lt;ptrdiff_t&gt;(SizeOrFirstIndex) : static_cast&lt;ptrdiff_t&gt;(LastIndex) - static_cast&lt;ptrdiff_t&gt;(SizeOrFirstIndex) + 1&gt; </div>
+template&lt;class T , auto FirstIndex, auto LastIndex, ptrdiff_t Size = static_cast&lt;ptrdiff_t&gt;(LastIndex) - static_cast&lt;ptrdiff_t&gt;(FirstIndex) + 1&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">constexpr auto <a class="el" href="classIndexedArray.html">IndexedArray</a>&lt; T, SizeOrFirstIndex, LastIndex, IsZeroBased, <a class="el" href="structSize.html">Size</a> &gt;::ActualFirstIndex</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">static</span><span class="mlabel">constexpr</span><span class="mlabel">private</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-<b>Initial value:</b><div class="fragment"><div class="line">=</div>
-<div class="line">        IsZeroBased ? <span class="keyword">static_cast&lt;</span><a class="code hl_typedef" href="classIndexedArray.html#a43b19570c7cc05e0cffd8d34bf725cdc">index_type</a><span class="keyword">&gt;</span>(0) : SizeOrFirstIndex</div>
-<div class="ttc" id="aclassIndexedArray_html_a43b19570c7cc05e0cffd8d34bf725cdc"><div class="ttname"><a href="classIndexedArray.html#a43b19570c7cc05e0cffd8d34bf725cdc">IndexedArray::index_type</a></div><div class="ttdeci">decltype(SizeOrFirstIndex) index_type</div><div class="ttdef"><b>Definition:</b> IndexedArray.h:86</div></div>
-</div><!-- fragment -->
-</div>
-</div>
-<a id="aa030946750e8681c365d3eaf0d311791" name="aa030946750e8681c365d3eaf0d311791"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa030946750e8681c365d3eaf0d311791">&#9670;&#160;</a></span>ActualLastIndex</h2>
-
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;class T , auto SizeOrFirstIndex, auto LastIndex = detail::INVALID_LAST_INDEX, bool IsZeroBased = std::is_same_v&lt;decltype(LastIndex), detail::LastIndex&gt;, ptrdiff_t Size = IsZeroBased ? static_cast&lt;ptrdiff_t&gt;(SizeOrFirstIndex) : static_cast&lt;ptrdiff_t&gt;(LastIndex) - static_cast&lt;ptrdiff_t&gt;(SizeOrFirstIndex) + 1&gt; </div>
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">constexpr auto <a class="el" href="classIndexedArray.html">IndexedArray</a>&lt; T, SizeOrFirstIndex, LastIndex, IsZeroBased, <a class="el" href="structSize.html">Size</a> &gt;::ActualLastIndex</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">static</span><span class="mlabel">constexpr</span><span class="mlabel">private</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-<b>Initial value:</b><div class="fragment"><div class="line">=</div>
-<div class="line">        IsZeroBased ? <span class="keyword">static_cast&lt;</span><a class="code hl_typedef" href="classIndexedArray.html#a43b19570c7cc05e0cffd8d34bf725cdc">index_type</a><span class="keyword">&gt;</span>(<span class="keyword">static_cast&lt;</span>ptrdiff_t<span class="keyword">&gt;</span>(SizeOrFirstIndex) - 1) : static_cast&lt;<a class="code hl_typedef" href="classIndexedArray.html#a43b19570c7cc05e0cffd8d34bf725cdc">index_type</a>&gt;(static_cast&lt;ptrdiff_t&gt;(LastIndex))</div>
-</div><!-- fragment -->
-</div>
-</div>
-<a id="a72100de0e8cc043770f6ef7ffd6e83e8" name="a72100de0e8cc043770f6ef7ffd6e83e8"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a72100de0e8cc043770f6ef7ffd6e83e8">&#9670;&#160;</a></span>SIZE</h2>
-
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;class T , auto SizeOrFirstIndex, auto LastIndex = detail::INVALID_LAST_INDEX, bool IsZeroBased = std::is_same_v&lt;decltype(LastIndex), detail::LastIndex&gt;, ptrdiff_t Size = IsZeroBased ? static_cast&lt;ptrdiff_t&gt;(SizeOrFirstIndex) : static_cast&lt;ptrdiff_t&gt;(LastIndex) - static_cast&lt;ptrdiff_t&gt;(SizeOrFirstIndex) + 1&gt; </div>
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">constexpr size_t <a class="el" href="classIndexedArray.html">IndexedArray</a>&lt; T, SizeOrFirstIndex, LastIndex, IsZeroBased, <a class="el" href="structSize.html">Size</a> &gt;::SIZE = <a class="el" href="structSize.html">Size</a></td>
+          <td class="memname">constexpr size_t <a class="el" href="classIndexedArray.html">IndexedArray</a>&lt; T, FirstIndex, LastIndex, <a class="el" href="structSize.html">Size</a> &gt;::SIZE = <a class="el" href="structSize.html">Size</a></td>
         </tr>
       </table>
   </td>
