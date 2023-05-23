@@ -165,7 +165,7 @@ void GUIWindow_MagicGuild::buyBooksDialogue() {
 
     if (HouseUI_CheckIfPlayerCanInteract()) {
         int itemcount = 0;
-        for (uint i = 0; i < 12; ++i) {
+        for (uint i = 0; i < ItemAmountForShop(buildingTable[wData.val - 1].uType); ++i) {
             if (pParty->SpellBooksInGuilds[wData.val - HOUSE_FIRE_GUILD_INITIATE_EMERALD_ISLE][i].uItemID != ITEM_NULL)
                 ++itemcount;
         }
@@ -209,6 +209,21 @@ void GUIWindow_MagicGuild::buyBooksDialogue() {
     }
 }
 
+void GUIWindow_MagicGuild::houseDialogueOptionSelected(DIALOGUE_TYPE option) {
+    if (option == DIALOGUE_GUILD_BUY_BOOKS) {
+        if (pParty->PartyTimes.Shops_next_generation_time[wData.val - HOUSE_FIRE_GUILD_INITIATE_EMERALD_ISLE] >= pParty->GetPlayingTime()) {
+            for (uint i = 0; i < ItemAmountForShop(buildingTable[wData.val - 1].uType); ++i) {
+                if (pParty->SpellBooksInGuilds[wData.val - HOUSE_FIRE_GUILD_INITIATE_EMERALD_ISLE][i].uItemID != ITEM_NULL)
+                    shop_ui_items_in_store[i] = assets->getImage_ColorKey(pParty->SpellBooksInGuilds[wData.val - HOUSE_FIRE_GUILD_INITIATE_EMERALD_ISLE][i].GetIconName());
+            }
+        } else {
+            GameTime nextGenTime = pParty->GetPlayingTime().AddDays(buildingTable[wData.val - 1].generation_interval_days);
+            generateSpellBooksForGuild();
+            pParty->PartyTimes.Shops_next_generation_time[wData.val - HOUSE_FIRE_GUILD_INITIATE_EMERALD_ISLE] = nextGenTime;
+        }
+    }
+}
+
 void GUIWindow_MagicGuild::houseSpecificDialogue() {
     switch (dialog_menu_id) {
       case DIALOGUE_MAIN:
@@ -223,17 +238,17 @@ void GUIWindow_MagicGuild::houseSpecificDialogue() {
     }
 }
 
-void generateSpellBooksForGuild() {
-    BuildingType guildType = buildingTable[window_SpeakInHouse->wData.val - 1].uType;
+void GUIWindow_MagicGuild::generateSpellBooksForGuild() {
+    BuildingType guildType = buildingTable[wData.val - 1].uType;
 
     // Combined guilds exist only in MM6/MM8 and need to be processed separately
     assert(guildType >= BuildingType_FireGuild && guildType <= BuildingType_DarkGuild);
 
     DAMAGE_TYPE schoolType = guildSpellsSchool[guildType];
-    PLAYER_SKILL_MASTERY maxMastery = guildSpellsMastery[window_SpeakInHouse->houseId()];
+    PLAYER_SKILL_MASTERY maxMastery = guildSpellsMastery[houseId()];
     Segment<ITEM_TYPE> spellbooksForGuild = spellbooksOfSchool(schoolType, maxMastery);
 
-    for (int i = 0; i < 12; ++i) {
+    for (int i = 0; i < ItemAmountForShop(guildType); ++i) {
         ITEM_TYPE pItemNum = grng->randomSample(spellbooksForGuild);
 
         if (pItemNum == ITEM_SPELLBOOK_DIVINE_INTERVENTION) {
@@ -242,7 +257,7 @@ void generateSpellBooksForGuild() {
             }
         }
 
-        ItemGen *itemSpellbook = &pParty->SpellBooksInGuilds[window_SpeakInHouse->wData.val - HOUSE_FIRE_GUILD_INITIATE_EMERALD_ISLE][i];
+        ItemGen *itemSpellbook = &pParty->SpellBooksInGuilds[wData.val - HOUSE_FIRE_GUILD_INITIATE_EMERALD_ISLE][i];
         itemSpellbook->Reset();
         itemSpellbook->uItemID = pItemNum;
         itemSpellbook->SetIdentified();

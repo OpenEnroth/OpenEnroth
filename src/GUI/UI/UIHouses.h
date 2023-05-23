@@ -62,6 +62,8 @@ extern DIALOGUE_TYPE dialog_menu_id;     // 00F8B19C
 
 int HouseDialogPressCloseBtn();
 
+int ItemAmountForShop(BuildingType buildingType);
+
 extern class Image *_591428_endcap;
 
 // Originally was a packed struct.
@@ -90,5 +92,6 @@ class GUIWindow_House : public GUIWindow {
 
     void houseDialogManager();
 
+    virtual void houseDialogueOptionSelected(DIALOGUE_TYPE option);
     virtual void houseSpecificDialogue();
 };

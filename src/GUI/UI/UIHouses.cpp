@@ -359,16 +359,27 @@ struct ITEM_VARIATION {
 
 int ItemAmountForShop(BuildingType buildingType) {
     switch(buildingType) {
-    case BuildingType_WeaponShop:
-    case BuildingType_GeneralStore:
+      case BuildingType_WeaponShop:
+      case BuildingType_GeneralStore:
         return 6;
-    case BuildingType_ArmorShop:
+      case BuildingType_ArmorShop:
         return 8;
-    case BuildingType_MagicShop:
+      case BuildingType_MagicShop:
         return 12;
-    case BuildingType_AlchemistShop:
+      case BuildingType_AlchemistShop:
         return 12;
-    default:
+      case BuildingType_FireGuild:
+      case BuildingType_AirGuild:
+      case BuildingType_WaterGuild:
+      case BuildingType_EarthGuild:
+      case BuildingType_SpiritGuild:
+      case BuildingType_MindGuild:
+      case BuildingType_BodyGuild:
+      case BuildingType_LightGuild:
+      case BuildingType_DarkGuild:
+      case BuildingType_MirroredPath:
+        return 12;
+      default:
         return 0;
     }
 }
@@ -1032,6 +1043,7 @@ void OnSelectShopDialogueOption(DIALOGUE_TYPE option) {
     }
 
     // NEW
+    // TODO(Nik-RE-dev): houseDialogueOptionSelected must be called without switch
     switch (in_current_building_type) {
     case BuildingType_FireGuild:
     case BuildingType_AirGuild:
@@ -1045,20 +1057,8 @@ void OnSelectShopDialogueOption(DIALOGUE_TYPE option) {
     case BuildingType_ElementalGuild:
     case BuildingType_SelfGuild:
     case BuildingType_MirroredPath:
-    {
-        if (pParty->PartyTimes.Shops_next_generation_time[window_SpeakInHouse->wData.val - HOUSE_FIRE_GUILD_INITIATE_EMERALD_ISLE] >= pParty->GetPlayingTime()) {
-            for (uint i = 0; i < 12; ++i) {
-                if (pParty->SpellBooksInGuilds[window_SpeakInHouse->wData.val - HOUSE_FIRE_GUILD_INITIATE_EMERALD_ISLE][i].uItemID != ITEM_NULL)
-                    shop_ui_items_in_store[i] = assets->getImage_ColorKey(
-                        pParty->SpellBooksInGuilds[window_SpeakInHouse->wData.val - HOUSE_FIRE_GUILD_INITIATE_EMERALD_ISLE][i].GetIconName());
-            }
-        } else {
-            generateSpellBooksForGuild();
-            pParty->PartyTimes.Shops_next_generation_time[window_SpeakInHouse->wData.val - HOUSE_FIRE_GUILD_INITIATE_EMERALD_ISLE] = GameTime(pParty->GetPlayingTime() + GameTime::FromDays(
-                    buildingTable[window_SpeakInHouse->wData.val - 1].generation_interval_days));
-        }
+        ((GUIWindow_House*)window_SpeakInHouse)->houseDialogueOptionSelected(option);
         break;
-    }
     case BuildingType_TownHall:
     {
         if (option == DIALOGUE_TOWNHALL_MESSAGE) {
@@ -3312,7 +3312,10 @@ void GUIWindow_House::Release() {
     GUIWindow::Release();
 }
 
-void GUIWindow_House::houseSpecificDialogue() {
+void GUIWindow_House::houseDialogueOptionSelected(DIALOGUE_TYPE option) {
     // Nothing
 }
 
+void GUIWindow_House::houseSpecificDialogue() {
+    // Nothing
+}
