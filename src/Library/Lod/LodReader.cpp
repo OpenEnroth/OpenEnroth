@@ -3,19 +3,18 @@
 #include <algorithm>
 #include <cassert>
 #include <map>
+#include <iterator>
 
 // TODO(captainurist): errorhandling should be moved to utility/library out of the engine
 #include "Engine/ErrorHandling.h"
+
 #include "Library/Compression/Compression.h"
-#include "Library/Lod/Internal/LodDirectory.h"
-#include "Library/Lod/Internal/LodDirectoryHeader.h"
-#include "Library/Lod/Internal/LodFile.h"
-#include "Library/Lod/Internal/LodFileHeader.h"
-#include "Library/Lod/Internal/LodHeader.h"
+#include "Library/Lod/LodDefinitions.h"
+
 #include "Utility/String.h"
+#include "Utility/Streams/MemoryInputStream.h"
 
-
-static inline size_t _getDirectoryHeaderImgSize(LodVersion lod_version) {
+static size_t getDirectoryHeaderImgSize(LodVersion lod_version) {
     switch (lod_version) {
     case LOD_VERSION_MM6:
     case LOD_VERSION_MM6_GAME:
@@ -25,201 +24,197 @@ static inline size_t _getDirectoryHeaderImgSize(LodVersion lod_version) {
     }
 
     Error("Unknown LOD version: %u", lod_version);
+    return 0;
 }
 
-
-static bool _lodHeaderParseVersion(const LodHeader_Mm6 &header, LodVersion &out_version) {
-    static std::map<std::string, LodVersion> version_map = {
+static bool lodHeaderParseVersion(const LodHeader_Mm6 &header, LodVersion &out_version) {
+    static std::map<std::string, LodVersion> versionMap = {
         {"MMVI",     LOD_VERSION_MM6},
         {"GameMMVI", LOD_VERSION_MM6_GAME},
         {"MMVII",    LOD_VERSION_MM7},
         {"MMVIII",   LOD_VERSION_MM8},
     };
 
-    auto it = version_map.find((const char *)header.version.data());
-    if (it != version_map.end()) {
+    auto it = versionMap.find((const char *)header.version.data());
+    if (it != versionMap.end()) {
         out_version = it->second;
         return true;
     }
 
-    Warn("Unknown LOD version: %s", (const char *)header.version.data());
     return false;
 }
 
+bool LodReader::parseDirectoryFiles(size_t numFiles, size_t filesOffset) {
+    size_t fileHeaderSize = 0;
 
-static bool _lodParseHeader(FILE *fp, LodVersion &out_version, std::string &out_description, size_t &out_num_expected_directories) {
-    LodHeader_Mm6 header;
-    if (1 != fread(&header, sizeof(header), 1, fp)) {
+    switch (_version) {
+      case LOD_VERSION_MM6:
+      case LOD_VERSION_MM6_GAME:
+      case LOD_VERSION_MM7:
+        fileHeaderSize = sizeof(LodFileHeader_Mm6);
+        break;
+
+      case LOD_VERSION_MM8:
+        fileHeaderSize = sizeof(LodFileHeader_Mm8);
+        break;
+
+      default:
+        assert(false);
+    }
+
+    Blob filesBlob = _lod.subBlob(filesOffset, fileHeaderSize*numFiles);
+
+    if (filesBlob.size() < fileHeaderSize*numFiles) {
         return false;
     }
 
-    if (memcmp(header.signature.data(), "LOD\0", sizeof(header.signature))) {
-        Warn("Not a LOD file");
-        return false;
+    MemoryInputStream stream(filesBlob.data(), filesBlob.size());
+
+    for (size_t i = 0; i < numFiles; ++i) {
+        FileEntryDesc fileEntry;
+        switch (_version) {
+            case LOD_VERSION_MM6:
+            case LOD_VERSION_MM6_GAME:
+            case LOD_VERSION_MM7: {
+                LodFileHeader_Mm6 header;
+                deserialize(stream, &header);
+
+                fileEntry.name = std::string((char *)header.name.data());
+                fileEntry.offset = filesOffset + header.dataOffset;
+                fileEntry.size = header.size;
+                break;
+            }
+
+            case LOD_VERSION_MM8: {
+                LodFileHeader_Mm8 header;
+                deserialize(stream, &header);
+
+                fileEntry.name = std::string((char *)header.name.data());
+                fileEntry.offset = filesOffset + header.dataOffset;
+                fileEntry.size = header.dataSize;
+                break;
+            }
+        }
+
+        _files.push_back(fileEntry);
     }
 
-    LodVersion version;
-    if (!_lodHeaderParseVersion(header, version)) {
-        return false;
-    }
-
-    out_version = version;
-    out_description = std::string((const char *)header.description.data());
-    out_num_expected_directories = header.numDirectories;
     return true;
 }
 
+bool LodReader::parseDirectories(size_t numDirectories, size_t dirOffset) {
+    assert(getDirectoryHeaderImgSize(_version) == sizeof(LodDirectoryHeader_Mm6));
 
-static inline void _lodParseDirectoryFiles(
-    FILE *fp,
-    LodVersion version,
-    LodDirectory &dir,
-    size_t num_expected_files
-) {
-    dir.files.clear();
+    _files.clear();
 
-    fseek(fp, dir.fileHeadersOffset, SEEK_SET);
-    for (size_t i = 0; i < num_expected_files; ++i) {
-        switch (version) {
-        case LOD_VERSION_MM6:
-        case LOD_VERSION_MM6_GAME:
-        case LOD_VERSION_MM7: {
-            LodFileHeader_Mm6 header;
-            assert(1 == fread(&header, sizeof(header), 1, fp));
-
-            LodFile file;
-            file.name = std::string((char *)header.name.data());
-            file.dataOffset = dir.fileHeadersOffset + header.dataOffset;
-            file.dataSize = header.size;
-            dir.files.push_back(file);
-            break;
-        }
-
-        case LOD_VERSION_MM8: {
-            LodFileHeader_Mm8 header;
-            assert(1 == fread(&header, sizeof(header), 1, fp));
-
-            LodFile file;
-            file.name = std::string((char *)header.name.data());
-            file.dataOffset = dir.fileHeadersOffset + header.dataOffset;
-            file.dataSize = header.dataSize;
-            dir.files.push_back(file);
-            break;
-        }
-        }
-    }
-}
-
-
-static bool _lodParseDirectories(FILE *fp, LodVersion version, size_t num_expected_directories, std::vector<LodDirectory> &out_index) {
-    std::vector<LodDirectory> dirs;
-
-    size_t read_size = _getDirectoryHeaderImgSize(version);
-    size_t items_read = 0;
-
-    size_t dir_read_ptr = ftell(fp);
-    for (size_t i = 0; i < num_expected_directories; ++i) {
-        LodDirectoryHeader_Mm6 img;
-        fseek(fp, dir_read_ptr, SEEK_SET);
-        items_read += fread(&img, read_size, 1, fp);
-        dir_read_ptr += read_size;
-
-        LodDirectory dir;
-        dir.name = std::string((const char *)img.filename.data());
-        dir.fileHeadersOffset = img.dataOffset;
-        _lodParseDirectoryFiles(fp, version, dir, img.numFiles);
-
-        dirs.push_back(dir);
+    if (numDirectories != 1) {
+        // While LOD structure itself support multiple directories, all LOD files associated with
+        // vanilla MM6/7/8 games use single directory.
+        Warn("LOD file have more that one directory, files will be read only from the first one.");
     }
 
-    out_index = dirs;
-    return true;
-}
+    Blob dirBlob = _lod.subBlob(dirOffset, sizeof(LodDirectoryHeader_Mm6));
 
+    if (dirBlob.size() < sizeof(LodDirectoryHeader_Mm6)) {
+        return false;
+    }
+
+    MemoryInputStream stream(dirBlob.data(), dirBlob.size());
+    LodDirectoryHeader_Mm6 dirHeader;
+    deserialize(stream, &dirHeader);
+
+    return parseDirectoryFiles(dirHeader.numFiles, dirHeader.dataOffset);
+}
 
 std::unique_ptr<LodReader> LodReader::open(const std::string &filename) {
-    auto lod = std::make_unique<LodReader>();
+    std::unique_ptr<LodReader> lod = std::make_unique<LodReader>();
+
     if (nullptr == lod) {
         Warn("LodReader::open: out of memory loading: %s", filename.c_str());
         return nullptr;
     }
 
-    auto fp = fopen(filename.c_str(), "rb");
-    if (nullptr == fp) {
+    lod->_lod = Blob::fromFile(filename);
+    if (lod->_lod.size() == 0) {
         Warn("LodReader::open: file not found: %s", filename.c_str());
         return nullptr;
     }
 
-    size_t num_expected_directories = 0;
-    bool is_lod = _lodParseHeader(fp, lod->_version, lod->_description, num_expected_directories);
-    if (!is_lod) {
+    if (lod->_lod.size() < sizeof(LodHeader_Mm6)) {
         Warn("LodReader::open: invalid LOD file: %s", filename.c_str());
-        fclose(fp);
         return nullptr;
     }
 
-    bool is_index_ok = _lodParseDirectories(fp, lod->_version, num_expected_directories, lod->_index);
-    if (is_index_ok) {
-        lod->_fp = fp;
-        return lod;
+    MemoryInputStream stream(lod->_lod.data(), lod->_lod.size());
+    LodHeader_Mm6 header;
+    deserialize(stream, &header);
+
+    if (memcmp(header.signature.data(), "LOD\0", sizeof(header.signature))) {
+        Warn("LodReader::open: invalid LOD file: %s", filename.c_str());
+        return nullptr;
     }
 
-    Warn("LodReader::open: corrupt directory index: %s", filename.c_str());
-    fclose(fp);
-    return nullptr;
-}
+    if (!lodHeaderParseVersion(header, lod->_version)) {
+        Warn("LodReader::open: unknown LOD version: %s", (const char *)header.version.data());
+        return nullptr;
+    }
 
+    if (!lod->parseDirectories(header.numDirectories, sizeof(LodHeader_Mm6))) {
+        Warn("LodReader::open: corrupt directory index: %s", filename.c_str());
+        return nullptr;
+    }
+
+    lod->_description = std::string((const char *)header.description.data());
+    return lod;
+}
 
 bool LodReader::exists(const std::string &filename) const {
-    const auto &dir = _index.front(); // only first dir is ever used, no matter names
-    return dir.files.cend() != std::find_if(
-        dir.files.cbegin(),
-        dir.files.cend(),
-        [&](const LodFile &file) {return iequals(file.name, filename); }
-    );
+    // TODO(Nik-RE-dev): use std::unordered_map to avoid full vector search
+    return _files.cend() != std::find_if(_files.cbegin(), _files.cend(), [&](const FileEntryDesc &file) { return iequals(file.name, filename); });
 }
 
-
 Blob LodReader::read(const std::string &filename) {
-    const auto &dir = _index.front(); // only first dir is ever used, no matter names
-    const auto &file = std::find_if(
-        dir.files.cbegin(),
-        dir.files.cend(),
-        [&](const LodFile &file) {return iequals(file.name, filename); }
-    );
+    const auto &file = std::find_if(_files.cbegin(), _files.cend(), [&](const FileEntryDesc &file) { return iequals(file.name, filename); });
 
-    if (dir.files.cend() == file) {
+    if (_files.cend() == file) {
         Warn("LodReader::read: file not found: %s", filename.c_str());
         return Blob();
     }
 
-    fseek(_fp, file->dataOffset, SEEK_SET);
-    if (_isFileCompressed(*file)) {
-        LodFileCompressionHeader_Mm6 header;
-        assert(1 == fread(&header, sizeof(header), 1, _fp));
-
-        if (0 != header.decompressedSize) {
-            return zlib::Uncompress(Blob::read(_fp, header.compressedSize), header.decompressedSize);
+    FileCompressionDesc compDesc;
+    if (isFileCompressed(*file, &compDesc)) {
+        if (0 != compDesc.decompressedSize) {
+            return zlib::Uncompress(_lod.subBlob(compDesc.compressedOffs, compDesc.compressedSize), compDesc.decompressedSize);
         } else {
-            return Blob::read(_fp, header.compressedSize);
+            return _lod.subBlob(compDesc.compressedOffs, compDesc.compressedSize);
         }
     }
 
-    return Blob::read(_fp, file->dataSize);
+    return _lod.subBlob(file->offset, file->size);
 }
 
+std::vector<std::string> LodReader::ls() const {
+    std::vector<std::string> res;
+    std::transform(_files.begin(), _files.end(), std::back_inserter(res), [](const FileEntryDesc &f) { return f.name; });
+    return res;
+}
 
-bool LodReader::_isFileCompressed(const LodFile &file) {
-    if (file.dataSize <= sizeof(LodFileCompressionHeader_Mm6)) {
+bool LodReader::isFileCompressed(const FileEntryDesc &desc, FileCompressionDesc *compDesc) {
+    if (desc.size <= sizeof(LodFileCompressionHeader_Mm6)) {
         return false;
     }
 
-    size_t prev_pos = ftell(_fp);
-    fseek(_fp, file.dataOffset, SEEK_SET);
-
+    Blob fileBlob = _lod.subBlob(desc.offset, desc.size);
+    MemoryInputStream stream(fileBlob.data(), fileBlob.size());
     LodFileCompressionHeader_Mm6 header;
-    assert(1 == fread(&header, sizeof(header), 1, _fp));
-    fseek(_fp, prev_pos, SEEK_SET);
+    deserialize(stream, &header);
 
-    return header.version == 91969 && !memcmp(header.signature.data(), "mvii", 4);
+    if (header.version == 91969 && !memcmp(header.signature.data(), "mvii", 4)) {
+        compDesc->compressedSize = header.compressedSize;
+        compDesc->decompressedSize = header.decompressedSize;
+        compDesc->compressedOffs = desc.offset + sizeof(LodFileCompressionHeader_Mm6);
+        return true;
+    }
+
+    return false;
 }

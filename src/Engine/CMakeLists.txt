@@ -18,6 +18,7 @@ set(ENGINE_SOURCES
         SaveLoad.cpp
         SpellFxRenderer.cpp
         Time.cpp
+        GameResourceManager.cpp
         mm7_data.cpp
         mm7text_ru.cpp)
 
@@ -40,6 +41,7 @@ set(ENGINE_HEADERS
         SaveLoad.h
         SpellFxRenderer.h
         Time.h
+        GameResourceManager.h
         mm7_data.h
         stru160.h
         stru314.h)

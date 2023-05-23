@@ -1,9 +1,9 @@
 #include "Engine/Tables/BuildingTable.h"
-#include "Engine/LOD.h"
+#include "Engine/Engine.h"
 #include "Utility/String.h"
 
-std::string buildingTableTXT_Raw;
 std::array<BuildingDesc, 525> buildingTable;
+std::string buildingTableTXT_Raw;
 
 void initializeBuildings() {
     int i;
@@ -14,7 +14,7 @@ void initializeBuildings() {
     char *tmp_pos;
     int decode_step;
 
-    buildingTableTXT_Raw = pEvents_LOD->LoadCompressedTexture("2dEvents.txt").string_view();
+    buildingTableTXT_Raw = engine->_gameResourceManager->getEventsFile("2dEvents.txt").string_view();
     strtok(buildingTableTXT_Raw.data(), "\r");
     strtok(NULL, "\r");
 

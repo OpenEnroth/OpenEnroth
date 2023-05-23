@@ -6,6 +6,8 @@
 #include "Utility/IndexedArray.h"
 #include "Utility/Memory/Blob.h"
 
+#include "Library/Binary/MemCopySerialization.h"
+
 enum class IMAGE_FORMAT {
     IMAGE_FORMAT_R5G6B5 = 0,
     IMAGE_FORMAT_A1R5G5B5 = 1,
@@ -96,6 +98,8 @@ struct TextureHeader {
                      // 0x0400 - don't free buffers (???)
 };
 #pragma pack(pop)
+
+MM_DECLARE_MEMCOPY_SERIALIZABLE(TextureHeader)
 
 struct Texture_MM7 {
     Texture_MM7();
