@@ -56,7 +56,7 @@
 #include "GUI/UI/Books/MapBook.h"
 #include "GUI/UI/Books/QuestBook.h"
 #include "GUI/UI/Books/TownPortalBook.h"
-#include "GUI/UI/Spellbook.h"
+#include "GUI/UI/UISpellbook.h"
 #include "GUI/UI/UIBooks.h"
 #include "GUI/UI/UICharacter.h"
 #include "GUI/UI/UICredits.h"
