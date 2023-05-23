@@ -210,7 +210,7 @@ struct MonsterDesc {
     uint32_t sTintColor;
     std::array<uint16_t, 4> pSoundSampleIDs; // TODO: actually this one should also be an IndexedArray
     std::string pMonsterName;
-    IndexedArray<std::string, ANIM_Count> pSpriteNames;
+    IndexedArray<std::string, ANIM_First, ANIM_Last> pSpriteNames;
 };
 
 struct MonsterList {

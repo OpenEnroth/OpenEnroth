@@ -8,29 +8,16 @@
 
 #include "Segment.h"
 
-namespace detail {
-
-enum class LastIndex {
-    INVALID_LAST_INDEX
-};
-using enum LastIndex;
-
-} // namespace detail
-
-
 /**
  * An `std::array`-like class that supports some additional features:
- * - Can be indexed with an enum (type is inferred from the `Size` parameter).
+ * - Can be indexed with an enum (type is inferred from the `FirstIndex` parameter).
  * - Supports an `std::map`-like initialization, so that the user doesn't have to manually double check that the order
  *   of the values in the initializer matches the order of the values of the enum that's used for indexing.
  * - Supports non-zero-based indexing (e.g. can be used to construct a Pascal-like array).
  *
- * The template itself is overloaded and can be used in several different ways:
- * - `IndexedArray<int, 10>` works the same as `std::array<int, 10>`.
+ * The template itself can be used in several different ways:
  * - `IndexedArray<int, 1, 10>` creates a Pascal-like array with a first index of 1, and last index of 10
  *   (so the size is still 10 as in the previous example).
- * - `IndexedArray<int, SomeEnum_Count>` creates an indexed array that's indexed with an enum. The main use case for
- *   this is using an `enum class` for indexing to make it fully type-safe.
  * - `IndexedArray<int, FirstWeaponItem, LastWeaponItem>` creates a non-zero-based enum-indexed array.
  *
  * Some code examples:
@@ -67,32 +54,22 @@ using enum LastIndex;
  * @endcode
  *
  * @tparam T                            Array element type.
- * @tparam SizeOrFirstIndex             Either array size or index of the 1st element. Value must be of enum or
- *                                      integral type.
- * @tparam LastIndex                    Index of the last element. If this parameter is provided, then the size of the
- *                                      indexed array is `LastIndex - SizeOrFirstIndex + 1`.
+ * @tparam FirstIndex                   Index of the first element. Value must be of enum or integral type.
+ * @tparam LastIndex                    Index of the last element. The size of the indexed array is
+ *                                      `LastIndex - FirstIndex + 1`.
  */
 template<
     class T,
-    auto SizeOrFirstIndex,
-    auto LastIndex = detail::INVALID_LAST_INDEX,
-    bool IsZeroBased = std::is_same_v<decltype(LastIndex), detail::LastIndex>,
-    ptrdiff_t Size =
-        IsZeroBased ?
-        static_cast<ptrdiff_t>(SizeOrFirstIndex) :
-        static_cast<ptrdiff_t>(LastIndex) - static_cast<ptrdiff_t>(SizeOrFirstIndex) + 1>
+    auto FirstIndex,
+    auto LastIndex,
+    ptrdiff_t Size = static_cast<ptrdiff_t>(LastIndex) - static_cast<ptrdiff_t>(FirstIndex) + 1>
 class IndexedArray: public std::array<T, Size> {
     using base_type = std::array<T, Size>;
-    using index_type = decltype(SizeOrFirstIndex);
+    using index_type = decltype(FirstIndex);
 
     static_assert(Size >= 0, "IndexedArray size must be non-negative");
-    static_assert(std::is_enum_v<index_type> || std::is_integral_v<index_type>, "SizeOrFirstIndex must be an enum or an integral type");
-    static_assert(IsZeroBased || std::is_same_v<index_type, decltype(LastIndex)>, "SizeOrFirstIndex and LastIndex must be of the same type");
-
-    static constexpr auto ActualFirstIndex =
-        IsZeroBased ? static_cast<index_type>(0) : SizeOrFirstIndex;
-    static constexpr auto ActualLastIndex =
-        IsZeroBased ? static_cast<index_type>(static_cast<ptrdiff_t>(SizeOrFirstIndex) - 1) : static_cast<index_type>(static_cast<ptrdiff_t>(LastIndex));
+    static_assert(std::is_enum_v<index_type> || std::is_integral_v<index_type>, "FirstIndex must be an enum or an integral type");
+    static_assert(std::is_same_v<index_type, decltype(LastIndex)>, "FirstIndex and LastIndex must be of the same type");
 
  public:
     static constexpr size_t SIZE = Size;
@@ -166,7 +143,7 @@ class IndexedArray: public std::array<T, Size> {
      * @return                          View over the valid indices for the elements of this indexed array.
      */
     constexpr Segment<key_type> indices() const {
-        return Segment(ActualFirstIndex, ActualLastIndex);
+        return Segment(FirstIndex, LastIndex);
     }
 
     using base_type::begin;
@@ -189,19 +166,19 @@ class IndexedArray: public std::array<T, Size> {
     using base_type::swap;
 
     constexpr reference at(key_type n) {
-        return base_type::at(static_cast<ptrdiff_t>(n) - static_cast<ptrdiff_t>(ActualFirstIndex));
+        return base_type::at(static_cast<ptrdiff_t>(n) - static_cast<ptrdiff_t>(FirstIndex));
     }
 
     constexpr const_reference at(key_type n) const {
-        return base_type::at(static_cast<ptrdiff_t>(n) - static_cast<ptrdiff_t>(ActualFirstIndex));
+        return base_type::at(static_cast<ptrdiff_t>(n) - static_cast<ptrdiff_t>(FirstIndex));
     }
 
     constexpr reference operator[](key_type n) noexcept {
-        return base_type::operator[](static_cast<ptrdiff_t>(n) - static_cast<ptrdiff_t>(ActualFirstIndex));
+        return base_type::operator[](static_cast<ptrdiff_t>(n) - static_cast<ptrdiff_t>(FirstIndex));
     }
 
     constexpr const_reference operator[](key_type n) const noexcept {
-        return base_type::operator[](static_cast<ptrdiff_t>(n) - static_cast<ptrdiff_t>(ActualFirstIndex));
+        return base_type::operator[](static_cast<ptrdiff_t>(n) - static_cast<ptrdiff_t>(FirstIndex));
     }
 
  private:

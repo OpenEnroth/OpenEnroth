@@ -16,7 +16,8 @@ enum class IMAGE_FORMAT {
     IMAGE_FORMAT_R8G8B8A8 = 4,
     IMAGE_FORMAT_A8B8G8R8 = 5,
 
-    IMAGE_NUM_FORMATS = 6,
+    IMAGE_FORMAT_FIRST = IMAGE_FORMAT_R5G6B5,
+    IMAGE_FORMAT_LAST = IMAGE_FORMAT_A8B8G8R8,
     IMAGE_INVALID_FORMAT = -1,
 };
 using enum IMAGE_FORMAT;
@@ -52,7 +53,7 @@ class Image {
     size_t width = 0;
     size_t height = 0;
     IMAGE_FORMAT native_format = IMAGE_INVALID_FORMAT;
-    IndexedArray<void *, IMAGE_NUM_FORMATS> pixels = {{}};
+    IndexedArray<void *, IMAGE_FORMAT_FIRST, IMAGE_FORMAT_LAST> pixels = {{}};
     void *palette24 = nullptr;
     void *palettepixels = nullptr;
 

@@ -230,9 +230,9 @@ class Actor {
     char field_B6 = 0;
     char field_B7 = 0;
     unsigned int uCurrentActionTime = 0;
-    IndexedArray<uint16_t, ANIM_Count> pSpriteIDs = {{}};
+    IndexedArray<uint16_t, ANIM_First, ANIM_Last> pSpriteIDs = {{}};
     std::array<uint16_t, 4> pSoundSampleIDs = {{}};  // 1 die     3 bored
-    IndexedArray<SpellBuff, ACTOR_BUFF_COUNT> pActorBuffs;
+    IndexedArray<SpellBuff, ACTOR_BUFF_FIRST, ACTOR_BUFF_LAST> pActorBuffs;
     std::array<ItemGen, 4> ActorHasItems;
     unsigned int uGroup = 0;
     unsigned int uAlly = 0;

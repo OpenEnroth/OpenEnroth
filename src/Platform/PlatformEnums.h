@@ -201,9 +201,10 @@ enum class PlatformKey : int {
     Gamepad_L2,
     Gamepad_R2,
 
-    Count,
+    None,
 
-    None = Count
+    First = Char,
+    Last = Gamepad_R2,
 };
 
 enum class PlatformModifier : uint32_t {
