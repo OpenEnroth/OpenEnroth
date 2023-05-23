@@ -110,6 +110,11 @@ inline Segment<HOUSE_ID> townhallHouses() {
     return {HOUSE_FIRST_TOWNHALL, HOUSE_LAST_TOWNHALL};
 }
 
+inline bool isShop(HOUSE_ID houseId) {
+    // TODO:(Nik-RE-dev): make Segment getters for all shop types and use them
+    return houseId < HOUSE_STABLES_HARMONDALE;
+}
+
 enum HouseSoundID : uint32_t {
     HouseSound_Greeting = 1,  // General greeting
     HouseSound_NotEnoughMoney = 2,

@@ -68,7 +68,6 @@ extern std::array<IndexedArray<CLASS_SKILL, PLAYER_SKILL_FIRST, PLAYER_SKILL_LAS
 extern IndexedArray<IndexedArray<PLAYER_SKILL_MASTERY, PLAYER_SKILL_FIRST, PLAYER_SKILL_LAST>, PLAYER_CLASS_FIRST, PLAYER_CLASS_LAST> skillMaxMasteryPerClass;
 extern std::array<short, 28> word_4EE150;
 
-extern std::array<int, 32> guild_membership_flags;
 extern std::array<int16_t, 49> word_4F0754;
 extern std::array<std::pair<int16_t, ITEM_TYPE>, 27> _4F0882_evt_VAR_PlayerItemInHands_vals;
 extern std::array<int, 11> price_for_membership;
@@ -120,7 +119,6 @@ extern DIALOGUE_TYPE uDialogueType;
 extern signed int sDialogue_SpeakingActorNPC_ID;
 extern int uCurrentHouse_Animation;
 
-extern std::array<std::array<char, 100>, 6> byte_591180;  // idb
 extern std::array<struct NPCData *, 7>
     HouseNPCData;  // 0this array size temporarily increased to 60 from 6 to
                    // work aroud house overflow

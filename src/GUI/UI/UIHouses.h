@@ -18,7 +18,6 @@ bool HouseUI_CheckIfPlayerCanInteract();
 void TrainingDialog(const char *s);
 void JailDialog();
 void MagicShopDialog();
-void GuildDialog();
 void MercenaryGuildDialog();
 bool IsTravelAvailable(int a1);
 
@@ -79,7 +78,7 @@ extern std::array<const HouseAnimDescr, 196> pAnimatedRooms;
 
 class GUIWindow_House : public GUIWindow {
  public:
-    GUIWindow_House(Pointi position, Sizei dimensions, HOUSE_ID houseId, const std::string &hint = std::string());
+    GUIWindow_House(HOUSE_ID houseId);
     virtual ~GUIWindow_House() {}
 
     virtual void Update();
@@ -88,4 +87,8 @@ class GUIWindow_House : public GUIWindow {
     HOUSE_ID houseId() const {
         return static_cast<HOUSE_ID>(wData.val); // TODO(captainurist): drop all direct accesses to wData.val.
     }
+
+    void houseDialogManager();
+
+    virtual void houseSpecificDialogue();
 };

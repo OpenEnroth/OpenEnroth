@@ -32,10 +32,10 @@
 #include "GUI/GUIWindow.h"
 #include "GUI/UI/UIDialogue.h"
 #include "GUI/UI/UIGame.h"
-#include "GUI/UI/UIGuilds.h"
 #include "GUI/UI/UIPartyCreation.h"
 #include "GUI/UI/UIShops.h"
 #include "GUI/UI/UIStatusBar.h"
+#include "GUI/UI/Houses/MagicGuild.h"
 
 #include "Io/Mouse.h"
 #include "Io/KeyboardInputHandler.h"
@@ -539,6 +539,8 @@ const std::array<ITEM_VARIATION, 28> shopArmr_variation_spc = {{
 
 std::vector<int> charactersTrainedLevels;
 
+std::array<std::string, 6> portraitClickLabel;
+
 void FillAviableSkillsToTeach(BuildingType type);
 
 //----- (004B3A72) --------------------------------------------------------
@@ -855,10 +857,8 @@ bool enterHouse(HOUSE_ID uHouseID) {
 
         return false;
     } else {
-        if (uHouseID < 53) {  // entering shops and guilds
-            if (!(pParty->PartyTimes._shop_ban_times[uHouseID]) ||
-                (pParty->PartyTimes._shop_ban_times[uHouseID] <=
-                    pParty->GetPlayingTime())) {
+        if (isShop(uHouseID)) {  // entering shops and guilds
+            if (!(pParty->PartyTimes._shop_ban_times[uHouseID]) || (pParty->PartyTimes._shop_ban_times[uHouseID] <= pParty->GetPlayingTime())) {
                 pParty->PartyTimes._shop_ban_times[uHouseID] = GameTime(0);
             } else {
                 GameUI_SetStatusBar(LSTR_BANNED_FROM_SHOP);
@@ -898,13 +898,11 @@ bool enterHouse(HOUSE_ID uHouseID) {
                 return true;
             }
         } else {  // guilds
-            int membership = guild_membership_flags[uHouseID - HOUSE_FIRE_GUILD_INITIATE_EMERALD_ISLE];
-
             // TODO(pskelton): check this behaviour
             if (!pParty->hasActiveCharacter())  // avoid nzi
                 pParty->setActiveToFirstCanAct();
 
-            if (!pParty->activeCharacter()._achievedAwardsBits[membership]) {
+            if (!pParty->activeCharacter()._achievedAwardsBits[guildMembershipFlags[uHouseID]]) {
                 PlayHouseSound(uHouseID, HouseSound_Greeting_2);
                 return true;
             }
@@ -2652,111 +2650,6 @@ void JailDialog() {
             0)) / 2 + 18, colorTable.PaleCanary.c16(), localization->GetString(LSTR_ONE_YEAR_SENTENCE), 3);
 }
 
-int HouseDialogPressCloseBtn() {
-    pCurrentFrameMessageQueue->Flush();
-    keyboardInputHandler->SetWindowInputStatus(WINDOW_INPUT_CANCELLED);
-    keyboardInputHandler->ResetKeys();
-    activeLevelDecoration = nullptr;
-    current_npc_text.clear();
-    if (pDialogueNPCCount == 0) return 0;
-
-    if (dialog_menu_id == DIALOGUE_SHOP_BUY_SPECIAL &&
-        shop_ui_background) {
-        shop_ui_background->Release();
-        shop_ui_background = nullptr;
-    }
-
-    switch (dialog_menu_id) {
-    case -1:
-        _4B4224_UpdateNPCTopics(pDialogueNPCCount - 1);
-        BackToHouseMenu();
-        break;
-
-    case DIALOGUE_SHOP_DISPLAY_EQUIPMENT:
-    case DIALOGUE_LEARN_SKILLS:
-    case DIALOGUE_TAVERN_ARCOMAGE_MAIN:
-        BackToHouseMenu();
-        UI_CreateEndConversationButton();
-        dialog_menu_id = DIALOGUE_MAIN;
-        InitializaDialogueOptions(in_current_building_type);
-        break;
-
-    case DIALOGUE_SHOP_SELL:
-    case DIALOGUE_SHOP_IDENTIFY:
-    case DIALOGUE_SHOP_REPAIR:
-        UI_CreateEndConversationButton();
-        dialog_menu_id = DIALOGUE_SHOP_DISPLAY_EQUIPMENT;
-        InitializaDialogueOptions_Shops(in_current_building_type);
-        break;
-
-    case DIALOGUE_TAVERN_ARCOMAGE_RULES:
-    case DIALOGUE_TAVERN_ARCOMAGE_VICTORY_CONDITIONS:
-    case DIALOGUE_TAVERN_ARCOMAGE_RESULT:
-        BackToHouseMenu();
-        UI_CreateEndConversationButton();
-        dialog_menu_id = DIALOGUE_TAVERN_ARCOMAGE_MAIN;
-        InitializaDialogueOptions_Tavern(in_current_building_type);
-        break;
-
-    case DIALOGUE_NULL:
-    case DIALOGUE_MAIN:
-        pDialogueNPCCount = 0;
-        pDialogueWindow->Release();
-        dialog_menu_id = DIALOGUE_NULL;
-        pDialogueWindow = 0;
-
-        if (uNumDialogueNPCPortraits == 1) return 0;
-
-        pBtn_ExitCancel = window_SpeakInHouse->vButtons.front();
-        if (uNumDialogueNPCPortraits > 0) {
-            for (uint i = 0; i < (unsigned int)uNumDialogueNPCPortraits; ++i) {
-                HouseNPCPortraitsButtonsList[i] = window_SpeakInHouse->CreateButton(
-                    {pNPCPortraits_x[uNumDialogueNPCPortraits - 1][i], pNPCPortraits_y[uNumDialogueNPCPortraits - 1][i]}, {63, 73}, 1, 0,
-                    UIMSG_ClickHouseNPCPortrait, i, InputAction::Invalid, byte_591180[i].data());
-            }
-        }
-
-        BackToHouseMenu();
-        break;
-
-    default:
-        BackToHouseMenu();
-        dialog_menu_id = DIALOGUE_MAIN;
-        InitializaDialogueOptions(in_current_building_type);
-        break;
-    }
-    return 1;
-}
-
-void createHouseUI(HOUSE_ID houseId) {
-    window_SpeakInHouse = new GUIWindow_House({0, 0}, render->GetRenderDimensions(), houseId);
-    window_SpeakInHouse->CreateButton({61, 424}, {31, 0}, 2, 94, UIMSG_SelectCharacter, 1, InputAction::SelectChar1, "");
-    window_SpeakInHouse->CreateButton({177, 424}, {31, 0}, 2, 94, UIMSG_SelectCharacter, 2, InputAction::SelectChar2, "");
-    window_SpeakInHouse->CreateButton({292, 424}, {31, 0}, 2, 94, UIMSG_SelectCharacter, 3, InputAction::SelectChar3, "");
-    window_SpeakInHouse->CreateButton({407, 424}, {31, 0}, 2, 94, UIMSG_SelectCharacter, 4, InputAction::SelectChar4, "");
-    window_SpeakInHouse->CreateButton({0, 0}, {0, 0}, 1, 0, UIMSG_CycleCharacters, 0, InputAction::CharCycle, "");
-}
-
-void BackToHouseMenu() {
-    auto pMouse = EngineIocContainer::ResolveMouse();
-    pMouse->ClearPickedItem();
-    // TODO(Nik-RE-dev): Looks like it's artifact of MM6
-#if 0
-    if (window_SpeakInHouse && window_SpeakInHouse->wData.val == 165 &&
-        !pMovie_Track) {
-        bGameoverLoop = true;
-        HouseDialogPressCloseBtn();
-        window_SpeakInHouse->Release();
-        pParty->uFlags &= 0xFFFFFFFD;
-        if (enterHouse(HOUSE_BODY_GUILD_MASTER_ERATHIA)) {
-            pAudioPlayer->playUISound(SOUND_Invalid);
-            createHouseUI(HOUSE_BODY_GUILD_MASTER_ERATHIA);
-        }
-        bGameoverLoop = false;
-    }
-#endif
-}
-
 //----- (004BE571) --------------------------------------------------------
 int sub_4BE571_AddItemToSet(
     DIALOGUE_TYPE valueToAdd,
@@ -3051,30 +2944,327 @@ void GenerateStandartShopItems() {
     pParty->InTheShopFlags[shop_index] = 0;
 }
 
-GUIWindow_House::GUIWindow_House(Pointi position, Sizei dimensions, HOUSE_ID houseId, const std::string &hint) :
-    GUIWindow(WINDOW_HouseInterior, position, dimensions, houseId, hint) {
+int HouseDialogPressCloseBtn() {
+    pCurrentFrameMessageQueue->Flush();
+    keyboardInputHandler->SetWindowInputStatus(WINDOW_INPUT_CANCELLED);
+    keyboardInputHandler->ResetKeys();
+    activeLevelDecoration = nullptr;
+    current_npc_text.clear();
+    if (pDialogueNPCCount == 0) return 0;
+
+    if (dialog_menu_id == DIALOGUE_SHOP_BUY_SPECIAL &&
+        shop_ui_background) {
+        shop_ui_background->Release();
+        shop_ui_background = nullptr;
+    }
+
+    switch (dialog_menu_id) {
+    case -1:
+        _4B4224_UpdateNPCTopics(pDialogueNPCCount - 1);
+        BackToHouseMenu();
+        break;
+
+    case DIALOGUE_SHOP_DISPLAY_EQUIPMENT:
+    case DIALOGUE_LEARN_SKILLS:
+    case DIALOGUE_TAVERN_ARCOMAGE_MAIN:
+        BackToHouseMenu();
+        UI_CreateEndConversationButton();
+        dialog_menu_id = DIALOGUE_MAIN;
+        InitializaDialogueOptions(in_current_building_type);
+        break;
+
+    case DIALOGUE_SHOP_SELL:
+    case DIALOGUE_SHOP_IDENTIFY:
+    case DIALOGUE_SHOP_REPAIR:
+        UI_CreateEndConversationButton();
+        dialog_menu_id = DIALOGUE_SHOP_DISPLAY_EQUIPMENT;
+        InitializaDialogueOptions_Shops(in_current_building_type);
+        break;
+
+    case DIALOGUE_TAVERN_ARCOMAGE_RULES:
+    case DIALOGUE_TAVERN_ARCOMAGE_VICTORY_CONDITIONS:
+    case DIALOGUE_TAVERN_ARCOMAGE_RESULT:
+        BackToHouseMenu();
+        UI_CreateEndConversationButton();
+        dialog_menu_id = DIALOGUE_TAVERN_ARCOMAGE_MAIN;
+        InitializaDialogueOptions_Tavern(in_current_building_type);
+        break;
+
+    case DIALOGUE_NULL:
+    case DIALOGUE_MAIN:
+        pDialogueNPCCount = 0;
+        pDialogueWindow->Release();
+        dialog_menu_id = DIALOGUE_NULL;
+        pDialogueWindow = 0;
+
+        if (uNumDialogueNPCPortraits == 1) return 0;
+
+        pBtn_ExitCancel = window_SpeakInHouse->vButtons.front();
+        if (uNumDialogueNPCPortraits > 0) {
+            for (uint i = 0; i < (unsigned int)uNumDialogueNPCPortraits; ++i) {
+                HouseNPCPortraitsButtonsList[i] = window_SpeakInHouse->CreateButton(
+                    {pNPCPortraits_x[uNumDialogueNPCPortraits - 1][i], pNPCPortraits_y[uNumDialogueNPCPortraits - 1][i]}, {63, 73}, 1, 0,
+                    UIMSG_ClickHouseNPCPortrait, i, InputAction::Invalid, portraitClickLabel[i]);
+            }
+        }
+
+        BackToHouseMenu();
+        break;
+
+    default:
+        BackToHouseMenu();
+        dialog_menu_id = DIALOGUE_MAIN;
+        InitializaDialogueOptions(in_current_building_type);
+        break;
+    }
+    return 1;
+}
+
+void createHouseUI(HOUSE_ID houseId) {
+    switch (in_current_building_type) {
+      case BuildingType_FireGuild:
+      case BuildingType_AirGuild:
+      case BuildingType_WaterGuild:
+      case BuildingType_EarthGuild:
+      case BuildingType_SpiritGuild:
+      case BuildingType_MindGuild:
+      case BuildingType_BodyGuild:
+      case BuildingType_LightGuild:
+      case BuildingType_DarkGuild:
+      case BuildingType_MirroredPath:
+        window_SpeakInHouse = new GUIWindow_MagicGuild(houseId);
+        break;
+      default:
+        window_SpeakInHouse = new GUIWindow_House(houseId);
+        break;
+    }
+    window_SpeakInHouse->CreateButton({61, 424}, {31, 0}, 2, 94, UIMSG_SelectCharacter, 1, InputAction::SelectChar1, "");
+    window_SpeakInHouse->CreateButton({177, 424}, {31, 0}, 2, 94, UIMSG_SelectCharacter, 2, InputAction::SelectChar2, "");
+    window_SpeakInHouse->CreateButton({292, 424}, {31, 0}, 2, 94, UIMSG_SelectCharacter, 3, InputAction::SelectChar3, "");
+    window_SpeakInHouse->CreateButton({407, 424}, {31, 0}, 2, 94, UIMSG_SelectCharacter, 4, InputAction::SelectChar4, "");
+    window_SpeakInHouse->CreateButton({0, 0}, {0, 0}, 1, 0, UIMSG_CycleCharacters, 0, InputAction::CharCycle, "");
+}
+
+void BackToHouseMenu() {
+    auto pMouse = EngineIocContainer::ResolveMouse();
+    pMouse->ClearPickedItem();
+    // TODO(Nik-RE-dev): Looks like it's artifact of MM6
+#if 0
+    if (window_SpeakInHouse && window_SpeakInHouse->wData.val == 165 &&
+        !pMovie_Track) {
+        bGameoverLoop = true;
+        HouseDialogPressCloseBtn();
+        window_SpeakInHouse->Release();
+        pParty->uFlags &= 0xFFFFFFFD;
+        if (enterHouse(HOUSE_BODY_GUILD_MASTER_ERATHIA)) {
+            pAudioPlayer->playUISound(SOUND_Invalid);
+            createHouseUI(HOUSE_BODY_GUILD_MASTER_ERATHIA);
+        }
+        bGameoverLoop = false;
+    }
+#endif
+}
+
+void GUIWindow_House::houseDialogManager() {
+    assert(window_SpeakInHouse != nullptr);
+
+    GUIWindow pWindow = *this;
+    pWindow.uFrameWidth -= 18;
+    pWindow.uFrameZ -= 18;
+    render->DrawTextureNew(477 / 640.0f, 0, game_ui_dialogue_background);
+    render->DrawTextureNew(468 / 640.0f, 0, game_ui_right_panel_frame);
+
+    if (pDialogueNPCCount != uNumDialogueNPCPortraits || !uHouse_ExitPic) {
+        const char *pHouseName = buildingTable[wData.val - 1].pName;
+        if (pHouseName) {
+            if (current_screen_type != CURRENT_SCREEN::SCREEN_SHOP_INVENTORY) {
+                int v3 = 2 * pFontCreate->GetHeight() - 6 - pFontCreate->CalcTextHeight(pHouseName, 130, 0);
+                if (v3 < 0)
+                    v3 = 0;
+                pWindow.DrawTitleText(pFontCreate, 0x1EAu, v3 / 2 + 4, colorTable.White.c16(), buildingTable[wData.val - 1].pName, 3);
+            }
+        }
+    }
+
+    pWindow.uFrameWidth += 8;
+    pWindow.uFrameZ += 8;
+    if (!pDialogueNPCCount) {
+        if (in_current_building_type == BuildingType_Jail) {
+            JailDialog();
+            if (pDialogueNPCCount == uNumDialogueNPCPortraits && uHouse_ExitPic) {
+                render->DrawTextureNew(556 / 640.0f, 451 / 480.0f, dialogue_ui_x_x_u);
+                render->DrawTextureNew(476 / 640.0f, 451 / 480.0f, dialogue_ui_x_ok_u);
+            } else {
+                render->DrawTextureNew(471 / 640.0f, 445 / 480.0f, ui_exit_cancel_button_background);
+            }
+            return;
+        }
+        if (!current_npc_text.empty()) {
+            GUIWindow pDialogWindow;
+            pDialogWindow.uFrameWidth = 458;
+            pDialogWindow.uFrameZ = 457;
+            int pTextHeight = pFontArrus->CalcTextHeight(current_npc_text, pDialogWindow.uFrameWidth, 13);
+            int v6 = pTextHeight + 7;
+            render->DrawTextureCustomHeight(8 / 640.0f, (352 - (pTextHeight + 7)) / 480.0f, ui_leather_mm7, pTextHeight + 7);
+            render->DrawTextureNew(8 / 640.0f, (347 - v6) / 480.0f, _591428_endcap);
+            DrawText(pFontArrus, {13, 354 - v6}, 0, pFontArrus->FitTextInAWindow(current_npc_text, pDialogWindow.uFrameWidth, 13), 0, 0, 0);
+        }
+        if (uNumDialogueNPCPortraits <= 0) {
+            if (pDialogueNPCCount == uNumDialogueNPCPortraits &&
+                uHouse_ExitPic) {
+                render->DrawTextureNew(556 / 640.0f, 451 / 480.0f, dialogue_ui_x_x_u);
+                render->DrawTextureNew(476 / 640.0f, 451 / 480.0f, dialogue_ui_x_ok_u);
+            } else {
+                render->DrawTextureNew(471 / 640.0f, 445 / 480.0f, ui_exit_cancel_button_background);
+            }
+            return;
+        }
+
+        for (int v8 = 0; v8 < uNumDialogueNPCPortraits; ++v8) {
+            render->DrawTextureNew((pNPCPortraits_x[uNumDialogueNPCPortraits - 1][v8] - 4) / 640.0f,
+                                   (pNPCPortraits_y[uNumDialogueNPCPortraits - 1][v8] - 4) / 480.0f, game_ui_evtnpc);
+            render->DrawTextureNew(pNPCPortraits_x[uNumDialogueNPCPortraits - 1][v8] / 640.0f,
+                                   pNPCPortraits_y[uNumDialogueNPCPortraits - 1][v8] / 480.0f, pDialogueNPCPortraits[v8]);
+            if (uNumDialogueNPCPortraits < 4) {
+                std::string pTitleText;
+                int v9 = 0;
+                if (v8 + 1 == uNumDialogueNPCPortraits && uHouse_ExitPic) {
+                    pTitleText = pMapStats->pInfos[uHouse_ExitPic].pName;
+                    v9 = 94 * v8 + SIDE_TEXT_BOX_POS_Y;
+                } else {
+                    if (!v8 && dword_591080) {
+                        pTitleText = (char*)buildingTable[wData.val - 1].pProprieterTitle;
+                        pWindow.DrawTitleText(pFontCreate, SIDE_TEXT_BOX_POS_X, SIDE_TEXT_BOX_POS_Y, colorTable.EasternBlue.c16(), pTitleText, 3);
+                        continue;
+                    }
+                    pTitleText = HouseNPCData[v8 + 1 - (dword_591080 != 0)]->pName;
+                    v9 = pNPCPortraits_y[uNumDialogueNPCPortraits - 1][v8] + pDialogueNPCPortraits[v8]->GetHeight() + 2;
+                }
+                pWindow.DrawTitleText(pFontCreate, SIDE_TEXT_BOX_POS_X, v9, colorTable.EasternBlue.c16(), pTitleText, 3);
+            }
+        }
+        if (pDialogueNPCCount == uNumDialogueNPCPortraits && uHouse_ExitPic) {
+            render->DrawTextureNew(556 / 640.0f, 451 / 480.0f, dialogue_ui_x_x_u);
+            render->DrawTextureNew(476 / 640.0f, 451 / 480.0f, dialogue_ui_x_ok_u);
+        } else {
+            render->DrawTextureNew(471 / 640.0f, 445 / 480.0f, ui_exit_cancel_button_background);
+        }
+        return;
+    }
+
+    int v4 = pDialogueNPCCount - 1;
+    render->DrawTextureNew((pNPCPortraits_x[0][0] - 4) / 640.0f, (pNPCPortraits_y[0][0] - 4) / 480.0f, game_ui_evtnpc);
+    render->DrawTextureNew(pNPCPortraits_x[0][0] / 640.0f, pNPCPortraits_y[0][0] / 480.0f, pDialogueNPCPortraits[v4]);
+    if (current_screen_type == CURRENT_SCREEN::SCREEN_SHOP_INVENTORY) {
+        CharacterUI_InventoryTab_Draw(&pParty->activeCharacter(), true);
+        if (pDialogueNPCCount == uNumDialogueNPCPortraits && uHouse_ExitPic) {
+            render->DrawTextureNew(556 / 640.0f, 451 / 480.0f, dialogue_ui_x_x_u);
+            render->DrawTextureNew(476 / 640.0f, 451 / 480.0f, dialogue_ui_x_ok_u);
+        } else {
+            render->DrawTextureNew(471 / 640.0f, 445 / 480.0f, ui_exit_cancel_button_background);
+        }
+        return;
+    }
+    if (v4 || !dword_591080) {  // emerald isle ship before quest's done   / на
+                                // изумрудном острове заходит на корабле пока не
+                                // выполнены квесты
+        SimpleHouseDialog();
+    } else {
+        std::string nameAndTitle = NameAndTitle(buildingTable[wData.val - 1].pProprieterName,
+                                                buildingTable[wData.val - 1].pProprieterTitle);
+        pWindow.DrawTitleText(pFontCreate, SIDE_TEXT_BOX_POS_X, SIDE_TEXT_BOX_POS_Y, colorTable.EasternBlue.c16(), nameAndTitle, 3);
+        houseSpecificDialogue();
+
+        // TODO(Nik-RE-dev): 
+        switch (in_current_building_type) {
+          case BuildingType_WeaponShop:
+            WeaponShopDialog();
+            break;
+          case BuildingType_ArmorShop:
+            ArmorShopDialog();
+            break;
+          case BuildingType_MagicShop:
+            MagicShopDialog();
+            break;
+          case BuildingType_AlchemistShop:
+            AlchemistDialog();
+            break;
+          case BuildingType_FireGuild:
+          case BuildingType_AirGuild:
+          case BuildingType_WaterGuild:
+          case BuildingType_EarthGuild:
+          case BuildingType_SpiritGuild:
+          case BuildingType_MindGuild:
+          case BuildingType_BodyGuild:
+          case BuildingType_LightGuild:
+          case BuildingType_DarkGuild:
+          case BuildingType_MirroredPath:
+            //GuildDialog();
+            break;
+          case BuildingType_MercenaryGuild:
+            MercenaryGuildDialog();
+            break;
+          case BuildingType_TownHall:
+            TownHallDialog();
+            break;
+          case BuildingType_Tavern:
+            TavernDialog();
+            break;
+          case BuildingType_Bank:
+            BankDialog();
+            break;
+          case BuildingType_Temple:
+            TempleDialog();
+            break;
+          case BuildingType_Stables:
+          case BuildingType_Boats:
+            TravelByTransport();
+            break;
+          case BuildingType_Training:
+            // __debugbreak(); // param was passed via pTmpBuf, investiage
+            // ?? no idea why this could pass an argument - its always reset
+            TrainingDialog("");
+            break;
+          case BuildingType_Jail:
+            JailDialog();
+            break;
+          default:
+            // __debugbreak();//New BuildingType (if enter Boat)
+            break;
+        }
+    }
+    if (pDialogueNPCCount == uNumDialogueNPCPortraits && uHouse_ExitPic) {
+        render->DrawTextureNew(556 / 640.0f, 451 / 480.0f, dialogue_ui_x_x_u);
+        render->DrawTextureNew(476 / 640.0f, 451 / 480.0f, dialogue_ui_x_ok_u);
+    } else {
+        render->DrawTextureNew(471 / 640.0f, 445 / 480.0f, ui_exit_cancel_button_background);
+    }
+}
+
+GUIWindow_House::GUIWindow_House(HOUSE_ID houseId) : GUIWindow(WINDOW_HouseInterior, {0, 0}, render->GetRenderDimensions(), houseId) {
     pEventTimer->Pause();  // pause timer so not attacked
 
     current_screen_type = CURRENT_SCREEN::SCREEN_HOUSE;
-    pBtn_ExitCancel = CreateButton({471, 445}, {169, 35}, 1, 0, UIMSG_Escape, 0, InputAction::Invalid, localization->GetString(LSTR_EXIT_BUILDING),
-        {ui_exit_cancel_button_background});
-    for (int v26 = 0; v26 < uNumDialogueNPCPortraits; ++v26) {
-        const char *v29;
-        std::string v30;
-        if (v26 + 1 == uNumDialogueNPCPortraits && uHouse_ExitPic) {
-            v30 = pMapStats->pInfos[uHouse_ExitPic].pName;
-            v29 = localization->GetString(LSTR_FMT_ENTER_S);
+    pBtn_ExitCancel = CreateButton({471, 445}, {169, 35}, 1, 0, UIMSG_Escape, 0, InputAction::Invalid,
+                                   localization->GetString(LSTR_EXIT_BUILDING), {ui_exit_cancel_button_background});
+    for (int curNpc = 0; curNpc < uNumDialogueNPCPortraits; curNpc++) {
+        int labelFmt;
+        std::string labelData;
+        if (curNpc + 1 == uNumDialogueNPCPortraits && uHouse_ExitPic) {
+            labelData = pMapStats->pInfos[uHouse_ExitPic].pName;
+            labelFmt = LSTR_FMT_ENTER_S;
         } else {
-            if (v26 || !dword_591080)
-                v30 = HouseNPCData[v26 + 1 - ((dword_591080 != 0) ? 1 : 0)]->pName;
-            else
-                v30 = buildingTable[houseId - 1].pProprieterName;
-            v29 = localization->GetString(LSTR_FMT_CONVERSE_WITH_S);
+            if (curNpc || !dword_591080) {
+                labelData = HouseNPCData[curNpc + 1 - ((dword_591080 != 0) ? 1 : 0)]->pName;
+            } else {
+                labelData = buildingTable[houseId - 1].pProprieterName;
+            }
+            labelFmt = LSTR_FMT_CONVERSE_WITH_S;
         }
-        sprintf(byte_591180[v26].data(), v29, v30.c_str());
-        HouseNPCPortraitsButtonsList[v26] = CreateButton(
-            {pNPCPortraits_x[uNumDialogueNPCPortraits - 1][v26], pNPCPortraits_y[uNumDialogueNPCPortraits - 1][v26]}, {63, 73}, 1, 0,
-            UIMSG_ClickHouseNPCPortrait, v26, InputAction::Invalid, byte_591180[v26].data());
+        portraitClickLabel[curNpc] = localization->FormatString(labelFmt, labelData.c_str());
+        HouseNPCPortraitsButtonsList[curNpc] = CreateButton(
+            {pNPCPortraits_x[uNumDialogueNPCPortraits - 1][curNpc], pNPCPortraits_y[uNumDialogueNPCPortraits - 1][curNpc]}, {63, 73}, 1, 0,
+            UIMSG_ClickHouseNPCPortrait, curNpc, InputAction::Invalid, portraitClickLabel[curNpc]);
     }
     if (uNumDialogueNPCPortraits == 1) {
         window_SpeakInHouse = this;
@@ -3083,14 +3273,15 @@ GUIWindow_House::GUIWindow_House(Pointi position, Sizei dimensions, HOUSE_ID hou
 }
 
 void GUIWindow_House::Update() {
-    HouseDialogManager();
-    if (!window_SpeakInHouse)
+    if (!window_SpeakInHouse) {
         return;
-    if (window_SpeakInHouse->wData.val >= 53)
+    }
+    houseDialogManager();
+    if (!isShop(houseId())) {
         return;
-    if (pParty->PartyTimes._shop_ban_times[window_SpeakInHouse->wData.val] <= pParty->GetPlayingTime()) {
-        if (window_SpeakInHouse->wData.val < 53)
-            pParty->PartyTimes._shop_ban_times[window_SpeakInHouse->wData.val] = GameTime(0);
+    }
+    if (pParty->PartyTimes._shop_ban_times[houseId()] <= pParty->GetPlayingTime()) {
+        pParty->PartyTimes._shop_ban_times[houseId()] = GameTime(0);
         return;
     }
     // dialog_menu_id = DIALOGUE_MAIN;
@@ -3120,3 +3311,8 @@ void GUIWindow_House::Release() {
 
     GUIWindow::Release();
 }
+
+void GUIWindow_House::houseSpecificDialogue() {
+    // Nothing
+}
+
