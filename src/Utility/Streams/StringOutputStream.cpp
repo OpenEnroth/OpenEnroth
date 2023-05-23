@@ -3,25 +3,25 @@
 #include <cassert>
 #include <cstring>
 
-StringOutputStream::StringOutputStream(std::string *target) : target_(target) {
+StringOutputStream::StringOutputStream(std::string *target) : _target(target) {
     assert(target);
 }
 
 StringOutputStream::~StringOutputStream() {}
 
 void StringOutputStream::write(const void *data, size_t size) {
-    assert(target_);
+    assert(_target);
 
-    target_->resize(target_->size() + size);
-    memcpy(target_->data() + target_->size() - size, data, size);
+    _target->resize(_target->size() + size);
+    memcpy(_target->data() + _target->size() - size, data, size);
 }
 
 void StringOutputStream::flush() {
-    assert(target_);
+    assert(_target);
 
     // Nothing else to do here.
 }
 
 void StringOutputStream::close() {
-    target_ = nullptr;
+    _target = nullptr;
 }
