@@ -20,7 +20,8 @@ enum class MERCHANT_PHRASE {
                                             // e.g. repairing a non-broken item, or selling a quest item.
     MERCAHNT_PHRASE_STOLEN_ITEM = 6,        // When hovering over a stolen item.
 
-    MERCHANT_PHRASE_COUNT = 7
+    MERCHANT_PHRASE_FIRST = MERCHANT_PHRASE_NOT_ENOUGH_GOLD,
+    MERCHANT_PHRASE_LAST = MERCAHNT_PHRASE_STOLEN_ITEM
 };
 using enum MERCHANT_PHRASE;
 

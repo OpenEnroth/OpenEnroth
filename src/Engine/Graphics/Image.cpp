@@ -231,7 +231,7 @@ const void *Image::GetPixels(IMAGE_FORMAT format) {
 
         auto native_pixels = this->pixels[this->native_format];
         if (native_pixels) {
-            static constexpr IndexedArray<IndexedArray<ImageFormatConverter, IMAGE_NUM_FORMATS>, IMAGE_NUM_FORMATS> converters = {
+            static constexpr IndexedArray<IndexedArray<ImageFormatConverter, IMAGE_FORMAT_FIRST, IMAGE_FORMAT_LAST>, IMAGE_FORMAT_FIRST, IMAGE_FORMAT_LAST> converters = {
                 {IMAGE_FORMAT_R5G6B5, {
                     {IMAGE_FORMAT_R5G6B5,       nullptr},
                     {IMAGE_FORMAT_A1R5G5B5,     nullptr},

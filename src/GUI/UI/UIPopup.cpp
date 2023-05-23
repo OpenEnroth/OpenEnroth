@@ -809,7 +809,7 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
                         pText =
                             localization->GetString(LSTR_PAIN_REFLECTION);
                         break;
-                    case ACTOR_BUFF_PAIN_HAMMERHANDS:
+                    case ACTOR_BUFF_HAMMERHANDS:
                         pTextColorID = 73;
                         pText = localization->GetString(LSTR_HAMMERHANDS);
                         break;

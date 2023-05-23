@@ -23,6 +23,7 @@ using enum ABILITY_INDEX;
 
 /*  361 */
 enum class ACTOR_BUFF_INDEX {
+    ACTOR_BUFF_NONE = 0,
     ACTOR_BUFF_CHARM = 1,
     ACTOR_BUFF_SUMMONED = 2,
     ACTOR_BUFF_SHRINK = 3,
@@ -43,8 +44,10 @@ enum class ACTOR_BUFF_INDEX {
     ACTOR_BUFF_HEROISM = 18,
     ACTOR_BUFF_HASTE = 19,
     ACTOR_BUFF_PAIN_REFLECTION = 20,
-    ACTOR_BUFF_PAIN_HAMMERHANDS = 21,
-    ACTOR_BUFF_COUNT
+    ACTOR_BUFF_HAMMERHANDS = 21,
+
+    ACTOR_BUFF_FIRST = ACTOR_BUFF_NONE, // TODO(captainurist): look into this, should be ACTOR_BUFF_CHARM.
+    ACTOR_BUFF_LAST = ACTOR_BUFF_HAMMERHANDS
 };
 using enum ACTOR_BUFF_INDEX;
 
@@ -96,7 +99,9 @@ enum class ActorAnimation {
     ANIM_Dying = 0x5,
     ANIM_Dead = 0x6,
     ANIM_Bored = 0x7,
-    ANIM_Count
+
+    ANIM_First = ANIM_Standing,
+    ANIM_Last = ANIM_Bored
 };
 using enum ActorAnimation;
 
