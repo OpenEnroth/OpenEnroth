@@ -71,7 +71,6 @@ extern std::array<short, 28> word_4EE150;
 extern std::array<int, 32> guild_membership_flags;
 extern std::array<int16_t, 49> word_4F0754;
 extern std::array<std::pair<int16_t, ITEM_TYPE>, 27> _4F0882_evt_VAR_PlayerItemInHands_vals;
-extern std::array<unsigned short, 6> pMaxLevelPerTrainingHallType;
 extern std::array<int, 11> price_for_membership;
 extern std::array<int, 500> ai_array_detected_actor_dist;
 extern std::array<int, 500> ai_array_detected_actor_ids;
@@ -213,7 +212,6 @@ extern std::array<unsigned short, 128 * 128 * 2> pTerrainNormalIndices;
 extern std::array<unsigned int, 128 * 128 * 2> pTerrainSomeOtherData;
 extern unsigned int uPlayerCreationUI_SelectedCharacter;
 extern int dword_A74CDC;
-extern std::array<int, 4> player_levels;
 extern std::array<int16_t, 6> weapons_Ypos;  // word_F8B158
 extern int guild_membership_approved;
 extern PLAYER_SKILL_MASTERY dword_F8B1B0_MasteryBeingTaught;

@@ -51,6 +51,14 @@ struct GameTime {
         this->value += SECONDS_TO_GAME_TIME(60ull * minutes);
         return *this;
     }
+    GameTime &SubtractMinutes(int minutes) {
+        this->value -= SECONDS_TO_GAME_TIME(60ull * minutes);
+        return *this;
+    }
+    GameTime &AddHours(int hours) {
+        this->value += SECONDS_TO_GAME_TIME(3600ull * hours);
+        return *this;
+    }
     GameTime &SubtractHours(int hours) {
         this->value -= SECONDS_TO_GAME_TIME(3600ull * hours);
         return *this;

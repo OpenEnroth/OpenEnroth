@@ -1,6 +1,8 @@
 #include "UIHouses.h"
 
 #include <cstdlib>
+#include <limits>
+#include <vector>
 
 #include "Arcomage/Arcomage.h"
 
@@ -44,6 +46,7 @@
 #include "Utility/String.h"
 #include "Library/Random/Random.h"
 #include "Utility/Math/TrigLut.h"
+#include "Utility/IndexedArray.h"
 
 using Io::TextInputType;
 
@@ -130,6 +133,19 @@ unsigned char transport_routes[20][4] = {
     { 24, 24, 24, 24 },      // HOUSE_BOATS_71
     { 255, 255, 255, 255 },  // HOUSE_BOATS_72
     { 255, 255, 255, 255 }   // HOUSE_BOATS_73
+};
+
+IndexedArray<int, HOUSE_TRAINING_HALL_EMERALD_ISLE, HOUSE_TRAINING_HALL_STONE_CITY> trainingHallMaxLevels = {
+    {HOUSE_TRAINING_HALL_EMERALD_ISLE, 5},
+    {HOUSE_TRAINING_HALL_HARMONDALE, 15},
+    {HOUSE_TRAINING_HALL_ERATHIA, 25},
+    {HOUSE_TRAINING_HALL_TULAREAN_FOREST, 25},
+    {HOUSE_TRAINING_HALL_CELESTE, 200},
+    {HOUSE_TRAINING_HALL_PIT, 200},
+    {HOUSE_TRAINING_HALL_NIGHON, std::numeric_limits<int>::max()}, // no limit
+    {HOUSE_TRAINING_HALL_TATALIA, 50},
+    {HOUSE_TRAINING_HALL_AVLEE, 50},
+    {HOUSE_TRAINING_HALL_STONE_CITY, 100},
 };
 
 std::array<const HouseAnimDescr, 196> pAnimatedRooms = { {  // 0x4E5F70
@@ -521,6 +537,8 @@ const std::array<ITEM_VARIATION, 28> shopArmr_variation_spc = {{
     { ITEM_TREASURE_LEVEL_5, { 33, 33, 33, 33 } }
 }};
 
+std::vector<int> charactersTrainedLevels;
+
 void FillAviableSkillsToTeach(BuildingType type);
 
 //----- (004B3A72) --------------------------------------------------------
@@ -805,14 +823,15 @@ bool enterHouse(HOUSE_ID uHouseID) {
 
     if (uHouseID == HOUSE_THRONEROOM_WIN_GOOD || uHouseID == HOUSE_THRONEROOM_WIN_EVIL) {
         pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_ShowGameOverWindow, 0, 0);
-        return 0;
+        return false;
     }
 
     int uOpenTime = buildingTable[uHouseID - HOUSE_SMITH_EMERALD_ISLE].uOpenTime;
     int uCloseTime = buildingTable[uHouseID - HOUSE_SMITH_EMERALD_ISLE].uCloseTime;
     current_npc_text.clear();
     dword_F8B1E4 = 0;
-    memset(player_levels.data(), 0, 16);
+    charactersTrainedLevels.resize(pParty->pPlayers.size());
+    std::fill(charactersTrainedLevels.begin(), charactersTrainedLevels.end(), 0);
     render->ClearZBuffer();
 
     if (((uCloseTime - 1 <= uOpenTime) && ((pParty->uCurrentHour < uOpenTime) && (pParty->uCurrentHour >(uCloseTime - 1)))) ||
@@ -834,7 +853,7 @@ bool enterHouse(HOUSE_ID uHouseID) {
             pParty->activeCharacter().playReaction(SPEECH_StoreClosed);
         }
 
-        return 0;
+        return false;
     } else {
         if (uHouseID < 53) {  // entering shops and guilds
             if (!(pParty->PartyTimes._shop_ban_times[uHouseID]) ||
@@ -843,7 +862,7 @@ bool enterHouse(HOUSE_ID uHouseID) {
                 pParty->PartyTimes._shop_ban_times[uHouseID] = GameTime(0);
             } else {
                 GameUI_SetStatusBar(LSTR_BANNED_FROM_SHOP);
-                return 0;
+                return false;
             }
         }
 
@@ -876,7 +895,7 @@ bool enterHouse(HOUSE_ID uHouseID) {
         dword_5C35D4 = 1;
         if ((signed int)uHouseID < HOUSE_FIRE_GUILD_INITIATE_EMERALD_ISLE || (signed int)uHouseID > HOUSE_SELF_GUILD_2) {
             if ((signed int)uHouseID >= HOUSE_STABLES_HARMONDALE && (signed int)uHouseID <= HOUSE_BOATS_PLACEHOLDER_2 && !IsTravelAvailable(uHouseID - HOUSE_STABLES_HARMONDALE)) {
-                return 1;
+                return true;
             }
         } else {  // guilds
             int membership = guild_membership_flags[uHouseID - HOUSE_FIRE_GUILD_INITIATE_EMERALD_ISLE];
@@ -887,12 +906,12 @@ bool enterHouse(HOUSE_ID uHouseID) {
 
             if (!pParty->activeCharacter()._achievedAwardsBits[membership]) {
                 PlayHouseSound(uHouseID, HouseSound_Greeting_2);
-                return 1;
+                return true;
             }
         }
         PlayHouseSound(uHouseID, HouseSound_Greeting);
         dword_5C35D4 = 1;
-        return 1;
+        return true;
     }
 }
 
@@ -965,28 +984,23 @@ void PlayHouseSound(unsigned int uHouseID, HouseSoundID sound) {
 
 //----- (004BCACC) --------------------------------------------------------
 void OnSelectShopDialogueOption(DIALOGUE_TYPE option) {
-    int experience_for_next_level;  // eax@5
-    signed int v36;                 // esi@227
-
-    if (!pDialogueWindow->pNumPresenceButton) return;
+    if (!pDialogueWindow->pNumPresenceButton)
+        return;
     render->ClearZBuffer();
 
     if (dialog_menu_id == DIALOGUE_MAIN) {
         Sizei renDims = render->GetRenderDimensions();
         if (in_current_building_type == BuildingType_Training) {
             if (option == DIALOGUE_TRAINING_HALL_TRAIN) {
-                experience_for_next_level = 0;
-                if (pParty->activeCharacter().uLevel > 0) {
-                    for (uint i = 0; i < pParty->activeCharacter().uLevel;
-                        i++)
-                        experience_for_next_level += i + 1;
+                Player &player = pParty->activeCharacter();
+                uint64_t expForNextLevel = 0;
+                for (int i = 0; i < pParty->activeCharacter().uLevel; i++) {
+                    expForNextLevel += i + 1;
                 }
-                if (pParty->activeCharacter().uLevel <
-                    pMaxLevelPerTrainingHallType
-                    [window_SpeakInHouse->wData.val - 89] &&
-                    (int64_t)pParty->activeCharacter().experience <
-                    1000 * experience_for_next_level)  // test experience
+                expForNextLevel *= 1000;
+                if (player.uLevel < trainingHallMaxLevels[HOUSE_ID(window_SpeakInHouse->wData.val)] && player.experience < expForNextLevel) {
                     return;
+                }
             }
             pDialogueWindow->Release();
             pDialogueWindow = new GUIWindow(WINDOW_Dialogue, {0, 0}, {renDims.w, 345}, 0);
@@ -1366,7 +1380,7 @@ void TravelByTransport() {
                     pSpeech = SPEECH_TravelHorse;
                 }
 
-                RestAndHeal(24 * 60 * traveltimedays);
+                restAndHeal(GameTime::FromDays(traveltimedays));
                 pParty->activeCharacter().playReaction(pSpeech);
                 pAudioPlayer->soundDrain();
                 while (HouseDialogPressCloseBtn()) {}
@@ -2126,7 +2140,6 @@ void TrainingDialog(const char *s) {
     int v14;              // esi@14
     int v33;              // eax@36
     unsigned int v36;     // eax@38
-    unsigned int v42;     // eax@46
     int index;
     int all_text_height;          // eax@68
     int v49;                      // ebx@69
@@ -2153,28 +2166,17 @@ void TrainingDialog(const char *s) {
                 index = 0;
                 pShopOptions[0] = s;  // set first item to fucntion param - this
                                       // always gets overwritten below??
-                pShopOptions[1] =
-                    localization->GetString(LSTR_LEARN_SKILLS);
-                if (pDialogueWindow->pStartingPosActiveItem <
-                    pDialogueWindow->pStartingPosActiveItem +
-                    pDialogueWindow->pNumPresenceButton) {
-                    for (int i = pDialogueWindow->pStartingPosActiveItem;
-                        i < pDialogueWindow->pNumPresenceButton +
-                        pDialogueWindow->pStartingPosActiveItem;
-                        ++i) {
-                        if (pDialogueWindow->GetControl(i)->msg_param ==
-                            DIALOGUE_TRAINING_HALL_TRAIN) {
+                pShopOptions[1] = localization->GetString(LSTR_LEARN_SKILLS);
+                if (pDialogueWindow->pStartingPosActiveItem < pDialogueWindow->pStartingPosActiveItem + pDialogueWindow->pNumPresenceButton) {
+                    for (int i = pDialogueWindow->pStartingPosActiveItem; i < pDialogueWindow->pNumPresenceButton + pDialogueWindow->pStartingPosActiveItem; ++i) {
+                        if (pDialogueWindow->GetControl(i)->msg_param == DIALOGUE_TRAINING_HALL_TRAIN) {
                             static std::string shop_option_str_container;
-                            if (pParty->activeCharacter().uLevel >=
-                                pMaxLevelPerTrainingHallType
-                                [window_SpeakInHouse->wData.val -
-                                HOUSE_TRAINING_HALL_EMERALD_ISLE]) {
+                            if (pParty->activeCharacter().uLevel >= trainingHallMaxLevels[HOUSE_ID(window_SpeakInHouse->wData.val)]) {
                                 shop_option_str_container = fmt::format(
                                     "{}\n \n{}",
                                     localization->GetString(LSTR_TEACHER_LEVEL_TOO_LOW),
                                     localization->GetString(LSTR_CANT_TRAIN_FURTHER));
                                 pShopOptions[index] = shop_option_str_container.c_str();
-
                             } else {
                                 if (pParty->activeCharacter().experience < expForNextLevel)
                                     shop_option_str_container = localization->FormatString(
@@ -2189,9 +2191,7 @@ void TrainingDialog(const char *s) {
                                 pShopOptions[index] = shop_option_str_container.c_str();
                             }
                         }
-                        all_text_height += pFontArrus->CalcTextHeight(
-                            pShopOptions[index],
-                            training_dialog_window.uFrameWidth, 0);
+                        all_text_height += pFontArrus->CalcTextHeight(pShopOptions[index], training_dialog_window.uFrameWidth, 0);
                         ++index;
                     }
                 }
@@ -2231,45 +2231,29 @@ void TrainingDialog(const char *s) {
             std::string label;
 
             if (!HouseUI_CheckIfPlayerCanInteract()) {
-                v33 = pFontArrus->CalcTextHeight(
-                    pNPCTopics[122].pText, training_dialog_window.uFrameWidth,
-                    0);
-                training_dialog_window.DrawTitleText(
-                    pFontArrus, 0, (212 - v33) / 2 + 101, colorTable.Jonquil.c16(), pNPCTopics[122].pText, 3);
+                v33 = pFontArrus->CalcTextHeight(pNPCTopics[122].pText, training_dialog_window.uFrameWidth, 0);
+                training_dialog_window.DrawTitleText(pFontArrus, 0, (212 - v33) / 2 + 101, colorTable.Jonquil.c16(), pNPCTopics[122].pText, 3);
                 pDialogueWindow->pNumPresenceButton = 0;
                 return;
             }
-            if (pParty->activeCharacter().uLevel <
-                pMaxLevelPerTrainingHallType
-                [window_SpeakInHouse->wData.val -
-                HOUSE_TRAINING_HALL_EMERALD_ISLE]) {
-                if ((int64_t)pParty->activeCharacter().experience >=
-                    expForNextLevel) {
+            if (pParty->activeCharacter().uLevel < trainingHallMaxLevels[HOUSE_ID(window_SpeakInHouse->wData.val)]) {
+                if ((int64_t)pParty->activeCharacter().experience >= expForNextLevel) {
                     if (pParty->GetGold() >= pPrice) {
                         pParty->TakeGold(pPrice);
-                        PlayHouseSound(
-                            window_SpeakInHouse->wData.val,
-                            HouseSound_NotEnoughMoney);
-                        ++pParty->activeCharacter().uLevel;
-                        pParty->activeCharacter().uSkillPoints +=
-                            pParty->activeCharacter().uLevel / 10 + 5;
-                        pParty->activeCharacter().health =
-                            pParty->activeCharacter().GetMaxHealth();
-                        pParty->activeCharacter().mana =
-                            pParty->activeCharacter().GetMaxMana();
-                        uint max_level_in_party = player_levels[0];
-                        for (uint _it = 1; _it < 4; ++_it) {
-                            if (player_levels[_it] > max_level_in_party)
-                                max_level_in_party = player_levels[_it];
-                        }
-                        ++player_levels[pParty->activeCharacterIndex() - 1];
-                        if (player_levels[pParty->activeCharacterIndex() - 1] >
-                            max_level_in_party) {  // if we reach new maximum party level feature is broken thou,
-                                                   // since this array is always zeroed in enterHouse
-                            v42 = 60 * (_494820_training_time(pParty->uCurrentHour) + 4) - pParty->uCurrentMinute;
-                            if (window_SpeakInHouse->wData.val == HOUSE_TRAINING_HALL_PIT || window_SpeakInHouse->wData.val == HOUSE_TRAINING_HALL_NIGHON)
-                                v42 += 12 * 60;
-                            RestAndHeal(v42 + 7 * 24 * 60);
+                        PlayHouseSound(window_SpeakInHouse->wData.val, HouseSound_NotEnoughMoney);
+                        pParty->activeCharacter().uLevel++;
+                        pParty->activeCharacter().uSkillPoints += pParty->activeCharacter().uLevel / 10 + 5;
+                        pParty->activeCharacter().health = pParty->activeCharacter().GetMaxHealth();
+                        pParty->activeCharacter().mana = pParty->activeCharacter().GetMaxMana();
+                        int maxLevelStepsBefore = *std::max_element(charactersTrainedLevels.begin(), charactersTrainedLevels.end());
+                        charactersTrainedLevels[pParty->activeCharacterIndex() - 1]++;
+                        int maxLevelStepsAfter = *std::max_element(charactersTrainedLevels.begin(), charactersTrainedLevels.end());
+                        if (maxLevelStepsAfter > maxLevelStepsBefore) {
+                            GameTime trainingTime = GameTime::FromHours(_494820_training_time(pParty->uCurrentHour) + 4).SubtractMinutes(pParty->uCurrentMinute);
+                            if (window_SpeakInHouse->wData.val == HOUSE_TRAINING_HALL_PIT || window_SpeakInHouse->wData.val == HOUSE_TRAINING_HALL_NIGHON) {
+                                trainingTime.AddHours(12);
+                            }
+                            restAndHeal(trainingTime.AddDays(7));
                             if (uCurrentlyLoadedLevelType == LEVEL_Outdoor)
                                 pOutdoor->SetFog();
                         }

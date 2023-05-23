@@ -2433,7 +2433,6 @@ std::array<std::pair<int16_t, ITEM_TYPE>, 27> _4F0882_evt_VAR_PlayerItemInHands_
     {0x0ED, ITEM_QUEST_LICH_JAR_FULL},
     {0x0F1, ITEM_RARE_THE_PERFECT_BOW}
 }};
-std::array<unsigned short, 6> pMaxLevelPerTrainingHallType = {{5, 15, 25, 25, 200, 200}};
 
 std::array<int, 11> price_for_membership = {{100, 100, 50, 50, 50, 50, 50, 50, 50, 1000, 1000}};
 
@@ -2562,7 +2561,6 @@ std::array<unsigned int, 128 * 128 * 2> pTerrainSomeOtherData;
 unsigned int uPlayerCreationUI_SelectedCharacter;
 int dword_A74CDC;
 // int dword_F8B144; // nexindex [-1] to the following
-std::array<int, 4> player_levels = {{1, 1, 1, 1}};
 std::array<int16_t, 6> weapons_Ypos;           // word_F8B158
 int guild_membership_approved;
 PLAYER_SKILL_MASTERY dword_F8B1B0_MasteryBeingTaught;

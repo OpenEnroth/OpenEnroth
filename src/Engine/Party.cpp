@@ -856,8 +856,7 @@ void Party::updatePlayersAndHirelingsEmotions() {
     }
 }
 
-//----- (00490D02) --------------------------------------------------------
-void Party::RestAndHeal() {
+void Party::restAndHeal() {
     Player *pPlayer;         // esi@4
     bool have_vessels_soul;  // [sp+10h] [bp-8h]@10
 
@@ -930,9 +929,8 @@ void Rest(GameTime restTime) {
     _494035_timed_effects__water_walking_damage__etc();
 }
 
-//----- (004B1BDB) --------------------------------------------------------
-void RestAndHeal(int minutes) {
-    pParty->GetPlayingTime().AddMinutes(minutes);
+void restAndHeal(GameTime restTime) {
+    pParty->GetPlayingTime() += restTime;
 
     pParty->pHirelings[0].bHasUsedTheAbility = false;
     pParty->pHirelings[1].bHasUsedTheAbility = false;
@@ -944,7 +942,7 @@ void RestAndHeal(int minutes) {
     pParty->uCurrentDayOfMonth = pParty->GetPlayingTime().GetDaysOfMonth();
     pParty->uCurrentMonth = pParty->GetPlayingTime().GetMonthsOfYear();
     pParty->uCurrentYear = pParty->GetPlayingTime().GetYears() + game_starting_year;
-    pParty->RestAndHeal();
+    pParty->restAndHeal();
 
     for (Player &player : pParty->pPlayers) {
         player.timeToRecovery = 0;
