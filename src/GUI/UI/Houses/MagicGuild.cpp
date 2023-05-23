@@ -105,10 +105,15 @@ IndexedArray<int, HOUSE_FIRE_GUILD_INITIATE_EMERALD_ISLE, HOUSE_DARK_GUILD_PARAM
 };
 
 void GUIWindow_MagicGuild::mainDialogue() {
+    GUIWindow working_window = *window_SpeakInHouse;
+    working_window.uFrameX = SIDE_TEXT_BOX_POS_X;
+    working_window.uFrameWidth = SIDE_TEXT_BOX_WIDTH;
+    working_window.uFrameZ = SIDE_TEXT_BOX_POS_Z;
+
     if (!pParty->activeCharacter()._achievedAwardsBits[guildMembershipFlags[houseId()]]) {
         // you must be a member
-        int textHeight = pFontArrus->CalcTextHeight(pNPCTopics[121].pText, uFrameWidth, 0);
-        DrawTitleText(pFontArrus, 0, (212 - textHeight) / 2 + 101, colorTable.PaleCanary.c16(), pNPCTopics[121].pText, 3);
+        int textHeight = pFontArrus->CalcTextHeight(pNPCTopics[121].pText, working_window.uFrameWidth, 0);
+        working_window.DrawTitleText(pFontArrus, 0, (212 - textHeight) / 2 + 101, colorTable.PaleCanary.c16(), pNPCTopics[121].pText, 3);
         pDialogueWindow->pNumPresenceButton = 0;
         return;
     }
@@ -121,13 +126,13 @@ void GUIWindow_MagicGuild::mainDialogue() {
     int all_text_height = 0;
     for (int i = pDialogueWindow->pStartingPosActiveItem; i < pDialogueWindow->pNumPresenceButton + pDialogueWindow->pStartingPosActiveItem; ++i) {
         if (pDialogueWindow->GetControl(i)->msg_param == DIALOGUE_GUILD_BUY_BOOKS) {
-            all_text_height += pFontArrus->CalcTextHeight(localization->GetString(LSTR_BUY_SPELLS), uFrameWidth, 0);
+            all_text_height += pFontArrus->CalcTextHeight(localization->GetString(LSTR_BUY_SPELLS), working_window.uFrameWidth, 0);
             dialogopts++;
         } else {
             PLAYER_SKILL_TYPE skill = GetLearningDialogueSkill((DIALOGUE_TYPE)pDialogueWindow->GetControl(i)->msg_param);
             if (skillMaxMasteryPerClass[pParty->activeCharacter().classType][skill] != PLAYER_SKILL_MASTERY_NONE &&
                 !pParty->activeCharacter().pActiveSkills[skill]) {
-                all_text_height += pFontArrus->CalcTextHeight(localization->GetSkillName(skill), uFrameWidth, 0, 0);
+                all_text_height += pFontArrus->CalcTextHeight(localization->GetSkillName(skill), working_window.uFrameWidth, 0, 0);
                 dialogopts++;
             }
         }
@@ -135,10 +140,15 @@ void GUIWindow_MagicGuild::mainDialogue() {
 
     int pPrice = PriceCalculator::skillLearningCostForPlayer(&pParty->activeCharacter(), buildingTable[wData.val - 1]);
 
-    SkillTrainingDialogue(this, dialogopts, all_text_height, pPrice);
+    SkillTrainingDialogue(&working_window, dialogopts, all_text_height, pPrice);
 }
 
 void GUIWindow_MagicGuild::buyBooksDialogue() {
+    GUIWindow working_window = *window_SpeakInHouse;
+    working_window.uFrameX = SIDE_TEXT_BOX_POS_X;
+    working_window.uFrameWidth = SIDE_TEXT_BOX_WIDTH;
+    working_window.uFrameZ = SIDE_TEXT_BOX_POS_Z;
+
     render->DrawTextureNew(8 / 640.0f, 8 / 480.0f, shop_ui_background);
     int itemxind = 0;
 
@@ -164,7 +174,7 @@ void GUIWindow_MagicGuild::buyBooksDialogue() {
 
         if (!itemcount) {  // shop empty
             GameTime nextGenTime = pParty->PartyTimes.Shops_next_generation_time[wData.val - HOUSE_FIRE_GUILD_INITIATE_EMERALD_ISLE];
-            DrawShops_next_generation_time_string(nextGenTime - pParty->GetPlayingTime());
+            working_window.DrawShops_next_generation_time_string(nextGenTime - pParty->GetPlayingTime());
             return;
         }
 
@@ -189,8 +199,8 @@ void GUIWindow_MagicGuild::buyBooksDialogue() {
                     if ((pt.y >= 90 && pt.y <= (90 + shop_ui_items_in_store[testx]->GetHeight())) || (pt.y >= 250 && pt.y <= (250 + shop_ui_items_in_store[testx]->GetHeight()))) {
                         MERCHANT_PHRASE phase = pParty->activeCharacter().SelectPhrasesTransaction(item, BuildingType_MagicShop, std::to_underlying(houseId()), 2);
                         std::string str = BuildDialogueString(pMerchantsBuyPhrases[phase], pParty->activeCharacterIndex() - 1, item, std::to_underlying(houseId()), 2);
-                        int textHeight = pFontArrus->CalcTextHeight(str, uFrameWidth, 0);
-                        DrawTitleText(pFontArrus, 0, (SIDE_TEXT_BOX_BODY_TEXT_HEIGHT - textHeight) / 2 + SIDE_TEXT_BOX_BODY_TEXT_OFFSET, colorTable.White.c16(), str, 3);
+                        int textHeight = pFontArrus->CalcTextHeight(str, working_window.uFrameWidth, 0);
+                        working_window.DrawTitleText(pFontArrus, 0, (SIDE_TEXT_BOX_BODY_TEXT_HEIGHT - textHeight) / 2 + SIDE_TEXT_BOX_BODY_TEXT_OFFSET, colorTable.White.c16(), str, 3);
                         return;
                     }
                 }
@@ -200,10 +210,6 @@ void GUIWindow_MagicGuild::buyBooksDialogue() {
 }
 
 void GUIWindow_MagicGuild::houseSpecificDialogue() {
-    uFrameX = SIDE_TEXT_BOX_POS_X;
-    uFrameWidth = SIDE_TEXT_BOX_WIDTH;
-    uFrameZ = SIDE_TEXT_BOX_POS_Z;
-
     switch (dialog_menu_id) {
       case DIALOGUE_MAIN:
         mainDialogue();

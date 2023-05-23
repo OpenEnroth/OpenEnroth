@@ -3173,9 +3173,8 @@ void GUIWindow_House::houseDialogManager() {
         std::string nameAndTitle = NameAndTitle(buildingTable[wData.val - 1].pProprieterName,
                                                 buildingTable[wData.val - 1].pProprieterTitle);
         pWindow.DrawTitleText(pFontCreate, SIDE_TEXT_BOX_POS_X, SIDE_TEXT_BOX_POS_Y, colorTable.EasternBlue.c16(), nameAndTitle, 3);
-        houseSpecificDialogue();
 
-        // TODO(Nik-RE-dev): 
+        // TODO(Nik-RE-dev): houseSpecificDialogue must be called without switch
         switch (in_current_building_type) {
           case BuildingType_WeaponShop:
             WeaponShopDialog();
@@ -3200,6 +3199,7 @@ void GUIWindow_House::houseDialogManager() {
           case BuildingType_DarkGuild:
           case BuildingType_MirroredPath:
             //GuildDialog();
+            houseSpecificDialogue();
             break;
           case BuildingType_MercenaryGuild:
             MercenaryGuildDialog();
