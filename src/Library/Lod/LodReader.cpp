@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <cassert>
 #include <map>
+#include <iterator>
 
 // TODO(captainurist): errorhandling should be moved to utility/library out of the engine
 #include "Engine/ErrorHandling.h"
