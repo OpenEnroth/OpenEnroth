@@ -73,7 +73,7 @@ var searchData=
   ['initializeplacements_70',['InitializePlacements',['../structMonsterStats.html#a39da6e47894cf7f07a5376f0d45fd653',1,'MonsterStats']]],
   ['initializequests_71',['initializeQuests',['../QuestTable_8cpp.html#afbb04f0c57936bfc25b317d6e44d2776',1,'initializeQuests():&#160;QuestTable.cpp'],['../QuestTable_8h.html#afbb04f0c57936bfc25b317d6e44d2776',1,'initializeQuests():&#160;QuestTable.cpp']]],
   ['initializeskillnames_72',['InitializeSkillNames',['../classLocalization.html#a01ff4edd6b043a885c53d7ac067f1631',1,'Localization']]],
-  ['initializespellbooktextures_73',['InitializeSpellBookTextures',['../Spellbook_8cpp.html#a0d7a497d603884e3891eb9c0246ef9f2',1,'Spellbook.cpp']]],
+  ['initializespellbooktextures_73',['InitializeSpellBookTextures',['../UISpellbook_8cpp.html#a0d7a497d603884e3891eb9c0246ef9f2',1,'UISpellbook.cpp']]],
   ['initializespellnames_74',['InitializeSpellNames',['../classLocalization.html#a6e2515cfd4563a11e93daea131ece5a5',1,'Localization']]],
   ['initializespellschoolnames_75',['InitializeSpellSchoolNames',['../classLocalization.html#a89ef052e0fb46f9c76dacec3e7e380fe',1,'Localization']]],
   ['initializesprite_76',['InitializeSprite',['../structSpriteFrameTable.html#a1d390b4fbe5985c715439289d806b3c4',1,'SpriteFrameTable']]],

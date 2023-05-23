@@ -1,7 +1,7 @@
 var searchData=
 [
-  ['h_0',['h',['../EventTrace_8cpp.html#a5e36941b3d856737e81516acd45edc50',1,'h():&#160;EventTrace.cpp'],['../structSize.html#a33719b3600ba6eb4a880c79577cac8d6',1,'Size::h()'],['../structRect.html#a78ae244d7142df714716f083db77533f',1,'Rect::h()']]],
-  ['h_1',['H',['../PlatformEnums_8h.html#a2ba59747730ab559dd1191f51081eeccac1d9f50f86825a1a2302ec2449c17196',1,'PlatformEnums.h']]],
+  ['h_0',['H',['../PlatformEnums_8h.html#a2ba59747730ab559dd1191f51081eeccac1d9f50f86825a1a2302ec2449c17196',1,'PlatformEnums.h']]],
+  ['h_1',['h',['../structSize.html#a33719b3600ba6eb4a880c79577cac8d6',1,'Size::h()'],['../structRect.html#a78ae244d7142df714716f083db77533f',1,'Rect::h()'],['../EventTrace_8cpp.html#a5e36941b3d856737e81516acd45edc50',1,'h():&#160;EventTrace.cpp']]],
   ['hacking_2emd_2',['HACKING.md',['../HACKING_8md.html',1,'']]],
   ['handle_3',['handle',['../classFileInputStream.html#aa8cb3043641b9ec541bd2a79f9cbd7b2',1,'FileInputStream::handle()'],['../classFileOutputStream.html#a7b1bd2a44a3192e2bf97e30552b204fa',1,'FileOutputStream::handle()']]],
   ['handlekeypress_4',['handleKeyPress',['../classGameWindowHandler.html#ab9d73c683893346ac74dc63f5f377f5f',1,'GameWindowHandler']]],
@@ -84,8 +84,8 @@ var searchData=
   ['hostilitytype_81',['hostilityType',['../structMonsterInfo__MM7.html#a68f3b5f4db95f81c32b1992027c254f4',1,'MonsterInfo_MM7']]],
   ['hotkey_82',['hotkey',['../structhotkey.html',1,'']]],
   ['hotkeys_83',['hotkeys',['../Nuklear_8cpp.html#a47d7359ae2b6b4e1cef094ac9838bb5e',1,'Nuklear.cpp']]],
-  ['hour_84',['Hour',['../structTimer.html#aece83d6a9db76b82a8d36c92666fead2',1,'Timer']]],
-  ['hour_85',['hour',['../structActorJob__MM7.html#a64e8f92f8f20413234a9655df21c2f6d',1,'ActorJob_MM7']]],
+  ['hour_84',['hour',['../structActorJob__MM7.html#a64e8f92f8f20413234a9655df21c2f6d',1,'ActorJob_MM7']]],
+  ['hour_85',['Hour',['../structTimer.html#aece83d6a9db76b82a8d36c92666fead2',1,'Timer']]],
   ['hourglasslooptimer_86',['hourglassLoopTimer',['../classGUIWindow__Rest.html#a7d3191342d12fb934b89eed5659386d7',1,'GUIWindow_Rest']]],
   ['house_5f224_5femerald_5fisle_87',['HOUSE_224_EMERALD_ISLE',['../UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fa8f49c7ee8ca774e67dc08bd5b4a3c07e',1,'UIHouseEnums.h']]],
   ['house_5f225_5femerald_5fisle_88',['HOUSE_225_EMERALD_ISLE',['../UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fa8bf00c30d7fc25fa8841b085b8f682ab',1,'UIHouseEnums.h']]],

@@ -39,11 +39,13 @@ var searchData=
   ['uishops_2eh_36',['UIShops.h',['../UIShops_8h.html',1,'']]],
   ['uispell_2ecpp_37',['UISpell.cpp',['../UISpell_8cpp.html',1,'']]],
   ['uispell_2eh_38',['UISpell.h',['../UISpell_8h.html',1,'']]],
-  ['uistatusbar_2ecpp_39',['UIStatusBar.cpp',['../UIStatusBar_8cpp.html',1,'']]],
-  ['uistatusbar_2eh_40',['UIStatusBar.h',['../UIStatusBar_8h.html',1,'']]],
-  ['uitransition_2ecpp_41',['UITransition.cpp',['../UITransition_8cpp.html',1,'']]],
-  ['uitransition_2eh_42',['UITransition.h',['../UITransition_8h.html',1,'']]],
-  ['unittest_2ecpp_43',['UnitTest.cpp',['../UnitTest_8cpp.html',1,'']]],
-  ['unittest_2eh_44',['UnitTest.h',['../UnitTest_8h.html',1,'']]],
-  ['unittestmain_2ecpp_45',['UnitTestMain.cpp',['../UnitTestMain_8cpp.html',1,'']]]
+  ['uispellbook_2ecpp_39',['UISpellbook.cpp',['../UISpellbook_8cpp.html',1,'']]],
+  ['uispellbook_2eh_40',['UISpellbook.h',['../UISpellbook_8h.html',1,'']]],
+  ['uistatusbar_2ecpp_41',['UIStatusBar.cpp',['../UIStatusBar_8cpp.html',1,'']]],
+  ['uistatusbar_2eh_42',['UIStatusBar.h',['../UIStatusBar_8h.html',1,'']]],
+  ['uitransition_2ecpp_43',['UITransition.cpp',['../UITransition_8cpp.html',1,'']]],
+  ['uitransition_2eh_44',['UITransition.h',['../UITransition_8h.html',1,'']]],
+  ['unittest_2ecpp_45',['UnitTest.cpp',['../UnitTest_8cpp.html',1,'']]],
+  ['unittest_2eh_46',['UnitTest.h',['../UnitTest_8h.html',1,'']]],
+  ['unittestmain_2ecpp_47',['UnitTestMain.cpp',['../UnitTestMain_8cpp.html',1,'']]]
 ];
