@@ -840,26 +840,26 @@ bool MM7_LoadLods() {
     engine->_gameResourceManager->openGameResources();
 
     pIcons_LOD = new LODFile_IconsBitmaps;
-    if (!pIcons_LOD->Load(MakeDataPath("data", "icons.lod"), "icons")) {
+    if (!pIcons_LOD->Load(makeDataPath("data", "icons.lod"), "icons")) {
         Error(localization->GetString(LSTR_PLEASE_REINSTALL), localization->GetString(LSTR_REINSTALL_NECESSARY));
         return false;
     }
     pIcons_LOD->_011BA4_debug_paletted_pixels_uncompressed = false;
 
     pEvents_LOD = new LODFile_IconsBitmaps;
-    if (!pEvents_LOD->Load(MakeDataPath("data", "events.lod"), "icons")) {
+    if (!pEvents_LOD->Load(makeDataPath("data", "events.lod"), "icons")) {
         Error(localization->GetString(LSTR_PLEASE_REINSTALL), localization->GetString(LSTR_REINSTALL_NECESSARY));
         return false;
     }
 
     pBitmaps_LOD = new LODFile_IconsBitmaps;
-    if (!pBitmaps_LOD->Load(MakeDataPath("data", "bitmaps.lod"), "bitmaps")) {
+    if (!pBitmaps_LOD->Load(makeDataPath("data", "bitmaps.lod"), "bitmaps")) {
         Error(localization->GetString(LSTR_PLEASE_REINSTALL), localization->GetString(LSTR_REINSTALL_NECESSARY));
         return false;
     }
 
     pSprites_LOD = new LODFile_Sprites;
-    if (!pSprites_LOD->Load(MakeDataPath("data", "sprites.lod"), "sprites08")) {
+    if (!pSprites_LOD->Load(makeDataPath("data", "sprites.lod"), "sprites08")) {
         Error(localization->GetString(LSTR_PLEASE_REINSTALL), localization->GetString(LSTR_REINSTALL_NECESSARY));
         return false;
     }

@@ -62,7 +62,7 @@ GUIWindow_Save::GUIWindow_Save() :
             file_name = "1.mm7";
         }
 
-        std::string str = MakeDataPath("saves", file_name);
+        std::string str = makeDataPath("saves", file_name);
         if (!std::filesystem::exists(str)) {
             pSavegameList->pSavegameUsedSlots[i] = false;
             pSavegameList->pSavegameHeader[i].name = localization->GetString(LSTR_EMPTY_SAVESLOT);
@@ -164,7 +164,7 @@ GUIWindow_Load::GUIWindow_Load(bool ingame) :
 
     LOD::File pLODFile;
     for (uint i = 0; i < pSavegameList->numSavegameFiles; ++i) {
-        std::string str = MakeDataPath("saves", pSavegameList->pFileList[i]);
+        std::string str = makeDataPath("saves", pSavegameList->pFileList[i]);
         if (!std::filesystem::exists(str)) {
             pSavegameList->pSavegameUsedSlots[i] = false;
             pSavegameList->pSavegameHeader[i].name = localization->GetString(LSTR_EMPTY_SAVESLOT);

@@ -17,16 +17,16 @@ class RangeIterator {
     using iterator_category = std::random_access_iterator_tag; // Not technically correct though.
 
     constexpr RangeIterator() = default;
-    constexpr explicit RangeIterator(value_type pos): pos_(pos) {}
+    constexpr explicit RangeIterator(value_type pos): _pos(pos) {}
 
     constexpr friend auto operator<=>(RangeIterator l, RangeIterator r) = default;
 
     constexpr reference operator*() const {
-        return pos_;
+        return _pos;
     }
 
     constexpr RangeIterator &operator++() {
-        pos_ = static_cast<value_type>(static_cast<difference_type>(pos_) + 1);
+        _pos = static_cast<value_type>(static_cast<difference_type>(_pos) + 1);
         return *this;
     }
 
@@ -37,7 +37,7 @@ class RangeIterator {
     }
 
     constexpr RangeIterator &operator--() {
-        pos_ = static_cast<value_type>(static_cast<difference_type>(pos_) - 1);
+        _pos = static_cast<value_type>(static_cast<difference_type>(_pos) - 1);
         return *this;
     }
 
@@ -56,15 +56,15 @@ class RangeIterator {
     }
 
     constexpr friend difference_type operator-(RangeIterator l, RangeIterator r) {
-        return static_cast<difference_type>(l.pos_) - static_cast<difference_type>(r.pos_);
+        return static_cast<difference_type>(l._pos) - static_cast<difference_type>(r._pos);
     }
 
     constexpr friend RangeIterator operator-(RangeIterator l, difference_type r) {
-        return RangeIterator(static_cast<value_type>(static_cast<difference_type>(l.pos_) - r));
+        return RangeIterator(static_cast<value_type>(static_cast<difference_type>(l._pos) - r));
     }
 
     constexpr friend RangeIterator operator+(RangeIterator l, difference_type r) {
-        return RangeIterator(static_cast<value_type>(static_cast<difference_type>(l.pos_) + r));
+        return RangeIterator(static_cast<value_type>(static_cast<difference_type>(l._pos) + r));
     }
 
     constexpr friend RangeIterator operator+(difference_type l, RangeIterator r) {
@@ -72,7 +72,7 @@ class RangeIterator {
     }
 
  private:
-    value_type pos_ = T();
+    value_type _pos = T();
 };
 
 } // namespace detail

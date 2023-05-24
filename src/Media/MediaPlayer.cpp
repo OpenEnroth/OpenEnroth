@@ -767,11 +767,11 @@ class VideoList {
 
 void MPlayer::Initialize() {
     might_list = new VideoList();
-    std::string filename = MakeDataPath("anims", "might7.vid");
+    std::string filename = makeDataPath("anims", "might7.vid");
     might_list->Initialize(filename);
 
     magic_list = new VideoList();
-    filename = MakeDataPath("anims", "magic7.vid");
+    filename = makeDataPath("anims", "magic7.vid");
     magic_list->Initialize(filename);
 }
 

@@ -123,7 +123,7 @@ class GLShader {
     GLuint load(const std::string &name, const std::string &filename, GLenum type, bool OpenGLES, bool nonFatal = false) {
         std::string directory = "shaders";
         std::string typeName = shaderTypeToName(type);
-        std::string path = MakeDataPath(directory, filename + "." + shaderTypeToExtension(type));
+        std::string path = makeDataPath(directory, filename + "." + shaderTypeToExtension(type));
 
         try {
             // open files
