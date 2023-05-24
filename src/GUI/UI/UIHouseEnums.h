@@ -120,7 +120,7 @@ inline Segment<HOUSE_ID> townhallHouses() {
 }
 
 inline bool isShop(HOUSE_ID houseId) {
-    // TODO:(Nik-RE-dev): make separate functions for all shop types and use them
+    // TODO(Nik-RE-dev): make separate functions for all shop types and use them
     return houseId < HOUSE_STABLES_HARMONDALE;
 }
 

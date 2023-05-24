@@ -80,7 +80,7 @@ extern std::array<const HouseAnimDescr, 196> pAnimatedRooms;
 
 class GUIWindow_House : public GUIWindow {
  public:
-    GUIWindow_House(HOUSE_ID houseId);
+    explicit GUIWindow_House(HOUSE_ID houseId);
     virtual ~GUIWindow_House() {}
 
     virtual void Update();

@@ -7,7 +7,7 @@
 
 class GUIWindow_MagicGuild : public GUIWindow_House {
  public:
-    GUIWindow_MagicGuild(HOUSE_ID houseId) : GUIWindow_House(houseId) {}
+    explicit GUIWindow_MagicGuild(HOUSE_ID houseId) : GUIWindow_House(houseId) {}
     virtual ~GUIWindow_MagicGuild() {}
 
     virtual void houseDialogueOptionSelected(DIALOGUE_TYPE option) override;

@@ -170,7 +170,6 @@ struct PartyTimeStruct {
     IndexedArray<GameTime, HOUSE_FIRST_TOWNHALL, HOUSE_LAST_TOWNHALL> bountyHuntNextGenTime; // Size was 10 originally.
     IndexedArray<GameTime, HOUSE_FIRST_SHOP, HOUSE_LAST_SHOP> shopNextRefreshTime;
     IndexedArray<GameTime, HOUSE_FIRST_MAGIC_GUILD, HOUSE_LAST_MAGIC_GUILD> guildNextRefreshTime;
-    std::array<GameTime, 85> Shops_next_generation_time;
     std::array<GameTime, 53> _shop_ban_times;
     std::array<GameTime, 10> CounterEventValues;  // (0xACD314h in Silvo's binary)
     std::array<GameTime, 29> HistoryEventTimes;  // (0xACD364h in Silvo's binary)
