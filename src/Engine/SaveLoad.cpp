@@ -48,8 +48,8 @@ void LoadGame(unsigned int uSlot) {
     pSave_LOD->CloseWriteFile();
     // uCurrentlyLoadedLevelType = LEVEL_null;
 
-    std::string filename = MakeDataPath("saves", pSavegameList->pFileList[uSlot]);
-    std::string to_file_path = MakeDataPath("data", "new.lod");
+    std::string filename = makeDataPath("saves", pSavegameList->pFileList[uSlot]);
+    std::string to_file_path = makeDataPath("data", "new.lod");
 
     std::error_code ec;
     if (!std::filesystem::copy_file(filename, to_file_path, std::filesystem::copy_options::overwrite_existing, ec))
@@ -253,8 +253,8 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld) {
     }
 
     if (IsAutoSAve) {
-        std::string src = MakeDataPath("data", "new.lod");
-        std::string dst = MakeDataPath("saves", "autosave.mm7");
+        std::string src = makeDataPath("data", "new.lod");
+        std::string dst = makeDataPath("saves", "autosave.mm7");
         std::error_code ec;
         if (!std::filesystem::copy_file(src, dst, std::filesystem::copy_options::overwrite_existing, ec))
             logger->warning("Copying of autosave.mm7 failed");
@@ -279,8 +279,8 @@ void DoSavegame(unsigned int uSlot) {
 
         pSave_LOD->Write("header.bin", &headerMm7, sizeof(headerMm7), 0);
         pSave_LOD->CloseWriteFile();  //закрыть
-        std::string src = MakeDataPath("data", "new.lod");
-        std::string dst = MakeDataPath("saves", fmt::format("save{:03}.mm7", uSlot));
+        std::string src = makeDataPath("data", "new.lod");
+        std::string dst = makeDataPath("saves", fmt::format("save{:03}.mm7", uSlot));
         std::error_code ec;
         if (!std::filesystem::copy_file(src, dst, std::filesystem::copy_options::overwrite_existing, ec))
             Error("Failed to copy: %s", src.c_str());
@@ -310,7 +310,7 @@ void DoSavegame(unsigned int uSlot) {
 void SavegameList::Initialize() {
     pSavegameList->Reset();
 
-    std::string saves_dir = MakeDataPath("saves");
+    std::string saves_dir = makeDataPath("saves");
 
     if (std::filesystem::exists(saves_dir)) {
         for (const auto &entry : std::filesystem::directory_iterator(saves_dir)) {
@@ -345,7 +345,7 @@ void SaveNewGame() {
         pSave_LOD->CloseWriteFile();
     }
 
-    std::string file_path = MakeDataPath("data", "new.lod");
+    std::string file_path = makeDataPath("data", "new.lod");
     remove(file_path.c_str());  // удалить new.lod
 
     LOD::FileHeader header;  // заголовок

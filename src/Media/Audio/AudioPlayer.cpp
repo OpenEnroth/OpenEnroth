@@ -70,7 +70,7 @@ void AudioPlayer::MusicPlayTrack(MusicID eTrack) {
         currentMusicTrack = MUSIC_Invalid;
 
         std::string file_path = fmt::format("{}.mp3", eTrack);
-        file_path = MakeDataPath("music", file_path);
+        file_path = makeDataPath("music", file_path);
         if (!std::filesystem::exists(file_path)) {
             logger->warning("AudioPlayer: {} not found", file_path);
             return;
@@ -534,8 +534,8 @@ struct SoundHeader_mm7 {
 void AudioPlayer::LoadAudioSnd() {
     static_assert(sizeof(SoundHeader_mm7) == 52, "Wrong type size");
 
-    std::string file_path = MakeDataPath("sounds", "audio.snd");
-    fAudioSnd.open(MakeDataPath("sounds", "audio.snd"));
+    std::string file_path = makeDataPath("sounds", "audio.snd");
+    fAudioSnd.open(makeDataPath("sounds", "audio.snd"));
 
     uint32_t uNumSoundHeaders {};
     fAudioSnd.readOrFail(&uNumSoundHeaders, sizeof(uNumSoundHeaders));

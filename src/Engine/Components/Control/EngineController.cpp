@@ -156,13 +156,13 @@ void EngineController::saveGame(const std::string &path) {
     // needed 99% of the time. So we just call back into the game thread.
     runGameRoutine([] { ::SaveGame(true, false); });
 
-    std::string src = MakeDataPath("saves", "autosave.mm7");
+    std::string src = makeDataPath("saves", "autosave.mm7");
     std::filesystem::copy_file(src, path, std::filesystem::copy_options::overwrite_existing); // This might throw.
 }
 
 void EngineController::loadGame(const std::string &path) {
     std::string saveName = "!!!test.mm7";
-    std::string dst = MakeDataPath("saves", saveName);
+    std::string dst = makeDataPath("saves", saveName);
     std::filesystem::copy_file(path, dst, std::filesystem::copy_options::overwrite_existing); // This might throw.
 
     goToMainMenu();

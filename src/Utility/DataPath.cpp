@@ -70,7 +70,3 @@ bool validateDataPath(const std::string &data_path) {
 
     return isGood;
 }
-
-std::string makeTempPath(const char *file_rel_path) {
-    return (std::filesystem::temp_directory_path() / file_rel_path).string();
-}

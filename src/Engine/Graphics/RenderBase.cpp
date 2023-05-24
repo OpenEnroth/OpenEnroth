@@ -34,10 +34,10 @@
 bool RenderBase::Initialize() {
     window->resize({config->window.Width.value(), config->window.Height.value()});
 
-    if (!pD3DBitmaps.Open(MakeDataPath("data", "d3dbitmap.hwl"))) {
+    if (!pD3DBitmaps.Open(makeDataPath("data", "d3dbitmap.hwl"))) {
         return false;
     }
-    if (!pD3DSprites.Open(MakeDataPath("data", "d3dsprite.hwl"))) {
+    if (!pD3DSprites.Open(makeDataPath("data", "d3dsprite.hwl"))) {
         return false;
     }
 
@@ -632,7 +632,7 @@ void RenderBase::SavePCXScreenshot() {
 
 void RenderBase::SavePCXImage32(const std::string &filename, const uint32_t *picture_data, const int width, const int height) {
     // TODO(pskelton): add "Screenshots" folder?
-    std::string thispath = MakeDataPath(filename);
+    std::string thispath = makeDataPath(filename);
     FILE *result = fopen(thispath.c_str(), "wb");
     if (result == nullptr) {
         return;

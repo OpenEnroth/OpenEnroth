@@ -78,7 +78,7 @@ GAME_TEST(Issues, Issue159) {
 
 GAME_TEST(Issues, Issue163) {
     // Testing that pressing the Load Game button doesn't crash even if the 'saves' folder doesn't exist.
-    std::string savesDir = MakeDataPath("saves");
+    std::string savesDir = makeDataPath("saves");
     std::string savesDirMoved;
 
     MM_AT_SCOPE_EXIT({
@@ -673,7 +673,7 @@ GAME_TEST(Issues, Issue624) {
 
 GAME_TEST(Issues, Issue626) {
     // Last loaded save is not remembered
-    std::string savesDir = MakeDataPath("saves");
+    std::string savesDir = makeDataPath("saves");
     std::string savesDirMoved;
 
     MM_AT_SCOPE_EXIT({
@@ -839,7 +839,7 @@ GAME_TEST(Issues, Issue679) {
 
 GAME_TEST(Issues, Issue689) {
     // Testing that clicking on load game scroll is not crashing the game then there's small amount of saves present.
-    std::string savesDir = MakeDataPath("saves");
+    std::string savesDir = makeDataPath("saves");
     std::string savesDirMoved;
 
     MM_AT_SCOPE_EXIT({
