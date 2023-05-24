@@ -7,6 +7,7 @@ set(UTILITY_SOURCES
         FileSystem.cpp
         Math/TrigLut.cpp
         Memory/Blob.cpp
+        Streams/BlobInputStream.cpp
         Streams/FileInputStream.cpp
         Streams/FileOutputStream.cpp
         Streams/InputStream.cpp
@@ -37,6 +38,7 @@ set(UTILITY_HEADERS
         Reversed.h
         ScopeGuard.h
         Segment.h
+        Streams/BlobInputStream.h
         Streams/FileInputStream.h
         Streams/FileOutputStream.h
         Streams/InputStream.h

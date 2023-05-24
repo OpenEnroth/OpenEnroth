@@ -4,7 +4,7 @@
 #include "Engine/Graphics/Image.h"
 
 #include "Utility/DataPath.h"
-#include "Utility/Streams/MemoryInputStream.h"
+#include "Utility/Streams/BlobInputStream.h"
 
 #include "Library/Compression/Compression.h"
 
@@ -22,16 +22,15 @@ Blob GameResourceManager::getEventsFile(const std::string &filename) {
 }
 
 Blob GameResourceManager::uncompressPseudoTexture(const Blob &input) {
-    MemoryInputStream stream(input.data(), input.size());
+    BlobInputStream stream(input);
     TextureHeader header;
     deserialize(stream, &header);
 
-    int compressedSize = header.uTextureSize;
     int uncompressedSize = header.uDecompressedSize;
-    assert((input.size() - sizeof(TextureHeader)) >= header.uTextureSize);
+    assert((input.size() - sizeof(TextureHeader)) == header.uTextureSize); // TODO(captainurist): throw?
     if (uncompressedSize) {
-        return zlib::Uncompress(input.subBlob(sizeof(TextureHeader), header.uTextureSize), header.uDecompressedSize);
+        return zlib::Uncompress(stream.tail(), header.uDecompressedSize);
     } else {
-        return input.subBlob(sizeof(TextureHeader), header.uTextureSize);
+        return stream.tail();
     }
 }

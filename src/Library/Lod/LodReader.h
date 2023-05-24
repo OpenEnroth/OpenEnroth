@@ -32,20 +32,12 @@ class LodReader final {
         size_t size = 0;
     };
 
-    struct FileCompressionDesc {
-        size_t compressedSize;
-        size_t decompressedSize;
-        size_t compressedOffs;
-    };
-
     bool parseDirectories(size_t numDirectories, size_t dirOffset);
     bool parseDirectoryFiles(size_t numFiles, size_t filesOffset);
 
-    bool isFileCompressed(const FileEntryDesc &desc, FileCompressionDesc *compDesc);
-
+ private:
     Blob _lod = Blob();
     LodVersion _version = LOD_VERSION_MM6;
-    std::string _description = "";
-
+    std::string _description;
     std::vector<FileEntryDesc> _files{};
 };
