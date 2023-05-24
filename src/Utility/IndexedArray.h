@@ -65,15 +65,13 @@ template<
     ptrdiff_t Size = static_cast<ptrdiff_t>(LastIndex) - static_cast<ptrdiff_t>(FirstIndex) + 1>
 class IndexedArray: public std::array<T, Size> {
     using base_type = std::array<T, Size>;
-    using index_type = decltype(FirstIndex);
-
-    static_assert(Size >= 0, "IndexedArray size must be non-negative");
-    static_assert(std::is_enum_v<index_type> || std::is_integral_v<index_type>, "FirstIndex must be an enum or an integral type");
-    static_assert(std::is_same_v<index_type, decltype(LastIndex)>, "FirstIndex and LastIndex must be of the same type");
+    static_assert(LastIndex >= FirstIndex, "IndexedArray must be non-empty");
+    static_assert(std::is_enum_v<decltype(FirstIndex)> || std::is_integral_v<decltype(FirstIndex)>, "FirstIndex must be an enum or an integral type");
+    static_assert(std::is_same_v<decltype(FirstIndex), decltype(LastIndex)>, "FirstIndex and LastIndex must be of the same type");
 
  public:
     static constexpr size_t SIZE = Size;
-    using key_type = index_type;
+    using key_type = decltype(FirstIndex);
     using typename base_type::value_type;
     using typename base_type::reference;
     using typename base_type::const_reference;

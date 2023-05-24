@@ -7,7 +7,6 @@ UNIT_TEST(IndexedArray, Size) {
     EXPECT_EQ(sizeof(IndexedArray<int, 0, 10>), 11 * sizeof(int));
     EXPECT_EQ(sizeof(IndexedArray<int, 1, 7>), 7 * sizeof(int));
     EXPECT_EQ(sizeof(IndexedArray<int, -10, 10>), 21 * sizeof(int));
-    EXPECT_EQ(sizeof(IndexedArray<int, 0, -1>), sizeof(std::array<int, 0>));
 
     enum class Index { A = 1000, B, C, D };
     using enum Index;
