@@ -4164,8 +4164,8 @@ void Actor::MakeActorAIList_ODM() {
     }
 
     // sort active actors by distance
-    std::sort(activeActorsDistances.begin(), activeActorsDistances.end(), [] (std::pair<int, int> a, std::pair<int, int> b) {
-              return a.second < b.second; });
+    // use stable_sort to make tests work across all platforms
+    std::stable_sort(activeActorsDistances.begin(), activeActorsDistances.end(), [] (std::pair<int, int> a, std::pair<int, int> b) { return a.second < b.second; });
 
     // and takes nearest 30
     for (int i = 0; (i < 30) && (i < activeActorsDistances.size()); i++) {
@@ -4218,8 +4218,8 @@ int Actor::MakeActorAIList_BLV() {
     }
 
     // sort active actors by distance
-    std::sort(activeActorsDistances.begin(), activeActorsDistances.end(), [] (std::pair<int, int> a, std::pair<int, int> b) {
-              return a.second < b.second; });
+    // use stable_sort to make tests work across all platforms
+    std::stable_sort(activeActorsDistances.begin(), activeActorsDistances.end(), [] (std::pair<int, int> a, std::pair<int, int> b) { return a.second < b.second; });
 
     // checks nearby actors can detect player and take nearest 30
     for (const auto &[actorId, _] : activeActorsDistances) {
