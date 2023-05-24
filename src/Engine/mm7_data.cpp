@@ -2437,10 +2437,7 @@ std::array<std::pair<int16_t, ITEM_TYPE>, 27> _4F0882_evt_VAR_PlayerItemInHands_
 std::array<int, 11> price_for_membership = {{100, 100, 50, 50, 50, 50, 50, 50, 50, 1000, 1000}};
 
 int ai_arrays_size;
-std::array<int, 500> ai_array_detected_actor_dist;
-std::array<int, 500> ai_array_detected_actor_ids;
 std::array<int, 500> ai_near_actors_targets_pid;
-std::array<int, 500> ai_near_actors_distances;
 std::array<unsigned int, 500> ai_near_actors_ids;
 
 char byte_4FAA24;  // turn over break??
