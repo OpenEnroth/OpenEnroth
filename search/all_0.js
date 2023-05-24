@@ -80,7 +80,7 @@ var searchData=
   ['_5fbase_77',['_base',['../classMersenneTwisterRandomEngine.html#a6ae0200d1c7910b3203081135c461ac2',1,'MersenneTwisterRandomEngine']]],
   ['_5fbasedatasource_78',['_baseDataSource',['../classOpenALAudioDataSource.html#ad1b24120bccd2cc11d45b0772e9d34c3',1,'OpenALAudioDataSource']]],
   ['_5fbaselogger_79',['_baseLogger',['../classLogger.html#a9e7bc6c4a180495730a8d5381e898643',1,'Logger']]],
-  ['_5fbitset_80',['_bitset',['../classIndexedBitset.html#a09cd330a27603968289b061c34c1ed06',1,'IndexedBitset']]],
+  ['_5fbitset_80',['_bitset',['../classIndexedBitset.html#a497fdfdd43533b777de4009ae2ca6701',1,'IndexedBitset']]],
   ['_5fbonus_5fstrength_81',['_bonus_strength',['../structItemDesc.html#a1551f45b8b2b0985ee67dc022958fea1',1,'ItemDesc']]],
   ['_5fbonus_5ftype_82',['_bonus_type',['../structItemDesc.html#af7572c9aab3b23aa059ffdcdd69aca8f',1,'ItemDesc']]],
   ['_5fbuffers_83',['_buffers',['../classOpenALAudioDataSource.html#a4447cac903cb87381258b9b6c04fb24e',1,'OpenALAudioDataSource']]],
