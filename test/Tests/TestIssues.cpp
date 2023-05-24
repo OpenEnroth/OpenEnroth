@@ -940,6 +940,11 @@ GAME_TEST(Issues, Issue730) {
     }
 }
 
+GAME_TEST(Issues, Issue735a) {
+    // Trace-only test: battle with ~60 monsters in a dungeon.
+    test->playTraceFromTestData("issue_735a.mm7", "issue_735a.json");
+}
+
 GAME_TEST(Issues, Issue741) {
     // Game crashing when walking into a wall in Temple of the moon
     test->playTraceFromTestData("issue_741.mm7", "issue_741.json");
