@@ -751,7 +751,7 @@ void SpellStats::Initialize() {
 
     char *test_string;
 
-    pSpellsTXT_Raw = pEvents_LOD->LoadCompressedTexture("spells.txt").string_view();
+    pSpellsTXT_Raw = engine->_gameResourceManager->getEventsFile("spells.txt").string_view();
 
     strtok(pSpellsTXT_Raw.data(), "\r");
     for (SPELL_TYPE uSpellID : allRegularSpells()) {

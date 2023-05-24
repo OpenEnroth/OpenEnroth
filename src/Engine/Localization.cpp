@@ -35,7 +35,7 @@ bool Localization::Initialize() {
     int temp_str_len;  // ecx@5
     bool string_end;   // [sp+14h] [bp-4h]@4
 
-    this->localization_raw = pEvents_LOD->LoadCompressedTexture("global.txt").string_view();
+    this->localization_raw = engine->_gameResourceManager->getEventsFile("global.txt").string_view();
     if (this->localization_raw.empty()) {
         return false;
     }
@@ -295,7 +295,7 @@ void Localization::InitializeSkillNames() {
     //    "But there is not much room to improve finesse or mastery for such a rudimentary weapon though. "
     //    "So don't expect to become thwonking killer and devastating anyone beyond weaklings.";
 
-    skill_desc_raw = pEvents_LOD->LoadCompressedTexture("skilldes.txt").string_view();
+    skill_desc_raw = engine->_gameResourceManager->getEventsFile("skilldes.txt").string_view();
     strtok(skill_desc_raw.data(), "\r");
     for (PLAYER_SKILL_TYPE i : VisibleSkills()) {
         char *test_string = strtok(NULL, "\r") + 1;
@@ -359,7 +359,7 @@ void Localization::InitializeClassNames() {
     this->class_names[34] = this->localization_strings[261];  // Archmage
     this->class_names[35] = this->localization_strings[49];   // Lich
 
-    this->class_desc_raw = pEvents_LOD->LoadCompressedTexture("class.txt").string_view();
+    this->class_desc_raw = engine->_gameResourceManager->getEventsFile("class.txt").string_view();
     strtok(this->class_desc_raw.data(), "\r");
     for (int i = 0; i < 36; ++i) {
         char *test_string = strtok(NULL, "\r") + 1;
@@ -437,7 +437,7 @@ void Localization::InitializeAttributeNames() {
     this->attribute_names[5] = this->localization_strings[211];  // Speed
     this->attribute_names[6] = this->localization_strings[136];  // Luck
 
-    this->attribute_desc_raw = pEvents_LOD->LoadCompressedTexture("stats.txt").string_view();
+    this->attribute_desc_raw = engine->_gameResourceManager->getEventsFile("stats.txt").string_view();
     strtok(this->attribute_desc_raw.data(), "\r");
     for (int i = 0; i < 26; ++i) {
         char *test_string = strtok(NULL, "\r") + 1;

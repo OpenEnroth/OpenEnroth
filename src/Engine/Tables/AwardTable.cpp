@@ -1,5 +1,5 @@
 #include "Engine/Tables/AwardTable.h"
-#include "Engine/LOD.h"
+#include "Engine/Engine.h"
 
 #include "Utility/String.h"
 
@@ -15,7 +15,7 @@ void initializeAwards() {
     char *tmp_pos;
     int decode_step;
 
-    pAwardsTXT_Raw = pEvents_LOD->LoadCompressedTexture("awards.txt").string_view();
+    pAwardsTXT_Raw = engine->_gameResourceManager->getEventsFile("awards.txt").string_view();
     strtok(pAwardsTXT_Raw.data(), "\r");
 
     for (i = 1; i < 105; ++i) {

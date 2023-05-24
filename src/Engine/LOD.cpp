@@ -13,8 +13,6 @@
 
 #include "Utility/Memory/FreeDeleter.h"
 
-LODFile_IconsBitmaps *pEvents_LOD = nullptr;
-
 LODFile_IconsBitmaps *pIcons_LOD = nullptr;
 LODFile_IconsBitmaps *pIcons_LOD_mm6 = nullptr;
 LODFile_IconsBitmaps *pIcons_LOD_mm8 = nullptr;

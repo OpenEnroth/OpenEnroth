@@ -112,7 +112,7 @@ void NPCStats::InitializeNPCText() {
     char *tmp_pos;
     int decode_step;
 
-    pNPCTextTXT_Raw = pEvents_LOD->LoadCompressedTexture("npctext.txt").string_view();
+    pNPCTextTXT_Raw = engine->_gameResourceManager->getEventsFile("npctext.txt").string_view();
     strtok(pNPCTextTXT_Raw.data(), "\r");
 
     for (i = 0; i < 789; ++i) {
@@ -139,7 +139,7 @@ void NPCStats::InitializeNPCText() {
             test_string = tmp_pos + 1;
         } while ((decode_step < 2) && !break_loop);
     }
-    pNPCTopicTXT_Raw = pEvents_LOD->LoadCompressedTexture("npctopic.txt").string_view();
+    pNPCTopicTXT_Raw = engine->_gameResourceManager->getEventsFile("npctopic.txt").string_view();
     strtok(pNPCTopicTXT_Raw.data(), "\r");
 
     for (i = 1; i <= 579; ++i) {  // NPC topics count limit
@@ -167,7 +167,7 @@ void NPCStats::InitializeNPCText() {
         } while ((decode_step < 2) && !break_loop);
     }
 
-    pNPCDistTXT_Raw = pEvents_LOD->LoadCompressedTexture("npcdist.txt").string_view();
+    pNPCDistTXT_Raw = engine->_gameResourceManager->getEventsFile("npcdist.txt").string_view();
     strtok(pNPCDistTXT_Raw.data(), "\r");
     strtok(NULL, "\r");
 
@@ -234,7 +234,7 @@ void NPCStats::InitializeNPCData() {
     char *tmp_pos;
     int decode_step;
 
-    pNPCDataTXT_Raw = pEvents_LOD->LoadCompressedTexture("npcdata.txt").string_view();
+    pNPCDataTXT_Raw = engine->_gameResourceManager->getEventsFile("npcdata.txt").string_view();
     strtok(pNPCDataTXT_Raw.data(), "\r");
     strtok(NULL, "\r");
 
@@ -298,7 +298,7 @@ void NPCStats::InitializeNPCData() {
         } while ((decode_step < 16) && !break_loop);
     }
     uNumNewNPCs = 501;
-    pNPCGreetTXT_Raw = pEvents_LOD->LoadCompressedTexture("npcgreet.txt").string_view();
+    pNPCGreetTXT_Raw = engine->_gameResourceManager->getEventsFile("npcgreet.txt").string_view();
     strtok(pNPCGreetTXT_Raw.data(), "\r");
     for (i = 1; i <= 205; ++i) {
         test_string = strtok(NULL, "\r") + 1;
@@ -331,7 +331,7 @@ void NPCStats::InitializeNPCData() {
         } while ((decode_step < 3) && !break_loop);
     }
 
-    pNCPGroupTXT_Raw = pEvents_LOD->LoadCompressedTexture("npcgroup.txt").string_view();
+    pNCPGroupTXT_Raw = engine->_gameResourceManager->getEventsFile("npcgroup.txt").string_view();
     strtok(pNCPGroupTXT_Raw.data(), "\r");
 
     for (i = 0; i < 51; ++i) {
@@ -358,7 +358,7 @@ void NPCStats::InitializeNPCData() {
         } while ((decode_step < 2) && !break_loop);
     }
 
-    pNPCNewsTXT_Raw = pEvents_LOD->LoadCompressedTexture("npcnews.txt").string_view();
+    pNPCNewsTXT_Raw = engine->_gameResourceManager->getEventsFile("npcnews.txt").string_view();
     strtok(pNPCNewsTXT_Raw.data(), "\r");
 
     for (i = 0; i < 51; ++i) {
@@ -404,7 +404,7 @@ void NPCStats::Initialize() {
     InitializeMerchants();
     initializeMessageScrolls();
 
-    pNPCNamesTXT_Raw = pEvents_LOD->LoadCompressedTexture("npcnames.txt").string_view();
+    pNPCNamesTXT_Raw = engine->_gameResourceManager->getEventsFile("npcnames.txt").string_view();
     strtok(pNPCNamesTXT_Raw.data(), "\r");
 
     uNewlNPCBufPos = 0;
@@ -444,7 +444,7 @@ void NPCStats::Initialize() {
     }
     uNumNPCNames[0] = i;
 
-    pNPCProfTXT_Raw = pEvents_LOD->LoadCompressedTexture("npcprof.txt").string_view();
+    pNPCProfTXT_Raw = engine->_gameResourceManager->getEventsFile("npcprof.txt").string_view();
     strtok(pNPCProfTXT_Raw.data(), "\r");
     strtok(NULL, "\r");
     strtok(NULL, "\r");
@@ -706,7 +706,7 @@ void InitializeMerchants() {
     char *tmp_pos;
     int decode_step;
 
-    pMerchantsTXT_Raw = pEvents_LOD->LoadCompressedTexture("merchant.txt").string_view();
+    pMerchantsTXT_Raw = engine->_gameResourceManager->getEventsFile("merchant.txt").string_view();
     strtok(pMerchantsTXT_Raw.data(), "\r");
 
     for (MERCHANT_PHRASE i : MerchantPhrases()) {
@@ -757,7 +757,7 @@ void InitializeTransitions() {
     char *tmp_pos;
     int decode_step;
 
-    pTransitionsTXT_Raw = pEvents_LOD->LoadCompressedTexture("trans.txt").string_view();
+    pTransitionsTXT_Raw = engine->_gameResourceManager->getEventsFile("trans.txt").string_view();
     strtok(pTransitionsTXT_Raw.data(), "\r");
 
     for (i = 0; i < 464; ++i) {

@@ -1,5 +1,6 @@
 #include "Engine/Tables/MessageScrollTable.h"
-#include "Engine/LOD.h"
+#include "Engine/Engine.h"
+
 #include "Utility/String.h"
 
 IndexedArray<const char *, ITEM_FIRST_MESSAGE_SCROLL, ITEM_LAST_MESSAGE_SCROLL> pMessageScrolls;
@@ -13,7 +14,7 @@ void initializeMessageScrolls() {
     char *tmp_pos;
     int decode_step;
 
-    pMessageScrollsTXT_Raw = pEvents_LOD->LoadCompressedTexture("scroll.txt").string_view();
+    pMessageScrollsTXT_Raw = engine->_gameResourceManager->getEventsFile("scroll.txt").string_view();
     strtok(pMessageScrollsTXT_Raw.data(), "\r");
     for (ITEM_TYPE i : pMessageScrolls.indices()) {
         test_string = strtok(NULL, "\r") + 1;

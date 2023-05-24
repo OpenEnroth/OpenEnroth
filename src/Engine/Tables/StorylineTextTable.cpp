@@ -1,9 +1,9 @@
-#include "Engine/Tables/StorylineTextTable.h"
-
 #include <vector>
 
+#include "Engine/Tables/StorylineTextTable.h"
+
 #include "Utility/String.h"
-#include "../LOD.h"
+#include "Engine/Engine.h"
 
 std::string pHistoryTXT_Raw;
 struct StorylineText *pStorylineText;
@@ -12,7 +12,7 @@ struct StorylineText *pStorylineText;
 void StorylineText::Initialize() {
     char *test_string;
 
-    pHistoryTXT_Raw = pEvents_LOD->LoadCompressedTexture("history.txt").string_view();
+    pHistoryTXT_Raw = engine->_gameResourceManager->getEventsFile("history.txt").string_view();
     strtok(pHistoryTXT_Raw.data(), "\r");
 
     StoreLine[0].pText = nullptr;

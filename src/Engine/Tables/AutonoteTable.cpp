@@ -1,5 +1,5 @@
 #include "Engine/Tables/AutonoteTable.h"
-#include "Engine/LOD.h"
+#include "Engine/Engine.h"
 
 #include "Utility/String.h"
 
@@ -15,7 +15,7 @@ void initializeAutonotes() {
     char *tmp_pos;
     int decode_step;
 
-    pAutonoteTXT_Raw = pEvents_LOD->LoadCompressedTexture("autonote.txt").string_view();
+    pAutonoteTXT_Raw = engine->_gameResourceManager->getEventsFile("autonote.txt").string_view();
     strtok(pAutonoteTXT_Raw.data(), "\r");
 
     for (i = 0; i < 195; ++i) {

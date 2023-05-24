@@ -50,7 +50,7 @@ const char *location_type[] = {
 };
 
 void MapStats::Initialize() {
-    std::string pMapStatsTXT = std::string(pEvents_LOD->LoadCompressedTexture("MapStats.txt").string_view());
+    std::string pMapStatsTXT = std::string(engine->_gameResourceManager->getEventsFile("MapStats.txt").string_view());
     std::stringstream stream(pMapStatsTXT);
     std::string tmpString;
     std::getline(stream, tmpString);
