@@ -153,10 +153,10 @@ void GUIWindow_MagicGuild::buyBooksDialogue() {
     int itemxind = 0;
 
     for (int pX = 32; pX < 452; pX += 70) {  // top row
-        if (pParty->SpellBooksInGuilds[wData.val - HOUSE_FIRE_GUILD_INITIATE_EMERALD_ISLE][itemxind].uItemID != ITEM_NULL) {
+        if (pParty->spellBooksInGuilds[houseId()][itemxind].uItemID != ITEM_NULL) {
             render->DrawTextureNew(pX / 640.0f, 90 / 480.0f, shop_ui_items_in_store[itemxind]);
         }
-        if (pParty->SpellBooksInGuilds[wData.val - HOUSE_FIRE_GUILD_INITIATE_EMERALD_ISLE][itemxind + 6].uItemID != ITEM_NULL) {
+        if (pParty->spellBooksInGuilds[houseId()][itemxind + 6].uItemID != ITEM_NULL) {
             render->DrawTextureNew(pX / 640.0f, 250 / 480.0f, shop_ui_items_in_store[itemxind + 6]);
         }
 
@@ -166,7 +166,7 @@ void GUIWindow_MagicGuild::buyBooksDialogue() {
     if (HouseUI_CheckIfPlayerCanInteract()) {
         int itemcount = 0;
         for (uint i = 0; i < ItemAmountForShop(buildingTable[wData.val - 1].uType); ++i) {
-            if (pParty->SpellBooksInGuilds[wData.val - HOUSE_FIRE_GUILD_INITIATE_EMERALD_ISLE][i].uItemID != ITEM_NULL)
+            if (pParty->spellBooksInGuilds[houseId()][i].uItemID != ITEM_NULL)
                 ++itemcount;
         }
 
@@ -185,7 +185,7 @@ void GUIWindow_MagicGuild::buyBooksDialogue() {
                 testx += 6;
             }
 
-            ItemGen *item = &pParty->SpellBooksInGuilds[wData.val - HOUSE_FIRE_GUILD_INITIATE_EMERALD_ISLE][testx];
+            ItemGen *item = &pParty->spellBooksInGuilds[houseId()][testx];
 
             if (item->uItemID != ITEM_NULL) {
                 int testpos;
@@ -213,8 +213,8 @@ void GUIWindow_MagicGuild::houseDialogueOptionSelected(DIALOGUE_TYPE option) {
     if (option == DIALOGUE_GUILD_BUY_BOOKS) {
         if (pParty->PartyTimes.guildNextRefreshTime[houseId()] >= pParty->GetPlayingTime()) {
             for (uint i = 0; i < ItemAmountForShop(buildingTable[wData.val - 1].uType); ++i) {
-                if (pParty->SpellBooksInGuilds[wData.val - HOUSE_FIRE_GUILD_INITIATE_EMERALD_ISLE][i].uItemID != ITEM_NULL)
-                    shop_ui_items_in_store[i] = assets->getImage_ColorKey(pParty->SpellBooksInGuilds[wData.val - HOUSE_FIRE_GUILD_INITIATE_EMERALD_ISLE][i].GetIconName());
+                if (pParty->spellBooksInGuilds[houseId()][i].uItemID != ITEM_NULL)
+                    shop_ui_items_in_store[i] = assets->getImage_ColorKey(pParty->spellBooksInGuilds[houseId()][i].GetIconName());
             }
         } else {
             GameTime nextGenTime = pParty->GetPlayingTime().AddDays(buildingTable[wData.val - 1].generation_interval_days);
@@ -257,7 +257,7 @@ void GUIWindow_MagicGuild::generateSpellBooksForGuild() {
             }
         }
 
-        ItemGen *itemSpellbook = &pParty->SpellBooksInGuilds[wData.val - HOUSE_FIRE_GUILD_INITIATE_EMERALD_ISLE][i];
+        ItemGen *itemSpellbook = &pParty->spellBooksInGuilds[houseId()][i];
         itemSpellbook->Reset();
         itemSpellbook->uItemID = pItemNum;
         itemSpellbook->SetIdentified();

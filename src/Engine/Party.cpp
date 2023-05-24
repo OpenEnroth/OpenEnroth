@@ -159,9 +159,9 @@ void Party::Zero() {
         for (unsigned int j = 0; j < 12; ++j)
             SpecialItemsInShops[i][j].Reset();
 
-    for (unsigned int i = 0; i < 32; ++i)
-        for (unsigned int j = 0; j < 12; ++j)
-            SpellBooksInGuilds[i][j].Reset();
+    for (HOUSE_ID i : spellBooksInGuilds.indices())
+        for (int j = 0; j < 12; ++j)
+            spellBooksInGuilds[i][j].Reset();
 
     field_1605C_set0_unused.fill(0);
     pHireling1Name[0] = 0;

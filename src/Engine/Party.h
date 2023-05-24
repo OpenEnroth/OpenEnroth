@@ -492,7 +492,7 @@ struct Party {
     unsigned int uFlags;
     std::array<std::array<ItemGen, 12>, 53> StandartItemsInShops;
     std::array<std::array<ItemGen, 12>, 53> SpecialItemsInShops;  // D0EC
-    std::array<std::array<ItemGen, 12>, 32> SpellBooksInGuilds;
+    IndexedArray<std::array<ItemGen, 12>, HOUSE_FIRST_MAGIC_GUILD, HOUSE_LAST_MAGIC_GUILD> spellBooksInGuilds;
     std::array<char, 24> field_1605C_set0_unused;
     std::string pHireling1Name;
     std::string pHireling2Name;

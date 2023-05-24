@@ -440,7 +440,7 @@ void serialize(const Party &src, Party_MM7 *dst) {
 
     serialize(src.StandartItemsInShops, &dst->standartItemsInShops);
     serialize(src.SpecialItemsInShops, &dst->specialItemsInShops);
-    serialize(src.SpellBooksInGuilds, &dst->spellBooksInGuilds);
+    serialize(src.spellBooksInGuilds, &dst->spellBooksInGuilds);
     serialize(src.field_1605C_set0_unused, &dst->field_1605C);
 
     serialize(src.pHireling1Name, &dst->hireling1Name);
@@ -572,7 +572,7 @@ void deserialize(const Party_MM7 &src, Party *dst) {
 
     deserialize(src.standartItemsInShops, &dst->StandartItemsInShops);
     deserialize(src.specialItemsInShops, &dst->SpecialItemsInShops);
-    deserialize(src.spellBooksInGuilds, &dst->SpellBooksInGuilds);
+    deserialize(src.spellBooksInGuilds, &dst->spellBooksInGuilds);
 
     deserialize(src.field_1605C, &dst->field_1605C_set0_unused);
 

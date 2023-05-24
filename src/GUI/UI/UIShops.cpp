@@ -821,7 +821,7 @@ void UIShop_Buy_Identify_Repair() {
                     testx += 6;
                 }
 
-                bought_item = &pParty->SpellBooksInGuilds[window_SpeakInHouse->wData.val - 139][testx];
+                bought_item = &pParty->spellBooksInGuilds[window_SpeakInHouse->houseId()][testx];
                 if (bought_item->uItemID != ITEM_NULL) {
                     int testpos;
                     if (pt.y >= 250) {
@@ -1430,7 +1430,7 @@ void ShowPopupShopItem() {
                 testx += 6;
             }
 
-            item = &pParty->SpellBooksInGuilds[window_SpeakInHouse->wData.val - HOUSE_FIRE_GUILD_INITIATE_EMERALD_ISLE][testx];
+            item = &pParty->spellBooksInGuilds[window_SpeakInHouse->houseId()][testx];
 
             if (item->uItemID != ITEM_NULL) {
                 int testpos;
@@ -1442,8 +1442,7 @@ void ShowPopupShopItem() {
 
                 if (pt.x >= testpos && pt.x <= testpos + shop_ui_items_in_store[testx]->GetWidth()) {
                     if ((pt.y >= 90 && pt.y <= (90 + shop_ui_items_in_store[testx]->GetHeight())) || (pt.y >= 250 && pt.y <= (250 + shop_ui_items_in_store[testx]->GetHeight()))) {
-                        unsigned int guildId = window_SpeakInHouse->wData.val - HOUSE_FIRE_GUILD_INITIATE_EMERALD_ISLE;
-                        sub_4B1523_showSpellbookInfo(pParty->SpellBooksInGuilds[guildId][testx].uItemID);
+                        sub_4B1523_showSpellbookInfo(pParty->spellBooksInGuilds[window_SpeakInHouse->houseId()][testx].uItemID);
                     }
                 }
             }
