@@ -23,4 +23,4 @@ class GUIWindow_MagicGuild : public GUIWindow_House {
     void buyBooksDialogue();
 };
 
-extern IndexedArray<int, HOUSE_FIRE_GUILD_INITIATE_EMERALD_ISLE, HOUSE_DARK_GUILD_PARAMOUNT_PIT> guildMembershipFlags;
+extern IndexedArray<int, HOUSE_FIRST_MAGIC_GUILD, HOUSE_LAST_MAGIC_GUILD> guildMembershipFlags;

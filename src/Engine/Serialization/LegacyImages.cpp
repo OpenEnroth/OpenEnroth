@@ -347,11 +347,10 @@ void serialize(const Party &src, Party_MM7 *dst) {
     dst->partyTimes.bountyHuntingNextGenerationTime.fill(0);
     serialize(src.PartyTimes.bountyHuntNextGenTime, &dst->partyTimes.bountyHuntingNextGenerationTime, 5);
 
-    // Initially was one array but was splitted in two to simplify access
+    // Initially was one array but was splitted in two to simplify access with first element as zero
+    // because it is corresponding to invalid house ID
     dst->partyTimes.shopsNextGenerationTime0 = 0;
-    dst->partyTimes.shopsNextGenerationTime.fill(0); // Original size is 53 with 0 element unused
     serialize(src.PartyTimes.shopNextRefreshTime, &dst->partyTimes.shopsNextGenerationTime);
-    dst->partyTimes.guildsNextGenerationTime.fill(0); // Original size is 32
     serialize(src.PartyTimes.guildNextRefreshTime, &dst->partyTimes.guildsNextGenerationTime);
 
     serialize(src.PartyTimes._shop_ban_times, &dst->partyTimes.shopBanTimes);
