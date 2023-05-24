@@ -15,7 +15,7 @@
 Texture *ODMFace::GetTexture() {
     if (this->IsTextureFrameTable()) {
         return pTextureFrameTable->GetFrameTexture(
-            (int64_t)this->resource, pEventTimer->uTotalGameTimeElapsed);
+            (int64_t)this->resource, pEventTimer->uTotalTimeElapsed);
     } else {
         return (Texture *)this->resource;
     }
