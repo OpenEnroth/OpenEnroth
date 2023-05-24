@@ -15,6 +15,6 @@ class MemoryInputStream: public InputStream {
     virtual void close() override;
 
  private:
-    const char *pos_ = nullptr;
-    const char *end_ = nullptr;
+    const char *_pos = nullptr;
+    const char *_end = nullptr;
 };

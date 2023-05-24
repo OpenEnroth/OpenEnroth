@@ -53,6 +53,7 @@
 #include "Media/MediaPlayer.h"
 
 #include "Library/Random/Random.h"
+#include "Library/Lod/LodReader.h"
 
 using Graphics::IRenderFactory;
 
@@ -152,7 +153,7 @@ void Engine::Draw() {
             // if ( render->pRenderD3D )
             {
                 float v2 =
-                    (double)(((signed int)pMiscTimer->uTotalGameTimeElapsed >> 2) & 0x1F) * 0.032258064 * 6.0;
+                    (double)(((signed int)pMiscTimer->uTotalTimeElapsed >> 2) & 0x1F) * 0.032258064 * 6.0;
                 // v3 = v2 + 6.7553994e15;
                 // render->field_1036A8_bitmapid = LODWORD(v3);
                 render->hd_water_current_frame = floorf(v2 + 0.5f);
@@ -835,34 +836,31 @@ void FinalInitialization() {
 }
 
 bool MM7_LoadLods() {
+    engine->_gameResourceManager = std::make_unique<GameResourceManager>();
+    engine->_gameResourceManager->openGameResources();
+
     pIcons_LOD = new LODFile_IconsBitmaps;
     if (!pIcons_LOD->Load(MakeDataPath("data", "icons.lod"), "icons")) {
-        Error("Some files are missing\n\nPlease Reinstall.");
+        Error(localization->GetString(LSTR_PLEASE_REINSTALL), localization->GetString(LSTR_REINSTALL_NECESSARY));
         return false;
     }
     pIcons_LOD->_011BA4_debug_paletted_pixels_uncompressed = false;
 
     pEvents_LOD = new LODFile_IconsBitmaps;
     if (!pEvents_LOD->Load(MakeDataPath("data", "events.lod"), "icons")) {
-        Error("Some files are missing\n\nPlease Reinstall.");
+        Error(localization->GetString(LSTR_PLEASE_REINSTALL), localization->GetString(LSTR_REINSTALL_NECESSARY));
         return false;
     }
 
     pBitmaps_LOD = new LODFile_IconsBitmaps;
     if (!pBitmaps_LOD->Load(MakeDataPath("data", "bitmaps.lod"), "bitmaps")) {
-        Error(
-            localization->GetString(LSTR_PLEASE_REINSTALL),
-            localization->GetString(LSTR_REINSTALL_NECESSARY)
-        );
+        Error(localization->GetString(LSTR_PLEASE_REINSTALL), localization->GetString(LSTR_REINSTALL_NECESSARY));
         return false;
     }
 
     pSprites_LOD = new LODFile_Sprites;
     if (!pSprites_LOD->Load(MakeDataPath("data", "sprites.lod"), "sprites08")) {
-        Error(
-            localization->GetString(LSTR_PLEASE_REINSTALL),
-            localization->GetString(LSTR_REINSTALL_NECESSARY)
-        );
+        Error(localization->GetString(LSTR_PLEASE_REINSTALL), localization->GetString(LSTR_REINSTALL_NECESSARY));
         return false;
     }
 

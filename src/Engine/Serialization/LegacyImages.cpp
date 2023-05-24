@@ -171,7 +171,7 @@ void serialize(const Timer &src, Timer_MM7 *dst) {
     dst->field_18 = src.field_18;
     dst->timeElapsed = src.uTimeElapsed;
     dst->dtFixpoint = src.dt_fixpoint;
-    dst->totalGameTimeElapsed = src.uTotalGameTimeElapsed;
+    dst->totalGameTimeElapsed = src.uTotalTimeElapsed;
 }
 
 void deserialize(const Timer_MM7 &src, Timer *dst) {
@@ -184,7 +184,7 @@ void deserialize(const Timer_MM7 &src, Timer *dst) {
     dst->field_18 = src.field_18;
     dst->uTimeElapsed = src.timeElapsed;
     dst->dt_fixpoint = src.dtFixpoint;
-    dst->uTotalGameTimeElapsed = src.totalGameTimeElapsed;
+    dst->uTotalTimeElapsed = src.totalGameTimeElapsed;
 }
 
 void serialize(const NPCData &src, NPCData_MM7 *dst) {

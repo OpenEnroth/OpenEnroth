@@ -22,6 +22,6 @@ class GameKeyboardController: public Io::IKeyboardController, public PlatformEve
     virtual bool keyReleaseEvent(const PlatformKeyEvent *event) override;
 
  private:
-    IndexedArray<bool, PlatformKey::Count> isKeyDown_ = {{}};
-    IndexedArray<bool, PlatformKey::Count> isKeyDownReported_ = {{}};
+    IndexedArray<bool, PlatformKey::First, PlatformKey::Last> isKeyDown_ = {{}};
+    IndexedArray<bool, PlatformKey::First, PlatformKey::Last> isKeyDownReported_ = {{}};
 };

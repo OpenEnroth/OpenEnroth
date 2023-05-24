@@ -404,18 +404,18 @@ void GUIWindow::HouseDialogManager() {
                 int v9 = 0;
                 if (v8 + 1 == uNumDialogueNPCPortraits && uHouse_ExitPic) {
                     pTitleText = pMapStats->pInfos[uHouse_ExitPic].pName;
-                    v9 = 94 * v8 + 113;
+                    v9 = 94 * v8 + SIDE_TEXT_BOX_POS_Y;
                 } else {
                     if (!v8 && dword_591080) {
                         pTitleText = (char*)buildingTable[window_SpeakInHouse->wData.val - 1].pProprieterTitle;
-                        pWindow.DrawTitleText(pFontCreate, 0x1E3u, 113, colorTable.EasternBlue.c16(), pTitleText, 3);
+                        pWindow.DrawTitleText(pFontCreate, SIDE_TEXT_BOX_POS_X, SIDE_TEXT_BOX_POS_Y, colorTable.EasternBlue.c16(), pTitleText, 3);
                         continue;
                     }
                     pTitleText = HouseNPCData[v8 + 1 - (dword_591080 != 0)]->pName;
                     v9 = pNPCPortraits_y[uNumDialogueNPCPortraits - 1][v8] + pDialogueNPCPortraits[v8]->GetHeight() + 2;
                 }
                 v10 = v9;
-                pWindow.DrawTitleText(pFontCreate, 483, v10, colorTable.EasternBlue.c16(), pTitleText, 3);
+                pWindow.DrawTitleText(pFontCreate, SIDE_TEXT_BOX_POS_X, v10, colorTable.EasternBlue.c16(), pTitleText, 3);
             }
         }
         if (pDialogueNPCCount == uNumDialogueNPCPortraits && uHouse_ExitPic) {
@@ -456,7 +456,7 @@ void GUIWindow::HouseDialogManager() {
         SimpleHouseDialog();
     } else {
         pWindow.DrawTitleText(
-            pFontCreate, 483, 113, colorTable.EasternBlue.c16(), NameAndTitle(
+            pFontCreate, SIDE_TEXT_BOX_POS_X, SIDE_TEXT_BOX_POS_Y, colorTable.EasternBlue.c16(), NameAndTitle(
                 buildingTable[window_SpeakInHouse->wData.val - 1].pProprieterName,
                 buildingTable[window_SpeakInHouse->wData.val - 1].pProprieterTitle
             ), 3);
@@ -2314,28 +2314,20 @@ void SeekKnowledgeElswhereDialogueOption(GUIWindow *dialogue, Player *player) {
     std::string str = SeekKnowledgeElswhereString(&pParty->activeCharacter());
     int text_height = pFontArrus->CalcTextHeight(str, dialogue->uFrameWidth, 0);
 
-    dialogue->DrawTitleText(pFontArrus, 0, (174 - text_height) / 2 + 138, colorTable.PaleCanary.c16(), str, 3);
+    dialogue->DrawTitleText(pFontArrus, 0, (SIDE_TEXT_BOX_BODY_TEXT_HEIGHT - text_height) / 2 + SIDE_TEXT_BOX_BODY_TEXT_OFFSET, colorTable.PaleCanary.c16(), str, 3);
 }
 
 
-void SkillTrainingDialogue(
-    GUIWindow *dialogue,
-    int num_skills_avaiable,
-    int all_text_height,
-     int skill_price
-) {
+void SkillTrainingDialogue(GUIWindow *dialogue, int num_skills_avaiable, int all_text_height, int skill_price) {
     if (!num_skills_avaiable) {
         SeekKnowledgeElswhereDialogueOption(dialogue, &pParty->activeCharacter());
         return;
     }
 
-    auto skill_price_label = localization->FormatString(
-        LSTR_FMT_SKILL_COST_D, skill_price
-    );
-    dialogue->DrawTitleText(pFontArrus, 0, 146, 0, skill_price_label, 3);
+    bool drawnPrice = false;
 
     int textspacings = (149 - all_text_height) / num_skills_avaiable;
-    if (textspacings > 32) textspacings = 32;
+    if (textspacings > SIDE_TEXT_BOX_MAX_SPACING) textspacings = SIDE_TEXT_BOX_MAX_SPACING;
     int textoffset = (149 - num_skills_avaiable * textspacings - all_text_height) / 2
             - textspacings / 2 + 162;
     for (int i = pDialogueWindow->pStartingPosActiveItem;
@@ -2357,15 +2349,9 @@ void SkillTrainingDialogue(
             if (pDialogueWindow->pCurrentPosActiveItem != i) {
                 text_color = colorTable.White.c16();
             }
-            dialogue->DrawTitleText(
-                pFontArrus, 0, pButton->uY, text_color,
-                localization->GetString(LSTR_BUY_SPELLS),
-                3
-            );
+            dialogue->DrawTitleText(pFontArrus, 0, pButton->uY, text_color, localization->GetString(LSTR_BUY_SPELLS), 3);
         } else {
-            auto skill_id = GetLearningDialogueSkill(
-                (DIALOGUE_TYPE)pButton->msg_param
-            );
+            auto skill_id = GetLearningDialogueSkill((DIALOGUE_TYPE)pButton->msg_param);
 
             if (skillMaxMasteryPerClass[pParty->activeCharacter().classType][skill_id] == PLAYER_SKILL_MASTERY_NONE
                 || pParty->activeCharacter().pActiveSkills[skill_id]) {
@@ -2373,12 +2359,13 @@ void SkillTrainingDialogue(
                 pButton->uHeight = 0;
                 pButton->uY = 0;
             } else {
+                if (!drawnPrice) {
+                    auto skill_price_label = localization->FormatString(LSTR_FMT_SKILL_COST_D, skill_price);
+                    dialogue->DrawTitleText(pFontArrus, 0, 146, 0, skill_price_label, 3);
+                    drawnPrice = true;
+                }
                 auto skill_name_label = localization->GetSkillName(skill_id);
-                int line_height = pFontArrus->CalcTextHeight(
-                    skill_name_label,
-                    dialogue->uFrameWidth,
-                    0
-                );
+                int line_height = pFontArrus->CalcTextHeight(skill_name_label, dialogue->uFrameWidth, 0);
                 pButton->uY = textspacings + textoffset;
                 pButton->uHeight = line_height;
                 pButton->uW = pButton->uY + line_height + 6 - 1;
@@ -2386,11 +2373,7 @@ void SkillTrainingDialogue(
                 int text_color = colorTable.Sunflower.c16();
                 if (pDialogueWindow->pCurrentPosActiveItem != i)
                     text_color = colorTable.White.c16();
-                dialogue->DrawTitleText(
-                    pFontArrus, 0, pButton->uY, text_color,
-                    skill_name_label,
-                    3
-                );
+                dialogue->DrawTitleText(pFontArrus, 0, pButton->uY, text_color, skill_name_label, 3);
             }
         }
     }

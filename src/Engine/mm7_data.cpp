@@ -4,7 +4,6 @@
 
 #include "Engine/Graphics/Viewport.h"
 #include "Engine/stru160.h"
-#include "Engine/stru367.h"
 #include "MapInfo.h"
 #include "OurMath.h"
 
@@ -2434,7 +2433,6 @@ std::array<std::pair<int16_t, ITEM_TYPE>, 27> _4F0882_evt_VAR_PlayerItemInHands_
     {0x0ED, ITEM_QUEST_LICH_JAR_FULL},
     {0x0F1, ITEM_RARE_THE_PERFECT_BOW}
 }};
-std::array<unsigned short, 6> pMaxLevelPerTrainingHallType = {{5, 15, 25, 25, 200, 200}};
 
 std::array<int, 11> price_for_membership = {{100, 100, 50, 50, 50, 50, 50, 50, 50, 1000, 1000}};
 
@@ -2459,7 +2457,6 @@ unsigned int uGameUIFontMain;
 int dword_507B00_spell_info_to_draw_in_popup;
 int dword_507CC0_activ_ch;
 bool OpenedTelekinesis;
-stru367 PortalFace;
 int enchantingActiveCharacter;
 std::array<unsigned int, 5> pIconIDs_Turn;
 unsigned int uIconID_TurnStop;
@@ -2550,10 +2547,10 @@ char bNoNPCHiring = false;
 Vec3i blv_prev_party_pos;
 std::array<NPCTopic, 789> pNPCTopics;
 std::string pMerchantsTXT_Raw;
-IndexedArray<const char *, MERCHANT_PHRASE_COUNT> pMerchantsBuyPhrases;
-IndexedArray<const char *, MERCHANT_PHRASE_COUNT> pMerchantsSellPhrases;
-IndexedArray<const char *, MERCHANT_PHRASE_COUNT> pMerchantsRepairPhrases;
-IndexedArray<const char *, MERCHANT_PHRASE_COUNT> pMerchantsIdentifyPhrases;
+IndexedArray<const char *, MERCHANT_PHRASE_FIRST, MERCHANT_PHRASE_LAST> pMerchantsBuyPhrases;
+IndexedArray<const char *, MERCHANT_PHRASE_FIRST, MERCHANT_PHRASE_LAST> pMerchantsSellPhrases;
+IndexedArray<const char *, MERCHANT_PHRASE_FIRST, MERCHANT_PHRASE_LAST> pMerchantsRepairPhrases;
+IndexedArray<const char *, MERCHANT_PHRASE_FIRST, MERCHANT_PHRASE_LAST> pMerchantsIdentifyPhrases;
 std::string pTransitionsTXT_Raw;
 std::vector<Vec3f> pTerrainNormals;
 std::array<unsigned short, 128 * 128 * 2> pTerrainNormalIndices;
@@ -2561,7 +2558,6 @@ std::array<unsigned int, 128 * 128 * 2> pTerrainSomeOtherData;
 unsigned int uPlayerCreationUI_SelectedCharacter;
 int dword_A74CDC;
 // int dword_F8B144; // nexindex [-1] to the following
-std::array<int, 4> player_levels = {{1, 1, 1, 1}};
 std::array<int16_t, 6> weapons_Ypos;           // word_F8B158
 int guild_membership_approved;
 PLAYER_SKILL_MASTERY dword_F8B1B0_MasteryBeingTaught;

@@ -51,6 +51,14 @@ struct GameTime {
         this->value += SECONDS_TO_GAME_TIME(60ull * minutes);
         return *this;
     }
+    GameTime &SubtractMinutes(int minutes) {
+        this->value -= SECONDS_TO_GAME_TIME(60ull * minutes);
+        return *this;
+    }
+    GameTime &AddHours(int hours) {
+        this->value += SECONDS_TO_GAME_TIME(3600ull * hours);
+        return *this;
+    }
     GameTime &SubtractHours(int hours) {
         this->value -= SECONDS_TO_GAME_TIME(3600ull * hours);
         return *this;
@@ -125,13 +133,14 @@ struct Timer {
         field_18 = 0;
         uTimeElapsed = 0;
         dt_fixpoint = 0;
-        uTotalGameTimeElapsed = 0;
+        uTotalTimeElapsed = 0;
     }
 
     void Initialize();
 
     /**
-     * @return                          Current time in 1/128th of a second.
+     * @return                          Current real time (not game time!) in timer ticks. One tick is 1/128th of a
+     *                                  real time second.
      */
     uint64_t Time();
 
@@ -141,18 +150,18 @@ struct Timer {
     void TrackGameTime();
     void StopGameTime();
 
-    unsigned int bReady; // Unused
+    unsigned int bReady; // Unused.
     unsigned int bPaused;
     int bTackGameTime;
-    unsigned int uStartTime; // Last tick (frame) time, in 1/128th of a second.
+    unsigned int uStartTime; // Last frame time, in real time ticks (128 ticks is 1 real time second).
     unsigned int uStopTime;
     int uGameTimeStart;
     int field_18;
-    int uTimeElapsed; // dt in 1/128th of a second (real time, not game time).
-    int dt_fixpoint; // dt in seconds in fixpoint format
-    unsigned int uTotalGameTimeElapsed; // total time elapsed since the last Initialize() call, in 1/128th of a second.
+    int uTimeElapsed; // dt since last frame in real time ticks (128 ticks is 1 real time second).
+    int dt_fixpoint; // dt since last frame in real time seconds in fixpoint format.
+    unsigned int uTotalTimeElapsed; // Total time elapsed since the last Initialize() call, in real time ticks (128 ticks is 1 real time second).
 
-    // Real-world time intervals in timer quants
+    // Real time intervals in timer ticks.
     static const unsigned int Second = 128;
     static const unsigned int Minute = 60 * Second;
     static const unsigned int Hour = 60 * Minute;

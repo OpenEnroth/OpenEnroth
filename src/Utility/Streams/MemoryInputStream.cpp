@@ -15,25 +15,25 @@ MemoryInputStream::MemoryInputStream(const void *data, size_t size) {
 MemoryInputStream::~MemoryInputStream() {}
 
 void MemoryInputStream::reset(const void *data, size_t size) {
-    pos_ = static_cast<const char *>(data);
-    end_ = pos_ + size;
+    _pos = static_cast<const char *>(data);
+    _end = _pos + size;
 }
 
 size_t MemoryInputStream::read(void *data, size_t size) {
-    assert(pos_);
+    assert(_pos);
 
-    size_t result = std::min(size, static_cast<size_t>(end_ - pos_));
+    size_t result = std::min(size, static_cast<size_t>(_end - _pos));
 
-    memcpy(data, pos_, result);
-    pos_ += result;
+    memcpy(data, _pos, result);
+    _pos += result;
     return result;
 }
 
 size_t MemoryInputStream::skip(size_t size) {
-    assert(pos_);
+    assert(_pos);
 
-    size_t result = std::min(size, static_cast<size_t>(end_ - pos_));
-    pos_ += result;
+    size_t result = std::min(size, static_cast<size_t>(_end - _pos));
+    _pos += result;
     return result;
 }
 

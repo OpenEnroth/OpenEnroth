@@ -54,6 +54,7 @@ if(ENABLE_TESTS)
             Math/Tests/Float_ut.cpp
             Streams/Tests/FileOutputStream_ut.cpp
             Tests/IndexedArray_ut.cpp
+            Tests/IndexedBitset_ut.cpp
             Tests/Segment_ut.cpp
             Tests/String_ut.cpp)
 

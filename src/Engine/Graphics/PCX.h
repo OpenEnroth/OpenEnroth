@@ -4,10 +4,11 @@
 #include <memory>
 
 #include "Image.h"
+#include "Utility/Memory/Blob.h"
 
 namespace PCX {
-std::unique_ptr<uint8_t[]> Decode(const void *data, size_t size, size_t *width,
-                                  size_t *height, IMAGE_FORMAT *format, IMAGE_FORMAT requestedFormat);
+std::unique_ptr<uint8_t[]> Decode(const Blob &data, size_t *width,
+                                  size_t *height, IMAGE_FORMAT *format);
 /**
  * @param picture_data                  Pointer to the image data to encode.
  * @param width                         Final width of image to create.

@@ -56,7 +56,7 @@
 #include "GUI/UI/Books/MapBook.h"
 #include "GUI/UI/Books/QuestBook.h"
 #include "GUI/UI/Books/TownPortalBook.h"
-#include "GUI/UI/Spellbook.h"
+#include "GUI/UI/UISpellbook.h"
 #include "GUI/UI/UIBooks.h"
 #include "GUI/UI/UICharacter.h"
 #include "GUI/UI/UICredits.h"
@@ -989,9 +989,9 @@ void Game::processQueuedMessages() {
                         pGameLoadingUI_ProgressBar->Progress();
                         SaveGame(1, 0);
                         pGameLoadingUI_ProgressBar->Progress();
-                        RestAndHeal(24 * 60 * getTravelTime());
+                        restAndHeal(GameTime::FromDays(getTravelTime()));
                         if (pParty->GetFood() > 0) {
-                            pParty->RestAndHeal();
+                            pParty->restAndHeal();
                             if (pParty->GetFood() < getTravelTime()) {
                                 for(Player &player : pParty->pPlayers)
                                     player.SetCondition(Condition_Weak, 0);
@@ -1494,7 +1494,7 @@ void Game::processQueuedMessages() {
                         remainingRestTime = remainingRestTime + GameTime::FromHours(12);
                     }
                     currentRestType = REST_HEAL;
-                    pParty->RestAndHeal();
+                    pParty->restAndHeal();
                     pParty->days_played_without_rest = 0;
                     for (Player &player : pParty->pPlayers) {
                         player.SetAsleep(GameTime(1));
@@ -1603,7 +1603,7 @@ void Game::processQueuedMessages() {
                         pParty->TakeFood(foodRequiredToRest);
                         remainingRestTime = GameTime::FromHours(8);
                         currentRestType = REST_HEAL;
-                        pParty->RestAndHeal();
+                        pParty->restAndHeal();
                         pParty->days_played_without_rest = 0;
                         for (Player &player : pParty->pPlayers) {
                             player.SetAsleep(GameTime(1));

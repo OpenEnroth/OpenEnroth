@@ -13,5 +13,5 @@ class StringOutputStream: public OutputStream {
     virtual void close() override;
 
  private:
-    std::string *target_ = nullptr;
+    std::string *_target = nullptr;
 };

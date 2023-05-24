@@ -515,7 +515,7 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
 
         case SPELL_BODY_HAMMERHANDS:
             // TODO(Nik-RE-dev): calculation of duration is strange
-            actorPtr->pActorBuffs[ACTOR_BUFF_PAIN_HAMMERHANDS]
+            actorPtr->pActorBuffs[ACTOR_BUFF_HAMMERHANDS]
                 .Apply(pParty->GetPlayingTime() + GameTime::FromHours(realPoints), masteryLevel, realPoints, 0, 0);
             spell_fx_renderer->sparklesOnActorAfterItCastsBuff(actorPtr, colorTable.JazzberryJam.c32());
             pAudioPlayer->playSound(SOUND_51heroism03, PID(OBJECT_Actor, uActorID));
@@ -1288,8 +1288,8 @@ int Actor::_43B3E0_CalcDamage(ABILITY_INDEX dmgSource) {
                 spellPower = this->pActorBuffs[ACTOR_BUFF_HOUR_OF_POWER].power;
             if (this->pActorBuffs[ACTOR_BUFF_HEROISM].Active() && this->pActorBuffs[ACTOR_BUFF_HEROISM].power > spellPower)
                 spellPower = this->pActorBuffs[ACTOR_BUFF_HEROISM].power;
-            if (this->pActorBuffs[ACTOR_BUFF_PAIN_HAMMERHANDS].Active())
-                spellPower += this->pActorBuffs[ACTOR_BUFF_PAIN_HAMMERHANDS].power;
+            if (this->pActorBuffs[ACTOR_BUFF_HAMMERHANDS].Active())
+                spellPower += this->pActorBuffs[ACTOR_BUFF_HAMMERHANDS].power;
             damageDiceRolls = this->pMonsterInfo.uAttack1DamageDiceRolls;
             damageDiceSides = this->pMonsterInfo.uAttack1DamageDiceSides;
             damageBonus = this->pMonsterInfo.uAttack1DamageBonus;
@@ -3899,7 +3899,7 @@ bool Actor::_427102_IsOkToCastSpell(SPELL_TYPE spell) {
         case SPELL_DARK_PAIN_REFLECTION:
             return this->pActorBuffs[ACTOR_BUFF_PAIN_REFLECTION].Expired();
         case SPELL_BODY_HAMMERHANDS:
-            return this->pActorBuffs[ACTOR_BUFF_PAIN_HAMMERHANDS].Expired();
+            return this->pActorBuffs[ACTOR_BUFF_HAMMERHANDS].Expired();
         case SPELL_FIRE_HASTE:
             return this->pActorBuffs[ACTOR_BUFF_HASTE].Expired();
         case SPELL_AIR_SHIELD:

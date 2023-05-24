@@ -18,6 +18,7 @@ set(ENGINE_SOURCES
         SaveLoad.cpp
         SpellFxRenderer.cpp
         Time.cpp
+        GameResourceManager.cpp
         mm7_data.cpp
         mm7text_ru.cpp)
 
@@ -40,10 +41,10 @@ set(ENGINE_HEADERS
         SaveLoad.h
         SpellFxRenderer.h
         Time.h
+        GameResourceManager.h
         mm7_data.h
         stru160.h
-        stru314.h
-        stru367.h)
+        stru314.h)
 
 add_library(engine STATIC ${ENGINE_SOURCES} ${ENGINE_HEADERS})
 target_check_style(engine)

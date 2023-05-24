@@ -255,7 +255,7 @@ void SpellFxRenderer::DrawProjectiles() {
 void SpellFxRenderer::_4A73AA_hanging_trace_particles___like_fire_strike_ice_blast_etc(
         SpriteObject *a2, unsigned int uDiffuse, Texture *texture) {
     // check if enough time has passed to add particle into the trail
-    if (a2->_lastParticleTime + a2->_ticksPerParticle < pEventTimer->uTotalGameTimeElapsed) {
+    if (a2->_lastParticleTime + a2->_ticksPerParticle < pEventTimer->uTotalTimeElapsed) {
         a2->_lastParticleTime += a2->_ticksPerParticle;
     } else {
         return;
@@ -623,7 +623,7 @@ float SpellFxRenderer::_4A806F_get_mass_distortion_value(Actor *pActor) {
 
     v3 = *(int *)&pActor->pActorBuffs[ACTOR_BUFF_MASS_DISTORTION]
               .expireTime.value -
-         pMiscTimer->uTotalGameTimeElapsed;
+         pMiscTimer->uTotalTimeElapsed;
     if (v3 > 64) {
         v2 = (v3 - 64) * (v3 - 64);
         v4 = (double)v2 / 5120.0 + 0.2;

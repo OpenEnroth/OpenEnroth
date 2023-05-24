@@ -1,4 +1,4 @@
-#include "GUI/UI/Spellbook.h"
+#include "GUI/UI/UISpellbook.h"
 
 #include "Engine/AssetsManager.h"
 #include "Engine/Engine.h"

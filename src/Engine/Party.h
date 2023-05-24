@@ -188,7 +188,11 @@ struct Party {
      * @offset 0x4909F4
      */
     void updatePlayersAndHirelingsEmotions();
-    void RestAndHeal();
+
+    /**
+     * @offset 0x490D02
+     */
+    void restAndHeal();
 
     /**
      * @offset 0x49135E
@@ -543,7 +547,14 @@ bool TestPartyQuestBit(PARTY_QUEST_BITS bit);
  * @offset 0x4938D1
  */
 void Rest(GameTime restTime);
-void RestAndHeal(int uNumMinutes);  // idb
+
+/**
+ * Perform resting with healing.
+ *
+ * @param restTime      Resting time.
+ * @offset 0x4B1BDB
+ */
+void restAndHeal(GameTime restTime);
 
 /**
  * @offset 0x444D80
