@@ -393,7 +393,10 @@ void deserialize(const Player_MM7 &src, Player *dst);
 
 struct PartyTimeStruct_MM7 {
     /* 000 */ std::array<int64_t, 10> bountyHuntingNextGenerationTime;
-    /* 050 */ std::array<int64_t, 85> shopsNextGenerationTime;
+    // Originally was one array
+    /* 050 */ int64_t shopsNextGenerationTime0; // shop generation time for house id 0 which is invalid value
+              std::array<int64_t, 52> shopsNextGenerationTime;
+              std::array<int64_t, 32> guildsNextGenerationTime;
     /* 2F8 */ std::array<int64_t, 53> shopBanTimes;
     /* 4A0 */ std::array<int64_t, 10> counterEventValues;
     /* 4F0 */ std::array<int64_t, 29> historyEventTimes;

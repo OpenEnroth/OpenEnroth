@@ -1123,13 +1123,13 @@ void OnSelectShopDialogueOption(DIALOGUE_TYPE option) {
     case DIALOGUE_SHOP_BUY_STANDARD:
     case DIALOGUE_SHOP_BUY_SPECIAL:
     {
-        if (pParty->PartyTimes.Shops_next_generation_time
-            [window_SpeakInHouse->wData.val] <
+        if (pParty->PartyTimes.shopNextRefreshTime
+            [window_SpeakInHouse->houseId()] <
             pParty->GetPlayingTime()) {
             GenerateStandartShopItems();
             GenerateSpecialShopItems();
             pParty->PartyTimes
-                .Shops_next_generation_time[window_SpeakInHouse->wData.val] =
+                .shopNextRefreshTime[window_SpeakInHouse->houseId()] =
                 GameTime(pParty->GetPlayingTime() +
                 GameTime::FromDays(
                     buildingTable[window_SpeakInHouse->wData.val - 1]

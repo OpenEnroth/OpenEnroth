@@ -85,10 +85,11 @@ void Party::Zero() {
     field_28_set0_unused = 0;
     playing_time = GameTime(0, 0, 0);
     last_regenerated = GameTime(0, 0, 0);
-    PartyTimes.bountyHunting_next_generation_time.fill(GameTime(0));
+    PartyTimes.bountyHuntNextGenTime.fill(GameTime(0));
     PartyTimes.CounterEventValues.fill(GameTime(0));
     PartyTimes.HistoryEventTimes.fill(GameTime(0));
-    PartyTimes.Shops_next_generation_time.fill(GameTime(0));
+    PartyTimes.shopNextRefreshTime.fill(GameTime(0));
+    PartyTimes.guildNextRefreshTime.fill(GameTime(0));
     PartyTimes._shop_ban_times.fill(GameTime(0));
     PartyTimes._s_times.fill(GameTime(0));
     vPosition.x = vPrevPosition.x = 0;

@@ -6,12 +6,15 @@
 
 enum HOUSE_ID {
     HOUSE_INVALID = 0,
+    // TODO(Nik-RE-dev): enumerate shops
     HOUSE_SMITH_EMERALD_ISLE = 1,
     HOUSE_ARMOURER_EMERALD_ISLE = 15,
     HOUSE_MAGE_EMERALD_ISLE = 29,
     HOUSE_MAGE_HARMONDALE = 30,
     HOUSE_ALCHEMIST_EMERALD_ISLE = 42,
     HOUSE_ALCHEMIST_HARMONDALE = 43,
+    HOUSE_ALCHEMIST_52 = 52,
+    HOUSE_53 = 53, // TODO(Nik-RE-dev): what is it? Shop times use size 53 and this index already falls outside of their scope.
     HOUSE_STABLES_HARMONDALE = 54,
     HOUSE_STABLES_STEADWICK = 55,
     HOUSE_STABLES_TULAREAN_FOREST = 56,
@@ -102,6 +105,12 @@ enum HOUSE_ID {
     HOUSE_THRONEROOM_WIN_GOOD = 600,  // Final task completion for good side
     HOUSE_THRONEROOM_WIN_EVIL = 601,   // Final task completion for evil side
 
+    HOUSE_FIRST_SHOP = HOUSE_SMITH_EMERALD_ISLE,
+    HOUSE_LAST_SHOP = HOUSE_ALCHEMIST_52,
+
+    HOUSE_FIRST_MAGIC_GUILD = HOUSE_FIRE_GUILD_INITIATE_EMERALD_ISLE,
+    HOUSE_LAST_MAGIC_GUILD = HOUSE_DARK_GUILD_PARAMOUNT_PIT, // self guilds (which is missing in MM7) are not counted here
+
     HOUSE_FIRST_TOWNHALL = HOUSE_TOWNHALL_HARMONDALE,
     HOUSE_LAST_TOWNHALL = HOUSE_TOWNHALL_THE_PIT,
 };
@@ -111,7 +120,7 @@ inline Segment<HOUSE_ID> townhallHouses() {
 }
 
 inline bool isShop(HOUSE_ID houseId) {
-    // TODO:(Nik-RE-dev): make Segment getters for all shop types and use them
+    // TODO:(Nik-RE-dev): make separate functions for all shop types and use them
     return houseId < HOUSE_STABLES_HARMONDALE;
 }
 

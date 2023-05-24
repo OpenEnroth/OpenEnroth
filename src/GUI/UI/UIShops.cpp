@@ -349,8 +349,8 @@ void WeaponShopWares(GUIWindow dialogwin, bool special) {
             }
         } else {  // shop empty
             dialogwin.DrawShops_next_generation_time_string(
-                pParty->PartyTimes.Shops_next_generation_time
-                    [window_SpeakInHouse->wData.val] -
+                pParty->PartyTimes.shopNextRefreshTime
+                    [window_SpeakInHouse->houseId()] -
                 pParty->GetPlayingTime());  //Приходите через 7 дней
         }
     }
@@ -510,7 +510,7 @@ void ArmorShopWares(GUIWindow dialogwin, bool special) {
         } else {
             // empty shop
             dialogwin.DrawShops_next_generation_time_string(
-                pParty->PartyTimes.Shops_next_generation_time[window_SpeakInHouse->wData.val] -
+                pParty->PartyTimes.shopNextRefreshTime[window_SpeakInHouse->houseId()] -
                 pParty->GetPlayingTime());
         }
     }
@@ -681,8 +681,8 @@ void AlchemyMagicShopWares(GUIWindow dialogwin, BuildingType building,
         } else {
             // shop empty
             dialogwin.DrawShops_next_generation_time_string(
-                pParty->PartyTimes.Shops_next_generation_time
-                    [window_SpeakInHouse->wData.val] -
+                pParty->PartyTimes.shopNextRefreshTime
+                    [window_SpeakInHouse->houseId()] -
                 pParty->GetPlayingTime());
         }
     }

@@ -345,9 +345,15 @@ void serialize(const Party &src, Party_MM7 *dst) {
 
     // MM7 uses an array of size 10 here, but we only store 5 elements. So zero it first.
     dst->partyTimes.bountyHuntingNextGenerationTime.fill(0);
-    serialize(src.PartyTimes.bountyHunting_next_generation_time, &dst->partyTimes.bountyHuntingNextGenerationTime, 5);
+    serialize(src.PartyTimes.bountyHuntNextGenTime, &dst->partyTimes.bountyHuntingNextGenerationTime, 5);
 
-    serialize(src.PartyTimes.Shops_next_generation_time, &dst->partyTimes.shopsNextGenerationTime);
+    // Initially was one array but was splitted in two to simplify access
+    dst->partyTimes.shopsNextGenerationTime0 = 0;
+    dst->partyTimes.shopsNextGenerationTime.fill(0); // Original size is 53 with 0 element unused
+    serialize(src.PartyTimes.shopNextRefreshTime, &dst->partyTimes.shopsNextGenerationTime);
+    dst->partyTimes.guildsNextGenerationTime.fill(0); // Original size is 32
+    serialize(src.PartyTimes.guildNextRefreshTime, &dst->partyTimes.guildsNextGenerationTime);
+
     serialize(src.PartyTimes._shop_ban_times, &dst->partyTimes.shopBanTimes);
     serialize(src.PartyTimes.CounterEventValues, &dst->partyTimes.counterEventValues);
     serialize(src.PartyTimes.HistoryEventTimes, &dst->partyTimes.historyEventTimes);
@@ -467,8 +473,9 @@ void deserialize(const Party_MM7 &src, Party *dst) {
     dst->playing_time.value = src.timePlayed;
     dst->last_regenerated.value = src.lastRegenerationTime;
 
-    deserialize(src.partyTimes.bountyHuntingNextGenerationTime, &dst->PartyTimes.bountyHunting_next_generation_time, 5);
-    deserialize(src.partyTimes.shopsNextGenerationTime, &dst->PartyTimes.Shops_next_generation_time);
+    deserialize(src.partyTimes.bountyHuntingNextGenerationTime, &dst->PartyTimes.bountyHuntNextGenTime, 5);
+    deserialize(src.partyTimes.shopsNextGenerationTime, &dst->PartyTimes.shopNextRefreshTime);
+    deserialize(src.partyTimes.guildsNextGenerationTime, &dst->PartyTimes.guildNextRefreshTime);
     deserialize(src.partyTimes.shopBanTimes, &dst->PartyTimes._shop_ban_times);
     deserialize(src.partyTimes.counterEventValues, &dst->PartyTimes.CounterEventValues);
     deserialize(src.partyTimes.historyEventTimes, &dst->PartyTimes.HistoryEventTimes);

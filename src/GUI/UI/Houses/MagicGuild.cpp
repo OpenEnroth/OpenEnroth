@@ -34,7 +34,7 @@ IndexedArray<DAMAGE_TYPE, BuildingType_FireGuild, BuildingType_DarkGuild> guildS
     {BuildingType_DarkGuild,   DMGT_DARK}
 };
 
-IndexedArray<PLAYER_SKILL_MASTERY, HOUSE_FIRE_GUILD_INITIATE_EMERALD_ISLE, HOUSE_DARK_GUILD_PARAMOUNT_PIT> guildSpellsMastery = {
+IndexedArray<PLAYER_SKILL_MASTERY, HOUSE_FIRST_MAGIC_GUILD, HOUSE_LAST_MAGIC_GUILD> guildSpellsMastery = {
     {HOUSE_FIRE_GUILD_INITIATE_EMERALD_ISLE,   PLAYER_SKILL_MASTERY_NOVICE},
     {HOUSE_FIRE_GUILD_ADEPT_HARMONDALE,        PLAYER_SKILL_MASTERY_EXPERT},
     {HOUSE_FIRE_GUILD_MASTER_TULAREAN_FOREST,  PLAYER_SKILL_MASTERY_MASTER},
@@ -69,7 +69,7 @@ IndexedArray<PLAYER_SKILL_MASTERY, HOUSE_FIRE_GUILD_INITIATE_EMERALD_ISLE, HOUSE
     {HOUSE_DARK_GUILD_PARAMOUNT_PIT,           PLAYER_SKILL_MASTERY_GRANDMASTER}
 };
 
-IndexedArray<int, HOUSE_FIRE_GUILD_INITIATE_EMERALD_ISLE, HOUSE_DARK_GUILD_PARAMOUNT_PIT> guildMembershipFlags = {
+IndexedArray<int, HOUSE_FIRST_MAGIC_GUILD, HOUSE_LAST_MAGIC_GUILD> guildMembershipFlags = {
     {HOUSE_FIRE_GUILD_INITIATE_EMERALD_ISLE,   54},
     {HOUSE_FIRE_GUILD_ADEPT_HARMONDALE,        54},
     {HOUSE_FIRE_GUILD_MASTER_TULAREAN_FOREST,  54},
@@ -173,7 +173,7 @@ void GUIWindow_MagicGuild::buyBooksDialogue() {
         GameUI_StatusBar_DrawImmediate(localization->GetString(LSTR_SELECT_ITEM_TO_BUY), 0);
 
         if (!itemcount) {  // shop empty
-            GameTime nextGenTime = pParty->PartyTimes.Shops_next_generation_time[wData.val - HOUSE_FIRE_GUILD_INITIATE_EMERALD_ISLE];
+            GameTime nextGenTime = pParty->PartyTimes.guildNextRefreshTime[houseId()];
             working_window.DrawShops_next_generation_time_string(nextGenTime - pParty->GetPlayingTime());
             return;
         }
@@ -211,7 +211,7 @@ void GUIWindow_MagicGuild::buyBooksDialogue() {
 
 void GUIWindow_MagicGuild::houseDialogueOptionSelected(DIALOGUE_TYPE option) {
     if (option == DIALOGUE_GUILD_BUY_BOOKS) {
-        if (pParty->PartyTimes.Shops_next_generation_time[wData.val - HOUSE_FIRE_GUILD_INITIATE_EMERALD_ISLE] >= pParty->GetPlayingTime()) {
+        if (pParty->PartyTimes.guildNextRefreshTime[houseId()] >= pParty->GetPlayingTime()) {
             for (uint i = 0; i < ItemAmountForShop(buildingTable[wData.val - 1].uType); ++i) {
                 if (pParty->SpellBooksInGuilds[wData.val - HOUSE_FIRE_GUILD_INITIATE_EMERALD_ISLE][i].uItemID != ITEM_NULL)
                     shop_ui_items_in_store[i] = assets->getImage_ColorKey(pParty->SpellBooksInGuilds[wData.val - HOUSE_FIRE_GUILD_INITIATE_EMERALD_ISLE][i].GetIconName());
@@ -219,7 +219,7 @@ void GUIWindow_MagicGuild::houseDialogueOptionSelected(DIALOGUE_TYPE option) {
         } else {
             GameTime nextGenTime = pParty->GetPlayingTime().AddDays(buildingTable[wData.val - 1].generation_interval_days);
             generateSpellBooksForGuild();
-            pParty->PartyTimes.Shops_next_generation_time[wData.val - HOUSE_FIRE_GUILD_INITIATE_EMERALD_ISLE] = nextGenTime;
+            pParty->PartyTimes.guildNextRefreshTime[houseId()] = nextGenTime;
         }
     }
 }
