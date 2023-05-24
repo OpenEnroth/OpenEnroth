@@ -1340,10 +1340,10 @@ void OutdoorLocation::PrepareActorsDrawList() {
         Cur_Action_Time = pActors[i].uCurrentActionTime;
         if (pParty->bTurnBasedModeOn) {
             if (pActors[i].uCurrentActionAnimation == ANIM_Walking)
-                Cur_Action_Time = 32 * i + pMiscTimer->uTotalGameTimeElapsed;
+                Cur_Action_Time = 32 * i + pMiscTimer->uTotalTimeElapsed;
         } else {
             if (pActors[i].uCurrentActionAnimation == ANIM_Walking)
-                Cur_Action_Time = 32 * i + pEventTimer->uTotalGameTimeElapsed;
+                Cur_Action_Time = 32 * i + pEventTimer->uTotalTimeElapsed;
         }
 
         if (pActors[i].pActorBuffs[ACTOR_BUFF_STONED].Active() ||

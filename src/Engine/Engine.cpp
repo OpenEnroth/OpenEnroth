@@ -153,7 +153,7 @@ void Engine::Draw() {
             // if ( render->pRenderD3D )
             {
                 float v2 =
-                    (double)(((signed int)pMiscTimer->uTotalGameTimeElapsed >> 2) & 0x1F) * 0.032258064 * 6.0;
+                    (double)(((signed int)pMiscTimer->uTotalTimeElapsed >> 2) & 0x1F) * 0.032258064 * 6.0;
                 // v3 = v2 + 6.7553994e15;
                 // render->field_1036A8_bitmapid = LODWORD(v3);
                 render->hd_water_current_frame = floorf(v2 + 0.5f);
