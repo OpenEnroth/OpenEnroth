@@ -3019,6 +3019,7 @@ bool Actor::isActorKilled(ACTOR_KILL_CHECK_POLICY policy, int param, int count) 
 
 int Actor::searchDeadActorsByID(int *pTotalActors, int id) {
     *pTotalActors = 0;
+    // TODO(pskelton): double '!' ?
     if (!!(pActors[id].uAttributes & ACTOR_UNKNOW7) == GetAlertStatus()) {
         *pTotalActors = 1;
         if (pActors[id].IsNotAlive()) {
@@ -3033,6 +3034,7 @@ int Actor::searchDeadActorsByGroup(int *pTotalActors, int group) {
     bool alert = GetAlertStatus();
 
     for (uint i = 0; i < pActors.size(); i++) {
+        // TODO(pskelton): double '!' ?
         if (!!(pActors[i].uAttributes & ACTOR_UNKNOW7) == alert && pActors[i].uGroup == group) {
             totalActors++;
             if (pActors[i].IsNotAlive()) {
@@ -3050,6 +3052,7 @@ int Actor::searchDeadActorsByMonsterID(int *pTotalActors, int monsterID) {
     bool alert = GetAlertStatus();
 
     for (uint i = 0; i < pActors.size(); i++) {
+        // TODO(pskelton): double '!' ?
         if (!!(pActors[i].uAttributes & ACTOR_UNKNOW7) == alert && pActors[i].pMonsterInfo.uID == monsterID) {
             totalActors++;
             if (pActors[i].IsNotAlive()) {
@@ -3067,6 +3070,7 @@ int Actor::searchDeadActors(int *pTotalActors) {
     bool alert = GetAlertStatus();
 
     for (uint i = 0; i < pActors.size(); i++) {
+        // TODO(pskelton): double '!' ?
         if (!!(pActors[i].uAttributes & ACTOR_UNKNOW7) == alert) {
             totalActors++;
             if (pActors[i].IsNotAlive()) {
