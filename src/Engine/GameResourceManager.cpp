@@ -26,11 +26,8 @@ Blob GameResourceManager::uncompressPseudoTexture(const Blob &input) {
     TextureHeader header;
     deserialize(stream, &header);
 
-    int uncompressedSize = header.uDecompressedSize;
-    assert((input.size() - sizeof(TextureHeader)) == header.uTextureSize); // TODO(captainurist): throw?
-    if (uncompressedSize) {
-        return zlib::Uncompress(stream.tail(), header.uDecompressedSize);
-    } else {
-        return stream.tail();
-    }
+    Blob result = stream.readBlobOrFail(header.uTextureSize);
+    if (header.uDecompressedSize)
+        result = zlib::Uncompress(result, header.uDecompressedSize);
+    return result;
 }
