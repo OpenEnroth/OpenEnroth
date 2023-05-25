@@ -401,7 +401,7 @@ void MonsterStats::InitializePlacements() {
     int decode_step;
     //  int item_counter;
 
-    pMonsterPlacementTXT_Raw = pEvents_LOD->LoadCompressedTexture("placemon.txt").string_view();
+    pMonsterPlacementTXT_Raw = engine->_gameResourceManager->getEventsFile("placemon.txt").string_view();
     strtok(pMonsterPlacementTXT_Raw.data(), "\r");
     for (i = 1; i < 31; ++i) {
         test_string = strtok(NULL, "\r") + 1;
@@ -446,7 +446,7 @@ void MonsterStats::Initialize() {
     FrameTableTxtLine parsed_field;
     std::string str;
 
-    pMonstersTXT_Raw = pEvents_LOD->LoadCompressedTexture("monsters.txt").string_view();
+    pMonstersTXT_Raw = engine->_gameResourceManager->getEventsFile("monsters.txt").string_view();
     strtok(pMonstersTXT_Raw.data(), "\r");
     strtok(NULL, "\r");
     strtok(NULL, "\r");

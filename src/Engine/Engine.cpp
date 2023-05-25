@@ -846,12 +846,6 @@ bool MM7_LoadLods() {
     }
     pIcons_LOD->_011BA4_debug_paletted_pixels_uncompressed = false;
 
-    pEvents_LOD = new LODFile_IconsBitmaps;
-    if (!pEvents_LOD->Load(makeDataPath("data", "events.lod"), "icons")) {
-        Error(localization->GetString(LSTR_PLEASE_REINSTALL), localization->GetString(LSTR_REINSTALL_NECESSARY));
-        return false;
-    }
-
     pBitmaps_LOD = new LODFile_IconsBitmaps;
     if (!pBitmaps_LOD->Load(makeDataPath("data", "bitmaps.lod"), "bitmaps")) {
         Error(localization->GetString(LSTR_PLEASE_REINSTALL), localization->GetString(LSTR_REINSTALL_NECESSARY));
@@ -896,67 +890,67 @@ bool Engine::MM7_Initialize() {
     {
         Blob sft_mm6 = pIcons_LOD_mm6 ? pIcons_LOD_mm6->LoadCompressedTexture("dsft.bin") : Blob();
         Blob sft_mm8;
-        Blob sft_mm7 = pEvents_LOD->LoadCompressedTexture("dsft.bin");
+        Blob sft_mm7 = engine->_gameResourceManager->getEventsFile("dsft.bin");
         pSpriteFrameTable = new SpriteFrameTable;
         pSpriteFrameTable->FromFile(sft_mm6, sft_mm7, sft_mm8);
 
         Blob tft_mm6 = pIcons_LOD_mm6 ? pIcons_LOD_mm6->LoadCompressedTexture("dtft.bin") : Blob();
         Blob tft_mm8;
-        Blob tft_mm7 = pEvents_LOD->LoadCompressedTexture("dtft.bin");
+        Blob tft_mm7 = engine->_gameResourceManager->getEventsFile("dtft.bin");
         pTextureFrameTable = new TextureFrameTable;
         pTextureFrameTable->FromFile(tft_mm6, tft_mm7, tft_mm8);
 
         Blob tiles_mm6 = pIcons_LOD_mm6 ? pIcons_LOD_mm6->LoadCompressedTexture("dtile.bin") : Blob();
         Blob tiles_mm8;
-        Blob tiles_mm7 = pEvents_LOD->LoadCompressedTexture("dtile.bin");
+        Blob tiles_mm7 = engine->_gameResourceManager->getEventsFile("dtile.bin");
         pTileTable = new TileTable;
         pTileTable->FromFile(tiles_mm6, tiles_mm7, tiles_mm8);
 
         Blob pft_mm6 = pIcons_LOD_mm6 ? pIcons_LOD_mm6->LoadCompressedTexture("dpft.bin") : Blob();
         Blob pft_mm8;
-        Blob pft_mm7 = pEvents_LOD->LoadCompressedTexture("dpft.bin");
+        Blob pft_mm7 = engine->_gameResourceManager->getEventsFile("dpft.bin");
         pPlayerFrameTable = new PlayerFrameTable;
         pPlayerFrameTable->FromFile(pft_mm6, pft_mm7, pft_mm8);
 
         Blob ift_mm6 = pIcons_LOD_mm6 ? pIcons_LOD_mm6->LoadCompressedTexture("dift.bin") : Blob();
         Blob ift_mm8;
-        Blob ift_mm7 = pEvents_LOD->LoadCompressedTexture("dift.bin");
+        Blob ift_mm7 = engine->_gameResourceManager->getEventsFile("dift.bin");
         pIconsFrameTable = new IconFrameTable;
         pIconsFrameTable->FromFile(ift_mm6, ift_mm7, ift_mm8);
 
         Blob decs_mm6 = pIcons_LOD_mm6 ? pIcons_LOD_mm6->LoadCompressedTexture("ddeclist.bin") : Blob();
         Blob decs_mm8;
-        Blob decs_mm7 = pEvents_LOD->LoadCompressedTexture("ddeclist.bin");
+        Blob decs_mm7 = engine->_gameResourceManager->getEventsFile("ddeclist.bin");
         pDecorationList = new DecorationList;
         pDecorationList->FromFile(decs_mm6, decs_mm7, decs_mm8);
 
         Blob objs_mm6 = pIcons_LOD_mm6 ? pIcons_LOD_mm6->LoadCompressedTexture("dobjlist.bin") : Blob();
         Blob objs_mm8;
-        Blob objs_mm7 = pEvents_LOD->LoadCompressedTexture("dobjlist.bin");
+        Blob objs_mm7 = engine->_gameResourceManager->getEventsFile("dobjlist.bin");
         pObjectList = new ObjectList;
         pObjectList->FromFile(objs_mm6, objs_mm7, objs_mm8);
 
         Blob mons_mm6 = pIcons_LOD_mm6 ? pIcons_LOD_mm6->LoadCompressedTexture("dmonlist.bin") : Blob();
         Blob mons_mm8;
-        Blob mons_mm7 = pEvents_LOD->LoadCompressedTexture("dmonlist.bin");
+        Blob mons_mm7 = engine->_gameResourceManager->getEventsFile("dmonlist.bin");
         pMonsterList = new MonsterList;
         pMonsterList->FromFile(mons_mm6, mons_mm7, mons_mm8);
 
         Blob chests_mm6 = pIcons_LOD_mm6 ? pIcons_LOD_mm6->LoadCompressedTexture("dchest.bin") : Blob();
         Blob chests_mm8;
-        Blob chests_mm7 = pEvents_LOD->LoadCompressedTexture("dchest.bin");
+        Blob chests_mm7 = engine->_gameResourceManager->getEventsFile("dchest.bin");
         pChestList = new ChestList;
         pChestList->FromFile(chests_mm6, chests_mm7, chests_mm8);
 
         Blob overlays_mm6 = pIcons_LOD_mm6 ? pIcons_LOD_mm6->LoadCompressedTexture("doverlay.bin") : Blob();
         Blob overlays_mm8;
-        Blob overlays_mm7 = pEvents_LOD->LoadCompressedTexture("doverlay.bin");
+        Blob overlays_mm7 = engine->_gameResourceManager->getEventsFile("doverlay.bin");
         pOverlayList = new OverlayList;
         pOverlayList->FromFile(overlays_mm6, overlays_mm7, overlays_mm8);
 
         Blob sounds_mm6 = pIcons_LOD_mm6 ? pIcons_LOD_mm6->LoadCompressedTexture("dsounds.bin") : Blob();
         Blob sounds_mm8;
-        Blob sounds_mm7 = pEvents_LOD->LoadCompressedTexture("dsounds.bin");
+        Blob sounds_mm7 = engine->_gameResourceManager->getEventsFile("dsounds.bin");
         pSoundList = new SoundList;
         pSoundList->FromFile(sounds_mm6, sounds_mm7, sounds_mm8);
     }
@@ -1954,7 +1948,7 @@ void initLevelStrings(Blob &blob) {
 }
 
 void Level_LoadEvtAndStr(const std::string &pLevelName) {
-    Blob blob = pEvents_LOD->LoadCompressedTexture(pLevelName + ".str");
+    Blob blob = engine->_gameResourceManager->getEventsFile(pLevelName + ".str");
     if (!blob || (blob.size() > 9216)) {
         Error("File %s Size %lu - Buffer size %lu", (pLevelName + ".str").c_str(), blob.size(), 9216);
     }

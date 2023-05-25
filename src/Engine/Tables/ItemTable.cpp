@@ -107,7 +107,7 @@ void ItemTable::Initialize() {
     pStorylineText = new StorylineText;
     pStorylineText->Initialize();
 
-    pStdItemsTXT_Raw = pEvents_LOD->LoadCompressedTexture("stditems.txt").string_view();
+    pStdItemsTXT_Raw = engine->_gameResourceManager->getEventsFile("stditems.txt").string_view();
     (void)strtok(pStdItemsTXT_Raw.data(), "\r");
     strtokSkipLines(3);
     // Standard Bonuses by Group
@@ -135,7 +135,7 @@ void ItemTable::Initialize() {
         bonusRanges[i].maxR = atoi(tokens[3]);
     }
 
-    pSpcItemsTXT_Raw = pEvents_LOD->LoadCompressedTexture("spcitems.txt").string_view();
+    pSpcItemsTXT_Raw = engine->_gameResourceManager->getEventsFile("spcitems.txt").string_view();
     (void)strtok(pSpcItemsTXT_Raw.data(), "\r");
     strtokSkipLines(3);
     for (ITEM_ENCHANTMENT i : pSpecialEnchantments.indices()) {
@@ -166,7 +166,7 @@ void ItemTable::Initialize() {
 
     initializeBuildings();
 
-    pItemsTXT_Raw = pEvents_LOD->LoadCompressedTexture("items.txt").string_view();
+    pItemsTXT_Raw = engine->_gameResourceManager->getEventsFile("items.txt").string_view();
     (void)strtok(pItemsTXT_Raw.data(), "\r");
     strtokSkipLines(1);
     for (size_t line = 0; line < 799; line++) {
@@ -229,7 +229,7 @@ void ItemTable::Initialize() {
         pItems[item_counter].pDescription = removeQuotes(tokens[16]);
     }
 
-    pRndItemsTXT_Raw = pEvents_LOD->LoadCompressedTexture("rnditems.txt").string_view();
+    pRndItemsTXT_Raw = engine->_gameResourceManager->getEventsFile("rnditems.txt").string_view();
     (void)strtok(pRndItemsTXT_Raw.data(), "\r");
     strtokSkipLines(3);
     for(size_t line = 0; line < 618; line++) {
@@ -320,7 +320,7 @@ void ItemTable::LoadPotions() {
     uint8_t potion_value;
 
     std::vector<char *> tokens;
-    pPotionsTXT_Raw = std::string(pEvents_LOD->LoadCompressedTexture("potion.txt").string_view());
+    pPotionsTXT_Raw = std::string(engine->_gameResourceManager->getEventsFile("potion.txt").string_view());
     test_string = strtok(pPotionsTXT_Raw.data(), "\r") + 1;
     while (test_string) {
         tokens = tokenize(test_string, '\t');
@@ -364,7 +364,7 @@ void ItemTable::LoadPotionNotes() {
     uint8_t potion_note;
 
     std::vector<char *> tokens;
-    pPotionNotesTXT_Raw = std::string(pEvents_LOD->LoadCompressedTexture("potnotes.txt").string_view());
+    pPotionNotesTXT_Raw = std::string(engine->_gameResourceManager->getEventsFile("potnotes.txt").string_view());
     test_string = strtok(pPotionNotesTXT_Raw.data(), "\r") + 1;
     while (test_string) {
         tokens = tokenize(test_string, '\t');

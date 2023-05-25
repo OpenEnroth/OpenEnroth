@@ -235,8 +235,6 @@ class LODFile_Sprites : public LOD::File {
     Sprite *pHardwareSprites;
 };
 
-extern LODFile_IconsBitmaps *pEvents_LOD;
-
 extern LODFile_IconsBitmaps *pIcons_LOD;
 extern LODFile_IconsBitmaps *pIcons_LOD_mm6;
 extern LODFile_IconsBitmaps *pIcons_LOD_mm8;

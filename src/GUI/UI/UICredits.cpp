@@ -16,7 +16,7 @@ GUICredits::GUICredits() :
 
     mm6title = assets->getImage_PCXFromIconsLOD("mm6title.pcx");
 
-    std::string text{ pEvents_LOD->LoadCompressedTexture("credits.txt").string_view() };
+    std::string text{ engine->_gameResourceManager->getEventsFile("credits.txt").string_view() };
 
     GUIWindow credit_window;
     credit_window.Init();

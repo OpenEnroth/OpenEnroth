@@ -3,7 +3,7 @@
 #include "Engine/Engine.h"
 
 void initGlobalEvents() {
-    Blob blob = pEvents_LOD->LoadCompressedTexture("global.evt");
+    Blob blob = engine->_gameResourceManager->getEventsFile("global.evt");
     const char *pointer = (const char*)blob.data();
     const char *end = pointer + blob.size();
 
@@ -17,7 +17,7 @@ void initGlobalEvents() {
 }
 
 void initLocalEvents(const std::string &mapName) {
-    Blob blob = pEvents_LOD->LoadCompressedTexture(mapName + ".evt");
+    Blob blob = engine->_gameResourceManager->getEventsFile(mapName + ".evt");
     const char *pointer = (const char*)blob.data();
     const char *end = pointer + blob.size();
 

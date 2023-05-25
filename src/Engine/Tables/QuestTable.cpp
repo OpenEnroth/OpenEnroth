@@ -1,5 +1,5 @@
 #include "Engine/Tables/QuestTable.h"
-#include "Engine/LOD.h"
+#include "Engine/Engine.h"
 
 #include "Utility/String.h"
 
@@ -15,7 +15,7 @@ void initializeQuests() {
     char *tmp_pos;
     int decode_step;
 
-    pQuestsTXT_Raw = pEvents_LOD->LoadCompressedTexture("quests.txt").string_view();
+    pQuestsTXT_Raw = engine->_gameResourceManager->getEventsFile("quests.txt").string_view();
     strtok(pQuestsTXT_Raw.data(), "\r");
     memset(pQuestTable.data(), 0, sizeof(pQuestTable));
     for (i = 0; i < 512; ++i) {
