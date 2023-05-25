@@ -882,7 +882,7 @@ int UseNPCSkill(NPCProf profession, int id) {
         } break;
 
         case WindMaster: {
-            if (uCurrentlyLoadedLevelType == LEVEL_Indoor) {
+            if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
                 GameUI_SetStatusBar(LSTR_CANT_FLY_INDOORS);
                 pAudioPlayer->playUISound(SOUND_fizzle);
             } else {

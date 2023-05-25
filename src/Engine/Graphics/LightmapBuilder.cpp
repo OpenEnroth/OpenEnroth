@@ -53,7 +53,7 @@ void DrawLightsDebugOutlines(
 int GetActorTintColor(int max_dimm, int min_dimm, float distance, int bNoLight, RenderBillboard *pBillboard) {
     int dimminglevel = 0;
 
-    if (uCurrentlyLoadedLevelType == LEVEL_Indoor)
+    if (uCurrentlyLoadedLevelType == LEVEL_INDOOR)
         return 8 * (31 - max_dimm) | ((8 * (31 - max_dimm) | ((31 - max_dimm) << 11)) << 8);
 
     if (pParty->armageddon_timer) return 0xFF0000FF;
@@ -137,7 +137,7 @@ int GetLightLevelAtPoint(unsigned int uBaseLightLevel, int uSectorID, float x, f
     }
 
     // sector lights
-    if (uCurrentlyLoadedLevelType == LEVEL_Indoor) {
+    if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
         BLVSector *pSector = &pIndoor->pSectors[uSectorID];
 
         for (uint i = 0; i < pSector->uNumLights; ++i) {
@@ -195,7 +195,7 @@ int GetLightLevelAtPoint(unsigned int uBaseLightLevel, int uSectorID, float x, f
 int _43F55F_get_billboard_light_level(RenderBillboard *a1, int uBaseLightLevel) {
     int v3 = 0;
 
-    if (uCurrentlyLoadedLevelType == LEVEL_Indoor) {
+    if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
         v3 = pIndoor->pSectors[a1->uIndoorSectorID].uMinAmbientLightLevel;
     } else {
         if (uBaseLightLevel == -1) {

@@ -223,7 +223,7 @@ unsigned int IndoorLocation::GetLocationIndex(const std::string &locationName) {
 }
 
 void IndoorLocation::toggleLight(signed int sLightID, unsigned int bToggle) {
-    if (uCurrentlyLoadedLevelType == LEVEL_Indoor &&
+    if (uCurrentlyLoadedLevelType == LEVEL_INDOOR &&
         (sLightID <= pIndoor->pLights.size() - 1) && (sLightID >= 0)) {
         if (bToggle)
             pIndoor->pLights[sLightID].uAtributes &= 0xFFFFFFF7;
@@ -311,7 +311,7 @@ void IndoorLocation::Load(const std::string &filename, int num_days_played, int 
 
 //----- (0049AC17) --------------------------------------------------------
 int IndoorLocation::GetSector(int sX, int sY, int sZ) {
-    if (uCurrentlyLoadedLevelType != LEVEL_Indoor) return 0;
+    if (uCurrentlyLoadedLevelType != LEVEL_INDOOR) return 0;
     if (pSectors.size() < 2) {
         // __debugbreak();
         return 0;
@@ -798,7 +798,7 @@ void PrepareToLoadBLV(bool bLoading) {
     respawn_interval = 0;
     pGameLoadingUI_ProgressBar->Reset(0x20u);
     bNoNPCHiring = false;
-    uCurrentlyLoadedLevelType = LEVEL_Indoor;
+    uCurrentlyLoadedLevelType = LEVEL_INDOOR;
     pBLVRenderParams->uPartySectorID = 0;
     pBLVRenderParams->uPartyEyeSectorID = 0;
 
@@ -1203,7 +1203,7 @@ bool Check_LineOfSight(const Vec3i &target, const Vec3i &from) {  // target from
     bool LOS_Obscurred = 0;
     bool LOS_Obscurred2 = 0;
 
-    if (uCurrentlyLoadedLevelType == LEVEL_Indoor) {
+    if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
         Vec3i targetmod{};
         Vec3i frommod{};
 
@@ -1216,7 +1216,7 @@ bool Check_LineOfSight(const Vec3i &target, const Vec3i &from) {  // target from
         Vec3i::rotate(32, AngleToTarget - TrigLUT.uIntegerHalfPi, 0, target, &targetmod.x, &targetmod.y, &targetmod.z);
         Vec3i::rotate(32, AngleToTarget - TrigLUT.uIntegerHalfPi, 0, from, &frommod.x, &frommod.y, &frommod.z);
         LOS_Obscurred = Check_LOS_Obscurred_Indoors(targetmod, frommod);
-    } else if (uCurrentlyLoadedLevelType == LEVEL_Outdoor) {
+    } else if (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR) {
         // TODO(pskelton): Need to add check against terrain
         Vec3i targetmod{};
         Vec3i frommod{};
@@ -1409,7 +1409,7 @@ char DoInteractionWithTopmostZObject(int pid) {
             break;
 
         case OBJECT_Face:
-            if (uCurrentlyLoadedLevelType == LEVEL_Outdoor) {
+            if (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR) {
                 int bmodel_id = pid >> 9;
                 int face_id = id & 0x3F;
 
@@ -2016,7 +2016,7 @@ int SpawnEncounterMonsters(MapInfo *map_info, int enc_index) {
     //// why check this ??
     // if (!uNumActors) return 0;
 
-    if (uCurrentlyLoadedLevelType == LEVEL_Outdoor) {
+    if (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR) {
         int dist_y;
         int dist_x;
         bool not_in_model = false;
@@ -2054,7 +2054,7 @@ int SpawnEncounterMonsters(MapInfo *map_info, int enc_index) {
             }
         }
         failed_point = loop_cnt == 100;
-    } else if (uCurrentlyLoadedLevelType == LEVEL_Indoor) {
+    } else if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
         int party_sectorID = pBLVRenderParams->uPartySectorID;
         int mon_sectorID;
         int indoor_floor_level;
@@ -2115,7 +2115,7 @@ int DropTreasureAt(ITEM_TREASURE_LEVEL trs_level, int trs_type, int x, int y, in
 void FindBillboardsLightLevels_BLV() {
     for (uint i = 0; i < uNumBillboardsToDraw; ++i) {
         if (pBillboardRenderList[i].field_1E & 2 ||
-            uCurrentlyLoadedLevelType == LEVEL_Indoor &&
+            uCurrentlyLoadedLevelType == LEVEL_INDOOR &&
                 !pBillboardRenderList[i].uIndoorSectorID)
             pBillboardRenderList[i].dimming_level = 0;
         else

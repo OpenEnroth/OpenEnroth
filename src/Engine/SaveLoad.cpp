@@ -46,7 +46,7 @@ void LoadGame(unsigned int uSlot) {
     pParty->Reset();
 
     pSave_LOD->CloseWriteFile();
-    // uCurrentlyLoadedLevelType = LEVEL_null;
+    // uCurrentlyLoadedLevelType = LEVEL_NULL;
 
     std::string filename = makeDataPath("saves", pSavegameList->pFileList[uSlot]);
     std::string to_file_path = makeDataPath("data", "new.lod");
@@ -219,12 +219,12 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld) {
     if (!NotSaveWorld) {  // autosave for change location
         CompactLayingItemsList();
 
-        if (uCurrentlyLoadedLevelType == LEVEL_Indoor) {
+        if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
             IndoorDelta_MM7 delta;
             serialize(*pIndoor, &delta);
             serialize(delta, &uncompressed);
         } else {
-            assert(uCurrentlyLoadedLevelType == LEVEL_Outdoor);
+            assert(uCurrentlyLoadedLevelType == LEVEL_OUTDOOR);
             OutdoorDelta_MM7 delta;
             serialize(*pOutdoor, &delta);
             serialize(delta, &uncompressed);

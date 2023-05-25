@@ -757,7 +757,7 @@ std::string GameUI_GetMinimapHintText() {
         (int64_t)((double)(pX - 557) * v3 + (double)pParty->vPosition.x);
     global_coord_Y =
         (int64_t)((double)pParty->vPosition.y - (double)(pY - 74) * v3);
-    if (uCurrentlyLoadedLevelType != LEVEL_Outdoor ||
+    if (uCurrentlyLoadedLevelType != LEVEL_OUTDOOR ||
         pOutdoor->pBModels.empty()) {
         pMapID = pMapStats->GetMapInfo(pCurrentMapName);
         if (pMapID == 0)
@@ -1083,7 +1083,7 @@ void GameUI_WritePointedObjectStatusString() {
             } else if (PID_TYPE(pickedObject.object_pid) == OBJECT_Face) {
                 if (pickedObject.depth < 0x200u) {
                     std::string newString;
-                    if (uCurrentlyLoadedLevelType != LEVEL_Indoor) {
+                    if (uCurrentlyLoadedLevelType != LEVEL_INDOOR) {
                         v18b = PID_ID(pickedObject.object_pid) >> 6;
                         short triggeredId = pOutdoor->pBModels[v18b].pFaces[pickedObjectID & 0x3F].sCogTriggeredID;
                         if (triggeredId != 0) {
@@ -1588,7 +1588,7 @@ void GameUI_DrawMinimap(unsigned int uX, unsigned int uY, unsigned int uZ,
         uWizardEyeSkillLevel = PLAYER_SKILL_MASTERY_MASTER;
     }
 
-    if (uCurrentlyLoadedLevelType == LEVEL_Outdoor) {
+    if (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR) {
         static Texture *minimaptemp;
         if (!minimaptemp) {
             minimaptemp = render->CreateTexture_Blank(uWidth, uHeight, IMAGE_FORMAT_A8B8G8R8);
@@ -1656,7 +1656,7 @@ void GameUI_DrawMinimap(unsigned int uX, unsigned int uY, unsigned int uZ,
             render->DrawTextureNew(uX / 640., uY / 480., minimaptemp);
         }
         render->BeginLines2D();
-    } else if (uCurrentlyLoadedLevelType == LEVEL_Indoor) {
+    } else if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
         render->FillRectFast(uX, uY, uZ - uX, uHeight, colorTable.NavyBlue.c32());
         uNumBlueFacesInBLVMinimap = 0;
         render->BeginLines2D();

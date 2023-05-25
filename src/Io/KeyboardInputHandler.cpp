@@ -152,7 +152,7 @@ void KeyboardInputHandler::GenerateGameplayActions() {
                     pPartyActionQueue->Add(pParty->uFlags2 & PARTY_FLAGS_2_RUNNING ? PARTY_FastTurnLeft : PARTY_TurnLeft);
                 }
 
-                if (uCurrentlyLoadedLevelType == LEVEL_Outdoor && pWeather->bRenderSnow)
+                if (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR && pWeather->bRenderSnow)
                     pWeather->OnPlayerTurn(10);
             }
             break;
@@ -166,7 +166,7 @@ void KeyboardInputHandler::GenerateGameplayActions() {
                     pPartyActionQueue->Add(pParty->uFlags2 & PARTY_FLAGS_2_RUNNING ? PARTY_FastTurnRight : PARTY_TurnRight);
                 }
 
-                if (uCurrentlyLoadedLevelType == LEVEL_Outdoor && pWeather->bRenderSnow)
+                if (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR && pWeather->bRenderSnow)
                     pWeather->OnPlayerTurn(-10);
             }
             break;

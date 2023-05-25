@@ -63,7 +63,7 @@ static void prepareToLoadRestUI() {
 }
 
 static void calculateRequiredFood() {
-    if (uCurrentlyLoadedLevelType == LEVEL_Outdoor) {
+    if (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR) {
         foodRequiredToRest = pOutdoor->getNumFoodRequiredToRestInCurrentPos(pParty->vPosition);
     } else {
         foodRequiredToRest = 2;

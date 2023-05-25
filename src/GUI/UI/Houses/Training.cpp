@@ -149,7 +149,7 @@ void TrainingDialog(const char *s) {
                                 trainingTime.AddHours(12);
                             }
                             restAndHeal(trainingTime.AddDays(7));
-                            if (uCurrentlyLoadedLevelType == LEVEL_Outdoor)
+                            if (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR)
                                 pOutdoor->SetFog();
                         }
                         pParty->activeCharacter().playReaction(SPEECH_LevelUp);
