@@ -129,3 +129,11 @@ enum class ActorAttribute : uint32_t {
 using enum ActorAttribute;
 MM_DECLARE_FLAGS(ActorAttributes, ActorAttribute)
 MM_DECLARE_OPERATORS_FOR_FLAGS(ActorAttributes)
+
+enum class ActorSounds {
+    ACTOR_ATTACK_SOUND = 0,
+    ACTOR_DEATH_SOUND = 1,
+    ACTOR_STUNNED_SOUND = 2,
+    ACTOR_BORED_SOUND = 3
+};
+using enum ActorSounds;
