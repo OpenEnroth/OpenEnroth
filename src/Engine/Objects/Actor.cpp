@@ -1855,7 +1855,7 @@ void Actor::AI_Bored(unsigned int uActorID, unsigned int uObjID,
 }
 
 //----- (00402F27) --------------------------------------------------------
-void Actor::Resurrect(unsigned int uActorID) {
+void Actor::resurrect(unsigned int uActorID) {
     assert(uActorID < pActors.size());
     Actor *pActor = &pActors[uActorID];
     pActor->uCurrentActionTime = 0;
@@ -1867,6 +1867,20 @@ void Actor::Resurrect(unsigned int uActorID) {
     pActor->sCurrentHP = (short)pActor->pMonsterInfo.uHP;
     Actor::playSound(uActorID, ACTOR_DEATH_SOUND);
     pActor->UpdateAnimation();
+
+    pActor->pMonsterInfo.uHostilityType = MonsterInfo::Hostility_Friendly;
+    // TODO(pskelton): vanilla behaviour but does it make sense to drop all carried treasure
+    pActor->pMonsterInfo.uTreasureDropChance = 0;
+    pActor->pMonsterInfo.uTreasureDiceRolls = 0;
+    pActor->pMonsterInfo.uTreasureDiceSides = 0;
+    pActor->pMonsterInfo.uTreasureLevel = ITEM_TREASURE_LEVEL_INVALID;
+    pActor->pMonsterInfo.uTreasureType = 0;
+    pActor->uAlly = 9999;
+    pActor->ResetAggressor();  // ~0x80000
+    pActor->uGroup = 0;
+    pActor->pActorBuffs[ACTOR_BUFF_BERSERK].Reset();
+    pActor->pActorBuffs[ACTOR_BUFF_CHARM].Reset();
+    pActor->pActorBuffs[ACTOR_BUFF_ENSLAVED].Reset();
 }
 
 //----- (00402D6E) --------------------------------------------------------
