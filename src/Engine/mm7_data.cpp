@@ -2563,6 +2563,5 @@ int dword_F8B1E0;
 int dword_F8B1E4;
 std::string current_npc_text;                        // F8B1E8
 char dialogue_show_profession_details = false;  // F8B1EC
-std::array<char, 777> byte_F8B1EF;
 
 int bGameoverLoop = 0;

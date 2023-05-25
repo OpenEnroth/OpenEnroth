@@ -106,7 +106,7 @@ IndexedArray<int, HOUSE_FIRST_MAGIC_GUILD, HOUSE_LAST_MAGIC_GUILD> guildMembersh
 };
 
 void GUIWindow_MagicGuild::mainDialogue() {
-    GUIWindow working_window = *window_SpeakInHouse;
+    GUIWindow working_window = *this;
     working_window.uFrameX = SIDE_TEXT_BOX_POS_X;
     working_window.uFrameWidth = SIDE_TEXT_BOX_WIDTH;
     working_window.uFrameZ = SIDE_TEXT_BOX_POS_Z;
@@ -145,7 +145,7 @@ void GUIWindow_MagicGuild::mainDialogue() {
 }
 
 void GUIWindow_MagicGuild::buyBooksDialogue() {
-    GUIWindow working_window = *window_SpeakInHouse;
+    GUIWindow working_window = *this;
     working_window.uFrameX = SIDE_TEXT_BOX_POS_X;
     working_window.uFrameWidth = SIDE_TEXT_BOX_WIDTH;
     working_window.uFrameZ = SIDE_TEXT_BOX_POS_Z;

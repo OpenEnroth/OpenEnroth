@@ -216,6 +216,5 @@ extern int dword_F8B1E0;
 extern int dword_F8B1E4;
 extern std::string current_npc_text;  // F8B1E8
 extern char dialogue_show_profession_details;
-extern std::array<char, 777> byte_F8B1EF;
 
 extern int bGameoverLoop;

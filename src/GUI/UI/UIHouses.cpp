@@ -989,18 +989,16 @@ void OnSelectShopDialogueOption(DIALOGUE_TYPE option) {
         break;
     }
     case BuildingType_Bank:
-    {
-        if (dialog_menu_id >= DIALOGUE_BANK_PUT_GOLD && dialog_menu_id <= DIALOGUE_BANK_GET_GOLD)
-            keyboardInputHandler->StartTextInput(TextInputType::Number, 10, window_SpeakInHouse);
-        return;
+        ((GUIWindow_House*)window_SpeakInHouse)->houseDialogueOptionSelected(option);
         break;
-    }
+    case BuildingType_Temple:
+        ((GUIWindow_House*)window_SpeakInHouse)->houseDialogueOptionSelected(option);
+        break;
     case BuildingType_WeaponShop:
     case BuildingType_ArmorShop:
     case BuildingType_MagicShop:
     case BuildingType_AlchemistShop:
     case BuildingType_Tavern:
-    case BuildingType_Temple:
     case BuildingType_Training:
     {
         break;
@@ -1879,6 +1877,12 @@ void createHouseUI(HOUSE_ID houseId) {
       case BuildingType_MirroredPath:
         window_SpeakInHouse = new GUIWindow_MagicGuild(houseId);
         break;
+      case BuildingType_Bank:
+        window_SpeakInHouse = new GUIWindow_Bank(houseId);
+        break;
+      case BuildingType_Temple:
+        window_SpeakInHouse = new GUIWindow_Temple(houseId);
+        break;
       default:
         window_SpeakInHouse = new GUIWindow_House(houseId);
         break;
@@ -2056,10 +2060,12 @@ void GUIWindow_House::houseDialogManager() {
             TavernDialog();
             break;
           case BuildingType_Bank:
-            BankDialog();
+            //BankDialog();
+            houseSpecificDialogue();
             break;
           case BuildingType_Temple:
-            TempleDialog();
+            //TempleDialog();
+            houseSpecificDialogue();
             break;
           case BuildingType_Stables:
           case BuildingType_Boats:
