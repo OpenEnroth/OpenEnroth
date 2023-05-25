@@ -180,7 +180,6 @@ Blob LodReader::read(const std::string &filename) {
     }
 
     Blob result = _lod.subBlob(file->offset, file->size);
-
     if (result.size() < sizeof(LodFileCompressionHeader_Mm6))
         return result;
 
@@ -190,11 +189,10 @@ Blob LodReader::read(const std::string &filename) {
     if (header.version != 91969 || memcmp(header.signature.data(), "mvii", 4))
         return result; // Not compressed after all.
 
-    if (0 != header.decompressedSize) {
-        return zlib::Uncompress(stream.tail(), header.decompressedSize);
-    } else {
-        return stream.tail();
-    }
+    result = stream.readBlobOrFail(header.compressedSize);
+    if (header.decompressedSize)
+        result = zlib::Uncompress(result, header.decompressedSize);
+    return result;
 }
 
 std::vector<std::string> LodReader::ls() const {
