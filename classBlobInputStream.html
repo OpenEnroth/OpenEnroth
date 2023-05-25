@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;ca44670</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;da97bfa</span>
    </div>
   </td>
  </tr>
@@ -71,6 +71,7 @@ $(function() {
 <div class="header">
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
+<a href="#pri-methods">Private Member Functions</a> &#124;
 <a href="#pri-attribs">Private Attributes</a> &#124;
 <a href="classBlobInputStream-members.html">List of all members</a>  </div>
   <div class="headertitle"><div class="title">BlobInputStream Class Reference</div></div>
@@ -102,6 +103,10 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:aee9d6242c38cbb55016587c4fd2c2222"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aefa26a70ce33a9964b2e6b2ceab29279"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classBlob.html">Blob</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classBlobInputStream.html#aefa26a70ce33a9964b2e6b2ceab29279">tail</a> () const</td></tr>
 <tr class="separator:aefa26a70ce33a9964b2e6b2ceab29279"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a54de3bd85c298d32c2782b78bb072fb5"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classBlob.html">Blob</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classBlobInputStream.html#a54de3bd85c298d32c2782b78bb072fb5">readBlob</a> (size_t size)</td></tr>
+<tr class="separator:a54de3bd85c298d32c2782b78bb072fb5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3ef0575228e3876ec021d55eb2f23716"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classBlob.html">Blob</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classBlobInputStream.html#a3ef0575228e3876ec021d55eb2f23716">readBlobOrFail</a> (size_t size)</td></tr>
+<tr class="separator:a3ef0575228e3876ec021d55eb2f23716"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_classInputStream"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classInputStream')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classInputStream.html">InputStream</a></td></tr>
 <tr class="memitem:a8c49246dd62e559578732f518f159432 inherit pub_methods_classInputStream"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classInputStream.html#a8c49246dd62e559578732f518f159432">~InputStream</a> ()</td></tr>
 <tr class="separator:a8c49246dd62e559578732f518f159432 inherit pub_methods_classInputStream"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -113,6 +118,13 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:afb53adf30be18bfecda9cd4a42c03394 inherit pub_methods_classInputStream"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0148f63b4e9e39a214362403a474a61c inherit pub_methods_classInputStream"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classInputStream.html#a0148f63b4e9e39a214362403a474a61c">close</a> ()=0</td></tr>
 <tr class="separator:a0148f63b4e9e39a214362403a474a61c inherit pub_methods_classInputStream"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pri-methods" name="pri-methods"></a>
+Private Member Functions</h2></td></tr>
+<tr class="memitem:a4580e9d39c20a7b7aba7e30c85bf931a"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classBlobInputStream.html#a4580e9d39c20a7b7aba7e30c85bf931a">offset</a> () const</td></tr>
+<tr class="separator:a4580e9d39c20a7b7aba7e30c85bf931a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af4bd1e1512f96672478e2f70f677df09"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classBlobInputStream.html#af4bd1e1512f96672478e2f70f677df09">remaining</a> () const</td></tr>
+<tr class="separator:af4bd1e1512f96672478e2f70f677df09"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pri-attribs" name="pri-attribs"></a>
 Private Attributes</h2></td></tr>
@@ -211,6 +223,31 @@ Private Attributes</h2></td></tr>
 
 </div>
 </div>
+<a id="a4580e9d39c20a7b7aba7e30c85bf931a" name="a4580e9d39c20a7b7aba7e30c85bf931a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4580e9d39c20a7b7aba7e30c85bf931a">&#9670;&#160;</a></span>offset()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">size_t BlobInputStream::offset </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="a11d916f1d4bd8e57f658f62cd7856547" name="a11d916f1d4bd8e57f658f62cd7856547"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a11d916f1d4bd8e57f658f62cd7856547">&#9670;&#160;</a></span>read()</h2>
 
@@ -260,6 +297,90 @@ Private Attributes</h2></td></tr>
 </dl>
 
 <p>Implements <a class="el" href="classInputStream.html#a39ae65ea1ecb89c53f31aa0206d901c3">InputStream</a>.</p>
+
+</div>
+</div>
+<a id="a54de3bd85c298d32c2782b78bb072fb5" name="a54de3bd85c298d32c2782b78bb072fb5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a54de3bd85c298d32c2782b78bb072fb5">&#9670;&#160;</a></span>readBlob()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classBlob.html">Blob</a> BlobInputStream::readBlob </td>
+          <td>(</td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>size</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p >Same as <code>read</code>, but returns the data as a blob that's shared with the blob that this stream is reading from.</p>
+<p >This basically presents a way to conveniently cut a blob into subblobs using a streaming interface.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">size</td><td>Number of bytes to read. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Subblob of the blob that this stream is reading from. Actual size might be less than <code>size</code> if end of stream is encountered. </dd></dl>
+
+</div>
+</div>
+<a id="a3ef0575228e3876ec021d55eb2f23716" name="a3ef0575228e3876ec021d55eb2f23716"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3ef0575228e3876ec021d55eb2f23716">&#9670;&#160;</a></span>readBlobOrFail()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classBlob.html">Blob</a> BlobInputStream::readBlobOrFail </td>
+          <td>(</td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>size</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p >Same as <code>readOrFail</code>, but returns the data as a blob that's shared with the blob that this stream is reading from.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">size</td><td>Number of bytes to read. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Subblob of the blob that this stream is reading from. </dd></dl>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname"><a class="el" href="classException.html">Exception</a></td><td>If there is not enough data in the stream. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="af4bd1e1512f96672478e2f70f677df09" name="af4bd1e1512f96672478e2f70f677df09"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af4bd1e1512f96672478e2f70f677df09">&#9670;&#160;</a></span>remaining()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">size_t BlobInputStream::remaining </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
 
 </div>
 </div>
@@ -318,6 +439,7 @@ Private Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<dl class="section return"><dt>Returns</dt><dd>Remaining stream data, as a blob that's shared with the blob that this stream is reading from. </dd></dl>
 
 </div>
 </div>
