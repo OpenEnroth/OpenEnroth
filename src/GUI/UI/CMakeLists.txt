@@ -10,7 +10,6 @@ set(GUI_UI_SOURCES
         UIDialogue.cpp
         UIGame.cpp
         UIGameOver.cpp
-        UIGuilds.cpp
         UIHouses.cpp
         UIInventory.cpp
         UIMainMenu.cpp
@@ -34,7 +33,6 @@ set(GUI_UI_HEADERS
         UIDialogue.h
         UIGame.h
         UIGameOver.h
-        UIGuilds.h
         UIHouseEnums.h
         UIHouses.h
         UIInventory.h
@@ -54,8 +52,10 @@ target_check_style(gui_ui)
 
 target_link_libraries(gui_ui
                       gui_ui_books
+                      gui_ui_houses
                       arcomage
                       engine_spells
                       utility)
 
 add_subdirectory(Books)
+add_subdirectory(Houses)

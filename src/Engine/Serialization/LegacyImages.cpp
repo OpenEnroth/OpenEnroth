@@ -345,9 +345,14 @@ void serialize(const Party &src, Party_MM7 *dst) {
 
     // MM7 uses an array of size 10 here, but we only store 5 elements. So zero it first.
     dst->partyTimes.bountyHuntingNextGenerationTime.fill(0);
-    serialize(src.PartyTimes.bountyHunting_next_generation_time, &dst->partyTimes.bountyHuntingNextGenerationTime, 5);
+    serialize(src.PartyTimes.bountyHuntNextGenTime, &dst->partyTimes.bountyHuntingNextGenerationTime, 5);
 
-    serialize(src.PartyTimes.Shops_next_generation_time, &dst->partyTimes.shopsNextGenerationTime);
+    // Initially was one array but was splitted in two to simplify access with first element as zero
+    // because it is corresponding to invalid house ID
+    dst->partyTimes.shopsNextGenerationTime0 = 0;
+    serialize(src.PartyTimes.shopNextRefreshTime, &dst->partyTimes.shopsNextGenerationTime);
+    serialize(src.PartyTimes.guildNextRefreshTime, &dst->partyTimes.guildsNextGenerationTime);
+
     serialize(src.PartyTimes._shop_ban_times, &dst->partyTimes.shopBanTimes);
     serialize(src.PartyTimes.CounterEventValues, &dst->partyTimes.counterEventValues);
     serialize(src.PartyTimes.HistoryEventTimes, &dst->partyTimes.historyEventTimes);
@@ -434,7 +439,7 @@ void serialize(const Party &src, Party_MM7 *dst) {
 
     serialize(src.StandartItemsInShops, &dst->standartItemsInShops);
     serialize(src.SpecialItemsInShops, &dst->specialItemsInShops);
-    serialize(src.SpellBooksInGuilds, &dst->spellBooksInGuilds);
+    serialize(src.spellBooksInGuilds, &dst->spellBooksInGuilds);
     serialize(src.field_1605C_set0_unused, &dst->field_1605C);
 
     serialize(src.pHireling1Name, &dst->hireling1Name);
@@ -467,8 +472,9 @@ void deserialize(const Party_MM7 &src, Party *dst) {
     dst->playing_time.value = src.timePlayed;
     dst->last_regenerated.value = src.lastRegenerationTime;
 
-    deserialize(src.partyTimes.bountyHuntingNextGenerationTime, &dst->PartyTimes.bountyHunting_next_generation_time, 5);
-    deserialize(src.partyTimes.shopsNextGenerationTime, &dst->PartyTimes.Shops_next_generation_time);
+    deserialize(src.partyTimes.bountyHuntingNextGenerationTime, &dst->PartyTimes.bountyHuntNextGenTime, 5);
+    deserialize(src.partyTimes.shopsNextGenerationTime, &dst->PartyTimes.shopNextRefreshTime);
+    deserialize(src.partyTimes.guildsNextGenerationTime, &dst->PartyTimes.guildNextRefreshTime);
     deserialize(src.partyTimes.shopBanTimes, &dst->PartyTimes._shop_ban_times);
     deserialize(src.partyTimes.counterEventValues, &dst->PartyTimes.CounterEventValues);
     deserialize(src.partyTimes.historyEventTimes, &dst->PartyTimes.HistoryEventTimes);
@@ -565,7 +571,7 @@ void deserialize(const Party_MM7 &src, Party *dst) {
 
     deserialize(src.standartItemsInShops, &dst->StandartItemsInShops);
     deserialize(src.specialItemsInShops, &dst->SpecialItemsInShops);
-    deserialize(src.spellBooksInGuilds, &dst->SpellBooksInGuilds);
+    deserialize(src.spellBooksInGuilds, &dst->spellBooksInGuilds);
 
     deserialize(src.field_1605C, &dst->field_1605C_set0_unused);
 

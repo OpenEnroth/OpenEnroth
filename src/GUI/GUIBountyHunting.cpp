@@ -136,9 +136,9 @@ void bountyHuntingDialogueOptionClicked() {
     HOUSE_ID house = window_SpeakInHouse->houseId();
 
     // Generate new bounty
-    if (pParty->PartyTimes.bountyHunting_next_generation_time[house] < pParty->GetPlayingTime()) {
+    if (pParty->PartyTimes.bountyHuntNextGenTime[house] < pParty->GetPlayingTime()) {
         pParty->monster_for_hunting_killed[house] = false;
-        pParty->PartyTimes.bountyHunting_next_generation_time[house] =
+        pParty->PartyTimes.bountyHuntNextGenTime[house] =
             GameTime(0x12750000ll * (pParty->uCurrentMonth + 12ll * pParty->uCurrentYear - 14015ll) / 30ll);
         pParty->monster_id_for_hunting[house] = RandomMonsterForHunting(house);
     }
