@@ -1,10 +1,24 @@
 cmake_minimum_required(VERSION 3.20.4 FATAL_ERROR)
 
 set(GUI_UI_HOUSES_SOURCES
-        MagicGuild.cpp)
+        Tavern.cpp
+        Temple.cpp
+        Training.cpp
+        Transport.cpp
+        Bank.cpp
+        Jail.cpp
+        MagicGuild.cpp
+        MercenaryGuild.cpp)
 
 set(GUI_UI_HOUSES_HEADERS
-        MagicGuild.h)
+        Tavern.h
+        Temple.h
+        Training.h
+        Transport.h
+        Bank.h
+        Jail.h
+        MagicGuild.h
+        MercenaryGuild.h)
 
 add_library(gui_ui_houses STATIC ${GUI_UI_HOUSES_SOURCES} ${GUI_UI_HOUSES_HEADERS})
 target_check_style(gui_ui_houses)

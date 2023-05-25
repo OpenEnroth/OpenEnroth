@@ -15,26 +15,8 @@ constexpr int SIDE_TEXT_BOX_BODY_TEXT_OFFSET = 138;
 constexpr int SIDE_TEXT_BOX_MAX_SPACING = 32;
 
 bool HouseUI_CheckIfPlayerCanInteract();
-void TrainingDialog(const char *s);
-void JailDialog();
 void MagicShopDialog();
-void MercenaryGuildDialog();
-bool IsTravelAvailable(int a1);
-
-/**
- * @brief                               New function.
- *
- * @param schedule_id                   Index to transport_schedule.
- *
- * @return                              Number of days travel by transport will take with hireling modifiers.
- */
-int GetTravelTimeTransportDays(int schedule_id);
-
-void TravelByTransport();
-void TempleDialog();
 void TownHallDialog();
-void BankDialog();
-void TavernDialog();
 void PlayHouseSound(unsigned int uHouseID, HouseSoundID sound);  // idb
 void WeaponShopDialog();
 void AlchemistDialog();
