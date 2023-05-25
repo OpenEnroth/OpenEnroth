@@ -16,6 +16,7 @@
 #include "Engine/Graphics/DecorationList.h"
 #include "Engine/Graphics/PaletteManager.h"
 
+#include "Utility/Streams/BlobInputStream.h"
 
 struct SpriteFrameTable *pSpriteFrameTable;
 
@@ -269,7 +270,7 @@ void SpriteFrameTable::FromFile(const Blob &data_mm6, const Blob &data_mm7, cons
     (void) data_mm6;
     (void) data_mm8;
 
-    MemoryInputStream src(data_mm7.data(), data_mm7.size()); // TODO(captainurist): encapsulate
+    BlobInputStream src(data_mm7); // TODO(captainurist): encapsulate
     uint32_t frameCount = 0;
     uint32_t eframeCount = 0;
     deserialize(src, &frameCount);

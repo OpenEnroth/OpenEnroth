@@ -67,7 +67,6 @@ class GUIWindow {
     void DrawTitleText(GUIFont *font, int horizontal_margin, int vertical_margin, uint16_t uDefaultColor, const std::string &str, int line_spacing);
 
     void DrawShops_next_generation_time_string(GameTime time);
-    void HouseDialogManager();
     void DrawMessageBox(bool inside_game_viewport);
     GUIButton *GetControl(unsigned int uID);
     void _41D08F_set_keyboard_control_group(int num_buttons, int a3, int a4, int a5);

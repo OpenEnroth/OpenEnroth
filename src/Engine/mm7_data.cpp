@@ -2400,9 +2400,6 @@ std::array<short, 28> word_4EE150 = {{1,  2,  3,  4,  5,  7,  32, 33, 36, 37,
                                       38, 40, 41, 42, 43, 45, 46, 47, 48, 49,
                                       50, 51, 52, 53, 54, 55, 56, 60}};
 
-std::array<int, 32> guild_membership_flags = {
-    {54, 54, 54, 54, 52, 52, 52, 52, 55, 55, 55, 55, 53, 53, 53, 53,
-     58, 58, 58, 58, 57, 57, 57, 57, 56, 56, 56, 56, 59, 59, 60, 60}};
 std::array<int16_t, 49> word_4F0754;
 std::array<std::pair<int16_t, ITEM_TYPE>, 27> _4F0882_evt_VAR_PlayerItemInHands_vals = {{
     {0x0D4, ITEM_QUEST_VASE},
@@ -2487,7 +2484,6 @@ DIALOGUE_TYPE uDialogueType;
 int sDialogue_SpeakingActorNPC_ID;
 int uCurrentHouse_Animation;
 std::string Party_Teleport_Map_Name;
-std::array<std::array<char, 100>, 6> byte_591180;  // idb
 std::array<struct NPCData *, 7> HouseNPCData;  // 0 zero element holds standart house npc
 GUIButton *HouseNPCPortraitsButtonsList[6];  // dword_5913F4
 std::string branchless_dialogue_str;

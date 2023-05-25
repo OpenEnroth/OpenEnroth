@@ -101,7 +101,7 @@ void initDataPath(const std::string &dataPath) {
     if (validateDataPath(dataPath)) {
         setDataPath(dataPath);
 
-        std::string savesPath = MakeDataPath("saves");
+        std::string savesPath = makeDataPath("saves");
         if (!std::filesystem::exists(savesPath)) {
             std::filesystem::create_directory(savesPath);
         }

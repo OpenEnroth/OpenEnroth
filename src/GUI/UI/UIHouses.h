@@ -18,7 +18,6 @@ bool HouseUI_CheckIfPlayerCanInteract();
 void TrainingDialog(const char *s);
 void JailDialog();
 void MagicShopDialog();
-void GuildDialog();
 void MercenaryGuildDialog();
 bool IsTravelAvailable(int a1);
 
@@ -63,6 +62,8 @@ extern DIALOGUE_TYPE dialog_menu_id;     // 00F8B19C
 
 int HouseDialogPressCloseBtn();
 
+int ItemAmountForShop(BuildingType buildingType);
+
 extern class Image *_591428_endcap;
 
 // Originally was a packed struct.
@@ -79,7 +80,7 @@ extern std::array<const HouseAnimDescr, 196> pAnimatedRooms;
 
 class GUIWindow_House : public GUIWindow {
  public:
-    GUIWindow_House(Pointi position, Sizei dimensions, HOUSE_ID houseId, const std::string &hint = std::string());
+    explicit GUIWindow_House(HOUSE_ID houseId);
     virtual ~GUIWindow_House() {}
 
     virtual void Update();
@@ -88,4 +89,9 @@ class GUIWindow_House : public GUIWindow {
     HOUSE_ID houseId() const {
         return static_cast<HOUSE_ID>(wData.val); // TODO(captainurist): drop all direct accesses to wData.val.
     }
+
+    void houseDialogManager();
+
+    virtual void houseDialogueOptionSelected(DIALOGUE_TYPE option);
+    virtual void houseSpecificDialogue();
 };

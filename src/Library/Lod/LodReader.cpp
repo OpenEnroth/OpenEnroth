@@ -12,7 +12,7 @@
 #include "Library/Lod/LodDefinitions.h"
 
 #include "Utility/String.h"
-#include "Utility/Streams/MemoryInputStream.h"
+#include "Utility/Streams/BlobInputStream.h"
 
 static size_t getDirectoryHeaderImgSize(LodVersion lod_version) {
     switch (lod_version) {
@@ -64,11 +64,11 @@ bool LodReader::parseDirectoryFiles(size_t numFiles, size_t filesOffset) {
 
     Blob filesBlob = _lod.subBlob(filesOffset, fileHeaderSize*numFiles);
 
-    if (filesBlob.size() < fileHeaderSize*numFiles) {
+    if (filesBlob.size() < fileHeaderSize * numFiles) {
         return false;
     }
 
-    MemoryInputStream stream(filesBlob.data(), filesBlob.size());
+    BlobInputStream stream(filesBlob);
 
     for (size_t i = 0; i < numFiles; ++i) {
         FileEntryDesc fileEntry;
@@ -119,9 +119,8 @@ bool LodReader::parseDirectories(size_t numDirectories, size_t dirOffset) {
         return false;
     }
 
-    MemoryInputStream stream(dirBlob.data(), dirBlob.size());
     LodDirectoryHeader_Mm6 dirHeader;
-    deserialize(stream, &dirHeader);
+    deserialize(dirBlob, &dirHeader);
 
     return parseDirectoryFiles(dirHeader.numFiles, dirHeader.dataOffset);
 }
@@ -145,9 +144,8 @@ std::unique_ptr<LodReader> LodReader::open(const std::string &filename) {
         return nullptr;
     }
 
-    MemoryInputStream stream(lod->_lod.data(), lod->_lod.size());
     LodHeader_Mm6 header;
-    deserialize(stream, &header);
+    deserialize(lod->_lod, &header);
 
     if (memcmp(header.signature.data(), "LOD\0", sizeof(header.signature))) {
         Warn("LodReader::open: invalid LOD file: %s", filename.c_str());
@@ -181,40 +179,26 @@ Blob LodReader::read(const std::string &filename) {
         return Blob();
     }
 
-    FileCompressionDesc compDesc;
-    if (isFileCompressed(*file, &compDesc)) {
-        if (0 != compDesc.decompressedSize) {
-            return zlib::Uncompress(_lod.subBlob(compDesc.compressedOffs, compDesc.compressedSize), compDesc.decompressedSize);
-        } else {
-            return _lod.subBlob(compDesc.compressedOffs, compDesc.compressedSize);
-        }
-    }
+    Blob result = _lod.subBlob(file->offset, file->size);
 
-    return _lod.subBlob(file->offset, file->size);
+    if (result.size() < sizeof(LodFileCompressionHeader_Mm6))
+        return result;
+
+    BlobInputStream stream(result);
+    LodFileCompressionHeader_Mm6 header;
+    deserialize(stream, &header);
+    if (header.version != 91969 || memcmp(header.signature.data(), "mvii", 4))
+        return result; // Not compressed after all.
+
+    if (0 != header.decompressedSize) {
+        return zlib::Uncompress(stream.tail(), header.decompressedSize);
+    } else {
+        return stream.tail();
+    }
 }
 
 std::vector<std::string> LodReader::ls() const {
     std::vector<std::string> res;
     std::transform(_files.begin(), _files.end(), std::back_inserter(res), [](const FileEntryDesc &f) { return f.name; });
     return res;
-}
-
-bool LodReader::isFileCompressed(const FileEntryDesc &desc, FileCompressionDesc *compDesc) {
-    if (desc.size <= sizeof(LodFileCompressionHeader_Mm6)) {
-        return false;
-    }
-
-    Blob fileBlob = _lod.subBlob(desc.offset, desc.size);
-    MemoryInputStream stream(fileBlob.data(), fileBlob.size());
-    LodFileCompressionHeader_Mm6 header;
-    deserialize(stream, &header);
-
-    if (header.version == 91969 && !memcmp(header.signature.data(), "mvii", 4)) {
-        compDesc->compressedSize = header.compressedSize;
-        compDesc->decompressedSize = header.decompressedSize;
-        compDesc->compressedOffs = desc.offset + sizeof(LodFileCompressionHeader_Mm6);
-        return true;
-    }
-
-    return false;
 }

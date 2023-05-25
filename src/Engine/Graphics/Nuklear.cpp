@@ -1001,7 +1001,7 @@ bool Nuklear::LuaLoadTemplate(WindowType winType) {
     }
 
     name = wins[winType].tmpl;
-    int status = luaL_loadfile(lua, MakeDataPath("ui", name + ".lua").c_str());
+    int status = luaL_loadfile(lua, makeDataPath("ui", name + ".lua").c_str());
     if (status) {
         wins[winType].state = WINDOW_TEMPLATE_ERROR;
         logger->warning("Nuklear: [{}] couldn't load lua template: {}", wins[winType].tmpl, lua_tostring(lua, -1));
@@ -2176,7 +2176,7 @@ static int lua_nk_load_font_from_file(lua_State *L) {
     struct context *w = (struct context *)lua_touserdata(L, 1);
     const char *fontname = luaL_checkstring(L, 2);
     size_t fontsize = luaL_checkinteger(L, 3);
-    std::string fontpath = MakeDataPath("fonts", fontname);
+    std::string fontpath = makeDataPath("fonts", fontname);
 
     struct nk_tex_font *font = render->NuklearFontLoad(fontpath.c_str(), fontsize);
     if (font) {
@@ -3148,7 +3148,7 @@ static int lua_nk_load_image(lua_State *L) {
     bool ret = false;
     if (lod) {
         LOD::File pLODFile;
-        if (pLODFile.Open(MakeDataPath("data", lod))) {
+        if (pLODFile.Open(makeDataPath("data", lod))) {
             // TODO: load from custom lod when this functionality becomes available
             pLODFile.Close();
         }
@@ -3431,7 +3431,7 @@ static int lua_load_raw_from_lod(lua_State *L) {
 }
 
 static bool lua_load_init() {
-    int status = luaL_loadfile(lua, MakeDataPath("ui", "init.lua").c_str());
+    int status = luaL_loadfile(lua, makeDataPath("ui", "init.lua").c_str());
     if (status) {
         logger->warning("Nuklear: couldn't load init template: {}", lua_tostring(lua, -1));
         lua_pop(lua, 1);
@@ -3463,7 +3463,7 @@ bool Nuklear::LuaInit() {
     lua_gc(lua, LUA_GCRESTART, -1);
 
     lua_getglobal(lua, "package");
-    lua_pushfstring(lua, MakeDataPath("ui", "?.lua").c_str());
+    lua_pushfstring(lua, makeDataPath("ui", "?.lua").c_str());
     lua_setfield(lua, -2, "path");
     lua_pushstring(lua, "");
     lua_setfield(lua, -2, "cpath");
