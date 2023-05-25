@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;da97bfa</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;a11a0c7</span>
    </div>
   </td>
  </tr>
@@ -114,6 +114,13 @@ $(function() {
 <code>#include &quot;<a class="el" href="UIShops_8h.html">GUI/UI/UIShops.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="UIStatusBar_8h.html">GUI/UI/UIStatusBar.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="MagicGuild_8h.html">GUI/UI/Houses/MagicGuild.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="Bank_8h.html">GUI/UI/Houses/Bank.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="Jail_8h.html">GUI/UI/Houses/Jail.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="Tavern_8h.html">GUI/UI/Houses/Tavern.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="Temple_8h.html">GUI/UI/Houses/Temple.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="Training_8h.html">GUI/UI/Houses/Training.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="Transport_8h.html">GUI/UI/Houses/Transport.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="MercenaryGuild_8h.html">GUI/UI/Houses/MercenaryGuild.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Mouse_8h.html">Io/Mouse.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="KeyboardInputHandler_8h.html">Io/KeyboardInputHandler.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="AudioPlayer_8h.html">Media/Audio/AudioPlayer.h</a>&quot;</code><br />
@@ -125,8 +132,6 @@ $(function() {
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Classes</h2></td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structstru365__travel__info.html">stru365_travel_info</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structITEM__VARIATION.html">ITEM_VARIATION</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
@@ -156,30 +161,10 @@ Functions</h2></td></tr>
 <tr class="separator:af131a9157367a2d529da9174e1319534"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a50274f38af972747404b73f4c835a51d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="UIHouses_8cpp.html#a50274f38af972747404b73f4c835a51d">OnSelectShopDialogueOption</a> (<a class="el" href="GUIDialogues_8h.html#afcd7885d9ec6583fa04d9e8f0f641d00">DIALOGUE_TYPE</a> option)</td></tr>
 <tr class="separator:a50274f38af972747404b73f4c835a51d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a34fb0d2c92f963a57d7568e4293a5a20"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="UIHouses_8cpp.html#a34fb0d2c92f963a57d7568e4293a5a20">GetTravelTimeTransportDays</a> (int schedule_id)</td></tr>
-<tr class="memdesc:a34fb0d2c92f963a57d7568e4293a5a20"><td class="mdescLeft">&#160;</td><td class="mdescRight">New function.  <a href="UIHouses_8cpp.html#a34fb0d2c92f963a57d7568e4293a5a20">More...</a><br /></td></tr>
-<tr class="separator:a34fb0d2c92f963a57d7568e4293a5a20"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a051a9386ff5f507d34162a116de3f434"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="UIHouses_8cpp.html#a051a9386ff5f507d34162a116de3f434">TravelByTransport</a> ()</td></tr>
-<tr class="separator:a051a9386ff5f507d34162a116de3f434"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afe12e4594f668c5e407da94cc554cad4"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="UIHouses_8cpp.html#afe12e4594f668c5e407da94cc554cad4">IsTravelAvailable</a> (int a1)</td></tr>
-<tr class="separator:afe12e4594f668c5e407da94cc554cad4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afdce028ca6920ad78a2a8f39fb093b04"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="UIHouses_8cpp.html#afdce028ca6920ad78a2a8f39fb093b04">TownHallDialog</a> ()</td></tr>
 <tr class="separator:afdce028ca6920ad78a2a8f39fb093b04"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6a8b5b55aa413db9c82a54e32b0e6ca6"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="UIHouses_8cpp.html#a6a8b5b55aa413db9c82a54e32b0e6ca6">BankDialog</a> ()</td></tr>
-<tr class="separator:a6a8b5b55aa413db9c82a54e32b0e6ca6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a85ed65d74da96b17f506a5b39248fc84"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="UIHouses_8cpp.html#a85ed65d74da96b17f506a5b39248fc84">TavernDialog</a> ()</td></tr>
-<tr class="separator:a85ed65d74da96b17f506a5b39248fc84"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3bf47183b95e701104b8fede3df5a993"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="UIHouses_8cpp.html#a3bf47183b95e701104b8fede3df5a993">TempleDialog</a> ()</td></tr>
-<tr class="separator:a3bf47183b95e701104b8fede3df5a993"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a508cd0b3e4de36620322bbefc36c56cf"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="UIHouses_8cpp.html#a508cd0b3e4de36620322bbefc36c56cf">TrainingDialog</a> (const char *<a class="el" href="Json__ut_8cpp.html#a3691308f2a4c2f6983f2880d32e29c84">s</a>)</td></tr>
-<tr class="separator:a508cd0b3e4de36620322bbefc36c56cf"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a245c59f82d964d80c2f0ed2b246fb637"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="UIHouses_8cpp.html#a245c59f82d964d80c2f0ed2b246fb637">MercenaryGuildDialog</a> ()</td></tr>
-<tr class="memdesc:a245c59f82d964d80c2f0ed2b246fb637"><td class="mdescLeft">&#160;</td><td class="mdescRight">Mercenary guild in MM6.  <a href="UIHouses_8cpp.html#a245c59f82d964d80c2f0ed2b246fb637">More...</a><br /></td></tr>
-<tr class="separator:a245c59f82d964d80c2f0ed2b246fb637"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a24aa347826f0bbf037cee75945dec5d1"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="UIHouses_8cpp.html#a24aa347826f0bbf037cee75945dec5d1">SimpleHouseDialog</a> ()</td></tr>
 <tr class="separator:a24aa347826f0bbf037cee75945dec5d1"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a94fd0881c896a6e2864b9b8a7c14c851"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="UIHouses_8cpp.html#a94fd0881c896a6e2864b9b8a7c14c851">JailDialog</a> ()</td></tr>
-<tr class="separator:a94fd0881c896a6e2864b9b8a7c14c851"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad9cebb1eb4097b5c5a8c0de0c6afb2a8"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="UIHouses_8cpp.html#ad9cebb1eb4097b5c5a8c0de0c6afb2a8">sub_4BE571_AddItemToSet</a> (<a class="el" href="GUIDialogues_8h.html#afcd7885d9ec6583fa04d9e8f0f641d00">DIALOGUE_TYPE</a> valueToAdd, <a class="el" href="GUIDialogues_8h.html#afcd7885d9ec6583fa04d9e8f0f641d00">DIALOGUE_TYPE</a> *outPutSet, int elemsAlreadyPresent, int elemsNeeded)</td></tr>
 <tr class="separator:ad9cebb1eb4097b5c5a8c0de0c6afb2a8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a719e7a9d096a2515e32cc2f594b027f7"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="UIHouses_8cpp.html#a719e7a9d096a2515e32cc2f594b027f7">HouseDialogPressCloseBtn</a> ()</td></tr>
@@ -203,12 +188,6 @@ Variables</h2></td></tr>
 <tr class="separator:a4942fe38fe8a78d5ef85727f2b2e1436"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0267d4094698d52718b19e0e3c7df3ac"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classImage.html">Image</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="UIHouses_8cpp.html#a0267d4094698d52718b19e0e3c7df3ac">_591428_endcap</a> = nullptr</td></tr>
 <tr class="separator:a0267d4094698d52718b19e0e3c7df3ac"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2cd5d5ef179c8f6d6cfd4b34c3b2e3f2"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structstru365__travel__info.html">stru365_travel_info</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="UIHouses_8cpp.html#a2cd5d5ef179c8f6d6cfd4b34c3b2e3f2">transport_schedule</a> [35]</td></tr>
-<tr class="separator:a2cd5d5ef179c8f6d6cfd4b34c3b2e3f2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aebed320a56be394803b62089be2c78fa"><td class="memItemLeft" align="right" valign="top">unsigned char&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="UIHouses_8cpp.html#aebed320a56be394803b62089be2c78fa">transport_routes</a> [20][4]</td></tr>
-<tr class="separator:aebed320a56be394803b62089be2c78fa"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7c8a19ec258baa23cb7be6fd902bfb6e"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classIndexedArray.html">IndexedArray</a>&lt; int, <a class="el" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405faabcc8f98ad5c4802559f93ea8a38bf59">HOUSE_TRAINING_HALL_EMERALD_ISLE</a>, <a class="el" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fade4de8484d51b22b557fbe1ce0b1fa0f">HOUSE_TRAINING_HALL_STONE_CITY</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="UIHouses_8cpp.html#a7c8a19ec258baa23cb7be6fd902bfb6e">trainingHallMaxLevels</a></td></tr>
-<tr class="separator:a7c8a19ec258baa23cb7be6fd902bfb6e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afca7bc064d88227f64fa87f84f66d632"><td class="memItemLeft" align="right" valign="top">std::array&lt; const <a class="el" href="structHouseAnimDescr.html">HouseAnimDescr</a>, 196 &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="UIHouses_8cpp.html#afca7bc064d88227f64fa87f84f66d632">pAnimatedRooms</a></td></tr>
 <tr class="separator:afca7bc064d88227f64fa87f84f66d632"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7130b96d31d40b0ea743c8d2bce2cae7"><td class="memItemLeft" align="right" valign="top">static std::array&lt; const char *, 19 &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="UIHouses_8cpp.html#a7130b96d31d40b0ea743c8d2bce2cae7">_4F03B8_shop_background_names</a></td></tr>
@@ -229,8 +208,6 @@ Variables</h2></td></tr>
 <tr class="separator:a5070fb5ce65ce8f84c5a28c7d694726d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad24e24f3382feec059b1dc53d0894a38"><td class="memItemLeft" align="right" valign="top">const std::array&lt; <a class="el" href="structITEM__VARIATION.html">ITEM_VARIATION</a>, 28 &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="UIHouses_8cpp.html#ad24e24f3382feec059b1dc53d0894a38">shopArmr_variation_spc</a></td></tr>
 <tr class="separator:ad24e24f3382feec059b1dc53d0894a38"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af6c05be3baed7f5ff40d9ef0bba5af73"><td class="memItemLeft" align="right" valign="top">std::vector&lt; int &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="UIHouses_8cpp.html#af6c05be3baed7f5ff40d9ef0bba5af73">charactersTrainedLevels</a></td></tr>
-<tr class="separator:af6c05be3baed7f5ff40d9ef0bba5af73"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a43ae6c5f01aad70b8a44025560dc81d6"><td class="memItemLeft" align="right" valign="top">std::array&lt; std::string, 6 &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="UIHouses_8cpp.html#a43ae6c5f01aad70b8a44025560dc81d6">portraitClickLabel</a></td></tr>
 <tr class="separator:a43ae6c5f01aad70b8a44025560dc81d6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
@@ -243,23 +220,6 @@ Variables</h2></td></tr>
       <table class="memname">
         <tr>
           <td class="memname">void BackToHouseMenu </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a6a8b5b55aa413db9c82a54e32b0e6ca6" name="a6a8b5b55aa413db9c82a54e32b0e6ca6"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a6a8b5b55aa413db9c82a54e32b0e6ca6">&#9670;&#160;</a></span>BankDialog()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void BankDialog </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
@@ -358,33 +318,6 @@ Variables</h2></td></tr>
 
 </div>
 </div>
-<a id="a34fb0d2c92f963a57d7568e4293a5a20" name="a34fb0d2c92f963a57d7568e4293a5a20"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a34fb0d2c92f963a57d7568e4293a5a20">&#9670;&#160;</a></span>GetTravelTimeTransportDays()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">int GetTravelTimeTransportDays </td>
-          <td>(</td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>schedule_id</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>New function. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">schedule_id</td><td>Index to transport_schedule.</td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>Number of days travel by transport will take with hireling modifiers. </dd></dl>
-
-</div>
-</div>
 <a id="a719e7a9d096a2515e32cc2f594b027f7" name="a719e7a9d096a2515e32cc2f594b027f7"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a719e7a9d096a2515e32cc2f594b027f7">&#9670;&#160;</a></span>HouseDialogPressCloseBtn()</h2>
 
@@ -473,24 +406,6 @@ Variables</h2></td></tr>
 
 </div>
 </div>
-<a id="afe12e4594f668c5e407da94cc554cad4" name="afe12e4594f668c5e407da94cc554cad4"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#afe12e4594f668c5e407da94cc554cad4">&#9670;&#160;</a></span>IsTravelAvailable()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">bool IsTravelAvailable </td>
-          <td>(</td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>a1</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
 <a id="ac8e170b69aa7467ea23d6b567fbb6f5e" name="ac8e170b69aa7467ea23d6b567fbb6f5e"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ac8e170b69aa7467ea23d6b567fbb6f5e">&#9670;&#160;</a></span>ItemAmountForShop()</h2>
 
@@ -506,43 +421,6 @@ Variables</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-
-</div>
-</div>
-<a id="a94fd0881c896a6e2864b9b8a7c14c851" name="a94fd0881c896a6e2864b9b8a7c14c851"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a94fd0881c896a6e2864b9b8a7c14c851">&#9670;&#160;</a></span>JailDialog()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void JailDialog </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a245c59f82d964d80c2f0ed2b246fb637" name="a245c59f82d964d80c2f0ed2b246fb637"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a245c59f82d964d80c2f0ed2b246fb637">&#9670;&#160;</a></span>MercenaryGuildDialog()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void MercenaryGuildDialog </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Mercenary guild in MM6. </p>
-<dl class="section user"><dt>Original binary offset:</dt><dd>0x004B6478. </dd></dl>
 
 </div>
 </div>
@@ -667,40 +545,6 @@ Variables</h2></td></tr>
 
 </div>
 </div>
-<a id="a85ed65d74da96b17f506a5b39248fc84" name="a85ed65d74da96b17f506a5b39248fc84"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a85ed65d74da96b17f506a5b39248fc84">&#9670;&#160;</a></span>TavernDialog()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void TavernDialog </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a3bf47183b95e701104b8fede3df5a993" name="a3bf47183b95e701104b8fede3df5a993"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a3bf47183b95e701104b8fede3df5a993">&#9670;&#160;</a></span>TempleDialog()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void TempleDialog </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
 <a id="afdce028ca6920ad78a2a8f39fb093b04" name="afdce028ca6920ad78a2a8f39fb093b04"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#afdce028ca6920ad78a2a8f39fb093b04">&#9670;&#160;</a></span>TownHallDialog()</h2>
 
@@ -709,41 +553,6 @@ Variables</h2></td></tr>
       <table class="memname">
         <tr>
           <td class="memname">void TownHallDialog </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a508cd0b3e4de36620322bbefc36c56cf" name="a508cd0b3e4de36620322bbefc36c56cf"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a508cd0b3e4de36620322bbefc36c56cf">&#9670;&#160;</a></span>TrainingDialog()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void TrainingDialog </td>
-          <td>(</td>
-          <td class="paramtype">const char *&#160;</td>
-          <td class="paramname"><em>s</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a051a9386ff5f507d34162a116de3f434" name="a051a9386ff5f507d34162a116de3f434"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a051a9386ff5f507d34162a116de3f434">&#9670;&#160;</a></span>TravelByTransport()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void TravelByTransport </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
@@ -802,20 +611,6 @@ Variables</h2></td></tr>
       <table class="memname">
         <tr>
           <td class="memname">int _F8B1DC_currentShopOption</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="af6c05be3baed7f5ff40d9ef0bba5af73" name="af6c05be3baed7f5ff40d9ef0bba5af73"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#af6c05be3baed7f5ff40d9ef0bba5af73">&#9670;&#160;</a></span>charactersTrainedLevels</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">std::vector&lt;int&gt; charactersTrainedLevels</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -1164,92 +959,6 @@ Variables</h2></td></tr>
 <div class="line">    { <a class="code hl_enumvalue" href="ItemEnums_8h.html#ad20c3ee7b5967d80cee8e0ec3e061a9ca63ba1cb7cd2a85d9dbe2ddf3d423b291">ITEM_TREASURE_LEVEL_4</a>, { 28, 25, 28, 29 } }</div>
 <div class="line">}}</div>
 </div><!-- fragment -->
-</div>
-</div>
-<a id="a7c8a19ec258baa23cb7be6fd902bfb6e" name="a7c8a19ec258baa23cb7be6fd902bfb6e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a7c8a19ec258baa23cb7be6fd902bfb6e">&#9670;&#160;</a></span>trainingHallMaxLevels</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="classIndexedArray.html">IndexedArray</a>&lt;int, <a class="el" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405faabcc8f98ad5c4802559f93ea8a38bf59">HOUSE_TRAINING_HALL_EMERALD_ISLE</a>, <a class="el" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fade4de8484d51b22b557fbe1ce0b1fa0f">HOUSE_TRAINING_HALL_STONE_CITY</a>&gt; trainingHallMaxLevels</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<b>Initial value:</b><div class="fragment"><div class="line">= {</div>
-<div class="line">    {<a class="code hl_enumvalue" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405faabcc8f98ad5c4802559f93ea8a38bf59">HOUSE_TRAINING_HALL_EMERALD_ISLE</a>, 5},</div>
-<div class="line">    {<a class="code hl_enumvalue" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fa756c441955de6ff77ed13016ac499fa4">HOUSE_TRAINING_HALL_HARMONDALE</a>, 15},</div>
-<div class="line">    {<a class="code hl_enumvalue" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fa1c40c4e119aa0407cc60a55ec7649081">HOUSE_TRAINING_HALL_ERATHIA</a>, 25},</div>
-<div class="line">    {<a class="code hl_enumvalue" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fa8e52ab9650de5f0b02dfa0bb96d28d95">HOUSE_TRAINING_HALL_TULAREAN_FOREST</a>, 25},</div>
-<div class="line">    {<a class="code hl_enumvalue" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fada66601e675af4d6b72a903f05524690">HOUSE_TRAINING_HALL_CELESTE</a>, 200},</div>
-<div class="line">    {<a class="code hl_enumvalue" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fa9e7086f5cc0d735dcd326aa54049192d">HOUSE_TRAINING_HALL_PIT</a>, 200},</div>
-<div class="line">    {<a class="code hl_enumvalue" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fac2b62247208d238c1547f4a9103b72ef">HOUSE_TRAINING_HALL_NIGHON</a>, std::numeric_limits&lt;int&gt;::max()}, </div>
-<div class="line">    {<a class="code hl_enumvalue" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fa237cc7e6d6400d51af18047af2930ccb">HOUSE_TRAINING_HALL_TATALIA</a>, 50},</div>
-<div class="line">    {<a class="code hl_enumvalue" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fafba7311b9b3a8d9c36437caaa3f200eb">HOUSE_TRAINING_HALL_AVLEE</a>, 50},</div>
-<div class="line">    {<a class="code hl_enumvalue" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fade4de8484d51b22b557fbe1ce0b1fa0f">HOUSE_TRAINING_HALL_STONE_CITY</a>, 100},</div>
-<div class="line">}</div>
-<div class="ttc" id="aUIHouseEnums_8h_html_aaee3335261c70d04921051c52287405fa1c40c4e119aa0407cc60a55ec7649081"><div class="ttname"><a href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fa1c40c4e119aa0407cc60a55ec7649081">HOUSE_TRAINING_HALL_ERATHIA</a></div><div class="ttdeci">@ HOUSE_TRAINING_HALL_ERATHIA</div><div class="ttdef"><b>Definition:</b> UIHouseEnums.h:42</div></div>
-<div class="ttc" id="aUIHouseEnums_8h_html_aaee3335261c70d04921051c52287405fa237cc7e6d6400d51af18047af2930ccb"><div class="ttname"><a href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fa237cc7e6d6400d51af18047af2930ccb">HOUSE_TRAINING_HALL_TATALIA</a></div><div class="ttdeci">@ HOUSE_TRAINING_HALL_TATALIA</div><div class="ttdef"><b>Definition:</b> UIHouseEnums.h:47</div></div>
-<div class="ttc" id="aUIHouseEnums_8h_html_aaee3335261c70d04921051c52287405fa756c441955de6ff77ed13016ac499fa4"><div class="ttname"><a href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fa756c441955de6ff77ed13016ac499fa4">HOUSE_TRAINING_HALL_HARMONDALE</a></div><div class="ttdeci">@ HOUSE_TRAINING_HALL_HARMONDALE</div><div class="ttdef"><b>Definition:</b> UIHouseEnums.h:41</div></div>
-<div class="ttc" id="aUIHouseEnums_8h_html_aaee3335261c70d04921051c52287405fa8e52ab9650de5f0b02dfa0bb96d28d95"><div class="ttname"><a href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fa8e52ab9650de5f0b02dfa0bb96d28d95">HOUSE_TRAINING_HALL_TULAREAN_FOREST</a></div><div class="ttdeci">@ HOUSE_TRAINING_HALL_TULAREAN_FOREST</div><div class="ttdef"><b>Definition:</b> UIHouseEnums.h:43</div></div>
-<div class="ttc" id="aUIHouseEnums_8h_html_aaee3335261c70d04921051c52287405fa9e7086f5cc0d735dcd326aa54049192d"><div class="ttname"><a href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fa9e7086f5cc0d735dcd326aa54049192d">HOUSE_TRAINING_HALL_PIT</a></div><div class="ttdeci">@ HOUSE_TRAINING_HALL_PIT</div><div class="ttdef"><b>Definition:</b> UIHouseEnums.h:45</div></div>
-<div class="ttc" id="aUIHouseEnums_8h_html_aaee3335261c70d04921051c52287405faabcc8f98ad5c4802559f93ea8a38bf59"><div class="ttname"><a href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405faabcc8f98ad5c4802559f93ea8a38bf59">HOUSE_TRAINING_HALL_EMERALD_ISLE</a></div><div class="ttdeci">@ HOUSE_TRAINING_HALL_EMERALD_ISLE</div><div class="ttdef"><b>Definition:</b> UIHouseEnums.h:40</div></div>
-<div class="ttc" id="aUIHouseEnums_8h_html_aaee3335261c70d04921051c52287405fac2b62247208d238c1547f4a9103b72ef"><div class="ttname"><a href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fac2b62247208d238c1547f4a9103b72ef">HOUSE_TRAINING_HALL_NIGHON</a></div><div class="ttdeci">@ HOUSE_TRAINING_HALL_NIGHON</div><div class="ttdef"><b>Definition:</b> UIHouseEnums.h:46</div></div>
-<div class="ttc" id="aUIHouseEnums_8h_html_aaee3335261c70d04921051c52287405fada66601e675af4d6b72a903f05524690"><div class="ttname"><a href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fada66601e675af4d6b72a903f05524690">HOUSE_TRAINING_HALL_CELESTE</a></div><div class="ttdeci">@ HOUSE_TRAINING_HALL_CELESTE</div><div class="ttdef"><b>Definition:</b> UIHouseEnums.h:44</div></div>
-<div class="ttc" id="aUIHouseEnums_8h_html_aaee3335261c70d04921051c52287405fade4de8484d51b22b557fbe1ce0b1fa0f"><div class="ttname"><a href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fade4de8484d51b22b557fbe1ce0b1fa0f">HOUSE_TRAINING_HALL_STONE_CITY</a></div><div class="ttdeci">@ HOUSE_TRAINING_HALL_STONE_CITY</div><div class="ttdef"><b>Definition:</b> UIHouseEnums.h:49</div></div>
-<div class="ttc" id="aUIHouseEnums_8h_html_aaee3335261c70d04921051c52287405fafba7311b9b3a8d9c36437caaa3f200eb"><div class="ttname"><a href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fafba7311b9b3a8d9c36437caaa3f200eb">HOUSE_TRAINING_HALL_AVLEE</a></div><div class="ttdeci">@ HOUSE_TRAINING_HALL_AVLEE</div><div class="ttdef"><b>Definition:</b> UIHouseEnums.h:48</div></div>
-</div><!-- fragment -->
-</div>
-</div>
-<a id="aebed320a56be394803b62089be2c78fa" name="aebed320a56be394803b62089be2c78fa"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aebed320a56be394803b62089be2c78fa">&#9670;&#160;</a></span>transport_routes</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">unsigned char transport_routes[20][4]</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<b>Initial value:</b><div class="fragment"><div class="line">= {</div>
-<div class="line">    { 0, 1, 1, 34 },         </div>
-<div class="line">    { 2, 3, 4, 5 },          </div>
-<div class="line">    { 6, 7, 8, 8 },          </div>
-<div class="line">    { 9, 10, 10, 10 },       </div>
-<div class="line">    { 11, 11, 12, 12 },      </div>
-<div class="line">    { 13, 13, 13, 13 },      </div>
-<div class="line">    { 14, 14, 15, 15 },      </div>
-<div class="line">    { 255, 255, 255, 255 },  </div>
-<div class="line">    { 255, 255, 255, 255 },  </div>
-<div class="line">    { 255, 255, 255, 255 },  </div>
-<div class="line">    { 16, 17, 18, 19 },      </div>
-<div class="line">    { 18, 20, 21, 21 },      </div>
-<div class="line">    { 22, 23, 24, 25 },      </div>
-<div class="line">    { 22, 22, 23, 23 },      </div>
-<div class="line">    { 255, 255, 255, 255 },  </div>
-<div class="line">    { 27, 28, 29, 30 },      </div>
-<div class="line">    { 31, 32, 33, 33 },      </div>
-<div class="line">    { 24, 24, 24, 24 },      </div>
-<div class="line">    { 255, 255, 255, 255 },  </div>
-<div class="line">    { 255, 255, 255, 255 }   </div>
-<div class="line">}</div>
-</div><!-- fragment -->
-</div>
-</div>
-<a id="a2cd5d5ef179c8f6d6cfd4b34c3b2e3f2" name="a2cd5d5ef179c8f6d6cfd4b34c3b2e3f2"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a2cd5d5ef179c8f6d6cfd4b34c3b2e3f2">&#9670;&#160;</a></span>transport_schedule</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="structstru365__travel__info.html">stru365_travel_info</a> transport_schedule[35]</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
 </div>
 </div>
 <a id="afabe273f991a402547b13229063de7a4" name="afabe273f991a402547b13229063de7a4"></a>

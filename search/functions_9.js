@@ -219,7 +219,7 @@ var searchData=
   ['istextureframetable_216',['IsTextureFrameTable',['../structBLVFace.html#a8f592ccc759d53ca44c5374dc8c65a72',1,'BLVFace::IsTextureFrameTable()'],['../structODMFace.html#aaee1c3430d5cb708ff04bd2fa02af14c',1,'ODMFace::IsTextureFrameTable()']]],
   ['istraceable_217',['isTraceable',['../structEventTrace.html#a62973ef03b19f274e72363a49c58c4f1',1,'EventTrace']]],
   ['istracing_218',['isTracing',['../classEngineTraceComponent.html#a8239cb9642e6b09860038267d32a307f',1,'EngineTraceComponent']]],
-  ['istravelavailable_219',['IsTravelAvailable',['../UIHouses_8cpp.html#afe12e4594f668c5e407da94cc554cad4',1,'IsTravelAvailable(int a1):&#160;UIHouses.cpp'],['../UIHouses_8h.html#afe12e4594f668c5e407da94cc554cad4',1,'IsTravelAvailable(int a1):&#160;UIHouses.cpp']]],
+  ['istravelavailable_219',['IsTravelAvailable',['../Transport_8cpp.html#afe12e4594f668c5e407da94cc554cad4',1,'IsTravelAvailable(int a1):&#160;Transport.cpp'],['../Transport_8h.html#afe12e4594f668c5e407da94cc554cad4',1,'IsTravelAvailable(int a1):&#160;Transport.cpp']]],
   ['istriggerkey_220',['isTriggerKey',['../classGameTraceHandler.html#ae5e75228fe167e9321be6de60436e9fb',1,'GameTraceHandler']]],
   ['istriggerkeysequence_221',['isTriggerKeySequence',['../classGameTraceHandler.html#a8a05628915c0bf8f8262139cbd449862',1,'GameTraceHandler']]],
   ['isturnstrafingtoggled_222',['IsTurnStrafingToggled',['../classIo_1_1KeyboardInputHandler.html#a7674a72b4c2f4b4f0c1dc6442942b0d8',1,'Io::KeyboardInputHandler']]],

@@ -3,7 +3,7 @@ var searchData=
   ['back_0',['back',['../classSegment.html#a4916adbc30989e41361fd5df7bd9c9e9',1,'Segment']]],
   ['back_5fto_5fgame_1',['back_to_game',['../Engine_8cpp.html#a2abba234a27ed12ea4d6fa54367ed10b',1,'back_to_game():&#160;Engine.cpp'],['../Engine_8h.html#a2abba234a27ed12ea4d6fa54367ed10b',1,'back_to_game():&#160;Engine.cpp']]],
   ['backtohousemenu_2',['BackToHouseMenu',['../UIHouses_8cpp.html#a367ca93a4c306e3d85e764d52a71a2d2',1,'BackToHouseMenu():&#160;UIHouses.cpp'],['../UIHouses_8h.html#a367ca93a4c306e3d85e764d52a71a2d2',1,'BackToHouseMenu():&#160;UIHouses.cpp']]],
-  ['bankdialog_3',['BankDialog',['../UIHouses_8cpp.html#a6a8b5b55aa413db9c82a54e32b0e6ca6',1,'BankDialog():&#160;UIHouses.cpp'],['../UIHouses_8h.html#a6a8b5b55aa413db9c82a54e32b0e6ca6',1,'BankDialog():&#160;UIHouses.cpp']]],
+  ['bankdialog_3',['BankDialog',['../Bank_8cpp.html#a6a8b5b55aa413db9c82a54e32b0e6ca6',1,'BankDialog():&#160;Bank.cpp'],['../Bank_8h.html#a6a8b5b55aa413db9c82a54e32b0e6ca6',1,'BankDialog():&#160;Bank.cpp']]],
   ['bankersrounding_4',['bankersRounding',['../OurMath_8h.html#ab2a1e13f594afe4778ee046c1a6763a5',1,'OurMath.h']]],
   ['bankersrounding_3c_20double_20_3e_5',['bankersRounding&lt; double &gt;',['../OurMath_8h.html#ae05bc48f61f3b3f873e62918eb7ba6ca',1,'OurMath.h']]],
   ['bankersrounding_3c_20float_20_3e_6',['bankersRounding&lt; float &gt;',['../OurMath_8h.html#a4df6b7b16fb58429d0153a520ad42153',1,'OurMath.h']]],
