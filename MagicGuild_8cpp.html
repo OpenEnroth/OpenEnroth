@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.9.5"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>OpenEnroth: src/GUI/UI/UIGuilds.cpp File Reference</title>
+<title>OpenEnroth: src/GUI/UI/Houses/MagicGuild.cpp File Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;073725a</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;95bd442</span>
    </div>
   </td>
  </tr>
@@ -69,23 +69,21 @@ $(function() {
 
 <div id="nav-path" class="navpath">
   <ul>
-<li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li><li class="navelem"><a class="el" href="dir_4e4e2e75df7fa6971448b424c011c8b5.html">GUI</a></li><li class="navelem"><a class="el" href="dir_a1c8096ddc6fb80a9bdd2e9a1b465426.html">UI</a></li>  </ul>
+<li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li><li class="navelem"><a class="el" href="dir_4e4e2e75df7fa6971448b424c011c8b5.html">GUI</a></li><li class="navelem"><a class="el" href="dir_a1c8096ddc6fb80a9bdd2e9a1b465426.html">UI</a></li><li class="navelem"><a class="el" href="dir_31a3d734ff16214a6e02942e8a62f5eb.html">Houses</a></li>  </ul>
 </div>
 </div><!-- top -->
 <div class="header">
   <div class="summary">
-<a href="#func-members">Functions</a> &#124;
 <a href="#var-members">Variables</a>  </div>
-  <div class="headertitle"><div class="title">UIGuilds.cpp File Reference</div></div>
+  <div class="headertitle"><div class="title">MagicGuild.cpp File Reference</div></div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><code>#include &quot;<a class="el" href="UIGuilds_8h.html">GUI/UI/UIGuilds.h</a>&quot;</code><br />
+<div class="textblock"><code>#include &quot;<a class="el" href="MagicGuild_8h.html">GUI/UI/Houses/MagicGuild.h</a>&quot;</code><br />
 <code>#include &lt;string&gt;</code><br />
 <code>#include &quot;<a class="el" href="Engine_8h.html">Engine/Engine.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="BuildingTable_8h.html">Engine/Tables/BuildingTable.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="IRender_8h.html">Engine/Graphics/IRender.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Image_8h.html">Engine/Graphics/Image.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="LOD_8h.html">Engine/LOD.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Localization_8h.html">Engine/Localization.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Items_8h.html">Engine/Objects/Items.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="ItemTable_8h.html">Engine/Tables/ItemTable.h</a>&quot;</code><br />
@@ -94,73 +92,43 @@ $(function() {
 <code>#include &quot;<a class="el" href="GUIWindow_8h.html">GUI/GUIWindow.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="GUIButton_8h.html">GUI/GUIButton.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="GUIFont_8h.html">GUI/GUIFont.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="UIHouses_8h.html">GUI/UI/UIHouses.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="UIShops_8h.html">GUI/UI/UIShops.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="UIStatusBar_8h.html">GUI/UI/UIStatusBar.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="UIShops_8h.html">GUI/UI/UIShops.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Mouse_8h.html">Io/Mouse.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="AudioPlayer_8h.html">Media/Audio/AudioPlayer.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Random_8h.html">Library/Random/Random.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="IndexedArray_8h.html">Utility/IndexedArray.h</a>&quot;</code><br />
 </div><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
-Functions</h2></td></tr>
-<tr class="memitem:a7fbb26f3fd48a15ffdcb709219220a74"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="UIGuilds_8cpp.html#a7fbb26f3fd48a15ffdcb709219220a74">GuildDialog</a> ()</td></tr>
-<tr class="separator:a7fbb26f3fd48a15ffdcb709219220a74"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa84fd5e1d6d256ecf86aa1ecec2c4ea4"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="UIGuilds_8cpp.html#aa84fd5e1d6d256ecf86aa1ecec2c4ea4">generateSpellBooksForGuild</a> ()</td></tr>
-<tr class="separator:aa84fd5e1d6d256ecf86aa1ecec2c4ea4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="var-members" name="var-members"></a>
 Variables</h2></td></tr>
-<tr class="memitem:ae0bde2ea84732c02b465d4caac563abd"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classIndexedArray.html">IndexedArray</a>&lt; <a class="el" href="ItemEnums_8h.html#a55231e9660ce1c5b6f7613a3f9d66891">DAMAGE_TYPE</a>, <a class="el" href="BuildingTable_8h.html#a1e6330273dfb88062f9ac99d61322e80a55e39214ba87e217c58b8c10bdb3f0b6">BuildingType_FireGuild</a>, <a class="el" href="BuildingTable_8h.html#a1e6330273dfb88062f9ac99d61322e80a69e60971fc82c5be31e7fc0ef884db1c">BuildingType_DarkGuild</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="UIGuilds_8cpp.html#ae0bde2ea84732c02b465d4caac563abd">guildSpellsSchool</a></td></tr>
+<tr class="memitem:ae0bde2ea84732c02b465d4caac563abd"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classIndexedArray.html">IndexedArray</a>&lt; <a class="el" href="ItemEnums_8h.html#a55231e9660ce1c5b6f7613a3f9d66891">DAMAGE_TYPE</a>, <a class="el" href="BuildingTable_8h.html#a1e6330273dfb88062f9ac99d61322e80a55e39214ba87e217c58b8c10bdb3f0b6">BuildingType_FireGuild</a>, <a class="el" href="BuildingTable_8h.html#a1e6330273dfb88062f9ac99d61322e80a69e60971fc82c5be31e7fc0ef884db1c">BuildingType_DarkGuild</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="MagicGuild_8cpp.html#ae0bde2ea84732c02b465d4caac563abd">guildSpellsSchool</a></td></tr>
 <tr class="separator:ae0bde2ea84732c02b465d4caac563abd"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1ee6a02bc29affad40c3e2f10f985a70"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classIndexedArray.html">IndexedArray</a>&lt; <a class="el" href="CombinedSkillValue_8h.html#ae7fdd356d1b4ddbdd59bcba036e6f942">PLAYER_SKILL_MASTERY</a>, <a class="el" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fa2c6d0bbdcc6940409be4a3fd9c277129">HOUSE_FIRE_GUILD_INITIATE_EMERALD_ISLE</a>, <a class="el" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fa1bf70be8d15aaf01aa0a6563fbcdb794">HOUSE_DARK_GUILD_PARAMOUNT_PIT</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="UIGuilds_8cpp.html#a1ee6a02bc29affad40c3e2f10f985a70">guildSpellsMastery</a></td></tr>
-<tr class="separator:a1ee6a02bc29affad40c3e2f10f985a70"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa31b30faac8dedc6fea698ddf8f8cd81"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classIndexedArray.html">IndexedArray</a>&lt; <a class="el" href="CombinedSkillValue_8h.html#ae7fdd356d1b4ddbdd59bcba036e6f942">PLAYER_SKILL_MASTERY</a>, <a class="el" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fab3aba1f7bce84a78ac634095fc590779">HOUSE_FIRST_MAGIC_GUILD</a>, <a class="el" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405faf9b04ab721e3f5aa7a333226012bd407">HOUSE_LAST_MAGIC_GUILD</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="MagicGuild_8cpp.html#aa31b30faac8dedc6fea698ddf8f8cd81">guildSpellsMastery</a></td></tr>
+<tr class="separator:aa31b30faac8dedc6fea698ddf8f8cd81"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adf39b5426042c9598218329f1122846a"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classIndexedArray.html">IndexedArray</a>&lt; int, <a class="el" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fab3aba1f7bce84a78ac634095fc590779">HOUSE_FIRST_MAGIC_GUILD</a>, <a class="el" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405faf9b04ab721e3f5aa7a333226012bd407">HOUSE_LAST_MAGIC_GUILD</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="MagicGuild_8cpp.html#adf39b5426042c9598218329f1122846a">guildMembershipFlags</a></td></tr>
+<tr class="separator:adf39b5426042c9598218329f1122846a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Function Documentation</h2>
-<a id="aa84fd5e1d6d256ecf86aa1ecec2c4ea4" name="aa84fd5e1d6d256ecf86aa1ecec2c4ea4"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa84fd5e1d6d256ecf86aa1ecec2c4ea4">&#9670;&#160;</a></span>generateSpellBooksForGuild()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void generateSpellBooksForGuild </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<dl class="section user"><dt>Original binary offset:</dt><dd>0x4BC8D5 </dd></dl>
-
-</div>
-</div>
-<a id="a7fbb26f3fd48a15ffdcb709219220a74" name="a7fbb26f3fd48a15ffdcb709219220a74"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a7fbb26f3fd48a15ffdcb709219220a74">&#9670;&#160;</a></span>GuildDialog()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void GuildDialog </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
 <h2 class="groupheader">Variable Documentation</h2>
-<a id="a1ee6a02bc29affad40c3e2f10f985a70" name="a1ee6a02bc29affad40c3e2f10f985a70"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a1ee6a02bc29affad40c3e2f10f985a70">&#9670;&#160;</a></span>guildSpellsMastery</h2>
+<a id="adf39b5426042c9598218329f1122846a" name="adf39b5426042c9598218329f1122846a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#adf39b5426042c9598218329f1122846a">&#9670;&#160;</a></span>guildMembershipFlags</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="classIndexedArray.html">IndexedArray</a>&lt;<a class="el" href="CombinedSkillValue_8h.html#ae7fdd356d1b4ddbdd59bcba036e6f942">PLAYER_SKILL_MASTERY</a>, <a class="el" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fa2c6d0bbdcc6940409be4a3fd9c277129">HOUSE_FIRE_GUILD_INITIATE_EMERALD_ISLE</a>, <a class="el" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fa1bf70be8d15aaf01aa0a6563fbcdb794">HOUSE_DARK_GUILD_PARAMOUNT_PIT</a>&gt; guildSpellsMastery</td>
+          <td class="memname"><a class="el" href="classIndexedArray.html">IndexedArray</a>&lt;int, <a class="el" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fab3aba1f7bce84a78ac634095fc590779">HOUSE_FIRST_MAGIC_GUILD</a>, <a class="el" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405faf9b04ab721e3f5aa7a333226012bd407">HOUSE_LAST_MAGIC_GUILD</a>&gt; guildMembershipFlags</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="aa31b30faac8dedc6fea698ddf8f8cd81" name="aa31b30faac8dedc6fea698ddf8f8cd81"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa31b30faac8dedc6fea698ddf8f8cd81">&#9670;&#160;</a></span>guildSpellsMastery</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classIndexedArray.html">IndexedArray</a>&lt;<a class="el" href="CombinedSkillValue_8h.html#ae7fdd356d1b4ddbdd59bcba036e6f942">PLAYER_SKILL_MASTERY</a>, <a class="el" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fab3aba1f7bce84a78ac634095fc590779">HOUSE_FIRST_MAGIC_GUILD</a>, <a class="el" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405faf9b04ab721e3f5aa7a333226012bd407">HOUSE_LAST_MAGIC_GUILD</a>&gt; guildSpellsMastery</td>
         </tr>
       </table>
 </div><div class="memdoc">
