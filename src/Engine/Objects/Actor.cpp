@@ -49,6 +49,8 @@ stru319 stru_50C198;  // idb
 
 std::array<uint, 5> _4DF380_hostilityRanges = {0, 1024, 2560, 5120, 10240};
 
+std::array<int16_t, 11> word_4E8152 = {{0, 0, 0, 90, 8, 2, 70, 20, 10, 50, 30}};  // level spawn monster levels ABC
+
 //----- (0042FB5C) --------------------------------------------------------
 // True if monster should play attack animation when casting this spell.
 bool ShouldMonsterPlayAttackAnim(SPELL_TYPE spell_id) {

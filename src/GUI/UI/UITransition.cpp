@@ -10,6 +10,7 @@
 #include "Engine/MapInfo.h"
 #include "Engine/Party.h"
 #include "Engine/Time.h"
+#include "Engine/Tables/TransitionTable.h"
 
 #include "GUI/GUIButton.h"
 #include "GUI/UI/UITransition.h"

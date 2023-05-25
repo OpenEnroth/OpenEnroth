@@ -1442,19 +1442,6 @@ void CharacterUI_LoadPaperdollTextures() {
     paperdoll_dbrds[3] = assets->getImage_Solid("ib-cd4-d");
     paperdoll_dbrds[1] = assets->getImage_Solid("ib-cd5-d");
 
-    // TODO(captainurist): safe to delete?
-#if 0
-    for (uint i = 0; i < 54; ++i) {  // test equipment
-        party_has_equipment[i] = 0;
-        if (pParty->pPickedItem.uItemID != i + 66) {
-            for (uint j = 0; j < 4; ++j) {
-                if (pParty->pPlayers[j].hasItem(i + 66, 0))
-                    party_has_equipment[i] = 1;
-            }
-        }
-    }
-#endif
-
     auto loadTexture = [&](const auto &map, int itemIndex, int bodyIndex, int shoulderIndex) {
         std::string name = GetItemTextureFilename(*valuePtr(map, itemIndex), bodyIndex + 1, shoulderIndex);
         return assets->getImage_Alpha(name);

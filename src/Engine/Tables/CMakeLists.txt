@@ -12,6 +12,8 @@ set(ENGINE_TABLES_SOURCES
         AwardTable.cpp
         AutonoteTable.cpp
         QuestTable.cpp
+        TransitionTable.cpp
+        MerchantTable.cpp
         MessageScrollTable.cpp)
 
 set(ENGINE_TABLES_HEADERS
@@ -26,6 +28,8 @@ set(ENGINE_TABLES_HEADERS
         AwardTable.h
         AutonoteTable.h
         QuestTable.h
+        TransitionTable.h
+        MerchantTable.h
         MessageScrollTable.h)
 
 add_library(engine_tables STATIC ${ENGINE_TABLES_SOURCES} ${ENGINE_TABLES_HEADERS})

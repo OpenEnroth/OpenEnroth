@@ -38,7 +38,6 @@ extern float flt_4D84E8;
 
 extern unsigned int uGammaPos;
 extern std::array<int, 8> BtnTurnCoord;
-// extern std::array<char, 80> _4E2B21_buff_spell_tooltip_colors;
 extern std::array<int8_t, 88> monster_popup_y_offsets;
 
 extern std::array<int, 6> dword_4E4560;
@@ -50,12 +49,9 @@ extern std::array<float, 10> flt_4E4A80;
 extern std::array<std::array<int, 6>, 6> pNPCPortraits_x;  // 004E5E50
 extern std::array<std::array<int, 6>, 6> pNPCPortraits_y;  // 004E5EE0
 extern std::array<const char *, 11> pHouse_ExitPictures;
-extern std::array<const char *, 11> _4E6BDC_loc_names;
-extern std::array<int16_t, 11> word_4E8152;
 extern char _4E94D0_light_type;
 extern char _4E94D2_light_type;
 extern char _4E94D3_light_type;
-extern std::array<const char *, 465> pTransitionStrings;  // 4EB080
 extern std::array<const char *, 25> pPlayerPortraitsNames;
 
 extern std::array<std::array<unsigned char, 25>, 48> byte_4ECF08;
@@ -66,7 +62,6 @@ extern IndexedArray<PLAYER_SKILL_LEVEL, PLAYER_SKILL_FIRST, PLAYER_SKILL_LAST> s
 extern IndexedArray<uint, PLAYER_SKILL_FIRST, PLAYER_SKILL_LAST> base_recovery_times_per_weapon_type;
 extern std::array<IndexedArray<CLASS_SKILL, PLAYER_SKILL_FIRST, PLAYER_SKILL_LAST>, 9> pSkillAvailabilityPerClass;
 extern IndexedArray<IndexedArray<PLAYER_SKILL_MASTERY, PLAYER_SKILL_FIRST, PLAYER_SKILL_LAST>, PLAYER_CLASS_FIRST, PLAYER_CLASS_LAST> skillMaxMasteryPerClass;
-extern std::array<short, 28> word_4EE150;
 
 extern std::array<int16_t, 49> word_4F0754;
 extern std::array<std::pair<int16_t, ITEM_TYPE>, 27> _4F0882_evt_VAR_PlayerItemInHands_vals;
@@ -75,14 +70,10 @@ extern std::array<int, 500> ai_near_actors_targets_pid;
 extern std::array<unsigned int, 500> ai_near_actors_ids;
 extern int ai_arrays_size;
 
-// extern std::array<unsigned int, 480> pSRZBufferLineOffsets;
-// extern Texture_MM7 *dword_50640C[];
 extern int quick_spell_at_page;
 extern char byte_506550;
 extern int uLastPointedObjectID;
 extern int KeyboardPageNum;
-extern GUIButton *pBtn_ZoomOut;  // idb
-extern GUIButton *pBtn_ZoomIn;  // idb
 extern unsigned int uGameUIFontShadow;
 extern unsigned int uGameUIFontMain;
 extern int dword_507B00_spell_info_to_draw_in_popup;
@@ -102,7 +93,6 @@ extern int ItemEnchantmentTimer; // 50C9A8 Timer for enchanting animation for it
 extern UIMessageType AfterEnchClickEventId; // 50C9D0 Event id that is pushed in queue after enchant item has been clicked
 extern int AfterEnchClickEventSecondParam; // 50C9D4 Parameter passed for event "AfterEnchClickEventId"
 extern int AfterEnchClickEventTimeout; // 50C9D8 Timer before event "AfterEnchClickEventId" is pushed in queue
-extern std::array<char, 54> party_has_equipment;
 
 extern unsigned int uNumBlueFacesInBLVMinimap;
 extern std::array<uint16_t, 50> pBlueFacesInBLVMinimapIDs;
@@ -116,9 +106,7 @@ extern DIALOGUE_TYPE uDialogueType;
 extern signed int sDialogue_SpeakingActorNPC_ID;
 extern int uCurrentHouse_Animation;
 
-extern std::array<struct NPCData *, 7>
-    HouseNPCData;  // 0this array size temporarily increased to 60 from 6 to
-                   // work aroud house overflow
+extern std::array<struct NPCData *, 7> HouseNPCData;  // 0this array size temporarily increased to 60 from 6 to work aroud house overflow
 extern GUIButton *HouseNPCPortraitsButtonsList[6];
 extern std::string branchless_dialogue_str;
 
@@ -196,12 +184,6 @@ extern std::string s_SavedMapName;
 extern char bNoNPCHiring;
 extern Vec3i blv_prev_party_pos;
 
-extern std::string pMerchantsTXT_Raw;
-extern IndexedArray<const char *, MERCHANT_PHRASE_FIRST, MERCHANT_PHRASE_LAST> pMerchantsBuyPhrases;
-extern IndexedArray<const char *, MERCHANT_PHRASE_FIRST, MERCHANT_PHRASE_LAST> pMerchantsSellPhrases;
-extern IndexedArray<const char *, MERCHANT_PHRASE_FIRST, MERCHANT_PHRASE_LAST> pMerchantsRepairPhrases;
-extern IndexedArray<const char *, MERCHANT_PHRASE_FIRST, MERCHANT_PHRASE_LAST> pMerchantsIdentifyPhrases;
-extern std::string pTransitionsTXT_Raw;
 extern std::vector<Vec3f> pTerrainNormals;
 extern std::array<unsigned short, 128 * 128 * 2> pTerrainNormalIndices;
 extern std::array<unsigned int, 128 * 128 * 2> pTerrainSomeOtherData;
