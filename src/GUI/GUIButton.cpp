@@ -23,7 +23,6 @@ GUIButton *pBtn_Book_3;
 GUIButton *pBtn_Book_2;
 GUIButton *pBtn_Book_1;
 
-
 GUIButton *pPlayerCreationUI_BtnReset;
 GUIButton *pPlayerCreationUI_BtnOK;
 GUIButton *pBtn_ExitCancel;
@@ -31,13 +30,11 @@ GUIButton *pBtn_YES;
 GUIButton *pPlayerCreationUI_BtnPlus;
 GUIButton *pPlayerCreationUI_BtnMinus;
 
-
 GUIButton *pButton_RestUI_Main;
 GUIButton *pButton_RestUI_Exit;
 GUIButton *pButton_RestUI_Wait5Minutes;
 GUIButton *pButton_RestUI_WaitUntilDawn;
 GUIButton *pButton_RestUI_Wait1Hour;
-
 
 GUIButton *pCharacterScreen_ExitBtn;
 GUIButton *pCharacterScreen_AwardsBtn;
@@ -46,7 +43,6 @@ GUIButton *pCharacterScreen_SkillsBtn;
 GUIButton *pCharacterScreen_StatsBtn;
 GUIButton *pCharacterScreen_DollBtn;
 GUIButton *pCharacterScreen_DetalizBtn;
-
 
 GUIButton *pBtn_NPCRight;
 GUIButton *pBtn_NPCLeft;
@@ -60,13 +56,11 @@ GUIButton *pBtn_Maps;
 GUIButton *pBtn_Autonotes;
 GUIButton *pBtn_Quests;
 
-
 GUIButton *pMMT_MainMenu_BtnMM6;
 GUIButton *pMMT_MainMenu_BtnMM7;
 GUIButton *pMMT_MainMenu_BtnMM8;
 GUIButton *pMMT_MainMenu_BtnContinue;
 GUIButton *pMMT_MainMenu_BtnExit;
-
 
 GUIButton *pBtn_Up;
 GUIButton *pBtn_Down;
@@ -82,6 +76,8 @@ GUIButton *pBtn_NewGame;
 GUIButton *pBtn_SliderRight;
 GUIButton *pBtn_SliderLeft;
 
+GUIButton *pBtn_ZoomOut;
+GUIButton *pBtn_ZoomIn;
 
 GUIButton *pBtnDownArrow;
 GUIButton *pBtnArrowUp;

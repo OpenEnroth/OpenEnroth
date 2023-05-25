@@ -25,6 +25,8 @@
 #include "Engine/Tables/ItemTable.h"
 #include "Engine/Tables/BuildingTable.h"
 #include "Engine/Tables/AwardTable.h"
+#include "Engine/Tables/MerchantTable.h"
+#include "Engine/Tables/TransitionTable.h"
 
 #include "GUI/GUIBountyHunting.h"
 #include "GUI/GUIButton.h"

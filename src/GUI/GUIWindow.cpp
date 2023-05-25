@@ -99,6 +99,10 @@ DIALOGUE_TYPE _dword_F8B1D8_last_npc_topic_menu;
 AwardType dword_F8B1AC_award_bit_number;
 PLAYER_SKILL_TYPE dword_F8B1AC_skill_being_taught; // Address the same as above --- splitting a union into two variables.
 
+std::array<short, 28> word_4EE150 = {{1,  2,  3,  4,  5,  7,  32, 33, 36, 37,
+                                      38, 40, 41, 42, 43, 45, 46, 47, 48, 49,
+                                      50, 51, 52, 53, 54, 55, 56, 60}};
+
 void SetCurrentMenuID(MENU_STATE uMenu) {
     sCurrentMenuID = uMenu;
     logger->warning("CurrentMenu = {} \n", toString(uMenu));

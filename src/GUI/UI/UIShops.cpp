@@ -13,6 +13,7 @@
 #include "Engine/Party.h"
 #include "Engine/PriceCalculator.h"
 #include "Engine/Tables/AwardTable.h"
+#include "Engine/Tables/MerchantTable.h"
 
 #include "GUI/GUIWindow.h"
 #include "GUI/GUIButton.h"
