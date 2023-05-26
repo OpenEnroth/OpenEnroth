@@ -322,7 +322,6 @@ struct Player {
     unsigned int GetItemListAtInventoryIndex(int inout_item_cell);
     unsigned int GetItemMainInventoryIndex(int inout_item_cell);
     struct ItemGen *GetItemAtInventoryIndex(int inout_item_cell);
-    bool IsPlayerHealableByTemple() const;
     int GetConditionDaysPassed(Condition condition) const;
     bool NothingOrJustBlastersEquipped() const;
     void SalesProcess(unsigned int inventory_idnx, int item_index, int BuildingDesc_idx);  // 0x4BE2DD

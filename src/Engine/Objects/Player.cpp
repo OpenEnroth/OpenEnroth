@@ -299,25 +299,6 @@ int Player::GetConditionDaysPassed(Condition condition) const {
     return diff.GetDays() + 1;
 }
 
-//----- (004B6FF9) --------------------------------------------------------
-bool Player::IsPlayerHealableByTemple() const {
-    if (this->health >= GetMaxHealth() && this->mana >= GetMaxMana() &&
-        GetMajorConditionIdx() == Condition_Good) {
-        return false;  // fully healthy
-    } else {
-        if (GetMajorConditionIdx() == Condition_Zombie) {
-            if ((window_SpeakInHouse->wData.val == 78 ||
-                 window_SpeakInHouse->wData.val == 81 ||
-                 window_SpeakInHouse->wData.val == 82))
-                return false;  // zombie cant be healed at these tmeples
-            else
-                return true;
-        } else {
-            return true;
-        }
-    }
-}
-
 ItemGen *Player::GetItemAtInventoryIndex(int inout_item_cell) {
     int inventory_index = this->GetItemListAtInventoryIndex(inout_item_cell);
 

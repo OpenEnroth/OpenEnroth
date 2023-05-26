@@ -13,8 +13,6 @@
 #include "Engine/Graphics/LocationFunctions.h"
 #include "Engine/Spells/CastSpellInfo.h"
 
-int templeSpellCounter = 0;
-
 void GUIWindow_Temple::mainDialogue() {
     GUIWindow temple_window = *this;
     temple_window.uFrameX = SIDE_TEXT_BOX_POS_X;
@@ -26,7 +24,7 @@ void GUIWindow_Temple::mainDialogue() {
     GUIButton *pButton = pDialogueWindow->GetControl(pDialogueWindow->pStartingPosActiveItem);
     pButton->uHeight = 0;
     pButton->uY = 0;
-    if (pParty->activeCharacter().IsPlayerHealableByTemple()) {
+    if (isPlayerHealableByTemple(pParty->activeCharacter())) {
         static std::string shop_option_container;
         shop_option_container = fmt::format("{} {} {}", localization->GetString(LSTR_HEAL), price, localization->GetString(LSTR_GOLD));
         pShopOptions[0] = shop_option_container.c_str();
@@ -60,7 +58,7 @@ void GUIWindow_Temple::mainDialogue() {
 }
 
 void GUIWindow_Temple::healDialogue() {
-    if (!pParty->activeCharacter().IsPlayerHealableByTemple()) {
+    if (!isPlayerHealableByTemple(pParty->activeCharacter())) {
         return;
     }
 
@@ -115,7 +113,7 @@ void GUIWindow_Temple::donateDialogue() {
             ddm->reputation -= 1;
         }
         int day = pParty->uCurrentDayOfMonth % 7;
-        int counter = templeSpellCounter % 7;
+        int counter = _templeSpellCounter[pParty->activeCharacterIndex() - 1] % 7;
         if (counter == day) {
             if (ddm->reputation <= -5) {
                 pushTempleSpell(SPELL_AIR_WIZARD_EYE);
@@ -133,7 +131,7 @@ void GUIWindow_Temple::donateDialogue() {
                 pushTempleSpell(SPELL_LIGHT_DAY_OF_PROTECTION);
             }
         }
-        templeSpellCounter++;
+        _templeSpellCounter[pParty->activeCharacterIndex() - 1]++;
         pParty->activeCharacter().playReaction(SPEECH_TempleDonate);
         GameUI_SetStatusBar(LSTR_THANK_YOU);
     } else {
@@ -166,6 +164,11 @@ void GUIWindow_Temple::learnSkillsDialogue() {
     }
 }
 
+GUIWindow_Temple::GUIWindow_Temple(HOUSE_ID houseId) : GUIWindow_House(houseId) {
+    _templeSpellCounter.resize(pParty->pPlayers.size());
+    std::fill(_templeSpellCounter.begin(), _templeSpellCounter.end(), 0);
+}
+
 void GUIWindow_Temple::houseDialogueOptionSelected(DIALOGUE_TYPE option) {
     // Nothing
 }
@@ -192,4 +195,16 @@ void GUIWindow_Temple::houseSpecificDialogue() {
       default:
         break;
     }
+}
+
+bool GUIWindow_Temple::isPlayerHealableByTemple(const Player &player) const {
+    if (player.health >= player.GetMaxHealth() && player.mana >= player.GetMaxMana() && player.GetMajorConditionIdx() == Condition_Good) {
+        // fully healthy
+        return false;
+    } else if (player.GetMajorConditionIdx() == Condition_Zombie) {
+        // zombie cant be healed at these tmeples
+        return houseId() != HOUSE_TEMPLE_DEYJA && houseId() != HOUSE_TEMPLE_PIT && houseId() != HOUSE_TEMPLE_NIGHON;
+    }
+
+    return true;
 }

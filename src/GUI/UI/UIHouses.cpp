@@ -930,31 +930,12 @@ void OnSelectShopDialogueOption(DIALOGUE_TYPE option) {
                     return;
                 }
             }
-            pDialogueWindow->Release();
-            pDialogueWindow = new GUIWindow(WINDOW_Dialogue, {0, 0}, {renDims.w, 345}, 0);
-            pBtn_ExitCancel = pDialogueWindow->CreateButton({526, 445}, {75, 33}, 1, 0,
-                UIMSG_Escape, 0, InputAction::Invalid, localization->GetString(LSTR_END_CONVERSATION), {ui_buttdesc2});
-            pDialogueWindow->CreateButton({8, 8}, {450, 320}, 1, 0, UIMSG_BuyInShop_Identify_Repair, 0);
         }
-        if (in_current_building_type != BuildingType_Training) {
-            if ((in_current_building_type == BuildingType_Stables ||
-                in_current_building_type == BuildingType_Boats) &&
-                transport_schedule
-                [transport_routes[window_SpeakInHouse->wData.val - HOUSE_STABLES_HARMONDALE]
-                [option - DIALOGUE_TRANSPORT_SCHEDULE_1]]
-            .pSchedule[pParty->uCurrentDayOfMonth % 7] ||
-                in_current_building_type != BuildingType_Temple ||
-                in_current_building_type != BuildingType_MindGuild) {
-                pDialogueWindow->Release();
-                pDialogueWindow = new GUIWindow(WINDOW_Dialogue, {0, 0}, {renDims.w, 345}, 0);
-                pBtn_ExitCancel = pDialogueWindow->CreateButton({526, 445}, {75, 33}, 1, 0,
-                    UIMSG_Escape, 0, InputAction::Invalid, localization->GetString(LSTR_END_CONVERSATION), {ui_buttdesc2});
-                pDialogueWindow->CreateButton({8, 8}, {450, 320}, 1, 0, UIMSG_BuyInShop_Identify_Repair, 0);
-            } else if (pParty->hasActiveCharacter()) {
-                if (!pParty->activeCharacter().IsPlayerHealableByTemple())
-                    return;
-            }
-        }
+        pDialogueWindow->Release();
+        pDialogueWindow = new GUIWindow(WINDOW_Dialogue, {0, 0}, {renDims.w, 345}, 0);
+        pBtn_ExitCancel = pDialogueWindow->CreateButton({526, 445}, {75, 33}, 1, 0, UIMSG_Escape, 0, InputAction::Invalid,
+                                                        localization->GetString(LSTR_END_CONVERSATION), {ui_buttdesc2});
+        pDialogueWindow->CreateButton({8, 8}, {450, 320}, 1, 0, UIMSG_BuyInShop_Identify_Repair, 0);
         dialog_menu_id = option;
         if (in_current_building_type < BuildingType_TownHall_MM6) {
             shop_ui_background = assets->getImage_ColorKey(_4F03B8_shop_background_names[(int)in_current_building_type]);
