@@ -330,10 +330,14 @@ void Engine::onGameViewportClick() {
             }
         } else if (pParty->bTurnBasedModeOn && pTurnEngine->turn_stage == TE_MOVEMENT) {
             pParty->setAirborne(true);
-        } else if (pParty->hasActiveCharacter() && IsSpellQuickCastableOnShiftClick(pParty->activeCharacter().uQuickSpell)) {
+        } else if (pParty->hasActiveCharacter() &&
+                   pParty->activeCharacter().uQuickSpell != SPELL_NONE &&
+                   IsSpellQuickCastableOnShiftClick(pParty->activeCharacter().uQuickSpell)) {
             pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_CastQuickSpell, 0, 0);
-        } else {
+        } else if (pParty->pPickedItem.uItemID != ITEM_NULL) {
             pParty->dropHeldItem();
+        } else {
+            pAudioPlayer->playUISound(SOUND_error);
         }
     } else if (PID_TYPE(pid) == OBJECT_Decoration) {
         int id = PID_ID(pid);
