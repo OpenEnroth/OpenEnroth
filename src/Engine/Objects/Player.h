@@ -209,7 +209,7 @@ struct Player {
     std::string GetMeleeDamageString();
     std::string GetRangedDamageString();
     bool CanTrainToNextLevel();
-    unsigned int GetExperienceDisplayColor();
+    Color GetExperienceDisplayColor();
     int CalculateIncommingDamage(DAMAGE_TYPE dmg_type, int amount);
     ITEM_EQUIP_TYPE GetEquippedItemEquipType(ITEM_SLOT uEquipSlot) const;
     PLAYER_SKILL_TYPE GetEquippedItemSkillType(ITEM_SLOT uEquipSlot) const;
@@ -265,7 +265,7 @@ struct Player {
     void DecreaseAttribute(int eAttribute);
     void IncreaseAttribute(int eAttribute);
     void resetTempBonuses();
-    unsigned int GetStatColor(int uStat) const;
+    Color GetStatColor(int uStat) const;
     bool DiscardConditionIfLastsLongerThan(Condition uCondition, GameTime time);
     MERCHANT_PHRASE SelectPhrasesTransaction(ItemGen *pItem, BuildingType building_type, int BuildID_2Events, int ShopMenuType);
     int GetBodybuilding() const;

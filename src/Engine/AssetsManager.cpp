@@ -58,7 +58,7 @@ Texture *AssetsManager::getImage_Paletted(const std::string &name) {
 }
 
 
-Texture *AssetsManager::getImage_ColorKey(const std::string &name, uint16_t colorkey) {
+Texture *AssetsManager::getImage_ColorKey(const std::string &name, Color colorkey) {
     auto filename = name;
     std::transform(filename.begin(), filename.end(), filename.begin(), ::tolower);
 

@@ -130,7 +130,7 @@ void ArenaFight() {
     std::string v1 = pFontArrus->FitTextInAWindow(
         localization->GetString(LSTR_PLEASE_WAIT_WHILE_I_SUMMON), window.uFrameWidth,
         13);
-    pDialogueWindow->DrawText(pFontArrus, {13, 354 - v0}, 0, v1, 0, 0, 0);
+    pDialogueWindow->DrawText(pFontArrus, {13, 354 - v0}, Color(), v1, 0, 0, Color());
     render->Present();
     pParty->vPosition.x = 3849;
     pParty->vPosition.y = 5770;

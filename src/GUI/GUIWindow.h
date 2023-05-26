@@ -57,14 +57,14 @@ class GUIWindow {
     bool Contains(unsigned int x, unsigned int y);
     void DrawFlashingInputCursor(int uX, int uY, GUIFont *a2);
 
-    int DrawTextInRect(GUIFont *font, Pointi position, unsigned int color, const char *text, int rect_width, int reverse_text);
-    int DrawTextInRect(GUIFont *font, Pointi position, unsigned int color, std::string &str, int rect_width, int reverse_text);
+    int DrawTextInRect(GUIFont *font, Pointi position, Color color, const char *text, int rect_width, int reverse_text);
+    int DrawTextInRect(GUIFont *font, Pointi position, Color color, std::string &str, int rect_width, int reverse_text);
 
-    void DrawText(GUIFont *font, Pointi position, uint16_t uFontColor, const char *str, bool present_time_transparency = false, int max_text_height = 0, int uFontShadowColor = 0);
-    void DrawText(GUIFont *font, Pointi position, uint16_t uFontColor, const std::string &str, bool present_time_transparency = false, int max_text_height = 0, int uFontShadowColor = 0);
+    void DrawText(GUIFont *font, Pointi position, Color uFontColor, const char *str, bool present_time_transparency = false, int max_text_height = 0, Color uFontShadowColor = Color());
+    void DrawText(GUIFont *font, Pointi position, Color uFontColor, const std::string &str, bool present_time_transparency = false, int max_text_height = 0, Color uFontShadowColor = Color());
 
-    void DrawTitleText(GUIFont *font, int horizontal_margin, int vertical_margin, uint16_t uDefaultColor, const char *pInString, int line_spacing);
-    void DrawTitleText(GUIFont *font, int horizontal_margin, int vertical_margin, uint16_t uDefaultColor, const std::string &str, int line_spacing);
+    void DrawTitleText(GUIFont *font, int horizontal_margin, int vertical_margin, Color uDefaultColor, const char *pInString, int line_spacing);
+    void DrawTitleText(GUIFont *font, int horizontal_margin, int vertical_margin, Color uDefaultColor, const std::string &str, int line_spacing);
 
     void DrawShops_next_generation_time_string(GameTime time);
     void DrawMessageBox(bool inside_game_viewport);
@@ -335,7 +335,7 @@ void CharacterUI_ReleaseButtons();
 /**
  * @offset 0x417AD4
  */
-unsigned int GetSkillColor(PLAYER_CLASS_TYPE uPlayerClass, PLAYER_SKILL_TYPE uPlayerSkillType, PLAYER_SKILL_MASTERY skill_mastery);
+Color GetSkillColor(PLAYER_CLASS_TYPE uPlayerClass, PLAYER_SKILL_TYPE uPlayerSkillType, PLAYER_SKILL_MASTERY skill_mastery);
 
 void DrawSpellDescriptionPopup(int spell_index_in_book);
 
@@ -345,9 +345,9 @@ void DrawPopupWindow(unsigned int uX, unsigned int uY, unsigned int uWidth,
                      unsigned int uHeight);  // idb
 void DrawMM7CopyrightWindow();
 void GUI_UpdateWindows();
-int GetConditionDrawColor(Condition uConditionIdx);  // idb
+Color GetConditionDrawColor(Condition uConditionIdx);  // idb
 void Inventory_ItemPopupAndAlchemy();
-unsigned int UI_GetHealthManaAndOtherQualitiesStringColor(int current_pos,
+Color UI_GetHealthManaAndOtherQualitiesStringColor(int current_pos,
                                                           int base_pos);
 unsigned int GetSizeInInventorySlots(unsigned int uNumPixels);
 class GUIButton *GUI_HandleHotkey(PlatformKey hotkey);
@@ -406,59 +406,59 @@ extern bool bGameOverWindowCheckExit;
 //extern GUIWindow *pGUIWindow_EscMessageWindow;
 extern GUIWindow *pGUIWindow_BranchlessDialogue;
 
-extern unsigned int ui_mainmenu_copyright_color;
-extern unsigned int ui_character_tooltip_header_default_color;
-extern unsigned int ui_character_default_text_color;
-extern unsigned int ui_character_skill_highlight_color;
-extern unsigned int ui_character_header_text_color;
-extern unsigned int ui_character_bonus_text_color;
-extern unsigned int ui_character_bonus_text_color_neg;
-extern unsigned int ui_character_skill_upgradeable_color;
-extern unsigned int ui_character_skill_default_color;
-extern unsigned int ui_character_stat_default_color;
-extern unsigned int ui_character_stat_buffed_color;
-extern unsigned int ui_character_stat_debuffed_color;
-extern unsigned int ui_character_skillinfo_can_learn;
-extern unsigned int ui_character_skillinfo_can_learn_gm;
-extern unsigned int ui_character_skillinfo_cant_learn;
-extern unsigned int ui_character_condition_normal_color;
-extern unsigned int ui_character_condition_light_color;
-extern unsigned int ui_character_condition_moderate_color;
-extern unsigned int ui_character_condition_severe_color;
-extern std::array<unsigned int, 6> ui_character_award_color;
-extern unsigned int ui_game_minimap_outline_color;
-extern unsigned int ui_game_minimap_actor_friendly_color;
-extern unsigned int ui_game_minimap_actor_hostile_color;
-extern unsigned int ui_game_minimap_actor_corpse_color;
-extern unsigned int ui_game_minimap_decoration_color_1;
-extern unsigned int ui_game_minimap_projectile_color;
-extern unsigned int ui_game_minimap_treasure_color;
-extern std::array<unsigned int, 24> ui_game_character_record_playerbuff_colors;
-extern unsigned int ui_gamemenu_video_gamma_title_color;
-extern unsigned int ui_gamemenu_keys_action_name_color;
-extern unsigned int ui_gamemenu_keys_key_selection_blink_color_1;
-extern unsigned int ui_gamemenu_keys_key_selection_blink_color_2;
-extern unsigned int ui_gamemenu_keys_key_default_color;
-extern unsigned int ui_book_quests_title_color;
-extern unsigned int ui_book_quests_text_color;
-extern unsigned int ui_book_autonotes_title_color;
-extern unsigned int ui_book_autonotes_text_color;
-extern unsigned int ui_book_map_title_color;
-extern unsigned int ui_book_map_coordinates_color;
-extern unsigned int ui_book_calendar_title_color;
-extern unsigned int ui_book_calendar_time_color;
-extern unsigned int ui_book_calendar_day_color;
-extern unsigned int ui_book_calendar_month_color;
-extern unsigned int ui_book_calendar_year_color;
-extern unsigned int ui_book_calendar_moon_color;
-extern unsigned int ui_book_calendar_location_color;
-extern unsigned int ui_book_journal_title_color;
-extern unsigned int ui_book_journal_text_color;
-extern unsigned int ui_book_journal_text_shadow;
-extern unsigned int ui_game_dialogue_npc_name_color;
-extern unsigned int ui_game_dialogue_option_highlight_color;
-extern unsigned int ui_game_dialogue_option_normal_color;
-extern unsigned int ui_house_player_cant_interact_color;
+extern Color ui_mainmenu_copyright_color;
+extern Color ui_character_tooltip_header_default_color;
+extern Color ui_character_default_text_color;
+extern Color ui_character_skill_highlight_color;
+extern Color ui_character_header_text_color;
+extern Color ui_character_bonus_text_color;
+extern Color ui_character_bonus_text_color_neg;
+extern Color ui_character_skill_upgradeable_color;
+extern Color ui_character_skill_default_color;
+extern Color ui_character_stat_default_color;
+extern Color ui_character_stat_buffed_color;
+extern Color ui_character_stat_debuffed_color;
+extern Color ui_character_skillinfo_can_learn;
+extern Color ui_character_skillinfo_can_learn_gm;
+extern Color ui_character_skillinfo_cant_learn;
+extern Color ui_character_condition_normal_color;
+extern Color ui_character_condition_light_color;
+extern Color ui_character_condition_moderate_color;
+extern Color ui_character_condition_severe_color;
+extern std::array<Color, 6> ui_character_award_color;
+extern Color ui_game_minimap_outline_color;
+extern Color ui_game_minimap_actor_friendly_color;
+extern Color ui_game_minimap_actor_hostile_color;
+extern Color ui_game_minimap_actor_corpse_color;
+extern Color ui_game_minimap_decoration_color_1;
+extern Color ui_game_minimap_projectile_color;
+extern Color ui_game_minimap_treasure_color;
+extern std::array<Color, 24> ui_game_character_record_playerbuff_colors;
+extern Color ui_gamemenu_video_gamma_title_color;
+extern Color ui_gamemenu_keys_action_name_color;
+extern Color ui_gamemenu_keys_key_selection_blink_color_1;
+extern Color ui_gamemenu_keys_key_selection_blink_color_2;
+extern Color ui_gamemenu_keys_key_default_color;
+extern Color ui_book_quests_title_color;
+extern Color ui_book_quests_text_color;
+extern Color ui_book_autonotes_title_color;
+extern Color ui_book_autonotes_text_color;
+extern Color ui_book_map_title_color;
+extern Color ui_book_map_coordinates_color;
+extern Color ui_book_calendar_title_color;
+extern Color ui_book_calendar_time_color;
+extern Color ui_book_calendar_day_color;
+extern Color ui_book_calendar_month_color;
+extern Color ui_book_calendar_year_color;
+extern Color ui_book_calendar_moon_color;
+extern Color ui_book_calendar_location_color;
+extern Color ui_book_journal_title_color;
+extern Color ui_book_journal_text_color;
+extern Color ui_book_journal_text_shadow;
+extern Color ui_game_dialogue_npc_name_color;
+extern Color ui_game_dialogue_option_highlight_color;
+extern Color ui_game_dialogue_option_normal_color;
+extern Color ui_house_player_cant_interact_color;
 
 class Image;
 extern Image *ui_exit_cancel_button_background;

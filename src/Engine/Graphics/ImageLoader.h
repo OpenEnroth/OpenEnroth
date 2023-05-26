@@ -4,8 +4,9 @@
 
 #include "Engine/LOD.h"
 #include "Engine/EngineIocContainer.h"
-
 #include "Engine/Graphics/Image.h"
+
+#include "Library/Color/Color.h"
 
 class ImageLoader {
  public:
@@ -43,7 +44,7 @@ class Paletted_Img_Loader : public ImageLoader {
 class ColorKey_LOD_Loader : public ImageLoader {
  public:
     inline ColorKey_LOD_Loader(LODFile_IconsBitmaps *lod,
-                               const std::string &filename, uint16_t colorkey) {
+                               const std::string &filename, Color colorkey) {
         this->resource_name = filename;
         this->colorkey = colorkey;
         this->lod = lod;
@@ -53,7 +54,7 @@ class ColorKey_LOD_Loader : public ImageLoader {
                       IMAGE_FORMAT *format, void **out_palette, void **out_pallettepixels = nullptr) override;
 
  protected:
-    uint16_t colorkey;
+    Color colorkey;
     LODFile_IconsBitmaps *lod;
 };
 
