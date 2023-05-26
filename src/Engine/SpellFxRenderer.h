@@ -1,12 +1,12 @@
 #pragma once
 
-#include <Utility/Color.h>
-
 #include <array>
 #include <memory>
 #include <cstdint>
 
 #include "Engine/Spells/Spells.h"
+
+#include "Library/Color/Color.h"
 
 class Actor;
 class Texture;

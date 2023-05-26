@@ -7,7 +7,7 @@
 #include "Engine/LOD.h"
 #include "Engine/OurMath.h"
 
-#include "Utility/Color.h"
+#include "Library/Color/Color.h"
 #include "Utility/Format.h"
 
 PaletteManager *pPaletteManager = new PaletteManager;

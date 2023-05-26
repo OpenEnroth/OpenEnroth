@@ -8,6 +8,6 @@ set(ACROMAGE_HEADERS
         Arcomage.h)
 
 add_library(arcomage STATIC ${ACROMAGE_SOURCES} ${ACROMAGE_HEADERS})
-target_link_libraries(arcomage utility engine gui media)
+target_link_libraries(arcomage utility engine gui media library_color)
 
 target_check_style(arcomage)

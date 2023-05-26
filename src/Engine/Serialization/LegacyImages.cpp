@@ -26,7 +26,7 @@
 
 #include "GUI/GUIFont.h"
 
-#include "Utility/Color.h"
+#include "Library/Color/Color.h"
 #include "Utility/Memory/MemSet.h"
 #include "Utility/IndexedBitset.h"
 

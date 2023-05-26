@@ -9,7 +9,7 @@
 #include "Engine/Graphics/Texture.h"
 #include "Engine/OurMath.h"
 #include "Application/GameConfig.h"
-#include "Utility/Color.h"
+#include "Library/Color/Color.h"
 #include "Utility/Geometry/Rect.h"
 
 class Sprite;
