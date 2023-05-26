@@ -81,7 +81,7 @@ set(ENGINE_GRAPHICS_HEADERS
 add_library(engine_graphics STATIC ${ENGINE_GRAPHICS_SOURCES} ${ENGINE_GRAPHICS_HEADERS})
 target_check_style(engine_graphics)
 
-target_link_libraries(engine_graphics libluajit glad nuklear utility library_serialization)
+target_link_libraries(engine_graphics libluajit glad nuklear utility library_serialization library_color)
 if (NOT BUILD_PLATFORM STREQUAL "android")
     find_package(OpenGL REQUIRED)
     target_link_libraries(engine_graphics ${OPENGL_opengl_LIBRARY})

@@ -1,7 +1,6 @@
 cmake_minimum_required(VERSION 3.20.4 FATAL_ERROR)
 
 set(UTILITY_SOURCES
-        Color.cpp
         DataPath.cpp
         Exception.cpp
         FileSystem.cpp
@@ -16,7 +15,6 @@ set(UTILITY_SOURCES
         String.cpp)
 
 set(UTILITY_HEADERS
-        Color.h
         DataPath.h
         Embedded.h
         Exception.h

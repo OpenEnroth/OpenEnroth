@@ -3,7 +3,7 @@
 #include <string>
 #include <unordered_map>
 
-#include "Utility/Color.h"
+#include "Library/Color/Color.h"
 
 class Image;
 class Texture;
