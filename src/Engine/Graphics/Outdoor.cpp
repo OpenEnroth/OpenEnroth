@@ -1314,7 +1314,7 @@ void OutdoorLocation::PrepareActorsDrawList() {
         if (uNumBillboardsToDraw >= 500) return;
 
         // view culling
-        if (uCurrentlyLoadedLevelType == LEVEL_Indoor) {
+        if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
             bool onlist = false;
             for (uint j = 0; j < pBspRenderer->uNumVisibleNotEmptySectors; j++) {
                 if (pBspRenderer->pVisibleSectorIDs_toDrawDecorsActorsEtcFrom[j] == pActors[i].uSectorID) {

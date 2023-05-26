@@ -900,7 +900,7 @@ void eventCastSpell(SPELL_TYPE uSpellID, PLAYER_SKILL_MASTERY skillMastery, PLAY
             pAudioPlayer->playSpellSound(uSpellID, PID(OBJECT_Item, spriteid));
             break;
         case SPELL_EARTH_DEATH_BLOSSOM:
-            if (uCurrentlyLoadedLevelType == LEVEL_Indoor) {
+            if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
                 return;
             }
             spell_sprites.spell_target_pid = 4;
@@ -1087,7 +1087,7 @@ int CalcSpellDamage(SPELL_TYPE uSpellID, PLAYER_SKILL_LEVEL spellLevel, PLAYER_S
 }
 
 void armageddonProgress() {
-    assert(uCurrentlyLoadedLevelType == LEVEL_Outdoor && pParty->armageddon_timer > 0);
+    assert(uCurrentlyLoadedLevelType == LEVEL_OUTDOOR && pParty->armageddon_timer > 0);
 
     if (pParty->armageddon_timer > 417) {
         pParty->armageddon_timer = 0;

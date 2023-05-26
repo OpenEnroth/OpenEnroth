@@ -1150,9 +1150,9 @@ bool RenderOpenGL::AreRenderSurfacesOk() {
 uint32_t *RenderOpenGL::MakeScreenshot32(const int width, const int height) {
     BeginScene3D();
 
-    if (uCurrentlyLoadedLevelType == LEVEL_Indoor) {
+    if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
         pIndoor->Draw();
-    } else if (uCurrentlyLoadedLevelType == LEVEL_Outdoor) {
+    } else if (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR) {
         pOutdoor->Draw();
     }
 
@@ -1167,7 +1167,7 @@ uint32_t *RenderOpenGL::MakeScreenshot32(const int width, const int height) {
     memset(pPixels, 0, sizeof(uint32_t) * height * width);
 
     uint32_t *for_pixels = pPixels;
-    if (uCurrentlyLoadedLevelType == LEVEL_null) {
+    if (uCurrentlyLoadedLevelType == LEVEL_NULL) {
         memset(&for_pixels, 0, sizeof(for_pixels));
     } else {
         for (uint y = 0; y < (unsigned int)height; ++y) {
@@ -2314,7 +2314,7 @@ void RenderOpenGL::DrawOutdoorSky() {
 
     pSkyPolygon.texture = pOutdoor->sky_texture;
     if (pSkyPolygon.texture) {
-        pSkyPolygon.dimming_level = (uCurrentlyLoadedLevelType == LEVEL_Outdoor)? 31 : 0;
+        pSkyPolygon.dimming_level = (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR)? 31 : 0;
         pSkyPolygon.uNumVertices = 4;
 
         // centering(центруем)-----------------------------------------------------------------
@@ -2620,7 +2620,7 @@ void RenderOpenGL::DrawForcePerVerts() {
     int fpfogmiddle{};
     uint fpfogcol{ GetLevelFogColor() };
 
-    if (engine->config->graphics.Fog.value() && uCurrentlyLoadedLevelType == LEVEL_Outdoor) {
+    if (engine->config->graphics.Fog.value() && uCurrentlyLoadedLevelType == LEVEL_OUTDOOR) {
         if (fpfogcol) {
             fpfogstart = day_fogrange_1;
             fpfogmiddle = day_fogrange_2;
@@ -2683,7 +2683,7 @@ void RenderOpenGL::DrawForcePerVerts() {
 void RenderOpenGL::SetFogParametersGL() {
     uint fogcol{ GetLevelFogColor() };
 
-    if (engine->config->graphics.Fog.value() && uCurrentlyLoadedLevelType == LEVEL_Outdoor) {
+    if (engine->config->graphics.Fog.value() && uCurrentlyLoadedLevelType == LEVEL_OUTDOOR) {
         if (fogcol) {
             fogstart = day_fogrange_1;
             fogmiddle = day_fogrange_2;

@@ -159,9 +159,9 @@ void Engine::Draw() {
                 render->hd_water_current_frame = floorf(v2 + 0.5f);
             }
 
-            if (uCurrentlyLoadedLevelType == LEVEL_Indoor)
+            if (uCurrentlyLoadedLevelType == LEVEL_INDOOR)
                 pIndoor->Draw();
-            else if (uCurrentlyLoadedLevelType == LEVEL_Outdoor)
+            else if (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR)
                 pOutdoor->Draw();
             else
                 Error("Invalid level type: %u", uCurrentlyLoadedLevelType);
@@ -231,7 +231,7 @@ void Engine::DrawGUI() {
     static uint framerate_time_elapsed = 0;
 
     if (current_screen_type == CURRENT_SCREEN::SCREEN_GAME &&
-        uCurrentlyLoadedLevelType == LEVEL_Outdoor)
+        uCurrentlyLoadedLevelType == LEVEL_OUTDOOR)
         pWeather->Draw();  // Ritor1: my include
 
     if (current_screen_type != CURRENT_SCREEN::SCREEN_GAME) {
@@ -266,7 +266,7 @@ void Engine::DrawGUI() {
         pPrimaryWindow->DrawText(pFontArrus, {16, debug_info_offset + 16}, colorTable.White.c16(),
                                  fmt::format("Party position:         {} {} {}", pParty->vPosition.x, pParty->vPosition.y, pParty->vPosition.z), 0, 0, 0);
 
-        if (uCurrentlyLoadedLevelType == LEVEL_Indoor) {
+        if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
             debug_info_offset += 16;
             int sector_id = pBLVRenderParams->uPartySectorID;
             pPrimaryWindow->DrawText(pFontArrus, { 16, debug_info_offset + 16 }, colorTable.White.c16(),
@@ -277,12 +277,12 @@ void Engine::DrawGUI() {
 
         if (uGameState == GAME_STATE_CHANGE_LOCATION) {
             floor_level_str = "Loading Level!";
-        } else if (uCurrentlyLoadedLevelType == LEVEL_Indoor) {
+        } else if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
             uint uFaceID;
             int sector_id = pBLVRenderParams->uPartySectorID;
             int floor_level = BLV_GetFloorLevel(pParty->vPosition/* + Vec3i(0,0,40) */, sector_id, &uFaceID);
             floor_level_str = fmt::format("BLV_GetFloorLevel: {}   face_id {}\n", floor_level, uFaceID);
-        } else if (uCurrentlyLoadedLevelType == LEVEL_Outdoor) {
+        } else if (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR) {
             bool on_water = false;
             int bmodel_pid;
             int floor_level = ODM_GetFloorLevel(pParty->vPosition, 0, &on_water, &bmodel_pid, false);
@@ -320,7 +320,7 @@ void Engine::PushStationaryLights(int a2) {
 void Engine::StackPartyTorchLight() {
     int TorchLightDistance = engine->config->graphics.TorchlightDistance.value();
     // TODO(pskelton): set this on level load
-    if (uCurrentlyLoadedLevelType == LEVEL_Outdoor) TorchLightDistance = 1024;
+    if (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR) TorchLightDistance = 1024;
     if (TorchLightDistance > 0) {  // lightspot around party
         if (pParty->TorchlightActive()) {
             // max is 800 * torchlight
@@ -348,7 +348,7 @@ void Engine::StackPartyTorchLight() {
 
         // TODO(pskelton): move this
         // if outdoors and its day turn off
-        if (uCurrentlyLoadedLevelType == LEVEL_Outdoor && !pWeather->bNight)
+        if (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR && !pWeather->bNight)
             TorchLightDistance = 0;
 
         pParty->TorchLightLastIntensity = TorchLightDistance;
@@ -412,11 +412,11 @@ bool Engine::_44EEA7() {  // cursor picking - particle update
     // decal_builder->curent_decal_id = 0;
     decal_builder->bloodsplat_container->uNumBloodsplats = 0;
 
-    if (/*render->pRenderD3D &&*/ uCurrentlyLoadedLevelType == LEVEL_Outdoor)
+    if (/*render->pRenderD3D &&*/ uCurrentlyLoadedLevelType == LEVEL_OUTDOOR)
         render->uFogColor = GetLevelFogColor() & colorTable.White.c32();
     // if (uFlags & GAME_FLAGS_1_400)
     //    engine->config->SetForceRedraw(true);
-    /*if ( !render->pRenderD3D && uCurrentlyLoadedLevelType == LEVEL_Outdoor &&
+    /*if ( !render->pRenderD3D && uCurrentlyLoadedLevelType == LEVEL_OUTDOOR &&
     pMobileLightsStack->uNumLightsActive )
     {
     uFlags2 |= 0x01;
@@ -705,13 +705,13 @@ void Engine::OutlineSelection() {
             }
 
             case VisObjectType_Face: {
-                if (uCurrentlyLoadedLevelType == LEVEL_Outdoor) {
+                if (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR) {
                     ODMFace *face = std::get<ODMFace *>(object_info->object);
                     if (face->uAttributes & FACE_OUTLINED)
                         face->uAttributes &= ~FACE_OUTLINED;
                     else
                         face->uAttributes |= FACE_OUTLINED;
-                } else if (uCurrentlyLoadedLevelType == LEVEL_Indoor) {
+                } else if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
                     BLVFace *face = std::get<BLVFace *>(object_info->object);
                     if (face->uAttributes & FACE_OUTLINED)
                         face->uAttributes &= ~FACE_OUTLINED;
@@ -745,9 +745,9 @@ void UpdateUserInput_and_MapSpecificStuff() {
         return;
     }
 
-    if (uCurrentlyLoadedLevelType == LEVEL_Indoor)
+    if (uCurrentlyLoadedLevelType == LEVEL_INDOOR)
         BLV_UpdateUserInputAndOther();
-    else if (uCurrentlyLoadedLevelType == LEVEL_Outdoor)
+    else if (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR)
         ODM_UpdateUserInputAndOther();
 
     evaluateAoeDamage();
@@ -1088,7 +1088,7 @@ void MM6_Initialize() {
 
 //----- (004666D5) --------------------------------------------------------
 void MM7Initialization() {
-    if (uCurrentlyLoadedLevelType == LEVEL_Outdoor) {
+    if (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR) {
         pODMRenderParams->shading_dist_shade = 2048;
         pODMRenderParams->terrain_gamma = 0;
         pODMRenderParams->building_gamme = 0;
@@ -1117,7 +1117,7 @@ void MM7Initialization() {
 //----- (004610AA) --------------------------------------------------------
 void PrepareToLoadODM(bool bLoading, ODMRenderParams *a2) {
     pGameLoadingUI_ProgressBar->Reset(27);
-    uCurrentlyLoadedLevelType = LEVEL_Outdoor;
+    uCurrentlyLoadedLevelType = LEVEL_OUTDOOR;
 
     ODM_LoadAndInitialize(pCurrentMapName, a2);
     if (!bLoading)
@@ -1142,13 +1142,13 @@ void Engine::ResetCursor_Palettes_LODs_Level_Audio_SFT_Windows() {
     pSprites_LOD->DeleteSomeOtherSprites();
     pIcons_LOD->ReleaseAll2();
 
-    if (uCurrentlyLoadedLevelType == LEVEL_Indoor)
+    if (uCurrentlyLoadedLevelType == LEVEL_INDOOR)
         pIndoor->Release();
-    else if (uCurrentlyLoadedLevelType == LEVEL_Outdoor)
+    else if (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR)
         pOutdoor->Release();
 
     pAudioPlayer->stopSounds();
-    uCurrentlyLoadedLevelType = LEVEL_null;
+    uCurrentlyLoadedLevelType = LEVEL_NULL;
     pSpriteFrameTable->ResetLoadedFlags();
     pParty->armageddon_timer = 0;
 
@@ -1331,7 +1331,7 @@ void setTexture(unsigned int uFaceCog, const std::string &pFilename) {
             // pBitmaps_LOD->pTextures[texture].palette_id2 =
             // pPaletteManager->LoadPalette(pBitmaps_LOD->pTextures[texture].palette_id1);
 
-            if (uCurrentlyLoadedLevelType == LEVEL_Indoor) {
+            if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
                 sub_44861E_set_texture_indoor(uFaceCog, pFilename);
             } else {
                 sub_44861E_set_texture_outdoor(uFaceCog, pFilename);
@@ -1344,7 +1344,7 @@ void setTexture(unsigned int uFaceCog, const std::string &pFilename) {
 
 void setFacesBit(int sCogNumber, FaceAttribute bit, int on) {
     if (sCogNumber) {
-        if (uCurrentlyLoadedLevelType == LEVEL_Indoor) {
+        if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
             for (uint i = 1; i < (unsigned int)pIndoor->pFaceExtras.size(); ++i) {
                 if (pIndoor->pFaceExtras[i].sCogNumber == sCogNumber) {
                     if (on)
@@ -1454,7 +1454,7 @@ void _494035_timed_effects__water_walking_damage__etc() {
                 }
             }
         }
-        if (uCurrentlyLoadedLevelType == LEVEL_Outdoor) pOutdoor->SetFog();
+        if (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR) pOutdoor->SetFog();
 
         for (Player &player : pParty->pPlayers)
             player.uNumDivineInterventionCastsThisDay = 0;

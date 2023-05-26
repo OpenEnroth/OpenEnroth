@@ -54,7 +54,7 @@ Vis_ObjectInfo *Vis::DetermineFacetIntersection(BLVFace *face, unsigned int pid,
             static_DetermineFacetIntersection_array_F8F200[i].flt_2C = 0.0f;
     }
 
-    if (uCurrentlyLoadedLevelType == LEVEL_Indoor) {
+    if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
         if ((signed int)face->uNumVertices > 0) {
             for (int i = 0; i < face->uNumVertices; i++) {
                 static_DetermineFacetIntersection_array_F8F200[i]
@@ -68,7 +68,7 @@ Vis_ObjectInfo *Vis::DetermineFacetIntersection(BLVFace *face, unsigned int pid,
                     (float)pIndoor->pVertices[face->pVertexIDs[i]].z;
             }
         }
-    } else if (uCurrentlyLoadedLevelType == LEVEL_Outdoor) {
+    } else if (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR) {
         uint bmodel_id = pid >> 9;
         const std::vector<Vec3i> &v = pOutdoor->pBModels[bmodel_id].pVertices;
         for (uint i = 0; i < face->uNumVertices; ++i)
@@ -99,10 +99,10 @@ Vis_ObjectInfo *Vis::DetermineFacetIntersection(BLVFace *face, unsigned int pid,
 
     CastPickRay(pRay, screenspace_center_x, screenspace_center_y, pick_depth);
 
-    if (uCurrentlyLoadedLevelType == LEVEL_Outdoor)
+    if (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR)
         PickOutdoorFaces_Mouse(pick_depth, pRay, &SelectedPointersList,
                                &vis_face_filter, true);
-    else if (uCurrentlyLoadedLevelType == LEVEL_Indoor)
+    else if (uCurrentlyLoadedLevelType == LEVEL_INDOOR)
         PickIndoorFaces_Mouse(pick_depth, pRay, &SelectedPointersList,
                               &vis_face_filter);
     else
@@ -861,9 +861,9 @@ bool Vis::PickKeyboard(float pick_depth, Vis_SelectionList *list,
     list->uSize = 0;
 
     PickBillboards_Keyboard(pick_depth, list, sprite_filter);
-    if (uCurrentlyLoadedLevelType == LEVEL_Indoor)
+    if (uCurrentlyLoadedLevelType == LEVEL_INDOOR)
         PickIndoorFaces_Keyboard(pick_depth, list, face_filter);
-    else if (uCurrentlyLoadedLevelType == LEVEL_Outdoor)
+    else if (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR)
         PickOutdoorFaces_Keyboard(pick_depth, list, face_filter);
     else
         assert(false);
@@ -889,9 +889,9 @@ bool Vis::PickMouse(float fDepth, float fMouseX, float fMouseY,
 
     PickBillboards_Mouse(fDepth, fMouseX, fMouseY, &default_list, sprite_filter);
 
-    if (uCurrentlyLoadedLevelType == LEVEL_Indoor) {
+    if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
         PickIndoorFaces_Mouse(fDepth, pMouseRay, &default_list, face_filter);
-    } else if (uCurrentlyLoadedLevelType == LEVEL_Outdoor) {
+    } else if (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR) {
         PickOutdoorFaces_Mouse(fDepth, pMouseRay, &default_list, face_filter, false);
     } else {
         log->warning("Picking mouse in undefined level");  // picking in main menu is
@@ -990,11 +990,11 @@ bool Vis::is_part_of_selection(const Vis_Object &what, Vis_SelectionFilter *filt
         case VisObjectType_Face: {
             FaceAttributes face_attrib;
             bool no_event = true;
-            if (uCurrentlyLoadedLevelType == LEVEL_Outdoor) {
+            if (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR) {
                 ODMFace *face = std::get<ODMFace *>(what);
                 no_event = face->sCogTriggeredID == 0;
                 face_attrib = face->uAttributes;
-            } else if (uCurrentlyLoadedLevelType == LEVEL_Indoor) {
+            } else if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
                 BLVFace *face = std::get<BLVFace *>(what);
                 no_event = pIndoor->pFaceExtras[face->uFaceExtraID].uEventID == 0;
                 face_attrib = face->uAttributes;
@@ -1044,7 +1044,7 @@ bool Vis::DoesRayIntersectBillboard(float fDepth, unsigned int uD3DBillboardIdx)
     // why check parent id billboardId? parent ID are wrong becasue of switching between pBillboardRenderListD3D and pBillboardRenderList
 
     CastPickRay(pPickingRay, test_x, test_y, fDepth);
-    if (uCurrentlyLoadedLevelType == LEVEL_Indoor)
+    if (uCurrentlyLoadedLevelType == LEVEL_INDOOR)
         PickIndoorFaces_Mouse(fDepth, pPickingRay, &Vis_static_stru_F91E10, &vis_face_filter);
     else
         PickOutdoorFaces_Mouse(fDepth, pPickingRay, &Vis_static_stru_F91E10, &vis_face_filter, false);
@@ -1067,7 +1067,7 @@ bool Vis::DoesRayIntersectBillboard(float fDepth, unsigned int uD3DBillboardIdx)
         if ((double)(pViewport->uScreen_TL_X) <= test_x && (double)pViewport->uScreen_BR_X >= test_x &&
             (double)pViewport->uScreen_TL_Y <= test_y && (double)pViewport->uScreen_BR_Y >= test_y) {
             CastPickRay(local_80, test_x, test_y, fDepth);
-            if (uCurrentlyLoadedLevelType == LEVEL_Indoor) {
+            if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
                 PickIndoorFaces_Mouse(fDepth, local_80, &Vis_static_stru_F91E10, &vis_face_filter);
             } else {
                 PickOutdoorFaces_Mouse(fDepth, local_80, &Vis_static_stru_F91E10, &vis_face_filter, false);
@@ -1084,7 +1084,7 @@ bool Vis::DoesRayIntersectBillboard(float fDepth, unsigned int uD3DBillboardIdx)
     }
 
     // reverse quad and test center
-    // if (uCurrentlyLoadedLevelType != LEVEL_Outdoor) return false;
+    // if (uCurrentlyLoadedLevelType != LEVEL_OUTDOOR) return false;
     t1_x = render->pBillboardRenderListD3D[uD3DBillboardIdx].pQuads[0].pos.x;
     t2_x = render->pBillboardRenderListD3D[uD3DBillboardIdx].pQuads[3].pos.x;
 
@@ -1104,7 +1104,7 @@ bool Vis::DoesRayIntersectBillboard(float fDepth, unsigned int uD3DBillboardIdx)
     if ((double)(pViewport->uScreen_TL_X) <= test_x && (double)pViewport->uScreen_BR_X >= test_x &&
         (double)pViewport->uScreen_TL_Y <= test_y && (double)pViewport->uScreen_BR_Y >= test_y) {
         CastPickRay(local_80, test_x, test_y, fDepth);
-        if (uCurrentlyLoadedLevelType == LEVEL_Indoor) {
+        if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
             PickIndoorFaces_Mouse(fDepth, local_80, &Vis_static_stru_F91E10, &vis_face_filter);
         } else {
             PickOutdoorFaces_Mouse(fDepth, local_80, &Vis_static_stru_F91E10, &vis_face_filter, false);

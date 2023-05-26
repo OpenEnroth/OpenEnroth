@@ -158,7 +158,7 @@ void DrawBook_Map_sub(unsigned int tl_x, unsigned int tl_y, unsigned int br_x, i
         pCenterY = viewparams->indoor_center_y;
     }
 
-    if (uCurrentlyLoadedLevelType != LEVEL_Indoor) {  // outdoors
+    if (uCurrentlyLoadedLevelType != LEVEL_INDOOR) {  // outdoors
         int screenWidth = br_x - tl_x + 1;
         int screenHeight = br_y - tl_y + 1;
 
@@ -327,7 +327,7 @@ std::string GetMapBookHintText(int mouse_x, int mouse_y) {
     int map_tile_X = abs(global_coord_X + 22528) / 512;
     int map_tile_Y = abs(global_coord_Y - 22528) / 512;
     if (pOutdoor->IsMapCellFullyRevealed(map_tile_X, map_tile_Y) &&
-        uCurrentlyLoadedLevelType == LEVEL_Outdoor &&
+        uCurrentlyLoadedLevelType == LEVEL_OUTDOOR &&
         !pOutdoor->pBModels.empty()) {
         for (BSPModel &model : pOutdoor->pBModels) {
             if (int_get_vector_length(
