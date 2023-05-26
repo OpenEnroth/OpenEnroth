@@ -800,6 +800,7 @@ void DoPrepareWorld(bool bLoading, int _1_fullscreen_loading_2_box) {
     else
         PrepareToLoadODM(bLoading, 0);
 
+    pNPCStats->setNPCNamesOnLoad();
     engine->_461103_load_level_sub();
     if ((pCurrentMapName == "d11.blv") ||
         (pCurrentMapName == "d10.blv")) {

@@ -213,8 +213,7 @@ void NPCStats::InitializeNPCText() {
     pNPCDistTXT_Raw.clear();
 }
 
-//----- (00476C60) --------------------------------------------------------
-void NPCStats::OnLoadSetNPC_Names() {
+void NPCStats::setNPCNamesOnLoad() {
     for (unsigned int i = 1; i < uNumNewNPCs; ++i)
         pNewNPCData[i].pName = pNPCUnicNames[i - 1];
 
