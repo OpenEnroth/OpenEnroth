@@ -679,7 +679,7 @@ void RenderBase::DrawMasked(float u, float v, Image *pTexture, unsigned int colo
     int b = ((mask >> 16) & 0xFF) & (0xFF >> color_dimming_level);
     int g = ((mask >> 8) & 0xFF) & (0xFF >> color_dimming_level);
     int r = ((mask) & 0xFF) & (0xFF >> color_dimming_level);
-    mask = color32(r, g, b);
+    mask = Color(r, g, b).c32();
 
     DrawTextureNew(u, v, pTexture, mask);
     return;

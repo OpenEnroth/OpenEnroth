@@ -130,7 +130,7 @@ void TavernDialog() {
                 }
             }
             dialog_window.DrawTitleText(
-                pFontArrus, 0, 146, 0,
+                pFontArrus, 0, 146, Color(),
                 fmt::format("{}\n \n{}\n \n{}\n \n{}", topic1, topic2, topic3, topic4),
                 3);
         }
@@ -150,8 +150,8 @@ void TavernDialog() {
         }
         render->DrawTextureCustomHeight(8 / 640.0f, (352 - pTextHeight) / 480.0f, ui_leather_mm7, pTextHeight);
         render->DrawTextureNew(8 / 640.0f, (347 - pTextHeight) / 480.0f, _591428_endcap);
-        window_SpeakInHouse->DrawText(pOutString, {12, 354 - pTextHeight}, colorTable.Black.c16(),
-            pOutString->FitTextInAWindow(str, dialog_window.uFrameWidth, 12), 0, 0, 0);
+        window_SpeakInHouse->DrawText(pOutString, {12, 354 - pTextHeight}, Color(),
+            pOutString->FitTextInAWindow(str, dialog_window.uFrameWidth, 12), 0, 0, Color());
         break;
     }
 
@@ -169,7 +169,7 @@ void TavernDialog() {
             ui_leather_mm7, pTextHeight);
         render->DrawTextureNew(
             8 / 640.0f, (347 - pTextHeight) / 480.0f, _591428_endcap);
-        window_SpeakInHouse->DrawText(pFontArrus, {12, 354 - pTextHeight}, colorTable.Black.c16(),
+        window_SpeakInHouse->DrawText(pFontArrus, {12, 354 - pTextHeight}, Color(),
             pFontArrus->FitTextInAWindow(label, dialog_window.uFrameWidth, 12));
         break;
     }
@@ -190,7 +190,7 @@ void TavernDialog() {
             (SIDE_TEXT_BOX_BODY_TEXT_HEIGHT - pFontArrus->CalcTextHeight(
                 pText, dialog_window.uFrameWidth, 0)) /
             2 +
-            SIDE_TEXT_BOX_BODY_TEXT_OFFSET, colorTable.PaleCanary.c16(), pText, 3);
+            SIDE_TEXT_BOX_BODY_TEXT_OFFSET, colorTable.PaleCanary, pText, 3);
         break;
     }
     case DIALOGUE_TAVERN_REST:
@@ -291,9 +291,9 @@ void TavernDialog() {
                 pButton->uHeight = pTextHeight;
                 v54 = pButton->uY + pTextHeight - 1;
                 pButton->uW = v54 + 6;
-                int pColorText = colorTable.PaleCanary.c16();
+                Color pColorText = colorTable.PaleCanary;
                 if (pDialogueWindow->pCurrentPosActiveItem != pItemNum)
-                    pColorText = colorTable.White.c16();
+                    pColorText = colorTable.White;
                 dialog_window.DrawTitleText(pFontArrus, 0, pButton->uY,
                     pColorText,
                     pShopOptions[pNumString], 3);

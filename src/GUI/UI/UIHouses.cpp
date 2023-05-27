@@ -1160,7 +1160,7 @@ void TownHallDialog() {
     int v17;                      // ebx@28
     GUIButton *pButton;           // eax@30
     int pTextHeight;              // eax@30
-    uint16_t pTextColor;  // ax@30
+    Color pTextColor;  // ax@30
     int v29;                      // [sp+10Ch] [bp-10h]@28
     int v31;                      // [sp+114h] [bp-8h]@29
     GUIFont *pOutString;          // [sp+118h] [bp-4h]@21
@@ -1171,7 +1171,7 @@ void TownHallDialog() {
     townHall_window.uFrameZ = SIDE_TEXT_BOX_POS_Z;
 
     std::string fine_str = fmt::format("{}: {}", localization->GetString(LSTR_CURRENT_FINE), pParty->uFine);
-    townHall_window.DrawTitleText(pFontArrus, 0, 260, colorTable.PaleCanary.c16(), fine_str, 3);
+    townHall_window.DrawTitleText(pFontArrus, 0, 260, colorTable.PaleCanary, fine_str, 3);
 
     switch (dialog_menu_id) {
     case DIALOGUE_MAIN:
@@ -1203,9 +1203,9 @@ void TownHallDialog() {
                 pButton->uHeight = pTextHeight;
                 v17 = pButton->uY + pTextHeight - 1;
                 pButton->uW = v17 + 6;
-                pTextColor = colorTable.PaleCanary.c16();
+                pTextColor = colorTable.PaleCanary;
                 if (pDialogueWindow->pCurrentPosActiveItem != v31)
-                    pTextColor = colorTable.White.c16();
+                    pTextColor = colorTable.White;
                 townHall_window.DrawTitleText(pFontArrus, 0, pButton->uY, pTextColor, pShopOptions[j], 3);
                 ++v31;
                 ++j;
@@ -1228,15 +1228,15 @@ void TownHallDialog() {
         render->DrawTextureCustomHeight(8 / 640.0f, (352 - pTextHeight) / 480.0f, ui_leather_mm7, pTextHeight);
         render->DrawTextureNew(8 / 640.0f, (347 - pTextHeight) / 480.0f, _591428_endcap);
         // window.DrawText(pOutString, 13, 354 - pTextHeight, 0, pOutString->FitTextInAWindow(current_npc_text, window.uFrameWidth, 13), 0, 0, 0);
-        window.DrawText(pOutString, {13, 354 - pTextHeight}, 0, current_npc_text, 0, 0, 0);
+        window.DrawText(pOutString, {13, 354 - pTextHeight}, Color(), current_npc_text, 0, 0, Color());
         break;
     }
     case DIALOGUE_TOWNHALL_PAY_FINE:
     {
         if (window_SpeakInHouse->keyboard_input_status == WINDOW_INPUT_IN_PROGRESS) {
-            townHall_window.DrawTitleText(pFontArrus, 0, 146, colorTable.PaleCanary.c16(),
+            townHall_window.DrawTitleText(pFontArrus, 0, 146, colorTable.PaleCanary,
                                           fmt::format("{}\n{}", localization->GetString(LSTR_PAY), localization->GetString(LSTR_HOW_MUCH)), 3);
-            townHall_window.DrawTitleText(pFontArrus, 0, 186, colorTable.White.c16(), keyboardInputHandler->GetTextInput().c_str(), 3);
+            townHall_window.DrawTitleText(pFontArrus, 0, 186, colorTable.White, keyboardInputHandler->GetTextInput().c_str(), 3);
             townHall_window.DrawFlashingInputCursor(pFontArrus->GetLineWidth(keyboardInputHandler->GetTextInput().c_str()) / 2 + 80, 185, pFontArrus);
             return;
         } else if (window_SpeakInHouse->keyboard_input_status == WINDOW_INPUT_CONFIRMED) {
@@ -1280,7 +1280,7 @@ void SimpleHouseDialog() {
     int v36;
     signed int all_text_height;   // ecx@54
     int v40;                      // edi@57
-    uint16_t pTextColor;  // ax@60
+    Color pTextColor;  // ax@60
     GUIFont *pTextFont;           // ebx@64
     int pTextHeight;
     GUIWindow w;      // [sp+Ch] [bp-110h]@64
@@ -1291,7 +1291,7 @@ void SimpleHouseDialog() {
         house_window.uFrameX = 493;
         house_window.uFrameWidth = 126;
         house_window.uFrameZ = 366;
-        house_window.DrawTitleText(pFontCreate, 0, 2, 0,
+        house_window.DrawTitleText(pFontCreate, 0, 2, Color(),
             pMapStats->pInfos[uHouse_ExitPic].pName, 3);
         house_window.uFrameX = SIDE_TEXT_BOX_POS_X;
         house_window.uFrameWidth = SIDE_TEXT_BOX_WIDTH;
@@ -1307,7 +1307,7 @@ void SimpleHouseDialog() {
                     str, house_window.uFrameWidth, 0)) /
                 2 +
                 101,
-                0, str, 3);
+                Color(), str, 3);
             return;
         }
 
@@ -1318,14 +1318,14 @@ void SimpleHouseDialog() {
                     house_window.uFrameWidth, 0)) /
             2 +
             101,
-            0, pTransitionStrings[uHouse_ExitPic], 3);
+            Color(), pTransitionStrings[uHouse_ExitPic], 3);
         return;
     }
     house_window.uFrameWidth -= 10;
     house_window.uFrameZ -= 10;
     pNPC = HouseNPCData[pDialogueNPCCount + -(dword_591080 != 0)];  //- 1
 
-    house_window.DrawTitleText(pFontCreate, SIDE_TEXT_BOX_POS_X, SIDE_TEXT_BOX_POS_Y, colorTable.EasternBlue.c16(), NameAndTitle(pNPC), 3);
+    house_window.DrawTitleText(pFontCreate, SIDE_TEXT_BOX_POS_X, SIDE_TEXT_BOX_POS_Y, colorTable.EasternBlue, NameAndTitle(pNPC), 3);
 
     if (!dword_591080) {
         if (uDialogueType == DIALOGUE_NULL) {
@@ -1346,8 +1346,8 @@ void SimpleHouseDialog() {
 
                 int h = (pFontArrus->CalcTextHeight(pInString, house_window.uFrameWidth, 13) + 7);
                 render->DrawTextureNew(8 / 640.0f, (347 - h) / 480.0f, _591428_endcap);
-                pDialogueWindow->DrawText(pFontArrus, {13, 354 - h}, colorTable.Black.c16(),
-                    pFontArrus->FitTextInAWindow(pInString, house_window.uFrameWidth, 13), 0, 0, 0);
+                pDialogueWindow->DrawText(pFontArrus, {13, 354 - h}, Color(),
+                    pFontArrus->FitTextInAWindow(pInString, house_window.uFrameWidth, 13), 0, 0, Color());
             }
         }
     }
@@ -1469,9 +1469,9 @@ void SimpleHouseDialog() {
             pButton->uHeight = pTextHeight;
             v40 = pButton->uY + pTextHeight - 1;
             pButton->uW = v40 + 6;
-            pTextColor = colorTable.Jonquil.c16();
+            pTextColor = colorTable.Jonquil;
             if (pDialogueWindow->pCurrentPosActiveItem != i)
-                pTextColor = colorTable.White.c16();
+                pTextColor = colorTable.White;
             right_panel_window.DrawTitleText(pFontArrus, 0, pButton->uY,
                 pTextColor, pButton->sLabel, 3);
         }
@@ -1493,7 +1493,7 @@ void SimpleHouseDialog() {
             ui_leather_mm7, pTextHeight);
         render->DrawTextureNew(8 / 640.0f, (347 - pTextHeight) / 480.0f,
             _591428_endcap);
-        house_window.DrawText(pTextFont, {13, 354 - pTextHeight}, colorTable.Black.c16(), pTextFont->FitTextInAWindow(current_npc_text, w.uFrameWidth, 13), 0, 0, 0);
+        house_window.DrawText(pTextFont, {13, 354 - pTextHeight}, Color(), pTextFont->FitTextInAWindow(current_npc_text, w.uFrameWidth, 13), 0, 0, Color());
     }
 }
 
@@ -1928,7 +1928,7 @@ void GUIWindow_House::houseDialogManager() {
                 int v3 = 2 * pFontCreate->GetHeight() - 6 - pFontCreate->CalcTextHeight(pHouseName, 130, 0);
                 if (v3 < 0)
                     v3 = 0;
-                pWindow.DrawTitleText(pFontCreate, 0x1EAu, v3 / 2 + 4, colorTable.White.c16(), buildingTable[wData.val - 1].pName, 3);
+                pWindow.DrawTitleText(pFontCreate, 0x1EAu, v3 / 2 + 4, colorTable.White, buildingTable[wData.val - 1].pName, 3);
             }
         }
     }
@@ -1954,7 +1954,7 @@ void GUIWindow_House::houseDialogManager() {
             int v6 = pTextHeight + 7;
             render->DrawTextureCustomHeight(8 / 640.0f, (352 - (pTextHeight + 7)) / 480.0f, ui_leather_mm7, pTextHeight + 7);
             render->DrawTextureNew(8 / 640.0f, (347 - v6) / 480.0f, _591428_endcap);
-            DrawText(pFontArrus, {13, 354 - v6}, 0, pFontArrus->FitTextInAWindow(current_npc_text, pDialogWindow.uFrameWidth, 13), 0, 0, 0);
+            DrawText(pFontArrus, {13, 354 - v6}, Color(), pFontArrus->FitTextInAWindow(current_npc_text, pDialogWindow.uFrameWidth, 13), 0, 0, Color());
         }
         if (uNumDialogueNPCPortraits <= 0) {
             if (pDialogueNPCCount == uNumDialogueNPCPortraits &&
@@ -1981,13 +1981,13 @@ void GUIWindow_House::houseDialogManager() {
                 } else {
                     if (!v8 && dword_591080) {
                         pTitleText = (char*)buildingTable[wData.val - 1].pProprieterTitle;
-                        pWindow.DrawTitleText(pFontCreate, SIDE_TEXT_BOX_POS_X, SIDE_TEXT_BOX_POS_Y, colorTable.EasternBlue.c16(), pTitleText, 3);
+                        pWindow.DrawTitleText(pFontCreate, SIDE_TEXT_BOX_POS_X, SIDE_TEXT_BOX_POS_Y, colorTable.EasternBlue, pTitleText, 3);
                         continue;
                     }
                     pTitleText = HouseNPCData[v8 + 1 - (dword_591080 != 0)]->pName;
                     v9 = pNPCPortraits_y[uNumDialogueNPCPortraits - 1][v8] + pDialogueNPCPortraits[v8]->GetHeight() + 2;
                 }
-                pWindow.DrawTitleText(pFontCreate, SIDE_TEXT_BOX_POS_X, v9, colorTable.EasternBlue.c16(), pTitleText, 3);
+                pWindow.DrawTitleText(pFontCreate, SIDE_TEXT_BOX_POS_X, v9, colorTable.EasternBlue, pTitleText, 3);
             }
         }
         if (pDialogueNPCCount == uNumDialogueNPCPortraits && uHouse_ExitPic) {
@@ -2019,7 +2019,7 @@ void GUIWindow_House::houseDialogManager() {
     } else {
         std::string nameAndTitle = NameAndTitle(buildingTable[wData.val - 1].pProprieterName,
                                                 buildingTable[wData.val - 1].pProprieterTitle);
-        pWindow.DrawTitleText(pFontCreate, SIDE_TEXT_BOX_POS_X, SIDE_TEXT_BOX_POS_Y, colorTable.EasternBlue.c16(), nameAndTitle, 3);
+        pWindow.DrawTitleText(pFontCreate, SIDE_TEXT_BOX_POS_X, SIDE_TEXT_BOX_POS_Y, colorTable.EasternBlue, nameAndTitle, 3);
 
         // TODO(Nik-RE-dev): houseSpecificDialogue must be called without switch
         switch (in_current_building_type) {

@@ -16,7 +16,7 @@
 void TempleDialog() {
     int pPrice;                   // edi@1
     int pTextHeight;              // eax@11
-    uint16_t pTextColor;  // ax@21
+    Color pTextColor;  // ax@21
     LocationInfo *ddm;          // edi@29
     GUIButton *pButton;           // edi@64
     uint8_t index;        // [sp+1B7h] [bp-Dh]@64
@@ -86,9 +86,9 @@ void TempleDialog() {
                 pButton->uHeight = pTextHeight;
                 pButton->uW = pButton->uY + pTextHeight - 1 + 6;
                 all_text_height = pButton->uW;
-                pTextColor = colorTable.PaleCanary.c16();
+                pTextColor = colorTable.PaleCanary;
                 if (pDialogueWindow->pCurrentPosActiveItem != index + 2)
-                    pTextColor = colorTable.White.c16();
+                    pTextColor = colorTable.White;
                 tample_window.DrawTitleText(pFontArrus, 0, pButton->uY,
                     pTextColor, pShopOptions[1 * i], 3);
                 i++;

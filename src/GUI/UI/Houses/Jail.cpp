@@ -13,5 +13,5 @@ void JailDialog() {
         pFontArrus, 0,
         (310 - pFontArrus->CalcTextHeight(localization->GetString(LSTR_ONE_YEAR_SENTENCE),
             jail_dialogue_window.uFrameWidth,
-            0)) / 2 + 18, colorTable.PaleCanary.c16(), localization->GetString(LSTR_ONE_YEAR_SENTENCE), 3);
+            0)) / 2 + 18, colorTable.PaleCanary, localization->GetString(LSTR_ONE_YEAR_SENTENCE), 3);
 }

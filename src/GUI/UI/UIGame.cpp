@@ -235,7 +235,7 @@ void GameUI_ReloadPlayerPortraits(
 }
 
 //----- (00414D24) --------------------------------------------------------
-static unsigned int GameMenuUI_GetKeyBindingColor(InputAction action) {
+static Color GameMenuUI_GetKeyBindingColor(InputAction action) {
     if (currently_selected_action_for_binding == action) {
         // TODO(pskelton): check tickcount usage here
         if (platform->tickCount() % 1000 < 500)
@@ -251,7 +251,7 @@ static unsigned int GameMenuUI_GetKeyBindingColor(InputAction action) {
         else
             intensity = +70 - 70 * time / 800;
 
-        return color16(185 + intensity, 40 + intensity / 4, 40 + intensity / 4);
+        return Color(185 + intensity, 40 + intensity / 4, 40 + intensity / 4);
     }
 
     return ui_gamemenu_keys_key_default_color;
@@ -343,13 +343,13 @@ void GUIWindow_GameKeyBindings::Update() {
 
     for (int i = 0; i < 7; ++i) {
         InputAction action1 = (InputAction)(base_controls_offset + i);
-        pGUIWindow_CurrentMenu->DrawText(pFontLucida, {23, 142 + i * 21}, ui_gamemenu_keys_action_name_color, GetDisplayName(action1).c_str(), 0, 0, 0);
-        pGUIWindow_CurrentMenu->DrawText(pFontLucida, {127, 142 + i * 21}, GameMenuUI_GetKeyBindingColor(action1), GetDisplayName(curr_key_map[action1]), 0, 0, 0);
+        pGUIWindow_CurrentMenu->DrawText(pFontLucida, {23, 142 + i * 21}, ui_gamemenu_keys_action_name_color, GetDisplayName(action1).c_str(), 0, 0, Color());
+        pGUIWindow_CurrentMenu->DrawText(pFontLucida, {127, 142 + i * 21}, GameMenuUI_GetKeyBindingColor(action1), GetDisplayName(curr_key_map[action1]), 0, 0, Color());
 
         int j = i + 7;
         InputAction action2 = (InputAction)(base_controls_offset + j);
-        pGUIWindow_CurrentMenu->DrawText(pFontLucida, {247, 142 + i * 21}, ui_gamemenu_keys_action_name_color, GetDisplayName(action2).c_str(), 0, 0, 0);
-        pGUIWindow_CurrentMenu->DrawText(pFontLucida, {350, 142 + i * 21}, GameMenuUI_GetKeyBindingColor(action2), GetDisplayName(curr_key_map[action2]), 0, 0, 0);
+        pGUIWindow_CurrentMenu->DrawText(pFontLucida, {247, 142 + i * 21}, ui_gamemenu_keys_action_name_color, GetDisplayName(action2).c_str(), 0, 0, Color());
+        pGUIWindow_CurrentMenu->DrawText(pFontLucida, {350, 142 + i * 21}, GameMenuUI_GetKeyBindingColor(action2), GetDisplayName(curr_key_map[action2]), 0, 0, Color());
     }
 }
 
@@ -732,10 +732,10 @@ void GameUI_DrawNPCPopup(void *_this) {  // PopupWindowForBenefitAndJoinText
                     (popup_window.uFrameY + 36) / 480.0f,
                     assets->getImage_ColorKey(tex_name));
 
-                popup_window.DrawTitleText(pFontArrus, 0, 12, colorTable.PaleCanary.c16(), NameAndTitle(pNPC), 3);
+                popup_window.DrawTitleText(pFontArrus, 0, 12, colorTable.PaleCanary, NameAndTitle(pNPC), 3);
                 popup_window.uFrameWidth -= 24;
                 popup_window.uFrameZ = popup_window.uFrameX + popup_window.uFrameWidth - 1;
-                popup_window.DrawText(pFontArrus, {100, 36}, 0, BuildDialogueString((char *)lpsz, pParty->activeCharacterIndex() - 1, 0, 0, 0));
+                popup_window.DrawText(pFontArrus, {100, 36}, Color(), BuildDialogueString((char *)lpsz, pParty->activeCharacterIndex() - 1, 0, 0, 0));
             }
         }
     }
@@ -839,20 +839,20 @@ void GameUI_CharacterQuickRecord_Draw(GUIWindow *window, Player *player) {
 
     // TODO(captainurist): do a 2nd rewrite here
     auto str =
-        fmt::format("\f{:05}", ui_character_header_text_color)
+        fmt::format("\f{:05}", ui_character_header_text_color.c16())
         + NameAndTitle(player->name, player->classType)
         + "\f00000\n"
         + fmt::format("{} : \f{:05}{}\f00000 / {}\n",
                       localization->GetString(LSTR_HIT_POINTS),
-                      UI_GetHealthManaAndOtherQualitiesStringColor(player->health, player->GetMaxHealth()),
+                      UI_GetHealthManaAndOtherQualitiesStringColor(player->health, player->GetMaxHealth()).c16(),
                       player->health, player->GetMaxHealth())
         + fmt::format("{} : \f{:05}{}\f00000 / {}\n",
                       localization->GetString(LSTR_SPELL_POINTS),
-                      UI_GetHealthManaAndOtherQualitiesStringColor(player->mana, player->GetMaxMana()),
+                      UI_GetHealthManaAndOtherQualitiesStringColor(player->mana, player->GetMaxMana()).c16(),
                       player->mana, player->GetMaxMana())
         + fmt::format("{}: \f{:05}{}\f00000\n",
                      localization->GetString(LSTR_CONDITION),
-                     GetConditionDrawColor(player->GetMajorConditionIdx()),
+                     GetConditionDrawColor(player->GetMajorConditionIdx()).c16(),
                      localization->GetCharacterConditionName(player->GetMajorConditionIdx()));
 
     if (player->uQuickSpell != SPELL_NONE)
@@ -862,7 +862,7 @@ void GameUI_CharacterQuickRecord_Draw(GUIWindow *window, Player *player) {
 
     str += fmt::format("{}: {}", localization->GetString(LSTR_QUICK_SPELL), v29);
 
-    window->DrawText(pFontArrus, {120, 22}, 0, str, 0, 0, 0);
+    window->DrawText(pFontArrus, {120, 22}, Color(), str, 0, 0, Color());
 
     uFramesetIDa = 0;
     for (uint i = 0; i < 24; ++i) {
@@ -871,7 +871,7 @@ void GameUI_CharacterQuickRecord_Draw(GUIWindow *window, Player *player) {
             v36 = uFramesetIDa++ * pFontComic->GetHeight() + 134;
             window->DrawText(pFontComic, {52, v36},
                              ui_game_character_record_playerbuff_colors[i],
-                             localization->GetSpellName(20 + i), 0, 0, 0);
+                             localization->GetSpellName(20 + i), 0, 0, Color());
             DrawBuff_remaining_time_string(
                 v36, window, buff->expireTime - pParty->GetPlayingTime(),
                 pFontComic);
@@ -881,7 +881,7 @@ void GameUI_CharacterQuickRecord_Draw(GUIWindow *window, Player *player) {
     auto active_spells = localization->FormatString(
         LSTR_FMT_ACTIVE_SPELLS_S,
         uFramesetIDa == 0 ? localization->GetString(LSTR_NONE) : "");
-    window->DrawText(pFontArrus, {14, 114}, 0, active_spells, 0, 0, 0);
+    window->DrawText(pFontArrus, {14, 114}, Color(), active_spells, 0, 0, Color());
 }
 
 //----- (0041AD6E) --------------------------------------------------------
@@ -1568,7 +1568,7 @@ void GameUI_DrawMinimap(unsigned int uX, unsigned int uY, unsigned int uZ,
     int map_scale;              // [sp+2Ch] [bp-28h]@30
     // signed int pZ;        // [sp+60h] [bp+Ch]@23
     double starty;            // [sp+60h] [bp+Ch]@30
-    unsigned int pColor;
+    Color pColor;
 
     signed int uCenterX = (uX + uZ) / 2;
     signed int uCenterY = (uY + uW) / 2;
@@ -1657,7 +1657,7 @@ void GameUI_DrawMinimap(unsigned int uX, unsigned int uY, unsigned int uZ,
         }
         render->BeginLines2D();
     } else if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
-        render->FillRectFast(uX, uY, uZ - uX, uHeight, colorTable.NavyBlue.c32());
+        render->FillRectFast(uX, uY, uZ - uX, uHeight, colorTable.NavyBlue);
         uNumBlueFacesInBLVMinimap = 0;
         render->BeginLines2D();
         for (uint i = 0; i < (uint)pIndoor->pMapOutlines.size(); ++i) {
@@ -1704,7 +1704,7 @@ void GameUI_DrawMinimap(unsigned int uX, unsigned int uY, unsigned int uZ,
             int pY = uCenterY - ((signed int)(((unsigned int)(fixpoint_mul(uZoom, pIndoor->pVertices[pOutline->uVertex1ID].y)) << 16) - uZoom * pParty->vPosition.y) >> 16);
             int pZ = uCenterX + ((signed int)(((unsigned int)(fixpoint_mul(uZoom, pIndoor->pVertices[pOutline->uVertex2ID].x)) << 16) - uZoom * pParty->vPosition.x) >> 16);
             int pW = uCenterY - ((signed int)(((unsigned int)(fixpoint_mul(uZoom, pIndoor->pVertices[pOutline->uVertex2ID].y)) << 16) - uZoom * pParty->vPosition.y) >> 16);
-            render->RasterLine2D(pX, pY, pZ, pW, color32(ui_game_minimap_outline_color));
+            render->RasterLine2D(pX, pY, pZ, pW, ui_game_minimap_outline_color);
         }
     }
 
@@ -1736,23 +1736,23 @@ void GameUI_DrawMinimap(unsigned int uX, unsigned int uY, unsigned int uZ,
                             .uFlags &
                         OBJECT_DESC_UNPICKABLE) {
                         render->RasterLine2D(pPoint_X, pPoint_Y, pPoint_X + 1,
-                                             pPoint_Y + 1, color32(ui_game_minimap_projectile_color));
+                                             pPoint_Y + 1, ui_game_minimap_projectile_color);
                     } else if (uZoom > 512) {
                         render->RasterLine2D(pPoint_X - 2, pPoint_Y,
-                                             pPoint_X - 2, pPoint_Y + 1 + lineadj, color32(ui_game_minimap_treasure_color));
+                                             pPoint_X - 2, pPoint_Y + 1 + lineadj, ui_game_minimap_treasure_color);
                         render->RasterLine2D(pPoint_X - 1, pPoint_Y - 1,
-                                             pPoint_X - 1, pPoint_Y + 1 + lineadj, color32(ui_game_minimap_treasure_color));
+                                             pPoint_X - 1, pPoint_Y + 1 + lineadj, ui_game_minimap_treasure_color);
                         render->RasterLine2D(pPoint_X, pPoint_Y - 2, pPoint_X,
-                                             pPoint_Y + 1 + lineadj, color32(ui_game_minimap_treasure_color));
+                                             pPoint_Y + 1 + lineadj, ui_game_minimap_treasure_color);
                         render->RasterLine2D(pPoint_X + 1, pPoint_Y - 1,
-                                             pPoint_X + 1, pPoint_Y + 1 + lineadj, color32(ui_game_minimap_treasure_color));
+                                             pPoint_X + 1, pPoint_Y + 1 + lineadj, ui_game_minimap_treasure_color);
                         render->RasterLine2D(pPoint_X + 2, pPoint_Y,
-                                             pPoint_X + 2, pPoint_Y + 1 + lineadj, color32(ui_game_minimap_treasure_color));
+                                             pPoint_X + 2, pPoint_Y + 1 + lineadj, ui_game_minimap_treasure_color);
                     } else {
                         render->RasterLine2D(pPoint_X - 1, pPoint_Y - 1,
-                                             pPoint_X - 1, pPoint_Y + lineadj, color32(ui_game_minimap_treasure_color));
+                                             pPoint_X - 1, pPoint_Y + lineadj, ui_game_minimap_treasure_color);
                         render->RasterLine2D(pPoint_X, pPoint_Y - 1, pPoint_X,
-                                             pPoint_Y + lineadj, color32(ui_game_minimap_treasure_color));
+                                             pPoint_Y + lineadj, ui_game_minimap_treasure_color);
                     }
                 }
             }
@@ -1774,11 +1774,11 @@ void GameUI_DrawMinimap(unsigned int uX, unsigned int uY, unsigned int uZ,
                 //  && pPoint_Y >= render->raster_clip_y && pPoint_Y <=
                 //  render->raster_clip_w )
                 {
-                    pColor = color32(ui_game_minimap_actor_friendly_color);
+                    pColor = ui_game_minimap_actor_friendly_color;
                     if (pActors[i].uAttributes & ACTOR_HOSTILE)
-                        pColor = color32(ui_game_minimap_actor_hostile_color);
+                        pColor = ui_game_minimap_actor_hostile_color;
                     if (pActors[i].uAIState == Dead)
-                        pColor = color32(ui_game_minimap_actor_corpse_color);
+                        pColor = ui_game_minimap_actor_corpse_color;
                     if (uZoom > 1024) {
                         render->RasterLine2D(pPoint_X - 2, pPoint_Y - 1,
                                              pPoint_X - 2, pPoint_Y + 1 + lineadj,
@@ -1818,11 +1818,11 @@ void GameUI_DrawMinimap(unsigned int uX, unsigned int uY, unsigned int uZ,
                 //  render->raster_clip_w )
                 {
                     if ((signed int)uZoom > 512) {
-                        render->RasterLine2D(pPoint_X - 1, pPoint_Y - 1, pPoint_X - 1, pPoint_Y + 1, color32(ui_game_minimap_decoration_color_1));
-                        render->RasterLine2D(pPoint_X, pPoint_Y - 1, pPoint_X, pPoint_Y + 1, color32(ui_game_minimap_decoration_color_1));
-                        render->RasterLine2D(pPoint_X + 1, pPoint_Y - 1, pPoint_X + 1, pPoint_Y + 1, color32(ui_game_minimap_decoration_color_1));
+                        render->RasterLine2D(pPoint_X - 1, pPoint_Y - 1, pPoint_X - 1, pPoint_Y + 1, ui_game_minimap_decoration_color_1);
+                        render->RasterLine2D(pPoint_X, pPoint_Y - 1, pPoint_X, pPoint_Y + 1, ui_game_minimap_decoration_color_1);
+                        render->RasterLine2D(pPoint_X + 1, pPoint_Y - 1, pPoint_X + 1, pPoint_Y + 1, ui_game_minimap_decoration_color_1);
                     } else {
-                        render->RasterLine2D(pPoint_X, pPoint_Y, pPoint_X, pPoint_Y, color32(ui_game_minimap_decoration_color_1));
+                        render->RasterLine2D(pPoint_X, pPoint_Y, pPoint_X, pPoint_Y, ui_game_minimap_decoration_color_1);
                     }
                 }
             }
@@ -1923,12 +1923,12 @@ void GameUI_DrawHiredNPCs() {
 }
 
 //----- (004178FE) --------------------------------------------------------
-unsigned int UI_GetHealthManaAndOtherQualitiesStringColor(int actual_value,
+Color UI_GetHealthManaAndOtherQualitiesStringColor(int actual_value,
                                                           int base_value) {
     uint16_t R, G, B;
 
     if (actual_value == base_value) {
-        R = 0, G = 0, B = 0;  // White
+        return Color(); // Default - white.
     } else if (actual_value < base_value) {
         if (100 * actual_value / base_value >=
             25)  // Yellow( current_pos > 1/4 )
@@ -1939,11 +1939,11 @@ unsigned int UI_GetHealthManaAndOtherQualitiesStringColor(int actual_value,
         R = 0, G = 255, B = 0;
     }
 
-    return color16(R, G, B);
+    return Color(R, G, B);
 }
 
 //----- (00417939) --------------------------------------------------------
-int GetConditionDrawColor(Condition uConditionIdx) {
+Color GetConditionDrawColor(Condition uConditionIdx) {
     switch (uConditionIdx) {
         case Condition_Zombie:
         case Condition_Good:
@@ -2051,7 +2051,7 @@ void GUIWindow_DebugMenu::Update() {
         pViewport->uViewportTL_Y / 480.0f,
         game_ui_menu_options);
 
-    pGUIWindow_CurrentMenu->DrawText(pFontArrus, {0, 10}, 0, "Debug Menu", 0, 0, 0);
+    pGUIWindow_CurrentMenu->DrawText(pFontArrus, {0, 10}, Color(), "Debug Menu", 0, 0, Color());
 
     buttonbox(13, 140, "Town Portal", engine->config->debug.TownPortal.value());
     buttonbox(127, 140, "Give Gold", 2);
@@ -2107,21 +2107,21 @@ void GUIWindow_DebugMenu::Update() {
 void buttonbox(int x, int y, const char *text, int col) {
     int width = 108;
     int height = 20;
-    render->FillRectFast(x, y, width+1, height+1, color32(50, 50, 50));
+    render->FillRectFast(x, y, width+1, height+1, Color(50, 50, 50)); // TODO(captainurist): color table
 
     //render->BeginLines2D();
-    render->RasterLine2D(x-1, y-1, x+width+1, y-1, colorTable.Jonquil.c32());
-    render->RasterLine2D(x-1, y-1, x-1, y+height+1, colorTable.Jonquil.c32());
-    render->RasterLine2D(x-1, y+height+1, x+width+1, y+height+1, colorTable.Jonquil.c32());
-    render->RasterLine2D(x+width+1, y-1, x+width+1, y+height+1, colorTable.Jonquil.c32());
+    render->RasterLine2D(x-1, y-1, x+width+1, y-1, colorTable.Jonquil);
+    render->RasterLine2D(x-1, y-1, x-1, y+height+1, colorTable.Jonquil);
+    render->RasterLine2D(x-1, y+height+1, x+width+1, y+height+1, colorTable.Jonquil);
+    render->RasterLine2D(x+width+1, y-1, x+width+1, y+height+1, colorTable.Jonquil);
     //render->EndLines2D();
 
-    uint16_t colour = ui_character_condition_severe_color;
+    Color colour = ui_character_condition_severe_color;
     if (col == 2) {
-        colour = 0;
+        colour = Color();
     }
     if (col == 1) {
         colour = ui_character_bonus_text_color;
     }
-    pGUIWindow_CurrentMenu->DrawText(pFontArrus, {x+1, y+2}, colour, text, 0, 0, 0);
+    pGUIWindow_CurrentMenu->DrawText(pFontArrus, {x+1, y+2}, colour, text, 0, 0, Color());
 }

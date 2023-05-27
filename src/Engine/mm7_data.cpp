@@ -2440,8 +2440,8 @@ char byte_506550;
 int uLastPointedObjectID;
 int KeyboardPageNum;
 //int dword_506F1C;
-unsigned int uGameUIFontShadow;
-unsigned int uGameUIFontMain;
+Color uGameUIFontShadow;
+Color uGameUIFontMain;
 int dword_507B00_spell_info_to_draw_in_popup;
 int dword_507CC0_activ_ch;
 bool OpenedTelekinesis;
@@ -2499,7 +2499,7 @@ int bDialogueUI_InitializeActor_NPC_ID;
 
 int dword_5C35D4;
 
-int ui_current_text_color;
+Color ui_current_text_color;
 int64_t qword_5C6DF0;
 
 struct FactionTable *pFactionTable;
