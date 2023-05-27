@@ -12,7 +12,7 @@ var searchData=
   ['ckeylistelement_9',['CKeyListElement',['../classCKeyListElement.html',1,'']]],
   ['clippingfunctions_10',['ClippingFunctions',['../structClippingFunctions.html',1,'']]],
   ['collisionstate_11',['CollisionState',['../structCollisionState.html',1,'']]],
-  ['color_12',['Color',['../classColorTable_1_1Color.html',1,'ColorTable']]],
+  ['color_12',['Color',['../structColor.html',1,'']]],
   ['colorkey_5flod_5floader_13',['ColorKey_LOD_Loader',['../classColorKey__LOD__Loader.html',1,'']]],
   ['colortable_14',['ColorTable',['../classColorTable.html',1,'']]],
   ['combinedskillvalue_15',['CombinedSkillValue',['../classCombinedSkillValue.html',1,'']]],
