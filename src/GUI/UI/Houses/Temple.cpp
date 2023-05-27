@@ -13,223 +13,198 @@
 #include "Engine/Graphics/LocationFunctions.h"
 #include "Engine/Spells/CastSpellInfo.h"
 
-void TempleDialog() {
-    int pPrice;                   // edi@1
-    int pTextHeight;              // eax@11
-    Color pTextColor;  // ax@21
-    LocationInfo *ddm;          // edi@29
-    GUIButton *pButton;           // edi@64
-    uint8_t index;        // [sp+1B7h] [bp-Dh]@64
-    int v64;                      // [sp+1B8h] [bp-Ch]@6
-    unsigned int pCurrentItem;    // [sp+1BCh] [bp-8h]@6
-    int all_text_height;          // [sp+1C0h] [bp-4h]@6
+void GUIWindow_Temple::mainDialogue() {
+    GUIWindow temple_window = *this;
+    temple_window.uFrameX = SIDE_TEXT_BOX_POS_X;
+    temple_window.uFrameWidth = SIDE_TEXT_BOX_WIDTH;
+    temple_window.uFrameZ = SIDE_TEXT_BOX_POS_Z;
 
-    GUIWindow tample_window = *window_SpeakInHouse;
-    tample_window.uFrameX = SIDE_TEXT_BOX_POS_X;
-    tample_window.uFrameWidth = SIDE_TEXT_BOX_WIDTH;
-    tample_window.uFrameZ = SIDE_TEXT_BOX_POS_Z;
+    int index = 1;
+    int price = PriceCalculator::templeHealingCostForPlayer(&pParty->activeCharacter(), buildingTable[wData.val - 1].fPriceMultiplier);
+    GUIButton *pButton = pDialogueWindow->GetControl(pDialogueWindow->pStartingPosActiveItem);
+    pButton->uHeight = 0;
+    pButton->uY = 0;
+    if (isPlayerHealableByTemple(pParty->activeCharacter())) {
+        static std::string shop_option_container;
+        shop_option_container = fmt::format("{} {} {}", localization->GetString(LSTR_HEAL), price, localization->GetString(LSTR_GOLD));
+        pShopOptions[0] = shop_option_container.c_str();
+        index = 0;
+    }
+    pShopOptions[1] = localization->GetString(LSTR_DONATE);
+    pShopOptions[2] = localization->GetString(LSTR_LEARN_SKILLS);
+    int allTextHeight = 0;
+    for (int i = index; i < pDialogueWindow->pNumPresenceButton; ++i) {
+        allTextHeight += pFontArrus->CalcTextHeight(pShopOptions[i], temple_window.uFrameWidth, 0);
+    }
+    int spacing = (SIDE_TEXT_BOX_BODY_TEXT_HEIGHT - allTextHeight) / (pDialogueWindow->pNumPresenceButton - index);
+    if (spacing > SIDE_TEXT_BOX_MAX_SPACING)
+        spacing = SIDE_TEXT_BOX_MAX_SPACING;
+    allTextHeight = (SIDE_TEXT_BOX_BODY_TEXT_HEIGHT - spacing * (pDialogueWindow->pNumPresenceButton - index) - allTextHeight) / 2 - spacing / 2 + SIDE_TEXT_BOX_BODY_TEXT_OFFSET;
 
+    int buttonsLimit = pDialogueWindow->pNumPresenceButton + pDialogueWindow->pStartingPosActiveItem;
+    for (int i = index + pDialogueWindow->pStartingPosActiveItem; i < buttonsLimit; i++, index++) {
+        pButton = pDialogueWindow->GetControl(i);
+        pButton->uY = spacing + allTextHeight;
+        int textHeight = pFontArrus->CalcTextHeight(pShopOptions[index], temple_window.uFrameWidth, 0);
+        pButton->uHeight = textHeight;
+        pButton->uW = pButton->uY + textHeight - 1 + 6;
+        allTextHeight = pButton->uW;
+        Color textColor = colorTable.PaleCanary;
+        if (pDialogueWindow->pCurrentPosActiveItem != index + 2) {
+            textColor = colorTable.White;
+        }
+        temple_window.DrawTitleText(pFontArrus, 0, pButton->uY, textColor, pShopOptions[index], 3);
+    }
+}
+
+void GUIWindow_Temple::healDialogue() {
+    if (!isPlayerHealableByTemple(pParty->activeCharacter())) {
+        return;
+    }
+
+    int price = PriceCalculator::templeHealingCostForPlayer(&pParty->activeCharacter(), buildingTable[wData.val - 1].fPriceMultiplier);
+    if (pParty->GetGold() < price) {
+        GameUI_SetStatusBar(LSTR_NOT_ENOUGH_GOLD);
+        PlayHouseSound(wData.val, HouseSound_NotEnoughMoney);
+        pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 1, 0);
+        return;
+    }
+
+    bool setZombie = false;
+    if (houseId() == HOUSE_TEMPLE_DEYJA || houseId() == HOUSE_TEMPLE_PIT || houseId() == HOUSE_TEMPLE_NIGHON) {
+        setZombie = pParty->activeCharacter().conditions.Has(Condition_Zombie);
+        if (!pParty->activeCharacter().conditions.Has(Condition_Zombie)) {
+            if (pParty->activeCharacter().conditions.HasAny({Condition_Eradicated, Condition_Petrified, Condition_Dead})) {
+                pParty->activeCharacter().uPrevFace = pParty->activeCharacter().uCurrentFace;
+                pParty->activeCharacter().uPrevVoiceID = pParty->activeCharacter().uVoiceID;
+                pParty->activeCharacter().uVoiceID = (pParty->activeCharacter().GetSexByVoice() != 0) + 23;
+                pParty->activeCharacter().uCurrentFace = (pParty->activeCharacter().GetSexByVoice() != 0) + 23;
+                GameUI_ReloadPlayerPortraits(pParty->activeCharacterIndex() - 1, (pParty->activeCharacter().GetSexByVoice() != 0) + 23);
+                setZombie = true;
+            }
+        }
+    } else {
+        if (pParty->activeCharacter().conditions.Has(Condition_Zombie)) {
+            pParty->activeCharacter().uCurrentFace = pParty->activeCharacter().uPrevFace;
+            pParty->activeCharacter().uVoiceID = pParty->activeCharacter().uPrevVoiceID;
+            GameUI_ReloadPlayerPortraits(pParty->activeCharacterIndex() - 1, pParty->activeCharacter().uPrevFace);
+        }
+    }
+
+    pParty->activeCharacter().conditions.ResetAll();
+    if (setZombie) {
+        pParty->activeCharacter().conditions.Set(Condition_Zombie, pParty->GetPlayingTime());
+    }
+    pParty->TakeGold(price);
+    pParty->activeCharacter().health = pParty->activeCharacter().GetMaxHealth();
+    pParty->activeCharacter().mana = pParty->activeCharacter().GetMaxMana();
+    pAudioPlayer->playExclusiveSound(SOUND_heal);
+    pParty->activeCharacter().playReaction(SPEECH_TempleHeal);
+    pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 1, 0);
+}
+
+void GUIWindow_Temple::donateDialogue() {
+    int price = buildingTable[wData.val - 1].fPriceMultiplier;
+    if (pParty->GetGold() >= price) {
+        pParty->TakeGold(price);
+        LocationInfo *ddm = &currentLocationInfo();
+
+        if (ddm->reputation > -5) {
+            ddm->reputation -= 1;
+        }
+        int day = pParty->uCurrentDayOfMonth % 7;
+        int counter = _templeSpellCounter[pParty->activeCharacterIndex() - 1] % 7;
+        if (counter == day) {
+            if (ddm->reputation <= -5) {
+                pushTempleSpell(SPELL_AIR_WIZARD_EYE);
+            }
+            if (ddm->reputation <= -10) {
+                pushTempleSpell(SPELL_SPIRIT_PRESERVATION);
+            }
+            if (ddm->reputation <= -15) {
+                pushTempleSpell(SPELL_BODY_PROTECTION_FROM_MAGIC);
+            }
+            if (ddm->reputation <= -20) {
+                pushTempleSpell(SPELL_LIGHT_HOUR_OF_POWER);
+            }
+            if (ddm->reputation <= -25) {
+                pushTempleSpell(SPELL_LIGHT_DAY_OF_PROTECTION);
+            }
+        }
+        _templeSpellCounter[pParty->activeCharacterIndex() - 1]++;
+        pParty->activeCharacter().playReaction(SPEECH_TempleDonate);
+        GameUI_SetStatusBar(LSTR_THANK_YOU);
+    } else {
+        GameUI_SetStatusBar(LSTR_NOT_ENOUGH_GOLD);
+    }
+    pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 1, 0);
+}
+
+void GUIWindow_Temple::learnSkillsDialogue() {
+    GUIWindow temple_window = *this;
+    temple_window.uFrameX = SIDE_TEXT_BOX_POS_X;
+    temple_window.uFrameWidth = SIDE_TEXT_BOX_WIDTH;
+    temple_window.uFrameZ = SIDE_TEXT_BOX_POS_Z;
+
+    if (HouseUI_CheckIfPlayerCanInteract()) {
+        int allTextHeight = 0;
+        int availableSkills = 0;
+        int cost = PriceCalculator::skillLearningCostForPlayer(&pParty->activeCharacter(), buildingTable[wData.val - 1]);
+        int buttonsLimit = pDialogueWindow->pNumPresenceButton + pDialogueWindow->pStartingPosActiveItem;
+        for (int i = pDialogueWindow->pStartingPosActiveItem; i < buttonsLimit; i++) {
+            PLAYER_SKILL_TYPE skill = GetLearningDialogueSkill((DIALOGUE_TYPE)pDialogueWindow->GetControl(i)->msg_param);
+            if (skillMaxMasteryPerClass[pParty->activeCharacter().classType][skill] != PLAYER_SKILL_MASTERY_NONE &&
+                !pParty->activeCharacter().pActiveSkills[skill]) {
+                allTextHeight += pFontArrus->CalcTextHeight(localization->GetSkillName(skill), temple_window.uFrameWidth, 0);
+                availableSkills++;
+            }
+        }
+
+        SkillTrainingDialogue(&temple_window, availableSkills, allTextHeight, cost);
+    }
+}
+
+GUIWindow_Temple::GUIWindow_Temple(HOUSE_ID houseId) : GUIWindow_House(houseId) {
+    _templeSpellCounter.resize(pParty->pPlayers.size());
+    std::fill(_templeSpellCounter.begin(), _templeSpellCounter.end(), 0);
+}
+
+void GUIWindow_Temple::houseDialogueOptionSelected(DIALOGUE_TYPE option) {
+    // Nothing
+}
+
+void GUIWindow_Temple::houseSpecificDialogue() {
     // TODO(pskelton): check this behaviour
     if (!pParty->hasActiveCharacter()) {  // avoid nzi
         pParty->setActiveToFirstCanAct();
     }
 
-    pPrice = PriceCalculator::templeHealingCostForPlayer(&pParty->activeCharacter(),
-                                                         buildingTable[window_SpeakInHouse->wData.val - 1].fPriceMultiplier);
-    if (dialog_menu_id == DIALOGUE_MAIN) {
-        index = 1;
-        pButton = pDialogueWindow->GetControl(
-            pDialogueWindow->pStartingPosActiveItem);
-        pButton->uHeight = 0;
-        pButton->uY = 0;
-        if (pParty->activeCharacter().IsPlayerHealableByTemple()) {
-            static std::string shop_option_container;
-            shop_option_container =
-                fmt::format("{} {} {}",
-                    localization->GetString(LSTR_HEAL), pPrice,
-                    localization->GetString(LSTR_GOLD));
-            pShopOptions[0] = shop_option_container.c_str();
-            index = 0;
-        }
-        pShopOptions[1] = localization->GetString(LSTR_DONATE);
-        pShopOptions[2] = localization->GetString(LSTR_LEARN_SKILLS);
-        all_text_height = 0;
-        if (index < pDialogueWindow->pNumPresenceButton) {
-            uint i = index;
-            for (uint j = index; j < pDialogueWindow->pNumPresenceButton; ++j) {
-                all_text_height += pFontArrus->CalcTextHeight(
-                    pShopOptions[1 * i], tample_window.uFrameWidth, 0);
-                i++;
-            }
-        }
-        v64 = (SIDE_TEXT_BOX_BODY_TEXT_HEIGHT - (signed int)all_text_height) /
-            (pDialogueWindow->pNumPresenceButton - index);
-        if (v64 > SIDE_TEXT_BOX_MAX_SPACING) v64 = SIDE_TEXT_BOX_MAX_SPACING;
-        all_text_height =
-            (SIDE_TEXT_BOX_BODY_TEXT_HEIGHT - v64 * (pDialogueWindow->pNumPresenceButton - index) -
-            (signed int)all_text_height) /
-            2 -
-            v64 / 2 + SIDE_TEXT_BOX_BODY_TEXT_OFFSET;
-        if (index + pDialogueWindow->pStartingPosActiveItem <
-            pDialogueWindow->pStartingPosActiveItem +
-            pDialogueWindow->pNumPresenceButton) {
-            uint i = index;
-            for (pCurrentItem = index + pDialogueWindow->pStartingPosActiveItem;
-                (signed int)pCurrentItem <
-                pDialogueWindow->pNumPresenceButton +
-                pDialogueWindow->pStartingPosActiveItem;
-                ++pCurrentItem) {
-                pButton = pDialogueWindow->GetControl(pCurrentItem);
-                pButton->uY = v64 + all_text_height;
-                pTextHeight = pFontArrus->CalcTextHeight(
-                    pShopOptions[1 * i], tample_window.uFrameWidth, 0);
-                pButton->uHeight = pTextHeight;
-                pButton->uW = pButton->uY + pTextHeight - 1 + 6;
-                all_text_height = pButton->uW;
-                pTextColor = colorTable.PaleCanary;
-                if (pDialogueWindow->pCurrentPosActiveItem != index + 2)
-                    pTextColor = colorTable.White;
-                tample_window.DrawTitleText(pFontArrus, 0, pButton->uY,
-                    pTextColor, pShopOptions[1 * i], 3);
-                i++;
-                index++;
-            }
-        }
-        return;
+    switch (dialog_menu_id) {
+      case DIALOGUE_MAIN:
+        mainDialogue();
+        break;
+      case DIALOGUE_TEMPLE_HEAL:
+        healDialogue();
+        break;
+      case DIALOGUE_TEMPLE_DONATE:
+        donateDialogue();
+        break;
+      case DIALOGUE_LEARN_SKILLS:
+        learnSkillsDialogue();
+        break;
+      default:
+        break;
     }
-    //-------------------------------------------------
-    if (dialog_menu_id == DIALOGUE_TEMPLE_HEAL) {
-        if (!pParty->activeCharacter().IsPlayerHealableByTemple()) return;
-        if (pParty->GetGold() < pPrice) {
-            GameUI_SetStatusBar(LSTR_NOT_ENOUGH_GOLD);
-            PlayHouseSound(window_SpeakInHouse->wData.val, HouseSound_NotEnoughMoney);
-            pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 1, 0);
-            return;
-        }
-        pParty->TakeGold(pPrice);
+}
 
-        pParty->activeCharacter().conditions.ResetAll();
-        pParty->activeCharacter().health =
-            pParty->activeCharacter().GetMaxHealth();
-        pParty->activeCharacter().mana =
-            pParty->activeCharacter().GetMaxMana();
-
-        if (window_SpeakInHouse->wData.val != 78 &&
-            (window_SpeakInHouse->wData.val <= 80 ||
-            window_SpeakInHouse->wData.val > 82)) {
-            if (pParty->activeCharacter().conditions.Has(Condition_Zombie)) {
-                // если состояние зомби
-                pParty->activeCharacter().uCurrentFace =
-                    pParty->activeCharacter().uPrevFace;
-                pParty->activeCharacter().uVoiceID =
-                    pParty->activeCharacter().uPrevVoiceID;
-                GameUI_ReloadPlayerPortraits(
-                    pParty->activeCharacterIndex() - 1,
-                    pParty->activeCharacter().uPrevFace);
-            }
-            pAudioPlayer->playExclusiveSound(SOUND_heal);
-            pParty->activeCharacter().playReaction(SPEECH_TempleHeal);
-            pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 1, 0);
-            return;
-        }
-        if (pParty->activeCharacter().conditions.Has(Condition_Zombie)) {
-            // LODWORD(pParty->activeCharacter().pConditions[Condition_Zombie])
-            // =
-            // LODWORD(pParty->activeCharacter().pConditions[Condition_Zombie]);
-        } else {
-            if (pParty->activeCharacter().conditions.HasNone({Condition_Eradicated, Condition_Petrified, Condition_Dead})) {
-                pAudioPlayer->playExclusiveSound(SOUND_heal);
-                pParty->activeCharacter().playReaction(SPEECH_TempleHeal);
-                pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 1, 0);
-                return;
-            }
-            pParty->activeCharacter().uPrevFace =
-                pParty->activeCharacter().uCurrentFace;
-            pParty->activeCharacter().uPrevVoiceID =
-                pParty->activeCharacter().uVoiceID;
-            pParty->activeCharacter().SetCondition(Condition_Zombie, 1);
-            pParty->activeCharacter().uVoiceID =
-                (pParty->activeCharacter().GetSexByVoice() != 0) + 23;
-            pParty->activeCharacter().uCurrentFace =
-                (pParty->activeCharacter().GetSexByVoice() != 0) + 23;
-            GameUI_ReloadPlayerPortraits(
-                pParty->activeCharacterIndex() - 1,
-                (pParty->activeCharacter().GetSexByVoice() != 0) + 23);
-            pParty->activeCharacter().conditions.Set(Condition_Zombie, pParty->GetPlayingTime());
-            // v39 = (GUIWindow *)HIDWORD(pParty->uTimePlayed);
-        }
-        // HIDWORD(pParty->activeCharacter().pConditions[Condition_Zombie]) =
-        // (int)v39;
-        pParty->activeCharacter().conditions.Set(Condition_Zombie, pParty->GetPlayingTime());
-        pAudioPlayer->playExclusiveSound(SOUND_heal);
-        pParty->activeCharacter().playReaction(SPEECH_TempleHeal);
-        pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 1, 0);
-        return;
+bool GUIWindow_Temple::isPlayerHealableByTemple(const Player &player) const {
+    if (player.health >= player.GetMaxHealth() && player.mana >= player.GetMaxMana() && player.GetMajorConditionIdx() == Condition_Good) {
+        // fully healthy
+        return false;
+    } else if (player.GetMajorConditionIdx() == Condition_Zombie) {
+        // zombie cant be healed at these tmeples
+        return houseId() != HOUSE_TEMPLE_DEYJA && houseId() != HOUSE_TEMPLE_PIT && houseId() != HOUSE_TEMPLE_NIGHON;
     }
-    //---------------------------------------------------
-    if (dialog_menu_id == DIALOGUE_TEMPLE_DONATE) {
-        pPrice = buildingTable[window_SpeakInHouse->wData.val - 1].fPriceMultiplier;
-        if (pParty->GetGold() >= pPrice) {
-            pParty->TakeGold(pPrice);
-            ddm = &currentLocationInfo();
 
-            if (ddm->reputation > -5) {
-                ddm->reputation = ddm->reputation - 1;
-                if (ddm->reputation - 1 < -5) ddm->reputation = -5;
-            }
-            if ((uint8_t)byte_F8B1EF[pParty->activeCharacterIndex()] == pParty->uCurrentDayOfMonth % 7) {
-                if (ddm->reputation <= -5) {
-                    pushTempleSpell(SPELL_AIR_WIZARD_EYE);
-                }
-                if (ddm->reputation <= -10) {
-                    pushTempleSpell(SPELL_SPIRIT_PRESERVATION);
-                }
-                if (ddm->reputation <= -15) {
-                    pushTempleSpell(SPELL_BODY_PROTECTION_FROM_MAGIC);
-                }
-                if (ddm->reputation <= -20) {
-                    pushTempleSpell(SPELL_LIGHT_HOUR_OF_POWER);
-                }
-                if (ddm->reputation <= -25) {
-                    pushTempleSpell(SPELL_LIGHT_DAY_OF_PROTECTION);
-                }
-            }
-            ++byte_F8B1EF[pParty->activeCharacterIndex()];
-            pParty->activeCharacter().playReaction(SPEECH_TempleDonate);
-            GameUI_SetStatusBar(LSTR_THANK_YOU);
-            pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 1, 0);
-            return;
-        }
-        GameUI_SetStatusBar(LSTR_NOT_ENOUGH_GOLD);
-        PlayHouseSound(window_SpeakInHouse->wData.val,
-            HouseSound_NotEnoughMoney);
-        pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 1, 0);
-        return;
-    }
-    //------------------------------------------------
-    if (dialog_menu_id == DIALOGUE_LEARN_SKILLS) {
-        if (HouseUI_CheckIfPlayerCanInteract()) {
-            all_text_height = 0;
-            v64 = PriceCalculator::skillLearningCostForPlayer(&pParty->activeCharacter(),
-                                                              buildingTable[window_SpeakInHouse->wData.val - 1]);
-            pCurrentItem = 0;
-            for (int i = pDialogueWindow->pStartingPosActiveItem;
-                i < pDialogueWindow->pNumPresenceButton +
-                pDialogueWindow->pStartingPosActiveItem;
-                ++i) {
-                auto skill = GetLearningDialogueSkill(
-                    (DIALOGUE_TYPE)pDialogueWindow->GetControl(i)->msg_param
-                );
-                if (skillMaxMasteryPerClass[pParty->activeCharacter().classType][skill] != PLAYER_SKILL_MASTERY_NONE
-                    && !pParty->activeCharacter().pActiveSkills[skill]) {
-                    all_text_height += pFontArrus->CalcTextHeight(
-                        localization->GetSkillName(skill),
-                        tample_window.uFrameWidth, 0);
-                    ++pCurrentItem;
-                }
-            }
-
-            SkillTrainingDialogue(&tample_window, pCurrentItem, all_text_height, v64);
-        }
-    }
+    return true;
 }

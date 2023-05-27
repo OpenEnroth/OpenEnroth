@@ -932,31 +932,12 @@ void OnSelectShopDialogueOption(DIALOGUE_TYPE option) {
                     return;
                 }
             }
-            pDialogueWindow->Release();
-            pDialogueWindow = new GUIWindow(WINDOW_Dialogue, {0, 0}, {renDims.w, 345}, 0);
-            pBtn_ExitCancel = pDialogueWindow->CreateButton({526, 445}, {75, 33}, 1, 0,
-                UIMSG_Escape, 0, InputAction::Invalid, localization->GetString(LSTR_END_CONVERSATION), {ui_buttdesc2});
-            pDialogueWindow->CreateButton({8, 8}, {450, 320}, 1, 0, UIMSG_BuyInShop_Identify_Repair, 0);
         }
-        if (in_current_building_type != BuildingType_Training) {
-            if ((in_current_building_type == BuildingType_Stables ||
-                in_current_building_type == BuildingType_Boats) &&
-                transport_schedule
-                [transport_routes[window_SpeakInHouse->wData.val - HOUSE_STABLES_HARMONDALE]
-                [option - DIALOGUE_TRANSPORT_SCHEDULE_1]]
-            .pSchedule[pParty->uCurrentDayOfMonth % 7] ||
-                in_current_building_type != BuildingType_Temple ||
-                in_current_building_type != BuildingType_MindGuild) {
-                pDialogueWindow->Release();
-                pDialogueWindow = new GUIWindow(WINDOW_Dialogue, {0, 0}, {renDims.w, 345}, 0);
-                pBtn_ExitCancel = pDialogueWindow->CreateButton({526, 445}, {75, 33}, 1, 0,
-                    UIMSG_Escape, 0, InputAction::Invalid, localization->GetString(LSTR_END_CONVERSATION), {ui_buttdesc2});
-                pDialogueWindow->CreateButton({8, 8}, {450, 320}, 1, 0, UIMSG_BuyInShop_Identify_Repair, 0);
-            } else if (pParty->hasActiveCharacter()) {
-                if (!pParty->activeCharacter().IsPlayerHealableByTemple())
-                    return;
-            }
-        }
+        pDialogueWindow->Release();
+        pDialogueWindow = new GUIWindow(WINDOW_Dialogue, {0, 0}, {renDims.w, 345}, 0);
+        pBtn_ExitCancel = pDialogueWindow->CreateButton({526, 445}, {75, 33}, 1, 0, UIMSG_Escape, 0, InputAction::Invalid,
+                                                        localization->GetString(LSTR_END_CONVERSATION), {ui_buttdesc2});
+        pDialogueWindow->CreateButton({8, 8}, {450, 320}, 1, 0, UIMSG_BuyInShop_Identify_Repair, 0);
         dialog_menu_id = option;
         if (in_current_building_type < BuildingType_TownHall_MM6) {
             shop_ui_background = assets->getImage_ColorKey(_4F03B8_shop_background_names[(int)in_current_building_type]);
@@ -991,18 +972,16 @@ void OnSelectShopDialogueOption(DIALOGUE_TYPE option) {
         break;
     }
     case BuildingType_Bank:
-    {
-        if (dialog_menu_id >= DIALOGUE_BANK_PUT_GOLD && dialog_menu_id <= DIALOGUE_BANK_GET_GOLD)
-            keyboardInputHandler->StartTextInput(TextInputType::Number, 10, window_SpeakInHouse);
-        return;
+        ((GUIWindow_House*)window_SpeakInHouse)->houseDialogueOptionSelected(option);
         break;
-    }
+    case BuildingType_Temple:
+        ((GUIWindow_House*)window_SpeakInHouse)->houseDialogueOptionSelected(option);
+        break;
     case BuildingType_WeaponShop:
     case BuildingType_ArmorShop:
     case BuildingType_MagicShop:
     case BuildingType_AlchemistShop:
     case BuildingType_Tavern:
-    case BuildingType_Temple:
     case BuildingType_Training:
     {
         break;
@@ -1881,6 +1860,12 @@ void createHouseUI(HOUSE_ID houseId) {
       case BuildingType_MirroredPath:
         window_SpeakInHouse = new GUIWindow_MagicGuild(houseId);
         break;
+      case BuildingType_Bank:
+        window_SpeakInHouse = new GUIWindow_Bank(houseId);
+        break;
+      case BuildingType_Temple:
+        window_SpeakInHouse = new GUIWindow_Temple(houseId);
+        break;
       default:
         window_SpeakInHouse = new GUIWindow_House(houseId);
         break;
@@ -2045,7 +2030,6 @@ void GUIWindow_House::houseDialogManager() {
           case BuildingType_LightGuild:
           case BuildingType_DarkGuild:
           case BuildingType_MirroredPath:
-            //GuildDialog();
             houseSpecificDialogue();
             break;
           case BuildingType_MercenaryGuild:
@@ -2058,10 +2042,10 @@ void GUIWindow_House::houseDialogManager() {
             TavernDialog();
             break;
           case BuildingType_Bank:
-            BankDialog();
+            houseSpecificDialogue();
             break;
           case BuildingType_Temple:
-            TempleDialog();
+            houseSpecificDialogue();
             break;
           case BuildingType_Stables:
           case BuildingType_Boats:
