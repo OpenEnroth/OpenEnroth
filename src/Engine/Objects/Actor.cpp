@@ -1177,7 +1177,7 @@ void Actor::AI_MeleeAttack(unsigned int uActorID, signed int sTargetPid,
             8;
         pActors[uActorID].uCurrentActionTime = 0;
         pActors[uActorID].uAIState = AttackingMelee;
-        Actor::playSound(uActorID, 0);
+        Actor::playSound(uActorID, ACTOR_ATTACK_SOUND);
         v25 = pMonsterStats->pInfos[pActors[uActorID].pMonsterInfo.uID]
                   .uRecoveryTime;
         if (pActors[uActorID].pActorBuffs[ACTOR_BUFF_SLOWED].Active()) v25 *= 2;
@@ -1420,7 +1420,7 @@ void Actor::AI_SpellAttack2(unsigned int uActorID, signed int edx0,
         v3->uCurrentActionLength = 8 * v13;
         v3->uCurrentActionTime = 0;
         v3->uAIState = AttackingRanged4;
-        Actor::playSound(uActorID, 0);
+        Actor::playSound(uActorID, ACTOR_ATTACK_SOUND);
         pDira = pMonsterStats->pInfos[v3->pMonsterInfo.uID].uRecoveryTime;
         if (v3->pActorBuffs[ACTOR_BUFF_SLOWED].Active()) pDira *= 2;
         if (pParty->bTurnBasedModeOn) {
@@ -1494,7 +1494,7 @@ void Actor::AI_SpellAttack1(unsigned int uActorID, signed int sTargetPid,
         v3->uCurrentActionLength = 8 * v13;
         v3->uCurrentActionTime = 0;
         v3->uAIState = AttackingRanged3;
-        Actor::playSound(uActorID, 0);
+        Actor::playSound(uActorID, ACTOR_ATTACK_SOUND);
         pDira = pMonsterStats->pInfos[v3->pMonsterInfo.uID].uRecoveryTime;
         if (v3->pActorBuffs[ACTOR_BUFF_SLOWED].Active()) pDira *= 2;
         if (pParty->bTurnBasedModeOn) {
@@ -1569,7 +1569,7 @@ void Actor::AI_MissileAttack2(unsigned int uActorID, signed int sTargetPid,
         v3->uCurrentActionLength = 8 * v13;
         v3->uCurrentActionTime = 0;
         v3->uAIState = AttackingRanged2;
-        Actor::playSound(uActorID, 0);
+        Actor::playSound(uActorID, ACTOR_ATTACK_SOUND);
         pDira = pMonsterStats->pInfos[v3->pMonsterInfo.uID].uRecoveryTime;
         if (v3->pActorBuffs[ACTOR_BUFF_SLOWED].Active()) pDira *= 2;
         if (!pParty->bTurnBasedModeOn) {
@@ -1640,7 +1640,7 @@ void Actor::AI_MissileAttack1(unsigned int uActorID, signed int sTargetPid,
         v3->uCurrentActionLength = 8 * v14;
         v3->uCurrentActionTime = 0;
         v3->uAIState = AttackingRanged1;
-        Actor::playSound(uActorID, 0);
+        Actor::playSound(uActorID, ACTOR_ATTACK_SOUND);
         pDira = pMonsterStats->pInfos[v3->pMonsterInfo.uID].uRecoveryTime;
         if (v3->pActorBuffs[ACTOR_BUFF_SLOWED].Active()) pDira *= 2;
         if (pParty->bTurnBasedModeOn) {
@@ -1713,7 +1713,7 @@ void Actor::AI_RandomMove(unsigned int uActor_id, unsigned int uTarget_id,
     pActors[uActor_id].uCurrentActionTime = 0;
     pActors[uActor_id].uAIState = Tethered;
     if (vrng->random(100) < 2) {
-        Actor::playSound(uActor_id, 3);
+        Actor::playSound(uActor_id, ACTOR_BORED_SOUND);
     }
     pActors[uActor_id].UpdateAnimation();
 }
@@ -1811,7 +1811,7 @@ void Actor::AI_Stun(unsigned int uActorID, signed int edx0,
         pActors[uActorID].uCurrentActionTime = 0;
         pActors[uActorID].uAIState = Stunned;
         pActors[uActorID].uCurrentActionLength = 8 * v7;
-        Actor::playSound(uActorID, 2);
+        Actor::playSound(uActorID, ACTOR_STUNNED_SOUND);
         pActors[uActorID].UpdateAnimation();
     }
 }
@@ -1848,17 +1848,16 @@ void Actor::AI_Bored(unsigned int uActorID, unsigned int uObjID,
         actor->vVelocity.y = 0;
         actor->vVelocity.x = 0;
         if (vrng->random(100) < 5) {
-            Actor::playSound(uActorID, 3);
+            Actor::playSound(uActorID, ACTOR_BORED_SOUND);
         }
         actor->UpdateAnimation();
     }
 }
 
 //----- (00402F27) --------------------------------------------------------
-void Actor::Resurrect(unsigned int uActorID) {
-    Actor *pActor;  // esi@1
-
-    pActor = &pActors[uActorID];
+void Actor::resurrect(unsigned int uActorID) {
+    assert(uActorID < pActors.size());
+    Actor *pActor = &pActors[uActorID];
     pActor->uCurrentActionTime = 0;
     pActor->uAIState = Resurrected;
     pActor->uCurrentActionAnimation = ANIM_Dying;
@@ -1866,8 +1865,22 @@ void Actor::Resurrect(unsigned int uActorID) {
         8 * pSpriteFrameTable->pSpriteSFrames[pActor->pSpriteIDs[ANIM_Dying]]
                 .uAnimLength;
     pActor->sCurrentHP = (short)pActor->pMonsterInfo.uHP;
-    Actor::playSound(uActorID, 1);
+    Actor::playSound(uActorID, ACTOR_DEATH_SOUND);
     pActor->UpdateAnimation();
+
+    pActor->pMonsterInfo.uHostilityType = MonsterInfo::Hostility_Friendly;
+    // TODO(pskelton): vanilla behaviour but does it make sense to drop all carried treasure
+    pActor->pMonsterInfo.uTreasureDropChance = 0;
+    pActor->pMonsterInfo.uTreasureDiceRolls = 0;
+    pActor->pMonsterInfo.uTreasureDiceSides = 0;
+    pActor->pMonsterInfo.uTreasureLevel = ITEM_TREASURE_LEVEL_INVALID;
+    pActor->pMonsterInfo.uTreasureType = 0;
+    pActor->uAlly = 9999;
+    pActor->ResetAggressor();  // ~0x80000
+    pActor->uGroup = 0;
+    pActor->pActorBuffs[ACTOR_BUFF_BERSERK].Reset();
+    pActor->pActorBuffs[ACTOR_BUFF_CHARM].Reset();
+    pActor->pActorBuffs[ACTOR_BUFF_ENSLAVED].Reset();
 }
 
 //----- (00402D6E) --------------------------------------------------------
@@ -1883,7 +1896,7 @@ void Actor::Die(unsigned int uActorID) {
                 .uAnimLength;
     actor->pActorBuffs[ACTOR_BUFF_PARALYZED].Reset();
     actor->pActorBuffs[ACTOR_BUFF_STONED].Reset();
-    Actor::playSound(uActorID, 1);
+    Actor::playSound(uActorID, ACTOR_DEATH_SOUND);
     actor->UpdateAnimation();
 
     for (HOUSE_ID house : townhallHouses())
@@ -1937,13 +1950,13 @@ void Actor::Die(unsigned int uActorID) {
     }
 }
 
-void Actor::playSound(unsigned int uActorID, unsigned int uSoundID) {
-    SoundID sound_sample_id =
-        (SoundID)pActors[uActorID].pSoundSampleIDs[uSoundID];
+void Actor::playSound(unsigned int uActorID, ActorSounds uSoundID) {
+    SoundID sound_sample_id = (SoundID)pActors[uActorID].pSoundSampleIDs[std::to_underlying(uSoundID)];
     if (sound_sample_id) {
         if (!pActors[uActorID].pActorBuffs[ACTOR_BUFF_SHRINK].Active()) {
             pAudioPlayer->playSound(sound_sample_id, PID(OBJECT_Actor, uActorID));
         } else {
+            // TODO(pskelton): looks incomplete - sounds meant to change depending on actor size
             switch (pActors[uActorID].pActorBuffs[ACTOR_BUFF_SHRINK].power) {
                 case 1:
                     pAudioPlayer->playSound(sound_sample_id, PID(OBJECT_Actor, uActorID), 0, 0, 0);
@@ -2176,7 +2189,7 @@ void Actor::AI_Pursue3(unsigned int uActorID, unsigned int a2,
     v6->uPitchAngle = v16;
     v6->uAIState = Pursuing;
     if (vrng->random(100) < 2) {
-        Actor::playSound(uActorID, 2);
+        Actor::playSound(uActorID, ACTOR_STUNNED_SOUND);
     }
     v6->UpdateAnimation();
 }

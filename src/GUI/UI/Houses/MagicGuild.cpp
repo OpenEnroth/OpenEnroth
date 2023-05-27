@@ -107,7 +107,7 @@ IndexedArray<int, HOUSE_FIRST_MAGIC_GUILD, HOUSE_LAST_MAGIC_GUILD> guildMembersh
 };
 
 void GUIWindow_MagicGuild::mainDialogue() {
-    GUIWindow working_window = *window_SpeakInHouse;
+    GUIWindow working_window = *this;
     working_window.uFrameX = SIDE_TEXT_BOX_POS_X;
     working_window.uFrameWidth = SIDE_TEXT_BOX_WIDTH;
     working_window.uFrameZ = SIDE_TEXT_BOX_POS_Z;
@@ -115,7 +115,7 @@ void GUIWindow_MagicGuild::mainDialogue() {
     if (!pParty->activeCharacter()._achievedAwardsBits[guildMembershipFlags[houseId()]]) {
         // you must be a member
         int textHeight = pFontArrus->CalcTextHeight(pNPCTopics[121].pText, working_window.uFrameWidth, 0);
-        working_window.DrawTitleText(pFontArrus, 0, (212 - textHeight) / 2 + 101, colorTable.PaleCanary.c16(), pNPCTopics[121].pText, 3);
+        working_window.DrawTitleText(pFontArrus, 0, (212 - textHeight) / 2 + 101, colorTable.PaleCanary, pNPCTopics[121].pText, 3);
         pDialogueWindow->pNumPresenceButton = 0;
         return;
     }
@@ -146,7 +146,7 @@ void GUIWindow_MagicGuild::mainDialogue() {
 }
 
 void GUIWindow_MagicGuild::buyBooksDialogue() {
-    GUIWindow working_window = *window_SpeakInHouse;
+    GUIWindow working_window = *this;
     working_window.uFrameX = SIDE_TEXT_BOX_POS_X;
     working_window.uFrameWidth = SIDE_TEXT_BOX_WIDTH;
     working_window.uFrameZ = SIDE_TEXT_BOX_POS_Z;
@@ -172,7 +172,7 @@ void GUIWindow_MagicGuild::buyBooksDialogue() {
                 ++itemcount;
         }
 
-        GameUI_StatusBar_DrawImmediate(localization->GetString(LSTR_SELECT_ITEM_TO_BUY), 0);
+        GameUI_StatusBar_DrawImmediate(localization->GetString(LSTR_SELECT_ITEM_TO_BUY), Color());
 
         if (!itemcount) {  // shop empty
             GameTime nextGenTime = pParty->PartyTimes.guildNextRefreshTime[houseId()];
@@ -202,7 +202,7 @@ void GUIWindow_MagicGuild::buyBooksDialogue() {
                         MERCHANT_PHRASE phase = pParty->activeCharacter().SelectPhrasesTransaction(item, BuildingType_MagicShop, std::to_underlying(houseId()), 2);
                         std::string str = BuildDialogueString(pMerchantsBuyPhrases[phase], pParty->activeCharacterIndex() - 1, item, std::to_underlying(houseId()), 2);
                         int textHeight = pFontArrus->CalcTextHeight(str, working_window.uFrameWidth, 0);
-                        working_window.DrawTitleText(pFontArrus, 0, (SIDE_TEXT_BOX_BODY_TEXT_HEIGHT - textHeight) / 2 + SIDE_TEXT_BOX_BODY_TEXT_OFFSET, colorTable.White.c16(), str, 3);
+                        working_window.DrawTitleText(pFontArrus, 0, (SIDE_TEXT_BOX_BODY_TEXT_HEIGHT - textHeight) / 2 + SIDE_TEXT_BOX_BODY_TEXT_OFFSET, colorTable.White, str, 3);
                         return;
                     }
                 }

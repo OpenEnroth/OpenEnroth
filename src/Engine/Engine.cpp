@@ -255,22 +255,22 @@ void Engine::DrawGUI() {
 
     if (engine->config->debug.ShowFPS.value()) {
         if (render_framerate) {
-            pPrimaryWindow->DrawText(pFontArrus, {494, 0}, colorTable.White.c16(), fmt::format("FPS: {: .4f}", framerate), 0, 0, 0);
+            pPrimaryWindow->DrawText(pFontArrus, {494, 0}, colorTable.White, fmt::format("FPS: {: .4f}", framerate), 0, 0, Color());
         }
 
-        pPrimaryWindow->DrawText(pFontArrus, {300, 0}, colorTable.White.c16(), fmt::format("DrawCalls: {}", render->drawcalls), 0, 0, 0);
+        pPrimaryWindow->DrawText(pFontArrus, {300, 0}, colorTable.White, fmt::format("DrawCalls: {}", render->drawcalls), 0, 0, Color());
         render->drawcalls = 0;
 
 
         int debug_info_offset = 0;
-        pPrimaryWindow->DrawText(pFontArrus, {16, debug_info_offset + 16}, colorTable.White.c16(),
-                                 fmt::format("Party position:         {} {} {}", pParty->vPosition.x, pParty->vPosition.y, pParty->vPosition.z), 0, 0, 0);
+        pPrimaryWindow->DrawText(pFontArrus, {16, debug_info_offset + 16}, colorTable.White,
+                                 fmt::format("Party position:         {} {} {}", pParty->vPosition.x, pParty->vPosition.y, pParty->vPosition.z), 0, 0, Color());
 
         if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
             debug_info_offset += 16;
             int sector_id = pBLVRenderParams->uPartySectorID;
-            pPrimaryWindow->DrawText(pFontArrus, { 16, debug_info_offset + 16 }, colorTable.White.c16(),
-                                     fmt::format("Party Sector ID:        {}/{}\n", sector_id, pIndoor->pSectors.size()), 0, 0, 0);
+            pPrimaryWindow->DrawText(pFontArrus, { 16, debug_info_offset + 16 }, colorTable.White,
+                                     fmt::format("Party Sector ID:        {}/{}\n", sector_id, pIndoor->pSectors.size()), 0, 0, Color());
         }
 
         std::string floor_level_str;
@@ -295,7 +295,7 @@ void Engine::DrawGUI() {
             );
         }
 
-        pPrimaryWindow->DrawText(pFontArrus, {16, debug_info_offset + 16 + 16}, colorTable.White.c16(), floor_level_str, 0, 0, 0);
+        pPrimaryWindow->DrawText(pFontArrus, {16, debug_info_offset + 16 + 16}, colorTable.White, floor_level_str, 0, 0, Color());
     }
 }
 
@@ -800,6 +800,7 @@ void DoPrepareWorld(bool bLoading, int _1_fullscreen_loading_2_box) {
     else
         PrepareToLoadODM(bLoading, 0);
 
+    pNPCStats->setNPCNamesOnLoad();
     engine->_461103_load_level_sub();
     if ((pCurrentMapName == "d11.blv") ||
         (pCurrentMapName == "d10.blv")) {

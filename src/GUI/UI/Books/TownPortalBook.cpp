@@ -97,5 +97,5 @@ void GUIWindow_TownPortalBook::Update() {
         }
     }
 
-    townPortalWindow.DrawTitleText(pBook2Font, 0, 22, 0, localization->GetString(LSTR_TOWN_PORTAL), 3);
+    townPortalWindow.DrawTitleText(pBook2Font, 0, 22, Color(), localization->GetString(LSTR_TOWN_PORTAL), 3);
 }

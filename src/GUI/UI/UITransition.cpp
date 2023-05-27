@@ -182,7 +182,7 @@ void GUIWindow_Travel::Update() {
         travel_window.uFrameWidth = 126;
         travel_window.uFrameZ = 366;
         travel_window.DrawTitleText(
-            pFontCreate, 0, 4, 0,
+            pFontCreate, 0, 4, Color(),
             pMapStats->pInfos[pMapStats->GetMapInfo(pDestinationMapName)].pName,
             3);
         travel_window.uFrameX = SIDE_TEXT_BOX_POS_X;
@@ -212,7 +212,7 @@ void GUIWindow_Travel::Update() {
              pFontCreate->CalcTextHeight(str, travel_window.uFrameWidth, 0)) /
                     2 +
                 101,
-            0, str, 3);
+            Color(), str, 3);
     }
 }
 
@@ -237,7 +237,7 @@ void GUIWindow_Transition::Update() {
     transition_window.uFrameX = 493;
     transition_window.uFrameWidth = 126;
     transition_window.uFrameZ = 366;
-    transition_window.DrawTitleText(pFontCreate, 0, 5, 0,
+    transition_window.DrawTitleText(pFontCreate, 0, 5, Color(),
                                     pMapStats->pInfos[map_id].pName, 3);
     transition_window.uFrameX = SIDE_TEXT_BOX_POS_X;
     transition_window.uFrameWidth = SIDE_TEXT_BOX_WIDTH;
@@ -251,7 +251,7 @@ void GUIWindow_Transition::Update() {
                 2 +
             101;
         transition_window.DrawTitleText(
-            pFontCreate, 0, v4, 0, pTransitionStrings[uCurrentHouse_Animation],
+            pFontCreate, 0, v4, Color(), pTransitionStrings[uCurrentHouse_Animation],
             3);
     } else if (map_id) {
         std::string str = localization->FormatString(
@@ -259,7 +259,7 @@ void GUIWindow_Transition::Update() {
             pMapStats->pInfos[map_id].pName.c_str());
         unsigned int v4 = (212 - pFontCreate->CalcTextHeight(
                                      str, transition_window.uFrameWidth, 0)) / 2 + 101;
-        transition_window.DrawTitleText(pFontCreate, 0, v4, 0, str, 3);
+        transition_window.DrawTitleText(pFontCreate, 0, v4, Color(), str, 3);
     } else {
         Error("Troubles in da house");
     }

@@ -3136,9 +3136,9 @@ static int lua_nk_load_image(lua_State *L) {
     const char *type = luaL_checkstring(L, 2);
     const char *name = luaL_checkstring(L, 3);
     const char *lod = nullptr;
-    int mask = 0x7FF;
+    Color mask = Color::fromC16(0x7FF);
     if (lua_gettop(L) == 4)
-        mask = luaL_checkinteger(L, 4);
+        mask = Color::fromC16(luaL_checkinteger(L, 4));
     if (lua_gettop(L) == 5)
         lod = luaL_checkstring(L, 5);
 

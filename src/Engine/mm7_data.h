@@ -15,6 +15,8 @@
 #include "GUI/GUIEnums.h"
 #include "GUI/GUIDialogues.h"
 
+#include "Library/Color/Color.h"
+
 #include "Utility/IndexedArray.h"
 #include "Utility/Geometry/Vec.h"
 
@@ -74,8 +76,8 @@ extern int quick_spell_at_page;
 extern char byte_506550;
 extern int uLastPointedObjectID;
 extern int KeyboardPageNum;
-extern unsigned int uGameUIFontShadow;
-extern unsigned int uGameUIFontMain;
+extern Color uGameUIFontShadow;
+extern Color uGameUIFontMain;
 extern int dword_507B00_spell_info_to_draw_in_popup;
 extern int dword_507CC0_activ_ch;
 extern bool OpenedTelekinesis;
@@ -130,7 +132,7 @@ extern int bDialogueUI_InitializeActor_NPC_ID;
 
 extern int dword_5C35D4;
 extern std::array<char, 10000> pTmpBuf3;
-extern int ui_current_text_color;
+extern Color ui_current_text_color;
 extern int64_t qword_5C6DF0;
 extern struct FactionTable *pFactionTable;
 
@@ -198,6 +200,5 @@ extern int dword_F8B1E0;
 extern int dword_F8B1E4;
 extern std::string current_npc_text;  // F8B1E8
 extern char dialogue_show_profession_details;
-extern std::array<char, 777> byte_F8B1EF;
 
 extern int bGameoverLoop;

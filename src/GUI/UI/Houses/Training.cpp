@@ -110,9 +110,9 @@ void TrainingDialog(const char *s) {
                         pButton->uHeight = pTextHeight;
                         pButton->uW = pTextHeight + pButton->uY - 1 + 6;
                         v49 = pButton->uW;
-                        int pTextColor = colorTable.Jonquil.c16();
+                        Color pTextColor = colorTable.Jonquil;
                         if (pDialogueWindow->pCurrentPosActiveItem != i)
-                            pTextColor = colorTable.White.c16();
+                            pTextColor = colorTable.White;
                         training_dialog_window.DrawTitleText(
                             pFontArrus, 0, pButton->uY, pTextColor,
                             pShopOptions[index], 3);
@@ -127,7 +127,7 @@ void TrainingDialog(const char *s) {
 
             if (!HouseUI_CheckIfPlayerCanInteract()) {
                 v33 = pFontArrus->CalcTextHeight(pNPCTopics[122].pText, training_dialog_window.uFrameWidth, 0);
-                training_dialog_window.DrawTitleText(pFontArrus, 0, (212 - v33) / 2 + 101, colorTable.Jonquil.c16(), pNPCTopics[122].pText, 3);
+                training_dialog_window.DrawTitleText(pFontArrus, 0, (212 - v33) / 2 + 101, colorTable.Jonquil, pNPCTopics[122].pText, 3);
                 pDialogueWindow->pNumPresenceButton = 0;
                 return;
             }
@@ -185,7 +185,7 @@ void TrainingDialog(const char *s) {
                         label, training_dialog_window.uFrameWidth, 0)) / 2 + 101;
             }
             training_dialog_window.DrawTitleText(
-                pFontArrus, 0, v36, colorTable.Jonquil.c16(), label, 3);
+                pFontArrus, 0, v36, colorTable.Jonquil, label, 3);
 
             PlayHouseSound(window_SpeakInHouse->wData.val, (HouseSoundID)3);
             pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 1, 0);

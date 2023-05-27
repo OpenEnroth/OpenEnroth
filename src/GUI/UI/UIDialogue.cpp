@@ -290,7 +290,7 @@ void GUIWindow_Dialogue::Update() {
 
         render->DrawTextureNew(8 / 640.0f, (347 - pTextHeight) / 480.0f,
                                     _591428_endcap);
-        pDialogueWindow->DrawText(font, {13, 354 - pTextHeight}, 0, font->FitTextInAWindow(dialogue_string, window.uFrameWidth, 13), 0, 0, 0);
+        pDialogueWindow->DrawText(font, {13, 354 - pTextHeight}, Color(), font->FitTextInAWindow(dialogue_string, window.uFrameWidth, 13), 0, 0, Color());
     }
 
     // Right panel(Правая панель)-------
@@ -426,7 +426,7 @@ void GUIWindow_Dialogue::Update() {
             pButton->uHeight = pTextHeight;
             v42 = pButton->uY + pTextHeight - 1;
             pButton->uW = v42;
-            uint16_t pTextColor = ui_game_dialogue_option_normal_color;
+            Color pTextColor = ui_game_dialogue_option_normal_color;
             if (pDialogueWindow->pCurrentPosActiveItem == i)
                 pTextColor = ui_game_dialogue_option_highlight_color;
             window.DrawTitleText(pFontArrus, 0, pButton->uY, pTextColor,
@@ -481,9 +481,9 @@ void GUIWindow_GenericDialogue::Update() {
                                     ui_leather_mm7, pTextHeight);
     render->DrawTextureNew(8 / 640.0f, (347 - pTextHeight) / 480.0f,
                                 _591428_endcap);
-    pGUIWindow_BranchlessDialogue->DrawText(pFont, {12, 354 - pTextHeight}, 0,
+    pGUIWindow_BranchlessDialogue->DrawText(pFont, {12, 354 - pTextHeight}, Color(),
         pFont->FitTextInAWindow(branchless_dialogue_str, BranchlessDlg_window.uFrameWidth, 12),
-        0, 0, 0);
+        0, 0, Color());
     render->DrawTextureNew(0, 352 / 480.0f, game_ui_statusbar);
     if (pGUIWindow_BranchlessDialogue->keyboard_input_status != WINDOW_INPUT_IN_PROGRESS) {
         if (pGUIWindow_BranchlessDialogue->keyboard_input_status == WINDOW_INPUT_CONFIRMED) {
@@ -502,7 +502,7 @@ void GUIWindow_GenericDialogue::Update() {
 
     if (pGUIWindow_BranchlessDialogue->wData.val == (int)EVENT_InputString) {
         auto str = fmt::format("{} {}", GameUI_StatusBar_GetInput(), keyboardInputHandler->GetTextInput());
-        pGUIWindow_BranchlessDialogue->DrawText(pFontLucida, {13, 357}, 0, str, 0, 0, 0);
+        pGUIWindow_BranchlessDialogue->DrawText(pFontLucida, {13, 357}, Color(), str, 0, 0, Color());
         pGUIWindow_BranchlessDialogue->DrawFlashingInputCursor(pFontLucida->GetLineWidth(str) + 13, 357, pFontLucida);
         return;
     }

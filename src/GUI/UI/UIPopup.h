@@ -1,7 +1,7 @@
 #pragma once
 #include <string>
 
-unsigned int GetSpellColor(signed int a1);
+Color GetSpellColor(signed int a1);
 uint64_t GetExperienceRequiredForLevel(int level);
 void CharacterUI_DrawTooltip(const char *title, std::string &content);
 

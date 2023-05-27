@@ -154,7 +154,7 @@ GUIWindow_Load::GUIWindow_Load(bool ingame) :
     this->uFrameZ = uFrameX + uFrameWidth - 1;
     this->uFrameW = uFrameY + uFrameHeight - 1;
 
-    DrawText(pFontSmallnum, {25, 199}, 0, localization->GetString(LSTR_READING), 0, 0, 0);
+    DrawText(pFontSmallnum, {25, 199}, Color(), localization->GetString(LSTR_READING), 0, 0, Color());
     render->Present();
 
     pSavegameList->Initialize();
@@ -261,7 +261,7 @@ static void UI_DrawSaveLoad(bool save) {
                                    pSavegameList->pSavegameThumbnails[pSavegameList->selectedSlot]);
         }
         // Draw map name
-        save_load_window.DrawTitleText(pFontSmallnum, 0, 0, 0,
+        save_load_window.DrawTitleText(pFontSmallnum, 0, 0, Color(),
                                        pMapStats->pInfos[pMapStats->GetMapInfo(pSavegameList->pSavegameHeader[pSavegameList->selectedSlot].locationName)].pName, 3);
 
         // Draw date
@@ -290,7 +290,7 @@ static void UI_DrawSaveLoad(bool save) {
             localization->GetMonthName(savegame_time.GetMonthsOfYear()),
             savegame_time.GetYears() + game_starting_year
         );
-        save_load_window.DrawTitleText(pFontSmallnum, 0, 0, 0, str, 3);
+        save_load_window.DrawTitleText(pFontSmallnum, 0, 0, Color(), str, 3);
     }
 
     if (pGUIWindow_CurrentMenu->keyboard_input_status == WINDOW_INPUT_CONFIRMED) {
@@ -304,14 +304,14 @@ static void UI_DrawSaveLoad(bool save) {
 
     if (GetCurrentMenuID() == MENU_LoadingProcInMainMenu) {
         pGUIWindow_CurrentMenu->DrawText(pFontSmallnum,
-            {pFontSmallnum->AlignText_Center(186, localization->GetString(LSTR_LOADING)) + 25, 220}, 0,
-            localization->GetString(LSTR_LOADING), 0, 0, 0);
+            {pFontSmallnum->AlignText_Center(186, localization->GetString(LSTR_LOADING)) + 25, 220}, Color(),
+            localization->GetString(LSTR_LOADING), 0, 0, Color());
         pGUIWindow_CurrentMenu->DrawTextInRect(pFontSmallnum,
-                                               {pFontSmallnum->AlignText_Center(186, pSavegameList->pSavegameHeader[pSavegameList->selectedSlot].name) + 25, 262}, 0,
+                                               {pFontSmallnum->AlignText_Center(186, pSavegameList->pSavegameHeader[pSavegameList->selectedSlot].name) + 25, 262}, Color(),
                                                pSavegameList->pSavegameHeader[pSavegameList->selectedSlot].name, 185, 0);
         pGUIWindow_CurrentMenu->DrawText(pFontSmallnum,
-            {pFontSmallnum->AlignText_Center(186, localization->GetString(LSTR_PLEASE_WAIT)) + 25, 304}, 0,
-            localization->GetString(LSTR_PLEASE_WAIT), 0, 0, 0);
+            {pFontSmallnum->AlignText_Center(186, localization->GetString(LSTR_PLEASE_WAIT)) + 25, 304}, Color(),
+            localization->GetString(LSTR_PLEASE_WAIT), 0, 0, Color());
     } else {
         int maxSaveFiles = MAX_SAVE_SLOTS;
         int framex = 0, framey = 0;
@@ -337,11 +337,11 @@ static void UI_DrawSaveLoad(bool save) {
                 break;
             }
             if (pGUIWindow_CurrentMenu->keyboard_input_status != WINDOW_INPUT_IN_PROGRESS || i != pSavegameList->selectedSlot) {
-                pGUIWindow_CurrentMenu->DrawTextInRect(pFontSmallnum, {27, slot_Y}, i == pSavegameList->selectedSlot ? colorTable.LaserLemon.c16() : 0,
+                pGUIWindow_CurrentMenu->DrawTextInRect(pFontSmallnum, {27, slot_Y}, i == pSavegameList->selectedSlot ? colorTable.LaserLemon : Color(),
                                                        pSavegameList->pSavegameHeader[i].name, 185, 0);
             } else {
                 pGUIWindow_CurrentMenu->DrawFlashingInputCursor(pGUIWindow_CurrentMenu->DrawTextInRect(pFontSmallnum, {27, slot_Y},
-                    i == pSavegameList->selectedSlot ? colorTable.LaserLemon.c16() : 0, keyboardInputHandler->GetTextInput().c_str(), 175, 1) + 27, slot_Y, pFontSmallnum);
+                    i == pSavegameList->selectedSlot ? colorTable.LaserLemon : Color(), keyboardInputHandler->GetTextInput().c_str(), 175, 1) + 27, slot_Y, pFontSmallnum);
             }
             slot_Y += 21;
         }

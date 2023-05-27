@@ -2,6 +2,8 @@
 
 #include <cstdint>
 
+#include "Library/Color/Color.h"
+
 // TODO(pskelton): combined viewport and viewing params?? or at least not have multiple places
 // where screen coords and viewport coords are held
 
@@ -80,7 +82,7 @@ struct ViewingParams {
     int field_60 = 0;
     int field_64 = 0;
     int field_68 = 0;
-    uint32_t pPalette[256] {};
+    Color pPalette[256] {};
 };
 
 extern struct ViewingParams *viewparams;

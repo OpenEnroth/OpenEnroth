@@ -4,6 +4,8 @@
 #include <vector>
 #include <string>
 
+#include "Library/Color/Color.h"
+
 #include "Utility/Geometry/Point.h"
 
 struct GUICharMetric {
@@ -52,12 +54,12 @@ class GUIFont {
 
     std::string GetPageTop(const std::string &pInString, GUIWindow *pWindow,
                       unsigned int uX, int a5);
-    void DrawTextLine(const std::string &text, uint16_t uDefaultColor, Pointi position, int max_len_pix);
-    void DrawText(GUIWindow *pWindow, Pointi position, uint16_t uFontColor,
+    void DrawTextLine(const std::string &text, Color uDefaultColor, Pointi position, int max_len_pix);
+    void DrawText(GUIWindow *pWindow, Pointi position, Color uFontColor,
                   const std::string &str, bool present_time_transparency,
-                  int max_text_height, int uFontShadowColor);
+                  int max_text_height, Color uFontShadowColor);
     int DrawTextInRect(GUIWindow *pWindow, Pointi position,
-                       uint16_t uColor, const std::string &str, int rect_width,
+                       Color uColor, const std::string &str, int rect_width,
                        int reverse_text);
 
     std::string FitTextInAWindow(const std::string &inString, unsigned int width, int uX,
@@ -65,8 +67,8 @@ class GUIFont {
 
     // TODO: these should take std::string_view
     void DrawCreditsEntry(GUIFont *pSecondFont, int uFrameX, int uFrameY,
-                          unsigned int w, unsigned int h, uint16_t firstColor,
-                          uint16_t secondColor, const std::string &pString,
+                          unsigned int w, unsigned int h, Color firstColor,
+                          Color secondColor, const std::string &pString,
                           Image *image);
     int GetStringHeight2(GUIFont *secondFont, const std::string &text_str,
                          GUIWindow *pWindow, int startX, int a6);
@@ -81,7 +83,7 @@ class GUIFont {
     std::string FitTwoFontStringINWindow(const std::string &pString, GUIFont *pFontSecond,
                                     GUIWindow *pWindow, int startPixlOff,
                                     int a6);
-    void DrawTextLineToBuff(uint16_t uColor, uint32_t *uX_buff_pos,
+    void DrawTextLineToBuff(Color uColor, uint32_t *uX_buff_pos,
                             const std::string &text, int line_width);
 };
 

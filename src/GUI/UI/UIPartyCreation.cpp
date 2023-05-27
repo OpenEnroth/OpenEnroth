@@ -287,10 +287,10 @@ void GUIWindow_PartyCreation::Update() {
     int pX;                         // ecx@7
     GUIButton *uPosActiveItem;      // edi@12
     int v17;                        // eax@33
-    unsigned int pStatColor;        // eax@44
+    Color pStatColor;        // eax@44
     PLAYER_SKILL_TYPE pSkillsType;  // eax@44
     PLAYER_CLASS_TYPE uClassType;   // edi@53
-    int pColorText;                 // eax@53
+    Color pColorText;                 // eax@53
     PLAYER_SKILL_TYPE pSkillId;     // edi@72
     size_t pLenText;                // eax@72
     signed int v104;                // ecx@72
@@ -335,8 +335,8 @@ void GUIWindow_PartyCreation::Update() {
 
     pTextCenter = ui_partycreation_font->AlignText_Center(
         640, localization->GetString(LSTR_CREATE_PARTY_FANCY));
-    pGUIWindow_CurrentMenu->DrawText(ui_partycreation_font, {pTextCenter + 1, 0}, colorTable.Black.c16(),
-        localization->GetString(LSTR_CREATE_PARTY_FANCY), 0, 0, 0);
+    pGUIWindow_CurrentMenu->DrawText(ui_partycreation_font, {pTextCenter + 1, 0}, Color(),
+        localization->GetString(LSTR_CREATE_PARTY_FANCY), 0, 0, Color());
 
     render->DrawTextureNew(17 / oldDims.w, 35 / oldDims.h, ui_partycreation_portraits[pParty->pPlayers[0].uCurrentFace]);
     render->DrawTextureNew(176 / oldDims.w, 35 / oldDims.h, ui_partycreation_portraits[pParty->pPlayers[1].uCurrentFace]);
@@ -363,15 +363,15 @@ void GUIWindow_PartyCreation::Update() {
     pX_Numbers = oldDims.w - 147;  // 493;
 
     for (int i = 0; i < 4; ++i) {
-        pGUIWindow_CurrentMenu->DrawText(pFontCreate, {pIntervalX + 73, 100}, colorTable.Black.c16(),
-            localization->GetClassName(pParty->pPlayers[i].classType), 0, 0, 0);
+        pGUIWindow_CurrentMenu->DrawText(pFontCreate, {pIntervalX + 73, 100}, Color(),
+            localization->GetClassName(pParty->pPlayers[i].classType), 0, 0, Color());
         render->DrawTextureNew((pIntervalX + 77) / oldDims.w, 50 / oldDims.h, ui_partycreation_class_icons[pParty->pPlayers[i].classType / 4]);
 
         if (pGUIWindow_CurrentMenu->keyboard_input_status != WINDOW_INPUT_NONE &&
             pGUIWindow_CurrentMenu->wData.val == i) {
             switch (pGUIWindow_CurrentMenu->keyboard_input_status) {
             case WINDOW_INPUT_IN_PROGRESS:  // press name panel
-                v17 = pGUIWindow_CurrentMenu->DrawTextInRect(pFontCreate, {159 * pGUIWindow_CurrentMenu->wData.val + 18, 124}, 0,
+                v17 = pGUIWindow_CurrentMenu->DrawTextInRect(pFontCreate, {159 * pGUIWindow_CurrentMenu->wData.val + 18, 124}, Color(),
                     keyboardInputHandler->GetTextInput().c_str(), 120, 1);
                 pGUIWindow_CurrentMenu->DrawFlashingInputCursor(159 * pGUIWindow_CurrentMenu->wData.val + v17 + 20, 124, pFontCreate);
                 break;
@@ -384,26 +384,26 @@ void GUIWindow_PartyCreation::Update() {
                 }
                 if (strlen(keyboardInputHandler->GetTextInput().c_str()) > 0 && v126 != strlen(keyboardInputHandler->GetTextInput().c_str()))
                     pParty->pPlayers[i].name = keyboardInputHandler->GetTextInput();
-                pGUIWindow_CurrentMenu->DrawTextInRect(pFontCreate, {pIntervalX, 124}, 0, pParty->pPlayers[i].name, 130, 0);
+                pGUIWindow_CurrentMenu->DrawTextInRect(pFontCreate, {pIntervalX, 124}, Color(), pParty->pPlayers[i].name, 130, 0);
                 pParty->pPlayers[i].field_1988[27] = 1;
                 break;
             case WINDOW_INPUT_CANCELLED:  // press escape
                 pGUIWindow_CurrentMenu->keyboard_input_status = WINDOW_INPUT_NONE;
-                pGUIWindow_CurrentMenu->DrawTextInRect(pFontCreate, {pIntervalX, 124}, 0, pParty->pPlayers[i].name, 130, 0);
+                pGUIWindow_CurrentMenu->DrawTextInRect(pFontCreate, {pIntervalX, 124}, Color(), pParty->pPlayers[i].name, 130, 0);
                 SetCurrentMenuID(MENU_NAMEPANELESC);
                 break;
             default:
                 break;
             }
         } else {
-            pGUIWindow_CurrentMenu->DrawTextInRect(pFontCreate, {pIntervalX, 124}, 0, pParty->pPlayers[i].name, 130, 0);
+            pGUIWindow_CurrentMenu->DrawTextInRect(pFontCreate, {pIntervalX, 124}, Color(), pParty->pPlayers[i].name, 130, 0);
         }
 
         std::string pRaceName = pParty->pPlayers[i].GetRaceName();
-        pGUIWindow_CurrentMenu->DrawTextInRect(pFontCreate, {pIntervalX + 72, pIntervalY + 12}, 0, pRaceName, 130, 0);
+        pGUIWindow_CurrentMenu->DrawTextInRect(pFontCreate, {pIntervalX + 72, pIntervalY + 12}, Color(), pRaceName, 130, 0);
 
         pTextCenter = pFontCreate->AlignText_Center(150, pText);
-        pGUIWindow_CurrentMenu->DrawText(pFontCreate, {pTextCenter + uX - 24, 291}, colorTable.Tacha.c16(), pText, 0, 0, 0);  // Skills
+        pGUIWindow_CurrentMenu->DrawText(pFontCreate, {pTextCenter + uX - 24, 291}, colorTable.Tacha, pText, 0, 0, Color());  // Skills
 
         int posY = 169;
 
@@ -440,27 +440,27 @@ void GUIWindow_PartyCreation::Update() {
         pSkillsType = pParty->pPlayers[i].GetSkillIdxByOrder(0);
         pTextCenter = pFontCreate->AlignText_Center(150, localization->GetSkillName(pSkillsType));
         auto str8 = fmt::format("\t{:03}{}", pTextCenter, localization->GetSkillName(pSkillsType));
-        pGUIWindow_CurrentMenu->DrawText(pFontCreate, {uX - 24, posY}, colorTable.White.c16(), str8);
+        pGUIWindow_CurrentMenu->DrawText(pFontCreate, {uX - 24, posY}, colorTable.White, str8);
 
         pSkillsType = pParty->pPlayers[i].GetSkillIdxByOrder(1);
         pTextCenter = pFontCreate->AlignText_Center(150, localization->GetSkillName(pSkillsType));
         auto str9 = fmt::format("\t{:03}{}", pTextCenter, localization->GetSkillName(pSkillsType));
-        pGUIWindow_CurrentMenu->DrawText(pFontCreate, {uX - 24, pIntervalY + posY}, colorTable.White.c16(), str9);
+        pGUIWindow_CurrentMenu->DrawText(pFontCreate, {uX - 24, pIntervalY + posY}, colorTable.White, str9);
 
         pSkillsType = pParty->pPlayers[i].GetSkillIdxByOrder(2);
         pTextCenter = pFontCreate->AlignText_Center(150, localization->GetSkillName(pSkillsType));
         auto str10 = fmt::format("\t{:03}{}", pTextCenter, localization->GetSkillName(pSkillsType));
-        pColorText = colorTable.Green.c16();
+        pColorText = colorTable.Green;
         if (pSkillsType == PLAYER_SKILL_INVALID)
-            pColorText = colorTable.Aqua.c16();
+            pColorText = colorTable.Aqua;
         pGUIWindow_CurrentMenu->DrawText(pFontCreate, {uX - 24, 2 * pIntervalY + posY}, pColorText, str10);
 
         pSkillsType = pParty->pPlayers[i].GetSkillIdxByOrder(3);
         pTextCenter = pFontCreate->AlignText_Center(150, localization->GetSkillName(pSkillsType));
         auto str11 = fmt::format("\t{:03}{}", pTextCenter, localization->GetSkillName(pSkillsType));
-        pColorText = colorTable.Green.c16();
+        pColorText = colorTable.Green;
         if (pSkillsType == PLAYER_SKILL_INVALID)
-            pColorText = colorTable.Aqua.c16();
+            pColorText = colorTable.Aqua;
         pGUIWindow_CurrentMenu->DrawText(pFontCreate, {uX - 24, 3 * pIntervalY + posY}, pColorText, str11);
 
         pIntervalX += 159;
@@ -474,71 +474,72 @@ void GUIWindow_PartyCreation::Update() {
 
     uClassType = pParty->pPlayers[uPlayerCreationUI_SelectedCharacter].classType;
     pTextCenter = pFontCreate->AlignText_Center(193, pText);
-    pGUIWindow_CurrentMenu->DrawText(pFontCreate, {pTextCenter + 324, 395}, colorTable.Tacha.c16(), pText, 0, 0, 0);  // Classes
+    pGUIWindow_CurrentMenu->DrawText(pFontCreate, {pTextCenter + 324, 395}, colorTable.Tacha, pText, 0, 0, Color());  // Classes
 
-    pColorText = colorTable.Aqua.c16();
+    pColorText = colorTable.Aqua;
     if (uClassType)
-        pColorText = colorTable.White.c16();
+        pColorText = colorTable.White;
     pTextCenter = pFontCreate->AlignText_Center(65, localization->GetClassName(0));
-    pGUIWindow_CurrentMenu->DrawText(pFontCreate, {pTextCenter + 323, 417}, pColorText, localization->GetClassName(0), 0, 0, 0);
+    pGUIWindow_CurrentMenu->DrawText(pFontCreate, {pTextCenter + 323, 417}, pColorText, localization->GetClassName(0), 0, 0, Color());
 
-    pColorText = colorTable.Aqua.c16();
+    pColorText = colorTable.Aqua;
     if (uClassType != PLAYER_CLASS_PALADIN)
-        pColorText = colorTable.White.c16();
+        pColorText = colorTable.White;
     pTextCenter =
         pFontCreate->AlignText_Center(65, localization->GetClassName(12));
-    pGUIWindow_CurrentMenu->DrawText(pFontCreate, {pTextCenter + 323, pIntervalY + 417}, pColorText, localization->GetClassName(12), 0, 0, 0);
+    pGUIWindow_CurrentMenu->DrawText(pFontCreate, {pTextCenter + 323, pIntervalY + 417}, pColorText, localization->GetClassName(12), 0, 0, Color());
 
-    pColorText = colorTable.Aqua.c16();
+    pColorText = colorTable.Aqua;
     if (uClassType != PLAYER_CLASS_RANGER)
-        pColorText = colorTable.White.c16();
+        pColorText = colorTable.White;
     pTextCenter =
         pFontCreate->AlignText_Center(65, localization->GetClassName(20));
-    pGUIWindow_CurrentMenu->DrawText(pFontCreate, {pTextCenter + 323, 2 * pIntervalY + 417}, pColorText, localization->GetClassName(20), 0, 0, 0);
+    pGUIWindow_CurrentMenu->DrawText(pFontCreate, {pTextCenter + 323, 2 * pIntervalY + 417}, pColorText, localization->GetClassName(20), 0, 0, Color());
 
-    pColorText = colorTable.Aqua.c16();
+    pColorText = colorTable.Aqua;
     if (uClassType != PLAYER_CLASS_CLERIC)
-        pColorText = colorTable.White.c16();
+        pColorText = colorTable.White;
     pTextCenter =
         pFontCreate->AlignText_Center(65, localization->GetClassName(24));
-    pGUIWindow_CurrentMenu->DrawText(pFontCreate, {pTextCenter + 388, 417}, pColorText, localization->GetClassName(24), 0, 0, 0);
+    pGUIWindow_CurrentMenu->DrawText(pFontCreate, {pTextCenter + 388, 417}, pColorText, localization->GetClassName(24), 0, 0, Color());
 
-    pColorText = colorTable.Aqua.c16();
+    pColorText = colorTable.Aqua;
     if (uClassType != PLAYER_CLASS_DRUID)
-        pColorText = colorTable.White.c16();
+        pColorText = colorTable.White;
     pTextCenter =
         pFontCreate->AlignText_Center(65, localization->GetClassName(28));
-    pGUIWindow_CurrentMenu->DrawText(pFontCreate, {pTextCenter + 388, pIntervalY + 417}, pColorText, localization->GetClassName(28), 0, 0, 0);
+    pGUIWindow_CurrentMenu->DrawText(pFontCreate, {pTextCenter + 388, pIntervalY + 417}, pColorText, localization->GetClassName(28), 0, 0, Color());
 
-    pColorText = colorTable.Aqua.c16();
+    pColorText = colorTable.Aqua;
     if (uClassType != PLAYER_CLASS_SORCERER)
-        pColorText = colorTable.White.c16();
+        pColorText = colorTable.White;
     pTextCenter =
         pFontCreate->AlignText_Center(65, localization->GetClassName(32));
-    pGUIWindow_CurrentMenu->DrawText(pFontCreate, {pTextCenter + 388, 2 * pIntervalY + 417}, pColorText, localization->GetClassName(32), 0, 0, 0);
+    pGUIWindow_CurrentMenu->DrawText(pFontCreate, {pTextCenter + 388, 2 * pIntervalY + 417}, pColorText, localization->GetClassName(32), 0, 0, Color());
 
-    pColorText = colorTable.Aqua.c16();
+    pColorText = colorTable.Aqua;
     if (uClassType != PLAYER_CLASS_ARCHER)
-        pColorText = colorTable.White.c16();
+        pColorText = colorTable.White;
     pTextCenter =
         pFontCreate->AlignText_Center(65, localization->GetClassName(16));
-    pGUIWindow_CurrentMenu->DrawText(pFontCreate, {pTextCenter + 453, 417}, pColorText, localization->GetClassName(16), 0, 0, 0);
+    pGUIWindow_CurrentMenu->DrawText(pFontCreate, {pTextCenter + 453, 417}, pColorText, localization->GetClassName(16), 0, 0, Color());
 
-    pColorText = colorTable.Aqua.c16();
-    if (uClassType != PLAYER_CLASS_MONK) pColorText = colorTable.White.c16();
+    pColorText = colorTable.Aqua;
+    if (uClassType != PLAYER_CLASS_MONK)
+        pColorText = colorTable.White;
     pTextCenter =
         pFontCreate->AlignText_Center(65, localization->GetClassName(8));
-    pGUIWindow_CurrentMenu->DrawText(pFontCreate, {pTextCenter + 453, pIntervalY + 417}, pColorText, localization->GetClassName(8), 0, 0, 0);
+    pGUIWindow_CurrentMenu->DrawText(pFontCreate, {pTextCenter + 453, pIntervalY + 417}, pColorText, localization->GetClassName(8), 0, 0, Color());
 
-    pColorText = colorTable.Aqua.c16();
+    pColorText = colorTable.Aqua;
     if (uClassType != PLAYER_CLASS_THIEF)
-        pColorText = colorTable.White.c16();
+        pColorText = colorTable.White;
     pTextCenter = pFontCreate->AlignText_Center(65, localization->GetClassName(4));
-    pGUIWindow_CurrentMenu->DrawText(pFontCreate, {pTextCenter + 453, 2 * pIntervalY + 417}, pColorText, localization->GetClassName(4), 0, 0, 0);
+    pGUIWindow_CurrentMenu->DrawText(pFontCreate, {pTextCenter + 453, 2 * pIntervalY + 417}, pColorText, localization->GetClassName(4), 0, 0, Color());
 
     pTextCenter = pFontCreate->AlignText_Center(
         236, localization->GetString(LSTR_AVAILABLE_SKILLS));
-    pGUIWindow_CurrentMenu->DrawText(pFontCreate, {pTextCenter + 37, 395}, colorTable.Tacha.c16(), localization->GetString(LSTR_AVAILABLE_SKILLS), 0, 0, 0);
+    pGUIWindow_CurrentMenu->DrawText(pFontCreate, {pTextCenter + 37, 395}, colorTable.Tacha, localization->GetString(LSTR_AVAILABLE_SKILLS), 0, 0, Color());
     for (int i = 0; i < 9; ++i) {
         pSkillId = pParty->pPlayers[uPlayerCreationUI_SelectedCharacter].GetSkillIdxByOrder(i + 4);
         strcpy(pText, localization->GetSkillName(pSkillId));
@@ -560,9 +561,9 @@ void GUIWindow_PartyCreation::Update() {
         pCorrective = -10;             // -5
         //if ((signed int)pLenText < 8)  // if ( (signed int)v124 > 2 )
         //    pCorrective = 0;
-        pColorText = colorTable.Aqua.c16();
+        pColorText = colorTable.Aqua;
         if (!pParty->pPlayers[uPlayerCreationUI_SelectedCharacter].pActiveSkills[pSkillId])
-            pColorText = colorTable.White.c16();
+            pColorText = colorTable.White;
 
         // align skills left / centre /right
         if ((i / 3) == 0) {
@@ -573,12 +574,12 @@ void GUIWindow_PartyCreation::Update() {
             pTextCenter = 105 - pFontCreate->GetLineWidth(pText);
         }
 
-        pGUIWindow_CurrentMenu->DrawText(pFontCreate, {100 * (i / 3) + pTextCenter + pCorrective + 17, pIntervalY * (i % 3) + 417}, pColorText, pText, 0, 0, 0);
+        pGUIWindow_CurrentMenu->DrawText(pFontCreate, {100 * (i / 3) + pTextCenter + pCorrective + 17, pIntervalY * (i % 3) + 417}, pColorText, pText, 0, 0, Color());
     }
 
     pTextCenter = pFontCreate->AlignText_Center(
         0x5C, localization->GetString(LSTR_BONUS));
-    pGUIWindow_CurrentMenu->DrawText(pFontCreate, {pTextCenter + 533, 394}, colorTable.Tacha.c16(), localization->GetString(LSTR_BONUS), 0, 0, 0);
+    pGUIWindow_CurrentMenu->DrawText(pFontCreate, {pTextCenter + 533, 394}, colorTable.Tacha, localization->GetString(LSTR_BONUS), 0, 0, Color());
 
     // force draw so overlays dont get muddled
     render->DrawTwodVerts();
@@ -589,7 +590,7 @@ void GUIWindow_PartyCreation::Update() {
     auto unspent_attribute_bonus_label = fmt::format("{}", pBonusNum);
     pTextCenter =
         pFontCreate->AlignText_Center(84, unspent_attribute_bonus_label);
-    pGUIWindow_CurrentMenu->DrawText(pFontCreate, {pTextCenter + 530, 410}, colorTable.White.c16(), unspent_attribute_bonus_label);
+    pGUIWindow_CurrentMenu->DrawText(pFontCreate, {pTextCenter + 530, 410}, colorTable.White, unspent_attribute_bonus_label);
     if (game_ui_status_bar_event_string_time_left > platform->tickCount()) {
         message_window.Init();
         message_window.sHint = localization->GetString(LSTR_PARTY_UNASSIGNED_POINTS);
