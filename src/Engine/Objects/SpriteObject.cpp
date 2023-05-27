@@ -44,6 +44,12 @@ int SpriteObject::Create(int yaw, int pitch, int speed, int which_char) {
         return -1;
     }
 
+    // TODO(pskelton): refactor this so check isnt needed
+    // To prevent memory corruption this function should never be called for any item in pSpriteObjects
+    for (SpriteObject &ref : pSpriteObjects) {
+        assert(&ref != this);
+    }
+
     // find free sprite slot
     int sprite_slot = -1;
     for (unsigned int i = 0; i < pSpriteObjects.size(); ++i) {

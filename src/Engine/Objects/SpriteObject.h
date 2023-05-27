@@ -14,7 +14,7 @@ struct SpriteObject {
         return uAttributes & SPRITE_ATTACHED_TO_HEAD;
     }
 
-    // WARNING - this function should not be called from any item in pSpriteObjects vector
+    // WARNING - this function should not be called for any item in pSpriteObjects vector
     int Create(int yaw, int pitch, int a4, int a5);
 
     /**
