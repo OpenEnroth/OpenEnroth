@@ -81,7 +81,10 @@ struct NPCStats {
     void Release();
     void InitializeAdditionalNPCs(NPCData *pNPCDataBuff, int npc_uid,
                                   int uLocation2D, int uMapId);
-    void OnLoadSetNPC_Names();
+    /**
+     * @offset 0x476C60
+     */
+    void setNPCNamesOnLoad();
     char *sub_495366_MispronounceName(uint8_t firstLetter,
                                       uint8_t genderId);
 
