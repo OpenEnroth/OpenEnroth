@@ -1104,3 +1104,11 @@ GAME_TEST(Issues, Issue868) {
     test->playTraceFromTestData("issue_868.mm7", "issue_868.json");
     EXPECT_EQ(pParty->pPlayers[0].GetMajorConditionIdx(), Condition_Zombie);
 }
+
+GAME_TEST(Issues, Issue872) {
+    // Test that loding game set correct names on unique NPCs
+    test->playTraceFromTestData("issue_872.mm7", "issue_872.json");
+    FlatHirelings buf;
+    buf.Prepare();
+    EXPECT_NE(buf.Get(0)->pName, "Dummy");
+}
