@@ -58,7 +58,7 @@ var searchData=
   ['verticalturnspeed_55',['VerticalTurnSpeed',['../classGameConfig_1_1Settings.html#ac812f17dd51243452220a06b976f78f7',1,'GameConfig::Settings']]],
   ['vertices_56',['vertices',['../structIndoorLocation__MM7.html#a25a0d98f7041902ff69c5cd6efd6f389',1,'IndoorLocation_MM7::vertices()'],['../structBSPModelExtras__MM7.html#aba127efbd3ec8e486df666625079120d',1,'BSPModelExtras_MM7::vertices()']]],
   ['vguardingposition_57',['vGuardingPosition',['../classActor.html#acf8133a0504e79a5026c75ae47d5e7ea',1,'Actor::vGuardingPosition()'],['../structActor__MM7.html#af49fc0952bea505d83cb4f3c1511f6d3',1,'Actor_MM7::vGuardingPosition()']]],
-  ['vibrantgreen_58',['VibrantGreen',['../classColorTable.html#abd374d50aefed916d33d81656ac0a18a',1,'ColorTable']]],
+  ['vibrantgreen_58',['VibrantGreen',['../classColorTable.html#aad8231c7801e6c0867870c6fc41942b3',1,'ColorTable']]],
   ['victory_5ftype_59',['Victory_type',['../structArcomageGame.html#a9136caea3621d73e5e4f60acf7dc7545',1,'ArcomageGame']]],
   ['video_60',['video',['../classMovie.html#a8a86213ee9dfa3c989dd8a3a52ce69c3',1,'Movie']]],
   ['video_5fname_61',['video_name',['../structHouseAnimDescr.html#aec55f35fd728df2fbcfe13d4d4981726',1,'HouseAnimDescr']]],

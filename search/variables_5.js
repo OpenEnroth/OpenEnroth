@@ -2,7 +2,7 @@ var searchData=
 [
   ['e_0',['e',['../Json__ut_8cpp.html#ad3d8865e86dcc3ccd62ab3c24c806d54',1,'Json_ut.cpp']]],
   ['earth_5fres_5fdescription_1',['earth_res_description',['../classLocalization.html#ae18835e2daff0a051c8954c8fbbfb434',1,'Localization']]],
-  ['easternblue_2',['EasternBlue',['../classColorTable.html#a66ec1a11d64a877325c893c361741c8d',1,'ColorTable']]],
+  ['easternblue_2',['EasternBlue',['../classColorTable.html#a6b332decfa280785829a71987f91a8a0',1,'ColorTable']]],
   ['ebo_3',['ebo',['../structRenderOpenGL_1_1nk__device.html#a8d761b40d6cd7956a35faaed7a1845dc',1,'RenderOpenGL::nk_device']]],
   ['eff_5fparams_4',['eff_params',['../structam__effects__struct.html#a716b23229a701dc071a730dd03131350',1,'am_effects_struct']]],
   ['effect_5factive_5',['effect_active',['../structexplosion__effect__struct.html#a41052afd0d468dc8a15ed00819179165',1,'explosion_effect_struct']]],

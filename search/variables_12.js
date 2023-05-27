@@ -19,10 +19,10 @@ var searchData=
   ['receives_5fkeyboard_5finput_16',['receives_keyboard_input',['../classGUIWindow.html#aaedaee57b8df9772e3d7a1a19d2b02e8',1,'GUIWindow']]],
   ['recovery_5fper_5fskill_17',['recovery_per_skill',['../classSpellData.html#a0cab291bda882b4dcfe5b7348324a851',1,'SpellData']]],
   ['recoverytime_18',['recoveryTime',['../structMonsterInfo__MM7.html#abe3a230c9ba43e68efe3760e9b8340e0',1,'MonsterInfo_MM7']]],
-  ['red_19',['red',['../structGLdecalverts.html#aaf45c445abb8d8eb45335455bba1ad00',1,'GLdecalverts']]],
-  ['red_20',['Red',['../classColorTable.html#a68b9a56fa9c09baa7f92b311e87c2a87',1,'ColorTable']]],
+  ['red_19',['Red',['../classColorTable.html#ad829a34e61c36e26851f8b5e2bfb49d7',1,'ColorTable']]],
+  ['red_20',['red',['../structGLdecalverts.html#aaf45c445abb8d8eb45335455bba1ad00',1,'GLdecalverts']]],
   ['redraw_21',['redraw',['../structActiveOverlayList__MM7.html#a49dfb438e1d8ef1c117dbeebf9ac9a1e',1,'ActiveOverlayList_MM7']]],
-  ['reef_22',['Reef',['../classColorTable.html#a467d4d2feb2dc7c538438242498eaf3d',1,'ColorTable']]],
+  ['reef_22',['Reef',['../classColorTable.html#a6dafe0e791f0192a6ccbbe419ae16403',1,'ColorTable']]],
   ['regularbonusmap_23',['regularBonusMap',['../Items_8cpp.html#a9db013bdacb4ac543eecbf8e365cb22d',1,'Items.cpp']]],
   ['relations_24',['relations',['../structFactionTable.html#a8841090571c6b9f6a4579b4700e1b791',1,'FactionTable']]],
   ['reloadshaders_25',['ReloadShaders',['../classGameConfig_1_1Keybindings.html#a35384b2e922e937a0fdfd52dd274c9ed',1,'GameConfig::Keybindings::ReloadShaders()'],['../classGameConfig_1_1Gamepad.html#afc8601c0ff812feefebe81ad56a86ba1',1,'GameConfig::Gamepad::ReloadShaders()']]],
@@ -96,6 +96,6 @@ var searchData=
   ['rightclickitemactionperformed_93',['rightClickItemActionPerformed',['../UIPopup_8cpp.html#ab6fe7188ec00c055299f079ae3bca994',1,'rightClickItemActionPerformed():&#160;UIPopup.cpp'],['../UIPopup_8h.html#ab6fe7188ec00c055299f079ae3bca994',1,'rightClickItemActionPerformed():&#160;UIPopup.cpp']]],
   ['rightclickportraitxmax_94',['RightClickPortraitXmax',['../UIPopup_8cpp.html#a1e0bb2e5df8caceb874ccbac8afb592b',1,'UIPopup.cpp']]],
   ['rightclickportraitxmin_95',['RightClickPortraitXmin',['../UIPopup_8cpp.html#a271bcf3fdc5ff14473042faddbd0cfa3',1,'UIPopup.cpp']]],
-  ['riogrande_96',['RioGrande',['../classColorTable.html#a81f2d91c73ff2c302ee544bfa2b43c0f',1,'ColorTable']]],
+  ['riogrande_96',['RioGrande',['../classColorTable.html#aa58f8586ab105fa9a9283df783386377',1,'ColorTable']]],
   ['rotation_5fspeed_97',['rotation_speed',['../structParticle.html#afc3be85262f36cb5f78cf3a51d8e61b3',1,'Particle']]]
 ];

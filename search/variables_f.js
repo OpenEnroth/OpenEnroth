@@ -21,7 +21,7 @@ var searchData=
   ['opponents_5fturn_18',['opponents_turn',['../Arcomage_8cpp.html#a0baedb8d9f104c2b021dfea21fc2ee8e',1,'Arcomage.cpp']]],
   ['options_19',['Options',['../classGameConfig_1_1Keybindings.html#a99c8c0f2bcd3fa18732ddc4e3c264761',1,'GameConfig::Keybindings::Options()'],['../classGameConfig_1_1Gamepad.html#a2b168dd69901fbac93342c5eb53bccbe',1,'GameConfig::Gamepad::Options()']]],
   ['options_5fmenu_5fskin_20',['options_menu_skin',['../UIGame_8cpp.html#aad8fee78c22b710592f9800e5126ede8',1,'options_menu_skin():&#160;UIGame.cpp'],['../Image_8h.html#aad8fee78c22b710592f9800e5126ede8',1,'options_menu_skin():&#160;UIGame.cpp']]],
-  ['orangeyred_21',['OrangeyRed',['../classColorTable.html#ac38b9acb9f35ffdf4d94d5dc899c4d2e',1,'ColorTable']]],
+  ['orangeyred_21',['OrangeyRed',['../classColorTable.html#ad3310ee3bf23f12ff7f0d711b3a7e0d1',1,'ColorTable']]],
   ['outbuildshader_22',['outbuildshader',['../classRenderOpenGL.html#a34f0647b67bd25cdcf85b4434cbbc72d',1,'RenderOpenGL']]],
   ['outbuildshaderstore_23',['outbuildshaderstore',['../RenderOpenGL_8cpp.html#a5ac3e3cca82e7ed13ae95548f2b8257f',1,'RenderOpenGL.cpp']]],
   ['outbuildtexmap_24',['outbuildtexmap',['../classRenderOpenGL.html#a5005e63368d5221e6e7c86ba3cc25a6a',1,'RenderOpenGL']]],

@@ -169,7 +169,7 @@ var searchData=
   ['options_5fmenu_5fskin_166',['options_menu_skin',['../Image_8h.html#aad8fee78c22b710592f9800e5126ede8',1,'options_menu_skin():&#160;UIGame.cpp'],['../UIGame_8cpp.html#aad8fee78c22b710592f9800e5126ede8',1,'options_menu_skin():&#160;UIGame.cpp']]],
   ['optionsmenuskin_167',['OptionsMenuSkin',['../structOptionsMenuSkin.html',1,'OptionsMenuSkin'],['../structOptionsMenuSkin.html#a4f1b33b50a216c82b73e857e3ce10b90',1,'OptionsMenuSkin::OptionsMenuSkin()']]],
   ['oracledialogue_168',['OracleDialogue',['../GUIWindow_8cpp.html#ac9811e84ae49203948b4fe17c3322f86',1,'OracleDialogue():&#160;GUIWindow.cpp'],['../GUIWindow_8h.html#ac9811e84ae49203948b4fe17c3322f86',1,'OracleDialogue():&#160;GUIWindow.cpp']]],
-  ['orangeyred_169',['OrangeyRed',['../classColorTable.html#ac38b9acb9f35ffdf4d94d5dc899c4d2e',1,'ColorTable']]],
+  ['orangeyred_169',['OrangeyRed',['../classColorTable.html#ad3310ee3bf23f12ff7f0d711b3a7e0d1',1,'ColorTable']]],
   ['orientations_170',['orientations',['../classPlatformWindow.html#aafd03f0e345d23c1eb1dfdd8b8f0313a',1,'PlatformWindow::orientations()'],['../classSdlWindow.html#ae1cd18fa23d48f1448971e8638d51f45',1,'SdlWindow::orientations()'],['../classProxyWindow.html#a2c2d0b6d6b155a59926c9dc3081c7880',1,'ProxyWindow::orientations()']]],
   ['os_5fgetappstringrecursive_171',['OS_GetAppStringRecursive',['../WinPlatform_8cpp.html#accc93512f07d76ba8fd42baf6e3bc552',1,'WinPlatform.cpp']]],
   ['otherside_172',['otherSide',['../structEngineControlStateHandle_1_1SharedData.html#a5f68c0e26a5caa87dd15e53d9b162daf',1,'EngineControlStateHandle::SharedData']]],
