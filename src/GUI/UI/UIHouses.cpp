@@ -2030,7 +2030,6 @@ void GUIWindow_House::houseDialogManager() {
           case BuildingType_LightGuild:
           case BuildingType_DarkGuild:
           case BuildingType_MirroredPath:
-            //GuildDialog();
             houseSpecificDialogue();
             break;
           case BuildingType_MercenaryGuild:
@@ -2043,11 +2042,9 @@ void GUIWindow_House::houseDialogManager() {
             TavernDialog();
             break;
           case BuildingType_Bank:
-            //BankDialog();
             houseSpecificDialogue();
             break;
           case BuildingType_Temple:
-            //TempleDialog();
             houseSpecificDialogue();
             break;
           case BuildingType_Stables:
