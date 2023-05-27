@@ -128,7 +128,7 @@ void RenderBase::DrawSpriteObjects() {
         int z = object->vPosition.z;
 
         // view culling
-        if (uCurrentlyLoadedLevelType == LEVEL_Indoor) {
+        if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
             bool onlist = false;
             for (uint j = 0; j < pBspRenderer->uNumVisibleNotEmptySectors; j++) {
                 if (pBspRenderer->pVisibleSectorIDs_toDrawDecorsActorsEtcFrom[j] == object->uSectorID) {
@@ -450,7 +450,7 @@ void RenderBase::TransformBillboard(SoftwareBillboard *pSoftBillboard, RenderBil
     unsigned int diffuse = ::GetActorTintColor(dimming_level, 0, pSoftBillboard->screen_space_z, 0, pBillboard);
 
     bool opaquetest{ false };
-    if (uCurrentlyLoadedLevelType == LEVEL_Outdoor) {
+    if (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR) {
         opaquetest = pSoftBillboard->sTintColor & 0xFF000000;
     } else {
         opaquetest = dimming_level & 0xFF000000;
@@ -679,7 +679,7 @@ void RenderBase::DrawMasked(float u, float v, Image *pTexture, unsigned int colo
     int b = ((mask >> 16) & 0xFF) & (0xFF >> color_dimming_level);
     int g = ((mask >> 8) & 0xFF) & (0xFF >> color_dimming_level);
     int r = ((mask) & 0xFF) & (0xFF >> color_dimming_level);
-    mask = color32(r, g, b);
+    mask = Color(r, g, b).c32();
 
     DrawTextureNew(u, v, pTexture, mask);
     return;

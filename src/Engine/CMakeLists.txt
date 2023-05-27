@@ -60,6 +60,7 @@ target_link_libraries(engine
         library_compression
         library_logger
         library_serialization
+        library_color
         utility)
 
 target_compile_definitions(engine PRIVATE

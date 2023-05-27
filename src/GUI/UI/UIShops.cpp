@@ -13,6 +13,7 @@
 #include "Engine/Party.h"
 #include "Engine/PriceCalculator.h"
 #include "Engine/Tables/AwardTable.h"
+#include "Engine/Tables/MerchantTable.h"
 
 #include "GUI/GUIWindow.h"
 #include "GUI/GUIButton.h"
@@ -53,7 +54,7 @@ void ShopDialogMain(GUIWindow dialogwin) {
 
         int pNumString = 0;
         GUIButton *pButton;
-        int pColorText;
+        Color pColorText;
 
         for (int i = pDialogueWindow->pStartingPosActiveItem;
              i < pDialogueWindow->pNumPresenceButton +
@@ -69,9 +70,9 @@ void ShopDialogMain(GUIWindow dialogwin) {
                          1;
             pButton->uW = textoffset + 6;
 
-            pColorText = colorTable.Jonquil.c16();
+            pColorText = colorTable.Jonquil;
             if (pDialogueWindow->pCurrentPosActiveItem != i)
-                pColorText = colorTable.White.c16();
+                pColorText = colorTable.White;
 
             dialogwin.DrawTitleText(pFontArrus, 0, pButton->uY, pColorText,
                                     pShopOptions[pNumString], 3);
@@ -106,7 +107,7 @@ void ShopDialogDisplayEquip(GUIWindow dialogwin,
 
     int pNumString = 0;
     GUIButton *pButton;
-    int pColorText;
+    Color pColorText;
 
     for (int i = pDialogueWindow->pStartingPosActiveItem;
          i < pDialogueWindow->pNumPresenceButton +
@@ -122,9 +123,9 @@ void ShopDialogDisplayEquip(GUIWindow dialogwin,
                      1;
         pButton->uW = textoffset + 6;
 
-        pColorText = colorTable.Jonquil.c16();
+        pColorText = colorTable.Jonquil;
         if (pDialogueWindow->pCurrentPosActiveItem != i)
-            pColorText = colorTable.White.c16();
+            pColorText = colorTable.White;
         dialogwin.DrawTitleText(pFontArrus, 0, pButton->uY, pColorText,
                                 pShopOptions[pNumString], 3);
         ++pNumString;
@@ -136,7 +137,7 @@ void ShopDialogSellEquip(GUIWindow dialogwin, BuildingType building) {
     CharacterUI_InventoryTab_Draw(&pParty->activeCharacter(), true);
 
     if (HouseUI_CheckIfPlayerCanInteract()) {
-        GameUI_StatusBar_DrawImmediate(localization->GetString(LSTR_SELECT_ITEM_TO_SELL), 0);
+        GameUI_StatusBar_DrawImmediate(localization->GetString(LSTR_SELECT_ITEM_TO_SELL), Color());
 
         Pointi pt = dialogwin.mouse->GetCursorPos();
 
@@ -158,7 +159,7 @@ void ShopDialogSellEquip(GUIWindow dialogwin, BuildingType building) {
                                     (SIDE_TEXT_BOX_BODY_TEXT_HEIGHT - pFontArrus->CalcTextHeight(
                                                str, dialogwin.uFrameWidth, 0)) /
                                             2 +
-                                        SIDE_TEXT_BOX_BODY_TEXT_OFFSET, colorTable.White.c16(), str, 3);
+                                        SIDE_TEXT_BOX_BODY_TEXT_OFFSET, colorTable.White, str, 3);
         }
     }
 }
@@ -168,7 +169,7 @@ void ShopDialogIdentify(GUIWindow dialogwin, BuildingType building) {
     CharacterUI_InventoryTab_Draw(&pParty->activeCharacter(), true);
 
     if (HouseUI_CheckIfPlayerCanInteract()) {
-        GameUI_StatusBar_DrawImmediate(localization->GetString(LSTR_SELECT_ITEM_TO_IDENTIFY), 0);
+        GameUI_StatusBar_DrawImmediate(localization->GetString(LSTR_SELECT_ITEM_TO_IDENTIFY), Color());
 
         Pointi pt = EngineIocContainer::ResolveMouse()->GetCursorPos();
 
@@ -193,7 +194,7 @@ void ShopDialogIdentify(GUIWindow dialogwin, BuildingType building) {
             }
 
             dialogwin.DrawTitleText(pFontArrus, 0,
-                (SIDE_TEXT_BOX_BODY_TEXT_HEIGHT - pFontArrus->CalcTextHeight(str, dialogwin.uFrameWidth, 0)) / 2 + SIDE_TEXT_BOX_BODY_TEXT_OFFSET, colorTable.White.c16(), str, 3);
+                (SIDE_TEXT_BOX_BODY_TEXT_HEIGHT - pFontArrus->CalcTextHeight(str, dialogwin.uFrameWidth, 0)) / 2 + SIDE_TEXT_BOX_BODY_TEXT_OFFSET, colorTable.White, str, 3);
         }
     }
 }
@@ -203,7 +204,7 @@ void ShopDialogRepair(GUIWindow dialogwin, BuildingType building) {
     CharacterUI_InventoryTab_Draw(&pParty->activeCharacter(), true);
 
     if (HouseUI_CheckIfPlayerCanInteract()) {
-        GameUI_StatusBar_DrawImmediate(localization->GetString(LSTR_SELECT_ITEM_TO_REPAIR), 0);
+        GameUI_StatusBar_DrawImmediate(localization->GetString(LSTR_SELECT_ITEM_TO_REPAIR), Color());
 
         Pointi pt = dialogwin.mouse->GetCursorPos();
 
@@ -224,7 +225,7 @@ void ShopDialogRepair(GUIWindow dialogwin, BuildingType building) {
                 pMerchantsRepairPhrases[phrases_id], pParty->activeCharacterIndex() - 1, item,
                 window_SpeakInHouse->wData.val, 5);
             dialogwin.DrawTitleText(pFontArrus, 0,
-                (SIDE_TEXT_BOX_BODY_TEXT_HEIGHT - pFontArrus->CalcTextHeight(str, dialogwin.uFrameWidth, 0)) / 2 + SIDE_TEXT_BOX_BODY_TEXT_OFFSET, colorTable.White.c16(), str, 3);
+                (SIDE_TEXT_BOX_BODY_TEXT_HEIGHT - pFontArrus->CalcTextHeight(str, dialogwin.uFrameWidth, 0)) / 2 + SIDE_TEXT_BOX_BODY_TEXT_OFFSET, colorTable.White, str, 3);
         }
     }
 }
@@ -296,9 +297,9 @@ void WeaponShopWares(GUIWindow dialogwin, bool special) {
         }
 
         if (isStealingModeActive())
-            GameUI_StatusBar_DrawImmediate(localization->GetString(LSTR_STEAL_ITEM), 0);
+            GameUI_StatusBar_DrawImmediate(localization->GetString(LSTR_STEAL_ITEM), Color());
         else
-            GameUI_StatusBar_DrawImmediate(localization->GetString(LSTR_SELECT_ITEM_TO_BUY), 0);
+            GameUI_StatusBar_DrawImmediate(localization->GetString(LSTR_SELECT_ITEM_TO_BUY), Color());
 
         if (item_num) {  // this shoudl go into func??
             Pointi pt = EngineIocContainer::ResolveMouse()->GetCursorPos();
@@ -342,7 +343,7 @@ void WeaponShopWares(GUIWindow dialogwin, bool special) {
                                 (SIDE_TEXT_BOX_BODY_TEXT_HEIGHT - pFontArrus->CalcTextHeight(
                                            str, dialogwin.uFrameWidth, 0)) /
                                         2 +
-                                    SIDE_TEXT_BOX_BODY_TEXT_OFFSET, colorTable.White.c16(), str, 3);
+                                    SIDE_TEXT_BOX_BODY_TEXT_OFFSET, colorTable.White, str, 3);
                         }
                     }
                 }
@@ -444,9 +445,9 @@ void ArmorShopWares(GUIWindow dialogwin, bool special) {
         }
 
         if (!isStealingModeActive()) {
-            GameUI_StatusBar_DrawImmediate(localization->GetString(LSTR_SELECT_ITEM_TO_BUY), 0);
+            GameUI_StatusBar_DrawImmediate(localization->GetString(LSTR_SELECT_ITEM_TO_BUY), Color());
         } else {
-            GameUI_StatusBar_DrawImmediate(localization->GetString(LSTR_STEAL_ITEM), 0);
+            GameUI_StatusBar_DrawImmediate(localization->GetString(LSTR_STEAL_ITEM), Color());
         }
 
         if (pItemCount) {  // this should go into func??
@@ -502,7 +503,7 @@ void ArmorShopWares(GUIWindow dialogwin, bool special) {
                             }
                             dialogwin.DrawTitleText(
                                 pFontArrus, 0,
-                                (SIDE_TEXT_BOX_BODY_TEXT_HEIGHT - pFontArrus->CalcTextHeight(str, dialogwin.uFrameWidth, 0)) / 2 + SIDE_TEXT_BOX_BODY_TEXT_OFFSET, colorTable.White.c16(), str, 3);
+                                (SIDE_TEXT_BOX_BODY_TEXT_HEIGHT - pFontArrus->CalcTextHeight(str, dialogwin.uFrameWidth, 0)) / 2 + SIDE_TEXT_BOX_BODY_TEXT_OFFSET, colorTable.White, str, 3);
                         }
                     }
                 }
@@ -618,9 +619,9 @@ void AlchemyMagicShopWares(GUIWindow dialogwin, BuildingType building,
         }
 
         if (isStealingModeActive()) {
-            GameUI_StatusBar_DrawImmediate(localization->GetString(LSTR_STEAL_ITEM), 0);
+            GameUI_StatusBar_DrawImmediate(localization->GetString(LSTR_STEAL_ITEM), Color());
         } else {
-            GameUI_StatusBar_DrawImmediate(localization->GetString(LSTR_SELECT_ITEM_TO_BUY), 0);
+            GameUI_StatusBar_DrawImmediate(localization->GetString(LSTR_SELECT_ITEM_TO_BUY), Color());
         }
 
         if (item_num) {
@@ -673,7 +674,7 @@ void AlchemyMagicShopWares(GUIWindow dialogwin, BuildingType building,
                                 (SIDE_TEXT_BOX_BODY_TEXT_HEIGHT - pFontArrus->CalcTextHeight(
                                            str, dialogwin.uFrameWidth, 0)) /
                                         2 +
-                                    SIDE_TEXT_BOX_BODY_TEXT_OFFSET, colorTable.White.c16(), str, 3);
+                                    SIDE_TEXT_BOX_BODY_TEXT_OFFSET, colorTable.White, str, 3);
                         }
                     }
                 }
@@ -1454,7 +1455,7 @@ void sub_4B1523_showSpellbookInfo(ITEM_TYPE spellItemId) {
     int v4;               // eax@4
     int v6;               // eax@10
     char *v7;             // ST44_4@12
-    uint16_t v8;  // ax@12
+    Color v8;  // ax@12
     int v13;              // [sp+6Ch] [bp-8h]@4
     int v14;              // [sp+70h] [bp-4h]@4
 
@@ -1508,16 +1509,16 @@ void sub_4B1523_showSpellbookInfo(ITEM_TYPE spellItemId) {
     v7 = pSpellStats->pInfos[spellId].name;
     a1.uFrameZ = a1.uFrameX + a1.uFrameWidth - 1;
     a1.uFrameW = a1.uFrameHeight + a1.uFrameY - 1;
-    v8 = colorTable.PaleCanary.c16();
+    v8 = colorTable.PaleCanary;
     a1.DrawTitleText(pFontArrus, 0x78u, 0xCu, v8, v7, 3u);
-    a1.DrawText(pFontSmallnum, {120, 44}, colorTable.Black.c16(), str, 0, 0, 0);
+    a1.DrawText(pFontSmallnum, {120, 44}, Color(), str, 0, 0, Color());
     a1.uFrameZ = a1.uFrameX + 107;
     a1.uFrameWidth = 108;
-    a1.DrawTitleText(pFontComic, 0xCu, 0x4Bu, 0,
+    a1.DrawTitleText(pFontComic, 0xCu, 0x4Bu, Color(),
                      localization->GetSkillName(static_cast<PLAYER_SKILL_TYPE>(spellSchool / 4 + 12)), 3u);
 
     str = fmt::format("{}\n{}", localization->GetString(LSTR_SP_COST), pSpellDatas[spellId].uNormalLevelMana);
-    a1.DrawTitleText(pFontComic, 0xCu, a1.uFrameHeight - pFontComic->GetHeight() - 16, 0, str, 3);
+    a1.DrawTitleText(pFontComic, 0xCu, a1.uFrameHeight - pFontComic->GetHeight() - 16, Color(), str, 3);
 }
 
 //----- (004B1D27) --------------------------------------------------------

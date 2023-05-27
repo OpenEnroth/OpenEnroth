@@ -10,6 +10,7 @@
 #include "Engine/MapInfo.h"
 #include "Engine/Party.h"
 #include "Engine/Time.h"
+#include "Engine/Tables/TransitionTable.h"
 
 #include "GUI/GUIButton.h"
 #include "GUI/UI/UITransition.h"
@@ -97,7 +98,7 @@ GUIWindow_Transition::GUIWindow_Transition(uint anim_id, uint exit_pic_id,
         }
         if (pMapStats->GetMapInfo(v15)) {
             transition_button_label = localization->FormatString(LSTR_FMT_ENTER_S, pMapStats->pInfos[pMapStats->GetMapInfo(v15)].pName.c_str());
-            if (uCurrentlyLoadedLevelType == LEVEL_Indoor && pParty->hasActiveCharacter() && pParty->GetRedOrYellowAlert())
+            if (uCurrentlyLoadedLevelType == LEVEL_INDOOR && pParty->hasActiveCharacter() && pParty->GetRedOrYellowAlert())
                 pParty->activeCharacter().playReaction(SPEECH_LeaveDungeon);
             if (IndoorLocation::GetLocationIndex(locationName))
                 uCurrentHouse_Animation = IndoorLocation::GetLocationIndex(locationName);
@@ -105,7 +106,7 @@ GUIWindow_Transition::GUIWindow_Transition(uint anim_id, uint exit_pic_id,
             transition_button_label = localization->FormatString(LSTR_FMT_ENTER_S, pMapStats->pInfos[pMapStats->GetMapInfo(v15)].pName.c_str());
             if (pAnimatedRooms[buildingTable[anim_id].uAnimationID].uRoomSoundId)
                 PlayHouseSound(anim_id, HouseSound_Greeting);
-            if (uCurrentlyLoadedLevelType == LEVEL_Indoor && pParty->hasActiveCharacter() && pParty->GetRedOrYellowAlert())
+            if (uCurrentlyLoadedLevelType == LEVEL_INDOOR && pParty->hasActiveCharacter() && pParty->GetRedOrYellowAlert())
                 pParty->activeCharacter().playReaction(SPEECH_LeaveDungeon);
             if (IndoorLocation::GetLocationIndex(locationName))
                 uCurrentHouse_Animation = IndoorLocation::GetLocationIndex(locationName);
@@ -115,7 +116,7 @@ GUIWindow_Transition::GUIWindow_Transition(uint anim_id, uint exit_pic_id,
             transition_button_label = localization->FormatString(LSTR_FMT_LEAVE_S, pMapStats->pInfos[pMapStats->GetMapInfo(pCurrentMapName)].pName.c_str());
             if (pAnimatedRooms[buildingTable[anim_id].uAnimationID].uRoomSoundId)
                 PlayHouseSound(anim_id, HouseSound_Greeting);
-            if (uCurrentlyLoadedLevelType == LEVEL_Indoor && pParty->hasActiveCharacter() && pParty->GetRedOrYellowAlert())
+            if (uCurrentlyLoadedLevelType == LEVEL_INDOOR && pParty->hasActiveCharacter() && pParty->GetRedOrYellowAlert())
                 pParty->activeCharacter().playReaction(SPEECH_LeaveDungeon);
             if (IndoorLocation::GetLocationIndex(locationName))
                 uCurrentHouse_Animation = IndoorLocation::GetLocationIndex(locationName);
@@ -123,7 +124,7 @@ GUIWindow_Transition::GUIWindow_Transition(uint anim_id, uint exit_pic_id,
             transition_button_label = localization->GetString(LSTR_DIALOGUE_EXIT);
             if ( pAnimatedRooms[buildingTable[anim_id].uAnimationID].uRoomSoundId)
                 PlayHouseSound(anim_id, HouseSound_Greeting);
-            if (uCurrentlyLoadedLevelType == LEVEL_Indoor && pParty->hasActiveCharacter() && pParty->GetRedOrYellowAlert())
+            if (uCurrentlyLoadedLevelType == LEVEL_INDOOR && pParty->hasActiveCharacter() && pParty->GetRedOrYellowAlert())
                 pParty->activeCharacter().playReaction(SPEECH_LeaveDungeon);
             if (IndoorLocation::GetLocationIndex(locationName))
                 uCurrentHouse_Animation = IndoorLocation::GetLocationIndex(locationName);
@@ -181,7 +182,7 @@ void GUIWindow_Travel::Update() {
         travel_window.uFrameWidth = 126;
         travel_window.uFrameZ = 366;
         travel_window.DrawTitleText(
-            pFontCreate, 0, 4, 0,
+            pFontCreate, 0, 4, Color(),
             pMapStats->pInfos[pMapStats->GetMapInfo(pDestinationMapName)].pName,
             3);
         travel_window.uFrameX = SIDE_TEXT_BOX_POS_X;
@@ -211,7 +212,7 @@ void GUIWindow_Travel::Update() {
              pFontCreate->CalcTextHeight(str, travel_window.uFrameWidth, 0)) /
                     2 +
                 101,
-            0, str, 3);
+            Color(), str, 3);
     }
 }
 
@@ -236,7 +237,7 @@ void GUIWindow_Transition::Update() {
     transition_window.uFrameX = 493;
     transition_window.uFrameWidth = 126;
     transition_window.uFrameZ = 366;
-    transition_window.DrawTitleText(pFontCreate, 0, 5, 0,
+    transition_window.DrawTitleText(pFontCreate, 0, 5, Color(),
                                     pMapStats->pInfos[map_id].pName, 3);
     transition_window.uFrameX = SIDE_TEXT_BOX_POS_X;
     transition_window.uFrameWidth = SIDE_TEXT_BOX_WIDTH;
@@ -250,7 +251,7 @@ void GUIWindow_Transition::Update() {
                 2 +
             101;
         transition_window.DrawTitleText(
-            pFontCreate, 0, v4, 0, pTransitionStrings[uCurrentHouse_Animation],
+            pFontCreate, 0, v4, Color(), pTransitionStrings[uCurrentHouse_Animation],
             3);
     } else if (map_id) {
         std::string str = localization->FormatString(
@@ -258,7 +259,7 @@ void GUIWindow_Transition::Update() {
             pMapStats->pInfos[map_id].pName.c_str());
         unsigned int v4 = (212 - pFontCreate->CalcTextHeight(
                                      str, transition_window.uFrameWidth, 0)) / 2 + 101;
-        transition_window.DrawTitleText(pFontCreate, 0, v4, 0, str, 3);
+        transition_window.DrawTitleText(pFontCreate, 0, v4, Color(), str, 3);
     } else {
         Error("Troubles in da house");
     }

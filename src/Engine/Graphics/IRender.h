@@ -9,7 +9,7 @@
 #include "Engine/Graphics/Texture.h"
 #include "Engine/OurMath.h"
 #include "Application/GameConfig.h"
-#include "Utility/Color.h"
+#include "Library/Color/Color.h"
 #include "Utility/Geometry/Rect.h"
 
 class Sprite;
@@ -214,7 +214,7 @@ class IRender {
     virtual void NuklearImageFree(Image *img) = 0;
 
     virtual Texture *CreateTexture_Paletted(const std::string &name) = 0;
-    virtual Texture *CreateTexture_ColorKey(const std::string &name, uint16_t colorkey) = 0;
+    virtual Texture *CreateTexture_ColorKey(const std::string &name, Color colorkey) = 0;
     virtual Texture *CreateTexture_Solid(const std::string &name) = 0;
     virtual Texture *CreateTexture_Alpha(const std::string &name) = 0;
 
@@ -247,7 +247,7 @@ class IRender {
 
     virtual void BeginLines2D() = 0;
     virtual void EndLines2D() = 0;
-    virtual void RasterLine2D(int uX, int uY, int uZ, int uW, uint32_t uColor32) = 0;
+    virtual void RasterLine2D(int uX, int uY, int uZ, int uW, Color uColor32) = 0;
     virtual void DrawLines(const RenderVertexD3D3 *vertices, unsigned int num_vertices) = 0;
 
     virtual void ClearZBuffer() = 0;
@@ -306,11 +306,11 @@ class IRender {
 
     virtual void BeginTextNew(Texture *main, Texture *shadow) = 0;
     virtual void EndTextNew() = 0;
-    virtual void DrawTextNew(int x, int y, int w, int h, float u1, float v1, float u2, float v2, int isshadow, uint16_t colour) = 0;
+    virtual void DrawTextNew(int x, int y, int w, int h, float u1, float v1, float u2, float v2, int isshadow, Color colour) = 0;
 
     virtual void FillRectFast(unsigned int uX, unsigned int uY,
                               unsigned int uWidth, unsigned int uHeight,
-                              uint32_t uColor32) = 0;
+                              Color uColor32) = 0;
 
     virtual void DrawOutdoorBuildings() = 0;
 

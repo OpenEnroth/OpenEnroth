@@ -49,9 +49,9 @@ void GUIWindow_Temple::mainDialogue() {
         pButton->uHeight = textHeight;
         pButton->uW = pButton->uY + textHeight - 1 + 6;
         allTextHeight = pButton->uW;
-        uint16_t textColor = colorTable.PaleCanary.c16();
+        Color textColor = colorTable.PaleCanary;
         if (pDialogueWindow->pCurrentPosActiveItem != index + 2) {
-            textColor = colorTable.White.c16();
+            textColor = colorTable.White;
         }
         temple_window.DrawTitleText(pFontArrus, 0, pButton->uY, textColor, pShopOptions[index], 3);
     }

@@ -210,13 +210,9 @@ std::array<const char *, 11> pHouse_ExitPictures = {{
     "istairup", "itrap",   "outside", "idoor",   "isecdoor"
 }};
 
-std::array<int16_t, 11> word_4E8152 = {{0, 0, 0, 90, 8, 2, 70, 20, 10, 50, 30}};  // level spawn monster levels ABC
-
 char _4E94D0_light_type = 5;  // stationary??
 char _4E94D2_light_type = 6;
 char _4E94D3_light_type = 10;
-// char *off_4EB080; // idb
-std::array<const char *, 465> pTransitionStrings = {{"", nullptr}};
 std::array<const char *, 25> pPlayerPortraitsNames = {{
     "pc01-", "pc02",  "pc03",  "pc04",  "pc05-", "pc06", "pc07",
     "pc08",  "pc09-", "pc10",  "pc11-", "pc12",  "pc13", "pc14",
@@ -2396,9 +2392,6 @@ IndexedArray<IndexedArray<PLAYER_SKILL_MASTERY, PLAYER_SKILL_FIRST, PLAYER_SKILL
         {PLAYER_SKILL_MISC, PLAYER_SKILL_MASTERY_NOVICE}
     }}
 }};
-std::array<short, 28> word_4EE150 = {{1,  2,  3,  4,  5,  7,  32, 33, 36, 37,
-                                      38, 40, 41, 42, 43, 45, 46, 47, 48, 49,
-                                      50, 51, 52, 53, 54, 55, 56, 60}};
 
 std::array<int16_t, 49> word_4F0754;
 std::array<std::pair<int16_t, ITEM_TYPE>, 27> _4F0882_evt_VAR_PlayerItemInHands_vals = {{
@@ -2447,10 +2440,8 @@ char byte_506550;
 int uLastPointedObjectID;
 int KeyboardPageNum;
 //int dword_506F1C;
-GUIButton *pBtn_ZoomOut;  // idb
-GUIButton *pBtn_ZoomIn;  // idb
-unsigned int uGameUIFontShadow;
-unsigned int uGameUIFontMain;
+Color uGameUIFontShadow;
+Color uGameUIFontMain;
 int dword_507B00_spell_info_to_draw_in_popup;
 int dword_507CC0_activ_ch;
 bool OpenedTelekinesis;
@@ -2470,7 +2461,6 @@ int AfterEnchClickEventSecondParam;
 int AfterEnchClickEventTimeout;
 // int dword_50C9E8; // idb
 // int dword_50C9EC[120];
-std::array<char, 54> party_has_equipment;
 
 unsigned int uNumBlueFacesInBLVMinimap;
 std::array<uint16_t, 50> pBlueFacesInBLVMinimapIDs;
@@ -2509,7 +2499,7 @@ int bDialogueUI_InitializeActor_NPC_ID;
 
 int dword_5C35D4;
 
-int ui_current_text_color;
+Color ui_current_text_color;
 int64_t qword_5C6DF0;
 
 struct FactionTable *pFactionTable;
@@ -2542,12 +2532,6 @@ std::string s_SavedMapName;  // idb
 char bNoNPCHiring = false;
 Vec3i blv_prev_party_pos;
 std::array<NPCTopic, 789> pNPCTopics;
-std::string pMerchantsTXT_Raw;
-IndexedArray<const char *, MERCHANT_PHRASE_FIRST, MERCHANT_PHRASE_LAST> pMerchantsBuyPhrases;
-IndexedArray<const char *, MERCHANT_PHRASE_FIRST, MERCHANT_PHRASE_LAST> pMerchantsSellPhrases;
-IndexedArray<const char *, MERCHANT_PHRASE_FIRST, MERCHANT_PHRASE_LAST> pMerchantsRepairPhrases;
-IndexedArray<const char *, MERCHANT_PHRASE_FIRST, MERCHANT_PHRASE_LAST> pMerchantsIdentifyPhrases;
-std::string pTransitionsTXT_Raw;
 std::vector<Vec3f> pTerrainNormals;
 std::array<unsigned short, 128 * 128 * 2> pTerrainNormalIndices;
 std::array<unsigned int, 128 * 128 * 2> pTerrainSomeOtherData;

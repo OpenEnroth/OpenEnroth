@@ -4,9 +4,9 @@
 #define DAY_ATTRIB_FOG 1
 
 enum class LEVEL_TYPE {
-    LEVEL_null = 0,
-    LEVEL_Indoor = 0x1,
-    LEVEL_Outdoor = 0x2,
+    LEVEL_NULL = 0,
+    LEVEL_INDOOR = 0x1,
+    LEVEL_OUTDOOR = 0x2,
 };
 using enum LEVEL_TYPE;
 

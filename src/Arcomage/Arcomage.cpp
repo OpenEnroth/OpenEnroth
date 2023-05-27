@@ -56,7 +56,7 @@ int ApplyDamageToBuildings(int player_num, int damage);
 void GameResultsApply();
 
 void am_DrawText(const std::string &str, Pointi *pXY);
-void DrawRect(Recti *pRect, uint32_t uColor, char bSolidFill);
+void DrawRect(Recti *pRect, Color uColor, char bSolidFill);
 
 struct ArcomageStartConditions {
     int16_t max_tower;
@@ -438,13 +438,13 @@ int new_explosion_effect(Pointi *startXY, int effect_value) {
 
 // TODO(pskelton): Hardcoded limit checks need changing
 void DrawSparks() {
-    uint32_t rgb_pixel_color{};
+    Color rgb_pixel_color;
 
     for (int i = 0; i < 10; ++i) {
         if (am_effects_array[i].have_effect && (am_effects_array[i].explosion_eff->IsEffectActive() == 2)) {
             // set the pixel color
-            rgb_pixel_color = colorTable.Green.c32();
-            if (!am_effects_array[i].effect_sign) rgb_pixel_color = colorTable.Red.c32();
+            rgb_pixel_color = colorTable.Green;
+            if (!am_effects_array[i].effect_sign) rgb_pixel_color = colorTable.Red;
 
             // draw sparks
             for (int j = 0; j < 150; ++j) {
@@ -568,7 +568,7 @@ bool ArcomageGame::LoadSprites() {
         for (int y = 0; y < pArcomageGame->pSprites->GetHeight(); ++y) {
             int index{ x + y * width };
             if (pix[index] == mask)
-                pix[index] = colorTable.Black.c32(0);
+                pix[index] = Color(0, 0, 0, 0).c32();
         }
     }
     render->Update_Texture(pArcomageGame->pSprites);
@@ -2019,7 +2019,7 @@ signed int DrawCardsRectangles(int player_num) {
     // draws the framing rectangle around cards on hover
     arcomage_mouse get_mouse;
     Recti pRect;
-    uint32_t color;
+    Color color;
 
     // only do for the human player
     if (am_Players[player_num].IsHisTurn) {
@@ -2047,9 +2047,9 @@ signed int DrawCardsRectangles(int player_num) {
                     // see if mouse is hovering
                     if (get_mouse.Inside(&pRect)) {
                         if (CanCardBePlayed(player_num, hand_index))
-                            color = colorTable.White.c32();  //белый цвет - white frame
+                            color = colorTable.White;  //белый цвет - white frame
                         else
-                            color = colorTable.Red.c32();  //красный цвет - red frame
+                            color = colorTable.Red;  //красный цвет - red frame
 
                         // draw outline and return
                         DrawRect(&pRect, color, 0);
@@ -2057,7 +2057,7 @@ signed int DrawCardsRectangles(int player_num) {
                     }
 
                     //рамка чёрного цвета - black frame
-                    DrawRect(&pRect, colorTable.Black.c32(), 0);
+                    DrawRect(&pRect, colorTable.Black, 0);
 
                     // unshift rectangle co ords
                     if (Player_Cards_Shift) {
@@ -2969,10 +2969,10 @@ void SetStartConditions() {
 }
 
 void am_DrawText(const std::string &str, Pointi *pXY) {
-    pPrimaryWindow->DrawText(pFontComic, {pXY->x, pXY->y - ((pFontComic->GetHeight() - 3) / 2) + 3}, 0, str, false, 0, 0);
+    pPrimaryWindow->DrawText(pFontComic, {pXY->x, pXY->y - ((pFontComic->GetHeight() - 3) / 2) + 3}, Color(), str, false, 0, Color());
 }
 
-void DrawRect(Recti *pRect, uint32_t uColor, char bSolidFill) {
+void DrawRect(Recti *pRect, Color uColor, char bSolidFill) {
     if (bSolidFill) {
         int width = pRect->w;
         int height = pRect->h;

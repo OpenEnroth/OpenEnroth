@@ -1268,7 +1268,7 @@ bool Player::CanTrainToNextLevel() {
 }
 
 //----- (0048D498) --------------------------------------------------------
-unsigned int Player::GetExperienceDisplayColor() {
+Color Player::GetExperienceDisplayColor() {
     if (CanTrainToNextLevel())
         return ui_character_bonus_text_color;
     else
@@ -3480,7 +3480,7 @@ void Player::resetTempBonuses() {
 }
 
 //----- (004907E7) --------------------------------------------------------
-unsigned int Player::GetStatColor(int uStat) const {
+Color Player::GetStatColor(int uStat) const {
     int attribute_value;  // edx@1
 
     int base_attribute_value = StatTable[GetRace()][uStat].uBaseValue;

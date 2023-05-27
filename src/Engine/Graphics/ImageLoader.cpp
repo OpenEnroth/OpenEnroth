@@ -39,7 +39,7 @@ uint32_t *MakeImageSolid(size_t width, size_t height,
             auto r = palette[(index * 3) + 0];
             auto g = palette[(index * 3) + 1];
             auto b = palette[(index * 3) + 2];
-            res[y * width + x] = color32(r, g, b);
+            res[y * width + x] = Color(r, g, b).c32();
         }
     }
 
@@ -57,9 +57,9 @@ uint32_t *MakeImageAlpha(size_t width, size_t height,
             auto g = palette[(index * 3) + 1];
             auto b = palette[(index * 3) + 2];
             if (index == 0) {
-                res[y * width + x] = color32(0, 0, 0, 0);
+                res[y * width + x] = Color(0, 0, 0, 0).c32();
             } else {
-                res[y * width + x] = color32(r, g, b);
+                res[y * width + x] = Color(r, g, b).c32();
             }
         }
     }
@@ -69,7 +69,7 @@ uint32_t *MakeImageAlpha(size_t width, size_t height,
 
 uint32_t *MakeImageColorKey(size_t width, size_t height,
                             uint8_t *pixels, uint8_t *palette,
-                            uint16_t color_key) {
+                            Color color_key) {
     uint32_t *res = new uint32_t[width * height];
 
     for (unsigned int y = 0; y < height; ++y) {
@@ -78,10 +78,10 @@ uint32_t *MakeImageColorKey(size_t width, size_t height,
             auto r = palette[(index * 3) + 0];
             auto g = palette[(index * 3) + 1];
             auto b = palette[(index * 3) + 2];
-            if (color16(r, g, b) == color_key) {
-                res[y * width + x] = color32(0, 0, 0, 0);
+            if (Color(r, g, b) == color_key) {
+                res[y * width + x] = 0;
             } else {
-                res[y * width + x] = color32(r, g, b);
+                res[y * width + x] = Color(r, g, b).c32();
             }
         }
     }
@@ -223,7 +223,7 @@ bool Alpha_LOD_Loader::Load(size_t *out_width, size_t *out_height,
     } else {
         *out_pixels = MakeImageColorKey(
             tex->header.uTextureWidth, tex->header.uTextureHeight,
-            tex->paletted_pixels, tex->pPalette24, colorTable.TealMask.c16());
+            tex->paletted_pixels, tex->pPalette24, colorTable.TealMask);
     }
 
     if (*out_pixels == nullptr) {

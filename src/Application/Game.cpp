@@ -755,7 +755,7 @@ void Game::processQueuedMessages() {
                                             rest_ui_hourglass_frame_current = nullptr;
                                         }
 
-                                        if (uCurrentlyLoadedLevelType == LEVEL_Outdoor) {
+                                        if (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR) {
                                             pOutdoor->UpdateSunlightVectors();
                                             pOutdoor->UpdateFog();
                                         }
@@ -1060,7 +1060,7 @@ void Game::processQueuedMessages() {
                         interactionPossible = pLevelDecorations[id].uEventID != 0;
                     }
                     if (type == OBJECT_Face) {
-                        if (uCurrentlyLoadedLevelType == LEVEL_Outdoor) {
+                        if (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR) {
                             ODMFace *pODMFace = &pOutdoor->pBModels[pid >> 9].pFaces[id];
                             interactionPossible = (pODMFace->Clickable() && pODMFace->sCogTriggeredID);
                         } else { // Indoor
@@ -1373,7 +1373,7 @@ void Game::processQueuedMessages() {
                         int x = atoi(frameTableTxtLine.pProperties[0]);
                         int y = atoi(frameTableTxtLine.pProperties[1]);
                         int z = atoi(frameTableTxtLine.pProperties[2]);
-                        if (uCurrentlyLoadedLevelType == LEVEL_Indoor) {
+                        if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
                             if (pIndoor->GetSector(x, y, z)) {
                                 pParty->vPosition.x = x;
                                 pParty->vPosition.y = y;
@@ -2049,7 +2049,7 @@ void Game::processQueuedMessages() {
                     ++viewparams->field_28;
                     viewparams->uMinimapZoom *= 2;
 
-                    if (uCurrentlyLoadedLevelType == LEVEL_Indoor) {
+                    if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
                         if (viewparams->uMinimapZoom > 4096) {
                             viewparams->uMinimapZoom = 4096;
                             viewparams->field_28 = 12;
@@ -2071,7 +2071,7 @@ void Game::processQueuedMessages() {
                     --viewparams->field_28;
                     viewparams->uMinimapZoom /= 2;
 
-                    if (uCurrentlyLoadedLevelType == LEVEL_Outdoor) {
+                    if (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR) {
                         if (viewparams->uMinimapZoom < 512) {
                             viewparams->uMinimapZoom = 512;
                             viewparams->field_28 = 9;

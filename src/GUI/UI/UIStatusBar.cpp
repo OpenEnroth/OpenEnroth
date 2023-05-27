@@ -101,7 +101,7 @@ void GameUI_StatusBar_Draw() {
     }
 }
 
-void GameUI_StatusBar_DrawImmediate(const std::string &str, int color) {
+void GameUI_StatusBar_DrawImmediate(const std::string &str, Color color) {
     render->DrawTextureNew(0, 352 / 480.0f, game_ui_statusbar);
     pPrimaryWindow->DrawText(pFontLucida, {pFontLucida->AlignText_Center(450, str) + 11, 357}, color, str);
 }

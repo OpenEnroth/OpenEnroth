@@ -52,164 +52,164 @@ int bRingsShownInCharScreen;  // 5118E0
 
 // TODO(pskelton): convert to color32
 
-unsigned int ui_mainmenu_copyright_color;
+Color ui_mainmenu_copyright_color;
 
-unsigned int ui_character_tooltip_header_default_color;
-unsigned int ui_character_default_text_color;
-unsigned int ui_character_skill_highlight_color;
-unsigned int ui_character_header_text_color;
-unsigned int ui_character_bonus_text_color;
-unsigned int ui_character_bonus_text_color_neg;
-unsigned int ui_character_skill_upgradeable_color;
-unsigned int ui_character_skill_default_color;
-unsigned int ui_character_stat_default_color;
-unsigned int ui_character_stat_buffed_color;
-unsigned int ui_character_stat_debuffed_color;
-unsigned int ui_character_skillinfo_can_learn;
-unsigned int ui_character_skillinfo_can_learn_gm;
-unsigned int ui_character_skillinfo_cant_learn;
-unsigned int ui_character_condition_normal_color;
-unsigned int ui_character_condition_light_color;
-unsigned int ui_character_condition_moderate_color;
-unsigned int ui_character_condition_severe_color;
-std::array<unsigned int, 6> ui_character_award_color;
+Color ui_character_tooltip_header_default_color;
+Color ui_character_default_text_color;
+Color ui_character_skill_highlight_color;
+Color ui_character_header_text_color;
+Color ui_character_bonus_text_color;
+Color ui_character_bonus_text_color_neg;
+Color ui_character_skill_upgradeable_color;
+Color ui_character_skill_default_color;
+Color ui_character_stat_default_color;
+Color ui_character_stat_buffed_color;
+Color ui_character_stat_debuffed_color;
+Color ui_character_skillinfo_can_learn;
+Color ui_character_skillinfo_can_learn_gm;
+Color ui_character_skillinfo_cant_learn;
+Color ui_character_condition_normal_color;
+Color ui_character_condition_light_color;
+Color ui_character_condition_moderate_color;
+Color ui_character_condition_severe_color;
+std::array<Color, 6> ui_character_award_color;
 
-unsigned int ui_game_minimap_outline_color;
-unsigned int ui_game_minimap_actor_friendly_color;
-unsigned int ui_game_minimap_actor_hostile_color;
-unsigned int ui_game_minimap_actor_corpse_color;
-unsigned int ui_game_minimap_decoration_color_1;
-unsigned int ui_game_minimap_projectile_color;
-unsigned int ui_game_minimap_treasure_color;
-std::array<unsigned int, 24> ui_game_character_record_playerbuff_colors;
+Color ui_game_minimap_outline_color;
+Color ui_game_minimap_actor_friendly_color;
+Color ui_game_minimap_actor_hostile_color;
+Color ui_game_minimap_actor_corpse_color;
+Color ui_game_minimap_decoration_color_1;
+Color ui_game_minimap_projectile_color;
+Color ui_game_minimap_treasure_color;
+std::array<Color, 24> ui_game_character_record_playerbuff_colors;
 
-unsigned int ui_gamemenu_video_gamma_title_color;
-unsigned int ui_gamemenu_keys_action_name_color;
-unsigned int ui_gamemenu_keys_key_selection_blink_color_1;
-unsigned int ui_gamemenu_keys_key_selection_blink_color_2;
-unsigned int ui_gamemenu_keys_key_default_color;
+Color ui_gamemenu_video_gamma_title_color;
+Color ui_gamemenu_keys_action_name_color;
+Color ui_gamemenu_keys_key_selection_blink_color_1;
+Color ui_gamemenu_keys_key_selection_blink_color_2;
+Color ui_gamemenu_keys_key_default_color;
 
-unsigned int ui_book_quests_title_color;
-unsigned int ui_book_quests_text_color;
-unsigned int ui_book_autonotes_title_color;
-unsigned int ui_book_autonotes_text_color;
-unsigned int ui_book_map_title_color;
-unsigned int ui_book_map_coordinates_color;
+Color ui_book_quests_title_color;
+Color ui_book_quests_text_color;
+Color ui_book_autonotes_title_color;
+Color ui_book_autonotes_text_color;
+Color ui_book_map_title_color;
+Color ui_book_map_coordinates_color;
 
-unsigned int ui_book_calendar_title_color;
-unsigned int ui_book_calendar_time_color;
-unsigned int ui_book_calendar_day_color;
-unsigned int ui_book_calendar_month_color;
-unsigned int ui_book_calendar_year_color;
-unsigned int ui_book_calendar_moon_color;
-unsigned int ui_book_calendar_location_color;
+Color ui_book_calendar_title_color;
+Color ui_book_calendar_time_color;
+Color ui_book_calendar_day_color;
+Color ui_book_calendar_month_color;
+Color ui_book_calendar_year_color;
+Color ui_book_calendar_moon_color;
+Color ui_book_calendar_location_color;
 
-unsigned int ui_book_journal_title_color;
-unsigned int ui_book_journal_text_color;
-unsigned int ui_book_journal_text_shadow;
+Color ui_book_journal_title_color;
+Color ui_book_journal_text_color;
+Color ui_book_journal_text_shadow;
 
-unsigned int ui_game_dialogue_npc_name_color;
-unsigned int ui_game_dialogue_option_highlight_color;
-unsigned int ui_game_dialogue_option_normal_color;
+Color ui_game_dialogue_npc_name_color;
+Color ui_game_dialogue_option_highlight_color;
+Color ui_game_dialogue_option_normal_color;
 
-unsigned int ui_house_player_cant_interact_color;
+Color ui_house_player_cant_interact_color;
 
 void set_default_ui_skin() {
-    ui_mainmenu_copyright_color = colorTable.White.c16();
+    ui_mainmenu_copyright_color = colorTable.White;
 
-    ui_character_tooltip_header_default_color = colorTable.PaleCanary.c16();
-    ui_character_default_text_color = colorTable.White.c16();
-    ui_character_header_text_color = colorTable.PaleCanary.c16();
-    ui_character_bonus_text_color = colorTable.Green.c16();
-    ui_character_bonus_text_color_neg = colorTable.Red.c16();
+    ui_character_tooltip_header_default_color = colorTable.PaleCanary;
+    ui_character_default_text_color = colorTable.White;
+    ui_character_header_text_color = colorTable.PaleCanary;
+    ui_character_bonus_text_color = colorTable.Green;
+    ui_character_bonus_text_color_neg = colorTable.Red;
 
-    ui_character_skill_upgradeable_color = color16(0, 175, 255);
-    ui_character_skill_default_color = colorTable.Red.c16();
-    ui_character_skill_highlight_color = colorTable.Red.c16();
+    ui_character_skill_upgradeable_color = Color(0, 175, 255); // TODO(captainurist): colortable?
+    ui_character_skill_default_color = colorTable.Red;
+    ui_character_skill_highlight_color = colorTable.Red;
 
-    ui_character_stat_default_color = colorTable.White.c16();
-    ui_character_stat_buffed_color = colorTable.Green.c16();
-    ui_character_stat_debuffed_color = colorTable.Scarlet.c16();
+    ui_character_stat_default_color = colorTable.White;
+    ui_character_stat_buffed_color = colorTable.Green;
+    ui_character_stat_debuffed_color = colorTable.Scarlet;
 
-    ui_character_skillinfo_can_learn = colorTable.White.c16();
-    ui_character_skillinfo_can_learn_gm = colorTable.Yellow.c16();
-    ui_character_skillinfo_cant_learn = colorTable.Red.c16();
+    ui_character_skillinfo_can_learn = colorTable.White;
+    ui_character_skillinfo_can_learn_gm = colorTable.Yellow;
+    ui_character_skillinfo_cant_learn = colorTable.Red;
 
-    ui_character_condition_normal_color = colorTable.White.c16();
-    ui_character_condition_light_color = colorTable.Green.c16();
-    ui_character_condition_moderate_color = colorTable.Sunflower.c16();
-    ui_character_condition_severe_color = colorTable.Scarlet.c16();
+    ui_character_condition_normal_color = colorTable.White;
+    ui_character_condition_light_color = colorTable.Green;
+    ui_character_condition_moderate_color = colorTable.Sunflower;
+    ui_character_condition_severe_color = colorTable.Scarlet;
 
-    ui_character_award_color[0] = colorTable.Magenta.c16();
-    ui_character_award_color[1] = colorTable.Malibu.c16();
-    ui_character_award_color[2] = colorTable.MoonRaker.c16();
-    ui_character_award_color[3] = colorTable.ScreaminGreen.c16();
-    ui_character_award_color[4] = colorTable.Canary.c16();
-    ui_character_award_color[5] = colorTable.Mimosa.c16();
+    ui_character_award_color[0] = colorTable.Magenta;
+    ui_character_award_color[1] = colorTable.Malibu;
+    ui_character_award_color[2] = colorTable.MoonRaker;
+    ui_character_award_color[3] = colorTable.ScreaminGreen;
+    ui_character_award_color[4] = colorTable.Canary;
+    ui_character_award_color[5] = colorTable.Mimosa;
 
-    ui_game_minimap_outline_color = colorTable.Blue.c16();
-    ui_game_minimap_actor_friendly_color = colorTable.Green.c16();
-    ui_game_minimap_actor_hostile_color = colorTable.Red.c16();
-    ui_game_minimap_actor_corpse_color = colorTable.Yellow.c16();
-    ui_game_minimap_decoration_color_1 = colorTable.White.c16();
-    ui_game_minimap_projectile_color = colorTable.Red.c16();
-    ui_game_minimap_treasure_color = colorTable.Blue.c16();
+    ui_game_minimap_outline_color = colorTable.Blue;
+    ui_game_minimap_actor_friendly_color = colorTable.Green;
+    ui_game_minimap_actor_hostile_color = colorTable.Red;
+    ui_game_minimap_actor_corpse_color = colorTable.Yellow;
+    ui_game_minimap_decoration_color_1 = colorTable.White;
+    ui_game_minimap_projectile_color = colorTable.Red;
+    ui_game_minimap_treasure_color = colorTable.Blue;
 
-    ui_game_character_record_playerbuff_colors[0] = colorTable.Anakiwa.c16();
-    ui_game_character_record_playerbuff_colors[1] = colorTable.Mercury.c16();
-    ui_game_character_record_playerbuff_colors[2] = colorTable.FlushOrange.c16();
-    ui_game_character_record_playerbuff_colors[3] = colorTable.Gray.c16();
-    ui_game_character_record_playerbuff_colors[4] = colorTable.Mercury.c16();
-    ui_game_character_record_playerbuff_colors[5] = colorTable.DarkOrange.c16();
-    ui_game_character_record_playerbuff_colors[6] = colorTable.FlushOrange.c16();
-    ui_game_character_record_playerbuff_colors[7] = colorTable.DarkOrange.c16();
-    ui_game_character_record_playerbuff_colors[8] = colorTable.Mercury.c16();
-    ui_game_character_record_playerbuff_colors[9] = colorTable.PurplePink.c16();
-    ui_game_character_record_playerbuff_colors[10] = colorTable.MoonRaker.c16();
-    ui_game_character_record_playerbuff_colors[11] = colorTable.Mercury.c16();
-    ui_game_character_record_playerbuff_colors[12] = colorTable.FlushOrange.c16();
-    ui_game_character_record_playerbuff_colors[13] = colorTable.Anakiwa.c16();
-    ui_game_character_record_playerbuff_colors[14] = colorTable.Gray.c16();
-    ui_game_character_record_playerbuff_colors[15] = colorTable.PaleCanary.c16();
-    ui_game_character_record_playerbuff_colors[16] = colorTable.PaleCanary.c16();
-    ui_game_character_record_playerbuff_colors[17] = colorTable.PaleCanary.c16();
-    ui_game_character_record_playerbuff_colors[18] = colorTable.PaleCanary.c16();
-    ui_game_character_record_playerbuff_colors[19] = colorTable.PaleCanary.c16();
-    ui_game_character_record_playerbuff_colors[20] = colorTable.PaleCanary.c16();
-    ui_game_character_record_playerbuff_colors[21] = colorTable.PaleCanary.c16();
-    ui_game_character_record_playerbuff_colors[22] = colorTable.AzureRadiance.c16();
-    ui_game_character_record_playerbuff_colors[23] = colorTable.AzureRadiance.c16();
+    ui_game_character_record_playerbuff_colors[0] = colorTable.Anakiwa;
+    ui_game_character_record_playerbuff_colors[1] = colorTable.Mercury;
+    ui_game_character_record_playerbuff_colors[2] = colorTable.FlushOrange;
+    ui_game_character_record_playerbuff_colors[3] = colorTable.Gray;
+    ui_game_character_record_playerbuff_colors[4] = colorTable.Mercury;
+    ui_game_character_record_playerbuff_colors[5] = colorTable.DarkOrange;
+    ui_game_character_record_playerbuff_colors[6] = colorTable.FlushOrange;
+    ui_game_character_record_playerbuff_colors[7] = colorTable.DarkOrange;
+    ui_game_character_record_playerbuff_colors[8] = colorTable.Mercury;
+    ui_game_character_record_playerbuff_colors[9] = colorTable.PurplePink;
+    ui_game_character_record_playerbuff_colors[10] = colorTable.MoonRaker;
+    ui_game_character_record_playerbuff_colors[11] = colorTable.Mercury;
+    ui_game_character_record_playerbuff_colors[12] = colorTable.FlushOrange;
+    ui_game_character_record_playerbuff_colors[13] = colorTable.Anakiwa;
+    ui_game_character_record_playerbuff_colors[14] = colorTable.Gray;
+    ui_game_character_record_playerbuff_colors[15] = colorTable.PaleCanary;
+    ui_game_character_record_playerbuff_colors[16] = colorTable.PaleCanary;
+    ui_game_character_record_playerbuff_colors[17] = colorTable.PaleCanary;
+    ui_game_character_record_playerbuff_colors[18] = colorTable.PaleCanary;
+    ui_game_character_record_playerbuff_colors[19] = colorTable.PaleCanary;
+    ui_game_character_record_playerbuff_colors[20] = colorTable.PaleCanary;
+    ui_game_character_record_playerbuff_colors[21] = colorTable.PaleCanary;
+    ui_game_character_record_playerbuff_colors[22] = colorTable.AzureRadiance;
+    ui_game_character_record_playerbuff_colors[23] = colorTable.AzureRadiance;
 
-    ui_gamemenu_video_gamma_title_color = colorTable.PaleCanary.c16();
-    ui_gamemenu_keys_action_name_color = colorTable.White.c16();
-    ui_gamemenu_keys_key_selection_blink_color_1 = colorTable.Temptress.c16();
-    ui_gamemenu_keys_key_selection_blink_color_2 = colorTable.Sunflower.c16();
-    ui_gamemenu_keys_key_default_color = colorTable.White.c16();
+    ui_gamemenu_video_gamma_title_color = colorTable.PaleCanary;
+    ui_gamemenu_keys_action_name_color = colorTable.White;
+    ui_gamemenu_keys_key_selection_blink_color_1 = colorTable.Temptress;
+    ui_gamemenu_keys_key_selection_blink_color_2 = colorTable.Sunflower;
+    ui_gamemenu_keys_key_default_color = colorTable.White;
 
-    ui_book_quests_title_color = colorTable.White.c16();
-    ui_book_quests_text_color = colorTable.White.c16();
-    ui_book_autonotes_title_color = colorTable.White.c16();
-    ui_book_autonotes_text_color = colorTable.White.c16();
-    ui_book_map_title_color = colorTable.White.c16();
-    ui_book_map_coordinates_color = colorTable.White.c16();
+    ui_book_quests_title_color = colorTable.White;
+    ui_book_quests_text_color = colorTable.White;
+    ui_book_autonotes_title_color = colorTable.White;
+    ui_book_autonotes_text_color = colorTable.White;
+    ui_book_map_title_color = colorTable.White;
+    ui_book_map_coordinates_color = colorTable.White;
 
-    ui_book_calendar_title_color = colorTable.White.c16();
-    ui_book_calendar_time_color = colorTable.Tundora.c16();
-    ui_book_calendar_day_color = colorTable.Tundora.c16();
-    ui_book_calendar_month_color = colorTable.Tundora.c16();
-    ui_book_calendar_year_color = colorTable.Tundora.c16();
-    ui_book_calendar_moon_color = colorTable.Tundora.c16();
-    ui_book_calendar_location_color = colorTable.Tundora.c16();
+    ui_book_calendar_title_color = colorTable.White;
+    ui_book_calendar_time_color = colorTable.Tundora;
+    ui_book_calendar_day_color = colorTable.Tundora;
+    ui_book_calendar_month_color = colorTable.Tundora;
+    ui_book_calendar_year_color = colorTable.Tundora;
+    ui_book_calendar_moon_color = colorTable.Tundora;
+    ui_book_calendar_location_color = colorTable.Tundora;
 
-    ui_book_journal_title_color = colorTable.White.c16();
-    ui_book_journal_text_color = colorTable.White.c16();
-    ui_book_journal_text_shadow = colorTable.Black.c16();
+    ui_book_journal_title_color = colorTable.White;
+    ui_book_journal_text_color = colorTable.White;
+    ui_book_journal_text_shadow = colorTable.Black; // TODO(captainurist): is it actually just Color()?
 
-    ui_game_dialogue_npc_name_color = colorTable.EasternBlue.c16();
-    ui_game_dialogue_option_highlight_color = colorTable.Sunflower.c16();
-    ui_game_dialogue_option_normal_color = colorTable.White.c16();
+    ui_game_dialogue_npc_name_color = colorTable.EasternBlue;
+    ui_game_dialogue_option_highlight_color = colorTable.Sunflower;
+    ui_game_dialogue_option_normal_color = colorTable.White;
 
-    ui_house_player_cant_interact_color = colorTable.PaleCanary.c16();
+    ui_house_player_cant_interact_color = colorTable.PaleCanary;
 }
 
 Image *paperdoll_drhs[4];
@@ -795,7 +795,7 @@ static int CharacterUI_SkillsTab_Draw__DrawSkillTable(
     Pointi pt = mouse->GetCursorPos();
 
     auto str = fmt::format("{}\r{:03}{}", skill_group_name, right_margin, localization->GetString(LSTR_LEVEL));
-    pGUIWindow_CurrentMenu->DrawText(pFontArrus, {x, y}, ui_character_header_text_color, str, 0, 0, 0);
+    pGUIWindow_CurrentMenu->DrawText(pFontArrus, {x, y}, ui_character_header_text_color, str, 0, 0, Color());
 
     int num_skills_drawn = 0;
     for (PLAYER_SKILL_TYPE skill : skill_list) {
@@ -814,8 +814,8 @@ static int CharacterUI_SkillsTab_Draw__DrawSkillTable(
 
             int skill_level = player->getSkillValue(skill).level();
 
-            uint skill_color = 0;
-            uint skill_mastery_color = 0;
+            Color skill_color;
+            Color skill_mastery_color;
             if (player->uSkillPoints > skill_level && skills_max_level[skill] != 1) {
                 skill_color = ui_character_skill_upgradeable_color;
             }
@@ -837,24 +837,24 @@ static int CharacterUI_SkillsTab_Draw__DrawSkillTable(
                 } else {
                     Strsk = fmt::format("{}\r{:03}{}", localization->GetSkillName(skill), right_margin, skill_level);
                 }
-                pGUIWindow_CurrentMenu->DrawText(pFontLucida, {x, button->uY}, skill_color, Strsk, 0, 0, 0);
+                pGUIWindow_CurrentMenu->DrawText(pFontLucida, {x, button->uY}, skill_color, Strsk, 0, 0, Color());
             } else {
                 const char *skill_level_str = skill_mastery == PLAYER_SKILL_MASTERY_NOVICE ? "" : localization->MasteryName(skill_mastery);
 
-                if (!skill_mastery_color) {
+                if (skill_mastery_color == Color()) {
                     skill_mastery_color = ui_character_header_text_color;
                 }
 
                 auto Strsk = fmt::format("{} \f{:05}{}\f{:05}\r{:03}{}",
-                        localization->GetSkillName(skill), skill_mastery_color, skill_level_str, skill_color, right_margin, skill_level);
-                pGUIWindow_CurrentMenu->DrawText(pFontLucida, {x, button->uY}, skill_color, Strsk, 0, 0, 0);
+                        localization->GetSkillName(skill), skill_mastery_color.c16(), skill_level_str, skill_color.c16(), right_margin, skill_level);
+                pGUIWindow_CurrentMenu->DrawText(pFontLucida, {x, button->uY}, skill_color, Strsk, 0, 0, Color());
             }
         }
     }
 
     if (!num_skills_drawn) {
         y_offset += pFontLucida->GetHeight() - 3;
-        pGUIWindow_CurrentMenu->DrawText(pFontLucida, {x, y_offset}, 0, localization->GetString(LSTR_NONE), 0, 0, 0);
+        pGUIWindow_CurrentMenu->DrawText(pFontLucida, {x, y_offset}, Color(), localization->GetString(LSTR_NONE), 0, 0, Color());
     }
 
     return y_offset;
@@ -867,12 +867,12 @@ void GUIWindow_CharacterRecord::CharacterUI_SkillsTab_Draw(Player *player) {
     auto str = fmt::format(
         "{} \f{:05}{}\f00000\r177{}: \f{:05}{}\f00000",  // ^Pv[]
                      localization->GetString(LSTR_SKILLS_FOR),
-                     ui_character_header_text_color, player->name.c_str(),
+                     ui_character_header_text_color.c16(), player->name.c_str(),
                      localization->GetString(LSTR_SKILL_POINTS),
-                     player->uSkillPoints ? ui_character_bonus_text_color
-                                          : ui_character_default_text_color,
+                     player->uSkillPoints ? ui_character_bonus_text_color.c16()
+                                          : ui_character_default_text_color.c16(),
                      player->uSkillPoints);
-    pGUIWindow_CurrentMenu->DrawText(pFontArrus, {24, 18}, 0, str, 0, 0, 0);
+    pGUIWindow_CurrentMenu->DrawText(pFontArrus, {24, 18}, Color(), str, 0, 0, Color());
 
     int y = 2 * pFontLucida->GetHeight() + 13;
     y = CharacterUI_SkillsTab_Draw__DrawSkillTable(player, 24, y, WeaponSkills(), 400, localization->GetString(LSTR_WEAPONS));
@@ -975,9 +975,9 @@ void GUIWindow_CharacterRecord::CharacterUI_AwardsTab_Draw(Player *player) {
     render->DrawTextureNew(8 / 640.0f, 8 / 480.0f, ui_character_awards_background);
 
     std::string str = fmt::format("{} \f{:05}{}\f00000", localization->GetString(LSTR_AWARDS_FOR),
-                                  ui_character_header_text_color, NameAndTitle(player->name, player->classType));
+                                  ui_character_header_text_color.c16(), NameAndTitle(player->name, player->classType));
 
-    pGUIWindow_CurrentMenu->DrawText(pFontArrus, {24, 18}, 0, str, 0, 0, 0);
+    pGUIWindow_CurrentMenu->DrawText(pFontArrus, {24, 18}, Color(), str, 0, 0, Color());
 
 
     if (_awardsCharacterId != pParty->activeCharacterIndex()) {
@@ -988,7 +988,7 @@ void GUIWindow_CharacterRecord::CharacterUI_AwardsTab_Draw(Player *player) {
     for (int i = _startAwardElem; i < _achievedAwardsList.size(); ++i) {
         std::string str = getAchievedAwardsString(i);
 
-        window.DrawText(pFontArrus, {0, 0}, ui_character_award_color[pAwards[_achievedAwardsList[i]].uPriority % 6], str, 0, 0, 0);
+        window.DrawText(pFontArrus, {0, 0}, ui_character_award_color[pAwards[_achievedAwardsList[i]].uPriority % 6], str, 0, 0, Color());
         window.uFrameY = pFontArrus->CalcTextHeight(str, window.uFrameWidth, 0) + window.uFrameY + 8;
         currentlyDisplayedElems++;
         if (window.uFrameY > window.uFrameHeight) {
@@ -1442,19 +1442,6 @@ void CharacterUI_LoadPaperdollTextures() {
     paperdoll_dbrds[3] = assets->getImage_Solid("ib-cd4-d");
     paperdoll_dbrds[1] = assets->getImage_Solid("ib-cd5-d");
 
-    // TODO(captainurist): safe to delete?
-#if 0
-    for (uint i = 0; i < 54; ++i) {  // test equipment
-        party_has_equipment[i] = 0;
-        if (pParty->pPickedItem.uItemID != i + 66) {
-            for (uint j = 0; j < 4; ++j) {
-                if (pParty->pPlayers[j].hasItem(i + 66, 0))
-                    party_has_equipment[i] = 1;
-            }
-        }
-    }
-#endif
-
     auto loadTexture = [&](const auto &map, int itemIndex, int bodyIndex, int shoulderIndex) {
         std::string name = GetItemTextureFilename(*valuePtr(map, itemIndex), bodyIndex + 1, shoulderIndex);
         return assets->getImage_Alpha(name);
@@ -1578,156 +1565,156 @@ void GUIWindow_CharacterRecord::CharacterUI_StatsTab_Draw(Player *player) {
 
     auto str1 =
         fmt::format("\f{:05}{}\f00000\r180{}: \f{:05}{}\f00000\n\n\n",
-                    ui_character_header_text_color,
+                    ui_character_header_text_color.c16(),
                     NameAndTitle(player->name, player->classType),
                     localization->GetString(LSTR_SKILL_POINTS),
-                    player->uSkillPoints ? ui_character_bonus_text_color : ui_character_default_text_color,
+                    player->uSkillPoints ? ui_character_bonus_text_color.c16() : ui_character_default_text_color.c16(),
                     player->uSkillPoints);
-    pGUIWindow_CurrentMenu->DrawText(pFontArrus, {26, 18}, 0, str1);
+    pGUIWindow_CurrentMenu->DrawText(pFontArrus, {26, 18}, Color(), str1);
 
     // Left column
     auto formatLeftCol = [] (int lstr, int current, int max) {
         const char *str = localization->GetString(lstr);
-        int color16 = UI_GetHealthManaAndOtherQualitiesStringColor(current, max);
+        Color color16 = UI_GetHealthManaAndOtherQualitiesStringColor(current, max);
         if (max < 1000) {
-            return fmt::format("{}\f{:05}\r424{}\f00000 /\t185{}\n", str, color16, current, max);
+            return fmt::format("{}\f{:05}\r424{}\f00000 /\t185{}\n", str, color16.c16(), current, max);
         } else {
-            return fmt::format("{}\f{:05}\r388{}\f00000 / {}\n", str, color16, current, max);
+            return fmt::format("{}\f{:05}\r388{}\f00000 / {}\n", str, color16.c16(), current, max);
         }
     };
 
     int pY = 53;
-    pGUIWindow_CurrentMenu->DrawText(pFontArrus, {26, pY}, 0,
+    pGUIWindow_CurrentMenu->DrawText(pFontArrus, {26, pY}, Color(),
                                      formatLeftCol(LSTR_MIGHT, player->GetActualMight(), player->GetBaseStrength()));
     // TODO(captainurist): GetActualMight vs GetBaseStrength, we need consistent naming
 
     pY += pFontArrus->GetHeight() - 2;
-    pGUIWindow_CurrentMenu->DrawText(pFontArrus, {26, pY}, 0,
+    pGUIWindow_CurrentMenu->DrawText(pFontArrus, {26, pY}, Color(),
                                      formatLeftCol(LSTR_INTELLECT, player->GetActualIntelligence(), player->GetBaseIntelligence()));
 
     pY += pFontArrus->GetHeight() - 2;
-    pGUIWindow_CurrentMenu->DrawText(pFontArrus, {26, pY}, 0,
+    pGUIWindow_CurrentMenu->DrawText(pFontArrus, {26, pY}, Color(),
                                      formatLeftCol(LSTR_PERSONALITY, player->GetActualWillpower(), player->GetBaseWillpower()));
     // TODO(captainurist): LSTR_PERSONALITY vs GetActualWillpower, we need consistent naming
 
     pY += pFontArrus->GetHeight() - 2;
-    pGUIWindow_CurrentMenu->DrawText(pFontArrus, {26, pY}, 0,
+    pGUIWindow_CurrentMenu->DrawText(pFontArrus, {26, pY}, Color(),
                                      formatLeftCol(LSTR_ENDURANCE, player->GetActualEndurance(), player->GetBaseEndurance()));
 
     pY += pFontArrus->GetHeight() - 2;
-    pGUIWindow_CurrentMenu->DrawText(pFontArrus, {26, pY}, 0,
+    pGUIWindow_CurrentMenu->DrawText(pFontArrus, {26, pY}, Color(),
                                      formatLeftCol(LSTR_ACCURACY, player->GetActualAccuracy(), player->GetBaseAccuracy()));
 
     pY += pFontArrus->GetHeight() - 2;
-    pGUIWindow_CurrentMenu->DrawText(pFontArrus, {26, pY}, 0,
+    pGUIWindow_CurrentMenu->DrawText(pFontArrus, {26, pY}, Color(),
                                      formatLeftCol(LSTR_SPEED, player->GetActualSpeed(), player->GetBaseSpeed()));
 
     pY += pFontArrus->GetHeight() - 2;
-    pGUIWindow_CurrentMenu->DrawText(pFontArrus, {26, pY}, 0,
+    pGUIWindow_CurrentMenu->DrawText(pFontArrus, {26, pY}, Color(),
                                      formatLeftCol(LSTR_LUCK, player->GetActualLuck(), player->GetBaseLuck()));
 
     pY += 2 * pFontArrus->GetHeight() + 5;
-    pGUIWindow_CurrentMenu->DrawText(pFontArrus, {26, pY}, 0,
+    pGUIWindow_CurrentMenu->DrawText(pFontArrus, {26, pY}, Color(),
                                      formatLeftCol(LSTR_HIT_POINTS, player->health, player->GetMaxHealth()));
 
     pY += pFontArrus->GetHeight() - 2;
-    pGUIWindow_CurrentMenu->DrawText(pFontArrus, {26, pY}, 0,
+    pGUIWindow_CurrentMenu->DrawText(pFontArrus, {26, pY}, Color(),
                                      formatLeftCol(LSTR_SPELL_POINTS, player->mana, player->GetMaxMana()));
 
     pY += pFontArrus->GetHeight() - 2;
-    pGUIWindow_CurrentMenu->DrawText(pFontArrus, {26, pY}, 0,
+    pGUIWindow_CurrentMenu->DrawText(pFontArrus, {26, pY}, Color(),
                                      formatLeftCol(LSTR_ARMOR_CLASS, player->GetActualAC(), player->GetBaseAC()));
 
     pY += 2 * pFontArrus->GetHeight() - 2;
     auto str12 =
         fmt::format("{}: \f{:05}{}\n",
                      localization->GetString(LSTR_CONDITION),
-                     GetConditionDrawColor(player->GetMajorConditionIdx()),
+                     GetConditionDrawColor(player->GetMajorConditionIdx()).c16(),
                      localization->GetCharacterConditionName(player->GetMajorConditionIdx()));
-    pGUIWindow_CurrentMenu->DrawTextInRect(pFontArrus, {26, pY}, 0, str12, 226, 0);
+    pGUIWindow_CurrentMenu->DrawTextInRect(pFontArrus, {26, pY}, Color(), str12, 226, 0);
 
     pY += pFontArrus->GetHeight() + -1;
     const char *spellName = localization->GetString(LSTR_NONE);
     if (player->uQuickSpell != SPELL_NONE)
         spellName = pSpellStats->pInfos[player->uQuickSpell].pShortName;
     auto str13 = fmt::format("{}: {}", localization->GetString(LSTR_QUICK_SPELL), spellName);
-    pGUIWindow_CurrentMenu->DrawTextInRect(pFontArrus, {26, pY}, 0, str13, 226, 0);
+    pGUIWindow_CurrentMenu->DrawTextInRect(pFontArrus, {26, pY}, Color(), str13, 226, 0);
 
     // Right column
     auto formatRightCol = [] (int lstr, int current, int max, bool immune = false) {
         const char *str = localization->GetString(lstr);
-        int color16 = UI_GetHealthManaAndOtherQualitiesStringColor(current, max);
+        Color color16 = UI_GetHealthManaAndOtherQualitiesStringColor(current, max);
         if (immune) {
-            return fmt::format("{}\f{:05}\r180{}\n", str, color16, localization->GetString(LSTR_IMMUNE));
+            return fmt::format("{}\f{:05}\r180{}\n", str, color16.c16(), localization->GetString(LSTR_IMMUNE));
         } else {
             if (current < 100 && max < 100) {
-                return fmt::format("{}\f{:05}\t110{}\f00000 / {}\n", str, color16, current, max);
+                return fmt::format("{}\f{:05}\t110{}\f00000 / {}\n", str, color16.c16(), current, max);
             } else {
-                return fmt::format("{}\f{:05}\r180{}\f00000 / {}\n", str, color16, current, max);
+                return fmt::format("{}\f{:05}\r180{}\f00000 / {}\n", str, color16.c16(), current, max);
             }
         }
     };
 
     pY = 50;
-    pGUIWindow_CurrentMenu->DrawText(pFontArrus, {266, pY}, 0,
+    pGUIWindow_CurrentMenu->DrawText(pFontArrus, {266, pY}, Color(),
                                      formatRightCol(LSTR_AGE, player->GetActualAge(), player->GetBaseAge()));
 
     pY += pFontArrus->GetHeight() - 2;
-    pGUIWindow_CurrentMenu->DrawText(pFontArrus, {266, pY}, 0,
+    pGUIWindow_CurrentMenu->DrawText(pFontArrus, {266, pY}, Color(),
                                      formatRightCol(LSTR_LEVEL, player->GetActualLevel(), player->GetBaseLevel()));
 
     pY += pFontArrus->GetHeight() - 2;
     auto str16 =
         fmt::format("{}\r180\f{:05}{}\f00000\n\n",
                     localization->GetString(player->experience <= 9999999 ? LSTR_EXPERIENCE : LSTR_EXP),
-                    player->GetExperienceDisplayColor(), player->experience);
-    pGUIWindow_CurrentMenu->DrawText(pFontArrus, {266, pY}, 0, str16);
+                    player->GetExperienceDisplayColor().c16(), player->experience);
+    pGUIWindow_CurrentMenu->DrawText(pFontArrus, {266, pY}, Color(), str16);
 
     pY += 2 * pFontArrus->GetHeight();
-    pGUIWindow_CurrentMenu->DrawText(pFontArrus, {266, pY}, 0,
+    pGUIWindow_CurrentMenu->DrawText(pFontArrus, {266, pY}, Color(),
                                      fmt::format("{}\t100{:+}\n", localization->GetString(LSTR_ATTACK), player->GetActualAttack(false)));
 
     pY += pFontArrus->GetHeight() - 2;
-    pGUIWindow_CurrentMenu->DrawText(pFontArrus, {266, pY}, 0,
+    pGUIWindow_CurrentMenu->DrawText(pFontArrus, {266, pY}, Color(),
                                      fmt::format("{}\t100 {}\n", localization->GetString(LSTR_DAMAGE), player->GetMeleeDamageString()));
 
     pY += pFontArrus->GetHeight() - 2;
-    pGUIWindow_CurrentMenu->DrawText(pFontArrus, {266, pY}, 0,
+    pGUIWindow_CurrentMenu->DrawText(pFontArrus, {266, pY}, Color(),
                                      fmt::format("{}\t100{:+}\n", localization->GetString(LSTR_SHOOT), player->GetRangedAttack()));
 
     pY += pFontArrus->GetHeight() - 2;
-    pGUIWindow_CurrentMenu->DrawText(pFontArrus, {266, pY}, 0,
+    pGUIWindow_CurrentMenu->DrawText(pFontArrus, {266, pY}, Color(),
                                      fmt::format("{}\t100 {}\n\n", localization->GetString(LSTR_DAMAGE), player->GetRangedDamageString()));
 
     pY += 2 * pFontArrus->GetHeight() - 4;
-    pGUIWindow_CurrentMenu->DrawText(pFontArrus, {266, pY}, 0,
+    pGUIWindow_CurrentMenu->DrawText(pFontArrus, {266, pY}, Color(),
                                      formatRightCol(LSTR_FIRE, player->GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_FIRE),
                                                     player->GetBaseResistance(CHARACTER_ATTRIBUTE_RESIST_FIRE)));
 
     pY += pFontArrus->GetHeight() - 2;
-    pGUIWindow_CurrentMenu->DrawText(pFontArrus, {266, pY}, 0,
+    pGUIWindow_CurrentMenu->DrawText(pFontArrus, {266, pY}, Color(),
                                      formatRightCol(LSTR_AIR, player->GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_AIR),
                                                     player->GetBaseResistance(CHARACTER_ATTRIBUTE_RESIST_AIR)));
 
     pY += pFontArrus->GetHeight() - 2;
-    pGUIWindow_CurrentMenu->DrawText(pFontArrus, {266, pY}, 0,
+    pGUIWindow_CurrentMenu->DrawText(pFontArrus, {266, pY}, Color(),
                                      formatRightCol(LSTR_WATER, player->GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_WATER),
                                                     player->GetBaseResistance(CHARACTER_ATTRIBUTE_RESIST_WATER)));
 
     pY += pFontArrus->GetHeight() - 2;
-    pGUIWindow_CurrentMenu->DrawText(pFontArrus, {266, pY}, 0,
+    pGUIWindow_CurrentMenu->DrawText(pFontArrus, {266, pY}, Color(),
                                      formatRightCol(LSTR_EARTH, player->GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_EARTH),
                                                     player->GetBaseResistance(CHARACTER_ATTRIBUTE_RESIST_EARTH)));
 
     pY += pFontArrus->GetHeight() - 2;
     bool immuneToMind = player->classType == PLAYER_CLASS_LICH && player->GetBaseResistance(CHARACTER_ATTRIBUTE_RESIST_MIND) == 200;
-    pGUIWindow_CurrentMenu->DrawText(pFontArrus, {266, pY}, 0,
+    pGUIWindow_CurrentMenu->DrawText(pFontArrus, {266, pY}, Color(),
                                      formatRightCol(LSTR_MIND, player->GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_MIND),
                                                     player->GetBaseResistance(CHARACTER_ATTRIBUTE_RESIST_MIND), immuneToMind));
 
     pY += pFontArrus->GetHeight() - 2;
     bool immuneToBody = player->classType == PLAYER_CLASS_LICH && player->GetBaseResistance(CHARACTER_ATTRIBUTE_RESIST_BODY) == 200;
-    pGUIWindow_CurrentMenu->DrawText(pFontArrus, {266, pY}, 0,
+    pGUIWindow_CurrentMenu->DrawText(pFontArrus, {266, pY}, Color(),
                                      formatRightCol(LSTR_BODY, player->GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_BODY),
                                                     player->GetBaseResistance(CHARACTER_ATTRIBUTE_RESIST_BODY), immuneToBody));
 }

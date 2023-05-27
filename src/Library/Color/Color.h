@@ -1,43 +1,55 @@
 #pragma once
 
 #include <cstdint>
+#include <cstring>
 
-static uint16_t color16(uint8_t r, uint8_t g, uint8_t b) {
-    return (b >> (8 - 5)) | 0x7E0 & (g << (6 + 5 - 8)) | 0xF800 & (r << (6 + 5 + 5 - 8));
-}
 
-static uint32_t color32(uint8_t r, uint8_t g, uint8_t b, uint8_t a = 255) {
-    return (a << 24) | (b << 16) | (g << 8) | r;
-}
+/**
+ * Color in A8B8G8R8 format.
+ */
+struct Color {
+    uint8_t r = 0;
+    uint8_t g = 0;
+    uint8_t b = 0;
+    uint8_t a = 0;
 
-static uint32_t color32(uint16_t color16) {
-    uint16_t c = color16;
-    uint8_t b = (c & 31) * 8;
-    uint8_t g = ((c >> 5) & 63) * 4;
-    uint8_t r = ((c >> 11) & 31) * 8;
+    constexpr Color() = default;
+    constexpr Color(uint8_t r, uint8_t g, uint8_t b, uint8_t a = 255): r(r), g(g), b(b), a(a) {}
 
-    return color32(r, g, b);
-}
+    // TODO(captainurist): replace all calls with color constants
+    static Color fromC16(uint16_t color) {
+        if (color == 0)
+            return Color(); // TODO(captainurist): code in GUIFont relies on this.
+
+        Color result;
+        result.b = (color & 31) * 8;
+        result.g = ((color >> 5) & 63) * 4;
+        result.r = ((color >> 11) & 31) * 8;
+        result.a = 255;
+        return result;
+    }
+
+    [[nodiscard]] uint32_t c32() const {
+        uint32_t result;
+        memcpy(&result, this, 4);
+        return result;
+    }
+
+    // TODO(captainurist): replace with ColorTag & std::format spec?
+    [[nodiscard]] uint16_t c16() const {
+        return (b >> (8 - 5)) | (0x7E0 & (g << (6 + 5 - 8))) | (0xF800 & (r << (6 + 5 + 5 - 8)));
+    }
+
+    [[nodiscard]] Color withAlpha(uint8_t a) const {
+        Color result = *this;
+        result.a = a;
+        return result;
+    }
+
+    friend bool operator==(const Color &l, const Color &r) = default;
+};
 
 class ColorTable {
-    class Color {
-     public:
-        Color(uint8_t r, uint8_t g, uint8_t b) : r(r), g(g), b(b) {}
-
-        uint16_t c16() {
-            return color16(r, g, b);
-        }
-
-        uint32_t c32(uint8_t a = 255) {
-            return color32(r, g, b, a);
-        }
-
-     private:
-        uint8_t r;
-        uint8_t g;
-        uint8_t b;
-    };
-
  public:
     Color Anakiwa = Color(150, 212, 255);         // #96D4FF
     Color Aqua = Color(0, 247, 247);              // #00F7F7

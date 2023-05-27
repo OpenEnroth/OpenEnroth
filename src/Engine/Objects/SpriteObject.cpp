@@ -1337,7 +1337,7 @@ void UpdateObjects() {
                 }
                 if (!(object->uFlags & OBJECT_DESC_TEMPORARY) ||
                     pSpriteObjects[i].uSpriteFrameID < lifetime) {
-                    if (uCurrentlyLoadedLevelType == LEVEL_Indoor) {
+                    if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
                         SpriteObject::updateObjectBLV(i);
                     } else {
                         SpriteObject::updateObjectODM(i);

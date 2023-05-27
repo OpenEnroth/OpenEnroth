@@ -13,7 +13,7 @@ Camera3D *pCamera3D = new Camera3D;
 
 //----- (0043643E) --------------------------------------------------------
 float Camera3D::GetMouseInfoDepth() {
-    if (uCurrentlyLoadedLevelType == LEVEL_Outdoor)
+    if (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR)
         return engine->config->gameplay.MouseInfoDepthOutdoor.value();
     else
         return engine->config->gameplay.MouseInfoDepthIndoor.value();
@@ -261,7 +261,7 @@ void Camera3D::CreateViewMatrixAndProjectionScale() {
     // TODO(pskelton): fov calcs only need recalculating on level change or if we add config option
     // fov projection calcs
     unit_fov = 0.5 / tan(odm_fov_rad / 2.0);
-    if (uCurrentlyLoadedLevelType == LEVEL_Indoor)
+    if (uCurrentlyLoadedLevelType == LEVEL_INDOOR)
         unit_fov = 0.5 / tan(blv_fov_rad / 2.0);
 
     ViewPlaneDist_X = (double)pViewport->uScreenWidth * unit_fov;
@@ -281,7 +281,7 @@ void Camera3D::BuildViewFrustum() {
     float HalfAngleX = (pi / 2.0) - (odm_fov_rad / 2.0);
     float HalfAngleY = (pi / 2.0) - (atan((game_viewport_height / 2.0) / pCamera3D->ViewPlaneDist_X));
 
-    if (uCurrentlyLoadedLevelType == LEVEL_Indoor) {
+    if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
         HalfAngleX = (pi / 2.0) - (blv_fov_rad / 2.0);
     }
 

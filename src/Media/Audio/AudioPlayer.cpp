@@ -280,7 +280,7 @@ void AudioPlayer::playSound(SoundID eSoundID, int pid, unsigned int uNumRepeats,
         unsigned int object_id = PID_ID(pid);
         switch (object_type) {
             case OBJECT_Door: {
-                assert(uCurrentlyLoadedLevelType == LEVEL_Indoor);
+                assert(uCurrentlyLoadedLevelType == LEVEL_INDOOR);
                 assert((int)object_id < pIndoor->pDoors.size());
 
                 sample->SetPosition(pIndoor->pDoors[object_id].pXOffsets[0] / positionScaling,

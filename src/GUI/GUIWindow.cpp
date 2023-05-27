@@ -99,6 +99,10 @@ DIALOGUE_TYPE _dword_F8B1D8_last_npc_topic_menu;
 AwardType dword_F8B1AC_award_bit_number;
 PLAYER_SKILL_TYPE dword_F8B1AC_skill_being_taught; // Address the same as above --- splitting a union into two variables.
 
+std::array<short, 28> word_4EE150 = {{1,  2,  3,  4,  5,  7,  32, 33, 36, 37,
+                                      38, 40, 41, 42, 43, 45, 46, 47, 48, 49,
+                                      50, 51, 52, 53, 54, 55, 56, 60}};
+
 void SetCurrentMenuID(MENU_STATE uMenu) {
     sCurrentMenuID = uMenu;
     logger->warning("CurrentMenu = {} \n", toString(uMenu));
@@ -309,13 +313,9 @@ void GUIWindow::DrawMessageBox(bool inside_game_viewport) {
         uBoxHeight);
     if (!sHint.empty()) {
         current_window.DrawTitleText(
-            pFontLucida, 0,
-            (int)(uBoxHeight -
-                pFontLucida->CalcTextHeight(this->sHint,
-                    current_window.uFrameWidth, 0)) /
-            2 -
-            14,
-            0, this->sHint, 3);
+            pFontLucida,
+            0, (int)(uBoxHeight - pFontLucida->CalcTextHeight(this->sHint, current_window.uFrameWidth, 0)) / 2 - 14,
+            Color(), this->sHint, 3);
     }
 }
 
@@ -360,19 +360,19 @@ std::string MakeDateTimeString(GameTime time) {
 //----- (004B1854) --------------------------------------------------------
 void GUIWindow::DrawShops_next_generation_time_string(GameTime time) {
     auto str = MakeDateTimeString(time);
-    this->DrawTitleText(pFontArrus, 0, (212 - pFontArrus->CalcTextHeight(str, this->uFrameWidth, 0)) / 2 + 101, colorTable.PaleCanary.c16(), localization->GetString(LSTR_PLEASE_TRY_BACK_IN) + str, 3);
+    this->DrawTitleText(pFontArrus, 0, (212 - pFontArrus->CalcTextHeight(str, this->uFrameWidth, 0)) / 2 + 101, colorTable.PaleCanary, localization->GetString(LSTR_PLEASE_TRY_BACK_IN) + str, 3);
 }
 
 void GUIWindow::DrawTitleText(GUIFont *font, int horizontal_margin,
     int vertical_margin,
-    uint16_t uDefaultColor, const std::string &str,
+    Color uDefaultColor, const std::string &str,
     int line_spacing) {
     this->DrawTitleText(font, horizontal_margin, vertical_margin, uDefaultColor,
         str.c_str(), line_spacing);
 }
 
 //----- (0044D406) --------------------------------------------------------
-void GUIWindow::DrawTitleText(GUIFont *pFont, int uHorizontalMargin, int uVerticalMargin, uint16_t uDefaultColor, const char *pInString, int uLineSpacing) {
+void GUIWindow::DrawTitleText(GUIFont *pFont, int uHorizontalMargin, int uVerticalMargin, Color uDefaultColor, const char *pInString, int uLineSpacing) {
     int width = this->uFrameWidth - uHorizontalMargin;
     ui_current_text_color = uDefaultColor;
     std::string resString = pFont->FitTextInAWindow(pInString, this->uFrameWidth, uHorizontalMargin);
@@ -387,33 +387,30 @@ void GUIWindow::DrawTitleText(GUIFont *pFont, int uHorizontalMargin, int uVertic
     }
 }
 
-void GUIWindow::DrawText(GUIFont *font, Pointi position, uint16_t uFontColor,
-    const std::string &str, bool present_time_transparency,
-    int max_text_height, int uFontShadowColor) {
+void GUIWindow::DrawText(GUIFont *font, Pointi position, Color uFontColor, const std::string &str, bool present_time_transparency,
+                         int max_text_height, Color uFontShadowColor) {
     this->DrawText(font, position, uFontColor, str.c_str(),
         present_time_transparency, max_text_height,
         uFontShadowColor);
 }
 
 //----- (0044CE08) --------------------------------------------------------
-void GUIWindow::DrawText(GUIFont *font, Pointi position,
-    uint16_t uFontColor, const char *Str,
-    bool present_time_transparency, int max_text_height,
-    int uFontShadowColor) {
+void GUIWindow::DrawText(GUIFont *font, Pointi position, Color uFontColor, const char *Str,
+                         bool present_time_transparency, int max_text_height, Color uFontShadowColor) {
     font->DrawText(this, position, uFontColor, Str, present_time_transparency, max_text_height, uFontShadowColor);
 }
 
 int GUIWindow::DrawTextInRect(GUIFont *font, Pointi position,
-    unsigned int color, const char *text,
-    int rect_width, int reverse_text) {
+                              Color color, const char *text,
+                              int rect_width, int reverse_text) {
     std::string label = std::string(text);
     return DrawTextInRect(font, position, color, label, rect_width, reverse_text);
 }
 
 //----- (0044CB4F) --------------------------------------------------------
 int GUIWindow::DrawTextInRect(GUIFont *pFont, Pointi position,
-    unsigned int uColor, std::string &str, int rect_width,
-    int reverse_text) {
+                              Color uColor, std::string &str, int rect_width,
+                              int reverse_text) {
     return pFont->DrawTextInRect(this, position, uColor, str, rect_width, reverse_text);
 }
 
@@ -470,7 +467,7 @@ void GUIWindow::InitializeGUI() {
 void GUIWindow::DrawFlashingInputCursor(int uX, int uY, GUIFont *a2) {
     // TODO(pskelton): check tickcount usage here
     if (platform->tickCount() % 1000 > 500) {
-        DrawText(a2, {uX, uY}, 0, "_", 0, 0, 0);
+        DrawText(a2, {uX, uY}, Color(), "_", 0, 0, Color());
     }
 }
 
@@ -542,7 +539,7 @@ void OnButtonClick::Update() {
     GUIButton *pButton = static_cast<GUIButton *>(wData.ptr);
     render->DrawTextureNew(uFrameX / 640.0f, uFrameY / 480.0f, pButton->vTextures[0]);
     if (!sHint.empty()) {
-        pButton->DrawLabel(sHint, pFontCreate, 0, 0);
+        pButton->DrawLabel(sHint, pFontCreate, Color(), Color());
     }
     Release();
 }
@@ -559,7 +556,7 @@ void OnButtonClick2::Update() {
         }
     }
     if (!sHint.empty()) {
-        pButton->DrawLabel(sHint, pFontCreate, 0, 0);
+        pButton->DrawLabel(sHint, pFontCreate, Color(), Color());
     }
     Release();
 }
@@ -570,7 +567,7 @@ void OnButtonClick3::Update() {
     GUIButton *pButton = static_cast<GUIButton *>(wData.ptr);
     render->DrawTextureNew(uFrameX / 640.0f, uFrameY / 480.0f, pButton->vTextures[1]);
     if (!sHint.empty()) {
-        pButton->DrawLabel(sHint, pFontCreate, 0, 0);
+        pButton->DrawLabel(sHint, pFontCreate, Color(), Color());
     }
     Release();
 }
@@ -592,7 +589,7 @@ void OnSaveLoad::Update() {
     GUIButton *pButton = static_cast<GUIButton *>(wData.ptr);
     render->DrawTextureNew(uFrameX / 640.0f, uFrameY / 480.0f, pButton->vTextures[0]);
     if (!sHint.empty()) {
-        pButton->DrawLabel(sHint, pFontCreate, 0, 0);
+        pButton->DrawLabel(sHint, pFontCreate, Color(), Color());
     }
     Release();
 
@@ -610,7 +607,7 @@ void OnCancel::Update() {
     GUIButton *pGUIButton = static_cast<GUIButton *>(wData.ptr);
     render->DrawTextureNew(uFrameX / 640.0f, uFrameY / 480.0f, pGUIButton->vTextures[0]);
     if (!sHint.empty()) {
-        pGUIButton->DrawLabel(sHint, pFontCreate, 0, 0);
+        pGUIButton->DrawLabel(sHint, pFontCreate, Color(), Color());
     }
     Release();
 
@@ -624,7 +621,7 @@ void OnCancel2::Update() {
     GUIButton *pButton = static_cast<GUIButton *>(wData.ptr);
     render->DrawTextureNew(uFrameX / 640.0f, uFrameY / 480.0f, pButton->vTextures[1]);
     if (!sHint.empty()) {
-        pButton->DrawLabel(sHint, pFontCreate, 0, 0);
+        pButton->DrawLabel(sHint, pFontCreate, Color(), Color());
     }
     Release();
 
@@ -639,7 +636,7 @@ void OnCancel3::Update() {
     GUIButton *pButton = static_cast<GUIButton *>(wData.ptr);
     render->DrawTextureNew(uFrameX / 640.0f, uFrameY / 480.0f, pButton->vTextures[0]);
     if (!sHint.empty()) {
-        pButton->DrawLabel(sHint, pFontCreate, 0, 0);
+        pButton->DrawLabel(sHint, pFontCreate, Color(), Color());
     }
     Release();
 
@@ -698,8 +695,8 @@ void CreateScrollWindow() {
 
     char *v1 = pItemTable->pItems[pGUIWindow_ScrollWindow->scroll_type].name;
 
-    a1.DrawTitleText(pFontCreate, 0, 0, 0, fmt::format("\f{:05}{}\f00000\n", colorTable.PaleCanary.c16(), v1), 3);
-    a1.DrawText(pFontSmallnum, {1, pFontCreate->GetHeight() - 3}, 0, pMessageScrolls[pGUIWindow_ScrollWindow->scroll_type], 0, 0, 0);
+    a1.DrawTitleText(pFontCreate, 0, 0, Color(), fmt::format("\f{:05}{}\f00000\n", colorTable.PaleCanary.c16(), v1), 3);
+    a1.DrawText(pFontSmallnum, {1, pFontCreate->GetHeight() - 3}, Color(), pMessageScrolls[pGUIWindow_ScrollWindow->scroll_type], 0, 0, Color());
 }
 
 //----- (00467F48) --------------------------------------------------------
@@ -820,8 +817,8 @@ void SetUserInterface(PartyAlignment align, bool bReplace) {
             pUIAnum_Torchlight->icon = pIconsFrameTable->GetIcon("torchC");
             pIconsFrameTable->InitializeAnimation(pUIAnum_Torchlight->icon->id);
         }
-        uGameUIFontMain = color16(0xC8u, 0, 0);
-        uGameUIFontShadow = colorTable.Diesel.c16();
+        uGameUIFontMain = Color(0xC8u, 0, 0); // TODO(captainurist): color table
+        uGameUIFontShadow = colorTable.Diesel;
     } else if (align == PartyAlignment::PartyAlignment_Neutral) {
         if (bReplace) {
             game_ui_rightframe = assets->getImage_PCXFromIconsLOD("ib-r-a.pcx");
@@ -922,8 +919,8 @@ void SetUserInterface(PartyAlignment align, bool bReplace) {
             messagebox_border_top = assets->getImage_Alpha("edge_top");
             _591428_endcap = assets->getImage_ColorKey("endcap");
         }
-        uGameUIFontMain = color16(0xAu, 0, 0);
-        uGameUIFontShadow = colorTable.StarkWhite.c16();
+        uGameUIFontMain = Color(0xAu, 0, 0); // TODO(captainurist): color table
+        uGameUIFontShadow = colorTable.StarkWhite;
     } else if (align == PartyAlignment::PartyAlignment_Good) {
         if (bReplace) {
             game_ui_rightframe = assets->getImage_PCXFromIconsLOD("ib-r-B.pcx");
@@ -974,15 +971,15 @@ void SetUserInterface(PartyAlignment align, bool bReplace) {
             messagebox_border_top = assets->getImage_Alpha("edge_top-b");
             _591428_endcap = assets->getImage_ColorKey("endcap-b");
         }
-        uGameUIFontMain = color16(0, 0, 0xC8u);
-        uGameUIFontShadow = colorTable.White.c16();
+        uGameUIFontMain = Color(0, 0, 0xC8u); // TODO(captainurist): color table
+        uGameUIFontShadow = colorTable.White;
     } else {
         Error("Invalid alignment type: %u", align);
     }
 }
 
 void DrawBuff_remaining_time_string(int uY, GUIWindow *window, GameTime remaining_time, GUIFont *Font) {
-    window->DrawText(Font, {32, uY}, 0, "\r020" + MakeDateTimeString(remaining_time), 0, 0, 0);
+    window->DrawText(Font, {32, uY}, Color(), "\r020" + MakeDateTimeString(remaining_time), 0, 0, Color());
 }
 
 void GUIMessageQueue::AddMessageImpl(UIMessageType msg, int param,
@@ -1002,7 +999,7 @@ bool isHoldingMouseRightButton() {
     return holdingMouseRightButton;
 }
 
-unsigned int GetSkillColor(PLAYER_CLASS_TYPE uPlayerClass, PLAYER_SKILL_TYPE uPlayerSkillType, PLAYER_SKILL_MASTERY skill_mastery) {
+Color GetSkillColor(PLAYER_CLASS_TYPE uPlayerClass, PLAYER_SKILL_TYPE uPlayerSkillType, PLAYER_SKILL_MASTERY skill_mastery) {
     if (skillMaxMasteryPerClass[uPlayerClass][uPlayerSkillType] >= skill_mastery) {
         return ui_character_skillinfo_can_learn;
     }
@@ -2105,7 +2102,7 @@ void SeekKnowledgeElswhereDialogueOption(GUIWindow *dialogue, Player *player) {
     std::string str = SeekKnowledgeElswhereString(&pParty->activeCharacter());
     int text_height = pFontArrus->CalcTextHeight(str, dialogue->uFrameWidth, 0);
 
-    dialogue->DrawTitleText(pFontArrus, 0, (SIDE_TEXT_BOX_BODY_TEXT_HEIGHT - text_height) / 2 + SIDE_TEXT_BOX_BODY_TEXT_OFFSET, colorTable.PaleCanary.c16(), str, 3);
+    dialogue->DrawTitleText(pFontArrus, 0, (SIDE_TEXT_BOX_BODY_TEXT_HEIGHT - text_height) / 2 + SIDE_TEXT_BOX_BODY_TEXT_OFFSET, colorTable.PaleCanary, str, 3);
 }
 
 
@@ -2136,9 +2133,9 @@ void SkillTrainingDialogue(GUIWindow *dialogue, int num_skills_avaiable, int all
             pButton->uHeight = line_height;
             textoffset = pButton->uY + line_height - 1;
             pButton->uW = textoffset + 6;
-            int text_color = colorTable.PaleCanary.c16();
+            Color text_color = colorTable.PaleCanary;
             if (pDialogueWindow->pCurrentPosActiveItem != i) {
-                text_color = colorTable.White.c16();
+                text_color = colorTable.White;
             }
             dialogue->DrawTitleText(pFontArrus, 0, pButton->uY, text_color, localization->GetString(LSTR_BUY_SPELLS), 3);
         } else {
@@ -2152,7 +2149,7 @@ void SkillTrainingDialogue(GUIWindow *dialogue, int num_skills_avaiable, int all
             } else {
                 if (!drawnPrice) {
                     auto skill_price_label = localization->FormatString(LSTR_FMT_SKILL_COST_D, skill_price);
-                    dialogue->DrawTitleText(pFontArrus, 0, 146, 0, skill_price_label, 3);
+                    dialogue->DrawTitleText(pFontArrus, 0, 146, Color(), skill_price_label, 3);
                     drawnPrice = true;
                 }
                 auto skill_name_label = localization->GetSkillName(skill_id);
@@ -2161,9 +2158,9 @@ void SkillTrainingDialogue(GUIWindow *dialogue, int num_skills_avaiable, int all
                 pButton->uHeight = line_height;
                 pButton->uW = pButton->uY + line_height + 6 - 1;
                 textoffset += textspacings + line_height - 1;
-                int text_color = colorTable.Sunflower.c16();
+                Color text_color = colorTable.Sunflower;
                 if (pDialogueWindow->pCurrentPosActiveItem != i)
-                    text_color = colorTable.White.c16();
+                    text_color = colorTable.White;
                 dialogue->DrawTitleText(pFontArrus, 0, pButton->uY, text_color, skill_name_label, 3);
             }
         }

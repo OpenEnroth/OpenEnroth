@@ -341,11 +341,11 @@ void RenderOpenGL::EndLines2D() {
 }
 
 void RenderOpenGL::RasterLine2D(signed int uX, signed int uY, signed int uZ,
-                                signed int uW, uint32_t uColor32) {
-    float a = ((uColor32 >> 24) & 0xFF) / 255.0f;
-    float b = ((uColor32 >> 16) & 0xFF) / 255.0f;
-    float g = ((uColor32 >> 8) & 0xFF) / 255.0f;
-    float r = (uColor32 & 0xFF) / 255.0f;
+                                signed int uW, Color uColor32) {
+    float a = uColor32.a / 255.0f;
+    float b = uColor32.b / 255.0f;
+    float g = uColor32.g / 255.0f;
+    float r = uColor32.r / 255.0f;
 
     lineshaderstore[linevertscnt].x = static_cast<float>(uX);
     lineshaderstore[linevertscnt].y = static_cast<float>(uY);
@@ -929,7 +929,7 @@ void RenderOpenGL::BlendTextures(int x, int y, Image *imgin, Image *imgblend, in
                     if (gcur < gmin) gcur = gmin;
                     if (rcur < rmin) rcur = rmin;
 
-                    temppix[xdraw + ydraw * Width] = color32(rcur, gcur, bcur);
+                    temppix[xdraw + ydraw * Width] = Color(rcur, gcur, bcur).c32();
                 }
 
                 pixelpoint++;
@@ -982,7 +982,7 @@ void RenderOpenGL::TexturePixelRotateDraw(float u, float v, Image *img, int time
                         palindex = (time + thispix) % (2 * 63);
                         if (palindex >= 63)
                             palindex = (2 * 63) - palindex;
-                        temppix[dx + dy * width] = color32(palpoint24[palindex * 3], palpoint24[palindex * 3 + 1], palpoint24[palindex * 3 + 2]);
+                        temppix[dx + dy * width] = Color(palpoint24[palindex * 3], palpoint24[palindex * 3 + 1], palpoint24[palindex * 3 + 2]).c32();
                     }
                     ++texpix24;
                 }
@@ -1150,9 +1150,9 @@ bool RenderOpenGL::AreRenderSurfacesOk() {
 uint32_t *RenderOpenGL::MakeScreenshot32(const int width, const int height) {
     BeginScene3D();
 
-    if (uCurrentlyLoadedLevelType == LEVEL_Indoor) {
+    if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
         pIndoor->Draw();
-    } else if (uCurrentlyLoadedLevelType == LEVEL_Outdoor) {
+    } else if (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR) {
         pOutdoor->Draw();
     }
 
@@ -1167,7 +1167,7 @@ uint32_t *RenderOpenGL::MakeScreenshot32(const int width, const int height) {
     memset(pPixels, 0, sizeof(uint32_t) * height * width);
 
     uint32_t *for_pixels = pPixels;
-    if (uCurrentlyLoadedLevelType == LEVEL_null) {
+    if (uCurrentlyLoadedLevelType == LEVEL_NULL) {
         memset(&for_pixels, 0, sizeof(for_pixels));
     } else {
         for (uint y = 0; y < (unsigned int)height; ++y) {
@@ -1555,7 +1555,7 @@ Texture *RenderOpenGL::CreateTexture_Paletted(const std::string &name) {
     return TextureOpenGL::Create(new Paletted_Img_Loader(pIcons_LOD, name, 0));
 }
 
-Texture *RenderOpenGL::CreateTexture_ColorKey(const std::string &name, uint16_t colorkey) {
+Texture *RenderOpenGL::CreateTexture_ColorKey(const std::string &name, Color colorkey) {
     return TextureOpenGL::Create(new ColorKey_LOD_Loader(pIcons_LOD, name, colorkey));
 }
 
@@ -2314,7 +2314,7 @@ void RenderOpenGL::DrawOutdoorSky() {
 
     pSkyPolygon.texture = pOutdoor->sky_texture;
     if (pSkyPolygon.texture) {
-        pSkyPolygon.dimming_level = (uCurrentlyLoadedLevelType == LEVEL_Outdoor)? 31 : 0;
+        pSkyPolygon.dimming_level = (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR)? 31 : 0;
         pSkyPolygon.uNumVertices = 4;
 
         // centering(центруем)-----------------------------------------------------------------
@@ -2620,7 +2620,7 @@ void RenderOpenGL::DrawForcePerVerts() {
     int fpfogmiddle{};
     uint fpfogcol{ GetLevelFogColor() };
 
-    if (engine->config->graphics.Fog.value() && uCurrentlyLoadedLevelType == LEVEL_Outdoor) {
+    if (engine->config->graphics.Fog.value() && uCurrentlyLoadedLevelType == LEVEL_OUTDOOR) {
         if (fpfogcol) {
             fpfogstart = day_fogrange_1;
             fpfogmiddle = day_fogrange_2;
@@ -2683,7 +2683,7 @@ void RenderOpenGL::DrawForcePerVerts() {
 void RenderOpenGL::SetFogParametersGL() {
     uint fogcol{ GetLevelFogColor() };
 
-    if (engine->config->graphics.Fog.value() && uCurrentlyLoadedLevelType == LEVEL_Outdoor) {
+    if (engine->config->graphics.Fog.value() && uCurrentlyLoadedLevelType == LEVEL_OUTDOOR) {
         if (fogcol) {
             fogstart = day_fogrange_1;
             fogmiddle = day_fogrange_2;
@@ -3449,10 +3449,10 @@ void RenderOpenGL::EndTextNew() {
 }
 
 // TODO(pskelton): make color 32
-void RenderOpenGL::DrawTextNew(int x, int y, int width, int h, float u1, float v1, float u2, float v2, int isshadow, uint16_t colour) {
-    float b = ((colour & 31) * 8) / 255.0f;
-    float g = (((colour >> 5) & 63) * 4) / 255.0f;
-    float r = (((colour >> 11) & 31) * 8) / 255.0f;
+void RenderOpenGL::DrawTextNew(int x, int y, int width, int h, float u1, float v1, float u2, float v2, int isshadow, Color colour) {
+    float b = colour.b / 255.0f;
+    float g = colour.g / 255.0f;
+    float r = colour.r / 255.0f;
     // not 100% sure why this is required but it is
     if (r == 0.0f) r = 0.00392f;
 
@@ -5044,11 +5044,11 @@ bool RenderOpenGL::Initialize() {
 }
 
 void RenderOpenGL::FillRectFast(unsigned int uX, unsigned int uY, unsigned int uWidth,
-                                unsigned int uHeight, uint32_t uColor32) {
-    float a = ((uColor32 >> 24) & 0xFF) / 255.0f;
-    float b = ((uColor32 >> 16) & 0xFF) / 255.0f;
-    float g = ((uColor32 >> 8) & 0xFF) / 255.0f;
-    float r = (uColor32 & 0xFF) / 255.0f;
+                                unsigned int uHeight, Color uColor32) {
+    float a = uColor32.a / 255.0f;
+    float b = uColor32.b / 255.0f;
+    float g = uColor32.g / 255.0f;
+    float r = uColor32.r / 255.0f;
 
     float depth = 0;
     int x = uX;

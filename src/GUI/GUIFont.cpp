@@ -134,13 +134,13 @@ int GUIFont::GetHeight() const {
     return pData->uFontHeight;
 }
 
-void GUIFont::DrawTextLine(const std::string &text, uint16_t uDefaultColor, Pointi position, int max_len_pix) {
+void GUIFont::DrawTextLine(const std::string &text, Color uDefaultColor, Pointi position, int max_len_pix) {
     if (text.empty()) {
         return;
     }
     render->BeginTextNew(fonttex, fontshadow);
 
-    uint16_t text_color = ui_current_text_color;
+    Color text_color = ui_current_text_color;
     size_t text_length = text.size();
     int uX_pos = position.x;
     for (int i = 0; i < text_length; ++i) {
@@ -154,7 +154,7 @@ void GUIFont::DrawTextLine(const std::string &text, uint16_t uDefaultColor, Poin
                 char color_code[20];
                 strncpy(color_code, &text[i + 1], 5);
                 color_code[5] = 0;
-                text_color = atoi(color_code);
+                text_color = Color::fromC16(atoi(color_code));
                 ui_current_text_color = text_color;
                 i += 5;
                 break;
@@ -168,10 +168,10 @@ void GUIFont::DrawTextLine(const std::string &text, uint16_t uDefaultColor, Poin
                     if (i > 0) {
                         uX_pos += pData->pMetrics[c].uLeftSpacing;
                     }
-                    uint16_t draw_color = text_color;
+                    Color draw_color = text_color;
                     uint8_t *pCharPixels = &pData->pFontData[pData->font_pixels_offset[c]];
-                    if (!text_color) {
-                        draw_color = colorTable.White.c16();
+                    if (text_color == Color()) {
+                        draw_color = colorTable.White;
                     }
 
                     int xsq = c % 16;
@@ -181,7 +181,7 @@ void GUIFont::DrawTextLine(const std::string &text, uint16_t uDefaultColor, Poin
                     float v1 = (ysq * 32.0f) / 512.0f;
                     float v2 = (ysq * 32.0f + pData->uFontHeight) / 512.0f;
 
-                    render->DrawTextNew(uX_pos, position.y, pData->pMetrics[c].uWidth, pData->uFontHeight, u1, v1, u2, v2, 1, 0);
+                    render->DrawTextNew(uX_pos, position.y, pData->pMetrics[c].uWidth, pData->uFontHeight, u1, v1, u2, v2, 1, Color());
                     render->DrawTextNew(uX_pos, position.y, pData->pMetrics[c].uWidth, pData->uFontHeight, u1, v1, u2, v2, 0, draw_color);
 
                     uX_pos += uCharWidth;
@@ -196,7 +196,7 @@ void GUIFont::DrawTextLine(const std::string &text, uint16_t uDefaultColor, Poin
 }
 
 void DrawCharToBuff(uint32_t *draw_buff, uint8_t *pCharPixels, int uCharWidth, int uCharHeight,
-    uint8_t *pFontPalette, uint16_t draw_color, int line_width) {
+    uint8_t *pFontPalette, Color draw_color, int line_width) {
     uint8_t *pPixels = pCharPixels;
     for (int y = 0; y < uCharHeight; ++y) {
         for (int x = 0; x < uCharWidth; ++x) {
@@ -206,9 +206,9 @@ void DrawCharToBuff(uint32_t *draw_buff, uint8_t *pCharPixels, int uCharWidth, i
                     uint8_t r = pFontPalette[3];
                     uint8_t g = pFontPalette[4];
                     uint8_t b = pFontPalette[5];
-                    *draw_buff = color32(r, g, b);
+                    *draw_buff = Color(r, g, b).c32();
                 } else {
-                    *draw_buff = color32(draw_color);
+                    *draw_buff = draw_color.c32();
                 }
             }
             ++draw_buff;
@@ -217,14 +217,14 @@ void DrawCharToBuff(uint32_t *draw_buff, uint8_t *pCharPixels, int uCharWidth, i
     }
 }
 
-void GUIFont::DrawTextLineToBuff(uint16_t uColor, uint32_t *uX_buff_pos, const std::string &text, int line_width) {
+void GUIFont::DrawTextLineToBuff(Color uColor, uint32_t *uX_buff_pos, const std::string &text, int line_width) {
     if (text.empty()) {
         return;
     }
 
     char color_code[20];
 
-    uint16_t text_color = ui_current_text_color;
+    Color text_color = ui_current_text_color;
     size_t text_length = text.length();
     uint32_t *uX_pos = uX_buff_pos;
     for (size_t i = 0; i < text_length; ++i) {
@@ -237,7 +237,7 @@ void GUIFont::DrawTextLineToBuff(uint16_t uColor, uint32_t *uX_buff_pos, const s
             case '\f':  // Form Feed, page eject  0C 12
                 strncpy(color_code, &text[i + 1], 5);
                 color_code[5] = 0;
-                text_color = atoi(color_code);
+                text_color = Color::fromC16(atoi(color_code));
                 ui_current_text_color = text_color;
                 i += 5;
                 break;
@@ -251,10 +251,10 @@ void GUIFont::DrawTextLineToBuff(uint16_t uColor, uint32_t *uX_buff_pos, const s
                     if (i > 0) {
                         uX_pos += pData->pMetrics[c].uLeftSpacing;
                     }
-                    uint16_t draw_color = text_color;
+                    Color draw_color = text_color;
                     uint8_t *pCharPixels = &pData->pFontData[pData->font_pixels_offset[c]];
-                    if (!text_color) {
-                        draw_color = -1;
+                    if (text_color == Color()) {
+                        draw_color = colorTable.White;
                     }
                     DrawCharToBuff(uX_pos, pCharPixels, uCharWidth, pData->uFontHeight, pData->pFontPalettes[0], draw_color, line_width);
                     uX_pos += uCharWidth;
@@ -443,8 +443,8 @@ std::string GUIFont::FitTextInAWindow(const std::string &inString, unsigned int 
     return temp_string;
 }
 
-void GUIFont::DrawText(GUIWindow *pWindow, Pointi position, uint16_t uFontColor, const std::string &str,
-    bool present_time_transparency, int max_text_height, int uFontShadowColor) {
+void GUIFont::DrawText(GUIWindow *pWindow, Pointi position, Color uFontColor, const std::string &str,
+    bool present_time_transparency, int max_text_height, Color uFontShadowColor) {
     int left_margin = 0;
     if (str.empty()) {
         return;
@@ -505,7 +505,7 @@ void GUIFont::DrawText(GUIWindow *pWindow, Pointi position, uint16_t uFontColor,
                 case '\f':
                     strncpy(Dest, &string_base[v14 + 1], 5);
                     Dest[5] = 0;
-                    uFontColor = atoi(Dest);
+                    uFontColor = Color::fromC16(atoi(Dest));
                     v14 += 5;
                     break;
                 case '\r':
@@ -537,7 +537,7 @@ void GUIFont::DrawText(GUIWindow *pWindow, Pointi position, uint16_t uFontColor,
 
 
                     unsigned char *letter_pixels = &pData->pFontData[pData->font_pixels_offset[c]];
-                    if (uFontColor) {
+                    if (uFontColor != Color()) {
                         int xsq = c % 16;
                         int ysq = c / 16;
                         float u1 = (xsq * 32.0f) / 512.0f;
@@ -571,8 +571,8 @@ void GUIFont::DrawText(GUIWindow *pWindow, Pointi position, uint16_t uFontColor,
                         float v1 = (ysq * 32.0f) / 512.0f;
                         float v2 = (ysq * 32.0f + pData->uFontHeight) / 512.0f;
 
-                        render->DrawTextNew(out_x, out_y, pData->pMetrics[c].uWidth, pData->uFontHeight, u1, v1, u2, v2, 0, color16(r, g, b));
-                        render->DrawTextNew(out_x, out_y, pData->pMetrics[c].uWidth, pData->uFontHeight, u1, v1, u2, v2, 1, colorTable.Black.c16());
+                        render->DrawTextNew(out_x, out_y, pData->pMetrics[c].uWidth, pData->uFontHeight, u1, v1, u2, v2, 0, Color(r, g, b));
+                        render->DrawTextNew(out_x, out_y, pData->pMetrics[c].uWidth, pData->uFontHeight, u1, v1, u2, v2, 1, Color());
                     }
 
                     out_x += pData->pMetrics[c].uWidth;
@@ -587,7 +587,7 @@ void GUIFont::DrawText(GUIWindow *pWindow, Pointi position, uint16_t uFontColor,
     // render->EndTextNew();
 }
 
-int GUIFont::DrawTextInRect(GUIWindow *pWindow, Pointi position, uint16_t uColor, const std::string &str, int rect_width, int reverse_text) {
+int GUIFont::DrawTextInRect(GUIWindow *pWindow, Pointi position, Color uColor, const std::string &str, int rect_width, int reverse_text) {
     char text[4096];
     Assert(str.length() < sizeof(text));
     strcpy(text, str.c_str());
@@ -597,7 +597,7 @@ int GUIFont::DrawTextInRect(GUIWindow *pWindow, Pointi position, uint16_t uColor
 
     unsigned int pLineWidth = this->GetLineWidth(text);
     if (pLineWidth < rect_width) {
-        this->DrawText(pWindow, position, uColor, text, 0, 0, 0);
+        this->DrawText(pWindow, position, uColor, text, 0, 0, Color());
         return pLineWidth;
     }
 
@@ -667,7 +667,7 @@ int GUIFont::DrawTextInRect(GUIWindow *pWindow, Pointi position, uint16_t uColor
                 strncpy(Str, &text[i + 1], 5);
                 Str[5] = 0;
                 i += 5;
-                uColor = atoi(Str);
+                uColor = Color::fromC16(atoi(Str));
                 break;
             }
             case '\f': {  // Carriage Return 0D 13
@@ -686,7 +686,7 @@ int GUIFont::DrawTextInRect(GUIWindow *pWindow, Pointi position, uint16_t uColor
                     text_pos_x += pData->pMetrics[v15].uLeftSpacing;
                 }
                 uint8_t *char_pix_ptr = &pData->pFontData[pData->font_pixels_offset[v15]];
-                if (uColor) {
+                if (uColor != Color()) {
                     int xsq = v15 % 16;
                     int ysq = v15 / 16;
                     float u1 = (xsq * 32.0f) / 512.0f;
@@ -694,7 +694,7 @@ int GUIFont::DrawTextInRect(GUIWindow *pWindow, Pointi position, uint16_t uColor
                     float v1 = (ysq * 32.0f) / 512.0f;
                     float v2 = (ysq * 32.0f + pData->uFontHeight) / 512.0f;
 
-                    render->DrawTextNew(text_pos_x, text_pos_y, pData->pMetrics[v15].uWidth, pData->uFontHeight, u1, v1, u2, v2, 1, 0);
+                    render->DrawTextNew(text_pos_x, text_pos_y, pData->pMetrics[v15].uWidth, pData->uFontHeight, u1, v1, u2, v2, 1, Color());
                     render->DrawTextNew(text_pos_x, text_pos_y, pData->pMetrics[v15].uWidth, pData->uFontHeight, u1, v1, u2, v2, 0, uColor);
                 } else {
                     // pallette24 check for colour
@@ -720,8 +720,8 @@ int GUIFont::DrawTextInRect(GUIWindow *pWindow, Pointi position, uint16_t uColor
                     float v1 = (ysq * 32.0f) / 512.0f;
                     float v2 = (ysq * 32.0f + pData->uFontHeight) / 512.0f;
 
-                    render->DrawTextNew(text_pos_x, text_pos_y, pData->pMetrics[v15].uWidth, pData->uFontHeight, u1, v1, u2, v2, 0, color16(r, g, b));
-                    render->DrawTextNew(text_pos_x, text_pos_y, pData->pMetrics[v15].uWidth, pData->uFontHeight, u1, v1, u2, v2, 1, colorTable.Black.c16());
+                    render->DrawTextNew(text_pos_x, text_pos_y, pData->pMetrics[v15].uWidth, pData->uFontHeight, u1, v1, u2, v2, 0, Color(r, g, b));
+                    render->DrawTextNew(text_pos_x, text_pos_y, pData->pMetrics[v15].uWidth, pData->uFontHeight, u1, v1, u2, v2, 1, Color());
                 }
                 text_pos_x += char_width;
                 if (i < (int)pNumLen) {
@@ -736,7 +736,7 @@ int GUIFont::DrawTextInRect(GUIWindow *pWindow, Pointi position, uint16_t uColor
 }
 
 void GUIFont::DrawCreditsEntry(GUIFont *pSecondFont, int uFrameX, int uFrameY, unsigned int w, unsigned int h,
-    uint16_t firstColor, uint16_t secondColor, const std::string &pString,
+                               Color firstColor, Color secondColor, const std::string &pString,
     Image *image) {
     GUIWindow draw_window;
     draw_window.uFrameHeight = h;
@@ -759,7 +759,7 @@ void GUIFont::DrawCreditsEntry(GUIFont *pSecondFont, int uFrameX, int uFrameY, u
             GUIFont *currentFont = this;
             ui_current_text_color = firstColor;
             int start_str_pos = 0;
-            int currentColor = firstColor;
+            Color currentColor = firstColor;
             if (work_string[0] == '_') {
                 currentFont = pSecondFont;
                 currentColor = secondColor;

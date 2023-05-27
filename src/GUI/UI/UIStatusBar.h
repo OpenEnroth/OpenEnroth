@@ -2,6 +2,8 @@
 
 #include <string>
 
+#include "Library/Color/Color.h"
+
 void GameUI_StatusBar_Draw();
 void GameUI_StatusBar_DrawForced();
 
@@ -19,4 +21,4 @@ void GameUI_StatusBar_ClearInputString();
 
 void GameUI_StatusBar_NothingHere();
 
-void GameUI_StatusBar_DrawImmediate(const std::string &str, int color);
+void GameUI_StatusBar_DrawImmediate(const std::string &str, Color color);

@@ -14,7 +14,7 @@ class GUIButton {
         pParent = nullptr;
     }
 
-    void DrawLabel(const std::string &label_text, GUIFont *pFont, int a5, int uFontShadowColor);
+    void DrawLabel(const std::string &label_text, GUIFont *pFont, Color color, Color uFontShadowColor);
     bool Contains(unsigned int x, unsigned int y);
     void Release();
 
@@ -108,12 +108,13 @@ extern GUIButton *pBtn_NewGame;
 extern GUIButton *pBtn_SliderRight;
 extern GUIButton *pBtn_SliderLeft;
 
-
 extern GUIButton *pBtnDownArrow;
 extern GUIButton *pBtnArrowUp;
 extern GUIButton *pBtnCancel;
 extern GUIButton *pBtnLoadSlot;
 
+extern GUIButton *pBtn_ZoomOut;
+extern GUIButton *pBtn_ZoomIn;
 
 extern std::array<GUIButton*, 4> pCreationUI_BtnPressRight2;
 extern std::array<GUIButton*, 4> pCreationUI_BtnPressLeft2;

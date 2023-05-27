@@ -49,6 +49,8 @@ stru319 stru_50C198;  // idb
 
 std::array<uint, 5> _4DF380_hostilityRanges = {0, 1024, 2560, 5120, 10240};
 
+std::array<int16_t, 11> word_4E8152 = {{0, 0, 0, 90, 8, 2, 70, 20, 10, 50, 30}};  // level spawn monster levels ABC
+
 //----- (0042FB5C) --------------------------------------------------------
 // True if monster should play attack animation when casting this spell.
 bool ShouldMonsterPlayAttackAnim(SPELL_TYPE spell_id) {
@@ -283,7 +285,7 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
 
         case SPELL_FIRE_METEOR_SHOWER:
         {
-            if (uCurrentlyLoadedLevelType == LEVEL_Indoor) {
+            if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
                 break;
             }
 
@@ -956,7 +958,7 @@ void Actor::GetDirectionInfo(unsigned int uObj1ID, unsigned int uObj2ID,
             break;
         }
         case OBJECT_Face: {
-            if (uCurrentlyLoadedLevelType == LEVEL_Indoor) {
+            if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
                 outx = (pIndoor->pFaces[v4].pBounding.x1 +
                         pIndoor->pFaces[v4].pBounding.x2) >>
                        1;
@@ -1004,7 +1006,7 @@ void Actor::GetDirectionInfo(unsigned int uObj1ID, unsigned int uObj2ID,
             break;
         }
         case OBJECT_Face: {
-            if (uCurrentlyLoadedLevelType == LEVEL_Indoor) {
+            if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
                 outx2 = (float)((pIndoor->pFaces[v5].pBounding.x1 +
                                  pIndoor->pFaces[v5].pBounding.x2) >>
                                 1);
@@ -2078,7 +2080,7 @@ void Actor::AI_Pursue2(unsigned int uActorID, unsigned int a2,
     v8 = PID(OBJECT_Actor, uActorID);
     if (v7->pMonsterInfo.uFlying != 0 && !pParty->bFlying) {
         if (v7->pMonsterInfo.uMissleAttack1Type &&
-            uCurrentlyLoadedLevelType == LEVEL_Outdoor)
+            uCurrentlyLoadedLevelType == LEVEL_OUTDOOR)
             v6 = v7->uActorRadius + 512;
         else
             v6 = pParty->uPartyHeight;
@@ -2135,7 +2137,7 @@ void Actor::AI_Pursue3(unsigned int uActorID, unsigned int a2,
     v7 = PID(OBJECT_Actor, uActorID);
     if (v6->pMonsterInfo.uFlying != 0 && !pParty->bFlying) {
         if (v6->pMonsterInfo.uMissleAttack1Type &&
-            uCurrentlyLoadedLevelType == LEVEL_Outdoor)
+            uCurrentlyLoadedLevelType == LEVEL_OUTDOOR)
             v5 = v6->uActorRadius + 512;
         else
             v5 = pParty->uPartyHeight;
@@ -2542,7 +2544,7 @@ void Actor::SummonMinion(int summonerId) {
     int actorSector;         // [sp+1Ch] [bp-Ch]@8
 
     actorSector = 0;
-    if (uCurrentlyLoadedLevelType == LEVEL_Indoor)
+    if (uCurrentlyLoadedLevelType == LEVEL_INDOOR)
         actorSector = pIndoor->GetSector(this->vPosition);
 
     v19 = this->uAlly;
@@ -2550,12 +2552,12 @@ void Actor::SummonMinion(int summonerId) {
         monsterId = this->pMonsterInfo.uID - 1;
         v19 = (uint)(monsterId * 0.33333334);
     }
-    v27 = uCurrentlyLoadedLevelType == LEVEL_Outdoor ? 128 : 64;
+    v27 = uCurrentlyLoadedLevelType == LEVEL_OUTDOOR ? 128 : 64;
     v13 = grng->random(2048);
     v15 = TrigLUT.cos(v13) * v27 + this->vPosition.x;
     v17 = TrigLUT.sin(v13) * v27 + this->vPosition.y;
 
-    if (uCurrentlyLoadedLevelType == LEVEL_Indoor) {
+    if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
         result = pIndoor->GetSector(v15, v17, this->vPosition.z);
         if (result != actorSector) return;
         result = BLV_GetFloorLevel(Vec3i(v15, v17, v27), result, &monsterId);
@@ -2635,13 +2637,13 @@ void Actor::UpdateActorAI() {
     uint v38;
 
     // Build AI array
-    if (uCurrentlyLoadedLevelType == LEVEL_Outdoor)
+    if (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR)
         Actor::MakeActorAIList_ODM();
     else
         Actor::MakeActorAIList_BLV();
 
     // Armageddon damage mechanic
-    if (uCurrentlyLoadedLevelType != LEVEL_Indoor && pParty->armageddon_timer > 0)
+    if (uCurrentlyLoadedLevelType != LEVEL_INDOOR && pParty->armageddon_timer > 0)
         armageddonProgress();
 
     // Turn-based mode: return
@@ -3409,7 +3411,7 @@ void Actor::Arena_summon_actor(int monster_id, int x, int y, int z) {
         return;
 
     int v16 = 0;
-    if (uCurrentlyLoadedLevelType == LEVEL_Indoor)
+    if (uCurrentlyLoadedLevelType == LEVEL_INDOOR)
         v16 = pIndoor->GetSector(x, y, z);
 
     actor->pActorName = pMonsterStats->pInfos[monster_id].pName;
@@ -3727,7 +3729,7 @@ bool CheckActors_proximity() {
     int for_z;            // [sp+10h] [bp-Ch]@5
 
     distance = 5120;
-    if (uCurrentlyLoadedLevelType == LEVEL_Indoor) distance = 2560;
+    if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) distance = 2560;
 
     for (uint i = 0; i < pActors.size(); ++i) {
         for_x = abs(pActors[i].vPosition.x - pParty->vPosition.x);
@@ -4340,7 +4342,7 @@ bool Detect_Between_Objects(unsigned int uObjID, unsigned int uObj2ID) {
     if (dist_3d > 5120) return 0;
 
     // if in range always detected outdoors
-    if (uCurrentlyLoadedLevelType == LEVEL_Outdoor) return 1;
+    if (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR) return 1;
 
     // monster in same sector with player/ monster
     if (obj1_sector == obj2_sector) return 1;
@@ -4507,10 +4509,10 @@ void Spawn_Light_Elemental(int spell_power, PLAYER_SKILL_MASTERY caster_skill_ma
         return; // Too many actors.
 
     int partySectorId = 0;
-    if (uCurrentlyLoadedLevelType == LEVEL_Indoor)
+    if (uCurrentlyLoadedLevelType == LEVEL_INDOOR)
         partySectorId = pBLVRenderParams->uPartySectorID;
 
-    int radius = uCurrentlyLoadedLevelType == LEVEL_Outdoor ? 128 : 64;
+    int radius = uCurrentlyLoadedLevelType == LEVEL_OUTDOOR ? 128 : 64;
     int angle = grng->random(2048);
 
     actor->pActorName = pMonsterStats->pInfos[uMonsterID + 1].pName;
@@ -4541,7 +4543,7 @@ void Spawn_Light_Elemental(int spell_power, PLAYER_SKILL_MASTERY caster_skill_ma
     int sectorId = pIndoor->GetSector(actor->vPosition);
     int zlevel;
     int zdiff;
-    if (uCurrentlyLoadedLevelType == LEVEL_Outdoor ||
+    if (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR ||
             sectorId == partySectorId &&
             (zlevel = BLV_GetFloorLevel(actor->vPosition, sectorId, &uFaceID), zlevel != -30000) &&
             (zdiff = abs(zlevel - pParty->vPosition.z), zdiff <= 1024)) {
@@ -4703,10 +4705,10 @@ void SpawnEncounter(MapInfo *pMapInfo, SpawnPoint *spawn, int a3, int a4, int a5
     pPosX = spawn->vPosition.x;
     a4 = spawn->vPosition.y;
     a3 = spawn->vPosition.z;
-    if (uCurrentlyLoadedLevelType == LEVEL_Indoor)
+    if (uCurrentlyLoadedLevelType == LEVEL_INDOOR)
         pSector = pIndoor->GetSector(spawn->vPosition);
     v53 = 0;
-    v52 = (((uCurrentlyLoadedLevelType != LEVEL_Outdoor) - 1) & 0x40) + 64;
+    v52 = (((uCurrentlyLoadedLevelType != LEVEL_OUTDOOR) - 1) & 0x40) + 64;
 
 
 
@@ -4783,7 +4785,7 @@ void SpawnEncounter(MapInfo *pMapInfo, SpawnPoint *spawn, int a3, int a4, int a5
         a3 = TrigLUT.sin(v32) * v52;
         a4 = a3 + spawn->vPosition.y;
         a3 = spawn->vPosition.z;
-        if (uCurrentlyLoadedLevelType == LEVEL_Outdoor) {
+        if (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR) {
             if (a5)
                 pMonster->uAttributes |= ACTOR_AGGRESSOR;
             continue;

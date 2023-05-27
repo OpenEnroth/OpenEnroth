@@ -162,11 +162,11 @@ void TravelByTransport() {
 
             if (pRealTextHeight != pPrimaryTextHeight) {
                 // height differences means we have travel options
-                travel_window.DrawTitleText(pFontArrus, 0, 146, 0,
+                travel_window.DrawTitleText(pFontArrus, 0, 146, Color(),
                     fmt::format("{}\n \n{}{}{}{}{}", travelcost, pTopicArray[0], pTopicArray[1], pTopicArray[2], pTopicArray[3], pTopicArray[4]), 3);
             } else {
                 travel_window.DrawTitleText(pFontArrus, 0, (SIDE_TEXT_BOX_BODY_TEXT_HEIGHT - pFontArrus->CalcTextHeight(localization->GetString(LSTR_COME_BACK_ANOTHER_DAY), travel_window.uFrameWidth, 0)) / 2 + SIDE_TEXT_BOX_BODY_TEXT_OFFSET,
-                                            colorTable.White.c16(), localization->GetString(LSTR_COME_BACK_ANOTHER_DAY), 3);
+                                            colorTable.White, localization->GetString(LSTR_COME_BACK_ANOTHER_DAY), 3);
             }
         }
     } else {  //после нажатия топика - travel option selected

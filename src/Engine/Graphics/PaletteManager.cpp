@@ -7,7 +7,7 @@
 #include "Engine/LOD.h"
 #include "Engine/OurMath.h"
 
-#include "Utility/Color.h"
+#include "Library/Color/Color.h"
 #include "Utility/Format.h"
 
 PaletteManager *pPaletteManager = new PaletteManager;
@@ -169,7 +169,7 @@ std::span<uint32_t> PaletteManager::paletteData() {
 Palette PaletteManager::createGrayscalePalette() {
     Palette result;
     for (int i = 0; i < 256; i++)
-        result.colors[i] = color32(i, i, i, 255);
+        result.colors[i] = Color(i, i, i, 255).c32();
     return result;
 }
 
@@ -191,7 +191,7 @@ Palette PaletteManager::createLoadedPalette(uint8_t *data) {
 
         HSV2RGB(&red, &green, &blue, hue, saturation, value);
 
-        result.colors[index / 3] = color32(red * 255.0, green * 255.0, blue * 255.0);
+        result.colors[index / 3] = Color(red * 255.0, green * 255.0, blue * 255.0).c32();
     }
 
     return result;

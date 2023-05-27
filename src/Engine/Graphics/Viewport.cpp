@@ -124,9 +124,9 @@ void ViewingParams::CenterOnPartyZoomOut() {
 void ViewingParams::CenterOnPartyZoomIn() {
     int MaxZoom;
 
-    if (uCurrentlyLoadedLevelType == LEVEL_Outdoor)
+    if (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR)
         MaxZoom = 1536;
-    else if (uCurrentlyLoadedLevelType == LEVEL_Indoor)
+    else if (uCurrentlyLoadedLevelType == LEVEL_INDOOR)
         MaxZoom = 3072;
     else
         assert(false);
@@ -167,7 +167,7 @@ void ViewingParams::AdjustPosition() {
 
 //----- (00443343) --------------------------------------------------------
 void ViewingParams::InitGrayPalette() {
-    for (unsigned short i = 0; i < 256; ++i) pPalette[i] = color32(i, i, i);
+    for (unsigned short i = 0; i < 256; ++i) pPalette[i] = Color(i, i, i);
 }
 
 //----- (00443365) --------------------------------------------------------
@@ -180,7 +180,7 @@ void ViewingParams::_443365() {
     int maximum_x;    // [sp+1Ch] [bp-4h]@2
 
     InitGrayPalette();
-    if (uCurrentlyLoadedLevelType == LEVEL_Indoor) {
+    if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
         minimum_x = 0x40000000;
         minimum_y = 0x40000000;
 
@@ -330,10 +330,14 @@ void Engine::onGameViewportClick() {
             }
         } else if (pParty->bTurnBasedModeOn && pTurnEngine->turn_stage == TE_MOVEMENT) {
             pParty->setAirborne(true);
-        } else if (pParty->hasActiveCharacter() && IsSpellQuickCastableOnShiftClick(pParty->activeCharacter().uQuickSpell)) {
+        } else if (pParty->hasActiveCharacter() &&
+                   pParty->activeCharacter().uQuickSpell != SPELL_NONE &&
+                   IsSpellQuickCastableOnShiftClick(pParty->activeCharacter().uQuickSpell)) {
             pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_CastQuickSpell, 0, 0);
-        } else {
+        } else if (pParty->pPickedItem.uItemID != ITEM_NULL) {
             pParty->dropHeldItem();
+        } else {
+            pAudioPlayer->playUISound(SOUND_error);
         }
     } else if (PID_TYPE(pid) == OBJECT_Decoration) {
         int id = PID_ID(pid);
@@ -350,7 +354,7 @@ void Engine::onGameViewportClick() {
     } else if (PID_TYPE(pid) == OBJECT_Face && in_range) {
         int eventId = 0;
 
-        if (uCurrentlyLoadedLevelType == LEVEL_Indoor) {
+        if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
             if (!pIndoor->pFaces[PID_ID(pid)].Clickable()) {
                 if (pParty->pPickedItem.uItemID == ITEM_NULL) {
                     GameUI_StatusBar_NothingHere();
@@ -361,7 +365,7 @@ void Engine::onGameViewportClick() {
             } else {
                 eventId = pIndoor->pFaceExtras[pIndoor->pFaces[PID_ID(pid)].uFaceExtraID].uEventID;
             }
-        } else if (uCurrentlyLoadedLevelType == LEVEL_Outdoor) {
+        } else if (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR) {
             ODMFace &model = pOutdoor->pBModels[(pid) >> 9].pFaces[PID_ID(pid) & 0x3F];
             if (!model.Clickable()) {
                 if (pParty->pPickedItem.uItemID == ITEM_NULL) {

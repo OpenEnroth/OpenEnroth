@@ -14,6 +14,8 @@
 #include "Engine/Tables/AwardTable.h"
 #include "Engine/Tables/AutonoteTable.h"
 #include "Engine/Tables/QuestTable.h"
+#include "Engine/Tables/TransitionTable.h"
+#include "Engine/Tables/MerchantTable.h"
 #include "Engine/Tables/MessageScrollTable.h"
 
 #include "GUI/GUIButton.h"
@@ -35,8 +37,6 @@ struct NPCStats *pNPCStats = nullptr;
 int NPCStats::dword_AE336C_LastMispronouncedNameFirstLetter = -1;
 int NPCStats::dword_AE3370_LastMispronouncedNameResult = -1;
 
-void InitializeMerchants();
-void InitializeTransitions();
 bool CheckPortretAgainstSex(int portret_num, int sex);
 
 // All conditions for alive character excluding zombie
@@ -213,8 +213,7 @@ void NPCStats::InitializeNPCText() {
     pNPCDistTXT_Raw.clear();
 }
 
-//----- (00476C60) --------------------------------------------------------
-void NPCStats::OnLoadSetNPC_Names() {
+void NPCStats::setNPCNamesOnLoad() {
     for (unsigned int i = 1; i < uNumNewNPCs; ++i)
         pNewNPCData[i].pName = pNPCUnicNames[i - 1];
 
@@ -400,8 +399,8 @@ void NPCStats::Initialize() {
     initializeQuests();
     initializeAutonotes();
     initializeAwards();
-    InitializeTransitions();
-    InitializeMerchants();
+    initializeTransitions();
+    initializeMerchants();
     initializeMessageScrolls();
 
     pNPCNamesTXT_Raw = engine->_gameResourceManager->getEventsFile("npcnames.txt").string_view();
@@ -697,95 +696,6 @@ bool CheckHiredNPCSpeciality(NPCProf prof) {
         || pParty->pHirelings[1].profession == prof;
 }
 
-//----- (00476590) --------------------------------------------------------
-void InitializeMerchants() {
-    char *test_string;
-    unsigned char c;
-    bool break_loop;
-    unsigned int temp_str_len;
-    char *tmp_pos;
-    int decode_step;
-
-    pMerchantsTXT_Raw = engine->_gameResourceManager->getEventsFile("merchant.txt").string_view();
-    strtok(pMerchantsTXT_Raw.data(), "\r");
-
-    for (MERCHANT_PHRASE i : MerchantPhrases()) {
-        test_string = strtok(NULL, "\r") + 1;
-        break_loop = false;
-        decode_step = 0;
-        do {
-            c = *(unsigned char *)test_string;
-            temp_str_len = 0;
-            while ((c != '\t') && (c > 0)) {
-                ++temp_str_len;
-                c = test_string[temp_str_len];
-            }
-            tmp_pos = test_string + temp_str_len;
-            if (*tmp_pos == 0) break_loop = true;
-            *tmp_pos = 0;
-            if (temp_str_len) {
-                switch (decode_step) {
-                    case 1:
-                        pMerchantsBuyPhrases[i] = removeQuotes(test_string);
-                        break;
-                    case 2:
-                        pMerchantsSellPhrases[i] = removeQuotes(test_string);
-                        break;
-                    case 3:
-                        pMerchantsRepairPhrases[i] = removeQuotes(test_string);
-                        break;
-                    case 4:
-                        pMerchantsIdentifyPhrases[i] = removeQuotes(test_string);
-                        break;
-                }
-            } else {
-                break_loop = true;
-            }
-            ++decode_step;
-            test_string = tmp_pos + 1;
-        } while ((decode_step < 5) && !break_loop);
-    }
-}
-
-//----- (00476682) --------------------------------------------------------
-void InitializeTransitions() {
-    int i;
-    char *test_string;
-    unsigned char c;
-    bool break_loop;
-    unsigned int temp_str_len;
-    char *tmp_pos;
-    int decode_step;
-
-    pTransitionsTXT_Raw = engine->_gameResourceManager->getEventsFile("trans.txt").string_view();
-    strtok(pTransitionsTXT_Raw.data(), "\r");
-
-    for (i = 0; i < 464; ++i) {
-        test_string = strtok(NULL, "\r") + 1;
-        break_loop = false;
-        decode_step = 0;
-        do {
-            c = *(unsigned char *)test_string;
-            temp_str_len = 0;
-            while ((c != '\t') && (c > 0)) {
-                ++temp_str_len;
-                c = test_string[temp_str_len];
-            }
-            tmp_pos = test_string + temp_str_len;
-            if (*tmp_pos == 0) break_loop = true;
-            *tmp_pos = 0;
-            if (temp_str_len) {
-                if (decode_step == 1)
-                    pTransitionStrings[i + 1] = removeQuotes(test_string);
-            } else {
-                break_loop = true;
-            }
-            ++decode_step;
-            test_string = tmp_pos + 1;
-        } while ((decode_step < 2) && !break_loop);
-    }
-}
-
 //----- (004B40E6) --------------------------------------------------------
 void NPCHireableDialogPrepare() {
     signed int v0;  // ebx@1
@@ -971,7 +881,7 @@ int UseNPCSkill(NPCProf profession, int id) {
         } break;
 
         case WindMaster: {
-            if (uCurrentlyLoadedLevelType == LEVEL_Indoor) {
+            if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
                 GameUI_SetStatusBar(LSTR_CANT_FLY_INDOORS);
                 pAudioPlayer->playUISound(SOUND_fizzle);
             } else {

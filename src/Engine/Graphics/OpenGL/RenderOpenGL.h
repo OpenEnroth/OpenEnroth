@@ -38,7 +38,7 @@ class RenderOpenGL : public RenderBase {
     virtual void NuklearImageFree(Image *img) override;
 
     virtual Texture *CreateTexture_Paletted(const std::string &name) override;
-    virtual Texture *CreateTexture_ColorKey(const std::string &name, uint16_t colorkey) override;
+    virtual Texture *CreateTexture_ColorKey(const std::string &name, Color colorkey) override;
     virtual Texture *CreateTexture_Solid(const std::string &name) override;
     virtual Texture *CreateTexture_Alpha(const std::string &name) override;
 
@@ -70,7 +70,7 @@ class RenderOpenGL : public RenderBase {
     virtual void BeginLines2D() override;
     virtual void EndLines2D() override;
     virtual void RasterLine2D(signed int uX, signed int uY, signed int uZ,
-                              signed int uW, uint32_t uColor32) override;
+                              signed int uW, Color uColor32) override;
     virtual void DrawLines(const RenderVertexD3D3 *vertices,
         unsigned int num_vertices) override;
 
@@ -116,11 +116,11 @@ class RenderOpenGL : public RenderBase {
 
     virtual void BeginTextNew(Texture *main, Texture *shadow) override;
     virtual void EndTextNew() override;
-    virtual void DrawTextNew(int x, int y, int w, int h, float u1, float v1, float u2, float v2, int isshadow, uint16_t colour) override;
+    virtual void DrawTextNew(int x, int y, int w, int h, float u1, float v1, float u2, float v2, int isshadow, Color colour) override;
 
     virtual void FillRectFast(unsigned int uX, unsigned int uY,
                               unsigned int uWidth, unsigned int uHeight,
-                              uint32_t uColor32) override;
+                              Color uColor32) override;
 
     virtual void DrawOutdoorBuildings() override;
 

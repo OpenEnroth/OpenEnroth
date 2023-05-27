@@ -515,8 +515,8 @@ void CastSpellInfoHelpers::castSpell() {
 
                 case SPELL_LIGHT_SUNRAY:
                 {
-                    if (uCurrentlyLoadedLevelType == LEVEL_Indoor ||
-                            uCurrentlyLoadedLevelType == LEVEL_Outdoor &&
+                    if (uCurrentlyLoadedLevelType == LEVEL_INDOOR ||
+                            uCurrentlyLoadedLevelType == LEVEL_OUTDOOR &&
                             (pParty->uCurrentHour < 5 || pParty->uCurrentHour >= 21)) {
                         spellFailed(pCastSpell, LSTR_SPELL_FAILED);
                         setSpellRecovery(pCastSpell, failureRecoveryTime);
@@ -963,7 +963,7 @@ void CastSpellInfoHelpers::castSpell() {
                 {
                     assert(spell_mastery >= PLAYER_SKILL_MASTERY_MASTER);
 
-                    if (uCurrentlyLoadedLevelType == LEVEL_Indoor) {
+                    if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
                         spellFailed(pCastSpell, LSTR_CANT_METEOR_SHOWER_INDOORS);
                         setSpellRecovery(pCastSpell, failureRecoveryTime);
                         continue;
@@ -1010,7 +1010,7 @@ void CastSpellInfoHelpers::castSpell() {
 
                 case SPELL_FIRE_INFERNO:
                 {
-                    if (uCurrentlyLoadedLevelType == LEVEL_Outdoor) {
+                    if (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR) {
                         spellFailed(pCastSpell, LSTR_CANT_INFERNO_OUTDOORS);
                         setSpellRecovery(pCastSpell, failureRecoveryTime);
                         continue;
@@ -1147,7 +1147,7 @@ void CastSpellInfoHelpers::castSpell() {
 
                 case SPELL_AIR_FLY:
                 {
-                    if (uCurrentlyLoadedLevelType == LEVEL_Indoor) {
+                    if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
                         spellFailed(pCastSpell, LSTR_CANT_FLY_INDOORS);
                         setSpellRecovery(pCastSpell, failureRecoveryTime);
                         continue;
@@ -1167,7 +1167,7 @@ void CastSpellInfoHelpers::castSpell() {
 
                 case SPELL_AIR_STARBURST:
                 {
-                    if (uCurrentlyLoadedLevelType == LEVEL_Indoor) {
+                    if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
                         spellFailed(pCastSpell, LSTR_CANT_STARBURST_INDOORS);
                         setSpellRecovery(pCastSpell, failureRecoveryTime);
                         continue;
@@ -1577,7 +1577,7 @@ void CastSpellInfoHelpers::castSpell() {
 
                 case SPELL_EARTH_DEATH_BLOSSOM:
                 {
-                    if (uCurrentlyLoadedLevelType == LEVEL_Indoor) {
+                    if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
                         spellFailed(pCastSpell, LSTR_SPELL_FAILED);
                         setSpellRecovery(pCastSpell, failureRecoveryTime);
                         continue;
@@ -2192,7 +2192,7 @@ void CastSpellInfoHelpers::castSpell() {
                     if (PID_TYPE(spell_targeted_at) == OBJECT_Face) {
                         int event;
                         OpenedTelekinesis = true;
-                        if (uCurrentlyLoadedLevelType == LEVEL_Indoor) {
+                        if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
                             event = pIndoor->pFaceExtras[pIndoor->pFaces[obj_id].uFaceExtraID].uEventID;
                         } else {
                             event = pOutdoor->pBModels[spell_targeted_at >> 9].pFaces[obj_id & 0x3F].sCogTriggeredID;
@@ -2473,7 +2473,7 @@ void CastSpellInfoHelpers::castSpell() {
 
                 case SPELL_LIGHT_PRISMATIC_LIGHT:
                 {
-                    if (uCurrentlyLoadedLevelType == LEVEL_Outdoor) {
+                    if (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR) {
                         spellFailed(pCastSpell, LSTR_CANT_PRISMATIC_OUTDOORS);
                         setSpellRecovery(pCastSpell, failureRecoveryTime);
                         continue;
@@ -2878,7 +2878,7 @@ void CastSpellInfoHelpers::castSpell() {
 
                 case SPELL_DARK_ARMAGEDDON:
                 {
-                    if (uCurrentlyLoadedLevelType == LEVEL_Indoor) {
+                    if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
                         spellFailed(pCastSpell, LSTR_CANT_ARMAGEDDON_INDOORS);
                         setSpellRecovery(pCastSpell, failureRecoveryTime);
                         continue;

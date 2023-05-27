@@ -158,7 +158,7 @@ void DrawBook_Map_sub(unsigned int tl_x, unsigned int tl_y, unsigned int br_x, i
         pCenterY = viewparams->indoor_center_y;
     }
 
-    if (uCurrentlyLoadedLevelType != LEVEL_Indoor) {  // outdoors
+    if (uCurrentlyLoadedLevelType != LEVEL_INDOOR) {  // outdoors
         int screenWidth = br_x - tl_x + 1;
         int screenHeight = br_y - tl_y + 1;
 
@@ -234,7 +234,7 @@ void DrawBook_Map_sub(unsigned int tl_x, unsigned int tl_y, unsigned int br_x, i
                         int linez = ScreenCenterX + fixpoint_mul(Vert2X, viewparams->uMapBookMapZoom);
                         int linew = ScreenCenterY - fixpoint_mul(Vert2Y, viewparams->uMapBookMapZoom);
 
-                        render->RasterLine2D(linex, liney, linez, linew, colorTable.Black.c32());
+                        render->RasterLine2D(linex, liney, linez, linew, colorTable.Black);
                     }
                 }
             }
@@ -292,11 +292,11 @@ void DrawBook_Map_sub(unsigned int tl_x, unsigned int tl_y, unsigned int br_x, i
                 int decypos = ScreenCenterY - fixpoint_mul(DecY, viewparams->uMapBookMapZoom);
 
                 if (viewparams->uMapBookMapZoom > 512) {
-                    render->RasterLine2D(decxpos - 1, decypos - 1, decxpos - 1, decypos + 1, colorTable.White.c32());
-                    render->RasterLine2D(decxpos, decypos - 1, decxpos, decypos + 1, colorTable.White.c32());
-                    render->RasterLine2D(decxpos + 1, decypos - 1, decxpos + 1, decypos + 1, colorTable.White.c32());
+                    render->RasterLine2D(decxpos - 1, decypos - 1, decxpos - 1, decypos + 1, colorTable.White);
+                    render->RasterLine2D(decxpos, decypos - 1, decxpos, decypos + 1, colorTable.White);
+                    render->RasterLine2D(decxpos + 1, decypos - 1, decxpos + 1, decypos + 1, colorTable.White);
                 } else {
-                    render->RasterLine2D(decxpos, decypos, decxpos, decypos, colorTable.White.c32());
+                    render->RasterLine2D(decxpos, decypos, decxpos, decypos, colorTable.White);
                 }
             }
         }
@@ -327,7 +327,7 @@ std::string GetMapBookHintText(int mouse_x, int mouse_y) {
     int map_tile_X = abs(global_coord_X + 22528) / 512;
     int map_tile_Y = abs(global_coord_Y - 22528) / 512;
     if (pOutdoor->IsMapCellFullyRevealed(map_tile_X, map_tile_Y) &&
-        uCurrentlyLoadedLevelType == LEVEL_Outdoor &&
+        uCurrentlyLoadedLevelType == LEVEL_OUTDOOR &&
         !pOutdoor->pBModels.empty()) {
         for (BSPModel &model : pOutdoor->pBModels) {
             if (int_get_vector_length(
