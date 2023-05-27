@@ -2661,19 +2661,7 @@ void CastSpellInfoHelpers::castSpell() {
                         // is too high to actually ressurect it.
                         break;
                     }
-                    Actor::Resurrect(monster_id);
-                    pActors[monster_id].pMonsterInfo.uHostilityType = MonsterInfo::Hostility_Friendly;
-                    pActors[monster_id].pMonsterInfo.uTreasureDropChance = 0;
-                    pActors[monster_id].pMonsterInfo.uTreasureDiceRolls = 0;
-                    pActors[monster_id].pMonsterInfo.uTreasureDiceSides = 0;
-                    pActors[monster_id].pMonsterInfo.uTreasureLevel = ITEM_TREASURE_LEVEL_INVALID;
-                    pActors[monster_id].pMonsterInfo.uTreasureType = 0;
-                    pActors[monster_id].uAlly = 9999;
-                    pActors[monster_id].ResetAggressor();  // ~0x80000
-                    pActors[monster_id].uGroup = 0;
-                    pActors[monster_id].pActorBuffs[ACTOR_BUFF_BERSERK].Reset();
-                    pActors[monster_id].pActorBuffs[ACTOR_BUFF_CHARM].Reset();
-                    pActors[monster_id].pActorBuffs[ACTOR_BUFF_ENSLAVED].Reset();
+                    Actor::resurrect(monster_id);
                     if (pActors[monster_id].sCurrentHP > zombie_hp_limit) {
                         pActors[monster_id].sCurrentHP = zombie_hp_limit;
                     }

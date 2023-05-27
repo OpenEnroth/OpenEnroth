@@ -101,9 +101,9 @@ class Actor {
     /**
      * @offset 0x402CED
      */
-    static void playSound(unsigned int uActorID, unsigned int uSoundID);
+    static void playSound(unsigned int uActorID, ActorSounds uSoundID);
     static void Die(unsigned int uActorID);
-    static void Resurrect(unsigned int uActorID);
+    static void resurrect(unsigned int uActorID);
     static void AI_Bored(unsigned int uActorID, unsigned int uObjID,
                          struct AIDirection *a4);
     static void AI_Stun(unsigned int uActorID, signed int edx0, int arg0);
