@@ -6,7 +6,7 @@
 
 #include "Engine/Spells/Spells.h"
 
-#include "Library/Color/Color.h"
+#include "Library/Color/ColorTable.h"
 
 class Actor;
 class Texture;
