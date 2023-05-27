@@ -240,7 +240,7 @@ var searchData=
   ['resume_237',['Resume',['../classAudioTrackS16.html#a56b4125e46925f41f0cc5959ead08ecc',1,'AudioTrackS16::Resume()'],['../classIAudioSample.html#a5f32ef4ec1c51668b8087aa829fea879',1,'IAudioSample::Resume()'],['../classIAudioTrack.html#a9140ea4200193d1c87e7b25728835bb5',1,'IAudioTrack::Resume()'],['../classAudioSample16.html#aba1ed8d497da66bc8ba8032a7146c8b2',1,'AudioSample16::Resume()'],['../structTimer.html#ad3b4e386f8ebb885fa2ef6fcac8d9ca3',1,'Timer::Resume()']]],
   ['resume_238',['resume',['../classAudioSamplePool.html#a406c2afb511ed0986dc72dae157620cc',1,'AudioSamplePool']]],
   ['resumesounds_239',['resumeSounds',['../classAudioPlayer.html#a2201d87691bbe58cb0d5da555b1f91e4',1,'AudioPlayer']]],
-  ['resurrect_240',['Resurrect',['../classActor.html#a8deb0e11152172d30a96b7724c102de1',1,'Actor']]],
+  ['resurrect_240',['resurrect',['../classActor.html#a19dc217219d46ec0d1563de450045a7a',1,'Actor']]],
   ['resurrected_241',['Resurrected',['../ActorEnums_8h.html#a75a2677e7281dc615368b0814c395fedaead662696e0486cb7a478ecd13a0b5c5',1,'ActorEnums.h']]],
   ['reswater_242',['resWater',['../structMonsterInfo__MM7.html#a14f515e3918c184df9a362e055038ad8',1,'MonsterInfo_MM7']]],
   ['reswaterbase_243',['resWaterBase',['../structPlayer__MM7.html#a7d133f5d9d323e30f3b52efb33cb0904',1,'Player_MM7']]],
