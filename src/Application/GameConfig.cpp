@@ -54,7 +54,7 @@ void GameConfig::resetForTest() {
     settings.VoiceLevel.setValue(1);
     settings.SoundLevel.setValue(1);
     debug.NoVideo.setValue(true);
-    debug.VerboseLogging.setValue(true);
+    debug.VerboseLogging.setValue(false);
     window.MouseGrab.setValue(false);
     graphics.FPSLimit.setValue(0); // Unlimited
 }
