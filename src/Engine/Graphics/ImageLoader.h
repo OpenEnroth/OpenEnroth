@@ -138,10 +138,9 @@ class PCX_LOD_Compressed_Loader : public PCX_Loader {
 
 class Bitmaps_LOD_Loader : public ImageLoader {
  public:
-    inline Bitmaps_LOD_Loader(LODFile_IconsBitmaps *lod, const std::string &filename, bool use_hwl) {
+    inline Bitmaps_LOD_Loader(LODFile_IconsBitmaps *lod, const std::string &filename) {
         this->resource_name = filename;
         this->lod = lod;
-        this->use_hwl = use_hwl;
     }
 
     virtual bool Load(size_t *width, size_t *height, void **pixels,
@@ -149,19 +148,17 @@ class Bitmaps_LOD_Loader : public ImageLoader {
 
  protected:
     LODFile_IconsBitmaps *lod;
-    bool use_hwl;
 };
 
 class Sprites_LOD_Loader : public ImageLoader {
  public:
     inline Sprites_LOD_Loader(LODFile_Sprites *lod, unsigned int palette_id,
                               const std::string &filename,
-                              /*refactor*/ unsigned int lod_sprite_id, bool use_hwl) {
+                              /*refactor*/ unsigned int lod_sprite_id) {
         this->resource_name = filename;
         this->lod = lod;
         this->palette_id = palette_id;
         this->lod_sprite_id = lod_sprite_id;
-        this->use_hwl = use_hwl;
     }
 
     virtual bool Load(size_t *width, size_t *height, void **pixels,
@@ -171,5 +168,4 @@ class Sprites_LOD_Loader : public ImageLoader {
     LODFile_Sprites *lod;
     unsigned int palette_id;
     /*refactor*/ unsigned int lod_sprite_id;
-    bool use_hwl;
 };

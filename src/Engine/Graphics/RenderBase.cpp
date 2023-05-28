@@ -34,13 +34,6 @@
 bool RenderBase::Initialize() {
     window->resize({config->window.Width.value(), config->window.Height.value()});
 
-    if (!pD3DBitmaps.Open(makeDataPath("data", "d3dbitmap.hwl"))) {
-        return false;
-    }
-    if (!pD3DSprites.Open(makeDataPath("data", "d3dsprite.hwl"))) {
-        return false;
-    }
-
     return true;
 }
 
@@ -615,14 +608,6 @@ float RenderBase::GetGamma() {
     const float mult = 0.1f;
     int level = engine->config->graphics.Gamma.value();
     return base + mult * level;
-}
-
-HWLTexture *RenderBase::LoadHwlBitmap(const std::string &name) {
-    return pD3DBitmaps.LoadTexture(name);
-}
-
-HWLTexture *RenderBase::LoadHwlSprite(const std::string &name) {
-    return pD3DSprites.LoadTexture(name);
 }
 
 void RenderBase::SavePCXScreenshot() {

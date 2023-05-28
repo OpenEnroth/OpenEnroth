@@ -1590,13 +1590,13 @@ Texture *RenderOpenGL::CreateTexture_Blank(unsigned int width, unsigned int heig
 }
 
 Texture *RenderOpenGL::CreateTexture(const std::string &name) {
-    return TextureOpenGL::Create(new Bitmaps_LOD_Loader(pBitmaps_LOD, name, engine->config->graphics.HWLBitmaps.value()));
+    return TextureOpenGL::Create(new Bitmaps_LOD_Loader(pBitmaps_LOD, name));
 }
 
 Texture *RenderOpenGL::CreateSprite(const std::string &name, unsigned int palette_id,
                                     /*refactor*/ unsigned int lod_sprite_id) {
     return TextureOpenGL::Create(
-        new Sprites_LOD_Loader(pSprites_LOD, palette_id, name, lod_sprite_id, engine->config->graphics.HWLSprites.value()));
+        new Sprites_LOD_Loader(pSprites_LOD, palette_id, name, lod_sprite_id));
 }
 
 void RenderOpenGL::Update_Texture(Texture *texture) {
@@ -2757,12 +2757,7 @@ void RenderOpenGL::DoRenderBillboards_D3D() {
         //int palette{ pBillboardRenderListD3D[i].PaletteID};
         int paletteindex{ pBillboardRenderListD3D[i].PaletteIndex };
 
-        if (engine->config->graphics.HWLSprites.value())
-            paletteindex = 0;
-
         if (pBillboardRenderListD3D[i].texture) {
-            //if (!engine->config->graphics.HWLSprites.Get())
-            //    palette = pBillboardRenderListD3D[i].texture->g
             auto texture = (TextureOpenGL *)pBillboardRenderListD3D[i].texture;
             gltexid = texture->GetOpenGlTexture();
         } else {
@@ -2961,8 +2956,7 @@ void RenderOpenGL::DrawBillboards() {
     glTexBuffer(GL_TEXTURE_BUFFER, GL_RGBA8UI, palbuf);
     glActiveTexture(GL_TEXTURE0);
 
-    GLboolean repaint = !engine->config->graphics.HWLSprites.value();
-    glUniform1i(glGetUniformLocation(billbshader.ID, "repaint"), repaint);
+    glUniform1i(glGetUniformLocation(billbshader.ID, "repaint"), true);
 
 
     // set sampler to texure0
@@ -2986,7 +2980,7 @@ void RenderOpenGL::DrawBillboards() {
         // set texture
         GLfloat thistex = billbstore[offset].texid;
         glBindTexture(GL_TEXTURE_2D, billbstore[offset].texid);
-        if (repaint && billbstore[offset].paletteindex) {
+        if (billbstore[offset].paletteindex) {
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
         } else {
@@ -5589,8 +5583,7 @@ void RenderOpenGL::DrawTwodVerts() {
     glTexBuffer(GL_TEXTURE_BUFFER, GL_RGBA8UI, palbuf);
     glActiveTexture(GL_TEXTURE0);
 
-    GLboolean repaint = !engine->config->graphics.HWLSprites.value();
-    glUniform1i(glGetUniformLocation(twodshader.ID, "repaint"), repaint);
+    glUniform1i(glGetUniformLocation(twodshader.ID, "repaint"), true);
 
     // glEnable(GL_TEXTURE_2D);
     glEnable(GL_BLEND);
@@ -5608,7 +5601,7 @@ void RenderOpenGL::DrawTwodVerts() {
         // set texture
         GLfloat thistex = twodshaderstore[offset].texid;
         glBindTexture(GL_TEXTURE_2D, static_cast<GLuint>(twodshaderstore[offset].texid));
-        if (repaint && twodshaderstore[offset].paletteid) {
+        if (twodshaderstore[offset].paletteid) {
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
         } else {

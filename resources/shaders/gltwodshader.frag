@@ -9,7 +9,7 @@ out vec4 FragColour;
 
 uniform sampler2D texture0;
 uniform usamplerBuffer palbuf;
-uniform bool repaint;
+uniform bool repaint; // TODO(captainurist): always true?
 
 void main() {
     vec4 fragcol = texture(texture0, texuv);

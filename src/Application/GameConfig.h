@@ -337,12 +337,6 @@ class GameConfig : public Config {
         Int HouseMovieX2 = {this, "house_movie_x2", 172, "Viewport bottom-right offset for in-house movies."};
         Int HouseMovieY2 = {this, "house_movie_y2", 128, "Viewport bottom-right offset for in-house movies."};
 
-        Bool HWLBitmaps = {this, "hwl_bitmaps", false,
-                           "Use low-resolution bitmaps from HWL file instead of hi-resolution ones from LOD."};
-
-        Bool HWLSprites = {this, "hwl_sprites", false,
-                           "Use low-resolution sprites from HWL file instead of hi-resolution ones from LOD."};
-
         Int MaxVisibleSectors = {this, "maxvisiblesectors", 10, &ValidateMaxSectors, "Max number of BSP sectors to display."};
 
         Bool SeasonsChange = {this, "seasons_change", true,

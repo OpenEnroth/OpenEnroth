@@ -17,7 +17,7 @@ struct FogParam {
 
 uniform sampler2D texture0;
 uniform usamplerBuffer palbuf;
-uniform bool repaint;
+uniform bool repaint; // TODO(captainurist): always true?
 uniform FogParam fog;
 uniform float gamma;
 
