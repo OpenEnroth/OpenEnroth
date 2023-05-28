@@ -1515,9 +1515,9 @@ void _494035_timed_effects__water_walking_damage__etc() {
             player.health + player.uEndurance >= 1 ||
             player.pPlayerBuffs[PLAYER_BUFF_PRESERVATION].Active()) {
             if (player.health < 1)
-                player.SetCondition(Condition_Unconscious, 0);
+                player.SetCondition(CONDITION_UNCONSCIOUS, 0);
         } else {
-            player.SetCondition(Condition_Dead, 0);
+            player.SetCondition(CONDITION_DEAD, 0);
         }
 
         if (player.field_E0) {
@@ -1610,7 +1610,7 @@ void _494035_timed_effects__water_walking_damage__etc() {
         }
 
         if (player.pPlayerBuffs[PLAYER_BUFF_HASTE].Expired()) {
-            player.SetCondition(Condition_Weak, 0);
+            player.SetCondition(CONDITION_WEAK, 0);
             player.pPlayerBuffs[PLAYER_BUFF_HASTE].Reset();
         }
     }
@@ -1623,7 +1623,7 @@ void _494035_timed_effects__water_walking_damage__etc() {
 
     if (pParty->pPartyBuffs[PARTY_BUFF_HASTE].Expired()) {
         for (Player &player : pParty->pPlayers)
-            player.SetCondition(Condition_Weak, 0);
+            player.SetCondition(CONDITION_WEAK, 0);
         pParty->pPartyBuffs[PARTY_BUFF_HASTE].Reset();
     }
 
@@ -1648,8 +1648,8 @@ void _494035_timed_effects__water_walking_damage__etc() {
         if (current_screen_type != CURRENT_SCREEN::SCREEN_REST) {
             for (Player &player : pParty->pPlayers) {
                 // if someone is sleeping - wake them up
-                if (player.conditions.Has(Condition_Sleep)) {
-                    player.conditions.Reset(Condition_Sleep);
+                if (player.conditions.Has(CONDITION_SLEEP)) {
+                    player.conditions.Reset(CONDITION_SLEEP);
                     numPlayersCouldAct = 1;
                     break;
                 }
@@ -1697,7 +1697,7 @@ void RegeneratePartyHealthMana() {
                         unsigned short spell_power = times_triggered * pParty->pPartyBuffs[PARTY_BUFF_FLY].uPower;
 
                         int caster = pParty->pPartyBuffs[PARTY_BUFF_FLY].uCaster - 1;
-                        GameTime cursed_times = pParty->pPlayers[caster].conditions.Get(Condition_Cursed);
+                        GameTime cursed_times = pParty->pPlayers[caster].conditions.Get(CONDITION_CURSED);
                         if (cursed_times.Valid() && cursed_times.value < spell_power) {
                             // TODO: cursed_times was a pointer before, and we had cursed_times = 0 here,
                             // was this meant to cancel the curse?
@@ -1717,13 +1717,13 @@ void RegeneratePartyHealthMana() {
                 if (pParty->uFlags & PARTY_FLAGS_1_STANDING_ON_WATER) {
                     if (!(pParty->pPartyBuffs[PARTY_BUFF_WATER_WALK].uFlags & 1)) {  // taking on water
                         int caster = pParty->pPartyBuffs[PARTY_BUFF_WATER_WALK].uCaster - 1;
-                        GameTime cursed_times = pParty->pPlayers[caster].conditions.Get(Condition_Cursed);
+                        GameTime cursed_times = pParty->pPlayers[caster].conditions.Get(CONDITION_CURSED);
                         cursed_times.value -= times_triggered;
                         if (cursed_times.value <= 0) {
                             cursed_times.value = 0;
                             pParty->uFlags &= ~PARTY_FLAGS_1_STANDING_ON_WATER;
                         }
-                        pParty->pPlayers[caster].conditions.Set(Condition_Cursed, cursed_times);
+                        pParty->pPlayers[caster].conditions.Set(CONDITION_CURSED, cursed_times);
                     }
                 }
             }
@@ -1836,32 +1836,32 @@ void RegeneratePartyHealthMana() {
                             }
                         }
 
-                        if (recovery_HP && player.conditions.HasNone({ Condition_Dead, Condition_Eradicated })) {
+                        if (recovery_HP && player.conditions.HasNone({ CONDITION_DEAD, CONDITION_ERADICATED })) {
                             if (player.health < player.GetMaxHealth()) {
                                 player.health++;
                             }
-                            if (player.conditions.Has(Condition_Unconscious) && player.health > 0) {
-                                player.conditions.Reset(Condition_Unconscious);
+                            if (player.conditions.Has(CONDITION_UNCONSCIOUS) && player.health > 0) {
+                                player.conditions.Reset(CONDITION_UNCONSCIOUS);
                             }
                         }
 
-                        if (recovery_SP && player.conditions.HasNone({ Condition_Dead, Condition_Eradicated })) {
+                        if (recovery_SP && player.conditions.HasNone({ CONDITION_DEAD, CONDITION_ERADICATED })) {
                             if (player.mana < player.GetMaxMana()) {
                                 player.mana++;
                             }
                         }
 
-                        if (decrease_HP && player.conditions.HasNone({ Condition_Dead, Condition_Eradicated })) {
+                        if (decrease_HP && player.conditions.HasNone({ CONDITION_DEAD, CONDITION_ERADICATED })) {
                             player.health--;
-                            if (!(player.conditions.Has(Condition_Unconscious)) && player.health < 0) {
-                                player.conditions.Set(Condition_Unconscious, pParty->GetPlayingTime());
+                            if (!(player.conditions.Has(CONDITION_UNCONSCIOUS)) && player.health < 0) {
+                                player.conditions.Set(CONDITION_UNCONSCIOUS, pParty->GetPlayingTime());
                             }
                             if (player.health < 1) {
                                 int enduranceCheck = player.health + player.uEndurance + player.GetItemsBonus(CHARACTER_ATTRIBUTE_ENDURANCE);
                                 if (enduranceCheck >= 1 || player.pPlayerBuffs[PLAYER_BUFF_PRESERVATION].Active()) {
-                                    player.conditions.Set(Condition_Unconscious, pParty->GetPlayingTime());
-                                } else if (!player.conditions.Has(Condition_Dead)) {
-                                    player.conditions.Set(Condition_Dead, pParty->GetPlayingTime());
+                                    player.conditions.Set(CONDITION_UNCONSCIOUS, pParty->GetPlayingTime());
+                                } else if (!player.conditions.Has(CONDITION_DEAD)) {
+                                    player.conditions.Set(CONDITION_DEAD, pParty->GetPlayingTime());
                                 }
                             }
                         }
@@ -1869,13 +1869,13 @@ void RegeneratePartyHealthMana() {
                 }
 
                 // regeneration buff
-                if (player.pPlayerBuffs[PLAYER_BUFF_REGENERATION].Active() && player.conditions.HasNone({ Condition_Dead, Condition_Eradicated })) {
+                if (player.pPlayerBuffs[PLAYER_BUFF_REGENERATION].Active() && player.conditions.HasNone({ CONDITION_DEAD, CONDITION_ERADICATED })) {
                     player.health += 5 * player.pPlayerBuffs[PLAYER_BUFF_REGENERATION].power;
                     if (player.health > player.GetMaxHealth()) {
                         player.health = player.GetMaxHealth();
                     }
-                    if (player.conditions.Has(Condition_Unconscious) && player.health > 0) {
-                        player.conditions.Reset(Condition_Unconscious);
+                    if (player.conditions.Has(CONDITION_UNCONSCIOUS) && player.health > 0) {
+                        player.conditions.Reset(CONDITION_UNCONSCIOUS);
                     }
                 }
 
@@ -1894,7 +1894,7 @@ void RegeneratePartyHealthMana() {
                             lich_has_jar = true;
                     }
 
-                    if (player.conditions.HasNone({ Condition_Dead, Condition_Eradicated })) {
+                    if (player.conditions.HasNone({ CONDITION_DEAD, CONDITION_ERADICATED })) {
                         if (player.health > (player.GetMaxHealth() / 2)) {
                             player.health = player.health - 2;
                         }
@@ -1911,8 +1911,8 @@ void RegeneratePartyHealthMana() {
                 }
 
                 // for zombie
-                if (player.conditions.Has(Condition_Zombie) &&
-                    player.conditions.HasNone({ Condition_Dead, Condition_Eradicated })) {
+                if (player.conditions.Has(CONDITION_ZOMBIE) &&
+                    player.conditions.HasNone({ CONDITION_DEAD, CONDITION_ERADICATED })) {
                     if (player.health > (player.GetMaxHealth() / 2)) {
                         player.health = player.health--;
                     }

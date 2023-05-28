@@ -72,9 +72,9 @@ void GUIWindow_Temple::healDialogue() {
 
     bool setZombie = false;
     if (houseId() == HOUSE_TEMPLE_DEYJA || houseId() == HOUSE_TEMPLE_PIT || houseId() == HOUSE_TEMPLE_NIGHON) {
-        setZombie = pParty->activeCharacter().conditions.Has(Condition_Zombie);
-        if (!pParty->activeCharacter().conditions.Has(Condition_Zombie)) {
-            if (pParty->activeCharacter().conditions.HasAny({Condition_Eradicated, Condition_Petrified, Condition_Dead})) {
+        setZombie = pParty->activeCharacter().conditions.Has(CONDITION_ZOMBIE);
+        if (!pParty->activeCharacter().conditions.Has(CONDITION_ZOMBIE)) {
+            if (pParty->activeCharacter().conditions.HasAny({CONDITION_ERADICATED, CONDITION_PETRIFIED, CONDITION_DEAD})) {
                 pParty->activeCharacter().uPrevFace = pParty->activeCharacter().uCurrentFace;
                 pParty->activeCharacter().uPrevVoiceID = pParty->activeCharacter().uVoiceID;
                 pParty->activeCharacter().uVoiceID = (pParty->activeCharacter().GetSexByVoice() != 0) + 23;
@@ -84,7 +84,7 @@ void GUIWindow_Temple::healDialogue() {
             }
         }
     } else {
-        if (pParty->activeCharacter().conditions.Has(Condition_Zombie)) {
+        if (pParty->activeCharacter().conditions.Has(CONDITION_ZOMBIE)) {
             pParty->activeCharacter().uCurrentFace = pParty->activeCharacter().uPrevFace;
             pParty->activeCharacter().uVoiceID = pParty->activeCharacter().uPrevVoiceID;
             GameUI_ReloadPlayerPortraits(pParty->activeCharacterIndex() - 1, pParty->activeCharacter().uPrevFace);
@@ -93,7 +93,7 @@ void GUIWindow_Temple::healDialogue() {
 
     pParty->activeCharacter().conditions.ResetAll();
     if (setZombie) {
-        pParty->activeCharacter().conditions.Set(Condition_Zombie, pParty->GetPlayingTime());
+        pParty->activeCharacter().conditions.Set(CONDITION_ZOMBIE, pParty->GetPlayingTime());
     }
     pParty->TakeGold(price);
     pParty->activeCharacter().health = pParty->activeCharacter().GetMaxHealth();
@@ -198,10 +198,10 @@ void GUIWindow_Temple::houseSpecificDialogue() {
 }
 
 bool GUIWindow_Temple::isPlayerHealableByTemple(const Player &player) const {
-    if (player.health >= player.GetMaxHealth() && player.mana >= player.GetMaxMana() && player.GetMajorConditionIdx() == Condition_Good) {
+    if (player.health >= player.GetMaxHealth() && player.mana >= player.GetMaxMana() && player.GetMajorConditionIdx() == CONDITION_GOOD) {
         // fully healthy
         return false;
-    } else if (player.GetMajorConditionIdx() == Condition_Zombie) {
+    } else if (player.GetMajorConditionIdx() == CONDITION_ZOMBIE) {
         // zombie cant be healed at these tmeples
         return houseId() != HOUSE_TEMPLE_DEYJA && houseId() != HOUSE_TEMPLE_PIT && houseId() != HOUSE_TEMPLE_NIGHON;
     }

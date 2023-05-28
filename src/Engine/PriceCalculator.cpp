@@ -98,15 +98,15 @@ int PriceCalculator::templeHealingCostForPlayer(const Player *player, float pric
     int conditionTimeMultiplier = 1;
     int baseConditionMultiplier = 1;  // condition good unless otherwise, base price for health and mana
 
-    if (conditionIdx >= Condition_Dead && conditionIdx <= Condition_Eradicated) {  // dead, petri, erad - serious
-        if (conditionIdx <= Condition_Petrified) {
+    if (conditionIdx >= CONDITION_DEAD && conditionIdx <= CONDITION_ERADICATED) {  // dead, petri, erad - serious
+        if (conditionIdx <= CONDITION_PETRIFIED) {
             baseConditionMultiplier = 5;  // dead or petri
         } else {
             baseConditionMultiplier = 10;  // erad
         }
 
         conditionTimeMultiplier = player->GetConditionDaysPassed(conditionIdx);
-    } else if (conditionIdx < Condition_Dead) {  // all other conditions
+    } else if (conditionIdx < CONDITION_DEAD) {  // all other conditions
         // get worst afflicted time of any other condition
         int highestTimeMultiplier;
         for (int i = 0; i <= 13; i++) {

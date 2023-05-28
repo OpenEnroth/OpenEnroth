@@ -9,25 +9,25 @@
 struct Player;
 
 enum class Condition : uint32_t {
-    Condition_Cursed = 0,
-    Condition_Weak = 1,
-    Condition_Sleep = 2,
-    Condition_Fear = 3,
-    Condition_Drunk = 4,
-    Condition_Insane = 5,
-    Condition_Poison_Weak = 6,
-    Condition_Disease_Weak = 7,
-    Condition_Poison_Medium = 8,
-    Condition_Disease_Medium = 9,
-    Condition_Poison_Severe = 10,
-    Condition_Disease_Severe = 11,
-    Condition_Paralyzed = 12,
-    Condition_Unconscious = 13,
-    Condition_Dead = 14,
-    Condition_Petrified = 15,
-    Condition_Eradicated = 16,
-    Condition_Zombie = 17,
-    Condition_Good = 18,
+    CONDITION_CURSED = 0,
+    CONDITION_WEAK = 1,
+    CONDITION_SLEEP = 2,
+    CONDITION_FEAR = 3,
+    CONDITION_DRUNK = 4,
+    CONDITION_INSANE = 5,
+    CONDITION_POISON_WEAK = 6,
+    CONDITION_DISEASE_WEAK = 7,
+    CONDITION_POISON_MEDIUM = 8,
+    CONDITION_DISEASE_MEDIUM = 9,
+    CONDITION_POISON_SEVERE = 10,
+    CONDITION_DISEASE_SEVERE = 11,
+    CONDITION_PARALYZED = 12,
+    CONDITION_UNCONSCIOUS = 13,
+    CONDITION_DEAD = 14,
+    CONDITION_PETRIFIED = 15,
+    CONDITION_ERADICATED = 16,
+    CONDITION_ZOMBIE = 17,
+    CONDITION_GOOD = 18,
 };
 using enum Condition;
 
@@ -60,6 +60,6 @@ class ConditionProcessor {
     static bool IsPlayerAffected(Player *, Condition, int);
 };
 
-extern IndexedArray<ConditionProcessor, Condition_Cursed, Condition_Zombie> conditionArray;
+extern IndexedArray<ConditionProcessor, CONDITION_CURSED, CONDITION_ZOMBIE> conditionArray;
 
 const std::array<Condition, 18> &conditionImportancyTable();
