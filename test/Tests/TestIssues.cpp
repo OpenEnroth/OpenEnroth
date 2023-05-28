@@ -1068,3 +1068,47 @@ GAME_TEST(Issues, Issue816) {
     // Test that encountering trigger event instruction does not assert
     test->playTraceFromTestData("issue_816.mm7", "issue_816.json"); // Should not assert
 }
+
+GAME_TEST(Issues, Issue833) {
+    // Test that quick spell castable on Shift and no crash with Shift+Click when quick spell is not set
+    uint64_t oldMana0 = 0;
+    uint64_t oldMana1 = 0;
+    test->playTraceFromTestData("issue_833.mm7", "issue_833.json", [&] {
+        oldMana0 = pParty->pPlayers[0].GetMana();
+        oldMana1 = pParty->pPlayers[1].GetMana();
+    });
+    EXPECT_EQ(pParty->pPlayers[0].GetMana(), oldMana0 - 2);
+    EXPECT_EQ(pParty->pPlayers[1].GetMana(), oldMana1);
+}
+
+GAME_TEST(Issues, Issue840) {
+    // Test that entering Body Guild in erathia does not crash
+    test->playTraceFromTestData("issue_840.mm7", "issue_840.json"); // Should not crash
+    EXPECT_EQ(current_screen_type, CURRENT_SCREEN::SCREEN_HOUSE);
+}
+
+GAME_TEST(Issues, Issue844) {
+    // Test that entering trainer in Stone City does not assert
+    test->playTraceFromTestData("issue_844.mm7", "issue_844.json"); // Should not assert
+    EXPECT_EQ(current_screen_type, CURRENT_SCREEN::SCREEN_HOUSE);
+}
+
+GAME_TEST(Issues, Issue867) {
+    // Test that temple donations work correctly
+    test->playTraceFromTestData("issue_867.mm7", "issue_867.json");
+    EXPECT_TRUE(pParty->pPartyBuffs[PARTY_BUFF_WIZARD_EYE].Active());
+}
+
+GAME_TEST(Issues, Issue868) {
+    // Test that ressurecting in evil temples set zombie status
+    test->playTraceFromTestData("issue_868.mm7", "issue_868.json");
+    EXPECT_EQ(pParty->pPlayers[0].GetMajorConditionIdx(), Condition_Zombie);
+}
+
+GAME_TEST(Issues, Issue872) {
+    // Test that loding game set correct names on unique NPCs
+    test->playTraceFromTestData("issue_872.mm7", "issue_872.json");
+    FlatHirelings buf;
+    buf.Prepare();
+    EXPECT_NE(buf.Get(0)->pName, "Dummy");
+}
