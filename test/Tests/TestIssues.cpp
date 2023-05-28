@@ -327,9 +327,13 @@ GAME_TEST(Issues, Issue315) {
     game->skipLoadingScreen(); // This shouldn't crash.
 }
 
-GAME_TEST(Issues, Issue331) {
+GAME_TEST(Issues, Issue331_679) {
     // Assert when traveling by horse caused by out of bound access to pObjectList->pObjects
-    test->playTraceFromTestData("issue_331.mm7", "issue_331.json");
+    int prevGold = -1;
+    test->playTraceFromTestData("issue_331.mm7", "issue_331.json", [&] { prevGold = pParty->GetGold(); });
+
+    // 679 - Loading autosave after travelling by stables / boat results in gold loss
+    EXPECT_EQ(prevGold, pParty->GetGold());
 }
 
 GAME_TEST(Prs, Pr347) {
@@ -439,8 +443,8 @@ static void check427Buffs(const char *ctx, std::initializer_list<int> players, b
     }
 }
 
-GAME_TEST(Issues, Issue427) {
-    // Test that some of the buff spells that start to affect whole party starting from certain mastery work correctly.
+GAME_TEST(Issues, Issue427_528) {
+    // 427 - Test that some of the buff spells that start to affect whole party starting from certain mastery work correctly.
 
     // In this test mastery is not enough for the whole party buff
     test->playTraceFromTestData("issue_427a.mm7", "issue_427a.json");
@@ -450,10 +454,13 @@ GAME_TEST(Issues, Issue427) {
     check427Buffs("a", { 1, 2, 3 }, false);
 
     // In this test mastery is enough for the whole party
-    test->playTraceFromTestData("issue_427b.mm7", "issue_427b.json");
+    test->playTraceFromTestData("issue_427b.mm7", "issue_427b.json", []() { EXPECT_EQ(pParty->pPlayers[2].mana, 100); });
 
     // Check that all character have buffs
     check427Buffs("b", { 0, 1, 2, 3 }, true);
+
+    // 528 - Check that spells target single player or entire party depending on mastery drain mana
+    EXPECT_EQ(pParty->pPlayers[2].mana, 40);
 }
 
 GAME_TEST(Issues, Issue442) {
@@ -558,13 +565,6 @@ GAME_TEST(Issues, Issue527) {
     // Check Cure Disease spell works
     test->playTraceFromTestData("issue_527.mm7", "issue_527.json", []() { EXPECT_TRUE(pParty->pPlayers[0].conditions.Has(Condition_Disease_Weak)); });
     EXPECT_FALSE(pParty->pPlayers[0].conditions.Has(Condition_Disease_Weak));
-}
-
-GAME_TEST(Issues, Issue528) {
-    // Check that spells target single player or entire party depending on mastery drain mana
-    // Use test for issue 427 which test the same spells
-    test->playTraceFromTestData("issue_427b.mm7", "issue_427b.json", []() { EXPECT_EQ(pParty->pPlayers[2].mana, 100); });
-    EXPECT_EQ(pParty->pPlayers[2].mana, 40);
 }
 
 GAME_TEST(Issues, Issue540) {
@@ -828,13 +828,6 @@ GAME_TEST(Issues, Issue677) {
     for (auto &player : pParty->pPlayers) {
         EXPECT_EQ(player.conditions.Has(Condition_Weak), true);
     }
-}
-
-GAME_TEST(Issues, Issue679) {
-    // Loading autosave after travelling by stables / boat results in gold loss
-    int prevGold = -1;
-    test->playTraceFromTestData("issue_679.mm7", "issue_679.json", [&] { prevGold = pParty->GetGold(); });
-    EXPECT_EQ(prevGold, pParty->GetGold());
 }
 
 GAME_TEST(Issues, Issue689) {
