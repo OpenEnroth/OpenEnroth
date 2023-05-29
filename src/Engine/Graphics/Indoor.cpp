@@ -179,7 +179,7 @@ Texture *BLVFace::GetTexture() {
 void BLVFace::SetTexture(const std::string &filename) {
     if (this->IsTextureFrameTable()) {
         this->resource =
-            (void *)pTextureFrameTable->FindTextureByName(filename.c_str());
+            (void *)pTextureFrameTable->FindTextureByName(filename);
         if (this->resource != (void *)-1) {
             return;
         }

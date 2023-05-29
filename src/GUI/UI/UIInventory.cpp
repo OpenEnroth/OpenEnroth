@@ -17,7 +17,7 @@
 void GUIWindow_Inventory::Update() {
     DrawMessageBox(0);
     DrawText(pFontLucida, {10, 20}, Color(), "Making item number", 0, 0, Color());
-    DrawText(pFontLucida, {10, 40}, Color(), keyboardInputHandler->GetTextInput().c_str(), 0, 0, Color());
+    DrawText(pFontLucida, {10, 40}, Color(), keyboardInputHandler->GetTextInput(), 0, 0, Color());
 
     // a hack to capture end of user input (enter) while avoiding listening to UI message handler
     // redo this in a more clean way

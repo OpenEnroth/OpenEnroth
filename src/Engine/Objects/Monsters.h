@@ -190,7 +190,7 @@ struct MonsterInfo {
 struct MonsterStats {
     void Initialize();
     void InitializePlacements();
-    signed int FindMonsterByTextureName(const char *Str2);
+    signed int FindMonsterByTextureName(const std::string &Str2);
 
     static bool BelongsToSupertype(unsigned int uMonsterInfoID,
                                    enum MONSTER_SUPERTYPE eSupertype);
@@ -214,7 +214,7 @@ struct MonsterDesc {
 };
 
 struct MonsterList {
-    int16_t GetMonsterIDByName(const char *pMonsterName);
+    int16_t GetMonsterIDByName(const std::string &pMonsterName);
     void FromFile(const Blob &data_mm6, const Blob &data_mm7, const Blob &data_mm8);
     bool FromFileTxt(const char *Args);
 

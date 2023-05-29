@@ -220,7 +220,7 @@ class LODFile_Sprites : public LOD::File {
     void DeleteSomeOtherSprites();
     int LoadSpriteFromFile(LODSprite *pSpriteHeader, const std::string &pContainer);
     bool Load(const std::string &pFilename, const std::string &folder);
-    int LoadSprite(const char *pContainerName, unsigned int uPaletteID);
+    int LoadSprite(const std::string &pContainerName, unsigned int uPaletteID);
     Sprite *getSprite(std::string_view pContainerName);
     void ReleaseLostHardwareSprites();
     void ReleaseAll();

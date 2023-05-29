@@ -14,10 +14,8 @@
 #include "Engine/Time.h"
 
 #include "Engine/Graphics/ImageLoader.h"
-#include "Engine/Graphics/Level/Decoration.h"
 #include "Engine/Graphics/Outdoor.h"
 #include "Engine/Graphics/Indoor.h"
-#include "Engine/Graphics/Overlays.h"
 #include "Engine/Graphics/PCX.h"
 #include "Engine/Graphics/IRender.h"
 
@@ -346,7 +344,7 @@ void SaveNewGame() {
     }
 
     std::string file_path = makeDataPath("data", "new.lod");
-    remove(file_path.c_str());  // удалить new.lod
+    std::filesystem::remove(file_path);  // удалить new.lod
 
     LOD::FileHeader header;  // заголовок
     strcpy(header.LodVersion, "MMVII");

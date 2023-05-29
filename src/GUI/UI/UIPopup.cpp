@@ -299,7 +299,7 @@ void GameUI_DrawItemInfo(struct ItemGen *inspect_item) {
             (iteminfo_window.uFrameX + (float)itemXspacing) / 640.0f,
             (itemYspacing + (float)iteminfo_window.uFrameY + 30) / 480.0f, inspect_item_image);
 
-        iteminfo_window.DrawTitleText(pFontArrus, 0, 0xCu, colorTable.PaleCanary, inspect_item->GetDisplayName().c_str(), 3);
+        iteminfo_window.DrawTitleText(pFontArrus, 0, 0xCu, colorTable.PaleCanary, inspect_item->GetDisplayName(), 3);
         iteminfo_window.DrawTitleText(pFontArrus, 0x64u,
             ((signed int)iteminfo_window.uFrameHeight >> 1) - pFontArrus->CalcTextHeight(localization->GetString(LSTR_BROKEN_ITEM), iteminfo_window.uFrameWidth, 0) / 2,
                                       colorTable.TorchRed, localization->GetString(LSTR_BROKEN_ITEM), 3);
@@ -1167,7 +1167,7 @@ void CharacterUI_StatsTab_ShowHint() {
             int meleerecov = pParty->activeCharacter().GetAttackRecoveryTime(false);
             // TODO(captainurist): fmt can throw
             std::string description = fmt::sprintf(localization->GetString(LSTR_FMT_RECOVERY_TIME_D), meleerecov);
-            description = fmt::format("{}\n\n{}", localization->getMeleeAttackDescription(), description.c_str());
+            description = fmt::format("{}\n\n{}", localization->getMeleeAttackDescription(), description);
             CharacterUI_DrawTooltip(localization->GetString(LSTR_ATTACK_BONUS), description);
             break;
         }
@@ -1668,7 +1668,7 @@ void UI_OnMouseRightClick(int mouse_x, int mouse_y) {
                     popup_window.uFrameY + popup_window.uFrameHeight - 1;
 
                 std::string str = fmt::format("{::}{}\f00000\n", colorTable.PaleCanary.tag(), pStr);
-                popup_window.DrawTitleText(pFontCreate, 0, 0, Color(), str.c_str(), 3);
+                popup_window.DrawTitleText(pFontCreate, 0, 0, Color(), str, 3);
                 popup_window.DrawText(pFontSmallnum, {1, pFontLucida->GetHeight()}, Color(), sHint, 0, 0, Color());
             }
             break;

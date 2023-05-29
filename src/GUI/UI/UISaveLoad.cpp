@@ -341,7 +341,7 @@ static void UI_DrawSaveLoad(bool save) {
                                                        pSavegameList->pSavegameHeader[i].name, 185, 0);
             } else {
                 pGUIWindow_CurrentMenu->DrawFlashingInputCursor(pGUIWindow_CurrentMenu->DrawTextInRect(pFontSmallnum, {27, slot_Y},
-                    i == pSavegameList->selectedSlot ? colorTable.LaserLemon : Color(), keyboardInputHandler->GetTextInput().c_str(), 175, 1) + 27, slot_Y, pFontSmallnum);
+                    i == pSavegameList->selectedSlot ? colorTable.LaserLemon : Color(), keyboardInputHandler->GetTextInput(), 175, 1) + 27, slot_Y, pFontSmallnum);
             }
             slot_Y += 21;
         }

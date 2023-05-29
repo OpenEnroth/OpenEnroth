@@ -343,12 +343,12 @@ void GUIWindow_GameKeyBindings::Update() {
 
     for (int i = 0; i < 7; ++i) {
         InputAction action1 = (InputAction)(base_controls_offset + i);
-        pGUIWindow_CurrentMenu->DrawText(pFontLucida, {23, 142 + i * 21}, ui_gamemenu_keys_action_name_color, GetDisplayName(action1).c_str(), 0, 0, Color());
+        pGUIWindow_CurrentMenu->DrawText(pFontLucida, {23, 142 + i * 21}, ui_gamemenu_keys_action_name_color, GetDisplayName(action1), 0, 0, Color());
         pGUIWindow_CurrentMenu->DrawText(pFontLucida, {127, 142 + i * 21}, GameMenuUI_GetKeyBindingColor(action1), GetDisplayName(curr_key_map[action1]), 0, 0, Color());
 
         int j = i + 7;
         InputAction action2 = (InputAction)(base_controls_offset + j);
-        pGUIWindow_CurrentMenu->DrawText(pFontLucida, {247, 142 + i * 21}, ui_gamemenu_keys_action_name_color, GetDisplayName(action2).c_str(), 0, 0, Color());
+        pGUIWindow_CurrentMenu->DrawText(pFontLucida, {247, 142 + i * 21}, ui_gamemenu_keys_action_name_color, GetDisplayName(action2), 0, 0, Color());
         pGUIWindow_CurrentMenu->DrawText(pFontLucida, {350, 142 + i * 21}, GameMenuUI_GetKeyBindingColor(action2), GetDisplayName(curr_key_map[action2]), 0, 0, Color());
     }
 }

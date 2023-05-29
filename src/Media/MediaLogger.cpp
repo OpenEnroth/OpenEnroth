@@ -35,7 +35,7 @@ void MediaLogger::log(void *ptr, int logLevel, const char *format, va_list args)
     } else {
         state.message += buffer;
         if (state.message.ends_with('\n')) {
-            _logger->verbose("{}", state.message.c_str());
+            _logger->verbose("{}", state.message);
             state.message.clear();
         }
     }

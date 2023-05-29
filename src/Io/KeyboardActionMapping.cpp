@@ -183,7 +183,6 @@ void KeyboardActionMapping::ReadMappings() {
     char str[32];
 
     for (size_t i = 0; i < keyMappingParams.size(); i++) {
-        const char *keyName = keyMappingParams[i].m_keyName.c_str();
         //GameKey commandDefaultKeyCode = keyMappingParams[i].m_key;
         InputAction commandId = keyMappingParams[i].m_cmdId;
         KeyToggleType toggType = keyMappingParams[i].m_toggType;
