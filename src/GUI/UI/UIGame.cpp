@@ -1633,7 +1633,6 @@ void GameUI_DrawMinimap(unsigned int uX, unsigned int uY, unsigned int uZ,
 
                 ushort MapImgWidth = viewparams->location_minimap->GetWidth();
                 auto pMapLod0Line = (uint32_t*)viewparams->location_minimap->GetPixels(IMAGE_FORMAT_A8B8G8R8);
-                // Image *minimaptemp = Image::Create(uWidth, uHeight, IMAGE_FORMAT_A8R8G8B8);
                 auto minitempix = (uint32_t*)minimaptemp->GetPixels(IMAGE_FORMAT_A8B8G8R8);
 
                 for (int y = 0; y < uHeight; ++y) {

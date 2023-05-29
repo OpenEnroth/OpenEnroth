@@ -879,7 +879,6 @@ void RenderOpenGL::BlendTextures(int x, int y, Image *imgin, Image *imgblend, in
         int Width = imgin->GetWidth();
         int Height = imgin->GetHeight();
         Texture *temp = render->CreateTexture_Blank(Width, Height, IMAGE_FORMAT_A8B8G8R8);
-        //Image *temp = Image::Create(Width, Height, IMAGE_FORMAT_A8R8G8B8);
         uint32_t *temppix = (uint32_t*)temp->GetPixels(IMAGE_FORMAT_A8B8G8R8);
 
         uint32_t c = *(pixelpointblend + 2700);  // guess at brightest pixel
@@ -1623,35 +1622,22 @@ void RenderOpenGL::RemoveTextureFromDevice(Texture *texture) {
 
 bool RenderOpenGL::MoveTextureToDevice(Texture *texture) {
     auto t = (TextureOpenGL *)texture;
-    auto native_format = t->GetFormat();
-    int gl_format = GL_RGB;
-        // native_format == IMAGE_FORMAT_A1R5G5B5 ? GL_RGBA : GL_RGB;
+    const void *pixels = t->GetPixels(IMAGE_FORMAT_A8B8G8R8);
+    assert(pixels);
 
-    uint8_t *pixels = nullptr;
-    if (native_format == IMAGE_FORMAT_R5G6B5 || native_format == IMAGE_FORMAT_A1R5G5B5 || native_format == IMAGE_FORMAT_R8G8B8A8
-         || native_format == IMAGE_FORMAT_R8G8B8 || native_format == IMAGE_FORMAT_A8B8G8R8) {
-        pixels = (uint8_t *)t->GetPixels(IMAGE_FORMAT_A8B8G8R8);
-        gl_format = GL_RGBA;
-    } else {
-        log->verbose("Image {} not loaded!", *t->GetName());
-    }
+    GLuint texid;
+    glGenTextures(1, &texid);
+    t->SetOpenGlTexture(texid);
 
-    if (pixels) {
-        GLuint texid;
-        glGenTextures(1, &texid);
-        t->SetOpenGlTexture(texid);
+    glBindTexture(GL_TEXTURE_2D, texid);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, t->GetWidth(), t->GetHeight(), 0, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
-        glBindTexture(GL_TEXTURE_2D, texid);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, t->GetWidth(), t->GetHeight(), 0, gl_format, GL_UNSIGNED_BYTE, pixels);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-
-        glBindTexture(GL_TEXTURE_2D, 0);
-        return true;
-    }
-    return false;
+    glBindTexture(GL_TEXTURE_2D, 0);
+    return true;
 }
 
 // TODO(pskelton): to camera?

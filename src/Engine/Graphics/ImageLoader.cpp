@@ -123,7 +123,7 @@ bool Paletted_Img_Loader::Load(size_t *out_width, size_t *out_height, void **out
 
     *out_width = tex->header.uTextureWidth;
     *out_height = tex->header.uTextureHeight;
-    *out_format = IMAGE_FORMAT_R8G8B8;
+    *out_format = IMAGE_FORMAT_A8B8G8R8;
 
     return true;
 }
