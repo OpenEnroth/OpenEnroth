@@ -839,20 +839,18 @@ void GameUI_CharacterQuickRecord_Draw(GUIWindow *window, Player *player) {
 
     // TODO(captainurist): do a 2nd rewrite here
     auto str =
-        fmt::format("\f{:05}", ui_character_header_text_color.c16())
-        + NameAndTitle(player->name, player->classType)
-        + "\f00000\n"
-        + fmt::format("{} : \f{:05}{}\f00000 / {}\n",
+        fmt::format("{::}{}\f00000\n", ui_character_header_text_color.tag(), NameAndTitle(player->name, player->classType))
+        + fmt::format("{} : {::}{}\f00000 / {}\n",
                       localization->GetString(LSTR_HIT_POINTS),
-                      UI_GetHealthManaAndOtherQualitiesStringColor(player->health, player->GetMaxHealth()).c16(),
+                      UI_GetHealthManaAndOtherQualitiesStringColor(player->health, player->GetMaxHealth()).tag(),
                       player->health, player->GetMaxHealth())
-        + fmt::format("{} : \f{:05}{}\f00000 / {}\n",
+        + fmt::format("{} : {::}{}\f00000 / {}\n",
                       localization->GetString(LSTR_SPELL_POINTS),
-                      UI_GetHealthManaAndOtherQualitiesStringColor(player->mana, player->GetMaxMana()).c16(),
+                      UI_GetHealthManaAndOtherQualitiesStringColor(player->mana, player->GetMaxMana()).tag(),
                       player->mana, player->GetMaxMana())
-        + fmt::format("{}: \f{:05}{}\f00000\n",
+        + fmt::format("{}: {::}{}\f00000\n",
                      localization->GetString(LSTR_CONDITION),
-                     GetConditionDrawColor(player->GetMajorConditionIdx()).c16(),
+                     GetConditionDrawColor(player->GetMajorConditionIdx()).tag(),
                      localization->GetCharacterConditionName(player->GetMajorConditionIdx()));
 
     if (player->uQuickSpell != SPELL_NONE)

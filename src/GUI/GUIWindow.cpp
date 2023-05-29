@@ -695,7 +695,7 @@ void CreateScrollWindow() {
 
     char *v1 = pItemTable->pItems[pGUIWindow_ScrollWindow->scroll_type].name;
 
-    a1.DrawTitleText(pFontCreate, 0, 0, Color(), fmt::format("\f{:05}{}\f00000\n", colorTable.PaleCanary.c16(), v1), 3);
+    a1.DrawTitleText(pFontCreate, 0, 0, Color(), fmt::format("{::}{}\f00000\n", colorTable.PaleCanary.tag(), v1), 3);
     a1.DrawText(pFontSmallnum, {1, pFontCreate->GetHeight() - 3}, Color(), pMessageScrolls[pGUIWindow_ScrollWindow->scroll_type], 0, 0, Color());
 }
 
@@ -1262,7 +1262,7 @@ void OracleDialogue() {
         pParty->pPlayers[0].AddVariable(VAR_PlayerItemInHands, std::to_underlying(item_id));
         // TODO(captainurist): what if fmt throws?
         current_npc_text = fmt::sprintf(pNPCTopics[666].pText, // "Here's %s that you lost. Be careful"
-                                        fmt::format("\f{:05}{}\f00000", colorTable.Jonquil.c16(),
+                                        fmt::format("{::}{}\f00000", colorTable.Jonquil.tag(),
                                                     pItemTable->pItems[item_id].pUnidentifiedName).c_str());
     }
 
@@ -1597,7 +1597,7 @@ std::string BuildDialogueString(const char *lpsz, uint8_t uPlayerID, ItemGen *a3
 
 //----- (00495461) --------------------------------------------------------
 std::string BuildDialogueString(std::string &str, uint8_t uPlayerID, ItemGen *a3, int eventId, int shop_screen, GameTime *a6) {
-    char v1[256] = "";
+    std::string v1;
     Player *pPlayer;       // ebx@3
     const char *pText;     // esi@7
     int64_t v18;    // qax@18
@@ -1727,7 +1727,7 @@ std::string BuildDialogueString(std::string &str, uint8_t uPlayerID, ItemGen *a3
             {
                 uint pay_percentage = pNPCStats->pProfessions[npc->profession].uHirePrice / 100;
                 if (pay_percentage == 0) pay_percentage = 1;
-                sprintf(v1, "%u", pay_percentage);
+                v1 = fmt::format("{}", pay_percentage);
                 result += v1;
                 break;
             }
@@ -1737,8 +1737,9 @@ std::string BuildDialogueString(std::string &str, uint8_t uPlayerID, ItemGen *a3
             case 21:
             case 22:
             case 26:
-                strncpy(v1, str.c_str() + i + 1, 2);
-                sprintf(v1, "%u", atoi(v1));
+                v1 = str.substr(i + 1, 2);
+                if (v1.starts_with('0'))
+                    v1 = v1.substr(1);
                 result += v1;
                 break;
             case 23:
@@ -1749,7 +1750,7 @@ std::string BuildDialogueString(std::string &str, uint8_t uPlayerID, ItemGen *a3
                 break;
 
             case 24:  // item name
-                sprintf(v1, "\f%05d%s\f00000\n", colorTable.PaleCanary.c16(), a3->GetDisplayName().c_str());
+                v1 = fmt::format("{::}{}\f00000\n", colorTable.PaleCanary.tag(), a3->GetDisplayName());
                 result += v1;
                 break;
 
@@ -1757,7 +1758,7 @@ std::string BuildDialogueString(std::string &str, uint8_t uPlayerID, ItemGen *a3
                 v29 = PriceCalculator::baseItemBuyingPrice(a3->GetValue(), buildingTable[eventId - 1].fPriceMultiplier);
                 switch (shop_screen) {
                 case 3:
-                        v29 = PriceCalculator::baseItemSellingPrice(a3->GetValue(), buildingTable[eventId - 1].fPriceMultiplier);
+                    v29 = PriceCalculator::baseItemSellingPrice(a3->GetValue(), buildingTable[eventId - 1].fPriceMultiplier);
                     break;
                 case 4:
                     v29 = PriceCalculator::baseItemIdentifyPrice(buildingTable[eventId - 1].fPriceMultiplier);
@@ -1769,47 +1770,39 @@ std::string BuildDialogueString(std::string &str, uint8_t uPlayerID, ItemGen *a3
                     v29 = PriceCalculator::baseItemSellingPrice(a3->GetValue(), buildingTable[eventId - 1].fPriceMultiplier) / 2;
                     break;
                 }
-                sprintf(v1, "%u", v29);
+                v1 = fmt::format("{}", v29);
                 result += v1;
                 break;
 
             case 27:  // actual price
                 v29 = PriceCalculator::itemBuyingPriceForPlayer(pPlayer, a3->GetValue(), buildingTable[eventId - 1].fPriceMultiplier);
                 if (shop_screen == 3) {
-                    // v29 = PriceCalculator::getItemSellingPriceForPlayer(pPlayer, a3->GetValue(),
-                    // buildingTable[(signed int)eventId - 1].fPriceMultiplier);
                     v29 = PriceCalculator::itemSellingPriceForPlayer(pPlayer, *a3, buildingTable[eventId - 1].fPriceMultiplier);
-                    // if (a3->IsBroken())
-                    // v29 = 1;
-                    sprintf(v1, "%u", v29);
+                    v1 = fmt::format("{}", v29);
                     result += v1;
                     break;
                 }
-                if (shop_screen != 4) {
+                if (shop_screen != 4) { // TODO(captainurist): enums for shop screens
                     if (shop_screen == 5) {
                     v29 = PriceCalculator::itemRepairPriceForPlayer(
                         pPlayer, a3->GetValue(),
                         buildingTable[eventId - 1].fPriceMultiplier);
                     } else {
                         if (shop_screen == 6) {
-                            // v29 = PriceCalculator::getItemSellingPriceForPlayer(pPlayer, a3->GetValue(),
-                            // buildingTable[(signed int)eventId -
-                            // 1].fPriceMultiplier) / 2;
+                            // TODO(captainurist): encapsulate this logic in PriceCalculator
                             v29 = PriceCalculator::itemSellingPriceForPlayer(pPlayer, *a3, buildingTable[eventId - 1].fPriceMultiplier) / 2;
-                            // if (a3->IsBroken())
-                            // v29 = 1;
                             if (!v29)  // cannot be 0
                                 v29 = 1;
-                            sprintf(v1, "%u", v29);
+                            v1 = fmt::format("{}", v29);
                             result += v1;
                             break;
                         }
                     }
-                    sprintf(v1, "%u", v29);
+                    v1 = fmt::format("{}", v29);
                     result += v1;
                     break;
                 }
-                sprintf(v1, "%u", PriceCalculator::itemIdentificationPriceForPlayer(pPlayer, buildingTable[eventId - 1].fPriceMultiplier));
+                v1 = fmt::format("{}", PriceCalculator::itemIdentificationPriceForPlayer(pPlayer, buildingTable[eventId - 1].fPriceMultiplier));
                 result += v1;
                 break;
 
@@ -1818,7 +1811,7 @@ std::string BuildDialogueString(std::string &str, uint8_t uPlayerID, ItemGen *a3
                 break;
 
             case 29:  // identify cost
-                sprintf(v1, "%u", PriceCalculator::itemIdentificationPriceForPlayer(pPlayer, buildingTable[eventId - 1].fPriceMultiplier));
+                v1 = fmt::format("{}", PriceCalculator::itemIdentificationPriceForPlayer(pPlayer, buildingTable[eventId - 1].fPriceMultiplier));
                 result += v1;
                 break;
             case 30:
@@ -1842,8 +1835,9 @@ std::string BuildDialogueString(std::string &str, uint8_t uPlayerID, ItemGen *a3
                 break;
             default:
                 if (mask <= 50 || mask > 70) {
-                    strncpy(v1, str.c_str() + i + 1, 2);
-                    sprintf(v1, "%u", atoi(v1));
+                    v1 = str.substr(i + 1, 2);
+                    if (v1.starts_with('0'))
+                        v1 = v1.substr(1);
                     result += v1;
                     break;
                 }
@@ -1916,7 +1910,7 @@ static void LoadPartyBuffIcons() {
     for (uint i = 0; i < 14; ++i) {
         //auto temp = assets->GetImage_Paletted(StringPrintf("isn-%02d", i + 1));
         //int booty = temp->GetHeight();
-        //party_buff_icons[i] = assets->getImage_ColorKey(StringPrintf("isn-%02d", i + 1), colorTable.TealMask.C16());
+        //party_buff_icons[i] = assets->getImage_ColorKey(StringPrintf("isn-%02d", i + 1), colorTable.TealMask);
         party_buff_icons[i] = assets->getImage_Paletted(fmt::format("isn-{:02}", i + 1));
     }
 

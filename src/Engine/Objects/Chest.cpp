@@ -184,7 +184,7 @@ bool Chest::ChestUI_WritePointedObjectStatusString() {
             /*
 
             auto img = assets->GetImage_16BitColorKey(item->GetIconName(),
-            colorTable.TealMask.C16());
+            colorTable.TealMask);
 
             int imgwidth = img->GetWidth();
             int imgheight = img->GetHeight();

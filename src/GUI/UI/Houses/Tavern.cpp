@@ -53,18 +53,18 @@ void TavernDialog() {
     {
         if (!HouseUI_CheckIfPlayerCanInteract()) return;
 
-        std::string topic1 = fmt::format("\f{:05}",
+        std::string topic1 = fmt::format("{::}",
                 pDialogueWindow->pCurrentPosActiveItem == 2
-                ? colorTable.PaleCanary.c16()
-                : colorTable.White.c16()) +
+                ? colorTable.PaleCanary.tag()
+                : colorTable.White.tag()) +
                              localization->FormatString(LSTR_FMT_RENT_ROOM_FOR_D_GOLD, pPriceRoom);
         pTopic1Height = pFontArrus->CalcTextHeight(
             topic1, dialog_window.uFrameWidth, 0);
 
-        std::string topic2 = fmt::format("\f{:05}",
+        std::string topic2 = fmt::format("{::}",
                 pDialogueWindow->pCurrentPosActiveItem == 3
-                ? colorTable.PaleCanary.c16()
-                : colorTable.White.c16())
+                ? colorTable.PaleCanary.tag()
+                : colorTable.White.tag())
             + localization->FormatString(
                 LSTR_FMT_BUY_D_FOOD_FOR_D_GOLD,
                 (unsigned int)
@@ -72,10 +72,10 @@ void TavernDialog() {
                 pPriceFood);
         pTopic2Height = pFontArrus->CalcTextHeight(topic2, dialog_window.uFrameWidth, 0);
 
-        std::string topic3 = fmt::format("\f{:05}",
+        std::string topic3 = fmt::format("{::}",
                 pDialogueWindow->pCurrentPosActiveItem == 4
-                ? colorTable.PaleCanary.c16()
-                : colorTable.White.c16()) +
+                ? colorTable.PaleCanary.tag()
+                : colorTable.White.tag()) +
                              localization->GetString(LSTR_LEARN_SKILLS);
         pTopic3Height = pFontArrus->CalcTextHeight(topic3, dialog_window.uFrameWidth, 0);
 
@@ -83,10 +83,10 @@ void TavernDialog() {
         if (window_SpeakInHouse->wData.val >= 108 &&
             window_SpeakInHouse->wData.val <= 120) {
             topic4 =
-                fmt::format("\f{:05}",
+                fmt::format("{::}",
                     pDialogueWindow->pCurrentPosActiveItem == 5
-                    ? colorTable.PaleCanary.c16()
-                    : colorTable.White.c16()) +
+                    ? colorTable.PaleCanary.tag()
+                    : colorTable.White.tag()) +
                 localization->GetString(LSTR_PLAY_ARCOMAGE);
             pTopic4Height = pFontArrus->CalcTextHeight(
                 topic4, dialog_window.uFrameWidth, 0);
