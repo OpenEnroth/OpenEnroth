@@ -7,7 +7,6 @@
 
 #include "Engine/Graphics/FrameLimiter.h"
 #include "Engine/Graphics/Nuklear.h"
-#include "Engine/Graphics/HWLContainer.h"
 #include "Engine/Graphics/RenderBase.h"
 #include "Engine/MM7.h"
 #include "Engine/Graphics/OpenGL/GLShaderLoader.h"

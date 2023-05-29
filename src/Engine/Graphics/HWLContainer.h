@@ -22,6 +22,7 @@ class HWLTexture {
 
 class Logger;
 
+// TODO(captainurist): currently unused, can drop.
 class HWLContainer {
  public:
     HWLContainer();

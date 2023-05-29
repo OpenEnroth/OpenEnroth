@@ -2,7 +2,6 @@
 #include <memory>
 #include <string>
 
-#include "Engine/Graphics/HWLContainer.h"
 #include "Engine/Graphics/IRender.h"
 
 class RenderBase : public IRender {
@@ -28,9 +27,6 @@ class RenderBase : public IRender {
                                                   unsigned int uDiffuse,
                                                   int angle) override;
     virtual float GetGamma() override;
-
-    virtual HWLTexture *LoadHwlBitmap(const std::string &name) override;
-    virtual HWLTexture *LoadHwlSprite(const std::string &name) override;
 
     virtual void SavePCXScreenshot() override;
     virtual void SavePCXImage32(const std::string &filename, const uint32_t *picture_data, const int width, const int height);
@@ -58,7 +54,4 @@ class RenderBase : public IRender {
  protected:
     unsigned int Billboard_ProbablyAddToListAndSortByZOrder(float z);
     void TransformBillboard(SoftwareBillboard *a2, RenderBillboard *pBillboard);
-
-    HWLContainer pD3DBitmaps;
-    HWLContainer pD3DSprites;
 };

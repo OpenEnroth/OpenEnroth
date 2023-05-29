@@ -171,8 +171,6 @@ struct nk_tex_font {
     struct nk_font *font;
 };
 
-class HWLTexture;
-
 class IRender {
  public:
     inline IRender(
@@ -380,9 +378,6 @@ class IRender {
     LightmapBuilder *lightmap_builder = nullptr;
     std::shared_ptr<ParticleEngine> particle_engine = nullptr;
     Vis *vis = nullptr;
-
-    virtual HWLTexture *LoadHwlBitmap(const std::string &name) = 0;
-    virtual HWLTexture *LoadHwlSprite(const std::string &name) = 0;
 };
 
 extern std::shared_ptr<IRender> render;

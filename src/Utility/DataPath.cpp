@@ -10,8 +10,8 @@ static const std::vector<std::vector<std::string_view>> globalValidateList = {
     {"anims", "magic7.vid" },
     {"anims", "might7.vid" },
     {"data", "bitmaps.lod" },
-    {"data", "d3dbitmap.hwl" },
-    {"data", "d3dsprite.hwl" },
+//    {"data", "d3dbitmap.hwl" }, // We're not using HWL textures, so these are not required.
+//    {"data", "d3dsprite.hwl" },
     {"data", "events.lod" },
     {"data", "games.lod" },
     {"data", "icons.lod" },

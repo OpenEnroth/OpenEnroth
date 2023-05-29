@@ -7,7 +7,6 @@
 
 #include "Engine/Engine.h"
 
-#include "Engine/Graphics/HWLContainer.h"
 #include "Engine/Graphics/IRender.h"
 #include "Engine/Graphics/Sprites.h"
 
@@ -180,21 +179,6 @@ int LODFile_Sprites::LoadSprite(const char *pContainerName, unsigned int uPalett
     pHardwareSprites[uNumLoadedSprites].uPaletteID = uPaletteID;
     pHardwareSprites[uNumLoadedSprites].texture = assets->getSprite(pContainerName, uPaletteID, uNumLoadedSprites);
     pHardwareSprites[uNumLoadedSprites].sprite_header = header;
-
-    if (engine->config->graphics.HWLSprites.value()) {
-        HWLTexture *hwl = render->LoadHwlSprite(pContainerName);
-        if (hwl) {
-            pHardwareSprites[uNumLoadedSprites].uBufferWidth = hwl->uBufferWidth;
-            pHardwareSprites[uNumLoadedSprites].uBufferHeight = hwl->uBufferHeight;
-            pHardwareSprites[uNumLoadedSprites].uAreaX = hwl->uAreaX;
-            pHardwareSprites[uNumLoadedSprites].uAreaY = hwl->uAreaY;
-            pHardwareSprites[uNumLoadedSprites].uAreaWidth = hwl->uAreaWidth;
-            pHardwareSprites[uNumLoadedSprites].uAreaHeight = hwl->uAreaHeigth;
-
-            delete[] hwl->pPixels;
-            delete hwl;
-        }
-    }
 
     ++uNumLoadedSprites;
     return uNumLoadedSprites - 1;

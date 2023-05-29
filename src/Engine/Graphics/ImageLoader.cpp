@@ -5,12 +5,10 @@
 #include <memory>
 
 #include "Engine/ErrorHandling.h"
-#include "Engine/Graphics/HWLContainer.h"
 #include "Engine/Graphics/IRender.h"
 #include "Engine/Graphics/ImageFormatConverter.h"
 #include "Engine/Graphics/PCX.h"
 #include "Engine/Graphics/Sprites.h"
-#include "Engine/Graphics/PaletteManager.h"
 
 // List of textures that require additional processing for transparent pixels.
 // TODO: move to OpenEnroth config file.
@@ -349,64 +347,37 @@ bool Bitmaps_LOD_Loader::Load(size_t *width, size_t *height,
     Texture_MM7 *tex = lod->GetTexture(lod->LoadTexture(this->resource_name));
     int num_pixels = tex->header.uTextureWidth * tex->header.uTextureHeight;
 
-    if (!this->use_hwl) {
-        Assert(tex->paletted_pixels);
-        Assert(tex->pPalette24);
+    Assert(tex->paletted_pixels);
+    Assert(tex->pPalette24);
 
-        uint8_t *pixels = new uint8_t[num_pixels * 4];
-        size_t w = tex->header.uTextureWidth;
-        size_t h = tex->header.uTextureHeight;
+    uint8_t *pixels = new uint8_t[num_pixels * 4];
+    size_t w = tex->header.uTextureWidth;
+    size_t h = tex->header.uTextureHeight;
 
-        bool haveTransparency = transparentTextures.contains(tex->header.pName);
+    bool haveTransparency = transparentTextures.contains(tex->header.pName);
 
-        for (size_t y = 0; y < h; y++) {
-            for (size_t x = 0; x < w; x++) {
-                size_t p = y * w + x;
+    for (size_t y = 0; y < h; y++) {
+        for (size_t x = 0; x < w; x++) {
+            size_t p = y * w + x;
 
-                int pal = tex->paletted_pixels[p];
-                if (haveTransparency && pal == 0) {
-                    ProcessTransparentPixel(tex->paletted_pixels, tex->pPalette24, x, y, w, h, &pixels[p * 4]);
-                } else {
-                    pixels[p * 4 + 0] = tex->pPalette24[3 * pal + 0];
-                    pixels[p * 4 + 1] = tex->pPalette24[3 * pal + 1];
-                    pixels[p * 4 + 2] = tex->pPalette24[3 * pal + 2];
-                    pixels[p * 4 + 3] = 255;
-                }
+            int pal = tex->paletted_pixels[p];
+            if (haveTransparency && pal == 0) {
+                ProcessTransparentPixel(tex->paletted_pixels, tex->pPalette24, x, y, w, h, &pixels[p * 4]);
+            } else {
+                pixels[p * 4 + 0] = tex->pPalette24[3 * pal + 0];
+                pixels[p * 4 + 1] = tex->pPalette24[3 * pal + 1];
+                pixels[p * 4 + 2] = tex->pPalette24[3 * pal + 2];
+                pixels[p * 4 + 3] = 255;
             }
         }
-
-        *format = IMAGE_FORMAT_A8B8G8R8;
-        *width = tex->header.uTextureWidth;
-        *height = tex->header.uTextureHeight;
-        *out_pixels = pixels;
-        *out_palette = tex->pPalette24;
-        return true;
-    } else {
-        uint16_t *pixels = new uint16_t[num_pixels];
-
-        HWLTexture *hwl = render->LoadHwlBitmap(this->resource_name);
-        if (hwl) {
-            // linear scaling
-            for (int s = 0; s < tex->header.uTextureHeight; ++s) {
-                for (int t = 0; t < tex->header.uTextureWidth; ++t) {
-                    unsigned int resampled_x = t * hwl->uWidth / tex->header.uTextureWidth,
-                        resampled_y = s * hwl->uHeight / tex->header.uTextureHeight;
-                    unsigned short sample = hwl->pPixels[resampled_y * hwl->uWidth + resampled_x];
-
-                    pixels[s * tex->header.uTextureWidth + t] = sample;
-                }
-            }
-
-            delete[] hwl->pPixels;
-            delete hwl;
-        }
-
-        *format = IMAGE_FORMAT_A1R5G5B5;
-        *width = tex->header.uTextureWidth;
-        *height = tex->header.uTextureHeight;
-        *out_pixels = pixels;
-        return true;
     }
+
+    *format = IMAGE_FORMAT_A8B8G8R8;
+    *width = tex->header.uTextureWidth;
+    *height = tex->header.uTextureHeight;
+    *out_pixels = pixels;
+    *out_palette = tex->pPalette24;
+    return true;
 }
 
 bool Sprites_LOD_Loader::Load(size_t *width, size_t *height,
@@ -417,82 +388,45 @@ bool Sprites_LOD_Loader::Load(size_t *width, size_t *height,
     *out_palette = nullptr;
     *format = IMAGE_INVALID_FORMAT;
 
-    if (!this->use_hwl) {
-        Sprite *pSprite = lod->getSprite(this->resource_name);
-        //Assert(thissprite->texture-> tex->paletted_pixels);
-        //Assert(tex->pPalette24);
+    Sprite *pSprite = lod->getSprite(this->resource_name);
+    //Assert(thissprite->texture-> tex->paletted_pixels);
+    //Assert(tex->pPalette24);
 
-        size_t w = pSprite->sprite_header->uWidth;
-        size_t h = pSprite->sprite_header->uHeight;
-        int numpix = w * h;
+    size_t w = pSprite->sprite_header->uWidth;
+    size_t h = pSprite->sprite_header->uHeight;
+    int numpix = w * h;
 
-        uint8_t *pixels = new uint8_t[numpix * 4];
-        memset(pixels, 0, numpix * 4);
+    uint8_t *pixels = new uint8_t[numpix * 4];
+    memset(pixels, 0, numpix * 4);
 
-        for (size_t y = 0; y < h; y++) {
-            for (size_t x = 0; x < w; x++) {
-                size_t p = y * w + x;
-                uint8_t bitpix = pSprite->sprite_header->bitmap[p];
+    for (size_t y = 0; y < h; y++) {
+        for (size_t x = 0; x < w; x++) {
+            size_t p = y * w + x;
+            uint8_t bitpix = pSprite->sprite_header->bitmap[p];
 
-                int r = 0, g = 0, b = 0, a = 0;
-                r = bitpix;
-                g = 0;
-                b = 0;
+            int r = 0, g = 0, b = 0, a = 0;
+            r = bitpix;
+            g = 0;
+            b = 0;
 
-                if (bitpix == 0) {
-                    a = r = g = b = 0;
-                } else {
-                    a = 255;
-                }
-
-                pixels[p * 4] = r;
-                pixels[p * 4 + 1] = g;
-                pixels[p * 4 + 2] = b;
-                pixels[p * 4 + 3] = a;
-            }
-        }
-
-        *format = IMAGE_FORMAT_A8B8G8R8;
-        *width = w;
-        *height = h;
-        *out_pixels = pixels;
-        *out_palette = nullptr;
-        return true;
-    } else {
-        HWLTexture *hwl = render->LoadHwlSprite(this->resource_name);
-        if (hwl) {
-            int dst_width = hwl->uWidth;
-            int dst_height = hwl->uHeight;
-
-            int num_pixels = dst_width * dst_height;
-            auto pixels = new uint16_t[num_pixels];
-            if (pixels) {
-                // linear scaling
-                for (int s = 0; s < dst_height; ++s) {
-                    for (int t = 0; t < dst_width; ++t) {
-                        unsigned int resampled_x = t * hwl->uWidth / dst_width,
-                            resampled_y = s * hwl->uHeight / dst_height;
-
-                        unsigned short sample =
-                            hwl->pPixels[resampled_y * hwl->uWidth + resampled_x];
-
-                        pixels[s * dst_width + t] = sample;
-                    }
-                }
-
-                delete[] hwl->pPixels;
-                delete hwl;
-
-                *width = dst_width;
-                *height = dst_height;
-                *format = IMAGE_FORMAT_A1R5G5B5;
+            if (bitpix == 0) {
+                a = r = g = b = 0;
+            } else {
+                a = 255;
             }
 
-            *out_pixels = pixels;
-            return true;
+            pixels[p * 4] = r;
+            pixels[p * 4 + 1] = g;
+            pixels[p * 4 + 2] = b;
+            pixels[p * 4 + 3] = a;
         }
     }
 
-    return false;
+    *format = IMAGE_FORMAT_A8B8G8R8;
+    *width = w;
+    *height = h;
+    *out_pixels = pixels;
+    *out_palette = nullptr;
+    return true;
 }
 
