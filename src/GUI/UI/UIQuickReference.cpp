@@ -169,8 +169,8 @@ void GUIWindow_QuickReference::Update() {
     }
 
     auto rep = fmt::format(
-        "{}: \f{:05}{}\f00000",
-        localization->GetString(LSTR_REPUTATION), pTextColor.c16(),
+        "{}: {::}{}\f00000",
+        localization->GetString(LSTR_REPUTATION), pTextColor.tag(),
         GetReputationString(pParty->GetPartyReputation())
     );
     pGUIWindow_CurrentMenu->DrawText(pFontArrus, {22, 323}, Color(), rep, 0, 0, Color());

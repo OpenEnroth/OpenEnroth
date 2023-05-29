@@ -845,8 +845,8 @@ static int CharacterUI_SkillsTab_Draw__DrawSkillTable(
                     skill_mastery_color = ui_character_header_text_color;
                 }
 
-                auto Strsk = fmt::format("{} \f{:05}{}\f{:05}\r{:03}{}",
-                        localization->GetSkillName(skill), skill_mastery_color.c16(), skill_level_str, skill_color.c16(), right_margin, skill_level);
+                auto Strsk = fmt::format("{} {::}{}{::}\r{:03}{}",
+                        localization->GetSkillName(skill), skill_mastery_color.tag(), skill_level_str, skill_color.tag(), right_margin, skill_level);
                 pGUIWindow_CurrentMenu->DrawText(pFontLucida, {x, button->uY}, skill_color, Strsk, 0, 0, Color());
             }
         }
@@ -865,12 +865,12 @@ void GUIWindow_CharacterRecord::CharacterUI_SkillsTab_Draw(Player *player) {
     render->DrawTextureNew(8 / 640.0f, 8 / 480.0f, ui_character_skills_background);
 
     auto str = fmt::format(
-        "{} \f{:05}{}\f00000\r177{}: \f{:05}{}\f00000",  // ^Pv[]
+        "{} {::}{}\f00000\r177{}: {::}{}\f00000",  // ^Pv[]
                      localization->GetString(LSTR_SKILLS_FOR),
-                     ui_character_header_text_color.c16(), player->name.c_str(),
+                     ui_character_header_text_color.tag(), player->name,
                      localization->GetString(LSTR_SKILL_POINTS),
-                     player->uSkillPoints ? ui_character_bonus_text_color.c16()
-                                          : ui_character_default_text_color.c16(),
+                     player->uSkillPoints ? ui_character_bonus_text_color.tag()
+                                          : ui_character_default_text_color.tag(),
                      player->uSkillPoints);
     pGUIWindow_CurrentMenu->DrawText(pFontArrus, {24, 18}, Color(), str, 0, 0, Color());
 
@@ -974,8 +974,8 @@ void GUIWindow_CharacterRecord::CharacterUI_AwardsTab_Draw(Player *player) {
 
     render->DrawTextureNew(8 / 640.0f, 8 / 480.0f, ui_character_awards_background);
 
-    std::string str = fmt::format("{} \f{:05}{}\f00000", localization->GetString(LSTR_AWARDS_FOR),
-                                  ui_character_header_text_color.c16(), NameAndTitle(player->name, player->classType));
+    std::string str = fmt::format("{} {::}{}\f00000", localization->GetString(LSTR_AWARDS_FOR),
+                                  ui_character_header_text_color.tag(), NameAndTitle(player->name, player->classType));
 
     pGUIWindow_CurrentMenu->DrawText(pFontArrus, {24, 18}, Color(), str, 0, 0, Color());
 
@@ -1564,11 +1564,11 @@ void GUIWindow_CharacterRecord::CharacterUI_StatsTab_Draw(Player *player) {
                                 ui_character_stats_background);
 
     auto str1 =
-        fmt::format("\f{:05}{}\f00000\r180{}: \f{:05}{}\f00000\n\n\n",
-                    ui_character_header_text_color.c16(),
+        fmt::format("{::}{}\f00000\r180{}: {::}{}\f00000\n\n\n",
+                    ui_character_header_text_color.tag(),
                     NameAndTitle(player->name, player->classType),
                     localization->GetString(LSTR_SKILL_POINTS),
-                    player->uSkillPoints ? ui_character_bonus_text_color.c16() : ui_character_default_text_color.c16(),
+                    player->uSkillPoints ? ui_character_bonus_text_color.tag() : ui_character_default_text_color.tag(),
                     player->uSkillPoints);
     pGUIWindow_CurrentMenu->DrawText(pFontArrus, {26, 18}, Color(), str1);
 
@@ -1577,9 +1577,9 @@ void GUIWindow_CharacterRecord::CharacterUI_StatsTab_Draw(Player *player) {
         const char *str = localization->GetString(lstr);
         Color color16 = UI_GetHealthManaAndOtherQualitiesStringColor(current, max);
         if (max < 1000) {
-            return fmt::format("{}\f{:05}\r424{}\f00000 /\t185{}\n", str, color16.c16(), current, max);
+            return fmt::format("{}{::}\r424{}\f00000 /\t185{}\n", str, color16.tag(), current, max);
         } else {
-            return fmt::format("{}\f{:05}\r388{}\f00000 / {}\n", str, color16.c16(), current, max);
+            return fmt::format("{}{::}\r388{}\f00000 / {}\n", str, color16.tag(), current, max);
         }
     };
 
@@ -1627,9 +1627,9 @@ void GUIWindow_CharacterRecord::CharacterUI_StatsTab_Draw(Player *player) {
 
     pY += 2 * pFontArrus->GetHeight() - 2;
     auto str12 =
-        fmt::format("{}: \f{:05}{}\n",
+        fmt::format("{}: {::}{}\n",
                      localization->GetString(LSTR_CONDITION),
-                     GetConditionDrawColor(player->GetMajorConditionIdx()).c16(),
+                     GetConditionDrawColor(player->GetMajorConditionIdx()).tag(),
                      localization->GetCharacterConditionName(player->GetMajorConditionIdx()));
     pGUIWindow_CurrentMenu->DrawTextInRect(pFontArrus, {26, pY}, Color(), str12, 226, 0);
 
@@ -1645,12 +1645,12 @@ void GUIWindow_CharacterRecord::CharacterUI_StatsTab_Draw(Player *player) {
         const char *str = localization->GetString(lstr);
         Color color16 = UI_GetHealthManaAndOtherQualitiesStringColor(current, max);
         if (immune) {
-            return fmt::format("{}\f{:05}\r180{}\n", str, color16.c16(), localization->GetString(LSTR_IMMUNE));
+            return fmt::format("{}{::}\r180{}\n", str, color16.tag(), localization->GetString(LSTR_IMMUNE));
         } else {
             if (current < 100 && max < 100) {
-                return fmt::format("{}\f{:05}\t110{}\f00000 / {}\n", str, color16.c16(), current, max);
+                return fmt::format("{}{::}\t110{}\f00000 / {}\n", str, color16.tag(), current, max);
             } else {
-                return fmt::format("{}\f{:05}\r180{}\f00000 / {}\n", str, color16.c16(), current, max);
+                return fmt::format("{}{::}\r180{}\f00000 / {}\n", str, color16.tag(), current, max);
             }
         }
     };
@@ -1665,9 +1665,9 @@ void GUIWindow_CharacterRecord::CharacterUI_StatsTab_Draw(Player *player) {
 
     pY += pFontArrus->GetHeight() - 2;
     auto str16 =
-        fmt::format("{}\r180\f{:05}{}\f00000\n\n",
+        fmt::format("{}\r180{::}{}\f00000\n\n",
                     localization->GetString(player->experience <= 9999999 ? LSTR_EXPERIENCE : LSTR_EXP),
-                    player->GetExperienceDisplayColor().c16(), player->experience);
+                    player->GetExperienceDisplayColor().tag(), player->experience);
     pGUIWindow_CurrentMenu->DrawText(pFontArrus, {266, pY}, Color(), str16);
 
     pY += 2 * pFontArrus->GetHeight();

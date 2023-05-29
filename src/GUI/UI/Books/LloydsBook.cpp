@@ -109,7 +109,7 @@ void GUIWindow_LloydsBook::Update() {
             std::string Str = pMapStats->pInfos[pMapStats->sub_410D99_get_map_index(beacon.SaveFileID)].pName;
             unsigned int pTextHeight = pSpellFont->CalcTextHeight(Str, pWindow.uFrameWidth, 0);
             pWindow.uFrameY -= 6 + pTextHeight;
-            pWindow.DrawTitleText(pSpellFont, 0, 0, Color::fromC16(1), Str, 3);
+            pWindow.DrawTitleText(pSpellFont, 0, 0, colorTable.Black, Str, 3);
 
             pWindow.uFrameY = pLloydsBeaconsPreviewYs[BeaconID];
             GameTime RemainingTime = beacon.uBeaconTime - pParty->GetPlayingTime();
@@ -124,10 +124,10 @@ void GUIWindow_LloydsBook::Update() {
                 str = fmt::format("{} {}", pDays + 1, localization->GetString(LSTR_DAY_CAPITALIZED));
             }
             pWindow.uFrameY = pWindow.uFrameY + pWindow.uFrameHeight + 4;
-            pWindow.DrawTitleText(pSpellFont, 0, 0, Color::fromC16(1), str, 3);
+            pWindow.DrawTitleText(pSpellFont, 0, 0, colorTable.Black, str, 3);
         } else {
             unsigned int pTextHeight = pSpellFont->CalcTextHeight(localization->GetString(LSTR_AVAILABLE), pWindow.uFrameWidth, 0);
-            pWindow.DrawTitleText(pSpellFont, 0, (int)pWindow.uFrameHeight / 2 - pTextHeight / 2, Color::fromC16(1), localization->GetString(LSTR_AVAILABLE), 3);
+            pWindow.DrawTitleText(pSpellFont, 0, (int)pWindow.uFrameHeight / 2 - pTextHeight / 2, colorTable.Black, localization->GetString(LSTR_AVAILABLE), 3);
         }
     }
 }

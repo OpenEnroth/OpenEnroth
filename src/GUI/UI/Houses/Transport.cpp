@@ -131,13 +131,13 @@ void TravelByTransport() {
 
                 if (schedule_id != 255 && route_active &&
                     (!transport_schedule[schedule_id].uQuestBit || pParty->_questBits[transport_schedule[schedule_id].uQuestBit])) {
-                    uint16_t color{};
+                    Color color;
                     if (pDialogueWindow->pCurrentPosActiveItem == pCurrentButton)
-                        color = colorTable.PaleCanary.c16();
+                        color = colorTable.PaleCanary;
                     else
-                        color = colorTable.White.c16();
+                        color = colorTable.White;
 
-                    pTopicArray[index] = fmt::format("\f{:05}", color);
+                    pTopicArray[index] = fmt::format("{::}", color.tag());
 
                     int travel_time = GetTravelTimeTransportDays(schedule_id);
 
