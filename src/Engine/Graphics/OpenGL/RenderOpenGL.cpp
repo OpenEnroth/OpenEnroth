@@ -5580,7 +5580,7 @@ void RenderOpenGL::DrawTwodVerts() {
     glBindTexture(GL_TEXTURE_BUFFER, paltex);
     glTexBuffer(GL_TEXTURE_BUFFER, GL_RGBA8UI, palbuf);
     glActiveTexture(GL_TEXTURE0);
-    
+
     // glEnable(GL_TEXTURE_2D);
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);

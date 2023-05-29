@@ -9,7 +9,6 @@
 
 GameTestOptions GameTestOptions::Parse(int argc, char **argv) {
     GameTestOptions result;
-    //result.verbose = true; // Logging in tests is always verbose.
     result.configPath = "openenroth_test.ini"; // Default config is different from the one used by the game.
     result.resetConfig = true; // Tests start with a default config.
 
