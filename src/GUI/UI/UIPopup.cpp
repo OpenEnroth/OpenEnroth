@@ -211,10 +211,6 @@ void GameUI_DrawItemInfo(struct ItemGen *inspect_item) {
     int v85;
     char *Str;  // [sp+270h] [bp-8h]@65
 
-    int r_mask = 0xF800;
-    int g_mask = 0x7E0;
-    int b_mask = 0x1F;
-
     if (inspect_item->uItemID == ITEM_NULL)
         return;
 
@@ -569,7 +565,7 @@ void GameUI_DrawItemInfo(struct ItemGen *inspect_item) {
         }
 
         iteminfo_window.DrawText(pFontComic,
-            {pFontComic->GetLineWidth(txt2.data()) + 132, iteminfo_window.uFrameHeight - pFontComic->GetHeight()}, Color::fromC16(r_mask), txt3, 0, 0, Color());
+            {pFontComic->GetLineWidth(txt2.data()) + 132, iteminfo_window.uFrameHeight - pFontComic->GetHeight()}, colorTable.Red, txt3, 0, 0, Color());
         render->ResetUIClipRect();
     }
 }
