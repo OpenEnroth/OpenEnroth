@@ -17,7 +17,6 @@ struct FogParam {
 
 uniform sampler2D texture0;
 uniform usamplerBuffer palbuf;
-uniform bool repaint; // TODO(captainurist): always true?
 uniform FogParam fog;
 uniform float gamma;
 
@@ -28,11 +27,9 @@ void main() {
     int index = int(fragcol.r * 255.0);
     vec4 newcol = vec4(texelFetch(palbuf, int(256 * paletteid + index)));
 
-    if (repaint == true) {
-        if (paletteid > 0)
-            if (index > 0)
-                fragcol = vec4(newcol.r / 255.0, newcol.g / 255.0, newcol.b / 255.0, 1.0);
-    }
+    if (paletteid > 0)
+        if (index > 0)
+            fragcol = vec4(newcol.r / 255.0, newcol.g / 255.0, newcol.b / 255.0, 1.0);
 
     fragcol *= colour;
 
