@@ -445,7 +445,7 @@ void Game::processQueuedMessages() {
     unsigned int uNumSeconds;     // [sp+24h] [bp-5D8h]@18
     UIMessageType uMessage;  // [sp+2Ch] [bp-5D0h]@7
     int uMessageParam2;            // [sp+30h] [bp-5CCh]@7
-    char pOut[32];                // [sp+BCh] [bp-540h]@370
+    std::string pOut;                // [sp+BCh] [bp-540h]@370
     int spellbookPages[9] {};                  // [sp+158h] [bp-4A4h]@652
     int currHour;
     bool playButtonSoundOnEscape = true;
@@ -965,9 +965,7 @@ void Game::processQueuedMessages() {
                     // encounter_index = (NPCData *)getTravelTime();
                     pOutdoor->level_filename = pCurrentMapName;
                     if (!_engine->IsUnderwater() && pParty->bFlying ||
-                        pOutdoor->GetTravelDestination(pParty->vPosition.x,
-                                                       pParty->vPosition.y,
-                                                       pOut, 20) != 1) {
+                        pOutdoor->GetTravelDestination(pParty->vPosition.x, pParty->vPosition.y, &pOut) != 1) {
                         PlayButtonClickSound();
                         if (pParty->vPosition.x < -22528)
                             pParty->vPosition.x = -22528;

@@ -322,9 +322,7 @@ MapStartPoint foot_travel_arrival_points[15][4] = {
 };
 
 //----- (0048902E) --------------------------------------------------------
-bool OutdoorLocation::GetTravelDestination(signed int sPartyX,
-                                           signed int sPartyZ, char *pOut,
-                                           signed int a5) {
+bool OutdoorLocation::GetTravelDestination(int sPartyX, int sPartyZ, std::string *pOut) {
     signed int direction;       // esi@7
     signed int destinationMap;  // eax@23
 
@@ -332,9 +330,8 @@ bool OutdoorLocation::GetTravelDestination(signed int sPartyX,
     str = str.substr(str.find_first_of("0123456789"));
     int mapNumberAsInt = atoi(str.c_str());
 
-    if (a5 < 10 || this->level_filename.length() != 9 || mapNumberAsInt < 1 ||
-        mapNumberAsInt > 15)  // длина  .odm и количество локаций
-        return 0;
+    if (this->level_filename.length() != 9 || mapNumberAsInt < 1 || mapNumberAsInt > 15)  // длина  .odm и количество локаций
+        return false;
     if (sPartyX < -22528)  // граница карты
         direction = 4;
     else if (sPartyX > 22528)
@@ -357,14 +354,14 @@ bool OutdoorLocation::GetTravelDestination(signed int sPartyX,
 
         if (wholePartyUnderwaterSuitEquipped) {
             uDefaultTravelTime_ByFoot = 1;
-            strcpy(pOut, "out15.odm");  // Shoals
+            *pOut = "out15.odm";  // Shoals
             uLevel_StartingPointType = MapStartPoint_East;
             HEXRAYS_LOWORD(pParty->uFlags) &= 0xFD7Bu;
             return true;
         }
     } else if (mapNumberAsInt == MAP_SHOALS && direction == 3) {  // from Shoals
         uDefaultTravelTime_ByFoot = 1;
-        strcpy(pOut, "out14.odm");  // Avlee
+        *pOut = "out14.odm";  // Avlee
         uLevel_StartingPointType = MapStartPoint_West;
         HEXRAYS_LOWORD(pParty->uFlags) &= 0xFD7Bu;
         return true;
@@ -377,7 +374,7 @@ bool OutdoorLocation::GetTravelDestination(signed int sPartyX,
 
     uDefaultTravelTime_ByFoot = foot_travel_times[mapNumberAsInt - 1][direction - 1];
     uLevel_StartingPointType = foot_travel_arrival_points[mapNumberAsInt - 1][direction - 1];
-    sprintf(pOut, "out%02d.odm", destinationMap);  // локация направления
+    *pOut = fmt::format("out{:02}.odm", destinationMap);  // локация направления
     return true;
 }
 
@@ -1593,15 +1590,14 @@ void ODM_GetTerrainNormalAt(int pos_x, int pos_y, Vec3i *out) {
 //----- (0046BE0A) --------------------------------------------------------
 void ODM_UpdateUserInputAndOther() {
     bool v0;        // eax@5
-    char pOut[32];  // [sp+8h] [bp-20h]@5
+    std::string pOut;  // [sp+8h] [bp-20h]@5
 
     UpdateObjects();
     ODM_ProcessPartyActions();
     if (pParty->vPosition.x < -22528 || pParty->vPosition.x > 22528 ||
         pParty->vPosition.y < -22528 || pParty->vPosition.y > 22528) {
         pOutdoor->level_filename = pCurrentMapName;
-        v0 = pOutdoor->GetTravelDestination(pParty->vPosition.x,
-                                            pParty->vPosition.y, pOut, 32);
+        v0 = pOutdoor->GetTravelDestination(pParty->vPosition.x, pParty->vPosition.y, &pOut);
         if (!engine->IsUnderwater() && (pParty->isAirborne() || (pParty->uFlags & (PARTY_FLAGS_1_STANDING_ON_WATER | PARTY_FLAGS_1_WATER_DAMAGE)) ||
                              pParty->uFlags & PARTY_FLAGS_1_BURNING || pParty->bFlying) ||
             !v0) {

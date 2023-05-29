@@ -45,7 +45,7 @@ class Icon {
 struct IconFrameTable {
     Icon *GetIcon(unsigned int idx);
     Icon *GetIcon(const char *pIconName);
-    unsigned int FindIcon(const char *pIconName);
+    unsigned int FindIcon(const std::string &pIconName);
     Icon *GetFrame(unsigned int uIconID, unsigned int frame_time);
     void InitializeAnimation(unsigned int uIconID);
     void FromFile(const Blob &data_mm6, const Blob &data_mm7, const Blob &data_mm8);

@@ -279,13 +279,12 @@ void LoadSpellbook(unsigned int spell_school) {
 
     for (unsigned int i = 1; i <= 11; ++i) {
         if (pParty->activeCharacter().spellbook.pChapters[spell_school].bIsSpellAvailable[i - 1] || engine->config->debug.AllMagic.value()) {
-            char pContainer[20];
-            sprintf(pContainer, "SB%sS%02d",
+            std::string pContainer = fmt::format("SB{}S{:02}",
                     spellbook_texture_filename_suffices[spell_school],
                     pSpellbookSpellIndices[spell_school][i]);
             SBPageSSpellsTextureList[i] = assets->getImage_Solid(pContainer);
 
-            sprintf(pContainer, "SB%sC%02d",
+            pContainer = fmt::format("SB{}C{:02}",
                     spellbook_texture_filename_suffices[spell_school],
                     pSpellbookSpellIndices[spell_school][i]);
             SBPageCSpellsTextureList[i] = assets->getImage_Solid(pContainer);
