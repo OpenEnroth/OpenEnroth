@@ -57,13 +57,10 @@ class GUIWindow {
     bool Contains(unsigned int x, unsigned int y);
     void DrawFlashingInputCursor(int uX, int uY, GUIFont *a2);
 
-    int DrawTextInRect(GUIFont *font, Pointi position, Color color, const char *text, int rect_width, int reverse_text);
-    int DrawTextInRect(GUIFont *font, Pointi position, Color color, std::string &str, int rect_width, int reverse_text);
+    int DrawTextInRect(GUIFont *font, Pointi position, Color color, const std::string &str, int rect_width, int reverse_text);
 
-    void DrawText(GUIFont *font, Pointi position, Color uFontColor, const char *str, bool present_time_transparency = false, int max_text_height = 0, Color uFontShadowColor = Color());
     void DrawText(GUIFont *font, Pointi position, Color uFontColor, const std::string &str, bool present_time_transparency = false, int max_text_height = 0, Color uFontShadowColor = Color());
 
-    void DrawTitleText(GUIFont *font, int horizontal_margin, int vertical_margin, Color uDefaultColor, const char *pInString, int line_spacing);
     void DrawTitleText(GUIFont *font, int horizontal_margin, int vertical_margin, Color uDefaultColor, const std::string &str, int line_spacing);
 
     void DrawShops_next_generation_time_string(GameTime time);

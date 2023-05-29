@@ -739,11 +739,11 @@ void _4B4224_UpdateNPCTopics(int _this) {
         pBtn_ExitCancel = pDialogueWindow->CreateButton({566, 445}, {75, 33}, 1, 0,
             UIMSG_Escape, 0, InputAction::No, localization->GetString(LSTR_CANCEL), {ui_buttdesc2});
         pBtn_YES = pDialogueWindow->CreateButton({486, 445}, {75, 33}, 1, 0,
-            UIMSG_BF, 1, InputAction::Yes, transition_button_label.c_str(), {ui_buttyes2});
+            UIMSG_BF, 1, InputAction::Yes, transition_button_label, {ui_buttyes2});
         pDialogueWindow->CreateButton({pNPCPortraits_x[0][0], pNPCPortraits_y[0][0]}, {63, 73}, 1, 0,
-            UIMSG_BF, 1, InputAction::EventTrigger, transition_button_label.c_str());
+            UIMSG_BF, 1, InputAction::EventTrigger, transition_button_label);
         pDialogueWindow->CreateButton({8, 8}, {460, 344}, 1, 0,
-            UIMSG_BF, 1, InputAction::Yes, transition_button_label.c_str()
+            UIMSG_BF, 1, InputAction::Yes, transition_button_label
         );
     } else {
         v17 = HouseNPCData[_this + 1 - ((dword_591080 != 0) ? 1 : 0)];  //+ 1

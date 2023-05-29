@@ -363,19 +363,11 @@ void GUIWindow::DrawShops_next_generation_time_string(GameTime time) {
     this->DrawTitleText(pFontArrus, 0, (212 - pFontArrus->CalcTextHeight(str, this->uFrameWidth, 0)) / 2 + 101, colorTable.PaleCanary, localization->GetString(LSTR_PLEASE_TRY_BACK_IN) + str, 3);
 }
 
-void GUIWindow::DrawTitleText(GUIFont *font, int horizontal_margin,
-    int vertical_margin,
-    Color uDefaultColor, const std::string &str,
-    int line_spacing) {
-    this->DrawTitleText(font, horizontal_margin, vertical_margin, uDefaultColor,
-        str.c_str(), line_spacing);
-}
-
 //----- (0044D406) --------------------------------------------------------
-void GUIWindow::DrawTitleText(GUIFont *pFont, int uHorizontalMargin, int uVerticalMargin, Color uDefaultColor, const char *pInString, int uLineSpacing) {
+void GUIWindow::DrawTitleText(GUIFont *pFont, int uHorizontalMargin, int uVerticalMargin, Color uDefaultColor, const std::string &str, int uLineSpacing) {
     int width = this->uFrameWidth - uHorizontalMargin;
     ui_current_text_color = uDefaultColor;
-    std::string resString = pFont->FitTextInAWindow(pInString, this->uFrameWidth, uHorizontalMargin);
+    std::string resString = pFont->FitTextInAWindow(str, this->uFrameWidth, uHorizontalMargin);
     std::istringstream stream(resString);
     std::string line;
     int x = uHorizontalMargin + this->uFrameX;
@@ -387,29 +379,15 @@ void GUIWindow::DrawTitleText(GUIFont *pFont, int uHorizontalMargin, int uVertic
     }
 }
 
-void GUIWindow::DrawText(GUIFont *font, Pointi position, Color uFontColor, const std::string &str, bool present_time_transparency,
-                         int max_text_height, Color uFontShadowColor) {
-    this->DrawText(font, position, uFontColor, str.c_str(),
-        present_time_transparency, max_text_height,
-        uFontShadowColor);
-}
-
 //----- (0044CE08) --------------------------------------------------------
-void GUIWindow::DrawText(GUIFont *font, Pointi position, Color uFontColor, const char *Str,
+void GUIWindow::DrawText(GUIFont *font, Pointi position, Color uFontColor, const std::string &Str,
                          bool present_time_transparency, int max_text_height, Color uFontShadowColor) {
     font->DrawText(this, position, uFontColor, Str, present_time_transparency, max_text_height, uFontShadowColor);
 }
 
-int GUIWindow::DrawTextInRect(GUIFont *font, Pointi position,
-                              Color color, const char *text,
-                              int rect_width, int reverse_text) {
-    std::string label = std::string(text);
-    return DrawTextInRect(font, position, color, label, rect_width, reverse_text);
-}
-
 //----- (0044CB4F) --------------------------------------------------------
 int GUIWindow::DrawTextInRect(GUIFont *pFont, Pointi position,
-                              Color uColor, std::string &str, int rect_width,
+                              Color uColor, const std::string &str, int rect_width,
                               int reverse_text) {
     return pFont->DrawTextInRect(this, position, uColor, str, rect_width, reverse_text);
 }
@@ -1263,7 +1241,7 @@ void OracleDialogue() {
         // TODO(captainurist): what if fmt throws?
         current_npc_text = fmt::sprintf(pNPCTopics[666].pText, // "Here's %s that you lost. Be careful"
                                         fmt::format("{::}{}\f00000", colorTable.Jonquil.tag(),
-                                                    pItemTable->pItems[item_id].pUnidentifiedName).c_str());
+                                                    pItemTable->pItems[item_id].pUnidentifiedName));
     }
 
     // missing item is lich jar and we need to bind soul vessel to lich class character

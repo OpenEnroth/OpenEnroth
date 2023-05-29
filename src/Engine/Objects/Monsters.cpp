@@ -382,7 +382,7 @@ void MonsterList::FromFile(const Blob &data_mm6, const Blob &data_mm7, const Blo
 }
 
 //----- (004563FF) --------------------------------------------------------
-signed int MonsterStats::FindMonsterByTextureName(const char *monster_textr_name) {
+signed int MonsterStats::FindMonsterByTextureName(const std::string &monster_textr_name) {
     for (int i = 1; i < uNumMonsters; ++i) {
         if (!pInfos[i].pName.empty() && iequals(pInfos[i].pPictureName, monster_textr_name))
             return i;
@@ -1061,8 +1061,7 @@ void MonsterStats::Initialize() {
                                             pInfos[curr_rec_num]
                                                 .field_3C_some_special_attack =
                                                 pMonsterList
-                                                    ->GetMonsterIDByName(
-                                                        str.c_str()) +
+                                                    ->GetMonsterIDByName(str) +
                                                 1;
                                             if (pInfos[curr_rec_num]
                                                     .field_3C_some_special_attack ==
@@ -1112,13 +1111,12 @@ void MonsterStats::Initialize() {
 }
 
 //----- (0044FA08) --------------------------------------------------------
-int16_t MonsterList::GetMonsterIDByName(const char *pMonsterName) {
-    if (!pMonsterName) return -1;
+int16_t MonsterList::GetMonsterIDByName(const std::string &pMonsterName) {
     for (int16_t i = 0; i < pMonsters.size(); ++i) {
         if (iequals(pMonsters[i].pMonsterName, pMonsterName))
             return i;
     }
-    Error("Monster not found: %s", pMonsterName);
+    Error("Monster not found: %s", pMonsterName.c_str());
 }
 //----- (00438BDF) --------------------------------------------------------
 bool MonsterStats::BelongsToSupertype(unsigned int uMonsterInfoID,

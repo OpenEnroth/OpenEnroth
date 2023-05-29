@@ -44,7 +44,7 @@ void SpriteFrameTable::InitializeSprite(signed int uSpriteID) {
                     pSpriteSFrames[iter_uSpriteID].ResetPaletteIndex(pPaletteManager->paletteIndex(pSpriteSFrames[iter_uSpriteID].uPaletteID));
 
                     if (uFlags & 0x10) {  // single frame per frame sequence
-                        auto v8 = pSprites_LOD->LoadSprite(pSpriteSFrames[iter_uSpriteID].texture_name.c_str(), pSpriteSFrames[iter_uSpriteID].uPaletteID);
+                        auto v8 = pSprites_LOD->LoadSprite(pSpriteSFrames[iter_uSpriteID].texture_name, pSpriteSFrames[iter_uSpriteID].uPaletteID);
 
                         if (v8 == -1) {
                             logger->warning("Sprite {} not loaded!", pSpriteSFrames[iter_uSpriteID].texture_name);
@@ -75,7 +75,7 @@ void SpriteFrameTable::InitializeSprite(signed int uSpriteID) {
                                     spriteName = pSpriteSFrames[iter_uSpriteID].texture_name + "0";
                                     break;
                             }
-                            auto v12 = pSprites_LOD->LoadSprite(spriteName.c_str(), pSpriteSFrames[iter_uSpriteID].uPaletteID);
+                            auto v12 = pSprites_LOD->LoadSprite(spriteName, pSpriteSFrames[iter_uSpriteID].uPaletteID);
                             // pSpriteSFrames[iter_uSpriteID].pHwSpriteIDs[i]=v12;
                             assert(v12 != -1);
                             pSpriteSFrames[iter_uSpriteID].hw_sprites[i] = &pSprites_LOD->pHardwareSprites[v12];
@@ -107,7 +107,7 @@ void SpriteFrameTable::InitializeSprite(signed int uSpriteID) {
                                     spriteName = pSpriteSFrames[iter_uSpriteID].texture_name + "1";
                                     break;
                             }
-                            auto v12 = pSprites_LOD->LoadSprite(spriteName.c_str(), pSpriteSFrames[iter_uSpriteID].uPaletteID);
+                            auto v12 = pSprites_LOD->LoadSprite(spriteName, pSpriteSFrames[iter_uSpriteID].uPaletteID);
                             // pSpriteSFrames[iter_uSpriteID].pHwSpriteIDs[i]=v12;
                             assert(v12 != -1);
                             pSpriteSFrames[iter_uSpriteID].hw_sprites[i] = &pSprites_LOD->pHardwareSprites[v12];
@@ -140,7 +140,7 @@ void SpriteFrameTable::InitializeSprite(signed int uSpriteID) {
                                 }
                             } else {
                                 // some names already passed through with codes attached
-                                if (strlen(pSpriteSFrames[iter_uSpriteID].texture_name.c_str()) < 7) {
+                                if (pSpriteSFrames[iter_uSpriteID].texture_name.size() < 7) {
                                     spriteName = fmt::format("{}{}", pSpriteSFrames[iter_uSpriteID].texture_name, i);
                                 } else {
                                     spriteName = pSpriteSFrames[iter_uSpriteID].texture_name;
@@ -148,7 +148,7 @@ void SpriteFrameTable::InitializeSprite(signed int uSpriteID) {
                                 }
                             }
 
-                            auto v12 = pSprites_LOD->LoadSprite(spriteName.c_str(), pSpriteSFrames[iter_uSpriteID].uPaletteID);
+                            auto v12 = pSprites_LOD->LoadSprite(spriteName, pSpriteSFrames[iter_uSpriteID].uPaletteID);
                             // pSpriteSFrames[iter_uSpriteID].pHwSpriteIDs[i]=v12;
                             assert(v12 != -1);
                             pSpriteSFrames[iter_uSpriteID].hw_sprites[i] = &pSprites_LOD->pHardwareSprites[v12];

@@ -144,7 +144,7 @@ bool LODFile_Sprites::Load(const std::string &pFilename, const std::string &fold
     return LoadSubIndices(folder);
 }
 
-int LODFile_Sprites::LoadSprite(const char *pContainerName, unsigned int uPaletteID) {
+int LODFile_Sprites::LoadSprite(const std::string &pContainerName, unsigned int uPaletteID) {
     for (int i = 0; i < uNumLoadedSprites; ++i) {
         if (pHardwareSprites[i].pName == pContainerName) {
             return i;

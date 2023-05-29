@@ -376,8 +376,7 @@ void KeyboardInputHandler::GenerateInputActions() {
 
 //----- (00459E5A) --------------------------------------------------------
 void KeyboardInputHandler::StartTextInput(TextInputType type, int max_string_len, GUIWindow *window) {
-    memset(pPressedKeysBuffer, 0, 0x101u);
-    uNumKeysPressed = 0;
+    pPressedKeysBuffer.clear();
     inputType = type;
 
     this->max_input_string_len = max_string_len;
@@ -410,24 +409,22 @@ bool KeyboardInputHandler::ProcessTextInput(PlatformKey key, int c) {
         }
 
         if (key == PlatformKey::Backspace) {
-            if (uNumKeysPressed > 0) {
-                pPressedKeysBuffer[--uNumKeysPressed] = 0;
+            if (!pPressedKeysBuffer.empty()) {
+                pPressedKeysBuffer.pop_back();
             }
         } else if (key == PlatformKey::Return) {
             SetWindowInputStatus(WINDOW_INPUT_CONFIRMED);
         } else if (key == PlatformKey::Escape) {
             SetWindowInputStatus(WINDOW_INPUT_CANCELLED);
-        } else if (key == PlatformKey::Space && this->uNumKeysPressed < this->max_input_string_len) {
+        } else if (key == PlatformKey::Space && pPressedKeysBuffer.size() < this->max_input_string_len) {
             if (inputType == TextInputType::Text) {
-                pPressedKeysBuffer[uNumKeysPressed++] = ' ';
-                pPressedKeysBuffer[uNumKeysPressed] = 0;
+                pPressedKeysBuffer.push_back(' ');
             }
-        } else if (key == PlatformKey::Char && this->uNumKeysPressed < this->max_input_string_len) {
+        } else if (key == PlatformKey::Char && pPressedKeysBuffer.size() < this->max_input_string_len) {
             if (inputType == TextInputType::Text) {
-                pPressedKeysBuffer[uNumKeysPressed++] = c;
-                pPressedKeysBuffer[uNumKeysPressed] = 0;
+                pPressedKeysBuffer.push_back(c);
             } else if (inputType == TextInputType::Number && isdigit(c)) {
-                pPressedKeysBuffer[uNumKeysPressed++] = c;
+                pPressedKeysBuffer.push_back(c);
             }
         }
     } else {
@@ -443,17 +440,12 @@ bool KeyboardInputHandler::ProcessTextInput(PlatformKey key, int c) {
 }
 
 
-std::string KeyboardInputHandler::GetTextInput() const {
-    return std::string(pPressedKeysBuffer);
+const std::string &KeyboardInputHandler::GetTextInput() const {
+    return pPressedKeysBuffer;
 }
 
 void KeyboardInputHandler::SetTextInput(const std::string &text) {
-    SetTextInput(text.c_str());
-}
-
-void KeyboardInputHandler::SetTextInput(const char *text) {
-    strcpy(pPressedKeysBuffer, text);
-    uNumKeysPressed = strlen(pPressedKeysBuffer);
+    pPressedKeysBuffer = text;
 }
 
 //----- (00459E3F) --------------------------------------------------------

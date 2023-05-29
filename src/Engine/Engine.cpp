@@ -1013,8 +1013,7 @@ void Engine::SecondaryInitialization() {
     spell_fx_renedrer->LoadAnimations();
 
     for (uint i = 0; i < 7; ++i) {
-        char container_name[64];
-        sprintf(container_name, "HDWTR%03u", i);
+        std::string container_name = fmt::format("HDWTR{:03}", i);
         render->pHDWaterBitmapIDs[i] =
             pBitmaps_LOD->LoadTexture(container_name);
         render->hd_water_tile_anim[i] = assets->getBitmap(container_name);
@@ -1270,8 +1269,7 @@ void Engine::_461103_load_level_sub() {
 //----- (0042F3D6) --------------------------------------------------------
 void InitializeTurnBasedAnimations(void *_this) {
     for (unsigned int i = 0; i < pIconIDs_Turn.size(); ++i) {
-        char icon_name[32];
-        sprintf(icon_name, "turn%u", i);
+        std::string icon_name = fmt::format("turn{}", i);
         pIconIDs_Turn[i] = pIconsFrameTable->FindIcon(icon_name);
         pIconsFrameTable->InitializeAnimation(pIconIDs_Turn[i]);
     }

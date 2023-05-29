@@ -1755,9 +1755,7 @@ void RenderOpenGL::DrawOutdoorTerrain() {
         terraintexturesizes[0] = wtrtexture->GetWidth();
 
         for (int buff = 0; buff < 7; buff++) {
-            char container_name[64];
-            sprintf(container_name, "HDWTR%03u", buff);
-
+            std::string container_name = fmt::format("HDWTR{:03}", buff);
             terraintexmap.insert(std::make_pair(container_name, terraintexmap.size()));
             numterraintexloaded[0]++;
         }
@@ -3654,9 +3652,7 @@ void RenderOpenGL::DrawOutdoorBuildings() {
         outbuildtextureheights[0] = wtrtexture->GetHeight();
 
         for (int buff = 0; buff < 7; buff++) {
-            char container_name[64];
-            sprintf(container_name, "HDWTR%03u", buff);
-
+            std::string container_name = fmt::format("HDWTR{:03}", buff);
             outbuildtexmap.insert(std::make_pair(container_name, outbuildtexmap.size()));
             numoutbuildtexloaded[0]++;
         }
@@ -4284,9 +4280,7 @@ void RenderOpenGL::DrawIndoorFaces() {
             bsptextureheights[0] = wtrtexture->GetHeight();
 
             for (int buff = 0; buff < 7; buff++) {
-                char container_name[64];
-                sprintf(container_name, "HDWTR%03u", buff);
-
+                std::string container_name = fmt::format("HDWTR{:03}", buff);
                 bsptexmap.insert(std::make_pair(container_name, bsptexmap.size()));
                 bsptexloaded[0]++;
             }

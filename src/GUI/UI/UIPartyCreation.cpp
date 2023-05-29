@@ -372,17 +372,17 @@ void GUIWindow_PartyCreation::Update() {
             switch (pGUIWindow_CurrentMenu->keyboard_input_status) {
             case WINDOW_INPUT_IN_PROGRESS:  // press name panel
                 v17 = pGUIWindow_CurrentMenu->DrawTextInRect(pFontCreate, {159 * pGUIWindow_CurrentMenu->wData.val + 18, 124}, Color(),
-                    keyboardInputHandler->GetTextInput().c_str(), 120, 1);
+                    keyboardInputHandler->GetTextInput(), 120, 1);
                 pGUIWindow_CurrentMenu->DrawFlashingInputCursor(159 * pGUIWindow_CurrentMenu->wData.val + v17 + 20, 124, pFontCreate);
                 break;
             case WINDOW_INPUT_CONFIRMED:  // press enter
                 pGUIWindow_CurrentMenu->keyboard_input_status = WINDOW_INPUT_NONE;
                 v126 = 0;
-                for (int j = 0; j < strlen(keyboardInputHandler->GetTextInput().c_str()); ++j) {  // edit name
-                    if (keyboardInputHandler->GetTextInput().c_str()[j] == ' ')
+                for (int j = 0; j < keyboardInputHandler->GetTextInput().size(); ++j) {  // edit name
+                    if (keyboardInputHandler->GetTextInput()[j] == ' ')
                         ++v126;
                 }
-                if (strlen(keyboardInputHandler->GetTextInput().c_str()) > 0 && v126 != strlen(keyboardInputHandler->GetTextInput().c_str()))
+                if (keyboardInputHandler->GetTextInput().size() > 0 && v126 != keyboardInputHandler->GetTextInput().size())
                     pParty->pPlayers[i].name = keyboardInputHandler->GetTextInput();
                 pGUIWindow_CurrentMenu->DrawTextInRect(pFontCreate, {pIntervalX, 124}, Color(), pParty->pPlayers[i].name, 130, 0);
                 pParty->pPlayers[i].field_1988[27] = 1;

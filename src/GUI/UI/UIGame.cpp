@@ -343,12 +343,12 @@ void GUIWindow_GameKeyBindings::Update() {
 
     for (int i = 0; i < 7; ++i) {
         InputAction action1 = (InputAction)(base_controls_offset + i);
-        pGUIWindow_CurrentMenu->DrawText(pFontLucida, {23, 142 + i * 21}, ui_gamemenu_keys_action_name_color, GetDisplayName(action1).c_str(), 0, 0, Color());
+        pGUIWindow_CurrentMenu->DrawText(pFontLucida, {23, 142 + i * 21}, ui_gamemenu_keys_action_name_color, GetDisplayName(action1), 0, 0, Color());
         pGUIWindow_CurrentMenu->DrawText(pFontLucida, {127, 142 + i * 21}, GameMenuUI_GetKeyBindingColor(action1), GetDisplayName(curr_key_map[action1]), 0, 0, Color());
 
         int j = i + 7;
         InputAction action2 = (InputAction)(base_controls_offset + j);
-        pGUIWindow_CurrentMenu->DrawText(pFontLucida, {247, 142 + i * 21}, ui_gamemenu_keys_action_name_color, GetDisplayName(action2).c_str(), 0, 0, Color());
+        pGUIWindow_CurrentMenu->DrawText(pFontLucida, {247, 142 + i * 21}, ui_gamemenu_keys_action_name_color, GetDisplayName(action2), 0, 0, Color());
         pGUIWindow_CurrentMenu->DrawText(pFontLucida, {350, 142 + i * 21}, GameMenuUI_GetKeyBindingColor(action2), GetDisplayName(curr_key_map[action2]), 0, 0, Color());
     }
 }
@@ -1883,7 +1883,6 @@ void GameUI_DrawTorchlightAndWizardEye() {
 //----- (00491F87) --------------------------------------------------------
 void GameUI_DrawHiredNPCs() {
     unsigned int v13;               // eax@23
-    char pContainer[20];            // [sp+Ch] [bp-30h]@18
     signed int uFrameID;            // [sp+24h] [bp-18h]@19
     int v22;                        // [sp+34h] [bp-8h]@2
     uint8_t pNPC_limit_ID;  // [sp+3Bh] [bp-1h]@2
@@ -1895,7 +1894,7 @@ void GameUI_DrawHiredNPCs() {
         pNPC_limit_ID = 0;
 
         for (int i = pParty->hirelingScrollPosition; i < buf.Size() && pNPC_limit_ID < 2; i++) {
-            sprintf(pContainer, "NPC%03d", buf.Get(i)->uPortraitID);
+            std::string pContainer = fmt::format("NPC{:03}", buf.Get(i)->uPortraitID);
             render->DrawTextureNew(
                     pHiredNPCsIconsOffsetsX[pNPC_limit_ID] / 640.0f,
                     pHiredNPCsIconsOffsetsY[pNPC_limit_ID] / 480.0f,

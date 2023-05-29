@@ -168,9 +168,9 @@ GUIWindow_Travel::GUIWindow_Travel() : GUIWindow(WINDOW_ChangeLocation, {0, 0}, 
 }
 
 void GUIWindow_Travel::Update() {
-    char pDestinationMapName[32];
+    std::string pDestinationMapName;
 
-    pOutdoor->GetTravelDestination(pParty->vPosition.x, pParty->vPosition.y, pDestinationMapName, 20);
+    pOutdoor->GetTravelDestination(pParty->vPosition.x, pParty->vPosition.y, &pDestinationMapName);
     render->DrawTextureNew(477 / 640.0f, 0, game_ui_dialogue_background);
     render->DrawTextureNew(468 / 640.0f, 0, game_ui_right_panel_frame);
     render->DrawTextureNew(pNPCPortraits_x[0][0] / 640.0f, pNPCPortraits_y[0][0] / 480.0f, transition_ui_icon);
@@ -217,7 +217,7 @@ void GUIWindow_Travel::Update() {
 }
 
 void GUIWindow_Transition::Update() {
-    unsigned int v9 = IndoorLocation::GetLocationIndex(_mapName.c_str());
+    unsigned int v9 = IndoorLocation::GetLocationIndex(_mapName);
     render->DrawTextureNew(477 / 640.0f, 0, game_ui_dialogue_background);
     render->DrawTextureNew((pNPCPortraits_x[0][0] - 4) / 640.0f,
                                 (pNPCPortraits_y[0][0] - 4) / 480.0f,
