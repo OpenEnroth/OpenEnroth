@@ -2956,8 +2956,6 @@ void RenderOpenGL::DrawBillboards() {
     glTexBuffer(GL_TEXTURE_BUFFER, GL_RGBA8UI, palbuf);
     glActiveTexture(GL_TEXTURE0);
 
-    glUniform1i(glGetUniformLocation(billbshader.ID, "repaint"), true);
-
 
     // set sampler to texure0
     glUniform1i(glGetUniformLocation(billbshader.ID, "texture0"), GLint(0));
@@ -5582,8 +5580,6 @@ void RenderOpenGL::DrawTwodVerts() {
     glBindTexture(GL_TEXTURE_BUFFER, paltex);
     glTexBuffer(GL_TEXTURE_BUFFER, GL_RGBA8UI, palbuf);
     glActiveTexture(GL_TEXTURE0);
-
-    glUniform1i(glGetUniformLocation(twodshader.ID, "repaint"), true);
 
     // glEnable(GL_TEXTURE_2D);
     glEnable(GL_BLEND);
