@@ -188,8 +188,7 @@ bool Chest::ChestUI_WritePointedObjectStatusString() {
 
             int imgwidth = img->GetWidth();
             int imgheight = img->GetHeight();
-            auto pixels = (int32_t
-            *)img->GetPixels(IMAGE_FORMAT_A8R8G8B8);
+            auto pixels = (int32_t*)img->GetPixels(IMAGE_FORMAT_A8R8G8B8);
 
             Assert(pixels != nullptr, "Cannot get pixels");
 
