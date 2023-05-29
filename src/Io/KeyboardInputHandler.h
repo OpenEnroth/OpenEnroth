@@ -33,7 +33,6 @@ namespace Io {
             lastKeyPressed = PlatformKey::None;
             inputType = TextInputType::None;
             window = nullptr;
-            uNumKeysPressed = 0;
             ResetKeys();
         }
 
@@ -59,9 +58,8 @@ namespace Io {
         bool ProcessTextInput(PlatformKey key, int c);
         void EndTextInput();
 
-        std::string GetTextInput() const;
+        const std::string &GetTextInput() const;
         void SetTextInput(const std::string &text);
-        void SetTextInput(const char *text);
 
      private:
         void GeneratePausedActions();
@@ -73,8 +71,7 @@ namespace Io {
         PlatformKey lastKeyPressed;
         int keydelaytimer;
         int max_input_string_len;
-        char pPressedKeysBuffer[257];
-        uint8_t uNumKeysPressed;
+        std::string pPressedKeysBuffer;
         TextInputType inputType;
         GUIWindow *window;
     };
