@@ -15,7 +15,8 @@ var searchData=
   ['fontdata_12',['FontData',['../structFontData.html',1,'']]],
   ['fontdata_5fmm7_13',['FontData_MM7',['../structFontData__MM7.html',1,'']]],
   ['forcepersverts_14',['forcepersverts',['../structforcepersverts.html',1,'']]],
-  ['framelimiter_15',['FrameLimiter',['../classFrameLimiter.html',1,'']]],
-  ['frametabletxtline_16',['FrameTableTxtLine',['../structFrameTableTxtLine.html',1,'']]],
-  ['freedeleter_17',['FreeDeleter',['../structFreeDeleter.html',1,'']]]
+  ['formatter_3c_20colortag_20_3e_15',['formatter&lt; ColorTag &gt;',['../structfmt_1_1formatter_3_01ColorTag_01_4.html',1,'fmt']]],
+  ['framelimiter_16',['FrameLimiter',['../classFrameLimiter.html',1,'']]],
+  ['frametabletxtline_17',['FrameTableTxtLine',['../structFrameTableTxtLine.html',1,'']]],
+  ['freedeleter_18',['FreeDeleter',['../structFreeDeleter.html',1,'']]]
 ];
