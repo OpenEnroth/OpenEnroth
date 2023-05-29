@@ -696,7 +696,7 @@ var searchData=
   ['unprojecty_693',['UnprojectY',['../Vis_8cpp.html#a71cda59bdbaef4739403550c80397f02',1,'Vis.cpp']]],
   ['unregisterwindow_694',['unregisterWindow',['../classSdlPlatformSharedState.html#acbcbe6a541f4e8fcb2dc2dd0f18486eb',1,'SdlPlatformSharedState']]],
   ['unserializable_695',['UNSERIALIZABLE',['../Serialization__ut_8cpp.html#a94beb900defc123803319b326e764a0da607014cced6f0bf4ad95bbc80e4e2e82',1,'Serialization_ut.cpp']]],
-  ['unsized_696',['unsized',['../ArraySerialization_8h.html#a2d8e705e797d4c7a4773b4559ceeac75',1,'ArraySerialization.h']]],
+  ['unsized_696',['unsized',['../ContainerSerialization_8h.html#a2d8e705e797d4c7a4773b4559ceeac75',1,'ContainerSerialization.h']]],
   ['unsizedsrcvector_697',['UnsizedSrcVector',['../structdetail_1_1UnsizedSrcVector.html',1,'detail::UnsizedSrcVector&lt; T &gt;'],['../structdetail_1_1UnsizedSrcVector.html#ac2146d98db134359c658da00d2df13b4',1,'detail::UnsizedSrcVector::UnsizedSrcVector()']]],
   ['unumactions_698',['uNumActions',['../structActionQueue.html#a16c5dddc29c4eae25254742899af3ab3',1,'ActionQueue']]],
   ['unumarcomageloses_699',['uNumArcomageLoses',['../structParty.html#acaee43e052ee7f1805c19f39c3148efc',1,'Party']]],

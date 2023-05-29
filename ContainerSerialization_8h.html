@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.9.5"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>OpenEnroth: src/Library/Binary/ArraySerialization.h File Reference</title>
+<title>OpenEnroth: src/Library/Binary/ContainerSerialization.h File Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;0169d78</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;f129e80</span>
    </div>
   </td>
  </tr>
@@ -77,7 +77,7 @@ $(function() {
 <a href="#nested-classes">Classes</a> &#124;
 <a href="#namespaces">Namespaces</a> &#124;
 <a href="#func-members">Functions</a>  </div>
-  <div class="headertitle"><div class="title">ArraySerialization.h File Reference</div></div>
+  <div class="headertitle"><div class="title">ContainerSerialization.h File Reference</div></div>
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><code>#include &lt;span&gt;</code><br />
@@ -113,34 +113,34 @@ Functions</h2></td></tr>
 <tr class="memitem:a275d5bf02569a269a89bc51166304464"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacedetail.html#a275d5bf02569a269a89bc51166304464">detail::deserializeAppend</a> (<a class="el" href="classInputStream.html">InputStream</a> &amp;src, std::vector&lt; T &gt; *dst, size_t size)</td></tr>
 <tr class="separator:a275d5bf02569a269a89bc51166304464"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a102753f2ab1d946ef1a29648e016a35a"><td class="memTemplParams" colspan="2">template&lt;class T , size_t N&gt; </td></tr>
-<tr class="memitem:a102753f2ab1d946ef1a29648e016a35a"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="ArraySerialization_8h.html#a102753f2ab1d946ef1a29648e016a35a">serialize</a> (const std::array&lt; T, <a class="el" href="PlatformEnums_8h.html#a2ba59747730ab559dd1191f51081eecca8d9c307cb7f3c4a32822a51922d1ceaa">N</a> &gt; &amp;src, <a class="el" href="classOutputStream.html">OutputStream</a> *dst)</td></tr>
+<tr class="memitem:a102753f2ab1d946ef1a29648e016a35a"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="ContainerSerialization_8h.html#a102753f2ab1d946ef1a29648e016a35a">serialize</a> (const std::array&lt; T, <a class="el" href="PlatformEnums_8h.html#a2ba59747730ab559dd1191f51081eecca8d9c307cb7f3c4a32822a51922d1ceaa">N</a> &gt; &amp;src, <a class="el" href="classOutputStream.html">OutputStream</a> *dst)</td></tr>
 <tr class="separator:a102753f2ab1d946ef1a29648e016a35a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a92565bdeaeba381b16073f35789dd858"><td class="memTemplParams" colspan="2">template&lt;class T , size_t N&gt; </td></tr>
-<tr class="memitem:a92565bdeaeba381b16073f35789dd858"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="ArraySerialization_8h.html#a92565bdeaeba381b16073f35789dd858">deserialize</a> (<a class="el" href="classInputStream.html">InputStream</a> &amp;src, std::array&lt; T, <a class="el" href="PlatformEnums_8h.html#a2ba59747730ab559dd1191f51081eecca8d9c307cb7f3c4a32822a51922d1ceaa">N</a> &gt; *dst)</td></tr>
+<tr class="memitem:a92565bdeaeba381b16073f35789dd858"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="ContainerSerialization_8h.html#a92565bdeaeba381b16073f35789dd858">deserialize</a> (<a class="el" href="classInputStream.html">InputStream</a> &amp;src, std::array&lt; T, <a class="el" href="PlatformEnums_8h.html#a2ba59747730ab559dd1191f51081eecca8d9c307cb7f3c4a32822a51922d1ceaa">N</a> &gt; *dst)</td></tr>
 <tr class="separator:a92565bdeaeba381b16073f35789dd858"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2d8e705e797d4c7a4773b4559ceeac75"><td class="memTemplParams" colspan="2">template&lt;class T &gt; </td></tr>
-<tr class="memitem:a2d8e705e797d4c7a4773b4559ceeac75"><td class="memTemplItemLeft" align="right" valign="top">auto&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="ArraySerialization_8h.html#a2d8e705e797d4c7a4773b4559ceeac75">unsized</a> (const std::vector&lt; T &gt; &amp;src)</td></tr>
+<tr class="memitem:a2d8e705e797d4c7a4773b4559ceeac75"><td class="memTemplItemLeft" align="right" valign="top">auto&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="ContainerSerialization_8h.html#a2d8e705e797d4c7a4773b4559ceeac75">unsized</a> (const std::vector&lt; T &gt; &amp;src)</td></tr>
 <tr class="separator:a2d8e705e797d4c7a4773b4559ceeac75"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac90803cfc5c100029c1e3c60c78b3c8b"><td class="memTemplParams" colspan="2">template&lt;class T &gt; </td></tr>
-<tr class="memitem:ac90803cfc5c100029c1e3c60c78b3c8b"><td class="memTemplItemLeft" align="right" valign="top">auto&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="ArraySerialization_8h.html#ac90803cfc5c100029c1e3c60c78b3c8b">presized</a> (size_t size, std::vector&lt; T &gt; *dst)</td></tr>
+<tr class="memitem:ac90803cfc5c100029c1e3c60c78b3c8b"><td class="memTemplItemLeft" align="right" valign="top">auto&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="ContainerSerialization_8h.html#ac90803cfc5c100029c1e3c60c78b3c8b">presized</a> (size_t size, std::vector&lt; T &gt; *dst)</td></tr>
 <tr class="separator:ac90803cfc5c100029c1e3c60c78b3c8b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a353a4d4e06900f635da0f920c14ef543"><td class="memTemplParams" colspan="2">template&lt;class T &gt; </td></tr>
-<tr class="memitem:a353a4d4e06900f635da0f920c14ef543"><td class="memTemplItemLeft" align="right" valign="top">auto&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="ArraySerialization_8h.html#a353a4d4e06900f635da0f920c14ef543">appendTo</a> (std::vector&lt; T &gt; *dst)</td></tr>
+<tr class="memitem:a353a4d4e06900f635da0f920c14ef543"><td class="memTemplItemLeft" align="right" valign="top">auto&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="ContainerSerialization_8h.html#a353a4d4e06900f635da0f920c14ef543">appendTo</a> (std::vector&lt; T &gt; *dst)</td></tr>
 <tr class="separator:a353a4d4e06900f635da0f920c14ef543"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af32953a65dd8be6026e1086e3f5aa2e1"><td class="memTemplParams" colspan="2">template&lt;class T &gt; </td></tr>
-<tr class="memitem:af32953a65dd8be6026e1086e3f5aa2e1"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="ArraySerialization_8h.html#af32953a65dd8be6026e1086e3f5aa2e1">serialize</a> (<a class="el" href="structdetail_1_1UnsizedSrcVector.html">detail::UnsizedSrcVector</a>&lt; T &gt; src, <a class="el" href="classOutputStream.html">OutputStream</a> *dst)</td></tr>
+<tr class="memitem:af32953a65dd8be6026e1086e3f5aa2e1"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="ContainerSerialization_8h.html#af32953a65dd8be6026e1086e3f5aa2e1">serialize</a> (<a class="el" href="structdetail_1_1UnsizedSrcVector.html">detail::UnsizedSrcVector</a>&lt; T &gt; src, <a class="el" href="classOutputStream.html">OutputStream</a> *dst)</td></tr>
 <tr class="separator:af32953a65dd8be6026e1086e3f5aa2e1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a81324715a9e1f6d1ee59f246ff6fc9ac"><td class="memTemplParams" colspan="2">template&lt;class T &gt; </td></tr>
-<tr class="memitem:a81324715a9e1f6d1ee59f246ff6fc9ac"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="ArraySerialization_8h.html#a81324715a9e1f6d1ee59f246ff6fc9ac">serialize</a> (const std::vector&lt; T &gt; &amp;src, <a class="el" href="classOutputStream.html">OutputStream</a> *dst)</td></tr>
+<tr class="memitem:a81324715a9e1f6d1ee59f246ff6fc9ac"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="ContainerSerialization_8h.html#a81324715a9e1f6d1ee59f246ff6fc9ac">serialize</a> (const std::vector&lt; T &gt; &amp;src, <a class="el" href="classOutputStream.html">OutputStream</a> *dst)</td></tr>
 <tr class="separator:a81324715a9e1f6d1ee59f246ff6fc9ac"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1827fe47935f0106035014be3cc2b4c4"><td class="memTemplParams" colspan="2">template&lt;class T &gt; </td></tr>
-<tr class="memitem:a1827fe47935f0106035014be3cc2b4c4"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="ArraySerialization_8h.html#a1827fe47935f0106035014be3cc2b4c4">deserialize</a> (<a class="el" href="classInputStream.html">InputStream</a> &amp;src, <a class="el" href="structdetail_1_1AppendDstVector.html">detail::AppendDstVector</a>&lt; T &gt; dst)</td></tr>
+<tr class="memitem:a1827fe47935f0106035014be3cc2b4c4"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="ContainerSerialization_8h.html#a1827fe47935f0106035014be3cc2b4c4">deserialize</a> (<a class="el" href="classInputStream.html">InputStream</a> &amp;src, <a class="el" href="structdetail_1_1AppendDstVector.html">detail::AppendDstVector</a>&lt; T &gt; dst)</td></tr>
 <tr class="separator:a1827fe47935f0106035014be3cc2b4c4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7916d840b7ecdb502e75b23cbb4d5c7b"><td class="memTemplParams" colspan="2">template&lt;class T &gt; </td></tr>
-<tr class="memitem:a7916d840b7ecdb502e75b23cbb4d5c7b"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="ArraySerialization_8h.html#a7916d840b7ecdb502e75b23cbb4d5c7b">deserialize</a> (<a class="el" href="classInputStream.html">InputStream</a> &amp;src, <a class="el" href="structdetail_1_1PresizedDstVector.html">detail::PresizedDstVector</a>&lt; T &gt; dst)</td></tr>
+<tr class="memitem:a7916d840b7ecdb502e75b23cbb4d5c7b"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="ContainerSerialization_8h.html#a7916d840b7ecdb502e75b23cbb4d5c7b">deserialize</a> (<a class="el" href="classInputStream.html">InputStream</a> &amp;src, <a class="el" href="structdetail_1_1PresizedDstVector.html">detail::PresizedDstVector</a>&lt; T &gt; dst)</td></tr>
 <tr class="separator:a7916d840b7ecdb502e75b23cbb4d5c7b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae088fb0b0770af062e84cfeecaff2d14"><td class="memTemplParams" colspan="2">template&lt;class T &gt; </td></tr>
-<tr class="memitem:ae088fb0b0770af062e84cfeecaff2d14"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="ArraySerialization_8h.html#ae088fb0b0770af062e84cfeecaff2d14">deserialize</a> (<a class="el" href="classInputStream.html">InputStream</a> &amp;src, std::vector&lt; T &gt; *dst)</td></tr>
+<tr class="memitem:ae088fb0b0770af062e84cfeecaff2d14"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="ContainerSerialization_8h.html#ae088fb0b0770af062e84cfeecaff2d14">deserialize</a> (<a class="el" href="classInputStream.html">InputStream</a> &amp;src, std::vector&lt; T &gt; *dst)</td></tr>
 <tr class="separator:ae088fb0b0770af062e84cfeecaff2d14"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Function Documentation</h2>
@@ -328,7 +328,7 @@ template&lt;class T &gt; </div>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Wrapper object to be passed into <code>deserialize</code> call. </dd></dl>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="ArraySerialization_8h.html#a2d8e705e797d4c7a4773b4559ceeac75">unsized</a> </dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="ContainerSerialization_8h.html#a2d8e705e797d4c7a4773b4559ceeac75">unsized</a> </dd></dl>
 
 </div>
 </div>
@@ -447,7 +447,7 @@ template&lt;class T &gt; </div>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Wrapper object to be passed into <code>serialize</code> call. </dd></dl>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="ArraySerialization_8h.html#ac90803cfc5c100029c1e3c60c78b3c8b">presized</a> </dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="ContainerSerialization_8h.html#ac90803cfc5c100029c1e3c60c78b3c8b">presized</a> </dd></dl>
 
 </div>
 </div>
