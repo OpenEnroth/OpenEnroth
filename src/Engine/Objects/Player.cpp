@@ -4588,7 +4588,7 @@ void Player::SetVariable(VariableType var_type, signed int var_value) {
             this->sAgeModifier = var_value;
             return;
         case VAR_Award:
-            if (!this->_achievedAwardsBits[var_value] && pAwards[var_value].pText) {
+            if (!this->_achievedAwardsBits[var_value] && !pAwards[var_value].pText.empty()) {
                 PlayAwardSound_Anim();
                 this->playReaction(SPEECH_AwardGot);
             }
@@ -4855,7 +4855,7 @@ void Player::SetVariable(VariableType var_type, signed int var_value) {
             return;
         case VAR_AutoNotes:
             assert(var_value > 0);
-            if (!pParty->_autonoteBits[var_value] && pAutonoteTxt[var_value].pText) {
+            if (!pParty->_autonoteBits[var_value] && !pAutonoteTxt[var_value].pText.empty()) {
                 spell_fx_renderer->SetPlayerBuffAnim(BECOME_MAGIC_GUILD_MEMBER, GetPlayerIndex());
                 this->playReaction(SPEECH_AwardGot);
                 bFlashAutonotesBook = true;
@@ -5171,7 +5171,7 @@ void Player::AddVariable(VariableType var_type, signed int val) {
             this->sAgeModifier += val;
             return;
         case VAR_Award:
-            if (this->_achievedAwardsBits[val] && pAwards[val].pText) {
+            if (this->_achievedAwardsBits[val] && !pAwards[val].pText.empty()) {
                 PlayAwardSound_Anim97_Face(SPEECH_AwardGot);
             }
             this->_achievedAwardsBits.set(val);
@@ -5424,7 +5424,7 @@ void Player::AddVariable(VariableType var_type, signed int val) {
             return;
         case VAR_AutoNotes:
             assert(val > 0);
-            if (!pParty->_autonoteBits[val] && pAutonoteTxt[val].pText) {
+            if (!pParty->_autonoteBits[val] && !pAutonoteTxt[val].pText.empty()) {
                 this->playReaction(SPEECH_AwardGot);
                 bFlashAutonotesBook = true;
                 autonoteBookDisplayType = pAutonoteTxt[val].eType;
