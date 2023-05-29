@@ -260,7 +260,11 @@ void _494035_timed_effects__water_walking_damage__etc();
  */
 void RegeneratePartyHealthMana();
 std::string GetReputationString(int reputation);
-unsigned int _494820_training_time(unsigned int a1);
+
+/**
+ * @offset 0x494820
+ */
+GameTime timeUntilDawn();
 
 /**
  * @offset 0x443E31

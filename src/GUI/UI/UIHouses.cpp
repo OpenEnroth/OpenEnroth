@@ -764,8 +764,6 @@ bool enterHouse(HOUSE_ID uHouseID) {
     int uCloseTime = buildingTable[uHouseID - HOUSE_SMITH_EMERALD_ISLE].uCloseTime;
     current_npc_text.clear();
     dword_F8B1E4 = 0;
-    charactersTrainedLevels.resize(pParty->pPlayers.size());
-    std::fill(charactersTrainedLevels.begin(), charactersTrainedLevels.end(), 0);
     render->ClearZBuffer();
 
     if (((uCloseTime - 1 <= uOpenTime) && ((pParty->uCurrentHour < uOpenTime) && (pParty->uCurrentHour >(uCloseTime - 1)))) ||
@@ -1866,6 +1864,9 @@ void createHouseUI(HOUSE_ID houseId) {
       case BuildingType_Temple:
         window_SpeakInHouse = new GUIWindow_Temple(houseId);
         break;
+      case BuildingType_Training:
+        window_SpeakInHouse = new GUIWindow_Training(houseId);
+        break;
       default:
         window_SpeakInHouse = new GUIWindow_House(houseId);
         break;
@@ -2052,9 +2053,7 @@ void GUIWindow_House::houseDialogManager() {
             TravelByTransport();
             break;
           case BuildingType_Training:
-            // __debugbreak(); // param was passed via pTmpBuf, investiage
-            // ?? no idea why this could pass an argument - its always reset
-            TrainingDialog("");
+            houseSpecificDialogue();
             break;
           case BuildingType_Jail:
             JailDialog();
