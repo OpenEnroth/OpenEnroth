@@ -16,9 +16,10 @@
 GameStarter::GameStarter(GameStarterOptions options): _options(std::move(options)) {
     _logger = PlatformLogger::createStandardLogger(WIN_ENSURE_CONSOLE_OPTION);
     auto setVerboseLogging = [logger = _logger.get()](bool verbose) {
-        logger->setLogLevel(APPLICATION_LOG, verbose ? LOG_VERBOSE : LOG_INFO);
+        logger->setLogLevel(APPLICATION_LOG, verbose ? LOG_VERBOSE : LOG_ERROR);
         logger->setLogLevel(PLATFORM_LOG, verbose ? LOG_VERBOSE : LOG_ERROR);
     };
+    // TODO(pskelton): should be able to pick log level rather than just verbose or not
     setVerboseLogging(_options.verbose);
     EngineIocContainer::ResolveLogger()->setBaseLogger(_logger.get());
     Engine::LogEngineBuildInfo();
