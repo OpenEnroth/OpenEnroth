@@ -994,13 +994,13 @@ void Game::processQueuedMessages() {
                             pParty->restAndHeal();
                             if (pParty->GetFood() < getTravelTime()) {
                                 for(Player &player : pParty->pPlayers)
-                                    player.SetCondition(Condition_Weak, 0);
+                                    player.SetCondition(CONDITION_WEAK, 0);
                                 ++pParty->days_played_without_rest;
                             }
                             pParty->TakeFood(getTravelTime());
                         } else {
                             for (Player &player : pParty->pPlayers)
-                                player.SetCondition(Condition_Weak, 0);
+                                player.SetCondition(CONDITION_WEAK, 0);
                             ++pParty->days_played_without_rest;
                         }
                         pSpriteFrameTable->ResetLoadedFlags();
@@ -1589,7 +1589,7 @@ void Game::processQueuedMessages() {
 
                             if (encounter_index) {
                                 pPlayerNum = grng->random(4);
-                                pParty->pPlayers[pPlayerNum].conditions.Reset(Condition_Sleep);
+                                pParty->pPlayers[pPlayerNum].conditions.Reset(CONDITION_SLEEP);
                                 Rest(GameTime::FromHours(1).AddMinutes(grng->random(6)));
                                 remainingRestTime = GameTime();
                                 currentRestType = REST_NONE;
@@ -2131,12 +2131,12 @@ void Game::processQueuedMessages() {
                 case UIMSG_DebugKillChar:
                     if (!pParty->hasActiveCharacter())
                         continue;
-                    pParty->activeCharacter().SetCondition(Condition_Dead, 0);
+                    pParty->activeCharacter().SetCondition(CONDITION_DEAD, 0);
                     continue;
                 case UIMSG_DebugEradicate:
                     if (!pParty->hasActiveCharacter())
                         continue;
-                    pParty->activeCharacter().SetCondition(Condition_Eradicated, 0);
+                    pParty->activeCharacter().SetCondition(CONDITION_ERADICATED, 0);
                     continue;
                 case UIMSG_DebugFullHeal:
                     if (!pParty->hasActiveCharacter())

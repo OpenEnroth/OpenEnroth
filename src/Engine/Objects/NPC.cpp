@@ -40,10 +40,10 @@ int NPCStats::dword_AE3370_LastMispronouncedNameResult = -1;
 bool CheckPortretAgainstSex(int portret_num, int sex);
 
 // All conditions for alive character excluding zombie
-static const Segment<Condition> standardConditionsExcludeDead = {Condition_Cursed, Condition_Unconscious};
+static const Segment<Condition> standardConditionsExcludeDead = {CONDITION_CURSED, CONDITION_UNCONSCIOUS};
 
 // All conditions including dead character ones, but still excluding zombie
-static const Segment<Condition> standardConditionsIncludeDead = {Condition_Cursed, Condition_Eradicated};
+static const Segment<Condition> standardConditionsIncludeDead = {CONDITION_CURSED, CONDITION_ERADICATED};
 
 //----- (004459F9) --------------------------------------------------------
 NPCData *GetNPCData(signed int npcid) {
@@ -851,7 +851,7 @@ int UseNPCSkill(NPCProf profession, int id) {
 
                 for (Condition condition : standardConditionsIncludeDead) {
                     // Master healer heals all except Eradicated and zombie
-                    if (condition != Condition_Eradicated) {
+                    if (condition != CONDITION_ERADICATED) {
                         player.conditions.Reset(condition);
                     }
                 }

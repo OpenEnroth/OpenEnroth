@@ -236,7 +236,7 @@ GAME_TEST(Issues, Issue293a) {
         EXPECT_EQ(partyItemCount(), 18);
         EXPECT_FALSE(pParty->pPlayers[0].hasItem(ITEM_LEATHER_ARMOR, false));
         for (int i = 0; i < 4; i++)
-            EXPECT_EQ(pParty->pPlayers[i].GetMajorConditionIdx(), Condition_Good);
+            EXPECT_EQ(pParty->pPlayers[i].GetMajorConditionIdx(), CONDITION_GOOD);
     });
 
     EXPECT_EQ(pParty->pPlayers[0].uMight, 30);
@@ -248,10 +248,10 @@ GAME_TEST(Issues, Issue293a) {
     EXPECT_EQ(pParty->pPlayers[0].uLuck, 7);
     EXPECT_EQ(partyItemCount(), 19); // +1
     EXPECT_TRUE(pParty->pPlayers[0].hasItem(ITEM_CHAIN_MAIL, false)); // That's the item from the trash pile.
-    EXPECT_EQ(pParty->pPlayers[0].GetMajorConditionIdx(), Condition_Disease_Weak);
-    EXPECT_EQ(pParty->pPlayers[1].GetMajorConditionIdx(), Condition_Good); // Good roll here, didn't get sick.
-    EXPECT_EQ(pParty->pPlayers[2].GetMajorConditionIdx(), Condition_Disease_Weak);
-    EXPECT_EQ(pParty->pPlayers[3].GetMajorConditionIdx(), Condition_Disease_Weak);
+    EXPECT_EQ(pParty->pPlayers[0].GetMajorConditionIdx(), CONDITION_DISEASE_WEAK);
+    EXPECT_EQ(pParty->pPlayers[1].GetMajorConditionIdx(), CONDITION_GOOD); // Good roll here, didn't get sick.
+    EXPECT_EQ(pParty->pPlayers[2].GetMajorConditionIdx(), CONDITION_DISEASE_WEAK);
+    EXPECT_EQ(pParty->pPlayers[3].GetMajorConditionIdx(), CONDITION_DISEASE_WEAK);
 }
 
 GAME_TEST(Issues, Issue293b) {
@@ -556,8 +556,8 @@ GAME_TEST(Issues, Issue521) {
 
 GAME_TEST(Issues, Issue527) {
     // Check Cure Disease spell works
-    test->playTraceFromTestData("issue_527.mm7", "issue_527.json", []() { EXPECT_TRUE(pParty->pPlayers[0].conditions.Has(Condition_Disease_Weak)); });
-    EXPECT_FALSE(pParty->pPlayers[0].conditions.Has(Condition_Disease_Weak));
+    test->playTraceFromTestData("issue_527.mm7", "issue_527.json", []() { EXPECT_TRUE(pParty->pPlayers[0].conditions.Has(CONDITION_DISEASE_WEAK)); });
+    EXPECT_FALSE(pParty->pPlayers[0].conditions.Has(CONDITION_DISEASE_WEAK));
 }
 
 GAME_TEST(Issues, Issue528) {
@@ -618,8 +618,8 @@ static void check601Conds(std::array<Condition, 4> conds, std::array<int, 4> hea
 
 GAME_TEST(Issues, Issue601) {
     // Check that Master Healer NPC skill work and does not assert
-    test->playTraceFromTestData("issue_601.mm7", "issue_601.json", []() { check601Conds({Condition_Sleep, Condition_Cursed, Condition_Fear, Condition_Dead}, {66, 128, 86, 70}); });
-    check601Conds({Condition_Good, Condition_Good, Condition_Good, Condition_Good}, {126, 190, 96, 80});
+    test->playTraceFromTestData("issue_601.mm7", "issue_601.json", []() { check601Conds({CONDITION_SLEEP, CONDITION_CURSED, CONDITION_FEAR, CONDITION_DEAD}, {66, 128, 86, 70}); });
+    check601Conds({CONDITION_GOOD, CONDITION_GOOD, CONDITION_GOOD, CONDITION_GOOD}, {126, 190, 96, 80});
 }
 
 GAME_TEST(Issues, Issue608) {
@@ -634,8 +634,8 @@ GAME_TEST(Issues, Issue611) {
     // expect chars to be healed and zombies
     EXPECT_EQ(pParty->pPlayers[0].health, 45);
     EXPECT_EQ(pParty->pPlayers[1].health, 39);
-    EXPECT_EQ(pParty->pPlayers[2].conditions.Has(Condition_Zombie), true);
-    EXPECT_EQ(pParty->pPlayers[3].conditions.Has(Condition_Zombie), true);
+    EXPECT_EQ(pParty->pPlayers[2].conditions.Has(CONDITION_ZOMBIE), true);
+    EXPECT_EQ(pParty->pPlayers[3].conditions.Has(CONDITION_ZOMBIE), true);
 }
 
 GAME_TEST(Issues, Issue613) {
@@ -742,10 +742,10 @@ GAME_TEST(Issues, Issue626) {
 GAME_TEST(Issue, Issue645) {
     // Characters does not enter unconscious state
     test->playTraceFromTestData("issue_645.mm7", "issue_645.json");
-    EXPECT_EQ(pParty->pPlayers[0].conditions.Has(Condition_Unconscious), true);
-    EXPECT_EQ(pParty->pPlayers[1].conditions.Has(Condition_Unconscious), false);
-    EXPECT_EQ(pParty->pPlayers[2].conditions.Has(Condition_Unconscious), true);
-    EXPECT_EQ(pParty->pPlayers[3].conditions.Has(Condition_Unconscious), true);
+    EXPECT_EQ(pParty->pPlayers[0].conditions.Has(CONDITION_UNCONSCIOUS), true);
+    EXPECT_EQ(pParty->pPlayers[1].conditions.Has(CONDITION_UNCONSCIOUS), false);
+    EXPECT_EQ(pParty->pPlayers[2].conditions.Has(CONDITION_UNCONSCIOUS), true);
+    EXPECT_EQ(pParty->pPlayers[3].conditions.Has(CONDITION_UNCONSCIOUS), true);
 }
 
 GAME_TEST(Issues, Issue661) {
@@ -826,7 +826,7 @@ GAME_TEST(Issues, Issue677) {
     // Haste doesn't impose weakness after it ends
     test->playTraceFromTestData("issue_677.mm7", "issue_677.json");
     for (auto &player : pParty->pPlayers) {
-        EXPECT_EQ(player.conditions.Has(Condition_Weak), true);
+        EXPECT_EQ(player.conditions.Has(CONDITION_WEAK), true);
     }
 }
 
@@ -1102,7 +1102,7 @@ GAME_TEST(Issues, Issue867) {
 GAME_TEST(Issues, Issue868) {
     // Test that ressurecting in evil temples set zombie status
     test->playTraceFromTestData("issue_868.mm7", "issue_868.json");
-    EXPECT_EQ(pParty->pPlayers[0].GetMajorConditionIdx(), Condition_Zombie);
+    EXPECT_EQ(pParty->pPlayers[0].GetMajorConditionIdx(), CONDITION_ZOMBIE);
 }
 
 GAME_TEST(Issues, Issue872) {

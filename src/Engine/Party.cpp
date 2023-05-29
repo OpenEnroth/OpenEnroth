@@ -762,7 +762,7 @@ void Party::ResetPosMiscAndSpellBuffs() {
 void Party::resetPlayerEmotions() {
     for (Player &player : this->pPlayers) {
         Condition condition = player.GetMajorConditionIdx();
-        if (condition == Condition_Good || condition == Condition_Zombie) {
+        if (condition == CONDITION_GOOD || condition == CONDITION_ZOMBIE) {
             player.uExpressionTimeLength = 32;
             player.expression = CHARACTER_EXPRESSION_NORMAL;
         } else {
@@ -782,7 +782,7 @@ void Party::updatePlayersAndHirelingsEmotions() {
         player.uExpressionTimePassed += (unsigned short)pMiscTimer->uTimeElapsed;
 
         Condition condition = player.GetMajorConditionIdx();
-        if (condition == Condition_Good || condition == Condition_Zombie) {
+        if (condition == CONDITION_GOOD || condition == CONDITION_ZOMBIE) {
             if (player.uExpressionTimePassed < player.uExpressionTimeLength)
                 continue;
 
@@ -871,15 +871,15 @@ void Party::restAndHeal() {
             buff.Reset();
 
         pPlayer->resetTempBonuses();
-        if (pPlayer->conditions.HasAny({Condition_Dead, Condition_Petrified, Condition_Eradicated})) {
+        if (pPlayer->conditions.HasAny({CONDITION_DEAD, CONDITION_PETRIFIED, CONDITION_ERADICATED})) {
             continue;
         }
 
-        pPlayer->conditions.Reset(Condition_Unconscious);
-        pPlayer->conditions.Reset(Condition_Drunk);
-        pPlayer->conditions.Reset(Condition_Fear);
-        pPlayer->conditions.Reset(Condition_Sleep);
-        pPlayer->conditions.Reset(Condition_Weak);
+        pPlayer->conditions.Reset(CONDITION_UNCONSCIOUS);
+        pPlayer->conditions.Reset(CONDITION_DRUNK);
+        pPlayer->conditions.Reset(CONDITION_FEAR);
+        pPlayer->conditions.Reset(CONDITION_SLEEP);
+        pPlayer->conditions.Reset(CONDITION_WEAK);
 
         pPlayer->timeToRecovery = 0;
         pPlayer->health = pPlayer->GetMaxHealth();
@@ -896,20 +896,20 @@ void Party::restAndHeal() {
             }
         }
 
-        if (pPlayer->conditions.Has(Condition_Zombie)) {
+        if (pPlayer->conditions.Has(CONDITION_ZOMBIE)) {
             pPlayer->mana = 0;
             pPlayer->health /= 2;
-        } else if (pPlayer->conditions.HasAny({Condition_Poison_Severe, Condition_Disease_Severe})) {
+        } else if (pPlayer->conditions.HasAny({CONDITION_POISON_SEVERE, CONDITION_DISEASE_SEVERE})) {
             pPlayer->health /= 4;
             pPlayer->mana /= 4;
-        } else if (pPlayer->conditions.HasAny({Condition_Poison_Medium, Condition_Disease_Medium})) {
+        } else if (pPlayer->conditions.HasAny({CONDITION_POISON_MEDIUM, CONDITION_DISEASE_MEDIUM})) {
             pPlayer->health /= 3;
             pPlayer->mana /= 3;
-        } else if (pPlayer->conditions.HasAny({Condition_Poison_Weak, Condition_Disease_Weak})) {
+        } else if (pPlayer->conditions.HasAny({CONDITION_POISON_WEAK, CONDITION_DISEASE_WEAK})) {
             pPlayer->health /= 2;
             pPlayer->mana /= 2;
         }
-        if (pPlayer->conditions.Has(Condition_Insane))
+        if (pPlayer->conditions.Has(CONDITION_INSANE))
             pPlayer->mana = 0;
         updatePlayersAndHirelingsEmotions();
     }
@@ -1009,14 +1009,14 @@ void Party::GivePartyExp(unsigned int pEXPNum) {
     if (pEXPNum > 0) {
         pActivePlayerCount = 0;
         for (Player &player : this->pPlayers) {
-            if (player.conditions.HasNone({Condition_Unconscious, Condition_Dead, Condition_Petrified, Condition_Eradicated})) {
+            if (player.conditions.HasNone({CONDITION_UNCONSCIOUS, CONDITION_DEAD, CONDITION_PETRIFIED, CONDITION_ERADICATED})) {
                 pActivePlayerCount++;
             }
         }
         if (pActivePlayerCount) {
             pEXPNum = pEXPNum / pActivePlayerCount;
             for (Player &player : this->pPlayers) {
-                if (player.conditions.HasNone({Condition_Unconscious, Condition_Dead, Condition_Petrified, Condition_Eradicated})) {
+                if (player.conditions.HasNone({CONDITION_UNCONSCIOUS, CONDITION_DEAD, CONDITION_PETRIFIED, CONDITION_ERADICATED})) {
                     pLearningPercent = player.getLearningPercent();
                     playermodexp = pEXPNum + pEXPNum * pLearningPercent / 100;
                     player.experience += playermodexp;

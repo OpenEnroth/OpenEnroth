@@ -1846,7 +1846,7 @@ void Inventory_ItemPopupAndAlchemy() {
                 pParty->activeCharacter().receiveDamage(grng->random(201) + 50, DMGT_FIRE);
                 pParty->activeCharacter().ItemsPotionDmgBreak(5);  // break 5
             } else if (damage_level >= 4) {
-                pParty->activeCharacter().SetCondition(Condition_Eradicated, 0);
+                pParty->activeCharacter().SetCondition(CONDITION_ERADICATED, 0);
                 pParty->activeCharacter().ItemsPotionDmgBreak(0);  // break everything
             }
 

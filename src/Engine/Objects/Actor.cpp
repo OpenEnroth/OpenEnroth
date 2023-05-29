@@ -3541,8 +3541,8 @@ int stru319::which_player_to_attack(Actor *pActor) {
                         flag = true;
                     }
                     if (flag == true) {
-                        if (pParty->pPlayers[j].conditions.HasNone({Condition_Paralyzed, Condition_Unconscious, Condition_Dead,
-                                                                    Condition_Petrified, Condition_Eradicated})) {
+                        if (pParty->pPlayers[j].conditions.HasNone({CONDITION_PARALYZED, CONDITION_UNCONSCIOUS, CONDITION_DEAD,
+                                                                    CONDITION_PETRIFIED, CONDITION_ERADICATED})) {
                             Victims_list[v2++] = j;
                         }
                     }
@@ -3552,8 +3552,8 @@ int stru319::which_player_to_attack(Actor *pActor) {
         if (v2) return Victims_list[grng->random(v2)];
     }
     for (int i = 0; i < pParty->pPlayers.size(); ++i) {
-        if (pParty->pPlayers[i].conditions.HasNone({Condition_Paralyzed, Condition_Unconscious, Condition_Dead,
-                                                    Condition_Petrified, Condition_Eradicated}))
+        if (pParty->pPlayers[i].conditions.HasNone({CONDITION_PARALYZED, CONDITION_UNCONSCIOUS, CONDITION_DEAD,
+                                                    CONDITION_PETRIFIED, CONDITION_ERADICATED}))
             Victims_list[v2++] = i;
     }
     if (v2)
@@ -4886,7 +4886,7 @@ void evaluateAoeDamage() {
                 // check line of sight to party
                 if (Check_LineOfSight(pParty->vPosition + Vec3i(0, 0, pParty->sEyelevel), attack.pos)) {
                     for (int i = 0; i < pParty->pPlayers.size(); i++) {
-                        if (pParty->pPlayers[i].conditions.HasNone({Condition_Dead, Condition_Petrified, Condition_Eradicated})) {
+                        if (pParty->pPlayers[i].conditions.HasNone({CONDITION_DEAD, CONDITION_PETRIFIED, CONDITION_ERADICATED})) {
                             DamagePlayerFromMonster(attack.pid, attack.attackSpecial, &attackVector, i);
                         }
                     }

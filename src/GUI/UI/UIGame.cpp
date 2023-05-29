@@ -1945,31 +1945,31 @@ Color UI_GetHealthManaAndOtherQualitiesStringColor(int actual_value,
 //----- (00417939) --------------------------------------------------------
 Color GetConditionDrawColor(Condition uConditionIdx) {
     switch (uConditionIdx) {
-        case Condition_Zombie:
-        case Condition_Good:
+        case CONDITION_ZOMBIE:
+        case CONDITION_GOOD:
             return ui_character_condition_normal_color;
 
-        case Condition_Cursed:
-        case Condition_Weak:
-        case Condition_Fear:
-        case Condition_Drunk:
-        case Condition_Insane:
-        case Condition_Poison_Weak:
-        case Condition_Disease_Weak:
+        case CONDITION_CURSED:
+        case CONDITION_WEAK:
+        case CONDITION_FEAR:
+        case CONDITION_DRUNK:
+        case CONDITION_INSANE:
+        case CONDITION_POISON_WEAK:
+        case CONDITION_DISEASE_WEAK:
             return ui_character_condition_light_color;
 
-        case Condition_Sleep:
-        case Condition_Poison_Medium:
-        case Condition_Disease_Medium:
-        case Condition_Paralyzed:
-        case Condition_Unconscious:
+        case CONDITION_SLEEP:
+        case CONDITION_POISON_MEDIUM:
+        case CONDITION_DISEASE_MEDIUM:
+        case CONDITION_PARALYZED:
+        case CONDITION_UNCONSCIOUS:
             return ui_character_condition_moderate_color;
 
-        case Condition_Poison_Severe:
-        case Condition_Disease_Severe:
-        case Condition_Dead:
-        case Condition_Petrified:
-        case Condition_Eradicated:
+        case CONDITION_POISON_SEVERE:
+        case CONDITION_DISEASE_SEVERE:
+        case CONDITION_DEAD:
+        case CONDITION_PETRIFIED:
+        case CONDITION_ERADICATED:
             return ui_character_condition_severe_color;
     }
     Error("Invalid condition (%u)", uConditionIdx);

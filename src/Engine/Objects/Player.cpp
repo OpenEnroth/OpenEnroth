@@ -438,47 +438,47 @@ void Player::SetCondition(Condition uConditionIdx, int blockable) {
     }
 
     switch (uConditionIdx) {  // conditions noises
-        case Condition_Cursed:
+        case CONDITION_CURSED:
             playReaction(SPEECH_Cursed);
             break;
-        case Condition_Weak:
+        case CONDITION_WEAK:
             playReaction(SPEECH_Weak);
             break;
-        case Condition_Sleep:
+        case CONDITION_SLEEP:
             break;  // nosound
-        case Condition_Fear:
+        case CONDITION_FEAR:
             playReaction(SPEECH_Fear);
             break;
-        case Condition_Drunk:
+        case CONDITION_DRUNK:
             playReaction(SPEECH_Drunk);
             break;
-        case Condition_Insane:
+        case CONDITION_INSANE:
             playReaction(SPEECH_Insane);
             break;
 
-        case Condition_Poison_Weak:
-        case Condition_Poison_Medium:
-        case Condition_Poison_Severe:
+        case CONDITION_POISON_WEAK:
+        case CONDITION_POISON_MEDIUM:
+        case CONDITION_POISON_SEVERE:
             playReaction(SPEECH_Poisoned);
             break;
 
-        case Condition_Disease_Weak:
-        case Condition_Disease_Medium:
-        case Condition_Disease_Severe:
+        case CONDITION_DISEASE_WEAK:
+        case CONDITION_DISEASE_MEDIUM:
+        case CONDITION_DISEASE_SEVERE:
             playReaction(SPEECH_Diseased);
             break;
 
-        case Condition_Paralyzed:
+        case CONDITION_PARALYZED:
             break;  // nosound
 
-        case Condition_Unconscious:
+        case CONDITION_UNCONSCIOUS:
             playReaction(SPEECH_Unconscious);
             if (health > 0) {
                 health = 0;
             }
             break;
 
-        case Condition_Dead:
+        case CONDITION_DEAD:
             playReaction(SPEECH_Dead);
             if (health > 0) {
                 health = 0;
@@ -488,11 +488,11 @@ void Player::SetCondition(Condition uConditionIdx, int blockable) {
             }
             break;
 
-        case Condition_Petrified:
+        case CONDITION_PETRIFIED:
             playReaction(SPEECH_Petrified);
             break;
 
-        case Condition_Eradicated:
+        case CONDITION_ERADICATED:
             playReaction(SPEECH_Eradicated);
             if (health > 0) {
                 health = 0;
@@ -502,7 +502,7 @@ void Player::SetCondition(Condition uConditionIdx, int blockable) {
             }
             break;
 
-        case Condition_Zombie:
+        case CONDITION_ZOMBIE:
             if (classType == PLAYER_CLASS_LICH || IsEradicated() || IsZombie() || !IsDead()) { // cant zombified
                 return;
             }
@@ -1772,112 +1772,112 @@ int Player::ReceiveSpecialAttackEffect(
 
         switch (attTypeCast) {
             case SPECIAL_ATTACK_CURSE:
-                SetCondition(Condition_Cursed, 1);
+                SetCondition(CONDITION_CURSED, 1);
                 pAudioPlayer->playUISound(SOUND_star1);
                 spell_fx_renderer->SetPlayerBuffAnim(SPELL_DISEASE, whichplayer);
                 return 1;
                 break;
 
             case SPECIAL_ATTACK_WEAK:
-                SetCondition(Condition_Weak, 1);
+                SetCondition(CONDITION_WEAK, 1);
                 pAudioPlayer->playUISound(SOUND_star1);
                 spell_fx_renderer->SetPlayerBuffAnim(SPELL_DISEASE, whichplayer);
                 return 1;
                 break;
 
             case SPECIAL_ATTACK_SLEEP:
-                SetCondition(Condition_Sleep, 1);
+                SetCondition(CONDITION_SLEEP, 1);
                 pAudioPlayer->playUISound(SOUND_star1);
                 spell_fx_renderer->SetPlayerBuffAnim(SPELL_DISEASE, whichplayer);
                 return 1;
                 break;
 
             case SPECIAL_ATTACK_DRUNK:
-                SetCondition(Condition_Drunk, 1);
+                SetCondition(CONDITION_DRUNK, 1);
                 pAudioPlayer->playUISound(SOUND_star1);
                 spell_fx_renderer->SetPlayerBuffAnim(SPELL_DISEASE, whichplayer);
                 return 1;
                 break;
 
             case SPECIAL_ATTACK_INSANE:
-                SetCondition(Condition_Insane, 1);
+                SetCondition(CONDITION_INSANE, 1);
                 pAudioPlayer->playUISound(SOUND_star4);
                 spell_fx_renderer->SetPlayerBuffAnim(SPELL_DISEASE, whichplayer);
                 return 1;
                 break;
 
             case SPECIAL_ATTACK_POISON_WEAK:
-                SetCondition(Condition_Poison_Weak, 1);
+                SetCondition(CONDITION_POISON_WEAK, 1);
                 pAudioPlayer->playUISound(SOUND_star2);
                 spell_fx_renderer->SetPlayerBuffAnim(SPELL_DISEASE, whichplayer);
                 return 1;
                 break;
 
             case SPECIAL_ATTACK_POISON_MEDIUM:
-                SetCondition(Condition_Poison_Medium, 1);
+                SetCondition(CONDITION_POISON_MEDIUM, 1);
                 pAudioPlayer->playUISound(SOUND_star2);
                 spell_fx_renderer->SetPlayerBuffAnim(SPELL_DISEASE, whichplayer);
                 return 1;
                 break;
 
             case SPECIAL_ATTACK_POISON_SEVERE:
-                SetCondition(Condition_Poison_Severe, 1);
+                SetCondition(CONDITION_POISON_SEVERE, 1);
                 pAudioPlayer->playUISound(SOUND_star2);
                 spell_fx_renderer->SetPlayerBuffAnim(SPELL_DISEASE, whichplayer);
                 return 1;
                 break;
 
             case SPECIAL_ATTACK_DISEASE_WEAK:
-                SetCondition(Condition_Disease_Weak, 1);
+                SetCondition(CONDITION_DISEASE_WEAK, 1);
                 pAudioPlayer->playUISound(SOUND_star2);
                 spell_fx_renderer->SetPlayerBuffAnim(SPELL_DISEASE, whichplayer);
                 return 1;
                 break;
 
             case SPECIAL_ATTACK_DISEASE_MEDIUM:
-                SetCondition(Condition_Disease_Medium, 1);
+                SetCondition(CONDITION_DISEASE_MEDIUM, 1);
                 pAudioPlayer->playUISound(SOUND_star2);
                 spell_fx_renderer->SetPlayerBuffAnim(SPELL_DISEASE, whichplayer);
                 return 1;
                 break;
 
             case SPECIAL_ATTACK_DISEASE_SEVERE:
-                SetCondition(Condition_Disease_Severe, 1);
+                SetCondition(CONDITION_DISEASE_SEVERE, 1);
                 pAudioPlayer->playUISound(SOUND_star2);
                 spell_fx_renderer->SetPlayerBuffAnim(SPELL_DISEASE, whichplayer);
                 return 1;
                 break;
 
             case SPECIAL_ATTACK_PARALYZED:
-                SetCondition(Condition_Paralyzed, 1);
+                SetCondition(CONDITION_PARALYZED, 1);
                 pAudioPlayer->playUISound(SOUND_star4);
                 spell_fx_renderer->SetPlayerBuffAnim(SPELL_DISEASE, whichplayer);
                 return 1;
                 break;
 
             case SPECIAL_ATTACK_UNCONSCIOUS:
-                SetCondition(Condition_Unconscious, 1);
+                SetCondition(CONDITION_UNCONSCIOUS, 1);
                 pAudioPlayer->playUISound(SOUND_star4);
                 spell_fx_renderer->SetPlayerBuffAnim(SPELL_DISEASE, whichplayer);
                 return 1;
                 break;
 
             case SPECIAL_ATTACK_DEAD:
-                SetCondition(Condition_Dead, 1);
+                SetCondition(CONDITION_DEAD, 1);
                 pAudioPlayer->playUISound(SOUND_eradicate);
                 spell_fx_renderer->SetPlayerBuffAnim(SPELL_DISEASE, whichplayer);
                 return 1;
                 break;
 
             case SPECIAL_ATTACK_PETRIFIED:
-                SetCondition(Condition_Petrified, 1);
+                SetCondition(CONDITION_PETRIFIED, 1);
                 pAudioPlayer->playUISound(SOUND_eradicate);
                 spell_fx_renderer->SetPlayerBuffAnim(SPELL_DISEASE, whichplayer);
                 return 1;
                 break;
 
             case SPECIAL_ATTACK_ERADICATED:
-                SetCondition(Condition_Eradicated, 1);
+                SetCondition(CONDITION_ERADICATED, 1);
                 pAudioPlayer->playUISound(SOUND_eradicate);
                 spell_fx_renderer->SetPlayerBuffAnim(SPELL_DISEASE, whichplayer);
                 return 1;
@@ -1933,7 +1933,7 @@ int Player::ReceiveSpecialAttackEffect(
                 break;
 
             case SPECIAL_ATTACK_FEAR:
-                SetCondition(Condition_Fear, 1);
+                SetCondition(CONDITION_FEAR, 1);
                 pAudioPlayer->playUISound(SOUND_star1);
                 spell_fx_renderer->SetPlayerBuffAnim(SPELL_DISEASE, whichplayer);
                 return 1;
@@ -2354,7 +2354,7 @@ Condition Player::GetMajorConditionIdx() const {
         if (conditions.Has(condition))
             return condition;  // return worst condition
     }
-    return Condition_Good;  // condition good
+    return CONDITION_GOOD;  // condition good
 }
 
 //----- (0048EA1B) --------------------------------------------------------
@@ -3538,7 +3538,7 @@ void Player::useItem(int targetCharacter, bool isPortraitClick) {
         // TODO(Nik-RE-dev): this looks like some artifact from MM6 (where you can eat reagents)
         // In MM7 these item IDs are invalid (plus index 161 used twice which is wrong)
         if (pParty->pPickedItem.uItemID == ITEM_161) {
-            playerAffected->SetCondition(Condition_Poison_Weak, 1);
+            playerAffected->SetCondition(CONDITION_POISON_WEAK, 1);
         } else if (pParty->pPickedItem.uItemID == ITEM_161) {
             playerAffected->mana += 2;
             if (playerAffected->mana > playerAffected->GetMaxMana()) {
@@ -3578,7 +3578,7 @@ void Player::useItem(int targetCharacter, bool isPortraitClick) {
         GameTime buffDuration = GameTime::FromMinutes(30 * potionStrength); // all buffs have same duration based on potion strength
         switch (pParty->pPickedItem.uItemID) {
             case ITEM_POTION_CATALYST:
-                playerAffected->SetCondition(Condition_Poison_Weak, 1);
+                playerAffected->SetCondition(CONDITION_POISON_WEAK, 1);
                 break;
 
             case ITEM_POTION_CURE_WOUNDS:
@@ -3593,27 +3593,27 @@ void Player::useItem(int targetCharacter, bool isPortraitClick) {
                 break;
 
             case ITEM_POTION_CURE_WEAKNESS:
-                playerAffected->conditions.Reset(Condition_Weak);
+                playerAffected->conditions.Reset(CONDITION_WEAK);
                 break;
 
             case ITEM_POTION_CURE_DISEASE:
-                playerAffected->conditions.Reset(Condition_Disease_Severe);
-                playerAffected->conditions.Reset(Condition_Disease_Medium);
-                playerAffected->conditions.Reset(Condition_Disease_Weak);
+                playerAffected->conditions.Reset(CONDITION_DISEASE_SEVERE);
+                playerAffected->conditions.Reset(CONDITION_DISEASE_MEDIUM);
+                playerAffected->conditions.Reset(CONDITION_DISEASE_WEAK);
                 break;
 
             case ITEM_POTION_CURE_POISON:
-                playerAffected->conditions.Reset(Condition_Poison_Severe);
-                playerAffected->conditions.Reset(Condition_Poison_Medium);
-                playerAffected->conditions.Reset(Condition_Poison_Weak);
+                playerAffected->conditions.Reset(CONDITION_POISON_SEVERE);
+                playerAffected->conditions.Reset(CONDITION_POISON_MEDIUM);
+                playerAffected->conditions.Reset(CONDITION_POISON_WEAK);
                 break;
 
             case ITEM_POTION_AWAKEN:
-                playerAffected->conditions.Reset(Condition_Sleep);
+                playerAffected->conditions.Reset(CONDITION_SLEEP);
                 break;
 
             case ITEM_POTION_HASTE:
-                if (!playerAffected->conditions.Has(Condition_Weak)) {
+                if (!playerAffected->conditions.Has(CONDITION_WEAK)) {
                     playerAffected->pPlayerBuffs[PLAYER_BUFF_HASTE].Apply(pParty->GetPlayingTime() + buffDuration, PLAYER_SKILL_MASTERY_MASTER, 5, 0, 0);
                 }
                 break;
@@ -3648,15 +3648,15 @@ void Player::useItem(int targetCharacter, bool isPortraitClick) {
                 break;
 
             case ITEM_POTION_REMOVE_FEAR:
-                playerAffected->conditions.Reset(Condition_Fear);
+                playerAffected->conditions.Reset(CONDITION_FEAR);
                 break;
 
             case ITEM_POTION_REMOVE_CURSE:
-                playerAffected->conditions.Reset(Condition_Cursed);
+                playerAffected->conditions.Reset(CONDITION_CURSED);
                 break;
 
             case ITEM_POTION_CURE_INSANITY:
-                playerAffected->conditions.Reset(Condition_Insane);
+                playerAffected->conditions.Reset(CONDITION_INSANE);
                 break;
 
             case ITEM_POTION_MIGHT_BOOST:
@@ -3696,19 +3696,19 @@ void Player::useItem(int targetCharacter, bool isPortraitClick) {
                 break;
 
             case ITEM_POTION_CURE_PARALYSIS:
-                playerAffected->conditions.Reset(Condition_Paralyzed);
+                playerAffected->conditions.Reset(CONDITION_PARALYZED);
                 break;
 
             case ITEM_POTION_DIVINE_RESTORATION:
             {
-                GameTime deadTime = playerAffected->conditions.Get(Condition_Dead);
-                GameTime petrifedTime = playerAffected->conditions.Get(Condition_Petrified);
-                GameTime eradicatedTime = playerAffected->conditions.Get(Condition_Eradicated);
+                GameTime deadTime = playerAffected->conditions.Get(CONDITION_DEAD);
+                GameTime petrifedTime = playerAffected->conditions.Get(CONDITION_PETRIFIED);
+                GameTime eradicatedTime = playerAffected->conditions.Get(CONDITION_ERADICATED);
                 // TODO(Nik-RE-dev): why not playerAffected?
                 conditions.ResetAll();
-                playerAffected->conditions.Set(Condition_Dead, deadTime);
-                playerAffected->conditions.Set(Condition_Petrified, petrifedTime);
-                playerAffected->conditions.Set(Condition_Eradicated, eradicatedTime);
+                playerAffected->conditions.Set(CONDITION_DEAD, deadTime);
+                playerAffected->conditions.Set(CONDITION_PETRIFIED, petrifedTime);
+                playerAffected->conditions.Set(CONDITION_ERADICATED, eradicatedTime);
                 break;
             }
 
@@ -3765,7 +3765,7 @@ void Player::useItem(int targetCharacter, bool isPortraitClick) {
                 break;
 
             case ITEM_POTION_STONE_TO_FLESH:
-                playerAffected->conditions.Reset(Condition_Petrified);
+                playerAffected->conditions.Reset(CONDITION_PETRIFIED);
                 break;
 
             case ITEM_POTION_PURE_LUCK:
@@ -4030,13 +4030,13 @@ void Player::useItem(int targetCharacter, bool isPortraitClick) {
             playerAffected->playReaction(SPEECH_QuestGot);
             pAudioPlayer->playUISound(SOUND_chimes);
             if (pParty->uCurrentDayOfMonth == 6 || pParty->uCurrentDayOfMonth == 20) {
-                playerAffected->SetCondition(Condition_Eradicated, 0);
+                playerAffected->SetCondition(CONDITION_ERADICATED, 0);
                 pAudioPlayer->playUISound(SOUND_gong);
             } else if (pParty->uCurrentDayOfMonth == 12 || pParty->uCurrentDayOfMonth == 26) {
-                playerAffected->SetCondition(Condition_Dead, 0);
+                playerAffected->SetCondition(CONDITION_DEAD, 0);
                 pAudioPlayer->playUISound(SOUND_gong);
             } else if (pParty->uCurrentDayOfMonth == 4 || pParty->uCurrentDayOfMonth == 25) {
-                playerAffected->SetCondition(Condition_Petrified, 0);
+                playerAffected->SetCondition(CONDITION_PETRIFIED, 0);
                 pAudioPlayer->playUISound(SOUND_gong);
             }
         } else if (pParty->pPickedItem.uItemID == ITEM_RED_APPLE) {
@@ -4317,42 +4317,42 @@ bool Player::CompareVariable(VariableType VarNum, int pValue) {
         case VAR_LearningSkill:
             return CmpSkillValue(pValue, this->pActiveSkills[PLAYER_SKILL_LEARNING]);
         case VAR_Cursed:
-            return conditions.Has(Condition_Cursed);
+            return conditions.Has(CONDITION_CURSED);
         case VAR_Weak:
-            return conditions.Has(Condition_Weak);
+            return conditions.Has(CONDITION_WEAK);
         case VAR_Asleep:
-            return conditions.Has(Condition_Sleep);
+            return conditions.Has(CONDITION_SLEEP);
         case VAR_Afraid:
-            return conditions.Has(Condition_Fear);
+            return conditions.Has(CONDITION_FEAR);
         case VAR_Drunk:
-            return conditions.Has(Condition_Drunk);
+            return conditions.Has(CONDITION_DRUNK);
         case VAR_Insane:
-            return conditions.Has(Condition_Insane);
+            return conditions.Has(CONDITION_INSANE);
         case VAR_PoisonedGreen:
-            return conditions.Has(Condition_Poison_Weak);
+            return conditions.Has(CONDITION_POISON_WEAK);
         case VAR_DiseasedGreen:
-            return conditions.Has(Condition_Disease_Weak);
+            return conditions.Has(CONDITION_DISEASE_WEAK);
         case VAR_PoisonedYellow:
-            return conditions.Has(Condition_Poison_Medium);
+            return conditions.Has(CONDITION_POISON_MEDIUM);
         case VAR_DiseasedYellow:
-            return conditions.Has(Condition_Disease_Medium);
+            return conditions.Has(CONDITION_DISEASE_MEDIUM);
         case VAR_PoisonedRed:
-            return conditions.Has(Condition_Poison_Severe);
+            return conditions.Has(CONDITION_POISON_SEVERE);
         case VAR_DiseasedRed:
-            return conditions.Has(Condition_Disease_Severe);
+            return conditions.Has(CONDITION_DISEASE_SEVERE);
         case VAR_Paralyzed:
-            return conditions.Has(Condition_Paralyzed);
+            return conditions.Has(CONDITION_PARALYZED);
         case VAR_Unconsious:
-            return conditions.Has(Condition_Unconscious);
+            return conditions.Has(CONDITION_UNCONSCIOUS);
         case VAR_Dead:
-            return conditions.Has(Condition_Dead);
+            return conditions.Has(CONDITION_DEAD);
         case VAR_Stoned:
-            return conditions.Has(Condition_Petrified);
+            return conditions.Has(CONDITION_PETRIFIED);
         case VAR_Eradicated:
-            return conditions.Has(Condition_Eradicated);
+            return conditions.Has(CONDITION_ERADICATED);
         case VAR_MajorCondition: {
             Condition condition = GetMajorConditionIdx();
-            if (condition != Condition_Good) {
+            if (condition != CONDITION_GOOD) {
                 return std::to_underlying(condition) >= pValue;
             }
             return true;
@@ -4782,71 +4782,71 @@ void Player::SetVariable(VariableType var_type, signed int var_value) {
             PlayAwardSound_Anim_Face(SPEECH_StatBonusInc);
             return;
         case VAR_Cursed:
-            this->SetCondition(Condition_Cursed, 1);
+            this->SetCondition(CONDITION_CURSED, 1);
             PlayAwardSound_Anim();
             return;
         case VAR_Weak:
-            this->SetCondition(Condition_Weak, 1);
+            this->SetCondition(CONDITION_WEAK, 1);
             PlayAwardSound_Anim();
             return;
         case VAR_Asleep:
-            this->SetCondition(Condition_Sleep, 1);
+            this->SetCondition(CONDITION_SLEEP, 1);
             PlayAwardSound_Anim();
             return;
         case VAR_Afraid:
-            this->SetCondition(Condition_Fear, 1);
+            this->SetCondition(CONDITION_FEAR, 1);
             PlayAwardSound_Anim();
             return;
         case VAR_Drunk:
-            this->SetCondition(Condition_Drunk, 1);
+            this->SetCondition(CONDITION_DRUNK, 1);
             PlayAwardSound_Anim();
             return;
         case VAR_Insane:
-            this->SetCondition(Condition_Insane, 1);
+            this->SetCondition(CONDITION_INSANE, 1);
             PlayAwardSound_Anim();
             return;
         case VAR_PoisonedGreen:
-            this->SetCondition(Condition_Poison_Weak, 1);
+            this->SetCondition(CONDITION_POISON_WEAK, 1);
             PlayAwardSound_Anim();
             return;
         case VAR_DiseasedGreen:
-            this->SetCondition(Condition_Disease_Weak, 1);
+            this->SetCondition(CONDITION_DISEASE_WEAK, 1);
             PlayAwardSound_Anim();
             return;
         case VAR_PoisonedYellow:
-            this->SetCondition(Condition_Poison_Medium, 1);
+            this->SetCondition(CONDITION_POISON_MEDIUM, 1);
             PlayAwardSound_Anim();
             return;
         case VAR_DiseasedYellow:
-            this->SetCondition(Condition_Disease_Medium, 1);
+            this->SetCondition(CONDITION_DISEASE_MEDIUM, 1);
             PlayAwardSound_Anim();
             return;
         case VAR_PoisonedRed:
-            this->SetCondition(Condition_Poison_Severe, 1);
+            this->SetCondition(CONDITION_POISON_SEVERE, 1);
             PlayAwardSound_Anim();
             return;
         case VAR_DiseasedRed:
-            this->SetCondition(Condition_Disease_Severe, 1);
+            this->SetCondition(CONDITION_DISEASE_SEVERE, 1);
             PlayAwardSound_Anim();
             return;
         case VAR_Paralyzed:
-            this->SetCondition(Condition_Paralyzed, 1);
+            this->SetCondition(CONDITION_PARALYZED, 1);
             PlayAwardSound_Anim();
             return;
         case VAR_Unconsious:
-            this->SetCondition(Condition_Unconscious, 1);
+            this->SetCondition(CONDITION_UNCONSCIOUS, 1);
             PlayAwardSound_Anim();
             return;
         case VAR_Dead:
-            this->SetCondition(Condition_Dead, 1);
+            this->SetCondition(CONDITION_DEAD, 1);
             PlayAwardSound_Anim();
             return;
         case VAR_Stoned:
-            this->SetCondition(Condition_Petrified, 1);
+            this->SetCondition(CONDITION_PETRIFIED, 1);
             PlayAwardSound_Anim();
             return;
         case VAR_Eradicated:
-            this->SetCondition(Condition_Eradicated, 1);
+            this->SetCondition(CONDITION_ERADICATED, 1);
             PlayAwardSound_Anim();
             return;
         case VAR_MajorCondition:
@@ -5351,71 +5351,71 @@ void Player::AddVariable(VariableType var_type, signed int val) {
             PlayAwardSound_Anim97_Face(SPEECH_StatBonusInc);
             return;
         case VAR_Cursed:
-            this->SetCondition(Condition_Cursed, 1);
+            this->SetCondition(CONDITION_CURSED, 1);
             PlayAwardSound_Anim97();
             return;
         case VAR_Weak:
-            this->SetCondition(Condition_Weak, 1);
+            this->SetCondition(CONDITION_WEAK, 1);
             PlayAwardSound_Anim97();
             return;
         case VAR_Asleep:
-            this->SetCondition(Condition_Sleep, 1);
+            this->SetCondition(CONDITION_SLEEP, 1);
             PlayAwardSound_Anim97();
             return;
         case VAR_Afraid:
-            this->SetCondition(Condition_Fear, 1);
+            this->SetCondition(CONDITION_FEAR, 1);
             PlayAwardSound_Anim97();
             return;
         case VAR_Drunk:
-            this->SetCondition(Condition_Drunk, 1);
+            this->SetCondition(CONDITION_DRUNK, 1);
             PlayAwardSound_Anim97();
             return;
         case VAR_Insane:
-            this->SetCondition(Condition_Insane, 1);
+            this->SetCondition(CONDITION_INSANE, 1);
             PlayAwardSound_Anim97();
             return;
         case VAR_PoisonedGreen:
-            this->SetCondition(Condition_Poison_Weak, 1);
+            this->SetCondition(CONDITION_POISON_WEAK, 1);
             PlayAwardSound_Anim97();
             return;
         case VAR_DiseasedGreen:
-            this->SetCondition(Condition_Disease_Weak, 1);
+            this->SetCondition(CONDITION_DISEASE_WEAK, 1);
             PlayAwardSound_Anim97();
             return;
         case VAR_PoisonedYellow:
-            this->SetCondition(Condition_Poison_Medium, 1);
+            this->SetCondition(CONDITION_POISON_MEDIUM, 1);
             PlayAwardSound_Anim97();
             return;
         case VAR_DiseasedYellow:
-            this->SetCondition(Condition_Disease_Medium, 1);
+            this->SetCondition(CONDITION_DISEASE_MEDIUM, 1);
             PlayAwardSound_Anim97();
             return;
         case VAR_PoisonedRed:
-            this->SetCondition(Condition_Poison_Severe, 1);
+            this->SetCondition(CONDITION_POISON_SEVERE, 1);
             PlayAwardSound_Anim97();
             return;
         case VAR_DiseasedRed:
-            this->SetCondition(Condition_Disease_Severe, 1);
+            this->SetCondition(CONDITION_DISEASE_SEVERE, 1);
             PlayAwardSound_Anim97();
             return;
         case VAR_Paralyzed:
-            this->SetCondition(Condition_Paralyzed, 1);
+            this->SetCondition(CONDITION_PARALYZED, 1);
             PlayAwardSound_Anim97();
             return;
         case VAR_Unconsious:
-            this->SetCondition(Condition_Unconscious, 1);
+            this->SetCondition(CONDITION_UNCONSCIOUS, 1);
             PlayAwardSound_Anim97();
             return;
         case VAR_Dead:
-            this->SetCondition(Condition_Dead, 1);
+            this->SetCondition(CONDITION_DEAD, 1);
             PlayAwardSound_Anim97();
             return;
         case VAR_Stoned:
-            this->SetCondition(Condition_Petrified, 1);
+            this->SetCondition(CONDITION_PETRIFIED, 1);
             PlayAwardSound_Anim97();
             return;
         case VAR_Eradicated:
-            this->SetCondition(Condition_Eradicated, 1);
+            this->SetCondition(CONDITION_ERADICATED, 1);
             PlayAwardSound_Anim97();
             return;
         case VAR_MajorCondition:
@@ -6012,71 +6012,71 @@ void Player::SubtractVariable(VariableType VarNum, signed int pValue) {
             PlayAwardSound_Anim98();
             return;
         case VAR_Cursed:
-            this->conditions.Reset(Condition_Cursed);
+            this->conditions.Reset(CONDITION_CURSED);
             PlayAwardSound_Anim98();
             return;
         case VAR_Weak:
-            this->conditions.Reset(Condition_Weak);
+            this->conditions.Reset(CONDITION_WEAK);
             PlayAwardSound_Anim98();
             return;
         case VAR_Asleep:
-            this->conditions.Reset(Condition_Sleep);
+            this->conditions.Reset(CONDITION_SLEEP);
             PlayAwardSound_Anim98();
             return;
         case VAR_Afraid:
-            this->conditions.Reset(Condition_Fear);
+            this->conditions.Reset(CONDITION_FEAR);
             PlayAwardSound_Anim98();
             return;
         case VAR_Drunk:
-            this->conditions.Reset(Condition_Drunk);
+            this->conditions.Reset(CONDITION_DRUNK);
             PlayAwardSound_Anim98();
             return;
         case VAR_Insane:
-            this->conditions.Reset(Condition_Insane);
+            this->conditions.Reset(CONDITION_INSANE);
             PlayAwardSound_Anim98();
             return;
         case VAR_PoisonedGreen:
-            this->conditions.Reset(Condition_Poison_Weak);
+            this->conditions.Reset(CONDITION_POISON_WEAK);
             PlayAwardSound_Anim98();
             return;
         case VAR_DiseasedGreen:
-            this->conditions.Reset(Condition_Disease_Weak);
+            this->conditions.Reset(CONDITION_DISEASE_WEAK);
             PlayAwardSound_Anim98();
             return;
         case VAR_PoisonedYellow:
-            this->conditions.Reset(Condition_Poison_Medium);
+            this->conditions.Reset(CONDITION_POISON_MEDIUM);
             PlayAwardSound_Anim98();
             return;
         case VAR_DiseasedYellow:
-            this->conditions.Reset(Condition_Disease_Medium);
+            this->conditions.Reset(CONDITION_DISEASE_MEDIUM);
             PlayAwardSound_Anim98();
             return;
         case VAR_PoisonedRed:
-            this->conditions.Reset(Condition_Poison_Severe);
+            this->conditions.Reset(CONDITION_POISON_SEVERE);
             PlayAwardSound_Anim98();
             return;
         case VAR_DiseasedRed:
-            this->conditions.Reset(Condition_Disease_Severe);
+            this->conditions.Reset(CONDITION_DISEASE_SEVERE);
             PlayAwardSound_Anim98();
             return;
         case VAR_Paralyzed:
-            this->conditions.Reset(Condition_Paralyzed);
+            this->conditions.Reset(CONDITION_PARALYZED);
             PlayAwardSound_Anim98();
             return;
         case VAR_Unconsious:
-            this->conditions.Reset(Condition_Unconscious);
+            this->conditions.Reset(CONDITION_UNCONSCIOUS);
             PlayAwardSound_Anim98();
             return;
         case VAR_Dead:
-            this->conditions.Reset(Condition_Dead);
+            this->conditions.Reset(CONDITION_DEAD);
             PlayAwardSound_Anim98();
             return;
         case VAR_Stoned:
-            this->conditions.Reset(Condition_Petrified);
+            this->conditions.Reset(CONDITION_PETRIFIED);
             PlayAwardSound_Anim98();
             return;
         case VAR_Eradicated:
-            this->conditions.Reset(Condition_Eradicated);
+            this->conditions.Reset(CONDITION_ERADICATED);
             PlayAwardSound_Anim98();
             return;
         case VAR_AutoNotes:
@@ -6780,131 +6780,131 @@ void Player::OnInventoryLeftClick() {
 }  // func
 
 bool Player::IsWeak() const {
-    return this->conditions.Has(Condition_Weak);
+    return this->conditions.Has(CONDITION_WEAK);
 }
 
 bool Player::IsDead() const {
-    return this->conditions.Has(Condition_Dead);
+    return this->conditions.Has(CONDITION_DEAD);
 }
 
 bool Player::IsEradicated() const {
-    return this->conditions.Has(Condition_Eradicated);
+    return this->conditions.Has(CONDITION_ERADICATED);
 }
 
 bool Player::IsZombie() const {
-    return this->conditions.Has(Condition_Zombie);
+    return this->conditions.Has(CONDITION_ZOMBIE);
 }
 
 bool Player::IsCursed() const {
-    return this->conditions.Has(Condition_Cursed);
+    return this->conditions.Has(CONDITION_CURSED);
 }
 
 bool Player::IsPertified() const {
-    return this->conditions.Has(Condition_Petrified);
+    return this->conditions.Has(CONDITION_PETRIFIED);
 }
 
 bool Player::IsUnconcious() const {
-    return this->conditions.Has(Condition_Unconscious);
+    return this->conditions.Has(CONDITION_UNCONSCIOUS);
 }
 
 bool Player::IsAsleep() const {
-    return this->conditions.Has(Condition_Sleep);
+    return this->conditions.Has(CONDITION_SLEEP);
 }
 
 bool Player::IsParalyzed() const {
-    return this->conditions.Has(Condition_Paralyzed);
+    return this->conditions.Has(CONDITION_PARALYZED);
 }
 
 bool Player::IsDrunk() const {
-    return this->conditions.Has(Condition_Drunk);
+    return this->conditions.Has(CONDITION_DRUNK);
 }
 
 void Player::SetCursed(GameTime time) {
-    this->conditions.Set(Condition_Cursed, time);
+    this->conditions.Set(CONDITION_CURSED, time);
 }
 
 void Player::SetWeak(GameTime time) {
-    this->conditions.Set(Condition_Weak, time);
+    this->conditions.Set(CONDITION_WEAK, time);
 }
 
 void Player::SetAsleep(GameTime time) {
-    this->conditions.Set(Condition_Sleep, time);
+    this->conditions.Set(CONDITION_SLEEP, time);
 }
 
 void Player::SetAfraid(GameTime time) {
-    this->conditions.Set(Condition_Fear, time);
+    this->conditions.Set(CONDITION_FEAR, time);
 }
 
 void Player::SetDrunk(GameTime time) {
-    this->conditions.Set(Condition_Drunk, time);
+    this->conditions.Set(CONDITION_DRUNK, time);
 }
 
 void Player::SetInsane(GameTime time) {
-    this->conditions.Set(Condition_Insane, time);
+    this->conditions.Set(CONDITION_INSANE, time);
 }
 
 void Player::SetPoisonWeak(GameTime time) {
-    this->conditions.Set(Condition_Poison_Weak, time);
+    this->conditions.Set(CONDITION_POISON_WEAK, time);
 }
 
 void Player::SetDiseaseWeak(GameTime time) {
-    this->conditions.Set(Condition_Disease_Weak, time);
+    this->conditions.Set(CONDITION_DISEASE_WEAK, time);
 }
 
 void Player::SetPoisonMedium(GameTime time) {
-    this->conditions.Set(Condition_Poison_Medium, time);
+    this->conditions.Set(CONDITION_POISON_MEDIUM, time);
 }
 
 void Player::SetDiseaseMedium(GameTime time) {
-    this->conditions.Set(Condition_Disease_Medium, time);
+    this->conditions.Set(CONDITION_DISEASE_MEDIUM, time);
 }
 
 void Player::SetPoisonSevere(GameTime time) {
-    this->conditions.Set(Condition_Poison_Severe, time);
+    this->conditions.Set(CONDITION_POISON_SEVERE, time);
 }
 
 void Player::SetDiseaseSevere(GameTime time) {
-    this->conditions.Set(Condition_Disease_Severe, time);
+    this->conditions.Set(CONDITION_DISEASE_SEVERE, time);
 }
 
 void Player::SetParalyzed(GameTime time) {
-    this->conditions.Set(Condition_Paralyzed, time);
+    this->conditions.Set(CONDITION_PARALYZED, time);
 }
 
 void Player::SetUnconcious(GameTime time) {
-    this->conditions.Set(Condition_Unconscious, time);
+    this->conditions.Set(CONDITION_UNCONSCIOUS, time);
 }
 
 void Player::SetDead(GameTime time) {
-    this->conditions.Set(Condition_Dead, time);
+    this->conditions.Set(CONDITION_DEAD, time);
 }
 
 void Player::SetPertified(GameTime time) {
-    this->conditions.Set(Condition_Petrified, time);
+    this->conditions.Set(CONDITION_PETRIFIED, time);
 }
 
 void Player::SetEradicated(GameTime time) {
-    this->conditions.Set(Condition_Eradicated, time);
+    this->conditions.Set(CONDITION_ERADICATED, time);
 }
 
 void Player::SetZombie(GameTime time) {
-    this->conditions.Set(Condition_Zombie, time);
+    this->conditions.Set(CONDITION_ZOMBIE, time);
 }
 
 void Player::SetCondWeakWithBlockCheck(int blockable) {
-    SetCondition(Condition_Weak, blockable);
+    SetCondition(CONDITION_WEAK, blockable);
 }
 
 void Player::SetCondInsaneWithBlockCheck(int blockable) {
-    SetCondition(Condition_Insane, blockable);
+    SetCondition(CONDITION_INSANE, blockable);
 }
 
 void Player::SetCondDeadWithBlockCheck(int blockable) {
-    SetCondition(Condition_Dead, blockable);
+    SetCondition(CONDITION_DEAD, blockable);
 }
 
 void Player::SetCondUnconsciousWithBlockCheck(int blockable) {
-    SetCondition(Condition_Unconscious, blockable);
+    SetCondition(CONDITION_UNCONSCIOUS, blockable);
 }
 
 ItemGen *Player::GetOffHandItem() { return GetItem(&PlayerEquipment::uOffHand); }

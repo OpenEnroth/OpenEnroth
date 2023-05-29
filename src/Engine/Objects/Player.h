@@ -615,35 +615,35 @@ struct Player {
 
 inline CHARACTER_EXPRESSION_ID expressionForCondition(Condition condition) {
     switch (condition) {
-      case Condition_Dead:
+      case CONDITION_DEAD:
         return CHARACTER_EXPRESSION_DEAD;
-      case Condition_Petrified:
+      case CONDITION_PETRIFIED:
         return CHARACTER_EXPRESSION_PERTIFIED;
-      case Condition_Eradicated:
+      case CONDITION_ERADICATED:
         return CHARACTER_EXPRESSION_ERADICATED;
-      case Condition_Cursed:
+      case CONDITION_CURSED:
         return CHARACTER_EXPRESSION_CURSED;
-      case Condition_Weak:
+      case CONDITION_WEAK:
         return CHARACTER_EXPRESSION_WEAK;
-      case Condition_Sleep:
+      case CONDITION_SLEEP:
         return CHARACTER_EXPRESSION_SLEEP;
-      case Condition_Fear:
+      case CONDITION_FEAR:
         return CHARACTER_EXPRESSION_FEAR;
-      case Condition_Drunk:
+      case CONDITION_DRUNK:
         return CHARACTER_EXPRESSION_DRUNK;
-      case Condition_Insane:
+      case CONDITION_INSANE:
         return CHARACTER_EXPRESSION_INSANE;
-      case Condition_Poison_Weak:
-      case Condition_Poison_Medium:
-      case Condition_Poison_Severe:
+      case CONDITION_POISON_WEAK:
+      case CONDITION_POISON_MEDIUM:
+      case CONDITION_POISON_SEVERE:
         return CHARACTER_EXPRESSION_POISONED;
-      case Condition_Disease_Weak:
-      case Condition_Disease_Medium:
-      case Condition_Disease_Severe:
+      case CONDITION_DISEASE_WEAK:
+      case CONDITION_DISEASE_MEDIUM:
+      case CONDITION_DISEASE_SEVERE:
         return CHARACTER_EXPRESSION_DISEASED;
-      case Condition_Paralyzed:
+      case CONDITION_PARALYZED:
         return CHARACTER_EXPRESSION_PARALYZED;
-      case Condition_Unconscious:
+      case CONDITION_UNCONSCIOUS:
         return CHARACTER_EXPRESSION_UNCONCIOUS;
       default:
         Error("Invalid condition: %u", condition);

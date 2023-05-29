@@ -813,7 +813,7 @@ void CastSpellInfoHelpers::castSpell() {
 
                     bool has_weak = false;
                     for (const Player &player : pParty->pPlayers) {
-                        if (player.conditions.Has(Condition_Weak)) {
+                        if (player.conditions.Has(CONDITION_WEAK)) {
                             has_weak = true;
                         }
                     }
@@ -1234,12 +1234,12 @@ void CastSpellInfoHelpers::castSpell() {
 
                     for (Player &player : pParty->pPlayers) {
                         if (spell_mastery == PLAYER_SKILL_MASTERY_GRANDMASTER) {
-                            if (player.conditions.Has(Condition_Sleep)) {
-                                player.conditions.Reset(Condition_Sleep);
+                            if (player.conditions.Has(CONDITION_SLEEP)) {
+                                player.conditions.Reset(CONDITION_SLEEP);
                                 player.playReaction(SPEECH_Awaken);
                             }
                         } else {
-                            if (player.DiscardConditionIfLastsLongerThan(Condition_Sleep, pParty->GetPlayingTime() - spell_duration)) {
+                            if (player.DiscardConditionIfLastsLongerThan(CONDITION_SLEEP, pParty->GetPlayingTime() - spell_duration)) {
                                 player.playReaction(SPEECH_Awaken);
                             }
                         }
@@ -1545,12 +1545,12 @@ void CastSpellInfoHelpers::castSpell() {
                             assert(false);
                     }
 
-                    if (pParty->pPlayers[pCastSpell->uPlayerID_2].conditions.Has(Condition_Petrified)) {
+                    if (pParty->pPlayers[pCastSpell->uPlayerID_2].conditions.Has(CONDITION_PETRIFIED)) {
                         if (spell_mastery == PLAYER_SKILL_MASTERY_GRANDMASTER) {
-                            pParty->pPlayers[pCastSpell->uPlayerID_2].conditions.Reset(Condition_Petrified);
+                            pParty->pPlayers[pCastSpell->uPlayerID_2].conditions.Reset(CONDITION_PETRIFIED);
                         } else {
                             pParty->pPlayers[pCastSpell->uPlayerID_2]
-                                .DiscardConditionIfLastsLongerThan(Condition_Petrified, pParty->GetPlayingTime() - spell_duration);
+                                .DiscardConditionIfLastsLongerThan(CONDITION_PETRIFIED, pParty->GetPlayingTime() - spell_duration);
                         }
                     }
                     break;
@@ -1678,14 +1678,14 @@ void CastSpellInfoHelpers::castSpell() {
                             assert(false);
                     }
 
-                    if (pParty->pPlayers[pCastSpell->uPlayerID_2].conditions.Has(Condition_Cursed)) {
+                    if (pParty->pPlayers[pCastSpell->uPlayerID_2].conditions.Has(CONDITION_CURSED)) {
                         if (spell_mastery == PLAYER_SKILL_MASTERY_GRANDMASTER) {
-                            pParty->pPlayers[pCastSpell->uPlayerID_2].conditions.Reset(Condition_Cursed);
+                            pParty->pPlayers[pCastSpell->uPlayerID_2].conditions.Reset(CONDITION_CURSED);
                         } else {
                             pParty->pPlayers[pCastSpell->uPlayerID_2]
-                                .DiscardConditionIfLastsLongerThan(Condition_Cursed, pParty->GetPlayingTime() - spell_duration);
+                                .DiscardConditionIfLastsLongerThan(CONDITION_CURSED, pParty->GetPlayingTime() - spell_duration);
                         }
-                        if (!pParty->pPlayers[pCastSpell->uPlayerID_2].conditions.Has(Condition_Cursed)) {
+                        if (!pParty->pPlayers[pCastSpell->uPlayerID_2].conditions.Has(CONDITION_CURSED)) {
                             spell_fx_renderer->SetPlayerBuffAnim(pCastSpell->uSpellID, pCastSpell->uPlayerID_2);
                         }
                     }
@@ -1779,18 +1779,18 @@ void CastSpellInfoHelpers::castSpell() {
                             assert(false);
                     }
 
-                    if (pParty->pPlayers[pCastSpell->uPlayerID_2].conditions.Has(Condition_Dead)) {
+                    if (pParty->pPlayers[pCastSpell->uPlayerID_2].conditions.Has(CONDITION_DEAD)) {
                         pParty->pPlayers[pCastSpell->uPlayerID_2].health = 1;
                         if (spell_mastery == PLAYER_SKILL_MASTERY_GRANDMASTER) {
-                            pParty->pPlayers[pCastSpell->uPlayerID_2].conditions.Reset(Condition_Dead);
-                            pParty->pPlayers[pCastSpell->uPlayerID_2].conditions.Reset(Condition_Unconscious);
+                            pParty->pPlayers[pCastSpell->uPlayerID_2].conditions.Reset(CONDITION_DEAD);
+                            pParty->pPlayers[pCastSpell->uPlayerID_2].conditions.Reset(CONDITION_UNCONSCIOUS);
                         } else {
                             pParty->pPlayers[pCastSpell->uPlayerID_2]
-                                .DiscardConditionIfLastsLongerThan(Condition_Dead, pParty->GetPlayingTime() - spell_duration);
+                                .DiscardConditionIfLastsLongerThan(CONDITION_DEAD, pParty->GetPlayingTime() - spell_duration);
                             pParty->pPlayers[pCastSpell->uPlayerID_2]
-                                .DiscardConditionIfLastsLongerThan(Condition_Unconscious, pParty->GetPlayingTime() - spell_duration);
+                                .DiscardConditionIfLastsLongerThan(CONDITION_UNCONSCIOUS, pParty->GetPlayingTime() - spell_duration);
                         }
-                        pParty->pPlayers[pCastSpell->uPlayerID_2].SetCondition(Condition_Weak, 0);
+                        pParty->pPlayers[pCastSpell->uPlayerID_2].SetCondition(CONDITION_WEAK, 0);
                     }
                     break;
                 }
@@ -1805,14 +1805,14 @@ void CastSpellInfoHelpers::castSpell() {
                     }
                     int active_pl_num = 0;
                     for (const Player &player : pParty->pPlayers) {
-                        if (player.conditions.HasNone({Condition_Dead, Condition_Petrified, Condition_Eradicated})) {
+                        if (player.conditions.HasNone({CONDITION_DEAD, CONDITION_PETRIFIED, CONDITION_ERADICATED})) {
                             shared_life_count += player.health;
                             active_pl_num++;
                         }
                     }
                     int mean_life = shared_life_count / active_pl_num;
                     for (size_t i = 0; i < pParty->pPlayers.size(); i++) {
-                        if (pParty->pPlayers[i].conditions.HasNone({Condition_Dead, Condition_Petrified, Condition_Eradicated})) {
+                        if (pParty->pPlayers[i].conditions.HasNone({CONDITION_DEAD, CONDITION_PETRIFIED, CONDITION_ERADICATED})) {
                             pParty->pPlayers[i].health = mean_life;
                             if (pParty->pPlayers[i].health > pParty->pPlayers[i].GetMaxHealth()) {
                                 pParty->pPlayers[i].health = pParty->pPlayers[i].GetMaxHealth();
@@ -1849,23 +1849,23 @@ void CastSpellInfoHelpers::castSpell() {
                             assert(false);
                     }
 
-                    if (pParty->pPlayers[pCastSpell->uPlayerID_2].conditions.HasAny({Condition_Eradicated, Condition_Dead})) {
-                        if (!pParty->pPlayers[pCastSpell->uPlayerID_2].conditions.Has(Condition_Weak)) {
+                    if (pParty->pPlayers[pCastSpell->uPlayerID_2].conditions.HasAny({CONDITION_ERADICATED, CONDITION_DEAD})) {
+                        if (!pParty->pPlayers[pCastSpell->uPlayerID_2].conditions.Has(CONDITION_WEAK)) {
                             pParty->pPlayers[pCastSpell->uPlayerID_2].playReaction(SPEECH_Weak);
                         }
                         if (spell_mastery == PLAYER_SKILL_MASTERY_GRANDMASTER) {
-                            pParty->pPlayers[pCastSpell->uPlayerID_2].conditions.Reset(Condition_Eradicated);
-                            pParty->pPlayers[pCastSpell->uPlayerID_2].conditions.Reset(Condition_Dead);
-                            pParty->pPlayers[pCastSpell->uPlayerID_2].conditions.Reset(Condition_Unconscious);
+                            pParty->pPlayers[pCastSpell->uPlayerID_2].conditions.Reset(CONDITION_ERADICATED);
+                            pParty->pPlayers[pCastSpell->uPlayerID_2].conditions.Reset(CONDITION_DEAD);
+                            pParty->pPlayers[pCastSpell->uPlayerID_2].conditions.Reset(CONDITION_UNCONSCIOUS);
                         } else {
                             pParty->pPlayers[pCastSpell->uPlayerID_2]
-                                .DiscardConditionIfLastsLongerThan(Condition_Eradicated, pParty->GetPlayingTime() - spell_duration);
+                                .DiscardConditionIfLastsLongerThan(CONDITION_ERADICATED, pParty->GetPlayingTime() - spell_duration);
                             pParty->pPlayers[pCastSpell->uPlayerID_2]
-                                .DiscardConditionIfLastsLongerThan(Condition_Dead, pParty->GetPlayingTime() - spell_duration);
+                                .DiscardConditionIfLastsLongerThan(CONDITION_DEAD, pParty->GetPlayingTime() - spell_duration);
                             pParty->pPlayers[pCastSpell->uPlayerID_2]
-                                .DiscardConditionIfLastsLongerThan(Condition_Unconscious, pParty->GetPlayingTime() - spell_duration);
+                                .DiscardConditionIfLastsLongerThan(CONDITION_UNCONSCIOUS, pParty->GetPlayingTime() - spell_duration);
                         }
-                        pParty->pPlayers[pCastSpell->uPlayerID_2].SetCondition(Condition_Weak, 1);
+                        pParty->pPlayers[pCastSpell->uPlayerID_2].SetCondition(CONDITION_WEAK, 1);
                         pParty->pPlayers[pCastSpell->uPlayerID_2].health = 1;
                         spell_fx_renderer->SetPlayerBuffAnim(pCastSpell->uSpellID, pCastSpell->uPlayerID_2);
                     }
@@ -1894,12 +1894,12 @@ void CastSpellInfoHelpers::castSpell() {
                     }
 
                     spell_fx_renderer->SetPlayerBuffAnim(pCastSpell->uSpellID, pCastSpell->uPlayerID_2);
-                    if (pParty->pPlayers[pCastSpell->uPlayerID_2].conditions.Has(Condition_Paralyzed)) {
+                    if (pParty->pPlayers[pCastSpell->uPlayerID_2].conditions.Has(CONDITION_PARALYZED)) {
                         if (spell_mastery == PLAYER_SKILL_MASTERY_GRANDMASTER) {
-                            pParty->pPlayers[pCastSpell->uPlayerID_2].conditions.Reset(Condition_Paralyzed);
+                            pParty->pPlayers[pCastSpell->uPlayerID_2].conditions.Reset(CONDITION_PARALYZED);
                         } else {
                             pParty->pPlayers[pCastSpell->uPlayerID_2]
-                                .DiscardConditionIfLastsLongerThan(Condition_Paralyzed, pParty->GetPlayingTime() - spell_duration);
+                                .DiscardConditionIfLastsLongerThan(CONDITION_PARALYZED, pParty->GetPlayingTime() - spell_duration);
                         }
                     }
                     break;
@@ -1927,12 +1927,12 @@ void CastSpellInfoHelpers::castSpell() {
                     }
 
                     spell_fx_renderer->SetPlayerBuffAnim(pCastSpell->uSpellID, pCastSpell->uPlayerID_2);
-                    if (pParty->pPlayers[pCastSpell->uPlayerID_2].conditions.Has(Condition_Fear)) {
+                    if (pParty->pPlayers[pCastSpell->uPlayerID_2].conditions.Has(CONDITION_FEAR)) {
                         if (spell_mastery == PLAYER_SKILL_MASTERY_GRANDMASTER) {
-                            pParty->pPlayers[pCastSpell->uPlayerID_2].conditions.Reset(Condition_Fear);
+                            pParty->pPlayers[pCastSpell->uPlayerID_2].conditions.Reset(CONDITION_FEAR);
                         } else {
                             pParty->pPlayers[pCastSpell->uPlayerID_2]
-                                .DiscardConditionIfLastsLongerThan(Condition_Fear, pParty->GetPlayingTime() - spell_duration);
+                                .DiscardConditionIfLastsLongerThan(CONDITION_FEAR, pParty->GetPlayingTime() - spell_duration);
                         }
                     }
 
@@ -2137,17 +2137,17 @@ void CastSpellInfoHelpers::castSpell() {
                     }
 
                     spell_fx_renderer->SetPlayerBuffAnim(pCastSpell->uSpellID, pCastSpell->uPlayerID_2);
-                    if (pParty->pPlayers[pCastSpell->uPlayerID_2].conditions.Has(Condition_Insane)) {
-                        if (!pParty->pPlayers[pCastSpell->uPlayerID_2].conditions.Has(Condition_Weak)) {
+                    if (pParty->pPlayers[pCastSpell->uPlayerID_2].conditions.Has(CONDITION_INSANE)) {
+                        if (!pParty->pPlayers[pCastSpell->uPlayerID_2].conditions.Has(CONDITION_WEAK)) {
                             pParty->pPlayers[pCastSpell->uPlayerID_2].playReaction(SPEECH_Weak);
                         }
                         if (spell_mastery == PLAYER_SKILL_MASTERY_GRANDMASTER) {
-                            pParty->pPlayers[pCastSpell->uPlayerID_2].conditions.Reset(Condition_Insane);
+                            pParty->pPlayers[pCastSpell->uPlayerID_2].conditions.Reset(CONDITION_INSANE);
                         } else {
                             pParty->pPlayers[pCastSpell->uPlayerID_2]
-                                .DiscardConditionIfLastsLongerThan(Condition_Insane, pParty->GetPlayingTime() - spell_duration);
+                                .DiscardConditionIfLastsLongerThan(CONDITION_INSANE, pParty->GetPlayingTime() - spell_duration);
                         }
-                        pParty->pPlayers[pCastSpell->uPlayerID_2].SetCondition( Condition_Weak, 0);
+                        pParty->pPlayers[pCastSpell->uPlayerID_2].SetCondition( CONDITION_WEAK, 0);
                     }
                     break;
                 }
@@ -2223,12 +2223,12 @@ void CastSpellInfoHelpers::castSpell() {
                             assert(false);
                     }
                     spell_fx_renderer->SetPlayerBuffAnim(pCastSpell->uSpellID, pCastSpell->uPlayerID_2);
-                    if (pParty->pPlayers[pCastSpell->uPlayerID_2].conditions.Has(Condition_Weak)) {
+                    if (pParty->pPlayers[pCastSpell->uPlayerID_2].conditions.Has(CONDITION_WEAK)) {
                         if (spell_mastery == PLAYER_SKILL_MASTERY_GRANDMASTER) {
-                            pParty->pPlayers[pCastSpell->uPlayerID_2].conditions.Reset(Condition_Weak);
+                            pParty->pPlayers[pCastSpell->uPlayerID_2].conditions.Reset(CONDITION_WEAK);
                         } else {
                             pParty->pPlayers[pCastSpell->uPlayerID_2]
-                                .DiscardConditionIfLastsLongerThan(Condition_Weak, pParty->GetPlayingTime() - spell_duration);
+                                .DiscardConditionIfLastsLongerThan(CONDITION_WEAK, pParty->GetPlayingTime() - spell_duration);
                         }
                     }
                     break;
@@ -2294,18 +2294,18 @@ void CastSpellInfoHelpers::castSpell() {
                     }
 
                     spell_fx_renderer->SetPlayerBuffAnim(pCastSpell->uSpellID, pCastSpell->uPlayerID_2);
-                    if (pParty->pPlayers[pCastSpell->uPlayerID_2].conditions.HasAny({Condition_Poison_Weak, Condition_Poison_Medium, Condition_Poison_Severe})) {
+                    if (pParty->pPlayers[pCastSpell->uPlayerID_2].conditions.HasAny({CONDITION_POISON_WEAK, CONDITION_POISON_MEDIUM, CONDITION_POISON_SEVERE})) {
                         if (spell_mastery == PLAYER_SKILL_MASTERY_GRANDMASTER) {
-                            pParty->pPlayers[pCastSpell->uPlayerID_2].conditions.Reset(Condition_Poison_Weak);
-                            pParty->pPlayers[pCastSpell->uPlayerID_2].conditions.Reset(Condition_Poison_Medium);
-                            pParty->pPlayers[pCastSpell->uPlayerID_2].conditions.Reset(Condition_Poison_Severe);
+                            pParty->pPlayers[pCastSpell->uPlayerID_2].conditions.Reset(CONDITION_POISON_WEAK);
+                            pParty->pPlayers[pCastSpell->uPlayerID_2].conditions.Reset(CONDITION_POISON_MEDIUM);
+                            pParty->pPlayers[pCastSpell->uPlayerID_2].conditions.Reset(CONDITION_POISON_SEVERE);
                         } else {
                             pParty->pPlayers[pCastSpell->uPlayerID_2]
-                                .DiscardConditionIfLastsLongerThan(Condition_Poison_Weak, pParty->GetPlayingTime() - spell_duration);
+                                .DiscardConditionIfLastsLongerThan(CONDITION_POISON_WEAK, pParty->GetPlayingTime() - spell_duration);
                             pParty->pPlayers[pCastSpell->uPlayerID_2]
-                                .DiscardConditionIfLastsLongerThan(Condition_Poison_Medium, pParty->GetPlayingTime() - spell_duration);
+                                .DiscardConditionIfLastsLongerThan(CONDITION_POISON_MEDIUM, pParty->GetPlayingTime() - spell_duration);
                             pParty->pPlayers[pCastSpell->uPlayerID_2]
-                                .DiscardConditionIfLastsLongerThan(Condition_Poison_Severe, pParty->GetPlayingTime() - spell_duration);
+                                .DiscardConditionIfLastsLongerThan(CONDITION_POISON_SEVERE, pParty->GetPlayingTime() - spell_duration);
                         }
                     }
                     break;
@@ -2333,18 +2333,18 @@ void CastSpellInfoHelpers::castSpell() {
                     }
 
                     spell_fx_renderer->SetPlayerBuffAnim(pCastSpell->uSpellID, pCastSpell->uPlayerID_2);
-                    if (pParty->pPlayers[pCastSpell->uPlayerID_2].conditions.HasAny({Condition_Disease_Weak, Condition_Disease_Medium, Condition_Disease_Severe})) {
+                    if (pParty->pPlayers[pCastSpell->uPlayerID_2].conditions.HasAny({CONDITION_DISEASE_WEAK, CONDITION_DISEASE_MEDIUM, CONDITION_DISEASE_SEVERE})) {
                         if (spell_mastery == PLAYER_SKILL_MASTERY_GRANDMASTER) {
-                            pParty->pPlayers[pCastSpell->uPlayerID_2].conditions.Reset(Condition_Disease_Weak);
-                            pParty->pPlayers[pCastSpell->uPlayerID_2].conditions.Reset(Condition_Disease_Medium);
-                            pParty->pPlayers[pCastSpell->uPlayerID_2].conditions.Reset(Condition_Disease_Severe);
+                            pParty->pPlayers[pCastSpell->uPlayerID_2].conditions.Reset(CONDITION_DISEASE_WEAK);
+                            pParty->pPlayers[pCastSpell->uPlayerID_2].conditions.Reset(CONDITION_DISEASE_MEDIUM);
+                            pParty->pPlayers[pCastSpell->uPlayerID_2].conditions.Reset(CONDITION_DISEASE_SEVERE);
                         } else {
                             pParty->pPlayers[pCastSpell->uPlayerID_2]
-                                .DiscardConditionIfLastsLongerThan(Condition_Disease_Weak, pParty->GetPlayingTime() - spell_duration);
+                                .DiscardConditionIfLastsLongerThan(CONDITION_DISEASE_WEAK, pParty->GetPlayingTime() - spell_duration);
                             pParty->pPlayers[pCastSpell->uPlayerID_2]
-                                .DiscardConditionIfLastsLongerThan(Condition_Disease_Medium, pParty->GetPlayingTime() - spell_duration);
+                                .DiscardConditionIfLastsLongerThan(CONDITION_DISEASE_MEDIUM, pParty->GetPlayingTime() - spell_duration);
                             pParty->pPlayers[pCastSpell->uPlayerID_2]
-                                .DiscardConditionIfLastsLongerThan(Condition_Disease_Severe, pParty->GetPlayingTime() - spell_duration);
+                                .DiscardConditionIfLastsLongerThan(CONDITION_DISEASE_SEVERE, pParty->GetPlayingTime() - spell_duration);
                         }
                     }
                     break;
@@ -2564,7 +2564,7 @@ void CastSpellInfoHelpers::castSpell() {
                     for (Player &player : pParty->pPlayers) {
                        player.pPlayerBuffs[PLAYER_BUFF_BLESS]
                             .Apply(pParty->GetPlayingTime() + other_duration, spell_mastery, target_skill_level, 0, 0);
-                        if (player.conditions.Has(Condition_Weak)) {
+                        if (player.conditions.Has(CONDITION_WEAK)) {
                             player_weak = true;
                         }
                     }
@@ -2629,10 +2629,10 @@ void CastSpellInfoHelpers::castSpell() {
                     int zombie_hp_limit = target_monster_level * 10;
                     if (pCastSpell->spell_target_pid == PID_INVALID) {
                         spell_fx_renderer->SetPlayerBuffAnim(pCastSpell->uSpellID, pCastSpell->uPlayerID_2);
-                        if (pParty->pPlayers[pCastSpell->uPlayerID_2].conditions.Has(Condition_Dead)) {
-                            pParty->pPlayers[pCastSpell->uPlayerID_2].SetCondition(Condition_Zombie, 1);
+                        if (pParty->pPlayers[pCastSpell->uPlayerID_2].conditions.Has(CONDITION_DEAD)) {
+                            pParty->pPlayers[pCastSpell->uPlayerID_2].SetCondition(CONDITION_ZOMBIE, 1);
                             GameUI_ReloadPlayerPortraits(pCastSpell->uPlayerID_2, (pParty->pPlayers[pCastSpell->uPlayerID_2].GetSexByVoice() != 0) + 23);
-                            pParty->pPlayers[pCastSpell->uPlayerID_2].conditions.Set(Condition_Zombie, pParty->GetPlayingTime());
+                            pParty->pPlayers[pCastSpell->uPlayerID_2].conditions.Set(CONDITION_ZOMBIE, pParty->GetPlayingTime());
                             // TODO: why call SetCondition and then conditions.Set?
                         }
                         break;
