@@ -25,7 +25,7 @@ var searchData=
   ['billboardspherespellfx_22',['BillboardSphereSpellFX',['../classRenderBase.html#a693e670ebe6e7bbe452fa6b71de4e400',1,'RenderBase::BillboardSphereSpellFX()'],['../classIRender.html#a2499d0ee9c9ac0f54073cde7167c2d13',1,'IRender::BillboardSphereSpellFX()']]],
   ['binarysearch_23',['BinarySearch',['../structSpriteFrameTable.html#a4eedc07f56dc5d1d5f9432a07220cdd3',1,'SpriteFrameTable']]],
   ['bind_24',['bind',['../classPlatformOpenGLContext.html#adc75ee2e5b6736369658848bb170f830',1,'PlatformOpenGLContext::bind()'],['../classSdlOpenGLContext.html#a827bc1dc8610dba418ec463fbc737ee9',1,'SdlOpenGLContext::bind()'],['../classProxyOpenGLContext.html#aeed052f589e1b39bbb002113be03cfdd',1,'ProxyOpenGLContext::bind()']]],
-  ['bitmaps_5flod_5floader_25',['Bitmaps_LOD_Loader',['../classBitmaps__LOD__Loader.html#afc1217e31b2722abedd6bc3b0573d3bf',1,'Bitmaps_LOD_Loader']]],
+  ['bitmaps_5flod_5floader_25',['Bitmaps_LOD_Loader',['../classBitmaps__LOD__Loader.html#aacd84c0d4a2c1f8e8998851e2dd7947c',1,'Bitmaps_LOD_Loader']]],
   ['blendcolors_26',['BlendColors',['../RenderBase_8cpp.html#ae65a83bf78580f32fc4d085716b0145c',1,'RenderBase.cpp']]],
   ['blendtextures_27',['BlendTextures',['../classRenderOpenGL.html#ae0168a288d9f1ad7423a34dd26cec7ff',1,'RenderOpenGL::BlendTextures()'],['../classIRender.html#a17b8e5fd61200f0d9ea272fd4771e438',1,'IRender::BlendTextures()']]],
   ['blob_28',['Blob',['../classBlob.html#ad22686b374be22a9e5651c726fc683c9',1,'Blob::Blob(Blob &amp;&amp;other)'],['../classBlob.html#ac6aa6cc91070d2b633247f2db4a75981',1,'Blob::Blob(const Blob &amp;)=delete'],['../classBlob.html#a6a0d29e3183e1458d1b9e6a5ca584826',1,'Blob::Blob()']]],
