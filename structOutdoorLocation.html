@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;f129e80</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;57792f2</span>
    </div>
   </td>
  </tr>
@@ -136,8 +136,8 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a4eca40cf76b1ef011f28e37ea83c6386"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6eebd46ebfee4b61194ef9614ccf83fa"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structOutdoorLocation.html#a6eebd46ebfee4b61194ef9614ccf83fa">Initialize</a> (const std::string &amp;filename, int days_played, int respawn_interval_days, bool *outdoors_was_respawned)</td></tr>
 <tr class="separator:a6eebd46ebfee4b61194ef9614ccf83fa"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afa32764595d901fa9dd5b44ff9da5c56"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structOutdoorLocation.html#afa32764595d901fa9dd5b44ff9da5c56">GetTravelDestination</a> (signed int sPartyX, signed int sPartyZ, char *pOut, signed int a5)</td></tr>
-<tr class="separator:afa32764595d901fa9dd5b44ff9da5c56"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af70267134cf2c120e541821a3106e18d"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structOutdoorLocation.html#af70267134cf2c120e541821a3106e18d">GetTravelDestination</a> (int sPartyX, int sPartyZ, std::string *pOut)</td></tr>
+<tr class="separator:af70267134cf2c120e541821a3106e18d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a93ad1862f88661d0a93128f707d04330"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structOutdoorLocation.html#a93ad1862f88661d0a93128f707d04330">MessWithLUN</a> ()</td></tr>
 <tr class="separator:a93ad1862f88661d0a93128f707d04330"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad1464d7a2aad592f0aff9786e636496e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structOutdoorLocation.html#ad1464d7a2aad592f0aff9786e636496e">UpdateSunlightVectors</a> ()</td></tr>
@@ -733,8 +733,8 @@ Public Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="afa32764595d901fa9dd5b44ff9da5c56" name="afa32764595d901fa9dd5b44ff9da5c56"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#afa32764595d901fa9dd5b44ff9da5c56">&#9670;&#160;</a></span>GetTravelDestination()</h2>
+<a id="af70267134cf2c120e541821a3106e18d" name="af70267134cf2c120e541821a3106e18d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af70267134cf2c120e541821a3106e18d">&#9670;&#160;</a></span>GetTravelDestination()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -742,26 +742,20 @@ Public Attributes</h2></td></tr>
         <tr>
           <td class="memname">bool OutdoorLocation::GetTravelDestination </td>
           <td>(</td>
-          <td class="paramtype">signed int&#160;</td>
+          <td class="paramtype">int&#160;</td>
           <td class="paramname"><em>sPartyX</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">signed int&#160;</td>
+          <td class="paramtype">int&#160;</td>
           <td class="paramname"><em>sPartyZ</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">char *&#160;</td>
-          <td class="paramname"><em>pOut</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">signed int&#160;</td>
-          <td class="paramname"><em>a5</em>&#160;</td>
+          <td class="paramtype">std::string *&#160;</td>
+          <td class="paramname"><em>pOut</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
