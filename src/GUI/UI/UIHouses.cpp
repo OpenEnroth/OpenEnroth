@@ -917,22 +917,8 @@ void OnSelectShopDialogueOption(DIALOGUE_TYPE option) {
     render->ClearZBuffer();
 
     if (dialog_menu_id == DIALOGUE_MAIN) {
-        Sizei renDims = render->GetRenderDimensions();
-        if (in_current_building_type == BuildingType_Training) {
-            if (option == DIALOGUE_TRAINING_HALL_TRAIN) {
-                Player &player = pParty->activeCharacter();
-                uint64_t expForNextLevel = 0;
-                for (int i = 0; i < pParty->activeCharacter().uLevel; i++) {
-                    expForNextLevel += i + 1;
-                }
-                expForNextLevel *= 1000;
-                if (player.uLevel < trainingHallMaxLevels[HOUSE_ID(window_SpeakInHouse->wData.val)] && player.experience < expForNextLevel) {
-                    return;
-                }
-            }
-        }
         pDialogueWindow->Release();
-        pDialogueWindow = new GUIWindow(WINDOW_Dialogue, {0, 0}, {renDims.w, 345}, 0);
+        pDialogueWindow = new GUIWindow(WINDOW_Dialogue, {0, 0}, {render->GetRenderDimensions().w, 345}, 0);
         pBtn_ExitCancel = pDialogueWindow->CreateButton({526, 445}, {75, 33}, 1, 0, UIMSG_Escape, 0, InputAction::Invalid,
                                                         localization->GetString(LSTR_END_CONVERSATION), {ui_buttdesc2});
         pDialogueWindow->CreateButton({8, 8}, {450, 320}, 1, 0, UIMSG_BuyInShop_Identify_Repair, 0);
@@ -957,6 +943,9 @@ void OnSelectShopDialogueOption(DIALOGUE_TYPE option) {
     case BuildingType_ElementalGuild:
     case BuildingType_SelfGuild:
     case BuildingType_MirroredPath:
+    case BuildingType_Training:
+    case BuildingType_Bank:
+    case BuildingType_Temple:
         ((GUIWindow_House*)window_SpeakInHouse)->houseDialogueOptionSelected(option);
         break;
     case BuildingType_TownHall:
@@ -969,18 +958,11 @@ void OnSelectShopDialogueOption(DIALOGUE_TYPE option) {
         }
         break;
     }
-    case BuildingType_Bank:
-        ((GUIWindow_House*)window_SpeakInHouse)->houseDialogueOptionSelected(option);
-        break;
-    case BuildingType_Temple:
-        ((GUIWindow_House*)window_SpeakInHouse)->houseDialogueOptionSelected(option);
-        break;
     case BuildingType_WeaponShop:
     case BuildingType_ArmorShop:
     case BuildingType_MagicShop:
     case BuildingType_AlchemistShop:
     case BuildingType_Tavern:
-    case BuildingType_Training:
     {
         break;
     }

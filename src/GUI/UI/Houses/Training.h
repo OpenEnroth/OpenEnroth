@@ -25,7 +25,3 @@ class GUIWindow_Training : public GUIWindow_House {
  private:
     std::vector<int> _charactersTrainedLevels;
 };
-
-// TODO(Nik-RE-dev): contain in cpp file
-extern IndexedArray<int, HOUSE_TRAINING_HALL_EMERALD_ISLE, HOUSE_TRAINING_HALL_STONE_CITY> trainingHallMaxLevels;
-extern std::vector<int> charactersTrainedLevels;
