@@ -345,7 +345,7 @@ void GameUI_DrawItemInfo(struct ItemGen *inspect_item) {
 
     text[0] = localization->FormatString(
         LSTR_FMT_TYPE_S,
-        pItemTable->pItems[inspect_item->uItemID].pUnidentifiedName);
+        pItemTable->pItems[inspect_item->uItemID].pUnidentifiedName.c_str());
 
     switch (inspect_item->GetItemEquipType()) {
         case EQUIP_SINGLE_HANDED:
