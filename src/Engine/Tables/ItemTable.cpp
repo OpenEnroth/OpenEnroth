@@ -28,7 +28,6 @@ void ItemTable::Release() {
     pRndItemsTXT_Raw.clear();
     pItemsTXT_Raw.clear();
     pHostileTXT_Raw.clear();
-    pHistoryTXT_Raw.clear();
     pPotionsTXT_Raw.clear();
     pPotionNotesTXT_Raw.clear();
 }
