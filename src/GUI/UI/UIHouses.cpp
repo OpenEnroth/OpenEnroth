@@ -947,6 +947,7 @@ void OnSelectShopDialogueOption(DIALOGUE_TYPE option) {
     // NEW
     // TODO(Nik-RE-dev): houseDialogueOptionSelected must be called without switch
     switch (in_current_building_type) {
+    case BuildingType_Tavern:
     case BuildingType_FireGuild:
     case BuildingType_AirGuild:
     case BuildingType_WaterGuild:
@@ -981,7 +982,6 @@ void OnSelectShopDialogueOption(DIALOGUE_TYPE option) {
     case BuildingType_ArmorShop:
     case BuildingType_MagicShop:
     case BuildingType_AlchemistShop:
-    case BuildingType_Tavern:
     case BuildingType_Training:
     {
         break;
@@ -1866,6 +1866,9 @@ void createHouseUI(HOUSE_ID houseId) {
       case BuildingType_Temple:
         window_SpeakInHouse = new GUIWindow_Temple(houseId);
         break;
+      case BuildingType_Tavern:
+        window_SpeakInHouse = new GUIWindow_Tavern(houseId);
+        break;
       default:
         window_SpeakInHouse = new GUIWindow_House(houseId);
         break;
@@ -2039,7 +2042,7 @@ void GUIWindow_House::houseDialogManager() {
             TownHallDialog();
             break;
           case BuildingType_Tavern:
-            TavernDialog();
+            houseSpecificDialogue();
             break;
           case BuildingType_Bank:
             houseSpecificDialogue();
