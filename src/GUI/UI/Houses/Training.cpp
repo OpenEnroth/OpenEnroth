@@ -41,7 +41,7 @@ void GUIWindow_Training::mainDialogue() {
         pShopOptions[1] = localization->GetString(LSTR_LEARN_SKILLS);
         for (int i = pDialogueWindow->pStartingPosActiveItem; i < pDialogueWindow->pNumPresenceButton + pDialogueWindow->pStartingPosActiveItem; ++i) {
             if (pDialogueWindow->GetControl(i)->msg_param == DIALOGUE_TRAINING_HALL_TRAIN) {
-                static std::string shop_option_str_container;
+                static std::string shop_option_str_container; // TODO(Nik-RE-dev): remove static when pShopOptions becomes local arrray of std::string-s.
                 if (pParty->activeCharacter().uLevel >= trainingHallMaxLevels[houseId()]) {
                     shop_option_str_container = fmt::format("{}\n \n{}", localization->GetString(LSTR_TEACHER_LEVEL_TOO_LOW),
                                                             localization->GetString(LSTR_CANT_TRAIN_FURTHER));
