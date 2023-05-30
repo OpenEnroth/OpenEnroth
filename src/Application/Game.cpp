@@ -938,7 +938,7 @@ void Game::processQueuedMessages() {
                         eventProcessor(savedEventID, 0, 1, savedEventStep);
                     }
                     if (iequals(s_SavedMapName.data(), "d05.blv"))
-                        pParty->GetPlayingTime().AddDays(4);
+                        pParty->GetPlayingTime() += GameTime::FromDays(4);
 
                     PlayButtonClickSound();
                     DialogueEnding();
@@ -2415,7 +2415,7 @@ void Game::gameLoop() {
                     player.SetVariable(VAR_Award, Award_Deaths);
                 }
                 pParty->days_played_without_rest = 0;
-                pParty->GetPlayingTime().AddDays(7);  // += 2580480
+                pParty->GetPlayingTime() += GameTime::FromDays(7);  // += 2580480
                 HEXRAYS_LOWORD(pParty->uFlags) &= ~0x204;
                 pParty->SetGold(0);
                 pActiveOverlayList->Reset();
