@@ -1589,7 +1589,7 @@ void GameUI_DrawMinimap(unsigned int uX, unsigned int uY, unsigned int uZ,
     if (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR) {
         static Texture *minimaptemp;
         if (!minimaptemp) {
-            minimaptemp = render->CreateTexture_Blank(uWidth, uHeight, IMAGE_FORMAT_A8B8G8R8);
+            minimaptemp = render->CreateTexture_Blank(uWidth, uHeight);
         }
 
         static uint16_t pOdmMinimap[117][137];
@@ -1632,8 +1632,8 @@ void GameUI_DrawMinimap(unsigned int uX, unsigned int uY, unsigned int uZ,
                 assert(uWidth == 137 && uHeight == 117);
 
                 ushort MapImgWidth = viewparams->location_minimap->GetWidth();
-                auto pMapLod0Line = (uint32_t*)viewparams->location_minimap->GetPixels(IMAGE_FORMAT_A8B8G8R8);
-                auto minitempix = (uint32_t*)minimaptemp->GetPixels(IMAGE_FORMAT_A8B8G8R8);
+                const Color *pMapLod0Line = viewparams->location_minimap->GetPixels();
+                Color *minitempix = const_cast<Color *>(minimaptemp->GetPixels()); // TODO(captainurist): #images const_cast
 
                 for (int y = 0; y < uHeight; ++y) {
                     for (int x = 0; x < uWidth; ++x) {

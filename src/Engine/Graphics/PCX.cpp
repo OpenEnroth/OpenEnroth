@@ -92,7 +92,7 @@ static int pcx_rle_decode(bstreamer *bs, uint8_t *dst, unsigned int bytes_per_sc
     return 0;
 }
 
-std::unique_ptr<uint8_t[]> PCX::Decode(const Blob &data, size_t *width, size_t *height, IMAGE_FORMAT *format) {
+std::unique_ptr<Color[]> PCX::Decode(const Blob &data, size_t *width, size_t *height) {
     if (data.size() < sizeof(PCXHeader))
         return nullptr;
 
@@ -116,7 +116,6 @@ std::unique_ptr<uint8_t[]> PCX::Decode(const Blob &data, size_t *width, size_t *
 
     switch ((header->nplanes << 8) + header->bpp) {
     case 0x0308:
-        *format = IMAGE_FORMAT_A8B8G8R8;
         break;
     case 0x0108:
     case 0x0104:
@@ -128,17 +127,16 @@ std::unique_ptr<uint8_t[]> PCX::Decode(const Blob &data, size_t *width, size_t *
         // TODO: PAL8 color mode
         // fall through
     default:
-        *format = IMAGE_INVALID_FORMAT;
         return nullptr;
     }
 
-    size_t pixel_count = *width * *height * 4;
+    size_t pixel_count = *width * *height;
 
-    std::unique_ptr<uint8_t[]> pixels(new uint8_t[pixel_count]);
+    std::unique_ptr<Color[]> pixels(new Color[pixel_count]);
     if (!pixels)
         return nullptr;
 
-    memset(pixels.get(), 0, pixel_count * sizeof(uint8_t));
+    memset(pixels.get(), 0, pixel_count * sizeof(Color));
 
     bstreamer bs;
     unsigned int stride = 0;
@@ -151,14 +149,10 @@ std::unique_ptr<uint8_t[]> PCX::Decode(const Blob &data, size_t *width, size_t *
             if (ret < 0)
                 return nullptr;
 
-            for (unsigned int x = 0; x < *width; x++) {
-                pixels[stride + 4 * x + 0] = scanline[x];
-                pixels[stride + 4 * x + 1] = scanline[x + header->bytes_per_row];
-                pixels[stride + 4 * x + 2] = scanline[x + (header->bytes_per_row << 1)];
-                pixels[stride + 4 * x + 3] = 255;
-            }
+            for (unsigned int x = 0; x < *width; x++)
+                pixels[stride + x] = Color(scanline[x], scanline[x + header->bytes_per_row], scanline[x + (header->bytes_per_row << 1)]);
 
-            stride += *width * 4;
+            stride += *width;
         }
     } else {
         // TODO: other planes/bpp variants
@@ -215,7 +209,7 @@ void *EncodeOneLine(void *pcx_data, void *line, size_t line_size) {
     return output;
 }
 
-Blob PCX::Encode(const void *data, size_t width, size_t height) {
+Blob PCX::Encode(const Color *data, size_t width, size_t height) {
     assert(data != nullptr && width != 0 & height != 0);
 
     // pcx lines are padded to next even byte boundary
@@ -235,16 +229,14 @@ Blob PCX::Encode(const void *data, size_t width, size_t height) {
     uint8_t *lineR = lineRGB.get();
     uint8_t *lineG = lineRGB.get() + pitch;
     uint8_t *lineB = lineRGB.get() + 2 * pitch;
-    const uint8_t *input = static_cast<const uint8_t *>(data);
+    const Color *input = data;
 
     for (int y = 0; y < height; y++) {
         for (unsigned int x = 0; x < width; x++) {
-            uint32_t pixel;
-            memcpy(&pixel, input, 4);
-            input += 4;
-            lineR[x] = pixel & 0xFF;
-            lineG[x] = (pixel >> 8) & 0xFF;
-            lineB[x] = (pixel >> 16) & 0xFF;
+            Color pixel = *input++;
+            lineR[x] = pixel.r;
+            lineG[x] = pixel.g;
+            lineB[x] = pixel.b;
         }
         uint8_t *line = lineRGB.get();
         for (int p = 0; p < 3; p++) {

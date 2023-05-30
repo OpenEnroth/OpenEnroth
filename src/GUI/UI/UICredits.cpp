@@ -27,7 +27,7 @@ GUICredits::GUICredits() :
 
     width = 250;
     height = pFontQuick->GetStringHeight2(pFontCChar, text, &credit_window, 0, 1) + 2 * credit_window.uFrameHeight;
-    cred_texture = render->CreateTexture_Blank(width, height, IMAGE_FORMAT_A8B8G8R8);
+    cred_texture = render->CreateTexture_Blank(width, height);
 
     pFontQuick->DrawCreditsEntry(pFontCChar, 0, credit_window.uFrameHeight, width, height, colorTable.CornFlowerBlue, colorTable.Primrose, text, cred_texture);
 
