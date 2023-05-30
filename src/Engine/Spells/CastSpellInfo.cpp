@@ -1425,8 +1425,8 @@ void CastSpellInfoHelpers::castSpell() {
                                     // finds how many possible enchaments and adds up to item apply values
                                     // if (pItemTable->pEnchantments_count > 0) {
                                     for (int norm_ench_loop = 0; norm_ench_loop < 24; ++norm_ench_loop) {
-                                        char *this_bon_state = pItemTable->standardEnchantments[norm_ench_loop].pBonusStat;
-                                        if (this_bon_state != NULL && (this_bon_state[0] != '\0')) {
+                                        std::string bonusStat = pItemTable->standardEnchantments[norm_ench_loop].pBonusStat;
+                                        if (!bonusStat.empty()) {
                                             int this_to_apply = pItemTable->standardEnchantments[norm_ench_loop].chancesByItemType[this_equip_type];
                                             to_item_apply_sum += this_to_apply;
                                             if (this_to_apply) {
@@ -1472,8 +1472,8 @@ void CastSpellInfoHelpers::castSpell() {
                                     // finds how many possible enchaments and adds up to item apply values
                                     if (pItemTable->pSpecialEnchantments_count > 0) {
                                         for (ITEM_ENCHANTMENT spec_ench_loop : pItemTable->pSpecialEnchantments.indices()) {
-                                            char *this_bon_state = pItemTable->pSpecialEnchantments[spec_ench_loop].pBonusStatement;
-                                            if (this_bon_state != NULL && (this_bon_state[0] != '\0')) {
+                                            std::string bonusStatement = pItemTable->pSpecialEnchantments[spec_ench_loop].pBonusStatement;
+                                            if (!bonusStatement.empty()) {
                                                 if (pItemTable->pSpecialEnchantments[spec_ench_loop].iTreasureLevel == 3) {
                                                     continue;
                                                 }

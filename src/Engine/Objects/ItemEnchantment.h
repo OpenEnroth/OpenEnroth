@@ -17,8 +17,8 @@ struct CEnchantment {
 
 struct ItemEnchantment {  // Bonus|Sta|Of
                           // Name|Arm|Shld|Helm|Belt|Cape|Gaunt|Boot|Ring|Amul
-    char *pBonusStat;
-    char *pOfName;
+    std::string pBonusStat;
+    std::string pOfName;
     /*	union{
                     struct {
                             unsigned char to_arm;
@@ -40,8 +40,8 @@ struct ItemSpecialEnchantment {  // 1Ch
     // Add|W1|W2|Miss|Arm|Shld|Helm|Belt|Cape|Gaunt|Boot|Ring|Amul|Value|Lvl|Description
     // fo special Bonuses and values
 
-    char *pBonusStatement;   // 0
-    char *pNameAdd;          // 4
+    std::string pBonusStatement;   // 0
+    std::string pNameAdd;          // 4
     IndexedArray<char, EQUIP_FIRST_SPECIAL_ENCHANTABLE, EQUIP_LAST_SPECIAL_ENCHANTABLE> to_item_apply;  // 8
     int iValue;              // 14
     int iTreasureLevel;      // 18

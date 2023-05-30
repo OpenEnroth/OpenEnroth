@@ -58,7 +58,7 @@ struct ItemGen {  // 0x24
 
     ITEM_EQUIP_TYPE GetItemEquipType() const;
     PLAYER_SKILL_TYPE GetPlayerSkillType() const;
-    char *GetIconName() const;
+    std::string GetIconName() const;
     uint8_t GetDamageDice() const;
     uint8_t GetDamageRoll() const;
     uint8_t GetDamageMod() const;
@@ -122,10 +122,10 @@ struct ItemDesc {  // 30h
     // Item # |Pic File|Name|Value|Equip Stat|Skill Group|Mod1|Mod2|material|
     /// ID/Rep/St|Not identified name|Sprite Index|VarA|VarB|Equip X|Equip
     /// Y|Notes
-    char *iconName = nullptr;              // 0 4
-    char *name = nullptr;                  // 4 8
-    char *pUnidentifiedName = nullptr;      // 8 c
-    char *pDescription = nullptr;           // 0c 10
+    std::string iconName = "";              // 0 4
+    std::string name = "";                  // 4 8
+    std::string pUnidentifiedName = "";      // 8 c
+    std::string pDescription = "";           // 0c 10
     uint32_t uValue = 0;          // 10 14
     uint16_t uSpriteID = 0;   // 14 18
     int16_t field_1A = 0;             // 16

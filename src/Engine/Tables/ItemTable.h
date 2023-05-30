@@ -38,12 +38,6 @@ struct ItemTable {
     IndexedArray<IndexedArray<ITEM_TYPE, ITEM_FIRST_REAL_POTION, ITEM_LAST_REAL_POTION>, ITEM_FIRST_REAL_POTION, ITEM_LAST_REAL_POTION> potionCombination;
     // 8176h*2=102ECh -11674
     IndexedArray<IndexedArray<uint16_t, ITEM_FIRST_REAL_POTION, ITEM_LAST_REAL_POTION>, ITEM_FIRST_REAL_POTION, ITEM_LAST_REAL_POTION> potionNotes;
-    std::string pItemsTXT_Raw;              // 11674h
-    std::string pRndItemsTXT_Raw;
-    std::string pStdItemsTXT_Raw;           // 1167Ch
-    std::string pSpcItemsTXT_Raw;           // 11680h
-    std::string pPotionsTXT_Raw;
-    std::string pPotionNotesTXT_Raw;
     IndexedArray<unsigned int, ITEM_TREASURE_LEVEL_FIRST_RANDOM, ITEM_TREASURE_LEVEL_LAST_RANDOM> chanceByTreasureLevelSums;   // 11684
     IndexedArray<unsigned int, ITEM_TREASURE_LEVEL_FIRST_RANDOM, ITEM_TREASURE_LEVEL_LAST_RANDOM> uBonusChanceStandart;       // 1169c
     IndexedArray<unsigned int, ITEM_TREASURE_LEVEL_FIRST_RANDOM, ITEM_TREASURE_LEVEL_LAST_RANDOM> uBonusChanceSpecial;        // 116B4

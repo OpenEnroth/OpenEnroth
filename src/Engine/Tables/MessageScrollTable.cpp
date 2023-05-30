@@ -3,8 +3,7 @@
 
 #include "Utility/String.h"
 
-IndexedArray<const char *, ITEM_FIRST_MESSAGE_SCROLL, ITEM_LAST_MESSAGE_SCROLL> pMessageScrolls;
-std::string pMessageScrollsTXT_Raw;
+IndexedArray<std::string, ITEM_FIRST_MESSAGE_SCROLL, ITEM_LAST_MESSAGE_SCROLL> pMessageScrolls;
 
 void initializeMessageScrolls() {
     char *test_string;
@@ -14,8 +13,8 @@ void initializeMessageScrolls() {
     char *tmp_pos;
     int decode_step;
 
-    pMessageScrollsTXT_Raw = engine->_gameResourceManager->getEventsFile("scroll.txt").string_view();
-    strtok(pMessageScrollsTXT_Raw.data(), "\r");
+    std::string txtRaw{ engine->_gameResourceManager->getEventsFile("scroll.txt").string_view() };
+    strtok(txtRaw.data(), "\r");
     for (ITEM_TYPE i : pMessageScrolls.indices()) {
         test_string = strtok(NULL, "\r") + 1;
         break_loop = false;
@@ -31,7 +30,8 @@ void initializeMessageScrolls() {
             if (*tmp_pos == 0) break_loop = true;
             *tmp_pos = 0;
             if (temp_str_len) {
-                if (decode_step == 1) pMessageScrolls[i] = removeQuotes(test_string);
+                if (decode_step == 1)
+                    pMessageScrolls[i] = removeQuotes(test_string);
             } else {
                 break_loop = true;
             }

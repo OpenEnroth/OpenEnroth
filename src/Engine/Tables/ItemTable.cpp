@@ -23,14 +23,8 @@
 void ItemTable::Release() {
     pMonstersTXT_Raw.clear();
     pMonsterPlacementTXT_Raw.clear();
-    pSpcItemsTXT_Raw.clear();
-    pStdItemsTXT_Raw.clear();
-    pRndItemsTXT_Raw.clear();
-    pItemsTXT_Raw.clear();
     pHostileTXT_Raw.clear();
     pHistoryTXT_Raw.clear();
-    pPotionsTXT_Raw.clear();
-    pPotionNotesTXT_Raw.clear();
 }
 
 static void strtokSkipLines(int n) {
@@ -107,8 +101,10 @@ void ItemTable::Initialize() {
     pStorylineText = new StorylineText;
     pStorylineText->Initialize();
 
-    pStdItemsTXT_Raw = engine->_gameResourceManager->getEventsFile("stditems.txt").string_view();
-    (void)strtok(pStdItemsTXT_Raw.data(), "\r");
+    std::string txtRaw;
+
+    txtRaw = engine->_gameResourceManager->getEventsFile("stditems.txt").string_view();
+    strtok(txtRaw.data(), "\r");
     strtokSkipLines(3);
     // Standard Bonuses by Group
     chanceByItemTypeSums.fill(0);
@@ -135,8 +131,8 @@ void ItemTable::Initialize() {
         bonusRanges[i].maxR = atoi(tokens[3]);
     }
 
-    pSpcItemsTXT_Raw = engine->_gameResourceManager->getEventsFile("spcitems.txt").string_view();
-    (void)strtok(pSpcItemsTXT_Raw.data(), "\r");
+    txtRaw = engine->_gameResourceManager->getEventsFile("spcitems.txt").string_view();
+    strtok(txtRaw.data(), "\r");
     strtokSkipLines(3);
     for (ITEM_ENCHANTMENT i : pSpecialEnchantments.indices()) {
         lineContent = strtok(NULL, "\r") + 1;
@@ -166,8 +162,8 @@ void ItemTable::Initialize() {
 
     initializeBuildings();
 
-    pItemsTXT_Raw = engine->_gameResourceManager->getEventsFile("items.txt").string_view();
-    (void)strtok(pItemsTXT_Raw.data(), "\r");
+    txtRaw = engine->_gameResourceManager->getEventsFile("items.txt").string_view();
+    strtok(txtRaw.data(), "\r");
     strtokSkipLines(1);
     for (size_t line = 0; line < 799; line++) {
         lineContent = strtok(NULL, "\r") + 1;
@@ -229,8 +225,8 @@ void ItemTable::Initialize() {
         pItems[item_counter].pDescription = removeQuotes(tokens[16]);
     }
 
-    pRndItemsTXT_Raw = engine->_gameResourceManager->getEventsFile("rnditems.txt").string_view();
-    (void)strtok(pRndItemsTXT_Raw.data(), "\r");
+    txtRaw = engine->_gameResourceManager->getEventsFile("rnditems.txt").string_view();
+    strtok(txtRaw.data(), "\r");
     strtokSkipLines(3);
     for(size_t line = 0; line < 618; line++) {
         lineContent = strtok(NULL, "\r") + 1;
@@ -284,7 +280,6 @@ void ItemTable::Initialize() {
                 break;
         }
     }
-    pRndItemsTXT_Raw.clear();
 
     ItemGen::PopulateSpecialBonusMap();
     ItemGen::PopulateArtifactBonusMap();
@@ -320,8 +315,8 @@ void ItemTable::LoadPotions() {
     uint8_t potion_value;
 
     std::vector<char *> tokens;
-    pPotionsTXT_Raw = std::string(engine->_gameResourceManager->getEventsFile("potion.txt").string_view());
-    test_string = strtok(pPotionsTXT_Raw.data(), "\r") + 1;
+    std::string txtRaw{ engine->_gameResourceManager->getEventsFile("potion.txt").string_view() };
+    test_string = strtok(txtRaw.data(), "\r") + 1;
     while (test_string) {
         tokens = tokenize(test_string, '\t');
         if (!strcmp(tokens[0], "222")) break;
@@ -364,8 +359,8 @@ void ItemTable::LoadPotionNotes() {
     uint8_t potion_note;
 
     std::vector<char *> tokens;
-    pPotionNotesTXT_Raw = std::string(engine->_gameResourceManager->getEventsFile("potnotes.txt").string_view());
-    test_string = strtok(pPotionNotesTXT_Raw.data(), "\r") + 1;
+    std::string txtRaw{ engine->_gameResourceManager->getEventsFile("potnotes.txt").string_view() };
+    test_string = strtok(txtRaw.data(), "\r") + 1;
     while (test_string) {
         tokens = tokenize(test_string, '\t');
         if (!strcmp(tokens[0], "222")) break;
