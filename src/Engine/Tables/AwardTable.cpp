@@ -6,7 +6,6 @@
 std::array<Award, 105> pAwards;
 
 void initializeAwards() {
-    int i;
     char *test_string;
     unsigned char c;
     bool break_loop;
@@ -17,7 +16,7 @@ void initializeAwards() {
     std::string txtRaw{ engine->_gameResourceManager->getEventsFile("awards.txt").string_view() };
     strtok(txtRaw.data(), "\r");
 
-    for (i = 1; i < 105; ++i) {
+    for (int i = 1; i < pAwards.size(); ++i) {
         test_string = strtok(NULL, "\r") + 1;
         break_loop = false;
         decode_step = 0;

@@ -86,10 +86,10 @@ GUIFont *GUIFont::LoadFont(const char *pFontFile, const char *pFontPalette) {
 void GUIFont::CreateFontTex() {
     this->ReleaseFontTex();
     // create blank textures
-    this->fonttex = render->CreateTexture_Blank(512, 512, IMAGE_FORMAT_A8B8G8R8);
-    this->fontshadow = render->CreateTexture_Blank(512, 512, IMAGE_FORMAT_A8B8G8R8);
-    uint32_t *pPixelsfont = (uint32_t*)this->fonttex->GetPixels(IMAGE_FORMAT_A8B8G8R8);
-    uint32_t *pPixelsshadow = (uint32_t*)this->fontshadow->GetPixels(IMAGE_FORMAT_A8B8G8R8);
+    this->fonttex = render->CreateTexture_Blank(512, 512);
+    this->fontshadow = render->CreateTexture_Blank(512, 512);
+    Color *pPixelsfont = const_cast<Color *>(this->fonttex->GetPixels()); // TODO(captainurist): #images const_cast
+    Color *pPixelsshadow = const_cast<Color *>(this->fontshadow->GetPixels());
 
     // load in char pixels into squares within texture
     for (int l = 0; l < 256; l++) {
@@ -103,11 +103,11 @@ void GUIFont::CreateFontTex() {
                 if (*pCharPixels) {
                     if (*pCharPixels != 1) {
                         // add to normal
-                        pPixelsfont[offset + x + y * 512] = colorTable.White.c32();
+                        pPixelsfont[offset + x + y * 512] = colorTable.White;
                     }
                     if (*pCharPixels == 1) {
                         // add to shadow
-                        pPixelsshadow[offset + x + y * 512] = colorTable.White.c32();
+                        pPixelsshadow[offset + x + y * 512] = colorTable.White;
                     }
                 }
                 ++pCharPixels;
@@ -195,9 +195,9 @@ void GUIFont::DrawTextLine(const std::string &text, Color uDefaultColor, Pointi 
     // render->EndTextNew();
 }
 
-void DrawCharToBuff(uint32_t *draw_buff, uint8_t *pCharPixels, int uCharWidth, int uCharHeight,
+void DrawCharToBuff(Color *draw_buff, const uint8_t *pCharPixels, int uCharWidth, int uCharHeight,
     uint8_t *pFontPalette, Color draw_color, int line_width) {
-    uint8_t *pPixels = pCharPixels;
+    const uint8_t *pPixels = pCharPixels;
     for (int y = 0; y < uCharHeight; ++y) {
         for (int x = 0; x < uCharWidth; ++x) {
             uint8_t char_pxl = *pPixels++;
@@ -206,9 +206,9 @@ void DrawCharToBuff(uint32_t *draw_buff, uint8_t *pCharPixels, int uCharWidth, i
                     uint8_t r = pFontPalette[3];
                     uint8_t g = pFontPalette[4];
                     uint8_t b = pFontPalette[5];
-                    *draw_buff = Color(r, g, b).c32();
+                    *draw_buff = Color(r, g, b);
                 } else {
-                    *draw_buff = draw_color.c32();
+                    *draw_buff = draw_color;
                 }
             }
             ++draw_buff;
@@ -217,7 +217,7 @@ void DrawCharToBuff(uint32_t *draw_buff, uint8_t *pCharPixels, int uCharWidth, i
     }
 }
 
-void GUIFont::DrawTextLineToBuff(Color uColor, uint32_t *uX_buff_pos, const std::string &text, int line_width) {
+void GUIFont::DrawTextLineToBuff(Color uColor, Color *uX_buff_pos, const std::string &text, int line_width) {
     if (text.empty()) {
         return;
     }
@@ -226,7 +226,7 @@ void GUIFont::DrawTextLineToBuff(Color uColor, uint32_t *uX_buff_pos, const std:
 
     Color text_color = ui_current_text_color;
     size_t text_length = text.length();
-    uint32_t *uX_pos = uX_buff_pos;
+    Color *uX_pos = uX_buff_pos;
     for (size_t i = 0; i < text_length; ++i) {
         uint8_t c = text[i];
         if (IsCharValid(c)) {
@@ -252,7 +252,7 @@ void GUIFont::DrawTextLineToBuff(Color uColor, uint32_t *uX_buff_pos, const std:
                         uX_pos += pData->pMetrics[c].uLeftSpacing;
                     }
                     Color draw_color = text_color;
-                    uint8_t *pCharPixels = &pData->pFontData[pData->font_pixels_offset[c]];
+                    const uint8_t *pCharPixels = &pData->pFontData[pData->font_pixels_offset[c]];
                     if (text_color == Color()) {
                         draw_color = colorTable.White;
                     }
@@ -751,8 +751,8 @@ void GUIFont::DrawCreditsEntry(GUIFont *pSecondFont, int uFrameX, int uFrameY, u
     std::istringstream stream(work_string);
     std::getline(stream, work_string);
 
-    uint32_t *pPixels = (uint32_t*)image->GetPixels(IMAGE_FORMAT_A8B8G8R8);
-    uint32_t *curr_pixel_pos = &pPixels[image->GetWidth() * uFrameY];
+    Color *pPixels = const_cast<Color *>(image->GetPixels()); // TODO(captainurist): #images const_cast
+    Color *curr_pixel_pos = &pPixels[image->GetWidth() * uFrameY];
     if (!work_string.empty()) {
         int half_frameX = uFrameX >> 1;
         while (!stream.eof()) {

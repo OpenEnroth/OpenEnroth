@@ -4,9 +4,9 @@
 #include <string>
 
 struct StorylineRecord {
-    char *pText;            // 0
-    char *pPageTitle;       // 4
-    uint8_t uTime;  // 8
+    std::string pText;
+    std::string pPageTitle;
+    uint8_t uTime;
     char f_9;
     char f_A;
     char f_B;
@@ -20,5 +20,4 @@ struct StorylineText {
     // int field_4[87];
 };
 
-extern std::string pHistoryTXT_Raw;
 extern struct StorylineText *pStorylineText;

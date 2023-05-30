@@ -7,22 +7,7 @@
 #include "Utility/Memory/Blob.h"
 
 #include "Library/Binary/MemCopySerialization.h"
-
-enum class IMAGE_FORMAT {
-    IMAGE_FORMAT_R5G6B5 = 0,
-    IMAGE_FORMAT_A1R5G5B5 = 1,
-    IMAGE_FORMAT_A8R8G8B8 = 2,
-    IMAGE_FORMAT_R8G8B8 = 3,
-    IMAGE_FORMAT_R8G8B8A8 = 4,
-    IMAGE_FORMAT_A8B8G8R8 = 5,
-
-    IMAGE_FORMAT_FIRST = IMAGE_FORMAT_R5G6B5,
-    IMAGE_FORMAT_LAST = IMAGE_FORMAT_A8B8G8R8,
-    IMAGE_INVALID_FORMAT = -1,
-};
-using enum IMAGE_FORMAT;
-
-unsigned int IMAGE_FORMAT_BytesPerPixel(IMAGE_FORMAT format);
+#include "Library/Color/Color.h"
 
 class ImageLoader;
 class Image {
@@ -30,16 +15,22 @@ class Image {
     explicit Image(bool lazy_initialization = true): lazy_initialization(lazy_initialization) {}
     virtual ~Image() {}
 
-    static Image *Create(unsigned int width, unsigned int height,
-                         IMAGE_FORMAT format, const void *pixels = nullptr);
+    static Image *Create(unsigned int width, unsigned int height, const Color *pixels = nullptr);
     static Image *Create(ImageLoader *loader);
 
     int GetWidth();
     int GetHeight();
-    const void *GetPixels(IMAGE_FORMAT format);
-    const void *GetPalette();
-    const void *GetPalettePixels();
-    IMAGE_FORMAT GetFormat() const { return native_format; }
+    const Color *GetPixels();
+
+    /**
+     * @return                              Returns pointer to image R8G8B8 palette. Size 3 * 256.
+     */
+    const uint8_t *GetPalette();
+
+    /**
+     * @return                              Returns pointer to image pixels 8 bit palette lookup. Size 1 * width * height.
+     */
+    const uint8_t *GetPalettePixels();
 
     std::string *GetName();
 
@@ -52,10 +43,9 @@ class Image {
 
     size_t width = 0;
     size_t height = 0;
-    IMAGE_FORMAT native_format = IMAGE_INVALID_FORMAT;
-    IndexedArray<void *, IMAGE_FORMAT_FIRST, IMAGE_FORMAT_LAST> pixels = {{}};
-    void *palette24 = nullptr;
-    void *palettepixels = nullptr;
+    Color *pixels = nullptr;
+    uint8_t *palette24 = nullptr;
+    uint8_t *palettepixels = nullptr;
 
     virtual bool LoadImageData();
 };
@@ -99,7 +89,6 @@ struct TextureHeader {
                      // 0x0400 - don't free buffers (???)
 };
 #pragma pack(pop)
-
 MM_DECLARE_MEMCOPY_SERIALIZABLE(TextureHeader)
 
 struct Texture_MM7 {
@@ -174,19 +163,3 @@ struct OptionsMenuSkin {
     Image *uTextureID_ShowDamage;       // 507CB8
 };
 extern OptionsMenuSkin options_menu_skin;  // 507C60
-
-extern struct stru355 stru_4E82A4;  // = {0x20, 0x41, 0, 0x20, 0xFF0000, 0xFF00,
-                                    // 0xFF, 0xFF000000};  moved to texture.h
-extern struct stru355 stru_4EFCBC;  // = {0x20, 0x41, 0, 0x10, 0x7C00, 0x3E0,
-                                    // 0x1F, 0x8000};  moved to texture.h
-
-struct stru355 {
-    int field_0;
-    int field_4;
-    int field_8;
-    int field_C;
-    int field_10;
-    int field_14;
-    int field_18;
-    int field_1C;
-};

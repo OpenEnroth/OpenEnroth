@@ -67,6 +67,8 @@ struct Color {
 
     friend bool constexpr operator==(const Color &l, const Color &r) = default;
 };
+static_assert(sizeof(Color) == 4);
+static_assert(alignof(Color) == 1);
 
 
 using ColorTag = detail::ColorTag<Color>;

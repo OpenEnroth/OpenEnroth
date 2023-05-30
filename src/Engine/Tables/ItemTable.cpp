@@ -24,7 +24,6 @@ void ItemTable::Release() {
     pMonstersTXT_Raw.clear();
     pMonsterPlacementTXT_Raw.clear();
     pHostileTXT_Raw.clear();
-    pHistoryTXT_Raw.clear();
 }
 
 static void strtokSkipLines(int n) {

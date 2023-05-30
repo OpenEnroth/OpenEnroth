@@ -8,5 +8,4 @@
  */
 void initializeQuests();
 
-extern std::array<const char *, 513> pQuestTable;
-extern std::string pQuestsTXT_Raw;
+extern std::array<std::string, 513> pQuestTable;

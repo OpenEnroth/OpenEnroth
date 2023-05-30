@@ -6,7 +6,6 @@
 
 #include "Engine/ErrorHandling.h"
 #include "Engine/Graphics/IRender.h"
-#include "Engine/Graphics/ImageFormatConverter.h"
 #include "Engine/Graphics/PCX.h"
 #include "Engine/Graphics/Sprites.h"
 
@@ -27,9 +26,8 @@ static const std::unordered_set<std::string_view> transparentTextures = {
     "hwtrdrxsw"
 };
 
-uint32_t *MakeImageSolid(size_t width, size_t height,
-                         uint8_t *pixels, uint8_t *palette) {
-    uint32_t *res = new uint32_t[width * height];
+static Color *MakeImageSolid(size_t width, size_t height, uint8_t *pixels, uint8_t *palette) {
+    Color *res = new Color[width * height];
 
     for (unsigned int y = 0; y < height; ++y) {
         for (unsigned int x = 0; x < width; ++x) {
@@ -37,16 +35,15 @@ uint32_t *MakeImageSolid(size_t width, size_t height,
             auto r = palette[(index * 3) + 0];
             auto g = palette[(index * 3) + 1];
             auto b = palette[(index * 3) + 2];
-            res[y * width + x] = Color(r, g, b).c32();
+            res[y * width + x] = Color(r, g, b);
         }
     }
 
     return res;
 }
 
-uint32_t *MakeImageAlpha(size_t width, size_t height,
-                         uint8_t *pixels, uint8_t *palette) {
-    uint32_t *res = new uint32_t[width * height];
+static Color *MakeImageAlpha(size_t width, size_t height, uint8_t *pixels, uint8_t *palette) {
+    Color *res = new Color[width * height];
 
     for (unsigned int y = 0; y < height; ++y) {
         for (unsigned int x = 0; x < width; ++x) {
@@ -55,9 +52,9 @@ uint32_t *MakeImageAlpha(size_t width, size_t height,
             auto g = palette[(index * 3) + 1];
             auto b = palette[(index * 3) + 2];
             if (index == 0) {
-                res[y * width + x] = Color(0, 0, 0, 0).c32();
+                res[y * width + x] = Color(0, 0, 0, 0);
             } else {
-                res[y * width + x] = Color(r, g, b).c32();
+                res[y * width + x] = Color(r, g, b);
             }
         }
     }
@@ -65,10 +62,8 @@ uint32_t *MakeImageAlpha(size_t width, size_t height,
     return res;
 }
 
-uint32_t *MakeImageColorKey(size_t width, size_t height,
-                            uint8_t *pixels, uint8_t *palette,
-                            Color color_key) {
-    uint32_t *res = new uint32_t[width * height];
+static Color *MakeImageColorKey(size_t width, size_t height, uint8_t *pixels, uint8_t *palette, Color color_key) {
+    Color *res = new Color[width * height];
 
     for (unsigned int y = 0; y < height; ++y) {
         for (unsigned int x = 0; x < width; ++x) {
@@ -77,9 +72,9 @@ uint32_t *MakeImageColorKey(size_t width, size_t height,
             auto g = palette[(index * 3) + 1];
             auto b = palette[(index * 3) + 2];
             if (Color(r, g, b) == color_key) {
-                res[y * width + x] = 0;
+                res[y * width + x] = Color();
             } else {
-                res[y * width + x] = Color(r, g, b).c32();
+                res[y * width + x] = Color(r, g, b);
             }
         }
     }
@@ -87,12 +82,11 @@ uint32_t *MakeImageColorKey(size_t width, size_t height,
     return res;
 }
 
-bool Paletted_Img_Loader::Load(size_t *out_width, size_t *out_height, void **out_pixels,
-                               IMAGE_FORMAT *out_format, void **out_palette, void **out_palettepixels) {
+bool Paletted_Img_Loader::Load(size_t *out_width, size_t *out_height, Color **out_pixels,
+                               uint8_t **out_palette, uint8_t **out_palettepixels) {
     *out_width = 0;
     *out_height = 0;
     *out_pixels = nullptr;
-    *out_format = IMAGE_INVALID_FORMAT;
     *out_palette = nullptr;
     *out_palettepixels = nullptr;
 
@@ -123,20 +117,17 @@ bool Paletted_Img_Loader::Load(size_t *out_width, size_t *out_height, void **out
 
     *out_width = tex->header.uTextureWidth;
     *out_height = tex->header.uTextureHeight;
-    *out_format = IMAGE_FORMAT_A8B8G8R8;
 
     return true;
 }
 
-bool ColorKey_LOD_Loader::Load(size_t *out_width, size_t *out_height, void **out_pixels,
-                               IMAGE_FORMAT *out_format, void **out_palette, void **out_palettepixels) {
+bool ColorKey_LOD_Loader::Load(size_t *out_width, size_t *out_height, Color **out_pixels,
+                               uint8_t **out_palette, uint8_t **out_palettepixels) {
     *out_width = 0;
     *out_height = 0;
     *out_pixels = nullptr;
-    *out_format = IMAGE_INVALID_FORMAT;
 
-    Texture_MM7 *tex = lod->GetTexture(
-        lod->LoadTexture(resource_name, TEXTURE_24BIT_PALETTE));
+    Texture_MM7 *tex = lod->GetTexture(lod->LoadTexture(resource_name, TEXTURE_24BIT_PALETTE));
     if ((tex == nullptr) || (tex->pPalette24 == nullptr) ||
         (tex->paletted_pixels == nullptr)) {
         return false;
@@ -158,21 +149,18 @@ bool ColorKey_LOD_Loader::Load(size_t *out_width, size_t *out_height, void **out
 
     *out_width = tex->header.uTextureWidth;
     *out_height = tex->header.uTextureHeight;
-    *out_format = IMAGE_FORMAT_A8B8G8R8;
     *out_palette = tex->pPalette24;
 
     return true;
 }
 
-bool Image16bit_LOD_Loader::Load(size_t *out_width, size_t *out_height, void **out_pixels,
-                                 IMAGE_FORMAT *out_format, void **out_palette, void **out_palettepixels) {
+bool Image16bit_LOD_Loader::Load(size_t *out_width, size_t *out_height, Color **out_pixels,
+                                 uint8_t **out_palette, uint8_t **out_palettepixels) {
     *out_width = 0;
     *out_height = 0;
     *out_pixels = nullptr;
-    *out_format = IMAGE_INVALID_FORMAT;
 
-    Texture_MM7 *tex = lod->GetTexture(
-        lod->LoadTexture(resource_name, TEXTURE_24BIT_PALETTE));
+    Texture_MM7 *tex = lod->GetTexture(lod->LoadTexture(resource_name, TEXTURE_24BIT_PALETTE));
     if ((tex == nullptr) || (tex->pPalette24 == nullptr) ||
         (tex->paletted_pixels == nullptr)) {
         return false;
@@ -194,21 +182,18 @@ bool Image16bit_LOD_Loader::Load(size_t *out_width, size_t *out_height, void **o
 
     *out_width = tex->header.uTextureWidth;
     *out_height = tex->header.uTextureHeight;
-    *out_format = IMAGE_FORMAT_A8B8G8R8;
     *out_palette = tex->pPalette24;
 
     return true;
 }
 
-bool Alpha_LOD_Loader::Load(size_t *out_width, size_t *out_height,
-                            void **out_pixels, IMAGE_FORMAT *out_format, void **out_palette, void **out_palettepixels) {
+bool Alpha_LOD_Loader::Load(size_t *out_width, size_t *out_height, Color **out_pixels,
+                            uint8_t **out_palette, uint8_t **out_palettepixels) {
     *out_width = 0;
     *out_height = 0;
     *out_pixels = nullptr;
-    *out_format = IMAGE_INVALID_FORMAT;
 
-    Texture_MM7 *tex = lod->GetTexture(
-        lod->LoadTexture(resource_name, TEXTURE_24BIT_PALETTE));
+    Texture_MM7 *tex = lod->GetTexture(lod->LoadTexture(resource_name, TEXTURE_24BIT_PALETTE));
     if ((tex == nullptr) || (tex->pPalette24 == nullptr) ||
         (tex->paletted_pixels == nullptr)) {
         return false;
@@ -230,16 +215,14 @@ bool Alpha_LOD_Loader::Load(size_t *out_width, size_t *out_height,
 
     *out_width = tex->header.uTextureWidth;
     *out_height = tex->header.uTextureHeight;
-    *out_format = IMAGE_FORMAT_A8B8G8R8;
     *out_palette = tex->pPalette24;
 
     return true;
 }
 
 bool PCX_Loader::InternalLoad(const void *file, size_t filesize,
-                              size_t *width, size_t *height,
-                              void **pixels, IMAGE_FORMAT *format) {
-    std::unique_ptr<uint8_t[]> result = PCX::Decode(Blob::view(file, filesize), width, height, format);
+                              size_t *width, size_t *height, Color **pixels) {
+    std::unique_ptr<Color[]> result = PCX::Decode(Blob::view(file, filesize), width, height);
     if (!result)
         return false;
 
@@ -247,24 +230,22 @@ bool PCX_Loader::InternalLoad(const void *file, size_t filesize,
     return true;
 }
 
-bool PCX_File_Loader::Load(size_t *width, size_t *height,
-                           void **pixels, IMAGE_FORMAT *format, void **out_palette, void **out_palettepixels) {
+bool PCX_File_Loader::Load(size_t *width, size_t *height, Color **pixels,
+                           uint8_t **out_palette, uint8_t **out_palettepixels) {
     *width = 0;
     *height = 0;
     *pixels = nullptr;
-    *format = IMAGE_INVALID_FORMAT;
     *out_palette = nullptr;
 
     Blob buffer = Blob::fromFile(makeDataPath(this->resource_name));
-    return InternalLoad(buffer.data(), buffer.size(), width, height, pixels, format);
+    return InternalLoad(buffer.data(), buffer.size(), width, height, pixels);
 }
 
-bool PCX_LOD_Raw_Loader::Load(size_t *width, size_t *height,
-                              void **pixels, IMAGE_FORMAT *format, void **out_palette, void **out_palettepixels) {
+bool PCX_LOD_Raw_Loader::Load(size_t *width, size_t *height, Color **pixels,
+                              uint8_t **out_palette, uint8_t **out_palettepixels) {
     *width = 0;
     *height = 0;
     *pixels = nullptr;
-    *format = IMAGE_INVALID_FORMAT;
     *out_palette = nullptr;
 
     Blob data = lod->LoadRaw(resource_name);
@@ -273,16 +254,15 @@ bool PCX_LOD_Raw_Loader::Load(size_t *width, size_t *height,
         return false;
     }
 
-    return InternalLoad(data.data(), data.size(), width, height, pixels, format);
+    return InternalLoad(data.data(), data.size(), width, height, pixels);
 }
 
-bool PCX_LOD_Compressed_Loader::Load(size_t *width, size_t *height,
-                                     void **pixels, IMAGE_FORMAT *format, void **out_palette, void **out_palettepixels) {
+bool PCX_LOD_Compressed_Loader::Load(size_t *width, size_t *height, Color **pixels,
+                                     uint8_t **out_palette, uint8_t **out_palettepixels) {
     *width = 0;
     *height = 0;
     *pixels = nullptr;
     *out_palette = nullptr;
-    *format = IMAGE_INVALID_FORMAT;
 
     Blob pcx_data = lod->LoadCompressedTexture(resource_name);
     if (!pcx_data) {
@@ -290,11 +270,11 @@ bool PCX_LOD_Compressed_Loader::Load(size_t *width, size_t *height,
         return false;
     }
 
-    return InternalLoad(pcx_data.data(), pcx_data.size(), width, height, pixels, format);
+    return InternalLoad(pcx_data.data(), pcx_data.size(), width, height, pixels);
 }
 
-static void ProcessTransparentPixel(uint8_t *pixels, uint8_t *palette,
-                                    size_t x, size_t y, size_t w, size_t h, uint8_t *rgba) {
+static void ProcessTransparentPixel(const uint8_t *pixels, const uint8_t *palette,
+                                    size_t x, size_t y, size_t w, size_t h, Color *rgba) {
     size_t count = 0;
     size_t r = 0, g = 0, b = 0;
 
@@ -336,21 +316,18 @@ static void ProcessTransparentPixel(uint8_t *pixels, uint8_t *palette,
         b /= count;
     }
 
-    rgba[0] = static_cast<uint8_t>(r);
-    rgba[1] = static_cast<uint8_t>(g);
-    rgba[2] = static_cast<uint8_t>(b);
-    rgba[3] = 0;
+    *rgba = Color(static_cast<uint8_t>(r), static_cast<uint8_t>(g), static_cast<uint8_t>(b), 0);
 }
 
-bool Bitmaps_LOD_Loader::Load(size_t *width, size_t *height,
-                              void **out_pixels, IMAGE_FORMAT *format, void **out_palette, void **out_palettepixels) {
+bool Bitmaps_LOD_Loader::Load(size_t *width, size_t *height, Color **out_pixels,
+                              uint8_t **out_palette, uint8_t **out_palettepixels) {
     Texture_MM7 *tex = lod->GetTexture(lod->LoadTexture(this->resource_name));
     int num_pixels = tex->header.uTextureWidth * tex->header.uTextureHeight;
 
     Assert(tex->paletted_pixels);
     Assert(tex->pPalette24);
 
-    uint8_t *pixels = new uint8_t[num_pixels * 4];
+    Color *pixels = new Color[num_pixels];
     size_t w = tex->header.uTextureWidth;
     size_t h = tex->header.uTextureHeight;
 
@@ -362,17 +339,13 @@ bool Bitmaps_LOD_Loader::Load(size_t *width, size_t *height,
 
             int pal = tex->paletted_pixels[p];
             if (haveTransparency && pal == 0) {
-                ProcessTransparentPixel(tex->paletted_pixels, tex->pPalette24, x, y, w, h, &pixels[p * 4]);
+                ProcessTransparentPixel(tex->paletted_pixels, tex->pPalette24, x, y, w, h, &pixels[p]);
             } else {
-                pixels[p * 4 + 0] = tex->pPalette24[3 * pal + 0];
-                pixels[p * 4 + 1] = tex->pPalette24[3 * pal + 1];
-                pixels[p * 4 + 2] = tex->pPalette24[3 * pal + 2];
-                pixels[p * 4 + 3] = 255;
+                pixels[p] = Color(tex->pPalette24[3 * pal + 0], tex->pPalette24[3 * pal + 1], tex->pPalette24[3 * pal + 2]);
             }
         }
     }
 
-    *format = IMAGE_FORMAT_A8B8G8R8;
     *width = tex->header.uTextureWidth;
     *height = tex->header.uTextureHeight;
     *out_pixels = pixels;
@@ -380,23 +353,20 @@ bool Bitmaps_LOD_Loader::Load(size_t *width, size_t *height,
     return true;
 }
 
-bool Sprites_LOD_Loader::Load(size_t *width, size_t *height,
-                              void **out_pixels, IMAGE_FORMAT *format, void **out_palette, void **out_palettepixels) {
+bool Sprites_LOD_Loader::Load(size_t *width, size_t *height, Color **out_pixels,
+                              uint8_t **out_palette, uint8_t **out_palettepixels) {
     *width = 0;
     *height = 0;
     *out_pixels = nullptr;
     *out_palette = nullptr;
-    *format = IMAGE_INVALID_FORMAT;
 
     Sprite *pSprite = lod->getSprite(this->resource_name);
-    //Assert(thissprite->texture-> tex->paletted_pixels);
-    //Assert(tex->pPalette24);
 
     size_t w = pSprite->sprite_header->uWidth;
     size_t h = pSprite->sprite_header->uHeight;
     int numpix = w * h;
 
-    uint8_t *pixels = new uint8_t[numpix * 4];
+    Color *pixels = new Color[numpix];
     memset(pixels, 0, numpix * 4);
 
     for (size_t y = 0; y < h; y++) {
@@ -415,14 +385,10 @@ bool Sprites_LOD_Loader::Load(size_t *width, size_t *height,
                 a = 255;
             }
 
-            pixels[p * 4] = r;
-            pixels[p * 4 + 1] = g;
-            pixels[p * 4 + 2] = b;
-            pixels[p * 4 + 3] = a;
+            pixels[p] = Color(r, g, b, a);
         }
     }
 
-    *format = IMAGE_FORMAT_A8B8G8R8;
     *width = w;
     *height = h;
     *out_pixels = pixels;
