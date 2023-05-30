@@ -4,7 +4,6 @@
 #include "Utility/String.h"
 
 std::array<Award, 105> pAwards;
-std::string pAwardsTXT_Raw;
 
 void initializeAwards() {
     int i;
@@ -15,8 +14,8 @@ void initializeAwards() {
     char *tmp_pos;
     int decode_step;
 
-    pAwardsTXT_Raw = engine->_gameResourceManager->getEventsFile("awards.txt").string_view();
-    strtok(pAwardsTXT_Raw.data(), "\r");
+    std::string txtRaw{ engine->_gameResourceManager->getEventsFile("awards.txt").string_view() };
+    strtok(txtRaw.data(), "\r");
 
     for (i = 1; i < 105; ++i) {
         test_string = strtok(NULL, "\r") + 1;

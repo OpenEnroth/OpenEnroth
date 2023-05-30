@@ -32,7 +32,7 @@ const IndexedArray<const char *, PartyAlignment_Good, PartyAlignment_Evil> Dialo
 };
 
 void GameUI_InitializeDialogue(Actor *actor, int bPlayerSaysHello) {
-    dword_A74CDC = -1;
+    currentAddressingAwardBit = -1;
     pNPCStats->dword_AE336C_LastMispronouncedNameFirstLetter = -1;
     pEventTimer->Pause();
     pMiscTimer->Pause();

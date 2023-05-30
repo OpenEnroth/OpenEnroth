@@ -2536,7 +2536,7 @@ std::vector<Vec3f> pTerrainNormals;
 std::array<unsigned short, 128 * 128 * 2> pTerrainNormalIndices;
 std::array<unsigned int, 128 * 128 * 2> pTerrainSomeOtherData;
 unsigned int uPlayerCreationUI_SelectedCharacter;
-int dword_A74CDC;
+int currentAddressingAwardBit;
 // int dword_F8B144; // nexindex [-1] to the following
 std::array<int16_t, 6> weapons_Ypos;           // word_F8B158
 int guild_membership_approved;

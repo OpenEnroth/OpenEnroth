@@ -4,7 +4,6 @@
 #include "Utility/String.h"
 
 std::array<Autonote, 196> pAutonoteTxt;
-std::string pAutonoteTXT_Raw;
 
 void initializeAutonotes() {
     int i;
@@ -15,8 +14,8 @@ void initializeAutonotes() {
     char *tmp_pos;
     int decode_step;
 
-    pAutonoteTXT_Raw = engine->_gameResourceManager->getEventsFile("autonote.txt").string_view();
-    strtok(pAutonoteTXT_Raw.data(), "\r");
+    std::string txtRaw{ engine->_gameResourceManager->getEventsFile("autonote.txt").string_view() };
+    strtok(txtRaw.data(), "\r");
 
     for (i = 0; i < 195; ++i) {
         test_string = strtok(NULL, "\r") + 1;

@@ -99,9 +99,9 @@ DIALOGUE_TYPE _dword_F8B1D8_last_npc_topic_menu;
 AwardType dword_F8B1AC_award_bit_number;
 PLAYER_SKILL_TYPE dword_F8B1AC_skill_being_taught; // Address the same as above --- splitting a union into two variables.
 
-std::array<short, 28> word_4EE150 = {{1,  2,  3,  4,  5,  7,  32, 33, 36, 37,
-                                      38, 40, 41, 42, 43, 45, 46, 47, 48, 49,
-                                      50, 51, 52, 53, 54, 55, 56, 60}};
+std::array<int, 28> possibleAddressingAwardBits = {{1,  2,  3,  4,  5,  7,  32, 33, 36, 37,
+                                                    38, 40, 41, 42, 43, 45, 46, 47, 48, 49,
+                                                    50, 51, 52, 53, 54, 55, 56, 60}};
 
 void SetCurrentMenuID(MENU_STATE uMenu) {
     sCurrentMenuID = uMenu;
@@ -1579,11 +1579,9 @@ std::string BuildDialogueString(std::string &str, uint8_t uPlayerID, ItemGen *a3
     Player *pPlayer;       // ebx@3
     const char *pText;     // esi@7
     int64_t v18;    // qax@18
-    int v21;               // ecx@34
     int v29;               // eax@68
-    int16_t v55[56] {};       // [sp+10h] [bp-128h]@34
+    std::vector<int> addressingBits;
     SummonedItem v56;      // [sp+80h] [bp-B8h]@107
-    int v63;               // [sp+12Ch] [bp-Ch]@32
 
     pPlayer = &pParty->pPlayers[uPlayerID];
 
@@ -1595,7 +1593,6 @@ std::string BuildDialogueString(std::string &str, uint8_t uPlayerID, ItemGen *a3
 
     std::string result;
 
-    // pText = a4;
     uint len = str.length();
     for (int i = 0, dst = 0; i < len; ++i) {
         char c = str[i];  // skip through string till we find insertion point
@@ -1646,24 +1643,18 @@ std::string BuildDialogueString(std::string &str, uint8_t uPlayerID, ItemGen *a3
                     result += localization->GetString(LSTR_SIR);
                 break;
             case 8:
-                v63 = 0;
-                for (uint _i = 0; _i < 28; ++_i) {
-                    if (pPlayer->_achievedAwardsBits[word_4EE150[i]]) {
-                        v21 = v63;
-                        ++v63;
-                        v55[v63] = word_4EE150[i];
+                for (int bit : possibleAddressingAwardBits) {
+                    if (pPlayer->_achievedAwardsBits[bit]) {
+                        addressingBits.push_back(bit);
                     }
                 }
-                if (v63) {
-                    if (dword_A74CDC == -1) dword_A74CDC = vrng->random(v63);
-                    pText =
-                        pAwards[v55[dword_A74CDC]]
-                        .pText;  // (char *)dword_723E80_award_related[2
-                                 // * v55[v24]];
+                if (addressingBits.size()) {
+                    if (currentAddressingAwardBit == -1)
+                        currentAddressingAwardBit = addressingBits[vrng->random(addressingBits.size())];
+                    result += pAwards[currentAddressingAwardBit].pText;
                 } else {
-                    pText = pNPCTopics[55].pText;
+                    result += pNPCTopics[55].pText;
                 }
-                result += pText;
                 break;
             case 9:
                 if (npc->uSex)
