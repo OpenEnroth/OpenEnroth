@@ -40,7 +40,7 @@ void GUIWindow_Tavern::mainDialogue() {
     std::string topic3 = fmt::format("{::}", color.tag()) + localization->GetString(LSTR_LEARN_SKILLS);
     int pTopic3Height = pFontArrus->CalcTextHeight(topic3, dialog_window.uFrameWidth, 0);
 
-    int pTopic4Height;
+    int pTopic4Height = 0;
     std::string topic4;
     if (houseId() != HOUSE_TAVERN_EMERALD_ISLE) {
         color = pDialogueWindow->pCurrentPosActiveItem == 5 ? colorTable.PaleCanary : colorTable.White;
