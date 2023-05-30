@@ -1275,29 +1275,14 @@ void SimpleHouseDialog() {
         house_window.uFrameX = SIDE_TEXT_BOX_POS_X;
         house_window.uFrameWidth = SIDE_TEXT_BOX_WIDTH;
         house_window.uFrameZ = SIDE_TEXT_BOX_POS_Z;
-        if (!pTransitionStrings[uHouse_ExitPic]) {
-            auto str = localization->FormatString(
-                LSTR_FMT_ENTER_S,
-                pMapStats->pInfos[uHouse_ExitPic].pName.c_str()
-            );
-            house_window.DrawTitleText(
-                pFontCreate, 0,
-                (212 - pFontCreate->CalcTextHeight(
-                    str, house_window.uFrameWidth, 0)) /
-                2 +
-                101,
-                Color(), str, 3);
+        if (pTransitionStrings[uHouse_ExitPic].empty()) {
+            auto str = localization->FormatString(LSTR_FMT_ENTER_S, pMapStats->pInfos[uHouse_ExitPic].pName.c_str());
+            house_window.DrawTitleText(pFontCreate, 0, (212 - pFontCreate->CalcTextHeight(str, house_window.uFrameWidth, 0)) / 2 + 101, Color(), str, 3);
             return;
         }
 
-        house_window.DrawTitleText(
-            pFontCreate, 0,
-            (212 -
-                pFontCreate->CalcTextHeight(pTransitionStrings[uHouse_ExitPic],
-                    house_window.uFrameWidth, 0)) /
-            2 +
-            101,
-            Color(), pTransitionStrings[uHouse_ExitPic], 3);
+        int vertMargin = (212 - pFontCreate->CalcTextHeight(pTransitionStrings[uHouse_ExitPic], house_window.uFrameWidth, 0)) / 2 + 101;
+        house_window.DrawTitleText(pFontCreate, 0, vertMargin, Color(), pTransitionStrings[uHouse_ExitPic], 3);
         return;
     }
     house_window.uFrameWidth -= 10;

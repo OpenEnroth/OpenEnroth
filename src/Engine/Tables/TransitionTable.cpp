@@ -2,11 +2,9 @@
 
 #include "Engine/Engine.h"
 
-std::array<const char *, 465> pTransitionStrings = {{"", nullptr}};
-std::string pTransitionsTXT_Raw;
+std::array<std::string, 465> pTransitionStrings;
 
 void initializeTransitions() {
-    int i;
     char *test_string;
     unsigned char c;
     bool break_loop;
@@ -14,10 +12,11 @@ void initializeTransitions() {
     char *tmp_pos;
     int decode_step;
 
-    pTransitionsTXT_Raw = engine->_gameResourceManager->getEventsFile("trans.txt").string_view();
-    strtok(pTransitionsTXT_Raw.data(), "\r");
+    std::string txtRaw{ engine->_gameResourceManager->getEventsFile("trans.txt").string_view() };
+    strtok(txtRaw.data(), "\r");
 
-    for (i = 0; i < 464; ++i) {
+    pTransitionStrings[0] = "";
+    for (int i = 1; i < pTransitionStrings.size(); ++i) {
         test_string = strtok(NULL, "\r") + 1;
         break_loop = false;
         decode_step = 0;
@@ -33,7 +32,7 @@ void initializeTransitions() {
             *tmp_pos = 0;
             if (temp_str_len) {
                 if (decode_step == 1)
-                    pTransitionStrings[i + 1] = removeQuotes(test_string);
+                    pTransitionStrings[i] = removeQuotes(test_string);
             } else {
                 break_loop = true;
             }

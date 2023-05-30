@@ -4498,7 +4498,7 @@ void Player::SetVariable(VariableType var_type, signed int var_value) {
     if (var_type >= VAR_History_0 && var_type <= VAR_History_28) {
         if (!pParty->PartyTimes.HistoryEventTimes[std::to_underlying(var_type) - std::to_underlying(VAR_History_0)]) {
             pParty->PartyTimes.HistoryEventTimes[std::to_underlying(var_type) - std::to_underlying(VAR_History_0)] = pParty->GetPlayingTime();
-            if (pStorylineText->StoreLine[std::to_underlying(var_type) - std::to_underlying(VAR_History_0)].pText) {
+            if (!pStorylineText->StoreLine[std::to_underlying(var_type) - std::to_underlying(VAR_History_0)].pText.empty()) {
                 bFlashHistoryBook = true;
                 PlayAwardSound();
             }
@@ -4599,7 +4599,7 @@ void Player::SetVariable(VariableType var_type, signed int var_value) {
             PlayAwardSound_Anim();
             return;
         case VAR_QBits_QuestsDone:
-            if (!pParty->_questBits[var_value] && pQuestTable[var_value]) {
+            if (!pParty->_questBits[var_value] && !pQuestTable[var_value].empty()) {
                 bFlashQuestBook = true;
                 spell_fx_renderer->SetPlayerBuffAnim(BECOME_MAGIC_GUILD_MEMBER, GetPlayerIndex());
                 PlayAwardSound();
@@ -5107,7 +5107,7 @@ void Player::AddVariable(VariableType var_type, signed int val) {
     if (var_type >= VAR_History_0 && var_type <= VAR_History_28) {
         if (!pParty->PartyTimes.HistoryEventTimes[std::to_underlying(var_type) - std::to_underlying(VAR_History_0)]) {
             pParty->PartyTimes.HistoryEventTimes[std::to_underlying(var_type) - std::to_underlying(VAR_History_0)] = pParty->GetPlayingTime();
-            if (pStorylineText->StoreLine[std::to_underlying(var_type) - std::to_underlying(VAR_History_0)].pText) {
+            if (!pStorylineText->StoreLine[std::to_underlying(var_type) - std::to_underlying(VAR_History_0)].pText.empty()) {
                 bFlashHistoryBook = true;
                 PlayAwardSound();
             }
@@ -5181,7 +5181,7 @@ void Player::AddVariable(VariableType var_type, signed int val) {
             PlayAwardSound_Anim97();
             return;
         case VAR_QBits_QuestsDone:
-            if (!pParty->_questBits[val] && pQuestTable[val]) {
+            if (!pParty->_questBits[val] && !pQuestTable[val].empty()) {
                 bFlashQuestBook = true;
                 PlayAwardSound_Anim97_Face(SPEECH_QuestGot);
             }

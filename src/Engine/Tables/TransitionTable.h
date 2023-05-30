@@ -7,5 +7,4 @@
  */
 void initializeTransitions();
 
-extern std::array<const char *, 465> pTransitionStrings;
-extern std::string pTransitionsTXT_Raw;
+extern std::array<std::string, 465> pTransitionStrings;
