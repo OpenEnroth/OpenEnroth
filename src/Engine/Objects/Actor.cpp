@@ -3769,12 +3769,12 @@ void StatusBarItemFound(int num_gold_found, std::string &item_unidentified_name)
         GameUI_SetStatusBar(
             LSTR_FMT_YOU_FOUND_GOLD_AND_ITEM,
             num_gold_found,
-            item_unidentified_name
+            item_unidentified_name.c_str()
         );
     } else {
         GameUI_SetStatusBar(
             LSTR_FMT_YOU_FOUND_ITEM,
-            item_unidentified_name
+            item_unidentified_name.c_str()
         );
     }
 }

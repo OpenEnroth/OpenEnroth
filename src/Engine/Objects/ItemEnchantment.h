@@ -1,5 +1,7 @@
 #pragma once
 
+#include <string>
+
 #include "Engine/Objects/Items.h"
 
 #include "Utility/IndexedArray.h"
