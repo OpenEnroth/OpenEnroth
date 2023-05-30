@@ -7543,8 +7543,7 @@ bool Player::SetBeacon(size_t index, size_t power) {
     LloydBeacon beacon;
 
     beacon.image = render->TakeScreenshot(92, 68);
-    IMAGE_FORMAT format = beacon.image->GetFormat();
-    beacon.image = render->CreateTexture_Blank(beacon.image->GetWidth(), beacon.image->GetHeight(), format, beacon.image->GetPixels(format));
+    beacon.image = render->CreateTexture_Blank(beacon.image->GetWidth(), beacon.image->GetHeight(), beacon.image->GetPixels());
     beacon.uBeaconTime = GameTime(pParty->GetPlayingTime() + GameTime::FromSeconds(power));
     beacon.PartyPos_X = pParty->vPosition.x;
     beacon.PartyPos_Y = pParty->vPosition.y;

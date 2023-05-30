@@ -4,7 +4,6 @@
 
 #include "Engine/Engine.h"
 
-#include "Engine/Graphics/ImageFormatConverter.h"
 #include "Engine/Graphics/ImageLoader.h"
 #include "Engine/Graphics/Texture.h"
 
@@ -14,34 +13,6 @@
 
 
 struct TextureFrameTable *pTextureFrameTable;
-
-stru355 stru_4E82A4 = {0x20, 0x41, 0, 0x20, 0xFF0000, 0xFF00, 0xFF, static_cast<int>(0xFF000000)};
-stru355 stru_4EFCBC = {0x20, 0x41, 0, 0x10, 0x7C00, 0x3E0, 0x1F, 0x8000};
-
-// Texture_MM7 pTex_F7CE30;
-
-MM_DEFINE_ENUM_MAGIC_SERIALIZATION_FUNCTIONS(IMAGE_FORMAT)
-
-unsigned int IMAGE_FORMAT_BytesPerPixel(IMAGE_FORMAT format) {
-    switch (format) {
-        case IMAGE_FORMAT_R5G6B5:
-            return 2;
-        case IMAGE_FORMAT_A1R5G5B5:
-            return 2;
-        case IMAGE_FORMAT_A8R8G8B8:
-            return 4;
-        case IMAGE_FORMAT_R8G8B8:
-            return 3;
-        case IMAGE_FORMAT_R8G8B8A8:
-            return 4;
-        case IMAGE_FORMAT_A8B8G8R8:
-            return 4;
-
-        default:
-            Error("Invalid format: %d", format);
-            return 0;
-    }
-}
 
 Texture *TextureFrame::GetTexture() {
     if (!this->tex) {
@@ -152,11 +123,11 @@ Image *Image::Create(ImageLoader *loader) {
 
 bool Image::LoadImageData() {
     if (!initialized) {
-        void *data = nullptr;
-        void *palette = nullptr;
-        initialized = loader->Load(&width, &height, &data, &native_format, &palette);
-        if (initialized && native_format != IMAGE_INVALID_FORMAT) {
-            pixels[native_format] = data;
+        Color *data = nullptr;
+        uint8_t *palette = nullptr;
+        initialized = loader->Load(&width, &height, &data, &palette);
+        if (initialized) {
+            pixels = data;
             palette24 = palette;
         }
     }
@@ -192,164 +163,50 @@ int Image::GetHeight() {
     return 0;
 }
 
-Image *Image::Create(unsigned int width, unsigned int height,
-                     IMAGE_FORMAT format, const void *pixels) {
+Image *Image::Create(unsigned int width, unsigned int height, const Color *pixels) {
     if (width == 0 || height == 0) __debugbreak();
 
     Image *img = new Image(false);
-    if (img) {
-        img->initialized = true;
-        img->width = width;
-        img->height = height;
-        img->native_format = format;
-        unsigned int num_pixels = img->GetWidth() * img->GetHeight();
-        unsigned int num_pixels_bytes =
-            num_pixels * IMAGE_FORMAT_BytesPerPixel(format);
-        img->pixels[format] = new unsigned char[num_pixels_bytes];
-        if (pixels) {
-            memcpy(img->pixels[format], pixels, num_pixels_bytes);
-        } else {
-            memset(img->pixels[format], 0, num_pixels_bytes);
-        }
 
-        return img;
-
+    img->initialized = true;
+    img->width = width;
+    img->height = height;
+    unsigned int num_pixels = img->GetWidth() * img->GetHeight();
+    unsigned int num_pixels_bytes = num_pixels * sizeof(Color);
+    img->pixels = new Color[num_pixels];
+    if (pixels) {
+        memcpy(img->pixels, pixels, num_pixels_bytes);
     } else {
-        return nullptr;
+        memset(img->pixels, 0, num_pixels_bytes);
     }
+
+    return img;
 }
 
-const void *Image::GetPixels(IMAGE_FORMAT format) {
-    if (!initialized) {
+const Color *Image::GetPixels() {
+    if (!initialized)
         LoadImageData();
-    }
-
-    if (initialized) {
-        if (this->pixels[format]) {
-            return this->pixels[format];
-        }
-
-        auto native_pixels = this->pixels[this->native_format];
-        if (native_pixels) {
-            static constexpr IndexedArray<IndexedArray<ImageFormatConverter, IMAGE_FORMAT_FIRST, IMAGE_FORMAT_LAST>, IMAGE_FORMAT_FIRST, IMAGE_FORMAT_LAST> converters = {
-                {IMAGE_FORMAT_R5G6B5, {
-                    {IMAGE_FORMAT_R5G6B5,       nullptr},
-                    {IMAGE_FORMAT_A1R5G5B5,     nullptr},
-                    {IMAGE_FORMAT_A8R8G8B8,     nullptr},
-                    {IMAGE_FORMAT_R8G8B8,       nullptr},
-                    {IMAGE_FORMAT_R8G8B8A8,     nullptr},
-                    {IMAGE_FORMAT_A8B8G8R8,     Image_R5G6B5_to_A8B8G8R8}
-                }},
-
-                {IMAGE_FORMAT_A1R5G5B5, {
-                    {IMAGE_FORMAT_R5G6B5,       nullptr},
-                    {IMAGE_FORMAT_A1R5G5B5,     nullptr},
-                    {IMAGE_FORMAT_A8R8G8B8,     nullptr},
-                    {IMAGE_FORMAT_R8G8B8,       nullptr},
-                    {IMAGE_FORMAT_R8G8B8A8,     nullptr},
-                    {IMAGE_FORMAT_A8B8G8R8,     Image_A1R5G5B5_to_A8B8G8R8}
-                }},
-
-                {IMAGE_FORMAT_A8R8G8B8, {
-                    {IMAGE_FORMAT_R5G6B5,       nullptr},
-                    {IMAGE_FORMAT_A1R5G5B5,     nullptr},
-                    {IMAGE_FORMAT_A8R8G8B8,     nullptr},
-                    {IMAGE_FORMAT_R8G8B8,       nullptr},
-                    {IMAGE_FORMAT_R8G8B8A8,     nullptr},
-                    {IMAGE_FORMAT_A8B8G8R8,     Image_A8R8G8B8_to_A8B8G8R8}
-                }},
-
-                {IMAGE_FORMAT_R8G8B8, {
-                    {IMAGE_FORMAT_R5G6B5,       nullptr},
-                    {IMAGE_FORMAT_A1R5G5B5,     nullptr},
-                    {IMAGE_FORMAT_A8R8G8B8,     nullptr},
-                    {IMAGE_FORMAT_R8G8B8,       nullptr},
-                    {IMAGE_FORMAT_R8G8B8A8,     nullptr},
-                    {IMAGE_FORMAT_A8B8G8R8,     Image_R8G8B8_to_A8B8G8R8}
-                }},
-
-                {IMAGE_FORMAT_R8G8B8A8, {
-                    {IMAGE_FORMAT_R5G6B5,       nullptr},
-                    {IMAGE_FORMAT_A1R5G5B5,     nullptr},
-                    {IMAGE_FORMAT_A8R8G8B8,     nullptr},
-                    {IMAGE_FORMAT_R8G8B8,       nullptr},
-                    {IMAGE_FORMAT_R8G8B8A8,     nullptr},
-                    {IMAGE_FORMAT_A8B8G8R8,     nullptr}
-                }},
-
-                {IMAGE_FORMAT_A8B8G8R8, {
-                    {IMAGE_FORMAT_R5G6B5,       nullptr},
-                    {IMAGE_FORMAT_A1R5G5B5,     nullptr},
-                    {IMAGE_FORMAT_A8R8G8B8,     Image_A8B8G8R8_to_A8R8G8B8},
-                    {IMAGE_FORMAT_R8G8B8,       nullptr},
-                    {IMAGE_FORMAT_R8G8B8A8,     nullptr},
-                    {IMAGE_FORMAT_A8B8G8R8,     nullptr}
-                }}
-            };
-
-            ImageFormatConverter cvt = converters[this->native_format][format];
-            if (cvt) {
-                unsigned int num_pixels = this->GetWidth() * this->GetHeight();
-
-                void *cvt_pixels =
-                    new unsigned char[num_pixels *
-                                      IMAGE_FORMAT_BytesPerPixel(format)];
-                if (cvt(width * height, native_pixels, cvt_pixels)) {
-                    return this->pixels[format] = cvt_pixels;
-                } else {
-                    delete[] cvt_pixels;
-                    cvt_pixels = nullptr;
-                }
-            } else {
-                Error("No ImageConverter defined from %s to %s",
-                                toString(this->native_format).c_str(),
-                                toString(format).c_str());
-            }
-        }
-    }
-    return nullptr;
+    return pixels;
 }
 
 
-/**
- * New function.
- *
- * @return                              Returns pointer to image R8G8B8 palette. Size 3 * 256.
- */
-const void *Image::GetPalette() {
-    if (!initialized) {
+const uint8_t *Image::GetPalette() {
+    if (!initialized)
         LoadImageData();
-    }
 
-    if (initialized) {
-        return this->palette24;
-    }
-
-    return nullptr;
+    return this->palette24;
 }
 
-/**
- * New function.
- *
- * @return                              Returns pointer to image pixels 8 bit palette lookup. Size 1 * width * height.
- */
-const void *Image::GetPalettePixels() {
-    if (!initialized) {
+const uint8_t *Image::GetPalettePixels() {
+    if (!initialized)
         LoadImageData();
-    }
-
-    if (initialized) {
-        return this->palettepixels;
-    }
-
-    return nullptr;
+    return this->palettepixels;
 }
 
 std::string *Image::GetName() {
     if (!loader) __debugbreak();
     return loader->GetResourceNamePtr();
 }
-
 
 bool Image::Release() {
     if (loader) {
@@ -364,11 +221,8 @@ bool Image::Release() {
             loader = nullptr;
         }
 
-        for (void *ptr : pixels)
-            delete[] ptr;
-        pixels.fill(nullptr);
+        delete[] pixels;
 
-        native_format = IMAGE_INVALID_FORMAT;
         width = 0;
         height = 0;
     }
