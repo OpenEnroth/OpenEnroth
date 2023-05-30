@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cstdint>
+#include <compare> // NOLINT: linter chokes on this one for no reason.
 
 const int game_starting_year = 1168;
 
@@ -43,33 +44,26 @@ struct GameTime {
     int GetWeeksOfMonth() const { return this->GetWeeks() % 4; }
     int GetMonthsOfYear() const { return this->GetMonths() % 12; }
 
-    GameTime &AddSeconds(int seconds) {
-        this->value += SECONDS_TO_GAME_TIME(seconds);
-        return *this;
+    [[nodiscard]] GameTime AddSeconds(int seconds) const {
+        return *this + GameTime::FromSeconds(seconds);
     }
-    GameTime &AddMinutes(int minutes) {
-        this->value += SECONDS_TO_GAME_TIME(60ull * minutes);
-        return *this;
+    [[nodiscard]] GameTime AddMinutes(int minutes) const {
+        return *this + GameTime::FromMinutes(minutes);
     }
-    GameTime &SubtractMinutes(int minutes) {
-        this->value -= SECONDS_TO_GAME_TIME(60ull * minutes);
-        return *this;
+    [[nodiscard]] GameTime SubtractMinutes(int minutes) const {
+        return *this - GameTime::FromMinutes(minutes);
     }
-    GameTime &AddHours(int hours) {
-        this->value += SECONDS_TO_GAME_TIME(3600ull * hours);
-        return *this;
+    [[nodiscard]] GameTime AddHours(int hours) const {
+        return *this + GameTime::FromHours(hours);
     }
-    GameTime &SubtractHours(int hours) {
-        this->value -= SECONDS_TO_GAME_TIME(3600ull * hours);
-        return *this;
+    [[nodiscard]] GameTime SubtractHours(int hours) const {
+        return *this + GameTime::FromHours(hours);
     }
-    GameTime &AddDays(int days) {
-        this->value += SECONDS_TO_GAME_TIME(86400ull * days);
-        return *this;
+    [[nodiscard]] GameTime AddDays(int days) const {
+        return *this + GameTime::FromDays(days);
     }
-    GameTime &AddYears(int years) {
-        this->value += SECONDS_TO_GAME_TIME(29030400ull * years);
-        return *this;
+    [[nodiscard]] GameTime AddYears(int years) const {
+        return *this + GameTime::FromYears(years);
     }
 
     void SetExpired() { this->value = -1;  }
@@ -79,29 +73,29 @@ struct GameTime {
     friend GameTime operator+(const GameTime &l, const GameTime &r) {
         return GameTime(l.value + r.value);
     }
+
     friend GameTime operator-(const GameTime &l, const GameTime &r) {
         return GameTime(l.value - r.value);
     }
-    GameTime &operator+=(GameTime &rhs) {
+
+    GameTime &operator+=(const GameTime &rhs) {
         this->value += rhs.value;
         return *this;
     }
-    GameTime &operator-=(GameTime &rhs) {
+
+    GameTime &operator-=(const GameTime &rhs) {
         this->value -= rhs.value;
         return *this;
     }
 
-    bool operator==(const GameTime &rhs) const { return this->value == rhs.value; }
-    bool operator>(const GameTime &rhs) const { return this->value > rhs.value; }
-    bool operator>=(const GameTime &rhs) const { return this->value >= rhs.value; }
-    bool operator<(const GameTime &rhs) const { return this->value < rhs.value; }
-    bool operator<=(const GameTime &rhs) const { return this->value <= rhs.value; }
+    friend bool operator==(const GameTime &l, const GameTime &r) = default;
+    friend auto operator<=>(const GameTime &l, const GameTime &r) = default;
 
-    explicit operator bool() {
+    explicit operator bool() const {
         return this->Valid();
-    }  // unsafe bool was casuing many problems
+    }
 
-    explicit operator int64_t() { return this->value; }  // cast operator conversion require
+    explicit operator int64_t() const { return this->value; }  // cast operator conversion require
 
     static GameTime FromSeconds(int seconds) {
         return GameTime(seconds, 0, 0, 0, 0, 0, 0);

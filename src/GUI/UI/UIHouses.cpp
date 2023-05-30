@@ -803,7 +803,7 @@ bool enterHouse(HOUSE_ID uHouseID) {
         if (in_current_building_type == BuildingType_Throne_Room && pParty->uFine) {  // going to jail
             uCurrentHouse_Animation = (int16_t)buildingTable[186].uAnimationID;
             uHouseID = HOUSE_JAIL;
-            pParty->GetPlayingTime().AddYears(1);  // += 123863040;
+            pParty->GetPlayingTime() += GameTime::FromYears(1);  // += 123863040;
             in_current_building_type = pAnimatedRooms[buildingTable[HOUSE_LORD_AND_JUDGE_EMERALD_ISLE].uAnimationID].uBuildingType;
             ++pParty->uNumPrisonTerms;
             pParty->uFine = 0;

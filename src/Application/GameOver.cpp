@@ -66,8 +66,7 @@ void CreateWinnerCertificate() {
     else
         assert(false);
 
-    GameTime play_time = pParty->GetPlayingTime();
-    play_time.SubtractHours(9);  // game begins at 9 am
+    GameTime play_time = pParty->GetPlayingTime().SubtractHours(9); // game begins at 9 am
 
     int v19 = play_time.GetDays();
     int v14 = play_time.GetYears();

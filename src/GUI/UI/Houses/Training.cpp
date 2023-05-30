@@ -146,7 +146,7 @@ void TrainingDialog(const char *s) {
                         if (maxLevelStepsAfter > maxLevelStepsBefore) {
                             GameTime trainingTime = GameTime::FromHours(_494820_training_time(pParty->uCurrentHour) + 4).SubtractMinutes(pParty->uCurrentMinute);
                             if (window_SpeakInHouse->wData.val == HOUSE_TRAINING_HALL_PIT || window_SpeakInHouse->wData.val == HOUSE_TRAINING_HALL_NIGHON) {
-                                trainingTime.AddHours(12);
+                                trainingTime += GameTime::FromHours(12);
                             }
                             restAndHeal(trainingTime.AddDays(7));
                             if (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR)
