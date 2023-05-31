@@ -16,7 +16,7 @@
 #include "Engine/Graphics/ImageLoader.h"
 #include "Engine/Graphics/Outdoor.h"
 #include "Engine/Graphics/Indoor.h"
-#include "Engine/Graphics/PCX.h"
+#include "Library/Image/PCX.h"
 #include "Engine/Graphics/IRender.h"
 
 #include "Engine/Objects/SpriteObject.h"
