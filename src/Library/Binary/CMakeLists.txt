@@ -4,10 +4,10 @@ set(LIBRARY_BINARY_SOURCES
         BinaryExceptions.cpp)
 
 set(LIBRARY_BINARY_HEADERS
-        ArraySerialization.h
         BinaryExceptions.h
         BinarySerialization.h
         BlobSerialization.h
+        ContainerSerialization.h
         MemCopySerialization.h)
 
 add_library(library_binary STATIC ${LIBRARY_BINARY_SOURCES} ${LIBRARY_BINARY_HEADERS})

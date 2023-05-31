@@ -41,8 +41,8 @@ void GUIWindow_Bank::putGoldDialogue() {
     if (keyboard_input_status == WINDOW_INPUT_IN_PROGRESS) {
         bank_window.DrawTitleText(pFontArrus, 0, 146, colorTable.PaleCanary,
                                   fmt::format("{}\n{}", localization->GetString(LSTR_DEPOSIT), localization->GetString(LSTR_HOW_MUCH)), 3);
-        bank_window.DrawTitleText(pFontArrus, 0, 186, colorTable.White, keyboardInputHandler->GetTextInput().c_str(), 3);
-        bank_window.DrawFlashingInputCursor(pFontArrus->GetLineWidth(keyboardInputHandler->GetTextInput().c_str()) / 2 + 80, 185, pFontArrus);
+        bank_window.DrawTitleText(pFontArrus, 0, 186, colorTable.White, keyboardInputHandler->GetTextInput(), 3);
+        bank_window.DrawFlashingInputCursor(pFontArrus->GetLineWidth(keyboardInputHandler->GetTextInput()) / 2 + 80, 185, pFontArrus);
         return;
     }
     if (keyboard_input_status == WINDOW_INPUT_CONFIRMED) {
@@ -81,8 +81,8 @@ void GUIWindow_Bank::getGoldDialogue() {
     if (keyboard_input_status == WINDOW_INPUT_IN_PROGRESS) {
         bank_window.DrawTitleText(pFontArrus, 0, 146, colorTable.PaleCanary,
                                   fmt::format("{}\n{}", localization->GetString(LSTR_WITHDRAW), localization->GetString(LSTR_HOW_MUCH)), 3);
-        bank_window.DrawTitleText(pFontArrus, 0, 186, colorTable.White, keyboardInputHandler->GetTextInput().c_str(), 3);
-        bank_window.DrawFlashingInputCursor(pFontArrus->GetLineWidth(keyboardInputHandler->GetTextInput().c_str()) / 2 + 80, 185, pFontArrus);
+        bank_window.DrawTitleText(pFontArrus, 0, 186, colorTable.White, keyboardInputHandler->GetTextInput(), 3);
+        bank_window.DrawFlashingInputCursor(pFontArrus->GetLineWidth(keyboardInputHandler->GetTextInput()) / 2 + 80, 185, pFontArrus);
         return;
     } else if (keyboard_input_status == WINDOW_INPUT_CONFIRMED) {
         keyboard_input_status = WINDOW_INPUT_NONE;

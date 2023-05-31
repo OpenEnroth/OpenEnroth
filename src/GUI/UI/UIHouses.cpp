@@ -801,7 +801,7 @@ bool enterHouse(HOUSE_ID uHouseID) {
         if (in_current_building_type == BuildingType_Throne_Room && pParty->uFine) {  // going to jail
             uCurrentHouse_Animation = (int16_t)buildingTable[186].uAnimationID;
             uHouseID = HOUSE_JAIL;
-            pParty->GetPlayingTime().AddYears(1);  // += 123863040;
+            pParty->GetPlayingTime() += GameTime::FromYears(1);  // += 123863040;
             in_current_building_type = pAnimatedRooms[buildingTable[HOUSE_LORD_AND_JUDGE_EMERALD_ISLE].uAnimationID].uBuildingType;
             ++pParty->uNumPrisonTerms;
             pParty->uFine = 0;
@@ -1195,8 +1195,8 @@ void TownHallDialog() {
         if (window_SpeakInHouse->keyboard_input_status == WINDOW_INPUT_IN_PROGRESS) {
             townHall_window.DrawTitleText(pFontArrus, 0, 146, colorTable.PaleCanary,
                                           fmt::format("{}\n{}", localization->GetString(LSTR_PAY), localization->GetString(LSTR_HOW_MUCH)), 3);
-            townHall_window.DrawTitleText(pFontArrus, 0, 186, colorTable.White, keyboardInputHandler->GetTextInput().c_str(), 3);
-            townHall_window.DrawFlashingInputCursor(pFontArrus->GetLineWidth(keyboardInputHandler->GetTextInput().c_str()) / 2 + 80, 185, pFontArrus);
+            townHall_window.DrawTitleText(pFontArrus, 0, 186, colorTable.White, keyboardInputHandler->GetTextInput(), 3);
+            townHall_window.DrawFlashingInputCursor(pFontArrus->GetLineWidth(keyboardInputHandler->GetTextInput()) / 2 + 80, 185, pFontArrus);
             return;
         } else if (window_SpeakInHouse->keyboard_input_status == WINDOW_INPUT_CONFIRMED) {
             int sum = atoi(keyboardInputHandler->GetTextInput().c_str());
@@ -1255,29 +1255,14 @@ void SimpleHouseDialog() {
         house_window.uFrameX = SIDE_TEXT_BOX_POS_X;
         house_window.uFrameWidth = SIDE_TEXT_BOX_WIDTH;
         house_window.uFrameZ = SIDE_TEXT_BOX_POS_Z;
-        if (!pTransitionStrings[uHouse_ExitPic]) {
-            auto str = localization->FormatString(
-                LSTR_FMT_ENTER_S,
-                pMapStats->pInfos[uHouse_ExitPic].pName.c_str()
-            );
-            house_window.DrawTitleText(
-                pFontCreate, 0,
-                (212 - pFontCreate->CalcTextHeight(
-                    str, house_window.uFrameWidth, 0)) /
-                2 +
-                101,
-                Color(), str, 3);
+        if (pTransitionStrings[uHouse_ExitPic].empty()) {
+            auto str = localization->FormatString(LSTR_FMT_ENTER_S, pMapStats->pInfos[uHouse_ExitPic].pName.c_str());
+            house_window.DrawTitleText(pFontCreate, 0, (212 - pFontCreate->CalcTextHeight(str, house_window.uFrameWidth, 0)) / 2 + 101, Color(), str, 3);
             return;
         }
 
-        house_window.DrawTitleText(
-            pFontCreate, 0,
-            (212 -
-                pFontCreate->CalcTextHeight(pTransitionStrings[uHouse_ExitPic],
-                    house_window.uFrameWidth, 0)) /
-            2 +
-            101,
-            Color(), pTransitionStrings[uHouse_ExitPic], 3);
+        int vertMargin = (212 - pFontCreate->CalcTextHeight(pTransitionStrings[uHouse_ExitPic], house_window.uFrameWidth, 0)) / 2 + 101;
+        house_window.DrawTitleText(pFontCreate, 0, vertMargin, Color(), pTransitionStrings[uHouse_ExitPic], 3);
         return;
     }
     house_window.uFrameWidth -= 10;

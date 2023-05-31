@@ -1729,7 +1729,7 @@ void GUIWindow_CharacterRecord::fillAwardsData() {
 
     _achievedAwardsList.clear();
     for (int i = 1; i < pAwards.size(); ++i) {
-        if (pPlayer->_achievedAwardsBits[i] && pAwards[i].pText) {
+        if (pPlayer->_achievedAwardsBits[i] && !pAwards[i].pText.empty()) {
             _achievedAwardsList.push_back(i);
         }
     }

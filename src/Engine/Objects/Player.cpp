@@ -4498,7 +4498,7 @@ void Player::SetVariable(VariableType var_type, signed int var_value) {
     if (var_type >= VAR_History_0 && var_type <= VAR_History_28) {
         if (!pParty->PartyTimes.HistoryEventTimes[std::to_underlying(var_type) - std::to_underlying(VAR_History_0)]) {
             pParty->PartyTimes.HistoryEventTimes[std::to_underlying(var_type) - std::to_underlying(VAR_History_0)] = pParty->GetPlayingTime();
-            if (pStorylineText->StoreLine[std::to_underlying(var_type) - std::to_underlying(VAR_History_0)].pText) {
+            if (!pStorylineText->StoreLine[std::to_underlying(var_type) - std::to_underlying(VAR_History_0)].pText.empty()) {
                 bFlashHistoryBook = true;
                 PlayAwardSound();
             }
@@ -4588,7 +4588,7 @@ void Player::SetVariable(VariableType var_type, signed int var_value) {
             this->sAgeModifier = var_value;
             return;
         case VAR_Award:
-            if (!this->_achievedAwardsBits[var_value] && pAwards[var_value].pText) {
+            if (!this->_achievedAwardsBits[var_value] && !pAwards[var_value].pText.empty()) {
                 PlayAwardSound_Anim();
                 this->playReaction(SPEECH_AwardGot);
             }
@@ -4599,7 +4599,7 @@ void Player::SetVariable(VariableType var_type, signed int var_value) {
             PlayAwardSound_Anim();
             return;
         case VAR_QBits_QuestsDone:
-            if (!pParty->_questBits[var_value] && pQuestTable[var_value]) {
+            if (!pParty->_questBits[var_value] && !pQuestTable[var_value].empty()) {
                 bFlashQuestBook = true;
                 spell_fx_renderer->SetPlayerBuffAnim(BECOME_MAGIC_GUILD_MEMBER, GetPlayerIndex());
                 PlayAwardSound();
@@ -4855,7 +4855,7 @@ void Player::SetVariable(VariableType var_type, signed int var_value) {
             return;
         case VAR_AutoNotes:
             assert(var_value > 0);
-            if (!pParty->_autonoteBits[var_value] && pAutonoteTxt[var_value].pText) {
+            if (!pParty->_autonoteBits[var_value] && !pAutonoteTxt[var_value].pText.empty()) {
                 spell_fx_renderer->SetPlayerBuffAnim(BECOME_MAGIC_GUILD_MEMBER, GetPlayerIndex());
                 this->playReaction(SPEECH_AwardGot);
                 bFlashAutonotesBook = true;
@@ -5107,7 +5107,7 @@ void Player::AddVariable(VariableType var_type, signed int val) {
     if (var_type >= VAR_History_0 && var_type <= VAR_History_28) {
         if (!pParty->PartyTimes.HistoryEventTimes[std::to_underlying(var_type) - std::to_underlying(VAR_History_0)]) {
             pParty->PartyTimes.HistoryEventTimes[std::to_underlying(var_type) - std::to_underlying(VAR_History_0)] = pParty->GetPlayingTime();
-            if (pStorylineText->StoreLine[std::to_underlying(var_type) - std::to_underlying(VAR_History_0)].pText) {
+            if (!pStorylineText->StoreLine[std::to_underlying(var_type) - std::to_underlying(VAR_History_0)].pText.empty()) {
                 bFlashHistoryBook = true;
                 PlayAwardSound();
             }
@@ -5171,7 +5171,7 @@ void Player::AddVariable(VariableType var_type, signed int val) {
             this->sAgeModifier += val;
             return;
         case VAR_Award:
-            if (this->_achievedAwardsBits[val] && pAwards[val].pText) {
+            if (this->_achievedAwardsBits[val] && !pAwards[val].pText.empty()) {
                 PlayAwardSound_Anim97_Face(SPEECH_AwardGot);
             }
             this->_achievedAwardsBits.set(val);
@@ -5181,7 +5181,7 @@ void Player::AddVariable(VariableType var_type, signed int val) {
             PlayAwardSound_Anim97();
             return;
         case VAR_QBits_QuestsDone:
-            if (!pParty->_questBits[val] && pQuestTable[val]) {
+            if (!pParty->_questBits[val] && !pQuestTable[val].empty()) {
                 bFlashQuestBook = true;
                 PlayAwardSound_Anim97_Face(SPEECH_QuestGot);
             }
@@ -5424,7 +5424,7 @@ void Player::AddVariable(VariableType var_type, signed int val) {
             return;
         case VAR_AutoNotes:
             assert(val > 0);
-            if (!pParty->_autonoteBits[val] && pAutonoteTxt[val].pText) {
+            if (!pParty->_autonoteBits[val] && !pAutonoteTxt[val].pText.empty()) {
                 this->playReaction(SPEECH_AwardGot);
                 bFlashAutonotesBook = true;
                 autonoteBookDisplayType = pAutonoteTxt[val].eType;
@@ -7543,8 +7543,7 @@ bool Player::SetBeacon(size_t index, size_t power) {
     LloydBeacon beacon;
 
     beacon.image = render->TakeScreenshot(92, 68);
-    IMAGE_FORMAT format = beacon.image->GetFormat();
-    beacon.image = render->CreateTexture_Blank(beacon.image->GetWidth(), beacon.image->GetHeight(), format, beacon.image->GetPixels(format));
+    beacon.image = render->CreateTexture_Blank(beacon.image->GetWidth(), beacon.image->GetHeight(), beacon.image->GetPixels());
     beacon.uBeaconTime = GameTime(pParty->GetPlayingTime() + GameTime::FromSeconds(power));
     beacon.PartyPos_X = pParty->vPosition.x;
     beacon.PartyPos_Y = pParty->vPosition.y;

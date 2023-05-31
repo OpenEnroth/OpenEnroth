@@ -29,7 +29,7 @@ Icon *IconFrameTable::GetIcon(const char *pIconName) {
 }
 
 //----- (00494F3A) --------------------------------------------------------
-unsigned int IconFrameTable::FindIcon(const char *pIconName) {
+unsigned int IconFrameTable::FindIcon(const std::string &pIconName) {
     for (uint i = 0; i < pIcons.size(); i++) {
         if (iequals(pIconName, this->pIcons[i].GetAnimationName()))
             return i;

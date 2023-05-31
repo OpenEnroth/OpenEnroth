@@ -4758,7 +4758,7 @@ void SpawnEncounter(MapInfo *pMapInfo, SpawnPoint *spawn, int a3, int a4, int a5
             }
         }
 
-        v50 = pMonsterList->GetMonsterIDByName(Str2.c_str());
+        v50 = pMonsterList->GetMonsterIDByName(Str2);
         pTexture = Str2;
         if ((int16_t)v50 == -1) {
             logger->warning("Can't create random monster: '{}'! See MapStats.txt and Monsters.txt!", pTexture);
@@ -4766,7 +4766,7 @@ void SpawnEncounter(MapInfo *pMapInfo, SpawnPoint *spawn, int a3, int a4, int a5
         }
 
         v27 = &pMonsterList->pMonsters[(int16_t)v50];
-        v28 = pMonsterStats->FindMonsterByTextureName(pTexture.c_str());
+        v28 = pMonsterStats->FindMonsterByTextureName(pTexture);
         if (!v28) v28 = 1;
         Src = &pMonsterStats->pInfos[v28];
         pMonster->pActorName = Src->pName;

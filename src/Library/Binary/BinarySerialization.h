@@ -1,6 +1,6 @@
 #pragma once
 
-#include "ArraySerialization.h"
+#include "ContainerSerialization.h"
 #include "BlobSerialization.h"
 #include "MemCopySerialization.h"
 

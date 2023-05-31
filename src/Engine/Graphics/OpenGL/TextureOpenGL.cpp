@@ -3,31 +3,25 @@
 #include "Engine/Graphics/ImageLoader.h"
 #include "Engine/ErrorHandling.h"
 
-Texture *TextureOpenGL::Create(unsigned int width, unsigned int height,
-    IMAGE_FORMAT format, const void *pixels = nullptr) {
+Texture *TextureOpenGL::Create(unsigned int width, unsigned int height, const Color *pixels) {
+    TextureOpenGL *tex = new TextureOpenGL(false);
 
-    auto tex = new TextureOpenGL(false);
-    if (tex) {
-        tex->initialized = true;
-        tex->width = width;
-        tex->height = height;
-        tex->native_format = format;
-        unsigned int num_pixels = tex->GetWidth() * tex->GetHeight();
-        unsigned int num_pixels_bytes =
-            num_pixels * IMAGE_FORMAT_BytesPerPixel(format);
-        tex->pixels[format] = new unsigned char[num_pixels_bytes];
-        if (pixels) {
-            memcpy(tex->pixels[format], pixels, num_pixels_bytes);
-        } else {
-            memset(tex->pixels[format], 0, num_pixels_bytes);
-        }
+    tex->initialized = true;
+    tex->width = width;
+    tex->height = height;
+    unsigned int num_pixels = tex->GetWidth() * tex->GetHeight();
+    unsigned int num_pixels_bytes = num_pixels * sizeof(Color);
+    tex->pixels = new Color[num_pixels];
+    if (pixels) {
+        memcpy(tex->pixels, pixels, num_pixels_bytes);
+    } else {
+        memset(tex->pixels, 0, num_pixels_bytes);
+    }
 
-        if (tex->initialized && tex->native_format != IMAGE_INVALID_FORMAT) {
-            // tex->pixels[format] = pixels;
-            tex->initialized = render->MoveTextureToDevice(tex);
-            if (!tex->initialized) {
-                __debugbreak();
-            }
+    if (tex->initialized) {
+        tex->initialized = render->MoveTextureToDevice(tex);
+        if (!tex->initialized) {
+            __debugbreak();
         }
     }
 
@@ -60,14 +54,13 @@ int TextureOpenGL::GetOpenGlTexture(bool bLoad) {
 
 bool TextureOpenGL::LoadImageData() {
     if (!this->initialized) {
-        void *pixels {nullptr};
-        void *palette {nullptr};
-        void *palettepixels {nullptr};
+        Color *pixels = nullptr;
+        uint8_t *palette = nullptr;
+        uint8_t *palettepixels = nullptr;
 
-        this->initialized =
-            this->loader->Load(&width, &height, &pixels, &native_format, &palette, &palettepixels);
-        if (this->initialized && this->native_format != IMAGE_INVALID_FORMAT) {
-            this->pixels[native_format] = pixels;
+        this->initialized = this->loader->Load(&width, &height, &pixels, &palette, &palettepixels);
+        if (this->initialized) {
+            this->pixels = pixels;
             this->palette24 = palette;
             this->palettepixels = palettepixels;
             this->initialized = render->MoveTextureToDevice(this);

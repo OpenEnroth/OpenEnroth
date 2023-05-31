@@ -10,7 +10,7 @@ class TextureOpenGL : public Texture {
  protected:
     friend class RenderOpenGL;
 
-    static Texture *Create(unsigned int width, unsigned int height, IMAGE_FORMAT format, const void * pixels);
+    static Texture *Create(unsigned int width, unsigned int height, const Color *pixels = nullptr);
 
     static Texture *Create(ImageLoader *loader);
 

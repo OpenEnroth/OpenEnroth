@@ -32,7 +32,7 @@ const IndexedArray<const char *, PartyAlignment_Good, PartyAlignment_Evil> Dialo
 };
 
 void GameUI_InitializeDialogue(Actor *actor, int bPlayerSaysHello) {
-    dword_A74CDC = -1;
+    currentAddressingAwardBit = -1;
     pNPCStats->dword_AE336C_LastMispronouncedNameFirstLetter = -1;
     pEventTimer->Pause();
     pMiscTimer->Pause();
@@ -318,7 +318,7 @@ void GUIWindow_Dialogue::Update() {
         } else if (pButton->msg_param == DIALOGUE_HIRE_FIRE) {
             if (pNPC->Hired()) {
                 // TODO(captainurist): what if fmt throws?
-                pButton->sLabel = fmt::sprintf(localization->GetString(LSTR_HIRE_RELEASE), pNPC->pName.c_str());
+                pButton->sLabel = fmt::sprintf(localization->GetString(LSTR_HIRE_RELEASE), pNPC->pName);
             } else {
                 pButton->sLabel = localization->GetString(LSTR_HIRE);
             }
@@ -460,7 +460,7 @@ void GUIWindow_GenericDialogue::Update() {
 
     pFont = pFontArrus;
     if (current_npc_text.length() > 0 && branchless_dialogue_str.empty())
-        branchless_dialogue_str = current_npc_text.c_str();
+        branchless_dialogue_str = current_npc_text;
 
     BranchlessDlg_window.Init();
     BranchlessDlg_window.uFrameWidth = game_viewport_width;
@@ -488,7 +488,7 @@ void GUIWindow_GenericDialogue::Update() {
     if (pGUIWindow_BranchlessDialogue->keyboard_input_status != WINDOW_INPUT_IN_PROGRESS) {
         if (pGUIWindow_BranchlessDialogue->keyboard_input_status == WINDOW_INPUT_CONFIRMED) {
             pGUIWindow_BranchlessDialogue->keyboard_input_status = WINDOW_INPUT_NONE;
-            GameUI_StatusBar_OnInput(keyboardInputHandler->GetTextInput().c_str());
+            GameUI_StatusBar_OnInput(keyboardInputHandler->GetTextInput());
             ReleaseBranchlessDialogue();
             return;
         }

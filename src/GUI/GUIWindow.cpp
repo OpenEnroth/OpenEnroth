@@ -99,9 +99,9 @@ DIALOGUE_TYPE _dword_F8B1D8_last_npc_topic_menu;
 AwardType dword_F8B1AC_award_bit_number;
 PLAYER_SKILL_TYPE dword_F8B1AC_skill_being_taught; // Address the same as above --- splitting a union into two variables.
 
-std::array<short, 28> word_4EE150 = {{1,  2,  3,  4,  5,  7,  32, 33, 36, 37,
-                                      38, 40, 41, 42, 43, 45, 46, 47, 48, 49,
-                                      50, 51, 52, 53, 54, 55, 56, 60}};
+std::array<int, 28> possibleAddressingAwardBits = {{1,  2,  3,  4,  5,  7,  32, 33, 36, 37,
+                                                    38, 40, 41, 42, 43, 45, 46, 47, 48, 49,
+                                                    50, 51, 52, 53, 54, 55, 56, 60}};
 
 void SetCurrentMenuID(MENU_STATE uMenu) {
     sCurrentMenuID = uMenu;
@@ -363,19 +363,11 @@ void GUIWindow::DrawShops_next_generation_time_string(GameTime time) {
     this->DrawTitleText(pFontArrus, 0, (212 - pFontArrus->CalcTextHeight(str, this->uFrameWidth, 0)) / 2 + 101, colorTable.PaleCanary, localization->GetString(LSTR_PLEASE_TRY_BACK_IN) + str, 3);
 }
 
-void GUIWindow::DrawTitleText(GUIFont *font, int horizontal_margin,
-    int vertical_margin,
-    Color uDefaultColor, const std::string &str,
-    int line_spacing) {
-    this->DrawTitleText(font, horizontal_margin, vertical_margin, uDefaultColor,
-        str.c_str(), line_spacing);
-}
-
 //----- (0044D406) --------------------------------------------------------
-void GUIWindow::DrawTitleText(GUIFont *pFont, int uHorizontalMargin, int uVerticalMargin, Color uDefaultColor, const char *pInString, int uLineSpacing) {
+void GUIWindow::DrawTitleText(GUIFont *pFont, int uHorizontalMargin, int uVerticalMargin, Color uDefaultColor, const std::string &str, int uLineSpacing) {
     int width = this->uFrameWidth - uHorizontalMargin;
     ui_current_text_color = uDefaultColor;
-    std::string resString = pFont->FitTextInAWindow(pInString, this->uFrameWidth, uHorizontalMargin);
+    std::string resString = pFont->FitTextInAWindow(str, this->uFrameWidth, uHorizontalMargin);
     std::istringstream stream(resString);
     std::string line;
     int x = uHorizontalMargin + this->uFrameX;
@@ -387,29 +379,15 @@ void GUIWindow::DrawTitleText(GUIFont *pFont, int uHorizontalMargin, int uVertic
     }
 }
 
-void GUIWindow::DrawText(GUIFont *font, Pointi position, Color uFontColor, const std::string &str, bool present_time_transparency,
-                         int max_text_height, Color uFontShadowColor) {
-    this->DrawText(font, position, uFontColor, str.c_str(),
-        present_time_transparency, max_text_height,
-        uFontShadowColor);
-}
-
 //----- (0044CE08) --------------------------------------------------------
-void GUIWindow::DrawText(GUIFont *font, Pointi position, Color uFontColor, const char *Str,
+void GUIWindow::DrawText(GUIFont *font, Pointi position, Color uFontColor, const std::string &Str,
                          bool present_time_transparency, int max_text_height, Color uFontShadowColor) {
     font->DrawText(this, position, uFontColor, Str, present_time_transparency, max_text_height, uFontShadowColor);
 }
 
-int GUIWindow::DrawTextInRect(GUIFont *font, Pointi position,
-                              Color color, const char *text,
-                              int rect_width, int reverse_text) {
-    std::string label = std::string(text);
-    return DrawTextInRect(font, position, color, label, rect_width, reverse_text);
-}
-
 //----- (0044CB4F) --------------------------------------------------------
 int GUIWindow::DrawTextInRect(GUIFont *pFont, Pointi position,
-                              Color uColor, std::string &str, int rect_width,
+                              Color uColor, const std::string &str, int rect_width,
                               int reverse_text) {
     return pFont->DrawTextInRect(this, position, uColor, str, rect_width, reverse_text);
 }
@@ -1263,7 +1241,7 @@ void OracleDialogue() {
         // TODO(captainurist): what if fmt throws?
         current_npc_text = fmt::sprintf(pNPCTopics[666].pText, // "Here's %s that you lost. Be careful"
                                         fmt::format("{::}{}\f00000", colorTable.Jonquil.tag(),
-                                                    pItemTable->pItems[item_id].pUnidentifiedName).c_str());
+                                                    pItemTable->pItems[item_id].pUnidentifiedName));
     }
 
     // missing item is lich jar and we need to bind soul vessel to lich class character
@@ -1601,11 +1579,9 @@ std::string BuildDialogueString(std::string &str, uint8_t uPlayerID, ItemGen *a3
     Player *pPlayer;       // ebx@3
     const char *pText;     // esi@7
     int64_t v18;    // qax@18
-    int v21;               // ecx@34
     int v29;               // eax@68
-    int16_t v55[56] {};       // [sp+10h] [bp-128h]@34
+    std::vector<int> addressingBits;
     SummonedItem v56;      // [sp+80h] [bp-B8h]@107
-    int v63;               // [sp+12Ch] [bp-Ch]@32
 
     pPlayer = &pParty->pPlayers[uPlayerID];
 
@@ -1617,7 +1593,6 @@ std::string BuildDialogueString(std::string &str, uint8_t uPlayerID, ItemGen *a3
 
     std::string result;
 
-    // pText = a4;
     uint len = str.length();
     for (int i = 0, dst = 0; i < len; ++i) {
         char c = str[i];  // skip through string till we find insertion point
@@ -1668,24 +1643,18 @@ std::string BuildDialogueString(std::string &str, uint8_t uPlayerID, ItemGen *a3
                     result += localization->GetString(LSTR_SIR);
                 break;
             case 8:
-                v63 = 0;
-                for (uint _i = 0; _i < 28; ++_i) {
-                    if (pPlayer->_achievedAwardsBits[word_4EE150[i]]) {
-                        v21 = v63;
-                        ++v63;
-                        v55[v63] = word_4EE150[i];
+                for (int bit : possibleAddressingAwardBits) {
+                    if (pPlayer->_achievedAwardsBits[bit]) {
+                        addressingBits.push_back(bit);
                     }
                 }
-                if (v63) {
-                    if (dword_A74CDC == -1) dword_A74CDC = vrng->random(v63);
-                    pText =
-                        pAwards[v55[dword_A74CDC]]
-                        .pText;  // (char *)dword_723E80_award_related[2
-                                 // * v55[v24]];
+                if (addressingBits.size()) {
+                    if (currentAddressingAwardBit == -1)
+                        currentAddressingAwardBit = addressingBits[vrng->random(addressingBits.size())];
+                    result += pAwards[currentAddressingAwardBit].pText;
                 } else {
-                    pText = pNPCTopics[55].pText;
+                    result += pNPCTopics[55].pText;
                 }
-                result += pText;
                 break;
             case 9:
                 if (npc->uSex)

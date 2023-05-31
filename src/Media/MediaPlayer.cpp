@@ -485,7 +485,7 @@ class Movie : public IMovie {
 
 
         // create texture
-        Texture *tex = render->CreateTexture_Blank(pMovie_Track->GetWidth(), pMovie_Track->GetHeight(), IMAGE_FORMAT_A8B8G8R8);
+        Texture *tex = render->CreateTexture_Blank(pMovie_Track->GetWidth(), pMovie_Track->GetHeight());
 
         // holds decoded audio
         std::queue<std::shared_ptr<Blob>, std::deque<std::shared_ptr<Blob>>> buffq;
@@ -552,9 +552,9 @@ class Movie : public IMovie {
 
                 render->BeginScene2D();
                 // update pixels from buffer
-                uint32_t *pix = (uint32_t*)tex->GetPixels(IMAGE_FORMAT_A8B8G8R8);
+                Color *pix = const_cast<Color *>(tex->GetPixels()); // TODO(captainurist): #images const_cast
                 unsigned int num_pixels = tex->GetWidth() * tex->GetHeight();
-                unsigned int num_pixels_bytes = num_pixels * IMAGE_FORMAT_BytesPerPixel(IMAGE_FORMAT_A8B8G8R8);
+                unsigned int num_pixels_bytes = num_pixels * sizeof(Color);
                 memcpy(pix, tmp_buf->data(), num_pixels_bytes);
 
                 // update texture
@@ -809,7 +809,7 @@ void MPlayer::HouseMovieLoop() {
 
     static Texture *tex;
     if (!tex) {
-        tex = render->CreateTexture_Blank(pMovie_Track->GetWidth(), pMovie_Track->GetHeight(), IMAGE_FORMAT_A8B8G8R8);
+        tex = render->CreateTexture_Blank(pMovie_Track->GetWidth(), pMovie_Track->GetHeight());
     }
 
     std::shared_ptr<Blob> buffer = pMovie_Track->GetFrame();
@@ -822,9 +822,9 @@ void MPlayer::HouseMovieLoop() {
         rect.h = wsize.h - render->config->graphics.HouseMovieY2.value();
 
         // update pixels from buffer
-        uint32_t *pix = (uint32_t*)tex->GetPixels(IMAGE_FORMAT_A8B8G8R8);
+        Color *pix = const_cast<Color *>(tex->GetPixels()); // TODO(captainurist): #images const_cast
         unsigned int num_pixels = tex->GetWidth() * tex->GetHeight();
-        unsigned int num_pixels_bytes = num_pixels * IMAGE_FORMAT_BytesPerPixel(IMAGE_FORMAT_A8B8G8R8);
+        unsigned int num_pixels_bytes = num_pixels * sizeof(Color);
         memcpy(pix, buffer->data(), num_pixels_bytes);
 
         // update texture
@@ -877,7 +877,7 @@ void MPlayer::PlayFullscreenMovie(const std::string &pFilename) {
     Sizei scaleSize;
 
     // create texture
-    Texture *tex = render->CreateTexture_Blank(pMovie_Track->GetWidth(), pMovie_Track->GetHeight(), IMAGE_FORMAT_A8B8G8R8);
+    Texture *tex = render->CreateTexture_Blank(pMovie_Track->GetWidth(), pMovie_Track->GetHeight());
 
     if (pMovie->GetFormat() == "bink") {
         logger->info("bink file");
@@ -897,9 +897,9 @@ void MPlayer::PlayFullscreenMovie(const std::string &pFilename) {
             }
 
             // update pixels from buffer
-            uint32_t *pix = (uint32_t*)tex->GetPixels(IMAGE_FORMAT_A8B8G8R8);
+            Color *pix = const_cast<Color *>(tex->GetPixels()); // TODO(captainurist): #images const_cast
             unsigned int num_pixels = tex->GetWidth() * tex->GetHeight();
-            unsigned int num_pixels_bytes = num_pixels * IMAGE_FORMAT_BytesPerPixel(IMAGE_FORMAT_A8B8G8R8);
+            unsigned int num_pixels_bytes = num_pixels * sizeof(Color);
             memcpy(pix, buffer->data(), num_pixels_bytes);
 
             // update texture

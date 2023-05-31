@@ -113,7 +113,7 @@ enum AwardType : uint32_t {
 };
 
 struct Award {
-    const char *pText;
+    std::string pText;
     unsigned int uPriority;
 };
 
@@ -123,4 +123,3 @@ struct Award {
 void initializeAwards();
 
 extern std::array<Award, 105> pAwards;
-extern std::string pAwardsTXT_Raw;

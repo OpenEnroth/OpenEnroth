@@ -28,7 +28,6 @@ void ItemTable::Release() {
     pRndItemsTXT_Raw.clear();
     pItemsTXT_Raw.clear();
     pHostileTXT_Raw.clear();
-    pHistoryTXT_Raw.clear();
     pPotionsTXT_Raw.clear();
     pPotionNotesTXT_Raw.clear();
 }
@@ -795,13 +794,13 @@ void ItemTable::PrintItemTypesEnum() {
         items.emplace_back(enumName, "");
     }
 
-    printf("enum ITEM_TYPE {\n");
+    fmt::printf("enum ITEM_TYPE {\n");
     for (size_t i = 0; i < items.size(); i++) {
         if (!items[i].first.empty()) {
-            printf("    ITEM_%s = %d,\n", items[i].first.c_str(), static_cast<int>(i));
+            fmt::printf("    ITEM_%s = %d,\n", items[i].first, static_cast<int>(i));
         } else {
-            printf("    ITEM_%d = %d, // %s\n", static_cast<int>(i), static_cast<int>(i), items[i].second.c_str());
+            fmt::printf("    ITEM_%d = %d, // %s\n", static_cast<int>(i), static_cast<int>(i), items[i].second);
         }
     }
-    printf("};\n");
+    fmt::printf("};\n");
 }

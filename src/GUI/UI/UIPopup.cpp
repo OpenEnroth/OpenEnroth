@@ -204,12 +204,9 @@ void GameUI_DrawItemInfo(struct ItemGen *inspect_item) {
     unsigned int frameXpos;     // eax@3
     const char *v28;     // edi@69
     int v34;             // esi@81
-    char out_text[300];  // [sp+8h] [bp-270h]@40
     SummonedItem v67;
     GUIWindow iteminfo_window;  // [sp+208h] [bp-70h]@2
-    char *v84;
     int v85;
-    char *Str;  // [sp+270h] [bp-8h]@65
 
     if (inspect_item->uItemID == ITEM_NULL)
         return;
@@ -299,7 +296,7 @@ void GameUI_DrawItemInfo(struct ItemGen *inspect_item) {
             (iteminfo_window.uFrameX + (float)itemXspacing) / 640.0f,
             (itemYspacing + (float)iteminfo_window.uFrameY + 30) / 480.0f, inspect_item_image);
 
-        iteminfo_window.DrawTitleText(pFontArrus, 0, 0xCu, colorTable.PaleCanary, inspect_item->GetDisplayName().c_str(), 3);
+        iteminfo_window.DrawTitleText(pFontArrus, 0, 0xCu, colorTable.PaleCanary, inspect_item->GetDisplayName(), 3);
         iteminfo_window.DrawTitleText(pFontArrus, 0x64u,
             ((signed int)iteminfo_window.uFrameHeight >> 1) - pFontArrus->CalcTextHeight(localization->GetString(LSTR_BROKEN_ITEM), iteminfo_window.uFrameWidth, 0) / 2,
                                       colorTable.TorchRed, localization->GetString(LSTR_BROKEN_ITEM), 3);
@@ -345,43 +342,35 @@ void GameUI_DrawItemInfo(struct ItemGen *inspect_item) {
         return;
     }
 
-    std::string str = localization->FormatString(
+    std::array<std::string, 3> text;
+
+    text[0] = localization->FormatString(
         LSTR_FMT_TYPE_S,
         pItemTable->pItems[inspect_item->uItemID].pUnidentifiedName);
-
-    strcpy(out_text, str.c_str());
-    out_text[100] = 0;
-    out_text[200] = 0;
 
     switch (inspect_item->GetItemEquipType()) {
         case EQUIP_SINGLE_HANDED:
         case EQUIP_TWO_HANDED: {
-            sprintf(out_text + 100, "%s: +%d   %s: %dd%d",
-                    localization->GetString(LSTR_ATTACK),
-                    (int)inspect_item->GetDamageMod(),
-                    localization->GetString(LSTR_DAMAGE),
-                    (int)inspect_item->GetDamageDice(),
-                    (int)inspect_item->GetDamageRoll());
-            if (inspect_item->GetDamageMod()) {
-                char mod[16];
-                sprintf(mod, "+%d", (int)inspect_item->GetDamageMod());
-                strcat(out_text + 100, mod);
-            }
+            text[1] = fmt::format("{}: +{}   {}: {}d{}",
+                                  localization->GetString(LSTR_ATTACK),
+                                  inspect_item->GetDamageMod(),
+                                  localization->GetString(LSTR_DAMAGE),
+                                  inspect_item->GetDamageDice(),
+                                  inspect_item->GetDamageRoll());
+            if (inspect_item->GetDamageMod())
+                text[1] += fmt::format("+{}", inspect_item->GetDamageMod());
             break;
         }
 
         case EQUIP_BOW:
-            sprintf(out_text + 100, "%s: +%d   %s: %dd%d",
-                    localization->GetString(LSTR_SHOOT),
-                    (int)inspect_item->GetDamageMod(),
-                    localization->GetString(LSTR_DAMAGE),
-                    (int)inspect_item->GetDamageDice(),
-                    (int)inspect_item->GetDamageRoll());
-            if (inspect_item->GetDamageMod()) {
-                char mod[16];
-                sprintf(mod, "+%d", (int)inspect_item->GetDamageMod());
-                strcat(out_text + 100, mod);
-            }
+            text[1] = fmt::format("{}: +{}   {}: {}d{}",
+                                  localization->GetString(LSTR_SHOOT),
+                                  inspect_item->GetDamageMod(),
+                                  localization->GetString(LSTR_DAMAGE),
+                                  inspect_item->GetDamageDice(),
+                                  inspect_item->GetDamageRoll());
+            if (inspect_item->GetDamageMod())
+                text[1] += fmt::format("+{}", inspect_item->GetDamageMod());
             break;
 
         case EQUIP_ARMOUR:
@@ -394,10 +383,9 @@ void GameUI_DrawItemInfo(struct ItemGen *inspect_item) {
         case EQUIP_RING:
         case EQUIP_AMULET:
             if (inspect_item->GetDamageDice())
-                sprintf(
-                    out_text + 100, "%s: +%d", localization->GetString(LSTR_ARMOR),
-                    inspect_item->GetDamageDice() + inspect_item->GetDamageMod()
-                );
+                text[1] = fmt::format("{}: +{}",
+                                      localization->GetString(LSTR_ARMOR),
+                                      inspect_item->GetDamageDice() + inspect_item->GetDamageMod());
             break;
 
         default:
@@ -408,45 +396,32 @@ void GameUI_DrawItemInfo(struct ItemGen *inspect_item) {
         // this is CORRECT! do not move to switch!
         if (inspect_item->isPotion()) {
             if (inspect_item->uEnchantmentType)
-                sprintf(
-                    out_text + 200, "%s: %d", localization->GetString(LSTR_POWER),
-                    inspect_item->uEnchantmentType
-                );
+                text[2] = fmt::format("{}: {}", localization->GetString(LSTR_POWER), inspect_item->uEnchantmentType);
         } else if (inspect_item->isReagent()) {
-            sprintf(
-                out_text + 200, "%s: %d", localization->GetString(LSTR_POWER),
-                inspect_item->GetDamageDice()
-            );
+            text[2] = fmt::format("{}: {}", localization->GetString(LSTR_POWER), inspect_item->GetDamageDice());
         } else if (inspect_item->uEnchantmentType) {
-            sprintf(
-                out_text + 200, "%s: %s +%d", localization->GetString(LSTR_SPECIAL_2),
-                pItemTable->standardEnchantments[inspect_item->uEnchantmentType - 1].pBonusStat,
-                inspect_item->m_enchantmentStrength);
+            text[2] = fmt::format("{}: {} +{}",
+                                  localization->GetString(LSTR_SPECIAL_2),
+                                  pItemTable->standardEnchantments[inspect_item->uEnchantmentType - 1].pBonusStat,
+                                  inspect_item->m_enchantmentStrength);
         } else if (inspect_item->special_enchantment) {
-            sprintf(
-                out_text + 200, "%s: %s", localization->GetString(LSTR_SPECIAL_2),
-                pItemTable->pSpecialEnchantments[inspect_item->special_enchantment].pBonusStatement);
+            text[2] = fmt::format("{}: {}",
+                                  localization->GetString(LSTR_SPECIAL_2),
+                                  pItemTable->pSpecialEnchantments[inspect_item->special_enchantment].pBonusStatement);
         } else if (inspect_item->isWand()) {
-            sprintf(
-                out_text + 200, localization->GetString(LSTR_FMT_S_U_OUT_OF_U), localization->GetString(LSTR_CHARGES),
-                inspect_item->uNumCharges, inspect_item->uMaxCharges
-            );
+            text[2] = fmt::sprintf(localization->GetString(LSTR_FMT_S_U_OUT_OF_U),
+                                   localization->GetString(LSTR_CHARGES),
+                                   inspect_item->uNumCharges,
+                                   inspect_item->uMaxCharges);
         }
     }
     iteminfo_window.uFrameWidth -= 12;
-    iteminfo_window.uFrameZ =
-        iteminfo_window.uFrameX + iteminfo_window.uFrameWidth - 1;
-    iteminfo_window.uFrameW =
-        iteminfo_window.uFrameY + iteminfo_window.uFrameHeight - 1;
+    iteminfo_window.uFrameZ = iteminfo_window.uFrameX + iteminfo_window.uFrameWidth - 1;
+    iteminfo_window.uFrameW = iteminfo_window.uFrameY + iteminfo_window.uFrameHeight - 1;
     int Str_int = (3 * (pFontArrus->GetHeight() + 8));
-    v84 = &out_text[0];
-    for (uint i = 1; i <= 3; i++) {
-        if (*v84)
-            Str_int += pFontComic->CalcTextHeight(v84, iteminfo_window.uFrameWidth,
-                                              100) +
-                   3;
-        v84 += 100;
-    }
+    for (const std::string &s : text)
+        if (!s.empty())
+            Str_int += pFontComic->CalcTextHeight(s, iteminfo_window.uFrameWidth, 100) + 3;
     v28 = pItemTable->pItems[inspect_item->uItemID].pDescription;
     if (*v28)
         Str_int += pFontSmallnum->CalcTextHeight(
@@ -493,13 +468,12 @@ void GameUI_DrawItemInfo(struct ItemGen *inspect_item) {
                                 inspect_item_image);
 
     v34 = (int)(v85 + 35);
-    Str = out_text;
-    for (uint i = 1; i <= 3; i++) {
-        if (*Str) {
-            iteminfo_window.DrawText(pFontComic, {100, v34}, Color(), Str, 0, 0, Color());
-            v34 += pFontComic->CalcTextHeight(Str, iteminfo_window.uFrameWidth, 100, 0) + 3;
+
+    for (const std::string &s : text) {
+        if (!s.empty()) {
+            iteminfo_window.DrawText(pFontComic, {100, v34}, Color(), s, 0, 0, Color());
+            v34 += pFontComic->CalcTextHeight(s, iteminfo_window.uFrameWidth, 100, 0) + 3;
         }
-        Str += 100;
     }
     v28 = pItemTable->pItems[inspect_item->uItemID].pDescription;
     if (*v28)
@@ -1167,7 +1141,7 @@ void CharacterUI_StatsTab_ShowHint() {
             int meleerecov = pParty->activeCharacter().GetAttackRecoveryTime(false);
             // TODO(captainurist): fmt can throw
             std::string description = fmt::sprintf(localization->GetString(LSTR_FMT_RECOVERY_TIME_D), meleerecov);
-            description = fmt::format("{}\n\n{}", localization->getMeleeAttackDescription(), description.c_str());
+            description = fmt::format("{}\n\n{}", localization->getMeleeAttackDescription(), description);
             CharacterUI_DrawTooltip(localization->GetString(LSTR_ATTACK_BONUS), description);
             break;
         }
@@ -1668,7 +1642,7 @@ void UI_OnMouseRightClick(int mouse_x, int mouse_y) {
                     popup_window.uFrameY + popup_window.uFrameHeight - 1;
 
                 std::string str = fmt::format("{::}{}\f00000\n", colorTable.PaleCanary.tag(), pStr);
-                popup_window.DrawTitleText(pFontCreate, 0, 0, Color(), str.c_str(), 3);
+                popup_window.DrawTitleText(pFontCreate, 0, 0, Color(), str, 3);
                 popup_window.DrawText(pFontSmallnum, {1, pFontLucida->GetHeight()}, Color(), sHint, 0, 0, Color());
             }
             break;

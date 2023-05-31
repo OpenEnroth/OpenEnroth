@@ -561,14 +561,14 @@ bool ArcomageGame::LoadSprites() {
     pArcomageGame->pSprites = assets->getImage_PCXFromIconsLOD("sprites.pcx");
 
     // mask out blue
-    uint32_t *pix = (uint32_t *)pArcomageGame->pSprites->GetPixels(IMAGE_FORMAT_A8B8G8R8);
+    Color *pix = const_cast<Color *>(pArcomageGame->pSprites->GetPixels()); // TODO(captainurist): #images const_cast
     int width = pArcomageGame->pSprites->GetWidth();
-    uint32_t mask = colorTable.Blue.c32();
+    Color mask = colorTable.Blue;
     for (int x = 0; x < width; ++x) {
         for (int y = 0; y < pArcomageGame->pSprites->GetHeight(); ++y) {
             int index{ x + y * width };
             if (pix[index] == mask)
-                pix[index] = Color(0, 0, 0, 0).c32();
+                pix[index] = Color(0, 0, 0, 0);
         }
     }
     render->Update_Texture(pArcomageGame->pSprites);

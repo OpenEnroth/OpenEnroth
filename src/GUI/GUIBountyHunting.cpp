@@ -176,6 +176,6 @@ std::string bountyHuntingText() {
     // TODO(captainurist): what do we do with exceptions inside fmt?
     return fmt::sprintf(bountyHunting_text,
                         fmt::format("{::}{}{::}", colorTable.PaleCanary.tag(),
-                                    pMonsterStats->pInfos[bountyHunting_monsterId].pName, colorTable.White.tag()).c_str(),
+                                    pMonsterStats->pInfos[bountyHunting_monsterId].pName, colorTable.White.tag()),
                         100 * pMonsterStats->pInfos[bountyHunting_monsterId].uLevel);
 }

@@ -97,7 +97,7 @@ void GUIWindow_Training::trainDialogue() {
         return;
     }
     if (pParty->activeCharacter().uLevel < trainingHallMaxLevels[houseId()]) {
-        if ((int64_t)pParty->activeCharacter().experience >= expForNextLevel) {
+        if (pParty->activeCharacter().experience >= expForNextLevel) {
             if (pParty->GetGold() >= pPrice) {
                 pParty->TakeGold(pPrice);
                 PlayHouseSound(wData.val, HouseSound_NotEnoughMoney);
@@ -111,7 +111,7 @@ void GUIWindow_Training::trainDialogue() {
                 if (maxLevelStepsAfter > maxLevelStepsBefore) {
                     GameTime trainingTime = timeUntilDawn().AddHours(4);
                     if (houseId() == HOUSE_TRAINING_HALL_PIT || houseId() == HOUSE_TRAINING_HALL_NIGHON) {
-                        trainingTime.AddHours(12);
+                        trainingTime += GameTime::FromHours(12);
                     }
                     restAndHeal(trainingTime.AddDays(7));
                     if (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR) {

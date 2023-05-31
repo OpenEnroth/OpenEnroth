@@ -14,7 +14,7 @@ enum class AUTONOTE_TYPE : uint32_t {
 using enum AUTONOTE_TYPE;
 
 struct Autonote {
-    const char *pText;
+    std::string pText;
     AUTONOTE_TYPE eType;
 };
 
@@ -24,4 +24,3 @@ struct Autonote {
 void initializeAutonotes();
 
 extern std::array<Autonote, 196> pAutonoteTxt;
-extern std::string pAutonoteTXT_Raw;

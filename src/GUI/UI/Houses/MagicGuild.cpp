@@ -219,7 +219,7 @@ void GUIWindow_MagicGuild::houseDialogueOptionSelected(DIALOGUE_TYPE option) {
                     shop_ui_items_in_store[i] = assets->getImage_ColorKey(pParty->spellBooksInGuilds[houseId()][i].GetIconName());
             }
         } else {
-            GameTime nextGenTime = pParty->GetPlayingTime().AddDays(buildingTable[wData.val - 1].generation_interval_days);
+            GameTime nextGenTime = pParty->GetPlayingTime() + GameTime::FromDays(buildingTable[wData.val - 1].generation_interval_days);
             generateSpellBooksForGuild();
             pParty->PartyTimes.guildNextRefreshTime[houseId()] = nextGenTime;
         }

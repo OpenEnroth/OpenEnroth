@@ -196,8 +196,8 @@ RenderOpenGL::~RenderOpenGL() { logger->info("RenderGl - Destructor"); }
 
 void RenderOpenGL::Release() { logger->info("RenderGL - Release"); }
 
-uint8_t *RenderOpenGL::ReadScreenPixels() {
-    GLubyte *sPixels = new GLubyte[4 * outputRender.w * outputRender.h];
+Color *RenderOpenGL::ReadScreenPixels() {
+    Color *sPixels = new Color[outputRender.w * outputRender.h];
     if (outputRender != outputPresent) {
         glBindFramebuffer(GL_READ_FRAMEBUFFER, framebuffer);
     }
@@ -210,21 +210,20 @@ uint8_t *RenderOpenGL::ReadScreenPixels() {
 }
 
 void RenderOpenGL::SaveWinnersCertificate(const std::string &filePath) {
-    GLubyte *sPixels = ReadScreenPixels();
+    Color *sPixels = ReadScreenPixels();
 
     // reverse input and save to texture for later
-    int pixsize{ 4 * outputRender.w * outputRender.h };
-    uint8_t *rev = new uint8_t[pixsize];
-    uint8_t *pq = sPixels;
+    Color *rev = new Color[outputRender.w * outputRender.h];
+    Color *pq = sPixels;
     for (uint y = 0; y < (unsigned int)outputRender.h; ++y) {
-        int index = 4 * y * outputRender.w;
-        int revindex = 4 * (outputRender.h - y - 1) * outputRender.w;
+        int index = y * outputRender.w;
+        int revindex = (outputRender.h - y - 1) * outputRender.w;
         memcpy(rev + index, pq + revindex, 4 * outputRender.w);
     }
-    assets->winnerCert = CreateTexture_Blank(outputRender.w, outputRender.h, IMAGE_FORMAT::IMAGE_FORMAT_A8B8G8R8, rev);
+    assets->winnerCert = CreateTexture_Blank(outputRender.w, outputRender.h, rev);
 
     // save to disk
-    SavePCXImage32(filePath, (uint32_t *)rev, outputRender.w, outputRender.h);
+    SavePCXImage32(filePath, rev, outputRender.w, outputRender.h);
 
     delete[] rev;
     delete[] sPixels;
@@ -843,7 +842,7 @@ void RenderOpenGL::ZDrawTextureAlpha(float u, float v, Image *img, int zVal) {
     int uOutY = static_cast<int>(v * outputRender.h);
     int imgheight = img->GetHeight();
     int imgwidth = img->GetWidth();
-    auto pixels = (uint32_t *)img->GetPixels(IMAGE_FORMAT_A8B8G8R8);
+    const Color *pixels = img->GetPixels();
 
     if (uOutX < 0)
         uOutX = 0;
@@ -852,7 +851,7 @@ void RenderOpenGL::ZDrawTextureAlpha(float u, float v, Image *img, int zVal) {
 
     for (int xs = 0; xs < imgwidth; xs++) {
         for (int ys = 0; ys < imgheight; ys++) {
-            if (pixels[xs + imgwidth * ys] & 0xFF000000) {
+            if (pixels[xs + imgwidth * ys].a != 0) {
                 this->pActiveZBuffer[uOutX + xs + outputRender.w * (uOutY + ys)] = zVal;
             }
         }
@@ -868,24 +867,22 @@ void RenderOpenGL::BlendTextures(int x, int y, Image *imgin, Image *imgblend, in
     // leaves gap where it shouldnt on dark pixels currently
     // doesnt use opacity params
 
-    const uint32_t *pixelpoint;
-    const uint32_t *pixelpointblend;
+    const Color *pixelpoint;
+    const Color *pixelpointblend;
 
     if (imgin && imgblend) {  // 2 images to blend
-        pixelpoint = (const uint32_t*)imgin->GetPixels(IMAGE_FORMAT_A8B8G8R8);
-        pixelpointblend =
-            (const uint32_t*)imgblend->GetPixels(IMAGE_FORMAT_A8B8G8R8);
+        pixelpoint = imgin->GetPixels();
+        pixelpointblend = imgblend->GetPixels();
 
         int Width = imgin->GetWidth();
         int Height = imgin->GetHeight();
-        Texture *temp = render->CreateTexture_Blank(Width, Height, IMAGE_FORMAT_A8B8G8R8);
-        //Image *temp = Image::Create(Width, Height, IMAGE_FORMAT_A8R8G8B8);
-        uint32_t *temppix = (uint32_t*)temp->GetPixels(IMAGE_FORMAT_A8B8G8R8);
+        Texture *temp = render->CreateTexture_Blank(Width, Height);
+        Color *temppix = const_cast<Color *>(temp->GetPixels()); // TODO(captainurist): #images const_cast
 
-        uint32_t c = *(pixelpointblend + 2700);  // guess at brightest pixel
-        unsigned int rmax = (c & 0xFF);
-        unsigned int gmax = ((c >> 8) & 0xFF);
-        unsigned int bmax = ((c >> 16) & 0xFF);
+        Color c = *(pixelpointblend + 2700);  // guess at brightest pixel
+        unsigned int rmax = c.r;
+        unsigned int gmax = c.g;
+        unsigned int bmax = c.b;
 
         unsigned int bmin = bmax / 10;
         unsigned int gmin = gmax / 10;
@@ -900,15 +897,15 @@ void RenderOpenGL::BlendTextures(int x, int y, Image *imgin, Image *imgblend, in
                 // should go blue -> black -> blue reverse
                 // patchy -> solid -> patchy
 
-                if (*pixelpoint) {  // check orig item not got blakc pixel
+                if (*pixelpoint != Color()) {  // check orig item not got blakc pixel
                     uint32_t nudge =
                         (xdraw % imgblend->GetWidth()) +
                         (ydraw % imgblend->GetHeight()) * imgblend->GetWidth();
-                    uint32_t pixcol = *(pixelpointblend + nudge);
+                    Color pixcol = *(pixelpointblend + nudge);
 
-                    unsigned int rcur = (pixcol & 0xFF);
-                    unsigned int gcur = ((pixcol >> 8) & 0xFF);
-                    unsigned int bcur = ((pixcol >> 16) & 0xFF);
+                    unsigned int rcur = pixcol.r;
+                    unsigned int gcur = pixcol.g;
+                    unsigned int bcur = pixcol.b;
 
                     int steps = (time) % 128;
 
@@ -929,7 +926,7 @@ void RenderOpenGL::BlendTextures(int x, int y, Image *imgin, Image *imgblend, in
                     if (gcur < gmin) gcur = gmin;
                     if (rcur < rmin) rcur = rmin;
 
-                    temppix[xdraw + ydraw * Width] = Color(rcur, gcur, bcur).c32();
+                    temppix[xdraw + ydraw * Width] = Color(rcur, gcur, bcur);
                 }
 
                 pixelpoint++;
@@ -966,12 +963,12 @@ void RenderOpenGL::TexturePixelRotateDraw(float u, float v, Image *img, int time
             int width = img->GetWidth();
             int height = img->GetHeight();
             if (!cachedtemp[thisslot]) {
-                cachedtemp[thisslot] = CreateTexture_Blank(width, height, IMAGE_FORMAT_A8B8G8R8);
+                cachedtemp[thisslot] = CreateTexture_Blank(width, height);
             }
 
-            uint8_t *palpoint24 = (uint8_t *)img->GetPalette();
-            uint32_t *temppix = (uint32_t *)cachedtemp[thisslot]->GetPixels(IMAGE_FORMAT_A8B8G8R8);
-            uint8_t *texpix24 = (uint8_t *)img->GetPalettePixels();
+            const uint8_t *palpoint24 = img->GetPalette();
+            Color *temppix = const_cast<Color *>(cachedtemp[thisslot]->GetPixels()); // TODO(captainurist): #images const_cast
+            const uint8_t *texpix24 = img->GetPalettePixels();
             uint8_t thispix;
             int palindex;
 
@@ -982,7 +979,7 @@ void RenderOpenGL::TexturePixelRotateDraw(float u, float v, Image *img, int time
                         palindex = (time + thispix) % (2 * 63);
                         if (palindex >= 63)
                             palindex = (2 * 63) - palindex;
-                        temppix[dx + dy * width] = Color(palpoint24[palindex * 3], palpoint24[palindex * 3 + 1], palpoint24[palindex * 3 + 2]).c32();
+                        temppix[dx + dy * width] = Color(palpoint24[palindex * 3], palpoint24[palindex * 3 + 1], palpoint24[palindex * 3 + 2]);
                     }
                     ++texpix24;
                 }
@@ -1147,7 +1144,7 @@ bool RenderOpenGL::AreRenderSurfacesOk() {
     return true;
 }
 
-uint32_t *RenderOpenGL::MakeScreenshot32(const int width, const int height) {
+Color *RenderOpenGL::MakeScreenshot32(const int width, const int height) {
     BeginScene3D();
 
     if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
@@ -1158,21 +1155,21 @@ uint32_t *RenderOpenGL::MakeScreenshot32(const int width, const int height) {
 
     DrawBillboards_And_MaybeRenderSpecialEffects_And_EndScene();
 
-    uint32_t *sPixels = (uint32_t*)ReadScreenPixels();
+    Color *sPixels = ReadScreenPixels();
     int interval_x = static_cast<int>(game_viewport_width / (double)width);
     int interval_y = static_cast<int>(game_viewport_height / (double)height);
 
-    uint32_t *pPixels = (uint32_t *)malloc(sizeof(uint32_t) * height * width);
+    Color *pPixels = (Color *)malloc(sizeof(Color) * height * width);
     assert(pPixels);
-    memset(pPixels, 0, sizeof(uint32_t) * height * width);
+    memset(pPixels, 0, sizeof(Color) * height * width);
 
-    uint32_t *for_pixels = pPixels;
+    Color *for_pixels = pPixels;
     if (uCurrentlyLoadedLevelType == LEVEL_NULL) {
         memset(&for_pixels, 0, sizeof(for_pixels));
     } else {
         for (uint y = 0; y < (unsigned int)height; ++y) {
             for (uint x = 0; x < (unsigned int)width; ++x) {
-                uint32_t *p = sPixels + (x * interval_x + pViewport->uViewportTL_X) + (outputRender.h - (y * interval_y) - pViewport->uViewportTL_Y) * outputRender.w;
+                Color *p = sPixels + (x * interval_x + pViewport->uViewportTL_X) + (outputRender.h - (y * interval_y) - pViewport->uViewportTL_Y) * outputRender.w;
                 *for_pixels = *p;
                 ++for_pixels;
             }
@@ -1583,10 +1580,8 @@ Texture *RenderOpenGL::CreateTexture_PCXFromLOD(LOD::File *pLOD, const std::stri
     return TextureOpenGL::Create(new PCX_LOD_Raw_Loader(pLOD, name));
 }
 
-Texture *RenderOpenGL::CreateTexture_Blank(unsigned int width, unsigned int height,
-    IMAGE_FORMAT format, const void *pixels) {
-
-    return TextureOpenGL::Create(width, height, format, pixels);
+Texture *RenderOpenGL::CreateTexture_Blank(unsigned int width, unsigned int height, const Color *pixels) {
+    return TextureOpenGL::Create(width, height, pixels);
 }
 
 Texture *RenderOpenGL::CreateTexture(const std::string &name) {
@@ -1602,7 +1597,7 @@ Texture *RenderOpenGL::CreateSprite(const std::string &name, unsigned int palett
 void RenderOpenGL::Update_Texture(Texture *texture) {
     auto t = (TextureOpenGL *)texture;
     glBindTexture(GL_TEXTURE_2D, t->GetOpenGlTexture());
-    glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, t->GetWidth(), t->GetHeight(), GL_RGBA, GL_UNSIGNED_BYTE, t->GetPixels(IMAGE_FORMAT_A8B8G8R8));
+    glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, t->GetWidth(), t->GetHeight(), GL_RGBA, GL_UNSIGNED_BYTE, t->GetPixels());
     glBindTexture(GL_TEXTURE_2D, 0);
 }
 
@@ -1623,35 +1618,22 @@ void RenderOpenGL::RemoveTextureFromDevice(Texture *texture) {
 
 bool RenderOpenGL::MoveTextureToDevice(Texture *texture) {
     auto t = (TextureOpenGL *)texture;
-    auto native_format = t->GetFormat();
-    int gl_format = GL_RGB;
-        // native_format == IMAGE_FORMAT_A1R5G5B5 ? GL_RGBA : GL_RGB;
+    const Color *pixels = t->GetPixels();
+    assert(pixels);
 
-    uint8_t *pixels = nullptr;
-    if (native_format == IMAGE_FORMAT_R5G6B5 || native_format == IMAGE_FORMAT_A1R5G5B5 || native_format == IMAGE_FORMAT_R8G8B8A8
-         || native_format == IMAGE_FORMAT_R8G8B8 || native_format == IMAGE_FORMAT_A8B8G8R8) {
-        pixels = (uint8_t *)t->GetPixels(IMAGE_FORMAT_A8B8G8R8);
-        gl_format = GL_RGBA;
-    } else {
-        log->verbose("Image {} not loaded!", *t->GetName());
-    }
+    GLuint texid;
+    glGenTextures(1, &texid);
+    t->SetOpenGlTexture(texid);
 
-    if (pixels) {
-        GLuint texid;
-        glGenTextures(1, &texid);
-        t->SetOpenGlTexture(texid);
+    glBindTexture(GL_TEXTURE_2D, texid);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, t->GetWidth(), t->GetHeight(), 0, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
-        glBindTexture(GL_TEXTURE_2D, texid);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, t->GetWidth(), t->GetHeight(), 0, gl_format, GL_UNSIGNED_BYTE, pixels);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-
-        glBindTexture(GL_TEXTURE_2D, 0);
-        return true;
-    }
-    return false;
+    glBindTexture(GL_TEXTURE_2D, 0);
+    return true;
 }
 
 // TODO(pskelton): to camera?
@@ -1755,9 +1737,7 @@ void RenderOpenGL::DrawOutdoorTerrain() {
         terraintexturesizes[0] = wtrtexture->GetWidth();
 
         for (int buff = 0; buff < 7; buff++) {
-            char container_name[64];
-            sprintf(container_name, "HDWTR%03u", buff);
-
+            std::string container_name = fmt::format("HDWTR{:03}", buff);
             terraintexmap.insert(std::make_pair(container_name, terraintexmap.size()));
             numterraintexloaded[0]++;
         }
@@ -1962,7 +1942,7 @@ void RenderOpenGL::DrawOutdoorTerrain() {
                         terraintexturesizes[unit], terraintexturesizes[unit], 1,
                         GL_RGBA,
                         GL_UNSIGNED_BYTE,
-                        texture->GetPixels(IMAGE_FORMAT_A8B8G8R8));
+                        texture->GetPixels());
                 }
 
                 it++;
@@ -3654,9 +3634,7 @@ void RenderOpenGL::DrawOutdoorBuildings() {
         outbuildtextureheights[0] = wtrtexture->GetHeight();
 
         for (int buff = 0; buff < 7; buff++) {
-            char container_name[64];
-            sprintf(container_name, "HDWTR%03u", buff);
-
+            std::string container_name = fmt::format("HDWTR{:03}", buff);
             outbuildtexmap.insert(std::make_pair(container_name, outbuildtexmap.size()));
             numoutbuildtexloaded[0]++;
         }
@@ -3837,7 +3815,7 @@ void RenderOpenGL::DrawOutdoorBuildings() {
                         outbuildtexturewidths[unit], outbuildtextureheights[unit], 1,
                         GL_RGBA,
                         GL_UNSIGNED_BYTE,
-                        texture->GetPixels(IMAGE_FORMAT_A8B8G8R8));
+                        texture->GetPixels());
                 }
 
                 it++;
@@ -4284,9 +4262,7 @@ void RenderOpenGL::DrawIndoorFaces() {
             bsptextureheights[0] = wtrtexture->GetHeight();
 
             for (int buff = 0; buff < 7; buff++) {
-                char container_name[64];
-                sprintf(container_name, "HDWTR%03u", buff);
-
+                std::string container_name = fmt::format("HDWTR{:03}", buff);
                 bsptexmap.insert(std::make_pair(container_name, bsptexmap.size()));
                 bsptexloaded[0]++;
             }
@@ -4455,7 +4431,7 @@ void RenderOpenGL::DrawIndoorFaces() {
                             bsptexturewidths[unit], bsptextureheights[unit], 1,
                             GL_RGBA,
                             GL_UNSIGNED_BYTE,
-                            texture->GetPixels(IMAGE_FORMAT_A8B8G8R8));
+                            texture->GetPixels());
 
                         //numterraintexloaded[0]++;
                     }
