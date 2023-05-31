@@ -6,7 +6,7 @@
 
 #include "Engine/ErrorHandling.h"
 #include "Engine/Graphics/IRender.h"
-#include "Engine/Graphics/PCX.h"
+#include "Library/Image/PCX.h"
 #include "Engine/Graphics/Sprites.h"
 
 // List of textures that require additional processing for transparent pixels.

@@ -3,7 +3,8 @@
 #include <cstdint>
 #include <memory>
 
-#include "Image.h"
+#include "Library/Color/Color.h"
+
 #include "Utility/Memory/Blob.h"
 
 namespace PCX {

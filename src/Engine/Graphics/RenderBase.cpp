@@ -24,7 +24,7 @@
 #include "Engine/Graphics/ParticleEngine.h"
 #include "Engine/Graphics/Level/Decoration.h"
 #include "Engine/Graphics/DecorationList.h"
-#include "Engine/Graphics/PCX.h"
+#include "Library/Image/PCX.h"
 
 #include "Utility/Math/TrigLut.h"
 #include "Library/Random/Random.h"
