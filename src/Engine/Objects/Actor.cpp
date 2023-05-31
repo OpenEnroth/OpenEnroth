@@ -3764,7 +3764,7 @@ bool CheckActors_proximity() {
 }
 
 
-void StatusBarItemFound(int num_gold_found, std::string &item_unidentified_name) {
+void StatusBarItemFound(int num_gold_found, const std::string &item_unidentified_name) {
     if (num_gold_found != 0) {
         GameUI_SetStatusBar(
             LSTR_FMT_YOU_FOUND_GOLD_AND_ITEM,

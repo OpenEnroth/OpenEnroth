@@ -669,7 +669,7 @@ void CreateScrollWindow() {
     a1.uFrameZ = a1.uFrameWidth + a1.uFrameX - 1;
     a1.uFrameW = a1.uFrameHeight + a1.uFrameY - 1;
 
-    std::string name = pItemTable->pItems[pGUIWindow_ScrollWindow->scroll_type].name;
+    const std::string &name = pItemTable->pItems[pGUIWindow_ScrollWindow->scroll_type].name;
 
     a1.DrawTitleText(pFontCreate, 0, 0, Color(), fmt::format("{::}{}\f00000\n", colorTable.PaleCanary.tag(), name), 3);
     a1.DrawText(pFontSmallnum, {1, pFontCreate->GetHeight() - 3}, Color(), pMessageScrolls[pGUIWindow_ScrollWindow->scroll_type], 0, 0, Color());

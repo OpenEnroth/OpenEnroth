@@ -58,7 +58,7 @@ struct ItemGen {  // 0x24
 
     ITEM_EQUIP_TYPE GetItemEquipType() const;
     PLAYER_SKILL_TYPE GetPlayerSkillType() const;
-    std::string GetIconName() const;
+    const std::string& GetIconName() const;
     uint8_t GetDamageDice() const;
     uint8_t GetDamageRoll() const;
     uint8_t GetDamageMod() const;

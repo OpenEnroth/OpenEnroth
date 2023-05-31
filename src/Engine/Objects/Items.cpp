@@ -705,7 +705,7 @@ PLAYER_SKILL_TYPE ItemGen::GetPlayerSkillType() const {
     return skl;
 }
 
-std::string ItemGen::GetIconName() const {
+const std::string& ItemGen::GetIconName() const {
     return pItemTable->pItems[this->uItemID].iconName;
 }
 
