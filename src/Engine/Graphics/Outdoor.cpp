@@ -1987,7 +1987,7 @@ void ODM_ProcessPartyActions() {
 
     //-------------------------------------------
     if (pParty->bFlying) {
-        // TODO(pskelton): check tickcount usage here - bob up and down in the air
+        // bob up and down in the air
         if (noFlightBob) {
             partyNewZ = partyOldFlightZ;
         } else {
