@@ -31,10 +31,10 @@ std::array<unsigned int, 2> saveload_dlg_ys = {{60, 0}};
 std::array<unsigned int, 2> saveload_dlg_zs = {{460, 640}};
 std::array<unsigned int, 2> saveload_dlg_ws = {{344, 480}};
 
-Image *saveload_ui_ls_saved = nullptr;
-Image *saveload_ui_x_d = nullptr;
+GraphicsImage *saveload_ui_ls_saved = nullptr;
+GraphicsImage *saveload_ui_x_d = nullptr;
 
-static Image *scrollstop = nullptr;
+static GraphicsImage *scrollstop = nullptr;
 
 // TODO(Nik-RE-dev): drop variable and load game only on double click
 static bool isLoadSlotClicked = false;

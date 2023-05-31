@@ -14,6 +14,6 @@ void ShowPopupShopItem();
 void GetHouseGoodbyeSpeech();
 void sub_4B1447_party_fine(int shopId, int stealingResult, int fineToAdd);
 
-extern class Image *shop_ui_background;
+extern class GraphicsImage *shop_ui_background;
 
-extern std::array<class Image *, 12> shop_ui_items_in_store;
+extern std::array<class GraphicsImage *, 12> shop_ui_items_in_store;

@@ -1,8 +1,8 @@
 #pragma once
 #include "Engine/Graphics/Image.h"
 
-class Texture : public Image {
+class Texture : public GraphicsImage {
  protected:
     explicit Texture(bool lazy_initialization = true)
-        : Image(lazy_initialization) {}
+        : GraphicsImage(lazy_initialization) {}
 };

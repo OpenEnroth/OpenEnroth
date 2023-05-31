@@ -706,12 +706,12 @@ void RenderOpenGL::ScreenFade(unsigned int color, float t) {
 
 
 void RenderOpenGL::DrawTextureOffset(int pX, int pY, int move_X, int move_Y,
-                                     Image *pTexture) {
+                                     GraphicsImage *pTexture) {
     DrawTextureNew((float)(pX - move_X)/outputRender.w, (float)(pY - move_Y)/outputRender.h, pTexture);
 }
 
 
-void RenderOpenGL::DrawImage(Image *img, const Recti &rect, uint paletteid, uint32_t uColor32) {
+void RenderOpenGL::DrawImage(GraphicsImage *img, const Recti &rect, uint paletteid, uint32_t uColor32) {
     if (!img) {
         logger->verbose("Null img passed to DrawImage");
         return;
@@ -835,7 +835,7 @@ void RenderOpenGL::DrawImage(Image *img, const Recti &rect, uint paletteid, uint
 }
 
 // TODO(pskelton): zbuffer must go
-void RenderOpenGL::ZDrawTextureAlpha(float u, float v, Image *img, int zVal) {
+void RenderOpenGL::ZDrawTextureAlpha(float u, float v, GraphicsImage *img, int zVal) {
     if (!img) return;
 
     int uOutX = static_cast<int>(u * outputRender.w);
@@ -861,8 +861,8 @@ void RenderOpenGL::ZDrawTextureAlpha(float u, float v, Image *img, int zVal) {
 
 // TODO(pskelton): sort this - forcing the draw is slow
 // TODO(pskelton): stencil masking with opacity would be a better way to do this
-void RenderOpenGL::BlendTextures(int x, int y, Image *imgin, Image *imgblend, int time, int start_opacity,
-    int end_opacity) {
+void RenderOpenGL::BlendTextures(int x, int y, GraphicsImage *imgin, GraphicsImage *imgblend, int time, int start_opacity,
+                                 int end_opacity) {
     // thrown together as a crude estimate of the enchaintg effects
     // leaves gap where it shouldnt on dark pixels currently
     // doesnt use opacity params
@@ -948,7 +948,7 @@ void RenderOpenGL::BlendTextures(int x, int y, Image *imgin, Image *imgblend, in
 //----- (004A65CC) --------------------------------------------------------
 //_4A65CC(unsigned int x, unsigned int y, Texture_MM7 *a4, Texture_MM7 *a5, int a6, int a7, int a8)
 // a6 is time, a7 is 0, a8 is 63
-void RenderOpenGL::TexturePixelRotateDraw(float u, float v, Image *img, int time) {
+void RenderOpenGL::TexturePixelRotateDraw(float u, float v, GraphicsImage *img, int time) {
     // TODO(pskelton): sort this - precalculate/ shader
     static std::array<Texture *, 14> cachedtemp {};
     static std::array<int, 14> cachetime { -1 };
@@ -3046,7 +3046,7 @@ void RenderOpenGL::BeginScene2D() {
 }
 
 // TODO(pskelton): use alpha from mask too
-void RenderOpenGL::DrawTextureNew(float u, float v, Image *tex, uint32_t colourmask) {
+void RenderOpenGL::DrawTextureNew(float u, float v, GraphicsImage *tex, uint32_t colourmask) {
     TextureOpenGL *texture = dynamic_cast<TextureOpenGL *>(tex);
     if (!texture) {
         logger->verbose("Null texture passed to DrawTextureNew");
@@ -3174,7 +3174,7 @@ void RenderOpenGL::DrawTextureNew(float u, float v, Image *tex, uint32_t colourm
 }
 
 // TODO(pskelton): add optional colour32
-void RenderOpenGL::DrawTextureCustomHeight(float u, float v, class Image *img, int custom_height) {
+void RenderOpenGL::DrawTextureCustomHeight(float u, float v, class GraphicsImage *img, int custom_height) {
     TextureOpenGL *texture = dynamic_cast<TextureOpenGL*>(img);
     if (!texture) {
         logger->verbose("Null texture passed to DrawTextureCustomHeight");
@@ -5873,7 +5873,7 @@ void RenderOpenGL::NuklearFontFree(struct nk_tex_font *tfont) {
         glDeleteTextures(1, &tfont->texid);
 }
 
-struct nk_image RenderOpenGL::NuklearImageLoad(Image *img) {
+struct nk_image RenderOpenGL::NuklearImageLoad(GraphicsImage *img) {
     GLuint texid;
     auto t = (TextureOpenGL *)img;
     texid = t->GetOpenGlTexture();
@@ -5882,7 +5882,7 @@ struct nk_image RenderOpenGL::NuklearImageLoad(Image *img) {
     return nk_image_id(texid);
 }
 
-void RenderOpenGL::NuklearImageFree(Image *img) {
+void RenderOpenGL::NuklearImageFree(GraphicsImage *img) {
     auto t = (TextureOpenGL *)img;
     GLuint texid = t->GetOpenGlTexture();
     if (texid != -1) {

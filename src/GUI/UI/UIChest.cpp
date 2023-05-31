@@ -49,7 +49,7 @@ void GUIWindow_Chest::Update() {
         int chestWidthCells = pChestWidthsByType[chestBitmapId];
         int chestHeghtCells = pChestHeightsByType[chestBitmapId];
 
-        Image *chest_background = assets->getImage_ColorKey(
+        GraphicsImage *chest_background = assets->getImage_ColorKey(
             fmt::format("chest{:02}", pChestList->vChests[chestBitmapId].uTextureID));
         render->DrawTextureNew(8 / 640.0f, 8 / 480.0f, chest_background);
 

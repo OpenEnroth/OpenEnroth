@@ -55,4 +55,4 @@ class Game {
 
 void initDataPath(const std::string &dataPath);
 
-extern class Image *gamma_preview_image;  // 506E40
+extern class GraphicsImage *gamma_preview_image;  // 506E40

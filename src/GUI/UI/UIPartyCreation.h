@@ -2,7 +2,7 @@
 
 #include "GUI/GUIWindow.h"
 
-class Image;
+class GraphicsImage;
 
 bool PartyCreationUI_Loop();
 
@@ -14,5 +14,5 @@ class GUIWindow_PartyCreation : public GUIWindow {
     virtual void Update();
 
  protected:
-    Image *main_menu_background;
+    GraphicsImage *main_menu_background;
 };

@@ -18,12 +18,12 @@ class GUIWindow_MainMenu : public GUIWindow {
     GUIButton *pBtnLoad;
     GUIButton *pBtnNew;
 
-    Image *main_menu_background;
+    GraphicsImage *main_menu_background;
 
-    Image *ui_mainmenu_new;
-    Image *ui_mainmenu_load;
-    Image *ui_mainmenu_credits;
-    Image *ui_mainmenu_exit;
+    GraphicsImage *ui_mainmenu_new;
+    GraphicsImage *ui_mainmenu_load;
+    GraphicsImage *ui_mainmenu_credits;
+    GraphicsImage *ui_mainmenu_exit;
 };
 
 extern GUIWindow_MainMenu *pWindow_MainMenu;

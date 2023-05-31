@@ -84,73 +84,73 @@ std::array<PARTY_BUFF_INDEX, 14> spellBuffsAtRightPanel = {
      PARTY_BUFF_SHIELD, PARTY_BUFF_STONE_SKIN, PARTY_BUFF_PROTECTION_FROM_MAGIC,
      PARTY_BUFF_IMMOLATION, PARTY_BUFF_DAY_OF_GODS}};
 
-Image *game_ui_statusbar = nullptr;
-Image *game_ui_rightframe = nullptr;
-Image *game_ui_topframe = nullptr;
-Image *game_ui_leftframe = nullptr;
-Image *game_ui_bottomframe = nullptr;
+GraphicsImage *game_ui_statusbar = nullptr;
+GraphicsImage *game_ui_rightframe = nullptr;
+GraphicsImage *game_ui_topframe = nullptr;
+GraphicsImage *game_ui_leftframe = nullptr;
+GraphicsImage *game_ui_bottomframe = nullptr;
 
-Image *game_ui_monster_hp_green = nullptr;
-Image *game_ui_monster_hp_yellow = nullptr;
-Image *game_ui_monster_hp_red = nullptr;
-Image *game_ui_monster_hp_background = nullptr;
-Image *game_ui_monster_hp_border_left = nullptr;
-Image *game_ui_monster_hp_border_right = nullptr;
+GraphicsImage *game_ui_monster_hp_green = nullptr;
+GraphicsImage *game_ui_monster_hp_yellow = nullptr;
+GraphicsImage *game_ui_monster_hp_red = nullptr;
+GraphicsImage *game_ui_monster_hp_background = nullptr;
+GraphicsImage *game_ui_monster_hp_border_left = nullptr;
+GraphicsImage *game_ui_monster_hp_border_right = nullptr;
 
-Image *game_ui_minimap_frame = nullptr;    // 5079D8
-Image *game_ui_minimap_compass = nullptr;  // 5079B4
-std::array<Image *, 8> game_ui_minimap_dirs;
+GraphicsImage *game_ui_minimap_frame = nullptr;    // 5079D8
+GraphicsImage *game_ui_minimap_compass = nullptr;  // 5079B4
+std::array<GraphicsImage *, 8> game_ui_minimap_dirs;
 
-Image *game_ui_menu_quit = nullptr;
-Image *game_ui_menu_resume = nullptr;
-Image *game_ui_menu_controls = nullptr;
-Image *game_ui_menu_save = nullptr;
-Image *game_ui_menu_load = nullptr;
-Image *game_ui_menu_new = nullptr;
-Image *game_ui_menu_options = nullptr;
+GraphicsImage *game_ui_menu_quit = nullptr;
+GraphicsImage *game_ui_menu_resume = nullptr;
+GraphicsImage *game_ui_menu_controls = nullptr;
+GraphicsImage *game_ui_menu_save = nullptr;
+GraphicsImage *game_ui_menu_load = nullptr;
+GraphicsImage *game_ui_menu_new = nullptr;
+GraphicsImage *game_ui_menu_options = nullptr;
 
-Image *game_ui_tome_storyline = nullptr;
-Image *game_ui_tome_calendar = nullptr;
-Image *game_ui_tome_maps = nullptr;
-Image *game_ui_tome_autonotes = nullptr;
-Image *game_ui_tome_quests = nullptr;
+GraphicsImage *game_ui_tome_storyline = nullptr;
+GraphicsImage *game_ui_tome_calendar = nullptr;
+GraphicsImage *game_ui_tome_maps = nullptr;
+GraphicsImage *game_ui_tome_autonotes = nullptr;
+GraphicsImage *game_ui_tome_quests = nullptr;
 
-Image *game_ui_btn_rest = nullptr;
-Image *game_ui_btn_cast = nullptr;
-Image *game_ui_btn_zoomin = nullptr;
-Image *game_ui_btn_zoomout = nullptr;
-Image *game_ui_btn_quickref = nullptr;
-Image *game_ui_btn_settings = nullptr;
+GraphicsImage *game_ui_btn_rest = nullptr;
+GraphicsImage *game_ui_btn_cast = nullptr;
+GraphicsImage *game_ui_btn_zoomin = nullptr;
+GraphicsImage *game_ui_btn_zoomout = nullptr;
+GraphicsImage *game_ui_btn_quickref = nullptr;
+GraphicsImage *game_ui_btn_settings = nullptr;
 
-Image *game_ui_dialogue_background = nullptr;
+GraphicsImage *game_ui_dialogue_background = nullptr;
 
-Image *game_ui_menu_options_video_background = nullptr;
-Image *game_ui_menu_options_video_bloodsplats = nullptr;
-Image *game_ui_menu_options_video_coloredlights = nullptr;
-Image *game_ui_menu_options_video_tinting = nullptr;
-std::array<Image *, 10> game_ui_menu_options_video_gamma_positions;
-std::array<Image *, 5> game_ui_options_controls;
+GraphicsImage *game_ui_menu_options_video_background = nullptr;
+GraphicsImage *game_ui_menu_options_video_bloodsplats = nullptr;
+GraphicsImage *game_ui_menu_options_video_coloredlights = nullptr;
+GraphicsImage *game_ui_menu_options_video_tinting = nullptr;
+std::array<GraphicsImage *, 10> game_ui_menu_options_video_gamma_positions;
+std::array<GraphicsImage *, 5> game_ui_options_controls;
 
-Image *game_ui_evtnpc = nullptr;  // 50795C
+GraphicsImage *game_ui_evtnpc = nullptr;  // 50795C
 
-std::array<std::array<Image *, 56>, 4> game_ui_player_faces;
-Image *game_ui_player_face_eradicated = nullptr;
-Image *game_ui_player_face_dead = nullptr;
+std::array<std::array<GraphicsImage *, 56>, 4> game_ui_player_faces;
+GraphicsImage *game_ui_player_face_eradicated = nullptr;
+GraphicsImage *game_ui_player_face_dead = nullptr;
 
-Image *game_ui_player_selection_frame = nullptr;  // 50C98C
-Image *game_ui_player_alert_yellow = nullptr;     // 5079C8
-Image *game_ui_player_alert_red = nullptr;        // 5079CC
-Image *game_ui_player_alert_green = nullptr;      // 5079D0
+GraphicsImage *game_ui_player_selection_frame = nullptr;  // 50C98C
+GraphicsImage *game_ui_player_alert_yellow = nullptr;     // 5079C8
+GraphicsImage *game_ui_player_alert_red = nullptr;        // 5079CC
+GraphicsImage *game_ui_player_alert_green = nullptr;      // 5079D0
 
-Image *game_ui_bar_red = nullptr;
-Image *game_ui_bar_yellow = nullptr;
-Image *game_ui_bar_green = nullptr;
-Image *game_ui_bar_blue = nullptr;
+GraphicsImage *game_ui_bar_red = nullptr;
+GraphicsImage *game_ui_bar_yellow = nullptr;
+GraphicsImage *game_ui_bar_green = nullptr;
+GraphicsImage *game_ui_bar_blue = nullptr;
 
-Image *game_ui_playerbuff_pain_reflection = nullptr;
-Image *game_ui_playerbuff_hammerhands = nullptr;
-Image *game_ui_playerbuff_preservation = nullptr;
-Image *game_ui_playerbuff_bless = nullptr;
+GraphicsImage *game_ui_playerbuff_pain_reflection = nullptr;
+GraphicsImage *game_ui_playerbuff_hammerhands = nullptr;
+GraphicsImage *game_ui_playerbuff_preservation = nullptr;
+GraphicsImage *game_ui_playerbuff_bless = nullptr;
 
 bool bFlashHistoryBook;
 bool bFlashAutonotesBook;
@@ -794,7 +794,7 @@ std::string GameUI_GetMinimapHintText() {
 
 //----- (0041D3B7) --------------------------------------------------------
 void GameUI_CharacterQuickRecord_Draw(GUIWindow *window, Player *player) {
-    Image *v13;              // eax@6
+    GraphicsImage *v13;              // eax@6
     PlayerFrame *v15;        // eax@12
     const char *v29;         // eax@16
     int v36;                 // esi@22
@@ -1413,7 +1413,7 @@ void GameUI_DrawCharacterSelectionFrame() {
 void GameUI_DrawPartySpells() {
     // TODO(pskelton): check tickcount usage here
     unsigned int frameNum = platform->tickCount() / 20;
-    Image *spell_texture;  // [sp-4h] [bp-1Ch]@12
+    GraphicsImage *spell_texture;  // [sp-4h] [bp-1Ch]@12
 
     for (int i = 0; i < spellBuffsAtRightPanel.size(); ++i) {
         if (pParty->pPartyBuffs[spellBuffsAtRightPanel[i]].Active()) {
@@ -1456,7 +1456,7 @@ void GameUI_DrawPartySpells() {
 void GameUI_DrawPortraits() {
     unsigned int face_expression_ID;  // eax@17
     PlayerFrame *pFrame;              // eax@21
-    Image *pPortrait;                 // [sp-4h] [bp-1Ch]@27
+    GraphicsImage *pPortrait;                 // [sp-4h] [bp-1Ch]@27
 
     pParty->updateDelayedReaction();
 

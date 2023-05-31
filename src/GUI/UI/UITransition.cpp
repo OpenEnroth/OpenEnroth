@@ -22,7 +22,7 @@
 #include "Media/Audio/AudioPlayer.h"
 #include "Media/MediaPlayer.h"
 
-Image *transition_ui_icon = nullptr;
+GraphicsImage *transition_ui_icon = nullptr;
 
 std::string transition_button_label;
 

@@ -208,8 +208,8 @@ class IRender {
     virtual void NuklearRelease() = 0;
     virtual struct nk_tex_font *NuklearFontLoad(const char *font_path, size_t font_size) = 0;
     virtual void NuklearFontFree(struct nk_tex_font *tfont) = 0;
-    virtual struct nk_image NuklearImageLoad(Image *img) = 0;
-    virtual void NuklearImageFree(Image *img) = 0;
+    virtual struct nk_image NuklearImageLoad(GraphicsImage *img) = 0;
+    virtual void NuklearImageFree(GraphicsImage *img) = 0;
 
     virtual Texture *CreateTexture_Paletted(const std::string &name) = 0;
     virtual Texture *CreateTexture_ColorKey(const std::string &name, Color colorkey) = 0;
@@ -283,22 +283,22 @@ class IRender {
                                unsigned int uZ, unsigned int uW) = 0;
     virtual void ResetUIClipRect() = 0;
 
-    virtual void DrawTextureNew(float u, float v, Image *img, uint32_t colourmask32 = 0xFFFFFFFF) = 0;
-    virtual void DrawTextureCustomHeight(float u, float v, Image *, int height) = 0;
-    virtual void DrawTextureOffset(int x, int y, int offset_x, int offset_y, Image *) = 0;
-    virtual void DrawImage(Image *, const Recti &rect, const uint paletteid = 0, uint32_t colourmask32 = 0xFFFFFFFF) = 0;
+    virtual void DrawTextureNew(float u, float v, GraphicsImage *img, uint32_t colourmask32 = 0xFFFFFFFF) = 0;
+    virtual void DrawTextureCustomHeight(float u, float v, GraphicsImage *, int height) = 0;
+    virtual void DrawTextureOffset(int x, int y, int offset_x, int offset_y, GraphicsImage *) = 0;
+    virtual void DrawImage(GraphicsImage *, const Recti &rect, const uint paletteid = 0, uint32_t colourmask32 = 0xFFFFFFFF) = 0;
 
-    virtual void ZDrawTextureAlpha(float u, float v, Image *pTexture, int zVal) = 0;
-    virtual void BlendTextures(int a2, int a3, Image *a4, Image *a5, int t, int start_opacity, int end_opacity) = 0;
-    virtual void TexturePixelRotateDraw(float u, float v, Image *img, int time) = 0;
+    virtual void ZDrawTextureAlpha(float u, float v, GraphicsImage *pTexture, int zVal) = 0;
+    virtual void BlendTextures(int a2, int a3, GraphicsImage *a4, GraphicsImage *a5, int t, int start_opacity, int end_opacity) = 0;
+    virtual void TexturePixelRotateDraw(float u, float v, GraphicsImage *img, int time) = 0;
     virtual void DrawMonsterPortrait(Recti rc, SpriteFrame *Portrait_Sprite, int Y_Offset) = 0;
 
-    virtual void DrawMasked(float u, float v, Image *img,
+    virtual void DrawMasked(float u, float v, GraphicsImage *img,
                             unsigned int color_dimming_level,
                             uint32_t mask = 0xFFFFFFFF) = 0;
-    virtual void DrawTextureGrayShade(float u, float v, Image *a4) = 0;
-    virtual void DrawTransparentRedShade(float u, float v, Image *a4) = 0;
-    virtual void DrawTransparentGreenShade(float u, float v, Image *pTexture) = 0;
+    virtual void DrawTextureGrayShade(float u, float v, GraphicsImage *a4) = 0;
+    virtual void DrawTransparentRedShade(float u, float v, GraphicsImage *a4) = 0;
+    virtual void DrawTransparentGreenShade(float u, float v, GraphicsImage *pTexture) = 0;
     // virtual void DrawFansTransparent(const RenderVertexD3D3 *vertices, unsigned int num_vertices) = 0;
 
     virtual void BeginTextNew(Texture *main, Texture *shadow) = 0;
@@ -321,7 +321,7 @@ class IRender {
 
     virtual bool AreRenderSurfacesOk() = 0;
 
-    virtual Image *TakeScreenshot(unsigned int width, unsigned int height) = 0;
+    virtual GraphicsImage *TakeScreenshot(unsigned int width, unsigned int height) = 0;
     virtual void SaveScreenshot(const std::string &filename, unsigned int width,
                                 unsigned int height) = 0;
     virtual Blob PackScreenshot(const unsigned int width, const unsigned int height) = 0;

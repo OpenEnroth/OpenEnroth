@@ -25,7 +25,7 @@
 
 void DrawBook_Map_sub(unsigned int tl_x, unsigned int tl_y, unsigned int br_x, int br_y, int dummy);
 
-Image *ui_book_map_background = nullptr;
+GraphicsImage *ui_book_map_background = nullptr;
 
 GUIWindow_MapBook::GUIWindow_MapBook() : GUIWindow_Book() {
     this->wData.val = WINDOW_MapsBook;  // inherited from GUIWindow::GUIWindow

@@ -67,7 +67,7 @@ void GUIWindow_MainMenu::Update() {
     Pointi pt = mouse->GetCursorPos();
     GUIWindow *pWindow = this;
 
-    Image *pTexture = nullptr;
+    GraphicsImage *pTexture = nullptr;
     if (!pGameOverWindow) {  // ???
         for (GUIButton *pButton : pWindow->vButtons) {
             if (pButton->Contains(pt.x, pt.y) && pWindow == pWindow_MainMenu) {
@@ -140,7 +140,7 @@ void GUIWindow_MainMenu::EventLoop() {
 static bool first_initialization = true;
 
 void GUIWindow_MainMenu::Loop() {
-    Image *tex;
+    GraphicsImage *tex;
     nuklear->Create(WINDOW_MainMenu_Load);
 
     pAudioPlayer->stopSounds();

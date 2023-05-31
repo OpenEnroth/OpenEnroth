@@ -40,7 +40,7 @@ struct nk_tex_font font_default;
 std::vector<struct hotkey> hotkeys;
 
 struct img {
-    Image *asset;
+    GraphicsImage *asset;
     struct nk_image nk;
 };
 
@@ -1409,7 +1409,7 @@ static int lua_nk_parse_image(struct context *w, lua_State *L, int idx, struct n
     return luaL_argerror(L, idx, lua_pushfstring(L, "asset is wrong"));
 }
 
-static int lua_nk_parse_image_asset(struct context *w, lua_State *L, int idx, Image **asset) {
+static int lua_nk_parse_image_asset(struct context *w, lua_State *L, int idx, GraphicsImage **asset) {
     size_t slot = luaL_checkinteger(L, idx);
     if (slot >= 0 && slot < w->imgs.size() && w->imgs[slot]->asset) {
         *asset = w->imgs[slot]->asset;
@@ -2092,7 +2092,7 @@ static int lua_nk_image_dimensions(lua_State *L) {
     lua_check_ret(lua_check_args(L, lua_gettop(L) == 2));
 
     struct context *w = (struct context *)lua_touserdata(L, 1);
-    Image *asset = NULL;
+    GraphicsImage *asset = NULL;
     luaL_checkinteger(L, 2);
 
     lua_check_ret(lua_nk_parse_image_asset(w, L, 2, &asset));

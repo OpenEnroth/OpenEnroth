@@ -112,8 +112,8 @@ Texture_MM7::Texture_MM7() {
     pPalette24 = nullptr;
 }
 
-Image *Image::Create(ImageLoader *loader) {
-    Image *img = new Image();
+GraphicsImage *GraphicsImage::Create(ImageLoader *loader) {
+    GraphicsImage *img = new GraphicsImage();
     if (img) {
         img->loader = loader;
     }
@@ -121,7 +121,7 @@ Image *Image::Create(ImageLoader *loader) {
     return img;
 }
 
-bool Image::LoadImageData() {
+bool GraphicsImage::LoadImageData() {
     if (!initialized) {
         Color *data = nullptr;
         uint8_t *palette = nullptr;
@@ -137,7 +137,7 @@ bool Image::LoadImageData() {
     return initialized;
 }
 
-int Image::GetWidth() {
+int GraphicsImage::GetWidth() {
     if (!initialized) {
         LoadImageData();
     }
@@ -150,7 +150,7 @@ int Image::GetWidth() {
     return 0;
 }
 
-int Image::GetHeight() {
+int GraphicsImage::GetHeight() {
     if (!initialized) {
         LoadImageData();
     }
@@ -163,10 +163,10 @@ int Image::GetHeight() {
     return 0;
 }
 
-Image *Image::Create(unsigned int width, unsigned int height, const Color *pixels) {
+GraphicsImage *GraphicsImage::Create(unsigned int width, unsigned int height, const Color *pixels) {
     if (width == 0 || height == 0) __debugbreak();
 
-    Image *img = new Image(false);
+    GraphicsImage *img = new GraphicsImage(false);
 
     img->initialized = true;
     img->width = width;
@@ -183,32 +183,32 @@ Image *Image::Create(unsigned int width, unsigned int height, const Color *pixel
     return img;
 }
 
-const Color *Image::GetPixels() {
+const Color *GraphicsImage::GetPixels() {
     if (!initialized)
         LoadImageData();
     return pixels;
 }
 
 
-const uint8_t *Image::GetPalette() {
+const uint8_t *GraphicsImage::GetPalette() {
     if (!initialized)
         LoadImageData();
 
     return this->palette24;
 }
 
-const uint8_t *Image::GetPalettePixels() {
+const uint8_t *GraphicsImage::GetPalettePixels() {
     if (!initialized)
         LoadImageData();
     return this->palettepixels;
 }
 
-std::string *Image::GetName() {
+std::string *GraphicsImage::GetName() {
     if (!loader) __debugbreak();
     return loader->GetResourceNamePtr();
 }
 
-bool Image::Release() {
+bool GraphicsImage::Release() {
     if (loader) {
         if (!assets->releaseSprite(loader->GetResourceName()))
             if (!assets->releaseImage(loader->GetResourceName()))

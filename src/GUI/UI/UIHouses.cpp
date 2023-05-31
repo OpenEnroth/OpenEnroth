@@ -66,7 +66,7 @@ int dword_591080;               // 591080
 BuildingType in_current_building_type;  // 00F8B198
 DIALOGUE_TYPE dialog_menu_id;     // 00F8B19C
 
-Image *_591428_endcap = nullptr;
+GraphicsImage *_591428_endcap = nullptr;
 
 void GenerateStandartShopItems();
 void GenerateSpecialShopItems();

@@ -29,9 +29,9 @@
 
 #include "Library/Random/Random.h"
 
-Image *shop_ui_background = nullptr;
+GraphicsImage *shop_ui_background = nullptr;
 
-std::array<Image *, 12> shop_ui_items_in_store;
+std::array<GraphicsImage *, 12> shop_ui_items_in_store;
 
 bool isStealingModeActive() {
     return keyboardInputHandler->IsStealingToggled() && pParty->activeCharacter().CanSteal();

@@ -312,7 +312,7 @@ int Chest::PutItemInChest(int position, ItemGen *put_item, int uChestID) {
         }
     }
 
-    Image *texture = assets->getImage_ColorKey(put_item->GetIconName());
+    GraphicsImage *texture = assets->getImage_ColorKey(put_item->GetIconName());
     unsigned int slot_width = GetSizeInInventorySlots(texture->GetWidth());
     unsigned int slot_height = GetSizeInInventorySlots(texture->GetHeight());
 

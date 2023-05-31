@@ -48,11 +48,11 @@ class GUIWindow {
 
     GUIButton *CreateButton(Pointi position, Sizei dimensions, int uButtonType, int uData,
                             UIMessageType msg, unsigned int msg_param, InputAction action = InputAction::Invalid, const std::string &label = {},
-                            const std::vector<Image *> &textures = {});
+                            const std::vector<GraphicsImage *> &textures = {});
 
     GUIButton *CreateButton(std::string id, Pointi position, Sizei dimensions, int uButtonType, int uData,
                             UIMessageType msg, unsigned int msg_param, InputAction action = InputAction::Invalid, const std::string &label = {},
-                            const std::vector<Image *> &textures = {});
+                            const std::vector<GraphicsImage *> &textures = {});
 
     bool Contains(unsigned int x, unsigned int y);
     void DrawFlashingInputCursor(int uX, int uY, GUIFont *a2);
@@ -457,25 +457,25 @@ extern Color ui_game_dialogue_option_highlight_color;
 extern Color ui_game_dialogue_option_normal_color;
 extern Color ui_house_player_cant_interact_color;
 
-class Image;
-extern Image *ui_exit_cancel_button_background;
-extern Image *game_ui_right_panel_frame;
-extern Image *dialogue_ui_x_ok_u;
-extern Image *dialogue_ui_x_x_u;
+class GraphicsImage;
+extern GraphicsImage *ui_exit_cancel_button_background;
+extern GraphicsImage *game_ui_right_panel_frame;
+extern GraphicsImage *dialogue_ui_x_ok_u;
+extern GraphicsImage *dialogue_ui_x_x_u;
 
-extern Image *ui_buttdesc2;
-extern Image *ui_buttyes2;
+extern GraphicsImage *ui_buttdesc2;
+extern GraphicsImage *ui_buttyes2;
 
-extern Image *ui_btn_npc_right;
-extern Image *ui_btn_npc_left;
+extern GraphicsImage *ui_btn_npc_right;
+extern GraphicsImage *ui_btn_npc_left;
 
-extern Image *ui_ar_dn_dn;
-extern Image *ui_ar_dn_up;
-extern Image *ui_ar_up_dn;
-extern Image *ui_ar_up_up;
+extern GraphicsImage *ui_ar_dn_dn;
+extern GraphicsImage *ui_ar_dn_up;
+extern GraphicsImage *ui_ar_up_dn;
+extern GraphicsImage *ui_ar_up_up;
 
-extern Image *ui_leather_mm6;
-extern Image *ui_leather_mm7;
+extern GraphicsImage *ui_leather_mm6;
+extern GraphicsImage *ui_leather_mm7;
 
 extern MENU_STATE sCurrentMenuID;
 void SetCurrentMenuID(MENU_STATE);

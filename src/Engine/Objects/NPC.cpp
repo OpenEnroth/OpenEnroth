@@ -30,7 +30,7 @@
 
 
 int pDialogueNPCCount;
-std::array<class Image *, 6> pDialogueNPCPortraits;
+std::array<class GraphicsImage *, 6> pDialogueNPCPortraits;
 int uNumDialogueNPCPortraits;
 struct NPCStats *pNPCStats = nullptr;
 

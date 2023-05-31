@@ -12,26 +12,26 @@
 
 #include "Media/Audio/AudioPlayer.h"
 
-Image *ui_book_button8_off = nullptr;
-Image *ui_book_button8_on = nullptr;
-Image *ui_book_button7_off = nullptr;
-Image *ui_book_button7_on = nullptr;
-Image *ui_book_button6_off = nullptr;
-Image *ui_book_button6_on = nullptr;
-Image *ui_book_button5_off = nullptr;
-Image *ui_book_button5_on = nullptr;
-Image *ui_book_button4_off = nullptr;
-Image *ui_book_button4_on = nullptr;
-Image *ui_book_button3_off = nullptr;
-Image *ui_book_button3_on = nullptr;
-Image *ui_book_button2_off = nullptr;
-Image *ui_book_button2_on = nullptr;
-Image *ui_book_button1_off = nullptr;
-Image *ui_book_button1_on = nullptr;
+GraphicsImage *ui_book_button8_off = nullptr;
+GraphicsImage *ui_book_button8_on = nullptr;
+GraphicsImage *ui_book_button7_off = nullptr;
+GraphicsImage *ui_book_button7_on = nullptr;
+GraphicsImage *ui_book_button6_off = nullptr;
+GraphicsImage *ui_book_button6_on = nullptr;
+GraphicsImage *ui_book_button5_off = nullptr;
+GraphicsImage *ui_book_button5_on = nullptr;
+GraphicsImage *ui_book_button4_off = nullptr;
+GraphicsImage *ui_book_button4_on = nullptr;
+GraphicsImage *ui_book_button3_off = nullptr;
+GraphicsImage *ui_book_button3_on = nullptr;
+GraphicsImage *ui_book_button2_off = nullptr;
+GraphicsImage *ui_book_button2_on = nullptr;
+GraphicsImage *ui_book_button1_off = nullptr;
+GraphicsImage *ui_book_button1_on = nullptr;
 
-Image *ui_book_map_frame = nullptr;
+GraphicsImage *ui_book_map_frame = nullptr;
 
-Image *ui_book_quest_div_bar = nullptr;
+GraphicsImage *ui_book_quest_div_bar = nullptr;
 
 bool bookButtonClicked;
 BOOK_BUTTON_ACTION bookButtonAction;

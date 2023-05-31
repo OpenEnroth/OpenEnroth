@@ -76,24 +76,24 @@ enum CURRENT_SCREEN prev_screen_type;
 struct GUIMessageQueue *pCurrentFrameMessageQueue = new GUIMessageQueue;
 struct GUIMessageQueue *pNextFrameMessageQueue = new GUIMessageQueue;
 
-Image *ui_exit_cancel_button_background = nullptr;
-Image *game_ui_right_panel_frame = nullptr;
-Image *dialogue_ui_x_ok_u = nullptr;
-Image *dialogue_ui_x_x_u = nullptr;
+GraphicsImage *ui_exit_cancel_button_background = nullptr;
+GraphicsImage *game_ui_right_panel_frame = nullptr;
+GraphicsImage *dialogue_ui_x_ok_u = nullptr;
+GraphicsImage *dialogue_ui_x_x_u = nullptr;
 
-Image *ui_buttdesc2 = nullptr;
-Image *ui_buttyes2 = nullptr;
+GraphicsImage *ui_buttdesc2 = nullptr;
+GraphicsImage *ui_buttyes2 = nullptr;
 
-Image *ui_btn_npc_right = nullptr;
-Image *ui_btn_npc_left = nullptr;
+GraphicsImage *ui_btn_npc_right = nullptr;
+GraphicsImage *ui_btn_npc_left = nullptr;
 
-Image *ui_ar_dn_dn = nullptr;
-Image *ui_ar_dn_up = nullptr;
-Image *ui_ar_up_dn = nullptr;
-Image *ui_ar_up_up = nullptr;
+GraphicsImage *ui_ar_dn_dn = nullptr;
+GraphicsImage *ui_ar_dn_up = nullptr;
+GraphicsImage *ui_ar_up_dn = nullptr;
+GraphicsImage *ui_ar_up_up = nullptr;
 
-Image *ui_leather_mm6 = nullptr;
-Image *ui_leather_mm7 = nullptr;
+GraphicsImage *ui_leather_mm6 = nullptr;
+GraphicsImage *ui_leather_mm7 = nullptr;
 
 DIALOGUE_TYPE _dword_F8B1D8_last_npc_topic_menu;
 AwardType dword_F8B1AC_award_bit_number;
@@ -396,7 +396,7 @@ GUIButton *GUIWindow::CreateButton(Pointi position, Sizei dimensions,
                                    int uButtonType, int uData, UIMessageType msg,
                                    unsigned int msg_param, InputAction action,
                                    const std::string &label,
-                                   const std::vector<Image *> &textures) {
+                                   const std::vector<GraphicsImage *> &textures) {
     GUIButton *pButton = new GUIButton();
 
     pButton->pParent = this;
@@ -427,7 +427,7 @@ GUIButton *GUIWindow::CreateButton(Pointi position, Sizei dimensions,
 
 GUIButton *GUIWindow::CreateButton(std::string id, Pointi position, Sizei dimensions, int uButtonType, int uData,
                         UIMessageType msg, unsigned int msg_param, InputAction action, const std::string &label,
-                        const std::vector<Image *> &textures) {
+                        const std::vector<GraphicsImage *> &textures) {
     GUIButton *result = CreateButton(position, dimensions, uButtonType, uData, msg, msg_param, action, label, textures);
     result->id = std::move(id);
     return result;

@@ -354,7 +354,7 @@ void ShowMM7IntroVideo_and_LoadingScreen() {
 
 
 
-Image *gamma_preview_image = nullptr;  // 506E40
+GraphicsImage *gamma_preview_image = nullptr;  // 506E40
 
 void Game_StartDialogue(unsigned int actor_id) {
     if (pParty->hasActiveCharacter()) {

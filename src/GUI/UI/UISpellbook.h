@@ -13,8 +13,8 @@ class GUIWindow_Spellbook : public GUIWindow {
     void OpenSpellbookPage(int page);
 };
 
-class Image;
-extern Image *ui_spellbook_btn_quckspell;
-extern Image *ui_spellbook_btn_quckspell_click;
-extern Image *ui_spellbook_btn_close;
-extern Image *ui_spellbook_btn_close_click;
+class GraphicsImage;
+extern GraphicsImage *ui_spellbook_btn_quckspell;
+extern GraphicsImage *ui_spellbook_btn_quckspell_click;
+extern GraphicsImage *ui_spellbook_btn_close;
+extern GraphicsImage *ui_spellbook_btn_close_click;

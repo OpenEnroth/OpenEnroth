@@ -55,12 +55,12 @@ class GUIWindow_CharacterRecord : public GUIWindow {
 bool ringscreenactive();
 static void CharacterUI_DrawItem(int x, int y, ItemGen *item, int id, Texture *item_texture = nullptr, bool doZDraw = false);
 
-class Image;
-extern Image *ui_character_skills_background;
-extern Image *ui_character_awards_background;
-extern Image *ui_character_stats_background;
-extern Image *ui_character_inventory_background;
-extern Image *ui_character_inventory_background_strip;
-extern Image *ui_character_inventory_paperdoll_background;
+class GraphicsImage;
+extern GraphicsImage *ui_character_skills_background;
+extern GraphicsImage *ui_character_awards_background;
+extern GraphicsImage *ui_character_stats_background;
+extern GraphicsImage *ui_character_inventory_background;
+extern GraphicsImage *ui_character_inventory_background_strip;
+extern GraphicsImage *ui_character_inventory_paperdoll_background;
 
-extern std::array<Image *, 16> paperdoll_dbrds;
+extern std::array<GraphicsImage *, 16> paperdoll_dbrds;

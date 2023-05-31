@@ -47,26 +47,26 @@ class GUIWindow_BooksButtonOverlay : public GUIWindow {
     virtual void Update();
 };
 
-class Image;
-extern Image *ui_book_button8_off;
-extern Image *ui_book_button8_on;
-extern Image *ui_book_button7_off;
-extern Image *ui_book_button7_on;
-extern Image *ui_book_button6_off;
-extern Image *ui_book_button6_on;
-extern Image *ui_book_button5_off;
-extern Image *ui_book_button5_on;
-extern Image *ui_book_button4_off;
-extern Image *ui_book_button4_on;
-extern Image *ui_book_button3_off;
-extern Image *ui_book_button3_on;
-extern Image *ui_book_button2_off;
-extern Image *ui_book_button2_on;
-extern Image *ui_book_button1_off;
-extern Image *ui_book_button1_on;
+class GraphicsImage;
+extern GraphicsImage *ui_book_button8_off;
+extern GraphicsImage *ui_book_button8_on;
+extern GraphicsImage *ui_book_button7_off;
+extern GraphicsImage *ui_book_button7_on;
+extern GraphicsImage *ui_book_button6_off;
+extern GraphicsImage *ui_book_button6_on;
+extern GraphicsImage *ui_book_button5_off;
+extern GraphicsImage *ui_book_button5_on;
+extern GraphicsImage *ui_book_button4_off;
+extern GraphicsImage *ui_book_button4_on;
+extern GraphicsImage *ui_book_button3_off;
+extern GraphicsImage *ui_book_button3_on;
+extern GraphicsImage *ui_book_button2_off;
+extern GraphicsImage *ui_book_button2_on;
+extern GraphicsImage *ui_book_button1_off;
+extern GraphicsImage *ui_book_button1_on;
 
-extern Image *ui_book_map_frame;
-extern Image *ui_book_quest_div_bar;
+extern GraphicsImage *ui_book_map_frame;
+extern GraphicsImage *ui_book_quest_div_bar;
 
 extern bool bookButtonClicked;
 extern BOOK_BUTTON_ACTION bookButtonAction;

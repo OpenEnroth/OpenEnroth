@@ -641,26 +641,26 @@ Blob RenderBase::PackScreenshot(const unsigned int width, const unsigned int hei
     return packedPCX;
 }
 
-Image *RenderBase::TakeScreenshot(const unsigned int width, const unsigned int height) {
+GraphicsImage *RenderBase::TakeScreenshot(const unsigned int width, const unsigned int height) {
     Color *pixels = MakeScreenshot32(width, height);
-    Image *image = Image::Create(width, height, pixels);
+    GraphicsImage *image = GraphicsImage::Create(width, height, pixels);
     free(pixels);
     return image;
 }
 
-void RenderBase::DrawTextureGrayShade(float a2, float a3, Image *a4) {
+void RenderBase::DrawTextureGrayShade(float a2, float a3, GraphicsImage *a4) {
     DrawMasked(a2, a3, a4, 1, colorTable.MediumGrey.c32());
 }
 
-void RenderBase::DrawTransparentRedShade(float u, float v, Image *a4) {
+void RenderBase::DrawTransparentRedShade(float u, float v, GraphicsImage *a4) {
     DrawMasked(u, v, a4, 0, colorTable.Red.c32());
 }
 
-void RenderBase::DrawTransparentGreenShade(float u, float v, Image *pTexture) {
+void RenderBase::DrawTransparentGreenShade(float u, float v, GraphicsImage *pTexture) {
     DrawMasked(u, v, pTexture, 0, colorTable.Green.c32());
 }
 
-void RenderBase::DrawMasked(float u, float v, Image *pTexture, unsigned int color_dimming_level, uint32_t mask) {
+void RenderBase::DrawMasked(float u, float v, GraphicsImage *pTexture, unsigned int color_dimming_level, uint32_t mask) {
     int b = ((mask >> 16) & 0xFF) & (0xFF >> color_dimming_level);
     int g = ((mask >> 8) & 0xFF) & (0xFF >> color_dimming_level);
     int r = ((mask) & 0xFF) & (0xFF >> color_dimming_level);

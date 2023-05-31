@@ -84,7 +84,7 @@ void Actor::DrawHealthBar(Actor *actor, GUIWindow *window) {
         bar_length = 200;
 
     // bar colour
-    Image *bar_image = game_ui_monster_hp_green;
+    GraphicsImage *bar_image = game_ui_monster_hp_green;
     if (actor->sCurrentHP <= (0.34 * actor->pMonsterInfo.uHP))
         bar_image = game_ui_monster_hp_red;
     else if (actor->sCurrentHP <= (0.67 * actor->pMonsterInfo.uHP))

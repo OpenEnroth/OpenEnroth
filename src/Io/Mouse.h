@@ -6,7 +6,7 @@
 
 #include "Utility/Geometry/Point.h"
 
-class Image;
+class GraphicsImage;
 
 
 namespace Io {
@@ -54,11 +54,11 @@ namespace Io {
         int field_18 = 0;
         int field_1C = 0;
         int field_20 = 0;
-        Image *cursor_img = nullptr;
+        GraphicsImage *cursor_img = nullptr;
         uint16_t *pCursorBitmap_sysmem = nullptr;
         int field_34 = 0;
         uint8_t *pCursorBitmap2_sysmem = nullptr;
-        Image *pPickedItem = nullptr;
+        GraphicsImage *pPickedItem = nullptr;
         int uCursorWithItemX = 0;
         int uCursorWithItemY = 0;
         int field_50 = 0;
