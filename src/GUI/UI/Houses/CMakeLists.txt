@@ -8,6 +8,7 @@ set(GUI_UI_HOUSES_SOURCES
         Bank.cpp
         Jail.cpp
         MagicGuild.cpp
+        TownHall.cpp
         MercenaryGuild.cpp)
 
 set(GUI_UI_HOUSES_HEADERS
@@ -18,6 +19,7 @@ set(GUI_UI_HOUSES_HEADERS
         Bank.h
         Jail.h
         MagicGuild.h
+        TownHall.h
         MercenaryGuild.h)
 
 add_library(gui_ui_houses STATIC ${GUI_UI_HOUSES_SOURCES} ${GUI_UI_HOUSES_HEADERS})

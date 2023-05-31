@@ -10,7 +10,6 @@
 #include "Engine/Objects/NPC.h"
 #include "Engine/Party.h"
 
-#include "GUI/GUIBountyHunting.h"
 #include "GUI/GUIFont.h"
 #include "GUI/GUIButton.h"
 #include "GUI/UI/UIGame.h"
@@ -697,7 +696,9 @@ void OnSelectNPCDialogueOption(DIALOGUE_TYPE option) {
                     OracleDialogue();
                     break;
                 case 311:
-                    openBountyHuntingDialogue();
+                    // TODO(Nik-RE-dev): event 311 belongs to one of the teleports in Bracada
+                    __debugbreak();
+                    //openBountyHuntingDialogue();
                     break;
                 case 399:
                     Arena_SelectionFightLevel();
