@@ -84,7 +84,7 @@ var searchData=
   ['artifactbonusmap_81',['artifactBonusMap',['../Items_8cpp.html#ae67fb39a89f1f86e0c951be6967fe2c9',1,'Items.cpp']]],
   ['artifactlimit_82',['ArtifactLimit',['../classGameConfig_1_1Gameplay.html#a402efe5bbd11c69751741d0d55b40b93',1,'GameConfig::Gameplay']]],
   ['aspect_83',['aspect',['../structCamera3D.html#a9d8856fa9b89a9eb60054b3acee58ba6',1,'Camera3D']]],
-  ['asset_84',['asset',['../structimg.html#ab1ad4dafee116e09bbf4a842c7041306',1,'img']]],
+  ['asset_84',['asset',['../structimg.html#ac9095cb7cdbda1d4d56e11ac8816e9aa',1,'img']]],
   ['assets_85',['assets',['../AssetsManager_8h.html#a645270130330d2d99964c967b7d33cd8',1,'assets():&#160;AssetsManager.cpp'],['../AssetsManager_8cpp.html#a645270130330d2d99964c967b7d33cd8',1,'assets():&#160;AssetsManager.cpp']]],
   ['at_5fai_5fstate_86',['at_ai_state',['../structVis__SelectionFilter.html#ac9810c904b21a7a6f55c95cd23836a8f',1,'Vis_SelectionFilter']]],
   ['atlas_87',['atlas',['../structRenderOpenGL_1_1nk__device.html#a7f55f52cc8a1f333decc1832c9e69f88',1,'RenderOpenGL::nk_device']]],
