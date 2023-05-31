@@ -89,6 +89,8 @@ class GameConfig : public Config {
         Int TraceFrameTimeMs = {this, "trace_frame_time_ms", 50, &ValidateFrameTime,
                                 "Number of milliseconds per frame when recording game traces."};
 
+        Bool FullMonsterID = { this, "full_monster_id", false, "Full monster info on popup." };
+
      private:
         static int ValidateFrameTime(int frameTime) {
             return std::clamp(frameTime, 1, 1000);
