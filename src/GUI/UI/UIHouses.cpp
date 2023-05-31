@@ -943,9 +943,10 @@ void OnSelectShopDialogueOption(DIALOGUE_TYPE option) {
     case BuildingType_ElementalGuild:
     case BuildingType_SelfGuild:
     case BuildingType_MirroredPath:
-    case BuildingType_Training:
     case BuildingType_Bank:
     case BuildingType_Temple:
+    case BuildingType_Tavern:
+    case BuildingType_Training:
         ((GUIWindow_House*)window_SpeakInHouse)->houseDialogueOptionSelected(option);
         break;
     case BuildingType_TownHall:
@@ -962,7 +963,6 @@ void OnSelectShopDialogueOption(DIALOGUE_TYPE option) {
     case BuildingType_ArmorShop:
     case BuildingType_MagicShop:
     case BuildingType_AlchemistShop:
-    case BuildingType_Tavern:
     {
         break;
     }
@@ -1831,6 +1831,9 @@ void createHouseUI(HOUSE_ID houseId) {
       case BuildingType_Temple:
         window_SpeakInHouse = new GUIWindow_Temple(houseId);
         break;
+      case BuildingType_Tavern:
+        window_SpeakInHouse = new GUIWindow_Tavern(houseId);
+        break;
       case BuildingType_Training:
         window_SpeakInHouse = new GUIWindow_Training(houseId);
         break;
@@ -2007,7 +2010,7 @@ void GUIWindow_House::houseDialogManager() {
             TownHallDialog();
             break;
           case BuildingType_Tavern:
-            TavernDialog();
+            houseSpecificDialogue();
             break;
           case BuildingType_Bank:
             houseSpecificDialogue();
