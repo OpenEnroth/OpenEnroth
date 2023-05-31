@@ -34,14 +34,14 @@
 #include "Library/Random/Random.h"
 
 Texture *parchment = nullptr;
-Image *messagebox_corner_x = nullptr;       // 5076AC
-Image *messagebox_corner_y = nullptr;       // 5076B4
-Image *messagebox_corner_z = nullptr;       // 5076A8
-Image *messagebox_corner_w = nullptr;       // 5076B0
-Image *messagebox_border_top = nullptr;     // 507698
-Image *messagebox_border_bottom = nullptr;  // 5076A4
-Image *messagebox_border_left = nullptr;    // 50769C
-Image *messagebox_border_right = nullptr;   // 5076A0
+GraphicsImage *messagebox_corner_x = nullptr;       // 5076AC
+GraphicsImage *messagebox_corner_y = nullptr;       // 5076B4
+GraphicsImage *messagebox_corner_z = nullptr;       // 5076A8
+GraphicsImage *messagebox_corner_w = nullptr;       // 5076B0
+GraphicsImage *messagebox_border_top = nullptr;     // 507698
+GraphicsImage *messagebox_border_bottom = nullptr;  // 5076A4
+GraphicsImage *messagebox_border_left = nullptr;    // 50769C
+GraphicsImage *messagebox_border_right = nullptr;   // 5076A0
 
 bool holdingMouseRightButton = false;
 bool rightClickItemActionPerformed = false;

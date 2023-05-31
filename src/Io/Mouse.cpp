@@ -236,7 +236,7 @@ void Mouse::DrawPickedItem() {
     if (pParty->pPickedItem.uItemID == ITEM_NULL)
         return;
 
-    Image *pTexture = assets->getImage_Alpha(pParty->pPickedItem.GetIconName());
+    GraphicsImage *pTexture = assets->getImage_Alpha(pParty->pPickedItem.GetIconName());
     if (!pTexture) return;
 
     if (pParty->pPickedItem.IsBroken()) {

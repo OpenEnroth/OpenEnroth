@@ -47,7 +47,7 @@ struct LloydBeacon {
     int16_t _partyViewPitch;
     uint16_t unknown;
     uint16_t SaveFileID;
-    Image *image;
+    GraphicsImage *image;
 };
 
 struct PlayerSpellbookChapter {

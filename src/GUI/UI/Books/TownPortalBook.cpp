@@ -17,7 +17,7 @@ static std::array<int, TOWN_PORTAL_DESTINATION_COUNT> pTownPortalBook_ys = {206,
 static std::array<int, TOWN_PORTAL_DESTINATION_COUNT> pTownPortalBook_ws = {80, 66, 68, 72, 67, 74};
 static std::array<int, TOWN_PORTAL_DESTINATION_COUNT> pTownPortalBook_hs = {55, 56, 65, 67, 67, 59};
 
-static std::array<Image *, TOWN_PORTAL_DESTINATION_COUNT> ui_book_townportal_icons;
+static std::array<GraphicsImage *, TOWN_PORTAL_DESTINATION_COUNT> ui_book_townportal_icons;
 
 std::array<int, TOWN_PORTAL_DESTINATION_COUNT> townPortalQuestBits = {
         QBIT_FOUNTAIN_IN_HARMONDALE_ACTIVATED,
@@ -27,7 +27,7 @@ std::array<int, TOWN_PORTAL_DESTINATION_COUNT> townPortalQuestBits = {
         QBIT_FOUNTAIN_IN_CELESTIA_ACTIVATED,
         QBIT_FOUNTAIN_IN_THE_PIT_ACTIVATED};
 
-Image *ui_book_townportal_background = nullptr;
+GraphicsImage *ui_book_townportal_background = nullptr;
 
 int townPortalCasterPid;
 

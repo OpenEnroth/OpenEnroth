@@ -37,13 +37,13 @@ class RenderBase : public IRender {
     * @return                              Returns Blob containing packed pcx data and its size.
     */
     virtual Blob PackScreenshot(const unsigned int width, const unsigned int height) override;
-    virtual Image *TakeScreenshot(unsigned int width, unsigned int height) override;
+    virtual GraphicsImage *TakeScreenshot(unsigned int width, unsigned int height) override;
 
-    virtual void DrawMasked(float u, float v, class Image *img,
+    virtual void DrawMasked(float u, float v, class GraphicsImage *img,
         unsigned int color_dimming_level, uint32_t mask = 0xFFFFFFFF) override;
-    virtual void DrawTextureGrayShade(float u, float v, class Image *a4) override;
-    virtual void DrawTransparentRedShade(float u, float v, class Image *a4) override;
-    virtual void DrawTransparentGreenShade(float u, float v, class Image *pTexture) override;
+    virtual void DrawTextureGrayShade(float u, float v, class GraphicsImage *a4) override;
+    virtual void DrawTransparentRedShade(float u, float v, class GraphicsImage *a4) override;
+    virtual void DrawTransparentGreenShade(float u, float v, class GraphicsImage *pTexture) override;
     virtual void ClearBlack() override;
     virtual void BillboardSphereSpellFX(struct SpellFX_Billboard *a1, int diffuse) override;
     virtual void DrawMonsterPortrait(Recti rc, SpriteFrame *Portrait_Sprite, int Y_Offset) override;

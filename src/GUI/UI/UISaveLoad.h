@@ -12,10 +12,10 @@ class GUIWindow_Save : public GUIWindow {
  protected:
     // Image * main_menu_background;
 
-    Image *saveload_ui_save_up;
-    Image *saveload_ui_loadsave;
-    Image *saveload_ui_saveu;
-    Image *saveload_ui_x_u;
+    GraphicsImage *saveload_ui_save_up;
+    GraphicsImage *saveload_ui_loadsave;
+    GraphicsImage *saveload_ui_saveu;
+    GraphicsImage *saveload_ui_x_u;
 };
 
 class GUIWindow_Load : public GUIWindow {
@@ -26,12 +26,12 @@ class GUIWindow_Load : public GUIWindow {
     virtual void Update();
 
  protected:
-    Image *main_menu_background;
+    GraphicsImage *main_menu_background;
 
-    Image *saveload_ui_load_up;
-    Image *saveload_ui_loadsave;
-    Image *saveload_ui_loadu;
-    Image *saveload_ui_x_u;
+    GraphicsImage *saveload_ui_load_up;
+    GraphicsImage *saveload_ui_loadsave;
+    GraphicsImage *saveload_ui_loadu;
+    GraphicsImage *saveload_ui_x_u;
 };
 
 void MainMenuLoad_Loop();

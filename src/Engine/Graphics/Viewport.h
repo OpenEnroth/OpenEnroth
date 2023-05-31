@@ -4,6 +4,8 @@
 
 #include "Library/Color/Color.h"
 
+class GraphicsImage;
+
 // TODO(pskelton): combined viewport and viewing params?? or at least not have multiple places
 // where screen coords and viewport coords are held
 
@@ -73,7 +75,7 @@ struct ViewingParams {
     int16_t indoor_center_x = 0;
     int16_t indoor_center_y = 0;
     int field_3C = 0;
-    class Image *location_minimap = nullptr;  // unsigned int uTextureID_LocationMap; ::40
+    GraphicsImage *location_minimap = nullptr;  // unsigned int uTextureID_LocationMap; ::40
     int field_4C = 0;
     int draw_sw_outlines = 0;
     int draw_d3d_outlines = 0;

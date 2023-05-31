@@ -18,7 +18,7 @@
 
 
 
-Image *ui_game_quickref_background = nullptr;
+GraphicsImage *ui_game_quickref_background = nullptr;
 
 GUIWindow_QuickReference::GUIWindow_QuickReference()
     : GUIWindow(WINDOW_QuickReference, {0, 0}, render->GetRenderDimensions(), 5) {

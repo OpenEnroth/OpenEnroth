@@ -15,7 +15,7 @@
 
 #include "Media/Audio/AudioPlayer.h"
 
-Image *ui_book_autonotes_background = nullptr;
+GraphicsImage *ui_book_autonotes_background = nullptr;
 
 AUTONOTE_TYPE autonoteBookDisplayType;
 

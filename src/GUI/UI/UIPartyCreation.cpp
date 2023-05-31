@@ -34,21 +34,21 @@ using Io::TextInputType;
 
 GUIFont *ui_partycreation_font;
 
-Image *ui_partycreation_top = nullptr;
-Image *ui_partycreation_sky_scroller = nullptr;
+GraphicsImage *ui_partycreation_top = nullptr;
+GraphicsImage *ui_partycreation_sky_scroller = nullptr;
 
-Image *ui_partycreation_left = nullptr;
-Image *ui_partycreation_right = nullptr;
-Image *ui_partycreation_minus = nullptr;
-Image *ui_partycreation_plus = nullptr;
-Image *ui_partycreation_buttmake2 = nullptr;
-Image *ui_partycreation_buttmake = nullptr;
+GraphicsImage *ui_partycreation_left = nullptr;
+GraphicsImage *ui_partycreation_right = nullptr;
+GraphicsImage *ui_partycreation_minus = nullptr;
+GraphicsImage *ui_partycreation_plus = nullptr;
+GraphicsImage *ui_partycreation_buttmake2 = nullptr;
+GraphicsImage *ui_partycreation_buttmake = nullptr;
 
-std::array<Image *, 9> ui_partycreation_class_icons;
-std::array<Image *, 22> ui_partycreation_portraits;
+std::array<GraphicsImage *, 9> ui_partycreation_class_icons;
+std::array<GraphicsImage *, 22> ui_partycreation_portraits;
 
-std::array<Image *, 19> ui_partycreation_arrow_r;
-std::array<Image *, 19> ui_partycreation_arrow_l;
+std::array<GraphicsImage *, 19> ui_partycreation_arrow_r;
+std::array<GraphicsImage *, 19> ui_partycreation_arrow_l;
 
 static const int ARROW_SPIN_PERIOD_MS = 475;
 

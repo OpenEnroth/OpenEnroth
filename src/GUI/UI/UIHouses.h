@@ -46,7 +46,7 @@ int HouseDialogPressCloseBtn();
 
 int ItemAmountForShop(BuildingType buildingType);
 
-extern class Image *_591428_endcap;
+extern class GraphicsImage *_591428_endcap;
 
 // Originally was a packed struct.
 struct HouseAnimDescr {

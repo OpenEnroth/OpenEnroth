@@ -17,7 +17,7 @@
 
 #include "Media/Audio/AudioPlayer.h"
 
-Image *ui_book_quests_background = nullptr;
+GraphicsImage *ui_book_quests_background = nullptr;
 
 GUIWindow_QuestBook::GUIWindow_QuestBook() : _startingQuestIdx(0), _currentPage(0), _currentPageQuests(0), GUIWindow_Book() {
     this->wData.val = WINDOW_QuestBook;  // inherited from GUIWindow::GUIWindow

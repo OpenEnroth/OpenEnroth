@@ -10,13 +10,13 @@
 #include "Library/Color/Color.h"
 
 class ImageLoader;
-class Image {
+class GraphicsImage {
  public:
-    explicit Image(bool lazy_initialization = true): lazy_initialization(lazy_initialization) {}
-    virtual ~Image() {}
+    explicit GraphicsImage(bool lazy_initialization = true): lazy_initialization(lazy_initialization) {}
+    virtual ~GraphicsImage() {}
 
-    static Image *Create(unsigned int width, unsigned int height, const Color *pixels = nullptr);
-    static Image *Create(ImageLoader *loader);
+    static GraphicsImage *Create(unsigned int width, unsigned int height, const Color *pixels = nullptr);
+    static GraphicsImage *Create(ImageLoader *loader);
 
     int GetWidth();
     int GetHeight();
@@ -52,11 +52,11 @@ class Image {
 
 class ImageHelper {
  public:
-    static int GetWidthLn2(Image *img) {
+    static int GetWidthLn2(GraphicsImage *img) {
         return ImageHelper::GetPowerOf2(img->GetWidth());
     }
 
-    static int GetHeightLn2(Image *img) {
+    static int GetHeightLn2(GraphicsImage *img) {
         return ImageHelper::GetPowerOf2(img->GetHeight());
     }
 
@@ -149,17 +149,17 @@ struct OptionsMenuSkin {
     OptionsMenuSkin();
     void Release();
 
-    Image *uTextureID_Background;       // 507C60
-    Image *uTextureID_TurnSpeed[3];     // 507C64
-    Image *uTextureID_ArrowLeft;        // 507C70
-    Image *uTextureID_ArrowRight;       // 507C74
-    Image *uTextureID_unused_0;         // 507C78
-    Image *uTextureID_unused_1;         // 507C7C
-    Image *uTextureID_unused_2;         // 507C80
-    Image *uTextureID_FlipOnExit;       // 507C84
-    Image *uTextureID_SoundLevels[10];  // 507C88
-    Image *uTextureID_AlwaysRun;        // 507CB0
-    Image *uTextureID_WalkSound;        // 507CB4
-    Image *uTextureID_ShowDamage;       // 507CB8
+    GraphicsImage *uTextureID_Background;       // 507C60
+    GraphicsImage *uTextureID_TurnSpeed[3];     // 507C64
+    GraphicsImage *uTextureID_ArrowLeft;        // 507C70
+    GraphicsImage *uTextureID_ArrowRight;       // 507C74
+    GraphicsImage *uTextureID_unused_0;         // 507C78
+    GraphicsImage *uTextureID_unused_1;         // 507C7C
+    GraphicsImage *uTextureID_unused_2;         // 507C80
+    GraphicsImage *uTextureID_FlipOnExit;       // 507C84
+    GraphicsImage *uTextureID_SoundLevels[10];  // 507C88
+    GraphicsImage *uTextureID_AlwaysRun;        // 507CB0
+    GraphicsImage *uTextureID_WalkSound;        // 507CB4
+    GraphicsImage *uTextureID_ShowDamage;       // 507CB8
 };
 extern OptionsMenuSkin options_menu_skin;  // 507C60

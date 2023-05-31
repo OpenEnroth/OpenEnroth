@@ -121,7 +121,7 @@ struct NPCStats {
 };
 
 extern int pDialogueNPCCount;
-extern std::array<class Image *, 6> pDialogueNPCPortraits;
+extern std::array<class GraphicsImage *, 6> pDialogueNPCPortraits;
 extern int uNumDialogueNPCPortraits;
 extern struct NPCStats *pNPCStats;
 

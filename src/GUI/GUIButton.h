@@ -6,7 +6,7 @@
 
 #include "GUI/GUIWindow.h"
 
-class Image;
+class GraphicsImage;
 
 class GUIButton {
  public:
@@ -32,7 +32,7 @@ class GUIButton {
     int field_28 = 0;
     bool field_2C_is_pushed = false;
     GUIWindow *pParent = nullptr;
-    std::vector<Image*> vTextures;
+    std::vector<GraphicsImage*> vTextures;
     InputAction action = InputAction::Invalid;
     std::string sLabel = "";
     std::string field_75 = "";

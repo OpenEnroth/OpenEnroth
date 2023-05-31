@@ -33,8 +33,8 @@ class RenderOpenGL : public RenderBase {
     virtual void NuklearRelease() override;
     virtual struct nk_tex_font *NuklearFontLoad(const char *font_path, size_t font_size) override;
     virtual void NuklearFontFree(struct nk_tex_font *tfont) override;
-    virtual struct nk_image NuklearImageLoad(Image *img) override;
-    virtual void NuklearImageFree(Image *img) override;
+    virtual struct nk_image NuklearImageLoad(GraphicsImage *img) override;
+    virtual void NuklearImageFree(GraphicsImage *img) override;
 
     virtual Texture *CreateTexture_Paletted(const std::string &name) override;
     virtual Texture *CreateTexture_ColorKey(const std::string &name, Color colorkey) override;
@@ -99,18 +99,18 @@ class RenderOpenGL : public RenderBase {
                                unsigned int uZ, unsigned int uW) override;
     virtual void ResetUIClipRect() override;
 
-    virtual void DrawTextureNew(float u, float v, class Image *, uint32_t colourmask = 0xFFFFFFFF) override;
+    virtual void DrawTextureNew(float u, float v, class GraphicsImage *, uint32_t colourmask = 0xFFFFFFFF) override;
 
-        virtual void DrawTextureCustomHeight(float u, float v, class Image *,
+        virtual void DrawTextureCustomHeight(float u, float v, class GraphicsImage *,
                                          int height) override;
     virtual void DrawTextureOffset(int x, int y, int offset_x, int offset_y,
-                                   Image *) override;
-    virtual void DrawImage(Image *, const Recti &rect, uint paletteid = 0, uint32_t colourmask32 = 0xFFFFFFFF) override;
+                                   GraphicsImage *) override;
+    virtual void DrawImage(GraphicsImage *, const Recti &rect, uint paletteid = 0, uint32_t colourmask32 = 0xFFFFFFFF) override;
 
-    virtual void ZDrawTextureAlpha(float u, float v, Image *pTexture, int zVal) override;
-    virtual void BlendTextures(int a2, int a3, Image *a4, Image *a5, int t,
+    virtual void ZDrawTextureAlpha(float u, float v, GraphicsImage *pTexture, int zVal) override;
+    virtual void BlendTextures(int a2, int a3, GraphicsImage *a4, GraphicsImage *a5, int t,
                                int start_opacity, int end_opacity) override;
-    virtual void TexturePixelRotateDraw(float u, float v, Image *img, int time) override;
+    virtual void TexturePixelRotateDraw(float u, float v, GraphicsImage *img, int time) override;
 
     virtual void BeginTextNew(Texture *main, Texture *shadow) override;
     virtual void EndTextNew() override;

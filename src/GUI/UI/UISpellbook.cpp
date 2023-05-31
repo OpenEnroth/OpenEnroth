@@ -44,16 +44,16 @@ std::array<std::array<unsigned char, 12>, 9>
       {0, 1, 10, 11, 9, 4, 3, 6, 5, 7, 8, 2},
       {0, 9, 3, 7, 1, 5, 2, 10, 11, 8, 6, 4}}};
 
-Image *ui_spellbook_btn_quckspell = nullptr;
-Image *ui_spellbook_btn_quckspell_click = nullptr;
-Image *ui_spellbook_btn_close = nullptr;
-Image *ui_spellbook_btn_close_click = nullptr;
+GraphicsImage *ui_spellbook_btn_quckspell = nullptr;
+GraphicsImage *ui_spellbook_btn_quckspell_click = nullptr;
+GraphicsImage *ui_spellbook_btn_close = nullptr;
+GraphicsImage *ui_spellbook_btn_close_click = nullptr;
 
-std::array<Image *, 12> SBPageCSpellsTextureList;
-std::array<Image *, 12> SBPageSSpellsTextureList;
+std::array<GraphicsImage *, 12> SBPageCSpellsTextureList;
+std::array<GraphicsImage *, 12> SBPageSSpellsTextureList;
 
-std::array<Image *, 9> ui_spellbook_school_backgrounds;
-std::array<std::array<Image *, 2>, 9> ui_spellbook_school_tabs;
+std::array<GraphicsImage *, 9> ui_spellbook_school_backgrounds;
+std::array<std::array<GraphicsImage *, 2>, 9> ui_spellbook_school_tabs;
 
 GUIWindow_Spellbook::GUIWindow_Spellbook()
     : GUIWindow(WINDOW_SpellBook, {0, 0}, render->GetRenderDimensions(), 0) {
@@ -142,7 +142,7 @@ void GUIWindow_Spellbook::OpenSpellbook() {
 void GUIWindow_Spellbook::Update() {
     auto player = &pParty->activeCharacter();
 
-    Image *pTexture;        // edx@5
+    GraphicsImage *pTexture;        // edx@5
     int v10;                // eax@13
     unsigned int pX_coord;  // esi@18
     unsigned int pY_coord;  // edi@18

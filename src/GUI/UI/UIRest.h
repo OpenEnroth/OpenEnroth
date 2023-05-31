@@ -40,8 +40,8 @@ enum class REST_TYPE {
 };
 using enum REST_TYPE;
 
-extern class Image *rest_ui_sky_frame_current;
-extern class Image *rest_ui_hourglass_frame_current;
+extern class GraphicsImage *rest_ui_sky_frame_current;
+extern class GraphicsImage *rest_ui_hourglass_frame_current;
 
 extern int foodRequiredToRest;
 extern GameTime remainingRestTime;

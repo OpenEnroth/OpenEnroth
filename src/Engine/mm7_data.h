@@ -99,7 +99,7 @@ extern int AfterEnchClickEventTimeout; // 50C9D8 Timer before event "AfterEnchCl
 extern unsigned int uNumBlueFacesInBLVMinimap;
 extern std::array<uint16_t, 50> pBlueFacesInBLVMinimapIDs;
 
-extern std::array<class Image *, 14> party_buff_icons;
+extern std::array<class GraphicsImage *, 14> party_buff_icons;
 extern unsigned int uIconIdx_FlySpell;
 extern unsigned int uIconIdx_WaterWalk;
 

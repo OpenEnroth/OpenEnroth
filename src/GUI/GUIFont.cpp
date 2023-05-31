@@ -737,7 +737,7 @@ int GUIFont::DrawTextInRect(GUIWindow *pWindow, Pointi position, Color uColor, c
 
 void GUIFont::DrawCreditsEntry(GUIFont *pSecondFont, int uFrameX, int uFrameY, unsigned int w, unsigned int h,
                                Color firstColor, Color secondColor, const std::string &pString,
-    Image *image) {
+                               GraphicsImage *image) {
     GUIWindow draw_window;
     draw_window.uFrameHeight = h;
     draw_window.uFrameW = uFrameY + h - 1;

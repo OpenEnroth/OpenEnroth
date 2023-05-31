@@ -212,20 +212,20 @@ void set_default_ui_skin() {
     ui_house_player_cant_interact_color = colorTable.PaleCanary;
 }
 
-Image *paperdoll_drhs[4];
-Image *paperdoll_dlhus[4];
-Image *paperdoll_dlhs[4];
-Image *paperdoll_dbods[5];
-Image *paperdoll_armor_texture[4][17][3];  // 0x511294
+GraphicsImage *paperdoll_drhs[4];
+GraphicsImage *paperdoll_dlhus[4];
+GraphicsImage *paperdoll_dlhs[4];
+GraphicsImage *paperdoll_dbods[5];
+GraphicsImage *paperdoll_armor_texture[4][17][3];  // 0x511294
 // int paperdoll_array_51132C[165];
-Image *paperdoll_dlaus[5];
-Image *paperdoll_dlads[4];
-Image *paperdoll_flying_feet[22];      // 005115E0
-Image *paperdoll_boots_texture[4][6];  // 511638
-Image *paperdoll_cloak_collar_texture[4][10];
-Image *paperdoll_cloak_texture[4][10];
-Image *paperdoll_helm_texture[2][16];  // 511698
-Image *paperdoll_belt_texture[4][7];   // 511718
+GraphicsImage *paperdoll_dlaus[5];
+GraphicsImage *paperdoll_dlads[4];
+GraphicsImage *paperdoll_flying_feet[22];      // 005115E0
+GraphicsImage *paperdoll_boots_texture[4][6];  // 511638
+GraphicsImage *paperdoll_cloak_collar_texture[4][10];
+GraphicsImage *paperdoll_cloak_texture[4][10];
+GraphicsImage *paperdoll_helm_texture[2][16];  // 511698
+GraphicsImage *paperdoll_belt_texture[4][7];   // 511718
 
 const int paperdoll_Weapon[4][16][2] = {
     // 4E4C30
@@ -551,19 +551,19 @@ const char *dlhu_texnames_by_face[25] = {
     "pc15lhu", "pc16lhu", "pc17lhu", "pc18lhu", "pc19lhu", "pc20lhu", "pc21lhu",
     "pc22lhu", "pc23lhu", "pc24lhu", "pc25lhu"};
 
-Image *ui_character_skills_background = nullptr;
-Image *ui_character_awards_background = nullptr;
-Image *ui_character_stats_background = nullptr;
-Image *ui_character_inventory_background = nullptr;
-Image *ui_character_inventory_background_strip = nullptr;
-Image *ui_character_inventory_magnification_glass = nullptr;
-Image *ui_character_inventory_paperdoll_background = nullptr;
-Image *ui_character_inventory_paperdoll_rings_background = nullptr;
-Image *ui_character_inventory_paperdoll_rings_close = nullptr;
+GraphicsImage *ui_character_skills_background = nullptr;
+GraphicsImage *ui_character_awards_background = nullptr;
+GraphicsImage *ui_character_stats_background = nullptr;
+GraphicsImage *ui_character_inventory_background = nullptr;
+GraphicsImage *ui_character_inventory_background_strip = nullptr;
+GraphicsImage *ui_character_inventory_magnification_glass = nullptr;
+GraphicsImage *ui_character_inventory_paperdoll_background = nullptr;
+GraphicsImage *ui_character_inventory_paperdoll_rings_background = nullptr;
+GraphicsImage *ui_character_inventory_paperdoll_rings_close = nullptr;
 
-static Image *scrollstop = nullptr;
+static GraphicsImage *scrollstop = nullptr;
 
-std::array<Image *, 16> paperdoll_dbrds;
+std::array<GraphicsImage *, 16> paperdoll_dbrds;
 
 int savedInventoryLeftClickButtonW;
 int savedInventoryLeftClickButtonZ;
@@ -1324,7 +1324,7 @@ void CharacterUI_InventoryTab_Draw(Player *player, bool Cover_Strip) {
         unsigned int uCellY = 32 * (i / 14) + 17;
         unsigned int uCellX = 32 * (i % 14) + 14;
 
-        Image *pTexture = assets->getImage_Alpha(player->pInventoryItemList[player->pInventoryMatrix[i] - 1].GetIconName());
+        GraphicsImage *pTexture = assets->getImage_Alpha(player->pInventoryItemList[player->pInventoryMatrix[i] - 1].GetIconName());
 
         int width = pTexture->GetWidth();
         int height = pTexture->GetHeight();
@@ -1342,7 +1342,7 @@ static void CharacterUI_DrawItem(int x, int y, ItemGen *item, int id, Texture *i
         item_texture = assets->getImage_Alpha(item->GetIconName());
 
     if (item->ItemEnchanted()) { // enchant animation
-        Image *enchantment_texture = nullptr;
+        GraphicsImage *enchantment_texture = nullptr;
         if (item->AuraEffectRed())
             enchantment_texture = assets->getImage_ColorKey("sptext01");
         else if (item->AuraEffectBlue())

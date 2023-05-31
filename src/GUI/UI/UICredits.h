@@ -18,7 +18,7 @@ class GUICredits : public GUIWindow {
     GUIFont *pFontQuick;
     GUIFont *pFontCChar;
 
-    Image *mm6title;
+    GraphicsImage *mm6title;
 
     int width;
     int height;

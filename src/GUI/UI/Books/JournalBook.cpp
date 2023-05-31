@@ -21,7 +21,7 @@
 
 #include "Utility/Memory/MemSet.h"
 
-Image *ui_book_journal_background = nullptr;
+GraphicsImage *ui_book_journal_background = nullptr;
 
 GUIWindow_JournalBook::GUIWindow_JournalBook() : _currentIdx(0), GUIWindow_Book() {
     eWindowType = WINDOW_JournalBook;

@@ -198,7 +198,7 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld) {
                 continue;
             }
             LloydBeacon *beacon = &player->vBeacons[j];
-            Image *image = beacon->image;
+            GraphicsImage *image = beacon->image;
             if ((beacon->uBeaconTime.Valid()) && (image != nullptr)) {
                 const Color *pixels = image->GetPixels();
                 if (!pixels)

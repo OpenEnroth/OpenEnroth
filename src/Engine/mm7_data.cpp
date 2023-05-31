@@ -2465,7 +2465,7 @@ int AfterEnchClickEventTimeout;
 unsigned int uNumBlueFacesInBLVMinimap;
 std::array<uint16_t, 50> pBlueFacesInBLVMinimapIDs;
 
-std::array<class Image *, 14> party_buff_icons;
+std::array<class GraphicsImage *, 14> party_buff_icons;
 unsigned int uIconIdx_FlySpell;
 unsigned int uIconIdx_WaterWalk;
 

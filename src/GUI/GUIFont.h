@@ -31,7 +31,7 @@ struct FontData {
 };
 
 class GUIWindow;
-class Image;
+class GraphicsImage;
 class Texture;
 struct FontData;
 
@@ -69,7 +69,7 @@ class GUIFont {
     void DrawCreditsEntry(GUIFont *pSecondFont, int uFrameX, int uFrameY,
                           unsigned int w, unsigned int h, Color firstColor,
                           Color secondColor, const std::string &pString,
-                          Image *image);
+                          GraphicsImage *image);
     int GetStringHeight2(GUIFont *secondFont, const std::string &text_str,
                          GUIWindow *pWindow, int startX, int a6);
 

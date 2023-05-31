@@ -13,15 +13,15 @@
 #include "GUI/UI/UIRest.h"
 #include "GUI/GUIFont.h"
 
-Image *rest_ui_btn_4 = nullptr;
-Image *rest_ui_btn_exit = nullptr;
-Image *rest_ui_btn_3 = nullptr;
-Image *rest_ui_btn_1 = nullptr;
-Image *rest_ui_btn_2 = nullptr;
-Image *rest_ui_restmain = nullptr;
+GraphicsImage *rest_ui_btn_4 = nullptr;
+GraphicsImage *rest_ui_btn_exit = nullptr;
+GraphicsImage *rest_ui_btn_3 = nullptr;
+GraphicsImage *rest_ui_btn_1 = nullptr;
+GraphicsImage *rest_ui_btn_2 = nullptr;
+GraphicsImage *rest_ui_restmain = nullptr;
 
-Image *rest_ui_sky_frame_current = nullptr;
-Image *rest_ui_hourglass_frame_current = nullptr;
+GraphicsImage *rest_ui_sky_frame_current = nullptr;
+GraphicsImage *rest_ui_hourglass_frame_current = nullptr;
 
 int foodRequiredToRest;
 GameTime remainingRestTime;

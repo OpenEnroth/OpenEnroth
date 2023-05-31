@@ -16,13 +16,13 @@
 
 #include "Media/Audio/AudioPlayer.h"
 
-Image *ui_book_calendar_background = nullptr;
+GraphicsImage *ui_book_calendar_background = nullptr;
 
-Image *ui_book_calendar_moon_new = nullptr;
-Image *ui_book_calendar_moon_4 = nullptr;
-Image *ui_book_calendar_moon_2 = nullptr;
-Image *ui_book_calendar_moon_2_2 = nullptr;
-Image *ui_book_calendar_moon_full = nullptr;
+GraphicsImage *ui_book_calendar_moon_new = nullptr;
+GraphicsImage *ui_book_calendar_moon_4 = nullptr;
+GraphicsImage *ui_book_calendar_moon_2 = nullptr;
+GraphicsImage *ui_book_calendar_moon_2_2 = nullptr;
+GraphicsImage *ui_book_calendar_moon_full = nullptr;
 
 // 4E1B18
 static std::array<int, 28> pDayMoonPhase = {

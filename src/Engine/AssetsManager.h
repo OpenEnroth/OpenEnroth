@@ -5,7 +5,7 @@
 
 #include "Library/Color/ColorTable.h"
 
-class Image;
+class GraphicsImage;
 class Texture;
 
 class AssetsManager {

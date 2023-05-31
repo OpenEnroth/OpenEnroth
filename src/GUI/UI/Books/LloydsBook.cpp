@@ -22,8 +22,8 @@ bool bRecallingBeacon;
 int lloydsBeaconCasterId;
 int lloydsBeaconSpellDuration;
 
-Image *ui_book_lloyds_border = nullptr;
-std::array<Image *, 2> ui_book_lloyds_backgrounds;
+GraphicsImage *ui_book_lloyds_border = nullptr;
+std::array<GraphicsImage *, 2> ui_book_lloyds_backgrounds;
 
 GUIWindow_LloydsBook::GUIWindow_LloydsBook() : GUIWindow_Book() {
     this->eWindowType = WindowType::WINDOW_LloydsBeacon;

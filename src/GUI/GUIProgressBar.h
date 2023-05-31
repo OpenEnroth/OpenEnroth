@@ -2,7 +2,7 @@
 
 #include <cstdint>
 
-class Image;
+class GraphicsImage;
 
 class GUIProgressBar {
  public:
@@ -30,9 +30,9 @@ class GUIProgressBar {
     uint8_t uProgressCurrent = 0;
     Type uType = TYPE_None;
 
-    Image *progressbar_dungeon = nullptr;  // struct Texture_MM7 pBardata;
-    Image *progressbar_loading = nullptr;  // struct Texture_MM7 pLoadingProgress;
-    Image *loading_bg = nullptr;
+    GraphicsImage *progressbar_dungeon = nullptr;  // struct Texture_MM7 pBardata;
+    GraphicsImage *progressbar_loading = nullptr;  // struct Texture_MM7 pLoadingProgress;
+    GraphicsImage *loading_bg = nullptr;
 };
 
 extern GUIProgressBar *pGameLoadingUI_ProgressBar;
