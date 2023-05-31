@@ -46,15 +46,14 @@ class RenderOpenGL : public RenderBase {
     virtual Texture *CreateTexture_PCXFromNewLOD(const std::string &name) override;
     virtual Texture *CreateTexture_PCXFromLOD(LOD::File *pLOD, const std::string &name) override;
 
-    virtual Texture *CreateTexture_Blank(unsigned int width, unsigned int height,
-        IMAGE_FORMAT format, const void *pixels = nullptr) override;
+    virtual Texture *CreateTexture_Blank(unsigned int width, unsigned int height, const Color *pixels = nullptr) override;
 
     virtual Texture *CreateTexture(const std::string &name) override;
     virtual Texture *CreateSprite(
         const std::string &name, unsigned int palette_id,
         /*refactor*/ unsigned int lod_sprite_id) override;
 
-    virtual uint8_t *ReadScreenPixels();
+    virtual Color *ReadScreenPixels() override;
     virtual void SaveWinnersCertificate(const std::string &filePath) override;
     virtual void ClearTarget(unsigned int uColor) override;
     virtual void Present() override;
@@ -129,7 +128,7 @@ class RenderOpenGL : public RenderBase {
 
     virtual bool AreRenderSurfacesOk() override;
 
-    virtual uint32_t *MakeScreenshot32(const int width, const int height) override;
+    virtual Color *MakeScreenshot32(const int width, const int height) override;
 
     virtual std::vector<Actor*> getActorsInViewport(int pDepth) override;
 

@@ -3,11 +3,9 @@
 
 #include "Utility/String.h"
 
-std::array<const char *, 513> pQuestTable;
-std::string pQuestsTXT_Raw;
+std::array<std::string, 513> pQuestTable;
 
 void initializeQuests() {
-    int i;
     char *test_string;
     unsigned char c;
     bool break_loop;
@@ -15,10 +13,10 @@ void initializeQuests() {
     char *tmp_pos;
     int decode_step;
 
-    pQuestsTXT_Raw = engine->_gameResourceManager->getEventsFile("quests.txt").string_view();
-    strtok(pQuestsTXT_Raw.data(), "\r");
+    std::string txtRaw{ engine->_gameResourceManager->getEventsFile("quests.txt").string_view() };
+    strtok(txtRaw.data(), "\r");
     memset(pQuestTable.data(), 0, sizeof(pQuestTable));
-    for (i = 0; i < 512; ++i) {
+    for (int i = 1; i < pQuestTable.size(); ++i) {
         test_string = strtok(NULL, "\r") + 1;
         break_loop = false;
         decode_step = 0;
@@ -34,7 +32,7 @@ void initializeQuests() {
             *tmp_pos = 0;
             if (temp_str_len) {
                 if (decode_step == 1)
-                    pQuestTable[i + 1] = removeQuotes(test_string);
+                    pQuestTable[i] = removeQuotes(test_string);
             } else {
                 break_loop = true;
             }

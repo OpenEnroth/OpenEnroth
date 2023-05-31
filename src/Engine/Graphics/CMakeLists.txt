@@ -48,7 +48,6 @@ set(ENGINE_GRAPHICS_HEADERS
         IRender.h
         IRenderFactory.h
         Image.h
-        ImageFormatConverter.h
         ImageLoader.h
         Indoor.h
         Level/Decoration.h

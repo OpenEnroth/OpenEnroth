@@ -174,10 +174,10 @@ void DrawBook_Map_sub(unsigned int tl_x, unsigned int tl_y, unsigned int br_x, i
 
         static Texture *minimaptemp = nullptr;
         if (!minimaptemp) {
-            minimaptemp = render->CreateTexture_Blank(screenWidth, screenHeight, IMAGE_FORMAT_A8B8G8R8);
+            minimaptemp = render->CreateTexture_Blank(screenWidth, screenHeight);
         }
-        auto minitempix = (uint32_t *)minimaptemp->GetPixels(IMAGE_FORMAT_A8B8G8R8);
-        auto minimap_pixels = (uint32_t *)viewparams->location_minimap->GetPixels(IMAGE_FORMAT_A8B8G8R8);
+        Color *minitempix = const_cast<Color *>(minimaptemp->GetPixels()); // TODO(captainurist): #images const_cast
+        const Color *minimap_pixels = viewparams->location_minimap->GetPixels();
         int textr_width = viewparams->location_minimap->GetWidth();
 
         // nearest neiborhood scaling
@@ -193,11 +193,11 @@ void DrawBook_Map_sub(unsigned int tl_x, unsigned int tl_y, unsigned int br_x, i
                         if (pOutdoor->IsMapCellPartiallyRevealed(map_tile_X,
                             map_tile_Y)) {
                             if (!((i + ScreenCenterX + j) % 2))
-                                minitempix[j + i * screenWidth] = colorTable.CodGray.c32();
+                                minitempix[j + i * screenWidth] = colorTable.CodGray;
                             else
                                 minitempix[j + i * screenWidth] = minimap_pixels[scaled_posX + scaled_posY * textr_width];
                         } else {
-                            minitempix[j + i * screenWidth] = colorTable.Black.c32();
+                            minitempix[j + i * screenWidth] = colorTable.Black;
                         }
                     } else {
                         minitempix[j + i * screenWidth] = minimap_pixels[scaled_posX + scaled_posY * textr_width];

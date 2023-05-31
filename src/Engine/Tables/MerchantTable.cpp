@@ -2,11 +2,10 @@
 
 #include "Engine/Engine.h"
 
-std::string pMerchantsTXT_Raw;
-IndexedArray<const char *, MERCHANT_PHRASE_FIRST, MERCHANT_PHRASE_LAST> pMerchantsBuyPhrases;
-IndexedArray<const char *, MERCHANT_PHRASE_FIRST, MERCHANT_PHRASE_LAST> pMerchantsSellPhrases;
-IndexedArray<const char *, MERCHANT_PHRASE_FIRST, MERCHANT_PHRASE_LAST> pMerchantsRepairPhrases;
-IndexedArray<const char *, MERCHANT_PHRASE_FIRST, MERCHANT_PHRASE_LAST> pMerchantsIdentifyPhrases;
+IndexedArray<std::string, MERCHANT_PHRASE_FIRST, MERCHANT_PHRASE_LAST> pMerchantsBuyPhrases;
+IndexedArray<std::string, MERCHANT_PHRASE_FIRST, MERCHANT_PHRASE_LAST> pMerchantsSellPhrases;
+IndexedArray<std::string, MERCHANT_PHRASE_FIRST, MERCHANT_PHRASE_LAST> pMerchantsRepairPhrases;
+IndexedArray<std::string, MERCHANT_PHRASE_FIRST, MERCHANT_PHRASE_LAST> pMerchantsIdentifyPhrases;
 
 void initializeMerchants() {
     char *test_string;
@@ -16,8 +15,8 @@ void initializeMerchants() {
     char *tmp_pos;
     int decode_step;
 
-    pMerchantsTXT_Raw = engine->_gameResourceManager->getEventsFile("merchant.txt").string_view();
-    strtok(pMerchantsTXT_Raw.data(), "\r");
+    std::string txtRaw{ engine->_gameResourceManager->getEventsFile("merchant.txt").string_view() };
+    strtok(txtRaw.data(), "\r");
 
     for (MERCHANT_PHRASE i : MerchantPhrases()) {
         test_string = strtok(NULL, "\r") + 1;

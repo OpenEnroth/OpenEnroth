@@ -764,8 +764,6 @@ bool enterHouse(HOUSE_ID uHouseID) {
     int uCloseTime = buildingTable[uHouseID - HOUSE_SMITH_EMERALD_ISLE].uCloseTime;
     current_npc_text.clear();
     dword_F8B1E4 = 0;
-    charactersTrainedLevels.resize(pParty->pPlayers.size());
-    std::fill(charactersTrainedLevels.begin(), charactersTrainedLevels.end(), 0);
     render->ClearZBuffer();
 
     if (((uCloseTime - 1 <= uOpenTime) && ((pParty->uCurrentHour < uOpenTime) && (pParty->uCurrentHour >(uCloseTime - 1)))) ||
@@ -919,22 +917,8 @@ void OnSelectShopDialogueOption(DIALOGUE_TYPE option) {
     render->ClearZBuffer();
 
     if (dialog_menu_id == DIALOGUE_MAIN) {
-        Sizei renDims = render->GetRenderDimensions();
-        if (in_current_building_type == BuildingType_Training) {
-            if (option == DIALOGUE_TRAINING_HALL_TRAIN) {
-                Player &player = pParty->activeCharacter();
-                uint64_t expForNextLevel = 0;
-                for (int i = 0; i < pParty->activeCharacter().uLevel; i++) {
-                    expForNextLevel += i + 1;
-                }
-                expForNextLevel *= 1000;
-                if (player.uLevel < trainingHallMaxLevels[HOUSE_ID(window_SpeakInHouse->wData.val)] && player.experience < expForNextLevel) {
-                    return;
-                }
-            }
-        }
         pDialogueWindow->Release();
-        pDialogueWindow = new GUIWindow(WINDOW_Dialogue, {0, 0}, {renDims.w, 345}, 0);
+        pDialogueWindow = new GUIWindow(WINDOW_Dialogue, {0, 0}, {render->GetRenderDimensions().w, 345}, 0);
         pBtn_ExitCancel = pDialogueWindow->CreateButton({526, 445}, {75, 33}, 1, 0, UIMSG_Escape, 0, InputAction::Invalid,
                                                         localization->GetString(LSTR_END_CONVERSATION), {ui_buttdesc2});
         pDialogueWindow->CreateButton({8, 8}, {450, 320}, 1, 0, UIMSG_BuyInShop_Identify_Repair, 0);
@@ -947,7 +931,6 @@ void OnSelectShopDialogueOption(DIALOGUE_TYPE option) {
     // NEW
     // TODO(Nik-RE-dev): houseDialogueOptionSelected must be called without switch
     switch (in_current_building_type) {
-    case BuildingType_Tavern:
     case BuildingType_FireGuild:
     case BuildingType_AirGuild:
     case BuildingType_WaterGuild:
@@ -960,6 +943,10 @@ void OnSelectShopDialogueOption(DIALOGUE_TYPE option) {
     case BuildingType_ElementalGuild:
     case BuildingType_SelfGuild:
     case BuildingType_MirroredPath:
+    case BuildingType_Bank:
+    case BuildingType_Temple:
+    case BuildingType_Tavern:
+    case BuildingType_Training:
         ((GUIWindow_House*)window_SpeakInHouse)->houseDialogueOptionSelected(option);
         break;
     case BuildingType_TownHall:
@@ -972,17 +959,10 @@ void OnSelectShopDialogueOption(DIALOGUE_TYPE option) {
         }
         break;
     }
-    case BuildingType_Bank:
-        ((GUIWindow_House*)window_SpeakInHouse)->houseDialogueOptionSelected(option);
-        break;
-    case BuildingType_Temple:
-        ((GUIWindow_House*)window_SpeakInHouse)->houseDialogueOptionSelected(option);
-        break;
     case BuildingType_WeaponShop:
     case BuildingType_ArmorShop:
     case BuildingType_MagicShop:
     case BuildingType_AlchemistShop:
-    case BuildingType_Training:
     {
         break;
     }
@@ -1275,29 +1255,14 @@ void SimpleHouseDialog() {
         house_window.uFrameX = SIDE_TEXT_BOX_POS_X;
         house_window.uFrameWidth = SIDE_TEXT_BOX_WIDTH;
         house_window.uFrameZ = SIDE_TEXT_BOX_POS_Z;
-        if (!pTransitionStrings[uHouse_ExitPic]) {
-            auto str = localization->FormatString(
-                LSTR_FMT_ENTER_S,
-                pMapStats->pInfos[uHouse_ExitPic].pName.c_str()
-            );
-            house_window.DrawTitleText(
-                pFontCreate, 0,
-                (212 - pFontCreate->CalcTextHeight(
-                    str, house_window.uFrameWidth, 0)) /
-                2 +
-                101,
-                Color(), str, 3);
+        if (pTransitionStrings[uHouse_ExitPic].empty()) {
+            auto str = localization->FormatString(LSTR_FMT_ENTER_S, pMapStats->pInfos[uHouse_ExitPic].pName.c_str());
+            house_window.DrawTitleText(pFontCreate, 0, (212 - pFontCreate->CalcTextHeight(str, house_window.uFrameWidth, 0)) / 2 + 101, Color(), str, 3);
             return;
         }
 
-        house_window.DrawTitleText(
-            pFontCreate, 0,
-            (212 -
-                pFontCreate->CalcTextHeight(pTransitionStrings[uHouse_ExitPic],
-                    house_window.uFrameWidth, 0)) /
-            2 +
-            101,
-            Color(), pTransitionStrings[uHouse_ExitPic], 3);
+        int vertMargin = (212 - pFontCreate->CalcTextHeight(pTransitionStrings[uHouse_ExitPic], house_window.uFrameWidth, 0)) / 2 + 101;
+        house_window.DrawTitleText(pFontCreate, 0, vertMargin, Color(), pTransitionStrings[uHouse_ExitPic], 3);
         return;
     }
     house_window.uFrameWidth -= 10;
@@ -1869,6 +1834,9 @@ void createHouseUI(HOUSE_ID houseId) {
       case BuildingType_Tavern:
         window_SpeakInHouse = new GUIWindow_Tavern(houseId);
         break;
+      case BuildingType_Training:
+        window_SpeakInHouse = new GUIWindow_Training(houseId);
+        break;
       default:
         window_SpeakInHouse = new GUIWindow_House(houseId);
         break;
@@ -2055,9 +2023,7 @@ void GUIWindow_House::houseDialogManager() {
             TravelByTransport();
             break;
           case BuildingType_Training:
-            // __debugbreak(); // param was passed via pTmpBuf, investiage
-            // ?? no idea why this could pass an argument - its always reset
-            TrainingDialog("");
+            houseSpecificDialogue();
             break;
           case BuildingType_Jail:
             JailDialog();
