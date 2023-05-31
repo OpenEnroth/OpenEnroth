@@ -1487,7 +1487,7 @@ void Game::processQueuedMessages() {
                 case UIMSG_RentRoom:
                     pGUIWindow_CurrentMenu = new GUIWindow_Rest();
 
-                    remainingRestTime = GameTime::FromHours(_494820_training_time(pParty->uCurrentHour) + 1) - GameTime::FromMinutes(pParty->uCurrentMinute);
+                    remainingRestTime = timeUntilDawn().AddHours(1);
                     if (uMessageParam == 111 || uMessageParam == 114 || uMessageParam == 116) { // 107 = Emerald Isle tavern
                         remainingRestTime = remainingRestTime + GameTime::FromHours(12);
                     }
@@ -1617,7 +1617,7 @@ void Game::processQueuedMessages() {
                     new OnButtonClick2({pButton_RestUI_WaitUntilDawn->uX, pButton_RestUI_WaitUntilDawn->uY}, {0, 0}, pButton_RestUI_WaitUntilDawn,
                                        localization->GetString(LSTR_WAIT_UNTIL_DAWN));
                     currentRestType = REST_WAIT;
-                    remainingRestTime = GameTime::FromHours(_494820_training_time(pParty->uCurrentHour)) - GameTime::FromMinutes(pParty->uCurrentMinute);
+                    remainingRestTime = timeUntilDawn();
                     continue;
 
                 case UIMSG_HintSelectRemoveQuickSpellBtn: {

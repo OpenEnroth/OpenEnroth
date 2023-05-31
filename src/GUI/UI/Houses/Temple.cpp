@@ -25,7 +25,7 @@ void GUIWindow_Temple::mainDialogue() {
     pButton->uHeight = 0;
     pButton->uY = 0;
     if (isPlayerHealableByTemple(pParty->activeCharacter())) {
-        static std::string shop_option_container;
+        static std::string shop_option_container; // TODO(Nik-RE-dev): remove static when pShopOptions becomes local arrray of std::string-s.
         shop_option_container = fmt::format("{} {} {}", localization->GetString(LSTR_HEAL), price, localization->GetString(LSTR_GOLD));
         pShopOptions[0] = shop_option_container.c_str();
         index = 0;

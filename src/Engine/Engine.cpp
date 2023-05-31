@@ -1925,13 +1925,14 @@ void RegeneratePartyHealthMana() {
     }
 }
 
-//----- (00494820) --------------------------------------------------------
-unsigned int _494820_training_time(unsigned int a1) {
-    signed int v1;  // eax@1
+GameTime timeUntilDawn() {
+    static const GameTime dawnHour = GameTime::FromHours(5);
+    GameTime currentTimeInDay = GameTime::FromHours(pParty->uCurrentHour).AddMinutes(pParty->uCurrentMinute);
 
-    v1 = 5;
-    if (a1 % 24 >= 5) v1 = 29;
-    return v1 - a1 % 24;
+    if (currentTimeInDay < dawnHour) {
+        return dawnHour - currentTimeInDay;
+    }
+    return GameTime::FromDays(1) + dawnHour - currentTimeInDay;
 }
 
 void initLevelStrings(Blob &blob) {
