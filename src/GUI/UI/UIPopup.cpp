@@ -202,7 +202,6 @@ void DrawPopupWindow(unsigned int uX, unsigned int uY, unsigned int uWidth,
 //----- (0041D895) --------------------------------------------------------
 void GameUI_DrawItemInfo(struct ItemGen *inspect_item) {
     unsigned int frameXpos;     // eax@3
-    const char *v28;     // edi@69
     int v34;             // esi@81
     SummonedItem v67;
     GUIWindow iteminfo_window;  // [sp+208h] [bp-70h]@2
@@ -346,7 +345,7 @@ void GameUI_DrawItemInfo(struct ItemGen *inspect_item) {
 
     text[0] = localization->FormatString(
         LSTR_FMT_TYPE_S,
-        pItemTable->pItems[inspect_item->uItemID].pUnidentifiedName);
+        pItemTable->pItems[inspect_item->uItemID].pUnidentifiedName.c_str());
 
     switch (inspect_item->GetItemEquipType()) {
         case EQUIP_SINGLE_HANDED:
@@ -422,8 +421,7 @@ void GameUI_DrawItemInfo(struct ItemGen *inspect_item) {
     for (const std::string &s : text)
         if (!s.empty())
             Str_int += pFontComic->CalcTextHeight(s, iteminfo_window.uFrameWidth, 100) + 3;
-    v28 = pItemTable->pItems[inspect_item->uItemID].pDescription;
-    if (*v28)
+    if (!pItemTable->pItems[inspect_item->uItemID].pDescription.empty())
         Str_int += pFontSmallnum->CalcTextHeight(
             pItemTable->pItems[inspect_item->uItemID].pDescription,
             iteminfo_window.uFrameWidth, 100);
@@ -475,9 +473,8 @@ void GameUI_DrawItemInfo(struct ItemGen *inspect_item) {
             v34 += pFontComic->CalcTextHeight(s, iteminfo_window.uFrameWidth, 100, 0) + 3;
         }
     }
-    v28 = pItemTable->pItems[inspect_item->uItemID].pDescription;
-    if (*v28)
-        iteminfo_window.DrawText(pFontSmallnum, {100, v34}, Color(), v28, 0, 0, Color());
+    if (!pItemTable->pItems[inspect_item->uItemID].pDescription.empty())
+        iteminfo_window.DrawText(pFontSmallnum, {100, v34}, Color(), pItemTable->pItems[inspect_item->uItemID].pDescription, 0, 0, Color());
     iteminfo_window.uFrameX += 12;
     iteminfo_window.uFrameWidth -= 24;
     iteminfo_window.DrawTitleText(pFontArrus, 0, 0xCu, colorTable.PaleCanary,

@@ -1532,7 +1532,7 @@ int Player::StealFromActor(
                     GameUI_SetStatusBar(
                         LSTR_FMT_S_STOLE_D_ITEM,
                         this->name.c_str(),
-                        pItemTable->pItems[carriedItemId].pUnidentifiedName
+                        pItemTable->pItems[carriedItemId].pUnidentifiedName.c_str()
                     );
                     pParty->setHoldingItem(&tempItem);
                     return STEAL_SUCCESS;

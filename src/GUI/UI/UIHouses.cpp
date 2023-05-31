@@ -1878,10 +1878,9 @@ void GUIWindow_House::houseDialogManager() {
     render->DrawTextureNew(468 / 640.0f, 0, game_ui_right_panel_frame);
 
     if (pDialogueNPCCount != uNumDialogueNPCPortraits || !uHouse_ExitPic) {
-        const char *pHouseName = buildingTable[wData.val - 1].pName;
-        if (pHouseName) {
+        if (!buildingTable[wData.val - 1].pName.empty()) {
             if (current_screen_type != CURRENT_SCREEN::SCREEN_SHOP_INVENTORY) {
-                int v3 = 2 * pFontCreate->GetHeight() - 6 - pFontCreate->CalcTextHeight(pHouseName, 130, 0);
+                int v3 = 2 * pFontCreate->GetHeight() - 6 - pFontCreate->CalcTextHeight(buildingTable[wData.val - 1].pName, 130, 0);
                 if (v3 < 0)
                     v3 = 0;
                 pWindow.DrawTitleText(pFontCreate, 0x1EAu, v3 / 2 + 4, colorTable.White, buildingTable[wData.val - 1].pName, 3);
@@ -1936,7 +1935,7 @@ void GUIWindow_House::houseDialogManager() {
                     v9 = 94 * v8 + SIDE_TEXT_BOX_POS_Y;
                 } else {
                     if (!v8 && dword_591080) {
-                        pTitleText = (char*)buildingTable[wData.val - 1].pProprieterTitle;
+                        pTitleText = buildingTable[wData.val - 1].pProprieterTitle;
                         pWindow.DrawTitleText(pFontCreate, SIDE_TEXT_BOX_POS_X, SIDE_TEXT_BOX_POS_Y, colorTable.EasternBlue, pTitleText, 3);
                         continue;
                     }

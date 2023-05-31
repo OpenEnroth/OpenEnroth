@@ -45,10 +45,10 @@ using enum BuildingType;
 struct BuildingDesc {
     BuildingType uType;
     uint16_t uAnimationID;
-    char *pName;
-    const char *pProprieterName;
-    const char *pEnterText;
-    const char *pProprieterTitle;
+    std::string pName;
+    std::string pProprieterName;
+    std::string pEnterText;
+    std::string pProprieterTitle;
     int16_t field_14;
     int16_t _state;
     int16_t _rep;
@@ -68,4 +68,3 @@ struct BuildingDesc {
 void initializeBuildings();
 
 extern std::array<BuildingDesc, 525> buildingTable;
-extern std::string buildingTableTXT_Raw;

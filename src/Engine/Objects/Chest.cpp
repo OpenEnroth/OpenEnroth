@@ -523,7 +523,7 @@ void Chest::GrabItem(bool all) {  // new fucntion to grab items from chest using
                 grabcount++;
                 GameUI_SetStatusBar(
                     LSTR_FMT_YOU_FOUND_ITEM,
-                    pItemTable->pItems[chestitem.uItemID].pUnidentifiedName
+                    pItemTable->pItems[chestitem.uItemID].pUnidentifiedName.c_str()
                 );
             } else {  // no room so set as holding item
                 pParty->setHoldingItem(&chestitem);

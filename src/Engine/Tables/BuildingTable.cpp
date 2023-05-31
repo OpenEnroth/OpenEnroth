@@ -3,7 +3,6 @@
 #include "Utility/String.h"
 
 std::array<BuildingDesc, 525> buildingTable;
-std::string buildingTableTXT_Raw;
 
 void initializeBuildings() {
     int i;
@@ -14,8 +13,8 @@ void initializeBuildings() {
     char *tmp_pos;
     int decode_step;
 
-    buildingTableTXT_Raw = engine->_gameResourceManager->getEventsFile("2dEvents.txt").string_view();
-    strtok(buildingTableTXT_Raw.data(), "\r");
+    std::string txtRaw{ engine->_gameResourceManager->getEventsFile("2dEvents.txt").string_view() };
+    strtok(txtRaw.data(), "\r");
     strtok(NULL, "\r");
 
     for (i = 0; i < 525; ++i) {
@@ -143,12 +142,10 @@ void initializeBuildings() {
                     buildingTable[i].pName = removeQuotes(test_string);
                     break;
                 case 6:
-                    buildingTable[i].pProprieterName =
-                        removeQuotes(test_string);
+                    buildingTable[i].pProprieterName = removeQuotes(test_string);
                     break;
                 case 7:
-                    buildingTable[i].pProprieterTitle =
-                        removeQuotes(test_string);
+                    buildingTable[i].pProprieterTitle = removeQuotes(test_string);
                     break;
                 case 8:
                     buildingTable[i].field_14 = atoi(test_string);
@@ -169,8 +166,7 @@ void initializeBuildings() {
                     buildingTable[i].flt_24 = atof(test_string);
                     break;
                 case 15:
-                    buildingTable[i].generation_interval_days =
-                        atoi(test_string);
+                    buildingTable[i].generation_interval_days = atoi(test_string);
                     break;
                 case 18:
                     buildingTable[i].uOpenTime = atoi(test_string);
