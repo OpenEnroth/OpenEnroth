@@ -34,7 +34,8 @@ struct SpellBuff {
     /**
      * @offset 0x42EB31
      */
-    bool Active() const { return this->expireTime.value > 0; }
+    bool Active() const { return this->expireTime.Valid(); }
+    bool Inactive() const { return !Active(); }
     bool Expired() const { return this->expireTime.value < 0; }
     GameTime &GetExpireTime() { return this->expireTime; }
 
