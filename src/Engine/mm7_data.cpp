@@ -2531,7 +2531,6 @@ float flt_debugrecmod3;
 std::string s_SavedMapName;  // idb
 char bNoNPCHiring = false;
 Vec3i blv_prev_party_pos;
-std::array<NPCTopic, 789> pNPCTopics;
 std::vector<Vec3f> pTerrainNormals;
 std::array<unsigned short, 128 * 128 * 2> pTerrainNormalIndices;
 std::array<unsigned int, 128 * 128 * 2> pTerrainSomeOtherData;
