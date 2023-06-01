@@ -3,30 +3,27 @@
 #include "GUI/UI/UIHouses.h"
 #include "GUI/UI/UIHouseEnums.h"
 
-bool IsTravelAvailable(int a1);
+class GUIWindow_Transport : public GUIWindow_House {
+ public:
+    explicit GUIWindow_Transport(HOUSE_ID houseId) : GUIWindow_House(houseId) {}
+    virtual ~GUIWindow_Transport() {}
 
-/**
- * @brief                               New function.
- *
- * @param schedule_id                   Index to transport_schedule.
- *
- * @return                              Number of days travel by transport will take with hireling modifiers.
- */
-int GetTravelTimeTransportDays(int schedule_id);
+    virtual void houseDialogueOptionSelected(DIALOGUE_TYPE option) override;
+    virtual void houseSpecificDialogue() override;
 
-void TravelByTransport();
+ protected:
+    void mainDialogue();
+    void transportDialogue();
 
-// TODO(Nik-RE-dev): contain in cpp file
-struct stru365_travel_info {
-    unsigned char uMapInfoID;
-    unsigned char pSchedule[7];
-    unsigned int uTravelTime; // In days.
-    int arrival_x;
-    int arrival_y;
-    int arrival_z;
-    int arrival_view_yaw;
-    unsigned int uQuestBit;  // quest bit required to set for this travel option
-                             // to be enabled; otherwise 0
+ private:
+    /**
+     * @brief                               New function.
+     *
+     * @param schedule_id                   Index to transport_schedule.
+     *
+     * @return                              Number of days travel by transport will take with hireling modifiers.
+     */
+    int getTravelTimeTransportDays(int schedule_id);
 };
-extern stru365_travel_info transport_schedule[35];
-extern unsigned char transport_routes[20][4];
+
+bool isTravelAvailable(HOUSE_ID houseId);

@@ -823,11 +823,7 @@ bool enterHouse(HOUSE_ID uHouseID) {
             pDialogueNPCCount = 1;
         pMediaPlayer->OpenHouseMovie(pAnimatedRooms[uCurrentHouse_Animation].video_name, 1u);
         dword_5C35D4 = 1;
-        if ((signed int)uHouseID < HOUSE_FIRE_GUILD_INITIATE_EMERALD_ISLE || (signed int)uHouseID > HOUSE_SELF_GUILD_2) {
-            if ((signed int)uHouseID >= HOUSE_STABLES_HARMONDALE && (signed int)uHouseID <= HOUSE_BOATS_PLACEHOLDER_2 && !IsTravelAvailable(uHouseID - HOUSE_STABLES_HARMONDALE)) {
-                return true;
-            }
-        } else {  // guilds
+        if (isMagicGuild(uHouseID)) {
             // TODO(pskelton): check this behaviour
             if (!pParty->hasActiveCharacter())  // avoid nzi
                 pParty->setActiveToFirstCanAct();
@@ -836,6 +832,8 @@ bool enterHouse(HOUSE_ID uHouseID) {
                 PlayHouseSound(uHouseID, HouseSound_Greeting_2);
                 return true;
             }
+        } else if ((isStable(uHouseID) || isBoat(uHouseID)) && !isTravelAvailable(uHouseID)) {
+            return true;
         }
         PlayHouseSound(uHouseID, HouseSound_Greeting);
         dword_5C35D4 = 1;
@@ -1837,6 +1835,10 @@ void createHouseUI(HOUSE_ID houseId) {
       case BuildingType_Training:
         window_SpeakInHouse = new GUIWindow_Training(houseId);
         break;
+      case BuildingType_Stables:
+      case BuildingType_Boats:
+        window_SpeakInHouse = new GUIWindow_Transport(houseId);
+        break;
       default:
         window_SpeakInHouse = new GUIWindow_House(houseId);
         break;
@@ -2019,7 +2021,7 @@ void GUIWindow_House::houseDialogManager() {
             break;
           case BuildingType_Stables:
           case BuildingType_Boats:
-            TravelByTransport();
+            houseSpecificDialogue();
             break;
           case BuildingType_Training:
             houseSpecificDialogue();
