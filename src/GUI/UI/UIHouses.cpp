@@ -639,7 +639,7 @@ void InitializaDialogueOptions(BuildingType type) {
     case BuildingType_TownHall:
     {
         int num_buttons = 1;
-        CreateShopDialogueButtonAtRow(0, DIALOGUE_TOWNHALL_MESSAGE);
+        CreateShopDialogueButtonAtRow(0, DIALOGUE_TOWNHALL_BOUNTY_HUNT);
 
         if (pParty->uFine) {
             num_buttons++;

@@ -125,7 +125,7 @@ void GUIWindow_TownHall::houseSpecificDialogue() {
       case DIALOGUE_MAIN:
         mainDialogue();
         break;
-      case DIALOGUE_TOWNHALL_MESSAGE:
+      case DIALOGUE_TOWNHALL_BOUNTY_HUNT:
         bountyHuntDialogue();
         break;
       case DIALOGUE_TOWNHALL_PAY_FINE:
@@ -137,7 +137,7 @@ void GUIWindow_TownHall::houseSpecificDialogue() {
 }
 
 void GUIWindow_TownHall::houseDialogueOptionSelected(DIALOGUE_TYPE option) {
-    if (option == DIALOGUE_TOWNHALL_MESSAGE) {
+    if (option == DIALOGUE_TOWNHALL_BOUNTY_HUNT) {
         bountyHuntingDialogueOptionClicked();
     } else if (option == DIALOGUE_TOWNHALL_PAY_FINE) {
         keyboardInputHandler->StartTextInput(TextInputType::Number, 10, this);
