@@ -251,11 +251,11 @@ void stru262_TurnBased::AITurnBasedAction() {
 
     for (uint i = 0; i < pActors.size(); ++i) {
         curr_actor = &pActors[i];
-        
+
         for (ACTOR_BUFF_INDEX j : pActors[i].pActorBuffs.indices())
             if (j != ACTOR_BUFF_MASS_DISTORTION)
                 pActors[i].pActorBuffs[j].IsBuffExpiredToTime(pParty->GetPlayingTime());
-        
+
         if (pActors[i].pActorBuffs[ACTOR_BUFF_SHRINK].Expired()) {
             pActors[i].uActorHeight = pMonsterList->pMonsters[pActors[i].pMonsterInfo.uID - 1].uMonsterHeight;
             pActors[i].pActorBuffs[ACTOR_BUFF_SHRINK].Reset();

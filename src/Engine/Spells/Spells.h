@@ -15,6 +15,7 @@
 #include "Utility/Geometry/Vec.h"
 
 // TODO(pskelton): move to own files
+// TODO(pskelton): style
 struct SpellBuff {
     /**
      * @offset 0x4584E0
@@ -34,9 +35,16 @@ struct SpellBuff {
 
     /**
      * @offset 0x42EB31
+     * Active is state where spell buff is in effect
      */
     bool Active() const { return this->expireTime.Valid(); }
+    /**
+    * Inactive is state where spell buff is not in effect (includes state expired)
+    */
     bool Inactive() const { return !Active(); }
+    /**
+    * Expired is state where spell buff is not in effect after previously being active    
+    */
     bool Expired() const { return this->expireTime.Expired(); }
     GameTime &GetExpireTime() { return this->expireTime; }
 
@@ -45,7 +53,7 @@ struct SpellBuff {
     PLAYER_SKILL_MASTERY skillMastery = PLAYER_SKILL_MASTERY_NONE; // 1-4, normal to grandmaster.
     uint16_t overlayID = 0;
     uint8_t caster = 0;
-    bool isGMBuff = false; // Buff was casted at grandmaster mastery   
+    bool isGMBuff = false; // Buff was casted at grandmaster mastery
 };
 
 struct SpellInfo {
