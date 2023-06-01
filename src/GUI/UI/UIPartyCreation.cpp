@@ -817,7 +817,8 @@ bool PartyCreationUI_LoopInternal() {
     for (uint i = 0; i < 4; ++i) {
         if (pParty->pPlayers[i].classType == PLAYER_CLASS_KNIGHT)
             pParty->pPlayers[i].sResMagicBase = 10;
-        pParty->pPlayers[i].pPlayerBuffs[22].expireTime.Reset();
+        // TODO(pskelton): why just 22?
+        pParty->pPlayers[i].pPlayerBuffs[22].Reset();
         int page = 0;
         for (PLAYER_SKILL_TYPE j : MagicSkills()) {
             if (pParty->pPlayers[i].pActiveSkills[j]) {

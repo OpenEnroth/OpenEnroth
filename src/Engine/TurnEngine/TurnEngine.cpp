@@ -247,19 +247,19 @@ void stru262_TurnBased::AITurnBasedAction() {
     AIDirection v15;    // [sp+3Ch] [bp-30h]@21
     Actor *curr_actor;  // [sp+58h] [bp-14h]@2
     int target_pid;     // [sp+5Ch] [bp-10h]@6
-    int shrinked;
     int j;
 
     for (uint i = 0; i < pActors.size(); ++i) {
         curr_actor = &pActors[i];
-        shrinked = pActors[i].pActorBuffs[ACTOR_BUFF_SHRINK].Active();
+        
         for (ACTOR_BUFF_INDEX j : pActors[i].pActorBuffs.indices())
             if (j != ACTOR_BUFF_MASS_DISTORTION)
                 pActors[i].pActorBuffs[j].IsBuffExpiredToTime(pParty->GetPlayingTime());
-        if (shrinked && pActors[i].pActorBuffs[ACTOR_BUFF_SHRINK].Expired())
-            pActors[i].uActorHeight =
-                pMonsterList->pMonsters[pActors[i].pMonsterInfo.uID - 1]
-                    .uMonsterHeight;
+        
+        if (pActors[i].pActorBuffs[ACTOR_BUFF_SHRINK].Expired()) {
+            pActors[i].uActorHeight = pMonsterList->pMonsters[pActors[i].pMonsterInfo.uID - 1].uMonsterHeight;
+            pActors[i].pActorBuffs[ACTOR_BUFF_SHRINK].Reset();
+        }
 
         if (!(curr_actor->uAttributes & ACTOR_STAND_IN_QUEUE) &&
             !curr_actor->pActorBuffs[ACTOR_BUFF_STONED].Expired() &&
