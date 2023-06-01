@@ -19,9 +19,9 @@
 #include "GUI/GUIButton.h"
 #include "GUI/GUIFont.h"
 #include "GUI/UI/UIHouses.h"
-#include "GUI/UI/UIShops.h"
 #include "GUI/UI/UIStatusBar.h"
 #include "GUI/UI/UIPopup.h"
+#include "GUI/UI/Houses/Shops.h"
 
 #include "Io/Mouse.h"
 
@@ -1485,48 +1485,6 @@ void sub_4B1523_showSpellbookInfo(ITEM_TYPE spellItemId) {
 
     str = fmt::format("{}\n{}", localization->GetString(LSTR_SP_COST), pSpellDatas[spellId].uNormalLevelMana);
     a1.DrawTitleText(pFontComic, 0xCu, a1.uFrameHeight - pFontComic->GetHeight() - 16, Color(), str, 3);
-}
-
-//----- (004B1D27) --------------------------------------------------------
-void GetHouseGoodbyeSpeech() {
-    int v7[4];      // [sp+Ch] [bp-10h]@12
-
-    if (in_current_building_type != BuildingType_Invalid) {
-        if (in_current_building_type > BuildingType_MagicShop) {
-            if (in_current_building_type == BuildingType_Bank) {
-                if (!dword_F8B1E4) return;
-            } else {
-                if (in_current_building_type != BuildingType_Temple) return;
-            }
-            PlayHouseSound(window_SpeakInHouse->wData.val, HouseSound_Greeting_2);
-            return;
-        }
-        if (pParty->PartyTimes._shop_ban_times[window_SpeakInHouse->wData.val] <= pParty->GetPlayingTime()) {
-            if (pParty->GetGold() <= 10000) {
-                if (!dword_F8B1E4) return;
-                PlayHouseSound(window_SpeakInHouse->wData.val, HouseSound_Goodbye);
-                return;
-            }
-            PlayHouseSound(window_SpeakInHouse->wData.val, (HouseSoundID)(dword_F8B1E4 + 3));
-            if (!dword_F8B1E4 && !pParty->_delayedReactionTimer) {
-                int id = pParty->getRandomActiveCharacterId(vrng.get());
-
-                if (id != -1) {
-                    pParty->setDelayedReaction(SPEECH_ShopRude, id);
-                    return;
-                }
-            }
-        } else {  // caught stealing
-            if (!pParty->_delayedReactionTimer) {
-                int id = pParty->getRandomActiveCharacterId(vrng.get());
-
-                if (id != -1) {
-                    pParty->setDelayedReaction(SPEECH_ShopRude, id);
-                    return;
-                }
-            }
-        }
-    }
 }
 
 //----- (004B1447) --------------------------------------------------------

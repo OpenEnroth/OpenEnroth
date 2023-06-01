@@ -34,7 +34,6 @@
 #include "GUI/UI/UIDialogue.h"
 #include "GUI/UI/UIGame.h"
 #include "GUI/UI/UIPartyCreation.h"
-#include "GUI/UI/UIShops.h"
 #include "GUI/UI/UIStatusBar.h"
 #include "GUI/UI/Houses/MagicGuild.h"
 #include "GUI/UI/Houses/Bank.h"
@@ -45,6 +44,7 @@
 #include "GUI/UI/Houses/Transport.h"
 #include "GUI/UI/Houses/MercenaryGuild.h"
 #include "GUI/UI/Houses/TownHall.h"
+#include "GUI/UI/Houses/Shops.h"
 
 #include "Io/Mouse.h"
 #include "Io/KeyboardInputHandler.h"
@@ -904,6 +904,48 @@ void PlayHouseSound(unsigned int uHouseID, HouseSoundID sound) {
         if (pAnimatedRooms[buildingTable[uHouseID - HOUSE_SMITH_EMERALD_ISLE].uAnimationID].uRoomSoundId) {
             int roomSoundId = pAnimatedRooms[buildingTable[uHouseID - HOUSE_SMITH_EMERALD_ISLE].uAnimationID].uRoomSoundId;
             pAudioPlayer->playHouseSound((SoundID)(sound + 100 * (roomSoundId + 300)), true);
+        }
+    }
+}
+
+//----- (004B1D27) --------------------------------------------------------
+void GetHouseGoodbyeSpeech() {
+    int v7[4];      // [sp+Ch] [bp-10h]@12
+
+    if (in_current_building_type != BuildingType_Invalid) {
+        if (in_current_building_type > BuildingType_MagicShop) {
+            if (in_current_building_type == BuildingType_Bank) {
+                if (!dword_F8B1E4) return;
+            } else {
+                if (in_current_building_type != BuildingType_Temple) return;
+            }
+            PlayHouseSound(window_SpeakInHouse->wData.val, HouseSound_Greeting_2);
+            return;
+        }
+        if (pParty->PartyTimes._shop_ban_times[window_SpeakInHouse->wData.val] <= pParty->GetPlayingTime()) {
+            if (pParty->GetGold() <= 10000) {
+                if (!dword_F8B1E4) return;
+                PlayHouseSound(window_SpeakInHouse->wData.val, HouseSound_Goodbye);
+                return;
+            }
+            PlayHouseSound(window_SpeakInHouse->wData.val, (HouseSoundID)(dword_F8B1E4 + 3));
+            if (!dword_F8B1E4 && !pParty->_delayedReactionTimer) {
+                int id = pParty->getRandomActiveCharacterId(vrng.get());
+
+                if (id != -1) {
+                    pParty->setDelayedReaction(SPEECH_ShopRude, id);
+                    return;
+                }
+            }
+        } else {  // caught stealing
+            if (!pParty->_delayedReactionTimer) {
+                int id = pParty->getRandomActiveCharacterId(vrng.get());
+
+                if (id != -1) {
+                    pParty->setDelayedReaction(SPEECH_ShopRude, id);
+                    return;
+                }
+            }
         }
     }
 }

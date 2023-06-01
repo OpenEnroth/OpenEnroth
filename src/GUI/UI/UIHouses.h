@@ -46,6 +46,8 @@ int HouseDialogPressCloseBtn();
 
 int ItemAmountForShop(BuildingType buildingType);
 
+void GetHouseGoodbyeSpeech();
+
 extern class GraphicsImage *_591428_endcap;
 
 // Originally was a packed struct.
