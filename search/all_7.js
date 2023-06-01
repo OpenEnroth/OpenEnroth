@@ -381,7 +381,7 @@ var searchData=
   ['gethintstring_378',['getHintString',['../classEventMap.html#acdd4f3b0c99fe998c3c6046a8099587c',1,'EventMap']]],
   ['gethours_379',['GetHours',['../structGameTime.html#a9f828cfde868d07e1f607171c6809435',1,'GameTime']]],
   ['gethoursofday_380',['GetHoursOfDay',['../structGameTime.html#a52727e9719cc59a2bfedd0b56ee7d2ba',1,'GameTime']]],
-  ['gethousegoodbyespeech_381',['GetHouseGoodbyeSpeech',['../UIShops_8h.html#a2e1e483bd4672889ba7fc20202fa4b11',1,'GetHouseGoodbyeSpeech():&#160;UIShops.cpp'],['../UIShops_8cpp.html#a2e1e483bd4672889ba7fc20202fa4b11',1,'GetHouseGoodbyeSpeech():&#160;UIShops.cpp']]],
+  ['gethousegoodbyespeech_381',['GetHouseGoodbyeSpeech',['../UIHouses_8h.html#a2e1e483bd4672889ba7fc20202fa4b11',1,'GetHouseGoodbyeSpeech():&#160;UIHouses.cpp'],['../UIHouses_8cpp.html#a2e1e483bd4672889ba7fc20202fa4b11',1,'GetHouseGoodbyeSpeech():&#160;UIHouses.cpp']]],
   ['gethpdescription_382',['getHPDescription',['../classLocalization.html#ac46d077a3ae7bf93b4ba150384676fda',1,'Localization']]],
   ['geticon_383',['GetIcon',['../structIconFrameTable.html#a731446052ef2802faf67a4a838626e8a',1,'IconFrameTable::GetIcon(unsigned int idx)'],['../structIconFrameTable.html#a4d40cc294e1746e6ceb5048d6010ffa6',1,'IconFrameTable::GetIcon(const char *pIconName)']]],
   ['geticonname_384',['GetIconName',['../structItemGen.html#a41f5987ba1211f8e3cddbf5afb7183fc',1,'ItemGen']]],

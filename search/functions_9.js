@@ -203,7 +203,7 @@ var searchData=
   ['isspelltargetsitem_200',['isSpellTargetsItem',['../SpellEnums_8h.html#a19c19168adcb03098d2473f5c36c0710',1,'SpellEnums.h']]],
   ['issphereinfrustum_201',['IsSphereInFrustum',['../Vis_8cpp.html#a2d1bded33e6191d7e1984d4d0eb000a7',1,'IsSphereInFrustum(Vec3f center, float radius, IndoorCameraD3D_Vec4 *frustum):&#160;Vis.cpp'],['../Vis_8h.html#a8c37adac2f10c5eeb895e97ad1dc5dc3',1,'IsSphereInFrustum(Vec3f center, float radius, IndoorCameraD3D_Vec4 *frustum=nullptr):&#160;Vis.cpp']]],
   ['isstable_202',['isStable',['../UIHouseEnums_8h.html#a2d33141d7e2b772dd2f8a0fb1007d5e4',1,'UIHouseEnums.h']]],
-  ['isstealingmodeactive_203',['isStealingModeActive',['../UIShops_8cpp.html#a80f9ff7d06d16069d56cda98f75331d8',1,'UIShops.cpp']]],
+  ['isstealingmodeactive_203',['isStealingModeActive',['../Shops_8cpp.html#a80f9ff7d06d16069d56cda98f75331d8',1,'Shops.cpp']]],
   ['isstealingtoggled_204',['IsStealingToggled',['../classIo_1_1KeyboardInputHandler.html#ad79082532ace063e7e1a775fe9fe1b15',1,'Io::KeyboardInputHandler']]],
   ['isstolen_205',['IsStolen',['../structItemGen.html#a54bbf797a219cf77f0c08f6452443b93',1,'ItemGen']]],
   ['isstopped_206',['IsStopped',['../classIAudioSample.html#a677629485b0b7e9ea45a37320c6cdcdb',1,'IAudioSample::IsStopped()'],['../classAudioSample16.html#ad0462a751db008dec025a5ac041dacd7',1,'AudioSample16::IsStopped()']]],

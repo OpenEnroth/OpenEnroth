@@ -26,7 +26,7 @@ var searchData=
   ['magicenum_23',['MagicEnum',['../Serialization__ut_8cpp.html#adb7b8082bc42eac875e12a319393e1b3',1,'Serialization_ut.cpp']]],
   ['magicguild_2ecpp_24',['MagicGuild.cpp',['../MagicGuild_8cpp.html',1,'']]],
   ['magicguild_2eh_25',['MagicGuild.h',['../MagicGuild_8h.html',1,'']]],
-  ['magicshopdialog_26',['MagicShopDialog',['../UIShops_8cpp.html#ae4ce274e60dd3f8b559423cbb991361d',1,'MagicShopDialog():&#160;UIShops.cpp'],['../UIHouses_8h.html#ae4ce274e60dd3f8b559423cbb991361d',1,'MagicShopDialog():&#160;UIShops.cpp']]],
+  ['magicshopdialog_26',['MagicShopDialog',['../UIHouses_8h.html#ae4ce274e60dd3f8b559423cbb991361d',1,'MagicShopDialog():&#160;Shops.cpp'],['../Shops_8cpp.html#ae4ce274e60dd3f8b559423cbb991361d',1,'MagicShopDialog():&#160;Shops.cpp']]],
   ['magicskills_27',['MagicSkills',['../PlayerEnums_8h.html#aeaf086e4c7372f4c3f810e9dca4352c4',1,'PlayerEnums.h']]],
   ['mahogany_28',['Mahogany',['../classColorTable.html#aafe1f038e64d70b6f0e26b98fccda074',1,'ColorTable']]],
   ['main_29',['main',['../UnitTestMain_8cpp.html#a7f83bdc516d2cb86e20235d94ddf055a',1,'main(int argc, char **argv):&#160;UnitTestMain.cpp'],['../SdlMain_8cpp.html#a3c04138a5bfe5d72780bb7e82a18e627',1,'main(int argc, char **argv):&#160;SdlMain.cpp'],['../AppleLibcxxAssertionTest_8cpp.html#a3c04138a5bfe5d72780bb7e82a18e627',1,'main(int argc, char **argv):&#160;AppleLibcxxAssertionTest.cpp']]],
