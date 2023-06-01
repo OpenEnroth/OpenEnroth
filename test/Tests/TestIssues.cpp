@@ -1119,3 +1119,12 @@ GAME_TEST(Issues, Issue895) {
     timeDiff = pParty->GetPlayingTime() - timeBefore;
     EXPECT_LT(timeDiff, GameTime::FromMinutes(5));
 }
+
+// 900
+
+GAME_TEST(Issues, Issue906) {
+    // Issue with some use of Spellbuff Expired() - check actors cast buffs
+    test->playTraceFromTestData("issue_906.mm7", "issue_906.json");
+    EXPECT_TRUE(pActors[2].pActorBuffs[ACTOR_BUFF_BLESS].Active());
+    EXPECT_TRUE(pActors[2].pActorBuffs[ACTOR_BUFF_HEROISM].Active());
+}
