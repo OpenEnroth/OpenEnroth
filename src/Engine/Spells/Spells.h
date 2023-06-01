@@ -14,6 +14,7 @@
 #include "Utility/IndexedArray.h"
 #include "Utility/Geometry/Vec.h"
 
+// TODO(pskelton): move to own files
 struct SpellBuff {
     /**
      * @offset 0x4584E0
@@ -36,7 +37,7 @@ struct SpellBuff {
      */
     bool Active() const { return this->expireTime.Valid(); }
     bool Inactive() const { return !Active(); }
-    bool Expired() const { return this->expireTime.value < 0; }
+    bool Expired() const { return this->expireTime.Expired(); }
     GameTime &GetExpireTime() { return this->expireTime; }
 
     GameTime expireTime;
@@ -44,7 +45,7 @@ struct SpellBuff {
     PLAYER_SKILL_MASTERY skillMastery = PLAYER_SKILL_MASTERY_NONE; // 1-4, normal to grandmaster.
     uint16_t overlayID = 0;
     uint8_t caster = 0;
-    bool isGMBuff = false; // Buff was casted at grandmaster mastery
+    bool isGMBuff = false; // Buff was casted at grandmaster mastery   
 };
 
 struct SpellInfo {

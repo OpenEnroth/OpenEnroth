@@ -2685,8 +2685,10 @@ void Actor::UpdateActorAI() {
                 pActor->pActorBuffs[i].IsBuffExpiredToTime(pParty->GetPlayingTime());
 
         // If shrink expired: reset height
-        if (pActor->pActorBuffs[ACTOR_BUFF_SHRINK].Expired())
+        if (pActor->pActorBuffs[ACTOR_BUFF_SHRINK].Expired()) {
             pActor->uActorHeight = pMonsterList->pMonsters[pActor->pMonsterInfo.uID - 1].uMonsterHeight;
+            pActor->pActorBuffs[ACTOR_BUFF_SHRINK].Reset();
+        }
 
         // If Charm still active: make actor friendly
         if (pActor->pActorBuffs[ACTOR_BUFF_CHARM].Active()) {
@@ -2694,6 +2696,7 @@ void Actor::UpdateActorAI() {
         } else if (pActor->pActorBuffs[ACTOR_BUFF_CHARM].Expired()) {
           // Else: reset hostilty
           pActor->pMonsterInfo.uHostilityType = pMonsterStats->pInfos[pActor->pMonsterInfo.uID].uHostilityType;
+          pActor->pActorBuffs[ACTOR_BUFF_CHARM].Reset();
         }
 
         // If actor Paralyzed or Stoned: skip
@@ -2759,13 +2762,16 @@ void Actor::UpdateActorAI() {
             if (i != ACTOR_BUFF_MASS_DISTORTION)
                 pActor->pActorBuffs[i].IsBuffExpiredToTime(pParty->GetPlayingTime());
 
-        if (pActor->pActorBuffs[ACTOR_BUFF_SHRINK].Expired())
+        if (pActor->pActorBuffs[ACTOR_BUFF_SHRINK].Expired()) {
             pActor->uActorHeight = pMonsterList->pMonsters[pActor->pMonsterInfo.uID - 1].uMonsterHeight;
+            pActor->pActorBuffs[ACTOR_BUFF_SHRINK].Reset();
+        }
 
         if (pActor->pActorBuffs[ACTOR_BUFF_CHARM].Active()) {
             pActor->pMonsterInfo.uHostilityType = MonsterInfo::Hostility_Friendly;
         } else if (pActor->pActorBuffs[ACTOR_BUFF_CHARM].Expired()) {
             pActor->pMonsterInfo.uHostilityType = pMonsterStats->pInfos[pActor->pMonsterInfo.uID].uHostilityType;
+            pActor->pActorBuffs[ACTOR_BUFF_CHARM].Reset();
         }
 
         // If actor is summoned and buff expired: continue and set state to
