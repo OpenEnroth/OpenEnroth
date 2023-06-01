@@ -1105,3 +1105,17 @@ GAME_TEST(Issues, Issue872) {
     buf.Prepare();
     EXPECT_NE(buf.Get(0)->pName, "Dummy");
 }
+
+GAME_TEST(Issues, Issue878) {
+    // Test that numpad number keys are working
+    test->playTraceFromTestData("issue_878.mm7", "issue_878.json", []() { EXPECT_EQ(pParty->uNumGoldInBank, 0); });
+    EXPECT_EQ(pParty->uNumGoldInBank, 123);
+}
+
+GAME_TEST(Issues, Issue895) {
+    // Test that entering magic guild does not shift date
+    GameTime timeBefore, timeDiff;
+    test->playTraceFromTestData("issue_895.mm7", "issue_895.json", [&]() { timeBefore = pParty->GetPlayingTime(); });
+    timeDiff = pParty->GetPlayingTime() - timeBefore;
+    EXPECT_LT(timeDiff, GameTime::FromMinutes(5));
+}

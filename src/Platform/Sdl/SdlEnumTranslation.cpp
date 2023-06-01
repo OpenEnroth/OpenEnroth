@@ -107,6 +107,7 @@ PlatformKey translateSdlKey(SDL_Scancode key) {
     case SDL_SCANCODE_KP_7:             return PlatformKey::Numpad7;
     case SDL_SCANCODE_KP_8:             return PlatformKey::Numpad8;
     case SDL_SCANCODE_KP_9:             return PlatformKey::Numpad9;
+    case SDL_SCANCODE_KP_ENTER:         return PlatformKey::Return;
 
     default:
         return PlatformKey::None;
