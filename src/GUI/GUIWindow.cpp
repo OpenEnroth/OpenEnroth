@@ -49,8 +49,6 @@
 
 #include "Library/Random/Random.h"
 
-#include "GUIBountyHunting.h"
-
 using Io::InputAction;
 
 GUIWindow *pPrimaryWindow;
@@ -1038,7 +1036,9 @@ void ClickNPCTopic(DIALOGUE_TYPE topic) {
                     OracleDialogue();
                 } else {
                     if (pEventNumber == 311) {
-                        openBountyHuntingDialogue();
+                        // TODO(Nik-RE-dev): event 311 belongs to one of the teleports in Bracada
+                        __debugbreak();
+                        //openBountyHuntingDialogue();
                     } else {
                         current_npc_text.clear();
                         activeLevelDecoration = (LevelDecoration *)1;

@@ -2,13 +2,6 @@
 
 #include <string>
 
-// TODO(captainurist): looks like this one should be safe to drop.
-/**
- * Opens a standalone bounty hunting dialogue AND presses the corresponding dialogue option right away. No idea how
- * to trigger it during gameplay.
- */
-void openBountyHuntingDialogue();
-
 /**
  * Handler for the "Bounty Hunt" dialogue option in a town hall.
  *
@@ -21,3 +14,5 @@ void bountyHuntingDialogueOptionClicked();
  * @return                              Text to show after the player has clicked on the "Bounty Hunt" dialogue option.
  */
 std::string bountyHuntingText();
+
+void TownHallDialog();

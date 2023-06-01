@@ -1,7 +1,6 @@
 cmake_minimum_required(VERSION 3.20.4 FATAL_ERROR)
 
 set(GUI_SOURCES
-        GUIBountyHunting.cpp
         GUIButton.cpp
         GUIEnums.cpp
         GUIFont.cpp
@@ -9,7 +8,6 @@ set(GUI_SOURCES
         GUIWindow.cpp)
 
 set(GUI_HEADERS
-        GUIBountyHunting.h
         GUIButton.h
         GUIDialogues.h
         GUIEnums.h
