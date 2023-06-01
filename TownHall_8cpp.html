@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.9.5"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>OpenEnroth: src/GUI/GUIBountyHunting.cpp File Reference</title>
+<title>OpenEnroth: src/GUI/UI/Houses/TownHall.cpp File Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;62f6d4c</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;6570aab</span>
    </div>
   </td>
  </tr>
@@ -69,41 +69,42 @@ $(function() {
 
 <div id="nav-path" class="navpath">
   <ul>
-<li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li><li class="navelem"><a class="el" href="dir_4e4e2e75df7fa6971448b424c011c8b5.html">GUI</a></li>  </ul>
+<li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li><li class="navelem"><a class="el" href="dir_4e4e2e75df7fa6971448b424c011c8b5.html">GUI</a></li><li class="navelem"><a class="el" href="dir_a1c8096ddc6fb80a9bdd2e9a1b465426.html">UI</a></li><li class="navelem"><a class="el" href="dir_31a3d734ff16214a6e02942e8a62f5eb.html">Houses</a></li>  </ul>
 </div>
 </div><!-- top -->
 <div class="header">
   <div class="summary">
 <a href="#func-members">Functions</a> &#124;
 <a href="#var-members">Variables</a>  </div>
-  <div class="headertitle"><div class="title">GUIBountyHunting.cpp File Reference</div></div>
+  <div class="headertitle"><div class="title">TownHall.cpp File Reference</div></div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><code>#include &quot;<a class="el" href="GUIBountyHunting_8h.html">GUIBountyHunting.h</a>&quot;</code><br />
-<code>#include &lt;cassert&gt;</code><br />
+<div class="textblock"><code>#include &lt;cassert&gt;</code><br />
+<code>#include &quot;<a class="el" href="TownHall_8h.html">GUI/UI/Houses/TownHall.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="IRender_8h.html">Engine/Graphics/IRender.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Localization_8h.html">Engine/Localization.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="AwardTable_8h.html">Engine/Tables/AwardTable.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="UIHouses_8h.html">GUI/UI/UIHouses.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="GUIWindow_8h.html">GUIWindow.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="GUIButton_8h.html">GUIButton.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="GUIWindow_8h.html">GUI/GUIWindow.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="GUIButton_8h.html">GUI/GUIButton.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="GUIFont_8h.html">GUI/GUIFont.h</a>&quot;</code><br />
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:ae16a10dd0439c63efd3393d7d9803fe1"><td class="memItemLeft" align="right" valign="top">static int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="GUIBountyHunting_8cpp.html#ae16a10dd0439c63efd3393d7d9803fe1">RandomMonsterForHunting</a> (<a class="el" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405f">HOUSE_ID</a> townhall)</td></tr>
+<tr class="memitem:afdce028ca6920ad78a2a8f39fb093b04"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="TownHall_8cpp.html#afdce028ca6920ad78a2a8f39fb093b04">TownHallDialog</a> ()</td></tr>
+<tr class="separator:afdce028ca6920ad78a2a8f39fb093b04"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae16a10dd0439c63efd3393d7d9803fe1"><td class="memItemLeft" align="right" valign="top">static int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="TownHall_8cpp.html#ae16a10dd0439c63efd3393d7d9803fe1">RandomMonsterForHunting</a> (<a class="el" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405f">HOUSE_ID</a> townhall)</td></tr>
 <tr class="separator:ae16a10dd0439c63efd3393d7d9803fe1"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1de235561e3e32fe70476b8d163e2a00"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="GUIBountyHunting_8cpp.html#a1de235561e3e32fe70476b8d163e2a00">openBountyHuntingDialogue</a> ()</td></tr>
-<tr class="separator:a1de235561e3e32fe70476b8d163e2a00"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8ed245bb728a351bf6e79df4f28460fe"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="GUIBountyHunting_8cpp.html#a8ed245bb728a351bf6e79df4f28460fe">bountyHuntingDialogueOptionClicked</a> ()</td></tr>
+<tr class="memitem:a8ed245bb728a351bf6e79df4f28460fe"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="TownHall_8cpp.html#a8ed245bb728a351bf6e79df4f28460fe">bountyHuntingDialogueOptionClicked</a> ()</td></tr>
 <tr class="separator:a8ed245bb728a351bf6e79df4f28460fe"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a890660d627c2177e224d4682a694d486"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="GUIBountyHunting_8cpp.html#a890660d627c2177e224d4682a694d486">bountyHuntingText</a> ()</td></tr>
+<tr class="memitem:a890660d627c2177e224d4682a694d486"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="TownHall_8cpp.html#a890660d627c2177e224d4682a694d486">bountyHuntingText</a> ()</td></tr>
 <tr class="separator:a890660d627c2177e224d4682a694d486"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="var-members" name="var-members"></a>
 Variables</h2></td></tr>
-<tr class="memitem:a7ecd918106be280c2dd10d99d55e4b5a"><td class="memItemLeft" align="right" valign="top">static const char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="GUIBountyHunting_8cpp.html#a7ecd918106be280c2dd10d99d55e4b5a">bountyHunting_text</a> = nullptr</td></tr>
+<tr class="memitem:a7ecd918106be280c2dd10d99d55e4b5a"><td class="memItemLeft" align="right" valign="top">static const char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="TownHall_8cpp.html#a7ecd918106be280c2dd10d99d55e4b5a">bountyHunting_text</a> = nullptr</td></tr>
 <tr class="separator:a7ecd918106be280c2dd10d99d55e4b5a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3c69f6e2bb3b5050ee2a52bf725443f7"><td class="memItemLeft" align="right" valign="top">static int16_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="GUIBountyHunting_8cpp.html#a3c69f6e2bb3b5050ee2a52bf725443f7">bountyHunting_monsterId</a> = 0</td></tr>
+<tr class="memitem:a3c69f6e2bb3b5050ee2a52bf725443f7"><td class="memItemLeft" align="right" valign="top">static int16_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="TownHall_8cpp.html#a3c69f6e2bb3b5050ee2a52bf725443f7">bountyHunting_monsterId</a> = 0</td></tr>
 <tr class="separator:a3c69f6e2bb3b5050ee2a52bf725443f7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Function Documentation</h2>
@@ -144,24 +145,6 @@ Variables</h2></td></tr>
 
 </div>
 </div>
-<a id="a1de235561e3e32fe70476b8d163e2a00" name="a1de235561e3e32fe70476b8d163e2a00"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a1de235561e3e32fe70476b8d163e2a00">&#9670;&#160;</a></span>openBountyHuntingDialogue()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void openBountyHuntingDialogue </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p >Opens a standalone bounty hunting dialogue AND presses the corresponding dialogue option right away. No idea how to trigger it during gameplay. </p>
-
-</div>
-</div>
 <a id="ae16a10dd0439c63efd3393d7d9803fe1" name="ae16a10dd0439c63efd3393d7d9803fe1"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ae16a10dd0439c63efd3393d7d9803fe1">&#9670;&#160;</a></span>RandomMonsterForHunting()</h2>
 
@@ -184,6 +167,23 @@ Variables</h2></td></tr>
 <span class="mlabels"><span class="mlabel">static</span></span>  </td>
   </tr>
 </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="afdce028ca6920ad78a2a8f39fb093b04" name="afdce028ca6920ad78a2a8f39fb093b04"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afdce028ca6920ad78a2a8f39fb093b04">&#9670;&#160;</a></span>TownHallDialog()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void TownHallDialog </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
 </div><div class="memdoc">
 
 </div>
