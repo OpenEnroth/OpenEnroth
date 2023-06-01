@@ -1,9 +1,9 @@
 #pragma once
 
+#include <string>
+
 #include "GUI/UI/UIHouses.h"
 #include "GUI/UI/UIHouseEnums.h"
-
-#include <string>
 
 class GUIWindow_TownHall : public GUIWindow_House {
  public:
