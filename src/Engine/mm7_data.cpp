@@ -2393,7 +2393,6 @@ IndexedArray<IndexedArray<PLAYER_SKILL_MASTERY, PLAYER_SKILL_FIRST, PLAYER_SKILL
     }}
 }};
 
-std::array<int16_t, 49> word_4F0754;
 std::array<std::pair<int16_t, ITEM_TYPE>, 27> _4F0882_evt_VAR_PlayerItemInHands_vals = {{
     {0x0D4, ITEM_QUEST_VASE},
     {0x0D5, ITEM_RARE_LADY_CARMINES_DAGGER},
