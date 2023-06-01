@@ -1420,7 +1420,7 @@ void ShowPopupShopItem() {
 void sub_4B1523_showSpellbookInfo(ITEM_TYPE spellItemId) {
     int v4;               // eax@4
     int v6;               // eax@10
-    char *v7;             // ST44_4@12
+    std::string v7;             // ST44_4@12
     Color v8;  // ax@12
     int v13;              // [sp+6Ch] [bp-8h]@4
     int v14;              // [sp+70h] [bp-4h]@4

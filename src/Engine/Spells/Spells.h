@@ -46,13 +46,13 @@ struct SpellBuff {
 };
 
 struct SpellInfo {
-    char *name;
-    char *pShortName;
-    char *pDescription;
-    char *pBasicSkillDesc;
-    char *pExpertSkillDesc;
-    char *pMasterSkillDesc;
-    char *pGrandmasterSkillDesc;
+    std::string name;
+    std::string pShortName;
+    std::string pDescription;
+    std::string pBasicSkillDesc;
+    std::string pExpertSkillDesc;
+    std::string pMasterSkillDesc;
+    std::string pGrandmasterSkillDesc;
     SPELL_SCHOOL uSchool;
     int field_20;
 };
@@ -127,8 +127,6 @@ extern IndexedArray<SPELL_TYPE, ITEM_FIRST_WAND, ITEM_LAST_WAND> wandSpellIds;
 extern IndexedArray<SPELL_TYPE, ITEM_FIRST_SPELL_SCROLL, ITEM_LAST_SPELL_SCROLL> scrollSpellIds;
 extern IndexedArray<SPELL_TYPE, ITEM_FIRST_SPELL_BOOK, ITEM_LAST_SPELL_BOOK> bookSpellIds;
 extern IndexedArray<uint16_t, SPELL_FIRST_WITH_SPRITE, SPELL_LAST_WITH_SPRITE> SpellSoundIds;
-
-extern std::string pSpellsTXT_Raw;
 
 /**
  * @offset 0x43AFE3

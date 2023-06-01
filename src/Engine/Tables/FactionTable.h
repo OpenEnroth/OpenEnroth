@@ -7,5 +7,3 @@ struct FactionTable {
 
     char relations[89][89];
 };
-
-extern std::string pHostileTXT_Raw;

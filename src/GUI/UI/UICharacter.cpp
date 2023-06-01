@@ -1634,7 +1634,7 @@ void GUIWindow_CharacterRecord::CharacterUI_StatsTab_Draw(Player *player) {
     pGUIWindow_CurrentMenu->DrawTextInRect(pFontArrus, {26, pY}, Color(), str12, 226, 0);
 
     pY += pFontArrus->GetHeight() + -1;
-    const char *spellName = localization->GetString(LSTR_NONE);
+    std::string spellName = localization->GetString(LSTR_NONE);
     if (player->uQuickSpell != SPELL_NONE)
         spellName = pSpellStats->pInfos[player->uQuickSpell].pShortName;
     auto str13 = fmt::format("{}: {}", localization->GetString(LSTR_QUICK_SPELL), spellName);

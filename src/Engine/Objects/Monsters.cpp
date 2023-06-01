@@ -401,8 +401,8 @@ void MonsterStats::InitializePlacements() {
     int decode_step;
     //  int item_counter;
 
-    pMonsterPlacementTXT_Raw = engine->_gameResourceManager->getEventsFile("placemon.txt").string_view();
-    strtok(pMonsterPlacementTXT_Raw.data(), "\r");
+    std::string txtRaw{ engine->_gameResourceManager->getEventsFile("placemon.txt").string_view() };
+    strtok(txtRaw.data(), "\r");
     for (i = 1; i < 31; ++i) {
         test_string = strtok(NULL, "\r") + 1;
         break_loop = false;
@@ -446,8 +446,8 @@ void MonsterStats::Initialize() {
     FrameTableTxtLine parsed_field;
     std::string str;
 
-    pMonstersTXT_Raw = engine->_gameResourceManager->getEventsFile("monsters.txt").string_view();
-    strtok(pMonstersTXT_Raw.data(), "\r");
+    std::string txtRaw{ engine->_gameResourceManager->getEventsFile("monsters.txt").string_view() };
+    strtok(txtRaw.data(), "\r");
     strtok(NULL, "\r");
     strtok(NULL, "\r");
     strtok(NULL, "\r");
@@ -477,8 +477,7 @@ void MonsterStats::Initialize() {
                         pInfos[curr_rec_num].pName = removeQuotes(test_string);
                         break;
                     case 2:
-                        pInfos[curr_rec_num].pPictureName =
-                            removeQuotes(test_string);
+                        pInfos[curr_rec_num].pPictureName = removeQuotes(test_string);
                         break;
                     case 3:
                         pInfos[curr_rec_num].uLevel = atoi(test_string);

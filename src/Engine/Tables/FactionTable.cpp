@@ -3,8 +3,6 @@
 #include "Engine/Engine.h"
 #include "Engine/LOD.h"
 
-std::string pHostileTXT_Raw;
-
 //----- (004547E4) --------------------------------------------------------
 void FactionTable::Initialize() {
     int i;
@@ -16,8 +14,8 @@ void FactionTable::Initialize() {
     int decode_step;
     //  int item_counter;
 
-    pHostileTXT_Raw = engine->_gameResourceManager->getEventsFile("hostile.txt").string_view();
-    strtok(pHostileTXT_Raw.data(), "\r");
+    std::string txtRaw{ engine->_gameResourceManager->getEventsFile("hostile.txt").string_view() };
+    strtok(txtRaw.data(), "\r");
     for (i = 0; i < 89; ++i) {
         test_string = strtok(NULL, "\r") + 1;
         break_loop = false;
@@ -42,5 +40,4 @@ void FactionTable::Initialize() {
             test_string = tmp_pos + 1;
         } while ((decode_step < 92) && !break_loop);
     }
-    pHostileTXT_Raw.clear();
 }
