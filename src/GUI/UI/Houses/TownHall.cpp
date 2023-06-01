@@ -12,23 +12,51 @@
 #include "GUI/GUIButton.h"
 #include "GUI/GUIFont.h"
 
-static const char *bountyHunting_text = nullptr;                // word_F8B1A4
-static int16_t bountyHunting_monsterId = 0;
+#include "Io/KeyboardActionMapping.h"
 
-//----- (004B7911) --------------------------------------------------------
-void TownHallDialog() {
-    int v1;                       // eax@10
-    int v2;                       // esi@10
-    signed int pStringSum;        // ebx@24
-    signed int v16;               // ebx@28
-    int v17;                      // ebx@28
-    GUIButton *pButton;           // eax@30
-    int pTextHeight;              // eax@30
-    Color pTextColor;  // ax@30
-    int v29;                      // [sp+10Ch] [bp-10h]@28
-    int v31;                      // [sp+114h] [bp-8h]@29
-    GUIFont *pOutString;          // [sp+118h] [bp-4h]@21
+using Io::TextInputType;
 
+void GUIWindow_TownHall::mainDialogue() {
+    GUIWindow townHall_window = *this;
+    townHall_window.uFrameX = SIDE_TEXT_BOX_POS_X;
+    townHall_window.uFrameWidth = SIDE_TEXT_BOX_WIDTH;
+    townHall_window.uFrameZ = SIDE_TEXT_BOX_POS_Z;
+
+    std::string fine_str = fmt::format("{}: {}", localization->GetString(LSTR_CURRENT_FINE), pParty->uFine);
+    townHall_window.DrawTitleText(pFontArrus, 0, 260, colorTable.PaleCanary, fine_str, 3);
+
+    int pStringSum = 1;
+    int pTextHeight = 0;
+    pShopOptions[0] = localization->GetString(LSTR_BOUNTY_HUNT);
+    if (pParty->uFine > 0) {
+        pShopOptions[1] = localization->GetString(LSTR_PAY_FINE);
+        pStringSum = 2;
+    }
+    for (int i = 0; i < pStringSum; ++i) {
+        pTextHeight += pFontArrus->CalcTextHeight(pShopOptions[i], townHall_window.uFrameWidth, 0);
+    }
+    int spacing = (100 - pTextHeight) / pStringSum;
+    int vertPos = ((80 - pStringSum * ((100 - pTextHeight) / pStringSum)) / 2) - spacing / 2 + 158;
+    int index = 2;
+    int option = 0;
+    for (int i = pDialogueWindow->pStartingPosActiveItem; i < pDialogueWindow->pNumPresenceButton + pDialogueWindow->pStartingPosActiveItem; ++i) {
+        GUIButton *pButton = pDialogueWindow->GetControl(i);
+        pButton->uY = spacing + vertPos;
+        pTextHeight = pFontArrus->CalcTextHeight(pShopOptions[option], townHall_window.uFrameWidth, 0);
+        pButton->uHeight = pTextHeight;
+        vertPos = pButton->uY + pTextHeight - 1;
+        pButton->uW = vertPos + 6;
+        Color pTextColor = colorTable.PaleCanary;
+        if (pDialogueWindow->pCurrentPosActiveItem != index) {
+            pTextColor = colorTable.White;
+        }
+        townHall_window.DrawTitleText(pFontArrus, 0, pButton->uY, pTextColor, pShopOptions[option], 3);
+        ++index;
+        ++option;
+    }
+}
+
+void GUIWindow_TownHall::bountyHuntDialogue() {
     GUIWindow townHall_window = *window_SpeakInHouse;
     townHall_window.uFrameX = SIDE_TEXT_BOX_POS_X;
     townHall_window.uFrameWidth = SIDE_TEXT_BOX_WIDTH;
@@ -37,104 +65,86 @@ void TownHallDialog() {
     std::string fine_str = fmt::format("{}: {}", localization->GetString(LSTR_CURRENT_FINE), pParty->uFine);
     townHall_window.DrawTitleText(pFontArrus, 0, 260, colorTable.PaleCanary, fine_str, 3);
 
-    switch (dialog_menu_id) {
-    case DIALOGUE_MAIN:
-    {
-        pStringSum = 1;
-        pTextHeight = 0;
-        pShopOptions[0] = localization->GetString(LSTR_BOUNTY_HUNT);
-        if (pParty->uFine > 0) {
-            pShopOptions[1] = localization->GetString(LSTR_PAY_FINE);
-            pStringSum = 2;
-        }
-        for (uint i = 0; i < pStringSum; ++i)
-            pTextHeight += pFontArrus->CalcTextHeight(
-                pShopOptions[i], townHall_window.uFrameWidth, 0);
-        v29 = (100 - pTextHeight) / pStringSum;
-        v16 = 80 - pStringSum * ((100 - pTextHeight) / pStringSum);
-        v17 = (v16 / 2) - v29 / 2 + 158;
-        if (pDialogueWindow->pNumPresenceButton > 0) {
-            v31 = 2;
-            uint j = 0;
-            for (uint i = pDialogueWindow->pStartingPosActiveItem;
-                i < pDialogueWindow->pNumPresenceButton +
-                pDialogueWindow->pStartingPosActiveItem;
-                ++i) {
-                pButton = pDialogueWindow->GetControl(i);
-                pButton->uY = v29 + v17;
-                pTextHeight = pFontArrus->CalcTextHeight(
-                    pShopOptions[j], townHall_window.uFrameWidth, 0);
-                pButton->uHeight = pTextHeight;
-                v17 = pButton->uY + pTextHeight - 1;
-                pButton->uW = v17 + 6;
-                pTextColor = colorTable.PaleCanary;
-                if (pDialogueWindow->pCurrentPosActiveItem != v31)
-                    pTextColor = colorTable.White;
-                townHall_window.DrawTitleText(pFontArrus, 0, pButton->uY, pTextColor, pShopOptions[j], 3);
-                ++v31;
-                ++j;
-            }
-        }
-        break;
+    current_npc_text = bountyHuntingText();
+    GUIWindow window = *pDialogueWindow;
+    window.uFrameWidth = 458;
+    window.uFrameZ = 457;
+    GUIFont *pOutString = pFontArrus;
+    int pTextHeight = pFontArrus->CalcTextHeight(current_npc_text, window.uFrameWidth, 13) + 7;
+    if (352 - pTextHeight < 8) {
+        pOutString = pFontCreate;
+        pTextHeight = pFontCreate->CalcTextHeight(current_npc_text, window.uFrameWidth, 13) + 7;
     }
-    case DIALOGUE_TOWNHALL_MESSAGE:
-    {
-        current_npc_text = bountyHuntingText();
-        GUIWindow window = *pDialogueWindow;
-        window.uFrameWidth = 458;
-        window.uFrameZ = 457;
-        pOutString = pFontArrus;
-        pTextHeight = pFontArrus->CalcTextHeight(current_npc_text, window.uFrameWidth, 13) + 7;
-        if (352 - pTextHeight < 8) {
-            pOutString = pFontCreate;
-            pTextHeight = pFontCreate->CalcTextHeight(current_npc_text, window.uFrameWidth, 13) + 7;
-        }
-        render->DrawTextureCustomHeight(8 / 640.0f, (352 - pTextHeight) / 480.0f, ui_leather_mm7, pTextHeight);
-        render->DrawTextureNew(8 / 640.0f, (347 - pTextHeight) / 480.0f, _591428_endcap);
-        // window.DrawText(pOutString, 13, 354 - pTextHeight, 0, pOutString->FitTextInAWindow(current_npc_text, window.uFrameWidth, 13), 0, 0, 0);
-        window.DrawText(pOutString, {13, 354 - pTextHeight}, Color(), current_npc_text, 0, 0, Color());
-        break;
-    }
-    case DIALOGUE_TOWNHALL_PAY_FINE:
-    {
-        if (window_SpeakInHouse->keyboard_input_status == WINDOW_INPUT_IN_PROGRESS) {
-            townHall_window.DrawTitleText(pFontArrus, 0, 146, colorTable.PaleCanary,
-                                          fmt::format("{}\n{}", localization->GetString(LSTR_PAY), localization->GetString(LSTR_HOW_MUCH)), 3);
-            townHall_window.DrawTitleText(pFontArrus, 0, 186, colorTable.White, keyboardInputHandler->GetTextInput(), 3);
-            townHall_window.DrawFlashingInputCursor(pFontArrus->GetLineWidth(keyboardInputHandler->GetTextInput()) / 2 + 80, 185, pFontArrus);
-            return;
-        } else if (window_SpeakInHouse->keyboard_input_status == WINDOW_INPUT_CONFIRMED) {
-            int sum = atoi(keyboardInputHandler->GetTextInput().c_str());
-            if (sum > 0) {
-                int party_gold = pParty->GetGold();
-                if (sum > party_gold) {
-                    PlayHouseSound(window_SpeakInHouse->wData.val, HouseSound_NotEnoughMoney);
-                    sum = party_gold;
-                }
-
-                if (sum > 0) {
-                    int required_sum = pParty->GetFine();
-                    if (sum > required_sum)
-                        sum = required_sum;
-
-                    pParty->TakeGold(sum);
-                    pParty->TakeFine(sum);
-                    if (pParty->hasActiveCharacter())
-                        pParty->activeCharacter().playReaction(SPEECH_BankDeposit);
-                }
-            }
-        }
-        window_SpeakInHouse->keyboard_input_status = WINDOW_INPUT_NONE;
-        pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 1, 0);
-        break;
-    }
-    default:
-        break;
-    }
-    return;
+    render->DrawTextureCustomHeight(8 / 640.0f, (352 - pTextHeight) / 480.0f, ui_leather_mm7, pTextHeight);
+    render->DrawTextureNew(8 / 640.0f, (347 - pTextHeight) / 480.0f, _591428_endcap);
+    window.DrawText(pOutString, {13, 354 - pTextHeight}, Color(), current_npc_text, 0, 0, Color());
 }
 
-static int RandomMonsterForHunting(HOUSE_ID townhall) {
+void GUIWindow_TownHall::payFineDialogue() {
+    GUIWindow townHall_window = *this;
+    townHall_window.uFrameX = SIDE_TEXT_BOX_POS_X;
+    townHall_window.uFrameWidth = SIDE_TEXT_BOX_WIDTH;
+    townHall_window.uFrameZ = SIDE_TEXT_BOX_POS_Z;
+
+    std::string fine_str = fmt::format("{}: {}", localization->GetString(LSTR_CURRENT_FINE), pParty->uFine);
+    townHall_window.DrawTitleText(pFontArrus, 0, 260, colorTable.PaleCanary, fine_str, 3);
+
+    if (keyboard_input_status == WINDOW_INPUT_IN_PROGRESS) {
+        townHall_window.DrawTitleText(pFontArrus, 0, 146, colorTable.PaleCanary,
+                                      fmt::format("{}\n{}", localization->GetString(LSTR_PAY), localization->GetString(LSTR_HOW_MUCH)), 3);
+        townHall_window.DrawTitleText(pFontArrus, 0, 186, colorTable.White, keyboardInputHandler->GetTextInput(), 3);
+        townHall_window.DrawFlashingInputCursor(pFontArrus->GetLineWidth(keyboardInputHandler->GetTextInput()) / 2 + 80, 185, pFontArrus);
+        return;
+    } else if (keyboard_input_status == WINDOW_INPUT_CONFIRMED) {
+        int sum = atoi(keyboardInputHandler->GetTextInput().c_str());
+        if (sum > 0) {
+            int party_gold = pParty->GetGold();
+            if (sum > party_gold) {
+                PlayHouseSound(wData.val, HouseSound_NotEnoughMoney);
+                sum = party_gold;
+            }
+
+            if (sum > 0) {
+                int required_sum = pParty->GetFine();
+                if (sum > required_sum)
+                    sum = required_sum;
+
+                pParty->TakeGold(sum);
+                pParty->TakeFine(sum);
+                if (pParty->hasActiveCharacter())
+                    pParty->activeCharacter().playReaction(SPEECH_BankDeposit);
+            }
+        }
+    }
+    keyboard_input_status = WINDOW_INPUT_NONE;
+    pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 1, 0);
+}
+
+void GUIWindow_TownHall::houseSpecificDialogue() {
+    switch (dialog_menu_id) {
+      case DIALOGUE_MAIN:
+        mainDialogue();
+        break;
+      case DIALOGUE_TOWNHALL_MESSAGE:
+        bountyHuntDialogue();
+        break;
+      case DIALOGUE_TOWNHALL_PAY_FINE:
+        payFineDialogue();
+        break;
+      default:
+        break;
+    }
+}
+
+void GUIWindow_TownHall::houseDialogueOptionSelected(DIALOGUE_TYPE option) {
+    if (option == DIALOGUE_TOWNHALL_MESSAGE) {
+        bountyHuntingDialogueOptionClicked();
+    } else if (option == DIALOGUE_TOWNHALL_PAY_FINE) {
+        keyboardInputHandler->StartTextInput(TextInputType::Number, 10, this);
+    }
+}
+
+int GUIWindow_TownHall::randomMonsterForHunting(HOUSE_ID townhall) {
     while (true) {
         int result = grng->random(258) + 1;
         switch (townhall) {
@@ -238,24 +248,23 @@ static int RandomMonsterForHunting(HOUSE_ID townhall) {
     }
 }
 
-void bountyHuntingDialogueOptionClicked() {
-    HOUSE_ID house = window_SpeakInHouse->houseId();
+void GUIWindow_TownHall::bountyHuntingDialogueOptionClicked() {
+    HOUSE_ID house = houseId();
 
     // Generate new bounty
     if (pParty->PartyTimes.bountyHuntNextGenTime[house] < pParty->GetPlayingTime()) {
         pParty->monster_for_hunting_killed[house] = false;
-        pParty->PartyTimes.bountyHuntNextGenTime[house] =
-            GameTime(0x12750000ll * (pParty->uCurrentMonth + 12ll * pParty->uCurrentYear - 14015ll) / 30ll);
-        pParty->monster_id_for_hunting[house] = RandomMonsterForHunting(house);
+        pParty->PartyTimes.bountyHuntNextGenTime[house] = GameTime::FromMonths(pParty->GetPlayingTime().GetMonths() + 1);
+        pParty->monster_id_for_hunting[house] = randomMonsterForHunting(house);
     }
 
-    bountyHunting_monsterId = pParty->monster_id_for_hunting[house];
+    _bountyHuntMonsterId = pParty->monster_id_for_hunting[house];
 
     if (!pParty->monster_for_hunting_killed[house]) {
         if (pParty->monster_id_for_hunting[house]) {
-            bountyHunting_text = pNPCTopics[351].pText; // "This month's bounty is on a %s..."
+            _bountyHuntText = pNPCTopics[351].pText; // "This month's bounty is on a %s..."
         } else {
-            bountyHunting_text = pNPCTopics[353].pText; // "Someone has already claimed the bounty this month..."
+            _bountyHuntText = pNPCTopics[353].pText; // "Someone has already claimed the bounty this month..."
         }
     } else {
         // Get prize
@@ -271,17 +280,15 @@ void bountyHuntingDialogueOptionClicked() {
             pParty->monster_for_hunting_killed[house] = false;
         }
 
-        bountyHunting_text = pNPCTopics[352].pText; // "Congratulations on defeating the %s! Here is the %lu gold reward..."
+        _bountyHuntText = pNPCTopics[352].pText; // "Congratulations on defeating the %s! Here is the %lu gold reward..."
     }
 }
 
-std::string bountyHuntingText() {
-    assert(bountyHunting_text);
-    assert(bountyHunting_monsterId != 0);
+std::string GUIWindow_TownHall::bountyHuntingText() {
+    assert(!_bountyHuntText.empty());
+    assert(_bountyHuntMonsterId != 0);
 
     // TODO(captainurist): what do we do with exceptions inside fmt?
-    return fmt::sprintf(bountyHunting_text,
-                        fmt::format("{::}{}{::}", colorTable.PaleCanary.tag(),
-                                    pMonsterStats->pInfos[bountyHunting_monsterId].pName, colorTable.White.tag()),
-                        100 * pMonsterStats->pInfos[bountyHunting_monsterId].uLevel);
+    std::string name = fmt::format("{::}{}{::}", colorTable.PaleCanary.tag(), pMonsterStats->pInfos[_bountyHuntMonsterId].pName, colorTable.White.tag());
+    return fmt::sprintf(_bountyHuntText, name, 100 * pMonsterStats->pInfos[_bountyHuntMonsterId].uLevel);
 }
