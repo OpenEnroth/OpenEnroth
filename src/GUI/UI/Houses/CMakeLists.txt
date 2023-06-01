@@ -9,7 +9,8 @@ set(GUI_UI_HOUSES_SOURCES
         Jail.cpp
         MagicGuild.cpp
         TownHall.cpp
-        MercenaryGuild.cpp)
+        MercenaryGuild.cpp
+        Shops.cpp)
 
 set(GUI_UI_HOUSES_HEADERS
         Tavern.h
@@ -20,7 +21,8 @@ set(GUI_UI_HOUSES_HEADERS
         Jail.h
         MagicGuild.h
         TownHall.h
-        MercenaryGuild.h)
+        MercenaryGuild.h
+        Shops.h)
 
 add_library(gui_ui_houses STATIC ${GUI_UI_HOUSES_SOURCES} ${GUI_UI_HOUSES_HEADERS})
 target_check_style(gui_ui_houses)

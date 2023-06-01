@@ -26,8 +26,8 @@
 #include "GUI/UI/Books/MapBook.h"
 #include "GUI/UI/UICharacter.h"
 #include "GUI/UI/UIPopup.h"
-#include "GUI/UI/UIShops.h"
 #include "GUI/UI/UIStatusBar.h"
+#include "GUI/UI/Houses/Shops.h"
 
 #include "Media/Audio/AudioPlayer.h"
 

@@ -3,7 +3,6 @@
 #include "GUI/UI/Houses/Tavern.h"
 
 #include "GUI/UI/UIStatusBar.h"
-#include "GUI/UI/UIShops.h"
 #include "GUI/GUIFont.h"
 #include "GUI/GUIButton.h"
 

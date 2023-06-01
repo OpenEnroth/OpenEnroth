@@ -4,7 +4,6 @@
 #include "GUI/UI/Houses/Transport.h"
 
 #include "GUI/UI/UIStatusBar.h"
-#include "GUI/UI/UIShops.h"
 #include "GUI/GUIFont.h"
 #include "GUI/GUIButton.h"
 
