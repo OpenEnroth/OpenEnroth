@@ -784,7 +784,7 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
                 }
                 if (!iequals(pText, "")) {
                     pWindow->DrawText(pFontSmallnum, {28, pTextHeight}, GetSpellColor(pTextColorID), pText, 0, 0, Color());
-                    pTextHeight = pTextHeight + *(char *)((int64_t)pFontSmallnum + 5) - 3;
+                    pTextHeight = pTextHeight + pFontSmallnum->GetHeight() - 3;
                 }
             }
         }
