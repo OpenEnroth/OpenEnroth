@@ -27,8 +27,9 @@ var searchData=
   ['trackbuffer_24',['TrackBuffer',['../structOpenALSoundProvider_1_1TrackBuffer.html',1,'OpenALSoundProvider']]],
   ['trailparticle_25',['TrailParticle',['../structTrailParticle.html',1,'']]],
   ['trailparticlegenerator_26',['TrailParticleGenerator',['../structTrailParticleGenerator.html',1,'']]],
-  ['trigtablelookup_27',['TrigTableLookup',['../classTrigTableLookup.html',1,'']]],
-  ['turnbased_5fqueueelem_28',['TurnBased_QueueElem',['../structTurnBased__QueueElem.html',1,'']]],
-  ['twodverts_29',['twodverts',['../structtwodverts.html',1,'']]],
-  ['typedhandler_30',['TypedHandler',['../classdetail_1_1TypedHandler.html',1,'detail']]]
+  ['transportinfo_27',['TransportInfo',['../structTransportInfo.html',1,'']]],
+  ['trigtablelookup_28',['TrigTableLookup',['../classTrigTableLookup.html',1,'']]],
+  ['turnbased_5fqueueelem_29',['TurnBased_QueueElem',['../structTurnBased__QueueElem.html',1,'']]],
+  ['twodverts_30',['twodverts',['../structtwodverts.html',1,'']]],
+  ['typedhandler_31',['TypedHandler',['../classdetail_1_1TypedHandler.html',1,'detail']]]
 ];

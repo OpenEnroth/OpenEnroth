@@ -69,5 +69,6 @@ var searchData=
   ['guiwindow_5ftownportalbook_66',['GUIWindow_TownPortalBook',['../structGUIWindow__TownPortalBook.html',1,'']]],
   ['guiwindow_5ftraining_67',['GUIWindow_Training',['../classGUIWindow__Training.html',1,'']]],
   ['guiwindow_5ftransition_68',['GUIWindow_Transition',['../classGUIWindow__Transition.html',1,'']]],
-  ['guiwindow_5ftravel_69',['GUIWindow_Travel',['../classGUIWindow__Travel.html',1,'']]]
+  ['guiwindow_5ftransport_69',['GUIWindow_Transport',['../classGUIWindow__Transport.html',1,'']]],
+  ['guiwindow_5ftravel_70',['GUIWindow_Travel',['../classGUIWindow__Travel.html',1,'']]]
 ];

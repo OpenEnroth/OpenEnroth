@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;7b96281</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;62f6d4c</span>
    </div>
   </td>
  </tr>
@@ -74,12 +74,14 @@ $(function() {
 </div><!-- top -->
 <div class="header">
   <div class="summary">
+<a href="#nested-classes">Classes</a> &#124;
 <a href="#func-members">Functions</a> &#124;
 <a href="#var-members">Variables</a>  </div>
   <div class="headertitle"><div class="title">Transport.cpp File Reference</div></div>
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><code>#include &lt;string&gt;</code><br />
+<code>#include &lt;array&gt;</code><br />
 <code>#include &quot;<a class="el" href="Transport_8h.html">GUI/UI/Houses/Transport.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="UIStatusBar_8h.html">GUI/UI/UIStatusBar.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="UIShops_8h.html">GUI/UI/UIShops.h</a>&quot;</code><br />
@@ -89,80 +91,37 @@ $(function() {
 <code>#include &quot;<a class="el" href="SaveLoad_8h.html">Engine/SaveLoad.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="PriceCalculator_8h.html">Engine/PriceCalculator.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Camera_8h.html">Engine/Graphics/Camera.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="IndexedArray_8h.html">Utility/IndexedArray.h</a>&quot;</code><br />
 </div><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
+Classes</h2></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structTransportInfo.html">TransportInfo</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:a34fb0d2c92f963a57d7568e4293a5a20"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Transport_8cpp.html#a34fb0d2c92f963a57d7568e4293a5a20">GetTravelTimeTransportDays</a> (int schedule_id)</td></tr>
-<tr class="memdesc:a34fb0d2c92f963a57d7568e4293a5a20"><td class="mdescLeft">&#160;</td><td class="mdescRight">New function.  <a href="Transport_8cpp.html#a34fb0d2c92f963a57d7568e4293a5a20">More...</a><br /></td></tr>
-<tr class="separator:a34fb0d2c92f963a57d7568e4293a5a20"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a051a9386ff5f507d34162a116de3f434"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Transport_8cpp.html#a051a9386ff5f507d34162a116de3f434">TravelByTransport</a> ()</td></tr>
-<tr class="separator:a051a9386ff5f507d34162a116de3f434"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afe12e4594f668c5e407da94cc554cad4"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Transport_8cpp.html#afe12e4594f668c5e407da94cc554cad4">IsTravelAvailable</a> (int a1)</td></tr>
-<tr class="separator:afe12e4594f668c5e407da94cc554cad4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4d3a13dadbbc77693868553a8d948f43"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Transport_8cpp.html#a4d3a13dadbbc77693868553a8d948f43">isTravelAvailable</a> (<a class="el" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405f">HOUSE_ID</a> houseId)</td></tr>
+<tr class="separator:a4d3a13dadbbc77693868553a8d948f43"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="var-members" name="var-members"></a>
 Variables</h2></td></tr>
-<tr class="memitem:a2cd5d5ef179c8f6d6cfd4b34c3b2e3f2"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structstru365__travel__info.html">stru365_travel_info</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Transport_8cpp.html#a2cd5d5ef179c8f6d6cfd4b34c3b2e3f2">transport_schedule</a> [35]</td></tr>
-<tr class="separator:a2cd5d5ef179c8f6d6cfd4b34c3b2e3f2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aebed320a56be394803b62089be2c78fa"><td class="memItemLeft" align="right" valign="top">unsigned char&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Transport_8cpp.html#aebed320a56be394803b62089be2c78fa">transport_routes</a> [20][4]</td></tr>
-<tr class="separator:aebed320a56be394803b62089be2c78fa"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6c83b68161d355cdaa866c5ddd703fa0"><td class="memItemLeft" align="right" valign="top">std::array&lt; <a class="el" href="structTransportInfo.html">TransportInfo</a>, 35 &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Transport_8cpp.html#a6c83b68161d355cdaa866c5ddd703fa0">transportSchedule</a></td></tr>
+<tr class="separator:a6c83b68161d355cdaa866c5ddd703fa0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad27526ae9a264be710c4bbf97251d67b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classIndexedArray.html">IndexedArray</a>&lt; std::array&lt; unsigned char, 4 &gt;, <a class="el" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fae767bcf04c56a27f00379f22d9ae0815">HOUSE_FIRST_TRANSPORT</a>, <a class="el" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fa57b316d9d52a8f45a209dd79f30378e2">HOUSE_LAST_TRANSPORT</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Transport_8cpp.html#ad27526ae9a264be710c4bbf97251d67b">transportRoutes</a></td></tr>
+<tr class="separator:ad27526ae9a264be710c4bbf97251d67b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Function Documentation</h2>
-<a id="a34fb0d2c92f963a57d7568e4293a5a20" name="a34fb0d2c92f963a57d7568e4293a5a20"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a34fb0d2c92f963a57d7568e4293a5a20">&#9670;&#160;</a></span>GetTravelTimeTransportDays()</h2>
+<a id="a4d3a13dadbbc77693868553a8d948f43" name="a4d3a13dadbbc77693868553a8d948f43"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4d3a13dadbbc77693868553a8d948f43">&#9670;&#160;</a></span>isTravelAvailable()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">int GetTravelTimeTransportDays </td>
+          <td class="memname">bool isTravelAvailable </td>
           <td>(</td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>schedule_id</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>New function. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">schedule_id</td><td>Index to transport_schedule.</td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>Number of days travel by transport will take with hireling modifiers. </dd></dl>
-
-</div>
-</div>
-<a id="afe12e4594f668c5e407da94cc554cad4" name="afe12e4594f668c5e407da94cc554cad4"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#afe12e4594f668c5e407da94cc554cad4">&#9670;&#160;</a></span>IsTravelAvailable()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">bool IsTravelAvailable </td>
-          <td>(</td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>a1</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a051a9386ff5f507d34162a116de3f434" name="a051a9386ff5f507d34162a116de3f434"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a051a9386ff5f507d34162a116de3f434">&#9670;&#160;</a></span>TravelByTransport()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void TravelByTransport </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
+          <td class="paramtype"><a class="el" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405f">HOUSE_ID</a>&#160;</td>
+          <td class="paramname"><em>houseId</em></td><td>)</td>
           <td></td>
         </tr>
       </table>
@@ -171,50 +130,70 @@ Variables</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Variable Documentation</h2>
-<a id="aebed320a56be394803b62089be2c78fa" name="aebed320a56be394803b62089be2c78fa"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aebed320a56be394803b62089be2c78fa">&#9670;&#160;</a></span>transport_routes</h2>
+<a id="ad27526ae9a264be710c4bbf97251d67b" name="ad27526ae9a264be710c4bbf97251d67b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad27526ae9a264be710c4bbf97251d67b">&#9670;&#160;</a></span>transportRoutes</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">unsigned char transport_routes[20][4]</td>
+          <td class="memname"><a class="el" href="classIndexedArray.html">IndexedArray</a>&lt;std::array&lt;unsigned char, 4&gt;, <a class="el" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fae767bcf04c56a27f00379f22d9ae0815">HOUSE_FIRST_TRANSPORT</a>, <a class="el" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fa57b316d9d52a8f45a209dd79f30378e2">HOUSE_LAST_TRANSPORT</a>&gt; transportRoutes</td>
         </tr>
       </table>
 </div><div class="memdoc">
 <b>Initial value:</b><div class="fragment"><div class="line">= {</div>
-<div class="line">    { 0, 1, 1, 34 },         </div>
-<div class="line">    { 2, 3, 4, 5 },          </div>
-<div class="line">    { 6, 7, 8, 8 },          </div>
-<div class="line">    { 9, 10, 10, 10 },       </div>
-<div class="line">    { 11, 11, 12, 12 },      </div>
-<div class="line">    { 13, 13, 13, 13 },      </div>
-<div class="line">    { 14, 14, 15, 15 },      </div>
-<div class="line">    { 255, 255, 255, 255 },  </div>
-<div class="line">    { 255, 255, 255, 255 },  </div>
-<div class="line">    { 255, 255, 255, 255 },  </div>
-<div class="line">    { 16, 17, 18, 19 },      </div>
-<div class="line">    { 18, 20, 21, 21 },      </div>
-<div class="line">    { 22, 23, 24, 25 },      </div>
-<div class="line">    { 22, 22, 23, 23 },      </div>
-<div class="line">    { 255, 255, 255, 255 },  </div>
-<div class="line">    { 27, 28, 29, 30 },      </div>
-<div class="line">    { 31, 32, 33, 33 },      </div>
-<div class="line">    { 24, 24, 24, 24 },      </div>
-<div class="line">    { 255, 255, 255, 255 },  </div>
-<div class="line">    { 255, 255, 255, 255 }   </div>
+<div class="line">    {<a class="code hl_enumvalue" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fa54fb2056ca292a3635f28d643fb66a41">HOUSE_STABLES_HARMONDALE</a>,      { 0, 1, 1, 34 }},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fab23c97d64721e12368fe95df1290acf9">HOUSE_STABLES_STEADWICK</a>,       { 2, 3, 4, 5 }},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fa7fbefdd211c350bc003441182bca3e31">HOUSE_STABLES_TULAREAN_FOREST</a>, { 6, 7, 8, 8 }},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fa8f1a555a7b498a1931d3f76b163d9e5e">HOUSE_STABLES_DEYJA</a>,           { 9, 10, 10, 10 }},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405face1c8c73e60154c77e0db22089c2507e">HOUSE_STABLES_BRACADA_DESERT</a>,  { 11, 11, 12, 12 }},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405faa2e0aa4129a8de37ced32fecde66121c">HOUSE_STABLES_TATALIA</a>,         { 13, 13, 13, 13 }},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fa455c26eef2f1c4feac4b59de5d69a4ee">HOUSE_STABLES_AVLEE</a>,           { 14, 14, 15, 15 }},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fa8c7d6cb64ef12999d1ce29375ce9a20b">HOUSE_STABLES_61</a>,              { 255, 255, 255, 255 }},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fab56a4bd866a24f9cb82cb354d35b1443">HOUSE_STABLES_62</a>,              { 255, 255, 255, 255 }},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fa087681939391134119cad2f51a216bc7">HOUSE_BOATS_EMERALD_ISLE</a>,      { 255, 255, 255, 255 }},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fa9dd652f0ad10b32ec5b6ef782d395504">HOUSE_BOATS_ERATHIA</a>,           { 16, 17, 18, 19 }},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fa812e6bccaf42f823eb5d509a76cbc60b">HOUSE_BOATS_TULAREAN_FOREST</a>,   { 18, 20, 21, 21 }},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fadc5c282c916698c72983449be050427b">HOUSE_BOATS_BRACADA_DESERT</a>,    { 22, 23, 24, 25 }},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405facaee9cc2072e7c4a346f5d823c9a3439">HOUSE_BOATS_EVENMORN_ISLAND</a>,   { 22, 22, 23, 23 }},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fa20d32b065989d7442adf1663d0112777">HOUSE_BOATS_PIT</a>,               { 255, 255, 255, 255 }},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fadd879d25c841621ee1176bfbff522895">HOUSE_BOATS_TATALIA</a>,           { 27, 28, 29, 30 }},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fa5657c16474829d5357a1c0acc2b18c0c">HOUSE_BOATS_AVLEE</a>,             { 31, 32, 33, 33 }},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fa1f7d74262e4be50a2a697a10b3b93d69">HOUSE_BOATS_CELESTE</a>,           { 24, 24, 24, 24 }},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405faa67aa2d3b2b7312cce4bbc410274000b">HOUSE_BOATS_72</a>,                { 255, 255, 255, 255 }},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fae13b419910f0b2fe35315bf928cfaeb1">HOUSE_BOATS_73</a>,                { 255, 255, 255, 255 }}</div>
 <div class="line">}</div>
+<div class="ttc" id="aUIHouseEnums_8h_html_aaee3335261c70d04921051c52287405fa087681939391134119cad2f51a216bc7"><div class="ttname"><a href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fa087681939391134119cad2f51a216bc7">HOUSE_BOATS_EMERALD_ISLE</a></div><div class="ttdeci">@ HOUSE_BOATS_EMERALD_ISLE</div><div class="ttdef"><b>Definition:</b> UIHouseEnums.h:27</div></div>
+<div class="ttc" id="aUIHouseEnums_8h_html_aaee3335261c70d04921051c52287405fa1f7d74262e4be50a2a697a10b3b93d69"><div class="ttname"><a href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fa1f7d74262e4be50a2a697a10b3b93d69">HOUSE_BOATS_CELESTE</a></div><div class="ttdeci">@ HOUSE_BOATS_CELESTE</div><div class="ttdef"><b>Definition:</b> UIHouseEnums.h:35</div></div>
+<div class="ttc" id="aUIHouseEnums_8h_html_aaee3335261c70d04921051c52287405fa20d32b065989d7442adf1663d0112777"><div class="ttname"><a href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fa20d32b065989d7442adf1663d0112777">HOUSE_BOATS_PIT</a></div><div class="ttdeci">@ HOUSE_BOATS_PIT</div><div class="ttdef"><b>Definition:</b> UIHouseEnums.h:32</div></div>
+<div class="ttc" id="aUIHouseEnums_8h_html_aaee3335261c70d04921051c52287405fa455c26eef2f1c4feac4b59de5d69a4ee"><div class="ttname"><a href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fa455c26eef2f1c4feac4b59de5d69a4ee">HOUSE_STABLES_AVLEE</a></div><div class="ttdeci">@ HOUSE_STABLES_AVLEE</div><div class="ttdef"><b>Definition:</b> UIHouseEnums.h:24</div></div>
+<div class="ttc" id="aUIHouseEnums_8h_html_aaee3335261c70d04921051c52287405fa54fb2056ca292a3635f28d643fb66a41"><div class="ttname"><a href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fa54fb2056ca292a3635f28d643fb66a41">HOUSE_STABLES_HARMONDALE</a></div><div class="ttdeci">@ HOUSE_STABLES_HARMONDALE</div><div class="ttdef"><b>Definition:</b> UIHouseEnums.h:18</div></div>
+<div class="ttc" id="aUIHouseEnums_8h_html_aaee3335261c70d04921051c52287405fa5657c16474829d5357a1c0acc2b18c0c"><div class="ttname"><a href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fa5657c16474829d5357a1c0acc2b18c0c">HOUSE_BOATS_AVLEE</a></div><div class="ttdeci">@ HOUSE_BOATS_AVLEE</div><div class="ttdef"><b>Definition:</b> UIHouseEnums.h:34</div></div>
+<div class="ttc" id="aUIHouseEnums_8h_html_aaee3335261c70d04921051c52287405fa7fbefdd211c350bc003441182bca3e31"><div class="ttname"><a href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fa7fbefdd211c350bc003441182bca3e31">HOUSE_STABLES_TULAREAN_FOREST</a></div><div class="ttdeci">@ HOUSE_STABLES_TULAREAN_FOREST</div><div class="ttdef"><b>Definition:</b> UIHouseEnums.h:20</div></div>
+<div class="ttc" id="aUIHouseEnums_8h_html_aaee3335261c70d04921051c52287405fa812e6bccaf42f823eb5d509a76cbc60b"><div class="ttname"><a href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fa812e6bccaf42f823eb5d509a76cbc60b">HOUSE_BOATS_TULAREAN_FOREST</a></div><div class="ttdeci">@ HOUSE_BOATS_TULAREAN_FOREST</div><div class="ttdef"><b>Definition:</b> UIHouseEnums.h:29</div></div>
+<div class="ttc" id="aUIHouseEnums_8h_html_aaee3335261c70d04921051c52287405fa8c7d6cb64ef12999d1ce29375ce9a20b"><div class="ttname"><a href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fa8c7d6cb64ef12999d1ce29375ce9a20b">HOUSE_STABLES_61</a></div><div class="ttdeci">@ HOUSE_STABLES_61</div><div class="ttdef"><b>Definition:</b> UIHouseEnums.h:25</div></div>
+<div class="ttc" id="aUIHouseEnums_8h_html_aaee3335261c70d04921051c52287405fa8f1a555a7b498a1931d3f76b163d9e5e"><div class="ttname"><a href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fa8f1a555a7b498a1931d3f76b163d9e5e">HOUSE_STABLES_DEYJA</a></div><div class="ttdeci">@ HOUSE_STABLES_DEYJA</div><div class="ttdef"><b>Definition:</b> UIHouseEnums.h:21</div></div>
+<div class="ttc" id="aUIHouseEnums_8h_html_aaee3335261c70d04921051c52287405fa9dd652f0ad10b32ec5b6ef782d395504"><div class="ttname"><a href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fa9dd652f0ad10b32ec5b6ef782d395504">HOUSE_BOATS_ERATHIA</a></div><div class="ttdeci">@ HOUSE_BOATS_ERATHIA</div><div class="ttdef"><b>Definition:</b> UIHouseEnums.h:28</div></div>
+<div class="ttc" id="aUIHouseEnums_8h_html_aaee3335261c70d04921051c52287405faa2e0aa4129a8de37ced32fecde66121c"><div class="ttname"><a href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405faa2e0aa4129a8de37ced32fecde66121c">HOUSE_STABLES_TATALIA</a></div><div class="ttdeci">@ HOUSE_STABLES_TATALIA</div><div class="ttdef"><b>Definition:</b> UIHouseEnums.h:23</div></div>
+<div class="ttc" id="aUIHouseEnums_8h_html_aaee3335261c70d04921051c52287405faa67aa2d3b2b7312cce4bbc410274000b"><div class="ttname"><a href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405faa67aa2d3b2b7312cce4bbc410274000b">HOUSE_BOATS_72</a></div><div class="ttdeci">@ HOUSE_BOATS_72</div><div class="ttdef"><b>Definition:</b> UIHouseEnums.h:36</div></div>
+<div class="ttc" id="aUIHouseEnums_8h_html_aaee3335261c70d04921051c52287405fab23c97d64721e12368fe95df1290acf9"><div class="ttname"><a href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fab23c97d64721e12368fe95df1290acf9">HOUSE_STABLES_STEADWICK</a></div><div class="ttdeci">@ HOUSE_STABLES_STEADWICK</div><div class="ttdef"><b>Definition:</b> UIHouseEnums.h:19</div></div>
+<div class="ttc" id="aUIHouseEnums_8h_html_aaee3335261c70d04921051c52287405fab56a4bd866a24f9cb82cb354d35b1443"><div class="ttname"><a href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fab56a4bd866a24f9cb82cb354d35b1443">HOUSE_STABLES_62</a></div><div class="ttdeci">@ HOUSE_STABLES_62</div><div class="ttdef"><b>Definition:</b> UIHouseEnums.h:26</div></div>
+<div class="ttc" id="aUIHouseEnums_8h_html_aaee3335261c70d04921051c52287405facaee9cc2072e7c4a346f5d823c9a3439"><div class="ttname"><a href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405facaee9cc2072e7c4a346f5d823c9a3439">HOUSE_BOATS_EVENMORN_ISLAND</a></div><div class="ttdeci">@ HOUSE_BOATS_EVENMORN_ISLAND</div><div class="ttdef"><b>Definition:</b> UIHouseEnums.h:31</div></div>
+<div class="ttc" id="aUIHouseEnums_8h_html_aaee3335261c70d04921051c52287405face1c8c73e60154c77e0db22089c2507e"><div class="ttname"><a href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405face1c8c73e60154c77e0db22089c2507e">HOUSE_STABLES_BRACADA_DESERT</a></div><div class="ttdeci">@ HOUSE_STABLES_BRACADA_DESERT</div><div class="ttdef"><b>Definition:</b> UIHouseEnums.h:22</div></div>
+<div class="ttc" id="aUIHouseEnums_8h_html_aaee3335261c70d04921051c52287405fadc5c282c916698c72983449be050427b"><div class="ttname"><a href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fadc5c282c916698c72983449be050427b">HOUSE_BOATS_BRACADA_DESERT</a></div><div class="ttdeci">@ HOUSE_BOATS_BRACADA_DESERT</div><div class="ttdef"><b>Definition:</b> UIHouseEnums.h:30</div></div>
+<div class="ttc" id="aUIHouseEnums_8h_html_aaee3335261c70d04921051c52287405fadd879d25c841621ee1176bfbff522895"><div class="ttname"><a href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fadd879d25c841621ee1176bfbff522895">HOUSE_BOATS_TATALIA</a></div><div class="ttdeci">@ HOUSE_BOATS_TATALIA</div><div class="ttdef"><b>Definition:</b> UIHouseEnums.h:33</div></div>
+<div class="ttc" id="aUIHouseEnums_8h_html_aaee3335261c70d04921051c52287405fae13b419910f0b2fe35315bf928cfaeb1"><div class="ttname"><a href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fae13b419910f0b2fe35315bf928cfaeb1">HOUSE_BOATS_73</a></div><div class="ttdeci">@ HOUSE_BOATS_73</div><div class="ttdef"><b>Definition:</b> UIHouseEnums.h:37</div></div>
 </div><!-- fragment -->
 </div>
 </div>
-<a id="a2cd5d5ef179c8f6d6cfd4b34c3b2e3f2" name="a2cd5d5ef179c8f6d6cfd4b34c3b2e3f2"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a2cd5d5ef179c8f6d6cfd4b34c3b2e3f2">&#9670;&#160;</a></span>transport_schedule</h2>
+<a id="a6c83b68161d355cdaa866c5ddd703fa0" name="a6c83b68161d355cdaa866c5ddd703fa0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6c83b68161d355cdaa866c5ddd703fa0">&#9670;&#160;</a></span>transportSchedule</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="structstru365__travel__info.html">stru365_travel_info</a> transport_schedule[35]</td>
+          <td class="memname">std::array&lt;<a class="el" href="structTransportInfo.html">TransportInfo</a>, 35&gt; transportSchedule</td>
         </tr>
       </table>
 </div><div class="memdoc">
