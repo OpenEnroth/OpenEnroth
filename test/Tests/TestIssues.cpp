@@ -975,7 +975,7 @@ GAME_TEST(Issues, Issue783) {
 
         // And all buffs should expire way in the future.
         for (PLAYER_BUFFS buff : allPotionBuffs())
-            EXPECT_GT(pParty->pPlayers[0].pPlayerBuffs[buff].expireTime, startTime + GameTime::FromHours(10));
+            EXPECT_GT(pParty->pPlayers[0].pPlayerBuffs[buff].GetExpireTime(), startTime + GameTime::FromHours(10));
     });
 
     GameTime endTime = pParty->GetPlayingTime();

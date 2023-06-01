@@ -1303,7 +1303,7 @@ static void drawBuffPopupWindow() {
     stringCount = 0;
     for (int i = 0; i < pParty->pPartyBuffs.size(); i++) {
         if (pParty->pPartyBuffs[i].Active()) {
-            GameTime remaingTime = pParty->pPartyBuffs[i].expireTime - pParty->GetPlayingTime();
+            GameTime remaingTime = pParty->pPartyBuffs[i].GetExpireTime() - pParty->GetPlayingTime();
             int yPos = stringCount * pFontComic->GetHeight() + 40;
             popupWindow.DrawText(pFontComic, {52, yPos}, spellTooltipColors[i], localization->GetSpellName(i), 0, 0, Color());
             DrawBuff_remaining_time_string(yPos, &popupWindow, remaingTime, pFontComic);

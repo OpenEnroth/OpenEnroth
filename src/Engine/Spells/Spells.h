@@ -36,6 +36,7 @@ struct SpellBuff {
      */
     bool Active() const { return this->expireTime.value > 0; }
     bool Expired() const { return this->expireTime.value < 0; }
+    GameTime &GetExpireTime() { return this->expireTime; }
 
     GameTime expireTime;
     uint16_t power = 0; // Spell power, semantics are spell-specific.
