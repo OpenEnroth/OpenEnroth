@@ -30,6 +30,8 @@ using Io::InputAction;
 static char PlatformKeyToChar(PlatformKey key, PlatformModifiers mods) {
     if (key >= PlatformKey::Digit0 && key <= PlatformKey::Digit9) {
         return std::to_underlying(key) - std::to_underlying(PlatformKey::Digit0) + '0';
+    } else if (key >= PlatformKey::Numpad0 && key <= PlatformKey::Numpad9 && (mods & MOD_NUM)) {
+        return std::to_underlying(key) - std::to_underlying(PlatformKey::Numpad0) + '0';
     } else if (key >= PlatformKey::A && key <= PlatformKey::Z) {
         if (mods & MOD_SHIFT) {
             return std::to_underlying(key) - std::to_underlying(PlatformKey::A) + 'A';
