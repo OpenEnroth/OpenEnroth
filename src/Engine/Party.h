@@ -170,7 +170,7 @@ struct PartyTimeStruct {
     IndexedArray<GameTime, HOUSE_FIRST_TOWNHALL, HOUSE_LAST_TOWNHALL> bountyHuntNextGenTime; // Size was 10 originally.
     IndexedArray<GameTime, HOUSE_FIRST_SHOP, HOUSE_LAST_SHOP> shopNextRefreshTime;
     IndexedArray<GameTime, HOUSE_FIRST_MAGIC_GUILD, HOUSE_LAST_MAGIC_GUILD> guildNextRefreshTime;
-    std::array<GameTime, 53> _shop_ban_times;
+    IndexedArray<GameTime, HOUSE_FIRST_SHOP, HOUSE_LAST_SHOP> shopBanTimes;
     std::array<GameTime, 10> CounterEventValues;  // (0xACD314h in Silvo's binary)
     std::array<GameTime, 29> HistoryEventTimes;  // (0xACD364h in Silvo's binary)
     std::array<GameTime, 20> _s_times;  // 5d8 440h+8*51     //(0xACD44Ch in Silvo's binary)
@@ -489,8 +489,8 @@ struct Party {
     std::array<NPCData, 2> pHirelings;
     ItemGen pPickedItem;
     unsigned int uFlags;
-    std::array<std::array<ItemGen, 12>, 53> StandartItemsInShops;
-    std::array<std::array<ItemGen, 12>, 53> SpecialItemsInShops;  // D0EC
+    IndexedArray<std::array<ItemGen, 12>, HOUSE_FIRST_SHOP, HOUSE_LAST_SHOP> standartItemsInShops;
+    IndexedArray<std::array<ItemGen, 12>, HOUSE_FIRST_SHOP, HOUSE_LAST_SHOP> specialItemsInShops;
     IndexedArray<std::array<ItemGen, 12>, HOUSE_FIRST_MAGIC_GUILD, HOUSE_LAST_MAGIC_GUILD> spellBooksInGuilds;
     std::array<char, 24> field_1605C_set0_unused;
     std::string pHireling1Name;
