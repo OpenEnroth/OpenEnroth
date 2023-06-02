@@ -2685,8 +2685,10 @@ void Actor::UpdateActorAI() {
                 pActor->pActorBuffs[i].IsBuffExpiredToTime(pParty->GetPlayingTime());
 
         // If shrink expired: reset height
-        if (pActor->pActorBuffs[ACTOR_BUFF_SHRINK].Expired())
+        if (pActor->pActorBuffs[ACTOR_BUFF_SHRINK].Expired()) {
             pActor->uActorHeight = pMonsterList->pMonsters[pActor->pMonsterInfo.uID - 1].uMonsterHeight;
+            pActor->pActorBuffs[ACTOR_BUFF_SHRINK].Reset();
+        }
 
         // If Charm still active: make actor friendly
         if (pActor->pActorBuffs[ACTOR_BUFF_CHARM].Active()) {
@@ -2694,6 +2696,7 @@ void Actor::UpdateActorAI() {
         } else if (pActor->pActorBuffs[ACTOR_BUFF_CHARM].Expired()) {
           // Else: reset hostilty
           pActor->pMonsterInfo.uHostilityType = pMonsterStats->pInfos[pActor->pMonsterInfo.uID].uHostilityType;
+          pActor->pActorBuffs[ACTOR_BUFF_CHARM].Reset();
         }
 
         // If actor Paralyzed or Stoned: skip
@@ -2759,13 +2762,16 @@ void Actor::UpdateActorAI() {
             if (i != ACTOR_BUFF_MASS_DISTORTION)
                 pActor->pActorBuffs[i].IsBuffExpiredToTime(pParty->GetPlayingTime());
 
-        if (pActor->pActorBuffs[ACTOR_BUFF_SHRINK].Expired())
+        if (pActor->pActorBuffs[ACTOR_BUFF_SHRINK].Expired()) {
             pActor->uActorHeight = pMonsterList->pMonsters[pActor->pMonsterInfo.uID - 1].uMonsterHeight;
+            pActor->pActorBuffs[ACTOR_BUFF_SHRINK].Reset();
+        }
 
         if (pActor->pActorBuffs[ACTOR_BUFF_CHARM].Active()) {
             pActor->pMonsterInfo.uHostilityType = MonsterInfo::Hostility_Friendly;
         } else if (pActor->pActorBuffs[ACTOR_BUFF_CHARM].Expired()) {
             pActor->pMonsterInfo.uHostilityType = pMonsterStats->pInfos[pActor->pMonsterInfo.uID].uHostilityType;
+            pActor->pActorBuffs[ACTOR_BUFF_CHARM].Reset();
         }
 
         // If actor is summoned and buff expired: continue and set state to
@@ -3908,25 +3914,25 @@ bool Actor::_427102_IsOkToCastSpell(SPELL_TYPE spell) {
         }
 
         case SPELL_LIGHT_DAY_OF_PROTECTION:
-            return this->pActorBuffs[ACTOR_BUFF_DAY_OF_PROTECTION].Expired();
+            return this->pActorBuffs[ACTOR_BUFF_DAY_OF_PROTECTION].Inactive();
         case SPELL_LIGHT_HOUR_OF_POWER:
-            return this->pActorBuffs[ACTOR_BUFF_HOUR_OF_POWER].Expired();
+            return this->pActorBuffs[ACTOR_BUFF_HOUR_OF_POWER].Inactive();
         case SPELL_DARK_PAIN_REFLECTION:
-            return this->pActorBuffs[ACTOR_BUFF_PAIN_REFLECTION].Expired();
+            return this->pActorBuffs[ACTOR_BUFF_PAIN_REFLECTION].Inactive();
         case SPELL_BODY_HAMMERHANDS:
-            return this->pActorBuffs[ACTOR_BUFF_HAMMERHANDS].Expired();
+            return this->pActorBuffs[ACTOR_BUFF_HAMMERHANDS].Inactive();
         case SPELL_FIRE_HASTE:
-            return this->pActorBuffs[ACTOR_BUFF_HASTE].Expired();
+            return this->pActorBuffs[ACTOR_BUFF_HASTE].Inactive();
         case SPELL_AIR_SHIELD:
-            return this->pActorBuffs[ACTOR_BUFF_SHIELD].Expired();
+            return this->pActorBuffs[ACTOR_BUFF_SHIELD].Inactive();
         case SPELL_EARTH_STONESKIN:
-            return this->pActorBuffs[ACTOR_BUFF_STONESKIN].Expired();
+            return this->pActorBuffs[ACTOR_BUFF_STONESKIN].Inactive();
         case SPELL_SPIRIT_BLESS:
-            return this->pActorBuffs[ACTOR_BUFF_BLESS].Expired();
+            return this->pActorBuffs[ACTOR_BUFF_BLESS].Inactive();
         case SPELL_SPIRIT_FATE:
-            return this->pActorBuffs[ACTOR_BUFF_FATE].Expired();
+            return this->pActorBuffs[ACTOR_BUFF_FATE].Inactive();
         case SPELL_SPIRIT_HEROISM:
-            return this->pActorBuffs[ACTOR_BUFF_HEROISM].Expired();
+            return this->pActorBuffs[ACTOR_BUFF_HEROISM].Inactive();
         default:
             return true;
     }

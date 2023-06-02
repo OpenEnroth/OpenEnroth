@@ -342,9 +342,8 @@ void AudioPlayer::playSound(SoundID eSoundID, int pid, unsigned int uNumRepeats,
             }
 
             default: {
-                // TODO(pskelton): temp fix to reduce instances of sounds not playing
                 result = _regularSoundPool.playNew(sample, si.dataSource);
-                logger->verbose("Unexpected object type from PID in playSound");
+                logger->warning("Unexpected object type from PID in playSound");
                 break;
             }
         }

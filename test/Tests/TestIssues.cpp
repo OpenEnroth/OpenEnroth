@@ -975,7 +975,7 @@ GAME_TEST(Issues, Issue783) {
 
         // And all buffs should expire way in the future.
         for (PLAYER_BUFFS buff : allPotionBuffs())
-            EXPECT_GT(pParty->pPlayers[0].pPlayerBuffs[buff].expireTime, startTime + GameTime::FromHours(10));
+            EXPECT_GT(pParty->pPlayers[0].pPlayerBuffs[buff].GetExpireTime(), startTime + GameTime::FromHours(10));
     });
 
     GameTime endTime = pParty->GetPlayingTime();
@@ -1118,4 +1118,13 @@ GAME_TEST(Issues, Issue895) {
     test->playTraceFromTestData("issue_895.mm7", "issue_895.json", [&]() { timeBefore = pParty->GetPlayingTime(); });
     timeDiff = pParty->GetPlayingTime() - timeBefore;
     EXPECT_LT(timeDiff, GameTime::FromMinutes(5));
+}
+
+// 900
+
+GAME_TEST(Issues, Issue906) {
+    // Issue with some use of Spellbuff Expired() - check actors cast buffs
+    test->playTraceFromTestData("issue_906.mm7", "issue_906.json");
+    EXPECT_TRUE(pActors[2].pActorBuffs[ACTOR_BUFF_BLESS].Active());
+    EXPECT_TRUE(pActors[2].pActorBuffs[ACTOR_BUFF_HEROISM].Active());
 }

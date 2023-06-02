@@ -309,7 +309,6 @@ void GUIWindow_PartyCreation::Update() {
     // move sky
     render->BeginScene2D();
     render->DrawTextureNew(0, 0, main_menu_background);
-    // TODO(pskelton): check tickcount usage here
     int sky_slider_anim_timer = (platform->tickCount() % ((int)oldDims.w * 20)) / 20;
     render->DrawTextureNew(sky_slider_anim_timer / oldDims.w, 2 / oldDims.h, ui_partycreation_sky_scroller);
     render->DrawTextureNew((sky_slider_anim_timer - (int)oldDims.w) / oldDims.w, 2 / oldDims.h, ui_partycreation_sky_scroller);
@@ -818,7 +817,8 @@ bool PartyCreationUI_LoopInternal() {
     for (uint i = 0; i < 4; ++i) {
         if (pParty->pPlayers[i].classType == PLAYER_CLASS_KNIGHT)
             pParty->pPlayers[i].sResMagicBase = 10;
-        pParty->pPlayers[i].pPlayerBuffs[22].expireTime.Reset();
+        // TODO(pskelton): why just 22?
+        pParty->pPlayers[i].pPlayerBuffs[22].Reset();
         int page = 0;
         for (PLAYER_SKILL_TYPE j : MagicSkills()) {
             if (pParty->pPlayers[i].pActiveSkills[j]) {

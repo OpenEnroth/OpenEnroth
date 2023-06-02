@@ -542,12 +542,7 @@ void GameUI_DrawItemInfo(struct ItemGen *inspect_item) {
 }
 
 void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
-    bool monster_full_informations = false;
     static Actor pMonsterInfoUI_Doll;
-    // TODO(pskelton): check this behaviour
-    if (!pParty->hasActiveCharacter()) {
-        pParty->setActiveToFirstCanAct();
-    }
 
     int Popup_Y_Offset = monster_popup_y_offsets[(pActors[uActorID].pMonsterInfo.uID - 1) / 3] - 40;
 
@@ -610,6 +605,7 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
         // Draw portrait
         render->DrawMonsterPortrait(doll_rect, Portrait_Sprite, Popup_Y_Offset);
     }
+    pMonsterInfoUI_Doll.uCurrentActionTime += pMiscTimer->uTimeElapsed;
 
     // Draw name and profession
     std::string str;
@@ -629,54 +625,56 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
     bool grandmaster_level = false;
     bool for_effects = false;
 
-    PLAYER_SKILL_LEVEL skill_points = 0;
-    PLAYER_SKILL_MASTERY skill_mastery = PLAYER_SKILL_MASTERY_NONE;
+    if (pParty->hasActiveCharacter()) {
+        PLAYER_SKILL_LEVEL skill_points = 0;
+        PLAYER_SKILL_MASTERY skill_mastery = PLAYER_SKILL_MASTERY_NONE;
+        CombinedSkillValue idMonsterSkill = pParty->activeCharacter().getActualSkillValue(PLAYER_SKILL_MONSTER_ID);
 
-    pMonsterInfoUI_Doll.uCurrentActionTime += pMiscTimer->uTimeElapsed;
-    CombinedSkillValue idMonsterSkill = pParty->activeCharacter().getActualSkillValue(PLAYER_SKILL_MONSTER_ID);
-    if ((skill_points = idMonsterSkill.level()) > 0) {
-        skill_mastery = idMonsterSkill.mastery();
-        if (skill_mastery == PLAYER_SKILL_MASTERY_NOVICE) {
-            if (skill_points + 10 >= pActors[uActorID].pMonsterInfo.uLevel) {
-                normal_level = true;
-            }
-        } else if (skill_mastery == PLAYER_SKILL_MASTERY_EXPERT) {
-            if (2 * skill_points + 10 >= pActors[uActorID].pMonsterInfo.uLevel) {
-                normal_level = true;
-                expert_level = true;
-            }
-        } else if (skill_mastery == PLAYER_SKILL_MASTERY_MASTER) {
-            if (3 * skill_points + 10 >= pActors[uActorID].pMonsterInfo.uLevel) {
+        if ((skill_points = idMonsterSkill.level()) > 0) {
+            skill_mastery = idMonsterSkill.mastery();
+            if (skill_mastery == PLAYER_SKILL_MASTERY_NOVICE) {
+                if (skill_points + 10 >= pActors[uActorID].pMonsterInfo.uLevel) {
+                    normal_level = true;
+                }
+            } else if (skill_mastery == PLAYER_SKILL_MASTERY_EXPERT) {
+                if (2 * skill_points + 10 >= pActors[uActorID].pMonsterInfo.uLevel) {
+                    normal_level = true;
+                    expert_level = true;
+                }
+            } else if (skill_mastery == PLAYER_SKILL_MASTERY_MASTER) {
+                if (3 * skill_points + 10 >= pActors[uActorID].pMonsterInfo.uLevel) {
+                    normal_level = true;
+                    expert_level = true;
+                    master_level = true;
+                    for_effects = true;
+                }
+            } else if (skill_mastery == PLAYER_SKILL_MASTERY_GRANDMASTER) {
                 normal_level = true;
                 expert_level = true;
                 master_level = true;
+                grandmaster_level = true;
                 for_effects = true;
             }
-        } else if (skill_mastery == PLAYER_SKILL_MASTERY_GRANDMASTER) {
-            normal_level = true;
-            expert_level = true;
-            master_level = true;
-            grandmaster_level = true;
-            for_effects = true;
+        }
+
+        // Only play reaction when right click on actor initially
+        if (pActors[uActorID].uAIState != Dead && pActors[uActorID].uAIState != Dying &&
+            !holdingMouseRightButton && skill_mastery != PLAYER_SKILL_MASTERY_NONE) {
+            PlayerSpeech speech;
+            if (normal_level || expert_level || master_level || grandmaster_level) {
+                if (pActors[uActorID].pMonsterInfo.uLevel >= pParty->activeCharacter().uLevel - 5)
+                    speech = SPEECH_IDMonsterStrong;
+                else
+                    speech = SPEECH_IDMonsterWeak;
+            } else {
+                speech = SPEECH_IDMonsterFail;
+            }
+            pParty->activeCharacter().playReaction(speech);
         }
     }
 
-    // Only play reaction when right click on actor initially
-    if (pActors[uActorID].uAIState != Dead && pActors[uActorID].uAIState != Dying &&
-        !holdingMouseRightButton && skill_mastery != PLAYER_SKILL_MASTERY_NONE) {
-        PlayerSpeech speech;
-        if (normal_level || expert_level || master_level || grandmaster_level) {
-            if (pActors[uActorID].pMonsterInfo.uLevel >= pParty->activeCharacter().uLevel - 5)
-                speech = SPEECH_IDMonsterStrong;
-            else
-                speech = SPEECH_IDMonsterWeak;
-        } else {
-            speech = SPEECH_IDMonsterFail;
-        }
-        pParty->activeCharacter().playReaction(speech);
-    }
-
-    // TODO(Nik-RE-dev): debug option?
+    // Debug option for full info
+    bool monster_full_informations = engine->config->debug.FullMonsterID.value();
     if (monster_full_informations == true) {
         normal_level = true;       //
         expert_level = true;       //
@@ -786,14 +784,12 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
                 }
                 if (!iequals(pText, "")) {
                     pWindow->DrawText(pFontSmallnum, {28, pTextHeight}, GetSpellColor(pTextColorID), pText, 0, 0, Color());
-                    pTextHeight =
-                        pTextHeight + *(char *)((int64_t)pFontSmallnum + 5) - 3;
+                    pTextHeight = pTextHeight + pFontSmallnum->GetHeight() - 3;
                 }
             }
         }
         if (iequals(pText, ""))
-            pWindow->DrawText(pFontSmallnum, {28, pTextHeight}, colorTable.Jonquil,
-                              localization->GetString(LSTR_NONE), 0, 0, Color());
+            pWindow->DrawText(pFontSmallnum, {28, pTextHeight}, colorTable.White, localization->GetString(LSTR_NONE), 0, 0, Color());
     }
 
     std::string txt2;
@@ -960,8 +956,8 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
         pWindow->DrawTitleText(pFontSmallnum, 0, pWindow->uFrameHeight - pFontSmallnum->GetHeight() - 12, Color(), str, 3);
     }
 
-    // TODO(captainurist): this isn't about verbose logging and should depend on some other parameter
-    if (engine->config->debug.VerboseLogging.value()) {
+    // Debug - show actor AI state with full information
+    if (monster_full_informations) {
         std::string str = fmt::format("AI State: {}", std::to_underlying(pActors[uActorID].uAIState));
         pFontSmallnum->GetLineWidth(str);
         pWindow->DrawTitleText(pFontSmallnum, 0, pWindow->uFrameHeight - pFontSmallnum->GetHeight() - 12, Color(), str, 3);
@@ -1307,7 +1303,7 @@ static void drawBuffPopupWindow() {
     stringCount = 0;
     for (int i = 0; i < pParty->pPartyBuffs.size(); i++) {
         if (pParty->pPartyBuffs[i].Active()) {
-            GameTime remaingTime = pParty->pPartyBuffs[i].expireTime - pParty->GetPlayingTime();
+            GameTime remaingTime = pParty->pPartyBuffs[i].GetExpireTime() - pParty->GetPlayingTime();
             int yPos = stringCount * pFontComic->GetHeight() + 40;
             popupWindow.DrawText(pFontComic, {52, yPos}, spellTooltipColors[i], localization->GetSpellName(i), 0, 0, Color());
             DrawBuff_remaining_time_string(yPos, &popupWindow, remaingTime, pFontComic);

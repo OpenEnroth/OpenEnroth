@@ -7426,12 +7426,8 @@ Player::Player() {
     for (uint i = 0; i < INVENTORY_SLOT_COUNT; ++i) pInventoryItemList[i].Reset();
     for (uint i = 0; i < ADDITIONAL_SLOT_COUNT; ++i) pEquippedItems[i].Reset();
 
-    for (uint i = 0; i < 24; ++i) {
-        pPlayerBuffs[i].skillMastery = PLAYER_SKILL_MASTERY_NONE;
-        pPlayerBuffs[i].power = 0;
-        pPlayerBuffs[i].expireTime.Reset();
-        pPlayerBuffs[i].caster = 0;
-        pPlayerBuffs[i].isGMBuff = 0;
+    for (auto &buf : pPlayerBuffs) {
+        buf.Reset();
     }
 
     name[0] = 0;

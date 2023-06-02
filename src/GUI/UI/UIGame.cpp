@@ -871,7 +871,7 @@ void GameUI_CharacterQuickRecord_Draw(GUIWindow *window, Player *player) {
                              ui_game_character_record_playerbuff_colors[i],
                              localization->GetSpellName(20 + i), 0, 0, Color());
             DrawBuff_remaining_time_string(
-                v36, window, buff->expireTime - pParty->GetPlayingTime(),
+                v36, window, buff->GetExpireTime() - pParty->GetPlayingTime(),
                 pFontComic);
         }
     }
