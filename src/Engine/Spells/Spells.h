@@ -14,6 +14,8 @@
 #include "Utility/IndexedArray.h"
 #include "Utility/Geometry/Vec.h"
 
+// TODO(pskelton): move to own files
+// TODO(pskelton): style
 struct SpellBuff {
     /**
      * @offset 0x4584E0
@@ -33,9 +35,18 @@ struct SpellBuff {
 
     /**
      * @offset 0x42EB31
+     * Active is state where spell buff is in effect
      */
-    bool Active() const { return this->expireTime.value > 0; }
-    bool Expired() const { return this->expireTime.value < 0; }
+    bool Active() const { return this->expireTime.Valid(); }
+    /**
+    * Inactive is state where spell buff is not in effect (includes state expired)
+    */
+    bool Inactive() const { return !Active(); }
+    /**
+    * Expired is state where spell buff is not in effect after previously being active    
+    */
+    bool Expired() const { return this->expireTime.Expired(); }
+    GameTime &GetExpireTime() { return this->expireTime; }
 
     GameTime expireTime;
     uint16_t power = 0; // Spell power, semantics are spell-specific.
@@ -46,13 +57,13 @@ struct SpellBuff {
 };
 
 struct SpellInfo {
-    char *name;
-    char *pShortName;
-    char *pDescription;
-    char *pBasicSkillDesc;
-    char *pExpertSkillDesc;
-    char *pMasterSkillDesc;
-    char *pGrandmasterSkillDesc;
+    std::string name;
+    std::string pShortName;
+    std::string pDescription;
+    std::string pBasicSkillDesc;
+    std::string pExpertSkillDesc;
+    std::string pMasterSkillDesc;
+    std::string pGrandmasterSkillDesc;
     SPELL_SCHOOL uSchool;
     int field_20;
 };
@@ -127,8 +138,6 @@ extern IndexedArray<SPELL_TYPE, ITEM_FIRST_WAND, ITEM_LAST_WAND> wandSpellIds;
 extern IndexedArray<SPELL_TYPE, ITEM_FIRST_SPELL_SCROLL, ITEM_LAST_SPELL_SCROLL> scrollSpellIds;
 extern IndexedArray<SPELL_TYPE, ITEM_FIRST_SPELL_BOOK, ITEM_LAST_SPELL_BOOK> bookSpellIds;
 extern IndexedArray<uint16_t, SPELL_FIRST_WITH_SPRITE, SPELL_LAST_WITH_SPRITE> SpellSoundIds;
-
-extern std::string pSpellsTXT_Raw;
 
 /**
  * @offset 0x43AFE3

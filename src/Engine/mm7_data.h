@@ -65,7 +65,6 @@ extern IndexedArray<uint, PLAYER_SKILL_FIRST, PLAYER_SKILL_LAST> base_recovery_t
 extern std::array<IndexedArray<CLASS_SKILL, PLAYER_SKILL_FIRST, PLAYER_SKILL_LAST>, 9> pSkillAvailabilityPerClass;
 extern IndexedArray<IndexedArray<PLAYER_SKILL_MASTERY, PLAYER_SKILL_FIRST, PLAYER_SKILL_LAST>, PLAYER_CLASS_FIRST, PLAYER_CLASS_LAST> skillMaxMasteryPerClass;
 
-extern std::array<int16_t, 49> word_4F0754;
 extern std::array<std::pair<int16_t, ITEM_TYPE>, 27> _4F0882_evt_VAR_PlayerItemInHands_vals;
 extern std::array<int, 11> price_for_membership;
 extern std::array<int, 500> ai_near_actors_targets_pid;
@@ -135,9 +134,6 @@ extern std::array<char, 10000> pTmpBuf3;
 extern Color ui_current_text_color;
 extern int64_t qword_5C6DF0;
 extern struct FactionTable *pFactionTable;
-
-extern std::string pMonstersTXT_Raw;
-extern std::string pMonsterPlacementTXT_Raw;
 
 extern int uDefaultTravelTime_ByFoot;
 extern int day_attrib;

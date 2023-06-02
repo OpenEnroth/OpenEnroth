@@ -29,8 +29,6 @@ std::array<TownPortalData, 6> TownPortalList =  // 4ECBB8
       {Vec3i(-158, 7624, 1), 512, 0, 7, 0},     // celeste
       {Vec3i(-1837, -4247, 65), 65, 0, 8, 0}}};  // pit
 
-std::string pSpellsTXT_Raw;
-
 struct SpellStats *pSpellStats = nullptr;
 
 /**
@@ -751,9 +749,9 @@ void SpellStats::Initialize() {
 
     char *test_string;
 
-    pSpellsTXT_Raw = engine->_gameResourceManager->getEventsFile("spells.txt").string_view();
+    std::string txtRaw{ engine->_gameResourceManager->getEventsFile("spells.txt").string_view() };
 
-    strtok(pSpellsTXT_Raw.data(), "\r");
+    strtok(txtRaw.data(), "\r");
     for (SPELL_TYPE uSpellID : allRegularSpells()) {
         if (((std::to_underlying(uSpellID) % 11) - 1) == 0) {
             strtok(NULL, "\r");

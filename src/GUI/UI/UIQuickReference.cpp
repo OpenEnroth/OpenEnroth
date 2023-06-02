@@ -49,7 +49,7 @@ void GUIWindow_QuickReference::Update() {
     int pX;          // [sp+14h] [bp-18h]@2
     int pY;          // edi@9
     int pSkillsCount;         // ecx@27
-    const char *pText;        // eax@38
+    std::string pText;        // eax@38
     int pFontHeight;          // [sp+18h] [bp-14h]@1
     std::string pTempString;
 

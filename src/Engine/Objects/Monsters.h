@@ -196,7 +196,7 @@ struct MonsterStats {
                                    enum MONSTER_SUPERTYPE eSupertype);
 
     MonsterInfo pInfos[265];      // 0 - 5b18h
-    char *pPlaceStrings[31];      // 5B18h placement counts from 1
+    std::array<std::string, 31> pPlaceStrings;      // 5B18h placement counts from 1
     unsigned int uNumMonsters;    // 5B94h
     unsigned int uNumPlacements;  // 5B98h
     int field_5B9C;

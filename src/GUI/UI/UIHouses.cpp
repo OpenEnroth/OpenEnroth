@@ -34,7 +34,6 @@
 #include "GUI/UI/UIDialogue.h"
 #include "GUI/UI/UIGame.h"
 #include "GUI/UI/UIPartyCreation.h"
-#include "GUI/UI/UIShops.h"
 #include "GUI/UI/UIStatusBar.h"
 #include "GUI/UI/Houses/MagicGuild.h"
 #include "GUI/UI/Houses/Bank.h"
@@ -45,6 +44,7 @@
 #include "GUI/UI/Houses/Transport.h"
 #include "GUI/UI/Houses/MercenaryGuild.h"
 #include "GUI/UI/Houses/TownHall.h"
+#include "GUI/UI/Houses/Shops.h"
 
 #include "Io/Mouse.h"
 #include "Io/KeyboardInputHandler.h"
@@ -799,16 +799,16 @@ bool enterHouse(HOUSE_ID uHouseID) {
         uCurrentHouse_Animation = buildingTable[uHouseID - HOUSE_SMITH_EMERALD_ISLE].uAnimationID;
         in_current_building_type = pAnimatedRooms[uCurrentHouse_Animation].uBuildingType;
         if (in_current_building_type == BuildingType_Throne_Room && pParty->uFine) {  // going to jail
-            uCurrentHouse_Animation = (int16_t)buildingTable[186].uAnimationID;
             uHouseID = HOUSE_JAIL;
-            pParty->GetPlayingTime() += GameTime::FromYears(1);  // += 123863040;
+            uCurrentHouse_Animation = buildingTable[uHouseID - 1].uAnimationID;
+            restAndHeal(GameTime::FromYears(1));
             in_current_building_type = pAnimatedRooms[buildingTable[HOUSE_LORD_AND_JUDGE_EMERALD_ISLE].uAnimationID].uBuildingType;
             ++pParty->uNumPrisonTerms;
             pParty->uFine = 0;
-            for (uint i = 0; i < 4; ++i) {
-                pParty->pPlayers[i].timeToRecovery = 0;
-                pParty->pPlayers[i].uNumDivineInterventionCastsThisDay = 0;
-                pParty->pPlayers[i].SetVariable(VAR_Award, Award_PrisonTerms);
+            for (Player &player : pParty->pPlayers) {
+                player.timeToRecovery = 0;
+                player.uNumDivineInterventionCastsThisDay = 0;
+                player.SetVariable(VAR_Award, Award_PrisonTerms);
             }
         }
 
@@ -908,6 +908,48 @@ void PlayHouseSound(unsigned int uHouseID, HouseSoundID sound) {
     }
 }
 
+//----- (004B1D27) --------------------------------------------------------
+void GetHouseGoodbyeSpeech() {
+    int v7[4];      // [sp+Ch] [bp-10h]@12
+
+    if (in_current_building_type != BuildingType_Invalid) {
+        if (in_current_building_type > BuildingType_MagicShop) {
+            if (in_current_building_type == BuildingType_Bank) {
+                if (!dword_F8B1E4) return;
+            } else {
+                if (in_current_building_type != BuildingType_Temple) return;
+            }
+            PlayHouseSound(window_SpeakInHouse->wData.val, HouseSound_Greeting_2);
+            return;
+        }
+        if (pParty->PartyTimes._shop_ban_times[window_SpeakInHouse->wData.val] <= pParty->GetPlayingTime()) {
+            if (pParty->GetGold() <= 10000) {
+                if (!dword_F8B1E4) return;
+                PlayHouseSound(window_SpeakInHouse->wData.val, HouseSound_Goodbye);
+                return;
+            }
+            PlayHouseSound(window_SpeakInHouse->wData.val, (HouseSoundID)(dword_F8B1E4 + 3));
+            if (!dword_F8B1E4 && !pParty->_delayedReactionTimer) {
+                int id = pParty->getRandomActiveCharacterId(vrng.get());
+
+                if (id != -1) {
+                    pParty->setDelayedReaction(SPEECH_ShopRude, id);
+                    return;
+                }
+            }
+        } else {  // caught stealing
+            if (!pParty->_delayedReactionTimer) {
+                int id = pParty->getRandomActiveCharacterId(vrng.get());
+
+                if (id != -1) {
+                    pParty->setDelayedReaction(SPEECH_ShopRude, id);
+                    return;
+                }
+            }
+        }
+    }
+}
+
 //----- (004BCACC) --------------------------------------------------------
 void OnSelectShopDialogueOption(DIALOGUE_TYPE option) {
     if (!pDialogueWindow->pNumPresenceButton)
@@ -945,6 +987,8 @@ void OnSelectShopDialogueOption(DIALOGUE_TYPE option) {
     case BuildingType_Temple:
     case BuildingType_Tavern:
     case BuildingType_Training:
+    case BuildingType_Jail:
+    case BuildingType_MercenaryGuild:
     case BuildingType_TownHall:
         ((GUIWindow_House*)window_SpeakInHouse)->houseDialogueOptionSelected(option);
         break;
@@ -1714,6 +1758,12 @@ void createHouseUI(HOUSE_ID houseId) {
       case BuildingType_TownHall:
         window_SpeakInHouse = new GUIWindow_TownHall(houseId);
         break;
+      case BuildingType_Jail:
+        window_SpeakInHouse = new GUIWindow_Jail(houseId);
+        break;
+      case BuildingType_MercenaryGuild:
+        window_SpeakInHouse = new GUIWindow_MercenaryGuild(houseId);
+        break;
       default:
         window_SpeakInHouse = new GUIWindow_House(houseId);
         break;
@@ -1769,7 +1819,7 @@ void GUIWindow_House::houseDialogManager() {
     pWindow.uFrameZ += 8;
     if (!pDialogueNPCCount) {
         if (in_current_building_type == BuildingType_Jail) {
-            JailDialog();
+            houseSpecificDialogue();
             if (pDialogueNPCCount == uNumDialogueNPCPortraits && uHouse_ExitPic) {
                 render->DrawTextureNew(556 / 640.0f, 451 / 480.0f, dialogue_ui_x_x_u);
                 render->DrawTextureNew(476 / 640.0f, 451 / 480.0f, dialogue_ui_x_ok_u);
@@ -1880,7 +1930,7 @@ void GUIWindow_House::houseDialogManager() {
             houseSpecificDialogue();
             break;
           case BuildingType_MercenaryGuild:
-            MercenaryGuildDialog();
+            houseSpecificDialogue();
             break;
           case BuildingType_TownHall:
             houseSpecificDialogue();
@@ -1902,7 +1952,7 @@ void GUIWindow_House::houseDialogManager() {
             houseSpecificDialogue();
             break;
           case BuildingType_Jail:
-            JailDialog();
+            houseSpecificDialogue();
             break;
           default:
             // __debugbreak();//New BuildingType (if enter Boat)

@@ -2393,7 +2393,6 @@ IndexedArray<IndexedArray<PLAYER_SKILL_MASTERY, PLAYER_SKILL_FIRST, PLAYER_SKILL
     }}
 }};
 
-std::array<int16_t, 49> word_4F0754;
 std::array<std::pair<int16_t, ITEM_TYPE>, 27> _4F0882_evt_VAR_PlayerItemInHands_vals = {{
     {0x0D4, ITEM_QUEST_VASE},
     {0x0D5, ITEM_RARE_LADY_CARMINES_DAGGER},
@@ -2507,9 +2506,6 @@ struct FactionTable *pFactionTable;
 
 std::array<char, 777> byte_5E4C15;
 
-std::string pMonstersTXT_Raw;
-std::string pMonsterPlacementTXT_Raw;
-
 int uDefaultTravelTime_ByFoot;
 int day_attrib;
 int day_fogrange_1; // fog start dist
@@ -2531,7 +2527,6 @@ float flt_debugrecmod3;
 std::string s_SavedMapName;  // idb
 char bNoNPCHiring = false;
 Vec3i blv_prev_party_pos;
-std::array<NPCTopic, 789> pNPCTopics;
 std::vector<Vec3f> pTerrainNormals;
 std::array<unsigned short, 128 * 128 * 2> pTerrainNormalIndices;
 std::array<unsigned int, 128 * 128 * 2> pTerrainSomeOtherData;

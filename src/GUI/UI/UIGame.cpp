@@ -796,7 +796,7 @@ std::string GameUI_GetMinimapHintText() {
 void GameUI_CharacterQuickRecord_Draw(GUIWindow *window, Player *player) {
     GraphicsImage *v13;              // eax@6
     PlayerFrame *v15;        // eax@12
-    const char *v29;         // eax@16
+    std::string spellName;   // eax@16
     int v36;                 // esi@22
     signed int uFramesetID;  // [sp+20h] [bp-8h]@9
     int uFramesetIDa;        // [sp+20h] [bp-8h]@18
@@ -854,11 +854,11 @@ void GameUI_CharacterQuickRecord_Draw(GUIWindow *window, Player *player) {
                      localization->GetCharacterConditionName(player->GetMajorConditionIdx()));
 
     if (player->uQuickSpell != SPELL_NONE)
-        v29 = pSpellStats->pInfos[player->uQuickSpell].pShortName;
+        spellName = pSpellStats->pInfos[player->uQuickSpell].pShortName;
     else
-        v29 = localization->GetString(LSTR_NONE);
+        spellName = localization->GetString(LSTR_NONE);
 
-    str += fmt::format("{}: {}", localization->GetString(LSTR_QUICK_SPELL), v29);
+    str += fmt::format("{}: {}", localization->GetString(LSTR_QUICK_SPELL), spellName);
 
     window->DrawText(pFontArrus, {120, 22}, Color(), str, 0, 0, Color());
 
@@ -871,7 +871,7 @@ void GameUI_CharacterQuickRecord_Draw(GUIWindow *window, Player *player) {
                              ui_game_character_record_playerbuff_colors[i],
                              localization->GetSpellName(20 + i), 0, 0, Color());
             DrawBuff_remaining_time_string(
-                v36, window, buff->expireTime - pParty->GetPlayingTime(),
+                v36, window, buff->GetExpireTime() - pParty->GetPlayingTime(),
                 pFontComic);
         }
     }

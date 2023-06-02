@@ -11,7 +11,6 @@ void UIShop_Buy_Identify_Repair();
 void sub_4B1523_showSpellbookInfo(ITEM_TYPE spellItemId);
 void ShowPopupShopSkills();
 void ShowPopupShopItem();
-void GetHouseGoodbyeSpeech();
 void sub_4B1447_party_fine(int shopId, int stealingResult, int fineToAdd);
 
 extern class GraphicsImage *shop_ui_background;

@@ -1466,7 +1466,7 @@ void _494035_timed_effects__water_walking_damage__etc() {
         for (Player &player : pParty->pPlayers) {
             if (player.WearsItem(ITEM_RELIC_HARECKS_LEATHER, ITEM_SLOT_ARMOUR) ||
                 player.HasEnchantedItemEquipped(ITEM_ENCHANTMENT_OF_WATER_WALKING) ||
-                player.pPlayerBuffs[PLAYER_BUFF_WATER_WALK].expireTime) {
+                player.pPlayerBuffs[PLAYER_BUFF_WATER_WALK].Active()) {
                 player.playEmotion(CHARACTER_EXPRESSION_SMILE, 0);
             } else {
                 if (!player.hasUnderwaterSuitEquipped()) {
@@ -1628,7 +1628,7 @@ void _494035_timed_effects__water_walking_damage__etc() {
     // Check if Fly/Water Walk caster can act
     for (PARTY_BUFF_INDEX buffIdx : {PARTY_BUFF_WATER_WALK, PARTY_BUFF_FLY}) {
         SpellBuff *pBuff = &pParty->pPartyBuffs[buffIdx];
-        if (!pBuff->expireTime.Valid()) {
+        if (pBuff->Inactive()) {
             continue;
         }
 

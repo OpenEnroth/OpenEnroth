@@ -18,7 +18,6 @@ set(GUI_UI_SOURCES
         UIQuickReference.cpp
         UIRest.cpp
         UISaveLoad.cpp
-        UIShops.cpp
         UISpell.cpp
         UIStatusBar.cpp
         UITransition.cpp)
@@ -42,7 +41,6 @@ set(GUI_UI_HEADERS
         UIQuickReference.h
         UIRest.h
         UISaveLoad.h
-        UIShops.h
         UISpell.h
         UIStatusBar.h
         UITransition.h)
