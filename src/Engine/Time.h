@@ -110,6 +110,9 @@ struct GameTime {
     static GameTime FromDays(int days) {
         return GameTime(0, 0, 0, days, 0, 0, 0);
     }
+    static GameTime FromMonths(int months) {
+        return GameTime(0, 0, 0, 0, 0, months, 0);
+    }
     static GameTime FromYears(int years) {
         return GameTime(0, 0, 0, 0, 0, 0, years);
     }

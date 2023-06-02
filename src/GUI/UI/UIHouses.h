@@ -16,7 +16,6 @@ constexpr int SIDE_TEXT_BOX_MAX_SPACING = 32;
 
 bool HouseUI_CheckIfPlayerCanInteract();
 void MagicShopDialog();
-void TownHallDialog();
 void PlayHouseSound(unsigned int uHouseID, HouseSoundID sound);  // idb
 void WeaponShopDialog();
 void AlchemistDialog();

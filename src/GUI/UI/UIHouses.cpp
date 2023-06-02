@@ -639,7 +639,7 @@ void InitializaDialogueOptions(BuildingType type) {
     case BuildingType_TownHall:
     {
         int num_buttons = 1;
-        CreateShopDialogueButtonAtRow(0, DIALOGUE_TOWNHALL_MESSAGE);
+        CreateShopDialogueButtonAtRow(0, DIALOGUE_TOWNHALL_BOUNTY_HUNT);
 
         if (pParty->uFine) {
             num_buttons++;
@@ -989,18 +989,9 @@ void OnSelectShopDialogueOption(DIALOGUE_TYPE option) {
     case BuildingType_Training:
     case BuildingType_Jail:
     case BuildingType_MercenaryGuild:
+    case BuildingType_TownHall:
         ((GUIWindow_House*)window_SpeakInHouse)->houseDialogueOptionSelected(option);
         break;
-    case BuildingType_TownHall:
-    {
-        if (option == DIALOGUE_TOWNHALL_MESSAGE) {
-            bountyHuntingDialogueOptionClicked();
-        } else if (option == DIALOGUE_TOWNHALL_PAY_FINE) {
-            keyboardInputHandler->StartTextInput(TextInputType::Number, 10, window_SpeakInHouse);
-            return;
-        }
-        break;
-    }
     case BuildingType_WeaponShop:
     case BuildingType_ArmorShop:
     case BuildingType_MagicShop:
@@ -1292,7 +1283,7 @@ void SimpleHouseDialog() {
             pButton->sLabel = GetJoinGuildDialogueOption(static_cast<GUILD_ID>(right_panel_window.wData.val));
             continue;
         case DIALOGUE_83_bounty_hunting:
-            current_npc_text = bountyHuntingText();
+            current_npc_text = ((GUIWindow_TownHall*)window_SpeakInHouse)->bountyHuntingText();
             pButton->sLabel.clear();
             continue;
         }
@@ -1764,6 +1755,9 @@ void createHouseUI(HOUSE_ID houseId) {
       case BuildingType_Boats:
         window_SpeakInHouse = new GUIWindow_Transport(houseId);
         break;
+      case BuildingType_TownHall:
+        window_SpeakInHouse = new GUIWindow_TownHall(houseId);
+        break;
       case BuildingType_Jail:
         window_SpeakInHouse = new GUIWindow_Jail(houseId);
         break;
@@ -1939,7 +1933,7 @@ void GUIWindow_House::houseDialogManager() {
             houseSpecificDialogue();
             break;
           case BuildingType_TownHall:
-            TownHallDialog();
+            houseSpecificDialogue();
             break;
           case BuildingType_Tavern:
             houseSpecificDialogue();
