@@ -68,9 +68,10 @@ var searchData=
   ['guiwindow_5fspellbook_65',['GUIWindow_Spellbook',['../classGUIWindow__Spellbook.html',1,'']]],
   ['guiwindow_5ftavern_66',['GUIWindow_Tavern',['../classGUIWindow__Tavern.html',1,'']]],
   ['guiwindow_5ftemple_67',['GUIWindow_Temple',['../classGUIWindow__Temple.html',1,'']]],
-  ['guiwindow_5ftownportalbook_68',['GUIWindow_TownPortalBook',['../structGUIWindow__TownPortalBook.html',1,'']]],
-  ['guiwindow_5ftraining_69',['GUIWindow_Training',['../classGUIWindow__Training.html',1,'']]],
-  ['guiwindow_5ftransition_70',['GUIWindow_Transition',['../classGUIWindow__Transition.html',1,'']]],
-  ['guiwindow_5ftransport_71',['GUIWindow_Transport',['../classGUIWindow__Transport.html',1,'']]],
-  ['guiwindow_5ftravel_72',['GUIWindow_Travel',['../classGUIWindow__Travel.html',1,'']]]
+  ['guiwindow_5ftownhall_68',['GUIWindow_TownHall',['../classGUIWindow__TownHall.html',1,'']]],
+  ['guiwindow_5ftownportalbook_69',['GUIWindow_TownPortalBook',['../structGUIWindow__TownPortalBook.html',1,'']]],
+  ['guiwindow_5ftraining_70',['GUIWindow_Training',['../classGUIWindow__Training.html',1,'']]],
+  ['guiwindow_5ftransition_71',['GUIWindow_Transition',['../classGUIWindow__Transition.html',1,'']]],
+  ['guiwindow_5ftransport_72',['GUIWindow_Transport',['../classGUIWindow__Transport.html',1,'']]],
+  ['guiwindow_5ftravel_73',['GUIWindow_Travel',['../classGUIWindow__Travel.html',1,'']]]
 ];

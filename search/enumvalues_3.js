@@ -112,7 +112,7 @@ var searchData=
   ['dialogue_5ftavern_5frest_109',['DIALOGUE_TAVERN_REST',['../GUIDialogues_8h.html#afcd7885d9ec6583fa04d9e8f0f641d00a4885bfdd9115bfbe5751a94a771b361f',1,'GUIDialogues.h']]],
   ['dialogue_5ftemple_5fdonate_110',['DIALOGUE_TEMPLE_DONATE',['../GUIDialogues_8h.html#afcd7885d9ec6583fa04d9e8f0f641d00a91779ae7f89eb5a53a4720c8211f72ba',1,'GUIDialogues.h']]],
   ['dialogue_5ftemple_5fheal_111',['DIALOGUE_TEMPLE_HEAL',['../GUIDialogues_8h.html#afcd7885d9ec6583fa04d9e8f0f641d00abf49d68d9bc7bb3e9350391be0a83eb4',1,'GUIDialogues.h']]],
-  ['dialogue_5ftownhall_5fmessage_112',['DIALOGUE_TOWNHALL_MESSAGE',['../GUIDialogues_8h.html#afcd7885d9ec6583fa04d9e8f0f641d00a5d1ff28ebe0d0f4c8ed3412298a34cfb',1,'GUIDialogues.h']]],
+  ['dialogue_5ftownhall_5fbounty_5fhunt_112',['DIALOGUE_TOWNHALL_BOUNTY_HUNT',['../GUIDialogues_8h.html#afcd7885d9ec6583fa04d9e8f0f641d00a3250afe6603ed5612f5da6021e0bdee8',1,'GUIDialogues.h']]],
   ['dialogue_5ftownhall_5fpay_5ffine_113',['DIALOGUE_TOWNHALL_PAY_FINE',['../GUIDialogues_8h.html#afcd7885d9ec6583fa04d9e8f0f641d00a62730930b871b13b367e21979090ff96',1,'GUIDialogues.h']]],
   ['dialogue_5ftraining_5fhall_5ftrain_114',['DIALOGUE_TRAINING_HALL_TRAIN',['../GUIDialogues_8h.html#afcd7885d9ec6583fa04d9e8f0f641d00aba1148d7d1076defbd8955325a848dca',1,'GUIDialogues.h']]],
   ['dialogue_5ftransport_5fschedule_5f1_115',['DIALOGUE_TRANSPORT_SCHEDULE_1',['../GUIDialogues_8h.html#afcd7885d9ec6583fa04d9e8f0f641d00abe2fe17965d1455c464ea690589a713d',1,'GUIDialogues.h']]],
