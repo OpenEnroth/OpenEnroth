@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;0b6df62</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;5b2aaf2</span>
    </div>
   </td>
  </tr>
@@ -89,8 +89,12 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a01a6d12114f06b996d5e57a5c8196519"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa8120188fb27f4eac35052ee945cce00"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structSpellBuff.html#aa8120188fb27f4eac35052ee945cce00">Active</a> () const</td></tr>
 <tr class="separator:aa8120188fb27f4eac35052ee945cce00"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac80a70cb1a986d65d532f46adfac4d55"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structSpellBuff.html#ac80a70cb1a986d65d532f46adfac4d55">Inactive</a> () const</td></tr>
+<tr class="separator:ac80a70cb1a986d65d532f46adfac4d55"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a82ae66dc29fa0c9404dc1044aa0ae922"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structSpellBuff.html#a82ae66dc29fa0c9404dc1044aa0ae922">Expired</a> () const</td></tr>
 <tr class="separator:a82ae66dc29fa0c9404dc1044aa0ae922"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac8dde3d1b4e2cfa61afc98a692545c72"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structGameTime.html">GameTime</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structSpellBuff.html#ac8dde3d1b4e2cfa61afc98a692545c72">GetExpireTime</a> ()</td></tr>
+<tr class="separator:ac8dde3d1b4e2cfa61afc98a692545c72"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
@@ -130,7 +134,7 @@ Public Attributes</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-<dl class="section user"><dt>Original binary offset:</dt><dd>0x42EB31 </dd></dl>
+<dl class="section user"><dt>Original binary offset:</dt><dd>0x42EB31 Active is state where spell buff is in effect </dd></dl>
 
 </div>
 </div>
@@ -203,6 +207,59 @@ Public Attributes</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+<p >Expired is state where spell buff is not in effect after previously being active <br  />
+ </p>
+
+</div>
+</div>
+<a id="ac8dde3d1b4e2cfa61afc98a692545c72" name="ac8dde3d1b4e2cfa61afc98a692545c72"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac8dde3d1b4e2cfa61afc98a692545c72">&#9670;&#160;</a></span>GetExpireTime()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structGameTime.html">GameTime</a> &amp; SpellBuff::GetExpireTime </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ac80a70cb1a986d65d532f46adfac4d55" name="ac80a70cb1a986d65d532f46adfac4d55"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac80a70cb1a986d65d532f46adfac4d55">&#9670;&#160;</a></span>Inactive()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool SpellBuff::Inactive </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p >Inactive is state where spell buff is not in effect (includes state expired) </p>
 
 </div>
 </div>
