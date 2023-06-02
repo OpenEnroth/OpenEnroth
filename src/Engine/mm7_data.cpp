@@ -2506,9 +2506,6 @@ struct FactionTable *pFactionTable;
 
 std::array<char, 777> byte_5E4C15;
 
-std::string pMonstersTXT_Raw;
-std::string pMonsterPlacementTXT_Raw;
-
 int uDefaultTravelTime_ByFoot;
 int day_attrib;
 int day_fogrange_1; // fog start dist

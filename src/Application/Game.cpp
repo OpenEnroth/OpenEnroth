@@ -1621,7 +1621,7 @@ void Game::processQueuedMessages() {
                     GameUI_StatusBar_Set(localization->FormatString(
                         LSTR_FMT_SET_S_AS_READY_SPELL,
                         pSpellStats->pInfos[static_cast<SPELL_TYPE>(quick_spell_at_page +
-                                     11 * pParty->activeCharacter().lastOpenedSpellbookPage)].name));
+                                     11 * pParty->activeCharacter().lastOpenedSpellbookPage)].name.c_str()));
                 } else {
                     if (pParty->activeCharacter().uQuickSpell != SPELL_NONE)
                         GameUI_StatusBar_Set(localization->GetString(LSTR_CLICK_TO_REMOVE_QUICKSPELL));
@@ -1645,10 +1645,10 @@ void Game::processQueuedMessages() {
                 int lastOpened = pParty->activeCharacter().lastOpenedSpellbookPage;
                 if (quick_spell_at_page - 1 == uMessageParam) {
                     GameUI_StatusBar_Set(localization->FormatString(LSTR_CAST_S,
-                                pSpellStats->pInfos[static_cast<SPELL_TYPE>(uMessageParam + 11 * lastOpened + 1)].name));
+                                pSpellStats->pInfos[static_cast<SPELL_TYPE>(uMessageParam + 11 * lastOpened + 1)].name.c_str()));
                 } else {
                     GameUI_StatusBar_Set(localization->FormatString(LSTR_SELECT_S,
-                                pSpellStats->pInfos[static_cast<SPELL_TYPE>(uMessageParam + 11 * lastOpened + 1)].name));
+                                pSpellStats->pInfos[static_cast<SPELL_TYPE>(uMessageParam + 11 * lastOpened + 1)].name.c_str()));
                 }
                 continue;
             }

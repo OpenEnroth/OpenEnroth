@@ -135,9 +135,6 @@ extern Color ui_current_text_color;
 extern int64_t qword_5C6DF0;
 extern struct FactionTable *pFactionTable;
 
-extern std::string pMonstersTXT_Raw;
-extern std::string pMonsterPlacementTXT_Raw;
-
 extern int uDefaultTravelTime_ByFoot;
 extern int day_attrib;
 extern int day_fogrange_1;
