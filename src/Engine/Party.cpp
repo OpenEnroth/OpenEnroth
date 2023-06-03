@@ -90,7 +90,7 @@ void Party::Zero() {
     PartyTimes.HistoryEventTimes.fill(GameTime(0));
     PartyTimes.shopNextRefreshTime.fill(GameTime(0));
     PartyTimes.guildNextRefreshTime.fill(GameTime(0));
-    PartyTimes._shop_ban_times.fill(GameTime(0));
+    PartyTimes.shopBanTimes.fill(GameTime(0));
     PartyTimes._s_times.fill(GameTime(0));
     vPosition.x = vPrevPosition.x = 0;
     vPosition.y = vPrevPosition.y = 0;
@@ -151,13 +151,13 @@ void Party::Zero() {
     pPickedItem.Reset();
     uFlags = 0;
 
-    for (unsigned int i = 0; i < 53; ++i)
-        for (unsigned int j = 0; j < 12; ++j)
-            StandartItemsInShops[i][j].Reset();
+    for (HOUSE_ID i : standartItemsInShops.indices())
+        for (int j = 0; j < 12; ++j)
+            standartItemsInShops[i][j].Reset();
 
-    for (unsigned int i = 0; i < 53; ++i)
-        for (unsigned int j = 0; j < 12; ++j)
-            SpecialItemsInShops[i][j].Reset();
+    for (HOUSE_ID i : specialItemsInShops.indices())
+        for (int j = 0; j < 12; ++j)
+            specialItemsInShops[i][j].Reset();
 
     for (HOUSE_ID i : spellBooksInGuilds.indices())
         for (int j = 0; j < 12; ++j)
@@ -699,7 +699,7 @@ void Party::Reset() {
     _questBits.reset();
     pIsArtifactFound.fill(false);
 
-    PartyTimes._shop_ban_times.fill(GameTime(0));
+    PartyTimes.shopBanTimes.fill(GameTime(0));
 
     pNPCStats->pNewNPCData = pNPCStats->pNPCData;
     pNPCStats->pGroups_copy = pNPCStats->pGroups;

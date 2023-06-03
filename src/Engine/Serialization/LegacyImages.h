@@ -397,7 +397,8 @@ struct PartyTimeStruct_MM7 {
     /* 050 */ int64_t shopsNextGenerationTime0; // shop generation time for house id 0 which is invalid value
               std::array<int64_t, 52> shopsNextGenerationTime;
               std::array<int64_t, 32> guildsNextGenerationTime;
-    /* 2F8 */ std::array<int64_t, 53> shopBanTimes;
+              int64_t shopBanTime0;
+    /* 2F8 */ std::array<int64_t, 52> shopBanTimes;
     /* 4A0 */ std::array<int64_t, 10> counterEventValues;
     /* 4F0 */ std::array<int64_t, 29> historyEventTimes;
     /* 5D8 */ std::array<int64_t, 20> someOtherTimes;
@@ -483,8 +484,10 @@ struct Party_MM7 {
     /* 07644 */ std::array<NPCData_MM7, 2> hirelings;
     /* 07754 */ ItemGen_MM7 pickedItem;
     /* 07778 */ uint32_t flags;
-    /* 0777C */ std::array<std::array<ItemGen_MM7, 12>, 53> standartItemsInShops;
-    /* 0D0EC */ std::array<std::array<ItemGen_MM7, 12>, 53> specialItemsInShops;
+    /* 0777C */ std::array<ItemGen_MM7, 12> standartItemsInShop0;
+                std::array<std::array<ItemGen_MM7, 12>, 52> standartItemsInShops;
+    /* 0D0EC */ std::array<ItemGen_MM7, 12> specialItemsInShop0;
+                std::array<std::array<ItemGen_MM7, 12>, 52> specialItemsInShops;
     /* 12A5C */ std::array<std::array<ItemGen_MM7, 12>, 32> spellBooksInGuilds;
     /* 1605C */ std::array<char, 24> field_1605C;
     /* 16074 */ std::array<char, 100> hireling1Name;

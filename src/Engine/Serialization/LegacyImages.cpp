@@ -352,7 +352,8 @@ void serialize(const Party &src, Party_MM7 *dst) {
     serialize(src.PartyTimes.shopNextRefreshTime, &dst->partyTimes.shopsNextGenerationTime);
     serialize(src.PartyTimes.guildNextRefreshTime, &dst->partyTimes.guildsNextGenerationTime);
 
-    serialize(src.PartyTimes._shop_ban_times, &dst->partyTimes.shopBanTimes);
+    dst->partyTimes.shopBanTime0 = 0;
+    serialize(src.PartyTimes.shopBanTimes, &dst->partyTimes.shopBanTimes);
     serialize(src.PartyTimes.CounterEventValues, &dst->partyTimes.counterEventValues);
     serialize(src.PartyTimes.HistoryEventTimes, &dst->partyTimes.historyEventTimes);
     serialize(src.PartyTimes._s_times, &dst->partyTimes.someOtherTimes);
@@ -436,8 +437,10 @@ void serialize(const Party &src, Party_MM7 *dst) {
 
     dst->flags = src.uFlags;
 
-    serialize(src.StandartItemsInShops, &dst->standartItemsInShops);
-    serialize(src.SpecialItemsInShops, &dst->specialItemsInShops);
+    dst->standartItemsInShop0.fill({});
+    serialize(src.standartItemsInShops, &dst->standartItemsInShops);
+    dst->specialItemsInShop0.fill({});
+    serialize(src.specialItemsInShops, &dst->specialItemsInShops);
     serialize(src.spellBooksInGuilds, &dst->spellBooksInGuilds);
     serialize(src.field_1605C_set0_unused, &dst->field_1605C);
 
@@ -474,7 +477,7 @@ void deserialize(const Party_MM7 &src, Party *dst) {
     deserialize(src.partyTimes.bountyHuntingNextGenerationTime, &dst->PartyTimes.bountyHuntNextGenTime, 5);
     deserialize(src.partyTimes.shopsNextGenerationTime, &dst->PartyTimes.shopNextRefreshTime);
     deserialize(src.partyTimes.guildsNextGenerationTime, &dst->PartyTimes.guildNextRefreshTime);
-    deserialize(src.partyTimes.shopBanTimes, &dst->PartyTimes._shop_ban_times);
+    deserialize(src.partyTimes.shopBanTimes, &dst->PartyTimes.shopBanTimes);
     deserialize(src.partyTimes.counterEventValues, &dst->PartyTimes.CounterEventValues);
     deserialize(src.partyTimes.historyEventTimes, &dst->PartyTimes.HistoryEventTimes);
     deserialize(src.partyTimes.someOtherTimes, &dst->PartyTimes._s_times);
@@ -568,8 +571,8 @@ void deserialize(const Party_MM7 &src, Party *dst) {
 
     dst->uFlags = src.flags;
 
-    deserialize(src.standartItemsInShops, &dst->StandartItemsInShops);
-    deserialize(src.specialItemsInShops, &dst->SpecialItemsInShops);
+    deserialize(src.standartItemsInShops, &dst->standartItemsInShops);
+    deserialize(src.specialItemsInShops, &dst->specialItemsInShops);
     deserialize(src.spellBooksInGuilds, &dst->spellBooksInGuilds);
 
     deserialize(src.field_1605C, &dst->field_1605C_set0_unused);

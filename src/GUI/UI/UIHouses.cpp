@@ -307,168 +307,168 @@ int ItemAmountForShop(BuildingType buildingType) {
     }
 }
 
-const std::array<ITEM_VARIATION, 15> shopWeap_variation_ord = {{
-    { ITEM_TREASURE_LEVEL_INVALID, { 00, 00, 00, 00 } },
-    { ITEM_TREASURE_LEVEL_1, { 23, 27, 20, 20 } },
-    { ITEM_TREASURE_LEVEL_1, { 23, 24, 28, 20 } },
-    { ITEM_TREASURE_LEVEL_2, { 23, 24, 25, 20 } },
-    { ITEM_TREASURE_LEVEL_2, { 27, 27, 26, 26 } },
-    { ITEM_TREASURE_LEVEL_4, { 24, 30, 25, 27 } },
-    { ITEM_TREASURE_LEVEL_4, { 24, 30, 25, 27 } },
-    { ITEM_TREASURE_LEVEL_3, { 30, 24, 20, 20 } },
-    { ITEM_TREASURE_LEVEL_2, { 20, 20, 20, 20 } },
-    { ITEM_TREASURE_LEVEL_3, { 27, 27, 26, 26 } },
-    { ITEM_TREASURE_LEVEL_3, { 28, 28, 25, 25 } },
-    { ITEM_TREASURE_LEVEL_2, { 23, 23, 24, 24 } },
-    { ITEM_TREASURE_LEVEL_3, { 23, 23, 26, 26 } },
-    { ITEM_TREASURE_LEVEL_2, { 30, 26, 26, 26 } },
-    { ITEM_TREASURE_LEVEL_2, { 28, 25, 28, 29 } }
+const IndexedArray<ITEM_VARIATION, HOUSE_FIRST_WEAPON_SHOP, HOUSE_LAST_WEAPON_SHOP> weaponShopVariationStandart = {{
+    {HOUSE_SMITH_EMERALD_ISLE,      { ITEM_TREASURE_LEVEL_1, { 23, 27, 20, 20 } }},
+    {HOUSE_SMITH_HARMONDALE,        { ITEM_TREASURE_LEVEL_1, { 23, 24, 28, 20 } }},
+    {HOUSE_SMITH_ERATHIA,           { ITEM_TREASURE_LEVEL_2, { 23, 24, 25, 20 } }},
+    {HOUSE_SMITH_TULAREAN_FOREST,   { ITEM_TREASURE_LEVEL_2, { 27, 27, 26, 26 } }},
+    {HOUSE_SMITH_CELESTE,           { ITEM_TREASURE_LEVEL_4, { 24, 30, 25, 27 } }},
+    {HOUSE_SMITH_PIT,               { ITEM_TREASURE_LEVEL_4, { 24, 30, 25, 27 } }},
+    {HOUSE_SMITH_NIGHON,            { ITEM_TREASURE_LEVEL_3, { 30, 24, 20, 20 } }},
+    {HOUSE_SMITH_TATALIA_VANDERS,   { ITEM_TREASURE_LEVEL_2, { 20, 20, 20, 20 } }},
+    {HOUSE_SMITH_AVLEE,             { ITEM_TREASURE_LEVEL_3, { 27, 27, 26, 26 } }},
+    {HOUSE_SMITH_STONE_CITY,        { ITEM_TREASURE_LEVEL_3, { 28, 28, 25, 25 } }},
+    {HOUSE_SMITH_CASTLE_HARMONDALE, { ITEM_TREASURE_LEVEL_2, { 23, 23, 24, 24 } }},
+    {HOUSE_SMITH_TATALIA_ALLOYED,   { ITEM_TREASURE_LEVEL_3, { 23, 23, 26, 26 } }},
+    {HOUSE_SMITH_13,                { ITEM_TREASURE_LEVEL_2, { 30, 26, 26, 26 } }},
+    {HOUSE_SMITH_14,                { ITEM_TREASURE_LEVEL_2, { 28, 25, 28, 29 } }}
 }};
 
-const std::array<ITEM_VARIATION, 28> shopArmr_variation_ord = {{
-    { ITEM_TREASURE_LEVEL_1, { 35, 35, 38, 38 } },
-    { ITEM_TREASURE_LEVEL_1, { 31, 31, 31, 34 } },
-    { ITEM_TREASURE_LEVEL_1, { 35, 35, 38, 38 } },
-    { ITEM_TREASURE_LEVEL_1, { 31, 31, 32, 34 } },
-    { ITEM_TREASURE_LEVEL_2, { 35, 35, 38, 38 } },
-    { ITEM_TREASURE_LEVEL_2, { 31, 32, 32, 33 } },
-    { ITEM_TREASURE_LEVEL_2, { 35, 35, 38, 38 } },
-    { ITEM_TREASURE_LEVEL_2, { 31, 31, 32, 32 } },
-    { ITEM_TREASURE_LEVEL_4, { 35, 35, 38, 38 } },
-    { ITEM_TREASURE_LEVEL_4, { 31, 32, 33, 34 } },
-    { ITEM_TREASURE_LEVEL_4, { 35, 35, 38, 38 } },
-    { ITEM_TREASURE_LEVEL_4, { 31, 32, 33, 34 } },
-    { ITEM_TREASURE_LEVEL_3, { 35, 35, 38, 38 } },
-    { ITEM_TREASURE_LEVEL_3, { 31, 31, 31, 31 } },
-    { ITEM_TREASURE_LEVEL_2, { 35, 35, 38, 38 } },
-    { ITEM_TREASURE_LEVEL_2, { 31, 32, 34, 34 } },
-    { ITEM_TREASURE_LEVEL_3, { 35, 35, 38, 38 } },
-    { ITEM_TREASURE_LEVEL_3, { 31, 31, 32, 32 } },
-    { ITEM_TREASURE_LEVEL_3, { 35, 35, 38, 38 } },
-    { ITEM_TREASURE_LEVEL_3, { 32, 32, 32, 33 } },
-    { ITEM_TREASURE_LEVEL_3, { 35, 35, 38, 38 } },
-    { ITEM_TREASURE_LEVEL_3, { 31, 31, 31, 32 } },
-    { ITEM_TREASURE_LEVEL_3, { 35, 35, 38, 38 } },
-    { ITEM_TREASURE_LEVEL_3, { 33, 31, 32, 34 } },
-    { ITEM_TREASURE_LEVEL_3, { 35, 35, 38, 38 } },
-    { ITEM_TREASURE_LEVEL_3, { 33, 31, 32, 34 } },
-    { ITEM_TREASURE_LEVEL_4, { 35, 35, 38, 38 } },
-    { ITEM_TREASURE_LEVEL_4, { 33, 31, 32, 34 } }
+const IndexedArray<ITEM_VARIATION, HOUSE_FIRST_WEAPON_SHOP, HOUSE_LAST_WEAPON_SHOP> weaponShopVariationSpecial = {{
+    {HOUSE_SMITH_EMERALD_ISLE,      { ITEM_TREASURE_LEVEL_2, { 25, 30, 20, 20 } }},
+    {HOUSE_SMITH_HARMONDALE,        { ITEM_TREASURE_LEVEL_2, { 23, 24, 28, 20 } }},
+    {HOUSE_SMITH_ERATHIA,           { ITEM_TREASURE_LEVEL_3, { 23, 24, 25, 20 } }},
+    {HOUSE_SMITH_TULAREAN_FOREST,   { ITEM_TREASURE_LEVEL_3, { 27, 27, 26, 26 } }},
+    {HOUSE_SMITH_CELESTE,           { ITEM_TREASURE_LEVEL_5, { 23, 26, 28, 27 } }},
+    {HOUSE_SMITH_PIT,               { ITEM_TREASURE_LEVEL_5, { 23, 26, 28, 27 } }},
+    {HOUSE_SMITH_NIGHON,            { ITEM_TREASURE_LEVEL_4, { 30, 24, 20, 20 } }},
+    {HOUSE_SMITH_TATALIA_VANDERS,   { ITEM_TREASURE_LEVEL_3, { 20, 20, 20, 20 } }},
+    {HOUSE_SMITH_AVLEE,             { ITEM_TREASURE_LEVEL_4, { 27, 27, 26, 26 } }},
+    {HOUSE_SMITH_STONE_CITY,        { ITEM_TREASURE_LEVEL_4, { 28, 28, 25, 25 } }},
+    {HOUSE_SMITH_CASTLE_HARMONDALE, { ITEM_TREASURE_LEVEL_4, { 23, 23, 24, 24 } }},
+    {HOUSE_SMITH_TATALIA_ALLOYED,   { ITEM_TREASURE_LEVEL_4, { 24, 24, 27, 20 } }},
+    {HOUSE_SMITH_13,                { ITEM_TREASURE_LEVEL_4, { 30, 26, 26, 26 } }},
+    {HOUSE_SMITH_14,                { ITEM_TREASURE_LEVEL_4, { 28, 25, 28, 29 } }}
 }};
 
-const ITEM_TREASURE_LEVEL shopMagic_treasure_lvl[14] = {
-    ITEM_TREASURE_LEVEL_INVALID,
-    ITEM_TREASURE_LEVEL_1,
-    ITEM_TREASURE_LEVEL_1,
-    ITEM_TREASURE_LEVEL_2,
-    ITEM_TREASURE_LEVEL_2,
-    ITEM_TREASURE_LEVEL_4,
-    ITEM_TREASURE_LEVEL_4,
-    ITEM_TREASURE_LEVEL_3,
-    ITEM_TREASURE_LEVEL_2,
-    ITEM_TREASURE_LEVEL_2,
-    ITEM_TREASURE_LEVEL_2,
-    ITEM_TREASURE_LEVEL_2,
-    ITEM_TREASURE_LEVEL_2,
-    ITEM_TREASURE_LEVEL_2
-};
-
-const ITEM_TREASURE_LEVEL shopAlch_treasure_lvl[13] = {
-    ITEM_TREASURE_LEVEL_INVALID,
-    ITEM_TREASURE_LEVEL_1,
-    ITEM_TREASURE_LEVEL_1,
-    ITEM_TREASURE_LEVEL_2,
-    ITEM_TREASURE_LEVEL_2,
-    ITEM_TREASURE_LEVEL_3,
-    ITEM_TREASURE_LEVEL_3,
-    ITEM_TREASURE_LEVEL_4,
-    ITEM_TREASURE_LEVEL_4,
-    ITEM_TREASURE_LEVEL_2,
-    ITEM_TREASURE_LEVEL_2,
-    ITEM_TREASURE_LEVEL_2,
-    ITEM_TREASURE_LEVEL_2
-};
-
-const std::array<ITEM_VARIATION, 15> shopWeap_variation_spc = {{
-    { ITEM_TREASURE_LEVEL_INVALID, { 00, 00, 00, 00 } },
-    { ITEM_TREASURE_LEVEL_2, { 25, 30, 20, 20 } },
-    { ITEM_TREASURE_LEVEL_2, { 23, 24, 28, 20 } },
-    { ITEM_TREASURE_LEVEL_3, { 23, 24, 25, 20 } },
-    { ITEM_TREASURE_LEVEL_3, { 27, 27, 26, 26 } },
-    { ITEM_TREASURE_LEVEL_5, { 23, 26, 28, 27 } },
-    { ITEM_TREASURE_LEVEL_5, { 23, 26, 28, 27 } },
-    { ITEM_TREASURE_LEVEL_4, { 30, 24, 20, 20 } },
-    { ITEM_TREASURE_LEVEL_3, { 20, 20, 20, 20 } },
-    { ITEM_TREASURE_LEVEL_4, { 27, 27, 26, 26 } },
-    { ITEM_TREASURE_LEVEL_4, { 28, 28, 25, 25 } },
-    { ITEM_TREASURE_LEVEL_4, { 23, 23, 24, 24 } },
-    { ITEM_TREASURE_LEVEL_4, { 24, 24, 27, 20 } },
-    { ITEM_TREASURE_LEVEL_4, { 30, 26, 26, 26 } },
-    { ITEM_TREASURE_LEVEL_4, { 28, 25, 28, 29 } }
+const IndexedArray<ITEM_VARIATION, HOUSE_FIRST_ARMOR_SHOP, HOUSE_LAST_ARMOR_SHOP> armorShopTopRowVariationStandart = {{
+    {HOUSE_ARMOURER_EMERALD_ISLE,         { ITEM_TREASURE_LEVEL_1, { 35, 35, 38, 38 } }},
+    {HOUSE_ARMOURER_HARMONDALE,           { ITEM_TREASURE_LEVEL_1, { 35, 35, 38, 38 } }},
+    {HOUSE_ARMOURER_ERATHIA,              { ITEM_TREASURE_LEVEL_2, { 35, 35, 38, 38 } }},
+    {HOUSE_ARMOURER_TULAREAN_FOREST,      { ITEM_TREASURE_LEVEL_2, { 35, 35, 38, 38 } }},
+    {HOUSE_ARMOURER_CELESTE,              { ITEM_TREASURE_LEVEL_4, { 35, 35, 38, 38 } }},
+    {HOUSE_ARMOURER_PIT,                  { ITEM_TREASURE_LEVEL_4, { 35, 35, 38, 38 } }},
+    {HOUSE_ARMOURER_NIGHON,               { ITEM_TREASURE_LEVEL_3, { 35, 35, 38, 38 } }},
+    {HOUSE_ARMOURER_TATALIA_MISSING_LINK, { ITEM_TREASURE_LEVEL_2, { 35, 35, 38, 38 } }},
+    {HOUSE_ARMOURER_AVLEE,                { ITEM_TREASURE_LEVEL_3, { 35, 35, 38, 38 } }},
+    {HOUSE_ARMOURER_STONE_CITY,           { ITEM_TREASURE_LEVEL_3, { 35, 35, 38, 38 } }},
+    {HOUSE_ARMOURER_CASTLE_HARMONDALE,    { ITEM_TREASURE_LEVEL_3, { 35, 35, 38, 38 } }},
+    {HOUSE_ARMOURER_TATALIA_ALLOYED,      { ITEM_TREASURE_LEVEL_3, { 35, 35, 38, 38 } }},
+    {HOUSE_ARMOURER_27,                   { ITEM_TREASURE_LEVEL_3, { 35, 35, 38, 38 } }},
+    {HOUSE_ARMOURER_28,                   { ITEM_TREASURE_LEVEL_4, { 35, 35, 38, 38 } }}
 }};
 
-const ITEM_TREASURE_LEVEL shopMagicSpc_treasure_lvl[14] = {
-    ITEM_TREASURE_LEVEL_INVALID,
-    ITEM_TREASURE_LEVEL_2,
-    ITEM_TREASURE_LEVEL_2,
-    ITEM_TREASURE_LEVEL_3,
-    ITEM_TREASURE_LEVEL_3,
-    ITEM_TREASURE_LEVEL_5,
-    ITEM_TREASURE_LEVEL_5,
-    ITEM_TREASURE_LEVEL_4,
-    ITEM_TREASURE_LEVEL_3,
-    ITEM_TREASURE_LEVEL_3,
-    ITEM_TREASURE_LEVEL_3,
-    ITEM_TREASURE_LEVEL_3,
-    ITEM_TREASURE_LEVEL_3,
-    ITEM_TREASURE_LEVEL_3
-};
+const IndexedArray<ITEM_VARIATION, HOUSE_FIRST_ARMOR_SHOP, HOUSE_LAST_ARMOR_SHOP> armorShopBottomRowVariationStandart = {{
+    {HOUSE_ARMOURER_EMERALD_ISLE,         { ITEM_TREASURE_LEVEL_1, { 31, 31, 31, 34 } }},
+    {HOUSE_ARMOURER_HARMONDALE,           { ITEM_TREASURE_LEVEL_1, { 31, 31, 32, 34 } }},
+    {HOUSE_ARMOURER_ERATHIA,              { ITEM_TREASURE_LEVEL_2, { 31, 32, 32, 33 } }},
+    {HOUSE_ARMOURER_TULAREAN_FOREST,      { ITEM_TREASURE_LEVEL_2, { 31, 31, 32, 32 } }},
+    {HOUSE_ARMOURER_CELESTE,              { ITEM_TREASURE_LEVEL_4, { 31, 32, 33, 34 } }},
+    {HOUSE_ARMOURER_PIT,                  { ITEM_TREASURE_LEVEL_4, { 31, 32, 33, 34 } }},
+    {HOUSE_ARMOURER_NIGHON,               { ITEM_TREASURE_LEVEL_3, { 31, 31, 31, 31 } }},
+    {HOUSE_ARMOURER_TATALIA_MISSING_LINK, { ITEM_TREASURE_LEVEL_2, { 31, 32, 34, 34 } }},
+    {HOUSE_ARMOURER_AVLEE,                { ITEM_TREASURE_LEVEL_3, { 31, 31, 32, 32 } }},
+    {HOUSE_ARMOURER_STONE_CITY,           { ITEM_TREASURE_LEVEL_3, { 32, 32, 32, 33 } }},
+    {HOUSE_ARMOURER_CASTLE_HARMONDALE,    { ITEM_TREASURE_LEVEL_3, { 31, 31, 31, 32 } }},
+    {HOUSE_ARMOURER_TATALIA_ALLOYED,      { ITEM_TREASURE_LEVEL_3, { 33, 31, 32, 34 } }},
+    {HOUSE_ARMOURER_27,                   { ITEM_TREASURE_LEVEL_3, { 33, 31, 32, 34 } }},
+    {HOUSE_ARMOURER_28,                   { ITEM_TREASURE_LEVEL_4, { 33, 31, 32, 34 } }}
+}};
 
-const ITEM_TREASURE_LEVEL shopAlchSpc_treasure_lvl[13] = {
-    ITEM_TREASURE_LEVEL_INVALID,
-    ITEM_TREASURE_LEVEL_2,
-    ITEM_TREASURE_LEVEL_2,
-    ITEM_TREASURE_LEVEL_3,
-    ITEM_TREASURE_LEVEL_3,
-    ITEM_TREASURE_LEVEL_4,
-    ITEM_TREASURE_LEVEL_4,
-    ITEM_TREASURE_LEVEL_5,
-    ITEM_TREASURE_LEVEL_5,
-    ITEM_TREASURE_LEVEL_3,
-    ITEM_TREASURE_LEVEL_2,
-    ITEM_TREASURE_LEVEL_2,
-    ITEM_TREASURE_LEVEL_2
-};
+const IndexedArray<ITEM_VARIATION, HOUSE_FIRST_ARMOR_SHOP, HOUSE_LAST_ARMOR_SHOP> armorShopTopRowVariationSpecial = {{
+    {HOUSE_ARMOURER_EMERALD_ISLE,         { ITEM_TREASURE_LEVEL_2, { 35, 35, 38, 38 } }},
+    {HOUSE_ARMOURER_HARMONDALE,           { ITEM_TREASURE_LEVEL_2, { 35, 35, 38, 38 } }},
+    {HOUSE_ARMOURER_ERATHIA,              { ITEM_TREASURE_LEVEL_3, { 35, 35, 38, 38 } }},
+    {HOUSE_ARMOURER_TULAREAN_FOREST,      { ITEM_TREASURE_LEVEL_3, { 35, 35, 38, 38 } }},
+    {HOUSE_ARMOURER_CELESTE,              { ITEM_TREASURE_LEVEL_5, { 35, 35, 38, 38 } }},
+    {HOUSE_ARMOURER_PIT,                  { ITEM_TREASURE_LEVEL_5, { 35, 35, 38, 38 } }},
+    {HOUSE_ARMOURER_NIGHON,               { ITEM_TREASURE_LEVEL_4, { 35, 35, 38, 38 } }},
+    {HOUSE_ARMOURER_TATALIA_MISSING_LINK, { ITEM_TREASURE_LEVEL_3, { 35, 35, 38, 38 } }},
+    {HOUSE_ARMOURER_AVLEE,                { ITEM_TREASURE_LEVEL_4, { 35, 35, 38, 38 } }},
+    {HOUSE_ARMOURER_STONE_CITY,           { ITEM_TREASURE_LEVEL_4, { 35, 35, 38, 38 } }},
+    {HOUSE_ARMOURER_CASTLE_HARMONDALE,    { ITEM_TREASURE_LEVEL_4, { 35, 35, 38, 38 } }},
+    {HOUSE_ARMOURER_TATALIA_ALLOYED,      { ITEM_TREASURE_LEVEL_4, { 35, 35, 38, 38 } }},
+    {HOUSE_ARMOURER_27,                   { ITEM_TREASURE_LEVEL_4, { 35, 35, 38, 38 } }},
+    {HOUSE_ARMOURER_28,                   { ITEM_TREASURE_LEVEL_5, { 35, 35, 38, 38 } }}
+}};
 
-const std::array<ITEM_VARIATION, 28> shopArmr_variation_spc = {{
-    { ITEM_TREASURE_LEVEL_2, { 35, 35, 38, 38 } },
-    { ITEM_TREASURE_LEVEL_2, { 31, 31, 31, 34 } },
-    { ITEM_TREASURE_LEVEL_2, { 35, 35, 38, 38 } },
-    { ITEM_TREASURE_LEVEL_2, { 31, 31, 32, 34 } },
-    { ITEM_TREASURE_LEVEL_3, { 35, 35, 38, 38 } },
-    { ITEM_TREASURE_LEVEL_3, { 31, 32, 32, 33 } },
-    { ITEM_TREASURE_LEVEL_3, { 35, 35, 38, 38 } },
-    { ITEM_TREASURE_LEVEL_3, { 31, 31, 32, 32 } },
-    { ITEM_TREASURE_LEVEL_5, { 35, 35, 38, 38 } },
-    { ITEM_TREASURE_LEVEL_5, { 31, 32, 33, 34 } },
-    { ITEM_TREASURE_LEVEL_5, { 35, 35, 38, 38 } },
-    { ITEM_TREASURE_LEVEL_5, { 31, 32, 33, 34 } },
-    { ITEM_TREASURE_LEVEL_4, { 35, 35, 38, 38 } },
-    { ITEM_TREASURE_LEVEL_4, { 31, 31, 31, 31 } },
-    { ITEM_TREASURE_LEVEL_3, { 35, 35, 38, 38 } },
-    { ITEM_TREASURE_LEVEL_3, { 31, 32, 34, 34 } },
-    { ITEM_TREASURE_LEVEL_4, { 35, 35, 38, 38 } },
-    { ITEM_TREASURE_LEVEL_4, { 31, 31, 32, 33 } },
-    { ITEM_TREASURE_LEVEL_4, { 35, 35, 38, 38 } },
-    { ITEM_TREASURE_LEVEL_4, { 32, 32, 33, 34 } },
-    { ITEM_TREASURE_LEVEL_4, { 35, 35, 38, 38 } },
-    { ITEM_TREASURE_LEVEL_4, { 31, 31, 31, 32 } },
-    { ITEM_TREASURE_LEVEL_4, { 35, 35, 38, 38 } },
-    { ITEM_TREASURE_LEVEL_4, { 32, 32, 32, 32 } },
-    { ITEM_TREASURE_LEVEL_4, { 35, 35, 38, 38 } },
-    { ITEM_TREASURE_LEVEL_4, { 34, 34, 34, 34 } },
-    { ITEM_TREASURE_LEVEL_5, { 35, 35, 38, 38 } },
-    { ITEM_TREASURE_LEVEL_5, { 33, 33, 33, 33 } }
+const IndexedArray<ITEM_VARIATION, HOUSE_FIRST_ARMOR_SHOP, HOUSE_LAST_ARMOR_SHOP> armorShopBottomRowVariationSpecial = {{
+    {HOUSE_ARMOURER_EMERALD_ISLE,         { ITEM_TREASURE_LEVEL_2, { 31, 31, 31, 34 } }},
+    {HOUSE_ARMOURER_HARMONDALE,           { ITEM_TREASURE_LEVEL_2, { 31, 31, 32, 34 } }},
+    {HOUSE_ARMOURER_ERATHIA,              { ITEM_TREASURE_LEVEL_3, { 31, 32, 32, 33 } }},
+    {HOUSE_ARMOURER_TULAREAN_FOREST,      { ITEM_TREASURE_LEVEL_3, { 31, 31, 32, 32 } }},
+    {HOUSE_ARMOURER_CELESTE,              { ITEM_TREASURE_LEVEL_5, { 31, 32, 33, 34 } }},
+    {HOUSE_ARMOURER_PIT,                  { ITEM_TREASURE_LEVEL_5, { 31, 32, 33, 34 } }},
+    {HOUSE_ARMOURER_NIGHON,               { ITEM_TREASURE_LEVEL_4, { 31, 31, 31, 31 } }},
+    {HOUSE_ARMOURER_TATALIA_MISSING_LINK, { ITEM_TREASURE_LEVEL_3, { 31, 32, 34, 34 } }},
+    {HOUSE_ARMOURER_AVLEE,                { ITEM_TREASURE_LEVEL_4, { 31, 31, 32, 33 } }},
+    {HOUSE_ARMOURER_STONE_CITY,           { ITEM_TREASURE_LEVEL_4, { 32, 32, 33, 34 } }},
+    {HOUSE_ARMOURER_CASTLE_HARMONDALE,    { ITEM_TREASURE_LEVEL_4, { 31, 31, 31, 32 } }},
+    {HOUSE_ARMOURER_TATALIA_ALLOYED,      { ITEM_TREASURE_LEVEL_4, { 32, 32, 32, 32 } }},
+    {HOUSE_ARMOURER_27,                   { ITEM_TREASURE_LEVEL_4, { 34, 34, 34, 34 } }},
+    {HOUSE_ARMOURER_28,                   { ITEM_TREASURE_LEVEL_5, { 33, 33, 33, 33 } }}
+}};
+
+const IndexedArray<ITEM_TREASURE_LEVEL, HOUSE_FIRST_MAGIC_SHOP, HOUSE_LAST_MAGIC_SHOP> magicShopVariationStandart = {{
+    {HOUSE_MAGE_EMERALD_ISLE,    ITEM_TREASURE_LEVEL_1},
+    {HOUSE_MAGE_HARMONDALE,      ITEM_TREASURE_LEVEL_1},
+    {HOUSE_MAGE_ERATHIA,         ITEM_TREASURE_LEVEL_2},
+    {HOUSE_MAGE_TULAREAN_FOREST, ITEM_TREASURE_LEVEL_2},
+    {HOUSE_MAGE_DEYJA,           ITEM_TREASURE_LEVEL_4},
+    {HOUSE_MAGE_BRACADA_DESERT,  ITEM_TREASURE_LEVEL_4},
+    {HOUSE_MAGE_CELESTE,         ITEM_TREASURE_LEVEL_3},
+    {HOUSE_MAGE_PIT,             ITEM_TREASURE_LEVEL_2},
+    {HOUSE_MAGE_NIGHON,          ITEM_TREASURE_LEVEL_2},
+    {HOUSE_MAGE_STONE_CITY,      ITEM_TREASURE_LEVEL_2},
+    {HOUSE_MAGE_39,              ITEM_TREASURE_LEVEL_2},
+    {HOUSE_MAGE_40,              ITEM_TREASURE_LEVEL_2},
+    {HOUSE_MAGE_41,              ITEM_TREASURE_LEVEL_2}
+}};
+
+const IndexedArray<ITEM_TREASURE_LEVEL, HOUSE_FIRST_MAGIC_SHOP, HOUSE_LAST_MAGIC_SHOP> magicShopVariationSpecial = {{
+    {HOUSE_MAGE_EMERALD_ISLE,    ITEM_TREASURE_LEVEL_2},
+    {HOUSE_MAGE_HARMONDALE,      ITEM_TREASURE_LEVEL_2},
+    {HOUSE_MAGE_ERATHIA,         ITEM_TREASURE_LEVEL_3},
+    {HOUSE_MAGE_TULAREAN_FOREST, ITEM_TREASURE_LEVEL_3},
+    {HOUSE_MAGE_DEYJA,           ITEM_TREASURE_LEVEL_5},
+    {HOUSE_MAGE_BRACADA_DESERT,  ITEM_TREASURE_LEVEL_5},
+    {HOUSE_MAGE_CELESTE,         ITEM_TREASURE_LEVEL_4},
+    {HOUSE_MAGE_PIT,             ITEM_TREASURE_LEVEL_3},
+    {HOUSE_MAGE_NIGHON,          ITEM_TREASURE_LEVEL_3},
+    {HOUSE_MAGE_STONE_CITY,      ITEM_TREASURE_LEVEL_3},
+    {HOUSE_MAGE_39,              ITEM_TREASURE_LEVEL_3},
+    {HOUSE_MAGE_40,              ITEM_TREASURE_LEVEL_3},
+    {HOUSE_MAGE_41,              ITEM_TREASURE_LEVEL_3}
+}};
+
+const IndexedArray<ITEM_TREASURE_LEVEL, HOUSE_FIRST_ALCHEMY_SHOP, HOUSE_LAST_ALCHEMY_SHOP> alchemyShopVariationStandart = {{
+    {HOUSE_ALCHEMIST_EMERALD_ISLE,      ITEM_TREASURE_LEVEL_1},
+    {HOUSE_ALCHEMIST_HARMONDALE,        ITEM_TREASURE_LEVEL_1},
+    {HOUSE_ALCHEMIST_ERATHIA,           ITEM_TREASURE_LEVEL_2},
+    {HOUSE_ALCHEMIST_TULAREAN_FOREST,   ITEM_TREASURE_LEVEL_2},
+    {HOUSE_ALCHEMIST_DEYJA,             ITEM_TREASURE_LEVEL_3},
+    {HOUSE_ALCHEMIST_BRACADA_DESERT,    ITEM_TREASURE_LEVEL_3},
+    {HOUSE_ALCHEMIST_CELESTE,           ITEM_TREASURE_LEVEL_4},
+    {HOUSE_ALCHEMIST_PIT,               ITEM_TREASURE_LEVEL_4},
+    {HOUSE_ALCHEMIST_STONE_CITY,        ITEM_TREASURE_LEVEL_2},
+    {HOUSE_ALCHEMIST_CASTLE_HARMONDALE, ITEM_TREASURE_LEVEL_2},
+    {HOUSE_ALCHEMIST_52,                ITEM_TREASURE_LEVEL_2},
+    {HOUSE_ALCHEMIST_53,                ITEM_TREASURE_LEVEL_2}
+}};
+
+const IndexedArray<ITEM_TREASURE_LEVEL, HOUSE_FIRST_ALCHEMY_SHOP, HOUSE_LAST_ALCHEMY_SHOP> alchemyShopVariationSpecial = {{
+    {HOUSE_ALCHEMIST_EMERALD_ISLE,      ITEM_TREASURE_LEVEL_2},
+    {HOUSE_ALCHEMIST_HARMONDALE,        ITEM_TREASURE_LEVEL_2},
+    {HOUSE_ALCHEMIST_ERATHIA,           ITEM_TREASURE_LEVEL_3},
+    {HOUSE_ALCHEMIST_TULAREAN_FOREST,   ITEM_TREASURE_LEVEL_3},
+    {HOUSE_ALCHEMIST_DEYJA,             ITEM_TREASURE_LEVEL_4},
+    {HOUSE_ALCHEMIST_BRACADA_DESERT,    ITEM_TREASURE_LEVEL_4},
+    {HOUSE_ALCHEMIST_CELESTE,           ITEM_TREASURE_LEVEL_5},
+    {HOUSE_ALCHEMIST_PIT,               ITEM_TREASURE_LEVEL_5},
+    {HOUSE_ALCHEMIST_STONE_CITY,        ITEM_TREASURE_LEVEL_3},
+    {HOUSE_ALCHEMIST_CASTLE_HARMONDALE, ITEM_TREASURE_LEVEL_2},
+    {HOUSE_ALCHEMIST_52,                ITEM_TREASURE_LEVEL_2},
+    {HOUSE_ALCHEMIST_53,                ITEM_TREASURE_LEVEL_2}
 }};
 
 std::array<std::string, 6> portraitClickLabel;
@@ -788,8 +788,8 @@ bool enterHouse(HOUSE_ID uHouseID) {
         return false;
     } else {
         if (isShop(uHouseID)) {  // entering shops and guilds
-            if (!(pParty->PartyTimes._shop_ban_times[uHouseID]) || (pParty->PartyTimes._shop_ban_times[uHouseID] <= pParty->GetPlayingTime())) {
-                pParty->PartyTimes._shop_ban_times[uHouseID] = GameTime(0);
+            if (!(pParty->PartyTimes.shopBanTimes[uHouseID]) || (pParty->PartyTimes.shopBanTimes[uHouseID] <= pParty->GetPlayingTime())) {
+                pParty->PartyTimes.shopBanTimes[uHouseID] = GameTime(0);
             } else {
                 GameUI_SetStatusBar(LSTR_BANNED_FROM_SHOP);
                 return false;
@@ -922,7 +922,7 @@ void GetHouseGoodbyeSpeech() {
             PlayHouseSound(window_SpeakInHouse->wData.val, HouseSound_Greeting_2);
             return;
         }
-        if (pParty->PartyTimes._shop_ban_times[window_SpeakInHouse->wData.val] <= pParty->GetPlayingTime()) {
+        if (pParty->PartyTimes.shopBanTimes[window_SpeakInHouse->houseId()] <= pParty->GetPlayingTime()) {
             if (pParty->GetGold() <= 10000) {
                 if (!dword_F8B1E4) return;
                 PlayHouseSound(window_SpeakInHouse->wData.val, HouseSound_Goodbye);
@@ -971,39 +971,33 @@ void OnSelectShopDialogueOption(DIALOGUE_TYPE option) {
     // NEW
     // TODO(Nik-RE-dev): houseDialogueOptionSelected must be called without switch
     switch (in_current_building_type) {
-    case BuildingType_FireGuild:
-    case BuildingType_AirGuild:
-    case BuildingType_WaterGuild:
-    case BuildingType_EarthGuild:
-    case BuildingType_SpiritGuild:
-    case BuildingType_MindGuild:
-    case BuildingType_BodyGuild:
-    case BuildingType_LightGuild:
-    case BuildingType_DarkGuild:
-    case BuildingType_ElementalGuild:
-    case BuildingType_SelfGuild:
-    case BuildingType_MirroredPath:
-    case BuildingType_Bank:
-    case BuildingType_Temple:
-    case BuildingType_Tavern:
-    case BuildingType_Training:
-    case BuildingType_Jail:
-    case BuildingType_MercenaryGuild:
-    case BuildingType_TownHall:
+      case BuildingType_FireGuild:
+      case BuildingType_AirGuild:
+      case BuildingType_WaterGuild:
+      case BuildingType_EarthGuild:
+      case BuildingType_SpiritGuild:
+      case BuildingType_MindGuild:
+      case BuildingType_BodyGuild:
+      case BuildingType_LightGuild:
+      case BuildingType_DarkGuild:
+      case BuildingType_ElementalGuild:
+      case BuildingType_SelfGuild:
+      case BuildingType_MirroredPath:
+      case BuildingType_Bank:
+      case BuildingType_Temple:
+      case BuildingType_Tavern:
+      case BuildingType_Training:
+      case BuildingType_Jail:
+      case BuildingType_MercenaryGuild:
+      case BuildingType_TownHall:
+      case BuildingType_WeaponShop:
+      case BuildingType_ArmorShop:
+      case BuildingType_MagicShop:
+      case BuildingType_AlchemistShop:
         ((GUIWindow_House*)window_SpeakInHouse)->houseDialogueOptionSelected(option);
         break;
-    case BuildingType_WeaponShop:
-    case BuildingType_ArmorShop:
-    case BuildingType_MagicShop:
-    case BuildingType_AlchemistShop:
-    {
-        break;
-    }
-    default:
-    {
+      default:
         return;
-        break;
-    }
     }
 
     switch (option) {
@@ -1051,20 +1045,14 @@ void OnSelectShopDialogueOption(DIALOGUE_TYPE option) {
         if (option == DIALOGUE_SHOP_BUY_STANDARD) {
             if (ItemAmountForShop(buildingTable[window_SpeakInHouse->wData.val - HOUSE_SMITH_EMERALD_ISLE].uType)) {
                 for (uint i = 0; i < ItemAmountForShop(buildingTable[window_SpeakInHouse->wData.val - HOUSE_SMITH_EMERALD_ISLE].uType); ++i) {
-                    if (pParty
-                        ->StandartItemsInShops[window_SpeakInHouse
-                        ->wData.val][i].uItemID != ITEM_NULL)
-                        shop_ui_items_in_store[i] = assets->getImage_ColorKey(
-                            pParty->StandartItemsInShops[window_SpeakInHouse->wData.val][i].GetIconName());
+                    if (pParty->standartItemsInShops[window_SpeakInHouse->houseId()][i].uItemID != ITEM_NULL)
+                        shop_ui_items_in_store[i] = assets->getImage_ColorKey(pParty->standartItemsInShops[window_SpeakInHouse->houseId()][i].GetIconName());
                 }
             }
             if (in_current_building_type == BuildingType_WeaponShop) {
                 if (ItemAmountForShop(buildingTable[window_SpeakInHouse->wData.val - HOUSE_SMITH_EMERALD_ISLE].uType)) {
                     for (uint i = 0; i < ItemAmountForShop(buildingTable[window_SpeakInHouse->wData.val - HOUSE_SMITH_EMERALD_ISLE].uType); ++i) {
-                        if (pParty
-                            ->StandartItemsInShops
-                            [window_SpeakInHouse->wData.val][i]
-                            .uItemID != ITEM_NULL) {
+                        if (pParty->standartItemsInShops[window_SpeakInHouse->houseId()][i].uItemID != ITEM_NULL) {
                             // Note that we're using grng here for a reason - we want recorded mouse clicks to work.
                             weapons_Ypos[i] = grng->random(300 - shop_ui_items_in_store[i]->GetHeight());
                         }
@@ -1075,18 +1063,14 @@ void OnSelectShopDialogueOption(DIALOGUE_TYPE option) {
         if (option == DIALOGUE_SHOP_BUY_SPECIAL) {
             if (ItemAmountForShop(buildingTable[window_SpeakInHouse->wData.val - HOUSE_SMITH_EMERALD_ISLE].uType)) {
                 for (uint i = 0; i < ItemAmountForShop(buildingTable[window_SpeakInHouse->wData.val - HOUSE_SMITH_EMERALD_ISLE].uType); ++i) {
-                    if (pParty->SpecialItemsInShops[
-                        window_SpeakInHouse->wData.val][i].uItemID != ITEM_NULL)
-                        shop_ui_items_in_store[i] = assets->getImage_ColorKey(
-                            pParty->SpecialItemsInShops
-                            [window_SpeakInHouse->wData.val][i].GetIconName());
+                    if (pParty->specialItemsInShops[window_SpeakInHouse->houseId()][i].uItemID != ITEM_NULL)
+                        shop_ui_items_in_store[i] = assets->getImage_ColorKey(pParty->specialItemsInShops[window_SpeakInHouse->houseId()][i].GetIconName());
                 }
             }
             if (in_current_building_type == BuildingType_WeaponShop) {
                 if (ItemAmountForShop(buildingTable[window_SpeakInHouse->wData.val - HOUSE_SMITH_EMERALD_ISLE].uType)) {
                     for (uint i = 0; i < ItemAmountForShop(buildingTable[window_SpeakInHouse->wData.val - HOUSE_SMITH_EMERALD_ISLE].uType); ++i) {
-                        if (pParty->SpecialItemsInShops[
-                            window_SpeakInHouse->wData.val][i].uItemID != ITEM_NULL) {
+                        if (pParty->specialItemsInShops[window_SpeakInHouse->houseId()][i].uItemID != ITEM_NULL) {
                             // Note that we're using grng here for a reason - we want recorded mouse clicks to work.
                             weapons_Ypos[i] = grng->random(300 - shop_ui_items_in_store[i]->GetHeight());
                         }
@@ -1391,11 +1375,9 @@ void FillAviableSkillsToTeach(BuildingType type) {
         for (int i = 0; i < 2; ++i) {
             for (int j = 0; j < 4; ++j) {
                 if (i)
-                    v21 = shopWeap_variation_spc
-                    [window_SpeakInHouse->wData.val].item_class[j];
+                    v21 = weaponShopVariationSpecial[window_SpeakInHouse->houseId()].item_class[j];
                 else
-                    v21 = shopWeap_variation_ord
-                    [window_SpeakInHouse->wData.val].item_class[j];
+                    v21 = weaponShopVariationStandart[window_SpeakInHouse->houseId()].item_class[j];
 
                 DIALOGUE_TYPE v34;
                 switch (v21) {
@@ -1419,12 +1401,17 @@ void FillAviableSkillsToTeach(BuildingType type) {
         for (int i = 0; i < 2; ++i) {
             for (int j = 0; j < 2; ++j) {
                 for (int k = 0; k < 4; ++k) {
-                    if (i)
-                        v15 = shopArmr_variation_spc
-                        [window_SpeakInHouse->wData.val - 15 + j].item_class[k];
-                    else
-                        v15 = shopArmr_variation_ord
-                        [window_SpeakInHouse->wData.val - 15 + j].item_class[k];
+                    if (j) {
+                        if (i)
+                            v15 = armorShopBottomRowVariationSpecial[window_SpeakInHouse->houseId()].item_class[k];
+                        else
+                            v15 = armorShopBottomRowVariationStandart[window_SpeakInHouse->houseId()].item_class[k];
+                    } else {
+                        if (i)
+                            v15 = armorShopTopRowVariationSpecial[window_SpeakInHouse->houseId()].item_class[k];
+                        else
+                            v15 = armorShopTopRowVariationStandart[window_SpeakInHouse->houseId()].item_class[k];
+                    }
 
                     DIALOGUE_TYPE v33;
                     switch (v15) {
@@ -1561,92 +1548,81 @@ void FillAviableSkillsToTeach(BuildingType type) {
 //----- (004B8F94) --------------------------------------------------------
 void GenerateSpecialShopItems() {
     signed int item_count;
-    signed int shop_index;
     ITEM_TREASURE_LEVEL treasure_lvl = ITEM_TREASURE_LEVEL_INVALID;
     int item_class = 0;
-    int mdf;
 
-    shop_index = window_SpeakInHouse->wData.val;
-    if (ItemAmountForShop(buildingTable[shop_index - 1].uType)) {
-        for (item_count = 0; item_count < ItemAmountForShop(buildingTable[shop_index - 1].uType); ++item_count) {
-            if (shop_index <= 14) {  // weapon shop
-                treasure_lvl =
-                    shopWeap_variation_spc[shop_index].treasure_level;
-                item_class =
-                    shopWeap_variation_spc[shop_index].item_class[grng->random(4)];
-            } else if (shop_index <= 28) {  // armor shop
-                mdf = 0;
-                if (item_count > 3) ++mdf;
-                treasure_lvl =
-                    shopArmr_variation_spc[2 * (shop_index - 15) + mdf]
-                    .treasure_level;
-                item_class = shopArmr_variation_spc[2 * (shop_index - 15) + mdf]
-                    .item_class[grng->random(4)];
-            } else if (shop_index <= 41) {  // magic shop
-                treasure_lvl = shopMagicSpc_treasure_lvl[shop_index - 28];
-                item_class = 22;          // misc
-            } else if (shop_index <= 53) {  // alchemist shop
+    HOUSE_ID shopId = window_SpeakInHouse->houseId();
+    if (ItemAmountForShop(buildingTable[std::to_underlying(shopId) - 1].uType)) {
+        for (item_count = 0; item_count < ItemAmountForShop(buildingTable[std::to_underlying(shopId) - 1].uType); ++item_count) {
+            if (isWeaponShop(shopId)) {  // weapon shop
+                treasure_lvl = weaponShopVariationSpecial[shopId].treasure_level;
+                item_class = weaponShopVariationSpecial[shopId].item_class[grng->random(4)];
+            } else if (isArmorShop(shopId)) {  // armor shop
+                if (item_count >= 4) {
+                    treasure_lvl = armorShopBottomRowVariationSpecial[shopId].treasure_level;
+                    item_class = armorShopBottomRowVariationSpecial[shopId].item_class[grng->random(4)];
+                } else {
+                    treasure_lvl = armorShopTopRowVariationSpecial[shopId].treasure_level;
+                    item_class = armorShopTopRowVariationSpecial[shopId].item_class[grng->random(4)];
+                }
+            } else if (isMagicShop(shopId)) {  // magic shop
+                treasure_lvl = magicShopVariationSpecial[shopId];
+                item_class = 22; // misc
+            } else if (isAlchemyShop(shopId)) {  // alchemist shop
                 if (item_count < 6) {
-                    pParty->SpecialItemsInShops[shop_index][item_count].Reset();
-                    pParty->SpecialItemsInShops[shop_index][item_count]
-                        .uItemID = grng->randomSample(recipeScrolls());  // mscrool
+                    pParty->specialItemsInShops[shopId][item_count].Reset();
+                    pParty->specialItemsInShops[shopId][item_count].uItemID = grng->randomSample(recipeScrolls());  // mscrool
                     continue;
                 } else {
-                    treasure_lvl = shopAlchSpc_treasure_lvl[shop_index - 41];
+                    treasure_lvl = alchemyShopVariationSpecial[shopId];
                     item_class = 44;  // potion
                 }
             }
-            pItemTable->generateItem(treasure_lvl, item_class, &pParty->SpecialItemsInShops[shop_index][item_count]);
-            pParty->SpecialItemsInShops[shop_index][item_count].SetIdentified();  // identified
+            pItemTable->generateItem(treasure_lvl, item_class, &pParty->specialItemsInShops[shopId][item_count]);
+            pParty->specialItemsInShops[shopId][item_count].SetIdentified();  // identified
         }
     }
-    pParty->InTheShopFlags[shop_index] = 0;
+    pParty->InTheShopFlags[std::to_underlying(shopId)] = 0;
 }
 
 //----- (004B8E3D) --------------------------------------------------------
 void GenerateStandartShopItems() {
     signed int item_count;
-    signed int shop_index;
     ITEM_TREASURE_LEVEL treasure_lvl = ITEM_TREASURE_LEVEL_INVALID;
     int item_class = 0;
-    int mdf;
 
-    shop_index = window_SpeakInHouse->wData.val;
-    if (ItemAmountForShop(buildingTable[shop_index - 1].uType)) {
-        for (item_count = 0; item_count < ItemAmountForShop(buildingTable[shop_index - 1].uType); ++item_count) {
-            if (shop_index <= 14) {  // weapon shop
-                treasure_lvl =
-                    shopWeap_variation_ord[shop_index].treasure_level;
-                item_class =
-                    shopWeap_variation_ord[shop_index].item_class[grng->random(4)];
-            } else if (shop_index <= 28) {  // armor shop
-                mdf = 0;
-                if (item_count > 3) ++mdf;  // rechek offsets
-                treasure_lvl =
-                    shopArmr_variation_ord[2 * (shop_index - 15) + mdf]
-                    .treasure_level;
-                item_class = shopArmr_variation_ord[2 * (shop_index - 15) + mdf]
-                    .item_class[grng->random(4)];
-            } else if (shop_index <= 41) {  // magic shop
-                treasure_lvl = shopMagic_treasure_lvl[shop_index - 28];
+    HOUSE_ID shopId = window_SpeakInHouse->houseId();
+    if (ItemAmountForShop(buildingTable[std::to_underlying(shopId) - 1].uType)) {
+        for (item_count = 0; item_count < ItemAmountForShop(buildingTable[std::to_underlying(shopId) - 1].uType); ++item_count) {
+            if (isWeaponShop(shopId)) {  // weapon shop
+                treasure_lvl = weaponShopVariationStandart[shopId].treasure_level;
+                item_class = weaponShopVariationStandart[shopId].item_class[grng->random(4)];
+            } else if (isArmorShop(shopId)) {  // armor shop
+                if (item_count >= 4) {
+                    treasure_lvl = armorShopBottomRowVariationStandart[shopId].treasure_level;
+                    item_class = armorShopBottomRowVariationStandart[shopId].item_class[grng->random(4)];
+                } else {
+                    treasure_lvl = armorShopTopRowVariationStandart[shopId].treasure_level;
+                    item_class = armorShopTopRowVariationStandart[shopId].item_class[grng->random(4)];
+                }
+            } else if (isMagicShop(shopId)) {  // magic shop
+                treasure_lvl = magicShopVariationStandart[shopId];
                 item_class = 22;          // misc
-            } else if (shop_index <= 53) {  // alchemist shop
+            } else if (isAlchemyShop(shopId)) {  // alchemist shop
                 if (item_count < 6) {
-                    pParty->StandartItemsInShops[shop_index][item_count]
-                        .Reset();
-                    pParty->StandartItemsInShops[shop_index][item_count]
-                        .uItemID = ITEM_POTION_BOTTLE;  // potion bottle
+                    pParty->standartItemsInShops[shopId][item_count].Reset();
+                    pParty->standartItemsInShops[shopId][item_count].uItemID = ITEM_POTION_BOTTLE;  // potion bottle
                     continue;
                 } else {
-                    treasure_lvl = shopAlch_treasure_lvl[shop_index - 41];
+                    treasure_lvl = alchemyShopVariationStandart[shopId];
                     item_class = 45;  // reagent
                 }
             }
-            pItemTable->generateItem(treasure_lvl, item_class, &pParty->StandartItemsInShops[shop_index][item_count]);
-            pParty->StandartItemsInShops[shop_index][item_count].SetIdentified();  // identified
+            pItemTable->generateItem(treasure_lvl, item_class, &pParty->standartItemsInShops[shopId][item_count]);
+            pParty->standartItemsInShops[shopId][item_count].SetIdentified();  // identified
         }
     }
-    pParty->InTheShopFlags[shop_index] = 0;
+    pParty->InTheShopFlags[std::to_underlying(shopId)] = 0;
 }
 
 int HouseDialogPressCloseBtn() {
@@ -1763,6 +1739,18 @@ void createHouseUI(HOUSE_ID houseId) {
         break;
       case BuildingType_MercenaryGuild:
         window_SpeakInHouse = new GUIWindow_MercenaryGuild(houseId);
+        break;
+      case BuildingType_WeaponShop:
+        window_SpeakInHouse = new GUIWindow_WeaponShop(houseId);
+        break;
+      case BuildingType_ArmorShop:
+        window_SpeakInHouse = new GUIWindow_ArmorShop(houseId);
+        break;
+      case BuildingType_MagicShop:
+        window_SpeakInHouse = new GUIWindow_MagicShop(houseId);
+        break;
+      case BuildingType_AlchemistShop:
+        window_SpeakInHouse = new GUIWindow_AlchemyShop(houseId);
         break;
       default:
         window_SpeakInHouse = new GUIWindow_House(houseId);
@@ -1894,70 +1882,12 @@ void GUIWindow_House::houseDialogManager() {
         }
         return;
     }
-    if (v4 || !dword_591080) {  // emerald isle ship before quest's done   / на
-                                // изумрудном острове заходит на корабле пока не
-                                // выполнены квесты
+    if (v4 || !dword_591080) {  // emerald isle ship before quest's done
         SimpleHouseDialog();
     } else {
-        std::string nameAndTitle = NameAndTitle(buildingTable[wData.val - 1].pProprieterName,
-                                                buildingTable[wData.val - 1].pProprieterTitle);
+        std::string nameAndTitle = NameAndTitle(buildingTable[wData.val - 1].pProprieterName, buildingTable[wData.val - 1].pProprieterTitle);
         pWindow.DrawTitleText(pFontCreate, SIDE_TEXT_BOX_POS_X, SIDE_TEXT_BOX_POS_Y, colorTable.EasternBlue, nameAndTitle, 3);
-
-        // TODO(Nik-RE-dev): houseSpecificDialogue must be called without switch
-        switch (in_current_building_type) {
-          case BuildingType_WeaponShop:
-            WeaponShopDialog();
-            break;
-          case BuildingType_ArmorShop:
-            ArmorShopDialog();
-            break;
-          case BuildingType_MagicShop:
-            MagicShopDialog();
-            break;
-          case BuildingType_AlchemistShop:
-            AlchemistDialog();
-            break;
-          case BuildingType_FireGuild:
-          case BuildingType_AirGuild:
-          case BuildingType_WaterGuild:
-          case BuildingType_EarthGuild:
-          case BuildingType_SpiritGuild:
-          case BuildingType_MindGuild:
-          case BuildingType_BodyGuild:
-          case BuildingType_LightGuild:
-          case BuildingType_DarkGuild:
-          case BuildingType_MirroredPath:
-            houseSpecificDialogue();
-            break;
-          case BuildingType_MercenaryGuild:
-            houseSpecificDialogue();
-            break;
-          case BuildingType_TownHall:
-            houseSpecificDialogue();
-            break;
-          case BuildingType_Tavern:
-            houseSpecificDialogue();
-            break;
-          case BuildingType_Bank:
-            houseSpecificDialogue();
-            break;
-          case BuildingType_Temple:
-            houseSpecificDialogue();
-            break;
-          case BuildingType_Stables:
-          case BuildingType_Boats:
-            houseSpecificDialogue();
-            break;
-          case BuildingType_Training:
-            houseSpecificDialogue();
-            break;
-          case BuildingType_Jail:
-            houseSpecificDialogue();
-            break;
-          default:
-            // __debugbreak();//New BuildingType (if enter Boat)
-            break;
-        }
+        houseSpecificDialogue();
     }
     if (pDialogueNPCCount == uNumDialogueNPCPortraits && uHouse_ExitPic) {
         render->DrawTextureNew(556 / 640.0f, 451 / 480.0f, dialogue_ui_x_x_u);
@@ -2006,8 +1936,8 @@ void GUIWindow_House::Update() {
     if (!isShop(houseId())) {
         return;
     }
-    if (pParty->PartyTimes._shop_ban_times[houseId()] <= pParty->GetPlayingTime()) {
-        pParty->PartyTimes._shop_ban_times[houseId()] = GameTime(0);
+    if (pParty->PartyTimes.shopBanTimes[houseId()] <= pParty->GetPlayingTime()) {
+        pParty->PartyTimes.shopBanTimes[houseId()] = GameTime(0);
         return;
     }
     // dialog_menu_id = DIALOGUE_MAIN;
