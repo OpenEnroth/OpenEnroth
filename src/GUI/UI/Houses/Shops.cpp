@@ -14,6 +14,7 @@
 #include "Engine/PriceCalculator.h"
 #include "Engine/Tables/AwardTable.h"
 #include "Engine/Tables/MerchantTable.h"
+#include "Engine/Tables/ItemTable.h"
 
 #include "GUI/GUIWindow.h"
 #include "GUI/GUIButton.h"
@@ -29,12 +30,259 @@
 
 #include "Library/Random/Random.h"
 
+#include "Utility/IndexedArray.h"
+
+const IndexedArray<ITEM_VARIATION, HOUSE_FIRST_WEAPON_SHOP, HOUSE_LAST_WEAPON_SHOP> weaponShopVariationStandart = {{
+    {HOUSE_SMITH_EMERALD_ISLE,      { ITEM_TREASURE_LEVEL_1, { 23, 27, 20, 20 } }},
+    {HOUSE_SMITH_HARMONDALE,        { ITEM_TREASURE_LEVEL_1, { 23, 24, 28, 20 } }},
+    {HOUSE_SMITH_ERATHIA,           { ITEM_TREASURE_LEVEL_2, { 23, 24, 25, 20 } }},
+    {HOUSE_SMITH_TULAREAN_FOREST,   { ITEM_TREASURE_LEVEL_2, { 27, 27, 26, 26 } }},
+    {HOUSE_SMITH_CELESTE,           { ITEM_TREASURE_LEVEL_4, { 24, 30, 25, 27 } }},
+    {HOUSE_SMITH_PIT,               { ITEM_TREASURE_LEVEL_4, { 24, 30, 25, 27 } }},
+    {HOUSE_SMITH_NIGHON,            { ITEM_TREASURE_LEVEL_3, { 30, 24, 20, 20 } }},
+    {HOUSE_SMITH_TATALIA_VANDERS,   { ITEM_TREASURE_LEVEL_2, { 20, 20, 20, 20 } }},
+    {HOUSE_SMITH_AVLEE,             { ITEM_TREASURE_LEVEL_3, { 27, 27, 26, 26 } }},
+    {HOUSE_SMITH_STONE_CITY,        { ITEM_TREASURE_LEVEL_3, { 28, 28, 25, 25 } }},
+    {HOUSE_SMITH_CASTLE_HARMONDALE, { ITEM_TREASURE_LEVEL_2, { 23, 23, 24, 24 } }},
+    {HOUSE_SMITH_TATALIA_ALLOYED,   { ITEM_TREASURE_LEVEL_3, { 23, 23, 26, 26 } }},
+    {HOUSE_SMITH_13,                { ITEM_TREASURE_LEVEL_2, { 30, 26, 26, 26 } }},
+    {HOUSE_SMITH_14,                { ITEM_TREASURE_LEVEL_2, { 28, 25, 28, 29 } }}
+}};
+
+const IndexedArray<ITEM_VARIATION, HOUSE_FIRST_WEAPON_SHOP, HOUSE_LAST_WEAPON_SHOP> weaponShopVariationSpecial = {{
+    {HOUSE_SMITH_EMERALD_ISLE,      { ITEM_TREASURE_LEVEL_2, { 25, 30, 20, 20 } }},
+    {HOUSE_SMITH_HARMONDALE,        { ITEM_TREASURE_LEVEL_2, { 23, 24, 28, 20 } }},
+    {HOUSE_SMITH_ERATHIA,           { ITEM_TREASURE_LEVEL_3, { 23, 24, 25, 20 } }},
+    {HOUSE_SMITH_TULAREAN_FOREST,   { ITEM_TREASURE_LEVEL_3, { 27, 27, 26, 26 } }},
+    {HOUSE_SMITH_CELESTE,           { ITEM_TREASURE_LEVEL_5, { 23, 26, 28, 27 } }},
+    {HOUSE_SMITH_PIT,               { ITEM_TREASURE_LEVEL_5, { 23, 26, 28, 27 } }},
+    {HOUSE_SMITH_NIGHON,            { ITEM_TREASURE_LEVEL_4, { 30, 24, 20, 20 } }},
+    {HOUSE_SMITH_TATALIA_VANDERS,   { ITEM_TREASURE_LEVEL_3, { 20, 20, 20, 20 } }},
+    {HOUSE_SMITH_AVLEE,             { ITEM_TREASURE_LEVEL_4, { 27, 27, 26, 26 } }},
+    {HOUSE_SMITH_STONE_CITY,        { ITEM_TREASURE_LEVEL_4, { 28, 28, 25, 25 } }},
+    {HOUSE_SMITH_CASTLE_HARMONDALE, { ITEM_TREASURE_LEVEL_4, { 23, 23, 24, 24 } }},
+    {HOUSE_SMITH_TATALIA_ALLOYED,   { ITEM_TREASURE_LEVEL_4, { 24, 24, 27, 20 } }},
+    {HOUSE_SMITH_13,                { ITEM_TREASURE_LEVEL_4, { 30, 26, 26, 26 } }},
+    {HOUSE_SMITH_14,                { ITEM_TREASURE_LEVEL_4, { 28, 25, 28, 29 } }}
+}};
+
+const IndexedArray<ITEM_VARIATION, HOUSE_FIRST_ARMOR_SHOP, HOUSE_LAST_ARMOR_SHOP> armorShopTopRowVariationStandart = {{
+    {HOUSE_ARMOURER_EMERALD_ISLE,         { ITEM_TREASURE_LEVEL_1, { 35, 35, 38, 38 } }},
+    {HOUSE_ARMOURER_HARMONDALE,           { ITEM_TREASURE_LEVEL_1, { 35, 35, 38, 38 } }},
+    {HOUSE_ARMOURER_ERATHIA,              { ITEM_TREASURE_LEVEL_2, { 35, 35, 38, 38 } }},
+    {HOUSE_ARMOURER_TULAREAN_FOREST,      { ITEM_TREASURE_LEVEL_2, { 35, 35, 38, 38 } }},
+    {HOUSE_ARMOURER_CELESTE,              { ITEM_TREASURE_LEVEL_4, { 35, 35, 38, 38 } }},
+    {HOUSE_ARMOURER_PIT,                  { ITEM_TREASURE_LEVEL_4, { 35, 35, 38, 38 } }},
+    {HOUSE_ARMOURER_NIGHON,               { ITEM_TREASURE_LEVEL_3, { 35, 35, 38, 38 } }},
+    {HOUSE_ARMOURER_TATALIA_MISSING_LINK, { ITEM_TREASURE_LEVEL_2, { 35, 35, 38, 38 } }},
+    {HOUSE_ARMOURER_AVLEE,                { ITEM_TREASURE_LEVEL_3, { 35, 35, 38, 38 } }},
+    {HOUSE_ARMOURER_STONE_CITY,           { ITEM_TREASURE_LEVEL_3, { 35, 35, 38, 38 } }},
+    {HOUSE_ARMOURER_CASTLE_HARMONDALE,    { ITEM_TREASURE_LEVEL_3, { 35, 35, 38, 38 } }},
+    {HOUSE_ARMOURER_TATALIA_ALLOYED,      { ITEM_TREASURE_LEVEL_3, { 35, 35, 38, 38 } }},
+    {HOUSE_ARMOURER_27,                   { ITEM_TREASURE_LEVEL_3, { 35, 35, 38, 38 } }},
+    {HOUSE_ARMOURER_28,                   { ITEM_TREASURE_LEVEL_4, { 35, 35, 38, 38 } }}
+}};
+
+const IndexedArray<ITEM_VARIATION, HOUSE_FIRST_ARMOR_SHOP, HOUSE_LAST_ARMOR_SHOP> armorShopBottomRowVariationStandart = {{
+    {HOUSE_ARMOURER_EMERALD_ISLE,         { ITEM_TREASURE_LEVEL_1, { 31, 31, 31, 34 } }},
+    {HOUSE_ARMOURER_HARMONDALE,           { ITEM_TREASURE_LEVEL_1, { 31, 31, 32, 34 } }},
+    {HOUSE_ARMOURER_ERATHIA,              { ITEM_TREASURE_LEVEL_2, { 31, 32, 32, 33 } }},
+    {HOUSE_ARMOURER_TULAREAN_FOREST,      { ITEM_TREASURE_LEVEL_2, { 31, 31, 32, 32 } }},
+    {HOUSE_ARMOURER_CELESTE,              { ITEM_TREASURE_LEVEL_4, { 31, 32, 33, 34 } }},
+    {HOUSE_ARMOURER_PIT,                  { ITEM_TREASURE_LEVEL_4, { 31, 32, 33, 34 } }},
+    {HOUSE_ARMOURER_NIGHON,               { ITEM_TREASURE_LEVEL_3, { 31, 31, 31, 31 } }},
+    {HOUSE_ARMOURER_TATALIA_MISSING_LINK, { ITEM_TREASURE_LEVEL_2, { 31, 32, 34, 34 } }},
+    {HOUSE_ARMOURER_AVLEE,                { ITEM_TREASURE_LEVEL_3, { 31, 31, 32, 32 } }},
+    {HOUSE_ARMOURER_STONE_CITY,           { ITEM_TREASURE_LEVEL_3, { 32, 32, 32, 33 } }},
+    {HOUSE_ARMOURER_CASTLE_HARMONDALE,    { ITEM_TREASURE_LEVEL_3, { 31, 31, 31, 32 } }},
+    {HOUSE_ARMOURER_TATALIA_ALLOYED,      { ITEM_TREASURE_LEVEL_3, { 33, 31, 32, 34 } }},
+    {HOUSE_ARMOURER_27,                   { ITEM_TREASURE_LEVEL_3, { 33, 31, 32, 34 } }},
+    {HOUSE_ARMOURER_28,                   { ITEM_TREASURE_LEVEL_4, { 33, 31, 32, 34 } }}
+}};
+
+const IndexedArray<ITEM_VARIATION, HOUSE_FIRST_ARMOR_SHOP, HOUSE_LAST_ARMOR_SHOP> armorShopTopRowVariationSpecial = {{
+    {HOUSE_ARMOURER_EMERALD_ISLE,         { ITEM_TREASURE_LEVEL_2, { 35, 35, 38, 38 } }},
+    {HOUSE_ARMOURER_HARMONDALE,           { ITEM_TREASURE_LEVEL_2, { 35, 35, 38, 38 } }},
+    {HOUSE_ARMOURER_ERATHIA,              { ITEM_TREASURE_LEVEL_3, { 35, 35, 38, 38 } }},
+    {HOUSE_ARMOURER_TULAREAN_FOREST,      { ITEM_TREASURE_LEVEL_3, { 35, 35, 38, 38 } }},
+    {HOUSE_ARMOURER_CELESTE,              { ITEM_TREASURE_LEVEL_5, { 35, 35, 38, 38 } }},
+    {HOUSE_ARMOURER_PIT,                  { ITEM_TREASURE_LEVEL_5, { 35, 35, 38, 38 } }},
+    {HOUSE_ARMOURER_NIGHON,               { ITEM_TREASURE_LEVEL_4, { 35, 35, 38, 38 } }},
+    {HOUSE_ARMOURER_TATALIA_MISSING_LINK, { ITEM_TREASURE_LEVEL_3, { 35, 35, 38, 38 } }},
+    {HOUSE_ARMOURER_AVLEE,                { ITEM_TREASURE_LEVEL_4, { 35, 35, 38, 38 } }},
+    {HOUSE_ARMOURER_STONE_CITY,           { ITEM_TREASURE_LEVEL_4, { 35, 35, 38, 38 } }},
+    {HOUSE_ARMOURER_CASTLE_HARMONDALE,    { ITEM_TREASURE_LEVEL_4, { 35, 35, 38, 38 } }},
+    {HOUSE_ARMOURER_TATALIA_ALLOYED,      { ITEM_TREASURE_LEVEL_4, { 35, 35, 38, 38 } }},
+    {HOUSE_ARMOURER_27,                   { ITEM_TREASURE_LEVEL_4, { 35, 35, 38, 38 } }},
+    {HOUSE_ARMOURER_28,                   { ITEM_TREASURE_LEVEL_5, { 35, 35, 38, 38 } }}
+}};
+
+const IndexedArray<ITEM_VARIATION, HOUSE_FIRST_ARMOR_SHOP, HOUSE_LAST_ARMOR_SHOP> armorShopBottomRowVariationSpecial = {{
+    {HOUSE_ARMOURER_EMERALD_ISLE,         { ITEM_TREASURE_LEVEL_2, { 31, 31, 31, 34 } }},
+    {HOUSE_ARMOURER_HARMONDALE,           { ITEM_TREASURE_LEVEL_2, { 31, 31, 32, 34 } }},
+    {HOUSE_ARMOURER_ERATHIA,              { ITEM_TREASURE_LEVEL_3, { 31, 32, 32, 33 } }},
+    {HOUSE_ARMOURER_TULAREAN_FOREST,      { ITEM_TREASURE_LEVEL_3, { 31, 31, 32, 32 } }},
+    {HOUSE_ARMOURER_CELESTE,              { ITEM_TREASURE_LEVEL_5, { 31, 32, 33, 34 } }},
+    {HOUSE_ARMOURER_PIT,                  { ITEM_TREASURE_LEVEL_5, { 31, 32, 33, 34 } }},
+    {HOUSE_ARMOURER_NIGHON,               { ITEM_TREASURE_LEVEL_4, { 31, 31, 31, 31 } }},
+    {HOUSE_ARMOURER_TATALIA_MISSING_LINK, { ITEM_TREASURE_LEVEL_3, { 31, 32, 34, 34 } }},
+    {HOUSE_ARMOURER_AVLEE,                { ITEM_TREASURE_LEVEL_4, { 31, 31, 32, 33 } }},
+    {HOUSE_ARMOURER_STONE_CITY,           { ITEM_TREASURE_LEVEL_4, { 32, 32, 33, 34 } }},
+    {HOUSE_ARMOURER_CASTLE_HARMONDALE,    { ITEM_TREASURE_LEVEL_4, { 31, 31, 31, 32 } }},
+    {HOUSE_ARMOURER_TATALIA_ALLOYED,      { ITEM_TREASURE_LEVEL_4, { 32, 32, 32, 32 } }},
+    {HOUSE_ARMOURER_27,                   { ITEM_TREASURE_LEVEL_4, { 34, 34, 34, 34 } }},
+    {HOUSE_ARMOURER_28,                   { ITEM_TREASURE_LEVEL_5, { 33, 33, 33, 33 } }}
+}};
+
+const IndexedArray<ITEM_TREASURE_LEVEL, HOUSE_FIRST_MAGIC_SHOP, HOUSE_LAST_MAGIC_SHOP> magicShopVariationStandart = {{
+    {HOUSE_MAGE_EMERALD_ISLE,    ITEM_TREASURE_LEVEL_1},
+    {HOUSE_MAGE_HARMONDALE,      ITEM_TREASURE_LEVEL_1},
+    {HOUSE_MAGE_ERATHIA,         ITEM_TREASURE_LEVEL_2},
+    {HOUSE_MAGE_TULAREAN_FOREST, ITEM_TREASURE_LEVEL_2},
+    {HOUSE_MAGE_DEYJA,           ITEM_TREASURE_LEVEL_4},
+    {HOUSE_MAGE_BRACADA_DESERT,  ITEM_TREASURE_LEVEL_4},
+    {HOUSE_MAGE_CELESTE,         ITEM_TREASURE_LEVEL_3},
+    {HOUSE_MAGE_PIT,             ITEM_TREASURE_LEVEL_2},
+    {HOUSE_MAGE_NIGHON,          ITEM_TREASURE_LEVEL_2},
+    {HOUSE_MAGE_STONE_CITY,      ITEM_TREASURE_LEVEL_2},
+    {HOUSE_MAGE_39,              ITEM_TREASURE_LEVEL_2},
+    {HOUSE_MAGE_40,              ITEM_TREASURE_LEVEL_2},
+    {HOUSE_MAGE_41,              ITEM_TREASURE_LEVEL_2}
+}};
+
+const IndexedArray<ITEM_TREASURE_LEVEL, HOUSE_FIRST_MAGIC_SHOP, HOUSE_LAST_MAGIC_SHOP> magicShopVariationSpecial = {{
+    {HOUSE_MAGE_EMERALD_ISLE,    ITEM_TREASURE_LEVEL_2},
+    {HOUSE_MAGE_HARMONDALE,      ITEM_TREASURE_LEVEL_2},
+    {HOUSE_MAGE_ERATHIA,         ITEM_TREASURE_LEVEL_3},
+    {HOUSE_MAGE_TULAREAN_FOREST, ITEM_TREASURE_LEVEL_3},
+    {HOUSE_MAGE_DEYJA,           ITEM_TREASURE_LEVEL_5},
+    {HOUSE_MAGE_BRACADA_DESERT,  ITEM_TREASURE_LEVEL_5},
+    {HOUSE_MAGE_CELESTE,         ITEM_TREASURE_LEVEL_4},
+    {HOUSE_MAGE_PIT,             ITEM_TREASURE_LEVEL_3},
+    {HOUSE_MAGE_NIGHON,          ITEM_TREASURE_LEVEL_3},
+    {HOUSE_MAGE_STONE_CITY,      ITEM_TREASURE_LEVEL_3},
+    {HOUSE_MAGE_39,              ITEM_TREASURE_LEVEL_3},
+    {HOUSE_MAGE_40,              ITEM_TREASURE_LEVEL_3},
+    {HOUSE_MAGE_41,              ITEM_TREASURE_LEVEL_3}
+}};
+
+const IndexedArray<ITEM_TREASURE_LEVEL, HOUSE_FIRST_ALCHEMY_SHOP, HOUSE_LAST_ALCHEMY_SHOP> alchemyShopVariationStandart = {{
+    {HOUSE_ALCHEMIST_EMERALD_ISLE,      ITEM_TREASURE_LEVEL_1},
+    {HOUSE_ALCHEMIST_HARMONDALE,        ITEM_TREASURE_LEVEL_1},
+    {HOUSE_ALCHEMIST_ERATHIA,           ITEM_TREASURE_LEVEL_2},
+    {HOUSE_ALCHEMIST_TULAREAN_FOREST,   ITEM_TREASURE_LEVEL_2},
+    {HOUSE_ALCHEMIST_DEYJA,             ITEM_TREASURE_LEVEL_3},
+    {HOUSE_ALCHEMIST_BRACADA_DESERT,    ITEM_TREASURE_LEVEL_3},
+    {HOUSE_ALCHEMIST_CELESTE,           ITEM_TREASURE_LEVEL_4},
+    {HOUSE_ALCHEMIST_PIT,               ITEM_TREASURE_LEVEL_4},
+    {HOUSE_ALCHEMIST_STONE_CITY,        ITEM_TREASURE_LEVEL_2},
+    {HOUSE_ALCHEMIST_CASTLE_HARMONDALE, ITEM_TREASURE_LEVEL_2},
+    {HOUSE_ALCHEMIST_52,                ITEM_TREASURE_LEVEL_2},
+    {HOUSE_ALCHEMIST_53,                ITEM_TREASURE_LEVEL_2}
+}};
+
+const IndexedArray<ITEM_TREASURE_LEVEL, HOUSE_FIRST_ALCHEMY_SHOP, HOUSE_LAST_ALCHEMY_SHOP> alchemyShopVariationSpecial = {{
+    {HOUSE_ALCHEMIST_EMERALD_ISLE,      ITEM_TREASURE_LEVEL_2},
+    {HOUSE_ALCHEMIST_HARMONDALE,        ITEM_TREASURE_LEVEL_2},
+    {HOUSE_ALCHEMIST_ERATHIA,           ITEM_TREASURE_LEVEL_3},
+    {HOUSE_ALCHEMIST_TULAREAN_FOREST,   ITEM_TREASURE_LEVEL_3},
+    {HOUSE_ALCHEMIST_DEYJA,             ITEM_TREASURE_LEVEL_4},
+    {HOUSE_ALCHEMIST_BRACADA_DESERT,    ITEM_TREASURE_LEVEL_4},
+    {HOUSE_ALCHEMIST_CELESTE,           ITEM_TREASURE_LEVEL_5},
+    {HOUSE_ALCHEMIST_PIT,               ITEM_TREASURE_LEVEL_5},
+    {HOUSE_ALCHEMIST_STONE_CITY,        ITEM_TREASURE_LEVEL_3},
+    {HOUSE_ALCHEMIST_CASTLE_HARMONDALE, ITEM_TREASURE_LEVEL_2},
+    {HOUSE_ALCHEMIST_52,                ITEM_TREASURE_LEVEL_2},
+    {HOUSE_ALCHEMIST_53,                ITEM_TREASURE_LEVEL_2}
+}};
+
 GraphicsImage *shop_ui_background = nullptr;
 
 std::array<GraphicsImage *, 12> shop_ui_items_in_store;
+std::array<int, 6> weaponYPos;
 
 bool isStealingModeActive() {
     return keyboardInputHandler->IsStealingToggled() && pParty->activeCharacter().CanSteal();
+}
+
+//----- (004B8F94) --------------------------------------------------------
+void GenerateSpecialShopItems() {
+    signed int item_count;
+    ITEM_TREASURE_LEVEL treasure_lvl = ITEM_TREASURE_LEVEL_INVALID;
+    int item_class = 0;
+
+    HOUSE_ID shopId = window_SpeakInHouse->houseId();
+    if (ItemAmountForShop(buildingTable[std::to_underlying(shopId) - 1].uType)) {
+        for (item_count = 0; item_count < ItemAmountForShop(buildingTable[std::to_underlying(shopId) - 1].uType); ++item_count) {
+            if (isWeaponShop(shopId)) {  // weapon shop
+                treasure_lvl = weaponShopVariationSpecial[shopId].treasure_level;
+                item_class = weaponShopVariationSpecial[shopId].item_class[grng->random(4)];
+            } else if (isArmorShop(shopId)) {  // armor shop
+                if (item_count >= 4) {
+                    treasure_lvl = armorShopBottomRowVariationSpecial[shopId].treasure_level;
+                    item_class = armorShopBottomRowVariationSpecial[shopId].item_class[grng->random(4)];
+                } else {
+                    treasure_lvl = armorShopTopRowVariationSpecial[shopId].treasure_level;
+                    item_class = armorShopTopRowVariationSpecial[shopId].item_class[grng->random(4)];
+                }
+            } else if (isMagicShop(shopId)) {  // magic shop
+                treasure_lvl = magicShopVariationSpecial[shopId];
+                item_class = 22; // misc
+            } else if (isAlchemyShop(shopId)) {  // alchemist shop
+                if (item_count < 6) {
+                    pParty->specialItemsInShops[shopId][item_count].Reset();
+                    pParty->specialItemsInShops[shopId][item_count].uItemID = grng->randomSample(recipeScrolls());  // mscrool
+                    continue;
+                } else {
+                    treasure_lvl = alchemyShopVariationSpecial[shopId];
+                    item_class = 44;  // potion
+                }
+            }
+            pItemTable->generateItem(treasure_lvl, item_class, &pParty->specialItemsInShops[shopId][item_count]);
+            pParty->specialItemsInShops[shopId][item_count].SetIdentified();  // identified
+        }
+    }
+    pParty->InTheShopFlags[std::to_underlying(shopId)] = 0;
+}
+
+//----- (004B8E3D) --------------------------------------------------------
+void GenerateStandartShopItems() {
+    signed int item_count;
+    ITEM_TREASURE_LEVEL treasure_lvl = ITEM_TREASURE_LEVEL_INVALID;
+    int item_class = 0;
+
+    HOUSE_ID shopId = window_SpeakInHouse->houseId();
+    if (ItemAmountForShop(buildingTable[std::to_underlying(shopId) - 1].uType)) {
+        for (item_count = 0; item_count < ItemAmountForShop(buildingTable[std::to_underlying(shopId) - 1].uType); ++item_count) {
+            if (isWeaponShop(shopId)) {  // weapon shop
+                treasure_lvl = weaponShopVariationStandart[shopId].treasure_level;
+                item_class = weaponShopVariationStandart[shopId].item_class[grng->random(4)];
+            } else if (isArmorShop(shopId)) {  // armor shop
+                if (item_count >= 4) {
+                    treasure_lvl = armorShopBottomRowVariationStandart[shopId].treasure_level;
+                    item_class = armorShopBottomRowVariationStandart[shopId].item_class[grng->random(4)];
+                } else {
+                    treasure_lvl = armorShopTopRowVariationStandart[shopId].treasure_level;
+                    item_class = armorShopTopRowVariationStandart[shopId].item_class[grng->random(4)];
+                }
+            } else if (isMagicShop(shopId)) {  // magic shop
+                treasure_lvl = magicShopVariationStandart[shopId];
+                item_class = 22;          // misc
+            } else if (isAlchemyShop(shopId)) {  // alchemist shop
+                if (item_count < 6) {
+                    pParty->standartItemsInShops[shopId][item_count].Reset();
+                    pParty->standartItemsInShops[shopId][item_count].uItemID = ITEM_POTION_BOTTLE;  // potion bottle
+                    continue;
+                } else {
+                    treasure_lvl = alchemyShopVariationStandart[shopId];
+                    item_class = 45;  // reagent
+                }
+            }
+            pItemTable->generateItem(treasure_lvl, item_class, &pParty->standartItemsInShops[shopId][item_count]);
+            pParty->standartItemsInShops[shopId][item_count].SetIdentified();  // identified
+        }
+    }
+    pParty->InTheShopFlags[std::to_underlying(shopId)] = 0;
 }
 
 void GUIWindow_Shop::mainDialogue() {
@@ -252,7 +500,7 @@ void GUIWindow_WeaponShop::shopWaresDialogue(bool isSpecial) {
     for (int i = 0; i < 6; ++i) {
         bool itemPresent = (isSpecial ? pParty->specialItemsInShops[houseId()][i].uItemID : pParty->standartItemsInShops[houseId()][i].uItemID) != ITEM_NULL;
         if (itemPresent) {
-            render->DrawTextureNew(((60 - (shop_ui_items_in_store[i]->GetWidth() / 2)) + item_X) / 640.0f, (weapons_Ypos[i] + 30) / 480.0f, shop_ui_items_in_store[i]);
+            render->DrawTextureNew(((60 - (shop_ui_items_in_store[i]->GetWidth() / 2)) + item_X) / 640.0f, (weaponYPos[i] + 30) / 480.0f, shop_ui_items_in_store[i]);
         }
 
         item_X += 70;
@@ -286,7 +534,7 @@ void GUIWindow_WeaponShop::shopWaresDialogue(bool isSpecial) {
                     int testpos = ((60 - (shop_ui_items_in_store[testx]->GetWidth() / 2)) + testx * 70);
 
                     if (pt.x >= testpos && pt.x < (testpos + shop_ui_items_in_store[testx]->GetWidth())) {
-                        if (pt.y >= weapons_Ypos[testx] + 30 && pt.y < (weapons_Ypos[testx] + 30 + shop_ui_items_in_store[testx]->GetHeight())) {
+                        if (pt.y >= weaponYPos[testx] + 30 && pt.y < (weaponYPos[testx] + 30 + shop_ui_items_in_store[testx]->GetHeight())) {
                             std::string str;
                             if (!isStealingModeActive()) {
                                 MERCHANT_PHRASE phrase = pParty->activeCharacter().SelectPhrasesTransaction(item, BuildingType_WeaponShop, wData.val, 2);
@@ -527,7 +775,34 @@ void GUIWindow_Shop::houseSpecificDialogue() {
 }
 
 void GUIWindow_Shop::houseDialogueOptionSelected(DIALOGUE_TYPE option) {
-    // Nothing
+    if (option == DIALOGUE_SHOP_BUY_STANDARD ||
+        option == DIALOGUE_SHOP_BUY_SPECIAL) {
+        if (pParty->PartyTimes.shopNextRefreshTime[houseId()] < pParty->GetPlayingTime()) {
+            GenerateStandartShopItems();
+            GenerateSpecialShopItems();
+            GameTime nextGenTime = pParty->GetPlayingTime() + GameTime::FromDays(buildingTable[wData.val - 1].generation_interval_days);
+            pParty->PartyTimes.shopNextRefreshTime[houseId()] = nextGenTime;
+        }
+
+        std::array<ItemGen, 12> &itemArray = (option == DIALOGUE_SHOP_BUY_STANDARD) ? pParty->standartItemsInShops[houseId()] : pParty->specialItemsInShops[houseId()];
+        if (ItemAmountForShop(buildingTable[wData.val - 1].uType)) {
+            for (int i = 0; i < ItemAmountForShop(buildingTable[wData.val - 1].uType); ++i) {
+                if (itemArray[i].uItemID != ITEM_NULL) {
+                    shop_ui_items_in_store[i] = assets->getImage_ColorKey(itemArray[i].GetIconName());
+                }
+            }
+        }
+        if (_buildingType == BuildingType_WeaponShop) {
+            if (ItemAmountForShop(buildingTable[wData.val - 1].uType)) {
+                for (int i = 0; i < ItemAmountForShop(buildingTable[wData.val - 1].uType); ++i) {
+                    if (itemArray[i].uItemID != ITEM_NULL) {
+                        // Note that we're using grng here for a reason - we want recorded mouse clicks to work.
+                        weaponYPos[i] = grng->random(300 - shop_ui_items_in_store[i]->GetHeight());
+                    }
+                }
+            }
+        }
+    }
 }
 
 void GUIWindow_Shop::processStealingResult(int stealingResult, int fineToAdd) {  // not working properly??
@@ -778,8 +1053,8 @@ void UIShop_Buy_Identify_Repair() {
                                     (testpos +
                                      (signed int)shop_ui_items_in_store[testx]
                                          ->GetWidth())) {
-                                if (pt.y >= weapons_Ypos[testx] + 30 &&
-                                    pt.y < (weapons_Ypos[testx] + 30 +
+                                if (pt.y >= weaponYPos[testx] + 30 &&
+                                    pt.y < (weaponYPos[testx] + 30 +
                                                shop_ui_items_in_store[testx]
                                                    ->GetHeight())) {
                                     break;  // good
@@ -975,292 +1250,6 @@ void UIShop_Buy_Identify_Repair() {
                 }
             }
             break;
-        }
-    }
-}
-
-void showSpellbookInfo(ITEM_TYPE spellItemId) {
-    // TODO(captainurist): deal away with casts.
-    SPELL_TYPE spellId = static_cast<SPELL_TYPE>(std::to_underlying(spellItemId) - 399);
-    int spellLevel = (std::to_underlying(spellItemId) - 400) % 11 + 1;
-    unsigned int spellSchool = 4 * (std::to_underlying(spellItemId) - 400) / 11;
-
-    Pointi cursorPos = EngineIocContainer::ResolveMouse()->GetCursorPos();
-    int popupVertPos = 30;
-    if (cursorPos.y <= 320) {
-        popupVertPos = cursorPos.y + 30;
-    }
-
-    GUIWindow popup;
-    popup.Init();
-    popup.uFrameY = popupVertPos;
-    popup.uFrameWidth = 328;
-    popup.uFrameHeight = 68;
-    popup.uFrameX = 90;
-    popup.uFrameZ = 417;
-    popup.uFrameW = popupVertPos + 67;
-
-    int maxLineWidth = std::max({
-        pFontSmallnum->GetLineWidth(localization->GetString(LSTR_NORMAL)),
-        pFontSmallnum->GetLineWidth(localization->GetString(LSTR_EXPERT)),
-        pFontSmallnum->GetLineWidth(localization->GetString(LSTR_MASTER)),
-        pFontSmallnum->GetLineWidth(localization->GetString(LSTR_GRAND))});
-
-    std::string str = fmt::format("{}\n\n{}\t{:03}:\t{:03}{}\t000\n{}\t{:03}:\t{:03}{}\t000\n{}\t{:03}:\t{:03}{}\t000\n{}\t{:03}:\t{:03}{}",
-                                  pSpellStats->pInfos[spellId].pDescription,
-                                  localization->GetString(LSTR_NORMAL), maxLineWidth + 3, maxLineWidth + 10, pSpellStats->pInfos[spellId].pBasicSkillDesc,
-                                  localization->GetString(LSTR_EXPERT), maxLineWidth + 3, maxLineWidth + 10, pSpellStats->pInfos[spellId].pExpertSkillDesc,
-                                  localization->GetString(LSTR_MASTER), maxLineWidth + 3, maxLineWidth + 10, pSpellStats->pInfos[spellId].pMasterSkillDesc,
-                                  localization->GetString(LSTR_GRAND), maxLineWidth + 3, maxLineWidth + 10, pSpellStats->pInfos[spellId].pGrandmasterSkillDesc);
-
-    popup.uFrameHeight += pFontSmallnum->CalcTextHeight(str, popup.uFrameWidth, 0);
-    if (popup.uFrameHeight < 150) {
-        popup.uFrameHeight = 150;
-    }
-    popup.uFrameWidth = game_viewport_width;
-    popup.DrawMessageBox(0);
-    popup.uFrameWidth -= 12;
-    popup.uFrameHeight -= 12;
-    popup.uFrameZ = popup.uFrameX + popup.uFrameWidth - 1;
-    popup.uFrameW = popup.uFrameHeight + popup.uFrameY - 1;
-    popup.DrawTitleText(pFontArrus, 0x78u, 0xCu, colorTable.PaleCanary, pSpellStats->pInfos[spellId].name, 3u);
-    popup.DrawText(pFontSmallnum, {120, 44}, Color(), str, 0, 0, Color());
-    popup.uFrameZ = popup.uFrameX + 107;
-    popup.uFrameWidth = 108;
-    popup.DrawTitleText(pFontComic, 0xCu, 0x4Bu, Color(), localization->GetSkillName(static_cast<PLAYER_SKILL_TYPE>(spellSchool / 4 + 12)), 3u);
-
-    str = fmt::format("{}\n{}", localization->GetString(LSTR_SP_COST), pSpellDatas[spellId].uNormalLevelMana);
-    popup.DrawTitleText(pFontComic, 0xCu, popup.uFrameHeight - pFontComic->GetHeight() - 16, Color(), str, 3);
-}
-
-//----- new function
-void ShowPopupShopSkills() {
-    int pX = 0;
-    int pY = 0;
-    mouse->GetClickPos(&pX, &pY);
-
-    if (pDialogueWindow) {
-        for (GUIButton *pButton : pDialogueWindow->vButtons) {
-            if (pX >= pButton->uX && pX < pButton->uZ && pY >= pButton->uY && pY < pButton->uW) {
-                if (IsSkillLearningDialogue((DIALOGUE_TYPE)pButton->msg_param)) {
-                    auto skill_id = GetLearningDialogueSkill((DIALOGUE_TYPE)pButton->msg_param);
-                    if (skillMaxMasteryPerClass[pParty->activeCharacter().classType][skill_id] != PLAYER_SKILL_MASTERY_NONE &&
-                        !pParty->activeCharacter().pActiveSkills[skill_id]) {
-                        // is this skill visible
-                        std::string pSkillDescText = CharacterUI_GetSkillDescText(pParty->activeCharacterIndex() - 1, skill_id);
-                        CharacterUI_DrawTooltip(localization->GetSkillName(skill_id), pSkillDescText);
-                    }
-                }
-            }
-        }
-    }
-}
-
-
-//----- (004B1A2D) --------------------------------------------------------
-void ShowPopupShopItem() {
-    ItemGen *item;  // ecx@13
-    int invindex;
-    int testpos;
-
-    if (in_current_building_type == BuildingType_Invalid) return;
-    if (dialog_menu_id < DIALOGUE_SHOP_BUY_STANDARD) return;
-
-    Pointi pt = EngineIocContainer::ResolveMouse()->GetCursorPos();
-    int testx;
-
-    if (in_current_building_type <= BuildingType_AlchemistShop) {
-        if (dialog_menu_id == DIALOGUE_SHOP_BUY_STANDARD ||
-            dialog_menu_id == DIALOGUE_SHOP_BUY_SPECIAL) {
-            switch (in_current_building_type) {
-                case BuildingType_WeaponShop: {
-                    testx = (pt.x - 30) / 70;
-                    if (testx >= 0 && testx < 6) {
-                        if (dialog_menu_id == DIALOGUE_SHOP_BUY_STANDARD)
-                            item = &pParty->standartItemsInShops[window_SpeakInHouse->houseId()][testx];
-                        else
-                            item = &pParty->specialItemsInShops[window_SpeakInHouse->houseId()][testx];
-
-                        if (item->uItemID != ITEM_NULL) {
-                            testpos =
-                                ((60 -
-                                  (shop_ui_items_in_store[testx]->GetWidth() /
-                                   2)) +
-                                 testx * 70);
-                            if (pt.x >= testpos &&
-                                pt.x <
-                                    (testpos + shop_ui_items_in_store[testx]
-                                                   ->GetWidth())) {
-                                if (pt.y >= weapons_Ypos[testx] + 30 &&
-                                    pt.y < (weapons_Ypos[testx] + 30 +
-                                               shop_ui_items_in_store[testx]
-                                                   ->GetHeight())) {
-                                    GameUI_DrawItemInfo(item);
-                                }
-                            } else {
-                                return;
-                            }
-                        }
-                    } else {
-                        return;
-                    }
-
-                    break;
-                }
-
-                case BuildingType_ArmorShop:
-                    testx = (pt.x - 40) / 105;
-                    if (testx >= 0 && testx < 4) {
-                        if (pt.y >= 126) {
-                            testx += 4;
-                        }
-
-                        if (dialog_menu_id == DIALOGUE_SHOP_BUY_STANDARD)
-                            item = &pParty->standartItemsInShops[window_SpeakInHouse->houseId()][testx];
-                        else
-                            item = &pParty->specialItemsInShops[window_SpeakInHouse->houseId()][testx];
-
-                        if (item->uItemID != ITEM_NULL) {
-                            if (testx >= 4) {
-                                testpos = ((90 - (shop_ui_items_in_store[testx]
-                                                      ->GetWidth() /
-                                                  2)) +
-                                           (testx * 105) - 420);  // low row
-                            } else {
-                                testpos = ((86 - (shop_ui_items_in_store[testx]
-                                                      ->GetWidth() /
-                                                  2)) +
-                                           testx * 105);
-                            }
-
-                            if (pt.x >= testpos &&
-                                pt.x <=
-                                    testpos + shop_ui_items_in_store[testx]
-                                                  ->GetWidth()) {
-                                if ((pt.y >= 126 &&
-                                    pt.y <
-                                         (126 + shop_ui_items_in_store[testx]
-                                                    ->GetHeight())) ||
-                                    (pt.y <= 98 &&
-                                        pt.y >=
-                                         (98 - shop_ui_items_in_store[testx]
-                                                   ->GetHeight()))) {
-                                    GameUI_DrawItemInfo(item);
-                                } else {
-                                    return;
-                                }
-                            }
-                        } else {
-                            return;
-                        }
-                    }
-                    break;
-
-                case BuildingType_AlchemistShop:
-                case BuildingType_MagicShop:
-                    testx = (pt.x) / 75;
-                    // testx limits check
-                    if (testx >= 0 && testx < 6) {
-                        if (pt.y >= 152) {
-                            testx += 6;
-                        }
-
-                        if (dialog_menu_id == DIALOGUE_SHOP_BUY_STANDARD)
-                            item = &pParty->standartItemsInShops[window_SpeakInHouse->houseId()][testx];
-                        else
-                            item = &pParty->specialItemsInShops[window_SpeakInHouse->houseId()][testx];
-
-                        if (item->uItemID != ITEM_NULL) {
-                            if (pt.y > 152) {
-                                testpos =
-                                    75 * testx -
-                                    shop_ui_items_in_store[testx]->GetWidth() /
-                                        2 +
-                                    40 - 450;
-                            } else {
-                                testpos =
-                                    75 * testx -
-                                    shop_ui_items_in_store[testx]->GetWidth() /
-                                        2 +
-                                    40;
-                            }
-
-                            if (pt.x >= testpos &&
-                                pt.x <=
-                                    testpos + shop_ui_items_in_store[testx]
-                                                  ->GetWidth()) {
-                                if ((pt.y <= 308 &&
-                                    pt.y >=
-                                         (308 - shop_ui_items_in_store[testx]
-                                                    ->GetHeight())) ||
-                                    (pt.y <= 152 &&
-                                        pt.y >=
-                                         (152 - shop_ui_items_in_store[testx]
-                                                    ->GetHeight()))) {
-                                    GameUI_DrawItemInfo(item);
-                                } else {
-                                    return;
-                                }
-                            }
-                        } else {
-                            return;
-                        }
-                    }
-                    break;
-
-                default:
-                    // v3 = render->pActiveZBuffer[mouse.x +
-                    // pSRZBufferLineOffsets[mouse.y]] & 0xFFFF; if (!v3)
-                    // return;
-                    // v7 = &pParty->StandartItemsInShops[(unsigned
-                    // int)window_SpeakInHouse->ptr_1C][v3 - 1]; if
-                    // (dialog_menu_id == DIALOGUE_SHOP_BUY_SPECIAL) v7 =
-                    // &pParty->SpecialItemsInShops[(unsigned
-                    // int)window_SpeakInHouse->ptr_1C][v3 - 1];
-                    // GameUI_DrawItemInfo(v7);
-                    return;
-                    break;
-            }
-        }
-
-        if (dialog_menu_id >= DIALOGUE_SHOP_SELL &&
-                dialog_menu_id <= DIALOGUE_SHOP_REPAIR ||
-            dialog_menu_id == DIALOGUE_SHOP_DISPLAY_EQUIPMENT) {
-            invindex = ((pt.x - 14) >> 5) + 14 * ((pt.y - 17) >> 5);
-            if (pt.x <= 13 || pt.x >= 462 ||
-                !pParty->activeCharacter().GetItemListAtInventoryIndex(
-                    invindex))
-                return;
-
-            GameUI_DrawItemInfo(
-                pParty->activeCharacter().GetItemAtInventoryIndex(invindex));
-            return;
-        }
-    }
-
-    if (in_current_building_type <= BuildingType_MirroredPath && dialog_menu_id == DIALOGUE_GUILD_BUY_BOOKS) {
-        int testx = (pt.x - 32) / 70;
-        if (testx >= 0 && testx < 6) {
-            if (pt.y >= 250) {
-                testx += 6;
-            }
-
-            item = &pParty->spellBooksInGuilds[window_SpeakInHouse->houseId()][testx];
-
-            if (item->uItemID != ITEM_NULL) {
-                int testpos;
-                if (pt.y >= 250) {
-                    testpos = 32 + 70 * testx - 420;
-                } else {
-                    testpos = 32 + 70 * testx;
-                }
-
-                if (pt.x >= testpos && pt.x <= testpos + shop_ui_items_in_store[testx]->GetWidth()) {
-                    if ((pt.y >= 90 && pt.y <= (90 + shop_ui_items_in_store[testx]->GetHeight())) || (pt.y >= 250 && pt.y <= (250 + shop_ui_items_in_store[testx]->GetHeight()))) {
-                        showSpellbookInfo(pParty->spellBooksInGuilds[window_SpeakInHouse->houseId()][testx].uItemID);
-                    }
-                }
-            }
         }
     }
 }

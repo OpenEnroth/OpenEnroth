@@ -71,15 +71,23 @@ class GUIWindow_AlchemyShop : public GUIWindow_MagicAlchemyShop {
     virtual ~GUIWindow_AlchemyShop() {}
 };
 
-/**
- * @offset 0x4B1523
- */
-void showSpellbookInfo(ITEM_TYPE spellItemId);
-
 void UIShop_Buy_Identify_Repair();
-void ShowPopupShopSkills();
-void ShowPopupShopItem();
 
 extern class GraphicsImage *shop_ui_background;
 
 extern std::array<class GraphicsImage *, 12> shop_ui_items_in_store;
+extern std::array<int, 6> weaponYPos;
+
+// TODO(Nik-RE-dev): these declarations required to enumerate available skills in weapon/armor shops
+//                   need to virtualize enumeration through GUIWindow_Shop class and remove these
+struct ITEM_VARIATION {
+    ITEM_TREASURE_LEVEL treasure_level;
+    uint16_t item_class[4];
+};
+
+extern const IndexedArray<ITEM_VARIATION, HOUSE_FIRST_WEAPON_SHOP, HOUSE_LAST_WEAPON_SHOP> weaponShopVariationStandart;
+extern const IndexedArray<ITEM_VARIATION, HOUSE_FIRST_WEAPON_SHOP, HOUSE_LAST_WEAPON_SHOP> weaponShopVariationSpecial;
+extern const IndexedArray<ITEM_VARIATION, HOUSE_FIRST_ARMOR_SHOP, HOUSE_LAST_ARMOR_SHOP> armorShopTopRowVariationStandart;
+extern const IndexedArray<ITEM_VARIATION, HOUSE_FIRST_ARMOR_SHOP, HOUSE_LAST_ARMOR_SHOP> armorShopBottomRowVariationStandart;
+extern const IndexedArray<ITEM_VARIATION, HOUSE_FIRST_ARMOR_SHOP, HOUSE_LAST_ARMOR_SHOP> armorShopTopRowVariationSpecial;
+extern const IndexedArray<ITEM_VARIATION, HOUSE_FIRST_ARMOR_SHOP, HOUSE_LAST_ARMOR_SHOP> armorShopBottomRowVariationSpecial;

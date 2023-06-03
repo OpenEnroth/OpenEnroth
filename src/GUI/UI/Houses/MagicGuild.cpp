@@ -167,7 +167,7 @@ void GUIWindow_MagicGuild::buyBooksDialogue() {
 
     if (HouseUI_CheckIfPlayerCanInteract()) {
         int itemcount = 0;
-        for (uint i = 0; i < ItemAmountForShop(buildingTable[wData.val - 1].uType); ++i) {
+        for (int i = 0; i < ItemAmountForShop(buildingTable[wData.val - 1].uType); ++i) {
             if (pParty->spellBooksInGuilds[houseId()][i].uItemID != ITEM_NULL)
                 ++itemcount;
         }
@@ -214,7 +214,7 @@ void GUIWindow_MagicGuild::buyBooksDialogue() {
 void GUIWindow_MagicGuild::houseDialogueOptionSelected(DIALOGUE_TYPE option) {
     if (option == DIALOGUE_GUILD_BUY_BOOKS) {
         if (pParty->PartyTimes.guildNextRefreshTime[houseId()] >= pParty->GetPlayingTime()) {
-            for (uint i = 0; i < ItemAmountForShop(buildingTable[wData.val - 1].uType); ++i) {
+            for (int i = 0; i < ItemAmountForShop(buildingTable[wData.val - 1].uType); ++i) {
                 if (pParty->spellBooksInGuilds[houseId()][i].uItemID != ITEM_NULL)
                     shop_ui_items_in_store[i] = assets->getImage_ColorKey(pParty->spellBooksInGuilds[houseId()][i].GetIconName());
             }
