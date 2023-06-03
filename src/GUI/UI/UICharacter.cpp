@@ -1431,10 +1431,10 @@ void CharacterUI_LoadPaperdollTextures() {
         }
     }
 
-    ui_ar_up_up = assets->getImage_Alpha("ar_up_up");
-    ui_ar_up_dn = assets->getImage_Alpha("ar_up_dn");
-    ui_ar_dn_up = assets->getImage_Alpha("ar_dn_up");
-    ui_ar_dn_dn = assets->getImage_Alpha("ar_dn_dn");
+    ui_ar_up_up = assets->getImage_Solid("ar_up_up");
+    ui_ar_up_dn = assets->getImage_Solid("ar_up_dn");
+    ui_ar_dn_up = assets->getImage_Solid("ar_dn_up");
+    ui_ar_dn_dn = assets->getImage_Solid("ar_dn_dn");
 
     paperdoll_dbrds[9] = assets->getImage_Solid("ib-cd1-d");
     paperdoll_dbrds[7] = assets->getImage_Solid("ib-cd2-d");
