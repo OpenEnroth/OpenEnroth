@@ -18,7 +18,7 @@ class ImageLoader {
     virtual std::string *GetResourceNamePtr() { return &this->resource_name; }
 
     virtual bool Load(size_t *width, size_t *height, Color **pixels,
-                      uint8_t **out_palette, uint8_t **out_pallettepixels = nullptr) = 0;
+                      Color **out_palette, uint8_t **out_pallettepixels = nullptr) = 0;
 
  protected:
     std::string resource_name;
@@ -34,7 +34,7 @@ class Paletted_Img_Loader : public ImageLoader {
     }
 
     virtual bool Load(size_t *width, size_t *height, Color **pixels,
-                      uint8_t **out_palette, uint8_t **out_pallettepixels = nullptr) override;
+                      Color **out_palette, uint8_t **out_pallettepixels = nullptr) override;
 
  protected:
     uint16_t colorkey;
@@ -51,7 +51,7 @@ class ColorKey_LOD_Loader : public ImageLoader {
     }
 
     virtual bool Load(size_t *width, size_t *height, Color **pixels,
-                      uint8_t **out_palette, uint8_t **out_pallettepixels = nullptr) override;
+                      Color **out_palette, uint8_t **out_pallettepixels = nullptr) override;
 
  protected:
     Color colorkey;
@@ -67,7 +67,7 @@ class Image16bit_LOD_Loader : public ImageLoader {
     }
 
     virtual bool Load(size_t *width, size_t *height, Color **pixels,
-                      uint8_t **out_palette, uint8_t **out_pallettepixels = nullptr) override;
+                      Color **out_palette, uint8_t **out_pallettepixels = nullptr) override;
 
  protected:
     LODFile_IconsBitmaps *lod;
@@ -81,7 +81,7 @@ class Alpha_LOD_Loader : public ImageLoader {
     }
 
     virtual bool Load(size_t *width, size_t *height, Color **pixels,
-                      uint8_t **out_palette, uint8_t **out_pallettepixels = nullptr) override;
+                      Color **out_palette, uint8_t **out_pallettepixels = nullptr) override;
 
  protected:
     LODFile_IconsBitmaps *lod;
@@ -101,7 +101,7 @@ class PCX_File_Loader : public PCX_Loader {
     }
 
     virtual bool Load(size_t *width, size_t *height, Color **pixels,
-                      uint8_t **out_palette, uint8_t **out_pallettepixels = nullptr) override;
+                      Color **out_palette, uint8_t **out_pallettepixels = nullptr) override;
 
     LODFile_IconsBitmaps *lod;
 };
@@ -114,7 +114,7 @@ class PCX_LOD_Raw_Loader : public PCX_Loader {
     }
 
     virtual bool Load(size_t *width, size_t *height, Color **pixels,
-                      uint8_t **out_palette, uint8_t **out_pallettepixels = nullptr) override;
+                      Color **out_palette, uint8_t **out_pallettepixels = nullptr) override;
 
  protected:
     LOD::File *lod;
@@ -128,7 +128,7 @@ class PCX_LOD_Compressed_Loader : public PCX_Loader {
     }
 
     virtual bool Load(size_t *width, size_t *height, Color **pixels,
-                      uint8_t **out_palette, uint8_t **out_pallettepixels = nullptr) override;
+                      Color **out_palette, uint8_t **out_pallettepixels = nullptr) override;
 
  protected:
     LOD::File *lod;
@@ -142,7 +142,7 @@ class Bitmaps_LOD_Loader : public ImageLoader {
     }
 
     virtual bool Load(size_t *width, size_t *height, Color **pixels,
-                      uint8_t **out_palette, uint8_t **out_pallettepixels = nullptr) override;
+                      Color **out_palette, uint8_t **out_pallettepixels = nullptr) override;
 
  protected:
     LODFile_IconsBitmaps *lod;
@@ -160,7 +160,7 @@ class Sprites_LOD_Loader : public ImageLoader {
     }
 
     virtual bool Load(size_t *width, size_t *height, Color **pixels,
-                      uint8_t **out_palette, uint8_t **out_pallettepixels = nullptr) override;
+                      Color **out_palette, uint8_t **out_pallettepixels = nullptr) override;
 
  protected:
     LODFile_Sprites *lod;

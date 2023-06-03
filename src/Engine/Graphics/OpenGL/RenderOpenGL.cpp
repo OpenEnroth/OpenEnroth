@@ -966,7 +966,7 @@ void RenderOpenGL::TexturePixelRotateDraw(float u, float v, GraphicsImage *img, 
                 cachedtemp[thisslot] = CreateTexture_Blank(width, height);
             }
 
-            const uint8_t *palpoint24 = img->GetPalette();
+            const Color *palette = img->GetPalette();
             Color *temppix = const_cast<Color *>(cachedtemp[thisslot]->GetPixels()); // TODO(captainurist): #images const_cast
             const uint8_t *texpix24 = img->GetPalettePixels();
             uint8_t thispix;
@@ -979,7 +979,7 @@ void RenderOpenGL::TexturePixelRotateDraw(float u, float v, GraphicsImage *img, 
                         palindex = (time + thispix) % (2 * 63);
                         if (palindex >= 63)
                             palindex = (2 * 63) - palindex;
-                        temppix[dx + dy * width] = Color(palpoint24[palindex * 3], palpoint24[palindex * 3 + 1], palpoint24[palindex * 3 + 2]);
+                        temppix[dx + dy * width] = palette[palindex];
                     }
                     ++texpix24;
                 }
