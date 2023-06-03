@@ -274,7 +274,7 @@ var searchData=
   ['getoffhanditem_271',['GetOffHandItem',['../structPlayer.html#aa21a62746eeab18923a9574f8bbeb1f5',1,'Player::GetOffHandItem()'],['../structPlayer.html#a72a4cc32a55abee5e3145ef5c6d15a4e',1,'Player::GetOffHandItem() const']]],
   ['getopengltexture_272',['GetOpenGlTexture',['../classTextureOpenGL.html#ac79e8ff7e08a4a45860bd175d287d885',1,'TextureOpenGL']]],
   ['getpagetop_273',['GetPageTop',['../classGUIFont.html#a621cd0a0bb13177ed58682a9f3554138',1,'GUIFont']]],
-  ['getpalette_274',['GetPalette',['../classGraphicsImage.html#a31169d4e0a14cb6e98249e091afe17df',1,'GraphicsImage']]],
+  ['getpalette_274',['GetPalette',['../classGraphicsImage.html#aa1b2754bcac0005f64121920a894ea46',1,'GraphicsImage']]],
   ['getpaletteindex_275',['GetPaletteIndex',['../classSpriteFrame.html#ae1cc14703b0fa4a83aa0e9c02fe53b3e',1,'SpriteFrame']]],
   ['getpalettepixels_276',['GetPalettePixels',['../classGraphicsImage.html#a50f2fc528c1c85daad0aa688c21da702',1,'GraphicsImage']]],
   ['getparameterbonus_277',['GetParameterBonus',['../structPlayer.html#a20e716b35eef7d6c52831e2df20e4025',1,'Player']]],

@@ -18,7 +18,7 @@ var searchData=
   ['pairspellbook_15',['pAirSpellbook',['../structPlayerSpells.html#a704845be2b1784ebdc65e9429a6672b0',1,'PlayerSpells']]],
   ['palbuf_16',['palbuf',['../classRenderOpenGL.html#a07607c2e48d24226c0f1ecad96878ab6',1,'RenderOpenGL']]],
   ['palecanary_17',['PaleCanary',['../classColorTable.html#a6b7abc7feb38a9f3be2c65880f53ba7d',1,'ColorTable']]],
-  ['palette24_18',['palette24',['../classGraphicsImage.html#a8285d7a19a59b0727d581118a37601a5',1,'GraphicsImage']]],
+  ['palette_18',['palette',['../classGraphicsImage.html#ac80577af06698773361a798580240da4',1,'GraphicsImage']]],
   ['palette_5fid_19',['palette_id',['../classSprites__LOD__Loader.html#ac78055e5c0fccae69a5cbca5a28c77a8',1,'Sprites_LOD_Loader']]],
   ['palette_5fid1_20',['palette_id1',['../structTextureHeader.html#ad6bb54ff3703c311a27846fb1184c910',1,'TextureHeader']]],
   ['palette_5fid2_21',['palette_id2',['../structTextureHeader.html#a925e0551b0c6667fdc1b6fdb37d01840',1,'TextureHeader']]],
