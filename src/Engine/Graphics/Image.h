@@ -25,7 +25,7 @@ class GraphicsImage {
     /**
      * @return                              Returns pointer to image R8G8B8 palette. Size 3 * 256.
      */
-    const uint8_t *GetPalette();
+    const Color *GetPalette();
 
     /**
      * @return                              Returns pointer to image pixels 8 bit palette lookup. Size 1 * width * height.
@@ -44,7 +44,7 @@ class GraphicsImage {
     size_t width = 0;
     size_t height = 0;
     Color *pixels = nullptr;
-    uint8_t *palette24 = nullptr;
+    Color *palette = nullptr;
     uint8_t *palettepixels = nullptr;
 
     virtual bool LoadImageData();

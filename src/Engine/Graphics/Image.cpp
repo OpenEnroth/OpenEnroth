@@ -124,11 +124,11 @@ GraphicsImage *GraphicsImage::Create(ImageLoader *loader) {
 bool GraphicsImage::LoadImageData() {
     if (!initialized) {
         Color *data = nullptr;
-        uint8_t *palette = nullptr;
+        Color *palette = nullptr;
         initialized = loader->Load(&width, &height, &data, &palette);
         if (initialized) {
             pixels = data;
-            palette24 = palette;
+            palette = palette;
         }
     }
 
@@ -190,11 +190,11 @@ const Color *GraphicsImage::GetPixels() {
 }
 
 
-const uint8_t *GraphicsImage::GetPalette() {
+const Color *GraphicsImage::GetPalette() {
     if (!initialized)
         LoadImageData();
 
-    return this->palette24;
+    return this->palette;
 }
 
 const uint8_t *GraphicsImage::GetPalettePixels() {
@@ -222,6 +222,8 @@ bool GraphicsImage::Release() {
         }
 
         delete[] pixels;
+        delete[] palette;
+        delete[] palettepixels;
 
         width = 0;
         height = 0;

@@ -55,13 +55,13 @@ int TextureOpenGL::GetOpenGlTexture(bool bLoad) {
 bool TextureOpenGL::LoadImageData() {
     if (!this->initialized) {
         Color *pixels = nullptr;
-        uint8_t *palette = nullptr;
+        Color *palette = nullptr;
         uint8_t *palettepixels = nullptr;
 
         this->initialized = this->loader->Load(&width, &height, &pixels, &palette, &palettepixels);
         if (this->initialized) {
             this->pixels = pixels;
-            this->palette24 = palette;
+            this->palette = palette;
             this->palettepixels = palettepixels;
             this->initialized = render->MoveTextureToDevice(this);
             if (!this->initialized) {

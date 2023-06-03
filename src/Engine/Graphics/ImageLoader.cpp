@@ -26,6 +26,13 @@ static const std::unordered_set<std::string_view> transparentTextures = {
     "hwtrdrxsw"
 };
 
+static Color *MakeColorPalette(uint8_t *palette24) {
+    Color *result = new Color[256];
+    for (size_t i = 0; i < 256; i++)
+        result[i] = Color(palette24[i * 3], palette24[i * 3 + 1], palette24[i * 3 + 2]);
+    return result;
+}
+
 static Color *MakeImageSolid(size_t width, size_t height, uint8_t *pixels, uint8_t *palette) {
     Color *res = new Color[width * height];
 
@@ -83,7 +90,7 @@ static Color *MakeImageColorKey(size_t width, size_t height, uint8_t *pixels, ui
 }
 
 bool Paletted_Img_Loader::Load(size_t *out_width, size_t *out_height, Color **out_pixels,
-                               uint8_t **out_palette, uint8_t **out_palettepixels) {
+                               Color **out_palette, uint8_t **out_palettepixels) {
     *out_width = 0;
     *out_height = 0;
     *out_pixels = nullptr;
@@ -102,9 +109,7 @@ bool Paletted_Img_Loader::Load(size_t *out_width, size_t *out_height, Color **ou
     memcpy(store, tex->paletted_pixels, size);
     *out_palettepixels = store;
 
-    uint8_t *storepal = new uint8_t[3 * 256];
-    memcpy(storepal, tex->pPalette24, 3 * 256);
-    *out_palette = storepal;
+    *out_palette = MakeColorPalette(tex->pPalette24);
 
     // make the actual image
     *out_pixels = MakeImageAlpha(tex->header.uTextureWidth,
@@ -122,7 +127,7 @@ bool Paletted_Img_Loader::Load(size_t *out_width, size_t *out_height, Color **ou
 }
 
 bool ColorKey_LOD_Loader::Load(size_t *out_width, size_t *out_height, Color **out_pixels,
-                               uint8_t **out_palette, uint8_t **out_palettepixels) {
+                               Color **out_palette, uint8_t **out_palettepixels) {
     *out_width = 0;
     *out_height = 0;
     *out_pixels = nullptr;
@@ -149,13 +154,13 @@ bool ColorKey_LOD_Loader::Load(size_t *out_width, size_t *out_height, Color **ou
 
     *out_width = tex->header.uTextureWidth;
     *out_height = tex->header.uTextureHeight;
-    *out_palette = tex->pPalette24;
+    *out_palette = MakeColorPalette(tex->pPalette24);
 
     return true;
 }
 
 bool Image16bit_LOD_Loader::Load(size_t *out_width, size_t *out_height, Color **out_pixels,
-                                 uint8_t **out_palette, uint8_t **out_palettepixels) {
+                                 Color **out_palette, uint8_t **out_palettepixels) {
     *out_width = 0;
     *out_height = 0;
     *out_pixels = nullptr;
@@ -182,13 +187,13 @@ bool Image16bit_LOD_Loader::Load(size_t *out_width, size_t *out_height, Color **
 
     *out_width = tex->header.uTextureWidth;
     *out_height = tex->header.uTextureHeight;
-    *out_palette = tex->pPalette24;
+    *out_palette = MakeColorPalette(tex->pPalette24);
 
     return true;
 }
 
 bool Alpha_LOD_Loader::Load(size_t *out_width, size_t *out_height, Color **out_pixels,
-                            uint8_t **out_palette, uint8_t **out_palettepixels) {
+                            Color **out_palette, uint8_t **out_palettepixels) {
     *out_width = 0;
     *out_height = 0;
     *out_pixels = nullptr;
@@ -215,7 +220,7 @@ bool Alpha_LOD_Loader::Load(size_t *out_width, size_t *out_height, Color **out_p
 
     *out_width = tex->header.uTextureWidth;
     *out_height = tex->header.uTextureHeight;
-    *out_palette = tex->pPalette24;
+    *out_palette = MakeColorPalette(tex->pPalette24);
 
     return true;
 }
@@ -231,7 +236,7 @@ bool PCX_Loader::InternalLoad(const void *file, size_t filesize,
 }
 
 bool PCX_File_Loader::Load(size_t *width, size_t *height, Color **pixels,
-                           uint8_t **out_palette, uint8_t **out_palettepixels) {
+                           Color **out_palette, uint8_t **out_palettepixels) {
     *width = 0;
     *height = 0;
     *pixels = nullptr;
@@ -242,7 +247,7 @@ bool PCX_File_Loader::Load(size_t *width, size_t *height, Color **pixels,
 }
 
 bool PCX_LOD_Raw_Loader::Load(size_t *width, size_t *height, Color **pixels,
-                              uint8_t **out_palette, uint8_t **out_palettepixels) {
+                              Color **out_palette, uint8_t **out_palettepixels) {
     *width = 0;
     *height = 0;
     *pixels = nullptr;
@@ -258,7 +263,7 @@ bool PCX_LOD_Raw_Loader::Load(size_t *width, size_t *height, Color **pixels,
 }
 
 bool PCX_LOD_Compressed_Loader::Load(size_t *width, size_t *height, Color **pixels,
-                                     uint8_t **out_palette, uint8_t **out_palettepixels) {
+                                     Color **out_palette, uint8_t **out_palettepixels) {
     *width = 0;
     *height = 0;
     *pixels = nullptr;
@@ -320,7 +325,7 @@ static void ProcessTransparentPixel(const uint8_t *pixels, const uint8_t *palett
 }
 
 bool Bitmaps_LOD_Loader::Load(size_t *width, size_t *height, Color **out_pixels,
-                              uint8_t **out_palette, uint8_t **out_palettepixels) {
+                              Color **out_palette, uint8_t **out_palettepixels) {
     Texture_MM7 *tex = lod->GetTexture(lod->LoadTexture(this->resource_name));
     int num_pixels = tex->header.uTextureWidth * tex->header.uTextureHeight;
 
@@ -349,12 +354,12 @@ bool Bitmaps_LOD_Loader::Load(size_t *width, size_t *height, Color **out_pixels,
     *width = tex->header.uTextureWidth;
     *height = tex->header.uTextureHeight;
     *out_pixels = pixels;
-    *out_palette = tex->pPalette24;
+    *out_palette = MakeColorPalette(tex->pPalette24);
     return true;
 }
 
 bool Sprites_LOD_Loader::Load(size_t *width, size_t *height, Color **out_pixels,
-                              uint8_t **out_palette, uint8_t **out_palettepixels) {
+                              Color **out_palette, uint8_t **out_palettepixels) {
     *width = 0;
     *height = 0;
     *out_pixels = nullptr;
