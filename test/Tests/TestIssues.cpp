@@ -748,6 +748,19 @@ GAME_TEST(Issue, Issue645) {
     EXPECT_EQ(pParty->pPlayers[3].conditions.Has(CONDITION_UNCONSCIOUS), true);
 }
 
+GAME_TEST(Issues, Issue651) {
+    // array subscript out of range
+    test->playTraceFromTestData("issue_651.mm7", "issue_651.json");
+    // check for valid pids
+    for (auto &obj : pSpriteObjects) {
+        ObjectType castertype = PID_TYPE(obj.spell_caster_pid);
+        int casterid = PID_ID(obj.spell_caster_pid);
+        if (castertype == OBJECT_Actor) {
+            EXPECT_TRUE(casterid < pActors.size());
+        }
+    }
+}
+
 GAME_TEST(Issues, Issue661) {
     // HP/SP regen from items is too high
     int oldHealth = 0;
@@ -949,21 +962,46 @@ GAME_TEST(Issues, Issue741) {
     EXPECT_NE(pBLVRenderParams->uPartySectorID, 0);
 }
 
+GAME_TEST(Issues, Issue742) {
+    // No starting Quests in Questbook
+    game->pressGuiButton("MainMenu_NewGame");
+    game->tick(2);
+    game->pressGuiButton("PartyCreation_OK");
+    game->skipLoadingScreen();
+    game->tick(2);
+    // check all starting quests
+    EXPECT_TRUE(pParty->_questBits.test(QBIT_EMERALD_ISLAND_RED_POTION_ACTIVE));
+    EXPECT_TRUE(pParty->_questBits.test(QBIT_EMERALD_ISLAND_SEASHELL_ACTIVE));
+    EXPECT_TRUE(pParty->_questBits.test(QBIT_EMERALD_ISLAND_LONGBOW_ACTIVE));
+    EXPECT_TRUE(pParty->_questBits.test(QBIT_EMERALD_ISLAND_PLATE_ACTIVE));
+    EXPECT_TRUE(pParty->_questBits.test(QBIT_EMERALD_ISLAND_LUTE_ACTIVE));
+    EXPECT_TRUE(pParty->_questBits.test(QBIT_EMERALD_ISLAND_HAT_ACTIVE));
+}
+
 GAME_TEST(Issues, Issue760) {
     // Check that mixing potions when character inventory is full does not discards empty bottle
     test->playTraceFromTestData("issue_760.mm7", "issue_760.json");
     EXPECT_EQ(pParty->pPickedItem.uItemID, ITEM_POTION_BOTTLE);
 }
 
-void check783784Buffs(bool haveBuffs) {
-    for (PLAYER_BUFFS buff : allPotionBuffs())
-        EXPECT_EQ(pParty->pPlayers[0].pPlayerBuffs[buff].Active(), haveBuffs) << "buff=" << static_cast<int>(buff);
+GAME_TEST(Issues, Issue774) {
+    // Background stunned actors do idle motions
+    test->playTraceFromTestData("issue_774.mm7", "issue_774.json");
+    for (auto &act : pActors) {
+        if (!(act.uAttributes & ACTOR_FULL_AI_STATE))
+            EXPECT_TRUE(act.uAIState == Stunned || act.uAIState == Dead);
+    }
 }
 
 GAME_TEST(Issues, Issue779) {
     // Test that you can't load game from save menu
     test->playTraceFromTestData("issue_779.mm7", "issue_779.json");
     EXPECT_EQ(current_screen_type, CURRENT_SCREEN::SCREEN_SAVEGAME);
+}
+
+void check783784Buffs(bool haveBuffs) {
+    for (PLAYER_BUFFS buff : allPotionBuffs())
+        EXPECT_EQ(pParty->pPlayers[0].pPlayerBuffs[buff].Active(), haveBuffs) << "buff=" << static_cast<int>(buff);
 }
 
 GAME_TEST(Issues, Issue783) {
@@ -1062,6 +1100,17 @@ GAME_TEST(Issues, Issue816) {
     test->playTraceFromTestData("issue_816.mm7", "issue_816.json"); // Should not assert
 }
 
+GAME_TEST(Issues, Issue_832) {
+    // Death Blossom + ice blast crash
+    test->playTraceFromTestData("issue_832.mm7", "issue_832.json");
+    // expect 3 dead actors
+    int count = 0;
+    for (auto &act : pActors) {
+        if (act.uAIState == AIState::Dead) ++count;
+    }
+    EXPECT_EQ(count, 3);
+}
+
 GAME_TEST(Issues, Issue833) {
     // Test that quick spell castable on Shift and no crash with Shift+Click when quick spell is not set
     uint64_t oldMana0 = 0;
@@ -1122,8 +1171,9 @@ GAME_TEST(Issues, Issue895) {
 
 // 900
 
-GAME_TEST(Issues, Issue906) {
+GAME_TEST(Issues, Issue906_773) {
     // Issue with some use of Spellbuff Expired() - check actors cast buffs
+    // AI_SpellAttack using wrong actor buff for bless #773
     test->playTraceFromTestData("issue_906.mm7", "issue_906.json");
     EXPECT_TRUE(pActors[2].pActorBuffs[ACTOR_BUFF_BLESS].Active());
     EXPECT_TRUE(pActors[2].pActorBuffs[ACTOR_BUFF_HEROISM].Active());
