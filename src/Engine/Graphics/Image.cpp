@@ -22,39 +22,39 @@ bool GraphicsImage::LoadImageData() {
     if (!initialized) {
         Color *data = nullptr;
         Color *palette = nullptr;
-        initialized = loader->Load(&width, &height, &data, &palette);
+        initialized = loader->Load(&_width, &_height, &data, &palette);
         if (initialized) {
             pixels = data;
             palette = palette;
         }
     }
 
-    if ((width == 0 || height == 0) && initialized) __debugbreak();
+    if ((_width == 0 || _height == 0) && initialized) __debugbreak();
 
     return initialized;
 }
 
-int GraphicsImage::GetWidth() {
+int GraphicsImage::width() {
     if (!initialized) {
         LoadImageData();
     }
 
     if (initialized) {
-        if (width == 0) __debugbreak();
-        return width;
+        if (_width == 0) __debugbreak();
+        return _width;
     }
 
     return 0;
 }
 
-int GraphicsImage::GetHeight() {
+int GraphicsImage::height() {
     if (!initialized) {
         LoadImageData();
     }
 
     if (initialized) {
-        if (height == 0) __debugbreak();
-        return height;
+        if (_height == 0) __debugbreak();
+        return _height;
     }
 
     return 0;
@@ -66,9 +66,9 @@ GraphicsImage *GraphicsImage::Create(unsigned int width, unsigned int height, co
     GraphicsImage *img = new GraphicsImage(false);
 
     img->initialized = true;
-    img->width = width;
-    img->height = height;
-    unsigned int num_pixels = img->GetWidth() * img->GetHeight();
+    img->_width = width;
+    img->_height = height;
+    unsigned int num_pixels = img->width() * img->height();
     unsigned int num_pixels_bytes = num_pixels * sizeof(Color);
     img->pixels = new Color[num_pixels];
     if (pixels) {
@@ -122,8 +122,8 @@ bool GraphicsImage::Release() {
         delete[] palette;
         delete[] palettepixels;
 
-        width = 0;
-        height = 0;
+        _width = 0;
+        _height = 0;
     }
 
     delete this;

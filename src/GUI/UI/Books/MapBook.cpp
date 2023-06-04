@@ -178,7 +178,7 @@ void DrawBook_Map_sub(unsigned int tl_x, unsigned int tl_y, unsigned int br_x, i
         }
         Color *minitempix = const_cast<Color *>(minimaptemp->GetPixels()); // TODO(captainurist): #images const_cast
         const Color *minimap_pixels = viewparams->location_minimap->GetPixels();
-        int textr_width = viewparams->location_minimap->GetWidth();
+        int textr_width = viewparams->location_minimap->width();
 
         // nearest neiborhood scaling
         // if (texture8_data)

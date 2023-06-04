@@ -60,8 +60,8 @@ void GUIWindow_Chest::Update() {
                 auto item_texture = assets->getImage_ColorKey(
                     vChests[uChestID].igChestItems[chest_item_index - 1].GetIconName());
 
-                int itemPixelWidth = item_texture->GetWidth();
-                int itemPixelHeght = item_texture->GetHeight();
+                int itemPixelWidth = item_texture->width();
+                int itemPixelHeght = item_texture->height();
                 if (itemPixelWidth < 14) itemPixelWidth = 14;
                 if (itemPixelHeght < 14) itemPixelHeght = 14;
                 signed int X_offset = (((signed int)((itemPixelWidth - 14) & 0xFFFFFFE0) + 32) - itemPixelWidth) / 2;

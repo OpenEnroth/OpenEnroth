@@ -562,10 +562,10 @@ bool ArcomageGame::LoadSprites() {
 
     // mask out blue
     Color *pix = const_cast<Color *>(pArcomageGame->pSprites->GetPixels()); // TODO(captainurist): #images const_cast
-    int width = pArcomageGame->pSprites->GetWidth();
+    int width = pArcomageGame->pSprites->width();
     Color mask = colorTable.Blue;
     for (int x = 0; x < width; ++x) {
-        for (int y = 0; y < pArcomageGame->pSprites->GetHeight(); ++y) {
+        for (int y = 0; y < pArcomageGame->pSprites->height(); ++y) {
             int index{ x + y * width };
             if (pix[index] == mask)
                 pix[index] = Color(0, 0, 0, 0);

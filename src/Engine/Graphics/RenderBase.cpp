@@ -151,7 +151,7 @@ void RenderBase::DrawSpriteObjects() {
 
             pBillboardRenderList[::uNumBillboardsToDraw].hwsprite = frame->hw_sprites[octant];
             // error catching
-            if (frame->hw_sprites[octant]->texture->GetHeight() == 0 || frame->hw_sprites[octant]->texture->GetWidth() == 0) {
+            if (frame->hw_sprites[octant]->texture->height() == 0 || frame->hw_sprites[octant]->texture->width() == 0) {
                 logger->verbose("Trying to draw sprite with empty octant texture");
                 continue;
             }
@@ -430,7 +430,7 @@ uint32_t BlendColors(uint32_t a1, uint32_t a2) {
 void RenderBase::TransformBillboard(SoftwareBillboard *pSoftBillboard, RenderBillboard *pBillboard) {
     Sprite *pSprite = pBillboard->hwsprite;
     // error catching
-    if (pSprite->texture->GetHeight() == 0 || pSprite->texture->GetWidth() == 0)
+    if (pSprite->texture->height() == 0 || pSprite->texture->width() == 0)
         __debugbreak();
 
     unsigned int billboard_index = Billboard_ProbablyAddToListAndSortByZOrder(pSoftBillboard->screen_space_z);

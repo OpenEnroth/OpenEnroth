@@ -61,7 +61,7 @@ void GUICredits::Update() {
 
     move_Y += 0.25;
 
-    if (move_Y >= cred_texture->GetHeight()) {
+    if (move_Y >= cred_texture->height()) {
         SetCurrentMenuID(MENU_MAIN);
     }
 }

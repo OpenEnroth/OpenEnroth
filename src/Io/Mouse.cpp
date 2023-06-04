@@ -159,8 +159,8 @@ void Mouse::DrawCursor() {
         if (this->cursor_img) {
             platform->setCursorShown(false);
             // draw image - needs centering
-            pos.x -= (this->cursor_img->GetWidth()) / 2;
-            pos.y -= (this->cursor_img->GetHeight()) / 2;
+            pos.x -= (this->cursor_img->width()) / 2;
+            pos.y -= (this->cursor_img->height()) / 2;
 
             render->DrawTextureNew(pos.x / 640., pos.y / 480., this->cursor_img);
         } else {

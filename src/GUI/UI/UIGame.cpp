@@ -506,21 +506,21 @@ GUIWindow_GameOptions::GUIWindow_GameOptions()
     options_menu_skin.uTextureID_ShowDamage = assets->getImage_ColorKey("option02");
     options_menu_skin.uTextureID_WalkSound = assets->getImage_ColorKey("option01");
 
-    CreateButton({22, 270}, {options_menu_skin.uTextureID_TurnSpeed[2]->GetWidth(), options_menu_skin.uTextureID_TurnSpeed[2]->GetHeight()}, 1, 0,
-        UIMSG_SetTurnSpeed, 0x80);
-    CreateButton({93, 270}, {options_menu_skin.uTextureID_TurnSpeed[1]->GetWidth(), options_menu_skin.uTextureID_TurnSpeed[1]->GetHeight()}, 1, 0,
-        UIMSG_SetTurnSpeed, 0x40u);
-    CreateButton({164, 270}, {options_menu_skin.uTextureID_TurnSpeed[0]->GetWidth(), options_menu_skin.uTextureID_TurnSpeed[0]->GetHeight()}, 1, 0,
-        UIMSG_SetTurnSpeed, 0);
+    CreateButton({22, 270}, options_menu_skin.uTextureID_TurnSpeed[2]->size(), 1, 0,
+                 UIMSG_SetTurnSpeed, 0x80);
+    CreateButton({93, 270}, options_menu_skin.uTextureID_TurnSpeed[1]->size(), 1, 0,
+                 UIMSG_SetTurnSpeed, 0x40u);
+    CreateButton({164, 270}, options_menu_skin.uTextureID_TurnSpeed[0]->size(), 1, 0,
+                 UIMSG_SetTurnSpeed, 0);
 
-    CreateButton({20, 303}, {options_menu_skin.uTextureID_WalkSound->GetWidth(), options_menu_skin.uTextureID_WalkSound->GetHeight()}, 1, 0,
-        UIMSG_ToggleWalkSound, 0);
-    CreateButton({128, 303}, {options_menu_skin.uTextureID_ShowDamage->GetWidth(), options_menu_skin.uTextureID_ShowDamage->GetHeight()}, 1, 0,
-        UIMSG_ToggleShowDamage, 0);
-    CreateButton({20, 325}, {options_menu_skin.uTextureID_AlwaysRun->GetWidth(), options_menu_skin.uTextureID_AlwaysRun->GetHeight()}, 1, 0,
-        UIMSG_ToggleAlwaysRun, 0);
-    CreateButton({128, 325}, {options_menu_skin.uTextureID_FlipOnExit->GetWidth(), options_menu_skin.uTextureID_FlipOnExit->GetHeight()}, 1, 0,
-        UIMSG_ToggleFlipOnExit, 0);
+    CreateButton({20, 303}, options_menu_skin.uTextureID_WalkSound->size(), 1, 0,
+                 UIMSG_ToggleWalkSound, 0);
+    CreateButton({128, 303}, options_menu_skin.uTextureID_ShowDamage->size(), 1, 0,
+                 UIMSG_ToggleShowDamage, 0);
+    CreateButton({20, 325}, options_menu_skin.uTextureID_AlwaysRun->size(), 1, 0,
+                 UIMSG_ToggleAlwaysRun, 0);
+    CreateButton({128, 325}, options_menu_skin.uTextureID_FlipOnExit->size(), 1, 0,
+                 UIMSG_ToggleFlipOnExit, 0);
 
     pBtn_SliderLeft = CreateButton({243, 162}, {16, 16}, 1, 0, UIMSG_ChangeSoundVolume, 4, InputAction::Invalid, "",
         {options_menu_skin.uTextureID_ArrowLeft});
@@ -959,9 +959,8 @@ void GameUI_DrawLifeManaBars() {
             if (hpFillRatio > 0.0) {
                 render->SetUIClipRect(
                     v17 + pHealthBarPos[i],
-                    (int64_t)((1.0 - hpFillRatio) * pTextureHealth->GetHeight()) + 402,
-                    v17 + pHealthBarPos[i] + pTextureHealth->GetWidth(),
-                    pTextureHealth->GetHeight() + 402);
+                    (int64_t)((1.0 - hpFillRatio) * pTextureHealth->height()) + 402,
+                    v17 + pHealthBarPos[i] + pTextureHealth->width(), pTextureHealth->height() + 402);
                 render->DrawTextureNew((v17 + pHealthBarPos[i]) / 640.0f, 402 / 480.0f, pTextureHealth);
                 render->ResetUIClipRect();
             }
@@ -975,9 +974,8 @@ void GameUI_DrawLifeManaBars() {
             if (i == 2) v17 = 1;
             render->SetUIClipRect(
                 v17 + pManaBarPos[i],
-                (int64_t)((1.0 - mpFillRatio) * game_ui_bar_blue->GetHeight()) + 402,
-                v17 + pManaBarPos[i] + game_ui_bar_blue->GetWidth(),
-                game_ui_bar_blue->GetHeight() + 402);
+                (int64_t)((1.0 - mpFillRatio) * game_ui_bar_blue->height()) + 402,
+                v17 + pManaBarPos[i] + game_ui_bar_blue->width(), game_ui_bar_blue->height() + 402);
             render->DrawTextureNew((v17 + pManaBarPos[i]) / 640.0f, 402 / 480.0f, game_ui_bar_blue);
             render->ResetUIClipRect();
         }
@@ -1631,7 +1629,7 @@ void GameUI_DrawMinimap(unsigned int uX, unsigned int uY, unsigned int uZ,
             if (/*pMapLod0 && */ bRedrawOdmMinimap) {
                 assert(uWidth == 137 && uHeight == 117);
 
-                ushort MapImgWidth = viewparams->location_minimap->GetWidth();
+                ushort MapImgWidth = viewparams->location_minimap->width();
                 const Color *pMapLod0Line = viewparams->location_minimap->GetPixels();
                 Color *minitempix = const_cast<Color *>(minimaptemp->GetPixels()); // TODO(captainurist): #images const_cast
 

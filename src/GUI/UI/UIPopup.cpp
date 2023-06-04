@@ -131,8 +131,8 @@ void DrawPopupWindow(unsigned int uX, unsigned int uY, unsigned int uWidth,
     float renwidth = renderdims.w;
     float renheight = renderdims.h;
 
-    unsigned int parchment_width = parchment->GetWidth();
-    unsigned int parchment_height = parchment->GetHeight();
+    unsigned int parchment_width = parchment->width();
+    unsigned int parchment_height = parchment->height();
 
     uNumTiles = uWidth / parchment_width;
     if (uWidth % parchment_width) ++uNumTiles;
@@ -149,50 +149,48 @@ void DrawPopupWindow(unsigned int uX, unsigned int uY, unsigned int uWidth,
 
     render->DrawTextureNew(uX / renwidth, uY / renheight, messagebox_corner_x);
     render->DrawTextureNew(
-        uX / renwidth, (uY + uHeight - messagebox_corner_y->GetHeight()) / renheight,
+        uX / renwidth, (uY + uHeight - messagebox_corner_y->height()) / renheight,
         messagebox_corner_y);
     render->DrawTextureNew(
-        (uX + uWidth - messagebox_corner_z->GetWidth()) / renwidth, uY / renheight,
+        (uX + uWidth - messagebox_corner_z->width()) / renwidth, uY / renheight,
         messagebox_corner_z);
     render->DrawTextureNew(
-        (uX + uWidth - messagebox_corner_z->GetWidth()) / renwidth,
-        (uY + uHeight - messagebox_corner_y->GetHeight()) / renheight,
+        (uX + uWidth - messagebox_corner_z->width()) / renwidth,
+        (uY + uHeight - messagebox_corner_y->height()) / renheight,
         messagebox_corner_w);
 
-    if (uWidth >
-        messagebox_corner_x->GetWidth() + messagebox_corner_z->GetWidth()) {
-        render->SetUIClipRect(uX + messagebox_corner_x->GetWidth(), uY,
-                              uX + uWidth - messagebox_corner_z->GetWidth(),
+    if (uWidth > messagebox_corner_x->width() + messagebox_corner_z->width()) {
+        render->SetUIClipRect(uX + messagebox_corner_x->width(), uY,
+                              uX + uWidth - messagebox_corner_z->width(),
                               uY + uHeight);
 
         // horizontal borders
-        for (unsigned int x = uX + messagebox_corner_x->GetWidth();
-             x < uX + uWidth - messagebox_corner_x->GetWidth();
-             x += messagebox_border_top->GetWidth()) {
+        for (unsigned int x = uX + messagebox_corner_x->width();
+             x < uX + uWidth - messagebox_corner_x->width();
+             x += messagebox_border_top->width()) {
             render->DrawTextureNew(x / renwidth, uY / renheight,
                                         messagebox_border_top);
             render->DrawTextureNew(
                 x / renwidth,
-                (uY + uHeight - messagebox_border_bottom->GetHeight()) / renheight,
+                (uY + uHeight - messagebox_border_bottom->height()) / renheight,
                 messagebox_border_bottom);
         }
     }
 
     // vertical borders
-    if (uHeight >
-        messagebox_corner_x->GetHeight() + messagebox_corner_y->GetHeight()) {
-        render->SetUIClipRect(uX, uY + messagebox_corner_x->GetHeight(),
+    if (uHeight > messagebox_corner_x->height() + messagebox_corner_y->height()) {
+        render->SetUIClipRect(uX, uY + messagebox_corner_x->height(),
                               uX + uWidth,
-                              uY + uHeight - messagebox_corner_y->GetHeight());
+                              uY + uHeight - messagebox_corner_y->height());
 
-        for (unsigned int y = uY + messagebox_corner_x->GetHeight();
-             y < uY + uHeight - messagebox_corner_y->GetHeight();
-             y += messagebox_border_right->GetHeight()) {
+        for (unsigned int y = uY + messagebox_corner_x->height();
+             y < uY + uHeight - messagebox_corner_y->height();
+             y += messagebox_border_right->height()) {
             render->DrawTextureNew(uX / renwidth, y / renheight,
                                         messagebox_border_left);
             render->DrawTextureNew(
-                (uX + uWidth - messagebox_border_right->GetWidth() - 1) /
-                    renwidth,
+                (uX + uWidth - messagebox_border_right->width() - 1) /
+                renwidth,
                 y / renheight, messagebox_border_right);
         }
     }
@@ -224,8 +222,8 @@ void GameUI_DrawItemInfo(struct ItemGen *inspect_item) {
         frameXpos = pt.x - iteminfo_window.uFrameWidth - 30;
 
     iteminfo_window.uFrameX = frameXpos;
-    int itemXspacing = 100 - inspect_item_image->GetWidth();
-    int itemYspacing = 144 - inspect_item_image->GetHeight();
+    int itemXspacing = 100 - inspect_item_image->width();
+    int itemYspacing = 144 - inspect_item_image->height();
     if (itemXspacing > 0) itemXspacing = itemXspacing / 2;
     if (itemYspacing <= 0)
         itemYspacing = 0;
@@ -233,7 +231,7 @@ void GameUI_DrawItemInfo(struct ItemGen *inspect_item) {
         itemYspacing = itemYspacing / 2;
 
     // added so window is correct size with broken items
-    iteminfo_window.uFrameHeight = inspect_item_image->GetHeight() + itemYspacing + 54;
+    iteminfo_window.uFrameHeight = inspect_item_image->height() + itemYspacing + 54;
 
     if (!pItemTable->pItems[inspect_item->uItemID].uItemID_Rep_St)
         inspect_item->SetIdentified();
@@ -425,7 +423,7 @@ void GameUI_DrawItemInfo(struct ItemGen *inspect_item) {
         Str_int += pFontSmallnum->CalcTextHeight(
             pItemTable->pItems[inspect_item->uItemID].pDescription,
             iteminfo_window.uFrameWidth, 100);
-    iteminfo_window.uFrameHeight = inspect_item_image->GetHeight() + itemYspacing + 54;
+    iteminfo_window.uFrameHeight = inspect_item_image->height() + itemYspacing + 54;
     if ((signed int)Str_int > (signed int)iteminfo_window.uFrameHeight)
         iteminfo_window.uFrameHeight = (unsigned int)Str_int;
     if (inspect_item->uAttributes & ITEM_TEMP_BONUS &&
@@ -462,7 +460,7 @@ void GameUI_DrawItemInfo(struct ItemGen *inspect_item) {
     iteminfo_window.uFrameW =
         iteminfo_window.uFrameY + iteminfo_window.uFrameHeight - 1;
     render->DrawTextureNew((iteminfo_window.uFrameX + (float)itemXspacing) / 640.0f,
-                                (iteminfo_window.uFrameY + (float)(iteminfo_window.uFrameHeight - inspect_item_image->GetHeight()) / 2.) / 480.0f,
+                           (iteminfo_window.uFrameY + (float)(iteminfo_window.uFrameHeight - inspect_item_image->height()) / 2.) / 480.0f,
                                 inspect_item_image);
 
     v34 = (int)(v85 + 35);
@@ -1420,17 +1418,14 @@ void ShowPopupShopItem() {
                         if (item->uItemID != ITEM_NULL) {
                             testpos =
                                 ((60 -
-                                  (shop_ui_items_in_store[testx]->GetWidth() /
+                                  (shop_ui_items_in_store[testx]->width() /
                                    2)) +
                                  testx * 70);
                             if (pt.x >= testpos &&
                                 pt.x <
-                                    (testpos + shop_ui_items_in_store[testx]
-                                                   ->GetWidth())) {
+                                    (testpos + shop_ui_items_in_store[testx]->width())) {
                                 if (pt.y >= weaponYPos[testx] + 30 &&
-                                    pt.y < (weaponYPos[testx] + 30 +
-                                               shop_ui_items_in_store[testx]
-                                                   ->GetHeight())) {
+                                    pt.y < (weaponYPos[testx] + 30 + shop_ui_items_in_store[testx]->height())) {
                                     GameUI_DrawItemInfo(item);
                                 }
                             } else {
@@ -1458,29 +1453,24 @@ void ShowPopupShopItem() {
 
                         if (item->uItemID != ITEM_NULL) {
                             if (testx >= 4) {
-                                testpos = ((90 - (shop_ui_items_in_store[testx]
-                                                      ->GetWidth() /
+                                testpos = ((90 - (shop_ui_items_in_store[testx]->width() /
                                                   2)) +
                                            (testx * 105) - 420);  // low row
                             } else {
-                                testpos = ((86 - (shop_ui_items_in_store[testx]
-                                                      ->GetWidth() /
+                                testpos = ((86 - (shop_ui_items_in_store[testx]->width() /
                                                   2)) +
                                            testx * 105);
                             }
 
                             if (pt.x >= testpos &&
                                 pt.x <=
-                                    testpos + shop_ui_items_in_store[testx]
-                                                  ->GetWidth()) {
+                                    testpos + shop_ui_items_in_store[testx]->width()) {
                                 if ((pt.y >= 126 &&
                                     pt.y <
-                                         (126 + shop_ui_items_in_store[testx]
-                                                    ->GetHeight())) ||
+                                         (126 + shop_ui_items_in_store[testx]->height())) ||
                                     (pt.y <= 98 &&
                                         pt.y >=
-                                         (98 - shop_ui_items_in_store[testx]
-                                                   ->GetHeight()))) {
+                                         (98 - shop_ui_items_in_store[testx]->height()))) {
                                     GameUI_DrawItemInfo(item);
                                 } else {
                                     return;
@@ -1509,30 +1499,25 @@ void ShowPopupShopItem() {
                         if (item->uItemID != ITEM_NULL) {
                             if (pt.y > 152) {
                                 testpos =
-                                    75 * testx -
-                                    shop_ui_items_in_store[testx]->GetWidth() /
+                                    75 * testx - shop_ui_items_in_store[testx]->width() /
                                         2 +
                                     40 - 450;
                             } else {
                                 testpos =
-                                    75 * testx -
-                                    shop_ui_items_in_store[testx]->GetWidth() /
+                                    75 * testx - shop_ui_items_in_store[testx]->width() /
                                         2 +
                                     40;
                             }
 
                             if (pt.x >= testpos &&
                                 pt.x <=
-                                    testpos + shop_ui_items_in_store[testx]
-                                                  ->GetWidth()) {
+                                    testpos + shop_ui_items_in_store[testx]->width()) {
                                 if ((pt.y <= 308 &&
                                     pt.y >=
-                                         (308 - shop_ui_items_in_store[testx]
-                                                    ->GetHeight())) ||
+                                         (308 - shop_ui_items_in_store[testx]->height())) ||
                                     (pt.y <= 152 &&
                                         pt.y >=
-                                         (152 - shop_ui_items_in_store[testx]
-                                                    ->GetHeight()))) {
+                                         (152 - shop_ui_items_in_store[testx]->height()))) {
                                     GameUI_DrawItemInfo(item);
                                 } else {
                                     return;
@@ -1591,8 +1576,8 @@ void ShowPopupShopItem() {
                     testpos = 32 + 70 * testx;
                 }
 
-                if (pt.x >= testpos && pt.x <= testpos + shop_ui_items_in_store[testx]->GetWidth()) {
-                    if ((pt.y >= 90 && pt.y <= (90 + shop_ui_items_in_store[testx]->GetHeight())) || (pt.y >= 250 && pt.y <= (250 + shop_ui_items_in_store[testx]->GetHeight()))) {
+                if (pt.x >= testpos && pt.x <= testpos + shop_ui_items_in_store[testx]->width()) {
+                    if ((pt.y >= 90 && pt.y <= (90 + shop_ui_items_in_store[testx]->height())) || (pt.y >= 250 && pt.y <= (250 + shop_ui_items_in_store[testx]->height()))) {
                         showSpellbookInfo(pParty->spellBooksInGuilds[window_SpeakInHouse->houseId()][testx].uItemID);
                     }
                 }

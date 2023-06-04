@@ -78,7 +78,7 @@ GUIWindow_Save::GUIWindow_Save() :
             }
 
             pSavegameList->pSavegameThumbnails[i] = render->CreateTexture_PCXFromLOD(&pLODFile, "image.pcx");
-            if (pSavegameList->pSavegameThumbnails[i]->GetWidth() == 0) {
+            if (pSavegameList->pSavegameThumbnails[i]->width() == 0) {
                 pSavegameList->pSavegameThumbnails[i]->Release();
                 pSavegameList->pSavegameThumbnails[i] = nullptr;
             }
@@ -195,7 +195,7 @@ GUIWindow_Load::GUIWindow_Load(bool ingame) :
 
         pSavegameList->pSavegameThumbnails[i] = render->CreateTexture_PCXFromLOD(&pLODFile, "image.pcx");
 
-        if (pSavegameList->pSavegameThumbnails[i]->GetWidth() == 0) {
+        if (pSavegameList->pSavegameThumbnails[i]->width() == 0) {
             pSavegameList->pSavegameThumbnails[i]->Release();
             pSavegameList->pSavegameThumbnails[i] = nullptr;
         }
