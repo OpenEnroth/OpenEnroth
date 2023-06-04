@@ -56,39 +56,39 @@ PlatformKey translateSdlKey(SDL_Scancode key) {
     case SDL_SCANCODE_Y:                return PlatformKey::KEY_Y;
     case SDL_SCANCODE_Z:                return PlatformKey::KEY_Z;
 
-    case SDL_SCANCODE_RETURN:           return PlatformKey::Return;
-    case SDL_SCANCODE_ESCAPE:           return PlatformKey::Escape;
-    case SDL_SCANCODE_TAB:              return PlatformKey::Tab;
-    case SDL_SCANCODE_BACKSPACE:        return PlatformKey::Backspace;
-    case SDL_SCANCODE_SPACE:            return PlatformKey::Space;
-    case SDL_SCANCODE_DECIMALSEPARATOR: return PlatformKey::Decimal;
-    case SDL_SCANCODE_SEMICOLON:        return PlatformKey::Semicolon;
-    case SDL_SCANCODE_PERIOD:           return PlatformKey::Period;
-    case SDL_SCANCODE_SLASH:            return PlatformKey::Slash;
-    case SDL_SCANCODE_APOSTROPHE:       return PlatformKey::SingleQuote;
-    case SDL_SCANCODE_BACKSLASH:        return PlatformKey::BackSlash;
-    case SDL_SCANCODE_GRAVE:            return PlatformKey::Tilde;
+    case SDL_SCANCODE_RETURN:           return PlatformKey::KEY_RETURN;
+    case SDL_SCANCODE_ESCAPE:           return PlatformKey::KEY_ESCAPE;
+    case SDL_SCANCODE_TAB:              return PlatformKey::KEY_TAB;
+    case SDL_SCANCODE_BACKSPACE:        return PlatformKey::KEY_BACKSPACE;
+    case SDL_SCANCODE_SPACE:            return PlatformKey::KEY_SPACE;
+    case SDL_SCANCODE_DECIMALSEPARATOR: return PlatformKey::KEY_DECIMAL;
+    case SDL_SCANCODE_SEMICOLON:        return PlatformKey::KEY_SEMICOLON;
+    case SDL_SCANCODE_PERIOD:           return PlatformKey::KEY_PERIOD;
+    case SDL_SCANCODE_SLASH:            return PlatformKey::KEY_SLASH;
+    case SDL_SCANCODE_APOSTROPHE:       return PlatformKey::KEY_SINGLEQUOTE;
+    case SDL_SCANCODE_BACKSLASH:        return PlatformKey::KEY_BACKSLASH;
+    case SDL_SCANCODE_GRAVE:            return PlatformKey::KEY_TILDE;
 
-    case SDL_SCANCODE_KP_MINUS:         return PlatformKey::Subtract;
-    case SDL_SCANCODE_KP_PLUS:          return PlatformKey::Add;
-    case SDL_SCANCODE_COMMA:            return PlatformKey::Comma;
-    case SDL_SCANCODE_LEFTBRACKET:      return PlatformKey::LeftBracket;
-    case SDL_SCANCODE_RIGHTBRACKET:     return PlatformKey::RightBracket;
+    case SDL_SCANCODE_KP_MINUS:         return PlatformKey::KEY_SUBTRACT;
+    case SDL_SCANCODE_KP_PLUS:          return PlatformKey::KEY_ADD;
+    case SDL_SCANCODE_COMMA:            return PlatformKey::KEY_COMMA;
+    case SDL_SCANCODE_LEFTBRACKET:      return PlatformKey::KEY_LEFTBRACKET;
+    case SDL_SCANCODE_RIGHTBRACKET:     return PlatformKey::KEY_RIGHTBRACKET;
 
-    case SDL_SCANCODE_LEFT:             return PlatformKey::Left;
-    case SDL_SCANCODE_RIGHT:            return PlatformKey::Right;
-    case SDL_SCANCODE_UP:               return PlatformKey::Up;
-    case SDL_SCANCODE_DOWN:             return PlatformKey::Down;
+    case SDL_SCANCODE_LEFT:             return PlatformKey::KEY_LEFT;
+    case SDL_SCANCODE_RIGHT:            return PlatformKey::KEY_RIGHT;
+    case SDL_SCANCODE_UP:               return PlatformKey::KEY_UP;
+    case SDL_SCANCODE_DOWN:             return PlatformKey::KEY_DOWN;
 
-    case SDL_SCANCODE_PRINTSCREEN:      return PlatformKey::PrintScreen;
+    case SDL_SCANCODE_PRINTSCREEN:      return PlatformKey::KEY_PRINTSCREEN;
 
-    case SDL_SCANCODE_INSERT:           return PlatformKey::Insert;
-    case SDL_SCANCODE_HOME:             return PlatformKey::Home;
-    case SDL_SCANCODE_END:              return PlatformKey::End;
-    case SDL_SCANCODE_PAGEUP:           return PlatformKey::PageUp;
-    case SDL_SCANCODE_PAGEDOWN:         return PlatformKey::PageDown;
-    case SDL_SCANCODE_DELETE:           return PlatformKey::Delete;
-    case SDL_SCANCODE_SELECT:           return PlatformKey::Select;
+    case SDL_SCANCODE_INSERT:           return PlatformKey::KEY_INSERT;
+    case SDL_SCANCODE_HOME:             return PlatformKey::KEY_HOME;
+    case SDL_SCANCODE_END:              return PlatformKey::KEY_END;
+    case SDL_SCANCODE_PAGEUP:           return PlatformKey::KEY_PAGEUP;
+    case SDL_SCANCODE_PAGEDOWN:         return PlatformKey::KEY_PAGEDOWN;
+    case SDL_SCANCODE_DELETE:           return PlatformKey::KEY_DELETE;
+    case SDL_SCANCODE_SELECT:           return PlatformKey::KEY_SELECT;
 
     case SDL_SCANCODE_LCTRL:            return PlatformKey::KEY_CONTROL;
     case SDL_SCANCODE_RCTRL:            return PlatformKey::KEY_CONTROL;
@@ -107,7 +107,7 @@ PlatformKey translateSdlKey(SDL_Scancode key) {
     case SDL_SCANCODE_KP_7:             return PlatformKey::KEY_NUMPAD_7;
     case SDL_SCANCODE_KP_8:             return PlatformKey::KEY_NUMPAD_8;
     case SDL_SCANCODE_KP_9:             return PlatformKey::KEY_NUMPAD_9;
-    case SDL_SCANCODE_KP_ENTER:         return PlatformKey::Return;
+    case SDL_SCANCODE_KP_ENTER:         return PlatformKey::KEY_RETURN;
 
     default:
         return PlatformKey::KEY_NONE;

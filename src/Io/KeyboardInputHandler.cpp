@@ -408,15 +408,15 @@ bool KeyboardInputHandler::ProcessTextInput(PlatformKey key, int c) {
             return false;
         }
 
-        if (key == PlatformKey::Backspace) {
+        if (key == PlatformKey::KEY_BACKSPACE) {
             if (!pPressedKeysBuffer.empty()) {
                 pPressedKeysBuffer.pop_back();
             }
-        } else if (key == PlatformKey::Return) {
+        } else if (key == PlatformKey::KEY_RETURN) {
             SetWindowInputStatus(WINDOW_INPUT_CONFIRMED);
-        } else if (key == PlatformKey::Escape) {
+        } else if (key == PlatformKey::KEY_ESCAPE) {
             SetWindowInputStatus(WINDOW_INPUT_CANCELLED);
-        } else if (key == PlatformKey::Space && pPressedKeysBuffer.size() < this->max_input_string_len) {
+        } else if (key == PlatformKey::KEY_SPACE && pPressedKeysBuffer.size() < this->max_input_string_len) {
             if (inputType == TextInputType::Text) {
                 pPressedKeysBuffer.push_back(' ');
             }

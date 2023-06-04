@@ -195,7 +195,7 @@ void GameWindowHandler::OnMouseLeftClick(Pointi position) {
         mouse->SetMouseClick(position.x, position.y);
 
         if (GetCurrentMenuID() == MENU_CREATEPARTY) {
-            UI_OnKeyDown(PlatformKey::Select);
+            UI_OnKeyDown(PlatformKey::KEY_SELECT);
         }
 
         if (engine) {

@@ -107,7 +107,6 @@ using enum PlatformLoggerOption;
 MM_DECLARE_FLAGS(PlatformLoggerOptions, PlatformLoggerOption)
 MM_DECLARE_OPERATORS_FOR_FLAGS(PlatformLoggerOptions)
 
-// TODO(captainurist): enum codestyle
 enum class PlatformKey : int {
     // usual text input
     KEY_CHAR, // TODO(captainurist): this doesn't belong here
@@ -134,39 +133,39 @@ enum class PlatformKey : int {
     KEY_T, KEY_U, KEY_V,
     KEY_W, KEY_X, KEY_Y, KEY_Z,
 
-    Return,
-    Escape,
-    Tab,
-    Backspace,
-    Space,
+    KEY_RETURN,
+    KEY_ESCAPE,
+    KEY_TAB,
+    KEY_BACKSPACE,
+    KEY_SPACE,
 
-    Add,
-    Subtract,
-    Comma,
-    LeftBracket,
-    RightBracket,
-    Decimal,
-    Semicolon,
-    Period,
-    Slash,
-    SingleQuote,
-    BackSlash,
-    Tilde,
+    KEY_ADD,
+    KEY_SUBTRACT,
+    KEY_COMMA,
+    KEY_LEFTBRACKET,
+    KEY_RIGHTBRACKET,
+    KEY_DECIMAL,
+    KEY_SEMICOLON,
+    KEY_PERIOD,
+    KEY_SLASH,
+    KEY_SINGLEQUOTE,
+    KEY_BACKSLASH,
+    KEY_TILDE,
 
-    Left,
-    Right,
-    Up,
-    Down,
+    KEY_LEFT,
+    KEY_RIGHT,
+    KEY_UP,
+    KEY_DOWN,
 
-    PrintScreen,
+    KEY_PRINTSCREEN,
 
-    Insert,
-    Home,
-    End,
-    PageUp,
-    PageDown,
-    Delete,
-    Select,
+    KEY_INSERT,
+    KEY_HOME,
+    KEY_END,
+    KEY_PAGEUP,
+    KEY_PAGEDOWN,
+    KEY_DELETE,
+    KEY_SELECT,
 
     KEY_CONTROL,
     KEY_ALT,

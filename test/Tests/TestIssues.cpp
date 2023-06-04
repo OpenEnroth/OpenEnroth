@@ -698,7 +698,7 @@ GAME_TEST(Issues, Issue626) {
     game->skipLoadingScreen();
     game->tick(2);
 
-    game->pressAndReleaseKey(PlatformKey::Escape);
+    game->pressAndReleaseKey(PlatformKey::KEY_ESCAPE);
     game->tick(2);
     game->pressGuiButton("GameMenu_SaveGame");
     game->tick(10);
@@ -709,7 +709,7 @@ GAME_TEST(Issues, Issue626) {
     game->pressGuiButton("SaveMenu_Save");
     game->tick(10);
 
-    game->pressAndReleaseKey(PlatformKey::Escape);
+    game->pressAndReleaseKey(PlatformKey::KEY_ESCAPE);
     game->tick(2);
     game->pressGuiButton("GameMenu_SaveGame");
     game->tick(10);
@@ -720,7 +720,7 @@ GAME_TEST(Issues, Issue626) {
     game->pressGuiButton("SaveMenu_Save");
     game->tick(10);
 
-    game->pressAndReleaseKey(PlatformKey::Escape);
+    game->pressAndReleaseKey(PlatformKey::KEY_ESCAPE);
     game->tick(2);
     game->pressGuiButton("GameMenu_LoadGame");
     game->tick(10);
@@ -731,7 +731,7 @@ GAME_TEST(Issues, Issue626) {
     game->skipLoadingScreen();
     game->tick(2);
 
-    game->pressAndReleaseKey(PlatformKey::Escape);
+    game->pressAndReleaseKey(PlatformKey::KEY_ESCAPE);
     game->tick(2);
     game->pressGuiButton("GameMenu_LoadGame");
     game->tick(10);
@@ -870,7 +870,7 @@ GAME_TEST(Issues, Issue689) {
     game->skipLoadingScreen();
     game->tick(2);
 
-    game->pressAndReleaseKey(PlatformKey::Escape);
+    game->pressAndReleaseKey(PlatformKey::KEY_ESCAPE);
     game->tick(2);
     game->pressGuiButton("GameMenu_SaveGame");
     game->tick(10);
@@ -881,7 +881,7 @@ GAME_TEST(Issues, Issue689) {
     game->pressGuiButton("SaveMenu_Save");
     game->tick(10);
 
-    game->pressAndReleaseKey(PlatformKey::Escape);
+    game->pressAndReleaseKey(PlatformKey::KEY_ESCAPE);
     game->tick(2);
     game->pressGuiButton("GameMenu_LoadGame");
     game->tick(10);
@@ -894,7 +894,7 @@ GAME_TEST(Issues, Issue689) {
     game->skipLoadingScreen();
     game->tick(2);
 
-    game->pressAndReleaseKey(PlatformKey::Escape);
+    game->pressAndReleaseKey(PlatformKey::KEY_ESCAPE);
     game->tick(2);
     game->pressGuiButton("GameMenu_Quit");
     game->tick(2);

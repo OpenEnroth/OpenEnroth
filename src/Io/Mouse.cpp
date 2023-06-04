@@ -379,7 +379,7 @@ bool UI_OnKeyDown(PlatformKey key) {
             GUIButton *pButton = win->GetControl(win->pCurrentPosActiveItem);
             pCurrentFrameMessageQueue->AddGUIMessage(pButton->msg, pButton->msg_param, 0);
             return true;
-        } else if (key == PlatformKey::Select) {
+        } else if (key == PlatformKey::KEY_SELECT) {
             int uClickX;
             int uClickY;
             EngineIocContainer::ResolveMouse()->GetClickPos(&uClickX, &uClickY);
@@ -422,7 +422,7 @@ bool UI_OnKeyDown(PlatformKey key) {
         } else if (keyboardActionMapping->IsKeyMatchAction(InputAction::DialogSelect, key)) {
             GUIButton *pButton = win->GetControl(win->pCurrentPosActiveItem);
             pCurrentFrameMessageQueue->AddGUIMessage(pButton->msg, pButton->msg_param, 0);
-        } else if (key == PlatformKey::PageDown) { // not button event from user, but a call from GUI_UpdateWindows to track mouse
+        } else if (key == PlatformKey::KEY_PAGEDOWN) { // not button event from user, but a call from GUI_UpdateWindows to track mouse
             if (win->field_30 != 0) {
                 int uClickX;
                 int uClickY;
