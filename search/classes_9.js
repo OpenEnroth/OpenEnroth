@@ -25,7 +25,7 @@ var searchData=
   ['indexedarray_22',['IndexedArray',['../classIndexedArray.html',1,'']]],
   ['indexedarray_3c_20bonusrange_2c_20item_5ftreasure_5flevel_5ffirst_5frandom_2c_20item_5ftreasure_5flevel_5flast_5frandom_20_3e_23',['IndexedArray&lt; BonusRange, ITEM_TREASURE_LEVEL_FIRST_RANDOM, ITEM_TREASURE_LEVEL_LAST_RANDOM &gt;',['../classIndexedArray.html',1,'']]],
   ['indexedarray_3c_20bool_2c_20item_5ffirst_5fspawnable_5fartifact_2c_20item_5flast_5fspawnable_5fartifact_20_3e_24',['IndexedArray&lt; bool, ITEM_FIRST_SPAWNABLE_ARTIFACT, ITEM_LAST_SPAWNABLE_ARTIFACT &gt;',['../classIndexedArray.html',1,'']]],
-  ['indexedarray_3c_20bool_2c_20platformkey_3a_3afirst_2c_20platformkey_3a_3alast_20_3e_25',['IndexedArray&lt; bool, PlatformKey::First, PlatformKey::Last &gt;',['../classIndexedArray.html',1,'']]],
+  ['indexedarray_3c_20bool_2c_20platformkey_3a_3akey_5ffirst_2c_20platformkey_3a_3akey_5flast_20_3e_25',['IndexedArray&lt; bool, PlatformKey::KEY_FIRST, PlatformKey::KEY_LAST &gt;',['../classIndexedArray.html',1,'']]],
   ['indexedarray_3c_20char_2c_20equip_5ffirst_5fspecial_5fenchantable_2c_20equip_5flast_5fspecial_5fenchantable_20_3e_26',['IndexedArray&lt; char, EQUIP_FIRST_SPECIAL_ENCHANTABLE, EQUIP_LAST_SPECIAL_ENCHANTABLE &gt;',['../classIndexedArray.html',1,'']]],
   ['indexedarray_3c_20const_20char_20_2a_2c_20npc_5fprofession_5ffirst_2c_20npc_5fprofession_5flast_20_3e_27',['IndexedArray&lt; const char *, NPC_PROFESSION_FIRST, NPC_PROFESSION_LAST &gt;',['../classIndexedArray.html',1,'']]],
   ['indexedarray_3c_20const_20char_20_2a_2c_20player_5fskill_5finvalid_2c_20player_5fskill_5flast_5fvisible_20_3e_28',['IndexedArray&lt; const char *, PLAYER_SKILL_INVALID, PLAYER_SKILL_LAST_VISIBLE &gt;',['../classIndexedArray.html',1,'']]],
