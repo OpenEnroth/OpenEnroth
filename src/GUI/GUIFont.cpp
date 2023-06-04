@@ -88,8 +88,8 @@ void GUIFont::CreateFontTex() {
     // create blank textures
     this->fonttex = render->CreateTexture_Blank(512, 512);
     this->fontshadow = render->CreateTexture_Blank(512, 512);
-    Color *pPixelsfont = const_cast<Color *>(this->fonttex->GetPixels()); // TODO(captainurist): #images const_cast
-    Color *pPixelsshadow = const_cast<Color *>(this->fontshadow->GetPixels());
+    Color *pPixelsfont = this->fonttex->rgba().pixels().data();
+    Color *pPixelsshadow = this->fontshadow->rgba().pixels().data();
 
     // load in char pixels into squares within texture
     for (int l = 0; l < 256; l++) {
@@ -751,7 +751,7 @@ void GUIFont::DrawCreditsEntry(GUIFont *pSecondFont, int uFrameX, int uFrameY, u
     std::istringstream stream(work_string);
     std::getline(stream, work_string);
 
-    Color *pPixels = const_cast<Color *>(image->GetPixels()); // TODO(captainurist): #images const_cast
+    Color *pPixels = image->rgba().pixels().data();
     Color *curr_pixel_pos = &pPixels[image->width() * uFrameY];
     if (!work_string.empty()) {
         int half_frameX = uFrameX >> 1;

@@ -5,9 +5,12 @@
 #include <memory>
 
 #include "Engine/ErrorHandling.h"
+#include "Engine/EngineIocContainer.h"
 #include "Engine/Graphics/IRender.h"
-#include "Library/Image/PCX.h"
 #include "Engine/Graphics/Sprites.h"
+
+#include "Library/Image/ImageFunctions.h"
+#include "Library/Image/PCX.h"
 
 // List of textures that require additional processing for transparent pixels.
 // TODO: move to OpenEnroth config file.
@@ -26,277 +29,150 @@ static const std::unordered_set<std::string_view> transparentTextures = {
     "hwtrdrxsw"
 };
 
-static Color *MakeColorPalette(uint8_t *palette24) {
-    Color *result = new Color[256];
+static Palette MakePaletteSolid(uint8_t *palette24) {
+    Palette result;
     for (size_t i = 0; i < 256; i++)
-        result[i] = Color(palette24[i * 3], palette24[i * 3 + 1], palette24[i * 3 + 2]);
+        result.colors[i] = Color(palette24[i * 3], palette24[i * 3 + 1], palette24[i * 3 + 2]);
     return result;
 }
 
-static Color *MakeImageSolid(size_t width, size_t height, uint8_t *pixels, uint8_t *palette) {
-    Color *res = new Color[width * height];
+static Palette MakePaletteAlpha(uint8_t *palette24) {
+    Palette result = MakePaletteSolid(palette24);
+    result.colors[0] = Color();
+    return result;
+}
 
-    for (unsigned int y = 0; y < height; ++y) {
-        for (unsigned int x = 0; x < width; ++x) {
-            int index = pixels[y * width + x];
-            auto r = palette[(index * 3) + 0];
-            auto g = palette[(index * 3) + 1];
-            auto b = palette[(index * 3) + 2];
-            res[y * width + x] = Color(r, g, b);
+static Palette MakePaletteColorKey(uint8_t *palette24, Color key) {
+    Palette result = MakePaletteSolid(palette24);
+
+    for (size_t i = 0; i < 256; i++) {
+        if (result.colors[i] == key) {
+            result.colors[i] = Color();
+            break;
         }
     }
 
-    return res;
+    return result;
 }
 
-static Color *MakeImageAlpha(size_t width, size_t height, uint8_t *pixels, uint8_t *palette) {
-    Color *res = new Color[width * height];
-
-    for (unsigned int y = 0; y < height; ++y) {
-        for (unsigned int x = 0; x < width; ++x) {
-            int index = pixels[y * width + x];
-            auto r = palette[(index * 3) + 0];
-            auto g = palette[(index * 3) + 1];
-            auto b = palette[(index * 3) + 2];
-            if (index == 0) {
-                res[y * width + x] = Color(0, 0, 0, 0);
-            } else {
-                res[y * width + x] = Color(r, g, b);
-            }
-        }
-    }
-
-    return res;
+ImageLoader::ImageLoader() {
+    this->log = EngineIocContainer::ResolveLogger();
 }
 
-static Color *MakeImageColorKey(size_t width, size_t height, uint8_t *pixels, uint8_t *palette, Color color_key) {
-    Color *res = new Color[width * height];
-
-    for (unsigned int y = 0; y < height; ++y) {
-        for (unsigned int x = 0; x < width; ++x) {
-            int index = pixels[y * width + x];
-            auto r = palette[(index * 3) + 0];
-            auto g = palette[(index * 3) + 1];
-            auto b = palette[(index * 3) + 2];
-            if (Color(r, g, b) == color_key) {
-                res[y * width + x] = Color();
-            } else {
-                res[y * width + x] = Color(r, g, b);
-            }
-        }
-    }
-
-    return res;
-}
-
-bool Paletted_Img_Loader::Load(size_t *out_width, size_t *out_height, Color **out_pixels,
-                               Color **out_palette, uint8_t **out_palettepixels) {
-    *out_width = 0;
-    *out_height = 0;
-    *out_pixels = nullptr;
-    *out_palette = nullptr;
-    *out_palettepixels = nullptr;
-
+bool Paletted_Img_Loader::Load(RgbaImage *rgbaImage, GrayscaleImage *indexedImage, Palette *palette) {
     Texture_MM7 *tex = lod->GetTexture(lod->LoadTexture(resource_name, TEXTURE_24BIT_PALETTE));
-
-    if ((tex == nullptr) || (tex->pPalette24 == nullptr) || (tex->paletted_pixels == nullptr)) {
+    if ((tex == nullptr) || (tex->pPalette24 == nullptr) || (tex->paletted_pixels == nullptr))
         return false;
-    }
 
-    // need to copy save palette pixels
-    int size = tex->header.uTextureWidth * tex->header.uTextureHeight;
-    uint8_t *store = new uint8_t[size];
-    memcpy(store, tex->paletted_pixels, size);
-    *out_palettepixels = store;
-
-    *out_palette = MakeColorPalette(tex->pPalette24);
-
-    // make the actual image
-    *out_pixels = MakeImageAlpha(tex->header.uTextureWidth,
-        tex->header.uTextureHeight,
-        tex->paletted_pixels, tex->pPalette24);
-
-    if (*out_pixels == nullptr) {
-        return false;
-    }
-
-    *out_width = tex->header.uTextureWidth;
-    *out_height = tex->header.uTextureHeight;
+    *indexedImage = GrayscaleImage::copy(tex->header.uTextureWidth, tex->header.uTextureHeight, tex->paletted_pixels);
+    *palette = MakePaletteAlpha(tex->pPalette24);
+    *rgbaImage = makeRgbaImage(*indexedImage, *palette);
 
     return true;
 }
 
-bool ColorKey_LOD_Loader::Load(size_t *out_width, size_t *out_height, Color **out_pixels,
-                               Color **out_palette, uint8_t **out_palettepixels) {
-    *out_width = 0;
-    *out_height = 0;
-    *out_pixels = nullptr;
-
+bool ColorKey_LOD_Loader::Load(RgbaImage *rgbaImage, GrayscaleImage *indexedImage, Palette *palette) {
     Texture_MM7 *tex = lod->GetTexture(lod->LoadTexture(resource_name, TEXTURE_24BIT_PALETTE));
-    if ((tex == nullptr) || (tex->pPalette24 == nullptr) ||
-        (tex->paletted_pixels == nullptr)) {
+    if ((tex == nullptr) || (tex->pPalette24 == nullptr) || (tex->paletted_pixels == nullptr))
         return false;
-    }
+
+    *indexedImage = GrayscaleImage::copy(tex->header.uTextureWidth, tex->header.uTextureHeight, tex->paletted_pixels);
 
     if (tex->header.pBits & 512) {
-        *out_pixels = MakeImageAlpha(tex->header.uTextureWidth,
-                                     tex->header.uTextureHeight,
-                                     tex->paletted_pixels, tex->pPalette24);
+        *palette = MakePaletteAlpha(tex->pPalette24);
     } else {
-        *out_pixels = MakeImageColorKey(
-            tex->header.uTextureWidth, tex->header.uTextureHeight,
-            tex->paletted_pixels, tex->pPalette24, colorkey);
+        *palette = MakePaletteColorKey(tex->pPalette24, colorkey);
     }
 
-    if (*out_pixels == nullptr) {
-        return false;
-    }
-
-    *out_width = tex->header.uTextureWidth;
-    *out_height = tex->header.uTextureHeight;
-    *out_palette = MakeColorPalette(tex->pPalette24);
+    *rgbaImage = makeRgbaImage(*indexedImage, *palette);
 
     return true;
 }
 
-bool Image16bit_LOD_Loader::Load(size_t *out_width, size_t *out_height, Color **out_pixels,
-                                 Color **out_palette, uint8_t **out_palettepixels) {
-    *out_width = 0;
-    *out_height = 0;
-    *out_pixels = nullptr;
-
+bool Image16bit_LOD_Loader::Load(RgbaImage *rgbaImage, GrayscaleImage *indexedImage, Palette *palette) {
     Texture_MM7 *tex = lod->GetTexture(lod->LoadTexture(resource_name, TEXTURE_24BIT_PALETTE));
-    if ((tex == nullptr) || (tex->pPalette24 == nullptr) ||
-        (tex->paletted_pixels == nullptr)) {
+    if ((tex == nullptr) || (tex->pPalette24 == nullptr) || (tex->paletted_pixels == nullptr))
         return false;
-    }
+
+    *indexedImage = GrayscaleImage::copy(tex->header.uTextureWidth, tex->header.uTextureHeight, tex->paletted_pixels);
 
     if (tex->header.pBits & 512) {
-        *out_pixels = MakeImageAlpha(tex->header.uTextureWidth,
-                                     tex->header.uTextureHeight,
-                                     tex->paletted_pixels, tex->pPalette24);
+        *palette = MakePaletteAlpha(tex->pPalette24);
     } else {
-        *out_pixels = MakeImageSolid(tex->header.uTextureWidth,
-                                     tex->header.uTextureHeight,
-                                     tex->paletted_pixels, tex->pPalette24);
+        *palette = MakePaletteSolid(tex->pPalette24);
     }
 
-    if (*out_pixels == nullptr) {
-        return false;
-    }
-
-    *out_width = tex->header.uTextureWidth;
-    *out_height = tex->header.uTextureHeight;
-    *out_palette = MakeColorPalette(tex->pPalette24);
+    *rgbaImage = makeRgbaImage(*indexedImage, *palette);
 
     return true;
 }
 
-bool Alpha_LOD_Loader::Load(size_t *out_width, size_t *out_height, Color **out_pixels,
-                            Color **out_palette, uint8_t **out_palettepixels) {
-    *out_width = 0;
-    *out_height = 0;
-    *out_pixels = nullptr;
-
+bool Alpha_LOD_Loader::Load(RgbaImage *rgbaImage, GrayscaleImage *indexedImage, Palette *palette) {
     Texture_MM7 *tex = lod->GetTexture(lod->LoadTexture(resource_name, TEXTURE_24BIT_PALETTE));
-    if ((tex == nullptr) || (tex->pPalette24 == nullptr) ||
-        (tex->paletted_pixels == nullptr)) {
+    if ((tex == nullptr) || (tex->pPalette24 == nullptr) || (tex->paletted_pixels == nullptr))
         return false;
-    }
+
+    *indexedImage = GrayscaleImage::copy(tex->header.uTextureWidth, tex->header.uTextureHeight, tex->paletted_pixels);
 
     if ((tex->header.pBits == 0) || (tex->header.pBits & 512)) {
-        *out_pixels = MakeImageAlpha(tex->header.uTextureWidth,
-                                     tex->header.uTextureHeight,
-                                     tex->paletted_pixels, tex->pPalette24);
+        *palette = MakePaletteAlpha(tex->pPalette24);
     } else {
-        *out_pixels = MakeImageColorKey(
-            tex->header.uTextureWidth, tex->header.uTextureHeight,
-            tex->paletted_pixels, tex->pPalette24, colorTable.TealMask);
+        *palette = MakePaletteColorKey(tex->pPalette24, colorTable.TealMask);
     }
 
-    if (*out_pixels == nullptr) {
-        return false;
-    }
-
-    *out_width = tex->header.uTextureWidth;
-    *out_height = tex->header.uTextureHeight;
-    *out_palette = MakeColorPalette(tex->pPalette24);
+    *rgbaImage = makeRgbaImage(*indexedImage, *palette);
 
     return true;
 }
 
-bool PCX_Loader::InternalLoad(const void *file, size_t filesize,
-                              size_t *width, size_t *height, Color **pixels) {
-    std::unique_ptr<Color[]> result = PCX::Decode(Blob::view(file, filesize), width, height);
-    if (!result)
-        return false;
-
-    *pixels = result.release();
+bool PCX_Loader::InternalLoad(const Blob &data, RgbaImage *rgbaImage) {
+    *rgbaImage = PCX::Decode(data);
     return true;
 }
 
-bool PCX_File_Loader::Load(size_t *width, size_t *height, Color **pixels,
-                           Color **out_palette, uint8_t **out_palettepixels) {
-    *width = 0;
-    *height = 0;
-    *pixels = nullptr;
-    *out_palette = nullptr;
-
+bool PCX_File_Loader::Load(RgbaImage *rgbaImage, GrayscaleImage *indexedImage, Palette *palette) {
     Blob buffer = Blob::fromFile(makeDataPath(this->resource_name));
-    return InternalLoad(buffer.data(), buffer.size(), width, height, pixels);
+    return InternalLoad(buffer, rgbaImage);
 }
 
-bool PCX_LOD_Raw_Loader::Load(size_t *width, size_t *height, Color **pixels,
-                              Color **out_palette, uint8_t **out_palettepixels) {
-    *width = 0;
-    *height = 0;
-    *pixels = nullptr;
-    *out_palette = nullptr;
-
+bool PCX_LOD_Raw_Loader::Load(RgbaImage *rgbaImage, GrayscaleImage *indexedImage, Palette *palette) {
     Blob data = lod->LoadRaw(resource_name);
     if (!data) {
         log->warning("Unable to load {}", this->resource_name);
         return false;
     }
 
-    return InternalLoad(data.data(), data.size(), width, height, pixels);
+    return InternalLoad(data, rgbaImage);
 }
 
-bool PCX_LOD_Compressed_Loader::Load(size_t *width, size_t *height, Color **pixels,
-                                     Color **out_palette, uint8_t **out_palettepixels) {
-    *width = 0;
-    *height = 0;
-    *pixels = nullptr;
-    *out_palette = nullptr;
-
+bool PCX_LOD_Compressed_Loader::Load(RgbaImage *rgbaImage, GrayscaleImage *indexedImage, Palette *palette) {
     Blob pcx_data = lod->LoadCompressedTexture(resource_name);
     if (!pcx_data) {
         log->warning("Unable to load {}", resource_name);
         return false;
     }
 
-    return InternalLoad(pcx_data.data(), pcx_data.size(), width, height, pixels);
+    return InternalLoad(pcx_data, rgbaImage);
 }
 
-static void ProcessTransparentPixel(const uint8_t *pixels, const uint8_t *palette,
-                                    size_t x, size_t y, size_t w, size_t h, Color *rgba) {
+static Color ProcessTransparentPixel(const GrayscaleImage &image, const Palette &palette, size_t x, size_t y) {
     size_t count = 0;
     size_t r = 0, g = 0, b = 0;
 
     auto processPixel = [&](size_t x, size_t y) {
-        int pal = pixels[y * w + x];
+        uint8_t pal = image[y][x];
         if (pal != 0) {
             count++;
-            b += palette[3 * pal + 2];
-            g += palette[3 * pal + 1];
-            r += palette[3 * pal + 0];
+            r += palette.colors[pal].r;
+            g += palette.colors[pal].g;
+            b += palette.colors[pal].b;
         }
     };
 
     bool canDecX = x > 0;
-    bool canIncX = x < w - 1;
+    bool canIncX = x < image.width() - 1;
     bool canDecY = y > 0;
-    bool canIncY = y < h - 1;
+    bool canIncY = y < image.height() - 1;
 
     if (canDecX && canDecY)
         processPixel(x - 1, y - 1);
@@ -321,63 +197,54 @@ static void ProcessTransparentPixel(const uint8_t *pixels, const uint8_t *palett
         b /= count;
     }
 
-    *rgba = Color(static_cast<uint8_t>(r), static_cast<uint8_t>(g), static_cast<uint8_t>(b), 0);
+    return Color(static_cast<uint8_t>(r), static_cast<uint8_t>(g), static_cast<uint8_t>(b), 0);
 }
 
-bool Bitmaps_LOD_Loader::Load(size_t *width, size_t *height, Color **out_pixels,
-                              Color **out_palette, uint8_t **out_palettepixels) {
+bool Bitmaps_LOD_Loader::Load(RgbaImage *rgbaImage, GrayscaleImage *indexedImage, Palette *palette) {
     Texture_MM7 *tex = lod->GetTexture(lod->LoadTexture(this->resource_name));
     int num_pixels = tex->header.uTextureWidth * tex->header.uTextureHeight;
 
     Assert(tex->paletted_pixels);
     Assert(tex->pPalette24);
 
-    Color *pixels = new Color[num_pixels];
     size_t w = tex->header.uTextureWidth;
     size_t h = tex->header.uTextureHeight;
 
-    bool haveTransparency = transparentTextures.contains(tex->header.pName);
+    *indexedImage = GrayscaleImage::copy(w, h, tex->paletted_pixels); // NOLINT: this is not std::copy.
 
-    for (size_t y = 0; y < h; y++) {
-        for (size_t x = 0; x < w; x++) {
-            size_t p = y * w + x;
+    if (!transparentTextures.contains(tex->header.pName)) {
+        *palette = MakePaletteSolid(tex->pPalette24);
+        *rgbaImage = makeRgbaImage(*indexedImage, *palette);
+    } else {
+        *palette = MakePaletteAlpha(tex->pPalette24);
 
-            int pal = tex->paletted_pixels[p];
-            if (haveTransparency && pal == 0) {
-                ProcessTransparentPixel(tex->paletted_pixels, tex->pPalette24, x, y, w, h, &pixels[p]);
-            } else {
-                pixels[p] = Color(tex->pPalette24[3 * pal + 0], tex->pPalette24[3 * pal + 1], tex->pPalette24[3 * pal + 2]);
+        *rgbaImage = RgbaImage::uninitialized(w, h);
+        for (size_t y = 0; y < h; y++) {
+            for (size_t x = 0; x < w; x++) {
+                uint8_t pal = (*indexedImage)[y][x];
+                if (pal == 0) {
+                    (*rgbaImage)[y][x] = ProcessTransparentPixel(*indexedImage, *palette, x, y);
+                } else {
+                    (*rgbaImage)[y][x] = palette->colors[pal];
+                }
             }
         }
     }
 
-    *width = tex->header.uTextureWidth;
-    *height = tex->header.uTextureHeight;
-    *out_pixels = pixels;
-    *out_palette = MakeColorPalette(tex->pPalette24);
     return true;
 }
 
-bool Sprites_LOD_Loader::Load(size_t *width, size_t *height, Color **out_pixels,
-                              Color **out_palette, uint8_t **out_palettepixels) {
-    *width = 0;
-    *height = 0;
-    *out_pixels = nullptr;
-    *out_palette = nullptr;
-
+bool Sprites_LOD_Loader::Load(RgbaImage *rgbaImage, GrayscaleImage *indexedImage, Palette *palette) {
     Sprite *pSprite = lod->getSprite(this->resource_name);
 
     size_t w = pSprite->sprite_header->uWidth;
     size_t h = pSprite->sprite_header->uHeight;
-    int numpix = w * h;
 
-    Color *pixels = new Color[numpix];
-    memset(pixels, 0, numpix * 4);
+    *rgbaImage = RgbaImage::solid(w, h, Color());
 
     for (size_t y = 0; y < h; y++) {
         for (size_t x = 0; x < w; x++) {
-            size_t p = y * w + x;
-            uint8_t bitpix = pSprite->sprite_header->bitmap[p];
+            uint8_t bitpix = pSprite->sprite_header->bitmap[y * w + x];
 
             int r = 0, g = 0, b = 0, a = 0;
             r = bitpix;
@@ -390,14 +257,10 @@ bool Sprites_LOD_Loader::Load(size_t *width, size_t *height, Color **out_pixels,
                 a = 255;
             }
 
-            pixels[p] = Color(r, g, b, a);
+            (*rgbaImage)[y][x] = Color(r, g, b, a);
         }
     }
 
-    *width = w;
-    *height = h;
-    *out_pixels = pixels;
-    *out_palette = nullptr;
     return true;
 }
 

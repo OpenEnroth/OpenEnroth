@@ -4,13 +4,9 @@
 #include <array>
 #include <vector>
 
-#include "Engine/Graphics/Sprites.h"
+#include "Library/Image/Palette.h"
 
 class LODFile_IconsBitmaps;
-
-struct Palette {
-    std::array<uint32_t, 256> colors;
-};
 
 class PaletteManager {
  public:
@@ -26,7 +22,7 @@ class PaletteManager {
     /**
      * @return                          Span containing contiguous data for all loaded palettes.
      */
-    std::span<uint32_t> paletteData();
+    std::span<Color> paletteData();
 
  private:
     static Palette createGrayscalePalette();

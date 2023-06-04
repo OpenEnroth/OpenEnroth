@@ -92,26 +92,26 @@ static int pcx_rle_decode(bstreamer *bs, uint8_t *dst, unsigned int bytes_per_sc
     return 0;
 }
 
-std::unique_ptr<Color[]> PCX::Decode(const Blob &data, size_t *width, size_t *height) {
+RgbaImage PCX::Decode(const Blob &data) {
     if (data.size() < sizeof(PCXHeader))
-        return nullptr;
+        return RgbaImage(); // TODO(captainurist): throw!
 
     const PCXHeader *header = static_cast<const PCXHeader *>(data.data());
 
     // check that's PCX and its version
     if (header->manufacturer != 0x0a || header->version < PCX_VERSION_2_5 || header->version == PCX_VERSION_NOT_VALID || header->version > PCX_VERSION_3_0) {
-        return nullptr;
+        return RgbaImage(); // TODO(captainurist): throw!
     }
 
-    *width = header->xmax - header->xmin + 1;
-    *height = header->ymax - header->ymin + 1;
+    size_t width = header->xmax - header->xmin + 1;
+    size_t height = header->ymax - header->ymin + 1;
 
     unsigned int bytes_per_scanline = header->nplanes * header->bytes_per_row;
 
     //corruption check
-    if (bytes_per_scanline < (*width * header->bpp * header->nplanes + 7) / 8 ||
-        (!header->compression && bytes_per_scanline > (data.size() - sizeof(PCXHeader)) / *height)) {
-        return nullptr;
+    if (bytes_per_scanline < (width * header->bpp * header->nplanes + 7) / 8 ||
+        (!header->compression && bytes_per_scanline > (data.size() - sizeof(PCXHeader)) / height)) {
+        return RgbaImage(); // TODO(captainurist): throw!
     }
 
     switch ((header->nplanes << 8) + header->bpp) {
@@ -127,39 +127,31 @@ std::unique_ptr<Color[]> PCX::Decode(const Blob &data, size_t *width, size_t *he
         // TODO: PAL8 color mode
         // fall through
     default:
-        return nullptr;
+        return RgbaImage(); // TODO(captainurist): throw!
     }
 
-    size_t pixel_count = *width * *height;
-
-    std::unique_ptr<Color[]> pixels(new Color[pixel_count]);
-    if (!pixels)
-        return nullptr;
-
-    memset(pixels.get(), 0, pixel_count * sizeof(Color));
+    RgbaImage result = RgbaImage::uninitialized(width, height);
 
     bstreamer bs;
-    unsigned int stride = 0;
     std::unique_ptr<uint8_t[], FreeDeleter> scanline(static_cast<uint8_t *>(malloc(bytes_per_scanline + 32)));
     bs_init(&bs, static_cast<const uint8_t *>(data.data()) + sizeof(PCXHeader), data.size() - sizeof(PCXHeader));
 
     if (header->nplanes == 3 && header->bpp == 8) {
-        for (unsigned int y = 0; y < *height; y++) {
+        for (unsigned int y = 0; y < height; y++) {
             int ret = pcx_rle_decode(&bs, scanline.get(), bytes_per_scanline, header->compression);
             if (ret < 0)
-                return nullptr;
+                return RgbaImage(); // TODO(captainurist): throw!
 
-            for (unsigned int x = 0; x < *width; x++)
-                pixels[stride + x] = Color(scanline[x], scanline[x + header->bytes_per_row], scanline[x + (header->bytes_per_row << 1)]);
-
-            stride += *width;
+            auto line = result[y];
+            for (unsigned int x = 0; x < width; x++)
+                line[x] = Color(scanline[x], scanline[x + header->bytes_per_row], scanline[x + (header->bytes_per_row << 1)]);
         }
     } else {
-        // TODO: other planes/bpp variants
-        return nullptr;
+        // TODO(captainurist): throw!
+        return RgbaImage();
     }
 
-    return pixels;
+    return result;
 }
 
 void *WritePCXHeader(void *pcx_data, int width, int height) {
@@ -209,14 +201,16 @@ void *EncodeOneLine(void *pcx_data, void *line, size_t line_size) {
     return output;
 }
 
-Blob PCX::Encode(const Color *data, size_t width, size_t height) {
-    assert(data != nullptr && width != 0 & height != 0);
+Blob PCX::Encode(RgbaImageView image) {
+    assert(image);
+
+    size_t width = image.width();
+    size_t height = image.height();
 
     // pcx lines are padded to next even byte boundary
-    int pitch = width;
-    if (width & 1) {
-        pitch = width + 1;
-    }
+    size_t pitch = width;
+    if (pitch & 1)
+        pitch = pitch + 1;
 
     // pcx file can be larger than uncompressed
     // pcx header and no compression @24bit worst case doubles in size
@@ -229,7 +223,7 @@ Blob PCX::Encode(const Color *data, size_t width, size_t height) {
     uint8_t *lineR = lineRGB.get();
     uint8_t *lineG = lineRGB.get() + pitch;
     uint8_t *lineB = lineRGB.get() + 2 * pitch;
-    const Color *input = data;
+    const Color *input = image.pixels().data();
 
     for (int y = 0; y < height; y++) {
         for (unsigned int x = 0; x < width; x++) {

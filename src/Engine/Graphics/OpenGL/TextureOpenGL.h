@@ -1,4 +1,7 @@
 #pragma once
+
+#include <memory>
+
 #include "Engine/Graphics/Texture.h"
 
 class TextureOpenGL : public Texture {
@@ -12,7 +15,7 @@ class TextureOpenGL : public Texture {
 
     static Texture *Create(unsigned int width, unsigned int height, const Color *pixels = nullptr);
 
-    static Texture *Create(ImageLoader *loader);
+    static Texture *Create(std::unique_ptr<ImageLoader> loader);
 
     void SetOpenGlTexture(int ogl_texture) { this->ogl_texture = ogl_texture; }
 

@@ -73,7 +73,7 @@ void LoadGame(unsigned int uSlot) {
             std::string str = fmt::format("lloyd{}{}.pcx", i + 1, j + 1);
             //beacon.image = Image::Create(new PCX_LOD_Raw_Loader(pNew_LOD, str));
             beacon.image = render->CreateTexture_PCXFromLOD(pSave_LOD, str);
-            beacon.image->width();
+            beacon.image->rgba(); // Force load!
         }
     }
 
@@ -200,11 +200,8 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld) {
             LloydBeacon *beacon = &player->vBeacons[j];
             GraphicsImage *image = beacon->image;
             if ((beacon->uBeaconTime.Valid()) && (image != nullptr)) {
-                const Color *pixels = image->GetPixels();
-                if (!pixels)
-                    __debugbreak();
-
-                Blob packedPCX{ PCX::Encode(pixels, image->width(), image->height()) };
+                assert(image->rgba());
+                Blob packedPCX = PCX::Encode(image->rgba());
                 std::string str = fmt::format("lloyd{}{}.pcx", i + 1, j + 1);
                 if (pSave_LOD->Write(str, packedPCX.data(), packedPCX.size(), 0)) {
                     logger->warning("{}", localization->FormatString(LSTR_FMT_SAVEGAME_CORRUPTED, 207));

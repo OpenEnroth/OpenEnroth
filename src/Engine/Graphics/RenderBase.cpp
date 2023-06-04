@@ -623,7 +623,7 @@ void RenderBase::SavePCXImage32(const std::string &filename, const Color *pictur
         return;
     }
 
-    Blob packedPCX{ PCX::Encode(picture_data, width, height) };
+    Blob packedPCX = PCX::Encode(RgbaImageView(picture_data, width, height));
     fwrite(packedPCX.data(), packedPCX.size(), 1, result);
     fclose(result);
 }
@@ -636,7 +636,7 @@ void RenderBase::SaveScreenshot(const std::string &filename, const unsigned int 
 
 Blob RenderBase::PackScreenshot(const unsigned int width, const unsigned int height) {
     auto pixels = render->MakeScreenshot32(width, height);
-    Blob packedPCX{ PCX::Encode(pixels, width, height) };
+    Blob packedPCX = PCX::Encode(RgbaImageView(pixels, width, height));
     free(pixels);
     return packedPCX;
 }

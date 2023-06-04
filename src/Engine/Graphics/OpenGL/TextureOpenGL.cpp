@@ -1,4 +1,7 @@
 #include "Engine/Graphics/OpenGL/TextureOpenGL.h"
+
+#include <utility>
+
 #include "Engine/Graphics/IRender.h"
 #include "Engine/Graphics/ImageLoader.h"
 #include "Engine/ErrorHandling.h"
@@ -6,40 +9,31 @@
 Texture *TextureOpenGL::Create(unsigned int width, unsigned int height, const Color *pixels) {
     TextureOpenGL *tex = new TextureOpenGL(false);
 
-    tex->initialized = true;
-    tex->_width = width;
-    tex->_height = height;
-    unsigned int num_pixels = tex->width() * tex->height();
-    unsigned int num_pixels_bytes = num_pixels * sizeof(Color);
-    tex->pixels = new Color[num_pixels];
+    tex->_initialized = true;
+
     if (pixels) {
-        memcpy(tex->pixels, pixels, num_pixels_bytes);
+        tex->_rgbaImage = RgbaImage::copy(width, height, pixels); // NOLINT: this is not std::copy.
     } else {
-        memset(tex->pixels, 0, num_pixels_bytes);
+        tex->_rgbaImage = RgbaImage::solid(width, height, Color());
     }
 
-    if (tex->initialized) {
-        tex->initialized = render->MoveTextureToDevice(tex);
-        if (!tex->initialized) {
-            __debugbreak();
-        }
+    tex->_initialized = render->MoveTextureToDevice(tex);
+    if (!tex->_initialized) {
+        __debugbreak();
     }
 
     return tex;
 }
 
-Texture *TextureOpenGL::Create(ImageLoader *loader) {
+Texture *TextureOpenGL::Create(std::unique_ptr<ImageLoader> loader) {
     auto tex = new TextureOpenGL();
-    if (tex) {
-        tex->loader = loader;
-    }
-
+    tex->_loader = std::move(loader);
     return tex;
 }
 
 int TextureOpenGL::GetOpenGlTexture(bool bLoad) {
     if (bLoad) {
-        if (!this->initialized) {
+        if (!this->_initialized) {
             this->LoadImageData();
         }
 
@@ -53,24 +47,17 @@ int TextureOpenGL::GetOpenGlTexture(bool bLoad) {
 }
 
 bool TextureOpenGL::LoadImageData() {
-    if (!this->initialized) {
-        Color *pixels = nullptr;
-        Color *palette = nullptr;
-        uint8_t *palettepixels = nullptr;
-
-        this->initialized = this->loader->Load(&_width, &_height, &pixels, &palette, &palettepixels);
-        if (this->initialized) {
-            this->pixels = pixels;
-            this->palette = palette;
-            this->palettepixels = palettepixels;
-            this->initialized = render->MoveTextureToDevice(this);
-            if (!this->initialized) {
+    if (!this->_initialized) {
+        this->_initialized = this->_loader->Load(&_rgbaImage, &_indexedImage, &_palette);
+        if (this->_initialized) {
+            this->_initialized = render->MoveTextureToDevice(this);
+            if (!this->_initialized) {
                 __debugbreak();
             }
         }
     }
 
-    return this->initialized;
+    return this->_initialized;
 }
 
 TextureOpenGL::~TextureOpenGL() {
