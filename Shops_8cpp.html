@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;f15722c</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;102c50a</span>
    </div>
   </td>
  </tr>
@@ -94,6 +94,7 @@ $(function() {
 <code>#include &quot;<a class="el" href="PriceCalculator_8h.html">Engine/PriceCalculator.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="AwardTable_8h.html">Engine/Tables/AwardTable.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="MerchantTable_8h.html">Engine/Tables/MerchantTable.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="ItemTable_8h.html">Engine/Tables/ItemTable.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="GUIWindow_8h.html">GUI/GUIWindow.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="GUIButton_8h.html">GUI/GUIButton.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="GUIFont_8h.html">GUI/GUIFont.h</a>&quot;</code><br />
@@ -104,28 +105,83 @@ $(function() {
 <code>#include &quot;<a class="el" href="Mouse_8h.html">Io/Mouse.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="AudioPlayer_8h.html">Media/Audio/AudioPlayer.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Random_8h.html">Library/Random/Random.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="IndexedArray_8h.html">Utility/IndexedArray.h</a>&quot;</code><br />
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
 <tr class="memitem:a80f9ff7d06d16069d56cda98f75331d8"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Shops_8cpp.html#a80f9ff7d06d16069d56cda98f75331d8">isStealingModeActive</a> ()</td></tr>
 <tr class="separator:a80f9ff7d06d16069d56cda98f75331d8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7a541fc22f8a95a91985b42f0604bc9c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Shops_8cpp.html#a7a541fc22f8a95a91985b42f0604bc9c">GenerateSpecialShopItems</a> ()</td></tr>
+<tr class="separator:a7a541fc22f8a95a91985b42f0604bc9c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a435781bf7481bbaffb8c2c1b3a23a0d9"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Shops_8cpp.html#a435781bf7481bbaffb8c2c1b3a23a0d9">GenerateStandartShopItems</a> ()</td></tr>
+<tr class="separator:a435781bf7481bbaffb8c2c1b3a23a0d9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a62c4e572d5c06ab9dd3aae265c49c840"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Shops_8cpp.html#a62c4e572d5c06ab9dd3aae265c49c840">UIShop_Buy_Identify_Repair</a> ()</td></tr>
 <tr class="separator:a62c4e572d5c06ab9dd3aae265c49c840"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa5c31400e54f840ae59ff47cde2434b1"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Shops_8cpp.html#aa5c31400e54f840ae59ff47cde2434b1">showSpellbookInfo</a> (<a class="el" href="ItemEnums_8h.html#a3423a9b7221dd99ce926bcad62ae96a5">ITEM_TYPE</a> spellItemId)</td></tr>
-<tr class="separator:aa5c31400e54f840ae59ff47cde2434b1"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a91d819980fe7424716bab4dde73a9cda"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Shops_8cpp.html#a91d819980fe7424716bab4dde73a9cda">ShowPopupShopSkills</a> ()</td></tr>
-<tr class="separator:a91d819980fe7424716bab4dde73a9cda"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a78364230a9d48e2bf4566f5a370b95c2"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Shops_8cpp.html#a78364230a9d48e2bf4566f5a370b95c2">ShowPopupShopItem</a> ()</td></tr>
-<tr class="separator:a78364230a9d48e2bf4566f5a370b95c2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="var-members" name="var-members"></a>
 Variables</h2></td></tr>
+<tr class="memitem:a39d5d4c006745e8c8708974563722bb4"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="classIndexedArray.html">IndexedArray</a>&lt; <a class="el" href="structITEM__VARIATION.html">ITEM_VARIATION</a>, <a class="el" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fa58f06d70d9437f1b3244cc393b0cb76f">HOUSE_FIRST_WEAPON_SHOP</a>, <a class="el" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fa7d8b5aa61e56adffffdbf260b9e795da">HOUSE_LAST_WEAPON_SHOP</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Shops_8cpp.html#a39d5d4c006745e8c8708974563722bb4">weaponShopVariationStandart</a></td></tr>
+<tr class="separator:a39d5d4c006745e8c8708974563722bb4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad1dc4c8381a91c7c42799be8a6141a9c"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="classIndexedArray.html">IndexedArray</a>&lt; <a class="el" href="structITEM__VARIATION.html">ITEM_VARIATION</a>, <a class="el" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fa58f06d70d9437f1b3244cc393b0cb76f">HOUSE_FIRST_WEAPON_SHOP</a>, <a class="el" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fa7d8b5aa61e56adffffdbf260b9e795da">HOUSE_LAST_WEAPON_SHOP</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Shops_8cpp.html#ad1dc4c8381a91c7c42799be8a6141a9c">weaponShopVariationSpecial</a></td></tr>
+<tr class="separator:ad1dc4c8381a91c7c42799be8a6141a9c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2531b9fd7598504b0a7a0a4086150841"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="classIndexedArray.html">IndexedArray</a>&lt; <a class="el" href="structITEM__VARIATION.html">ITEM_VARIATION</a>, <a class="el" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fa4c8201fefe399402306da99ab460d20a">HOUSE_FIRST_ARMOR_SHOP</a>, <a class="el" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405faa875ee34369cae5fd832a48886e907d4">HOUSE_LAST_ARMOR_SHOP</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Shops_8cpp.html#a2531b9fd7598504b0a7a0a4086150841">armorShopTopRowVariationStandart</a></td></tr>
+<tr class="separator:a2531b9fd7598504b0a7a0a4086150841"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aaaf91849ecce16df8ace7a837ca95c2d"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="classIndexedArray.html">IndexedArray</a>&lt; <a class="el" href="structITEM__VARIATION.html">ITEM_VARIATION</a>, <a class="el" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fa4c8201fefe399402306da99ab460d20a">HOUSE_FIRST_ARMOR_SHOP</a>, <a class="el" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405faa875ee34369cae5fd832a48886e907d4">HOUSE_LAST_ARMOR_SHOP</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Shops_8cpp.html#aaaf91849ecce16df8ace7a837ca95c2d">armorShopBottomRowVariationStandart</a></td></tr>
+<tr class="separator:aaaf91849ecce16df8ace7a837ca95c2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9d2bfaba1e5624e4b2d0ece3ac9d0f43"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="classIndexedArray.html">IndexedArray</a>&lt; <a class="el" href="structITEM__VARIATION.html">ITEM_VARIATION</a>, <a class="el" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fa4c8201fefe399402306da99ab460d20a">HOUSE_FIRST_ARMOR_SHOP</a>, <a class="el" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405faa875ee34369cae5fd832a48886e907d4">HOUSE_LAST_ARMOR_SHOP</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Shops_8cpp.html#a9d2bfaba1e5624e4b2d0ece3ac9d0f43">armorShopTopRowVariationSpecial</a></td></tr>
+<tr class="separator:a9d2bfaba1e5624e4b2d0ece3ac9d0f43"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abbeae6527d00266e60133ecf9f3d038b"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="classIndexedArray.html">IndexedArray</a>&lt; <a class="el" href="structITEM__VARIATION.html">ITEM_VARIATION</a>, <a class="el" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fa4c8201fefe399402306da99ab460d20a">HOUSE_FIRST_ARMOR_SHOP</a>, <a class="el" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405faa875ee34369cae5fd832a48886e907d4">HOUSE_LAST_ARMOR_SHOP</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Shops_8cpp.html#abbeae6527d00266e60133ecf9f3d038b">armorShopBottomRowVariationSpecial</a></td></tr>
+<tr class="separator:abbeae6527d00266e60133ecf9f3d038b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a04f27296839d1689180c65daeb57da09"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="classIndexedArray.html">IndexedArray</a>&lt; <a class="el" href="ItemEnums_8h.html#ad20c3ee7b5967d80cee8e0ec3e061a9c">ITEM_TREASURE_LEVEL</a>, <a class="el" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fae0e072babad8d8de515082dfc1717ad7">HOUSE_FIRST_MAGIC_SHOP</a>, <a class="el" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405faeda03cbea526e28a095ee9cc3dd13ff1">HOUSE_LAST_MAGIC_SHOP</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Shops_8cpp.html#a04f27296839d1689180c65daeb57da09">magicShopVariationStandart</a></td></tr>
+<tr class="separator:a04f27296839d1689180c65daeb57da09"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af88191866455baa2e2a0aae293014264"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="classIndexedArray.html">IndexedArray</a>&lt; <a class="el" href="ItemEnums_8h.html#ad20c3ee7b5967d80cee8e0ec3e061a9c">ITEM_TREASURE_LEVEL</a>, <a class="el" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fae0e072babad8d8de515082dfc1717ad7">HOUSE_FIRST_MAGIC_SHOP</a>, <a class="el" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405faeda03cbea526e28a095ee9cc3dd13ff1">HOUSE_LAST_MAGIC_SHOP</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Shops_8cpp.html#af88191866455baa2e2a0aae293014264">magicShopVariationSpecial</a></td></tr>
+<tr class="separator:af88191866455baa2e2a0aae293014264"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab404c8330b7e777bb1fe8c3891821a91"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="classIndexedArray.html">IndexedArray</a>&lt; <a class="el" href="ItemEnums_8h.html#ad20c3ee7b5967d80cee8e0ec3e061a9c">ITEM_TREASURE_LEVEL</a>, <a class="el" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fad1eed5a44ac4da609a4536849173372e">HOUSE_FIRST_ALCHEMY_SHOP</a>, <a class="el" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fa25a2f4f99c70092adf0356ad8cbbaed9">HOUSE_LAST_ALCHEMY_SHOP</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Shops_8cpp.html#ab404c8330b7e777bb1fe8c3891821a91">alchemyShopVariationStandart</a></td></tr>
+<tr class="separator:ab404c8330b7e777bb1fe8c3891821a91"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a31744611a5669cec8df7c11f0dd2b3eb"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="classIndexedArray.html">IndexedArray</a>&lt; <a class="el" href="ItemEnums_8h.html#ad20c3ee7b5967d80cee8e0ec3e061a9c">ITEM_TREASURE_LEVEL</a>, <a class="el" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fad1eed5a44ac4da609a4536849173372e">HOUSE_FIRST_ALCHEMY_SHOP</a>, <a class="el" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fa25a2f4f99c70092adf0356ad8cbbaed9">HOUSE_LAST_ALCHEMY_SHOP</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Shops_8cpp.html#a31744611a5669cec8df7c11f0dd2b3eb">alchemyShopVariationSpecial</a></td></tr>
+<tr class="separator:a31744611a5669cec8df7c11f0dd2b3eb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8c56c3d34caff990c41a171afa5eb4da"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classGraphicsImage.html">GraphicsImage</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Shops_8cpp.html#a8c56c3d34caff990c41a171afa5eb4da">shop_ui_background</a> = nullptr</td></tr>
 <tr class="separator:a8c56c3d34caff990c41a171afa5eb4da"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5a45c4b756410d2b7fc83c65595c2287"><td class="memItemLeft" align="right" valign="top">std::array&lt; <a class="el" href="classGraphicsImage.html">GraphicsImage</a> *, 12 &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Shops_8cpp.html#a5a45c4b756410d2b7fc83c65595c2287">shop_ui_items_in_store</a></td></tr>
 <tr class="separator:a5a45c4b756410d2b7fc83c65595c2287"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a904a987094063493bd89e20768f207e5"><td class="memItemLeft" align="right" valign="top">std::array&lt; int, 6 &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Shops_8cpp.html#a904a987094063493bd89e20768f207e5">weaponYPos</a></td></tr>
+<tr class="separator:a904a987094063493bd89e20768f207e5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Function Documentation</h2>
+<a id="a7a541fc22f8a95a91985b42f0604bc9c" name="a7a541fc22f8a95a91985b42f0604bc9c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7a541fc22f8a95a91985b42f0604bc9c">&#9670;&#160;</a></span>GenerateSpecialShopItems()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void GenerateSpecialShopItems </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a435781bf7481bbaffb8c2c1b3a23a0d9" name="a435781bf7481bbaffb8c2c1b3a23a0d9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a435781bf7481bbaffb8c2c1b3a23a0d9">&#9670;&#160;</a></span>GenerateStandartShopItems()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void GenerateStandartShopItems </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="a80f9ff7d06d16069d56cda98f75331d8" name="a80f9ff7d06d16069d56cda98f75331d8"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a80f9ff7d06d16069d56cda98f75331d8">&#9670;&#160;</a></span>isStealingModeActive()</h2>
 
@@ -140,59 +196,6 @@ Variables</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-
-</div>
-</div>
-<a id="a78364230a9d48e2bf4566f5a370b95c2" name="a78364230a9d48e2bf4566f5a370b95c2"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a78364230a9d48e2bf4566f5a370b95c2">&#9670;&#160;</a></span>ShowPopupShopItem()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void ShowPopupShopItem </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a91d819980fe7424716bab4dde73a9cda" name="a91d819980fe7424716bab4dde73a9cda"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a91d819980fe7424716bab4dde73a9cda">&#9670;&#160;</a></span>ShowPopupShopSkills()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void ShowPopupShopSkills </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="aa5c31400e54f840ae59ff47cde2434b1" name="aa5c31400e54f840ae59ff47cde2434b1"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa5c31400e54f840ae59ff47cde2434b1">&#9670;&#160;</a></span>showSpellbookInfo()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void showSpellbookInfo </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="ItemEnums_8h.html#a3423a9b7221dd99ce926bcad62ae96a5">ITEM_TYPE</a>&#160;</td>
-          <td class="paramname"><em>spellItemId</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<dl class="section user"><dt>Original binary offset:</dt><dd>0x4B1523 </dd></dl>
 
 </div>
 </div>
@@ -214,6 +217,284 @@ Variables</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Variable Documentation</h2>
+<a id="a31744611a5669cec8df7c11f0dd2b3eb" name="a31744611a5669cec8df7c11f0dd2b3eb"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a31744611a5669cec8df7c11f0dd2b3eb">&#9670;&#160;</a></span>alchemyShopVariationSpecial</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">const <a class="el" href="classIndexedArray.html">IndexedArray</a>&lt;<a class="el" href="ItemEnums_8h.html#ad20c3ee7b5967d80cee8e0ec3e061a9c">ITEM_TREASURE_LEVEL</a>, <a class="el" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fad1eed5a44ac4da609a4536849173372e">HOUSE_FIRST_ALCHEMY_SHOP</a>, <a class="el" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fa25a2f4f99c70092adf0356ad8cbbaed9">HOUSE_LAST_ALCHEMY_SHOP</a>&gt; alchemyShopVariationSpecial</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<b>Initial value:</b><div class="fragment"><div class="line">= {{</div>
+<div class="line">    {<a class="code hl_enumvalue" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fa058a608a3672f1115db42faefe216a5d">HOUSE_ALCHEMIST_EMERALD_ISLE</a>,      <a class="code hl_enumvalue" href="ItemEnums_8h.html#ad20c3ee7b5967d80cee8e0ec3e061a9ca15fd29d60ae611302e9b40b7f8c1b02c">ITEM_TREASURE_LEVEL_2</a>},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fadbc9cca6d22613b678f0d4372649b3a8">HOUSE_ALCHEMIST_HARMONDALE</a>,        <a class="code hl_enumvalue" href="ItemEnums_8h.html#ad20c3ee7b5967d80cee8e0ec3e061a9ca15fd29d60ae611302e9b40b7f8c1b02c">ITEM_TREASURE_LEVEL_2</a>},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fa35411c01b26ab02ed9a8d3f708a94fe5">HOUSE_ALCHEMIST_ERATHIA</a>,           <a class="code hl_enumvalue" href="ItemEnums_8h.html#ad20c3ee7b5967d80cee8e0ec3e061a9ca23a3f3592095f08dfbe5e598e4c81d84">ITEM_TREASURE_LEVEL_3</a>},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fa8a917fc235daaf7fc385b4bc6aa4ebf9">HOUSE_ALCHEMIST_TULAREAN_FOREST</a>,   <a class="code hl_enumvalue" href="ItemEnums_8h.html#ad20c3ee7b5967d80cee8e0ec3e061a9ca23a3f3592095f08dfbe5e598e4c81d84">ITEM_TREASURE_LEVEL_3</a>},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fa6bd9d8e3403b5ee851366c665a6d3892">HOUSE_ALCHEMIST_DEYJA</a>,             <a class="code hl_enumvalue" href="ItemEnums_8h.html#ad20c3ee7b5967d80cee8e0ec3e061a9ca63ba1cb7cd2a85d9dbe2ddf3d423b291">ITEM_TREASURE_LEVEL_4</a>},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fa1026f088061cf2d0a3bb08b1cd9bf428">HOUSE_ALCHEMIST_BRACADA_DESERT</a>,    <a class="code hl_enumvalue" href="ItemEnums_8h.html#ad20c3ee7b5967d80cee8e0ec3e061a9ca63ba1cb7cd2a85d9dbe2ddf3d423b291">ITEM_TREASURE_LEVEL_4</a>},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405faa52609c5df59808e8611d400983f4661">HOUSE_ALCHEMIST_CELESTE</a>,           <a class="code hl_enumvalue" href="ItemEnums_8h.html#ad20c3ee7b5967d80cee8e0ec3e061a9caa75efd62506770ffa26bc595c4a7f668">ITEM_TREASURE_LEVEL_5</a>},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fa99d72d082f8c360da2004888ff0a162e">HOUSE_ALCHEMIST_PIT</a>,               <a class="code hl_enumvalue" href="ItemEnums_8h.html#ad20c3ee7b5967d80cee8e0ec3e061a9caa75efd62506770ffa26bc595c4a7f668">ITEM_TREASURE_LEVEL_5</a>},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fad796f42b51665b16ca6e04ed19b920bd">HOUSE_ALCHEMIST_STONE_CITY</a>,        <a class="code hl_enumvalue" href="ItemEnums_8h.html#ad20c3ee7b5967d80cee8e0ec3e061a9ca23a3f3592095f08dfbe5e598e4c81d84">ITEM_TREASURE_LEVEL_3</a>},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fa39f40264cd22f74231ed96062214b45e">HOUSE_ALCHEMIST_CASTLE_HARMONDALE</a>, <a class="code hl_enumvalue" href="ItemEnums_8h.html#ad20c3ee7b5967d80cee8e0ec3e061a9ca15fd29d60ae611302e9b40b7f8c1b02c">ITEM_TREASURE_LEVEL_2</a>},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fae9c03e24d92c413e43d7148b34d3cdfd">HOUSE_ALCHEMIST_52</a>,                <a class="code hl_enumvalue" href="ItemEnums_8h.html#ad20c3ee7b5967d80cee8e0ec3e061a9ca15fd29d60ae611302e9b40b7f8c1b02c">ITEM_TREASURE_LEVEL_2</a>},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fa28131c5dfb6a79534927f16dc07770c9">HOUSE_ALCHEMIST_53</a>,                <a class="code hl_enumvalue" href="ItemEnums_8h.html#ad20c3ee7b5967d80cee8e0ec3e061a9ca15fd29d60ae611302e9b40b7f8c1b02c">ITEM_TREASURE_LEVEL_2</a>}</div>
+<div class="line">}}</div>
+<div class="ttc" id="aItemEnums_8h_html_ad20c3ee7b5967d80cee8e0ec3e061a9ca15fd29d60ae611302e9b40b7f8c1b02c"><div class="ttname"><a href="ItemEnums_8h.html#ad20c3ee7b5967d80cee8e0ec3e061a9ca15fd29d60ae611302e9b40b7f8c1b02c">ITEM_TREASURE_LEVEL::ITEM_TREASURE_LEVEL_2</a></div><div class="ttdeci">@ ITEM_TREASURE_LEVEL_2</div></div>
+<div class="ttc" id="aItemEnums_8h_html_ad20c3ee7b5967d80cee8e0ec3e061a9ca23a3f3592095f08dfbe5e598e4c81d84"><div class="ttname"><a href="ItemEnums_8h.html#ad20c3ee7b5967d80cee8e0ec3e061a9ca23a3f3592095f08dfbe5e598e4c81d84">ITEM_TREASURE_LEVEL::ITEM_TREASURE_LEVEL_3</a></div><div class="ttdeci">@ ITEM_TREASURE_LEVEL_3</div></div>
+<div class="ttc" id="aItemEnums_8h_html_ad20c3ee7b5967d80cee8e0ec3e061a9ca63ba1cb7cd2a85d9dbe2ddf3d423b291"><div class="ttname"><a href="ItemEnums_8h.html#ad20c3ee7b5967d80cee8e0ec3e061a9ca63ba1cb7cd2a85d9dbe2ddf3d423b291">ITEM_TREASURE_LEVEL::ITEM_TREASURE_LEVEL_4</a></div><div class="ttdeci">@ ITEM_TREASURE_LEVEL_4</div></div>
+<div class="ttc" id="aItemEnums_8h_html_ad20c3ee7b5967d80cee8e0ec3e061a9caa75efd62506770ffa26bc595c4a7f668"><div class="ttname"><a href="ItemEnums_8h.html#ad20c3ee7b5967d80cee8e0ec3e061a9caa75efd62506770ffa26bc595c4a7f668">ITEM_TREASURE_LEVEL::ITEM_TREASURE_LEVEL_5</a></div><div class="ttdeci">@ ITEM_TREASURE_LEVEL_5</div></div>
+<div class="ttc" id="aUIHouseEnums_8h_html_aaee3335261c70d04921051c52287405fa058a608a3672f1115db42faefe216a5d"><div class="ttname"><a href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fa058a608a3672f1115db42faefe216a5d">HOUSE_ALCHEMIST_EMERALD_ISLE</a></div><div class="ttdeci">@ HOUSE_ALCHEMIST_EMERALD_ISLE</div><div class="ttdef"><b>Definition:</b> UIHouseEnums.h:50</div></div>
+<div class="ttc" id="aUIHouseEnums_8h_html_aaee3335261c70d04921051c52287405fa1026f088061cf2d0a3bb08b1cd9bf428"><div class="ttname"><a href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fa1026f088061cf2d0a3bb08b1cd9bf428">HOUSE_ALCHEMIST_BRACADA_DESERT</a></div><div class="ttdeci">@ HOUSE_ALCHEMIST_BRACADA_DESERT</div><div class="ttdef"><b>Definition:</b> UIHouseEnums.h:55</div></div>
+<div class="ttc" id="aUIHouseEnums_8h_html_aaee3335261c70d04921051c52287405fa28131c5dfb6a79534927f16dc07770c9"><div class="ttname"><a href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fa28131c5dfb6a79534927f16dc07770c9">HOUSE_ALCHEMIST_53</a></div><div class="ttdeci">@ HOUSE_ALCHEMIST_53</div><div class="ttdef"><b>Definition:</b> UIHouseEnums.h:61</div></div>
+<div class="ttc" id="aUIHouseEnums_8h_html_aaee3335261c70d04921051c52287405fa35411c01b26ab02ed9a8d3f708a94fe5"><div class="ttname"><a href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fa35411c01b26ab02ed9a8d3f708a94fe5">HOUSE_ALCHEMIST_ERATHIA</a></div><div class="ttdeci">@ HOUSE_ALCHEMIST_ERATHIA</div><div class="ttdef"><b>Definition:</b> UIHouseEnums.h:52</div></div>
+<div class="ttc" id="aUIHouseEnums_8h_html_aaee3335261c70d04921051c52287405fa39f40264cd22f74231ed96062214b45e"><div class="ttname"><a href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fa39f40264cd22f74231ed96062214b45e">HOUSE_ALCHEMIST_CASTLE_HARMONDALE</a></div><div class="ttdeci">@ HOUSE_ALCHEMIST_CASTLE_HARMONDALE</div><div class="ttdef"><b>Definition:</b> UIHouseEnums.h:59</div></div>
+<div class="ttc" id="aUIHouseEnums_8h_html_aaee3335261c70d04921051c52287405fa6bd9d8e3403b5ee851366c665a6d3892"><div class="ttname"><a href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fa6bd9d8e3403b5ee851366c665a6d3892">HOUSE_ALCHEMIST_DEYJA</a></div><div class="ttdeci">@ HOUSE_ALCHEMIST_DEYJA</div><div class="ttdef"><b>Definition:</b> UIHouseEnums.h:54</div></div>
+<div class="ttc" id="aUIHouseEnums_8h_html_aaee3335261c70d04921051c52287405fa8a917fc235daaf7fc385b4bc6aa4ebf9"><div class="ttname"><a href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fa8a917fc235daaf7fc385b4bc6aa4ebf9">HOUSE_ALCHEMIST_TULAREAN_FOREST</a></div><div class="ttdeci">@ HOUSE_ALCHEMIST_TULAREAN_FOREST</div><div class="ttdef"><b>Definition:</b> UIHouseEnums.h:53</div></div>
+<div class="ttc" id="aUIHouseEnums_8h_html_aaee3335261c70d04921051c52287405fa99d72d082f8c360da2004888ff0a162e"><div class="ttname"><a href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fa99d72d082f8c360da2004888ff0a162e">HOUSE_ALCHEMIST_PIT</a></div><div class="ttdeci">@ HOUSE_ALCHEMIST_PIT</div><div class="ttdef"><b>Definition:</b> UIHouseEnums.h:57</div></div>
+<div class="ttc" id="aUIHouseEnums_8h_html_aaee3335261c70d04921051c52287405faa52609c5df59808e8611d400983f4661"><div class="ttname"><a href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405faa52609c5df59808e8611d400983f4661">HOUSE_ALCHEMIST_CELESTE</a></div><div class="ttdeci">@ HOUSE_ALCHEMIST_CELESTE</div><div class="ttdef"><b>Definition:</b> UIHouseEnums.h:56</div></div>
+<div class="ttc" id="aUIHouseEnums_8h_html_aaee3335261c70d04921051c52287405fad796f42b51665b16ca6e04ed19b920bd"><div class="ttname"><a href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fad796f42b51665b16ca6e04ed19b920bd">HOUSE_ALCHEMIST_STONE_CITY</a></div><div class="ttdeci">@ HOUSE_ALCHEMIST_STONE_CITY</div><div class="ttdef"><b>Definition:</b> UIHouseEnums.h:58</div></div>
+<div class="ttc" id="aUIHouseEnums_8h_html_aaee3335261c70d04921051c52287405fadbc9cca6d22613b678f0d4372649b3a8"><div class="ttname"><a href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fadbc9cca6d22613b678f0d4372649b3a8">HOUSE_ALCHEMIST_HARMONDALE</a></div><div class="ttdeci">@ HOUSE_ALCHEMIST_HARMONDALE</div><div class="ttdef"><b>Definition:</b> UIHouseEnums.h:51</div></div>
+<div class="ttc" id="aUIHouseEnums_8h_html_aaee3335261c70d04921051c52287405fae9c03e24d92c413e43d7148b34d3cdfd"><div class="ttname"><a href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fae9c03e24d92c413e43d7148b34d3cdfd">HOUSE_ALCHEMIST_52</a></div><div class="ttdeci">@ HOUSE_ALCHEMIST_52</div><div class="ttdef"><b>Definition:</b> UIHouseEnums.h:60</div></div>
+</div><!-- fragment -->
+</div>
+</div>
+<a id="ab404c8330b7e777bb1fe8c3891821a91" name="ab404c8330b7e777bb1fe8c3891821a91"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab404c8330b7e777bb1fe8c3891821a91">&#9670;&#160;</a></span>alchemyShopVariationStandart</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">const <a class="el" href="classIndexedArray.html">IndexedArray</a>&lt;<a class="el" href="ItemEnums_8h.html#ad20c3ee7b5967d80cee8e0ec3e061a9c">ITEM_TREASURE_LEVEL</a>, <a class="el" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fad1eed5a44ac4da609a4536849173372e">HOUSE_FIRST_ALCHEMY_SHOP</a>, <a class="el" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fa25a2f4f99c70092adf0356ad8cbbaed9">HOUSE_LAST_ALCHEMY_SHOP</a>&gt; alchemyShopVariationStandart</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<b>Initial value:</b><div class="fragment"><div class="line">= {{</div>
+<div class="line">    {<a class="code hl_enumvalue" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fa058a608a3672f1115db42faefe216a5d">HOUSE_ALCHEMIST_EMERALD_ISLE</a>,      <a class="code hl_enumvalue" href="ItemEnums_8h.html#ad20c3ee7b5967d80cee8e0ec3e061a9ca4159aecae10983f78eeaf5564eb78166">ITEM_TREASURE_LEVEL_1</a>},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fadbc9cca6d22613b678f0d4372649b3a8">HOUSE_ALCHEMIST_HARMONDALE</a>,        <a class="code hl_enumvalue" href="ItemEnums_8h.html#ad20c3ee7b5967d80cee8e0ec3e061a9ca4159aecae10983f78eeaf5564eb78166">ITEM_TREASURE_LEVEL_1</a>},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fa35411c01b26ab02ed9a8d3f708a94fe5">HOUSE_ALCHEMIST_ERATHIA</a>,           <a class="code hl_enumvalue" href="ItemEnums_8h.html#ad20c3ee7b5967d80cee8e0ec3e061a9ca15fd29d60ae611302e9b40b7f8c1b02c">ITEM_TREASURE_LEVEL_2</a>},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fa8a917fc235daaf7fc385b4bc6aa4ebf9">HOUSE_ALCHEMIST_TULAREAN_FOREST</a>,   <a class="code hl_enumvalue" href="ItemEnums_8h.html#ad20c3ee7b5967d80cee8e0ec3e061a9ca15fd29d60ae611302e9b40b7f8c1b02c">ITEM_TREASURE_LEVEL_2</a>},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fa6bd9d8e3403b5ee851366c665a6d3892">HOUSE_ALCHEMIST_DEYJA</a>,             <a class="code hl_enumvalue" href="ItemEnums_8h.html#ad20c3ee7b5967d80cee8e0ec3e061a9ca23a3f3592095f08dfbe5e598e4c81d84">ITEM_TREASURE_LEVEL_3</a>},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fa1026f088061cf2d0a3bb08b1cd9bf428">HOUSE_ALCHEMIST_BRACADA_DESERT</a>,    <a class="code hl_enumvalue" href="ItemEnums_8h.html#ad20c3ee7b5967d80cee8e0ec3e061a9ca23a3f3592095f08dfbe5e598e4c81d84">ITEM_TREASURE_LEVEL_3</a>},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405faa52609c5df59808e8611d400983f4661">HOUSE_ALCHEMIST_CELESTE</a>,           <a class="code hl_enumvalue" href="ItemEnums_8h.html#ad20c3ee7b5967d80cee8e0ec3e061a9ca63ba1cb7cd2a85d9dbe2ddf3d423b291">ITEM_TREASURE_LEVEL_4</a>},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fa99d72d082f8c360da2004888ff0a162e">HOUSE_ALCHEMIST_PIT</a>,               <a class="code hl_enumvalue" href="ItemEnums_8h.html#ad20c3ee7b5967d80cee8e0ec3e061a9ca63ba1cb7cd2a85d9dbe2ddf3d423b291">ITEM_TREASURE_LEVEL_4</a>},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fad796f42b51665b16ca6e04ed19b920bd">HOUSE_ALCHEMIST_STONE_CITY</a>,        <a class="code hl_enumvalue" href="ItemEnums_8h.html#ad20c3ee7b5967d80cee8e0ec3e061a9ca15fd29d60ae611302e9b40b7f8c1b02c">ITEM_TREASURE_LEVEL_2</a>},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fa39f40264cd22f74231ed96062214b45e">HOUSE_ALCHEMIST_CASTLE_HARMONDALE</a>, <a class="code hl_enumvalue" href="ItemEnums_8h.html#ad20c3ee7b5967d80cee8e0ec3e061a9ca15fd29d60ae611302e9b40b7f8c1b02c">ITEM_TREASURE_LEVEL_2</a>},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fae9c03e24d92c413e43d7148b34d3cdfd">HOUSE_ALCHEMIST_52</a>,                <a class="code hl_enumvalue" href="ItemEnums_8h.html#ad20c3ee7b5967d80cee8e0ec3e061a9ca15fd29d60ae611302e9b40b7f8c1b02c">ITEM_TREASURE_LEVEL_2</a>},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fa28131c5dfb6a79534927f16dc07770c9">HOUSE_ALCHEMIST_53</a>,                <a class="code hl_enumvalue" href="ItemEnums_8h.html#ad20c3ee7b5967d80cee8e0ec3e061a9ca15fd29d60ae611302e9b40b7f8c1b02c">ITEM_TREASURE_LEVEL_2</a>}</div>
+<div class="line">}}</div>
+<div class="ttc" id="aItemEnums_8h_html_ad20c3ee7b5967d80cee8e0ec3e061a9ca4159aecae10983f78eeaf5564eb78166"><div class="ttname"><a href="ItemEnums_8h.html#ad20c3ee7b5967d80cee8e0ec3e061a9ca4159aecae10983f78eeaf5564eb78166">ITEM_TREASURE_LEVEL::ITEM_TREASURE_LEVEL_1</a></div><div class="ttdeci">@ ITEM_TREASURE_LEVEL_1</div></div>
+</div><!-- fragment -->
+</div>
+</div>
+<a id="abbeae6527d00266e60133ecf9f3d038b" name="abbeae6527d00266e60133ecf9f3d038b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abbeae6527d00266e60133ecf9f3d038b">&#9670;&#160;</a></span>armorShopBottomRowVariationSpecial</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">const <a class="el" href="classIndexedArray.html">IndexedArray</a>&lt;<a class="el" href="structITEM__VARIATION.html">ITEM_VARIATION</a>, <a class="el" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fa4c8201fefe399402306da99ab460d20a">HOUSE_FIRST_ARMOR_SHOP</a>, <a class="el" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405faa875ee34369cae5fd832a48886e907d4">HOUSE_LAST_ARMOR_SHOP</a>&gt; armorShopBottomRowVariationSpecial</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<b>Initial value:</b><div class="fragment"><div class="line">= {{</div>
+<div class="line">    {<a class="code hl_enumvalue" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fa539e98b97b52cd5d97d8736de6d321bc">HOUSE_ARMOURER_EMERALD_ISLE</a>,         { <a class="code hl_enumvalue" href="ItemEnums_8h.html#ad20c3ee7b5967d80cee8e0ec3e061a9ca15fd29d60ae611302e9b40b7f8c1b02c">ITEM_TREASURE_LEVEL_2</a>, { 31, 31, 31, 34 } }},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405faccf50f995b92b10b3fcaf470060e7dc1">HOUSE_ARMOURER_HARMONDALE</a>,           { <a class="code hl_enumvalue" href="ItemEnums_8h.html#ad20c3ee7b5967d80cee8e0ec3e061a9ca15fd29d60ae611302e9b40b7f8c1b02c">ITEM_TREASURE_LEVEL_2</a>, { 31, 31, 32, 34 } }},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fa0ef696fe84b1b37dc6b586e7d105e341">HOUSE_ARMOURER_ERATHIA</a>,              { <a class="code hl_enumvalue" href="ItemEnums_8h.html#ad20c3ee7b5967d80cee8e0ec3e061a9ca23a3f3592095f08dfbe5e598e4c81d84">ITEM_TREASURE_LEVEL_3</a>, { 31, 32, 32, 33 } }},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405faa3f8bf66bd6a6f37064f21e288e37482">HOUSE_ARMOURER_TULAREAN_FOREST</a>,      { <a class="code hl_enumvalue" href="ItemEnums_8h.html#ad20c3ee7b5967d80cee8e0ec3e061a9ca23a3f3592095f08dfbe5e598e4c81d84">ITEM_TREASURE_LEVEL_3</a>, { 31, 31, 32, 32 } }},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fa39c31f37c921de15f86848ad9fccdc2b">HOUSE_ARMOURER_CELESTE</a>,              { <a class="code hl_enumvalue" href="ItemEnums_8h.html#ad20c3ee7b5967d80cee8e0ec3e061a9caa75efd62506770ffa26bc595c4a7f668">ITEM_TREASURE_LEVEL_5</a>, { 31, 32, 33, 34 } }},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fa5b725566aae29c2dc391a1c321288df7">HOUSE_ARMOURER_PIT</a>,                  { <a class="code hl_enumvalue" href="ItemEnums_8h.html#ad20c3ee7b5967d80cee8e0ec3e061a9caa75efd62506770ffa26bc595c4a7f668">ITEM_TREASURE_LEVEL_5</a>, { 31, 32, 33, 34 } }},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fa1469650cd3be834cf3510a7e9d6bff0e">HOUSE_ARMOURER_NIGHON</a>,               { <a class="code hl_enumvalue" href="ItemEnums_8h.html#ad20c3ee7b5967d80cee8e0ec3e061a9ca63ba1cb7cd2a85d9dbe2ddf3d423b291">ITEM_TREASURE_LEVEL_4</a>, { 31, 31, 31, 31 } }},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405faabbfba6049a7b366725daea868069e00">HOUSE_ARMOURER_TATALIA_MISSING_LINK</a>, { <a class="code hl_enumvalue" href="ItemEnums_8h.html#ad20c3ee7b5967d80cee8e0ec3e061a9ca23a3f3592095f08dfbe5e598e4c81d84">ITEM_TREASURE_LEVEL_3</a>, { 31, 32, 34, 34 } }},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fa59497003ec3758004a0133175b0f2aae">HOUSE_ARMOURER_AVLEE</a>,                { <a class="code hl_enumvalue" href="ItemEnums_8h.html#ad20c3ee7b5967d80cee8e0ec3e061a9ca63ba1cb7cd2a85d9dbe2ddf3d423b291">ITEM_TREASURE_LEVEL_4</a>, { 31, 31, 32, 33 } }},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fa3cb7686d6ed4c8407dd139afe9ae3c1b">HOUSE_ARMOURER_STONE_CITY</a>,           { <a class="code hl_enumvalue" href="ItemEnums_8h.html#ad20c3ee7b5967d80cee8e0ec3e061a9ca63ba1cb7cd2a85d9dbe2ddf3d423b291">ITEM_TREASURE_LEVEL_4</a>, { 32, 32, 33, 34 } }},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fac7d1cfc7f59185a9cb6491cf23090fde">HOUSE_ARMOURER_CASTLE_HARMONDALE</a>,    { <a class="code hl_enumvalue" href="ItemEnums_8h.html#ad20c3ee7b5967d80cee8e0ec3e061a9ca63ba1cb7cd2a85d9dbe2ddf3d423b291">ITEM_TREASURE_LEVEL_4</a>, { 31, 31, 31, 32 } }},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fa0cad325fb3790ef8d9aebc99873f1382">HOUSE_ARMOURER_TATALIA_ALLOYED</a>,      { <a class="code hl_enumvalue" href="ItemEnums_8h.html#ad20c3ee7b5967d80cee8e0ec3e061a9ca63ba1cb7cd2a85d9dbe2ddf3d423b291">ITEM_TREASURE_LEVEL_4</a>, { 32, 32, 32, 32 } }},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fa917163ede29171bc2566777e43835062">HOUSE_ARMOURER_27</a>,                   { <a class="code hl_enumvalue" href="ItemEnums_8h.html#ad20c3ee7b5967d80cee8e0ec3e061a9ca63ba1cb7cd2a85d9dbe2ddf3d423b291">ITEM_TREASURE_LEVEL_4</a>, { 34, 34, 34, 34 } }},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fa52280c86dc3976a8ec4f2faceec57cc5">HOUSE_ARMOURER_28</a>,                   { <a class="code hl_enumvalue" href="ItemEnums_8h.html#ad20c3ee7b5967d80cee8e0ec3e061a9caa75efd62506770ffa26bc595c4a7f668">ITEM_TREASURE_LEVEL_5</a>, { 33, 33, 33, 33 } }}</div>
+<div class="line">}}</div>
+<div class="ttc" id="aUIHouseEnums_8h_html_aaee3335261c70d04921051c52287405fa0cad325fb3790ef8d9aebc99873f1382"><div class="ttname"><a href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fa0cad325fb3790ef8d9aebc99873f1382">HOUSE_ARMOURER_TATALIA_ALLOYED</a></div><div class="ttdeci">@ HOUSE_ARMOURER_TATALIA_ALLOYED</div><div class="ttdef"><b>Definition:</b> UIHouseEnums.h:34</div></div>
+<div class="ttc" id="aUIHouseEnums_8h_html_aaee3335261c70d04921051c52287405fa0ef696fe84b1b37dc6b586e7d105e341"><div class="ttname"><a href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fa0ef696fe84b1b37dc6b586e7d105e341">HOUSE_ARMOURER_ERATHIA</a></div><div class="ttdeci">@ HOUSE_ARMOURER_ERATHIA</div><div class="ttdef"><b>Definition:</b> UIHouseEnums.h:25</div></div>
+<div class="ttc" id="aUIHouseEnums_8h_html_aaee3335261c70d04921051c52287405fa1469650cd3be834cf3510a7e9d6bff0e"><div class="ttname"><a href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fa1469650cd3be834cf3510a7e9d6bff0e">HOUSE_ARMOURER_NIGHON</a></div><div class="ttdeci">@ HOUSE_ARMOURER_NIGHON</div><div class="ttdef"><b>Definition:</b> UIHouseEnums.h:29</div></div>
+<div class="ttc" id="aUIHouseEnums_8h_html_aaee3335261c70d04921051c52287405fa39c31f37c921de15f86848ad9fccdc2b"><div class="ttname"><a href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fa39c31f37c921de15f86848ad9fccdc2b">HOUSE_ARMOURER_CELESTE</a></div><div class="ttdeci">@ HOUSE_ARMOURER_CELESTE</div><div class="ttdef"><b>Definition:</b> UIHouseEnums.h:27</div></div>
+<div class="ttc" id="aUIHouseEnums_8h_html_aaee3335261c70d04921051c52287405fa3cb7686d6ed4c8407dd139afe9ae3c1b"><div class="ttname"><a href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fa3cb7686d6ed4c8407dd139afe9ae3c1b">HOUSE_ARMOURER_STONE_CITY</a></div><div class="ttdeci">@ HOUSE_ARMOURER_STONE_CITY</div><div class="ttdef"><b>Definition:</b> UIHouseEnums.h:32</div></div>
+<div class="ttc" id="aUIHouseEnums_8h_html_aaee3335261c70d04921051c52287405fa52280c86dc3976a8ec4f2faceec57cc5"><div class="ttname"><a href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fa52280c86dc3976a8ec4f2faceec57cc5">HOUSE_ARMOURER_28</a></div><div class="ttdeci">@ HOUSE_ARMOURER_28</div><div class="ttdef"><b>Definition:</b> UIHouseEnums.h:36</div></div>
+<div class="ttc" id="aUIHouseEnums_8h_html_aaee3335261c70d04921051c52287405fa539e98b97b52cd5d97d8736de6d321bc"><div class="ttname"><a href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fa539e98b97b52cd5d97d8736de6d321bc">HOUSE_ARMOURER_EMERALD_ISLE</a></div><div class="ttdeci">@ HOUSE_ARMOURER_EMERALD_ISLE</div><div class="ttdef"><b>Definition:</b> UIHouseEnums.h:23</div></div>
+<div class="ttc" id="aUIHouseEnums_8h_html_aaee3335261c70d04921051c52287405fa59497003ec3758004a0133175b0f2aae"><div class="ttname"><a href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fa59497003ec3758004a0133175b0f2aae">HOUSE_ARMOURER_AVLEE</a></div><div class="ttdeci">@ HOUSE_ARMOURER_AVLEE</div><div class="ttdef"><b>Definition:</b> UIHouseEnums.h:31</div></div>
+<div class="ttc" id="aUIHouseEnums_8h_html_aaee3335261c70d04921051c52287405fa5b725566aae29c2dc391a1c321288df7"><div class="ttname"><a href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fa5b725566aae29c2dc391a1c321288df7">HOUSE_ARMOURER_PIT</a></div><div class="ttdeci">@ HOUSE_ARMOURER_PIT</div><div class="ttdef"><b>Definition:</b> UIHouseEnums.h:28</div></div>
+<div class="ttc" id="aUIHouseEnums_8h_html_aaee3335261c70d04921051c52287405fa917163ede29171bc2566777e43835062"><div class="ttname"><a href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fa917163ede29171bc2566777e43835062">HOUSE_ARMOURER_27</a></div><div class="ttdeci">@ HOUSE_ARMOURER_27</div><div class="ttdef"><b>Definition:</b> UIHouseEnums.h:35</div></div>
+<div class="ttc" id="aUIHouseEnums_8h_html_aaee3335261c70d04921051c52287405faa3f8bf66bd6a6f37064f21e288e37482"><div class="ttname"><a href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405faa3f8bf66bd6a6f37064f21e288e37482">HOUSE_ARMOURER_TULAREAN_FOREST</a></div><div class="ttdeci">@ HOUSE_ARMOURER_TULAREAN_FOREST</div><div class="ttdef"><b>Definition:</b> UIHouseEnums.h:26</div></div>
+<div class="ttc" id="aUIHouseEnums_8h_html_aaee3335261c70d04921051c52287405faabbfba6049a7b366725daea868069e00"><div class="ttname"><a href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405faabbfba6049a7b366725daea868069e00">HOUSE_ARMOURER_TATALIA_MISSING_LINK</a></div><div class="ttdeci">@ HOUSE_ARMOURER_TATALIA_MISSING_LINK</div><div class="ttdef"><b>Definition:</b> UIHouseEnums.h:30</div></div>
+<div class="ttc" id="aUIHouseEnums_8h_html_aaee3335261c70d04921051c52287405fac7d1cfc7f59185a9cb6491cf23090fde"><div class="ttname"><a href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fac7d1cfc7f59185a9cb6491cf23090fde">HOUSE_ARMOURER_CASTLE_HARMONDALE</a></div><div class="ttdeci">@ HOUSE_ARMOURER_CASTLE_HARMONDALE</div><div class="ttdef"><b>Definition:</b> UIHouseEnums.h:33</div></div>
+<div class="ttc" id="aUIHouseEnums_8h_html_aaee3335261c70d04921051c52287405faccf50f995b92b10b3fcaf470060e7dc1"><div class="ttname"><a href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405faccf50f995b92b10b3fcaf470060e7dc1">HOUSE_ARMOURER_HARMONDALE</a></div><div class="ttdeci">@ HOUSE_ARMOURER_HARMONDALE</div><div class="ttdef"><b>Definition:</b> UIHouseEnums.h:24</div></div>
+</div><!-- fragment -->
+</div>
+</div>
+<a id="aaaf91849ecce16df8ace7a837ca95c2d" name="aaaf91849ecce16df8ace7a837ca95c2d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aaaf91849ecce16df8ace7a837ca95c2d">&#9670;&#160;</a></span>armorShopBottomRowVariationStandart</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">const <a class="el" href="classIndexedArray.html">IndexedArray</a>&lt;<a class="el" href="structITEM__VARIATION.html">ITEM_VARIATION</a>, <a class="el" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fa4c8201fefe399402306da99ab460d20a">HOUSE_FIRST_ARMOR_SHOP</a>, <a class="el" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405faa875ee34369cae5fd832a48886e907d4">HOUSE_LAST_ARMOR_SHOP</a>&gt; armorShopBottomRowVariationStandart</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<b>Initial value:</b><div class="fragment"><div class="line">= {{</div>
+<div class="line">    {<a class="code hl_enumvalue" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fa539e98b97b52cd5d97d8736de6d321bc">HOUSE_ARMOURER_EMERALD_ISLE</a>,         { <a class="code hl_enumvalue" href="ItemEnums_8h.html#ad20c3ee7b5967d80cee8e0ec3e061a9ca4159aecae10983f78eeaf5564eb78166">ITEM_TREASURE_LEVEL_1</a>, { 31, 31, 31, 34 } }},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405faccf50f995b92b10b3fcaf470060e7dc1">HOUSE_ARMOURER_HARMONDALE</a>,           { <a class="code hl_enumvalue" href="ItemEnums_8h.html#ad20c3ee7b5967d80cee8e0ec3e061a9ca4159aecae10983f78eeaf5564eb78166">ITEM_TREASURE_LEVEL_1</a>, { 31, 31, 32, 34 } }},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fa0ef696fe84b1b37dc6b586e7d105e341">HOUSE_ARMOURER_ERATHIA</a>,              { <a class="code hl_enumvalue" href="ItemEnums_8h.html#ad20c3ee7b5967d80cee8e0ec3e061a9ca15fd29d60ae611302e9b40b7f8c1b02c">ITEM_TREASURE_LEVEL_2</a>, { 31, 32, 32, 33 } }},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405faa3f8bf66bd6a6f37064f21e288e37482">HOUSE_ARMOURER_TULAREAN_FOREST</a>,      { <a class="code hl_enumvalue" href="ItemEnums_8h.html#ad20c3ee7b5967d80cee8e0ec3e061a9ca15fd29d60ae611302e9b40b7f8c1b02c">ITEM_TREASURE_LEVEL_2</a>, { 31, 31, 32, 32 } }},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fa39c31f37c921de15f86848ad9fccdc2b">HOUSE_ARMOURER_CELESTE</a>,              { <a class="code hl_enumvalue" href="ItemEnums_8h.html#ad20c3ee7b5967d80cee8e0ec3e061a9ca63ba1cb7cd2a85d9dbe2ddf3d423b291">ITEM_TREASURE_LEVEL_4</a>, { 31, 32, 33, 34 } }},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fa5b725566aae29c2dc391a1c321288df7">HOUSE_ARMOURER_PIT</a>,                  { <a class="code hl_enumvalue" href="ItemEnums_8h.html#ad20c3ee7b5967d80cee8e0ec3e061a9ca63ba1cb7cd2a85d9dbe2ddf3d423b291">ITEM_TREASURE_LEVEL_4</a>, { 31, 32, 33, 34 } }},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fa1469650cd3be834cf3510a7e9d6bff0e">HOUSE_ARMOURER_NIGHON</a>,               { <a class="code hl_enumvalue" href="ItemEnums_8h.html#ad20c3ee7b5967d80cee8e0ec3e061a9ca23a3f3592095f08dfbe5e598e4c81d84">ITEM_TREASURE_LEVEL_3</a>, { 31, 31, 31, 31 } }},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405faabbfba6049a7b366725daea868069e00">HOUSE_ARMOURER_TATALIA_MISSING_LINK</a>, { <a class="code hl_enumvalue" href="ItemEnums_8h.html#ad20c3ee7b5967d80cee8e0ec3e061a9ca15fd29d60ae611302e9b40b7f8c1b02c">ITEM_TREASURE_LEVEL_2</a>, { 31, 32, 34, 34 } }},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fa59497003ec3758004a0133175b0f2aae">HOUSE_ARMOURER_AVLEE</a>,                { <a class="code hl_enumvalue" href="ItemEnums_8h.html#ad20c3ee7b5967d80cee8e0ec3e061a9ca23a3f3592095f08dfbe5e598e4c81d84">ITEM_TREASURE_LEVEL_3</a>, { 31, 31, 32, 32 } }},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fa3cb7686d6ed4c8407dd139afe9ae3c1b">HOUSE_ARMOURER_STONE_CITY</a>,           { <a class="code hl_enumvalue" href="ItemEnums_8h.html#ad20c3ee7b5967d80cee8e0ec3e061a9ca23a3f3592095f08dfbe5e598e4c81d84">ITEM_TREASURE_LEVEL_3</a>, { 32, 32, 32, 33 } }},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fac7d1cfc7f59185a9cb6491cf23090fde">HOUSE_ARMOURER_CASTLE_HARMONDALE</a>,    { <a class="code hl_enumvalue" href="ItemEnums_8h.html#ad20c3ee7b5967d80cee8e0ec3e061a9ca23a3f3592095f08dfbe5e598e4c81d84">ITEM_TREASURE_LEVEL_3</a>, { 31, 31, 31, 32 } }},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fa0cad325fb3790ef8d9aebc99873f1382">HOUSE_ARMOURER_TATALIA_ALLOYED</a>,      { <a class="code hl_enumvalue" href="ItemEnums_8h.html#ad20c3ee7b5967d80cee8e0ec3e061a9ca23a3f3592095f08dfbe5e598e4c81d84">ITEM_TREASURE_LEVEL_3</a>, { 33, 31, 32, 34 } }},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fa917163ede29171bc2566777e43835062">HOUSE_ARMOURER_27</a>,                   { <a class="code hl_enumvalue" href="ItemEnums_8h.html#ad20c3ee7b5967d80cee8e0ec3e061a9ca23a3f3592095f08dfbe5e598e4c81d84">ITEM_TREASURE_LEVEL_3</a>, { 33, 31, 32, 34 } }},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fa52280c86dc3976a8ec4f2faceec57cc5">HOUSE_ARMOURER_28</a>,                   { <a class="code hl_enumvalue" href="ItemEnums_8h.html#ad20c3ee7b5967d80cee8e0ec3e061a9ca63ba1cb7cd2a85d9dbe2ddf3d423b291">ITEM_TREASURE_LEVEL_4</a>, { 33, 31, 32, 34 } }}</div>
+<div class="line">}}</div>
+</div><!-- fragment -->
+</div>
+</div>
+<a id="a9d2bfaba1e5624e4b2d0ece3ac9d0f43" name="a9d2bfaba1e5624e4b2d0ece3ac9d0f43"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9d2bfaba1e5624e4b2d0ece3ac9d0f43">&#9670;&#160;</a></span>armorShopTopRowVariationSpecial</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">const <a class="el" href="classIndexedArray.html">IndexedArray</a>&lt;<a class="el" href="structITEM__VARIATION.html">ITEM_VARIATION</a>, <a class="el" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fa4c8201fefe399402306da99ab460d20a">HOUSE_FIRST_ARMOR_SHOP</a>, <a class="el" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405faa875ee34369cae5fd832a48886e907d4">HOUSE_LAST_ARMOR_SHOP</a>&gt; armorShopTopRowVariationSpecial</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<b>Initial value:</b><div class="fragment"><div class="line">= {{</div>
+<div class="line">    {<a class="code hl_enumvalue" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fa539e98b97b52cd5d97d8736de6d321bc">HOUSE_ARMOURER_EMERALD_ISLE</a>,         { <a class="code hl_enumvalue" href="ItemEnums_8h.html#ad20c3ee7b5967d80cee8e0ec3e061a9ca15fd29d60ae611302e9b40b7f8c1b02c">ITEM_TREASURE_LEVEL_2</a>, { 35, 35, 38, 38 } }},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405faccf50f995b92b10b3fcaf470060e7dc1">HOUSE_ARMOURER_HARMONDALE</a>,           { <a class="code hl_enumvalue" href="ItemEnums_8h.html#ad20c3ee7b5967d80cee8e0ec3e061a9ca15fd29d60ae611302e9b40b7f8c1b02c">ITEM_TREASURE_LEVEL_2</a>, { 35, 35, 38, 38 } }},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fa0ef696fe84b1b37dc6b586e7d105e341">HOUSE_ARMOURER_ERATHIA</a>,              { <a class="code hl_enumvalue" href="ItemEnums_8h.html#ad20c3ee7b5967d80cee8e0ec3e061a9ca23a3f3592095f08dfbe5e598e4c81d84">ITEM_TREASURE_LEVEL_3</a>, { 35, 35, 38, 38 } }},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405faa3f8bf66bd6a6f37064f21e288e37482">HOUSE_ARMOURER_TULAREAN_FOREST</a>,      { <a class="code hl_enumvalue" href="ItemEnums_8h.html#ad20c3ee7b5967d80cee8e0ec3e061a9ca23a3f3592095f08dfbe5e598e4c81d84">ITEM_TREASURE_LEVEL_3</a>, { 35, 35, 38, 38 } }},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fa39c31f37c921de15f86848ad9fccdc2b">HOUSE_ARMOURER_CELESTE</a>,              { <a class="code hl_enumvalue" href="ItemEnums_8h.html#ad20c3ee7b5967d80cee8e0ec3e061a9caa75efd62506770ffa26bc595c4a7f668">ITEM_TREASURE_LEVEL_5</a>, { 35, 35, 38, 38 } }},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fa5b725566aae29c2dc391a1c321288df7">HOUSE_ARMOURER_PIT</a>,                  { <a class="code hl_enumvalue" href="ItemEnums_8h.html#ad20c3ee7b5967d80cee8e0ec3e061a9caa75efd62506770ffa26bc595c4a7f668">ITEM_TREASURE_LEVEL_5</a>, { 35, 35, 38, 38 } }},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fa1469650cd3be834cf3510a7e9d6bff0e">HOUSE_ARMOURER_NIGHON</a>,               { <a class="code hl_enumvalue" href="ItemEnums_8h.html#ad20c3ee7b5967d80cee8e0ec3e061a9ca63ba1cb7cd2a85d9dbe2ddf3d423b291">ITEM_TREASURE_LEVEL_4</a>, { 35, 35, 38, 38 } }},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405faabbfba6049a7b366725daea868069e00">HOUSE_ARMOURER_TATALIA_MISSING_LINK</a>, { <a class="code hl_enumvalue" href="ItemEnums_8h.html#ad20c3ee7b5967d80cee8e0ec3e061a9ca23a3f3592095f08dfbe5e598e4c81d84">ITEM_TREASURE_LEVEL_3</a>, { 35, 35, 38, 38 } }},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fa59497003ec3758004a0133175b0f2aae">HOUSE_ARMOURER_AVLEE</a>,                { <a class="code hl_enumvalue" href="ItemEnums_8h.html#ad20c3ee7b5967d80cee8e0ec3e061a9ca63ba1cb7cd2a85d9dbe2ddf3d423b291">ITEM_TREASURE_LEVEL_4</a>, { 35, 35, 38, 38 } }},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fa3cb7686d6ed4c8407dd139afe9ae3c1b">HOUSE_ARMOURER_STONE_CITY</a>,           { <a class="code hl_enumvalue" href="ItemEnums_8h.html#ad20c3ee7b5967d80cee8e0ec3e061a9ca63ba1cb7cd2a85d9dbe2ddf3d423b291">ITEM_TREASURE_LEVEL_4</a>, { 35, 35, 38, 38 } }},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fac7d1cfc7f59185a9cb6491cf23090fde">HOUSE_ARMOURER_CASTLE_HARMONDALE</a>,    { <a class="code hl_enumvalue" href="ItemEnums_8h.html#ad20c3ee7b5967d80cee8e0ec3e061a9ca63ba1cb7cd2a85d9dbe2ddf3d423b291">ITEM_TREASURE_LEVEL_4</a>, { 35, 35, 38, 38 } }},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fa0cad325fb3790ef8d9aebc99873f1382">HOUSE_ARMOURER_TATALIA_ALLOYED</a>,      { <a class="code hl_enumvalue" href="ItemEnums_8h.html#ad20c3ee7b5967d80cee8e0ec3e061a9ca63ba1cb7cd2a85d9dbe2ddf3d423b291">ITEM_TREASURE_LEVEL_4</a>, { 35, 35, 38, 38 } }},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fa917163ede29171bc2566777e43835062">HOUSE_ARMOURER_27</a>,                   { <a class="code hl_enumvalue" href="ItemEnums_8h.html#ad20c3ee7b5967d80cee8e0ec3e061a9ca63ba1cb7cd2a85d9dbe2ddf3d423b291">ITEM_TREASURE_LEVEL_4</a>, { 35, 35, 38, 38 } }},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fa52280c86dc3976a8ec4f2faceec57cc5">HOUSE_ARMOURER_28</a>,                   { <a class="code hl_enumvalue" href="ItemEnums_8h.html#ad20c3ee7b5967d80cee8e0ec3e061a9caa75efd62506770ffa26bc595c4a7f668">ITEM_TREASURE_LEVEL_5</a>, { 35, 35, 38, 38 } }}</div>
+<div class="line">}}</div>
+</div><!-- fragment -->
+</div>
+</div>
+<a id="a2531b9fd7598504b0a7a0a4086150841" name="a2531b9fd7598504b0a7a0a4086150841"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2531b9fd7598504b0a7a0a4086150841">&#9670;&#160;</a></span>armorShopTopRowVariationStandart</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">const <a class="el" href="classIndexedArray.html">IndexedArray</a>&lt;<a class="el" href="structITEM__VARIATION.html">ITEM_VARIATION</a>, <a class="el" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fa4c8201fefe399402306da99ab460d20a">HOUSE_FIRST_ARMOR_SHOP</a>, <a class="el" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405faa875ee34369cae5fd832a48886e907d4">HOUSE_LAST_ARMOR_SHOP</a>&gt; armorShopTopRowVariationStandart</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<b>Initial value:</b><div class="fragment"><div class="line">= {{</div>
+<div class="line">    {<a class="code hl_enumvalue" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fa539e98b97b52cd5d97d8736de6d321bc">HOUSE_ARMOURER_EMERALD_ISLE</a>,         { <a class="code hl_enumvalue" href="ItemEnums_8h.html#ad20c3ee7b5967d80cee8e0ec3e061a9ca4159aecae10983f78eeaf5564eb78166">ITEM_TREASURE_LEVEL_1</a>, { 35, 35, 38, 38 } }},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405faccf50f995b92b10b3fcaf470060e7dc1">HOUSE_ARMOURER_HARMONDALE</a>,           { <a class="code hl_enumvalue" href="ItemEnums_8h.html#ad20c3ee7b5967d80cee8e0ec3e061a9ca4159aecae10983f78eeaf5564eb78166">ITEM_TREASURE_LEVEL_1</a>, { 35, 35, 38, 38 } }},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fa0ef696fe84b1b37dc6b586e7d105e341">HOUSE_ARMOURER_ERATHIA</a>,              { <a class="code hl_enumvalue" href="ItemEnums_8h.html#ad20c3ee7b5967d80cee8e0ec3e061a9ca15fd29d60ae611302e9b40b7f8c1b02c">ITEM_TREASURE_LEVEL_2</a>, { 35, 35, 38, 38 } }},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405faa3f8bf66bd6a6f37064f21e288e37482">HOUSE_ARMOURER_TULAREAN_FOREST</a>,      { <a class="code hl_enumvalue" href="ItemEnums_8h.html#ad20c3ee7b5967d80cee8e0ec3e061a9ca15fd29d60ae611302e9b40b7f8c1b02c">ITEM_TREASURE_LEVEL_2</a>, { 35, 35, 38, 38 } }},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fa39c31f37c921de15f86848ad9fccdc2b">HOUSE_ARMOURER_CELESTE</a>,              { <a class="code hl_enumvalue" href="ItemEnums_8h.html#ad20c3ee7b5967d80cee8e0ec3e061a9ca63ba1cb7cd2a85d9dbe2ddf3d423b291">ITEM_TREASURE_LEVEL_4</a>, { 35, 35, 38, 38 } }},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fa5b725566aae29c2dc391a1c321288df7">HOUSE_ARMOURER_PIT</a>,                  { <a class="code hl_enumvalue" href="ItemEnums_8h.html#ad20c3ee7b5967d80cee8e0ec3e061a9ca63ba1cb7cd2a85d9dbe2ddf3d423b291">ITEM_TREASURE_LEVEL_4</a>, { 35, 35, 38, 38 } }},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fa1469650cd3be834cf3510a7e9d6bff0e">HOUSE_ARMOURER_NIGHON</a>,               { <a class="code hl_enumvalue" href="ItemEnums_8h.html#ad20c3ee7b5967d80cee8e0ec3e061a9ca23a3f3592095f08dfbe5e598e4c81d84">ITEM_TREASURE_LEVEL_3</a>, { 35, 35, 38, 38 } }},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405faabbfba6049a7b366725daea868069e00">HOUSE_ARMOURER_TATALIA_MISSING_LINK</a>, { <a class="code hl_enumvalue" href="ItemEnums_8h.html#ad20c3ee7b5967d80cee8e0ec3e061a9ca15fd29d60ae611302e9b40b7f8c1b02c">ITEM_TREASURE_LEVEL_2</a>, { 35, 35, 38, 38 } }},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fa59497003ec3758004a0133175b0f2aae">HOUSE_ARMOURER_AVLEE</a>,                { <a class="code hl_enumvalue" href="ItemEnums_8h.html#ad20c3ee7b5967d80cee8e0ec3e061a9ca23a3f3592095f08dfbe5e598e4c81d84">ITEM_TREASURE_LEVEL_3</a>, { 35, 35, 38, 38 } }},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fa3cb7686d6ed4c8407dd139afe9ae3c1b">HOUSE_ARMOURER_STONE_CITY</a>,           { <a class="code hl_enumvalue" href="ItemEnums_8h.html#ad20c3ee7b5967d80cee8e0ec3e061a9ca23a3f3592095f08dfbe5e598e4c81d84">ITEM_TREASURE_LEVEL_3</a>, { 35, 35, 38, 38 } }},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fac7d1cfc7f59185a9cb6491cf23090fde">HOUSE_ARMOURER_CASTLE_HARMONDALE</a>,    { <a class="code hl_enumvalue" href="ItemEnums_8h.html#ad20c3ee7b5967d80cee8e0ec3e061a9ca23a3f3592095f08dfbe5e598e4c81d84">ITEM_TREASURE_LEVEL_3</a>, { 35, 35, 38, 38 } }},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fa0cad325fb3790ef8d9aebc99873f1382">HOUSE_ARMOURER_TATALIA_ALLOYED</a>,      { <a class="code hl_enumvalue" href="ItemEnums_8h.html#ad20c3ee7b5967d80cee8e0ec3e061a9ca23a3f3592095f08dfbe5e598e4c81d84">ITEM_TREASURE_LEVEL_3</a>, { 35, 35, 38, 38 } }},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fa917163ede29171bc2566777e43835062">HOUSE_ARMOURER_27</a>,                   { <a class="code hl_enumvalue" href="ItemEnums_8h.html#ad20c3ee7b5967d80cee8e0ec3e061a9ca23a3f3592095f08dfbe5e598e4c81d84">ITEM_TREASURE_LEVEL_3</a>, { 35, 35, 38, 38 } }},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fa52280c86dc3976a8ec4f2faceec57cc5">HOUSE_ARMOURER_28</a>,                   { <a class="code hl_enumvalue" href="ItemEnums_8h.html#ad20c3ee7b5967d80cee8e0ec3e061a9ca63ba1cb7cd2a85d9dbe2ddf3d423b291">ITEM_TREASURE_LEVEL_4</a>, { 35, 35, 38, 38 } }}</div>
+<div class="line">}}</div>
+</div><!-- fragment -->
+</div>
+</div>
+<a id="af88191866455baa2e2a0aae293014264" name="af88191866455baa2e2a0aae293014264"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af88191866455baa2e2a0aae293014264">&#9670;&#160;</a></span>magicShopVariationSpecial</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">const <a class="el" href="classIndexedArray.html">IndexedArray</a>&lt;<a class="el" href="ItemEnums_8h.html#ad20c3ee7b5967d80cee8e0ec3e061a9c">ITEM_TREASURE_LEVEL</a>, <a class="el" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fae0e072babad8d8de515082dfc1717ad7">HOUSE_FIRST_MAGIC_SHOP</a>, <a class="el" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405faeda03cbea526e28a095ee9cc3dd13ff1">HOUSE_LAST_MAGIC_SHOP</a>&gt; magicShopVariationSpecial</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<b>Initial value:</b><div class="fragment"><div class="line">= {{</div>
+<div class="line">    {<a class="code hl_enumvalue" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fac2694df9cb43d6b4cbceca6ef6b1efb2">HOUSE_MAGE_EMERALD_ISLE</a>,    <a class="code hl_enumvalue" href="ItemEnums_8h.html#ad20c3ee7b5967d80cee8e0ec3e061a9ca15fd29d60ae611302e9b40b7f8c1b02c">ITEM_TREASURE_LEVEL_2</a>},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fa7ef1ad3da8541fc7997950b409e08b3f">HOUSE_MAGE_HARMONDALE</a>,      <a class="code hl_enumvalue" href="ItemEnums_8h.html#ad20c3ee7b5967d80cee8e0ec3e061a9ca15fd29d60ae611302e9b40b7f8c1b02c">ITEM_TREASURE_LEVEL_2</a>},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fa505e931cbf95c399e0ca23bee1ee6c29">HOUSE_MAGE_ERATHIA</a>,         <a class="code hl_enumvalue" href="ItemEnums_8h.html#ad20c3ee7b5967d80cee8e0ec3e061a9ca23a3f3592095f08dfbe5e598e4c81d84">ITEM_TREASURE_LEVEL_3</a>},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fac3a02c3dcf6c6a1651430b69bb1ada11">HOUSE_MAGE_TULAREAN_FOREST</a>, <a class="code hl_enumvalue" href="ItemEnums_8h.html#ad20c3ee7b5967d80cee8e0ec3e061a9ca23a3f3592095f08dfbe5e598e4c81d84">ITEM_TREASURE_LEVEL_3</a>},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fa5d56386210ceda607c82472041f4aa0f">HOUSE_MAGE_DEYJA</a>,           <a class="code hl_enumvalue" href="ItemEnums_8h.html#ad20c3ee7b5967d80cee8e0ec3e061a9caa75efd62506770ffa26bc595c4a7f668">ITEM_TREASURE_LEVEL_5</a>},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fae5979ac8012e8dc9bc1bccd95d0db824">HOUSE_MAGE_BRACADA_DESERT</a>,  <a class="code hl_enumvalue" href="ItemEnums_8h.html#ad20c3ee7b5967d80cee8e0ec3e061a9caa75efd62506770ffa26bc595c4a7f668">ITEM_TREASURE_LEVEL_5</a>},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fa5e960b68e790f8e35585ed4e5d6b8390">HOUSE_MAGE_CELESTE</a>,         <a class="code hl_enumvalue" href="ItemEnums_8h.html#ad20c3ee7b5967d80cee8e0ec3e061a9ca63ba1cb7cd2a85d9dbe2ddf3d423b291">ITEM_TREASURE_LEVEL_4</a>},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fa39e2c831f56d95741391a84cf762d3ee">HOUSE_MAGE_PIT</a>,             <a class="code hl_enumvalue" href="ItemEnums_8h.html#ad20c3ee7b5967d80cee8e0ec3e061a9ca23a3f3592095f08dfbe5e598e4c81d84">ITEM_TREASURE_LEVEL_3</a>},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fabc0d9d85568af2b2b6833825afa76ee2">HOUSE_MAGE_NIGHON</a>,          <a class="code hl_enumvalue" href="ItemEnums_8h.html#ad20c3ee7b5967d80cee8e0ec3e061a9ca23a3f3592095f08dfbe5e598e4c81d84">ITEM_TREASURE_LEVEL_3</a>},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fa1fc095c93c720c18b5bd0a47be822ec8">HOUSE_MAGE_STONE_CITY</a>,      <a class="code hl_enumvalue" href="ItemEnums_8h.html#ad20c3ee7b5967d80cee8e0ec3e061a9ca23a3f3592095f08dfbe5e598e4c81d84">ITEM_TREASURE_LEVEL_3</a>},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fa112dfcee036e8371cdc15cc3b335a0f7">HOUSE_MAGE_39</a>,              <a class="code hl_enumvalue" href="ItemEnums_8h.html#ad20c3ee7b5967d80cee8e0ec3e061a9ca23a3f3592095f08dfbe5e598e4c81d84">ITEM_TREASURE_LEVEL_3</a>},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fa3b876f910cb2593a8f8430114cd26b95">HOUSE_MAGE_40</a>,              <a class="code hl_enumvalue" href="ItemEnums_8h.html#ad20c3ee7b5967d80cee8e0ec3e061a9ca23a3f3592095f08dfbe5e598e4c81d84">ITEM_TREASURE_LEVEL_3</a>},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fae6b3ecc68a950b0db49386bda7ea8cff">HOUSE_MAGE_41</a>,              <a class="code hl_enumvalue" href="ItemEnums_8h.html#ad20c3ee7b5967d80cee8e0ec3e061a9ca23a3f3592095f08dfbe5e598e4c81d84">ITEM_TREASURE_LEVEL_3</a>}</div>
+<div class="line">}}</div>
+<div class="ttc" id="aUIHouseEnums_8h_html_aaee3335261c70d04921051c52287405fa112dfcee036e8371cdc15cc3b335a0f7"><div class="ttname"><a href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fa112dfcee036e8371cdc15cc3b335a0f7">HOUSE_MAGE_39</a></div><div class="ttdeci">@ HOUSE_MAGE_39</div><div class="ttdef"><b>Definition:</b> UIHouseEnums.h:47</div></div>
+<div class="ttc" id="aUIHouseEnums_8h_html_aaee3335261c70d04921051c52287405fa1fc095c93c720c18b5bd0a47be822ec8"><div class="ttname"><a href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fa1fc095c93c720c18b5bd0a47be822ec8">HOUSE_MAGE_STONE_CITY</a></div><div class="ttdeci">@ HOUSE_MAGE_STONE_CITY</div><div class="ttdef"><b>Definition:</b> UIHouseEnums.h:46</div></div>
+<div class="ttc" id="aUIHouseEnums_8h_html_aaee3335261c70d04921051c52287405fa39e2c831f56d95741391a84cf762d3ee"><div class="ttname"><a href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fa39e2c831f56d95741391a84cf762d3ee">HOUSE_MAGE_PIT</a></div><div class="ttdeci">@ HOUSE_MAGE_PIT</div><div class="ttdef"><b>Definition:</b> UIHouseEnums.h:44</div></div>
+<div class="ttc" id="aUIHouseEnums_8h_html_aaee3335261c70d04921051c52287405fa3b876f910cb2593a8f8430114cd26b95"><div class="ttname"><a href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fa3b876f910cb2593a8f8430114cd26b95">HOUSE_MAGE_40</a></div><div class="ttdeci">@ HOUSE_MAGE_40</div><div class="ttdef"><b>Definition:</b> UIHouseEnums.h:48</div></div>
+<div class="ttc" id="aUIHouseEnums_8h_html_aaee3335261c70d04921051c52287405fa505e931cbf95c399e0ca23bee1ee6c29"><div class="ttname"><a href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fa505e931cbf95c399e0ca23bee1ee6c29">HOUSE_MAGE_ERATHIA</a></div><div class="ttdeci">@ HOUSE_MAGE_ERATHIA</div><div class="ttdef"><b>Definition:</b> UIHouseEnums.h:39</div></div>
+<div class="ttc" id="aUIHouseEnums_8h_html_aaee3335261c70d04921051c52287405fa5d56386210ceda607c82472041f4aa0f"><div class="ttname"><a href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fa5d56386210ceda607c82472041f4aa0f">HOUSE_MAGE_DEYJA</a></div><div class="ttdeci">@ HOUSE_MAGE_DEYJA</div><div class="ttdef"><b>Definition:</b> UIHouseEnums.h:41</div></div>
+<div class="ttc" id="aUIHouseEnums_8h_html_aaee3335261c70d04921051c52287405fa5e960b68e790f8e35585ed4e5d6b8390"><div class="ttname"><a href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fa5e960b68e790f8e35585ed4e5d6b8390">HOUSE_MAGE_CELESTE</a></div><div class="ttdeci">@ HOUSE_MAGE_CELESTE</div><div class="ttdef"><b>Definition:</b> UIHouseEnums.h:43</div></div>
+<div class="ttc" id="aUIHouseEnums_8h_html_aaee3335261c70d04921051c52287405fa7ef1ad3da8541fc7997950b409e08b3f"><div class="ttname"><a href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fa7ef1ad3da8541fc7997950b409e08b3f">HOUSE_MAGE_HARMONDALE</a></div><div class="ttdeci">@ HOUSE_MAGE_HARMONDALE</div><div class="ttdef"><b>Definition:</b> UIHouseEnums.h:38</div></div>
+<div class="ttc" id="aUIHouseEnums_8h_html_aaee3335261c70d04921051c52287405fabc0d9d85568af2b2b6833825afa76ee2"><div class="ttname"><a href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fabc0d9d85568af2b2b6833825afa76ee2">HOUSE_MAGE_NIGHON</a></div><div class="ttdeci">@ HOUSE_MAGE_NIGHON</div><div class="ttdef"><b>Definition:</b> UIHouseEnums.h:45</div></div>
+<div class="ttc" id="aUIHouseEnums_8h_html_aaee3335261c70d04921051c52287405fac2694df9cb43d6b4cbceca6ef6b1efb2"><div class="ttname"><a href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fac2694df9cb43d6b4cbceca6ef6b1efb2">HOUSE_MAGE_EMERALD_ISLE</a></div><div class="ttdeci">@ HOUSE_MAGE_EMERALD_ISLE</div><div class="ttdef"><b>Definition:</b> UIHouseEnums.h:37</div></div>
+<div class="ttc" id="aUIHouseEnums_8h_html_aaee3335261c70d04921051c52287405fac3a02c3dcf6c6a1651430b69bb1ada11"><div class="ttname"><a href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fac3a02c3dcf6c6a1651430b69bb1ada11">HOUSE_MAGE_TULAREAN_FOREST</a></div><div class="ttdeci">@ HOUSE_MAGE_TULAREAN_FOREST</div><div class="ttdef"><b>Definition:</b> UIHouseEnums.h:40</div></div>
+<div class="ttc" id="aUIHouseEnums_8h_html_aaee3335261c70d04921051c52287405fae5979ac8012e8dc9bc1bccd95d0db824"><div class="ttname"><a href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fae5979ac8012e8dc9bc1bccd95d0db824">HOUSE_MAGE_BRACADA_DESERT</a></div><div class="ttdeci">@ HOUSE_MAGE_BRACADA_DESERT</div><div class="ttdef"><b>Definition:</b> UIHouseEnums.h:42</div></div>
+<div class="ttc" id="aUIHouseEnums_8h_html_aaee3335261c70d04921051c52287405fae6b3ecc68a950b0db49386bda7ea8cff"><div class="ttname"><a href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fae6b3ecc68a950b0db49386bda7ea8cff">HOUSE_MAGE_41</a></div><div class="ttdeci">@ HOUSE_MAGE_41</div><div class="ttdef"><b>Definition:</b> UIHouseEnums.h:49</div></div>
+</div><!-- fragment -->
+</div>
+</div>
+<a id="a04f27296839d1689180c65daeb57da09" name="a04f27296839d1689180c65daeb57da09"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a04f27296839d1689180c65daeb57da09">&#9670;&#160;</a></span>magicShopVariationStandart</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">const <a class="el" href="classIndexedArray.html">IndexedArray</a>&lt;<a class="el" href="ItemEnums_8h.html#ad20c3ee7b5967d80cee8e0ec3e061a9c">ITEM_TREASURE_LEVEL</a>, <a class="el" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fae0e072babad8d8de515082dfc1717ad7">HOUSE_FIRST_MAGIC_SHOP</a>, <a class="el" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405faeda03cbea526e28a095ee9cc3dd13ff1">HOUSE_LAST_MAGIC_SHOP</a>&gt; magicShopVariationStandart</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<b>Initial value:</b><div class="fragment"><div class="line">= {{</div>
+<div class="line">    {<a class="code hl_enumvalue" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fac2694df9cb43d6b4cbceca6ef6b1efb2">HOUSE_MAGE_EMERALD_ISLE</a>,    <a class="code hl_enumvalue" href="ItemEnums_8h.html#ad20c3ee7b5967d80cee8e0ec3e061a9ca4159aecae10983f78eeaf5564eb78166">ITEM_TREASURE_LEVEL_1</a>},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fa7ef1ad3da8541fc7997950b409e08b3f">HOUSE_MAGE_HARMONDALE</a>,      <a class="code hl_enumvalue" href="ItemEnums_8h.html#ad20c3ee7b5967d80cee8e0ec3e061a9ca4159aecae10983f78eeaf5564eb78166">ITEM_TREASURE_LEVEL_1</a>},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fa505e931cbf95c399e0ca23bee1ee6c29">HOUSE_MAGE_ERATHIA</a>,         <a class="code hl_enumvalue" href="ItemEnums_8h.html#ad20c3ee7b5967d80cee8e0ec3e061a9ca15fd29d60ae611302e9b40b7f8c1b02c">ITEM_TREASURE_LEVEL_2</a>},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fac3a02c3dcf6c6a1651430b69bb1ada11">HOUSE_MAGE_TULAREAN_FOREST</a>, <a class="code hl_enumvalue" href="ItemEnums_8h.html#ad20c3ee7b5967d80cee8e0ec3e061a9ca15fd29d60ae611302e9b40b7f8c1b02c">ITEM_TREASURE_LEVEL_2</a>},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fa5d56386210ceda607c82472041f4aa0f">HOUSE_MAGE_DEYJA</a>,           <a class="code hl_enumvalue" href="ItemEnums_8h.html#ad20c3ee7b5967d80cee8e0ec3e061a9ca63ba1cb7cd2a85d9dbe2ddf3d423b291">ITEM_TREASURE_LEVEL_4</a>},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fae5979ac8012e8dc9bc1bccd95d0db824">HOUSE_MAGE_BRACADA_DESERT</a>,  <a class="code hl_enumvalue" href="ItemEnums_8h.html#ad20c3ee7b5967d80cee8e0ec3e061a9ca63ba1cb7cd2a85d9dbe2ddf3d423b291">ITEM_TREASURE_LEVEL_4</a>},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fa5e960b68e790f8e35585ed4e5d6b8390">HOUSE_MAGE_CELESTE</a>,         <a class="code hl_enumvalue" href="ItemEnums_8h.html#ad20c3ee7b5967d80cee8e0ec3e061a9ca23a3f3592095f08dfbe5e598e4c81d84">ITEM_TREASURE_LEVEL_3</a>},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fa39e2c831f56d95741391a84cf762d3ee">HOUSE_MAGE_PIT</a>,             <a class="code hl_enumvalue" href="ItemEnums_8h.html#ad20c3ee7b5967d80cee8e0ec3e061a9ca15fd29d60ae611302e9b40b7f8c1b02c">ITEM_TREASURE_LEVEL_2</a>},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fabc0d9d85568af2b2b6833825afa76ee2">HOUSE_MAGE_NIGHON</a>,          <a class="code hl_enumvalue" href="ItemEnums_8h.html#ad20c3ee7b5967d80cee8e0ec3e061a9ca15fd29d60ae611302e9b40b7f8c1b02c">ITEM_TREASURE_LEVEL_2</a>},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fa1fc095c93c720c18b5bd0a47be822ec8">HOUSE_MAGE_STONE_CITY</a>,      <a class="code hl_enumvalue" href="ItemEnums_8h.html#ad20c3ee7b5967d80cee8e0ec3e061a9ca15fd29d60ae611302e9b40b7f8c1b02c">ITEM_TREASURE_LEVEL_2</a>},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fa112dfcee036e8371cdc15cc3b335a0f7">HOUSE_MAGE_39</a>,              <a class="code hl_enumvalue" href="ItemEnums_8h.html#ad20c3ee7b5967d80cee8e0ec3e061a9ca15fd29d60ae611302e9b40b7f8c1b02c">ITEM_TREASURE_LEVEL_2</a>},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fa3b876f910cb2593a8f8430114cd26b95">HOUSE_MAGE_40</a>,              <a class="code hl_enumvalue" href="ItemEnums_8h.html#ad20c3ee7b5967d80cee8e0ec3e061a9ca15fd29d60ae611302e9b40b7f8c1b02c">ITEM_TREASURE_LEVEL_2</a>},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fae6b3ecc68a950b0db49386bda7ea8cff">HOUSE_MAGE_41</a>,              <a class="code hl_enumvalue" href="ItemEnums_8h.html#ad20c3ee7b5967d80cee8e0ec3e061a9ca15fd29d60ae611302e9b40b7f8c1b02c">ITEM_TREASURE_LEVEL_2</a>}</div>
+<div class="line">}}</div>
+</div><!-- fragment -->
+</div>
+</div>
 <a id="a8c56c3d34caff990c41a171afa5eb4da" name="a8c56c3d34caff990c41a171afa5eb4da"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a8c56c3d34caff990c41a171afa5eb4da">&#9670;&#160;</a></span>shop_ui_background</h2>
 
@@ -236,6 +517,94 @@ Variables</h2></td></tr>
       <table class="memname">
         <tr>
           <td class="memname">std::array&lt;<a class="el" href="classGraphicsImage.html">GraphicsImage</a> *, 12&gt; shop_ui_items_in_store</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ad1dc4c8381a91c7c42799be8a6141a9c" name="ad1dc4c8381a91c7c42799be8a6141a9c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad1dc4c8381a91c7c42799be8a6141a9c">&#9670;&#160;</a></span>weaponShopVariationSpecial</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">const <a class="el" href="classIndexedArray.html">IndexedArray</a>&lt;<a class="el" href="structITEM__VARIATION.html">ITEM_VARIATION</a>, <a class="el" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fa58f06d70d9437f1b3244cc393b0cb76f">HOUSE_FIRST_WEAPON_SHOP</a>, <a class="el" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fa7d8b5aa61e56adffffdbf260b9e795da">HOUSE_LAST_WEAPON_SHOP</a>&gt; weaponShopVariationSpecial</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<b>Initial value:</b><div class="fragment"><div class="line">= {{</div>
+<div class="line">    {<a class="code hl_enumvalue" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fa70e69054aa8b9e8ef6fe58ea1416625b">HOUSE_SMITH_EMERALD_ISLE</a>,      { <a class="code hl_enumvalue" href="ItemEnums_8h.html#ad20c3ee7b5967d80cee8e0ec3e061a9ca15fd29d60ae611302e9b40b7f8c1b02c">ITEM_TREASURE_LEVEL_2</a>, { 25, 30, 20, 20 } }},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fa4c133f989219a60dbbf969128b1982f4">HOUSE_SMITH_HARMONDALE</a>,        { <a class="code hl_enumvalue" href="ItemEnums_8h.html#ad20c3ee7b5967d80cee8e0ec3e061a9ca15fd29d60ae611302e9b40b7f8c1b02c">ITEM_TREASURE_LEVEL_2</a>, { 23, 24, 28, 20 } }},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405faccd0a3bdf1a121a4335ee6cd0ef6d376">HOUSE_SMITH_ERATHIA</a>,           { <a class="code hl_enumvalue" href="ItemEnums_8h.html#ad20c3ee7b5967d80cee8e0ec3e061a9ca23a3f3592095f08dfbe5e598e4c81d84">ITEM_TREASURE_LEVEL_3</a>, { 23, 24, 25, 20 } }},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fa201aa353cfa9771207c1c3dc1d6937ce">HOUSE_SMITH_TULAREAN_FOREST</a>,   { <a class="code hl_enumvalue" href="ItemEnums_8h.html#ad20c3ee7b5967d80cee8e0ec3e061a9ca23a3f3592095f08dfbe5e598e4c81d84">ITEM_TREASURE_LEVEL_3</a>, { 27, 27, 26, 26 } }},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405facbe44b72e9b672979c1058c8aa2d8f67">HOUSE_SMITH_CELESTE</a>,           { <a class="code hl_enumvalue" href="ItemEnums_8h.html#ad20c3ee7b5967d80cee8e0ec3e061a9caa75efd62506770ffa26bc595c4a7f668">ITEM_TREASURE_LEVEL_5</a>, { 23, 26, 28, 27 } }},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fac2c6c16a26334b579d0bb42d6ad81af4">HOUSE_SMITH_PIT</a>,               { <a class="code hl_enumvalue" href="ItemEnums_8h.html#ad20c3ee7b5967d80cee8e0ec3e061a9caa75efd62506770ffa26bc595c4a7f668">ITEM_TREASURE_LEVEL_5</a>, { 23, 26, 28, 27 } }},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fa30aa93d9c4ac65a23d469ecf0b2d09d8">HOUSE_SMITH_NIGHON</a>,            { <a class="code hl_enumvalue" href="ItemEnums_8h.html#ad20c3ee7b5967d80cee8e0ec3e061a9ca63ba1cb7cd2a85d9dbe2ddf3d423b291">ITEM_TREASURE_LEVEL_4</a>, { 30, 24, 20, 20 } }},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fae0cad744f10a6e41a91b540b09da38d9">HOUSE_SMITH_TATALIA_VANDERS</a>,   { <a class="code hl_enumvalue" href="ItemEnums_8h.html#ad20c3ee7b5967d80cee8e0ec3e061a9ca23a3f3592095f08dfbe5e598e4c81d84">ITEM_TREASURE_LEVEL_3</a>, { 20, 20, 20, 20 } }},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fa242c737d1950ce443b1a851ac97b5c19">HOUSE_SMITH_AVLEE</a>,             { <a class="code hl_enumvalue" href="ItemEnums_8h.html#ad20c3ee7b5967d80cee8e0ec3e061a9ca63ba1cb7cd2a85d9dbe2ddf3d423b291">ITEM_TREASURE_LEVEL_4</a>, { 27, 27, 26, 26 } }},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fa0ee75147bfaaf539904850f88289e258">HOUSE_SMITH_STONE_CITY</a>,        { <a class="code hl_enumvalue" href="ItemEnums_8h.html#ad20c3ee7b5967d80cee8e0ec3e061a9ca63ba1cb7cd2a85d9dbe2ddf3d423b291">ITEM_TREASURE_LEVEL_4</a>, { 28, 28, 25, 25 } }},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fa27b07428c52259f15128f451248ee8cb">HOUSE_SMITH_CASTLE_HARMONDALE</a>, { <a class="code hl_enumvalue" href="ItemEnums_8h.html#ad20c3ee7b5967d80cee8e0ec3e061a9ca63ba1cb7cd2a85d9dbe2ddf3d423b291">ITEM_TREASURE_LEVEL_4</a>, { 23, 23, 24, 24 } }},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405faaafd32b2d7216fc531ce53eaab7319c8">HOUSE_SMITH_TATALIA_ALLOYED</a>,   { <a class="code hl_enumvalue" href="ItemEnums_8h.html#ad20c3ee7b5967d80cee8e0ec3e061a9ca63ba1cb7cd2a85d9dbe2ddf3d423b291">ITEM_TREASURE_LEVEL_4</a>, { 24, 24, 27, 20 } }},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fa3a836be89cdfb2332a2bb9920633b24d">HOUSE_SMITH_13</a>,                { <a class="code hl_enumvalue" href="ItemEnums_8h.html#ad20c3ee7b5967d80cee8e0ec3e061a9ca63ba1cb7cd2a85d9dbe2ddf3d423b291">ITEM_TREASURE_LEVEL_4</a>, { 30, 26, 26, 26 } }},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fae0549a9c480740118a87b150a28919bb">HOUSE_SMITH_14</a>,                { <a class="code hl_enumvalue" href="ItemEnums_8h.html#ad20c3ee7b5967d80cee8e0ec3e061a9ca63ba1cb7cd2a85d9dbe2ddf3d423b291">ITEM_TREASURE_LEVEL_4</a>, { 28, 25, 28, 29 } }}</div>
+<div class="line">}}</div>
+<div class="ttc" id="aUIHouseEnums_8h_html_aaee3335261c70d04921051c52287405fa0ee75147bfaaf539904850f88289e258"><div class="ttname"><a href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fa0ee75147bfaaf539904850f88289e258">HOUSE_SMITH_STONE_CITY</a></div><div class="ttdeci">@ HOUSE_SMITH_STONE_CITY</div><div class="ttdef"><b>Definition:</b> UIHouseEnums.h:18</div></div>
+<div class="ttc" id="aUIHouseEnums_8h_html_aaee3335261c70d04921051c52287405fa201aa353cfa9771207c1c3dc1d6937ce"><div class="ttname"><a href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fa201aa353cfa9771207c1c3dc1d6937ce">HOUSE_SMITH_TULAREAN_FOREST</a></div><div class="ttdeci">@ HOUSE_SMITH_TULAREAN_FOREST</div><div class="ttdef"><b>Definition:</b> UIHouseEnums.h:12</div></div>
+<div class="ttc" id="aUIHouseEnums_8h_html_aaee3335261c70d04921051c52287405fa242c737d1950ce443b1a851ac97b5c19"><div class="ttname"><a href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fa242c737d1950ce443b1a851ac97b5c19">HOUSE_SMITH_AVLEE</a></div><div class="ttdeci">@ HOUSE_SMITH_AVLEE</div><div class="ttdef"><b>Definition:</b> UIHouseEnums.h:17</div></div>
+<div class="ttc" id="aUIHouseEnums_8h_html_aaee3335261c70d04921051c52287405fa27b07428c52259f15128f451248ee8cb"><div class="ttname"><a href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fa27b07428c52259f15128f451248ee8cb">HOUSE_SMITH_CASTLE_HARMONDALE</a></div><div class="ttdeci">@ HOUSE_SMITH_CASTLE_HARMONDALE</div><div class="ttdef"><b>Definition:</b> UIHouseEnums.h:19</div></div>
+<div class="ttc" id="aUIHouseEnums_8h_html_aaee3335261c70d04921051c52287405fa30aa93d9c4ac65a23d469ecf0b2d09d8"><div class="ttname"><a href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fa30aa93d9c4ac65a23d469ecf0b2d09d8">HOUSE_SMITH_NIGHON</a></div><div class="ttdeci">@ HOUSE_SMITH_NIGHON</div><div class="ttdef"><b>Definition:</b> UIHouseEnums.h:15</div></div>
+<div class="ttc" id="aUIHouseEnums_8h_html_aaee3335261c70d04921051c52287405fa3a836be89cdfb2332a2bb9920633b24d"><div class="ttname"><a href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fa3a836be89cdfb2332a2bb9920633b24d">HOUSE_SMITH_13</a></div><div class="ttdeci">@ HOUSE_SMITH_13</div><div class="ttdef"><b>Definition:</b> UIHouseEnums.h:21</div></div>
+<div class="ttc" id="aUIHouseEnums_8h_html_aaee3335261c70d04921051c52287405fa4c133f989219a60dbbf969128b1982f4"><div class="ttname"><a href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fa4c133f989219a60dbbf969128b1982f4">HOUSE_SMITH_HARMONDALE</a></div><div class="ttdeci">@ HOUSE_SMITH_HARMONDALE</div><div class="ttdef"><b>Definition:</b> UIHouseEnums.h:10</div></div>
+<div class="ttc" id="aUIHouseEnums_8h_html_aaee3335261c70d04921051c52287405fa70e69054aa8b9e8ef6fe58ea1416625b"><div class="ttname"><a href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fa70e69054aa8b9e8ef6fe58ea1416625b">HOUSE_SMITH_EMERALD_ISLE</a></div><div class="ttdeci">@ HOUSE_SMITH_EMERALD_ISLE</div><div class="ttdef"><b>Definition:</b> UIHouseEnums.h:9</div></div>
+<div class="ttc" id="aUIHouseEnums_8h_html_aaee3335261c70d04921051c52287405faaafd32b2d7216fc531ce53eaab7319c8"><div class="ttname"><a href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405faaafd32b2d7216fc531ce53eaab7319c8">HOUSE_SMITH_TATALIA_ALLOYED</a></div><div class="ttdeci">@ HOUSE_SMITH_TATALIA_ALLOYED</div><div class="ttdef"><b>Definition:</b> UIHouseEnums.h:20</div></div>
+<div class="ttc" id="aUIHouseEnums_8h_html_aaee3335261c70d04921051c52287405fac2c6c16a26334b579d0bb42d6ad81af4"><div class="ttname"><a href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fac2c6c16a26334b579d0bb42d6ad81af4">HOUSE_SMITH_PIT</a></div><div class="ttdeci">@ HOUSE_SMITH_PIT</div><div class="ttdef"><b>Definition:</b> UIHouseEnums.h:14</div></div>
+<div class="ttc" id="aUIHouseEnums_8h_html_aaee3335261c70d04921051c52287405facbe44b72e9b672979c1058c8aa2d8f67"><div class="ttname"><a href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405facbe44b72e9b672979c1058c8aa2d8f67">HOUSE_SMITH_CELESTE</a></div><div class="ttdeci">@ HOUSE_SMITH_CELESTE</div><div class="ttdef"><b>Definition:</b> UIHouseEnums.h:13</div></div>
+<div class="ttc" id="aUIHouseEnums_8h_html_aaee3335261c70d04921051c52287405faccd0a3bdf1a121a4335ee6cd0ef6d376"><div class="ttname"><a href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405faccd0a3bdf1a121a4335ee6cd0ef6d376">HOUSE_SMITH_ERATHIA</a></div><div class="ttdeci">@ HOUSE_SMITH_ERATHIA</div><div class="ttdef"><b>Definition:</b> UIHouseEnums.h:11</div></div>
+<div class="ttc" id="aUIHouseEnums_8h_html_aaee3335261c70d04921051c52287405fae0549a9c480740118a87b150a28919bb"><div class="ttname"><a href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fae0549a9c480740118a87b150a28919bb">HOUSE_SMITH_14</a></div><div class="ttdeci">@ HOUSE_SMITH_14</div><div class="ttdef"><b>Definition:</b> UIHouseEnums.h:22</div></div>
+<div class="ttc" id="aUIHouseEnums_8h_html_aaee3335261c70d04921051c52287405fae0cad744f10a6e41a91b540b09da38d9"><div class="ttname"><a href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fae0cad744f10a6e41a91b540b09da38d9">HOUSE_SMITH_TATALIA_VANDERS</a></div><div class="ttdeci">@ HOUSE_SMITH_TATALIA_VANDERS</div><div class="ttdef"><b>Definition:</b> UIHouseEnums.h:16</div></div>
+</div><!-- fragment -->
+</div>
+</div>
+<a id="a39d5d4c006745e8c8708974563722bb4" name="a39d5d4c006745e8c8708974563722bb4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a39d5d4c006745e8c8708974563722bb4">&#9670;&#160;</a></span>weaponShopVariationStandart</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">const <a class="el" href="classIndexedArray.html">IndexedArray</a>&lt;<a class="el" href="structITEM__VARIATION.html">ITEM_VARIATION</a>, <a class="el" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fa58f06d70d9437f1b3244cc393b0cb76f">HOUSE_FIRST_WEAPON_SHOP</a>, <a class="el" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fa7d8b5aa61e56adffffdbf260b9e795da">HOUSE_LAST_WEAPON_SHOP</a>&gt; weaponShopVariationStandart</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<b>Initial value:</b><div class="fragment"><div class="line">= {{</div>
+<div class="line">    {<a class="code hl_enumvalue" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fa70e69054aa8b9e8ef6fe58ea1416625b">HOUSE_SMITH_EMERALD_ISLE</a>,      { <a class="code hl_enumvalue" href="ItemEnums_8h.html#ad20c3ee7b5967d80cee8e0ec3e061a9ca4159aecae10983f78eeaf5564eb78166">ITEM_TREASURE_LEVEL_1</a>, { 23, 27, 20, 20 } }},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fa4c133f989219a60dbbf969128b1982f4">HOUSE_SMITH_HARMONDALE</a>,        { <a class="code hl_enumvalue" href="ItemEnums_8h.html#ad20c3ee7b5967d80cee8e0ec3e061a9ca4159aecae10983f78eeaf5564eb78166">ITEM_TREASURE_LEVEL_1</a>, { 23, 24, 28, 20 } }},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405faccd0a3bdf1a121a4335ee6cd0ef6d376">HOUSE_SMITH_ERATHIA</a>,           { <a class="code hl_enumvalue" href="ItemEnums_8h.html#ad20c3ee7b5967d80cee8e0ec3e061a9ca15fd29d60ae611302e9b40b7f8c1b02c">ITEM_TREASURE_LEVEL_2</a>, { 23, 24, 25, 20 } }},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fa201aa353cfa9771207c1c3dc1d6937ce">HOUSE_SMITH_TULAREAN_FOREST</a>,   { <a class="code hl_enumvalue" href="ItemEnums_8h.html#ad20c3ee7b5967d80cee8e0ec3e061a9ca15fd29d60ae611302e9b40b7f8c1b02c">ITEM_TREASURE_LEVEL_2</a>, { 27, 27, 26, 26 } }},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405facbe44b72e9b672979c1058c8aa2d8f67">HOUSE_SMITH_CELESTE</a>,           { <a class="code hl_enumvalue" href="ItemEnums_8h.html#ad20c3ee7b5967d80cee8e0ec3e061a9ca63ba1cb7cd2a85d9dbe2ddf3d423b291">ITEM_TREASURE_LEVEL_4</a>, { 24, 30, 25, 27 } }},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fac2c6c16a26334b579d0bb42d6ad81af4">HOUSE_SMITH_PIT</a>,               { <a class="code hl_enumvalue" href="ItemEnums_8h.html#ad20c3ee7b5967d80cee8e0ec3e061a9ca63ba1cb7cd2a85d9dbe2ddf3d423b291">ITEM_TREASURE_LEVEL_4</a>, { 24, 30, 25, 27 } }},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fa30aa93d9c4ac65a23d469ecf0b2d09d8">HOUSE_SMITH_NIGHON</a>,            { <a class="code hl_enumvalue" href="ItemEnums_8h.html#ad20c3ee7b5967d80cee8e0ec3e061a9ca23a3f3592095f08dfbe5e598e4c81d84">ITEM_TREASURE_LEVEL_3</a>, { 30, 24, 20, 20 } }},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fae0cad744f10a6e41a91b540b09da38d9">HOUSE_SMITH_TATALIA_VANDERS</a>,   { <a class="code hl_enumvalue" href="ItemEnums_8h.html#ad20c3ee7b5967d80cee8e0ec3e061a9ca15fd29d60ae611302e9b40b7f8c1b02c">ITEM_TREASURE_LEVEL_2</a>, { 20, 20, 20, 20 } }},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fa242c737d1950ce443b1a851ac97b5c19">HOUSE_SMITH_AVLEE</a>,             { <a class="code hl_enumvalue" href="ItemEnums_8h.html#ad20c3ee7b5967d80cee8e0ec3e061a9ca23a3f3592095f08dfbe5e598e4c81d84">ITEM_TREASURE_LEVEL_3</a>, { 27, 27, 26, 26 } }},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fa0ee75147bfaaf539904850f88289e258">HOUSE_SMITH_STONE_CITY</a>,        { <a class="code hl_enumvalue" href="ItemEnums_8h.html#ad20c3ee7b5967d80cee8e0ec3e061a9ca23a3f3592095f08dfbe5e598e4c81d84">ITEM_TREASURE_LEVEL_3</a>, { 28, 28, 25, 25 } }},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fa27b07428c52259f15128f451248ee8cb">HOUSE_SMITH_CASTLE_HARMONDALE</a>, { <a class="code hl_enumvalue" href="ItemEnums_8h.html#ad20c3ee7b5967d80cee8e0ec3e061a9ca15fd29d60ae611302e9b40b7f8c1b02c">ITEM_TREASURE_LEVEL_2</a>, { 23, 23, 24, 24 } }},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405faaafd32b2d7216fc531ce53eaab7319c8">HOUSE_SMITH_TATALIA_ALLOYED</a>,   { <a class="code hl_enumvalue" href="ItemEnums_8h.html#ad20c3ee7b5967d80cee8e0ec3e061a9ca23a3f3592095f08dfbe5e598e4c81d84">ITEM_TREASURE_LEVEL_3</a>, { 23, 23, 26, 26 } }},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fa3a836be89cdfb2332a2bb9920633b24d">HOUSE_SMITH_13</a>,                { <a class="code hl_enumvalue" href="ItemEnums_8h.html#ad20c3ee7b5967d80cee8e0ec3e061a9ca15fd29d60ae611302e9b40b7f8c1b02c">ITEM_TREASURE_LEVEL_2</a>, { 30, 26, 26, 26 } }},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fae0549a9c480740118a87b150a28919bb">HOUSE_SMITH_14</a>,                { <a class="code hl_enumvalue" href="ItemEnums_8h.html#ad20c3ee7b5967d80cee8e0ec3e061a9ca15fd29d60ae611302e9b40b7f8c1b02c">ITEM_TREASURE_LEVEL_2</a>, { 28, 25, 28, 29 } }}</div>
+<div class="line">}}</div>
+</div><!-- fragment -->
+</div>
+</div>
+<a id="a904a987094063493bd89e20768f207e5" name="a904a987094063493bd89e20768f207e5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a904a987094063493bd89e20768f207e5">&#9670;&#160;</a></span>weaponYPos</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::array&lt;int, 6&gt; weaponYPos</td>
         </tr>
       </table>
 </div><div class="memdoc">
