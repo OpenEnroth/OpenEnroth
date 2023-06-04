@@ -50,8 +50,6 @@ void WetsuitOff(unsigned int uPlayerID);
 
 int bRingsShownInCharScreen;  // 5118E0
 
-// TODO(pskelton): convert to color32
-
 Color ui_mainmenu_copyright_color;
 
 Color ui_character_tooltip_header_default_color;
@@ -1303,17 +1301,11 @@ void CharacterUI_DrawPaperdoll(Player *player) {
 
 //----- (0041A2D1) --------------------------------------------------------
 void CharacterUI_InventoryTab_Draw(Player *player, bool Cover_Strip) {
-    render->DrawTextureNew(8 / 640.0f, 8 / 480.0f,
-        ui_character_inventory_background);
+    render->DrawTextureNew(8 / 640.0f, 8 / 480.0f, ui_character_inventory_background);
+    
     if (Cover_Strip) {
-        if (ui_character_inventory_background_strip == nullptr) {
-            // strip doesnt load if you havent already look at
-                        // inventorys
-            ui_character_inventory_background_strip =
-                assets->getImage_ColorKey("fr_strip");
-        }
-        render->DrawTextureNew(8 / 640.0f, 305 / 480.0f,
-            ui_character_inventory_background_strip);
+        ui_character_inventory_background_strip = assets->getImage_ColorKey("fr_strip");
+        render->DrawTextureNew(8 / 640.0f, 305 / 480.0f, ui_character_inventory_background_strip);
     }
 
     for (uint i = 0; i < 126; ++i) {
