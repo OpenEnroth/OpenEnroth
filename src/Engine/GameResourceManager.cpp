@@ -1,12 +1,13 @@
 #include "Engine/GameResourceManager.h"
+
 #include "Engine/ErrorHandling.h"
 #include "Engine/Localization.h"
-#include "Engine/Graphics/Image.h"
+#include "Engine/Graphics/Texture_MM7.h"
+
+#include "Library/Compression/Compression.h"
 
 #include "Utility/DataPath.h"
 #include "Utility/Streams/BlobInputStream.h"
-
-#include "Library/Compression/Compression.h"
 
 void GameResourceManager::openGameResources() {
     _eventsLodReader = LodReader::open(makeDataPath("data", "events.lod"));

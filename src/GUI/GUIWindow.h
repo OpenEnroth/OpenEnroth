@@ -25,8 +25,6 @@
 using Io::Mouse;
 using Io::InputAction;
 
-struct Texture_MM7;
-
 class GUIFont;
 class GUIButton;
 class GUIWindow_House;

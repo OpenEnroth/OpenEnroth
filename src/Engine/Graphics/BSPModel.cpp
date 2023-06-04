@@ -6,7 +6,7 @@
 
 #include "Engine/AssetsManager.h"
 #include "Engine/Events/Processor.h"
-#include "Engine/Graphics/Image.h"
+#include "Engine/Graphics/TextureFrameTable.h"
 #include "Engine/Time.h"
 #include "Engine/Graphics/Indoor.h"
 
