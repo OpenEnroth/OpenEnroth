@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <memory>
 #include <vector>
 
 #include "Utility/IndexedArray.h"
@@ -8,46 +9,41 @@
 #include "Utility/Memory/Blob.h"
 
 #include "Library/Color/Color.h"
+#include "Library/Image/Image.h"
+#include "Library/Image/Palette.h"
 
 class ImageLoader;
+
 class GraphicsImage {
  public:
-    explicit GraphicsImage(bool lazy_initialization = true): lazy_initialization(lazy_initialization) {}
-    virtual ~GraphicsImage() {}
+    explicit GraphicsImage(bool lazy_initialization = true);
+    virtual ~GraphicsImage();
 
-    static GraphicsImage *Create(unsigned int width, unsigned int height, const Color *pixels = nullptr);
-    static GraphicsImage *Create(ImageLoader *loader);
+    static GraphicsImage *Create(std::unique_ptr<ImageLoader> loader);
+    static GraphicsImage *Create(size_t width, size_t height, const Color *pixels = nullptr);
 
-    int width();
-    int height();
-    Sizei size() { return {width(), height()}; }
+    size_t width();
+    size_t height();
+    Sizei size();
 
-    const Color *GetPixels();
+    RgbaImage &rgba();
 
-    /**
-     * @return                              Returns pointer to image R8G8B8 palette. Size 3 * 256.
-     */
-    const Color *GetPalette();
+    const Palette &palette();
 
-    /**
-     * @return                              Returns pointer to image pixels 8 bit palette lookup. Size 1 * width * height.
-     */
-    const uint8_t *GetPalettePixels();
+    const GrayscaleImage &indexed();
 
     std::string *GetName();
 
     bool Release();
 
  protected:
-    bool lazy_initialization = false;
-    bool initialized = false;
-    ImageLoader *loader = nullptr;
+    bool _lazyInitialization = false;
+    bool _initialized = false;
+    std::unique_ptr<ImageLoader> _loader;
 
-    size_t _width = 0;
-    size_t _height = 0;
-    Color *pixels = nullptr;
-    Color *palette = nullptr;
-    uint8_t *palettepixels = nullptr;
+    RgbaImage _rgbaImage;
+    GrayscaleImage _indexedImage;
+    Palette _palette;
 
     virtual bool LoadImageData();
 };

@@ -552,9 +552,8 @@ class Movie : public IMovie {
 
                 render->BeginScene2D();
                 // update pixels from buffer
-                Color *pix = const_cast<Color *>(tex->GetPixels()); // TODO(captainurist): #images const_cast
-                unsigned int num_pixels = tex->width() * tex->height();
-                unsigned int num_pixels_bytes = num_pixels * sizeof(Color);
+                Color *pix = tex->rgba().pixels().data();
+                unsigned int num_pixels_bytes = tex->rgba().pixels().size_bytes();
                 memcpy(pix, tmp_buf->data(), num_pixels_bytes);
 
                 // update texture
@@ -822,9 +821,8 @@ void MPlayer::HouseMovieLoop() {
         rect.h = wsize.h - render->config->graphics.HouseMovieY2.value();
 
         // update pixels from buffer
-        Color *pix = const_cast<Color *>(tex->GetPixels()); // TODO(captainurist): #images const_cast
-        unsigned int num_pixels = tex->width() * tex->height();
-        unsigned int num_pixels_bytes = num_pixels * sizeof(Color);
+        Color *pix = tex->rgba().pixels().data();
+        unsigned int num_pixels_bytes = tex->rgba().pixels().size_bytes();
         memcpy(pix, buffer->data(), num_pixels_bytes);
 
         // update texture
@@ -897,9 +895,8 @@ void MPlayer::PlayFullscreenMovie(const std::string &pFilename) {
             }
 
             // update pixels from buffer
-            Color *pix = const_cast<Color *>(tex->GetPixels()); // TODO(captainurist): #images const_cast
-            unsigned int num_pixels = tex->width() * tex->height();
-            unsigned int num_pixels_bytes = num_pixels * sizeof(Color);
+            Color *pix = tex->rgba().pixels().data();
+            unsigned int num_pixels_bytes = tex->rgba().pixels().size_bytes();
             memcpy(pix, buffer->data(), num_pixels_bytes);
 
             // update texture

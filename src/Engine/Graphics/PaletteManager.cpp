@@ -162,14 +162,14 @@ int PaletteManager::paletteIndex(int paletteId) {
     return pos - _paletteIds.begin();
 }
 
-std::span<uint32_t> PaletteManager::paletteData() {
+std::span<Color> PaletteManager::paletteData() {
     return {_palettes[0].colors.data(), _palettes.size() * _palettes[0].colors.size()};
 }
 
 Palette PaletteManager::createGrayscalePalette() {
     Palette result;
     for (int i = 0; i < 256; i++)
-        result.colors[i] = Color(i, i, i, 255).c32();
+        result.colors[i] = Color(i, i, i, 255);
     return result;
 }
 
@@ -191,7 +191,7 @@ Palette PaletteManager::createLoadedPalette(uint8_t *data) {
 
         HSV2RGB(&red, &green, &blue, hue, saturation, value);
 
-        result.colors[index / 3] = Color(red * 255.0, green * 255.0, blue * 255.0).c32();
+        result.colors[index / 3] = Color(red * 255.0, green * 255.0, blue * 255.0);
     }
 
     return result;

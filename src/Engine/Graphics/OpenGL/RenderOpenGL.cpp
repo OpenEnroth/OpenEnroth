@@ -841,7 +841,7 @@ void RenderOpenGL::ZDrawTextureAlpha(float u, float v, GraphicsImage *img, int z
     int uOutY = static_cast<int>(v * outputRender.h);
     int imgheight = img->height();
     int imgwidth = img->width();
-    const Color *pixels = img->GetPixels();
+    const Color *pixels = img->rgba().pixels().data();
 
     if (uOutX < 0)
         uOutX = 0;
@@ -870,13 +870,13 @@ void RenderOpenGL::BlendTextures(int x, int y, GraphicsImage *imgin, GraphicsIma
     const Color *pixelpointblend;
 
     if (imgin && imgblend) {  // 2 images to blend
-        pixelpoint = imgin->GetPixels();
-        pixelpointblend = imgblend->GetPixels();
+        pixelpoint = imgin->rgba().pixels().data();
+        pixelpointblend = imgblend->rgba().pixels().data();
 
         int Width = imgin->width();
         int Height = imgin->height();
         Texture *temp = render->CreateTexture_Blank(Width, Height);
-        Color *temppix = const_cast<Color *>(temp->GetPixels()); // TODO(captainurist): #images const_cast
+        Color *temppix = temp->rgba().pixels().data();
 
         Color c = *(pixelpointblend + 2700);  // guess at brightest pixel
         unsigned int rmax = c.r;
@@ -965,9 +965,9 @@ void RenderOpenGL::TexturePixelRotateDraw(float u, float v, GraphicsImage *img, 
                 cachedtemp[thisslot] = CreateTexture_Blank(width, height);
             }
 
-            const Color *palette = img->GetPalette();
-            Color *temppix = const_cast<Color *>(cachedtemp[thisslot]->GetPixels()); // TODO(captainurist): #images const_cast
-            const uint8_t *texpix24 = img->GetPalettePixels();
+            const Color *palette = img->palette().colors.data();
+            Color *temppix = cachedtemp[thisslot]->rgba().pixels().data();
+            const uint8_t *texpix24 = img->indexed().pixels().data();
             uint8_t thispix;
             int palindex;
 
@@ -1548,35 +1548,35 @@ void RenderOpenGL::DrawFromSpriteSheet(Recti *pSrcRect, Pointi *pTargetPoint, in
 }
 
 Texture *RenderOpenGL::CreateTexture_Paletted(const std::string &name) {
-    return TextureOpenGL::Create(new Paletted_Img_Loader(pIcons_LOD, name, 0));
+    return TextureOpenGL::Create(std::make_unique<Paletted_Img_Loader>(pIcons_LOD, name, 0));
 }
 
 Texture *RenderOpenGL::CreateTexture_ColorKey(const std::string &name, Color colorkey) {
-    return TextureOpenGL::Create(new ColorKey_LOD_Loader(pIcons_LOD, name, colorkey));
+    return TextureOpenGL::Create(std::make_unique<ColorKey_LOD_Loader>(pIcons_LOD, name, colorkey));
 }
 
 Texture *RenderOpenGL::CreateTexture_Solid(const std::string &name) {
-    return TextureOpenGL::Create(new Image16bit_LOD_Loader(pIcons_LOD, name));
+    return TextureOpenGL::Create(std::make_unique<Image16bit_LOD_Loader>(pIcons_LOD, name));
 }
 
 Texture *RenderOpenGL::CreateTexture_Alpha(const std::string &name) {
-    return TextureOpenGL::Create(new Alpha_LOD_Loader(pIcons_LOD, name));
+    return TextureOpenGL::Create(std::make_unique<Alpha_LOD_Loader>(pIcons_LOD, name));
 }
 
 Texture *RenderOpenGL::CreateTexture_PCXFromIconsLOD(const std::string &name) {
-    return TextureOpenGL::Create(new PCX_LOD_Compressed_Loader(pIcons_LOD, name));
+    return TextureOpenGL::Create(std::make_unique<PCX_LOD_Compressed_Loader>(pIcons_LOD, name));
 }
 
 Texture *RenderOpenGL::CreateTexture_PCXFromNewLOD(const std::string &name) {
-    return TextureOpenGL::Create(new PCX_LOD_Compressed_Loader(pSave_LOD, name));
+    return TextureOpenGL::Create(std::make_unique<PCX_LOD_Compressed_Loader>(pSave_LOD, name));
 }
 
 Texture *RenderOpenGL::CreateTexture_PCXFromFile(const std::string &name) {
-    return TextureOpenGL::Create(new PCX_File_Loader(name));
+    return TextureOpenGL::Create(std::make_unique<PCX_File_Loader>(name));
 }
 
 Texture *RenderOpenGL::CreateTexture_PCXFromLOD(LOD::File *pLOD, const std::string &name) {
-    return TextureOpenGL::Create(new PCX_LOD_Raw_Loader(pLOD, name));
+    return TextureOpenGL::Create(std::make_unique<PCX_LOD_Raw_Loader>(pLOD, name));
 }
 
 Texture *RenderOpenGL::CreateTexture_Blank(unsigned int width, unsigned int height, const Color *pixels) {
@@ -1584,19 +1584,18 @@ Texture *RenderOpenGL::CreateTexture_Blank(unsigned int width, unsigned int heig
 }
 
 Texture *RenderOpenGL::CreateTexture(const std::string &name) {
-    return TextureOpenGL::Create(new Bitmaps_LOD_Loader(pBitmaps_LOD, name));
+    return TextureOpenGL::Create(std::make_unique<Bitmaps_LOD_Loader>(pBitmaps_LOD, name));
 }
 
 Texture *RenderOpenGL::CreateSprite(const std::string &name, unsigned int palette_id,
                                     /*refactor*/ unsigned int lod_sprite_id) {
-    return TextureOpenGL::Create(
-        new Sprites_LOD_Loader(pSprites_LOD, palette_id, name, lod_sprite_id));
+    return TextureOpenGL::Create(std::make_unique<Sprites_LOD_Loader>(pSprites_LOD, palette_id, name, lod_sprite_id));
 }
 
 void RenderOpenGL::Update_Texture(Texture *texture) {
     auto t = (TextureOpenGL *)texture;
     glBindTexture(GL_TEXTURE_2D, t->GetOpenGlTexture());
-    glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, t->width(), t->height(), GL_RGBA, GL_UNSIGNED_BYTE, t->GetPixels());
+    glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, t->width(), t->height(), GL_RGBA, GL_UNSIGNED_BYTE, t->rgba().pixels().data());
     glBindTexture(GL_TEXTURE_2D, 0);
 }
 
@@ -1617,7 +1616,7 @@ void RenderOpenGL::RemoveTextureFromDevice(Texture *texture) {
 
 bool RenderOpenGL::MoveTextureToDevice(Texture *texture) {
     auto t = (TextureOpenGL *)texture;
-    const Color *pixels = t->GetPixels();
+    const Color *pixels = t->rgba().pixels().data();
     assert(pixels);
 
     GLuint texid;
@@ -1941,7 +1940,7 @@ void RenderOpenGL::DrawOutdoorTerrain() {
                         terraintexturesizes[unit], terraintexturesizes[unit], 1,
                         GL_RGBA,
                         GL_UNSIGNED_BYTE,
-                        texture->GetPixels());
+                        texture->rgba().pixels().data());
                 }
 
                 it++;
@@ -2902,7 +2901,7 @@ void RenderOpenGL::DrawBillboards() {
 
     if (palbuf == 0) {
         // generate palette buffer texture
-        std::span<uint32_t> palettes = pPaletteManager->paletteData();
+        std::span<Color> palettes = pPaletteManager->paletteData();
         glGenBuffers(1, &palbuf);
         glBindBuffer(GL_TEXTURE_BUFFER, palbuf);
         glBufferData(GL_TEXTURE_BUFFER, palettes.size_bytes(), palettes.data(), GL_STATIC_DRAW);
@@ -3814,7 +3813,7 @@ void RenderOpenGL::DrawOutdoorBuildings() {
                         outbuildtexturewidths[unit], outbuildtextureheights[unit], 1,
                         GL_RGBA,
                         GL_UNSIGNED_BYTE,
-                        texture->GetPixels());
+                        texture->rgba().pixels().data());
                 }
 
                 it++;
@@ -4430,7 +4429,7 @@ void RenderOpenGL::DrawIndoorFaces() {
                             bsptexturewidths[unit], bsptextureheights[unit], 1,
                             GL_RGBA,
                             GL_UNSIGNED_BYTE,
-                            texture->GetPixels());
+                            texture->rgba().pixels().data());
 
                         //numterraintexloaded[0]++;
                     }
@@ -5524,7 +5523,7 @@ void RenderOpenGL::DrawTwodVerts() {
 
     if (palbuf == 0) {
         // generate palette buffer texture
-        std::span<uint32_t> palettes = pPaletteManager->paletteData();
+        std::span<Color> palettes = pPaletteManager->paletteData();
         glGenBuffers(1, &palbuf);
         glBindBuffer(GL_TEXTURE_BUFFER, palbuf);
         glBufferData(GL_TEXTURE_BUFFER, palettes.size_bytes(), palettes.data(), GL_STATIC_DRAW);

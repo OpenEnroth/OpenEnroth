@@ -1,9 +1,13 @@
 cmake_minimum_required(VERSION 3.20.4 FATAL_ERROR)
 
 set(LIBRARY_IMAGE_SOURCES
+        ImageFunctions.cpp
         PCX.cpp)
 
 set(LIBRARY_IMAGE_HEADERS
+        Image.h
+        ImageFunctions.h
+        Palette.h
         PCX.h)
 
 add_library(library_image STATIC ${LIBRARY_IMAGE_SOURCES} ${LIBRARY_IMAGE_HEADERS})

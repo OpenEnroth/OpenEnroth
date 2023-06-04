@@ -1630,8 +1630,8 @@ void GameUI_DrawMinimap(unsigned int uX, unsigned int uY, unsigned int uZ,
                 assert(uWidth == 137 && uHeight == 117);
 
                 ushort MapImgWidth = viewparams->location_minimap->width();
-                const Color *pMapLod0Line = viewparams->location_minimap->GetPixels();
-                Color *minitempix = const_cast<Color *>(minimaptemp->GetPixels()); // TODO(captainurist): #images const_cast
+                const Color *pMapLod0Line = viewparams->location_minimap->rgba().pixels().data();
+                Color *minitempix = minimaptemp->rgba().pixels().data();
 
                 for (int y = 0; y < uHeight; ++y) {
                     for (int x = 0; x < uWidth; ++x) {

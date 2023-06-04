@@ -3,22 +3,21 @@
 #include <string>
 
 #include "Engine/LOD.h"
-#include "Engine/EngineIocContainer.h"
-#include "Engine/Graphics/Image.h"
 
 #include "Library/Color/Color.h"
+#include "Library/Image/Image.h"
+#include "Library/Image/Palette.h"
+
+class Logger;
 
 class ImageLoader {
  public:
-    inline ImageLoader() {
-         this->log = EngineIocContainer::ResolveLogger();
-    }
-    virtual ~ImageLoader() {}
+    ImageLoader();
+    virtual ~ImageLoader() = default;
     virtual std::string GetResourceName() const { return this->resource_name; }
     virtual std::string *GetResourceNamePtr() { return &this->resource_name; }
 
-    virtual bool Load(size_t *width, size_t *height, Color **pixels,
-                      Color **out_palette, uint8_t **out_pallettepixels = nullptr) = 0;
+    virtual bool Load(RgbaImage *rgbaImage, GrayscaleImage *indexedImage, Palette *palette) = 0;
 
  protected:
     std::string resource_name;
@@ -33,8 +32,7 @@ class Paletted_Img_Loader : public ImageLoader {
         this->lod = lod;
     }
 
-    virtual bool Load(size_t *width, size_t *height, Color **pixels,
-                      Color **out_palette, uint8_t **out_pallettepixels = nullptr) override;
+    virtual bool Load(RgbaImage *rgbaImage, GrayscaleImage *indexedImage, Palette *palette) override;
 
  protected:
     uint16_t colorkey;
@@ -50,8 +48,7 @@ class ColorKey_LOD_Loader : public ImageLoader {
         this->lod = lod;
     }
 
-    virtual bool Load(size_t *width, size_t *height, Color **pixels,
-                      Color **out_palette, uint8_t **out_pallettepixels = nullptr) override;
+    virtual bool Load(RgbaImage *rgbaImage, GrayscaleImage *indexedImage, Palette *palette) override;
 
  protected:
     Color colorkey;
@@ -66,8 +63,7 @@ class Image16bit_LOD_Loader : public ImageLoader {
         this->lod = lod;
     }
 
-    virtual bool Load(size_t *width, size_t *height, Color **pixels,
-                      Color **out_palette, uint8_t **out_pallettepixels = nullptr) override;
+    virtual bool Load(RgbaImage *rgbaImage, GrayscaleImage *indexedImage, Palette *palette) override;
 
  protected:
     LODFile_IconsBitmaps *lod;
@@ -80,8 +76,7 @@ class Alpha_LOD_Loader : public ImageLoader {
         this->lod = lod;
     }
 
-    virtual bool Load(size_t *width, size_t *height, Color **pixels,
-                      Color **out_palette, uint8_t **out_pallettepixels = nullptr) override;
+    virtual bool Load(RgbaImage *rgbaImage, GrayscaleImage *indexedImage, Palette *palette) override;
 
  protected:
     LODFile_IconsBitmaps *lod;
@@ -89,9 +84,7 @@ class Alpha_LOD_Loader : public ImageLoader {
 
 class PCX_Loader : public ImageLoader {
  protected:
-    bool DecodePCX(const void *pcx_data, uint16_t *pOutPixels,
-                   size_t *width, size_t *height);
-    bool InternalLoad(const void *file, size_t size, size_t *width, size_t *height, Color **pixels);
+    bool InternalLoad(const Blob &data, RgbaImage *rgbaImage);
 };
 
 class PCX_File_Loader : public PCX_Loader {
@@ -100,8 +93,7 @@ class PCX_File_Loader : public PCX_Loader {
         this->resource_name = filename;
     }
 
-    virtual bool Load(size_t *width, size_t *height, Color **pixels,
-                      Color **out_palette, uint8_t **out_pallettepixels = nullptr) override;
+    virtual bool Load(RgbaImage *rgbaImage, GrayscaleImage *indexedImage, Palette *palette) override;
 
     LODFile_IconsBitmaps *lod;
 };
@@ -113,8 +105,7 @@ class PCX_LOD_Raw_Loader : public PCX_Loader {
         this->lod = lod;
     }
 
-    virtual bool Load(size_t *width, size_t *height, Color **pixels,
-                      Color **out_palette, uint8_t **out_pallettepixels = nullptr) override;
+    virtual bool Load(RgbaImage *rgbaImage, GrayscaleImage *indexedImage, Palette *palette) override;
 
  protected:
     LOD::File *lod;
@@ -127,8 +118,7 @@ class PCX_LOD_Compressed_Loader : public PCX_Loader {
         this->lod = lod;
     }
 
-    virtual bool Load(size_t *width, size_t *height, Color **pixels,
-                      Color **out_palette, uint8_t **out_pallettepixels = nullptr) override;
+    virtual bool Load(RgbaImage *rgbaImage, GrayscaleImage *indexedImage, Palette *palette) override;
 
  protected:
     LOD::File *lod;
@@ -141,8 +131,7 @@ class Bitmaps_LOD_Loader : public ImageLoader {
         this->lod = lod;
     }
 
-    virtual bool Load(size_t *width, size_t *height, Color **pixels,
-                      Color **out_palette, uint8_t **out_pallettepixels = nullptr) override;
+    virtual bool Load(RgbaImage *rgbaImage, GrayscaleImage *indexedImage, Palette *palette) override;
 
  protected:
     LODFile_IconsBitmaps *lod;
@@ -159,8 +148,7 @@ class Sprites_LOD_Loader : public ImageLoader {
         this->lod_sprite_id = lod_sprite_id;
     }
 
-    virtual bool Load(size_t *width, size_t *height, Color **pixels,
-                      Color **out_palette, uint8_t **out_pallettepixels = nullptr) override;
+    virtual bool Load(RgbaImage *rgbaImage, GrayscaleImage *indexedImage, Palette *palette) override;
 
  protected:
     LODFile_Sprites *lod;

@@ -1,4 +1,5 @@
 #pragma once
+
 #include "Engine/Graphics/Image.h"
 
 class Texture : public GraphicsImage {

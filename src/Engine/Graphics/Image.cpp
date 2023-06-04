@@ -1,131 +1,88 @@
 #include "Engine/Graphics/Image.h"
 
-#include <algorithm>
+#include <cassert>
+#include <utility>
 
 #include "Engine/Engine.h"
 
 #include "Engine/Graphics/ImageLoader.h"
 #include "Engine/Graphics/Texture.h"
 
-#include "Engine/Serialization/LegacyImages.h"
+GraphicsImage::GraphicsImage(bool lazy_initialization): _lazyInitialization(lazy_initialization) {}
 
-GraphicsImage *GraphicsImage::Create(ImageLoader *loader) {
+GraphicsImage::~GraphicsImage() = default;
+
+GraphicsImage *GraphicsImage::Create(std::unique_ptr<ImageLoader> loader) {
     GraphicsImage *img = new GraphicsImage();
-    if (img) {
-        img->loader = loader;
-    }
-
+    img->_loader = std::move(loader);
     return img;
 }
 
-bool GraphicsImage::LoadImageData() {
-    if (!initialized) {
-        Color *data = nullptr;
-        Color *palette = nullptr;
-        initialized = loader->Load(&_width, &_height, &data, &palette);
-        if (initialized) {
-            pixels = data;
-            palette = palette;
-        }
-    }
-
-    if ((_width == 0 || _height == 0) && initialized) __debugbreak();
-
-    return initialized;
-}
-
-int GraphicsImage::width() {
-    if (!initialized) {
-        LoadImageData();
-    }
-
-    if (initialized) {
-        if (_width == 0) __debugbreak();
-        return _width;
-    }
-
-    return 0;
-}
-
-int GraphicsImage::height() {
-    if (!initialized) {
-        LoadImageData();
-    }
-
-    if (initialized) {
-        if (_height == 0) __debugbreak();
-        return _height;
-    }
-
-    return 0;
-}
-
-GraphicsImage *GraphicsImage::Create(unsigned int width, unsigned int height, const Color *pixels) {
-    if (width == 0 || height == 0) __debugbreak();
+GraphicsImage *GraphicsImage::Create(size_t width, size_t height, const Color *pixels) {
+    assert(width != 0 && height != 0);
 
     GraphicsImage *img = new GraphicsImage(false);
 
-    img->initialized = true;
-    img->_width = width;
-    img->_height = height;
-    unsigned int num_pixels = img->width() * img->height();
-    unsigned int num_pixels_bytes = num_pixels * sizeof(Color);
-    img->pixels = new Color[num_pixels];
+    img->_initialized = true;
+
     if (pixels) {
-        memcpy(img->pixels, pixels, num_pixels_bytes);
+        img->_rgbaImage = RgbaImage::copy(width, height, pixels); // NOLINT: this is not std::copy.
     } else {
-        memset(img->pixels, 0, num_pixels_bytes);
+        img->_rgbaImage = RgbaImage::solid(width, height, Color());
     }
 
     return img;
 }
 
-const Color *GraphicsImage::GetPixels() {
-    if (!initialized)
-        LoadImageData();
-    return pixels;
+size_t GraphicsImage::width() {
+    return rgba().width();
 }
 
-
-const Color *GraphicsImage::GetPalette() {
-    if (!initialized)
-        LoadImageData();
-
-    return this->palette;
+size_t GraphicsImage::height() {
+    return rgba().height();
 }
 
-const uint8_t *GraphicsImage::GetPalettePixels() {
-    if (!initialized)
-        LoadImageData();
-    return this->palettepixels;
+Sizei GraphicsImage::size() {
+    return rgba().size();
+}
+
+RgbaImage &GraphicsImage::rgba() {
+    LoadImageData();
+    return _rgbaImage;
+}
+
+const Palette &GraphicsImage::palette() {
+    LoadImageData();
+    return _palette;
+}
+
+const GrayscaleImage &GraphicsImage::indexed() {
+    LoadImageData();
+    return _indexedImage;
 }
 
 std::string *GraphicsImage::GetName() {
-    if (!loader) __debugbreak();
-    return loader->GetResourceNamePtr();
+    assert(_loader);
+
+    return _loader->GetResourceNamePtr();
 }
 
 bool GraphicsImage::Release() {
-    if (loader) {
-        if (!assets->releaseSprite(loader->GetResourceName()))
-            if (!assets->releaseImage(loader->GetResourceName()))
-                assets->releaseBitmap(loader->GetResourceName());
-    }
-
-    if (initialized) {
-        if (loader) {
-            delete loader;
-            loader = nullptr;
-        }
-
-        delete[] pixels;
-        delete[] palette;
-        delete[] palettepixels;
-
-        _width = 0;
-        _height = 0;
+    if (_loader) {
+        if (!assets->releaseSprite(_loader->GetResourceName()))
+            if (!assets->releaseImage(_loader->GetResourceName()))
+                assets->releaseBitmap(_loader->GetResourceName());
     }
 
     delete this;
     return true;
+}
+
+bool GraphicsImage::LoadImageData() {
+    if (_initialized)
+        return true;
+
+    _initialized = _loader->Load(&_rgbaImage, &_indexedImage, &_palette);
+    assert(_rgbaImage);
+    return _initialized;
 }
