@@ -4,6 +4,7 @@
 #include <vector>
 
 #include "Utility/IndexedArray.h"
+#include "Utility/Geometry/Size.h"
 #include "Utility/Memory/Blob.h"
 
 #include "Library/Color/Color.h"
@@ -17,8 +18,10 @@ class GraphicsImage {
     static GraphicsImage *Create(unsigned int width, unsigned int height, const Color *pixels = nullptr);
     static GraphicsImage *Create(ImageLoader *loader);
 
-    int GetWidth();
-    int GetHeight();
+    int width();
+    int height();
+    Sizei size() { return {width(), height()}; }
+
     const Color *GetPixels();
 
     /**
@@ -40,8 +43,8 @@ class GraphicsImage {
     bool initialized = false;
     ImageLoader *loader = nullptr;
 
-    size_t width = 0;
-    size_t height = 0;
+    size_t _width = 0;
+    size_t _height = 0;
     Color *pixels = nullptr;
     Color *palette = nullptr;
     uint8_t *palettepixels = nullptr;
@@ -52,11 +55,11 @@ class GraphicsImage {
 class ImageHelper {
  public:
     static int GetWidthLn2(GraphicsImage *img) {
-        return ImageHelper::GetPowerOf2(img->GetWidth());
+        return ImageHelper::GetPowerOf2(img->width());
     }
 
     static int GetHeightLn2(GraphicsImage *img) {
-        return ImageHelper::GetPowerOf2(img->GetHeight());
+        return ImageHelper::GetPowerOf2(img->height());
     }
 
     static int GetPowerOf2(int value) {

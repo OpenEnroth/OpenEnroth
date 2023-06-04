@@ -1377,7 +1377,7 @@ void OutdoorLocation::PrepareActorsDrawList() {
 
         // no sprite frame to draw
         if (frame->icon_name == "null") continue;
-        if (frame->hw_sprites[Sprite_Octant]->texture->GetHeight() == 0 || frame->hw_sprites[Sprite_Octant]->texture->GetWidth() == 0)
+        if (frame->hw_sprites[Sprite_Octant]->texture->height() == 0 || frame->hw_sprites[Sprite_Octant]->texture->width() == 0)
             __debugbreak();
 
         int flags = 0;

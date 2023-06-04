@@ -127,16 +127,16 @@ GAME_TEST(Issues, Issue198) {
     // Preload item images in the main thread first.
     game->runGameRoutine([&] {
         forEachInventoryItem([](const ItemGen &item, int /*x*/, int /*y*/) {
-            // Calling GetWidth forces the texture to be created.
-            assets->getImage_ColorKey(pItemTable->pItems[item.uItemID].iconName)->GetWidth();
+            // Calling width() forces the texture to be created.
+            assets->getImage_ColorKey(pItemTable->pItems[item.uItemID].iconName)->width();
         });
     });
 
     // Then can safely check everything.
     forEachInventoryItem([](const ItemGen &item, int x, int y) {
         Texture *image = assets->getImage_ColorKey(pItemTable->pItems[item.uItemID].iconName);
-        int width = GetSizeInInventorySlots(image->GetWidth());
-        int height = GetSizeInInventorySlots(image->GetHeight());
+        int width = GetSizeInInventorySlots(image->width());
+        int height = GetSizeInInventorySlots(image->height());
 
         EXPECT_LE(x + width, Player::INVENTORY_SLOTS_WIDTH);
         EXPECT_LE(y + height, Player::INVENTORY_SLOTS_HEIGHT);

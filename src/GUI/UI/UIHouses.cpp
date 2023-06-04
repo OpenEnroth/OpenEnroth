@@ -1548,7 +1548,7 @@ void GUIWindow_House::houseDialogManager() {
                         continue;
                     }
                     pTitleText = HouseNPCData[v8 + 1 - (dword_591080 != 0)]->pName;
-                    v9 = pNPCPortraits_y[uNumDialogueNPCPortraits - 1][v8] + pDialogueNPCPortraits[v8]->GetHeight() + 2;
+                    v9 = pNPCPortraits_y[uNumDialogueNPCPortraits - 1][v8] + pDialogueNPCPortraits[v8]->height() + 2;
                 }
                 pWindow.DrawTitleText(pFontCreate, SIDE_TEXT_BOX_POS_X, v9, colorTable.EasternBlue, pTitleText, 3);
             }

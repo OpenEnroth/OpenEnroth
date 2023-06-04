@@ -553,8 +553,8 @@ void Player::SetCondition(Condition uConditionIdx, int blockable) {
 
 bool Player::canFitItem(unsigned int uSlot, ITEM_TYPE uItemID) const {
     auto img = assets->getImage_ColorKey(pItemTable->pItems[uItemID].iconName);
-    unsigned int slotWidth = GetSizeInInventorySlots(img->GetWidth());
-    unsigned int slotHeight = GetSizeInInventorySlots(img->GetHeight());
+    unsigned int slotWidth = GetSizeInInventorySlots(img->width());
+    unsigned int slotHeight = GetSizeInInventorySlots(img->height());
 
     Assert(slotHeight > 0 && slotWidth > 0,
            "Items should have nonzero dimensions");
@@ -698,8 +698,8 @@ void Player::PutItemArInventoryIndex(
     int index) {  // originally accepted ItemGen *but needed only its uItemID
 
     auto img = assets->getImage_ColorKey(pItemTable->pItems[uItemID].iconName);
-    unsigned int slot_width = GetSizeInInventorySlots(img->GetWidth());
-    unsigned int slot_height = GetSizeInInventorySlots(img->GetHeight());
+    unsigned int slot_width = GetSizeInInventorySlots(img->width());
+    unsigned int slot_height = GetSizeInInventorySlots(img->height());
 
     if (slot_width > 0) {
         int *pInvPos = &pInventoryMatrix[index];
@@ -720,8 +720,8 @@ void Player::RemoveItemAtInventoryIndex(unsigned int index) {
     ItemGen *item_in_slot = this->GetItemAtInventoryIndex(index);
 
     auto img = assets->getImage_ColorKey(item_in_slot->GetIconName());
-    unsigned int slot_width = GetSizeInInventorySlots(img->GetWidth());
-    unsigned int slot_height = GetSizeInInventorySlots(img->GetHeight());
+    unsigned int slot_width = GetSizeInInventorySlots(img->width());
+    unsigned int slot_height = GetSizeInInventorySlots(img->height());
 
     item_in_slot->Reset();  // must get img details before reset
 
@@ -7539,7 +7539,7 @@ bool Player::SetBeacon(size_t index, size_t power) {
     LloydBeacon beacon;
 
     beacon.image = render->TakeScreenshot(92, 68);
-    beacon.image = render->CreateTexture_Blank(beacon.image->GetWidth(), beacon.image->GetHeight(), beacon.image->GetPixels());
+    beacon.image = render->CreateTexture_Blank(beacon.image->width(), beacon.image->height(), beacon.image->GetPixels());
     beacon.uBeaconTime = GameTime(pParty->GetPlayingTime() + GameTime::FromSeconds(power));
     beacon.PartyPos_X = pParty->vPosition.x;
     beacon.PartyPos_Y = pParty->vPosition.y;

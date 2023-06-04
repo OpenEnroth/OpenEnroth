@@ -197,8 +197,8 @@ void GUIWindow_MagicGuild::buyBooksDialogue() {
                     testpos = 32 + 70 * testx;
                 }
 
-                if (pt.x >= testpos && pt.x <= testpos + shop_ui_items_in_store[testx]->GetWidth()) {
-                    if ((pt.y >= 90 && pt.y <= (90 + shop_ui_items_in_store[testx]->GetHeight())) || (pt.y >= 250 && pt.y <= (250 + shop_ui_items_in_store[testx]->GetHeight()))) {
+                if (pt.x >= testpos && pt.x <= testpos + shop_ui_items_in_store[testx]->width()) {
+                    if ((pt.y >= 90 && pt.y <= (90 + shop_ui_items_in_store[testx]->height())) || (pt.y >= 250 && pt.y <= (250 + shop_ui_items_in_store[testx]->height()))) {
                         MERCHANT_PHRASE phase = pParty->activeCharacter().SelectPhrasesTransaction(item, BuildingType_MagicShop, std::to_underlying(houseId()), 2);
                         std::string str = BuildDialogueString(pMerchantsBuyPhrases[phase], pParty->activeCharacterIndex() - 1, item, std::to_underlying(houseId()), 2);
                         int textHeight = pFontArrus->CalcTextHeight(str, working_window.uFrameWidth, 0);

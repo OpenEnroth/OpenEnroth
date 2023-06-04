@@ -752,7 +752,7 @@ void GUIFont::DrawCreditsEntry(GUIFont *pSecondFont, int uFrameX, int uFrameY, u
     std::getline(stream, work_string);
 
     Color *pPixels = const_cast<Color *>(image->GetPixels()); // TODO(captainurist): #images const_cast
-    Color *curr_pixel_pos = &pPixels[image->GetWidth() * uFrameY];
+    Color *curr_pixel_pos = &pPixels[image->width() * uFrameY];
     if (!work_string.empty()) {
         int half_frameX = uFrameX >> 1;
         while (!stream.eof()) {
@@ -771,8 +771,8 @@ void GUIFont::DrawCreditsEntry(GUIFont *pSecondFont, int uFrameX, int uFrameY, u
                 line_w = 0;
             }
             currentFont->DrawTextLineToBuff(currentColor, &curr_pixel_pos[line_w + half_frameX],
-                work_string, image->GetWidth());
-            curr_pixel_pos += image->GetWidth() * (currentFont->GetHeight() - 3);
+                work_string, image->width());
+            curr_pixel_pos += image->width() * (currentFont->GetHeight() - 3);
             std::getline(stream, work_string);
             if (work_string.empty()) {
                 break;

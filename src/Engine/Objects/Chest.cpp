@@ -240,8 +240,8 @@ bool Chest::CanPlaceItemAt(int test_cell_position, ITEM_TYPE item_id, int uChest
     int chest_cell_width = pChestWidthsByType[vChests[uChestID].uChestBitmapID];
 
     auto img = assets->getImage_ColorKey(pItemTable->pItems[item_id].iconName);
-    unsigned int slot_width = GetSizeInInventorySlots(img->GetWidth());
-    unsigned int slot_height = GetSizeInInventorySlots(img->GetHeight());
+    unsigned int slot_width = GetSizeInInventorySlots(img->width());
+    unsigned int slot_height = GetSizeInInventorySlots(img->height());
 
     Assert(slot_height > 0 && slot_width > 0, "Items should have nonzero dimensions");
     if ((slot_width + test_cell_position % chest_cell_width <= chest_cell_width) &&
@@ -313,8 +313,8 @@ int Chest::PutItemInChest(int position, ItemGen *put_item, int uChestID) {
     }
 
     GraphicsImage *texture = assets->getImage_ColorKey(put_item->GetIconName());
-    unsigned int slot_width = GetSizeInInventorySlots(texture->GetWidth());
-    unsigned int slot_height = GetSizeInInventorySlots(texture->GetHeight());
+    unsigned int slot_width = GetSizeInInventorySlots(texture->width());
+    unsigned int slot_height = GetSizeInInventorySlots(texture->height());
 
     Assert(slot_height > 0 && slot_width > 0, "Items should have nonzero dimensions");
 
@@ -342,10 +342,10 @@ void Chest::PlaceItemAt(unsigned int put_cell_pos, unsigned int item_at_cell, in
 
     auto img = assets->getImage_Alpha(pItemTable->pItems[uItemID].iconName);
 
-    int v9 = img->GetWidth();
+    int v9 = img->width();
     if (v9 < 14) v9 = 14;
     unsigned int texture_cell_width = ((v9 - 14) >> 5) + 1;
-    int v10 = img->GetHeight();
+    int v10 = img->height();
     if (v10 < 14) v10 = 14;
     int textute_cell_height = ((v10 - 14) >> 5) + 1;
 
@@ -432,8 +432,8 @@ void RemoveItemAtChestIndex(int index) {
     ItemGen *item_in_slot = &chest->igChestItems[chestindex - 1];
 
     auto img = assets->getImage_ColorKey(item_in_slot->GetIconName());
-    unsigned int slot_width = GetSizeInInventorySlots(img->GetWidth());
-    unsigned int slot_height = GetSizeInInventorySlots(img->GetHeight());
+    unsigned int slot_width = GetSizeInInventorySlots(img->width());
+    unsigned int slot_height = GetSizeInInventorySlots(img->height());
 
     int chestwidth = pChestWidthsByType[chest->uChestBitmapID];
 

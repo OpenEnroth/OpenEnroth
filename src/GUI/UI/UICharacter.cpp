@@ -579,27 +579,27 @@ GUIWindow_CharacterRecord::GUIWindow_CharacterRecord(
     current_screen_type = screen;
 
     pCharacterScreen_StatsBtn = CreateButton({pViewport->uViewportTL_X + 12, pViewport->uViewportTL_Y + 308},
-        {paperdoll_dbrds[9]->GetWidth(), paperdoll_dbrds[9]->GetHeight()}, 1, 0,
-        UIMSG_ClickStatsBtn, 0, InputAction::Stats, localization->GetString(LSTR_STATS),
-        {{paperdoll_dbrds[10], paperdoll_dbrds[9]}});
+                                             paperdoll_dbrds[9]->size(), 1, 0,
+                                             UIMSG_ClickStatsBtn, 0, InputAction::Stats, localization->GetString(LSTR_STATS),
+                                             {{paperdoll_dbrds[10], paperdoll_dbrds[9]}});
     pCharacterScreen_SkillsBtn = CreateButton({pViewport->uViewportTL_X + 102, pViewport->uViewportTL_Y + 308},
-        {paperdoll_dbrds[7]->GetWidth(), paperdoll_dbrds[7]->GetHeight()}, 1, 0,
-        UIMSG_ClickSkillsBtn, 0, InputAction::Skills, localization->GetString(LSTR_SKILLS),
-        {{paperdoll_dbrds[8], paperdoll_dbrds[7]}});
+                                              paperdoll_dbrds[7]->size(), 1, 0,
+                                              UIMSG_ClickSkillsBtn, 0, InputAction::Skills, localization->GetString(LSTR_SKILLS),
+                                              {{paperdoll_dbrds[8], paperdoll_dbrds[7]}});
     pCharacterScreen_InventoryBtn = CreateButton({pViewport->uViewportTL_X + 192, pViewport->uViewportTL_Y + 308},
-        {paperdoll_dbrds[5]->GetWidth(), paperdoll_dbrds[5]->GetHeight()}, 1, 0,
-        UIMSG_ClickInventoryBtn, 0, InputAction::Inventory,
-        localization->GetString(LSTR_INVENTORY),
-        {{paperdoll_dbrds[6], paperdoll_dbrds[5]}});
+                                                 paperdoll_dbrds[5]->size(), 1, 0,
+                                                 UIMSG_ClickInventoryBtn, 0, InputAction::Inventory,
+                                                 localization->GetString(LSTR_INVENTORY),
+                                                 {{paperdoll_dbrds[6], paperdoll_dbrds[5]}});
     pCharacterScreen_AwardsBtn = CreateButton({pViewport->uViewportTL_X + 282, pViewport->uViewportTL_Y + 308},
-        {paperdoll_dbrds[3]->GetWidth(), paperdoll_dbrds[3]->GetHeight()}, 1, 0,
-        UIMSG_ClickAwardsBtn, 0, InputAction::Awards, localization->GetString(LSTR_AWARDS),
-        {{paperdoll_dbrds[4], paperdoll_dbrds[3]}});
+                                              paperdoll_dbrds[3]->size(), 1, 0,
+                                              UIMSG_ClickAwardsBtn, 0, InputAction::Awards, localization->GetString(LSTR_AWARDS),
+                                              {{paperdoll_dbrds[4], paperdoll_dbrds[3]}});
     pCharacterScreen_ExitBtn = CreateButton({pViewport->uViewportTL_X + 371, pViewport->uViewportTL_Y + 308},
-        {paperdoll_dbrds[1]->GetWidth(), paperdoll_dbrds[1]->GetHeight()}, 1, 0,
-        UIMSG_ClickExitCharacterWindowBtn, 0, InputAction::Invalid,
-        localization->GetString(LSTR_DIALOGUE_EXIT),
-        {{paperdoll_dbrds[2], paperdoll_dbrds[1]}});
+                                            paperdoll_dbrds[1]->size(), 1, 0,
+                                            UIMSG_ClickExitCharacterWindowBtn, 0, InputAction::Invalid,
+                                            localization->GetString(LSTR_DIALOGUE_EXIT),
+                                            {{paperdoll_dbrds[2], paperdoll_dbrds[1]}});
     CreateButton({0, 0}, {476, 345}, 1, 122, UIMSG_InventoryLeftClick, 0);
     pCharacterScreen_DetalizBtn = CreateButton({600, 300}, {30, 30}, 1, 0,
         UIMSG_ChangeDetaliz, 0, InputAction::Invalid, localization->GetString(LSTR_DETAIL_TOGGLE));
@@ -656,10 +656,10 @@ void GUIWindow_CharacterRecord::createAwardsScrollBar() {
                 pButton->uX = 0;
             }
         }
-        pBtn_Up = pGUIWindow_CurrentMenu->CreateButton({438, 46}, {ui_ar_up_up->GetWidth(), ui_ar_up_up->GetHeight()}, 1, 0,
-            UIMSG_ClickAwardsUpBtn, 0, InputAction::Invalid, "", {{ui_ar_up_up, ui_ar_up_dn}});
-        pBtn_Down = pGUIWindow_CurrentMenu->CreateButton({438, 292}, {ui_ar_dn_up->GetWidth(), ui_ar_dn_up->GetHeight()}, 1, 0,
-            UIMSG_ClickAwardsDownBtn, 0, InputAction::Invalid, "", {{ui_ar_dn_up, ui_ar_dn_dn}});
+        pBtn_Up = pGUIWindow_CurrentMenu->CreateButton({438, 46}, ui_ar_up_up->size(), 1, 0,
+                                                       UIMSG_ClickAwardsUpBtn, 0, InputAction::Invalid, "", {{ui_ar_up_up, ui_ar_up_dn}});
+        pBtn_Down = pGUIWindow_CurrentMenu->CreateButton({438, 292}, ui_ar_dn_up->size(), 1, 0,
+                                                         UIMSG_ClickAwardsDownBtn, 0, InputAction::Invalid, "", {{ui_ar_dn_up, ui_ar_dn_dn}});
         pBtn_Scroll = pGUIWindow_CurrentMenu->CreateButton({440, 62}, {16, 232}, 1, 0, UIMSG_ClickAwardScrollBar, 0, InputAction::Invalid, "");
     }
 }
@@ -753,8 +753,8 @@ void GUIWindow_CharacterRecord::ToggleRingsOverlay() {
     pCharacterScreen_DetalizBtn->Release();
     pCharacterScreen_DollBtn->Release();
     if (bRingsShownInCharScreen) {
-        h = ui_character_inventory_paperdoll_rings_close->GetHeight();
-        w = ui_character_inventory_paperdoll_rings_close->GetWidth();
+        h = ui_character_inventory_paperdoll_rings_close->height();
+        w = ui_character_inventory_paperdoll_rings_close->width();
         y = 445;
         x = 471;
     } else {
@@ -1326,8 +1326,8 @@ void CharacterUI_InventoryTab_Draw(Player *player, bool Cover_Strip) {
 
         GraphicsImage *pTexture = assets->getImage_Alpha(player->pInventoryItemList[player->pInventoryMatrix[i] - 1].GetIconName());
 
-        int width = pTexture->GetWidth();
-        int height = pTexture->GetHeight();
+        int width = pTexture->width();
+        int height = pTexture->height();
         if (width < 14) width = 14;
         if (height < 14) height = 14;
 

@@ -2097,8 +2097,8 @@ static int lua_nk_image_dimensions(lua_State *L) {
 
     lua_check_ret(lua_nk_parse_image_asset(w, L, 2, &asset));
 
-    lua_pushnumber(L, asset->GetHeight());
-    lua_pushnumber(L, asset->GetWidth());
+    lua_pushnumber(L, asset->height());
+    lua_pushnumber(L, asset->width());
 
     return 2;
 }

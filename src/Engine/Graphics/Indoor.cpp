@@ -667,13 +667,13 @@ void BLV_UpdateDoors() {
             if (face->uAttributes & FACE_TexAlignLeft) {
                 extras->sTextureDeltaU -= minU;
             } else if (face->uAttributes & FACE_TexAlignRight && face->resource) {
-                extras->sTextureDeltaU -= maxU + ((Texture *)face->resource)->GetWidth();
+                extras->sTextureDeltaU -= maxU + ((Texture *) face->resource)->width();
             }
 
             if (face->uAttributes & FACE_TexAlignDown) {
                 extras->sTextureDeltaV -= minV;
             } else if (face->uAttributes & FACE_TexAlignBottom && face->resource) {
-                extras->sTextureDeltaV -= maxU + ((Texture *)face->resource)->GetHeight();
+                extras->sTextureDeltaV -= maxU + ((Texture *) face->resource)->height();
             }
 
             if (face->uAttributes & FACE_TexMoveByDoor) {
@@ -1158,7 +1158,7 @@ void IndoorLocation::PrepareDecorationsRenderList_BLV(unsigned int uDecorationID
                     pBillboardRenderList[uNumBillboardsToDraw - 1].hwsprite =
                         v11->hw_sprites[v9];
 
-                    if (v11->hw_sprites[v9]->texture->GetHeight() == 0 || v11->hw_sprites[v9]->texture->GetWidth() == 0)
+                    if (v11->hw_sprites[v9]->texture->height() == 0 || v11->hw_sprites[v9]->texture->width() == 0)
                         __debugbreak();
 
                     pBillboardRenderList[uNumBillboardsToDraw - 1].uPaletteIndex = v11->GetPaletteIndex();

@@ -500,7 +500,7 @@ void GUIWindow_WeaponShop::shopWaresDialogue(bool isSpecial) {
     for (int i = 0; i < 6; ++i) {
         bool itemPresent = (isSpecial ? pParty->specialItemsInShops[houseId()][i].uItemID : pParty->standartItemsInShops[houseId()][i].uItemID) != ITEM_NULL;
         if (itemPresent) {
-            render->DrawTextureNew(((60 - (shop_ui_items_in_store[i]->GetWidth() / 2)) + item_X) / 640.0f, (weaponYPos[i] + 30) / 480.0f, shop_ui_items_in_store[i]);
+            render->DrawTextureNew(((60 - (shop_ui_items_in_store[i]->width() / 2)) + item_X) / 640.0f, (weaponYPos[i] + 30) / 480.0f, shop_ui_items_in_store[i]);
         }
 
         item_X += 70;
@@ -531,10 +531,10 @@ void GUIWindow_WeaponShop::shopWaresDialogue(bool isSpecial) {
                 }
 
                 if (item->uItemID != ITEM_NULL) {  // item picking
-                    int testpos = ((60 - (shop_ui_items_in_store[testx]->GetWidth() / 2)) + testx * 70);
+                    int testpos = ((60 - (shop_ui_items_in_store[testx]->width() / 2)) + testx * 70);
 
-                    if (pt.x >= testpos && pt.x < (testpos + shop_ui_items_in_store[testx]->GetWidth())) {
-                        if (pt.y >= weaponYPos[testx] + 30 && pt.y < (weaponYPos[testx] + 30 + shop_ui_items_in_store[testx]->GetHeight())) {
+                    if (pt.x >= testpos && pt.x < (testpos + shop_ui_items_in_store[testx]->width())) {
+                        if (pt.y >= weaponYPos[testx] + 30 && pt.y < (weaponYPos[testx] + 30 + shop_ui_items_in_store[testx]->height())) {
                             std::string str;
                             if (!isStealingModeActive()) {
                                 MERCHANT_PHRASE phrase = pParty->activeCharacter().SelectPhrasesTransaction(item, BuildingType_WeaponShop, wData.val, 2);
@@ -568,10 +568,10 @@ void GUIWindow_ArmorShop::shopWaresDialogue(bool isSpecial) {
 
         if (itemPresent) {
             if (i >= 4) {
-                render->DrawTextureNew(((90 - (shop_ui_items_in_store[i]->GetWidth() / 2)) + item_x - 420) / 640.0f, 126 / 480.0f, shop_ui_items_in_store[i]);
+                render->DrawTextureNew(((90 - (shop_ui_items_in_store[i]->width() / 2)) + item_x - 420) / 640.0f, 126 / 480.0f, shop_ui_items_in_store[i]);
             } else {
-                int x = ((86 - (shop_ui_items_in_store[i]->GetWidth() / 2)) + item_x);
-                int y = (98 - shop_ui_items_in_store[i]->GetHeight());
+                int x = ((86 - (shop_ui_items_in_store[i]->width() / 2)) + item_x);
+                int y = (98 - shop_ui_items_in_store[i]->height());
                 render->DrawTextureNew(x / 640.0f, y / 480.0f, shop_ui_items_in_store[i]);
             }
         }
@@ -610,15 +610,15 @@ void GUIWindow_ArmorShop::shopWaresDialogue(bool isSpecial) {
                 if (item->uItemID != ITEM_NULL) {
                     int testpos;
                     if (testx >= 4) {
-                        testpos = ((90 - (shop_ui_items_in_store[testx]->GetWidth() / 2)) + (testx * 105) - 420);
+                        testpos = ((90 - (shop_ui_items_in_store[testx]->width() / 2)) + (testx * 105) - 420);
                     } else {
-                        testpos = ((86 - (shop_ui_items_in_store[testx]->GetWidth() / 2)) + testx * 105);
+                        testpos = ((86 - (shop_ui_items_in_store[testx]->width() / 2)) + testx * 105);
                     }
 
                     if (pt.x >= testpos &&
-                        pt.x <= testpos + shop_ui_items_in_store[testx]->GetWidth()) {
-                        if ((pt.y >= 126 && pt.y < (126 + shop_ui_items_in_store[testx]->GetHeight())) ||
-                            (pt.y <= 98 && pt.y >= (98 - shop_ui_items_in_store[testx]->GetHeight()))) {
+                        pt.x <= testpos + shop_ui_items_in_store[testx]->width()) {
+                        if ((pt.y >= 126 && pt.y < (126 + shop_ui_items_in_store[testx]->height())) ||
+                            (pt.y <= 98 && pt.y >= (98 - shop_ui_items_in_store[testx]->height()))) {
                             // y is 126 to 126 + height low or 98-height to 98
 
                             std::string str;
@@ -654,15 +654,15 @@ void GUIWindow_MagicAlchemyShop::shopWaresDialogue(bool isSpecial) {
 
         if (itemPresent) {
             if (i >= 6) {
-                itemy = 308 - shop_ui_items_in_store[i]->GetHeight();
+                itemy = 308 - shop_ui_items_in_store[i]->height();
                 if (itemy < 0)
                     itemy = 0;
-                itemx = 75 * i - shop_ui_items_in_store[i]->GetWidth() / 2 + 40 - 450;
+                itemx = 75 * i - shop_ui_items_in_store[i]->width() / 2 + 40 - 450;
             } else {
-                itemy = 152 - shop_ui_items_in_store[i]->GetHeight();
+                itemy = 152 - shop_ui_items_in_store[i]->height();
                 if (itemy < 0)
                     itemy = 0;
-                itemx = 75 * i - shop_ui_items_in_store[i]->GetWidth() / 2 + 40;
+                itemx = 75 * i - shop_ui_items_in_store[i]->width() / 2 + 40;
             }
 
             if (i == 0 || i == 6) {
@@ -671,8 +671,8 @@ void GUIWindow_MagicAlchemyShop::shopWaresDialogue(bool isSpecial) {
             }
 
             if (i == 5 || i == 11) {
-                if (itemx > 457 - shop_ui_items_in_store[i]->GetWidth()) {
-                    itemx = 457 - shop_ui_items_in_store[i]->GetWidth();
+                if (itemx > 457 - shop_ui_items_in_store[i]->width()) {
+                    itemx = 457 - shop_ui_items_in_store[i]->width();
                 }
             }
 
@@ -713,15 +713,15 @@ void GUIWindow_MagicAlchemyShop::shopWaresDialogue(bool isSpecial) {
                 if (item->uItemID != ITEM_NULL) {
                     int testpos;
                     if (pt.y > 152) {
-                        testpos = 75 * testx - shop_ui_items_in_store[testx]->GetWidth() / 2 + 40 - 450;
+                        testpos = 75 * testx - shop_ui_items_in_store[testx]->width() / 2 + 40 - 450;
                     } else {
-                        testpos = 75 * testx - shop_ui_items_in_store[testx]->GetWidth() / 2 + 40;
+                        testpos = 75 * testx - shop_ui_items_in_store[testx]->width() / 2 + 40;
                     }
 
                     if (pt.x >= testpos &&
-                        pt.x <= testpos + shop_ui_items_in_store[testx]->GetWidth()) {
-                        if ((pt.y <= 308 && pt.y >= (308 - shop_ui_items_in_store[testx]->GetHeight())) ||
-                            (pt.y <= 152 && pt.y >= (152 - shop_ui_items_in_store[testx]->GetHeight()))) {
+                        pt.x <= testpos + shop_ui_items_in_store[testx]->width()) {
+                        if ((pt.y <= 308 && pt.y >= (308 - shop_ui_items_in_store[testx]->height())) ||
+                            (pt.y <= 152 && pt.y >= (152 - shop_ui_items_in_store[testx]->height()))) {
                             // y is 152-h to 152 or 308-height to 308
 
                             std::string str;
@@ -797,7 +797,7 @@ void GUIWindow_Shop::houseDialogueOptionSelected(DIALOGUE_TYPE option) {
                 for (int i = 0; i < ItemAmountForShop(buildingTable[wData.val - 1].uType); ++i) {
                     if (itemArray[i].uItemID != ITEM_NULL) {
                         // Note that we're using grng here for a reason - we want recorded mouse clicks to work.
-                        weaponYPos[i] = grng->random(300 - shop_ui_items_in_store[i]->GetHeight());
+                        weaponYPos[i] = grng->random(300 - shop_ui_items_in_store[i]->height());
                     }
                 }
             }
@@ -890,9 +890,9 @@ void UIShop_Buy_Identify_Repair() {
                         testpos = 32 + 70 * testx;
                     }
 
-                    if (pt.x >= testpos && pt.x <= testpos + shop_ui_items_in_store[testx]->GetWidth()) {
-                        if ((pt.y >= 90 && pt.y <= (90 + shop_ui_items_in_store[testx]->GetHeight())) ||
-                            (pt.y >= 250 && pt.y <= (250 + shop_ui_items_in_store[testx]->GetHeight()))) {
+                    if (pt.x >= testpos && pt.x <= testpos + shop_ui_items_in_store[testx]->width()) {
+                        if ((pt.y >= 90 && pt.y <= (90 + shop_ui_items_in_store[testx]->height())) ||
+                            (pt.y >= 250 && pt.y <= (250 + shop_ui_items_in_store[testx]->height()))) {
                             pPriceMultiplier = buildingTable[window_SpeakInHouse->wData.val - 1].fPriceMultiplier;
                             uPriceItemService = PriceCalculator::itemBuyingPriceForPlayer(&pParty->activeCharacter(),
                                                                                           bought_item->GetValue(), pPriceMultiplier);
@@ -1044,19 +1044,15 @@ void UIShop_Buy_Identify_Repair() {
                         if (bought_item->uItemID != ITEM_NULL) {
                             testpos =
                                 ((60 -
-                                  ((signed int)shop_ui_items_in_store[testx]
-                                       ->GetWidth() /
+                                  ((signed int) shop_ui_items_in_store[testx]->width() /
                                    2)) +
                                  testx * 70);
                             if (pt.x >= testpos &&
                                 pt.x <
                                     (testpos +
-                                     (signed int)shop_ui_items_in_store[testx]
-                                         ->GetWidth())) {
+                                     (signed int) shop_ui_items_in_store[testx]->width())) {
                                 if (pt.y >= weaponYPos[testx] + 30 &&
-                                    pt.y < (weaponYPos[testx] + 30 +
-                                               shop_ui_items_in_store[testx]
-                                                   ->GetHeight())) {
+                                    pt.y < (weaponYPos[testx] + 30 + shop_ui_items_in_store[testx]->height())) {
                                     break;  // good
                                 }
                             } else {
@@ -1084,29 +1080,24 @@ void UIShop_Buy_Identify_Repair() {
 
                         if (bought_item->uItemID != ITEM_NULL) {
                             if (testx >= 4) {
-                                testpos = ((90 - (shop_ui_items_in_store[testx]
-                                                      ->GetWidth() /
+                                testpos = ((90 - (shop_ui_items_in_store[testx]->width() /
                                                   2)) +
                                            (testx * 105) - 420);  // low row
                             } else {
-                                testpos = ((86 - (shop_ui_items_in_store[testx]
-                                                      ->GetWidth() /
+                                testpos = ((86 - (shop_ui_items_in_store[testx]->width() /
                                                   2)) +
                                            testx * 105);
                             }
 
                             if (pt.x >= testpos &&
                                 pt.x <=
-                                    testpos + shop_ui_items_in_store[testx]
-                                                  ->GetWidth()) {
+                                    testpos + shop_ui_items_in_store[testx]->width()) {
                                 if ((pt.y >= 126 &&
                                     pt.y <
-                                         (126 + shop_ui_items_in_store[testx]
-                                                    ->GetHeight())) ||
+                                         (126 + shop_ui_items_in_store[testx]->height())) ||
                                     (pt.y <= 98 &&
                                         pt.y >=
-                                         (98 - shop_ui_items_in_store[testx]
-                                                   ->GetHeight()))) {
+                                         (98 - shop_ui_items_in_store[testx]->height()))) {
                                     break;  // good
                                 }
                             } else {
@@ -1136,30 +1127,25 @@ void UIShop_Buy_Identify_Repair() {
                         if (bought_item->uItemID != ITEM_NULL) {
                             if (pt.y > 152) {
                                 testpos =
-                                    75 * testx -
-                                    shop_ui_items_in_store[testx]->GetWidth() /
+                                    75 * testx - shop_ui_items_in_store[testx]->width() /
                                         2 +
                                     40 - 450;
                             } else {
                                 testpos =
-                                    75 * testx -
-                                    shop_ui_items_in_store[testx]->GetWidth() /
+                                    75 * testx - shop_ui_items_in_store[testx]->width() /
                                         2 +
                                     40;
                             }
 
                             if (pt.x >= testpos &&
                                 pt.x <=
-                                    testpos + shop_ui_items_in_store[testx]
-                                                  ->GetWidth()) {
+                                    testpos + shop_ui_items_in_store[testx]->width()) {
                                 if ((pt.y <= 308 &&
                                     pt.y >=
-                                         (308 - shop_ui_items_in_store[testx]
-                                                    ->GetHeight())) ||
+                                         (308 - shop_ui_items_in_store[testx]->height())) ||
                                     (pt.y <= 152 &&
                                         pt.y >=
-                                         (152 - shop_ui_items_in_store[testx]
-                                                    ->GetHeight()))) {
+                                         (152 - shop_ui_items_in_store[testx]->height()))) {
                                     // y is 152-h to 152 or 308-height to 308
                                     break;  // good
                                 }

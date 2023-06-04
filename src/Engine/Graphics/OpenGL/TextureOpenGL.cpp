@@ -7,9 +7,9 @@ Texture *TextureOpenGL::Create(unsigned int width, unsigned int height, const Co
     TextureOpenGL *tex = new TextureOpenGL(false);
 
     tex->initialized = true;
-    tex->width = width;
-    tex->height = height;
-    unsigned int num_pixels = tex->GetWidth() * tex->GetHeight();
+    tex->_width = width;
+    tex->_height = height;
+    unsigned int num_pixels = tex->width() * tex->height();
     unsigned int num_pixels_bytes = num_pixels * sizeof(Color);
     tex->pixels = new Color[num_pixels];
     if (pixels) {
@@ -58,7 +58,7 @@ bool TextureOpenGL::LoadImageData() {
         Color *palette = nullptr;
         uint8_t *palettepixels = nullptr;
 
-        this->initialized = this->loader->Load(&width, &height, &pixels, &palette, &palettepixels);
+        this->initialized = this->loader->Load(&_width, &_height, &pixels, &palette, &palettepixels);
         if (this->initialized) {
             this->pixels = pixels;
             this->palette = palette;

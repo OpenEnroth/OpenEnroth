@@ -721,8 +721,8 @@ void RenderOpenGL::DrawImage(GraphicsImage *img, const Recti &rect, uint palette
     float g = ((uColor32 >> 8) & 0xFF) / 255.0f;
     float r = (uColor32 & 0xFF) / 255.0f;
 
-    int width = img->GetWidth();
-    int height = img->GetHeight();
+    int width = img->width();
+    int height = img->height();
 
     int x = rect.x;
     int y = rect.y;
@@ -839,8 +839,8 @@ void RenderOpenGL::ZDrawTextureAlpha(float u, float v, GraphicsImage *img, int z
 
     int uOutX = static_cast<int>(u * outputRender.w);
     int uOutY = static_cast<int>(v * outputRender.h);
-    int imgheight = img->GetHeight();
-    int imgwidth = img->GetWidth();
+    int imgheight = img->height();
+    int imgwidth = img->width();
     const Color *pixels = img->GetPixels();
 
     if (uOutX < 0)
@@ -873,8 +873,8 @@ void RenderOpenGL::BlendTextures(int x, int y, GraphicsImage *imgin, GraphicsIma
         pixelpoint = imgin->GetPixels();
         pixelpointblend = imgblend->GetPixels();
 
-        int Width = imgin->GetWidth();
-        int Height = imgin->GetHeight();
+        int Width = imgin->width();
+        int Height = imgin->height();
         Texture *temp = render->CreateTexture_Blank(Width, Height);
         Color *temppix = const_cast<Color *>(temp->GetPixels()); // TODO(captainurist): #images const_cast
 
@@ -898,8 +898,8 @@ void RenderOpenGL::BlendTextures(int x, int y, GraphicsImage *imgin, GraphicsIma
 
                 if (*pixelpoint != Color()) {  // check orig item not got blakc pixel
                     uint32_t nudge =
-                        (xdraw % imgblend->GetWidth()) +
-                        (ydraw % imgblend->GetHeight()) * imgblend->GetWidth();
+                        (xdraw % imgblend->width()) +
+                        (ydraw % imgblend->height()) * imgblend->width();
                     Color pixcol = *(pixelpointblend + nudge);
 
                     unsigned int rcur = pixcol.r;
@@ -931,7 +931,7 @@ void RenderOpenGL::BlendTextures(int x, int y, GraphicsImage *imgin, GraphicsIma
                 pixelpoint++;
             }
 
-            pixelpoint += imgin->GetWidth() - Width;
+            pixelpoint += imgin->width() - Width;
         }
         // draw image
         render->Update_Texture(temp);
@@ -959,8 +959,8 @@ void RenderOpenGL::TexturePixelRotateDraw(float u, float v, GraphicsImage *img, 
 
         int thisslot = 10 * number + number2 - 1;
         if (cachetime[thisslot] != time) {
-            int width = img->GetWidth();
-            int height = img->GetHeight();
+            int width = img->width();
+            int height = img->height();
             if (!cachedtemp[thisslot]) {
                 cachedtemp[thisslot] = CreateTexture_Blank(width, height);
             }
@@ -1064,9 +1064,9 @@ void RenderOpenGL::DrawIndoorSky(unsigned int uNumVertices, unsigned int uFaceID
 
         // offset tex coords
         float texoffset_U = ((pMiscTimer->uTotalTimeElapsed) / 128.0f) + ((skyfinalleft * worldviewdepth) / 16.0f);
-        VertexRenderList[_507D30_idx].u = texoffset_U / (pSkyPolygon.texture->GetWidth());
+        VertexRenderList[_507D30_idx].u = texoffset_U / (pSkyPolygon.texture->width());
         float texoffset_V = ((pMiscTimer->uTotalTimeElapsed) / 128.0f) + ((skyfinalfront * worldviewdepth) / 16.0f);
-        VertexRenderList[_507D30_idx].v = texoffset_V / (pSkyPolygon.texture->GetHeight());
+        VertexRenderList[_507D30_idx].v = texoffset_V / (pSkyPolygon.texture->height());
 
         // this basically acts as texture perspective correction
         VertexRenderList[_507D30_idx]._rhw = worldviewdepth;
@@ -1448,8 +1448,8 @@ void RenderOpenGL::DrawFromSpriteSheet(Recti *pSrcRect, Pointi *pTargetPoint, in
     if (!(this->clip_x < z && this->clip_z > x && this->clip_y < w && this->clip_w > y)) return;
 
     float gltexid = static_cast<float>(texture->GetOpenGlTexture());
-    int texwidth = texture->GetWidth();
-    int texheight = texture->GetHeight();
+    int texwidth = texture->width();
+    int texheight = texture->height();
 
     float drawx = static_cast<float>(x);
     float drawy = static_cast<float>(y);
@@ -1596,7 +1596,7 @@ Texture *RenderOpenGL::CreateSprite(const std::string &name, unsigned int palett
 void RenderOpenGL::Update_Texture(Texture *texture) {
     auto t = (TextureOpenGL *)texture;
     glBindTexture(GL_TEXTURE_2D, t->GetOpenGlTexture());
-    glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, t->GetWidth(), t->GetHeight(), GL_RGBA, GL_UNSIGNED_BYTE, t->GetPixels());
+    glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, t->width(), t->height(), GL_RGBA, GL_UNSIGNED_BYTE, t->GetPixels());
     glBindTexture(GL_TEXTURE_2D, 0);
 }
 
@@ -1625,7 +1625,7 @@ bool RenderOpenGL::MoveTextureToDevice(Texture *texture) {
     t->SetOpenGlTexture(texid);
 
     glBindTexture(GL_TEXTURE_2D, texid);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, t->GetWidth(), t->GetHeight(), 0, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, t->width(), t->height(), 0, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
@@ -1733,7 +1733,7 @@ void RenderOpenGL::DrawOutdoorTerrain() {
 
         // reserve first 7 layers for water tiles in unit 0
         auto wtrtexture = this->hd_water_tile_anim[0];
-        terraintexturesizes[0] = wtrtexture->GetWidth();
+        terraintexturesizes[0] = wtrtexture->width();
 
         for (int buff = 0; buff < 7; buff++) {
             std::string container_name = fmt::format("HDWTR{:03}", buff);
@@ -1764,7 +1764,7 @@ void RenderOpenGL::DrawOutdoorTerrain() {
                 } else {
                     // else need to add it
                     auto thistexture = assets->getBitmap(tile->name);
-                    int width = thistexture->GetWidth();
+                    int width = thistexture->width();
                     // check size to see what unit it needs
                     int i;
                     for (i = 0; i < 8; i++) {
@@ -2347,9 +2347,9 @@ void RenderOpenGL::DrawOutdoorSky() {
 
             // offset tex coords
             float texoffset_U = (float(pMiscTimer->uTotalTimeElapsed) / 128.0) + ((skyfinalleft * worldviewdepth));
-            VertexRenderList[i].u = texoffset_U / ((float)pSkyPolygon.texture->GetWidth());
+            VertexRenderList[i].u = texoffset_U / ((float) pSkyPolygon.texture->width());
             float texoffset_V = (float(pMiscTimer->uTotalTimeElapsed) / 128.0) + ((skyfinalfront * worldviewdepth));
-            VertexRenderList[i].v = texoffset_V / ((float)pSkyPolygon.texture->GetHeight());
+            VertexRenderList[i].v = texoffset_V / ((float) pSkyPolygon.texture->height());
 
             VertexRenderList[i].vWorldViewPosition.x = pCamera3D->GetFarClip();
 
@@ -3061,8 +3061,8 @@ void RenderOpenGL::DrawTextureNew(float u, float v, GraphicsImage *tex, uint32_t
     int clipw = this->clip_w;
     int clipz = this->clip_z;
 
-    int width = tex->GetWidth();
-    int height = tex->GetHeight();
+    int width = tex->width();
+    int height = tex->height();
 
     int x = u * outputRender.w;
     int y = v * outputRender.h;
@@ -3189,8 +3189,8 @@ void RenderOpenGL::DrawTextureCustomHeight(float u, float v, class GraphicsImage
     int clipw = this->clip_w;
     int clipz = this->clip_z;
 
-    int width = img->GetWidth();
-    int height = img->GetHeight();
+    int width = img->width();
+    int height = img->height();
 
     int x = u * outputRender.w;
     int y = v * outputRender.h + 0.5;
@@ -3629,8 +3629,8 @@ void RenderOpenGL::DrawOutdoorBuildings() {
         auto wtrtexture = this->hd_water_tile_anim[0];
         //terraintexmap.insert(std::make_pair("wtrtyl", terraintexmap.size()));
         //numterraintexloaded[0]++;
-        outbuildtexturewidths[0] = wtrtexture->GetWidth();
-        outbuildtextureheights[0] = wtrtexture->GetHeight();
+        outbuildtexturewidths[0] = wtrtexture->width();
+        outbuildtextureheights[0] = wtrtexture->height();
 
         for (int buff = 0; buff < 7; buff++) {
             std::string container_name = fmt::format("HDWTR{:03}", buff);
@@ -3697,8 +3697,8 @@ void RenderOpenGL::DrawOutdoorBuildings() {
                             } else {
                                 // else need to add it
                                 auto thistexture = assets->getBitmap(*texname);
-                                int width = thistexture->GetWidth();
-                                int height = thistexture->GetHeight();
+                                int width = thistexture->width();
+                                int height = thistexture->height();
                                 // check size to see what unit it needs
                                 int i;
                                 for (i = 0; i < 16; i++) {
@@ -4257,8 +4257,8 @@ void RenderOpenGL::DrawIndoorFaces() {
             auto wtrtexture = this->hd_water_tile_anim[0];
             //terraintexmap.insert(std::make_pair("wtrtyl", terraintexmap.size()));
             //numterraintexloaded[0]++;
-            bsptexturewidths[0] = wtrtexture->GetWidth();
-            bsptextureheights[0] = wtrtexture->GetHeight();
+            bsptexturewidths[0] = wtrtexture->width();
+            bsptextureheights[0] = wtrtexture->height();
 
             for (int buff = 0; buff < 7; buff++) {
                 std::string container_name = fmt::format("HDWTR{:03}", buff);
@@ -4322,8 +4322,8 @@ void RenderOpenGL::DrawIndoorFaces() {
                     } else {
                         // else need to add it
                         auto thistexture = assets->getBitmap(*texname);
-                        int width = thistexture->GetWidth();
-                        int height = thistexture->GetHeight();
+                        int width = thistexture->width();
+                        int height = thistexture->height();
                         // check size to see what unit it needs
                         int i;
                         for (i = 0; i < 16; i++) {

@@ -100,7 +100,7 @@ void GUIWindow_Spellbook::OpenSpellbook() {
         CreateButton(fmt::format("SpellBook_Spell{}", i),
                      {pViewport->uViewportTL_X + pIconPos[v4][pSpellbookSpellIndices[v4][i + 1]].Xpos,
                      pViewport->uViewportTL_Y + pIconPos[v4][pSpellbookSpellIndices[v4][i + 1]].Ypos},  // dword_4E20D0
-                     {SBPageSSpellsTextureList[i + 1]->GetWidth(), SBPageSSpellsTextureList[i + 1]->GetHeight()}, 1, 79,
+                     SBPageSSpellsTextureList[i + 1]->size(), 1, 79,
                      UIMSG_SelectSpell, i);
         ++a2;
         // ++v3;
@@ -129,12 +129,12 @@ void GUIWindow_Spellbook::OpenSpellbook() {
     if (pPlayer->pActiveSkills[PLAYER_SKILL_DARK] || engine->config->debug.AllMagic.value())
         CreateButton({400, 307}, {50, 36}, 1, 0, UIMSG_OpenSpellbookPage, 8, InputAction::Invalid, localization->GetSpellSchoolName(8));
 
-    CreateButton({476, 450}, {ui_spellbook_btn_quckspell->GetWidth(), ui_spellbook_btn_quckspell->GetHeight()}, 1, 78,
-        UIMSG_ClickInstallRemoveQuickSpellBtn, 0);
+    CreateButton({476, 450}, ui_spellbook_btn_quckspell->size(), 1, 78,
+                 UIMSG_ClickInstallRemoveQuickSpellBtn, 0);
     pBtn_InstallRemoveSpell = CreateButton({476, 450}, {48, 32}, 1, 78,
         UIMSG_ClickInstallRemoveQuickSpellBtn, 0, InputAction::Invalid, "", {ui_spellbook_btn_quckspell_click});
-    CreateButton({561, 450}, {ui_spellbook_btn_close->GetWidth(), ui_spellbook_btn_close->GetHeight()}, 1, 0,
-        UIMSG_Escape, 0, InputAction::Invalid, localization->GetString(LSTR_DIALOGUE_EXIT));
+    CreateButton({561, 450}, ui_spellbook_btn_close->size(), 1, 0,
+                 UIMSG_Escape, 0, InputAction::Invalid, localization->GetString(LSTR_DIALOGUE_EXIT));
     pBtn_CloseBook = CreateButton({561, 450}, {48, 32}, 1, 0,
         UIMSG_Escape, 0, InputAction::Invalid, localization->GetString(LSTR_DIALOGUE_EXIT), {ui_spellbook_btn_close_click});
 }
