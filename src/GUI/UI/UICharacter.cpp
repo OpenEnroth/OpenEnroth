@@ -121,7 +121,7 @@ void set_default_ui_skin() {
     ui_character_bonus_text_color = colorTable.Green;
     ui_character_bonus_text_color_neg = colorTable.Red;
 
-    ui_character_skill_upgradeable_color = Color(0, 175, 255); // TODO(captainurist): colortable?
+    ui_character_skill_upgradeable_color = colorTable.BoltBlue;
     ui_character_skill_default_color = colorTable.Red;
     ui_character_skill_highlight_color = colorTable.Red;
 
