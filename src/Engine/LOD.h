@@ -4,7 +4,7 @@
 #include <string>
 #include <vector>
 
-#include "Engine/Graphics/Image.h"
+#include "Engine/Graphics/Texture_MM7.h"
 #include "Utility/Memory/Blob.h"
 
 class Sprite;

@@ -25,12 +25,12 @@
 #include "Engine/Graphics/Outdoor.h"
 #include "Engine/Graphics/Indoor.h"
 #include "Engine/Graphics/ParticleEngine.h"
+#include "Engine/Graphics/TextureFrameTable.h"
 #include "Engine/Graphics/Viewport.h"
 #include "Engine/Graphics/Vis.h"
 #include "Engine/Graphics/Weather.h"
 #include "Engine/Graphics/PaletteManager.h"
 #include "Engine/Objects/Actor.h"
-#include "Engine/Objects/ObjectList.h"
 #include "Engine/Objects/SpriteObject.h"
 #include "Engine/OurMath.h"
 #include "Engine/Party.h"
@@ -44,7 +44,6 @@
 #include "Utility/Geometry/Size.h"
 #include "Utility/Format.h"
 #include "Utility/Memory/MemSet.h"
-#include "Utility/Math/TrigLut.h"
 
 #ifndef LOWORD
     #define LOWORD(l) ((unsigned short)(((std::uintptr_t)(l)) & 0xFFFF))

@@ -30,6 +30,8 @@ set(ENGINE_GRAPHICS_SOURCES
         PortalFunctions.cpp
         RenderBase.cpp
         Sprites.cpp
+        Texture_MM7.cpp
+        TextureFrameTable.cpp
         Viewport.cpp
         Vis.cpp
         Weather.cpp)
@@ -71,6 +73,8 @@ set(ENGINE_GRAPHICS_HEADERS
         RendererType.h
         Sprites.h
         Texture.h
+        Texture_MM7.h
+        TextureFrameTable.h
         Viewport.h
         Vis.h
         Weather.h)
