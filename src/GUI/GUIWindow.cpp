@@ -622,7 +622,7 @@ void OnCancel3::Update() {
 void GUI_UpdateWindows() {
     if (GetCurrentMenuID() != MENU_CREATEPARTY) {
         extern bool UI_OnKeyDown(PlatformKey key);
-        UI_OnKeyDown(PlatformKey::PageDown); // hack to highlight dialog options under mouse cursor
+        UI_OnKeyDown(PlatformKey::KEY_PAGEDOWN); // hack to highlight dialog options under mouse cursor
     }
 
     // should never activte this - gameui window should always be open

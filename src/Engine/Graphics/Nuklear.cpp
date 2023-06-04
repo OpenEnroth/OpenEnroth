@@ -726,13 +726,13 @@ int Nuklear::KeyEvent(PlatformKey key) {
     for (auto it = hotkeys.begin(); it < hotkeys.end(); it++) {
         struct hotkey hk = *it;
         if (hk.key == key) {
-            if (hk.mod_control && !engine->keyboardInputHandler->IsKeyHeld(PlatformKey::Control))
+            if (hk.mod_control && !engine->keyboardInputHandler->IsKeyHeld(PlatformKey::KEY_CONTROL))
                 continue;
 
-            if (hk.mod_shift && !engine->keyboardInputHandler->IsKeyHeld(PlatformKey::Shift))
+            if (hk.mod_shift && !engine->keyboardInputHandler->IsKeyHeld(PlatformKey::KEY_SHIFT))
                 continue;
 
-            if (hk.mod_alt && !engine->keyboardInputHandler->IsKeyHeld(PlatformKey::Alt))
+            if (hk.mod_alt && !engine->keyboardInputHandler->IsKeyHeld(PlatformKey::KEY_ALT))
                 continue;
 
             lua_rawgeti(lua, LUA_REGISTRYINDEX, hk.callback);

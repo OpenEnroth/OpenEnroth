@@ -18,57 +18,57 @@ bool NuklearEventHandler::keyReleaseEvent(const PlatformKeyEvent *event) {
     PlatformKey key = event->key;
     PlatformModifiers mods = event->mods;
 
-    if (key == PlatformKey::Tilde && (mods & MOD_CTRL))
+    if (key == PlatformKey::KEY_TILDE && (mods & MOD_CTRL))
         nuklear->Reload();
 
     return KeyEvent(key, mods, false);
 }
 
 bool NuklearEventHandler::KeyEvent(PlatformKey key, PlatformModifiers mods, bool down) {
-    if (key == PlatformKey::Shift) {
+    if (key == PlatformKey::KEY_SHIFT) {
         nk_input_key(nuklear->ctx, NK_KEY_SHIFT, down);
-    } else if (key == PlatformKey::Delete) {
+    } else if (key == PlatformKey::KEY_DELETE) {
         nk_input_key(nuklear->ctx, NK_KEY_DEL, down);
-    } else if (key == PlatformKey::Return) {
+    } else if (key == PlatformKey::KEY_RETURN) {
         nk_input_key(nuklear->ctx, NK_KEY_ENTER, down);
-    } else if (key == PlatformKey::Tab) {
+    } else if (key == PlatformKey::KEY_TAB) {
         nk_input_key(nuklear->ctx, NK_KEY_TAB, down);
-    } else if (key == PlatformKey::Backspace) {
+    } else if (key == PlatformKey::KEY_BACKSPACE) {
         nk_input_key(nuklear->ctx, NK_KEY_BACKSPACE, down);
-    } else if (key == PlatformKey::Home) {
+    } else if (key == PlatformKey::KEY_HOME) {
         nk_input_key(nuklear->ctx, NK_KEY_TEXT_START, down);
         nk_input_key(nuklear->ctx, NK_KEY_SCROLL_START, down);
-    } else if (key == PlatformKey::End) {
+    } else if (key == PlatformKey::KEY_END) {
         nk_input_key(nuklear->ctx, NK_KEY_TEXT_END, down);
         nk_input_key(nuklear->ctx, NK_KEY_SCROLL_END, down);
-    } else if (key == PlatformKey::PageDown) {
+    } else if (key == PlatformKey::KEY_PAGEDOWN) {
         nk_input_key(nuklear->ctx, NK_KEY_SCROLL_DOWN, down);
-    } else if (key == PlatformKey::PageUp) {
+    } else if (key == PlatformKey::KEY_PAGEUP) {
         nk_input_key(nuklear->ctx, NK_KEY_SCROLL_UP, down);
-    } else if (key == PlatformKey::Z && (mods & MOD_CTRL)) {
+    } else if (key == PlatformKey::KEY_Z && (mods & MOD_CTRL)) {
         nk_input_key(nuklear->ctx, NK_KEY_TEXT_UNDO, down);
-    } else if (key == PlatformKey::R && (mods & MOD_CTRL)) {
+    } else if (key == PlatformKey::KEY_R && (mods & MOD_CTRL)) {
         nk_input_key(nuklear->ctx, NK_KEY_TEXT_REDO, down);
-    } else if (key == PlatformKey::C && (mods & MOD_CTRL)) {
+    } else if (key == PlatformKey::KEY_C && (mods & MOD_CTRL)) {
         nk_input_key(nuklear->ctx, NK_KEY_COPY, down);
-    } else if (key == PlatformKey::V && (mods & MOD_CTRL)) {
+    } else if (key == PlatformKey::KEY_V && (mods & MOD_CTRL)) {
         nk_input_key(nuklear->ctx, NK_KEY_PASTE, down);
-    } else if (key == PlatformKey::X && (mods & MOD_CTRL)) {
+    } else if (key == PlatformKey::KEY_X && (mods & MOD_CTRL)) {
         nk_input_key(nuklear->ctx, NK_KEY_CUT, down);
-    } else if (key == PlatformKey::B && (mods & MOD_CTRL)) {
+    } else if (key == PlatformKey::KEY_B && (mods & MOD_CTRL)) {
         nk_input_key(nuklear->ctx, NK_KEY_TEXT_LINE_START, down);
-    } else if (key == PlatformKey::E && (mods & MOD_CTRL)) {
+    } else if (key == PlatformKey::KEY_E && (mods & MOD_CTRL)) {
         nk_input_key(nuklear->ctx, NK_KEY_TEXT_LINE_END, down);
-    } else if (key == PlatformKey::Up) {
+    } else if (key == PlatformKey::KEY_UP) {
         nk_input_key(nuklear->ctx, NK_KEY_UP, down);
-    } else if (key == PlatformKey::Down) {
+    } else if (key == PlatformKey::KEY_DOWN) {
         nk_input_key(nuklear->ctx, NK_KEY_DOWN, down);
-    } else if (key == PlatformKey::Left) {
+    } else if (key == PlatformKey::KEY_LEFT) {
         if (mods & MOD_CTRL)
             nk_input_key(nuklear->ctx, NK_KEY_TEXT_WORD_LEFT, down);
         else
             nk_input_key(nuklear->ctx, NK_KEY_LEFT, down);
-    } else if (key == PlatformKey::Right) {
+    } else if (key == PlatformKey::KEY_RIGHT) {
         if (mods & MOD_CTRL)
             nk_input_key(nuklear->ctx, NK_KEY_TEXT_WORD_RIGHT, down);
         else

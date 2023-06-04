@@ -51,12 +51,12 @@ bool GameTraceHandler::keyReleaseEvent(const PlatformKeyEvent *event) {
 
 bool GameTraceHandler::isTriggerKey(const PlatformKeyEvent *event) const {
     // TODO(captainurist) : make configurable
-    return event->key == PlatformKey::R;
+    return event->key == PlatformKey::KEY_R;
 }
 
 bool GameTraceHandler::isTriggerKeySequence(const PlatformKeyEvent *event) const {
     // TODO(captainurist) : make configurable
     PlatformModifiers mods = MOD_CTRL | MOD_SHIFT;
 
-    return event->key == PlatformKey::R && (event->mods & mods) == mods;
+    return event->key == PlatformKey::KEY_R && (event->mods & mods) == mods;
 }

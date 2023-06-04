@@ -111,7 +111,7 @@ void EngineController::goToMainMenu() {
     // Leave to game screen if we're in the game, or to main menu if we're in menus.
     while (current_screen_type != CURRENT_SCREEN::SCREEN_GAME && GetCurrentMenuID() != MENU_MAIN) {
         maybeThrow();
-        pressAndReleaseKey(PlatformKey::Escape);
+        pressAndReleaseKey(PlatformKey::KEY_ESCAPE);
         tick(1);
     }
 
@@ -122,7 +122,7 @@ void EngineController::goToMainMenu() {
     // Go to in-game menu.
     while (current_screen_type != CURRENT_SCREEN::SCREEN_MENU) {
         maybeThrow();
-        pressAndReleaseKey(PlatformKey::Escape);
+        pressAndReleaseKey(PlatformKey::KEY_ESCAPE);
         tick(1);
     }
 
