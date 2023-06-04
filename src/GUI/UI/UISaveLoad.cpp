@@ -87,10 +87,10 @@ GUIWindow_Save::GUIWindow_Save() :
         }
     }
 
-    saveload_ui_x_d = assets->getImage_Alpha("x_d");
-    saveload_ui_ls_saved = assets->getImage_Alpha("LS_saveD");
-    ui_ar_up_dn = assets->getImage_Alpha("ar_up_dn");
-    ui_ar_dn_dn = assets->getImage_Alpha("ar_dn_dn");
+    saveload_ui_x_d = assets->getImage_ColorKey("x_d");
+    saveload_ui_ls_saved = assets->getImage_ColorKey("LS_saveD");
+    ui_ar_up_dn = assets->getImage_ColorKey("ar_up_dn");
+    ui_ar_dn_dn = assets->getImage_ColorKey("ar_dn_dn");
 
     scrollstop = assets->getImage_ColorKey("con_x");
 
@@ -209,10 +209,10 @@ GUIWindow_Load::GUIWindow_Load(bool ingame) :
         //}
     }
 
-    saveload_ui_x_d = assets->getImage_Alpha("x_d");
-    saveload_ui_ls_saved = assets->getImage_Alpha("LS_loadD");
-    ui_ar_up_dn = assets->getImage_Alpha("AR_UP_DN");
-    ui_ar_dn_dn = assets->getImage_Alpha("AR_DN_DN");
+    saveload_ui_x_d = assets->getImage_ColorKey("x_d");
+    saveload_ui_ls_saved = assets->getImage_ColorKey("LS_loadD");
+    ui_ar_up_dn = assets->getImage_ColorKey("AR_UP_DN");
+    ui_ar_dn_dn = assets->getImage_ColorKey("AR_DN_DN");
 
     scrollstop = assets->getImage_ColorKey("con_x");
 
