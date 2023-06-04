@@ -1312,6 +1312,295 @@ static void drawBuffPopupWindow() {
     }
 }
 
+/**
+ * @offset 0x4B1523
+ */
+void showSpellbookInfo(ITEM_TYPE spellItemId) {
+    // TODO(captainurist): deal away with casts.
+    SPELL_TYPE spellId = static_cast<SPELL_TYPE>(std::to_underlying(spellItemId) - 399);
+    int spellLevel = (std::to_underlying(spellItemId) - 400) % 11 + 1;
+    unsigned int spellSchool = 4 * (std::to_underlying(spellItemId) - 400) / 11;
+
+    Pointi cursorPos = EngineIocContainer::ResolveMouse()->GetCursorPos();
+    int popupVertPos = 30;
+    if (cursorPos.y <= 320) {
+        popupVertPos = cursorPos.y + 30;
+    }
+
+    GUIWindow popup;
+    popup.Init();
+    popup.uFrameY = popupVertPos;
+    popup.uFrameWidth = 328;
+    popup.uFrameHeight = 68;
+    popup.uFrameX = 90;
+    popup.uFrameZ = 417;
+    popup.uFrameW = popupVertPos + 67;
+
+    int maxLineWidth = std::max({
+        pFontSmallnum->GetLineWidth(localization->GetString(LSTR_NORMAL)),
+        pFontSmallnum->GetLineWidth(localization->GetString(LSTR_EXPERT)),
+        pFontSmallnum->GetLineWidth(localization->GetString(LSTR_MASTER)),
+        pFontSmallnum->GetLineWidth(localization->GetString(LSTR_GRAND))});
+
+    std::string str = fmt::format("{}\n\n{}\t{:03}:\t{:03}{}\t000\n{}\t{:03}:\t{:03}{}\t000\n{}\t{:03}:\t{:03}{}\t000\n{}\t{:03}:\t{:03}{}",
+                                  pSpellStats->pInfos[spellId].pDescription,
+                                  localization->GetString(LSTR_NORMAL), maxLineWidth + 3, maxLineWidth + 10, pSpellStats->pInfos[spellId].pBasicSkillDesc,
+                                  localization->GetString(LSTR_EXPERT), maxLineWidth + 3, maxLineWidth + 10, pSpellStats->pInfos[spellId].pExpertSkillDesc,
+                                  localization->GetString(LSTR_MASTER), maxLineWidth + 3, maxLineWidth + 10, pSpellStats->pInfos[spellId].pMasterSkillDesc,
+                                  localization->GetString(LSTR_GRAND), maxLineWidth + 3, maxLineWidth + 10, pSpellStats->pInfos[spellId].pGrandmasterSkillDesc);
+
+    popup.uFrameHeight += pFontSmallnum->CalcTextHeight(str, popup.uFrameWidth, 0);
+    if (popup.uFrameHeight < 150) {
+        popup.uFrameHeight = 150;
+    }
+    popup.uFrameWidth = game_viewport_width;
+    popup.DrawMessageBox(0);
+    popup.uFrameWidth -= 12;
+    popup.uFrameHeight -= 12;
+    popup.uFrameZ = popup.uFrameX + popup.uFrameWidth - 1;
+    popup.uFrameW = popup.uFrameHeight + popup.uFrameY - 1;
+    popup.DrawTitleText(pFontArrus, 0x78u, 0xCu, colorTable.PaleCanary, pSpellStats->pInfos[spellId].name, 3u);
+    popup.DrawText(pFontSmallnum, {120, 44}, Color(), str, 0, 0, Color());
+    popup.uFrameZ = popup.uFrameX + 107;
+    popup.uFrameWidth = 108;
+    popup.DrawTitleText(pFontComic, 0xCu, 0x4Bu, Color(), localization->GetSkillName(static_cast<PLAYER_SKILL_TYPE>(spellSchool / 4 + 12)), 3u);
+
+    str = fmt::format("{}\n{}", localization->GetString(LSTR_SP_COST), pSpellDatas[spellId].uNormalLevelMana);
+    popup.DrawTitleText(pFontComic, 0xCu, popup.uFrameHeight - pFontComic->GetHeight() - 16, Color(), str, 3);
+}
+
+//----- new function
+void ShowPopupShopSkills() {
+    int pX = 0;
+    int pY = 0;
+    mouse->GetClickPos(&pX, &pY);
+
+    if (pDialogueWindow) {
+        for (GUIButton *pButton : pDialogueWindow->vButtons) {
+            if (pX >= pButton->uX && pX < pButton->uZ && pY >= pButton->uY && pY < pButton->uW) {
+                if (IsSkillLearningDialogue((DIALOGUE_TYPE)pButton->msg_param)) {
+                    auto skill_id = GetLearningDialogueSkill((DIALOGUE_TYPE)pButton->msg_param);
+                    if (skillMaxMasteryPerClass[pParty->activeCharacter().classType][skill_id] != PLAYER_SKILL_MASTERY_NONE &&
+                        !pParty->activeCharacter().pActiveSkills[skill_id]) {
+                        // is this skill visible
+                        std::string pSkillDescText = CharacterUI_GetSkillDescText(pParty->activeCharacterIndex() - 1, skill_id);
+                        CharacterUI_DrawTooltip(localization->GetSkillName(skill_id), pSkillDescText);
+                    }
+                }
+            }
+        }
+    }
+}
+
+
+//----- (004B1A2D) --------------------------------------------------------
+void ShowPopupShopItem() {
+    ItemGen *item;  // ecx@13
+    int invindex;
+    int testpos;
+
+    if (in_current_building_type == BuildingType_Invalid) return;
+    if (dialog_menu_id < DIALOGUE_SHOP_BUY_STANDARD) return;
+
+    Pointi pt = EngineIocContainer::ResolveMouse()->GetCursorPos();
+    int testx;
+
+    if (in_current_building_type <= BuildingType_AlchemistShop) {
+        if (dialog_menu_id == DIALOGUE_SHOP_BUY_STANDARD ||
+            dialog_menu_id == DIALOGUE_SHOP_BUY_SPECIAL) {
+            switch (in_current_building_type) {
+                case BuildingType_WeaponShop: {
+                    testx = (pt.x - 30) / 70;
+                    if (testx >= 0 && testx < 6) {
+                        if (dialog_menu_id == DIALOGUE_SHOP_BUY_STANDARD)
+                            item = &pParty->standartItemsInShops[window_SpeakInHouse->houseId()][testx];
+                        else
+                            item = &pParty->specialItemsInShops[window_SpeakInHouse->houseId()][testx];
+
+                        if (item->uItemID != ITEM_NULL) {
+                            testpos =
+                                ((60 -
+                                  (shop_ui_items_in_store[testx]->GetWidth() /
+                                   2)) +
+                                 testx * 70);
+                            if (pt.x >= testpos &&
+                                pt.x <
+                                    (testpos + shop_ui_items_in_store[testx]
+                                                   ->GetWidth())) {
+                                if (pt.y >= weaponYPos[testx] + 30 &&
+                                    pt.y < (weaponYPos[testx] + 30 +
+                                               shop_ui_items_in_store[testx]
+                                                   ->GetHeight())) {
+                                    GameUI_DrawItemInfo(item);
+                                }
+                            } else {
+                                return;
+                            }
+                        }
+                    } else {
+                        return;
+                    }
+
+                    break;
+                }
+
+                case BuildingType_ArmorShop:
+                    testx = (pt.x - 40) / 105;
+                    if (testx >= 0 && testx < 4) {
+                        if (pt.y >= 126) {
+                            testx += 4;
+                        }
+
+                        if (dialog_menu_id == DIALOGUE_SHOP_BUY_STANDARD)
+                            item = &pParty->standartItemsInShops[window_SpeakInHouse->houseId()][testx];
+                        else
+                            item = &pParty->specialItemsInShops[window_SpeakInHouse->houseId()][testx];
+
+                        if (item->uItemID != ITEM_NULL) {
+                            if (testx >= 4) {
+                                testpos = ((90 - (shop_ui_items_in_store[testx]
+                                                      ->GetWidth() /
+                                                  2)) +
+                                           (testx * 105) - 420);  // low row
+                            } else {
+                                testpos = ((86 - (shop_ui_items_in_store[testx]
+                                                      ->GetWidth() /
+                                                  2)) +
+                                           testx * 105);
+                            }
+
+                            if (pt.x >= testpos &&
+                                pt.x <=
+                                    testpos + shop_ui_items_in_store[testx]
+                                                  ->GetWidth()) {
+                                if ((pt.y >= 126 &&
+                                    pt.y <
+                                         (126 + shop_ui_items_in_store[testx]
+                                                    ->GetHeight())) ||
+                                    (pt.y <= 98 &&
+                                        pt.y >=
+                                         (98 - shop_ui_items_in_store[testx]
+                                                   ->GetHeight()))) {
+                                    GameUI_DrawItemInfo(item);
+                                } else {
+                                    return;
+                                }
+                            }
+                        } else {
+                            return;
+                        }
+                    }
+                    break;
+
+                case BuildingType_AlchemistShop:
+                case BuildingType_MagicShop:
+                    testx = (pt.x) / 75;
+                    // testx limits check
+                    if (testx >= 0 && testx < 6) {
+                        if (pt.y >= 152) {
+                            testx += 6;
+                        }
+
+                        if (dialog_menu_id == DIALOGUE_SHOP_BUY_STANDARD)
+                            item = &pParty->standartItemsInShops[window_SpeakInHouse->houseId()][testx];
+                        else
+                            item = &pParty->specialItemsInShops[window_SpeakInHouse->houseId()][testx];
+
+                        if (item->uItemID != ITEM_NULL) {
+                            if (pt.y > 152) {
+                                testpos =
+                                    75 * testx -
+                                    shop_ui_items_in_store[testx]->GetWidth() /
+                                        2 +
+                                    40 - 450;
+                            } else {
+                                testpos =
+                                    75 * testx -
+                                    shop_ui_items_in_store[testx]->GetWidth() /
+                                        2 +
+                                    40;
+                            }
+
+                            if (pt.x >= testpos &&
+                                pt.x <=
+                                    testpos + shop_ui_items_in_store[testx]
+                                                  ->GetWidth()) {
+                                if ((pt.y <= 308 &&
+                                    pt.y >=
+                                         (308 - shop_ui_items_in_store[testx]
+                                                    ->GetHeight())) ||
+                                    (pt.y <= 152 &&
+                                        pt.y >=
+                                         (152 - shop_ui_items_in_store[testx]
+                                                    ->GetHeight()))) {
+                                    GameUI_DrawItemInfo(item);
+                                } else {
+                                    return;
+                                }
+                            }
+                        } else {
+                            return;
+                        }
+                    }
+                    break;
+
+                default:
+                    // v3 = render->pActiveZBuffer[mouse.x +
+                    // pSRZBufferLineOffsets[mouse.y]] & 0xFFFF; if (!v3)
+                    // return;
+                    // v7 = &pParty->StandartItemsInShops[(unsigned
+                    // int)window_SpeakInHouse->ptr_1C][v3 - 1]; if
+                    // (dialog_menu_id == DIALOGUE_SHOP_BUY_SPECIAL) v7 =
+                    // &pParty->SpecialItemsInShops[(unsigned
+                    // int)window_SpeakInHouse->ptr_1C][v3 - 1];
+                    // GameUI_DrawItemInfo(v7);
+                    return;
+                    break;
+            }
+        }
+
+        if (dialog_menu_id >= DIALOGUE_SHOP_SELL &&
+                dialog_menu_id <= DIALOGUE_SHOP_REPAIR ||
+            dialog_menu_id == DIALOGUE_SHOP_DISPLAY_EQUIPMENT) {
+            invindex = ((pt.x - 14) >> 5) + 14 * ((pt.y - 17) >> 5);
+            if (pt.x <= 13 || pt.x >= 462 ||
+                !pParty->activeCharacter().GetItemListAtInventoryIndex(
+                    invindex))
+                return;
+
+            GameUI_DrawItemInfo(
+                pParty->activeCharacter().GetItemAtInventoryIndex(invindex));
+            return;
+        }
+    }
+
+    if (in_current_building_type <= BuildingType_MirroredPath && dialog_menu_id == DIALOGUE_GUILD_BUY_BOOKS) {
+        int testx = (pt.x - 32) / 70;
+        if (testx >= 0 && testx < 6) {
+            if (pt.y >= 250) {
+                testx += 6;
+            }
+
+            item = &pParty->spellBooksInGuilds[window_SpeakInHouse->houseId()][testx];
+
+            if (item->uItemID != ITEM_NULL) {
+                int testpos;
+                if (pt.y >= 250) {
+                    testpos = 32 + 70 * testx - 420;
+                } else {
+                    testpos = 32 + 70 * testx;
+                }
+
+                if (pt.x >= testpos && pt.x <= testpos + shop_ui_items_in_store[testx]->GetWidth()) {
+                    if ((pt.y >= 90 && pt.y <= (90 + shop_ui_items_in_store[testx]->GetHeight())) || (pt.y >= 250 && pt.y <= (250 + shop_ui_items_in_store[testx]->GetHeight()))) {
+                        showSpellbookInfo(pParty->spellBooksInGuilds[window_SpeakInHouse->houseId()][testx].uItemID);
+                    }
+                }
+            }
+        }
+    }
+}
+
 //----- (00416D62) --------------------------------------------------------
 void UI_OnMouseRightClick(int mouse_x, int mouse_y) {
     int v5;                  // esi@62

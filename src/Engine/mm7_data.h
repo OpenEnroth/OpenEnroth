@@ -187,7 +187,6 @@ extern std::array<unsigned short, 128 * 128 * 2> pTerrainNormalIndices;
 extern std::array<unsigned int, 128 * 128 * 2> pTerrainSomeOtherData;
 extern unsigned int uPlayerCreationUI_SelectedCharacter;
 extern int currentAddressingAwardBit;
-extern std::array<int16_t, 6> weapons_Ypos;  // word_F8B158
 extern int guild_membership_approved;
 extern PLAYER_SKILL_MASTERY dword_F8B1B0_MasteryBeingTaught;
 extern int gold_transaction_amount;  // F8B1B4
