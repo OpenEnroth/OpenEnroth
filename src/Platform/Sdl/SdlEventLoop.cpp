@@ -149,7 +149,7 @@ void SdlEventLoop::dispatchKeyEvent(PlatformEventHandler *eventHandler, const SD
     e.key = translateSdlKey(event->keysym.scancode);
     e.mods = translateSdlMods(event->keysym.mod);
 
-    if (e.key != PlatformKey::None)
+    if (e.key != PlatformKey::KEY_NONE)
         dispatchEvent(eventHandler, &e);
 }
 
@@ -293,7 +293,7 @@ void SdlEventLoop::dispatchGamepadButtonEvent(PlatformEventHandler *eventHandler
     e.type = event->type == SDL_CONTROLLERBUTTONUP ? EVENT_GAMEPAD_KEY_RELEASE : EVENT_GAMEPAD_KEY_PRESS;
     e.key = translateSdlGamepadButton(static_cast<SDL_GameControllerButton>(event->button));
 
-    if (!e.gamepad || e.key == PlatformKey::None)
+    if (!e.gamepad || e.key == PlatformKey::KEY_NONE)
         return;
 
     dispatchEvent(eventHandler, &e);
@@ -306,7 +306,7 @@ void SdlEventLoop::dispatchGamepadAxisEvent(PlatformEventHandler *eventHandler, 
     e.axis = translateSdlGamepadAxis(static_cast<SDL_GameControllerAxis>(event->axis));
     e.value = std::clamp(event->value / 31767.0f, -1.0f, 1.0f);
 
-    if (!e.gamepad || e.axis == PlatformKey::None)
+    if (!e.gamepad || e.axis == PlatformKey::KEY_NONE)
         return;
 
     dispatchEvent(eventHandler, &e);

@@ -28,15 +28,15 @@
 using Io::InputAction;
 
 static char PlatformKeyToChar(PlatformKey key, PlatformModifiers mods) {
-    if (key >= PlatformKey::Digit0 && key <= PlatformKey::Digit9) {
-        return std::to_underlying(key) - std::to_underlying(PlatformKey::Digit0) + '0';
-    } else if (key >= PlatformKey::Numpad0 && key <= PlatformKey::Numpad9 && (mods & MOD_NUM)) {
-        return std::to_underlying(key) - std::to_underlying(PlatformKey::Numpad0) + '0';
-    } else if (key >= PlatformKey::A && key <= PlatformKey::Z) {
+    if (key >= PlatformKey::KEY_DIGIT_0 && key <= PlatformKey::KEY_DIGIT_9) {
+        return std::to_underlying(key) - std::to_underlying(PlatformKey::KEY_DIGIT_0) + '0';
+    } else if (key >= PlatformKey::KEY_NUMPAD_0 && key <= PlatformKey::KEY_NUMPAD_9 && (mods & MOD_NUM)) {
+        return std::to_underlying(key) - std::to_underlying(PlatformKey::KEY_NUMPAD_0) + '0';
+    } else if (key >= PlatformKey::KEY_A && key <= PlatformKey::KEY_Z) {
         if (mods & MOD_SHIFT) {
-            return std::to_underlying(key) - std::to_underlying(PlatformKey::A) + 'A';
+            return std::to_underlying(key) - std::to_underlying(PlatformKey::KEY_A) + 'A';
         } else {
-            return std::to_underlying(key) - std::to_underlying(PlatformKey::A) + 'a';
+            return std::to_underlying(key) - std::to_underlying(PlatformKey::KEY_A) + 'a';
         }
     }
 
@@ -158,7 +158,7 @@ bool GameWindowHandler::OnChar(PlatformKey key, int c) {
 
     // regular text input
     if (c != -1) {
-        textInputHandled |= keyboardInputHandler->ProcessTextInput(PlatformKey::Char, c);
+        textInputHandled |= keyboardInputHandler->ProcessTextInput(PlatformKey::KEY_CHAR, c);
     }
 
     if (!textInputHandled && !viewparams->field_4C) {
@@ -591,14 +591,14 @@ bool GameWindowHandler::gamepadAxisEvent(const PlatformGamepadAxisEvent *event) 
 
     // TODO(captainurist): this is temporary, we need separate axis enum and proper axis handling
     if (value < 0) {
-        if (key == PlatformKey::Gamepad_LeftStick_Right) {
-            key = PlatformKey::Gamepad_LeftStick_Left;
-        } else if (key == PlatformKey::Gamepad_RightStick_Right) {
-            key = PlatformKey::Gamepad_RightStick_Left;
-        } else if (key == PlatformKey::Gamepad_LeftStick_Down) {
-            key = PlatformKey::Gamepad_LeftStick_Up;
-        } else if (key == PlatformKey::Gamepad_RightStick_Down) {
-            key = PlatformKey::Gamepad_RightStick_Up;
+        if (key == PlatformKey::KEY_GAMEPAD_LEFTSTICK_RIGHT) {
+            key = PlatformKey::KEY_GAMEPAD_LEFTSTICK_LEFT;
+        } else if (key == PlatformKey::KEY_GAMEPAD_RIGHTSTICK_RIGHT) {
+            key = PlatformKey::KEY_GAMEPAD_RIGHTSTICK_LEFT;
+        } else if (key == PlatformKey::KEY_GAMEPAD_LEFTSTICK_DOWN) {
+            key = PlatformKey::KEY_GAMEPAD_LEFTSTICK_UP;
+        } else if (key == PlatformKey::KEY_GAMEPAD_RIGHTSTICK_DOWN) {
+            key = PlatformKey::KEY_GAMEPAD_RIGHTSTICK_UP;
         }
 
         value = -value;

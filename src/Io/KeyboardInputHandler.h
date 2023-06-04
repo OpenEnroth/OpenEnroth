@@ -30,7 +30,7 @@ namespace Io {
             this->controller = controller;
             this->actionMapping = actionMapping;
 
-            lastKeyPressed = PlatformKey::None;
+            lastKeyPressed = PlatformKey::KEY_NONE;
             inputType = TextInputType::None;
             window = nullptr;
             ResetKeys();

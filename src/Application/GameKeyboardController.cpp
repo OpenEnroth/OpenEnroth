@@ -5,7 +5,7 @@
 GameKeyboardController::GameKeyboardController() : PlatformEventFilter({EVENT_KEY_PRESS, EVENT_KEY_RELEASE}) {}
 
 bool GameKeyboardController::ConsumeKeyPress(PlatformKey key) {
-    if (key == PlatformKey::None)
+    if (key == PlatformKey::KEY_NONE)
         return false;
 
     if (!isKeyDown_[key])

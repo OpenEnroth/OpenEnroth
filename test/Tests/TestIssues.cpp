@@ -704,7 +704,7 @@ GAME_TEST(Issues, Issue626) {
     game->tick(10);
     game->pressGuiButton("SaveMenu_Slot0");
     game->tick(2);
-    game->pressAndReleaseKey(PlatformKey::Digit0);
+    game->pressAndReleaseKey(PlatformKey::KEY_DIGIT_0);
     game->tick(2);
     game->pressGuiButton("SaveMenu_Save");
     game->tick(10);
@@ -715,7 +715,7 @@ GAME_TEST(Issues, Issue626) {
     game->tick(10);
     game->pressGuiButton("SaveMenu_Slot1");
     game->tick(2);
-    game->pressAndReleaseKey(PlatformKey::Digit1);
+    game->pressAndReleaseKey(PlatformKey::KEY_DIGIT_1);
     game->tick(2);
     game->pressGuiButton("SaveMenu_Save");
     game->tick(10);
@@ -876,7 +876,7 @@ GAME_TEST(Issues, Issue689) {
     game->tick(10);
     game->pressGuiButton("SaveMenu_Slot0");
     game->tick(2);
-    game->pressAndReleaseKey(PlatformKey::Digit0);
+    game->pressAndReleaseKey(PlatformKey::KEY_DIGIT_0);
     game->tick(2);
     game->pressGuiButton("SaveMenu_Save");
     game->tick(10);

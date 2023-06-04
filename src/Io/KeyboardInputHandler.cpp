@@ -420,7 +420,7 @@ bool KeyboardInputHandler::ProcessTextInput(PlatformKey key, int c) {
             if (inputType == TextInputType::Text) {
                 pPressedKeysBuffer.push_back(' ');
             }
-        } else if (key == PlatformKey::Char && pPressedKeysBuffer.size() < this->max_input_string_len) {
+        } else if (key == PlatformKey::KEY_CHAR && pPressedKeysBuffer.size() < this->max_input_string_len) {
             if (inputType == TextInputType::Text) {
                 pPressedKeysBuffer.push_back(c);
             } else if (inputType == TextInputType::Number && isdigit(c)) {
@@ -428,7 +428,7 @@ bool KeyboardInputHandler::ProcessTextInput(PlatformKey key, int c) {
             }
         }
     } else {
-        if (key != PlatformKey::Char) {
+        if (key != PlatformKey::KEY_CHAR) {
             // we're setting key binding in options
             // pPressedKeysBuffer[uNumKeysPressed++] = c;
             // pPressedKeysBuffer[uNumKeysPressed] = 0;
@@ -457,35 +457,35 @@ void KeyboardInputHandler::ResetKeys() {
 }
 
 bool KeyboardInputHandler::IsRunKeyToggled() const {
-    return controller->IsKeyDown(PlatformKey::Shift);
+    return controller->IsKeyDown(PlatformKey::KEY_SHIFT);
 }
 
 bool KeyboardInputHandler::IsTurnStrafingToggled() const {
-    return controller->IsKeyDown(PlatformKey::Control);
+    return controller->IsKeyDown(PlatformKey::KEY_CONTROL);
 }
 
 bool KeyboardInputHandler::IsKeyboardPickingOutlineToggled() const {
-    return controller->IsKeyDown(PlatformKey::Control);
+    return controller->IsKeyDown(PlatformKey::KEY_CONTROL);
 }
 
 bool KeyboardInputHandler::IsStealingToggled() const {
-    return controller->IsKeyDown(PlatformKey::Control);
+    return controller->IsKeyDown(PlatformKey::KEY_CONTROL);
 }
 
 bool KeyboardInputHandler::IsTakeAllToggled() const {
-    return controller->IsKeyDown(PlatformKey::Control);
+    return controller->IsKeyDown(PlatformKey::KEY_CONTROL);
 }
 
 bool KeyboardInputHandler::IsAdventurerBackcycleToggled() const {
-    return controller->IsKeyDown(PlatformKey::Shift);
+    return controller->IsKeyDown(PlatformKey::KEY_SHIFT);
 }
 
 bool KeyboardInputHandler::IsSpellBackcycleToggled() const {
-    return controller->IsKeyDown(PlatformKey::Shift);
+    return controller->IsKeyDown(PlatformKey::KEY_SHIFT);
 }
 
 bool KeyboardInputHandler::IsCastOnClickToggled() const {
-    return controller->IsKeyDown(PlatformKey::Shift);
+    return controller->IsKeyDown(PlatformKey::KEY_SHIFT);
 }
 
 bool KeyboardInputHandler::IsKeyHeld(PlatformKey key) const {

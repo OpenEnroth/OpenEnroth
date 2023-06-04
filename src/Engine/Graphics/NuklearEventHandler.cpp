@@ -25,7 +25,7 @@ bool NuklearEventHandler::keyReleaseEvent(const PlatformKeyEvent *event) {
 }
 
 bool NuklearEventHandler::KeyEvent(PlatformKey key, PlatformModifiers mods, bool down) {
-    if (key == PlatformKey::Shift) {
+    if (key == PlatformKey::KEY_SHIFT) {
         nk_input_key(nuklear->ctx, NK_KEY_SHIFT, down);
     } else if (key == PlatformKey::Delete) {
         nk_input_key(nuklear->ctx, NK_KEY_DEL, down);
@@ -45,19 +45,19 @@ bool NuklearEventHandler::KeyEvent(PlatformKey key, PlatformModifiers mods, bool
         nk_input_key(nuklear->ctx, NK_KEY_SCROLL_DOWN, down);
     } else if (key == PlatformKey::PageUp) {
         nk_input_key(nuklear->ctx, NK_KEY_SCROLL_UP, down);
-    } else if (key == PlatformKey::Z && (mods & MOD_CTRL)) {
+    } else if (key == PlatformKey::KEY_Z && (mods & MOD_CTRL)) {
         nk_input_key(nuklear->ctx, NK_KEY_TEXT_UNDO, down);
-    } else if (key == PlatformKey::R && (mods & MOD_CTRL)) {
+    } else if (key == PlatformKey::KEY_R && (mods & MOD_CTRL)) {
         nk_input_key(nuklear->ctx, NK_KEY_TEXT_REDO, down);
-    } else if (key == PlatformKey::C && (mods & MOD_CTRL)) {
+    } else if (key == PlatformKey::KEY_C && (mods & MOD_CTRL)) {
         nk_input_key(nuklear->ctx, NK_KEY_COPY, down);
-    } else if (key == PlatformKey::V && (mods & MOD_CTRL)) {
+    } else if (key == PlatformKey::KEY_V && (mods & MOD_CTRL)) {
         nk_input_key(nuklear->ctx, NK_KEY_PASTE, down);
-    } else if (key == PlatformKey::X && (mods & MOD_CTRL)) {
+    } else if (key == PlatformKey::KEY_X && (mods & MOD_CTRL)) {
         nk_input_key(nuklear->ctx, NK_KEY_CUT, down);
-    } else if (key == PlatformKey::B && (mods & MOD_CTRL)) {
+    } else if (key == PlatformKey::KEY_B && (mods & MOD_CTRL)) {
         nk_input_key(nuklear->ctx, NK_KEY_TEXT_LINE_START, down);
-    } else if (key == PlatformKey::E && (mods & MOD_CTRL)) {
+    } else if (key == PlatformKey::KEY_E && (mods & MOD_CTRL)) {
         nk_input_key(nuklear->ctx, NK_KEY_TEXT_LINE_END, down);
     } else if (key == PlatformKey::Up) {
         nk_input_key(nuklear->ctx, NK_KEY_UP, down);
