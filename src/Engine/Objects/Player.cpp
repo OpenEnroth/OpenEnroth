@@ -832,8 +832,8 @@ char Player::getLearningPercent() const {
 }
 
 //----- (0048C855) --------------------------------------------------------
-int Player::GetBaseStrength() const {
-    return this->uMight + GetItemsBonus(CHARACTER_ATTRIBUTE_STRENGTH);
+int Player::GetBaseMight() const {
+    return this->uMight + GetItemsBonus(CHARACTER_ATTRIBUTE_MIGHT);
 }
 
 //----- (0048C86C) --------------------------------------------------------
@@ -881,7 +881,7 @@ int Player::GetActualLevel() const {
 
 //----- (0048C93C) --------------------------------------------------------
 int Player::GetActualMight() const {
-    return GetActualAttribute(CHARACTER_ATTRIBUTE_STRENGTH, &Player::uMight,
+    return GetActualAttribute(CHARACTER_ATTRIBUTE_MIGHT, &Player::uMight,
                               &Player::uMightBonus);
 }
 
@@ -2583,7 +2583,7 @@ int Player::GetItemsBonus(CHARACTER_ATTRIBUTE_TYPE attr, bool getOnlyMainHandDmg
             }
             break;
 
-        case CHARACTER_ATTRIBUTE_STRENGTH:
+        case CHARACTER_ATTRIBUTE_MIGHT:
         case CHARACTER_ATTRIBUTE_INTELLIGENCE:
         case CHARACTER_ATTRIBUTE_WILLPOWER:
         case CHARACTER_ATTRIBUTE_ENDURANCE:
@@ -2702,7 +2702,7 @@ int Player::GetMagicalBonus(CHARACTER_ATTRIBUTE_TYPE a2) const {
             v3 = this->pPlayerBuffs[PLAYER_BUFF_HEROISM].power;
             v4 = pParty->pPartyBuffs[PARTY_BUFF_HEROISM].power;
             break;
-        case CHARACTER_ATTRIBUTE_STRENGTH:
+        case CHARACTER_ATTRIBUTE_MIGHT:
             v3 = pPlayerBuffs[PLAYER_BUFF_STRENGTH].power;
             v4 = pParty->pPartyBuffs[PARTY_BUFF_DAY_OF_GODS].power;
             break;
@@ -3351,7 +3351,7 @@ void Player::DecreaseAttribute(int eAttribute) {
     pStep = StatTable[raceId][eAttribute].uBaseStep;
     unsigned short *AttrToChange = nullptr;
     switch (eAttribute) {
-        case CHARACTER_ATTRIBUTE_STRENGTH:
+        case CHARACTER_ATTRIBUTE_MIGHT:
             AttrToChange = &this->uMight;
             break;
         case CHARACTER_ATTRIBUTE_INTELLIGENCE:
@@ -4361,7 +4361,7 @@ bool Player::CompareVariable(VariableType VarNum, int pValue) {
             return pParty->_autonoteBits[pValue];
         case VAR_IsMightMoreThanBase:
             actStat = GetActualMight();
-            baseStat = GetBaseStrength();
+            baseStat = GetBaseMight();
             return (actStat >= baseStat);
         case VAR_IsIntellectMoreThanBase:
             actStat = GetActualIntelligence();

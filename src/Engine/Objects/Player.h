@@ -181,7 +181,7 @@ struct Player {
     int GetActualAttribute(CHARACTER_ATTRIBUTE_TYPE attrId,
                            unsigned short Player::*attrValue,
                            unsigned short Player::*attrBonus) const;
-    int GetBaseStrength() const;
+    int GetBaseMight() const;
     int GetBaseIntelligence() const;
     int GetBaseWillpower() const;
     int GetBaseEndurance() const;

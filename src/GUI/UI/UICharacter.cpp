@@ -1558,8 +1558,7 @@ void GUIWindow_CharacterRecord::CharacterUI_StatsTab_Draw(Player *player) {
 
     int pY = 53;
     pGUIWindow_CurrentMenu->DrawText(pFontArrus, {26, pY}, Color(),
-                                     formatLeftCol(LSTR_MIGHT, player->GetActualMight(), player->GetBaseStrength()));
-    // TODO(captainurist): GetActualMight vs GetBaseStrength, we need consistent naming
+                                     formatLeftCol(LSTR_MIGHT, player->GetActualMight(), player->GetBaseMight()));
 
     pY += pFontArrus->GetHeight() - 2;
     pGUIWindow_CurrentMenu->DrawText(pFontArrus, {26, pY}, Color(),
