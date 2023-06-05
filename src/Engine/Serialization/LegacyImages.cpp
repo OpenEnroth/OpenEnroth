@@ -99,11 +99,11 @@ static void deserialize(const std::array<T1, N> &src, IndexedArray<T2, L, H> *ds
 }
 
 void deserialize(const SpriteFrame_MM7 &src, SpriteFrame *dst) {
-    dst->icon_name = src.iconName.data();
-    std::transform(dst->icon_name.begin(), dst->icon_name.end(), dst->icon_name.begin(), ::tolower);
+    deserialize(src.iconName, &dst->icon_name);
+    dst->icon_name = toLower(dst->icon_name);
 
-    dst->texture_name = src.textureName.data();
-    std::transform(dst->texture_name.begin(), dst->texture_name.end(), dst->texture_name.begin(), ::tolower);
+    deserialize(src.textureName, &dst->texture_name);
+    dst->texture_name = toLower(dst->texture_name);
 
     for (unsigned int i = 0; i < 8; ++i)
         dst->hw_sprites[i] = nullptr;
