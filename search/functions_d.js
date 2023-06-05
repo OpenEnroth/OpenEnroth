@@ -19,7 +19,7 @@ var searchData=
   ['makepalettesolid_16',['MakePaletteSolid',['../ImageLoader_8cpp.html#af8da90009ce8868d2f3a1f4b5bf78450',1,'ImageLoader.cpp']]],
   ['makeparticlebillboardandpush_17',['MakeParticleBillboardAndPush',['../classIRender.html#a2e261dcefcdcd0f92386ae36b709dacd',1,'IRender::MakeParticleBillboardAndPush()'],['../classRenderBase.html#a4066bd07b80374166cb41166412340f2',1,'RenderBase::MakeParticleBillboardAndPush()']]],
   ['makergbaimage_18',['makeRgbaImage',['../ImageFunctions_8h.html#ac5f5b17ca75af1b22f8ab84f3193341f',1,'makeRgbaImage(GrayscaleImageView indexedImage, const Palette &amp;palette):&#160;ImageFunctions.cpp'],['../ImageFunctions_8cpp.html#ac5f5b17ca75af1b22f8ab84f3193341f',1,'makeRgbaImage(GrayscaleImageView indexedImage, const Palette &amp;palette):&#160;ImageFunctions.cpp']]],
-  ['makescreenshot32_19',['MakeScreenshot32',['../classIRender.html#a69e264d1c53669bb471a72cf8cada751',1,'IRender::MakeScreenshot32()'],['../classRenderOpenGL.html#a2ba53658375c2a081ec4a4143788230f',1,'RenderOpenGL::MakeScreenshot32()']]],
+  ['makescreenshot32_19',['MakeScreenshot32',['../classIRender.html#af2bb536a20f317bc998434e09c43ed79',1,'IRender::MakeScreenshot32()'],['../classRenderOpenGL.html#a65047ef63f5a86ba09588957dd5da963',1,'RenderOpenGL::MakeScreenshot32()']]],
   ['makevisiblesectorlist_20',['MakeVisibleSectorList',['../structBspRenderer.html#acbf92a5a5953c56e1a92a4a7d334a87d',1,'BspRenderer']]],
   ['mapdefaultkey_21',['MapDefaultKey',['../structIo_1_1KeyboardActionMapping.html#a1958ecd3a43f69d65c76259fe7bc15d0',1,'Io::KeyboardActionMapping']]],
   ['mapgamepadkey_22',['MapGamepadKey',['../structIo_1_1KeyboardActionMapping.html#a695a96d3e80441de0540e1210cf8c5a1',1,'Io::KeyboardActionMapping']]],
