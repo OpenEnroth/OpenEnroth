@@ -1,12 +1,12 @@
 #include "Engine/Objects/Player.h"
 
 #include <algorithm>
+#include <memory>
 
 #include "Engine/Engine.h"
 #include "Engine/Spells/CastSpellInfo.h"
 #include "Engine/Graphics/DecalBuilder.h"
 #include "Engine/Graphics/Indoor.h"
-#include "Engine/Graphics/Viewport.h"
 #include "Engine/Localization.h"
 #include "Engine/LOD.h"
 #include "Engine/Objects/Actor.h"
@@ -32,7 +32,6 @@
 #include "GUI/GUIWindow.h"
 #include "GUI/UI/UIGame.h"
 #include "GUI/UI/UIStatusBar.h"
-#include "GUI/UI/UIHouses.h"
 #include "GUI/UI/Books/AutonotesBook.h"
 
 #include "Utility/Memory/MemSet.h"
@@ -7538,8 +7537,9 @@ bool Player::SetBeacon(size_t index, size_t power) {
 
     LloydBeacon beacon;
 
-    beacon.image = render->TakeScreenshot(92, 68);
-    beacon.image = render->CreateTexture_Blank(beacon.image->width(), beacon.image->height(), beacon.image->rgba().pixels().data());
+    std::unique_ptr<GraphicsImage> tmp(render->TakeScreenshot(92, 68));
+
+    beacon.image = render->CreateTexture_Blank(std::move(tmp->rgba()));
     beacon.uBeaconTime = GameTime(pParty->GetPlayingTime() + GameTime::FromSeconds(power));
     beacon.PartyPos_X = pParty->vPosition.x;
     beacon.PartyPos_Y = pParty->vPosition.y;

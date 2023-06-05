@@ -26,16 +26,14 @@ class ImageLoader {
 
 class Paletted_Img_Loader : public ImageLoader {
  public:
-    inline Paletted_Img_Loader(LODFile_IconsBitmaps *lod, const std::string &filename, uint16_t colorkey) {
+    inline Paletted_Img_Loader(LODFile_IconsBitmaps *lod, const std::string &filename) {
         this->resource_name = filename;
-        this->colorkey = colorkey;
         this->lod = lod;
     }
 
     virtual bool Load(RgbaImage *rgbaImage, GrayscaleImage *indexedImage, Palette *palette) override;
 
  protected:
-    uint16_t colorkey;
     LODFile_IconsBitmaps *lod;
 };
 

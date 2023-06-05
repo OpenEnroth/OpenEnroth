@@ -1,28 +1,25 @@
 #include "Engine/Graphics/OpenGL/TextureOpenGL.h"
 
+#include <cassert>
 #include <utility>
 
 #include "Engine/Graphics/IRender.h"
 #include "Engine/Graphics/ImageLoader.h"
 #include "Engine/ErrorHandling.h"
 
-Texture *TextureOpenGL::Create(unsigned int width, unsigned int height, const Color *pixels) {
+Texture *TextureOpenGL::Create(RgbaImage image) {
     TextureOpenGL *tex = new TextureOpenGL(false);
 
+    tex->_rgbaImage = std::move(image);
     tex->_initialized = true;
-
-    if (pixels) {
-        tex->_rgbaImage = RgbaImage::copy(width, height, pixels); // NOLINT: this is not std::copy.
-    } else {
-        tex->_rgbaImage = RgbaImage::solid(width, height, Color());
-    }
-
     tex->_initialized = render->MoveTextureToDevice(tex);
-    if (!tex->_initialized) {
-        __debugbreak();
-    }
+    assert(tex->_initialized);
 
     return tex;
+}
+
+Texture *TextureOpenGL::Create(unsigned int width, unsigned int height) {
+    return Create(RgbaImage::solid(width, height, Color()));
 }
 
 Texture *TextureOpenGL::Create(std::unique_ptr<ImageLoader> loader) {

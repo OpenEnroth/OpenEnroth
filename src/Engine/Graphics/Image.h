@@ -19,8 +19,9 @@ class GraphicsImage {
     explicit GraphicsImage(bool lazy_initialization = true);
     virtual ~GraphicsImage();
 
+    static GraphicsImage *Create(RgbaImage image);
+    static GraphicsImage *Create(size_t width, size_t height);
     static GraphicsImage *Create(std::unique_ptr<ImageLoader> loader);
-    static GraphicsImage *Create(size_t width, size_t height, const Color *pixels = nullptr);
 
     size_t width();
     size_t height();

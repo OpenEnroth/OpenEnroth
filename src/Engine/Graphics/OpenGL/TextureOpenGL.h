@@ -13,8 +13,8 @@ class TextureOpenGL : public Texture {
  protected:
     friend class RenderOpenGL;
 
-    static Texture *Create(unsigned int width, unsigned int height, const Color *pixels = nullptr);
-
+    static Texture *Create(RgbaImage image);
+    static Texture *Create(unsigned int width, unsigned int height);
     static Texture *Create(std::unique_ptr<ImageLoader> loader);
 
     void SetOpenGlTexture(int ogl_texture) { this->ogl_texture = ogl_texture; }
