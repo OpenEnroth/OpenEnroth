@@ -1,5 +1,7 @@
 #pragma once
 
+#include <vector>
+
 #include "GUI/UI/UIHouses.h"
 #include "GUI/UI/UIHouseEnums.h"
 
