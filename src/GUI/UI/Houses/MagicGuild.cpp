@@ -35,6 +35,18 @@ IndexedArray<DAMAGE_TYPE, BuildingType_FireGuild, BuildingType_DarkGuild> guildS
     {BuildingType_DarkGuild,   DMGT_DARK}
 };
 
+IndexedArray<DIALOGUE_TYPE, BuildingType_FireGuild, BuildingType_DarkGuild> learnableMagicSkillDialogue = {
+    {BuildingType_FireGuild,   DIALOGUE_LEARN_FIRE},
+    {BuildingType_AirGuild,    DIALOGUE_LEARN_AIR},
+    {BuildingType_WaterGuild,  DIALOGUE_LEARN_WATER},
+    {BuildingType_EarthGuild,  DIALOGUE_LEARN_EARTH},
+    {BuildingType_SpiritGuild, DIALOGUE_LEARN_SPIRIT},
+    {BuildingType_MindGuild,   DIALOGUE_LEARN_MIND},
+    {BuildingType_BodyGuild,   DIALOGUE_LEARN_BODY},
+    {BuildingType_LightGuild,  DIALOGUE_LEARN_LIGHT},
+    {BuildingType_DarkGuild,   DIALOGUE_LEARN_DARK}
+};
+
 IndexedArray<PLAYER_SKILL_MASTERY, HOUSE_FIRST_MAGIC_GUILD, HOUSE_LAST_MAGIC_GUILD> guildSpellsMastery = {
     {HOUSE_FIRE_GUILD_INITIATE_EMERALD_ISLE,   PLAYER_SKILL_MASTERY_NOVICE},
     {HOUSE_FIRE_GUILD_ADEPT_HARMONDALE,        PLAYER_SKILL_MASTERY_EXPERT},
@@ -167,7 +179,7 @@ void GUIWindow_MagicGuild::buyBooksDialogue() {
 
     if (HouseUI_CheckIfPlayerCanInteract()) {
         int itemcount = 0;
-        for (int i = 0; i < ItemAmountForShop(buildingTable[wData.val - 1].uType); ++i) {
+        for (int i = 0; i < itemAmountForShop(); ++i) {
             if (pParty->spellBooksInGuilds[houseId()][i].uItemID != ITEM_NULL)
                 ++itemcount;
         }
@@ -214,7 +226,7 @@ void GUIWindow_MagicGuild::buyBooksDialogue() {
 void GUIWindow_MagicGuild::houseDialogueOptionSelected(DIALOGUE_TYPE option) {
     if (option == DIALOGUE_GUILD_BUY_BOOKS) {
         if (pParty->PartyTimes.guildNextRefreshTime[houseId()] >= pParty->GetPlayingTime()) {
-            for (int i = 0; i < ItemAmountForShop(buildingTable[wData.val - 1].uType); ++i) {
+            for (int i = 0; i < itemAmountForShop(); ++i) {
                 if (pParty->spellBooksInGuilds[houseId()][i].uItemID != ITEM_NULL)
                     shop_ui_items_in_store[i] = assets->getImage_ColorKey(pParty->spellBooksInGuilds[houseId()][i].GetIconName());
             }
@@ -223,6 +235,8 @@ void GUIWindow_MagicGuild::houseDialogueOptionSelected(DIALOGUE_TYPE option) {
             generateSpellBooksForGuild();
             pParty->PartyTimes.guildNextRefreshTime[houseId()] = nextGenTime;
         }
+    } else if (IsSkillLearningDialogue(option)) {
+        learnSelectedSkill(GetLearningDialogueSkill(option));
     }
 }
 
@@ -240,6 +254,21 @@ void GUIWindow_MagicGuild::houseSpecificDialogue() {
     }
 }
 
+std::vector<DIALOGUE_TYPE> GUIWindow_MagicGuild::listDialogueOptions(DIALOGUE_TYPE option) {
+    BuildingType guildType = buildingTable[wData.val - 1].uType;
+
+    switch (dialog_menu_id) {
+      case DIALOGUE_MAIN:
+        if (guildType == BuildingType_LightGuild || guildType == BuildingType_DarkGuild) {
+            return {DIALOGUE_GUILD_BUY_BOOKS, learnableMagicSkillDialogue[guildType]};
+        } else {
+            return {DIALOGUE_GUILD_BUY_BOOKS, learnableMagicSkillDialogue[guildType], DIALOGUE_LEARN_MEDITATION};
+        }
+      default:
+        return {};
+    }
+}
+
 void GUIWindow_MagicGuild::generateSpellBooksForGuild() {
     BuildingType guildType = buildingTable[wData.val - 1].uType;
 
@@ -250,7 +279,7 @@ void GUIWindow_MagicGuild::generateSpellBooksForGuild() {
     PLAYER_SKILL_MASTERY maxMastery = guildSpellsMastery[houseId()];
     Segment<ITEM_TYPE> spellbooksForGuild = spellbooksOfSchool(schoolType, maxMastery);
 
-    for (int i = 0; i < ItemAmountForShop(guildType); ++i) {
+    for (int i = 0; i < itemAmountForShop(); ++i) {
         ITEM_TYPE pItemNum = grng->randomSample(spellbooksForGuild);
 
         if (pItemNum == ITEM_SPELLBOOK_DIVINE_INTERVENTION) {

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <vector>
 
 #include "GUI/UI/UIHouses.h"
 #include "GUI/UI/UIHouseEnums.h"
@@ -12,6 +13,7 @@ class GUIWindow_TownHall : public GUIWindow_House {
 
     virtual void houseDialogueOptionSelected(DIALOGUE_TYPE option) override;
     virtual void houseSpecificDialogue() override;
+    virtual std::vector<DIALOGUE_TYPE> listDialogueOptions(DIALOGUE_TYPE option) override;
 
     /**
      * @return   Text to show after the player has clicked on the "Bounty Hunt" dialogue option.

@@ -58,7 +58,6 @@
 using Io::TextInputType;
 
 int uHouse_ExitPic;
-int _F8B1DC_currentShopOption;  // F8B1DC
 int dword_591080;               // 591080
 
 BuildingType in_current_building_type;  // 00F8B198
@@ -270,280 +269,7 @@ static std::array<const char *, 19> _4F03B8_shop_background_names = {
     "MAGSHELF", "MAGSHELF", "MAGSHELF", "MAGSHELF", "MAGSHELF", "MAGSHELF",
     "MAGSHELF", "MAGSHELF", "MAGSHELF", "MAGSHELF", "MAGSHELF", "MAGSHELF" } };
 
-int ItemAmountForShop(BuildingType buildingType) {
-    switch(buildingType) {
-      case BuildingType_WeaponShop:
-      case BuildingType_GeneralStore:
-        return 6;
-      case BuildingType_ArmorShop:
-        return 8;
-      case BuildingType_MagicShop:
-        return 12;
-      case BuildingType_AlchemistShop:
-        return 12;
-      case BuildingType_FireGuild:
-      case BuildingType_AirGuild:
-      case BuildingType_WaterGuild:
-      case BuildingType_EarthGuild:
-      case BuildingType_SpiritGuild:
-      case BuildingType_MindGuild:
-      case BuildingType_BodyGuild:
-      case BuildingType_LightGuild:
-      case BuildingType_DarkGuild:
-      case BuildingType_MirroredPath:
-        return 12;
-      default:
-        return 0;
-    }
-}
-
 std::array<std::string, 6> portraitClickLabel;
-
-void FillAviableSkillsToTeach(BuildingType type);
-
-//----- (004B3A72) --------------------------------------------------------
-void InitializaDialogueOptions_Tavern(BuildingType type) {
-    int num_buttons;  // esi@1
-
-    num_buttons = 0;
-    if (type == BuildingType_Tavern) {
-        num_buttons = 2;
-        CreateShopDialogueButtonAtRow(0, DIALOGUE_TAVERN_ARCOMAGE_RULES);
-        CreateShopDialogueButtonAtRow(1, DIALOGUE_TAVERN_ARCOMAGE_VICTORY_CONDITIONS);
-        if (pParty->hasItem(ITEM_QUEST_ARCOMAGE_DECK)) {
-            num_buttons = 3;
-            CreateShopDialogueButtonAtRow(2, DIALOGUE_TAVERN_ARCOMAGE_RESULT);
-        }
-    }
-    pDialogueWindow->_41D08F_set_keyboard_control_group(num_buttons, 1, 0, 2);
-    dword_F8B1E0 = pDialogueWindow->pNumPresenceButton;
-}
-// F8B1E0: using guessed type int dword_F8B1E0;
-
-//----- (004B3AD4) --------------------------------------------------------
-void InitializaDialogueOptions_Shops(BuildingType type) {
-    switch (type) {
-    case BuildingType_WeaponShop:
-    case BuildingType_ArmorShop:
-    case BuildingType_MagicShop:
-        CreateShopDialogueButtonAtRow(0, DIALOGUE_SHOP_SELL);
-        CreateShopDialogueButtonAtRow(1, DIALOGUE_SHOP_IDENTIFY);
-        CreateShopDialogueButtonAtRow(2, DIALOGUE_SHOP_REPAIR);
-        pDialogueWindow->_41D08F_set_keyboard_control_group(3, 1, 0, 2);
-        break;
-
-    case BuildingType_AlchemistShop:
-        CreateShopDialogueButtonAtRow(0, DIALOGUE_SHOP_SELL);
-        CreateShopDialogueButtonAtRow(1, DIALOGUE_SHOP_IDENTIFY);
-        pDialogueWindow->_41D08F_set_keyboard_control_group(2, 1, 0, 2);
-        break;
-
-    case BuildingType_GeneralStore:
-        CreateShopDialogueButtonAtRow(0, DIALOGUE_SHOP_SELL);
-        pDialogueWindow->_41D08F_set_keyboard_control_group(1, 1, 0, 2);
-        break;
-
-    default:
-        break;
-    }
-
-    dword_F8B1E0 = pDialogueWindow->pNumPresenceButton;
-}
-
-
-//----- (004B3B42) --------------------------------------------------------
-void InitializaDialogueOptions(BuildingType type) {
-    switch (type) {
-    case BuildingType_WeaponShop:
-    case BuildingType_ArmorShop:
-    case BuildingType_MagicShop:
-    case BuildingType_AlchemistShop:
-    {
-        CreateShopDialogueButtonAtRow(0, DIALOGUE_SHOP_BUY_STANDARD);
-        CreateShopDialogueButtonAtRow(1, DIALOGUE_SHOP_BUY_SPECIAL);
-        CreateShopDialogueButtonAtRow(2, DIALOGUE_SHOP_DISPLAY_EQUIPMENT);
-        CreateShopDialogueButtonAtRow(3, DIALOGUE_LEARN_SKILLS);
-        pDialogueWindow->_41D08F_set_keyboard_control_group(4, 1, 0, 2);
-    } break;
-
-    case BuildingType_FireGuild:
-    {
-        CreateShopDialogueButtonAtRow(0, DIALOGUE_GUILD_BUY_BOOKS);
-        CreateShopDialogueButtonAtRow(1, DIALOGUE_LEARN_FIRE);
-        CreateShopDialogueButtonAtRow(2, DIALOGUE_LEARN_LEARNING);
-        pDialogueWindow->_41D08F_set_keyboard_control_group(3, 1, 0, 2);
-    } break;
-
-    case BuildingType_AirGuild:
-    {
-        CreateShopDialogueButtonAtRow(0, DIALOGUE_GUILD_BUY_BOOKS);
-        CreateShopDialogueButtonAtRow(1, DIALOGUE_LEARN_AIR);
-        CreateShopDialogueButtonAtRow(2, DIALOGUE_LEARN_LEARNING);
-        pDialogueWindow->_41D08F_set_keyboard_control_group(3, 1, 0, 2);
-    } break;
-
-    case BuildingType_WaterGuild:
-    {
-        CreateShopDialogueButtonAtRow(0, DIALOGUE_GUILD_BUY_BOOKS);
-        CreateShopDialogueButtonAtRow(1, DIALOGUE_LEARN_WATER);
-        CreateShopDialogueButtonAtRow(2, DIALOGUE_LEARN_LEARNING);
-        pDialogueWindow->_41D08F_set_keyboard_control_group(3, 1, 0, 2);
-    } break;
-
-    case BuildingType_EarthGuild:
-    {
-        CreateShopDialogueButtonAtRow(0, DIALOGUE_GUILD_BUY_BOOKS);
-        CreateShopDialogueButtonAtRow(1, DIALOGUE_LEARN_EARTH);
-        CreateShopDialogueButtonAtRow(2, DIALOGUE_LEARN_LEARNING);
-        pDialogueWindow->_41D08F_set_keyboard_control_group(3, 1, 0, 2);
-    } break;
-
-    case BuildingType_SpiritGuild:
-    {
-        CreateShopDialogueButtonAtRow(0, DIALOGUE_GUILD_BUY_BOOKS);
-        CreateShopDialogueButtonAtRow(1, DIALOGUE_LEARN_SPIRIT);
-        CreateShopDialogueButtonAtRow(2, DIALOGUE_LEARN_MEDITATION);
-        pDialogueWindow->_41D08F_set_keyboard_control_group(3, 1, 0, 2);
-    } break;
-
-    case BuildingType_MindGuild:
-    {
-        CreateShopDialogueButtonAtRow(0, DIALOGUE_GUILD_BUY_BOOKS);
-        CreateShopDialogueButtonAtRow(1, DIALOGUE_LEARN_MIND);
-        CreateShopDialogueButtonAtRow(2, DIALOGUE_LEARN_MEDITATION);
-        pDialogueWindow->_41D08F_set_keyboard_control_group(3, 1, 0, 2);
-    } break;
-
-    case BuildingType_BodyGuild:
-    {
-        CreateShopDialogueButtonAtRow(0, DIALOGUE_GUILD_BUY_BOOKS);
-        CreateShopDialogueButtonAtRow(1, DIALOGUE_LEARN_BODY);
-        CreateShopDialogueButtonAtRow(2, DIALOGUE_LEARN_MEDITATION);
-        pDialogueWindow->_41D08F_set_keyboard_control_group(3, 1, 0, 2);
-    } break;
-
-    case BuildingType_LightGuild:
-    {
-        CreateShopDialogueButtonAtRow(0, DIALOGUE_GUILD_BUY_BOOKS);
-        CreateShopDialogueButtonAtRow(1, DIALOGUE_LEARN_LIGHT);
-        pDialogueWindow->_41D08F_set_keyboard_control_group(2, 1, 0, 2);
-    } break;
-
-    case BuildingType_DarkGuild:
-    {
-        CreateShopDialogueButtonAtRow(0, DIALOGUE_GUILD_BUY_BOOKS);
-        CreateShopDialogueButtonAtRow(1, DIALOGUE_LEARN_DARK);
-        pDialogueWindow->_41D08F_set_keyboard_control_group(2, 1, 0, 2);
-    } break;
-
-    case BuildingType_ElementalGuild:
-    {
-        CreateShopDialogueButtonAtRow(0, DIALOGUE_GUILD_BUY_BOOKS);
-        CreateShopDialogueButtonAtRow(1, DIALOGUE_LEARN_FIRE);
-        CreateShopDialogueButtonAtRow(2, DIALOGUE_LEARN_AIR);
-        CreateShopDialogueButtonAtRow(3, DIALOGUE_LEARN_WATER);
-        CreateShopDialogueButtonAtRow(4, DIALOGUE_LEARN_EARTH);
-        pDialogueWindow->_41D08F_set_keyboard_control_group(5, 1, 0, 2);
-    } break;
-
-    case BuildingType_SelfGuild:
-    {
-        CreateShopDialogueButtonAtRow(0, DIALOGUE_GUILD_BUY_BOOKS);
-        CreateShopDialogueButtonAtRow(1, DIALOGUE_LEARN_SPIRIT);
-        CreateShopDialogueButtonAtRow(2, DIALOGUE_LEARN_MIND);
-        CreateShopDialogueButtonAtRow(3, DIALOGUE_LEARN_BODY);
-        pDialogueWindow->_41D08F_set_keyboard_control_group(4, 1, 0, 2);
-    } break;
-
-    case BuildingType_MirroredPath:
-    {
-        CreateShopDialogueButtonAtRow(0, DIALOGUE_GUILD_BUY_BOOKS);
-        CreateShopDialogueButtonAtRow(1, DIALOGUE_LEARN_DARK);
-        CreateShopDialogueButtonAtRow(2, DIALOGUE_LEARN_LIGHT);
-        pDialogueWindow->_41D08F_set_keyboard_control_group(3, 1, 0, 2);
-    } break;
-    case BuildingType_TownHall:
-    {
-        int num_buttons = 1;
-        CreateShopDialogueButtonAtRow(0, DIALOGUE_TOWNHALL_BOUNTY_HUNT);
-
-        if (pParty->uFine) {
-            num_buttons++;
-            CreateShopDialogueButtonAtRow(1, DIALOGUE_TOWNHALL_PAY_FINE);
-        }
-
-        pDialogueWindow->_41D08F_set_keyboard_control_group(num_buttons, 1, 0, 2);
-    } break;
-
-    case BuildingType_Bank:
-    {
-        CreateShopDialogueButtonAtRow(0, DIALOGUE_BANK_PUT_GOLD);
-        CreateShopDialogueButtonAtRow(1, DIALOGUE_BANK_GET_GOLD);
-        pDialogueWindow->_41D08F_set_keyboard_control_group(2, 1, 0, 2);
-    } break;
-
-    case BuildingType_Temple:
-    {
-        CreateShopDialogueButtonAtRow(0, DIALOGUE_TEMPLE_HEAL);
-        CreateShopDialogueButtonAtRow(1, DIALOGUE_TEMPLE_DONATE);
-        CreateShopDialogueButtonAtRow(2, DIALOGUE_LEARN_SKILLS);
-        pDialogueWindow->_41D08F_set_keyboard_control_group(3, 1, 0, 2);
-    } break;
-
-    case BuildingType_Stables:
-    case BuildingType_Boats:
-    {
-        CreateShopDialogueButtonAtRow(0, DIALOGUE_TRANSPORT_SCHEDULE_1);
-        CreateShopDialogueButtonAtRow(1, DIALOGUE_TRANSPORT_SCHEDULE_2);
-        CreateShopDialogueButtonAtRow(2, DIALOGUE_TRANSPORT_SCHEDULE_3);
-        CreateShopDialogueButtonAtRow(3, DIALOGUE_TRANSPORT_SCHEDULE_4);
-        pDialogueWindow->_41D08F_set_keyboard_control_group(4, 1, 0, 2);
-    } break;
-
-    case BuildingType_Training:
-    {
-        CreateShopDialogueButtonAtRow(0, DIALOGUE_TRAINING_HALL_TRAIN);
-        CreateShopDialogueButtonAtRow(1, DIALOGUE_LEARN_SKILLS);
-        pDialogueWindow->_41D08F_set_keyboard_control_group(2, 1, 0, 2);
-    } break;
-
-    case BuildingType_Tavern:
-    case BuildingType_AdventuresInn:
-    {
-        CreateShopDialogueButtonAtRow(0, DIALOGUE_TAVERN_REST);
-        CreateShopDialogueButtonAtRow(1, DIALOGUE_TAVERN_BUY_FOOD);
-        CreateShopDialogueButtonAtRow(2, DIALOGUE_LEARN_SKILLS);
-        if (window_SpeakInHouse->wData.val >= HOUSE_TAVERN_EMERALD_ISLE && window_SpeakInHouse->wData.val <= HOUSE_TAVERN_STONE_CITY) {
-            CreateShopDialogueButtonAtRow(3, DIALOGUE_TAVERN_ARCOMAGE_MAIN);
-            pDialogueWindow->_41D08F_set_keyboard_control_group(4, 1, 0, 2);
-        } else {
-            pDialogueWindow->_41D08F_set_keyboard_control_group(3, 1, 0, 2);
-        }
-    } break;
-
-    case BuildingType_GeneralStore:
-    {
-        CreateShopDialogueButtonAtRow(0, DIALOGUE_SHOP_BUY_STANDARD);
-        pDialogueWindow->_41D08F_set_keyboard_control_group(1, 1, 0, 2);
-    } break;
-
-    case BuildingType_Jail:
-    case BuildingType_TownHall_MM6:
-    case BuildingType_Throne_Room:
-    case BuildingType_Castle:
-    case BuildingType_Dungeon:
-    case BuildingType_Seer:
-    case BuildingType_Circus:
-    case BuildingType_MercenaryGuild:
-    case BuildingType_ShadowGuild:
-        break;
-
-    default:
-        Error("Invalid building type: %u", type);
-    }
-    dword_F8B1E0 = pDialogueWindow->pNumPresenceButton;
-}
-
 
 bool HouseUI_CheckIfPlayerCanInteract() {
     if (!pParty->hasActiveCharacter()) {  // to avoid access zeroeleement
@@ -831,14 +557,14 @@ void OnSelectShopDialogueOption(DIALOGUE_TYPE option) {
     {
         pDialogueWindow->eWindowType = WINDOW_MainMenu;
         UI_CreateEndConversationButton();
-        FillAviableSkillsToTeach(in_current_building_type);
+        ((GUIWindow_House*)window_SpeakInHouse)->initializeDialog();
         break;
     }
     case DIALOGUE_TAVERN_ARCOMAGE_MAIN:
     {
         pDialogueWindow->eWindowType = WINDOW_MainMenu;
         UI_CreateEndConversationButton();
-        InitializaDialogueOptions_Tavern(in_current_building_type);
+        ((GUIWindow_House*)window_SpeakInHouse)->initializeDialog();
         break;
     }
     case DIALOGUE_TAVERN_ARCOMAGE_RULES:
@@ -865,38 +591,11 @@ void OnSelectShopDialogueOption(DIALOGUE_TYPE option) {
     {
         pDialogueWindow->eWindowType = WINDOW_MainMenu;
         UI_CreateEndConversationButton();
-        InitializaDialogueOptions_Shops(in_current_building_type);
+        ((GUIWindow_House*)window_SpeakInHouse)->initializeDialog();
         break;
     }
     default:
-    {
-        if (IsSkillLearningDialogue(option)) {
-            int pPrice = PriceCalculator::skillLearningCostForPlayer(&pParty->activeCharacter(),
-                                                                         buildingTable[window_SpeakInHouse->wData.val - 1]);  // ecx@227
-            auto skill = GetLearningDialogueSkill(option);
-            if (skillMaxMasteryPerClass[pParty->activeCharacter().classType][skill] != PLAYER_SKILL_MASTERY_NONE) {
-                if (!pParty->activeCharacter().pActiveSkills[skill]) {
-                    if (pParty->GetGold() < pPrice) {
-                        GameUI_SetStatusBar(LSTR_NOT_ENOUGH_GOLD);
-                        if (in_current_building_type == BuildingType_Training
-                            || in_current_building_type == BuildingType_Tavern)
-                            PlayHouseSound(
-                            window_SpeakInHouse->wData.val, HouseSound_Goodbye);
-                        else
-                            PlayHouseSound(
-                            window_SpeakInHouse->wData.val,
-                                HouseSound_NotEnoughMoney);
-                    } else {
-                        pParty->TakeGold(pPrice);
-                        dword_F8B1E4 = 1;
-                        pParty->activeCharacter().pActiveSkills[skill] = 1;
-                        pParty->activeCharacter().playReaction(SPEECH_SkillLearned);
-                    }
-                }
-            }
-        }
         break;
-    }
     }
 }
 
@@ -1112,212 +811,6 @@ void SimpleHouseDialog() {
     }
 }
 
-//----- (004BE571) --------------------------------------------------------
-int sub_4BE571_AddItemToSet(
-    DIALOGUE_TYPE valueToAdd,
-    DIALOGUE_TYPE*outPutSet,
-    int elemsAlreadyPresent,
-    int elemsNeeded
-) {
-    int i;  // esi@3
-
-    if (elemsAlreadyPresent < elemsNeeded) {
-        for (i = 0; i < elemsAlreadyPresent; ++i) {
-            if (valueToAdd == outPutSet[i]) return elemsAlreadyPresent;
-        }
-        outPutSet[elemsAlreadyPresent] = valueToAdd;
-        return elemsAlreadyPresent + 1;
-    }
-    return elemsNeeded;
-}
-
-//----- (004B3703) --------------------------------------------------------
-void FillAviableSkillsToTeach(BuildingType type) {
-    const char *v30;   // ecx@65
-    int v15;           // ecx@19
-    int v21;           // ecx@34
-
-    DIALOGUE_TYPE options[5];
-    int num_options = 0;
-
-    _F8B1DC_currentShopOption = 0;
-
-    switch (type) {
-    case BuildingType_WeaponShop:
-    {
-        for (int i = 0; i < 2; ++i) {
-            for (int j = 0; j < 4; ++j) {
-                if (i)
-                    v21 = weaponShopVariationSpecial[window_SpeakInHouse->houseId()].item_class[j];
-                else
-                    v21 = weaponShopVariationStandart[window_SpeakInHouse->houseId()].item_class[j];
-
-                DIALOGUE_TYPE v34;
-                switch (v21) {
-                case 23: v34 = DIALOGUE_LEARN_SWORD; break;
-                case 24: v34 = DIALOGUE_LEARN_DAGGER; break;
-                case 25: v34 = DIALOGUE_LEARN_AXE; break;
-                case 26: v34 = DIALOGUE_LEARN_SPEAR; break;
-                case 27: v34 = DIALOGUE_LEARN_BOW; break;
-                case 28: v34 = DIALOGUE_LEARN_MACE; break;
-                case 30: v34 = DIALOGUE_LEARN_STAFF; break;
-                default:
-                    continue;
-                }
-                num_options = sub_4BE571_AddItemToSet(v34, options, num_options, 5);
-            }
-        }
-    } break;
-
-    case BuildingType_ArmorShop:
-    {
-        for (int i = 0; i < 2; ++i) {
-            for (int j = 0; j < 2; ++j) {
-                for (int k = 0; k < 4; ++k) {
-                    if (j) {
-                        if (i)
-                            v15 = armorShopBottomRowVariationSpecial[window_SpeakInHouse->houseId()].item_class[k];
-                        else
-                            v15 = armorShopBottomRowVariationStandart[window_SpeakInHouse->houseId()].item_class[k];
-                    } else {
-                        if (i)
-                            v15 = armorShopTopRowVariationSpecial[window_SpeakInHouse->houseId()].item_class[k];
-                        else
-                            v15 = armorShopTopRowVariationStandart[window_SpeakInHouse->houseId()].item_class[k];
-                    }
-
-                    DIALOGUE_TYPE v33;
-                    switch (v15) {
-                    case 31: v33 = DIALOGUE_LEARN_LEATHER; break;
-                    case 32: v33 = DIALOGUE_LEARN_CHAIN; break;
-                    case 33: v33 = DIALOGUE_LEARN_PLATE; break;
-                    case 34: v33 = DIALOGUE_LEARN_SHIELD; break;
-                    default:
-                        continue;
-                    }
-                    num_options = sub_4BE571_AddItemToSet(v33, options, num_options, 5);
-                }
-            }
-        }
-    } break;
-
-    case BuildingType_MagicShop:
-        num_options = 2;
-        options[0] = DIALOGUE_LEARN_ITEM_ID;
-        options[1] = DIALOGUE_LEARN_REPAIR;
-        break;
-    case BuildingType_AlchemistShop:
-        num_options = 2;
-        options[0] = DIALOGUE_LEARN_ALCHEMY;
-        options[1] = DIALOGUE_LEARN_MONSTER_ID;
-        break;
-    case BuildingType_Tavern:
-        num_options = 3;
-        options[0] = DIALOGUE_LEARN_STEALING;
-        options[1] = DIALOGUE_LEARN_TRAP_DISARM;
-        options[2] = DIALOGUE_LEARN_PERCEPTION;
-        break;
-    case BuildingType_Temple:
-        num_options = 3;
-        options[0] = DIALOGUE_LEARN_UNARMED;
-        options[1] = DIALOGUE_LEARN_DODGE;
-        options[2] = DIALOGUE_LEARN_MERCHANT;
-        break;
-    case BuildingType_Training:
-        num_options = 2;
-        options[0] = DIALOGUE_LEARN_ARMSMASTER;
-        options[1] = DIALOGUE_LEARN_BODYBUILDING;
-        break;
-    default:
-        break;
-    }
-
-    for (int i = 0; i < num_options; ++i) {
-        DIALOGUE_TYPE menu = options[i];
-        switch (menu) {
-        case DIALOGUE_LEARN_SPEAR:
-            v30 = localization->GetSkillName(PLAYER_SKILL_SPEAR);
-            break;
-        case DIALOGUE_SHOP_REPAIR:
-            v30 = localization->GetSkillName(PLAYER_SKILL_REPAIR);
-            break;
-        case DIALOGUE_LEARN_STAFF:
-            v30 = localization->GetSkillName(PLAYER_SKILL_STAFF);
-            break;
-        case DIALOGUE_LEARN_SWORD:
-            v30 = localization->GetSkillName(PLAYER_SKILL_SWORD);
-            break;
-        case DIALOGUE_LEARN_DAGGER:
-            v30 = localization->GetSkillName(PLAYER_SKILL_DAGGER);
-            break;
-        case DIALOGUE_LEARN_AXE:
-            v30 = localization->GetSkillName(PLAYER_SKILL_AXE);
-            break;
-        case DIALOGUE_LEARN_BOW:
-            v30 = localization->GetSkillName(PLAYER_SKILL_BOW);
-            break;
-        case DIALOGUE_LEARN_MACE:
-            v30 = localization->GetSkillName(PLAYER_SKILL_MACE);
-            break;
-        case DIALOGUE_LEARN_SHIELD:
-            v30 = localization->GetSkillName(PLAYER_SKILL_SHIELD);
-            break;
-        case DIALOGUE_LEARN_LEATHER:
-            v30 = localization->GetSkillName(PLAYER_SKILL_LEATHER);
-            break;
-        case DIALOGUE_LEARN_CHAIN:
-            v30 = localization->GetSkillName(PLAYER_SKILL_CHAIN);
-            break;
-        case DIALOGUE_LEARN_PLATE:
-            v30 = localization->GetSkillName(PLAYER_SKILL_PLATE);
-            break;
-        case DIALOGUE_LEARN_DODGE:
-            v30 = localization->GetSkillName(PLAYER_SKILL_DODGE);
-            break;
-        case DIALOGUE_LEARN_ITEM_ID:
-            v30 = localization->GetSkillName(PLAYER_SKILL_ITEM_ID);
-            break;
-        case DIALOGUE_LEARN_MERCHANT:
-            v30 = localization->GetSkillName(PLAYER_SKILL_MERCHANT);
-            break;
-        case DIALOGUE_LEARN_BODYBUILDING:
-            v30 = localization->GetSkillName(PLAYER_SKILL_BODYBUILDING);
-            break;
-        case DIALOGUE_LEARN_PERCEPTION:
-            v30 = localization->GetSkillName(PLAYER_SKILL_PERCEPTION);
-            break;
-        case DIALOGUE_LEARN_TRAP_DISARM:
-            v30 = localization->GetSkillName(PLAYER_SKILL_TRAP_DISARM);
-            break;
-        case DIALOGUE_LEARN_UNARMED:
-            v30 = localization->GetSkillName(PLAYER_SKILL_UNARMED);
-            break;
-        case DIALOGUE_LEARN_MONSTER_ID:
-            v30 = localization->GetSkillName(PLAYER_SKILL_MONSTER_ID);
-            break;
-        case DIALOGUE_LEARN_ARMSMASTER:
-            v30 = localization->GetSkillName(PLAYER_SKILL_ARMSMASTER);
-            break;
-        case DIALOGUE_LEARN_STEALING:
-            v30 = localization->GetSkillName(PLAYER_SKILL_STEALING);
-            break;
-        case DIALOGUE_LEARN_ALCHEMY:
-            v30 = localization->GetSkillName(PLAYER_SKILL_ALCHEMY);
-            break;
-        case DIALOGUE_LEARN_CLUB:
-            v30 = localization->GetSkillName(PLAYER_SKILL_CLUB);
-            break;
-        default:
-            v30 = localization->GetString(LSTR_NO_TEXT);
-        }
-        pShopOptions[_F8B1DC_currentShopOption] = v30;
-        ++_F8B1DC_currentShopOption;
-        CreateShopDialogueButtonAtRow(i + 1, menu);
-    }
-    pDialogueWindow->_41D08F_set_keyboard_control_group(num_options, 1, 0, 2);
-    dword_F8B1E0 = pDialogueWindow->pNumPresenceButton;
-}
-
 int HouseDialogPressCloseBtn() {
     pCurrentFrameMessageQueue->Flush();
     keyboardInputHandler->SetWindowInputStatus(WINDOW_INPUT_CANCELLED);
@@ -1344,7 +837,7 @@ int HouseDialogPressCloseBtn() {
         BackToHouseMenu();
         UI_CreateEndConversationButton();
         dialog_menu_id = DIALOGUE_MAIN;
-        InitializaDialogueOptions(in_current_building_type);
+        ((GUIWindow_House*)window_SpeakInHouse)->initializeDialog();
         break;
 
     case DIALOGUE_SHOP_SELL:
@@ -1352,7 +845,7 @@ int HouseDialogPressCloseBtn() {
     case DIALOGUE_SHOP_REPAIR:
         UI_CreateEndConversationButton();
         dialog_menu_id = DIALOGUE_SHOP_DISPLAY_EQUIPMENT;
-        InitializaDialogueOptions_Shops(in_current_building_type);
+        ((GUIWindow_House*)window_SpeakInHouse)->initializeDialog();
         break;
 
     case DIALOGUE_TAVERN_ARCOMAGE_RULES:
@@ -1361,7 +854,7 @@ int HouseDialogPressCloseBtn() {
         BackToHouseMenu();
         UI_CreateEndConversationButton();
         dialog_menu_id = DIALOGUE_TAVERN_ARCOMAGE_MAIN;
-        InitializaDialogueOptions_Tavern(in_current_building_type);
+        ((GUIWindow_House*)window_SpeakInHouse)->initializeDialog();
         break;
 
     case DIALOGUE_NULL:
@@ -1388,7 +881,7 @@ int HouseDialogPressCloseBtn() {
     default:
         BackToHouseMenu();
         dialog_menu_id = DIALOGUE_MAIN;
-        InitializaDialogueOptions(in_current_building_type);
+        ((GUIWindow_House*)window_SpeakInHouse)->initializeDialog();
         break;
     }
     return 1;
@@ -1454,6 +947,9 @@ void createHouseUI(HOUSE_ID houseId) {
     window_SpeakInHouse->CreateButton({292, 424}, {31, 0}, 2, 94, UIMSG_SelectCharacter, 3, InputAction::SelectChar3, "");
     window_SpeakInHouse->CreateButton({407, 424}, {31, 0}, 2, 94, UIMSG_SelectCharacter, 4, InputAction::SelectChar4, "");
     window_SpeakInHouse->CreateButton({0, 0}, {0, 0}, 1, 0, UIMSG_CycleCharacters, 0, InputAction::CharCycle, "");
+    if (uNumDialogueNPCPortraits == 1) {
+        _4B4224_UpdateNPCTopics(0);
+    }
 }
 
 void BackToHouseMenu() {
@@ -1590,6 +1086,39 @@ void GUIWindow_House::houseDialogManager() {
     }
 }
 
+void GUIWindow_House::initializeDialog() {
+    std::vector<DIALOGUE_TYPE> optionList = listDialogueOptions(dialog_menu_id);
+
+    if (optionList.size()) {
+        for (int i = 0; i < optionList.size(); i++) {
+            CreateShopDialogueButtonAtRow(i, optionList[i]);
+        }
+        pDialogueWindow->_41D08F_set_keyboard_control_group(optionList.size(), 1, 0, 2);
+    }
+    dword_F8B1E0 = pDialogueWindow->pNumPresenceButton;
+}
+
+void GUIWindow_House::learnSelectedSkill(PLAYER_SKILL_TYPE skill) {
+    int pPrice = PriceCalculator::skillLearningCostForPlayer(&pParty->activeCharacter(), buildingTable[wData.val - 1]);
+    if (skillMaxMasteryPerClass[pParty->activeCharacter().classType][skill] != PLAYER_SKILL_MASTERY_NONE) {
+        if (!pParty->activeCharacter().pActiveSkills[skill]) {
+            if (pParty->GetGold() < pPrice) {
+                GameUI_SetStatusBar(LSTR_NOT_ENOUGH_GOLD);
+                if (in_current_building_type == BuildingType_Training || in_current_building_type == BuildingType_Tavern) {
+                    PlayHouseSound(wData.val, HouseSound_Goodbye);
+                } else {
+                    PlayHouseSound(wData.val, HouseSound_NotEnoughMoney);
+                }
+            } else {
+                pParty->TakeGold(pPrice);
+                dword_F8B1E4 = 1;
+                pParty->activeCharacter().pActiveSkills[skill] = 1;
+                pParty->activeCharacter().playReaction(SPEECH_SkillLearned);
+            }
+        }
+    }
+}
+
 GUIWindow_House::GUIWindow_House(HOUSE_ID houseId) : GUIWindow(WINDOW_HouseInterior, {0, 0}, render->GetRenderDimensions(), houseId) {
     pEventTimer->Pause();  // pause timer so not attacked
 
@@ -1614,10 +1143,6 @@ GUIWindow_House::GUIWindow_House(HOUSE_ID houseId) : GUIWindow(WINDOW_HouseInter
         HouseNPCPortraitsButtonsList[curNpc] = CreateButton(
             {pNPCPortraits_x[uNumDialogueNPCPortraits - 1][curNpc], pNPCPortraits_y[uNumDialogueNPCPortraits - 1][curNpc]}, {63, 73}, 1, 0,
             UIMSG_ClickHouseNPCPortrait, curNpc, InputAction::Invalid, portraitClickLabel[curNpc]);
-    }
-    if (uNumDialogueNPCPortraits == 1) {
-        window_SpeakInHouse = this;
-        _4B4224_UpdateNPCTopics(0);
     }
 }
 
@@ -1667,4 +1192,8 @@ void GUIWindow_House::houseDialogueOptionSelected(DIALOGUE_TYPE option) {
 
 void GUIWindow_House::houseSpecificDialogue() {
     // Nothing
+}
+
+std::vector<DIALOGUE_TYPE> GUIWindow_House::listDialogueOptions(DIALOGUE_TYPE option) {
+    return {};
 }

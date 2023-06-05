@@ -175,7 +175,9 @@ GUIWindow_Training::GUIWindow_Training(HOUSE_ID houseId) : GUIWindow_House(house
 }
 
 void GUIWindow_Training::houseDialogueOptionSelected(DIALOGUE_TYPE option) {
-    // Nothing
+    if (IsSkillLearningDialogue(option)) {
+        learnSelectedSkill(GetLearningDialogueSkill(option));
+    }
 }
 
 void GUIWindow_Training::houseSpecificDialogue() {
@@ -195,6 +197,18 @@ void GUIWindow_Training::houseSpecificDialogue() {
         learnSkillsDialogue();
         break;
       default:
+        pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 1, 0);
         break;
+    }
+}
+
+std::vector<DIALOGUE_TYPE> GUIWindow_Training::listDialogueOptions(DIALOGUE_TYPE option) {
+    switch (dialog_menu_id) {
+      case DIALOGUE_MAIN:
+        return {DIALOGUE_TRAINING_HALL_TRAIN, DIALOGUE_LEARN_SKILLS};
+      case DIALOGUE_LEARN_SKILLS:
+        return {DIALOGUE_LEARN_ARMSMASTER, DIALOGUE_LEARN_BODYBUILDING};
+      default:
+        return {};
     }
 }

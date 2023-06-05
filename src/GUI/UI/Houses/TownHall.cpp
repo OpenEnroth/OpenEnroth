@@ -144,6 +144,19 @@ void GUIWindow_TownHall::houseDialogueOptionSelected(DIALOGUE_TYPE option) {
     }
 }
 
+std::vector<DIALOGUE_TYPE> GUIWindow_TownHall::listDialogueOptions(DIALOGUE_TYPE option) {
+    switch (dialog_menu_id) {
+      case DIALOGUE_MAIN:
+        if (pParty->uFine) {
+            return {DIALOGUE_TOWNHALL_BOUNTY_HUNT, DIALOGUE_TOWNHALL_PAY_FINE};
+        } else {
+            return {DIALOGUE_TOWNHALL_BOUNTY_HUNT};
+        }
+      default:
+        return {};
+    }
+}
+
 int GUIWindow_TownHall::randomMonsterForHunting(HOUSE_ID townhall) {
     while (true) {
         int result = grng->random(258) + 1;

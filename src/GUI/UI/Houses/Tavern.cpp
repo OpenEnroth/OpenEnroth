@@ -232,6 +232,12 @@ void GUIWindow_Tavern::learnSkillsDialogue() {
     SkillTrainingDialogue(&dialog_window, pSkillCount, all_text_height, pPriceSkill);
 }
 
+void GUIWindow_Tavern::houseDialogueOptionSelected(DIALOGUE_TYPE option) {
+    if (IsSkillLearningDialogue(option)) {
+        learnSelectedSkill(GetLearningDialogueSkill(option));
+    }
+}
+
 void GUIWindow_Tavern::houseSpecificDialogue() {
     // TODO(pskelton): check this behaviour
     if (!pParty->hasActiveCharacter()) {  // avoid nzi
@@ -264,10 +270,24 @@ void GUIWindow_Tavern::houseSpecificDialogue() {
         learnSkillsDialogue();
         break;
       default:
+        pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 1, 0);
         break;
     }
 }
 
-void GUIWindow_Tavern::houseDialogueOptionSelected(DIALOGUE_TYPE option) {
-    // Nothing
+std::vector<DIALOGUE_TYPE> GUIWindow_Tavern::listDialogueOptions(DIALOGUE_TYPE option) {
+    switch (dialog_menu_id) {
+      case DIALOGUE_MAIN:
+        return {DIALOGUE_TAVERN_REST, DIALOGUE_TAVERN_BUY_FOOD, DIALOGUE_LEARN_SKILLS, DIALOGUE_TAVERN_ARCOMAGE_MAIN};
+      case DIALOGUE_LEARN_SKILLS:
+        return {DIALOGUE_LEARN_STEALING, DIALOGUE_LEARN_TRAP_DISARM, DIALOGUE_LEARN_PERCEPTION};
+      case DIALOGUE_TAVERN_ARCOMAGE_MAIN:
+        if (pParty->hasItem(ITEM_QUEST_ARCOMAGE_DECK)) {
+            return {DIALOGUE_TAVERN_ARCOMAGE_RULES, DIALOGUE_TAVERN_ARCOMAGE_VICTORY_CONDITIONS, DIALOGUE_TAVERN_ARCOMAGE_RESULT};
+        } else {
+            return {DIALOGUE_TAVERN_ARCOMAGE_RULES, DIALOGUE_TAVERN_ARCOMAGE_VICTORY_CONDITIONS};
+        }
+      default:
+        return {};
+    }
 }

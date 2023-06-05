@@ -1,5 +1,7 @@
 #pragma once
 
+#include <vector>
+
 #include "GUI/UI/UIHouses.h"
 #include "GUI/UI/UIHouseEnums.h"
 
@@ -10,6 +12,7 @@ class GUIWindow_Tavern : public GUIWindow_House {
 
     virtual void houseDialogueOptionSelected(DIALOGUE_TYPE option) override;
     virtual void houseSpecificDialogue() override;
+    virtual std::vector<DIALOGUE_TYPE> listDialogueOptions(DIALOGUE_TYPE option) override;
 
  protected:
     void mainDialogue();

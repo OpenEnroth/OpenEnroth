@@ -170,7 +170,9 @@ GUIWindow_Temple::GUIWindow_Temple(HOUSE_ID houseId) : GUIWindow_House(houseId) 
 }
 
 void GUIWindow_Temple::houseDialogueOptionSelected(DIALOGUE_TYPE option) {
-    // Nothing
+    if (IsSkillLearningDialogue(option)) {
+        learnSelectedSkill(GetLearningDialogueSkill(option));
+    }
 }
 
 void GUIWindow_Temple::houseSpecificDialogue() {
@@ -193,7 +195,19 @@ void GUIWindow_Temple::houseSpecificDialogue() {
         learnSkillsDialogue();
         break;
       default:
+        pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 1, 0);
         break;
+    }
+}
+
+std::vector<DIALOGUE_TYPE> GUIWindow_Temple::listDialogueOptions(DIALOGUE_TYPE option) {
+    switch (dialog_menu_id) {
+      case DIALOGUE_MAIN:
+        return {DIALOGUE_TEMPLE_HEAL, DIALOGUE_TEMPLE_DONATE, DIALOGUE_LEARN_SKILLS};
+      case DIALOGUE_LEARN_SKILLS:
+        return {DIALOGUE_LEARN_UNARMED, DIALOGUE_LEARN_DODGE, DIALOGUE_LEARN_MERCHANT};
+      default:
+        return {};
     }
 }
 

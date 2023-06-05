@@ -32,6 +32,13 @@
 
 #include "Utility/IndexedArray.h"
 
+struct ITEM_VARIATION {
+    ITEM_TREASURE_LEVEL treasure_level;
+    uint16_t item_class[4];
+};
+
+// TODO(Nik-RE-dev): enumerate treasure types used in this file
+
 const IndexedArray<ITEM_VARIATION, HOUSE_FIRST_WEAPON_SHOP, HOUSE_LAST_WEAPON_SHOP> weaponShopVariationStandart = {{
     {HOUSE_SMITH_EMERALD_ISLE,      { ITEM_TREASURE_LEVEL_1, { 23, 27, 20, 20 } }},
     {HOUSE_SMITH_HARMONDALE,        { ITEM_TREASURE_LEVEL_1, { 23, 24, 28, 20 } }},
@@ -205,86 +212,6 @@ bool isStealingModeActive() {
     return keyboardInputHandler->IsStealingToggled() && pParty->activeCharacter().CanSteal();
 }
 
-//----- (004B8F94) --------------------------------------------------------
-void GenerateSpecialShopItems() {
-    signed int item_count;
-    ITEM_TREASURE_LEVEL treasure_lvl = ITEM_TREASURE_LEVEL_INVALID;
-    int item_class = 0;
-
-    HOUSE_ID shopId = window_SpeakInHouse->houseId();
-    if (ItemAmountForShop(buildingTable[std::to_underlying(shopId) - 1].uType)) {
-        for (item_count = 0; item_count < ItemAmountForShop(buildingTable[std::to_underlying(shopId) - 1].uType); ++item_count) {
-            if (isWeaponShop(shopId)) {  // weapon shop
-                treasure_lvl = weaponShopVariationSpecial[shopId].treasure_level;
-                item_class = weaponShopVariationSpecial[shopId].item_class[grng->random(4)];
-            } else if (isArmorShop(shopId)) {  // armor shop
-                if (item_count >= 4) {
-                    treasure_lvl = armorShopBottomRowVariationSpecial[shopId].treasure_level;
-                    item_class = armorShopBottomRowVariationSpecial[shopId].item_class[grng->random(4)];
-                } else {
-                    treasure_lvl = armorShopTopRowVariationSpecial[shopId].treasure_level;
-                    item_class = armorShopTopRowVariationSpecial[shopId].item_class[grng->random(4)];
-                }
-            } else if (isMagicShop(shopId)) {  // magic shop
-                treasure_lvl = magicShopVariationSpecial[shopId];
-                item_class = 22; // misc
-            } else if (isAlchemyShop(shopId)) {  // alchemist shop
-                if (item_count < 6) {
-                    pParty->specialItemsInShops[shopId][item_count].Reset();
-                    pParty->specialItemsInShops[shopId][item_count].uItemID = grng->randomSample(recipeScrolls());  // mscrool
-                    continue;
-                } else {
-                    treasure_lvl = alchemyShopVariationSpecial[shopId];
-                    item_class = 44;  // potion
-                }
-            }
-            pItemTable->generateItem(treasure_lvl, item_class, &pParty->specialItemsInShops[shopId][item_count]);
-            pParty->specialItemsInShops[shopId][item_count].SetIdentified();  // identified
-        }
-    }
-    pParty->InTheShopFlags[std::to_underlying(shopId)] = 0;
-}
-
-//----- (004B8E3D) --------------------------------------------------------
-void GenerateStandartShopItems() {
-    signed int item_count;
-    ITEM_TREASURE_LEVEL treasure_lvl = ITEM_TREASURE_LEVEL_INVALID;
-    int item_class = 0;
-
-    HOUSE_ID shopId = window_SpeakInHouse->houseId();
-    if (ItemAmountForShop(buildingTable[std::to_underlying(shopId) - 1].uType)) {
-        for (item_count = 0; item_count < ItemAmountForShop(buildingTable[std::to_underlying(shopId) - 1].uType); ++item_count) {
-            if (isWeaponShop(shopId)) {  // weapon shop
-                treasure_lvl = weaponShopVariationStandart[shopId].treasure_level;
-                item_class = weaponShopVariationStandart[shopId].item_class[grng->random(4)];
-            } else if (isArmorShop(shopId)) {  // armor shop
-                if (item_count >= 4) {
-                    treasure_lvl = armorShopBottomRowVariationStandart[shopId].treasure_level;
-                    item_class = armorShopBottomRowVariationStandart[shopId].item_class[grng->random(4)];
-                } else {
-                    treasure_lvl = armorShopTopRowVariationStandart[shopId].treasure_level;
-                    item_class = armorShopTopRowVariationStandart[shopId].item_class[grng->random(4)];
-                }
-            } else if (isMagicShop(shopId)) {  // magic shop
-                treasure_lvl = magicShopVariationStandart[shopId];
-                item_class = 22;          // misc
-            } else if (isAlchemyShop(shopId)) {  // alchemist shop
-                if (item_count < 6) {
-                    pParty->standartItemsInShops[shopId][item_count].Reset();
-                    pParty->standartItemsInShops[shopId][item_count].uItemID = ITEM_POTION_BOTTLE;  // potion bottle
-                    continue;
-                } else {
-                    treasure_lvl = alchemyShopVariationStandart[shopId];
-                    item_class = 45;  // reagent
-                }
-            }
-            pItemTable->generateItem(treasure_lvl, item_class, &pParty->standartItemsInShops[shopId][item_count]);
-            pParty->standartItemsInShops[shopId][item_count].SetIdentified();  // identified
-        }
-    }
-    pParty->InTheShopFlags[std::to_underlying(shopId)] = 0;
-}
-
 void GUIWindow_Shop::mainDialogue() {
     GUIWindow dialogwin = *this;
     dialogwin.uFrameX = SIDE_TEXT_BOX_POS_X;
@@ -336,13 +263,7 @@ void GUIWindow_Shop::displayEquipmentDialogue() {
     pShopOptions[1] = localization->GetString(LSTR_IDENTIFY);
     pShopOptions[2] = localization->GetString(LSTR_REPAIR);
 
-    int options;
-    if (_buildingType == BuildingType_AlchemistShop) {
-        options = 2;
-    } else {
-        options = 3;
-    }
-
+    int options = (buildingTable[wData.val - 1].uType == BuildingType_AlchemistShop) ? 2 : 3;
     int all_text_height = 0;
     for (int i = 0; i < options; ++i)
         all_text_height += pFontArrus->CalcTextHeight(pShopOptions[i], dialogwin.uFrameWidth, 0);
@@ -387,7 +308,7 @@ void GUIWindow_Shop::sellDialogue() {
         int pItemID = pParty->activeCharacter().GetItemListAtInventoryIndex(invindex);
         if (pItemID) {
             ItemGen *item = &pParty->activeCharacter().pInventoryItemList[pItemID - 1];
-            MERCHANT_PHRASE phrases_id = pParty->activeCharacter().SelectPhrasesTransaction(item, _buildingType, wData.val, 3);
+            MERCHANT_PHRASE phrases_id = pParty->activeCharacter().SelectPhrasesTransaction(item, buildingTable[wData.val - 1].uType, wData.val, 3);
             std::string str = BuildDialogueString(pMerchantsSellPhrases[phrases_id], pParty->activeCharacterIndex() - 1, item, wData.val, 3);
             int vertMargin = (SIDE_TEXT_BOX_BODY_TEXT_HEIGHT - pFontArrus->CalcTextHeight(str, dialogwin.uFrameWidth, 0)) / 2 + SIDE_TEXT_BOX_BODY_TEXT_OFFSET;
             dialogwin.DrawTitleText(pFontArrus, 0, vertMargin, colorTable.White, str, 3);
@@ -420,7 +341,7 @@ void GUIWindow_Shop::identifyDialogue() {
 
             std::string str;
             if (!item->IsIdentified()) {
-                MERCHANT_PHRASE phrases_id = pParty->activeCharacter().SelectPhrasesTransaction(item, _buildingType, wData.val, 4);
+                MERCHANT_PHRASE phrases_id = pParty->activeCharacter().SelectPhrasesTransaction(item, buildingTable[wData.val - 1].uType, wData.val, 4);
                 str = BuildDialogueString(pMerchantsIdentifyPhrases[phrases_id], pParty->activeCharacterIndex() - 1, item, wData.val, 4);
             } else {
                 str = BuildDialogueString("%24", pParty->activeCharacterIndex() - 1, item, wData.val, 4);
@@ -456,7 +377,7 @@ void GUIWindow_Shop::repairDialogue() {
 
         if (pParty->activeCharacter().pOwnItems[pItemID - 1].uAttributes & ITEM_BROKEN) {
             ItemGen *item = &pParty->activeCharacter().pInventoryItemList[pItemID - 1];
-            MERCHANT_PHRASE phrases_id = pParty->activeCharacter().SelectPhrasesTransaction(item, _buildingType, wData.val, 5);
+            MERCHANT_PHRASE phrases_id = pParty->activeCharacter().SelectPhrasesTransaction(item, buildingTable[wData.val - 1].uType, wData.val, 5);
             std::string str = BuildDialogueString(pMerchantsRepairPhrases[phrases_id], pParty->activeCharacterIndex() - 1, item, wData.val, 5);
             int vertMargin = (SIDE_TEXT_BOX_BODY_TEXT_HEIGHT - pFontArrus->CalcTextHeight(str, dialogwin.uFrameWidth, 0)) / 2 + SIDE_TEXT_BOX_BODY_TEXT_OFFSET;
             dialogwin.DrawTitleText(pFontArrus, 0, vertMargin, colorTable.White, str, 3);
@@ -623,7 +544,7 @@ void GUIWindow_ArmorShop::shopWaresDialogue(bool isSpecial) {
 
                             std::string str;
                             if (!isStealingModeActive()) {
-                                MERCHANT_PHRASE phrase = pParty->activeCharacter().SelectPhrasesTransaction(item, _buildingType, wData.val, 2);
+                                MERCHANT_PHRASE phrase = pParty->activeCharacter().SelectPhrasesTransaction(item, buildingTable[wData.val - 1].uType, wData.val, 2);
                                 str = BuildDialogueString(pMerchantsBuyPhrases[phrase], pParty->activeCharacterIndex() - 1, item, wData.val, 2);
                             } else {
                                 str = BuildDialogueString(localization->GetString(LSTR_STEAL_ITEM_FMT), pParty->activeCharacterIndex() - 1, item, wData.val, 2);
@@ -726,7 +647,7 @@ void GUIWindow_MagicAlchemyShop::shopWaresDialogue(bool isSpecial) {
 
                             std::string str;
                             if (!isStealingModeActive()) {
-                                MERCHANT_PHRASE phrase = pParty->activeCharacter().SelectPhrasesTransaction(item, _buildingType, wData.val, 2);
+                                MERCHANT_PHRASE phrase = pParty->activeCharacter().SelectPhrasesTransaction(item, buildingTable[wData.val - 1].uType, wData.val, 2);
                                 str = BuildDialogueString(pMerchantsBuyPhrases[phrase], pParty->activeCharacterIndex() - 1, item, wData.val, 2);
                             } else {
                                 str = BuildDialogueString(localization->GetString(LSTR_STEAL_ITEM_FMT), pParty->activeCharacterIndex() - 1, item, wData.val, 2);
@@ -741,6 +662,177 @@ void GUIWindow_MagicAlchemyShop::shopWaresDialogue(bool isSpecial) {
             dialogwin.DrawShops_next_generation_time_string(pParty->PartyTimes.shopNextRefreshTime[houseId()] - pParty->GetPlayingTime());
         }
     }
+}
+
+void GUIWindow_WeaponShop::generateShopItems(bool isSpecial) {
+    std::array<ItemGen, 12> &itemArray = isSpecial ? pParty->specialItemsInShops[houseId()] : pParty->standartItemsInShops[houseId()];
+    const ITEM_VARIATION variation = isSpecial ? weaponShopVariationSpecial[houseId()] : weaponShopVariationStandart[houseId()];
+
+    for (int i = 0; i < itemAmountForShop(); i++) {
+        int itemClass = variation.item_class[grng->random(4)];
+        pItemTable->generateItem(variation.treasure_level, itemClass, &itemArray[i]);
+        itemArray[i].SetIdentified();
+    }
+
+    pParty->InTheShopFlags[houseId()] = 0;
+}
+
+void GUIWindow_ArmorShop::generateShopItems(bool isSpecial) {
+    std::array<ItemGen, 12> &itemArray = isSpecial ? pParty->specialItemsInShops[houseId()] : pParty->standartItemsInShops[houseId()];
+    const ITEM_VARIATION variationTop = isSpecial ? armorShopTopRowVariationSpecial[houseId()] : armorShopTopRowVariationStandart[houseId()];
+    const ITEM_VARIATION variationBottom = isSpecial ? armorShopBottomRowVariationSpecial[houseId()] : armorShopBottomRowVariationStandart[houseId()];
+
+    for (int i = 0; i < itemAmountForShop(); i++) {
+        int itemClass;
+        ITEM_TREASURE_LEVEL treasureLvl;
+
+        if (i >= 4) {
+            treasureLvl = variationBottom.treasure_level;
+            itemClass = variationBottom.item_class[grng->random(4)];
+        } else {
+            treasureLvl = variationTop.treasure_level;
+            itemClass = variationTop.item_class[grng->random(4)];
+        }
+        pItemTable->generateItem(treasureLvl, itemClass, &itemArray[i]);
+        itemArray[i].SetIdentified();
+    }
+
+    pParty->InTheShopFlags[houseId()] = 0;
+}
+
+void GUIWindow_MagicShop::generateShopItems(bool isSpecial) {
+    std::array<ItemGen, 12> &itemArray = isSpecial ? pParty->specialItemsInShops[houseId()] : pParty->standartItemsInShops[houseId()];
+    ITEM_TREASURE_LEVEL treasureLvl = isSpecial ? magicShopVariationSpecial[houseId()] : magicShopVariationStandart[houseId()];
+
+    for (int i = 0; i < itemAmountForShop(); i++) {
+        pItemTable->generateItem(treasureLvl, 22, &itemArray[i]);
+        itemArray[i].SetIdentified();
+    }
+
+    pParty->InTheShopFlags[houseId()] = 0;
+}
+
+void GUIWindow_AlchemyShop::generateShopItems(bool isSpecial) {
+    std::array<ItemGen, 12> &itemArray = isSpecial ? pParty->specialItemsInShops[houseId()] : pParty->standartItemsInShops[houseId()];
+    ITEM_TREASURE_LEVEL treasureLvl = isSpecial ? alchemyShopVariationSpecial[houseId()] : alchemyShopVariationStandart[houseId()];
+    int bottomRowItemClass = isSpecial ? 44 : 45;
+
+    for (int i = 0; i < itemAmountForShop(); i++) {
+        if (i < 6) {
+            itemArray[i].Reset();
+            if (isSpecial) {
+                itemArray[i].uItemID = grng->randomSample(recipeScrolls());
+            } else {
+                itemArray[i].uItemID = ITEM_POTION_BOTTLE;
+            }
+        } else {
+            pItemTable->generateItem(treasureLvl, bottomRowItemClass, &itemArray[i]);
+            itemArray[i].SetIdentified();
+        }
+    }
+
+    pParty->InTheShopFlags[houseId()] = 0;
+}
+
+std::vector<DIALOGUE_TYPE> GUIWindow_WeaponShop::listShopLearnableSkills() {
+    std::vector<int> itemClasses;
+    std::vector<DIALOGUE_TYPE> skillsOptions;
+
+    for (int itemClass : weaponShopVariationStandart[houseId()].item_class) {
+        if (std::find(itemClasses.begin(), itemClasses.end(), itemClass) == itemClasses.end()) {
+            itemClasses.push_back(itemClass);
+        }
+    }
+    for (int itemClass : weaponShopVariationSpecial[houseId()].item_class) {
+        if (std::find(itemClasses.begin(), itemClasses.end(), itemClass) == itemClasses.end()) {
+            itemClasses.push_back(itemClass);
+        }
+    }
+
+    for (int itemClass : itemClasses) {
+        switch (itemClass) {
+          case 23:
+            skillsOptions.push_back(DIALOGUE_LEARN_SWORD);
+            break;
+          case 24:
+            skillsOptions.push_back(DIALOGUE_LEARN_DAGGER);
+            break;
+          case 25:
+            skillsOptions.push_back(DIALOGUE_LEARN_AXE);
+            break;
+          case 26:
+            skillsOptions.push_back(DIALOGUE_LEARN_SPEAR);
+            break;
+          case 27:
+            skillsOptions.push_back(DIALOGUE_LEARN_BOW);
+            break;
+          case 28:
+            skillsOptions.push_back(DIALOGUE_LEARN_MACE);
+            break;
+          case 30:
+            skillsOptions.push_back(DIALOGUE_LEARN_STAFF);
+            break;
+          default:
+            continue;
+        }
+    }
+
+    return skillsOptions;
+}
+
+std::vector<DIALOGUE_TYPE> GUIWindow_ArmorShop::listShopLearnableSkills() {
+    std::vector<int> itemClasses;
+    std::vector<DIALOGUE_TYPE> skillsOptions;
+
+    for (int itemClass : armorShopTopRowVariationStandart[houseId()].item_class) {
+        if (std::find(itemClasses.begin(), itemClasses.end(), itemClass) == itemClasses.end()) {
+            itemClasses.push_back(itemClass);
+        }
+    }
+    for (int itemClass : armorShopBottomRowVariationStandart[houseId()].item_class) {
+        if (std::find(itemClasses.begin(), itemClasses.end(), itemClass) == itemClasses.end()) {
+            itemClasses.push_back(itemClass);
+        }
+    }
+    for (int itemClass : armorShopTopRowVariationSpecial[houseId()].item_class) {
+        if (std::find(itemClasses.begin(), itemClasses.end(), itemClass) == itemClasses.end()) {
+            itemClasses.push_back(itemClass);
+        }
+    }
+    for (int itemClass : armorShopBottomRowVariationSpecial[houseId()].item_class) {
+        if (std::find(itemClasses.begin(), itemClasses.end(), itemClass) == itemClasses.end()) {
+            itemClasses.push_back(itemClass);
+        }
+    }
+
+    for (int itemClass : itemClasses) {
+        switch (itemClass) {
+          case 31:
+            skillsOptions.push_back(DIALOGUE_LEARN_LEATHER);
+            break;
+          case 32:
+            skillsOptions.push_back(DIALOGUE_LEARN_CHAIN);
+            break;
+          case 33:
+            skillsOptions.push_back(DIALOGUE_LEARN_PLATE);
+            break;
+          case 34:
+            skillsOptions.push_back(DIALOGUE_LEARN_SHIELD);
+            break;
+          default:
+            continue;
+        }
+    }
+
+    return skillsOptions;
+}
+
+std::vector<DIALOGUE_TYPE> GUIWindow_MagicShop::listShopLearnableSkills() {
+    return {DIALOGUE_LEARN_ITEM_ID, DIALOGUE_LEARN_REPAIR};
+}
+
+std::vector<DIALOGUE_TYPE> GUIWindow_AlchemyShop::listShopLearnableSkills() {
+    return {DIALOGUE_LEARN_ALCHEMY, DIALOGUE_LEARN_MONSTER_ID};
 }
 
 void GUIWindow_Shop::houseSpecificDialogue() {
@@ -775,33 +867,47 @@ void GUIWindow_Shop::houseSpecificDialogue() {
 }
 
 void GUIWindow_Shop::houseDialogueOptionSelected(DIALOGUE_TYPE option) {
-    if (option == DIALOGUE_SHOP_BUY_STANDARD ||
-        option == DIALOGUE_SHOP_BUY_SPECIAL) {
+    if (option == DIALOGUE_SHOP_BUY_STANDARD || option == DIALOGUE_SHOP_BUY_SPECIAL) {
         if (pParty->PartyTimes.shopNextRefreshTime[houseId()] < pParty->GetPlayingTime()) {
-            GenerateStandartShopItems();
-            GenerateSpecialShopItems();
+            generateShopItems(false);
+            generateShopItems(true);
             GameTime nextGenTime = pParty->GetPlayingTime() + GameTime::FromDays(buildingTable[wData.val - 1].generation_interval_days);
             pParty->PartyTimes.shopNextRefreshTime[houseId()] = nextGenTime;
         }
 
-        std::array<ItemGen, 12> &itemArray = (option == DIALOGUE_SHOP_BUY_STANDARD) ? pParty->standartItemsInShops[houseId()] : pParty->specialItemsInShops[houseId()];
-        if (ItemAmountForShop(buildingTable[wData.val - 1].uType)) {
-            for (int i = 0; i < ItemAmountForShop(buildingTable[wData.val - 1].uType); ++i) {
+        const std::array<ItemGen, 12> &itemArray = (option == DIALOGUE_SHOP_BUY_STANDARD) ? pParty->standartItemsInShops[houseId()] : pParty->specialItemsInShops[houseId()];
+        for (int i = 0; i < itemAmountForShop(); ++i) {
+            if (itemArray[i].uItemID != ITEM_NULL) {
+                shop_ui_items_in_store[i] = assets->getImage_ColorKey(itemArray[i].GetIconName());
+            }
+        }
+        if (buildingTable[wData.val - 1].uType == BuildingType_WeaponShop) {
+            for (int i = 0; i < itemAmountForShop(); ++i) {
                 if (itemArray[i].uItemID != ITEM_NULL) {
-                    shop_ui_items_in_store[i] = assets->getImage_ColorKey(itemArray[i].GetIconName());
+                    // Note that we're using grng here for a reason - we want recorded mouse clicks to work.
+                    weaponYPos[i] = grng->random(300 - shop_ui_items_in_store[i]->height());
                 }
             }
         }
-        if (_buildingType == BuildingType_WeaponShop) {
-            if (ItemAmountForShop(buildingTable[wData.val - 1].uType)) {
-                for (int i = 0; i < ItemAmountForShop(buildingTable[wData.val - 1].uType); ++i) {
-                    if (itemArray[i].uItemID != ITEM_NULL) {
-                        // Note that we're using grng here for a reason - we want recorded mouse clicks to work.
-                        weaponYPos[i] = grng->random(300 - shop_ui_items_in_store[i]->height());
-                    }
-                }
-            }
+    } else if (IsSkillLearningDialogue(option)) {
+        learnSelectedSkill(GetLearningDialogueSkill(option));
+    }
+}
+
+std::vector<DIALOGUE_TYPE> GUIWindow_Shop::listDialogueOptions(DIALOGUE_TYPE option) {
+    switch (dialog_menu_id) {
+      case DIALOGUE_MAIN:
+        return {DIALOGUE_SHOP_BUY_STANDARD, DIALOGUE_SHOP_BUY_SPECIAL, DIALOGUE_SHOP_DISPLAY_EQUIPMENT, DIALOGUE_LEARN_SKILLS};
+      case DIALOGUE_SHOP_DISPLAY_EQUIPMENT:
+        if (buildingTable[wData.val - 1].uType == BuildingType_AlchemistShop) {
+            return {DIALOGUE_SHOP_SELL, DIALOGUE_SHOP_IDENTIFY};
+        } else {
+            return {DIALOGUE_SHOP_SELL, DIALOGUE_SHOP_IDENTIFY, DIALOGUE_SHOP_REPAIR};
         }
+      case DIALOGUE_LEARN_SKILLS:
+        return listShopLearnableSkills();
+      default:
+        return {};
     }
 }
 
