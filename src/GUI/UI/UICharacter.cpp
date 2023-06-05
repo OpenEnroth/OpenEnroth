@@ -50,8 +50,6 @@ void WetsuitOff(unsigned int uPlayerID);
 
 int bRingsShownInCharScreen;  // 5118E0
 
-// TODO(pskelton): convert to color32
-
 Color ui_mainmenu_copyright_color;
 
 Color ui_character_tooltip_header_default_color;
@@ -123,7 +121,7 @@ void set_default_ui_skin() {
     ui_character_bonus_text_color = colorTable.Green;
     ui_character_bonus_text_color_neg = colorTable.Red;
 
-    ui_character_skill_upgradeable_color = Color(0, 175, 255); // TODO(captainurist): colortable?
+    ui_character_skill_upgradeable_color = colorTable.BoltBlue;
     ui_character_skill_default_color = colorTable.Red;
     ui_character_skill_highlight_color = colorTable.Red;
 
@@ -559,7 +557,6 @@ GraphicsImage *ui_character_inventory_background_strip = nullptr;
 GraphicsImage *ui_character_inventory_magnification_glass = nullptr;
 GraphicsImage *ui_character_inventory_paperdoll_background = nullptr;
 GraphicsImage *ui_character_inventory_paperdoll_rings_background = nullptr;
-GraphicsImage *ui_character_inventory_paperdoll_rings_close = nullptr;
 
 static GraphicsImage *scrollstop = nullptr;
 
@@ -753,8 +750,8 @@ void GUIWindow_CharacterRecord::ToggleRingsOverlay() {
     pCharacterScreen_DetalizBtn->Release();
     pCharacterScreen_DollBtn->Release();
     if (bRingsShownInCharScreen) {
-        h = ui_character_inventory_paperdoll_rings_close->height();
-        w = ui_character_inventory_paperdoll_rings_close->width();
+        h = ui_exit_cancel_button_background->height();
+        w = ui_exit_cancel_button_background->width();
         y = 445;
         x = 471;
     } else {
@@ -1304,17 +1301,11 @@ void CharacterUI_DrawPaperdoll(Player *player) {
 
 //----- (0041A2D1) --------------------------------------------------------
 void CharacterUI_InventoryTab_Draw(Player *player, bool Cover_Strip) {
-    render->DrawTextureNew(8 / 640.0f, 8 / 480.0f,
-        ui_character_inventory_background);
+    render->DrawTextureNew(8 / 640.0f, 8 / 480.0f, ui_character_inventory_background);
+
     if (Cover_Strip) {
-        if (ui_character_inventory_background_strip == nullptr) {
-            // strip doesnt load if you havent already look at
-                        // inventorys
-            ui_character_inventory_background_strip =
-                assets->getImage_ColorKey("fr_strip");
-        }
-        render->DrawTextureNew(8 / 640.0f, 305 / 480.0f,
-            ui_character_inventory_background_strip);
+        ui_character_inventory_background_strip = assets->getImage_ColorKey("fr_strip");
+        render->DrawTextureNew(8 / 640.0f, 305 / 480.0f, ui_character_inventory_background_strip);
     }
 
     for (uint i = 0; i < 126; ++i) {
@@ -1383,7 +1374,7 @@ void CharacterUI_DrawPaperdollWithRingOverlay(Player *player) {
     render->DrawTextureNew(468 / 640.0f, 0, game_ui_right_panel_frame);
     render->DrawTextureNew(pCharacterScreen_DetalizBtn->uX / 640.0f,
                                 pCharacterScreen_DetalizBtn->uY / 480.0f,
-                                ui_character_inventory_paperdoll_rings_close);
+                                ui_exit_cancel_button_background);
 
     for (uint i = 0; i < 6; ++i) {
         if (!player->pEquipment.uRings[i]) continue;
@@ -1406,23 +1397,10 @@ void CharacterUI_DrawPaperdollWithRingOverlay(Player *player) {
 
 //----- (0043BCA7) --------------------------------------------------------
 void CharacterUI_LoadPaperdollTextures() {
-    int v3;                // ebx@10
-    Player *pPlayer;       // edi@12
-    signed int v32;        // [sp+10h] [bp-28h]@75
-    signed int v33;        // [sp+10h] [bp-28h]@77
-    int pItemTXTNum;       // [sp+14h] [bp-24h]@75
-    signed int v38;        // [sp+14h] [bp-24h]@79
-
-    if (!ui_character_inventory_magnification_glass)
-        ui_character_inventory_magnification_glass = assets->getImage_Alpha("MAGNIF-B");
-
-    // if ( !pParty->uAlignment || pParty->uAlignment == 1 || pParty->uAlignment == 2 )
-    if (!ui_character_inventory_paperdoll_background)
-        ui_character_inventory_paperdoll_background = assets->getImage_ColorKey("BACKDOLL");
-
+    ui_character_inventory_magnification_glass = assets->getImage_Alpha("MAGNIF-B");
+    ui_character_inventory_paperdoll_background = assets->getImage_ColorKey("BACKDOLL");
     ui_character_inventory_paperdoll_rings_background = assets->getImage_Alpha("BACKHAND");
 
-    ui_character_inventory_paperdoll_rings_close = ui_exit_cancel_button_background;
     for (int i = 0; i < pParty->pPlayers.size(); ++i) {
         if (pParty->pPlayers[i].hasUnderwaterSuitEquipped()) {
             WetsuitOn(i + 1);
@@ -1458,30 +1436,25 @@ void CharacterUI_LoadPaperdollTextures() {
                                           // different graphic for dwarves
             paperdoll_dbrds[11] = assets->getImage_Alpha("item092v3");
     }
-    // v43 = 0;
+
     for (uint i = 0; i < 4; ++i) {
         if (ShouldLoadTexturesForRaceAndGender(i)) {
             paperdoll_belt_texture[i][5] = loadTexture(paperdoll_belt_typeByIndex, 5, i, 0);  // Titans belt
 
-            for (v32 = 0; v32 < 17; ++v32) {  // simple armor
+            for (int v32 = 0; v32 < 17; ++v32) {  // simple armor
                 paperdoll_armor_texture[i][v32][0] = loadTexture(paperdoll_armor_typeByIndex, v32, i, 0);  // armor
                 paperdoll_armor_texture[i][v32][1] = loadTexture(paperdoll_armor_typeByIndex, v32, i, 1);  // shoulder 1
                 paperdoll_armor_texture[i][v32][2] = loadTexture(paperdoll_armor_typeByIndex, v32, i, 2);  // shoulder 2
             }
 
-            for (v33 = 0; v33 < 6; ++v33)  // boots
+            for (int v33 = 0; v33 < 6; ++v33)  // boots
                 paperdoll_boots_texture[i][v33] = loadTexture(paperdoll_boots_typeByIndex, v33, i, 0);
 
-            for (v38 = 0; v38 < 10; ++v38) {  // Cloak
+            for (int v38 = 0; v38 < 10; ++v38) {  // Cloak
                 paperdoll_cloak_texture[i][v38] = loadTexture(paperdoll_cloak_typeByIndex, v38, i, 0);
                 paperdoll_cloak_collar_texture[i][v38] = loadTexture(paperdoll_cloak_typeByIndex, v38, i, 1);
             }
         }
-        // else
-        //{
-        // v26 = v43;
-        //}
-        // v43 = v26 + 40;
     }
 }
 
@@ -1585,8 +1558,7 @@ void GUIWindow_CharacterRecord::CharacterUI_StatsTab_Draw(Player *player) {
 
     int pY = 53;
     pGUIWindow_CurrentMenu->DrawText(pFontArrus, {26, pY}, Color(),
-                                     formatLeftCol(LSTR_MIGHT, player->GetActualMight(), player->GetBaseStrength()));
-    // TODO(captainurist): GetActualMight vs GetBaseStrength, we need consistent naming
+                                     formatLeftCol(LSTR_MIGHT, player->GetActualMight(), player->GetBaseMight()));
 
     pY += pFontArrus->GetHeight() - 2;
     pGUIWindow_CurrentMenu->DrawText(pFontArrus, {26, pY}, Color(),
@@ -1594,8 +1566,7 @@ void GUIWindow_CharacterRecord::CharacterUI_StatsTab_Draw(Player *player) {
 
     pY += pFontArrus->GetHeight() - 2;
     pGUIWindow_CurrentMenu->DrawText(pFontArrus, {26, pY}, Color(),
-                                     formatLeftCol(LSTR_PERSONALITY, player->GetActualWillpower(), player->GetBaseWillpower()));
-    // TODO(captainurist): LSTR_PERSONALITY vs GetActualWillpower, we need consistent naming
+                                     formatLeftCol(LSTR_PERSONALITY, player->GetActualPersonality(), player->GetBasePersonality()));
 
     pY += pFontArrus->GetHeight() - 2;
     pGUIWindow_CurrentMenu->DrawText(pFontArrus, {26, pY}, Color(),

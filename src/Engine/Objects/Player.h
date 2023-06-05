@@ -181,9 +181,9 @@ struct Player {
     int GetActualAttribute(CHARACTER_ATTRIBUTE_TYPE attrId,
                            unsigned short Player::*attrValue,
                            unsigned short Player::*attrBonus) const;
-    int GetBaseStrength() const;
+    int GetBaseMight() const;
     int GetBaseIntelligence() const;
-    int GetBaseWillpower() const;
+    int GetBasePersonality() const;
     int GetBaseEndurance() const;
     int GetBaseAccuracy() const;
     int GetBaseSpeed() const;
@@ -192,7 +192,7 @@ struct Player {
     int GetActualLevel() const;
     int GetActualMight() const;
     int GetActualIntelligence() const;
-    int GetActualWillpower() const;
+    int GetActualPersonality() const;
     int GetActualEndurance() const;
     int GetActualAccuracy() const;
     int GetActualSpeed() const;
@@ -460,8 +460,8 @@ struct Player {
     uint16_t uMightBonus;
     uint16_t uIntelligence;
     uint16_t uIntelligenceBonus;
-    uint16_t uWillpower;
-    uint16_t uWillpowerBonus;
+    uint16_t uPersonality;
+    uint16_t uPersonalityBonus;
     uint16_t uEndurance;
     uint16_t uEnduranceBonus;
     uint16_t uSpeed;
@@ -534,7 +534,7 @@ struct Player {
     int pure_speed_used;
     int pure_intellect_used;
     int pure_endurance_used;
-    int pure_willpower_used;
+    int pure_personality_used;
     int pure_accuracy_used;
     int pure_might_used;
     union {  // 214h

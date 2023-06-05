@@ -151,7 +151,7 @@ void Localization::InitializeSpellNames() {
     this->spell_names[38] = this->localization_strings[248];
     this->spell_names[39] = this->localization_strings[674];
     this->spell_names[40] =
-        this->localization_strings[249];  // Temporary Willpower
+        this->localization_strings[249];  // Temporary Personality
     this->spell_names[41] = this->localization_strings[258];
     this->spell_names[42] = this->localization_strings[194];
     this->spell_names[43] = this->localization_strings[657];  // Water Breathing
@@ -431,7 +431,7 @@ void Localization::InitializeSpellSchoolNames() {
 void Localization::InitializeAttributeNames() {
     this->attribute_names[0] = this->localization_strings[144];  // Might
     this->attribute_names[1] = this->localization_strings[116];  // Intelligence
-    this->attribute_names[2] = this->localization_strings[163];  // Willpower
+    this->attribute_names[2] = this->localization_strings[163];  // Personality
     this->attribute_names[3] = this->localization_strings[75];   // Endurance
     this->attribute_names[4] = this->localization_strings[1];    // Accuracy
     this->attribute_names[5] = this->localization_strings[211];  // Speed

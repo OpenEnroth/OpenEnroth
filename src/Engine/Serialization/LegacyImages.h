@@ -280,8 +280,8 @@ struct Player_MM7 {
     /* 00BE */ uint16_t mightBonus;
     /* 00C0 */ uint16_t intelligence;
     /* 00C2 */ uint16_t intelligenceBonus;
-    /* 00C4 */ uint16_t willpower;
-    /* 00C6 */ uint16_t willpowerBonus;
+    /* 00C4 */ uint16_t personality;
+    /* 00C6 */ uint16_t personalityBonus;
     /* 00C8 */ uint16_t endurance;
     /* 00CA */ uint16_t enduranceBonus;
     /* 00CC */ uint16_t speed;
@@ -312,7 +312,7 @@ struct Player_MM7 {
     /* 01FC */ int32_t pureSpeedUsed;
     /* 0200 */ int32_t pureIntellectUsed;
     /* 0204 */ int32_t pureEnduranceUsed;
-    /* 0208 */ int32_t pureWillpowerUsed;
+    /* 0208 */ int32_t purePersonalityUsed;
     /* 020C */ int32_t pureAccuracyUsed;
     /* 0210 */ int32_t pureMightUsed;
     /* 0214 */ std::array<ItemGen_MM7, 138> ownItems;

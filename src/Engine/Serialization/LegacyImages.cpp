@@ -612,8 +612,8 @@ void serialize(const Player &src, Player_MM7 *dst) {
     dst->mightBonus = src.uMightBonus;
     dst->intelligence = src.uIntelligence;
     dst->intelligenceBonus = src.uIntelligenceBonus;
-    dst->willpower = src.uWillpower;
-    dst->willpowerBonus = src.uWillpowerBonus;
+    dst->personality = src.uPersonality;
+    dst->personalityBonus = src.uPersonalityBonus;
     dst->endurance = src.uEndurance;
     dst->enduranceBonus = src.uEnduranceBonus;
     dst->speed = src.uSpeed;
@@ -645,7 +645,7 @@ void serialize(const Player &src, Player_MM7 *dst) {
     dst->pureSpeedUsed = src.pure_speed_used;
     dst->pureIntellectUsed = src.pure_intellect_used;
     dst->pureEnduranceUsed = src.pure_endurance_used;
-    dst->pureWillpowerUsed = src.pure_willpower_used;
+    dst->purePersonalityUsed = src.pure_personality_used;
     dst->pureAccuracyUsed = src.pure_accuracy_used;
     dst->pureMightUsed = src.pure_might_used;
 
@@ -876,8 +876,8 @@ void deserialize(const Player_MM7 &src, Player *dst) {
     dst->uMightBonus = src.mightBonus;
     dst->uIntelligence = src.intelligence;
     dst->uIntelligenceBonus = src.intelligenceBonus;
-    dst->uWillpower = src.willpower;
-    dst->uWillpowerBonus = src.willpowerBonus;
+    dst->uPersonality = src.personality;
+    dst->uPersonalityBonus = src.personalityBonus;
     dst->uEndurance = src.endurance;
     dst->uEnduranceBonus = src.enduranceBonus;
     dst->uSpeed = src.speed;
@@ -909,7 +909,7 @@ void deserialize(const Player_MM7 &src, Player *dst) {
     dst->pure_speed_used = src.pureSpeedUsed;
     dst->pure_intellect_used = src.pureIntellectUsed;
     dst->pure_endurance_used = src.pureEnduranceUsed;
-    dst->pure_willpower_used = src.pureWillpowerUsed;
+    dst->pure_personality_used = src.purePersonalityUsed;
     dst->pure_accuracy_used = src.pureAccuracyUsed;
     dst->pure_might_used = src.pureMightUsed;
 

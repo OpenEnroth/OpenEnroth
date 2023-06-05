@@ -414,7 +414,7 @@ void GUIWindow_PartyCreation::Update() {
         pStatColor = pParty->pPlayers[i].GetStatColor(1);
         pGUIWindow_CurrentMenu->DrawText(pFontCreate, {uX, pIntervalY + posY}, pStatColor, str2);
 
-        auto str3 = fmt::format("{}\r{:03}{}", localization->GetString(LSTR_PERSONALITY), pX_Numbers, pParty->pPlayers[i].GetActualWillpower());
+        auto str3 = fmt::format("{}\r{:03}{}", localization->GetString(LSTR_PERSONALITY), pX_Numbers, pParty->pPlayers[i].GetActualPersonality());
         pStatColor = pParty->pPlayers[i].GetStatColor(2);
         pGUIWindow_CurrentMenu->DrawText(pFontCreate, {uX, 2 * pIntervalY + posY}, pStatColor, str3);
 
