@@ -45,12 +45,9 @@ static Palette MakePaletteAlpha(uint8_t *palette24) {
 static Palette MakePaletteColorKey(uint8_t *palette24, Color key) {
     Palette result = MakePaletteSolid(palette24);
 
-    for (size_t i = 0; i < 256; i++) {
-        if (result.colors[i] == key) {
-            result.colors[i] = Color();
-            break;
-        }
-    }
+    for (size_t i = 0; i < 256; i++)
+        if (result.colors[i] == key)
+            result.colors[i] = Color(); // Repeated appearances of the same color do happen, so can't break early.
 
     return result;
 }
@@ -65,7 +62,7 @@ bool Paletted_Img_Loader::Load(RgbaImage *rgbaImage, GrayscaleImage *indexedImag
         return false;
 
     *indexedImage = GrayscaleImage::copy(tex->header.uTextureWidth, tex->header.uTextureHeight, tex->paletted_pixels);
-    *palette = MakePaletteAlpha(tex->pPalette24);
+    *palette = MakePaletteSolid(tex->pPalette24);
     *rgbaImage = makeRgbaImage(*indexedImage, *palette);
 
     return true;

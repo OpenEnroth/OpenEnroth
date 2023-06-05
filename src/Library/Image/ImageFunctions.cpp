@@ -16,3 +16,13 @@ RgbaImage makeRgbaImage(GrayscaleImageView indexedImage, const Palette &palette)
 
     return result;
 }
+
+RgbaImage flipVertically(RgbaImageView image) {
+    if (!image)
+        return RgbaImage();
+
+    RgbaImage result = RgbaImage::uninitialized(image.width(), image.height());
+    for (size_t y = 0, h = image.height(); y < h; y++)
+        memcpy(result[h - y - 1].data(), image[y].data(), image[y].size_bytes());
+    return result;
+}
