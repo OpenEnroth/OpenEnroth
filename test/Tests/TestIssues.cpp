@@ -46,7 +46,7 @@ static std::initializer_list<PLAYER_BUFFS> allPotionBuffs() {
         PLAYER_BUFF_INTELLIGENCE,
         PLAYER_BUFF_LUCK,
         PLAYER_BUFF_STRENGTH,
-        PLAYER_BUFF_WILLPOWER,
+        PLAYER_BUFF_PERSONALITY,
         PLAYER_BUFF_SPEED,
         PLAYER_BUFF_RESIST_WATER,
         PLAYER_BUFF_WATER_WALK
@@ -228,7 +228,7 @@ GAME_TEST(Issues, Issue293a) {
     test->playTraceFromTestData("issue_293a.mm7", "issue_293a.json", [] {
         EXPECT_EQ(pParty->pPlayers[0].uMight, 30);
         EXPECT_EQ(pParty->pPlayers[0].uIntelligence, 5);
-        EXPECT_EQ(pParty->pPlayers[0].uWillpower, 5);
+        EXPECT_EQ(pParty->pPlayers[0].uPersonality, 5);
         EXPECT_EQ(pParty->pPlayers[0].uEndurance, 13);
         EXPECT_EQ(pParty->pPlayers[0].uSpeed, 14);
         EXPECT_EQ(pParty->pPlayers[0].uAccuracy, 13);
@@ -241,7 +241,7 @@ GAME_TEST(Issues, Issue293a) {
 
     EXPECT_EQ(pParty->pPlayers[0].uMight, 30);
     EXPECT_EQ(pParty->pPlayers[0].uIntelligence, 7); // +2
-    EXPECT_EQ(pParty->pPlayers[0].uWillpower, 5);
+    EXPECT_EQ(pParty->pPlayers[0].uPersonality, 5);
     EXPECT_EQ(pParty->pPlayers[0].uEndurance, 13);
     EXPECT_EQ(pParty->pPlayers[0].uSpeed, 14);
     EXPECT_EQ(pParty->pPlayers[0].uAccuracy, 15); // +2
@@ -1051,7 +1051,7 @@ GAME_TEST(Issues, Issue784) {
     EXPECT_EQ(225, player0.GetMagicalBonus(CHARACTER_ATTRIBUTE_INTELLIGENCE));
     EXPECT_EQ(225, player0.GetMagicalBonus(CHARACTER_ATTRIBUTE_LUCK));
     EXPECT_EQ(225, player0.GetMagicalBonus(CHARACTER_ATTRIBUTE_MIGHT));
-    EXPECT_EQ(225, player0.GetMagicalBonus(CHARACTER_ATTRIBUTE_WILLPOWER));
+    EXPECT_EQ(225, player0.GetMagicalBonus(CHARACTER_ATTRIBUTE_PERSONALITY));
     EXPECT_EQ(225, player0.GetMagicalBonus(CHARACTER_ATTRIBUTE_SPEED));
     EXPECT_EQ(225, player0.GetMagicalBonus(CHARACTER_ATTRIBUTE_RESIST_WATER));
     // No check for PLAYER_BUFF_WATER_WALK

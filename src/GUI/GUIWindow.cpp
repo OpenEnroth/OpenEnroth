@@ -1463,7 +1463,7 @@ std::string _4B254D_SkillMasteryTeacher(int trainerInfo) {
             gold_transaction_amount = 2000;
             break;
         case PLAYER_SKILL_MASTERY_MASTER:
-            if (activePlayer->GetBaseWillpower() < 50)
+            if (activePlayer->GetBasePersonality() < 50)
                 return std::string(pNPCTopics[127].pText);
             gold_transaction_amount = 5000;
             break;

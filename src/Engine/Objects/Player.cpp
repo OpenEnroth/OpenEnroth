@@ -147,7 +147,7 @@ unsigned char pConditionAttributeModifier[7][19] = {
     {100, 100, 100, 50, 25, 10, 100, 100, 75, 60, 50, 30, 100, 100, 100, 100,
      100, 1, 100},  // Intelligence
     {100, 100, 100, 50, 25, 10, 100, 100, 75, 60, 50, 30, 100, 100, 100, 100,
-     100, 1, 100},  // Willpower
+     100, 1, 100},  // Personality
     {100, 100, 100, 100, 50, 150, 75, 60, 50, 30, 25, 10, 100, 100, 100, 100,
      100, 100, 100},  // Endurance
     {100, 100, 100, 50, 10, 100, 75, 60, 50, 30, 25, 10, 100, 100, 100, 100,
@@ -160,7 +160,7 @@ unsigned char pConditionAttributeModifier[7][19] = {
 unsigned char pAgingAttributeModifier[7][4] = {
     {100, 75, 40, 10},      // Might
     {100, 150, 100, 10},    // Intelligence
-    {100, 150, 100, 10},    // Willpower
+    {100, 150, 100, 10},    // Personality
     {100, 75, 40, 10},      // Endurance
     {100, 100, 40, 10},     // Accuracy
     {100, 100, 40, 10},     // Speed
@@ -196,7 +196,7 @@ int PlayerCreation_GetUnspentAttributePointCount() {
                     CurrentStatValue = player.uIntelligence;
                     break;
                 case 2:
-                    CurrentStatValue = player.uWillpower;
+                    CurrentStatValue = player.uPersonality;
                     break;
                 case 3:
                     CurrentStatValue = player.uEndurance;
@@ -843,8 +843,8 @@ int Player::GetBaseIntelligence() const {
 }
 
 //----- (0048C883) --------------------------------------------------------
-int Player::GetBaseWillpower() const {
-    return this->uWillpower + GetItemsBonus(CHARACTER_ATTRIBUTE_WILLPOWER);
+int Player::GetBasePersonality() const {
+    return this->uPersonality + GetItemsBonus(CHARACTER_ATTRIBUTE_PERSONALITY);
 }
 
 //----- (0048C89A) --------------------------------------------------------
@@ -893,9 +893,9 @@ int Player::GetActualIntelligence() const {
 }
 
 //----- (0048CA3F) --------------------------------------------------------
-int Player::GetActualWillpower() const {
-    return GetActualAttribute(CHARACTER_ATTRIBUTE_WILLPOWER,
-                              &Player::uWillpower, &Player::uWillpowerBonus);
+int Player::GetActualPersonality() const {
+    return GetActualAttribute(CHARACTER_ATTRIBUTE_PERSONALITY,
+                              &Player::uPersonality, &Player::uPersonalityBonus);
 }
 
 //----- (0048CABC) --------------------------------------------------------
@@ -1620,7 +1620,7 @@ int Player::ReceiveSpecialAttackEffect(
 
     switch (attTypeCast) {
         case SPECIAL_ATTACK_CURSE:
-            statcheck = GetActualWillpower();
+            statcheck = GetActualPersonality();
             statcheckbonus = GetParameterBonus(statcheck);
             break;
 
@@ -1659,7 +1659,7 @@ int Player::ReceiveSpecialAttackEffect(
 
         case SPECIAL_ATTACK_MANA_DRAIN:
             statcheckbonus = (GetParameterBonus(GetActualIntelligence()) +
-                              GetParameterBonus(GetActualWillpower())) /
+                              GetParameterBonus(GetActualPersonality())) /
                              2;
             break;
 
@@ -2144,7 +2144,7 @@ int Player::GetMaxMana() const {
         case PLAYER_CLASS_PRIEST_OF_SUN:
         case PLAYER_CLASS_PRIEST_OF_MOON:
             // personality based mana
-            mainmanastat = GetActualWillpower();
+            mainmanastat = GetActualPersonality();
             statbonus = GetParameterBonus(mainmanastat);
             break;
 
@@ -2156,7 +2156,7 @@ int Player::GetMaxMana() const {
         case PLAYER_CLASS_ARCH_DRUID:
         case PLAYER_CLASS_WARLOCK:
             // mixed base mana
-            mainmanastat = GetActualWillpower();
+            mainmanastat = GetActualPersonality();
             statbonus = GetParameterBonus(mainmanastat);
             addmanastat = GetActualIntelligence();
             statbonus += GetParameterBonus(addmanastat);
@@ -2585,7 +2585,7 @@ int Player::GetItemsBonus(CHARACTER_ATTRIBUTE_TYPE attr, bool getOnlyMainHandDmg
 
         case CHARACTER_ATTRIBUTE_MIGHT:
         case CHARACTER_ATTRIBUTE_INTELLIGENCE:
-        case CHARACTER_ATTRIBUTE_WILLPOWER:
+        case CHARACTER_ATTRIBUTE_PERSONALITY:
         case CHARACTER_ATTRIBUTE_ENDURANCE:
         case CHARACTER_ATTRIBUTE_ACCURACY:
         case CHARACTER_ATTRIBUTE_SPEED:
@@ -2710,8 +2710,8 @@ int Player::GetMagicalBonus(CHARACTER_ATTRIBUTE_TYPE a2) const {
             v3 = pPlayerBuffs[PLAYER_BUFF_INTELLIGENCE].power;
             v4 = pParty->pPartyBuffs[PARTY_BUFF_DAY_OF_GODS].power;
             break;
-        case CHARACTER_ATTRIBUTE_WILLPOWER:
-            v3 = pPlayerBuffs[PLAYER_BUFF_WILLPOWER].power;
+        case CHARACTER_ATTRIBUTE_PERSONALITY:
+            v3 = pPlayerBuffs[PLAYER_BUFF_PERSONALITY].power;
             v4 = pParty->pPartyBuffs[PARTY_BUFF_DAY_OF_GODS].power;
             break;
         case CHARACTER_ATTRIBUTE_ENDURANCE:
@@ -3218,7 +3218,7 @@ void Player::SetInitialStats() {
     CHARACTER_RACE race = GetRace();
     uMight = StatTable[race][0].uBaseValue;
     uIntelligence = StatTable[race][1].uBaseValue;
-    uWillpower = StatTable[race][2].uBaseValue;
+    uPersonality = StatTable[race][2].uBaseValue;
     uEndurance = StatTable[race][3].uBaseValue;
     uAccuracy = StatTable[race][4].uBaseValue;
     uSpeed = StatTable[race][5].uBaseValue;
@@ -3272,7 +3272,7 @@ void Player::Reset(PLAYER_CLASS_TYPE cls) {
     uSpeedBonus = 0;
     uAccuracyBonus = 0;
     uEnduranceBonus = 0;
-    uWillpowerBonus = 0;
+    uPersonalityBonus = 0;
     uIntelligenceBonus = 0;
     uMightBonus = 0;
     uLevel = 1;
@@ -3357,8 +3357,8 @@ void Player::DecreaseAttribute(int eAttribute) {
         case CHARACTER_ATTRIBUTE_INTELLIGENCE:
             AttrToChange = &this->uIntelligence;
             break;
-        case CHARACTER_ATTRIBUTE_WILLPOWER:
-            AttrToChange = &this->uWillpower;
+        case CHARACTER_ATTRIBUTE_PERSONALITY:
+            AttrToChange = &this->uPersonality;
             break;
         case CHARACTER_ATTRIBUTE_ENDURANCE:
             AttrToChange = &this->uEndurance;
@@ -3403,7 +3403,7 @@ void Player::IncreaseAttribute(int eAttribute) {
             statToChange = &this->uIntelligence;
             break;
         case 2:
-            statToChange = &this->uWillpower;
+            statToChange = &this->uPersonality;
             break;
         case 3:
             statToChange = &this->uEndurance;
@@ -3441,7 +3441,7 @@ void Player::resetTempBonuses() {
     this->uAccuracyBonus = 0;
     this->uSpeedBonus = 0;
     this->uEnduranceBonus = 0;
-    this->uWillpowerBonus = 0;
+    this->uPersonalityBonus = 0;
     this->uIntelligenceBonus = 0;
     this->uMightBonus = 0;
     this->field_100 = 0;
@@ -3492,7 +3492,7 @@ Color Player::GetStatColor(int uStat) const {
             attribute_value = uIntelligence;
             break;
         case 2:
-            attribute_value = uWillpower;
+            attribute_value = uPersonality;
             break;
         case 3:
             attribute_value = uEndurance;
@@ -3673,7 +3673,7 @@ void Player::useItem(int targetCharacter, bool isPortraitClick) {
 
             case ITEM_POTION_PERSONALITY_BOOST:
                 // mastery was NONE
-                playerAffected->pPlayerBuffs[PLAYER_BUFF_WILLPOWER].Apply(pParty->GetPlayingTime() + buffDuration, PLAYER_SKILL_MASTERY_MASTER,
+                playerAffected->pPlayerBuffs[PLAYER_BUFF_PERSONALITY].Apply(pParty->GetPlayingTime() + buffDuration, PLAYER_SKILL_MASTERY_MASTER,
                         potionStrength * 3, 0, 0);
                 break;
 
@@ -3797,9 +3797,9 @@ void Player::useItem(int targetCharacter, bool isPortraitClick) {
                 break;
 
             case ITEM_POTION_PURE_PERSONALITY:
-                if (!playerAffected->pure_willpower_used) {
-                    playerAffected->uWillpower += 50;
-                    playerAffected->pure_willpower_used = 1;
+                if (!playerAffected->pure_personality_used) {
+                    playerAffected->uPersonality += 50;
+                    playerAffected->pure_personality_used = 1;
                 }
                 break;
 
@@ -3954,7 +3954,7 @@ void Player::useItem(int targetCharacter, bool isPortraitClick) {
                     status = fmt::format("+{} {} {}", value, localization->GetAttirubteName(1), localization->GetString(LSTR_PERMANENT));
                     break;
                 case 2: // Mar
-                    playerAffected->uWillpower += value;
+                    playerAffected->uPersonality += value;
                     status = fmt::format("+{} {} {}", value, localization->GetAttirubteName(2), localization->GetString(LSTR_PERMANENT));
                     break;
                 case 3: // Apr
@@ -4160,7 +4160,7 @@ bool Player::CompareVariable(VariableType VarNum, int pValue) {
         case VAR_IntellectBonus:
             return this->uIntelligenceBonus >= pValue;
         case VAR_PersonalityBonus:
-            return this->uWillpowerBonus >= pValue;
+            return this->uPersonalityBonus >= pValue;
         case VAR_EnduranceBonus:
             return this->uEnduranceBonus >= pValue;
         case VAR_SpeedBonus:
@@ -4174,7 +4174,7 @@ bool Player::CompareVariable(VariableType VarNum, int pValue) {
         case VAR_BaseIntellect:
             return this->uIntelligence >= pValue;
         case VAR_BasePersonality:
-            return this->uWillpower >= pValue;
+            return this->uPersonality >= pValue;
         case VAR_BaseEndurance:
             return this->uEndurance >= pValue;
         case VAR_BaseSpeed:
@@ -4188,7 +4188,7 @@ bool Player::CompareVariable(VariableType VarNum, int pValue) {
         case VAR_ActualIntellect:
             return GetActualIntelligence() >= pValue;
         case VAR_ActualPersonality:
-            return GetActualWillpower() >= pValue;
+            return GetActualPersonality() >= pValue;
         case VAR_ActualEndurance:
             return GetActualEndurance() >= pValue;
         case VAR_ActualSpeed:
@@ -4368,8 +4368,8 @@ bool Player::CompareVariable(VariableType VarNum, int pValue) {
             baseStat = GetBaseIntelligence();
             return (actStat >= baseStat);
         case VAR_IsPersonalityMoreThanBase:
-            actStat = GetActualWillpower();
-            baseStat = GetBaseWillpower();
+            actStat = GetActualPersonality();
+            baseStat = GetBasePersonality();
             return (actStat >= baseStat);
         case VAR_IsEnduranceMoreThanBase:
             actStat = GetActualEndurance();
@@ -4644,7 +4644,7 @@ void Player::SetVariable(VariableType var_type, signed int var_value) {
             PlayAwardSound_Anim_Face(SPEECH_StatBaseInc);
             return;
         case VAR_BasePersonality:
-            this->uWillpower = (uint8_t)var_value;
+            this->uPersonality = (uint8_t)var_value;
             PlayAwardSound_Anim_Face(SPEECH_StatBaseInc);
             return;
         case VAR_BaseEndurance:
@@ -4675,7 +4675,7 @@ void Player::SetVariable(VariableType var_type, signed int var_value) {
             return;
         case VAR_PersonalityBonus:
         case VAR_ActualPersonality:
-            this->uWillpowerBonus = (uint8_t)var_value;
+            this->uPersonalityBonus = (uint8_t)var_value;
             PlayAwardSound_Anim_Face(SPEECH_StatBonusInc);
             return;
         case VAR_EnduranceBonus:
@@ -5211,7 +5211,7 @@ void Player::AddVariable(VariableType var_type, signed int val) {
             PlayAwardSound_Anim97_Face(SPEECH_StatBaseInc);
             return;
         case VAR_BasePersonality:
-            this->uWillpower = std::min(this->uWillpower + val, 255);
+            this->uPersonality = std::min(this->uPersonality + val, 255);
             PlayAwardSound_Anim97_Face(SPEECH_StatBaseInc);
             return;
         case VAR_BaseEndurance:
@@ -5247,7 +5247,7 @@ void Player::AddVariable(VariableType var_type, signed int val) {
             return;
         case VAR_PersonalityBonus:
         case VAR_ActualPersonality:
-            this->uWillpowerBonus = std::min(this->uWillpowerBonus + val, 255);
+            this->uPersonalityBonus = std::min(this->uPersonalityBonus + val, 255);
             PlayAwardSound_Anim97_Face(SPEECH_StatBonusInc);
             return;
         case VAR_EnduranceBonus:
@@ -5733,7 +5733,7 @@ void Player::SubtractVariable(VariableType VarNum, signed int pValue) {
             return;
         case VAR_PersonalityBonus:
         case VAR_ActualPersonality:
-            this->uWillpowerBonus -= (uint16_t)pValue;
+            this->uPersonalityBonus -= (uint16_t)pValue;
             this->PlayAwardSound_Anim98_Face(SPEECH_StatBonusInc);
             return;
         case VAR_EnduranceBonus:
@@ -5765,7 +5765,7 @@ void Player::SubtractVariable(VariableType VarNum, signed int pValue) {
             this->PlayAwardSound_Anim98_Face(SPEECH_StatBaseInc);
             return;
         case VAR_BasePersonality:
-            this->uWillpower -= (uint16_t)pValue;
+            this->uPersonality -= (uint16_t)pValue;
             this->PlayAwardSound_Anim98_Face(SPEECH_StatBaseInc);
             return;
         case VAR_BaseEndurance:
@@ -7437,7 +7437,7 @@ Player::Player() {
 
     uMight = uMightBonus = 0;
     uIntelligence = uIntelligenceBonus = 0;
-    uWillpower = uWillpowerBonus = 0;
+    uPersonality = uPersonalityBonus = 0;
     uEndurance = uEnduranceBonus = 0;
     uSpeed = uSpeedBonus = 0;
     uAccuracy = uAccuracyBonus = 0;
@@ -7451,7 +7451,7 @@ Player::Player() {
     pure_speed_used = 0;
     pure_intellect_used = 0;
     pure_endurance_used = 0;
-    pure_willpower_used = 0;
+    pure_personality_used = 0;
     pure_accuracy_used = 0;
     pure_might_used = 0;
 

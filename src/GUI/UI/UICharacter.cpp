@@ -1302,7 +1302,7 @@ void CharacterUI_DrawPaperdoll(Player *player) {
 //----- (0041A2D1) --------------------------------------------------------
 void CharacterUI_InventoryTab_Draw(Player *player, bool Cover_Strip) {
     render->DrawTextureNew(8 / 640.0f, 8 / 480.0f, ui_character_inventory_background);
-    
+
     if (Cover_Strip) {
         ui_character_inventory_background_strip = assets->getImage_ColorKey("fr_strip");
         render->DrawTextureNew(8 / 640.0f, 305 / 480.0f, ui_character_inventory_background_strip);
@@ -1566,8 +1566,7 @@ void GUIWindow_CharacterRecord::CharacterUI_StatsTab_Draw(Player *player) {
 
     pY += pFontArrus->GetHeight() - 2;
     pGUIWindow_CurrentMenu->DrawText(pFontArrus, {26, pY}, Color(),
-                                     formatLeftCol(LSTR_PERSONALITY, player->GetActualWillpower(), player->GetBaseWillpower()));
-    // TODO(captainurist): LSTR_PERSONALITY vs GetActualWillpower, we need consistent naming
+                                     formatLeftCol(LSTR_PERSONALITY, player->GetActualPersonality(), player->GetBasePersonality()));
 
     pY += pFontArrus->GetHeight() - 2;
     pGUIWindow_CurrentMenu->DrawText(pFontArrus, {26, pY}, Color(),

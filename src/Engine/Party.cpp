@@ -445,7 +445,7 @@ void Party::createDefaultParty(bool bDebugGiveItems) {
     this->pPlayers[0].uVoiceID = 17;
     this->pPlayers[0].uMight = 30;
     this->pPlayers[0].uIntelligence = 5;
-    this->pPlayers[0].uWillpower = 5;
+    this->pPlayers[0].uPersonality = 5;
     this->pPlayers[0].uEndurance = 13;
     this->pPlayers[0].uAccuracy = 13;
     this->pPlayers[0].uSpeed = 14;
@@ -462,7 +462,7 @@ void Party::createDefaultParty(bool bDebugGiveItems) {
     this->pPlayers[1].uVoiceID = 3;
     this->pPlayers[1].uMight = 13;
     this->pPlayers[1].uIntelligence = 9;
-    this->pPlayers[1].uWillpower = 9;
+    this->pPlayers[1].uPersonality = 9;
     this->pPlayers[1].uEndurance = 13;
     this->pPlayers[1].uAccuracy = 13;
     this->pPlayers[1].uSpeed = 13;
@@ -479,7 +479,7 @@ void Party::createDefaultParty(bool bDebugGiveItems) {
     this->pPlayers[2].uVoiceID = 14;
     this->pPlayers[2].uMight = 12;
     this->pPlayers[2].uIntelligence = 9;
-    this->pPlayers[2].uWillpower = 20;
+    this->pPlayers[2].uPersonality = 20;
     this->pPlayers[2].uEndurance = 22;
     this->pPlayers[2].uAccuracy = 7;
     this->pPlayers[2].uSpeed = 13;
@@ -499,7 +499,7 @@ void Party::createDefaultParty(bool bDebugGiveItems) {
     this->pPlayers[3].uVoiceID = 10;
     this->pPlayers[3].uMight = 5;
     this->pPlayers[3].uIntelligence = 30;
-    this->pPlayers[3].uWillpower = 9;
+    this->pPlayers[3].uPersonality = 9;
     this->pPlayers[3].uLuck = 7;
     this->pPlayers[3].pActiveSkills[PLAYER_SKILL_LEATHER] = 1;
     this->pPlayers[3].pActiveSkills[PLAYER_SKILL_AIR] = 1;
