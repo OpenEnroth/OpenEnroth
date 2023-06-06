@@ -39,8 +39,6 @@ class GUIWindow_WeaponShop : public GUIWindow_Shop {
     explicit GUIWindow_WeaponShop(HOUSE_ID houseId) : GUIWindow_Shop(houseId) {}
     virtual ~GUIWindow_WeaponShop() {}
 
-    virtual int itemAmountForShop() override { return 6; }
-
  private:
     virtual void shopWaresDialogue(bool isSpecial) override;
     virtual void generateShopItems(bool isSpecial) override;
@@ -51,8 +49,6 @@ class GUIWindow_ArmorShop : public GUIWindow_Shop {
  public:
     explicit GUIWindow_ArmorShop(HOUSE_ID houseId) : GUIWindow_Shop(houseId) {}
     virtual ~GUIWindow_ArmorShop() {}
-
-    virtual int itemAmountForShop() override { return 8; }
 
  private:
     virtual void shopWaresDialogue(bool isSpecial) override;
@@ -74,8 +70,6 @@ class GUIWindow_MagicShop : public GUIWindow_MagicAlchemyShop {
     explicit GUIWindow_MagicShop(HOUSE_ID houseId) : GUIWindow_MagicAlchemyShop(houseId) {}
     virtual ~GUIWindow_MagicShop() {}
 
-    virtual int itemAmountForShop() override { return 12; }
-
  private:
     virtual void generateShopItems(bool isSpecial) override;
     virtual std::vector<DIALOGUE_TYPE> listShopLearnableSkills() override;
@@ -85,8 +79,6 @@ class GUIWindow_AlchemyShop : public GUIWindow_MagicAlchemyShop {
  public:
     explicit GUIWindow_AlchemyShop(HOUSE_ID houseId) : GUIWindow_MagicAlchemyShop(houseId) {}
     virtual ~GUIWindow_AlchemyShop() {}
-
-    virtual int itemAmountForShop() override { return 12; }
 
  private:
     virtual void generateShopItems(bool isSpecial) override;

@@ -179,7 +179,7 @@ void GUIWindow_MagicGuild::buyBooksDialogue() {
 
     if (HouseUI_CheckIfPlayerCanInteract()) {
         int itemcount = 0;
-        for (int i = 0; i < itemAmountForShop(); ++i) {
+        for (int i = 0; i < itemAmountInShop[buildingTable[wData.val - 1].uType]; ++i) {
             if (pParty->spellBooksInGuilds[houseId()][i].uItemID != ITEM_NULL)
                 ++itemcount;
         }
@@ -226,7 +226,7 @@ void GUIWindow_MagicGuild::buyBooksDialogue() {
 void GUIWindow_MagicGuild::houseDialogueOptionSelected(DIALOGUE_TYPE option) {
     if (option == DIALOGUE_GUILD_BUY_BOOKS) {
         if (pParty->PartyTimes.guildNextRefreshTime[houseId()] >= pParty->GetPlayingTime()) {
-            for (int i = 0; i < itemAmountForShop(); ++i) {
+            for (int i = 0; i < itemAmountInShop[buildingTable[wData.val - 1].uType]; ++i) {
                 if (pParty->spellBooksInGuilds[houseId()][i].uItemID != ITEM_NULL)
                     shop_ui_items_in_store[i] = assets->getImage_ColorKey(pParty->spellBooksInGuilds[houseId()][i].GetIconName());
             }
@@ -279,7 +279,7 @@ void GUIWindow_MagicGuild::generateSpellBooksForGuild() {
     PLAYER_SKILL_MASTERY maxMastery = guildSpellsMastery[houseId()];
     Segment<ITEM_TYPE> spellbooksForGuild = spellbooksOfSchool(schoolType, maxMastery);
 
-    for (int i = 0; i < itemAmountForShop(); ++i) {
+    for (int i = 0; i < itemAmountInShop[buildingTable[wData.val - 1].uType]; ++i) {
         ITEM_TYPE pItemNum = grng->randomSample(spellbooksForGuild);
 
         if (pItemNum == ITEM_SPELLBOOK_DIVINE_INTERVENTION) {

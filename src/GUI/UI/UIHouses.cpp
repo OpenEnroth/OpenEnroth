@@ -264,6 +264,22 @@ std::array<const HouseAnimDescr, 196> pAnimatedRooms = { {  // 0x4E5F70
     { "Player Castle Bad", 0x24, 0, BuildingType_Castle, 0, 0 }
 } };
 
+IndexedArray<int, BuildingType_WeaponShop, BuildingType_DarkGuild> itemAmountInShop = {{
+    {BuildingType_WeaponShop, 6},
+    {BuildingType_ArmorShop, 8},
+    {BuildingType_MagicShop, 12},
+    {BuildingType_AlchemistShop, 12},
+    {BuildingType_FireGuild, 12},
+    {BuildingType_AirGuild, 12},
+    {BuildingType_WaterGuild, 12},
+    {BuildingType_EarthGuild, 12},
+    {BuildingType_SpiritGuild, 12},
+    {BuildingType_MindGuild, 12},
+    {BuildingType_BodyGuild, 12},
+    {BuildingType_LightGuild, 12},
+    {BuildingType_DarkGuild, 12}
+}};;
+
 static std::array<const char *, 19> _4F03B8_shop_background_names = {
     { "", "WEPNTABL", "ARMORY", "MAGSHELF", "MAGSHELF", "MAGSHELF", "MAGSHELF",
     "MAGSHELF", "MAGSHELF", "MAGSHELF", "MAGSHELF", "MAGSHELF", "MAGSHELF",

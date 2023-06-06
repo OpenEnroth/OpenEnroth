@@ -14,7 +14,6 @@ class GUIWindow_MagicGuild : public GUIWindow_House {
 
     virtual void houseDialogueOptionSelected(DIALOGUE_TYPE option) override;
     virtual void houseSpecificDialogue() override;
-    virtual int itemAmountForShop() override { return 12; }
     virtual std::vector<DIALOGUE_TYPE> listDialogueOptions(DIALOGUE_TYPE option) override;
 
  protected:

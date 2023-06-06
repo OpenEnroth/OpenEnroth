@@ -668,7 +668,7 @@ void GUIWindow_WeaponShop::generateShopItems(bool isSpecial) {
     std::array<ItemGen, 12> &itemArray = isSpecial ? pParty->specialItemsInShops[houseId()] : pParty->standartItemsInShops[houseId()];
     const ITEM_VARIATION variation = isSpecial ? weaponShopVariationSpecial[houseId()] : weaponShopVariationStandart[houseId()];
 
-    for (int i = 0; i < itemAmountForShop(); i++) {
+    for (int i = 0; i < itemAmountInShop[buildingTable[wData.val - 1].uType]; i++) {
         int itemClass = variation.item_class[grng->random(4)];
         pItemTable->generateItem(variation.treasure_level, itemClass, &itemArray[i]);
         itemArray[i].SetIdentified();
@@ -682,7 +682,7 @@ void GUIWindow_ArmorShop::generateShopItems(bool isSpecial) {
     const ITEM_VARIATION variationTop = isSpecial ? armorShopTopRowVariationSpecial[houseId()] : armorShopTopRowVariationStandart[houseId()];
     const ITEM_VARIATION variationBottom = isSpecial ? armorShopBottomRowVariationSpecial[houseId()] : armorShopBottomRowVariationStandart[houseId()];
 
-    for (int i = 0; i < itemAmountForShop(); i++) {
+    for (int i = 0; i < itemAmountInShop[buildingTable[wData.val - 1].uType]; i++) {
         int itemClass;
         ITEM_TREASURE_LEVEL treasureLvl;
 
@@ -704,7 +704,7 @@ void GUIWindow_MagicShop::generateShopItems(bool isSpecial) {
     std::array<ItemGen, 12> &itemArray = isSpecial ? pParty->specialItemsInShops[houseId()] : pParty->standartItemsInShops[houseId()];
     ITEM_TREASURE_LEVEL treasureLvl = isSpecial ? magicShopVariationSpecial[houseId()] : magicShopVariationStandart[houseId()];
 
-    for (int i = 0; i < itemAmountForShop(); i++) {
+    for (int i = 0; i < itemAmountInShop[buildingTable[wData.val - 1].uType]; i++) {
         pItemTable->generateItem(treasureLvl, 22, &itemArray[i]);
         itemArray[i].SetIdentified();
     }
@@ -717,7 +717,7 @@ void GUIWindow_AlchemyShop::generateShopItems(bool isSpecial) {
     ITEM_TREASURE_LEVEL treasureLvl = isSpecial ? alchemyShopVariationSpecial[houseId()] : alchemyShopVariationStandart[houseId()];
     int bottomRowItemClass = isSpecial ? 44 : 45;
 
-    for (int i = 0; i < itemAmountForShop(); i++) {
+    for (int i = 0; i < itemAmountInShop[buildingTable[wData.val - 1].uType]; i++) {
         if (i < 6) {
             itemArray[i].Reset();
             if (isSpecial) {
@@ -876,13 +876,13 @@ void GUIWindow_Shop::houseDialogueOptionSelected(DIALOGUE_TYPE option) {
         }
 
         const std::array<ItemGen, 12> &itemArray = (option == DIALOGUE_SHOP_BUY_STANDARD) ? pParty->standartItemsInShops[houseId()] : pParty->specialItemsInShops[houseId()];
-        for (int i = 0; i < itemAmountForShop(); ++i) {
+        for (int i = 0; i < itemAmountInShop[buildingTable[wData.val - 1].uType]; ++i) {
             if (itemArray[i].uItemID != ITEM_NULL) {
                 shop_ui_items_in_store[i] = assets->getImage_ColorKey(itemArray[i].GetIconName());
             }
         }
         if (buildingTable[wData.val - 1].uType == BuildingType_WeaponShop) {
-            for (int i = 0; i < itemAmountForShop(); ++i) {
+            for (int i = 0; i < itemAmountInShop[buildingTable[wData.val - 1].uType]; ++i) {
                 if (itemArray[i].uItemID != ITEM_NULL) {
                     // Note that we're using grng here for a reason - we want recorded mouse clicks to work.
                     weaponYPos[i] = grng->random(300 - shop_ui_items_in_store[i]->height());

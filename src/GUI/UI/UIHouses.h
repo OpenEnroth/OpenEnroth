@@ -4,6 +4,7 @@
 #include <vector>
 
 #include "GUI/GUIWindow.h"
+#include "Utility/IndexedArray.h"
 #include "UIHouseEnums.h"
 
 // Right hand side dialogue writing constants
@@ -51,7 +52,6 @@ class GUIWindow_House : public GUIWindow {
 
     virtual void houseDialogueOptionSelected(DIALOGUE_TYPE option);
     virtual void houseSpecificDialogue();
-    virtual int itemAmountForShop() { return 0; }
     virtual std::vector<DIALOGUE_TYPE> listDialogueOptions(DIALOGUE_TYPE option);
 };
 
@@ -73,3 +73,5 @@ extern DIALOGUE_TYPE dialog_menu_id;     // 00F8B19C
 extern class GraphicsImage *_591428_endcap;
 
 extern std::array<const HouseAnimDescr, 196> pAnimatedRooms;
+
+extern IndexedArray<int, BuildingType_WeaponShop, BuildingType_DarkGuild> itemAmountInShop;
