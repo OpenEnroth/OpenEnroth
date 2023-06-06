@@ -703,7 +703,7 @@ void Party::Reset() {
 
     pNPCStats->pNewNPCData = pNPCStats->pNPCData;
     pNPCStats->pGroups_copy = pNPCStats->pGroups;
-    pNPCStats->pNewNPCData[3].uFlags |= 128;  //|= 0x80u; Lady Margaret
+    pNPCStats->pNewNPCData[3].uFlags |= NPC_HIRED;  //|= 0x80u; Lady Margaret
     _494035_timed_effects__water_walking_damage__etc();
     pEventTimer->Pause();
 

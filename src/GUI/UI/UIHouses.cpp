@@ -698,15 +698,21 @@ void PrepareHouse(HOUSE_ID house) {
 
     for (uint i = 1; i < pNPCStats->uNumNewNPCs; ++i) {
         if (pNPCStats->pNewNPCData[i].Location2D == house) {
-            if (!(pNPCStats->pNewNPCData[i].uFlags & 0x80)) {
+            if (!(pNPCStats->pNewNPCData[i].uFlags & NPC_HIRED)) {
                 HouseNPCData[uNumDialogueNPCPortraits + 1 -
                     ((dword_591080 != 0) ? 1 : 0)] =
                     &pNPCStats->pNewNPCData[i];
                 npc_id_arr[uNumDialogueNPCPortraits] =
                     pNPCStats->pNewNPCData[i].uPortraitID;
                 ++uNumDialogueNPCPortraits;
-                if ((pNPCStats->pNewNPCData[i].uFlags & 3) != 2)
-                    ++pNPCStats->pNewNPCData[i].uFlags;
+                if (!(pNPCStats->pNewNPCData[i].uFlags & NPC_GREETED_SECOND)) {
+                    if (pNPCStats->pNewNPCData[i].uFlags & NPC_GREETED_FIRST) {
+                        pNPCStats->pNewNPCData[i].uFlags &= ~NPC_GREETED_FIRST;
+                        pNPCStats->pNewNPCData[i].uFlags |= NPC_GREETED_SECOND;
+                    } else {
+                        pNPCStats->pNewNPCData[i].uFlags |= NPC_GREETED_FIRST;
+                    }
+                }
             }
         }
     }
@@ -902,7 +908,7 @@ void OnSelectShopDialogueOption(DIALOGUE_TYPE option) {
 
 void SimpleHouseDialog() {
     NPCData *pNPC;       // esi@6
-    const char *v15;           // esi@14
+    std::string v15;           // esi@14
     GUIButton *pButton;  // eax@15
     char *v29;           // esi@42
     int v31;             // ST1C_4@42
@@ -914,7 +920,7 @@ void SimpleHouseDialog() {
     GUIFont *pTextFont;           // ebx@64
     int pTextHeight;
     GUIWindow w;      // [sp+Ch] [bp-110h]@64
-    char *pInString;  // [sp+114h] [bp-8h]@12
+    std::string pInString;  // [sp+114h] [bp-8h]@12
 
     GUIWindow house_window = *pDialogueWindow;
     if (pDialogueNPCCount == uNumDialogueNPCPortraits && uHouse_ExitPic) {
@@ -947,7 +953,11 @@ void SimpleHouseDialog() {
             if (pNPC->greet) {
                 house_window.uFrameWidth = game_viewport_width;
                 house_window.uFrameZ = 452;
-                pInString = pNPCStats->pNPCGreetings[pNPC->greet].pGreetings[((pNPC->uFlags & 3) == 2)];
+                if (pNPC->uFlags & NPC_GREETED_SECOND) {
+                    pInString = pNPCStats->pNPCGreetings[pNPC->greet].pGreeting2;
+                } else {
+                    pInString = pNPCStats->pNPCGreetings[pNPC->greet].pGreeting1;
+                }
                 // pInString = (char *)*(&pNPCStats->field_17884 +
                 // ((pNPC->uFlags & 3) == 2) + 2 * pNPC->greet);
                 render->DrawTextureCustomHeight(
@@ -978,52 +988,46 @@ void SimpleHouseDialog() {
         pButton = right_panel_window.GetControl(i);
         switch (pButton->msg_param) {
         case DIALOGUE_SCRIPTED_LINE_1:
-            v15 = (char *)pNPCTopics[pNPC->dialogue_1_evt_id].pTopic;
-            if (!v15) {
+            v15 = pNPCTopics[pNPC->dialogue_1_evt_id].pTopic;
+            if (v15.empty()) {
                 pButton->msg_param = 0;
-                v15 = "";
             }
             pButton->sLabel = v15;
             continue;
         case DIALOGUE_SCRIPTED_LINE_2:
-            v15 = (char *)pNPCTopics[pNPC->dialogue_2_evt_id].pTopic;
-            if (!v15) {
+            v15 = pNPCTopics[pNPC->dialogue_2_evt_id].pTopic;
+            if (v15.empty()) {
                 pButton->msg_param = 0;
-                v15 = "";
             }
 
             pButton->sLabel = v15;
             continue;
 
         case DIALOGUE_SCRIPTED_LINE_3:
-            v15 = (char *)pNPCTopics[pNPC->dialogue_3_evt_id].pTopic;
-            if (!v15) {
+            v15 = pNPCTopics[pNPC->dialogue_3_evt_id].pTopic;
+            if (v15.empty()) {
                 pButton->msg_param = 0;
-                v15 = "";
             }
             pButton->sLabel = v15;
             continue;
         case DIALOGUE_SCRIPTED_LINE_4:
-            v15 = (char *)pNPCTopics[pNPC->dialogue_4_evt_id].pTopic;
-            if (!v15) {
+            v15 = pNPCTopics[pNPC->dialogue_4_evt_id].pTopic;
+            if (v15.empty()) {
                 pButton->msg_param = 0;
-                v15 = "";
             }
             pButton->sLabel = v15;
             continue;
         case DIALOGUE_SCRIPTED_LINE_5:
-            v15 = (char *)pNPCTopics[pNPC->dialogue_5_evt_id].pTopic;
-            if (!v15) {
+            v15 = pNPCTopics[pNPC->dialogue_5_evt_id].pTopic;
+            if (v15.empty()) {
                 pButton->msg_param = 0;
-                v15 = "";
             }
             pButton->sLabel = v15;
             continue;
         case DIALOGUE_SCRIPTED_LINE_6:
-            v15 = (char *)pNPCTopics[pNPC->dialogue_6_evt_id].pTopic;
-            if (!v15) {
+            v15 = pNPCTopics[pNPC->dialogue_6_evt_id].pTopic;
+            if (v15.empty()) {
                 pButton->msg_param = 0;
-                v15 = "";
             }
             pButton->sLabel = v15;
             continue;

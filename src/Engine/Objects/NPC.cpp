@@ -101,7 +101,7 @@ bool CheckHiredNPCSpeciality(NPCProf prof) {
 
     for (uint i = 0; i < pNPCStats->uNumNewNPCs; ++i) {
         if (pNPCStats->pNewNPCData[i].profession == prof &&
-            (pNPCStats->pNewNPCData[i].uFlags & 0x80)) {
+            (pNPCStats->pNewNPCData[i].uFlags & NPC_HIRED)) {
             return true;
         }
     }
@@ -122,7 +122,7 @@ void NPCHireableDialogPrepare() {
         UIMSG_Escape, 0, InputAction::Invalid, localization->GetString(LSTR_CANCEL), {ui_exit_cancel_button_background}
     );
     pDialogueWindow->CreateButton({0, 0}, {0, 0}, 1, 0, UIMSG_BuyInShop_Identify_Repair, 0);
-    if (pNPCStats->pProfessions[v1->profession].pBenefits) {
+    if (!pNPCStats->pProfessions[v1->profession].pBenefits.empty()) {
         pDialogueWindow->CreateButton({480, 160}, {140, 30}, 1, 0,
             UIMSG_ClickNPCTopic, DIALOGUE_PROFESSION_DETAILS, InputAction::Invalid, localization->GetString(LSTR_MORE_INFORMATION)
         );
@@ -220,7 +220,7 @@ int GetGreetType(signed int SpeakingNPC_ID) {
 }
 
 //----- (00445308) --------------------------------------------------------
-const char *GetProfessionActionText(NPCProf prof) {
+const std::string& GetProfessionActionText(NPCProf prof) {
     switch (prof) {
     case Healer:
     case ExpertHealer:

@@ -688,10 +688,9 @@ void GameUI_OnPlayerPortraitLeftClick(unsigned int uPlayerID) {
 
 void GameUI_DrawNPCPopup(void *_this) {  // PopupWindowForBenefitAndJoinText
     NPCData *pNPC;           // eax@16
-    const char *pText;       // eax@18
+    std::string pText;       // eax@18
     GUIWindow popup_window;  // [sp+Ch] [bp-60h]@23
     int a2;                  // [sp+60h] [bp-Ch]@16
-    const char *lpsz = 0;        // [sp+68h] [bp-4h]@6
 
     if (bNoNPCHiring != 1) {
         FlatHirelings buf;
@@ -705,10 +704,8 @@ void GameUI_DrawNPCPopup(void *_this) {  // PopupWindowForBenefitAndJoinText
                     pText = pNPCTopics[512].pText;  // Baby dragon
                 else
                     pText = pNPCStats->pProfessions[pNPC->profession].pBenefits;
-                lpsz = pText;
-                if (!pText) {
-                    lpsz = pNPCStats->pProfessions[pNPC->profession].pJoinText;
-                    if (!lpsz) lpsz = "";
+                if (pText.empty()) {
+                    pText = pNPCStats->pProfessions[pNPC->profession].pJoinText;
                 }
                 popup_window.Init();
                 popup_window.sHint.clear();
@@ -717,7 +714,7 @@ void GameUI_DrawNPCPopup(void *_this) {  // PopupWindowForBenefitAndJoinText
                 popup_window.uFrameWidth = 276;
                 popup_window.uFrameZ = 313;
                 popup_window.uFrameHeight =
-                    pFontArrus->CalcTextHeight(lpsz, popup_window.uFrameWidth,
+                    pFontArrus->CalcTextHeight(pText, popup_window.uFrameWidth,
                                                0) +
                     2 * pFontArrus->GetHeight() + 24;
                 if ((signed int)popup_window.uFrameHeight < 130)
@@ -735,7 +732,7 @@ void GameUI_DrawNPCPopup(void *_this) {  // PopupWindowForBenefitAndJoinText
                 popup_window.DrawTitleText(pFontArrus, 0, 12, colorTable.PaleCanary, NameAndTitle(pNPC), 3);
                 popup_window.uFrameWidth -= 24;
                 popup_window.uFrameZ = popup_window.uFrameX + popup_window.uFrameWidth - 1;
-                popup_window.DrawText(pFontArrus, {100, 36}, Color(), BuildDialogueString((char *)lpsz, pParty->activeCharacterIndex() - 1, 0, 0, 0));
+                popup_window.DrawText(pFontArrus, {100, 36}, Color(), BuildDialogueString(pText, pParty->activeCharacterIndex() - 1, 0, 0, 0));
             }
         }
     }
@@ -1064,11 +1061,11 @@ void GameUI_WritePointedObjectStatusString() {
                 }  // intentional fallthrough
             } else if (PID_TYPE(pickedObject.object_pid) == OBJECT_Decoration) {
                 if (!pLevelDecorations[pickedObjectID].uEventID) {
-                    const char *pText;                 // ecx@79
+                    std::string pText;                 // ecx@79
                     if (pLevelDecorations[pickedObjectID].IsInteractive())
                         pText = pNPCTopics[engine->_persistentVariables.decorVars[pLevelDecorations[pickedObjectID].eventVarId] + 380].pTopic; // campfire
                     else
-                        pText = pDecorationList->GetDecoration(pLevelDecorations[pickedObjectID].uDecorationDescID)->field_20.data();
+                        pText = pDecorationList->GetDecoration(pLevelDecorations[pickedObjectID].uDecorationDescID)->field_20;
                     GameUI_StatusBar_Set(pText);
                 } else {
                     std::string hintString = getEventHintString(pLevelDecorations[pickedObjectID].uEventID);

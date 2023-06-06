@@ -6,19 +6,32 @@
 #include "Engine/Objects/NPCEnums.h"
 
 #include "Utility/IndexedArray.h"
+#include "Utility/Flags.h"
+
+// TODO(Nik-RE-dev): It seems that two greet flags are used purely because it's modification is performed
+//                   before greeting string is constructed. It is also ensures that NPC in multi-NPC houses
+//                   always greet you with first line until you leave the house.
+//                   Ideally there should be only one flag.
+enum class NPC_FLAG : uint32_t {
+    NPC_GREETED_FIRST = 0x01, // NPC has been greeted first time
+    NPC_GREETED_SECOND = 0x02, // NPC has been greeted second time
+    NPC_HIRED = 0x80 // NPC is hired
+};
+using enum NPC_FLAG;
+MM_DECLARE_FLAGS(NPC_FLAGS, NPC_FLAG)
+MM_DECLARE_OPERATORS_FOR_FLAGS(NPC_FLAGS)
 
 struct NPCTopic {
-    const char *pTopic;
-    const char *pText;
+    std::string pTopic;
+    std::string pText;
 };
 
 struct NPCData {  // 4Ch
-    inline bool Hired() { return (uFlags & 0x80) != 0; }
+    inline bool Hired() { return uFlags & NPC_HIRED; }
 
     std::string pName;               // 0
     unsigned int uPortraitID = 0;  // 4
-    unsigned int uFlags = 0;  // 8    // & 0x80    no greeting on dialogue start;
-                          // looks like hired
+    NPC_FLAGS uFlags = 0;  // 8
     int fame = 0;                  // c
     int rep = 0;                   // 10
     unsigned int Location2D = 0;   // 14  house_id
@@ -38,18 +51,11 @@ struct NPCData {  // 4Ch
 };
 
 struct NPCProfession {
-    inline NPCProfession()
-        : uHirePrice(0),
-          pBenefits(nullptr),
-          pActionText(nullptr),
-          pJoinText(nullptr),
-          pDismissText(nullptr) {}
-
-    unsigned int uHirePrice;
-    char *pBenefits;
-    char *pActionText;
-    char *pJoinText;
-    char *pDismissText;
+    unsigned int uHirePrice{};
+    std::string pBenefits{};
+    std::string pActionText{};
+    std::string pJoinText{};
+    std::string pDismissText{};
 };
 
 struct NPCProfessionChance {
@@ -58,13 +64,8 @@ struct NPCProfessionChance {
 };
 
 struct NPCGreeting {
-    union {
-        struct {
-            char *pGreeting1;  // at first meet
-            char *pGreeting2;  // at latest meets
-        };
-        char *pGreetings[2];
-    };
+    std::string pGreeting1;  // at first meet
+    std::string pGreeting2;  // at latest meets
 };
 
 struct NPCStats {
@@ -82,16 +83,15 @@ struct NPCStats {
      * @offset 0x476C60
      */
     void setNPCNamesOnLoad();
-    char *sub_495366_MispronounceName(uint8_t firstLetter,
-                                      uint8_t genderId);
+    const std::string& sub_495366_MispronounceName(uint8_t firstLetter, uint8_t genderId);
 
     std::array<NPCData, 501> pNPCData;     // 0 - 94BCh count from 1
     std::array<NPCData, 501> pNewNPCData;  // 94BCh- 12978h count from 1
-    char *pNPCNames[540][2];
+    std::array<std::array<std::string, 2>, 540> pNPCNames{};
     IndexedArray<NPCProfession, NPC_PROFESSION_FIRST, NPC_PROFESSION_LAST> pProfessions = {{}};  // count from 1
-    std::array<NPCData, 100> pAdditionalNPC;
-    char *pCatchPhrases[52]{};   // 15CA4h
-    char *pNPCUnicNames[500]{};  // from first batch
+    std::array<NPCData, 100> pAdditionalNPC = {{}};
+    std::array<std::string, 52> pCatchPhrases{};   // 15CA4h
+    std::array<std::string, 500> pNPCUnicNames{};  // from first batch
     NPCProfessionChance pProfessionChance[77];  // 16544h profession chance in each area
     int field_17884 = 0;
     int field_17888 = 0;
@@ -103,15 +103,6 @@ struct NPCStats {
     int field_17FC8 = 0;
     unsigned int uNumNPCProfessions{};
     unsigned int uNumNPCNames[2]{};  // 0 male 1 female
-    std::string pNPCDataTXT_Raw;
-    std::string pNPCNamesTXT_Raw;
-    std::string pNPCProfTXT_Raw;
-    std::string pNPCNewsTXT_Raw;
-    std::string pNPCTopicTXT_Raw;
-    std::string pNPCTextTXT_Raw;
-    std::string pNPCDistTXT_Raw;
-    std::string pNPCGreetTXT_Raw;
-    std::string pNCPGroupTXT_Raw;
 
     static int dword_AE336C_LastMispronouncedNameFirstLetter;
     static int dword_AE3370_LastMispronouncedNameResult;

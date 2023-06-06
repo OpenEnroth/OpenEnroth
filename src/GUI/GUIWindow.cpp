@@ -475,7 +475,7 @@ GUIWindow::GUIWindow(WindowType windowType, Pointi position, Sizei dimensions, W
 //----- (004B3EF0) --------------------------------------------------------
 void DrawJoinGuildWindow(GUILD_ID guild_id) {
     uDialogueType = DIALOGUE_81_join_guild;
-    current_npc_text = (char *)pNPCTopics[guild_id + 99].pText;
+    current_npc_text = pNPCTopics[guild_id + 99].pText;
     GetJoinGuildDialogueOption(guild_id);
     pDialogueWindow->Release();
     pDialogueWindow = new GUIWindow(WINDOW_Dialogue, {0, 0}, {render->GetRenderDimensions().w, 350}, guild_id);
@@ -1169,7 +1169,7 @@ void ClickNPCTopic(DIALOGUE_TYPE topic) {
         }
     }
 
-    pCurrentNPCInfo->uFlags |= 128;
+    pCurrentNPCInfo->uFlags |= NPC_HIRED;
     pParty->hirelingScrollPosition = 0;
     pParty->CountHirelings();
     if (!pParty->pHirelings[0].pName.empty()) {
@@ -2130,7 +2130,7 @@ void SkillTrainingDialogue(GUIWindow *dialogue, int num_skills_avaiable, int all
 
 
 //----- (004B29F2) --------------------------------------------------------
-const char *GetJoinGuildDialogueOption(GUILD_ID guild_id) {
+const std::string& GetJoinGuildDialogueOption(GUILD_ID guild_id) {
     static const int dialogue_base = 110;
     guild_membership_approved = false;
     dword_F8B1AC_award_bit_number = static_cast<AwardType>(Award_Membership_ElementalGuilds + std::to_underlying(guild_id));

@@ -4,20 +4,6 @@
 
 #include "Library/Serialization/SerializationFwd.h"
 
-enum GUILD_ID : int32_t {
-    GUILD_OF_ELEMENTS = 0,
-    GUILD_OF_SELF = 1,
-    GUILD_OF_AIR = 2,
-    GUILD_OF_EARTH = 3,
-    GUILD_OF_FIRE = 4,
-    GUILD_OF_WATER = 5,
-    GUILD_OF_BODY = 6,
-    GUILD_OF_MIND = 7,
-    GUILD_OF_SPIRIT = 8,
-    GUILD_OF_LIGHT = 9,
-    GUILD_OF_DARK = 10,
-};
-
 enum UIMessageType : uint32_t {
     UIMSG_0 = 0,
 

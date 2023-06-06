@@ -193,7 +193,7 @@ void serialize(const NPCData &src, NPCData_MM7 *dst) {
     // dst->pName = src.pName;
     dst->name = !src.pName.empty();
     dst->portraitId = src.uPortraitID;
-    dst->flags = src.uFlags;
+    dst->flags = std::to_underlying(src.uFlags);
     dst->fame = src.fame;
     dst->rep = src.rep;
     dst->location2d = src.Location2D;
@@ -216,7 +216,7 @@ void deserialize(const NPCData_MM7 &src, NPCData *dst) {
     // dst->pName = src.pName;
     dst->pName = src.name ? "Dummy" : "";
     dst->uPortraitID = src.portraitId;
-    dst->uFlags = src.flags;
+    dst->uFlags = NPC_FLAGS(src.flags);
     dst->fame = src.fame;
     dst->rep = src.rep;
     dst->Location2D = src.location2d;

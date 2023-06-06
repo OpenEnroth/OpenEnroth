@@ -508,7 +508,8 @@ int EventInterpreter::executeOneEvent(int step, bool isNpc) {
             npcSetItem(ir.data.npc_item_descr.id, ir.data.npc_item_descr.item, ir.data.npc_item_descr.is_give);
             break;
         case EVENT_SetNPCGreeting:
-            pNPCStats->pNewNPCData[ir.data.npc_descr.npc_id].uFlags &= 0xFFFFFFFCu;
+            pNPCStats->pNewNPCData[ir.data.npc_descr.npc_id].uFlags &= ~NPC_GREETED_FIRST;
+            pNPCStats->pNewNPCData[ir.data.npc_descr.npc_id].uFlags &= ~NPC_GREETED_SECOND;
             pNPCStats->pNewNPCData[ir.data.npc_descr.npc_id].greet = ir.data.npc_descr.greeting;
             break;
         case EVENT_IsActorKilled:
