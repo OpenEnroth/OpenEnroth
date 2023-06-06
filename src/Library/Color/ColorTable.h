@@ -61,6 +61,7 @@ class ColorTable {
     const Color ScreaminGreen = Color(64, 244, 96);     // #40F460
     const Color Canary = Color(232, 244, 96);           // #E8F460
     const Color Mimosa = Color(240, 252, 192);          // #F0FCC0
+    const Color BoltBlue = Color(0, 175, 255);          // #00AFFF
 };
 
 extern const ColorTable colorTable;

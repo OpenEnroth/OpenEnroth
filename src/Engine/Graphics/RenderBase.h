@@ -29,7 +29,7 @@ class RenderBase : public IRender {
     virtual float GetGamma() override;
 
     virtual void SavePCXScreenshot() override;
-    virtual void SavePCXImage32(const std::string &filename, const Color *picture_data, const int width, const int height);
+    virtual void SavePCXImage32(const std::string &filename, RgbaImageView image);
     virtual void SaveScreenshot(const std::string &filename, unsigned int width, unsigned int height) override;
     /**
     * @param width                         Final width of image to create.

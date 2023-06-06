@@ -12,25 +12,21 @@ GraphicsImage::GraphicsImage(bool lazy_initialization): _lazyInitialization(lazy
 
 GraphicsImage::~GraphicsImage() = default;
 
-GraphicsImage *GraphicsImage::Create(std::unique_ptr<ImageLoader> loader) {
-    GraphicsImage *img = new GraphicsImage();
-    img->_loader = std::move(loader);
+GraphicsImage *GraphicsImage::Create(RgbaImage image) {
+    GraphicsImage *img = new GraphicsImage(false);
+    img->_initialized = true;
+    img->_rgbaImage = std::move(image);
     return img;
 }
 
-GraphicsImage *GraphicsImage::Create(size_t width, size_t height, const Color *pixels) {
+GraphicsImage *GraphicsImage::Create(size_t width, size_t height) {
     assert(width != 0 && height != 0);
+    return Create(RgbaImage::solid(width, height, Color()));
+}
 
-    GraphicsImage *img = new GraphicsImage(false);
-
-    img->_initialized = true;
-
-    if (pixels) {
-        img->_rgbaImage = RgbaImage::copy(width, height, pixels); // NOLINT: this is not std::copy.
-    } else {
-        img->_rgbaImage = RgbaImage::solid(width, height, Color());
-    }
-
+GraphicsImage *GraphicsImage::Create(std::unique_ptr<ImageLoader> loader) {
+    GraphicsImage *img = new GraphicsImage();
+    img->_loader = std::move(loader);
     return img;
 }
 

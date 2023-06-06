@@ -537,7 +537,7 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
                 buff.Reset();
             }
             for (int i = 0; i < pParty->pPlayers.size(); i++) {
-                int willCheck = pParty->pPlayers[i].GetParameterBonus(pParty->pPlayers[i].GetActualWillpower()) / 2;
+                int willCheck = pParty->pPlayers[i].GetParameterBonus(pParty->pPlayers[i].GetActualPersonality()) / 2;
                 int intCheck = pParty->pPlayers[i].GetParameterBonus(pParty->pPlayers[i].GetActualIntelligence()) / 2;
                 int luckCheck = pParty->pPlayers[i].GetParameterBonus(pParty->pPlayers[i].GetActualLuck()) + 30;
                 if (grng->random(willCheck + intCheck + luckCheck) < 30) {

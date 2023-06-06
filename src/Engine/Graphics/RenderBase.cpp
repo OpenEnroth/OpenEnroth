@@ -24,10 +24,12 @@
 #include "Engine/Graphics/ParticleEngine.h"
 #include "Engine/Graphics/Level/Decoration.h"
 #include "Engine/Graphics/DecorationList.h"
+
 #include "Library/Image/PCX.h"
+#include "Library/Random/Random.h"
 
 #include "Utility/Math/TrigLut.h"
-#include "Library/Random/Random.h"
+#include "Utility/Streams/FileOutputStream.h"
 
 
 
@@ -615,37 +617,23 @@ void RenderBase::SavePCXScreenshot() {
     SaveWinnersCertificate(fmt::format("screenshot_{:05}.pcx", engine->config->settings.ScreenshotNumber.value()));
 }
 
-void RenderBase::SavePCXImage32(const std::string &filename, const Color *picture_data, const int width, const int height) {
+void RenderBase::SavePCXImage32(const std::string &filename, RgbaImageView image) {
     // TODO(pskelton): add "Screenshots" folder?
-    std::string thispath = makeDataPath(filename);
-    FILE *result = fopen(thispath.c_str(), "wb");
-    if (result == nullptr) {
-        return;
-    }
-
-    Blob packedPCX = PCX::Encode(RgbaImageView(picture_data, width, height));
-    fwrite(packedPCX.data(), packedPCX.size(), 1, result);
-    fclose(result);
+    FileOutputStream output(makeDataPath(filename));
+    output.write(PCX::Encode(image).string_view());
+    output.close();
 }
 
 void RenderBase::SaveScreenshot(const std::string &filename, const unsigned int width, const unsigned int height) {
-    auto pixels = render->MakeScreenshot32(width, height);
-    SavePCXImage32(filename, pixels, width, height);
-    free(pixels);
+    SavePCXImage32(filename, render->MakeScreenshot32(width, height));
 }
 
 Blob RenderBase::PackScreenshot(const unsigned int width, const unsigned int height) {
-    auto pixels = render->MakeScreenshot32(width, height);
-    Blob packedPCX = PCX::Encode(RgbaImageView(pixels, width, height));
-    free(pixels);
-    return packedPCX;
+    return PCX::Encode(render->MakeScreenshot32(width, height));
 }
 
 GraphicsImage *RenderBase::TakeScreenshot(const unsigned int width, const unsigned int height) {
-    Color *pixels = MakeScreenshot32(width, height);
-    GraphicsImage *image = GraphicsImage::Create(width, height, pixels);
-    free(pixels);
-    return image;
+    return GraphicsImage::Create(MakeScreenshot32(width, height));
 }
 
 void RenderBase::DrawTextureGrayShade(float a2, float a3, GraphicsImage *a4) {

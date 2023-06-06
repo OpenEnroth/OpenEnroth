@@ -221,7 +221,8 @@ class IRender {
     virtual Texture *CreateTexture_PCXFromNewLOD(const std::string &name) = 0;
     virtual Texture *CreateTexture_PCXFromLOD(LOD::File *pLOD, const std::string &name) = 0;
 
-    virtual Texture *CreateTexture_Blank(unsigned int width, unsigned int height, const Color *pixels = nullptr) = 0;
+    virtual Texture *CreateTexture_Blank(unsigned int width, unsigned int height) = 0;
+    virtual Texture *CreateTexture_Blank(RgbaImage image) = 0;
 
     virtual Texture *CreateTexture(const std::string &name) = 0;
     virtual Texture *CreateSprite(const std::string &name, unsigned int palette_id,
@@ -230,7 +231,7 @@ class IRender {
     virtual void ClearBlack() = 0;
     virtual void PresentBlackScreen() = 0;
 
-    virtual Color *ReadScreenPixels() = 0;
+    virtual RgbaImage ReadScreenPixels() = 0;
     virtual void SaveWinnersCertificate(const std::string &filePath) = 0;
     virtual void ClearTarget(unsigned int uColor) = 0;
     virtual void Present() = 0;
@@ -326,7 +327,7 @@ class IRender {
                                 unsigned int height) = 0;
     virtual Blob PackScreenshot(const unsigned int width, const unsigned int height) = 0;
     virtual void SavePCXScreenshot() = 0;
-    virtual Color *MakeScreenshot32(const int width, const int height) = 0;
+    virtual RgbaImage MakeScreenshot32(const int width, const int height) = 0;
 
     virtual std::vector<Actor*> getActorsInViewport(int pDepth) = 0;
 
