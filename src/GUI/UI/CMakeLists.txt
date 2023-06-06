@@ -20,7 +20,8 @@ set(GUI_UI_SOURCES
         UISaveLoad.cpp
         UISpell.cpp
         UIStatusBar.cpp
-        UITransition.cpp)
+        UITransition.cpp
+        UIMessageScroll.cpp)
 
 set(GUI_UI_HEADERS
         UISpellbook.h
@@ -43,7 +44,8 @@ set(GUI_UI_HEADERS
         UISaveLoad.h
         UISpell.h
         UIStatusBar.h
-        UITransition.h)
+        UITransition.h
+        UIMessageScroll.h)
 
 add_library(gui_ui STATIC ${GUI_UI_SOURCES} ${GUI_UI_HEADERS})
 target_check_style(gui_ui)
