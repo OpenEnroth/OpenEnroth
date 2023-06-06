@@ -562,7 +562,7 @@ void OnSelectShopDialogueOption(DIALOGUE_TYPE option) {
       case BuildingType_ArmorShop:
       case BuildingType_MagicShop:
       case BuildingType_AlchemistShop:
-        ((GUIWindow_House*)window_SpeakInHouse)->houseDialogueOptionSelected(option);
+        window_SpeakInHouse->houseDialogueOptionSelected(option);
         break;
       default:
         return;
@@ -573,14 +573,14 @@ void OnSelectShopDialogueOption(DIALOGUE_TYPE option) {
     {
         pDialogueWindow->eWindowType = WINDOW_MainMenu;
         UI_CreateEndConversationButton();
-        ((GUIWindow_House*)window_SpeakInHouse)->initializeDialog();
+        window_SpeakInHouse->initializeDialog();
         break;
     }
     case DIALOGUE_TAVERN_ARCOMAGE_MAIN:
     {
         pDialogueWindow->eWindowType = WINDOW_MainMenu;
         UI_CreateEndConversationButton();
-        ((GUIWindow_House*)window_SpeakInHouse)->initializeDialog();
+        window_SpeakInHouse->initializeDialog();
         break;
     }
     case DIALOGUE_TAVERN_ARCOMAGE_RULES:
@@ -607,7 +607,7 @@ void OnSelectShopDialogueOption(DIALOGUE_TYPE option) {
     {
         pDialogueWindow->eWindowType = WINDOW_MainMenu;
         UI_CreateEndConversationButton();
-        ((GUIWindow_House*)window_SpeakInHouse)->initializeDialog();
+        window_SpeakInHouse->initializeDialog();
         break;
     }
     default:
@@ -853,7 +853,7 @@ int HouseDialogPressCloseBtn() {
         BackToHouseMenu();
         UI_CreateEndConversationButton();
         dialog_menu_id = DIALOGUE_MAIN;
-        ((GUIWindow_House*)window_SpeakInHouse)->initializeDialog();
+        window_SpeakInHouse->initializeDialog();
         break;
 
     case DIALOGUE_SHOP_SELL:
@@ -861,7 +861,7 @@ int HouseDialogPressCloseBtn() {
     case DIALOGUE_SHOP_REPAIR:
         UI_CreateEndConversationButton();
         dialog_menu_id = DIALOGUE_SHOP_DISPLAY_EQUIPMENT;
-        ((GUIWindow_House*)window_SpeakInHouse)->initializeDialog();
+        window_SpeakInHouse->initializeDialog();
         break;
 
     case DIALOGUE_TAVERN_ARCOMAGE_RULES:
@@ -870,7 +870,7 @@ int HouseDialogPressCloseBtn() {
         BackToHouseMenu();
         UI_CreateEndConversationButton();
         dialog_menu_id = DIALOGUE_TAVERN_ARCOMAGE_MAIN;
-        ((GUIWindow_House*)window_SpeakInHouse)->initializeDialog();
+        window_SpeakInHouse->initializeDialog();
         break;
 
     case DIALOGUE_NULL:
@@ -897,7 +897,7 @@ int HouseDialogPressCloseBtn() {
     default:
         BackToHouseMenu();
         dialog_menu_id = DIALOGUE_MAIN;
-        ((GUIWindow_House*)window_SpeakInHouse)->initializeDialog();
+        window_SpeakInHouse->initializeDialog();
         break;
     }
     return 1;

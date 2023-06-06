@@ -173,7 +173,7 @@ void _4B4224_UpdateNPCTopics(int _this) {
         pDialogueWindow->CreateButton({8, 8}, {450, 320}, 1, 0, UIMSG_BuyInShop_Identify_Repair, 0);
         dialog_menu_id = DIALOGUE_MAIN;
         if (pDialogueNPCCount == 1 && dword_591080) {
-            ((GUIWindow_House*)window_SpeakInHouse)->initializeDialog();
+            window_SpeakInHouse->initializeDialog();
         } else {
             if (v17->is_joinable) {
                 num_menu_buttons = 1;
