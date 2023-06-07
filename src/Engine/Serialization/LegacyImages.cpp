@@ -216,7 +216,7 @@ void deserialize(const NPCData_MM7 &src, NPCData *dst) {
     // dst->pName = src.pName;
     dst->pName = src.name ? "Dummy" : "";
     dst->uPortraitID = src.portraitId;
-    dst->uFlags = NPC_FLAGS(src.flags);
+    dst->uFlags = NpcFlags(src.flags);
     dst->fame = src.fame;
     dst->rep = src.rep;
     dst->Location2D = src.location2d;

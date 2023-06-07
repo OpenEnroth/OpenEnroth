@@ -220,7 +220,7 @@ int GetGreetType(signed int SpeakingNPC_ID) {
 }
 
 //----- (00445308) --------------------------------------------------------
-const std::string& GetProfessionActionText(NPCProf prof) {
+const std::string &GetProfessionActionText(NPCProf prof) {
     switch (prof) {
     case Healer:
     case ExpertHealer:

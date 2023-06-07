@@ -2130,7 +2130,7 @@ void SkillTrainingDialogue(GUIWindow *dialogue, int num_skills_avaiable, int all
 
 
 //----- (004B29F2) --------------------------------------------------------
-const std::string& GetJoinGuildDialogueOption(GUILD_ID guild_id) {
+const std::string &GetJoinGuildDialogueOption(GUILD_ID guild_id) {
     static const int dialogue_base = 110;
     guild_membership_approved = false;
     dword_F8B1AC_award_bit_number = static_cast<AwardType>(Award_Membership_ElementalGuilds + std::to_underlying(guild_id));

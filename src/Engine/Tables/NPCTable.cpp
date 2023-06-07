@@ -540,7 +540,7 @@ void NPCStats::InitializeAdditionalNPCs(NPCData *pNPCDataBuff, int npc_uid,
 }
 
 //----- (00495366) --------------------------------------------------------
-const std::string& NPCStats::sub_495366_MispronounceName(uint8_t firstLetter, uint8_t genderId) {
+const std::string &NPCStats::sub_495366_MispronounceName(uint8_t firstLetter, uint8_t genderId) {
     int pickedName;  // edx@2
 
     if (firstLetter == dword_AE336C_LastMispronouncedNameFirstLetter) {
@@ -571,8 +571,3 @@ const std::string& NPCStats::sub_495366_MispronounceName(uint8_t firstLetter, ui
     dword_AE3370_LastMispronouncedNameResult = pickedName;
     return this->pNPCNames[pickedName][genderId];
 }
-
-//----- (00477266) --------------------------------------------------------
-void NPCStats::Release() {
-}
-

@@ -461,9 +461,6 @@ void Engine::Deinitialize() {
     if (pItemTable)
         pItemTable->Release();
 
-    if (pNPCStats)
-        pNPCStats->Release();
-
     if (pSave_LOD)
         pSave_LOD->FreeSubIndexAndIO();
 

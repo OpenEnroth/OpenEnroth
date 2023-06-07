@@ -357,7 +357,7 @@ void free_book_subwindow();
 void CreateScrollWindow();
 void OnPaperdollLeftClick();
 void DrawJoinGuildWindow(GUILD_ID guild_id);
-const std::string& GetJoinGuildDialogueOption(GUILD_ID guild_id);
+const std::string &GetJoinGuildDialogueOption(GUILD_ID guild_id);
 void DialogueEnding();
 
 /**

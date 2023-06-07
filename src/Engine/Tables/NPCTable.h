@@ -12,14 +12,14 @@
 //                   before greeting string is constructed. It is also ensures that NPC in multi-NPC houses
 //                   always greet you with first line until you leave the house.
 //                   Ideally there should be only one flag.
-enum class NPC_FLAG : uint32_t {
+enum class NpcFlag : uint32_t {
     NPC_GREETED_FIRST = 0x01, // NPC has been greeted first time
     NPC_GREETED_SECOND = 0x02, // NPC has been greeted second time
     NPC_HIRED = 0x80 // NPC is hired
 };
-using enum NPC_FLAG;
-MM_DECLARE_FLAGS(NPC_FLAGS, NPC_FLAG)
-MM_DECLARE_OPERATORS_FOR_FLAGS(NPC_FLAGS)
+using enum NpcFlag;
+MM_DECLARE_FLAGS(NpcFlags, NpcFlag)
+MM_DECLARE_OPERATORS_FOR_FLAGS(NpcFlags)
 
 struct NPCTopic {
     std::string pTopic;
@@ -31,7 +31,7 @@ struct NPCData {  // 4Ch
 
     std::string pName;               // 0
     unsigned int uPortraitID = 0;  // 4
-    NPC_FLAGS uFlags = 0;  // 8
+    NpcFlags uFlags = 0;  // 8
     int fame = 0;                  // c
     int rep = 0;                   // 10
     unsigned int Location2D = 0;   // 14  house_id
@@ -76,14 +76,13 @@ struct NPCStats {
     void InitializeNPCText();
     void InitializeNPCData();
     void Initialize();
-    void Release();
     void InitializeAdditionalNPCs(NPCData *pNPCDataBuff, int npc_uid,
                                   int uLocation2D, int uMapId);
     /**
      * @offset 0x476C60
      */
     void setNPCNamesOnLoad();
-    const std::string& sub_495366_MispronounceName(uint8_t firstLetter, uint8_t genderId);
+    const std::string &sub_495366_MispronounceName(uint8_t firstLetter, uint8_t genderId);
 
     std::array<NPCData, 501> pNPCData;     // 0 - 94BCh count from 1
     std::array<NPCData, 501> pNewNPCData;  // 94BCh- 12978h count from 1
