@@ -166,9 +166,6 @@ enum ClassSkill : uint8_t {
 };
 using enum ClassSkill;
 
-#pragma warning(push)
-#pragma warning(disable : 4341) // TODO(captainurist): msvc mis-warns here, just drop this warning altogether for msvc
-/*  328 */
 enum class PLAYER_SKILL_TYPE : int8_t {
     PLAYER_SKILL_INVALID = -1,
     PLAYER_SKILL_STAFF = 0,
@@ -288,8 +285,6 @@ inline std::initializer_list<PLAYER_SKILL_TYPE> MagicSkills() {
 
     return result;
 }
-
-#pragma warning(pop)
 
 /*  329 */
 // TODO(Nik-RE-dev): turn it into enum class
