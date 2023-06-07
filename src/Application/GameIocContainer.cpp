@@ -10,11 +10,3 @@ Menu *GameIocContainer::ResolveGameMenu() {
     }
     return menu;
 }
-
-GameWindowHandler *GameIocContainer::gameWindowHandler = nullptr;
-GameWindowHandler *GameIocContainer::ResolveGameWindowHandler() {
-    if (!gameWindowHandler) {
-        gameWindowHandler = new GameWindowHandler();
-    }
-    return gameWindowHandler;
-}

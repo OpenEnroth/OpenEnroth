@@ -138,9 +138,8 @@ Game::Game(PlatformApplication *application, std::shared_ptr<GameConfig> config)
     // It doesn't matter where to put control component as it's running the control routine after a call to `SwapBuffers`.
     // But the trace component should go after the deterministic component - deterministic component updates tick count,
     // and then trace component stores the updated value in a recorded `PaintEvent`.
-    _windowHandler.reset(GameIocContainer::ResolveGameWindowHandler());
     _application->install(std::make_unique<GameKeyboardController>()); // This one should go before the window handler.
-    _application->install(_windowHandler.get()); // TODO(captainurist): actually move ownership into PlatformApplication?
+    _application->install(std::make_unique<GameWindowHandler>());
     _application->install(std::make_unique<EngineControlComponent>());
     _application->install(std::make_unique<EngineTraceComponent>());
     _application->install(std::make_unique<EngineDeterministicComponent>());
@@ -150,7 +149,6 @@ Game::Game(PlatformApplication *application, std::shared_ptr<GameConfig> config)
 }
 
 Game::~Game() {
-    _application->remove(_windowHandler.get());
     if (_nuklearHandler)
         _application->remove(_nuklearHandler.get());
 }
@@ -205,7 +203,7 @@ int Game::run() {
      * For some reason windows not liking that and hang in SDL_GL_SwapWindow if it was called after changing window position out of primary monitor.
      * And if we try to exclude changing position and set it after render initialization then when game started in fullscreen request will be ignored.
      * Hack below with render reinitialization is a temporary workaround. */
-    _windowHandler->UpdateWindowFromConfig(_config.get());
+    _application->get<GameWindowHandler>()->UpdateWindowFromConfig(_config.get());
     _render->Reinitialize();
     window->activate();
     ::eventLoop->processMessages(eventHandler);
@@ -225,7 +223,7 @@ int Game::run() {
     }
 
     if (window) {
-        _windowHandler->UpdateConfigFromWindow(_config.get());
+        _application->get<GameWindowHandler>()->UpdateConfigFromWindow(_config.get());
         _config->SaveConfiguration();
     }
 
