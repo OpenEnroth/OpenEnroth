@@ -203,7 +203,7 @@ void GUIWindow_Training::houseSpecificDialogue() {
 }
 
 std::vector<DIALOGUE_TYPE> GUIWindow_Training::listDialogueOptions(DIALOGUE_TYPE option) {
-    switch (dialog_menu_id) {
+    switch (option) {
       case DIALOGUE_MAIN:
         return {DIALOGUE_TRAINING_HALL_TRAIN, DIALOGUE_LEARN_SKILLS};
       case DIALOGUE_LEARN_SKILLS:

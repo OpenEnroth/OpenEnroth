@@ -51,6 +51,7 @@ class GUIWindow_House : public GUIWindow {
     void learnSelectedSkill(PLAYER_SKILL_TYPE skill);
 
     virtual void houseDialogueOptionSelected(DIALOGUE_TYPE option);
+    // TODO(Nik-RE-dev): add DIALOGUE_TYPE argument?
     virtual void houseSpecificDialogue();
     virtual std::vector<DIALOGUE_TYPE> listDialogueOptions(DIALOGUE_TYPE option);
 };

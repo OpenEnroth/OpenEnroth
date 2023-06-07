@@ -276,7 +276,7 @@ void GUIWindow_Tavern::houseSpecificDialogue() {
 }
 
 std::vector<DIALOGUE_TYPE> GUIWindow_Tavern::listDialogueOptions(DIALOGUE_TYPE option) {
-    switch (dialog_menu_id) {
+    switch (option) {
       case DIALOGUE_MAIN:
         return {DIALOGUE_TAVERN_REST, DIALOGUE_TAVERN_BUY_FOOD, DIALOGUE_LEARN_SKILLS, DIALOGUE_TAVERN_ARCOMAGE_MAIN};
       case DIALOGUE_LEARN_SKILLS:

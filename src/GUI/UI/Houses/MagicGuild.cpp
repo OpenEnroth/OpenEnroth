@@ -255,9 +255,10 @@ void GUIWindow_MagicGuild::houseSpecificDialogue() {
 }
 
 std::vector<DIALOGUE_TYPE> GUIWindow_MagicGuild::listDialogueOptions(DIALOGUE_TYPE option) {
+    // TODO(Nik-RE-dev): add buildingType() to GUIWindow_House
     BuildingType guildType = buildingTable[wData.val - 1].uType;
 
-    switch (dialog_menu_id) {
+    switch (option) {
       case DIALOGUE_MAIN:
         if (guildType == BuildingType_LightGuild || guildType == BuildingType_DarkGuild) {
             return {DIALOGUE_GUILD_BUY_BOOKS, learnableMagicSkillDialogue[guildType]};

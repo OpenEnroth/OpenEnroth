@@ -80,6 +80,8 @@ class GUIWindow_AlchemyShop : public GUIWindow_MagicAlchemyShop {
     explicit GUIWindow_AlchemyShop(HOUSE_ID houseId) : GUIWindow_MagicAlchemyShop(houseId) {}
     virtual ~GUIWindow_AlchemyShop() {}
 
+    virtual std::vector<DIALOGUE_TYPE> listDialogueOptions(DIALOGUE_TYPE option) override;
+
  private:
     virtual void generateShopItems(bool isSpecial) override;
     virtual std::vector<DIALOGUE_TYPE> listShopLearnableSkills() override;

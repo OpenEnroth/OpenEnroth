@@ -254,7 +254,7 @@ void GUIWindow_Transport::houseDialogueOptionSelected(DIALOGUE_TYPE option) {
 }
 
 std::vector<DIALOGUE_TYPE> GUIWindow_Transport::listDialogueOptions(DIALOGUE_TYPE option) {
-    switch (dialog_menu_id) {
+    switch (option) {
       case DIALOGUE_MAIN:
         return {DIALOGUE_TRANSPORT_SCHEDULE_1, DIALOGUE_TRANSPORT_SCHEDULE_2, DIALOGUE_TRANSPORT_SCHEDULE_3, DIALOGUE_TRANSPORT_SCHEDULE_4};
       default:

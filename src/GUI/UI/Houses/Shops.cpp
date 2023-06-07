@@ -1,6 +1,7 @@
 #include <cstdlib>
 #include <algorithm>
 #include <string>
+#include <array>
 
 #include "Engine/Engine.h"
 #include "Engine/Graphics/IRender.h"
@@ -34,7 +35,7 @@
 
 struct ITEM_VARIATION {
     ITEM_TREASURE_LEVEL treasure_level;
-    uint16_t item_class[4];
+    std::array<uint16_t, 4> item_class;
 };
 
 // TODO(Nik-RE-dev): enumerate treasure types used in this file
@@ -210,6 +211,43 @@ std::array<int, 6> weaponYPos;
 
 bool isStealingModeActive() {
     return keyboardInputHandler->IsStealingToggled() && pParty->activeCharacter().CanSteal();
+}
+
+void addUniqueItemClasses(const ITEM_VARIATION &variation, std::vector<int> &set) {
+    for (int itemClass : variation.item_class) {
+        if (std::find(set.begin(), set.end(), itemClass) == set.end()) {
+            set.push_back(itemClass);
+        }
+    }
+}
+
+DIALOGUE_TYPE getSkillLearnDualogueForItemClass(int itemClass) {
+    switch (itemClass) {
+      case 23:
+        return DIALOGUE_LEARN_SWORD;
+      case 24:
+        return DIALOGUE_LEARN_DAGGER;
+      case 25:
+        return DIALOGUE_LEARN_AXE;
+      case 26:
+        return DIALOGUE_LEARN_SPEAR;
+      case 27:
+        return DIALOGUE_LEARN_BOW;
+      case 28:
+        return DIALOGUE_LEARN_MACE;
+      case 30:
+        return DIALOGUE_LEARN_STAFF;
+      case 31:
+        return DIALOGUE_LEARN_LEATHER;
+      case 32:
+        return DIALOGUE_LEARN_CHAIN;
+      case 33:
+        return DIALOGUE_LEARN_PLATE;
+      case 34:
+        return DIALOGUE_LEARN_SHIELD;
+      default:
+        return DIALOGUE_NULL;
+    }
 }
 
 void GUIWindow_Shop::mainDialogue() {
@@ -738,42 +776,13 @@ std::vector<DIALOGUE_TYPE> GUIWindow_WeaponShop::listShopLearnableSkills() {
     std::vector<int> itemClasses;
     std::vector<DIALOGUE_TYPE> skillsOptions;
 
-    for (int itemClass : weaponShopVariationStandart[houseId()].item_class) {
-        if (std::find(itemClasses.begin(), itemClasses.end(), itemClass) == itemClasses.end()) {
-            itemClasses.push_back(itemClass);
-        }
-    }
-    for (int itemClass : weaponShopVariationSpecial[houseId()].item_class) {
-        if (std::find(itemClasses.begin(), itemClasses.end(), itemClass) == itemClasses.end()) {
-            itemClasses.push_back(itemClass);
-        }
-    }
+    addUniqueItemClasses(weaponShopVariationStandart[houseId()], itemClasses);
+    addUniqueItemClasses(weaponShopVariationSpecial[houseId()], itemClasses);
 
     for (int itemClass : itemClasses) {
-        switch (itemClass) {
-          case 23:
-            skillsOptions.push_back(DIALOGUE_LEARN_SWORD);
-            break;
-          case 24:
-            skillsOptions.push_back(DIALOGUE_LEARN_DAGGER);
-            break;
-          case 25:
-            skillsOptions.push_back(DIALOGUE_LEARN_AXE);
-            break;
-          case 26:
-            skillsOptions.push_back(DIALOGUE_LEARN_SPEAR);
-            break;
-          case 27:
-            skillsOptions.push_back(DIALOGUE_LEARN_BOW);
-            break;
-          case 28:
-            skillsOptions.push_back(DIALOGUE_LEARN_MACE);
-            break;
-          case 30:
-            skillsOptions.push_back(DIALOGUE_LEARN_STAFF);
-            break;
-          default:
-            continue;
+        DIALOGUE_TYPE dialogue = getSkillLearnDualogueForItemClass(itemClass);
+        if (dialogue != DIALOGUE_NULL) {
+            skillsOptions.push_back(dialogue);
         }
     }
 
@@ -784,43 +793,15 @@ std::vector<DIALOGUE_TYPE> GUIWindow_ArmorShop::listShopLearnableSkills() {
     std::vector<int> itemClasses;
     std::vector<DIALOGUE_TYPE> skillsOptions;
 
-    for (int itemClass : armorShopTopRowVariationStandart[houseId()].item_class) {
-        if (std::find(itemClasses.begin(), itemClasses.end(), itemClass) == itemClasses.end()) {
-            itemClasses.push_back(itemClass);
-        }
-    }
-    for (int itemClass : armorShopBottomRowVariationStandart[houseId()].item_class) {
-        if (std::find(itemClasses.begin(), itemClasses.end(), itemClass) == itemClasses.end()) {
-            itemClasses.push_back(itemClass);
-        }
-    }
-    for (int itemClass : armorShopTopRowVariationSpecial[houseId()].item_class) {
-        if (std::find(itemClasses.begin(), itemClasses.end(), itemClass) == itemClasses.end()) {
-            itemClasses.push_back(itemClass);
-        }
-    }
-    for (int itemClass : armorShopBottomRowVariationSpecial[houseId()].item_class) {
-        if (std::find(itemClasses.begin(), itemClasses.end(), itemClass) == itemClasses.end()) {
-            itemClasses.push_back(itemClass);
-        }
-    }
+    addUniqueItemClasses(armorShopTopRowVariationStandart[houseId()], itemClasses);
+    addUniqueItemClasses(armorShopBottomRowVariationStandart[houseId()], itemClasses);
+    addUniqueItemClasses(armorShopTopRowVariationSpecial[houseId()], itemClasses);
+    addUniqueItemClasses(armorShopBottomRowVariationSpecial[houseId()], itemClasses);
 
     for (int itemClass : itemClasses) {
-        switch (itemClass) {
-          case 31:
-            skillsOptions.push_back(DIALOGUE_LEARN_LEATHER);
-            break;
-          case 32:
-            skillsOptions.push_back(DIALOGUE_LEARN_CHAIN);
-            break;
-          case 33:
-            skillsOptions.push_back(DIALOGUE_LEARN_PLATE);
-            break;
-          case 34:
-            skillsOptions.push_back(DIALOGUE_LEARN_SHIELD);
-            break;
-          default:
-            continue;
+        DIALOGUE_TYPE dialogue = getSkillLearnDualogueForItemClass(itemClass);
+        if (dialogue != DIALOGUE_NULL) {
+            skillsOptions.push_back(dialogue);
         }
     }
 
@@ -895,20 +876,23 @@ void GUIWindow_Shop::houseDialogueOptionSelected(DIALOGUE_TYPE option) {
 }
 
 std::vector<DIALOGUE_TYPE> GUIWindow_Shop::listDialogueOptions(DIALOGUE_TYPE option) {
-    switch (dialog_menu_id) {
+    switch (option) {
       case DIALOGUE_MAIN:
         return {DIALOGUE_SHOP_BUY_STANDARD, DIALOGUE_SHOP_BUY_SPECIAL, DIALOGUE_SHOP_DISPLAY_EQUIPMENT, DIALOGUE_LEARN_SKILLS};
       case DIALOGUE_SHOP_DISPLAY_EQUIPMENT:
-        if (buildingTable[wData.val - 1].uType == BuildingType_AlchemistShop) {
-            return {DIALOGUE_SHOP_SELL, DIALOGUE_SHOP_IDENTIFY};
-        } else {
-            return {DIALOGUE_SHOP_SELL, DIALOGUE_SHOP_IDENTIFY, DIALOGUE_SHOP_REPAIR};
-        }
+        return {DIALOGUE_SHOP_SELL, DIALOGUE_SHOP_IDENTIFY, DIALOGUE_SHOP_REPAIR};
       case DIALOGUE_LEARN_SKILLS:
         return listShopLearnableSkills();
       default:
         return {};
     }
+}
+
+std::vector<DIALOGUE_TYPE> GUIWindow_AlchemyShop::listDialogueOptions(DIALOGUE_TYPE option) {
+    if (option == DIALOGUE_SHOP_DISPLAY_EQUIPMENT) {
+        return {DIALOGUE_SHOP_SELL, DIALOGUE_SHOP_IDENTIFY};
+    }
+    return GUIWindow_Shop::listDialogueOptions(option);
 }
 
 void GUIWindow_Shop::processStealingResult(int stealingResult, int fineToAdd) {  // not working properly??

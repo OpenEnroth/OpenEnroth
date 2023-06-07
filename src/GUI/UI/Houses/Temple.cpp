@@ -201,7 +201,7 @@ void GUIWindow_Temple::houseSpecificDialogue() {
 }
 
 std::vector<DIALOGUE_TYPE> GUIWindow_Temple::listDialogueOptions(DIALOGUE_TYPE option) {
-    switch (dialog_menu_id) {
+    switch (option) {
       case DIALOGUE_MAIN:
         return {DIALOGUE_TEMPLE_HEAL, DIALOGUE_TEMPLE_DONATE, DIALOGUE_LEARN_SKILLS};
       case DIALOGUE_LEARN_SKILLS:

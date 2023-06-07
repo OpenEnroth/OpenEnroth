@@ -130,7 +130,7 @@ void GUIWindow_Bank::houseSpecificDialogue() {
 }
 
 std::vector<DIALOGUE_TYPE> GUIWindow_Bank::listDialogueOptions(DIALOGUE_TYPE option) {
-    switch (dialog_menu_id) {
+    switch (option) {
       case DIALOGUE_MAIN:
         return {DIALOGUE_BANK_PUT_GOLD, DIALOGUE_BANK_GET_GOLD};
       default:
