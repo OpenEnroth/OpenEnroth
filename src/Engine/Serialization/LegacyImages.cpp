@@ -318,7 +318,7 @@ void deserialize(const ItemGen_MM7 &src, ItemGen *dst) {
     dst->m_enchantmentStrength = src.enchantmentStrength;
     dst->special_enchantment = static_cast<ITEM_ENCHANTMENT>(src.specialEnchantment);
     dst->uNumCharges = src.numCharges;
-    dst->uAttributes = static_cast<ITEM_FLAGS>(src.attributes);
+    dst->uAttributes = ItemFlags(src.attributes);
     dst->uBodyAnchor = static_cast<ITEM_SLOT>(src.bodyAnchor);
     dst->uMaxCharges = src.maxCharges;
     dst->uHolderPlayer = src.holderPlayer;
@@ -1552,7 +1552,7 @@ void deserialize(const SpriteObject_MM7 &src, SpriteObject *dst) {
     dst->vVelocity = src.vVelocity;
     dst->uFacing = src.uFacing;
     dst->uSoundID = src.uSoundID;
-    dst->uAttributes = static_cast<SPRITE_ATTRIBUTES>(src.uAttributes);
+    dst->uAttributes = SpriteAttributes(src.uAttributes);
     dst->uSectorID = src.uSectorID;
     dst->uSpriteFrameID = src.uSpriteFrameID;
     dst->tempLifetime = src.tempLifetime;
@@ -1586,7 +1586,7 @@ void deserialize(const DecorationDesc_MM6 &src, DecorationDesc *dst) {
     dst->uRadius = src.uRadius;
     dst->uLightRadius = src.uLightRadius;
     dst->uSpriteID = src.uSpriteID;
-    dst->uFlags = DECORATION_DESC_FLAGS(src.uFlags);
+    dst->uFlags = DecorationDescFlags(src.uFlags);
     dst->uSoundID = src.uSoundID;
 
     dst->uColoredLightRed = 255;
@@ -1613,7 +1613,7 @@ void serialize(const Chest &src, Chest_MM7 *dst) {
 
 void deserialize(const Chest_MM7 &src, Chest *dst) {
     dst->uChestBitmapID = src.uChestBitmapID;
-    dst->uFlags = CHEST_FLAGS(src.uFlags);
+    dst->uFlags = ChestFlags(src.uFlags);
     deserialize(src.igChestItems, &dst->igChestItems);
     deserialize(src.pInventoryIndices, &dst->pInventoryIndices);
 }
@@ -1699,7 +1699,7 @@ void deserialize(const ObjectDesc_MM6 &src, ObjectDesc *dst) {
     dst->uObjectID = src.uObjectID;
     dst->uRadius = src.uRadius;
     dst->uHeight = src.uHeight;
-    dst->uFlags = OBJECT_DESC_FLAGS(src.uFlags);
+    dst->uFlags = ObjectDescFlags(src.uFlags);
     dst->uSpriteID = src.uSpriteID;
     dst->uLifetime = src.uLifetime;
     dst->uParticleTrailColor = src.uParticleTrailColor;
@@ -1714,7 +1714,7 @@ void deserialize(const ObjectDesc_MM7 &src, ObjectDesc *dst) {
     dst->uObjectID = src.uObjectID;
     dst->uRadius = src.uRadius;
     dst->uHeight = src.uHeight;
-    dst->uFlags = OBJECT_DESC_FLAGS(src.uFlags);
+    dst->uFlags = ObjectDescFlags(src.uFlags);
     dst->uSpriteID = src.uSpriteID;
     dst->uLifetime = src.uLifetime;
     dst->uParticleTrailColor = src.uParticleTrailColor;

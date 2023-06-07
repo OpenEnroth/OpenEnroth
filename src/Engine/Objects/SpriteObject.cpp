@@ -110,7 +110,7 @@ int SpriteObject::Create(int yaw, int pitch, int speed, int which_char) {
     return sprite_slot;
 }
 
-static void createSpriteTrailParticle(Vec3i pos, OBJECT_DESC_FLAGS flags) {
+static void createSpriteTrailParticle(Vec3i pos, ObjectDescFlags flags) {
     Particle_sw particle;
     memset(&particle, 0, sizeof(Particle_sw));
     particle.x = pos.x;
@@ -676,7 +676,7 @@ bool SpriteObject::applyShrinkRayAoe() {
 }
 
 bool SpriteObject::dropItemAt(SPRITE_OBJECT_TYPE sprite, Vec3i pos, int speed, int count,
-                              bool randomRotate, SPRITE_ATTRIBUTES attributes, ItemGen *item) {
+                              bool randomRotate, SpriteAttributes attributes, ItemGen *item) {
     SpriteObject pSpellObject;
 
     pSpellObject.uType = sprite;

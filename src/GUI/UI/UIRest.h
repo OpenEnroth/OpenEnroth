@@ -33,16 +33,16 @@ class GUIWindow_RestWindow : public GUIWindow {
 };
 #endif
 
-enum class REST_TYPE {
+enum class RestType {
     REST_NONE = 0,
     REST_WAIT = 1,
     REST_HEAL = 2
 };
-using enum REST_TYPE;
+using enum RestType;
 
 extern class GraphicsImage *rest_ui_sky_frame_current;
 extern class GraphicsImage *rest_ui_hourglass_frame_current;
 
 extern int foodRequiredToRest;
 extern GameTime remainingRestTime;
-extern REST_TYPE currentRestType;
+extern RestType currentRestType;

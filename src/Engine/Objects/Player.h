@@ -267,7 +267,7 @@ struct Player {
     void resetTempBonuses();
     Color GetStatColor(int uStat) const;
     bool DiscardConditionIfLastsLongerThan(Condition uCondition, GameTime time);
-    MERCHANT_PHRASE SelectPhrasesTransaction(ItemGen *pItem, BuildingType building_type, int BuildID_2Events, int ShopMenuType);
+    MerchantPhrase SelectPhrasesTransaction(ItemGen *pItem, BuildingType building_type, int BuildID_2Events, int ShopMenuType);
     int GetBodybuilding() const;
     int GetMeditation() const;
     bool CanIdentify(ItemGen *pItem) const;

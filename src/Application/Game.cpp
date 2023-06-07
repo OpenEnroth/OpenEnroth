@@ -1043,8 +1043,7 @@ void Game::processQueuedMessages() {
                     interactionPossible = pActors[id].uAIState == Dead;
                 }
                 if (type == OBJECT_Item) {
-                    int flags = pObjectList->pObjects[pSpriteObjects[id].uObjectDescID].uFlags;
-                    interactionPossible = (flags & OBJECT_DESC_UNPICKABLE) != OBJECT_DESC_UNPICKABLE;
+                    interactionPossible = !(pObjectList->pObjects[pSpriteObjects[id].uObjectDescID].uFlags & OBJECT_DESC_UNPICKABLE);
                 }
                 if (type == OBJECT_Decoration) {
                     interactionPossible = pLevelDecorations[id].uEventID != 0;
@@ -1896,7 +1895,7 @@ void Game::processQueuedMessages() {
                 continue;
             case UIMSG_ClickBooksBtn:
                 bookButtonClicked = true;
-                bookButtonAction = BOOK_BUTTON_ACTION(uMessageParam);
+                bookButtonAction = BookButtonAction(uMessageParam);
                 switch (bookButtonAction) {
                     case BOOK_PREV_PAGE:
                     case BOOK_ZOOM_IN:

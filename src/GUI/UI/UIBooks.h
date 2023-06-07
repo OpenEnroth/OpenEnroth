@@ -4,7 +4,7 @@
 
 #include "GUI/GUIWindow.h"
 
-enum class BOOK_BUTTON_ACTION {
+enum class BookButtonAction {
     BOOK_ZOOM_IN = 0,
     BOOK_ZOOM_OUT = 1,
     BOOK_SCROLL_UP = 2,
@@ -20,7 +20,7 @@ enum class BOOK_BUTTON_ACTION {
     BOOK_NEXT_PAGE = 12,
     BOOK_PREV_PAGE = 13
 };
-using enum BOOK_BUTTON_ACTION;
+using enum BookButtonAction;
 
 class GUIWindow_Book : public GUIWindow {
  public:
@@ -69,4 +69,4 @@ extern GraphicsImage *ui_book_map_frame;
 extern GraphicsImage *ui_book_quest_div_bar;
 
 extern bool bookButtonClicked;
-extern BOOK_BUTTON_ACTION bookButtonAction;
+extern BookButtonAction bookButtonAction;

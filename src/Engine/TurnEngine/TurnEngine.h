@@ -2,15 +2,15 @@
 
 #include "Utility/Flags.h"
 
-enum class TURN_ENGINE_FLAG {
+enum class TurnEngineFlag {
     TE_FLAG_1 = 1,
     TE_HAVE_PENDING_ACTIONS = 2,
     TE_PLAYER_TURN = 4,
     TE_FLAG_8_finished = 8
 };
-using enum TURN_ENGINE_FLAG;
-MM_DECLARE_FLAGS(TURN_ENGINE_FLAGS, TURN_ENGINE_FLAG)
-MM_DECLARE_OPERATORS_FOR_FLAGS(TURN_ENGINE_FLAGS)
+using enum TurnEngineFlag;
+MM_DECLARE_FLAGS(TurnEngineFlags, TurnEngineFlag)
+MM_DECLARE_OPERATORS_FOR_FLAGS(TurnEngineFlags)
 
 enum class TURN_ENGINE_AI_ACTION {
     TE_AI_STAND = 0,
@@ -79,7 +79,7 @@ struct stru262_TurnBased {
     int uActorQueueSize;  // c
     int turn_initiative;
     int uActionPointsLeft;  // 14
-    TURN_ENGINE_FLAGS flags;
+    TurnEngineFlags flags;
     int pending_actions;
     TurnBased_QueueElem pQueue[530];  // 20
 };

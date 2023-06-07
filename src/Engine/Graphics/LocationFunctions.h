@@ -4,7 +4,7 @@
 #include "LocationInfo.h"
 #include "LocationTime.h"
 
-extern LEVEL_TYPE uCurrentlyLoadedLevelType;
+extern LevelType uCurrentlyLoadedLevelType;
 
 bool GetAlertStatus();
 
