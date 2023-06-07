@@ -93,13 +93,13 @@ struct ItemGen {  // 0x24
         return GetItemEquipType() == EQUIP_SINGLE_HANDED || GetItemEquipType() == EQUIP_TWO_HANDED;
     }
     bool isWeapon() const {
-        return IsWeapon(GetItemEquipType());
+        return ::isWeapon(GetItemEquipType());
     }
     bool isArmor() const {
-        return IsArmor(GetItemEquipType());
+        return ::isArmor(GetItemEquipType());
     }
     bool isPassiveEquipment() const {
-        return IsPassiveEquipment(GetItemEquipType());
+        return ::isPassiveEquipment(GetItemEquipType());
     }
 
 

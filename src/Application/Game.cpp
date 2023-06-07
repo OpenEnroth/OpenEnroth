@@ -1673,7 +1673,7 @@ void Game::processQueuedMessages() {
                 int skill_count = 0;
                 int uAction = 0;
                 int page = 0;
-                for (PLAYER_SKILL_TYPE i : MagicSkills()) {
+                for (PLAYER_SKILL_TYPE i : allMagicSkills()) {
                     if (pParty->activeCharacter().pActiveSkills[i] || _engine->config->debug.AllMagic.value()) {
                         if (pParty->activeCharacter().lastOpenedSpellbookPage == page)
                             uAction = skill_count;
@@ -2085,7 +2085,7 @@ void Game::processQueuedMessages() {
                     continue;
 
                 for(size_t attempt = 0; attempt < 500; attempt++) {
-                    ITEM_TYPE pItemID = grng->randomSample(SpawnableItems());
+                    ITEM_TYPE pItemID = grng->randomSample(allSpawnableItems());
                     if (pItemTable->pItems[pItemID].uItemID_Rep_St > 6) {
                         if (!pParty->activeCharacter().AddItem(-1, pItemID)) {
                             pAudioPlayer->playUISound(SOUND_error);
@@ -2102,7 +2102,7 @@ void Game::processQueuedMessages() {
                     continue;
 
                 for (size_t attempt = 0; attempt < 500; attempt++) {
-                    ITEM_TYPE pItemID = grng->randomSample(SpawnableItems());
+                    ITEM_TYPE pItemID = grng->randomSample(allSpawnableItems());
                     // if (pItemTable->pItems[pItemID].uItemID_Rep_St ==
                     //   (item_id - 40015 + 1)) {
                     if (!pParty->activeCharacter().AddItem(-1, pItemID)) {
@@ -2152,7 +2152,7 @@ void Game::processQueuedMessages() {
                 continue;
             case UIMSG_DebugLearnSkills:
                 for (Player &player : pParty->pPlayers) { // loop over players
-                    for (PLAYER_SKILL_TYPE ski : AllSkills()) {  // loop over skills
+                    for (PLAYER_SKILL_TYPE ski : allSkills()) {  // loop over skills
                         // if class can learn this skill
                         if (skillMaxMasteryPerClass[player.classType][ski] > PLAYER_SKILL_MASTERY_NONE) {
                             if (player.getSkillValue(ski).level() == 0) {

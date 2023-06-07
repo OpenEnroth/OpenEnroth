@@ -60,7 +60,7 @@ bool PlayerCreation_Choose4Skills() {
 
     for (uint j = 0; j < 4; ++j) {
         skills_count = 0;
-        for (PLAYER_SKILL_TYPE i : AllSkills()) {
+        for (PLAYER_SKILL_TYPE i : allSkills()) {
             if (pParty->pPlayers[j].pActiveSkills[i])
                 ++skills_count;
         }
@@ -820,7 +820,7 @@ bool PartyCreationUI_LoopInternal() {
         // TODO(pskelton): why just 22?
         pParty->pPlayers[i].pPlayerBuffs[22].Reset();
         int page = 0;
-        for (PLAYER_SKILL_TYPE j : MagicSkills()) {
+        for (PLAYER_SKILL_TYPE j : allMagicSkills()) {
             if (pParty->pPlayers[i].pActiveSkills[j]) {
                 pParty->pPlayers[i].lastOpenedSpellbookPage = page;
                 break;
@@ -833,7 +833,7 @@ bool PartyCreationUI_LoopInternal() {
 
         pParty->pPlayers[i].health = pParty->pPlayers[i].GetMaxHealth();
         pParty->pPlayers[i].mana = pParty->pPlayers[i].GetMaxMana();
-        for (PLAYER_SKILL_TYPE j : AllSkills()) {
+        for (PLAYER_SKILL_TYPE j : allSkills()) {
             if (!pParty->pPlayers[i].pActiveSkills[j]) continue;
 
             switch (j) {
@@ -924,7 +924,7 @@ bool PartyCreationUI_LoopInternal() {
             case PLAYER_SKILL_TRAP_DISARM:
             case PLAYER_SKILL_LEARNING:
                 pParty->pPlayers[i].AddItem(-1, ITEM_POTION_BOTTLE);
-                pParty->pPlayers[i].AddItem(-1, grng->randomSample(Level1Reagents()));
+                pParty->pPlayers[i].AddItem(-1, grng->randomSample(allLevel1Reagents()));
                 break;
             case PLAYER_SKILL_DODGE:
                 pParty->pPlayers[i].AddItem(-1, ITEM_LEATHER_BOOTS);
