@@ -28,6 +28,7 @@ using Io::InputAction;
 class GUIFont;
 class GUIButton;
 class GUIWindow_House;
+class GUIWindow_MessageScroll;
 
 struct WindowData {
     WindowData() {}
@@ -94,26 +95,6 @@ class GUIWindow {
 
     std::shared_ptr<Mouse> mouse = nullptr;
     Logger *log = nullptr;
-};
-
-class GUIWindow_Scroll : public GUIWindow {
- public:
-    GUIWindow_Scroll(Pointi position, Sizei dimensions, ITEM_TYPE scroll_type, const std::string &hint = std::string()) :
-        GUIWindow(WINDOW_Scroll, position, dimensions, 0, hint) {
-        Assert(isMessageScroll(scroll_type));
-
-        this->scroll_type = scroll_type;
-        CreateButton({61, 424}, {31, 0}, 2, 94, UIMSG_SelectCharacter, 1, InputAction::SelectChar1, "");
-        CreateButton({177, 424}, {31, 0}, 2, 94, UIMSG_SelectCharacter, 2, InputAction::SelectChar2, "");
-        CreateButton({292, 424}, {31, 0}, 2, 94, UIMSG_SelectCharacter, 3, InputAction::SelectChar3, "");
-        CreateButton({407, 424}, {31, 0}, 2, 94, UIMSG_SelectCharacter, 4, InputAction::SelectChar4, "");
-        CreateButton({0, 0}, {0, 0}, 1, 0, UIMSG_CycleCharacters, 0, InputAction::CharCycle, "");
-    }
-    virtual ~GUIWindow_Scroll() {}
-
-    virtual void Update() override;
-
-    ITEM_TYPE scroll_type = ITEM_NULL;
 };
 
 class OnButtonClick : public GUIWindow {
@@ -308,20 +289,13 @@ void GameUI_DrawLifeManaBars();
 void GameUI_DrawHiredNPCs();
 void GameUI_DrawPortraits();
 void GameUI_DrawMinimap(unsigned int uX, unsigned int uY, unsigned int uZ,
-                        unsigned int uW, unsigned int uZoom,
-                        unsigned int bRedrawOdmMinimap);
+                        unsigned int uW, unsigned int uZoom, unsigned int bRedrawOdmMinimap);
 std::string GameUI_GetMinimapHintText();
 void GameUI_DrawPartySpells();
 void GameUI_DrawTorchlightAndWizardEye();
 void GameUI_DrawCharacterSelectionFrame();
-void GameUI_CharacterQuickRecord_Draw(GUIWindow *window, Player *player);
-void GameUI_DrawNPCPopup(void *_this);
 
 // character ui
-std::string CharacterUI_GetSkillDescText(unsigned int uPlayerID,
-                                    PLAYER_SKILL_TYPE uPlayerSkillType);
-void CharacterUI_SkillsTab_ShowHint();
-void CharacterUI_StatsTab_ShowHint();
 void CharacterUI_InventoryTab_Draw(Player *player, bool a2);
 void CharacterUI_DrawPaperdoll(Player *player);
 void CharacterUI_DrawPaperdollWithRingOverlay(Player *player);
@@ -332,28 +306,18 @@ void CharacterUI_ReleaseButtons();
  */
 Color GetSkillColor(PLAYER_CLASS_TYPE uPlayerClass, PLAYER_SKILL_TYPE uPlayerSkillType, PLAYER_SKILL_MASTERY skill_mastery);
 
-void DrawSpellDescriptionPopup(int spell_index_in_book);
-
 void UI_OnMouseRightClick(int mouse_x, int mouse_y);
 
-void DrawPopupWindow(unsigned int uX, unsigned int uY, unsigned int uWidth,
-                     unsigned int uHeight);  // idb
-void DrawMM7CopyrightWindow();
 void GUI_UpdateWindows();
 Color GetConditionDrawColor(Condition uConditionIdx);  // idb
-void Inventory_ItemPopupAndAlchemy();
-Color UI_GetHealthManaAndOtherQualitiesStringColor(int current_pos,
-                                                          int base_pos);
+Color UI_GetHealthManaAndOtherQualitiesStringColor(int current_pos, int base_pos);
 unsigned int GetSizeInInventorySlots(unsigned int uNumPixels);
 class GUIButton *GUI_HandleHotkey(PlatformKey hotkey);
 void GUI_ReplaceHotkey(PlatformKey oldKey, PlatformKey newKey, char bFirstCall);
 void DrawBuff_remaining_time_string(int uY, GUIWindow *window,
                                     GameTime remaining_time, GUIFont *Font);
-void GameUI_DrawItemInfo(struct ItemGen *inspect_item);   // idb
-void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *window);
 void SetUserInterface(PartyAlignment alignment, bool bReplace);
 void CreateMsgScrollWindow(ITEM_TYPE mscroll_id);
-void free_book_subwindow();
 void CreateScrollWindow();
 void OnPaperdollLeftClick();
 void DrawJoinGuildWindow(GUILD_ID guild_id);
@@ -374,7 +338,6 @@ std::string BuildDialogueString(const char *lpsz, uint8_t uPlayerID,
 std::string BuildDialogueString(std::string &str, uint8_t uPlayerID,
                            struct ItemGen *a3, int eventId, int shop_screen,
                            GameTime *a6 = nullptr);
-int const_2();
 
 
 std::string NameAndTitle(const std::string &name, const std::string &title);
@@ -391,7 +354,7 @@ extern GUIWindow *pPrimaryWindow;
 //extern GUIWindow *pChestWindow;
 extern GUIWindow *pDialogueWindow;
 extern GUIWindow_House *window_SpeakInHouse;
-extern GUIWindow_Scroll *pGUIWindow_ScrollWindow;
+extern GUIWindow_MessageScroll *pGUIWindow_ScrollWindow;
 extern GUIWindow *ptr_507BC8;
 extern GUIWindow *pGUIWindow_CurrentMenu;
 //extern GUIWindow *ptr_507BD0;

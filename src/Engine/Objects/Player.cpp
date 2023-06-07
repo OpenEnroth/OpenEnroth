@@ -32,6 +32,7 @@
 #include "GUI/GUIWindow.h"
 #include "GUI/UI/UIGame.h"
 #include "GUI/UI/UIStatusBar.h"
+#include "GUI/UI/UIMessageScroll.h"
 #include "GUI/UI/Books/AutonotesBook.h"
 
 #include "Utility/Memory/MemSet.h"
