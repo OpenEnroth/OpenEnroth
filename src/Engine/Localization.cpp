@@ -457,10 +457,10 @@ void Localization::InitializeAttributeNames() {
                 this->hp_description = removeQuotes(tokens[1]);
                 break;
             case 8:
-                this->sp_description = removeQuotes(tokens[1]);
+                this->armour_class_description = removeQuotes(tokens[1]);
                 break;
             case 9:
-                this->armour_class_description = removeQuotes(tokens[1]);
+                this->sp_description = removeQuotes(tokens[1]);
                 break;
             case 10:
                 this->character_condition_description = removeQuotes(tokens[1]);
