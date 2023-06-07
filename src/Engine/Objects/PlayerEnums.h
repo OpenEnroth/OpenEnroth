@@ -151,7 +151,6 @@ enum PlayerSpeech {
     SPEECH_LAST = SPEECH_110
 };
 
-/*  339 */
 enum CHARACTER_RACE {
     CHARACTER_RACE_HUMAN = 0,
     CHARACTER_RACE_ELF = 1,
@@ -159,6 +158,7 @@ enum CHARACTER_RACE {
     CHARACTER_RACE_DWARF = 3,
 };
 
+// TODO(captainurist): think of a better name for this enum.
 enum ClassSkill : uint8_t {
     CLASS_SKILL_DENIED = 0,
     CLASS_SKILL_AVAILABLE = 1,
