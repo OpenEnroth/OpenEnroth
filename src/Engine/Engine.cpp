@@ -47,6 +47,7 @@
 #include "GUI/GUIWindow.h"
 #include "GUI/UI/UIStatusBar.h"
 #include "GUI/UI/UIPopup.h"
+#include "GUI/UI/UIMessageScroll.h"
 
 #include "Io/Mouse.h"
 
@@ -1394,9 +1395,14 @@ void back_to_game() {
     rightClickItemActionPerformed = false;
     identifyOrRepairReactionPlayed = false;
 
-    if (pGUIWindow_ScrollWindow) free_book_subwindow();
-    if (current_screen_type == CURRENT_SCREEN::SCREEN_GAME && !pGUIWindow_CastTargetedSpell)
+    if (pGUIWindow_ScrollWindow) {
+        pGUIWindow_ScrollWindow->Release();
+        pGUIWindow_ScrollWindow = nullptr;
+    }
+
+    if (current_screen_type == CURRENT_SCREEN::SCREEN_GAME && !pGUIWindow_CastTargetedSpell) {
         pEventTimer->Resume();
+    }
 }
 
 //----- (00494035) --------------------------------------------------------

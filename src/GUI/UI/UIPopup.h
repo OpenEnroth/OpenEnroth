@@ -1,9 +1,7 @@
 #pragma once
 #include <string>
 
-Color GetSpellColor(signed int a1);
-uint64_t GetExperienceRequiredForLevel(int level);
-void CharacterUI_DrawTooltip(const char *title, std::string &content);
+void DrawPopupWindow(unsigned int uX, unsigned int uY, unsigned int uWidth, unsigned int uHeight);  // idb
 
 class GraphicsImage;
 class Texture;

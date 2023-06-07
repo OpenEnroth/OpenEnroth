@@ -16,6 +16,7 @@
 #include "Engine/Objects/ObjectList.h"
 #include "Engine/Objects/SpriteObject.h"
 #include "Engine/Tables/ItemTable.h"
+#include "Engine/Tables/PlayerFrameTable.h"
 #include "Engine/Party.h"
 #include "Engine/Time.h"
 
@@ -26,6 +27,7 @@
 #include "GUI/UI/Books/MapBook.h"
 #include "GUI/UI/UICharacter.h"
 #include "GUI/UI/UIPopup.h"
+#include "GUI/UI/UIGame.h"
 #include "GUI/UI/UIStatusBar.h"
 #include "GUI/UI/Houses/Shops.h"
 
@@ -81,6 +83,10 @@ std::array<int8_t, 88> monster_popup_y_offsets = {
      0,   0,  0,   0,   0,   -20, -20, -20, 20,  20,  20,  10,  10,  10,  10,
      10,  10, -90, -60, -40, -20, -20, -80, -10, 0,   0,   -40, 0,   0,   0,
      -20, 10, 0,   0,   0,   0,   0,   0,   -60, 0,   0,   0,   0}};
+
+void Inventory_ItemPopupAndAlchemy();
+Color GetSpellColor(signed int a1);
+uint64_t GetExperienceRequiredForLevel(int level);
 
 //----- (004179BC) --------------------------------------------------------
 void CharacterUI_DrawTooltip(const char *title, std::string &content) {
@@ -1581,6 +1587,145 @@ void ShowPopupShopItem() {
                         showSpellbookInfo(pParty->spellBooksInGuilds[window_SpeakInHouse->houseId()][testx].uItemID);
                     }
                 }
+            }
+        }
+    }
+}
+
+//----- (0041D3B7) --------------------------------------------------------
+void GameUI_CharacterQuickRecord_Draw(GUIWindow *window, Player *player) {
+    GraphicsImage *v13;              // eax@6
+    PlayerFrame *v15;        // eax@12
+    std::string spellName;   // eax@16
+    int v36;                 // esi@22
+    signed int uFramesetID;  // [sp+20h] [bp-8h]@9
+    int uFramesetIDa;        // [sp+20h] [bp-8h]@18
+
+    uint numActivePlayerBuffs = 0;
+    for (uint i = 0; i < 24; ++i) {
+        if (player->pPlayerBuffs[i].Active()) ++numActivePlayerBuffs;
+    }
+
+    window->uFrameHeight =
+        ((pFontArrus->GetHeight() + 162) +
+         ((numActivePlayerBuffs - 1) * pFontArrus->GetHeight()));
+    window->uFrameZ = window->uFrameWidth + window->uFrameX - 1;
+    window->uFrameW = ((pFontArrus->GetHeight() + 162) +
+                       ((numActivePlayerBuffs - 1) * pFontArrus->GetHeight())) +
+                      window->uFrameY - 1;
+    window->DrawMessageBox(0);
+
+    if (player->IsEradicated()) {
+        v13 = game_ui_player_face_eradicated;
+    } else if (player->IsDead()) {
+        v13 = game_ui_player_face_dead;
+    } else {
+        uFramesetID =
+            pPlayerFrameTable->GetFrameIdByExpression(player->expression);
+        if (!uFramesetID) uFramesetID = 1;
+        if (player->expression == CHARACTER_EXPRESSION_TALK)
+            v15 = pPlayerFrameTable->GetFrameBy_y(
+                &player->_expression21_frameset,
+                &player->_expression21_animtime, pMiscTimer->uTimeElapsed);
+        else
+            v15 = pPlayerFrameTable->GetFrameBy_x(uFramesetID,
+                                                  pMiscTimer->Time());
+        player->uExpressionImageIndex = v15->uTextureID - 1;
+        v13 = game_ui_player_faces[window->wData.val][v15->uTextureID - 1];
+    }
+
+    render->DrawTextureNew((window->uFrameX + 24) / 640.0f,
+                                (window->uFrameY + 24) / 480.0f, v13);
+
+    // TODO(captainurist): do a 2nd rewrite here
+    auto str =
+        fmt::format("{::}{}\f00000\n", ui_character_header_text_color.tag(), NameAndTitle(player->name, player->classType))
+        + fmt::format("{} : {::}{}\f00000 / {}\n",
+                      localization->GetString(LSTR_HIT_POINTS),
+                      UI_GetHealthManaAndOtherQualitiesStringColor(player->health, player->GetMaxHealth()).tag(),
+                      player->health, player->GetMaxHealth())
+        + fmt::format("{} : {::}{}\f00000 / {}\n",
+                      localization->GetString(LSTR_SPELL_POINTS),
+                      UI_GetHealthManaAndOtherQualitiesStringColor(player->mana, player->GetMaxMana()).tag(),
+                      player->mana, player->GetMaxMana())
+        + fmt::format("{}: {::}{}\f00000\n",
+                     localization->GetString(LSTR_CONDITION),
+                     GetConditionDrawColor(player->GetMajorConditionIdx()).tag(),
+                     localization->GetCharacterConditionName(player->GetMajorConditionIdx()));
+
+    if (player->uQuickSpell != SPELL_NONE)
+        spellName = pSpellStats->pInfos[player->uQuickSpell].pShortName;
+    else
+        spellName = localization->GetString(LSTR_NONE);
+
+    str += fmt::format("{}: {}", localization->GetString(LSTR_QUICK_SPELL), spellName);
+
+    window->DrawText(pFontArrus, {120, 22}, Color(), str, 0, 0, Color());
+
+    uFramesetIDa = 0;
+    for (uint i = 0; i < 24; ++i) {
+        SpellBuff *buff = &player->pPlayerBuffs[i];
+        if (buff->Active()) {
+            v36 = uFramesetIDa++ * pFontComic->GetHeight() + 134;
+            window->DrawText(pFontComic, {52, v36},
+                             ui_game_character_record_playerbuff_colors[i],
+                             localization->GetSpellName(20 + i), 0, 0, Color());
+            DrawBuff_remaining_time_string(
+                v36, window, buff->GetExpireTime() - pParty->GetPlayingTime(),
+                pFontComic);
+        }
+    }
+
+    auto active_spells = localization->FormatString(
+        LSTR_FMT_ACTIVE_SPELLS_S,
+        uFramesetIDa == 0 ? localization->GetString(LSTR_NONE) : "");
+    window->DrawText(pFontArrus, {14, 114}, Color(), active_spells, 0, 0, Color());
+}
+
+void GameUI_DrawNPCPopup(void *_this) {  // PopupWindowForBenefitAndJoinText
+    NPCData *pNPC;           // eax@16
+    std::string pText;       // eax@18
+    GUIWindow popup_window;  // [sp+Ch] [bp-60h]@23
+    int a2;                  // [sp+60h] [bp-Ch]@16
+
+    if (bNoNPCHiring != 1) {
+        FlatHirelings buf;
+        buf.Prepare();
+
+        if ((int64_t)((char *)_this + pParty->hirelingScrollPosition) < buf.Size()) {
+            sDialogue_SpeakingActorNPC_ID = -1 - pParty->hirelingScrollPosition - (int64_t)_this;
+            pNPC = GetNewNPCData(sDialogue_SpeakingActorNPC_ID, &a2);
+            if (pNPC) {
+                if (a2 == 57)
+                    pText = pNPCTopics[512].pText;  // Baby dragon
+                else
+                    pText = pNPCStats->pProfessions[pNPC->profession].pBenefits;
+                if (pText.empty()) {
+                    pText = pNPCStats->pProfessions[pNPC->profession].pJoinText;
+                }
+                popup_window.Init();
+                popup_window.sHint.clear();
+                popup_window.uFrameX = 38;
+                popup_window.uFrameY = 60;
+                popup_window.uFrameWidth = 276;
+                popup_window.uFrameZ = 313;
+                popup_window.uFrameHeight = pFontArrus->CalcTextHeight(pText, popup_window.uFrameWidth, 0) + 2 * pFontArrus->GetHeight() + 24;
+                if (popup_window.uFrameHeight < 130)
+                    popup_window.uFrameHeight = 130;
+                popup_window.uFrameWidth = 400;
+                popup_window.uFrameZ = popup_window.uFrameX + 399;
+                popup_window.DrawMessageBox(0);
+
+                auto tex_name = fmt::format("NPC{:03}", pNPC->uPortraitID);
+                render->DrawTextureNew(
+                    (popup_window.uFrameX + 22) / 640.0f,
+                    (popup_window.uFrameY + 36) / 480.0f,
+                    assets->getImage_ColorKey(tex_name));
+
+                popup_window.DrawTitleText(pFontArrus, 0, 12, colorTable.PaleCanary, NameAndTitle(pNPC), 3);
+                popup_window.uFrameWidth -= 24;
+                popup_window.uFrameZ = popup_window.uFrameX + popup_window.uFrameWidth - 1;
+                popup_window.DrawText(pFontArrus, {100, 36}, Color(), BuildDialogueString(pText, pParty->activeCharacterIndex() - 1, 0, 0, 0));
             }
         }
     }

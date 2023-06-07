@@ -139,6 +139,31 @@ void GUIWindow_MainMenu::EventLoop() {
 
 static bool first_initialization = true;
 
+void DrawMM7CopyrightWindow() {
+    GUIWindow Dst;
+    Dst.uFrameWidth = 624;
+    Dst.uFrameHeight = 256;
+    Dst.uFrameX = 8;
+    Dst.uFrameY = 30;
+    Dst.uFrameHeight = pFontSmallnum->CalcTextHeight(
+        localization->GetString(LSTR_3DO_COPYRIGHT), Dst.uFrameWidth, 24, 0)
+        + 2 * (unsigned char)pFontSmallnum->GetHeight() + 24;
+    Dst.uFrameY = 470 - Dst.uFrameHeight;
+    Dst.uFrameZ = Dst.uFrameX + Dst.uFrameWidth - 1;
+    Dst.uFrameW = 469;
+    Dst.DrawMessageBox(0);
+
+    Dst.uFrameWidth -= 28;
+    Dst.uFrameX += 12;
+    Dst.uFrameY += 12;
+    Dst.uFrameHeight -= 12;
+    Dst.uFrameZ = Dst.uFrameX + Dst.uFrameWidth - 1;
+    Dst.uFrameW = Dst.uFrameY + Dst.uFrameHeight - 1;
+    Dst.DrawTitleText(
+        pFontSmallnum, 0, 12, ui_mainmenu_copyright_color,
+        localization->GetString(LSTR_3DO_COPYRIGHT), 3);
+}
+
 void GUIWindow_MainMenu::Loop() {
     GraphicsImage *tex;
     nuklear->Create(WINDOW_MainMenu_Load);
@@ -198,29 +223,4 @@ void GUIWindow_MainMenu::Loop() {
     pWindow_MainMenu->Release();
     delete pWindow_MainMenu;
     pWindow_MainMenu = nullptr;
-}
-
-void DrawMM7CopyrightWindow() {
-    GUIWindow Dst;
-    Dst.uFrameWidth = 624;
-    Dst.uFrameHeight = 256;
-    Dst.uFrameX = 8;
-    Dst.uFrameY = 30;
-    Dst.uFrameHeight = pFontSmallnum->CalcTextHeight(
-        localization->GetString(LSTR_3DO_COPYRIGHT), Dst.uFrameWidth, 24, 0)
-        + 2 * (unsigned char)pFontSmallnum->GetHeight() + 24;
-    Dst.uFrameY = 470 - Dst.uFrameHeight;
-    Dst.uFrameZ = Dst.uFrameX + Dst.uFrameWidth - 1;
-    Dst.uFrameW = 469;
-    Dst.DrawMessageBox(0);
-
-    Dst.uFrameWidth -= 28;
-    Dst.uFrameX += 12;
-    Dst.uFrameY += 12;
-    Dst.uFrameHeight -= 12;
-    Dst.uFrameZ = Dst.uFrameX + Dst.uFrameWidth - 1;
-    Dst.uFrameW = Dst.uFrameY + Dst.uFrameHeight - 1;
-    Dst.DrawTitleText(
-        pFontSmallnum, 0, 12, ui_mainmenu_copyright_color,
-        localization->GetString(LSTR_3DO_COPYRIGHT), 3);
 }
