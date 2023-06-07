@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;676d68e</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;549ef4b</span>
    </div>
   </td>
  </tr>
@@ -90,14 +90,12 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:af9a3c5a45420b0591acb42f1f1a73fdd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8331690ebe63c400b3bba7c7bd7cdaba"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structNPCStats.html#a8331690ebe63c400b3bba7c7bd7cdaba">Initialize</a> ()</td></tr>
 <tr class="separator:a8331690ebe63c400b3bba7c7bd7cdaba"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a91c45bf50b4a47907a003129d8083bae"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structNPCStats.html#a91c45bf50b4a47907a003129d8083bae">Release</a> ()</td></tr>
-<tr class="separator:a91c45bf50b4a47907a003129d8083bae"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5ca576c3deb006e2674b95059cd11d9e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structNPCStats.html#a5ca576c3deb006e2674b95059cd11d9e">InitializeAdditionalNPCs</a> (<a class="el" href="structNPCData.html">NPCData</a> *pNPCDataBuff, int npc_uid, int uLocation2D, int uMapId)</td></tr>
 <tr class="separator:a5ca576c3deb006e2674b95059cd11d9e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5b99f624bf09a6ddb1fa9235d1de4776"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structNPCStats.html#a5b99f624bf09a6ddb1fa9235d1de4776">setNPCNamesOnLoad</a> ()</td></tr>
 <tr class="separator:a5b99f624bf09a6ddb1fa9235d1de4776"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a57df536be568ebfa24ebe6f70343e466"><td class="memItemLeft" align="right" valign="top">char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structNPCStats.html#a57df536be568ebfa24ebe6f70343e466">sub_495366_MispronounceName</a> (uint8_t firstLetter, uint8_t genderId)</td></tr>
-<tr class="separator:a57df536be568ebfa24ebe6f70343e466"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aefc21aa7f25b397fefedfb9efb5f6f9d"><td class="memItemLeft" align="right" valign="top">const std::string &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structNPCStats.html#aefc21aa7f25b397fefedfb9efb5f6f9d">sub_495366_MispronounceName</a> (uint8_t firstLetter, uint8_t genderId)</td></tr>
+<tr class="separator:aefc21aa7f25b397fefedfb9efb5f6f9d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
@@ -105,16 +103,16 @@ Public Attributes</h2></td></tr>
 <tr class="separator:a812519b6390b644c78ac652c544a9eb1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a798b0904a1cf8d159a9b4268d7af1b9c"><td class="memItemLeft" align="right" valign="top">std::array&lt; <a class="el" href="structNPCData.html">NPCData</a>, 501 &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structNPCStats.html#a798b0904a1cf8d159a9b4268d7af1b9c">pNewNPCData</a></td></tr>
 <tr class="separator:a798b0904a1cf8d159a9b4268d7af1b9c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a589c3d76a3f0145522f4175f103a8a74"><td class="memItemLeft" align="right" valign="top">char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structNPCStats.html#a589c3d76a3f0145522f4175f103a8a74">pNPCNames</a> [540][2]</td></tr>
-<tr class="separator:a589c3d76a3f0145522f4175f103a8a74"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a12399d79464d9bead760a4fedff48647"><td class="memItemLeft" align="right" valign="top">std::array&lt; std::array&lt; std::string, 2 &gt;, 540 &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structNPCStats.html#a12399d79464d9bead760a4fedff48647">pNPCNames</a> {}</td></tr>
+<tr class="separator:a12399d79464d9bead760a4fedff48647"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5a6e42ae52c006f9774b9029ef82aada"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classIndexedArray.html">IndexedArray</a>&lt; <a class="el" href="structNPCProfession.html">NPCProfession</a>, <a class="el" href="NPCEnums_8h.html#ae6501f571f97d74c2c78fddcb371bad4a5e7ece4126105c8e62f4c2c0dbd00a91">NPC_PROFESSION_FIRST</a>, <a class="el" href="NPCEnums_8h.html#ae6501f571f97d74c2c78fddcb371bad4a7e04078b21df971e5dcbbc512dc2bbcd">NPC_PROFESSION_LAST</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structNPCStats.html#a5a6e42ae52c006f9774b9029ef82aada">pProfessions</a> = {{}}</td></tr>
 <tr class="separator:a5a6e42ae52c006f9774b9029ef82aada"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa70a2041bf25316a8db5842458130c80"><td class="memItemLeft" align="right" valign="top">std::array&lt; <a class="el" href="structNPCData.html">NPCData</a>, 100 &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structNPCStats.html#aa70a2041bf25316a8db5842458130c80">pAdditionalNPC</a></td></tr>
+<tr class="memitem:aa70a2041bf25316a8db5842458130c80"><td class="memItemLeft" align="right" valign="top">std::array&lt; <a class="el" href="structNPCData.html">NPCData</a>, 100 &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structNPCStats.html#aa70a2041bf25316a8db5842458130c80">pAdditionalNPC</a> = {{}}</td></tr>
 <tr class="separator:aa70a2041bf25316a8db5842458130c80"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aafd5f01d52c0ee1e4a77065813f69471"><td class="memItemLeft" align="right" valign="top">char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structNPCStats.html#aafd5f01d52c0ee1e4a77065813f69471">pCatchPhrases</a> [52] {}</td></tr>
-<tr class="separator:aafd5f01d52c0ee1e4a77065813f69471"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6abb33492541d32e841591610f98e46b"><td class="memItemLeft" align="right" valign="top">char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structNPCStats.html#a6abb33492541d32e841591610f98e46b">pNPCUnicNames</a> [500] {}</td></tr>
-<tr class="separator:a6abb33492541d32e841591610f98e46b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0f86beb5af6f4c605e04a3974cb02ecf"><td class="memItemLeft" align="right" valign="top">std::array&lt; std::string, 52 &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structNPCStats.html#a0f86beb5af6f4c605e04a3974cb02ecf">pCatchPhrases</a> {}</td></tr>
+<tr class="separator:a0f86beb5af6f4c605e04a3974cb02ecf"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4713b25e1ff14f29ae03a9d3718178cf"><td class="memItemLeft" align="right" valign="top">std::array&lt; std::string, 500 &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structNPCStats.html#a4713b25e1ff14f29ae03a9d3718178cf">pNPCUnicNames</a> {}</td></tr>
+<tr class="separator:a4713b25e1ff14f29ae03a9d3718178cf"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2940022d9e6c1ca9cbf1510f12908de6"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structNPCProfessionChance.html">NPCProfessionChance</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structNPCStats.html#a2940022d9e6c1ca9cbf1510f12908de6">pProfessionChance</a> [77]</td></tr>
 <tr class="separator:a2940022d9e6c1ca9cbf1510f12908de6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac026cbeee6234d62439497f8d46e5533"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structNPCStats.html#ac026cbeee6234d62439497f8d46e5533">field_17884</a> = 0</td></tr>
@@ -137,24 +135,6 @@ Public Attributes</h2></td></tr>
 <tr class="separator:ac12db9202628f17aadd0f191413249fe"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a858a554f9490edb590899c7512d97bcc"><td class="memItemLeft" align="right" valign="top">unsigned int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structNPCStats.html#a858a554f9490edb590899c7512d97bcc">uNumNPCNames</a> [2] {}</td></tr>
 <tr class="separator:a858a554f9490edb590899c7512d97bcc"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a03a42a52238c8bfc7b276768725365b1"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structNPCStats.html#a03a42a52238c8bfc7b276768725365b1">pNPCDataTXT_Raw</a></td></tr>
-<tr class="separator:a03a42a52238c8bfc7b276768725365b1"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4594d15ef4316d4a3da679f3fdf1ba80"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structNPCStats.html#a4594d15ef4316d4a3da679f3fdf1ba80">pNPCNamesTXT_Raw</a></td></tr>
-<tr class="separator:a4594d15ef4316d4a3da679f3fdf1ba80"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6b12e868d97a896491254cb8747f41df"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structNPCStats.html#a6b12e868d97a896491254cb8747f41df">pNPCProfTXT_Raw</a></td></tr>
-<tr class="separator:a6b12e868d97a896491254cb8747f41df"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3c07830eefe9002315ff7a06052f0d53"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structNPCStats.html#a3c07830eefe9002315ff7a06052f0d53">pNPCNewsTXT_Raw</a></td></tr>
-<tr class="separator:a3c07830eefe9002315ff7a06052f0d53"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a468fc50b9857eff9e0d92affa74ff306"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structNPCStats.html#a468fc50b9857eff9e0d92affa74ff306">pNPCTopicTXT_Raw</a></td></tr>
-<tr class="separator:a468fc50b9857eff9e0d92affa74ff306"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a73d3a6f2ee4d349a8c9955fb90989ceb"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structNPCStats.html#a73d3a6f2ee4d349a8c9955fb90989ceb">pNPCTextTXT_Raw</a></td></tr>
-<tr class="separator:a73d3a6f2ee4d349a8c9955fb90989ceb"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aea63cf10a1410f455742c9f36dfe8095"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structNPCStats.html#aea63cf10a1410f455742c9f36dfe8095">pNPCDistTXT_Raw</a></td></tr>
-<tr class="separator:aea63cf10a1410f455742c9f36dfe8095"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0c8c309e162d67b31124427f708b5760"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structNPCStats.html#a0c8c309e162d67b31124427f708b5760">pNPCGreetTXT_Raw</a></td></tr>
-<tr class="separator:a0c8c309e162d67b31124427f708b5760"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af3c1a6d7397889099cb6af509f8e4da2"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structNPCStats.html#af3c1a6d7397889099cb6af509f8e4da2">pNCPGroupTXT_Raw</a></td></tr>
-<tr class="separator:af3c1a6d7397889099cb6af509f8e4da2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-static-attribs" name="pub-static-attribs"></a>
 Static Public Attributes</h2></td></tr>
@@ -281,23 +261,6 @@ Static Public Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="a91c45bf50b4a47907a003129d8083bae" name="a91c45bf50b4a47907a003129d8083bae"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a91c45bf50b4a47907a003129d8083bae">&#9670;&#160;</a></span>Release()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void NPCStats::Release </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
 <a id="a5b99f624bf09a6ddb1fa9235d1de4776" name="a5b99f624bf09a6ddb1fa9235d1de4776"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a5b99f624bf09a6ddb1fa9235d1de4776">&#9670;&#160;</a></span>setNPCNamesOnLoad()</h2>
 
@@ -316,14 +279,14 @@ Static Public Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="a57df536be568ebfa24ebe6f70343e466" name="a57df536be568ebfa24ebe6f70343e466"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a57df536be568ebfa24ebe6f70343e466">&#9670;&#160;</a></span>sub_495366_MispronounceName()</h2>
+<a id="aefc21aa7f25b397fefedfb9efb5f6f9d" name="aefc21aa7f25b397fefedfb9efb5f6f9d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aefc21aa7f25b397fefedfb9efb5f6f9d">&#9670;&#160;</a></span>sub_495366_MispronounceName()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">char * NPCStats::sub_495366_MispronounceName </td>
+          <td class="memname">const std::string &amp; NPCStats::sub_495366_MispronounceName </td>
           <td>(</td>
           <td class="paramtype">uint8_t&#160;</td>
           <td class="paramname"><em>firstLetter</em>, </td>
@@ -438,21 +401,21 @@ Static Public Attributes</h2></td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">std::array&lt;<a class="el" href="structNPCData.html">NPCData</a>, 100&gt; NPCStats::pAdditionalNPC</td>
+          <td class="memname">std::array&lt;<a class="el" href="structNPCData.html">NPCData</a>, 100&gt; NPCStats::pAdditionalNPC = {{}}</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
 </div>
 </div>
-<a id="aafd5f01d52c0ee1e4a77065813f69471" name="aafd5f01d52c0ee1e4a77065813f69471"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aafd5f01d52c0ee1e4a77065813f69471">&#9670;&#160;</a></span>pCatchPhrases</h2>
+<a id="a0f86beb5af6f4c605e04a3974cb02ecf" name="a0f86beb5af6f4c605e04a3974cb02ecf"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0f86beb5af6f4c605e04a3974cb02ecf">&#9670;&#160;</a></span>pCatchPhrases</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">char* NPCStats::pCatchPhrases[52] {}</td>
+          <td class="memname">std::array&lt;std::string, 52&gt; NPCStats::pCatchPhrases {}</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -487,20 +450,6 @@ Static Public Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="af3c1a6d7397889099cb6af509f8e4da2" name="af3c1a6d7397889099cb6af509f8e4da2"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#af3c1a6d7397889099cb6af509f8e4da2">&#9670;&#160;</a></span>pNCPGroupTXT_Raw</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">std::string NPCStats::pNCPGroupTXT_Raw</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
 <a id="a798b0904a1cf8d159a9b4268d7af1b9c" name="a798b0904a1cf8d159a9b4268d7af1b9c"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a798b0904a1cf8d159a9b4268d7af1b9c">&#9670;&#160;</a></span>pNewNPCData</h2>
 
@@ -529,34 +478,6 @@ Static Public Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="a03a42a52238c8bfc7b276768725365b1" name="a03a42a52238c8bfc7b276768725365b1"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a03a42a52238c8bfc7b276768725365b1">&#9670;&#160;</a></span>pNPCDataTXT_Raw</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">std::string NPCStats::pNPCDataTXT_Raw</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="aea63cf10a1410f455742c9f36dfe8095" name="aea63cf10a1410f455742c9f36dfe8095"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aea63cf10a1410f455742c9f36dfe8095">&#9670;&#160;</a></span>pNPCDistTXT_Raw</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">std::string NPCStats::pNPCDistTXT_Raw</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
 <a id="a6e8882fd635e275cf2111ddb603ccc6e" name="a6e8882fd635e275cf2111ddb603ccc6e"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a6e8882fd635e275cf2111ddb603ccc6e">&#9670;&#160;</a></span>pNPCGreetings</h2>
 
@@ -571,112 +492,28 @@ Static Public Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="a0c8c309e162d67b31124427f708b5760" name="a0c8c309e162d67b31124427f708b5760"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a0c8c309e162d67b31124427f708b5760">&#9670;&#160;</a></span>pNPCGreetTXT_Raw</h2>
+<a id="a12399d79464d9bead760a4fedff48647" name="a12399d79464d9bead760a4fedff48647"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a12399d79464d9bead760a4fedff48647">&#9670;&#160;</a></span>pNPCNames</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">std::string NPCStats::pNPCGreetTXT_Raw</td>
+          <td class="memname">std::array&lt;std::array&lt;std::string, 2&gt;, 540&gt; NPCStats::pNPCNames {}</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
 </div>
 </div>
-<a id="a589c3d76a3f0145522f4175f103a8a74" name="a589c3d76a3f0145522f4175f103a8a74"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a589c3d76a3f0145522f4175f103a8a74">&#9670;&#160;</a></span>pNPCNames</h2>
+<a id="a4713b25e1ff14f29ae03a9d3718178cf" name="a4713b25e1ff14f29ae03a9d3718178cf"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4713b25e1ff14f29ae03a9d3718178cf">&#9670;&#160;</a></span>pNPCUnicNames</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">char* NPCStats::pNPCNames[540][2]</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a4594d15ef4316d4a3da679f3fdf1ba80" name="a4594d15ef4316d4a3da679f3fdf1ba80"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a4594d15ef4316d4a3da679f3fdf1ba80">&#9670;&#160;</a></span>pNPCNamesTXT_Raw</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">std::string NPCStats::pNPCNamesTXT_Raw</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a3c07830eefe9002315ff7a06052f0d53" name="a3c07830eefe9002315ff7a06052f0d53"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a3c07830eefe9002315ff7a06052f0d53">&#9670;&#160;</a></span>pNPCNewsTXT_Raw</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">std::string NPCStats::pNPCNewsTXT_Raw</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a6b12e868d97a896491254cb8747f41df" name="a6b12e868d97a896491254cb8747f41df"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a6b12e868d97a896491254cb8747f41df">&#9670;&#160;</a></span>pNPCProfTXT_Raw</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">std::string NPCStats::pNPCProfTXT_Raw</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a73d3a6f2ee4d349a8c9955fb90989ceb" name="a73d3a6f2ee4d349a8c9955fb90989ceb"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a73d3a6f2ee4d349a8c9955fb90989ceb">&#9670;&#160;</a></span>pNPCTextTXT_Raw</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">std::string NPCStats::pNPCTextTXT_Raw</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a468fc50b9857eff9e0d92affa74ff306" name="a468fc50b9857eff9e0d92affa74ff306"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a468fc50b9857eff9e0d92affa74ff306">&#9670;&#160;</a></span>pNPCTopicTXT_Raw</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">std::string NPCStats::pNPCTopicTXT_Raw</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a6abb33492541d32e841591610f98e46b" name="a6abb33492541d32e841591610f98e46b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a6abb33492541d32e841591610f98e46b">&#9670;&#160;</a></span>pNPCUnicNames</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">char* NPCStats::pNPCUnicNames[500] {}</td>
+          <td class="memname">std::array&lt;std::string, 500&gt; NPCStats::pNPCUnicNames {}</td>
         </tr>
       </table>
 </div><div class="memdoc">

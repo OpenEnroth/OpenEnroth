@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;676d68e</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;549ef4b</span>
    </div>
   </td>
  </tr>
@@ -75,6 +75,7 @@ $(function() {
 <div class="header">
   <div class="summary">
 <a href="#nested-classes">Classes</a> &#124;
+<a href="#enum-members">Enumerations</a> &#124;
 <a href="#var-members">Variables</a>  </div>
   <div class="headertitle"><div class="title">NPCTable.h File Reference</div></div>
 </div><!--header-->
@@ -83,6 +84,7 @@ $(function() {
 <code>#include &lt;array&gt;</code><br />
 <code>#include &quot;<a class="el" href="NPCEnums_8h.html">Engine/Objects/NPCEnums.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="IndexedArray_8h.html">Utility/IndexedArray.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="Flags_8h.html">Utility/Flags.h</a>&quot;</code><br />
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Classes</h2></td></tr>
@@ -99,6 +101,14 @@ Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structNPCStats.html">NPCStats</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="enum-members" name="enum-members"></a>
+Enumerations</h2></td></tr>
+<tr class="memitem:aac94c9aaebe985e90dba084e900a99a3"><td class="memItemLeft" align="right" valign="top">enum class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="NPCTable_8h.html#aac94c9aaebe985e90dba084e900a99a3">NpcFlag</a> : uint32_t { <a class="el" href="NPCTable_8h.html#aac94c9aaebe985e90dba084e900a99a3aa17fdb89530a23a0aef2b64045524e33">NPC_GREETED_FIRST</a> = 0x01
+, <a class="el" href="NPCTable_8h.html#aac94c9aaebe985e90dba084e900a99a3aa8c2f6619440a73832ed61def8408ee8">NPC_GREETED_SECOND</a> = 0x02
+, <a class="el" href="NPCTable_8h.html#aac94c9aaebe985e90dba084e900a99a3ac0b92c738f2050289071f094cc4c1361">NPC_HIRED</a> = 0x80
+ }</td></tr>
+<tr class="separator:aac94c9aaebe985e90dba084e900a99a3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="var-members" name="var-members"></a>
 Variables</h2></td></tr>
 <tr class="memitem:a3d734cab11768d224a1da23c14417de6"><td class="memItemLeft" align="right" valign="top">std::array&lt; <a class="el" href="structNPCTopic.html">NPCTopic</a>, 789 &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="NPCTable_8h.html#a3d734cab11768d224a1da23c14417de6">pNPCTopics</a></td></tr>
@@ -106,6 +116,34 @@ Variables</h2></td></tr>
 <tr class="memitem:a5c8b4db1afd780cdf7ff9ccd02e7a542"><td class="memItemLeft" align="right" valign="top">struct <a class="el" href="structNPCStats.html">NPCStats</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="NPCTable_8h.html#a5c8b4db1afd780cdf7ff9ccd02e7a542">pNPCStats</a></td></tr>
 <tr class="separator:a5c8b4db1afd780cdf7ff9ccd02e7a542"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<h2 class="groupheader">Enumeration Type Documentation</h2>
+<a id="aac94c9aaebe985e90dba084e900a99a3" name="aac94c9aaebe985e90dba084e900a99a3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aac94c9aaebe985e90dba084e900a99a3">&#9670;&#160;</a></span>NpcFlag</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">enum class <a class="el" href="NPCTable_8h.html#aac94c9aaebe985e90dba084e900a99a3">NpcFlag</a> : uint32_t</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">strong</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<table class="fieldtable">
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="aac94c9aaebe985e90dba084e900a99a3aa17fdb89530a23a0aef2b64045524e33" name="aac94c9aaebe985e90dba084e900a99a3aa17fdb89530a23a0aef2b64045524e33"></a>NPC_GREETED_FIRST&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="aac94c9aaebe985e90dba084e900a99a3aa8c2f6619440a73832ed61def8408ee8" name="aac94c9aaebe985e90dba084e900a99a3aa8c2f6619440a73832ed61def8408ee8"></a>NPC_GREETED_SECOND&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="aac94c9aaebe985e90dba084e900a99a3ac0b92c738f2050289071f094cc4c1361" name="aac94c9aaebe985e90dba084e900a99a3ac0b92c738f2050289071f094cc4c1361"></a>NPC_HIRED&#160;</td><td class="fielddoc"></td></tr>
+</table>
+
+</div>
+</div>
 <h2 class="groupheader">Variable Documentation</h2>
 <a id="a5c8b4db1afd780cdf7ff9ccd02e7a542" name="a5c8b4db1afd780cdf7ff9ccd02e7a542"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a5c8b4db1afd780cdf7ff9ccd02e7a542">&#9670;&#160;</a></span>pNPCStats</h2>
