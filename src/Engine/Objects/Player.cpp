@@ -3044,8 +3044,7 @@ int Player::GetSkillBonus(CHARACTER_ATTRIBUTE_TYPE inSkill) const {
             for (ITEM_SLOT i : allItemSlots()) {
                 if (this->HasItemEquipped(i)) {
                     const ItemGen *currItemPtr = GetNthEquippedIndexItem(i);
-                    // TODO(Nik-RE-dev): melee?
-                    if (currItemPtr->isMeleeWeapon()) {
+                    if (currItemPtr->isWeapon()) {
                         PLAYER_SKILL_TYPE currentItemSkillType = GetNthEquippedIndexItem(i)->GetPlayerSkillType();
                         int currentItemSkillLevel = this->getActualSkillValue(currentItemSkillType).level();
                         if (currentItemSkillType == PLAYER_SKILL_BOW) {
