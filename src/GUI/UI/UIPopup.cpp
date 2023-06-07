@@ -1684,10 +1684,9 @@ void GameUI_CharacterQuickRecord_Draw(GUIWindow *window, Player *player) {
 
 void GameUI_DrawNPCPopup(void *_this) {  // PopupWindowForBenefitAndJoinText
     NPCData *pNPC;           // eax@16
-    const char *pText;       // eax@18
+    std::string pText;       // eax@18
     GUIWindow popup_window;  // [sp+Ch] [bp-60h]@23
     int a2;                  // [sp+60h] [bp-Ch]@16
-    const char *lpsz = 0;        // [sp+68h] [bp-4h]@6
 
     if (bNoNPCHiring != 1) {
         FlatHirelings buf;
@@ -1701,10 +1700,8 @@ void GameUI_DrawNPCPopup(void *_this) {  // PopupWindowForBenefitAndJoinText
                     pText = pNPCTopics[512].pText;  // Baby dragon
                 else
                     pText = pNPCStats->pProfessions[pNPC->profession].pBenefits;
-                lpsz = pText;
-                if (!pText) {
-                    lpsz = pNPCStats->pProfessions[pNPC->profession].pJoinText;
-                    if (!lpsz) lpsz = "";
+                if (pText.empty()) {
+                    pText = pNPCStats->pProfessions[pNPC->profession].pJoinText;
                 }
                 popup_window.Init();
                 popup_window.sHint.clear();
@@ -1712,11 +1709,8 @@ void GameUI_DrawNPCPopup(void *_this) {  // PopupWindowForBenefitAndJoinText
                 popup_window.uFrameY = 60;
                 popup_window.uFrameWidth = 276;
                 popup_window.uFrameZ = 313;
-                popup_window.uFrameHeight =
-                    pFontArrus->CalcTextHeight(lpsz, popup_window.uFrameWidth,
-                                               0) +
-                    2 * pFontArrus->GetHeight() + 24;
-                if ((signed int)popup_window.uFrameHeight < 130)
+                popup_window.uFrameHeight = pFontArrus->CalcTextHeight(pText, popup_window.uFrameWidth, 0) + 2 * pFontArrus->GetHeight() + 24;
+                if (popup_window.uFrameHeight < 130)
                     popup_window.uFrameHeight = 130;
                 popup_window.uFrameWidth = 400;
                 popup_window.uFrameZ = popup_window.uFrameX + 399;
@@ -1731,7 +1725,7 @@ void GameUI_DrawNPCPopup(void *_this) {  // PopupWindowForBenefitAndJoinText
                 popup_window.DrawTitleText(pFontArrus, 0, 12, colorTable.PaleCanary, NameAndTitle(pNPC), 3);
                 popup_window.uFrameWidth -= 24;
                 popup_window.uFrameZ = popup_window.uFrameX + popup_window.uFrameWidth - 1;
-                popup_window.DrawText(pFontArrus, {100, 36}, Color(), BuildDialogueString((char *)lpsz, pParty->activeCharacterIndex() - 1, 0, 0, 0));
+                popup_window.DrawText(pFontArrus, {100, 36}, Color(), BuildDialogueString(pText, pParty->activeCharacterIndex() - 1, 0, 0, 0));
             }
         }
     }

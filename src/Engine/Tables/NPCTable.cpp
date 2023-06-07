@@ -27,8 +27,9 @@ void NPCStats::InitializeNPCText() {
     char *tmp_pos;
     int decode_step;
 
-    pNPCTextTXT_Raw = engine->_gameResourceManager->getEventsFile("npctext.txt").string_view();
-    strtok(pNPCTextTXT_Raw.data(), "\r");
+    std::string txtRaw;
+    txtRaw = engine->_gameResourceManager->getEventsFile("npctext.txt").string_view();
+    strtok(txtRaw.data(), "\r");
 
     for (i = 0; i < 789; ++i) {
         test_string = strtok(NULL, "\r") + 1;
@@ -54,8 +55,8 @@ void NPCStats::InitializeNPCText() {
             test_string = tmp_pos + 1;
         } while ((decode_step < 2) && !break_loop);
     }
-    pNPCTopicTXT_Raw = engine->_gameResourceManager->getEventsFile("npctopic.txt").string_view();
-    strtok(pNPCTopicTXT_Raw.data(), "\r");
+    txtRaw = engine->_gameResourceManager->getEventsFile("npctopic.txt").string_view();
+    strtok(txtRaw.data(), "\r");
 
     for (i = 1; i <= 579; ++i) {  // NPC topics count limit
         test_string = strtok(NULL, "\r") + 1;
@@ -82,8 +83,8 @@ void NPCStats::InitializeNPCText() {
         } while ((decode_step < 2) && !break_loop);
     }
 
-    pNPCDistTXT_Raw = engine->_gameResourceManager->getEventsFile("npcdist.txt").string_view();
-    strtok(pNPCDistTXT_Raw.data(), "\r");
+    txtRaw = engine->_gameResourceManager->getEventsFile("npcdist.txt").string_view();
+    strtok(txtRaw.data(), "\r");
     strtok(NULL, "\r");
 
     for (i = 1; i < 59; ++i) {
@@ -102,8 +103,7 @@ void NPCStats::InitializeNPCText() {
             *tmp_pos = 0;
             if (temp_str_len) {
                 if ((decode_step > 0) && (decode_step < 77)) {
-                    pProfessionChance[decode_step].professionChancePerArea[i] =
-                        atoi(test_string);
+                    pProfessionChance[decode_step].professionChancePerArea[i] = atoi(test_string);
                 } else if (decode_step == 0) {
                     pProfessionChance[0].professionChancePerArea[i] = 10;
                 }
@@ -118,14 +118,11 @@ void NPCStats::InitializeNPCText() {
     for (i = 0; i < 77; ++i) {
         pProfessionChance[i].uTotalprofChance = 0;
         for (int ii = 1; ii < 59; ++ii) {
-            pProfessionChance[i].uTotalprofChance +=
-                pProfessionChance[i].professionChancePerArea[ii];
+            pProfessionChance[i].uTotalprofChance += pProfessionChance[i].professionChancePerArea[ii];
         }
         pProfessionChance[i].professionChancePerArea[0] = 0;
         pProfessionChance[i].professionChancePerArea[59] = 0;
     }
-
-    pNPCDistTXT_Raw.clear();
 }
 
 // TODO(Nik-RE-dev): move out of table back to Engine/Objects/NPC.cpp
@@ -149,8 +146,9 @@ void NPCStats::InitializeNPCData() {
     char *tmp_pos;
     int decode_step;
 
-    pNPCDataTXT_Raw = engine->_gameResourceManager->getEventsFile("npcdata.txt").string_view();
-    strtok(pNPCDataTXT_Raw.data(), "\r");
+    std::string txtRaw;
+    txtRaw = engine->_gameResourceManager->getEventsFile("npcdata.txt").string_view();
+    strtok(txtRaw.data(), "\r");
     strtok(NULL, "\r");
 
     for (i = 0; i < 500; ++i) {
@@ -213,8 +211,8 @@ void NPCStats::InitializeNPCData() {
         } while ((decode_step < 16) && !break_loop);
     }
     uNumNewNPCs = 501;
-    pNPCGreetTXT_Raw = engine->_gameResourceManager->getEventsFile("npcgreet.txt").string_view();
-    strtok(pNPCGreetTXT_Raw.data(), "\r");
+    txtRaw = engine->_gameResourceManager->getEventsFile("npcgreet.txt").string_view();
+    strtok(txtRaw.data(), "\r");
     for (i = 1; i <= 205; ++i) {
         test_string = strtok(NULL, "\r") + 1;
         break_loop = false;
@@ -232,12 +230,10 @@ void NPCStats::InitializeNPCData() {
             if (temp_str_len) {  // i+1
                 switch (decode_step) {
                     case 1:
-                        pNPCGreetings[i].pGreetings[0] =
-                            removeQuotes(test_string);
+                        pNPCGreetings[i].pGreeting1 = removeQuotes(test_string);
                         break;
                     case 2:
-                        pNPCGreetings[i].pGreetings[1] =
-                            removeQuotes(test_string);
+                        pNPCGreetings[i].pGreeting2 = removeQuotes(test_string);
                         break;
                 }
             }
@@ -246,8 +242,8 @@ void NPCStats::InitializeNPCData() {
         } while ((decode_step < 3) && !break_loop);
     }
 
-    pNCPGroupTXT_Raw = engine->_gameResourceManager->getEventsFile("npcgroup.txt").string_view();
-    strtok(pNCPGroupTXT_Raw.data(), "\r");
+    txtRaw = engine->_gameResourceManager->getEventsFile("npcgroup.txt").string_view();
+    strtok(txtRaw.data(), "\r");
 
     for (i = 0; i < 51; ++i) {
         test_string = strtok(NULL, "\r") + 1;
@@ -273,8 +269,8 @@ void NPCStats::InitializeNPCData() {
         } while ((decode_step < 2) && !break_loop);
     }
 
-    pNPCNewsTXT_Raw = engine->_gameResourceManager->getEventsFile("npcnews.txt").string_view();
-    strtok(pNPCNewsTXT_Raw.data(), "\r");
+    txtRaw = engine->_gameResourceManager->getEventsFile("npcnews.txt").string_view();
+    strtok(txtRaw.data(), "\r");
 
     for (i = 0; i < 51; ++i) {
         test_string = strtok(NULL, "\r") + 1;
@@ -319,8 +315,9 @@ void NPCStats::Initialize() {
     initializeMerchants();
     initializeMessageScrolls();
 
-    pNPCNamesTXT_Raw = engine->_gameResourceManager->getEventsFile("npcnames.txt").string_view();
-    strtok(pNPCNamesTXT_Raw.data(), "\r");
+    std::string txtRaw;
+    txtRaw = engine->_gameResourceManager->getEventsFile("npcnames.txt").string_view();
+    strtok(txtRaw.data(), "\r");
 
     uNewlNPCBufPos = 0;
 
@@ -359,8 +356,8 @@ void NPCStats::Initialize() {
     }
     uNumNPCNames[0] = i;
 
-    pNPCProfTXT_Raw = engine->_gameResourceManager->getEventsFile("npcprof.txt").string_view();
-    strtok(pNPCProfTXT_Raw.data(), "\r");
+    txtRaw = engine->_gameResourceManager->getEventsFile("npcprof.txt").string_view();
+    strtok(txtRaw.data(), "\r");
     strtok(NULL, "\r");
     strtok(NULL, "\r");
     strtok(NULL, "\r");
@@ -398,8 +395,7 @@ void NPCStats::Initialize() {
                         pProfessions[i].pJoinText = removeQuotes(test_string);
                         break;
                     case 6:
-                        pProfessions[i].pDismissText =
-                            removeQuotes(test_string);
+                        pProfessions[i].pDismissText = removeQuotes(test_string);
                 }
             } else {
                 if (!decode_step) break_loop = true;
@@ -544,8 +540,7 @@ void NPCStats::InitializeAdditionalNPCs(NPCData *pNPCDataBuff, int npc_uid,
 }
 
 //----- (00495366) --------------------------------------------------------
-char *NPCStats::sub_495366_MispronounceName(uint8_t firstLetter,
-                                            uint8_t genderId) {
+const std::string &NPCStats::sub_495366_MispronounceName(uint8_t firstLetter, uint8_t genderId) {
     int pickedName;  // edx@2
 
     if (firstLetter == dword_AE336C_LastMispronouncedNameFirstLetter) {
@@ -576,17 +571,3 @@ char *NPCStats::sub_495366_MispronounceName(uint8_t firstLetter,
     dword_AE3370_LastMispronouncedNameResult = pickedName;
     return this->pNPCNames[pickedName][genderId];
 }
-
-//----- (00477266) --------------------------------------------------------
-void NPCStats::Release() {
-    pNPCTopicTXT_Raw.clear();
-    pNPCTextTXT_Raw.clear();
-    pNPCNewsTXT_Raw.clear();
-    pNPCProfTXT_Raw.clear();
-    pNPCNamesTXT_Raw.clear();
-    pNPCDataTXT_Raw.clear();
-    pNPCDistTXT_Raw.clear();
-    pNPCGreetTXT_Raw.clear();
-    pNCPGroupTXT_Raw.clear();
-}
-

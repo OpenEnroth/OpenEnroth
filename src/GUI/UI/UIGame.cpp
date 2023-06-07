@@ -919,11 +919,11 @@ void GameUI_WritePointedObjectStatusString() {
                 }  // intentional fallthrough
             } else if (PID_TYPE(pickedObject.object_pid) == OBJECT_Decoration) {
                 if (!pLevelDecorations[pickedObjectID].uEventID) {
-                    const char *pText;                 // ecx@79
+                    std::string pText;                 // ecx@79
                     if (pLevelDecorations[pickedObjectID].IsInteractive())
                         pText = pNPCTopics[engine->_persistentVariables.decorVars[pLevelDecorations[pickedObjectID].eventVarId] + 380].pTopic; // campfire
                     else
-                        pText = pDecorationList->GetDecoration(pLevelDecorations[pickedObjectID].uDecorationDescID)->field_20.data();
+                        pText = pDecorationList->GetDecoration(pLevelDecorations[pickedObjectID].uDecorationDescID)->field_20;
                     GameUI_StatusBar_Set(pText);
                 } else {
                     std::string hintString = getEventHintString(pLevelDecorations[pickedObjectID].uEventID);

@@ -4869,7 +4869,7 @@ void Player::SetVariable(VariableType var_type, signed int var_value) {
             return;
         case VAR_NPCs2:
             pParty->hirelingScrollPosition = 0;
-            pNPCStats->pNewNPCData[var_value].uFlags |= 0x80u;
+            pNPCStats->pNewNPCData[var_value].uFlags |= NPC_HIRED;
             pParty->CountHirelings();
             return;
         case VAR_NumSkillPoints:
@@ -5438,7 +5438,7 @@ void Player::AddVariable(VariableType var_type, signed int val) {
             return;
         case VAR_NPCs2:
             pParty->hirelingScrollPosition = 0;
-            pNPCStats->pNewNPCData[val].uFlags |= 0x80;
+            pNPCStats->pNewNPCData[val].uFlags |= NPC_HIRED;
             pParty->CountHirelings();
             return;
         case VAR_NumSkillPoints:
@@ -6095,14 +6095,14 @@ void Player::SubtractVariable(VariableType VarNum, signed int pValue) {
             } else {
                 npcIdToDismissAfterDialogue = 0;
                 pParty->hirelingScrollPosition = 0;
-                pNPCStats->pNewNPCData[(int)pValue].uFlags &= 0xFFFFFF7F;
+                pNPCStats->pNewNPCData[(int)pValue].uFlags &= ~NPC_HIRED;
                 pParty->CountHirelings();
             }
             return;
         case VAR_HiredNPCHasSpeciality:
             for (unsigned int i = 0; i < pNPCStats->uNumNewNPCs; i++) {
                 if (pNPCStats->pNewNPCData[i].profession == (NPCProf)pValue) {
-                    pNPCStats->pNewNPCData[(int)pValue].uFlags &= 0xFFFFFF7F;
+                    pNPCStats->pNewNPCData[(int)pValue].uFlags &= ~NPC_HIRED;
                 }
             }
             if (pParty->pHirelings[0].profession == (NPCProf)pValue) {

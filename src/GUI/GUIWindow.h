@@ -321,7 +321,7 @@ void CreateMsgScrollWindow(ITEM_TYPE mscroll_id);
 void CreateScrollWindow();
 void OnPaperdollLeftClick();
 void DrawJoinGuildWindow(GUILD_ID guild_id);
-const char *GetJoinGuildDialogueOption(GUILD_ID guild_id);
+const std::string &GetJoinGuildDialogueOption(GUILD_ID guild_id);
 void DialogueEnding();
 
 /**
