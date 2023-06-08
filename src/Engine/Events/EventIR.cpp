@@ -885,7 +885,7 @@ EventIR EventIR::parse(const void *data, size_t maxSize) {
             ir.data.chest_id = _evt->v5;
             break;
         case EVENT_ShowFace:
-            ir.who = (PLAYER_CHOOSE_POLICY)_evt->v5;
+            ir.who = (CharacterChoosePolicy)_evt->v5;
             ir.data.expr_id = (CHARACTER_EXPRESSION_ID)_evt->v6;
             break;
         case EVENT_ReceiveDamage:
@@ -1002,7 +1002,7 @@ EventIR EventIR::parse(const void *data, size_t maxSize) {
             ir.data.summon_item_descr.random_rotate = (bool)_evt->v26;
             break;
         case EVENT_ForPartyMember:
-            ir.who = (PLAYER_CHOOSE_POLICY)_evt->v5;
+            ir.who = (CharacterChoosePolicy)_evt->v5;
             break;
         case EVENT_Jmp:
             ir.target_step = _evt->v5;
@@ -1090,7 +1090,7 @@ EventIR EventIR::parse(const void *data, size_t maxSize) {
             // TODO
             break;
         case EVENT_CheckSeason:
-            ir.data.season = (SEASON)_evt->v5;
+            ir.data.season = (Season)_evt->v5;
             ir.target_step = _evt->v6;
             break;
         case EVENT_ToggleActorGroupFlag:
@@ -1100,11 +1100,11 @@ EventIR EventIR::parse(const void *data, size_t maxSize) {
             break;
         case EVENT_ToggleChestFlag:
             ir.data.chest_flag_descr.chest_id = EVT_DWORD(_evt->v5);
-            ir.data.chest_flag_descr.flag = (CHEST_FLAG)EVT_DWORD(_evt->v9);
+            ir.data.chest_flag_descr.flag = (ChestFlag)EVT_DWORD(_evt->v9);
             ir.data.chest_flag_descr.is_set = _evt->v13;
             break;
         case EVENT_CharacterAnimation:
-            ir.who = (PLAYER_CHOOSE_POLICY)_evt->v5;
+            ir.who = (CharacterChoosePolicy)_evt->v5;
             ir.data.speech_id = (PlayerSpeech)_evt->v6;
             break;
         case EVENT_SetActorItem:

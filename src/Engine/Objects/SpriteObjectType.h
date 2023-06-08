@@ -245,7 +245,7 @@ enum SPRITE_OBJECT_TYPE : uint16_t {
  * Sprite attributes, values taken from MMExtension, see MMExtension code,
  * function `structs.f.MapObject(define)`.
  */
-enum class SPRITE_ATTRIBUTE : uint16_t {
+enum class SpriteAttribute : uint16_t {
     SPRITE_VISIBLE = 0x0001,
     SPRITE_TEMPORARY = 0x0002,
     SPRITE_HALT_TURN_BASED = 0x0004,    // turn based mode must wait until this object hits or is removed
@@ -257,6 +257,6 @@ enum class SPRITE_ATTRIBUTE : uint16_t {
     SPRITE_MISSILE = 0x0100,            // item field contains the launching weapon
     SPRITE_REMOVED = 0x0200,            // item was removed
 };
-using enum SPRITE_ATTRIBUTE;
-MM_DECLARE_FLAGS(SPRITE_ATTRIBUTES, SPRITE_ATTRIBUTE)
-MM_DECLARE_OPERATORS_FOR_FLAGS(SPRITE_ATTRIBUTES)
+using enum SpriteAttribute;
+MM_DECLARE_FLAGS(SpriteAttributes, SpriteAttribute)
+MM_DECLARE_OPERATORS_FOR_FLAGS(SpriteAttributes)

@@ -99,11 +99,11 @@ static void deserialize(const std::array<T1, N> &src, IndexedArray<T2, L, H> *ds
 }
 
 void deserialize(const SpriteFrame_MM7 &src, SpriteFrame *dst) {
-    dst->icon_name = src.iconName.data();
-    std::transform(dst->icon_name.begin(), dst->icon_name.end(), dst->icon_name.begin(), ::tolower);
+    deserialize(src.iconName, &dst->icon_name);
+    dst->icon_name = toLower(dst->icon_name);
 
-    dst->texture_name = src.textureName.data();
-    std::transform(dst->texture_name.begin(), dst->texture_name.end(), dst->texture_name.begin(), ::tolower);
+    deserialize(src.textureName, &dst->texture_name);
+    dst->texture_name = toLower(dst->texture_name);
 
     for (unsigned int i = 0; i < 8; ++i)
         dst->hw_sprites[i] = nullptr;
@@ -193,7 +193,7 @@ void serialize(const NPCData &src, NPCData_MM7 *dst) {
     // dst->pName = src.pName;
     dst->name = !src.pName.empty();
     dst->portraitId = src.uPortraitID;
-    dst->flags = src.uFlags;
+    dst->flags = std::to_underlying(src.uFlags);
     dst->fame = src.fame;
     dst->rep = src.rep;
     dst->location2d = src.Location2D;
@@ -216,7 +216,7 @@ void deserialize(const NPCData_MM7 &src, NPCData *dst) {
     // dst->pName = src.pName;
     dst->pName = src.name ? "Dummy" : "";
     dst->uPortraitID = src.portraitId;
-    dst->uFlags = src.flags;
+    dst->uFlags = NpcFlags(src.flags);
     dst->fame = src.fame;
     dst->rep = src.rep;
     dst->Location2D = src.location2d;
@@ -318,7 +318,7 @@ void deserialize(const ItemGen_MM7 &src, ItemGen *dst) {
     dst->m_enchantmentStrength = src.enchantmentStrength;
     dst->special_enchantment = static_cast<ITEM_ENCHANTMENT>(src.specialEnchantment);
     dst->uNumCharges = src.numCharges;
-    dst->uAttributes = static_cast<ITEM_FLAGS>(src.attributes);
+    dst->uAttributes = ItemFlags(src.attributes);
     dst->uBodyAnchor = static_cast<ITEM_SLOT>(src.bodyAnchor);
     dst->uMaxCharges = src.maxCharges;
     dst->uHolderPlayer = src.holderPlayer;
@@ -1552,7 +1552,7 @@ void deserialize(const SpriteObject_MM7 &src, SpriteObject *dst) {
     dst->vVelocity = src.vVelocity;
     dst->uFacing = src.uFacing;
     dst->uSoundID = src.uSoundID;
-    dst->uAttributes = static_cast<SPRITE_ATTRIBUTES>(src.uAttributes);
+    dst->uAttributes = SpriteAttributes(src.uAttributes);
     dst->uSectorID = src.uSectorID;
     dst->uSpriteFrameID = src.uSpriteFrameID;
     dst->tempLifetime = src.tempLifetime;
@@ -1586,7 +1586,7 @@ void deserialize(const DecorationDesc_MM6 &src, DecorationDesc *dst) {
     dst->uRadius = src.uRadius;
     dst->uLightRadius = src.uLightRadius;
     dst->uSpriteID = src.uSpriteID;
-    dst->uFlags = DECORATION_DESC_FLAGS(src.uFlags);
+    dst->uFlags = DecorationDescFlags(src.uFlags);
     dst->uSoundID = src.uSoundID;
 
     dst->uColoredLightRed = 255;
@@ -1613,7 +1613,7 @@ void serialize(const Chest &src, Chest_MM7 *dst) {
 
 void deserialize(const Chest_MM7 &src, Chest *dst) {
     dst->uChestBitmapID = src.uChestBitmapID;
-    dst->uFlags = CHEST_FLAGS(src.uFlags);
+    dst->uFlags = ChestFlags(src.uFlags);
     deserialize(src.igChestItems, &dst->igChestItems);
     deserialize(src.pInventoryIndices, &dst->pInventoryIndices);
 }
@@ -1699,7 +1699,7 @@ void deserialize(const ObjectDesc_MM6 &src, ObjectDesc *dst) {
     dst->uObjectID = src.uObjectID;
     dst->uRadius = src.uRadius;
     dst->uHeight = src.uHeight;
-    dst->uFlags = OBJECT_DESC_FLAGS(src.uFlags);
+    dst->uFlags = ObjectDescFlags(src.uFlags);
     dst->uSpriteID = src.uSpriteID;
     dst->uLifetime = src.uLifetime;
     dst->uParticleTrailColor = src.uParticleTrailColor;
@@ -1714,7 +1714,7 @@ void deserialize(const ObjectDesc_MM7 &src, ObjectDesc *dst) {
     dst->uObjectID = src.uObjectID;
     dst->uRadius = src.uRadius;
     dst->uHeight = src.uHeight;
-    dst->uFlags = OBJECT_DESC_FLAGS(src.uFlags);
+    dst->uFlags = ObjectDescFlags(src.uFlags);
     dst->uSpriteID = src.uSpriteID;
     dst->uLifetime = src.uLifetime;
     dst->uParticleTrailColor = src.uParticleTrailColor;

@@ -9,7 +9,7 @@
 #include "Utility/Memory/Blob.h"
 
 /*  321 */
-enum class DECORATION_DESC_FLAG : uint16_t {
+enum class DecorationDescFlag : uint16_t {
     DECORATION_DESC_MOVE_THROUGH = 0x0001,
     DECORATION_DESC_DONT_DRAW = 0x0002,
     DECORATION_DESC_FLICKER_SLOW = 0x0004,
@@ -22,9 +22,9 @@ enum class DECORATION_DESC_FLAG : uint16_t {
     DECORATION_DESC_SOUND_ON_DUSK = 0x0200,
     DECORATION_DESC_EMITS_SMOKE = 0x0400,
 };
-using enum DECORATION_DESC_FLAG;
-MM_DECLARE_FLAGS(DECORATION_DESC_FLAGS, DECORATION_DESC_FLAG)
-MM_DECLARE_OPERATORS_FOR_FLAGS(DECORATION_DESC_FLAGS)
+using enum DecorationDescFlag;
+MM_DECLARE_FLAGS(DecorationDescFlags, DecorationDescFlag)
+MM_DECLARE_OPERATORS_FOR_FLAGS(DecorationDescFlags)
 
 struct DecorationDesc {
     std::string pName;
@@ -34,7 +34,7 @@ struct DecorationDesc {
     int16_t uRadius;
     int16_t uLightRadius;
     uint16_t uSpriteID;
-    DECORATION_DESC_FLAGS uFlags;
+    DecorationDescFlags uFlags;
     int16_t uSoundID;
     uint8_t uColoredLightRed;
     uint8_t uColoredLightGreen;

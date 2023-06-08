@@ -725,8 +725,7 @@ class VideoList {
                   });
 
         for (size_t i = 0; i < headers.size(); i++) {
-            std::string name = headers[i].pVideoName;
-            std::transform(name.begin(), name.end(), name.begin(), ::tolower);
+            std::string name = toLower(headers[i].pVideoName);
             Node node;
             node.offset = headers[i].uFileOffset;
             if (i < headers.size() - 1) {
@@ -744,8 +743,7 @@ class VideoList {
         offset = 0;
         size = 0;
 
-        std::string name = video_name;
-        std::transform(name.begin(), name.end(), name.begin(), ::tolower);
+        std::string name = toLower(video_name);
         Nodes::iterator it = nodes.find(name);
         if (it != nodes.end()) {
             file_ = file;
@@ -929,12 +927,8 @@ bool MPlayer::StopMovie() {
 }
 
 FILE *MPlayer::LoadMovie(const std::string &video_name, size_t &size, size_t &offset) {
-    std::string pVideoNameBik = video_name + ".bik";
-    std::transform(pVideoNameBik.begin(), pVideoNameBik.end(),
-                   pVideoNameBik.begin(), ::tolower);
-    std::string pVideoNameSmk = video_name + ".smk";
-    std::transform(pVideoNameSmk.begin(), pVideoNameSmk.end(),
-                   pVideoNameSmk.begin(), ::tolower);
+    std::string pVideoNameBik = toLower(video_name) + ".bik";
+    std::string pVideoNameSmk = toLower(video_name) + ".smk";
 
     FILE *file = nullptr;
     offset = 0;

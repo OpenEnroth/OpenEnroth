@@ -786,9 +786,7 @@ void Game::processQueuedMessages() {
                                     pMediaPlayer->Unload();
                                     if (npcIdToDismissAfterDialogue) {
                                         pParty->hirelingScrollPosition = 0;
-                                        pNPCStats
-                                            ->pNewNPCData[npcIdToDismissAfterDialogue]
-                                            .uFlags &= 0xFFFFFF7F;
+                                        pNPCStats->pNewNPCData[npcIdToDismissAfterDialogue].uFlags &= ~NPC_HIRED;
                                         pParty->CountHirelings();
                                         npcIdToDismissAfterDialogue = 0;
                                     }
@@ -798,9 +796,7 @@ void Game::processQueuedMessages() {
                                 case CURRENT_SCREEN::SCREEN_NPC_DIALOGUE:  // click escape
                                     if (npcIdToDismissAfterDialogue) {
                                         pParty->hirelingScrollPosition = 0;
-                                        pNPCStats
-                                            ->pNewNPCData[npcIdToDismissAfterDialogue]
-                                            .uFlags &= 0xFFFFFF7F;
+                                        pNPCStats->pNewNPCData[npcIdToDismissAfterDialogue].uFlags &= ~NPC_HIRED;
                                         pParty->CountHirelings();
                                         npcIdToDismissAfterDialogue = 0;
                                     }
@@ -1047,8 +1043,7 @@ void Game::processQueuedMessages() {
                     interactionPossible = pActors[id].uAIState == Dead;
                 }
                 if (type == OBJECT_Item) {
-                    int flags = pObjectList->pObjects[pSpriteObjects[id].uObjectDescID].uFlags;
-                    interactionPossible = (flags & OBJECT_DESC_UNPICKABLE) != OBJECT_DESC_UNPICKABLE;
+                    interactionPossible = !(pObjectList->pObjects[pSpriteObjects[id].uObjectDescID].uFlags & OBJECT_DESC_UNPICKABLE);
                 }
                 if (type == OBJECT_Decoration) {
                     interactionPossible = pLevelDecorations[id].uEventID != 0;
@@ -1900,7 +1895,7 @@ void Game::processQueuedMessages() {
                 continue;
             case UIMSG_ClickBooksBtn:
                 bookButtonClicked = true;
-                bookButtonAction = BOOK_BUTTON_ACTION(uMessageParam);
+                bookButtonAction = BookButtonAction(uMessageParam);
                 switch (bookButtonAction) {
                     case BOOK_PREV_PAGE:
                     case BOOK_ZOOM_IN:
@@ -2400,7 +2395,7 @@ void Game::gameLoop() {
                 pParty->pHirelings[1] = NPCData();
                 for (int i = 0; i < (signed int)pNPCStats->uNumNewNPCs; ++i) {
                     if (pNPCStats->pNewNPCData[i].field_24)
-                        pNPCStats->pNewNPCData[i].uFlags &= 0xFFFFFF7Fu;
+                        pNPCStats->pNewNPCData[i].uFlags &= ~NPC_HIRED;
                 }
                 pMediaPlayer->PlayFullscreenMovie("losegame");
                 if (pMovie_Track) pMediaPlayer->Unload();

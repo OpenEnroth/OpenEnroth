@@ -159,8 +159,12 @@ enum CHARACTER_RACE {
     CHARACTER_RACE_DWARF = 3,
 };
 
-enum CLASS_SKILL : uint8_t { CLASS_SKILL_DENIED = 0, CLASS_SKILL_AVAILABLE = 1, CLASS_SKILL_PRIMARY = 2 };
-using enum CLASS_SKILL;
+enum ClassSkill : uint8_t {
+    CLASS_SKILL_DENIED = 0,
+    CLASS_SKILL_AVAILABLE = 1,
+    CLASS_SKILL_PRIMARY = 2
+};
+using enum ClassSkill;
 
 #pragma warning(push)
 #pragma warning(disable : 4341) // TODO(captainurist): msvc mis-warns here, just drop this warning altogether for msvc

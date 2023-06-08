@@ -30,8 +30,7 @@ void AssetsManager::releaseAllTextures() {
 }
 
 bool AssetsManager::releaseImage(const std::string &name) {
-    auto filename = name;
-    std::transform(filename.begin(), filename.end(), filename.begin(), ::tolower);
+    std::string filename = toLower(name);
 
     auto i = images.find(filename);
     if (i == images.end()) {
@@ -44,8 +43,7 @@ bool AssetsManager::releaseImage(const std::string &name) {
 }
 
 Texture *AssetsManager::getImage_Paletted(const std::string &name) {
-    auto filename = name;
-    std::transform(filename.begin(), filename.end(), filename.begin(), ::tolower);
+    std::string filename = toLower(name);
 
     auto i = images.find(filename);
     if (i == images.end()) {
@@ -59,8 +57,7 @@ Texture *AssetsManager::getImage_Paletted(const std::string &name) {
 
 
 Texture *AssetsManager::getImage_ColorKey(const std::string &name, Color colorkey) {
-    auto filename = name;
-    std::transform(filename.begin(), filename.end(), filename.begin(), ::tolower);
+    std::string filename = toLower(name);
 
     auto i = images.find(filename);
     if (i == images.end()) {
@@ -75,8 +72,7 @@ Texture *AssetsManager::getImage_ColorKey(const std::string &name, Color colorke
 
 
 Texture *AssetsManager::getImage_Solid(const std::string &name) {
-    auto filename = name;
-    std::transform(filename.begin(), filename.end(), filename.begin(), ::tolower);
+    std::string filename = toLower(name);
 
     auto i = images.find(filename);
     if (i == images.end()) {
@@ -89,8 +85,7 @@ Texture *AssetsManager::getImage_Solid(const std::string &name) {
 }
 
 Texture *AssetsManager::getImage_Alpha(const std::string &name) {
-    auto filename = name;
-    std::transform(filename.begin(), filename.end(), filename.begin(), ::tolower);
+    std::string filename = toLower(name);
 
     auto i = images.find(filename);
     if (i == images.end()) {
@@ -103,8 +98,7 @@ Texture *AssetsManager::getImage_Alpha(const std::string &name) {
 }
 
 Texture *AssetsManager::getImage_PCXFromIconsLOD(const std::string &name) {
-    auto filename = name;
-    std::transform(filename.begin(), filename.end(), filename.begin(), ::tolower);
+    std::string filename = toLower(name);
 
     auto i = images.find(filename);
     if (i == images.end()) {
@@ -117,8 +111,7 @@ Texture *AssetsManager::getImage_PCXFromIconsLOD(const std::string &name) {
 }
 
 Texture *AssetsManager::getImage_PCXFromNewLOD(const std::string &name) {
-    auto filename = name;
-    std::transform(filename.begin(), filename.end(), filename.begin(), ::tolower);
+    std::string filename = toLower(name);
 
     auto i = images.find(filename);
     if (i == images.end()) {
@@ -131,8 +124,7 @@ Texture *AssetsManager::getImage_PCXFromNewLOD(const std::string &name) {
 }
 
 Texture *AssetsManager::getImage_PCXFromFile(const std::string &name) {
-    auto filename = name;
-    std::transform(filename.begin(), filename.end(), filename.begin(), ::tolower);
+    std::string filename = toLower(name);
 
     auto i = images.find(filename);
     if (i == images.end()) {
@@ -158,8 +150,7 @@ Texture *AssetsManager::getBitmap(const std::string &name) {
 }
 
 bool AssetsManager::releaseBitmap(const std::string &name) {
-    auto filename = name;
-    std::transform(filename.begin(), filename.end(), filename.begin(), ::tolower);
+    std::string filename = toLower(name);
 
     auto i = bitmaps.find(filename);
     if (i == bitmaps.end()) {
@@ -173,8 +164,7 @@ bool AssetsManager::releaseBitmap(const std::string &name) {
 
 Texture *AssetsManager::getSprite(const std::string &name, unsigned int palette_id,
                                   unsigned int lod_sprite_id) {
-    auto filename = name;
-    std::transform(filename.begin(), filename.end(), filename.begin(), ::tolower);
+    std::string filename = toLower(name);
 
     auto i = sprites.find(filename);
     if (i == sprites.end()) {
@@ -187,8 +177,7 @@ Texture *AssetsManager::getSprite(const std::string &name, unsigned int palette_
 }
 
 bool AssetsManager::releaseSprite(const std::string &name) {
-    auto filename = name;
-    std::transform(filename.begin(), filename.end(), filename.begin(), ::tolower);
+    std::string filename = toLower(name);
 
     auto i = sprites.find(filename);
     if (i == sprites.end()) {

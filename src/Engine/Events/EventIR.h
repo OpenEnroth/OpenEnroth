@@ -20,7 +20,7 @@ class EventIR {
     EventType type;
     int step;
     int target_step;
-    PLAYER_CHOOSE_POLICY who;
+    CharacterChoosePolicy who;
     std::string str;
     union {
         HOUSE_ID house_id;
@@ -28,7 +28,7 @@ class EventIR {
         CHARACTER_EXPRESSION_ID expr_id;
         PlayerSpeech speech_id;
         int text_id;
-        SEASON season;
+        Season season;
         int event_id;
         int movie_unknown_field;
         int can_show_npc_dialogue;
@@ -158,7 +158,7 @@ class EventIR {
         } give_item_descr;
         struct {
             int chest_id;
-            CHEST_FLAG flag;
+            ChestFlag flag;
             int is_set;
         } chest_flag_descr;
         struct {

@@ -32,6 +32,7 @@
 #include "GUI/GUIWindow.h"
 #include "GUI/UI/UIGame.h"
 #include "GUI/UI/UIStatusBar.h"
+#include "GUI/UI/UIMessageScroll.h"
 #include "GUI/UI/Books/AutonotesBook.h"
 
 #include "Utility/Memory/MemSet.h"
@@ -4868,7 +4869,7 @@ void Player::SetVariable(VariableType var_type, signed int var_value) {
             return;
         case VAR_NPCs2:
             pParty->hirelingScrollPosition = 0;
-            pNPCStats->pNewNPCData[var_value].uFlags |= 0x80u;
+            pNPCStats->pNewNPCData[var_value].uFlags |= NPC_HIRED;
             pParty->CountHirelings();
             return;
         case VAR_NumSkillPoints:
@@ -5437,7 +5438,7 @@ void Player::AddVariable(VariableType var_type, signed int val) {
             return;
         case VAR_NPCs2:
             pParty->hirelingScrollPosition = 0;
-            pNPCStats->pNewNPCData[val].uFlags |= 0x80;
+            pNPCStats->pNewNPCData[val].uFlags |= NPC_HIRED;
             pParty->CountHirelings();
             return;
         case VAR_NumSkillPoints:
@@ -6094,14 +6095,14 @@ void Player::SubtractVariable(VariableType VarNum, signed int pValue) {
             } else {
                 npcIdToDismissAfterDialogue = 0;
                 pParty->hirelingScrollPosition = 0;
-                pNPCStats->pNewNPCData[(int)pValue].uFlags &= 0xFFFFFF7F;
+                pNPCStats->pNewNPCData[(int)pValue].uFlags &= ~NPC_HIRED;
                 pParty->CountHirelings();
             }
             return;
         case VAR_HiredNPCHasSpeciality:
             for (unsigned int i = 0; i < pNPCStats->uNumNewNPCs; i++) {
                 if (pNPCStats->pNewNPCData[i].profession == (NPCProf)pValue) {
-                    pNPCStats->pNewNPCData[(int)pValue].uFlags &= 0xFFFFFF7F;
+                    pNPCStats->pNewNPCData[(int)pValue].uFlags &= ~NPC_HIRED;
                 }
             }
             if (pParty->pHirelings[0].profession == (NPCProf)pValue) {
@@ -7340,7 +7341,7 @@ bool Player::isClass(PLAYER_CLASS_TYPE class_type, bool check_honorary) const {
 }
 
 //----- (00490EEE) --------------------------------------------------------
-MERCHANT_PHRASE Player::SelectPhrasesTransaction(ItemGen *pItem, BuildingType building_type, int BuildID_2Events, int ShopMenuType) {
+MerchantPhrase Player::SelectPhrasesTransaction(ItemGen *pItem, BuildingType building_type, int BuildID_2Events, int ShopMenuType) {
     // TODO(_): probably move this somewhere else, not really Player:: stuff
     ITEM_TYPE idemId;   // edx@1
     ITEM_EQUIP_TYPE equipType;  // esi@1

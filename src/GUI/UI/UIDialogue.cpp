@@ -39,8 +39,13 @@ void GameUI_InitializeDialogue(Actor *actor, int bPlayerSaysHello) {
     sDialogue_SpeakingActorNPC_ID = actor->sNPC_ID;
     pDialogue_SpeakingActor = actor;
     NPCData *pNPCInfo = GetNPCData(actor->sNPC_ID);
-    if ((pNPCInfo->uFlags & 3) != 2) {
-        pNPCInfo->uFlags = pNPCInfo->uFlags + 1;
+    if (!(pNPCInfo->uFlags & NPC_GREETED_SECOND)) {
+        if (pNPCInfo->uFlags & NPC_GREETED_FIRST) {
+            pNPCInfo->uFlags &= ~NPC_GREETED_FIRST;
+            pNPCInfo->uFlags |= NPC_GREETED_SECOND;
+        } else {
+            pNPCInfo->uFlags |= NPC_GREETED_FIRST;
+        }
     }
 
     std::string filename = DialogueBackgroundResourceByAlignment[pParty->alignment];
@@ -52,10 +57,13 @@ void GameUI_InitializeDialogue(Actor *actor, int bPlayerSaysHello) {
     filename = fmt::format("npc{:03}", pNPCInfo->uPortraitID);
     pDialogueNPCPortraits[0] = assets->getImage_ColorKey(filename);
 
+    // TODO(Nik-RE-dev): this looks like checks for NPC that only talk if party has enough fame
+    //                   which is a thing only for MM8 if I remember correctly
+#if 0
     int pNumberContacts = 0;
     int v9 = 0;
     if (!pNPCInfo->Hired() && pNPCInfo->Location2D >= 0) {
-        if ((signed int)pParty->getPartyFame() <= pNPCInfo->fame ||
+        if (pParty->getPartyFame() <= pNPCInfo->fame ||
             (pNumberContacts = pNPCInfo->uFlags & 0xFFFFFF7F,
              (pNumberContacts & 0x80000000u) != 0)) {
             v9 = 1;
@@ -76,6 +84,7 @@ void GameUI_InitializeDialogue(Actor *actor, int bPlayerSaysHello) {
         }
     }
     if (sDialogue_SpeakingActorNPC_ID < 0) v9 = 4;
+#endif
 
     pDialogueWindow = new GUIWindow_Dialogue({0, 0}, render->GetRenderDimensions(), 3);
     if (pNPCInfo->Hired() && !pNPCInfo->bHasUsedTheAbility) {
@@ -249,12 +258,10 @@ void GUIWindow_Dialogue::Update() {
                 dialogue_string = current_npc_text;
             } else if (pGreetType == 1) {  // QuestNPC_greet
                 if (pNPC->greet) {
-                    if ((pNPC->uFlags & 3) == 2)
-                        dialogue_string =
-                            pNPCStats->pNPCGreetings[pNPC->greet].pGreeting2;
+                    if (pNPC->uFlags & NPC_GREETED_SECOND)
+                        dialogue_string = pNPCStats->pNPCGreetings[pNPC->greet].pGreeting2;
                     else
-                        dialogue_string =
-                            pNPCStats->pNPCGreetings[pNPC->greet].pGreeting1;
+                        dialogue_string = pNPCStats->pNPCGreetings[pNPC->greet].pGreeting1;
                 }
             } else if (pGreetType == 2) {  // HiredNPC_greet
                 NPCProfession *prof = &pNPCStats->pProfessions[pNPC->profession];
@@ -551,7 +558,7 @@ void BuildHireableNpcDialogue() {
     pDialogueWindow->eWindowType = WINDOW_MainMenu;
     pDialogueWindow->Release();
     pDialogueWindow = new GUIWindow_Dialogue({0, 0}, render->GetRenderDimensions(), 1);
-    if (pNPCStats->pProfessions[v0->profession].pBenefits) {
+    if (!pNPCStats->pProfessions[v0->profession].pBenefits.empty()) {
         pDialogueWindow->CreateButton({480, 160}, {140, 28}, 1, 0,
             UIMSG_SelectNPCDialogueOption, DIALOGUE_PROFESSION_DETAILS, InputAction::Invalid,
             localization->GetString(LSTR_MORE_INFORMATION));
@@ -568,17 +575,16 @@ void OnSelectNPCDialogueOption(DIALOGUE_TYPE option) {
 
     NPCData *speakingNPC = GetNPCData(sDialogue_SpeakingActorNPC_ID);
     uDialogueType = option;
-    if (!speakingNPC->uFlags) speakingNPC->uFlags = 1;
+    if (!speakingNPC->uFlags)
+        speakingNPC->uFlags = NPC_GREETED_FIRST;
     if (option == DIALOGUE_PROFESSION_DETAILS) {
         dialogue_show_profession_details = ~dialogue_show_profession_details;
     } else if (option == DIALOGUE_HIRE_FIRE) {
         if (speakingNPC->Hired()) {
             if ((signed int)pNPCStats->uNumNewNPCs > 0) {
-                for (uint i = 0; i < (unsigned int)pNPCStats->uNumNewNPCs;
-                     ++i) {
-                    if (pNPCStats->pNewNPCData[i].Hired() &&
-                        speakingNPC->pName == pNPCStats->pNewNPCData[i].pName)
-                        pNPCStats->pNewNPCData[i].uFlags &= 0x7Fu;
+                for (uint i = 0; i < (unsigned int)pNPCStats->uNumNewNPCs; ++i) {
+                    if (pNPCStats->pNewNPCData[i].Hired() && speakingNPC->pName == pNPCStats->pNewNPCData[i].pName)
+                        pNPCStats->pNewNPCData[i].uFlags &= ~NPC_HIRED;
                 }
             }
             if (iequals(pParty->pHirelings[0].pName, speakingNPC->pName))
@@ -607,7 +613,7 @@ void OnSelectNPCDialogueOption(DIALOGUE_TYPE option) {
                 }
                 pParty->TakeGold(pNPCStats->pProfessions[speakingNPC->profession].uHirePrice);
             }
-            speakingNPC->uFlags |= 0x80u;
+            speakingNPC->uFlags |= NPC_HIRED;
             if (!pParty->pHirelings[0].pName.empty()) {
                 pParty->pHirelings[1] = *speakingNPC;
                 pParty->pHireling2Name = speakingNPC->pName;
@@ -649,9 +655,8 @@ void OnSelectNPCDialogueOption(DIALOGUE_TYPE option) {
             dialogue_show_profession_details = false;
         } else {
             for (uint i = 0; i < (signed int)pNPCStats->uNumNewNPCs; ++i) {
-                if (pNPCStats->pNewNPCData[i].Hired() &&
-                    speakingNPC->pName == pNPCStats->pNewNPCData[i].pName)
-                    pNPCStats->pNewNPCData[i].uFlags &= 0x7Fu;
+                if (pNPCStats->pNewNPCData[i].Hired() && speakingNPC->pName == pNPCStats->pNewNPCData[i].pName)
+                    pNPCStats->pNewNPCData[i].uFlags &= ~NPC_HIRED;
             }
             if (iequals(pParty->pHirelings[0].pName, speakingNPC->pName))
                 pParty->pHirelings[0] = NPCData();

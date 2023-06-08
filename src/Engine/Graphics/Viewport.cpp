@@ -254,7 +254,7 @@ void InteractWithActor(unsigned int id) {
         pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_StartNPCDialogue, id, 0);
     } else {
         if (pNPCStats->pGroups_copy[pActors[id].uGroup]) {
-            if (pNPCStats->pCatchPhrases[pNPCStats->pGroups_copy[pActors[id].uGroup]]) {
+            if (!pNPCStats->pCatchPhrases[pNPCStats->pGroups_copy[pActors[id].uGroup]].empty()) {
                 pParty->uFlags |= PARTY_FLAGS_1_ForceRedraw;
                 branchless_dialogue_str = pNPCStats->pCatchPhrases[pNPCStats->pGroups_copy[pActors[id].uGroup]];
                 StartBranchlessDialogue(0, 0, 0);

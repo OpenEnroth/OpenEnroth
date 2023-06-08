@@ -18,7 +18,7 @@ void initializeMerchants() {
     std::string txtRaw{ engine->_gameResourceManager->getEventsFile("merchant.txt").string_view() };
     strtok(txtRaw.data(), "\r");
 
-    for (MERCHANT_PHRASE i : MerchantPhrases()) {
+    for (MerchantPhrase i : MerchantPhrases()) {
         test_string = strtok(NULL, "\r") + 1;
         break_loop = false;
         decode_step = 0;

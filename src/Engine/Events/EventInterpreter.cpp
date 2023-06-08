@@ -31,27 +31,27 @@
 /**
  * @offset 0x4465DF
  */
-static bool checkSeason(SEASON season) {
+static bool checkSeason(Season season) {
     int monthPlusOne = pParty->uCurrentMonth + 1;
     int daysPlusOne = pParty->uCurrentDayOfMonth + 1;
 
     switch (season) {
-        case WINTER:  // winter 12.21 -> 3.20
+        case SEASON_WINTER:  // winter 12.21 -> 3.20
             return (monthPlusOne == 12 && daysPlusOne >= 21 ||
                     monthPlusOne == 1 || monthPlusOne == 2 ||
                     monthPlusOne == 3 && daysPlusOne <= 20);
 
-        case AUTUMN:  // autumn/fall 9.21 -> 12.20
+        case SEASON_AUTUMN:  // autumn/fall 9.21 -> 12.20
             return (monthPlusOne == 9 && daysPlusOne >= 21 ||
                     monthPlusOne == 10 || monthPlusOne == 11 ||
                     monthPlusOne == 12 && daysPlusOne <= 20);
 
-        case SUMMER:  // summer 6.21 -> 9.20
+        case SEASON_SUMMER:  // summer 6.21 -> 9.20
             return (monthPlusOne == 6 && daysPlusOne >= 21 ||
                     monthPlusOne == 7 || monthPlusOne == 8 ||
                     monthPlusOne == 9 && daysPlusOne <= 20);
 
-        case SPRING:  // spring 3.21 -> 6.20
+        case SEASON_SPRING:  // spring 3.21 -> 6.20
             return (monthPlusOne == 3 && daysPlusOne >= 21 ||
                     monthPlusOne == 4 || monthPlusOne == 5 ||
                     monthPlusOne == 6 && daysPlusOne <= 20);
@@ -90,7 +90,7 @@ static void spawnMonsters(int16_t typeindex, int16_t level, int count,
     }
 }
 
-static bool doForChosenPlayer(PLAYER_CHOOSE_POLICY who, RandomEngine *rng, std::function<int(Player&)> func) {
+static bool doForChosenPlayer(CharacterChoosePolicy who, RandomEngine *rng, std::function<int(Player&)> func) {
     if (who >= CHOOSE_PLAYER1 && who <= CHOOSE_PLAYER4) {
         return func(pParty->pPlayers[std::to_underlying(who)]);
     } else if (who == CHOOSE_ACTIVE) {
@@ -508,7 +508,8 @@ int EventInterpreter::executeOneEvent(int step, bool isNpc) {
             npcSetItem(ir.data.npc_item_descr.id, ir.data.npc_item_descr.item, ir.data.npc_item_descr.is_give);
             break;
         case EVENT_SetNPCGreeting:
-            pNPCStats->pNewNPCData[ir.data.npc_descr.npc_id].uFlags &= 0xFFFFFFFCu;
+            pNPCStats->pNewNPCData[ir.data.npc_descr.npc_id].uFlags &= ~NPC_GREETED_FIRST;
+            pNPCStats->pNewNPCData[ir.data.npc_descr.npc_id].uFlags &= ~NPC_GREETED_SECOND;
             pNPCStats->pNewNPCData[ir.data.npc_descr.npc_id].greet = ir.data.npc_descr.greeting;
             break;
         case EVENT_IsActorKilled:
