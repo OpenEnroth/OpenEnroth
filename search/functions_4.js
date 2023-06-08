@@ -64,7 +64,7 @@ var searchData=
   ['doescontainerexist_61',['DoesContainerExist',['../classLOD_1_1File.html#a02909e515f23f11465c09d7f6a6f1add',1,'LOD::File']]],
   ['doesdmgtypedodamage_62',['DoesDmgTypeDoDamage',['../classActor.html#a14d2bb380e87e988ebfb926307638cbe',1,'Actor']]],
   ['doesrayintersectbillboard_63',['DoesRayIntersectBillboard',['../classVis.html#ad4af37acceccfd227b3221caa6381385',1,'Vis']]],
-  ['doforchosenplayer_64',['doForChosenPlayer',['../EventInterpreter_8cpp.html#a589acbabe029216292640e935be2f772',1,'EventInterpreter.cpp']]],
+  ['doforchosenplayer_64',['doForChosenPlayer',['../EventInterpreter_8cpp.html#a4b5f805245db74521edfdb7c39707c0b',1,'EventInterpreter.cpp']]],
   ['dogetheightonterrain_65',['DoGetHeightOnTerrain',['../structOutdoorLocation.html#abe2aa540a3d2933e7c1ced447be3f180',1,'OutdoorLocation']]],
   ['dointeractionwithtopmostzobject_66',['DoInteractionWithTopmostZObject',['../Indoor_8cpp.html#a086d58ef699669d6bafa59d91159b276',1,'DoInteractionWithTopmostZObject(int pid):&#160;Indoor.cpp'],['../Indoor_8h.html#a086d58ef699669d6bafa59d91159b276',1,'DoInteractionWithTopmostZObject(int pid):&#160;Indoor.cpp']]],
   ['donatedialogue_67',['donateDialogue',['../classGUIWindow__Temple.html#a14e870e4149fb8dfb473a37011d29015',1,'GUIWindow_Temple']]],
@@ -153,7 +153,7 @@ var searchData=
   ['drawturnbasedicon_150',['DrawTurnBasedIcon',['../structActiveOverlayList.html#ab70f211fa2e5fd151c2c024a4e732b85',1,'ActiveOverlayList']]],
   ['drawtwodverts_151',['DrawTwodVerts',['../classIRender.html#adfbff9bcb735079ba54dc01b77e2b301',1,'IRender::DrawTwodVerts()'],['../classRenderOpenGL.html#a32c59e2a963c6782a956a30d83181b8e',1,'RenderOpenGL::DrawTwodVerts()']]],
   ['drophelditem_152',['dropHeldItem',['../structParty.html#a0693aea0ed8b47d1ae9d99258818fb54',1,'Party']]],
-  ['dropitemat_153',['dropItemAt',['../structSpriteObject.html#a947c5f6cded2789f4563b4265c1db5e4',1,'SpriteObject']]],
+  ['dropitemat_153',['dropItemAt',['../structSpriteObject.html#af03e2b0f3616e142fa60a59ba953b506',1,'SpriteObject']]],
   ['droptreasureat_154',['DropTreasureAt',['../Indoor_8cpp.html#afe5fefe7269b2747edf2d6095266e8ab',1,'DropTreasureAt(ITEM_TREASURE_LEVEL trs_level, int trs_type, int x, int y, int z, uint16_t facing):&#160;Indoor.cpp'],['../Indoor_8h.html#a432e8194ed9df808841895f55a83325a',1,'DropTreasureAt(ITEM_TREASURE_LEVEL trs_level, signed int trs_type, int x, int y, int z, uint16_t facing):&#160;Indoor.h']]],
   ['dump_155',['dump',['../classEventMap.html#a8ad7b6b1ee85fddbdc480c5a69053296',1,'EventMap']]],
   ['dumpall_156',['dumpAll',['../classEventMap.html#a8116841cc91c74eaef88048fc278b454',1,'EventMap']]]

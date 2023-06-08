@@ -526,7 +526,7 @@ var searchData=
   ['pshopoptions_523',['pShopOptions',['../mm7__data_8h.html#a860ffc8780eb65ed03010159873b72b4',1,'pShopOptions():&#160;mm7_data.cpp'],['../mm7__data_8cpp.html#a860ffc8780eb65ed03010159873b72b4',1,'pShopOptions():&#160;mm7_data.cpp']]],
   ['pshortname_524',['pShortName',['../structSpellInfo.html#a220dd9c8d2ccc59556188f78a5baf966',1,'SpellInfo']]],
   ['psignature_525',['pSignature',['../structLOD_1_1FileHeader.html#aa7eba80a70657b5de410d8bb03d385dd',1,'LOD::FileHeader']]],
-  ['pskillavailabilityperclass_526',['pSkillAvailabilityPerClass',['../mm7__data_8cpp.html#ad8a328adfbc89355482cbf71be58f46f',1,'pSkillAvailabilityPerClass():&#160;mm7_data.cpp'],['../mm7__data_8h.html#ad8a328adfbc89355482cbf71be58f46f',1,'pSkillAvailabilityPerClass():&#160;mm7_data.cpp']]],
+  ['pskillavailabilityperclass_526',['pSkillAvailabilityPerClass',['../mm7__data_8cpp.html#ada9dd2cf9eb07f8f8e8ed312c73c021c',1,'pSkillAvailabilityPerClass():&#160;mm7_data.cpp'],['../mm7__data_8h.html#ada9dd2cf9eb07f8f8e8ed312c73c021c',1,'pSkillAvailabilityPerClass():&#160;mm7_data.cpp']]],
   ['psounddataid_527',['pSoundDataID',['../structSoundInfo__MM6.html#acb0c98e85143daff6a13e8caec667605',1,'SoundInfo_MM6']]],
   ['psoundlist_528',['pSoundList',['../AudioPlayer_8h.html#ad69469921c052e5df1d760da80a0139e',1,'pSoundList():&#160;AudioPlayer.cpp'],['../AudioPlayer_8cpp.html#ad69469921c052e5df1d760da80a0139e',1,'pSoundList():&#160;AudioPlayer.cpp']]],
   ['psoundname_529',['pSoundName',['../structSoundHeader__mm7.html#a24791de9708453705873a264189cb460',1,'SoundHeader_mm7::pSoundName()'],['../structSoundInfo__MM6.html#abc08ea4ce55bc1ae9d107c7c349a3a8b',1,'SoundInfo_MM6::pSoundName()']]],

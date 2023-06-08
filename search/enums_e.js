@@ -21,12 +21,11 @@ var searchData=
   ['platformwindowmode_18',['PlatformWindowMode',['../PlatformEnums_8h.html#a7772d16a8207ba672642f139658d8f14',1,'PlatformEnums.h']]],
   ['platformwindoworientation_19',['PlatformWindowOrientation',['../PlatformEnums_8h.html#acef92f6f6dcb8940ab858cd4fe1c64bc',1,'PlatformEnums.h']]],
   ['player_5fbuffs_20',['PLAYER_BUFFS',['../PlayerEnums_8h.html#ac2005d40089d000876ce6dec2d5b123f',1,'PlayerEnums.h']]],
-  ['player_5fchoose_5fpolicy_21',['PLAYER_CHOOSE_POLICY',['../EventEnums_8h.html#ad2446f76c70a74ed546cc2a802542ab4',1,'EventEnums.h']]],
-  ['player_5fclass_5ftype_22',['PLAYER_CLASS_TYPE',['../PlayerEnums_8h.html#a8b0f780d4f163891fe834eebde9c9955',1,'PlayerEnums.h']]],
-  ['player_5fsex_23',['PLAYER_SEX',['../PlayerEnums_8h.html#a8b5cdb0c1525ed7ab1d3f60dc14684f9',1,'PlayerEnums.h']]],
-  ['player_5fskill_5fmastery_24',['PLAYER_SKILL_MASTERY',['../CombinedSkillValue_8h.html#ae7fdd356d1b4ddbdd59bcba036e6f942',1,'CombinedSkillValue.h']]],
-  ['player_5fskill_5ftype_25',['PLAYER_SKILL_TYPE',['../PlayerEnums_8h.html#a882aeeabc7e03f0fa334764a909ab3f5',1,'PlayerEnums.h']]],
-  ['playerspeech_26',['PlayerSpeech',['../PlayerEnums_8h.html#ab50a2a71840e11476f69875990dc7265',1,'PlayerEnums.h']]],
-  ['pointercreationtype_27',['PointerCreationType',['../structVis__SelectionList.html#a9e474fcb1237991d944eecc3f71c5ee3',1,'Vis_SelectionList']]],
-  ['polygontype_28',['PolygonType',['../BSPModel_8h.html#a91fb3e69af7609c2810f12d81ecf6fab',1,'BSPModel.h']]]
+  ['player_5fclass_5ftype_21',['PLAYER_CLASS_TYPE',['../PlayerEnums_8h.html#a8b0f780d4f163891fe834eebde9c9955',1,'PlayerEnums.h']]],
+  ['player_5fsex_22',['PLAYER_SEX',['../PlayerEnums_8h.html#a8b5cdb0c1525ed7ab1d3f60dc14684f9',1,'PlayerEnums.h']]],
+  ['player_5fskill_5fmastery_23',['PLAYER_SKILL_MASTERY',['../CombinedSkillValue_8h.html#ae7fdd356d1b4ddbdd59bcba036e6f942',1,'CombinedSkillValue.h']]],
+  ['player_5fskill_5ftype_24',['PLAYER_SKILL_TYPE',['../PlayerEnums_8h.html#a882aeeabc7e03f0fa334764a909ab3f5',1,'PlayerEnums.h']]],
+  ['playerspeech_25',['PlayerSpeech',['../PlayerEnums_8h.html#ab50a2a71840e11476f69875990dc7265',1,'PlayerEnums.h']]],
+  ['pointercreationtype_26',['PointerCreationType',['../structVis__SelectionList.html#a9e474fcb1237991d944eecc3f71c5ee3',1,'Vis_SelectionList']]],
+  ['polygontype_27',['PolygonType',['../BSPModel_8h.html#a91fb3e69af7609c2810f12d81ecf6fab',1,'BSPModel.h']]]
 ];

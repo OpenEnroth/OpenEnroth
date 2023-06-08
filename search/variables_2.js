@@ -65,7 +65,7 @@ var searchData=
   ['boltblue_62',['BoltBlue',['../classColorTable.html#a9f0180cb4d6d9c018c62b15d907555db',1,'ColorTable']]],
   ['bonusranges_63',['bonusRanges',['../structItemTable.html#a7cf820c151e066d833843dcc76580d91',1,'ItemTable']]],
   ['bonusskilldamage_64',['bonusSkillDamage',['../classSpellData.html#a4676eb5661a72b83e72d2511fb3c339a',1,'SpellData']]],
-  ['bookbuttonaction_65',['bookButtonAction',['../UIBooks_8h.html#a6e8e8a435256ccad66007a70d1427cc0',1,'bookButtonAction():&#160;UIBooks.cpp'],['../UIBooks_8cpp.html#a6e8e8a435256ccad66007a70d1427cc0',1,'bookButtonAction():&#160;UIBooks.cpp']]],
+  ['bookbuttonaction_65',['bookButtonAction',['../UIBooks_8h.html#a65adb4fd7c254530a8a34fcc39036ab3',1,'bookButtonAction():&#160;UIBooks.cpp'],['../UIBooks_8cpp.html#a65adb4fd7c254530a8a34fcc39036ab3',1,'bookButtonAction():&#160;UIBooks.cpp']]],
   ['bookbuttonclicked_66',['bookButtonClicked',['../UIBooks_8h.html#a0f7243fa3032b1939968d40f231566cf',1,'bookButtonClicked():&#160;UIBooks.cpp'],['../UIBooks_8cpp.html#a0f7243fa3032b1939968d40f231566cf',1,'bookButtonClicked():&#160;UIBooks.cpp']]],
   ['bookflashstate_67',['bookFlashState',['../UIGame_8cpp.html#aa55f9cc1c11ab47de036a5bf5a65e3b3',1,'UIGame.cpp']]],
   ['bookflashtimer_68',['bookFlashTimer',['../UIGame_8cpp.html#ab11f377820d5a75638ebf052741fe77a',1,'UIGame.cpp']]],

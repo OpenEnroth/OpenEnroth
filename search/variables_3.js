@@ -116,7 +116,7 @@ var searchData=
   ['currentmonth_113',['currentMonth',['../structParty__MM7.html#ac618c7f37f7ced5207972f66daa5b205',1,'Party_MM7']]],
   ['currentmonthweek_114',['currentMonthWeek',['../structParty__MM7.html#afbbbef8de12b7b8b86c84a11d41ffb8a',1,'Party_MM7']]],
   ['currentmusictrack_115',['currentMusicTrack',['../classAudioPlayer.html#aa328abd6a98d1b36e89e4cd4be469e8b',1,'AudioPlayer']]],
-  ['currentresttype_116',['currentRestType',['../UIRest_8h.html#a474d1be8724add7ced625ae4cd8a580d',1,'currentRestType():&#160;UIRest.cpp'],['../UIRest_8cpp.html#a474d1be8724add7ced625ae4cd8a580d',1,'currentRestType():&#160;UIRest.cpp']]],
+  ['currentresttype_116',['currentRestType',['../UIRest_8h.html#a1f7c2681f3e87a05f32ba6490b5e7133',1,'currentRestType():&#160;UIRest.cpp'],['../UIRest_8cpp.html#a1f7c2681f3e87a05f32ba6490b5e7133',1,'currentRestType():&#160;UIRest.cpp']]],
   ['currentside_117',['currentSide',['../classEngineControlState.html#a67212b422b997707f0ad0a3c8e502bd4',1,'EngineControlState']]],
   ['currenttimesecond_118',['currentTimeSecond',['../structParty__MM7.html#a6b63f59293dcd966877db254226843be',1,'Party_MM7']]],
   ['currentwalkingsound_119',['currentWalkingSound',['../structParty.html#adc7c0a6f7bf9b4fce0126ba715e864f1',1,'Party']]],
