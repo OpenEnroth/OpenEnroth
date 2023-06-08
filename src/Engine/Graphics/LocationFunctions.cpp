@@ -5,7 +5,7 @@
 #include "Indoor.h"
 #include "Outdoor.h"
 
-LEVEL_TYPE uCurrentlyLoadedLevelType = LEVEL_NULL;
+LevelType uCurrentlyLoadedLevelType = LEVEL_NULL;
 
 //----- (00450DA3) --------------------------------------------------------
 bool GetAlertStatus() {

@@ -242,16 +242,16 @@ enum class VariableType {
 };
 using enum VariableType;
 
-enum class SEASON {
-    SPRING = 0,
-    SUMMER = 1,
-    AUTUMN = 2,
-    WINTER = 3
+enum class Season {
+    SEASON_SPRING = 0,
+    SEASON_SUMMER = 1,
+    SEASON_AUTUMN = 2,
+    SEASON_WINTER = 3
 };
-using enum SEASON;
+using enum Season;
 
 // TODO(Nik-RE-dev): currently exclusive for MM7, need to be independent from players number
-enum class PLAYER_CHOOSE_POLICY {
+enum class CharacterChoosePolicy {
     CHOOSE_PLAYER1 = 0,
     CHOOSE_PLAYER2 = 1,
     CHOOSE_PLAYER3 = 2,
@@ -261,5 +261,5 @@ enum class PLAYER_CHOOSE_POLICY {
     CHOOSE_PARTY = 5,
     CHOOSE_RANDOM = 6
 };
-using enum PLAYER_CHOOSE_POLICY;
+using enum CharacterChoosePolicy;
 

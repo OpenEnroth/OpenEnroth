@@ -34,7 +34,7 @@ GraphicsImage *ui_book_map_frame = nullptr;
 GraphicsImage *ui_book_quest_div_bar = nullptr;
 
 bool bookButtonClicked;
-BOOK_BUTTON_ACTION bookButtonAction;
+BookButtonAction bookButtonAction;
 
 //----- (00411597) --------------------------------------------------------
 void GUIWindow_Book::Release() {

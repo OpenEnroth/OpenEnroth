@@ -28,7 +28,7 @@ enum class DAMAGE_TYPE : unsigned int {
 using enum DAMAGE_TYPE;
 
 /*  338 */
-enum class ITEM_FLAG : uint32_t {
+enum class ItemFlag : uint32_t {
     ITEM_IDENTIFIED = 0x1,
     ITEM_BROKEN = 0x2,
     ITEM_TEMP_BONUS = 0x8,
@@ -40,9 +40,9 @@ enum class ITEM_FLAG : uint32_t {
     ITEM_STOLEN = 0x100,
     ITEM_HARDENED = 0x200,
 };
-using enum ITEM_FLAG;
-MM_DECLARE_FLAGS(ITEM_FLAGS, ITEM_FLAG)
-MM_DECLARE_OPERATORS_FOR_FLAGS(ITEM_FLAGS)
+using enum ItemFlag;
+MM_DECLARE_FLAGS(ItemFlags, ItemFlag)
+MM_DECLARE_OPERATORS_FOR_FLAGS(ItemFlags)
 
 enum ITEM_ENCHANTMENT : unsigned int {
     ITEM_ENCHANTMENT_NULL = 0,

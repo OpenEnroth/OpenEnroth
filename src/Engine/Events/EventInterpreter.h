@@ -24,5 +24,5 @@ class EventInterpreter {
      bool _canShowOption = true;
      bool _readyToExit = false;
      bool _mapExitTriggered = false;
-     PLAYER_CHOOSE_POLICY _who = CHOOSE_PARTY;
+     CharacterChoosePolicy _who = CHOOSE_PARTY;
 };

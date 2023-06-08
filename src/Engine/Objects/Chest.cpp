@@ -403,7 +403,7 @@ void Chest::PlaceItems(int uChestID) {  // only sued for setup
     vChests[uChestID].SetInitialized(true);
 }
 
-void Chest::toggleFlag(int uChestID, CHEST_FLAG uFlag, bool bValue) {
+void Chest::toggleFlag(int uChestID, ChestFlag uFlag, bool bValue) {
     if (uChestID >= 0 && uChestID <= 19) {
         if (bValue)
             vChests[uChestID].uFlags |= uFlag;

@@ -7341,7 +7341,7 @@ bool Player::isClass(PLAYER_CLASS_TYPE class_type, bool check_honorary) const {
 }
 
 //----- (00490EEE) --------------------------------------------------------
-MERCHANT_PHRASE Player::SelectPhrasesTransaction(ItemGen *pItem, BuildingType building_type, int BuildID_2Events, int ShopMenuType) {
+MerchantPhrase Player::SelectPhrasesTransaction(ItemGen *pItem, BuildingType building_type, int BuildID_2Events, int ShopMenuType) {
     // TODO(_): probably move this somewhere else, not really Player:: stuff
     ITEM_TYPE idemId;   // edx@1
     ITEM_EQUIP_TYPE equipType;  // esi@1

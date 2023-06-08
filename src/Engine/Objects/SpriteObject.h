@@ -58,7 +58,7 @@ struct SpriteObject {
      * @offset 0x42F7EB
      */
     static bool dropItemAt(SPRITE_OBJECT_TYPE spriteType, Vec3i pos, int speed, int count = 1,
-                           bool randomRotate = false, SPRITE_ATTRIBUTES attributes = 0, ItemGen *item = nullptr);
+                           bool randomRotate = false, SpriteAttributes attributes = 0, ItemGen *item = nullptr);
     static void createSplashObject(Vec3i pos);
     static void InitializeSpriteObjects();
 
@@ -69,7 +69,7 @@ struct SpriteObject {
     Vec3s vVelocity;
     uint16_t uFacing = 0;
     uint16_t uSoundID = 0;
-    SPRITE_ATTRIBUTES uAttributes = 0;
+    SpriteAttributes uAttributes = 0;
     int16_t uSectorID = 0;
     uint16_t uSpriteFrameID = 0;
     int16_t tempLifetime = 0;
