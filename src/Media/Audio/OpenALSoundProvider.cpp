@@ -41,6 +41,14 @@ bool CheckError() {
     return true;
 }
 
+void setSourceDefaults(ALuint al_source) {
+    alSourcei(al_source, AL_LOOPING, AL_FALSE);
+    alSourcef(al_source, AL_PITCH, 1.f);
+    alSourcef(al_source, AL_GAIN, 1.f);
+    alSource3f(al_source, AL_POSITION, 0.f, 0.f, 0.f);
+    alSource3f(al_source, AL_VELOCITY, 0.f, 0.f, 0.f);
+}
+
 OpenALSoundProvider::OpenALSoundProvider() {
     device = nullptr;
     context = nullptr;
@@ -235,11 +243,7 @@ OpenALSoundProvider::CreateStreamingTrack16(int num_channels, int sample_rate,
         return nullptr;
     }
 
-    alSourcei(al_source, AL_LOOPING, AL_FALSE);
-    alSourcef(al_source, AL_PITCH, 1.f);
-    alSourcef(al_source, AL_GAIN, 1.f);
-    alSource3f(al_source, AL_POSITION, 0.f, 0.f, 0.f);
-    alSource3f(al_source, AL_VELOCITY, 0.f, 0.f, 0.f);
+    setSourceDefaults(al_source);
 
     StreamingTrackBuffer *ret = new StreamingTrackBuffer;
     ret->source_id = al_source;
@@ -330,11 +334,7 @@ OpenALSoundProvider::TrackBuffer *OpenALSoundProvider::CreateTrack16(
         return nullptr;
     }
 
-    alSourcei(al_source, AL_LOOPING, AL_FALSE);
-    alSourcef(al_source, AL_PITCH, 1.f);
-    alSourcef(al_source, AL_GAIN, 1.f);
-    alSource3f(al_source, AL_POSITION, 0.f, 0.f, 0.f);
-    alSource3f(al_source, AL_VELOCITY, 0.f, 0.f, 0.f);
+    setSourceDefaults(al_source);
 
     ALuint al_buffer = -1;
     alGenBuffers(1, &al_buffer);
@@ -487,12 +487,8 @@ bool AudioTrackS16::Open(PAudioDataSource data_source) {
         return false;
     }
 
-    alSourcei(al_source, AL_LOOPING, AL_FALSE);
-    alSourcef(al_source, AL_PITCH, 1.f);
-    alSourcef(al_source, AL_GAIN, 1.f);
+    setSourceDefaults(al_source);
     alSourcei(al_source, AL_SOURCE_RELATIVE, AL_TRUE);
-    alSource3f(al_source, AL_POSITION, 0.f, 0.f, 0.f);
-    alSource3f(al_source, AL_VELOCITY, 0.f, 0.f, 0.f);
 
     al_sample_rate = pDataSource->GetSampleRate();
 
@@ -809,6 +805,7 @@ class AudioSample16 : public IAudioSample {
 
  protected:
     void Close();
+    void defaultSource();
 
     PAudioDataSource pDataSource = nullptr;
     ALuint al_source = -1;
@@ -834,6 +831,14 @@ void AudioSample16::Close() {
     al_source = -1;
 }
 
+void AudioSample16::defaultSource() {
+    assert((al_source != -1) && "Cannot default invalid source!");
+    setSourceDefaults(al_source);
+    alSourcef(al_source, AL_REFERENCE_DISTANCE, REFERENCE_DIST);
+    alSourcef(al_source, AL_MAX_DISTANCE, MAX_SOUND_DIST);
+    alSourcef(al_source, AL_ROLLOFF_FACTOR, ROLLOFF_FACTOR);
+}
+
 bool AudioSample16::Open(PAudioDataSource data_source) {
     pDataSource = data_source;
     if (!pDataSource) {
@@ -851,13 +856,7 @@ bool AudioSample16::Open(PAudioDataSource data_source) {
         return false;
     }
 
-    alSourcei(al_source, AL_LOOPING, AL_FALSE);
-    alSourcef(al_source, AL_PITCH, 1.f);
-    alSourcef(al_source, AL_GAIN, 1.f);
-    alSourcef(al_source, AL_REFERENCE_DISTANCE, 6.5f);  // 300 / 50
-    alSourcef(al_source, AL_MAX_DISTANCE, 2000.f);
-    alSource3f(al_source, AL_POSITION, 0.f, 0.f, 0.f);
-    alSource3f(al_source, AL_VELOCITY, 0.f, 0.f, 0.f);
+    defaultSource();
 
     if (!openalDataSource->linkSource(al_source)) {
         Close();

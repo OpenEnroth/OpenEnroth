@@ -30,13 +30,6 @@ std::array<float, 10> pSoundVolumeLevels = {
     {0.0000000f, 0.1099999f, 0.2199999f, 0.3300000f, 0.4399999f, 0.5500000f,
      0.6600000f, 0.7699999f, 0.8799999f, 0.9700000f}};
 
-// Max value used for volume control
-// TODO(Nik-RE-dev): originally it was 2.0f, but OpenAL support gains from [0.0f, 1.0f] only
-static const float maxVolumeGain = 1.0f;
-
-// TODO(Nik-RE-dev): investigate importance of applying scaling to position coordinates
-static const float positionScaling = 50.0f;
-
 std::map<uint32_t, SoundInfo> mapSounds;
 
 void SoundList::Initialize() {}
@@ -126,7 +119,7 @@ void AudioPlayer::MusicResume() {
 
 void AudioPlayer::SetMusicVolume(int level) {
     level = std::clamp(level, 0, 9);
-    uMusicVolume = pSoundVolumeLevels[level] * maxVolumeGain;
+    uMusicVolume = pSoundVolumeLevels[level];
 
     if (!pCurrentMusicTrack) {
         return;
@@ -142,7 +135,7 @@ void AudioPlayer::SetMusicVolume(int level) {
 
 void AudioPlayer::SetMasterVolume(int level) {
     level = std::clamp(level, 0, 9);
-    uMasterVolume = (maxVolumeGain * pSoundVolumeLevels[level]);
+    uMasterVolume = pSoundVolumeLevels[level];
 
     _regularSoundPool.setVolume(uMasterVolume);
     _loopingSoundPool.setVolume(uMasterVolume);
@@ -153,7 +146,7 @@ void AudioPlayer::SetMasterVolume(int level) {
 
 void AudioPlayer::SetVoiceVolume(int level) {
     level = std::clamp(level, 0, 9);
-    uVoiceVolume = (maxVolumeGain * pSoundVolumeLevels[level]);
+    uVoiceVolume = pSoundVolumeLevels[level];
 
     _voiceSoundPool.setVolume(uVoiceVolume);
 }
@@ -284,9 +277,9 @@ void AudioPlayer::playSound(SoundID eSoundID, int pid, unsigned int uNumRepeats,
                 assert(uCurrentlyLoadedLevelType == LEVEL_INDOOR);
                 assert((int)object_id < pIndoor->pDoors.size());
 
-                sample->SetPosition(pIndoor->pDoors[object_id].pXOffsets[0] / positionScaling,
-                                    pIndoor->pDoors[object_id].pYOffsets[0] / positionScaling,
-                                    pIndoor->pDoors[object_id].pZOffsets[0] / positionScaling, 500.f);
+                sample->SetPosition(pIndoor->pDoors[object_id].pXOffsets[0],
+                                    pIndoor->pDoors[object_id].pYOffsets[0],
+                                    pIndoor->pDoors[object_id].pZOffsets[0], MAX_SOUND_DIST);
 
                 result = _regularSoundPool.playUniquePid(sample, si.dataSource, pid, true);
 
@@ -303,9 +296,9 @@ void AudioPlayer::playSound(SoundID eSoundID, int pid, unsigned int uNumRepeats,
             case OBJECT_Actor: {
                 assert(object_id < pActors.size());
 
-                sample->SetPosition(pActors[object_id].vPosition.x / positionScaling,
-                                    pActors[object_id].vPosition.y / positionScaling,
-                                    pActors[object_id].vPosition.z / positionScaling, 500.f);
+                sample->SetPosition(pActors[object_id].vPosition.x,
+                                    pActors[object_id].vPosition.y,
+                                    pActors[object_id].vPosition.z, MAX_SOUND_DIST);
 
                 result = _regularSoundPool.playUniquePid(sample, si.dataSource, pid, true);
 
@@ -315,10 +308,9 @@ void AudioPlayer::playSound(SoundID eSoundID, int pid, unsigned int uNumRepeats,
             case OBJECT_Decoration: {
                 assert(object_id < pLevelDecorations.size());
 
-                // TODO(Nik-RE-dev): why distance for decorations is 4 times more that for other sounds?
-                sample->SetPosition((float)pLevelDecorations[object_id].vPosition.x / positionScaling,
-                                    (float)pLevelDecorations[object_id].vPosition.y / positionScaling,
-                                    (float)pLevelDecorations[object_id].vPosition.z / positionScaling, 2000.f);
+                sample->SetPosition(pLevelDecorations[object_id].vPosition.x,
+                                    pLevelDecorations[object_id].vPosition.y,
+                                    pLevelDecorations[object_id].vPosition.z, MAX_SOUND_DIST);
 
                 result = _loopingSoundPool.playNew(sample, si.dataSource, true);
 
@@ -328,9 +320,9 @@ void AudioPlayer::playSound(SoundID eSoundID, int pid, unsigned int uNumRepeats,
             case OBJECT_Item: {
                 assert(object_id < pSpriteObjects.size());
 
-                sample->SetPosition(pSpriteObjects[object_id].vPosition.x / positionScaling,
-                                    pSpriteObjects[object_id].vPosition.y / positionScaling,
-                                    pSpriteObjects[object_id].vPosition.z / positionScaling, 500.f);
+                sample->SetPosition(pSpriteObjects[object_id].vPosition.x,
+                                    pSpriteObjects[object_id].vPosition.y,
+                                    pSpriteObjects[object_id].vPosition.z, MAX_SOUND_DIST);
 
                 result = _regularSoundPool.playUniquePid(sample, si.dataSource, pid, true);
                 break;
@@ -370,9 +362,7 @@ void AudioPlayer::UpdateSounds() {
     float yaw = pi * (float)pParty->_viewYaw / 1024.f;
 
     provider->SetOrientation(yaw, pitch);
-    provider->SetListenerPosition(pParty->vPosition.x / positionScaling,
-                                  pParty->vPosition.y / positionScaling,
-                                  pParty->vPosition.z / positionScaling);
+    provider->SetListenerPosition(pParty->vPosition.x, pParty->vPosition.y, pParty->vPosition.z);
 
     _voiceSoundPool.update();
     _regularSoundPool.update();
