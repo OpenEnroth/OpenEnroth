@@ -65,9 +65,9 @@ GUIWindow_AutonotesBook::GUIWindow_AutonotesBook() : GUIWindow_Book() {
     ui_book_button8_off = assets->getImage_Alpha("tab-an-8a");
 
     pBtn_Book_1 = CreateButton({pViewport->uViewportTL_X + 398, pViewport->uViewportTL_Y + 1}, {50, 34}, 1, 0,
-        UIMSG_ClickBooksBtn, std::to_underlying(BOOK_PREV_PAGE), InputAction::Invalid, localization->GetString(LSTR_SCROLL_DOWN), {ui_book_button1_on});
+        UIMSG_ClickBooksBtn, std::to_underlying(BOOK_PREV_PAGE), InputAction::DialogLeft, localization->GetString(LSTR_SCROLL_DOWN), {ui_book_button1_on});
     pBtn_Book_2 = CreateButton({pViewport->uViewportTL_X + 398, pViewport->uViewportTL_Y + 38}, {50, 34}, 1, 0,
-        UIMSG_ClickBooksBtn, std::to_underlying(BOOK_NEXT_PAGE), InputAction::Invalid, localization->GetString(LSTR_SCROLL_UP), {ui_book_button2_on});
+        UIMSG_ClickBooksBtn, std::to_underlying(BOOK_NEXT_PAGE), InputAction::DialogRight, localization->GetString(LSTR_SCROLL_UP), {ui_book_button2_on});
     pBtn_Book_3 = CreateButton({pViewport->uViewportTL_X + 398, pViewport->uViewportTL_Y + 113}, {50, 34}, 1, 0,
         UIMSG_ClickBooksBtn, std::to_underlying(BOOK_NOTES_POTION), InputAction::Invalid, localization->GetString(LSTR_POTION_NOTES), {ui_book_button3_on});
     pBtn_Book_4 = CreateButton({pViewport->uViewportTL_X + 399, pViewport->uViewportTL_Y + 150}, {50, 34}, 1, 0,
