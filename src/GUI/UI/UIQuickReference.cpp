@@ -122,6 +122,7 @@ void GUIWindow_QuickReference::Update() {
         pGUIWindow_CurrentMenu->DrawTextInRect(pFontArrus, {pX, pY}, pTextColor, fmt::format("{}", player.uSkillPoints), 84, 0);
         pY += pFontHeight;
 
+        pTextColor = GetConditionDrawColor(player.GetMajorConditionIdx());
         pGUIWindow_CurrentMenu->DrawTextInRect(pFontArrus, {pX, pY}, pTextColor, localization->GetCharacterConditionName(player.GetMajorConditionIdx()), 84, 0);
         pY += pFontHeight;
 
