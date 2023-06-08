@@ -30,7 +30,7 @@ var searchData=
   ['valueptr_27',['valuePtr',['../MapAccess_8h.html#a97091bc461ab7fd9e0c93b33c6c3b31f',1,'MapAccess.h']]],
   ['vanillainputactions_28',['VanillaInputActions',['../InputAction_8h.html#ae87029f48ff9fa584a45d409757f9393',1,'VanillaInputActions():&#160;InputAction.cpp'],['../InputAction_8cpp.html#acd6d030dfa2d67e1e91cf9b2ec880b80',1,'VanillaInputActions():&#160;InputAction.cpp']]],
   ['vec2_29',['Vec2',['../structVec2.html#ac951c9668ebe023e6deb3f920df905d3',1,'Vec2::Vec2(T a, T b)'],['../structVec2.html#a40b1f3da82b038c13f5085383d4c747b',1,'Vec2::Vec2()=default']]],
-  ['vec3_30',['Vec3',['../structVec3.html#a84e5e045a97bcbaa1cf7de795d0fea4c',1,'Vec3::Vec3(const Vec3 &amp;other)=default'],['../structVec3.html#a9faa088e87519c539d86a919a6c2457a',1,'Vec3::Vec3(const Vec3&lt; OtherT &gt; &amp;other)'],['../structVec3.html#aecb50dcb34ee0db200a46be97b7d6dae',1,'Vec3::Vec3(T a, T b, T c)'],['../structVec3.html#a050a094a45ca19dccc170642c8b74afb',1,'Vec3::Vec3()=default']]],
+  ['vec3_30',['Vec3',['../structVec3.html#a050a094a45ca19dccc170642c8b74afb',1,'Vec3::Vec3()=default'],['../structVec3.html#a84e5e045a97bcbaa1cf7de795d0fea4c',1,'Vec3::Vec3(const Vec3 &amp;other)=default'],['../structVec3.html#a9faa088e87519c539d86a919a6c2457a',1,'Vec3::Vec3(const Vec3&lt; OtherT &gt; &amp;other)'],['../structVec3.html#aecb50dcb34ee0db200a46be97b7d6dae',1,'Vec3::Vec3(T a, T b, T c)']]],
   ['verbose_31',['verbose',['../classLogger.html#a115dc3828922e3d9b0bc4fd5bbb8086b',1,'Logger']]],
   ['via_32',['via',['../MultiStageSerialization_8h.html#a020bb72f6aa44db6e7e8eca032cb4ef2',1,'MultiStageSerialization.h']]],
   ['viadst_33',['ViaDst',['../structdetail_1_1ViaDst.html#ac733b30f300135acd15139c8f13e8d14',1,'detail::ViaDst']]],
@@ -42,8 +42,7 @@ var searchData=
   ['viewproject_5ftrueifstillvisible_5fblv_39',['ViewProject_TrueIfStillVisible_BLV',['../classParticleEngine.html#ad63c7069319085019cf0c086e38cce06',1,'ParticleEngine']]],
   ['viewtransform_40',['ViewTransform',['../structCamera3D.html#a396badc1e3335dc188a2c88d61f8a7f6',1,'Camera3D::ViewTransform(struct RenderVertexSoft *a1a, unsigned int uNumVertices)'],['../structCamera3D.html#a525586eca7cf9a04905be7702dae1625',1,'Camera3D::ViewTransform(int x, int y, int z, int *transformed_x, int *transformed_y, int *transformed_z)']]],
   ['vis_41',['Vis',['../classVis.html#abf7e70e0019fe93122ce8b53f5eedc50',1,'Vis']]],
-  ['visible_42',['Visible',['../structBLVFace.html#ab0f27bf592ba9ca357dde5deef3459b4',1,'BLVFace::Visible()'],['../structODMFace.html#a8113cb0afb1f45cc292fd22959459daa',1,'ODMFace::Visible()']]],
-  ['visibleskills_43',['VisibleSkills',['../PlayerEnums_8h.html#a3d75864681b86d2ee25a6449cce0ce9d',1,'PlayerEnums.h']]],
-  ['visit_44',['visit',['../classPlatformIntrospection.html#a83040febef70b51af271589ae4c1f532',1,'PlatformIntrospection']]],
-  ['visitinternal_45',['visitInternal',['../classPlatformIntrospection.html#a1a984691e737325e8abf75d978b6b574',1,'PlatformIntrospection']]]
+  ['visible_42',['Visible',['../structODMFace.html#a8113cb0afb1f45cc292fd22959459daa',1,'ODMFace::Visible()'],['../structBLVFace.html#ab0f27bf592ba9ca357dde5deef3459b4',1,'BLVFace::Visible()']]],
+  ['visit_43',['visit',['../classPlatformIntrospection.html#a83040febef70b51af271589ae4c1f532',1,'PlatformIntrospection']]],
+  ['visitinternal_44',['visitInternal',['../classPlatformIntrospection.html#a1a984691e737325e8abf75d978b6b574',1,'PlatformIntrospection']]]
 ];
