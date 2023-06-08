@@ -2434,8 +2434,6 @@ char byte_4FAA24;  // turn over break??
 
 // std::array<unsigned int, 480> pSRZBufferLineOffsets;
 
-int quick_spell_at_page;
-char byte_506550;
 int uLastPointedObjectID;
 int KeyboardPageNum;
 //int dword_506F1C;

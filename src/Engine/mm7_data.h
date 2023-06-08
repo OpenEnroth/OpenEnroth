@@ -71,8 +71,6 @@ extern std::array<int, 500> ai_near_actors_targets_pid;
 extern std::array<unsigned int, 500> ai_near_actors_ids;
 extern int ai_arrays_size;
 
-extern int quick_spell_at_page;
-extern char byte_506550;
 extern int uLastPointedObjectID;
 extern int KeyboardPageNum;
 extern Color uGameUIFontShadow;

@@ -1,5 +1,7 @@
 #pragma once
 
+#include <functional>
+
 #include "GUI/GUIWindow.h"
 
 class GUIWindow_MainMenu : public GUIWindow {
@@ -9,10 +11,14 @@ class GUIWindow_MainMenu : public GUIWindow {
 
     virtual void Update();
 
-    static void Loop();
     void EventLoop();
 
+    static void drawCopyrightAndInit(std::function<void()> initFunc);
+    static void loop();
+
  protected:
+    static void drawMM7CopyrightWindow();
+
     GUIButton *pBtnExit;
     GUIButton *pBtnCredits;
     GUIButton *pBtnLoad;

@@ -57,7 +57,7 @@ enum UIMessageType : uint32_t {
     UIMSG_PlayerCreationRemoveDownSkill = 75,  // choice skill 2
 
     UIMSG_HintSelectRemoveQuickSpellBtn = 78,
-    UIMSG_SPellbook_ShowHightlightedSpellInfo = 79,
+    UIMSG_Spellbook_ShowHightlightedSpellInfo = 79,
 
     UIMSG_BuyInShop_Identify_Repair = 81,
     UIMSG_LoadGame = 82,

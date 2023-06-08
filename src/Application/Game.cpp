@@ -212,9 +212,14 @@ int Game::run() {
 
     dword_6BE364_game_settings_1 |= GAME_SETTINGS_4000;
 
+    GUIWindow_MainMenu::drawCopyrightAndInit([&] {
+        engine->SecondaryInitialization();
+        FinalInitialization();
+    });
+
     // logger->Warning("MM: entering main loop");
     while (true) {
-        GUIWindow_MainMenu::Loop();
+        GUIWindow_MainMenu::loop();
         uGameState = GAME_STATE_PLAYING;
 
         if (!loop()) {
@@ -437,7 +442,6 @@ void Game::processQueuedMessages() {
     int v92;                    // eax@605
     int v93;                    // edx@605
     int pPlayerNum;             // edx@611
-    int v103;                   // eax@671
     int uMessageParam;            // [sp+18h] [bp-5E4h]@7
     int encounter_index;           // [sp+20h] [bp-5DCh]@23
     unsigned int uNumSeconds;     // [sp+24h] [bp-5D8h]@18
@@ -1610,11 +1614,8 @@ void Game::processQueuedMessages() {
                 continue;
 
             case UIMSG_HintSelectRemoveQuickSpellBtn: {
-                if (quick_spell_at_page && byte_506550) {
-                    GameUI_StatusBar_Set(localization->FormatString(
-                        LSTR_FMT_SET_S_AS_READY_SPELL,
-                        pSpellStats->pInfos[static_cast<SPELL_TYPE>(quick_spell_at_page +
-                                     11 * pParty->activeCharacter().lastOpenedSpellbookPage)].name.c_str()));
+                if (spellbookSelectedSpell != SPELL_NONE && spellbookSelectedSpell != pParty->activeCharacter().uQuickSpell) {
+                    GameUI_StatusBar_Set(localization->FormatString(LSTR_FMT_SET_S_AS_READY_SPELL, pSpellStats->pInfos[spellbookSelectedSpell].name.c_str()));
                 } else {
                     if (pParty->activeCharacter().uQuickSpell != SPELL_NONE)
                         GameUI_StatusBar_Set(localization->GetString(LSTR_CLICK_TO_REMOVE_QUICKSPELL));
@@ -1624,45 +1625,38 @@ void Game::processQueuedMessages() {
                 continue;
             }
 
-            case UIMSG_SPellbook_ShowHightlightedSpellInfo: {
-                if (!pParty->hasActiveCharacter())  // || (uNumSeconds = (unsigned
-                                        // int)pPlayers[pParty->activeCharacterIndex()],!*(char
-                                        // *)(uNumSeconds + 11 * *(char
-                                        // *)(uNumSeconds + 6734) +
-                                        // uMessageParam + 402)))
-                    continue;  // this used to check if player had the spell
-                               // activated - no longer rquired here ??
+            case UIMSG_Spellbook_ShowHightlightedSpellInfo: {
+                // this used to check if player had the spell activated - no longer required here ??
+                if (!pParty->hasActiveCharacter())
+                    continue;
 
-                if (isHoldingMouseRightButton())
+                if (isHoldingMouseRightButton()) {
                     dword_507B00_spell_info_to_draw_in_popup = uMessageParam + 1;
-                int lastOpened = pParty->activeCharacter().lastOpenedSpellbookPage;
-                if (quick_spell_at_page - 1 == uMessageParam) {
-                    GameUI_StatusBar_Set(localization->FormatString(LSTR_CAST_S,
-                                pSpellStats->pInfos[static_cast<SPELL_TYPE>(uMessageParam + 11 * lastOpened + 1)].name.c_str()));
+                }
+                SPELL_TYPE selectedSpell = static_cast<SPELL_TYPE>(11 * pParty->activeCharacter().lastOpenedSpellbookPage + uMessageParam + 1);
+                if (spellbookSelectedSpell == selectedSpell) {
+                    GameUI_StatusBar_Set(localization->FormatString(LSTR_CAST_S, pSpellStats->pInfos[selectedSpell].name.c_str()));
                 } else {
-                    GameUI_StatusBar_Set(localization->FormatString(LSTR_SELECT_S,
-                                pSpellStats->pInfos[static_cast<SPELL_TYPE>(uMessageParam + 11 * lastOpened + 1)].name.c_str()));
+                    GameUI_StatusBar_Set(localization->FormatString(LSTR_SELECT_S, pSpellStats->pInfos[selectedSpell].name.c_str()));
                 }
                 continue;
             }
 
             case UIMSG_ClickInstallRemoveQuickSpellBtn: {
                 new OnButtonClick2({pBtn_InstallRemoveSpell->uX, pBtn_InstallRemoveSpell->uY}, {0, 0}, pBtn_InstallRemoveSpell);
-                if (!pParty->hasActiveCharacter()) continue;
+                if (!pParty->hasActiveCharacter())
+                    continue;
                 Player *player = &pParty->activeCharacter();
-                if (!byte_506550 || !quick_spell_at_page) {
+                if (spellbookSelectedSpell == SPELL_NONE || spellbookSelectedSpell == player->uQuickSpell) {
                     player->uQuickSpell = SPELL_NONE;
-                    quick_spell_at_page = 0;
+                    spellbookSelectedSpell = SPELL_NONE;
                     pAudioPlayer->playUISound(SOUND_fizzle);
                     continue;
                 }
-                // TODO(captainurist): encapsulate the arithmetic below
-                pParty->activeCharacter().uQuickSpell = static_cast<SPELL_TYPE>(
-                    quick_spell_at_page + 11 * pParty->activeCharacter().lastOpenedSpellbookPage);
+                pParty->activeCharacter().uQuickSpell = spellbookSelectedSpell;
                 if (pParty->hasActiveCharacter()) {
                     player->playReaction(SPEECH_SetQuickSpell);
                 }
-                byte_506550 = 0;
                 continue;
             }
 
@@ -1694,7 +1688,7 @@ void Game::processQueuedMessages() {
                         if (uAction >= skill_count)
                             uAction = 0;
                     }
-                    ((GUIWindow_Spellbook *)pGUIWindow_CurrentMenu)->OpenSpellbookPage(spellbookPages[uAction]);
+                    ((GUIWindow_Spellbook *)pGUIWindow_CurrentMenu)->openSpellbookPage(spellbookPages[uAction]);
                 }
                 continue;
             }
@@ -1704,7 +1698,7 @@ void Game::processQueuedMessages() {
                     uMessageParam == pParty->activeCharacter().lastOpenedSpellbookPage) {
                     continue;
                 }
-                ((GUIWindow_Spellbook *)pGUIWindow_CurrentMenu)->OpenSpellbookPage(uMessageParam);
+                ((GUIWindow_Spellbook *)pGUIWindow_CurrentMenu)->openSpellbookPage(uMessageParam);
                 continue;
             case UIMSG_SelectSpell: {
                 if (pTurnEngine->turn_stage == TE_MOVEMENT) {
@@ -1714,31 +1708,18 @@ void Game::processQueuedMessages() {
                     continue;
                 }
 
-                //  uNumSeconds = (unsigned int)pPlayers[pParty->activeCharacterIndex()];
                 Player *player = &pParty->activeCharacter();
-                if (player->spellbook.pChapters[player->lastOpenedSpellbookPage].bIsSpellAvailable[uMessageParam]
-                    || _engine->config->debug.AllMagic.value()) {
-                    if (quick_spell_at_page - 1 == uMessageParam) {
+                if (player->spellbook.pChapters[player->lastOpenedSpellbookPage].bIsSpellAvailable[uMessageParam] || _engine->config->debug.AllMagic.value()) {
+                    SPELL_TYPE selectedSpell = static_cast<SPELL_TYPE>(11 * player->lastOpenedSpellbookPage + uMessageParam + 1);
+                    if (spellbookSelectedSpell == selectedSpell) {
                         pGUIWindow_CurrentMenu->Release();  // spellbook close
                         pEventTimer->Resume();
                         current_screen_type = CURRENT_SCREEN::SCREEN_GAME;
-                        v103 = quick_spell_at_page + 11 * player->lastOpenedSpellbookPage;
-                        /*if ( dword_50C9E8 < 40 )
-                        {
-                        dword_50C9EC[3 * dword_50C9E8] =
-                        UIMSG_CastSpellFromBook; dword_50C9EC[3 *
-                        dword_50C9E8 + 1] = v103; dword_50C9EC[3 *
-                        dword_50C9E8 + 2] = pParty->activeCharacterIndex() - 1;
-                        ++dword_50C9E8;
-                        }*/
                         // Processing must happen on next frame because need to close spell book and update
                         // drawing object list which is used to count actors for some spells
-                        pNextFrameMessageQueue->AddGUIMessage( UIMSG_CastSpellFromBook, v103, pParty->activeCharacterIndex() - 1);
-                        //  pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_CastSpellFromBook,
-                        //  v103, pParty->activeCharacterIndex() - 1);
+                        pNextFrameMessageQueue->AddGUIMessage( UIMSG_CastSpellFromBook, selectedSpell, pParty->activeCharacterIndex() - 1);
                     } else {
-                        byte_506550 = 1;
-                        quick_spell_at_page = uMessageParam + 1;
+                        spellbookSelectedSpell = selectedSpell;
                     }
                 }
                 continue;

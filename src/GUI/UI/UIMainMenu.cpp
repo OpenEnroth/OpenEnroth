@@ -13,8 +13,6 @@
 #include "Media/Audio/AudioPlayer.h"
 #include "Media/MediaPlayer.h"
 
-
-
 GUIWindow_MainMenu *pWindow_MainMenu = nullptr;
 
 GUIWindow_MainMenu::GUIWindow_MainMenu() :
@@ -137,17 +135,14 @@ void GUIWindow_MainMenu::EventLoop() {
     }
 }
 
-static bool first_initialization = true;
-
-void DrawMM7CopyrightWindow() {
+void GUIWindow_MainMenu::drawMM7CopyrightWindow() {
     GUIWindow Dst;
     Dst.uFrameWidth = 624;
     Dst.uFrameHeight = 256;
     Dst.uFrameX = 8;
     Dst.uFrameY = 30;
-    Dst.uFrameHeight = pFontSmallnum->CalcTextHeight(
-        localization->GetString(LSTR_3DO_COPYRIGHT), Dst.uFrameWidth, 24, 0)
-        + 2 * (unsigned char)pFontSmallnum->GetHeight() + 24;
+    Dst.uFrameHeight = pFontSmallnum->CalcTextHeight(localization->GetString(LSTR_3DO_COPYRIGHT), Dst.uFrameWidth, 24, 0);
+    Dst.uFrameHeight += 2 * pFontSmallnum->GetHeight() + 24;
     Dst.uFrameY = 470 - Dst.uFrameHeight;
     Dst.uFrameZ = Dst.uFrameX + Dst.uFrameWidth - 1;
     Dst.uFrameW = 469;
@@ -159,45 +154,40 @@ void DrawMM7CopyrightWindow() {
     Dst.uFrameHeight -= 12;
     Dst.uFrameZ = Dst.uFrameX + Dst.uFrameWidth - 1;
     Dst.uFrameW = Dst.uFrameY + Dst.uFrameHeight - 1;
-    Dst.DrawTitleText(
-        pFontSmallnum, 0, 12, ui_mainmenu_copyright_color,
-        localization->GetString(LSTR_3DO_COPYRIGHT), 3);
+    Dst.DrawTitleText(pFontSmallnum, 0, 12, ui_mainmenu_copyright_color, localization->GetString(LSTR_3DO_COPYRIGHT), 3);
 }
 
-void GUIWindow_MainMenu::Loop() {
-    GraphicsImage *tex;
+void GUIWindow_MainMenu::drawCopyrightAndInit(std::function<void()> initFunc) {
     nuklear->Create(WINDOW_MainMenu_Load);
+    GraphicsImage *tex;
 
-    pAudioPlayer->stopSounds();
-    pAudioPlayer->MusicPlayTrack(MUSIC_MainMenu);
+    if (nuklear->Mode(WINDOW_MainMenu_Load) != nuklear->NUKLEAR_MODE_EXCLUSIVE) {
+        tex = assets->getImage_PCXFromIconsLOD("mm6title.pcx");
+    }
 
-    if (first_initialization) {
-        first_initialization = false;
+    render->ResetUIClipRect();
+    render->BeginScene2D();
+    {
+        nuklear->Draw(nuklear->NUKLEAR_STAGE_PRE, WINDOW_MainMenu_Load, 1);
+        if (nuklear->Mode(WINDOW_MainMenu_Load) != nuklear->NUKLEAR_MODE_EXCLUSIVE) {
+            render->DrawTextureNew(0, 0, tex);
+            drawMM7CopyrightWindow();
+        }
+        nuklear->Draw(nuklear->NUKLEAR_STAGE_POST, WINDOW_MainMenu_Load, 1);
+        render->Present();
+
+        initFunc();
 
         if (nuklear->Mode(WINDOW_MainMenu_Load) != nuklear->NUKLEAR_MODE_EXCLUSIVE) {
-            tex = assets->getImage_PCXFromIconsLOD("mm6title.pcx");
-        }
-
-        render->ResetUIClipRect();
-        render->BeginScene2D();
-        {
-            nuklear->Draw(nuklear->NUKLEAR_STAGE_PRE, WINDOW_MainMenu_Load, 1);
-            if (nuklear->Mode(WINDOW_MainMenu_Load) != nuklear->NUKLEAR_MODE_EXCLUSIVE) {
-                render->DrawTextureNew(0, 0, tex);
-                DrawMM7CopyrightWindow();
-            }
-            nuklear->Draw(nuklear->NUKLEAR_STAGE_POST, WINDOW_MainMenu_Load, 1);
-            render->Present();
-
-            engine->SecondaryInitialization();
-            FinalInitialization();
-
-            if (nuklear->Mode(WINDOW_MainMenu_Load) != nuklear->NUKLEAR_MODE_EXCLUSIVE) {
-                tex->Release();
-            }
+            tex->Release();
         }
     }
     nuklear->Release(WINDOW_MainMenu_Load);
+}
+
+void GUIWindow_MainMenu::loop() {
+    pAudioPlayer->stopSounds();
+    pAudioPlayer->MusicPlayTrack(MUSIC_MainMenu);
 
     current_screen_type = CURRENT_SCREEN::SCREEN_GAME;
 
