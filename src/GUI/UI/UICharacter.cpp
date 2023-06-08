@@ -872,16 +872,16 @@ void GUIWindow_CharacterRecord::CharacterUI_SkillsTab_Draw(Player *player) {
     pGUIWindow_CurrentMenu->DrawText(pFontArrus, {24, 18}, Color(), str, 0, 0, Color());
 
     int y = 2 * pFontLucida->GetHeight() + 13;
-    y = CharacterUI_SkillsTab_Draw__DrawSkillTable(player, 24, y, WeaponSkills(), 400, localization->GetString(LSTR_WEAPONS));
+    y = CharacterUI_SkillsTab_Draw__DrawSkillTable(player, 24, y, allWeaponSkills(), 400, localization->GetString(LSTR_WEAPONS));
 
     y += 2 * pFontLucida->GetHeight() - 10;
-    CharacterUI_SkillsTab_Draw__DrawSkillTable(player, 24, y, MagicSkills(), 400, localization->GetString(LSTR_MAGIC));
+    CharacterUI_SkillsTab_Draw__DrawSkillTable(player, 24, y, allMagicSkills(), 400, localization->GetString(LSTR_MAGIC));
 
     y = 2 * pFontLucida->GetHeight() + 13;
-    y = CharacterUI_SkillsTab_Draw__DrawSkillTable(player, 248, y, ArmorSkills(), 177, localization->GetString(LSTR_ARMOR));
+    y = CharacterUI_SkillsTab_Draw__DrawSkillTable(player, 248, y, allArmorSkills(), 177, localization->GetString(LSTR_ARMOR));
 
     y += 2 * pFontLucida->GetHeight() - 10;
-    y = CharacterUI_SkillsTab_Draw__DrawSkillTable(player, 248, y, MiscSkills(), 177, localization->GetString(LSTR_MISC));
+    y = CharacterUI_SkillsTab_Draw__DrawSkillTable(player, 248, y, allMiscSkills(), 177, localization->GetString(LSTR_MISC));
 }
 
 GUIWindow GUIWindow_CharacterRecord::prepareAwardsWindow() {
@@ -1483,7 +1483,7 @@ void GUIWindow_CharacterRecord::CharacterUI_SkillsTab_CreateButtons() {
     int uCurrFontHeght = pFontLucida->GetHeight();
     int current_Y = 2 * uCurrFontHeght + 13;
     int width = 204;
-    for (PLAYER_SKILL_TYPE skill : WeaponSkills()) {
+    for (PLAYER_SKILL_TYPE skill : allWeaponSkills()) {
         if (curr_player->getSkillValue(skill).level()) {
             current_Y += uCurrFontHeght - 3;
             ++buttons_count;
@@ -1494,7 +1494,7 @@ void GUIWindow_CharacterRecord::CharacterUI_SkillsTab_CreateButtons() {
     }
     if (!first_rows) current_Y += uCurrFontHeght - 3;
     current_Y += 2 * uCurrFontHeght - 6;
-    for (PLAYER_SKILL_TYPE skill : MagicSkills()) {
+    for (PLAYER_SKILL_TYPE skill : allMagicSkills()) {
         if (curr_player->getSkillValue(skill).level() /*&& buttons_count < 15*/) {
             current_Y += uCurrFontHeght - 3;
             ++buttons_count;
@@ -1504,7 +1504,7 @@ void GUIWindow_CharacterRecord::CharacterUI_SkillsTab_CreateButtons() {
     }
     first_rows = 0;
     current_Y = 2 * uCurrFontHeght + 13;
-    for (PLAYER_SKILL_TYPE skill : ArmorSkills()) {
+    for (PLAYER_SKILL_TYPE skill : allArmorSkills()) {
         if (curr_player->getSkillValue(skill).level()) {
             current_Y += uCurrFontHeght - 3;
             ++buttons_count;
@@ -1515,7 +1515,7 @@ void GUIWindow_CharacterRecord::CharacterUI_SkillsTab_CreateButtons() {
     }
     if (!first_rows) current_Y += uCurrFontHeght - 3;
     current_Y += 2 * uCurrFontHeght - 6;
-    for (PLAYER_SKILL_TYPE skill : MiscSkills()) {
+    for (PLAYER_SKILL_TYPE skill : allMiscSkills()) {
         if (curr_player->getSkillValue(skill).level()) {
             current_Y += uCurrFontHeght - 3;
             ++buttons_count;
@@ -1892,7 +1892,7 @@ void OnPaperdollLeftClick() {
                     //слоты для колец
                     // equippos = 0;
 
-                    for (ITEM_SLOT equippos : RingSlots()) {
+                    for (ITEM_SLOT equippos : allRingSlots()) {
                         if (!pParty->activeCharacter().pEquipment.pIndices[equippos]) {
                             freeslot = pParty->activeCharacter().findFreeInventoryListSlot();
                             if (freeslot >= 0) {  // drop ring into free space
@@ -1922,7 +1922,7 @@ void OnPaperdollLeftClick() {
                             mousex <= (RingsX[i] + slot) &&
                             mousey >= RingsY[i] &&
                             mousey <= (RingsY[i] + slot)) {  // check against ring slots
-                            pos = RingSlot(i);
+                            pos = ringSlot(i);
                         }
                     }
 
@@ -2153,7 +2153,7 @@ void OnPaperdollLeftClick() {
                 mousey >= RingsY[i] && mousey <= (RingsY[i] + slot)) {
                 // ring
                 // pitem = pParty->activeCharacter().GetNthRingItem(i); //10+i
-                pos = RingSlot(i);
+                pos = ringSlot(i);
             }
         }
 

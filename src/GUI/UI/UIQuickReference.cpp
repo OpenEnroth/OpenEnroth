@@ -130,7 +130,7 @@ void GUIWindow_QuickReference::Update() {
         if (!i)
             pGUIWindow_CurrentMenu->DrawTextInRect(pFontArrus, {22, pY}, Color(), localization->GetString(LSTR_SKILLS), 60, 0);
         pSkillsCount = 0;
-        for (PLAYER_SKILL_TYPE j : AllSkills()) {
+        for (PLAYER_SKILL_TYPE j : allSkills()) {
             if (player->pActiveSkills[j])
                 ++pSkillsCount;
         }

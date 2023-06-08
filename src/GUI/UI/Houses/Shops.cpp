@@ -231,7 +231,7 @@ void GenerateSpecialShopItems() {
             } else if (isAlchemyShop(shopId)) {  // alchemist shop
                 if (item_count < 6) {
                     pParty->specialItemsInShops[shopId][item_count].Reset();
-                    pParty->specialItemsInShops[shopId][item_count].uItemID = grng->randomSample(recipeScrolls());  // mscrool
+                    pParty->specialItemsInShops[shopId][item_count].uItemID = grng->randomSample(allRecipeScrolls());  // mscrool
                     continue;
                 } else {
                     treasure_lvl = alchemyShopVariationSpecial[shopId];

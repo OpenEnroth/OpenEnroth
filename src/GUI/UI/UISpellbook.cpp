@@ -160,7 +160,7 @@ void GUIWindow_Spellbook::Update() {
     render->ClearZBuffer();
 
     int page = 0;
-    for (PLAYER_SKILL_TYPE i : MagicSkills()) {
+    for (PLAYER_SKILL_TYPE i : allMagicSkills()) {
         if (player->pActiveSkills[i] || engine->config->debug.AllMagic.value()) {
             auto pPageTexture = ui_spellbook_school_tabs[page][0];
             if (player->lastOpenedSpellbookPage == page) {

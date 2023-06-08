@@ -207,7 +207,7 @@ enum HOUSE_ID {
     HOUSE_LAST_TOWNHALL = HOUSE_TOWNHALL_THE_PIT,
 };
 
-inline Segment<HOUSE_ID> townhallHouses() {
+inline Segment<HOUSE_ID> allTownhallHouses() {
     return {HOUSE_FIRST_TOWNHALL, HOUSE_LAST_TOWNHALL};
 }
 

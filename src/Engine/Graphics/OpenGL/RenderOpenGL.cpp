@@ -1137,8 +1137,7 @@ RgbaImage RenderOpenGL::MakeScreenshot32(const int width, const int height) {
     if (uCurrentlyLoadedLevelType != LEVEL_NULL) {
         for (int y = 0; y < height; ++y) {
             for (int x = 0; x < width; ++x) {
-                // TODO(captainurist): (y + 1) * interval_y?
-                pPixels[y][x] = sPixels[outputRender.h - y * interval_y - pViewport->uViewportTL_Y][x * interval_x + pViewport->uViewportTL_X];
+                pPixels[y][x] = sPixels[outputRender.h - (y + 1) * interval_y - pViewport->uViewportTL_Y][x * interval_x + pViewport->uViewportTL_X];
             }
         }
     }

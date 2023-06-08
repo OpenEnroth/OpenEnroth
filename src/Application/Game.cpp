@@ -138,9 +138,8 @@ Game::Game(PlatformApplication *application, std::shared_ptr<GameConfig> config)
     // It doesn't matter where to put control component as it's running the control routine after a call to `SwapBuffers`.
     // But the trace component should go after the deterministic component - deterministic component updates tick count,
     // and then trace component stores the updated value in a recorded `PaintEvent`.
-    _windowHandler.reset(GameIocContainer::ResolveGameWindowHandler());
     _application->install(std::make_unique<GameKeyboardController>()); // This one should go before the window handler.
-    _application->install(_windowHandler.get()); // TODO(captainurist): actually move ownership into PlatformApplication?
+    _application->install(std::make_unique<GameWindowHandler>());
     _application->install(std::make_unique<EngineControlComponent>());
     _application->install(std::make_unique<EngineTraceComponent>());
     _application->install(std::make_unique<EngineDeterministicComponent>());
@@ -150,7 +149,6 @@ Game::Game(PlatformApplication *application, std::shared_ptr<GameConfig> config)
 }
 
 Game::~Game() {
-    _application->remove(_windowHandler.get());
     if (_nuklearHandler)
         _application->remove(_nuklearHandler.get());
 }
@@ -205,7 +203,7 @@ int Game::run() {
      * For some reason windows not liking that and hang in SDL_GL_SwapWindow if it was called after changing window position out of primary monitor.
      * And if we try to exclude changing position and set it after render initialization then when game started in fullscreen request will be ignored.
      * Hack below with render reinitialization is a temporary workaround. */
-    _windowHandler->UpdateWindowFromConfig(_config.get());
+    _application->get<GameWindowHandler>()->UpdateWindowFromConfig(_config.get());
     _render->Reinitialize();
     window->activate();
     ::eventLoop->processMessages(eventHandler);
@@ -225,7 +223,7 @@ int Game::run() {
     }
 
     if (window) {
-        _windowHandler->UpdateConfigFromWindow(_config.get());
+        _application->get<GameWindowHandler>()->UpdateConfigFromWindow(_config.get());
         _config->SaveConfiguration();
     }
 
@@ -1675,7 +1673,7 @@ void Game::processQueuedMessages() {
                 int skill_count = 0;
                 int uAction = 0;
                 int page = 0;
-                for (PLAYER_SKILL_TYPE i : MagicSkills()) {
+                for (PLAYER_SKILL_TYPE i : allMagicSkills()) {
                     if (pParty->activeCharacter().pActiveSkills[i] || _engine->config->debug.AllMagic.value()) {
                         if (pParty->activeCharacter().lastOpenedSpellbookPage == page)
                             uAction = skill_count;
@@ -2087,7 +2085,7 @@ void Game::processQueuedMessages() {
                     continue;
 
                 for(size_t attempt = 0; attempt < 500; attempt++) {
-                    ITEM_TYPE pItemID = grng->randomSample(SpawnableItems());
+                    ITEM_TYPE pItemID = grng->randomSample(allSpawnableItems());
                     if (pItemTable->pItems[pItemID].uItemID_Rep_St > 6) {
                         if (!pParty->activeCharacter().AddItem(-1, pItemID)) {
                             pAudioPlayer->playUISound(SOUND_error);
@@ -2104,7 +2102,7 @@ void Game::processQueuedMessages() {
                     continue;
 
                 for (size_t attempt = 0; attempt < 500; attempt++) {
-                    ITEM_TYPE pItemID = grng->randomSample(SpawnableItems());
+                    ITEM_TYPE pItemID = grng->randomSample(allSpawnableItems());
                     // if (pItemTable->pItems[pItemID].uItemID_Rep_St ==
                     //   (item_id - 40015 + 1)) {
                     if (!pParty->activeCharacter().AddItem(-1, pItemID)) {
@@ -2154,7 +2152,7 @@ void Game::processQueuedMessages() {
                 continue;
             case UIMSG_DebugLearnSkills:
                 for (Player &player : pParty->pPlayers) { // loop over players
-                    for (PLAYER_SKILL_TYPE ski : AllSkills()) {  // loop over skills
+                    for (PLAYER_SKILL_TYPE ski : allSkills()) {  // loop over skills
                         // if class can learn this skill
                         if (skillMaxMasteryPerClass[player.classType][ski] > PLAYER_SKILL_MASTERY_NONE) {
                             if (player.getSkillValue(ski).level() == 0) {
