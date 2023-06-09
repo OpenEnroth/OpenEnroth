@@ -132,7 +132,7 @@ void GUIWindow_MagicGuild::mainDialogue() {
         return;
     }
 
-    if (!HouseUI_CheckIfPlayerCanInteract()) {
+    if (!checkIfPlayerCanInteract()) {
         return;
     }
 
@@ -177,9 +177,9 @@ void GUIWindow_MagicGuild::buyBooksDialogue() {
         ++itemxind;
     }
 
-    if (HouseUI_CheckIfPlayerCanInteract()) {
+    if (checkIfPlayerCanInteract()) {
         int itemcount = 0;
-        for (int i = 0; i < itemAmountInShop[buildingTable[wData.val - 1].uType]; ++i) {
+        for (int i = 0; i < itemAmountInShop[buildingType()]; ++i) {
             if (pParty->spellBooksInGuilds[houseId()][i].uItemID != ITEM_NULL)
                 ++itemcount;
         }
@@ -226,7 +226,7 @@ void GUIWindow_MagicGuild::buyBooksDialogue() {
 void GUIWindow_MagicGuild::houseDialogueOptionSelected(DIALOGUE_TYPE option) {
     if (option == DIALOGUE_GUILD_BUY_BOOKS) {
         if (pParty->PartyTimes.guildNextRefreshTime[houseId()] >= pParty->GetPlayingTime()) {
-            for (int i = 0; i < itemAmountInShop[buildingTable[wData.val - 1].uType]; ++i) {
+            for (int i = 0; i < itemAmountInShop[buildingType()]; ++i) {
                 if (pParty->spellBooksInGuilds[houseId()][i].uItemID != ITEM_NULL)
                     shop_ui_items_in_store[i] = assets->getImage_ColorKey(pParty->spellBooksInGuilds[houseId()][i].GetIconName());
             }
@@ -255,8 +255,7 @@ void GUIWindow_MagicGuild::houseSpecificDialogue() {
 }
 
 std::vector<DIALOGUE_TYPE> GUIWindow_MagicGuild::listDialogueOptions(DIALOGUE_TYPE option) {
-    // TODO(Nik-RE-dev): add buildingType() to GUIWindow_House
-    BuildingType guildType = buildingTable[wData.val - 1].uType;
+    BuildingType guildType = buildingType();
 
     switch (option) {
       case DIALOGUE_MAIN:
@@ -271,7 +270,7 @@ std::vector<DIALOGUE_TYPE> GUIWindow_MagicGuild::listDialogueOptions(DIALOGUE_TY
 }
 
 void GUIWindow_MagicGuild::generateSpellBooksForGuild() {
-    BuildingType guildType = buildingTable[wData.val - 1].uType;
+    BuildingType guildType = buildingType();
 
     // Combined guilds exist only in MM6/MM8 and need to be processed separately
     assert(guildType >= BuildingType_FireGuild && guildType <= BuildingType_DarkGuild);
@@ -280,7 +279,7 @@ void GUIWindow_MagicGuild::generateSpellBooksForGuild() {
     PLAYER_SKILL_MASTERY maxMastery = guildSpellsMastery[houseId()];
     Segment<ITEM_TYPE> spellbooksForGuild = spellbooksOfSchool(schoolType, maxMastery);
 
-    for (int i = 0; i < itemAmountInShop[buildingTable[wData.val - 1].uType]; ++i) {
+    for (int i = 0; i < itemAmountInShop[guildType]; ++i) {
         ITEM_TYPE pItemNum = grng->randomSample(spellbooksForGuild);
 
         if (pItemNum == ITEM_SPELLBOOK_DIVINE_INTERVENTION) {

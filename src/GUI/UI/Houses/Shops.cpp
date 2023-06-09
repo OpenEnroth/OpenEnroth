@@ -256,7 +256,7 @@ void GUIWindow_Shop::mainDialogue() {
     dialogwin.uFrameWidth = SIDE_TEXT_BOX_WIDTH;
     dialogwin.uFrameZ = SIDE_TEXT_BOX_POS_Z;
 
-    if (HouseUI_CheckIfPlayerCanInteract()) {
+    if (checkIfPlayerCanInteract()) {
         pShopOptions[0] = localization->GetString(LSTR_STANDARD);
         pShopOptions[1] = localization->GetString(LSTR_SPECIAL);
         pShopOptions[2] = localization->GetString(LSTR_DISPLAY);
@@ -301,7 +301,7 @@ void GUIWindow_Shop::displayEquipmentDialogue() {
     pShopOptions[1] = localization->GetString(LSTR_IDENTIFY);
     pShopOptions[2] = localization->GetString(LSTR_REPAIR);
 
-    int options = (buildingTable[wData.val - 1].uType == BuildingType_AlchemistShop) ? 2 : 3;
+    int options = (buildingType() == BuildingType_AlchemistShop) ? 2 : 3;
     int all_text_height = 0;
     for (int i = 0; i < options; ++i)
         all_text_height += pFontArrus->CalcTextHeight(pShopOptions[i], dialogwin.uFrameWidth, 0);
@@ -334,7 +334,7 @@ void GUIWindow_Shop::sellDialogue() {
     draw_leather();
     CharacterUI_InventoryTab_Draw(&pParty->activeCharacter(), true);
 
-    if (HouseUI_CheckIfPlayerCanInteract()) {
+    if (checkIfPlayerCanInteract()) {
         GameUI_StatusBar_DrawImmediate(localization->GetString(LSTR_SELECT_ITEM_TO_SELL), Color());
 
         Pointi pt = dialogwin.mouse->GetCursorPos();
@@ -346,7 +346,7 @@ void GUIWindow_Shop::sellDialogue() {
         int pItemID = pParty->activeCharacter().GetItemListAtInventoryIndex(invindex);
         if (pItemID) {
             ItemGen *item = &pParty->activeCharacter().pInventoryItemList[pItemID - 1];
-            MerchantPhrase phrases_id = pParty->activeCharacter().SelectPhrasesTransaction(item, buildingTable[wData.val - 1].uType, wData.val, 3);
+            MerchantPhrase phrases_id = pParty->activeCharacter().SelectPhrasesTransaction(item, buildingType(), wData.val, 3);
             std::string str = BuildDialogueString(pMerchantsSellPhrases[phrases_id], pParty->activeCharacterIndex() - 1, item, wData.val, 3);
             int vertMargin = (SIDE_TEXT_BOX_BODY_TEXT_HEIGHT - pFontArrus->CalcTextHeight(str, dialogwin.uFrameWidth, 0)) / 2 + SIDE_TEXT_BOX_BODY_TEXT_OFFSET;
             dialogwin.DrawTitleText(pFontArrus, 0, vertMargin, colorTable.White, str, 3);
@@ -363,7 +363,7 @@ void GUIWindow_Shop::identifyDialogue() {
     draw_leather();
     CharacterUI_InventoryTab_Draw(&pParty->activeCharacter(), true);
 
-    if (HouseUI_CheckIfPlayerCanInteract()) {
+    if (checkIfPlayerCanInteract()) {
         GameUI_StatusBar_DrawImmediate(localization->GetString(LSTR_SELECT_ITEM_TO_IDENTIFY), Color());
 
         Pointi pt = EngineIocContainer::ResolveMouse()->GetCursorPos();
@@ -379,7 +379,7 @@ void GUIWindow_Shop::identifyDialogue() {
 
             std::string str;
             if (!item->IsIdentified()) {
-                MerchantPhrase phrases_id = pParty->activeCharacter().SelectPhrasesTransaction(item, buildingTable[wData.val - 1].uType, wData.val, 4);
+                MerchantPhrase phrases_id = pParty->activeCharacter().SelectPhrasesTransaction(item, buildingType(), wData.val, 4);
                 str = BuildDialogueString(pMerchantsIdentifyPhrases[phrases_id], pParty->activeCharacterIndex() - 1, item, wData.val, 4);
             } else {
                 str = BuildDialogueString("%24", pParty->activeCharacterIndex() - 1, item, wData.val, 4);
@@ -400,7 +400,7 @@ void GUIWindow_Shop::repairDialogue() {
     draw_leather();
     CharacterUI_InventoryTab_Draw(&pParty->activeCharacter(), true);
 
-    if (HouseUI_CheckIfPlayerCanInteract()) {
+    if (checkIfPlayerCanInteract()) {
         GameUI_StatusBar_DrawImmediate(localization->GetString(LSTR_SELECT_ITEM_TO_REPAIR), Color());
 
         Pointi pt = dialogwin.mouse->GetCursorPos();
@@ -415,7 +415,7 @@ void GUIWindow_Shop::repairDialogue() {
 
         if (pParty->activeCharacter().pOwnItems[pItemID - 1].uAttributes & ITEM_BROKEN) {
             ItemGen *item = &pParty->activeCharacter().pInventoryItemList[pItemID - 1];
-            MerchantPhrase phrases_id = pParty->activeCharacter().SelectPhrasesTransaction(item, buildingTable[wData.val - 1].uType, wData.val, 5);
+            MerchantPhrase phrases_id = pParty->activeCharacter().SelectPhrasesTransaction(item, buildingType(), wData.val, 5);
             std::string str = BuildDialogueString(pMerchantsRepairPhrases[phrases_id], pParty->activeCharacterIndex() - 1, item, wData.val, 5);
             int vertMargin = (SIDE_TEXT_BOX_BODY_TEXT_HEIGHT - pFontArrus->CalcTextHeight(str, dialogwin.uFrameWidth, 0)) / 2 + SIDE_TEXT_BOX_BODY_TEXT_OFFSET;
             dialogwin.DrawTitleText(pFontArrus, 0, vertMargin, colorTable.White, str, 3);
@@ -429,7 +429,7 @@ void GUIWindow_Shop::learnSkillsDialogue() {
     dialogwin.uFrameWidth = SIDE_TEXT_BOX_WIDTH;
     dialogwin.uFrameZ = SIDE_TEXT_BOX_POS_Z;
 
-    if (!HouseUI_CheckIfPlayerCanInteract())
+    if (!checkIfPlayerCanInteract())
         return;
 
     int item_num = 0;
@@ -465,7 +465,7 @@ void GUIWindow_WeaponShop::shopWaresDialogue(bool isSpecial) {
         item_X += 70;
     }
 
-    if (HouseUI_CheckIfPlayerCanInteract()) {
+    if (checkIfPlayerCanInteract()) {
         int item_num = 0;
         for (int i = 0; i < 6; ++i) {
             item_num += (isSpecial ? pParty->specialItemsInShops[houseId()][i].uItemID : pParty->standartItemsInShops[houseId()][i].uItemID) != ITEM_NULL;
@@ -537,7 +537,7 @@ void GUIWindow_ArmorShop::shopWaresDialogue(bool isSpecial) {
         item_x += 105;
     }
 
-    if (HouseUI_CheckIfPlayerCanInteract()) {
+    if (checkIfPlayerCanInteract()) {
         int pItemCount = 0;
         for (int i = 0; i < 6; ++i) {
             pItemCount += (isSpecial ? pParty->specialItemsInShops[houseId()][i].uItemID : pParty->standartItemsInShops[houseId()][i].uItemID) != ITEM_NULL;
@@ -582,7 +582,7 @@ void GUIWindow_ArmorShop::shopWaresDialogue(bool isSpecial) {
 
                             std::string str;
                             if (!isStealingModeActive()) {
-                                MerchantPhrase phrase = pParty->activeCharacter().SelectPhrasesTransaction(item, buildingTable[wData.val - 1].uType, wData.val, 2);
+                                MerchantPhrase phrase = pParty->activeCharacter().SelectPhrasesTransaction(item, buildingType(), wData.val, 2);
                                 str = BuildDialogueString(pMerchantsBuyPhrases[phrase], pParty->activeCharacterIndex() - 1, item, wData.val, 2);
                             } else {
                                 str = BuildDialogueString(localization->GetString(LSTR_STEAL_ITEM_FMT), pParty->activeCharacterIndex() - 1, item, wData.val, 2);
@@ -639,7 +639,7 @@ void GUIWindow_MagicAlchemyShop::shopWaresDialogue(bool isSpecial) {
         }
     }
 
-    if (HouseUI_CheckIfPlayerCanInteract()) {
+    if (checkIfPlayerCanInteract()) {
         int item_num = 0;
 
         for (int i = 0; i < 12; ++i) {
@@ -685,7 +685,7 @@ void GUIWindow_MagicAlchemyShop::shopWaresDialogue(bool isSpecial) {
 
                             std::string str;
                             if (!isStealingModeActive()) {
-                                MerchantPhrase phrase = pParty->activeCharacter().SelectPhrasesTransaction(item, buildingTable[wData.val - 1].uType, wData.val, 2);
+                                MerchantPhrase phrase = pParty->activeCharacter().SelectPhrasesTransaction(item, buildingType(), wData.val, 2);
                                 str = BuildDialogueString(pMerchantsBuyPhrases[phrase], pParty->activeCharacterIndex() - 1, item, wData.val, 2);
                             } else {
                                 str = BuildDialogueString(localization->GetString(LSTR_STEAL_ITEM_FMT), pParty->activeCharacterIndex() - 1, item, wData.val, 2);
@@ -706,7 +706,7 @@ void GUIWindow_WeaponShop::generateShopItems(bool isSpecial) {
     std::array<ItemGen, 12> &itemArray = isSpecial ? pParty->specialItemsInShops[houseId()] : pParty->standartItemsInShops[houseId()];
     const ITEM_VARIATION variation = isSpecial ? weaponShopVariationSpecial[houseId()] : weaponShopVariationStandart[houseId()];
 
-    for (int i = 0; i < itemAmountInShop[buildingTable[wData.val - 1].uType]; i++) {
+    for (int i = 0; i < itemAmountInShop[buildingType()]; i++) {
         int itemClass = variation.item_class[grng->random(4)];
         pItemTable->generateItem(variation.treasure_level, itemClass, &itemArray[i]);
         itemArray[i].SetIdentified();
@@ -720,7 +720,7 @@ void GUIWindow_ArmorShop::generateShopItems(bool isSpecial) {
     const ITEM_VARIATION variationTop = isSpecial ? armorShopTopRowVariationSpecial[houseId()] : armorShopTopRowVariationStandart[houseId()];
     const ITEM_VARIATION variationBottom = isSpecial ? armorShopBottomRowVariationSpecial[houseId()] : armorShopBottomRowVariationStandart[houseId()];
 
-    for (int i = 0; i < itemAmountInShop[buildingTable[wData.val - 1].uType]; i++) {
+    for (int i = 0; i < itemAmountInShop[buildingType()]; i++) {
         int itemClass;
         ITEM_TREASURE_LEVEL treasureLvl;
 
@@ -742,7 +742,7 @@ void GUIWindow_MagicShop::generateShopItems(bool isSpecial) {
     std::array<ItemGen, 12> &itemArray = isSpecial ? pParty->specialItemsInShops[houseId()] : pParty->standartItemsInShops[houseId()];
     ITEM_TREASURE_LEVEL treasureLvl = isSpecial ? magicShopVariationSpecial[houseId()] : magicShopVariationStandart[houseId()];
 
-    for (int i = 0; i < itemAmountInShop[buildingTable[wData.val - 1].uType]; i++) {
+    for (int i = 0; i < itemAmountInShop[buildingType()]; i++) {
         pItemTable->generateItem(treasureLvl, 22, &itemArray[i]);
         itemArray[i].SetIdentified();
     }
@@ -755,7 +755,7 @@ void GUIWindow_AlchemyShop::generateShopItems(bool isSpecial) {
     ITEM_TREASURE_LEVEL treasureLvl = isSpecial ? alchemyShopVariationSpecial[houseId()] : alchemyShopVariationStandart[houseId()];
     int bottomRowItemClass = isSpecial ? 44 : 45;
 
-    for (int i = 0; i < itemAmountInShop[buildingTable[wData.val - 1].uType]; i++) {
+    for (int i = 0; i < itemAmountInShop[buildingType()]; i++) {
         if (i < 6) {
             itemArray[i].Reset();
             if (isSpecial) {
@@ -843,6 +843,7 @@ void GUIWindow_Shop::houseSpecificDialogue() {
         learnSkillsDialogue();
         break;
       default:
+        pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 1, 0);
         break;
     }
 }
@@ -856,20 +857,23 @@ void GUIWindow_Shop::houseDialogueOptionSelected(DIALOGUE_TYPE option) {
             pParty->PartyTimes.shopNextRefreshTime[houseId()] = nextGenTime;
         }
 
+        BuildingType shopType = buildingType();
         const std::array<ItemGen, 12> &itemArray = (option == DIALOGUE_SHOP_BUY_STANDARD) ? pParty->standartItemsInShops[houseId()] : pParty->specialItemsInShops[houseId()];
-        for (int i = 0; i < itemAmountInShop[buildingTable[wData.val - 1].uType]; ++i) {
+        for (int i = 0; i < itemAmountInShop[shopType]; ++i) {
             if (itemArray[i].uItemID != ITEM_NULL) {
                 shop_ui_items_in_store[i] = assets->getImage_ColorKey(itemArray[i].GetIconName());
             }
         }
-        if (buildingTable[wData.val - 1].uType == BuildingType_WeaponShop) {
-            for (int i = 0; i < itemAmountInShop[buildingTable[wData.val - 1].uType]; ++i) {
+        if (shopType == BuildingType_WeaponShop) {
+            for (int i = 0; i < itemAmountInShop[shopType]; ++i) {
                 if (itemArray[i].uItemID != ITEM_NULL) {
                     // Note that we're using grng here for a reason - we want recorded mouse clicks to work.
                     weaponYPos[i] = grng->random(300 - shop_ui_items_in_store[i]->height());
                 }
             }
         }
+    } else if (option == DIALOGUE_SHOP_SELL || option == DIALOGUE_SHOP_IDENTIFY || option == DIALOGUE_SHOP_REPAIR) {
+        pParty->placeHeldItemInInventoryOrDrop();
     } else if (IsSkillLearningDialogue(option)) {
         learnSelectedSkill(GetLearningDialogueSkill(option));
     }
@@ -893,6 +897,19 @@ std::vector<DIALOGUE_TYPE> GUIWindow_AlchemyShop::listDialogueOptions(DIALOGUE_T
         return {DIALOGUE_SHOP_SELL, DIALOGUE_SHOP_IDENTIFY};
     }
     return GUIWindow_Shop::listDialogueOptions(option);
+}
+
+DIALOGUE_TYPE GUIWindow_Shop::getOptionOnEscape() {
+    if (IsSkillLearningDialogue(dialog_menu_id)) {
+        return DIALOGUE_LEARN_SKILLS;
+    }
+    if (dialog_menu_id == DIALOGUE_SHOP_SELL || dialog_menu_id == DIALOGUE_SHOP_IDENTIFY || dialog_menu_id == DIALOGUE_SHOP_REPAIR) {
+        return DIALOGUE_SHOP_DISPLAY_EQUIPMENT;
+    }
+    if (dialog_menu_id == DIALOGUE_MAIN) {
+        return DIALOGUE_NULL;
+    }
+    return DIALOGUE_MAIN;
 }
 
 void GUIWindow_Shop::processStealingResult(int stealingResult, int fineToAdd) {  // not working properly??
@@ -950,7 +967,7 @@ void UIShop_Buy_Identify_Repair() {
         return;
     }
 
-    if (!HouseUI_CheckIfPlayerCanInteract()) {
+    if (!window_SpeakInHouse->checkIfPlayerCanInteract()) {
         pAudioPlayer->playUISound(SOUND_error);
         return;
     }

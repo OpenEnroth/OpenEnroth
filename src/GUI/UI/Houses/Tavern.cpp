@@ -15,7 +15,7 @@
 #include "Media/MediaPlayer.h"
 
 void GUIWindow_Tavern::mainDialogue() {
-    if (!HouseUI_CheckIfPlayerCanInteract())
+    if (!checkIfPlayerCanInteract())
         return;
 
     GUIWindow dialog_window = *this;
@@ -76,7 +76,7 @@ void GUIWindow_Tavern::arcomageMainDialogue() {
     dialog_window.uFrameWidth = SIDE_TEXT_BOX_WIDTH;
     dialog_window.uFrameZ = SIDE_TEXT_BOX_POS_Z;
 
-    if (HouseUI_CheckIfPlayerCanInteract()) {
+    if (checkIfPlayerCanInteract()) {
         int pOptionsCount = 2;
         pShopOptions[0] = localization->GetString(LSTR_RULES);
         pShopOptions[1] = localization->GetString(LSTR_VICTORY_CONDITIONS);
@@ -172,7 +172,7 @@ void GUIWindow_Tavern::restDialogue() {
         pParty->TakeGold(pPriceRoom);
         PlayHouseSound(wData.val, HouseSound_NotEnoughMoney);
         dialog_menu_id = DIALOGUE_NULL;
-        HouseDialogPressCloseBtn();
+        houseDialogPressEscape();
         GetHouseGoodbyeSpeech();
         pMediaPlayer->Unload();
 
@@ -210,7 +210,7 @@ void GUIWindow_Tavern::buyFoodDialogue() {
 }
 
 void GUIWindow_Tavern::learnSkillsDialogue() {
-    if (!HouseUI_CheckIfPlayerCanInteract()) {
+    if (!checkIfPlayerCanInteract()) {
         return;
     }
 
@@ -233,7 +233,9 @@ void GUIWindow_Tavern::learnSkillsDialogue() {
 }
 
 void GUIWindow_Tavern::houseDialogueOptionSelected(DIALOGUE_TYPE option) {
-    if (IsSkillLearningDialogue(option)) {
+    if (option == DIALOGUE_TAVERN_ARCOMAGE_RESULT) {
+        pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_PlayArcomage, 0, 0);
+    } else if (IsSkillLearningDialogue(option)) {
         learnSelectedSkill(GetLearningDialogueSkill(option));
     }
 }
@@ -278,7 +280,11 @@ void GUIWindow_Tavern::houseSpecificDialogue() {
 std::vector<DIALOGUE_TYPE> GUIWindow_Tavern::listDialogueOptions(DIALOGUE_TYPE option) {
     switch (option) {
       case DIALOGUE_MAIN:
-        return {DIALOGUE_TAVERN_REST, DIALOGUE_TAVERN_BUY_FOOD, DIALOGUE_LEARN_SKILLS, DIALOGUE_TAVERN_ARCOMAGE_MAIN};
+        if (houseId() == HOUSE_TAVERN_EMERALD_ISLE) {
+            return {DIALOGUE_TAVERN_REST, DIALOGUE_TAVERN_BUY_FOOD, DIALOGUE_LEARN_SKILLS};
+        } else {
+            return {DIALOGUE_TAVERN_REST, DIALOGUE_TAVERN_BUY_FOOD, DIALOGUE_LEARN_SKILLS, DIALOGUE_TAVERN_ARCOMAGE_MAIN};
+        }
       case DIALOGUE_LEARN_SKILLS:
         return {DIALOGUE_LEARN_STEALING, DIALOGUE_LEARN_TRAP_DISARM, DIALOGUE_LEARN_PERCEPTION};
       case DIALOGUE_TAVERN_ARCOMAGE_MAIN:
@@ -290,4 +296,19 @@ std::vector<DIALOGUE_TYPE> GUIWindow_Tavern::listDialogueOptions(DIALOGUE_TYPE o
       default:
         return {};
     }
+}
+
+DIALOGUE_TYPE GUIWindow_Tavern::getOptionOnEscape() {
+    if (IsSkillLearningDialogue(dialog_menu_id)) {
+        return DIALOGUE_LEARN_SKILLS;
+    }
+    if (dialog_menu_id == DIALOGUE_TAVERN_ARCOMAGE_RULES ||
+        dialog_menu_id == DIALOGUE_TAVERN_ARCOMAGE_VICTORY_CONDITIONS ||
+        dialog_menu_id == DIALOGUE_TAVERN_ARCOMAGE_RESULT) {
+        return DIALOGUE_TAVERN_ARCOMAGE_MAIN;
+    }
+    if (dialog_menu_id == DIALOGUE_MAIN) {
+        return DIALOGUE_NULL;
+    }
+    return DIALOGUE_MAIN;
 }

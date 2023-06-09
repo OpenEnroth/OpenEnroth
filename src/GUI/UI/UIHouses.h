@@ -16,10 +16,15 @@ constexpr int SIDE_TEXT_BOX_BODY_TEXT_HEIGHT = 174;
 constexpr int SIDE_TEXT_BOX_BODY_TEXT_OFFSET = 138;
 constexpr int SIDE_TEXT_BOX_MAX_SPACING = 32;
 
-bool HouseUI_CheckIfPlayerCanInteract();
 void PlayHouseSound(unsigned int uHouseID, HouseSoundID sound);  // idb
 void SimpleHouseDialog();
-void OnSelectShopDialogueOption(DIALOGUE_TYPE option);
+
+void BackToHouseMenu();
+
+/**
+ * @offset 0x4BCACC
+ */
+void onSelectShopDialogueOption(DIALOGUE_TYPE option);
 void PrepareHouse(HOUSE_ID house);  // idb
 
 void createHouseUI(HOUSE_ID houseId);
@@ -28,9 +33,8 @@ void createHouseUI(HOUSE_ID houseId);
  * @offset 0x44622E
  */
 bool enterHouse(HOUSE_ID uHouseID);
-void BackToHouseMenu();
 
-int HouseDialogPressCloseBtn();
+bool houseDialogPressEscape();
 
 void GetHouseGoodbyeSpeech();
 
@@ -42,6 +46,10 @@ class GUIWindow_House : public GUIWindow {
     virtual void Update();
     virtual void Release();
 
+    BuildingType buildingType() const {
+        return buildingTable[wData.val - 1].uType;
+    }
+
     HOUSE_ID houseId() const {
         return static_cast<HOUSE_ID>(wData.val); // TODO(captainurist): drop all direct accesses to wData.val.
     }
@@ -49,11 +57,17 @@ class GUIWindow_House : public GUIWindow {
     void houseDialogManager();
     void initializeDialog();
     void learnSelectedSkill(PLAYER_SKILL_TYPE skill);
+    void reinitDialogueWindow();
+    bool checkIfPlayerCanInteract();
 
     virtual void houseDialogueOptionSelected(DIALOGUE_TYPE option);
     // TODO(Nik-RE-dev): add DIALOGUE_TYPE argument?
     virtual void houseSpecificDialogue();
     virtual std::vector<DIALOGUE_TYPE> listDialogueOptions(DIALOGUE_TYPE option);
+    virtual DIALOGUE_TYPE getOptionOnEscape();
+
+ protected:
+    int _savedButtonsNum{};
 };
 
 // Originally was a packed struct.

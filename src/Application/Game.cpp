@@ -490,7 +490,7 @@ void Game::processQueuedMessages() {
                 ClickNPCTopic((DIALOGUE_TYPE)uMessageParam);
                 continue;
             case UIMSG_SelectShopDialogueOption:
-                OnSelectShopDialogueOption((DIALOGUE_TYPE)uMessageParam);
+                onSelectShopDialogueOption((DIALOGUE_TYPE)uMessageParam);
                 continue;
             case UIMSG_SelectNPCDialogueOption:
                 OnSelectNPCDialogueOption((DIALOGUE_TYPE)uMessageParam);
@@ -770,9 +770,9 @@ void Game::processQueuedMessages() {
                                         uDialogueType = DIALOGUE_NULL;
                                     }
                                     if (uGameState == GAME_STATE_CHANGE_LOCATION) {
-                                        while (HouseDialogPressCloseBtn()) {}
+                                        while (houseDialogPressEscape()) {}
                                     } else {
-                                        if (HouseDialogPressCloseBtn())
+                                        if (houseDialogPressEscape())
                                             continue;
                                     }
                                     GetHouseGoodbyeSpeech();
@@ -1105,7 +1105,7 @@ void Game::processQueuedMessages() {
                     Start_Party_Teleport_Flag =
                         v55 | Party_Teleport_Y_Pos | v56 | v57;
                 }
-                HouseDialogPressCloseBtn();
+                houseDialogPressEscape();
                 pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 1, 0);
                 continue;
 

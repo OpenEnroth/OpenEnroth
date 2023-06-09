@@ -111,11 +111,3 @@ bool GUIButton::Contains(unsigned int x, unsigned int y) {
 void CreateShopDialogueButtonAtRow(int row, DIALOGUE_TYPE type) {
     pDialogueWindow->CreateButton({480, 146 + 30 * row}, {140, 30}, 1, 0, UIMSG_SelectShopDialogueOption, type, InputAction::Invalid, "");
 }
-
-void UI_CreateEndConversationButton() {
-    pDialogueWindow->Release();
-    pDialogueWindow = new GUIWindow(WINDOW_Dialogue, {0, 0}, {render->GetPresentDimensions().w, 345}, 0);
-    pBtn_ExitCancel = pDialogueWindow->CreateButton({471, 445}, {169, 35}, 1, 0, UIMSG_Escape, 0, InputAction::Invalid,
-        localization->GetString(LSTR_END_CONVERSATION), {ui_exit_cancel_button_background});
-    pDialogueWindow->CreateButton({8, 8}, {450, 320}, 1, 0, UIMSG_BuyInShop_Identify_Repair, 0, InputAction::Invalid, "");
-}
