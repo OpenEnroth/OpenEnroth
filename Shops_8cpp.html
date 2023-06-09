@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;5ddc8b6</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;4da3dce</span>
    </div>
   </td>
  </tr>
@@ -74,6 +74,7 @@ $(function() {
 </div><!-- top -->
 <div class="header">
   <div class="summary">
+<a href="#nested-classes">Classes</a> &#124;
 <a href="#func-members">Functions</a> &#124;
 <a href="#var-members">Variables</a>  </div>
   <div class="headertitle"><div class="title">Shops.cpp File Reference</div></div>
@@ -82,6 +83,7 @@ $(function() {
 <div class="textblock"><code>#include &lt;cstdlib&gt;</code><br />
 <code>#include &lt;algorithm&gt;</code><br />
 <code>#include &lt;string&gt;</code><br />
+<code>#include &lt;array&gt;</code><br />
 <code>#include &quot;<a class="el" href="Engine_8h.html">Engine/Engine.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="IRender_8h.html">Engine/Graphics/IRender.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Engine_2Graphics_2Image_8h.html">Engine/Graphics/Image.h</a>&quot;</code><br />
@@ -107,14 +109,19 @@ $(function() {
 <code>#include &quot;<a class="el" href="Random_8h.html">Library/Random/Random.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="IndexedArray_8h.html">Utility/IndexedArray.h</a>&quot;</code><br />
 </div><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
+Classes</h2></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structITEM__VARIATION.html">ITEM_VARIATION</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
 <tr class="memitem:a80f9ff7d06d16069d56cda98f75331d8"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Shops_8cpp.html#a80f9ff7d06d16069d56cda98f75331d8">isStealingModeActive</a> ()</td></tr>
 <tr class="separator:a80f9ff7d06d16069d56cda98f75331d8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7a541fc22f8a95a91985b42f0604bc9c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Shops_8cpp.html#a7a541fc22f8a95a91985b42f0604bc9c">GenerateSpecialShopItems</a> ()</td></tr>
-<tr class="separator:a7a541fc22f8a95a91985b42f0604bc9c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a435781bf7481bbaffb8c2c1b3a23a0d9"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Shops_8cpp.html#a435781bf7481bbaffb8c2c1b3a23a0d9">GenerateStandartShopItems</a> ()</td></tr>
-<tr class="separator:a435781bf7481bbaffb8c2c1b3a23a0d9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a09d944ab4a8a23f30e415de876245ec0"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Shops_8cpp.html#a09d944ab4a8a23f30e415de876245ec0">addUniqueItemClasses</a> (const <a class="el" href="structITEM__VARIATION.html">ITEM_VARIATION</a> &amp;variation, std::vector&lt; int &gt; &amp;set)</td></tr>
+<tr class="separator:a09d944ab4a8a23f30e415de876245ec0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3d1725d2adcc9a413ee6ee2f0991fab2"><td class="memItemLeft" align="right" valign="top"><a class="el" href="GUIDialogues_8h.html#afcd7885d9ec6583fa04d9e8f0f641d00">DIALOGUE_TYPE</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Shops_8cpp.html#a3d1725d2adcc9a413ee6ee2f0991fab2">getSkillLearnDualogueForItemClass</a> (int itemClass)</td></tr>
+<tr class="separator:a3d1725d2adcc9a413ee6ee2f0991fab2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a62c4e572d5c06ab9dd3aae265c49c840"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Shops_8cpp.html#a62c4e572d5c06ab9dd3aae265c49c840">UIShop_Buy_Identify_Repair</a> ()</td></tr>
 <tr class="separator:a62c4e572d5c06ab9dd3aae265c49c840"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
@@ -148,33 +155,45 @@ Variables</h2></td></tr>
 <tr class="separator:a904a987094063493bd89e20768f207e5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Function Documentation</h2>
-<a id="a7a541fc22f8a95a91985b42f0604bc9c" name="a7a541fc22f8a95a91985b42f0604bc9c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a7a541fc22f8a95a91985b42f0604bc9c">&#9670;&#160;</a></span>GenerateSpecialShopItems()</h2>
+<a id="a09d944ab4a8a23f30e415de876245ec0" name="a09d944ab4a8a23f30e415de876245ec0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a09d944ab4a8a23f30e415de876245ec0">&#9670;&#160;</a></span>addUniqueItemClasses()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">void GenerateSpecialShopItems </td>
+          <td class="memname">void addUniqueItemClasses </td>
           <td>(</td>
-          <td class="paramname"></td><td>)</td>
+          <td class="paramtype">const <a class="el" href="structITEM__VARIATION.html">ITEM_VARIATION</a> &amp;&#160;</td>
+          <td class="paramname"><em>variation</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype">std::vector&lt; int &gt; &amp;&#160;</td>
+          <td class="paramname"><em>set</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
         </tr>
       </table>
 </div><div class="memdoc">
 
 </div>
 </div>
-<a id="a435781bf7481bbaffb8c2c1b3a23a0d9" name="a435781bf7481bbaffb8c2c1b3a23a0d9"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a435781bf7481bbaffb8c2c1b3a23a0d9">&#9670;&#160;</a></span>GenerateStandartShopItems()</h2>
+<a id="a3d1725d2adcc9a413ee6ee2f0991fab2" name="a3d1725d2adcc9a413ee6ee2f0991fab2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3d1725d2adcc9a413ee6ee2f0991fab2">&#9670;&#160;</a></span>getSkillLearnDualogueForItemClass()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">void GenerateStandartShopItems </td>
+          <td class="memname"><a class="el" href="GUIDialogues_8h.html#afcd7885d9ec6583fa04d9e8f0f641d00">DIALOGUE_TYPE</a> getSkillLearnDualogueForItemClass </td>
           <td>(</td>
-          <td class="paramname"></td><td>)</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>itemClass</em></td><td>)</td>
           <td></td>
         </tr>
       </table>
