@@ -13,6 +13,11 @@ class GUIWindow_MainMenu : public GUIWindow {
 
     void EventLoop();
 
+    /**
+     * @brief Performs secondary initialization while showing copyright window.
+     *
+     * @param initFunc     Pointer to code which is executed while copyright window is showed.
+     */
     static void drawCopyrightAndInit(std::function<void()> initFunc);
     static void loop();
 
