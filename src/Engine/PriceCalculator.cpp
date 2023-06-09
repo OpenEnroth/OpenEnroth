@@ -87,7 +87,7 @@ int PriceCalculator::itemSellingPriceForPlayer(const Player *player, const ItemG
         // can't get less than 1 gold or more than item is actually worth
         result = std::clamp(result, 1, uRealValue);
     } else {
-        // for example blasters do not have a value - so they are sellable for 1 gold
+        // TODO(Nik-RE-dev): blaster price is 0 and we can sell it for 1 gold because of the code below, but this is probably not how it should work
         result = 1;
     }
 
