@@ -1,8 +1,10 @@
 #pragma once
 
 #include <string>
+#include <vector>
 
 #include "GUI/GUIWindow.h"
+#include "Utility/IndexedArray.h"
 #include "UIHouseEnums.h"
 
 // Right hand side dialogue writing constants
@@ -15,11 +17,7 @@ constexpr int SIDE_TEXT_BOX_BODY_TEXT_OFFSET = 138;
 constexpr int SIDE_TEXT_BOX_MAX_SPACING = 32;
 
 bool HouseUI_CheckIfPlayerCanInteract();
-void MagicShopDialog();
 void PlayHouseSound(unsigned int uHouseID, HouseSoundID sound);  // idb
-void WeaponShopDialog();
-void AlchemistDialog();
-void ArmorShopDialog();
 void SimpleHouseDialog();
 void OnSelectShopDialogueOption(DIALOGUE_TYPE option);
 void PrepareHouse(HOUSE_ID house);  // idb
@@ -32,34 +30,9 @@ void createHouseUI(HOUSE_ID houseId);
 bool enterHouse(HOUSE_ID uHouseID);
 void BackToHouseMenu();
 
-void InitializaDialogueOptions_Tavern(BuildingType type);  // idb
-void InitializaDialogueOptions_Shops(BuildingType type);
-void InitializaDialogueOptions(BuildingType type);
-
-extern int uHouse_ExitPic;
-extern int dword_591080;
-extern BuildingType in_current_building_type;  // 00F8B198
-extern DIALOGUE_TYPE dialog_menu_id;     // 00F8B19C
-
 int HouseDialogPressCloseBtn();
 
-int ItemAmountForShop(BuildingType buildingType);
-
 void GetHouseGoodbyeSpeech();
-
-extern class GraphicsImage *_591428_endcap;
-
-// Originally was a packed struct.
-struct HouseAnimDescr {
-    const char *video_name;
-    int field_4;
-    int house_npc_id;
-    BuildingType uBuildingType; // Originally was 1 byte.
-    uint8_t uRoomSoundId;
-    uint16_t padding_e;
-};
-
-extern std::array<const HouseAnimDescr, 196> pAnimatedRooms;
 
 class GUIWindow_House : public GUIWindow {
  public:
@@ -74,7 +47,32 @@ class GUIWindow_House : public GUIWindow {
     }
 
     void houseDialogManager();
+    void initializeDialog();
+    void learnSelectedSkill(PLAYER_SKILL_TYPE skill);
 
     virtual void houseDialogueOptionSelected(DIALOGUE_TYPE option);
+    // TODO(Nik-RE-dev): add DIALOGUE_TYPE argument?
     virtual void houseSpecificDialogue();
+    virtual std::vector<DIALOGUE_TYPE> listDialogueOptions(DIALOGUE_TYPE option);
 };
+
+// Originally was a packed struct.
+struct HouseAnimDescr {
+    const char *video_name;
+    int field_4;
+    int house_npc_id;
+    BuildingType uBuildingType; // Originally was 1 byte.
+    uint8_t uRoomSoundId;
+    uint16_t padding_e;
+};
+
+extern int uHouse_ExitPic;
+extern int dword_591080;
+extern BuildingType in_current_building_type;  // 00F8B198
+extern DIALOGUE_TYPE dialog_menu_id;     // 00F8B19C
+
+extern class GraphicsImage *_591428_endcap;
+
+extern std::array<const HouseAnimDescr, 196> pAnimatedRooms;
+
+extern IndexedArray<int, BuildingType_WeaponShop, BuildingType_DarkGuild> itemAmountInShop;

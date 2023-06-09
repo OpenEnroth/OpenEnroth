@@ -253,6 +253,15 @@ void GUIWindow_Transport::houseDialogueOptionSelected(DIALOGUE_TYPE option) {
     // Nothing
 }
 
+std::vector<DIALOGUE_TYPE> GUIWindow_Transport::listDialogueOptions(DIALOGUE_TYPE option) {
+    switch (option) {
+      case DIALOGUE_MAIN:
+        return {DIALOGUE_TRANSPORT_SCHEDULE_1, DIALOGUE_TRANSPORT_SCHEDULE_2, DIALOGUE_TRANSPORT_SCHEDULE_3, DIALOGUE_TRANSPORT_SCHEDULE_4};
+      default:
+        return {};
+    }
+}
+
 int GUIWindow_Transport::getTravelTimeTransportDays(int schedule_id) {
     int travel_time = transportSchedule[schedule_id].uTravelTime;
     if (isBoat(houseId())) {

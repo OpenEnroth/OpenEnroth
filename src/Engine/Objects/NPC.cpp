@@ -171,8 +171,9 @@ void _4B4224_UpdateNPCTopics(int _this) {
             UIMSG_Escape, 0, InputAction::Invalid, localization->GetString(LSTR_END_CONVERSATION), {ui_exit_cancel_button_background}
         );
         pDialogueWindow->CreateButton({8, 8}, {450, 320}, 1, 0, UIMSG_BuyInShop_Identify_Repair, 0);
+        dialog_menu_id = DIALOGUE_MAIN;
         if (pDialogueNPCCount == 1 && dword_591080) {
-            InitializaDialogueOptions(in_current_building_type);
+            window_SpeakInHouse->initializeDialog();
         } else {
             if (v17->is_joinable) {
                 num_menu_buttons = 1;
@@ -198,7 +199,6 @@ void _4B4224_UpdateNPCTopics(int _this) {
             pDialogueWindow->_41D08F_set_keyboard_control_group(num_menu_buttons, 1, 0, 2);
             dword_F8B1E0 = pDialogueWindow->pNumPresenceButton;
         }
-        dialog_menu_id = DIALOGUE_MAIN;
     }
 }
 
