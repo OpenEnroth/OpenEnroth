@@ -140,16 +140,16 @@ void deserialize(InputStream &src, IndoorLocation_MM7 *dst) {
     deserialize(src, &dst->header);
     deserialize(src, &dst->vertices);
     deserialize(src, &dst->faces);
-    deserialize(src, presized(dst->header.uFaces_fdata_Size / sizeof(uint16_t), &dst->faceData));
-    deserialize(src, presized(dst->faces.size(), &dst->faceTextures));
+    deserialize(src, &dst->faceData, presized(dst->header.uFaces_fdata_Size / sizeof(uint16_t)));
+    deserialize(src, &dst->faceTextures, presized(dst->faces.size()));
     deserialize(src, &dst->faceExtras);
-    deserialize(src, presized(dst->faceExtras.size(), &dst->faceExtraTextures));
+    deserialize(src, &dst->faceExtraTextures, presized(dst->faceExtras.size()));
     deserialize(src, &dst->sectors);
-    deserialize(src, presized(dst->header.uSector_rdata_Size / sizeof(uint16_t), &dst->sectorData));
-    deserialize(src, presized(dst->header.uSector_lrdata_Size / sizeof(uint16_t), &dst->sectorLightData));
+    deserialize(src, &dst->sectorData, presized(dst->header.uSector_rdata_Size / sizeof(uint16_t)));
+    deserialize(src, &dst->sectorLightData, presized(dst->header.uSector_lrdata_Size / sizeof(uint16_t)));
     deserialize(src, &dst->doorCount);
     deserialize(src, &dst->decorations);
-    deserialize(src, presized(dst->decorations.size(), &dst->decorationNames));
+    deserialize(src, &dst->decorationNames, presized(dst->decorations.size()));
     deserialize(src, &dst->lights);
     deserialize(src, &dst->bspNodes);
     deserialize(src, &dst->spawnPoints);
@@ -274,13 +274,13 @@ void deserialize(const IndoorDelta_MM7 &src, IndoorLocation *dst) {
 void serialize(const IndoorDelta_MM7 &src, OutputStream *dst) {
     serialize(src.header, dst);
     serialize(src.visibleOutlines, dst);
-    serialize(unsized(src.faceAttributes), dst);
-    serialize(unsized(src.decorationFlags), dst);
+    serialize(src.faceAttributes, dst, unsized());
+    serialize(src.decorationFlags, dst, unsized());
     serialize(src.actors, dst);
     serialize(src.spriteObjects, dst);
     serialize(src.chests, dst);
-    serialize(unsized(src.doors), dst);
-    serialize(unsized(src.doorsData), dst);
+    serialize(src.doors, dst, unsized());
+    serialize(src.doorsData, dst, unsized());
     serialize(src.eventVariables, dst);
     serialize(src.locationTime, dst);
 }
@@ -288,13 +288,13 @@ void serialize(const IndoorDelta_MM7 &src, OutputStream *dst) {
 void deserialize(InputStream &src, IndoorDelta_MM7 *dst, const IndoorLocation_MM7 &ctx) {
     deserialize(src, &dst->header);
     deserialize(src, &dst->visibleOutlines);
-    deserialize(src, presized(ctx.faces.size(), &dst->faceAttributes));
-    deserialize(src, presized(ctx.decorations.size(), &dst->decorationFlags));
+    deserialize(src, &dst->faceAttributes, presized(ctx.faces.size()));
+    deserialize(src, &dst->decorationFlags, presized(ctx.decorations.size()));
     deserialize(src, &dst->actors);
     deserialize(src, &dst->spriteObjects);
     deserialize(src, &dst->chests);
-    deserialize(src, presized(ctx.doorCount, &dst->doors));
-    deserialize(src, presized(ctx.header.uDoors_ddata_Size / sizeof(int16_t), &dst->doorsData));
+    deserialize(src, &dst->doors, presized(ctx.doorCount));
+    deserialize(src, &dst->doorsData, presized(ctx.header.uDoors_ddata_Size / sizeof(int16_t)));
     deserialize(src, &dst->eventVariables);
     deserialize(src, &dst->locationTime);
 }
@@ -402,21 +402,21 @@ void deserialize(InputStream &src, OutdoorLocation_MM7 *dst) {
     deserialize(src, &dst->normalCount);
     deserialize(src, &dst->someOtherMap);
     deserialize(src, &dst->normalMap);
-    deserialize(src, presized(dst->normalCount, &dst->normals));
+    deserialize(src, &dst->normals, presized(dst->normalCount));
     deserialize(src, &dst->models);
 
     dst->modelExtras.clear();
     for (const BSPModelData_MM7 &model : dst->models) {
         BSPModelExtras_MM7 &extra = dst->modelExtras.emplace_back();
-        deserialize(src, presized(model.uNumVertices, &extra.vertices));
-        deserialize(src, presized(model.uNumFaces, &extra.faces));
-        deserialize(src, presized(model.uNumFaces, &extra.faceOrdering));
-        deserialize(src, presized(model.uNumNodes, &extra.bspNodes));
-        deserialize(src, presized(model.uNumFaces, &extra.faceTextures));
+        deserialize(src, &extra.vertices, presized(model.uNumVertices));
+        deserialize(src, &extra.faces, presized(model.uNumFaces));
+        deserialize(src, &extra.faceOrdering, presized(model.uNumFaces));
+        deserialize(src, &extra.bspNodes, presized(model.uNumNodes));
+        deserialize(src, &extra.faceTextures, presized(model.uNumFaces));
     }
 
     deserialize(src, &dst->decorations);
-    deserialize(src, presized(dst->decorations.size(), &dst->decorationNames));
+    deserialize(src, &dst->decorationNames, presized(dst->decorations.size()));
     deserialize(src, &dst->decorationPidList);
     deserialize(src, &dst->decorationMap);
     deserialize(src, &dst->spawnPoints);
@@ -494,8 +494,8 @@ void serialize(const OutdoorDelta_MM7 &src, OutputStream *dst) {
     serialize(src.header, dst);
     serialize(src.fullyRevealedCells, dst);
     serialize(src.partiallyRevealedCells, dst);
-    serialize(unsized(src.faceAttributes), dst);
-    serialize(unsized(src.decorationFlags), dst);
+    serialize(src.faceAttributes, dst, unsized());
+    serialize(src.decorationFlags, dst, unsized());
     serialize(src.actors, dst);
     serialize(src.spriteObjects, dst);
     serialize(src.chests, dst);
@@ -511,8 +511,8 @@ void deserialize(InputStream &src, OutdoorDelta_MM7 *dst, const OutdoorLocation_
     deserialize(src, &dst->header);
     deserialize(src, &dst->fullyRevealedCells);
     deserialize(src, &dst->partiallyRevealedCells);
-    deserialize(src, presized(totalFaces, &dst->faceAttributes));
-    deserialize(src, presized(ctx.decorations.size(), &dst->decorationFlags));
+    deserialize(src, &dst->faceAttributes, presized(totalFaces));
+    deserialize(src, &dst->decorationFlags, presized(ctx.decorations.size()));
     deserialize(src, &dst->actors);
     deserialize(src, &dst->spriteObjects);
     deserialize(src, &dst->chests);

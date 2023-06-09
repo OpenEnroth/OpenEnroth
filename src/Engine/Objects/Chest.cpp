@@ -416,11 +416,11 @@ void ChestList::FromFile(const Blob &data_mm6, const Blob &data_mm7, const Blob 
     vChests.clear();
 
     if (data_mm6)
-        deserialize(data_mm6, appendVia<ChestDesc_MM7>(&vChests));
+        deserialize(data_mm6, &vChests, appendVia<ChestDesc_MM7>());
     if (data_mm7)
-        deserialize(data_mm7, appendVia<ChestDesc_MM7>(&vChests));
+        deserialize(data_mm7, &vChests, appendVia<ChestDesc_MM7>());
     if (data_mm8)
-        deserialize(data_mm8, appendVia<ChestDesc_MM7>(&vChests));
+        deserialize(data_mm8, &vChests, appendVia<ChestDesc_MM7>());
 
     assert(!vChests.empty());
 }

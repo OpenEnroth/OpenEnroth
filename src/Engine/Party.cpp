@@ -130,7 +130,7 @@ void Party::Zero() {
     uNumBountiesCollected = 0;
     field_74C_set0_unused = 0;
     monster_id_for_hunting.fill(0);
-    monster_for_hunting_killed.fill(0);
+    monster_for_hunting_killed.fill(false);
     days_played_without_rest = 0;
     _questBits.reset();
     pArcomageWins.fill(0);

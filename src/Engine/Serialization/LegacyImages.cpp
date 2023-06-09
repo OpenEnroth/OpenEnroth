@@ -40,64 +40,6 @@ static void deserialize(int64_t src, GameTime *dst) {
     dst->value = src;
 }
 
-template<class T1, size_t N, class T2, auto L, auto H>
-static void serialize(const IndexedArray<T2, L, H> &src, std::array<T1, N> *dst) {
-    static_assert(IndexedArray<T2, L, H>::SIZE == N, "Expected arrays of equal size.");
-    for (size_t i = 0; auto index : src.indices())
-        serialize(src[index], &(*dst)[i++]);
-}
-
-template<class T1, size_t N, class T2, auto L, auto H>
-static void deserialize(const std::array<T1, N> &src, IndexedArray<T2, L, H> *dst) {
-    static_assert(IndexedArray<T2, L, H>::SIZE == N, "Expected arrays of equal size.");
-    for (size_t i = 0; auto index : dst->indices())
-        deserialize(src[i++], &(*dst)[index]);
-}
-
-// Bits inside each array element indexed backwards
-template<class T, size_t N, auto L, auto H>
-static void serialize(const IndexedBitset<L, H> &src, std::array<T, N> *dst) {
-    assert(dst->size() * sizeof(T) * 8 == src.size());
-    size_t i = 1, j = 0;
-    while (i < src.size()) {
-        T val = 0;
-        for (size_t k = 0; k < (sizeof(T) * 8); k++, i++) {
-            val |= src[i] << ((sizeof(T) * 8) - k - 1);
-        }
-        serialize(val, &(*dst)[j]);
-        j++;
-    }
-}
-
-// Bits inside each array element indexed backwards
-template<class T, size_t N, auto L, auto H>
-static void deserialize(const std::array<T, N> &src, IndexedBitset<L, H> *dst) {
-    assert(dst->size() == src.size() * sizeof(T) * 8);
-    size_t i = 1, j = 0;
-    while (i < dst->size()) {
-        T val = 0;
-        deserialize(src[j], &val);
-        for (size_t k = 0; k < (sizeof(T) * 8); k++, i++) {
-            dst->set(i, !!(val & (1 << ((sizeof(T) * 8) - k - 1))));
-        }
-        j++;
-    }
-}
-
-template<class T1, size_t N, class T2, auto L, auto H>
-static void serialize(const IndexedArray<T2, L, H> &src, std::array<T1, N> *dst, size_t count) {
-    assert((count == src.size() || count == dst->size()) && src.size() != dst->size());
-    for (size_t i = 0; i < count; i++)
-        serialize(src[src.indices()[i]], &(*dst)[i]);
-}
-
-template<class T1, size_t N, class T2, auto L, auto H>
-static void deserialize(const std::array<T1, N> &src, IndexedArray<T2, L, H> *dst, size_t count) {
-    assert((count == src.size() || count == dst->size()) && src.size() != dst->size());
-    for (int i = 0; i < count; i++)
-        deserialize(src[i], &(*dst)[dst->indices()[i]]);
-}
-
 void deserialize(const SpriteFrame_MM7 &src, SpriteFrame *dst) {
     deserialize(src.iconName, &dst->icon_name);
     dst->icon_name = toLower(dst->icon_name);
@@ -402,7 +344,7 @@ void serialize(const Party &src, Party_MM7 *dst) {
     dst->field_74C = src.field_74C_set0_unused;
 
     serialize(src.monster_id_for_hunting, &dst->monsterIdForHunting);
-    serialize(src.monster_for_hunting_killed, &dst->monsterForHuntingKilled);
+    serialize(src.monster_for_hunting_killed, &dst->monsterForHuntingKilled, convert<bool, int16_t>());
 
     dst->daysPlayedWithoutRest = src.days_played_without_rest;
 
@@ -527,7 +469,7 @@ void deserialize(const Party_MM7 &src, Party *dst) {
     dst->field_74C_set0_unused = src.field_74C;
 
     deserialize(src.monsterIdForHunting, &dst->monster_id_for_hunting);
-    deserialize(src.monsterForHuntingKilled, &dst->monster_for_hunting_killed);
+    deserialize(src.monsterForHuntingKilled, &dst->monster_for_hunting_killed, convert<int16_t, bool>());
 
     dst->days_played_without_rest = src.daysPlayedWithoutRest;
 
@@ -636,7 +578,7 @@ void serialize(const Player &src, Player_MM7 *dst) {
     dst->field_100 = src.field_100;
     dst->field_104 = src.field_104;
 
-    serialize(src.pActiveSkills, &dst->activeSkills, 37);
+    serialize(src.pActiveSkills, &dst->activeSkills, segment<PLAYER_SKILL_FIRST_VISIBLE, PLAYER_SKILL_LAST_VISIBLE>());
     serialize(src._achievedAwardsBits, &dst->achievedAwardsBits);
     serialize(src.spellbook.bHaveSpell, &dst->spellbook.haveSpell);
 
@@ -900,7 +842,7 @@ void deserialize(const Player_MM7 &src, Player *dst) {
     dst->field_100 = src.field_100;
     dst->field_104 = src.field_104;
 
-    deserialize(src.activeSkills, &dst->pActiveSkills, 37);
+    deserialize(src.activeSkills, &dst->pActiveSkills, segment<PLAYER_SKILL_FIRST_VISIBLE, PLAYER_SKILL_LAST_VISIBLE>());
     deserialize(src.achievedAwardsBits, &dst->_achievedAwardsBits);
     deserialize(src.spellbook.haveSpell, &dst->spellbook.bHaveSpell);
 
@@ -1060,7 +1002,7 @@ void deserialize(const MonsterDesc_MM6 &src, MonsterDesc *dst) {
     dst->sTintColor = colorTable.White.c32();
     dst->pSoundSampleIDs = src.soundSampleIds;
     deserialize(src.monsterName, &dst->pMonsterName);
-    deserialize(src.spriteNames, &dst->pSpriteNames, 8);
+    deserialize(src.spriteNames, &dst->pSpriteNames);
 }
 
 void serialize(const MonsterDesc &src, MonsterDesc_MM7 *dst) {
@@ -1073,9 +1015,9 @@ void serialize(const MonsterDesc &src, MonsterDesc_MM7 *dst) {
     dst->tintColor = src.sTintColor;
     dst->soundSampleIds = src.pSoundSampleIDs;
     serialize(src.pMonsterName, &dst->monsterName);
-    serialize(src.pSpriteNames, &dst->spriteNames, 8);
-    dst->spriteNames[8][0] = '\0';
-    dst->spriteNames[9][0] = '\0';
+    serialize(src.pSpriteNames, &dst->spriteNames);
+    dst->spriteNamesUnused[0].fill('\0');
+    dst->spriteNamesUnused[1].fill('\0');
 }
 
 void deserialize(const MonsterDesc_MM7 &src, MonsterDesc *dst) {
@@ -1086,7 +1028,7 @@ void deserialize(const MonsterDesc_MM7 &src, MonsterDesc *dst) {
     dst->sTintColor = src.tintColor;
     dst->pSoundSampleIDs = src.soundSampleIds;
     deserialize(src.monsterName, &dst->pMonsterName);
-    deserialize(src.spriteNames, &dst->pSpriteNames, 8);
+    deserialize(src.spriteNames, &dst->pSpriteNames);
 }
 
 void serialize(const ActorJob &src, ActorJob_MM7 *dst) {
