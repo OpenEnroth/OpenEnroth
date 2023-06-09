@@ -1,5 +1,10 @@
 #pragma once
+
+#include <array>
+
 #include "GUI/GUIWindow.h"
+#include "Engine/Graphics/Image.h"
+#include "Engine/Spells/SpellEnums.h"
 
 class GUIWindow_Spellbook : public GUIWindow {
  public:
@@ -9,12 +14,27 @@ class GUIWindow_Spellbook : public GUIWindow {
     virtual void Update();
     virtual void Release();
 
-    void OpenSpellbook();
-    void OpenSpellbookPage(int page);
+    // TODO(captainurist): turn parameter into an enum
+    void openSpellbookPage(int page);
+
+ protected:
+    void loadSpellbook();
+    void openSpellbook();
+    void initializeTextures();
+    void drawCurrentSchoolBackground();
+    void onCloseSpellBook();
+    void onCloseSpellBookPage();
+
+    GraphicsImage *ui_spellbook_btn_quckspell = nullptr;
+    GraphicsImage *ui_spellbook_btn_quckspell_click = nullptr;
+    GraphicsImage *ui_spellbook_btn_close = nullptr;
+    GraphicsImage *ui_spellbook_btn_close_click = nullptr;
+
+    std::array<GraphicsImage *, 9> ui_spellbook_school_backgrounds{};
+    std::array<std::array<GraphicsImage *, 2>, 9> ui_spellbook_school_tabs{};
+
+    std::array<GraphicsImage *, 12> SBPageCSpellsTextureList{};
+    std::array<GraphicsImage *, 12> SBPageSSpellsTextureList{};
 };
 
-class GraphicsImage;
-extern GraphicsImage *ui_spellbook_btn_quckspell;
-extern GraphicsImage *ui_spellbook_btn_quckspell_click;
-extern GraphicsImage *ui_spellbook_btn_close;
-extern GraphicsImage *ui_spellbook_btn_close_click;
+extern SPELL_TYPE spellbookSelectedSpell;
