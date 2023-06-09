@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;0badee4</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;5ddc8b6</span>
    </div>
   </td>
  </tr>
@@ -72,6 +72,7 @@ $(function() {
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="#pub-static-methods">Static Public Member Functions</a> &#124;
+<a href="#pro-static-methods">Static Protected Member Functions</a> &#124;
 <a href="#pro-attribs">Protected Attributes</a> &#124;
 <a href="classGUIWindow__MainMenu-members.html">List of all members</a>  </div>
   <div class="headertitle"><div class="title">GUIWindow_MainMenu Class Reference</div></div>
@@ -139,11 +140,19 @@ Public Member Functions</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-static-methods" name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
-<tr class="memitem:ad12c43bc3078a3dbdab21a148ba71b64"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGUIWindow__MainMenu.html#ad12c43bc3078a3dbdab21a148ba71b64">Loop</a> ()</td></tr>
-<tr class="separator:ad12c43bc3078a3dbdab21a148ba71b64"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5830c23f3f369504136dd7c3122268f5"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGUIWindow__MainMenu.html#a5830c23f3f369504136dd7c3122268f5">drawCopyrightAndInit</a> (std::function&lt; void()&gt; initFunc)</td></tr>
+<tr class="memdesc:a5830c23f3f369504136dd7c3122268f5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Performs secondary initialization while showing copyright window.  <a href="classGUIWindow__MainMenu.html#a5830c23f3f369504136dd7c3122268f5">More...</a><br /></td></tr>
+<tr class="separator:a5830c23f3f369504136dd7c3122268f5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a986b093bc51e30f309f2b4e77a844f44"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGUIWindow__MainMenu.html#a986b093bc51e30f309f2b4e77a844f44">loop</a> ()</td></tr>
+<tr class="separator:a986b093bc51e30f309f2b4e77a844f44"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_static_methods_classGUIWindow"><td colspan="2" onclick="javascript:toggleInherit('pub_static_methods_classGUIWindow')"><img src="closed.png" alt="-"/>&#160;Static Public Member Functions inherited from <a class="el" href="classGUIWindow.html">GUIWindow</a></td></tr>
 <tr class="memitem:a5c1f1a3ef130e92819f280b3824cecb9 inherit pub_static_methods_classGUIWindow"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGUIWindow.html#a5c1f1a3ef130e92819f280b3824cecb9">InitializeGUI</a> ()</td></tr>
 <tr class="separator:a5c1f1a3ef130e92819f280b3824cecb9 inherit pub_static_methods_classGUIWindow"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pro-static-methods" name="pro-static-methods"></a>
+Static Protected Member Functions</h2></td></tr>
+<tr class="memitem:a4dadf01fc4dacdd380da1b7fb19d64c5"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGUIWindow__MainMenu.html#a4dadf01fc4dacdd380da1b7fb19d64c5">drawMM7CopyrightWindow</a> ()</td></tr>
+<tr class="separator:a4dadf01fc4dacdd380da1b7fb19d64c5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pro-attribs" name="pro-attribs"></a>
 Protected Attributes</h2></td></tr>
@@ -254,6 +263,65 @@ Additional Inherited Members</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
+<a id="a5830c23f3f369504136dd7c3122268f5" name="a5830c23f3f369504136dd7c3122268f5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5830c23f3f369504136dd7c3122268f5">&#9670;&#160;</a></span>drawCopyrightAndInit()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void GUIWindow_MainMenu::drawCopyrightAndInit </td>
+          <td>(</td>
+          <td class="paramtype">std::function&lt; void()&gt;&#160;</td>
+          <td class="paramname"><em>initFunc</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Performs secondary initialization while showing copyright window. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">initFunc</td><td>Pointer to code which is executed while copyright window is showed. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a4dadf01fc4dacdd380da1b7fb19d64c5" name="a4dadf01fc4dacdd380da1b7fb19d64c5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4dadf01fc4dacdd380da1b7fb19d64c5">&#9670;&#160;</a></span>drawMM7CopyrightWindow()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void GUIWindow_MainMenu::drawMM7CopyrightWindow </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="a3a60ce7f0e258d5cf1d17037b19bc9a1" name="a3a60ce7f0e258d5cf1d17037b19bc9a1"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a3a60ce7f0e258d5cf1d17037b19bc9a1">&#9670;&#160;</a></span>EventLoop()</h2>
 
@@ -271,8 +339,8 @@ Additional Inherited Members</h2></td></tr>
 
 </div>
 </div>
-<a id="ad12c43bc3078a3dbdab21a148ba71b64" name="ad12c43bc3078a3dbdab21a148ba71b64"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ad12c43bc3078a3dbdab21a148ba71b64">&#9670;&#160;</a></span>Loop()</h2>
+<a id="a986b093bc51e30f309f2b4e77a844f44" name="a986b093bc51e30f309f2b4e77a844f44"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a986b093bc51e30f309f2b4e77a844f44">&#9670;&#160;</a></span>loop()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -281,7 +349,7 @@ Additional Inherited Members</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">void GUIWindow_MainMenu::Loop </td>
+          <td class="memname">void GUIWindow_MainMenu::loop </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>

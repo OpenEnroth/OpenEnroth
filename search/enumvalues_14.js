@@ -185,7 +185,7 @@ var searchData=
   ['uimsg_5fshowstatus_5fplayer_182',['UIMSG_ShowStatus_Player',['../GUIEnums_8h.html#a2519966952faeb9397447ce89e9bcb02ab81cf2234122292e147fd343e0a96d08',1,'GUIEnums.h']]],
   ['uimsg_5fskillup_183',['UIMSG_SkillUp',['../GUIEnums_8h.html#a2519966952faeb9397447ce89e9bcb02aeed36f20b9b53df6085fba0d679e6492',1,'GUIEnums.h']]],
   ['uimsg_5fspellbook_5fpresstab_184',['UIMSG_SpellBook_PressTab',['../GUIEnums_8h.html#a2519966952faeb9397447ce89e9bcb02a0a8bef34bacc37dcf16c485d527f70de',1,'GUIEnums.h']]],
-  ['uimsg_5fspellbook_5fshowhightlightedspellinfo_185',['UIMSG_SPellbook_ShowHightlightedSpellInfo',['../GUIEnums_8h.html#a2519966952faeb9397447ce89e9bcb02a2f519f43b4508cd82b588b7cd0d54a15',1,'GUIEnums.h']]],
+  ['uimsg_5fspellbook_5fshowhightlightedspellinfo_185',['UIMSG_Spellbook_ShowHightlightedSpellInfo',['../GUIEnums_8h.html#a2519966952faeb9397447ce89e9bcb02a5f947a4b854986c35be406b78e2b0a82',1,'GUIEnums.h']]],
   ['uimsg_5fspellbookwindow_186',['UIMSG_SpellBookWindow',['../GUIEnums_8h.html#a2519966952faeb9397447ce89e9bcb02a2ea53600219de124064103f0f9f8e39c',1,'GUIEnums.h']]],
   ['uimsg_5fspellscrolluse_187',['UIMSG_SpellScrollUse',['../GUIEnums_8h.html#a2519966952faeb9397447ce89e9bcb02a7643b9b4ef38b23e2eacb9e50855f5ab',1,'GUIEnums.h']]],
   ['uimsg_5fstarthireling1dialogue_188',['UIMSG_StartHireling1Dialogue',['../GUIEnums_8h.html#a2519966952faeb9397447ce89e9bcb02a9398deae2759a59513df77dc7e3aff1d',1,'GUIEnums.h']]],
