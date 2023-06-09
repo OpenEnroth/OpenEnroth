@@ -297,7 +297,7 @@ void Localization::InitializeSkillNames() {
 
     skill_desc_raw = engine->_gameResourceManager->getEventsFile("skilldes.txt").string_view();
     strtok(skill_desc_raw.data(), "\r");
-    for (PLAYER_SKILL_TYPE i : VisibleSkills()) {
+    for (PLAYER_SKILL_TYPE i : allVisibleSkills()) {
         char *test_string = strtok(NULL, "\r") + 1;
 
         if (test_string != NULL && strlen(test_string) > 0) {

@@ -151,7 +151,6 @@ enum PlayerSpeech {
     SPEECH_LAST = SPEECH_110
 };
 
-/*  339 */
 enum CHARACTER_RACE {
     CHARACTER_RACE_HUMAN = 0,
     CHARACTER_RACE_ELF = 1,
@@ -159,6 +158,7 @@ enum CHARACTER_RACE {
     CHARACTER_RACE_DWARF = 3,
 };
 
+// TODO(captainurist): think of a better name for this enum.
 enum ClassSkill : uint8_t {
     CLASS_SKILL_DENIED = 0,
     CLASS_SKILL_AVAILABLE = 1,
@@ -166,9 +166,6 @@ enum ClassSkill : uint8_t {
 };
 using enum ClassSkill;
 
-#pragma warning(push)
-#pragma warning(disable : 4341) // TODO(captainurist): msvc mis-warns here, just drop this warning altogether for msvc
-/*  328 */
 enum class PLAYER_SKILL_TYPE : int8_t {
     PLAYER_SKILL_INVALID = -1,
     PLAYER_SKILL_STAFF = 0,
@@ -219,14 +216,14 @@ enum class PLAYER_SKILL_TYPE : int8_t {
 };
 using enum PLAYER_SKILL_TYPE;
 
-inline Segment<PLAYER_SKILL_TYPE> AllSkills() {
+inline Segment<PLAYER_SKILL_TYPE> allSkills() {
     return Segment(PLAYER_SKILL_FIRST, PLAYER_SKILL_LAST);
 }
 
 /**
  * @return                              List of skills that are visible to the player and that are stored in a savegame.
  */
-inline Segment<PLAYER_SKILL_TYPE> VisibleSkills() {
+inline Segment<PLAYER_SKILL_TYPE> allVisibleSkills() {
     return Segment(PLAYER_SKILL_FIRST_VISIBLE, PLAYER_SKILL_LAST_VISIBLE);
 }
 
@@ -234,7 +231,7 @@ inline Segment<PLAYER_SKILL_TYPE> VisibleSkills() {
  * @return                              List of skills that are drawn in the "Armor" section of the character
  *                                      screen's skills tab.
  */
-inline std::initializer_list<PLAYER_SKILL_TYPE> ArmorSkills() {
+inline std::initializer_list<PLAYER_SKILL_TYPE> allArmorSkills() {
     static constexpr std::initializer_list<PLAYER_SKILL_TYPE> result = {
         PLAYER_SKILL_LEATHER, PLAYER_SKILL_CHAIN, PLAYER_SKILL_PLATE,
         PLAYER_SKILL_SHIELD,  PLAYER_SKILL_DODGE
@@ -247,7 +244,7 @@ inline std::initializer_list<PLAYER_SKILL_TYPE> ArmorSkills() {
  * @return                              List of skills that are drawn in the "Weapons" section of the character
  *                                      screen's skills tab.
  */
-inline std::initializer_list<PLAYER_SKILL_TYPE> WeaponSkills() {
+inline std::initializer_list<PLAYER_SKILL_TYPE> allWeaponSkills() {
     static constexpr std::initializer_list<PLAYER_SKILL_TYPE> result = {
         PLAYER_SKILL_AXE,   PLAYER_SKILL_BOW,     PLAYER_SKILL_DAGGER,
         PLAYER_SKILL_MACE,  PLAYER_SKILL_SPEAR,   PLAYER_SKILL_STAFF,
@@ -262,7 +259,7 @@ inline std::initializer_list<PLAYER_SKILL_TYPE> WeaponSkills() {
  * @return                              List of skills that are drawn in the "Misc" section of the character
  *                                      screen's skills tab.
  */
-inline std::initializer_list<PLAYER_SKILL_TYPE> MiscSkills() {
+inline std::initializer_list<PLAYER_SKILL_TYPE> allMiscSkills() {
     static constexpr std::initializer_list<PLAYER_SKILL_TYPE> result = {
         PLAYER_SKILL_ALCHEMY,      PLAYER_SKILL_ARMSMASTER,
         PLAYER_SKILL_BODYBUILDING, PLAYER_SKILL_ITEM_ID,
@@ -279,7 +276,7 @@ inline std::initializer_list<PLAYER_SKILL_TYPE> MiscSkills() {
  * @return                              List of skills that are drawn in the "Magic" section of the character
  *                                      screen's skills tab.
  */
-inline std::initializer_list<PLAYER_SKILL_TYPE> MagicSkills() {
+inline std::initializer_list<PLAYER_SKILL_TYPE> allMagicSkills() {
     static constexpr std::initializer_list<PLAYER_SKILL_TYPE> result = {
         PLAYER_SKILL_FIRE,  PLAYER_SKILL_AIR,    PLAYER_SKILL_WATER,
         PLAYER_SKILL_EARTH, PLAYER_SKILL_SPIRIT, PLAYER_SKILL_MIND,
@@ -288,8 +285,6 @@ inline std::initializer_list<PLAYER_SKILL_TYPE> MagicSkills() {
 
     return result;
 }
-
-#pragma warning(pop)
 
 /*  329 */
 // TODO(Nik-RE-dev): turn it into enum class

@@ -41,7 +41,6 @@ class Game {
  private:
     PlatformApplication *_application = nullptr;
     std::shared_ptr<GameConfig> _config;
-    std::unique_ptr<GameWindowHandler> _windowHandler;
     std::unique_ptr<NuklearEventHandler> _nuklearHandler;
     std::shared_ptr<Engine> _engine;
     std::shared_ptr<IRender> _render;

@@ -759,7 +759,7 @@ void GUIWindow_AlchemyShop::generateShopItems(bool isSpecial) {
         if (i < 6) {
             itemArray[i].Reset();
             if (isSpecial) {
-                itemArray[i].uItemID = grng->randomSample(recipeScrolls());
+                itemArray[i].uItemID = grng->randomSample(allRecipeScrolls());
             } else {
                 itemArray[i].uItemID = ITEM_POTION_BOTTLE;
             }

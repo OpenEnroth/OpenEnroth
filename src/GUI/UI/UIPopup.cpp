@@ -2124,7 +2124,7 @@ void Inventory_ItemPopupAndAlchemy() {
             for (int i = 0; i < 6; ++i) {
                 if (mouse->uMouseX >= ringsX[i] && mouse->uMouseX <= (ringsX[i] + slotSize) &&
                     mouse->uMouseY >= ringsY[i] && mouse->uMouseY <= (ringsY[i] + slotSize)) {
-                    pos = RingSlot(i);
+                    pos = ringSlot(i);
                 }
             }
 

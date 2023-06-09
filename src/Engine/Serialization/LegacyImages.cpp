@@ -343,9 +343,8 @@ void serialize(const Party &src, Party_MM7 *dst) {
     dst->timePlayed = src.playing_time.value;
     dst->lastRegenerationTime = src.last_regenerated.value;
 
-    // MM7 uses an array of size 10 here, but we only store 5 elements. So zero it first.
-    dst->partyTimes.bountyHuntingNextGenerationTime.fill(0);
-    serialize(src.PartyTimes.bountyHuntNextGenTime, &dst->partyTimes.bountyHuntingNextGenerationTime, 5);
+    serialize(src.PartyTimes.bountyHuntNextGenTime, &dst->partyTimes.bountyHuntingNextGenerationTime);
+    dst->partyTimes.bountyHuntingNextGenerationTimeUnused.fill(0);
 
     // Initially was one array but was splitted in two to simplify access with first element as zero
     // because it is corresponding to invalid house ID
@@ -475,7 +474,7 @@ void deserialize(const Party_MM7 &src, Party *dst) {
     dst->playing_time.value = src.timePlayed;
     dst->last_regenerated.value = src.lastRegenerationTime;
 
-    deserialize(src.partyTimes.bountyHuntingNextGenerationTime, &dst->PartyTimes.bountyHuntNextGenTime, 5);
+    deserialize(src.partyTimes.bountyHuntingNextGenerationTime, &dst->PartyTimes.bountyHuntNextGenTime);
     deserialize(src.partyTimes.shopsNextGenerationTime, &dst->PartyTimes.shopNextRefreshTime);
     deserialize(src.partyTimes.guildsNextGenerationTime, &dst->PartyTimes.guildNextRefreshTime);
     deserialize(src.partyTimes.shopBanTimes, &dst->PartyTimes.shopBanTimes);

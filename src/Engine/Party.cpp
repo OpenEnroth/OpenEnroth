@@ -512,7 +512,7 @@ void Party::createDefaultParty(bool bDebugGiveItems) {
 
         pCharacter.lastOpenedSpellbookPage = 0;
         int count = 0;
-        for (PLAYER_SKILL_TYPE skill : MagicSkills()) {  // for Magic Book
+        for (PLAYER_SKILL_TYPE skill : allMagicSkills()) {  // for Magic Book
             if (pCharacter.pActiveSkills[skill]) {
                 pCharacter.lastOpenedSpellbookPage = count;
                 break;
@@ -593,7 +593,7 @@ void Party::createDefaultParty(bool bDebugGiveItems) {
                         case PLAYER_SKILL_TRAP_DISARM:
                         case PLAYER_SKILL_LEARNING:
                             pCharacter.AddItem(-1, ITEM_POTION_BOTTLE);
-                            pCharacter.AddItem(-1, grng->randomSample(Level1Reagents())); // Add simple reagent.
+                            pCharacter.AddItem(-1, grng->randomSample(allLevel1Reagents())); // Add simple reagent.
                             break;
                         case PLAYER_SKILL_DODGE:
                             pCharacter.AddItem(-1, ITEM_LEATHER_BOOTS);
