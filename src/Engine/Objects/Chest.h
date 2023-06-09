@@ -8,14 +8,14 @@
 #include "Utility/Memory/Blob.h"
 #include "Utility/Flags.h"
 
-enum class CHEST_FLAG : uint16_t {
+enum class ChestFlag : uint16_t {
     CHEST_TRAPPED = 0x1,
     CHEST_ITEMS_PLACED = 0x2,
     CHEST_OPENED = 0x4,
 };
-using enum CHEST_FLAG;
-MM_DECLARE_FLAGS(CHEST_FLAGS, CHEST_FLAG)
-MM_DECLARE_OPERATORS_FOR_FLAGS(CHEST_FLAGS)
+using enum ChestFlag;
+MM_DECLARE_FLAGS(ChestFlags, ChestFlag)
+MM_DECLARE_OPERATORS_FOR_FLAGS(ChestFlags)
 
 struct ChestDesc {
     std::string sName;
@@ -52,13 +52,13 @@ struct Chest {
     static void PlaceItemAt(unsigned int put_cell_pos, unsigned int uItemIdx, int uChestID);
     static void PlaceItems(int uChestID);
     static bool open(int uChestID, int objectPid);
-    static void toggleFlag(int uChestID, CHEST_FLAG uFlag, bool bValue);
+    static void toggleFlag(int uChestID, ChestFlag uFlag, bool bValue);
     static bool ChestUI_WritePointedObjectStatusString();
     static void OnChestLeftClick();
     static void GrabItem(bool all = false);
 
     uint16_t uChestBitmapID = 0;
-    CHEST_FLAGS uFlags;
+    ChestFlags uFlags;
     std::array<ItemGen, 140> igChestItems;
     std::array<int16_t, 140> pInventoryIndices = {{}};  // 0x13b4 why is this a short?
 };

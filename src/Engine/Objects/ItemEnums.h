@@ -28,7 +28,7 @@ enum class DAMAGE_TYPE : unsigned int {
 using enum DAMAGE_TYPE;
 
 /*  338 */
-enum class ITEM_FLAG : uint32_t {
+enum class ItemFlag : uint32_t {
     ITEM_IDENTIFIED = 0x1,
     ITEM_BROKEN = 0x2,
     ITEM_TEMP_BONUS = 0x8,
@@ -40,9 +40,9 @@ enum class ITEM_FLAG : uint32_t {
     ITEM_STOLEN = 0x100,
     ITEM_HARDENED = 0x200,
 };
-using enum ITEM_FLAG;
-MM_DECLARE_FLAGS(ITEM_FLAGS, ITEM_FLAG)
-MM_DECLARE_OPERATORS_FOR_FLAGS(ITEM_FLAGS)
+using enum ItemFlag;
+MM_DECLARE_FLAGS(ItemFlags, ItemFlag)
+MM_DECLARE_OPERATORS_FOR_FLAGS(ItemFlags)
 
 enum ITEM_ENCHANTMENT : unsigned int {
     ITEM_ENCHANTMENT_NULL = 0,
@@ -154,7 +154,7 @@ enum class ITEM_TREASURE_LEVEL : int8_t {
 };
 using enum ITEM_TREASURE_LEVEL;
 
-inline bool IsRandomTreasureLevel(ITEM_TREASURE_LEVEL level) {
+inline bool isRandomTreasureLevel(ITEM_TREASURE_LEVEL level) {
     return level >= ITEM_TREASURE_LEVEL_FIRST_RANDOM && level <= ITEM_TREASURE_LEVEL_LAST_RANDOM;
 }
 
@@ -1100,7 +1100,7 @@ inline Segment<ITEM_TYPE> spellbooksOfSchool(DAMAGE_TYPE damage, PLAYER_SKILL_MA
     return Segment(ITEM_TYPE(firstSpellInSchool), ITEM_TYPE(lastSpellInSchool));
 }
 
-inline Segment<ITEM_TYPE> recipeScrolls() {
+inline Segment<ITEM_TYPE> allRecipeScrolls() {
     return Segment(ITEM_FIRST_RECIPE, ITEM_LAST_RECIPE);
 }
 
@@ -1108,7 +1108,7 @@ inline Segment<ITEM_TYPE> recipeScrolls() {
  * @return                              Range of all items that can be randomly generated as loot. Note that not all
  *                                      of the entries might actually be valid.
  */
-inline Segment<ITEM_TYPE> SpawnableItems() {
+inline Segment<ITEM_TYPE> allSpawnableItems() {
     return Segment(ITEM_FIRST_SPAWNABLE, ITEM_LAST_SPAWNABLE);
 }
 
@@ -1118,14 +1118,14 @@ inline Segment<ITEM_TYPE> SpawnableItems() {
  *                                      generated this way, e.g. Hermes' Sandals can only be picked up from a
  *                                      Mega Dragon's corpse.
  */
-inline Segment<ITEM_TYPE> SpawnableArtifacts() {
+inline Segment<ITEM_TYPE> allSpawnableArtifacts() {
     return Segment(ITEM_FIRST_SPAWNABLE_ARTIFACT, ITEM_LAST_SPAWNABLE_ARTIFACT);
 }
 
 /**
  * @return                              List of lowest level (power=1) alchemical reagents.
  */
-inline std::initializer_list<ITEM_TYPE> Level1Reagents() {
+inline std::initializer_list<ITEM_TYPE> allLevel1Reagents() {
     static constexpr std::initializer_list<ITEM_TYPE> result = {
         ITEM_REAGENT_WIDOWSWEEP_BERRIES,
         ITEM_REAGENT_PHIRNA_ROOT,
@@ -1191,7 +1191,7 @@ using enum ITEM_EQUIP_TYPE;
  * @return                              Whether the provided type represents a `passive` equipment, e.g. shields,
  *                                      armor, rings, amulets, etc.
  */
-inline bool IsPassiveEquipment(ITEM_EQUIP_TYPE type) {
+inline bool isPassiveEquipment(ITEM_EQUIP_TYPE type) {
     return type >= EQUIP_ARMOUR && type <= EQUIP_AMULET;
 }
 
@@ -1200,7 +1200,7 @@ inline bool IsPassiveEquipment(ITEM_EQUIP_TYPE type) {
  * @return                              Whether the provided type represents wearable armor, e.g. any passive
  *                                      equipment except amulets and rings.
  */
-inline bool IsArmor(ITEM_EQUIP_TYPE type) {
+inline bool isArmor(ITEM_EQUIP_TYPE type) {
     return type >= EQUIP_ARMOUR && type <= EQUIP_BOOTS;
 }
 
@@ -1209,7 +1209,7 @@ inline bool IsArmor(ITEM_EQUIP_TYPE type) {
  * @return                              Whether the provided type represents a weapon. Note that wands are not
  *                                      considered weapons.
  */
-inline bool IsWeapon(ITEM_EQUIP_TYPE type) {
+inline bool isWeapon(ITEM_EQUIP_TYPE type) {
     return type >= EQUIP_SINGLE_HANDED && type <= EQUIP_BOW;
 }
 
@@ -1243,15 +1243,15 @@ enum class ITEM_SLOT : uint8_t {
 };
 using enum ITEM_SLOT;
 
-inline Segment<ITEM_SLOT> RingSlots() {
+inline Segment<ITEM_SLOT> allRingSlots() {
     return Segment(ITEM_SLOT_RING1, ITEM_SLOT_RING6);
 }
 
-inline ITEM_SLOT RingSlot(int index) {
+inline ITEM_SLOT ringSlot(int index) {
     assert(index >= 0 && index <= 5);
     return static_cast<ITEM_SLOT>(std::to_underlying(ITEM_SLOT_RING1) + index);
 }
 
-inline Segment<ITEM_SLOT> AllItemSlots() {
+inline Segment<ITEM_SLOT> allItemSlots() {
     return Segment(ITEM_SLOT_FIRST_VALID, ITEM_SLOT_LAST_VALID);
 }

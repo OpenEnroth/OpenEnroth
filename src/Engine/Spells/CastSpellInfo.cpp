@@ -1404,8 +1404,8 @@ void CastSpellInfoHelpers::castSpell() {
                             spell_item_to_enchant->m_enchantmentStrength == 0 &&
                             !spell_item_to_enchant->IsBroken()) {
                         // break items with low value
-                        if ((spell_item_to_enchant->GetValue() < 450 && !IsWeapon(this_equip_type)) ||  // not weapons
-                                (spell_item_to_enchant->GetValue() < 250 && IsWeapon(this_equip_type))) {  // weapons
+                        if ((spell_item_to_enchant->GetValue() < 450 && !isWeapon(this_equip_type)) ||  // not weapons
+                                (spell_item_to_enchant->GetValue() < 250 && isWeapon(this_equip_type))) {  // weapons
                             if (!(spell_item_to_enchant->uAttributes & ITEM_HARDENED)) {
                                 spell_item_to_enchant->SetBroken();
                             }
@@ -1418,7 +1418,7 @@ void CastSpellInfoHelpers::castSpell() {
                                 }
                             } else {
                                 // Weapons are limited to special enchantments, but all other types can have either
-                                if (rnd < 80 && IsPassiveEquipment(this_equip_type)) { // chance to roll standard enchantment on non-weapons
+                                if (rnd < 80 && isPassiveEquipment(this_equip_type)) { // chance to roll standard enchantment on non-weapons
                                     int ench_found = 0;
                                     int to_item_apply_sum = 0;
                                     int ench_array[100] = { 0 };

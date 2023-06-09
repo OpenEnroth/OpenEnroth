@@ -388,7 +388,7 @@ void ItemTable::LoadPotionNotes() {
 }
 
 void ItemTable::generateItem(ITEM_TREASURE_LEVEL treasure_level, unsigned int uTreasureType, ItemGen *outItem) {
-    Assert(IsRandomTreasureLevel(treasure_level));
+    Assert(isRandomTreasureLevel(treasure_level));
 
     int current_chance;           // ebx@43
     int tmp_chance;               // ecx@47
@@ -500,7 +500,7 @@ void ItemTable::generateItem(ITEM_TREASURE_LEVEL treasure_level, unsigned int uT
         j = 0;
         // a2a = 1;
         if (requested_skill == PLAYER_SKILL_INVALID) {  // no skill for this item needed
-            for (ITEM_TYPE i : SpawnableItems()) {
+            for (ITEM_TYPE i : allSpawnableItems()) {
                 if (pItems[i].uEquipType == requested_equip) {
                     spawnableRequestedItems[j] = i;
                     ++j;
@@ -509,7 +509,7 @@ void ItemTable::generateItem(ITEM_TREASURE_LEVEL treasure_level, unsigned int uT
                 }
             }
         } else {  // have needed skill
-            for (ITEM_TYPE itemId : SpawnableItems()) {
+            for (ITEM_TYPE itemId : allSpawnableItems()) {
                 if (pItems[itemId].uSkillType == requested_skill) {
                     spawnableRequestedItems[j] = itemId;
                     ++j;
@@ -536,9 +536,9 @@ void ItemTable::generateItem(ITEM_TREASURE_LEVEL treasure_level, unsigned int uT
         // artifact
         if (treasure_level == ITEM_TREASURE_LEVEL_6) {
             int artifactsFound = 0;  // [sp+CA0h] [bp+Ch]@55
-            for (ITEM_TYPE i : SpawnableArtifacts())
+            for (ITEM_TYPE i : allSpawnableArtifacts())
                 artifactsFound += pParty->pIsArtifactFound[i];
-            artifactRandomId = grng->randomSample(SpawnableArtifacts());
+            artifactRandomId = grng->randomSample(allSpawnableArtifacts());
             if ((grng->random(100) < 5) && !pParty->pIsArtifactFound[artifactRandomId] &&
                 (engine->config->gameplay.ArtifactLimit.value() == 0 || artifactsFound < engine->config->gameplay.ArtifactLimit.value())) {
                 pParty->pIsArtifactFound[artifactRandomId] = 1;

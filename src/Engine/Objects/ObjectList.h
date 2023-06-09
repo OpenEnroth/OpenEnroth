@@ -5,9 +5,9 @@
 #include <vector>
 
 #include "Utility/Memory/Blob.h"
+#include "Utility/Flags.h"
 
-// TODO: Use enum class & class Flags.
-enum OBJECT_DESC_FLAGS : int16_t {
+enum class ObjectDescFlag : int16_t {
     OBJECT_DESC_NO_SPRITE = 0x1,
     OBJECT_DESC_NO_COLLISION = 0x2,
     OBJECT_DESC_TEMPORARY = 0x4,
@@ -20,6 +20,9 @@ enum OBJECT_DESC_FLAGS : int16_t {
     OBJECT_DESC_TRIAL_FIRE = 0x200,
     OBJECT_DESC_TRIAL_LINE = 0x400,
 };
+using enum ObjectDescFlag;
+MM_DECLARE_FLAGS(ObjectDescFlags, ObjectDescFlag)
+MM_DECLARE_OPERATORS_FOR_FLAGS(ObjectDescFlags)
 
 struct ObjectDesc {
     inline bool NoSprite() const { return uFlags & OBJECT_DESC_NO_SPRITE; }
@@ -28,7 +31,7 @@ struct ObjectDesc {
     int16_t uObjectID;
     int16_t uRadius;
     int16_t uHeight;
-    OBJECT_DESC_FLAGS uFlags;
+    ObjectDescFlags uFlags;
     uint16_t uSpriteID;
     int16_t uLifetime;
     uint32_t uParticleTrailColor;

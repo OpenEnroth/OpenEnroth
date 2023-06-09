@@ -1796,7 +1796,7 @@ void RegeneratePartyHealthMana() {
 
             // HP/SP regeneration and HP deterioration
             for (Player &player : pParty->pPlayers) {
-                for (ITEM_SLOT idx : AllItemSlots()) {
+                for (ITEM_SLOT idx : allItemSlots()) {
                     bool recovery_HP = false;
                     bool decrease_HP = false;
                     bool recovery_SP = false;

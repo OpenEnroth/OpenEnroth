@@ -93,13 +93,13 @@ struct ItemGen {  // 0x24
         return GetItemEquipType() == EQUIP_SINGLE_HANDED || GetItemEquipType() == EQUIP_TWO_HANDED;
     }
     bool isWeapon() const {
-        return IsWeapon(GetItemEquipType());
+        return ::isWeapon(GetItemEquipType());
     }
     bool isArmor() const {
-        return IsArmor(GetItemEquipType());
+        return ::isArmor(GetItemEquipType());
     }
     bool isPassiveEquipment() const {
-        return IsPassiveEquipment(GetItemEquipType());
+        return ::isPassiveEquipment(GetItemEquipType());
     }
 
 
@@ -110,7 +110,7 @@ struct ItemGen {  // 0x24
     int32_t m_enchantmentStrength = 0;  // 8
     ITEM_ENCHANTMENT special_enchantment = ITEM_ENCHANTMENT_NULL;  // 0c // For gold it's amount
     int32_t uNumCharges = 0;           // 10
-    ITEM_FLAGS uAttributes = 0;          // 14
+    ItemFlags uAttributes = 0;          // 14
     ITEM_SLOT uBodyAnchor = ITEM_SLOT_INVALID; // 18
     uint8_t uMaxCharges = 0;           // 19
     uint8_t uHolderPlayer = -1;        // 1A

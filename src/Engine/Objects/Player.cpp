@@ -268,7 +268,7 @@ bool Player::NothingOrJustBlastersEquipped() const {
     ITEM_TYPE item_id;
 
     // scan through all equipped items
-    for (ITEM_SLOT i : AllItemSlots()) {
+    for (ITEM_SLOT i : allItemSlots()) {
         item_idx = pEquipment.pIndices[i];
 
         if (item_idx) {
@@ -1377,7 +1377,7 @@ bool Player::HasItemEquipped(ITEM_SLOT uEquipIndex) const {
 
 //----- (0048D6D0) --------------------------------------------------------
 bool Player::HasEnchantedItemEquipped(int uEnchantment) const {
-    for (ITEM_SLOT i : AllItemSlots()) {  // search over equipped inventory
+    for (ITEM_SLOT i : allItemSlots()) {  // search over equipped inventory
         if (HasItemEquipped(i) &&
             GetNthEquippedIndexItem(i)->special_enchantment == uEnchantment)
             return true;  // check item equipped and is enchanted
@@ -1393,7 +1393,7 @@ bool Player::WearsItem(ITEM_TYPE item_id, ITEM_SLOT equip_type) const {
 }
 
 bool Player::wearsItemAnywhere(ITEM_TYPE item_id) const {
-    for (ITEM_SLOT i : AllItemSlots())
+    for (ITEM_SLOT i : allItemSlots())
         if (WearsItem(item_id, i))
             return true;
     return false;
@@ -1686,7 +1686,7 @@ int Player::ReceiveSpecialAttackEffect(
             break;
 
         case SPECIAL_ATTACK_BREAK_ARMOR:
-            for (ITEM_SLOT i : AllItemSlots()) {
+            for (ITEM_SLOT i : allItemSlots()) {
                 if (HasItemEquipped(i)) {
                     if (i == ITEM_SLOT_ARMOUR)
                         itemstobreaklist[itemstobreakcounter++] =
@@ -1709,7 +1709,7 @@ int Player::ReceiveSpecialAttackEffect(
             break;
 
         case SPECIAL_ATTACK_BREAK_WEAPON:
-            for (ITEM_SLOT i : AllItemSlots()) {
+            for (ITEM_SLOT i : allItemSlots()) {
                 if (HasItemEquipped(i)) {
                     if (i == ITEM_SLOT_BOW)
                         itemstobreaklist[itemstobreakcounter++] =
@@ -2370,7 +2370,7 @@ int Player::GetParameterBonus(int player_parameter) const {
 
 //----- (0048EA46) --------------------------------------------------------
 int Player::GetSpecialItemBonus(ITEM_ENCHANTMENT enchantment) const {
-    for (ITEM_SLOT i : AllItemSlots()) {
+    for (ITEM_SLOT i : allItemSlots()) {
         if (HasItemEquipped(i)) {
             if (enchantment == ITEM_ENCHANTMENT_OF_RECOVERY) {
                 if (GetNthEquippedIndexItem(i)->special_enchantment ==
@@ -2509,7 +2509,7 @@ int Player::GetItemsBonus(CHARACTER_ATTRIBUTE_TYPE attr, bool getOnlyMainHandDmg
                 return 3;
             } else {
                 if (this->HasItemEquipped(ITEM_SLOT_MAIN_HAND)) {
-                    if (IsWeapon(GetEquippedItemEquipType(ITEM_SLOT_MAIN_HAND))) {
+                    if (isWeapon(GetEquippedItemEquipType(ITEM_SLOT_MAIN_HAND))) {
                         const ItemGen *mainHandItem = GetMainHandItem();
                         v26 = mainHandItem->GetDamageRoll();
                         if (GetOffHandItem() != nullptr ||
@@ -2523,7 +2523,7 @@ int Player::GetItemsBonus(CHARACTER_ATTRIBUTE_TYPE attr, bool getOnlyMainHandDmg
                 }
                 if (getOnlyMainHandDmg ||
                     !this->HasItemEquipped(ITEM_SLOT_OFF_HAND) ||
-                    !IsWeapon(GetEquippedItemEquipType(ITEM_SLOT_OFF_HAND))) {
+                    !isWeapon(GetEquippedItemEquipType(ITEM_SLOT_OFF_HAND))) {
                     return v5;
                 } else {
                     const ItemGen *offHandItem = GetOffHandItem();
@@ -2541,13 +2541,13 @@ int Player::GetItemsBonus(CHARACTER_ATTRIBUTE_TYPE attr, bool getOnlyMainHandDmg
                 return 0;
             }
             if (this->HasItemEquipped(ITEM_SLOT_MAIN_HAND)) {
-                if (IsWeapon(GetEquippedItemEquipType(ITEM_SLOT_MAIN_HAND))) {
+                if (isWeapon(GetEquippedItemEquipType(ITEM_SLOT_MAIN_HAND))) {
                     v5 = GetMainHandItem()->GetDamageMod();
                 }
             }
             if (getOnlyMainHandDmg ||
                 !this->HasItemEquipped(ITEM_SLOT_OFF_HAND) ||
-                !IsWeapon(this->GetEquippedItemEquipType(ITEM_SLOT_OFF_HAND))) {
+                !isWeapon(this->GetEquippedItemEquipType(ITEM_SLOT_OFF_HAND))) {
                 return v5;
             } else {
                 v56 = GetOffHandItem()->GetDamageMod();
@@ -2560,7 +2560,7 @@ int Player::GetItemsBonus(CHARACTER_ATTRIBUTE_TYPE attr, bool getOnlyMainHandDmg
                 return 1;
             }
             if (this->HasItemEquipped(ITEM_SLOT_MAIN_HAND)) {
-                if (IsWeapon(GetEquippedItemEquipType(ITEM_SLOT_MAIN_HAND))) {
+                if (isWeapon(GetEquippedItemEquipType(ITEM_SLOT_MAIN_HAND))) {
                     const ItemGen *mainHandItem = GetMainHandItem();
                     v5 = mainHandItem->GetDamageDice() +
                          mainHandItem->GetDamageMod();
@@ -2573,7 +2573,7 @@ int Player::GetItemsBonus(CHARACTER_ATTRIBUTE_TYPE attr, bool getOnlyMainHandDmg
 
             if (getOnlyMainHandDmg ||
                 !this->HasItemEquipped(ITEM_SLOT_OFF_HAND) ||
-                !IsWeapon(GetEquippedItemEquipType(ITEM_SLOT_OFF_HAND))) {
+                !isWeapon(GetEquippedItemEquipType(ITEM_SLOT_OFF_HAND))) {
                 return v5;
             } else {
                 const ItemGen *offHandItem = GetOffHandItem();
@@ -2624,11 +2624,11 @@ int Player::GetItemsBonus(CHARACTER_ATTRIBUTE_TYPE attr, bool getOnlyMainHandDmg
         case CHARACTER_ATTRIBUTE_SKILL_BOW:
         case CHARACTER_ATTRIBUTE_SKILL_SHIELD:
         case CHARACTER_ATTRIBUTE_SKILL_LEARNING:
-            for (ITEM_SLOT i : AllItemSlots()) {
+            for (ITEM_SLOT i : allItemSlots()) {
                 if (HasItemEquipped(i)) {
                     currEquippedItem = GetNthEquippedIndexItem(i);
                     if (attr == CHARACTER_ATTRIBUTE_AC_BONUS) {
-                        if (IsPassiveEquipment(currEquippedItem->GetItemEquipType())) {
+                        if (isPassiveEquipment(currEquippedItem->GetItemEquipType())) {
                             v5 += currEquippedItem->GetDamageDice() +
                                   currEquippedItem->GetDamageMod();
                         }
@@ -2949,7 +2949,7 @@ int Player::GetSkillBonus(CHARACTER_ATTRIBUTE_TYPE inSkill) const {
             bool wearingLeather = false;
             unsigned int ACSum = 0;
 
-            for (ITEM_SLOT j : AllItemSlots()) {
+            for (ITEM_SLOT j : allItemSlots()) {
                 const ItemGen *currItem = GetNthEquippedIndexItem(j);
                 if (currItem != nullptr && (!currItem->IsBroken())) {
                     PLAYER_SKILL_TYPE itemSkillType =
@@ -3018,7 +3018,7 @@ int Player::GetSkillBonus(CHARACTER_ATTRIBUTE_TYPE inSkill) const {
                     PLAYER_SKILL_UNARMED, 0, 1, 2, 2);
                 return armsMasterBonus + multiplier * unarmedSkill;
             }
-            for (ITEM_SLOT i : AllItemSlots()) {  // ?? what eh check behaviour
+            for (ITEM_SLOT i : allItemSlots()) {  // ?? what eh check behaviour
                 if (this->HasItemEquipped(i)) {
                     const ItemGen *currItem = GetNthEquippedIndexItem(i);
                     if (currItem->isMeleeWeapon()) {
@@ -3041,7 +3041,7 @@ int Player::GetSkillBonus(CHARACTER_ATTRIBUTE_TYPE inSkill) const {
             break;
 
         case CHARACTER_ATTRIBUTE_RANGED_ATTACK:
-            for (ITEM_SLOT i : AllItemSlots()) {
+            for (ITEM_SLOT i : allItemSlots()) {
                 if (this->HasItemEquipped(i)) {
                     const ItemGen *currItemPtr = GetNthEquippedIndexItem(i);
                     // TODO(Nik-RE-dev): melee?
@@ -3070,7 +3070,7 @@ int Player::GetSkillBonus(CHARACTER_ATTRIBUTE_TYPE inSkill) const {
                 int multiplier = GetMultiplierForSkillLevel(PLAYER_SKILL_UNARMED, 0, 1, 2, 2);
                 return multiplier * unarmedSkillLevel;
             }
-            for (ITEM_SLOT i : AllItemSlots()) {
+            for (ITEM_SLOT i : allItemSlots()) {
                 if (this->HasItemEquipped(i)) {
                     const ItemGen *currItemPtr = GetNthEquippedIndexItem(i);
                     if (currItemPtr->isMeleeWeapon()) {
@@ -3286,7 +3286,7 @@ void Player::Reset(PLAYER_CLASS_TYPE cls) {
     memset(&spellbook, 0, sizeof(spellbook));
     uQuickSpell = SPELL_NONE;
 
-    for (PLAYER_SKILL_TYPE i : AllSkills()) {
+    for (PLAYER_SKILL_TYPE i : allSkills()) {
         if (pSkillAvailabilityPerClass[classType / 4][i] != 2)
             continue;
 
@@ -3325,7 +3325,7 @@ PLAYER_SKILL_TYPE Player::GetSkillIdxByOrder(signed int order) {
         return PLAYER_SKILL_INVALID;
     }
     counter = 0;
-    for (PLAYER_SKILL_TYPE i : VisibleSkills()) {
+    for (PLAYER_SKILL_TYPE i : allVisibleSkills()) {
         if ((this->pActiveSkills[i] || canBeInactive) &&
             pSkillAvailabilityPerClass[classType / 4][i] == requiredValue) {
             if (counter == order - offset) return i;
@@ -4477,7 +4477,7 @@ bool Player::CompareVariable(VariableType VarNum, int pValue) {
         case VAR_Invisible:
             return pParty->pPartyBuffs[PARTY_BUFF_INVISIBILITY].Active();
         case VAR_ItemEquipped:
-            for (ITEM_SLOT i : AllItemSlots()) {
+            for (ITEM_SLOT i : allItemSlots()) {
                 if (HasItemEquipped(i) &&
                     GetNthEquippedIndexItem(i)->uItemID == ITEM_TYPE(pValue)) {
                     return true;
@@ -5669,7 +5669,7 @@ void Player::SubtractVariable(VariableType VarNum, signed int pValue) {
             this->playReaction(SPEECH_AwardGot);
             return;
         case VAR_PlayerItemInHands:
-            for (ITEM_SLOT i : AllItemSlots()) {
+            for (ITEM_SLOT i : allItemSlots()) {
                 int id_ = this->pEquipment.pIndices[i];
                 if (id_ > 0) {
                     if (this->pInventoryItemList[this->pEquipment.pIndices[i] -
@@ -6244,7 +6244,7 @@ bool Player::hasItem(ITEM_TYPE uItemID, bool checkHeldItem) {
                     return true;
             }
         }
-        for (ITEM_SLOT i : AllItemSlots()) {
+        for (ITEM_SLOT i : allItemSlots()) {
             if (this->pEquipment.pIndices[i]) {
                 if (this
                         ->pInventoryItemList[this->pEquipment.pIndices[i] - 1]
@@ -6938,9 +6938,9 @@ ItemGen *Player::GetAmuletItem() { return GetItem(&PlayerEquipment::uAmulet); }
 const ItemGen *Player::GetAmuletItem() const { return GetItem(&PlayerEquipment::uAmulet); }
 
 ItemGen *Player::GetNthRingItem(int ringNum) {
-    return GetNthEquippedIndexItem(RingSlot(ringNum));
+    return GetNthEquippedIndexItem(ringSlot(ringNum));
 }
-const ItemGen *Player::GetNthRingItem(int ringNum) const { return GetNthEquippedIndexItem(RingSlot(ringNum)); }
+const ItemGen *Player::GetNthRingItem(int ringNum) const { return GetNthEquippedIndexItem(ringSlot(ringNum)); }
 
 ItemGen *Player::GetNthEquippedIndexItem(ITEM_SLOT index) {
     if (this->pEquipment.pIndices[index] == 0) {
@@ -7341,7 +7341,7 @@ bool Player::isClass(PLAYER_CLASS_TYPE class_type, bool check_honorary) const {
 }
 
 //----- (00490EEE) --------------------------------------------------------
-MERCHANT_PHRASE Player::SelectPhrasesTransaction(ItemGen *pItem, BuildingType building_type, int BuildID_2Events, int ShopMenuType) {
+MerchantPhrase Player::SelectPhrasesTransaction(ItemGen *pItem, BuildingType building_type, int BuildID_2Events, int ShopMenuType) {
     // TODO(_): probably move this somewhere else, not really Player:: stuff
     ITEM_TYPE idemId;   // edx@1
     ITEM_EQUIP_TYPE equipType;  // esi@1
@@ -7359,13 +7359,13 @@ MERCHANT_PHRASE Player::SelectPhrasesTransaction(ItemGen *pItem, BuildingType bu
         case BuildingType_WeaponShop:
             if (idemId >= ITEM_ARTIFACT_HERMES_SANDALS)
                 return MERCHANT_PHRASE_INVALID_ACTION;
-            if (!IsWeapon(equipType))
+            if (!isWeapon(equipType))
                 return MERCHANT_PHRASE_INCOMPATIBLE_ITEM;
             break;
         case BuildingType_ArmorShop:
             if (idemId >= ITEM_ARTIFACT_HERMES_SANDALS)
                 return MERCHANT_PHRASE_INVALID_ACTION;
-            if (!IsArmor(equipType))
+            if (!isArmor(equipType))
                 return MERCHANT_PHRASE_INCOMPATIBLE_ITEM;
             break;
         case BuildingType_MagicShop:

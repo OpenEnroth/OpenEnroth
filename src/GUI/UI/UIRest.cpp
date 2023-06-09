@@ -25,7 +25,7 @@ GraphicsImage *rest_ui_hourglass_frame_current = nullptr;
 
 int foodRequiredToRest;
 GameTime remainingRestTime;
-REST_TYPE currentRestType;
+RestType currentRestType;
 
 // GUIWindow_RestWindow is unused
 #if 0

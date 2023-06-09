@@ -392,7 +392,8 @@ void deserialize(const Player_MM7 &src, Player *dst);
 
 
 struct PartyTimeStruct_MM7 {
-    /* 000 */ std::array<int64_t, 10> bountyHuntingNextGenerationTime;
+    /* 000 */ std::array<int64_t, 5> bountyHuntingNextGenerationTime;
+              std::array<int64_t, 5> bountyHuntingNextGenerationTimeUnused; // Only first five elements are actually used, these are always zero.
     // Originally was one array
     /* 050 */ int64_t shopsNextGenerationTime0; // shop generation time for house id 0 which is invalid value
               std::array<int64_t, 52> shopsNextGenerationTime;

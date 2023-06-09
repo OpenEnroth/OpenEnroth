@@ -4,7 +4,6 @@
 
 #include "Utility/Segment.h"
 
-/*  360 */
 enum SPELL_TYPE : uint8_t {
     SPELL_NONE = 0,
 
@@ -132,7 +131,6 @@ enum SPELL_TYPE : uint8_t {
     SPELL_DISEASE = 153
 };
 
-// TODO(captainurist): rename other similar functions using the same convention
 /**
  * @return                              All regular spell types.
  */

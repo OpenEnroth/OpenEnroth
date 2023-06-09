@@ -9,7 +9,7 @@
  *
  * IDs work for selling, buying, repairing and identifying items.
  */
-enum class MERCHANT_PHRASE {
+enum class MerchantPhrase {
     MERCHANT_PHRASE_NOT_ENOUGH_GOLD = 0,    // Not used at the moment.
     MERCHANT_PHRASE_PRICE = 1,              // When hovering over an item w/o a merchant skill.
     MERCHANT_PHRASE_PRICE_HAGGLE = 2,       // When hovering over an item while having a merchant skill.
@@ -23,9 +23,9 @@ enum class MERCHANT_PHRASE {
     MERCHANT_PHRASE_FIRST = MERCHANT_PHRASE_NOT_ENOUGH_GOLD,
     MERCHANT_PHRASE_LAST = MERCAHNT_PHRASE_STOLEN_ITEM
 };
-using enum MERCHANT_PHRASE;
+using enum MerchantPhrase;
 
-inline Segment<MERCHANT_PHRASE> MerchantPhrases() {
+inline Segment<MerchantPhrase> MerchantPhrases() {
     return Segment(MERCHANT_PHRASE_NOT_ENOUGH_GOLD, MERCAHNT_PHRASE_STOLEN_ITEM);
 }
 

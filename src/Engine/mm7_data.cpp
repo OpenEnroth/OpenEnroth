@@ -543,7 +543,7 @@ IndexedArray<uint, PLAYER_SKILL_FIRST, PLAYER_SKILL_LAST> base_recovery_times_pe
 };
 
 // byte[] @ MM7.exe::004ED820, some of these are started at 4ED94C, but needs to be here
-std::array<IndexedArray<CLASS_SKILL, PLAYER_SKILL_FIRST, PLAYER_SKILL_LAST>, 9> pSkillAvailabilityPerClass = {{
+std::array<IndexedArray<ClassSkill, PLAYER_SKILL_FIRST, PLAYER_SKILL_LAST>, 9> pSkillAvailabilityPerClass = {{
     {
         {PLAYER_SKILL_STAFF, CLASS_SKILL_DENIED},
         {PLAYER_SKILL_SWORD, CLASS_SKILL_PRIMARY},
