@@ -83,8 +83,13 @@ int PriceCalculator::itemSellingPriceForPlayer(const Player *player, const ItemG
     int uRealValue = item.GetValue();
     int result = static_cast<int>((uRealValue / (priceMultiplier + 2.0)) + uRealValue * playerMerchant(player) / 100.0);
 
-    // can't get less than 1 gold or more than item is actually worth
-    result = std::clamp(result, 1, uRealValue);
+    if (uRealValue) {
+        // can't get less than 1 gold or more than item is actually worth
+        result = std::clamp(result, 1, uRealValue);
+    } else {
+        // TODO(Nik-RE-dev): blaster price is 0 and we can sell it for 1 gold because of the code below, but this is probably not how it should work
+        result = 1;
+    }
 
     if (item.IsBroken()) {
         result = 1;
