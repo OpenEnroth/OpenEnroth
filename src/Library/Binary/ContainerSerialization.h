@@ -9,27 +9,17 @@
 #include "MemCopySerialization.h"
 
 namespace detail {
-template<class T>
-struct UnsizedSrcVector {
-    explicit UnsizedSrcVector(const std::vector<T> &src) : src(src) {}
-    const std::vector<T> &src;
-};
+struct UnsizedTag {};
 
-template<class T>
-struct PresizedDstVector {
-    explicit PresizedDstVector(size_t size, std::vector<T> *dst) : size(size), dst(dst) {}
+struct PresizedTag {
+    explicit PresizedTag(size_t size) : size(size) {}
     size_t size;
-    std::vector<T> *dst;
 };
 
-template<class T>
-struct AppendDstVector {
-    explicit AppendDstVector(std::vector<T> *dst) : dst(dst) {}
-    std::vector<T> *dst;
-};
+struct AppendTag {};
 
 template<class T, size_t N>
-void DeserializeSpan(InputStream &src, std::span<T, N> dst) {
+void deserializeSpan(InputStream & src, std::span<T, N> dst) {
     if constexpr (is_memcopy_serializable_v<T>) {
         size_t bytesExpected = dst.size() * sizeof(T);
         size_t bytesRead = src.read(dst.data(), bytesExpected);
@@ -56,7 +46,7 @@ void deserializeAppend(InputStream &src, std::vector<T> *dst, size_t size) {
     dst->resize(dst->size() + size);
     T *end = dst->data() + dst->size();
 
-    DeserializeSpan(src, std::span(end - size, end));
+    deserializeSpan(src, std::span(end - size, end));
 }
 } // namespace detail
 
@@ -72,7 +62,7 @@ void serialize(const std::array<T, N> &src, OutputStream *dst) {
 
 template<class T, size_t N>
 void deserialize(InputStream &src, std::array<T, N> *dst) {
-    detail::DeserializeSpan(src, std::span(*dst));
+    detail::deserializeSpan(src, std::span(*dst));
 }
 
 
@@ -81,50 +71,44 @@ void deserialize(InputStream &src, std::array<T, N> *dst) {
 //
 
 /**
- * Creates a serialization wrapper that instructs the binary serialization framework to NOT write the vector size
- * into the stream. Note that this implies that you'll have to use the `presized` wrapper when deserializing.
+ * Creates a serialization tag that instructs the binary serialization framework to NOT write the vector size
+ * into the stream. Note that this implies that you'll have to use the `presized` tag when deserializing.
  *
- * @param src                           Vector to serialize.
- * @return                              Wrapper object to be passed into `serialize` call.
+ * @return                              Tag object to be passed into the `serialize` call.
  * @see presized
  */
-template<class T>
-auto unsized(const std::vector<T> &src) {
-    return detail::UnsizedSrcVector<T>(src);
+inline detail::UnsizedTag unsized() {
+    return {};
 }
 
 /**
- * Creates a deserialization wrapper that instructs the binary serialization to use the supplied vector size instead of
+ * Creates a deserialization tag that instructs the binary serialization to use the supplied vector size instead of
  * reading it from the stream. Note that this implies that the serialization must have been performed with the
- * `unsized` wrapper.
+ * `unsized` tag.
  *
  * @param size                          Number of elements to deserialize.
- * @param dst                           Vector to deserialize into.
- * @return                              Wrapper object to be passed into `deserialize` call.
+ * @return                              Tag object to be passed into the `deserialize` call.
  * @see unsized
  */
-template<class T>
-auto presized(size_t size, std::vector<T> *dst) {
-    return detail::PresizedDstVector<T>(size, dst);
+inline detail::PresizedTag presized(size_t size) {
+    return detail::PresizedTag(size);
 }
 
 /**
- * Creates a deserialization wrapper that instructs the binary serialization framework to append deserialized elements
+ * Creates a deserialization tag that instructs the binary serialization framework to append deserialized elements
  * into the target vector instead of replacing its contents. This is useful when you want to deserialize several
  * sequences into the same `std::vector` object - normally subsequent `deserialize` calls would replace the vector
  * contents, but using this wrapper lets you accumulate the results of several `deserialize` calls instead.
  *
- * @param dst                           Vector to append deserialized elements to.
- * @return                              Wrapper object to be passed into `deserialize` call.
+ * @return                              Tag object to be passed into `deserialize` call.
  */
-template<class T>
-auto appendTo(std::vector<T> *dst) {
-    return detail::AppendDstVector<T>(dst);
+inline detail::AppendTag append() {
+    return {};
 }
 
 template<class T>
-void serialize(detail::UnsizedSrcVector<T> src, OutputStream *dst) {
-    detail::serializeSpan(std::span(src.src), dst);
+void serialize(const std::vector<T> &src, OutputStream *dst, detail::UnsizedTag) {
+    detail::serializeSpan(std::span(src), dst);
 }
 
 template<class T>
@@ -133,25 +117,25 @@ void serialize(const std::vector<T> &src, OutputStream *dst) {
 
     uint32_t size = src.size();
     serialize(size, dst);
-    serialize(unsized(src), dst);
+    serialize(src, dst, unsized());
 }
 
 template<class T>
-void deserialize(InputStream &src, detail::AppendDstVector<T> dst) {
+void deserialize(InputStream &src, std::vector<T> *dst, detail::AppendTag) {
     uint32_t size;
     deserialize(src, &size);
-    detail::deserializeAppend(src, dst.dst, size);
+    detail::deserializeAppend(src, dst, size);
 }
 
 template<class T>
-void deserialize(InputStream &src, detail::PresizedDstVector<T> dst) {
-    dst.dst->clear();
-    detail::deserializeAppend(src, dst.dst, dst.size);
+void deserialize(InputStream &src, std::vector<T> *dst, detail::PresizedTag tag) {
+    dst->clear();
+    detail::deserializeAppend(src, dst, tag.size);
 }
 
 template<class T>
 void deserialize(InputStream &src, std::vector<T> *dst) {
     dst->clear();
-    deserialize(src, appendTo(dst));
+    deserialize(src, dst, append());
 }
 

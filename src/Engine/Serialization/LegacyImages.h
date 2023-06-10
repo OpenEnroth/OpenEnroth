@@ -663,7 +663,8 @@ struct MonsterDesc_MM6 {
     int16_t toHitRadius;
     std::array<uint16_t, 4> soundSampleIds;
     std::array<char, 32> monsterName;
-    std::array<std::array<char, 10>, 10> spriteNames;
+    std::array<std::array<char, 10>, 8> spriteNames;
+    std::array<std::array<char, 10>, 2> spriteNamesUnused;
 };
 static_assert(sizeof(MonsterDesc_MM6) == 148);
 MM_DECLARE_MEMCOPY_SERIALIZABLE(MonsterDesc_MM6)
@@ -679,7 +680,8 @@ struct MonsterDesc_MM7 {
     uint32_t tintColor;
     std::array<uint16_t, 4> soundSampleIds;
     std::array<char, 32> monsterName;
-    std::array<std::array<char, 10>, 10> spriteNames;
+    std::array<std::array<char, 10>, 8> spriteNames;
+    std::array<std::array<char, 10>, 2> spriteNamesUnused;
 };
 static_assert(sizeof(MonsterDesc_MM7) == 152);
 MM_DECLARE_MEMCOPY_SERIALIZABLE(MonsterDesc_MM7)
