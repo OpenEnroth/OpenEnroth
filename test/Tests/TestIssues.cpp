@@ -1178,3 +1178,10 @@ GAME_TEST(Issues, Issue906_773) {
     EXPECT_TRUE(pActors[2].pActorBuffs[ACTOR_BUFF_BLESS].Active());
     EXPECT_TRUE(pActors[2].pActorBuffs[ACTOR_BUFF_HEROISM].Active());
 }
+
+GAME_TEST(Issues, Issue929) {
+    // Test that blaster sells for 1 gold and selling not asserts
+    int oldGold = 0;
+    test->playTraceFromTestData("issue_929.mm7", "issue_929.json", [&] { oldGold = pParty->uNumGold; });
+    EXPECT_EQ(oldGold + 1, pParty->uNumGold);
+}
