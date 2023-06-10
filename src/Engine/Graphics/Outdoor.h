@@ -209,7 +209,7 @@ void SetUnderwaterFog();
 void sub_487DA9();
 void ODM_LoadAndInitialize(const std::string &pLevelFilename,
                            struct ODMRenderParams *thisa);
-unsigned int GetLevelFogColor();
+Color GetLevelFogColor();
 int sub_47C3D7_get_fog_specular(int unused, int a2, float a3);
 unsigned int WorldPosToGridCellX(int);
 unsigned int WorldPosToGridCellY(int);

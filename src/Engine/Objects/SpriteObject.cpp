@@ -118,21 +118,21 @@ static void createSpriteTrailParticle(Vec3i pos, ObjectDescFlags flags) {
     particle.z = pos.z;
     if (flags & OBJECT_DESC_TRIAL_FIRE) {
         particle.type = ParticleType_Bitmap | ParticleType_Rotating | ParticleType_Ascending;
-        particle.uDiffuse = colorTable.OrangeyRed.c32();
+        particle.uDiffuse = colorTable.OrangeyRed;
         particle.timeToLive = vrng->random(0x80) + 128; // was rand() & 0x80
         particle.texture = spell_fx_renderer->effpar01;
         particle.particle_size = 1.0f;
         particle_engine->AddParticle(&particle);
     } else if (flags & OBJECT_DESC_TRIAL_LINE) {
         particle.type = ParticleType_Line;
-        particle.uDiffuse = vrng->random(RAND_MAX); // TODO(captainurist): TBH this makes no sense, investigate
+        particle.uDiffuse = Color(vrng->random(0x100), vrng->random(0x100), 0, 0); // TODO(captainurist): TBH this makes no sense, investigate
         particle.timeToLive = 64;
         particle.texture = nullptr;
         particle.particle_size = 1.0f;
         particle_engine->AddParticle(&particle);
     } else if (flags & OBJECT_DESC_TRIAL_PARTICLE) {
         particle.type = ParticleType_Bitmap | ParticleType_Ascending;
-        particle.uDiffuse = vrng->random(RAND_MAX);
+        particle.uDiffuse = Color(vrng->random(0x100), vrng->random(0x100), 0, 0); // TODO(captainurist): TBH this makes no sense, investigate
         particle.timeToLive = vrng->random(0x80) + 128; // was rand() & 0x80
         particle.texture = spell_fx_renderer->effpar03;
         particle.particle_size = 1.0f;

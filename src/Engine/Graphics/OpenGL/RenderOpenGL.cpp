@@ -234,7 +234,7 @@ void RenderOpenGL::BltBackToFontFast(int a2, int a3, Recti *a4) {
     // never called anywhere
 }
 
-void RenderOpenGL::ClearTarget(unsigned int uColor) {
+void RenderOpenGL::ClearTarget(Color uColor) {
     glClearColor(0, 0, 0, 0/*0.9f, 0.5f, 0.1f, 1.0f*/);
     glClearDepthf(1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -359,17 +359,17 @@ void RenderOpenGL::RasterLine2D(signed int uX, signed int uY, signed int uZ,
 void RenderOpenGL::DrawLines(const RenderVertexD3D3 *vertices, unsigned int num_vertices) {
     BeginLines2D();
     for (uint i = 0; i < num_vertices - 1; ++i) {
-        uint uColor32 = vertices[i].diffuse;
-        float a1 = ((uColor32 >> 24) & 0xFF) / 255.0f;
-        float b1 = ((uColor32 >> 16) & 0xFF) / 255.0f;
-        float g1 = ((uColor32 >> 8) & 0xFF) / 255.0f;
-        float r1 = (uColor32 & 0xFF) / 255.0f;
+        Color uColor32 = vertices[i].diffuse;
+        float a1 = uColor32.a / 255.0f;
+        float b1 = uColor32.b / 255.0f;
+        float g1 = uColor32.g / 255.0f;
+        float r1 = uColor32.r / 255.0f;
 
-        uint uColor32_2 = vertices[i + 1].diffuse;
-        float a2 = ((uColor32_2 >> 24) & 0xFF) / 255.0f;
-        float b2 = ((uColor32_2 >> 16) & 0xFF) / 255.0f;
-        float g2 = ((uColor32_2 >> 8) & 0xFF) / 255.0f;
-        float r2 = (uColor32_2 & 0xFF) / 255.0f;
+        Color uColor32_2 = vertices[i + 1].diffuse;
+        float a2 = uColor32_2.a / 255.0f;
+        float b2 = uColor32_2.b / 255.0f;
+        float g2 = uColor32_2.g / 255.0f;
+        float r2 = uColor32_2.r / 255.0f;
 
         lineshaderstore[linevertscnt].x = vertices[i].pos.x;
         lineshaderstore[linevertscnt].y = vertices[i].pos.y;
@@ -474,8 +474,8 @@ void RenderOpenGL::DrawProjectile(float srcX, float srcY, float srcworldview, fl
     v29[0].pos.y = srcY - srcymod;
     v29[0].pos.z = srcz;
     v29[0].rhw = srcrhw;
-    v29[0].diffuse = -1;
-    v29[0].specular = 0;
+    v29[0].diffuse = colorTable.White;
+    v29[0].specular = Color();
     v29[0].texcoord.x = 1.0;
     v29[0].texcoord.y = 0.0;
 
@@ -483,8 +483,8 @@ void RenderOpenGL::DrawProjectile(float srcX, float srcY, float srcworldview, fl
     v29[1].pos.y = dstY - dstymod;
     v29[1].pos.z = dstz;
     v29[1].rhw = dstrhw;
-    v29[1].diffuse = -16711936;
-    v29[1].specular = 0;
+    v29[1].diffuse = Color(0, 255, 0); // TODO(captainurist): eeeeeeh???
+    v29[1].specular = Color();
     v29[1].texcoord.x = 1.0;
     v29[1].texcoord.y = 1.0;
 
@@ -492,8 +492,8 @@ void RenderOpenGL::DrawProjectile(float srcX, float srcY, float srcworldview, fl
     v29[2].pos.y = dstymod + dstY;
     v29[2].pos.z = dstz;
     v29[2].rhw = dstrhw;
-    v29[2].diffuse = -1;
-    v29[2].specular = 0;
+    v29[2].diffuse = colorTable.White;
+    v29[2].specular = Color();
     v29[2].texcoord.x = 0.0;
     v29[2].texcoord.y = 1.0;
 
@@ -501,8 +501,8 @@ void RenderOpenGL::DrawProjectile(float srcX, float srcY, float srcworldview, fl
     v29[3].pos.y = srcymod + srcY;
     v29[3].pos.z = srcz;
     v29[3].rhw = srcrhw;
-    v29[3].diffuse = -1;
-    v29[3].specular = 0;
+    v29[3].diffuse = colorTable.White;
+    v29[3].specular = Color();
     v29[3].texcoord.x = 0.0;
     v29[3].texcoord.y = 0.0;
 
@@ -591,12 +591,12 @@ twodverts twodshaderstore[500] = {};
 int twodvertscnt = 0;
 
 // TODO(pskelton): change to color32
-void RenderOpenGL::ScreenFade(unsigned int color, float t) {
+void RenderOpenGL::ScreenFade(Color color, float t) {
     t = std::clamp(t, 0.0f, 1.0f);
     //color is 24bits r8g8b8?
-    float blue = ((color & 0xFF0000) >> 16) / 255.0f;
-    float green = ((color & 0xFF00) >> 8) / 255.0f;
-    float red = ((color & 0xFF)) / 255.0f;
+    float blue = color.b / 255.0f;
+    float green = color.g / 255.0f;
+    float red = color.r / 255.0f;
 
     float drawx = static_cast<float>(pViewport->uViewportTL_X);
     float drawy = static_cast<float>(pViewport->uViewportTL_Y);
@@ -700,16 +700,16 @@ void RenderOpenGL::DrawTextureOffset(int pX, int pY, int move_X, int move_Y,
 }
 
 
-void RenderOpenGL::DrawImage(GraphicsImage *img, const Recti &rect, uint paletteid, uint32_t uColor32) {
+void RenderOpenGL::DrawImage(GraphicsImage *img, const Recti &rect, uint paletteid, Color uColor32) {
     if (!img) {
         logger->verbose("Null img passed to DrawImage");
         return;
     }
 
-    float a = ((uColor32 >> 24) & 0xFF) / 255.0f;
-    float b = ((uColor32 >> 16) & 0xFF) / 255.0f;
-    float g = ((uColor32 >> 8) & 0xFF) / 255.0f;
-    float r = (uColor32 & 0xFF) / 255.0f;
+    float a = uColor32.a / 255.0f;
+    float b = uColor32.b / 255.0f;
+    float g = uColor32.g / 255.0f;
+    float r = uColor32.r / 255.0f;
 
     int width = img->width();
     int height = img->height();
@@ -1056,8 +1056,8 @@ void RenderOpenGL::DrawIndoorSkyPolygon(signed int uNumVertices, struct Polygon 
     auto texture = (TextureOpenGL*)pSkyPolygon->texture;
     auto texid = texture->GetOpenGlTexture();
 
-    uint uTint = GetActorTintColor(pSkyPolygon->dimming_level, 0, VertexRenderList[0].vWorldViewPosition.x, 1, 0);
-    uint uTintB = (uTint >> 16) & 0xFF, uTintG = (uTint >> 8) & 0xFF, uTintR = uTint & 0xFF;
+    Color uTint = GetActorTintColor(pSkyPolygon->dimming_level, 0, VertexRenderList[0].vWorldViewPosition.x, 1, 0);
+    uint uTintB = uTint.b, uTintG = uTint.g, uTintR = uTint.r;
     float scrspace{ pCamera3D->GetFarClip() };
 
     float oneon = 1.0f / (pCamera3D->GetNearClip() * 2.0f);
@@ -1334,8 +1334,8 @@ void RenderOpenGL::DrawDecal(struct Decal *pDecal, float z_bias) {
     for (int z = 0; z < (pDecal->uNumVertices - 2); z++) {
         // 123, 134, 145, 156..
         GLdecalverts *thisvert = &decalshaderstore[numdecalverts];
-        uint uTint = GetActorTintColor(pDecal->DimmingLevel, 0, pDecal->pVertices[0].vWorldViewPosition.x, 0, nullptr);
-        uint uTintB = (uTint >> 16) & 0xFF, uTintG = (uTint >> 8) & 0xFF, uTintR = uTint & 0xFF;
+        Color uTint = GetActorTintColor(pDecal->DimmingLevel, 0, pDecal->pVertices[0].vWorldViewPosition.x, 0, nullptr);
+        uint uTintB = uTint.b, uTintG = uTint.g, uTintR = uTint.r;
 
         float uFinalR = floorf(uTintR / 255.0f * color_mult * uDecalColorMultR + 0.0f),
              uFinalG = floorf(uTintG / 255.0f * color_mult * uDecalColorMultG + 0.0f),
@@ -1357,7 +1357,7 @@ void RenderOpenGL::DrawDecal(struct Decal *pDecal, float z_bias) {
         // copy other two (z+1)(z+2)
         for (uint i = 1; i < 3; ++i) {
             uTint = GetActorTintColor(pDecal->DimmingLevel, 0, pDecal->pVertices[z + i].vWorldViewPosition.x, 0, nullptr);
-            uTintB = (uTint >> 16) & 0xFF, uTintG = (uTint >> 8) & 0xFF, uTintR = uTint & 0xFF;
+            uTintB = uTint.b, uTintG = uTint.g, uTintR = uTint.r;
             uFinalR = floorf(uTintR / 255.0f * color_mult * uDecalColorMultR + 0.0f),
             uFinalG = floorf(uTintG / 255.0f * color_mult * uDecalColorMultG + 0.0f),
             uFinalB = floorf(uTintB / 255.0f * color_mult * uDecalColorMultB + 0.0f);
@@ -2369,8 +2369,8 @@ void RenderOpenGL::DrawOutdoorSkyPolygon(struct Polygon *pSkyPolygon) {
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
-    uint uTint = GetActorTintColor(pSkyPolygon->dimming_level, 0, VertexRenderList[0].vWorldViewPosition.x, 1, 0);
-    uint uTintB = (uTint >> 16) & 0xFF, uTintG = (uTint >> 8) & 0xFF, uTintR = uTint & 0xFF;
+    Color uTint = GetActorTintColor(pSkyPolygon->dimming_level, 0, VertexRenderList[0].vWorldViewPosition.x, 1, 0);
+    uint uTintB = uTint.b, uTintG = uTint.g, uTintR = uTint.r;
     float scrspace{ pCamera3D->GetFarClip() };
 
 
@@ -2566,14 +2566,14 @@ void RenderOpenGL::DrawForcePerVerts() {
     int fpfogstart{};
     int fpfogend{};
     int fpfogmiddle{};
-    uint fpfogcol{ GetLevelFogColor() };
+    Color fpfogcol{ GetLevelFogColor() };
 
     if (engine->config->graphics.Fog.value() && uCurrentlyLoadedLevelType == LEVEL_OUTDOOR) {
-        if (fpfogcol) {
+        if (fpfogcol != Color()) {
             fpfogstart = day_fogrange_1;
             fpfogmiddle = day_fogrange_2;
             fpfogend = pCamera3D->GetFarClip();
-            fpfogr = fpfogg = fpfogb = (GetLevelFogColor() & 0xFF) / 255.0f;
+            fpfogr = fpfogg = fpfogb = GetLevelFogColor().r / 255.0f;
         } else {
             fpfogstart = pCamera3D->GetFarClip();
             fpfogmiddle = 0.0f;
@@ -2629,23 +2629,22 @@ void RenderOpenGL::DrawForcePerVerts() {
 
 // TODO(pskelton): move ?
 void RenderOpenGL::SetFogParametersGL() {
-    uint fogcol{ GetLevelFogColor() };
+    Color fogcol{ GetLevelFogColor() };
 
     if (engine->config->graphics.Fog.value() && uCurrentlyLoadedLevelType == LEVEL_OUTDOOR) {
-        if (fogcol) {
+        if (fogcol != Color()) {
             fogstart = day_fogrange_1;
             fogmiddle = day_fogrange_2;
             fogend = pCamera3D->GetFarClip();
-            fogr = fogg = fogb = (GetLevelFogColor() & 0xFF) / 255.0f;
+            fogr = fogg = fogb = GetLevelFogColor().r / 255.0f;
         } else {
             fogend = pCamera3D->GetFarClip();
             fogmiddle = 0.0f;
             fogstart = fogend * engine->config->graphics.FogDepthRatio.value();
 
             // grabs sky back fog colour
-            uint uTint = GetActorTintColor(31, 0, fogend, 1, 0);
-            uTint = uTint & 0xFF;
-            fogr = fogg = fogb = uTint / 255.0f;
+            Color uTint = GetActorTintColor(31, 0, fogend, 1, 0);
+            fogr = fogg = fogb = uTint.r / 255.0f;
         }
     } else {
         // puts fog beyond viewclip so we never see it
@@ -2734,9 +2733,9 @@ void RenderOpenGL::DoRenderBillboards_D3D() {
         billbstore[billbstorecnt].z = thisdepth;
         billbstore[billbstorecnt].u = std::clamp(billboard->pQuads[0].texcoord.x, 0.01f, 0.99f);
         billbstore[billbstorecnt].v = std::clamp(billboard->pQuads[0].texcoord.y, 0.01f, 0.99f);
-        billbstore[billbstorecnt].r = ((billboard->pQuads[0].diffuse >> 0) & 0xFF) / 255.0f;
-        billbstore[billbstorecnt].g = ((billboard->pQuads[0].diffuse >> 8) & 0xFF) / 255.0f;
-        billbstore[billbstorecnt].b = ((billboard->pQuads[0].diffuse >> 16) & 0xFF) / 255.0f;
+        billbstore[billbstorecnt].r = billboard->pQuads[0].diffuse.r / 255.0f;
+        billbstore[billbstorecnt].g = billboard->pQuads[0].diffuse.g / 255.0f;
+        billbstore[billbstorecnt].b = billboard->pQuads[0].diffuse.b / 255.0f;
         billbstore[billbstorecnt].a = 1;
         billbstore[billbstorecnt].screenspace = billboard->screen_space_z;
         billbstore[billbstorecnt].texid = gltexid;
@@ -2749,9 +2748,9 @@ void RenderOpenGL::DoRenderBillboards_D3D() {
         billbstore[billbstorecnt].z = thisdepth;
         billbstore[billbstorecnt].u = std::clamp(billboard->pQuads[1].texcoord.x, 0.01f, 0.99f);
         billbstore[billbstorecnt].v = std::clamp(billboard->pQuads[1].texcoord.y, 0.01f, 0.99f);
-        billbstore[billbstorecnt].r = ((billboard->pQuads[1].diffuse >> 0) & 0xFF) / 255.0f;
-        billbstore[billbstorecnt].g = ((billboard->pQuads[1].diffuse >> 8) & 0xFF) / 255.0f;
-        billbstore[billbstorecnt].b = ((billboard->pQuads[1].diffuse >> 16) & 0xFF) / 255.0f;
+        billbstore[billbstorecnt].r = billboard->pQuads[1].diffuse.r / 255.0f;
+        billbstore[billbstorecnt].g = billboard->pQuads[1].diffuse.g / 255.0f;
+        billbstore[billbstorecnt].b = billboard->pQuads[1].diffuse.b / 255.0f;
         billbstore[billbstorecnt].a = 1;
         billbstore[billbstorecnt].screenspace = billboard->screen_space_z;
         billbstore[billbstorecnt].texid = gltexid;
@@ -2764,9 +2763,9 @@ void RenderOpenGL::DoRenderBillboards_D3D() {
         billbstore[billbstorecnt].z = thisdepth;
         billbstore[billbstorecnt].u = std::clamp(billboard->pQuads[2].texcoord.x, 0.01f, 0.99f);
         billbstore[billbstorecnt].v = std::clamp(billboard->pQuads[2].texcoord.y, 0.01f, 0.99f);
-        billbstore[billbstorecnt].r = ((billboard->pQuads[2].diffuse >> 0) & 0xFF) / 255.0f;
-        billbstore[billbstorecnt].g = ((billboard->pQuads[2].diffuse >> 8) & 0xFF) / 255.0f;
-        billbstore[billbstorecnt].b = ((billboard->pQuads[2].diffuse >> 16) & 0xFF) / 255.0f;
+        billbstore[billbstorecnt].r = billboard->pQuads[2].diffuse.r / 255.0f;
+        billbstore[billbstorecnt].g = billboard->pQuads[2].diffuse.g / 255.0f;
+        billbstore[billbstorecnt].b = billboard->pQuads[2].diffuse.b / 255.0f;
         billbstore[billbstorecnt].a = 1;
         billbstore[billbstorecnt].screenspace = billboard->screen_space_z;
         billbstore[billbstorecnt].texid = gltexid;
@@ -2782,9 +2781,9 @@ void RenderOpenGL::DoRenderBillboards_D3D() {
             billbstore[billbstorecnt].z = thisdepth;
             billbstore[billbstorecnt].u = std::clamp(billboard->pQuads[0].texcoord.x, 0.01f, 0.99f);
             billbstore[billbstorecnt].v = std::clamp(billboard->pQuads[0].texcoord.y, 0.01f, 0.99f);
-            billbstore[billbstorecnt].r = ((billboard->pQuads[0].diffuse >> 0) & 0xFF) / 255.0f;
-            billbstore[billbstorecnt].g = ((billboard->pQuads[0].diffuse >> 8) & 0xFF) / 255.0f;
-            billbstore[billbstorecnt].b = ((billboard->pQuads[0].diffuse >> 16) & 0xFF) / 255.0f;
+            billbstore[billbstorecnt].r = billboard->pQuads[0].diffuse.r / 255.0f;
+            billbstore[billbstorecnt].g = billboard->pQuads[0].diffuse.g / 255.0f;
+            billbstore[billbstorecnt].b = billboard->pQuads[0].diffuse.b / 255.0f;
             billbstore[billbstorecnt].a = 1;
             billbstore[billbstorecnt].screenspace = billboard->screen_space_z;
             billbstore[billbstorecnt].texid = gltexid;
@@ -2797,9 +2796,9 @@ void RenderOpenGL::DoRenderBillboards_D3D() {
             billbstore[billbstorecnt].z = thisdepth;
             billbstore[billbstorecnt].u = std::clamp(billboard->pQuads[2].texcoord.x, 0.01f, 0.99f);
             billbstore[billbstorecnt].v = std::clamp(billboard->pQuads[2].texcoord.y, 0.01f, 0.99f);
-            billbstore[billbstorecnt].r = ((billboard->pQuads[2].diffuse >> 0) & 0xFF) / 255.0f;
-            billbstore[billbstorecnt].g = ((billboard->pQuads[2].diffuse >> 8) & 0xFF) / 255.0f;
-            billbstore[billbstorecnt].b = ((billboard->pQuads[2].diffuse >> 16) & 0xFF) / 255.0f;
+            billbstore[billbstorecnt].r = billboard->pQuads[2].diffuse.r / 255.0f;
+            billbstore[billbstorecnt].g = billboard->pQuads[2].diffuse.g / 255.0f;
+            billbstore[billbstorecnt].b = billboard->pQuads[2].diffuse.b / 255.0f;
             billbstore[billbstorecnt].a = 1;
             billbstore[billbstorecnt].screenspace = billboard->screen_space_z;
             billbstore[billbstorecnt].texid = gltexid;
@@ -2812,9 +2811,9 @@ void RenderOpenGL::DoRenderBillboards_D3D() {
             billbstore[billbstorecnt].z = thisdepth;
             billbstore[billbstorecnt].u = std::clamp(billboard->pQuads[3].texcoord.x, 0.01f, 0.99f);
             billbstore[billbstorecnt].v = std::clamp(billboard->pQuads[3].texcoord.y, 0.01f, 0.99f);
-            billbstore[billbstorecnt].r = ((billboard->pQuads[3].diffuse >> 0) & 0xFF) / 255.0f;
-            billbstore[billbstorecnt].g = ((billboard->pQuads[3].diffuse >> 8) & 0xFF) / 255.0f;
-            billbstore[billbstorecnt].b = ((billboard->pQuads[3].diffuse >> 16) & 0xFF) / 255.0f;
+            billbstore[billbstorecnt].r = billboard->pQuads[3].diffuse.r / 255.0f;
+            billbstore[billbstorecnt].g = billboard->pQuads[3].diffuse.g / 255.0f;
+            billbstore[billbstorecnt].b = billboard->pQuads[3].diffuse.b / 255.0f;
             billbstore[billbstorecnt].a = 1;
             billbstore[billbstorecnt].screenspace = billboard->screen_space_z;
             billbstore[billbstorecnt].texid = gltexid;
@@ -3014,16 +3013,16 @@ void RenderOpenGL::BeginScene2D() {
 }
 
 // TODO(pskelton): use alpha from mask too
-void RenderOpenGL::DrawTextureNew(float u, float v, GraphicsImage *tex, uint32_t colourmask) {
+void RenderOpenGL::DrawTextureNew(float u, float v, GraphicsImage *tex, Color colourmask) {
     TextureOpenGL *texture = dynamic_cast<TextureOpenGL *>(tex);
     if (!texture) {
         logger->verbose("Null texture passed to DrawTextureNew");
         return;
     }
 
-    float r = ((colourmask >> 0) & 0xFF) / 255.0f;
-    float g = ((colourmask >> 8) & 0xFF) / 255.0f;
-    float b = ((colourmask >> 16) & 0xFF) / 255.0f;
+    float r = colourmask.r / 255.0f;
+    float g = colourmask.g / 255.0f;
+    float b = colourmask.b / 255.0f;
 
     int clipx = this->clip_x;
     int clipy = this->clip_y;

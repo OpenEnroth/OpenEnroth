@@ -46,7 +46,7 @@ struct RenderBillboard {
     int16_t screen_space_z;
     uint16_t object_pid;
     uint16_t dimming_level;
-    unsigned int sTintColor;
+    Color sTintColor;
     SpriteFrame *pSpriteFrame;
 };
 
@@ -100,8 +100,8 @@ struct RenderVertexSoft {
 struct RenderVertexD3D3 {
     Vec3f pos {};
     float rhw = 0;
-    unsigned int diffuse = 0;
-    unsigned int specular = 0;
+    Color diffuse;
+    Color specular;
     Vec2f texcoord {};
 };
 
@@ -161,7 +161,7 @@ struct SoftwareBillboard {
     unsigned int uViewportW;
     int field_44;
     int sParentBillboardID;
-    int sTintColor;
+    Color sTintColor;
     unsigned short object_pid;
     int paletteID;
 };
@@ -191,7 +191,7 @@ class IRender {
         this->log = logger;
 
         pActiveZBuffer = 0;
-        uFogColor = 0;
+        uFogColor = Color();
         memset(pHDWaterBitmapIDs, 0, sizeof(pHDWaterBitmapIDs));
         hd_water_current_frame = 0;
         memset(pBillboardRenderListD3D, 0, sizeof(pBillboardRenderListD3D));
@@ -233,7 +233,7 @@ class IRender {
 
     virtual RgbaImage ReadScreenPixels() = 0;
     virtual void SaveWinnersCertificate(const std::string &filePath) = 0;
-    virtual void ClearTarget(unsigned int uColor) = 0;
+    virtual void ClearTarget(Color uColor) = 0;
     virtual void Present() = 0;
 
     virtual bool InitializeFullscreen() = 0;
@@ -259,12 +259,12 @@ class IRender {
 
     virtual void MakeParticleBillboardAndPush(SoftwareBillboard *a2,
                                                   Texture *texture,
-                                                  unsigned int uDiffuse,
+                                                  Color uDiffuse,
                                                   int angle) = 0;
     virtual float GetGamma() = 0;
 
     virtual void DrawBillboards_And_MaybeRenderSpecialEffects_And_EndScene() = 0;
-    virtual void BillboardSphereSpellFX(struct SpellFX_Billboard *a1, int diffuse) = 0;
+    virtual void BillboardSphereSpellFX(struct SpellFX_Billboard *a1, Color diffuse) = 0;
     virtual void TransformBillboardsAndSetPalettesODM() = 0;
 
     virtual void DrawProjectile(float srcX, float srcY, float a3, float a4,
@@ -278,16 +278,16 @@ class IRender {
 
 
     virtual void BeginScene2D() = 0;
-    virtual void ScreenFade(unsigned int color, float t) = 0;
+    virtual void ScreenFade(Color color, float t) = 0;
 
     virtual void SetUIClipRect(unsigned int uX, unsigned int uY,
                                unsigned int uZ, unsigned int uW) = 0;
     virtual void ResetUIClipRect() = 0;
 
-    virtual void DrawTextureNew(float u, float v, GraphicsImage *img, uint32_t colourmask32 = 0xFFFFFFFF) = 0;
+    virtual void DrawTextureNew(float u, float v, GraphicsImage *img, Color colourmask32 = colorTable.White) = 0;
     virtual void DrawTextureCustomHeight(float u, float v, GraphicsImage *, int height) = 0;
     virtual void DrawTextureOffset(int x, int y, int offset_x, int offset_y, GraphicsImage *) = 0;
-    virtual void DrawImage(GraphicsImage *, const Recti &rect, const uint paletteid = 0, uint32_t colourmask32 = 0xFFFFFFFF) = 0;
+    virtual void DrawImage(GraphicsImage *, const Recti &rect, const uint paletteid = 0, Color colourmask32 = colorTable.White) = 0;
 
     virtual void ZDrawTextureAlpha(float u, float v, GraphicsImage *pTexture, int zVal) = 0;
     virtual void BlendTextures(int a2, int a3, GraphicsImage *a4, GraphicsImage *a5, int t, int start_opacity, int end_opacity) = 0;
@@ -296,7 +296,7 @@ class IRender {
 
     virtual void DrawMasked(float u, float v, GraphicsImage *img,
                             unsigned int color_dimming_level,
-                            uint32_t mask = 0xFFFFFFFF) = 0;
+                            Color mask = colorTable.White) = 0;
     virtual void DrawTextureGrayShade(float u, float v, GraphicsImage *a4) = 0;
     virtual void DrawTransparentRedShade(float u, float v, GraphicsImage *a4) = 0;
     virtual void DrawTransparentGreenShade(float u, float v, GraphicsImage *pTexture) = 0;
@@ -363,7 +363,7 @@ class IRender {
 
     std::shared_ptr<GameConfig> config = nullptr;
     int *pActiveZBuffer;
-    uint32_t uFogColor;
+    Color uFogColor;
     unsigned int pHDWaterBitmapIDs[7];
     int hd_water_current_frame;
     Texture *hd_water_tile_anim[7];
@@ -416,8 +416,8 @@ extern SkyBillboardStruct SkyBillboard;
 
 unsigned int _452442_color_cvt(uint16_t a1, uint16_t a2, int a3, int a4);
 
-int GetActorTintColor(int max_dim, int min_dim, float distance, int a4,
-                      struct RenderBillboard *a5);
+Color GetActorTintColor(int max_dim, int min_dim, float distance, int a4,
+                        struct RenderBillboard *a5);
 int _43F55F_get_billboard_light_level(struct RenderBillboard *a1,
                                       int uBaseLightLevel);
 int GetLightLevelAtPoint(unsigned int uBaseLightLevel, int uSectorID, float x, float y, float z);

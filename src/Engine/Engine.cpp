@@ -415,7 +415,7 @@ bool Engine::_44EEA7() {  // cursor picking - particle update
     decal_builder->bloodsplat_container->uNumBloodsplats = 0;
 
     if (/*render->pRenderD3D &&*/ uCurrentlyLoadedLevelType == LEVEL_OUTDOOR)
-        render->uFogColor = GetLevelFogColor() & colorTable.White.c32();
+        render->uFogColor = GetLevelFogColor();
     // if (uFlags & GAME_FLAGS_1_400)
     //    engine->config->SetForceRedraw(true);
     /*if ( !render->pRenderD3D && uCurrentlyLoadedLevelType == LEVEL_OUTDOOR &&

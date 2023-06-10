@@ -50,13 +50,13 @@ void DrawLightsDebugOutlines(
  *
  * @return                              Return 32bit colour ARGB.
  */
-int GetActorTintColor(int max_dimm, int min_dimm, float distance, int bNoLight, RenderBillboard *pBillboard) {
+Color GetActorTintColor(int max_dimm, int min_dimm, float distance, int bNoLight, RenderBillboard *pBillboard) {
     int dimminglevel = 0;
 
     if (uCurrentlyLoadedLevelType == LEVEL_INDOOR)
-        return 8 * (31 - max_dimm) | ((8 * (31 - max_dimm) | ((31 - max_dimm) << 11)) << 8);
+        return Color(8 * (31 - max_dimm), 8 * (31 - max_dimm), 8 * (31 - max_dimm));
 
-    if (pParty->armageddon_timer) return 0xFF0000FF;
+    if (pParty->armageddon_timer) return colorTable.Red;
 
     bool isNight = pWeather->bNight;
     if (engine->IsUnderwater())
@@ -66,11 +66,11 @@ int GetActorTintColor(int max_dimm, int min_dimm, float distance, int bNoLight, 
         dimminglevel = 216;
         if (pBillboard) dimminglevel = 8 * _43F55F_get_billboard_light_level(pBillboard, dimminglevel >> 3);
         dimminglevel = std::clamp(dimminglevel, 0, 216);
-        return (255 - dimminglevel) | ((255 - dimminglevel) << 16) | ((255 - dimminglevel) << 8);
+        return Color(255 - dimminglevel, 255 - dimminglevel, 255 - dimminglevel);
     }
 
     // daytime
-    if (fabsf(distance) < 1.0e-6f) return 0xFFF8F8F8;
+    if (fabsf(distance) < 1.0e-6f) return Color(0xF8, 0xF8, 0xF8); // TODO(captainurist): colortable
 
     // dim in measured in 8-steps
     int rangewidth = 8 * (max_dimm - min_dimm);
@@ -88,14 +88,14 @@ int GetActorTintColor(int max_dimm, int min_dimm, float distance, int bNoLight, 
         dimminglevel = 8 * pOutdoor->max_terrain_dimming_level;
 
     if (!engine->IsUnderwater()) {
-        return (255 - dimminglevel) | ((255 - dimminglevel) << 16) | ((255 - dimminglevel) << 8);
+        return Color(255 - dimminglevel, 255 - dimminglevel, 255 - dimminglevel);
     } else {
         // underwater
         float col = (255 - dimminglevel) * 0.0039215689f;
         int red = static_cast<int>(floorf(col * 16.0f + 0.5f));
         int grn = static_cast<int>(floorf(col * 194.0f + 0.5f));
         int blue = static_cast<int>(floorf(col * 153.0f + 0.5f));
-        return red | (grn << 8) | (blue << 16);
+        return Color(red, grn, blue);
     }
 }
 

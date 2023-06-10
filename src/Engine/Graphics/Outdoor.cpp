@@ -2747,9 +2747,9 @@ void ODM_LoadAndInitialize(const std::string &pFilename, ODMRenderParams *thisa)
     MM7Initialization();
 }
 // returns 0xXXYYZZ fog color
-unsigned int GetLevelFogColor() {
+Color GetLevelFogColor() {
     if (engine->IsUnderwater()) {
-        return 0xFF258F5C;
+        return Color(0x5C, 0x8F, 0x25, 0xFF); // TODO(captainurist): colorTable
     }
 
     if (day_attrib & DAY_ATTRIB_FOG) {
@@ -2758,17 +2758,20 @@ unsigned int GetLevelFogColor() {
                 logger->warning("decompilation can be inaccurate, please send savegame to Nomad");
                 __debugbreak();
             }
-            int v2 = -(pWeather->bNight != 1);
-            return (v2 & 0xE0E0E1) - 0xE0E0E1;
+            if (pWeather->bNight) {
+                return Color(0x1F, 0x1F, 0x1F); // TODO(captainurist): colorTable
+            } else {
+                return Color();
+            }
         } else {
             int64_t v1 = (int64_t)((1.0 - pOutdoor->fFogDensity) * 200.0 +
                                    pOutdoor->fFogDensity * 31.0);
             int out = v1 & 0xFF;
-            return 0xFF << 24 | out << 16 | out << 8 | out;
+            return Color(out, out, out);
         }
     }
 
-    return 0;
+    return Color();
 }
 
 // TODO(pskelton): drop this
