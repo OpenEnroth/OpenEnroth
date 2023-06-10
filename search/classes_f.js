@@ -58,7 +58,7 @@ var searchData=
   ['playerspells_55',['PlayerSpells',['../structPlayerSpells.html',1,'']]],
   ['playerspells_5fmm7_56',['PlayerSpells_MM7',['../structPlayerSpells__MM7.html',1,'']]],
   ['polygon_57',['Polygon',['../structPolygon.html',1,'']]],
-  ['presizeddstvector_58',['PresizedDstVector',['../structdetail_1_1PresizedDstVector.html',1,'detail']]],
+  ['presizedtag_58',['PresizedTag',['../structdetail_1_1PresizedTag.html',1,'detail']]],
   ['pricecalculator_59',['PriceCalculator',['../classPriceCalculator.html',1,'']]],
   ['projectileanim_60',['ProjectileAnim',['../structProjectileAnim.html',1,'']]],
   ['proxybase_61',['ProxyBase',['../classProxyBase.html',1,'']]],

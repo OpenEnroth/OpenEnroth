@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;4da3dce</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;d28fdaf</span>
    </div>
   </td>
  </tr>
@@ -89,11 +89,11 @@ $(function() {
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Classes</h2></td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structdetail_1_1UnsizedSrcVector.html">detail::UnsizedSrcVector&lt; T &gt;</a></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structdetail_1_1UnsizedTag.html">detail::UnsizedTag</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structdetail_1_1PresizedDstVector.html">detail::PresizedDstVector&lt; T &gt;</a></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structdetail_1_1PresizedTag.html">detail::PresizedTag</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structdetail_1_1AppendDstVector.html">detail::AppendDstVector&lt; T &gt;</a></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structdetail_1_1AppendTag.html">detail::AppendTag</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="namespaces" name="namespaces"></a>
@@ -103,9 +103,9 @@ Namespaces</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:a85ceb129de2d8df4c58ab6a2b408950a"><td class="memTemplParams" colspan="2">template&lt;class T , size_t N&gt; </td></tr>
-<tr class="memitem:a85ceb129de2d8df4c58ab6a2b408950a"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacedetail.html#a85ceb129de2d8df4c58ab6a2b408950a">detail::DeserializeSpan</a> (<a class="el" href="classInputStream.html">InputStream</a> &amp;src, std::span&lt; T, N &gt; dst)</td></tr>
-<tr class="separator:a85ceb129de2d8df4c58ab6a2b408950a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5f9d5162caa65a391931865e8dde3e77"><td class="memTemplParams" colspan="2">template&lt;class T , size_t N&gt; </td></tr>
+<tr class="memitem:a5f9d5162caa65a391931865e8dde3e77"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacedetail.html#a5f9d5162caa65a391931865e8dde3e77">detail::deserializeSpan</a> (<a class="el" href="classInputStream.html">InputStream</a> &amp;src, std::span&lt; T, N &gt; dst)</td></tr>
+<tr class="separator:a5f9d5162caa65a391931865e8dde3e77"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a81bfdb47132b79d6a1e80f130b2f5717"><td class="memTemplParams" colspan="2">template&lt;class T , size_t N&gt; </td></tr>
 <tr class="memitem:a81bfdb47132b79d6a1e80f130b2f5717"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacedetail.html#a81bfdb47132b79d6a1e80f130b2f5717">detail::serializeSpan</a> (std::span&lt; const T, N &gt; src, <a class="el" href="classOutputStream.html">OutputStream</a> *dst)</td></tr>
 <tr class="separator:a81bfdb47132b79d6a1e80f130b2f5717"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -118,122 +118,58 @@ Functions</h2></td></tr>
 <tr class="memitem:a92565bdeaeba381b16073f35789dd858"><td class="memTemplParams" colspan="2">template&lt;class T , size_t N&gt; </td></tr>
 <tr class="memitem:a92565bdeaeba381b16073f35789dd858"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="ContainerSerialization_8h.html#a92565bdeaeba381b16073f35789dd858">deserialize</a> (<a class="el" href="classInputStream.html">InputStream</a> &amp;src, std::array&lt; T, N &gt; *dst)</td></tr>
 <tr class="separator:a92565bdeaeba381b16073f35789dd858"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2d8e705e797d4c7a4773b4559ceeac75"><td class="memTemplParams" colspan="2">template&lt;class T &gt; </td></tr>
-<tr class="memitem:a2d8e705e797d4c7a4773b4559ceeac75"><td class="memTemplItemLeft" align="right" valign="top">auto&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="ContainerSerialization_8h.html#a2d8e705e797d4c7a4773b4559ceeac75">unsized</a> (const std::vector&lt; T &gt; &amp;src)</td></tr>
-<tr class="separator:a2d8e705e797d4c7a4773b4559ceeac75"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac90803cfc5c100029c1e3c60c78b3c8b"><td class="memTemplParams" colspan="2">template&lt;class T &gt; </td></tr>
-<tr class="memitem:ac90803cfc5c100029c1e3c60c78b3c8b"><td class="memTemplItemLeft" align="right" valign="top">auto&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="ContainerSerialization_8h.html#ac90803cfc5c100029c1e3c60c78b3c8b">presized</a> (size_t size, std::vector&lt; T &gt; *dst)</td></tr>
-<tr class="separator:ac90803cfc5c100029c1e3c60c78b3c8b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a353a4d4e06900f635da0f920c14ef543"><td class="memTemplParams" colspan="2">template&lt;class T &gt; </td></tr>
-<tr class="memitem:a353a4d4e06900f635da0f920c14ef543"><td class="memTemplItemLeft" align="right" valign="top">auto&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="ContainerSerialization_8h.html#a353a4d4e06900f635da0f920c14ef543">appendTo</a> (std::vector&lt; T &gt; *dst)</td></tr>
-<tr class="separator:a353a4d4e06900f635da0f920c14ef543"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af32953a65dd8be6026e1086e3f5aa2e1"><td class="memTemplParams" colspan="2">template&lt;class T &gt; </td></tr>
-<tr class="memitem:af32953a65dd8be6026e1086e3f5aa2e1"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="ContainerSerialization_8h.html#af32953a65dd8be6026e1086e3f5aa2e1">serialize</a> (<a class="el" href="structdetail_1_1UnsizedSrcVector.html">detail::UnsizedSrcVector</a>&lt; T &gt; src, <a class="el" href="classOutputStream.html">OutputStream</a> *dst)</td></tr>
-<tr class="separator:af32953a65dd8be6026e1086e3f5aa2e1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2990db58af64e88fe102f1e0ed99734f"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structdetail_1_1UnsizedTag.html">detail::UnsizedTag</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ContainerSerialization_8h.html#a2990db58af64e88fe102f1e0ed99734f">unsized</a> ()</td></tr>
+<tr class="separator:a2990db58af64e88fe102f1e0ed99734f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abc514d1c61a385a0c2f72a8a95b6944a"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structdetail_1_1PresizedTag.html">detail::PresizedTag</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ContainerSerialization_8h.html#abc514d1c61a385a0c2f72a8a95b6944a">presized</a> (size_t size)</td></tr>
+<tr class="separator:abc514d1c61a385a0c2f72a8a95b6944a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adcdea875e344aab34f9f6627c1de0c30"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structdetail_1_1AppendTag.html">detail::AppendTag</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ContainerSerialization_8h.html#adcdea875e344aab34f9f6627c1de0c30">append</a> ()</td></tr>
+<tr class="separator:adcdea875e344aab34f9f6627c1de0c30"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af092173972389e06b25f65b1dfe1aaaf"><td class="memTemplParams" colspan="2">template&lt;class T &gt; </td></tr>
+<tr class="memitem:af092173972389e06b25f65b1dfe1aaaf"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="ContainerSerialization_8h.html#af092173972389e06b25f65b1dfe1aaaf">serialize</a> (const std::vector&lt; T &gt; &amp;src, <a class="el" href="classOutputStream.html">OutputStream</a> *dst, <a class="el" href="structdetail_1_1UnsizedTag.html">detail::UnsizedTag</a>)</td></tr>
+<tr class="separator:af092173972389e06b25f65b1dfe1aaaf"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a81324715a9e1f6d1ee59f246ff6fc9ac"><td class="memTemplParams" colspan="2">template&lt;class T &gt; </td></tr>
 <tr class="memitem:a81324715a9e1f6d1ee59f246ff6fc9ac"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="ContainerSerialization_8h.html#a81324715a9e1f6d1ee59f246ff6fc9ac">serialize</a> (const std::vector&lt; T &gt; &amp;src, <a class="el" href="classOutputStream.html">OutputStream</a> *dst)</td></tr>
 <tr class="separator:a81324715a9e1f6d1ee59f246ff6fc9ac"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1827fe47935f0106035014be3cc2b4c4"><td class="memTemplParams" colspan="2">template&lt;class T &gt; </td></tr>
-<tr class="memitem:a1827fe47935f0106035014be3cc2b4c4"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="ContainerSerialization_8h.html#a1827fe47935f0106035014be3cc2b4c4">deserialize</a> (<a class="el" href="classInputStream.html">InputStream</a> &amp;src, <a class="el" href="structdetail_1_1AppendDstVector.html">detail::AppendDstVector</a>&lt; T &gt; dst)</td></tr>
-<tr class="separator:a1827fe47935f0106035014be3cc2b4c4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7916d840b7ecdb502e75b23cbb4d5c7b"><td class="memTemplParams" colspan="2">template&lt;class T &gt; </td></tr>
-<tr class="memitem:a7916d840b7ecdb502e75b23cbb4d5c7b"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="ContainerSerialization_8h.html#a7916d840b7ecdb502e75b23cbb4d5c7b">deserialize</a> (<a class="el" href="classInputStream.html">InputStream</a> &amp;src, <a class="el" href="structdetail_1_1PresizedDstVector.html">detail::PresizedDstVector</a>&lt; T &gt; dst)</td></tr>
-<tr class="separator:a7916d840b7ecdb502e75b23cbb4d5c7b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a81d3231e403f9ff6fa102fb39de98c90"><td class="memTemplParams" colspan="2">template&lt;class T &gt; </td></tr>
+<tr class="memitem:a81d3231e403f9ff6fa102fb39de98c90"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="ContainerSerialization_8h.html#a81d3231e403f9ff6fa102fb39de98c90">deserialize</a> (<a class="el" href="classInputStream.html">InputStream</a> &amp;src, std::vector&lt; T &gt; *dst, <a class="el" href="structdetail_1_1AppendTag.html">detail::AppendTag</a>)</td></tr>
+<tr class="separator:a81d3231e403f9ff6fa102fb39de98c90"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6aa82da39927bcaa3989f0c462941bf4"><td class="memTemplParams" colspan="2">template&lt;class T &gt; </td></tr>
+<tr class="memitem:a6aa82da39927bcaa3989f0c462941bf4"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="ContainerSerialization_8h.html#a6aa82da39927bcaa3989f0c462941bf4">deserialize</a> (<a class="el" href="classInputStream.html">InputStream</a> &amp;src, std::vector&lt; T &gt; *dst, <a class="el" href="structdetail_1_1PresizedTag.html">detail::PresizedTag</a> tag)</td></tr>
+<tr class="separator:a6aa82da39927bcaa3989f0c462941bf4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae088fb0b0770af062e84cfeecaff2d14"><td class="memTemplParams" colspan="2">template&lt;class T &gt; </td></tr>
 <tr class="memitem:ae088fb0b0770af062e84cfeecaff2d14"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="ContainerSerialization_8h.html#ae088fb0b0770af062e84cfeecaff2d14">deserialize</a> (<a class="el" href="classInputStream.html">InputStream</a> &amp;src, std::vector&lt; T &gt; *dst)</td></tr>
 <tr class="separator:ae088fb0b0770af062e84cfeecaff2d14"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Function Documentation</h2>
-<a id="a353a4d4e06900f635da0f920c14ef543" name="a353a4d4e06900f635da0f920c14ef543"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a353a4d4e06900f635da0f920c14ef543">&#9670;&#160;</a></span>appendTo()</h2>
+<a id="adcdea875e344aab34f9f6627c1de0c30" name="adcdea875e344aab34f9f6627c1de0c30"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#adcdea875e344aab34f9f6627c1de0c30">&#9670;&#160;</a></span>append()</h2>
 
 <div class="memitem">
 <div class="memproto">
-<div class="memtemplate">
-template&lt;class T &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">auto appendTo </td>
+          <td class="memname"><a class="el" href="structdetail_1_1AppendTag.html">detail::AppendTag</a> append </td>
           <td>(</td>
-          <td class="paramtype">std::vector&lt; T &gt; *&#160;</td>
-          <td class="paramname"><em>dst</em></td><td>)</td>
+          <td class="paramname"></td><td>)</td>
           <td></td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
-<p >Creates a deserialization wrapper that instructs the binary serialization framework to append deserialized elements into the target vector instead of replacing its contents. This is useful when you want to deserialize several sequences into the same <code>std::vector</code> object - normally subsequent <code>deserialize</code> calls would replace the vector contents, but using this wrapper lets you accumulate the results of several <code>deserialize</code> calls instead.</p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">dst</td><td>Vector to append deserialized elements to. </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>Wrapper object to be passed into <code>deserialize</code> call. </dd></dl>
-
-</div>
-</div>
-<a id="a1827fe47935f0106035014be3cc2b4c4" name="a1827fe47935f0106035014be3cc2b4c4"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a1827fe47935f0106035014be3cc2b4c4">&#9670;&#160;</a></span>deserialize() <span class="overload">[1/4]</span></h2>
-
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;class T &gt; </div>
-      <table class="memname">
-        <tr>
-          <td class="memname">void deserialize </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="classInputStream.html">InputStream</a> &amp;&#160;</td>
-          <td class="paramname"><em>src</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="structdetail_1_1AppendDstVector.html">detail::AppendDstVector</a>&lt; T &gt;&#160;</td>
-          <td class="paramname"><em>dst</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a7916d840b7ecdb502e75b23cbb4d5c7b" name="a7916d840b7ecdb502e75b23cbb4d5c7b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a7916d840b7ecdb502e75b23cbb4d5c7b">&#9670;&#160;</a></span>deserialize() <span class="overload">[2/4]</span></h2>
-
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;class T &gt; </div>
-      <table class="memname">
-        <tr>
-          <td class="memname">void deserialize </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="classInputStream.html">InputStream</a> &amp;&#160;</td>
-          <td class="paramname"><em>src</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="structdetail_1_1PresizedDstVector.html">detail::PresizedDstVector</a>&lt; T &gt;&#160;</td>
-          <td class="paramname"><em>dst</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
+<p >Creates a deserialization tag that instructs the binary serialization framework to append deserialized elements into the target vector instead of replacing its contents. This is useful when you want to deserialize several sequences into the same <code>std::vector</code> object - normally subsequent <code>deserialize</code> calls would replace the vector contents, but using this wrapper lets you accumulate the results of several <code>deserialize</code> calls instead.</p>
+<dl class="section return"><dt>Returns</dt><dd>Tag object to be passed into <code>deserialize</code> call. </dd></dl>
 
 </div>
 </div>
 <a id="a92565bdeaeba381b16073f35789dd858" name="a92565bdeaeba381b16073f35789dd858"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a92565bdeaeba381b16073f35789dd858">&#9670;&#160;</a></span>deserialize() <span class="overload">[3/4]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a92565bdeaeba381b16073f35789dd858">&#9670;&#160;</a></span>deserialize() <span class="overload">[1/4]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -263,7 +199,7 @@ template&lt;class T , size_t N&gt; </div>
 </div>
 </div>
 <a id="ae088fb0b0770af062e84cfeecaff2d14" name="ae088fb0b0770af062e84cfeecaff2d14"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae088fb0b0770af062e84cfeecaff2d14">&#9670;&#160;</a></span>deserialize() <span class="overload">[4/4]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#ae088fb0b0770af062e84cfeecaff2d14">&#9670;&#160;</a></span>deserialize() <span class="overload">[2/4]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -292,8 +228,8 @@ template&lt;class T &gt; </div>
 
 </div>
 </div>
-<a id="ac90803cfc5c100029c1e3c60c78b3c8b" name="ac90803cfc5c100029c1e3c60c78b3c8b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ac90803cfc5c100029c1e3c60c78b3c8b">&#9670;&#160;</a></span>presized()</h2>
+<a id="a81d3231e403f9ff6fa102fb39de98c90" name="a81d3231e403f9ff6fa102fb39de98c90"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a81d3231e403f9ff6fa102fb39de98c90">&#9670;&#160;</a></span>deserialize() <span class="overload">[3/4]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -301,16 +237,22 @@ template&lt;class T &gt; </div>
 template&lt;class T &gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname">auto presized </td>
+          <td class="memname">void deserialize </td>
           <td>(</td>
-          <td class="paramtype">size_t&#160;</td>
-          <td class="paramname"><em>size</em>, </td>
+          <td class="paramtype"><a class="el" href="classInputStream.html">InputStream</a> &amp;&#160;</td>
+          <td class="paramname"><em>src</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">std::vector&lt; T &gt; *&#160;</td>
-          <td class="paramname"><em>dst</em>&#160;</td>
+          <td class="paramname"><em>dst</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="structdetail_1_1AppendTag.html">detail::AppendTag</a>&#160;</td>
+          <td class="paramname">&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -319,16 +261,77 @@ template&lt;class T &gt; </div>
         </tr>
       </table>
 </div><div class="memdoc">
-<p >Creates a deserialization wrapper that instructs the binary serialization to use the supplied vector size instead of reading it from the stream. Note that this implies that the serialization must have been performed with the <code>unsized</code> wrapper.</p>
+
+</div>
+</div>
+<a id="a6aa82da39927bcaa3989f0c462941bf4" name="a6aa82da39927bcaa3989f0c462941bf4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6aa82da39927bcaa3989f0c462941bf4">&#9670;&#160;</a></span>deserialize() <span class="overload">[4/4]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class T &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">void deserialize </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classInputStream.html">InputStream</a> &amp;&#160;</td>
+          <td class="paramname"><em>src</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::vector&lt; T &gt; *&#160;</td>
+          <td class="paramname"><em>dst</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="structdetail_1_1PresizedTag.html">detail::PresizedTag</a>&#160;</td>
+          <td class="paramname"><em>tag</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="abc514d1c61a385a0c2f72a8a95b6944a" name="abc514d1c61a385a0c2f72a8a95b6944a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abc514d1c61a385a0c2f72a8a95b6944a">&#9670;&#160;</a></span>presized()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structdetail_1_1PresizedTag.html">detail::PresizedTag</a> presized </td>
+          <td>(</td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>size</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p >Creates a deserialization tag that instructs the binary serialization to use the supplied vector size instead of reading it from the stream. Note that this implies that the serialization must have been performed with the <code>unsized</code> tag.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">size</td><td>Number of elements to deserialize. </td></tr>
-    <tr><td class="paramname">dst</td><td>Vector to deserialize into. </td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>Wrapper object to be passed into <code>deserialize</code> call. </dd></dl>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="ContainerSerialization_8h.html#a2d8e705e797d4c7a4773b4559ceeac75">unsized</a> </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>Tag object to be passed into the <code>deserialize</code> call. </dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="ContainerSerialization_8h.html#a2990db58af64e88fe102f1e0ed99734f">unsized</a> </dd></dl>
 
 </div>
 </div>
@@ -392,8 +395,8 @@ template&lt;class T &gt; </div>
 
 </div>
 </div>
-<a id="af32953a65dd8be6026e1086e3f5aa2e1" name="af32953a65dd8be6026e1086e3f5aa2e1"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#af32953a65dd8be6026e1086e3f5aa2e1">&#9670;&#160;</a></span>serialize() <span class="overload">[3/3]</span></h2>
+<a id="af092173972389e06b25f65b1dfe1aaaf" name="af092173972389e06b25f65b1dfe1aaaf"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af092173972389e06b25f65b1dfe1aaaf">&#9670;&#160;</a></span>serialize() <span class="overload">[3/3]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -403,14 +406,20 @@ template&lt;class T &gt; </div>
         <tr>
           <td class="memname">void serialize </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="structdetail_1_1UnsizedSrcVector.html">detail::UnsizedSrcVector</a>&lt; T &gt;&#160;</td>
+          <td class="paramtype">const std::vector&lt; T &gt; &amp;&#160;</td>
           <td class="paramname"><em>src</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype"><a class="el" href="classOutputStream.html">OutputStream</a> *&#160;</td>
-          <td class="paramname"><em>dst</em>&#160;</td>
+          <td class="paramname"><em>dst</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="structdetail_1_1UnsizedTag.html">detail::UnsizedTag</a>&#160;</td>
+          <td class="paramname">&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -422,32 +431,31 @@ template&lt;class T &gt; </div>
 
 </div>
 </div>
-<a id="a2d8e705e797d4c7a4773b4559ceeac75" name="a2d8e705e797d4c7a4773b4559ceeac75"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a2d8e705e797d4c7a4773b4559ceeac75">&#9670;&#160;</a></span>unsized()</h2>
+<a id="a2990db58af64e88fe102f1e0ed99734f" name="a2990db58af64e88fe102f1e0ed99734f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2990db58af64e88fe102f1e0ed99734f">&#9670;&#160;</a></span>unsized()</h2>
 
 <div class="memitem">
 <div class="memproto">
-<div class="memtemplate">
-template&lt;class T &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">auto unsized </td>
+          <td class="memname"><a class="el" href="structdetail_1_1UnsizedTag.html">detail::UnsizedTag</a> unsized </td>
           <td>(</td>
-          <td class="paramtype">const std::vector&lt; T &gt; &amp;&#160;</td>
-          <td class="paramname"><em>src</em></td><td>)</td>
+          <td class="paramname"></td><td>)</td>
           <td></td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
-<p >Creates a serialization wrapper that instructs the binary serialization framework to NOT write the vector size into the stream. Note that this implies that you'll have to use the <code>presized</code> wrapper when deserializing.</p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">src</td><td>Vector to serialize. </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>Wrapper object to be passed into <code>serialize</code> call. </dd></dl>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="ContainerSerialization_8h.html#ac90803cfc5c100029c1e3c60c78b3c8b">presized</a> </dd></dl>
+<p >Creates a serialization tag that instructs the binary serialization framework to NOT write the vector size into the stream. Note that this implies that you'll have to use the <code>presized</code> tag when deserializing.</p>
+<dl class="section return"><dt>Returns</dt><dd>Tag object to be passed into the <code>serialize</code> call. </dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="ContainerSerialization_8h.html#abc514d1c61a385a0c2f72a8a95b6944a">presized</a> </dd></dl>
 
 </div>
 </div>

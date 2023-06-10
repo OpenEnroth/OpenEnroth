@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;4da3dce</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;d28fdaf</span>
    </div>
   </td>
  </tr>
@@ -74,6 +74,8 @@ $(function() {
 </div><!-- top -->
 <div class="header">
   <div class="summary">
+<a href="#nested-classes">Classes</a> &#124;
+<a href="#namespaces">Namespaces</a> &#124;
 <a href="#func-members">Functions</a>  </div>
   <div class="headertitle"><div class="title">CommonImages.h File Reference</div></div>
 </div><!--header-->
@@ -84,41 +86,123 @@ $(function() {
 <code>#include &lt;string&gt;</code><br />
 <code>#include &lt;vector&gt;</code><br />
 <code>#include &lt;type_traits&gt;</code><br />
+<code>#include &quot;<a class="el" href="Segment_8h.html">Utility/Segment.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="IndexedArray_8h.html">Utility/IndexedArray.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="IndexedBitset_8h.html">Utility/IndexedBitset.h</a>&quot;</code><br />
 </div><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
+Classes</h2></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structdetail_1_1ConvertTag.html">detail::ConvertTag&lt; From, To &gt;</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structNoTag.html">NoTag</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structdetail_1_1SegmentTag.html">detail::SegmentTag&lt; FirstIndex, LastIndex &gt;</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="namespaces" name="namespaces"></a>
+Namespaces</h2></td></tr>
+<tr class="memitem:namespacedetail"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacedetail.html">detail</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:aedf504c97b0477f0cf4a72341191773b"><td class="memTemplParams" colspan="2">template&lt;class T &gt; </td></tr>
-<tr class="memitem:aedf504c97b0477f0cf4a72341191773b"><td class="memTemplItemLeft" align="right" valign="top">static void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="CommonImages_8h.html#aedf504c97b0477f0cf4a72341191773b">serialize</a> (const T &amp;src, T *dst)</td></tr>
-<tr class="separator:aedf504c97b0477f0cf4a72341191773b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a554f780aa7e3cee149be4ece79aa928e"><td class="memTemplParams" colspan="2">template&lt;class T &gt; </td></tr>
-<tr class="memitem:a554f780aa7e3cee149be4ece79aa928e"><td class="memTemplItemLeft" align="right" valign="top">static void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="CommonImages_8h.html#a554f780aa7e3cee149be4ece79aa928e">deserialize</a> (const T &amp;src, T *dst)</td></tr>
-<tr class="separator:a554f780aa7e3cee149be4ece79aa928e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afe38de570c03ebc54df42fa943cddd28"><td class="memTemplParams" colspan="2">template&lt;class T1 , class T2 &gt; <br />
-requires (!std::is_same_v&lt;T1, T2&gt;)</td></tr>
-<tr class="memitem:afe38de570c03ebc54df42fa943cddd28"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="CommonImages_8h.html#afe38de570c03ebc54df42fa943cddd28">serialize</a> (const std::vector&lt; T1 &gt; &amp;src, std::vector&lt; T2 &gt; *dst)</td></tr>
-<tr class="separator:afe38de570c03ebc54df42fa943cddd28"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a82f0c604927e87d065b045ba41248953"><td class="memTemplParams" colspan="2">template&lt;class T1 , class T2 &gt; <br />
-requires (!std::is_same_v&lt;T1, T2&gt;)</td></tr>
-<tr class="memitem:a82f0c604927e87d065b045ba41248953"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="CommonImages_8h.html#a82f0c604927e87d065b045ba41248953">deserialize</a> (const std::vector&lt; T1 &gt; &amp;src, std::vector&lt; T2 &gt; *dst)</td></tr>
-<tr class="separator:a82f0c604927e87d065b045ba41248953"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aec20eaf12ee2c7a593c50cb7134b4119"><td class="memTemplParams" colspan="2">template&lt;class T1 , size_t N1, class T2 , size_t N2&gt; <br />
-requires (!std::is_same_v&lt;T1, T2&gt;)</td></tr>
-<tr class="memitem:aec20eaf12ee2c7a593c50cb7134b4119"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="CommonImages_8h.html#aec20eaf12ee2c7a593c50cb7134b4119">serialize</a> (const std::array&lt; T1, N1 &gt; &amp;src, std::array&lt; T2, N2 &gt; *dst)</td></tr>
-<tr class="separator:aec20eaf12ee2c7a593c50cb7134b4119"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1e264c92ae351b7cc104d6ad515c45d4"><td class="memTemplParams" colspan="2">template&lt;class T1 , size_t N1, class T2 , size_t N2&gt; <br />
-requires (!std::is_same_v&lt;T1, T2&gt;)</td></tr>
-<tr class="memitem:a1e264c92ae351b7cc104d6ad515c45d4"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="CommonImages_8h.html#a1e264c92ae351b7cc104d6ad515c45d4">deserialize</a> (const std::array&lt; T1, N1 &gt; &amp;src, std::array&lt; T2, N2 &gt; *dst)</td></tr>
-<tr class="separator:a1e264c92ae351b7cc104d6ad515c45d4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae820b2586069d6302fea9d56334f8d45"><td class="memTemplParams" colspan="2">template&lt;class T &gt; </td></tr>
+<tr class="memitem:ae820b2586069d6302fea9d56334f8d45"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="CommonImages_8h.html#ae820b2586069d6302fea9d56334f8d45">serialize</a> (const T &amp;src, T *dst)</td></tr>
+<tr class="separator:ae820b2586069d6302fea9d56334f8d45"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a293ca6862352ec6aafe9e3950b13b45a"><td class="memTemplParams" colspan="2">template&lt;class T &gt; </td></tr>
+<tr class="memitem:a293ca6862352ec6aafe9e3950b13b45a"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="CommonImages_8h.html#a293ca6862352ec6aafe9e3950b13b45a">deserialize</a> (const T &amp;src, T *dst)</td></tr>
+<tr class="separator:a293ca6862352ec6aafe9e3950b13b45a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab885963d9fbe9f6d1573cc8684ce4623"><td class="memTemplParams" colspan="2">template&lt;class From , class To &gt; </td></tr>
+<tr class="memitem:ab885963d9fbe9f6d1573cc8684ce4623"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="structdetail_1_1ConvertTag.html">detail::ConvertTag</a>&lt; From, To &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="CommonImages_8h.html#ab885963d9fbe9f6d1573cc8684ce4623">convert</a> ()</td></tr>
+<tr class="separator:ab885963d9fbe9f6d1573cc8684ce4623"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a89fbcab9b93d245ed5bf0231af1336cf"><td class="memTemplParams" colspan="2">template&lt;class T1 , class T2 &gt; </td></tr>
+<tr class="memitem:a89fbcab9b93d245ed5bf0231af1336cf"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="CommonImages_8h.html#a89fbcab9b93d245ed5bf0231af1336cf">serialize</a> (const T1 &amp;src, T2 *dst, <a class="el" href="structdetail_1_1ConvertTag.html">detail::ConvertTag</a>&lt; T1, T2 &gt;)</td></tr>
+<tr class="separator:a89fbcab9b93d245ed5bf0231af1336cf"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a132df05ef72b5127bf4756787697924b"><td class="memTemplParams" colspan="2">template&lt;class T1 , class T2 &gt; </td></tr>
+<tr class="memitem:a132df05ef72b5127bf4756787697924b"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="CommonImages_8h.html#a132df05ef72b5127bf4756787697924b">deserialize</a> (const T1 &amp;src, T2 *dst, <a class="el" href="structdetail_1_1ConvertTag.html">detail::ConvertTag</a>&lt; T1, T2 &gt;)</td></tr>
+<tr class="separator:a132df05ef72b5127bf4756787697924b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af1e03f13680f2d0258e0d62f0f90ed8d"><td class="memTemplParams" colspan="2">template&lt;size_t N&gt; </td></tr>
 <tr class="memitem:af1e03f13680f2d0258e0d62f0f90ed8d"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="CommonImages_8h.html#af1e03f13680f2d0258e0d62f0f90ed8d">serialize</a> (const std::string &amp;src, std::array&lt; char, N &gt; *dst)</td></tr>
 <tr class="separator:af1e03f13680f2d0258e0d62f0f90ed8d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a98d08d9c8727d201f4f981dc2e1b7b1d"><td class="memTemplParams" colspan="2">template&lt;size_t N&gt; </td></tr>
 <tr class="memitem:a98d08d9c8727d201f4f981dc2e1b7b1d"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="CommonImages_8h.html#a98d08d9c8727d201f4f981dc2e1b7b1d">deserialize</a> (const std::array&lt; char, N &gt; &amp;src, std::string *dst)</td></tr>
 <tr class="separator:a98d08d9c8727d201f4f981dc2e1b7b1d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a90e7187e55378830fb02b2711e65d395"><td class="memTemplParams" colspan="2">template&lt;class T1 , class T2 , class Tag &gt; <br />
+requires std::is_same_v&lt;Tag, <a class="el" href="structNoTag.html">NoTag</a>&gt;</td></tr>
+<tr class="memitem:a90e7187e55378830fb02b2711e65d395"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="CommonImages_8h.html#a90e7187e55378830fb02b2711e65d395">serialize</a> (const T1 &amp;src, T2 *dst, const Tag &amp;)</td></tr>
+<tr class="separator:a90e7187e55378830fb02b2711e65d395"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a32a90c508edf4ca217f23b13205c12ea"><td class="memTemplParams" colspan="2">template&lt;class T1 , class T2 , class Tag &gt; <br />
+requires std::is_same_v&lt;Tag, <a class="el" href="structNoTag.html">NoTag</a>&gt;</td></tr>
+<tr class="memitem:a32a90c508edf4ca217f23b13205c12ea"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="CommonImages_8h.html#a32a90c508edf4ca217f23b13205c12ea">deserialize</a> (const T1 &amp;src, T2 *dst, const Tag &amp;)</td></tr>
+<tr class="separator:a32a90c508edf4ca217f23b13205c12ea"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad886cd8614d3a600f0fc4234d7e1ef53"><td class="memTemplParams" colspan="2">template&lt;class T1 , class T2 , class Tag  = NoTag&gt; <br />
+requires (!std::is_same_v&lt;T1, T2&gt;)</td></tr>
+<tr class="memitem:ad886cd8614d3a600f0fc4234d7e1ef53"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="CommonImages_8h.html#ad886cd8614d3a600f0fc4234d7e1ef53">serialize</a> (const std::vector&lt; T1 &gt; &amp;src, std::vector&lt; T2 &gt; *dst, const Tag &amp;tag={})</td></tr>
+<tr class="separator:ad886cd8614d3a600f0fc4234d7e1ef53"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a82494327679163cf7528ac3e8c58df75"><td class="memTemplParams" colspan="2">template&lt;class T1 , class T2 , class Tag  = NoTag&gt; <br />
+requires (!std::is_same_v&lt;T1, T2&gt;)</td></tr>
+<tr class="memitem:a82494327679163cf7528ac3e8c58df75"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="CommonImages_8h.html#a82494327679163cf7528ac3e8c58df75">deserialize</a> (const std::vector&lt; T1 &gt; &amp;src, std::vector&lt; T2 &gt; *dst, const Tag &amp;tag={})</td></tr>
+<tr class="separator:a82494327679163cf7528ac3e8c58df75"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af83d8848598142dc501ebc56e0b605d5"><td class="memTemplParams" colspan="2">template&lt;class T1 , size_t N1, class T2 , size_t N2, class Tag  = NoTag&gt; <br />
+requires (!std::is_same_v&lt;T1, T2&gt;)</td></tr>
+<tr class="memitem:af83d8848598142dc501ebc56e0b605d5"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="CommonImages_8h.html#af83d8848598142dc501ebc56e0b605d5">serialize</a> (const std::array&lt; T1, N1 &gt; &amp;src, std::array&lt; T2, N2 &gt; *dst, const Tag &amp;tag={})</td></tr>
+<tr class="separator:af83d8848598142dc501ebc56e0b605d5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2d76f14b38830f50a0f32fd4ff28c1e5"><td class="memTemplParams" colspan="2">template&lt;class T1 , size_t N1, class T2 , size_t N2, class Tag  = NoTag&gt; <br />
+requires (!std::is_same_v&lt;T1, T2&gt;)</td></tr>
+<tr class="memitem:a2d76f14b38830f50a0f32fd4ff28c1e5"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="CommonImages_8h.html#a2d76f14b38830f50a0f32fd4ff28c1e5">deserialize</a> (const std::array&lt; T1, N1 &gt; &amp;src, std::array&lt; T2, N2 &gt; *dst, const Tag &amp;tag={})</td></tr>
+<tr class="separator:a2d76f14b38830f50a0f32fd4ff28c1e5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac9d6e4941ba473c9c2d31cc26ef20cc8"><td class="memTemplParams" colspan="2">template&lt;class T1 , size_t N, class T2 , auto L, auto H, class Tag  = NoTag&gt; </td></tr>
+<tr class="memitem:ac9d6e4941ba473c9c2d31cc26ef20cc8"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="CommonImages_8h.html#ac9d6e4941ba473c9c2d31cc26ef20cc8">serialize</a> (const <a class="el" href="classIndexedArray.html">IndexedArray</a>&lt; T2, L, H &gt; &amp;src, std::array&lt; T1, N &gt; *dst, const Tag &amp;tag={})</td></tr>
+<tr class="separator:ac9d6e4941ba473c9c2d31cc26ef20cc8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7feaf23137aeb5ba1af2f5bca21f505d"><td class="memTemplParams" colspan="2">template&lt;class T1 , size_t N, class T2 , auto L, auto H, class Tag  = NoTag&gt; </td></tr>
+<tr class="memitem:a7feaf23137aeb5ba1af2f5bca21f505d"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="CommonImages_8h.html#a7feaf23137aeb5ba1af2f5bca21f505d">deserialize</a> (const std::array&lt; T1, N &gt; &amp;src, <a class="el" href="classIndexedArray.html">IndexedArray</a>&lt; T2, L, H &gt; *dst, const Tag &amp;tag={})</td></tr>
+<tr class="separator:a7feaf23137aeb5ba1af2f5bca21f505d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7a06d33cfec82330d371aacce4c799ba"><td class="memTemplParams" colspan="2">template&lt;auto First, auto Last&gt; </td></tr>
+<tr class="memitem:a7a06d33cfec82330d371aacce4c799ba"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="structdetail_1_1SegmentTag.html">detail::SegmentTag</a>&lt; First, Last &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="CommonImages_8h.html#a7a06d33cfec82330d371aacce4c799ba">segment</a> ()</td></tr>
+<tr class="separator:a7a06d33cfec82330d371aacce4c799ba"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad919b630e57e1821244953bb529e3884"><td class="memTemplParams" colspan="2">template&lt;class T1 , size_t N, class T2 , auto L, auto H, auto LL, auto HH&gt; </td></tr>
+<tr class="memitem:ad919b630e57e1821244953bb529e3884"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="CommonImages_8h.html#ad919b630e57e1821244953bb529e3884">serialize</a> (const <a class="el" href="classIndexedArray.html">IndexedArray</a>&lt; T2, L, H &gt; &amp;src, std::array&lt; T1, N &gt; *dst, <a class="el" href="structdetail_1_1SegmentTag.html">detail::SegmentTag</a>&lt; LL, HH &gt; tag)</td></tr>
+<tr class="separator:ad919b630e57e1821244953bb529e3884"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a806dafd0e0d2cc90396319358342f0d3"><td class="memTemplParams" colspan="2">template&lt;class T1 , size_t N, class T2 , auto L, auto H, auto LL, auto HH&gt; </td></tr>
+<tr class="memitem:a806dafd0e0d2cc90396319358342f0d3"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="CommonImages_8h.html#a806dafd0e0d2cc90396319358342f0d3">deserialize</a> (const std::array&lt; T1, N &gt; &amp;src, <a class="el" href="classIndexedArray.html">IndexedArray</a>&lt; T2, L, H &gt; *dst, <a class="el" href="structdetail_1_1SegmentTag.html">detail::SegmentTag</a>&lt; LL, HH &gt; tag)</td></tr>
+<tr class="separator:a806dafd0e0d2cc90396319358342f0d3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a77d8b40d9fe87c389fa2e2b374ed35db"><td class="memTemplParams" colspan="2">template&lt;class T , size_t N, auto L, auto H&gt; </td></tr>
+<tr class="memitem:a77d8b40d9fe87c389fa2e2b374ed35db"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="CommonImages_8h.html#a77d8b40d9fe87c389fa2e2b374ed35db">serialize</a> (const <a class="el" href="classIndexedBitset.html">IndexedBitset</a>&lt; L, H &gt; &amp;src, std::array&lt; T, N &gt; *dst)</td></tr>
+<tr class="separator:a77d8b40d9fe87c389fa2e2b374ed35db"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af15916dc23c563330a4a460a478cbd3e"><td class="memTemplParams" colspan="2">template&lt;class T , size_t N, auto L, auto H&gt; </td></tr>
+<tr class="memitem:af15916dc23c563330a4a460a478cbd3e"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="CommonImages_8h.html#af15916dc23c563330a4a460a478cbd3e">deserialize</a> (const std::array&lt; T, N &gt; &amp;src, <a class="el" href="classIndexedBitset.html">IndexedBitset</a>&lt; L, H &gt; *dst)</td></tr>
+<tr class="separator:af15916dc23c563330a4a460a478cbd3e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Function Documentation</h2>
+<a id="ab885963d9fbe9f6d1573cc8684ce4623" name="ab885963d9fbe9f6d1573cc8684ce4623"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab885963d9fbe9f6d1573cc8684ce4623">&#9670;&#160;</a></span>convert()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class From , class To &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structdetail_1_1ConvertTag.html">detail::ConvertTag</a>&lt; From, To &gt; convert </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="a98d08d9c8727d201f4f981dc2e1b7b1d" name="a98d08d9c8727d201f4f981dc2e1b7b1d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a98d08d9c8727d201f4f981dc2e1b7b1d">&#9670;&#160;</a></span>deserialize() <span class="overload">[1/4]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a98d08d9c8727d201f4f981dc2e1b7b1d">&#9670;&#160;</a></span>deserialize() <span class="overload">[1/9]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -147,13 +231,115 @@ template&lt;size_t N&gt; </div>
 
 </div>
 </div>
-<a id="a1e264c92ae351b7cc104d6ad515c45d4" name="a1e264c92ae351b7cc104d6ad515c45d4"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a1e264c92ae351b7cc104d6ad515c45d4">&#9670;&#160;</a></span>deserialize() <span class="overload">[2/4]</span></h2>
+<a id="af15916dc23c563330a4a460a478cbd3e" name="af15916dc23c563330a4a460a478cbd3e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af15916dc23c563330a4a460a478cbd3e">&#9670;&#160;</a></span>deserialize() <span class="overload">[2/9]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;class T1 , size_t N1, class T2 , size_t N2&gt; <br />
+template&lt;class T , size_t N, auto L, auto H&gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">void deserialize </td>
+          <td>(</td>
+          <td class="paramtype">const std::array&lt; T, N &gt; &amp;&#160;</td>
+          <td class="paramname"><em>src</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classIndexedBitset.html">IndexedBitset</a>&lt; L, H &gt; *&#160;</td>
+          <td class="paramname"><em>dst</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a7feaf23137aeb5ba1af2f5bca21f505d" name="a7feaf23137aeb5ba1af2f5bca21f505d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7feaf23137aeb5ba1af2f5bca21f505d">&#9670;&#160;</a></span>deserialize() <span class="overload">[3/9]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class T1 , size_t N, class T2 , auto L, auto H, class Tag  = NoTag&gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">void deserialize </td>
+          <td>(</td>
+          <td class="paramtype">const std::array&lt; T1, N &gt; &amp;&#160;</td>
+          <td class="paramname"><em>src</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classIndexedArray.html">IndexedArray</a>&lt; T2, L, H &gt; *&#160;</td>
+          <td class="paramname"><em>dst</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const Tag &amp;&#160;</td>
+          <td class="paramname"><em>tag</em> = <code>{}</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a806dafd0e0d2cc90396319358342f0d3" name="a806dafd0e0d2cc90396319358342f0d3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a806dafd0e0d2cc90396319358342f0d3">&#9670;&#160;</a></span>deserialize() <span class="overload">[4/9]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class T1 , size_t N, class T2 , auto L, auto H, auto LL, auto HH&gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">void deserialize </td>
+          <td>(</td>
+          <td class="paramtype">const std::array&lt; T1, N &gt; &amp;&#160;</td>
+          <td class="paramname"><em>src</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classIndexedArray.html">IndexedArray</a>&lt; T2, L, H &gt; *&#160;</td>
+          <td class="paramname"><em>dst</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="structdetail_1_1SegmentTag.html">detail::SegmentTag</a>&lt; LL, HH &gt;&#160;</td>
+          <td class="paramname"><em>tag</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a2d76f14b38830f50a0f32fd4ff28c1e5" name="a2d76f14b38830f50a0f32fd4ff28c1e5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2d76f14b38830f50a0f32fd4ff28c1e5">&#9670;&#160;</a></span>deserialize() <span class="overload">[5/9]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class T1 , size_t N1, class T2 , size_t N2, class Tag  = NoTag&gt; <br />
 requires (!std::is_same_v&lt;T1, T2&gt;)</div>
       <table class="memname">
         <tr>
@@ -166,7 +352,13 @@ requires (!std::is_same_v&lt;T1, T2&gt;)</div>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">std::array&lt; T2, N2 &gt; *&#160;</td>
-          <td class="paramname"><em>dst</em>&#160;</td>
+          <td class="paramname"><em>dst</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const Tag &amp;&#160;</td>
+          <td class="paramname"><em>tag</em> = <code>{}</code>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -178,13 +370,13 @@ requires (!std::is_same_v&lt;T1, T2&gt;)</div>
 
 </div>
 </div>
-<a id="a82f0c604927e87d065b045ba41248953" name="a82f0c604927e87d065b045ba41248953"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a82f0c604927e87d065b045ba41248953">&#9670;&#160;</a></span>deserialize() <span class="overload">[3/4]</span></h2>
+<a id="a82494327679163cf7528ac3e8c58df75" name="a82494327679163cf7528ac3e8c58df75"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a82494327679163cf7528ac3e8c58df75">&#9670;&#160;</a></span>deserialize() <span class="overload">[6/9]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;class T1 , class T2 &gt; <br />
+template&lt;class T1 , class T2 , class Tag  = NoTag&gt; <br />
 requires (!std::is_same_v&lt;T1, T2&gt;)</div>
       <table class="memname">
         <tr>
@@ -197,7 +389,13 @@ requires (!std::is_same_v&lt;T1, T2&gt;)</div>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">std::vector&lt; T2 &gt; *&#160;</td>
-          <td class="paramname"><em>dst</em>&#160;</td>
+          <td class="paramname"><em>dst</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const Tag &amp;&#160;</td>
+          <td class="paramname"><em>tag</em> = <code>{}</code>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -209,19 +407,16 @@ requires (!std::is_same_v&lt;T1, T2&gt;)</div>
 
 </div>
 </div>
-<a id="a554f780aa7e3cee149be4ece79aa928e" name="a554f780aa7e3cee149be4ece79aa928e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a554f780aa7e3cee149be4ece79aa928e">&#9670;&#160;</a></span>deserialize() <span class="overload">[4/4]</span></h2>
+<a id="a293ca6862352ec6aafe9e3950b13b45a" name="a293ca6862352ec6aafe9e3950b13b45a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a293ca6862352ec6aafe9e3950b13b45a">&#9670;&#160;</a></span>deserialize() <span class="overload">[7/9]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
 template&lt;class T &gt; </div>
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">static void deserialize </td>
+          <td class="memname">void deserialize </td>
           <td>(</td>
           <td class="paramtype">const T &amp;&#160;</td>
           <td class="paramname"><em>src</em>, </td>
@@ -238,34 +433,192 @@ template&lt;class T &gt; </div>
           <td></td><td></td>
         </tr>
       </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">static</span></span>  </td>
-  </tr>
-</table>
 </div><div class="memdoc">
 
 </div>
 </div>
-<a id="aec20eaf12ee2c7a593c50cb7134b4119" name="aec20eaf12ee2c7a593c50cb7134b4119"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aec20eaf12ee2c7a593c50cb7134b4119">&#9670;&#160;</a></span>serialize() <span class="overload">[1/4]</span></h2>
+<a id="a32a90c508edf4ca217f23b13205c12ea" name="a32a90c508edf4ca217f23b13205c12ea"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a32a90c508edf4ca217f23b13205c12ea">&#9670;&#160;</a></span>deserialize() <span class="overload">[8/9]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;class T1 , size_t N1, class T2 , size_t N2&gt; <br />
-requires (!std::is_same_v&lt;T1, T2&gt;)</div>
+template&lt;class T1 , class T2 , class Tag &gt; <br />
+requires std::is_same_v&lt;Tag, <a class="el" href="structNoTag.html">NoTag</a>&gt;</div>
       <table class="memname">
         <tr>
-          <td class="memname">void serialize </td>
+          <td class="memname">void deserialize </td>
           <td>(</td>
-          <td class="paramtype">const std::array&lt; T1, N1 &gt; &amp;&#160;</td>
+          <td class="paramtype">const T1 &amp;&#160;</td>
           <td class="paramname"><em>src</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">std::array&lt; T2, N2 &gt; *&#160;</td>
+          <td class="paramtype">T2 *&#160;</td>
+          <td class="paramname"><em>dst</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const Tag &amp;&#160;</td>
+          <td class="paramname">&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a132df05ef72b5127bf4756787697924b" name="a132df05ef72b5127bf4756787697924b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a132df05ef72b5127bf4756787697924b">&#9670;&#160;</a></span>deserialize() <span class="overload">[9/9]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class T1 , class T2 &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">void deserialize </td>
+          <td>(</td>
+          <td class="paramtype">const T1 &amp;&#160;</td>
+          <td class="paramname"><em>src</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">T2 *&#160;</td>
+          <td class="paramname"><em>dst</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="structdetail_1_1ConvertTag.html">detail::ConvertTag</a>&lt; T1, T2 &gt;&#160;</td>
+          <td class="paramname">&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a7a06d33cfec82330d371aacce4c799ba" name="a7a06d33cfec82330d371aacce4c799ba"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7a06d33cfec82330d371aacce4c799ba">&#9670;&#160;</a></span>segment()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;auto First, auto Last&gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structdetail_1_1SegmentTag.html">detail::SegmentTag</a>&lt; First, Last &gt; segment </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ac9d6e4941ba473c9c2d31cc26ef20cc8" name="ac9d6e4941ba473c9c2d31cc26ef20cc8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac9d6e4941ba473c9c2d31cc26ef20cc8">&#9670;&#160;</a></span>serialize() <span class="overload">[1/9]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class T1 , size_t N, class T2 , auto L, auto H, class Tag  = NoTag&gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">void serialize </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classIndexedArray.html">IndexedArray</a>&lt; T2, L, H &gt; &amp;&#160;</td>
+          <td class="paramname"><em>src</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::array&lt; T1, N &gt; *&#160;</td>
+          <td class="paramname"><em>dst</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const Tag &amp;&#160;</td>
+          <td class="paramname"><em>tag</em> = <code>{}</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ad919b630e57e1821244953bb529e3884" name="ad919b630e57e1821244953bb529e3884"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad919b630e57e1821244953bb529e3884">&#9670;&#160;</a></span>serialize() <span class="overload">[2/9]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class T1 , size_t N, class T2 , auto L, auto H, auto LL, auto HH&gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">void serialize </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classIndexedArray.html">IndexedArray</a>&lt; T2, L, H &gt; &amp;&#160;</td>
+          <td class="paramname"><em>src</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::array&lt; T1, N &gt; *&#160;</td>
+          <td class="paramname"><em>dst</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="structdetail_1_1SegmentTag.html">detail::SegmentTag</a>&lt; LL, HH &gt;&#160;</td>
+          <td class="paramname"><em>tag</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a77d8b40d9fe87c389fa2e2b374ed35db" name="a77d8b40d9fe87c389fa2e2b374ed35db"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a77d8b40d9fe87c389fa2e2b374ed35db">&#9670;&#160;</a></span>serialize() <span class="overload">[3/9]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class T , size_t N, auto L, auto H&gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">void serialize </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classIndexedBitset.html">IndexedBitset</a>&lt; L, H &gt; &amp;&#160;</td>
+          <td class="paramname"><em>src</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::array&lt; T, N &gt; *&#160;</td>
           <td class="paramname"><em>dst</em>&#160;</td>
         </tr>
         <tr>
@@ -278,8 +631,45 @@ requires (!std::is_same_v&lt;T1, T2&gt;)</div>
 
 </div>
 </div>
+<a id="af83d8848598142dc501ebc56e0b605d5" name="af83d8848598142dc501ebc56e0b605d5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af83d8848598142dc501ebc56e0b605d5">&#9670;&#160;</a></span>serialize() <span class="overload">[4/9]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class T1 , size_t N1, class T2 , size_t N2, class Tag  = NoTag&gt; <br />
+requires (!std::is_same_v&lt;T1, T2&gt;)</div>
+      <table class="memname">
+        <tr>
+          <td class="memname">void serialize </td>
+          <td>(</td>
+          <td class="paramtype">const std::array&lt; T1, N1 &gt; &amp;&#160;</td>
+          <td class="paramname"><em>src</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::array&lt; T2, N2 &gt; *&#160;</td>
+          <td class="paramname"><em>dst</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const Tag &amp;&#160;</td>
+          <td class="paramname"><em>tag</em> = <code>{}</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="af1e03f13680f2d0258e0d62f0f90ed8d" name="af1e03f13680f2d0258e0d62f0f90ed8d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#af1e03f13680f2d0258e0d62f0f90ed8d">&#9670;&#160;</a></span>serialize() <span class="overload">[2/4]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#af1e03f13680f2d0258e0d62f0f90ed8d">&#9670;&#160;</a></span>serialize() <span class="overload">[5/9]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -308,13 +698,13 @@ template&lt;size_t N&gt; </div>
 
 </div>
 </div>
-<a id="afe38de570c03ebc54df42fa943cddd28" name="afe38de570c03ebc54df42fa943cddd28"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#afe38de570c03ebc54df42fa943cddd28">&#9670;&#160;</a></span>serialize() <span class="overload">[3/4]</span></h2>
+<a id="ad886cd8614d3a600f0fc4234d7e1ef53" name="ad886cd8614d3a600f0fc4234d7e1ef53"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad886cd8614d3a600f0fc4234d7e1ef53">&#9670;&#160;</a></span>serialize() <span class="overload">[6/9]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;class T1 , class T2 &gt; <br />
+template&lt;class T1 , class T2 , class Tag  = NoTag&gt; <br />
 requires (!std::is_same_v&lt;T1, T2&gt;)</div>
       <table class="memname">
         <tr>
@@ -327,7 +717,13 @@ requires (!std::is_same_v&lt;T1, T2&gt;)</div>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">std::vector&lt; T2 &gt; *&#160;</td>
-          <td class="paramname"><em>dst</em>&#160;</td>
+          <td class="paramname"><em>dst</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const Tag &amp;&#160;</td>
+          <td class="paramname"><em>tag</em> = <code>{}</code>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -339,19 +735,16 @@ requires (!std::is_same_v&lt;T1, T2&gt;)</div>
 
 </div>
 </div>
-<a id="aedf504c97b0477f0cf4a72341191773b" name="aedf504c97b0477f0cf4a72341191773b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aedf504c97b0477f0cf4a72341191773b">&#9670;&#160;</a></span>serialize() <span class="overload">[4/4]</span></h2>
+<a id="ae820b2586069d6302fea9d56334f8d45" name="ae820b2586069d6302fea9d56334f8d45"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae820b2586069d6302fea9d56334f8d45">&#9670;&#160;</a></span>serialize() <span class="overload">[7/9]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
 template&lt;class T &gt; </div>
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">static void serialize </td>
+          <td class="memname">void serialize </td>
           <td>(</td>
           <td class="paramtype">const T &amp;&#160;</td>
           <td class="paramname"><em>src</em>, </td>
@@ -368,11 +761,79 @@ template&lt;class T &gt; </div>
           <td></td><td></td>
         </tr>
       </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">static</span></span>  </td>
-  </tr>
-</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a90e7187e55378830fb02b2711e65d395" name="a90e7187e55378830fb02b2711e65d395"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a90e7187e55378830fb02b2711e65d395">&#9670;&#160;</a></span>serialize() <span class="overload">[8/9]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class T1 , class T2 , class Tag &gt; <br />
+requires std::is_same_v&lt;Tag, <a class="el" href="structNoTag.html">NoTag</a>&gt;</div>
+      <table class="memname">
+        <tr>
+          <td class="memname">void serialize </td>
+          <td>(</td>
+          <td class="paramtype">const T1 &amp;&#160;</td>
+          <td class="paramname"><em>src</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">T2 *&#160;</td>
+          <td class="paramname"><em>dst</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const Tag &amp;&#160;</td>
+          <td class="paramname">&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a89fbcab9b93d245ed5bf0231af1336cf" name="a89fbcab9b93d245ed5bf0231af1336cf"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a89fbcab9b93d245ed5bf0231af1336cf">&#9670;&#160;</a></span>serialize() <span class="overload">[9/9]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class T1 , class T2 &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">void serialize </td>
+          <td>(</td>
+          <td class="paramtype">const T1 &amp;&#160;</td>
+          <td class="paramname"><em>src</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">T2 *&#160;</td>
+          <td class="paramname"><em>dst</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="structdetail_1_1ConvertTag.html">detail::ConvertTag</a>&lt; T1, T2 &gt;&#160;</td>
+          <td class="paramname">&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
 </div><div class="memdoc">
 
 </div>
