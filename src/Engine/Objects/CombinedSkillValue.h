@@ -1,4 +1,5 @@
 #pragma once
+#include <cstdint>
 #include "Engine/Objects/PlayerEnums.h"
 #include "Utility/Segment.h"
 
