@@ -1,5 +1,7 @@
 #pragma once
 
+#include <cstdint>
+
 enum class EventType : uint8_t {
     EVENT_Invalid = 0,
     EVENT_Exit = 1,
