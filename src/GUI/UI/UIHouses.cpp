@@ -278,42 +278,28 @@ IndexedArray<int, BuildingType_WeaponShop, BuildingType_DarkGuild> itemAmountInS
     {BuildingType_BodyGuild, 12},
     {BuildingType_LightGuild, 12},
     {BuildingType_DarkGuild, 12}
-}};;
+}};
 
-static std::array<const char *, 19> _4F03B8_shop_background_names = {
-    { "", "WEPNTABL", "ARMORY", "MAGSHELF", "MAGSHELF", "MAGSHELF", "MAGSHELF",
-    "MAGSHELF", "MAGSHELF", "MAGSHELF", "MAGSHELF", "MAGSHELF", "MAGSHELF",
-    "MAGSHELF", "MAGSHELF", "MAGSHELF", "MAGSHELF", "MAGSHELF", "MAGSHELF" } };
+IndexedArray<std::string, BuildingType_WeaponShop, BuildingType_MirroredPath> shopBackgroundNames = {{
+    {BuildingType_WeaponShop, "WEPNTABL"},
+    {BuildingType_ArmorShop, "ARMORY"},
+    {BuildingType_MagicShop, "MAGSHELF"},
+    {BuildingType_AlchemistShop, "MAGSHELF"},
+    {BuildingType_FireGuild, "MAGSHELF"},
+    {BuildingType_AirGuild, "MAGSHELF"},
+    {BuildingType_WaterGuild, "MAGSHELF"},
+    {BuildingType_EarthGuild, "MAGSHELF"},
+    {BuildingType_SpiritGuild, "MAGSHELF"},
+    {BuildingType_MindGuild, "MAGSHELF"},
+    {BuildingType_BodyGuild, "MAGSHELF"},
+    {BuildingType_LightGuild, "MAGSHELF"},
+    {BuildingType_DarkGuild, "MAGSHELF"},
+    {BuildingType_ElementalGuild, "MAGSHELF"},
+    {BuildingType_SelfGuild, "MAGSHELF"},
+    {BuildingType_MirroredPath, "MAGSHELF"}
+}};
 
 std::array<std::string, 6> portraitClickLabel;
-
-bool HouseUI_CheckIfPlayerCanInteract() {
-    if (!pParty->hasActiveCharacter()) {  // to avoid access zeroeleement
-        return false;
-    }
-
-    if (pParty->activeCharacter().CanAct()) {
-        pDialogueWindow->pNumPresenceButton = dword_F8B1E0;
-        return true;
-    } else {
-        pDialogueWindow->pNumPresenceButton = 0;
-        GUIWindow window = *pPrimaryWindow;
-        window.uFrameX = SIDE_TEXT_BOX_POS_X;
-        window.uFrameWidth = SIDE_TEXT_BOX_WIDTH;
-        window.uFrameZ = SIDE_TEXT_BOX_POS_Z;
-
-        std::string str = localization->FormatString(
-            LSTR_FMT_S_IS_IN_NO_CODITION_TO_S,
-            pParty->activeCharacter().name.c_str(),
-            localization->GetString(LSTR_DO_ANYTHING));
-        window.DrawTitleText(
-            pFontArrus, 0,
-            (212 - pFontArrus->CalcTextHeight(str, window.uFrameWidth, 0)) / 2 +
-            101,
-            ui_house_player_cant_interact_color, str, 3);
-        return false;
-    }
-}
 
 bool enterHouse(HOUSE_ID uHouseID) {
     GameUI_StatusBar_Clear();
@@ -521,103 +507,6 @@ void GetHouseGoodbyeSpeech() {
                 }
             }
         }
-    }
-}
-
-//----- (004BCACC) --------------------------------------------------------
-void OnSelectShopDialogueOption(DIALOGUE_TYPE option) {
-    if (!pDialogueWindow->pNumPresenceButton)
-        return;
-    render->ClearZBuffer();
-
-    if (dialog_menu_id == DIALOGUE_MAIN) {
-        pDialogueWindow->Release();
-        pDialogueWindow = new GUIWindow(WINDOW_Dialogue, {0, 0}, {render->GetRenderDimensions().w, 345}, 0);
-        pBtn_ExitCancel = pDialogueWindow->CreateButton({526, 445}, {75, 33}, 1, 0, UIMSG_Escape, 0, InputAction::Invalid,
-                                                        localization->GetString(LSTR_END_CONVERSATION), {ui_buttdesc2});
-        pDialogueWindow->CreateButton({8, 8}, {450, 320}, 1, 0, UIMSG_BuyInShop_Identify_Repair, 0);
-        dialog_menu_id = option;
-        if (in_current_building_type < BuildingType_TownHall_MM6) {
-            shop_ui_background = assets->getImage_ColorKey(_4F03B8_shop_background_names[(int)in_current_building_type]);
-        }
-    }
-
-    // NEW
-    // TODO(Nik-RE-dev): houseDialogueOptionSelected must be called without switch
-    switch (in_current_building_type) {
-      case BuildingType_FireGuild:
-      case BuildingType_AirGuild:
-      case BuildingType_WaterGuild:
-      case BuildingType_EarthGuild:
-      case BuildingType_SpiritGuild:
-      case BuildingType_MindGuild:
-      case BuildingType_BodyGuild:
-      case BuildingType_LightGuild:
-      case BuildingType_DarkGuild:
-      case BuildingType_ElementalGuild:
-      case BuildingType_SelfGuild:
-      case BuildingType_MirroredPath:
-      case BuildingType_Bank:
-      case BuildingType_Temple:
-      case BuildingType_Tavern:
-      case BuildingType_Training:
-      case BuildingType_Jail:
-      case BuildingType_MercenaryGuild:
-      case BuildingType_TownHall:
-      case BuildingType_WeaponShop:
-      case BuildingType_ArmorShop:
-      case BuildingType_MagicShop:
-      case BuildingType_AlchemistShop:
-        window_SpeakInHouse->houseDialogueOptionSelected(option);
-        break;
-      default:
-        return;
-    }
-
-    switch (option) {
-    case DIALOGUE_LEARN_SKILLS:
-    {
-        pDialogueWindow->eWindowType = WINDOW_MainMenu;
-        UI_CreateEndConversationButton();
-        window_SpeakInHouse->initializeDialog();
-        break;
-    }
-    case DIALOGUE_TAVERN_ARCOMAGE_MAIN:
-    {
-        pDialogueWindow->eWindowType = WINDOW_MainMenu;
-        UI_CreateEndConversationButton();
-        window_SpeakInHouse->initializeDialog();
-        break;
-    }
-    case DIALOGUE_TAVERN_ARCOMAGE_RULES:
-    case DIALOGUE_TAVERN_ARCOMAGE_VICTORY_CONDITIONS:
-    {
-        dialog_menu_id = option;
-        break;
-    }
-    case DIALOGUE_TAVERN_ARCOMAGE_RESULT:
-    {
-        pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_PlayArcomage, 0, 0);
-        dialog_menu_id = DIALOGUE_TAVERN_ARCOMAGE_RESULT;
-        break;
-    }
-    case DIALOGUE_SHOP_SELL:
-    case DIALOGUE_SHOP_IDENTIFY:
-    case DIALOGUE_SHOP_REPAIR:
-    {
-        dialog_menu_id = option;
-        pParty->placeHeldItemInInventoryOrDrop();
-        break;
-    }
-    case DIALOGUE_SHOP_DISPLAY_EQUIPMENT:
-    {
-        pDialogueWindow->eWindowType = WINDOW_MainMenu;
-        UI_CreateEndConversationButton();
-        window_SpeakInHouse->initializeDialog();
-        break;
-    }
-    default:
-        break;
     }
 }
 
@@ -831,80 +720,68 @@ void SimpleHouseDialog() {
     }
 }
 
-int HouseDialogPressCloseBtn() {
+void onSelectShopDialogueOption(DIALOGUE_TYPE option) {
+    if (!pDialogueWindow || !pDialogueWindow->pNumPresenceButton) {
+        return;
+    }
+
+    render->ClearZBuffer();
+
+    dialog_menu_id = option;
+    window_SpeakInHouse->houseDialogueOptionSelected(option);
+    window_SpeakInHouse->reinitDialogueWindow();
+    window_SpeakInHouse->initializeDialog();
+}
+
+bool houseDialogPressEscape() {
     pCurrentFrameMessageQueue->Flush();
     keyboardInputHandler->SetWindowInputStatus(WINDOW_INPUT_CANCELLED);
     keyboardInputHandler->ResetKeys();
     activeLevelDecoration = nullptr;
     current_npc_text.clear();
-    if (pDialogueNPCCount == 0) return 0;
 
-    if (dialog_menu_id == DIALOGUE_SHOP_BUY_SPECIAL &&
-        shop_ui_background) {
-        shop_ui_background->Release();
-        shop_ui_background = nullptr;
+    if (pDialogueNPCCount == 0) {
+        return false;
     }
 
-    switch (dialog_menu_id) {
-    case -1:
+    if (dialog_menu_id == DIALOGUE_OTHER) {
         _4B4224_UpdateNPCTopics(pDialogueNPCCount - 1);
         BackToHouseMenu();
-        break;
+        return true;
+    }
 
-    case DIALOGUE_SHOP_DISPLAY_EQUIPMENT:
-    case DIALOGUE_LEARN_SKILLS:
-    case DIALOGUE_TAVERN_ARCOMAGE_MAIN:
-        BackToHouseMenu();
-        UI_CreateEndConversationButton();
-        dialog_menu_id = DIALOGUE_MAIN;
-        window_SpeakInHouse->initializeDialog();
-        break;
-
-    case DIALOGUE_SHOP_SELL:
-    case DIALOGUE_SHOP_IDENTIFY:
-    case DIALOGUE_SHOP_REPAIR:
-        UI_CreateEndConversationButton();
-        dialog_menu_id = DIALOGUE_SHOP_DISPLAY_EQUIPMENT;
-        window_SpeakInHouse->initializeDialog();
-        break;
-
-    case DIALOGUE_TAVERN_ARCOMAGE_RULES:
-    case DIALOGUE_TAVERN_ARCOMAGE_VICTORY_CONDITIONS:
-    case DIALOGUE_TAVERN_ARCOMAGE_RESULT:
-        BackToHouseMenu();
-        UI_CreateEndConversationButton();
-        dialog_menu_id = DIALOGUE_TAVERN_ARCOMAGE_MAIN;
-        window_SpeakInHouse->initializeDialog();
-        break;
-
-    case DIALOGUE_NULL:
-    case DIALOGUE_MAIN:
+    if (dialog_menu_id == DIALOGUE_NULL || dialog_menu_id == DIALOGUE_MAIN) {
         pDialogueNPCCount = 0;
-        pDialogueWindow->Release();
+        if (pDialogueWindow) {
+            pDialogueWindow->Release();
+        }
+        if (shop_ui_background) {
+            shop_ui_background->Release();
+            shop_ui_background = nullptr;
+        }
         dialog_menu_id = DIALOGUE_NULL;
-        pDialogueWindow = 0;
+        pDialogueWindow = nullptr;
 
-        if (uNumDialogueNPCPortraits == 1) return 0;
+        if (uNumDialogueNPCPortraits == 1) {
+            return false;
+        }
 
         pBtn_ExitCancel = window_SpeakInHouse->vButtons.front();
-        if (uNumDialogueNPCPortraits > 0) {
-            for (uint i = 0; i < (unsigned int)uNumDialogueNPCPortraits; ++i) {
-                HouseNPCPortraitsButtonsList[i] = window_SpeakInHouse->CreateButton(
-                    {pNPCPortraits_x[uNumDialogueNPCPortraits - 1][i], pNPCPortraits_y[uNumDialogueNPCPortraits - 1][i]}, {63, 73}, 1, 0,
-                    UIMSG_ClickHouseNPCPortrait, i, InputAction::Invalid, portraitClickLabel[i]);
-            }
+        for (int i = 0; i < uNumDialogueNPCPortraits; ++i) {
+            Pointi pos = {pNPCPortraits_x[uNumDialogueNPCPortraits - 1][i], pNPCPortraits_y[uNumDialogueNPCPortraits - 1][i]};
+            HouseNPCPortraitsButtonsList[i] = window_SpeakInHouse->CreateButton(pos, {63, 73}, 1, 0, UIMSG_ClickHouseNPCPortrait, i,
+                                                                                InputAction::Invalid, portraitClickLabel[i]);
         }
 
         BackToHouseMenu();
-        break;
-
-    default:
-        BackToHouseMenu();
-        dialog_menu_id = DIALOGUE_MAIN;
-        window_SpeakInHouse->initializeDialog();
-        break;
+        return true;
     }
-    return 1;
+
+    dialog_menu_id = window_SpeakInHouse->getOptionOnEscape();
+    window_SpeakInHouse->reinitDialogueWindow();
+    window_SpeakInHouse->initializeDialog();
+
+    return true;
 }
 
 void createHouseUI(HOUSE_ID houseId) {
@@ -972,6 +849,7 @@ void createHouseUI(HOUSE_ID houseId) {
     }
 }
 
+// TODO(Nik-RE-dev): looks like this function is not needed anymore
 void BackToHouseMenu() {
     auto pMouse = EngineIocContainer::ResolveMouse();
     pMouse->ClearPickedItem();
@@ -980,7 +858,7 @@ void BackToHouseMenu() {
     if (window_SpeakInHouse && window_SpeakInHouse->wData.val == 165 &&
         !pMovie_Track) {
         bGameoverLoop = true;
-        HouseDialogPressCloseBtn();
+        houseDialogPressEscape();
         window_SpeakInHouse->Release();
         pParty->uFlags &= 0xFFFFFFFD;
         if (enterHouse(HOUSE_BODY_GUILD_MASTER_ERATHIA)) {
@@ -990,6 +868,43 @@ void BackToHouseMenu() {
         bGameoverLoop = false;
     }
 #endif
+}
+
+void GUIWindow_House::reinitDialogueWindow() {
+    if (pDialogueWindow) {
+        pDialogueWindow->Release();
+    }
+
+    pDialogueWindow = new GUIWindow(WINDOW_Dialogue, {0, 0}, {render->GetPresentDimensions().w, 345}, 0);
+    pBtn_ExitCancel = pDialogueWindow->CreateButton({471, 445}, {169, 35}, 1, 0, UIMSG_Escape, 0, InputAction::Invalid,
+        localization->GetString(LSTR_END_CONVERSATION), {ui_exit_cancel_button_background});
+    pDialogueWindow->CreateButton({8, 8}, {450, 320}, 1, 0, UIMSG_BuyInShop_Identify_Repair, 0, InputAction::Invalid, "");
+}
+
+bool GUIWindow_House::checkIfPlayerCanInteract() {
+    if (!pParty->hasActiveCharacter()) {  // to avoid access zeroeleement
+        return false;
+    }
+
+    // Do nothing if no current conversation exist
+    if (!pDialogueWindow) {
+        return true;
+    }
+
+    if (pParty->activeCharacter().CanAct()) {
+        pDialogueWindow->pNumPresenceButton = _savedButtonsNum;
+        return true;
+    } else {
+        pDialogueWindow->pNumPresenceButton = 0;
+        GUIWindow window = *window_SpeakInHouse;
+        window.uFrameX = SIDE_TEXT_BOX_POS_X;
+        window.uFrameWidth = SIDE_TEXT_BOX_WIDTH;
+        window.uFrameZ = SIDE_TEXT_BOX_POS_Z;
+
+        std::string str = localization->FormatString(LSTR_FMT_S_IS_IN_NO_CODITION_TO_S, pParty->activeCharacter().name.c_str(), localization->GetString(LSTR_DO_ANYTHING));
+        window.DrawTitleText(pFontArrus, 0, (212 - pFontArrus->CalcTextHeight(str, window.uFrameWidth, 0)) / 2 + 101, ui_house_player_cant_interact_color, str, 3);
+        return false;
+    }
 }
 
 void GUIWindow_House::houseDialogManager() {
@@ -1107,6 +1022,10 @@ void GUIWindow_House::houseDialogManager() {
 }
 
 void GUIWindow_House::initializeDialog() {
+    if (!pDialogueWindow) {
+        return;
+    }
+
     std::vector<DIALOGUE_TYPE> optionList = listDialogueOptions(dialog_menu_id);
 
     if (optionList.size()) {
@@ -1115,7 +1034,7 @@ void GUIWindow_House::initializeDialog() {
         }
         pDialogueWindow->_41D08F_set_keyboard_control_group(optionList.size(), 1, 0, 2);
     }
-    dword_F8B1E0 = pDialogueWindow->pNumPresenceButton;
+    _savedButtonsNum = pDialogueWindow->pNumPresenceButton;
 }
 
 void GUIWindow_House::learnSelectedSkill(PLAYER_SKILL_TYPE skill) {
@@ -1145,6 +1064,11 @@ GUIWindow_House::GUIWindow_House(HOUSE_ID houseId) : GUIWindow(WINDOW_HouseInter
     current_screen_type = CURRENT_SCREEN::SCREEN_HOUSE;
     pBtn_ExitCancel = CreateButton({471, 445}, {169, 35}, 1, 0, UIMSG_Escape, 0, InputAction::Invalid,
                                    localization->GetString(LSTR_EXIT_BUILDING), {ui_exit_cancel_button_background});
+
+    if (in_current_building_type <= BuildingType_MirroredPath) {
+        shop_ui_background = assets->getImage_ColorKey(shopBackgroundNames[in_current_building_type]);
+    }
+
     for (int curNpc = 0; curNpc < uNumDialogueNPCPortraits; curNpc++) {
         int labelFmt;
         std::string labelData;
@@ -1216,4 +1140,11 @@ void GUIWindow_House::houseSpecificDialogue() {
 
 std::vector<DIALOGUE_TYPE> GUIWindow_House::listDialogueOptions(DIALOGUE_TYPE option) {
     return {};
+}
+
+DIALOGUE_TYPE GUIWindow_House::getOptionOnEscape() {
+    if (dialog_menu_id == DIALOGUE_MAIN) {
+        return DIALOGUE_NULL;
+    }
+    return DIALOGUE_MAIN;
 }

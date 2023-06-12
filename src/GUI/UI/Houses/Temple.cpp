@@ -146,7 +146,7 @@ void GUIWindow_Temple::learnSkillsDialogue() {
     temple_window.uFrameWidth = SIDE_TEXT_BOX_WIDTH;
     temple_window.uFrameZ = SIDE_TEXT_BOX_POS_Z;
 
-    if (HouseUI_CheckIfPlayerCanInteract()) {
+    if (checkIfPlayerCanInteract()) {
         int allTextHeight = 0;
         int availableSkills = 0;
         int cost = PriceCalculator::skillLearningCostForPlayer(&pParty->activeCharacter(), buildingTable[wData.val - 1]);
@@ -209,6 +209,16 @@ std::vector<DIALOGUE_TYPE> GUIWindow_Temple::listDialogueOptions(DIALOGUE_TYPE o
       default:
         return {};
     }
+}
+
+DIALOGUE_TYPE GUIWindow_Temple::getOptionOnEscape() {
+    if (IsSkillLearningDialogue(dialog_menu_id)) {
+        return DIALOGUE_LEARN_SKILLS;
+    }
+    if (dialog_menu_id == DIALOGUE_MAIN) {
+        return DIALOGUE_NULL;
+    }
+    return DIALOGUE_MAIN;
 }
 
 bool GUIWindow_Temple::isPlayerHealableByTemple(const Player &player) const {

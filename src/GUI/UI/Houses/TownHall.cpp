@@ -57,7 +57,7 @@ void GUIWindow_TownHall::mainDialogue() {
 }
 
 void GUIWindow_TownHall::bountyHuntDialogue() {
-    GUIWindow townHall_window = *window_SpeakInHouse;
+    GUIWindow townHall_window = *this;
     townHall_window.uFrameX = SIDE_TEXT_BOX_POS_X;
     townHall_window.uFrameWidth = SIDE_TEXT_BOX_WIDTH;
     townHall_window.uFrameZ = SIDE_TEXT_BOX_POS_Z;

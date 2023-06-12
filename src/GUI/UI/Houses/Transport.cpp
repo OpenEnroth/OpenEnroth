@@ -98,7 +98,7 @@ void GUIWindow_Transport::mainDialogue() {
 
     int pPrice = PriceCalculator::transportCostForPlayer(&pParty->activeCharacter(), buildingTable[wData.val - 1]);
 
-    if (HouseUI_CheckIfPlayerCanInteract()) {
+    if (checkIfPlayerCanInteract()) {
         int index = 0;
 
         std::string travelcost = localization->FormatString(LSTR_FMT_TRAVEL_COST_D_GOLD, pPrice);
@@ -223,7 +223,7 @@ void GUIWindow_Transport::transportDialogue() {
         restAndHeal(GameTime::FromDays(getTravelTimeTransportDays(transportRoutes[houseId()][choice_id])));
         pParty->activeCharacter().playReaction(pSpeech);
         pAudioPlayer->soundDrain();
-        while (HouseDialogPressCloseBtn()) {}
+        while (houseDialogPressEscape()) {}
         pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 0, 0);
     } else {
         dialog_menu_id = DIALOGUE_MAIN;

@@ -35,7 +35,8 @@ void GUIWindow_MercenaryGuild::houseSpecificDialogue() {
             pDialogueWindow->pNumPresenceButton = 0;
             return;
         }
-        if (!HouseUI_CheckIfPlayerCanInteract()) return;
+        if (!checkIfPlayerCanInteract())
+            return;
         int all_text_height = 0;
         int index = 0;
         for (int i = pDialogueWindow->pStartingPosActiveItem; i < pDialogueWindow->pNumPresenceButton + pDialogueWindow->pStartingPosActiveItem; ++i) {
@@ -53,7 +54,7 @@ void GUIWindow_MercenaryGuild::houseSpecificDialogue() {
         return;
     }
 
-    if (HouseUI_CheckIfPlayerCanInteract()) {
+    if (checkIfPlayerCanInteract()) {
         __debugbreak();  // what type of house that even is?
         // pSkillAvailabilityPerClass[8 + v58->uClass][4 + v23]
         // or

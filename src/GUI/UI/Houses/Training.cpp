@@ -31,7 +31,7 @@ void GUIWindow_Training::mainDialogue() {
     training_dialog_window.uFrameWidth = SIDE_TEXT_BOX_WIDTH;
     training_dialog_window.uFrameZ = SIDE_TEXT_BOX_POS_Z;
 
-    if (HouseUI_CheckIfPlayerCanInteract()) {
+    if (checkIfPlayerCanInteract()) {
         int pPrice = PriceCalculator::trainingCostForPlayer(&pParty->activeCharacter(), buildingTable[wData.val - 1]);
         uint64_t expForNextLevel = 1000ull * pParty->activeCharacter().uLevel * (pParty->activeCharacter().uLevel + 1) / 2;
         int index = 0;
@@ -90,7 +90,7 @@ void GUIWindow_Training::trainDialogue() {
     int pPrice = PriceCalculator::trainingCostForPlayer(&pParty->activeCharacter(), buildingTable[wData.val - 1]);
     uint64_t expForNextLevel = 1000ull * pParty->activeCharacter().uLevel * (pParty->activeCharacter().uLevel + 1) / 2;
 
-    if (!HouseUI_CheckIfPlayerCanInteract()) {
+    if (!checkIfPlayerCanInteract()) {
         int height = pFontArrus->CalcTextHeight(pNPCTopics[122].pText, training_dialog_window.uFrameWidth, 0);
         training_dialog_window.DrawTitleText(pFontArrus, 0, (212 - height) / 2 + 101, colorTable.Jonquil, pNPCTopics[122].pText, 3);
         pDialogueWindow->pNumPresenceButton = 0;
@@ -153,7 +153,7 @@ void GUIWindow_Training::learnSkillsDialogue() {
     training_dialog_window.uFrameZ = SIDE_TEXT_BOX_POS_Z;
     int all_text_height = 0;
 
-    if (HouseUI_CheckIfPlayerCanInteract()) {
+    if (checkIfPlayerCanInteract()) {
         int pPrice = PriceCalculator::skillLearningCostForPlayer(&pParty->activeCharacter(), buildingTable[wData.val - 1]);
         int index = 0;
         for (int i = pDialogueWindow->pStartingPosActiveItem; i < pDialogueWindow->pNumPresenceButton + pDialogueWindow->pStartingPosActiveItem; ++i) {
@@ -211,4 +211,14 @@ std::vector<DIALOGUE_TYPE> GUIWindow_Training::listDialogueOptions(DIALOGUE_TYPE
       default:
         return {};
     }
+}
+
+DIALOGUE_TYPE GUIWindow_Training::getOptionOnEscape() {
+    if (IsSkillLearningDialogue(dialog_menu_id)) {
+        return DIALOGUE_LEARN_SKILLS;
+    }
+    if (dialog_menu_id == DIALOGUE_MAIN) {
+        return DIALOGUE_NULL;
+    }
+    return DIALOGUE_MAIN;
 }

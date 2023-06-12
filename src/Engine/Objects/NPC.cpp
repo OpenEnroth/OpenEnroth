@@ -197,7 +197,9 @@ void _4B4224_UpdateNPCTopics(int _this) {
             AddScriptedDialogueLine(v17->dialogue_6_evt_id, DIALOGUE_SCRIPTED_LINE_6);
 
             pDialogueWindow->_41D08F_set_keyboard_control_group(num_menu_buttons, 1, 0, 2);
-            dword_F8B1E0 = pDialogueWindow->pNumPresenceButton;
+            // TODO(Nik-RE-dev): initial number of buttons used only in non-simple houses now
+            //                   but this causes situation where dead character can talk to someone
+            //dword_F8B1E0 = pDialogueWindow->pNumPresenceButton;
         }
     }
 }

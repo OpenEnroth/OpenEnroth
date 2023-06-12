@@ -233,7 +233,7 @@ int EventInterpreter::executeOneEvent(int step, bool isNpc) {
                 if (current_screen_type == CURRENT_SCREEN::SCREEN_HOUSE) {
                     if (uGameState == GAME_STATE_CHANGE_LOCATION) {
                         dialog_menu_id = DIALOGUE_NULL;
-                        while (HouseDialogPressCloseBtn()) {}
+                        while (houseDialogPressEscape()) {}
                         pMediaPlayer->Unload();
                         window_SpeakInHouse->Release();
                         window_SpeakInHouse = nullptr;
@@ -429,7 +429,7 @@ int EventInterpreter::executeOneEvent(int step, bool isNpc) {
             if (ir.data.npc_topic_descr.index == 5) npc->dialogue_6_evt_id = ir.data.npc_topic_descr.event_id;
             if (ir.data.npc_topic_descr.npc_id == 8) {
                 if (ir.data.npc_topic_descr.event_id == 78) {
-                    HouseDialogPressCloseBtn();
+                    houseDialogPressEscape();
                     window_SpeakInHouse->Release();
                     pParty->uFlags &= ~PARTY_FLAGS_1_ForceRedraw;
                     if (enterHouse(HOUSE_DARK_GUILD_PARAMOUNT_PIT)) {
@@ -446,7 +446,7 @@ int EventInterpreter::executeOneEvent(int step, bool isNpc) {
 #if 0
             if (window_SpeakInHouse) {
                 if (window_SpeakInHouse->wData.val == HOUSE_BODY_GUILD_MASTER_ERATHIA) {
-                    HouseDialogPressCloseBtn();
+                    houseDialogPressEscape();
                     pMediaPlayer->Unload();
                     window_SpeakInHouse->Release();
                     pParty->uFlags &= ~PARTY_FLAGS_1_ForceRedraw;
