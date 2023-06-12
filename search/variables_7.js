@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['g_0',['g',['../structBloodsplat.html#a1c1c8a0b0edcbaadc72a9d4349df49f8',1,'Bloodsplat::g()'],['../structlinesverts.html#a4f083501b162b2c0ba39d383f3256a1c',1,'linesverts::g()'],['../structforcepersverts.html#a3018b295f30cb6d35b01f8dbf8643f26',1,'forcepersverts::g()'],['../structtwodverts.html#a3c78fffa76d7b3abe7f3e4c4560b75c7',1,'twodverts::g()'],['../structbillbverts.html#a257bf6c7deeca9af27dd804f0f66b515',1,'billbverts::g()'],['../structParticle__sw.html#a40047b52ad61460c7680a0fcf8656ca1',1,'Particle_sw::g()'],['../structParticle.html#a3f6dd15bd44813e567f41599de2b36d2',1,'Particle::g()'],['../structColor.html#a23331f00b02491a901873b5085461d99',1,'Color::g()'],['../structGame__Bloodsplat.html#a9881a0c510c0362031426eda97eb0d9e',1,'Game_Bloodsplat::g()']]],
+  ['g_0',['g',['../structBloodsplat.html#a1c1c8a0b0edcbaadc72a9d4349df49f8',1,'Bloodsplat::g()'],['../structlinesverts.html#a4f083501b162b2c0ba39d383f3256a1c',1,'linesverts::g()'],['../structforcepersverts.html#a3018b295f30cb6d35b01f8dbf8643f26',1,'forcepersverts::g()'],['../structtwodverts.html#a3c78fffa76d7b3abe7f3e4c4560b75c7',1,'twodverts::g()'],['../structbillbverts.html#a257bf6c7deeca9af27dd804f0f66b515',1,'billbverts::g()'],['../structParticle__sw.html#a40047b52ad61460c7680a0fcf8656ca1',1,'Particle_sw::g()'],['../structColor.html#a23331f00b02491a901873b5085461d99',1,'Color::g()'],['../structGame__Bloodsplat.html#a9881a0c510c0362031426eda97eb0d9e',1,'Game_Bloodsplat::g()']]],
   ['game_1',['game',['../classGameTest.html#aa0244276a149f58d175c4d42da1dba03',1,'GameTest']]],
   ['game_5fstarting_5fyear_2',['game_starting_year',['../Time_8h.html#a2ad26c3f2b5e54993203668a354ea997',1,'Time.h']]],
   ['game_5fui_5fbar_5fblue_3',['game_ui_bar_blue',['../UIGame_8h.html#a136c3056972e3dbb8495f5e67209b42b',1,'game_ui_bar_blue():&#160;UIGame.cpp'],['../UIGame_8cpp.html#a136c3056972e3dbb8495f5e67209b42b',1,'game_ui_bar_blue():&#160;UIGame.cpp']]],
@@ -105,8 +105,8 @@ var searchData=
   ['gravity_102',['Gravity',['../classGameConfig_1_1Gameplay.html#a41ac5fbe41ff0a60999a2571e41c5602',1,'GameConfig::Gameplay']]],
   ['gravity_5facc_103',['gravity_acc',['../structeffect__params__struct.html#ae9c34c6b7a65410f28a2f9d069d7a0da',1,'effect_params_struct']]],
   ['gray_104',['Gray',['../classColorTable.html#a064537115cf47fa61f46657aa8404717',1,'ColorTable']]],
-  ['green_105',['green',['../structGLdecalverts.html#a40238226a73686e0edf4232d137d8b25',1,'GLdecalverts']]],
-  ['green_106',['Green',['../classColorTable.html#ada96688f87e39c4d12ac414de2e4fd00',1,'ColorTable']]],
+  ['green_105',['Green',['../classColorTable.html#ada96688f87e39c4d12ac414de2e4fd00',1,'ColorTable']]],
+  ['green_106',['green',['../structGLdecalverts.html#a40238226a73686e0edf4232d137d8b25',1,'GLdecalverts']]],
   ['greenishbrown_107',['GreenishBrown',['../classColorTable.html#a1c5d5c2f78bb87b33acf05375a7a6c4d',1,'ColorTable']]],
   ['greenteal_108',['GreenTeal',['../classColorTable.html#a53f0b2e9bf0659add7d93905b6aa9c8f',1,'ColorTable']]],
   ['greet_109',['greet',['../structNPCData.html#a2170b2c689647b237415b07cb00a916d',1,'NPCData::greet()'],['../structNPCData__MM7.html#aaa8b2dac85a6ca52f07e3330c8c9531d',1,'NPCData_MM7::greet()']]],
