@@ -67,6 +67,8 @@ class GUIWindow_House : public GUIWindow {
     virtual DIALOGUE_TYPE getOptionOnEscape();
 
  protected:
+    void learnSkillsDialogue();
+
     int _savedButtonsNum{};
 };
 

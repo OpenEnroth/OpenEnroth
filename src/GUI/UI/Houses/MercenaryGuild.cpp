@@ -35,22 +35,7 @@ void GUIWindow_MercenaryGuild::houseSpecificDialogue() {
             pDialogueWindow->pNumPresenceButton = 0;
             return;
         }
-        if (!checkIfPlayerCanInteract())
-            return;
-        int all_text_height = 0;
-        int index = 0;
-        for (int i = pDialogueWindow->pStartingPosActiveItem; i < pDialogueWindow->pNumPresenceButton + pDialogueWindow->pStartingPosActiveItem; ++i) {
-            auto skill = GetLearningDialogueSkill((DIALOGUE_TYPE)pDialogueWindow->GetControl(i)->msg_param);
-            // Was class type / 3
-            if (skillMaxMasteryPerClass[pParty->activeCharacter().classType][skill] != PLAYER_SKILL_MASTERY_NONE
-                && !pParty->activeCharacter().pActiveSkills[skill]) {
-                all_text_height += pFontArrus->CalcTextHeight(localization->GetSkillName(skill), dialog_window.uFrameWidth, 0);
-                ++index;
-            }
-        }
-
-
-        SkillTrainingDialogue(&dialog_window, index, all_text_height, pPrice);
+        learnSkillsDialogue();
         return;
     }
 

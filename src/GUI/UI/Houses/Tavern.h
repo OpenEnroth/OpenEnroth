@@ -23,5 +23,4 @@ class GUIWindow_Tavern : public GUIWindow_House {
     void arcomageResultDialogue();
     void restDialogue();
     void buyFoodDialogue();
-    void learnSkillsDialogue();
 };

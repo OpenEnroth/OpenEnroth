@@ -28,7 +28,6 @@ class GUIWindow_Shop : public GUIWindow_House {
     void sellDialogue();
     void identifyDialogue();
     void repairDialogue();
-    void learnSkillsDialogue();
 
     virtual void shopWaresDialogue(bool isSpecial) = 0;
     virtual void generateShopItems(bool isSpecial) = 0;

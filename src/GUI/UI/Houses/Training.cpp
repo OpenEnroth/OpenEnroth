@@ -146,29 +146,6 @@ void GUIWindow_Training::trainDialogue() {
     return;
 }
 
-void GUIWindow_Training::learnSkillsDialogue() {
-    GUIWindow training_dialog_window = *this;
-    training_dialog_window.uFrameX = SIDE_TEXT_BOX_POS_X;
-    training_dialog_window.uFrameWidth = SIDE_TEXT_BOX_WIDTH;
-    training_dialog_window.uFrameZ = SIDE_TEXT_BOX_POS_Z;
-    int all_text_height = 0;
-
-    if (checkIfPlayerCanInteract()) {
-        int pPrice = PriceCalculator::skillLearningCostForPlayer(&pParty->activeCharacter(), buildingTable[wData.val - 1]);
-        int index = 0;
-        for (int i = pDialogueWindow->pStartingPosActiveItem; i < pDialogueWindow->pNumPresenceButton + pDialogueWindow->pStartingPosActiveItem; ++i) {
-            auto skill = GetLearningDialogueSkill((DIALOGUE_TYPE)pDialogueWindow->GetControl(i)->msg_param);
-            if (skillMaxMasteryPerClass[pParty->activeCharacter().classType][skill] != PLAYER_SKILL_MASTERY_NONE &&
-                !pParty->activeCharacter().pActiveSkills[skill]) {
-                all_text_height += pFontArrus->CalcTextHeight(localization->GetSkillName(skill), training_dialog_window.uFrameWidth, 0);
-                ++index;
-            }
-        }
-
-        SkillTrainingDialogue(&training_dialog_window, index, all_text_height, pPrice);
-    }
-}
-
 GUIWindow_Training::GUIWindow_Training(HOUSE_ID houseId) : GUIWindow_House(houseId) {
     _charactersTrainedLevels.resize(pParty->pPlayers.size());
     std::fill(_charactersTrainedLevels.begin(), _charactersTrainedLevels.end(), 0);

@@ -137,16 +137,17 @@ void GUIWindow_MagicGuild::mainDialogue() {
     }
 
     int dialogopts = 0;
-    int all_text_height = 0;
-    for (int i = pDialogueWindow->pStartingPosActiveItem; i < pDialogueWindow->pNumPresenceButton + pDialogueWindow->pStartingPosActiveItem; ++i) {
+    int allTextHeight = 0;
+    int buttonsLimit = pDialogueWindow->pStartingPosActiveItem + pDialogueWindow->pNumPresenceButton;
+    for (int i = pDialogueWindow->pStartingPosActiveItem; i < buttonsLimit; ++i) {
         if (pDialogueWindow->GetControl(i)->msg_param == DIALOGUE_GUILD_BUY_BOOKS) {
-            all_text_height += pFontArrus->CalcTextHeight(localization->GetString(LSTR_BUY_SPELLS), working_window.uFrameWidth, 0);
+            allTextHeight += pFontArrus->CalcTextHeight(localization->GetString(LSTR_BUY_SPELLS), working_window.uFrameWidth, 0);
             dialogopts++;
         } else {
             PLAYER_SKILL_TYPE skill = GetLearningDialogueSkill((DIALOGUE_TYPE)pDialogueWindow->GetControl(i)->msg_param);
             if (skillMaxMasteryPerClass[pParty->activeCharacter().classType][skill] != PLAYER_SKILL_MASTERY_NONE &&
                 !pParty->activeCharacter().pActiveSkills[skill]) {
-                all_text_height += pFontArrus->CalcTextHeight(localization->GetSkillName(skill), working_window.uFrameWidth, 0, 0);
+                allTextHeight += pFontArrus->CalcTextHeight(localization->GetSkillName(skill), working_window.uFrameWidth, 0, 0);
                 dialogopts++;
             }
         }
@@ -154,7 +155,51 @@ void GUIWindow_MagicGuild::mainDialogue() {
 
     int pPrice = PriceCalculator::skillLearningCostForPlayer(&pParty->activeCharacter(), buildingTable[wData.val - 1]);
 
-    SkillTrainingDialogue(&working_window, dialogopts, all_text_height, pPrice);
+    if (dialogopts > 1) {
+        std::string skill_price_label = localization->FormatString(LSTR_FMT_SKILL_COST_D, pPrice);
+        working_window.DrawTitleText(pFontArrus, 0, 146, Color(), skill_price_label, 3);
+    }
+
+    bool drawnPrice = false;
+    int textspacings = (149 - allTextHeight) / dialogopts;
+    if (textspacings > SIDE_TEXT_BOX_MAX_SPACING)
+        textspacings = SIDE_TEXT_BOX_MAX_SPACING;
+    int textoffset = (149 - dialogopts * textspacings - allTextHeight) / 2 - textspacings / 2 + 162;
+    for (int i = pDialogueWindow->pStartingPosActiveItem; i < buttonsLimit; ++i) {
+        GUIButton *pButton = pDialogueWindow->GetControl(i);
+        if (pButton->msg_param == DIALOGUE_GUILD_BUY_BOOKS) {
+            pButton->uY = textspacings + textoffset;
+            int line_height = pFontArrus->CalcTextHeight(localization->GetString(LSTR_BUY_SPELLS), working_window.uFrameWidth, 0);
+            pButton->uHeight = line_height;
+            textoffset = pButton->uY + line_height - 1;
+            pButton->uW = textoffset + 6;
+            Color text_color = colorTable.PaleCanary;
+            if (pDialogueWindow->pCurrentPosActiveItem != i) {
+                text_color = colorTable.White;
+            }
+            working_window.DrawTitleText(pFontArrus, 0, pButton->uY, text_color, localization->GetString(LSTR_BUY_SPELLS), 3);
+        } else {
+            auto skill_id = GetLearningDialogueSkill((DIALOGUE_TYPE)pButton->msg_param);
+
+            if (skillMaxMasteryPerClass[pParty->activeCharacter().classType][skill_id] == PLAYER_SKILL_MASTERY_NONE
+                || pParty->activeCharacter().pActiveSkills[skill_id]) {
+                pButton->uW = 0;
+                pButton->uHeight = 0;
+                pButton->uY = 0;
+            } else {
+                std::string skill_name_label = localization->GetSkillName(skill_id);
+                int line_height = pFontArrus->CalcTextHeight(skill_name_label, working_window.uFrameWidth, 0);
+                pButton->uY = textspacings + textoffset;
+                pButton->uHeight = line_height;
+                pButton->uW = pButton->uY + line_height + 6 - 1;
+                textoffset += textspacings + line_height - 1;
+                Color text_color = colorTable.Sunflower;
+                if (pDialogueWindow->pCurrentPosActiveItem != i)
+                    text_color = colorTable.White;
+                working_window.DrawTitleText(pFontArrus, 0, pButton->uY, text_color, skill_name_label, 3);
+            }
+        }
+    }
 }
 
 void GUIWindow_MagicGuild::buyBooksDialogue() {

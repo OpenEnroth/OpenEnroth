@@ -20,7 +20,6 @@ class GUIWindow_Temple : public GUIWindow_House {
     void mainDialogue();
     void healDialogue();
     void donateDialogue();
-    void learnSkillsDialogue();
 
     /**
      * @offset 0x4B6FF9
