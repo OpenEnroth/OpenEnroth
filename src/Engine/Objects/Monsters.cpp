@@ -353,8 +353,7 @@ bool MonsterList::FromFileTxt(const char *Args) {
             Argsb = atoi(v25.pProperties[13]) & 0xFF;
             v26 = atoi(v25.pProperties[14]) & 0xFF;
             v18 = atoi(v25.pProperties[15]);
-            monster.sTintColor =
-                v18 | ((v26 | ((Argsb | (v17 << 8)) << 8)) << 8);
+            monster.sTintColor = Color(v18, v26, Argsb, v17);
             v19 = 0;
             do {
                 v20 = atoi(v25.pProperties[v19 + 16]);

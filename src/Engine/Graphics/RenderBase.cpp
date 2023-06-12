@@ -220,7 +220,7 @@ void RenderBase::DrawSpriteObjects() {
 
                             pBillboardRenderList[::uNumBillboardsToDraw].object_pid = PID(OBJECT_Item, i);
                             pBillboardRenderList[::uNumBillboardsToDraw].dimming_level = 0;
-                            pBillboardRenderList[::uNumBillboardsToDraw].sTintColor = 0;
+                            pBillboardRenderList[::uNumBillboardsToDraw].sTintColor = Color();
 
                             assert(::uNumBillboardsToDraw < 500);
                             ++::uNumBillboardsToDraw;
@@ -363,7 +363,7 @@ void RenderBase::PrepareDecorationsRenderList_ODM() {
                                     pBillboardRenderList[::uNumBillboardsToDraw - 1].object_pid = PID(OBJECT_Decoration, i);
                                     pBillboardRenderList[::uNumBillboardsToDraw - 1].dimming_level = 0;
                                     pBillboardRenderList[::uNumBillboardsToDraw - 1].pSpriteFrame = frame;
-                                    pBillboardRenderList[::uNumBillboardsToDraw - 1].sTintColor = 0;
+                                    pBillboardRenderList[::uNumBillboardsToDraw - 1].sTintColor = Color();
                                 }
                             }
                         }
@@ -373,7 +373,7 @@ void RenderBase::PrepareDecorationsRenderList_ODM() {
                 // Emit fire particles.
                 memset(&local_0, 0, sizeof(Particle_sw));
                 local_0.type = ParticleType_Bitmap | ParticleType_Rotating | ParticleType_Ascending;
-                local_0.uDiffuse = colorTable.OrangeyRed.c32();
+                local_0.uDiffuse = colorTable.OrangeyRed;
                 local_0.x = static_cast<float>(pLevelDecorations[i].vPosition.x);
                 local_0.y = static_cast<float>(pLevelDecorations[i].vPosition.y);
                 local_0.z = static_cast<float>(pLevelDecorations[i].vPosition.z);
@@ -421,12 +421,12 @@ void RenderBase::TransformBillboardsAndSetPalettesODM() {
     }
 }
 
-uint32_t BlendColors(uint32_t a1, uint32_t a2) {
-    uint alpha = (uint)floorf(0.5f + (a1 >> 24) / 255.0f * (a2 >> 24) / 255.0f * 255.0f);
-    uint blue = (uint)floorf(0.5f + ((a1 >> 16) & 0xFF) / 255.0f * ((a2 >> 16) & 0xFF) / 255.0f * 255.0f);
-    uint green = (uint)floorf(0.5f + ((a1 >> 8) & 0xFF) / 255.0f * ((a2 >> 8) & 0xFF) / 255.0f * 255.0f);
-    uint red = (uint)floorf(0.5f + ((a1 >> 0) & 0xFF) / 255.0f * ((a2 >> 0) & 0xFF) / 255.0f * 255.0f);
-    return (alpha << 24) | (blue << 16) | (green << 8) | red;
+Color BlendColors(Color a1, Color a2) {
+    uint alpha = (uint)floorf(0.5f + a1.a / 255.0f * a2.a / 255.0f * 255.0f);
+    uint blue = (uint)floorf(0.5f + a1.b / 255.0f * a2.b / 255.0f * 255.0f);
+    uint green = (uint)floorf(0.5f + a1.g / 255.0f * a2.g / 255.0f * 255.0f);
+    uint red = (uint)floorf(0.5f + a1.r / 255.0f * a2.r / 255.0f * 255.0f);
+    return Color(red, green, blue, alpha);
 }
 
 void RenderBase::TransformBillboard(SoftwareBillboard *pSoftBillboard, RenderBillboard *pBillboard) {
@@ -442,19 +442,19 @@ void RenderBase::TransformBillboard(SoftwareBillboard *pSoftBillboard, RenderBil
     float scr_proj_y = pSoftBillboard->screenspace_projection_factor_y;
 
     int dimming_level = pBillboard->dimming_level;
-    unsigned int diffuse = ::GetActorTintColor(dimming_level, 0, pSoftBillboard->screen_space_z, 0, pBillboard);
+    Color diffuse = ::GetActorTintColor(dimming_level, 0, pSoftBillboard->screen_space_z, 0, pBillboard);
 
     bool opaquetest{ false };
     if (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR) {
-        opaquetest = pSoftBillboard->sTintColor & 0xFF000000;
+        opaquetest = pSoftBillboard->sTintColor.a;
     } else {
         opaquetest = dimming_level & 0xFF000000;
     }
 
-    if (config->graphics.Tinting.value() && pSoftBillboard->sTintColor & 0x00FFFFFF) {
+    if (config->graphics.Tinting.value() && pSoftBillboard->sTintColor.c32() & 0x00FFFFFF) {
         diffuse = BlendColors(pSoftBillboard->sTintColor, diffuse);
         if (opaquetest)
-            diffuse = 0x007F7F7F & ((unsigned int)diffuse >> 1);
+            diffuse = Color::fromC32(0x007F7F7F & (diffuse.c32() >> 1)); // TODO(captainurist): what's going on here?
     }
 
     if (opaquetest)
@@ -462,7 +462,7 @@ void RenderBase::TransformBillboard(SoftwareBillboard *pSoftBillboard, RenderBil
     else
         billboard->opacity = RenderBillboardD3D::Transparent;
 
-    unsigned int specular = 0;
+    Color specular;
 
     float v14 = (float)((int)pSprite->uBufferWidth / 2 - pSprite->uAreaX);
     float v15 = (float)((int)pSprite->uBufferHeight - pSprite->uAreaY);
@@ -529,7 +529,7 @@ double fix2double(int fix) {
 
 void RenderBase::MakeParticleBillboardAndPush(SoftwareBillboard *a2,
                                                   Texture *texture,
-                                                  unsigned int uDiffuse,
+                                                  Color uDiffuse,
                                                   int angle) {
     unsigned int billboard_index = Billboard_ProbablyAddToListAndSortByZOrder(a2->screen_space_z);
     RenderBillboardD3D *billboard = &pBillboardRenderListD3D[billboard_index];
@@ -558,7 +558,7 @@ void RenderBase::MakeParticleBillboardAndPush(SoftwareBillboard *a2,
         billboard->pQuads[0].pos.x = (acos * v16 - asin * v17) * screenspace_projection_factor + (float)a2->screen_space_x;
         billboard->pQuads[0].pos.y = (acos * v17 + asin * v16 - 12.f) * screenspace_projection_factor + (float)a2->screen_space_y;
         billboard->pQuads[0].pos.z = z;
-        billboard->pQuads[0].specular = 0;
+        billboard->pQuads[0].specular = Color();
         billboard->pQuads[0].diffuse = uDiffuse;
         billboard->pQuads[0].rhw = rhw;
         billboard->pQuads[0].texcoord.x = 0.f;
@@ -571,7 +571,7 @@ void RenderBase::MakeParticleBillboardAndPush(SoftwareBillboard *a2,
         billboard->pQuads[1].pos.x = (acos * v31 - asin * v32) * screenspace_projection_factor + (float)a2->screen_space_x;
         billboard->pQuads[1].pos.y = (acos * v32 + asin * v31 - 12.f) * screenspace_projection_factor + (float)a2->screen_space_y;
         billboard->pQuads[1].pos.z = z;
-        billboard->pQuads[1].specular = 0;
+        billboard->pQuads[1].specular = Color();
         billboard->pQuads[1].diffuse = uDiffuse;
         billboard->pQuads[1].rhw = rhw;
         billboard->pQuads[1].texcoord.x = 0.0;
@@ -584,7 +584,7 @@ void RenderBase::MakeParticleBillboardAndPush(SoftwareBillboard *a2,
         billboard->pQuads[2].pos.x = (acos * v23 - asin * v24) * screenspace_projection_factor + (float)a2->screen_space_x;
         billboard->pQuads[2].pos.y = (acos * v24 + asin * v23 - 12.f) * screenspace_projection_factor + (float)a2->screen_space_y;
         billboard->pQuads[2].pos.z = z;
-        billboard->pQuads[2].specular = 0;
+        billboard->pQuads[2].specular = Color();
         billboard->pQuads[2].diffuse = uDiffuse;
         billboard->pQuads[2].rhw = rhw;
         billboard->pQuads[2].texcoord.x = 1.0;
@@ -597,7 +597,7 @@ void RenderBase::MakeParticleBillboardAndPush(SoftwareBillboard *a2,
         billboard->pQuads[3].pos.x = (acos * v39 - asin * v40) * screenspace_projection_factor + (float)a2->screen_space_x;
         billboard->pQuads[3].pos.y = (acos * v40 + asin * v39 - 12.f) * screenspace_projection_factor + (float)a2->screen_space_y;
         billboard->pQuads[3].pos.z = z;
-        billboard->pQuads[3].specular = 0;
+        billboard->pQuads[3].specular = Color();
         billboard->pQuads[3].diffuse = uDiffuse;
         billboard->pQuads[3].rhw = rhw;
         billboard->pQuads[3].texcoord.x = 1.0;
@@ -637,34 +637,33 @@ GraphicsImage *RenderBase::TakeScreenshot(const unsigned int width, const unsign
 }
 
 void RenderBase::DrawTextureGrayShade(float a2, float a3, GraphicsImage *a4) {
-    DrawMasked(a2, a3, a4, 1, colorTable.MediumGrey.c32());
+    DrawMasked(a2, a3, a4, 1, colorTable.MediumGrey);
 }
 
 void RenderBase::DrawTransparentRedShade(float u, float v, GraphicsImage *a4) {
-    DrawMasked(u, v, a4, 0, colorTable.Red.c32());
+    DrawMasked(u, v, a4, 0, colorTable.Red);
 }
 
 void RenderBase::DrawTransparentGreenShade(float u, float v, GraphicsImage *pTexture) {
-    DrawMasked(u, v, pTexture, 0, colorTable.Green.c32());
+    DrawMasked(u, v, pTexture, 0, colorTable.Green);
 }
 
-void RenderBase::DrawMasked(float u, float v, GraphicsImage *pTexture, unsigned int color_dimming_level, uint32_t mask) {
-    int b = ((mask >> 16) & 0xFF) & (0xFF >> color_dimming_level);
-    int g = ((mask >> 8) & 0xFF) & (0xFF >> color_dimming_level);
-    int r = ((mask) & 0xFF) & (0xFF >> color_dimming_level);
-    mask = Color(r, g, b).c32();
+void RenderBase::DrawMasked(float u, float v, GraphicsImage *pTexture, unsigned int color_dimming_level, Color mask) {
+    int b = mask.b & (0xFF >> color_dimming_level);
+    int g = mask.g & (0xFF >> color_dimming_level);
+    int r = mask.r & (0xFF >> color_dimming_level);
+    mask = Color(r, g, b);
 
     DrawTextureNew(u, v, pTexture, mask);
-    return;
 }
 
 void RenderBase::ClearBlack() {  // used only at start and in game over win
     ClearZBuffer();
-    ClearTarget(0);
+    ClearTarget(Color());
 }
 
 //----- (004A4CC9) ---------------------------------------
-void RenderBase::BillboardSphereSpellFX(struct SpellFX_Billboard *a1, int diffuse) {
+void RenderBase::BillboardSphereSpellFX(struct SpellFX_Billboard *a1, Color diffuse) {
     // fireball / implosion sphere
     // TODO(pskelton): could draw in 3d rather than convert to billboard for ogl
 
@@ -705,14 +704,14 @@ void RenderBase::BillboardSphereSpellFX(struct SpellFX_Billboard *a1, int diffus
 
         pBillboardRenderListD3D[v5].pQuads[i].rhw = rhw;
 
-        int v12;
-        if (diffuse & 0xFF000000) {
+        Color v12;
+        if (diffuse.a) {
             v12 = a1->field_104[i].diffuse;
         } else {
             v12 = diffuse;
         }
         pBillboardRenderListD3D[v5].pQuads[i].diffuse = v12;
-        pBillboardRenderListD3D[v5].pQuads[i].specular = 0;
+        pBillboardRenderListD3D[v5].pQuads[i].specular = Color();
 
         pBillboardRenderListD3D[v5].pQuads[i].texcoord.x = 0.5;
         pBillboardRenderListD3D[v5].pQuads[i].texcoord.y = 0.5;
@@ -738,7 +737,7 @@ void RenderBase::DrawSpecialEffectsQuad(Texture *texture, int palette) {
     targetrect.w = pViewport->uViewportBR_X - pViewport->uViewportTL_X;
     targetrect.h = pViewport->uViewportBR_Y - pViewport->uViewportTL_Y;
 
-    DrawImage(texture, targetrect, palette, colorTable.MediumGrey.c32());
+    DrawImage(texture, targetrect, palette, colorTable.MediumGrey);
 }
 
 void RenderBase::DrawBillboards_And_MaybeRenderSpecialEffects_And_EndScene() {

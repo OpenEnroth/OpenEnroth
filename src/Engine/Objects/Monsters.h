@@ -8,6 +8,8 @@
 #include "Utility/Memory/Blob.h"
 #include "Utility/IndexedArray.h"
 
+#include "Library/Color/Color.h"
+
 #include "Engine/Spells/SpellEnums.h"
 
 #include "ActorEnums.h"
@@ -207,8 +209,8 @@ struct MonsterDesc {
     uint16_t uMonsterRadius;
     uint16_t uMovementSpeed;
     int16_t uToHitRadius;
-    uint32_t sTintColor;
-    std::array<uint16_t, 4> pSoundSampleIDs; // TODO: actually this one should also be an IndexedArray
+    Color sTintColor;
+    std::array<uint16_t, 4> pSoundSampleIDs; // TODO(captainurist): actually this one should also be an IndexedArray
     std::string pMonsterName;
     IndexedArray<std::string, ANIM_First, ANIM_Last> pSpriteNames;
 };

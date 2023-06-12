@@ -154,9 +154,9 @@ bool Camera3D::is_face_faced_to_cameraODM(ODMFace *pFace, RenderVertexSoft *a2) 
 
 //----- (00437AB5) --------------------------------------------------------
 void Camera3D::do_draw_debug_line_sw(RenderVertexSoft *pLineBegin,
-                                            signed int sStartDiffuse32,
+                                            Color sStartDiffuse32,
                                             RenderVertexSoft *pLineEnd,
-                                            signed int sEndDiffuse32,
+                                            Color sEndDiffuse32,
                                             unsigned int uOutNumVertices,
                                             float z_stuff) {
     RenderVertexSoft a1[20];         // [sp+8h] [bp-7C4h]@6
@@ -172,7 +172,7 @@ void Camera3D::do_draw_debug_line_sw(RenderVertexSoft *pLineBegin,
 
         pVertices[1].vWorldViewProjX = pLineEnd->vWorldViewProjX;
         pVertices[1].vWorldViewProjY = pLineEnd->vWorldViewProjY;
-        v24[0].specular = 0;
+        v24[0].specular = Color();
         v24[0].pos.x = pVertices[0].vWorldViewProjX;
         v24[0].pos.y = pVertices[0].vWorldViewProjY;
         v24[0].pos.z = 0.001 - z_stuff;
@@ -185,7 +185,7 @@ void Camera3D::do_draw_debug_line_sw(RenderVertexSoft *pLineBegin,
         v24[1].pos.y = pVertices[1].vWorldViewProjY;
         v24[1].diffuse = sEndDiffuse32;
         v24[1].pos.z = 0.001 - z_stuff;
-        v24[1].specular = 0;
+        v24[1].specular = Color();
         v24[1].rhw = 0.001f;
         v24[1].texcoord.x = 0.0f;
         v24[1].texcoord.y = 0.0f;
@@ -205,7 +205,7 @@ void Camera3D::do_draw_debug_line_sw(RenderVertexSoft *pLineBegin,
         (signed int)uOutNumVertices >= 2) {
         ViewTransform(pVertices, 2);
         Project(pVertices, 2, 0);
-        v24[0].specular = 0;
+        v24[0].specular = Color();
         v24[0].pos.x = pVertices[0].vWorldViewProjX;
         v24[0].pos.y = pVertices[0].vWorldViewProjY;
         v24[0].pos.z = 0.001 - z_stuff;
@@ -218,7 +218,7 @@ void Camera3D::do_draw_debug_line_sw(RenderVertexSoft *pLineBegin,
         v24[1].pos.y = pVertices[1].vWorldViewProjY;
         v24[1].diffuse = sEndDiffuse32;
         v24[1].pos.z = 0.001 - z_stuff;
-        v24[1].specular = 0;
+        v24[1].specular = Color();
         v24[1].rhw = 0.001f;
         v24[1].texcoord.x = 0.0;
         v24[1].texcoord.y = 0.0;
@@ -232,7 +232,7 @@ void Camera3D::do_draw_debug_line_sw(RenderVertexSoft *pLineBegin,
 //----- (004379EE) --------------------------------------------------------
 void Camera3D::debug_outline_sw(RenderVertexSoft *a2,
                                        unsigned int uNumVertices,
-                                       unsigned int uDiffuse32, float a5) {
+                                       Color uDiffuse32, float a5) {
     if (!uNumVertices) return;
     if ((signed int)(uNumVertices - 1) > 0) {
         for (uint i = 0; i < uNumVertices - 1; i++)

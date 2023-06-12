@@ -56,7 +56,7 @@ class RenderOpenGL : public RenderBase {
 
     virtual RgbaImage ReadScreenPixels() override;
     virtual void SaveWinnersCertificate(const std::string &filePath) override;
-    virtual void ClearTarget(unsigned int uColor) override;
+    virtual void ClearTarget(Color uColor) override;
     virtual void Present() override;
 
     virtual bool InitializeFullscreen() override;
@@ -94,19 +94,19 @@ class RenderOpenGL : public RenderBase {
     virtual void DeleteTexture(Texture *texture) override;
 
     virtual void BeginScene2D() override;
-    virtual void ScreenFade(unsigned int color, float t) override;
+    virtual void ScreenFade(Color color, float t) override;
 
     virtual void SetUIClipRect(unsigned int uX, unsigned int uY,
                                unsigned int uZ, unsigned int uW) override;
     virtual void ResetUIClipRect() override;
 
-    virtual void DrawTextureNew(float u, float v, class GraphicsImage *, uint32_t colourmask = 0xFFFFFFFF) override;
+    virtual void DrawTextureNew(float u, float v, class GraphicsImage *, Color colourmask = colorTable.White) override;
 
         virtual void DrawTextureCustomHeight(float u, float v, class GraphicsImage *,
                                          int height) override;
     virtual void DrawTextureOffset(int x, int y, int offset_x, int offset_y,
                                    GraphicsImage *) override;
-    virtual void DrawImage(GraphicsImage *, const Recti &rect, uint paletteid = 0, uint32_t colourmask32 = 0xFFFFFFFF) override;
+    virtual void DrawImage(GraphicsImage *, const Recti &rect, uint paletteid = 0, Color colourmask = colorTable.White) override;
 
     virtual void ZDrawTextureAlpha(float u, float v, GraphicsImage *pTexture, int zVal) override;
     virtual void BlendTextures(int a2, int a3, GraphicsImage *a4, GraphicsImage *a5, int t,

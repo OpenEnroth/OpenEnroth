@@ -68,13 +68,13 @@ struct Camera3D {
     void CreateViewMatrixAndProjectionScale();
 
     void debug_outline_sw(struct RenderVertexSoft *a2,
-                          unsigned int uNumVertices, unsigned int uDiffuse32,
+                          unsigned int uNumVertices, Color uDiffuse32,
                           float a5);
 
     void do_draw_debug_line_sw(struct RenderVertexSoft *pLineBegin,
-                               signed int sStartDiffuse32,
+                               Color sStartDiffuse32,
                                struct RenderVertexSoft *pLineEnd,
-                               signed int sEndDiffuse32,
+                               Color sEndDiffuse32,
                                unsigned int uOutNumVertices, float z_stuff);
     bool is_face_faced_to_cameraBLV(struct BLVFace *pFace);
     bool is_face_faced_to_cameraODM(struct ODMFace *pFace, struct RenderVertexSoft *a2);

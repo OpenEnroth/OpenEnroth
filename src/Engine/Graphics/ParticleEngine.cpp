@@ -173,9 +173,9 @@ void ParticleEngine::UpdateParticles() {
         float dissipate_factor = dissipate_value / 255.0f;
         // v10 = (double)v22 * 0.0039215689;
         // TODO(Nik-RE-dev): check colour format use in particles
-        p->uLightColor_bgr = ((uint)floorf(p->b * dissipate_factor + 0.5) << 16) |
-                             ((uint)floorf(p->g * dissipate_factor + 0.5) << 8) |
-                             ((uint)floorf(p->r * dissipate_factor + 0.5) << 0);
+        p->uLightColor_bgr = Color(floorf(p->uParticleColor.r * dissipate_factor + 0.5),
+                                   floorf(p->uParticleColor.g * dissipate_factor + 0.5),
+                                   floorf(p->uParticleColor.b * dissipate_factor + 0.5));
 
         if (i < uCurrentBegin) {
            uCurrentBegin = i;
@@ -269,7 +269,7 @@ void ParticleEngine::DrawParticles_BLV() {
                     pLines.pLineVertices[2 * pLines.uNumLines].rhw = 1.0;
                     pLines.pLineVertices[2 * pLines.uNumLines].diffuse =
                         p->uLightColor_bgr;
-                    pLines.pLineVertices[2 * pLines.uNumLines].specular = 0;
+                    pLines.pLineVertices[2 * pLines.uNumLines].specular = Color();
                     pLines.pLineVertices[2 * pLines.uNumLines].texcoord.x = 0.0;
                     pLines.pLineVertices[2 * pLines.uNumLines].texcoord.y = 0.0;
 
@@ -282,7 +282,7 @@ void ParticleEngine::DrawParticles_BLV() {
                     pLines.pLineVertices[2 * pLines.uNumLines + 1].rhw = 1.0;
                     pLines.pLineVertices[2 * pLines.uNumLines + 1].diffuse =
                         p->uLightColor_bgr;
-                    pLines.pLineVertices[2 * pLines.uNumLines + 1].specular = 0;
+                    pLines.pLineVertices[2 * pLines.uNumLines + 1].specular = Color();
                     pLines.pLineVertices[2 * pLines.uNumLines + 1].texcoord.x =
                         0.0;
                     pLines.pLineVertices[2 * pLines.uNumLines++ + 1]

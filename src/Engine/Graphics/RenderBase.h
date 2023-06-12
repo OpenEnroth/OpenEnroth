@@ -24,7 +24,7 @@ class RenderBase : public IRender {
     virtual void PrepareDecorationsRenderList_ODM() override;
     virtual void MakeParticleBillboardAndPush(SoftwareBillboard *a2,
                                                   Texture *texture,
-                                                  unsigned int uDiffuse,
+                                                  Color uDiffuse,
                                                   int angle) override;
     virtual float GetGamma() override;
 
@@ -40,12 +40,12 @@ class RenderBase : public IRender {
     virtual GraphicsImage *TakeScreenshot(unsigned int width, unsigned int height) override;
 
     virtual void DrawMasked(float u, float v, class GraphicsImage *img,
-        unsigned int color_dimming_level, uint32_t mask = 0xFFFFFFFF) override;
+        unsigned int color_dimming_level, Color mask = colorTable.White) override;
     virtual void DrawTextureGrayShade(float u, float v, class GraphicsImage *a4) override;
     virtual void DrawTransparentRedShade(float u, float v, class GraphicsImage *a4) override;
     virtual void DrawTransparentGreenShade(float u, float v, class GraphicsImage *pTexture) override;
     virtual void ClearBlack() override;
-    virtual void BillboardSphereSpellFX(struct SpellFX_Billboard *a1, int diffuse) override;
+    virtual void BillboardSphereSpellFX(struct SpellFX_Billboard *a1, Color diffuse) override;
     virtual void DrawMonsterPortrait(Recti rc, SpriteFrame *Portrait_Sprite, int Y_Offset) override;
     virtual void DrawSpecialEffectsQuad(Texture *texture, int palette) override;
     virtual void DrawBillboards_And_MaybeRenderSpecialEffects_And_EndScene() override;

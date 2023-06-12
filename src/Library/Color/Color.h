@@ -40,6 +40,12 @@ struct Color {
         return result;
     }
 
+    static Color fromC32(uint32_t color) {
+        Color result;
+        memcpy(&result, &color, 4);
+        return result;
+    }
+
     [[nodiscard]] uint32_t c32() const {
         uint32_t result;
         memcpy(&result, this, 4);

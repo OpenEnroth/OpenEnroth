@@ -999,7 +999,7 @@ void deserialize(const MonsterDesc_MM6 &src, MonsterDesc *dst) {
     dst->uMonsterRadius = src.monsterRadius;
     dst->uMovementSpeed = src.movementSpeed;
     dst->uToHitRadius = src.toHitRadius;
-    dst->sTintColor = colorTable.White.c32();
+    dst->sTintColor = colorTable.White;
     dst->pSoundSampleIDs = src.soundSampleIds;
     deserialize(src.monsterName, &dst->pMonsterName);
     deserialize(src.spriteNames, &dst->pSpriteNames);
@@ -1012,7 +1012,7 @@ void serialize(const MonsterDesc &src, MonsterDesc_MM7 *dst) {
     dst->monsterRadius = src.uMonsterRadius;
     dst->movementSpeed = src.uMovementSpeed;
     dst->toHitRadius = src.uToHitRadius;
-    dst->tintColor = src.sTintColor;
+    dst->tintColor = src.sTintColor.c32();
     dst->soundSampleIds = src.pSoundSampleIDs;
     serialize(src.pMonsterName, &dst->monsterName);
     serialize(src.pSpriteNames, &dst->spriteNames);
@@ -1025,7 +1025,7 @@ void deserialize(const MonsterDesc_MM7 &src, MonsterDesc *dst) {
     dst->uMonsterRadius = src.monsterRadius;
     dst->uMovementSpeed = src.movementSpeed;
     dst->uToHitRadius = src.toHitRadius;
-    dst->sTintColor = src.tintColor;
+    dst->sTintColor = Color::fromC32(src.tintColor);
     dst->pSoundSampleIDs = src.soundSampleIds;
     deserialize(src.monsterName, &dst->pMonsterName);
     deserialize(src.spriteNames, &dst->pSpriteNames);

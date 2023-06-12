@@ -30,7 +30,7 @@ struct Particle_sw {
     float r{};
     float g{};
     float b{};
-    unsigned int uDiffuse{};
+    Color uDiffuse{};
     int timeToLive{};
     Texture *texture{ nullptr };
     int paletteID{ 0 };
@@ -49,12 +49,7 @@ struct Particle {
     float shift_x = 0;
     float shift_y = 0;
     float shift_z = 0;
-    union {
-        struct {
-            unsigned char r, g, b, a;
-        };
-        unsigned int uParticleColor;
-    };
+    Color uParticleColor;
     int timeToLive = 0;
     Texture *texture = nullptr;  // unsigned int resource_id;// bitmap IDirect3DTexture
                        // idx or sprite idx depending on type
@@ -80,7 +75,7 @@ struct Particle {
     float screenspace_scale = 1.0;  // fixed screenspace_scale {};  // int _screenspace_scale;
     float fov_x = 0;
     float fov_y = 0;
-    int uLightColor_bgr = 0;
+    Color uLightColor_bgr;
 };
 
 struct stru2_LineList {
