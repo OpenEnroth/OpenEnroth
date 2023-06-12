@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;b321dcf</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;c5689ab</span>
    </div>
   </td>
  </tr>
@@ -86,21 +86,24 @@ $(function() {
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:a9bc887efb7fe3d7d0bb66b6579c7f08c"><td class="memTemplParams" colspan="2">template&lt;class T , class... Ctx&gt; </td></tr>
-<tr class="memitem:a9bc887efb7fe3d7d0bb66b6579c7f08c"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="BlobSerialization_8h.html#a9bc887efb7fe3d7d0bb66b6579c7f08c">serialize</a> (const T &amp;src, <a class="el" href="classBlob.html">Blob</a> *dst, Ctx &amp;&amp;... ctx)</td></tr>
-<tr class="separator:a9bc887efb7fe3d7d0bb66b6579c7f08c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a39e62e7602a31652d563bbda0247f1e1"><td class="memTemplParams" colspan="2">template&lt;class T , class... Ctx&gt; </td></tr>
-<tr class="memitem:a39e62e7602a31652d563bbda0247f1e1"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="BlobSerialization_8h.html#a39e62e7602a31652d563bbda0247f1e1">deserialize</a> (const <a class="el" href="classBlob.html">Blob</a> &amp;src, T &amp;&amp;dst, Ctx &amp;&amp;... ctx)</td></tr>
-<tr class="separator:a39e62e7602a31652d563bbda0247f1e1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0e90d26146c2a76d90babc400b019778"><td class="memTemplParams" colspan="2">template&lt;class T , class... Tag&gt; <br />
+requires (sizeof...(Tag) &lt;= 1)</td></tr>
+<tr class="memitem:a0e90d26146c2a76d90babc400b019778"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="BlobSerialization_8h.html#a0e90d26146c2a76d90babc400b019778">serialize</a> (const T &amp;src, <a class="el" href="classBlob.html">Blob</a> *dst, const Tag &amp;... tag)</td></tr>
+<tr class="separator:a0e90d26146c2a76d90babc400b019778"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adf8885110d05f6c2812313733e54a2f1"><td class="memTemplParams" colspan="2">template&lt;class T , class... Tag&gt; <br />
+requires (sizeof...(Tag) &lt;= 1)</td></tr>
+<tr class="memitem:adf8885110d05f6c2812313733e54a2f1"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="BlobSerialization_8h.html#adf8885110d05f6c2812313733e54a2f1">deserialize</a> (const <a class="el" href="classBlob.html">Blob</a> &amp;src, T &amp;&amp;dst, const Tag &amp;... tag)</td></tr>
+<tr class="separator:adf8885110d05f6c2812313733e54a2f1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Function Documentation</h2>
-<a id="a39e62e7602a31652d563bbda0247f1e1" name="a39e62e7602a31652d563bbda0247f1e1"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a39e62e7602a31652d563bbda0247f1e1">&#9670;&#160;</a></span>deserialize()</h2>
+<a id="adf8885110d05f6c2812313733e54a2f1" name="adf8885110d05f6c2812313733e54a2f1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#adf8885110d05f6c2812313733e54a2f1">&#9670;&#160;</a></span>deserialize()</h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;class T , class... Ctx&gt; </div>
+template&lt;class T , class... Tag&gt; <br />
+requires (sizeof...(Tag) &lt;= 1)</div>
       <table class="memname">
         <tr>
           <td class="memname">void deserialize </td>
@@ -117,8 +120,8 @@ template&lt;class T , class... Ctx&gt; </div>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">Ctx &amp;&amp;...&#160;</td>
-          <td class="paramname"><em>ctx</em>&#160;</td>
+          <td class="paramtype">const Tag &amp;...&#160;</td>
+          <td class="paramname"><em>tag</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -130,13 +133,14 @@ template&lt;class T , class... Ctx&gt; </div>
 
 </div>
 </div>
-<a id="a9bc887efb7fe3d7d0bb66b6579c7f08c" name="a9bc887efb7fe3d7d0bb66b6579c7f08c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a9bc887efb7fe3d7d0bb66b6579c7f08c">&#9670;&#160;</a></span>serialize()</h2>
+<a id="a0e90d26146c2a76d90babc400b019778" name="a0e90d26146c2a76d90babc400b019778"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0e90d26146c2a76d90babc400b019778">&#9670;&#160;</a></span>serialize()</h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;class T , class... Ctx&gt; </div>
+template&lt;class T , class... Tag&gt; <br />
+requires (sizeof...(Tag) &lt;= 1)</div>
       <table class="memname">
         <tr>
           <td class="memname">void serialize </td>
@@ -153,8 +157,8 @@ template&lt;class T , class... Ctx&gt; </div>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">Ctx &amp;&amp;...&#160;</td>
-          <td class="paramname"><em>ctx</em>&#160;</td>
+          <td class="paramtype">const Tag &amp;...&#160;</td>
+          <td class="paramname"><em>tag</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
