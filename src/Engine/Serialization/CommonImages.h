@@ -12,7 +12,8 @@
 #include "Utility/IndexedBitset.h"
 
 // TODO(captainurist): rename this file?
-
+// TODO(captainurist): I think we a better verb for what's going on here. There should be no serialize(T, T*) overload.
+//                     can/uncan? conserve/unconserve? pack/unpack?
 
 //
 // Identity serialization.
@@ -73,40 +74,23 @@ void deserialize(const std::array<char, N> &src, std::string *dst) {
 
 
 //
-// Basic tag support.
-//
-
-struct NoTag {};
-
-template<class T1, class T2, class Tag> requires std::is_same_v<Tag, NoTag>
-void serialize(const T1 &src, T2 *dst, const Tag &) {
-    serialize(src, dst);
-}
-
-template<class T1, class T2, class Tag> requires std::is_same_v<Tag, NoTag>
-void deserialize(const T1 &src, T2 *dst, const Tag &) {
-    deserialize(src, dst);
-}
-
-
-//
 // std::vector support.
 //
 
-template<class T1, class T2, class Tag = NoTag> requires (!std::is_same_v<T1, T2>)
-void serialize(const std::vector<T1> &src, std::vector<T2> *dst, const Tag &tag = {}) {
-    dst->clear();
-    dst->reserve(src.size());
-    for(const T1 &element : src)
-        serialize(element, &dst->emplace_back(), tag);
-}
-
-template<class T1, class T2, class Tag = NoTag> requires (!std::is_same_v<T1, T2>)
-void deserialize(const std::vector<T1> &src, std::vector<T2> *dst, const Tag &tag = {}) {
+template<class T1, class T2, class... Tag> requires (!std::is_same_v<T1, T2> && sizeof...(Tag) <= 1)
+void serialize(const std::vector<T1> &src, std::vector<T2> *dst, const Tag &... tag) {
     dst->clear();
     dst->reserve(src.size());
     for (const T1 &element : src)
-        deserialize(element, &dst->emplace_back(), tag);
+        serialize(element, &dst->emplace_back(), tag...);
+}
+
+template<class T1, class T2, class... Tag> requires (!std::is_same_v<T1, T2> && sizeof...(Tag) <= 1)
+void deserialize(const std::vector<T1> &src, std::vector<T2> *dst, const Tag &... tag) {
+    dst->clear();
+    dst->reserve(src.size());
+    for (const T1 &element : src)
+        deserialize(element, &dst->emplace_back(), tag...);
 }
 
 
@@ -114,18 +98,18 @@ void deserialize(const std::vector<T1> &src, std::vector<T2> *dst, const Tag &ta
 // std::array support.
 //
 
-template<class T1, size_t N1, class T2, size_t N2, class Tag = NoTag> requires (!std::is_same_v<T1, T2>)
-void serialize(const std::array<T1, N1> &src, std::array<T2, N2> *dst, const Tag &tag = {}) {
+template<class T1, size_t N1, class T2, size_t N2, class... Tag> requires (!std::is_same_v<T1, T2> && sizeof...(Tag) <= 1)
+void serialize(const std::array<T1, N1> &src, std::array<T2, N2> *dst, const Tag &... tag) {
     static_assert(N1 == N2, "Expected arrays of equal size.");
     for (size_t i = 0; i < N1; i++)
-        serialize(src[i], &(*dst)[i], tag);
+        serialize(src[i], &(*dst)[i], tag...);
 }
 
-template<class T1, size_t N1, class T2, size_t N2, class Tag = NoTag> requires (!std::is_same_v<T1, T2>)
-void deserialize(const std::array<T1, N1> &src, std::array<T2, N2> *dst, const Tag &tag = {}) {
+template<class T1, size_t N1, class T2, size_t N2, class... Tag> requires (!std::is_same_v<T1, T2> && sizeof...(Tag) <= 1)
+void deserialize(const std::array<T1, N1> &src, std::array<T2, N2> *dst, const Tag &... tag) {
     static_assert(N1 == N2, "Expected arrays of equal size.");
     for (size_t i = 0; i < N1; i++)
-        deserialize(src[i], &(*dst)[i], tag);
+        deserialize(src[i], &(*dst)[i], tag...);
 }
 
 
@@ -133,18 +117,18 @@ void deserialize(const std::array<T1, N1> &src, std::array<T2, N2> *dst, const T
 // IndexedArray support
 //
 
-template<class T1, size_t N, class T2, auto L, auto H, class Tag = NoTag>
-void serialize(const IndexedArray<T2, L, H> &src, std::array<T1, N> *dst, const Tag &tag = {}) {
+template<class T1, size_t N, class T2, auto L, auto H, class... Tag> requires (sizeof...(Tag) <= 1)
+void serialize(const IndexedArray<T2, L, H> &src, std::array<T1, N> *dst, const Tag &... tag) {
     static_assert(IndexedArray<T2, L, H>::SIZE == N, "Expected arrays of equal size.");
     for (size_t i = 0; auto index : src.indices())
-        serialize(src[index], &(*dst)[i++], tag);
+        serialize(src[index], &(*dst)[i++], tag...);
 }
 
-template<class T1, size_t N, class T2, auto L, auto H, class Tag = NoTag>
-void deserialize(const std::array<T1, N> &src, IndexedArray<T2, L, H> *dst, const Tag &tag = {}) {
+template<class T1, size_t N, class T2, auto L, auto H, class... Tag> requires (sizeof...(Tag) <= 1)
+void deserialize(const std::array<T1, N> &src, IndexedArray<T2, L, H> *dst, const Tag &... tag) {
     static_assert(IndexedArray<T2, L, H>::SIZE == N, "Expected arrays of equal size.");
     for (size_t i = 0; auto index : dst->indices())
-        deserialize(src[i++], &(*dst)[index], tag);
+        deserialize(src[i++], &(*dst)[index], tag...);
 }
 
 
