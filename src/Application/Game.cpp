@@ -483,8 +483,10 @@ void Game::processQueuedMessages() {
             case UIMSG_StartHireling2Dialogue:
                 Game_StartHirelingDialogue(uMessage - UIMSG_StartHireling1Dialogue);
                 continue;
-            case UIMSG_BuyInShop_Identify_Repair:
-                UIShop_Buy_Identify_Repair();
+            case UIMSG_HouseScreenClick:
+                if (window_SpeakInHouse) {
+                    window_SpeakInHouse->houseScreenClick();
+                }
                 continue;
             case UIMSG_ClickNPCTopic:
                 ClickNPCTopic((DIALOGUE_TYPE)uMessageParam);

@@ -65,6 +65,7 @@ class GUIWindow_House : public GUIWindow {
     virtual void houseSpecificDialogue();
     virtual std::vector<DIALOGUE_TYPE> listDialogueOptions(DIALOGUE_TYPE option);
     virtual DIALOGUE_TYPE getOptionOnEscape();
+    virtual void houseScreenClick();
 
  protected:
     int _savedButtonsNum{};

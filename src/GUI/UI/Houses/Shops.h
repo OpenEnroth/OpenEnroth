@@ -16,6 +16,7 @@ class GUIWindow_Shop : public GUIWindow_House {
     virtual void houseSpecificDialogue() override;
     virtual std::vector<DIALOGUE_TYPE> listDialogueOptions(DIALOGUE_TYPE option) override;
     virtual DIALOGUE_TYPE getOptionOnEscape() override;
+    virtual void houseScreenClick() override;
 
     /**
      * @offset 0x4B1447

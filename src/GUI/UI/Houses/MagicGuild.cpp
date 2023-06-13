@@ -269,6 +269,61 @@ std::vector<DIALOGUE_TYPE> GUIWindow_MagicGuild::listDialogueOptions(DIALOGUE_TY
     }
 }
 
+void GUIWindow_MagicGuild::houseScreenClick() {
+    if (!checkIfPlayerCanInteract()) {
+        pAudioPlayer->playUISound(SOUND_error);
+        return;
+    }
+
+    Pointi pt = EngineIocContainer::ResolveMouse()->GetCursorPos();
+
+    int testx = (pt.x - 32) / 70;
+    if (testx >= 0 && testx < 6) {
+        if (pt.y >= 250) {
+            testx += 6;
+        }
+
+        ItemGen &boughtItem = pParty->spellBooksInGuilds[houseId()][testx];
+        if (boughtItem.uItemID != ITEM_NULL) {
+            int testpos;
+            if (pt.y >= 250) {
+                testpos = 32 + 70 * testx - 420;
+            } else {
+                testpos = 32 + 70 * testx;
+            }
+
+            if (pt.x >= testpos && pt.x <= testpos + shop_ui_items_in_store[testx]->width()) {
+                if ((pt.y >= 90 && pt.y <= (90 + shop_ui_items_in_store[testx]->height())) ||
+                    (pt.y >= 250 && pt.y <= (250 + shop_ui_items_in_store[testx]->height()))) {
+                    float fPriceMultiplier = buildingTable[wData.val - 1].fPriceMultiplier;
+                    int uPriceItemService = PriceCalculator::itemBuyingPriceForPlayer(&pParty->activeCharacter(), boughtItem.GetValue(), fPriceMultiplier);
+
+                    if (pParty->GetGold() < uPriceItemService) {
+                        PlayHouseSound(wData.val, (HouseSoundID)2);
+                        GameUI_SetStatusBar(LSTR_NOT_ENOUGH_GOLD);
+                        return;
+                    }
+
+                    int itemSlot = pParty->activeCharacter().AddItem(-1, boughtItem. uItemID);
+                    if (itemSlot) {
+                        boughtItem.SetIdentified();
+                        pParty->activeCharacter().pInventoryItemList[itemSlot - 1] = boughtItem;
+                        dword_F8B1E4 = 1;
+                        pParty->TakeGold(uPriceItemService);
+                        boughtItem.Reset();
+                        render->ClearZBuffer();
+                        pParty->activeCharacter().playReaction(SPEECH_ItemBuy);
+                        return;
+                    }
+
+                    pParty->activeCharacter().playReaction(SPEECH_NoRoom);
+                    GameUI_SetStatusBar(LSTR_INVENTORY_IS_FULL);
+                }
+            }
+        }
+    }
+}
+
 void GUIWindow_MagicGuild::generateSpellBooksForGuild() {
     BuildingType guildType = buildingType();
 
