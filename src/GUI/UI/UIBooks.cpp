@@ -8,38 +8,12 @@
 #include "Engine/Graphics/IRender.h"
 
 #include "GUI/GUIFont.h"
+#include "GUI/GUIButton.h"
 #include "GUI/UI/UIBooks.h"
 
 #include "Media/Audio/AudioPlayer.h"
 
-GraphicsImage *ui_book_button8_off = nullptr;
-GraphicsImage *ui_book_button8_on = nullptr;
-GraphicsImage *ui_book_button7_off = nullptr;
-GraphicsImage *ui_book_button7_on = nullptr;
-GraphicsImage *ui_book_button6_off = nullptr;
-GraphicsImage *ui_book_button6_on = nullptr;
-GraphicsImage *ui_book_button5_off = nullptr;
-GraphicsImage *ui_book_button5_on = nullptr;
-GraphicsImage *ui_book_button4_off = nullptr;
-GraphicsImage *ui_book_button4_on = nullptr;
-GraphicsImage *ui_book_button3_off = nullptr;
-GraphicsImage *ui_book_button3_on = nullptr;
-GraphicsImage *ui_book_button2_off = nullptr;
-GraphicsImage *ui_book_button2_on = nullptr;
-GraphicsImage *ui_book_button1_off = nullptr;
-GraphicsImage *ui_book_button1_on = nullptr;
-
-GraphicsImage *ui_book_map_frame = nullptr;
-
-GraphicsImage *ui_book_quest_div_bar = nullptr;
-
-bool bookButtonClicked;
-BookButtonAction bookButtonAction;
-
-//----- (00411597) --------------------------------------------------------
 void GUIWindow_Book::Release() {
-    // -----------------------------------------
-    // 0041C26A void GUIWindow::Release --- part
     free(pSpellFont);
     pSpellFont = nullptr;
     free(pBookFont);
@@ -51,7 +25,57 @@ void GUIWindow_Book::Release() {
 
     if (ui_book_map_frame) {
         ui_book_map_frame->Release();
-        ui_book_map_frame = nullptr;
+    }
+    if (ui_book_quest_div_bar) {
+        ui_book_quest_div_bar->Release();
+    }
+    if (ui_book_button8_off) {
+        ui_book_button8_off->Release();
+    }
+    if (ui_book_button8_on) {
+        ui_book_button8_on->Release();
+    }
+    if (ui_book_button7_off) {
+        ui_book_button7_off->Release();
+    }
+    if (ui_book_button7_on) {
+        ui_book_button7_on->Release();
+    }
+    if (ui_book_button6_off) {
+        ui_book_button6_off->Release();
+    }
+    if (ui_book_button6_on) {
+        ui_book_button6_on->Release();
+    }
+    if (ui_book_button5_off) {
+        ui_book_button5_off->Release();
+    }
+    if (ui_book_button5_on) {
+        ui_book_button5_on->Release();
+    }
+    if (ui_book_button4_off) {
+        ui_book_button4_off->Release();
+    }
+    if (ui_book_button4_on) {
+        ui_book_button4_on->Release();
+    }
+    if (ui_book_button3_off) {
+        ui_book_button3_off->Release();
+    }
+    if (ui_book_button3_on) {
+        ui_book_button3_on->Release();
+    }
+    if (ui_book_button2_off) {
+        ui_book_button2_off->Release();
+    }
+    if (ui_book_button2_on) {
+        ui_book_button2_on->Release();
+    }
+    if (ui_book_button1_off) {
+        ui_book_button1_off->Release();
+    }
+    if (ui_book_button1_on) {
+        ui_book_button1_on->Release();
     }
 
     pAudioPlayer->playUISound(SOUND_closebook);
@@ -64,15 +88,13 @@ void GUIWindow_Book::Release() {
 }
 
 GUIWindow_Book::GUIWindow_Book() : GUIWindow(WINDOW_Book, {0, 0}, render->GetRenderDimensions(), 0) {
-    InitializeFonts();
+    initializeFonts();
     CreateButton({475, 445}, {158, 34}, 1, 0, UIMSG_Escape, 0, InputAction::Invalid, localization->GetString(LSTR_DIALOGUE_EXIT));
     current_screen_type = CURRENT_SCREEN::SCREEN_BOOKS;
-    bookButtonClicked = false;
     pEventTimer->Pause();
 }
 
-//----- (00411AAA) --------------------------------------------------------
-void GUIWindow_Book::InitializeFonts() {
+void GUIWindow_Book::initializeFonts() {
     pAudioPlayer->playUISound(SOUND_openbook);
 
     ui_book_map_frame = assets->getImage_Alpha("mapbordr");
@@ -81,4 +103,14 @@ void GUIWindow_Book::InitializeFonts() {
     pBook2Font = GUIFont::LoadFont("book2.fnt", "FONTPAL");
     pAutonoteFont = GUIFont::LoadFont("autonote.fnt", "FONTPAL");
     pSpellFont = GUIFont::LoadFont("spell.fnt", "FONTPAL");
+}
+
+void GUIWindow_Book::bookButtonClicked(BookButtonAction action) {
+    _bookButtonClicked = true;
+    _bookButtonAction = action;
+}
+
+void GUIWindow_BooksButtonOverlay::Update() {
+    GUIButton *pButton = static_cast<GUIButton *>(wData.ptr);
+    render->DrawTextureNew(uFrameY / 640.0f, uFrameX / 480.0f, pButton->vTextures[0]);
 }

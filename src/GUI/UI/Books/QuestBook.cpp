@@ -20,16 +20,12 @@
 GraphicsImage *ui_book_quests_background = nullptr;
 
 GUIWindow_QuestBook::GUIWindow_QuestBook() : _startingQuestIdx(0), _currentPage(0), _currentPageQuests(0), GUIWindow_Book() {
-    this->wData.val = WINDOW_QuestBook;  // inherited from GUIWindow::GUIWindow
+    this->wData.val = WINDOW_QuestBook;
     this->eWindowType = WindowType::WINDOW_QuestBook;
 
-    // --------------------------------
-    // 004304E7 Game_EventLoop --- part
     pChildBooksOverlay = new GUIWindow_BooksButtonOverlay({493, 355}, {0, 0}, pBtn_Quests);
     bFlashQuestBook = false;
 
-    // ----------------------------------------------
-    // 00411BFC GUIWindow::InitializeBookView -- part
     ui_book_quests_background = assets->getImage_Solid("sbquiknot");
     ui_book_quest_div_bar = assets->getImage_Alpha("divbar");
 
@@ -51,34 +47,20 @@ GUIWindow_QuestBook::GUIWindow_QuestBook() : _startingQuestIdx(0), _currentPage(
 }
 
 void GUIWindow_QuestBook::Update() {
-    // -----------------------------------
-    // 004156F0 GUI_UpdateWindows --- part
-    // {
-    //     BookUI_Draw((WindowType)(int)ptr_1C);
-    // }
+    render->DrawTextureNew(471 / 640.0f, 445 / 480.0f, ui_exit_cancel_button_background);
 
-    // ----- (00413CC6) --------------------------------------------------------
-    // void BookUI_Draw(WindowType book) --- part
-    // {
-    render->DrawTextureNew(471 / 640.0f, 445 / 480.0f,
-                                ui_exit_cancel_button_background);
-    //     BookUI_Questbook_Draw();
-
-    // ----- (00413126) --------------------------------------------------------
-    // void BookUI_Questbook_Draw()
-    // {
-    int pTextHeight;             // eax@19
-    GUIWindow questbook_window;  // [sp+Ch] [bp-54h]@9
+    int pTextHeight;
+    GUIWindow questbook_window;
 
     render->DrawTextureNew(pViewport->uViewportTL_X / 640.0f, pViewport->uViewportTL_Y / 480.0f, ui_book_quests_background);
 
-    if ((bookButtonClicked && bookButtonAction == BOOK_PREV_PAGE) || !_startingQuestIdx) {
+    if ((_bookButtonClicked && _bookButtonAction == BOOK_PREV_PAGE) || !_startingQuestIdx) {
         render->DrawTextureNew((pViewport->uViewportTL_X + 407) / 640.0f, (pViewport->uViewportTL_Y + 2) / 480.0f, ui_book_button1_off);
     } else {
         render->DrawTextureNew((pViewport->uViewportTL_X + 398) / 640.0f, (pViewport->uViewportTL_Y + 1) / 480.0f, ui_book_button1_on);
     }
 
-    if ((bookButtonClicked && bookButtonAction == BOOK_NEXT_PAGE) || (_startingQuestIdx + _currentPageQuests) >= _activeQuestsIdx.size()) {
+    if ((_bookButtonClicked && _bookButtonAction == BOOK_NEXT_PAGE) || (_startingQuestIdx + _currentPageQuests) >= _activeQuestsIdx.size()) {
         render->DrawTextureNew((pViewport->uViewportTL_X + 407) / 640.0f, (pViewport->uViewportTL_Y + 38) / 480.0f, ui_book_button2_off);
     } else {
         render->DrawTextureNew((pViewport->uViewportTL_X + 398) / 640.0f, (pViewport->uViewportTL_Y + 38) / 480.0f, ui_book_button2_on);
@@ -101,20 +83,20 @@ void GUIWindow_QuestBook::Update() {
     questbook_window.uFrameZ = 407;
     questbook_window.uFrameW = 333;
 
-    if (bookButtonClicked && bookButtonAction == BOOK_NEXT_PAGE && (_startingQuestIdx + _currentPageQuests) < _activeQuestsIdx.size()) {
+    if (_bookButtonClicked && _bookButtonAction == BOOK_NEXT_PAGE && (_startingQuestIdx + _currentPageQuests) < _activeQuestsIdx.size()) {
         pAudioPlayer->playUISound(SOUND_openbook);
         _startingQuestIdx += _currentPageQuests;
         _questsPerPage[_currentPage] = _currentPageQuests;
         _currentPage++;
     }
 
-    if (bookButtonClicked && bookButtonAction == BOOK_PREV_PAGE && _startingQuestIdx) {
+    if (_bookButtonClicked && _bookButtonAction == BOOK_PREV_PAGE && _startingQuestIdx) {
         pAudioPlayer->playUISound(SOUND_openbook);
         _currentPage--;
         _startingQuestIdx -= _questsPerPage[_currentPage];
     }
 
-    bookButtonClicked = false;
+    _bookButtonClicked = false;
     _currentPageQuests = 0;
 
     for (int i = _startingQuestIdx; i < _activeQuestsIdx.size(); ++i) {

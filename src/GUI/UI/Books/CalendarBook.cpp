@@ -38,15 +38,11 @@ static std::array<int, 28> pDayMoonPhase = {
 
 
 GUIWindow_CalendarBook::GUIWindow_CalendarBook() : GUIWindow_Book() {
-    this->wData.val = WINDOW_CalendarBook;  // inherited from GUIWindow::GUIWindow
+    this->wData.val = WINDOW_CalendarBook;
     this->eWindowType = WindowType::WINDOW_CalendarBook;
 
-    // --------------------------------
-    // 004304E7 Game_EventLoop --- part
     pChildBooksOverlay = new GUIWindow_BooksButtonOverlay({570, 354}, {0, 0}, pBtn_Calendar);
 
-    // ----------------------------------------------
-    // 00411BFC GUIWindow::InitializeBookView -- part
     ui_book_calendar_background = assets->getImage_ColorKey("sbdate-time");
     ui_book_calendar_moon_new = assets->getImage_ColorKey("moon_new");
     ui_book_calendar_moon_4 = assets->getImage_ColorKey("moon_4");

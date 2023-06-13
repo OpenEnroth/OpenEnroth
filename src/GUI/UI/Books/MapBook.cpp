@@ -28,7 +28,7 @@ void DrawBook_Map_sub(unsigned int tl_x, unsigned int tl_y, unsigned int br_x, i
 GraphicsImage *ui_book_map_background = nullptr;
 
 GUIWindow_MapBook::GUIWindow_MapBook() : GUIWindow_Book() {
-    this->wData.val = WINDOW_MapsBook;  // inherited from GUIWindow::GUIWindow
+    this->wData.val = WINDOW_MapsBook;
     this->eWindowType = WindowType::WINDOW_MapsBook;
 
     viewparams->sViewCenterX = pParty->vPosition.x;
@@ -67,59 +67,59 @@ void GUIWindow_MapBook::Update() {
     render->DrawTextureNew(471 /  640.0f, 445 / 480.0f, ui_exit_cancel_button_background);
     render->DrawTextureNew(pViewport->uViewportTL_X / 640.0f, pViewport->uViewportTL_Y / 480.0f, ui_book_map_background);
 
-    if ((bookButtonClicked && bookButtonAction == BOOK_ZOOM_IN) || viewparams->uMapBookMapZoom / 128 >= 12) {
+    if ((_bookButtonClicked && _bookButtonAction == BOOK_ZOOM_IN) || viewparams->uMapBookMapZoom / 128 >= 12) {
         render->DrawTextureNew((pViewport->uViewportTL_X + 408) / 640.0f, (pViewport->uViewportTL_Y + 2) / 480.0f, ui_book_button1_off);
     } else {
         render->DrawTextureNew((pViewport->uViewportTL_X + 398) / 640.0f, (pViewport->uViewportTL_Y + 1) / 480.0f, ui_book_button1_on);
     }
 
-    if ((bookButtonClicked && bookButtonAction == BOOK_ZOOM_OUT) || viewparams->uMapBookMapZoom / 128 <= 3) {
+    if ((_bookButtonClicked && _bookButtonAction == BOOK_ZOOM_OUT) || viewparams->uMapBookMapZoom / 128 <= 3) {
         render->DrawTextureNew((pViewport->uViewportTL_X + 408) / 640.0f, (pViewport->uViewportTL_Y + 38) / 480.0f, ui_book_button2_off);
     } else {
         render->DrawTextureNew((pViewport->uViewportTL_X + 398) / 640.0f, (pViewport->uViewportTL_Y + 38) / 480.0f, ui_book_button2_on);
     }
 
-    if (bookButtonClicked && bookButtonAction == BOOK_SCROLL_UP) {
+    if (_bookButtonClicked && _bookButtonAction == BOOK_SCROLL_UP) {
         render->DrawTextureNew((pViewport->uViewportTL_X + 408) / 640.0f, (pViewport->uViewportTL_Y + 113) / 480.0f, ui_book_button3_off);
         viewparams->MapViewUp();
     } else {
         render->DrawTextureNew((pViewport->uViewportTL_X + 398) / 640.0f, (pViewport->uViewportTL_Y + 113) / 480.0f, ui_book_button3_on);
     }
 
-    if (bookButtonClicked && bookButtonAction == BOOK_SCROLL_DOWN) { // Button 4
+    if (_bookButtonClicked && _bookButtonAction == BOOK_SCROLL_DOWN) { // Button 4
         render->DrawTextureNew((pViewport->uViewportTL_X + 408) / 640.0f, (pViewport->uViewportTL_Y + 150) / 480.0f, ui_book_button4_off);
         viewparams->MapViewDown();
     } else {
         render->DrawTextureNew((pViewport->uViewportTL_X + 399) / 640.0f, (pViewport->uViewportTL_Y + 150) / 480.0f, ui_book_button4_on);
     }
 
-    if (bookButtonClicked && bookButtonAction == BOOK_SCROLL_RIGHT) {
+    if (_bookButtonClicked && _bookButtonAction == BOOK_SCROLL_RIGHT) {
         render->DrawTextureNew((pViewport->uViewportTL_X + 408) / 640.0f, (pViewport->uViewportTL_Y + 188) / 480.0f, ui_book_button5_off);
         viewparams->MapViewRight();
     } else {
         render->DrawTextureNew((pViewport->uViewportTL_X + 397) / 640.0f, (pViewport->uViewportTL_Y + 188) / 480.0f, ui_book_button5_on);
     }
 
-    if (bookButtonClicked && bookButtonAction == BOOK_SCROLL_LEFT) {
+    if (_bookButtonClicked && _bookButtonAction == BOOK_SCROLL_LEFT) {
         render->DrawTextureNew((pViewport->uViewportTL_X + 408) / 640.0f, (pViewport->uViewportTL_Y + 226) / 480.0f, ui_book_button6_off);
         viewparams->MapViewLeft();
     } else {
         render->DrawTextureNew((pViewport->uViewportTL_X + 397) / 640.0f, (pViewport->uViewportTL_Y + 226) / 480.0f, ui_book_button6_on);
     }
 
-    if (bookButtonClicked) {
-        if (bookButtonAction == BOOK_ZOOM_IN) {
+    if (_bookButtonClicked) {
+        if (_bookButtonAction == BOOK_ZOOM_IN) {
             viewparams->CenterOnPartyZoomIn();
-        } else if (bookButtonAction == BOOK_ZOOM_OUT) {
+        } else if (_bookButtonAction == BOOK_ZOOM_OUT) {
             viewparams->CenterOnPartyZoomOut();
         }
     }
 
-    if (bookButtonClicked) {
+    if (_bookButtonClicked) {
         pAudioPlayer->playUISound(SOUND_StartMainChoice02);
     }
 
-    bookButtonClicked = false;
+    _bookButtonClicked = false;
 
     render->DrawTextureNew(75 / 640.0f, 22 / 480.0f, ui_book_map_frame);
     DrawBook_Map_sub(97, 49, 361, 313, 0);
