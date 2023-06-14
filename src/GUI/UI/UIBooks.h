@@ -3,6 +3,7 @@
 #include <string>
 
 #include "GUI/GUIWindow.h"
+#include "Engine/Graphics/Image.h"
 
 enum class BookButtonAction {
     BOOK_ZOOM_IN = 0,
@@ -27,13 +28,44 @@ class GUIWindow_Book : public GUIWindow {
     GUIWindow_Book();
     virtual ~GUIWindow_Book() {}
 
+    /**
+     * @offset 0x411597
+     */
     virtual void Release();
+
+    void bookButtonClicked(BookButtonAction action);
 
  protected:
     GUIWindow *pChildBooksOverlay{ nullptr };
 
+    GraphicsImage *ui_book_button8_off{ nullptr };
+    GraphicsImage *ui_book_button8_on{ nullptr };
+    GraphicsImage *ui_book_button7_off{ nullptr };
+    GraphicsImage *ui_book_button7_on{ nullptr };
+    GraphicsImage *ui_book_button6_off{ nullptr };
+    GraphicsImage *ui_book_button6_on{ nullptr };
+    GraphicsImage *ui_book_button5_off{ nullptr };
+    GraphicsImage *ui_book_button5_on{ nullptr };
+    GraphicsImage *ui_book_button4_off{ nullptr };
+    GraphicsImage *ui_book_button4_on{ nullptr };
+    GraphicsImage *ui_book_button3_off{ nullptr };
+    GraphicsImage *ui_book_button3_on{ nullptr };
+    GraphicsImage *ui_book_button2_off{ nullptr };
+    GraphicsImage *ui_book_button2_on{ nullptr };
+    GraphicsImage *ui_book_button1_off{ nullptr };
+    GraphicsImage *ui_book_button1_on{ nullptr };
+
+    GraphicsImage *ui_book_map_frame{ nullptr };
+    GraphicsImage *ui_book_quest_div_bar{ nullptr };
+
+    bool _bookButtonClicked{ false };
+    BookButtonAction _bookButtonAction;
+
  private:
-    void InitializeFonts();
+    /**
+     * @offset 0x411AAA
+     */
+    void initializeFonts();
 };
 
 
@@ -46,27 +78,3 @@ class GUIWindow_BooksButtonOverlay : public GUIWindow {
 
     virtual void Update();
 };
-
-class GraphicsImage;
-extern GraphicsImage *ui_book_button8_off;
-extern GraphicsImage *ui_book_button8_on;
-extern GraphicsImage *ui_book_button7_off;
-extern GraphicsImage *ui_book_button7_on;
-extern GraphicsImage *ui_book_button6_off;
-extern GraphicsImage *ui_book_button6_on;
-extern GraphicsImage *ui_book_button5_off;
-extern GraphicsImage *ui_book_button5_on;
-extern GraphicsImage *ui_book_button4_off;
-extern GraphicsImage *ui_book_button4_on;
-extern GraphicsImage *ui_book_button3_off;
-extern GraphicsImage *ui_book_button3_on;
-extern GraphicsImage *ui_book_button2_off;
-extern GraphicsImage *ui_book_button2_on;
-extern GraphicsImage *ui_book_button1_off;
-extern GraphicsImage *ui_book_button1_on;
-
-extern GraphicsImage *ui_book_map_frame;
-extern GraphicsImage *ui_book_quest_div_bar;
-
-extern bool bookButtonClicked;
-extern BookButtonAction bookButtonAction;

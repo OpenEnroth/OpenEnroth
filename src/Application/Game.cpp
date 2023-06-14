@@ -1873,9 +1873,7 @@ void Game::processQueuedMessages() {
                 new OnCancel2({pCharacterScreen_ExitBtn->uX, pCharacterScreen_ExitBtn->uY}, {0, 0}, pCharacterScreen_ExitBtn);
                 continue;
             case UIMSG_ClickBooksBtn:
-                bookButtonClicked = true;
-                bookButtonAction = BookButtonAction(uMessageParam);
-                switch (bookButtonAction) {
+                switch (BookButtonAction(uMessageParam)) {
                     case BOOK_PREV_PAGE:
                     case BOOK_ZOOM_IN:
                         pButton = pBtn_Book_1;
@@ -1910,6 +1908,7 @@ void Game::processQueuedMessages() {
                         continue;
                 }
                 new OnButtonClick({pButton->uX, pButton->uY}, {0, 0}, pButton, std::string(), false);
+                ((GUIWindow_Book *)pGUIWindow_CurrentMenu)->bookButtonClicked(BookButtonAction(uMessageParam));
                 continue;
             case UIMSG_SelectCharacter:
                 pCurrentFrameMessageQueue->Flush();

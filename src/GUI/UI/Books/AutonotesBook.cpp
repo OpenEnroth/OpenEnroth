@@ -37,13 +37,9 @@ GUIWindow_AutonotesBook::GUIWindow_AutonotesBook() : GUIWindow_Book() {
     this->wData.val = WINDOW_AutonotesBook;  // inherited from GUIWindow::GUIWindow
     this->eWindowType = WindowType::WINDOW_AutonotesBook;
 
-    // --------------------------------
-    // 004304E7 Game_EventLoop --- part
     pChildBooksOverlay = new GUIWindow_BooksButtonOverlay({527, 353}, {0, 0}, pBtn_Autonotes);
     bFlashAutonotesBook = false;
 
-    // ----------------------------------------------
-    // 00411BFC GUIWindow::InitializeBookView -- part
     ui_book_autonotes_background = assets->getImage_ColorKey("sbautnot");
     ui_book_quest_div_bar = assets->getImage_Alpha("divbar");
 
@@ -85,40 +81,26 @@ GUIWindow_AutonotesBook::GUIWindow_AutonotesBook() : GUIWindow_Book() {
 }
 
 void GUIWindow_AutonotesBook::Update() {
-    // -----------------------------------
-    // 004156F0 GUI_UpdateWindows --- part
-    // {
-    //     BookUI_Draw((WindowType)(int)ptr_1C);
-    // }
+    render->DrawTextureNew(471 / 640.0f, 445 / 480.0f, ui_exit_cancel_button_background);
 
-    // ----- (00413CC6) --------------------------------------------------------
-    // void BookUI_Draw(WindowType book) --- part
-    // {
-    render->DrawTextureNew(471 / 640.0f, 445 / 480.0f,
-                                ui_exit_cancel_button_background);
-    //     BookUI_Autonotes_Draw();
-
-    // ----- (0041338E) --------------------------------------------------------
-    // void BookUI_Autonotes_Draw()
-    // {
     int pTextHeight;
     bool noteTypeChanged = false;
     GUIWindow autonotes_window;
 
     render->DrawTextureNew(pViewport->uViewportTL_X / 640.0f, pViewport->uViewportTL_Y / 480.0f, ui_book_autonotes_background);
-    if ((bookButtonClicked && bookButtonAction == BOOK_PREV_PAGE) || !_startingNotesIdx) {
+    if ((_bookButtonClicked && _bookButtonAction == BOOK_PREV_PAGE) || !_startingNotesIdx) {
         render->DrawTextureNew((pViewport->uViewportTL_X + 407) / 640.0f, (pViewport->uViewportTL_Y + 2) / 480.0f, ui_book_button1_off);
     } else {
         render->DrawTextureNew((pViewport->uViewportTL_X + 398) / 640.0f, (pViewport->uViewportTL_Y + 1) / 480.0f, ui_book_button1_on);
     }
 
-    if ((bookButtonClicked && bookButtonAction == BOOK_NEXT_PAGE) || (_startingNotesIdx + _currentPageNotes) >= _activeNotesIdx.size()) {
+    if ((_bookButtonClicked && _bookButtonAction == BOOK_NEXT_PAGE) || (_startingNotesIdx + _currentPageNotes) >= _activeNotesIdx.size()) {
         render->DrawTextureNew((pViewport->uViewportTL_X + 407) / 640.0f, (pViewport->uViewportTL_Y + 38) / 480.0f, ui_book_button2_off);
     } else {
         render->DrawTextureNew((pViewport->uViewportTL_X + 398) / 640.0f, (pViewport->uViewportTL_Y + 38) / 480.0f, ui_book_button2_on);
     }
 
-    if (bookButtonClicked && bookButtonAction == BOOK_NOTES_POTION) {
+    if (_bookButtonClicked && _bookButtonAction == BOOK_NOTES_POTION) {
         if (autonoteBookDisplayType == AUTONOTE_POTION_RECEPIE) {
             render->DrawTextureNew((pViewport->uViewportTL_X + 398) / 640.0f, (pViewport->uViewportTL_Y + 113) / 480.0f, ui_book_button3_on);
         } else {
@@ -135,7 +117,7 @@ void GUIWindow_AutonotesBook::Update() {
         }
     }
 
-    if (bookButtonClicked && bookButtonAction == BOOK_NOTES_FOUNTAIN) {
+    if (_bookButtonClicked && _bookButtonAction == BOOK_NOTES_FOUNTAIN) {
         if (autonoteBookDisplayType == AUTONOTE_STAT_HINT) {
             render->DrawTextureNew((pViewport->uViewportTL_X + 399) / 640.0f, (pViewport->uViewportTL_Y + 150) / 480.0f, ui_book_button4_on);
         } else {
@@ -152,7 +134,7 @@ void GUIWindow_AutonotesBook::Update() {
         }
     }
 
-    if (bookButtonClicked && bookButtonAction == BOOK_NOTES_OBELISK) {
+    if (_bookButtonClicked && _bookButtonAction == BOOK_NOTES_OBELISK) {
         if (autonoteBookDisplayType == AUTONOTE_OBELISK) {
             render->DrawTextureNew((pViewport->uViewportTL_X + 397) / 640.0f, (pViewport->uViewportTL_Y + 188) / 480.0f, ui_book_button5_on);
         } else {
@@ -169,7 +151,7 @@ void GUIWindow_AutonotesBook::Update() {
         }
     }
 
-    if (bookButtonClicked && bookButtonAction == BOOK_NOTES_SEER) {
+    if (_bookButtonClicked && _bookButtonAction == BOOK_NOTES_SEER) {
         if (autonoteBookDisplayType == AUTONOTE_SEER) {
             render->DrawTextureNew((pViewport->uViewportTL_X + 397) / 640.0f, (pViewport->uViewportTL_Y + 226) / 480.0f, ui_book_button6_on);
         } else {
@@ -186,7 +168,7 @@ void GUIWindow_AutonotesBook::Update() {
         }
     }
 
-    if (bookButtonClicked && bookButtonAction == BOOK_NOTES_MISC) {
+    if (_bookButtonClicked && _bookButtonAction == BOOK_NOTES_MISC) {
         if (autonoteBookDisplayType == AUTONOTE_MISC) {
             render->DrawTextureNew((pViewport->uViewportTL_X + 397) / 640.0f, (pViewport->uViewportTL_Y + 264) / 480.0f, ui_book_button7_on);
         } else {
@@ -203,7 +185,7 @@ void GUIWindow_AutonotesBook::Update() {
         }
     }
 
-    if (bookButtonClicked && bookButtonAction == BOOK_NOTES_INSTRUCTORS) {
+    if (_bookButtonClicked && _bookButtonAction == BOOK_NOTES_INSTRUCTORS) {
         if (autonoteBookDisplayType == AUTONOTE_TEACHER) {
             render->DrawTextureNew((pViewport->uViewportTL_X + 397) / 640.0f, (pViewport->uViewportTL_Y + 302) / 480.0f, ui_book_button8_on);
         } else {
@@ -237,19 +219,19 @@ void GUIWindow_AutonotesBook::Update() {
     autonotes_window.uFrameZ = 407;
     autonotes_window.uFrameW = 333;
 
-    if (bookButtonClicked) {
-        if (bookButtonAction >= BOOK_NOTES_POTION && bookButtonAction <= BOOK_NOTES_INSTRUCTORS) {
+    if (_bookButtonClicked) {
+        if (_bookButtonAction >= BOOK_NOTES_POTION && _bookButtonAction <= BOOK_NOTES_INSTRUCTORS) {
             if (noteTypeChanged) {
                 recalculateCurrentNotesTypePages();
             }
         } else {
-            if (bookButtonAction == BOOK_NEXT_PAGE && (_startingNotesIdx + _currentPageNotes) < _activeNotesIdx.size()) {
+            if (_bookButtonAction == BOOK_NEXT_PAGE && (_startingNotesIdx + _currentPageNotes) < _activeNotesIdx.size()) {
                 pAudioPlayer->playUISound(SOUND_openbook);
                 _startingNotesIdx += _currentPageNotes;
                 _notesPerPage[_currentPage] = _currentPageNotes;
                 _currentPage++;
             }
-            if (bookButtonAction == BOOK_PREV_PAGE && _startingNotesIdx) {
+            if (_bookButtonAction == BOOK_PREV_PAGE && _startingNotesIdx) {
                 pAudioPlayer->playUISound(SOUND_openbook);
                 _currentPage--;
                 _startingNotesIdx -= _notesPerPage[_currentPage];
@@ -257,7 +239,7 @@ void GUIWindow_AutonotesBook::Update() {
         }
     }
 
-    bookButtonClicked = false;
+    _bookButtonClicked = false;
     _currentPageNotes = 0;
 
     for (int i = _startingNotesIdx; i < _activeNotesIdx.size(); ++i) {

@@ -37,8 +37,6 @@ GUIWindow_TownPortalBook::GUIWindow_TownPortalBook(int casterPid) : GUIWindow_Bo
 
     townPortalCasterPid = casterPid;
 
-    // ----------------------------------------------
-    // 00411BFC GUIWindow::InitializeBookView -- part
     ui_book_townportal_background = assets->getImage_Solid("townport");
 
     ui_book_townportal_icons[0] = assets->getImage_ColorKey("tpharmndy");
@@ -54,21 +52,8 @@ GUIWindow_TownPortalBook::GUIWindow_TownPortalBook(int casterPid) : GUIWindow_Bo
 }
 
 void GUIWindow_TownPortalBook::Update() {
-    // -----------------------------------
-    // 004156F0 GUI_UpdateWindows --- part
-    // {
-    //     BookUI_Draw((WindowType)(int)ptr_1C);
-    // }
-
-    // ----- (00413CC6) --------------------------------------------------------
-    // void BookUI_Draw(WindowType book) --- part
-    // {
     render->DrawTextureNew(471 / 640.0f, 445 / 480.0f, ui_exit_cancel_button_background);
-    //     BookUI_DrawTownPortalMap();
 
-    // ----- (00411150) --------------------------------------------------------
-    // void BookUI_DrawTownPortalMap()
-    // {
     GUIWindow townPortalWindow;
 
     render->ClearZBuffer();

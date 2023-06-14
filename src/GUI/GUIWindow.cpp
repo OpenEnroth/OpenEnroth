@@ -499,11 +499,6 @@ void DialogueEnding() {
     pEventTimer->Resume();
 }
 
-void GUIWindow_BooksButtonOverlay::Update() {
-    GUIButton *pButton = static_cast<GUIButton *>(wData.ptr);
-    render->DrawTextureNew(uFrameY / 640.0f, uFrameX / 480.0f, pButton->vTextures[0]);
-}
-
 void OnButtonClick::Update() {
     if (bPlaySound) {
         pAudioPlayer->playUISound(SOUND_StartMainChoice02);
