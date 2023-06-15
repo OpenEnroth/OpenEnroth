@@ -895,6 +895,60 @@ bool GUIWindow_House::checkIfPlayerCanInteract() {
     }
 }
 
+void GUIWindow_House::drawOptions(std::vector<std::string> &optionsText, Color selectColor, int startingOffset, bool denseSpacing) {
+    GUIWindow window = *this;
+    window.uFrameX = SIDE_TEXT_BOX_POS_X;
+    window.uFrameWidth = SIDE_TEXT_BOX_WIDTH;
+    window.uFrameZ = SIDE_TEXT_BOX_POS_Z;
+
+    assert(optionsText.size() == pDialogueWindow->pNumPresenceButton);
+
+    int allTextHeight = 0;
+    int activeOptions = 0;
+    for (int i = 0; i < optionsText.size(); ++i) {
+        if (!optionsText[i].empty()) {
+            allTextHeight += pFontArrus->CalcTextHeight(optionsText[i], window.uFrameWidth, 0);
+            activeOptions++;
+        }
+    }
+
+    int spacing = 0;
+    if (!denseSpacing) {
+        spacing = (SIDE_TEXT_BOX_BODY_TEXT_HEIGHT - allTextHeight) / activeOptions;
+        if (spacing > SIDE_TEXT_BOX_MAX_SPACING) {
+            spacing = SIDE_TEXT_BOX_MAX_SPACING;
+        }
+    }
+
+    int offset = startingOffset - spacing;
+    if (!startingOffset) {
+        offset = (SIDE_TEXT_BOX_BODY_TEXT_HEIGHT - spacing * activeOptions - allTextHeight) / 2 - spacing / 2 + SIDE_TEXT_BOX_BODY_TEXT_OFFSET;
+    }
+
+    for (int i = 0; i < pDialogueWindow->pNumPresenceButton; ++i) {
+        int buttonIndex = i + pDialogueWindow->pStartingPosActiveItem;
+        GUIButton *button = pDialogueWindow->GetControl(buttonIndex);
+
+        if (!optionsText[i].empty()) {
+            Color textColor = (pDialogueWindow->pCurrentPosActiveItem == buttonIndex) ? selectColor : textColor = colorTable.White;
+            int textHeight = pFontArrus->CalcTextHeight(optionsText[i], window.uFrameWidth, 0);
+            button->uY = spacing + offset;
+            button->uHeight = textHeight;
+            button->uW = button->uY + textHeight - 1 + 6;
+            if (denseSpacing) {
+                offset += pFontArrus->GetHeight() - 3 + textHeight;
+            } else {
+                offset = button->uW;
+            }
+            window.DrawTitleText(pFontArrus, 0, button->uY, textColor, optionsText[i], 3);
+        } else if (button) {
+            button->uW = 0;
+            button->uHeight = 0;
+            button->uY = 0;
+        }
+    }
+}
+
 void GUIWindow_House::houseDialogManager() {
     assert(window_SpeakInHouse != nullptr);
 

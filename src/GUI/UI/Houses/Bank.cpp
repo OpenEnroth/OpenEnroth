@@ -1,3 +1,5 @@
+#include <string>
+
 #include "GUI/UI/Houses/Bank.h"
 
 #include "GUI/UI/UIStatusBar.h"
@@ -15,19 +17,12 @@ void GUIWindow_Bank::mainDialogue() {
     bank_window.uFrameX = SIDE_TEXT_BOX_POS_X;
     bank_window.uFrameWidth = SIDE_TEXT_BOX_WIDTH;
     bank_window.uFrameZ = SIDE_TEXT_BOX_POS_Z;
-    bank_window.DrawTitleText(pFontArrus, 0, 220, colorTable.PaleCanary,
-                              fmt::format("{}: {}", localization->GetString(LSTR_BALANCE), pParty->uNumGoldInBank), 3);
 
-    Color pColorText = colorTable.PaleCanary;
-    if (pDialogueWindow->pCurrentPosActiveItem != 2) {
-        pColorText = colorTable.White;
-    }
-    bank_window.DrawTitleText(pFontArrus, 0, 146, pColorText, localization->GetString(LSTR_DEPOSIT), 3);
-    pColorText = colorTable.PaleCanary;
-    if (pDialogueWindow->pCurrentPosActiveItem != 3) {
-        pColorText = colorTable.White;
-    }
-    bank_window.DrawTitleText(pFontArrus, 0, 176, pColorText, localization->GetString(LSTR_WITHDRAW), 3);
+    std::vector<std::string> optionsText = {localization->GetString(LSTR_DEPOSIT), localization->GetString(LSTR_WITHDRAW)};
+    std::string balance_str = fmt::format("{}: {}", localization->GetString(LSTR_BALANCE), pParty->uNumGoldInBank);
+    bank_window.DrawTitleText(pFontArrus, 0, 220, colorTable.PaleCanary, balance_str, 3);
+
+    drawOptions(optionsText, colorTable.PaleCanary, 146, true);
 }
 
 void GUIWindow_Bank::putGoldDialogue() {

@@ -26,76 +26,39 @@ IndexedArray<int, HOUSE_TRAINING_HALL_EMERALD_ISLE, HOUSE_TRAINING_HALL_STONE_CI
 };
 
 void GUIWindow_Training::mainDialogue() {
-    GUIWindow training_dialog_window = *this;
-    training_dialog_window.uFrameX = SIDE_TEXT_BOX_POS_X;
-    training_dialog_window.uFrameWidth = SIDE_TEXT_BOX_WIDTH;
-    training_dialog_window.uFrameZ = SIDE_TEXT_BOX_POS_Z;
+    if (!checkIfPlayerCanInteract()) {
+        return;
+    }
 
-    if (checkIfPlayerCanInteract()) {
-        int pPrice = PriceCalculator::trainingCostForPlayer(&pParty->activeCharacter(), buildingTable[wData.val - 1]);
-        uint64_t expForNextLevel = 1000ull * pParty->activeCharacter().uLevel * (pParty->activeCharacter().uLevel + 1) / 2;
-        int index = 0;
-        int all_text_height = 0;
+    int pPrice = PriceCalculator::trainingCostForPlayer(&pParty->activeCharacter(), buildingTable[wData.val - 1]);
+    uint64_t expForNextLevel = 1000ull * pParty->activeCharacter().uLevel * (pParty->activeCharacter().uLevel + 1) / 2;
+    std::string trainText = "";
 
-        pShopOptions[0] = "";
-        pShopOptions[1] = localization->GetString(LSTR_LEARN_SKILLS);
-        for (int i = pDialogueWindow->pStartingPosActiveItem; i < pDialogueWindow->pNumPresenceButton + pDialogueWindow->pStartingPosActiveItem; ++i) {
-            if (pDialogueWindow->GetControl(i)->msg_param == DIALOGUE_TRAINING_HALL_TRAIN) {
-                static std::string shop_option_str_container; // TODO(Nik-RE-dev): remove static when pShopOptions becomes local arrray of std::string-s.
-                if (pParty->activeCharacter().uLevel >= trainingHallMaxLevels[houseId()]) {
-                    shop_option_str_container = fmt::format("{}\n \n{}", localization->GetString(LSTR_TEACHER_LEVEL_TOO_LOW),
-                                                            localization->GetString(LSTR_CANT_TRAIN_FURTHER));
-                    pShopOptions[index] = shop_option_str_container.c_str();
-                } else {
-                    if (pParty->activeCharacter().experience < expForNextLevel) {
-                        uint64_t expDelta = expForNextLevel - pParty->activeCharacter().experience;
-                        shop_option_str_container = localization->FormatString(LSTR_XP_UNTIL_NEXT_LEVEL, expDelta, pParty->activeCharacter().uLevel + 1);
-                    } else {
-                        shop_option_str_container = localization->FormatString(LSTR_FMT_TRAIN_LEVEL_D_FOR_D_GOLD, pParty->activeCharacter().uLevel + 1, pPrice);
-                    }
-                    pShopOptions[index] = shop_option_str_container.c_str();
-                }
-            }
-            all_text_height += pFontArrus->CalcTextHeight(pShopOptions[index], training_dialog_window.uFrameWidth, 0);
-            ++index;
-        }
-        int spacing = (SIDE_TEXT_BOX_BODY_TEXT_HEIGHT - all_text_height) / 2;
-        int vertPos = 87 - spacing - all_text_height / 2 - spacing / 2 + SIDE_TEXT_BOX_BODY_TEXT_OFFSET;
-
-        index = 0;
-        for (int i = pDialogueWindow->pStartingPosActiveItem; i < pDialogueWindow->pStartingPosActiveItem + pDialogueWindow->pNumPresenceButton; ++i) {
-            GUIButton *pButton = pDialogueWindow->GetControl(i);
-            pButton->uY = spacing + vertPos;
-            int pTextHeight = pFontArrus->CalcTextHeight(pShopOptions[index], training_dialog_window.uFrameWidth, 0);
-            pButton->uHeight = pTextHeight;
-            pButton->uW = pTextHeight + pButton->uY - 1 + 6;
-            vertPos = pButton->uW;
-            Color pTextColor = colorTable.Jonquil;
-            if (pDialogueWindow->pCurrentPosActiveItem != i) {
-                pTextColor = colorTable.White;
-            }
-            training_dialog_window.DrawTitleText(pFontArrus, 0, pButton->uY, pTextColor, pShopOptions[index], 3);
-            ++index;
+    if (pParty->activeCharacter().uLevel >= trainingHallMaxLevels[houseId()]) {
+        trainText = fmt::format("{}\n \n{}", localization->GetString(LSTR_TEACHER_LEVEL_TOO_LOW), localization->GetString(LSTR_CANT_TRAIN_FURTHER));
+    } else {
+        if (pParty->activeCharacter().experience < expForNextLevel) {
+            uint64_t expDelta = expForNextLevel - pParty->activeCharacter().experience;
+            trainText = localization->FormatString(LSTR_XP_UNTIL_NEXT_LEVEL, expDelta, pParty->activeCharacter().uLevel + 1);
+        } else {
+            trainText = localization->FormatString(LSTR_FMT_TRAIN_LEVEL_D_FOR_D_GOLD, pParty->activeCharacter().uLevel + 1, pPrice);
         }
     }
+
+    std::vector<std::string> optionsText = {trainText, localization->GetString(LSTR_LEARN_SKILLS)};
+
+    drawOptions(optionsText, colorTable.Jonquil);
 }
 
 void GUIWindow_Training::trainDialogue() {
-    GUIWindow training_dialog_window = *this;
-    training_dialog_window.uFrameX = SIDE_TEXT_BOX_POS_X;
-    training_dialog_window.uFrameWidth = SIDE_TEXT_BOX_WIDTH;
-    training_dialog_window.uFrameZ = SIDE_TEXT_BOX_POS_Z;
-    std::string label;
-    int textHeight;
     int pPrice = PriceCalculator::trainingCostForPlayer(&pParty->activeCharacter(), buildingTable[wData.val - 1]);
     uint64_t expForNextLevel = 1000ull * pParty->activeCharacter().uLevel * (pParty->activeCharacter().uLevel + 1) / 2;
 
     if (!checkIfPlayerCanInteract()) {
-        int height = pFontArrus->CalcTextHeight(pNPCTopics[122].pText, training_dialog_window.uFrameWidth, 0);
-        training_dialog_window.DrawTitleText(pFontArrus, 0, (212 - height) / 2 + 101, colorTable.Jonquil, pNPCTopics[122].pText, 3);
-        pDialogueWindow->pNumPresenceButton = 0;
+        pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 1, 0);
         return;
     }
+
     if (pParty->activeCharacter().uLevel < trainingHallMaxLevels[houseId()]) {
         if (pParty->activeCharacter().experience >= expForNextLevel) {
             if (pParty->GetGold() >= pPrice) {
@@ -132,14 +95,7 @@ void GUIWindow_Training::trainDialogue() {
             pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 1, 0);
             return;
         }
-        uint64_t expDelta = expForNextLevel - pParty->activeCharacter().experience;
-        label = localization->FormatString(LSTR_XP_UNTIL_NEXT_LEVEL, expDelta, pParty->activeCharacter().uLevel + 1);
-        textHeight = (212 - pFontArrus->CalcTextHeight(label, training_dialog_window.uFrameWidth, 0)) / 2 + 88;
-    } else {
-        label = fmt::format("{}\n \n{}", localization->GetString(LSTR_TEACHER_LEVEL_TOO_LOW), localization->GetString(LSTR_CANT_TRAIN_FURTHER));
-        textHeight = (212 - pFontArrus->CalcTextHeight(label, training_dialog_window.uFrameWidth, 0)) / 2 + 101;
     }
-    training_dialog_window.DrawTitleText(pFontArrus, 0, textHeight, colorTable.Jonquil, label, 3);
 
     playHouseSound(houseId(), HOUSE_SOUND_TRAINING_CANT_TRAIN);
     pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 1, 0);
