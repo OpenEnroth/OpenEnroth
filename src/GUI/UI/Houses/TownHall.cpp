@@ -22,38 +22,15 @@ void GUIWindow_TownHall::mainDialogue() {
     townHall_window.uFrameWidth = SIDE_TEXT_BOX_WIDTH;
     townHall_window.uFrameZ = SIDE_TEXT_BOX_POS_Z;
 
+    std::vector<std::string> optionsText = {localization->GetString(LSTR_BOUNTY_HUNT)};
     std::string fine_str = fmt::format("{}: {}", localization->GetString(LSTR_CURRENT_FINE), pParty->uFine);
     townHall_window.DrawTitleText(pFontArrus, 0, 260, colorTable.PaleCanary, fine_str, 3);
 
-    int pStringSum = 1;
-    int pTextHeight = 0;
-    pShopOptions[0] = localization->GetString(LSTR_BOUNTY_HUNT);
     if (pParty->uFine > 0) {
-        pShopOptions[1] = localization->GetString(LSTR_PAY_FINE);
-        pStringSum = 2;
+        optionsText.push_back(localization->GetString(LSTR_PAY_FINE));
     }
-    for (int i = 0; i < pStringSum; ++i) {
-        pTextHeight += pFontArrus->CalcTextHeight(pShopOptions[i], townHall_window.uFrameWidth, 0);
-    }
-    int spacing = (100 - pTextHeight) / pStringSum;
-    int vertPos = ((80 - pStringSum * ((100 - pTextHeight) / pStringSum)) / 2) - spacing / 2 + 158;
-    int index = 2;
-    int option = 0;
-    for (int i = pDialogueWindow->pStartingPosActiveItem; i < pDialogueWindow->pNumPresenceButton + pDialogueWindow->pStartingPosActiveItem; ++i) {
-        GUIButton *pButton = pDialogueWindow->GetControl(i);
-        pButton->uY = spacing + vertPos;
-        pTextHeight = pFontArrus->CalcTextHeight(pShopOptions[option], townHall_window.uFrameWidth, 0);
-        pButton->uHeight = pTextHeight;
-        vertPos = pButton->uY + pTextHeight - 1;
-        pButton->uW = vertPos + 6;
-        Color pTextColor = colorTable.PaleCanary;
-        if (pDialogueWindow->pCurrentPosActiveItem != index) {
-            pTextColor = colorTable.White;
-        }
-        townHall_window.DrawTitleText(pFontArrus, 0, pButton->uY, pTextColor, pShopOptions[option], 3);
-        ++index;
-        ++option;
-    }
+
+    drawOptions(optionsText, colorTable.PaleCanary, 170, true);
 }
 
 void GUIWindow_TownHall::bountyHuntDialogue() {

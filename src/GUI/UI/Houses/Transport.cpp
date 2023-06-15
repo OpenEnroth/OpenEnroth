@@ -65,7 +65,7 @@ std::array<TransportInfo, 35> transportSchedule = {{
     { MAP_ARENA, { 0, 0, 0, 0, 0, 0, 1 }, 4, 3844, 2906, 193, 512, 0 }
 }};
 
-IndexedArray<std::array<unsigned char, 4>, HOUSE_FIRST_TRANSPORT, HOUSE_LAST_TRANSPORT> transportRoutes = {
+IndexedArray<std::array<int, 4>, HOUSE_FIRST_TRANSPORT, HOUSE_LAST_TRANSPORT> transportRoutes = {
     {HOUSE_STABLES_HARMONDALE,      { 0, 1, 1, 34 }},
     {HOUSE_STABLES_STEADWICK,       { 2, 3, 4, 5 }},
     {HOUSE_STABLES_TULAREAN_FOREST, { 6, 7, 8, 8 }},
@@ -96,75 +96,44 @@ void GUIWindow_Transport::mainDialogue() {
 
     assert(pParty->hasActiveCharacter()); // code in this function couldn't handle pParty->activeCharacterIndex() = 0 and crash
 
-    int pPrice = PriceCalculator::transportCostForPlayer(&pParty->activeCharacter(), buildingTable[wData.val - 1]);
+    if (!checkIfPlayerCanInteract()) {
+        return;
+    }
 
-    if (checkIfPlayerCanInteract()) {
-        int index = 0;
+    std::vector<std::string> optionsText;
+    std::vector<bool> optionsActive;
+    int price = PriceCalculator::transportCostForPlayer(&pParty->activeCharacter(), buildingTable[wData.val - 1]);
+    std::string travelCost = localization->FormatString(LSTR_FMT_TRAVEL_COST_D_GOLD, price);
+    int startingOffset = pFontArrus->CalcTextHeight(travelCost, travel_window.uFrameWidth, 0) + (pFontArrus->GetHeight() - 3) + 146;
+    int lastsched = 255;
+    bool hasActiveRoute = false;
 
-        std::string travelcost = localization->FormatString(LSTR_FMT_TRAVEL_COST_D_GOLD, pPrice);
-        int pTextHeight = pFontArrus->CalcTextHeight(travelcost, travel_window.uFrameWidth, 0);
-        int pRealTextHeight = pTextHeight + (pFontArrus->GetHeight() - 3) + 146;
-        int pPrimaryTextHeight = pRealTextHeight;
+    for (int schedule_id : transportRoutes[houseId()]) {
+        bool routeActive = false;
 
-        int pCurrentButton = 2;
-        int lastsched{ 255 };
-        std::string pTopicArray[5]{};
-
-        for (int i = pDialogueWindow->pStartingPosActiveItem; i < pDialogueWindow->pNumPresenceButton + pDialogueWindow->pStartingPosActiveItem; ++i) {
-            int schedule_id = transportRoutes[houseId()][index];
-            GUIButton *pButton = pDialogueWindow->GetControl(i);
-
-            bool route_active = 0;
-
-            if (schedule_id != 255 && (lastsched != schedule_id)) {
-                Assert(schedule_id < 35);
-                if (pCurrentButton >= 6)
-                    route_active = true;
-                else
-                    route_active = transportSchedule[schedule_id].pSchedule[pParty->uCurrentDayOfMonth % 7];
-            }
-
-            lastsched = schedule_id;
-
-            if (schedule_id != 255 && route_active && (!transportSchedule[schedule_id].uQuestBit || pParty->_questBits[transportSchedule[schedule_id].uQuestBit])) {
-                Color color;
-                if (pDialogueWindow->pCurrentPosActiveItem == pCurrentButton)
-                    color = colorTable.PaleCanary;
-                else
-                    color = colorTable.White;
-
-                pTopicArray[index] = fmt::format("{::}", color.tag());
-
-                int travel_time = getTravelTimeTransportDays(schedule_id);
-
-                std::string str = localization->FormatString(LSTR_FMT_D_DAYS_TO_S, travel_time, pMapStats->pInfos[transportSchedule[schedule_id].uMapInfoID].pName.c_str());
-                pTopicArray[index] += str + "\n \n";
-                pButton->uY = pRealTextHeight;
-                pTextHeight = pFontArrus->CalcTextHeight(str, travel_window.uFrameWidth, 0);
-                pButton->uHeight = pTextHeight;
-                pButton->uW = pButton->uY + pTextHeight - 1 + 6;
-                pRealTextHeight += (pFontArrus->GetHeight() - 3) + pTextHeight;
-            } else {
-                pTopicArray[index] = "";
-                if (pButton) {
-                    pButton->uW = 0;
-                    pButton->uHeight = 0;
-                    pButton->uY = 0;
-                }
-            }
-            ++index;
-            ++pCurrentButton;
+        if (schedule_id != 255 && (lastsched != schedule_id)) {
+            Assert(schedule_id < transportSchedule.size());
+            routeActive = transportSchedule[schedule_id].pSchedule[pParty->uCurrentDayOfMonth % 7];
         }
 
-        if (pRealTextHeight != pPrimaryTextHeight) {
-            // height differences means we have travel options
-            std::string text = fmt::format("{}\n \n{}{}{}{}{}", travelcost, pTopicArray[0], pTopicArray[1], pTopicArray[2], pTopicArray[3], pTopicArray[4]);
-            travel_window.DrawTitleText(pFontArrus, 0, 146, Color(), text, 3);
+        lastsched = schedule_id;
+
+        if (routeActive && (!transportSchedule[schedule_id].uQuestBit || pParty->_questBits[transportSchedule[schedule_id].uQuestBit])) {
+            int travel_time = getTravelTimeTransportDays(schedule_id);
+            optionsText.push_back(localization->FormatString(LSTR_FMT_D_DAYS_TO_S, travel_time, pMapStats->pInfos[transportSchedule[schedule_id].uMapInfoID].pName.c_str()));
+            hasActiveRoute = true;
         } else {
-            int textHeight = pFontArrus->CalcTextHeight(localization->GetString(LSTR_COME_BACK_ANOTHER_DAY), travel_window.uFrameWidth, 0);
-            int vertMargin = (SIDE_TEXT_BOX_BODY_TEXT_HEIGHT - textHeight) / 2 + SIDE_TEXT_BOX_BODY_TEXT_OFFSET;
-            travel_window.DrawTitleText(pFontArrus, 0, vertMargin, colorTable.White, localization->GetString(LSTR_COME_BACK_ANOTHER_DAY), 3);
+            optionsText.push_back("");
         }
+    }
+
+    if (hasActiveRoute) {
+        travel_window.DrawTitleText(pFontArrus, 0, 146, Color(), travelCost, 3);
+        drawOptions(optionsText, colorTable.PaleCanary, startingOffset, true);
+    } else {
+        int textHeight = pFontArrus->CalcTextHeight(localization->GetString(LSTR_COME_BACK_ANOTHER_DAY), travel_window.uFrameWidth, 0);
+        int vertMargin = (SIDE_TEXT_BOX_BODY_TEXT_HEIGHT - textHeight) / 2 + SIDE_TEXT_BOX_BODY_TEXT_OFFSET;
+        travel_window.DrawTitleText(pFontArrus, 0, vertMargin, colorTable.White, localization->GetString(LSTR_COME_BACK_ANOTHER_DAY), 3);
     }
 }
 
@@ -222,11 +191,10 @@ void GUIWindow_Transport::transportDialogue() {
         pParty->activeCharacter().playReaction(pSpeech);
         pAudioPlayer->soundDrain();
         while (houseDialogPressEscape()) {}
-        pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 0, 0);
     } else {
-        dialog_menu_id = DIALOGUE_MAIN;
         pAudioPlayer->playUISound(SOUND_error);
     }
+    pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 0, 0);
 }
 
 void GUIWindow_Transport::houseSpecificDialogue() {
@@ -281,7 +249,7 @@ int GUIWindow_Transport::getTravelTimeTransportDays(int schedule_id) {
 }
 
 bool isTravelAvailable(HOUSE_ID houseId) {
-    for (char schedule : transportRoutes[houseId]) {
+    for (int schedule : transportRoutes[houseId]) {
         if (transportSchedule[schedule].pSchedule[pParty->uCurrentDayOfMonth % 7]) {
             if (!transportSchedule[schedule].uQuestBit || pParty->_questBits[transportSchedule[schedule].uQuestBit]) {
                 return true;

@@ -14,47 +14,12 @@
 #include "Engine/Spells/CastSpellInfo.h"
 
 void GUIWindow_Temple::mainDialogue() {
-    GUIWindow temple_window = *this;
-    temple_window.uFrameX = SIDE_TEXT_BOX_POS_X;
-    temple_window.uFrameWidth = SIDE_TEXT_BOX_WIDTH;
-    temple_window.uFrameZ = SIDE_TEXT_BOX_POS_Z;
-
-    int index = 1;
     int price = PriceCalculator::templeHealingCostForPlayer(&pParty->activeCharacter(), buildingTable[wData.val - 1].fPriceMultiplier);
-    GUIButton *pButton = pDialogueWindow->GetControl(pDialogueWindow->pStartingPosActiveItem);
-    pButton->uHeight = 0;
-    pButton->uY = 0;
-    if (isPlayerHealableByTemple(pParty->activeCharacter())) {
-        static std::string shop_option_container; // TODO(Nik-RE-dev): remove static when pShopOptions becomes local arrray of std::string-s.
-        shop_option_container = fmt::format("{} {} {}", localization->GetString(LSTR_HEAL), price, localization->GetString(LSTR_GOLD));
-        pShopOptions[0] = shop_option_container.c_str();
-        index = 0;
-    }
-    pShopOptions[1] = localization->GetString(LSTR_DONATE);
-    pShopOptions[2] = localization->GetString(LSTR_LEARN_SKILLS);
-    int allTextHeight = 0;
-    for (int i = index; i < pDialogueWindow->pNumPresenceButton; ++i) {
-        allTextHeight += pFontArrus->CalcTextHeight(pShopOptions[i], temple_window.uFrameWidth, 0);
-    }
-    int spacing = (SIDE_TEXT_BOX_BODY_TEXT_HEIGHT - allTextHeight) / (pDialogueWindow->pNumPresenceButton - index);
-    if (spacing > SIDE_TEXT_BOX_MAX_SPACING)
-        spacing = SIDE_TEXT_BOX_MAX_SPACING;
-    allTextHeight = (SIDE_TEXT_BOX_BODY_TEXT_HEIGHT - spacing * (pDialogueWindow->pNumPresenceButton - index) - allTextHeight) / 2 - spacing / 2 + SIDE_TEXT_BOX_BODY_TEXT_OFFSET;
+    std::string healString = fmt::format("{} {} {}", localization->GetString(LSTR_HEAL), price, localization->GetString(LSTR_GOLD));
+    std::vector<std::string> optionsText = {isPlayerHealableByTemple(pParty->activeCharacter()) ? healString : "",
+                                            localization->GetString(LSTR_DONATE), localization->GetString(LSTR_LEARN_SKILLS)};
 
-    int buttonsLimit = pDialogueWindow->pNumPresenceButton + pDialogueWindow->pStartingPosActiveItem;
-    for (int i = index + pDialogueWindow->pStartingPosActiveItem; i < buttonsLimit; i++, index++) {
-        pButton = pDialogueWindow->GetControl(i);
-        pButton->uY = spacing + allTextHeight;
-        int textHeight = pFontArrus->CalcTextHeight(pShopOptions[index], temple_window.uFrameWidth, 0);
-        pButton->uHeight = textHeight;
-        pButton->uW = pButton->uY + textHeight - 1 + 6;
-        allTextHeight = pButton->uW;
-        Color textColor = colorTable.PaleCanary;
-        if (pDialogueWindow->pCurrentPosActiveItem != index + 2) {
-            textColor = colorTable.White;
-        }
-        temple_window.DrawTitleText(pFontArrus, 0, pButton->uY, textColor, pShopOptions[index], 3);
-    }
+    drawOptions(optionsText, colorTable.PaleCanary);
 }
 
 void GUIWindow_Temple::healDialogue() {

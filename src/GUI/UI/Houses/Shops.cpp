@@ -251,78 +251,24 @@ DIALOGUE_TYPE getSkillLearnDualogueForItemClass(int itemClass) {
 }
 
 void GUIWindow_Shop::mainDialogue() {
-    GUIWindow dialogwin = *this;
-    dialogwin.uFrameX = SIDE_TEXT_BOX_POS_X;
-    dialogwin.uFrameWidth = SIDE_TEXT_BOX_WIDTH;
-    dialogwin.uFrameZ = SIDE_TEXT_BOX_POS_Z;
-
-    if (checkIfPlayerCanInteract()) {
-        pShopOptions[0] = localization->GetString(LSTR_STANDARD);
-        pShopOptions[1] = localization->GetString(LSTR_SPECIAL);
-        pShopOptions[2] = localization->GetString(LSTR_DISPLAY);
-        pShopOptions[3] = localization->GetString(LSTR_LEARN_SKILLS);
-
-        int all_text_height = 0;
-        for (int i = 0; i < 4; ++i)
-            all_text_height += pFontArrus->CalcTextHeight(pShopOptions[i], dialogwin.uFrameWidth, 0);
-
-        int textspacings = (SIDE_TEXT_BOX_BODY_TEXT_HEIGHT - all_text_height) / 4;
-        int textoffset = SIDE_TEXT_BOX_BODY_TEXT_OFFSET - (textspacings / 2);
-        int pNumString = 0;
-
-        for (int i = pDialogueWindow->pStartingPosActiveItem; i < pDialogueWindow->pNumPresenceButton + pDialogueWindow->pStartingPosActiveItem; ++i) {
-            GUIButton *pButton = pDialogueWindow->GetControl(i);
-            pButton->uY = textspacings + textoffset;
-            pButton->uHeight = pFontArrus->CalcTextHeight(pShopOptions[pNumString], dialogwin.uFrameWidth, 0);
-            textoffset = pButton->uY + pFontArrus->CalcTextHeight(pShopOptions[pNumString], dialogwin.uFrameWidth, 0) - 1;
-            pButton->uW = textoffset + 6;
-
-            Color pColorText = colorTable.Jonquil;
-            if (pDialogueWindow->pCurrentPosActiveItem != i) {
-                pColorText = colorTable.White;
-            }
-
-            dialogwin.DrawTitleText(pFontArrus, 0, pButton->uY, pColorText, pShopOptions[pNumString], 3);
-            ++pNumString;
-        }
+    if (!checkIfPlayerCanInteract()) {
+        return;
     }
+
+    std::vector<std::string> optionsText = {localization->GetString(LSTR_STANDARD), localization->GetString(LSTR_SPECIAL),
+                                            localization->GetString(LSTR_DISPLAY), localization->GetString(LSTR_LEARN_SKILLS)};
+
+    drawOptions(optionsText, colorTable.Jonquil);
 }
 
 void GUIWindow_Shop::displayEquipmentDialogue() {
-    GUIWindow dialogwin = *this;
-    dialogwin.uFrameX = SIDE_TEXT_BOX_POS_X;
-    dialogwin.uFrameWidth = SIDE_TEXT_BOX_WIDTH;
-    dialogwin.uFrameZ = SIDE_TEXT_BOX_POS_Z;
-
     draw_leather();
     CharacterUI_InventoryTab_Draw(&pParty->activeCharacter(), true);
 
-    pShopOptions[0] = localization->GetString(LSTR_SELL);
-    pShopOptions[1] = localization->GetString(LSTR_IDENTIFY);
-    pShopOptions[2] = localization->GetString(LSTR_REPAIR);
+    std::vector<std::string> optionsText = {localization->GetString(LSTR_SELL), localization->GetString(LSTR_IDENTIFY),
+                                            (buildingType() != BuildingType_AlchemistShop) ? localization->GetString(LSTR_REPAIR) : ""};
 
-    int options = (buildingType() == BuildingType_AlchemistShop) ? 2 : 3;
-    int all_text_height = 0;
-    for (int i = 0; i < options; ++i)
-        all_text_height += pFontArrus->CalcTextHeight(pShopOptions[i], dialogwin.uFrameWidth, 0);
-
-    int textspacings = (SIDE_TEXT_BOX_BODY_TEXT_HEIGHT - all_text_height) / options;
-    int textoffset = SIDE_TEXT_BOX_BODY_TEXT_OFFSET - (textspacings / 2);
-    int pNumString = 0;
-
-    for (int i = pDialogueWindow->pStartingPosActiveItem; i < pDialogueWindow->pNumPresenceButton + pDialogueWindow->pStartingPosActiveItem; ++i) {
-        GUIButton *pButton = pDialogueWindow->GetControl(i);
-        pButton->uY = textspacings + textoffset;
-        pButton->uHeight = pFontArrus->CalcTextHeight(pShopOptions[pNumString], dialogwin.uFrameWidth, 0);
-        textoffset = pButton->uY + pFontArrus->CalcTextHeight(pShopOptions[pNumString], dialogwin.uFrameWidth, 0) - 1;
-        pButton->uW = textoffset + 6;
-
-        Color pColorText = colorTable.Jonquil;
-        if (pDialogueWindow->pCurrentPosActiveItem != i)
-            pColorText = colorTable.White;
-        dialogwin.DrawTitleText(pFontArrus, 0, pButton->uY, pColorText, pShopOptions[pNumString], 3);
-        ++pNumString;
-    }
+    drawOptions(optionsText, colorTable.Jonquil);
 }
 
 void GUIWindow_Shop::sellDialogue() {
