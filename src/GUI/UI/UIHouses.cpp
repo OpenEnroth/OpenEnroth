@@ -878,7 +878,7 @@ void GUIWindow_House::reinitDialogueWindow() {
     pDialogueWindow = new GUIWindow(WINDOW_Dialogue, {0, 0}, {render->GetPresentDimensions().w, 345}, 0);
     pBtn_ExitCancel = pDialogueWindow->CreateButton({471, 445}, {169, 35}, 1, 0, UIMSG_Escape, 0, InputAction::Invalid,
         localization->GetString(LSTR_END_CONVERSATION), {ui_exit_cancel_button_background});
-    pDialogueWindow->CreateButton({8, 8}, {450, 320}, 1, 0, UIMSG_BuyInShop_Identify_Repair, 0, InputAction::Invalid, "");
+    pDialogueWindow->CreateButton({8, 8}, {450, 320}, 1, 0, UIMSG_HouseScreenClick, 0, InputAction::Invalid, "");
 }
 
 bool GUIWindow_House::checkIfPlayerCanInteract() {
@@ -1147,4 +1147,8 @@ DIALOGUE_TYPE GUIWindow_House::getOptionOnEscape() {
         return DIALOGUE_NULL;
     }
     return DIALOGUE_MAIN;
+}
+
+void GUIWindow_House::houseScreenClick() {
+    // Nothing to do by default
 }

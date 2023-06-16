@@ -59,7 +59,7 @@ enum UIMessageType : uint32_t {
     UIMSG_HintSelectRemoveQuickSpellBtn = 78,
     UIMSG_Spellbook_ShowHightlightedSpellInfo = 79,
 
-    UIMSG_BuyInShop_Identify_Repair = 81,
+    UIMSG_HouseScreenClick = 81,
     UIMSG_LoadGame = 82,
     UIMSG_SaveGame = 83,
     UIMSG_54 = 84,
