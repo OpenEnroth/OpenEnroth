@@ -1037,6 +1037,7 @@ void GUIWindow_House::initializeDialog() {
     _savedButtonsNum = pDialogueWindow->pNumPresenceButton;
 }
 
+// TODO(Nik-RE-dev): partially duplicates code of main dialogue of Magic Guild, need unification along with similar code of other shops
 void GUIWindow_House::learnSkillsDialogue() {
     if (!checkIfPlayerCanInteract()) {
         return;

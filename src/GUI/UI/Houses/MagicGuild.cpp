@@ -118,6 +118,7 @@ IndexedArray<int, HOUSE_FIRST_MAGIC_GUILD, HOUSE_LAST_MAGIC_GUILD> guildMembersh
     {HOUSE_DARK_GUILD_PARAMOUNT_PIT,           60}
 };
 
+// TODO(Nik-RE-dev): partially duplicates code in learnSkillsDialogue function, need unification along with similar code of other shops
 void GUIWindow_MagicGuild::mainDialogue() {
     GUIWindow working_window = *this;
     working_window.uFrameX = SIDE_TEXT_BOX_POS_X;
