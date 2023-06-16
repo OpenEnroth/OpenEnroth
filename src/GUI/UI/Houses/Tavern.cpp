@@ -170,10 +170,10 @@ void GUIWindow_Tavern::restDialogue() {
 
     if (pParty->GetGold() >= pPriceRoom) {
         pParty->TakeGold(pPriceRoom);
-        PlayHouseSound(wData.val, HouseSound_NotEnoughMoney);
+        playHouseSound(houseId(), HOUSE_SOUND_TAVERN_RENT_ROOM);
         dialog_menu_id = DIALOGUE_NULL;
         houseDialogPressEscape();
-        GetHouseGoodbyeSpeech();
+        playHouseGoodbyeSpeech();
         pMediaPlayer->Unload();
 
         pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_RentRoom, wData.val, 1);
@@ -182,7 +182,7 @@ void GUIWindow_Tavern::restDialogue() {
         return;
     }
     GameUI_SetStatusBar(LSTR_NOT_ENOUGH_GOLD);
-    PlayHouseSound(wData.val, HouseSound_Goodbye);
+    playHouseSound(houseId(), HOUSE_SOUND_TAVERN_NOT_ENOUGH_GOLD);
     pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 1, 0);
 }
 
@@ -200,12 +200,12 @@ void GUIWindow_Tavern::buyFoodDialogue() {
     if (pParty->GetGold() >= pPriceFood) {
         pParty->TakeGold(pPriceFood);
         pParty->SetFood(buildingTable[wData.val - 1].fPriceMultiplier);
-        PlayHouseSound(wData.val, HouseSound_Greeting_2);
+        playHouseSound(houseId(), HOUSE_SOUND_TAVERN_BUY_FOOD);
         pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 1, 0);
         return;
     }
     GameUI_SetStatusBar(LSTR_NOT_ENOUGH_GOLD);
-    PlayHouseSound(wData.val, HouseSound_Goodbye);
+    playHouseSound(houseId(), HOUSE_SOUND_TAVERN_NOT_ENOUGH_GOLD);
     pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 1, 0);
 }
 

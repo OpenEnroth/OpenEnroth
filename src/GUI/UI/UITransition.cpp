@@ -105,7 +105,7 @@ GUIWindow_Transition::GUIWindow_Transition(uint anim_id, uint exit_pic_id,
         } else {
             transition_button_label = localization->FormatString(LSTR_FMT_ENTER_S, pMapStats->pInfos[pMapStats->GetMapInfo(v15)].pName.c_str());
             if (pAnimatedRooms[buildingTable[anim_id].uAnimationID].uRoomSoundId)
-                PlayHouseSound(anim_id, HouseSound_Greeting);
+                playHouseSound((HOUSE_ID)anim_id, HOUSE_SOUND_GENERAL_GREETING);
             if (uCurrentlyLoadedLevelType == LEVEL_INDOOR && pParty->hasActiveCharacter() && pParty->GetRedOrYellowAlert())
                 pParty->activeCharacter().playReaction(SPEECH_LeaveDungeon);
             if (IndoorLocation::GetLocationIndex(locationName))
@@ -115,7 +115,7 @@ GUIWindow_Transition::GUIWindow_Transition(uint anim_id, uint exit_pic_id,
         if (pMapStats->GetMapInfo(pCurrentMapName)) {
             transition_button_label = localization->FormatString(LSTR_FMT_LEAVE_S, pMapStats->pInfos[pMapStats->GetMapInfo(pCurrentMapName)].pName.c_str());
             if (pAnimatedRooms[buildingTable[anim_id].uAnimationID].uRoomSoundId)
-                PlayHouseSound(anim_id, HouseSound_Greeting);
+                playHouseSound((HOUSE_ID)anim_id, HOUSE_SOUND_GENERAL_GREETING);
             if (uCurrentlyLoadedLevelType == LEVEL_INDOOR && pParty->hasActiveCharacter() && pParty->GetRedOrYellowAlert())
                 pParty->activeCharacter().playReaction(SPEECH_LeaveDungeon);
             if (IndoorLocation::GetLocationIndex(locationName))
@@ -123,7 +123,7 @@ GUIWindow_Transition::GUIWindow_Transition(uint anim_id, uint exit_pic_id,
         } else {
             transition_button_label = localization->GetString(LSTR_DIALOGUE_EXIT);
             if ( pAnimatedRooms[buildingTable[anim_id].uAnimationID].uRoomSoundId)
-                PlayHouseSound(anim_id, HouseSound_Greeting);
+                playHouseSound((HOUSE_ID)anim_id, HOUSE_SOUND_GENERAL_GREETING);
             if (uCurrentlyLoadedLevelType == LEVEL_INDOOR && pParty->hasActiveCharacter() && pParty->GetRedOrYellowAlert())
                 pParty->activeCharacter().playReaction(SPEECH_LeaveDungeon);
             if (IndoorLocation::GetLocationIndex(locationName))

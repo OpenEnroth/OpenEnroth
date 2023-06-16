@@ -777,7 +777,7 @@ void Game::processQueuedMessages() {
                                         if (houseDialogPressEscape())
                                             continue;
                                     }
-                                    GetHouseGoodbyeSpeech();
+                                    window_SpeakInHouse->playHouseGoodbyeSpeech();
                                     pAudioPlayer->playHouseSound(SOUND_WoodDoorClosing, false);
                                     pMediaPlayer->Unload();
                                     pGUIWindow_CurrentMenu = window_SpeakInHouse;
@@ -786,7 +786,7 @@ void Game::processQueuedMessages() {
                                     continue;
                                 case CURRENT_SCREEN::SCREEN_INPUT_BLV:  // click escape
                                     if (uCurrentHouse_Animation == 153)
-                                        PlayHouseSound(0x99u, HouseSound_Greeting_2);
+                                        playHouseSound((HOUSE_ID)0x99u, HouseSoundType(3)); // TODO(Nik-RE-dev): what is this?
                                     pMediaPlayer->Unload();
                                     if (npcIdToDismissAfterDialogue) {
                                         pParty->hirelingScrollPosition = 0;

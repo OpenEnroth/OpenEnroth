@@ -54,13 +54,14 @@ void GUIWindow_Bank::putGoldDialogue() {
 
         int party_gold = pParty->GetGold();
         if (sum > party_gold) {
-            PlayHouseSound(wData.val, HouseSound_NotEnoughMoney);
+            playHouseSound(houseId(), HOUSE_SOUND_GENERAL_NOT_ENOUGH_GOLD);
             sum = party_gold;
         }
 
         if (sum > 0) {
             pParty->TakeGold(sum);
             pParty->AddBankGold(sum);
+            _transactionPerformed = true;
             if (pParty->hasActiveCharacter()) {
                 pParty->activeCharacter().playReaction(SPEECH_BankDeposit);
             }
@@ -94,11 +95,12 @@ void GUIWindow_Bank::getGoldDialogue() {
 
         int bank_gold = pParty->GetBankGold();
         if (sum > bank_gold) {
-            PlayHouseSound(wData.val, HouseSound_NotEnoughMoney);
+            playHouseSound(houseId(), HOUSE_SOUND_GENERAL_NOT_ENOUGH_GOLD);
             sum = bank_gold;
         }
 
         if (sum > 0) {
+            _transactionPerformed = true;
             pParty->TakeBankGold(sum);
             pParty->AddGold(sum);
         }

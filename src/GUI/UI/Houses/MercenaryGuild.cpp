@@ -64,7 +64,7 @@ void GUIWindow_MercenaryGuild::houseSpecificDialogue() {
                 *(short *)v6 = 1;
                 v27 = 2;
             }
-            PlayHouseSound(window_SpeakInHouse->wData.val, (HouseSoundID)v27);
+            playHouseSound(houseId(), HouseSoundType(v27));
         }
     }
     pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 1, 0);
