@@ -140,30 +140,6 @@ void GUIWindow_Temple::donateDialogue() {
     pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 1, 0);
 }
 
-void GUIWindow_Temple::learnSkillsDialogue() {
-    GUIWindow temple_window = *this;
-    temple_window.uFrameX = SIDE_TEXT_BOX_POS_X;
-    temple_window.uFrameWidth = SIDE_TEXT_BOX_WIDTH;
-    temple_window.uFrameZ = SIDE_TEXT_BOX_POS_Z;
-
-    if (checkIfPlayerCanInteract()) {
-        int allTextHeight = 0;
-        int availableSkills = 0;
-        int cost = PriceCalculator::skillLearningCostForPlayer(&pParty->activeCharacter(), buildingTable[wData.val - 1]);
-        int buttonsLimit = pDialogueWindow->pNumPresenceButton + pDialogueWindow->pStartingPosActiveItem;
-        for (int i = pDialogueWindow->pStartingPosActiveItem; i < buttonsLimit; i++) {
-            PLAYER_SKILL_TYPE skill = GetLearningDialogueSkill((DIALOGUE_TYPE)pDialogueWindow->GetControl(i)->msg_param);
-            if (skillMaxMasteryPerClass[pParty->activeCharacter().classType][skill] != PLAYER_SKILL_MASTERY_NONE &&
-                !pParty->activeCharacter().pActiveSkills[skill]) {
-                allTextHeight += pFontArrus->CalcTextHeight(localization->GetSkillName(skill), temple_window.uFrameWidth, 0);
-                availableSkills++;
-            }
-        }
-
-        SkillTrainingDialogue(&temple_window, availableSkills, allTextHeight, cost);
-    }
-}
-
 GUIWindow_Temple::GUIWindow_Temple(HOUSE_ID houseId) : GUIWindow_House(houseId) {
     _templeSpellCounter.resize(pParty->pPlayers.size());
     std::fill(_templeSpellCounter.begin(), _templeSpellCounter.end(), 0);

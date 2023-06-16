@@ -423,30 +423,6 @@ void GUIWindow_Shop::repairDialogue() {
     }
 }
 
-void GUIWindow_Shop::learnSkillsDialogue() {
-    GUIWindow dialogwin = *this;
-    dialogwin.uFrameX = SIDE_TEXT_BOX_POS_X;
-    dialogwin.uFrameWidth = SIDE_TEXT_BOX_WIDTH;
-    dialogwin.uFrameZ = SIDE_TEXT_BOX_POS_Z;
-
-    if (!checkIfPlayerCanInteract())
-        return;
-
-    int item_num = 0;
-    int all_text_height = 0;
-    int pPrice = PriceCalculator::skillLearningCostForPlayer(&pParty->activeCharacter(), buildingTable[wData.val - 1]);
-
-    for (int i = pDialogueWindow->pStartingPosActiveItem; i < pDialogueWindow->pNumPresenceButton + pDialogueWindow->pStartingPosActiveItem; ++i) {
-        auto skill = GetLearningDialogueSkill((DIALOGUE_TYPE)pDialogueWindow->GetControl(i)->msg_param);
-        if (skillMaxMasteryPerClass[pParty->activeCharacter().classType][skill] != PLAYER_SKILL_MASTERY_NONE && !pParty->activeCharacter().pActiveSkills[skill]) {
-            all_text_height += pFontArrus->CalcTextHeight(localization->GetSkillName(skill), dialogwin.uFrameWidth, 0);
-            item_num++;
-        }
-    }
-
-    SkillTrainingDialogue(&dialogwin, item_num, all_text_height, pPrice);
-}
-
 void GUIWindow_WeaponShop::shopWaresDialogue(bool isSpecial) {
     GUIWindow dialogwin = *this;
     dialogwin.uFrameX = SIDE_TEXT_BOX_POS_X;

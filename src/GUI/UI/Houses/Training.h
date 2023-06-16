@@ -22,7 +22,6 @@ class GUIWindow_Training : public GUIWindow_House {
  protected:
     void mainDialogue();
     void trainDialogue();
-    void learnSkillsDialogue();
 
  private:
     std::vector<int> _charactersTrainedLevels;

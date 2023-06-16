@@ -347,9 +347,6 @@ std::string NameAndTitle(NPCData *npc);
 
 std::string GetDisplayName(Actor *actor);
 
-void SeekKnowledgeElswhereDialogueOption(GUIWindow *dialogue, Player *player);
-void SkillTrainingDialogue(GUIWindow *dialogue, int num_skills_avaiable, int all_text_height, int skill_price);
-
 extern GUIWindow *pPrimaryWindow;
 //extern GUIWindow *pChestWindow;
 extern GUIWindow *pDialogueWindow;

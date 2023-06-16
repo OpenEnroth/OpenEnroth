@@ -209,29 +209,6 @@ void GUIWindow_Tavern::buyFoodDialogue() {
     pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 1, 0);
 }
 
-void GUIWindow_Tavern::learnSkillsDialogue() {
-    if (!checkIfPlayerCanInteract()) {
-        return;
-    }
-
-    GUIWindow dialog_window = *this;
-    dialog_window.uFrameX = SIDE_TEXT_BOX_POS_X;
-    dialog_window.uFrameWidth = SIDE_TEXT_BOX_WIDTH;
-    dialog_window.uFrameZ = SIDE_TEXT_BOX_POS_Z;
-
-    int pSkillCount = 0;
-    int pPriceSkill = PriceCalculator::skillLearningCostForPlayer(&pParty->activeCharacter(), buildingTable[wData.val - 1]);
-    int all_text_height = 0;
-    for (int i = pDialogueWindow->pStartingPosActiveItem; i < pDialogueWindow->pStartingPosActiveItem + pDialogueWindow->pNumPresenceButton; ++i) {
-        auto skill = GetLearningDialogueSkill((DIALOGUE_TYPE)pDialogueWindow->GetControl(i)->msg_param);
-        if (skillMaxMasteryPerClass[pParty->activeCharacter().classType][skill] != PLAYER_SKILL_MASTERY_NONE && !pParty->activeCharacter().pActiveSkills[skill]) {
-            all_text_height = pFontArrus->CalcTextHeight(localization->GetSkillName(skill), dialog_window.uFrameWidth, 0);
-            pSkillCount++;
-        }
-    }
-    SkillTrainingDialogue(&dialog_window, pSkillCount, all_text_height, pPriceSkill);
-}
-
 void GUIWindow_Tavern::houseDialogueOptionSelected(DIALOGUE_TYPE option) {
     if (option == DIALOGUE_TAVERN_ARCOMAGE_RESULT) {
         pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_PlayArcomage, 0, 0);

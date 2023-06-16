@@ -68,6 +68,8 @@ class GUIWindow_House : public GUIWindow {
     virtual void houseScreenClick();
 
  protected:
+    void learnSkillsDialogue();
+
     int _savedButtonsNum{};
 };
 
