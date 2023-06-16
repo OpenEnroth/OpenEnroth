@@ -895,7 +895,7 @@ bool GUIWindow_House::checkIfPlayerCanInteract() {
     }
 }
 
-void GUIWindow_House::drawOptions(std::vector<std::string> &optionsText, Color selectColor, int startingOffset, bool denseSpacing) {
+void GUIWindow_House::drawOptions(std::vector<std::string> &optionsText, Color selectColor, int topOptionShift, bool denseSpacing) {
     GUIWindow window = *this;
     window.uFrameX = SIDE_TEXT_BOX_POS_X;
     window.uFrameWidth = SIDE_TEXT_BOX_WIDTH;
@@ -913,16 +913,13 @@ void GUIWindow_House::drawOptions(std::vector<std::string> &optionsText, Color s
     }
 
     int spacing = 0;
+    int offset = topOptionShift;
     if (!denseSpacing) {
-        spacing = (SIDE_TEXT_BOX_BODY_TEXT_HEIGHT - allTextHeight) / activeOptions;
+        spacing = (SIDE_TEXT_BOX_BODY_TEXT_HEIGHT - topOptionShift - allTextHeight) / activeOptions;
         if (spacing > SIDE_TEXT_BOX_MAX_SPACING) {
             spacing = SIDE_TEXT_BOX_MAX_SPACING;
         }
-    }
-
-    int offset = startingOffset - spacing;
-    if (!startingOffset) {
-        offset = (SIDE_TEXT_BOX_BODY_TEXT_HEIGHT - spacing * activeOptions - allTextHeight) / 2 - spacing / 2 + SIDE_TEXT_BOX_BODY_TEXT_OFFSET;
+        offset += (SIDE_TEXT_BOX_BODY_TEXT_HEIGHT - topOptionShift - spacing * activeOptions - allTextHeight) / 2 - spacing / 2 + SIDE_TEXT_BOX_BODY_TEXT_OFFSET;
     }
 
     for (int i = 0; i < pDialogueWindow->pNumPresenceButton; ++i) {
@@ -1079,10 +1076,24 @@ void GUIWindow_House::initializeDialog() {
     _savedButtonsNum = pDialogueWindow->pNumPresenceButton;
 }
 
-// TODO(Nik-RE-dev): partially duplicates code of main dialogue of Magic Guild, need unification along with similar code of other shops
 void GUIWindow_House::learnSkillsDialogue() {
     if (!checkIfPlayerCanInteract()) {
         return;
+    }
+
+    bool haveLearnableSkills = false;
+    std::vector<std::string> optionsText;
+    int cost = PriceCalculator::skillLearningCostForPlayer(&pParty->activeCharacter(), buildingTable[wData.val - 1]);
+    int buttonsLimit = pDialogueWindow->pStartingPosActiveItem + pDialogueWindow->pNumPresenceButton;
+    for (int i = pDialogueWindow->pStartingPosActiveItem; i < buttonsLimit; i++) {
+        PLAYER_SKILL_TYPE skill = GetLearningDialogueSkill((DIALOGUE_TYPE)pDialogueWindow->GetControl(i)->msg_param);
+        if (skillMaxMasteryPerClass[pParty->activeCharacter().classType][skill] != PLAYER_SKILL_MASTERY_NONE &&
+            !pParty->activeCharacter().pActiveSkills[skill]) {
+            optionsText.push_back(localization->GetSkillName(skill));
+            haveLearnableSkills = true;
+        } else {
+            optionsText.push_back("");
+        }
     }
 
     GUIWindow dialogue = *this;
@@ -1090,20 +1101,7 @@ void GUIWindow_House::learnSkillsDialogue() {
     dialogue.uFrameWidth = SIDE_TEXT_BOX_WIDTH;
     dialogue.uFrameZ = SIDE_TEXT_BOX_POS_Z;
 
-    int allTextHeight = 0;
-    int availableSkills = 0;
-    int cost = PriceCalculator::skillLearningCostForPlayer(&pParty->activeCharacter(), buildingTable[wData.val - 1]);
-    int buttonsLimit = pDialogueWindow->pStartingPosActiveItem + pDialogueWindow->pNumPresenceButton;
-    for (int i = pDialogueWindow->pStartingPosActiveItem; i < buttonsLimit; i++) {
-        PLAYER_SKILL_TYPE skill = GetLearningDialogueSkill((DIALOGUE_TYPE)pDialogueWindow->GetControl(i)->msg_param);
-        if (skillMaxMasteryPerClass[pParty->activeCharacter().classType][skill] != PLAYER_SKILL_MASTERY_NONE &&
-            !pParty->activeCharacter().pActiveSkills[skill]) {
-            allTextHeight += pFontArrus->CalcTextHeight(localization->GetSkillName(skill), dialogue.uFrameWidth, 0);
-            availableSkills++;
-        }
-    }
-
-    if (!availableSkills) {
+    if (!haveLearnableSkills) {
         Player &player = pParty->activeCharacter();
         std::string str = localization->FormatString(LSTR_FMT_SEEK_KNOWLEDGE_ELSEWHERE, player.name.c_str(), localization->GetClassName(player.classType));
         str = str + "\n \n" + localization->GetString(LSTR_NO_FURTHER_OFFERS);
@@ -1116,34 +1114,7 @@ void GUIWindow_House::learnSkillsDialogue() {
     std::string skill_price_label = localization->FormatString(LSTR_FMT_SKILL_COST_D, cost);
     dialogue.DrawTitleText(pFontArrus, 0, 146, Color(), skill_price_label, 3);
 
-    int textspacings = (149 - allTextHeight) / availableSkills;
-    if (textspacings > SIDE_TEXT_BOX_MAX_SPACING) {
-        textspacings = SIDE_TEXT_BOX_MAX_SPACING;
-    }
-    int textoffset = (149 - availableSkills * textspacings - allTextHeight) / 2 - textspacings / 2 + 162;
-    for (int i = pDialogueWindow->pStartingPosActiveItem; i < buttonsLimit; ++i) {
-        GUIButton *pButton = pDialogueWindow->GetControl(i);
-        auto skill_id = GetLearningDialogueSkill((DIALOGUE_TYPE)pButton->msg_param);
-
-        if (skillMaxMasteryPerClass[pParty->activeCharacter().classType][skill_id] == PLAYER_SKILL_MASTERY_NONE
-            || pParty->activeCharacter().pActiveSkills[skill_id]) {
-            pButton->uW = 0;
-            pButton->uHeight = 0;
-            pButton->uY = 0;
-        } else {
-            std::string skill_name_label = localization->GetSkillName(skill_id);
-            int line_height = pFontArrus->CalcTextHeight(skill_name_label, dialogue.uFrameWidth, 0);
-            pButton->uY = textspacings + textoffset;
-            pButton->uHeight = line_height;
-            pButton->uW = pButton->uY + line_height + 6 - 1;
-            textoffset += textspacings + line_height - 1;
-            Color text_color = colorTable.Sunflower;
-            if (pDialogueWindow->pCurrentPosActiveItem != i) {
-                text_color = colorTable.White;
-            }
-            dialogue.DrawTitleText(pFontArrus, 0, pButton->uY, text_color, skill_name_label, 3);
-        }
-    }
+    drawOptions(optionsText, colorTable.Sunflower, 18);
 }
 
 void GUIWindow_House::learnSelectedSkill(PLAYER_SKILL_TYPE skill) {

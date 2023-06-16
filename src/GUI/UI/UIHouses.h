@@ -68,7 +68,7 @@ class GUIWindow_House : public GUIWindow {
     void playHouseGoodbyeSpeech();
 
     void drawOptions(std::vector<std::string> &optionsText, Color selectColor,
-                     int startingOffset = 0, bool denseSpacing = false);
+                     int topOptionShift = 0, bool denseSpacing = false);
 
     virtual void houseDialogueOptionSelected(DIALOGUE_TYPE option);
     // TODO(Nik-RE-dev): add DIALOGUE_TYPE argument?
