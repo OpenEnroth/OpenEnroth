@@ -265,8 +265,11 @@ void GUIWindow_Shop::displayEquipmentDialogue() {
     draw_leather();
     CharacterUI_InventoryTab_Draw(&pParty->activeCharacter(), true);
 
-    std::vector<std::string> optionsText = {localization->GetString(LSTR_SELL), localization->GetString(LSTR_IDENTIFY),
-                                            (buildingType() != BuildingType_AlchemistShop) ? localization->GetString(LSTR_REPAIR) : ""};
+    std::vector<std::string> optionsText = {localization->GetString(LSTR_SELL), localization->GetString(LSTR_IDENTIFY)};
+
+    if (buildingType() != BuildingType_AlchemistShop) {
+        optionsText.push_back(localization->GetString(LSTR_REPAIR));
+    }
 
     drawOptions(optionsText, colorTable.Jonquil);
 }
