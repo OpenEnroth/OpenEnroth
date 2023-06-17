@@ -25,7 +25,7 @@ class ColorTable {
     const Color EasternBlue = Color(21, 153, 233);      // #1699E9
     const Color FlushOrange = Color(255, 128, 0);       // #FF8000
     const Color Green = Color(0, 225, 0);               // #00FF00
-    const Color Jonquil = Color(255, 255, 155);         // #E1FF9B
+    const Color Jonquil = Color(225, 255, 155);         // #E1FF9B
     const Color LaserLemon = Color(255, 255, 100);      // #FFFF64
     const Color MoonRaker = Color(192, 192, 240);       // #C0C0F0
     const Color Mercury = Color(225, 225, 225);         // #E1E1E1
