@@ -453,6 +453,9 @@ void GUIFont::DrawText(GUIWindow *pWindow, Pointi position, Color uFontColor, co
         return;
     }
 
+    if (uFontShadowColor == Color())
+        uFontShadowColor = colorTable.Black; // Default shadow color.
+
     render->BeginTextNew(fonttex, fontshadow);
 
     size_t v30 = str.length();
@@ -572,7 +575,7 @@ void GUIFont::DrawText(GUIWindow *pWindow, Pointi position, Color uFontColor, co
                         float v2 = (ysq * 32.0f + pData->uFontHeight) / 512.0f;
 
                         render->DrawTextNew(out_x, out_y, pData->pMetrics[c].uWidth, pData->uFontHeight, u1, v1, u2, v2, 0, Color(r, g, b));
-                        render->DrawTextNew(out_x, out_y, pData->pMetrics[c].uWidth, pData->uFontHeight, u1, v1, u2, v2, 1, Color());
+                        render->DrawTextNew(out_x, out_y, pData->pMetrics[c].uWidth, pData->uFontHeight, u1, v1, u2, v2, 1, colorTable.Black); // TODO(captainurist): uFontShadowColor?
                     }
 
                     out_x += pData->pMetrics[c].uWidth;
