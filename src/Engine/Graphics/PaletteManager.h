@@ -34,5 +34,3 @@ class PaletteManager {
 };
 
 extern PaletteManager *pPaletteManager;
-
-int ReplaceHSV(unsigned int uColor, float h_replace, float s_replace, float v_replace);
