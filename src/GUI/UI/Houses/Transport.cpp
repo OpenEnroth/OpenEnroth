@@ -101,7 +101,6 @@ void GUIWindow_Transport::mainDialogue() {
     }
 
     std::vector<std::string> optionsText;
-    std::vector<bool> optionsActive;
     int price = PriceCalculator::transportCostForPlayer(&pParty->activeCharacter(), buildingTable[wData.val - 1]);
     std::string travelCost = localization->FormatString(LSTR_FMT_TRAVEL_COST_D_GOLD, price);
     int startingOffset = pFontArrus->CalcTextHeight(travelCost, travel_window.uFrameWidth, 0) + (pFontArrus->GetHeight() - 3) + 146;
