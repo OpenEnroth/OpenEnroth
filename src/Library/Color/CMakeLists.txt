@@ -5,6 +5,7 @@ set(LIBRARY_COLOR_SOURCES
 
 set(LIBRARY_COLOR_HEADERS
         Color.h
+        Colorf.h
         ColorTable.h)
 
 add_library(library_color STATIC ${LIBRARY_COLOR_SOURCES} ${LIBRARY_COLOR_HEADERS})

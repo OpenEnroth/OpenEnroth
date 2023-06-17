@@ -396,9 +396,9 @@ void serialize(const Party &src, Party_MM7 *dst) {
     serialize(src.InTheShopFlags, &dst->inTheShopFlags);
 
     dst->fine = src.uFine;
-    dst->torchlightColorR = src.flt_TorchlightColorR;
-    dst->torchlightColorG = src.flt_TorchlightColorG;
-    dst->torchlightColorB = src.flt_TorchlightColorB;
+    dst->torchlightColorR = src.torchLightColor.r;
+    dst->torchlightColorG = src.torchLightColor.g;
+    dst->torchlightColorB = src.torchLightColor.b;
 }
 
 void deserialize(const Party_MM7 &src, Party *dst) {
@@ -530,10 +530,11 @@ void deserialize(const Party_MM7 &src, Party *dst) {
 
     dst->uFine = src.fine;
 
-    // is this correct / ever used??
-    dst->flt_TorchlightColorR = src.torchlightColorR;
-    dst->flt_TorchlightColorG = src.torchlightColorG;
-    dst->flt_TorchlightColorB = src.torchlightColorB;
+    // TODO(captainurist): is this correct / ever used??
+    dst->torchLightColor.r = src.torchlightColorR;
+    dst->torchLightColor.g = src.torchlightColorG;
+    dst->torchLightColor.b = src.torchlightColorB;
+    dst->torchLightColor.a = 255;
 }
 
 void serialize(const Player &src, Player_MM7 *dst) {
@@ -1530,17 +1531,19 @@ void deserialize(const DecorationDesc_MM6 &src, DecorationDesc *dst) {
     dst->uFlags = DecorationDescFlags(src.uFlags);
     dst->uSoundID = src.uSoundID;
 
-    dst->uColoredLightRed = 255;
-    dst->uColoredLightGreen = 255;
-    dst->uColoredLightBlue = 255;
+    dst->uColoredLight.r = 255;
+    dst->uColoredLight.g = 255;
+    dst->uColoredLight.b = 255;
+    dst->uColoredLight.a = 255;
 }
 
 void deserialize(const DecorationDesc_MM7 &src, DecorationDesc *dst) {
     deserialize(static_cast<const DecorationDesc_MM6 &>(src), dst);
 
-    dst->uColoredLightRed = src.uColoredLightRed;
-    dst->uColoredLightGreen = src.uColoredLightGreen;
-    dst->uColoredLightBlue = src.uColoredLightBlue;
+    dst->uColoredLight.r = src.uColoredLightRed;
+    dst->uColoredLight.g = src.uColoredLightGreen;
+    dst->uColoredLight.b = src.uColoredLightBlue;
+    dst->uColoredLight.a = 255;
 }
 
 void serialize(const Chest &src, Chest_MM7 *dst) {
@@ -1643,11 +1646,9 @@ void deserialize(const ObjectDesc_MM6 &src, ObjectDesc *dst) {
     dst->uFlags = ObjectDescFlags(src.uFlags);
     dst->uSpriteID = src.uSpriteID;
     dst->uLifetime = src.uLifetime;
-    dst->uParticleTrailColor = src.uParticleTrailColor;
+    // Note: src.uParticleTrailColor16 is ignored.
+    dst->uParticleTrailColor = Color(src.uParticleTrailColorR, src.uParticleTrailColorG, src.uParticleTrailColorB);
     dst->uSpeed = src.uSpeed;
-    dst->uParticleTrailColorR = src.uParticleTrailColorR;
-    dst->uParticleTrailColorG = src.uParticleTrailColorG;
-    dst->uParticleTrailColorB = src.uParticleTrailColorB;
 }
 
 void deserialize(const ObjectDesc_MM7 &src, ObjectDesc *dst) {
@@ -1658,11 +1659,9 @@ void deserialize(const ObjectDesc_MM7 &src, ObjectDesc *dst) {
     dst->uFlags = ObjectDescFlags(src.uFlags);
     dst->uSpriteID = src.uSpriteID;
     dst->uLifetime = src.uLifetime;
-    dst->uParticleTrailColor = src.uParticleTrailColor;
+    // Note: src.uParticleTrailColor32 is ignored.
+    dst->uParticleTrailColor = Color(src.uParticleTrailColorR, src.uParticleTrailColorG, src.uParticleTrailColorB);
     dst->uSpeed = src.uSpeed;
-    dst->uParticleTrailColorR = src.uParticleTrailColorR;
-    dst->uParticleTrailColorG = src.uParticleTrailColorG;
-    dst->uParticleTrailColorB = src.uParticleTrailColorB;
 }
 
 void serialize(const LocationTime &src, LocationTime_MM7 *dst) {

@@ -14,6 +14,8 @@ struct ColorTag {
 };
 } // namespace detail
 
+struct Colorf;
+
 /**
  * Color in A8B8G8R8 format.
  */
@@ -51,6 +53,8 @@ struct Color {
         memcpy(&result, this, 4);
         return result;
     }
+
+    constexpr inline Colorf toColorf() const; // Defined in Colorf.h.
 
     /**
      * This function returns a tag that can then be used in `fmt::format` calls to print out a color introducer.

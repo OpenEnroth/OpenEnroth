@@ -144,15 +144,6 @@ class ParticleEngine {
 };
 
 struct TrailParticle {
-    inline TrailParticle() {
-        x = 0;
-        y = 0;
-        z = 0;
-        time_left = 0;
-        time_to_live = 0;
-        bgr16 = 0;
-    }
-
     char field_0 = 0;
     char field_1 = 0;
     char field_2 = 0;
@@ -168,7 +159,7 @@ struct TrailParticle {
     char field_11 = 0;
     char field_12 = 0;
     char field_13 = 0;
-    int16_t bgr16 = 0;
+    Color color;
     char field_16 = 0;
     char field_17 = 0;
 };
@@ -177,11 +168,11 @@ struct TrailParticleGenerator {  // stru167_wrap
  public:
     inline TrailParticleGenerator() { num_particles = 0; }
 
-    void GenerateTrailParticles(int x, int y, int z, int bgr16);
+    void GenerateTrailParticles(int x, int y, int z, Color color);
     void UpdateParticles();
 
  protected:
-    void AddParticle(int x, int y, int z, int bgr16);
+    void AddParticle(int x, int y, int z, Color color);
 
     TrailParticle particles[100];
     int num_particles;

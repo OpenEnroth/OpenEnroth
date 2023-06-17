@@ -171,15 +171,14 @@ void RenderBase::DrawSpriteObjects() {
 
             // lighting
             int lightradius = frame->uGlowRadius * object->field_22_glow_radius_multiplier;
-            int red = pSpriteObjects[i].GetParticleTrailColorR();
-            if (red == 0) red = 0xFF;
-            int green = pSpriteObjects[i].GetParticleTrailColorG();
-            if (green == 0) green = 0xFF;
-            int blue = pSpriteObjects[i].GetParticleTrailColorB();
-            if (blue == 0) blue = 0xFF;
+
+            Color color = pSpriteObjects[i].GetParticleTrailColor();
+            if (color.r == 0) color.r = 0xFF;
+            if (color.g == 0) color.g = 0xFF;
+            if (color.b == 0) color.b = 0xFF;
             if (lightradius) {
                 pMobileLightsStack->AddLight(object->vPosition.toFloat(),
-                                             object->uSectorID, lightradius, red, green, blue, _4E94D3_light_type);
+                                             object->uSectorID, lightradius, color, _4E94D3_light_type);
             }
 
             int view_x = 0;
@@ -239,9 +238,7 @@ void RenderBase::PrepareDecorationsRenderList_ODM() {
     int v7;                 // eax@9
     SpriteFrame *frame;     // eax@9
     int v13;                // ecx@9
-    int r;                 // ecx@20
-    int g;                 // dl@20
-    int b_;                // eax@20
+    Color color;
     Particle_sw local_0;    // [sp+Ch] [bp-98h]@7
     int v38;                // [sp+88h] [bp-1Ch]@9
 
@@ -297,21 +294,17 @@ void RenderBase::PrepareDecorationsRenderList_ODM() {
 
                     // for light
                     if (frame->uGlowRadius) {
-                        r = 255;
-                        g = 255;
-                        b_ = 255;
+                        color = colorTable.White;
                         if (render->config->graphics.ColoredLights.value()) {
-                            r = decor_desc->uColoredLightRed;
-                            g = decor_desc->uColoredLightGreen;
-                            b_ = decor_desc->uColoredLightBlue;
+                            color = decor_desc->uColoredLight;
                             // to avoid blank lights
-                            if (!r && !g && !b_) {
-                                r = g = b_ = 255;
+                            if (color == Color()) {
+                                color = colorTable.White;
                             }
                         }
                         pStationaryLightsStack->AddLight(pLevelDecorations[i].vPosition.toFloat() +
                             Vec3f(0, 0, decor_desc->uDecorationHeight / 2),
-                            frame->uGlowRadius, r, g, b_, _4E94D0_light_type);
+                            frame->uGlowRadius, color, _4E94D0_light_type);
                     }  // for light
 
                        // v17 = (pLevelDecorations[i].vPosition.x -
@@ -422,10 +415,10 @@ void RenderBase::TransformBillboardsAndSetPalettesODM() {
 }
 
 Color BlendColors(Color a1, Color a2) {
-    uint alpha = (uint)floorf(0.5f + a1.a / 255.0f * a2.a / 255.0f * 255.0f);
-    uint blue = (uint)floorf(0.5f + a1.b / 255.0f * a2.b / 255.0f * 255.0f);
-    uint green = (uint)floorf(0.5f + a1.g / 255.0f * a2.g / 255.0f * 255.0f);
-    uint red = (uint)floorf(0.5f + a1.r / 255.0f * a2.r / 255.0f * 255.0f);
+    int alpha = (a1.a * a2.a + 127) / 255;
+    int blue = (a1.b * a2.b + 127) / 255;
+    int green = (a1.g * a2.g + 127) / 255;
+    int red = (a1.r * a2.r + 127) / 255;
     return Color(red, green, blue, alpha);
 }
 

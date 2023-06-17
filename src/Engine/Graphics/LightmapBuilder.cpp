@@ -2,11 +2,7 @@
 
 // TODO(pskelton): rename - lighting functions
 
-#include <string>
-
 #include "Engine/Engine.h"
-#include "Engine/Graphics/Camera.h"
-#include "Engine/stru314.h"
 
 #include "Engine/Graphics/LightsStack.h"
 #include "Engine/Graphics/Outdoor.h"
@@ -15,11 +11,7 @@
 #include "Engine/Graphics/Weather.h"
 
 LightsStack_StationaryLight_ *pStationaryLightsStack = new LightsStack_StationaryLight_;
-// StationaryLight pStationaryLights[400];
-// int uNumStationaryLightsApplied;
 LightsStack_MobileLight_ *pMobileLightsStack = new LightsStack_MobileLight_;
-// MobileLight pMobileLights[400];
-// int uNumMobileLightsApplied;
 
 
 // TODO(pskelton): this needs reworking if we want lights to be outlined

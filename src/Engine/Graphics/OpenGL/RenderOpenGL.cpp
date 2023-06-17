@@ -41,6 +41,7 @@
 #include "Library/Application/PlatformApplication.h"
 #include "Library/Serialization/EnumSerialization.h"
 #include "Library/Image/ImageFunctions.h"
+#include "Library/Color/Colorf.h"
 
 #include "Utility/Geometry/Size.h"
 #include "Utility/Format.h"
@@ -263,10 +264,7 @@ void RenderOpenGL::ClearZBuffer() {
 struct linesverts {
     GLfloat x;
     GLfloat y;
-    GLfloat r;
-    GLfloat g;
-    GLfloat b;
-    GLfloat a;
+    Colorf color;
 };
 
 linesverts lineshaderstore[2000] = {};
@@ -291,7 +289,7 @@ void RenderOpenGL::BeginLines2D() {
         glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(linesverts), (void *)offsetof(linesverts, x));
         glEnableVertexAttribArray(0);
         // colour attribute
-        glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(linesverts), (void *)offsetof(linesverts, r));
+        glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(linesverts), (void *)offsetof(linesverts, color));
         glEnableVertexAttribArray(1);
     }
 }
@@ -328,27 +326,17 @@ void RenderOpenGL::EndLines2D() {
     linevertscnt = 0;
 }
 
-void RenderOpenGL::RasterLine2D(signed int uX, signed int uY, signed int uZ,
-                                signed int uW, Color uColor32) {
-    float a = uColor32.a / 255.0f;
-    float b = uColor32.b / 255.0f;
-    float g = uColor32.g / 255.0f;
-    float r = uColor32.r / 255.0f;
+void RenderOpenGL::RasterLine2D(int uX, int uY, int uZ, int uW, Color uColor32) {
+    Colorf cf = uColor32.toColorf();
 
     lineshaderstore[linevertscnt].x = static_cast<float>(uX);
     lineshaderstore[linevertscnt].y = static_cast<float>(uY);
-    lineshaderstore[linevertscnt].r = r;
-    lineshaderstore[linevertscnt].g = g;
-    lineshaderstore[linevertscnt].b = b;
-    lineshaderstore[linevertscnt].a = a;
+    lineshaderstore[linevertscnt].color = cf;
     linevertscnt++;
 
     lineshaderstore[linevertscnt].x = static_cast<float>(uZ);
     lineshaderstore[linevertscnt].y = static_cast<float>(uW);
-    lineshaderstore[linevertscnt].r = r;
-    lineshaderstore[linevertscnt].g = g;
-    lineshaderstore[linevertscnt].b = b;
-    lineshaderstore[linevertscnt].a = a;
+    lineshaderstore[linevertscnt].color = cf;
     linevertscnt++;
 
     // draw if buffer full
@@ -359,32 +347,17 @@ void RenderOpenGL::RasterLine2D(signed int uX, signed int uY, signed int uZ,
 void RenderOpenGL::DrawLines(const RenderVertexD3D3 *vertices, unsigned int num_vertices) {
     BeginLines2D();
     for (uint i = 0; i < num_vertices - 1; ++i) {
-        Color uColor32 = vertices[i].diffuse;
-        float a1 = uColor32.a / 255.0f;
-        float b1 = uColor32.b / 255.0f;
-        float g1 = uColor32.g / 255.0f;
-        float r1 = uColor32.r / 255.0f;
-
-        Color uColor32_2 = vertices[i + 1].diffuse;
-        float a2 = uColor32_2.a / 255.0f;
-        float b2 = uColor32_2.b / 255.0f;
-        float g2 = uColor32_2.g / 255.0f;
-        float r2 = uColor32_2.r / 255.0f;
+        Colorf color0 = vertices[i].diffuse.toColorf();
+        Colorf color1 = vertices[i + 1].diffuse.toColorf();
 
         lineshaderstore[linevertscnt].x = vertices[i].pos.x;
         lineshaderstore[linevertscnt].y = vertices[i].pos.y;
-        lineshaderstore[linevertscnt].r = r1;
-        lineshaderstore[linevertscnt].g = g1;
-        lineshaderstore[linevertscnt].b = b1;
-        lineshaderstore[linevertscnt].a = a1;
+        lineshaderstore[linevertscnt].color = color0;
         linevertscnt++;
 
         lineshaderstore[linevertscnt].x = vertices[i + 1].pos.x + 0.5f;
         lineshaderstore[linevertscnt].y = vertices[i + 1].pos.y + 0.5f;
-        lineshaderstore[linevertscnt].r = r2;
-        lineshaderstore[linevertscnt].g = g2;
-        lineshaderstore[linevertscnt].b = b2;
-        lineshaderstore[linevertscnt].a = a2;
+        lineshaderstore[linevertscnt].color = color1;
         linevertscnt++;
 
         // draw if buffer full
@@ -426,10 +399,7 @@ struct forcepersverts {
     GLfloat v;
     GLfloat q;  // rhw
     GLfloat screenspace;
-    GLfloat r;
-    GLfloat g;
-    GLfloat b;
-    GLfloat a;
+    Colorf color;
     GLfloat texid;
 };
 
@@ -533,10 +503,7 @@ void RenderOpenGL::DrawProjectile(float srcX, float srcY, float srcworldview, fl
         thisvert->v = v29[0].texcoord.y;
         thisvert->q = v29[0].rhw;
         thisvert->screenspace = srcworldview;
-        thisvert->r = 1.0f;
-        thisvert->g = 1.0f;
-        thisvert->b = 1.0f;
-        thisvert->a = 1.0f;
+        thisvert->color = colorTable.White.toColorf();
         thisvert->texid = texid;
         thisvert++;
 
@@ -550,10 +517,7 @@ void RenderOpenGL::DrawProjectile(float srcX, float srcY, float srcworldview, fl
             thisvert->v = v29[z + i].texcoord.y;
             thisvert->q = v29[z + i].rhw;
             thisvert->screenspace = (z + i == 3) ? srcworldview: dstworldview;
-            thisvert->r = 1.0f;
-            thisvert->g = 1.0f;
-            thisvert->b = 1.0f;
-            thisvert->a = 1.0f;
+            thisvert->color = colorTable.White.toColorf();
             thisvert->texid = texid;
             thisvert++;
         }
@@ -579,10 +543,7 @@ struct twodverts {
     GLfloat z;
     GLfloat u;
     GLfloat v;
-    GLfloat r;
-    GLfloat g;
-    GLfloat b;
-    GLfloat a;
+    Colorf color;
     GLfloat texid;
     GLfloat paletteid;
 };
@@ -592,11 +553,8 @@ int twodvertscnt = 0;
 
 // TODO(pskelton): change to color32
 void RenderOpenGL::ScreenFade(Color color, float t) {
-    t = std::clamp(t, 0.0f, 1.0f);
-    //color is 24bits r8g8b8?
-    float blue = color.b / 255.0f;
-    float green = color.g / 255.0f;
-    float red = color.r / 255.0f;
+    Colorf cf = color.toColorf();
+    cf.a = std::clamp(t, 0.0f, 1.0f);
 
     float drawx = static_cast<float>(pViewport->uViewportTL_X);
     float drawy = static_cast<float>(pViewport->uViewportTL_Y);
@@ -614,10 +572,7 @@ void RenderOpenGL::ScreenFade(Color color, float t) {
     twodshaderstore[twodvertscnt].z = 0;
     twodshaderstore[twodvertscnt].u = 0.5f;
     twodshaderstore[twodvertscnt].v = 0.5f;
-    twodshaderstore[twodvertscnt].r = red;
-    twodshaderstore[twodvertscnt].g = green;
-    twodshaderstore[twodvertscnt].b = blue;
-    twodshaderstore[twodvertscnt].a = t;
+    twodshaderstore[twodvertscnt].color = cf;
     twodshaderstore[twodvertscnt].texid = gltexid;
     twodshaderstore[twodvertscnt].paletteid = 0;
     twodvertscnt++;
@@ -627,10 +582,7 @@ void RenderOpenGL::ScreenFade(Color color, float t) {
     twodshaderstore[twodvertscnt].z = 0;
     twodshaderstore[twodvertscnt].u = 0.5f;
     twodshaderstore[twodvertscnt].v = 0.5f;
-    twodshaderstore[twodvertscnt].r = red;
-    twodshaderstore[twodvertscnt].g = green;
-    twodshaderstore[twodvertscnt].b = blue;
-    twodshaderstore[twodvertscnt].a = t;
+    twodshaderstore[twodvertscnt].color = cf;
     twodshaderstore[twodvertscnt].texid = gltexid;
     twodshaderstore[twodvertscnt].paletteid = 0;
     twodvertscnt++;
@@ -640,10 +592,7 @@ void RenderOpenGL::ScreenFade(Color color, float t) {
     twodshaderstore[twodvertscnt].z = 0;
     twodshaderstore[twodvertscnt].u = 0.5f;
     twodshaderstore[twodvertscnt].v = 0.5f;
-    twodshaderstore[twodvertscnt].r = red;
-    twodshaderstore[twodvertscnt].g = green;
-    twodshaderstore[twodvertscnt].b = blue;
-    twodshaderstore[twodvertscnt].a = t;
+    twodshaderstore[twodvertscnt].color = cf;
     twodshaderstore[twodvertscnt].texid = gltexid;
     twodshaderstore[twodvertscnt].paletteid = 0;
     twodvertscnt++;
@@ -655,10 +604,7 @@ void RenderOpenGL::ScreenFade(Color color, float t) {
     twodshaderstore[twodvertscnt].z = 0;
     twodshaderstore[twodvertscnt].u = 0.5f;
     twodshaderstore[twodvertscnt].v = 0.5f;
-    twodshaderstore[twodvertscnt].r = red;
-    twodshaderstore[twodvertscnt].g = green;
-    twodshaderstore[twodvertscnt].b = blue;
-    twodshaderstore[twodvertscnt].a = t;
+    twodshaderstore[twodvertscnt].color = cf;
     twodshaderstore[twodvertscnt].texid = 0;
     twodshaderstore[twodvertscnt].paletteid = 0;
     twodvertscnt++;
@@ -668,10 +614,7 @@ void RenderOpenGL::ScreenFade(Color color, float t) {
     twodshaderstore[twodvertscnt].z = 0;
     twodshaderstore[twodvertscnt].u = 0.5f;
     twodshaderstore[twodvertscnt].v = 0.5f;
-    twodshaderstore[twodvertscnt].r = red;
-    twodshaderstore[twodvertscnt].g = green;
-    twodshaderstore[twodvertscnt].b = blue;
-    twodshaderstore[twodvertscnt].a = t;
+    twodshaderstore[twodvertscnt].color = cf;
     twodshaderstore[twodvertscnt].texid = gltexid;
     twodshaderstore[twodvertscnt].paletteid = 0;
     twodvertscnt++;
@@ -681,10 +624,7 @@ void RenderOpenGL::ScreenFade(Color color, float t) {
     twodshaderstore[twodvertscnt].z = 0;
     twodshaderstore[twodvertscnt].u = 0.5f;
     twodshaderstore[twodvertscnt].v = 0.5f;
-    twodshaderstore[twodvertscnt].r = red;
-    twodshaderstore[twodvertscnt].g = green;
-    twodshaderstore[twodvertscnt].b = blue;
-    twodshaderstore[twodvertscnt].a = t;
+    twodshaderstore[twodvertscnt].color = cf;
     twodshaderstore[twodvertscnt].texid = gltexid;
     twodshaderstore[twodvertscnt].paletteid = 0;
     twodvertscnt++;
@@ -706,10 +646,7 @@ void RenderOpenGL::DrawImage(GraphicsImage *img, const Recti &rect, uint palette
         return;
     }
 
-    float a = uColor32.a / 255.0f;
-    float b = uColor32.b / 255.0f;
-    float g = uColor32.g / 255.0f;
-    float r = uColor32.r / 255.0f;
+    Colorf cf = uColor32.toColorf();
 
     int width = img->width();
     int height = img->height();
@@ -744,10 +681,7 @@ void RenderOpenGL::DrawImage(GraphicsImage *img, const Recti &rect, uint palette
     twodshaderstore[twodvertscnt].z = 0;
     twodshaderstore[twodvertscnt].u = texx;
     twodshaderstore[twodvertscnt].v = texy;
-    twodshaderstore[twodvertscnt].r = r;
-    twodshaderstore[twodvertscnt].g = g;
-    twodshaderstore[twodvertscnt].b = b;
-    twodshaderstore[twodvertscnt].a = a;
+    twodshaderstore[twodvertscnt].color = cf;
     twodshaderstore[twodvertscnt].texid = gltexid;
     twodshaderstore[twodvertscnt].paletteid = paletteid;
     twodvertscnt++;
@@ -757,10 +691,7 @@ void RenderOpenGL::DrawImage(GraphicsImage *img, const Recti &rect, uint palette
     twodshaderstore[twodvertscnt].z = 0;
     twodshaderstore[twodvertscnt].u = texz;
     twodshaderstore[twodvertscnt].v = texy;
-    twodshaderstore[twodvertscnt].r = r;
-    twodshaderstore[twodvertscnt].g = g;
-    twodshaderstore[twodvertscnt].b = b;
-    twodshaderstore[twodvertscnt].a = a;
+    twodshaderstore[twodvertscnt].color = cf;
     twodshaderstore[twodvertscnt].texid = gltexid;
     twodshaderstore[twodvertscnt].paletteid = paletteid;
     twodvertscnt++;
@@ -770,10 +701,7 @@ void RenderOpenGL::DrawImage(GraphicsImage *img, const Recti &rect, uint palette
     twodshaderstore[twodvertscnt].z = 0;
     twodshaderstore[twodvertscnt].u = texz;
     twodshaderstore[twodvertscnt].v = texw;
-    twodshaderstore[twodvertscnt].r = r;
-    twodshaderstore[twodvertscnt].g = g;
-    twodshaderstore[twodvertscnt].b = b;
-    twodshaderstore[twodvertscnt].a = a;
+    twodshaderstore[twodvertscnt].color = cf;
     twodshaderstore[twodvertscnt].texid = gltexid;
     twodshaderstore[twodvertscnt].paletteid = paletteid;
     twodvertscnt++;
@@ -785,10 +713,7 @@ void RenderOpenGL::DrawImage(GraphicsImage *img, const Recti &rect, uint palette
     twodshaderstore[twodvertscnt].z = 0;
     twodshaderstore[twodvertscnt].u = texx;
     twodshaderstore[twodvertscnt].v = texy;
-    twodshaderstore[twodvertscnt].r = r;
-    twodshaderstore[twodvertscnt].g = g;
-    twodshaderstore[twodvertscnt].b = b;
-    twodshaderstore[twodvertscnt].a = a;
+    twodshaderstore[twodvertscnt].color = cf;
     twodshaderstore[twodvertscnt].texid = gltexid;
     twodshaderstore[twodvertscnt].paletteid = paletteid;
     twodvertscnt++;
@@ -798,10 +723,7 @@ void RenderOpenGL::DrawImage(GraphicsImage *img, const Recti &rect, uint palette
     twodshaderstore[twodvertscnt].z = 0;
     twodshaderstore[twodvertscnt].u = texz;
     twodshaderstore[twodvertscnt].v = texw;
-    twodshaderstore[twodvertscnt].r = r;
-    twodshaderstore[twodvertscnt].g = g;
-    twodshaderstore[twodvertscnt].b = b;
-    twodshaderstore[twodvertscnt].a = a;
+    twodshaderstore[twodvertscnt].color = cf;
     twodshaderstore[twodvertscnt].texid = gltexid;
     twodshaderstore[twodvertscnt].paletteid = paletteid;
     twodvertscnt++;
@@ -811,10 +733,7 @@ void RenderOpenGL::DrawImage(GraphicsImage *img, const Recti &rect, uint palette
     twodshaderstore[twodvertscnt].z = 0;
     twodshaderstore[twodvertscnt].u = texx;
     twodshaderstore[twodvertscnt].v = texw;
-    twodshaderstore[twodvertscnt].r = r;
-    twodshaderstore[twodvertscnt].g = g;
-    twodshaderstore[twodvertscnt].b = b;
-    twodshaderstore[twodvertscnt].a = a;
+    twodshaderstore[twodvertscnt].color = cf;
     twodshaderstore[twodvertscnt].texid = gltexid;
     twodshaderstore[twodvertscnt].paletteid = paletteid;
     twodvertscnt++;
@@ -1056,8 +975,7 @@ void RenderOpenGL::DrawIndoorSkyPolygon(signed int uNumVertices, struct Polygon 
     auto texture = (TextureOpenGL*)pSkyPolygon->texture;
     auto texid = texture->GetOpenGlTexture();
 
-    Color uTint = GetActorTintColor(pSkyPolygon->dimming_level, 0, VertexRenderList[0].vWorldViewPosition.x, 1, 0);
-    uint uTintB = uTint.b, uTintG = uTint.g, uTintR = uTint.r;
+    Colorf uTint = GetActorTintColor(pSkyPolygon->dimming_level, 0, VertexRenderList[0].vWorldViewPosition.x, 1, 0).toColorf();
     float scrspace{ pCamera3D->GetFarClip() };
 
     float oneon = 1.0f / (pCamera3D->GetNearClip() * 2.0f);
@@ -1078,10 +996,7 @@ void RenderOpenGL::DrawIndoorSkyPolygon(signed int uNumVertices, struct Polygon 
         thisvert->v = VertexRenderList[0].v;
         thisvert->q = 1.0f;
         thisvert->screenspace = scrspace;
-        thisvert->r = (uTintR) / 255.0f;
-        thisvert->g = (uTintG) / 255.0f;
-        thisvert->b = (uTintB) / 255.0f;
-        thisvert->a = 1.0f;
+        thisvert->color = uTint;
         thisvert->texid = texid;
         thisvert++;
 
@@ -1097,10 +1012,7 @@ void RenderOpenGL::DrawIndoorSkyPolygon(signed int uNumVertices, struct Polygon 
             thisvert->v = VertexRenderList[z + i].v;
             thisvert->q = 1.0f;
             thisvert->screenspace = scrspace;
-            thisvert->r = (uTintR) / 255.0f;
-            thisvert->g = (uTintG) / 255.0f;
-            thisvert->b = (uTintB) / 255.0f;
-            thisvert->a = 1.0f;
+            thisvert->color = uTint;
             thisvert->texid = texid;
             thisvert++;
         }
@@ -1270,7 +1182,7 @@ void RenderOpenGL::EndDecals() {
     glUniformMatrix4fv(glGetUniformLocation(decalshader.ID, "view"), 1, GL_FALSE, &viewmat[0][0]);
 
     // set fog uniforms
-    glUniform3f(glGetUniformLocation(decalshader.ID, "fog.color"), fogr, fogg, fogb);
+    glUniform3f(glGetUniformLocation(decalshader.ID, "fog.color"), fog.r, fog.g, fog.b);
     glUniform1f(glGetUniformLocation(decalshader.ID, "fog.fogstart"), GLfloat(fogstart));
     glUniform1f(glGetUniformLocation(decalshader.ID, "fog.fogmiddle"), GLfloat(fogmiddle));
     glUniform1f(glGetUniformLocation(decalshader.ID, "fog.fogend"), GLfloat(fogend));
@@ -1327,19 +1239,16 @@ void RenderOpenGL::DrawDecal(struct Decal *pDecal, float z_bias) {
     // color_mult = 1;
 
     // load into buffer
-    uint uDecalColorMultB = (pDecal->uColorMultiplier >> 16) & 0xFF,
-        uDecalColorMultG = (pDecal->uColorMultiplier >> 8) & 0xFF,
-        uDecalColorMultR = pDecal->uColorMultiplier & 0xFF;
+    Colorf decalColorMult = pDecal->uColorMultiplier.toColorf();
 
     for (int z = 0; z < (pDecal->uNumVertices - 2); z++) {
         // 123, 134, 145, 156..
         GLdecalverts *thisvert = &decalshaderstore[numdecalverts];
-        Color uTint = GetActorTintColor(pDecal->DimmingLevel, 0, pDecal->pVertices[0].vWorldViewPosition.x, 0, nullptr);
-        uint uTintB = uTint.b, uTintG = uTint.g, uTintR = uTint.r;
+        Colorf uTint = GetActorTintColor(pDecal->DimmingLevel, 0, pDecal->pVertices[0].vWorldViewPosition.x, 0, nullptr).toColorf();
 
-        float uFinalR = floorf(uTintR / 255.0f * color_mult * uDecalColorMultR + 0.0f),
-             uFinalG = floorf(uTintG / 255.0f * color_mult * uDecalColorMultG + 0.0f),
-             uFinalB = floorf(uTintB / 255.0f * color_mult * uDecalColorMultB + 0.0f);
+        float uFinalR = uTint.r * color_mult * decalColorMult.r;
+        float uFinalG = uTint.g * color_mult * decalColorMult.g;
+        float uFinalB = uTint.b * color_mult * decalColorMult.b;
 
         // copy first
         thisvert->x = pDecal->pVertices[0].vWorldPosition.x;
@@ -1348,19 +1257,18 @@ void RenderOpenGL::DrawDecal(struct Decal *pDecal, float z_bias) {
         thisvert->u = pDecal->pVertices[0].u;
         thisvert->v = pDecal->pVertices[0].v;
         thisvert->texunit = 0;
-        thisvert->red = (uFinalR) / 255.0f;
-        thisvert->green = (uFinalG) / 255.0f;
-        thisvert->blue = (uFinalB) / 255.0f;
+        thisvert->red = uFinalR;
+        thisvert->green = uFinalG;
+        thisvert->blue = uFinalB;
         thisvert->attribs = 0;
         thisvert++;
 
         // copy other two (z+1)(z+2)
         for (uint i = 1; i < 3; ++i) {
-            uTint = GetActorTintColor(pDecal->DimmingLevel, 0, pDecal->pVertices[z + i].vWorldViewPosition.x, 0, nullptr);
-            uTintB = uTint.b, uTintG = uTint.g, uTintR = uTint.r;
-            uFinalR = floorf(uTintR / 255.0f * color_mult * uDecalColorMultR + 0.0f),
-            uFinalG = floorf(uTintG / 255.0f * color_mult * uDecalColorMultG + 0.0f),
-            uFinalB = floorf(uTintB / 255.0f * color_mult * uDecalColorMultB + 0.0f);
+            uTint = GetActorTintColor(pDecal->DimmingLevel, 0, pDecal->pVertices[z + i].vWorldViewPosition.x, 0, nullptr).toColorf();
+            uFinalR = uTint.r * color_mult * decalColorMult.r;
+            uFinalG = uTint.g * color_mult * decalColorMult.g;
+            uFinalB = uTint.b * color_mult * decalColorMult.b;
 
             thisvert->x = pDecal->pVertices[z + i].vWorldPosition.x;
             thisvert->y = pDecal->pVertices[z + i].vWorldPosition.y;
@@ -1368,9 +1276,9 @@ void RenderOpenGL::DrawDecal(struct Decal *pDecal, float z_bias) {
             thisvert->u = pDecal->pVertices[z + i].u;
             thisvert->v = pDecal->pVertices[z + i].v;
             thisvert->texunit = 0;
-            thisvert->red = (uFinalR) / 255.0f;
-            thisvert->green = (uFinalG) / 255.0f;
-            thisvert->blue = (uFinalB) / 255.0f;
+            thisvert->red = uFinalR;
+            thisvert->green = uFinalG;
+            thisvert->blue = uFinalB;
             thisvert->attribs = 0;
             thisvert++;
         }
@@ -1391,9 +1299,7 @@ void RenderOpenGL::DrawFromSpriteSheet(Recti *pSrcRect, Pointi *pTargetPoint, in
     }
 
     float col = (blend_mode == 2) ? 1.0f : 0.5f;
-    float r = col;
-    float g = col;
-    float b = col;
+    Colorf cf = Colorf(col, col, col);
 
     int clipx = this->clip_x;
     int clipy = this->clip_y;
@@ -1434,10 +1340,7 @@ void RenderOpenGL::DrawFromSpriteSheet(Recti *pSrcRect, Pointi *pTargetPoint, in
     twodshaderstore[twodvertscnt].z = 0;
     twodshaderstore[twodvertscnt].u = texx;
     twodshaderstore[twodvertscnt].v = texy;
-    twodshaderstore[twodvertscnt].r = r;
-    twodshaderstore[twodvertscnt].g = g;
-    twodshaderstore[twodvertscnt].b = b;
-    twodshaderstore[twodvertscnt].a = 1;
+    twodshaderstore[twodvertscnt].color = cf;
     twodshaderstore[twodvertscnt].texid = gltexid;
     twodshaderstore[twodvertscnt].paletteid = 0;
     twodvertscnt++;
@@ -1447,10 +1350,7 @@ void RenderOpenGL::DrawFromSpriteSheet(Recti *pSrcRect, Pointi *pTargetPoint, in
     twodshaderstore[twodvertscnt].z = 0;
     twodshaderstore[twodvertscnt].u = texz;
     twodshaderstore[twodvertscnt].v = texy;
-    twodshaderstore[twodvertscnt].r = r;
-    twodshaderstore[twodvertscnt].g = g;
-    twodshaderstore[twodvertscnt].b = b;
-    twodshaderstore[twodvertscnt].a = 1;
+    twodshaderstore[twodvertscnt].color = cf;
     twodshaderstore[twodvertscnt].texid = gltexid;
     twodshaderstore[twodvertscnt].paletteid = 0;
     twodvertscnt++;
@@ -1460,10 +1360,7 @@ void RenderOpenGL::DrawFromSpriteSheet(Recti *pSrcRect, Pointi *pTargetPoint, in
     twodshaderstore[twodvertscnt].z = 0;
     twodshaderstore[twodvertscnt].u = texz;
     twodshaderstore[twodvertscnt].v = texw;
-    twodshaderstore[twodvertscnt].r = r;
-    twodshaderstore[twodvertscnt].g = g;
-    twodshaderstore[twodvertscnt].b = b;
-    twodshaderstore[twodvertscnt].a = 1;
+    twodshaderstore[twodvertscnt].color = cf;
     twodshaderstore[twodvertscnt].texid = gltexid;
     twodshaderstore[twodvertscnt].paletteid = 0;
     twodvertscnt++;
@@ -1475,10 +1372,7 @@ void RenderOpenGL::DrawFromSpriteSheet(Recti *pSrcRect, Pointi *pTargetPoint, in
     twodshaderstore[twodvertscnt].z = 0;
     twodshaderstore[twodvertscnt].u = texx;
     twodshaderstore[twodvertscnt].v = texy;
-    twodshaderstore[twodvertscnt].r = r;
-    twodshaderstore[twodvertscnt].g = g;
-    twodshaderstore[twodvertscnt].b = b;
-    twodshaderstore[twodvertscnt].a = 1;
+    twodshaderstore[twodvertscnt].color = cf;
     twodshaderstore[twodvertscnt].texid = gltexid;
     twodshaderstore[twodvertscnt].paletteid = 0;
     twodvertscnt++;
@@ -1488,10 +1382,7 @@ void RenderOpenGL::DrawFromSpriteSheet(Recti *pSrcRect, Pointi *pTargetPoint, in
     twodshaderstore[twodvertscnt].z = 0;
     twodshaderstore[twodvertscnt].u = texz;
     twodshaderstore[twodvertscnt].v = texw;
-    twodshaderstore[twodvertscnt].r = r;
-    twodshaderstore[twodvertscnt].g = g;
-    twodshaderstore[twodvertscnt].b = b;
-    twodshaderstore[twodvertscnt].a = 1;
+    twodshaderstore[twodvertscnt].color = cf;
     twodshaderstore[twodvertscnt].texid = gltexid;
     twodshaderstore[twodvertscnt].paletteid = 0;
     twodvertscnt++;
@@ -1501,10 +1392,7 @@ void RenderOpenGL::DrawFromSpriteSheet(Recti *pSrcRect, Pointi *pTargetPoint, in
     twodshaderstore[twodvertscnt].z = 0;
     twodshaderstore[twodvertscnt].u = texx;
     twodshaderstore[twodvertscnt].v = texw;
-    twodshaderstore[twodvertscnt].r = r;
-    twodshaderstore[twodvertscnt].g = g;
-    twodshaderstore[twodvertscnt].b = b;
-    twodshaderstore[twodvertscnt].a = 1;
+    twodshaderstore[twodvertscnt].color = cf;
     twodshaderstore[twodvertscnt].texid = gltexid;
     twodshaderstore[twodvertscnt].paletteid = 0;
     twodvertscnt++;
@@ -1967,7 +1855,7 @@ void RenderOpenGL::DrawOutdoorTerrain() {
     glUniform1f(glGetUniformLocation(terrainshader.ID, "gamma"), gamma);
 
     // set fog uniforms
-    glUniform3f(glGetUniformLocation(terrainshader.ID, "fog.color"), fogr, fogg, fogb);
+    glUniform3f(glGetUniformLocation(terrainshader.ID, "fog.color"), fog.r, fog.g, fog.b);
     glUniform1f(glGetUniformLocation(terrainshader.ID, "fog.fogstart"), GLfloat(fogstart));
     glUniform1f(glGetUniformLocation(terrainshader.ID, "fog.fogmiddle"), GLfloat(fogmiddle));
     glUniform1f(glGetUniformLocation(terrainshader.ID, "fog.fogend"), GLfloat(fogend));
@@ -2012,15 +1900,13 @@ void RenderOpenGL::DrawOutdoorTerrain() {
         float y = pMobileLightsStack->pLights[i].vPosition.y;
         float z = pMobileLightsStack->pLights[i].vPosition.z;
 
-        float r = pMobileLightsStack->pLights[i].uLightColorR / 255.0f;
-        float g = pMobileLightsStack->pLights[i].uLightColorG / 255.0f;
-        float b = pMobileLightsStack->pLights[i].uLightColorB / 255.0f;
+        Colorf color = pMobileLightsStack->pLights[i].uLightColor.toColorf();
 
         glUniform1f(glGetUniformLocation(terrainshader.ID, ("fspointlights[" + slotnum + "].type").c_str()), 2.0f);
         glUniform3f(glGetUniformLocation(terrainshader.ID, ("fspointlights[" + slotnum + "].position").c_str()), x, y, z);
         glUniform1f(glGetUniformLocation(terrainshader.ID, ("fspointlights[" + slotnum + "].sector").c_str()), 0);
-        glUniform3f(glGetUniformLocation(terrainshader.ID, ("fspointlights[" + slotnum + "].ambient").c_str()), r, g, b);
-        glUniform3f(glGetUniformLocation(terrainshader.ID, ("fspointlights[" + slotnum + "].diffuse").c_str()), r, g, b);
+        glUniform3f(glGetUniformLocation(terrainshader.ID, ("fspointlights[" + slotnum + "].ambient").c_str()), color.r, color.g, color.b);
+        glUniform3f(glGetUniformLocation(terrainshader.ID, ("fspointlights[" + slotnum + "].diffuse").c_str()), color.r, color.g, color.b);
         glUniform3f(glGetUniformLocation(terrainshader.ID, ("fspointlights[" + slotnum + "].specular").c_str()), 0, 0, 0);
         glUniform1f(glGetUniformLocation(terrainshader.ID, ("fspointlights[" + slotnum + "].radius").c_str()), test.uRadius);
         num_lights++;
@@ -2038,17 +1924,15 @@ void RenderOpenGL::DrawOutdoorTerrain() {
         float y = test.vPosition.y;
         float z = test.vPosition.z;
 
-        float r = test.uLightColorR / 255.0;
-        float g = test.uLightColorG / 255.0;
-        float b = test.uLightColorB / 255.0;
+        Colorf color = test.uLightColor.toColorf();
 
         float lightrad = test.uRadius;
 
         glUniform1f(glGetUniformLocation(terrainshader.ID, ("fspointlights[" + slotnum + "].type").c_str()), 1.0);
         glUniform3f(glGetUniformLocation(terrainshader.ID, ("fspointlights[" + slotnum + "].position").c_str()), x, y, z);
-        glUniform3f(glGetUniformLocation(terrainshader.ID, ("fspointlights[" + slotnum + "].ambient").c_str()), r, g, b);
-        glUniform3f(glGetUniformLocation(terrainshader.ID, ("fspointlights[" + slotnum + "].diffuse").c_str()), r, g, b);
-        glUniform3f(glGetUniformLocation(terrainshader.ID, ("fspointlights[" + slotnum + "].specular").c_str()), r, g, b);
+        glUniform3f(glGetUniformLocation(terrainshader.ID, ("fspointlights[" + slotnum + "].ambient").c_str()), color.r, color.g, color.b);
+        glUniform3f(glGetUniformLocation(terrainshader.ID, ("fspointlights[" + slotnum + "].diffuse").c_str()), color.r, color.g, color.b);
+        glUniform3f(glGetUniformLocation(terrainshader.ID, ("fspointlights[" + slotnum + "].specular").c_str()), color.r, color.g, color.b);
         glUniform1f(glGetUniformLocation(terrainshader.ID, ("fspointlights[" + slotnum + "].radius").c_str()), lightrad);
 
         num_lights++;
@@ -2067,17 +1951,15 @@ void RenderOpenGL::DrawOutdoorTerrain() {
         float y = pMobileLightsStack->pLights[i].vPosition.y;
         float z = pMobileLightsStack->pLights[i].vPosition.z;
 
-        float r = pMobileLightsStack->pLights[i].uLightColorR / 255.0;
-        float g = pMobileLightsStack->pLights[i].uLightColorG / 255.0;
-        float b = pMobileLightsStack->pLights[i].uLightColorB / 255.0;
+        Colorf color = pMobileLightsStack->pLights[i].uLightColor.toColorf();
 
         float lightrad = pMobileLightsStack->pLights[i].uRadius;
 
         glUniform1f(glGetUniformLocation(terrainshader.ID, ("fspointlights[" + slotnum + "].type").c_str()), 2.0);
         glUniform3f(glGetUniformLocation(terrainshader.ID, ("fspointlights[" + slotnum + "].position").c_str()), x, y, z);
-        glUniform3f(glGetUniformLocation(terrainshader.ID, ("fspointlights[" + slotnum + "].ambient").c_str()), r, g, b);
-        glUniform3f(glGetUniformLocation(terrainshader.ID, ("fspointlights[" + slotnum + "].diffuse").c_str()), r, g, b);
-        glUniform3f(glGetUniformLocation(terrainshader.ID, ("fspointlights[" + slotnum + "].specular").c_str()), r, g, b);
+        glUniform3f(glGetUniformLocation(terrainshader.ID, ("fspointlights[" + slotnum + "].ambient").c_str()), color.r, color.g, color.b);
+        glUniform3f(glGetUniformLocation(terrainshader.ID, ("fspointlights[" + slotnum + "].diffuse").c_str()), color.r, color.g, color.b);
+        glUniform3f(glGetUniformLocation(terrainshader.ID, ("fspointlights[" + slotnum + "].specular").c_str()), color.r, color.g, color.b);
         glUniform1f(glGetUniformLocation(terrainshader.ID, ("fspointlights[" + slotnum + "].radius").c_str()), lightrad);
 
         num_lights++;
@@ -2369,8 +2251,7 @@ void RenderOpenGL::DrawOutdoorSkyPolygon(struct Polygon *pSkyPolygon) {
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
-    Color uTint = GetActorTintColor(pSkyPolygon->dimming_level, 0, VertexRenderList[0].vWorldViewPosition.x, 1, 0);
-    uint uTintB = uTint.b, uTintG = uTint.g, uTintR = uTint.r;
+    Colorf uTint = GetActorTintColor(pSkyPolygon->dimming_level, 0, VertexRenderList[0].vWorldViewPosition.x, 1, 0).toColorf();
     float scrspace{ pCamera3D->GetFarClip() };
 
 
@@ -2389,10 +2270,7 @@ void RenderOpenGL::DrawOutdoorSkyPolygon(struct Polygon *pSkyPolygon) {
         thisvert->v = VertexRenderList[0].v;
         thisvert->q = 1.0f;
         thisvert->screenspace = scrspace;
-        thisvert->r = (uTintR) / 255.0f;
-        thisvert->g = (uTintG) / 255.0f;
-        thisvert->b = (uTintB) / 255.0f;
-        thisvert->a = 1.0f;
+        thisvert->color = uTint;
         thisvert->texid = texid;
         thisvert++;
 
@@ -2406,10 +2284,7 @@ void RenderOpenGL::DrawOutdoorSkyPolygon(struct Polygon *pSkyPolygon) {
             thisvert->v = VertexRenderList[z + i].v;
             thisvert->q = 1.0f;
             thisvert->screenspace = scrspace;
-            thisvert->r = (uTintR) / 255.0f;
-            thisvert->g = (uTintG) / 255.0f;
-            thisvert->b = (uTintB) / 255.0f;
-            thisvert->a = 1.0f;
+            thisvert->color = uTint;
             thisvert->texid = texid;
             thisvert++;
         }
@@ -2434,10 +2309,7 @@ void RenderOpenGL::DrawOutdoorSkyPolygon(struct Polygon *pSkyPolygon) {
             thisvert->v = 0.5f;
             thisvert->q = 1.0f;
             thisvert->screenspace = scrspace;
-            thisvert->r = (uTintR) / 255.0f;
-            thisvert->g = (uTintG) / 255.0f;
-            thisvert->b = (uTintB) / 255.0f;
-            thisvert->a = 0.0f;
+            thisvert->color = uTint;
             thisvert->texid = texidsolid;
             thisvert++;
 
@@ -2451,10 +2323,8 @@ void RenderOpenGL::DrawOutdoorSkyPolygon(struct Polygon *pSkyPolygon) {
                 thisvert->v = 0.5f;
                 thisvert->q = 1.0f;
                 thisvert->screenspace = scrspace;
-                thisvert->r = (uTintR) / 255.0f;
-                thisvert->g = (uTintG) / 255.0f;
-                thisvert->b = (uTintB) / 255.0f;
-                thisvert->a = ((z + i) == 7) ? 0.0f : 1.0f;
+                thisvert->color = uTint;
+                thisvert->color.a = ((z + i) == 7) ? 0.0f : 1.0f;
                 thisvert->texid = texidsolid;
                 thisvert++;
             }
@@ -2478,10 +2348,7 @@ void RenderOpenGL::DrawOutdoorSkyPolygon(struct Polygon *pSkyPolygon) {
             thisvert->v = 0.5f;
             thisvert->q = 1.0f;
             thisvert->screenspace = scrspace;
-            thisvert->r = (uTintR) / 255.0f;
-            thisvert->g = (uTintG) / 255.0f;
-            thisvert->b = (uTintB) / 255.0f;
-            thisvert->a = 1.0f;
+            thisvert->color = uTint;
             thisvert->texid = texidsolid;
             thisvert++;
 
@@ -2495,10 +2362,7 @@ void RenderOpenGL::DrawOutdoorSkyPolygon(struct Polygon *pSkyPolygon) {
                 thisvert->v = 0.5f;
                 thisvert->q = 1.0f;
                 thisvert->screenspace = scrspace;
-                thisvert->r = (uTintR) / 255.0f;
-                thisvert->g = (uTintG) / 255.0f;
-                thisvert->b = (uTintB) / 255.0f;
-                thisvert->a = 1.0f;
+                thisvert->color = uTint;
                 thisvert->texid = texidsolid;
                 thisvert++;
             }
@@ -2533,7 +2397,7 @@ void RenderOpenGL::DrawForcePerVerts() {
         glVertexAttribPointer(2, 1, GL_FLOAT, GL_FALSE, sizeof(forcepersverts), (void *)offsetof(forcepersverts, screenspace));
         glEnableVertexAttribArray(2);
         // colour
-        glVertexAttribPointer(3, 4, GL_FLOAT, GL_FALSE, sizeof(forcepersverts), (void *)offsetof(forcepersverts, r));
+        glVertexAttribPointer(3, 4, GL_FLOAT, GL_FALSE, sizeof(forcepersverts), (void *)offsetof(forcepersverts, color));
         glEnableVertexAttribArray(3);
     }
 
@@ -2566,7 +2430,7 @@ void RenderOpenGL::DrawForcePerVerts() {
     int fpfogstart{};
     int fpfogend{};
     int fpfogmiddle{};
-    Color fpfogcol{ GetLevelFogColor() };
+    Color fpfogcol = GetLevelFogColor();
 
     if (engine->config->graphics.Fog.value() && uCurrentlyLoadedLevelType == LEVEL_OUTDOOR) {
         if (fpfogcol != Color()) {
@@ -2578,7 +2442,7 @@ void RenderOpenGL::DrawForcePerVerts() {
             fpfogstart = pCamera3D->GetFarClip();
             fpfogmiddle = 0.0f;
             fpfogend = fpfogstart + 1;
-            fpfogr = fpfogg = fpfogb = forceperstore[0].r;
+            fpfogr = fpfogg = fpfogb = forceperstore[0].color.r;
         }
     } else {
         fpfogstart = pCamera3D->GetFarClip();
@@ -2629,14 +2493,14 @@ void RenderOpenGL::DrawForcePerVerts() {
 
 // TODO(pskelton): move ?
 void RenderOpenGL::SetFogParametersGL() {
-    Color fogcol{ GetLevelFogColor() };
+    Color fogcol = GetLevelFogColor();
 
     if (engine->config->graphics.Fog.value() && uCurrentlyLoadedLevelType == LEVEL_OUTDOOR) {
         if (fogcol != Color()) {
             fogstart = day_fogrange_1;
             fogmiddle = day_fogrange_2;
             fogend = pCamera3D->GetFarClip();
-            fogr = fogg = fogb = GetLevelFogColor().r / 255.0f;
+            fog.r = fog.g = fog.b = GetLevelFogColor().r / 255.0f;
         } else {
             fogend = pCamera3D->GetFarClip();
             fogmiddle = 0.0f;
@@ -2644,7 +2508,7 @@ void RenderOpenGL::SetFogParametersGL() {
 
             // grabs sky back fog colour
             Color uTint = GetActorTintColor(31, 0, fogend, 1, 0);
-            fogr = fogg = fogb = uTint.r / 255.0f;
+            fog.r = fog.g = fog.b = uTint.r / 255.0f;
         }
     } else {
         // puts fog beyond viewclip so we never see it
@@ -2660,10 +2524,7 @@ struct billbverts {
     GLfloat z;
     GLfloat u;
     GLfloat v;
-    GLfloat r;
-    GLfloat g;
-    GLfloat b;
-    GLfloat a;
+    Colorf color;
     GLfloat screenspace;
     GLfloat texid;
     GLfloat blend;
@@ -2733,10 +2594,7 @@ void RenderOpenGL::DoRenderBillboards_D3D() {
         billbstore[billbstorecnt].z = thisdepth;
         billbstore[billbstorecnt].u = std::clamp(billboard->pQuads[0].texcoord.x, 0.01f, 0.99f);
         billbstore[billbstorecnt].v = std::clamp(billboard->pQuads[0].texcoord.y, 0.01f, 0.99f);
-        billbstore[billbstorecnt].r = billboard->pQuads[0].diffuse.r / 255.0f;
-        billbstore[billbstorecnt].g = billboard->pQuads[0].diffuse.g / 255.0f;
-        billbstore[billbstorecnt].b = billboard->pQuads[0].diffuse.b / 255.0f;
-        billbstore[billbstorecnt].a = 1;
+        billbstore[billbstorecnt].color = billboard->pQuads[0].diffuse.toColorf();
         billbstore[billbstorecnt].screenspace = billboard->screen_space_z;
         billbstore[billbstorecnt].texid = gltexid;
         billbstore[billbstorecnt].blend = thisblend;
@@ -2748,10 +2606,7 @@ void RenderOpenGL::DoRenderBillboards_D3D() {
         billbstore[billbstorecnt].z = thisdepth;
         billbstore[billbstorecnt].u = std::clamp(billboard->pQuads[1].texcoord.x, 0.01f, 0.99f);
         billbstore[billbstorecnt].v = std::clamp(billboard->pQuads[1].texcoord.y, 0.01f, 0.99f);
-        billbstore[billbstorecnt].r = billboard->pQuads[1].diffuse.r / 255.0f;
-        billbstore[billbstorecnt].g = billboard->pQuads[1].diffuse.g / 255.0f;
-        billbstore[billbstorecnt].b = billboard->pQuads[1].diffuse.b / 255.0f;
-        billbstore[billbstorecnt].a = 1;
+        billbstore[billbstorecnt].color = billboard->pQuads[1].diffuse.toColorf();
         billbstore[billbstorecnt].screenspace = billboard->screen_space_z;
         billbstore[billbstorecnt].texid = gltexid;
         billbstore[billbstorecnt].blend = thisblend;
@@ -2763,10 +2618,7 @@ void RenderOpenGL::DoRenderBillboards_D3D() {
         billbstore[billbstorecnt].z = thisdepth;
         billbstore[billbstorecnt].u = std::clamp(billboard->pQuads[2].texcoord.x, 0.01f, 0.99f);
         billbstore[billbstorecnt].v = std::clamp(billboard->pQuads[2].texcoord.y, 0.01f, 0.99f);
-        billbstore[billbstorecnt].r = billboard->pQuads[2].diffuse.r / 255.0f;
-        billbstore[billbstorecnt].g = billboard->pQuads[2].diffuse.g / 255.0f;
-        billbstore[billbstorecnt].b = billboard->pQuads[2].diffuse.b / 255.0f;
-        billbstore[billbstorecnt].a = 1;
+        billbstore[billbstorecnt].color = billboard->pQuads[2].diffuse.toColorf();
         billbstore[billbstorecnt].screenspace = billboard->screen_space_z;
         billbstore[billbstorecnt].texid = gltexid;
         billbstore[billbstorecnt].blend = thisblend;
@@ -2781,10 +2633,7 @@ void RenderOpenGL::DoRenderBillboards_D3D() {
             billbstore[billbstorecnt].z = thisdepth;
             billbstore[billbstorecnt].u = std::clamp(billboard->pQuads[0].texcoord.x, 0.01f, 0.99f);
             billbstore[billbstorecnt].v = std::clamp(billboard->pQuads[0].texcoord.y, 0.01f, 0.99f);
-            billbstore[billbstorecnt].r = billboard->pQuads[0].diffuse.r / 255.0f;
-            billbstore[billbstorecnt].g = billboard->pQuads[0].diffuse.g / 255.0f;
-            billbstore[billbstorecnt].b = billboard->pQuads[0].diffuse.b / 255.0f;
-            billbstore[billbstorecnt].a = 1;
+            billbstore[billbstorecnt].color = billboard->pQuads[0].diffuse.toColorf();
             billbstore[billbstorecnt].screenspace = billboard->screen_space_z;
             billbstore[billbstorecnt].texid = gltexid;
             billbstore[billbstorecnt].blend = thisblend;
@@ -2796,10 +2645,7 @@ void RenderOpenGL::DoRenderBillboards_D3D() {
             billbstore[billbstorecnt].z = thisdepth;
             billbstore[billbstorecnt].u = std::clamp(billboard->pQuads[2].texcoord.x, 0.01f, 0.99f);
             billbstore[billbstorecnt].v = std::clamp(billboard->pQuads[2].texcoord.y, 0.01f, 0.99f);
-            billbstore[billbstorecnt].r = billboard->pQuads[2].diffuse.r / 255.0f;
-            billbstore[billbstorecnt].g = billboard->pQuads[2].diffuse.g / 255.0f;
-            billbstore[billbstorecnt].b = billboard->pQuads[2].diffuse.b / 255.0f;
-            billbstore[billbstorecnt].a = 1;
+            billbstore[billbstorecnt].color = billboard->pQuads[2].diffuse.toColorf();
             billbstore[billbstorecnt].screenspace = billboard->screen_space_z;
             billbstore[billbstorecnt].texid = gltexid;
             billbstore[billbstorecnt].blend = thisblend;
@@ -2811,10 +2657,7 @@ void RenderOpenGL::DoRenderBillboards_D3D() {
             billbstore[billbstorecnt].z = thisdepth;
             billbstore[billbstorecnt].u = std::clamp(billboard->pQuads[3].texcoord.x, 0.01f, 0.99f);
             billbstore[billbstorecnt].v = std::clamp(billboard->pQuads[3].texcoord.y, 0.01f, 0.99f);
-            billbstore[billbstorecnt].r = billboard->pQuads[3].diffuse.r / 255.0f;
-            billbstore[billbstorecnt].g = billboard->pQuads[3].diffuse.g / 255.0f;
-            billbstore[billbstorecnt].b = billboard->pQuads[3].diffuse.b / 255.0f;
-            billbstore[billbstorecnt].a = 1;
+            billbstore[billbstorecnt].color = billboard->pQuads[3].diffuse.toColorf();
             billbstore[billbstorecnt].screenspace = billboard->screen_space_z;
             billbstore[billbstorecnt].texid = gltexid;
             billbstore[billbstorecnt].blend = thisblend;
@@ -2855,7 +2698,7 @@ void RenderOpenGL::DrawBillboards() {
         glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(billbverts), (void *)offsetof(billbverts, u));
         glEnableVertexAttribArray(1);
         // colour
-        glVertexAttribPointer(2, 4, GL_FLOAT, GL_FALSE, sizeof(billbverts), (void *)offsetof(billbverts, r));
+        glVertexAttribPointer(2, 4, GL_FLOAT, GL_FALSE, sizeof(billbverts), (void *)offsetof(billbverts, color));
         glEnableVertexAttribArray(2);
         // screenspace
         glVertexAttribPointer(3, 1, GL_FLOAT, GL_FALSE, sizeof(billbverts), (void *)offsetof(billbverts, screenspace));
@@ -2915,7 +2758,7 @@ void RenderOpenGL::DrawBillboards() {
     glUniform1f(glGetUniformLocation(billbshader.ID, "gamma"), gamma);
 
     // set fog uniforms
-    glUniform3f(glGetUniformLocation(billbshader.ID, "fog.color"), fogr, fogg, fogb);
+    glUniform3f(glGetUniformLocation(billbshader.ID, "fog.color"), fog.r, fog.g, fog.b);
     glUniform1f(glGetUniformLocation(billbshader.ID, "fog.fogstart"), GLfloat(fogstart));
     glUniform1f(glGetUniformLocation(billbshader.ID, "fog.fogmiddle"), GLfloat(fogmiddle));
     glUniform1f(glGetUniformLocation(billbshader.ID, "fog.fogend"), GLfloat(fogend));
@@ -3020,9 +2863,7 @@ void RenderOpenGL::DrawTextureNew(float u, float v, GraphicsImage *tex, Color co
         return;
     }
 
-    float r = colourmask.r / 255.0f;
-    float g = colourmask.g / 255.0f;
-    float b = colourmask.b / 255.0f;
+    Colorf cf = colourmask.toColorf();
 
     int clipx = this->clip_x;
     int clipy = this->clip_y;
@@ -3061,10 +2902,7 @@ void RenderOpenGL::DrawTextureNew(float u, float v, GraphicsImage *tex, Color co
     twodshaderstore[twodvertscnt].z = 0;
     twodshaderstore[twodvertscnt].u = texx;
     twodshaderstore[twodvertscnt].v = texy;
-    twodshaderstore[twodvertscnt].r = r;
-    twodshaderstore[twodvertscnt].g = g;
-    twodshaderstore[twodvertscnt].b = b;
-    twodshaderstore[twodvertscnt].a = 1;
+    twodshaderstore[twodvertscnt].color = cf;
     twodshaderstore[twodvertscnt].texid = gltexid;
     twodshaderstore[twodvertscnt].paletteid = 0;
     twodvertscnt++;
@@ -3074,10 +2912,7 @@ void RenderOpenGL::DrawTextureNew(float u, float v, GraphicsImage *tex, Color co
     twodshaderstore[twodvertscnt].z = 0;
     twodshaderstore[twodvertscnt].u = texz;
     twodshaderstore[twodvertscnt].v = texy;
-    twodshaderstore[twodvertscnt].r = r;
-    twodshaderstore[twodvertscnt].g = g;
-    twodshaderstore[twodvertscnt].b = b;
-    twodshaderstore[twodvertscnt].a = 1;
+    twodshaderstore[twodvertscnt].color = cf;
     twodshaderstore[twodvertscnt].texid = gltexid;
     twodshaderstore[twodvertscnt].paletteid = 0;
     twodvertscnt++;
@@ -3087,10 +2922,7 @@ void RenderOpenGL::DrawTextureNew(float u, float v, GraphicsImage *tex, Color co
     twodshaderstore[twodvertscnt].z = 0;
     twodshaderstore[twodvertscnt].u = texz;
     twodshaderstore[twodvertscnt].v = texw;
-    twodshaderstore[twodvertscnt].r = r;
-    twodshaderstore[twodvertscnt].g = g;
-    twodshaderstore[twodvertscnt].b = b;
-    twodshaderstore[twodvertscnt].a = 1;
+    twodshaderstore[twodvertscnt].color = cf;
     twodshaderstore[twodvertscnt].texid = gltexid;
     twodshaderstore[twodvertscnt].paletteid = 0;
     twodvertscnt++;
@@ -3102,10 +2934,7 @@ void RenderOpenGL::DrawTextureNew(float u, float v, GraphicsImage *tex, Color co
     twodshaderstore[twodvertscnt].z = 0;
     twodshaderstore[twodvertscnt].u = texx;
     twodshaderstore[twodvertscnt].v = texy;
-    twodshaderstore[twodvertscnt].r = r;
-    twodshaderstore[twodvertscnt].g = g;
-    twodshaderstore[twodvertscnt].b = b;
-    twodshaderstore[twodvertscnt].a = 1;
+    twodshaderstore[twodvertscnt].color = cf;
     twodshaderstore[twodvertscnt].texid = gltexid;
     twodshaderstore[twodvertscnt].paletteid = 0;
     twodvertscnt++;
@@ -3115,10 +2944,7 @@ void RenderOpenGL::DrawTextureNew(float u, float v, GraphicsImage *tex, Color co
     twodshaderstore[twodvertscnt].z = 0;
     twodshaderstore[twodvertscnt].u = texz;
     twodshaderstore[twodvertscnt].v = texw;
-    twodshaderstore[twodvertscnt].r = r;
-    twodshaderstore[twodvertscnt].g = g;
-    twodshaderstore[twodvertscnt].b = b;
-    twodshaderstore[twodvertscnt].a = 1;
+    twodshaderstore[twodvertscnt].color = cf;
     twodshaderstore[twodvertscnt].texid = gltexid;
     twodshaderstore[twodvertscnt].paletteid = 0;
     twodvertscnt++;
@@ -3128,10 +2954,7 @@ void RenderOpenGL::DrawTextureNew(float u, float v, GraphicsImage *tex, Color co
     twodshaderstore[twodvertscnt].z = 0;
     twodshaderstore[twodvertscnt].u = texx;
     twodshaderstore[twodvertscnt].v = texw;
-    twodshaderstore[twodvertscnt].r = r;
-    twodshaderstore[twodvertscnt].g = g;
-    twodshaderstore[twodvertscnt].b = b;
-    twodshaderstore[twodvertscnt].a = 1;
+    twodshaderstore[twodvertscnt].color = cf;
     twodshaderstore[twodvertscnt].texid = gltexid;
     twodshaderstore[twodvertscnt].paletteid = 0;
     twodvertscnt++;
@@ -3148,9 +2971,7 @@ void RenderOpenGL::DrawTextureCustomHeight(float u, float v, class GraphicsImage
         return;
     }
 
-    float r = 1.0f;
-    float g = 1.0f;
-    float b = 1.0f;
+    Colorf cf(1.0f, 1.0f, 1.0f);
 
     int clipx = this->clip_x;
     int clipy = this->clip_y;
@@ -3189,10 +3010,7 @@ void RenderOpenGL::DrawTextureCustomHeight(float u, float v, class GraphicsImage
     twodshaderstore[twodvertscnt].z = 0;
     twodshaderstore[twodvertscnt].u = texx;
     twodshaderstore[twodvertscnt].v = texy;
-    twodshaderstore[twodvertscnt].r = r;
-    twodshaderstore[twodvertscnt].g = g;
-    twodshaderstore[twodvertscnt].b = b;
-    twodshaderstore[twodvertscnt].a = 1;
+    twodshaderstore[twodvertscnt].color = cf;
     twodshaderstore[twodvertscnt].texid = gltexid;
     twodshaderstore[twodvertscnt].paletteid = 0;
     twodvertscnt++;
@@ -3202,10 +3020,7 @@ void RenderOpenGL::DrawTextureCustomHeight(float u, float v, class GraphicsImage
     twodshaderstore[twodvertscnt].z = 0;
     twodshaderstore[twodvertscnt].u = texz;
     twodshaderstore[twodvertscnt].v = texy;
-    twodshaderstore[twodvertscnt].r = r;
-    twodshaderstore[twodvertscnt].g = g;
-    twodshaderstore[twodvertscnt].b = b;
-    twodshaderstore[twodvertscnt].a = 1;
+    twodshaderstore[twodvertscnt].color = cf;
     twodshaderstore[twodvertscnt].texid = gltexid;
     twodshaderstore[twodvertscnt].paletteid = 0;
     twodvertscnt++;
@@ -3215,10 +3030,7 @@ void RenderOpenGL::DrawTextureCustomHeight(float u, float v, class GraphicsImage
     twodshaderstore[twodvertscnt].z = 0;
     twodshaderstore[twodvertscnt].u = texz;
     twodshaderstore[twodvertscnt].v = texw;
-    twodshaderstore[twodvertscnt].r = r;
-    twodshaderstore[twodvertscnt].g = g;
-    twodshaderstore[twodvertscnt].b = b;
-    twodshaderstore[twodvertscnt].a = 1;
+    twodshaderstore[twodvertscnt].color = cf;
     twodshaderstore[twodvertscnt].texid = gltexid;
     twodshaderstore[twodvertscnt].paletteid = 0;
     twodvertscnt++;
@@ -3230,10 +3042,7 @@ void RenderOpenGL::DrawTextureCustomHeight(float u, float v, class GraphicsImage
     twodshaderstore[twodvertscnt].z = 0;
     twodshaderstore[twodvertscnt].u = texx;
     twodshaderstore[twodvertscnt].v = texy;
-    twodshaderstore[twodvertscnt].r = r;
-    twodshaderstore[twodvertscnt].g = g;
-    twodshaderstore[twodvertscnt].b = b;
-    twodshaderstore[twodvertscnt].a = 1;
+    twodshaderstore[twodvertscnt].color = cf;
     twodshaderstore[twodvertscnt].texid = gltexid;
     twodshaderstore[twodvertscnt].paletteid = 0;
     twodvertscnt++;
@@ -3243,10 +3052,7 @@ void RenderOpenGL::DrawTextureCustomHeight(float u, float v, class GraphicsImage
     twodshaderstore[twodvertscnt].z = 0;
     twodshaderstore[twodvertscnt].u = texz;
     twodshaderstore[twodvertscnt].v = texw;
-    twodshaderstore[twodvertscnt].r = r;
-    twodshaderstore[twodvertscnt].g = g;
-    twodshaderstore[twodvertscnt].b = b;
-    twodshaderstore[twodvertscnt].a = 1;
+    twodshaderstore[twodvertscnt].color = cf;
     twodshaderstore[twodvertscnt].texid = gltexid;
     twodshaderstore[twodvertscnt].paletteid = 0;
     twodvertscnt++;
@@ -3256,10 +3062,7 @@ void RenderOpenGL::DrawTextureCustomHeight(float u, float v, class GraphicsImage
     twodshaderstore[twodvertscnt].z = 0;
     twodshaderstore[twodvertscnt].u = texx;
     twodshaderstore[twodvertscnt].v = texw;
-    twodshaderstore[twodvertscnt].r = r;
-    twodshaderstore[twodvertscnt].g = g;
-    twodshaderstore[twodvertscnt].b = b;
-    twodshaderstore[twodvertscnt].a = 1;
+    twodshaderstore[twodvertscnt].color = cf;
     twodshaderstore[twodvertscnt].texid = gltexid;
     twodshaderstore[twodvertscnt].paletteid = 0;
     twodvertscnt++;
@@ -3321,7 +3124,7 @@ void RenderOpenGL::EndTextNew() {
         glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(twodverts), (void *)offsetof(twodverts, u));
         glEnableVertexAttribArray(1);
         // colour
-        glVertexAttribPointer(2, 4, GL_FLOAT, GL_FALSE, sizeof(twodverts), (void *)offsetof(twodverts, r));
+        glVertexAttribPointer(2, 4, GL_FLOAT, GL_FALSE, sizeof(twodverts), (void *)offsetof(twodverts, color));
         glEnableVertexAttribArray(2);
         // texid
         glVertexAttribPointer(3, 1, GL_FLOAT, GL_FALSE, sizeof(twodverts), (void *)offsetof(twodverts, texid));
@@ -3389,11 +3192,10 @@ void RenderOpenGL::EndTextNew() {
 
 // TODO(pskelton): make color 32
 void RenderOpenGL::DrawTextNew(int x, int y, int width, int h, float u1, float v1, float u2, float v2, int isshadow, Color colour) {
-    float b = colour.b / 255.0f;
-    float g = colour.g / 255.0f;
-    float r = colour.r / 255.0f;
+    Colorf cf = colour.toColorf();
     // not 100% sure why this is required but it is
-    if (r == 0.0f) r = 0.00392f;
+    if (cf.r == 0.0f)
+        cf.r = 0.00392f;
 
     int clipx = this->clip_x;
     int clipy = this->clip_y;
@@ -3424,10 +3226,7 @@ void RenderOpenGL::DrawTextNew(int x, int y, int width, int h, float u1, float v
     textshaderstore[textvertscnt].z = 0;
     textshaderstore[textvertscnt].u = texx;
     textshaderstore[textvertscnt].v = texy;
-    textshaderstore[textvertscnt].r = r;
-    textshaderstore[textvertscnt].g = g;
-    textshaderstore[textvertscnt].b = b;
-    textshaderstore[textvertscnt].a = 1.0f;
+    textshaderstore[textvertscnt].color = cf;
     textshaderstore[textvertscnt].texid = (isshadow);
     textshaderstore[textvertscnt].paletteid = 0;
     textvertscnt++;
@@ -3437,10 +3236,7 @@ void RenderOpenGL::DrawTextNew(int x, int y, int width, int h, float u1, float v
     textshaderstore[textvertscnt].z = 0;
     textshaderstore[textvertscnt].u = texz;
     textshaderstore[textvertscnt].v = texy;
-    textshaderstore[textvertscnt].r = r;
-    textshaderstore[textvertscnt].g = g;
-    textshaderstore[textvertscnt].b = b;
-    textshaderstore[textvertscnt].a = 1.0f;
+    textshaderstore[textvertscnt].color = cf;
     textshaderstore[textvertscnt].texid = (isshadow);
     textshaderstore[textvertscnt].paletteid = 0;
     textvertscnt++;
@@ -3450,10 +3246,7 @@ void RenderOpenGL::DrawTextNew(int x, int y, int width, int h, float u1, float v
     textshaderstore[textvertscnt].z = 0;
     textshaderstore[textvertscnt].u = texz;
     textshaderstore[textvertscnt].v = texw;
-    textshaderstore[textvertscnt].r = r;
-    textshaderstore[textvertscnt].g = g;
-    textshaderstore[textvertscnt].b = b;
-    textshaderstore[textvertscnt].a = 1;
+    textshaderstore[textvertscnt].color = cf;
     textshaderstore[textvertscnt].texid = (isshadow);
     textshaderstore[textvertscnt].paletteid = 0;
     textvertscnt++;
@@ -3464,10 +3257,7 @@ void RenderOpenGL::DrawTextNew(int x, int y, int width, int h, float u1, float v
     textshaderstore[textvertscnt].z = 0;
     textshaderstore[textvertscnt].u = texx;
     textshaderstore[textvertscnt].v = texy;
-    textshaderstore[textvertscnt].r = r;
-    textshaderstore[textvertscnt].g = g;
-    textshaderstore[textvertscnt].b = b;
-    textshaderstore[textvertscnt].a = 1;
+    textshaderstore[textvertscnt].color = cf;
     textshaderstore[textvertscnt].texid = (isshadow);
     textshaderstore[textvertscnt].paletteid = 0;
     textvertscnt++;
@@ -3477,10 +3267,7 @@ void RenderOpenGL::DrawTextNew(int x, int y, int width, int h, float u1, float v
     textshaderstore[textvertscnt].z = 0;
     textshaderstore[textvertscnt].u = texz;
     textshaderstore[textvertscnt].v = texw;
-    textshaderstore[textvertscnt].r = r;
-    textshaderstore[textvertscnt].g = g;
-    textshaderstore[textvertscnt].b = b;
-    textshaderstore[textvertscnt].a = 1;
+    textshaderstore[textvertscnt].color = cf;
     textshaderstore[textvertscnt].texid = (isshadow);
     textshaderstore[textvertscnt].paletteid = 0;
     textvertscnt++;
@@ -3490,10 +3277,7 @@ void RenderOpenGL::DrawTextNew(int x, int y, int width, int h, float u1, float v
     textshaderstore[textvertscnt].z = 0;
     textshaderstore[textvertscnt].u = texx;
     textshaderstore[textvertscnt].v = texw;
-    textshaderstore[textvertscnt].r = r;
-    textshaderstore[textvertscnt].g = g;
-    textshaderstore[textvertscnt].b = b;
-    textshaderstore[textvertscnt].a = 1;
+    textshaderstore[textvertscnt].color = cf;
     textshaderstore[textvertscnt].texid = (isshadow);
     textshaderstore[textvertscnt].paletteid = 0;
     textvertscnt++;
@@ -3946,7 +3730,7 @@ void RenderOpenGL::DrawOutdoorBuildings() {
     glUniform1i(glGetUniformLocation(outbuildshader.ID, "textureArray0"), GLint(0));
 
     // set fog uniforms
-    glUniform3f(glGetUniformLocation(outbuildshader.ID, "fog.color"), fogr, fogg, fogb);
+    glUniform3f(glGetUniformLocation(outbuildshader.ID, "fog.color"), fog.r, fog.g, fog.b);
     glUniform1f(glGetUniformLocation(outbuildshader.ID, "fog.fogstart"), GLfloat(fogstart));
     glUniform1f(glGetUniformLocation(outbuildshader.ID, "fog.fogmiddle"), GLfloat(fogmiddle));
     glUniform1f(glGetUniformLocation(outbuildshader.ID, "fog.fogend"), GLfloat(fogend));
@@ -3990,15 +3774,13 @@ void RenderOpenGL::DrawOutdoorBuildings() {
         float y = pMobileLightsStack->pLights[i].vPosition.y;
         float z = pMobileLightsStack->pLights[i].vPosition.z;
 
-        float r = pMobileLightsStack->pLights[i].uLightColorR / 255.0f;
-        float g = pMobileLightsStack->pLights[i].uLightColorG / 255.0f;
-        float b = pMobileLightsStack->pLights[i].uLightColorB / 255.0f;
+        Colorf color = pMobileLightsStack->pLights[i].uLightColor.toColorf();
 
         glUniform1f(glGetUniformLocation(outbuildshader.ID, ("fspointlights[" + slotnum + "].type").c_str()), 2.0f);
         glUniform3f(glGetUniformLocation(outbuildshader.ID, ("fspointlights[" + slotnum + "].position").c_str()), x, y, z);
         glUniform1f(glGetUniformLocation(outbuildshader.ID, ("fspointlights[" + slotnum + "].sector").c_str()), 0);
-        glUniform3f(glGetUniformLocation(outbuildshader.ID, ("fspointlights[" + slotnum + "].ambient").c_str()), r, g, b);
-        glUniform3f(glGetUniformLocation(outbuildshader.ID, ("fspointlights[" + slotnum + "].diffuse").c_str()), r, g, b);
+        glUniform3f(glGetUniformLocation(outbuildshader.ID, ("fspointlights[" + slotnum + "].ambient").c_str()), color.r, color.g, color.b);
+        glUniform3f(glGetUniformLocation(outbuildshader.ID, ("fspointlights[" + slotnum + "].diffuse").c_str()), color.r, color.g, color.b);
         glUniform3f(glGetUniformLocation(outbuildshader.ID, ("fspointlights[" + slotnum + "].specular").c_str()), 0, 0, 0);
         glUniform1f(glGetUniformLocation(outbuildshader.ID, ("fspointlights[" + slotnum + "].radius").c_str()), test.uRadius);
         num_lights++;
@@ -4016,17 +3798,15 @@ void RenderOpenGL::DrawOutdoorBuildings() {
         float y = test.vPosition.y;
         float z = test.vPosition.z;
 
-        float r = test.uLightColorR / 255.0;
-        float g = test.uLightColorG / 255.0;
-        float b = test.uLightColorB / 255.0;
+        Colorf color = test.uLightColor.toColorf();
 
         float lightrad = test.uRadius;
 
         glUniform1f(glGetUniformLocation(outbuildshader.ID, ("fspointlights[" + slotnum + "].type").c_str()), 1.0);
         glUniform3f(glGetUniformLocation(outbuildshader.ID, ("fspointlights[" + slotnum + "].position").c_str()), x, y, z);
-        glUniform3f(glGetUniformLocation(outbuildshader.ID, ("fspointlights[" + slotnum + "].ambient").c_str()), r, g, b);
-        glUniform3f(glGetUniformLocation(outbuildshader.ID, ("fspointlights[" + slotnum + "].diffuse").c_str()), r, g, b);
-        glUniform3f(glGetUniformLocation(outbuildshader.ID, ("fspointlights[" + slotnum + "].specular").c_str()), r, g, b);
+        glUniform3f(glGetUniformLocation(outbuildshader.ID, ("fspointlights[" + slotnum + "].ambient").c_str()), color.r, color.g, color.b);
+        glUniform3f(glGetUniformLocation(outbuildshader.ID, ("fspointlights[" + slotnum + "].diffuse").c_str()), color.r, color.g, color.b);
+        glUniform3f(glGetUniformLocation(outbuildshader.ID, ("fspointlights[" + slotnum + "].specular").c_str()), color.r, color.g, color.b);
         glUniform1f(glGetUniformLocation(outbuildshader.ID, ("fspointlights[" + slotnum + "].radius").c_str()), lightrad);
 
         num_lights++;
@@ -4045,17 +3825,15 @@ void RenderOpenGL::DrawOutdoorBuildings() {
         float y = pMobileLightsStack->pLights[i].vPosition.y;
         float z = pMobileLightsStack->pLights[i].vPosition.z;
 
-        float r = pMobileLightsStack->pLights[i].uLightColorR / 255.0;
-        float g = pMobileLightsStack->pLights[i].uLightColorG / 255.0;
-        float b = pMobileLightsStack->pLights[i].uLightColorB / 255.0;
+        Colorf color = pMobileLightsStack->pLights[i].uLightColor.toColorf();
 
         float lightrad = pMobileLightsStack->pLights[i].uRadius;
 
         glUniform1f(glGetUniformLocation(outbuildshader.ID, ("fspointlights[" + slotnum + "].type").c_str()), 2.0);
         glUniform3f(glGetUniformLocation(outbuildshader.ID, ("fspointlights[" + slotnum + "].position").c_str()), x, y, z);
-        glUniform3f(glGetUniformLocation(outbuildshader.ID, ("fspointlights[" + slotnum + "].ambient").c_str()), r, g, b);
-        glUniform3f(glGetUniformLocation(outbuildshader.ID, ("fspointlights[" + slotnum + "].diffuse").c_str()), r, g, b);
-        glUniform3f(glGetUniformLocation(outbuildshader.ID, ("fspointlights[" + slotnum + "].specular").c_str()), r, g, b);
+        glUniform3f(glGetUniformLocation(outbuildshader.ID, ("fspointlights[" + slotnum + "].ambient").c_str()), color.r, color.g, color.b);
+        glUniform3f(glGetUniformLocation(outbuildshader.ID, ("fspointlights[" + slotnum + "].diffuse").c_str()), color.r, color.g, color.b);
+        glUniform3f(glGetUniformLocation(outbuildshader.ID, ("fspointlights[" + slotnum + "].specular").c_str()), color.r, color.g, color.b);
         glUniform1f(glGetUniformLocation(outbuildshader.ID, ("fspointlights[" + slotnum + "].radius").c_str()), lightrad);
 
         num_lights++;
@@ -4691,15 +4469,13 @@ void RenderOpenGL::DrawIndoorFaces() {
             float y = pMobileLightsStack->pLights[i].vPosition.y;
             float z = pMobileLightsStack->pLights[i].vPosition.z;
 
-            float r = pMobileLightsStack->pLights[i].uLightColorR / 255.0f;
-            float g = pMobileLightsStack->pLights[i].uLightColorG / 255.0f;
-            float b = pMobileLightsStack->pLights[i].uLightColorB / 255.0f;
+            Colorf color = pMobileLightsStack->pLights[i].uLightColor.toColorf();
 
             glUniform1f(glGetUniformLocation(bspshader.ID, ("fspointlights[" + slotnum + "].type").c_str()), 2.0f);
             glUniform3f(glGetUniformLocation(bspshader.ID, ("fspointlights[" + slotnum + "].position").c_str()), x, y, z);
             glUniform1f(glGetUniformLocation(bspshader.ID, ("fspointlights[" + slotnum + "].sector").c_str()), 0);
-            glUniform3f(glGetUniformLocation(bspshader.ID, ("fspointlights[" + slotnum + "].ambient").c_str()), r, g, b);
-            glUniform3f(glGetUniformLocation(bspshader.ID, ("fspointlights[" + slotnum + "].diffuse").c_str()), r, g, b);
+            glUniform3f(glGetUniformLocation(bspshader.ID, ("fspointlights[" + slotnum + "].ambient").c_str()), color.r, color.g, color.b);
+            glUniform3f(glGetUniformLocation(bspshader.ID, ("fspointlights[" + slotnum + "].diffuse").c_str()), color.r, color.g, color.b);
             glUniform3f(glGetUniformLocation(bspshader.ID, ("fspointlights[" + slotnum + "].specular").c_str()), 0, 0, 0);
             glUniform1f(glGetUniformLocation(bspshader.ID, ("fspointlights[" + slotnum + "].radius").c_str()), test.uRadius);
             num_lights++;
@@ -4751,15 +4527,13 @@ void RenderOpenGL::DrawIndoorFaces() {
             float y = test.vPosition.y;
             float z = test.vPosition.z;
 
-            float r = test.uLightColorR / 255.0f;
-            float g = test.uLightColorG / 255.0f;
-            float b = test.uLightColorB / 255.0f;
+            Colorf color = test.uLightColor.toColorf();
 
             glUniform1f(glGetUniformLocation(bspshader.ID, ("fspointlights[" + slotnum + "].type").c_str()), 1.0f);
             glUniform3f(glGetUniformLocation(bspshader.ID, ("fspointlights[" + slotnum + "].position").c_str()), x, y, z);
             glUniform1f(glGetUniformLocation(bspshader.ID, ("fspointlights[" + slotnum + "].sector").c_str()), test.uSectorID);
-            glUniform3f(glGetUniformLocation(bspshader.ID, ("fspointlights[" + slotnum + "].ambient").c_str()), r, g, b);
-            glUniform3f(glGetUniformLocation(bspshader.ID, ("fspointlights[" + slotnum + "].diffuse").c_str()), r, g, b);
+            glUniform3f(glGetUniformLocation(bspshader.ID, ("fspointlights[" + slotnum + "].ambient").c_str()), color.r, color.g, color.b);
+            glUniform3f(glGetUniformLocation(bspshader.ID, ("fspointlights[" + slotnum + "].diffuse").c_str()), color.r, color.g, color.b);
             glUniform3f(glGetUniformLocation(bspshader.ID, ("fspointlights[" + slotnum + "].specular").c_str()), 0, 0, 0);
             glUniform1f(glGetUniformLocation(bspshader.ID, ("fspointlights[" + slotnum + "].radius").c_str()), test.uRadius);
             num_lights++;
@@ -4779,15 +4553,13 @@ void RenderOpenGL::DrawIndoorFaces() {
             float y = pMobileLightsStack->pLights[i].vPosition.y;
             float z = pMobileLightsStack->pLights[i].vPosition.z;
 
-            float r = pMobileLightsStack->pLights[i].uLightColorR / 255.0f;
-            float g = pMobileLightsStack->pLights[i].uLightColorG / 255.0f;
-            float b = pMobileLightsStack->pLights[i].uLightColorB / 255.0f;
+            Colorf color = pMobileLightsStack->pLights[i].uLightColor.toColorf();
 
             glUniform1f(glGetUniformLocation(bspshader.ID, ("fspointlights[" + slotnum + "].type").c_str()), 2.0f);
             glUniform3f(glGetUniformLocation(bspshader.ID, ("fspointlights[" + slotnum + "].position").c_str()), x, y, z);
             glUniform1f(glGetUniformLocation(bspshader.ID, ("fspointlights[" + slotnum + "].sector").c_str()), 0);
-            glUniform3f(glGetUniformLocation(bspshader.ID, ("fspointlights[" + slotnum + "].ambient").c_str()), r, g, b);
-            glUniform3f(glGetUniformLocation(bspshader.ID, ("fspointlights[" + slotnum + "].diffuse").c_str()), r, g, b);
+            glUniform3f(glGetUniformLocation(bspshader.ID, ("fspointlights[" + slotnum + "].ambient").c_str()), color.r, color.g, color.b);
+            glUniform3f(glGetUniformLocation(bspshader.ID, ("fspointlights[" + slotnum + "].diffuse").c_str()), color.r, color.g, color.b);
             glUniform3f(glGetUniformLocation(bspshader.ID, ("fspointlights[" + slotnum + "].specular").c_str()), 0, 0, 0);
             glUniform1f(glGetUniformLocation(bspshader.ID, ("fspointlights[" + slotnum + "].radius").c_str()), test.uRadius);
             num_lights++;
@@ -4980,10 +4752,7 @@ bool RenderOpenGL::Initialize() {
 
 void RenderOpenGL::FillRectFast(unsigned int uX, unsigned int uY, unsigned int uWidth,
                                 unsigned int uHeight, Color uColor32) {
-    float a = uColor32.a / 255.0f;
-    float b = uColor32.b / 255.0f;
-    float g = uColor32.g / 255.0f;
-    float r = uColor32.r / 255.0f;
+    Colorf cf = uColor32.toColorf();
 
     float depth = 0;
     int x = uX;
@@ -5017,10 +4786,7 @@ void RenderOpenGL::FillRectFast(unsigned int uX, unsigned int uY, unsigned int u
     twodshaderstore[twodvertscnt].z = 0;
     twodshaderstore[twodvertscnt].u = texx;
     twodshaderstore[twodvertscnt].v = texy;
-    twodshaderstore[twodvertscnt].r = r;
-    twodshaderstore[twodvertscnt].g = g;
-    twodshaderstore[twodvertscnt].b = b;
-    twodshaderstore[twodvertscnt].a = a;
+    twodshaderstore[twodvertscnt].color = cf;
     twodshaderstore[twodvertscnt].texid = gltexid;
     twodshaderstore[twodvertscnt].paletteid = 0;
     twodvertscnt++;
@@ -5030,10 +4796,7 @@ void RenderOpenGL::FillRectFast(unsigned int uX, unsigned int uY, unsigned int u
     twodshaderstore[twodvertscnt].z = 0;
     twodshaderstore[twodvertscnt].u = texz;
     twodshaderstore[twodvertscnt].v = texy;
-    twodshaderstore[twodvertscnt].r = r;
-    twodshaderstore[twodvertscnt].g = g;
-    twodshaderstore[twodvertscnt].b = b;
-    twodshaderstore[twodvertscnt].a = a;
+    twodshaderstore[twodvertscnt].color = cf;
     twodshaderstore[twodvertscnt].texid = gltexid;
     twodshaderstore[twodvertscnt].paletteid = 0;
     twodvertscnt++;
@@ -5043,10 +4806,7 @@ void RenderOpenGL::FillRectFast(unsigned int uX, unsigned int uY, unsigned int u
     twodshaderstore[twodvertscnt].z = 0;
     twodshaderstore[twodvertscnt].u = texz;
     twodshaderstore[twodvertscnt].v = texw;
-    twodshaderstore[twodvertscnt].r = r;
-    twodshaderstore[twodvertscnt].g = g;
-    twodshaderstore[twodvertscnt].b = b;
-    twodshaderstore[twodvertscnt].a = a;
+    twodshaderstore[twodvertscnt].color = cf;
     twodshaderstore[twodvertscnt].texid = gltexid;
     twodshaderstore[twodvertscnt].paletteid = 0;
     twodvertscnt++;
@@ -5058,10 +4818,7 @@ void RenderOpenGL::FillRectFast(unsigned int uX, unsigned int uY, unsigned int u
     twodshaderstore[twodvertscnt].z = 0;
     twodshaderstore[twodvertscnt].u = texx;
     twodshaderstore[twodvertscnt].v = texy;
-    twodshaderstore[twodvertscnt].r = r;
-    twodshaderstore[twodvertscnt].g = g;
-    twodshaderstore[twodvertscnt].b = b;
-    twodshaderstore[twodvertscnt].a = a;
+    twodshaderstore[twodvertscnt].color = cf;
     twodshaderstore[twodvertscnt].texid = gltexid;
     twodshaderstore[twodvertscnt].paletteid = 0;
     twodvertscnt++;
@@ -5071,10 +4828,7 @@ void RenderOpenGL::FillRectFast(unsigned int uX, unsigned int uY, unsigned int u
     twodshaderstore[twodvertscnt].z = 0;
     twodshaderstore[twodvertscnt].u = texz;
     twodshaderstore[twodvertscnt].v = texw;
-    twodshaderstore[twodvertscnt].r = r;
-    twodshaderstore[twodvertscnt].g = g;
-    twodshaderstore[twodvertscnt].b = b;
-    twodshaderstore[twodvertscnt].a = a;
+    twodshaderstore[twodvertscnt].color = cf;
     twodshaderstore[twodvertscnt].texid = gltexid;
     twodshaderstore[twodvertscnt].paletteid = 0;
     twodvertscnt++;
@@ -5084,10 +4838,7 @@ void RenderOpenGL::FillRectFast(unsigned int uX, unsigned int uY, unsigned int u
     twodshaderstore[twodvertscnt].z = 0;
     twodshaderstore[twodvertscnt].u = texx;
     twodshaderstore[twodvertscnt].v = texw;
-    twodshaderstore[twodvertscnt].r = r;
-    twodshaderstore[twodvertscnt].g = g;
-    twodshaderstore[twodvertscnt].b = b;
-    twodshaderstore[twodvertscnt].a = a;
+    twodshaderstore[twodvertscnt].color = cf;
     twodshaderstore[twodvertscnt].texid = gltexid;
     twodshaderstore[twodvertscnt].paletteid = 0;
     twodvertscnt++;
@@ -5480,7 +5231,7 @@ void RenderOpenGL::DrawTwodVerts() {
         glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(twodverts), (void*)offsetof(twodverts, u));
         glEnableVertexAttribArray(1);
         // colour
-        glVertexAttribPointer(2, 4, GL_FLOAT, GL_FALSE, sizeof(twodverts), (void*)offsetof(twodverts, r));
+        glVertexAttribPointer(2, 4, GL_FLOAT, GL_FALSE, sizeof(twodverts), (void*)offsetof(twodverts, color));
         glEnableVertexAttribArray(2);
         // texid
         glVertexAttribPointer(3, 1, GL_FLOAT, GL_FALSE, sizeof(twodverts), (void*)offsetof(twodverts, texid));

@@ -118,7 +118,6 @@ class Engine {
     bool AlterGamma_ODM(struct ODMFace *pFace, unsigned int *pColor);
     bool draw_debug_outlines();
     bool _44EEA7();
-    void PushStationaryLights(int a2);
     void StackPartyTorchLight();
     // void PrepareBloodsplats();
     void Deinitialize();
@@ -153,9 +152,7 @@ class Engine {
 
 
     std::shared_ptr<GameConfig> config;
-    Game__StationaryLight pStationaryLights[25];
     char field_2C0[1092];
-    unsigned int uNumStationaryLights;
     Game_Bloodsplat pBloodsplats[20];
     int field_938;
     int field_93C;

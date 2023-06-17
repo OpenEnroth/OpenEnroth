@@ -4,6 +4,8 @@
 #include <array>
 #include <vector>
 
+#include "Library/Color/Color.h"
+
 #include "Utility/Memory/Blob.h"
 #include "Utility/Flags.h"
 
@@ -34,18 +36,14 @@ struct ObjectDesc {
     ObjectDescFlags uFlags;
     uint16_t uSpriteID;
     int16_t uLifetime;
-    uint32_t uParticleTrailColor;
+    Color uParticleTrailColor;
     int16_t uSpeed;
-    uint8_t uParticleTrailColorR;
-    uint8_t uParticleTrailColorG;
-    uint8_t uParticleTrailColorB;
 };
 
 class ObjectList {
  public:
     void FromFile(const Blob &data_mm6, const Blob &data_mm7, const Blob &data_mm8);
     void InitializeSprites();
-    void InitializeColors();
     unsigned int ObjectIDByItemID(unsigned int uItemID);
 
  public:

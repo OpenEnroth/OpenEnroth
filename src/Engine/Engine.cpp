@@ -306,19 +306,6 @@ void Engine::DrawParticles() {
     particle_engine->Draw();
 }
 
-//----- (0044F120) --------------------------------------------------------
-void Engine::PushStationaryLights(int a2) {
-    Game__StationaryLight *pLight;
-
-    for (int i = 0; i < uNumStationaryLights; ++i) {
-        pLight = &pStationaryLights[i];
-        pStationaryLightsStack->AddLight(
-            pLight->vPosition,
-            pLight->flt_18, pLight->vRGBColor.x, pLight->vRGBColor.y,
-            pLight->vRGBColor.z, _4E94D0_light_type);
-    }
-}
-
 void Engine::StackPartyTorchLight() {
     int TorchLightDistance = engine->config->graphics.TorchlightDistance.value();
     // TODO(pskelton): set this on level load
@@ -356,11 +343,9 @@ void Engine::StackPartyTorchLight() {
         pParty->TorchLightLastIntensity = TorchLightDistance;
 
         // problem with deserializing this ??
-        if (pParty->flt_TorchlightColorR == 0) {
+        if (pParty->torchLightColor.r == 0) {
             // __debugbreak();
-            pParty->flt_TorchlightColorR = 96;
-            pParty->flt_TorchlightColorG = 96;
-            pParty->flt_TorchlightColorB = 96;
+            pParty->torchLightColor = Color(96, 96, 96); // TODO(captainurist): colorTable
 
             logger->verbose("Torchlight doesn't have color");
         }
@@ -370,9 +355,7 @@ void Engine::StackPartyTorchLight() {
 
         pMobileLightsStack->AddLight(
             pos, pBLVRenderParams->uPartySectorID, TorchLightDistance,
-            floorf(pParty->flt_TorchlightColorR + 0.5f),
-            floorf(pParty->flt_TorchlightColorG + 0.5f),
-            floorf(pParty->flt_TorchlightColorB + 0.5f), _4E94D0_light_type);
+            pParty->torchLightColor, _4E94D0_light_type);
     }
 }
 
@@ -590,7 +573,6 @@ Engine::Engine(std::shared_ptr<GameConfig> config) {
     this->particle_engine = EngineIocContainer::ResolveParticleEngine();
     this->vis = EngineIocContainer::ResolveVis();
 
-    uNumStationaryLights = 0;
     uNumStationaryLights_in_pStationaryLightsStack = 0;
 
     // pThreadWardInstance = nullptr;
@@ -1004,8 +986,6 @@ void Engine::SecondaryInitialization() {
         pUIAnims[i]->x = _4E98D0[i][0];
         pUIAnims[i]->y = _4E98D0[i][2];
     }
-
-    pObjectList->InitializeColors();
 
     UI_Create();
 
