@@ -6,7 +6,6 @@
 #include "Engine/Engine.h"
 #include "Engine/Graphics/PaletteManager.h"
 #include "Engine/Graphics/Sprites.h"
-#include "Engine/Graphics/Texture.h"
 #include "Engine/Graphics/Viewport.h"
 #include "Engine/Graphics/Vis.h"
 #include "Engine/LOD.h"
@@ -35,7 +34,7 @@
 
 #include "Library/Random/Random.h"
 
-Texture *parchment = nullptr;
+GraphicsImage *parchment = nullptr;
 GraphicsImage *messagebox_corner_x = nullptr;       // 5076AC
 GraphicsImage *messagebox_corner_y = nullptr;       // 5076B4
 GraphicsImage *messagebox_corner_z = nullptr;       // 5076A8

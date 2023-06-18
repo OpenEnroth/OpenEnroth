@@ -172,7 +172,7 @@ void DrawBook_Map_sub(unsigned int tl_x, unsigned int tl_y, unsigned int br_x, i
             ((double)(-pCenterY - 22528 / (viewparams->uMapBookMapZoom / 384) + 32768) / MapSizeScale) << 16;
         int scaled_posY = stepY_r >> 16;
 
-        static Texture *minimaptemp = nullptr;
+        static GraphicsImage *minimaptemp = nullptr;
         if (!minimaptemp) {
             minimaptemp = render->CreateTexture_Blank(screenWidth, screenHeight);
         }

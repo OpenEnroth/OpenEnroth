@@ -94,7 +94,7 @@ struct BLVFace {  // 60h
     void FromODM(struct ODMFace *face);
 
     void SetTexture(const std::string &filename);
-    Texture *GetTexture();
+    GraphicsImage *GetTexture();
 
     inline bool Invisible() const {
         return uAttributes & FACE_IsInvisible;

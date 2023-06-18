@@ -137,7 +137,7 @@ struct OutdoorLocation {
     std::vector<BSPModel> pBModels;
     std::vector<uint16_t> pFaceIDLIST;
     std::array<uint32_t, 128 * 128> pOMAP;
-    Texture *sky_texture = nullptr;        // signed int sSky_TextureID;
+    GraphicsImage *sky_texture = nullptr;        // signed int sSky_TextureID;
     int16_t field_F0;
     int16_t field_F2;
     int field_F4;

@@ -134,7 +134,7 @@ GAME_TEST(Issues, Issue198) {
 
     // Then can safely check everything.
     forEachInventoryItem([](const ItemGen &item, int x, int y) {
-        Texture *image = assets->getImage_ColorKey(pItemTable->pItems[item.uItemID].iconName);
+        GraphicsImage *image = assets->getImage_ColorKey(pItemTable->pItems[item.uItemID].iconName);
         int width = GetSizeInInventorySlots(image->width());
         int height = GetSizeInInventorySlots(image->height());
 

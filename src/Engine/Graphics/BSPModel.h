@@ -8,6 +8,8 @@
 #include "Utility/Geometry/Plane.h"
 #include "Utility/Geometry/BBox.h"
 
+class GraphicsImage;
+
 enum class FaceAttribute : uint32_t {
     FACE_IsPortal          = 0x00000001,
     FACE_IsSecret          = 0x00000002,
@@ -79,7 +81,6 @@ struct BSPNode {
     int16_t uNumBSPFaces;
 };
 
-class Texture;
 
 struct ODMFace {
     bool HasEventHint();
@@ -111,7 +112,7 @@ struct ODMFace {
     }
 
     void SetTexture(const std::string &filename);
-    Texture *GetTexture();
+    GraphicsImage *GetTexture();
 
     // TODO: does this really have to be two separate functions?
     /**
@@ -131,7 +132,7 @@ struct ODMFace {
     std::array<int16_t, 20> pZInterceptDisplacements = {{}};
 
     // details store for array texture
-    void *resource = nullptr;  // int16_t uTextureID;;
+    void *resource = nullptr;  // int16_t uTextureID;
     int texunit = -1;
     int texlayer = -1;
 

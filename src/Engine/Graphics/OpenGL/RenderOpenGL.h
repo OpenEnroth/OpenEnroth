@@ -38,21 +38,21 @@ class RenderOpenGL : public RenderBase {
     virtual struct nk_image NuklearImageLoad(GraphicsImage *img) override;
     virtual void NuklearImageFree(GraphicsImage *img) override;
 
-    virtual Texture *CreateTexture_Paletted(const std::string &name) override;
-    virtual Texture *CreateTexture_ColorKey(const std::string &name, Color colorkey) override;
-    virtual Texture *CreateTexture_Solid(const std::string &name) override;
-    virtual Texture *CreateTexture_Alpha(const std::string &name) override;
+    virtual GraphicsImage *CreateTexture_Paletted(const std::string &name) override;
+    virtual GraphicsImage *CreateTexture_ColorKey(const std::string &name, Color colorkey) override;
+    virtual GraphicsImage *CreateTexture_Solid(const std::string &name) override;
+    virtual GraphicsImage *CreateTexture_Alpha(const std::string &name) override;
 
-    virtual Texture *CreateTexture_PCXFromFile(const std::string &name) override;
-    virtual Texture *CreateTexture_PCXFromIconsLOD(const std::string &name) override;
-    virtual Texture *CreateTexture_PCXFromNewLOD(const std::string &name) override;
-    virtual Texture *CreateTexture_PCXFromLOD(LOD::File *pLOD, const std::string &name) override;
+    virtual GraphicsImage *CreateTexture_PCXFromFile(const std::string &name) override;
+    virtual GraphicsImage *CreateTexture_PCXFromIconsLOD(const std::string &name) override;
+    virtual GraphicsImage *CreateTexture_PCXFromNewLOD(const std::string &name) override;
+    virtual GraphicsImage *CreateTexture_PCXFromLOD(LOD::File *pLOD, const std::string &name) override;
 
-    virtual Texture *CreateTexture_Blank(unsigned int width, unsigned int height) override;
-    virtual Texture *CreateTexture_Blank(RgbaImage image) override;
+    virtual GraphicsImage *CreateTexture_Blank(unsigned int width, unsigned int height) override;
+    virtual GraphicsImage *CreateTexture_Blank(RgbaImage image) override;
 
-    virtual Texture *CreateTexture(const std::string &name) override;
-    virtual Texture *CreateSprite(
+    virtual GraphicsImage *CreateTexture(const std::string &name) override;
+    virtual GraphicsImage *CreateSprite(
         const std::string &name, unsigned int palette_id,
         /*refactor*/ unsigned int lod_sprite_id) override;
 
@@ -86,14 +86,14 @@ class RenderOpenGL : public RenderBase {
 
     virtual void DrawProjectile(float srcX, float srcY, float a3, float a4,
                                 float dstX, float dstY, float a7, float a8,
-                                Texture *texture) override;
+                                GraphicsImage *texture) override;
 
-    virtual void RemoveTextureFromDevice(Texture *texture) override;
-    virtual bool MoveTextureToDevice(Texture *texture) override;
+    virtual void RemoveTextureFromDevice(GraphicsImage *texture) override;
+    virtual bool MoveTextureToDevice(GraphicsImage *texture) override;
 
-    virtual void Update_Texture(Texture *texture) override;
+    virtual void Update_Texture(GraphicsImage *texture) override;
 
-    virtual void DeleteTexture(Texture *texture) override;
+    virtual void DeleteTexture(GraphicsImage *texture) override;
 
     virtual void BeginScene2D() override;
     virtual void ScreenFade(Color color, float t) override;
@@ -115,7 +115,7 @@ class RenderOpenGL : public RenderBase {
                                int start_opacity, int end_opacity) override;
     virtual void TexturePixelRotateDraw(float u, float v, GraphicsImage *img, int time) override;
 
-    virtual void BeginTextNew(Texture *main, Texture *shadow) override;
+    virtual void BeginTextNew(GraphicsImage *main, GraphicsImage *shadow) override;
     virtual void EndTextNew() override;
     virtual void DrawTextNew(int x, int y, int w, int h, float u1, float v1, float u2, float v2, int isshadow, Color colour) override;
 

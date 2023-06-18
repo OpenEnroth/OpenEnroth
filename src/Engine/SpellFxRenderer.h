@@ -9,7 +9,7 @@
 #include "Library/Color/ColorTable.h"
 
 class Actor;
-class Texture;
+class GraphicsImage;
 class ParticleEngine;
 
 struct SpellFX_Billboard {
@@ -74,7 +74,7 @@ struct ProjectileAnim {
     float dstX;
     float dstY;
     float dstZ;
-    Texture *texture;  // int uTextureID;
+    GraphicsImage *texture;  // int uTextureID;
 };
 
 struct stru6_stru2 {
@@ -111,13 +111,13 @@ struct SpellFxRenderer {
     }
 
     void DoAddProjectile(float srcX, float srcY, float srcZ, float dstX,
-                         float dstY, float dstZ, Texture *);
+                         float dstY, float dstZ, GraphicsImage *);
     void DrawProjectiles();
     void _4A73AA_hanging_trace_particles___like_fire_strike_ice_blast_etc(
-        struct SpriteObject *a2, Color uDiffuse, Texture *texture);
+        struct SpriteObject *a2, Color uDiffuse, GraphicsImage *texture);
     void _4A75CC_single_spell_collision_particle(struct SpriteObject *a1,
                                                  Color uDiffuse,
-                                                 Texture *texture);
+                                                 GraphicsImage *texture);
     void _4A7688_fireball_collision_particle(struct SpriteObject *a2);
     void _4A77FD_implosion_particle_d3d(struct SpriteObject *a1);
     void _4A7948_mind_blast_after_effect(struct SpriteObject *a1);
@@ -125,9 +125,9 @@ struct SpellFxRenderer {
                         int uRadius);
     void
     _4A7A66_miltiple_spell_collision_partifles___like_after_sparks_or_lightning(
-        SpriteObject *a1, Color uDiffuse, Texture *texture, float a4);
+        SpriteObject *a1, Color uDiffuse, GraphicsImage *texture, float a4);
     void _4A7C07_stun_spell_fx(struct SpriteObject *a2);
-    void AddProjectile(struct SpriteObject *a2, int a3, Texture *);
+    void AddProjectile(struct SpriteObject *a2, int a3, GraphicsImage *);
     /**
      * @offset 0x4A7E89
      */
@@ -158,9 +158,9 @@ struct SpellFxRenderer {
     int uFadeTime;
     int uFadeLength;
     Color uFadeColor;
-    Texture *effpar01;  // unsigned int effpar01; // trail fire
-    Texture *effpar02;  // unsigned int effpar02;
-    Texture *effpar03;  // unsigned int effpar03; // trail particle
+    GraphicsImage *effpar01;  // unsigned int effpar01; // trail fire
+    GraphicsImage *effpar02;  // unsigned int effpar02;
+    GraphicsImage *effpar03;  // unsigned int effpar03; // trail particle
     unsigned int _unused_uSpriteID_sp57c;
     int field_5F4;
 

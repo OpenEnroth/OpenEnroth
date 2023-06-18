@@ -8,7 +8,7 @@
 
 #include "Utility/Memory/Blob.h"
 
-class Texture;
+class GraphicsImage;
 
 class Icon {
  public:
@@ -29,7 +29,7 @@ class Icon {
     }
     inline unsigned int GetAnimTime() const { return this->anim_time; }
 
-    Texture *GetTexture();
+    GraphicsImage *GetTexture();
 
     std::string pTextureName;
     int16_t uFlags = 0;
@@ -39,7 +39,7 @@ class Icon {
     std::string anim_name;
     unsigned int anim_length = 0;
     unsigned int anim_time = 0;
-    Texture *img = nullptr;
+    GraphicsImage *img = nullptr;
 };
 
 struct IconFrameTable {

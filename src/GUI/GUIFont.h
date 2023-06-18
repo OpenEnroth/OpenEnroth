@@ -32,7 +32,6 @@ struct FontData {
 
 class GUIWindow;
 class GraphicsImage;
-class Texture;
 struct FontData;
 
 class GUIFont {
@@ -74,8 +73,8 @@ class GUIFont {
                          GUIWindow *pWindow, int startX, int a6);
 
     int maxcharwidth = 0;
-    Texture *fonttex = nullptr;
-    Texture *fontshadow = nullptr;
+    GraphicsImage *fonttex = nullptr;
+    GraphicsImage *fontshadow = nullptr;
 
  protected:
     FontData *pData;

@@ -23,9 +23,9 @@ class RenderBase : public IRender {
     virtual void DrawSpriteObjects() override;
     virtual void PrepareDecorationsRenderList_ODM() override;
     virtual void MakeParticleBillboardAndPush(SoftwareBillboard *a2,
-                                                  Texture *texture,
-                                                  Color uDiffuse,
-                                                  int angle) override;
+                                              GraphicsImage *texture,
+                                              Color uDiffuse,
+                                              int angle) override;
     virtual float GetGamma() override;
 
     virtual void SavePCXScreenshot() override;
@@ -47,7 +47,7 @@ class RenderBase : public IRender {
     virtual void ClearBlack() override;
     virtual void BillboardSphereSpellFX(struct SpellFX_Billboard *a1, Color diffuse) override;
     virtual void DrawMonsterPortrait(Recti rc, SpriteFrame *Portrait_Sprite, int Y_Offset) override;
-    virtual void DrawSpecialEffectsQuad(Texture *texture, int palette) override;
+    virtual void DrawSpecialEffectsQuad(GraphicsImage *texture, int palette) override;
     virtual void DrawBillboards_And_MaybeRenderSpecialEffects_And_EndScene() override;
     virtual void PresentBlackScreen() override;
 

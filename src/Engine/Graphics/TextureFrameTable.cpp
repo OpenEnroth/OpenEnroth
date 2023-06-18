@@ -7,7 +7,7 @@
 
 struct TextureFrameTable *pTextureFrameTable;
 
-Texture *TextureFrame::GetTexture() {
+GraphicsImage *TextureFrame::GetTexture() {
     if (!this->tex) {
         this->tex = assets->getBitmap(this->name);
     }
@@ -50,7 +50,7 @@ int64_t TextureFrameTable::FindTextureByName(const std::string &Str2) {
     return -1;
 }
 
-Texture *TextureFrameTable::GetFrameTexture(int frameId, int time) {
+GraphicsImage *TextureFrameTable::GetFrameTexture(int frameId, int time) {
     int animLength = textures[frameId].uAnimLength;
 
     if (textures[frameId].uFlags & 1 && animLength != 0) {

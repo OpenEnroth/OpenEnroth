@@ -22,6 +22,6 @@ class GUICredits : public GUIWindow {
 
     int width;
     int height;
-    Texture *cred_texture;
+    GraphicsImage *cred_texture;
     float move_Y;
 };

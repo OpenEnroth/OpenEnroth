@@ -9,7 +9,7 @@
 
 #include "Utility/Memory/Blob.h"
 
-class Texture;
+class GraphicsImage;
 
 class Sprite {
  public:
@@ -29,7 +29,7 @@ class Sprite {
 
     std::string pName;
     int uPaletteID; // this is repaint palette index if it doesnt match sprite header palette
-    Texture *texture;
+    GraphicsImage *texture;
     int uAreaX;
     int uAreaY;
     int uBufferWidth;   // hardware width  (as opposed to LODSprite::Width)

@@ -32,7 +32,7 @@ struct Particle_sw {
     float b{};
     Color uDiffuse{};
     int timeToLive{};
-    Texture *texture{ nullptr };
+    GraphicsImage *texture{ nullptr };
     int paletteID{ 0 };
     float particle_size{};
     int field_2C{};
@@ -51,7 +51,7 @@ struct Particle {
     float shift_z = 0;
     Color uParticleColor;
     int timeToLive = 0;
-    Texture *texture = nullptr;  // unsigned int resource_id;// bitmap IDirect3DTexture
+    GraphicsImage *texture = nullptr;  // unsigned int resource_id;// bitmap IDirect3DTexture
                        // idx or sprite idx depending on type
     int paletteID = 0;
     float particle_size = 0;  // field_28

@@ -485,7 +485,7 @@ class Movie : public IMovie {
 
 
         // create texture
-        Texture *tex = render->CreateTexture_Blank(pMovie_Track->GetWidth(), pMovie_Track->GetHeight());
+        GraphicsImage *tex = render->CreateTexture_Blank(pMovie_Track->GetWidth(), pMovie_Track->GetHeight());
 
         // holds decoded audio
         std::queue<std::shared_ptr<Blob>, std::deque<std::shared_ptr<Blob>>> buffq;
@@ -802,7 +802,7 @@ void MPlayer::HouseMovieLoop() {
 
     render->BeginScene2D();
 
-    static Texture *tex;
+    static GraphicsImage *tex;
     if (!tex) {
         tex = render->CreateTexture_Blank(pMovie_Track->GetWidth(), pMovie_Track->GetHeight());
     }
@@ -869,7 +869,7 @@ void MPlayer::PlayFullscreenMovie(const std::string &pFilename) {
     Sizei scaleSize;
 
     // create texture
-    Texture *tex = render->CreateTexture_Blank(pMovie_Track->GetWidth(), pMovie_Track->GetHeight());
+    GraphicsImage *tex = render->CreateTexture_Blank(pMovie_Track->GetWidth(), pMovie_Track->GetHeight());
 
     if (pMovie->GetFormat() == "bink") {
         logger->info("bink file");

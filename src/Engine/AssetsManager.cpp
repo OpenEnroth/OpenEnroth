@@ -4,7 +4,6 @@
 
 #include "Engine/Graphics/IRender.h"
 #include "Engine/Graphics/ImageLoader.h"
-#include "Engine/Graphics/Texture.h"
 #include "GUI/GUIFont.h"
 
 #include "Utility/String.h"
@@ -42,7 +41,7 @@ bool AssetsManager::releaseImage(const std::string &name) {
     return true;
 }
 
-Texture *AssetsManager::getImage_Paletted(const std::string &name) {
+GraphicsImage *AssetsManager::getImage_Paletted(const std::string &name) {
     std::string filename = toLower(name);
 
     auto i = images.find(filename);
@@ -56,7 +55,7 @@ Texture *AssetsManager::getImage_Paletted(const std::string &name) {
 }
 
 
-Texture *AssetsManager::getImage_ColorKey(const std::string &name, Color colorkey) {
+GraphicsImage *AssetsManager::getImage_ColorKey(const std::string &name, Color colorkey) {
     std::string filename = toLower(name);
 
     auto i = images.find(filename);
@@ -71,7 +70,7 @@ Texture *AssetsManager::getImage_ColorKey(const std::string &name, Color colorke
 
 
 
-Texture *AssetsManager::getImage_Solid(const std::string &name) {
+GraphicsImage *AssetsManager::getImage_Solid(const std::string &name) {
     std::string filename = toLower(name);
 
     auto i = images.find(filename);
@@ -84,7 +83,7 @@ Texture *AssetsManager::getImage_Solid(const std::string &name) {
     return i->second;
 }
 
-Texture *AssetsManager::getImage_Alpha(const std::string &name) {
+GraphicsImage *AssetsManager::getImage_Alpha(const std::string &name) {
     std::string filename = toLower(name);
 
     auto i = images.find(filename);
@@ -97,7 +96,7 @@ Texture *AssetsManager::getImage_Alpha(const std::string &name) {
     return i->second;
 }
 
-Texture *AssetsManager::getImage_PCXFromIconsLOD(const std::string &name) {
+GraphicsImage *AssetsManager::getImage_PCXFromIconsLOD(const std::string &name) {
     std::string filename = toLower(name);
 
     auto i = images.find(filename);
@@ -110,7 +109,7 @@ Texture *AssetsManager::getImage_PCXFromIconsLOD(const std::string &name) {
     return i->second;
 }
 
-Texture *AssetsManager::getImage_PCXFromNewLOD(const std::string &name) {
+GraphicsImage *AssetsManager::getImage_PCXFromNewLOD(const std::string &name) {
     std::string filename = toLower(name);
 
     auto i = images.find(filename);
@@ -123,7 +122,7 @@ Texture *AssetsManager::getImage_PCXFromNewLOD(const std::string &name) {
     return i->second;
 }
 
-Texture *AssetsManager::getImage_PCXFromFile(const std::string &name) {
+GraphicsImage *AssetsManager::getImage_PCXFromFile(const std::string &name) {
     std::string filename = toLower(name);
 
     auto i = images.find(filename);
@@ -136,7 +135,7 @@ Texture *AssetsManager::getImage_PCXFromFile(const std::string &name) {
     return i->second;
 }
 
-Texture *AssetsManager::getBitmap(const std::string &name) {
+GraphicsImage *AssetsManager::getBitmap(const std::string &name) {
     std::string filename = toLower(name);
 
     auto i = bitmaps.find(filename);
@@ -162,7 +161,7 @@ bool AssetsManager::releaseBitmap(const std::string &name) {
     return true;
 }
 
-Texture *AssetsManager::getSprite(const std::string &name, unsigned int palette_id,
+GraphicsImage *AssetsManager::getSprite(const std::string &name, unsigned int palette_id,
                                   unsigned int lod_sprite_id) {
     std::string filename = toLower(name);
 
