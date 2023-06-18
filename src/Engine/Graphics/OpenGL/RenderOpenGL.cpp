@@ -410,7 +410,7 @@ int forceperstorecnt{ 0 };
 
 void RenderOpenGL::DrawProjectile(float srcX, float srcY, float srcworldview, float srcfovoworldview,
                                   float dstX, float dstY, float dstworldview, float dstfovoworldview,
-                                  Texture *texture) {
+                                  GraphicsImage *texture) {
     // billboards projectile - lightning bolt
 
     TextureOpenGL *textured3d = (TextureOpenGL *)texture;
@@ -561,7 +561,7 @@ void RenderOpenGL::ScreenFade(Color color, float t) {
     float drawz = static_cast<float>(pViewport->uViewportBR_X);
     float draww = static_cast<float>(pViewport->uViewportBR_Y);
 
-    static Texture *effpar03 = assets->getBitmap("effpar03");
+    static GraphicsImage *effpar03 = assets->getBitmap("effpar03");
     auto texture = (TextureOpenGL *)effpar03;
     float gltexid = static_cast<float>(texture->GetOpenGlTexture());
 
@@ -780,7 +780,7 @@ void RenderOpenGL::BlendTextures(int x, int y, GraphicsImage *imgin, GraphicsIma
 
         int w = imgin->width();
         int h = imgin->height();
-        Texture *temp = render->CreateTexture_Blank(w, h);
+        GraphicsImage *temp = render->CreateTexture_Blank(w, h);
         RgbaImage &dstImage = temp->rgba();
 
         Color c = maskImage.pixels()[2700];  // guess at brightest pixel
@@ -845,7 +845,7 @@ void RenderOpenGL::BlendTextures(int x, int y, GraphicsImage *imgin, GraphicsIma
 // a6 is time, a7 is 0, a8 is 63
 void RenderOpenGL::TexturePixelRotateDraw(float u, float v, GraphicsImage *img, int time) {
     // TODO(pskelton): sort this - precalculate/ shader
-    static std::array<Texture *, 14> cachedtemp {};
+    static std::array<GraphicsImage *, 14> cachedtemp {};
     static std::array<int, 14> cachetime { -1 };
 
     if (img) {
@@ -1401,66 +1401,66 @@ void RenderOpenGL::DrawFromSpriteSheet(Recti *pSrcRect, Pointi *pTargetPoint, in
     return;
 }
 
-Texture *RenderOpenGL::CreateTexture_Paletted(const std::string &name) {
+GraphicsImage *RenderOpenGL::CreateTexture_Paletted(const std::string &name) {
     return TextureOpenGL::Create(std::make_unique<Paletted_Img_Loader>(pIcons_LOD, name));
 }
 
-Texture *RenderOpenGL::CreateTexture_ColorKey(const std::string &name, Color colorkey) {
+GraphicsImage *RenderOpenGL::CreateTexture_ColorKey(const std::string &name, Color colorkey) {
     return TextureOpenGL::Create(std::make_unique<ColorKey_LOD_Loader>(pIcons_LOD, name, colorkey));
 }
 
-Texture *RenderOpenGL::CreateTexture_Solid(const std::string &name) {
+GraphicsImage *RenderOpenGL::CreateTexture_Solid(const std::string &name) {
     return TextureOpenGL::Create(std::make_unique<Image16bit_LOD_Loader>(pIcons_LOD, name));
 }
 
-Texture *RenderOpenGL::CreateTexture_Alpha(const std::string &name) {
+GraphicsImage *RenderOpenGL::CreateTexture_Alpha(const std::string &name) {
     return TextureOpenGL::Create(std::make_unique<Alpha_LOD_Loader>(pIcons_LOD, name));
 }
 
-Texture *RenderOpenGL::CreateTexture_PCXFromIconsLOD(const std::string &name) {
+GraphicsImage *RenderOpenGL::CreateTexture_PCXFromIconsLOD(const std::string &name) {
     return TextureOpenGL::Create(std::make_unique<PCX_LOD_Compressed_Loader>(pIcons_LOD, name));
 }
 
-Texture *RenderOpenGL::CreateTexture_PCXFromNewLOD(const std::string &name) {
+GraphicsImage *RenderOpenGL::CreateTexture_PCXFromNewLOD(const std::string &name) {
     return TextureOpenGL::Create(std::make_unique<PCX_LOD_Compressed_Loader>(pSave_LOD, name));
 }
 
-Texture *RenderOpenGL::CreateTexture_PCXFromFile(const std::string &name) {
+GraphicsImage *RenderOpenGL::CreateTexture_PCXFromFile(const std::string &name) {
     return TextureOpenGL::Create(std::make_unique<PCX_File_Loader>(name));
 }
 
-Texture *RenderOpenGL::CreateTexture_PCXFromLOD(LOD::File *pLOD, const std::string &name) {
+GraphicsImage *RenderOpenGL::CreateTexture_PCXFromLOD(LOD::File *pLOD, const std::string &name) {
     return TextureOpenGL::Create(std::make_unique<PCX_LOD_Raw_Loader>(pLOD, name));
 }
 
-Texture *RenderOpenGL::CreateTexture_Blank(unsigned int width, unsigned int height) {
+GraphicsImage *RenderOpenGL::CreateTexture_Blank(unsigned int width, unsigned int height) {
     return TextureOpenGL::Create(width, height);
 }
 
-Texture *RenderOpenGL::CreateTexture_Blank(RgbaImage image) {
+GraphicsImage *RenderOpenGL::CreateTexture_Blank(RgbaImage image) {
     return TextureOpenGL::Create(std::move(image));
 }
 
-Texture *RenderOpenGL::CreateTexture(const std::string &name) {
+GraphicsImage *RenderOpenGL::CreateTexture(const std::string &name) {
     return TextureOpenGL::Create(std::make_unique<Bitmaps_LOD_Loader>(pBitmaps_LOD, name));
 }
 
-Texture *RenderOpenGL::CreateSprite(const std::string &name, unsigned int palette_id,
-                                    /*refactor*/ unsigned int lod_sprite_id) {
+GraphicsImage *RenderOpenGL::CreateSprite(const std::string &name, unsigned int palette_id,
+                                          /*refactor*/ unsigned int lod_sprite_id) {
     return TextureOpenGL::Create(std::make_unique<Sprites_LOD_Loader>(pSprites_LOD, palette_id, name, lod_sprite_id));
 }
 
-void RenderOpenGL::Update_Texture(Texture *texture) {
-    auto t = (TextureOpenGL *)texture;
+void RenderOpenGL::Update_Texture(GraphicsImage *texture) {
+    auto t = static_cast<TextureOpenGL *>(texture);
     glBindTexture(GL_TEXTURE_2D, t->GetOpenGlTexture());
     glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, t->width(), t->height(), GL_RGBA, GL_UNSIGNED_BYTE, t->rgba().pixels().data());
     glBindTexture(GL_TEXTURE_2D, 0);
 }
 
-void RenderOpenGL::DeleteTexture(Texture *texture) {
+void RenderOpenGL::DeleteTexture(GraphicsImage *texture) {
     // crash here when assets not loaded as texture
 
-    auto t = (TextureOpenGL *)texture;
+    auto t = static_cast<TextureOpenGL *>(texture);
     GLuint texid = t->GetOpenGlTexture(false);
     if (texid != -1) {
         glDeleteTextures(1, &texid);
@@ -1468,12 +1468,12 @@ void RenderOpenGL::DeleteTexture(Texture *texture) {
     }
 }
 
-void RenderOpenGL::RemoveTextureFromDevice(Texture *texture) {
+void RenderOpenGL::RemoveTextureFromDevice(GraphicsImage *texture) {
     logger->info("RenderGL - RemoveTextureFromDevice");
 }
 
-bool RenderOpenGL::MoveTextureToDevice(Texture *texture) {
-    auto t = (TextureOpenGL *)texture;
+bool RenderOpenGL::MoveTextureToDevice(GraphicsImage *texture) {
+    auto t = static_cast<TextureOpenGL *>(texture);
     const Color *pixels = t->rgba().pixels().data();
     assert(pixels);
 
@@ -2243,7 +2243,7 @@ void RenderOpenGL::DrawOutdoorSkyPolygon(struct Polygon *pSkyPolygon) {
     auto texture = (TextureOpenGL *)pSkyPolygon->texture;
     auto texid = texture->GetOpenGlTexture();
 
-    static Texture *effpar03 = assets->getBitmap("effpar03");
+    static GraphicsImage *effpar03 = assets->getBitmap("effpar03");
     auto texturesolid = (TextureOpenGL*)effpar03;
     float texidsolid = static_cast<float>(texturesolid->GetOpenGlTexture());
 
@@ -2569,8 +2569,8 @@ void RenderOpenGL::DoRenderBillboards_D3D() {
             auto texture = (TextureOpenGL *)pBillboardRenderListD3D[i].texture;
             gltexid = texture->GetOpenGlTexture();
         } else {
-            static Texture *effpar03 = assets->getBitmap("effpar03");
-            auto texture = (TextureOpenGL *)effpar03;
+            static GraphicsImage *effpar03 = assets->getBitmap("effpar03");
+            auto texture = static_cast<TextureOpenGL *>(effpar03);
             gltexid = static_cast<float>(texture->GetOpenGlTexture());
         }
 
@@ -3075,7 +3075,7 @@ void RenderOpenGL::DrawTextureCustomHeight(float u, float v, class GraphicsImage
 twodverts textshaderstore[10000] = {};
 int textvertscnt = 0;
 
-void RenderOpenGL::BeginTextNew(Texture *main, Texture *shadow) {
+void RenderOpenGL::BeginTextNew(GraphicsImage *main, GraphicsImage *shadow) {
     // draw any images in buffer
     if (twodvertscnt) {
         DrawTwodVerts();
@@ -4765,8 +4765,8 @@ void RenderOpenGL::FillRectFast(unsigned int uX, unsigned int uY, unsigned int u
     // check for overlap
     if (!(this->clip_x < z && this->clip_z > x && this->clip_y < w && this->clip_w > y)) return;
 
-    static Texture *effpar03 = assets->getBitmap("effpar03");
-    auto texture = (TextureOpenGL*)effpar03;
+    static GraphicsImage *effpar03 = assets->getBitmap("effpar03");
+    auto texture = static_cast<TextureOpenGL *>(effpar03);
     float gltexid = static_cast<float>(texture->GetOpenGlTexture());
 
     float drawx = static_cast<float>(std::max(x, this->clip_x));

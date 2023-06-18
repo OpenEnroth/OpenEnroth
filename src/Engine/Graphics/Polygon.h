@@ -2,7 +2,6 @@
 #include <array>
 
 
-class Texture;
 struct ODMFace;
 struct Span;
 struct Edge;
@@ -32,7 +31,7 @@ struct Polygon {
     int16_t field_32 = 0;
     int field_34 = 0;
     struct SkyBillboardStruct *ptr_38 = nullptr;
-    Texture *texture = nullptr;  // struct Texture_MM7 *pTexture;
+    GraphicsImage *texture = nullptr;  // struct Texture_MM7 *pTexture;
     Span *_unused_prolly_head = nullptr;
     Span *_unused_prolly_tail = nullptr;
     int **ptr_48 = nullptr;

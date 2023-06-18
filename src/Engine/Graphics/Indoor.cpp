@@ -16,7 +16,6 @@
 #include "Engine/Graphics/Outdoor.h"
 #include "Engine/Graphics/Overlays.h"
 #include "Engine/Graphics/ParticleEngine.h"
-#include "Engine/Graphics/Texture.h"
 #include "Engine/Graphics/TextureFrameTable.h"
 #include "Engine/Graphics/Sprites.h"
 #include "Engine/Graphics/PortalFunctions.h"
@@ -166,12 +165,12 @@ void BLVFace::FromODM(ODMFace *face) {
 }
 
 //----- (004AE5BA) --------------------------------------------------------
-Texture *BLVFace::GetTexture() {
+GraphicsImage *BLVFace::GetTexture() {
     if (this->IsTextureFrameTable())
         return pTextureFrameTable->GetFrameTexture(
             (int64_t)this->resource, pBLVRenderParams->textureFrameTableTimer);
     else
-        return (Texture *)this->resource;
+        return static_cast<GraphicsImage *>(this->resource);
 }
 
 void BLVFace::SetTexture(const std::string &filename) {
@@ -667,13 +666,13 @@ void BLV_UpdateDoors() {
             if (face->uAttributes & FACE_TexAlignLeft) {
                 extras->sTextureDeltaU -= minU;
             } else if (face->uAttributes & FACE_TexAlignRight && face->resource) {
-                extras->sTextureDeltaU -= maxU + ((Texture *) face->resource)->width();
+                extras->sTextureDeltaU -= maxU + face->GetTexture()->width();
             }
 
             if (face->uAttributes & FACE_TexAlignDown) {
                 extras->sTextureDeltaV -= minV;
             } else if (face->uAttributes & FACE_TexAlignBottom && face->resource) {
-                extras->sTextureDeltaV -= maxU + ((Texture *) face->resource)->height();
+                extras->sTextureDeltaV -= maxU + face->GetTexture()->height();
             }
 
             if (face->uAttributes & FACE_TexMoveByDoor) {

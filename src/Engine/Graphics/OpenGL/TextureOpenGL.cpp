@@ -7,7 +7,7 @@
 #include "Engine/Graphics/ImageLoader.h"
 #include "Engine/ErrorHandling.h"
 
-Texture *TextureOpenGL::Create(RgbaImage image) {
+TextureOpenGL *TextureOpenGL::Create(RgbaImage image) {
     TextureOpenGL *tex = new TextureOpenGL(false);
 
     tex->_rgbaImage = std::move(image);
@@ -18,11 +18,11 @@ Texture *TextureOpenGL::Create(RgbaImage image) {
     return tex;
 }
 
-Texture *TextureOpenGL::Create(unsigned int width, unsigned int height) {
+TextureOpenGL *TextureOpenGL::Create(unsigned int width, unsigned int height) {
     return Create(RgbaImage::solid(width, height, Color()));
 }
 
-Texture *TextureOpenGL::Create(std::unique_ptr<ImageLoader> loader) {
+TextureOpenGL *TextureOpenGL::Create(std::unique_ptr<ImageLoader> loader) {
     auto tex = new TextureOpenGL();
     tex->_loader = std::move(loader);
     return tex;

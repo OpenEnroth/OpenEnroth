@@ -6,7 +6,7 @@
 
 #include "Utility/Memory/Blob.h"
 
-class Texture;
+class GraphicsImage;
 
 // TODO(captainurist): where is this used?
 enum TEXTURE_FRAME_TABLE_FLAGS {
@@ -23,16 +23,16 @@ class TextureFrame {
     int16_t uAnimLength = 0;
     int16_t uFlags = 0;  // 1 for anim
 
-    Texture *GetTexture();
+    GraphicsImage *GetTexture();
 
  protected:
-    Texture *tex;
+    GraphicsImage *tex;
 };
 
 struct TextureFrameTable {
     void FromFile(const Blob &data_mm6, const Blob &data_mm7, const Blob &data_mm8);
     void LoadAnimationSequenceAndPalettes(int uIconID);
-    Texture *GetFrameTexture(int frameId, int time);
+    GraphicsImage *GetFrameTexture(int frameId, int time);
     /**
     * @param   frameID        TextureFrameTable index
     * @return                 Total length of texture animation

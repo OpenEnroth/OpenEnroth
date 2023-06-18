@@ -3,7 +3,6 @@
 #include <string>
 
 #include "Engine/Graphics/Image.h"
-#include "Engine/Graphics/Texture.h"
 #include "Engine/Graphics/FrameLimiter.h"
 
 #include "Utility/Geometry/Point.h"
@@ -160,8 +159,8 @@ struct ArcomageGame {
     GUIFont *pfntArrus = nullptr;  // ptr_4C;
     int field_50 = 0;
     int field_54 = 0;  // blend mode ??
-    Texture *pGameBackground = nullptr;
-    Texture *pSprites = nullptr;
+    GraphicsImage *pGameBackground = nullptr;
+    GraphicsImage *pSprites = nullptr;
     int uGameWinner = 0;
     int Victory_type = 0;
     std::string pPlayer1Name;

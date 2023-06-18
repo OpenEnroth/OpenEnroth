@@ -72,7 +72,6 @@ set(ENGINE_GRAPHICS_HEADERS
         RenderBase.h
         RendererType.h
         Sprites.h
-        Texture.h
         Texture_MM7.h
         TextureFrameTable.h
         Viewport.h

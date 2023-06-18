@@ -2,6 +2,11 @@
 
 #include "Color.h"
 
+/**
+ * Common colors used throughout the codebase.
+ *
+ * @see https://colors.artyclick.com/color-name-finder/
+ */
 class ColorTable {
  public:
     const Color Anakiwa = Color(150, 212, 255);         // #96D4FF

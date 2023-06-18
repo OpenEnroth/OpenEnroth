@@ -15,7 +15,6 @@
 #include "Engine/Graphics/Overlays.h"
 #include "Engine/Graphics/ParticleEngine.h"
 #include "Engine/Graphics/Sprites.h"
-#include "Engine/Graphics/Texture.h"
 #include "Engine/Graphics/Viewport.h"
 
 #include "Engine/Objects/Actor.h"
@@ -204,7 +203,7 @@ void SpellFX_Billboard::_47829F_sphere_particle(
 //----- (004A71FE) --------------------------------------------------------
 void SpellFxRenderer::DoAddProjectile(float srcX, float srcY, float srcZ,
                                       float dstX, float dstY, float dstZ,
-                                      Texture *texture) {
+                                      GraphicsImage *texture) {
     // int v8; // eax@1
 
     // v8 = uNumProjectiles;
@@ -253,7 +252,7 @@ void SpellFxRenderer::DrawProjectiles() {
 
 //----- (004A73AA) --------------------------------------------------------
 void SpellFxRenderer::_4A73AA_hanging_trace_particles___like_fire_strike_ice_blast_etc(
-        SpriteObject *a2, Color uDiffuse, Texture *texture) {
+        SpriteObject *a2, Color uDiffuse, GraphicsImage *texture) {
     // check if enough time has passed to add particle into the trail
     if (a2->_lastParticleTime + a2->_ticksPerParticle < pEventTimer->uTotalTimeElapsed) {
         a2->_lastParticleTime += a2->_ticksPerParticle;
@@ -328,7 +327,7 @@ void SpellFxRenderer::_4A73AA_hanging_trace_particles___like_fire_strike_ice_bla
 
 //----- (004A75CC) --------------------------------------------------------
 void SpellFxRenderer::_4A75CC_single_spell_collision_particle(
-    SpriteObject *a1, Color uDiffuse, Texture *texture) {
+    SpriteObject *a1, Color uDiffuse, GraphicsImage *texture) {
     double v4;            // st7@1
     signed int v5;        // edi@1
     Particle_sw local_0;  // [sp+8h] [bp-68h]@1
@@ -431,7 +430,7 @@ bool SpellFxRenderer::AddMobileLight(SpriteObject *a1, Color uDiffuse,
 //----- (004A7A66) --------------------------------------------------------
 void SpellFxRenderer::
     _4A7A66_miltiple_spell_collision_partifles___like_after_sparks_or_lightning(
-        SpriteObject *a1, Color uDiffuse, Texture *texture, float a4) {
+        SpriteObject *a1, Color uDiffuse, GraphicsImage *texture, float a4) {
     int v5;               // eax@1
     double v7;            // st6@1
     double v8;            // st6@1
@@ -546,7 +545,7 @@ void SpellFxRenderer::_4A7C07_stun_spell_fx(SpriteObject *a2) {
 
 //----- (004A7E05) --------------------------------------------------------
 void SpellFxRenderer::AddProjectile(SpriteObject *a2, int a3,
-                                    Texture *texture) {
+                                    GraphicsImage *texture) {
     if (a2->field_54) {
         DoAddProjectile(array_4[a2->field_54 & 0x1F].flt_0_x,
                         array_4[a2->field_54 & 0x1F].flt_4_y,

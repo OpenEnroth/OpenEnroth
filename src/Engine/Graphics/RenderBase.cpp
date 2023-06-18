@@ -521,9 +521,9 @@ double fix2double(int fix) {
 }
 
 void RenderBase::MakeParticleBillboardAndPush(SoftwareBillboard *a2,
-                                                  Texture *texture,
-                                                  Color uDiffuse,
-                                                  int angle) {
+                                              GraphicsImage *texture,
+                                              Color uDiffuse,
+                                              int angle) {
     unsigned int billboard_index = Billboard_ProbablyAddToListAndSortByZOrder(a2->screen_space_z);
     RenderBillboardD3D *billboard = &pBillboardRenderListD3D[billboard_index];
 
@@ -626,7 +626,7 @@ Blob RenderBase::PackScreenshot(const unsigned int width, const unsigned int hei
 }
 
 GraphicsImage *RenderBase::TakeScreenshot(const unsigned int width, const unsigned int height) {
-    return GraphicsImage::Create(MakeScreenshot32(width, height));
+    return CreateTexture_Blank(MakeScreenshot32(width, height));
 }
 
 void RenderBase::DrawTextureGrayShade(float a2, float a3, GraphicsImage *a4) {
@@ -723,7 +723,7 @@ void RenderBase::DrawMonsterPortrait(Recti rc, SpriteFrame *Portrait, int Y_Offs
     render->ResetUIClipRect();
 }
 
-void RenderBase::DrawSpecialEffectsQuad(Texture *texture, int palette) {
+void RenderBase::DrawSpecialEffectsQuad(GraphicsImage *texture, int palette) {
     Recti targetrect{};
     targetrect.x = pViewport->uViewportTL_X;
     targetrect.y = pViewport->uViewportTL_Y;

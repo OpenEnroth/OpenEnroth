@@ -4,8 +4,8 @@
 void DrawPopupWindow(unsigned int uX, unsigned int uY, unsigned int uWidth, unsigned int uHeight);  // idb
 
 class GraphicsImage;
-class Texture;
-extern Texture *parchment;
+
+extern GraphicsImage *parchment;
 extern GraphicsImage *messagebox_corner_x;       // 5076AC
 extern GraphicsImage *messagebox_corner_y;       // 5076B4
 extern GraphicsImage *messagebox_corner_z;       // 5076A8

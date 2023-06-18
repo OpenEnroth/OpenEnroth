@@ -1,4 +1,5 @@
 #pragma once
+
 #include <memory>
 #include <string>
 #include <vector>
@@ -6,7 +7,6 @@
 
 #include "Engine/Graphics/Image.h"
 #include "Engine/Graphics/Nuklear.h"
-#include "Engine/Graphics/Texture.h"
 #include "Engine/OurMath.h"
 #include "Application/GameConfig.h"
 #include "Library/Color/Color.h"
@@ -126,7 +126,7 @@ struct RenderBillboardD3D {
     };
     using enum OpacityType;
 
-    Texture *texture;  // void *gapi_texture;//IDirect3DTexture2 *pTexture; for d3d
+    GraphicsImage *texture;  // void *gapi_texture;//IDirect3DTexture2 *pTexture; for d3d
     unsigned int uNumVertices;
     std::array<RenderVertexD3D3, 4> pQuads;
     float z_order;
@@ -211,22 +211,22 @@ class IRender {
     virtual struct nk_image NuklearImageLoad(GraphicsImage *img) = 0;
     virtual void NuklearImageFree(GraphicsImage *img) = 0;
 
-    virtual Texture *CreateTexture_Paletted(const std::string &name) = 0;
-    virtual Texture *CreateTexture_ColorKey(const std::string &name, Color colorkey) = 0;
-    virtual Texture *CreateTexture_Solid(const std::string &name) = 0;
-    virtual Texture *CreateTexture_Alpha(const std::string &name) = 0;
+    virtual GraphicsImage *CreateTexture_Paletted(const std::string &name) = 0;
+    virtual GraphicsImage *CreateTexture_ColorKey(const std::string &name, Color colorkey) = 0;
+    virtual GraphicsImage *CreateTexture_Solid(const std::string &name) = 0;
+    virtual GraphicsImage *CreateTexture_Alpha(const std::string &name) = 0;
 
-    virtual Texture *CreateTexture_PCXFromFile(const std::string &name) = 0;
-    virtual Texture *CreateTexture_PCXFromIconsLOD(const std::string &name) = 0;
-    virtual Texture *CreateTexture_PCXFromNewLOD(const std::string &name) = 0;
-    virtual Texture *CreateTexture_PCXFromLOD(LOD::File *pLOD, const std::string &name) = 0;
+    virtual GraphicsImage *CreateTexture_PCXFromFile(const std::string &name) = 0;
+    virtual GraphicsImage *CreateTexture_PCXFromIconsLOD(const std::string &name) = 0;
+    virtual GraphicsImage *CreateTexture_PCXFromNewLOD(const std::string &name) = 0;
+    virtual GraphicsImage *CreateTexture_PCXFromLOD(LOD::File *pLOD, const std::string &name) = 0;
 
-    virtual Texture *CreateTexture_Blank(unsigned int width, unsigned int height) = 0;
-    virtual Texture *CreateTexture_Blank(RgbaImage image) = 0;
+    virtual GraphicsImage *CreateTexture_Blank(unsigned int width, unsigned int height) = 0;
+    virtual GraphicsImage *CreateTexture_Blank(RgbaImage image) = 0;
 
-    virtual Texture *CreateTexture(const std::string &name) = 0;
-    virtual Texture *CreateSprite(const std::string &name, unsigned int palette_id,
-                                  /*refactor*/ unsigned int lod_sprite_id) = 0;
+    virtual GraphicsImage *CreateTexture(const std::string &name) = 0;
+    virtual GraphicsImage *CreateSprite(const std::string &name, unsigned int palette_id,
+                                        /*refactor*/ unsigned int lod_sprite_id) = 0;
 
     virtual void ClearBlack() = 0;
     virtual void PresentBlackScreen() = 0;
@@ -258,9 +258,9 @@ class IRender {
                                     bool clampAtTextureBorders) = 0;
 
     virtual void MakeParticleBillboardAndPush(SoftwareBillboard *a2,
-                                                  Texture *texture,
-                                                  Color uDiffuse,
-                                                  int angle) = 0;
+                                              GraphicsImage *texture,
+                                              Color uDiffuse,
+                                              int angle) = 0;
     virtual float GetGamma() = 0;
 
     virtual void DrawBillboards_And_MaybeRenderSpecialEffects_And_EndScene() = 0;
@@ -269,12 +269,12 @@ class IRender {
 
     virtual void DrawProjectile(float srcX, float srcY, float a3, float a4,
                                 float dstX, float dstY, float a7, float a8,
-                                Texture *texture) = 0;
-    virtual void RemoveTextureFromDevice(Texture *texture) = 0;
-    virtual bool MoveTextureToDevice(Texture *texture) = 0;
+                                GraphicsImage *texture) = 0;
+    virtual void RemoveTextureFromDevice(GraphicsImage *texture) = 0;
+    virtual bool MoveTextureToDevice(GraphicsImage *texture) = 0;
 
-    virtual void Update_Texture(Texture *texture) = 0;
-    virtual void DeleteTexture(Texture *texture) = 0;
+    virtual void Update_Texture(GraphicsImage *texture) = 0;
+    virtual void DeleteTexture(GraphicsImage *texture) = 0;
 
 
     virtual void BeginScene2D() = 0;
@@ -302,7 +302,7 @@ class IRender {
     virtual void DrawTransparentGreenShade(float u, float v, GraphicsImage *pTexture) = 0;
     // virtual void DrawFansTransparent(const RenderVertexD3D3 *vertices, unsigned int num_vertices) = 0;
 
-    virtual void BeginTextNew(Texture *main, Texture *shadow) = 0;
+    virtual void BeginTextNew(GraphicsImage *main, GraphicsImage *shadow) = 0;
     virtual void EndTextNew() = 0;
     virtual void DrawTextNew(int x, int y, int w, int h, float u1, float v1, float u2, float v2, int isshadow, Color colour) = 0;
 
@@ -342,7 +342,7 @@ class IRender {
     virtual void EndDecals() = 0;
     virtual void DrawDecal(struct Decal *pDecal, float z_bias) = 0;
 
-    virtual void DrawSpecialEffectsQuad(Texture *texture, int palette) = 0;
+    virtual void DrawSpecialEffectsQuad(GraphicsImage *texture, int palette) = 0;
 
     virtual void DrawFromSpriteSheet(Recti *pSrcRect,
                                Pointi *pTargetPoint, int a3,
@@ -366,7 +366,7 @@ class IRender {
     Color uFogColor;
     unsigned int pHDWaterBitmapIDs[7];
     int hd_water_current_frame;
-    Texture *hd_water_tile_anim[7];
+    GraphicsImage *hd_water_tile_anim[7];
     RenderBillboardD3D pBillboardRenderListD3D[1000];
     unsigned int uNumBillboardsToDraw;
 

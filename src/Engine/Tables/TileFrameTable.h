@@ -86,7 +86,6 @@ enum Tileset : int16_t {
 };
 #pragma warning(pop)
 
-class Texture;
 
 class TileDesc {
  public:
@@ -98,7 +97,7 @@ class TileDesc {
     uint16_t uSection = 0;
     uint16_t uAttributes = TILE_DESC_NULL;
 
-    inline Texture *GetTexture() {
+    inline GraphicsImage *GetTexture() {
         if (!this->texture) {
             this->texture = assets->getBitmap(this->name);
         }
@@ -114,7 +113,7 @@ class TileDesc {
     }
 
  protected:
-    Texture *texture;
+    GraphicsImage *texture;
 };
 
 struct TileTable {

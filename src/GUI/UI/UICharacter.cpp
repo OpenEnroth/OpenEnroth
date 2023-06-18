@@ -1064,7 +1064,7 @@ void CharacterUI_DrawPaperdoll(Player *player) {
             item_X = pPaperdoll_BodyX + paperdoll_Weapon[pBodyComplection][1][0] - pItemTable->pItems[item->uItemID].uEquipX;
             item_Y = pPaperdoll_BodyY + paperdoll_Weapon[pBodyComplection][1][1] - pItemTable->pItems[item->uItemID].uEquipY;
 
-            Texture *texture = nullptr;
+            GraphicsImage *texture = nullptr;
             if (item->uItemID == ITEM_BLASTER)
                 texture = assets->getImage_Alpha("item64v1");
 
@@ -1088,7 +1088,7 @@ void CharacterUI_DrawPaperdoll(Player *player) {
                 item_X = pPaperdoll_BodyX + paperdoll_Cloak[pBodyComplection][index][0];
                 item_Y = pPaperdoll_BodyY + paperdoll_Cloak[pBodyComplection][index][1];
 
-                Texture *texture = (Texture *)paperdoll_cloak_texture[pBodyComplection][index];
+                GraphicsImage *texture = paperdoll_cloak_texture[pBodyComplection][index];
                 CharacterUI_DrawItem(item_X, item_Y, item, player->pEquipment.uCloak, texture, !bRingsShownInCharScreen);
             }
         }
@@ -1104,7 +1104,7 @@ void CharacterUI_DrawPaperdoll(Player *player) {
                 item_X = pPaperdoll_BodyX + paperdoll_Armor_Coord[pBodyComplection][index][0];
                 item_Y = pPaperdoll_BodyY + paperdoll_Armor_Coord[pBodyComplection][index][1];
 
-                Texture *texture = (Texture *)paperdoll_armor_texture[pBodyComplection][index][0];
+                GraphicsImage *texture = paperdoll_armor_texture[pBodyComplection][index][0];
                 CharacterUI_DrawItem(item_X, item_Y, item, player->pEquipment.uArmor, texture, !bRingsShownInCharScreen);
             }
         }
@@ -1117,11 +1117,11 @@ void CharacterUI_DrawPaperdoll(Player *player) {
                 item_X = pPaperdoll_BodyX + paperdoll_Boot[pBodyComplection][index][0];
                 item_Y = pPaperdoll_BodyY + paperdoll_Boot[pBodyComplection][index][1];
 
-                Texture *texture = nullptr;
+                GraphicsImage *texture = nullptr;
                 if (item->uItemID == ITEM_ARTIFACT_HERMES_SANDALS) {
-                    texture = (Texture *)paperdoll_flying_feet[player->uCurrentFace];
+                    texture = paperdoll_flying_feet[player->uCurrentFace];
                 } else {
-                    texture = (Texture *)paperdoll_boots_texture[pBodyComplection][index];
+                    texture = paperdoll_boots_texture[pBodyComplection][index];
                 }
 
                 CharacterUI_DrawItem(item_X, item_Y, item, player->pEquipment.uBoot, texture, !bRingsShownInCharScreen);
@@ -1146,11 +1146,11 @@ void CharacterUI_DrawPaperdoll(Player *player) {
             if (index != -1) {
                 item_X = pPaperdoll_BodyX + paperdoll_Belt[pBodyComplection][index][0];
                 item_Y = pPaperdoll_BodyY + paperdoll_Belt[pBodyComplection][index][1];
-                Texture *texture = nullptr;
+                GraphicsImage *texture = nullptr;
                 if (IsDwarf != 1 || index == 5)
-                    texture = (Texture *)paperdoll_belt_texture[pBodyComplection][index];
+                    texture = paperdoll_belt_texture[pBodyComplection][index];
                 else
-                    texture = (Texture *)paperdoll_belt_texture[pBodyComplection - 2][index];
+                    texture = paperdoll_belt_texture[pBodyComplection - 2][index];
 
                 CharacterUI_DrawItem(item_X, item_Y, item, player->pEquipment.uBelt, texture, !bRingsShownInCharScreen);
             }
@@ -1161,18 +1161,18 @@ void CharacterUI_DrawPaperdoll(Player *player) {
         if (item) {
             index = valueOr(paperdoll_armor_indexByType, item->uItemID, -1);
             if (index != -1) {
-                Texture *texture = nullptr;
+                GraphicsImage *texture = nullptr;
                 // Some armors doesn't have sleeves so use normal one for two-handed or none if it also unavailable
                 if (bTwoHandedGrip && paperdoll_shoulder_second_coord[pBodyComplection][index][0]) {
                     item_X = pPaperdoll_BodyX + paperdoll_shoulder_second_coord[pBodyComplection][index][0];
                     item_Y = pPaperdoll_BodyY + paperdoll_shoulder_second_coord[pBodyComplection][index][1];
 
-                    texture = (Texture *)paperdoll_armor_texture[pBodyComplection][index][2];
+                    texture = paperdoll_armor_texture[pBodyComplection][index][2];
                 } else if (paperdoll_shoulder_coord[pBodyComplection][index][0]) {
                     item_X = pPaperdoll_BodyX + paperdoll_shoulder_coord[pBodyComplection][index][0];
                     item_Y = pPaperdoll_BodyY + paperdoll_shoulder_coord[pBodyComplection][index][1];
 
-                    texture = (Texture *)paperdoll_armor_texture[pBodyComplection][index][1];
+                    texture = paperdoll_armor_texture[pBodyComplection][index][1];
                 }
 
                 if (texture)
@@ -1190,7 +1190,7 @@ void CharacterUI_DrawPaperdoll(Player *player) {
                     item_X = pPaperdoll_BodyX + paperdoll_CloakCollar[pBodyComplection][index][0];
                     item_Y = pPaperdoll_BodyY + paperdoll_CloakCollar[pBodyComplection][index][1];
 
-                    Texture *texture = (Texture *)paperdoll_cloak_collar_texture[pBodyComplection][index];
+                    GraphicsImage *texture = paperdoll_cloak_collar_texture[pBodyComplection][index];
                     CharacterUI_DrawItem(item_X, item_Y, item, player->pEquipment.uCloak, texture, !bRingsShownInCharScreen);
                 }
             }
@@ -1212,11 +1212,11 @@ void CharacterUI_DrawPaperdoll(Player *player) {
                 item_X = pPaperdoll_BodyX + paperdoll_Helm[pBodyComplection][index][0];
                 item_Y = pPaperdoll_BodyY + paperdoll_Helm[pBodyComplection][index][1];
 
-                Texture *texture = nullptr;
+                GraphicsImage *texture = nullptr;
                 if (IsDwarf != 1 || item->uItemID != ITEM_PHYNAXIAN_HELM)
-                    texture = (Texture *)paperdoll_helm_texture[player->GetSexByVoice()][index];
+                    texture = paperdoll_helm_texture[player->GetSexByVoice()][index];
                 else
-                    texture = (Texture *)paperdoll_dbrds[11];
+                    texture = paperdoll_dbrds[11];
 
                 CharacterUI_DrawItem(item_X, item_Y, item, player->pEquipment.uHelm, texture, !bRingsShownInCharScreen);
             }
@@ -1228,7 +1228,7 @@ void CharacterUI_DrawPaperdoll(Player *player) {
             item_X = pPaperdoll_BodyX + paperdoll_Weapon[pBodyComplection][1][0] - pItemTable->pItems[item->uItemID].uEquipX;
             item_Y = pPaperdoll_BodyY + paperdoll_Weapon[pBodyComplection][1][1] - pItemTable->pItems[item->uItemID].uEquipY;
 
-            Texture *texture = nullptr;
+            GraphicsImage *texture = nullptr;
             if (item->uItemID == ITEM_BLASTER)
                 texture = assets->getImage_Alpha("item64v1");
 
@@ -1328,7 +1328,7 @@ void CharacterUI_InventoryTab_Draw(Player *player, bool Cover_Strip) {
     }
 }
 
-static void CharacterUI_DrawItem(int x, int y, ItemGen *item, int id, Texture *item_texture, bool doZDraw) {
+static void CharacterUI_DrawItem(int x, int y, ItemGen *item, int id, GraphicsImage *item_texture, bool doZDraw) {
     if (!item_texture)
         item_texture = assets->getImage_Alpha(item->GetIconName());
 

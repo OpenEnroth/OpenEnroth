@@ -7,7 +7,7 @@
 #include "../LOD.h"
 
 
-Texture *Icon::GetTexture() {
+GraphicsImage *Icon::GetTexture() {
     if (!this->img) {
         this->img = assets->getImage_ColorKey(this->pTextureName);
     }

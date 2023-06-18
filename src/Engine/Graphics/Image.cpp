@@ -6,7 +6,6 @@
 #include "Engine/Engine.h"
 
 #include "Engine/Graphics/ImageLoader.h"
-#include "Engine/Graphics/Texture.h"
 
 GraphicsImage::GraphicsImage(bool lazy_initialization): _lazyInitialization(lazy_initialization) {}
 
