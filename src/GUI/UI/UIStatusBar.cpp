@@ -97,7 +97,7 @@ void GameUI_StatusBar_Draw() {
     }
 
     if (status.length() > 0) {
-        pPrimaryWindow->DrawText(pFontLucida, {pFontLucida->AlignText_Center(450, status) + 11, 357}, uGameUIFontMain, status, 0, 0, uGameUIFontShadow);
+        pPrimaryWindow->DrawText(pFontLucida, {pFontLucida->AlignText_Center(450, status) + 11, 357}, uGameUIFontMain, status, 0, uGameUIFontShadow);
     }
 }
 

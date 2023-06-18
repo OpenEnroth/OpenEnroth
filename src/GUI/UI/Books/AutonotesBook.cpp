@@ -245,7 +245,7 @@ void GUIWindow_AutonotesBook::Update() {
     for (int i = _startingNotesIdx; i < _activeNotesIdx.size(); ++i) {
         _currentPageNotes++;
 
-        autonotes_window.DrawText(pAutonoteFont, {1, 0}, ui_book_autonotes_text_color, pAutonoteTxt[_activeNotesIdx[i]].pText, 0, 0, Color());
+        autonotes_window.DrawText(pAutonoteFont, {1, 0}, ui_book_autonotes_text_color, pAutonoteTxt[_activeNotesIdx[i]].pText);
         pTextHeight = pAutonoteFont->CalcTextHeight(pAutonoteTxt[_activeNotesIdx[i]].pText, autonotes_window.uFrameWidth, 1);
         if ((autonotes_window.uFrameY + pTextHeight) > autonotes_window.uFrameHeight) {
             break;

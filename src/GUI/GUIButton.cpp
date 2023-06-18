@@ -98,10 +98,10 @@ void GUIButton::Release() {
     delete this;
 }
 
-void GUIButton::DrawLabel(const std::string &label_text, GUIFont *pFont, Color color, Color uFontShadowColor) {
-    return pParent->DrawText(pFont,
-                             {this->uX + (int)(this->uWidth - pFont->GetLineWidth(label_text)) / 2, this->uY + (int)(this->uHeight - pFont->GetHeight()) / 2}, color,
-                             label_text, 0, 0, uFontShadowColor);
+void GUIButton::DrawLabel(const std::string &text, GUIFont *font, Color color, Color shadowColor) {
+    return pParent->DrawText(font,
+                             {this->uX + (int)(this->uWidth - font->GetLineWidth(text)) / 2, this->uY + (int)(this->uHeight - font->GetHeight()) / 2},
+                             color, text, 0, shadowColor);
 }
 
 bool GUIButton::Contains(unsigned int x, unsigned int y) {

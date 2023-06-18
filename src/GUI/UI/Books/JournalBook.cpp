@@ -120,7 +120,7 @@ void GUIWindow_JournalBook::Update() {
         std::string str = BuildDialogueString(pStorylineText->StoreLine[_journalIdx[_currentIdx]].pText,
                                               0, 0, 0, 0, &pParty->PartyTimes.HistoryEventTimes[_journalIdx[_currentIdx] - 1]);
         std::string pStringOnPage = pAutonoteFont->GetPageTop(str, &journal_window, 1, _journalEntryPage[_currentIdx]);
-        journal_window.DrawText(pAutonoteFont, {1, 0}, ui_book_journal_text_color, pStringOnPage, 0,
+        journal_window.DrawText(pAutonoteFont, {1, 0}, ui_book_journal_text_color, pStringOnPage,
                                 journal_window.uFrameY + journal_window.uFrameHeight, ui_book_journal_text_shadow);
     }
 }

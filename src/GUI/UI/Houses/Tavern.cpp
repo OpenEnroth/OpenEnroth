@@ -126,7 +126,7 @@ void GUIWindow_Tavern::arcomageRulesDialogue() {
     }
     render->DrawTextureCustomHeight(8 / 640.0f, (352 - pTextHeight) / 480.0f, ui_leather_mm7, pTextHeight);
     render->DrawTextureNew(8 / 640.0f, (347 - pTextHeight) / 480.0f, _591428_endcap);
-    DrawText(font, {12, 354 - pTextHeight}, Color(), font->FitTextInAWindow(str, dialog_window.uFrameWidth, 12), 0, 0, Color());
+    DrawText(font, {12, 354 - pTextHeight}, Color(), font->FitTextInAWindow(str, dialog_window.uFrameWidth, 12));
 }
 
 void GUIWindow_Tavern::arcomageVictoryCondDialogue() {

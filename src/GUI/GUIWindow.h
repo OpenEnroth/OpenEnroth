@@ -56,11 +56,11 @@ class GUIWindow {
     bool Contains(unsigned int x, unsigned int y);
     void DrawFlashingInputCursor(int uX, int uY, GUIFont *a2);
 
-    int DrawTextInRect(GUIFont *font, Pointi position, Color color, const std::string &str, int rect_width, int reverse_text);
+    int DrawTextInRect(GUIFont *font, Pointi position, Color color, const std::string &text, int rect_width, int reverse_text);
 
-    void DrawText(GUIFont *font, Pointi position, Color uFontColor, const std::string &str, bool present_time_transparency = false, int max_text_height = 0, Color uFontShadowColor = Color());
+    void DrawText(GUIFont *font, Pointi position, Color color, const std::string &text, int maxHeight = 0, Color shadowColor = Color());
 
-    void DrawTitleText(GUIFont *font, int horizontal_margin, int vertical_margin, Color uDefaultColor, const std::string &str, int line_spacing);
+    void DrawTitleText(GUIFont *font, int horizontalMargin, int verticalMargin, Color color, const std::string &text, int lineSpacing);
 
     void DrawShops_next_generation_time_string(GameTime time);
     void DrawMessageBox(bool inside_game_viewport);

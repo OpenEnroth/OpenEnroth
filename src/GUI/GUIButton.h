@@ -14,7 +14,7 @@ class GUIButton {
         pParent = nullptr;
     }
 
-    void DrawLabel(const std::string &label_text, GUIFont *pFont, Color color, Color uFontShadowColor);
+    void DrawLabel(const std::string &text, GUIFont *font, Color color, Color shadowColor);
     bool Contains(unsigned int x, unsigned int y);
     void Release();
 

@@ -92,21 +92,21 @@ void GUIWindow_CalendarBook::Update() {
 
     std::string str = fmt::format("{}\t100:\t110{}:{:02} {} - {}", localization->GetString(LSTR_TIME), hour,
                                   pParty->uCurrentMinute, localization->GetAmPm(am), GetDayPart());
-    calendar_window.DrawText(pBookFont, {70, 55}, ui_book_calendar_time_color, str, 0, 0, Color());
+    calendar_window.DrawText(pBookFont, {70, 55}, ui_book_calendar_time_color, str);
 
     str = fmt::format("{}\t100:\t110{} - {}", localization->GetString(LSTR_DAY_CAPITALIZED), pParty->uCurrentDayOfMonth + 1,
                       localization->GetDayName(pParty->uCurrentDayOfMonth % 7));
-    calendar_window.DrawText(pBookFont, {70, 2 * pBookFont->GetHeight() + 49}, ui_book_calendar_day_color, str, 0, 0, Color());
+    calendar_window.DrawText(pBookFont, {70, 2 * pBookFont->GetHeight() + 49}, ui_book_calendar_day_color, str);
 
     str = fmt::format("{}\t100:\t110{} - {}", localization->GetString(LSTR_MONTH), pParty->uCurrentMonth + 1,
                       localization->GetMonthName(pParty->uCurrentMonth));
-    calendar_window.DrawText(pBookFont, {70, 4 * pBookFont->GetHeight() + 43}, ui_book_calendar_month_color, str, 0, 0, Color());
+    calendar_window.DrawText(pBookFont, {70, 4 * pBookFont->GetHeight() + 43}, ui_book_calendar_month_color, str);
 
     str = fmt::format("{}\t100:\t110{}", localization->GetString(LSTR_YEAR), pParty->uCurrentYear);
-    calendar_window.DrawText(pBookFont, {70, 6 * pBookFont->GetHeight() + 37}, ui_book_calendar_year_color, str, 0, 0, Color());
+    calendar_window.DrawText(pBookFont, {70, 6 * pBookFont->GetHeight() + 37}, ui_book_calendar_year_color, str);
 
     str = fmt::format("{}\t100:\t110{}", localization->GetString(LSTR_MOON), localization->GetMoonPhaseName(pDayMoonPhase[pParty->uCurrentDayOfMonth]));
-    calendar_window.DrawText(pBookFont, {70, 8 * (unsigned char)pBookFont->GetHeight() + 31}, ui_book_calendar_moon_color, str, 0, 0, Color());
+    calendar_window.DrawText(pBookFont, {70, 8 * (unsigned char)pBookFont->GetHeight() + 31}, ui_book_calendar_moon_color, str);
 
     int pMapID = pMapStats->GetMapInfo(pCurrentMapName);
     std::string pMapName;
@@ -117,5 +117,5 @@ void GUIWindow_CalendarBook::Update() {
     }
 
     str = fmt::format("{}\t100:\t110{}", localization->GetString(LSTR_LOCATION), pMapName);
-    calendar_window.DrawText(pBookFont, {70, 10 * (unsigned char)pBookFont->GetHeight() + 25}, ui_book_calendar_location_color, str, 0, 0, Color());
+    calendar_window.DrawText(pBookFont, {70, 10 * (unsigned char)pBookFont->GetHeight() + 25}, ui_book_calendar_location_color, str);
 }

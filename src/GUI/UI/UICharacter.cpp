@@ -792,7 +792,7 @@ static int CharacterUI_SkillsTab_Draw__DrawSkillTable(
     Pointi pt = mouse->GetCursorPos();
 
     auto str = fmt::format("{}\r{:03}{}", skill_group_name, right_margin, localization->GetString(LSTR_LEVEL));
-    pGUIWindow_CurrentMenu->DrawText(pFontArrus, {x, y}, ui_character_header_text_color, str, 0, 0, Color());
+    pGUIWindow_CurrentMenu->DrawText(pFontArrus, {x, y}, ui_character_header_text_color, str);
 
     int num_skills_drawn = 0;
     for (PLAYER_SKILL_TYPE skill : skill_list) {
@@ -834,7 +834,7 @@ static int CharacterUI_SkillsTab_Draw__DrawSkillTable(
                 } else {
                     Strsk = fmt::format("{}\r{:03}{}", localization->GetSkillName(skill), right_margin, skill_level);
                 }
-                pGUIWindow_CurrentMenu->DrawText(pFontLucida, {x, button->uY}, skill_color, Strsk, 0, 0, Color());
+                pGUIWindow_CurrentMenu->DrawText(pFontLucida, {x, button->uY}, skill_color, Strsk);
             } else {
                 const char *skill_level_str = skill_mastery == PLAYER_SKILL_MASTERY_NOVICE ? "" : localization->MasteryName(skill_mastery);
 
@@ -844,14 +844,14 @@ static int CharacterUI_SkillsTab_Draw__DrawSkillTable(
 
                 auto Strsk = fmt::format("{} {::}{}{::}\r{:03}{}",
                         localization->GetSkillName(skill), skill_mastery_color.tag(), skill_level_str, skill_color.tag(), right_margin, skill_level);
-                pGUIWindow_CurrentMenu->DrawText(pFontLucida, {x, button->uY}, skill_color, Strsk, 0, 0, Color());
+                pGUIWindow_CurrentMenu->DrawText(pFontLucida, {x, button->uY}, skill_color, Strsk);
             }
         }
     }
 
     if (!num_skills_drawn) {
         y_offset += pFontLucida->GetHeight() - 3;
-        pGUIWindow_CurrentMenu->DrawText(pFontLucida, {x, y_offset}, Color(), localization->GetString(LSTR_NONE), 0, 0, Color());
+        pGUIWindow_CurrentMenu->DrawText(pFontLucida, {x, y_offset}, Color(), localization->GetString(LSTR_NONE));
     }
 
     return y_offset;
@@ -869,7 +869,7 @@ void GUIWindow_CharacterRecord::CharacterUI_SkillsTab_Draw(Player *player) {
                      player->uSkillPoints ? ui_character_bonus_text_color.tag()
                                           : ui_character_default_text_color.tag(),
                      player->uSkillPoints);
-    pGUIWindow_CurrentMenu->DrawText(pFontArrus, {24, 18}, Color(), str, 0, 0, Color());
+    pGUIWindow_CurrentMenu->DrawText(pFontArrus, {24, 18}, Color(), str);
 
     int y = 2 * pFontLucida->GetHeight() + 13;
     y = CharacterUI_SkillsTab_Draw__DrawSkillTable(player, 24, y, allWeaponSkills(), 400, localization->GetString(LSTR_WEAPONS));
@@ -974,7 +974,7 @@ void GUIWindow_CharacterRecord::CharacterUI_AwardsTab_Draw(Player *player) {
     std::string str = fmt::format("{} {::}{}\f00000", localization->GetString(LSTR_AWARDS_FOR),
                                   ui_character_header_text_color.tag(), NameAndTitle(player->name, player->classType));
 
-    pGUIWindow_CurrentMenu->DrawText(pFontArrus, {24, 18}, Color(), str, 0, 0, Color());
+    pGUIWindow_CurrentMenu->DrawText(pFontArrus, {24, 18}, Color(), str);
 
 
     if (_awardsCharacterId != pParty->activeCharacterIndex()) {
@@ -985,7 +985,7 @@ void GUIWindow_CharacterRecord::CharacterUI_AwardsTab_Draw(Player *player) {
     for (int i = _startAwardElem; i < _achievedAwardsList.size(); ++i) {
         std::string str = getAchievedAwardsString(i);
 
-        window.DrawText(pFontArrus, {0, 0}, ui_character_award_color[pAwards[_achievedAwardsList[i]].uPriority % 6], str, 0, 0, Color());
+        window.DrawText(pFontArrus, {0, 0}, ui_character_award_color[pAwards[_achievedAwardsList[i]].uPriority % 6], str);
         window.uFrameY = pFontArrus->CalcTextHeight(str, window.uFrameWidth, 0) + window.uFrameY + 8;
         currentlyDisplayedElems++;
         if (window.uFrameY > window.uFrameHeight) {

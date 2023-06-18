@@ -362,32 +362,31 @@ void GUIWindow::DrawShops_next_generation_time_string(GameTime time) {
 }
 
 //----- (0044D406) --------------------------------------------------------
-void GUIWindow::DrawTitleText(GUIFont *pFont, int uHorizontalMargin, int uVerticalMargin, Color uDefaultColor, const std::string &str, int uLineSpacing) {
-    int width = this->uFrameWidth - uHorizontalMargin;
-    ui_current_text_color = uDefaultColor;
-    std::string resString = pFont->FitTextInAWindow(str, this->uFrameWidth, uHorizontalMargin);
+void GUIWindow::DrawTitleText(GUIFont *pFont, int horizontalMargin, int verticalMargin, Color color, const std::string &text, int lineSpacing) {
+    int width = this->uFrameWidth - horizontalMargin;
+    ui_current_text_color = color;
+    std::string resString = pFont->FitTextInAWindow(text, this->uFrameWidth, horizontalMargin);
     std::istringstream stream(resString);
     std::string line;
-    int x = uHorizontalMargin + this->uFrameX;
-    int y = uVerticalMargin + this->uFrameY;
+    int x = horizontalMargin + this->uFrameX;
+    int y = verticalMargin + this->uFrameY;
     while (std::getline(stream, line)) {
         int x_offset = pFont->AlignText_Center(width, line);
-        pFont->DrawTextLine(line, uDefaultColor, {x + x_offset, y}, render->GetRenderDimensions().w);
-        y += pFont->GetHeight() - uLineSpacing;
+        pFont->DrawTextLine(line, color, {x + x_offset, y}, render->GetRenderDimensions().w);
+        y += pFont->GetHeight() - lineSpacing;
     }
 }
 
 //----- (0044CE08) --------------------------------------------------------
-void GUIWindow::DrawText(GUIFont *font, Pointi position, Color uFontColor, const std::string &Str,
-                         bool present_time_transparency, int max_text_height, Color uFontShadowColor) {
-    font->DrawText(this, position, uFontColor, Str, present_time_transparency, max_text_height, uFontShadowColor);
+void GUIWindow::DrawText(GUIFont *font, Pointi position, Color color, const std::string &text, int maxHeight, Color shadowColor) {
+    font->DrawText(this, position, color, text, maxHeight, shadowColor);
 }
 
 //----- (0044CB4F) --------------------------------------------------------
 int GUIWindow::DrawTextInRect(GUIFont *pFont, Pointi position,
-                              Color uColor, const std::string &str, int rect_width,
+                              Color uColor, const std::string &text, int rect_width,
                               int reverse_text) {
-    return pFont->DrawTextInRect(this, position, uColor, str, rect_width, reverse_text);
+    return pFont->DrawTextInRect(this, position, uColor, text, rect_width, reverse_text);
 }
 
 GUIButton *GUIWindow::CreateButton(Pointi position, Sizei dimensions,
@@ -443,7 +442,7 @@ void GUIWindow::InitializeGUI() {
 void GUIWindow::DrawFlashingInputCursor(int uX, int uY, GUIFont *a2) {
     // TODO(pskelton): check tickcount usage here
     if (platform->tickCount() % 1000 > 500) {
-        DrawText(a2, {uX, uY}, Color(), "_", 0, 0, Color());
+        DrawText(a2, {uX, uY}, Color(), "_");
     }
 }
 
@@ -901,7 +900,7 @@ void SetUserInterface(PartyAlignment align, bool bReplace) {
 }
 
 void DrawBuff_remaining_time_string(int uY, GUIWindow *window, GameTime remaining_time, GUIFont *Font) {
-    window->DrawText(Font, {32, uY}, Color(), "\r020" + MakeDateTimeString(remaining_time), 0, 0, Color());
+    window->DrawText(Font, {32, uY}, Color(), "\r020" + MakeDateTimeString(remaining_time));
 }
 
 void GUIMessageQueue::AddMessageImpl(UIMessageType msg, int param,

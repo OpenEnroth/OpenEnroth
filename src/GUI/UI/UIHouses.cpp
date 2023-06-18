@@ -523,7 +523,7 @@ void SimpleHouseDialog() {
                 int h = (pFontArrus->CalcTextHeight(pInString, house_window.uFrameWidth, 13) + 7);
                 render->DrawTextureNew(8 / 640.0f, (347 - h) / 480.0f, _591428_endcap);
                 pDialogueWindow->DrawText(pFontArrus, {13, 354 - h}, Color(),
-                    pFontArrus->FitTextInAWindow(pInString, house_window.uFrameWidth, 13), 0, 0, Color());
+                    pFontArrus->FitTextInAWindow(pInString, house_window.uFrameWidth, 13));
             }
         }
     }
@@ -663,7 +663,7 @@ void SimpleHouseDialog() {
             ui_leather_mm7, pTextHeight);
         render->DrawTextureNew(8 / 640.0f, (347 - pTextHeight) / 480.0f,
             _591428_endcap);
-        house_window.DrawText(pTextFont, {13, 354 - pTextHeight}, Color(), pTextFont->FitTextInAWindow(current_npc_text, w.uFrameWidth, 13), 0, 0, Color());
+        house_window.DrawText(pTextFont, {13, 354 - pTextHeight}, Color(), pTextFont->FitTextInAWindow(current_npc_text, w.uFrameWidth, 13));
     }
 }
 
@@ -936,7 +936,7 @@ void GUIWindow_House::houseDialogManager() {
             int v6 = pTextHeight + 7;
             render->DrawTextureCustomHeight(8 / 640.0f, (352 - (pTextHeight + 7)) / 480.0f, ui_leather_mm7, pTextHeight + 7);
             render->DrawTextureNew(8 / 640.0f, (347 - v6) / 480.0f, _591428_endcap);
-            DrawText(pFontArrus, {13, 354 - v6}, Color(), pFontArrus->FitTextInAWindow(current_npc_text, pDialogWindow.uFrameWidth, 13), 0, 0, Color());
+            DrawText(pFontArrus, {13, 354 - v6}, Color(), pFontArrus->FitTextInAWindow(current_npc_text, pDialogWindow.uFrameWidth, 13));
         }
         if (uNumDialogueNPCPortraits <= 0) {
             if (pDialogueNPCCount == uNumDialogueNPCPortraits &&
