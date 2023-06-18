@@ -6,6 +6,7 @@
 /* Skill encodes level and mastery where first 0x3F are for skill level and 0x1C0 bits are for skill mastery.
  * So max possible stored skill level is 63.
  */
+// TODO(pskelton): reduce or drop in favour of combined value
 typedef uint16_t PLAYER_SKILL;
 typedef uint8_t PLAYER_SKILL_LEVEL;
 
