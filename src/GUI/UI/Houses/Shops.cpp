@@ -920,7 +920,7 @@ void GUIWindow_Shop::houseScreenClick() {
             }
 
             if (pParty->activeCharacter().pInventoryItemList[pItemID - 1].MerchandiseTest(wData.val)) {
-                dword_F8B1E4 = 1;
+                _transactionPerformed = true;
                 pParty->activeCharacter().SalesProcess(invindex, pItemID - 1, wData.val);
                 render->ClearZBuffer();
                 pParty->activeCharacter().playReaction(SPEECH_ItemSold);
@@ -950,7 +950,7 @@ void GUIWindow_Shop::houseScreenClick() {
             if (!(item.uAttributes & ITEM_IDENTIFIED)) {
                 if (item.MerchandiseTest(wData.val)) {
                     if (pParty->GetGold() >= uPriceItemService) {
-                        dword_F8B1E4 = 1;
+                        _transactionPerformed = true;
                         pParty->TakeGold(uPriceItemService);
                         item.uAttributes |= ITEM_IDENTIFIED;
                         pParty->activeCharacter().playReaction(SPEECH_ShopIdentify);
@@ -958,7 +958,8 @@ void GUIWindow_Shop::houseScreenClick() {
                         return;
                     }
 
-                    PlayHouseSound(wData.val, (HouseSoundID)2);
+                    playHouseSound(houseId(), HOUSE_SOUND_GENERAL_NOT_ENOUGH_GOLD);
+                    GameUI_SetStatusBar(LSTR_NOT_ENOUGH_GOLD);
                     return;
                 }
 
@@ -989,7 +990,7 @@ void GUIWindow_Shop::houseScreenClick() {
             if (item.uAttributes & ITEM_BROKEN) {
                 if (item.MerchandiseTest(wData.val)) {
                     if (pParty->GetGold() >= uPriceItemService) {
-                        dword_F8B1E4 = 1;
+                        _transactionPerformed = true;
                         pParty->TakeGold(uPriceItemService);
                         item.uAttributes = (item.uAttributes & ~ITEM_BROKEN) | ITEM_IDENTIFIED;
                         pParty->activeCharacter().playReaction(SPEECH_ShopRepair);
@@ -997,7 +998,8 @@ void GUIWindow_Shop::houseScreenClick() {
                         return;
                     }
 
-                    PlayHouseSound(wData.val, (HouseSoundID)2);
+                    playHouseSound(houseId(), HOUSE_SOUND_GENERAL_NOT_ENOUGH_GOLD);
+                    GameUI_SetStatusBar(LSTR_NOT_ENOUGH_GOLD);
                     return;
                 }
 
@@ -1117,7 +1119,7 @@ void GUIWindow_Shop::houseScreenClick() {
                     return;
                 }
             } else if (pParty->GetGold() < uPriceItemService) {
-                PlayHouseSound(wData.val, (HouseSoundID)2);
+                playHouseSound(houseId(), HOUSE_SOUND_GENERAL_NOT_ENOUGH_GOLD);
                 GameUI_SetStatusBar(LSTR_NOT_ENOUGH_GOLD);
                 return;
             }
@@ -1130,7 +1132,7 @@ void GUIWindow_Shop::houseScreenClick() {
                     pParty->activeCharacter().pInventoryItemList[itemSlot - 1].SetStolen();
                     processStealingResult(stealResult, fine);
                 } else {
-                    dword_F8B1E4 = 1;
+                    _transactionPerformed = true;
                     pParty->TakeGold(uPriceItemService);
                 }
                 boughtItem->Reset();

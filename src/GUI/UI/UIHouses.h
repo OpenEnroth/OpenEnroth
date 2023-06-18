@@ -16,7 +16,6 @@ constexpr int SIDE_TEXT_BOX_BODY_TEXT_HEIGHT = 174;
 constexpr int SIDE_TEXT_BOX_BODY_TEXT_OFFSET = 138;
 constexpr int SIDE_TEXT_BOX_MAX_SPACING = 32;
 
-void PlayHouseSound(unsigned int uHouseID, HouseSoundID sound);  // idb
 void SimpleHouseDialog();
 
 void BackToHouseMenu();
@@ -36,7 +35,10 @@ bool enterHouse(HOUSE_ID uHouseID);
 
 bool houseDialogPressEscape();
 
-void GetHouseGoodbyeSpeech();
+/**
+ * @offset 0x4B1E92
+ */
+void playHouseSound(HOUSE_ID houseID, HouseSoundType type);
 
 class GUIWindow_House : public GUIWindow {
  public:
@@ -60,6 +62,11 @@ class GUIWindow_House : public GUIWindow {
     void reinitDialogueWindow();
     bool checkIfPlayerCanInteract();
 
+    /**
+     * @offset 0x4B1D27
+     */
+    void playHouseGoodbyeSpeech();
+
     virtual void houseDialogueOptionSelected(DIALOGUE_TYPE option);
     // TODO(Nik-RE-dev): add DIALOGUE_TYPE argument?
     virtual void houseSpecificDialogue();
@@ -71,6 +78,7 @@ class GUIWindow_House : public GUIWindow {
     void learnSkillsDialogue();
 
     int _savedButtonsNum{};
+    bool _transactionPerformed = false;
 };
 
 // Originally was a packed struct.

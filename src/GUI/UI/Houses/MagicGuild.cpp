@@ -345,7 +345,7 @@ void GUIWindow_MagicGuild::houseScreenClick() {
                     int uPriceItemService = PriceCalculator::itemBuyingPriceForPlayer(&pParty->activeCharacter(), boughtItem.GetValue(), fPriceMultiplier);
 
                     if (pParty->GetGold() < uPriceItemService) {
-                        PlayHouseSound(wData.val, (HouseSoundID)2);
+                        playHouseSound(houseId(), HOUSE_SOUND_GENERAL_NOT_ENOUGH_GOLD);
                         GameUI_SetStatusBar(LSTR_NOT_ENOUGH_GOLD);
                         return;
                     }
@@ -354,7 +354,7 @@ void GUIWindow_MagicGuild::houseScreenClick() {
                     if (itemSlot) {
                         boughtItem.SetIdentified();
                         pParty->activeCharacter().pInventoryItemList[itemSlot - 1] = boughtItem;
-                        dword_F8B1E4 = 1;
+                        _transactionPerformed = true;
                         pParty->TakeGold(uPriceItemService);
                         boughtItem.Reset();
                         render->ClearZBuffer();

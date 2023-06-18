@@ -317,7 +317,6 @@ bool enterHouse(HOUSE_ID uHouseID) {
     int uOpenTime = buildingTable[uHouseID - HOUSE_SMITH_EMERALD_ISLE].uOpenTime;
     int uCloseTime = buildingTable[uHouseID - HOUSE_SMITH_EMERALD_ISLE].uCloseTime;
     current_npc_text.clear();
-    dword_F8B1E4 = 0;
     render->ClearZBuffer();
 
     if (((uCloseTime - 1 <= uOpenTime) && ((pParty->uCurrentHour < uOpenTime) && (pParty->uCurrentHour >(uCloseTime - 1)))) ||
@@ -383,13 +382,13 @@ bool enterHouse(HOUSE_ID uHouseID) {
                 pParty->setActiveToFirstCanAct();
 
             if (!pParty->activeCharacter()._achievedAwardsBits[guildMembershipFlags[uHouseID]]) {
-                PlayHouseSound(uHouseID, HouseSound_Greeting_2);
+                playHouseSound(uHouseID, HOUSE_SOUND_MAGIC_GUILD_MEMBERS_ONLY);
                 return true;
             }
         } else if ((isStable(uHouseID) || isBoat(uHouseID)) && !isTravelAvailable(uHouseID)) {
             return true;
         }
-        PlayHouseSound(uHouseID, HouseSound_Greeting);
+        playHouseSound(uHouseID, HOUSE_SOUND_GENERAL_GREETING);
         dword_5C35D4 = 1;
         return true;
     }
@@ -455,58 +454,6 @@ void PrepareHouse(HOUSE_ID house) {
             assets->getImage_ColorKey(pHouse_ExitPictures[uHouse_ExitPic]);
         ++uNumDialogueNPCPortraits;
         uHouse_ExitPic = buildingTable[house - HOUSE_SMITH_EMERALD_ISLE].uExitMapID;
-    }
-}
-
-//----- (004B1E92) --------------------------------------------------------
-void PlayHouseSound(unsigned int uHouseID, HouseSoundID sound) {
-    if (uHouseID > 0) {
-        if (pAnimatedRooms[buildingTable[uHouseID - HOUSE_SMITH_EMERALD_ISLE].uAnimationID].uRoomSoundId) {
-            int roomSoundId = pAnimatedRooms[buildingTable[uHouseID - HOUSE_SMITH_EMERALD_ISLE].uAnimationID].uRoomSoundId;
-            pAudioPlayer->playHouseSound((SoundID)(sound + 100 * (roomSoundId + 300)), true);
-        }
-    }
-}
-
-//----- (004B1D27) --------------------------------------------------------
-void GetHouseGoodbyeSpeech() {
-    int v7[4];      // [sp+Ch] [bp-10h]@12
-
-    if (in_current_building_type != BuildingType_Invalid) {
-        if (in_current_building_type > BuildingType_MagicShop) {
-            if (in_current_building_type == BuildingType_Bank) {
-                if (!dword_F8B1E4) return;
-            } else {
-                if (in_current_building_type != BuildingType_Temple) return;
-            }
-            PlayHouseSound(window_SpeakInHouse->wData.val, HouseSound_Greeting_2);
-            return;
-        }
-        if (pParty->PartyTimes.shopBanTimes[window_SpeakInHouse->houseId()] <= pParty->GetPlayingTime()) {
-            if (pParty->GetGold() <= 10000) {
-                if (!dword_F8B1E4) return;
-                PlayHouseSound(window_SpeakInHouse->wData.val, HouseSound_Goodbye);
-                return;
-            }
-            PlayHouseSound(window_SpeakInHouse->wData.val, (HouseSoundID)(dword_F8B1E4 + 3));
-            if (!dword_F8B1E4 && !pParty->_delayedReactionTimer) {
-                int id = pParty->getRandomActiveCharacterId(vrng.get());
-
-                if (id != -1) {
-                    pParty->setDelayedReaction(SPEECH_ShopRude, id);
-                    return;
-                }
-            }
-        } else {  // caught stealing
-            if (!pParty->_delayedReactionTimer) {
-                int id = pParty->getRandomActiveCharacterId(vrng.get());
-
-                if (id != -1) {
-                    pParty->setDelayedReaction(SPEECH_ShopRude, id);
-                    return;
-                }
-            }
-        }
     }
 }
 
@@ -870,6 +817,47 @@ void BackToHouseMenu() {
 #endif
 }
 
+void playHouseSound(HOUSE_ID houseID, HouseSoundType type) {
+    if (houseID != HOUSE_INVALID && pAnimatedRooms[buildingTable[std::to_underlying(houseID) - 1].uAnimationID].uRoomSoundId) {
+        int roomSoundId = pAnimatedRooms[buildingTable[std::to_underlying(houseID) - 1].uAnimationID].uRoomSoundId;
+        SoundID soundId = SoundID(std::to_underlying(type) + 100 * (roomSoundId + 300));
+        pAudioPlayer->playHouseSound(soundId, true);
+    }
+}
+
+void GUIWindow_House::playHouseGoodbyeSpeech() {
+    if (buildingType() != BuildingType_Invalid) {
+        if (!isShop(houseId())) {
+            if (buildingType() == BuildingType_Temple) {
+                playHouseSound(houseId(), HOUSE_SOUND_TEMPLE_GOODBYE);
+            } else if (buildingType() == BuildingType_Bank && _transactionPerformed) {
+                playHouseSound(houseId(), HOUSE_SOUND_BANK_GOODBYE);
+            }
+            return;
+        }
+
+        bool rudeReaction = true;
+        if (pParty->PartyTimes.shopBanTimes[houseId()] <= pParty->GetPlayingTime()) {
+            if (pParty->GetGold() <= 10000) {
+                if (_transactionPerformed) {
+                    playHouseSound(houseId(), HOUSE_SOUND_SHOP_GOODBYE_POLITE);
+                }
+                return;
+            }
+            playHouseSound(houseId(), _transactionPerformed ? HOUSE_SOUND_SHOP_GOODBYE_POLITE : HOUSE_SOUND_SHOP_GOODBYE_RUDE);
+            rudeReaction = !_transactionPerformed;
+        }
+        if (rudeReaction && !pParty->_delayedReactionTimer) {
+            int id = pParty->getRandomActiveCharacterId(vrng.get());
+
+            if (id != -1) {
+                pParty->setDelayedReaction(SPEECH_ShopRude, id);
+                return;
+            }
+        }
+    }
+}
+
 void GUIWindow_House::reinitDialogueWindow() {
     if (pDialogueWindow) {
         pDialogueWindow->Release();
@@ -1110,14 +1098,16 @@ void GUIWindow_House::learnSelectedSkill(PLAYER_SKILL_TYPE skill) {
         if (!pParty->activeCharacter().pActiveSkills[skill]) {
             if (pParty->GetGold() < pPrice) {
                 GameUI_SetStatusBar(LSTR_NOT_ENOUGH_GOLD);
-                if (in_current_building_type == BuildingType_Training || in_current_building_type == BuildingType_Tavern) {
-                    PlayHouseSound(wData.val, HouseSound_Goodbye);
+                if (buildingType() == BuildingType_Training) {
+                    playHouseSound(houseId(), HOUSE_SOUND_TRAINING_NOT_ENOUGH_GOLD);
+                } else if (buildingType() == BuildingType_Tavern) {
+                    playHouseSound(houseId(), HOUSE_SOUND_TAVERN_NOT_ENOUGH_GOLD);
                 } else {
-                    PlayHouseSound(wData.val, HouseSound_NotEnoughMoney);
+                    playHouseSound(houseId(), HOUSE_SOUND_GENERAL_NOT_ENOUGH_GOLD);
                 }
             } else {
                 pParty->TakeGold(pPrice);
-                dword_F8B1E4 = 1;
+                _transactionPerformed = true;
                 pParty->activeCharacter().pActiveSkills[skill] = 1;
                 pParty->activeCharacter().playReaction(SPEECH_SkillLearned);
             }

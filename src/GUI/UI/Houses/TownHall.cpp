@@ -100,7 +100,7 @@ void GUIWindow_TownHall::payFineDialogue() {
         if (sum > 0) {
             int party_gold = pParty->GetGold();
             if (sum > party_gold) {
-                PlayHouseSound(wData.val, HouseSound_NotEnoughMoney);
+                playHouseSound(houseId(), HOUSE_SOUND_GENERAL_NOT_ENOUGH_GOLD);
                 sum = party_gold;
             }
 

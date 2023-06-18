@@ -100,7 +100,7 @@ void GUIWindow_Training::trainDialogue() {
         if (pParty->activeCharacter().experience >= expForNextLevel) {
             if (pParty->GetGold() >= pPrice) {
                 pParty->TakeGold(pPrice);
-                PlayHouseSound(wData.val, HouseSound_NotEnoughMoney);
+                playHouseSound(houseId(), HOUSE_SOUND_TRAINING_TRAIN);
                 pParty->activeCharacter().uLevel++;
                 pParty->activeCharacter().uSkillPoints += pParty->activeCharacter().uLevel / 10 + 5;
                 pParty->activeCharacter().health = pParty->activeCharacter().GetMaxHealth();
@@ -128,7 +128,7 @@ void GUIWindow_Training::trainDialogue() {
             }
 
             GameUI_SetStatusBar(LSTR_NOT_ENOUGH_GOLD);
-            PlayHouseSound(wData.val, HouseSound_Goodbye);
+            playHouseSound(houseId(), HOUSE_SOUND_TRAINING_NOT_ENOUGH_GOLD);
             pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 1, 0);
             return;
         }
@@ -141,7 +141,7 @@ void GUIWindow_Training::trainDialogue() {
     }
     training_dialog_window.DrawTitleText(pFontArrus, 0, textHeight, colorTable.Jonquil, label, 3);
 
-    PlayHouseSound(wData.val, HouseSound_Greeting_2);
+    playHouseSound(houseId(), HOUSE_SOUND_TRAINING_CANT_TRAIN);
     pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 1, 0);
     return;
 }

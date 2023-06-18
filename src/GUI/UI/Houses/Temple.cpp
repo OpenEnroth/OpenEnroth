@@ -65,7 +65,7 @@ void GUIWindow_Temple::healDialogue() {
     int price = PriceCalculator::templeHealingCostForPlayer(&pParty->activeCharacter(), buildingTable[wData.val - 1].fPriceMultiplier);
     if (pParty->GetGold() < price) {
         GameUI_SetStatusBar(LSTR_NOT_ENOUGH_GOLD);
-        PlayHouseSound(wData.val, HouseSound_NotEnoughMoney);
+        playHouseSound(houseId(), HOUSE_SOUND_GENERAL_NOT_ENOUGH_GOLD);
         pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 1, 0);
         return;
     }

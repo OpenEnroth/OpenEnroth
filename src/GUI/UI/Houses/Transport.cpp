@@ -173,8 +173,7 @@ void GUIWindow_Transport::transportDialogue() {
 
     if (pParty->GetGold() < pPrice) {
         GameUI_SetStatusBar(LSTR_NOT_ENOUGH_GOLD);
-        // TODO(pskelton): correct sound but wrong label - travel house sounds might need different enum
-        PlayHouseSound(wData.val, HouseSound_Greeting_2);
+        playHouseSound(houseId(), HOUSE_SOUND_TRANSPORT_NOT_ENOUGH_GOLD);
         pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 1, 0);
         return;
     }
@@ -210,8 +209,7 @@ void GUIWindow_Transport::transportDialogue() {
         }
 
         pParty->TakeGold(pPrice);
-        // TODO(pskelton): correct sound but wrong label - travel house sounds might need different enum
-        PlayHouseSound(wData.val, HouseSound_NotEnoughMoney);
+        playHouseSound(houseId(), HOUSE_SOUND_TRANSPORT_TRAVEL);
 
         PlayerSpeech pSpeech;
         if (isBoat(houseId())) {

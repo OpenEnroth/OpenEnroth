@@ -243,9 +243,22 @@ inline bool isBoat(HOUSE_ID houseId) {
     return houseId >= HOUSE_FIRST_BOAT && houseId <= HOUSE_LAST_BOAT;
 }
 
-enum HouseSoundID : uint32_t {
-    HouseSound_Greeting = 1,  // General greeting
-    HouseSound_NotEnoughMoney = 2,
-    HouseSound_Greeting_2 = 3,  // Polite Greeting when you're guild member
-    HouseSound_Goodbye = 4      // farewells when bought something
+enum class HouseSoundType : uint32_t {
+    HOUSE_SOUND_GENERAL_GREETING = 1,
+    HOUSE_SOUND_GENERAL_NOT_ENOUGH_GOLD = 2,
+
+    HOUSE_SOUND_MAGIC_GUILD_MEMBERS_ONLY = 3,
+    HOUSE_SOUND_SHOP_GOODBYE_RUDE = 3,
+    HOUSE_SOUND_SHOP_GOODBYE_POLITE = 4,
+    HOUSE_SOUND_TEMPLE_GOODBYE = 3,
+    HOUSE_SOUND_BANK_GOODBYE = 3,
+    HOUSE_SOUND_TAVERN_RENT_ROOM = 2,
+    HOUSE_SOUND_TAVERN_BUY_FOOD = 3,
+    HOUSE_SOUND_TAVERN_NOT_ENOUGH_GOLD = 4,
+    HOUSE_SOUND_TRAINING_TRAIN = 2,
+    HOUSE_SOUND_TRAINING_CANT_TRAIN = 3,
+    HOUSE_SOUND_TRAINING_NOT_ENOUGH_GOLD = 4,
+    HOUSE_SOUND_TRANSPORT_TRAVEL = 2,
+    HOUSE_SOUND_TRANSPORT_NOT_ENOUGH_GOLD = 3
 };
+using enum HouseSoundType;
