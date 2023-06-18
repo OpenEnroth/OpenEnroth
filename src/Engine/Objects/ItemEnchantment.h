@@ -10,10 +10,10 @@ struct Player;
 
 struct CEnchantment {
     CEnchantment() {}
-    explicit CEnchantment(int bonus, uint16_t Player::* skillPtr = nullptr)
+    explicit CEnchantment(int bonus, CombinedSkillValue Player::* skillPtr = nullptr)
         : statPtr(skillPtr), statBonus(bonus) {}
 
-    uint16_t Player::* statPtr = nullptr;
+    CombinedSkillValue Player::* statPtr = nullptr;
     int statBonus = 0;
 };
 

@@ -2915,11 +2915,9 @@ int Player::GetSkillBonus(CHARACTER_ATTRIBUTE_TYPE inSkill) const {
     if (armmaster_skill > 0) {
         int multiplier = 0;
         if (inSkill == CHARACTER_ATTRIBUTE_MELEE_DMG_BONUS) {
-            multiplier =
-                GetMultiplierForSkillLevel(PLAYER_SKILL_ARMSMASTER, 0, 0, 1, 2);
+            multiplier = GetMultiplierForSkillLevel(PLAYER_SKILL_ARMSMASTER, 0, 0, 1, 2);
         } else if (inSkill == CHARACTER_ATTRIBUTE_ATTACK) {
-            multiplier =
-                GetMultiplierForSkillLevel(PLAYER_SKILL_ARMSMASTER, 0, 1, 1, 2);
+            multiplier = GetMultiplierForSkillLevel(PLAYER_SKILL_ARMSMASTER, 0, 1, 1, 2);
         }
         armsMasterBonus = multiplier * armmaster_skill;
     }
@@ -2928,8 +2926,7 @@ int Player::GetSkillBonus(CHARACTER_ATTRIBUTE_TYPE inSkill) const {
         case CHARACTER_ATTRIBUTE_RANGED_DMG_BONUS:
             if (HasItemEquipped(ITEM_SLOT_BOW)) {
                 int bowSkillLevel = getActualSkillValue(PLAYER_SKILL_BOW).level();
-                int multiplier =
-                    GetMultiplierForSkillLevel(PLAYER_SKILL_BOW, 0, 0, 0, 1);
+                int multiplier = GetMultiplierForSkillLevel(PLAYER_SKILL_BOW, 0, 0, 0, 1);
                 return multiplier * bowSkillLevel;
             }
             return 0;
@@ -3122,9 +3119,11 @@ int Player::GetSkillBonus(CHARACTER_ATTRIBUTE_TYPE inSkill) const {
 
 unsigned int Player::GetMultiplierForSkillLevel(
     PLAYER_SKILL_TYPE uSkillType, int mult1, int mult2, int mult3,
-    int mult4) const {  // ?? needs changing - check behavious
-    PLAYER_SKILL_MASTERY masteryLvl = getActualSkillValue(uSkillType).mastery();
+    int mult4) const {  // TODO(pskelton): ?? needs changing - check behavious
+    PLAYER_SKILL_MASTERY masteryLvl = GetActualSkillMastery(uSkillType);
     switch (masteryLvl) {
+        case PLAYER_SKILL_MASTERY_NONE:
+            return 0;
         case PLAYER_SKILL_MASTERY_NOVICE:
             return mult1;
         case PLAYER_SKILL_MASTERY_EXPERT:
@@ -3137,6 +3136,7 @@ unsigned int Player::GetMultiplierForSkillLevel(
     Error("(%u)", masteryLvl);
     return 0;
 }
+
 //----- (00490109) --------------------------------------------------------
 // faces are:  0  1  2  3   human males
 //             4  5  6  7   human females
@@ -3278,9 +3278,9 @@ void Player::Reset(PLAYER_CLASS_TYPE cls) {
     experience = 251ll + grng->random(100);
     uSkillPoints = 0;
     uBirthYear = 1147 - grng->random(6);
-    pActiveSkills.fill(0);
-    pActiveSkills[PLAYER_SKILL_CLUB] = 1; // Hidden skills, always at 1.
-    pActiveSkills[PLAYER_SKILL_MISC] = 1;
+    pActiveSkills.fill(CombinedSkillValue());
+    pActiveSkills[PLAYER_SKILL_CLUB].learn(); // Hidden skills, always known.
+    pActiveSkills[PLAYER_SKILL_MISC].learn();
     _achievedAwardsBits.reset();
     memset(&spellbook, 0, sizeof(spellbook));
     uQuickSpell = SPELL_NONE;
@@ -4240,81 +4240,81 @@ bool Player::CompareVariable(VariableType VarNum, int pValue) {
         case VAR_MagicResistanceBonus:
             return this->sResMagicBonus >= pValue;
         case VAR_StaffSkill:
-            return CmpSkillValue(pValue, this->pActiveSkills[PLAYER_SKILL_STAFF]);
+            return CmpSkillValue(pValue, this->pActiveSkills[PLAYER_SKILL_STAFF].join());
         case VAR_SwordSkill:
-            return CmpSkillValue(pValue, this->pActiveSkills[PLAYER_SKILL_SWORD]);
+            return CmpSkillValue(pValue, this->pActiveSkills[PLAYER_SKILL_SWORD].join());
         case VAR_DaggerSkill:
-            return CmpSkillValue(pValue, this->pActiveSkills[PLAYER_SKILL_DAGGER]);
+            return CmpSkillValue(pValue, this->pActiveSkills[PLAYER_SKILL_DAGGER].join());
         case VAR_AxeSkill:
-            return CmpSkillValue(pValue, this->pActiveSkills[PLAYER_SKILL_AXE]);
+            return CmpSkillValue(pValue, this->pActiveSkills[PLAYER_SKILL_AXE].join());
         case VAR_SpearSkill:
-            return CmpSkillValue(pValue, this->pActiveSkills[PLAYER_SKILL_SPEAR]);
+            return CmpSkillValue(pValue, this->pActiveSkills[PLAYER_SKILL_SPEAR].join());
         case VAR_BowSkill:
-            return CmpSkillValue(pValue, this->pActiveSkills[PLAYER_SKILL_BOW]);
+            return CmpSkillValue(pValue, this->pActiveSkills[PLAYER_SKILL_BOW].join());
         case VAR_MaceSkill:
-            return CmpSkillValue(pValue, this->pActiveSkills[PLAYER_SKILL_MACE]);
+            return CmpSkillValue(pValue, this->pActiveSkills[PLAYER_SKILL_MACE].join());
         case VAR_BlasterSkill:
-            return CmpSkillValue(pValue, this->pActiveSkills[PLAYER_SKILL_BLASTER]);
+            return CmpSkillValue(pValue, this->pActiveSkills[PLAYER_SKILL_BLASTER].join());
         case VAR_ShieldSkill:
-            return CmpSkillValue(pValue, this->pActiveSkills[PLAYER_SKILL_SHIELD]);
+            return CmpSkillValue(pValue, this->pActiveSkills[PLAYER_SKILL_SHIELD].join());
         case VAR_LeatherSkill:
-            return CmpSkillValue(pValue, this->pActiveSkills[PLAYER_SKILL_LEATHER]);
+            return CmpSkillValue(pValue, this->pActiveSkills[PLAYER_SKILL_LEATHER].join());
         case VAR_SkillChain:
-            return CmpSkillValue(pValue, this->pActiveSkills[PLAYER_SKILL_CHAIN]);
+            return CmpSkillValue(pValue, this->pActiveSkills[PLAYER_SKILL_CHAIN].join());
         case VAR_PlateSkill:
-            return CmpSkillValue(pValue, this->pActiveSkills[PLAYER_SKILL_PLATE]);
+            return CmpSkillValue(pValue, this->pActiveSkills[PLAYER_SKILL_PLATE].join());
         case VAR_FireSkill:
-            return CmpSkillValue(pValue, this->pActiveSkills[PLAYER_SKILL_FIRE]);
+            return CmpSkillValue(pValue, this->pActiveSkills[PLAYER_SKILL_FIRE].join());
         case VAR_AirSkill:
-            return CmpSkillValue(pValue, this->pActiveSkills[PLAYER_SKILL_AIR]);
+            return CmpSkillValue(pValue, this->pActiveSkills[PLAYER_SKILL_AIR].join());
         case VAR_WaterSkill:
-            return CmpSkillValue(pValue, this->pActiveSkills[PLAYER_SKILL_WATER]);
+            return CmpSkillValue(pValue, this->pActiveSkills[PLAYER_SKILL_WATER].join());
         case VAR_EarthSkill:
-            return CmpSkillValue(pValue, this->pActiveSkills[PLAYER_SKILL_EARTH]);
+            return CmpSkillValue(pValue, this->pActiveSkills[PLAYER_SKILL_EARTH].join());
         case VAR_SpiritSkill:
-            return CmpSkillValue(pValue, this->pActiveSkills[PLAYER_SKILL_SPIRIT]);
+            return CmpSkillValue(pValue, this->pActiveSkills[PLAYER_SKILL_SPIRIT].join());
         case VAR_MindSkill:
-            return CmpSkillValue(pValue, this->pActiveSkills[PLAYER_SKILL_MIND]);
+            return CmpSkillValue(pValue, this->pActiveSkills[PLAYER_SKILL_MIND].join());
         case VAR_BodySkill:
-            return CmpSkillValue(pValue, this->pActiveSkills[PLAYER_SKILL_BODY]);
+            return CmpSkillValue(pValue, this->pActiveSkills[PLAYER_SKILL_BODY].join());
         case VAR_LightSkill:
-            return CmpSkillValue(pValue, this->pActiveSkills[PLAYER_SKILL_LIGHT]);
+            return CmpSkillValue(pValue, this->pActiveSkills[PLAYER_SKILL_LIGHT].join());
         case VAR_DarkSkill:
-            return CmpSkillValue(pValue, this->pActiveSkills[PLAYER_SKILL_DARK]);
+            return CmpSkillValue(pValue, this->pActiveSkills[PLAYER_SKILL_DARK].join());
         case VAR_IdentifyItemSkill:
-            return CmpSkillValue(pValue, this->pActiveSkills[PLAYER_SKILL_ITEM_ID]);
+            return CmpSkillValue(pValue, this->pActiveSkills[PLAYER_SKILL_ITEM_ID].join());
         case VAR_MerchantSkill:
-            return CmpSkillValue(pValue, this->pActiveSkills[PLAYER_SKILL_MERCHANT]);
+            return CmpSkillValue(pValue, this->pActiveSkills[PLAYER_SKILL_MERCHANT].join());
         case VAR_RepairSkill:
-            return CmpSkillValue(pValue, this->pActiveSkills[PLAYER_SKILL_REPAIR]);
+            return CmpSkillValue(pValue, this->pActiveSkills[PLAYER_SKILL_REPAIR].join());
         case VAR_BodybuildingSkill:
-            return CmpSkillValue(pValue, this->pActiveSkills[PLAYER_SKILL_BODYBUILDING]);
+            return CmpSkillValue(pValue, this->pActiveSkills[PLAYER_SKILL_BODYBUILDING].join());
         case VAR_MeditationSkill:
-            return CmpSkillValue(pValue, this->pActiveSkills[PLAYER_SKILL_MEDITATION]);
+            return CmpSkillValue(pValue, this->pActiveSkills[PLAYER_SKILL_MEDITATION].join());
         case VAR_PerceptionSkill:
-            return CmpSkillValue(pValue, this->pActiveSkills[PLAYER_SKILL_PERCEPTION]);
+            return CmpSkillValue(pValue, this->pActiveSkills[PLAYER_SKILL_PERCEPTION].join());
         case VAR_DiplomacySkill:
-            return CmpSkillValue(pValue, this->pActiveSkills[PLAYER_SKILL_DIPLOMACY]);
+            return CmpSkillValue(pValue, this->pActiveSkills[PLAYER_SKILL_DIPLOMACY].join());
         case VAR_ThieverySkill:
             //Error("Thievery isn't used in events");
             //return false;
-            return CmpSkillValue(pValue, this->pActiveSkills[PLAYER_SKILL_THIEVERY]);  // wasn't in the original
+            return CmpSkillValue(pValue, this->pActiveSkills[PLAYER_SKILL_THIEVERY].join());  // wasn't in the original
         case VAR_DisarmTrapSkill:  // wasn't in the original
-            return CmpSkillValue(pValue, this->pActiveSkills[PLAYER_SKILL_TRAP_DISARM]);
+            return CmpSkillValue(pValue, this->pActiveSkills[PLAYER_SKILL_TRAP_DISARM].join());
         case VAR_DodgeSkill:  // wasn't in the original
-            return CmpSkillValue(pValue, this->pActiveSkills[PLAYER_SKILL_DODGE]);
+            return CmpSkillValue(pValue, this->pActiveSkills[PLAYER_SKILL_DODGE].join());
         case VAR_UnarmedSkill:  // wasn't in the original
-            return CmpSkillValue(pValue, this->pActiveSkills[PLAYER_SKILL_UNARMED]);
+            return CmpSkillValue(pValue, this->pActiveSkills[PLAYER_SKILL_UNARMED].join());
         case VAR_IdentifyMonsterSkill:  // wasn't in the original
-            return CmpSkillValue(pValue, this->pActiveSkills[PLAYER_SKILL_MONSTER_ID]);
+            return CmpSkillValue(pValue, this->pActiveSkills[PLAYER_SKILL_MONSTER_ID].join());
         case VAR_ArmsmasterSkill:  // wasn't in the original
-            return CmpSkillValue(pValue, this->pActiveSkills[PLAYER_SKILL_ARMSMASTER]);
+            return CmpSkillValue(pValue, this->pActiveSkills[PLAYER_SKILL_ARMSMASTER].join());
         case VAR_StealingSkill:  // wasn't in the original
-            return CmpSkillValue(pValue, this->pActiveSkills[PLAYER_SKILL_STEALING]);
+            return CmpSkillValue(pValue, this->pActiveSkills[PLAYER_SKILL_STEALING].join());
         case VAR_AlchemySkill:  // wasn't in the original
-            return CmpSkillValue(pValue, this->pActiveSkills[PLAYER_SKILL_ALCHEMY]);
+            return CmpSkillValue(pValue, this->pActiveSkills[PLAYER_SKILL_ALCHEMY].join());
         case VAR_LearningSkill:
-            return CmpSkillValue(pValue, this->pActiveSkills[PLAYER_SKILL_LEARNING]);
+            return CmpSkillValue(pValue, this->pActiveSkills[PLAYER_SKILL_LEARNING].join());
         case VAR_Cursed:
             return conditions.Has(CONDITION_CURSED);
         case VAR_Weak:
@@ -4919,115 +4919,151 @@ void Player::SetVariable(VariableType var_type, signed int var_value) {
             pParty->uNumArenaWins[3] = var_value;
             return;
         case VAR_StaffSkill:
-            SetSkillByEvent(&Player::skillStaff, var_value);
+            this->skillStaff.set(var_value);
+            SetSkillReaction();
             return;
         case VAR_SwordSkill:
-            SetSkillByEvent(&Player::skillSword, var_value);
+            this->skillSword.set(var_value);
+            SetSkillReaction();
             return;
         case VAR_DaggerSkill:
-            SetSkillByEvent(&Player::skillDagger, var_value);
+            this->skillDagger.set(var_value);
+            SetSkillReaction();
             return;
         case VAR_AxeSkill:
-            SetSkillByEvent(&Player::skillAxe, var_value);
+            this->skillAxe.set(var_value);
+            SetSkillReaction();
             return;
         case VAR_SpearSkill:
-            SetSkillByEvent(&Player::skillSpear, var_value);
+            this->skillSpear.set(var_value);
+            SetSkillReaction();
             return;
         case VAR_BowSkill:
-            SetSkillByEvent(&Player::skillBow, var_value);
+            this->skillBow.set(var_value);
+            SetSkillReaction();
             return;
         case VAR_MaceSkill:
-            SetSkillByEvent(&Player::skillMace, var_value);
+            this->skillMace.set(var_value);
+            SetSkillReaction();
             return;
         case VAR_BlasterSkill:
-            SetSkillByEvent(&Player::skillBlaster, var_value);
+            this->skillBlaster.set(var_value);
+            SetSkillReaction();
             return;
         case VAR_ShieldSkill:
-            SetSkillByEvent(&Player::skillShield, var_value);
+            this->skillShield.set(var_value);
+            SetSkillReaction();
             return;
         case VAR_LeatherSkill:
-            SetSkillByEvent(&Player::skillLeather, var_value);
+            this->skillLeather.set(var_value);
+            SetSkillReaction();
             return;
         case VAR_SkillChain:
-            SetSkillByEvent(&Player::skillChain, var_value);
+            this->skillChain.set(var_value);
+            SetSkillReaction();
             return;
         case VAR_PlateSkill:
-            SetSkillByEvent(&Player::skillPlate, var_value);
+            this->skillPlate.set(var_value);
+            SetSkillReaction();
             return;
         case VAR_FireSkill:
-            SetSkillByEvent(&Player::skillFire, var_value);
+            this->skillFire.set(var_value);
+            SetSkillReaction();
             return;
         case VAR_AirSkill:
-            SetSkillByEvent(&Player::skillAir, var_value);
+            this->skillAir.set(var_value);
+            SetSkillReaction();
             return;
         case VAR_WaterSkill:
-            SetSkillByEvent(&Player::skillWater, var_value);
+            this->skillWater.set(var_value);
+            SetSkillReaction();
             return;
         case VAR_EarthSkill:
-            SetSkillByEvent(&Player::skillEarth, var_value);
+            this->skillEarth.set(var_value);
+            SetSkillReaction();
             return;
         case VAR_SpiritSkill:
-            SetSkillByEvent(&Player::skillSpirit, var_value);
+            this->skillSpirit.set(var_value);
+            SetSkillReaction();
             return;
         case VAR_MindSkill:
-            SetSkillByEvent(&Player::skillMind, var_value);
+            this->skillMind.set(var_value);
+            SetSkillReaction();
             return;
         case VAR_BodySkill:
-            SetSkillByEvent(&Player::skillBody, var_value);
+            this->skillBody.set(var_value);
+            SetSkillReaction();
             return;
         case VAR_LightSkill:
-            SetSkillByEvent(&Player::skillLight, var_value);
+            this->skillLight.set(var_value);
+            SetSkillReaction();
             return;
         case VAR_DarkSkill:
-            SetSkillByEvent(&Player::skillDark, var_value);
+            this->skillDark.set(var_value);
+            SetSkillReaction();
             return;
         case VAR_IdentifyItemSkill:
-            SetSkillByEvent(&Player::skillItemId, var_value);
+            this->skillItemId.set(var_value);
+            SetSkillReaction();
             return;
         case VAR_MerchantSkill:
-            SetSkillByEvent(&Player::skillMerchant, var_value);
+            this->skillMerchant.set(var_value);
+            SetSkillReaction();
             return;
         case VAR_RepairSkill:
-            SetSkillByEvent(&Player::skillRepair, var_value);
+            this->skillRepair.set(var_value);
+            SetSkillReaction();
             return;
         case VAR_BodybuildingSkill:
-            SetSkillByEvent(&Player::skillBodybuilding, var_value);
+            this->skillBodybuilding.set(var_value);
+            SetSkillReaction();
             return;
         case VAR_MeditationSkill:
-            SetSkillByEvent(&Player::skillMeditation, var_value);
+            this->skillMeditation.set(var_value);
+            SetSkillReaction();
             return;
         case VAR_PerceptionSkill:
-            SetSkillByEvent(&Player::skillPerception, var_value);
+            this->skillPerception.set(var_value);
+            SetSkillReaction();
             return;
         case VAR_DiplomacySkill:
-            SetSkillByEvent(&Player::skillDiplomacy, var_value);
+            this->skillDiplomacy.set(var_value);
+            SetSkillReaction();
             return;
         case VAR_ThieverySkill:
             Error("Thieving unsupported");
             return;
         case VAR_DisarmTrapSkill:
-            SetSkillByEvent(&Player::skillDisarmTrap, var_value);
+            this->skillDisarmTrap.set(var_value);
+            SetSkillReaction();
             return;
         case VAR_DodgeSkill:
-            SetSkillByEvent(&Player::skillDodge, var_value);
+            this->skillDodge.set(var_value);
+            SetSkillReaction();
             return;
         case VAR_UnarmedSkill:
-            SetSkillByEvent(&Player::skillUnarmed, var_value);
+            this->skillUnarmed.set(var_value);
+            SetSkillReaction();
             return;
         case VAR_IdentifyMonsterSkill:
-            SetSkillByEvent(&Player::skillMonsterId, var_value);
+            this->skillMonsterId.set(var_value);
+            SetSkillReaction();
             return;
         case VAR_ArmsmasterSkill:
-            SetSkillByEvent(&Player::skillArmsmaster, var_value);
+            this->skillArmsmaster.set(var_value);
+            SetSkillReaction();
             return;
         case VAR_StealingSkill:
-            SetSkillByEvent(&Player::skillStealing, var_value);
+            this->skillStealing.set(var_value);
+            SetSkillReaction();
             return;
         case VAR_AlchemySkill:
-            SetSkillByEvent(&Player::skillAlchemy, var_value);
+            this->skillAlchemy.set(var_value);
+            SetSkillReaction();
             return;
         case VAR_LearningSkill:
-            SetSkillByEvent(&Player::skillLearning, var_value);
+            this->skillLearning.set(var_value);
+            SetSkillReaction();
             return;
         default:
             return;
@@ -5056,14 +5092,7 @@ void Player::PlayAwardSound_Anim_Face(PlayerSpeech speech) {
 }
 
 //----- (new function) --------------------------------------------------------
-void Player::SetSkillByEvent(uint16_t Player::*skillToSet,
-                             uint16_t skillValue) {
-    uint16_t currSkillValue = this->*skillToSet;
-    if (skillValue > 63) {  // the original had the condition reversed which was probably wrong
-        this->*skillToSet = skillValue | (currSkillValue & 63);
-    } else {
-        this->*skillToSet = skillValue | (currSkillValue & 0xC0);
-    }
+void Player::SetSkillReaction() {
     int playerIndex = GetPlayerIndex();
     spell_fx_renderer->SetPlayerBuffAnim(BECOME_MAGIC_GUILD_MEMBER, playerIndex);
     PlayAwardSound();
@@ -5474,115 +5503,151 @@ void Player::AddVariable(VariableType var_type, signed int val) {
             pParty->uNumArenaWins[3] += val;
             return;
         case VAR_StaffSkill:
-            AddSkillByEvent(&Player::skillStaff, val);
+            this->skillStaff.add(val);
+            PlayAwardSound_Anim97();
             return;
         case VAR_SwordSkill:
-            AddSkillByEvent(&Player::skillSword, val);
+            this->skillSword.add(val);
+            PlayAwardSound_Anim97();
             return;
         case VAR_DaggerSkill:
-            AddSkillByEvent(&Player::skillDagger, val);
+            this->skillDagger.add(val);
+            PlayAwardSound_Anim97();
             return;
         case VAR_AxeSkill:
-            AddSkillByEvent(&Player::skillAxe, val);
+            this->skillAxe.add(val);
+            PlayAwardSound_Anim97();
             return;
         case VAR_SpearSkill:
-            AddSkillByEvent(&Player::skillSpear, val);
+            this->skillSpear.add(val);
+            PlayAwardSound_Anim97();
             return;
         case VAR_BowSkill:
-            AddSkillByEvent(&Player::skillBow, val);
+            this->skillBow.add(val);
+            PlayAwardSound_Anim97();
             return;
         case VAR_MaceSkill:
-            AddSkillByEvent(&Player::skillMace, val);
+            this->skillMace.add(val);
+            PlayAwardSound_Anim97();
             return;
         case VAR_BlasterSkill:
-            AddSkillByEvent(&Player::skillBlaster, val);
+            this->skillBlaster.add(val);
+            PlayAwardSound_Anim97();
             return;
         case VAR_ShieldSkill:
-            AddSkillByEvent(&Player::skillShield, val);
+            this->skillShield.add(val);
+            PlayAwardSound_Anim97();
             return;
         case VAR_LeatherSkill:
-            AddSkillByEvent(&Player::skillLeather, val);
+            this->skillLeather.add(val);
+            PlayAwardSound_Anim97();
             return;
         case VAR_SkillChain:
-            AddSkillByEvent(&Player::skillChain, val);
+            this->skillChain.add(val);
+            PlayAwardSound_Anim97();
             return;
         case VAR_PlateSkill:
-            AddSkillByEvent(&Player::skillPlate, val);
+            this->skillPlate.add(val);
+            PlayAwardSound_Anim97();
             return;
         case VAR_FireSkill:
-            AddSkillByEvent(&Player::skillFire, val);
+            this->skillFire.add(val);
+            PlayAwardSound_Anim97();
             return;
         case VAR_AirSkill:
-            AddSkillByEvent(&Player::skillAir, val);
+            this->skillAir.add(val);
+            PlayAwardSound_Anim97();
             return;
         case VAR_WaterSkill:
-            AddSkillByEvent(&Player::skillWater, val);
+            this->skillWater.add(val);
+            PlayAwardSound_Anim97();
             return;
         case VAR_EarthSkill:
-            AddSkillByEvent(&Player::skillEarth, val);
+            this->skillEarth.add(val);
+            PlayAwardSound_Anim97();
             return;
         case VAR_SpiritSkill:
-            AddSkillByEvent(&Player::skillSpirit, val);
+            this->skillSpirit.add(val);
+            PlayAwardSound_Anim97();
             return;
         case VAR_MindSkill:
-            AddSkillByEvent(&Player::skillMind, val);
+            this->skillMind.add(val);
+            PlayAwardSound_Anim97();
             return;
         case VAR_BodySkill:
-            AddSkillByEvent(&Player::skillBody, val);
+            this->skillBody.add(val);
+            PlayAwardSound_Anim97();
             return;
         case VAR_LightSkill:
-            AddSkillByEvent(&Player::skillLight, val);
+            this->skillLight.add(val);
+            PlayAwardSound_Anim97();
             return;
         case VAR_DarkSkill:
-            AddSkillByEvent(&Player::skillDark, val);
+            this->skillDark.add(val);
+            PlayAwardSound_Anim97();
             return;
         case VAR_IdentifyItemSkill:
-            AddSkillByEvent(&Player::skillItemId, val);
+            this->skillItemId.add(val);
+            PlayAwardSound_Anim97();
             return;
         case VAR_MerchantSkill:
-            AddSkillByEvent(&Player::skillMerchant, val);
+            this->skillMerchant.add(val);
+            PlayAwardSound_Anim97();
             return;
         case VAR_RepairSkill:
-            AddSkillByEvent(&Player::skillRepair, val);
+            this->skillRepair.add(val);
+            PlayAwardSound_Anim97();
             return;
         case VAR_BodybuildingSkill:
-            AddSkillByEvent(&Player::skillBodybuilding, val);
+            this->skillBodybuilding.add(val);
+            PlayAwardSound_Anim97();
             return;
         case VAR_MeditationSkill:
-            AddSkillByEvent(&Player::skillMeditation, val);
+            this->skillMeditation.add(val);
+            PlayAwardSound_Anim97();
             return;
         case VAR_PerceptionSkill:
-            AddSkillByEvent(&Player::skillPerception, val);
+            this->skillPerception.add(val);
+            PlayAwardSound_Anim97();
             return;
         case VAR_DiplomacySkill:
-            AddSkillByEvent(&Player::skillDiplomacy, val);
+            this->skillDiplomacy.add(val);
+            PlayAwardSound_Anim97();
             return;
         case VAR_ThieverySkill:
             Error("Thieving unsupported");
             return;
         case VAR_DisarmTrapSkill:
-            AddSkillByEvent(&Player::skillDisarmTrap, val);
+            this->skillDisarmTrap.add(val);
+            PlayAwardSound_Anim97();
             return;
         case VAR_DodgeSkill:
-            AddSkillByEvent(&Player::skillDodge, val);
+            this->skillDodge.add(val);
+            PlayAwardSound_Anim97();
             return;
         case VAR_UnarmedSkill:
-            AddSkillByEvent(&Player::skillUnarmed, val);
+            this->skillUnarmed.add(val);
+            PlayAwardSound_Anim97();
             return;
         case VAR_IdentifyMonsterSkill:
-            AddSkillByEvent(&Player::skillMonsterId, val);
+            this->skillMonsterId.add(val);
+            PlayAwardSound_Anim97();
             return;
         case VAR_ArmsmasterSkill:
-            AddSkillByEvent(&Player::skillArmsmaster, val);
+            this->skillArmsmaster.add(val);
+            PlayAwardSound_Anim97();
             return;
         case VAR_StealingSkill:
-            AddSkillByEvent(&Player::skillStealing, val);
+            this->skillStealing.add(val);
+            PlayAwardSound_Anim97();
             return;
         case VAR_AlchemySkill:
-            AddSkillByEvent(&Player::skillAlchemy, val);
+            this->skillAlchemy.add(val);
+            PlayAwardSound_Anim97();
             return;
         case VAR_LearningSkill:
-            AddSkillByEvent(&Player::skillLearning, val);
+            this->skillLearning.add(val);
+            PlayAwardSound_Anim97();
             return;
         default:
             return;
@@ -5600,20 +5665,6 @@ void Player::PlayAwardSound_Anim97() {
 void Player::PlayAwardSound_Anim97_Face(PlayerSpeech speech) {
     this->playReaction(speech);
     PlayAwardSound_Anim97();
-}
-
-//----- (new function) --------------------------------------------------------
-void Player::AddSkillByEvent(uint16_t Player::*skillToSet,
-                             uint16_t addSkillValue) {
-    if (addSkillValue > 63) {
-        this->*skillToSet =
-            (uint8_t)addSkillValue | this->*skillToSet & 63;
-    } else {
-        this->*skillToSet = std::min(this->*skillToSet + addSkillValue, 60) |
-                            this->*skillToSet & 0xC0;
-    }
-    PlayAwardSound_Anim97();
-    return;
 }
 
 //----- (0044B9C4) --------------------------------------------------------
@@ -5864,150 +5915,150 @@ void Player::SubtractVariable(VariableType VarNum, signed int pValue) {
             this->PlayAwardSound_Anim98_Face(SPEECH_StatBonusInc);
             return;
         case VAR_StaffSkill:
-            this->skillStaff -= (uint8_t)pValue;
+            this->skillStaff.subtract(pValue);
             PlayAwardSound_Anim98();
             return;
         case VAR_SwordSkill:
-            this->skillSword -= (uint8_t)pValue;
+            this->skillSword.subtract(pValue);
             PlayAwardSound_Anim98();
             return;
         case VAR_DaggerSkill:
-            this->skillDagger -= (uint8_t)pValue;
+            this->skillDagger.subtract(pValue);
             PlayAwardSound_Anim98();
             return;
         case VAR_AxeSkill:
-            this->skillAxe -= (uint8_t)pValue;
+            this->skillAxe.subtract(pValue);
             PlayAwardSound_Anim98();
             return;
         case VAR_SpearSkill:
-            this->skillSpear -= (uint8_t)pValue;
+            this->skillSpear.subtract(pValue);
             PlayAwardSound_Anim98();
             return;
         case VAR_BowSkill:
-            this->skillBow -= (uint8_t)pValue;
+            this->skillBow.subtract(pValue);
             PlayAwardSound_Anim98();
             return;
         case VAR_MaceSkill:
-            this->skillMace -= (uint8_t)pValue;
+            this->skillMace.subtract(pValue);
             PlayAwardSound_Anim98();
             return;
         case VAR_BlasterSkill:
-            this->skillBlaster -= (uint8_t)pValue;
+            this->skillBlaster.subtract(pValue);
             PlayAwardSound_Anim98();
             return;
         case VAR_ShieldSkill:
-            this->skillShield -= (uint8_t)pValue;
+            this->skillShield.subtract(pValue);
             PlayAwardSound_Anim98();
             return;
         case VAR_LeatherSkill:
-            this->skillLearning -= (uint8_t)pValue;
+            this->skillLearning.subtract(pValue);
             PlayAwardSound_Anim98();
             return;
         case VAR_SkillChain:
-            this->skillChain -= (uint8_t)pValue;
+            this->skillChain.subtract(pValue);
             PlayAwardSound_Anim98();
             return;
         case VAR_PlateSkill:
-            this->skillPlate -= (uint8_t)pValue;
+            this->skillPlate.subtract(pValue);
             PlayAwardSound_Anim98();
             return;
         case VAR_FireSkill:
-            this->skillFire -= (uint8_t)pValue;
+            this->skillFire.subtract(pValue);
             PlayAwardSound_Anim98();
             return;
         case VAR_AirSkill:
-            this->skillAir -= (uint8_t)pValue;
+            this->skillAir.subtract(pValue);
             PlayAwardSound_Anim98();
             return;
         case VAR_WaterSkill:
-            this->skillWater -= (uint8_t)pValue;
+            this->skillWater.subtract(pValue);
             PlayAwardSound_Anim98();
             return;
         case VAR_EarthSkill:
-            this->skillEarth -= (uint8_t)pValue;
+            this->skillEarth.subtract(pValue);
             PlayAwardSound_Anim98();
             return;
         case VAR_SpiritSkill:
-            this->skillSpirit -= (uint8_t)pValue;
+            this->skillSpirit.subtract(pValue);
             PlayAwardSound_Anim98();
             return;
         case VAR_MindSkill:
-            this->skillMind -= (uint8_t)pValue;
+            this->skillMind.subtract(pValue);
             PlayAwardSound_Anim98();
             return;
         case VAR_BodySkill:
-            this->skillBody -= (uint8_t)pValue;
+            this->skillBody.subtract(pValue);
             PlayAwardSound_Anim98();
             return;
         case VAR_LightSkill:
-            this->skillLight -= (uint8_t)pValue;
+            this->skillLight.subtract(pValue);
             PlayAwardSound_Anim98();
             return;
         case VAR_DarkSkill:
-            this->skillDark -= (uint8_t)pValue;
+            this->skillDark.subtract(pValue);
             PlayAwardSound_Anim98();
             return;
         case VAR_IdentifyItemSkill:
-            this->skillItemId -= (uint8_t)pValue;
+            this->skillItemId.subtract(pValue);
             PlayAwardSound_Anim98();
             return;
         case VAR_MerchantSkill:
-            this->skillMerchant -= (uint8_t)pValue;
+            this->skillMerchant.subtract(pValue);
             PlayAwardSound_Anim98();
             return;
         case VAR_RepairSkill:
-            this->skillRepair -= (uint8_t)pValue;
+            this->skillRepair.subtract(pValue);
             PlayAwardSound_Anim98();
             return;
         case VAR_BodybuildingSkill:
-            this->skillBodybuilding -= (uint8_t)pValue;
+            this->skillBodybuilding.subtract(pValue);
             PlayAwardSound_Anim98();
             return;
         case VAR_MeditationSkill:
-            this->skillMeditation -= (uint8_t)pValue;
+            this->skillMeditation.subtract(pValue);
             PlayAwardSound_Anim98();
             return;
         case VAR_PerceptionSkill:
-            this->skillPerception -= (uint8_t)pValue;
+            this->skillPerception.subtract(pValue);
             PlayAwardSound_Anim98();
             return;
         case VAR_DiplomacySkill:
-            this->skillDiplomacy -= (uint8_t)pValue;
+            this->skillDiplomacy.subtract(pValue);
             PlayAwardSound_Anim98();
             return;
         case VAR_ThieverySkill:
             Error("Thieving unsupported");
             return;
         case VAR_DisarmTrapSkill:
-            this->skillDisarmTrap -= (uint8_t)pValue;
+            this->skillDisarmTrap.subtract(pValue);
             PlayAwardSound_Anim98();
             return;
         case VAR_DodgeSkill:
-            this->skillDodge -= (uint8_t)pValue;
+            this->skillDodge.subtract(pValue);
             PlayAwardSound_Anim98();
             return;
         case VAR_UnarmedSkill:
-            this->skillUnarmed -= (uint8_t)pValue;
+            this->skillUnarmed.subtract(pValue);
             PlayAwardSound_Anim98();
             return;
         case VAR_IdentifyMonsterSkill:
-            this->skillMonsterId -= (uint8_t)pValue;
+            this->skillMonsterId.subtract(pValue);
             PlayAwardSound_Anim98();
             return;
         case VAR_ArmsmasterSkill:
-            this->skillArmsmaster -= (uint8_t)pValue;
+            this->skillArmsmaster.subtract(pValue);
             PlayAwardSound_Anim98();
             return;
         case VAR_StealingSkill:
-            this->skillStealing -= (uint8_t)pValue;
+            this->skillStealing.subtract(pValue);
             PlayAwardSound_Anim98();
             return;
         case VAR_AlchemySkill:
-            this->skillAlchemy -= (uint8_t)pValue;
+            this->skillAlchemy.subtract(pValue);
             PlayAwardSound_Anim98();
             return;
         case VAR_LearningSkill:
-            this->skillLearning -= (uint8_t)pValue;
+            this->skillLearning.subtract(pValue);
             PlayAwardSound_Anim98();
             return;
         case VAR_Cursed:
@@ -7217,27 +7268,27 @@ void Player::_42FA66_do_explosive_impact(int xpos, int ypos, int zpos, int a4,
 }
 
 PLAYER_SKILL_LEVEL Player::GetSkillLevel(PLAYER_SKILL_TYPE skill) const {
-    return ::GetSkillLevel(pActiveSkills[skill]);
+    return pActiveSkills[skill].level();
 }
 
 PLAYER_SKILL_MASTERY Player::GetSkillMastery(PLAYER_SKILL_TYPE skill) const {
-    return ::GetSkillMastery(pActiveSkills[skill]);
+    return pActiveSkills[skill].mastery();
 }
 
 CombinedSkillValue Player::getSkillValue(PLAYER_SKILL_TYPE skill) const {
-    return CombinedSkillValue(pActiveSkills[skill]);
+    return pActiveSkills[skill];
 }
 
 void Player::SetSkillLevel(PLAYER_SKILL_TYPE skill, PLAYER_SKILL_LEVEL level) {
-    ::SetSkillLevel(&pActiveSkills[skill], level);
+    pActiveSkills[skill].setLevel(level);
 }
 
 void Player::SetSkillMastery(PLAYER_SKILL_TYPE skill, PLAYER_SKILL_MASTERY mastery) {
-    ::SetSkillMastery(&pActiveSkills[skill], mastery);
+    pActiveSkills[skill].setMastery(mastery);
 }
 
 void Player::setSkillValue(PLAYER_SKILL_TYPE skill, const CombinedSkillValue &value) {
-    pActiveSkills[skill] = value.join();
+    pActiveSkills[skill] = value;
 }
 
 void Player::playReaction(PlayerSpeech speech, int a3) {

@@ -1101,7 +1101,7 @@ void GUIWindow_House::learnSelectedSkill(PLAYER_SKILL_TYPE skill) {
             } else {
                 pParty->TakeGold(pPrice);
                 _transactionPerformed = true;
-                pParty->activeCharacter().pActiveSkills[skill] = 1;
+                pParty->activeCharacter().pActiveSkills[skill].learn();
                 pParty->activeCharacter().playReaction(SPEECH_SkillLearned);
             }
         }

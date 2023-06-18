@@ -185,7 +185,7 @@ void CreateParty_EventLoop() {
         case UIMSG_PlayerCreationSelectActiveSkill:
             if (pPlayer[uPlayerCreationUI_SelectedCharacter].GetSkillIdxByOrder(3) == PLAYER_SKILL_INVALID)
                 pParty->pPlayers[uPlayerCreationUI_SelectedCharacter].pActiveSkills[pPlayer[uPlayerCreationUI_SelectedCharacter]
-                    .GetSkillIdxByOrder(param + 4)] = 1;
+                    .GetSkillIdxByOrder(param + 4)].learn();
             pAudioPlayer->playUISound(SOUND_ClickSkill);
             break;
         case UIMSG_PlayerCreationSelectClass:
@@ -212,7 +212,7 @@ void CreateParty_EventLoop() {
             v4 = pGUIWindow_CurrentMenu->pCurrentPosActiveItem - pGUIWindow_CurrentMenu->pStartingPosActiveItem;
             pGUIWindow_CurrentMenu->pCurrentPosActiveItem = v4 % 7 + pGUIWindow_CurrentMenu->pStartingPosActiveItem + 7 * param;
             if (pPlayer[param].GetSkillIdxByOrder(2) != PLAYER_SKILL_INVALID) {
-                pParty->pPlayers[param].pActiveSkills[pPlayer[param].GetSkillIdxByOrder(2)] = 0;
+                pParty->pPlayers[param].pActiveSkills[pPlayer[param].GetSkillIdxByOrder(2)].reset();
             }
             break;
         }
@@ -222,7 +222,7 @@ void CreateParty_EventLoop() {
             v4 = pGUIWindow_CurrentMenu->pCurrentPosActiveItem - pGUIWindow_CurrentMenu->pStartingPosActiveItem;
             pGUIWindow_CurrentMenu->pCurrentPosActiveItem = v4 % 7 + pGUIWindow_CurrentMenu->pStartingPosActiveItem + 7 * param;
             if (pPlayer[param].GetSkillIdxByOrder(3) != PLAYER_SKILL_INVALID)
-                pParty->pPlayers[param].pActiveSkills[pPlayer[param].GetSkillIdxByOrder(3)] = 0;
+                pParty->pPlayers[param].pActiveSkills[pPlayer[param].GetSkillIdxByOrder(3)].reset();
         } break;
         case UIMSG_PlayerCreationChangeName:
             pAudioPlayer->playUISound(SOUND_ClickSkill);

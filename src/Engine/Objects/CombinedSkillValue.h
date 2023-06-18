@@ -26,17 +26,17 @@ inline Segment<PLAYER_SKILL_MASTERY> SkillMasteries() {
     return Segment(PLAYER_SKILL_MASTERY_FIRST, PLAYER_SKILL_MASTERY_LAST);
 }
 
-inline PLAYER_SKILL_LEVEL GetSkillLevel(PLAYER_SKILL skill_value) {
-    return skill_value & 0x3F;
+inline PLAYER_SKILL_LEVEL GetSkillLevel(const PLAYER_SKILL skill_value) {
+    return skill_value & 63;
 }
 
 /**
  * @offset 0x00458244.
  */
-inline PLAYER_SKILL_MASTERY GetSkillMastery(PLAYER_SKILL skill_value) {
+inline PLAYER_SKILL_MASTERY GetSkillMastery(const PLAYER_SKILL skill_value) {
     // PLAYER_SKILL_MASTERY_NONE equal PLAYER_SKILL_MASTERY_NOVICE with skill level 0.
-    // if (skill_value == 0)
-    //    return PLAYER_SKILL_MASTERY_NONE;
+    if (GetSkillLevel(skill_value) == 0)
+        return PLAYER_SKILL_MASTERY_NONE;
 
     switch (skill_value & 0x1C0) {
         case 0x100:
@@ -91,8 +91,8 @@ inline PLAYER_SKILL ConstructSkillValue(PLAYER_SKILL_MASTERY mastery, PLAYER_SKI
 
 // Simple POD-like class for storing full skill value (level and mastery)
 class CombinedSkillValue {
-    int _level;
-    PLAYER_SKILL_MASTERY _mastery;
+    int _level = 0;
+    PLAYER_SKILL_MASTERY _mastery = PLAYER_SKILL_MASTERY_NONE;
 
  public:
     CombinedSkillValue();
@@ -100,7 +100,7 @@ class CombinedSkillValue {
     explicit CombinedSkillValue(int joinedValue);
 
     // joins level and mastery into one integer
-    int join() const;
+    uint16_t join() const;
 
     int level() const;
     CombinedSkillValue &setLevel(int level);
@@ -110,4 +110,12 @@ class CombinedSkillValue {
 
     static bool isLevelValid(int level);
     static bool isMasteryValid(PLAYER_SKILL_MASTERY mastery);
+
+    explicit operator bool() const { return _level > 0; }
+    void learn();
+    void reset();
+
+    void subtract(const int sub);
+    void add(const int add);
+    void set(const int set);
 };

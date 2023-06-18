@@ -268,7 +268,7 @@ bool ItemGen::GenerateArtifact() {
 
 template<class Key, class ActualKey>
 static void AddToMap(std::map<Key, std::map<CHARACTER_ATTRIBUTE_TYPE, CEnchantment>> &map,
-                     ActualKey key, CHARACTER_ATTRIBUTE_TYPE subkey, int bonusValue = 0, uint16_t Player::*skillPtr = NULL) {
+                     ActualKey key, CHARACTER_ATTRIBUTE_TYPE subkey, int bonusValue = 0, CombinedSkillValue Player::*skillPtr = NULL) {
     auto &submap = map[key];
 
     Assert(!submap.contains(subkey));
@@ -650,7 +650,7 @@ void ItemGen::GetItemBonusSpecialEnchantment(const Player *owner,
     const CEnchantment &currBonus = subpos->second;
     if (currBonus.statPtr != NULL) {
         if (currBonus.statBonus == 0) {
-            *halfSkillBonus = GetSkillLevel(owner->*currBonus.statPtr) / 2;
+            *halfSkillBonus = (owner->*currBonus.statPtr).level() / 2;
         } else {
             if (*additiveBonus < currBonus.statBonus) {
                 *additiveBonus = currBonus.statBonus;
@@ -674,7 +674,7 @@ void ItemGen::GetItemBonusArtifact(const Player *owner,
 
     const CEnchantment &currBonus = subpos->second;
     if (currBonus.statPtr != NULL) {
-        *bonusSum = GetSkillLevel(owner->*currBonus.statPtr) / 2;
+        *bonusSum = (owner->*currBonus.statPtr).level() / 2;
     } else {
         *bonusSum += currBonus.statBonus;
     }

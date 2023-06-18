@@ -1,3 +1,5 @@
+#include <algorithm>
+
 #include "CombinedSkillValue.h"
 
 CombinedSkillValue::CombinedSkillValue(int joinedValue) {
@@ -17,7 +19,7 @@ CombinedSkillValue::CombinedSkillValue() {
     _mastery = PLAYER_SKILL_MASTERY_NONE;
 }
 
-int CombinedSkillValue::join() const {
+uint16_t CombinedSkillValue::join() const {
     return ::ConstructSkillValue(_mastery, _level);
 }
 
@@ -48,4 +50,32 @@ bool CombinedSkillValue::isLevelValid(int level) {
 bool CombinedSkillValue::isMasteryValid(PLAYER_SKILL_MASTERY mastery) {
     return mastery == PLAYER_SKILL_MASTERY_NONE || mastery == PLAYER_SKILL_MASTERY_NOVICE || mastery == PLAYER_SKILL_MASTERY_EXPERT ||
            mastery == PLAYER_SKILL_MASTERY_MASTER || mastery == PLAYER_SKILL_MASTERY_GRANDMASTER;
+}
+
+void CombinedSkillValue::learn() {
+    _level = 1;
+    _mastery = PLAYER_SKILL_MASTERY_NOVICE;
+}
+
+void CombinedSkillValue::reset() {
+    _level = 0;
+    _mastery = PLAYER_SKILL_MASTERY_NONE;
+}
+
+void CombinedSkillValue::subtract(const int sub) {
+    _level -= GetSkillLevel(sub);
+    _level = std::max(0, _level);
+    // TODO(pskelton): check - should this be able to forget a skill '0' or min of '1'
+    // TODO(pskelton): check - should this modify mastery as well
+}
+
+void CombinedSkillValue::add(const int add) {
+    _level += GetSkillLevel(add);
+    PLAYER_SKILL_MASTERY addmast = GetSkillMastery(add);
+    if (addmast > _mastery) _mastery = addmast;
+}
+
+void CombinedSkillValue::set(const int set) {
+    _level = ::GetSkillLevel(set);
+    _mastery = ::GetSkillMastery(set);
 }
