@@ -88,12 +88,11 @@ class RenderOpenGL : public RenderBase {
                                 float dstX, float dstY, float a7, float a8,
                                 GraphicsImage *texture) override;
 
-    virtual void RemoveTextureFromDevice(GraphicsImage *texture) override;
-    virtual bool MoveTextureToDevice(GraphicsImage *texture) override;
+    virtual TextureRenderId CreateTexture(RgbaImageView image) override;
+    virtual void DeleteTexture(TextureRenderId id) override;
+    virtual void UpdateTexture(TextureRenderId id, RgbaImageView image) override;
 
     virtual void Update_Texture(GraphicsImage *texture) override;
-
-    virtual void DeleteTexture(GraphicsImage *texture) override;
 
     virtual void BeginScene2D() override;
     virtual void ScreenFade(Color color, float t) override;

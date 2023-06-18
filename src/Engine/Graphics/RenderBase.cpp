@@ -516,10 +516,6 @@ void RenderBase::TransformBillboard(SoftwareBillboard *pSoftBillboard, RenderBil
     billboard->PaletteIndex = pBillboard->uPaletteIndex;
 }
 
-double fix2double(int fix) {
-    return (((double)(fix & 0xFFFF) / (double)0xFFFF) + (double)(fix >> 16));
-}
-
 void RenderBase::MakeParticleBillboardAndPush(SoftwareBillboard *a2,
                                               GraphicsImage *texture,
                                               Color uDiffuse,

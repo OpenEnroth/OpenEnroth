@@ -22,7 +22,6 @@ set(ENGINE_GRAPHICS_SOURCES
         NuklearEventHandler.cpp
         OpenGL/GLShaderLoader.cpp
         OpenGL/RenderOpenGL.cpp
-        OpenGL/TextureOpenGL.cpp
         Outdoor.cpp
         Overlays.cpp
         PaletteManager.cpp
@@ -62,7 +61,6 @@ set(ENGINE_GRAPHICS_HEADERS
         NuklearEventHandler.h
         OpenGL/GLShaderLoader.h
         OpenGL/RenderOpenGL.h
-        OpenGL/TextureOpenGL.h
         Outdoor.h
         Overlays.h
         PaletteManager.h
@@ -72,6 +70,7 @@ set(ENGINE_GRAPHICS_HEADERS
         RenderBase.h
         RendererType.h
         Sprites.h
+        TextureRenderId.h
         Texture_MM7.h
         TextureFrameTable.h
         Viewport.h

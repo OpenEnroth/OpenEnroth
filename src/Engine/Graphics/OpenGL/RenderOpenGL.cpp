@@ -20,7 +20,6 @@
 #include "Engine/Graphics/Level/Decoration.h"
 #include "Engine/Graphics/LightsStack.h"
 #include "Engine/Graphics/Nuklear.h"
-#include "Engine/Graphics/OpenGL/TextureOpenGL.h"
 #include "Engine/Graphics/OpenGL/GLShaderLoader.h"
 #include "Engine/Graphics/Outdoor.h"
 #include "Engine/Graphics/Indoor.h"
@@ -413,8 +412,6 @@ void RenderOpenGL::DrawProjectile(float srcX, float srcY, float srcworldview, fl
                                   GraphicsImage *texture) {
     // billboards projectile - lightning bolt
 
-    TextureOpenGL *textured3d = (TextureOpenGL *)texture;
-
     int xDifference = bankersRounding(dstX - srcX);
     int yDifference = bankersRounding(dstY - srcY);
     int absYDifference = abs(yDifference);
@@ -483,10 +480,10 @@ void RenderOpenGL::DrawProjectile(float srcX, float srcY, float srcworldview, fl
     glDepthMask(GL_FALSE);
     glDisable(GL_CULL_FACE);
 
-    auto texid{ 0 };
+    int texid = 0;
 
-    if (textured3d) {
-        texid = textured3d->GetOpenGlTexture();
+    if (texture) {
+        texid = texture->renderId().value();
     }
 
     // load up poly
@@ -561,8 +558,7 @@ void RenderOpenGL::ScreenFade(Color color, float t) {
     float draww = static_cast<float>(pViewport->uViewportBR_Y);
 
     static GraphicsImage *effpar03 = assets->getBitmap("effpar03");
-    auto texture = (TextureOpenGL *)effpar03;
-    float gltexid = static_cast<float>(texture->GetOpenGlTexture());
+    float gltexid = static_cast<float>(effpar03->renderId().value());
 
     // 0 1 2 / 0 2 3
 
@@ -660,8 +656,7 @@ void RenderOpenGL::DrawImage(GraphicsImage *img, const Recti &rect, uint palette
     // check for overlap
     if (!(this->clip_x < z && this->clip_z > x && this->clip_y < w && this->clip_w > y)) return;
 
-    auto texture = (TextureOpenGL*)img;
-    float gltexid = static_cast<float>(texture->GetOpenGlTexture());
+    float gltexid = static_cast<float>(img->renderId().value());
 
     float drawx = static_cast<float>(std::max(x, this->clip_x));
     float drawy = static_cast<float>(std::max(y, this->clip_y));
@@ -971,8 +966,7 @@ void RenderOpenGL::DrawIndoorSky(unsigned int uNumVertices, unsigned int uFaceID
 }
 
 void RenderOpenGL::DrawIndoorSkyPolygon(signed int uNumVertices, struct Polygon *pSkyPolygon) {
-    auto texture = (TextureOpenGL*)pSkyPolygon->texture;
-    auto texid = texture->GetOpenGlTexture();
+    int texid = pSkyPolygon->texture->renderId().value();
 
     Colorf uTint = GetActorTintColor(pSkyPolygon->dimming_level, 0, VertexRenderList[0].vWorldViewPosition.x, 1, 0).toColorf();
     float scrspace{ pCamera3D->GetFarClip() };
@@ -1113,8 +1107,8 @@ int numdecalverts{ 0 };
 
 
 void RenderOpenGL::BeginDecals() {
-    auto texture = (TextureOpenGL*)assets->getBitmap("hwsplat04");
-    glBindTexture(GL_TEXTURE_2D, texture->GetOpenGlTexture());
+    GraphicsImage *texture = assets->getBitmap("hwsplat04");
+    glBindTexture(GL_TEXTURE_2D, texture->renderId().value());
 
     glDisable(GL_CULL_FACE);
     glDepthMask(GL_FALSE);
@@ -1193,8 +1187,8 @@ void RenderOpenGL::EndDecals() {
     glUniform1i(glGetUniformLocation(decalshader.ID, "texture0"), GLint(0));
     glActiveTexture(GL_TEXTURE0);
 
-    auto texture = (TextureOpenGL *)assets->getBitmap("hwsplat04");
-    glBindTexture(GL_TEXTURE_2D, texture->GetOpenGlTexture());
+    GraphicsImage *texture = assets->getBitmap("hwsplat04");
+    glBindTexture(GL_TEXTURE_2D, texture->renderId().value());
 
     glBindVertexArray(decalVAO);
     glEnableVertexAttribArray(0);
@@ -1290,7 +1284,7 @@ void RenderOpenGL::DrawDecal(struct Decal *pDecal, float z_bias) {
 void RenderOpenGL::DrawFromSpriteSheet(Recti *pSrcRect, Pointi *pTargetPoint, int a3, int blend_mode) {
     // want to draw psrcrect section @ point
 
-    TextureOpenGL *texture = (TextureOpenGL*)pArcomageGame->pSprites;
+    GraphicsImage *texture = pArcomageGame->pSprites;
 
     if (!texture) {
         logger->verbose("Missing Arcomage Sprite Sheet");
@@ -1318,7 +1312,7 @@ void RenderOpenGL::DrawFromSpriteSheet(Recti *pSrcRect, Pointi *pTargetPoint, in
     // check for overlap
     if (!(this->clip_x < z && this->clip_z > x && this->clip_y < w && this->clip_w > y)) return;
 
-    float gltexid = static_cast<float>(texture->GetOpenGlTexture());
+    float gltexid = static_cast<float>(texture->renderId().value());
     int texwidth = texture->width();
     int texheight = texture->height();
 
@@ -1401,94 +1395,89 @@ void RenderOpenGL::DrawFromSpriteSheet(Recti *pSrcRect, Pointi *pTargetPoint, in
 }
 
 GraphicsImage *RenderOpenGL::CreateTexture_Paletted(const std::string &name) {
-    return TextureOpenGL::Create(std::make_unique<Paletted_Img_Loader>(pIcons_LOD, name));
+    return GraphicsImage::Create(std::make_unique<Paletted_Img_Loader>(pIcons_LOD, name));
 }
 
 GraphicsImage *RenderOpenGL::CreateTexture_ColorKey(const std::string &name, Color colorkey) {
-    return TextureOpenGL::Create(std::make_unique<ColorKey_LOD_Loader>(pIcons_LOD, name, colorkey));
+    return GraphicsImage::Create(std::make_unique<ColorKey_LOD_Loader>(pIcons_LOD, name, colorkey));
 }
 
 GraphicsImage *RenderOpenGL::CreateTexture_Solid(const std::string &name) {
-    return TextureOpenGL::Create(std::make_unique<Image16bit_LOD_Loader>(pIcons_LOD, name));
+    return GraphicsImage::Create(std::make_unique<Image16bit_LOD_Loader>(pIcons_LOD, name));
 }
 
 GraphicsImage *RenderOpenGL::CreateTexture_Alpha(const std::string &name) {
-    return TextureOpenGL::Create(std::make_unique<Alpha_LOD_Loader>(pIcons_LOD, name));
+    return GraphicsImage::Create(std::make_unique<Alpha_LOD_Loader>(pIcons_LOD, name));
 }
 
 GraphicsImage *RenderOpenGL::CreateTexture_PCXFromIconsLOD(const std::string &name) {
-    return TextureOpenGL::Create(std::make_unique<PCX_LOD_Compressed_Loader>(pIcons_LOD, name));
+    return GraphicsImage::Create(std::make_unique<PCX_LOD_Compressed_Loader>(pIcons_LOD, name));
 }
 
 GraphicsImage *RenderOpenGL::CreateTexture_PCXFromNewLOD(const std::string &name) {
-    return TextureOpenGL::Create(std::make_unique<PCX_LOD_Compressed_Loader>(pSave_LOD, name));
+    return GraphicsImage::Create(std::make_unique<PCX_LOD_Compressed_Loader>(pSave_LOD, name));
 }
 
 GraphicsImage *RenderOpenGL::CreateTexture_PCXFromFile(const std::string &name) {
-    return TextureOpenGL::Create(std::make_unique<PCX_File_Loader>(name));
+    return GraphicsImage::Create(std::make_unique<PCX_File_Loader>(name));
 }
 
 GraphicsImage *RenderOpenGL::CreateTexture_PCXFromLOD(LOD::File *pLOD, const std::string &name) {
-    return TextureOpenGL::Create(std::make_unique<PCX_LOD_Raw_Loader>(pLOD, name));
+    return GraphicsImage::Create(std::make_unique<PCX_LOD_Raw_Loader>(pLOD, name));
 }
 
 GraphicsImage *RenderOpenGL::CreateTexture_Blank(unsigned int width, unsigned int height) {
-    return TextureOpenGL::Create(width, height);
+    return GraphicsImage::Create(width, height);
 }
 
 GraphicsImage *RenderOpenGL::CreateTexture_Blank(RgbaImage image) {
-    return TextureOpenGL::Create(std::move(image));
+    return GraphicsImage::Create(std::move(image));
 }
 
 GraphicsImage *RenderOpenGL::CreateTexture(const std::string &name) {
-    return TextureOpenGL::Create(std::make_unique<Bitmaps_LOD_Loader>(pBitmaps_LOD, name));
+    return GraphicsImage::Create(std::make_unique<Bitmaps_LOD_Loader>(pBitmaps_LOD, name));
 }
 
 GraphicsImage *RenderOpenGL::CreateSprite(const std::string &name, unsigned int palette_id,
                                           /*refactor*/ unsigned int lod_sprite_id) {
-    return TextureOpenGL::Create(std::make_unique<Sprites_LOD_Loader>(pSprites_LOD, palette_id, name, lod_sprite_id));
+    return GraphicsImage::Create(std::make_unique<Sprites_LOD_Loader>(pSprites_LOD, palette_id, name, lod_sprite_id));
 }
 
 void RenderOpenGL::Update_Texture(GraphicsImage *texture) {
-    auto t = static_cast<TextureOpenGL *>(texture);
-    glBindTexture(GL_TEXTURE_2D, t->GetOpenGlTexture());
-    glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, t->width(), t->height(), GL_RGBA, GL_UNSIGNED_BYTE, t->rgba().pixels().data());
-    glBindTexture(GL_TEXTURE_2D, 0);
+    UpdateTexture(texture->renderId(), texture->rgba());
 }
 
-void RenderOpenGL::DeleteTexture(GraphicsImage *texture) {
-    // crash here when assets not loaded as texture
+TextureRenderId RenderOpenGL::CreateTexture(RgbaImageView image) {
+    assert(image);
 
-    auto t = static_cast<TextureOpenGL *>(texture);
-    GLuint texid = t->GetOpenGlTexture(false);
-    if (texid != -1) {
-        glDeleteTextures(1, &texid);
-        t->SetOpenGlTexture(-1);
-    }
-}
-
-void RenderOpenGL::RemoveTextureFromDevice(GraphicsImage *texture) {
-    logger->info("RenderGL - RemoveTextureFromDevice");
-}
-
-bool RenderOpenGL::MoveTextureToDevice(GraphicsImage *texture) {
-    auto t = static_cast<TextureOpenGL *>(texture);
-    const Color *pixels = t->rgba().pixels().data();
-    assert(pixels);
-
-    GLuint texid;
-    glGenTextures(1, &texid);
-    t->SetOpenGlTexture(texid);
-
-    glBindTexture(GL_TEXTURE_2D, texid);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, t->width(), t->height(), 0, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
+    GLuint glId;
+    glGenTextures(1, &glId);
+    glBindTexture(GL_TEXTURE_2D, glId);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, image.width(), image.height(), 0, GL_RGBA, GL_UNSIGNED_BYTE, image.pixels().data());
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-
     glBindTexture(GL_TEXTURE_2D, 0);
-    return true;
+
+    return TextureRenderId(glId);
+}
+
+void RenderOpenGL::DeleteTexture(TextureRenderId id) {
+    if (!id)
+        return;
+
+    GLuint glId = id.value();
+    glDeleteTextures(1, &glId);
+}
+
+void RenderOpenGL::UpdateTexture(TextureRenderId id, RgbaImageView image) {
+    assert(image);
+    assert(id);
+
+    glBindTexture(GL_TEXTURE_2D, id.value());
+    glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, image.width(), image.height(), GL_RGBA, GL_UNSIGNED_BYTE, image.pixels().data());
+    glBindTexture(GL_TEXTURE_2D, 0);
 }
 
 // TODO(pskelton): to camera?
@@ -2239,12 +2228,11 @@ void RenderOpenGL::DrawOutdoorSky() {
 
 //----- (004A2DA3) --------------------------------------------------------
 void RenderOpenGL::DrawOutdoorSkyPolygon(struct Polygon *pSkyPolygon) {
-    auto texture = (TextureOpenGL *)pSkyPolygon->texture;
-    auto texid = texture->GetOpenGlTexture();
+    auto texture = pSkyPolygon->texture;
+    auto texid = texture->renderId().value();
 
     static GraphicsImage *effpar03 = assets->getBitmap("effpar03");
-    auto texturesolid = (TextureOpenGL*)effpar03;
-    float texidsolid = static_cast<float>(texturesolid->GetOpenGlTexture());
+    float texidsolid = static_cast<float>(effpar03->renderId().value());
 
     //glBindTexture(GL_TEXTURE_2D, texture->GetOpenGlTexture());
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
@@ -2565,12 +2553,11 @@ void RenderOpenGL::DoRenderBillboards_D3D() {
         int paletteindex{ pBillboardRenderListD3D[i].PaletteIndex };
 
         if (pBillboardRenderListD3D[i].texture) {
-            auto texture = (TextureOpenGL *)pBillboardRenderListD3D[i].texture;
-            gltexid = texture->GetOpenGlTexture();
+            auto texture = pBillboardRenderListD3D[i].texture;
+            gltexid = texture->renderId().value();
         } else {
             static GraphicsImage *effpar03 = assets->getBitmap("effpar03");
-            auto texture = static_cast<TextureOpenGL *>(effpar03);
-            gltexid = static_cast<float>(texture->GetOpenGlTexture());
+            gltexid = static_cast<float>(effpar03->renderId().value());
         }
 
         //if (gltexid != testtexid) {
@@ -2856,8 +2843,7 @@ void RenderOpenGL::BeginScene2D() {
 
 // TODO(pskelton): use alpha from mask too
 void RenderOpenGL::DrawTextureNew(float u, float v, GraphicsImage *tex, Color colourmask) {
-    TextureOpenGL *texture = dynamic_cast<TextureOpenGL *>(tex);
-    if (!texture) {
+    if (!tex) {
         logger->verbose("Null texture passed to DrawTextureNew");
         return;
     }
@@ -2882,7 +2868,7 @@ void RenderOpenGL::DrawTextureNew(float u, float v, GraphicsImage *tex, Color co
     // check for overlap
     if (!(this->clip_x < z && this->clip_z > x && this->clip_y < w && this->clip_w > y)) return;
 
-    float gltexid = texture->GetOpenGlTexture();
+    float gltexid = tex->renderId().value();
 
     float drawx = static_cast<float>(std::max(x, this->clip_x));
     float drawy = static_cast<float>(std::max(y, this->clip_y));
@@ -2964,8 +2950,7 @@ void RenderOpenGL::DrawTextureNew(float u, float v, GraphicsImage *tex, Color co
 
 // TODO(pskelton): add optional colour32
 void RenderOpenGL::DrawTextureCustomHeight(float u, float v, class GraphicsImage *img, int custom_height) {
-    TextureOpenGL *texture = dynamic_cast<TextureOpenGL*>(img);
-    if (!texture) {
+    if (!img) {
         logger->verbose("Null texture passed to DrawTextureCustomHeight");
         return;
     }
@@ -2990,7 +2975,7 @@ void RenderOpenGL::DrawTextureCustomHeight(float u, float v, class GraphicsImage
     // check for overlap
     if (!(this->clip_x < z && this->clip_z > x && this->clip_y < w && this->clip_w > y)) return;
 
-    float gltexid = texture->GetOpenGlTexture();
+    float gltexid = img->renderId().value();
 
     float drawx = static_cast<float>(std::max(x, this->clip_x));
     float drawy = static_cast<float>(std::max(y, this->clip_y));
@@ -3080,18 +3065,16 @@ void RenderOpenGL::BeginTextNew(GraphicsImage *main, GraphicsImage *shadow) {
         DrawTwodVerts();
     }
 
-    auto texturemain = (TextureOpenGL *)main;
-    GLuint texmainidcheck = texturemain->GetOpenGlTexture();
+    GLuint texmainidcheck = main->renderId().value();
 
     // if we are changing font draw whats in the text buffer
     if (texmainidcheck != texmain) {
         EndTextNew();
     }
 
-    texmain = texturemain->GetOpenGlTexture();
+    texmain = main->renderId().value();
 
-    auto textureshadow = (TextureOpenGL *)shadow;
-    texshadow = textureshadow->GetOpenGlTexture();
+    texshadow = shadow->renderId().value();
 
     // set up buffers
     // set up counts
@@ -3401,12 +3384,12 @@ void RenderOpenGL::DrawOutdoorBuildings() {
                     if (!face.Invisible()) {
                         // TODO(pskelton): Same as indoors. When ODM and BLV face is combined - seperate out function
 
-                        TextureOpenGL *tex = (TextureOpenGL*)face.GetTexture();
+                        GraphicsImage *tex = face.GetTexture();
                         std::string *texname = tex->GetName();
 
                         int animLength = 0, frame = 0;
                         if (face.IsTextureFrameTable()) {
-                            tex = (TextureOpenGL *)pTextureFrameTable->GetFrameTexture((int64_t)face.resource, frame);
+                            tex = pTextureFrameTable->GetFrameTexture((int64_t)face.resource, frame);
                             animLength = pTextureFrameTable->textureFrameAnimLength((int64_t)face.resource);
                             texname = tex->GetName();
                         }
@@ -3487,7 +3470,7 @@ void RenderOpenGL::DrawOutdoorBuildings() {
                                 // TODO(pskelton): any instances where animTime is not consistent would need checking
                                 frame += pTextureFrameTable->textureFrameAnimTime((int64_t)face.resource);
                                 // 'frame * 8' as input gets divided in function
-                                tex = (TextureOpenGL *)pTextureFrameTable->GetFrameTexture((int64_t)face.resource, frame * 8);
+                                tex = pTextureFrameTable->GetFrameTexture((int64_t)face.resource, frame * 8);
                                 texname = tex->GetName();
                             }
                         } while (animLength > frame);
@@ -3615,7 +3598,7 @@ void RenderOpenGL::DrawOutdoorBuildings() {
                                 }
 
                                 if (texlayer == -1) { // texture has been reset - see if its in the map
-                                    TextureOpenGL *tex = (TextureOpenGL *)face.GetTexture();
+                                    GraphicsImage *tex = face.GetTexture();
                                     std::string *texname = tex->GetName();
                                     auto mapiter = bsptexmap.find(*texname);
                                     if (mapiter != bsptexmap.end()) {
@@ -4019,12 +4002,12 @@ void RenderOpenGL::DrawIndoorFaces() {
                 //if (face->uAttributes & FACE_IS_DOOR) continue;
 
                 // TODO(pskelton): Same as outdoors. When ODM and BLV face is combined - seperate out function
-                TextureOpenGL *tex = (TextureOpenGL*)face->GetTexture();
+                GraphicsImage *tex = face->GetTexture();
                 std::string *texname = tex->GetName();
 
                 int animLength = 0, frame = 0;
                 if (face->IsTextureFrameTable()) {
-                    tex = (TextureOpenGL *)pTextureFrameTable->GetFrameTexture((int64_t)face->resource, frame);
+                    tex = pTextureFrameTable->GetFrameTexture((int64_t)face->resource, frame);
                     animLength = pTextureFrameTable->textureFrameAnimLength((int64_t)face->resource);
                     texname = tex->GetName();
                 }
@@ -4106,7 +4089,7 @@ void RenderOpenGL::DrawIndoorFaces() {
                         // TODO(pskelton): any instances where animTime is not consistent would need checking
                         frame += pTextureFrameTable->textureFrameAnimTime((int64_t)face->resource);
                         // 'frame * 8' as input gets divided in function
-                        tex = (TextureOpenGL *)pTextureFrameTable->GetFrameTexture((int64_t)face->resource, frame * 8);
+                        tex = pTextureFrameTable->GetFrameTexture((int64_t)face->resource, frame * 8);
                         texname = tex->GetName();
                     }
                 } while (animLength > frame);
@@ -4298,7 +4281,7 @@ void RenderOpenGL::DrawIndoorFaces() {
                             }
 
                             if (texlayer == -1) { // texture has been reset - see if its in the map
-                                TextureOpenGL *tex = (TextureOpenGL *)face->GetTexture();
+                                GraphicsImage *tex = face->GetTexture();
                                 std::string *texname = tex->GetName();
                                 auto mapiter = bsptexmap.find(*texname);
                                 if (mapiter != bsptexmap.end()) {
@@ -4764,8 +4747,7 @@ void RenderOpenGL::FillRectFast(unsigned int uX, unsigned int uY, unsigned int u
     if (!(this->clip_x < z && this->clip_z > x && this->clip_y < w && this->clip_w > y)) return;
 
     static GraphicsImage *effpar03 = assets->getBitmap("effpar03");
-    auto texture = static_cast<TextureOpenGL *>(effpar03);
-    float gltexid = static_cast<float>(texture->GetOpenGlTexture());
+    float gltexid = static_cast<float>(effpar03->renderId().value());
 
     float drawx = static_cast<float>(std::max(x, this->clip_x));
     float drawy = static_cast<float>(std::max(y, this->clip_y));
@@ -5590,18 +5572,10 @@ void RenderOpenGL::NuklearFontFree(struct nk_tex_font *tfont) {
 }
 
 struct nk_image RenderOpenGL::NuklearImageLoad(GraphicsImage *img) {
-    GLuint texid;
-    auto t = (TextureOpenGL *)img;
-    texid = t->GetOpenGlTexture();
-
-    t->SetOpenGlTexture(texid);
+    GLuint texid = img->renderId().value();
     return nk_image_id(texid);
 }
 
 void RenderOpenGL::NuklearImageFree(GraphicsImage *img) {
-    auto t = (TextureOpenGL *)img;
-    GLuint texid = t->GetOpenGlTexture();
-    if (texid != -1) {
-        glDeleteTextures(1, &texid);
-    }
+    img->releaseRenderId();
 }

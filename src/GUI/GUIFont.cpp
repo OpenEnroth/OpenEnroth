@@ -121,9 +121,9 @@ void GUIFont::CreateFontTex() {
 
 void GUIFont::ReleaseFontTex() {
     if (this->fonttex)
-        render->DeleteTexture(this->fonttex);
+        this->fonttex->releaseRenderId();
     if (this->fontshadow)
-        render->DeleteTexture(this->fontshadow);
+        this->fontshadow->releaseRenderId();
 }
 
 bool GUIFont::IsCharValid(unsigned char c) const {
