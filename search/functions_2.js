@@ -19,7 +19,7 @@ var searchData=
   ['beginlines2d_16',['BeginLines2D',['../classRenderOpenGL.html#a07e139a78dc3ac8bbec6fdf806c98f11',1,'RenderOpenGL::BeginLines2D()'],['../classIRender.html#a51fa4f6f5ce9f3e8a5843bb4c4a1ce03',1,'IRender::BeginLines2D()']]],
   ['beginscene2d_17',['BeginScene2D',['../classRenderOpenGL.html#a09154878e012b97328000999d11ead3a',1,'RenderOpenGL::BeginScene2D()'],['../classIRender.html#a2c0b228176a9a18a8865fd3421ba90b2',1,'IRender::BeginScene2D()=0']]],
   ['beginscene3d_18',['BeginScene3D',['../classIRender.html#a1ff202e38853b89f367e18857e845d6c',1,'IRender::BeginScene3D()'],['../classRenderOpenGL.html#affe2bfa5061867e50c810669c2492062',1,'RenderOpenGL::BeginScene3D()']]],
-  ['begintextnew_19',['BeginTextNew',['../classIRender.html#a4d12aeef8f49001d28b1ea21e61d41ba',1,'IRender::BeginTextNew()'],['../classRenderOpenGL.html#a0a4dd444b432ddfd186bb9b6739e3c57',1,'RenderOpenGL::BeginTextNew()']]],
+  ['begintextnew_19',['BeginTextNew',['../classIRender.html#aceaa3ead62deb9e9d4eeb71b607e5cd4',1,'IRender::BeginTextNew()'],['../classRenderOpenGL.html#a7264d5ab37c630d39cbcc19924059256',1,'RenderOpenGL::BeginTextNew()']]],
   ['belongstosupertype_20',['BelongsToSupertype',['../structMonsterStats.html#af740f33299fb75dc1dafe63bf58ef858',1,'MonsterStats']]],
   ['billboard_5fprobablyaddtolistandsortbyzorder_21',['Billboard_ProbablyAddToListAndSortByZOrder',['../classRenderBase.html#a18f94bfc431e24e140d93e7521bd270a',1,'RenderBase']]],
   ['billboardspherespellfx_22',['BillboardSphereSpellFX',['../classRenderBase.html#a42333919c0855de6ff8313ffd2cb18a7',1,'RenderBase::BillboardSphereSpellFX()'],['../classIRender.html#a3775b4725352a7879f7e77e317bd535c',1,'IRender::BillboardSphereSpellFX()']]],
