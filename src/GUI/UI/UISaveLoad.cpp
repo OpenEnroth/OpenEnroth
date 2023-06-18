@@ -154,7 +154,7 @@ GUIWindow_Load::GUIWindow_Load(bool ingame) :
     this->uFrameZ = uFrameX + uFrameWidth - 1;
     this->uFrameW = uFrameY + uFrameHeight - 1;
 
-    DrawText(pFontSmallnum, {25, 199}, Color(), localization->GetString(LSTR_READING), 0, 0, Color());
+    DrawText(pFontSmallnum, {25, 199}, Color(), localization->GetString(LSTR_READING));
     render->Present();
 
     pSavegameList->Initialize();
@@ -305,13 +305,13 @@ static void UI_DrawSaveLoad(bool save) {
     if (GetCurrentMenuID() == MENU_LoadingProcInMainMenu) {
         pGUIWindow_CurrentMenu->DrawText(pFontSmallnum,
             {pFontSmallnum->AlignText_Center(186, localization->GetString(LSTR_LOADING)) + 25, 220}, Color(),
-            localization->GetString(LSTR_LOADING), 0, 0, Color());
+            localization->GetString(LSTR_LOADING));
         pGUIWindow_CurrentMenu->DrawTextInRect(pFontSmallnum,
                                                {pFontSmallnum->AlignText_Center(186, pSavegameList->pSavegameHeader[pSavegameList->selectedSlot].name) + 25, 262}, Color(),
                                                pSavegameList->pSavegameHeader[pSavegameList->selectedSlot].name, 185, 0);
         pGUIWindow_CurrentMenu->DrawText(pFontSmallnum,
             {pFontSmallnum->AlignText_Center(186, localization->GetString(LSTR_PLEASE_WAIT)) + 25, 304}, Color(),
-            localization->GetString(LSTR_PLEASE_WAIT), 0, 0, Color());
+            localization->GetString(LSTR_PLEASE_WAIT));
     } else {
         int maxSaveFiles = MAX_SAVE_SLOTS;
         int framex = 0, framey = 0;

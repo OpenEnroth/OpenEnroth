@@ -257,22 +257,22 @@ void Engine::DrawGUI() {
 
     if (engine->config->debug.ShowFPS.value()) {
         if (render_framerate) {
-            pPrimaryWindow->DrawText(pFontArrus, {494, 0}, colorTable.White, fmt::format("FPS: {: .4f}", framerate), 0, 0, Color());
+            pPrimaryWindow->DrawText(pFontArrus, {494, 0}, colorTable.White, fmt::format("FPS: {: .4f}", framerate));
         }
 
-        pPrimaryWindow->DrawText(pFontArrus, {300, 0}, colorTable.White, fmt::format("DrawCalls: {}", render->drawcalls), 0, 0, Color());
+        pPrimaryWindow->DrawText(pFontArrus, {300, 0}, colorTable.White, fmt::format("DrawCalls: {}", render->drawcalls));
         render->drawcalls = 0;
 
 
         int debug_info_offset = 0;
         pPrimaryWindow->DrawText(pFontArrus, {16, debug_info_offset + 16}, colorTable.White,
-                                 fmt::format("Party position:         {} {} {}", pParty->vPosition.x, pParty->vPosition.y, pParty->vPosition.z), 0, 0, Color());
+                                 fmt::format("Party position:         {} {} {}", pParty->vPosition.x, pParty->vPosition.y, pParty->vPosition.z));
 
         if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
             debug_info_offset += 16;
             int sector_id = pBLVRenderParams->uPartySectorID;
             pPrimaryWindow->DrawText(pFontArrus, { 16, debug_info_offset + 16 }, colorTable.White,
-                                     fmt::format("Party Sector ID:        {}/{}\n", sector_id, pIndoor->pSectors.size()), 0, 0, Color());
+                                     fmt::format("Party Sector ID:        {}/{}\n", sector_id, pIndoor->pSectors.size()));
         }
 
         std::string floor_level_str;
@@ -297,7 +297,7 @@ void Engine::DrawGUI() {
             );
         }
 
-        pPrimaryWindow->DrawText(pFontArrus, {16, debug_info_offset + 16 + 16}, colorTable.White, floor_level_str, 0, 0, Color());
+        pPrimaryWindow->DrawText(pFontArrus, {16, debug_info_offset + 16 + 16}, colorTable.White, floor_level_str);
     }
 }
 

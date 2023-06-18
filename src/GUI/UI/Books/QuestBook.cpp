@@ -102,7 +102,7 @@ void GUIWindow_QuestBook::Update() {
     for (int i = _startingQuestIdx; i < _activeQuestsIdx.size(); ++i) {
         _currentPageQuests++;
 
-        questbook_window.DrawText(pAutonoteFont, {1, 0}, ui_book_quests_text_color, pQuestTable[_activeQuestsIdx[i]], 0, 0, Color());
+        questbook_window.DrawText(pAutonoteFont, {1, 0}, ui_book_quests_text_color, pQuestTable[_activeQuestsIdx[i]]);
         pTextHeight = pAutonoteFont->CalcTextHeight(pQuestTable[_activeQuestsIdx[i]], questbook_window.uFrameWidth, 1);
         if ((questbook_window.uFrameY + pTextHeight) > questbook_window.uFrameHeight) {
             break;

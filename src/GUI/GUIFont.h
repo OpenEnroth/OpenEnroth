@@ -54,12 +54,10 @@ class GUIFont {
 
     std::string GetPageTop(const std::string &pInString, GUIWindow *pWindow,
                       unsigned int uX, int a5);
-    void DrawTextLine(const std::string &text, Color uDefaultColor, Pointi position, int max_len_pix);
-    void DrawText(GUIWindow *pWindow, Pointi position, Color uFontColor,
-                  const std::string &str, bool present_time_transparency,
-                  int max_text_height, Color uFontShadowColor);
-    int DrawTextInRect(GUIWindow *pWindow, Pointi position,
-                       Color uColor, const std::string &str, int rect_width,
+    void DrawTextLine(const std::string &text, Color color, Pointi position, int max_len_pix);
+    void DrawText(GUIWindow *window, Pointi position, Color color, const std::string &text, int maxHeight, Color shadowColor);
+    int DrawTextInRect(GUIWindow *window, Pointi position,
+                       Color color, const std::string &text, int rect_width,
                        int reverse_text);
 
     std::string FitTextInAWindow(const std::string &inString, unsigned int width, int uX,

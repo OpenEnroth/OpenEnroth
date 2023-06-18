@@ -343,13 +343,13 @@ void GUIWindow_GameKeyBindings::Update() {
 
     for (int i = 0; i < 7; ++i) {
         InputAction action1 = (InputAction)(base_controls_offset + i);
-        pGUIWindow_CurrentMenu->DrawText(pFontLucida, {23, 142 + i * 21}, ui_gamemenu_keys_action_name_color, GetDisplayName(action1), 0, 0, Color());
-        pGUIWindow_CurrentMenu->DrawText(pFontLucida, {127, 142 + i * 21}, GameMenuUI_GetKeyBindingColor(action1), GetDisplayName(curr_key_map[action1]), 0, 0, Color());
+        pGUIWindow_CurrentMenu->DrawText(pFontLucida, {23, 142 + i * 21}, ui_gamemenu_keys_action_name_color, GetDisplayName(action1));
+        pGUIWindow_CurrentMenu->DrawText(pFontLucida, {127, 142 + i * 21}, GameMenuUI_GetKeyBindingColor(action1), GetDisplayName(curr_key_map[action1]));
 
         int j = i + 7;
         InputAction action2 = (InputAction)(base_controls_offset + j);
-        pGUIWindow_CurrentMenu->DrawText(pFontLucida, {247, 142 + i * 21}, ui_gamemenu_keys_action_name_color, GetDisplayName(action2), 0, 0, Color());
-        pGUIWindow_CurrentMenu->DrawText(pFontLucida, {350, 142 + i * 21}, GameMenuUI_GetKeyBindingColor(action2), GetDisplayName(curr_key_map[action2]), 0, 0, Color());
+        pGUIWindow_CurrentMenu->DrawText(pFontLucida, {247, 142 + i * 21}, ui_gamemenu_keys_action_name_color, GetDisplayName(action2));
+        pGUIWindow_CurrentMenu->DrawText(pFontLucida, {350, 142 + i * 21}, GameMenuUI_GetKeyBindingColor(action2), GetDisplayName(curr_key_map[action2]));
     }
 }
 
@@ -786,8 +786,8 @@ void GameUI_DrawFoodAndGold() {
     if (uGameState != GAME_STATE_FINAL_WINDOW) {
         text_y = _44100D_should_alter_right_panel() != 0 ? 381 : 322;
 
-        pPrimaryWindow->DrawText(pFontSmallnum, {0, text_y}, uGameUIFontMain, fmt::format("\r087{}", pParty->GetFood()), 0, 0, uGameUIFontShadow);
-        pPrimaryWindow->DrawText(pFontSmallnum, {0, text_y}, uGameUIFontMain, fmt::format("\r028{}", pParty->GetGold()), 0, 0, uGameUIFontShadow);
+        pPrimaryWindow->DrawText(pFontSmallnum, {0, text_y}, uGameUIFontMain, fmt::format("\r087{}", pParty->GetFood()), 0, uGameUIFontShadow);
+        pPrimaryWindow->DrawText(pFontSmallnum, {0, text_y}, uGameUIFontMain, fmt::format("\r028{}", pParty->GetGold()), 0, uGameUIFontShadow);
         // force to render all queued text now so it wont be delayed and drawn over things it isn't supposed to, like item in hand or nuklear
         render->EndTextNew();
     }
@@ -1900,7 +1900,7 @@ void GUIWindow_DebugMenu::Update() {
         pViewport->uViewportTL_Y / 480.0f,
         game_ui_menu_options);
 
-    pGUIWindow_CurrentMenu->DrawText(pFontArrus, {0, 10}, Color(), "Debug Menu", 0, 0, Color());
+    pGUIWindow_CurrentMenu->DrawText(pFontArrus, {0, 10}, Color(), "Debug Menu");
 
     buttonbox(13, 140, "Town Portal", engine->config->debug.TownPortal.value());
     buttonbox(127, 140, "Give Gold", 2);
@@ -1972,5 +1972,5 @@ void buttonbox(int x, int y, const char *text, int col) {
     if (col == 1) {
         colour = ui_character_bonus_text_color;
     }
-    pGUIWindow_CurrentMenu->DrawText(pFontArrus, {x+1, y+2}, colour, text, 0, 0, Color());
+    pGUIWindow_CurrentMenu->DrawText(pFontArrus, {x+1, y+2}, colour, text);
 }

@@ -134,7 +134,7 @@ int GUIFont::GetHeight() const {
     return pData->uFontHeight;
 }
 
-void GUIFont::DrawTextLine(const std::string &text, Color uDefaultColor, Pointi position, int max_len_pix) {
+void GUIFont::DrawTextLine(const std::string &text, Color color, Pointi position, int max_len_pix) {
     if (text.empty()) {
         return;
     }
@@ -443,38 +443,37 @@ std::string GUIFont::FitTextInAWindow(const std::string &inString, unsigned int 
     return temp_string;
 }
 
-void GUIFont::DrawText(GUIWindow *pWindow, Pointi position, Color uFontColor, const std::string &str,
-    bool present_time_transparency, int max_text_height, Color uFontShadowColor) {
+void GUIFont::DrawText(GUIWindow *window, Pointi position, Color color, const std::string &text, int maxHeight, Color shadowColor) {
     int left_margin = 0;
-    if (str.empty()) {
+    if (text.empty()) {
         return;
     }
-    if (str == "null") {
+    if (text == "null") {
         return;
     }
 
     // TODO(captainurist): just use colorTable.Black at all call sites and drop this?
-    if (uFontShadowColor == Color())
-        uFontShadowColor = colorTable.Black; // Default shadow color.
+    if (shadowColor == Color())
+        shadowColor = colorTable.Black; // Default shadow color.
 
     render->BeginTextNew(fonttex, fontshadow);
 
-    size_t v30 = str.length();
+    size_t v30 = text.length();
     if (!position.x) {
         position.x = 12;
     }
 
-    std::string string_begin = str;
-    if (max_text_height == 0) {
-        string_begin = FitTextInAWindow(str, pWindow->uFrameWidth, position.x);
+    std::string string_begin = text;
+    if (maxHeight == 0) {
+        string_begin = FitTextInAWindow(text, window->uFrameWidth, position.x);
     }
     auto string_end = string_begin;
     auto string_base = string_begin;
 
-    int out_x = position.x + pWindow->uFrameX;
-    int out_y = position.y + pWindow->uFrameY;
+    int out_x = position.x + window->uFrameX;
+    int out_y = position.y + window->uFrameY;
 
-    if (max_text_height != 0 && out_y + pData->uFontHeight > max_text_height) {
+    if (maxHeight != 0 && out_y + pData->uFontHeight > maxHeight) {
         return;
     }
 
@@ -494,14 +493,14 @@ void GUIFont::DrawText(GUIWindow *pWindow, Pointi position, Color uFontColor, co
                     Dest[3] = 0;
                     v14 += 3;
                     left_margin = atoi(Dest);
-                    out_x = position.x + pWindow->uFrameX + left_margin;
+                    out_x = position.x + window->uFrameX + left_margin;
                     break;
                 case '\n':
                     position.y = position.y + pData->uFontHeight - 3;
-                    out_y = position.y + pWindow->uFrameY;
-                    out_x = position.x + pWindow->uFrameX + left_margin;
-                    if (max_text_height != 0) {
-                        if (pData->uFontHeight + out_y - 3 > max_text_height) {
+                    out_y = position.y + window->uFrameY;
+                    out_x = position.x + window->uFrameX + left_margin;
+                    if (maxHeight != 0) {
+                        if (pData->uFontHeight + out_y - 3 > maxHeight) {
                             return;
                         }
                     }
@@ -509,7 +508,7 @@ void GUIFont::DrawText(GUIWindow *pWindow, Pointi position, Color uFontColor, co
                 case '\f':
                     strncpy(Dest, &string_base[v14 + 1], 5);
                     Dest[5] = 0;
-                    uFontColor = Color::fromC16(atoi(Dest));
+                    color = Color::fromC16(atoi(Dest));
                     v14 += 5;
                     break;
                 case '\r':
@@ -517,10 +516,10 @@ void GUIFont::DrawText(GUIWindow *pWindow, Pointi position, Color uFontColor, co
                     Dest[3] = 0;
                     v14 += 3;
                     left_margin = atoi(Dest);
-                    out_x = pWindow->uFrameZ - this->GetLineWidth(&string_base[v14]) - left_margin;
-                    out_y = position.y + pWindow->uFrameY;
-                    if (max_text_height != 0) {
-                        if (pData->uFontHeight + out_y - 3 > max_text_height) {
+                    out_x = window->uFrameZ - this->GetLineWidth(&string_base[v14]) - left_margin;
+                    out_y = position.y + window->uFrameY;
+                    if (maxHeight != 0) {
+                        if (pData->uFontHeight + out_y - 3 > maxHeight) {
                             return;
                         }
                         break;
@@ -537,11 +536,8 @@ void GUIFont::DrawText(GUIWindow *pWindow, Pointi position, Color uFontColor, co
                         out_x += pData->pMetrics[c].uLeftSpacing;
                     }
 
-                    if (present_time_transparency) __debugbreak();
-
-
                     unsigned char *letter_pixels = &pData->pFontData[pData->font_pixels_offset[c]];
-                    if (uFontColor != Color()) {
+                    if (color != Color()) {
                         int xsq = c % 16;
                         int ysq = c / 16;
                         float u1 = (xsq * 32.0f) / 512.0f;
@@ -549,8 +545,8 @@ void GUIFont::DrawText(GUIWindow *pWindow, Pointi position, Color uFontColor, co
                         float v1 = (ysq * 32.0f) / 512.0f;
                         float v2 = (ysq * 32.0f + pData->uFontHeight) / 512.0f;
 
-                        render->DrawTextNew(out_x, out_y, pData->pMetrics[c].uWidth, pData->uFontHeight, u1, v1, u2, v2, 1, uFontShadowColor);
-                        render->DrawTextNew(out_x, out_y, pData->pMetrics[c].uWidth, pData->uFontHeight, u1, v1, u2, v2, 0, uFontColor);
+                        render->DrawTextNew(out_x, out_y, pData->pMetrics[c].uWidth, pData->uFontHeight, u1, v1, u2, v2, 1, shadowColor);
+                        render->DrawTextNew(out_x, out_y, pData->pMetrics[c].uWidth, pData->uFontHeight, u1, v1, u2, v2, 0, color);
                     } else {
                         // pallette24 check for colour
                         unsigned char *pix = letter_pixels;
@@ -591,17 +587,17 @@ void GUIFont::DrawText(GUIWindow *pWindow, Pointi position, Color uFontColor, co
     // render->EndTextNew();
 }
 
-int GUIFont::DrawTextInRect(GUIWindow *pWindow, Pointi position, Color uColor, const std::string &str, int rect_width, int reverse_text) {
-    char text[4096];
-    Assert(str.length() < sizeof(text));
-    strcpy(text, str.c_str());
+int GUIFont::DrawTextInRect(GUIWindow *window, Pointi position, Color color, const std::string &text, int rect_width, int reverse_text) {
+    char buf[4096];
+    Assert(text.length() < sizeof(buf));
+    strcpy(buf, text.c_str());
 
-    size_t pNumLen = strlen(text);
+    size_t pNumLen = strlen(buf);
     if (pNumLen == 0) return 0;
 
-    unsigned int pLineWidth = this->GetLineWidth(text);
+    unsigned int pLineWidth = this->GetLineWidth(buf);
     if (pLineWidth < rect_width) {
-        this->DrawText(pWindow, position, uColor, text, 0, 0, Color());
+        this->DrawText(window, position, color, buf, 0, Color());
         return pLineWidth;
     }
 
@@ -609,7 +605,7 @@ int GUIFont::DrawTextInRect(GUIWindow *pWindow, Pointi position, Color uColor, c
 
     unsigned int text_width = 0;
     if (reverse_text)
-        std::reverse(text, text + pNumLen);
+        std::reverse(buf, buf + pNumLen);
 
     size_t Str1a = 0;
     size_t i = 0;
@@ -617,7 +613,7 @@ int GUIFont::DrawTextInRect(GUIWindow *pWindow, Pointi position, Color uColor, c
         if (text_width >= rect_width) {
             break;
         }
-        uint8_t v12 = text[i];
+        uint8_t v12 = buf[i];
         if (this->IsCharValid(v12)) {
             switch (v12) {
             case '\t':  // Horizontal tab 09
@@ -638,22 +634,22 @@ int GUIFont::DrawTextInRect(GUIWindow *pWindow, Pointi position, Color uColor, c
             }
         }
     }
-    text[i - 1] = 0;
+    buf[i - 1] = 0;
 
-    pNumLen = strlen(text);
-    unsigned int v28 = this->GetLineWidth(text);
+    pNumLen = strlen(buf);
+    unsigned int v28 = this->GetLineWidth(buf);
     if (reverse_text)
-        std::reverse(text, text + pNumLen);
+        std::reverse(buf, buf + pNumLen);
 
-    int text_pos_x = position.x + pWindow->uFrameX;
-    int text_pos_y = position.y + pWindow->uFrameY;
+    int text_pos_x = position.x + window->uFrameX;
+    int text_pos_y = position.y + window->uFrameY;
     for (i = 0; i < pNumLen; ++i) {
-        uint8_t v15 = text[i];
+        uint8_t v15 = buf[i];
         if (this->IsCharValid(v15)) {
             switch (v15) {
             case '\t': {  // Horizontal tab 09
                 char Str[6];
-                strncpy(Str, &text[i + 1], 3);
+                strncpy(Str, &buf[i + 1], 3);
                 Str[3] = 0;
                 //   atoi(Str);
                 i += 3;
@@ -668,19 +664,19 @@ int GUIFont::DrawTextInRect(GUIWindow *pWindow, Pointi position, Color uColor, c
             }
             case '\r': {  // Form Feed, page eject  0C 12
                 char Str[6];
-                strncpy(Str, &text[i + 1], 5);
+                strncpy(Str, &buf[i + 1], 5);
                 Str[5] = 0;
                 i += 5;
-                uColor = Color::fromC16(atoi(Str));
+                color = Color::fromC16(atoi(Str));
                 break;
             }
             case '\f': {  // Carriage Return 0D 13
                 char Str[6];
-                strncpy(Str, &text[i + 1], 3);
+                strncpy(Str, &buf[i + 1], 3);
                 Str[3] = 0;
                 i += 3;
-                unsigned int v23 = this->GetLineWidth(&text[i]);
-                text_pos_x = pWindow->uFrameZ - v23 - atoi(Str);
+                unsigned int v23 = this->GetLineWidth(&buf[i]);
+                text_pos_x = window->uFrameZ - v23 - atoi(Str);
                 text_pos_y = position.y;
                 break;
             }
@@ -690,7 +686,7 @@ int GUIFont::DrawTextInRect(GUIWindow *pWindow, Pointi position, Color uColor, c
                     text_pos_x += pData->pMetrics[v15].uLeftSpacing;
                 }
                 uint8_t *char_pix_ptr = &pData->pFontData[pData->font_pixels_offset[v15]];
-                if (uColor != Color()) {
+                if (color != Color()) {
                     int xsq = v15 % 16;
                     int ysq = v15 / 16;
                     float u1 = (xsq * 32.0f) / 512.0f;
@@ -699,7 +695,7 @@ int GUIFont::DrawTextInRect(GUIWindow *pWindow, Pointi position, Color uColor, c
                     float v2 = (ysq * 32.0f + pData->uFontHeight) / 512.0f;
 
                     render->DrawTextNew(text_pos_x, text_pos_y, pData->pMetrics[v15].uWidth, pData->uFontHeight, u1, v1, u2, v2, 1, Color());
-                    render->DrawTextNew(text_pos_x, text_pos_y, pData->pMetrics[v15].uWidth, pData->uFontHeight, u1, v1, u2, v2, 0, uColor);
+                    render->DrawTextNew(text_pos_x, text_pos_y, pData->pMetrics[v15].uWidth, pData->uFontHeight, u1, v1, u2, v2, 0, color);
                 } else {
                     // pallette24 check for colour
                     unsigned char *pix = char_pix_ptr;
