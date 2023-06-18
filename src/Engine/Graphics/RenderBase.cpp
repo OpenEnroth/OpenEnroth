@@ -1,7 +1,7 @@
 #include "Engine/Graphics/RenderBase.h"
 
 #include <cassert>
-#include <algorithm>
+#include <utility>
 
 #include "Engine/Engine.h"
 #include "Engine/MM7.h"
@@ -14,7 +14,6 @@
 #include "Engine/Graphics/Camera.h"
 #include "Engine/Graphics/LightmapBuilder.h"
 #include "Engine/Graphics/LightsStack.h"
-#include "Engine/Graphics/Outdoor.h"
 #include "Engine/Graphics/Indoor.h"
 #include "Engine/Graphics/BspRenderer.h"
 #include "Engine/Graphics/Sprites.h"

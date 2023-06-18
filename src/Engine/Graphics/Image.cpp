@@ -79,11 +79,11 @@ bool GraphicsImage::Release() {
 }
 
 [[nodiscard]] TextureRenderId GraphicsImage::renderId(bool load) {
-    if (load)
+    if (load) {
         LoadImageData();
-
-    if (!_renderId)
-        _renderId = render->CreateTexture(_rgbaImage);
+        if (!_renderId)
+            _renderId = render->CreateTexture(_rgbaImage);
+    }
 
     return _renderId;
 }
