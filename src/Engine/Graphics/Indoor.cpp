@@ -251,7 +251,7 @@ void IndoorLocation::Load(const std::string &filename, int num_days_played, int 
 
     IndoorLocation_MM7 location;
     deserialize(pGames_LOD->LoadCompressed(blv_filename), &location);
-    deserialize(location, this);
+    reconstruct(location, this);
 
     std::string dlv_filename = filename;
     dlv_filename.replace(dlv_filename.length() - 4, 4, ".dlv");
@@ -299,7 +299,7 @@ void IndoorLocation::Load(const std::string &filename, int num_days_played, int 
         *indoor_was_respawned = false;
     }
 
-    deserialize(delta, this);
+    reconstruct(delta, this);
 
     if (respawnTimed || respawnInitial)
         dlv.lastRespawnDay = num_days_played;

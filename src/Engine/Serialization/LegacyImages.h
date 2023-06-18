@@ -97,7 +97,7 @@ struct SpriteFrame_MM7 : public SpriteFrame_MM6 {
 static_assert(sizeof(SpriteFrame_MM7) == 60);
 MM_DECLARE_MEMCOPY_SERIALIZABLE(SpriteFrame_MM7)
 
-void deserialize(const SpriteFrame_MM7 &src, SpriteFrame *dst);
+void reconstruct(const SpriteFrame_MM7 &src, SpriteFrame *dst);
 
 
 struct BLVFace_MM7 {
@@ -125,7 +125,7 @@ struct BLVFace_MM7 {
 static_assert(sizeof(BLVFace_MM7) == 0x60);
 MM_DECLARE_MEMCOPY_SERIALIZABLE(BLVFace_MM7)
 
-void deserialize(const BLVFace_MM7 &src, BLVFace *dst);
+void reconstruct(const BLVFace_MM7 &src, BLVFace *dst);
 
 
 struct TileDesc_MM7 {
@@ -139,7 +139,7 @@ struct TileDesc_MM7 {
 static_assert(sizeof(TileDesc_MM7) == 26);
 MM_DECLARE_MEMCOPY_SERIALIZABLE(TileDesc_MM7)
 
-void deserialize(const TileDesc_MM7 &src, TileDesc *dst);
+void reconstruct(const TileDesc_MM7 &src, TileDesc *dst);
 
 
 struct TextureFrame_MM7 {
@@ -152,7 +152,7 @@ struct TextureFrame_MM7 {
 static_assert(sizeof(TextureFrame_MM7) == 20);
 MM_DECLARE_MEMCOPY_SERIALIZABLE(TextureFrame_MM7)
 
-void deserialize(const TextureFrame_MM7 &src, TextureFrame *dst);
+void reconstruct(const TextureFrame_MM7 &src, TextureFrame *dst);
 
 
 struct NPCData_MM7 {
@@ -180,8 +180,8 @@ struct NPCData_MM7 {
 static_assert(sizeof(NPCData_MM7) == 0x4C);
 MM_DECLARE_MEMCOPY_SERIALIZABLE(NPCData_MM7)
 
-void serialize(const NPCData &src, NPCData_MM7 *dst);
-void deserialize(const NPCData_MM7 &src, NPCData *dst);
+void snapshot(const NPCData &src, NPCData_MM7 *dst);
+void reconstruct(const NPCData_MM7 &src, NPCData *dst);
 
 
 struct ItemGen_MM7 {
@@ -200,8 +200,8 @@ struct ItemGen_MM7 {
 static_assert(sizeof(ItemGen_MM7) == 0x24);
 MM_DECLARE_MEMCOPY_SERIALIZABLE(ItemGen_MM7)
 
-void serialize(const ItemGen &src, ItemGen_MM7 *dst);
-void deserialize(const ItemGen_MM7 &src, ItemGen *dst);
+void snapshot(const ItemGen &src, ItemGen_MM7 *dst);
+void reconstruct(const ItemGen_MM7 &src, ItemGen *dst);
 
 
 struct SpellBuff_MM7 {
@@ -216,8 +216,8 @@ struct SpellBuff_MM7 {
 static_assert(sizeof(SpellBuff_MM7) == 0x10);
 MM_DECLARE_MEMCOPY_SERIALIZABLE(SpellBuff_MM7)
 
-void serialize(const SpellBuff &src, SpellBuff_MM7 *dst);
-void deserialize(const SpellBuff_MM7 &src, SpellBuff *dst);
+void snapshot(const SpellBuff &src, SpellBuff_MM7 *dst);
+void reconstruct(const SpellBuff_MM7 &src, SpellBuff *dst);
 
 
 struct PlayerSpellbookChapter_MM7 {
@@ -387,8 +387,8 @@ struct Player_MM7 {
 static_assert(sizeof(Player_MM7) == 0x1B3C);
 MM_DECLARE_MEMCOPY_SERIALIZABLE(Player_MM7)
 
-void serialize(const Player &src, Player_MM7 *dst);
-void deserialize(const Player_MM7 &src, Player *dst);
+void snapshot(const Player &src, Player_MM7 *dst);
+void reconstruct(const Player_MM7 &src, Player *dst);
 
 
 struct PartyTimeStruct_MM7 {
@@ -506,8 +506,8 @@ struct Party_MM7 {
 static_assert(sizeof(Party_MM7) == 0x16238);
 MM_DECLARE_MEMCOPY_SERIALIZABLE(Party_MM7)
 
-void serialize(const Party &src, Party_MM7 *dst);
-void deserialize(const Party_MM7 &src, Party *dst);
+void snapshot(const Party &src, Party_MM7 *dst);
+void reconstruct(const Party_MM7 &src, Party *dst);
 
 struct Timer_MM7 {
     /* 00 */ uint32_t ready;
@@ -525,8 +525,8 @@ struct Timer_MM7 {
 static_assert(sizeof(Timer_MM7) == 0x28);
 MM_DECLARE_MEMCOPY_SERIALIZABLE(Timer_MM7)
 
-void serialize(const Timer &src, Timer_MM7 *dst);
-void deserialize(const Timer_MM7 &src, Timer *dst);
+void snapshot(const Timer &src, Timer_MM7 *dst);
+void reconstruct(const Timer_MM7 &src, Timer *dst);
 
 
 struct ActiveOverlay_MM7 {
@@ -544,8 +544,8 @@ struct ActiveOverlay_MM7 {
 static_assert(sizeof(ActiveOverlay_MM7) == 0x14);
 MM_DECLARE_MEMCOPY_SERIALIZABLE(ActiveOverlay_MM7)
 
-void serialize(const ActiveOverlay &src, ActiveOverlay_MM7 *dst);
-void deserialize(const ActiveOverlay_MM7 &src, ActiveOverlay *dst);
+void snapshot(const ActiveOverlay &src, ActiveOverlay_MM7 *dst);
+void reconstruct(const ActiveOverlay_MM7 &src, ActiveOverlay *dst);
 
 
 struct ActiveOverlayList_MM7 {
@@ -557,8 +557,8 @@ struct ActiveOverlayList_MM7 {
 static_assert(sizeof(ActiveOverlayList_MM7) == 0x3F0);
 MM_DECLARE_MEMCOPY_SERIALIZABLE(ActiveOverlayList_MM7)
 
-void serialize(const ActiveOverlayList &src, ActiveOverlayList_MM7 *dst);
-void deserialize(const ActiveOverlayList_MM7 &src, ActiveOverlayList *dst);
+void snapshot(const ActiveOverlayList &src, ActiveOverlayList_MM7 *dst);
+void reconstruct(const ActiveOverlayList_MM7 &src, ActiveOverlayList *dst);
 
 
 struct IconFrame_MM7 {
@@ -572,8 +572,8 @@ struct IconFrame_MM7 {
 static_assert(sizeof(IconFrame_MM7) == 0x20);
 MM_DECLARE_MEMCOPY_SERIALIZABLE(IconFrame_MM7)
 
-void serialize(const Icon &src, IconFrame_MM7 *dst);
-void deserialize(const IconFrame_MM7 &src, Icon *dst);
+void snapshot(const Icon &src, IconFrame_MM7 *dst);
+void reconstruct(const IconFrame_MM7 &src, Icon *dst);
 
 
 struct UIAnimation_MM7 {
@@ -588,8 +588,8 @@ struct UIAnimation_MM7 {
 static_assert(sizeof(UIAnimation_MM7) == 0xD);
 MM_DECLARE_MEMCOPY_SERIALIZABLE(UIAnimation_MM7)
 
-void serialize(const UIAnimation &src, UIAnimation_MM7 *dst);
-void deserialize(const UIAnimation_MM7 &src, UIAnimation *dst);
+void snapshot(const UIAnimation &src, UIAnimation_MM7 *dst);
+void reconstruct(const UIAnimation_MM7 &src, UIAnimation *dst);
 
 
 struct MonsterInfo_MM7 {
@@ -669,7 +669,7 @@ struct MonsterDesc_MM6 {
 static_assert(sizeof(MonsterDesc_MM6) == 148);
 MM_DECLARE_MEMCOPY_SERIALIZABLE(MonsterDesc_MM6)
 
-void deserialize(const MonsterDesc_MM6 &src, MonsterDesc *dst);
+void reconstruct(const MonsterDesc_MM6 &src, MonsterDesc *dst);
 
 
 struct MonsterDesc_MM7 {
@@ -686,8 +686,8 @@ struct MonsterDesc_MM7 {
 static_assert(sizeof(MonsterDesc_MM7) == 152);
 MM_DECLARE_MEMCOPY_SERIALIZABLE(MonsterDesc_MM7)
 
-void serialize(const MonsterDesc &src, MonsterDesc_MM7 *dst);
-void deserialize(const MonsterDesc_MM7 &src, MonsterDesc *dst);
+void snapshot(const MonsterDesc &src, MonsterDesc_MM7 *dst);
+void reconstruct(const MonsterDesc_MM7 &src, MonsterDesc *dst);
 
 
 struct ActorJob_MM7 {
@@ -701,8 +701,8 @@ struct ActorJob_MM7 {
 static_assert(sizeof(ActorJob_MM7) == 12);
 MM_DECLARE_MEMCOPY_SERIALIZABLE(ActorJob_MM7)
 
-void serialize(const ActorJob &src, ActorJob_MM7 *dst);
-void deserialize(const ActorJob_MM7 &src, ActorJob *dst);
+void snapshot(const ActorJob &src, ActorJob_MM7 *dst);
+void reconstruct(const ActorJob_MM7 &src, ActorJob *dst);
 
 
 struct Actor_MM7 {
@@ -748,8 +748,8 @@ struct Actor_MM7 {
 static_assert(sizeof(Actor_MM7) == 0x344);
 MM_DECLARE_MEMCOPY_SERIALIZABLE(Actor_MM7)
 
-void serialize(const Actor &src, Actor_MM7 *dst);
-void deserialize(const Actor_MM7 &src, Actor *dst);
+void snapshot(const Actor &src, Actor_MM7 *dst);
+void reconstruct(const Actor_MM7 &src, Actor *dst);
 
 
 struct BLVDoor_MM7 {
@@ -778,8 +778,8 @@ struct BLVDoor_MM7 {
 static_assert(sizeof(BLVDoor_MM7) == 0x50);
 MM_DECLARE_MEMCOPY_SERIALIZABLE(BLVDoor_MM7)
 
-void serialize(const BLVDoor &src, BLVDoor_MM7 *dst);
-void deserialize(const BLVDoor_MM7 &src, BLVDoor *dst);
+void snapshot(const BLVDoor &src, BLVDoor_MM7 *dst);
+void reconstruct(const BLVDoor_MM7 &src, BLVDoor *dst);
 
 
 struct BLVSector_MM7 {
@@ -828,8 +828,8 @@ struct BLVSector_MM7 {
 static_assert(sizeof(BLVSector_MM7) == 0x74);
 MM_DECLARE_MEMCOPY_SERIALIZABLE(BLVSector_MM7)
 
-void serialize(const BLVSector &src, BLVSector_MM7 *dst);
-void deserialize(const BLVSector_MM7 &src, BLVSector *dst);
+void snapshot(const BLVSector &src, BLVSector_MM7 *dst);
+void reconstruct(const BLVSector_MM7 &src, BLVSector *dst);
 
 
 struct GUICharMetric_MM7 {
@@ -840,8 +840,8 @@ struct GUICharMetric_MM7 {
 static_assert(sizeof(GUICharMetric_MM7) == 12);
 MM_DECLARE_MEMCOPY_SERIALIZABLE(GUICharMetric_MM7)
 
-void serialize(const GUICharMetric &src, GUICharMetric_MM7 *dst);
-void deserialize(const GUICharMetric_MM7 &src, GUICharMetric *dst);
+void snapshot(const GUICharMetric &src, GUICharMetric_MM7 *dst);
+void reconstruct(const GUICharMetric_MM7 &src, GUICharMetric *dst);
 
 
 struct FontData_MM7 {
@@ -861,8 +861,8 @@ struct FontData_MM7 {
 static_assert(sizeof(FontData_MM7) == 0x1020);
 MM_DECLARE_MEMCOPY_SERIALIZABLE(FontData_MM7)
 
-void serialize(const FontData &src, FontData_MM7 *dst);
-void deserialize(const FontData_MM7 &src, size_t size, FontData *dst);
+void snapshot(const FontData &src, FontData_MM7 *dst);
+void reconstruct(const FontData_MM7 &src, size_t size, FontData *dst);
 
 
 struct ODMFace_MM7 {
@@ -900,7 +900,7 @@ struct ODMFace_MM7 {
 static_assert(sizeof(ODMFace_MM7) == 308);
 MM_DECLARE_MEMCOPY_SERIALIZABLE(ODMFace_MM7)
 
-void deserialize(const ODMFace_MM7 &src, ODMFace *dst);
+void reconstruct(const ODMFace_MM7 &src, ODMFace *dst);
 
 
 struct SpawnPoint_MM6 {
@@ -924,7 +924,7 @@ struct SpawnPoint_MM7 {
 static_assert(sizeof(SpawnPoint_MM7) == 24);
 MM_DECLARE_MEMCOPY_SERIALIZABLE(SpawnPoint_MM7)
 
-void deserialize(const SpawnPoint_MM7 &src, SpawnPoint *dst);
+void reconstruct(const SpawnPoint_MM7 &src, SpawnPoint *dst);
 
 
 struct SpriteObject_MM7 {
@@ -955,8 +955,8 @@ struct SpriteObject_MM7 {
 static_assert(sizeof(SpriteObject_MM7) == 0x70);
 MM_DECLARE_MEMCOPY_SERIALIZABLE(SpriteObject_MM7)
 
-void serialize(const SpriteObject &src, SpriteObject_MM7 *dst);
-void deserialize(const SpriteObject_MM7 &src, SpriteObject *dst);
+void snapshot(const SpriteObject &src, SpriteObject_MM7 *dst);
+void reconstruct(const SpriteObject_MM7 &src, SpriteObject *dst);
 
 
 struct ChestDesc_MM7 {
@@ -968,7 +968,7 @@ struct ChestDesc_MM7 {
 static_assert(sizeof(ChestDesc_MM7) == 36);
 MM_DECLARE_MEMCOPY_SERIALIZABLE(ChestDesc_MM7)
 
-void deserialize(const ChestDesc_MM7 &src, ChestDesc *dst);
+void reconstruct(const ChestDesc_MM7 &src, ChestDesc *dst);
 
 
 struct DecorationDesc_MM6 {
@@ -995,8 +995,8 @@ struct DecorationDesc_MM7 : public DecorationDesc_MM6 {
 static_assert(sizeof(DecorationDesc_MM7) == 84);
 MM_DECLARE_MEMCOPY_SERIALIZABLE(DecorationDesc_MM7)
 
-void deserialize(const DecorationDesc_MM6 &src, DecorationDesc *dst);
-void deserialize(const DecorationDesc_MM7 &src, DecorationDesc *dst);
+void reconstruct(const DecorationDesc_MM6 &src, DecorationDesc *dst);
+void reconstruct(const DecorationDesc_MM7 &src, DecorationDesc *dst);
 
 
 struct Chest_MM7 {
@@ -1008,8 +1008,8 @@ struct Chest_MM7 {
 static_assert(sizeof(Chest_MM7) == 5324);
 MM_DECLARE_MEMCOPY_SERIALIZABLE(Chest_MM7)
 
-void serialize(const Chest &src, Chest_MM7 *dst);
-void deserialize(const Chest_MM7 &src, Chest *dst);
+void snapshot(const Chest &src, Chest_MM7 *dst);
+void reconstruct(const Chest_MM7 &src, Chest *dst);
 
 
 struct BLVLight_MM6 {
@@ -1034,7 +1034,7 @@ struct BLVLight_MM7 {
 static_assert(sizeof(BLVLight_MM7) == 16);
 MM_DECLARE_MEMCOPY_SERIALIZABLE(BLVLight_MM7)
 
-void deserialize(const BLVLight_MM7 &src, BLVLight *dst);
+void reconstruct(const BLVLight_MM7 &src, BLVLight *dst);
 
 
 struct OverlayDesc_MM7 {
@@ -1046,7 +1046,7 @@ struct OverlayDesc_MM7 {
 static_assert(sizeof(OverlayDesc_MM7) == 8);
 MM_DECLARE_MEMCOPY_SERIALIZABLE(OverlayDesc_MM7)
 
-void deserialize(const OverlayDesc_MM7 &src, OverlayDesc *dst);
+void reconstruct(const OverlayDesc_MM7 &src, OverlayDesc *dst);
 
 
 struct PlayerFrame_MM7 {
@@ -1059,7 +1059,7 @@ struct PlayerFrame_MM7 {
 static_assert(sizeof(PlayerFrame_MM7) == 10);
 MM_DECLARE_MEMCOPY_SERIALIZABLE(PlayerFrame_MM7)
 
-void deserialize(const PlayerFrame_MM7 &src, PlayerFrame *dst);
+void reconstruct(const PlayerFrame_MM7 &src, PlayerFrame *dst);
 
 
 struct LevelDecoration_MM7 {
@@ -1077,7 +1077,7 @@ struct LevelDecoration_MM7 {
 static_assert(sizeof(LevelDecoration_MM7) == 32);
 MM_DECLARE_MEMCOPY_SERIALIZABLE(LevelDecoration_MM7)
 
-void deserialize(const LevelDecoration_MM7 &src, LevelDecoration *dst);
+void reconstruct(const LevelDecoration_MM7 &src, LevelDecoration *dst);
 
 
 struct BLVFaceExtra_MM7 {
@@ -1103,7 +1103,7 @@ struct BLVFaceExtra_MM7 {
 static_assert(sizeof(BLVFaceExtra_MM7) == 36);
 MM_DECLARE_MEMCOPY_SERIALIZABLE(BLVFaceExtra_MM7)
 
-void deserialize(const BLVFaceExtra_MM7 &src, BLVFaceExtra *dst);
+void reconstruct(const BLVFaceExtra_MM7 &src, BLVFaceExtra *dst);
 
 
 struct BSPNode_MM7 {
@@ -1115,7 +1115,7 @@ struct BSPNode_MM7 {
 static_assert(sizeof(BSPNode_MM7) == 8);
 MM_DECLARE_MEMCOPY_SERIALIZABLE(BSPNode_MM7)
 
-void deserialize(const BSPNode_MM7 &src, BSPNode *dst);
+void reconstruct(const BSPNode_MM7 &src, BSPNode *dst);
 
 
 struct BLVMapOutline_MM7 {
@@ -1129,7 +1129,7 @@ struct BLVMapOutline_MM7 {
 static_assert(sizeof(BLVMapOutline_MM7) == 12);
 MM_DECLARE_MEMCOPY_SERIALIZABLE(BLVMapOutline_MM7)
 
-void deserialize(const BLVMapOutline_MM7 &src, BLVMapOutline *dst);
+void reconstruct(const BLVMapOutline_MM7 &src, BLVMapOutline *dst);
 
 
 struct ObjectDesc_MM6 {
@@ -1168,8 +1168,8 @@ struct ObjectDesc_MM7 {
 static_assert(sizeof(ObjectDesc_MM7) == 56);
 MM_DECLARE_MEMCOPY_SERIALIZABLE(ObjectDesc_MM7)
 
-void deserialize(const ObjectDesc_MM6 &src, ObjectDesc *dst);
-void deserialize(const ObjectDesc_MM7 &src, ObjectDesc *dst);
+void reconstruct(const ObjectDesc_MM6 &src, ObjectDesc *dst);
+void reconstruct(const ObjectDesc_MM7 &src, ObjectDesc *dst);
 
 
 struct BSPModelData_MM7 {
@@ -1218,8 +1218,8 @@ struct LocationTime_MM7 {
 static_assert(sizeof(LocationTime_MM7) == 0x38);
 MM_DECLARE_MEMCOPY_SERIALIZABLE(LocationTime_MM7)
 
-void serialize(const LocationTime &src, LocationTime_MM7 *dst);
-void deserialize(const LocationTime_MM7 &src, LocationTime *dst);
+void snapshot(const LocationTime &src, LocationTime_MM7 *dst);
+void reconstruct(const LocationTime_MM7 &src, LocationTime *dst);
 
 
 struct SoundInfo_MM6 {
@@ -1239,8 +1239,8 @@ struct SoundInfo_MM7 : public SoundInfo_MM6 {
 static_assert(sizeof(SoundInfo_MM7) == 120);
 MM_DECLARE_MEMCOPY_SERIALIZABLE(SoundInfo_MM7)
 
-void deserialize(const SoundInfo_MM6 &src, SoundInfo *dst);
-void deserialize(const SoundInfo_MM7 &src, SoundInfo *dst);
+void reconstruct(const SoundInfo_MM6 &src, SoundInfo *dst);
+void reconstruct(const SoundInfo_MM7 &src, SoundInfo *dst);
 
 
 struct LocationInfo_MM7 {
@@ -1252,8 +1252,8 @@ struct LocationInfo_MM7 {
 static_assert(sizeof(LocationInfo_MM7) == 16);
 MM_DECLARE_MEMCOPY_SERIALIZABLE(LocationInfo_MM7)
 
-void serialize(const LocationInfo &src, LocationInfo_MM7 *dst);
-void deserialize(const LocationInfo_MM7 &src, LocationInfo *dst);
+void snapshot(const LocationInfo &src, LocationInfo_MM7 *dst);
+void reconstruct(const LocationInfo_MM7 &src, LocationInfo *dst);
 
 
 struct LocationHeader_MM7 {
@@ -1268,7 +1268,7 @@ struct LocationHeader_MM7 {
 static_assert(sizeof(LocationHeader_MM7) == 40);
 MM_DECLARE_MEMCOPY_SERIALIZABLE(LocationHeader_MM7)
 // LocationHeader_MM7 is only used during deserialization and doesn't have a runtime equivalent,
-// so no deserialize() overloads for it.
+// so no reconstruct() overloads for it.
 
 
 // TODO(captainurist): PersistentVariables_MM7
@@ -1279,8 +1279,8 @@ struct MapEventVariables_MM7 {
 static_assert(sizeof(MapEventVariables_MM7) == 0xC8);
 MM_DECLARE_MEMCOPY_SERIALIZABLE(MapEventVariables_MM7)
 
-void serialize(const PersistentVariables &src, MapEventVariables_MM7 *dst);
-void deserialize(const MapEventVariables_MM7 &src, PersistentVariables *dst);
+void snapshot(const PersistentVariables &src, MapEventVariables_MM7 *dst);
+void reconstruct(const MapEventVariables_MM7 &src, PersistentVariables *dst);
 
 
 struct BLVHeader_MM7 {
@@ -1294,7 +1294,7 @@ struct BLVHeader_MM7 {
 static_assert(sizeof(BLVHeader_MM7) == 136);
 MM_DECLARE_MEMCOPY_SERIALIZABLE(BLVHeader_MM7)
 // BLVHeader_MM7 is only used during deserialization and doesn't have a runtime equivalent,
-// so no deserialize() overloads for it.
+// so no reconstruct() overloads for it.
 
 
 struct OutdoorLocationTileType_MM7 {
@@ -1304,7 +1304,7 @@ struct OutdoorLocationTileType_MM7 {
 static_assert(sizeof(OutdoorLocationTileType_MM7) == 4);
 MM_DECLARE_MEMCOPY_SERIALIZABLE(OutdoorLocationTileType_MM7)
 
-void deserialize(const OutdoorLocationTileType_MM7 &src, OutdoorLocationTileType *dst);
+void reconstruct(const OutdoorLocationTileType_MM7 &src, OutdoorLocationTileType *dst);
 
 
 struct SaveGameHeader_MM7 {
@@ -1316,8 +1316,8 @@ struct SaveGameHeader_MM7 {
 static_assert(sizeof(SaveGameHeader_MM7) == 0x64);
 MM_DECLARE_MEMCOPY_SERIALIZABLE(SaveGameHeader_MM7)
 
-void serialize(const SaveGameHeader &src, SaveGameHeader_MM7 *dst);
-void deserialize(const SaveGameHeader_MM7 &src, SaveGameHeader *dst);
+void snapshot(const SaveGameHeader &src, SaveGameHeader_MM7 *dst);
+void reconstruct(const SaveGameHeader_MM7 &src, SaveGameHeader *dst);
 
 
 #pragma pack(pop)

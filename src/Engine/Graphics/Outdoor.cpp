@@ -856,7 +856,7 @@ void OutdoorLocation::Load(const std::string &filename, int days_played, int res
 
     OutdoorLocation_MM7 location;
     deserialize(pGames_LOD->LoadCompressed(odm_filename), &location);
-    deserialize(location, this);
+    reconstruct(location, this);
 
     // ****************.ddm file*********************//
 
@@ -912,7 +912,7 @@ void OutdoorLocation::Load(const std::string &filename, int days_played, int res
         *outdoors_was_respawned = false;
     }
 
-    deserialize(delta, this);
+    reconstruct(delta, this);
 
     if (respawnTimed || respawnInitial)
         ddm.lastRespawnDay = days_played;

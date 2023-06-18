@@ -278,7 +278,7 @@ void SpriteFrameTable::FromFile(const Blob &data_mm6, const Blob &data_mm7, cons
 
     std::vector<SpriteFrame_MM7> tmp;
     deserialize(src, &tmp, presized(frameCount));
-    deserialize(tmp, &pSpriteSFrames);
+    reconstruct(tmp, &pSpriteSFrames);
     deserialize(src, &pSpriteEFrames, presized(eframeCount));
 
     pSpritePFrames.clear();

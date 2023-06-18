@@ -14,10 +14,10 @@
 
 #include "CommonImages.h"
 
-void deserialize(const IndoorLocation_MM7 &src, IndoorLocation *dst) {
-    deserialize(src.vertices, &dst->pVertices);
-    deserialize(src.faces, &dst->pFaces);
-    deserialize(src.faceData, &dst->pLFaces);
+void reconstruct(const IndoorLocation_MM7 &src, IndoorLocation *dst) {
+    reconstruct(src.vertices, &dst->pVertices);
+    reconstruct(src.faces, &dst->pFaces);
+    reconstruct(src.faceData, &dst->pLFaces);
 
     for (size_t i = 0, j = 0; i < dst->pFaces.size(); ++i) {
         BLVFace *pFace = &dst->pFaces[i];
@@ -47,15 +47,15 @@ void deserialize(const IndoorLocation_MM7 &src, IndoorLocation *dst) {
         BLVFace *pFace = &dst->pFaces[i];
 
         std::string texName;
-        deserialize(src.faceTextures[i], &texName);
+        reconstruct(src.faceTextures[i], &texName);
         pFace->SetTexture(texName);
     }
 
-    deserialize(src.faceExtras, &dst->pFaceExtras);
+    reconstruct(src.faceExtras, &dst->pFaceExtras);
 
     std::string textureName;
     for (uint i = 0; i < dst->pFaceExtras.size(); ++i) {
-        deserialize(src.faceExtraTextures[i], &textureName);
+        reconstruct(src.faceExtraTextures[i], &textureName);
 
         if (textureName.empty())
             dst->pFaceExtras[i].uAdditionalBitmapID = -1;
@@ -75,8 +75,8 @@ void deserialize(const IndoorLocation_MM7 &src, IndoorLocation *dst) {
         }
     }
 
-    deserialize(src.sectors, &dst->pSectors);
-    deserialize(src.sectorData, &dst->ptr_0002B0_sector_rdata);
+    reconstruct(src.sectors, &dst->pSectors);
+    reconstruct(src.sectorData, &dst->ptr_0002B0_sector_rdata);
 
     for (size_t i = 0, j = 0; i < dst->pSectors.size(); ++i) {
         BLVSector *pSector = &dst->pSectors[i];
@@ -111,7 +111,7 @@ void deserialize(const IndoorLocation_MM7 &src, IndoorLocation *dst) {
         assert(j <= dst->ptr_0002B0_sector_rdata.size());
     }
 
-    deserialize(src.sectorLightData, &dst->ptr_0002B8_sector_lrdata);
+    reconstruct(src.sectorLightData, &dst->ptr_0002B8_sector_lrdata);
 
     for (uint i = 0, j = 0; i < dst->pSectors.size(); ++i) {
         BLVSector *pSector = &dst->pSectors[i];
@@ -122,18 +122,18 @@ void deserialize(const IndoorLocation_MM7 &src, IndoorLocation *dst) {
         assert(j <= dst->ptr_0002B8_sector_lrdata.size());
     }
 
-    deserialize(src.decorations, &pLevelDecorations);
+    reconstruct(src.decorations, &pLevelDecorations);
 
     std::string decorationName;
     for (size_t i = 0; i < pLevelDecorations.size(); ++i) {
-        deserialize(src.decorationNames[i], &decorationName);
+        reconstruct(src.decorationNames[i], &decorationName);
         pLevelDecorations[i].uDecorationDescID = pDecorationList->GetDecorIdByName(decorationName);
     }
 
-    deserialize(src.lights, &dst->pLights);
-    deserialize(src.bspNodes, &dst->pNodes);
-    deserialize(src.spawnPoints, &dst->pSpawnPoints);
-    deserialize(src.mapOutlines, &dst->pMapOutlines);
+    reconstruct(src.lights, &dst->pLights);
+    reconstruct(src.bspNodes, &dst->pNodes);
+    reconstruct(src.spawnPoints, &dst->pSpawnPoints);
+    reconstruct(src.mapOutlines, &dst->pMapOutlines);
 }
 
 void deserialize(InputStream &src, IndoorLocation_MM7 *dst) {
@@ -156,13 +156,13 @@ void deserialize(InputStream &src, IndoorLocation_MM7 *dst) {
     deserialize(src, &dst->mapOutlines);
 }
 
-void serialize(const IndoorLocation &src, IndoorDelta_MM7 *dst) {
-    serialize(src.dlv, &dst->header.info);
+void snapshot(const IndoorLocation &src, IndoorDelta_MM7 *dst) {
+    snapshot(src.dlv, &dst->header.info);
     dst->header.totalFacesCount = src.pFaces.size();
     dst->header.bmodelCount = 0;
     dst->header.decorationCount = pLevelDecorations.size();
 
-    serialize(src._visible_outlines, &dst->visibleOutlines);
+    snapshot(src._visible_outlines, &dst->visibleOutlines);
 
     dst->faceAttributes.clear();
     for (const BLVFace &pFace : pIndoor->pFaces)
@@ -172,18 +172,18 @@ void serialize(const IndoorLocation &src, IndoorDelta_MM7 *dst) {
     for (const LevelDecoration &decoration : pLevelDecorations)
         dst->decorationFlags.push_back(std::to_underlying(decoration.uFlags));
 
-    serialize(pActors, &dst->actors);
-    serialize(pSpriteObjects, &dst->spriteObjects);
-    serialize(vChests, &dst->chests);
-    serialize(src.pDoors, &dst->doors);
-    serialize(src.ptr_0002B4_doors_ddata, &dst->doorsData);
-    serialize(engine->_persistentVariables, &dst->eventVariables);
-    serialize(src.stru1, &dst->locationTime);
+    snapshot(pActors, &dst->actors);
+    snapshot(pSpriteObjects, &dst->spriteObjects);
+    snapshot(vChests, &dst->chests);
+    snapshot(src.pDoors, &dst->doors);
+    snapshot(src.ptr_0002B4_doors_ddata, &dst->doorsData);
+    snapshot(engine->_persistentVariables, &dst->eventVariables);
+    snapshot(src.stru1, &dst->locationTime);
 }
 
-void deserialize(const IndoorDelta_MM7 &src, IndoorLocation *dst) {
-    deserialize(src.header.info, &dst->dlv); // XXX
-    deserialize(src.visibleOutlines, &dst->_visible_outlines);
+void reconstruct(const IndoorDelta_MM7 &src, IndoorLocation *dst) {
+    reconstruct(src.header.info, &dst->dlv); // XXX
+    reconstruct(src.visibleOutlines, &dst->_visible_outlines);
 
     for (size_t i = 0; i < dst->pMapOutlines.size(); ++i) {
         BLVMapOutline *pVertex = &dst->pMapOutlines[i];
@@ -208,11 +208,11 @@ void deserialize(const IndoorDelta_MM7 &src, IndoorLocation *dst) {
     for (size_t i = 0; i < pLevelDecorations.size(); ++i)
         pLevelDecorations[i].uFlags = LevelDecorationFlags(src.decorationFlags[i]);
 
-    deserialize(src.actors, &pActors);
+    reconstruct(src.actors, &pActors);
     for(size_t i = 0; i < pActors.size(); i++)
         pActors[i].id = i;
 
-    deserialize(src.spriteObjects, &pSpriteObjects);
+    reconstruct(src.spriteObjects, &pSpriteObjects);
 
     for (size_t i = 0; i < pSpriteObjects.size(); ++i) {
         if (pSpriteObjects[i].containing_item.uItemID != ITEM_NULL && !(pSpriteObjects[i].uAttributes & SPRITE_MISSILE)) {
@@ -221,9 +221,9 @@ void deserialize(const IndoorDelta_MM7 &src, IndoorLocation *dst) {
         }
     }
 
-    deserialize(src.chests, &vChests);
-    deserialize(src.doors, &dst->pDoors);
-    deserialize(src.doorsData, &dst->ptr_0002B4_doors_ddata);
+    reconstruct(src.chests, &vChests);
+    reconstruct(src.doors, &dst->pDoors);
+    reconstruct(src.doorsData, &dst->ptr_0002B4_doors_ddata);
 
     for (uint i = 0, j = 0; i < dst->pDoors.size(); ++i) {
         BLVDoor *pDoor = &dst->pDoors[i];
@@ -267,8 +267,8 @@ void deserialize(const IndoorDelta_MM7 &src, IndoorLocation *dst) {
         }
     }
 
-    deserialize(src.eventVariables, &engine->_persistentVariables);
-    deserialize(src.locationTime, &dst->stru1);
+    reconstruct(src.eventVariables, &engine->_persistentVariables);
+    reconstruct(src.locationTime, &dst->stru1);
 }
 
 void serialize(const IndoorDelta_MM7 &src, OutputStream *dst) {
@@ -299,12 +299,12 @@ void deserialize(InputStream &src, IndoorDelta_MM7 *dst, const IndoorLocation_MM
     deserialize(src, &dst->locationTime);
 }
 
-void deserialize(std::tuple<const BSPModelData_MM7 &, const BSPModelExtras_MM7 &> src, BSPModel *dst) {
+void reconstruct(std::tuple<const BSPModelData_MM7 &, const BSPModelExtras_MM7 &> src, BSPModel *dst) {
     const auto &[srcData, srcExtras] = src;
 
     // dst->index is set externally.
-    deserialize(srcData.pModelName, &dst->pModelName);
-    deserialize(srcData.pModelName2, &dst->pModelName2);
+    reconstruct(srcData.pModelName, &dst->pModelName);
+    reconstruct(srcData.pModelName2, &dst->pModelName2);
     dst->field_40 = srcData.field_40;
     dst->sCenterX = srcData.sCenterX;
     dst->sCenterY = srcData.sCenterY;
@@ -325,18 +325,18 @@ void deserialize(std::tuple<const BSPModelData_MM7 &, const BSPModelExtras_MM7 &
     dst->sBoundingRadius = srcData.sBoundingRadius;
 
     dst->pVertices = srcExtras.vertices;
-    deserialize(srcExtras.faces, &dst->pFaces);
+    reconstruct(srcExtras.faces, &dst->pFaces);
 
     for (size_t i = 0; i < dst->pFaces.size(); i++)
         dst->pFaces[i].index = i;
 
     dst->pFacesOrdering = srcExtras.faceOrdering;
 
-    deserialize(srcExtras.bspNodes, &dst->pNodes);
+    reconstruct(srcExtras.bspNodes, &dst->pNodes);
 
     std::string textureName;
     for (size_t i = 0; i < dst->pFaces.size(); ++i) {
-        deserialize(srcExtras.faceTextures[i], &textureName);
+        reconstruct(srcExtras.faceTextures[i], &textureName);
         dst->pFaces[i].SetTexture(textureName);
 
         if (dst->pFaces[i].sCogTriggeredID) {
@@ -348,45 +348,45 @@ void deserialize(std::tuple<const BSPModelData_MM7 &, const BSPModelExtras_MM7 &
     }
 }
 
-void deserialize(const OutdoorLocation_MM7 &src, OutdoorLocation *dst) {
-    deserialize(src.name, &dst->level_filename);
-    deserialize(src.fileName, &dst->location_filename);
-    deserialize(src.desciption, &dst->location_file_description);
-    deserialize(src.skyTexture, &dst->sky_texture_filename);
+void reconstruct(const OutdoorLocation_MM7 &src, OutdoorLocation *dst) {
+    reconstruct(src.name, &dst->level_filename);
+    reconstruct(src.fileName, &dst->location_filename);
+    reconstruct(src.desciption, &dst->location_file_description);
+    reconstruct(src.skyTexture, &dst->sky_texture_filename);
     // src.groundTileset is just dropped
-    deserialize(src.tileTypes, &dst->pTileTypes);
+    reconstruct(src.tileTypes, &dst->pTileTypes);
 
     dst->LoadTileGroupIds();
     dst->LoadRoadTileset();
 
-    deserialize(src.heightMap, &dst->pTerrain.pHeightmap);
-    deserialize(src.tileMap, &dst->pTerrain.pTilemap);
-    deserialize(src.attributeMap, &dst->pTerrain.pAttributemap);
+    reconstruct(src.heightMap, &dst->pTerrain.pHeightmap);
+    reconstruct(src.tileMap, &dst->pTerrain.pTilemap);
+    reconstruct(src.attributeMap, &dst->pTerrain.pAttributemap);
 
     dst->pTerrain.FillDMap(0, 0, 128, 128);
 
-    deserialize(src.someOtherMap, &pTerrainSomeOtherData);
-    deserialize(src.normalMap, &pTerrainNormalIndices);
-    deserialize(src.normals, &pTerrainNormals);
+    reconstruct(src.someOtherMap, &pTerrainSomeOtherData);
+    reconstruct(src.normalMap, &pTerrainNormalIndices);
+    reconstruct(src.normals, &pTerrainNormals);
 
     dst->pBModels.clear();
     for (size_t i = 0; i < src.models.size(); i++) {
         BSPModel &dstModel = dst->pBModels.emplace_back();
         dstModel.index = i;
-        deserialize(std::forward_as_tuple(src.models[i], src.modelExtras[i]), &dstModel);
+        reconstruct(std::forward_as_tuple(src.models[i], src.modelExtras[i]), &dstModel);
     }
 
-    deserialize(src.decorations, &pLevelDecorations);
+    reconstruct(src.decorations, &pLevelDecorations);
 
     std::string decorationName;
     for (size_t i = 0; i < pLevelDecorations.size(); ++i) {
-        deserialize(src.decorationNames[i], &decorationName);
+        reconstruct(src.decorationNames[i], &decorationName);
         pLevelDecorations[i].uDecorationDescID = pDecorationList->GetDecorIdByName(decorationName);
     }
 
-    deserialize(src.decorationPidList, &dst->pFaceIDLIST);
-    deserialize(src.decorationMap, &dst->pOMAP);
-    deserialize(src.spawnPoints, &dst->pSpawnPoints);
+    reconstruct(src.decorationPidList, &dst->pFaceIDLIST);
+    reconstruct(src.decorationMap, &dst->pOMAP);
+    reconstruct(src.spawnPoints, &dst->pSpawnPoints);
 }
 
 void deserialize(InputStream &src, OutdoorLocation_MM7 *dst) {
@@ -422,16 +422,16 @@ void deserialize(InputStream &src, OutdoorLocation_MM7 *dst) {
     deserialize(src, &dst->spawnPoints);
 }
 
-void serialize(const OutdoorLocation &src, OutdoorDelta_MM7 *dst) {
-    serialize(src.ddm, &dst->header.info);
+void snapshot(const OutdoorLocation &src, OutdoorDelta_MM7 *dst) {
+    snapshot(src.ddm, &dst->header.info);
     dst->header.totalFacesCount = 0;
     for (const BSPModel &model : src.pBModels)
         dst->header.totalFacesCount += model.pFaces.size();
     dst->header.bmodelCount = src.pBModels.size();
     dst->header.decorationCount = pLevelDecorations.size();
 
-    serialize(src.uFullyRevealedCellOnMap, &dst->fullyRevealedCells);
-    serialize(src.uPartiallyRevealedCellOnMap, &dst->partiallyRevealedCells);
+    snapshot(src.uFullyRevealedCellOnMap, &dst->fullyRevealedCells);
+    snapshot(src.uPartiallyRevealedCellOnMap, &dst->partiallyRevealedCells);
 
     dst->faceAttributes.clear();
     for (const BSPModel &model : src.pBModels)
@@ -442,17 +442,17 @@ void serialize(const OutdoorLocation &src, OutdoorDelta_MM7 *dst) {
     for (const LevelDecoration &decoration : pLevelDecorations)
         dst->decorationFlags.push_back(std::to_underlying(decoration.uFlags));
 
-    serialize(pActors, &dst->actors);
-    serialize(pSpriteObjects, &dst->spriteObjects);
-    serialize(vChests, &dst->chests);
-    serialize(engine->_persistentVariables, &dst->eventVariables);
-    serialize(src.loc_time, &dst->locationTime);
+    snapshot(pActors, &dst->actors);
+    snapshot(pSpriteObjects, &dst->spriteObjects);
+    snapshot(vChests, &dst->chests);
+    snapshot(engine->_persistentVariables, &dst->eventVariables);
+    snapshot(src.loc_time, &dst->locationTime);
 }
 
-void deserialize(const OutdoorDelta_MM7 &src, OutdoorLocation *dst) {
-    deserialize(src.header.info, &dst->ddm);
-    deserialize(src.fullyRevealedCells, &dst->uFullyRevealedCellOnMap);
-    deserialize(src.partiallyRevealedCells, &dst->uPartiallyRevealedCellOnMap);
+void reconstruct(const OutdoorDelta_MM7 &src, OutdoorLocation *dst) {
+    reconstruct(src.header.info, &dst->ddm);
+    reconstruct(src.fullyRevealedCells, &dst->uFullyRevealedCellOnMap);
+    reconstruct(src.partiallyRevealedCells, &dst->uPartiallyRevealedCellOnMap);
 
     size_t attributeIndex = 0;
     for (BSPModel &model : dst->pBModels) {
@@ -480,14 +480,14 @@ void deserialize(const OutdoorDelta_MM7 &src, OutdoorLocation *dst) {
     for (size_t i = 0; i < pLevelDecorations.size(); ++i)
         pLevelDecorations[i].uFlags = LevelDecorationFlags(src.decorationFlags[i]);
 
-    deserialize(src.actors, &pActors);
+    reconstruct(src.actors, &pActors);
     for(size_t i = 0; i < pActors.size(); i++)
         pActors[i].id = i;
 
-    deserialize(src.spriteObjects, &pSpriteObjects);
-    deserialize(src.chests, &vChests);
-    deserialize(src.eventVariables, &engine->_persistentVariables);
-    deserialize(src.locationTime, &dst->loc_time);
+    reconstruct(src.spriteObjects, &pSpriteObjects);
+    reconstruct(src.chests, &vChests);
+    reconstruct(src.eventVariables, &engine->_persistentVariables);
+    reconstruct(src.locationTime, &dst->loc_time);
 }
 
 void serialize(const OutdoorDelta_MM7 &src, OutputStream *dst) {
@@ -520,22 +520,22 @@ void deserialize(InputStream &src, OutdoorDelta_MM7 *dst, const OutdoorLocation_
     deserialize(src, &dst->locationTime);
 }
 
-void serialize(const SaveGameHeader &src, SaveGame_MM7 *dst) {
-    serialize(src, &dst->header);
-    serialize(*pParty, &dst->party);
-    serialize(*pEventTimer, &dst->eventTimer);
-    serialize(*pActiveOverlayList, &dst->overlays);
-    serialize(pNPCStats->pNewNPCData, &dst->npcData);
-    serialize(pNPCStats->pGroups_copy, &dst->npcGroup);
+void snapshot(const SaveGameHeader &src, SaveGame_MM7 *dst) {
+    snapshot(src, &dst->header);
+    snapshot(*pParty, &dst->party);
+    snapshot(*pEventTimer, &dst->eventTimer);
+    snapshot(*pActiveOverlayList, &dst->overlays);
+    snapshot(pNPCStats->pNewNPCData, &dst->npcData);
+    snapshot(pNPCStats->pGroups_copy, &dst->npcGroup);
 }
 
-void deserialize(const SaveGame_MM7 &src, SaveGameHeader *dst) {
-    deserialize(src.header, dst);
-    deserialize(src.party, pParty);
-    deserialize(src.eventTimer, pEventTimer);
-    deserialize(src.overlays, pActiveOverlayList);
-    deserialize(src.npcData, &pNPCStats->pNewNPCData);
-    deserialize(src.npcGroup, &pNPCStats->pGroups_copy);
+void reconstruct(const SaveGame_MM7 &src, SaveGameHeader *dst) {
+    reconstruct(src.header, dst);
+    reconstruct(src.party, pParty);
+    reconstruct(src.eventTimer, pEventTimer);
+    reconstruct(src.overlays, pActiveOverlayList);
+    reconstruct(src.npcData, &pNPCStats->pNewNPCData);
+    reconstruct(src.npcGroup, &pNPCStats->pGroups_copy);
 }
 
 void serialize(const SaveGame_MM7 &src, LOD::WriteableFile *dst) {

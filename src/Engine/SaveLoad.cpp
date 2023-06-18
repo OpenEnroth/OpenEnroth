@@ -55,11 +55,8 @@ void LoadGame(unsigned int uSlot) {
 
     pSave_LOD->LoadFile(to_file_path, 0);
 
-    SaveGame_MM7 save;
-    deserialize(*pSave_LOD, &save);
-
     SaveGameHeader header;
-    deserialize(save, &header);
+    deserialize(*pSave_LOD, &header, via<SaveGame_MM7>());
 
     // TODO(captainurist): incapsulate this too
     pParty->bTurnBasedModeOn = false;  // We always start in realtime after loading a game.
@@ -186,9 +183,7 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld) {
     save_header.locationName = pCurrentMapName;
     save_header.playingTime = pParty->GetPlayingTime();
 
-    SaveGame_MM7 save;
-    serialize(save_header, &save);
-    serialize(save, pSave_LOD);
+    serialize(save_header, pSave_LOD, via<SaveGame_MM7>());
 
     // TODO(captainurist): incapsulate this too
     for (size_t i = 0; i < 4; ++i) {  // 4 - players
@@ -215,14 +210,10 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld) {
         CompactLayingItemsList();
 
         if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
-            IndoorDelta_MM7 delta;
-            serialize(*pIndoor, &delta);
-            serialize(delta, &uncompressed);
+            serialize(*pIndoor, &uncompressed, via<IndoorDelta_MM7>());
         } else {
             assert(uCurrentlyLoadedLevelType == LEVEL_OUTDOOR);
-            OutdoorDelta_MM7 delta;
-            serialize(*pOutdoor, &delta);
-            serialize(delta, &uncompressed);
+            serialize(*pOutdoor, &uncompressed, via<OutdoorDelta_MM7>());
         }
 
         LOD::CompressedHeader odm_data;
@@ -265,12 +256,13 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld) {
 void DoSavegame(unsigned int uSlot) {
     if (pCurrentMapName != "d05.blv") {  // Not Arena(не Арена)
         SaveGame(0, 0);
+
+        // TODO(captainurist): this code doesn't belong here.
         pSavegameList->pSavegameHeader[uSlot].locationName = pCurrentMapName;
         pSavegameList->pSavegameHeader[uSlot].playingTime = pParty->GetPlayingTime();
 
-        // TODO(captainurist): ooof
         SaveGameHeader_MM7 headerMm7;
-        serialize(pSavegameList->pSavegameHeader[uSlot], &headerMm7);
+        snapshot(pSavegameList->pSavegameHeader[uSlot], &headerMm7);
 
         pSave_LOD->Write("header.bin", &headerMm7, sizeof(headerMm7), 0);
         pSave_LOD->CloseWriteFile();  //закрыть
@@ -364,7 +356,7 @@ void SaveNewGame() {
 
         // TODO(captainurist): encapsulate
         SaveGameHeader_MM7 headerMm7;
-        serialize(pSavegameList->pSavegameHeader[0], &headerMm7);
+        snapshot(pSavegameList->pSavegameHeader[0], &headerMm7);
 
         pSave_LOD->AppendDirectory("header.bin", &headerMm7, sizeof(headerMm7));
 

@@ -35,7 +35,7 @@ struct IndoorLocation_MM7 {
     std::vector<BLVMapOutline_MM7> mapOutlines;
 };
 
-void deserialize(const IndoorLocation_MM7 &src, IndoorLocation *dst);
+void reconstruct(const IndoorLocation_MM7 &src, IndoorLocation *dst);
 void deserialize(InputStream &src, IndoorLocation_MM7 *dst);
 
 
@@ -53,8 +53,8 @@ struct IndoorDelta_MM7 {
     LocationTime_MM7 locationTime;
 };
 
-void serialize(const IndoorLocation &src, IndoorDelta_MM7 *dst);
-void deserialize(const IndoorDelta_MM7 &src, IndoorLocation *dst);
+void snapshot(const IndoorLocation &src, IndoorDelta_MM7 *dst);
+void reconstruct(const IndoorDelta_MM7 &src, IndoorLocation *dst);
 void serialize(const IndoorDelta_MM7 &src, OutputStream *dst);
 void deserialize(InputStream &src, IndoorDelta_MM7 *dst, const IndoorLocation_MM7 &ctx);
 
@@ -67,7 +67,7 @@ struct BSPModelExtras_MM7 {
     std::vector<std::array<char, 10>> faceTextures;
 };
 
-void deserialize(std::tuple<const BSPModelData_MM7 &, const BSPModelExtras_MM7 &> src, BSPModel *dst);
+void reconstruct(std::tuple<const BSPModelData_MM7 &, const BSPModelExtras_MM7 &> src, BSPModel *dst);
 
 
 struct OutdoorLocation_MM7 {
@@ -93,7 +93,7 @@ struct OutdoorLocation_MM7 {
     std::vector<SpawnPoint_MM7> spawnPoints;
 };
 
-void deserialize(const OutdoorLocation_MM7 &src, OutdoorLocation *dst);
+void reconstruct(const OutdoorLocation_MM7 &src, OutdoorLocation *dst);
 void deserialize(InputStream &src, OutdoorLocation_MM7 *dst);
 
 struct OutdoorDelta_MM7 {
@@ -109,8 +109,8 @@ struct OutdoorDelta_MM7 {
     LocationTime_MM7 locationTime;
 };
 
-void serialize(const OutdoorLocation &src, OutdoorDelta_MM7 *dst);
-void deserialize(const OutdoorDelta_MM7 &src, OutdoorLocation *dst);
+void snapshot(const OutdoorLocation &src, OutdoorDelta_MM7 *dst);
+void reconstruct(const OutdoorDelta_MM7 &src, OutdoorLocation *dst);
 void serialize(const OutdoorDelta_MM7 &src, OutputStream *dst);
 void deserialize(InputStream &src, OutdoorDelta_MM7 *dst, const OutdoorLocation_MM7 &ctx);
 
@@ -125,7 +125,7 @@ struct SaveGame_MM7 {
 };
 
 // TODO(captainurist): header here is essentially the whole savegame. Redo properly.
-void serialize(const SaveGameHeader &src, SaveGame_MM7 *dst);
-void deserialize(const SaveGame_MM7 &src, SaveGameHeader *dst);
+void snapshot(const SaveGameHeader &src, SaveGame_MM7 *dst);
+void reconstruct(const SaveGame_MM7 &src, SaveGameHeader *dst);
 void serialize(const SaveGame_MM7 &src, LOD::WriteableFile *dst);
 void deserialize(const LOD::File &src, SaveGame_MM7 *dst);
