@@ -2181,9 +2181,9 @@ int Player::GetMaxMana() const {
 
 //----- (0048E656) --------------------------------------------------------
 int Player::GetBaseAC() const {
-    int acc = GetActualAccuracy();
-    int accbonus = GetParameterBonus(acc);
-    int itembonus = GetItemsBonus(CHARACTER_ATTRIBUTE_AC_BONUS) + accbonus;
+    int spd = GetActualSpeed();
+    int spdbonus = GetParameterBonus(spd);
+    int itembonus = GetItemsBonus(CHARACTER_ATTRIBUTE_AC_BONUS) + spdbonus;
     int skillbonus = GetSkillBonus(CHARACTER_ATTRIBUTE_AC_BONUS) + itembonus;
 
     if (skillbonus < 0)  // min zero
@@ -2194,13 +2194,12 @@ int Player::GetBaseAC() const {
 
 //----- (0048E68F) --------------------------------------------------------
 int Player::GetActualAC() const {
-    int acc = GetActualAccuracy();
-    int accbonus = GetParameterBonus(acc);
-    int itembonus = GetItemsBonus(CHARACTER_ATTRIBUTE_AC_BONUS) + accbonus;
+    int spd = GetActualSpeed();
+    int spdbonus = GetParameterBonus(spd);
+    int itembonus = GetItemsBonus(CHARACTER_ATTRIBUTE_AC_BONUS) + spdbonus;
     int skillbonus = GetSkillBonus(CHARACTER_ATTRIBUTE_AC_BONUS) + itembonus;
 
-    int result = this->sACModifier +
-                 GetMagicalBonus(CHARACTER_ATTRIBUTE_AC_BONUS) + skillbonus;
+    int result = this->sACModifier + GetMagicalBonus(CHARACTER_ATTRIBUTE_AC_BONUS) + skillbonus;
 
     if (result < 0)  // min zero
         result = 0;
