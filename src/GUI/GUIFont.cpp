@@ -452,10 +452,6 @@ void GUIFont::DrawText(GUIWindow *window, Pointi position, Color color, const st
         return;
     }
 
-    // TODO(captainurist): just use colorTable.Black at all call sites and drop this?
-    if (shadowColor == Color())
-        shadowColor = colorTable.Black; // Default shadow color.
-
     render->BeginTextNew(fonttex, fontshadow);
 
     size_t v30 = text.length();
@@ -572,7 +568,7 @@ void GUIFont::DrawText(GUIWindow *window, Pointi position, Color color, const st
                         float v2 = (ysq * 32.0f + pData->uFontHeight) / 512.0f;
 
                         render->DrawTextNew(out_x, out_y, pData->pMetrics[c].uWidth, pData->uFontHeight, u1, v1, u2, v2, 0, Color(r, g, b));
-                        render->DrawTextNew(out_x, out_y, pData->pMetrics[c].uWidth, pData->uFontHeight, u1, v1, u2, v2, 1, colorTable.Black); // TODO(captainurist): uFontShadowColor?
+                        render->DrawTextNew(out_x, out_y, pData->pMetrics[c].uWidth, pData->uFontHeight, u1, v1, u2, v2, 1, shadowColor);
                     }
 
                     out_x += pData->pMetrics[c].uWidth;
@@ -597,7 +593,7 @@ int GUIFont::DrawTextInRect(GUIWindow *window, Pointi position, Color color, con
 
     unsigned int pLineWidth = this->GetLineWidth(buf);
     if (pLineWidth < rect_width) {
-        this->DrawText(window, position, color, buf, 0, Color());
+        this->DrawText(window, position, color, buf, 0, colorTable.Black);
         return pLineWidth;
     }
 
