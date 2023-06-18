@@ -58,7 +58,7 @@ class GUIWindow {
 
     int DrawTextInRect(GUIFont *font, Pointi position, Color color, const std::string &text, int rect_width, int reverse_text);
 
-    void DrawText(GUIFont *font, Pointi position, Color color, const std::string &text, int maxHeight = 0, Color shadowColor = Color());
+    void DrawText(GUIFont *font, Pointi position, Color color, const std::string &text, int maxHeight = 0, Color shadowColor = colorTable.Black);
 
     void DrawTitleText(GUIFont *font, int horizontalMargin, int verticalMargin, Color color, const std::string &text, int lineSpacing);
 

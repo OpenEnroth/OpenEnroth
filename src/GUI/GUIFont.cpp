@@ -135,6 +135,8 @@ int GUIFont::GetHeight() const {
 }
 
 void GUIFont::DrawTextLine(const std::string &text, Color color, Pointi position, int max_len_pix) {
+    // TODO(captainurist): why is color parameter unused?
+
     if (text.empty()) {
         return;
     }
@@ -181,7 +183,7 @@ void GUIFont::DrawTextLine(const std::string &text, Color color, Pointi position
                     float v1 = (ysq * 32.0f) / 512.0f;
                     float v2 = (ysq * 32.0f + pData->uFontHeight) / 512.0f;
 
-                    render->DrawTextNew(uX_pos, position.y, pData->pMetrics[c].uWidth, pData->uFontHeight, u1, v1, u2, v2, 1, Color());
+                    render->DrawTextNew(uX_pos, position.y, pData->pMetrics[c].uWidth, pData->uFontHeight, u1, v1, u2, v2, 1, colorTable.Black);
                     render->DrawTextNew(uX_pos, position.y, pData->pMetrics[c].uWidth, pData->uFontHeight, u1, v1, u2, v2, 0, draw_color);
 
                     uX_pos += uCharWidth;
@@ -452,10 +454,6 @@ void GUIFont::DrawText(GUIWindow *window, Pointi position, Color color, const st
         return;
     }
 
-    // TODO(captainurist): just use colorTable.Black at all call sites and drop this?
-    if (shadowColor == Color())
-        shadowColor = colorTable.Black; // Default shadow color.
-
     render->BeginTextNew(fonttex, fontshadow);
 
     size_t v30 = text.length();
@@ -572,7 +570,7 @@ void GUIFont::DrawText(GUIWindow *window, Pointi position, Color color, const st
                         float v2 = (ysq * 32.0f + pData->uFontHeight) / 512.0f;
 
                         render->DrawTextNew(out_x, out_y, pData->pMetrics[c].uWidth, pData->uFontHeight, u1, v1, u2, v2, 0, Color(r, g, b));
-                        render->DrawTextNew(out_x, out_y, pData->pMetrics[c].uWidth, pData->uFontHeight, u1, v1, u2, v2, 1, colorTable.Black); // TODO(captainurist): uFontShadowColor?
+                        render->DrawTextNew(out_x, out_y, pData->pMetrics[c].uWidth, pData->uFontHeight, u1, v1, u2, v2, 1, shadowColor);
                     }
 
                     out_x += pData->pMetrics[c].uWidth;
@@ -597,7 +595,7 @@ int GUIFont::DrawTextInRect(GUIWindow *window, Pointi position, Color color, con
 
     unsigned int pLineWidth = this->GetLineWidth(buf);
     if (pLineWidth < rect_width) {
-        this->DrawText(window, position, color, buf, 0, Color());
+        this->DrawText(window, position, color, buf, 0, colorTable.Black);
         return pLineWidth;
     }
 
@@ -694,7 +692,7 @@ int GUIFont::DrawTextInRect(GUIWindow *window, Pointi position, Color color, con
                     float v1 = (ysq * 32.0f) / 512.0f;
                     float v2 = (ysq * 32.0f + pData->uFontHeight) / 512.0f;
 
-                    render->DrawTextNew(text_pos_x, text_pos_y, pData->pMetrics[v15].uWidth, pData->uFontHeight, u1, v1, u2, v2, 1, Color());
+                    render->DrawTextNew(text_pos_x, text_pos_y, pData->pMetrics[v15].uWidth, pData->uFontHeight, u1, v1, u2, v2, 1, colorTable.Black);
                     render->DrawTextNew(text_pos_x, text_pos_y, pData->pMetrics[v15].uWidth, pData->uFontHeight, u1, v1, u2, v2, 0, color);
                 } else {
                     // pallette24 check for colour
@@ -721,7 +719,7 @@ int GUIFont::DrawTextInRect(GUIWindow *window, Pointi position, Color color, con
                     float v2 = (ysq * 32.0f + pData->uFontHeight) / 512.0f;
 
                     render->DrawTextNew(text_pos_x, text_pos_y, pData->pMetrics[v15].uWidth, pData->uFontHeight, u1, v1, u2, v2, 0, Color(r, g, b));
-                    render->DrawTextNew(text_pos_x, text_pos_y, pData->pMetrics[v15].uWidth, pData->uFontHeight, u1, v1, u2, v2, 1, Color());
+                    render->DrawTextNew(text_pos_x, text_pos_y, pData->pMetrics[v15].uWidth, pData->uFontHeight, u1, v1, u2, v2, 1, colorTable.Black);
                 }
                 text_pos_x += char_width;
                 if (i < (int)pNumLen) {

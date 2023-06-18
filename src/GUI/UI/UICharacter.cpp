@@ -201,7 +201,7 @@ void set_default_ui_skin() {
 
     ui_book_journal_title_color = colorTable.White;
     ui_book_journal_text_color = colorTable.White;
-    ui_book_journal_text_shadow = colorTable.Black; // TODO(captainurist): is it actually just Color()?
+    ui_book_journal_text_shadow = colorTable.Black;
 
     ui_game_dialogue_npc_name_color = colorTable.EasternBlue;
     ui_game_dialogue_option_highlight_color = colorTable.Sunflower;

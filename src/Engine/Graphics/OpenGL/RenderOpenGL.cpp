@@ -551,7 +551,6 @@ struct twodverts {
 twodverts twodshaderstore[500] = {};
 int twodvertscnt = 0;
 
-// TODO(pskelton): change to color32
 void RenderOpenGL::ScreenFade(Color color, float t) {
     Colorf cf = color.toColorf();
     cf.a = std::clamp(t, 0.0f, 1.0f);
@@ -3190,7 +3189,6 @@ void RenderOpenGL::EndTextNew() {
     return;
 }
 
-// TODO(pskelton): make color 32
 void RenderOpenGL::DrawTextNew(int x, int y, int width, int h, float u1, float v1, float u2, float v2, int isshadow, Color colour) {
     Colorf cf = colour.toColorf();
     // not 100% sure why this is required but it is
