@@ -4,6 +4,8 @@
 #include <vector>
 #include <string>
 
+#include "Library/Color/Color.h"
+
 #include "Utility/String.h"
 #include "Utility/Flags.h"
 #include "Utility/Memory/Blob.h"
@@ -36,9 +38,7 @@ struct DecorationDesc {
     uint16_t uSpriteID;
     DecorationDescFlags uFlags;
     int16_t uSoundID;
-    uint8_t uColoredLightRed;
-    uint8_t uColoredLightGreen;
-    uint8_t uColoredLightBlue;
+    Color uColoredLight;
 
     inline bool CanMoveThrough() const {
         return uFlags & DECORATION_DESC_MOVE_THROUGH;

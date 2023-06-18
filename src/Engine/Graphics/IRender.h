@@ -414,17 +414,10 @@ struct SkyBillboardStruct {
 
 extern SkyBillboardStruct SkyBillboard;
 
-unsigned int _452442_color_cvt(uint16_t a1, uint16_t a2, int a3, int a4);
-
 Color GetActorTintColor(int max_dim, int min_dim, float distance, int a4,
                         struct RenderBillboard *a5);
 int _43F55F_get_billboard_light_level(struct RenderBillboard *a1,
                                       int uBaseLightLevel);
 int GetLightLevelAtPoint(unsigned int uBaseLightLevel, int uSectorID, float x, float y, float z);
-unsigned int GetMaxMipLevels(unsigned int uDim);
 
 void UpdateObjects();
-
-class BSPModel;
-
-inline uint32_t PixelDim(uint32_t pix, int dimming);

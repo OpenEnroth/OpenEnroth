@@ -14,13 +14,13 @@
 TrailParticleGenerator trail_particle_generator;
 
 //----- (00440DF5) --------------------------------------------------------
-void TrailParticleGenerator::AddParticle(int x, int y, int z, int bgr16) {
+void TrailParticleGenerator::AddParticle(int x, int y, int z, Color color) {
     particles[num_particles].x = x;
     particles[num_particles].y = y;
     particles[num_particles].z = z;
     particles[num_particles].time_to_live = vrng->random(64) + 256;
     particles[num_particles].time_left = particles[num_particles].time_to_live;
-    particles[num_particles].bgr16 = bgr16;
+    particles[num_particles].color = color;
 
     num_particles++;
     assert(num_particles < 100);
@@ -28,9 +28,9 @@ void TrailParticleGenerator::AddParticle(int x, int y, int z, int bgr16) {
 
 //----- (00440E91) --------------------------------------------------------
 void TrailParticleGenerator::GenerateTrailParticles(int x, int y, int z,
-                                                    int bgr16) {
+                                                    Color color) {
     for (int i = 0, count = 5 + vrng->random(6); i < count; ++i)
-        AddParticle(vrng->random(33) + x - 16, vrng->random(33) + y - 16, vrng->random(33) + z, bgr16);
+        AddParticle(vrng->random(33) + x - 16, vrng->random(33) + y - 16, vrng->random(33) + z, color);
 }
 
 //----- (00440F07) --------------------------------------------------------

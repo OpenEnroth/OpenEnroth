@@ -7,7 +7,6 @@
 #include "RendererType.h"
 
 class IRender;
-class OSWindow;
 
 namespace Graphics {
     class IRenderFactory {

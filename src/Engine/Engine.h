@@ -114,11 +114,10 @@ class Engine {
     void OutlineSelection();
     int _44EC23_saturate_face_odm(struct Polygon *a2, int *a3, signed int a4);
     int _44ED0A_saturate_face_blv(struct BLVFace *a2, int *a3, signed int a4);
-    bool AlterGamma_BLV(struct BLVFace *pFace, unsigned int *pColor);
-    bool AlterGamma_ODM(struct ODMFace *pFace, unsigned int *pColor);
+    bool AlterGamma_BLV(struct BLVFace *pFace, Color *pColor);
+    bool AlterGamma_ODM(struct ODMFace *pFace, Color *pColor);
     bool draw_debug_outlines();
     bool _44EEA7();
-    void PushStationaryLights(int a2);
     void StackPartyTorchLight();
     // void PrepareBloodsplats();
     void Deinitialize();
@@ -153,9 +152,7 @@ class Engine {
 
 
     std::shared_ptr<GameConfig> config;
-    Game__StationaryLight pStationaryLights[25];
     char field_2C0[1092];
-    unsigned int uNumStationaryLights;
     Game_Bloodsplat pBloodsplats[20];
     int field_938;
     int field_93C;

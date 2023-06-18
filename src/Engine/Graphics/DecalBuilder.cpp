@@ -25,15 +25,12 @@ float Decal::Fade_by_time() {
 }
 
 //----- (0043B6EF) --------------------------------------------------------
-void BloodsplatContainer::AddBloodsplat(const Vec3f &pos, float radius,
-                                        unsigned char r, unsigned char g, unsigned char b) {
+void BloodsplatContainer::AddBloodsplat(const Vec3f &pos, float radius, Color color) {
     // this adds to store of bloodsplats to apply
     Bloodsplat &splat = pBloodsplats_to_apply[uNumBloodsplats];
     splat.pos = pos;
     splat.radius = radius;
-    splat.r = r;
-    splat.g = g;
-    splat.b = b;
+    splat.color = color;
     splat.faceDist = 0;
     splat.blood_flags = DecalFlagsNone;
     splat.fade_timer = 0;
@@ -42,10 +39,8 @@ void BloodsplatContainer::AddBloodsplat(const Vec3f &pos, float radius,
 }
 
 //----- (0049B490) --------------------------------------------------------
-void DecalBuilder::AddBloodsplat(const Vec3f &pos, float r, float g, float b, float radius) {
-    bloodsplat_container->AddBloodsplat(
-        pos, radius, bankersRounding(r * 255.0f),
-        bankersRounding(g * 255.0f), bankersRounding(b * 255.0f));
+void DecalBuilder::AddBloodsplat(const Vec3f &pos, Color color, float radius) {
+    bloodsplat_container->AddBloodsplat(pos, radius, color);
 }
 
 //----- (0049B525) --------------------------------------------------------
@@ -74,13 +69,11 @@ char DecalBuilder::BuildAndApplyDecals(int light_level, LocationFlags locationFl
                     light_level, uSectorID,
                     buildsplat->pos.x, buildsplat->pos.y, buildsplat->pos.z);
 
-            int ColourMult = buildsplat->r | (buildsplat->g << 8) | (buildsplat->b << 16);
-
             if (!this->Build_Decal_Geometry(
                 point_light_level, locationFlags,
                 buildsplat,
                 buildsplat->radius,
-                ColourMult,
+                buildsplat->color,
                 buildsplat->faceDist,
                 &static_FacePlane, NumFaceVerts, FaceVerts, ClipFlags))
                 log->warning("Error: Failed to build decal geometry");
@@ -92,7 +85,7 @@ char DecalBuilder::BuildAndApplyDecals(int light_level, LocationFlags locationFl
 //----- (0049B790) --------------------------------------------------------
 bool DecalBuilder::Build_Decal_Geometry(
     int LightLevel, LocationFlags locationFlags, Bloodsplat *blood, float DecalRadius,
-    unsigned int uColorMultiplier, float DecalDotDist, stru314 *FacetNormals, signed int numfaceverts,
+    Color uColorMultiplier, float DecalDotDist, stru314 *FacetNormals, signed int numfaceverts,
     RenderVertexSoft *faceverts, char uClipFlags) {
 
     if (DecalRadius == 0.0f) return 1;

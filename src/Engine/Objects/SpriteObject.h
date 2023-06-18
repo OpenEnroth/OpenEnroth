@@ -26,9 +26,7 @@ struct SpriteObject {
     SpriteFrame *getSpriteFrame();
     bool IsUnpickable();
     bool HasSprite();
-    uint8_t GetParticleTrailColorR();
-    uint8_t GetParticleTrailColorG();
-    uint8_t GetParticleTrailColorB();
+    Color GetParticleTrailColor();
 
     inline void spellSpriteStop() {
         uSpriteFrameID = 0;

@@ -599,19 +599,8 @@ bool SpriteObject::HasSprite() {
     return !pObjectDesc->NoSprite();
 }
 
-uint8_t SpriteObject::GetParticleTrailColorR() {
-    ObjectDesc *pObjectDesc = &pObjectList->pObjects[uObjectDescID];
-    return pObjectDesc->uParticleTrailColorR;
-}
-
-uint8_t SpriteObject::GetParticleTrailColorG() {
-    ObjectDesc *pObjectDesc = &pObjectList->pObjects[uObjectDescID];
-    return pObjectDesc->uParticleTrailColorG;
-}
-
-uint8_t SpriteObject::GetParticleTrailColorB() {
-    ObjectDesc *pObjectDesc = &pObjectList->pObjects[uObjectDescID];
-    return pObjectDesc->uParticleTrailColorB;
+Color SpriteObject::GetParticleTrailColor() {
+    return pObjectList->pObjects[uObjectDescID].uParticleTrailColor;
 }
 
 void SpriteObject::OnInteraction(unsigned int uLayingItemID) {

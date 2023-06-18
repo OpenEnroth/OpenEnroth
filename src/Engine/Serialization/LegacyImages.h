@@ -1140,7 +1140,7 @@ struct ObjectDesc_MM6 {
     int16_t uFlags;
     uint16_t uSpriteID;
     int16_t uLifetime;
-    uint16_t uParticleTrailColor;
+    uint16_t uParticleTrailColor16;
     int16_t uSpeed;
     uint8_t uParticleTrailColorR;
     uint8_t uParticleTrailColorG;
@@ -1158,7 +1158,7 @@ struct ObjectDesc_MM7 {
     uint16_t uFlags;
     uint16_t uSpriteID;
     int16_t uLifetime;
-    uint32_t uParticleTrailColor;
+    uint32_t uParticleTrailColor32;
     int16_t uSpeed;
     uint8_t uParticleTrailColorR;
     uint8_t uParticleTrailColorG;

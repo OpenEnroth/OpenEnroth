@@ -5,6 +5,8 @@
 
 #include "Utility/Format.h"
 
+#include "Colorf.h"
+
 namespace fmt {} // Make Doxygen happy.
 
 namespace detail {
@@ -13,6 +15,8 @@ struct ColorTag {
     Color color;
 };
 } // namespace detail
+
+struct Colorf;
 
 /**
  * Color in A8B8G8R8 format.
@@ -26,7 +30,7 @@ struct Color {
     constexpr Color() = default;
     constexpr Color(uint8_t r, uint8_t g, uint8_t b, uint8_t a = 255): r(r), g(g), b(b), a(a) {}
 
-    static constexpr Color fromC16(uint16_t color) {
+    [[nodiscard]] static constexpr Color fromC16(uint16_t color) {
         // 16-bit zero was used as a marker for 'default color', but in new code that marker is Color(), so we have
         // to special-case the old behavior.
         if (color == 0)
@@ -40,7 +44,7 @@ struct Color {
         return result;
     }
 
-    static Color fromC32(uint32_t color) {
+    [[nodiscard]] static Color fromC32(uint32_t color) {
         Color result;
         memcpy(&result, &color, 4);
         return result;
@@ -49,6 +53,15 @@ struct Color {
     [[nodiscard]] uint32_t c32() const {
         uint32_t result;
         memcpy(&result, this, 4);
+        return result;
+    }
+
+    [[nodiscard]] constexpr inline Colorf toColorf() const {
+        Colorf result;
+        result.r = r / 255.0f;
+        result.g = g / 255.0f;
+        result.b = b / 255.0f;
+        result.a = a / 255.0f;
         return result;
     }
 
@@ -101,3 +114,13 @@ struct fmt::formatter<ColorTag> {
         return (color.b >> (8 - 5)) | (0x7E0 & (color.g << (6 + 5 - 8))) | (0xF800 & (color.r << (6 + 5 + 5 - 8)));
     }
 };
+
+
+constexpr inline Color Colorf::toColor() const {
+    Color result;
+    result.r = r * 255.0f + 0.5f;
+    result.g = g * 255.0f + 0.5f;
+    result.b = b * 255.0f + 0.5f;
+    result.a = a * 255.0f + 0.5f;
+    return result;
+}

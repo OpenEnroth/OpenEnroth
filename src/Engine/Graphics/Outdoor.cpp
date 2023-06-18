@@ -137,7 +137,6 @@ void OutdoorLocation::ExecDraw(unsigned int bRedraw) {
     pStationaryLightsStack->uNumLightsActive = 0;
     engine->StackPartyTorchLight();
 
-    engine->PushStationaryLights(-1);
     // engine->PrepareBloodsplats(); // not used?
     if (bRedraw)
         UpdateDiscoveredArea(WorldPosToGridCellX(pParty->vPosition.x),
@@ -1387,8 +1386,8 @@ void OutdoorLocation::PrepareActorsDrawList() {
         if (frame->uFlags & 0x20000) flags |= 0x80;
         if ((256 << Sprite_Octant) & frame->uFlags) flags |= 4;
         if (frame->uGlowRadius) {
-            pMobileLightsStack->AddLight(Vec3f(x, y, z), pActors[i].uSectorID, frame->uGlowRadius, 0xFFu,
-                                         0xFFu, 0xFFu, _4E94D3_light_type);
+            pMobileLightsStack->AddLight(Vec3f(x, y, z), pActors[i].uSectorID, frame->uGlowRadius, colorTable.White,
+                                         _4E94D3_light_type);
         }
 
         int view_x = 0, view_y = 0, view_z = 0;
@@ -2550,7 +2549,7 @@ void UpdateActors_ODM() {
                     if (pMonsterStats->pInfos[pActors[Actor_ITR].pMonsterInfo.uID].bBloodSplatOnDeath) {
                         if (engine->config->graphics.BloodSplats.value()) {
                             float splatRadius = pActors[Actor_ITR].uActorRadius * engine->config->graphics.BloodSplatsMultiplier.value();
-                            decal_builder->AddBloodsplat(Vec3f(pActors[Actor_ITR].vPosition.x, pActors[Actor_ITR].vPosition.y, Floor_Level + 30), 1.0, 0.0, 0.0, splatRadius);
+                            decal_builder->AddBloodsplat(Vec3f(pActors[Actor_ITR].vPosition.x, pActors[Actor_ITR].vPosition.y, Floor_Level + 30), colorTable.Red, splatRadius);
                         }
                         pActors[Actor_ITR].donebloodsplat = true;
                     }

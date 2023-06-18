@@ -32,16 +32,14 @@ struct Bloodsplat {
     float radius = 0;
     float faceDist = 0; // Signed distance from bloodsplat origin to the face plane (for the current face).
                         // TODO(captainurist): doesn't belong to this struct, should be moved out.
-    unsigned char r = 0;
-    unsigned char g = 0;
-    unsigned char b = 0;
+    Color color;
     DecalFlags blood_flags = DecalFlagsNone;
     uint64_t fade_timer = 0;
 };
 
 // store for all the bloodsplats to be applied
 struct BloodsplatContainer {
-    void AddBloodsplat(const Vec3f &pos, float radius, unsigned char r, unsigned char g, unsigned char b);
+    void AddBloodsplat(const Vec3f &pos, float radius, Color color);
 
     std::array<Bloodsplat, 64> pBloodsplats_to_apply;
     uint uNumBloodsplats = 0;  // this loops round so old bloodsplats are replaced
@@ -63,7 +61,7 @@ struct Decal {
     int16_t DecalXPos;
     int16_t DecalYPos;
     int16_t DecalZPos;
-    uint32_t uColorMultiplier;
+    Color uColorMultiplier;
     int DimmingLevel;
 
     uint64_t fadetime;
@@ -80,13 +78,13 @@ struct DecalBuilder {
 
     virtual ~DecalBuilder() {}
 
-    void AddBloodsplat(const Vec3f &pos, float r, float g, float b, float radius);
+    void AddBloodsplat(const Vec3f &pos, Color color, float radius);
     void Reset(bool bPreserveBloodsplats);
     char BuildAndApplyDecals(int light_level, LocationFlags locationFlags, const Planef &FacePlane, int NumFaceVerts,
                              RenderVertexSoft *FaceVerts, char ClipFlags, unsigned int uSectorID);
     bool Build_Decal_Geometry(
         int LightLevel, LocationFlags locationFlags, Bloodsplat *blood, float DecalRadius,
-        unsigned int uColorMultiplier, float DecalDotDist, struct stru314 *FacetNormals, signed int numfaceverts,
+        Color uColorMultiplier, float DecalDotDist, struct stru314 *FacetNormals, signed int numfaceverts,
         RenderVertexSoft *faceverts, char uClipFlags);
     bool ApplyBloodsplatDecals_IndoorFace(unsigned int uFaceID);
     bool ApplyBloodSplat_OutdoorFace(ODMFace *pFace);

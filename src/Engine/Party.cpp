@@ -171,9 +171,7 @@ void Party::Zero() {
     pTurnBasedPlayerRecoveryTimes.fill(0);
     InTheShopFlags.fill(0);
     uFine = 0;
-    flt_TorchlightColorR = 0.0f;
-    flt_TorchlightColorG = 0.0f;
-    flt_TorchlightColorB = 0.0f;
+    torchLightColor = Color();
     TorchLightLastIntensity = 0.0f;
 
     _roundingDt = 0;

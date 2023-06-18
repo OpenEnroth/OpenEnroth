@@ -11,6 +11,8 @@
 #include "Engine/MM7.h"
 #include "Engine/Graphics/OpenGL/GLShaderLoader.h"
 
+#include "Library/Color/Colorf.h"
+
 class PlatformOpenGLContext;
 
 class RenderOpenGL : public RenderBase {
@@ -249,7 +251,7 @@ class RenderOpenGL : public RenderBase {
     GLuint forceperVBO{}, forceperVAO{};
 
     // Fog parameters
-    float fogr{}, fogg{}, fogb{};
+    Colorf fog;
     int fogstart{};
     int fogmiddle{};
     int fogend{};

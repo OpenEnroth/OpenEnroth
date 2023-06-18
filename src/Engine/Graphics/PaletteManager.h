@@ -33,7 +33,4 @@ class PaletteManager {
     std::vector<Palette> _palettes;
 };
 
-bool HSV2RGB(float *redo, float *greeno, float *blueo, float hin, float sin, float vin);
-void RGB2HSV(float redin, float greenin, float bluein, float *outh, float *outs, float *outv);
-signed int ReplaceHSV(unsigned int uColor, float a2, float gamma, float a4);
 extern PaletteManager *pPaletteManager;

@@ -718,7 +718,7 @@ void UpdateActors_BLV() {
                     if (pMonsterStats->pInfos[actor.pMonsterInfo.uID].bBloodSplatOnDeath) {
                         if (engine->config->graphics.BloodSplats.value()) {
                             float splatRadius = actor.uActorRadius * engine->config->graphics.BloodSplatsMultiplier.value();
-                            decal_builder->AddBloodsplat(Vec3f(actor.vPosition.x, actor.vPosition.y, floorZ + 30), 1.0, 0.0, 0.0, splatRadius);
+                            decal_builder->AddBloodsplat(Vec3f(actor.vPosition.x, actor.vPosition.y, floorZ + 30), colorTable.Red, splatRadius);
                         }
                         actor.donebloodsplat = true;
                     }
@@ -882,15 +882,10 @@ void PrepareToLoadBLV(bool bLoading) {
         if (!(pLevelDecorations[i].uFlags & LEVEL_DECORATION_INVISIBLE)) {
             if (!decoration->DontDraw()) {
                 if (decoration->uLightRadius) {
-                    unsigned char r = 255, g = 255, b = 255;
-                    if (/*render->pRenderD3D*/ true && render->config->graphics.ColoredLights.value()) {
-                        r = decoration->uColoredLightRed;
-                        g = decoration->uColoredLightGreen;
-                        b = decoration->uColoredLightBlue;
-                    }
+                    Color color = render->config->graphics.ColoredLights.value() ? decoration->uColoredLight : colorTable.White;
                     pStationaryLightsStack->AddLight(pLevelDecorations[i].vPosition.toFloat() +
                         Vec3f(0, 0, decoration->uDecorationHeight),
-                        decoration->uLightRadius, r, g, b, _4E94D0_light_type);
+                        decoration->uLightRadius, color, _4E94D0_light_type);
                 }
             }
         }
