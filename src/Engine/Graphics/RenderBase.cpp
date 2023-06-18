@@ -626,7 +626,7 @@ Blob RenderBase::PackScreenshot(const unsigned int width, const unsigned int hei
 }
 
 GraphicsImage *RenderBase::TakeScreenshot(const unsigned int width, const unsigned int height) {
-    return GraphicsImage::Create(MakeScreenshot32(width, height));
+    return CreateTexture_Blank(MakeScreenshot32(width, height));
 }
 
 void RenderBase::DrawTextureGrayShade(float a2, float a3, GraphicsImage *a4) {
