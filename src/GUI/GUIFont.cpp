@@ -453,6 +453,7 @@ void GUIFont::DrawText(GUIWindow *pWindow, Pointi position, Color uFontColor, co
         return;
     }
 
+    // TODO(captainurist): just use colorTable.Black at all call sites and drop this?
     if (uFontShadowColor == Color())
         uFontShadowColor = colorTable.Black; // Default shadow color.
 
