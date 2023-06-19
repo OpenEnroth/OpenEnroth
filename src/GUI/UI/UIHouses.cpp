@@ -895,6 +895,7 @@ bool GUIWindow_House::checkIfPlayerCanInteract() {
     }
 }
 
+// TODO(Nik-RE-dev): maybe need to unify selectColor for all dialogue
 void GUIWindow_House::drawOptions(std::vector<std::string> &optionsText, Color selectColor, int topOptionShift, bool denseSpacing) {
     GUIWindow window = *this;
     window.uFrameX = SIDE_TEXT_BOX_POS_X;
