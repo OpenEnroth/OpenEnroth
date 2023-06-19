@@ -13,6 +13,7 @@ class GUIWindow_Bank : public GUIWindow_House {
     virtual void houseDialogueOptionSelected(DIALOGUE_TYPE option) override;
     virtual void houseSpecificDialogue() override;
     virtual std::vector<DIALOGUE_TYPE> listDialogueOptions(DIALOGUE_TYPE option) override;
+    virtual void playHouseGoodbyeSpeech() override;
 
  protected:
     void mainDialogue();

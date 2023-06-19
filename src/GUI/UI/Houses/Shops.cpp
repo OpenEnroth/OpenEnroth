@@ -837,6 +837,29 @@ DIALOGUE_TYPE GUIWindow_Shop::getOptionOnEscape() {
     return DIALOGUE_MAIN;
 }
 
+void GUIWindow_Shop::playHouseGoodbyeSpeech() {
+    bool rudeReaction = true;
+
+    if (pParty->PartyTimes.shopBanTimes[houseId()] <= pParty->GetPlayingTime()) {
+        if (pParty->GetGold() <= 10000) {
+            if (_transactionPerformed) {
+                playHouseSound(houseId(), HOUSE_SOUND_SHOP_GOODBYE_POLITE);
+            }
+            return;
+        }
+        playHouseSound(houseId(), _transactionPerformed ? HOUSE_SOUND_SHOP_GOODBYE_POLITE : HOUSE_SOUND_SHOP_GOODBYE_RUDE);
+        rudeReaction = !_transactionPerformed;
+    }
+    if (rudeReaction && !pParty->_delayedReactionTimer) {
+        int id = pParty->getRandomActiveCharacterId(vrng.get());
+
+        if (id != -1) {
+            pParty->setDelayedReaction(SPEECH_ShopRude, id);
+            return;
+        }
+    }
+}
+
 void GUIWindow_Shop::houseScreenClick() {
     if (current_screen_type == CURRENT_SCREEN::SCREEN_SHOP_INVENTORY) {
         pParty->activeCharacter().OnInventoryLeftClick();

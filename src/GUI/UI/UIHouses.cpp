@@ -825,39 +825,6 @@ void playHouseSound(HOUSE_ID houseID, HouseSoundType type) {
     }
 }
 
-void GUIWindow_House::playHouseGoodbyeSpeech() {
-    if (buildingType() != BuildingType_Invalid) {
-        if (!isShop(houseId())) {
-            if (buildingType() == BuildingType_Temple) {
-                playHouseSound(houseId(), HOUSE_SOUND_TEMPLE_GOODBYE);
-            } else if (buildingType() == BuildingType_Bank && _transactionPerformed) {
-                playHouseSound(houseId(), HOUSE_SOUND_BANK_GOODBYE);
-            }
-            return;
-        }
-
-        bool rudeReaction = true;
-        if (pParty->PartyTimes.shopBanTimes[houseId()] <= pParty->GetPlayingTime()) {
-            if (pParty->GetGold() <= 10000) {
-                if (_transactionPerformed) {
-                    playHouseSound(houseId(), HOUSE_SOUND_SHOP_GOODBYE_POLITE);
-                }
-                return;
-            }
-            playHouseSound(houseId(), _transactionPerformed ? HOUSE_SOUND_SHOP_GOODBYE_POLITE : HOUSE_SOUND_SHOP_GOODBYE_RUDE);
-            rudeReaction = !_transactionPerformed;
-        }
-        if (rudeReaction && !pParty->_delayedReactionTimer) {
-            int id = pParty->getRandomActiveCharacterId(vrng.get());
-
-            if (id != -1) {
-                pParty->setDelayedReaction(SPEECH_ShopRude, id);
-                return;
-            }
-        }
-    }
-}
-
 void GUIWindow_House::reinitDialogueWindow() {
     if (pDialogueWindow) {
         pDialogueWindow->Release();
@@ -1234,4 +1201,8 @@ DIALOGUE_TYPE GUIWindow_House::getOptionOnEscape() {
 
 void GUIWindow_House::houseScreenClick() {
     // Nothing to do by default
+}
+
+void GUIWindow_House::playHouseGoodbyeSpeech() {
+    // No speech by default
 }

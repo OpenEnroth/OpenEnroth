@@ -134,3 +134,9 @@ std::vector<DIALOGUE_TYPE> GUIWindow_Bank::listDialogueOptions(DIALOGUE_TYPE opt
         return {};
     }
 }
+
+void GUIWindow_Bank::playHouseGoodbyeSpeech() {
+    if (_transactionPerformed) {
+        playHouseSound(houseId(), HOUSE_SOUND_BANK_GOODBYE);
+    }
+}
