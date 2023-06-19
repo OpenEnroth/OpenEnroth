@@ -313,7 +313,7 @@ void GUIWindow::DrawMessageBox(bool inside_game_viewport) {
         current_window.DrawTitleText(
             pFontLucida,
             0, (int)(uBoxHeight - pFontLucida->CalcTextHeight(this->sHint, current_window.uFrameWidth, 0)) / 2 - 14,
-            Color(), this->sHint, 3);
+            colorTable.White, this->sHint, 3);
     }
 }
 
@@ -364,7 +364,6 @@ void GUIWindow::DrawShops_next_generation_time_string(GameTime time) {
 //----- (0044D406) --------------------------------------------------------
 void GUIWindow::DrawTitleText(GUIFont *pFont, int horizontalMargin, int verticalMargin, Color color, const std::string &text, int lineSpacing) {
     int width = this->uFrameWidth - horizontalMargin;
-    ui_current_text_color = color;
     std::string resString = pFont->FitTextInAWindow(text, this->uFrameWidth, horizontalMargin);
     std::istringstream stream(resString);
     std::string line;
@@ -442,7 +441,7 @@ void GUIWindow::InitializeGUI() {
 void GUIWindow::DrawFlashingInputCursor(int uX, int uY, GUIFont *a2) {
     // TODO(pskelton): check tickcount usage here
     if (platform->tickCount() % 1000 > 500) {
-        DrawText(a2, {uX, uY}, Color(), "_");
+        DrawText(a2, {uX, uY}, colorTable.White, "_");
     }
 }
 
@@ -900,7 +899,7 @@ void SetUserInterface(PartyAlignment align, bool bReplace) {
 }
 
 void DrawBuff_remaining_time_string(int uY, GUIWindow *window, GameTime remaining_time, GUIFont *Font) {
-    window->DrawText(Font, {32, uY}, Color(), "\r020" + MakeDateTimeString(remaining_time));
+    window->DrawText(Font, {32, uY}, colorTable.White, "\r020" + MakeDateTimeString(remaining_time));
 }
 
 void GUIMessageQueue::AddMessageImpl(UIMessageType msg, int param,

@@ -154,7 +154,7 @@ GUIWindow_Load::GUIWindow_Load(bool ingame) :
     this->uFrameZ = uFrameX + uFrameWidth - 1;
     this->uFrameW = uFrameY + uFrameHeight - 1;
 
-    DrawText(pFontSmallnum, {25, 199}, Color(), localization->GetString(LSTR_READING));
+    DrawText(pFontSmallnum, {25, 199}, colorTable.White, localization->GetString(LSTR_READING));
     render->Present();
 
     pSavegameList->Initialize();
@@ -261,7 +261,7 @@ static void UI_DrawSaveLoad(bool save) {
                                    pSavegameList->pSavegameThumbnails[pSavegameList->selectedSlot]);
         }
         // Draw map name
-        save_load_window.DrawTitleText(pFontSmallnum, 0, 0, Color(),
+        save_load_window.DrawTitleText(pFontSmallnum, 0, 0, colorTable.White,
                                        pMapStats->pInfos[pMapStats->GetMapInfo(pSavegameList->pSavegameHeader[pSavegameList->selectedSlot].locationName)].pName, 3);
 
         // Draw date
@@ -290,7 +290,7 @@ static void UI_DrawSaveLoad(bool save) {
             localization->GetMonthName(savegame_time.GetMonthsOfYear()),
             savegame_time.GetYears() + game_starting_year
         );
-        save_load_window.DrawTitleText(pFontSmallnum, 0, 0, Color(), str, 3);
+        save_load_window.DrawTitleText(pFontSmallnum, 0, 0, colorTable.White, str, 3);
     }
 
     if (pGUIWindow_CurrentMenu->keyboard_input_status == WINDOW_INPUT_CONFIRMED) {
@@ -304,13 +304,13 @@ static void UI_DrawSaveLoad(bool save) {
 
     if (GetCurrentMenuID() == MENU_LoadingProcInMainMenu) {
         pGUIWindow_CurrentMenu->DrawText(pFontSmallnum,
-            {pFontSmallnum->AlignText_Center(186, localization->GetString(LSTR_LOADING)) + 25, 220}, Color(),
+            {pFontSmallnum->AlignText_Center(186, localization->GetString(LSTR_LOADING)) + 25, 220}, colorTable.White,
             localization->GetString(LSTR_LOADING));
         pGUIWindow_CurrentMenu->DrawTextInRect(pFontSmallnum,
-                                               {pFontSmallnum->AlignText_Center(186, pSavegameList->pSavegameHeader[pSavegameList->selectedSlot].name) + 25, 262}, Color(),
+                                               {pFontSmallnum->AlignText_Center(186, pSavegameList->pSavegameHeader[pSavegameList->selectedSlot].name) + 25, 262}, colorTable.White,
                                                pSavegameList->pSavegameHeader[pSavegameList->selectedSlot].name, 185, 0);
         pGUIWindow_CurrentMenu->DrawText(pFontSmallnum,
-            {pFontSmallnum->AlignText_Center(186, localization->GetString(LSTR_PLEASE_WAIT)) + 25, 304}, Color(),
+            {pFontSmallnum->AlignText_Center(186, localization->GetString(LSTR_PLEASE_WAIT)) + 25, 304}, colorTable.White,
             localization->GetString(LSTR_PLEASE_WAIT));
     } else {
         int maxSaveFiles = MAX_SAVE_SLOTS;
@@ -337,11 +337,11 @@ static void UI_DrawSaveLoad(bool save) {
                 break;
             }
             if (pGUIWindow_CurrentMenu->keyboard_input_status != WINDOW_INPUT_IN_PROGRESS || i != pSavegameList->selectedSlot) {
-                pGUIWindow_CurrentMenu->DrawTextInRect(pFontSmallnum, {27, slot_Y}, i == pSavegameList->selectedSlot ? colorTable.LaserLemon : Color(),
+                pGUIWindow_CurrentMenu->DrawTextInRect(pFontSmallnum, {27, slot_Y}, i == pSavegameList->selectedSlot ? colorTable.LaserLemon : colorTable.White,
                                                        pSavegameList->pSavegameHeader[i].name, 185, 0);
             } else {
                 pGUIWindow_CurrentMenu->DrawFlashingInputCursor(pGUIWindow_CurrentMenu->DrawTextInRect(pFontSmallnum, {27, slot_Y},
-                    i == pSavegameList->selectedSlot ? colorTable.LaserLemon : Color(), keyboardInputHandler->GetTextInput(), 175, 1) + 27, slot_Y, pFontSmallnum);
+                    i == pSavegameList->selectedSlot ? colorTable.LaserLemon : colorTable.White, keyboardInputHandler->GetTextInput(), 175, 1) + 27, slot_Y, pFontSmallnum);
             }
             slot_Y += 21;
         }

@@ -159,7 +159,7 @@ void GUIWindow_MagicGuild::mainDialogue() {
 
     if (haveLearnableSkills) {
         std::string skill_price_label = localization->FormatString(LSTR_FMT_SKILL_COST_D, pPrice);
-        working_window.DrawTitleText(pFontArrus, 0, 146, Color(), skill_price_label, 3);
+        working_window.DrawTitleText(pFontArrus, 0, 146, colorTable.White, skill_price_label, 3);
     }
 
     drawOptions(optionsText, colorTable.Sunflower, 24);
