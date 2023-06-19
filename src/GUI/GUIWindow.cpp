@@ -504,7 +504,7 @@ void OnButtonClick::Update() {
     GUIButton *pButton = static_cast<GUIButton *>(wData.ptr);
     render->DrawTextureNew(uFrameX / 640.0f, uFrameY / 480.0f, pButton->vTextures[0]);
     if (!sHint.empty()) {
-        pButton->DrawLabel(sHint, pFontCreate, Color());
+        pButton->DrawLabel(sHint, pFontCreate, colorTable.White);
     }
     Release();
 }
@@ -521,7 +521,7 @@ void OnButtonClick2::Update() {
         }
     }
     if (!sHint.empty()) {
-        pButton->DrawLabel(sHint, pFontCreate, Color());
+        pButton->DrawLabel(sHint, pFontCreate, colorTable.White);
     }
     Release();
 }
@@ -532,7 +532,7 @@ void OnButtonClick3::Update() {
     GUIButton *pButton = static_cast<GUIButton *>(wData.ptr);
     render->DrawTextureNew(uFrameX / 640.0f, uFrameY / 480.0f, pButton->vTextures[1]);
     if (!sHint.empty()) {
-        pButton->DrawLabel(sHint, pFontCreate, Color());
+        pButton->DrawLabel(sHint, pFontCreate, colorTable.White);
     }
     Release();
 }
@@ -554,7 +554,7 @@ void OnSaveLoad::Update() {
     GUIButton *pButton = static_cast<GUIButton *>(wData.ptr);
     render->DrawTextureNew(uFrameX / 640.0f, uFrameY / 480.0f, pButton->vTextures[0]);
     if (!sHint.empty()) {
-        pButton->DrawLabel(sHint, pFontCreate, Color());
+        pButton->DrawLabel(sHint, pFontCreate, colorTable.White);
     }
     Release();
 
@@ -572,7 +572,7 @@ void OnCancel::Update() {
     GUIButton *pGUIButton = static_cast<GUIButton *>(wData.ptr);
     render->DrawTextureNew(uFrameX / 640.0f, uFrameY / 480.0f, pGUIButton->vTextures[0]);
     if (!sHint.empty()) {
-        pGUIButton->DrawLabel(sHint, pFontCreate, Color());
+        pGUIButton->DrawLabel(sHint, pFontCreate, colorTable.White);
     }
     Release();
 
@@ -586,7 +586,7 @@ void OnCancel2::Update() {
     GUIButton *pButton = static_cast<GUIButton *>(wData.ptr);
     render->DrawTextureNew(uFrameX / 640.0f, uFrameY / 480.0f, pButton->vTextures[1]);
     if (!sHint.empty()) {
-        pButton->DrawLabel(sHint, pFontCreate, Color());
+        pButton->DrawLabel(sHint, pFontCreate, colorTable.White);
     }
     Release();
 
@@ -601,7 +601,7 @@ void OnCancel3::Update() {
     GUIButton *pButton = static_cast<GUIButton *>(wData.ptr);
     render->DrawTextureNew(uFrameX / 640.0f, uFrameY / 480.0f, pButton->vTextures[0]);
     if (!sHint.empty()) {
-        pButton->DrawLabel(sHint, pFontCreate, Color());
+        pButton->DrawLabel(sHint, pFontCreate, colorTable.White);
     }
     Release();
 

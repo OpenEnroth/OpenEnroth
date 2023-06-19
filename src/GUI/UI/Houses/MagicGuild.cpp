@@ -192,7 +192,7 @@ void GUIWindow_MagicGuild::buyBooksDialogue() {
                 ++itemcount;
         }
 
-        GameUI_StatusBar_DrawImmediate(localization->GetString(LSTR_SELECT_ITEM_TO_BUY), Color());
+        GameUI_StatusBar_DrawImmediate(localization->GetString(LSTR_SELECT_ITEM_TO_BUY), colorTable.White);
 
         if (!itemcount) {  // shop empty
             GameTime nextGenTime = pParty->PartyTimes.guildNextRefreshTime[houseId()];

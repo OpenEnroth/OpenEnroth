@@ -127,7 +127,7 @@ void GUIWindow_Transport::mainDialogue() {
     }
 
     if (hasActiveRoute) {
-        travel_window.DrawTitleText(pFontArrus, 0, 146, Color(), travelCost, 3);
+        travel_window.DrawTitleText(pFontArrus, 0, 146, colorTable.White, travelCost, 3);
         drawOptions(optionsText, colorTable.PaleCanary, startingOffset, true);
     } else {
         int textHeight = pFontArrus->CalcTextHeight(localization->GetString(LSTR_COME_BACK_ANOTHER_DAY), travel_window.uFrameWidth, 0);

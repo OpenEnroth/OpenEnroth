@@ -284,7 +284,7 @@ void GUIWindow_Shop::sellDialogue() {
     CharacterUI_InventoryTab_Draw(&pParty->activeCharacter(), true);
 
     if (checkIfPlayerCanInteract()) {
-        GameUI_StatusBar_DrawImmediate(localization->GetString(LSTR_SELECT_ITEM_TO_SELL), Color());
+        GameUI_StatusBar_DrawImmediate(localization->GetString(LSTR_SELECT_ITEM_TO_SELL), colorTable.White);
 
         Pointi pt = dialogwin.mouse->GetCursorPos();
 
@@ -313,7 +313,7 @@ void GUIWindow_Shop::identifyDialogue() {
     CharacterUI_InventoryTab_Draw(&pParty->activeCharacter(), true);
 
     if (checkIfPlayerCanInteract()) {
-        GameUI_StatusBar_DrawImmediate(localization->GetString(LSTR_SELECT_ITEM_TO_IDENTIFY), Color());
+        GameUI_StatusBar_DrawImmediate(localization->GetString(LSTR_SELECT_ITEM_TO_IDENTIFY), colorTable.White);
 
         Pointi pt = EngineIocContainer::ResolveMouse()->GetCursorPos();
 
@@ -350,7 +350,7 @@ void GUIWindow_Shop::repairDialogue() {
     CharacterUI_InventoryTab_Draw(&pParty->activeCharacter(), true);
 
     if (checkIfPlayerCanInteract()) {
-        GameUI_StatusBar_DrawImmediate(localization->GetString(LSTR_SELECT_ITEM_TO_REPAIR), Color());
+        GameUI_StatusBar_DrawImmediate(localization->GetString(LSTR_SELECT_ITEM_TO_REPAIR), colorTable.White);
 
         Pointi pt = dialogwin.mouse->GetCursorPos();
 
@@ -397,9 +397,9 @@ void GUIWindow_WeaponShop::shopWaresDialogue(bool isSpecial) {
         }
 
         if (isStealingModeActive()) {
-            GameUI_StatusBar_DrawImmediate(localization->GetString(LSTR_STEAL_ITEM), Color());
+            GameUI_StatusBar_DrawImmediate(localization->GetString(LSTR_STEAL_ITEM), colorTable.White);
         } else {
-            GameUI_StatusBar_DrawImmediate(localization->GetString(LSTR_SELECT_ITEM_TO_BUY), Color());
+            GameUI_StatusBar_DrawImmediate(localization->GetString(LSTR_SELECT_ITEM_TO_BUY), colorTable.White);
         }
 
         if (item_num) {
@@ -469,9 +469,9 @@ void GUIWindow_ArmorShop::shopWaresDialogue(bool isSpecial) {
         }
 
         if (isStealingModeActive()) {
-            GameUI_StatusBar_DrawImmediate(localization->GetString(LSTR_STEAL_ITEM), Color());
+            GameUI_StatusBar_DrawImmediate(localization->GetString(LSTR_STEAL_ITEM), colorTable.White);
         } else {
-            GameUI_StatusBar_DrawImmediate(localization->GetString(LSTR_SELECT_ITEM_TO_BUY), Color());
+            GameUI_StatusBar_DrawImmediate(localization->GetString(LSTR_SELECT_ITEM_TO_BUY), colorTable.White);
         }
 
         if (pItemCount) {
@@ -572,9 +572,9 @@ void GUIWindow_MagicAlchemyShop::shopWaresDialogue(bool isSpecial) {
         }
 
         if (isStealingModeActive()) {
-            GameUI_StatusBar_DrawImmediate(localization->GetString(LSTR_STEAL_ITEM), Color());
+            GameUI_StatusBar_DrawImmediate(localization->GetString(LSTR_STEAL_ITEM), colorTable.White);
         } else {
-            GameUI_StatusBar_DrawImmediate(localization->GetString(LSTR_SELECT_ITEM_TO_BUY), Color());
+            GameUI_StatusBar_DrawImmediate(localization->GetString(LSTR_SELECT_ITEM_TO_BUY), colorTable.White);
         }
 
         if (item_num) {

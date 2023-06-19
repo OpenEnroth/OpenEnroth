@@ -54,7 +54,7 @@ void GUIWindow_TownHall::bountyHuntDialogue() {
     }
     render->DrawTextureCustomHeight(8 / 640.0f, (352 - pTextHeight) / 480.0f, ui_leather_mm7, pTextHeight);
     render->DrawTextureNew(8 / 640.0f, (347 - pTextHeight) / 480.0f, _591428_endcap);
-    window.DrawText(pOutString, {13, 354 - pTextHeight}, Color(), current_npc_text);
+    window.DrawText(pOutString, {13, 354 - pTextHeight}, colorTable.White, current_npc_text);
 }
 
 void GUIWindow_TownHall::payFineDialogue() {
