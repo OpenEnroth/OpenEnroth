@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['release_0',['RELEASE',['../UIGame_8cpp.html#a944433111e32fb8b7cebac19321b7c3b',1,'UIGame.cpp']]]
+  ['time_5fquant_0',['TIME_QUANT',['../Time_8h.html#a48cda5a1c67fc5d0af89c63aebbfc2da',1,'Time.h']]],
+  ['time_5fseconds_5fper_5fquant_1',['TIME_SECONDS_PER_QUANT',['../Time_8h.html#a438aa758d82a47abe6a32cbab57ad650',1,'Time.h']]]
 ];

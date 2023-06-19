@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['configrenderer_0',['ConfigRenderer',['../GameConfig_8h.html#a6a9866164f69f22ef82f741d3aa8a007',1,'GameConfig.h']]],
-  ['configwindowmode_1',['ConfigWindowMode',['../GameConfig_8h.html#a1e1c5b84911d53bfb633b2ac3eab53fe',1,'GameConfig.h']]]
+  ['day_5fattrib_5ffog_0',['DAY_ATTRIB_FOG',['../LocationEnums_8h.html#a8f7e5851c250151ad4eaca18a88e1d86',1,'LocationEnums.h']]],
+  ['deck_5fsize_1',['DECK_SIZE',['../Arcomage_8h.html#ab48a679225d82ec51e09e62d14313b34',1,'Arcomage.h']]]
 ];

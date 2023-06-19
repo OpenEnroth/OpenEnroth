@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['time_5fquant_0',['TIME_QUANT',['../Time_8h.html#a48cda5a1c67fc5d0af89c63aebbfc2da',1,'Time.h']]],
-  ['time_5fseconds_5fper_5fquant_1',['TIME_SECONDS_PER_QUANT',['../Time_8h.html#a438aa758d82a47abe6a32cbab57ad650',1,'Time.h']]]
+  ['warn_0',['Warn',['../ErrorHandling_8h.html#a0e8095ce1ed00bd4150a20c72d4e4330',1,'ErrorHandling.h']]],
+  ['win32_5flean_5fand_5fmean_1',['WIN32_LEAN_AND_MEAN',['../WinPlatform_8cpp.html#ac7bef5d85e3dcd73eef56ad39ffc84a9',1,'WinPlatform.cpp']]]
 ];
