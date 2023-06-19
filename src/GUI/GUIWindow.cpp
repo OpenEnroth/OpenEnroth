@@ -1561,18 +1561,14 @@ std::string BuildDialogueString(std::string &str, uint8_t uPlayerID, ItemGen *a3
                 break;
             case 5:
                 v18 = pParty->GetPlayingTime().GetHoursOfDay();
-                pText = localization->GetString(LSTR_EVENING);
-                if (HEXRAYS_SHIDWORD(v18) <= 0 &&
-                    HEXRAYS_SHIDWORD(v18) >= 0 && (unsigned int)v18 >= 5 &&
-                    HEXRAYS_SHIDWORD(v18) <= 0) {
-                    if (HEXRAYS_SHIDWORD(v18) >= 0 &&
-                        (unsigned int)v18 >= 11) {
-                        if (v18 < 20)
-                            pText = localization->GetString(LSTR_DAY);
-                    } else {
-                        pText = localization->GetString(LSTR_MORNING);
-                    }
+                if (v18 >= 11 && v18 < 20) {
+                    pText = localization->GetString(LSTR_DAY);
+                } else if (v18 >= 5 && v18 < 11) {
+                    pText = localization->GetString(LSTR_MORNING);
+                } else {
+                    pText = localization->GetString(LSTR_EVENING);
                 }
+                // TODO(captainurist): ^ and what about night?
                 result += pText;
                 break;
             case 6:

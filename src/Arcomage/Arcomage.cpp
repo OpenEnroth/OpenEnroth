@@ -2988,67 +2988,67 @@ void DrawRect(Recti *pRect, Color uColor, char bSolidFill) {
 void set_stru1_field_8_InArcomage(int inValue) {  // keyboard input - broken atm
     switch (inValue) {
         case 91:
-            HEXRAYS_LOBYTE(pArcomageGame->stru1.am_input_key) = 123;
+            pArcomageGame->stru1.am_input_key = 123;
             break;
         case 92:
-            HEXRAYS_LOBYTE(pArcomageGame->stru1.am_input_key) = 124;
+            pArcomageGame->stru1.am_input_key = 124;
             break;
         case 93:
-            HEXRAYS_LOBYTE(pArcomageGame->stru1.am_input_key) = 125;
+            pArcomageGame->stru1.am_input_key = 125;
             break;
         case 96:
-            HEXRAYS_LOBYTE(pArcomageGame->stru1.am_input_key) = 126;
+            pArcomageGame->stru1.am_input_key = 126;
             break;
         case 61:
-            HEXRAYS_LOBYTE(pArcomageGame->stru1.am_input_key) = 43;
+            pArcomageGame->stru1.am_input_key = 43;
             break;
         case 55:
-            HEXRAYS_LOBYTE(pArcomageGame->stru1.am_input_key) = 38;
+            pArcomageGame->stru1.am_input_key = 38;
             break;
         case 56:
-            HEXRAYS_LOBYTE(pArcomageGame->stru1.am_input_key) = 42;
+            pArcomageGame->stru1.am_input_key = 42;
             break;
         case 57:
-            HEXRAYS_LOBYTE(pArcomageGame->stru1.am_input_key) = 40;
+            pArcomageGame->stru1.am_input_key = 40;
             break;
         case 59:
-            HEXRAYS_LOBYTE(pArcomageGame->stru1.am_input_key) = 58;
+            pArcomageGame->stru1.am_input_key = 58;
             break;
         case 54:
-            HEXRAYS_LOBYTE(pArcomageGame->stru1.am_input_key) = 94;
+            pArcomageGame->stru1.am_input_key = 94;
             break;
         case 50:
-            HEXRAYS_LOBYTE(pArcomageGame->stru1.am_input_key) = 64;
+            pArcomageGame->stru1.am_input_key = 64;
             break;
         case 51:
-            HEXRAYS_LOBYTE(pArcomageGame->stru1.am_input_key) = 35;
+            pArcomageGame->stru1.am_input_key = 35;
             break;
         case 52:
-            HEXRAYS_LOBYTE(pArcomageGame->stru1.am_input_key) = 36;
+            pArcomageGame->stru1.am_input_key = 36;
             break;
         case 53:
-            HEXRAYS_LOBYTE(pArcomageGame->stru1.am_input_key) = 37;
+            pArcomageGame->stru1.am_input_key = 37;
             break;
         case 49:
-            HEXRAYS_LOBYTE(pArcomageGame->stru1.am_input_key) = 33;
+            pArcomageGame->stru1.am_input_key = 33;
             break;
         case 39:
-            HEXRAYS_LOBYTE(pArcomageGame->stru1.am_input_key) = 34;
+            pArcomageGame->stru1.am_input_key = 34;
             break;
         case 44:
-            HEXRAYS_LOBYTE(pArcomageGame->stru1.am_input_key) = 60;
+            pArcomageGame->stru1.am_input_key = 60;
             break;
         case 46:
-            HEXRAYS_LOBYTE(pArcomageGame->stru1.am_input_key) = 62;
+            pArcomageGame->stru1.am_input_key = 62;
             break;
         case 47:
-            HEXRAYS_LOBYTE(pArcomageGame->stru1.am_input_key) = 63;
+            pArcomageGame->stru1.am_input_key = 63;
             break;
         case 48:
-            HEXRAYS_LOBYTE(pArcomageGame->stru1.am_input_key) = 41;
+            pArcomageGame->stru1.am_input_key = 41;
             break;
         default:
-            HEXRAYS_LOBYTE(pArcomageGame->stru1.am_input_key) = inValue;
+            pArcomageGame->stru1.am_input_key = inValue;
             break;
     }
 }
