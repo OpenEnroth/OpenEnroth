@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;acb5178</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;3b98c2a</span>
    </div>
   </td>
  </tr>
@@ -141,6 +141,12 @@ Functions</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="var-members" name="var-members"></a>
 Variables</h2></td></tr>
+<tr class="memitem:a88f537916158d9a91c82ec40f9796e01"><td class="memTemplParams" colspan="2">template&lt;class T &gt; </td></tr>
+<tr class="memitem:a88f537916158d9a91c82ec40f9796e01"><td class="memTemplItemLeft" align="right" valign="top">constexpr bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacedetail.html#a88f537916158d9a91c82ec40f9796e01">is_binary_deserialization_source_v</a> = std::is_base_of_v&lt;<a class="el" href="classInputStream.html">InputStream</a>, T&gt; || std::is_base_of_v&lt;<a class="el" href="classLOD_1_1File.html">LOD::File</a>, T&gt;</td></tr>
+<tr class="separator:a88f537916158d9a91c82ec40f9796e01"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acaee4e6067069b14a5f7f30a38db64f7"><td class="memTemplParams" colspan="2">template&lt;class T &gt; </td></tr>
+<tr class="memitem:acaee4e6067069b14a5f7f30a38db64f7"><td class="memTemplItemLeft" align="right" valign="top">constexpr bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacedetail.html#acaee4e6067069b14a5f7f30a38db64f7">is_binary_serialization_target_v</a> = std::is_base_of_v&lt;<a class="el" href="classOutputStream.html">OutputStream</a>, T&gt; || std::is_base_of_v&lt;<a class="el" href="classLOD_1_1WriteableFile.html">LOD::WriteableFile</a>, T&gt;</td></tr>
+<tr class="separator:acaee4e6067069b14a5f7f30a38db64f7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:acfb055d7387db58dcb65b2851bcabeec"><td class="memTemplParams" colspan="2">template&lt;class T &gt; </td></tr>
 <tr class="memitem:acfb055d7387db58dcb65b2851bcabeec"><td class="memTemplItemLeft" align="right" valign="top">constinit <a class="el" href="classdetail_1_1TypedHandler.html">TypedHandler</a>&lt; T &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacedetail.html#acfb055d7387db58dcb65b2851bcabeec">globalTypedHandler</a></td></tr>
 <tr class="separator:acfb055d7387db58dcb65b2851bcabeec"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -308,6 +314,54 @@ template&lt;class T &gt; </div>
           <td class="memname">constinit <a class="el" href="classdetail_1_1TypedHandler.html">TypedHandler</a>&lt;T&gt; detail::globalTypedHandler</td>
         </tr>
       </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a88f537916158d9a91c82ec40f9796e01" name="a88f537916158d9a91c82ec40f9796e01"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a88f537916158d9a91c82ec40f9796e01">&#9670;&#160;</a></span>is_binary_deserialization_source_v</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class T &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">constexpr bool detail::is_binary_deserialization_source_v = std::is_base_of_v&lt;<a class="el" href="classInputStream.html">InputStream</a>, T&gt; || std::is_base_of_v&lt;<a class="el" href="classLOD_1_1File.html">LOD::File</a>, T&gt;</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">constexpr</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="acaee4e6067069b14a5f7f30a38db64f7" name="acaee4e6067069b14a5f7f30a38db64f7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#acaee4e6067069b14a5f7f30a38db64f7">&#9670;&#160;</a></span>is_binary_serialization_target_v</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class T &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">constexpr bool detail::is_binary_serialization_target_v = std::is_base_of_v&lt;<a class="el" href="classOutputStream.html">OutputStream</a>, T&gt; || std::is_base_of_v&lt;<a class="el" href="classLOD_1_1WriteableFile.html">LOD::WriteableFile</a>, T&gt;</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">constexpr</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 
 </div>

@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;acb5178</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;3b98c2a</span>
    </div>
   </td>
  </tr>
@@ -76,7 +76,8 @@ $(function() {
   <div class="summary">
 <a href="#nested-classes">Classes</a> &#124;
 <a href="#namespaces">Namespaces</a> &#124;
-<a href="#func-members">Functions</a>  </div>
+<a href="#func-members">Functions</a> &#124;
+<a href="#var-members">Variables</a>  </div>
   <div class="headertitle"><div class="title">MultiStageSerialization.h File Reference</div></div>
 </div><!--header-->
 <div class="contents">
@@ -93,6 +94,8 @@ Classes</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="namespaces" name="namespaces"></a>
 Namespaces</h2></td></tr>
+<tr class="memitem:namespaceLOD"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceLOD.html">LOD</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:namespacedetail"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacedetail.html">detail</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
@@ -101,15 +104,29 @@ Functions</h2></td></tr>
 <tr class="memitem:ac37291594e4e6667b7b5b243edbf6fae"><td class="memTemplParams" colspan="2">template&lt;class Via &gt; </td></tr>
 <tr class="memitem:ac37291594e4e6667b7b5b243edbf6fae"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="structdetail_1_1AppendViaTag.html">detail::AppendViaTag</a>&lt; Via &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="MultiStageSerialization_8h.html#ac37291594e4e6667b7b5b243edbf6fae">appendVia</a> ()</td></tr>
 <tr class="separator:ac37291594e4e6667b7b5b243edbf6fae"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a10382f404bde757d3ca7db3347ef61e3"><td class="memTemplParams" colspan="2">template&lt;class Via , class T &gt; </td></tr>
-<tr class="memitem:a10382f404bde757d3ca7db3347ef61e3"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="MultiStageSerialization_8h.html#a10382f404bde757d3ca7db3347ef61e3">deserialize</a> (<a class="el" href="classInputStream.html">InputStream</a> &amp;src, std::vector&lt; T &gt; *dst, <a class="el" href="structdetail_1_1AppendViaTag.html">detail::AppendViaTag</a>&lt; Via &gt;)</td></tr>
-<tr class="separator:a10382f404bde757d3ca7db3347ef61e3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab1e02ae9f34d5b225edc8df4d1ac13e7"><td class="memTemplParams" colspan="2">template&lt;class Dst , class Via &gt; </td></tr>
+<tr class="memitem:ab1e02ae9f34d5b225edc8df4d1ac13e7"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="MultiStageSerialization_8h.html#ab1e02ae9f34d5b225edc8df4d1ac13e7">deserialize</a> (<a class="el" href="classInputStream.html">InputStream</a> &amp;src, std::vector&lt; Dst &gt; *dst, <a class="el" href="structdetail_1_1AppendViaTag.html">detail::AppendViaTag</a>&lt; Via &gt;)</td></tr>
+<tr class="separator:ab1e02ae9f34d5b225edc8df4d1ac13e7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9492057c2dfbc939edacef3ef7d78251"><td class="memTemplParams" colspan="2">template&lt;class Via &gt; </td></tr>
 <tr class="memitem:a9492057c2dfbc939edacef3ef7d78251"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="structdetail_1_1ViaTag.html">detail::ViaTag</a>&lt; Via &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="MultiStageSerialization_8h.html#a9492057c2dfbc939edacef3ef7d78251">via</a> ()</td></tr>
 <tr class="separator:a9492057c2dfbc939edacef3ef7d78251"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa4d76eea184f9a8b5b8a8bd7dd5863d4"><td class="memTemplParams" colspan="2">template&lt;class Via , class T &gt; </td></tr>
-<tr class="memitem:aa4d76eea184f9a8b5b8a8bd7dd5863d4"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="MultiStageSerialization_8h.html#aa4d76eea184f9a8b5b8a8bd7dd5863d4">deserialize</a> (<a class="el" href="classInputStream.html">InputStream</a> &amp;src, T *dst, <a class="el" href="structdetail_1_1ViaTag.html">detail::ViaTag</a>&lt; Via &gt;)</td></tr>
-<tr class="separator:aa4d76eea184f9a8b5b8a8bd7dd5863d4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2b35f845334a9a98d674a5e2b6540885"><td class="memTemplParams" colspan="2">template&lt;class Src , class Dst , class Via &gt; <br />
+requires <a class="el" href="namespacedetail.html#a88f537916158d9a91c82ec40f9796e01">detail::is_binary_deserialization_source_v</a>&lt;std::remove_cvref_t&lt;Src&gt;&gt;</td></tr>
+<tr class="memitem:a2b35f845334a9a98d674a5e2b6540885"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="MultiStageSerialization_8h.html#a2b35f845334a9a98d674a5e2b6540885">deserialize</a> (Src &amp;&amp;src, Dst *dst, <a class="el" href="structdetail_1_1ViaTag.html">detail::ViaTag</a>&lt; Via &gt;)</td></tr>
+<tr class="separator:a2b35f845334a9a98d674a5e2b6540885"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a325b2b60e4480b7d9d7b3f124c744d68"><td class="memTemplParams" colspan="2">template&lt;class Src , class Dst , class Via &gt; <br />
+requires <a class="el" href="namespacedetail.html#acaee4e6067069b14a5f7f30a38db64f7">detail::is_binary_serialization_target_v</a>&lt;Dst&gt;</td></tr>
+<tr class="memitem:a325b2b60e4480b7d9d7b3f124c744d68"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="MultiStageSerialization_8h.html#a325b2b60e4480b7d9d7b3f124c744d68">serialize</a> (const Src &amp;src, Dst *dst, <a class="el" href="structdetail_1_1ViaTag.html">detail::ViaTag</a>&lt; Via &gt;)</td></tr>
+<tr class="separator:a325b2b60e4480b7d9d7b3f124c744d68"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="var-members" name="var-members"></a>
+Variables</h2></td></tr>
+<tr class="memitem:a88f537916158d9a91c82ec40f9796e01"><td class="memTemplParams" colspan="2">template&lt;class T &gt; </td></tr>
+<tr class="memitem:a88f537916158d9a91c82ec40f9796e01"><td class="memTemplItemLeft" align="right" valign="top">constexpr bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacedetail.html#a88f537916158d9a91c82ec40f9796e01">detail::is_binary_deserialization_source_v</a> = std::is_base_of_v&lt;<a class="el" href="classInputStream.html">InputStream</a>, T&gt; || std::is_base_of_v&lt;<a class="el" href="classLOD_1_1File.html">LOD::File</a>, T&gt;</td></tr>
+<tr class="separator:a88f537916158d9a91c82ec40f9796e01"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acaee4e6067069b14a5f7f30a38db64f7"><td class="memTemplParams" colspan="2">template&lt;class T &gt; </td></tr>
+<tr class="memitem:acaee4e6067069b14a5f7f30a38db64f7"><td class="memTemplItemLeft" align="right" valign="top">constexpr bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacedetail.html#acaee4e6067069b14a5f7f30a38db64f7">detail::is_binary_serialization_target_v</a> = std::is_base_of_v&lt;<a class="el" href="classOutputStream.html">OutputStream</a>, T&gt; || std::is_base_of_v&lt;<a class="el" href="classLOD_1_1WriteableFile.html">LOD::WriteableFile</a>, T&gt;</td></tr>
+<tr class="separator:acaee4e6067069b14a5f7f30a38db64f7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Function Documentation</h2>
 <a id="ac37291594e4e6667b7b5b243edbf6fae" name="ac37291594e4e6667b7b5b243edbf6fae"></a>
@@ -128,11 +145,11 @@ template&lt;class Via &gt; </div>
         </tr>
       </table>
 </div><div class="memdoc">
-<p >Creates a deserialization tag that instructs the binary serialization framework to read a vector of <code>Via</code> objects from the stream, and then deserialize them into game objects &amp; append those to the target vector.</p>
+<p >Creates a deserialization tag that instructs the binary serialization framework to read a vector of <code>Via</code> objects from the stream, and then reconstruct them into game objects &amp; append those to the target vector.</p>
 <p >Example usage: </p><div class="fragment"><div class="line">std::vector&lt;MonsterDesc&gt; monsters;</div>
 <div class="line"><a class="code hl_class" href="classBlob.html">Blob</a> monstersBlob = readMonstersBlob();</div>
-<div class="line"><a class="code hl_function" href="CommonImages_8h.html#a293ca6862352ec6aafe9e3950b13b45a">deserialize</a>(monstersBlob, &amp;monsters, appendVia&lt;MonsterDesc_MM7&gt;());</div>
-<div class="ttc" id="aCommonImages_8h_html_a293ca6862352ec6aafe9e3950b13b45a"><div class="ttname"><a href="CommonImages_8h.html#a293ca6862352ec6aafe9e3950b13b45a">deserialize</a></div><div class="ttdeci">void deserialize(const T &amp;src, T *dst)</div><div class="ttdef"><b>Definition:</b> CommonImages.h:28</div></div>
+<div class="line"><a class="code hl_function" href="CompositeImages_8cpp.html#a19304568664873e32a8849fbf0496588">deserialize</a>(monstersBlob, &amp;monsters, appendVia&lt;MonsterDesc_MM7&gt;());</div>
+<div class="ttc" id="aCompositeImages_8cpp_html_a19304568664873e32a8849fbf0496588"><div class="ttname"><a href="CompositeImages_8cpp.html#a19304568664873e32a8849fbf0496588">deserialize</a></div><div class="ttdeci">void deserialize(InputStream &amp;src, IndoorLocation_MM7 *dst)</div><div class="ttdef"><b>Definition:</b> CompositeImages.cpp:139</div></div>
 <div class="ttc" id="aclassBlob_html"><div class="ttname"><a href="classBlob.html">Blob</a></div><div class="ttdef"><b>Definition:</b> Blob.h:21</div></div>
 </div><!-- fragment --><dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
@@ -144,13 +161,13 @@ template&lt;class Via &gt; </div>
 
 </div>
 </div>
-<a id="a10382f404bde757d3ca7db3347ef61e3" name="a10382f404bde757d3ca7db3347ef61e3"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a10382f404bde757d3ca7db3347ef61e3">&#9670;&#160;</a></span>deserialize() <span class="overload">[1/2]</span></h2>
+<a id="ab1e02ae9f34d5b225edc8df4d1ac13e7" name="ab1e02ae9f34d5b225edc8df4d1ac13e7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab1e02ae9f34d5b225edc8df4d1ac13e7">&#9670;&#160;</a></span>deserialize() <span class="overload">[1/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;class Via , class T &gt; </div>
+template&lt;class Dst , class Via &gt; </div>
       <table class="memname">
         <tr>
           <td class="memname">void deserialize </td>
@@ -161,7 +178,7 @@ template&lt;class Via , class T &gt; </div>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">std::vector&lt; T &gt; *&#160;</td>
+          <td class="paramtype">std::vector&lt; Dst &gt; *&#160;</td>
           <td class="paramname"><em>dst</em>, </td>
         </tr>
         <tr>
@@ -180,24 +197,62 @@ template&lt;class Via , class T &gt; </div>
 
 </div>
 </div>
-<a id="aa4d76eea184f9a8b5b8a8bd7dd5863d4" name="aa4d76eea184f9a8b5b8a8bd7dd5863d4"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa4d76eea184f9a8b5b8a8bd7dd5863d4">&#9670;&#160;</a></span>deserialize() <span class="overload">[2/2]</span></h2>
+<a id="a2b35f845334a9a98d674a5e2b6540885" name="a2b35f845334a9a98d674a5e2b6540885"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2b35f845334a9a98d674a5e2b6540885">&#9670;&#160;</a></span>deserialize() <span class="overload">[2/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;class Via , class T &gt; </div>
+template&lt;class Src , class Dst , class Via &gt; <br />
+requires <a class="el" href="namespacedetail.html#a88f537916158d9a91c82ec40f9796e01">detail::is_binary_deserialization_source_v</a>&lt;std::remove_cvref_t&lt;Src&gt;&gt;</div>
       <table class="memname">
         <tr>
           <td class="memname">void deserialize </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="classInputStream.html">InputStream</a> &amp;&#160;</td>
+          <td class="paramtype">Src &amp;&amp;&#160;</td>
           <td class="paramname"><em>src</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">T *&#160;</td>
+          <td class="paramtype">Dst *&#160;</td>
+          <td class="paramname"><em>dst</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="structdetail_1_1ViaTag.html">detail::ViaTag</a>&lt; Via &gt;&#160;</td>
+          <td class="paramname">&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a325b2b60e4480b7d9d7b3f124c744d68" name="a325b2b60e4480b7d9d7b3f124c744d68"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a325b2b60e4480b7d9d7b3f124c744d68">&#9670;&#160;</a></span>serialize()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class Src , class Dst , class Via &gt; <br />
+requires <a class="el" href="namespacedetail.html#acaee4e6067069b14a5f7f30a38db64f7">detail::is_binary_serialization_target_v</a>&lt;Dst&gt;</div>
+      <table class="memname">
+        <tr>
+          <td class="memname">void serialize </td>
+          <td>(</td>
+          <td class="paramtype">const Src &amp;&#160;</td>
+          <td class="paramname"><em>src</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Dst *&#160;</td>
           <td class="paramname"><em>dst</em>, </td>
         </tr>
         <tr>
@@ -232,10 +287,10 @@ template&lt;class Via &gt; </div>
         </tr>
       </table>
 </div><div class="memdoc">
-<p >Creates a deserialization tag that instructs the binary serialization framework to first read a <code>Via</code> object from a stream, and then deserialize it into the target object.</p>
+<p >Creates a deserialization tag that instructs the binary serialization framework to first read a <code>Via</code> object from a stream, and then use it to reconstruct the target object.</p>
 <p >Example usage: </p><div class="fragment"><div class="line"><a class="code hl_struct" href="structSaveGameHeader.html">SaveGameHeader</a> header;</div>
 <div class="line"><a class="code hl_class" href="classBlob.html">Blob</a> headerBlob = readHeaderBlob();</div>
-<div class="line"><a class="code hl_function" href="CommonImages_8h.html#a293ca6862352ec6aafe9e3950b13b45a">deserialize</a>(headerBlob, &amp;header, via&lt;SaveGameHeader_MM7&gt;());</div>
+<div class="line"><a class="code hl_function" href="CompositeImages_8cpp.html#a19304568664873e32a8849fbf0496588">deserialize</a>(headerBlob, &amp;header, via&lt;SaveGameHeader_MM7&gt;());</div>
 <div class="ttc" id="astructSaveGameHeader_html"><div class="ttname"><a href="structSaveGameHeader.html">SaveGameHeader</a></div><div class="ttdef"><b>Definition:</b> SaveLoad.h:10</div></div>
 </div><!-- fragment --><dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">

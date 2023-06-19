@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;acb5178</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;3b98c2a</span>
    </div>
   </td>
  </tr>
@@ -104,10 +104,10 @@ Macros</h2></td></tr>
 </div><div class="memdoc">
 <b>Value:</b><div class="fragment"><div class="line">    [[nodiscard]] <span class="keywordtype">bool</span> <a class="code hl_function" href="StandardSerialization_8cpp.html#a2e030070a47872390fb1f3ec08447b5e">trySerialize</a>(<span class="keyword">const</span> TYPE &amp;src, std::string *dst);                                                 \</div>
 <div class="line">    [[nodiscard]] <span class="keywordtype">bool</span> <a class="code hl_function" href="StandardSerialization_8cpp.html#a897b4104dc916637eb6e69bd81724456">tryDeserialize</a>(std::string_view src, TYPE *dst);                                                 \</div>
-<div class="line">    <span class="keywordtype">void</span> <a class="code hl_function" href="CommonImages_8h.html#ae820b2586069d6302fea9d56334f8d45">serialize</a>(<span class="keyword">const</span> TYPE &amp;src, std::string *dst);                                                                  \</div>
-<div class="line">    <span class="keywordtype">void</span> <a class="code hl_function" href="CommonImages_8h.html#a293ca6862352ec6aafe9e3950b13b45a">deserialize</a>(std::string_view src, TYPE *dst);</div>
-<div class="ttc" id="aCommonImages_8h_html_a293ca6862352ec6aafe9e3950b13b45a"><div class="ttname"><a href="CommonImages_8h.html#a293ca6862352ec6aafe9e3950b13b45a">deserialize</a></div><div class="ttdeci">void deserialize(const T &amp;src, T *dst)</div><div class="ttdef"><b>Definition:</b> CommonImages.h:28</div></div>
-<div class="ttc" id="aCommonImages_8h_html_ae820b2586069d6302fea9d56334f8d45"><div class="ttname"><a href="CommonImages_8h.html#ae820b2586069d6302fea9d56334f8d45">serialize</a></div><div class="ttdeci">void serialize(const T &amp;src, T *dst)</div><div class="ttdef"><b>Definition:</b> CommonImages.h:23</div></div>
+<div class="line">    <span class="keywordtype">void</span> <a class="code hl_function" href="CompositeImages_8cpp.html#ae8c705cd30d39d17b7c0769c8c303c83">serialize</a>(<span class="keyword">const</span> TYPE &amp;src, std::string *dst);                                                                  \</div>
+<div class="line">    <span class="keywordtype">void</span> <a class="code hl_function" href="CompositeImages_8cpp.html#a19304568664873e32a8849fbf0496588">deserialize</a>(std::string_view src, TYPE *dst);</div>
+<div class="ttc" id="aCompositeImages_8cpp_html_a19304568664873e32a8849fbf0496588"><div class="ttname"><a href="CompositeImages_8cpp.html#a19304568664873e32a8849fbf0496588">deserialize</a></div><div class="ttdeci">void deserialize(InputStream &amp;src, IndoorLocation_MM7 *dst)</div><div class="ttdef"><b>Definition:</b> CompositeImages.cpp:139</div></div>
+<div class="ttc" id="aCompositeImages_8cpp_html_ae8c705cd30d39d17b7c0769c8c303c83"><div class="ttname"><a href="CompositeImages_8cpp.html#ae8c705cd30d39d17b7c0769c8c303c83">serialize</a></div><div class="ttdeci">void serialize(const IndoorDelta_MM7 &amp;src, OutputStream *dst)</div><div class="ttdef"><b>Definition:</b> CompositeImages.cpp:274</div></div>
 <div class="ttc" id="aStandardSerialization_8cpp_html_a2e030070a47872390fb1f3ec08447b5e"><div class="ttname"><a href="StandardSerialization_8cpp.html#a2e030070a47872390fb1f3ec08447b5e">trySerialize</a></div><div class="ttdeci">bool trySerialize(const bool &amp;src, std::string *dst)</div><div class="ttdef"><b>Definition:</b> StandardSerialization.cpp:32</div></div>
 <div class="ttc" id="aStandardSerialization_8cpp_html_a897b4104dc916637eb6e69bd81724456"><div class="ttname"><a href="StandardSerialization_8cpp.html#a897b4104dc916637eb6e69bd81724456">tryDeserialize</a></div><div class="ttdeci">bool tryDeserialize(std::string_view src, bool *dst)</div><div class="ttdef"><b>Definition:</b> StandardSerialization.cpp:37</div></div>
 </div><!-- fragment --><p >Forward-declares lexical serialization functions for the given type.</p>
