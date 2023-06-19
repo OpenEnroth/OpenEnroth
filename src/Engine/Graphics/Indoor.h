@@ -8,7 +8,6 @@
 #include "Engine/mm7_data.h"
 #include "Engine/EngineIocContainer.h"
 #include "Engine/SpawnPoint.h"
-#include "Engine/Serialization/LegacyImages.h"
 
 #include "BSPModel.h"
 #include "IRender.h"

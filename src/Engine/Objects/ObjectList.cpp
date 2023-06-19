@@ -2,7 +2,7 @@
 
 #include "Engine/Graphics/Sprites.h"
 
-#include "Engine/Serialization/LegacyImages.h"
+#include "Engine/Snapshots/EntitySnapshots.h"
 
 struct ObjectList *pObjectList;
 

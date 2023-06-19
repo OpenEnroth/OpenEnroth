@@ -12,7 +12,7 @@
 
 #include "Engine/TurnEngine/TurnEngine.h"
 
-#include "Engine/Serialization/LegacyImages.h"
+#include "Engine/Snapshots/EntitySnapshots.h"
 
 #include "GUI/GUIWindow.h"
 

@@ -27,7 +27,7 @@
 #include "Engine/Tables/ItemTable.h"
 #include "Engine/OurMath.h"
 #include "Engine/Party.h"
-#include "Engine/Serialization/CompositeImages.h"
+#include "Engine/Snapshots/CompositeSnapshots.h"
 #include "Engine/SpellFxRenderer.h"
 #include "Engine/Time.h"
 #include "Engine/TurnEngine/TurnEngine.h"

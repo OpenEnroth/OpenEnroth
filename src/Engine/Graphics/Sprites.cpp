@@ -10,8 +10,7 @@
 
 #include "Engine/Objects/Actor.h"
 
-#include "Engine/Serialization/LegacyImages.h"
-#include "Engine/Serialization/CommonImages.h"
+#include "Engine/Snapshots/EntitySnapshots.h"
 
 #include "Engine/Graphics/DecorationList.h"
 #include "Engine/Graphics/PaletteManager.h"

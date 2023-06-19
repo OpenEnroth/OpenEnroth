@@ -4,7 +4,7 @@
 #include <utility>
 
 #include "Engine/Engine.h"
-#include "Engine/Serialization/LegacyImages.h"
+#include "Engine/Snapshots/EntitySnapshots.h"
 
 
 #include "../LOD.h"

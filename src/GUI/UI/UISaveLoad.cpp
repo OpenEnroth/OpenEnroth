@@ -10,7 +10,7 @@
 #include "Engine/Graphics/IRender.h"
 #include "Engine/Graphics/ImageLoader.h"
 #include "Engine/Graphics/Viewport.h"
-#include "Engine/Serialization/LegacyImages.h"
+#include "Engine/Snapshots/EntitySnapshots.h"
 #include "Engine/Localization.h"
 #include "Engine/LOD.h"
 #include "Engine/MapInfo.h"
@@ -20,7 +20,6 @@
 
 #include "GUI/GUIButton.h"
 #include "GUI/GUIFont.h"
-#include "GUI/UI/UIMainMenu.h"
 
 using Io::TextInputType;
 

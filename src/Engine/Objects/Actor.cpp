@@ -11,7 +11,6 @@
 #include "Engine/Graphics/Level/Decoration.h"
 #include "Engine/Graphics/Indoor.h"
 #include "Engine/Graphics/Overlays.h"
-#include "Engine/Graphics/PaletteManager.h"
 #include "Engine/Graphics/Sprites.h"
 #include "Engine/Graphics/Vis.h"
 #include "Engine/Localization.h"
@@ -20,7 +19,6 @@
 #include "Engine/Objects/SpriteObject.h"
 #include "Engine/OurMath.h"
 #include "Engine/Party.h"
-#include "Engine/Serialization/LegacyImages.h"
 #include "Engine/SpellFxRenderer.h"
 #include "Engine/Spells/CastSpellInfo.h"
 #include "Engine/AttackList.h"
@@ -4777,7 +4775,6 @@ void SpawnEncounter(MapInfo *pMapInfo, SpawnPoint *spawn, int a3, int a4, int a5
         Src = &pMonsterStats->pInfos[v28];
         pMonster->pActorName = Src->pName;
         pMonster->sCurrentHP = Src->uHP;
-        assert(sizeof(MonsterInfo_MM7) == 88);
 
         // memcpy(&pMonster->pMonsterInfo, Src, sizeof(MonsterInfo));  // Uninitialized portail memory access
 

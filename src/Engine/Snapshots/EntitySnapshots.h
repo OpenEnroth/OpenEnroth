@@ -7,15 +7,16 @@
 
 #include "Library/Binary/BinarySerialization.h"
 
-#include "MultiStageSerialization.h"
-#include "CommonImages.h"
+#include "SnapshotSerialization.h" // TODO(captainurist): drop include
+#include "CommonSnapshots.h" // TODO(captainurist): drop include
 
-/*
- * Party, timers, NPCs and other stuff is binary dumped into resources/savegame
- * files, which limits ability to alter these structures without breaking
- * compatibility. This module is used to serialize and deserialize native game
- * structures intro their current representations without breaking compatibility
- * with original files.
+/**
+ * @file
+ *
+ * Snapshots in this file are representations of different engine entities, as stored in the game binary files.
+ *
+ * All structs here can be directly memory-mapped / memcpy'd from the game files. This layer is mainly needed so that
+ * the engine has 100% freedom to change data layout without breaking backward compatibility.
  */
 
 class Actor;

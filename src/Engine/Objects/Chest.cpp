@@ -14,7 +14,7 @@
 #include "Engine/Objects/ObjectList.h"
 #include "Engine/Objects/SpriteObject.h"
 #include "Engine/Tables/ItemTable.h"
-#include "Engine/Serialization/LegacyImages.h"
+#include "Engine/Snapshots/EntitySnapshots.h"
 #include "Engine/OurMath.h"
 #include "Engine/Party.h"
 
