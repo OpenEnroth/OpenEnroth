@@ -22,6 +22,7 @@
 #include "Engine/Objects/SpriteObject.h"
 
 #include "Engine/Snapshots/CompositeSnapshots.h"
+#include "Engine/Snapshots/SnapshotSerialization.h"
 
 #include "GUI/GUIFont.h"
 #include "GUI/GUIWindow.h"

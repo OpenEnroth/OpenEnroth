@@ -11,6 +11,8 @@
 #include "Engine/Objects/Actor.h"
 
 #include "Engine/Snapshots/EntitySnapshots.h"
+#include "Engine/Snapshots/CommonSnapshots.h"
+#include "Engine/Snapshots/SnapshotSerialization.h"
 
 #include "Engine/Graphics/DecorationList.h"
 #include "Engine/Graphics/PaletteManager.h"
