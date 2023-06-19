@@ -6,7 +6,7 @@
 
 // TODO(captaiurist): actually these static vars belong to Engine/
 
-/*
+/**
  * @file
  *
  * Some notes on what is happening here.

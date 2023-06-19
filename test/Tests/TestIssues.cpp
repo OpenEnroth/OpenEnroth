@@ -1100,7 +1100,7 @@ GAME_TEST(Issues, Issue816) {
     test->playTraceFromTestData("issue_816.mm7", "issue_816.json"); // Should not assert
 }
 
-GAME_TEST(Issues, Issue_832) {
+GAME_TEST(Issues, Issue832) {
     // Death Blossom + ice blast crash
     test->playTraceFromTestData("issue_832.mm7", "issue_832.json");
     // expect 3 dead actors
