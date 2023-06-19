@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;3cf1520</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;b8e256f</span>
    </div>
   </td>
  </tr>
@@ -80,7 +80,7 @@ $(function() {
 <div class="contents">
 <div class="textblock"><code>#include &quot;<a class="el" href="RenderBase_8h.html">Engine/Graphics/RenderBase.h</a>&quot;</code><br />
 <code>#include &lt;cassert&gt;</code><br />
-<code>#include &lt;algorithm&gt;</code><br />
+<code>#include &lt;utility&gt;</code><br />
 <code>#include &quot;<a class="el" href="Engine_8h.html">Engine/Engine.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="MM7_8h.html">Engine/MM7.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="SpellFxRenderer_8h.html">Engine/SpellFxRenderer.h</a>&quot;</code><br />
@@ -90,7 +90,6 @@ $(function() {
 <code>#include &quot;<a class="el" href="Camera_8h.html">Engine/Graphics/Camera.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="LightmapBuilder_8h.html">Engine/Graphics/LightmapBuilder.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="LightsStack_8h.html">Engine/Graphics/LightsStack.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="Outdoor_8h.html">Engine/Graphics/Outdoor.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Indoor_8h.html">Engine/Graphics/Indoor.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="BspRenderer_8h.html">Engine/Graphics/BspRenderer.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Sprites_8h.html">Engine/Graphics/Sprites.h</a>&quot;</code><br />
@@ -104,13 +103,12 @@ $(function() {
 <code>#include &quot;<a class="el" href="Random_8h.html">Library/Random/Random.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="TrigLut_8h.html">Utility/Math/TrigLut.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="FileOutputStream_8h.html">Utility/Streams/FileOutputStream.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="ImageLoader_8h.html">ImageLoader.h</a>&quot;</code><br />
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
 <tr class="memitem:a3b6aa605fa2454b6e22807d58cf0c494"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structColor.html">Color</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="RenderBase_8cpp.html#a3b6aa605fa2454b6e22807d58cf0c494">BlendColors</a> (<a class="el" href="structColor.html">Color</a> a1, <a class="el" href="structColor.html">Color</a> a2)</td></tr>
 <tr class="separator:a3b6aa605fa2454b6e22807d58cf0c494"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa9e80e055bb49dd24b7acb0bd045e7f0"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="RenderBase_8cpp.html#aa9e80e055bb49dd24b7acb0bd045e7f0">fix2double</a> (int fix)</td></tr>
-<tr class="separator:aa9e80e055bb49dd24b7acb0bd045e7f0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Function Documentation</h2>
 <a id="a3b6aa605fa2454b6e22807d58cf0c494" name="a3b6aa605fa2454b6e22807d58cf0c494"></a>
@@ -135,24 +133,6 @@ Functions</h2></td></tr>
           <td></td>
           <td>)</td>
           <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="aa9e80e055bb49dd24b7acb0bd045e7f0" name="aa9e80e055bb49dd24b7acb0bd045e7f0"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa9e80e055bb49dd24b7acb0bd045e7f0">&#9670;&#160;</a></span>fix2double()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">double fix2double </td>
-          <td>(</td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>fix</em></td><td>)</td>
-          <td></td>
         </tr>
       </table>
 </div><div class="memdoc">

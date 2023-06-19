@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;3cf1520</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;b8e256f</span>
    </div>
   </td>
  </tr>
@@ -80,15 +80,6 @@ $(function() {
 <div class="contents">
 
 <p><code>#include &lt;Image.h&gt;</code></p>
-<div class="dynheader">
-Inheritance diagram for GraphicsImage:</div>
-<div class="dyncontent">
- <div class="center">
-  <img src="classGraphicsImage.png" usemap="#GraphicsImage_map" alt=""/>
-  <map id="GraphicsImage_map" name="GraphicsImage_map">
-<area href="classTextureOpenGL.html" alt="TextureOpenGL" shape="rect" coords="0,56,101,80"/>
-  </map>
-</div></div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
@@ -112,6 +103,10 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a851b0178e7c74697350e73c079996f1d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abedf739884df81d1d58b66aff14d71fd"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGraphicsImage.html#abedf739884df81d1d58b66aff14d71fd">Release</a> ()</td></tr>
 <tr class="separator:abedf739884df81d1d58b66aff14d71fd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab3146a2a671455129659a4ec0d3a8d64"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classTextureRenderId.html">TextureRenderId</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGraphicsImage.html#ab3146a2a671455129659a4ec0d3a8d64">renderId</a> (bool load=true)</td></tr>
+<tr class="separator:ab3146a2a671455129659a4ec0d3a8d64"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1994143dbd05208e003f8355bfdafa66"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGraphicsImage.html#a1994143dbd05208e003f8355bfdafa66">releaseRenderId</a> ()</td></tr>
+<tr class="separator:a1994143dbd05208e003f8355bfdafa66"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-static-methods" name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
@@ -141,6 +136,8 @@ Protected Attributes</h2></td></tr>
 <tr class="separator:a5a37209a8014e0ffa4e9b70940fa6521"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac6682781bb09cb61d011f54168ba2a3e"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structPalette.html">Palette</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGraphicsImage.html#ac6682781bb09cb61d011f54168ba2a3e">_palette</a></td></tr>
 <tr class="separator:ac6682781bb09cb61d011f54168ba2a3e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2a2beed952a21828bee2bc6d677d9c01"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classTextureRenderId.html">TextureRenderId</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGraphicsImage.html#a2a2beed952a21828bee2bc6d677d9c01">_renderId</a></td></tr>
+<tr class="separator:a2a2beed952a21828bee2bc6d677d9c01"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a05f3eda6f1e74faf7f8e2d3d3993c25c" name="a05f3eda6f1e74faf7f8e2d3d3993c25c"></a>
@@ -357,8 +354,6 @@ Protected Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Reimplemented in <a class="el" href="classTextureOpenGL.html#a433d717d607142fccc36ead2ea9bcea3">TextureOpenGL</a>.</p>
-
 </div>
 </div>
 <a id="a267770000fce69ca0398167d4628fd92" name="a267770000fce69ca0398167d4628fd92"></a>
@@ -388,6 +383,41 @@ Protected Attributes</h2></td></tr>
           <td class="memname">bool GraphicsImage::Release </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a1994143dbd05208e003f8355bfdafa66" name="a1994143dbd05208e003f8355bfdafa66"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1994143dbd05208e003f8355bfdafa66">&#9670;&#160;</a></span>releaseRenderId()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void GraphicsImage::releaseRenderId </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ab3146a2a671455129659a4ec0d3a8d64" name="ab3146a2a671455129659a4ec0d3a8d64"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab3146a2a671455129659a4ec0d3a8d64">&#9670;&#160;</a></span>renderId()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classTextureRenderId.html">TextureRenderId</a> GraphicsImage::renderId </td>
+          <td>(</td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>load</em> = <code>true</code></td><td>)</td>
           <td></td>
         </tr>
       </table>
@@ -546,6 +576,28 @@ Protected Attributes</h2></td></tr>
       <table class="memname">
         <tr>
           <td class="memname"><a class="el" href="structPalette.html">Palette</a> GraphicsImage::_palette</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a2a2beed952a21828bee2bc6d677d9c01" name="a2a2beed952a21828bee2bc6d677d9c01"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2a2beed952a21828bee2bc6d677d9c01">&#9670;&#160;</a></span>_renderId</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classTextureRenderId.html">TextureRenderId</a> GraphicsImage::_renderId</td>
         </tr>
       </table>
   </td>

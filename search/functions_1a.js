@@ -145,8 +145,7 @@ var searchData=
   ['_7etargetedspellui_5fcharacter_142',['~TargetedSpellUI_Character',['../classTargetedSpellUI__Character.html#ad62fa63c8e064197956267bde49c00b3',1,'TargetedSpellUI_Character']]],
   ['_7etargetedspellui_5fhirelings_143',['~TargetedSpellUI_Hirelings',['../classTargetedSpellUI__Hirelings.html#a6edafdbe50e4af1f5a290fab149a7a3e',1,'TargetedSpellUI_Hirelings']]],
   ['_7etargetedspellui_5ftelekinesis_144',['~TargetedSpellUI_Telekinesis',['../classTargetedSpellUI__Telekinesis.html#a7672f2c262feb05fcc913f8289b2c569',1,'TargetedSpellUI_Telekinesis']]],
-  ['_7etextureopengl_145',['~TextureOpenGL',['../classTextureOpenGL.html#aea59bc615664482d22fd341648c61c5c',1,'TextureOpenGL']]],
-  ['_7evideolist_146',['~VideoList',['../classVideoList.html#a53e59e7c17d368e3cf2f7dffa2125e2b',1,'VideoList']]],
-  ['_7evis_147',['~Vis',['../classVis.html#a9ae27677516b6805b5ad5a4517112ed6',1,'Vis']]],
-  ['_7ewindowmanager_148',['~WindowManager',['../classWindowManager.html#ad2c42494d2d9045b18a3a09e5920290f',1,'WindowManager']]]
+  ['_7evideolist_145',['~VideoList',['../classVideoList.html#a53e59e7c17d368e3cf2f7dffa2125e2b',1,'VideoList']]],
+  ['_7evis_146',['~Vis',['../classVis.html#a9ae27677516b6805b5ad5a4517112ed6',1,'Vis']]],
+  ['_7ewindowmanager_147',['~WindowManager',['../classWindowManager.html#ad2c42494d2d9045b18a3a09e5920290f',1,'WindowManager']]]
 ];
