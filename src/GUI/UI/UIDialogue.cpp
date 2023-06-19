@@ -52,10 +52,9 @@ void GameUI_InitializeDialogue(Actor *actor, int bPlayerSaysHello) {
     game_ui_dialogue_background = assets->getImage_Solid(filename);
 
     pDialogueNPCCount = 0;
-    uNumDialogueNPCPortraits = 1;
 
     filename = fmt::format("npc{:03}", pNPCInfo->uPortraitID);
-    pDialogueNPCPortraits[0] = assets->getImage_ColorKey(filename);
+    pDialogueNPCPortraits.push_back(assets->getImage_ColorKey(filename));
 
     // TODO(Nik-RE-dev): this looks like checks for NPC that only talk if party has enough fame
     //                   which is a thing only for MM8 if I remember correctly
@@ -180,7 +179,12 @@ GUIWindow_Dialogue::GUIWindow_Dialogue(Pointi position, Sizei dimensions, Window
 }
 
 void GUIWindow_Dialogue::Release() {
-    uNumDialogueNPCPortraits = 0;
+    for (GraphicsImage *image : pDialogueNPCPortraits) {
+        if (image) {
+            image->Release();
+        }
+    }
+    pDialogueNPCPortraits.clear();
 
     if (game_ui_dialogue_background) {
         game_ui_dialogue_background->Release();

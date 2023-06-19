@@ -941,8 +941,7 @@ void ClickNPCTopic(DIALOGUE_TYPE topic) {
     int pPrice;        // ecx@70
 
     uDialogueType = (DIALOGUE_TYPE)(topic + 1);
-    NPCData *pCurrentNPCInfo =
-        HouseNPCData[pDialogueNPCCount - ((dword_591080 != 0) ? 1 : 0)];  //- 1
+    NPCData *pCurrentNPCInfo = HouseNPCData[pDialogueNPCCount - ((dword_591080 != 0) ? 1 : 0)];  //- 1
     if (topic <= DIALOGUE_SCRIPTED_LINE_6) {
         switch (topic) {
         case DIALOGUE_13_hiring_related:

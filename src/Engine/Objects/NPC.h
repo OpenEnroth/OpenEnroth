@@ -1,6 +1,6 @@
 #pragma once
 
-#include <array>
+#include <vector>
 #include <cstdint>
 #include <string>
 
@@ -8,10 +8,10 @@
 
 #include "Engine/Objects/NPCEnums.h"
 #include "Engine/Tables/NPCTable.h"
+#include "Engine/Graphics/Image.h"
 
 extern int pDialogueNPCCount;
-extern std::array<class GraphicsImage *, 6> pDialogueNPCPortraits;
-extern int uNumDialogueNPCPortraits;
+extern std::vector<GraphicsImage *> pDialogueNPCPortraits;
 
 // TODO(Nik-RE-dev): remove
 //----- (0047730C) --------------------------------------------------------
