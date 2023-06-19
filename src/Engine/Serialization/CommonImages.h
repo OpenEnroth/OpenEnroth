@@ -12,26 +12,24 @@
 #include "Utility/IndexedBitset.h"
 
 // TODO(captainurist): rename this file?
-// TODO(captainurist): I think we a better verb for what's going on here. There should be no serialize(T, T*) overload.
-//                     can/uncan? conserve/unconserve? pack/unpack?
 
 //
-// Identity serialization.
+// Identity images.
 //
 
 template<class T>
-void serialize(const T &src, T *dst) {
+void snapshot(const T &src, T *dst) {
     *dst = src;
 }
 
 template<class T>
-void deserialize(const T &src, T *dst) {
+void reconstruct(const T &src, T *dst) {
     *dst = src;
 }
 
 
 //
-// (De)serialization via standard conversions.
+// Standard conversions support.
 //
 
 namespace detail {
@@ -45,12 +43,12 @@ inline detail::ConvertTag<From, To> convert() {
 }
 
 template<class T1, class T2>
-void serialize(const T1 &src, T2 *dst, detail::ConvertTag<T1, T2>) {
+void snapshot(const T1 &src, T2 *dst, detail::ConvertTag<T1, T2>) {
     *dst = src;
 }
 
 template<class T1, class T2>
-void deserialize(const T1 &src, T2 *dst, detail::ConvertTag<T1, T2>) {
+void reconstruct(const T1 &src, T2 *dst, detail::ConvertTag<T1, T2>) {
     *dst = src;
 }
 
@@ -60,13 +58,13 @@ void deserialize(const T1 &src, T2 *dst, detail::ConvertTag<T1, T2>) {
 //
 
 template<size_t N>
-void serialize(const std::string &src, std::array<char, N> *dst) {
+void snapshot(const std::string &src, std::array<char, N> *dst) {
     memset(dst->data(), 0, N);
     memcpy(dst->data(), src.data(), std::min(src.size(), N - 1));
 }
 
 template<size_t N>
-void deserialize(const std::array<char, N> &src, std::string *dst) {
+void reconstruct(const std::array<char, N> &src, std::string *dst) {
     const char *end = static_cast<const char *>(memchr(src.data(), 0, N));
     size_t size = end == nullptr ? N : end - src.data();
     *dst = std::string(src.data(), size);
@@ -78,19 +76,19 @@ void deserialize(const std::array<char, N> &src, std::string *dst) {
 //
 
 template<class T1, class T2, class... Tag> requires (!std::is_same_v<T1, T2> && sizeof...(Tag) <= 1)
-void serialize(const std::vector<T1> &src, std::vector<T2> *dst, const Tag &... tag) {
+void snapshot(const std::vector<T1> &src, std::vector<T2> *dst, const Tag &... tag) {
     dst->clear();
     dst->reserve(src.size());
     for (const T1 &element : src)
-        serialize(element, &dst->emplace_back(), tag...);
+        snapshot(element, &dst->emplace_back(), tag...);
 }
 
 template<class T1, class T2, class... Tag> requires (!std::is_same_v<T1, T2> && sizeof...(Tag) <= 1)
-void deserialize(const std::vector<T1> &src, std::vector<T2> *dst, const Tag &... tag) {
+void reconstruct(const std::vector<T1> &src, std::vector<T2> *dst, const Tag &... tag) {
     dst->clear();
     dst->reserve(src.size());
     for (const T1 &element : src)
-        deserialize(element, &dst->emplace_back(), tag...);
+        reconstruct(element, &dst->emplace_back(), tag...);
 }
 
 
@@ -99,17 +97,17 @@ void deserialize(const std::vector<T1> &src, std::vector<T2> *dst, const Tag &..
 //
 
 template<class T1, size_t N1, class T2, size_t N2, class... Tag> requires (!std::is_same_v<T1, T2> && sizeof...(Tag) <= 1)
-void serialize(const std::array<T1, N1> &src, std::array<T2, N2> *dst, const Tag &... tag) {
+void snapshot(const std::array<T1, N1> &src, std::array<T2, N2> *dst, const Tag &... tag) {
     static_assert(N1 == N2, "Expected arrays of equal size.");
     for (size_t i = 0; i < N1; i++)
-        serialize(src[i], &(*dst)[i], tag...);
+        snapshot(src[i], &(*dst)[i], tag...);
 }
 
 template<class T1, size_t N1, class T2, size_t N2, class... Tag> requires (!std::is_same_v<T1, T2> && sizeof...(Tag) <= 1)
-void deserialize(const std::array<T1, N1> &src, std::array<T2, N2> *dst, const Tag &... tag) {
+void reconstruct(const std::array<T1, N1> &src, std::array<T2, N2> *dst, const Tag &... tag) {
     static_assert(N1 == N2, "Expected arrays of equal size.");
     for (size_t i = 0; i < N1; i++)
-        deserialize(src[i], &(*dst)[i], tag...);
+        reconstruct(src[i], &(*dst)[i], tag...);
 }
 
 
@@ -118,17 +116,17 @@ void deserialize(const std::array<T1, N1> &src, std::array<T2, N2> *dst, const T
 //
 
 template<class T1, size_t N, class T2, auto L, auto H, class... Tag> requires (sizeof...(Tag) <= 1)
-void serialize(const IndexedArray<T2, L, H> &src, std::array<T1, N> *dst, const Tag &... tag) {
+void snapshot(const IndexedArray<T2, L, H> &src, std::array<T1, N> *dst, const Tag &... tag) {
     static_assert(IndexedArray<T2, L, H>::SIZE == N, "Expected arrays of equal size.");
     for (size_t i = 0; auto index : src.indices())
-        serialize(src[index], &(*dst)[i++], tag...);
+        snapshot(src[index], &(*dst)[i++], tag...);
 }
 
 template<class T1, size_t N, class T2, auto L, auto H, class... Tag> requires (sizeof...(Tag) <= 1)
-void deserialize(const std::array<T1, N> &src, IndexedArray<T2, L, H> *dst, const Tag &... tag) {
+void reconstruct(const std::array<T1, N> &src, IndexedArray<T2, L, H> *dst, const Tag &... tag) {
     static_assert(IndexedArray<T2, L, H>::SIZE == N, "Expected arrays of equal size.");
     for (size_t i = 0; auto index : dst->indices())
-        deserialize(src[i++], &(*dst)[index], tag...);
+        reconstruct(src[i++], &(*dst)[index], tag...);
 }
 
 
@@ -153,17 +151,17 @@ detail::SegmentTag<First, Last> segment() {
 }
 
 template<class T1, size_t N, class T2, auto L, auto H, auto LL, auto HH>
-void serialize(const IndexedArray<T2, L, H> &src, std::array<T1, N> *dst, detail::SegmentTag<LL, HH> tag) {
+void snapshot(const IndexedArray<T2, L, H> &src, std::array<T1, N> *dst, detail::SegmentTag<LL, HH> tag) {
     static_assert(L <= LL && HH <= H && detail::SegmentTag<LL, HH>::SIZE == N);
     for (size_t i = 0; auto index : tag.segment())
-        serialize(src[index], &(*dst)[i++]);
+        snapshot(src[index], &(*dst)[i++]);
 }
 
 template<class T1, size_t N, class T2, auto L, auto H, auto LL, auto HH>
-void deserialize(const std::array<T1, N> &src, IndexedArray<T2, L, H> *dst, detail::SegmentTag<LL, HH> tag) {
+void reconstruct(const std::array<T1, N> &src, IndexedArray<T2, L, H> *dst, detail::SegmentTag<LL, HH> tag) {
     static_assert(L <= LL && HH <= H && detail::SegmentTag<LL, HH>::SIZE == N);
     for (size_t i = 0; auto index : tag.segment())
-        deserialize(src[i++], &(*dst)[index]);
+        reconstruct(src[i++], &(*dst)[index]);
 }
 
 
@@ -172,7 +170,7 @@ void deserialize(const std::array<T1, N> &src, IndexedArray<T2, L, H> *dst, deta
 //
 
 template<class T, size_t N, auto L, auto H>
-void serialize(const IndexedBitset<L, H> &src, std::array<T, N> *dst) {
+void snapshot(const IndexedBitset<L, H> &src, std::array<T, N> *dst) {
     assert(dst->size() * sizeof(T) * 8 == src.size());
     size_t i = 1, j = 0;
     while (i < src.size()) {
@@ -181,18 +179,17 @@ void serialize(const IndexedBitset<L, H> &src, std::array<T, N> *dst) {
         for (size_t k = 0; k < (sizeof(T) * 8); k++, i++) {
             val |= src[i] << ((sizeof(T) * 8) - k - 1);
         }
-        serialize(val, &(*dst)[j]);
+        (*dst)[j] = val;
         j++;
     }
 }
 
 template<class T, size_t N, auto L, auto H>
-void deserialize(const std::array<T, N> &src, IndexedBitset<L, H> *dst) {
+void reconstruct(const std::array<T, N> &src, IndexedBitset<L, H> *dst) {
     assert(dst->size() == src.size() * sizeof(T) * 8);
     size_t i = 1, j = 0;
     while (i < dst->size()) {
-        T val = 0;
-        deserialize(src[j], &val);
+        T val = src[j];
         // Bits inside each array element indexed backwards
         for (size_t k = 0; k < (sizeof(T) * 8); k++, i++) {
             dst->set(i, !!(val & (1 << ((sizeof(T) * 8) - k - 1))));
