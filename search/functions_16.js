@@ -32,7 +32,7 @@ var searchData=
   ['vec2_29',['Vec2',['../structVec2.html#a40b1f3da82b038c13f5085383d4c747b',1,'Vec2::Vec2()=default'],['../structVec2.html#ac951c9668ebe023e6deb3f920df905d3',1,'Vec2::Vec2(T a, T b)']]],
   ['vec3_30',['Vec3',['../structVec3.html#a050a094a45ca19dccc170642c8b74afb',1,'Vec3::Vec3()=default'],['../structVec3.html#a84e5e045a97bcbaa1cf7de795d0fea4c',1,'Vec3::Vec3(const Vec3 &amp;other)=default'],['../structVec3.html#a9faa088e87519c539d86a919a6c2457a',1,'Vec3::Vec3(const Vec3&lt; OtherT &gt; &amp;other)'],['../structVec3.html#aecb50dcb34ee0db200a46be97b7d6dae',1,'Vec3::Vec3(T a, T b, T c)']]],
   ['verbose_31',['verbose',['../classLogger.html#a115dc3828922e3d9b0bc4fd5bbb8086b',1,'Logger']]],
-  ['via_32',['via',['../MultiStageSerialization_8h.html#a9492057c2dfbc939edacef3ef7d78251',1,'MultiStageSerialization.h']]],
+  ['via_32',['via',['../SnapshotSerialization_8h.html#a9492057c2dfbc939edacef3ef7d78251',1,'SnapshotSerialization.h']]],
   ['videolist_33',['VideoList',['../classVideoList.html#a73bccff3371a9ac599720a357900a6ef',1,'VideoList']]],
   ['view_34',['view',['../classBlob.html#a14c523d7452abe45c8d25bd7db76f41d',1,'Blob']]],
   ['viewclip_35',['ViewClip',['../structCamera3D.html#aa7c2b7d9c37b4025b0f46741e947ffed',1,'Camera3D']]],

@@ -258,7 +258,7 @@ var searchData=
   ['append_255',['append',['../ContainerSerialization_8h.html#adcdea875e344aab34f9f6627c1de0c30',1,'ContainerSerialization.h']]],
   ['appenddirectory_256',['AppendDirectory',['../classLOD_1_1WriteableFile.html#a20d1b14cd29a6d4538063732c802cd09',1,'LOD::WriteableFile']]],
   ['appendtag_257',['AppendTag',['../structdetail_1_1AppendTag.html',1,'detail']]],
-  ['appendvia_258',['appendVia',['../MultiStageSerialization_8h.html#ac37291594e4e6667b7b5b243edbf6fae',1,'MultiStageSerialization.h']]],
+  ['appendvia_258',['appendVia',['../SnapshotSerialization_8h.html#ac37291594e4e6667b7b5b243edbf6fae',1,'SnapshotSerialization.h']]],
   ['appendviatag_259',['AppendViaTag',['../structdetail_1_1AppendViaTag.html',1,'detail']]],
   ['applelibcxxassertiontest_2ecpp_260',['AppleLibcxxAssertionTest.cpp',['../AppleLibcxxAssertionTest_8cpp.html',1,'']]],
   ['applelibcxxassertionworkaround_2ecpp_261',['AppleLibcxxAssertionWorkaround.cpp',['../AppleLibcxxAssertionWorkaround_8cpp.html',1,'']]],

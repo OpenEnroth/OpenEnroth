@@ -274,7 +274,7 @@ var searchData=
   ['verticalturnspeed_271',['VerticalTurnSpeed',['../classGameConfig_1_1Settings.html#ac812f17dd51243452220a06b976f78f7',1,'GameConfig::Settings']]],
   ['vertices_272',['vertices',['../structIndoorLocation__MM7.html#a25a0d98f7041902ff69c5cd6efd6f389',1,'IndoorLocation_MM7::vertices()'],['../structBSPModelExtras__MM7.html#aba127efbd3ec8e486df666625079120d',1,'BSPModelExtras_MM7::vertices()']]],
   ['vguardingposition_273',['vGuardingPosition',['../classActor.html#acf8133a0504e79a5026c75ae47d5e7ea',1,'Actor::vGuardingPosition()'],['../structActor__MM7.html#af49fc0952bea505d83cb4f3c1511f6d3',1,'Actor_MM7::vGuardingPosition()']]],
-  ['via_274',['via',['../MultiStageSerialization_8h.html#a9492057c2dfbc939edacef3ef7d78251',1,'MultiStageSerialization.h']]],
+  ['via_274',['via',['../SnapshotSerialization_8h.html#a9492057c2dfbc939edacef3ef7d78251',1,'SnapshotSerialization.h']]],
   ['viatag_275',['ViaTag',['../structdetail_1_1ViaTag.html',1,'detail']]],
   ['vibrantgreen_276',['VibrantGreen',['../classColorTable.html#aad8231c7801e6c0867870c6fc41942b3',1,'ColorTable']]],
   ['victory_5ftype_277',['Victory_type',['../structArcomageGame.html#a9136caea3621d73e5e4f60acf7dc7545',1,'ArcomageGame']]],

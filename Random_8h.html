@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;3e0ce93</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;f7380b4</span>
    </div>
   </td>
  </tr>
@@ -88,7 +88,13 @@ Variables</h2></td></tr>
 <tr class="memitem:a8ad0bfb138641d43568560435d8e8d5c"><td class="memItemLeft" align="right" valign="top">std::unique_ptr&lt; <a class="el" href="classRandomEngine.html">RandomEngine</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Random_8h.html#a8ad0bfb138641d43568560435d8e8d5c">vrng</a></td></tr>
 <tr class="separator:a8ad0bfb138641d43568560435d8e8d5c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Variable Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p >Some notes on what is happening here.</p>
+<p >We want to be able to record play traces, and for this we need deterministic random number generation. Unfortunately, right now some code paths use <code>pMiscTimer</code> in conditionals, and this timer isn't even stored in saves. So there is some non-determinism in the code, and there's little that we can do about it.</p>
+<p >This is the reason why we have two random engines. One is for everything that's affecting gameplay, the other one is for everything else.</p>
+<p >If there comes a moment where we'd want to e.g. test that characters are using the right speech phrases when killing a monster, the proper way to do it would be to split the <code>vrng</code> engine in two. One for speech, one for everything else. This won't add much overhead, and would let us test what we want to.</p>
+<p >The problems might start if we were to change game logic and introduce additional random calls for <code>grng</code> in the code. But the goal of OpenEnroth is to keep the vanilla behavior, so this either shouldn't happen, or should happen under a config flag. Thus, already recorded traces shouldn't break. </p>
+</div><h2 class="groupheader">Variable Documentation</h2>
 <a id="ab831b6483ae52c1dfbc129a9d28bf489" name="ab831b6483ae52c1dfbc129a9d28bf489"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ab831b6483ae52c1dfbc129a9d28bf489">&#9670;&#160;</a></span>grng</h2>
 

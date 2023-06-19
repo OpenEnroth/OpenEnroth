@@ -33,6 +33,5 @@ var searchData=
   ['monsters_2ecpp_30',['Monsters.cpp',['../Monsters_8cpp.html',1,'']]],
   ['monsters_2eh_31',['Monsters.h',['../Monsters_8h.html',1,'']]],
   ['mouse_2ecpp_32',['Mouse.cpp',['../Mouse_8cpp.html',1,'']]],
-  ['mouse_2eh_33',['Mouse.h',['../Mouse_8h.html',1,'']]],
-  ['multistageserialization_2eh_34',['MultiStageSerialization.h',['../MultiStageSerialization_8h.html',1,'']]]
+  ['mouse_2eh_33',['Mouse.h',['../Mouse_8h.html',1,'']]]
 ];

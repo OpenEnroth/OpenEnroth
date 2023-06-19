@@ -103,7 +103,7 @@ var searchData=
   ['anyconfigentry_100',['AnyConfigEntry',['../classAnyConfigEntry.html#af5c7701aff861d5c6c561c893e8bf291',1,'AnyConfigEntry']]],
   ['append_101',['append',['../ContainerSerialization_8h.html#adcdea875e344aab34f9f6627c1de0c30',1,'ContainerSerialization.h']]],
   ['appenddirectory_102',['AppendDirectory',['../classLOD_1_1WriteableFile.html#a20d1b14cd29a6d4538063732c802cd09',1,'LOD::WriteableFile']]],
-  ['appendvia_103',['appendVia',['../MultiStageSerialization_8h.html#ac37291594e4e6667b7b5b243edbf6fae',1,'MultiStageSerialization.h']]],
+  ['appendvia_103',['appendVia',['../SnapshotSerialization_8h.html#ac37291594e4e6667b7b5b243edbf6fae',1,'SnapshotSerialization.h']]],
   ['application_104',['application',['../classPlatformApplicationAware.html#aed85e21801a9f13b1e04f168fac59001',1,'PlatformApplicationAware::application()'],['../classGameStarter.html#aac6d635d220336c3d3fec9d866109004',1,'GameStarter::application()']]],
   ['applicationproxy_105',['ApplicationProxy',['../classApplicationProxy.html#ab935029fd11a03fb5517b0b774d7127b',1,'ApplicationProxy']]],
   ['apply_106',['Apply',['../structSpellBuff.html#a97c8659ac06abf002c98f80715d03820',1,'SpellBuff']]],
