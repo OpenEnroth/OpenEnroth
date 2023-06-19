@@ -964,7 +964,7 @@ bool Vis::is_part_of_selection(const Vis_Object &what, Vis_SelectionFilter *filt
                 }
 
                 // v10 = &pActors[object_idx];
-                int aiState = 1 << HEXRAYS_LOBYTE(pActors[object_idx].uAIState);
+                int aiState = 1 << static_cast<int>(pActors[object_idx].uAIState); // TODO(captainurist): Flags.
 
                 if (aiState & filter->no_at_ai_state)
                     return false;

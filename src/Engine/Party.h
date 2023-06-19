@@ -488,7 +488,7 @@ struct Party {
     std::array<Player, 4> pPlayers;
     std::array<NPCData, 2> pHirelings;
     ItemGen pPickedItem;
-    unsigned int uFlags;
+    unsigned int uFlags; // TODO(captainurist): Flags
     IndexedArray<std::array<ItemGen, 12>, HOUSE_FIRST_SHOP, HOUSE_LAST_SHOP> standartItemsInShops;
     IndexedArray<std::array<ItemGen, 12>, HOUSE_FIRST_SHOP, HOUSE_LAST_SHOP> specialItemsInShops;
     IndexedArray<std::array<ItemGen, 12>, HOUSE_FIRST_MAGIC_GUILD, HOUSE_LAST_MAGIC_GUILD> spellBooksInGuilds;

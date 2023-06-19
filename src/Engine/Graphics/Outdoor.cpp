@@ -355,14 +355,14 @@ bool OutdoorLocation::GetTravelDestination(int sPartyX, int sPartyZ, std::string
             uDefaultTravelTime_ByFoot = 1;
             *pOut = "out15.odm";  // Shoals
             uLevel_StartingPointType = MapStartPoint_East;
-            HEXRAYS_LOWORD(pParty->uFlags) &= 0xFD7Bu;
+            pParty->uFlags &= 0xFD7Bu; // ~0x0284
             return true;
         }
     } else if (mapNumberAsInt == MAP_SHOALS && direction == 3) {  // from Shoals
         uDefaultTravelTime_ByFoot = 1;
         *pOut = "out14.odm";  // Avlee
         uLevel_StartingPointType = MapStartPoint_West;
-        HEXRAYS_LOWORD(pParty->uFlags) &= 0xFD7Bu;
+        pParty->uFlags &= 0xFD7Bu; // ~0x0284
         return true;
     }
     destinationMap = foot_travel_destinations[mapNumberAsInt - 1][direction - 1];

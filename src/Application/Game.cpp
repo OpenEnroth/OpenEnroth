@@ -2386,7 +2386,7 @@ void Game::gameLoop() {
                 }
                 pParty->days_played_without_rest = 0;
                 pParty->GetPlayingTime() += GameTime::FromDays(7);  // += 2580480
-                HEXRAYS_LOWORD(pParty->uFlags) &= ~0x204;
+                pParty->uFlags &= ~0x204;
                 pParty->SetGold(0);
                 pActiveOverlayList->Reset();
                 pParty->pPartyBuffs.fill(SpellBuff());
