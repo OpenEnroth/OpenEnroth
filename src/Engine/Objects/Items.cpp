@@ -268,12 +268,12 @@ bool ItemGen::GenerateArtifact() {
 
 template<class Key, class ActualKey>
 static void AddToMap(std::map<Key, std::map<CHARACTER_ATTRIBUTE_TYPE, CEnchantment>> &map,
-                     ActualKey key, CHARACTER_ATTRIBUTE_TYPE subkey, int bonusValue = 0, CombinedSkillValue Player::*skillPtr = NULL) {
+                     ActualKey key, CHARACTER_ATTRIBUTE_TYPE subkey, int bonusValue = 0, PLAYER_SKILL_TYPE skill = PLAYER_SKILL_INVALID) {
     auto &submap = map[key];
 
     Assert(!submap.contains(subkey));
 
-    submap[subkey] = CEnchantment(bonusValue, skillPtr);
+    submap[subkey] = CEnchantment(bonusValue, skill);
 }
 
 void ItemGen::PopulateSpecialBonusMap() {
@@ -296,31 +296,31 @@ void ItemGen::PopulateSpecialBonusMap() {
     AddToMap(specialBonusMap, ITEM_ENCHANTMENT_OF_GODS, CHARACTER_ATTRIBUTE_PERSONALITY, 10);
 
     // of Air Magic
-    AddToMap(specialBonusMap, ITEM_ENCHANTMENT_OF_AIR_MAGIC, CHARACTER_ATTRIBUTE_SKILL_AIR, 0, &Player::skillAir);
+    AddToMap(specialBonusMap, ITEM_ENCHANTMENT_OF_AIR_MAGIC, CHARACTER_ATTRIBUTE_SKILL_AIR, 0, PLAYER_SKILL_AIR);
 
     // of Body Magic
-    AddToMap(specialBonusMap, ITEM_ENCHANTMENT_OF_BODY_MAGIC, CHARACTER_ATTRIBUTE_SKILL_BODY, 0, &Player::skillBody);
+    AddToMap(specialBonusMap, ITEM_ENCHANTMENT_OF_BODY_MAGIC, CHARACTER_ATTRIBUTE_SKILL_BODY, 0, PLAYER_SKILL_BODY);
 
     // of Dark Magic
-    AddToMap(specialBonusMap, ITEM_ENCHANTMENT_OF_DARK_MAGIC, CHARACTER_ATTRIBUTE_SKILL_DARK, 0, &Player::skillDark);
+    AddToMap(specialBonusMap, ITEM_ENCHANTMENT_OF_DARK_MAGIC, CHARACTER_ATTRIBUTE_SKILL_DARK, 0, PLAYER_SKILL_DARK);
 
     // of Earth Magic
-    AddToMap(specialBonusMap, ITEM_ENCHANTMENT_OF_EARTH_MAGIC, CHARACTER_ATTRIBUTE_SKILL_EARTH, 0, &Player::skillEarth);
+    AddToMap(specialBonusMap, ITEM_ENCHANTMENT_OF_EARTH_MAGIC, CHARACTER_ATTRIBUTE_SKILL_EARTH, 0, PLAYER_SKILL_EARTH);
 
     // of Fire Magic
-    AddToMap(specialBonusMap, ITEM_ENCHANTMENT_OF_FIRE_MAGIC, CHARACTER_ATTRIBUTE_SKILL_FIRE, 0, &Player::skillFire);
+    AddToMap(specialBonusMap, ITEM_ENCHANTMENT_OF_FIRE_MAGIC, CHARACTER_ATTRIBUTE_SKILL_FIRE, 0, PLAYER_SKILL_FIRE);
 
     // of Light Magic
-    AddToMap(specialBonusMap, ITEM_ENCHANTMENT_OF_LIGHT_MAGIC, CHARACTER_ATTRIBUTE_SKILL_LIGHT, 0, &Player::skillLight);
+    AddToMap(specialBonusMap, ITEM_ENCHANTMENT_OF_LIGHT_MAGIC, CHARACTER_ATTRIBUTE_SKILL_LIGHT, 0, PLAYER_SKILL_LIGHT);
 
     // of Mind Magic
-    AddToMap(specialBonusMap, ITEM_ENCHANTMENT_OF_MIND_MAGIC, CHARACTER_ATTRIBUTE_SKILL_MIND, 0, &Player::skillMind);
+    AddToMap(specialBonusMap, ITEM_ENCHANTMENT_OF_MIND_MAGIC, CHARACTER_ATTRIBUTE_SKILL_MIND, 0, PLAYER_SKILL_MIND);
 
     // of Spirit Magic
-    AddToMap(specialBonusMap, ITEM_ENCHANTMENT_OF_SPIRIT_MAGIC, CHARACTER_ATTRIBUTE_SKILL_SPIRIT, 0, &Player::skillSpirit);
+    AddToMap(specialBonusMap, ITEM_ENCHANTMENT_OF_SPIRIT_MAGIC, CHARACTER_ATTRIBUTE_SKILL_SPIRIT, 0, PLAYER_SKILL_SPIRIT);
 
     // of Water Magic
-    AddToMap(specialBonusMap, ITEM_ENCHANTMENT_OF_WATER_MAGIC, CHARACTER_ATTRIBUTE_SKILL_WATER, 0, &Player::skillWater);
+    AddToMap(specialBonusMap, ITEM_ENCHANTMENT_OF_WATER_MAGIC, CHARACTER_ATTRIBUTE_SKILL_WATER, 0, PLAYER_SKILL_WATER);
 
     // of Doom, +1 to Seven Stats, HP, SP, Armor, Resistances (in txt it says 4, need to check!)
     AddToMap(specialBonusMap, ITEM_ENCHANTMENT_OF_DOOM, CHARACTER_ATTRIBUTE_ACCURACY, 1);
@@ -400,19 +400,19 @@ void ItemGen::PopulateSpecialBonusMap() {
     AddToMap(specialBonusMap, ITEM_ENCHANTMENT_WIZARDS, CHARACTER_ATTRIBUTE_PERSONALITY, 5);
 
     // Monks
-    AddToMap(specialBonusMap, ITEM_ENCHANTMENT_MONKS, CHARACTER_ATTRIBUTE_SKILL_DODGE, 3, &Player::skillDodge);
-    AddToMap(specialBonusMap, ITEM_ENCHANTMENT_MONKS, CHARACTER_ATTRIBUTE_SKILL_UNARMED, 3, &Player::skillUnarmed);
+    AddToMap(specialBonusMap, ITEM_ENCHANTMENT_MONKS, CHARACTER_ATTRIBUTE_SKILL_DODGE, 3, PLAYER_SKILL_DODGE);
+    AddToMap(specialBonusMap, ITEM_ENCHANTMENT_MONKS, CHARACTER_ATTRIBUTE_SKILL_UNARMED, 3, PLAYER_SKILL_UNARMED);
 
     // Thieves
-    AddToMap(specialBonusMap, ITEM_ENCHANTMENT_THIEVES, CHARACTER_ATTRIBUTE_SKILL_STEALING, 3, &Player::skillStealing);
-    AddToMap(specialBonusMap, ITEM_ENCHANTMENT_THIEVES, CHARACTER_ATTRIBUTE_SKILL_TRAP_DISARM, 3, &Player::skillDisarmTrap);
+    AddToMap(specialBonusMap, ITEM_ENCHANTMENT_THIEVES, CHARACTER_ATTRIBUTE_SKILL_STEALING, 3, PLAYER_SKILL_STEALING);
+    AddToMap(specialBonusMap, ITEM_ENCHANTMENT_THIEVES, CHARACTER_ATTRIBUTE_SKILL_TRAP_DISARM, 3, PLAYER_SKILL_TRAP_DISARM);
 
     // of Identifying
-    AddToMap(specialBonusMap, ITEM_ENCHANTMENT_OF_IDENTIFYING, CHARACTER_ATTRIBUTE_SKILL_ITEM_ID, 3, &Player::skillItemId);
-    AddToMap(specialBonusMap, ITEM_ENCHANTMENT_OF_IDENTIFYING, CHARACTER_ATTRIBUTE_SKILL_MONSTER_ID, 3, &Player::skillMonsterId);
+    AddToMap(specialBonusMap, ITEM_ENCHANTMENT_OF_IDENTIFYING, CHARACTER_ATTRIBUTE_SKILL_ITEM_ID, 3, PLAYER_SKILL_ITEM_ID);
+    AddToMap(specialBonusMap, ITEM_ENCHANTMENT_OF_IDENTIFYING, CHARACTER_ATTRIBUTE_SKILL_MONSTER_ID, 3, PLAYER_SKILL_MONSTER_ID);
 
     // Assassins
-    AddToMap(specialBonusMap, ITEM_ENCHANTMENT_ASSASINS, CHARACTER_ATTRIBUTE_SKILL_TRAP_DISARM, 2, &Player::skillDisarmTrap);
+    AddToMap(specialBonusMap, ITEM_ENCHANTMENT_ASSASINS, CHARACTER_ATTRIBUTE_SKILL_TRAP_DISARM, 2, PLAYER_SKILL_TRAP_DISARM);
 
     // Barbarians
     AddToMap(specialBonusMap, ITEM_ENCHANTMENT_BARBARIANS, CHARACTER_ATTRIBUTE_AC_BONUS, 5);
@@ -422,7 +422,7 @@ void ItemGen::PopulateSpecialBonusMap() {
 
     // of the Ocean
     AddToMap(specialBonusMap, ITEM_ENCHANTMENT_OF_OCEAN, CHARACTER_ATTRIBUTE_RESIST_WATER, 10);
-    AddToMap(specialBonusMap, ITEM_ENCHANTMENT_OF_OCEAN, CHARACTER_ATTRIBUTE_SKILL_ALCHEMY, 2, &Player::skillAlchemy);
+    AddToMap(specialBonusMap, ITEM_ENCHANTMENT_OF_OCEAN, CHARACTER_ATTRIBUTE_SKILL_ALCHEMY, 2, PLAYER_SKILL_ALCHEMY);
 }
 
 // TODO: where is it used?
@@ -533,17 +533,17 @@ void ItemGen::PopulateArtifactBonusMap() {
     AddToMap(artifactBonusMap, ITEM_ARTIFACT_HANDS_OF_THE_MASTER, CHARACTER_ATTRIBUTE_SKILL_UNARMED, 10);
 
     AddToMap(artifactBonusMap, ITEM_ARTIFACT_SEVEN_LEAGUE_BOOTS, CHARACTER_ATTRIBUTE_SPEED, 40);
-    AddToMap(artifactBonusMap, ITEM_ARTIFACT_SEVEN_LEAGUE_BOOTS, CHARACTER_ATTRIBUTE_SKILL_WATER, 0, &Player::skillWater);
+    AddToMap(artifactBonusMap, ITEM_ARTIFACT_SEVEN_LEAGUE_BOOTS, CHARACTER_ATTRIBUTE_SKILL_WATER, 0, PLAYER_SKILL_WATER);
 
-    AddToMap(artifactBonusMap, ITEM_ARTIFACT_RULERS_RING, CHARACTER_ATTRIBUTE_SKILL_MIND, 0, &Player::skillMind);
-    AddToMap(artifactBonusMap, ITEM_ARTIFACT_RULERS_RING, CHARACTER_ATTRIBUTE_SKILL_DARK, 0, &Player::skillDark);
+    AddToMap(artifactBonusMap, ITEM_ARTIFACT_RULERS_RING, CHARACTER_ATTRIBUTE_SKILL_MIND, 0, PLAYER_SKILL_MIND);
+    AddToMap(artifactBonusMap, ITEM_ARTIFACT_RULERS_RING, CHARACTER_ATTRIBUTE_SKILL_DARK, 0, PLAYER_SKILL_DARK);
 
     AddToMap(artifactBonusMap, ITEM_RELIC_MASH, CHARACTER_ATTRIBUTE_MIGHT, 150);
     AddToMap(artifactBonusMap, ITEM_RELIC_MASH, CHARACTER_ATTRIBUTE_INTELLIGENCE, -40);
     AddToMap(artifactBonusMap, ITEM_RELIC_MASH, CHARACTER_ATTRIBUTE_PERSONALITY, -40);
     AddToMap(artifactBonusMap, ITEM_RELIC_MASH, CHARACTER_ATTRIBUTE_SPEED, -40);
 
-    AddToMap(artifactBonusMap, ITEM_RELIC_ETHRICS_STAFF, CHARACTER_ATTRIBUTE_SKILL_DARK, 0, &Player::skillDark);
+    AddToMap(artifactBonusMap, ITEM_RELIC_ETHRICS_STAFF, CHARACTER_ATTRIBUTE_SKILL_DARK, 0, PLAYER_SKILL_DARK);
     AddToMap(artifactBonusMap, ITEM_RELIC_ETHRICS_STAFF, CHARACTER_ATTRIBUTE_SKILL_MEDITATION, 15);
 
     AddToMap(artifactBonusMap, ITEM_RELIC_HARECKS_LEATHER, CHARACTER_ATTRIBUTE_SKILL_TRAP_DISARM, 5);
@@ -562,7 +562,7 @@ void ItemGen::PopulateArtifactBonusMap() {
     AddToMap(artifactBonusMap, ITEM_RELIC_AMUCK, CHARACTER_ATTRIBUTE_ENDURANCE, 100);
     AddToMap(artifactBonusMap, ITEM_RELIC_AMUCK, CHARACTER_ATTRIBUTE_AC_BONUS, -15);
 
-    AddToMap(artifactBonusMap, ITEM_RELIC_GLORY_SHIELD, CHARACTER_ATTRIBUTE_SKILL_SPIRIT, 0, &Player::skillSpirit);
+    AddToMap(artifactBonusMap, ITEM_RELIC_GLORY_SHIELD, CHARACTER_ATTRIBUTE_SKILL_SPIRIT, 0, PLAYER_SKILL_SPIRIT);
     AddToMap(artifactBonusMap, ITEM_RELIC_GLORY_SHIELD, CHARACTER_ATTRIBUTE_SKILL_SHIELD, 5);
     AddToMap(artifactBonusMap, ITEM_RELIC_GLORY_SHIELD, CHARACTER_ATTRIBUTE_RESIST_MIND, -10);
     AddToMap(artifactBonusMap, ITEM_RELIC_GLORY_SHIELD, CHARACTER_ATTRIBUTE_RESIST_BODY, -10);
@@ -570,7 +570,7 @@ void ItemGen::PopulateArtifactBonusMap() {
     AddToMap(artifactBonusMap, ITEM_RELIC_KELEBRIM, CHARACTER_ATTRIBUTE_ENDURANCE, 50);
     AddToMap(artifactBonusMap, ITEM_RELIC_KELEBRIM, CHARACTER_ATTRIBUTE_RESIST_EARTH, -30);
 
-    AddToMap(artifactBonusMap, ITEM_RELIC_TALEDONS_HELM, CHARACTER_ATTRIBUTE_SKILL_LIGHT, 0, &Player::skillLight);
+    AddToMap(artifactBonusMap, ITEM_RELIC_TALEDONS_HELM, CHARACTER_ATTRIBUTE_SKILL_LIGHT, 0, PLAYER_SKILL_LIGHT);
     AddToMap(artifactBonusMap, ITEM_RELIC_TALEDONS_HELM, CHARACTER_ATTRIBUTE_PERSONALITY, 15);
     AddToMap(artifactBonusMap, ITEM_RELIC_TALEDONS_HELM, CHARACTER_ATTRIBUTE_MIGHT, 15);
     AddToMap(artifactBonusMap, ITEM_RELIC_TALEDONS_HELM, CHARACTER_ATTRIBUTE_LUCK, -40);
@@ -578,7 +578,7 @@ void ItemGen::PopulateArtifactBonusMap() {
     AddToMap(artifactBonusMap, ITEM_RELIC_SCHOLARS_CAP, CHARACTER_ATTRIBUTE_SKILL_LEARNING, +15);
     AddToMap(artifactBonusMap, ITEM_RELIC_SCHOLARS_CAP, CHARACTER_ATTRIBUTE_ENDURANCE, -50);
 
-    AddToMap(artifactBonusMap, ITEM_RELIC_PHYNAXIAN_CROWN, CHARACTER_ATTRIBUTE_SKILL_FIRE, 0, &Player::skillFire);
+    AddToMap(artifactBonusMap, ITEM_RELIC_PHYNAXIAN_CROWN, CHARACTER_ATTRIBUTE_SKILL_FIRE, 0, PLAYER_SKILL_FIRE);
     AddToMap(artifactBonusMap, ITEM_RELIC_PHYNAXIAN_CROWN, CHARACTER_ATTRIBUTE_RESIST_WATER, +50);
     AddToMap(artifactBonusMap, ITEM_RELIC_PHYNAXIAN_CROWN, CHARACTER_ATTRIBUTE_PERSONALITY, 30);
     AddToMap(artifactBonusMap, ITEM_RELIC_PHYNAXIAN_CROWN, CHARACTER_ATTRIBUTE_AC_BONUS, -20);
@@ -599,11 +599,11 @@ void ItemGen::PopulateArtifactBonusMap() {
     AddToMap(artifactBonusMap, ITEM_RELIC_ANIA_SELVING, CHARACTER_ATTRIBUTE_SKILL_BOW, 5);
     AddToMap(artifactBonusMap, ITEM_RELIC_ANIA_SELVING, CHARACTER_ATTRIBUTE_AC_BONUS, -25);
 
-    AddToMap(artifactBonusMap, ITEM_RELIC_JUSTICE, CHARACTER_ATTRIBUTE_SKILL_MIND, 0, &Player::skillMind);
-    AddToMap(artifactBonusMap, ITEM_RELIC_JUSTICE, CHARACTER_ATTRIBUTE_SKILL_BODY, 0, &Player::skillBody);
+    AddToMap(artifactBonusMap, ITEM_RELIC_JUSTICE, CHARACTER_ATTRIBUTE_SKILL_MIND, 0, PLAYER_SKILL_MIND);
+    AddToMap(artifactBonusMap, ITEM_RELIC_JUSTICE, CHARACTER_ATTRIBUTE_SKILL_BODY, 0, PLAYER_SKILL_BODY);
     AddToMap(artifactBonusMap, ITEM_RELIC_JUSTICE, CHARACTER_ATTRIBUTE_SPEED, -40);
 
-    AddToMap(artifactBonusMap, ITEM_RELIC_MEKORIGS_HAMMER, CHARACTER_ATTRIBUTE_SKILL_SPIRIT, 0, &Player::skillSpirit);
+    AddToMap(artifactBonusMap, ITEM_RELIC_MEKORIGS_HAMMER, CHARACTER_ATTRIBUTE_SKILL_SPIRIT, 0, PLAYER_SKILL_SPIRIT);
     AddToMap(artifactBonusMap, ITEM_RELIC_MEKORIGS_HAMMER, CHARACTER_ATTRIBUTE_MIGHT, 75);
     AddToMap(artifactBonusMap, ITEM_RELIC_MEKORIGS_HAMMER, CHARACTER_ATTRIBUTE_RESIST_AIR, -50);
 
@@ -648,9 +648,9 @@ void ItemGen::GetItemBonusSpecialEnchantment(const Player *owner,
         return;
 
     const CEnchantment &currBonus = subpos->second;
-    if (currBonus.statPtr != NULL) {
+    if (currBonus.skillType != PLAYER_SKILL_INVALID) {
         if (currBonus.statBonus == 0) {
-            *halfSkillBonus = (owner->*currBonus.statPtr).level() / 2;
+            *halfSkillBonus = owner->pActiveSkills[currBonus.skillType].level() / 2;
         } else {
             if (*additiveBonus < currBonus.statBonus) {
                 *additiveBonus = currBonus.statBonus;
@@ -673,8 +673,8 @@ void ItemGen::GetItemBonusArtifact(const Player *owner,
         return;
 
     const CEnchantment &currBonus = subpos->second;
-    if (currBonus.statPtr != NULL) {
-        *bonusSum = (owner->*currBonus.statPtr).level() / 2;
+    if (currBonus.skillType != PLAYER_SKILL_INVALID) {
+        *bonusSum = owner->pActiveSkills[currBonus.skillType].level() / 2;
     } else {
         *bonusSum += currBonus.statBonus;
     }
