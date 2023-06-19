@@ -1,4 +1,4 @@
-#include "CompositeImages.h"
+#include "CompositeSnapshots.h"
 
 #include <string>
 
@@ -12,7 +12,7 @@
 #include "Engine/Tables/ItemTable.h"
 #include "Engine/LOD.h"
 
-#include "CommonImages.h"
+#include "CommonSnapshots.h"
 
 void reconstruct(const IndoorLocation_MM7 &src, IndoorLocation *dst) {
     reconstruct(src.vertices, &dst->pVertices);

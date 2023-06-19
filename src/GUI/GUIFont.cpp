@@ -9,7 +9,7 @@
 
 #include "Engine/Graphics/IRender.h"
 
-#include "Engine/Serialization/LegacyImages.h"
+#include "Engine/Snapshots/EntitySnapshots.h"
 
 #include "GUI/GUIWindow.h"
 

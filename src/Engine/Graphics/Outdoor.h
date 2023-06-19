@@ -6,7 +6,6 @@
 #include <glm.hpp>
 
 #include "Engine/Tables/TileFrameTable.h"
-#include "Engine/Serialization/LegacyImages.h"
 
 #include "Engine/SpawnPoint.h"
 #include "Media/Audio/AudioPlayer.h"

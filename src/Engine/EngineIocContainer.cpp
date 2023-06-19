@@ -1,37 +1,13 @@
 #include "Engine/EngineIocContainer.h"
 
-#include "Arcomage/Arcomage.h"
-
-#include "Engine/Party.h"
-#include "Engine/SaveLoad.h"
 #include "Engine/SpellFxRenderer.h"
-
 #include "Engine/Graphics/DecalBuilder.h"
-#include "Engine/Graphics/DecorationList.h"
 #include "Engine/Graphics/Indoor.h"
-#include "Engine/Graphics/IRender.h"
-#include "Engine/Graphics/LightmapBuilder.h"
-#include "Engine/Graphics/LightsStack.h"
 #include "Engine/Graphics/Nuklear.h"
-#include "Engine/Graphics/Overlays.h"
 #include "Engine/Graphics/ParticleEngine.h"
-#include "Engine/Graphics/PaletteManager.h"
 #include "Engine/Graphics/Vis.h"
-
-#include "Engine/Graphics/Level/Decoration.h"
-
-#include "Engine/Objects/Actor.h"
-#include "Engine/Objects/Chest.h"
-#include "Engine/Objects/Monsters.h"
 #include "Engine/Objects/Player.h"
 #include "Engine/Objects/SpriteObject.h"
-
-#include "Engine/Serialization/LegacyImages.h"
-
-#include "Engine/Spells/CastSpellInfo.h"
-
-#include "Engine/Tables/FactionTable.h"
-#include "Engine/Tables/PlayerFrameTable.h"
 
 #include "Io/Mouse.h"
 

@@ -3,7 +3,7 @@
 #include <cstdlib>
 
 #include "Engine/Engine.h"
-#include "Engine/Serialization/LegacyImages.h"
+#include "Engine/Snapshots/EntitySnapshots.h"
 #include "Level/Decoration.h"
 #include "Sprites.h"
 

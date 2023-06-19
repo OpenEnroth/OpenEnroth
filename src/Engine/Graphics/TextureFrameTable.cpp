@@ -1,6 +1,6 @@
 #include "TextureFrameTable.h"
 
-#include "Engine/Serialization/LegacyImages.h"
+#include "Engine/Snapshots/EntitySnapshots.h"
 #include "Engine/AssetsManager.h"
 
 #include "Utility/String.h"

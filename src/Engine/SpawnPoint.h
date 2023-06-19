@@ -3,6 +3,8 @@
 #include "Engine/Objects/ActorEnums.h"
 #include "Engine/Objects/ItemEnums.h"
 
+#include "Utility/Geometry/Vec.h"
+
 struct SpawnPoint {
     Vec3i vPosition;
     uint16_t uRadius = 32;

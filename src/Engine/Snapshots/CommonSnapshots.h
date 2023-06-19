@@ -11,10 +11,8 @@
 #include "Utility/IndexedArray.h"
 #include "Utility/IndexedBitset.h"
 
-// TODO(captainurist): rename this file?
-
 //
-// Identity images.
+// Identity snapshotting.
 //
 
 template<class T>

@@ -3,7 +3,16 @@
 #include <vector>
 #include <tuple>
 
-#include "LegacyImages.h"
+#include "EntitySnapshots.h"
+
+/**
+ * @file
+ *
+ * Snapshots in this header are representations of game binary files, one struct per single file.
+ *
+ * Struct fields are laid out in the order in which they are laid out in binary files.
+ */
+
 
 class Blob;
 class BSPModel;

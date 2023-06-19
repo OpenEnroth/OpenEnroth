@@ -71,7 +71,7 @@ target_compile_definitions(engine PRIVATE
 
 add_subdirectory(Graphics)
 add_subdirectory(Objects)
-add_subdirectory(Serialization)
+add_subdirectory(Snapshots)
 add_subdirectory(Spells)
 add_subdirectory(Tables)
 add_subdirectory(Components)

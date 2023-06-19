@@ -1,6 +1,6 @@
 #include "Engine/Engine.h"
 
-#include "Engine/Serialization/LegacyImages.h"
+#include "Engine/Snapshots/EntitySnapshots.h"
 
 #include "Library/Random/Random.h"
 

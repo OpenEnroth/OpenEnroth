@@ -1,4 +1,4 @@
-#include "LegacyImages.h"
+#include "EntitySnapshots.h"
 
 #include <algorithm>
 #include <type_traits>
@@ -30,7 +30,7 @@
 #include "Utility/Memory/MemSet.h"
 #include "Utility/IndexedBitset.h"
 
-#include "CommonImages.h"
+#include "CommonSnapshots.h"
 
 static void snapshot(const GameTime &src, int64_t *dst) {
     *dst = src.value;
