@@ -3,6 +3,7 @@
 #include "Engine/Engine.h"
 #include "Engine/Graphics/IRender.h"
 #include "Engine/Snapshots/EntitySnapshots.h"
+#include "Engine/Snapshots/SnapshotSerialization.h"
 
 #include "../LOD.h"
 

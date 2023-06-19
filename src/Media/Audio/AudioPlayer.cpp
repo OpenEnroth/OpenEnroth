@@ -16,6 +16,7 @@
 #include "Engine/Objects/SpriteObject.h"
 #include "Engine/Party.h"
 #include "Engine/Snapshots/EntitySnapshots.h"
+#include "Engine/Snapshots/SnapshotSerialization.h"
 
 #include "Media/Audio/OpenALSoundProvider.h"
 

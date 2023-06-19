@@ -11,6 +11,7 @@
 #include "Engine/Graphics/ImageLoader.h"
 #include "Engine/Graphics/Viewport.h"
 #include "Engine/Snapshots/EntitySnapshots.h"
+#include "Engine/Snapshots/SnapshotSerialization.h"
 #include "Engine/Localization.h"
 #include "Engine/LOD.h"
 #include "Engine/MapInfo.h"

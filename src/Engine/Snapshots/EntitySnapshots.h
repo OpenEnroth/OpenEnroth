@@ -2,13 +2,11 @@
 
 #include <array>
 
+#include "Utility/Geometry/Vec.h"
 #include "Utility/Geometry/Plane.h"
 #include "Utility/Geometry/BBox.h"
 
 #include "Library/Binary/BinarySerialization.h"
-
-#include "SnapshotSerialization.h" // TODO(captainurist): drop include
-#include "CommonSnapshots.h" // TODO(captainurist): drop include
 
 /**
  * @file

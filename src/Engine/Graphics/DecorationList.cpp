@@ -4,6 +4,7 @@
 
 #include "Engine/Engine.h"
 #include "Engine/Snapshots/EntitySnapshots.h"
+#include "Engine/Snapshots/SnapshotSerialization.h"
 #include "Level/Decoration.h"
 #include "Sprites.h"
 
