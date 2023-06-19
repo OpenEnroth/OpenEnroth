@@ -185,7 +185,7 @@ void CreateParty_EventLoop() {
         case UIMSG_PlayerCreationSelectActiveSkill:
             if (pPlayer[uPlayerCreationUI_SelectedCharacter].GetSkillIdxByOrder(3) == PLAYER_SKILL_INVALID)
                 pParty->pPlayers[uPlayerCreationUI_SelectedCharacter].pActiveSkills[pPlayer[uPlayerCreationUI_SelectedCharacter]
-                    .GetSkillIdxByOrder(param + 4)].learn();
+                    .GetSkillIdxByOrder(param + 4)] = CombinedSkillValue::novice();
             pAudioPlayer->playUISound(SOUND_ClickSkill);
             break;
         case UIMSG_PlayerCreationSelectClass:

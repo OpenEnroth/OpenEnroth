@@ -355,8 +355,10 @@ struct Player {
     void PlayAwardSound_Anim_Face(PlayerSpeech speech);
     void PlayAwardSound_Anim97();
     void PlayAwardSound_Anim97_Face(PlayerSpeech speech);
+    void AddSkillByEvent(PLAYER_SKILL_TYPE, uint16_t addSkillValue);
     void PlayAwardSound_Anim98();
     void PlayAwardSound_Anim98_Face(PlayerSpeech speech);
+    void SubtractSkillByEvent(PLAYER_SKILL_TYPE skill, uint16_t subSkillValue);
 
     bool IsWeak() const;
     bool IsDead() const;

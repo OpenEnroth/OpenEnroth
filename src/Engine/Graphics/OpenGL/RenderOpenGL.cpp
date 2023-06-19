@@ -2248,6 +2248,7 @@ void RenderOpenGL::DrawOutdoorSkyPolygon(struct Polygon *pSkyPolygon) {
             thisvert->q = 1.0f;
             thisvert->screenspace = scrspace;
             thisvert->color = uTint;
+            thisvert->color.a = 0;
             thisvert->texid = texidsolid;
             thisvert++;
 
@@ -2287,7 +2288,6 @@ void RenderOpenGL::DrawOutdoorSkyPolygon(struct Polygon *pSkyPolygon) {
             thisvert->q = 1.0f;
             thisvert->screenspace = scrspace;
             thisvert->color = uTint;
-            thisvert->color.a = 0;
             thisvert->texid = texidsolid;
             thisvert++;
 

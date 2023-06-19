@@ -950,12 +950,12 @@ void reconstruct(const Player_MM7 &src, Player *dst) {
     dst->field_1B3B_set0_unused = src.field_1B3B;
 }
 
-void serialize(const CombinedSkillValue &src, uint16_t *dst) {
+void snapshot(const CombinedSkillValue &src, uint16_t *dst) {
     *dst = src.join();
 }
 
-void deserialize(const uint16_t &src, CombinedSkillValue *dst) {
-    *dst = CombinedSkillValue(src);
+void reconstruct(const uint16_t &src, CombinedSkillValue *dst) {
+    *dst = CombinedSkillValue::fromJoined(src);
 }
 
 void snapshot(const Icon &src, IconFrame_MM7 *dst) {

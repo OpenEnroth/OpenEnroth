@@ -28,7 +28,7 @@ inline Segment<PLAYER_SKILL_MASTERY> SkillMasteries() {
 }
 
 inline PLAYER_SKILL_LEVEL GetSkillLevel(const PLAYER_SKILL skill_value) {
-    return skill_value & 63;
+    return skill_value & 0x3F;
 }
 
 /**
@@ -78,6 +78,7 @@ inline void SetSkillMastery(PLAYER_SKILL *skill_value, PLAYER_SKILL_MASTERY mast
     }
 }
 
+// TODO(pskelton): drop
 /**
  * Construct player skill value using skill mastery and skill level
  */
@@ -98,10 +99,9 @@ class CombinedSkillValue {
  public:
     CombinedSkillValue();
     CombinedSkillValue(int level, PLAYER_SKILL_MASTERY mastery);
-    explicit CombinedSkillValue(int joinedValue);
 
     // joins level and mastery into one integer
-    uint16_t join() const;
+    [[nodiscard]] uint16_t join() const;
 
     int level() const;
     CombinedSkillValue &setLevel(int level);
@@ -111,12 +111,9 @@ class CombinedSkillValue {
 
     static bool isLevelValid(int level);
     static bool isMasteryValid(PLAYER_SKILL_MASTERY mastery);
+    static CombinedSkillValue novice();
+    static CombinedSkillValue fromJoined(uint16_t);
 
     explicit operator bool() const { return _level > 0; }
-    void learn();
     void reset();
-
-    void subtract(const int sub);
-    void add(const int add);
-    void set(const int set);
 };
