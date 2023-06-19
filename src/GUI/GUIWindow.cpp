@@ -738,7 +738,7 @@ void SetUserInterface(PartyAlignment align, bool bReplace) {
             pUIAnum_Torchlight->icon = pIconsFrameTable->GetIcon("torchC");
             pIconsFrameTable->InitializeAnimation(pUIAnum_Torchlight->icon->id);
         }
-        uGameUIFontMain = Color(0xC8u, 0, 0); // TODO(captainurist): color table
+        uGameUIFontMain = colorTable.MediumRed;
         uGameUIFontShadow = colorTable.Diesel;
     } else if (align == PartyAlignment::PartyAlignment_Neutral) {
         if (bReplace) {
@@ -840,7 +840,7 @@ void SetUserInterface(PartyAlignment align, bool bReplace) {
             messagebox_border_top = assets->getImage_Alpha("edge_top");
             _591428_endcap = assets->getImage_ColorKey("endcap");
         }
-        uGameUIFontMain = Color(0xAu, 0, 0); // TODO(captainurist): color table
+        uGameUIFontMain = colorTable.Diesel;
         uGameUIFontShadow = colorTable.StarkWhite;
     } else if (align == PartyAlignment::PartyAlignment_Good) {
         if (bReplace) {
@@ -892,7 +892,7 @@ void SetUserInterface(PartyAlignment align, bool bReplace) {
             messagebox_border_top = assets->getImage_Alpha("edge_top-b");
             _591428_endcap = assets->getImage_ColorKey("endcap-b");
         }
-        uGameUIFontMain = Color(0, 0, 0xC8u); // TODO(captainurist): color table
+        uGameUIFontMain = colorTable.MediumBlue;
         uGameUIFontShadow = colorTable.White;
     } else {
         Error("Invalid alignment type: %u", align);

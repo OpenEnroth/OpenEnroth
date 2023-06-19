@@ -193,7 +193,7 @@ void DrawBook_Map_sub(unsigned int tl_x, unsigned int tl_y, unsigned int br_x, i
                         if (pOutdoor->IsMapCellPartiallyRevealed(map_tile_X,
                             map_tile_Y)) {
                             if (!((i + ScreenCenterX + j) % 2))
-                                minitempix[j + i * screenWidth] = colorTable.CodGray;
+                                minitempix[j + i * screenWidth] = colorTable.GrayBlack;
                             else
                                 minitempix[j + i * screenWidth] = minimap_pixels[scaled_posX + scaled_posY * textr_width];
                         } else {

@@ -14,13 +14,16 @@ class ColorTable {
     const Color AzureRadiance = Color(0, 128, 255);     // #0080FF
     const Color Black = Color(0, 0, 0);                 // #000000
     const Color Blue = Color(0, 0, 255);                // #0000FF
-    const Color CodGray = Color(12, 12, 12);            // #0C0C0C
+    const Color GrayBlack = Color(12, 12, 12);          // #0C0C0C
+    const Color DarkGray = Color(31, 31, 31);           // #1F1F1F
+    const Color GunmetalGray = Color(50, 50, 50);       // #323232
+    const Color CarbonGray = Color(96, 96, 96);         // #606060
+    const Color Gray = Color(128, 128, 128);            // #808080
     const Color CornFlowerBlue = Color(112, 143, 251);  // #708FFE
     const Color DarkOrange = Color(255, 85, 0);         // #FF5500
     const Color Diesel = Color(10, 0, 0);               // #0A0000
     const Color EasternBlue = Color(21, 153, 233);      // #1699E9
     const Color FlushOrange = Color(255, 128, 0);       // #FF8000
-    const Color Gray = Color(128, 128, 128);            // #808080
     const Color Green = Color(0, 225, 0);               // #00FF00
     const Color Jonquil = Color(255, 255, 155);         // #E1FF9B
     const Color LaserLemon = Color(255, 255, 100);      // #FFFF64
@@ -67,6 +70,9 @@ class ColorTable {
     const Color Canary = Color(232, 244, 96);           // #E8F460
     const Color Mimosa = Color(240, 252, 192);          // #F0FCC0
     const Color BoltBlue = Color(0, 175, 255);          // #00AFFF
+    const Color MediumRed = Color(200, 0, 0);           // #C80000
+    const Color MediumBlue = Color(0, 0, 200);          // #0000C8
+    const Color OliveDrab = Color(92, 143, 37);         // #5C8F25
 };
 
 extern const ColorTable colorTable;
