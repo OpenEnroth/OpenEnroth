@@ -453,7 +453,7 @@ void RenderOpenGL::DrawProjectile(float srcX, float srcY, float srcworldview, fl
     v29[1].pos.y = dstY - dstymod;
     v29[1].pos.z = dstz;
     v29[1].rhw = dstrhw;
-    v29[1].diffuse = colorTable.Green; // TODO(captainurist): why Green???
+    v29[1].diffuse = colorTable.White;
     v29[1].specular = Color();
     v29[1].texcoord.x = 1.0;
     v29[1].texcoord.y = 1.0;
