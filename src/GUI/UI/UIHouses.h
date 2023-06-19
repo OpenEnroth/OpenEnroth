@@ -62,11 +62,6 @@ class GUIWindow_House : public GUIWindow {
     void reinitDialogueWindow();
     bool checkIfPlayerCanInteract();
 
-    /**
-     * @offset 0x4B1D27
-     */
-    void playHouseGoodbyeSpeech();
-
     void drawOptions(std::vector<std::string> &optionsText, Color selectColor,
                      int topOptionShift = 0, bool denseSpacing = false);
 
@@ -76,6 +71,7 @@ class GUIWindow_House : public GUIWindow {
     virtual std::vector<DIALOGUE_TYPE> listDialogueOptions(DIALOGUE_TYPE option);
     virtual DIALOGUE_TYPE getOptionOnEscape();
     virtual void houseScreenClick();
+    virtual void playHouseGoodbyeSpeech();
 
  protected:
     void learnSkillsDialogue();

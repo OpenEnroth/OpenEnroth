@@ -77,6 +77,7 @@ void GUIWindow_TownHall::payFineDialogue() {
         if (sum > 0) {
             int party_gold = pParty->GetGold();
             if (sum > party_gold) {
+                // TODO(Nik-RE-dev): game resources does not contain such sounds for town halls
                 playHouseSound(houseId(), HOUSE_SOUND_GENERAL_NOT_ENOUGH_GOLD);
                 sum = party_gold;
             }

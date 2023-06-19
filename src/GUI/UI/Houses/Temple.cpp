@@ -162,6 +162,10 @@ DIALOGUE_TYPE GUIWindow_Temple::getOptionOnEscape() {
     return DIALOGUE_MAIN;
 }
 
+void GUIWindow_Temple::playHouseGoodbyeSpeech() {
+    playHouseSound(houseId(), HOUSE_SOUND_TEMPLE_GOODBYE);
+}
+
 bool GUIWindow_Temple::isPlayerHealableByTemple(const Player &player) const {
     if (player.health >= player.GetMaxHealth() && player.mana >= player.GetMaxMana() && player.GetMajorConditionIdx() == CONDITION_GOOD) {
         // fully healthy
