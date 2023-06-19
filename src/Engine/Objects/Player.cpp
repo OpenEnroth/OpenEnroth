@@ -7356,25 +7356,25 @@ MerchantPhrase Player::SelectPhrasesTransaction(ItemGen *pItem, BuildingType bui
     itemValue = pItem->GetValue();
 
     switch (building_type) {
-        case BuildingType_WeaponShop:
+        case BUILDING_WEAPON_SHOP:
             if (idemId >= ITEM_ARTIFACT_HERMES_SANDALS)
                 return MERCHANT_PHRASE_INVALID_ACTION;
             if (!isWeapon(equipType))
                 return MERCHANT_PHRASE_INCOMPATIBLE_ITEM;
             break;
-        case BuildingType_ArmorShop:
+        case BUILDING_ARMOR_SHOP:
             if (idemId >= ITEM_ARTIFACT_HERMES_SANDALS)
                 return MERCHANT_PHRASE_INVALID_ACTION;
             if (!isArmor(equipType))
                 return MERCHANT_PHRASE_INCOMPATIBLE_ITEM;
             break;
-        case BuildingType_MagicShop:
+        case BUILDING_MAGIC_SHOP:
             if (idemId >= ITEM_ARTIFACT_HERMES_SANDALS)
                 return MERCHANT_PHRASE_INVALID_ACTION;
             if (pItemTable->pItems[idemId].uSkillType != PLAYER_SKILL_MISC)
                 return MERCHANT_PHRASE_INCOMPATIBLE_ITEM;
             break;
-        case BuildingType_AlchemistShop:
+        case BUILDING_ALCHEMY_SHOP:
             if (idemId >= ITEM_ARTIFACT_HERMES_SANDALS && !isRecipe(idemId))
                 return MERCHANT_PHRASE_INVALID_ACTION;
             if (equipType != EQUIP_REAGENT && equipType != EQUIP_POTION && equipType != EQUIP_MESSAGE_SCROLL)

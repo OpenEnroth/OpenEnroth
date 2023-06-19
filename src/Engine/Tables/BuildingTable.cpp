@@ -36,103 +36,103 @@ void initializeBuildings() {
                 case 2:
                 {
                     if (istarts_with(test_string, "wea")) {
-                        buildingTable[i].uType = BuildingType_WeaponShop;
+                        buildingTable[i].uType = BUILDING_WEAPON_SHOP;
                         break;
                     }
                     if (istarts_with(test_string, "arm")) {
-                        buildingTable[i].uType = BuildingType_ArmorShop;
+                        buildingTable[i].uType = BUILDING_ARMOR_SHOP;
                         break;
                     }
                     if (istarts_with(test_string, "mag")) {
-                        buildingTable[i].uType = BuildingType_MagicShop;
+                        buildingTable[i].uType = BUILDING_MAGIC_SHOP;
                         break;
                     }
                     if (istarts_with(test_string, "alc")) {
-                        buildingTable[i].uType = BuildingType_AlchemistShop;
+                        buildingTable[i].uType = BUILDING_ALCHEMY_SHOP;
                         break;
                     }
                     if (istarts_with(test_string, "sta")) {
-                        buildingTable[i].uType = BuildingType_Stables;
+                        buildingTable[i].uType = BUILDING_STABLE;
                         break;
                     }
                     if (istarts_with(test_string, "boa")) {
-                        buildingTable[i].uType = BuildingType_Boats;
+                        buildingTable[i].uType = BUILDING_BOAT;
                         break;
                     }
                     if (istarts_with(test_string, "tem")) {
-                        buildingTable[i].uType = BuildingType_Temple;
+                        buildingTable[i].uType = BUILDING_TEMPLE;
                         break;
                     }
                     if (istarts_with(test_string, "tra")) {
-                        buildingTable[i].uType = BuildingType_Training;
+                        buildingTable[i].uType = BUILDING_TRAINING_GROUND;
                         break;
                     }
                     if (istarts_with(test_string, "tow")) {
-                        buildingTable[i].uType = BuildingType_TownHall;
+                        buildingTable[i].uType = BUILDING_TOWN_HALL;
                         break;
                     }
 
                     if (istarts_with(test_string, "tav")) {
-                        buildingTable[i].uType = BuildingType_Tavern;
+                        buildingTable[i].uType = BUILDING_TAVERN;
                         break;
                     }
                     if (istarts_with(test_string, "ban")) {
-                        buildingTable[i].uType = BuildingType_Bank;
+                        buildingTable[i].uType = BUILDING_BANK;
                         break;
                     }
                     if (istarts_with(test_string, "fir")) {
-                        buildingTable[i].uType = BuildingType_FireGuild;
+                        buildingTable[i].uType = BUILDING_FIRE_GUILD;
                         break;
                     }
                     if (istarts_with(test_string, "air")) {
-                        buildingTable[i].uType = BuildingType_AirGuild;
+                        buildingTable[i].uType = BUILDING_AIR_GUILD;
                         break;
                     }
                     if (istarts_with(test_string, "wat")) {
-                        buildingTable[i].uType = BuildingType_WaterGuild;
+                        buildingTable[i].uType = BUILDING_WATER_GUILD;
                         break;
                     }
                     if (istarts_with(test_string, "ear")) {
-                        buildingTable[i].uType = BuildingType_EarthGuild;
+                        buildingTable[i].uType = BUILDING_EARTH_GUILD;
                         break;
                     }
                     if (istarts_with(test_string, "spi")) {
-                        buildingTable[i].uType = BuildingType_SpiritGuild;
+                        buildingTable[i].uType = BUILDING_SPIRIT_GUILD;
                         break;
                     }
                     if (istarts_with(test_string, "min")) {
-                        buildingTable[i].uType = BuildingType_MindGuild;
+                        buildingTable[i].uType = BUILDING_MIND_GUILD;
                         break;
                     }
                     if (istarts_with(test_string, "bod")) {
-                        buildingTable[i].uType = BuildingType_BodyGuild;
+                        buildingTable[i].uType = BUILDING_BODY_GUILD;
                         break;
                     }
                     if (istarts_with(test_string, "lig")) {
-                        buildingTable[i].uType = BuildingType_LightGuild;
+                        buildingTable[i].uType = BUILDING_LIGHT_GUILD;
                         break;
                     }
                     if (istarts_with(test_string, "dar")) {
-                        buildingTable[i].uType = BuildingType_DarkGuild;
+                        buildingTable[i].uType = BUILDING_DARK_GUILD;
                         break;
                     }
                     if (istarts_with(test_string, "ele")) { // "Element Guild" from mm6
-                        buildingTable[i].uType = BuildingType_ElementalGuild;
+                        buildingTable[i].uType = BUILDING_ELEMENTAL_GUILD;
                         break;
                     }
                     if (istarts_with(test_string, "sel")) {
-                        buildingTable[i].uType = BuildingType_SelfGuild;
+                        buildingTable[i].uType = BUILDING_SELF_GUILD;
                         break;
                     }
                     if (istarts_with(test_string, "mir")) {
-                        buildingTable[i].uType = BuildingType_MirroredPath;
+                        buildingTable[i].uType = BUILDING_MIRRORED_PATH_GUILD;
                         break;
                     }
                     if (istarts_with(test_string, "mer")) { // "Thieves Guild" from mm6
-                        buildingTable[i].uType = BuildingType_TownHall; //TODO: Is this right and not Merc Guild (18)?
+                        buildingTable[i].uType = BUILDING_TOWN_HALL; //TODO: Is this right and not Merc Guild (18)?
                         break;
                     }
-                    buildingTable[i].uType = BuildingType_MercenaryGuild;
+                    buildingTable[i].uType = BUILDING_MERCENARY_GUILD;
                 } break;
 
                 case 4:

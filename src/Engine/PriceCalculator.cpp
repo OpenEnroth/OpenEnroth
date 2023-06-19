@@ -158,10 +158,10 @@ int PriceCalculator::applyMerchantDiscount(const Player *player, float goldAmoun
 }
 
 int PriceCalculator::skillLearningCostForPlayer(const Player *player, const BuildingDesc &house) {
-    bool isGuild = house.uType >= BuildingType_FireGuild && house.uType <= BuildingType_SelfGuild;
+    bool isGuild = house.uType >= BUILDING_FIRE_GUILD && house.uType <= BUILDING_SELF_GUILD;
     // guilds use different multiplier for skill learning
     int baseTeachPrice = (isGuild ? house.fPriceMultiplier : house.flt_24) * 500.0;
-    if (house.uType == BuildingType_MercenaryGuild) {
+    if (house.uType == BUILDING_MERCENARY_GUILD) {
         baseTeachPrice = 250;
     }
     int effectivePrice = applyMerchantDiscount(player, baseTeachPrice);
@@ -172,7 +172,7 @@ int PriceCalculator::skillLearningCostForPlayer(const Player *player, const Buil
 }
 int PriceCalculator::transportCostForPlayer(const Player *player, const BuildingDesc &house) {
     // boats are 2 times pricier than stables
-    int basePrice = house.uType == BuildingType_Stables ? 25 : 50;
+    int basePrice = house.uType == BUILDING_STABLE ? 25 : 50;
 
     int price = applyMerchantDiscount(player, basePrice * house.fPriceMultiplier);
     if (price < basePrice / 3) {
