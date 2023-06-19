@@ -7,15 +7,18 @@
 
 #include "Engine/Graphics/ImageLoader.h"
 
+#include "IRender.h"
+
 GraphicsImage::GraphicsImage(bool lazy_initialization): _lazyInitialization(lazy_initialization) {}
 
 GraphicsImage::~GraphicsImage() = default;
 
 GraphicsImage *GraphicsImage::Create(RgbaImage image) {
-    GraphicsImage *img = new GraphicsImage(false);
-    img->_initialized = true;
-    img->_rgbaImage = std::move(image);
-    return img;
+    std::unique_ptr<GraphicsImage> result = std::make_unique<GraphicsImage>(false);
+    result->_initialized = true;
+    result->_rgbaImage = std::move(image);
+    result->_renderId = render->CreateTexture(result->_rgbaImage);
+    return result.release();
 }
 
 GraphicsImage *GraphicsImage::Create(size_t width, size_t height) {
@@ -69,8 +72,28 @@ bool GraphicsImage::Release() {
                 assets->releaseBitmap(_loader->GetResourceName());
     }
 
+    releaseRenderId();
+
     delete this;
     return true;
+}
+
+[[nodiscard]] TextureRenderId GraphicsImage::renderId(bool load) {
+    if (load) {
+        LoadImageData();
+        if (!_renderId)
+            _renderId = render->CreateTexture(_rgbaImage);
+    }
+
+    return _renderId;
+}
+
+void GraphicsImage::releaseRenderId() {
+    if (!_renderId)
+        return;
+
+    render->DeleteTexture(_renderId);
+    _renderId = TextureRenderId();
 }
 
 bool GraphicsImage::LoadImageData() {
@@ -78,6 +101,10 @@ bool GraphicsImage::LoadImageData() {
         return true;
 
     _initialized = _loader->Load(&_rgbaImage, &_indexedImage, &_palette);
-    assert(_rgbaImage);
+    // TODO(captainurist): _initialized == false happens, investigate
+
+    if (_initialized)
+        _renderId = render->CreateTexture(_rgbaImage);
+
     return _initialized;
 }

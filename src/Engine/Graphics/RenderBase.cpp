@@ -1,7 +1,7 @@
 #include "Engine/Graphics/RenderBase.h"
 
 #include <cassert>
-#include <algorithm>
+#include <utility>
 
 #include "Engine/Engine.h"
 #include "Engine/MM7.h"
@@ -14,7 +14,6 @@
 #include "Engine/Graphics/Camera.h"
 #include "Engine/Graphics/LightmapBuilder.h"
 #include "Engine/Graphics/LightsStack.h"
-#include "Engine/Graphics/Outdoor.h"
 #include "Engine/Graphics/Indoor.h"
 #include "Engine/Graphics/BspRenderer.h"
 #include "Engine/Graphics/Sprites.h"
@@ -31,7 +30,7 @@
 #include "Utility/Math/TrigLut.h"
 #include "Utility/Streams/FileOutputStream.h"
 
-
+#include "ImageLoader.h"
 
 bool RenderBase::Initialize() {
     window->resize({config->window.Width.value(), config->window.Height.value()});
@@ -516,10 +515,6 @@ void RenderBase::TransformBillboard(SoftwareBillboard *pSoftBillboard, RenderBil
     billboard->PaletteIndex = pBillboard->uPaletteIndex;
 }
 
-double fix2double(int fix) {
-    return (((double)(fix & 0xFFFF) / (double)0xFFFF) + (double)(fix >> 16));
-}
-
 void RenderBase::MakeParticleBillboardAndPush(SoftwareBillboard *a2,
                                               GraphicsImage *texture,
                                               Color uDiffuse,
@@ -743,4 +738,52 @@ void RenderBase::PresentBlackScreen() {
     BeginScene2D();
     ClearBlack();
     Present();
+}
+
+GraphicsImage *RenderBase::CreateTexture_Paletted(const std::string &name) {
+    return GraphicsImage::Create(std::make_unique<Paletted_Img_Loader>(pIcons_LOD, name));
+}
+
+GraphicsImage *RenderBase::CreateTexture_ColorKey(const std::string &name, Color colorkey) {
+    return GraphicsImage::Create(std::make_unique<ColorKey_LOD_Loader>(pIcons_LOD, name, colorkey));
+}
+
+GraphicsImage *RenderBase::CreateTexture_Solid(const std::string &name) {
+    return GraphicsImage::Create(std::make_unique<Image16bit_LOD_Loader>(pIcons_LOD, name));
+}
+
+GraphicsImage *RenderBase::CreateTexture_Alpha(const std::string &name) {
+    return GraphicsImage::Create(std::make_unique<Alpha_LOD_Loader>(pIcons_LOD, name));
+}
+
+GraphicsImage *RenderBase::CreateTexture_PCXFromIconsLOD(const std::string &name) {
+    return GraphicsImage::Create(std::make_unique<PCX_LOD_Compressed_Loader>(pIcons_LOD, name));
+}
+
+GraphicsImage *RenderBase::CreateTexture_PCXFromNewLOD(const std::string &name) {
+    return GraphicsImage::Create(std::make_unique<PCX_LOD_Compressed_Loader>(pSave_LOD, name));
+}
+
+GraphicsImage *RenderBase::CreateTexture_PCXFromFile(const std::string &name) {
+    return GraphicsImage::Create(std::make_unique<PCX_File_Loader>(name));
+}
+
+GraphicsImage *RenderBase::CreateTexture_PCXFromLOD(LOD::File *pLOD, const std::string &name) {
+    return GraphicsImage::Create(std::make_unique<PCX_LOD_Raw_Loader>(pLOD, name));
+}
+
+GraphicsImage *RenderBase::CreateTexture_Blank(unsigned int width, unsigned int height) {
+    return GraphicsImage::Create(width, height);
+}
+
+GraphicsImage *RenderBase::CreateTexture_Blank(RgbaImage image) {
+    return GraphicsImage::Create(std::move(image));
+}
+
+GraphicsImage *RenderBase::CreateTexture(const std::string &name) {
+    return GraphicsImage::Create(std::make_unique<Bitmaps_LOD_Loader>(pBitmaps_LOD, name));
+}
+
+GraphicsImage *RenderBase::CreateSprite(const std::string &name, unsigned int palette_id, /*refactor*/ unsigned int lod_sprite_id) {
+    return GraphicsImage::Create(std::make_unique<Sprites_LOD_Loader>(pSprites_LOD, palette_id, name, lod_sprite_id));
 }

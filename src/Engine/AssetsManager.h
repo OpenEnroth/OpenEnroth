@@ -13,6 +13,7 @@ class AssetsManager {
 
     void releaseAllTextures();
 
+    // TODO(captainurist): These are called back from GraphicsImage::Release, which is a questionable design.
     bool releaseImage(const std::string &name);
     bool releaseSprite(const std::string &name);
     bool releaseBitmap(const std::string &name);

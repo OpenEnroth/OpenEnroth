@@ -12,6 +12,8 @@
 #include "Library/Color/Color.h"
 #include "Utility/Geometry/Rect.h"
 
+#include "TextureRenderId.h"
+
 class Sprite;
 class SpriteFrame;
 struct SoftwareBillboard;
@@ -270,11 +272,12 @@ class IRender {
     virtual void DrawProjectile(float srcX, float srcY, float a3, float a4,
                                 float dstX, float dstY, float a7, float a8,
                                 GraphicsImage *texture) = 0;
-    virtual void RemoveTextureFromDevice(GraphicsImage *texture) = 0;
-    virtual bool MoveTextureToDevice(GraphicsImage *texture) = 0;
+
+    virtual TextureRenderId CreateTexture(RgbaImageView image) = 0;
+    virtual void DeleteTexture(TextureRenderId id) = 0;
+    virtual void UpdateTexture(TextureRenderId id, RgbaImageView image) = 0;
 
     virtual void Update_Texture(GraphicsImage *texture) = 0;
-    virtual void DeleteTexture(GraphicsImage *texture) = 0;
 
 
     virtual void BeginScene2D() = 0;

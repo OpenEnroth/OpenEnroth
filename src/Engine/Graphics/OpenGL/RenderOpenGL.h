@@ -38,24 +38,6 @@ class RenderOpenGL : public RenderBase {
     virtual struct nk_image NuklearImageLoad(GraphicsImage *img) override;
     virtual void NuklearImageFree(GraphicsImage *img) override;
 
-    virtual GraphicsImage *CreateTexture_Paletted(const std::string &name) override;
-    virtual GraphicsImage *CreateTexture_ColorKey(const std::string &name, Color colorkey) override;
-    virtual GraphicsImage *CreateTexture_Solid(const std::string &name) override;
-    virtual GraphicsImage *CreateTexture_Alpha(const std::string &name) override;
-
-    virtual GraphicsImage *CreateTexture_PCXFromFile(const std::string &name) override;
-    virtual GraphicsImage *CreateTexture_PCXFromIconsLOD(const std::string &name) override;
-    virtual GraphicsImage *CreateTexture_PCXFromNewLOD(const std::string &name) override;
-    virtual GraphicsImage *CreateTexture_PCXFromLOD(LOD::File *pLOD, const std::string &name) override;
-
-    virtual GraphicsImage *CreateTexture_Blank(unsigned int width, unsigned int height) override;
-    virtual GraphicsImage *CreateTexture_Blank(RgbaImage image) override;
-
-    virtual GraphicsImage *CreateTexture(const std::string &name) override;
-    virtual GraphicsImage *CreateSprite(
-        const std::string &name, unsigned int palette_id,
-        /*refactor*/ unsigned int lod_sprite_id) override;
-
     virtual RgbaImage ReadScreenPixels() override;
     virtual void SaveWinnersCertificate(const std::string &filePath) override;
     virtual void ClearTarget(Color uColor) override;
@@ -88,12 +70,11 @@ class RenderOpenGL : public RenderBase {
                                 float dstX, float dstY, float a7, float a8,
                                 GraphicsImage *texture) override;
 
-    virtual void RemoveTextureFromDevice(GraphicsImage *texture) override;
-    virtual bool MoveTextureToDevice(GraphicsImage *texture) override;
+    virtual TextureRenderId CreateTexture(RgbaImageView image) override;
+    virtual void DeleteTexture(TextureRenderId id) override;
+    virtual void UpdateTexture(TextureRenderId id, RgbaImageView image) override;
 
     virtual void Update_Texture(GraphicsImage *texture) override;
-
-    virtual void DeleteTexture(GraphicsImage *texture) override;
 
     virtual void BeginScene2D() override;
     virtual void ScreenFade(Color color, float t) override;

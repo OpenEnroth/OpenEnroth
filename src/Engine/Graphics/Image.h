@@ -12,6 +12,8 @@
 #include "Library/Image/Image.h"
 #include "Library/Image/Palette.h"
 
+#include "TextureRenderId.h"
+
 class ImageLoader;
 
 class GraphicsImage {
@@ -37,6 +39,9 @@ class GraphicsImage {
 
     bool Release();
 
+    [[nodiscard]] TextureRenderId renderId(bool load = true);
+    void releaseRenderId();
+
  protected:
     bool _lazyInitialization = false;
     bool _initialized = false;
@@ -45,6 +50,7 @@ class GraphicsImage {
     RgbaImage _rgbaImage;
     GrayscaleImage _indexedImage;
     Palette _palette;
+    TextureRenderId _renderId;
 
     virtual bool LoadImageData();
 };

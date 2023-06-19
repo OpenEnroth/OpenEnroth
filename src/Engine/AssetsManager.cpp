@@ -14,13 +14,13 @@ void AssetsManager::releaseAllTextures() {
     logger->info("Render - Releasing Textures.");
     // clears any textures from gpu
     for (auto img : images) {
-        render->DeleteTexture(img.second);
+        img.second->releaseRenderId();
     }
     for (auto bit : bitmaps) {
-        render->DeleteTexture(bit.second);
+        bit.second->releaseRenderId();
     }
     for (auto spr : sprites) {
-        render->DeleteTexture(spr.second);
+        spr.second->releaseRenderId();
     }
 
     ReloadFonts();
@@ -36,7 +36,7 @@ bool AssetsManager::releaseImage(const std::string &name) {
         return false;
     }
 
-    render->DeleteTexture(i->second);
+    i->second->releaseRenderId();
     images.erase(filename);
     return true;
 }
@@ -156,7 +156,7 @@ bool AssetsManager::releaseBitmap(const std::string &name) {
         return false;
     }
 
-    render->DeleteTexture(i->second);
+    i->second->releaseRenderId();
     bitmaps.erase(filename);
     return true;
 }
@@ -183,7 +183,7 @@ bool AssetsManager::releaseSprite(const std::string &name) {
         return false;
     }
 
-    render->DeleteTexture(i->second);
+    i->second->releaseRenderId();
     sprites.erase(filename);
     return true;
 }
