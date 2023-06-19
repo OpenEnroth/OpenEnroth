@@ -345,7 +345,7 @@ void Engine::StackPartyTorchLight() {
         // problem with deserializing this ??
         if (pParty->torchLightColor.r == 0) {
             // __debugbreak();
-            pParty->torchLightColor = Color(96, 96, 96); // TODO(captainurist): colorTable
+            pParty->torchLightColor = colorTable.CarbonGray;
 
             logger->verbose("Torchlight doesn't have color");
         }

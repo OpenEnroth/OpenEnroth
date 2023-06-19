@@ -62,7 +62,7 @@ Color GetActorTintColor(int max_dimm, int min_dimm, float distance, int bNoLight
     }
 
     // daytime
-    if (fabsf(distance) < 1.0e-6f) return Color(0xF8, 0xF8, 0xF8); // TODO(captainurist): colortable
+    if (fabsf(distance) < 1.0e-6f) return colorTable.White;
 
     // dim in measured in 8-steps
     int rangewidth = 8 * (max_dimm - min_dimm);

@@ -2748,7 +2748,7 @@ void ODM_LoadAndInitialize(const std::string &pFilename, ODMRenderParams *thisa)
 // returns 0xXXYYZZ fog color
 Color GetLevelFogColor() {
     if (engine->IsUnderwater()) {
-        return Color(0x5C, 0x8F, 0x25, 0xFF); // TODO(captainurist): colorTable
+        return colorTable.OliveDrab;
     }
 
     if (day_attrib & DAY_ATTRIB_FOG) {
@@ -2758,7 +2758,7 @@ Color GetLevelFogColor() {
                 __debugbreak();
             }
             if (pWeather->bNight) {
-                return Color(0x1F, 0x1F, 0x1F); // TODO(captainurist): colorTable
+                return colorTable.DarkGray;
             } else {
                 return Color();
             }

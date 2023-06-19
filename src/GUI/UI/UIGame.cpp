@@ -1956,7 +1956,7 @@ void GUIWindow_DebugMenu::Update() {
 void buttonbox(int x, int y, const char *text, int col) {
     int width = 108;
     int height = 20;
-    render->FillRectFast(x, y, width+1, height+1, Color(50, 50, 50)); // TODO(captainurist): color table
+    render->FillRectFast(x, y, width+1, height+1, colorTable.GunmetalGray);
 
     //render->BeginLines2D();
     render->RasterLine2D(x-1, y-1, x+width+1, y-1, colorTable.Jonquil);
