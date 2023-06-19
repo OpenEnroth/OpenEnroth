@@ -101,9 +101,10 @@ bool GraphicsImage::LoadImageData() {
         return true;
 
     _initialized = _loader->Load(&_rgbaImage, &_indexedImage, &_palette);
-    assert(_initialized); // TODO(captainurist): error handling
+    // TODO(captainurist): _initialized == false happens, investigate
 
-    _renderId = render->CreateTexture(_rgbaImage);
+    if (_initialized)
+        _renderId = render->CreateTexture(_rgbaImage);
 
     return _initialized;
 }
