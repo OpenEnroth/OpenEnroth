@@ -367,6 +367,10 @@ void AudioPlayer::UpdateSounds() {
     _voiceSoundPool.update();
     _regularSoundPool.update();
     _loopingSoundPool.update();
+
+    if (current_screen_type != CURRENT_SCREEN::SCREEN_GAME) {
+        stopWalkingSounds();
+    }
     if (_currentWalkingSample && _currentWalkingSample->IsStopped()) {
         _currentWalkingSample = nullptr;
     }
