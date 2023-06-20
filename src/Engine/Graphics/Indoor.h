@@ -170,24 +170,12 @@ struct BLVFace {  // 60h
 struct BLVFaceExtra {
     bool HasEventHint();
 
-    int16_t field_0;
-    int16_t field_2;
-    int16_t field_4;
-    int16_t field_6;
-    int16_t field_8;
-    int16_t field_A;
     int16_t face_id;
-    uint16_t uAdditionalBitmapID;
-    int16_t field_10;
-    int16_t field_12;
+    uint16_t uAdditionalBitmapID; // TODO(captainurist): why is this one unused?
     int16_t sTextureDeltaU;
     int16_t sTextureDeltaV;
     int16_t sCogNumber;
     uint16_t uEventID;
-    int16_t field_1C;
-    int16_t field_1E;
-    int16_t field_20;
-    int16_t field_22;
 };
 
 /*   95 */
