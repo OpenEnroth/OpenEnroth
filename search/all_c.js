@@ -14,7 +14,7 @@ var searchData=
   ['lastpressedkey_11',['LastPressedKey',['../classIo_1_1KeyboardInputHandler.html#adc4b592ab015ea6f10d7586a62b2ad6c',1,'Io::KeyboardInputHandler']]],
   ['lastregenerationtime_12',['lastRegenerationTime',['../structParty__MM7.html#aba3bf7bb90d7d0f6d341819ef1e3508d',1,'Party_MM7']]],
   ['lastrespawnday_13',['lastRespawnDay',['../structLocationInfo.html#abc5d8d49ac4da4bbefe6bd43235bd2cb',1,'LocationInfo::lastRespawnDay()'],['../structLocationInfo__MM7.html#a447ace69d01e88bb108980cdbc881c86',1,'LocationInfo_MM7::lastRespawnDay()']]],
-  ['learnablemagicskilldialogue_14',['learnableMagicSkillDialogue',['../MagicGuild_8cpp.html#a2e1846dc8a18bf64b118ebccf37b0e9d',1,'MagicGuild.cpp']]],
+  ['learnablemagicskilldialogue_14',['learnableMagicSkillDialogue',['../MagicGuild_8cpp.html#a3d49bb49f491db25369f2a1a8970dc3b',1,'MagicGuild.cpp']]],
   ['learnselectedskill_15',['learnSelectedSkill',['../classGUIWindow__House.html#a4a537cc47db0891724539255c2b1b25f',1,'GUIWindow_House']]],
   ['learnskillsdialogue_16',['learnSkillsDialogue',['../classGUIWindow__House.html#a34eff85ed9f49e6d43d799bdb68b397b',1,'GUIWindow_House']]],
   ['left_17',['Left',['../classGameConfig_1_1Gamepad.html#a53b3a2c81b768bed02b10275f3a06eba',1,'GameConfig::Gamepad::Left()'],['../classGameConfig_1_1Keybindings.html#ae6d7863985abee2aa378cbb93979e1f7',1,'GameConfig::Keybindings::Left()']]],

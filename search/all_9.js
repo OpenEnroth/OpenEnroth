@@ -1351,7 +1351,7 @@ var searchData=
   ['item_5fwooden_5fbuckler_1348',['ITEM_WOODEN_BUCKLER',['../ItemEnums_8h.html#a3423a9b7221dd99ce926bcad62ae96a5aa5842c2b1ad3f369c85e8b85056bd9a4',1,'ItemEnums.h']]],
   ['item_5fwooden_5fshield_1349',['ITEM_WOODEN_SHIELD',['../ItemEnums_8h.html#a3423a9b7221dd99ce926bcad62ae96a5ac9f3cb728e66490e1e00cdf01a61dbe7',1,'ItemEnums.h']]],
   ['item_5fzealot_5fmace_1350',['ITEM_ZEALOT_MACE',['../ItemEnums_8h.html#a3423a9b7221dd99ce926bcad62ae96a5a9036ebaf51fad659c052ae1a3cb4cf7f',1,'ItemEnums.h']]],
-  ['itemamountinshop_1351',['itemAmountInShop',['../UIHouses_8cpp.html#a1166664e2367d0947f508e96b7092c35',1,'itemAmountInShop():&#160;UIHouses.cpp'],['../UIHouses_8h.html#a1166664e2367d0947f508e96b7092c35',1,'itemAmountInShop():&#160;UIHouses.cpp']]],
+  ['itemamountinshop_1351',['itemAmountInShop',['../UIHouses_8cpp.html#aca969b631b13ed0ed17382c499ff62fd',1,'itemAmountInShop():&#160;UIHouses.cpp'],['../UIHouses_8h.html#aca969b631b13ed0ed17382c499ff62fd',1,'itemAmountInShop():&#160;UIHouses.cpp']]],
   ['itembuyingpriceforplayer_1352',['itemBuyingPriceForPlayer',['../classPriceCalculator.html#aca068ee759b4e9b24023c5d42da4b5f2',1,'PriceCalculator']]],
   ['itemdamagefromactor_1353',['ItemDamageFromActor',['../Actor_8cpp.html#a812345669ace3abe38c75ec103db7ab5',1,'ItemDamageFromActor(unsigned int uObjID, unsigned int uActorID, Vec3i *pVelocity):&#160;Actor.cpp'],['../Actor_8h.html#a812345669ace3abe38c75ec103db7ab5',1,'ItemDamageFromActor(unsigned int uObjID, unsigned int uActorID, Vec3i *pVelocity):&#160;Actor.cpp']]],
   ['itemdesc_1354',['ItemDesc',['../structItemDesc.html',1,'']]],

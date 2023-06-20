@@ -121,6 +121,6 @@ var searchData=
   ['guildnextrefreshtime_118',['guildNextRefreshTime',['../structPartyTimeStruct.html#ae1af9a593fec5cb8d7e9477f465cb9be',1,'PartyTimeStruct']]],
   ['guildsnextgenerationtime_119',['guildsNextGenerationTime',['../structPartyTimeStruct__MM7.html#a26cdec2d1bb29ec59e2a4801f86defc1',1,'PartyTimeStruct_MM7']]],
   ['guildspellsmastery_120',['guildSpellsMastery',['../MagicGuild_8cpp.html#aa31b30faac8dedc6fea698ddf8f8cd81',1,'MagicGuild.cpp']]],
-  ['guildspellsschool_121',['guildSpellsSchool',['../MagicGuild_8cpp.html#ae0bde2ea84732c02b465d4caac563abd',1,'MagicGuild.cpp']]],
+  ['guildspellsschool_121',['guildSpellsSchool',['../MagicGuild_8cpp.html#af18e8011ba6ba400116c46c07ef3b02a',1,'MagicGuild.cpp']]],
   ['gunmetalgray_122',['GunmetalGray',['../classColorTable.html#ae1234cdd7eed7ece6a83ec22750bd79e',1,'ColorTable']]]
 ];
