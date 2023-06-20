@@ -3463,13 +3463,9 @@ void Player::resetTempBonuses() {
     this->sResLightBonus = 0;
     this->sResDarkBonus = 0;
 
-    this->field_1A97_set0_unused = 0;
     this->_ranged_dmg_bonus = 0;
-    this->field_1A95 = 0;
     this->_ranged_atk_bonus = 0;
-    this->field_1A93 = 0;
     this->_melee_dmg_bonus = 0;
-    this->field_1A91 = 0;
     this->_some_attack_bonus = 0;
     this->_mana_related = 0;
     this->uFullManaBonus = 0;
@@ -7546,13 +7542,9 @@ Player::Player() {
     uQuickSpell = SPELL_NONE;
 
     _some_attack_bonus = 0;
-    field_1A91 = 0;
     _melee_dmg_bonus = 0;
-    field_1A93 = 0;
     _ranged_atk_bonus = 0;
-    field_1A95 = 0;
     _ranged_dmg_bonus = 0;
-    field_1A97_set0_unused = 0;
 
     expression = CHARACTER_EXPRESSION_INVALID;
     uExpressionTimePassed = 0;

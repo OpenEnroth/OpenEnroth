@@ -59,7 +59,6 @@ struct BLVDoor {  // 50h
     uint16_t uNumSectors;
     uint16_t uNumOffsets;
     State uState;
-    int16_t field_4E;
 };
 
 struct BLVMapOutline {  // 0C

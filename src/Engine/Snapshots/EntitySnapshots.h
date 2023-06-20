@@ -643,7 +643,7 @@ struct MonsterInfo_MM7 {
     uint8_t specialAbilityDamageDiceSides;
     uint8_t specialAbilityDamageDiceBonus;
     uint8_t numCharactersAttackedPerSpecialAbility;
-    char field_33;
+    char _pad;
     uint16_t id;
     uint16_t bloodSplatOnDeath;
     uint16_t spellSkillAndMastery1;
@@ -735,8 +735,7 @@ struct Actor_MM7 {
     int16_t uAIState;
     uint16_t uCurrentActionAnimation;
     uint16_t uCarriedItemID;
-    char field_B6;
-    char field_B7;
+    uint16_t _pad;
     uint32_t uCurrentActionTime;
     std::array<uint16_t, 8> pSpriteIDs;
     std::array<uint16_t, 4> pSoundSampleIDs;  // 1 die     3 bored
@@ -778,7 +777,7 @@ struct BLVDoor_MM7 {
     uint16_t uNumSectors;
     uint16_t uNumOffsets;
     uint16_t uState;
-    int16_t field_4E;
+    int16_t _pad;
 };
 static_assert(sizeof(BLVDoor_MM7) == 0x50);
 MM_DECLARE_MEMCOPY_SERIALIZABLE(BLVDoor_MM7)

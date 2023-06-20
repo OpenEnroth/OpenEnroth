@@ -35,7 +35,6 @@ int ActiveOverlayList::_4418B6(int uOverlayID, int16_t pid, int animLength, int 
 
     for (uint i = 0; i < 50; ++i) {
         if (this->pOverlays[i].animLength <= 0) {
-            this->pOverlays[i].field_0 = 0;
             this->pOverlays[i].screenSpaceY = 0;
             this->pOverlays[i].screenSpaceX = 0;
             this->pOverlays[i].pid = pid;
@@ -169,7 +168,6 @@ bool OverlayList::FromFileTxt(const char *Args) {
 
 //----- (0045855F) --------------------------------------------------------
 void ActiveOverlay::Reset() {
-    this->field_0 = 0;
     this->indexToOverlayList = 0;
     this->spriteFrameTime = 0;
     this->animLength = 0;

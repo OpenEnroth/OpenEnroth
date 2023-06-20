@@ -12,7 +12,6 @@ struct ActiveOverlay {
     ActiveOverlay();
     void Reset();
 
-    int16_t field_0;
     int16_t indexToOverlayList;
     int16_t spriteFrameTime;
     int16_t animLength;
@@ -29,7 +28,6 @@ struct ActiveOverlayList {
     void DrawTurnBasedIcon();
 
     std::array<ActiveOverlay, 50> pOverlays;
-    int field_3E8 = 0;
 };
 
 struct OverlayDesc {

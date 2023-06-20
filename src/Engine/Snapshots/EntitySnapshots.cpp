@@ -118,7 +118,6 @@ void snapshot(const Timer &src, Timer_MM7 *dst) {
     dst->startTime = src.uStartTime;
     dst->stopTime = src.uStopTime;
     dst->gameTimeStart = src.uGameTimeStart;
-    dst->field_18 = src.field_18;
     dst->timeElapsed = src.uTimeElapsed;
     dst->dtFixpoint = src.dt_fixpoint;
     dst->totalGameTimeElapsed = src.uTotalTimeElapsed;
@@ -131,7 +130,6 @@ void reconstruct(const Timer_MM7 &src, Timer *dst) {
     dst->uStartTime = src.startTime;
     dst->uStopTime = src.stopTime;
     dst->uGameTimeStart = src.gameTimeStart;
-    dst->field_18 = src.field_18;
     dst->uTimeElapsed = src.timeElapsed;
     dst->dt_fixpoint = src.dtFixpoint;
     dst->uTotalTimeElapsed = src.totalGameTimeElapsed;
@@ -186,7 +184,6 @@ void reconstruct(const NPCData_MM7 &src, NPCData *dst) {
 void snapshot(const ActiveOverlay &src, ActiveOverlay_MM7 *dst) {
     memzero(dst);
 
-    dst->field_0 = src.field_0;
     dst->indexToOverlayList = src.indexToOverlayList;
     dst->spriteFrameTime = src.spriteFrameTime;
     dst->animLength = src.animLength;
@@ -200,7 +197,6 @@ void snapshot(const ActiveOverlay &src, ActiveOverlay_MM7 *dst) {
 void reconstruct(const ActiveOverlay_MM7 &src, ActiveOverlay *dst) {
     memzero(dst);
 
-    dst->field_0 = src.field_0;
     dst->indexToOverlayList = src.indexToOverlayList;
     dst->spriteFrameTime = src.spriteFrameTime;
     dst->animLength = src.animLength;
@@ -215,12 +211,10 @@ void snapshot(const ActiveOverlayList &src, ActiveOverlayList_MM7 *dst) {
     memzero(dst);
 
     dst->redraw = true;
-    dst->field_3E8 = src.field_3E8;
     snapshot(src.pOverlays, &dst->overlays);
 }
 
 void reconstruct(const ActiveOverlayList_MM7 &src, ActiveOverlayList *dst) {
-    dst->field_3E8 = src.field_3E8;
     reconstruct(src.overlays, &dst->pOverlays);
 }
 
@@ -595,21 +589,15 @@ void snapshot(const Player &src, Player_MM7 *dst) {
 
     snapshot(src.pEquipment.pIndices, &dst->equipment.indices);
 
-    dst->field_1A4C = src.field_1A4C;
-    dst->field_1A4D = src.field_1A4D;
     dst->lastOpenedSpellbookPage = src.lastOpenedSpellbookPage;
     dst->quickSpell = std::to_underlying(src.uQuickSpell);
 
     snapshot(src._playerEventBits, &dst->playerEventBits);
 
     dst->someAttackBonus = src._some_attack_bonus;
-    dst->field_1A91 = src.field_1A91;
     dst->meleeDmgBonus = src._melee_dmg_bonus;
-    dst->field_1A93 = src.field_1A93;
     dst->rangedAttackBonus = src._ranged_atk_bonus;
-    dst->field_1A95 = src.field_1A95;
     dst->rangedDmgBonus = src._ranged_dmg_bonus;
-    dst->field_1A97 = src.field_1A97_set0_unused;
     dst->fullHealthBonus = src.uFullHealthBonus;
     dst->healthRelated = src._health_related;
     dst->fullManaBonus = src.uFullManaBonus;
@@ -852,21 +840,15 @@ void reconstruct(const Player_MM7 &src, Player *dst) {
 
     reconstruct(src.equipment.indices, &dst->pEquipment.pIndices);
 
-    dst->field_1A4C = src.field_1A4C;
-    dst->field_1A4D = src.field_1A4D;
     dst->lastOpenedSpellbookPage = src.lastOpenedSpellbookPage;
     dst->uQuickSpell = static_cast<SPELL_TYPE>(src.quickSpell);
 
     reconstruct(src.playerEventBits, &dst->_playerEventBits);
 
     dst->_some_attack_bonus = src.someAttackBonus;
-    dst->field_1A91 = src.field_1A91;
     dst->_melee_dmg_bonus = src.meleeDmgBonus;
-    dst->field_1A93 = src.field_1A93;
     dst->_ranged_atk_bonus = src.rangedAttackBonus;
-    dst->field_1A95 = src.field_1A95;
     dst->_ranged_dmg_bonus = src.rangedDmgBonus;
-    dst->field_1A97_set0_unused = src.field_1A97;
     dst->uFullHealthBonus = src.fullHealthBonus;
     dst->_health_related = src.healthRelated;
     dst->uFullManaBonus = src.fullManaBonus;
@@ -927,23 +909,19 @@ void snapshot(const UIAnimation &src, UIAnimation_MM7 *dst) {
     memzero(dst);
 
     /* 000 */ dst->iconId = src.icon->id;
-    /* 002 */ dst->field_2 = src.field_2;
     /* 004 */ dst->animTime = src.uAnimTime;
     /* 006 */ dst->animLength = src.uAnimLength;
     /* 008 */ dst->x = src.x;
     /* 00A */ dst->y = src.y;
-    /* 00C */ dst->field_C = src.field_C;
 }
 
 void reconstruct(const UIAnimation_MM7 &src, UIAnimation *dst) {
     dst->icon = pIconsFrameTable->GetIcon(src.iconId);
     ///* 000 */ anim->uIconID = src.uIconID;
-    /* 002 */ dst->field_2 = src.field_2;
     /* 004 */ dst->uAnimTime = src.animTime;
     /* 006 */ dst->uAnimLength = src.animLength;
     /* 008 */ dst->x = src.x;
     /* 00A */ dst->y = src.y;
-    /* 00C */ dst->field_C = src.field_C;
 }
 
 void reconstruct(const MonsterDesc_MM6 &src, MonsterDesc *dst) {
@@ -1022,7 +1000,6 @@ void snapshot(const Actor &src, Actor_MM7 *dst) {
     dst->pMonsterInfo.movementType = src.pMonsterInfo.uMovementType;
     dst->pMonsterInfo.aiType = src.pMonsterInfo.uAIType;
     dst->pMonsterInfo.hostilityType = (uint8_t)src.pMonsterInfo.uHostilityType;
-    dst->pMonsterInfo.field_12 = src.pMonsterInfo.field_12;
     dst->pMonsterInfo.specialAttackType = src.pMonsterInfo.uSpecialAttackType;
     dst->pMonsterInfo.specialAttackLevel = src.pMonsterInfo.uSpecialAttackLevel;
     dst->pMonsterInfo.attack1Type = src.pMonsterInfo.uAttack1Type;
@@ -1055,7 +1032,6 @@ void snapshot(const Actor &src, Actor_MM7 *dst) {
     dst->pMonsterInfo.specialAbilityDamageDiceSides = src.pMonsterInfo.uSpecialAbilityDamageDiceSides;
     dst->pMonsterInfo.specialAbilityDamageDiceBonus = src.pMonsterInfo.uSpecialAbilityDamageDiceBonus;
     dst->pMonsterInfo.numCharactersAttackedPerSpecialAbility = src.pMonsterInfo.uNumCharactersAttackedPerSpecialAbility;
-    dst->pMonsterInfo.field_33 = src.pMonsterInfo.field_33;
     dst->pMonsterInfo.id = src.pMonsterInfo.uID;
     dst->pMonsterInfo.bloodSplatOnDeath = src.pMonsterInfo.bBloodSplatOnDeath;
     dst->pMonsterInfo.spellSkillAndMastery1 = src.pMonsterInfo.uSpellSkillAndMastery1;
@@ -1118,7 +1094,6 @@ void reconstruct(const Actor_MM7 &src, Actor *dst) {
     dst->pMonsterInfo.uMovementType = src.pMonsterInfo.movementType;
     dst->pMonsterInfo.uAIType = src.pMonsterInfo.aiType;
     dst->pMonsterInfo.uHostilityType = static_cast<MonsterInfo::HostilityRadius>(src.pMonsterInfo.hostilityType);
-    dst->pMonsterInfo.field_12 = src.pMonsterInfo.field_12;
     dst->pMonsterInfo.uSpecialAttackType = static_cast<SPECIAL_ATTACK_TYPE>(src.pMonsterInfo.specialAttackType);
     dst->pMonsterInfo.uSpecialAttackLevel = src.pMonsterInfo.specialAttackLevel;
     dst->pMonsterInfo.uAttack1Type = src.pMonsterInfo.attack1Type;
@@ -1151,7 +1126,6 @@ void reconstruct(const Actor_MM7 &src, Actor *dst) {
     dst->pMonsterInfo.uSpecialAbilityDamageDiceSides = src.pMonsterInfo.specialAbilityDamageDiceSides;
     dst->pMonsterInfo.uSpecialAbilityDamageDiceBonus = src.pMonsterInfo.specialAbilityDamageDiceBonus;
     dst->pMonsterInfo.uNumCharactersAttackedPerSpecialAbility = src.pMonsterInfo.numCharactersAttackedPerSpecialAbility;
-    dst->pMonsterInfo.field_33 = src.pMonsterInfo.field_33;
     dst->pMonsterInfo.uID = src.pMonsterInfo.id;
     dst->pMonsterInfo.bBloodSplatOnDeath = src.pMonsterInfo.bloodSplatOnDeath;
     dst->pMonsterInfo.uSpellSkillAndMastery1 = src.pMonsterInfo.spellSkillAndMastery1;
@@ -1213,7 +1187,6 @@ void snapshot(const BLVDoor &src, BLVDoor_MM7 *dst) {
     dst->uNumSectors = src.uNumSectors;
     dst->uNumOffsets = src.uNumOffsets;
     dst->uState = std::to_underlying(src.uState);
-    dst->field_4E = src.field_4E;
 }
 
 void reconstruct(const BLVDoor_MM7 &src, BLVDoor *dst) {
@@ -1229,7 +1202,6 @@ void reconstruct(const BLVDoor_MM7 &src, BLVDoor *dst) {
     dst->uNumSectors = src.uNumSectors;
     dst->uNumOffsets = src.uNumOffsets;
     dst->uState = static_cast<BLVDoor::State>(src.uState);
-    dst->field_4E = src.field_4E;
 }
 
 void snapshot(const BLVSector &src, BLVSector_MM7 *dst) {

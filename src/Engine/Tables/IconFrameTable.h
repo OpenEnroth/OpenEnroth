@@ -59,12 +59,10 @@ class UIAnimation {
  public:
     class Icon *icon;
 
-    /* 002 */ int16_t field_2;
-    /* 004 */ int16_t uAnimTime;
-    /* 006 */ int16_t uAnimLength;
-    /* 008 */ int16_t x;
-    /* 00A */ int16_t y;
-    /* 00C */ char field_C;
+    int16_t uAnimTime;
+    int16_t uAnimLength;
+    int16_t x;
+    int16_t y;
 };
 
 extern struct IconFrameTable *pIconsFrameTable;

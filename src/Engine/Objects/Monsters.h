@@ -138,7 +138,6 @@ struct MonsterInfo {
     uint8_t uMovementType = 0;
     uint8_t uAIType = 0;
     HostilityRadius uHostilityType = Hostility_Friendly;
-    char field_12 = 0;
     SPECIAL_ATTACK_TYPE uSpecialAttackType = SPECIAL_ATTACK_NONE;
     uint8_t uSpecialAttackLevel = 0;
     uint8_t uAttack1Type = 0;
@@ -174,7 +173,6 @@ struct MonsterInfo {
     uint8_t uSpecialAbilityDamageDiceSides = 0;
     uint8_t uSpecialAbilityDamageDiceBonus = 0;
     uint8_t uNumCharactersAttackedPerSpecialAbility = 0;
-    char field_33 = 0;
     uint16_t uID = 0;
     bool bBloodSplatOnDeath = 0;  // true for bloodsplat on death
     uint16_t uSpellSkillAndMastery1 = 0;
