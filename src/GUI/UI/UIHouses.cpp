@@ -911,10 +911,10 @@ void GUIWindow_House::houseDialogManager() {
     if (currentDialogueInteractive == -1 || dialogueInteractiveList[currentDialogueInteractive].type != HOUSE_INTERACTIVE_TRANSITION) {
         if (!buildingTable[wData.val - 1].pName.empty()) {
             if (current_screen_type != CURRENT_SCREEN::SCREEN_SHOP_INVENTORY) {
-                int v3 = 2 * pFontCreate->GetHeight() - 6 - pFontCreate->CalcTextHeight(buildingTable[wData.val - 1].pName, 130, 0);
-                if (v3 < 0)
-                    v3 = 0;
-                pWindow.DrawTitleText(pFontCreate, 0x1EAu, v3 / 2 + 4, colorTable.White, buildingTable[wData.val - 1].pName, 3);
+                int yPos = 2 * pFontCreate->GetHeight() - 6 - pFontCreate->CalcTextHeight(buildingTable[wData.val - 1].pName, 130, 0);
+                if (yPos < 0)
+                    yPos = 0;
+                pWindow.DrawTitleText(pFontCreate, 0x1EAu, yPos / 2 + 4, colorTable.White, buildingTable[wData.val - 1].pName, 3);
             }
         }
     }
@@ -938,39 +938,37 @@ void GUIWindow_House::houseDialogManager() {
             render->DrawTextureNew(8 / 640.0f, (347 - v6) / 480.0f, _591428_endcap);
             DrawText(pFontArrus, {13, 354 - v6}, colorTable.White, pFontArrus->FitTextInAWindow(current_npc_text, pDialogWindow.uFrameWidth, 13));
         }
-        if (dialogueInteractiveList.size() == 0) {
-            return;
-        }
 
-        for (int v8 = 0; v8 < dialogueInteractiveList.size(); ++v8) {
-            render->DrawTextureNew((pNPCPortraits_x[dialogueInteractiveList.size() - 1][v8] - 4) / 640.0f,
-                                   (pNPCPortraits_y[dialogueInteractiveList.size() - 1][v8] - 4) / 480.0f, game_ui_evtnpc);
-            render->DrawTextureNew(pNPCPortraits_x[dialogueInteractiveList.size() - 1][v8] / 640.0f,
-                                   pNPCPortraits_y[dialogueInteractiveList.size() - 1][v8] / 480.0f, dialogueInteractiveList[v8].icon);
+        for (int i = 0; i < dialogueInteractiveList.size(); ++i) {
+            render->DrawTextureNew((pNPCPortraits_x[dialogueInteractiveList.size() - 1][i] - 4) / 640.0f,
+                                   (pNPCPortraits_y[dialogueInteractiveList.size() - 1][i] - 4) / 480.0f, game_ui_evtnpc);
+            render->DrawTextureNew(pNPCPortraits_x[dialogueInteractiveList.size() - 1][i] / 640.0f,
+                                   pNPCPortraits_y[dialogueInteractiveList.size() - 1][i] / 480.0f, dialogueInteractiveList[i].icon);
             if (dialogueInteractiveList.size() < 4) {
-                std::string pTitleText;
-                int v9 = 0;
-                if (dialogueInteractiveList[v8].type == HOUSE_INTERACTIVE_TRANSITION) {
-                    pTitleText = pMapStats->pInfos[dialogueInteractiveList[v8].data.targetMapID].pName;
-                    v9 = 94 * v8 + SIDE_TEXT_BOX_POS_Y;
-                } else {
-                    if (!v8 && dialogueInteractiveList[0].type == HOUSE_INTERACTIVE_PROPRIETOR) {
-                        pTitleText = buildingTable[wData.val - 1].pProprieterTitle;
-                        pWindow.DrawTitleText(pFontCreate, SIDE_TEXT_BOX_POS_X, SIDE_TEXT_BOX_POS_Y, colorTable.EasternBlue, pTitleText, 3);
-                        continue;
-                    }
-                    pTitleText = dialogueInteractiveList[v8].data.npc->pName;
-                    v9 = pNPCPortraits_y[dialogueInteractiveList.size() - 1][v8] + dialogueInteractiveList[v8].icon->height() + 2;
+                std::string pTitleText = "";
+                int yPos = 0;
+                switch (dialogueInteractiveList[i].type) {
+                  case HOUSE_INTERACTIVE_TRANSITION:
+                    pTitleText = pMapStats->pInfos[dialogueInteractiveList[i].data.targetMapID].pName;
+                    yPos = 94 * i + SIDE_TEXT_BOX_POS_Y;
+                    break;
+                  case HOUSE_INTERACTIVE_PROPRIETOR:
+                    pTitleText = buildingTable[wData.val - 1].pProprieterTitle;
+                    yPos = SIDE_TEXT_BOX_POS_Y;
+                    break;
+                  case HOUSE_INTERACTIVE_NPC:
+                    pTitleText = dialogueInteractiveList[i].data.npc->pName;
+                    yPos = pNPCPortraits_y[dialogueInteractiveList.size() - 1][i] + dialogueInteractiveList[i].icon->height() + 2;
+                    break;
                 }
-                pWindow.DrawTitleText(pFontCreate, SIDE_TEXT_BOX_POS_X, v9, colorTable.EasternBlue, pTitleText, 3);
+                pWindow.DrawTitleText(pFontCreate, SIDE_TEXT_BOX_POS_X, yPos, colorTable.EasternBlue, pTitleText, 3);
             }
         }
         return;
     }
 
-    int v4 = currentDialogueInteractive;
     render->DrawTextureNew((pNPCPortraits_x[0][0] - 4) / 640.0f, (pNPCPortraits_y[0][0] - 4) / 480.0f, game_ui_evtnpc);
-    render->DrawTextureNew(pNPCPortraits_x[0][0] / 640.0f, pNPCPortraits_y[0][0] / 480.0f, dialogueInteractiveList[v4].icon);
+    render->DrawTextureNew(pNPCPortraits_x[0][0] / 640.0f, pNPCPortraits_y[0][0] / 480.0f, dialogueInteractiveList[currentDialogueInteractive].icon);
     if (current_screen_type == CURRENT_SCREEN::SCREEN_SHOP_INVENTORY) {
         CharacterUI_InventoryTab_Draw(&pParty->activeCharacter(), true);
         if (dialogueInteractiveList[currentDialogueInteractive].type == HOUSE_INTERACTIVE_TRANSITION) {
@@ -981,7 +979,7 @@ void GUIWindow_House::houseDialogManager() {
         }
         return;
     }
-    if (v4 || dialogueInteractiveList[0].type != HOUSE_INTERACTIVE_PROPRIETOR) {  // emerald isle ship before quest's done
+    if (currentDialogueInteractive || dialogueInteractiveList[0].type != HOUSE_INTERACTIVE_PROPRIETOR) {  // emerald isle ship before quest's done
         SimpleHouseDialog();
     } else {
         std::string nameAndTitle = NameAndTitle(buildingTable[wData.val - 1].pProprieterName, buildingTable[wData.val - 1].pProprieterTitle);
