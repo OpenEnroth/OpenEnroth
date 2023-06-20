@@ -974,8 +974,6 @@ void Game::processQueuedMessages() {
                     DialogueEnding();
                     current_screen_type = CURRENT_SCREEN::SCREEN_GAME;
                 } else {
-                    pParty->field_6E4_set0_unused = 0;
-                    pParty->field_6E0_set0_unused = 0;
                     CastSpellInfoHelpers::cancelSpellCastInProgress();
                     DialogueEnding();
                     pEventTimer->Pause();
@@ -1318,8 +1316,6 @@ void Game::processQueuedMessages() {
                 pParty->uFallStartZ = pParty->vPosition.z;
                 pParty->_viewPitch = 0;
                 pParty->uFallSpeed = 0;
-                pParty->field_6E4_set0_unused = 0;
-                pParty->field_6E0_set0_unused = 0;
 
                 // change map to Harmondale
                 pCurrentMapName = "out02.odm";
@@ -2424,8 +2420,6 @@ void Game::gameLoop() {
                 pParty->uFallStartZ = pParty->vPosition.z;
                 pParty->_viewPitch = 0;
                 pParty->uFallSpeed = 0;
-                pParty->field_6E4_set0_unused = 0;
-                pParty->field_6E0_set0_unused = 0;
                 // change map
                 if (pCurrentMapName != Source) {
                     pCurrentMapName = Source;

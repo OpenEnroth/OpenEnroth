@@ -1022,7 +1022,7 @@ bool processSpellImpact(unsigned int uLayingItemID, int pid) {
             }
             object->spellSpriteStop();
             pushAoeAttack(PID(OBJECT_Item, uLayingItemID), engine->config->gameplay.AoeDamageDistance.value(),
-                    pSpriteObjects[uLayingItemID].vPosition, object->field_61);
+                    pSpriteObjects[uLayingItemID].vPosition, object->spellCasterAbility);
             // int v78 = 0;
             // if (pSpriteObjects[uLayingItemID].uSoundID != 0) {
             //     v78 = pSpriteObjects[uLayingItemID].uSoundID + 4;
@@ -1239,7 +1239,7 @@ bool processSpellImpact(unsigned int uLayingItemID, int pid) {
             }
             object->spellSpriteStop();
             pushAoeAttack(PID(OBJECT_Item, uLayingItemID), engine->config->gameplay.AoeDamageDistance.value(),
-                    pSpriteObjects[uLayingItemID].vPosition, object->field_61);
+                    pSpriteObjects[uLayingItemID].vPosition, object->spellCasterAbility);
             if (objectDesc->uFlags & OBJECT_DESC_TRIAL_PARTICLE) {
                 trail_particle_generator.GenerateTrailParticles(
                     object->vPosition.x, object->vPosition.y, object->vPosition.z,
@@ -1268,13 +1268,13 @@ void applySpellSpriteDamage(unsigned int uLayingItemID, int pid) {
     if (PID_TYPE(pid) == OBJECT_Player) {
         velocity = pSpriteObjects[uLayingItemID].vVelocity;
         normalize_to_fixpoint(&velocity.x, &velocity.y, &velocity.z);
-        DamagePlayerFromMonster(PID(OBJECT_Item, uLayingItemID), pSpriteObjects[uLayingItemID].field_61, &velocity, -1);
+        DamagePlayerFromMonster(PID(OBJECT_Item, uLayingItemID), pSpriteObjects[uLayingItemID].spellCasterAbility, &velocity, -1);
     } else if (PID_TYPE(pid) == OBJECT_Actor) {
         velocity = pSpriteObjects[uLayingItemID].vVelocity;
         normalize_to_fixpoint(&velocity.x, &velocity.y, &velocity.z);
         switch (PID_TYPE(pSpriteObjects[uLayingItemID].spell_caster_pid)) {
             case OBJECT_Actor:
-                Actor::ActorDamageFromMonster(PID(OBJECT_Item, uLayingItemID), PID_ID(pid), &velocity, pSpriteObjects[uLayingItemID].field_61);
+                Actor::ActorDamageFromMonster(PID(OBJECT_Item, uLayingItemID), PID_ID(pid), &velocity, pSpriteObjects[uLayingItemID].spellCasterAbility);
                 break;
             case OBJECT_Player:
                 Actor::DamageMonsterFromParty(PID(OBJECT_Item, uLayingItemID), PID_ID(pid), &velocity);

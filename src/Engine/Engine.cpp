@@ -342,20 +342,12 @@ void Engine::StackPartyTorchLight() {
 
         pParty->TorchLightLastIntensity = TorchLightDistance;
 
-        // problem with deserializing this ??
-        if (pParty->torchLightColor.r == 0) {
-            // __debugbreak();
-            pParty->torchLightColor = colorTable.CarbonGray;
-
-            logger->verbose("Torchlight doesn't have color");
-        }
-
         // TODO: either add conversion functions, or keep only glm / only Vec3_* classes.
         Vec3f pos(pCamera3D->vCameraPos.x, pCamera3D->vCameraPos.y, pCamera3D->vCameraPos.z);
 
         pMobileLightsStack->AddLight(
             pos, pBLVRenderParams->uPartySectorID, TorchLightDistance,
-            pParty->torchLightColor, _4E94D0_light_type);
+            colorTable.CarbonGray, _4E94D0_light_type);
     }
 }
 

@@ -3,6 +3,7 @@
 #include <cstdint>
 #include <array>
 #include <vector>
+#include <string>
 
 #include "Library/Color/Color.h"
 
@@ -29,7 +30,7 @@ MM_DECLARE_OPERATORS_FOR_FLAGS(ObjectDescFlags)
 struct ObjectDesc {
     inline bool NoSprite() const { return uFlags & OBJECT_DESC_NO_SPRITE; }
 
-    std::array<char, 32> field_0;
+    std::string name; // TODO(captainurist): why is this unused?
     int16_t uObjectID;
     int16_t uRadius;
     int16_t uHeight;

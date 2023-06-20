@@ -353,7 +353,7 @@ void reconstruct(const OutdoorLocation_MM7 &src, OutdoorLocation *dst) {
     reconstruct(src.fileName, &dst->location_filename);
     reconstruct(src.desciption, &dst->location_file_description);
     reconstruct(src.skyTexture, &dst->sky_texture_filename);
-    // src.groundTileset is just dropped
+    // src.groundTilesetUnused is just dropped
     reconstruct(src.tileTypes, &dst->pTileTypes);
 
     dst->LoadTileGroupIds();
@@ -371,9 +371,15 @@ void reconstruct(const OutdoorLocation_MM7 &src, OutdoorLocation *dst) {
 
     dst->pBModels.clear();
     for (size_t i = 0; i < src.models.size(); i++) {
-        BSPModel &dstModel = dst->pBModels.emplace_back();
-        dstModel.index = i;
-        reconstruct(std::forward_as_tuple(src.models[i], src.modelExtras[i]), &dstModel);
+        BSPModel &model = dst->pBModels.emplace_back();
+        model.index = i;
+        reconstruct(std::forward_as_tuple(src.models[i], src.modelExtras[i]), &model);
+
+        // Recalculate bounding spheres, the ones stored in data files are borked.
+        Vec3f topLeft = Vec3f(model.pBoundingBox.x1, model.pBoundingBox.y1, model.pBoundingBox.z1);
+        Vec3f bottomRight = Vec3f(model.pBoundingBox.x2, model.pBoundingBox.y2, model.pBoundingBox.z2);
+        model.vBoundingCenter = ((topLeft + bottomRight) / 2.0f).toInt();
+        model.sBoundingRadius = (topLeft - model.vBoundingCenter.toFloat()).length();
     }
 
     reconstruct(src.decorations, &pLevelDecorations);
@@ -394,7 +400,7 @@ void deserialize(InputStream &src, OutdoorLocation_MM7 *dst) {
     deserialize(src, &dst->fileName);
     deserialize(src, &dst->desciption);
     deserialize(src, &dst->skyTexture);
-    deserialize(src, &dst->groundTileset);
+    deserialize(src, &dst->groundTilesetUnused);
     deserialize(src, &dst->tileTypes);
     deserialize(src, &dst->heightMap);
     deserialize(src, &dst->tileMap);
@@ -468,13 +474,6 @@ void reconstruct(const OutdoorDelta_MM7 &src, OutdoorLocation *dst) {
                 }
             }
         }
-
-        // TODO(captainurist): this actually belongs to level loading code, not save loading
-        // calculate bounding sphere for model
-        Vec3f topLeft = Vec3f(model.pBoundingBox.x1, model.pBoundingBox.y1, model.pBoundingBox.z1);
-        Vec3f bottomRight = Vec3f(model.pBoundingBox.x2, model.pBoundingBox.y2, model.pBoundingBox.z2);
-        model.vBoundingCenter = ((topLeft + bottomRight) / 2.0f).toInt();
-        model.sBoundingRadius = (topLeft - model.vBoundingCenter.toFloat()).length();
     }
 
     for (size_t i = 0; i < pLevelDecorations.size(); ++i)

@@ -58,7 +58,7 @@ struct IndoorDelta_MM7 {
     std::vector<Chest_MM7> chests;
     std::vector<BLVDoor_MM7> doors;
     std::vector<int16_t> doorsData;
-    MapEventVariables_MM7 eventVariables;
+    PersistentVariables_MM7 eventVariables;
     LocationTime_MM7 locationTime;
 };
 
@@ -84,7 +84,7 @@ struct OutdoorLocation_MM7 {
     std::array<char, 32> fileName;
     std::array<char, 32> desciption;
     std::array<char, 32> skyTexture;
-    std::array<char, 32> groundTileset;
+    std::array<char, 32> groundTilesetUnused;
     std::array<OutdoorLocationTileType_MM7, 4> tileTypes;
     std::array<uint8_t, 128 * 128> heightMap;
     std::array<uint8_t, 128 * 128> tileMap;
@@ -114,7 +114,7 @@ struct OutdoorDelta_MM7 {
     std::vector<Actor_MM7> actors;
     std::vector<SpriteObject_MM7> spriteObjects;
     std::vector<Chest_MM7> chests;
-    MapEventVariables_MM7 eventVariables;
+    PersistentVariables_MM7 eventVariables;
     LocationTime_MM7 locationTime;
 };
 

@@ -143,9 +143,7 @@ struct ODMFace {
     int16_t sCogNumber = 0;
     int16_t sCogTriggeredID = 0;
     int16_t sCogTriggerType = 0;
-    char field_128 = 0;
-    char field_129 = 0;
-    uint8_t uGradientVertex1 = 0;
+    uint8_t uGradientVertex1 = 0; // TODO(captainurist): can we drop these?
     uint8_t uGradientVertex2 = 0;
     uint8_t uGradientVertex3 = 0;
     uint8_t uGradientVertex4 = 0;
@@ -153,8 +151,6 @@ struct ODMFace {
     PolygonType uPolygonType = POLYGON_Invalid;
     uint8_t uShadeType = 0;  // could be minimum shade
     uint8_t bVisible = 0;
-    char field_132 = 0;
-    char field_133 = 0;
 };
 
 class BSPModel {

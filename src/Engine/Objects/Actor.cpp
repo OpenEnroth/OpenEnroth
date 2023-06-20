@@ -250,7 +250,7 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
             sprite.spell_caster_pid = PID(OBJECT_Actor, uActorID);
             sprite.spell_target_pid = 0;
             sprite.field_60_distance_related_prolly_lod = distancemod;
-            sprite.field_61 = ABILITY_SPELL1;
+            sprite.spellCasterAbility = ABILITY_SPELL1;
 
             spriteId = sprite.Create(pDir->uYawAngle, pDir->uPitchAngle, pObjectList->pObjects[sprite.uObjectDescID].uSpeed, 0);
             if (spriteId != -1) {
@@ -332,7 +332,7 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
                 sprite.uFacing = yaw;
                 sprite.uSoundID = 0;
                 sprite.field_60_distance_related_prolly_lod = distancemod;
-                sprite.field_61 = ABILITY_SPELL1;
+                sprite.spellCasterAbility = ABILITY_SPELL1;
 
                 spriteId = sprite.Create(yaw, pitch, pObjectList->pObjects[sprite.uObjectDescID].uSpeed, 0);
                 i = grng->random(1024) - 512;
@@ -800,7 +800,7 @@ void Actor::AI_RangedAttack(unsigned int uActorID, struct AIDirection *pDir,
     else
         a1.field_60_distance_related_prolly_lod = 3;
 
-    a1.field_61 = a4;
+    a1.spellCasterAbility = a4;
     // 1
     a1.Create(pDir->uYawAngle, pDir->uPitchAngle,
               pObjectList->pObjects[(int16_t)a1.uObjectDescID].uSpeed, 0);
@@ -844,7 +844,7 @@ void Actor::Explode(unsigned int uActorID) {  // death explosion for some actors
     a1.spell_caster_pid = PID(OBJECT_Actor, uActorID);
     a1.spell_target_pid = 0;
     a1.field_60_distance_related_prolly_lod = 3;
-    a1.field_61 = ABILITY_SPECIAL;
+    a1.spellCasterAbility = ABILITY_SPECIAL;
     a1.Create(0, 0, 0, 0);
     return;
 }
@@ -4916,7 +4916,7 @@ void evaluateAoeDamage() {
                                     break;
                                 case OBJECT_Actor:
                                     if (pSpriteObj && pActors[attackerId].GetActorsRelation(&pActors[actorID])) {
-                                        Actor::ActorDamageFromMonster(attack.pid, actorID, &attackVector, pSpriteObj->field_61);
+                                        Actor::ActorDamageFromMonster(attack.pid, actorID, &attackVector, pSpriteObj->spellCasterAbility);
                                     }
                                     break;
                                 case OBJECT_Item:

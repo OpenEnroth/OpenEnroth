@@ -68,4 +68,5 @@ struct BuildingDesc {
 
 void initializeBuildings();
 
+// TODO(captainurist): should be IndexedArray<HOUSE_SMITH_EMERALD_ISLE, SOME_OTHER_HOUSE, BuildingDesc>
 extern std::array<BuildingDesc, 525> buildingTable;

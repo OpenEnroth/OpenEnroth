@@ -40,6 +40,14 @@ static void reconstruct(int64_t src, GameTime *dst) {
     dst->value = src;
 }
 
+static void snapshot(const CombinedSkillValue &src, uint16_t *dst) {
+    *dst = src.join();
+}
+
+static void reconstruct(const uint16_t &src, CombinedSkillValue *dst) {
+    *dst = CombinedSkillValue::fromJoined(src);
+}
+
 void reconstruct(const SpriteFrame_MM7 &src, SpriteFrame *dst) {
     reconstruct(src.iconName, &dst->icon_name);
     dst->icon_name = toLower(dst->icon_name);
@@ -110,7 +118,6 @@ void snapshot(const Timer &src, Timer_MM7 *dst) {
     dst->startTime = src.uStartTime;
     dst->stopTime = src.uStopTime;
     dst->gameTimeStart = src.uGameTimeStart;
-    dst->field_18 = src.field_18;
     dst->timeElapsed = src.uTimeElapsed;
     dst->dtFixpoint = src.dt_fixpoint;
     dst->totalGameTimeElapsed = src.uTotalTimeElapsed;
@@ -123,7 +130,6 @@ void reconstruct(const Timer_MM7 &src, Timer *dst) {
     dst->uStartTime = src.startTime;
     dst->uStopTime = src.stopTime;
     dst->uGameTimeStart = src.gameTimeStart;
-    dst->field_18 = src.field_18;
     dst->uTimeElapsed = src.timeElapsed;
     dst->dt_fixpoint = src.dtFixpoint;
     dst->uTotalTimeElapsed = src.totalGameTimeElapsed;
@@ -132,7 +138,6 @@ void reconstruct(const Timer_MM7 &src, Timer *dst) {
 void snapshot(const NPCData &src, NPCData_MM7 *dst) {
     memzero(dst);
 
-    // dst->pName = src.pName;
     dst->name = !src.pName.empty();
     dst->portraitId = src.uPortraitID;
     dst->flags = std::to_underlying(src.uFlags);
@@ -155,7 +160,6 @@ void snapshot(const NPCData &src, NPCData_MM7 *dst) {
 }
 
 void reconstruct(const NPCData_MM7 &src, NPCData *dst) {
-    // dst->pName = src.pName;
     dst->pName = src.name ? "Dummy" : "";
     dst->uPortraitID = src.portraitId;
     dst->uFlags = NpcFlags(src.flags);
@@ -180,7 +184,6 @@ void reconstruct(const NPCData_MM7 &src, NPCData *dst) {
 void snapshot(const ActiveOverlay &src, ActiveOverlay_MM7 *dst) {
     memzero(dst);
 
-    dst->field_0 = src.field_0;
     dst->indexToOverlayList = src.indexToOverlayList;
     dst->spriteFrameTime = src.spriteFrameTime;
     dst->animLength = src.animLength;
@@ -194,7 +197,6 @@ void snapshot(const ActiveOverlay &src, ActiveOverlay_MM7 *dst) {
 void reconstruct(const ActiveOverlay_MM7 &src, ActiveOverlay *dst) {
     memzero(dst);
 
-    dst->field_0 = src.field_0;
     dst->indexToOverlayList = src.indexToOverlayList;
     dst->spriteFrameTime = src.spriteFrameTime;
     dst->animLength = src.animLength;
@@ -209,12 +211,10 @@ void snapshot(const ActiveOverlayList &src, ActiveOverlayList_MM7 *dst) {
     memzero(dst);
 
     dst->redraw = true;
-    dst->field_3E8 = src.field_3E8;
     snapshot(src.pOverlays, &dst->overlays);
 }
 
 void reconstruct(const ActiveOverlayList_MM7 &src, ActiveOverlayList *dst) {
-    dst->field_3E8 = src.field_3E8;
     reconstruct(src.overlays, &dst->pOverlays);
 }
 
@@ -271,7 +271,7 @@ void reconstruct(const ItemGen_MM7 &src, ItemGen *dst) {
 void snapshot(const Party &src, Party_MM7 *dst) {
     memzero(dst);
 
-    dst->field_0 = src.field_0_set25_unused;
+    dst->field_0 = 25; // Vanilla set this to 25, so we're doing the same just in case.
     dst->partyHeight = src.uPartyHeight;
     dst->defaultPartyHeight = src.uDefaultPartyHeight;
     dst->eyeLevel = src.sEyelevel;
@@ -281,7 +281,6 @@ void snapshot(const Party &src, Party_MM7 *dst) {
     dst->walkSpeed = src.uWalkSpeed;
     dst->yawRotationSpeed = src._yawRotationSpeed;
     dst->jumpStrength = src.jump_strength;
-    dst->field_28 = src.field_28_set0_unused;
     dst->timePlayed = src.playing_time.value;
     dst->lastRegenerationTime = src.last_regenerated.value;
 
@@ -311,20 +310,15 @@ void snapshot(const Party &src, Party_MM7 *dst) {
     dst->viewPrevYaw = src._viewPrevYaw;
     dst->viewPrevPitch = src._viewPrevPitch;
     dst->prevEyeLevel = src.sPrevEyelevel;
-    dst->field_6E0 = src.field_6E0_set0_unused;
-    dst->field_6E4 = src.field_6E4_set0_unused;
     dst->fallSpeed = src.uFallSpeed;
-    dst->field_6EC = src.field_6EC_set0_unused;
-    dst->field_6F0 = src.sPartySavedFlightZ;
+    dst->savedFlightZ = src.sPartySavedFlightZ;
     dst->floorFacePid = src.floor_face_pid;
-    dst->walkSoundTimer = 0; // zero walking sound timer, in OE it was removed and it is little meaning saving it
     dst->waterLavaTimer = src._6FC_water_lava_timer;
     dst->fallStartZ = src.uFallStartZ;
     dst->flying = src.bFlying;
-    dst->field_708 = src.field_708_set15_unused;
+    dst->field_708 = 15; // Vanilla set this to 15, so we're doing the same just in case.
     dst->hirelingScrollPosition = src.hirelingScrollPosition;
     dst->field_70A = src.cNonHireFollowers;
-    dst->field_70B = src.field_70B_set0_unused;
     dst->currentYear = src.uCurrentYear;
     dst->currentMonth = src.uCurrentMonth;
     dst->currentMonthWeek = src.uCurrentMonthWeek;
@@ -333,15 +327,11 @@ void snapshot(const Party &src, Party_MM7 *dst) {
     dst->currentMinute = src.uCurrentMinute;
     dst->currentTimeSecond = src.uCurrentTimeSecond;
     dst->numFoodRations = src.GetFood();
-    dst->field_72C = src.field_72C_set0_unused;
-    dst->field_730 = src.field_730_set0_unused;
     dst->numGold = src.GetGold();
     dst->numGoldInBank = src.uNumGoldInBank;
     dst->numDeaths = src.uNumDeaths;
-    dst->field_740 = src.field_740_set0_unused;
     dst->numPrisonTerms = src.uNumPrisonTerms;
     dst->numBountiesCollected = src.uNumBountiesCollected;
-    dst->field_74C = src.field_74C_set0_unused;
 
     snapshot(src.monster_id_for_hunting, &dst->monsterIdForHunting);
     snapshot(src.monster_for_hunting_killed, &dst->monsterForHuntingKilled, convert<bool, int16_t>());
@@ -355,15 +345,11 @@ void snapshot(const Party &src, Party_MM7 *dst) {
     dst->numArenaWins = src.uNumArenaWins;
 
     snapshot(src.pIsArtifactFound, &dst->isArtifactFound);
-    snapshot(src.field_7d7_set0_unused, &dst->field_7d7);
     snapshot(src._autonoteBits, &dst->autonoteBits);
-    snapshot(src.field_818_set0_unused, &dst->field_818);
-    snapshot(src.random_order_num_unused, &dst->field_854);
 
     dst->numArcomageWins = src.uNumArcomageWins;
     dst->numArcomageLoses = src.uNumArcomageLoses;
     dst->turnBasedModeOn = src.bTurnBasedModeOn;
-    dst->field_880 = src.field_880_set0_unused;
     dst->flags2 = src.uFlags2;
 
     uint align = 0;
@@ -384,7 +370,6 @@ void snapshot(const Party &src, Party_MM7 *dst) {
     dst->specialItemsInShop0.fill({});
     snapshot(src.specialItemsInShops, &dst->specialItemsInShops);
     snapshot(src.spellBooksInGuilds, &dst->spellBooksInGuilds);
-    snapshot(src.field_1605C_set0_unused, &dst->field_1605C);
 
     snapshot(src.pHireling1Name, &dst->hireling1Name);
     snapshot(src.pHireling2Name, &dst->hireling2Name);
@@ -396,13 +381,9 @@ void snapshot(const Party &src, Party_MM7 *dst) {
     snapshot(src.InTheShopFlags, &dst->inTheShopFlags);
 
     dst->fine = src.uFine;
-    dst->torchlightColorR = src.torchLightColor.r;
-    dst->torchlightColorG = src.torchLightColor.g;
-    dst->torchlightColorB = src.torchLightColor.b;
 }
 
 void reconstruct(const Party_MM7 &src, Party *dst) {
-    dst->field_0_set25_unused = src.field_0;
     dst->uPartyHeight = src.partyHeight;
     dst->uDefaultPartyHeight = src.defaultPartyHeight;
     dst->sEyelevel = src.eyeLevel;
@@ -412,7 +393,6 @@ void reconstruct(const Party_MM7 &src, Party *dst) {
     dst->uWalkSpeed = src.walkSpeed;
     dst->_yawRotationSpeed = src.yawRotationSpeed;
     dst->jump_strength = src.jumpStrength;
-    dst->field_28_set0_unused = src.field_28;
     dst->playing_time.value = src.timePlayed;
     dst->last_regenerated.value = src.lastRegenerationTime;
 
@@ -435,21 +415,16 @@ void reconstruct(const Party_MM7 &src, Party *dst) {
     dst->_viewPrevYaw = src.viewPrevYaw;
     dst->_viewPrevPitch = src.viewPrevPitch;
     dst->sPrevEyelevel = src.prevEyeLevel;
-    dst->field_6E0_set0_unused = src.field_6E0;
-    dst->field_6E4_set0_unused = src.field_6E4;
     dst->uFallSpeed = src.fallSpeed;
-    dst->field_6EC_set0_unused = src.field_6EC;
-    dst->sPartySavedFlightZ = src.field_6F0;
+    dst->sPartySavedFlightZ = src.savedFlightZ;
     dst->floor_face_pid = src.floorFacePid;
     // Walking sound timer was removed from OE
     //dst->walk_sound_timer = src.walk_sound_timer;
     dst->_6FC_water_lava_timer = src.waterLavaTimer;
     dst->uFallStartZ = src.fallStartZ;
     dst->bFlying = src.flying;
-    dst->field_708_set15_unused = src.field_708;
     dst->hirelingScrollPosition = src.hirelingScrollPosition;
     dst->cNonHireFollowers = src.field_70A;
-    dst->field_70B_set0_unused = src.field_70B;
     dst->uCurrentYear = src.currentYear;
     dst->uCurrentMonth = src.currentMonth;
     dst->uCurrentMonthWeek = src.currentMonthWeek;
@@ -458,15 +433,11 @@ void reconstruct(const Party_MM7 &src, Party *dst) {
     dst->uCurrentMinute = src.currentMinute;
     dst->uCurrentTimeSecond = src.currentTimeSecond;
     dst->uNumFoodRations = src.numFoodRations;
-    dst->field_72C_set0_unused = src.field_72C;
-    dst->field_730_set0_unused = src.field_730;
     dst->uNumGold = src.numGold;
     dst->uNumGoldInBank = src.numGoldInBank;
     dst->uNumDeaths = src.numDeaths;
-    dst->field_740_set0_unused = src.field_740;
     dst->uNumPrisonTerms = src.numPrisonTerms;
     dst->uNumBountiesCollected = src.numBountiesCollected;
-    dst->field_74C_set0_unused = src.field_74C;
 
     reconstruct(src.monsterIdForHunting, &dst->monster_id_for_hunting);
     reconstruct(src.monsterForHuntingKilled, &dst->monster_for_hunting_killed, convert<int16_t, bool>());
@@ -480,15 +451,11 @@ void reconstruct(const Party_MM7 &src, Party *dst) {
     dst->uNumArenaWins = src.numArenaWins;
 
     reconstruct(src.isArtifactFound, &dst->pIsArtifactFound);
-    reconstruct(src.field_7d7, &dst->field_7d7_set0_unused);
     reconstruct(src.autonoteBits, &dst->_autonoteBits);
-    reconstruct(src.field_818, &dst->field_818_set0_unused);
-    reconstruct(src.field_854, &dst->random_order_num_unused);
 
     dst->uNumArcomageWins = src.numArcomageWins;
     dst->uNumArcomageLoses = src.numArcomageLoses;
     dst->bTurnBasedModeOn = src.turnBasedModeOn;
-    dst->field_880_set0_unused = src.field_880;
     dst->uFlags2 = src.flags2;
 
     switch (src.alignment) {
@@ -517,8 +484,6 @@ void reconstruct(const Party_MM7 &src, Party *dst) {
     reconstruct(src.specialItemsInShops, &dst->specialItemsInShops);
     reconstruct(src.spellBooksInGuilds, &dst->spellBooksInGuilds);
 
-    reconstruct(src.field_1605C, &dst->field_1605C_set0_unused);
-
     reconstruct(src.hireling1Name, &dst->pHireling1Name);
     reconstruct(src.hireling2Name, &dst->pHireling2Name);
 
@@ -529,12 +494,6 @@ void reconstruct(const Party_MM7 &src, Party *dst) {
     reconstruct(src.inTheShopFlags, &dst->InTheShopFlags);
 
     dst->uFine = src.fine;
-
-    // TODO(captainurist): is this correct / ever used??
-    dst->torchLightColor.r = src.torchlightColorR;
-    dst->torchLightColor.g = src.torchlightColorG;
-    dst->torchLightColor.b = src.torchlightColorB;
-    dst->torchLightColor.a = 255;
 }
 
 void snapshot(const Player &src, Player_MM7 *dst) {
@@ -622,11 +581,7 @@ void snapshot(const Player &src, Player_MM7 *dst) {
     dst->voiceId = src.uVoiceID;
     dst->prevVoiceId = src.uPrevVoiceID;
     dst->prevFace = src.uPrevFace;
-    dst->field_192C = src.field_192C;
-    dst->field_1930 = src.field_1930;
     dst->timeToRecovery = src.timeToRecovery;
-    dst->field_1936 = src.field_1936;
-    dst->field_1937 = src.field_1937;
     dst->skillPoints = src.uSkillPoints;
     dst->health = src.health;
     dst->mana = src.mana;
@@ -634,23 +589,15 @@ void snapshot(const Player &src, Player_MM7 *dst) {
 
     snapshot(src.pEquipment.pIndices, &dst->equipment.indices);
 
-    snapshot(src.field_1988, &dst->field_1988);
-
-    dst->field_1A4C = src.field_1A4C;
-    dst->field_1A4D = src.field_1A4D;
     dst->lastOpenedSpellbookPage = src.lastOpenedSpellbookPage;
     dst->quickSpell = std::to_underlying(src.uQuickSpell);
 
     snapshot(src._playerEventBits, &dst->playerEventBits);
 
     dst->someAttackBonus = src._some_attack_bonus;
-    dst->field_1A91 = src.field_1A91;
     dst->meleeDmgBonus = src._melee_dmg_bonus;
-    dst->field_1A93 = src.field_1A93;
     dst->rangedAttackBonus = src._ranged_atk_bonus;
-    dst->field_1A95 = src.field_1A95;
     dst->rangedDmgBonus = src._ranged_dmg_bonus;
-    dst->field_1A97 = src.field_1A97_set0_unused;
     dst->fullHealthBonus = src.uFullHealthBonus;
     dst->healthRelated = src._health_related;
     dst->fullManaBonus = src.uFullManaBonus;
@@ -678,7 +625,6 @@ void snapshot(const Player &src, Player_MM7 *dst) {
     dst->numDivineInterventionCasts = src.uNumDivineInterventionCastsThisDay;
     dst->numArmageddonCasts = src.uNumArmageddonCasts;
     dst->numFireSpikeCasts = src.uNumFireSpikeCasts;
-    dst->field_1B3B = src.field_1B3B_set0_unused;
 }
 
 void reconstruct(const Player_MM7 &src, Player *dst) {
@@ -886,11 +832,7 @@ void reconstruct(const Player_MM7 &src, Player *dst) {
     dst->uVoiceID = src.voiceId;
     dst->uPrevVoiceID = src.prevVoiceId;
     dst->uPrevFace = src.prevFace;
-    dst->field_192C = src.field_192C;
-    dst->field_1930 = src.field_1930;
     dst->timeToRecovery = src.timeToRecovery;
-    dst->field_1936 = src.field_1936;
-    dst->field_1937 = src.field_1937;
     dst->uSkillPoints = src.skillPoints;
     dst->health = src.health;
     dst->mana = src.mana;
@@ -898,23 +840,15 @@ void reconstruct(const Player_MM7 &src, Player *dst) {
 
     reconstruct(src.equipment.indices, &dst->pEquipment.pIndices);
 
-    reconstruct(src.field_1988, &dst->field_1988);
-
-    dst->field_1A4C = src.field_1A4C;
-    dst->field_1A4D = src.field_1A4D;
     dst->lastOpenedSpellbookPage = src.lastOpenedSpellbookPage;
     dst->uQuickSpell = static_cast<SPELL_TYPE>(src.quickSpell);
 
     reconstruct(src.playerEventBits, &dst->_playerEventBits);
 
     dst->_some_attack_bonus = src.someAttackBonus;
-    dst->field_1A91 = src.field_1A91;
     dst->_melee_dmg_bonus = src.meleeDmgBonus;
-    dst->field_1A93 = src.field_1A93;
     dst->_ranged_atk_bonus = src.rangedAttackBonus;
-    dst->field_1A95 = src.field_1A95;
     dst->_ranged_dmg_bonus = src.rangedDmgBonus;
-    dst->field_1A97_set0_unused = src.field_1A97;
     dst->uFullHealthBonus = src.fullHealthBonus;
     dst->_health_related = src.healthRelated;
     dst->uFullManaBonus = src.fullManaBonus;
@@ -947,15 +881,6 @@ void reconstruct(const Player_MM7 &src, Player *dst) {
     dst->uNumDivineInterventionCastsThisDay = src.numDivineInterventionCasts;
     dst->uNumArmageddonCasts = src.numArmageddonCasts;
     dst->uNumFireSpikeCasts = src.numFireSpikeCasts;
-    dst->field_1B3B_set0_unused = src.field_1B3B;
-}
-
-void snapshot(const CombinedSkillValue &src, uint16_t *dst) {
-    *dst = src.join();
-}
-
-void reconstruct(const uint16_t &src, CombinedSkillValue *dst) {
-    *dst = CombinedSkillValue::fromJoined(src);
 }
 
 void snapshot(const Icon &src, IconFrame_MM7 *dst) {
@@ -984,23 +909,19 @@ void snapshot(const UIAnimation &src, UIAnimation_MM7 *dst) {
     memzero(dst);
 
     /* 000 */ dst->iconId = src.icon->id;
-    /* 002 */ dst->field_2 = src.field_2;
     /* 004 */ dst->animTime = src.uAnimTime;
     /* 006 */ dst->animLength = src.uAnimLength;
     /* 008 */ dst->x = src.x;
     /* 00A */ dst->y = src.y;
-    /* 00C */ dst->field_C = src.field_C;
 }
 
 void reconstruct(const UIAnimation_MM7 &src, UIAnimation *dst) {
     dst->icon = pIconsFrameTable->GetIcon(src.iconId);
     ///* 000 */ anim->uIconID = src.uIconID;
-    /* 002 */ dst->field_2 = src.field_2;
     /* 004 */ dst->uAnimTime = src.animTime;
     /* 006 */ dst->uAnimLength = src.animLength;
     /* 008 */ dst->x = src.x;
     /* 00A */ dst->y = src.y;
-    /* 00C */ dst->field_C = src.field_C;
 }
 
 void reconstruct(const MonsterDesc_MM6 &src, MonsterDesc *dst) {
@@ -1042,6 +963,7 @@ void reconstruct(const MonsterDesc_MM7 &src, MonsterDesc *dst) {
 
 void snapshot(const ActorJob &src, ActorJob_MM7 *dst) {
     memzero(dst);
+
     dst->pos = src.vPos;
     dst->attributes = src.uAttributes;
     dst->action = src.uAction;
@@ -1065,7 +987,6 @@ void snapshot(const Actor &src, Actor_MM7 *dst) {
     snapshot(src.pActorName, &dst->pActorName);
 
     dst->sNPC_ID = src.sNPC_ID;
-    dst->field_22 = src.field_22;
     dst->uAttributes = std::to_underlying(src.uAttributes);
     dst->sCurrentHP = src.sCurrentHP;
 
@@ -1079,7 +1000,6 @@ void snapshot(const Actor &src, Actor_MM7 *dst) {
     dst->pMonsterInfo.movementType = src.pMonsterInfo.uMovementType;
     dst->pMonsterInfo.aiType = src.pMonsterInfo.uAIType;
     dst->pMonsterInfo.hostilityType = (uint8_t)src.pMonsterInfo.uHostilityType;
-    dst->pMonsterInfo.field_12 = src.pMonsterInfo.field_12;
     dst->pMonsterInfo.specialAttackType = src.pMonsterInfo.uSpecialAttackType;
     dst->pMonsterInfo.specialAttackLevel = src.pMonsterInfo.uSpecialAttackLevel;
     dst->pMonsterInfo.attack1Type = src.pMonsterInfo.uAttack1Type;
@@ -1112,7 +1032,6 @@ void snapshot(const Actor &src, Actor_MM7 *dst) {
     dst->pMonsterInfo.specialAbilityDamageDiceSides = src.pMonsterInfo.uSpecialAbilityDamageDiceSides;
     dst->pMonsterInfo.specialAbilityDamageDiceBonus = src.pMonsterInfo.uSpecialAbilityDamageDiceBonus;
     dst->pMonsterInfo.numCharactersAttackedPerSpecialAbility = src.pMonsterInfo.uNumCharactersAttackedPerSpecialAbility;
-    dst->pMonsterInfo.field_33 = src.pMonsterInfo.field_33;
     dst->pMonsterInfo.id = src.pMonsterInfo.uID;
     dst->pMonsterInfo.bloodSplatOnDeath = src.pMonsterInfo.bBloodSplatOnDeath;
     dst->pMonsterInfo.spellSkillAndMastery1 = src.pMonsterInfo.uSpellSkillAndMastery1;
@@ -1142,8 +1061,6 @@ void snapshot(const Actor &src, Actor_MM7 *dst) {
     dst->uAIState = std::to_underlying(src.uAIState);
     dst->uCurrentActionAnimation = std::to_underlying(src.uCurrentActionAnimation);
     dst->uCarriedItemID = std::to_underlying(src.uCarriedItemID);
-    dst->field_B6 = src.field_B6;
-    dst->field_B7 = src.field_B7;
     dst->uCurrentActionTime = src.uCurrentActionTime;
 
     snapshot(src.pSpriteIDs, &dst->pSpriteIDs);
@@ -1159,14 +1076,11 @@ void snapshot(const Actor &src, Actor_MM7 *dst) {
     dst->uSummonerID = src.uSummonerID;
     dst->uLastCharacterIDToHit = src.uLastCharacterIDToHit;
     dst->dword_000334_unique_name = src.dword_000334_unique_name;
-
-    snapshot(src.field_338, &dst->field_338);
 }
 
 void reconstruct(const Actor_MM7 &src, Actor *dst) {
     reconstruct(src.pActorName, &dst->pActorName);
     dst->sNPC_ID = src.sNPC_ID;
-    dst->field_22 = src.field_22;
     dst->uAttributes = ActorAttributes(src.uAttributes);
     dst->sCurrentHP = src.sCurrentHP;
 
@@ -1180,7 +1094,6 @@ void reconstruct(const Actor_MM7 &src, Actor *dst) {
     dst->pMonsterInfo.uMovementType = src.pMonsterInfo.movementType;
     dst->pMonsterInfo.uAIType = src.pMonsterInfo.aiType;
     dst->pMonsterInfo.uHostilityType = static_cast<MonsterInfo::HostilityRadius>(src.pMonsterInfo.hostilityType);
-    dst->pMonsterInfo.field_12 = src.pMonsterInfo.field_12;
     dst->pMonsterInfo.uSpecialAttackType = static_cast<SPECIAL_ATTACK_TYPE>(src.pMonsterInfo.specialAttackType);
     dst->pMonsterInfo.uSpecialAttackLevel = src.pMonsterInfo.specialAttackLevel;
     dst->pMonsterInfo.uAttack1Type = src.pMonsterInfo.attack1Type;
@@ -1213,7 +1126,6 @@ void reconstruct(const Actor_MM7 &src, Actor *dst) {
     dst->pMonsterInfo.uSpecialAbilityDamageDiceSides = src.pMonsterInfo.specialAbilityDamageDiceSides;
     dst->pMonsterInfo.uSpecialAbilityDamageDiceBonus = src.pMonsterInfo.specialAbilityDamageDiceBonus;
     dst->pMonsterInfo.uNumCharactersAttackedPerSpecialAbility = src.pMonsterInfo.numCharactersAttackedPerSpecialAbility;
-    dst->pMonsterInfo.field_33 = src.pMonsterInfo.field_33;
     dst->pMonsterInfo.uID = src.pMonsterInfo.id;
     dst->pMonsterInfo.bBloodSplatOnDeath = src.pMonsterInfo.bloodSplatOnDeath;
     dst->pMonsterInfo.uSpellSkillAndMastery1 = src.pMonsterInfo.spellSkillAndMastery1;
@@ -1243,8 +1155,6 @@ void reconstruct(const Actor_MM7 &src, Actor *dst) {
     dst->uAIState = static_cast<AIState>(src.uAIState);
     dst->uCurrentActionAnimation = static_cast<ActorAnimation>(src.uCurrentActionAnimation);
     dst->uCarriedItemID = ITEM_TYPE(src.uCarriedItemID);
-    dst->field_B6 = src.field_B6;
-    dst->field_B7 = src.field_B7;
     dst->uCurrentActionTime = src.uCurrentActionTime;
 
     reconstruct(src.pSpriteIDs, &dst->pSpriteIDs);
@@ -1260,8 +1170,6 @@ void reconstruct(const Actor_MM7 &src, Actor *dst) {
     dst->uSummonerID = src.uSummonerID;
     dst->uLastCharacterIDToHit = src.uLastCharacterIDToHit;
     dst->dword_000334_unique_name = src.dword_000334_unique_name;
-
-    reconstruct(src.field_338, &dst->field_338);
 }
 
 void snapshot(const BLVDoor &src, BLVDoor_MM7 *dst) {
@@ -1279,7 +1187,6 @@ void snapshot(const BLVDoor &src, BLVDoor_MM7 *dst) {
     dst->uNumSectors = src.uNumSectors;
     dst->uNumOffsets = src.uNumOffsets;
     dst->uState = std::to_underlying(src.uState);
-    dst->field_4E = src.field_4E;
 }
 
 void reconstruct(const BLVDoor_MM7 &src, BLVDoor *dst) {
@@ -1295,7 +1202,6 @@ void reconstruct(const BLVDoor_MM7 &src, BLVDoor *dst) {
     dst->uNumSectors = src.uNumSectors;
     dst->uNumOffsets = src.uNumOffsets;
     dst->uState = static_cast<BLVDoor::State>(src.uState);
-    dst->field_4E = src.field_4E;
 }
 
 void snapshot(const BLVSector &src, BLVSector_MM7 *dst) {
@@ -1303,28 +1209,18 @@ void snapshot(const BLVSector &src, BLVSector_MM7 *dst) {
 
     dst->field_0 = src.field_0;
     dst->uNumFloors = src.uNumFloors;
-    dst->field_6 = src.field_6;
     dst->uNumWalls = src.uNumWalls;
-    dst->field_E = src.field_E;
     dst->uNumCeilings = src.uNumCeilings;
-    dst->field_16 = src.field_16;
     dst->uNumFluids = src.uNumFluids;
-    dst->field_1E = src.field_1E;
     dst->uNumPortals = src.uNumPortals;
-    dst->field_26 = src.field_26;
     dst->uNumFaces = src.uNumFaces;
     dst->uNumNonBSPFaces = src.uNumNonBSPFaces;
     dst->uNumCylinderFaces = src.uNumCylinderFaces;
-    dst->field_36 = src.field_36;
     dst->pCylinderFaces = src.pCylinderFaces;
     dst->uNumCogs = src.uNumCogs;
-    dst->field_3E = src.field_3E;
     dst->uNumDecorations = src.uNumDecorations;
-    dst->field_46 = src.field_46;
     dst->uNumMarkers = src.uNumMarkers;
-    dst->field_4E = src.field_4E;
     dst->uNumLights = src.uNumLights;
-    dst->field_56 = src.field_56;
     dst->uWaterLevel = src.uWaterLevel;
     dst->uMistLevel = src.uMistLevel;
     dst->uLightDistanceMultiplier = src.uLightDistanceMultiplier;
@@ -1337,28 +1233,18 @@ void snapshot(const BLVSector &src, BLVSector_MM7 *dst) {
 void reconstruct(const BLVSector_MM7 &src, BLVSector *dst) {
     dst->field_0 = src.field_0;
     dst->uNumFloors = src.uNumFloors;
-    dst->field_6 = src.field_6;
     dst->uNumWalls = src.uNumWalls;
-    dst->field_E = src.field_E;
     dst->uNumCeilings = src.uNumCeilings;
-    dst->field_16 = src.field_16;
     dst->uNumFluids = src.uNumFluids;
-    dst->field_1E = src.field_1E;
     dst->uNumPortals = src.uNumPortals;
-    dst->field_26 = src.field_26;
     dst->uNumFaces = src.uNumFaces;
     dst->uNumNonBSPFaces = src.uNumNonBSPFaces;
     dst->uNumCylinderFaces = src.uNumCylinderFaces;
-    dst->field_36 = src.field_36;
     dst->pCylinderFaces = src.pCylinderFaces;
     dst->uNumCogs = src.uNumCogs;
-    dst->field_3E = src.field_3E;
     dst->uNumDecorations = src.uNumDecorations;
-    dst->field_46 = src.field_46;
     dst->uNumMarkers = src.uNumMarkers;
-    dst->field_4E = src.field_4E;
     dst->uNumLights = src.uNumLights;
-    dst->field_56 = src.field_56;
     dst->uWaterLevel = src.uWaterLevel;
     dst->uMistLevel = src.uMistLevel;
     dst->uLightDistanceMultiplier = src.uLightDistanceMultiplier;
@@ -1387,11 +1273,7 @@ void snapshot(const FontData &src, FontData_MM7 *dst) {
 
     dst->cFirstChar = src.cFirstChar;
     dst->cLastChar = src.cLastChar;
-    dst->field_2 = src.field_2;
-    dst->field_3 = src.field_3;
-    dst->field_4 = src.field_4;
     dst->uFontHeight = src.uFontHeight;
-    dst->field_7 = src.field_7;
     dst->palletes_count = src.palletes_count;
 
     snapshot(src.pMetrics, &dst->pMetrics);
@@ -1403,11 +1285,7 @@ void snapshot(const FontData &src, FontData_MM7 *dst) {
 void reconstruct(const FontData_MM7 &src, size_t size, FontData *dst) {
     dst->cFirstChar = src.cFirstChar;
     dst->cLastChar = src.cLastChar;
-    dst->field_2 = src.field_2;
-    dst->field_3 = src.field_3;
-    dst->field_4 = src.field_4;
     dst->uFontHeight = src.uFontHeight;
-    dst->field_7 = src.field_7;
     dst->palletes_count = src.palletes_count;
 
     reconstruct(src.pMetrics, &dst->pMetrics);
@@ -1437,8 +1315,6 @@ void reconstruct(const ODMFace_MM7 &src, ODMFace *dst) {
     dst->sCogNumber = src.sCogNumber;
     dst->sCogTriggeredID = src.sCogTriggeredID;
     dst->sCogTriggerType = src.sCogTriggerType;
-    dst->field_128 = src.field_128;
-    dst->field_129 = src.field_129;
     dst->uGradientVertex1 = src.uGradientVertex1;
     dst->uGradientVertex2 = src.uGradientVertex2;
     dst->uGradientVertex3 = src.uGradientVertex3;
@@ -1447,8 +1323,6 @@ void reconstruct(const ODMFace_MM7 &src, ODMFace *dst) {
     dst->uPolygonType = static_cast<PolygonType>(src.uPolygonType);
     dst->uShadeType = src.uShadeType;
     dst->bVisible = src.bVisible;
-    dst->field_132 = src.field_132;
-    dst->field_133 = src.field_133;
 }
 
 void reconstruct(const SpawnPoint_MM7 &src, SpawnPoint *dst) {
@@ -1489,9 +1363,7 @@ void snapshot(const SpriteObject &src, SpriteObject_MM7 *dst) {
     dst->spell_caster_pid = src.spell_caster_pid;
     dst->spell_target_pid = src.spell_target_pid;
     dst->field_60_distance_related_prolly_lod = src.field_60_distance_related_prolly_lod;
-    dst->field_61 = std::to_underlying(src.field_61);
-    dst->field_62[0] = src.field_62[0];
-    dst->field_62[1] = src.field_62[1];
+    dst->spellCasterAbility = std::to_underlying(src.spellCasterAbility);
     dst->initialPosition = src.initialPosition;
 }
 
@@ -1515,9 +1387,7 @@ void reconstruct(const SpriteObject_MM7 &src, SpriteObject *dst) {
     dst->spell_caster_pid = src.spell_caster_pid;
     dst->spell_target_pid = src.spell_target_pid;
     dst->field_60_distance_related_prolly_lod = src.field_60_distance_related_prolly_lod;
-    dst->field_61 = static_cast<ABILITY_INDEX>(src.field_61);
-    dst->field_62[0] = src.field_62[0];
-    dst->field_62[1] = src.field_62[1];
+    dst->spellCasterAbility = static_cast<ABILITY_INDEX>(src.spellCasterAbility);
     dst->initialPosition = src.initialPosition;
 }
 
@@ -1606,28 +1476,15 @@ void reconstruct(const LevelDecoration_MM7 &src, LevelDecoration *dst) {
     dst->uTriggerRange = src.uTriggerRange;
     dst->field_1A = src.field_1A;
     dst->eventVarId = src.eventVarId - 75; // Was changed because all current usages are without this 75 shift
-    dst->field_1E = src.field_1E;
 }
 
 void reconstruct(const BLVFaceExtra_MM7 &src, BLVFaceExtra *dst) {
-    dst->field_0 = src.field_0;
-    dst->field_2 = src.field_2;
-    dst->field_4 = src.field_4;
-    dst->field_6 = src.field_6;
-    dst->field_8 = src.field_8;
-    dst->field_A = src.field_A;
     dst->face_id = src.face_id;
     dst->uAdditionalBitmapID = src.uAdditionalBitmapID;
-    dst->field_10 = src.field_10;
-    dst->field_12 = src.field_12;
     dst->sTextureDeltaU = src.sTextureDeltaU;
     dst->sTextureDeltaV = src.sTextureDeltaV;
     dst->sCogNumber = src.sCogNumber;
     dst->uEventID = src.uEventID;
-    dst->field_1C = src.field_1C;
-    dst->field_1E = src.field_1E;
-    dst->field_20 = src.field_20;
-    dst->field_22 = src.field_22;
 }
 
 void reconstruct(const BSPNode_MM7 &src, BSPNode *dst) {
@@ -1647,7 +1504,7 @@ void reconstruct(const BLVMapOutline_MM7 &src, BLVMapOutline *dst) {
 }
 
 void reconstruct(const ObjectDesc_MM6 &src, ObjectDesc *dst) {
-    dst->field_0 =  src.field_0;
+    reconstruct(src.name, &dst->name);
     dst->uObjectID = src.uObjectID;
     dst->uRadius = src.uRadius;
     dst->uHeight = src.uHeight;
@@ -1660,7 +1517,7 @@ void reconstruct(const ObjectDesc_MM6 &src, ObjectDesc *dst) {
 }
 
 void reconstruct(const ObjectDesc_MM7 &src, ObjectDesc *dst) {
-    dst->field_0 = src.field_0;
+    reconstruct(src.name, &dst->name);
     dst->uObjectID = src.uObjectID;
     dst->uRadius = src.uRadius;
     dst->uHeight = src.uHeight;
@@ -1702,6 +1559,8 @@ void reconstruct(const SoundInfo_MM7 &src, SoundInfo *dst) {
 }
 
 void snapshot(const LocationInfo &src, LocationInfo_MM7 *dst) {
+    memzero(dst);
+
     dst->respawnCount = src.respawnCount;
     dst->lastRespawnDay = src.lastRespawnDay;
     dst->reputation = src.reputation;
@@ -1715,14 +1574,14 @@ void reconstruct(const LocationInfo_MM7 &src, LocationInfo *dst) {
     dst->alertStatus = src.alertStatus;
 }
 
-void snapshot(const PersistentVariables &src, MapEventVariables_MM7 *dst) {
+void snapshot(const PersistentVariables &src, PersistentVariables_MM7 *dst) {
     memzero(dst);
 
     dst->mapVars = src.mapVars;
     dst->decorVars = src.decorVars;
 }
 
-void reconstruct(const MapEventVariables_MM7 &src, PersistentVariables *dst) {
+void reconstruct(const PersistentVariables_MM7 &src, PersistentVariables *dst) {
     dst->mapVars = src.mapVars;
     dst->decorVars = src.decorVars;
 }

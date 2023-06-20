@@ -4,7 +4,7 @@
 
 #include "Utility/Geometry/Vec.h"
 #include "Utility/Geometry/Plane.h"
-#include "Utility/Geometry/BBox.h"
+#include "Utility/Geometry/BBox.h" // TODO(captainurist): Don't depend on BBox binary layout.
 
 #include "Library/Binary/BinarySerialization.h"
 
@@ -352,7 +352,8 @@ struct Player_MM7 {
     /* 1940 */ int32_t mana;
     /* 1944 */ uint32_t birthYear;
     /* 1948 */ PlayerEquipment_MM7 equipment;
-    /* 1988 */ std::array<int32_t, 49> field_1988;
+    /* 1988 */ std::array<int32_t, 49> field_1988; // field_1988[27] was set to 1 in party creation when character
+                                                   // name was changed. We just set everything to zero.
     /* 1A4C */ char field_1A4C;
     /* 1A4D */ char field_1A4D;
     /* 1A4E */ char lastOpenedSpellbookPage;
@@ -409,7 +410,7 @@ MM_DECLARE_MEMCOPY_SERIALIZABLE(PartyTimeStruct_MM7)
 
 
 struct Party_MM7 {
-    /* 00000 */ int32_t field_0;
+    /* 00000 */ int32_t field_0; // Was set to 25 in Party::Reset & Party::Zero, not used for anything.
     /* 00004 */ uint32_t partyHeight;
     /* 00008 */ uint32_t defaultPartyHeight;
     /* 0000C */ int32_t eyeLevel;
@@ -430,17 +431,17 @@ struct Party_MM7 {
     /* 006D4 */ int32_t viewPrevYaw;
     /* 006D8 */ int32_t viewPrevPitch;
     /* 006DC */ int32_t prevEyeLevel;
-    /* 006E0 */ int32_t field_6E0;
-    /* 006E4 */ int32_t field_6E4;
+    /* 006E0 */ int32_t field_6E0; // Party old x/y?
+    /* 006E4 */ int32_t field_6E4; // Party old x/y?
     /* 006E8 */ int32_t fallSpeed;
     /* 006EC */ int32_t field_6EC;
-    /* 006F0 */ int32_t field_6F0;
-    /* 006F4 */ int32_t floorFacePid;  // face we are standing at
-    /* 006F8 */ int32_t walkSoundTimer;
+    /* 006F0 */ int32_t savedFlightZ;
+    /* 006F4 */ int32_t floorFacePid; // face we are standing at
+    /* 006F8 */ int32_t walkSoundTimerUnused; // This was removed in OE and we're just saving 0 in this field.
     /* 006FC */ int32_t waterLavaTimer;
     /* 00700 */ int32_t fallStartZ;
     /* 00704 */ uint32_t flying;
-    /* 00708 */ char field_708;
+    /* 00708 */ char field_708; // Was set to 15 in Party::Reset & Party::Zero, not used for anything.
     /* 00709 */ uint8_t hirelingScrollPosition;
     /* 0070A */ char field_70A;
     /* 0070B */ char field_70B;
@@ -472,7 +473,9 @@ struct Party_MM7 {
     /* 007D7 */ std::array<char, 39> field_7d7;
     /* 007FE */ std::array<uint8_t, 26> autonoteBits;
     /* 00818 */ std::array<char, 60> field_818;
-    /* 00854 */ std::array<char, 32> field_854;
+    /* 00854 */ std::array<char, 32> randomNumbersUnused; // Array of random numbers, was filled during party creation
+                                                          // and not used for anything. Probably a remnant of the old
+                                                          // party creation code that randomized stats?
     /* 00874 */ int32_t numArcomageWins;
     /* 00878 */ int32_t numArcomageLoses;
     /* 0087C */ uint32_t turnBasedModeOn;
@@ -497,9 +500,12 @@ struct Party_MM7 {
     /* 16144 */ std::array<int32_t, 4> turnBasedPlayerRecoveryTimes;
     /* 16154 */ std::array<int32_t, 53> inTheShopFlags;
     /* 16228 */ int32_t fine;
-    /* 1622C */ float torchlightColorR;
-    /* 16230 */ float torchlightColorG;
-    /* 16234 */ float torchlightColorB;
+
+    // Not sure why torchlight color is even stored in savegames in vanilla. Testing it on old savegames, it seems
+    // it's always set to zero. But maybe savegames made in hardware mode differ from ones made in software mode,
+    // and hardware mode actually sets torchlight color? Not sure how to check.
+    // Anyway, reading torchlight color from a savegame makes very little sense, so we don't.
+    /* 1622C */ std::array<float, 3> torchLightColorRgbUnused;
     /* 16238 */
 };
 static_assert(sizeof(Party_MM7) == 0x16238);
@@ -637,7 +643,7 @@ struct MonsterInfo_MM7 {
     uint8_t specialAbilityDamageDiceSides;
     uint8_t specialAbilityDamageDiceBonus;
     uint8_t numCharactersAttackedPerSpecialAbility;
-    char field_33;
+    char _pad;
     uint16_t id;
     uint16_t bloodSplatOnDeath;
     uint16_t spellSkillAndMastery1;
@@ -729,8 +735,7 @@ struct Actor_MM7 {
     int16_t uAIState;
     uint16_t uCurrentActionAnimation;
     uint16_t uCarriedItemID;
-    char field_B6;
-    char field_B7;
+    uint16_t _pad;
     uint32_t uCurrentActionTime;
     std::array<uint16_t, 8> pSpriteIDs;
     std::array<uint16_t, 4> pSoundSampleIDs;  // 1 die     3 bored
@@ -772,7 +777,7 @@ struct BLVDoor_MM7 {
     uint16_t uNumSectors;
     uint16_t uNumOffsets;
     uint16_t uState;
-    int16_t field_4E;
+    int16_t _pad;
 };
 static_assert(sizeof(BLVDoor_MM7) == 0x50);
 MM_DECLARE_MEMCOPY_SERIALIZABLE(BLVDoor_MM7)
@@ -784,37 +789,37 @@ void reconstruct(const BLVDoor_MM7 &src, BLVDoor *dst);
 struct BLVSector_MM7 {
     int32_t field_0;
     uint16_t uNumFloors;
-    int16_t field_6;
+    int16_t _pad0;
     uint32_t pFloors;
     uint16_t uNumWalls;
-    int16_t field_E;
+    int16_t _pad1;
     uint32_t pWalls;
     uint16_t uNumCeilings;
-    int16_t field_16;
+    int16_t _pad2;
     uint32_t pCeilings;
     uint16_t uNumFluids;
-    int16_t field_1E;
+    int16_t _pad3;
     uint32_t pFluids;
     int16_t uNumPortals;
-    int16_t field_26;
+    int16_t _pad4;
     uint32_t pPortals;
     uint16_t uNumFaces;
     uint16_t uNumNonBSPFaces;
     uint32_t pFaceIDs;
     uint16_t uNumCylinderFaces;
-    int16_t field_36;
+    int16_t _pad5;
     int32_t pCylinderFaces;
     uint16_t uNumCogs;
-    int16_t field_3E;
+    int16_t _pad6;
     uint32_t pCogs;
     uint16_t uNumDecorations;
-    int16_t field_46;
+    int16_t _pad7;
     uint32_t pDecorationIDs;
     uint16_t uNumMarkers;
-    int16_t field_4E;
+    int16_t _pad8;
     uint32_t pMarkers;
     uint16_t uNumLights;
-    int16_t field_56;
+    int16_t _pad9;
     uint32_t pLights;
     int16_t uWaterLevel;
     int16_t uMistLevel;
@@ -946,8 +951,8 @@ struct SpriteObject_MM7 {
     int spell_caster_pid;
     int spell_target_pid;
     char field_60_distance_related_prolly_lod;
-    char field_61;
-    char field_62[2];
+    char spellCasterAbility;
+    uint16_t _pad;
     Vec3i initialPosition;
 };
 
@@ -1132,7 +1137,7 @@ void reconstruct(const BLVMapOutline_MM7 &src, BLVMapOutline *dst);
 
 
 struct ObjectDesc_MM6 {
-    std::array<char, 32> field_0;
+    std::array<char, 32> name;
     int16_t uObjectID;
     int16_t uRadius;
     int16_t uHeight;
@@ -1150,7 +1155,7 @@ static_assert(sizeof(ObjectDesc_MM6) == 52);
 MM_DECLARE_MEMCOPY_SERIALIZABLE(ObjectDesc_MM6)
 
 struct ObjectDesc_MM7 {
-    std::array<char, 32> field_0;
+    std::array<char, 32> name;
     int16_t uObjectID;
     int16_t uRadius;
     int16_t uHeight;
@@ -1270,16 +1275,15 @@ MM_DECLARE_MEMCOPY_SERIALIZABLE(LocationHeader_MM7)
 // so no reconstruct() overloads for it.
 
 
-// TODO(captainurist): PersistentVariables_MM7
-struct MapEventVariables_MM7 {
+struct PersistentVariables_MM7 {
     std::array<unsigned char, 75> mapVars;
     std::array<unsigned char, 125> decorVars;
 };
-static_assert(sizeof(MapEventVariables_MM7) == 0xC8);
-MM_DECLARE_MEMCOPY_SERIALIZABLE(MapEventVariables_MM7)
+static_assert(sizeof(PersistentVariables_MM7) == 0xC8);
+MM_DECLARE_MEMCOPY_SERIALIZABLE(PersistentVariables_MM7)
 
-void snapshot(const PersistentVariables &src, MapEventVariables_MM7 *dst);
-void reconstruct(const MapEventVariables_MM7 &src, PersistentVariables *dst);
+void snapshot(const PersistentVariables &src, PersistentVariables_MM7 *dst);
+void reconstruct(const PersistentVariables_MM7 &src, PersistentVariables *dst);
 
 
 struct BLVHeader_MM7 {

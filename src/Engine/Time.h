@@ -128,7 +128,6 @@ struct Timer {
         uStartTime = 0;
         uStopTime = 0;
         uGameTimeStart = 0;
-        field_18 = 0;
         uTimeElapsed = 0;
         dt_fixpoint = 0;
         uTotalTimeElapsed = 0;
@@ -154,7 +153,6 @@ struct Timer {
     unsigned int uStartTime; // Last frame time, in real time ticks (128 ticks is 1 real time second).
     unsigned int uStopTime;
     int uGameTimeStart;
-    int field_18;
     int uTimeElapsed; // dt since last frame in real time ticks (128 ticks is 1 real time second).
     int dt_fixpoint; // dt since last frame in real time seconds in fixpoint format.
     unsigned int uTotalTimeElapsed; // Total time elapsed since the last Initialize() call, in real time ticks (128 ticks is 1 real time second).
