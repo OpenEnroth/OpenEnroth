@@ -413,33 +413,6 @@ bool Engine::_44EEA7() {  // cursor picking - particle update
     return true;
 }
 
-//----- (0044EDE4) --------------------------------------------------------
-bool Engine::AlterGamma_BLV(BLVFace *pFace, Color *pColor) {
-    // TODO(captainurist): Is this function even needed?
-    //                     Also, it used to replace hue with 1.0f, which made no sense.
-    if (engine->IsSaturateFaces() && pFace->uAttributes & FACE_IsSecret) {
-        HsvColorf hsv = pColor->toColorf().toHsv();
-        hsv.s = fSaturation;
-        *pColor = hsv.toRgb().toColor();
-        return true;
-    } else {
-        return false;
-    }
-}
-
-bool Engine::AlterGamma_ODM(ODMFace *pFace, Color *pColor) {
-    // TODO(captainurist): Is this function even needed?
-    //                     Also, it used to replace hue with 1.0f, which made no sense.
-    if (engine->IsSaturateFaces() && pFace->uAttributes & FACE_IsSecret) {
-        HsvColorf hsv = pColor->toColorf().toHsv();
-        hsv.s = fSaturation;
-        *pColor = hsv.toRgb().toColor();
-        return true;
-    } else {
-        return false;
-    }
-}
-
 //----- (004645FA) --------------------------------------------------------
 void Engine::Deinitialize() {
     if (mouse)
