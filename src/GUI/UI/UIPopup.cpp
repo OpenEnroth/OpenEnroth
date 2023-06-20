@@ -631,7 +631,7 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
     if (pParty->hasActiveCharacter()) {
         PLAYER_SKILL_LEVEL skill_points = 0;
         PLAYER_SKILL_MASTERY skill_mastery = PLAYER_SKILL_MASTERY_NONE;
-        CombinedSkillValue idMonsterSkill = pParty->activeCharacter().getActualSkillValue(PLAYER_SKILL_MONSTER_ID);
+        CombinedSkillValue idMonsterSkill = pParty->activeCharacter().getActualSkillValue(CHARACTER_SKILL_MONSTER_ID);
 
         if ((skill_points = idMonsterSkill.level()) > 0) {
             skill_mastery = idMonsterSkill.mastery();
@@ -975,7 +975,7 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
   * @param uPlayerID                     Character identifier.
   * @param uPlayerSkillType              Skill type identifier.
   */
-std::string CharacterUI_GetSkillDescText(unsigned int uPlayerID, PLAYER_SKILL_TYPE uPlayerSkillType) {
+std::string CharacterUI_GetSkillDescText(unsigned int uPlayerID, CharacterSkillType uPlayerSkillType) {
     size_t line_width = std::max({
         pFontSmallnum->GetLineWidth(localization->GetString(LSTR_NORMAL)),
         pFontSmallnum->GetLineWidth(localization->GetString(LSTR_EXPERT)),
@@ -1019,7 +1019,7 @@ void CharacterUI_SkillsTab_ShowHint() {
         for (GUIButton *pButton : pGUIWindow_CurrentMenu->vButtons) {
             if (pButton->msg == UIMSG_SkillUp && pX >= pButton->uX &&
                 pX < pButton->uZ && pY >= pButton->uY && pY < pButton->uW) {
-                PLAYER_SKILL_TYPE skill = static_cast<PLAYER_SKILL_TYPE>(pButton->msg_param);
+                CharacterSkillType skill = static_cast<CharacterSkillType>(pButton->msg_param);
                 std::string pSkillDescText = CharacterUI_GetSkillDescText(pParty->activeCharacterIndex() - 1, skill);
                 CharacterUI_DrawTooltip(localization->GetSkillName(skill), pSkillDescText);
             }
@@ -1249,7 +1249,7 @@ void DrawSpellDescriptionPopup(int spell_index_in_book) {
     spell_info_window.DrawText(pFontSmallnum, {120, 44}, colorTable.White, str);
     spell_info_window.uFrameWidth = 108;
     spell_info_window.uFrameZ = spell_info_window.uFrameX + 107;
-    PLAYER_SKILL_TYPE skill = static_cast<PLAYER_SKILL_TYPE>(pParty->activeCharacter().lastOpenedSpellbookPage + 12);
+    CharacterSkillType skill = static_cast<CharacterSkillType>(pParty->activeCharacter().lastOpenedSpellbookPage + 12);
     PLAYER_SKILL_MASTERY skill_mastery = pParty->activeCharacter().getSkillValue(skill).mastery();
     spell_info_window.DrawTitleText(pFontComic, 12, 75, colorTable.White, localization->GetSkillName(skill), 3);
 
@@ -1366,7 +1366,7 @@ void showSpellbookInfo(ITEM_TYPE spellItemId) {
     popup.DrawText(pFontSmallnum, {120, 44}, colorTable.White, str);
     popup.uFrameZ = popup.uFrameX + 107;
     popup.uFrameWidth = 108;
-    popup.DrawTitleText(pFontComic, 0xCu, 0x4Bu, colorTable.White, localization->GetSkillName(static_cast<PLAYER_SKILL_TYPE>(spellSchool / 4 + 12)), 3u);
+    popup.DrawTitleText(pFontComic, 0xCu, 0x4Bu, colorTable.White, localization->GetSkillName(static_cast<CharacterSkillType>(spellSchool / 4 + 12)), 3u);
 
     str = fmt::format("{}\n{}", localization->GetString(LSTR_SP_COST), pSpellDatas[spellId].uNormalLevelMana);
     popup.DrawTitleText(pFontComic, 0xCu, popup.uFrameHeight - pFontComic->GetHeight() - 16, colorTable.White, str, 3);
@@ -2010,7 +2010,7 @@ void UI_OnMouseRightClick(int mouse_x, int mouse_y) {
                             UIMSG_PlayerCreationRemoveDownSkill) {  // Sellected
                                                                     // skills info
                         pY = 0;
-                        if (pParty->pPlayers[pButton->msg_param].GetSkillIdxByOrder(pButton->msg - UIMSG_48) != PLAYER_SKILL_INVALID) {
+                        if (pParty->pPlayers[pButton->msg_param].GetSkillIdxByOrder(pButton->msg - UIMSG_48) != CHARACTER_SKILL_INVALID) {
                             static std::string hint_reference;
                             hint_reference = CharacterUI_GetSkillDescText(
                                 pButton->msg_param,
@@ -2159,7 +2159,7 @@ void Inventory_ItemPopupAndAlchemy() {
         return;
     }
 
-    CombinedSkillValue alchemySkill = pParty->activeCharacter().getActualSkillValue(PLAYER_SKILL_ALCHEMY);
+    CombinedSkillValue alchemySkill = pParty->activeCharacter().getActualSkillValue(CHARACTER_SKILL_ALCHEMY);
 
     if (pParty->pPickedItem.uItemID == ITEM_POTION_BOTTLE) {
         GameUI_DrawItemInfo(item);

@@ -1099,7 +1099,7 @@ void GameUI_WritePointedObjectStatusString() {
                             break;
                         case 3:  // hovering over buttons
                             if (pButton->Contains(pX, pY)) {
-                                PLAYER_SKILL_TYPE skill = static_cast<PLAYER_SKILL_TYPE>(pButton->msg_param);
+                                CharacterSkillType skill = static_cast<CharacterSkillType>(pButton->msg_param);
                                 int skillLevel = pParty->activeCharacter().getSkillValue(skill).level();
                                 requiredSkillpoints = skillLevel + 1;
 

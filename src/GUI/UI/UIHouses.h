@@ -58,7 +58,7 @@ class GUIWindow_House : public GUIWindow {
 
     void houseDialogManager();
     void initializeDialog();
-    void learnSelectedSkill(PLAYER_SKILL_TYPE skill);
+    void learnSelectedSkill(CharacterSkillType skill);
     void reinitDialogueWindow();
     bool checkIfPlayerCanInteract();
 

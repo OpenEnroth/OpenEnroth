@@ -56,20 +56,20 @@ void ItemTable::Initialize() {
     equipStatMap["gold"] = EQUIP_GOLD;
     equipStatMap["gem"] = EQUIP_GEM;
 
-    std::map<std::string, PLAYER_SKILL_TYPE, ILess> equipSkillMap;
-    equipSkillMap["staff"] = PLAYER_SKILL_STAFF;
-    equipSkillMap["sword"] = PLAYER_SKILL_SWORD;
-    equipSkillMap["dagger"] = PLAYER_SKILL_DAGGER;
-    equipSkillMap["axe"] = PLAYER_SKILL_AXE;
-    equipSkillMap["spear"] = PLAYER_SKILL_SPEAR;
-    equipSkillMap["bow"] = PLAYER_SKILL_BOW;
-    equipSkillMap["mace"] = PLAYER_SKILL_MACE;
-    equipSkillMap["blaster"] = PLAYER_SKILL_BLASTER;
-    equipSkillMap["shield"] = PLAYER_SKILL_SHIELD;
-    equipSkillMap["leather"] = PLAYER_SKILL_LEATHER;
-    equipSkillMap["chain"] = PLAYER_SKILL_CHAIN;
-    equipSkillMap["plate"] = PLAYER_SKILL_PLATE;
-    equipSkillMap["club"] = PLAYER_SKILL_CLUB;
+    std::map<std::string, CharacterSkillType, ILess> equipSkillMap;
+    equipSkillMap["staff"] = CHARACTER_SKILL_STAFF;
+    equipSkillMap["sword"] = CHARACTER_SKILL_SWORD;
+    equipSkillMap["dagger"] = CHARACTER_SKILL_DAGGER;
+    equipSkillMap["axe"] = CHARACTER_SKILL_AXE;
+    equipSkillMap["spear"] = CHARACTER_SKILL_SPEAR;
+    equipSkillMap["bow"] = CHARACTER_SKILL_BOW;
+    equipSkillMap["mace"] = CHARACTER_SKILL_MACE;
+    equipSkillMap["blaster"] = CHARACTER_SKILL_BLASTER;
+    equipSkillMap["shield"] = CHARACTER_SKILL_SHIELD;
+    equipSkillMap["leather"] = CHARACTER_SKILL_LEATHER;
+    equipSkillMap["chain"] = CHARACTER_SKILL_CHAIN;
+    equipSkillMap["plate"] = CHARACTER_SKILL_PLATE;
+    equipSkillMap["club"] = CHARACTER_SKILL_CLUB;
 
     std::map<std::string, ITEM_MATERIAL, ILess> materialMap;
     materialMap["artifact"] = MATERIAL_ARTIFACT;
@@ -170,7 +170,7 @@ void ItemTable::Initialize() {
         pItems[item_counter].name = removeQuotes(tokens[2]);
         pItems[item_counter].uValue = atoi(tokens[3]);
         pItems[item_counter].uEquipType = valueOr(equipStatMap, tokens[4], EQUIP_NONE);
-        pItems[item_counter].uSkillType = valueOr(equipSkillMap, tokens[5], PLAYER_SKILL_MISC);
+        pItems[item_counter].uSkillType = valueOr(equipSkillMap, tokens[5], CHARACTER_SKILL_MISC);
         auto diceRollTokens = tokenize(tokens[6], 'd');
         if (diceRollTokens.size() == 2) {
             pItems[item_counter].uDamageDice = atoi(diceRollTokens[0]);
@@ -406,7 +406,7 @@ void ItemTable::generateItem(ITEM_TREASURE_LEVEL treasure_level, unsigned int uT
 
     if (uTreasureType) {  // generate known treasure type
         ITEM_EQUIP_TYPE requested_equip;
-        PLAYER_SKILL_TYPE requested_skill = PLAYER_SKILL_INVALID;
+        CharacterSkillType requested_skill = CHARACTER_SKILL_INVALID;
         switch (uTreasureType) {
             case 20:
                 requested_equip = EQUIP_SINGLE_HANDED;
@@ -415,40 +415,40 @@ void ItemTable::generateItem(ITEM_TREASURE_LEVEL treasure_level, unsigned int uT
                 requested_equip = EQUIP_ARMOUR;
                 break;
             case 22:
-                requested_skill = PLAYER_SKILL_MISC;
+                requested_skill = CHARACTER_SKILL_MISC;
                 break;
             case 23:
-                requested_skill = PLAYER_SKILL_SWORD;
+                requested_skill = CHARACTER_SKILL_SWORD;
                 break;
             case 24:
-                requested_skill = PLAYER_SKILL_DAGGER;
+                requested_skill = CHARACTER_SKILL_DAGGER;
                 break;
             case 25:
-                requested_skill = PLAYER_SKILL_AXE;
+                requested_skill = CHARACTER_SKILL_AXE;
                 break;
             case 26:
-                requested_skill = PLAYER_SKILL_SPEAR;
+                requested_skill = CHARACTER_SKILL_SPEAR;
                 break;
             case 27:
-                requested_skill = PLAYER_SKILL_BOW;
+                requested_skill = CHARACTER_SKILL_BOW;
                 break;
             case 28:
-                requested_skill = PLAYER_SKILL_MACE;
+                requested_skill = CHARACTER_SKILL_MACE;
                 break;
             case 29:
-                requested_skill = PLAYER_SKILL_CLUB;
+                requested_skill = CHARACTER_SKILL_CLUB;
                 break;
             case 30:
-                requested_skill = PLAYER_SKILL_STAFF;
+                requested_skill = CHARACTER_SKILL_STAFF;
                 break;
             case 31:
-                requested_skill = PLAYER_SKILL_LEATHER;
+                requested_skill = CHARACTER_SKILL_LEATHER;
                 break;
             case 32:
-                requested_skill = PLAYER_SKILL_CHAIN;
+                requested_skill = CHARACTER_SKILL_CHAIN;
                 break;
             case 33:
-                requested_skill = PLAYER_SKILL_PLATE;
+                requested_skill = CHARACTER_SKILL_PLATE;
                 break;
             case 34:
                 requested_equip = EQUIP_SHIELD;
@@ -499,7 +499,7 @@ void ItemTable::generateItem(ITEM_TREASURE_LEVEL treasure_level, unsigned int uT
         total_chance = 0;
         j = 0;
         // a2a = 1;
-        if (requested_skill == PLAYER_SKILL_INVALID) {  // no skill for this item needed
+        if (requested_skill == CHARACTER_SKILL_INVALID) {  // no skill for this item needed
             for (ITEM_TYPE i : allSpawnableItems()) {
                 if (pItems[i].uEquipType == requested_equip) {
                     spawnableRequestedItems[j] = i;

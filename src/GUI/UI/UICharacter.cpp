@@ -786,7 +786,7 @@ GUIWindow *CastSpellInfo::GetCastSpellInInventoryWindow() {
 }
 
 static int CharacterUI_SkillsTab_Draw__DrawSkillTable(
-    Player *player, int x, int y, const std::initializer_list<PLAYER_SKILL_TYPE> skill_list,
+    Player *player, int x, int y, const std::initializer_list<CharacterSkillType> skill_list,
     int right_margin, const char *skill_group_name) {
     int y_offset = y;
     Pointi pt = mouse->GetCursorPos();
@@ -795,14 +795,14 @@ static int CharacterUI_SkillsTab_Draw__DrawSkillTable(
     pGUIWindow_CurrentMenu->DrawText(pFontArrus, {x, y}, ui_character_header_text_color, str);
 
     int num_skills_drawn = 0;
-    for (PLAYER_SKILL_TYPE skill : skill_list) {
+    for (CharacterSkillType skill : skill_list) {
         for (size_t j = 0; j < pGUIWindow_CurrentMenu->vButtons.size(); ++j) {
             GUIButton *button = pGUIWindow_CurrentMenu->GetControl(j);
             if ((short)(button->uData) >= 0) {
                 continue;  // skips an of the stats skills innv awards buttons
             }
 
-            if (static_cast<PLAYER_SKILL_TYPE>(button->uData & 0x7FFF) != skill) {
+            if (static_cast<CharacterSkillType>(button->uData & 0x7FFF) != skill) {
                 continue;  // skips buttons that dont match skill
             }
 
@@ -1042,7 +1042,7 @@ void CharacterUI_DrawPaperdoll(Player *player) {
 
     ItemGen *itemMainHand = player->GetMainHandItem();
     ItemGen *itemOffHand = player->GetOffHandItem();
-    bool bTwoHandedGrip = itemMainHand && (itemMainHand->GetItemEquipType() == EQUIP_TWO_HANDED || itemMainHand->GetPlayerSkillType() == PLAYER_SKILL_SPEAR && !itemOffHand);
+    bool bTwoHandedGrip = itemMainHand && (itemMainHand->GetItemEquipType() == EQUIP_TWO_HANDED || itemMainHand->GetPlayerSkillType() == CHARACTER_SKILL_SPEAR && !itemOffHand);
 
     // Aqua-Lung
     if (player->hasUnderwaterSuitEquipped()) {
@@ -1246,7 +1246,7 @@ void CharacterUI_DrawPaperdoll(Player *player) {
              * These cases should never execute in MM7 as we have spell books in these positions.
              * Also MM6 doesn't have variable size paperdoll's so cordinates need to account pPaperdoll_BodyX/Y.
              */
-            if (item->GetPlayerSkillType() == PLAYER_SKILL_DAGGER || item->GetPlayerSkillType() == PLAYER_SKILL_SWORD) {
+            if (item->GetPlayerSkillType() == CHARACTER_SKILL_DAGGER || item->GetPlayerSkillType() == CHARACTER_SKILL_SWORD) {
                 switch (item->uItemID) {
                     case ITEM_SPELLBOOK_TORCH_LIGHT: // Mordred
                         item_X = 596;
@@ -1459,7 +1459,7 @@ void CharacterUI_LoadPaperdollTextures() {
 }
 
 void GUIWindow_CharacterRecord::CharacterUI_SkillsTab_CreateButtons() {
-    PLAYER_SKILL_TYPE skill;
+    CharacterSkillType skill;
 
     int buttons_count = 0;
     if (dword_507CC0_activ_ch) CharacterUI_ReleaseButtons();
@@ -1483,7 +1483,7 @@ void GUIWindow_CharacterRecord::CharacterUI_SkillsTab_CreateButtons() {
     int uCurrFontHeght = pFontLucida->GetHeight();
     int current_Y = 2 * uCurrFontHeght + 13;
     int width = 204;
-    for (PLAYER_SKILL_TYPE skill : allWeaponSkills()) {
+    for (CharacterSkillType skill : allWeaponSkills()) {
         if (curr_player->getSkillValue(skill).level()) {
             current_Y += uCurrFontHeght - 3;
             ++buttons_count;
@@ -1494,7 +1494,7 @@ void GUIWindow_CharacterRecord::CharacterUI_SkillsTab_CreateButtons() {
     }
     if (!first_rows) current_Y += uCurrFontHeght - 3;
     current_Y += 2 * uCurrFontHeght - 6;
-    for (PLAYER_SKILL_TYPE skill : allMagicSkills()) {
+    for (CharacterSkillType skill : allMagicSkills()) {
         if (curr_player->getSkillValue(skill).level() /*&& buttons_count < 15*/) {
             current_Y += uCurrFontHeght - 3;
             ++buttons_count;
@@ -1504,7 +1504,7 @@ void GUIWindow_CharacterRecord::CharacterUI_SkillsTab_CreateButtons() {
     }
     first_rows = 0;
     current_Y = 2 * uCurrFontHeght + 13;
-    for (PLAYER_SKILL_TYPE skill : allArmorSkills()) {
+    for (CharacterSkillType skill : allArmorSkills()) {
         if (curr_player->getSkillValue(skill).level()) {
             current_Y += uCurrFontHeght - 3;
             ++buttons_count;
@@ -1515,7 +1515,7 @@ void GUIWindow_CharacterRecord::CharacterUI_SkillsTab_CreateButtons() {
     }
     if (!first_rows) current_Y += uCurrFontHeght - 3;
     current_Y += 2 * uCurrFontHeght - 6;
-    for (PLAYER_SKILL_TYPE skill : allMiscSkills()) {
+    for (CharacterSkillType skill : allMiscSkills()) {
         if (curr_player->getSkillValue(skill).level()) {
             current_Y += uCurrFontHeght - 3;
             ++buttons_count;
@@ -1790,7 +1790,7 @@ void OnPaperdollLeftClick() {
     // int equippos; // esi@27
     // int v8; // eax@29
     int v17;  // eax@44
-    PLAYER_SKILL_TYPE pSkillType = PLAYER_SKILL_INVALID;
+    CharacterSkillType pSkillType = CHARACTER_SKILL_INVALID;
 
     int v23;  // eax@62
     int v26;  // eax@69
@@ -1819,10 +1819,10 @@ void OnPaperdollLeftClick() {
         pEquipType = pParty->pPickedItem.GetItemEquipType();
         pSkillType = pParty->pPickedItem.GetPlayerSkillType();
 
-        if (pSkillType == PLAYER_SKILL_SPEAR) {
+        if (pSkillType == CHARACTER_SKILL_SPEAR) {
             if (shieldequip) {
                 // cant use spear in one hand till master
-                if (pParty->activeCharacter().getActualSkillValue(PLAYER_SKILL_SPEAR).mastery() < PLAYER_SKILL_MASTERY_MASTER) {
+                if (pParty->activeCharacter().getActualSkillValue(CHARACTER_SKILL_SPEAR).mastery() < PLAYER_SKILL_MASTERY_MASTER) {
                     pParty->activeCharacter().playReaction(SPEECH_CANT_EQUIP);
 
                     return;
@@ -1831,10 +1831,10 @@ void OnPaperdollLeftClick() {
                 pickeditem = pParty->pPickedItem.uItemID;
             }
         } else {
-            if ((pSkillType == PLAYER_SKILL_SHIELD || pSkillType == PLAYER_SKILL_SWORD || pSkillType == PLAYER_SKILL_DAGGER) && mainhandequip &&
-                pParty->activeCharacter().pInventoryItemList[mainhandequip - 1].GetPlayerSkillType() == PLAYER_SKILL_SPEAR) {
+            if ((pSkillType == CHARACTER_SKILL_SHIELD || pSkillType == CHARACTER_SKILL_SWORD || pSkillType == CHARACTER_SKILL_DAGGER) && mainhandequip &&
+                pParty->activeCharacter().pInventoryItemList[mainhandequip - 1].GetPlayerSkillType() == CHARACTER_SKILL_SPEAR) {
                 // cant use spear in one hand till master
-                if (pParty->activeCharacter().getActualSkillValue(PLAYER_SKILL_SPEAR).mastery() < PLAYER_SKILL_MASTERY_MASTER) {
+                if (pParty->activeCharacter().getActualSkillValue(CHARACTER_SKILL_SPEAR).mastery() < PLAYER_SKILL_MASTERY_MASTER) {
                     pParty->activeCharacter().playReaction(SPEECH_CANT_EQUIP);
                     return;
                 }
@@ -2015,8 +2015,8 @@ void OnPaperdollLeftClick() {
                 }
                 v50 = ITEM_NULL;
                 // dagger at expert or sword at master in left hand
-                if (pSkillType == PLAYER_SKILL_DAGGER && (pParty->activeCharacter().getActualSkillValue(PLAYER_SKILL_DAGGER).mastery() >= PLAYER_SKILL_MASTERY_EXPERT)
-                    || pSkillType == PLAYER_SKILL_SWORD && (pParty->activeCharacter().getActualSkillValue(PLAYER_SKILL_SWORD).mastery() >= PLAYER_SKILL_MASTERY_MASTER)) {
+                if (pSkillType == CHARACTER_SKILL_DAGGER && (pParty->activeCharacter().getActualSkillValue(CHARACTER_SKILL_DAGGER).mastery() >= PLAYER_SKILL_MASTERY_EXPERT)
+                    || pSkillType == CHARACTER_SKILL_SWORD && (pParty->activeCharacter().getActualSkillValue(CHARACTER_SKILL_SWORD).mastery() >= PLAYER_SKILL_MASTERY_MASTER)) {
                     if ((signed int)mouse->uMouseX >= 560) {
                         if (!twohandedequip) {
                             if (shieldequip) {

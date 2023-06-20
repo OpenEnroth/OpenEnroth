@@ -144,7 +144,7 @@ void GUIWindow_MagicGuild::mainDialogue() {
         if (pDialogueWindow->GetControl(i)->msg_param == DIALOGUE_GUILD_BUY_BOOKS) {
             optionsText.push_back(localization->GetString(LSTR_BUY_SPELLS));
         } else {
-            PLAYER_SKILL_TYPE skill = GetLearningDialogueSkill((DIALOGUE_TYPE)pDialogueWindow->GetControl(i)->msg_param);
+            CharacterSkillType skill = GetLearningDialogueSkill((DIALOGUE_TYPE)pDialogueWindow->GetControl(i)->msg_param);
             if (skillMaxMasteryPerClass[pParty->activeCharacter().classType][skill] != PLAYER_SKILL_MASTERY_NONE &&
                 !pParty->activeCharacter().pActiveSkills[skill]) {
                 optionsText.push_back(localization->GetSkillName(skill));

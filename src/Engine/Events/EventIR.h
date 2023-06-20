@@ -162,7 +162,7 @@ class EventIR {
             int is_set;
         } chest_flag_descr;
         struct {
-            PLAYER_SKILL_TYPE skill_type;
+            CharacterSkillType skill_type;
             PLAYER_SKILL_MASTERY skill_mastery;
             PLAYER_SKILL_LEVEL skill_level;
         } check_skill_descr;

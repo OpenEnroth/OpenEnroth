@@ -60,7 +60,7 @@ bool PlayerCreation_Choose4Skills() {
 
     for (uint j = 0; j < 4; ++j) {
         skills_count = 0;
-        for (PLAYER_SKILL_TYPE i : allSkills()) {
+        for (CharacterSkillType i : allSkills()) {
             if (pParty->pPlayers[j].pActiveSkills[i])
                 ++skills_count;
         }
@@ -183,7 +183,7 @@ void CreateParty_EventLoop() {
             pAudioPlayer->playUISound(SOUND_ClickPlus);
             break;
         case UIMSG_PlayerCreationSelectActiveSkill:
-            if (pPlayer[uPlayerCreationUI_SelectedCharacter].GetSkillIdxByOrder(3) == PLAYER_SKILL_INVALID)
+            if (pPlayer[uPlayerCreationUI_SelectedCharacter].GetSkillIdxByOrder(3) == CHARACTER_SKILL_INVALID)
                 pParty->pPlayers[uPlayerCreationUI_SelectedCharacter].pActiveSkills[pPlayer[uPlayerCreationUI_SelectedCharacter]
                     .GetSkillIdxByOrder(param + 4)] = CombinedSkillValue::novice();
             pAudioPlayer->playUISound(SOUND_ClickSkill);
@@ -211,7 +211,7 @@ void CreateParty_EventLoop() {
             int v4;
             v4 = pGUIWindow_CurrentMenu->pCurrentPosActiveItem - pGUIWindow_CurrentMenu->pStartingPosActiveItem;
             pGUIWindow_CurrentMenu->pCurrentPosActiveItem = v4 % 7 + pGUIWindow_CurrentMenu->pStartingPosActiveItem + 7 * param;
-            if (pPlayer[param].GetSkillIdxByOrder(2) != PLAYER_SKILL_INVALID) {
+            if (pPlayer[param].GetSkillIdxByOrder(2) != CHARACTER_SKILL_INVALID) {
                 pParty->pPlayers[param].pActiveSkills[pPlayer[param].GetSkillIdxByOrder(2)].reset();
             }
             break;
@@ -221,7 +221,7 @@ void CreateParty_EventLoop() {
             int v4;
             v4 = pGUIWindow_CurrentMenu->pCurrentPosActiveItem - pGUIWindow_CurrentMenu->pStartingPosActiveItem;
             pGUIWindow_CurrentMenu->pCurrentPosActiveItem = v4 % 7 + pGUIWindow_CurrentMenu->pStartingPosActiveItem + 7 * param;
-            if (pPlayer[param].GetSkillIdxByOrder(3) != PLAYER_SKILL_INVALID)
+            if (pPlayer[param].GetSkillIdxByOrder(3) != CHARACTER_SKILL_INVALID)
                 pParty->pPlayers[param].pActiveSkills[pPlayer[param].GetSkillIdxByOrder(3)].reset();
         } break;
         case UIMSG_PlayerCreationChangeName:
@@ -288,10 +288,10 @@ void GUIWindow_PartyCreation::Update() {
     GUIButton *uPosActiveItem;      // edi@12
     int v17;                        // eax@33
     Color pStatColor;        // eax@44
-    PLAYER_SKILL_TYPE pSkillsType;  // eax@44
+    CharacterSkillType pSkillsType;  // eax@44
     PLAYER_CLASS_TYPE uClassType;   // edi@53
     Color pColorText;                 // eax@53
-    PLAYER_SKILL_TYPE pSkillId;     // edi@72
+    CharacterSkillType pSkillId;     // edi@72
     size_t pLenText;                // eax@72
     signed int v104;                // ecx@72
     signed int pBonusNum;           // edi@82
@@ -449,7 +449,7 @@ void GUIWindow_PartyCreation::Update() {
         pTextCenter = pFontCreate->AlignText_Center(150, localization->GetSkillName(pSkillsType));
         auto str10 = fmt::format("\t{:03}{}", pTextCenter, localization->GetSkillName(pSkillsType));
         pColorText = colorTable.Green;
-        if (pSkillsType == PLAYER_SKILL_INVALID)
+        if (pSkillsType == CHARACTER_SKILL_INVALID)
             pColorText = colorTable.Aqua;
         pGUIWindow_CurrentMenu->DrawText(pFontCreate, {uX - 24, 2 * pIntervalY + posY}, pColorText, str10);
 
@@ -457,7 +457,7 @@ void GUIWindow_PartyCreation::Update() {
         pTextCenter = pFontCreate->AlignText_Center(150, localization->GetSkillName(pSkillsType));
         auto str11 = fmt::format("\t{:03}{}", pTextCenter, localization->GetSkillName(pSkillsType));
         pColorText = colorTable.Green;
-        if (pSkillsType == PLAYER_SKILL_INVALID)
+        if (pSkillsType == CHARACTER_SKILL_INVALID)
             pColorText = colorTable.Aqua;
         pGUIWindow_CurrentMenu->DrawText(pFontCreate, {uX - 24, 3 * pIntervalY + posY}, pColorText, str11);
 
@@ -819,7 +819,7 @@ bool PartyCreationUI_LoopInternal() {
         // TODO(pskelton): why just 22?
         pParty->pPlayers[i].pPlayerBuffs[22].Reset();
         int page = 0;
-        for (PLAYER_SKILL_TYPE j : allMagicSkills()) {
+        for (CharacterSkillType j : allMagicSkills()) {
             if (pParty->pPlayers[i].pActiveSkills[j]) {
                 pParty->pPlayers[i].lastOpenedSpellbookPage = page;
                 break;
@@ -832,106 +832,106 @@ bool PartyCreationUI_LoopInternal() {
 
         pParty->pPlayers[i].health = pParty->pPlayers[i].GetMaxHealth();
         pParty->pPlayers[i].mana = pParty->pPlayers[i].GetMaxMana();
-        for (PLAYER_SKILL_TYPE j : allSkills()) {
+        for (CharacterSkillType j : allSkills()) {
             if (!pParty->pPlayers[i].pActiveSkills[j]) continue;
 
             switch (j) {
-            case PLAYER_SKILL_STAFF:
+            case CHARACTER_SKILL_STAFF:
                 pParty->pPlayers[i].AddItem(-1, ITEM_STAFF);
                 break;
-            case PLAYER_SKILL_SWORD:
+            case CHARACTER_SKILL_SWORD:
                 pParty->pPlayers[i].AddItem(-1, ITEM_CRUDE_LONGSWORD);
                 break;
-            case PLAYER_SKILL_DAGGER:
+            case CHARACTER_SKILL_DAGGER:
                 pParty->pPlayers[i].AddItem(-1, ITEM_DAGGER);
                 break;
-            case PLAYER_SKILL_AXE:
+            case CHARACTER_SKILL_AXE:
                 pParty->pPlayers[i].AddItem(-1, ITEM_CRUDE_AXE);
                 break;
-            case PLAYER_SKILL_SPEAR:
+            case CHARACTER_SKILL_SPEAR:
                 pParty->pPlayers[i].AddItem(-1, ITEM_CRUDE_SPEAR);
                 break;
-            case PLAYER_SKILL_BOW:
+            case CHARACTER_SKILL_BOW:
                 pParty->pPlayers[i].AddItem(-1, ITEM_CROSSBOW);
                 break;
-            case PLAYER_SKILL_MACE:
+            case CHARACTER_SKILL_MACE:
                 pParty->pPlayers[i].AddItem(-1, ITEM_MACE);
                 break;
-            case PLAYER_SKILL_BLASTER:
+            case CHARACTER_SKILL_BLASTER:
                 Error("No blasters at startup :p");
-            case PLAYER_SKILL_SHIELD:
+            case CHARACTER_SKILL_SHIELD:
                 pParty->pPlayers[i].AddItem(-1, ITEM_WOODEN_BUCKLER);
                 break;
-            case PLAYER_SKILL_LEATHER:
+            case CHARACTER_SKILL_LEATHER:
                 pParty->pPlayers[i].AddItem(-1, ITEM_LEATHER_ARMOR);
                 break;
-            case PLAYER_SKILL_CHAIN:
+            case CHARACTER_SKILL_CHAIN:
                 pParty->pPlayers[i].AddItem(-1, ITEM_CHAIN_MAIL);
                 break;
-            case PLAYER_SKILL_PLATE:
+            case CHARACTER_SKILL_PLATE:
                 pParty->pPlayers[i].AddItem(-1, ITEM_PLATE_ARMOR);
                 break;
-            case PLAYER_SKILL_FIRE:
+            case CHARACTER_SKILL_FIRE:
                 pParty->pPlayers[i].AddItem(-1, ITEM_SPELLBOOK_FIRE_BOLT);
                 pParty->pPlayers[i]
                     .spellbook.pFireSpellbook.bIsSpellAvailable[0] = true;
                 break;
-            case PLAYER_SKILL_AIR:
+            case CHARACTER_SKILL_AIR:
                 pParty->pPlayers[i].AddItem(
                     -1, ITEM_SPELLBOOK_FEATHER_FALL);
                 pParty->pPlayers[i]
                     .spellbook.pAirSpellbook.bIsSpellAvailable[0] = true;
                 break;
-            case PLAYER_SKILL_WATER:
+            case CHARACTER_SKILL_WATER:
                 pParty->pPlayers[i].AddItem(
                     -1, ITEM_SPELLBOOK_POISON_SPRAY);
                 pParty->pPlayers[i]
                     .spellbook.pWaterSpellbook.bIsSpellAvailable[0] = true;
                 break;
-            case PLAYER_SKILL_EARTH:
+            case CHARACTER_SKILL_EARTH:
                 pParty->pPlayers[i].AddItem(-1, ITEM_SPELLBOOK_SLOW);
                 pParty->pPlayers[i]
                     .spellbook.pEarthSpellbook.bIsSpellAvailable[0] = true;
                 break;
-            case PLAYER_SKILL_SPIRIT:
+            case CHARACTER_SKILL_SPIRIT:
                 pParty->pPlayers[i].AddItem(-1,
                                             ITEM_SPELLBOOK_BLESS);
                 pParty->pPlayers[i]
                     .spellbook.pSpiritSpellbook.bIsSpellAvailable[0] = true;
                 break;
-            case PLAYER_SKILL_MIND:
+            case CHARACTER_SKILL_MIND:
                 pParty->pPlayers[i].AddItem(-1,
                                             ITEM_SPELLBOOK_MIND_BLAST);
                 pParty->pPlayers[i]
                     .spellbook.pMindSpellbook.bIsSpellAvailable[0] = true;
                 break;
-            case PLAYER_SKILL_BODY:
+            case CHARACTER_SKILL_BODY:
                 pParty->pPlayers[i].AddItem(-1,
                                             ITEM_SPELLBOOK_HEAL);
                 pParty->pPlayers[i]
                     .spellbook.pBodySpellbook.bIsSpellAvailable[0] = true;
                 break;
-            case PLAYER_SKILL_LIGHT:
-            case PLAYER_SKILL_DARK:
-            case PLAYER_SKILL_DIPLOMACY:
+            case CHARACTER_SKILL_LIGHT:
+            case CHARACTER_SKILL_DARK:
+            case CHARACTER_SKILL_DIPLOMACY:
                 Error("No dimoplacy in mm7 (yet)");
                 break;
-            case PLAYER_SKILL_ITEM_ID:
-            case PLAYER_SKILL_REPAIR:
-            case PLAYER_SKILL_MEDITATION:
-            case PLAYER_SKILL_PERCEPTION:
-            case PLAYER_SKILL_TRAP_DISARM:
-            case PLAYER_SKILL_LEARNING:
+            case CHARACTER_SKILL_ITEM_ID:
+            case CHARACTER_SKILL_REPAIR:
+            case CHARACTER_SKILL_MEDITATION:
+            case CHARACTER_SKILL_PERCEPTION:
+            case CHARACTER_SKILL_TRAP_DISARM:
+            case CHARACTER_SKILL_LEARNING:
                 pParty->pPlayers[i].AddItem(-1, ITEM_POTION_BOTTLE);
                 pParty->pPlayers[i].AddItem(-1, grng->randomSample(allLevel1Reagents()));
                 break;
-            case PLAYER_SKILL_DODGE:
+            case CHARACTER_SKILL_DODGE:
                 pParty->pPlayers[i].AddItem(-1, ITEM_LEATHER_BOOTS);
                 break;
-            case PLAYER_SKILL_UNARMED:
+            case CHARACTER_SKILL_UNARMED:
                 pParty->pPlayers[i].AddItem(-1, ITEM_GAUNTLETS);
                 break;
-            case PLAYER_SKILL_CLUB:
+            case CHARACTER_SKILL_CLUB:
                 // pParty->pPlayers[i].AddItem(-1, ITEM_CLUB);
                 break;
             default:

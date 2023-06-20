@@ -110,7 +110,7 @@ static void setSpellRecovery(CastSpellInfo *pCastSpell,
 }
 
 void CastSpellInfoHelpers::castSpell() {
-    PLAYER_SKILL_TYPE which_skill;
+    CharacterSkillType which_skill;
     AIDirection target_direction;
 
     static const int ONE_THIRD_PI = TrigLUT.uIntegerPi / 3;
@@ -209,8 +209,8 @@ void CastSpellInfoHelpers::castSpell() {
         failureRecoveryTime = recoveryTime * engine->config->gameplay.SpellFailureRecoveryMod.value();
 
         if (!pCastSpell->forced_spell_skill_level) {
-            if (which_skill == PLAYER_SKILL_DARK && pParty->uCurrentHour == 0 && pParty->uCurrentMinute == 0 ||
-                which_skill == PLAYER_SKILL_LIGHT && pParty->uCurrentHour == 12 && pParty->uCurrentMinute == 0) {  // free spells at midnight or midday
+            if (which_skill == CHARACTER_SKILL_DARK && pParty->uCurrentHour == 0 && pParty->uCurrentMinute == 0 ||
+                which_skill == CHARACTER_SKILL_LIGHT && pParty->uCurrentHour == 12 && pParty->uCurrentMinute == 0) {  // free spells at midnight or midday
                 uRequiredMana = 0;
             }
         }
@@ -3047,7 +3047,7 @@ void pushSpellOrRangedAttack(SPELL_TYPE spell,
 
             case SPELL_SPIRIT_BLESS:
                 if (!checkSkill) {
-                    checkSkill = player->pActiveSkills[PLAYER_SKILL_SPIRIT].join();
+                    checkSkill = player->pActiveSkills[CHARACTER_SKILL_SPIRIT].join();
                 }
                 if (GetSkillMastery(checkSkill) < PLAYER_SKILL_MASTERY_EXPERT && !engine->config->debug.AllMagic.value()) {
                     flags |= ON_CAST_TargetedCharacter;
@@ -3056,7 +3056,7 @@ void pushSpellOrRangedAttack(SPELL_TYPE spell,
 
             case SPELL_SPIRIT_PRESERVATION:
                 if (!checkSkill) {
-                    checkSkill = player->pActiveSkills[PLAYER_SKILL_SPIRIT].join();
+                    checkSkill = player->pActiveSkills[CHARACTER_SKILL_SPIRIT].join();
                 }
                 if (GetSkillMastery(checkSkill) < PLAYER_SKILL_MASTERY_MASTER && !engine->config->debug.AllMagic.value()) {
                     flags |= ON_CAST_TargetedCharacter;
@@ -3065,7 +3065,7 @@ void pushSpellOrRangedAttack(SPELL_TYPE spell,
 
             case SPELL_DARK_PAIN_REFLECTION:
                 if (!checkSkill) {
-                    checkSkill = player->pActiveSkills[PLAYER_SKILL_DARK].join();
+                    checkSkill = player->pActiveSkills[CHARACTER_SKILL_DARK].join();
                 }
                 if (GetSkillMastery(checkSkill) < PLAYER_SKILL_MASTERY_MASTER && !engine->config->debug.AllMagic.value()) {
                     flags |= ON_CAST_TargetedCharacter;
@@ -3074,7 +3074,7 @@ void pushSpellOrRangedAttack(SPELL_TYPE spell,
 
             case SPELL_BODY_HAMMERHANDS:
                 if (!checkSkill) {
-                    checkSkill = player->pActiveSkills[PLAYER_SKILL_BODY].join();
+                    checkSkill = player->pActiveSkills[CHARACTER_SKILL_BODY].join();
                 }
                 if (GetSkillMastery(checkSkill) < PLAYER_SKILL_MASTERY_GRANDMASTER && !engine->config->debug.AllMagic.value()) {
                     flags |= ON_CAST_TargetedCharacter;

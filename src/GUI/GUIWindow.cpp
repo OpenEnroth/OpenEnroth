@@ -95,7 +95,7 @@ GraphicsImage *ui_leather_mm7 = nullptr;
 
 DIALOGUE_TYPE _dword_F8B1D8_last_npc_topic_menu;
 AwardType dword_F8B1AC_award_bit_number;
-PLAYER_SKILL_TYPE dword_F8B1AC_skill_being_taught; // Address the same as above --- splitting a union into two variables.
+CharacterSkillType dword_F8B1AC_skill_being_taught; // Address the same as above --- splitting a union into two variables.
 
 std::array<int, 28> possibleAddressingAwardBits = {{1,  2,  3,  4,  5,  7,  32, 33, 36, 37,
                                                     38, 40, 41, 42, 43, 45, 46, 47, 48, 49,
@@ -919,7 +919,7 @@ bool isHoldingMouseRightButton() {
     return holdingMouseRightButton;
 }
 
-Color GetSkillColor(PLAYER_CLASS_TYPE uPlayerClass, PLAYER_SKILL_TYPE uPlayerSkillType, PLAYER_SKILL_MASTERY skill_mastery) {
+Color GetSkillColor(PLAYER_CLASS_TYPE uPlayerClass, CharacterSkillType uPlayerSkillType, PLAYER_SKILL_MASTERY skill_mastery) {
     if (skillMaxMasteryPerClass[uPlayerClass][uPlayerSkillType] >= skill_mastery) {
         return ui_character_skillinfo_can_learn;
     }
@@ -1219,7 +1219,7 @@ void OracleDialogue() {
 //----- (004B254D) --------------------------------------------------------
 std::string _4B254D_SkillMasteryTeacher(int trainerInfo) {
     uint8_t teacherLevel = (trainerInfo - 200) % 3;
-    PLAYER_SKILL_TYPE skillBeingTaught = static_cast<PLAYER_SKILL_TYPE>((trainerInfo - 200) / 3);
+    CharacterSkillType skillBeingTaught = static_cast<CharacterSkillType>((trainerInfo - 200) / 3);
     Player *activePlayer = &pParty->activeCharacter();
     PLAYER_CLASS_TYPE pClassType = activePlayer->classType;
     PLAYER_SKILL_MASTERY currClassMaxMastery = skillMaxMasteryPerClass[pClassType][skillBeingTaught];
@@ -1265,14 +1265,14 @@ std::string _4B254D_SkillMasteryTeacher(int trainerInfo) {
         return std::string(pNPCTopics[127].pText);
 
     switch (dword_F8B1AC_skill_being_taught) {
-    case PLAYER_SKILL_STAFF:
-    case PLAYER_SKILL_SWORD:
-    case PLAYER_SKILL_DAGGER:
-    case PLAYER_SKILL_AXE:
-    case PLAYER_SKILL_SPEAR:
-    case PLAYER_SKILL_BOW:
-    case PLAYER_SKILL_MACE:
-    case PLAYER_SKILL_ARMSMASTER:
+    case CHARACTER_SKILL_STAFF:
+    case CHARACTER_SKILL_SWORD:
+    case CHARACTER_SKILL_DAGGER:
+    case CHARACTER_SKILL_AXE:
+    case CHARACTER_SKILL_SPEAR:
+    case CHARACTER_SKILL_BOW:
+    case CHARACTER_SKILL_MACE:
+    case CHARACTER_SKILL_ARMSMASTER:
         switch (masteryLevelBeingTaught) {
         case PLAYER_SKILL_MASTERY_EXPERT:
             gold_transaction_amount = 2000;
@@ -1287,7 +1287,7 @@ std::string _4B254D_SkillMasteryTeacher(int trainerInfo) {
             break;
         }
         break;
-    case PLAYER_SKILL_BLASTER:
+    case CHARACTER_SKILL_BLASTER:
         switch (masteryLevelBeingTaught) {
         case PLAYER_SKILL_MASTERY_EXPERT:
             gold_transaction_amount = 0;
@@ -1302,10 +1302,10 @@ std::string _4B254D_SkillMasteryTeacher(int trainerInfo) {
             break;
         }
         break;
-    case PLAYER_SKILL_SHIELD:
-    case PLAYER_SKILL_LEATHER:
-    case PLAYER_SKILL_CHAIN:
-    case PLAYER_SKILL_PLATE:
+    case CHARACTER_SKILL_SHIELD:
+    case CHARACTER_SKILL_LEATHER:
+    case CHARACTER_SKILL_CHAIN:
+    case CHARACTER_SKILL_PLATE:
         switch (masteryLevelBeingTaught) {
         case PLAYER_SKILL_MASTERY_EXPERT:
             gold_transaction_amount = 1000;
@@ -1320,13 +1320,13 @@ std::string _4B254D_SkillMasteryTeacher(int trainerInfo) {
             break;
         }
         break;
-    case PLAYER_SKILL_FIRE:
-    case PLAYER_SKILL_AIR:
-    case PLAYER_SKILL_WATER:
-    case PLAYER_SKILL_EARTH:
-    case PLAYER_SKILL_SPIRIT:
-    case PLAYER_SKILL_MIND:
-    case PLAYER_SKILL_BODY:
+    case CHARACTER_SKILL_FIRE:
+    case CHARACTER_SKILL_AIR:
+    case CHARACTER_SKILL_WATER:
+    case CHARACTER_SKILL_EARTH:
+    case CHARACTER_SKILL_SPIRIT:
+    case CHARACTER_SKILL_MIND:
+    case CHARACTER_SKILL_BODY:
         switch (masteryLevelBeingTaught) {
         case PLAYER_SKILL_MASTERY_EXPERT:
             gold_transaction_amount = 1000;
@@ -1341,7 +1341,7 @@ std::string _4B254D_SkillMasteryTeacher(int trainerInfo) {
             break;
         }
         break;
-    case PLAYER_SKILL_LIGHT:
+    case CHARACTER_SKILL_LIGHT:
         switch (masteryLevelBeingTaught) {
         case PLAYER_SKILL_MASTERY_EXPERT:
             gold_transaction_amount = 2000;
@@ -1360,7 +1360,7 @@ std::string _4B254D_SkillMasteryTeacher(int trainerInfo) {
             break;
         }
         break;
-    case PLAYER_SKILL_DARK:
+    case CHARACTER_SKILL_DARK:
         switch (masteryLevelBeingTaught) {
         case PLAYER_SKILL_MASTERY_EXPERT:
             gold_transaction_amount = 2000;
@@ -1379,15 +1379,15 @@ std::string _4B254D_SkillMasteryTeacher(int trainerInfo) {
             break;
         }
         break;
-    case PLAYER_SKILL_ITEM_ID:
-    case PLAYER_SKILL_REPAIR:
-    case PLAYER_SKILL_MEDITATION:
-    case PLAYER_SKILL_PERCEPTION:
-    case PLAYER_SKILL_TRAP_DISARM:
-    case PLAYER_SKILL_MONSTER_ID:
-    case PLAYER_SKILL_STEALING:
-    case PLAYER_SKILL_ALCHEMY:
-    case PLAYER_SKILL_CLUB:
+    case CHARACTER_SKILL_ITEM_ID:
+    case CHARACTER_SKILL_REPAIR:
+    case CHARACTER_SKILL_MEDITATION:
+    case CHARACTER_SKILL_PERCEPTION:
+    case CHARACTER_SKILL_TRAP_DISARM:
+    case CHARACTER_SKILL_MONSTER_ID:
+    case CHARACTER_SKILL_STEALING:
+    case CHARACTER_SKILL_ALCHEMY:
+    case CHARACTER_SKILL_CLUB:
         switch (masteryLevelBeingTaught) {
         case PLAYER_SKILL_MASTERY_EXPERT:
             gold_transaction_amount = 500;
@@ -1402,7 +1402,7 @@ std::string _4B254D_SkillMasteryTeacher(int trainerInfo) {
             break;
         }
         break;
-    case PLAYER_SKILL_MERCHANT:
+    case CHARACTER_SKILL_MERCHANT:
         switch (masteryLevelBeingTaught) {
         case PLAYER_SKILL_MASTERY_EXPERT:
             gold_transaction_amount = 2000;
@@ -1419,7 +1419,7 @@ std::string _4B254D_SkillMasteryTeacher(int trainerInfo) {
             break;
         }
         break;
-    case PLAYER_SKILL_BODYBUILDING:
+    case CHARACTER_SKILL_BODYBUILDING:
         switch (masteryLevelBeingTaught) {
         case PLAYER_SKILL_MASTERY_EXPERT:
             gold_transaction_amount = 500;
@@ -1436,13 +1436,13 @@ std::string _4B254D_SkillMasteryTeacher(int trainerInfo) {
             break;
         }
         break;
-    case PLAYER_SKILL_DIPLOMACY:
+    case CHARACTER_SKILL_DIPLOMACY:
         Error("Diplomacy not used");
         break;
-    case PLAYER_SKILL_THIEVERY:
+    case CHARACTER_SKILL_THIEVERY:
         Error("Thievery not used");
         break;
-    case PLAYER_SKILL_DODGE:
+    case CHARACTER_SKILL_DODGE:
         switch (masteryLevelBeingTaught) {
         case PLAYER_SKILL_MASTERY_EXPERT:
             gold_transaction_amount = 2000;
@@ -1451,7 +1451,7 @@ std::string _4B254D_SkillMasteryTeacher(int trainerInfo) {
             gold_transaction_amount = 5000;
             break;
         case PLAYER_SKILL_MASTERY_GRANDMASTER:
-            if (activePlayer->pActiveSkills[PLAYER_SKILL_UNARMED].level() < 10)
+            if (activePlayer->pActiveSkills[CHARACTER_SKILL_UNARMED].level() < 10)
                 return std::string(pNPCTopics[127].pText);
             gold_transaction_amount = 8000;
             break;
@@ -1459,7 +1459,7 @@ std::string _4B254D_SkillMasteryTeacher(int trainerInfo) {
             break;
         }
         break;
-    case PLAYER_SKILL_UNARMED:
+    case CHARACTER_SKILL_UNARMED:
         switch (masteryLevelBeingTaught) {
         case PLAYER_SKILL_MASTERY_EXPERT:
             gold_transaction_amount = 2000;
@@ -1468,7 +1468,7 @@ std::string _4B254D_SkillMasteryTeacher(int trainerInfo) {
             gold_transaction_amount = 5000;
             break;
         case PLAYER_SKILL_MASTERY_GRANDMASTER:
-            if (activePlayer->pActiveSkills[PLAYER_SKILL_DODGE].level() < 10)
+            if (activePlayer->pActiveSkills[CHARACTER_SKILL_DODGE].level() < 10)
                 return std::string(pNPCTopics[127].pText);
             gold_transaction_amount = 8000;
             break;
@@ -1477,7 +1477,7 @@ std::string _4B254D_SkillMasteryTeacher(int trainerInfo) {
         }
         break;
 
-    case PLAYER_SKILL_LEARNING:
+    case CHARACTER_SKILL_LEARNING:
         switch (masteryLevelBeingTaught) {
         case PLAYER_SKILL_MASTERY_EXPERT:
             gold_transaction_amount = 2000;

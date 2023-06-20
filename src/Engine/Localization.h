@@ -476,7 +476,7 @@ class Localization {
         return this->attribute_descriptions[index];
     }
 
-    const char *GetSkillName(PLAYER_SKILL_TYPE index) const {
+    const char *GetSkillName(CharacterSkillType index) const {
         return this->skill_names[index];
     }
 
@@ -496,11 +496,11 @@ class Localization {
         return mastery == PLAYER_SKILL_MASTERY_GRANDMASTER ? GetString(LSTR_GRANDMASTER) : MasteryName(mastery);
     }
 
-    const char *GetSkillDescription(PLAYER_SKILL_TYPE index) const {
+    const char *GetSkillDescription(CharacterSkillType index) const {
         return this->skill_descriptions[index];
     }
 
-    const char *GetSkillDescription(PLAYER_SKILL_TYPE index, PLAYER_SKILL_MASTERY mastery) const {
+    const char *GetSkillDescription(CharacterSkillType index, PLAYER_SKILL_MASTERY mastery) const {
         switch(mastery) {
         case PLAYER_SKILL_MASTERY_NOVICE: return GetSkillDescriptionNormal(index);
         case PLAYER_SKILL_MASTERY_EXPERT: return GetSkillDescriptionExpert(index);
@@ -512,19 +512,19 @@ class Localization {
         }
     }
 
-    const char *GetSkillDescriptionNormal(PLAYER_SKILL_TYPE index) const {
+    const char *GetSkillDescriptionNormal(CharacterSkillType index) const {
         return this->skill_descriptions_normal[index];
     }
 
-    const char *GetSkillDescriptionExpert(PLAYER_SKILL_TYPE index) const {
+    const char *GetSkillDescriptionExpert(CharacterSkillType index) const {
         return this->skill_descriptions_expert[index];
     }
 
-    const char *GetSkillDescriptionMaster(PLAYER_SKILL_TYPE index) const {
+    const char *GetSkillDescriptionMaster(CharacterSkillType index) const {
         return this->skill_descriptions_master[index];
     }
 
-    const char *GetSkillDescriptionGrand(PLAYER_SKILL_TYPE index) const {
+    const char *GetSkillDescriptionGrand(CharacterSkillType index) const {
         return this->skill_descriptions_grand[index];
     }
 
@@ -653,12 +653,12 @@ class Localization {
     const char *class_desciptions[36]{};
     const char *attribute_names[7]{};
     const char *attribute_descriptions[7]{};
-    IndexedArray<const char *, PLAYER_SKILL_INVALID, PLAYER_SKILL_LAST_VISIBLE> skill_names = {{}};
-    IndexedArray<const char *, PLAYER_SKILL_INVALID, PLAYER_SKILL_LAST_VISIBLE> skill_descriptions = {{}};
-    IndexedArray<const char *, PLAYER_SKILL_INVALID, PLAYER_SKILL_LAST_VISIBLE> skill_descriptions_normal = {{}};
-    IndexedArray<const char *, PLAYER_SKILL_INVALID, PLAYER_SKILL_LAST_VISIBLE> skill_descriptions_expert = {{}};
-    IndexedArray<const char *, PLAYER_SKILL_INVALID, PLAYER_SKILL_LAST_VISIBLE> skill_descriptions_master = {{}};
-    IndexedArray<const char *, PLAYER_SKILL_INVALID, PLAYER_SKILL_LAST_VISIBLE> skill_descriptions_grand = {{}};
+    IndexedArray<const char *, CHARACTER_SKILL_INVALID, CHARACTER_SKILL_LAST_VISIBLE> skill_names = {{}};
+    IndexedArray<const char *, CHARACTER_SKILL_INVALID, CHARACTER_SKILL_LAST_VISIBLE> skill_descriptions = {{}};
+    IndexedArray<const char *, CHARACTER_SKILL_INVALID, CHARACTER_SKILL_LAST_VISIBLE> skill_descriptions_normal = {{}};
+    IndexedArray<const char *, CHARACTER_SKILL_INVALID, CHARACTER_SKILL_LAST_VISIBLE> skill_descriptions_expert = {{}};
+    IndexedArray<const char *, CHARACTER_SKILL_INVALID, CHARACTER_SKILL_LAST_VISIBLE> skill_descriptions_master = {{}};
+    IndexedArray<const char *, CHARACTER_SKILL_INVALID, CHARACTER_SKILL_LAST_VISIBLE> skill_descriptions_grand = {{}};
     const char *character_conditions[19]{};
     IndexedArray<const char *, NPC_PROFESSION_FIRST, NPC_PROFESSION_LAST> npc_profession_names = {{}};
     const char *hp_description{};

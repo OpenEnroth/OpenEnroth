@@ -1665,7 +1665,7 @@ void Game::processQueuedMessages() {
                 int skill_count = 0;
                 int uAction = 0;
                 int page = 0;
-                for (PLAYER_SKILL_TYPE i : allMagicSkills()) {
+                for (CharacterSkillType i : allMagicSkills()) {
                     if (pParty->activeCharacter().pActiveSkills[i] || _engine->config->debug.AllMagic.value()) {
                         if (pParty->activeCharacter().lastOpenedSpellbookPage == page)
                             uAction = skill_count;
@@ -1836,7 +1836,7 @@ void Game::processQueuedMessages() {
                 continue;
             case UIMSG_SkillUp:
             {
-                PLAYER_SKILL_TYPE skill = static_cast<PLAYER_SKILL_TYPE>(uMessageParam);
+                CharacterSkillType skill = static_cast<CharacterSkillType>(uMessageParam);
                 Player *player = &pParty->activeCharacter();
                 int skill_level = player->getSkillValue(skill).level();
                 const char *statusString;
@@ -2130,7 +2130,7 @@ void Game::processQueuedMessages() {
                 continue;
             case UIMSG_DebugLearnSkills:
                 for (Player &player : pParty->pPlayers) { // loop over players
-                    for (PLAYER_SKILL_TYPE ski : allSkills()) {  // loop over skills
+                    for (CharacterSkillType ski : allSkills()) {  // loop over skills
                         // if class can learn this skill
                         if (skillMaxMasteryPerClass[player.classType][ski] > PLAYER_SKILL_MASTERY_NONE) {
                             if (player.getSkillValue(ski).level() == 0) {

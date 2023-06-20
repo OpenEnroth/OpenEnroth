@@ -212,7 +212,7 @@ struct Player {
     Color GetExperienceDisplayColor();
     int CalculateIncommingDamage(DAMAGE_TYPE dmg_type, int amount);
     ITEM_EQUIP_TYPE GetEquippedItemEquipType(ITEM_SLOT uEquipSlot) const;
-    PLAYER_SKILL_TYPE GetEquippedItemSkillType(ITEM_SLOT uEquipSlot) const;
+    CharacterSkillType GetEquippedItemSkillType(ITEM_SLOT uEquipSlot) const;
     bool IsUnarmed() const;
     bool HasItemEquipped(ITEM_SLOT uEquipIndex) const;
     bool HasEnchantedItemEquipped(int uEnchantment) const;
@@ -251,17 +251,17 @@ struct Player {
     int GetSpecialItemBonus(ITEM_ENCHANTMENT enchantment) const;
     int GetItemsBonus(CHARACTER_ATTRIBUTE_TYPE attr, bool getOnlyMainHandDmg = false) const;
     int GetMagicalBonus(CHARACTER_ATTRIBUTE_TYPE a2) const;
-    PLAYER_SKILL_LEVEL GetActualSkillLevel(PLAYER_SKILL_TYPE uSkillType) const;
-    PLAYER_SKILL_MASTERY GetActualSkillMastery(PLAYER_SKILL_TYPE uSkillType) const;
-    CombinedSkillValue getActualSkillValue(PLAYER_SKILL_TYPE skillType) const;
+    PLAYER_SKILL_LEVEL GetActualSkillLevel(CharacterSkillType uSkillType) const;
+    PLAYER_SKILL_MASTERY GetActualSkillMastery(CharacterSkillType uSkillType) const;
+    CombinedSkillValue getActualSkillValue(CharacterSkillType skillType) const;
     int GetSkillBonus(CHARACTER_ATTRIBUTE_TYPE a2) const;
-    CHARACTER_RACE GetRace() const;
+    CharacterRace GetRace() const;
     std::string GetRaceName() const;
     CHARACTER_SEX GetSexByVoice() const;
     void SetInitialStats();
     void SetSexByVoice();
     void Reset(PLAYER_CLASS_TYPE classType);
-    PLAYER_SKILL_TYPE GetSkillIdxByOrder(signed int order);
+    CharacterSkillType GetSkillIdxByOrder(signed int order);
     void DecreaseAttribute(int eAttribute);
     void IncreaseAttribute(int eAttribute);
     void resetTempBonuses();
@@ -292,7 +292,7 @@ struct Player {
      */
     int findFreeInventoryListSlot() const;
     int CreateItemInInventory(unsigned int uSlot, ITEM_TYPE uItemID);
-    int HasSkill(PLAYER_SKILL_TYPE uSkillType) const;
+    int HasSkill(CharacterSkillType uSkillType) const;
     void WearItem(ITEM_TYPE uItemID);
     int AddItem(int uSlot, ITEM_TYPE uItemID);
     int AddItem2(int uSlot, ItemGen *Src);
@@ -344,21 +344,21 @@ struct Player {
 
     bool PlayerHitOrMiss(Actor *pActor, int distancemod, PLAYER_SKILL_LEVEL skillmod);
 
-    unsigned int GetMultiplierForSkillLevel(PLAYER_SKILL_TYPE uSkillType, int mult1, int mult2, int mult3, int mult4) const;
+    unsigned int GetMultiplierForSkillLevel(CharacterSkillType uSkillType, int mult1, int mult2, int mult3, int mult4) const;
     int CalculateMeleeDmgToEnemyWithWeapon(ItemGen *weapon,
                                            unsigned int uTargetActorID,
                                            bool addOneDice);
     bool wearsItemAnywhere(ITEM_TYPE item_id) const;
-    float GetArmorRecoveryMultiplierFromSkillLevel(PLAYER_SKILL_TYPE armour_skill_type, float param2, float param3, float param4, float param5) const;
+    float GetArmorRecoveryMultiplierFromSkillLevel(CharacterSkillType armour_skill_type, float param2, float param3, float param4, float param5) const;
     void SetSkillReaction();
     void PlayAwardSound_Anim();
     void PlayAwardSound_Anim_Face(CharacterSpeech speech);
     void PlayAwardSound_Anim97();
     void PlayAwardSound_Anim97_Face(CharacterSpeech speech);
-    void AddSkillByEvent(PLAYER_SKILL_TYPE, uint16_t addSkillValue);
+    void AddSkillByEvent(CharacterSkillType, uint16_t addSkillValue);
     void PlayAwardSound_Anim98();
     void PlayAwardSound_Anim98_Face(CharacterSpeech speech);
-    void SubtractSkillByEvent(PLAYER_SKILL_TYPE skill, uint16_t subSkillValue);
+    void SubtractSkillByEvent(CharacterSkillType skill, uint16_t subSkillValue);
 
     bool IsWeak() const;
     bool IsDead() const;
@@ -441,13 +441,13 @@ struct Player {
     void CleanupBeacons();
     bool SetBeacon(size_t index, size_t power);
 
-    PLAYER_SKILL_LEVEL GetSkillLevel(PLAYER_SKILL_TYPE skill) const;
-    PLAYER_SKILL_MASTERY GetSkillMastery(PLAYER_SKILL_TYPE skill) const;
-    CombinedSkillValue getSkillValue(PLAYER_SKILL_TYPE skill) const;
+    PLAYER_SKILL_LEVEL GetSkillLevel(CharacterSkillType skill) const;
+    PLAYER_SKILL_MASTERY GetSkillMastery(CharacterSkillType skill) const;
+    CombinedSkillValue getSkillValue(CharacterSkillType skill) const;
 
-    void SetSkillLevel(PLAYER_SKILL_TYPE skill, PLAYER_SKILL_LEVEL level);
-    void SetSkillMastery(PLAYER_SKILL_TYPE skill, PLAYER_SKILL_MASTERY mastery);
-    void setSkillValue(PLAYER_SKILL_TYPE skill, const CombinedSkillValue &value);
+    void SetSkillLevel(CharacterSkillType skill, PLAYER_SKILL_LEVEL level);
+    void SetSkillMastery(CharacterSkillType skill, PLAYER_SKILL_MASTERY mastery);
+    void setSkillValue(CharacterSkillType skill, const CombinedSkillValue &value);
 
     PlayerConditions conditions;
     uint64_t experience;
@@ -483,7 +483,7 @@ struct Player {
     int field_FC;
     int field_100;
     int field_104;
-    IndexedArray<CombinedSkillValue, PLAYER_SKILL_FIRST, PLAYER_SKILL_LAST> pActiveSkills;
+    IndexedArray<CombinedSkillValue, CHARACTER_SKILL_FIRST, CHARACTER_SKILL_LAST> pActiveSkills;
     IndexedBitset<1, 512> _achievedAwardsBits;
     PlayerSpells spellbook;
     int pure_luck_used;

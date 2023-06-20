@@ -10,10 +10,10 @@ struct Player;
 
 struct CEnchantment {
     CEnchantment() {}
-    explicit CEnchantment(int bonus, PLAYER_SKILL_TYPE skill = PLAYER_SKILL_INVALID)
+    explicit CEnchantment(int bonus, CharacterSkillType skill = CHARACTER_SKILL_INVALID)
         : skillType(skill), statBonus(bonus) {}
 
-    PLAYER_SKILL_TYPE skillType = PLAYER_SKILL_INVALID;
+    CharacterSkillType skillType = CHARACTER_SKILL_INVALID;
     int statBonus = 0;
 };
 

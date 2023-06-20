@@ -3169,23 +3169,23 @@ void Actor::DamageMonsterFromParty(signed int a1, unsigned int uActorID_Monster,
         int main_hand_idx = player->pEquipment.uMainHand;
         IsAdditionalDamagePossible = true;
         if (player->HasItemEquipped(ITEM_SLOT_MAIN_HAND)) {
-            PLAYER_SKILL_TYPE main_hand_skill = player->GetMainHandItem()->GetPlayerSkillType();
+            CharacterSkillType main_hand_skill = player->GetMainHandItem()->GetPlayerSkillType();
             PLAYER_SKILL_MASTERY main_hand_mastery = player->getSkillValue(main_hand_skill).mastery();
             switch (main_hand_skill) {
-                case PLAYER_SKILL_STAFF:
+                case CHARACTER_SKILL_STAFF:
                     if (main_hand_mastery >= PLAYER_SKILL_MASTERY_MASTER) {
-                        if (grng->random(100) < player->getActualSkillValue(PLAYER_SKILL_STAFF).level())
+                        if (grng->random(100) < player->getActualSkillValue(CHARACTER_SKILL_STAFF).level())
                             hit_will_stun = true;
                     }
                     break;
 
-                case PLAYER_SKILL_MACE:
+                case CHARACTER_SKILL_MACE:
                     if (main_hand_mastery >= PLAYER_SKILL_MASTERY_MASTER) {
-                        if (grng->random(100) < player->getActualSkillValue(PLAYER_SKILL_MACE).level())
+                        if (grng->random(100) < player->getActualSkillValue(CHARACTER_SKILL_MACE).level())
                             hit_will_stun = true;
                     }
                     if (main_hand_mastery >= PLAYER_SKILL_MASTERY_GRANDMASTER) {
-                        if (grng->random(100) < player->getActualSkillValue(PLAYER_SKILL_MACE).level())
+                        if (grng->random(100) < player->getActualSkillValue(CHARACTER_SKILL_MACE).level())
                             hit_will_paralyze = true;
                     }
                     break;
@@ -3217,8 +3217,8 @@ void Actor::DamageMonsterFromParty(signed int a1, unsigned int uActorID_Monster,
             case SPELL_LASER_PROJECTILE:
                 // TODO: should be changed to GetActual* equivalents?
                 v61 = 1;
-                if (player->getSkillValue(PLAYER_SKILL_BLASTER).mastery() >= PLAYER_SKILL_MASTERY_MASTER)
-                    skillLevel = player->getSkillValue(PLAYER_SKILL_BLASTER).level();
+                if (player->getSkillValue(CHARACTER_SKILL_BLASTER).mastery() >= PLAYER_SKILL_MASTERY_MASTER)
+                    skillLevel = player->getSkillValue(CHARACTER_SKILL_BLASTER).level();
                 attackElement = DMGT_PHISYCAL;
                 uDamageAmount = player->CalculateMeleeDamageTo(true, true, 0);
                 if (!player->PlayerHitOrMiss(pMonster, v61, skillLevel)) {
@@ -3397,7 +3397,7 @@ void Actor::DamageMonsterFromParty(signed int a1, unsigned int uActorID_Monster,
     }
     if (hit_will_paralyze && pMonster->CanAct() &&
         pMonster->DoesDmgTypeDoDamage(DMGT_EARTH)) {
-        CombinedSkillValue maceSkill = player->getActualSkillValue(PLAYER_SKILL_MACE);
+        CombinedSkillValue maceSkill = player->getActualSkillValue(CHARACTER_SKILL_MACE);
         GameTime v46 = GameTime(0, maceSkill.level());  // ??
         pMonster->pActorBuffs[ACTOR_BUFF_PARALYZED].Apply((pParty->GetPlayingTime() + v46), maceSkill.mastery(), 0, 0, 0);
         if (engine->config->settings.ShowHits.value()) {

@@ -152,90 +152,90 @@ enum CharacterSpeech {
     SPEECH_LAST = SPEECH_110
 };
 
-enum CHARACTER_RACE {
+enum CharacterRace {
     CHARACTER_RACE_HUMAN = 0,
     CHARACTER_RACE_ELF = 1,
     CHARACTER_RACE_GOBLIN = 2,
     CHARACTER_RACE_DWARF = 3,
 };
 
-// TODO(captainurist): think of a better name for this enum.
-enum ClassSkill : uint8_t {
+enum ClassSkillAffinity : uint8_t {
     CLASS_SKILL_DENIED = 0,
     CLASS_SKILL_AVAILABLE = 1,
     CLASS_SKILL_PRIMARY = 2
 };
-using enum ClassSkill;
+using enum ClassSkillAffinity;
 
-enum class PLAYER_SKILL_TYPE : int8_t {
-    PLAYER_SKILL_INVALID = -1,
-    PLAYER_SKILL_STAFF = 0,
-    PLAYER_SKILL_SWORD = 1,
-    PLAYER_SKILL_DAGGER = 2,
-    PLAYER_SKILL_AXE = 3,
-    PLAYER_SKILL_SPEAR = 4,
-    PLAYER_SKILL_BOW = 5,
-    PLAYER_SKILL_MACE = 6,
-    PLAYER_SKILL_BLASTER = 7,
-    PLAYER_SKILL_SHIELD = 8,
-    PLAYER_SKILL_LEATHER = 9,
-    PLAYER_SKILL_CHAIN = 10,
-    PLAYER_SKILL_PLATE = 11,
-    PLAYER_SKILL_FIRE = 12,
-    PLAYER_SKILL_AIR = 13,
-    PLAYER_SKILL_WATER = 14,
-    PLAYER_SKILL_EARTH = 15,
-    PLAYER_SKILL_SPIRIT = 16,
-    PLAYER_SKILL_MIND = 17,
-    PLAYER_SKILL_BODY = 18,
-    PLAYER_SKILL_LIGHT = 19,
-    PLAYER_SKILL_DARK = 20,
-    PLAYER_SKILL_ITEM_ID = 21,
-    PLAYER_SKILL_MERCHANT = 22,
-    PLAYER_SKILL_REPAIR = 23,
-    PLAYER_SKILL_BODYBUILDING = 24,
-    PLAYER_SKILL_MEDITATION = 25,
-    PLAYER_SKILL_PERCEPTION = 26,
-    PLAYER_SKILL_DIPLOMACY = 27,
-    PLAYER_SKILL_THIEVERY = 28,
-    PLAYER_SKILL_TRAP_DISARM = 29,
-    PLAYER_SKILL_DODGE = 30,
-    PLAYER_SKILL_UNARMED = 31,
-    PLAYER_SKILL_MONSTER_ID = 32,
-    PLAYER_SKILL_ARMSMASTER = 33,
-    PLAYER_SKILL_STEALING = 34,
-    PLAYER_SKILL_ALCHEMY = 35,
-    PLAYER_SKILL_LEARNING = 36,
-    PLAYER_SKILL_CLUB = 37, // In vanilla clubs are using separate hidden & non-upgradable skill.
-    PLAYER_SKILL_MISC = 38, // Hidden skill that's always 1. Used for wetsuits, for example.
+// TODO(pskelton): drop CHARACTER_ at start?
+enum class CharacterSkillType : int8_t {
+    CHARACTER_SKILL_INVALID = -1,
+    CHARACTER_SKILL_STAFF = 0,
+    CHARACTER_SKILL_SWORD = 1,
+    CHARACTER_SKILL_DAGGER = 2,
+    CHARACTER_SKILL_AXE = 3,
+    CHARACTER_SKILL_SPEAR = 4,
+    CHARACTER_SKILL_BOW = 5,
+    CHARACTER_SKILL_MACE = 6,
+    CHARACTER_SKILL_BLASTER = 7,
+    CHARACTER_SKILL_SHIELD = 8,
+    CHARACTER_SKILL_LEATHER = 9,
+    CHARACTER_SKILL_CHAIN = 10,
+    CHARACTER_SKILL_PLATE = 11,
+    CHARACTER_SKILL_FIRE = 12,
+    CHARACTER_SKILL_AIR = 13,
+    CHARACTER_SKILL_WATER = 14,
+    CHARACTER_SKILL_EARTH = 15,
+    CHARACTER_SKILL_SPIRIT = 16,
+    CHARACTER_SKILL_MIND = 17,
+    CHARACTER_SKILL_BODY = 18,
+    CHARACTER_SKILL_LIGHT = 19,
+    CHARACTER_SKILL_DARK = 20,
+    CHARACTER_SKILL_ITEM_ID = 21,
+    CHARACTER_SKILL_MERCHANT = 22,
+    CHARACTER_SKILL_REPAIR = 23,
+    CHARACTER_SKILL_BODYBUILDING = 24,
+    CHARACTER_SKILL_MEDITATION = 25,
+    CHARACTER_SKILL_PERCEPTION = 26,
+    CHARACTER_SKILL_DIPLOMACY = 27,
+    CHARACTER_SKILL_THIEVERY = 28,
+    CHARACTER_SKILL_TRAP_DISARM = 29,
+    CHARACTER_SKILL_DODGE = 30,
+    CHARACTER_SKILL_UNARMED = 31,
+    CHARACTER_SKILL_MONSTER_ID = 32,
+    CHARACTER_SKILL_ARMSMASTER = 33,
+    CHARACTER_SKILL_STEALING = 34,
+    CHARACTER_SKILL_ALCHEMY = 35,
+    CHARACTER_SKILL_LEARNING = 36,
+    CHARACTER_SKILL_CLUB = 37, // In vanilla clubs are using separate hidden & non-upgradable skill.
+    CHARACTER_SKILL_MISC = 38, // Hidden skill that's always 1. Used for wetsuits, for example.
 
-    PLAYER_SKILL_FIRST_VISIBLE = PLAYER_SKILL_STAFF,
-    PLAYER_SKILL_LAST_VISIBLE = PLAYER_SKILL_LEARNING,
+    CHARACTER_SKILL_FIRST_VISIBLE = CHARACTER_SKILL_STAFF,
+    CHARACTER_SKILL_LAST_VISIBLE = CHARACTER_SKILL_LEARNING,
 
-    PLAYER_SKILL_FIRST = PLAYER_SKILL_STAFF,
-    PLAYER_SKILL_LAST = PLAYER_SKILL_MISC,
+    CHARACTER_SKILL_FIRST = CHARACTER_SKILL_STAFF,
+    CHARACTER_SKILL_LAST = CHARACTER_SKILL_MISC,
 };
-using enum PLAYER_SKILL_TYPE;
+using enum CharacterSkillType;
 
-inline Segment<PLAYER_SKILL_TYPE> allSkills() {
-    return Segment(PLAYER_SKILL_FIRST, PLAYER_SKILL_LAST);
+inline Segment<CharacterSkillType> allSkills() {
+    return Segment(CHARACTER_SKILL_FIRST, CHARACTER_SKILL_LAST);
 }
 
 /**
  * @return                              List of skills that are visible to the player and that are stored in a savegame.
  */
-inline Segment<PLAYER_SKILL_TYPE> allVisibleSkills() {
-    return Segment(PLAYER_SKILL_FIRST_VISIBLE, PLAYER_SKILL_LAST_VISIBLE);
+inline Segment<CharacterSkillType> allVisibleSkills() {
+    return Segment(CHARACTER_SKILL_FIRST_VISIBLE, CHARACTER_SKILL_LAST_VISIBLE);
 }
 
 /**
  * @return                              List of skills that are drawn in the "Armor" section of the character
  *                                      screen's skills tab.
  */
-inline std::initializer_list<PLAYER_SKILL_TYPE> allArmorSkills() {
-    static constexpr std::initializer_list<PLAYER_SKILL_TYPE> result = {
-        PLAYER_SKILL_LEATHER, PLAYER_SKILL_CHAIN, PLAYER_SKILL_PLATE,
-        PLAYER_SKILL_SHIELD,  PLAYER_SKILL_DODGE
+inline std::initializer_list<CharacterSkillType> allArmorSkills() {
+    static constexpr std::initializer_list<CharacterSkillType> result = {
+        CHARACTER_SKILL_LEATHER, CHARACTER_SKILL_CHAIN, CHARACTER_SKILL_PLATE,
+        CHARACTER_SKILL_SHIELD,  CHARACTER_SKILL_DODGE
     };
 
     return result;
@@ -245,12 +245,12 @@ inline std::initializer_list<PLAYER_SKILL_TYPE> allArmorSkills() {
  * @return                              List of skills that are drawn in the "Weapons" section of the character
  *                                      screen's skills tab.
  */
-inline std::initializer_list<PLAYER_SKILL_TYPE> allWeaponSkills() {
-    static constexpr std::initializer_list<PLAYER_SKILL_TYPE> result = {
-        PLAYER_SKILL_AXE,   PLAYER_SKILL_BOW,     PLAYER_SKILL_DAGGER,
-        PLAYER_SKILL_MACE,  PLAYER_SKILL_SPEAR,   PLAYER_SKILL_STAFF,
-        PLAYER_SKILL_SWORD, PLAYER_SKILL_UNARMED, PLAYER_SKILL_BLASTER
-        // PLAYER_SKILL_CLUB is not displayed in skills.
+inline std::initializer_list<CharacterSkillType> allWeaponSkills() {
+    static constexpr std::initializer_list<CharacterSkillType> result = {
+        CHARACTER_SKILL_AXE,   CHARACTER_SKILL_BOW,     CHARACTER_SKILL_DAGGER,
+        CHARACTER_SKILL_MACE,  CHARACTER_SKILL_SPEAR,   CHARACTER_SKILL_STAFF,
+        CHARACTER_SKILL_SWORD, CHARACTER_SKILL_UNARMED, CHARACTER_SKILL_BLASTER
+        // CHARACTER_SKILL_CLUB is not displayed in skills.
     };
 
     return result;
@@ -260,14 +260,14 @@ inline std::initializer_list<PLAYER_SKILL_TYPE> allWeaponSkills() {
  * @return                              List of skills that are drawn in the "Misc" section of the character
  *                                      screen's skills tab.
  */
-inline std::initializer_list<PLAYER_SKILL_TYPE> allMiscSkills() {
-    static constexpr std::initializer_list<PLAYER_SKILL_TYPE> result = {
-        PLAYER_SKILL_ALCHEMY,      PLAYER_SKILL_ARMSMASTER,
-        PLAYER_SKILL_BODYBUILDING, PLAYER_SKILL_ITEM_ID,
-        PLAYER_SKILL_MONSTER_ID,   PLAYER_SKILL_LEARNING,
-        PLAYER_SKILL_TRAP_DISARM,  PLAYER_SKILL_MEDITATION,
-        PLAYER_SKILL_MERCHANT,     PLAYER_SKILL_PERCEPTION,
-        PLAYER_SKILL_REPAIR,       PLAYER_SKILL_STEALING
+inline std::initializer_list<CharacterSkillType> allMiscSkills() {
+    static constexpr std::initializer_list<CharacterSkillType> result = {
+        CHARACTER_SKILL_ALCHEMY,      CHARACTER_SKILL_ARMSMASTER,
+        CHARACTER_SKILL_BODYBUILDING, CHARACTER_SKILL_ITEM_ID,
+        CHARACTER_SKILL_MONSTER_ID,   CHARACTER_SKILL_LEARNING,
+        CHARACTER_SKILL_TRAP_DISARM,  CHARACTER_SKILL_MEDITATION,
+        CHARACTER_SKILL_MERCHANT,     CHARACTER_SKILL_PERCEPTION,
+        CHARACTER_SKILL_REPAIR,       CHARACTER_SKILL_STEALING
     };
 
     return result;
@@ -277,11 +277,11 @@ inline std::initializer_list<PLAYER_SKILL_TYPE> allMiscSkills() {
  * @return                              List of skills that are drawn in the "Magic" section of the character
  *                                      screen's skills tab.
  */
-inline std::initializer_list<PLAYER_SKILL_TYPE> allMagicSkills() {
-    static constexpr std::initializer_list<PLAYER_SKILL_TYPE> result = {
-        PLAYER_SKILL_FIRE,  PLAYER_SKILL_AIR,    PLAYER_SKILL_WATER,
-        PLAYER_SKILL_EARTH, PLAYER_SKILL_SPIRIT, PLAYER_SKILL_MIND,
-        PLAYER_SKILL_BODY,  PLAYER_SKILL_LIGHT,  PLAYER_SKILL_DARK
+inline std::initializer_list<CharacterSkillType> allMagicSkills() {
+    static constexpr std::initializer_list<CharacterSkillType> result = {
+        CHARACTER_SKILL_FIRE,  CHARACTER_SKILL_AIR,    CHARACTER_SKILL_WATER,
+        CHARACTER_SKILL_EARTH, CHARACTER_SKILL_SPIRIT, CHARACTER_SKILL_MIND,
+        CHARACTER_SKILL_BODY,  CHARACTER_SKILL_LIGHT,  CHARACTER_SKILL_DARK
     };
 
     return result;
