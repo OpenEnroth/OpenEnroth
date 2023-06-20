@@ -1581,7 +1581,7 @@ void reconstruct(const BLVMapOutline_MM7 &src, BLVMapOutline *dst) {
 }
 
 void reconstruct(const ObjectDesc_MM6 &src, ObjectDesc *dst) {
-    dst->field_0 =  src.field_0;
+    reconstruct(src.name, &dst->name);
     dst->uObjectID = src.uObjectID;
     dst->uRadius = src.uRadius;
     dst->uHeight = src.uHeight;
@@ -1594,7 +1594,7 @@ void reconstruct(const ObjectDesc_MM6 &src, ObjectDesc *dst) {
 }
 
 void reconstruct(const ObjectDesc_MM7 &src, ObjectDesc *dst) {
-    dst->field_0 = src.field_0;
+    reconstruct(src.name, &dst->name);
     dst->uObjectID = src.uObjectID;
     dst->uRadius = src.uRadius;
     dst->uHeight = src.uHeight;

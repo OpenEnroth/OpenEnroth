@@ -1138,7 +1138,7 @@ void reconstruct(const BLVMapOutline_MM7 &src, BLVMapOutline *dst);
 
 
 struct ObjectDesc_MM6 {
-    std::array<char, 32> field_0;
+    std::array<char, 32> name;
     int16_t uObjectID;
     int16_t uRadius;
     int16_t uHeight;
@@ -1156,7 +1156,7 @@ static_assert(sizeof(ObjectDesc_MM6) == 52);
 MM_DECLARE_MEMCOPY_SERIALIZABLE(ObjectDesc_MM6)
 
 struct ObjectDesc_MM7 {
-    std::array<char, 32> field_0;
+    std::array<char, 32> name;
     int16_t uObjectID;
     int16_t uRadius;
     int16_t uHeight;
