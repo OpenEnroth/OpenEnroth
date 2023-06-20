@@ -51,15 +51,15 @@ void GameUI_InitializeDialogue(Actor *actor, int bPlayerSaysHello) {
     std::string filename = DialogueBackgroundResourceByAlignment[pParty->alignment];
     game_ui_dialogue_background = assets->getImage_Solid(filename);
 
-    currentHouseInteraction = 0;
+    currentDialogueInteractive = 0;
 
-    HouseInteractionDesc desc;
-    desc.type = HOUSE_INTERACTION_NPC;
+    HouseInteractiveDesc desc;
+    desc.type = HOUSE_INTERACTIVE_NPC;
     desc.label = localization->FormatString(LSTR_FMT_CONVERSE_WITH_S, pNPCInfo->pName.c_str());
     desc.icon = assets->getImage_ColorKey(fmt::format("npc{:03}", pNPCInfo->uPortraitID));
     desc.data.npc = pNPCInfo;
 
-    houseInteractionList.push_back(desc);
+    dialogueInteractiveList.push_back(desc);
 
     // TODO(Nik-RE-dev): this looks like checks for NPC that only talk if party has enough fame
     //                   which is a thing only for MM8 if I remember correctly
@@ -184,10 +184,10 @@ GUIWindow_Dialogue::GUIWindow_Dialogue(Pointi position, Sizei dimensions, Window
 }
 
 void GUIWindow_Dialogue::Release() {
-    if (houseInteractionList[0].icon) {
-        houseInteractionList[0].icon->Release();
+    if (dialogueInteractiveList[0].icon) {
+        dialogueInteractiveList[0].icon->Release();
     }
-    houseInteractionList.clear();
+    dialogueInteractiveList.clear();
 
     if (game_ui_dialogue_background) {
         game_ui_dialogue_background->Release();
@@ -217,7 +217,7 @@ void GUIWindow_Dialogue::Update() {
                                 game_ui_evtnpc);
     render->DrawTextureNew(pNPCPortraits_x[0][0] / 640.0f,
                                 pNPCPortraits_y[0][0] / 480.0f,
-                                houseInteractionList[0].icon);
+                                dialogueInteractiveList[0].icon);
 
     window.DrawTitleText(
         pFontArrus, SIDE_TEXT_BOX_POS_X, SIDE_TEXT_BOX_POS_Y, ui_game_dialogue_npc_name_color, NameAndTitle(pNPC), 3

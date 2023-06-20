@@ -38,15 +38,15 @@ bool houseDialogPressEscape();
  */
 void playHouseSound(HOUSE_ID houseID, HouseSoundType type);
 
-enum class HouseInteractionType {
-    HOUSE_INTERACTION_PROPRIETOR,
-    HOUSE_INTERACTION_NPC,
-    HOUSE_INTERACTION_TRANSITION
+enum class HouseInteractiveType {
+    HOUSE_INTERACTIVE_PROPRIETOR,
+    HOUSE_INTERACTIVE_NPC,
+    HOUSE_INTERACTIVE_TRANSITION
 };
-using enum HouseInteractionType;
+using enum HouseInteractiveType;
 
-struct HouseInteractionDesc {
-    HouseInteractionType type;
+struct HouseInteractiveDesc {
+    HouseInteractiveType type;
     std::string label = "";
     GraphicsImage *icon = nullptr;
     GUIButton *button = nullptr;
@@ -115,5 +115,5 @@ extern std::array<const HouseAnimDescr, 196> pAnimatedRooms;
 
 extern IndexedArray<int, BUILDING_WEAPON_SHOP, BUILDING_DARK_GUILD> itemAmountInShop;
 
-extern std::vector<HouseInteractionDesc> houseInteractionList;
-extern int currentHouseInteraction;
+extern std::vector<HouseInteractiveDesc> dialogueInteractiveList;
+extern int currentDialogueInteractive;

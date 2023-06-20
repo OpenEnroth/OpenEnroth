@@ -940,7 +940,7 @@ void ClickNPCTopic(DIALOGUE_TYPE topic) {
     int pPrice;        // ecx@70
 
     uDialogueType = (DIALOGUE_TYPE)(topic + 1);
-    NPCData *pCurrentNPCInfo = houseInteractionList[currentHouseInteraction].data.npc;
+    NPCData *pCurrentNPCInfo = dialogueInteractiveList[currentDialogueInteractive].data.npc;
     if (topic <= DIALOGUE_SCRIPTED_LINE_6) {
         switch (topic) {
         case DIALOGUE_13_hiring_related:
@@ -1528,7 +1528,7 @@ std::string BuildDialogueString(std::string &str, uint8_t uPlayerID, ItemGen *a3
 
     pPlayer = &pParty->pCharacters[uPlayerID];
 
-    NPCData *npc = houseInteractionList[currentHouseInteraction].data.npc;
+    NPCData *npc = dialogueInteractiveList[currentDialogueInteractive].data.npc;
 
     std::string result;
 
