@@ -31,11 +31,6 @@ struct Color {
     constexpr Color(uint8_t r, uint8_t g, uint8_t b, uint8_t a = 255): r(r), g(g), b(b), a(a) {}
 
     [[nodiscard]] static constexpr Color fromC16(uint16_t color) {
-        // 16-bit zero was used as a marker for 'default color', but in new code that marker is Color(), so we have
-        // to special-case the old behavior.
-        if (color == 0)
-            return Color();
-
         Color result;
         result.b = (color & 31) * 8;
         result.g = ((color >> 5) & 63) * 4;

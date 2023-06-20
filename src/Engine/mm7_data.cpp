@@ -2496,7 +2496,6 @@ int bDialogueUI_InitializeActor_NPC_ID;
 
 int dword_5C35D4;
 
-Color ui_current_text_color;
 int64_t qword_5C6DF0;
 
 struct FactionTable *pFactionTable;

@@ -334,7 +334,7 @@ void GUIWindow_PartyCreation::Update() {
 
     pTextCenter = ui_partycreation_font->AlignText_Center(
         640, localization->GetString(LSTR_CREATE_PARTY_FANCY));
-    pGUIWindow_CurrentMenu->DrawText(ui_partycreation_font, {pTextCenter + 1, 0}, Color(),
+    pGUIWindow_CurrentMenu->DrawText(ui_partycreation_font, {pTextCenter + 1, 0}, colorTable.White,
         localization->GetString(LSTR_CREATE_PARTY_FANCY));
 
     render->DrawTextureNew(17 / oldDims.w, 35 / oldDims.h, ui_partycreation_portraits[pParty->pPlayers[0].uCurrentFace]);
@@ -362,7 +362,7 @@ void GUIWindow_PartyCreation::Update() {
     pX_Numbers = oldDims.w - 147;  // 493;
 
     for (int i = 0; i < 4; ++i) {
-        pGUIWindow_CurrentMenu->DrawText(pFontCreate, {pIntervalX + 73, 100}, Color(),
+        pGUIWindow_CurrentMenu->DrawText(pFontCreate, {pIntervalX + 73, 100}, colorTable.White,
             localization->GetClassName(pParty->pPlayers[i].classType));
         render->DrawTextureNew((pIntervalX + 77) / oldDims.w, 50 / oldDims.h, ui_partycreation_class_icons[pParty->pPlayers[i].classType / 4]);
 
@@ -370,7 +370,7 @@ void GUIWindow_PartyCreation::Update() {
             pGUIWindow_CurrentMenu->wData.val == i) {
             switch (pGUIWindow_CurrentMenu->keyboard_input_status) {
             case WINDOW_INPUT_IN_PROGRESS:  // press name panel
-                v17 = pGUIWindow_CurrentMenu->DrawTextInRect(pFontCreate, {159 * pGUIWindow_CurrentMenu->wData.val + 18, 124}, Color(),
+                v17 = pGUIWindow_CurrentMenu->DrawTextInRect(pFontCreate, {159 * pGUIWindow_CurrentMenu->wData.val + 18, 124}, colorTable.White,
                     keyboardInputHandler->GetTextInput(), 120, 1);
                 pGUIWindow_CurrentMenu->DrawFlashingInputCursor(159 * pGUIWindow_CurrentMenu->wData.val + v17 + 20, 124, pFontCreate);
                 break;
@@ -383,23 +383,23 @@ void GUIWindow_PartyCreation::Update() {
                 }
                 if (keyboardInputHandler->GetTextInput().size() > 0 && v126 != keyboardInputHandler->GetTextInput().size())
                     pParty->pPlayers[i].name = keyboardInputHandler->GetTextInput();
-                pGUIWindow_CurrentMenu->DrawTextInRect(pFontCreate, {pIntervalX, 124}, Color(), pParty->pPlayers[i].name, 130, 0);
+                pGUIWindow_CurrentMenu->DrawTextInRect(pFontCreate, {pIntervalX, 124}, colorTable.White, pParty->pPlayers[i].name, 130, 0);
                 pParty->pPlayers[i].field_1988[27] = 1;
                 break;
             case WINDOW_INPUT_CANCELLED:  // press escape
                 pGUIWindow_CurrentMenu->keyboard_input_status = WINDOW_INPUT_NONE;
-                pGUIWindow_CurrentMenu->DrawTextInRect(pFontCreate, {pIntervalX, 124}, Color(), pParty->pPlayers[i].name, 130, 0);
+                pGUIWindow_CurrentMenu->DrawTextInRect(pFontCreate, {pIntervalX, 124}, colorTable.White, pParty->pPlayers[i].name, 130, 0);
                 SetCurrentMenuID(MENU_NAMEPANELESC);
                 break;
             default:
                 break;
             }
         } else {
-            pGUIWindow_CurrentMenu->DrawTextInRect(pFontCreate, {pIntervalX, 124}, Color(), pParty->pPlayers[i].name, 130, 0);
+            pGUIWindow_CurrentMenu->DrawTextInRect(pFontCreate, {pIntervalX, 124}, colorTable.White, pParty->pPlayers[i].name, 130, 0);
         }
 
         std::string pRaceName = pParty->pPlayers[i].GetRaceName();
-        pGUIWindow_CurrentMenu->DrawTextInRect(pFontCreate, {pIntervalX + 72, pIntervalY + 12}, Color(), pRaceName, 130, 0);
+        pGUIWindow_CurrentMenu->DrawTextInRect(pFontCreate, {pIntervalX + 72, pIntervalY + 12}, colorTable.White, pRaceName, 130, 0);
 
         pTextCenter = pFontCreate->AlignText_Center(150, pText);
         pGUIWindow_CurrentMenu->DrawText(pFontCreate, {pTextCenter + uX - 24, 291}, colorTable.Tacha, pText);  // Skills

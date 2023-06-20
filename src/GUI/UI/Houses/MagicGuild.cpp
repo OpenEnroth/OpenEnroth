@@ -159,7 +159,7 @@ void GUIWindow_MagicGuild::mainDialogue() {
 
     if (haveLearnableSkills) {
         std::string skill_price_label = localization->FormatString(LSTR_FMT_SKILL_COST_D, pPrice);
-        working_window.DrawTitleText(pFontArrus, 0, 146, Color(), skill_price_label, 3);
+        working_window.DrawTitleText(pFontArrus, 0, 146, colorTable.White, skill_price_label, 3);
     }
 
     drawOptions(optionsText, colorTable.Sunflower, 24);
@@ -192,7 +192,7 @@ void GUIWindow_MagicGuild::buyBooksDialogue() {
                 ++itemcount;
         }
 
-        GameUI_StatusBar_DrawImmediate(localization->GetString(LSTR_SELECT_ITEM_TO_BUY), Color());
+        GameUI_StatusBar_DrawImmediate(localization->GetString(LSTR_SELECT_ITEM_TO_BUY), colorTable.White);
 
         if (!itemcount) {  // shop empty
             GameTime nextGenTime = pParty->PartyTimes.guildNextRefreshTime[houseId()];

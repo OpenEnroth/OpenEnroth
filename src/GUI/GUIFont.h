@@ -80,7 +80,7 @@ class GUIFont {
     std::string FitTwoFontStringINWindow(const std::string &pString, GUIFont *pFontSecond,
                                     GUIWindow *pWindow, int startPixlOff,
                                     int a6);
-    void DrawTextLineToBuff(Color uColor, Color *uX_buff_pos,
+    void DrawTextLineToBuff(Color color, Color *uX_buff_pos,
                             const std::string &text, int line_width);
 };
 

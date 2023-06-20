@@ -112,8 +112,8 @@ void CharacterUI_DrawTooltip(const char *title, std::string &content) {
 
     auto colored_title = fmt::format(
         "{::}{}\f00000\n", ui_character_tooltip_header_default_color.tag(), title);
-    popup_window.DrawTitleText(pFontCreate, 0, 0, Color(), colored_title, 3);
-    popup_window.DrawText(pFontSmallnum, {1, pFontLucida->GetHeight()}, Color(), content);  // popup_window.uFrameY + popup_window.uFrameHeight
+    popup_window.DrawTitleText(pFontCreate, 0, 0, colorTable.White, colored_title, 3);
+    popup_window.DrawText(pFontSmallnum, {1, pFontLucida->GetHeight()}, colorTable.White, content);  // popup_window.uFrameY + popup_window.uFrameHeight
 }
 
 void CharacterUI_DrawTooltip(const char *title, const char *content) {
@@ -472,12 +472,12 @@ void GameUI_DrawItemInfo(struct ItemGen *inspect_item) {
 
     for (const std::string &s : text) {
         if (!s.empty()) {
-            iteminfo_window.DrawText(pFontComic, {100, v34}, Color(), s);
+            iteminfo_window.DrawText(pFontComic, {100, v34}, colorTable.White, s);
             v34 += pFontComic->CalcTextHeight(s, iteminfo_window.uFrameWidth, 100, 0) + 3;
         }
     }
     if (!pItemTable->pItems[inspect_item->uItemID].pDescription.empty())
-        iteminfo_window.DrawText(pFontSmallnum, {100, v34}, Color(), pItemTable->pItems[inspect_item->uItemID].pDescription);
+        iteminfo_window.DrawText(pFontSmallnum, {100, v34}, colorTable.White, pItemTable->pItems[inspect_item->uItemID].pDescription);
     iteminfo_window.uFrameX += 12;
     iteminfo_window.uFrameWidth -= 24;
     iteminfo_window.DrawTitleText(pFontArrus, 0, 0xCu, colorTable.PaleCanary,
@@ -487,7 +487,7 @@ void GameUI_DrawItemInfo(struct ItemGen *inspect_item) {
 
     if (GoldAmount) {
         auto txt = fmt::format("{}: {}", localization->GetString(LSTR_VALUE), GoldAmount);
-        iteminfo_window.DrawText(pFontComic, {100, iteminfo_window.uFrameHeight - pFontComic->GetHeight()}, Color(), txt);
+        iteminfo_window.DrawText(pFontComic, {100, iteminfo_window.uFrameHeight - pFontComic->GetHeight()}, colorTable.White, txt);
         render->ResetUIClipRect();
     } else {
         if ((inspect_item->uAttributes & ITEM_TEMP_BONUS) &&
@@ -518,14 +518,14 @@ void GameUI_DrawItemInfo(struct ItemGen *inspect_item) {
             if (formatting)
                 txt4 += fmt::format(" {}:mn", v67.field_4_expire_minute);
 
-            iteminfo_window.DrawText(pFontComic, {100, iteminfo_window.uFrameHeight - 2 * pFontComic->GetHeight()}, Color(), txt4);
+            iteminfo_window.DrawText(pFontComic, {100, iteminfo_window.uFrameHeight - 2 * pFontComic->GetHeight()}, colorTable.White, txt4);
         }
 
         auto txt2 = fmt::format(
             "{}: {}", localization->GetString(LSTR_VALUE),
             inspect_item->GetValue()
         );
-        iteminfo_window.DrawText(pFontComic, {100, iteminfo_window.uFrameHeight - pFontComic->GetHeight()}, Color(), txt2);
+        iteminfo_window.DrawText(pFontComic, {100, iteminfo_window.uFrameHeight - pFontComic->GetHeight()}, colorTable.White, txt2);
 
         std::string txt3;
         if (inspect_item->uAttributes & ITEM_STOLEN) {
@@ -956,14 +956,14 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
     if (pParty->pPartyBuffs[PARTY_BUFF_DETECT_LIFE].Active()) {
         std::string str = fmt::format("{}: {}", localization->GetString(LSTR_CURRENT_HIT_POINTS), pActors[uActorID].sCurrentHP);
         pFontSmallnum->GetLineWidth(str);
-        pWindow->DrawTitleText(pFontSmallnum, 0, pWindow->uFrameHeight - pFontSmallnum->GetHeight() - 12, Color(), str, 3);
+        pWindow->DrawTitleText(pFontSmallnum, 0, pWindow->uFrameHeight - pFontSmallnum->GetHeight() - 12, colorTable.White, str, 3);
     }
 
     // Debug - show actor AI state with full information
     if (monster_full_informations) {
         std::string str = fmt::format("AI State: {}", std::to_underlying(pActors[uActorID].uAIState));
         pFontSmallnum->GetLineWidth(str);
-        pWindow->DrawTitleText(pFontSmallnum, 0, pWindow->uFrameHeight - pFontSmallnum->GetHeight() - 12, Color(), str, 3);
+        pWindow->DrawTitleText(pFontSmallnum, 0, pWindow->uFrameHeight - pFontSmallnum->GetHeight() - 12, colorTable.White, str, 3);
     }
 }
 
@@ -1246,19 +1246,19 @@ void DrawSpellDescriptionPopup(int spell_index_in_book) {
     spell_info_window.uFrameW = spell_info_window.uFrameHeight + spell_info_window.uFrameY - 1;
     spell_info_window.DrawTitleText(
         pFontArrus, 0x78u, 0xCu, colorTable.PaleCanary, spell->name, 3);
-    spell_info_window.DrawText(pFontSmallnum, {120, 44}, Color(), str);
+    spell_info_window.DrawText(pFontSmallnum, {120, 44}, colorTable.White, str);
     spell_info_window.uFrameWidth = 108;
     spell_info_window.uFrameZ = spell_info_window.uFrameX + 107;
     PLAYER_SKILL_TYPE skill = static_cast<PLAYER_SKILL_TYPE>(pParty->activeCharacter().lastOpenedSpellbookPage + 12);
     PLAYER_SKILL_MASTERY skill_mastery = pParty->activeCharacter().getSkillValue(skill).mastery();
-    spell_info_window.DrawTitleText(pFontComic, 12, 75, Color(), localization->GetSkillName(skill), 3);
+    spell_info_window.DrawTitleText(pFontComic, 12, 75, colorTable.White, localization->GetSkillName(skill), 3);
 
     auto str2 = fmt::format(
         "{}\n{}", localization->GetString(LSTR_SP_COST),
         pSpellDatas[spell_id].mana_per_skill[std::to_underlying(skill_mastery) - 1]);
     spell_info_window.DrawTitleText(
         pFontComic, 12,
-        spell_info_window.uFrameHeight - pFontComic->GetHeight() - 16, Color(), str2,
+        spell_info_window.uFrameHeight - pFontComic->GetHeight() - 16, colorTable.White, str2,
         3);
     dword_507B00_spell_info_to_draw_in_popup = 0;
 }
@@ -1298,9 +1298,9 @@ static void drawBuffPopupWindow() {
     popupWindow.uFrameZ = popupWindow.uFrameWidth + popupWindow.uFrameX - 1;
     popupWindow.uFrameW = popupWindow.uFrameY + popupWindow.uFrameHeight - 1;
     popupWindow.DrawMessageBox(0);
-    popupWindow.DrawTitleText(pFontArrus, 0, 12, Color(), localization->GetString(LSTR_ACTIVE_PARTY_SPELLS), 3);
+    popupWindow.DrawTitleText(pFontArrus, 0, 12, colorTable.White, localization->GetString(LSTR_ACTIVE_PARTY_SPELLS), 3);
     if (!stringCount) {
-        popupWindow.DrawTitleText(pFontComic, 0, 40, Color(), localization->GetString(LSTR_NONE), 3);
+        popupWindow.DrawTitleText(pFontComic, 0, 40, colorTable.White, localization->GetString(LSTR_NONE), 3);
     }
 
     stringCount = 0;
@@ -1363,13 +1363,13 @@ void showSpellbookInfo(ITEM_TYPE spellItemId) {
     popup.uFrameZ = popup.uFrameX + popup.uFrameWidth - 1;
     popup.uFrameW = popup.uFrameHeight + popup.uFrameY - 1;
     popup.DrawTitleText(pFontArrus, 0x78u, 0xCu, colorTable.PaleCanary, pSpellStats->pInfos[spellId].name, 3u);
-    popup.DrawText(pFontSmallnum, {120, 44}, Color(), str);
+    popup.DrawText(pFontSmallnum, {120, 44}, colorTable.White, str);
     popup.uFrameZ = popup.uFrameX + 107;
     popup.uFrameWidth = 108;
-    popup.DrawTitleText(pFontComic, 0xCu, 0x4Bu, Color(), localization->GetSkillName(static_cast<PLAYER_SKILL_TYPE>(spellSchool / 4 + 12)), 3u);
+    popup.DrawTitleText(pFontComic, 0xCu, 0x4Bu, colorTable.White, localization->GetSkillName(static_cast<PLAYER_SKILL_TYPE>(spellSchool / 4 + 12)), 3u);
 
     str = fmt::format("{}\n{}", localization->GetString(LSTR_SP_COST), pSpellDatas[spellId].uNormalLevelMana);
-    popup.DrawTitleText(pFontComic, 0xCu, popup.uFrameHeight - pFontComic->GetHeight() - 16, Color(), str, 3);
+    popup.DrawTitleText(pFontComic, 0xCu, popup.uFrameHeight - pFontComic->GetHeight() - 16, colorTable.White, str, 3);
 }
 
 //----- new function
@@ -1659,7 +1659,7 @@ void GameUI_CharacterQuickRecord_Draw(GUIWindow *window, Player *player) {
 
     str += fmt::format("{}: {}", localization->GetString(LSTR_QUICK_SPELL), spellName);
 
-    window->DrawText(pFontArrus, {120, 22}, Color(), str);
+    window->DrawText(pFontArrus, {120, 22}, colorTable.White, str);
 
     uFramesetIDa = 0;
     for (uint i = 0; i < 24; ++i) {
@@ -1678,7 +1678,7 @@ void GameUI_CharacterQuickRecord_Draw(GUIWindow *window, Player *player) {
     auto active_spells = localization->FormatString(
         LSTR_FMT_ACTIVE_SPELLS_S,
         uFramesetIDa == 0 ? localization->GetString(LSTR_NONE) : "");
-    window->DrawText(pFontArrus, {14, 114}, Color(), active_spells);
+    window->DrawText(pFontArrus, {14, 114}, colorTable.White, active_spells);
 }
 
 void GameUI_DrawNPCPopup(void *_this) {  // PopupWindowForBenefitAndJoinText
@@ -1724,7 +1724,7 @@ void GameUI_DrawNPCPopup(void *_this) {  // PopupWindowForBenefitAndJoinText
                 popup_window.DrawTitleText(pFontArrus, 0, 12, colorTable.PaleCanary, NameAndTitle(pNPC), 3);
                 popup_window.uFrameWidth -= 24;
                 popup_window.uFrameZ = popup_window.uFrameX + popup_window.uFrameWidth - 1;
-                popup_window.DrawText(pFontArrus, {100, 36}, Color(), BuildDialogueString(pText, pParty->activeCharacterIndex() - 1, 0, 0, 0));
+                popup_window.DrawText(pFontArrus, {100, 36}, colorTable.White, BuildDialogueString(pText, pParty->activeCharacterIndex() - 1, 0, 0, 0));
             }
         }
     }
@@ -2053,8 +2053,8 @@ void UI_OnMouseRightClick(int mouse_x, int mouse_y) {
                     popup_window.uFrameY + popup_window.uFrameHeight - 1;
 
                 std::string str = fmt::format("{::}{}\f00000\n", colorTable.PaleCanary.tag(), pStr);
-                popup_window.DrawTitleText(pFontCreate, 0, 0, Color(), str, 3);
-                popup_window.DrawText(pFontSmallnum, {1, pFontLucida->GetHeight()}, Color(), sHint);
+                popup_window.DrawTitleText(pFontCreate, 0, 0, colorTable.White, str, 3);
+                popup_window.DrawText(pFontSmallnum, {1, pFontLucida->GetHeight()}, colorTable.White, sHint);
             }
             break;
         }
@@ -2411,7 +2411,7 @@ void Inventory_ItemPopupAndAlchemy() {
 
 //----- (0045828B) --------------------------------------------------------
 Color GetSpellColor(signed int a1) {
-    if (a1 == 0) return Color();
+    if (a1 == 0) return colorTable.White;
     if (a1 < 12) return colorTable.DarkOrange;
     if (a1 < 23) return colorTable.Anakiwa;
     if (a1 < 34) return colorTable.AzureRadiance;
@@ -2426,7 +2426,7 @@ Color GetSpellColor(signed int a1) {
         __debugbreak();
 
     logger->warning("No color returned - GetSpellColor!");
-    return Color();
+    return colorTable.White;
 }
 
 //----- (004B46F8) --------------------------------------------------------

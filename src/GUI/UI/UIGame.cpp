@@ -1777,7 +1777,7 @@ Color UI_GetHealthManaAndOtherQualitiesStringColor(int actual_value,
     uint16_t R, G, B;
 
     if (actual_value == base_value) {
-        return Color(); // Default - white.
+        return colorTable.White; // Default - white.
     } else if (actual_value < base_value) {
         if (100 * actual_value / base_value >=
             25)  // Yellow( current_pos > 1/4 )
@@ -1900,7 +1900,7 @@ void GUIWindow_DebugMenu::Update() {
         pViewport->uViewportTL_Y / 480.0f,
         game_ui_menu_options);
 
-    pGUIWindow_CurrentMenu->DrawText(pFontArrus, {0, 10}, Color(), "Debug Menu");
+    pGUIWindow_CurrentMenu->DrawText(pFontArrus, {0, 10}, colorTable.White, "Debug Menu");
 
     buttonbox(13, 140, "Town Portal", engine->config->debug.TownPortal.value());
     buttonbox(127, 140, "Give Gold", 2);
@@ -1967,7 +1967,7 @@ void buttonbox(int x, int y, const char *text, int col) {
 
     Color colour = ui_character_condition_severe_color;
     if (col == 2) {
-        colour = Color();
+        colour = colorTable.White;
     }
     if (col == 1) {
         colour = ui_character_bonus_text_color;

@@ -129,7 +129,6 @@ extern int bDialogueUI_InitializeActor_NPC_ID;
 
 extern int dword_5C35D4;
 extern std::array<char, 10000> pTmpBuf3;
-extern Color ui_current_text_color;
 extern int64_t qword_5C6DF0;
 extern struct FactionTable *pFactionTable;
 
