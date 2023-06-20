@@ -1,9 +1,6 @@
-#include "CombinedSkillValue.h"
+#include <algorithm>
 
-CombinedSkillValue::CombinedSkillValue(int joinedValue) {
-    _level = ::GetSkillLevel(joinedValue);
-    _mastery = ::GetSkillMastery(joinedValue);
-}
+#include "CombinedSkillValue.h"
 
 CombinedSkillValue::CombinedSkillValue(int level, PLAYER_SKILL_MASTERY mastery) {
     assert(isLevelValid(level));
@@ -17,7 +14,7 @@ CombinedSkillValue::CombinedSkillValue() {
     _mastery = PLAYER_SKILL_MASTERY_NONE;
 }
 
-int CombinedSkillValue::join() const {
+uint16_t CombinedSkillValue::join() const {
     return ::ConstructSkillValue(_mastery, _level);
 }
 
@@ -48,4 +45,19 @@ bool CombinedSkillValue::isLevelValid(int level) {
 bool CombinedSkillValue::isMasteryValid(PLAYER_SKILL_MASTERY mastery) {
     return mastery == PLAYER_SKILL_MASTERY_NONE || mastery == PLAYER_SKILL_MASTERY_NOVICE || mastery == PLAYER_SKILL_MASTERY_EXPERT ||
            mastery == PLAYER_SKILL_MASTERY_MASTER || mastery == PLAYER_SKILL_MASTERY_GRANDMASTER;
+}
+
+CombinedSkillValue CombinedSkillValue::fromJoined(uint16_t joinedValue) {
+    PLAYER_SKILL_LEVEL lvl  = ::GetSkillLevel(joinedValue);
+    PLAYER_SKILL_MASTERY mst = ::GetSkillMastery(joinedValue);
+    return CombinedSkillValue(lvl, mst);
+}
+
+CombinedSkillValue CombinedSkillValue::novice() {
+    return CombinedSkillValue(1, PLAYER_SKILL_MASTERY_NOVICE);
+}
+
+void CombinedSkillValue::reset() {
+    _level = 0;
+    _mastery = PLAYER_SKILL_MASTERY_NONE;
 }

@@ -777,7 +777,7 @@ GAME_TEST(Issues, Issue662) {
     test->loadGameFromTestData("issue_662.mm7");
     // currently air magic is (expert) 6
     EXPECT_EQ(pParty->pPlayers[3].GetItemsBonus(CHARACTER_ATTRIBUTE_SKILL_AIR), 3);
-    pParty->pPlayers[3].skillAir = 5;
+    pParty->pPlayers[3].pActiveSkills[PLAYER_SKILL_AIR].setLevel(5);
     EXPECT_EQ(pParty->pPlayers[3].GetItemsBonus(CHARACTER_ATTRIBUTE_SKILL_AIR), 2);
 }
 

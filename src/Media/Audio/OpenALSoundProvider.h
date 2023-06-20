@@ -12,6 +12,11 @@
 
 #include "Media/Media.h"
 
+// Sound attenuation factors
+constexpr float MAX_SOUND_DIST = 60000.0f;
+constexpr float REFERENCE_DIST = 300.0f;
+constexpr float ROLLOFF_FACTOR = 1.5f;
+
 class OpenALSoundProvider {
  public:
     struct TrackBuffer {
@@ -51,3 +56,6 @@ class OpenALSoundProvider {
     ALCdevice *device;
     ALCcontext *context;
 };
+
+// TODO(pskelton): contain?
+void setSourceDefaults(ALuint al_source);

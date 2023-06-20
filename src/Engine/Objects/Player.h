@@ -350,16 +350,15 @@ struct Player {
                                            bool addOneDice);
     bool wearsItemAnywhere(ITEM_TYPE item_id) const;
     float GetArmorRecoveryMultiplierFromSkillLevel(PLAYER_SKILL_TYPE armour_skill_type, float param2, float param3, float param4, float param5) const;
-    void SetSkillByEvent(uint16_t Player::*skillToSet,
-                         uint16_t skillValue);
-    void AddSkillByEvent(uint16_t Player::*skillToSet,
-                         uint16_t addSkillValue);
+    void SetSkillReaction();
     void PlayAwardSound_Anim();
     void PlayAwardSound_Anim_Face(PlayerSpeech speech);
     void PlayAwardSound_Anim97();
     void PlayAwardSound_Anim97_Face(PlayerSpeech speech);
+    void AddSkillByEvent(PLAYER_SKILL_TYPE, uint16_t addSkillValue);
     void PlayAwardSound_Anim98();
     void PlayAwardSound_Anim98_Face(PlayerSpeech speech);
+    void SubtractSkillByEvent(PLAYER_SKILL_TYPE skill, uint16_t subSkillValue);
 
     bool IsWeak() const;
     bool IsDead() const;
@@ -484,49 +483,7 @@ struct Player {
     int field_FC;
     int field_100;
     int field_104;
-    union {
-        struct {
-            uint16_t skillStaff;
-            uint16_t skillSword;
-            uint16_t skillDagger;
-            uint16_t skillAxe;
-            uint16_t skillSpear;
-            uint16_t skillBow;
-            uint16_t skillMace;
-            uint16_t skillBlaster;
-            uint16_t skillShield;
-            uint16_t skillLeather;
-            uint16_t skillChain;
-            uint16_t skillPlate;
-            uint16_t skillFire;
-            uint16_t skillAir;
-            uint16_t skillWater;
-            uint16_t skillEarth;
-            uint16_t skillSpirit;
-            uint16_t skillMind;
-            uint16_t skillBody;
-            uint16_t skillLight;
-            uint16_t skillDark;
-            uint16_t skillItemId;
-            uint16_t skillMerchant;
-            uint16_t skillRepair;
-            uint16_t skillBodybuilding;
-            uint16_t skillMeditation;
-            uint16_t skillPerception;
-            uint16_t skillDiplomacy;
-            uint16_t skillThievery;
-            uint16_t skillDisarmTrap;
-            uint16_t skillDodge;
-            uint16_t skillUnarmed;
-            uint16_t skillMonsterId;
-            uint16_t skillArmsmaster;
-            uint16_t skillStealing;
-            uint16_t skillAlchemy;
-            uint16_t skillLearning;
-            uint16_t skillClub;
-        };
-        IndexedArray<PLAYER_SKILL, PLAYER_SKILL_FIRST, PLAYER_SKILL_LAST> pActiveSkills;
-    };
+    IndexedArray<CombinedSkillValue, PLAYER_SKILL_FIRST, PLAYER_SKILL_LAST> pActiveSkills;
     IndexedBitset<1, 512> _achievedAwardsBits;
     PlayerSpells spellbook;
     char _1F6_padding[2];

@@ -354,7 +354,7 @@ class GameConfig : public Config {
         Int TorchlightDistance = {this, "torchlight_distance", 800, &ValidateTorchlight,
                                   "Torchlight distance per power level. Use 0 to disable torchlight."};
 
-        Int TorchlightFlicker = {this, "torchlight_flicker", 200, &ValidateTorchlight,
+        Int TorchlightFlicker = {this, "torchlight_flicker", 0, &ValidateTorchlight,
                                  "Torchlight lighting flicker effect distance. Use 0 to disable flicker."};
 
         Bool VSync = {this, "vsync", false, "Enable synchronization of framerate with monitor vertical refresh rate."};

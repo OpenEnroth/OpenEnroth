@@ -3047,7 +3047,7 @@ void pushSpellOrRangedAttack(SPELL_TYPE spell,
 
             case SPELL_SPIRIT_BLESS:
                 if (!checkSkill) {
-                    checkSkill = player->pActiveSkills[PLAYER_SKILL_SPIRIT];
+                    checkSkill = player->pActiveSkills[PLAYER_SKILL_SPIRIT].join();
                 }
                 if (GetSkillMastery(checkSkill) < PLAYER_SKILL_MASTERY_EXPERT && !engine->config->debug.AllMagic.value()) {
                     flags |= ON_CAST_TargetedCharacter;
@@ -3056,7 +3056,7 @@ void pushSpellOrRangedAttack(SPELL_TYPE spell,
 
             case SPELL_SPIRIT_PRESERVATION:
                 if (!checkSkill) {
-                    checkSkill = player->pActiveSkills[PLAYER_SKILL_SPIRIT];
+                    checkSkill = player->pActiveSkills[PLAYER_SKILL_SPIRIT].join();
                 }
                 if (GetSkillMastery(checkSkill) < PLAYER_SKILL_MASTERY_MASTER && !engine->config->debug.AllMagic.value()) {
                     flags |= ON_CAST_TargetedCharacter;
@@ -3065,7 +3065,7 @@ void pushSpellOrRangedAttack(SPELL_TYPE spell,
 
             case SPELL_DARK_PAIN_REFLECTION:
                 if (!checkSkill) {
-                    checkSkill = player->pActiveSkills[PLAYER_SKILL_DARK];
+                    checkSkill = player->pActiveSkills[PLAYER_SKILL_DARK].join();
                 }
                 if (GetSkillMastery(checkSkill) < PLAYER_SKILL_MASTERY_MASTER && !engine->config->debug.AllMagic.value()) {
                     flags |= ON_CAST_TargetedCharacter;
@@ -3074,7 +3074,7 @@ void pushSpellOrRangedAttack(SPELL_TYPE spell,
 
             case SPELL_BODY_HAMMERHANDS:
                 if (!checkSkill) {
-                    checkSkill = player->pActiveSkills[PLAYER_SKILL_BODY];
+                    checkSkill = player->pActiveSkills[PLAYER_SKILL_BODY].join();
                 }
                 if (GetSkillMastery(checkSkill) < PLAYER_SKILL_MASTERY_GRANDMASTER && !engine->config->debug.AllMagic.value()) {
                     flags |= ON_CAST_TargetedCharacter;

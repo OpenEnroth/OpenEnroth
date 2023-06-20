@@ -1452,7 +1452,7 @@ std::string _4B254D_SkillMasteryTeacher(int trainerInfo) {
             gold_transaction_amount = 5000;
             break;
         case PLAYER_SKILL_MASTERY_GRANDMASTER:
-            if ((activePlayer->pActiveSkills[PLAYER_SKILL_UNARMED] & 63) < 0xA)
+            if (activePlayer->pActiveSkills[PLAYER_SKILL_UNARMED].level() < 10)
                 return std::string(pNPCTopics[127].pText);
             gold_transaction_amount = 8000;
             break;
@@ -1469,7 +1469,7 @@ std::string _4B254D_SkillMasteryTeacher(int trainerInfo) {
             gold_transaction_amount = 5000;
             break;
         case PLAYER_SKILL_MASTERY_GRANDMASTER:
-            if ((activePlayer->pActiveSkills[PLAYER_SKILL_DODGE] & 63) < 0xA)
+            if (activePlayer->pActiveSkills[PLAYER_SKILL_DODGE].level() < 10)
                 return std::string(pNPCTopics[127].pText);
             gold_transaction_amount = 8000;
             break;

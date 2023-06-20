@@ -448,10 +448,10 @@ void Party::createDefaultParty(bool bDebugGiveItems) {
     this->pPlayers[0].uAccuracy = 13;
     this->pPlayers[0].uSpeed = 14;
     this->pPlayers[0].uLuck = 7;
-    this->pPlayers[0].pActiveSkills[PLAYER_SKILL_LEATHER] = 1;
-    this->pPlayers[0].pActiveSkills[PLAYER_SKILL_ARMSMASTER] = 1;
-    this->pPlayers[0].pActiveSkills[PLAYER_SKILL_BOW] = 1;
-    this->pPlayers[0].pActiveSkills[PLAYER_SKILL_SWORD] = 1;
+    this->pPlayers[0].pActiveSkills[PLAYER_SKILL_LEATHER] = CombinedSkillValue::novice();
+    this->pPlayers[0].pActiveSkills[PLAYER_SKILL_ARMSMASTER] = CombinedSkillValue::novice();
+    this->pPlayers[0].pActiveSkills[PLAYER_SKILL_BOW] = CombinedSkillValue::novice();
+    this->pPlayers[0].pActiveSkills[PLAYER_SKILL_SWORD] = CombinedSkillValue::novice();
 
     this->pPlayers[1].name = localization->GetString(LSTR_PC_NAME_RODERIC);
     this->pPlayers[1].uPrevFace = 3;
@@ -465,10 +465,10 @@ void Party::createDefaultParty(bool bDebugGiveItems) {
     this->pPlayers[1].uAccuracy = 13;
     this->pPlayers[1].uSpeed = 13;
     this->pPlayers[1].uLuck = 13;
-    this->pPlayers[1].pActiveSkills[PLAYER_SKILL_LEATHER] = 1;
-    this->pPlayers[1].pActiveSkills[PLAYER_SKILL_STEALING] = 1;
-    this->pPlayers[1].pActiveSkills[PLAYER_SKILL_DAGGER] = 1;
-    this->pPlayers[1].pActiveSkills[PLAYER_SKILL_TRAP_DISARM] = 1;
+    this->pPlayers[1].pActiveSkills[PLAYER_SKILL_LEATHER] = CombinedSkillValue::novice();
+    this->pPlayers[1].pActiveSkills[PLAYER_SKILL_STEALING] = CombinedSkillValue::novice();
+    this->pPlayers[1].pActiveSkills[PLAYER_SKILL_DAGGER] = CombinedSkillValue::novice();
+    this->pPlayers[1].pActiveSkills[PLAYER_SKILL_TRAP_DISARM] = CombinedSkillValue::novice();
 
     this->pPlayers[2].name = localization->GetString(LSTR_PC_NAME_SERENA);
     this->pPlayers[2].uPrevFace = 14;
@@ -482,10 +482,10 @@ void Party::createDefaultParty(bool bDebugGiveItems) {
     this->pPlayers[2].uAccuracy = 7;
     this->pPlayers[2].uSpeed = 13;
     this->pPlayers[2].uLuck = 7;
-    this->pPlayers[2].pActiveSkills[PLAYER_SKILL_ALCHEMY] = 1;
-    this->pPlayers[2].pActiveSkills[PLAYER_SKILL_LEATHER] = 1;
-    this->pPlayers[2].pActiveSkills[PLAYER_SKILL_BODY] = 1;
-    this->pPlayers[2].pActiveSkills[PLAYER_SKILL_MACE] = 1;
+    this->pPlayers[2].pActiveSkills[PLAYER_SKILL_ALCHEMY] = CombinedSkillValue::novice();
+    this->pPlayers[2].pActiveSkills[PLAYER_SKILL_LEATHER] = CombinedSkillValue::novice();
+    this->pPlayers[2].pActiveSkills[PLAYER_SKILL_BODY] = CombinedSkillValue::novice();
+    this->pPlayers[2].pActiveSkills[PLAYER_SKILL_MACE] = CombinedSkillValue::novice();
 
     this->pPlayers[3].name = localization->GetString(LSTR_PC_NAME_ALEXIS);
     this->pPlayers[3].uPrevFace = 10;
@@ -499,10 +499,10 @@ void Party::createDefaultParty(bool bDebugGiveItems) {
     this->pPlayers[3].uIntelligence = 30;
     this->pPlayers[3].uPersonality = 9;
     this->pPlayers[3].uLuck = 7;
-    this->pPlayers[3].pActiveSkills[PLAYER_SKILL_LEATHER] = 1;
-    this->pPlayers[3].pActiveSkills[PLAYER_SKILL_AIR] = 1;
-    this->pPlayers[3].pActiveSkills[PLAYER_SKILL_FIRE] = 1;
-    this->pPlayers[3].pActiveSkills[PLAYER_SKILL_STAFF] = 1;
+    this->pPlayers[3].pActiveSkills[PLAYER_SKILL_LEATHER] = CombinedSkillValue::novice();
+    this->pPlayers[3].pActiveSkills[PLAYER_SKILL_AIR] = CombinedSkillValue::novice();
+    this->pPlayers[3].pActiveSkills[PLAYER_SKILL_FIRE] = CombinedSkillValue::novice();
+    this->pPlayers[3].pActiveSkills[PLAYER_SKILL_STAFF] = CombinedSkillValue::novice();
 
     for (Player &pCharacter : pPlayers) {
         if (pCharacter.classType == PLAYER_CLASS_KNIGHT)
