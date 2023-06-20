@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;e66c896</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;5d7ed96</span>
    </div>
   </td>
  </tr>
@@ -80,12 +80,13 @@ $(function() {
   <div class="headertitle"><div class="title">NPC.h File Reference</div></div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><code>#include &lt;array&gt;</code><br />
+<div class="textblock"><code>#include &lt;vector&gt;</code><br />
 <code>#include &lt;cstdint&gt;</code><br />
 <code>#include &lt;string&gt;</code><br />
 <code>#include &quot;<a class="el" href="IndexedArray_8h.html">Utility/IndexedArray.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="NPCEnums_8h.html">Engine/Objects/NPCEnums.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="NPCTable_8h.html">Engine/Tables/NPCTable.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="Engine_2Graphics_2Image_8h.html">Engine/Graphics/Image.h</a>&quot;</code><br />
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Classes</h2></td></tr>
@@ -119,10 +120,8 @@ Functions</h2></td></tr>
 Variables</h2></td></tr>
 <tr class="memitem:a87917bc65a38cef119e06260bbc6ad6e"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="NPC_8h.html#a87917bc65a38cef119e06260bbc6ad6e">pDialogueNPCCount</a></td></tr>
 <tr class="separator:a87917bc65a38cef119e06260bbc6ad6e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aeea0f24f1e0563097ecaaedbbf1b98d4"><td class="memItemLeft" align="right" valign="top">std::array&lt; class <a class="el" href="classGraphicsImage.html">GraphicsImage</a> *, 6 &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="NPC_8h.html#aeea0f24f1e0563097ecaaedbbf1b98d4">pDialogueNPCPortraits</a></td></tr>
-<tr class="separator:aeea0f24f1e0563097ecaaedbbf1b98d4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aacd86f6c26e7b363a1be22693d7e1406"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="NPC_8h.html#aacd86f6c26e7b363a1be22693d7e1406">uNumDialogueNPCPortraits</a></td></tr>
-<tr class="separator:aacd86f6c26e7b363a1be22693d7e1406"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af2493c1f6f7309b579f4717db71bfe7f"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="classGraphicsImage.html">GraphicsImage</a> * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="NPC_8h.html#af2493c1f6f7309b579f4717db71bfe7f">pDialogueNPCPortraits</a></td></tr>
+<tr class="separator:af2493c1f6f7309b579f4717db71bfe7f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Function Documentation</h2>
 <a id="a58a376999ccce3cb142578b812b47124" name="a58a376999ccce3cb142578b812b47124"></a>
@@ -364,8 +363,8 @@ Variables</h2></td></tr>
 
 </div>
 </div>
-<a id="aeea0f24f1e0563097ecaaedbbf1b98d4" name="aeea0f24f1e0563097ecaaedbbf1b98d4"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aeea0f24f1e0563097ecaaedbbf1b98d4">&#9670;&#160;</a></span>pDialogueNPCPortraits</h2>
+<a id="af2493c1f6f7309b579f4717db71bfe7f" name="af2493c1f6f7309b579f4717db71bfe7f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af2493c1f6f7309b579f4717db71bfe7f">&#9670;&#160;</a></span>pDialogueNPCPortraits</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -374,29 +373,7 @@ Variables</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">std::array&lt;class <a class="el" href="classGraphicsImage.html">GraphicsImage</a> *, 6&gt; pDialogueNPCPortraits</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">extern</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="aacd86f6c26e7b363a1be22693d7e1406" name="aacd86f6c26e7b363a1be22693d7e1406"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aacd86f6c26e7b363a1be22693d7e1406">&#9670;&#160;</a></span>uNumDialogueNPCPortraits</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">int uNumDialogueNPCPortraits</td>
+          <td class="memname">std::vector&lt;<a class="el" href="classGraphicsImage.html">GraphicsImage</a> *&gt; pDialogueNPCPortraits</td>
         </tr>
       </table>
   </td>
