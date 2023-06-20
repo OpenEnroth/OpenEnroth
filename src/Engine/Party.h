@@ -503,7 +503,6 @@ struct Party {
     std::array<int, 4> pTurnBasedPlayerRecoveryTimes;
     std::array<int, 53> InTheShopFlags;
     int uFine;
-    Color torchLightColor;
     float TorchLightLastIntensity;
 
     uint _roundingDt{ 0 };  // keeps track of rounding remainder for recovery

@@ -404,9 +404,6 @@ void snapshot(const Party &src, Party_MM7 *dst) {
     snapshot(src.InTheShopFlags, &dst->inTheShopFlags);
 
     dst->fine = src.uFine;
-    dst->torchlightColorR = src.torchLightColor.r;
-    dst->torchlightColorG = src.torchLightColor.g;
-    dst->torchlightColorB = src.torchLightColor.b;
 }
 
 void reconstruct(const Party_MM7 &src, Party *dst) {
@@ -537,12 +534,6 @@ void reconstruct(const Party_MM7 &src, Party *dst) {
     reconstruct(src.inTheShopFlags, &dst->InTheShopFlags);
 
     dst->uFine = src.fine;
-
-    // TODO(captainurist): is this correct / ever used??
-    dst->torchLightColor.r = src.torchlightColorR;
-    dst->torchLightColor.g = src.torchlightColorG;
-    dst->torchLightColor.b = src.torchlightColorB;
-    dst->torchLightColor.a = 255;
 }
 
 void snapshot(const Player &src, Player_MM7 *dst) {

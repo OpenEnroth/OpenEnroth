@@ -497,9 +497,12 @@ struct Party_MM7 {
     /* 16144 */ std::array<int32_t, 4> turnBasedPlayerRecoveryTimes;
     /* 16154 */ std::array<int32_t, 53> inTheShopFlags;
     /* 16228 */ int32_t fine;
-    /* 1622C */ float torchlightColorR;
-    /* 16230 */ float torchlightColorG;
-    /* 16234 */ float torchlightColorB;
+
+    // Not sure why torchlight color is even stored in savegames in vanilla. Testing it on old savegames, it seems
+    // it's always set to zero. But maybe savegames made in hardware mode differ from ones made in software mode,
+    // and hardware mode actually sets torchlight color? Not sure how to check.
+    // Anyway, reading torchlight color from a savegame makes very little sense, so we don't.
+    /* 1622C */ std::array<float, 3> torchLightColorRgbUnused;
     /* 16238 */
 };
 static_assert(sizeof(Party_MM7) == 0x16238);
