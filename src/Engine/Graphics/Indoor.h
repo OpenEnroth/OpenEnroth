@@ -182,37 +182,27 @@ struct BLVFaceExtra {
 struct BLVSector {  // 0x74
     int32_t field_0;  // flags?? &8 is for check floor level against portals &10 is for adding additonal node faces
     uint16_t uNumFloors;
-    int16_t field_6;
     uint16_t *pFloors;
     uint16_t uNumWalls;
-    int16_t field_E;
     uint16_t *pWalls;
     uint16_t uNumCeilings;
-    int16_t field_16;
     uint16_t *pCeilings;
     uint16_t uNumFluids;
-    int16_t field_1E;
     uint16_t *pFluids;
     int16_t uNumPortals;
-    int16_t field_26;
     uint16_t *pPortals;
     uint16_t uNumFaces;
     uint16_t uNumNonBSPFaces;
     uint16_t *pFaceIDs;
     uint16_t uNumCylinderFaces;
-    int16_t field_36;
     int32_t pCylinderFaces;
     uint16_t uNumCogs;
-    int16_t field_3E;
     uint16_t *pCogs;
     uint16_t uNumDecorations;
-    int16_t field_46;
     uint16_t *pDecorationIDs;
     uint16_t uNumMarkers;
-    int16_t field_4E;
     uint16_t *pMarkers;
     uint16_t uNumLights;
-    int16_t field_56;
     uint16_t *pLights;
     int16_t uWaterLevel;
     int16_t uMistLevel;

@@ -1237,28 +1237,18 @@ void snapshot(const BLVSector &src, BLVSector_MM7 *dst) {
 
     dst->field_0 = src.field_0;
     dst->uNumFloors = src.uNumFloors;
-    dst->field_6 = src.field_6;
     dst->uNumWalls = src.uNumWalls;
-    dst->field_E = src.field_E;
     dst->uNumCeilings = src.uNumCeilings;
-    dst->field_16 = src.field_16;
     dst->uNumFluids = src.uNumFluids;
-    dst->field_1E = src.field_1E;
     dst->uNumPortals = src.uNumPortals;
-    dst->field_26 = src.field_26;
     dst->uNumFaces = src.uNumFaces;
     dst->uNumNonBSPFaces = src.uNumNonBSPFaces;
     dst->uNumCylinderFaces = src.uNumCylinderFaces;
-    dst->field_36 = src.field_36;
     dst->pCylinderFaces = src.pCylinderFaces;
     dst->uNumCogs = src.uNumCogs;
-    dst->field_3E = src.field_3E;
     dst->uNumDecorations = src.uNumDecorations;
-    dst->field_46 = src.field_46;
     dst->uNumMarkers = src.uNumMarkers;
-    dst->field_4E = src.field_4E;
     dst->uNumLights = src.uNumLights;
-    dst->field_56 = src.field_56;
     dst->uWaterLevel = src.uWaterLevel;
     dst->uMistLevel = src.uMistLevel;
     dst->uLightDistanceMultiplier = src.uLightDistanceMultiplier;
@@ -1271,28 +1261,18 @@ void snapshot(const BLVSector &src, BLVSector_MM7 *dst) {
 void reconstruct(const BLVSector_MM7 &src, BLVSector *dst) {
     dst->field_0 = src.field_0;
     dst->uNumFloors = src.uNumFloors;
-    dst->field_6 = src.field_6;
     dst->uNumWalls = src.uNumWalls;
-    dst->field_E = src.field_E;
     dst->uNumCeilings = src.uNumCeilings;
-    dst->field_16 = src.field_16;
     dst->uNumFluids = src.uNumFluids;
-    dst->field_1E = src.field_1E;
     dst->uNumPortals = src.uNumPortals;
-    dst->field_26 = src.field_26;
     dst->uNumFaces = src.uNumFaces;
     dst->uNumNonBSPFaces = src.uNumNonBSPFaces;
     dst->uNumCylinderFaces = src.uNumCylinderFaces;
-    dst->field_36 = src.field_36;
     dst->pCylinderFaces = src.pCylinderFaces;
     dst->uNumCogs = src.uNumCogs;
-    dst->field_3E = src.field_3E;
     dst->uNumDecorations = src.uNumDecorations;
-    dst->field_46 = src.field_46;
     dst->uNumMarkers = src.uNumMarkers;
-    dst->field_4E = src.field_4E;
     dst->uNumLights = src.uNumLights;
-    dst->field_56 = src.field_56;
     dst->uWaterLevel = src.uWaterLevel;
     dst->uMistLevel = src.uMistLevel;
     dst->uLightDistanceMultiplier = src.uLightDistanceMultiplier;
@@ -1321,11 +1301,7 @@ void snapshot(const FontData &src, FontData_MM7 *dst) {
 
     dst->cFirstChar = src.cFirstChar;
     dst->cLastChar = src.cLastChar;
-    dst->field_2 = src.field_2;
-    dst->field_3 = src.field_3;
-    dst->field_4 = src.field_4;
     dst->uFontHeight = src.uFontHeight;
-    dst->field_7 = src.field_7;
     dst->palletes_count = src.palletes_count;
 
     snapshot(src.pMetrics, &dst->pMetrics);
@@ -1337,11 +1313,7 @@ void snapshot(const FontData &src, FontData_MM7 *dst) {
 void reconstruct(const FontData_MM7 &src, size_t size, FontData *dst) {
     dst->cFirstChar = src.cFirstChar;
     dst->cLastChar = src.cLastChar;
-    dst->field_2 = src.field_2;
-    dst->field_3 = src.field_3;
-    dst->field_4 = src.field_4;
     dst->uFontHeight = src.uFontHeight;
-    dst->field_7 = src.field_7;
     dst->palletes_count = src.palletes_count;
 
     reconstruct(src.pMetrics, &dst->pMetrics);
@@ -1371,8 +1343,6 @@ void reconstruct(const ODMFace_MM7 &src, ODMFace *dst) {
     dst->sCogNumber = src.sCogNumber;
     dst->sCogTriggeredID = src.sCogTriggeredID;
     dst->sCogTriggerType = src.sCogTriggerType;
-    dst->field_128 = src.field_128;
-    dst->field_129 = src.field_129;
     dst->uGradientVertex1 = src.uGradientVertex1;
     dst->uGradientVertex2 = src.uGradientVertex2;
     dst->uGradientVertex3 = src.uGradientVertex3;
@@ -1381,8 +1351,6 @@ void reconstruct(const ODMFace_MM7 &src, ODMFace *dst) {
     dst->uPolygonType = static_cast<PolygonType>(src.uPolygonType);
     dst->uShadeType = src.uShadeType;
     dst->bVisible = src.bVisible;
-    dst->field_132 = src.field_132;
-    dst->field_133 = src.field_133;
 }
 
 void reconstruct(const SpawnPoint_MM7 &src, SpawnPoint *dst) {
@@ -1423,9 +1391,7 @@ void snapshot(const SpriteObject &src, SpriteObject_MM7 *dst) {
     dst->spell_caster_pid = src.spell_caster_pid;
     dst->spell_target_pid = src.spell_target_pid;
     dst->field_60_distance_related_prolly_lod = src.field_60_distance_related_prolly_lod;
-    dst->field_61 = std::to_underlying(src.field_61);
-    dst->field_62[0] = src.field_62[0];
-    dst->field_62[1] = src.field_62[1];
+    dst->spellCasterAbility = std::to_underlying(src.spellCasterAbility);
     dst->initialPosition = src.initialPosition;
 }
 
@@ -1449,9 +1415,7 @@ void reconstruct(const SpriteObject_MM7 &src, SpriteObject *dst) {
     dst->spell_caster_pid = src.spell_caster_pid;
     dst->spell_target_pid = src.spell_target_pid;
     dst->field_60_distance_related_prolly_lod = src.field_60_distance_related_prolly_lod;
-    dst->field_61 = static_cast<ABILITY_INDEX>(src.field_61);
-    dst->field_62[0] = src.field_62[0];
-    dst->field_62[1] = src.field_62[1];
+    dst->spellCasterAbility = static_cast<ABILITY_INDEX>(src.spellCasterAbility);
     dst->initialPosition = src.initialPosition;
 }
 

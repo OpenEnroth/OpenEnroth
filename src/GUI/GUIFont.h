@@ -17,11 +17,7 @@ struct GUICharMetric {
 struct FontData {
     uint8_t cFirstChar = 0;  // 0
     uint8_t cLastChar = 0;   // 1
-    uint8_t field_2 = 0;
-    uint8_t field_3 = 0;
-    uint8_t field_4 = 0;
     uint16_t uFontHeight = 0;  // 5-6
-    uint8_t field_7 = 0;
     uint32_t palletes_count = 0;
     uint8_t *pFontPalettes[5]{};
     std::array<GUICharMetric, 256> pMetrics = {{}};
