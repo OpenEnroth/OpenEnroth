@@ -352,7 +352,8 @@ struct Player_MM7 {
     /* 1940 */ int32_t mana;
     /* 1944 */ uint32_t birthYear;
     /* 1948 */ PlayerEquipment_MM7 equipment;
-    /* 1988 */ std::array<int32_t, 49> field_1988;
+    /* 1988 */ std::array<int32_t, 49> field_1988; // field_1988[27] was set to 1 in party creation when character
+                                                   // name was changed. We just set everything to zero.
     /* 1A4C */ char field_1A4C;
     /* 1A4D */ char field_1A4D;
     /* 1A4E */ char lastOpenedSpellbookPage;

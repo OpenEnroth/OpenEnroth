@@ -140,7 +140,6 @@ void reconstruct(const Timer_MM7 &src, Timer *dst) {
 void snapshot(const NPCData &src, NPCData_MM7 *dst) {
     memzero(dst);
 
-    // dst->pName = src.pName;
     dst->name = !src.pName.empty();
     dst->portraitId = src.uPortraitID;
     dst->flags = std::to_underlying(src.uFlags);
@@ -163,7 +162,6 @@ void snapshot(const NPCData &src, NPCData_MM7 *dst) {
 }
 
 void reconstruct(const NPCData_MM7 &src, NPCData *dst) {
-    // dst->pName = src.pName;
     dst->pName = src.name ? "Dummy" : "";
     dst->uPortraitID = src.portraitId;
     dst->uFlags = NpcFlags(src.flags);
@@ -589,19 +587,13 @@ void snapshot(const Player &src, Player_MM7 *dst) {
     dst->voiceId = src.uVoiceID;
     dst->prevVoiceId = src.uPrevVoiceID;
     dst->prevFace = src.uPrevFace;
-    dst->field_192C = src.field_192C;
-    dst->field_1930 = src.field_1930;
     dst->timeToRecovery = src.timeToRecovery;
-    dst->field_1936 = src.field_1936;
-    dst->field_1937 = src.field_1937;
     dst->skillPoints = src.uSkillPoints;
     dst->health = src.health;
     dst->mana = src.mana;
     dst->birthYear = src.uBirthYear;
 
     snapshot(src.pEquipment.pIndices, &dst->equipment.indices);
-
-    snapshot(src.field_1988, &dst->field_1988);
 
     dst->field_1A4C = src.field_1A4C;
     dst->field_1A4D = src.field_1A4D;
@@ -645,7 +637,6 @@ void snapshot(const Player &src, Player_MM7 *dst) {
     dst->numDivineInterventionCasts = src.uNumDivineInterventionCastsThisDay;
     dst->numArmageddonCasts = src.uNumArmageddonCasts;
     dst->numFireSpikeCasts = src.uNumFireSpikeCasts;
-    dst->field_1B3B = src.field_1B3B_set0_unused;
 }
 
 void reconstruct(const Player_MM7 &src, Player *dst) {
@@ -853,19 +844,13 @@ void reconstruct(const Player_MM7 &src, Player *dst) {
     dst->uVoiceID = src.voiceId;
     dst->uPrevVoiceID = src.prevVoiceId;
     dst->uPrevFace = src.prevFace;
-    dst->field_192C = src.field_192C;
-    dst->field_1930 = src.field_1930;
     dst->timeToRecovery = src.timeToRecovery;
-    dst->field_1936 = src.field_1936;
-    dst->field_1937 = src.field_1937;
     dst->uSkillPoints = src.skillPoints;
     dst->health = src.health;
     dst->mana = src.mana;
     dst->uBirthYear = src.birthYear;
 
     reconstruct(src.equipment.indices, &dst->pEquipment.pIndices);
-
-    reconstruct(src.field_1988, &dst->field_1988);
 
     dst->field_1A4C = src.field_1A4C;
     dst->field_1A4D = src.field_1A4D;
@@ -914,7 +899,6 @@ void reconstruct(const Player_MM7 &src, Player *dst) {
     dst->uNumDivineInterventionCastsThisDay = src.numDivineInterventionCasts;
     dst->uNumArmageddonCasts = src.numArmageddonCasts;
     dst->uNumFireSpikeCasts = src.numFireSpikeCasts;
-    dst->field_1B3B_set0_unused = src.field_1B3B;
 }
 
 void snapshot(const Icon &src, IconFrame_MM7 *dst) {

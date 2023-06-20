@@ -927,7 +927,6 @@ void restAndHeal(GameTime restTime) {
         player.uNumDivineInterventionCastsThisDay = 0;
         player.uNumArmageddonCasts = 0;
         player.uNumFireSpikeCasts = 0;
-        player.field_1B3B_set0_unused = 0;
     }
 
     pParty->updatePlayersAndHirelingsEmotions();

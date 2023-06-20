@@ -384,7 +384,6 @@ void GUIWindow_PartyCreation::Update() {
                 if (keyboardInputHandler->GetTextInput().size() > 0 && v126 != keyboardInputHandler->GetTextInput().size())
                     pParty->pPlayers[i].name = keyboardInputHandler->GetTextInput();
                 pGUIWindow_CurrentMenu->DrawTextInRect(pFontCreate, {pIntervalX, 124}, colorTable.White, pParty->pPlayers[i].name, 130, 0);
-                pParty->pPlayers[i].field_1988[27] = 1;
                 break;
             case WINDOW_INPUT_CANCELLED:  // press escape
                 pGUIWindow_CurrentMenu->keyboard_input_status = WINDOW_INPUT_NONE;

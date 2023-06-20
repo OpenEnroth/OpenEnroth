@@ -7562,7 +7562,6 @@ Player::Player() {
     uNumArmageddonCasts = 0;
     uNumFireSpikeCasts = 0;
 
-    field_1988.fill(0);
     _playerEventBits.reset();
 
     field_E0 = 0;

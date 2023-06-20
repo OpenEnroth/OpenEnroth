@@ -486,7 +486,6 @@ struct Player {
     IndexedArray<CombinedSkillValue, PLAYER_SKILL_FIRST, PLAYER_SKILL_LAST> pActiveSkills;
     IndexedBitset<1, 512> _achievedAwardsBits;
     PlayerSpells spellbook;
-    char _1F6_padding[2];
     int pure_luck_used;
     int pure_speed_used;
     int pure_intellect_used;
@@ -529,11 +528,7 @@ struct Player {
     unsigned int uVoiceID;
     int uPrevVoiceID;
     int uPrevFace;
-    int field_192C;
-    int field_1930;
     uint16_t timeToRecovery;
-    char field_1936;
-    char field_1937;
     unsigned int uSkillPoints;
     int health;
     int mana;
@@ -567,7 +562,6 @@ struct Player {
     char uNumDivineInterventionCastsThisDay;
     char uNumArmageddonCasts;
     char uNumFireSpikeCasts;
-    char field_1B3B_set0_unused;
 };
 
 inline CHARACTER_EXPRESSION_ID expressionForCondition(Condition condition) {
