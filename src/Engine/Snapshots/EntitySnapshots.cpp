@@ -1540,7 +1540,6 @@ void reconstruct(const LevelDecoration_MM7 &src, LevelDecoration *dst) {
     dst->uTriggerRange = src.uTriggerRange;
     dst->field_1A = src.field_1A;
     dst->eventVarId = src.eventVarId - 75; // Was changed because all current usages are without this 75 shift
-    dst->field_1E = src.field_1E;
 }
 
 void reconstruct(const BLVFaceExtra_MM7 &src, BLVFaceExtra *dst) {
