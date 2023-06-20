@@ -40,6 +40,14 @@ static void reconstruct(int64_t src, GameTime *dst) {
     dst->value = src;
 }
 
+static void snapshot(const CombinedSkillValue &src, uint16_t *dst) {
+    *dst = src.join();
+}
+
+static void reconstruct(const uint16_t &src, CombinedSkillValue *dst) {
+    *dst = CombinedSkillValue::fromJoined(src);
+}
+
 void reconstruct(const SpriteFrame_MM7 &src, SpriteFrame *dst) {
     reconstruct(src.iconName, &dst->icon_name);
     dst->icon_name = toLower(dst->icon_name);
@@ -950,14 +958,6 @@ void reconstruct(const Player_MM7 &src, Player *dst) {
     dst->field_1B3B_set0_unused = src.field_1B3B;
 }
 
-void snapshot(const CombinedSkillValue &src, uint16_t *dst) {
-    *dst = src.join();
-}
-
-void reconstruct(const uint16_t &src, CombinedSkillValue *dst) {
-    *dst = CombinedSkillValue::fromJoined(src);
-}
-
 void snapshot(const Icon &src, IconFrame_MM7 *dst) {
     memzero(dst);
 
@@ -1715,14 +1715,14 @@ void reconstruct(const LocationInfo_MM7 &src, LocationInfo *dst) {
     dst->alertStatus = src.alertStatus;
 }
 
-void snapshot(const PersistentVariables &src, MapEventVariables_MM7 *dst) {
+void snapshot(const PersistentVariables &src, PersistentVariables_MM7 *dst) {
     memzero(dst);
 
     dst->mapVars = src.mapVars;
     dst->decorVars = src.decorVars;
 }
 
-void reconstruct(const MapEventVariables_MM7 &src, PersistentVariables *dst) {
+void reconstruct(const PersistentVariables_MM7 &src, PersistentVariables *dst) {
     dst->mapVars = src.mapVars;
     dst->decorVars = src.decorVars;
 }

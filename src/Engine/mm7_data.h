@@ -66,7 +66,7 @@ extern std::array<IndexedArray<ClassSkill, PLAYER_SKILL_FIRST, PLAYER_SKILL_LAST
 extern IndexedArray<IndexedArray<PLAYER_SKILL_MASTERY, PLAYER_SKILL_FIRST, PLAYER_SKILL_LAST>, PLAYER_CLASS_FIRST, PLAYER_CLASS_LAST> skillMaxMasteryPerClass;
 
 extern std::array<std::pair<int16_t, ITEM_TYPE>, 27> _4F0882_evt_VAR_PlayerItemInHands_vals;
-extern std::array<int, 11> price_for_membership;
+extern std::array<int, 11> price_for_membership; // TODO(captainurist): IndexedArray<GUILD_FIRST, GUILD_LAST, int> - uses GUILD_ID.
 extern std::array<int, 500> ai_near_actors_targets_pid;
 extern std::array<unsigned int, 500> ai_near_actors_ids;
 extern int ai_arrays_size;

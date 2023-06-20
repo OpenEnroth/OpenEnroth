@@ -58,7 +58,7 @@ struct IndoorDelta_MM7 {
     std::vector<Chest_MM7> chests;
     std::vector<BLVDoor_MM7> doors;
     std::vector<int16_t> doorsData;
-    MapEventVariables_MM7 eventVariables;
+    PersistentVariables_MM7 eventVariables;
     LocationTime_MM7 locationTime;
 };
 
@@ -114,7 +114,7 @@ struct OutdoorDelta_MM7 {
     std::vector<Actor_MM7> actors;
     std::vector<SpriteObject_MM7> spriteObjects;
     std::vector<Chest_MM7> chests;
-    MapEventVariables_MM7 eventVariables;
+    PersistentVariables_MM7 eventVariables;
     LocationTime_MM7 locationTime;
 };
 

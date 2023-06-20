@@ -1270,16 +1270,15 @@ MM_DECLARE_MEMCOPY_SERIALIZABLE(LocationHeader_MM7)
 // so no reconstruct() overloads for it.
 
 
-// TODO(captainurist): PersistentVariables_MM7
-struct MapEventVariables_MM7 {
+struct PersistentVariables_MM7 {
     std::array<unsigned char, 75> mapVars;
     std::array<unsigned char, 125> decorVars;
 };
-static_assert(sizeof(MapEventVariables_MM7) == 0xC8);
-MM_DECLARE_MEMCOPY_SERIALIZABLE(MapEventVariables_MM7)
+static_assert(sizeof(PersistentVariables_MM7) == 0xC8);
+MM_DECLARE_MEMCOPY_SERIALIZABLE(PersistentVariables_MM7)
 
-void snapshot(const PersistentVariables &src, MapEventVariables_MM7 *dst);
-void reconstruct(const MapEventVariables_MM7 &src, PersistentVariables *dst);
+void snapshot(const PersistentVariables &src, PersistentVariables_MM7 *dst);
+void reconstruct(const PersistentVariables_MM7 &src, PersistentVariables *dst);
 
 
 struct BLVHeader_MM7 {
