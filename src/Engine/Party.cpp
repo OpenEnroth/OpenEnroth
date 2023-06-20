@@ -1101,7 +1101,7 @@ bool Party::addItemToParty(ItemGen *pItem, bool isSilent) {
                 pItem->Reset();
                 if (!isSilent) {
                     pAudioPlayer->playUISound(SOUND_gold01);
-                    pPlayers[playerId].playReaction(SPEECH_FoundItem);
+                    pPlayers[playerId].playReaction(SPEECH_FOUND_ITEM);
                 }
 
                 if (texture) {

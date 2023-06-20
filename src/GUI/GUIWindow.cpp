@@ -1025,7 +1025,7 @@ void ClickNPCTopic(DIALOGUE_TYPE topic) {
                     pParty->TakeGold(gold_transaction_amount);
                     if (pParty->hasActiveCharacter()) {
                         pParty->activeCharacter().SetSkillMastery(dword_F8B1AC_skill_being_taught, dword_F8B1B0_MasteryBeingTaught);
-                        pParty->activeCharacter().playReaction(SPEECH_SkillMasteryInc);
+                        pParty->activeCharacter().playReaction(SPEECH_SKILL_MASTERY_INC);
                     }
                     pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 1, 0);
                 }
@@ -1072,7 +1072,7 @@ void ClickNPCTopic(DIALOGUE_TYPE topic) {
                     }
                     pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 1, 0);
                     if (pParty->hasActiveCharacter()) {
-                        pParty->activeCharacter().playReaction(SPEECH_JoinedGuild);
+                        pParty->activeCharacter().playReaction(SPEECH_JOINED_GUILD);
                         BackToHouseMenu();
                         return;
                     }
@@ -1104,7 +1104,7 @@ void ClickNPCTopic(DIALOGUE_TYPE topic) {
                 pNPCStats->pProfessions[pCurrentNPCInfo->profession].pJoinText,
                 pParty->activeCharacterIndex() - 1, 0, 0, 0);
             if (pParty->hasActiveCharacter()) {
-                pParty->activeCharacter().playReaction(SPEECH_NotEnoughGold);
+                pParty->activeCharacter().playReaction(SPEECH_NOT_ENOUGH_GOLD);
             }
             GameUI_SetStatusBar(LSTR_NOT_ENOUGH_GOLD);
             BackToHouseMenu();
@@ -1131,7 +1131,7 @@ void ClickNPCTopic(DIALOGUE_TYPE topic) {
 
     pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 1, 0);
     if (pParty->hasActiveCharacter()) {
-        pParty->activeCharacter().playReaction(SPEECH_HireNPC);
+        pParty->activeCharacter().playReaction(SPEECH_HIRE_NPC);
     }
 
     BackToHouseMenu();

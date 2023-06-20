@@ -104,7 +104,7 @@ void CreateParty_EventLoop() {
             new OnButtonClick({pButton->uX, pButton->uY}, {0, 0}, pButton, std::string(), false);
             pAudioPlayer->playUISound(SOUND_SelectingANewCharacter);
             pAudioPlayer->stopVoiceSounds();
-            pParty->pPlayers[param].playReaction(SPEECH_PickMe);
+            pParty->pPlayers[param].playReaction(SPEECH_PICK_ME);
             break;
         }
         case UIMSG_PlayerCreation_VoiceNext:
@@ -118,7 +118,7 @@ void CreateParty_EventLoop() {
             new OnButtonClick({pButton->uX, pButton->uY}, {0, 0}, pButton, std::string(), false);
             pAudioPlayer->playUISound(SOUND_SelectingANewCharacter);
             pAudioPlayer->stopVoiceSounds();
-            pParty->pPlayers[param].playReaction(SPEECH_PickMe);
+            pParty->pPlayers[param].playReaction(SPEECH_PICK_ME);
             break;
         }
         case UIMSG_PlayerCreation_FacePrev:
@@ -142,7 +142,7 @@ void CreateParty_EventLoop() {
                 pCreationUI_BtnPressLeft[param], std::string(), false);
             pAudioPlayer->playUISound(SOUND_SelectingANewCharacter);
             pAudioPlayer->stopVoiceSounds();
-            pParty->pPlayers[param].playReaction(SPEECH_PickMe);
+            pParty->pPlayers[param].playReaction(SPEECH_PICK_ME);
             break;
         case UIMSG_PlayerCreation_FaceNext:
             // pPlayer = &pParty->pPlayers[pParam];
@@ -164,7 +164,7 @@ void CreateParty_EventLoop() {
                 pCreationUI_BtnPressRight[param], std::string(), false);
             pAudioPlayer->playUISound(SOUND_SelectingANewCharacter);
             pAudioPlayer->stopVoiceSounds();
-            pParty->pPlayers[param].playReaction(SPEECH_PickMe);
+            pParty->pPlayers[param].playReaction(SPEECH_PICK_ME);
             break;
         case UIMSG_PlayerCreationClickPlus:
             new OnButtonClick2({613, 393}, {0, 0}, pPlayerCreationUI_BtnPlus, std::string(), false);

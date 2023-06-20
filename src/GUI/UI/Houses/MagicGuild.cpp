@@ -320,11 +320,11 @@ void GUIWindow_MagicGuild::houseScreenClick() {
                         pParty->TakeGold(uPriceItemService);
                         boughtItem.Reset();
                         render->ClearZBuffer();
-                        pParty->activeCharacter().playReaction(SPEECH_ItemBuy);
+                        pParty->activeCharacter().playReaction(SPEECH_ITEM_BUY);
                         return;
                     }
 
-                    pParty->activeCharacter().playReaction(SPEECH_NoRoom);
+                    pParty->activeCharacter().playReaction(SPEECH_NO_ROOM);
                     GameUI_SetStatusBar(LSTR_INVENTORY_IS_FULL);
                 }
             }

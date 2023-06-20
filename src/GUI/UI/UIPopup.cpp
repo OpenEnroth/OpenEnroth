@@ -251,13 +251,13 @@ void GameUI_DrawItemInfo(struct ItemGen *inspect_item) {
         if (!inspect_item->IsIdentified()) {
             if (pParty->activeCharacter().CanIdentify(inspect_item) == 1)
                 inspect_item->SetIdentified();
-            PlayerSpeech speech = SPEECH_IndentifyItemFail;
+            CharacterSpeech speech = SPEECH_ID_ITEM_FAIL;
             if (!inspect_item->IsIdentified()) {
                 GameUI_SetStatusBar(LSTR_IDENTIFY_FAILED);
             } else {
-                speech = SPEECH_IndentifyItemStrong;
+                speech = SPEECH_ID_ITEM_STRONG;
                 if (inspect_item->GetValue() < 100 * (pParty->activeCharacter().uLevel + 5)) {
-                    speech = SPEECH_IndentifyItemWeak;
+                    speech = SPEECH_ID_ITEM_WEAK;
                 }
             }
             if (!identifyOrRepairReactionPlayed) {
@@ -269,9 +269,9 @@ void GameUI_DrawItemInfo(struct ItemGen *inspect_item) {
         if (inspect_item->IsBroken()) {
             if (pParty->activeCharacter().CanRepair(inspect_item) == 1)
                 inspect_item->uAttributes = inspect_item->uAttributes & ~ITEM_BROKEN | ITEM_IDENTIFIED;
-            PlayerSpeech speech = SPEECH_RepairFail;
+            CharacterSpeech speech = SPEECH_REPAIR_FAIL;
             if (!inspect_item->IsBroken())
-                speech = SPEECH_RepairSuccess;
+                speech = SPEECH_REPAIR_SUCCESS;
             else
                 GameUI_SetStatusBar(LSTR_REPAIR_FAILED);
             if (!identifyOrRepairReactionPlayed) {
@@ -663,14 +663,14 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
         // Only play reaction when right click on actor initially
         if (pActors[uActorID].uAIState != Dead && pActors[uActorID].uAIState != Dying &&
             !holdingMouseRightButton && skill_mastery != PLAYER_SKILL_MASTERY_NONE) {
-            PlayerSpeech speech;
+            CharacterSpeech speech;
             if (normal_level || expert_level || master_level || grandmaster_level) {
                 if (pActors[uActorID].pMonsterInfo.uLevel >= pParty->activeCharacter().uLevel - 5)
-                    speech = SPEECH_IDMonsterStrong;
+                    speech = SPEECH_ID_MONSTER_STRONG;
                 else
-                    speech = SPEECH_IDMonsterWeak;
+                    speech = SPEECH_ID_MONSTER_WEAK;
             } else {
-                speech = SPEECH_IDMonsterFail;
+                speech = SPEECH_ID_MONSTER_FAIL;
             }
             pParty->activeCharacter().playReaction(speech);
         }
@@ -2238,7 +2238,7 @@ void Inventory_ItemPopupAndAlchemy() {
             Vec3i::rotate(64, pParty->_viewYaw, pParty->_viewPitch, pParty->vPosition + Vec3i(0, 0, pParty->sEyelevel), &_viewPitch, &_viewYaw, &rot_z);
             SpriteObject::dropItemAt(SPRITE_SPELL_FIRE_FIREBALL_IMPACT, {_viewPitch, _viewYaw, rot_z}, 0);
             if (pParty->activeCharacter().CanAct()) {
-                pParty->activeCharacter().playReaction(SPEECH_PotionExplode);
+                pParty->activeCharacter().playReaction(SPEECH_POTION_EXPLODE);
             }
             GameUI_SetStatusBar(LSTR_OOPS);
             mouse->RemoveHoldingItem();
@@ -2267,7 +2267,7 @@ void Inventory_ItemPopupAndAlchemy() {
             if (!(pItemTable->pItems[item->uItemID].uItemID_Rep_St)) {
                 item->uAttributes |= ITEM_IDENTIFIED;
             }
-            pParty->activeCharacter().playReaction(SPEECH_PotionSuccess);
+            pParty->activeCharacter().playReaction(SPEECH_POTION_SUCCESS);
             mouse->RemoveHoldingItem();
             rightClickItemActionPerformed = true;
             int bottleId = pParty->activeCharacter().AddItem(-1, ITEM_POTION_BOTTLE);
@@ -2400,7 +2400,7 @@ void Inventory_ItemPopupAndAlchemy() {
                 break;
         }
 
-        pParty->activeCharacter().playReaction(SPEECH_PotionSuccess);
+        pParty->activeCharacter().playReaction(SPEECH_POTION_SUCCESS);
         mouse->RemoveHoldingItem();
         rightClickItemActionPerformed = true;
         return;

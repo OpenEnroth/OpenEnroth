@@ -58,7 +58,7 @@ void GUIWindow_Bank::putGoldDialogue() {
             pParty->AddBankGold(sum);
             _transactionPerformed = true;
             if (pParty->hasActiveCharacter()) {
-                pParty->activeCharacter().playReaction(SPEECH_BankDeposit);
+                pParty->activeCharacter().playReaction(SPEECH_BANK_DEPOSIT);
             }
         }
     }

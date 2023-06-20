@@ -1511,7 +1511,7 @@ void Game::processQueuedMessages() {
                         GameUI_SetStatusBar(LSTR_HOSTILE_ENEMIES_NEARBY);
 
                     if (!pParty->hasActiveCharacter()) continue;
-                    pParty->activeCharacter().playReaction(SPEECH_CantRestHere);
+                    pParty->activeCharacter().playReaction(SPEECH_CANT_REST_HERE);
                     continue;
                 }
                 if (pParty->bTurnBasedModeOn) {
@@ -1540,7 +1540,7 @@ void Game::processQueuedMessages() {
                     GameUI_SetStatusBar(LSTR_HOSTILE_ENEMIES_NEARBY);
 
                 if (!pParty->hasActiveCharacter()) continue;
-                pParty->activeCharacter().playReaction(SPEECH_CantRestHere);
+                pParty->activeCharacter().playReaction(SPEECH_CANT_REST_HERE);
                 continue;
             case UIMSG_Rest8Hour:
                 pCurrentFrameMessageQueue->Clear(); // TODO: sometimes it is called twice, prevent that for now and investigate why later
@@ -1552,7 +1552,7 @@ void Game::processQueuedMessages() {
                 if (pParty->GetFood() < foodRequiredToRest) {
                     GameUI_SetStatusBar(LSTR_NOT_ENOUGH_FOOD);
                     if (pParty->hasActiveCharacter() && pParty->activeCharacter().CanAct()) {
-                        pParty->activeCharacter().playReaction(SPEECH_NotEnoughFood);
+                        pParty->activeCharacter().playReaction(SPEECH_NOT_ENOUGH_FOOD);
                     }
                 } else {
                     for (Player &player : pParty->pPlayers) {
@@ -1653,7 +1653,7 @@ void Game::processQueuedMessages() {
                 }
                 pParty->activeCharacter().uQuickSpell = spellbookSelectedSpell;
                 if (pParty->hasActiveCharacter()) {
-                    player->playReaction(SPEECH_SetQuickSpell);
+                    player->playReaction(SPEECH_SET_QUICK_SPELL);
                 }
                 continue;
             }
@@ -1846,7 +1846,7 @@ void Game::processQueuedMessages() {
                     if (skill_level < skills_max_level[skill]) {
                         player->SetSkillLevel(skill, skill_level + 1);
                         player->uSkillPoints -= skill_level + 1;
-                        player->playReaction(SPEECH_SkillIncrease);
+                        player->playReaction(SPEECH_SKILL_INCREASE);
                         pAudioPlayer->playUISound(SOUND_quest);
                         continue;
                     }
@@ -2436,7 +2436,7 @@ void Game::gameLoop() {
                 int playerId = pParty->getRandomActiveCharacterId(vrng.get());
 
                 if (playerId != -1) {
-                    pParty->pPlayers[playerId].playReaction(SPEECH_CheatedDeath);
+                    pParty->pPlayers[playerId].playReaction(SPEECH_CHEATED_DEATH);
                 }
 
                 GameUI_SetStatusBar(LSTR_CHEATED_THE_DEATH);

@@ -439,47 +439,47 @@ void Player::SetCondition(Condition uConditionIdx, int blockable) {
 
     switch (uConditionIdx) {  // conditions noises
         case CONDITION_CURSED:
-            playReaction(SPEECH_Cursed);
+            playReaction(SPEECH_CURSED);
             break;
         case CONDITION_WEAK:
-            playReaction(SPEECH_Weak);
+            playReaction(SPEECH_WEAK);
             break;
         case CONDITION_SLEEP:
             break;  // nosound
         case CONDITION_FEAR:
-            playReaction(SPEECH_Fear);
+            playReaction(SPEECH_FEAR);
             break;
         case CONDITION_DRUNK:
-            playReaction(SPEECH_Drunk);
+            playReaction(SPEECH_DRUNK);
             break;
         case CONDITION_INSANE:
-            playReaction(SPEECH_Insane);
+            playReaction(SPEECH_INSANE);
             break;
 
         case CONDITION_POISON_WEAK:
         case CONDITION_POISON_MEDIUM:
         case CONDITION_POISON_SEVERE:
-            playReaction(SPEECH_Poisoned);
+            playReaction(SPEECH_POISONED);
             break;
 
         case CONDITION_DISEASE_WEAK:
         case CONDITION_DISEASE_MEDIUM:
         case CONDITION_DISEASE_SEVERE:
-            playReaction(SPEECH_Diseased);
+            playReaction(SPEECH_DISEASED);
             break;
 
         case CONDITION_PARALYZED:
             break;  // nosound
 
         case CONDITION_UNCONSCIOUS:
-            playReaction(SPEECH_Unconscious);
+            playReaction(SPEECH_UNCONSCIOUS);
             if (health > 0) {
                 health = 0;
             }
             break;
 
         case CONDITION_DEAD:
-            playReaction(SPEECH_Dead);
+            playReaction(SPEECH_DEAD);
             if (health > 0) {
                 health = 0;
             }
@@ -489,11 +489,11 @@ void Player::SetCondition(Condition uConditionIdx, int blockable) {
             break;
 
         case CONDITION_PETRIFIED:
-            playReaction(SPEECH_Petrified);
+            playReaction(SPEECH_PETRIFIED);
             break;
 
         case CONDITION_ERADICATED:
-            playReaction(SPEECH_Eradicated);
+            playReaction(SPEECH_ERADICATED);
             if (health > 0) {
                 health = 0;
             }
@@ -521,7 +521,7 @@ void Player::SetCondition(Condition uConditionIdx, int blockable) {
                 uVoiceID = 24;
             }
 
-            playReaction(SPEECH_CheatedDeath);
+            playReaction(SPEECH_CHEATED_DEATH);
             break;
 
         default:
@@ -545,7 +545,7 @@ void Player::SetCondition(Condition uConditionIdx, int blockable) {
     }
 
     if ((playersBefore == 2) && (playersAfter == 1)) { // if was 2 and now down to 1 - "its just you and me now"
-        remainingPlayer->playReaction(SPEECH_LastManStanding);
+        remainingPlayer->playReaction(SPEECH_LAST_MAN_STANDING);
     }
 
     return;
@@ -588,7 +588,7 @@ int Player::CreateItemInInventory(unsigned int uSlot, ITEM_TYPE uItemID) {
 
     if (freeSlot == -1) {  // no room
         if (pParty->hasActiveCharacter()) {
-            pParty->activeCharacter().playReaction(SPEECH_NoRoom);
+            pParty->activeCharacter().playReaction(SPEECH_NO_ROOM);
         }
 
         return 0;
@@ -1578,7 +1578,7 @@ int Player::receiveDamage(signed int amount, DAMAGE_TYPE dmg_type) {
 
     if (health < 1) {  // player unconscious or if too hurt - dead
         if ((health + uEndurance + GetItemsBonus(CHARACTER_ATTRIBUTE_ENDURANCE) >= 1) ||
-            pPlayerBuffs[PLAYER_BUFF_PRESERVATION].Active()) {
+            pPlayerBuffs[CHARACTER_BUFF_PRESERVATION].Active()) {
             SetCondUnconsciousWithBlockCheck(false);
         } else {
             SetCondDeadWithBlockCheck(false);
@@ -1596,7 +1596,7 @@ int Player::receiveDamage(signed int amount, DAMAGE_TYPE dmg_type) {
     }
 
     if (recieved_dmg && CanAct()) {
-        playReaction(SPEECH_Damaged);  // oww
+        playReaction(SPEECH_DAMAGED);  // oww
     }
 
     return recieved_dmg;
@@ -1887,7 +1887,7 @@ int Player::ReceiveSpecialAttackEffect(
             case SPECIAL_ATTACK_BREAK_ARMOR:
             case SPECIAL_ATTACK_BREAK_WEAPON:
                 if (!(itemtobreak->uAttributes & ITEM_HARDENED)) {
-                    playReaction(SPEECH_ItemBroken);
+                    playReaction(SPEECH_ITEM_BROKEN);
                     itemtobreak->SetBroken();
                     pAudioPlayer->playUISound(SOUND_metal_vs_metal03h);
                 }
@@ -1896,7 +1896,7 @@ int Player::ReceiveSpecialAttackEffect(
                 break;
 
             case SPECIAL_ATTACK_STEAL: {
-                playReaction(SPEECH_ItemBroken);
+                playReaction(SPEECH_ITEM_BROKEN);
                 void *actoritems = &pActor->ActorHasItems[0];
                 if (pActor->ActorHasItems[0].uItemID != ITEM_NULL) {
                     actoritems = &pActor->ActorHasItems[1];
@@ -1917,7 +1917,7 @@ int Player::ReceiveSpecialAttackEffect(
             }
 
             case SPECIAL_ATTACK_AGING:
-                playReaction(SPEECH_Aging);
+                playReaction(SPEECH_AGING);
                 ++this->sAgeModifier;
                 pAudioPlayer->playUISound(SOUND_eleccircle);
                 spell_fx_renderer->SetPlayerBuffAnim(SPELL_DISEASE, whichplayer);
@@ -1925,7 +1925,7 @@ int Player::ReceiveSpecialAttackEffect(
                 break;
 
             case SPECIAL_ATTACK_MANA_DRAIN:
-                playReaction(SPEECH_SPDrained);
+                playReaction(SPEECH_SP_DRAINED);
                 this->mana = 0;
                 pAudioPlayer->playUISound(SOUND_eleccircle);
                 spell_fx_renderer->SetPlayerBuffAnim(SPELL_DISEASE, whichplayer);
@@ -2037,7 +2037,7 @@ int Player::GetAttackRecoveryTime(bool bRangedAttack) const {
     }
 
     uint hasteRecoveryReduction = 0;
-    if (pPlayerBuffs[PLAYER_BUFF_HASTE].Active()) hasteRecoveryReduction = 25;
+    if (pPlayerBuffs[CHARACTER_BUFF_HASTE].Active()) hasteRecoveryReduction = 25;
     if (pParty->pPartyBuffs[PARTY_BUFF_HASTE].Active()) hasteRecoveryReduction = 25;
 
     uint weapon_enchantment_recovery_reduction = 0;
@@ -2669,68 +2669,68 @@ int Player::GetMagicalBonus(CHARACTER_ATTRIBUTE_TYPE a2) const {
 
     switch (a2) {
         case CHARACTER_ATTRIBUTE_RESIST_FIRE:
-            v3 = this->pPlayerBuffs[PLAYER_BUFF_RESIST_FIRE].power;
+            v3 = this->pPlayerBuffs[CHARACTER_BUFF_RESIST_FIRE].power;
             v4 = pParty->pPartyBuffs[PARTY_BUFF_RESIST_FIRE].power;
             break;
         case CHARACTER_ATTRIBUTE_RESIST_AIR:
-            v3 = this->pPlayerBuffs[PLAYER_BUFF_RESIST_AIR].power;
+            v3 = this->pPlayerBuffs[CHARACTER_BUFF_RESIST_AIR].power;
             v4 = pParty->pPartyBuffs[PARTY_BUFF_RESIST_AIR].power;
             break;
         case CHARACTER_ATTRIBUTE_RESIST_BODY:
-            v3 = this->pPlayerBuffs[PLAYER_BUFF_RESIST_BODY].power;
+            v3 = this->pPlayerBuffs[CHARACTER_BUFF_RESIST_BODY].power;
             v4 = pParty->pPartyBuffs[PARTY_BUFF_RESIST_BODY].power;
             break;
         case CHARACTER_ATTRIBUTE_RESIST_WATER:
-            v3 = this->pPlayerBuffs[PLAYER_BUFF_RESIST_WATER].power;
+            v3 = this->pPlayerBuffs[CHARACTER_BUFF_RESIST_WATER].power;
             v4 = pParty->pPartyBuffs[PARTY_BUFF_RESIST_WATER].power;
             break;
         case CHARACTER_ATTRIBUTE_RESIST_EARTH:
-            v3 = this->pPlayerBuffs[PLAYER_BUFF_RESIST_EARTH].power;
+            v3 = this->pPlayerBuffs[CHARACTER_BUFF_RESIST_EARTH].power;
             v4 = pParty->pPartyBuffs[PARTY_BUFF_RESIST_EARTH].power;
             break;
         case CHARACTER_ATTRIBUTE_RESIST_MIND:
-            v3 = this->pPlayerBuffs[PLAYER_BUFF_RESIST_MIND].power;
+            v3 = this->pPlayerBuffs[CHARACTER_BUFF_RESIST_MIND].power;
             v4 = pParty->pPartyBuffs[PARTY_BUFF_RESIST_MIND].power;
             break;
         case CHARACTER_ATTRIBUTE_ATTACK:
         case CHARACTER_ATTRIBUTE_RANGED_ATTACK:
-            v3 = this->pPlayerBuffs[PLAYER_BUFF_BLESS]
+            v3 = this->pPlayerBuffs[CHARACTER_BUFF_BLESS]
                      .power;  // only player effect spell in both VI and VII
             break;
         case CHARACTER_ATTRIBUTE_MELEE_DMG_BONUS:
-            v3 = this->pPlayerBuffs[PLAYER_BUFF_HEROISM].power;
+            v3 = this->pPlayerBuffs[CHARACTER_BUFF_HEROISM].power;
             v4 = pParty->pPartyBuffs[PARTY_BUFF_HEROISM].power;
             break;
         case CHARACTER_ATTRIBUTE_MIGHT:
-            v3 = pPlayerBuffs[PLAYER_BUFF_STRENGTH].power;
+            v3 = pPlayerBuffs[CHARACTER_BUFF_STRENGTH].power;
             v4 = pParty->pPartyBuffs[PARTY_BUFF_DAY_OF_GODS].power;
             break;
         case CHARACTER_ATTRIBUTE_INTELLIGENCE:
-            v3 = pPlayerBuffs[PLAYER_BUFF_INTELLIGENCE].power;
+            v3 = pPlayerBuffs[CHARACTER_BUFF_INTELLIGENCE].power;
             v4 = pParty->pPartyBuffs[PARTY_BUFF_DAY_OF_GODS].power;
             break;
         case CHARACTER_ATTRIBUTE_PERSONALITY:
-            v3 = pPlayerBuffs[PLAYER_BUFF_PERSONALITY].power;
+            v3 = pPlayerBuffs[CHARACTER_BUFF_PERSONALITY].power;
             v4 = pParty->pPartyBuffs[PARTY_BUFF_DAY_OF_GODS].power;
             break;
         case CHARACTER_ATTRIBUTE_ENDURANCE:
-            v3 = pPlayerBuffs[PLAYER_BUFF_ENDURANCE].power;
+            v3 = pPlayerBuffs[CHARACTER_BUFF_ENDURANCE].power;
             v4 = pParty->pPartyBuffs[PARTY_BUFF_DAY_OF_GODS].power;
             break;
         case CHARACTER_ATTRIBUTE_ACCURACY:
-            v3 = pPlayerBuffs[PLAYER_BUFF_ACCURACY].power;
+            v3 = pPlayerBuffs[CHARACTER_BUFF_ACCURACY].power;
             v4 = pParty->pPartyBuffs[PARTY_BUFF_DAY_OF_GODS].power;
             break;
         case CHARACTER_ATTRIBUTE_SPEED:
-            v3 = pPlayerBuffs[PLAYER_BUFF_SPEED].power;
+            v3 = pPlayerBuffs[CHARACTER_BUFF_SPEED].power;
             v4 = pParty->pPartyBuffs[PARTY_BUFF_DAY_OF_GODS].power;
             break;
         case CHARACTER_ATTRIBUTE_LUCK:
-            v3 = pPlayerBuffs[PLAYER_BUFF_LUCK].power;
+            v3 = pPlayerBuffs[CHARACTER_BUFF_LUCK].power;
             v4 = pParty->pPartyBuffs[PARTY_BUFF_DAY_OF_GODS].power;
             break;
         case CHARACTER_ATTRIBUTE_AC_BONUS:
-            v3 = this->pPlayerBuffs[PLAYER_BUFF_STONESKIN].power;
+            v3 = this->pPlayerBuffs[CHARACTER_BUFF_STONESKIN].power;
             v4 = pParty->pPartyBuffs[PARTY_BUFF_STONE_SKIN].power;
             break;
         default:
@@ -3177,7 +3177,7 @@ std::string Player::GetRaceName() const {
 }
 
 //----- (00490141) --------------------------------------------------------
-PLAYER_SEX Player::GetSexByVoice() const {
+CHARACTER_SEX Player::GetSexByVoice() const {
     switch (this->uVoiceID) {
         case 0u:
         case 1u:
@@ -3538,10 +3538,10 @@ void Player::useItem(int targetCharacter, bool isPortraitClick) {
             if (playerAffected->mana > playerAffected->GetMaxMana()) {
                 playerAffected->mana = playerAffected->GetMaxMana();
             }
-            playerAffected->playReaction(SPEECH_DrinkPotion);
+            playerAffected->playReaction(SPEECH_DRINK_POTION);
         } else if (pParty->pPickedItem.uItemID == ITEM_162) {
             playerAffected->Heal(2);
-            playerAffected->playReaction(SPEECH_DrinkPotion);
+            playerAffected->playReaction(SPEECH_DRINK_POTION);
         } else {
             GameUI_SetStatusBar(LSTR_FMT_S_CANT_BE_USED_THIS_WAY, pParty->pPickedItem.GetDisplayName().c_str());
             pAudioPlayer->playUISound(SOUND_error);
@@ -3608,36 +3608,36 @@ void Player::useItem(int targetCharacter, bool isPortraitClick) {
 
             case ITEM_POTION_HASTE:
                 if (!playerAffected->conditions.Has(CONDITION_WEAK)) {
-                    playerAffected->pPlayerBuffs[PLAYER_BUFF_HASTE].Apply(pParty->GetPlayingTime() + buffDuration, PLAYER_SKILL_MASTERY_MASTER, 5, 0, 0);
+                    playerAffected->pPlayerBuffs[CHARACTER_BUFF_HASTE].Apply(pParty->GetPlayingTime() + buffDuration, PLAYER_SKILL_MASTERY_MASTER, 5, 0, 0);
                 }
                 break;
 
             case ITEM_POTION_HEROISM:
-                playerAffected->pPlayerBuffs[PLAYER_BUFF_HEROISM].Apply(pParty->GetPlayingTime() + buffDuration, PLAYER_SKILL_MASTERY_MASTER, 5, 0, 0);
+                playerAffected->pPlayerBuffs[CHARACTER_BUFF_HEROISM].Apply(pParty->GetPlayingTime() + buffDuration, PLAYER_SKILL_MASTERY_MASTER, 5, 0, 0);
                 break;
 
             case ITEM_POTION_BLESS:
-                playerAffected->pPlayerBuffs[PLAYER_BUFF_BLESS].Apply(pParty->GetPlayingTime() + buffDuration, PLAYER_SKILL_MASTERY_MASTER, 5, 0, 0);
+                playerAffected->pPlayerBuffs[CHARACTER_BUFF_BLESS].Apply(pParty->GetPlayingTime() + buffDuration, PLAYER_SKILL_MASTERY_MASTER, 5, 0, 0);
                 break;
 
             case ITEM_POTION_PRESERVATION:
                 // mastery was NONE
-                playerAffected->pPlayerBuffs[PLAYER_BUFF_PRESERVATION].Apply(pParty->GetPlayingTime() + buffDuration, PLAYER_SKILL_MASTERY_MASTER,
+                playerAffected->pPlayerBuffs[CHARACTER_BUFF_PRESERVATION].Apply(pParty->GetPlayingTime() + buffDuration, PLAYER_SKILL_MASTERY_MASTER,
                         potionStrength * 3, 0, 0);
                 break;
 
             case ITEM_POTION_SHIELD:
                 // mastery was NONE
-                playerAffected->pPlayerBuffs[PLAYER_BUFF_SHIELD].Apply(pParty->GetPlayingTime() + buffDuration, PLAYER_SKILL_MASTERY_MASTER,
+                playerAffected->pPlayerBuffs[CHARACTER_BUFF_SHIELD].Apply(pParty->GetPlayingTime() + buffDuration, PLAYER_SKILL_MASTERY_MASTER,
                         potionStrength * 3, 0, 0);
                 break;
 
             case ITEM_POTION_STONESKIN:
-                playerAffected->pPlayerBuffs[PLAYER_BUFF_STONESKIN].Apply(pParty->GetPlayingTime() + buffDuration, PLAYER_SKILL_MASTERY_MASTER, 5, 0, 0);
+                playerAffected->pPlayerBuffs[CHARACTER_BUFF_STONESKIN].Apply(pParty->GetPlayingTime() + buffDuration, PLAYER_SKILL_MASTERY_MASTER, 5, 0, 0);
                 break;
 
             case ITEM_POTION_WATER_BREATHING:
-                playerAffected->pPlayerBuffs[PLAYER_BUFF_WATER_WALK].Apply(pParty->GetPlayingTime() + buffDuration, PLAYER_SKILL_MASTERY_MASTER, 5, 0, 0);
+                playerAffected->pPlayerBuffs[CHARACTER_BUFF_WATER_WALK].Apply(pParty->GetPlayingTime() + buffDuration, PLAYER_SKILL_MASTERY_MASTER, 5, 0, 0);
                 // Drink potion reaction was missing
                 break;
 
@@ -3655,37 +3655,37 @@ void Player::useItem(int targetCharacter, bool isPortraitClick) {
 
             case ITEM_POTION_MIGHT_BOOST:
                 // mastery was NONE
-                playerAffected->pPlayerBuffs[PLAYER_BUFF_STRENGTH].Apply(pParty->GetPlayingTime() + buffDuration, PLAYER_SKILL_MASTERY_MASTER,
+                playerAffected->pPlayerBuffs[CHARACTER_BUFF_STRENGTH].Apply(pParty->GetPlayingTime() + buffDuration, PLAYER_SKILL_MASTERY_MASTER,
                         potionStrength * 3, 0, 0);
                 break;
 
             case ITEM_POTION_INTELLECT_BOOST:
                 // mastery was NONE
-                playerAffected->pPlayerBuffs[PLAYER_BUFF_INTELLIGENCE].Apply(pParty->GetPlayingTime() + buffDuration, PLAYER_SKILL_MASTERY_MASTER,
+                playerAffected->pPlayerBuffs[CHARACTER_BUFF_INTELLIGENCE].Apply(pParty->GetPlayingTime() + buffDuration, PLAYER_SKILL_MASTERY_MASTER,
                         potionStrength * 3, 0, 0);
                 break;
 
             case ITEM_POTION_PERSONALITY_BOOST:
                 // mastery was NONE
-                playerAffected->pPlayerBuffs[PLAYER_BUFF_PERSONALITY].Apply(pParty->GetPlayingTime() + buffDuration, PLAYER_SKILL_MASTERY_MASTER,
+                playerAffected->pPlayerBuffs[CHARACTER_BUFF_PERSONALITY].Apply(pParty->GetPlayingTime() + buffDuration, PLAYER_SKILL_MASTERY_MASTER,
                         potionStrength * 3, 0, 0);
                 break;
 
             case ITEM_POTION_ENDURANCE_BOOST:
                 // mastery was NONE
-                playerAffected->pPlayerBuffs[PLAYER_BUFF_ENDURANCE].Apply(pParty->GetPlayingTime() + buffDuration, PLAYER_SKILL_MASTERY_MASTER,
+                playerAffected->pPlayerBuffs[CHARACTER_BUFF_ENDURANCE].Apply(pParty->GetPlayingTime() + buffDuration, PLAYER_SKILL_MASTERY_MASTER,
                         potionStrength * 3, 0, 0);
                 break;
 
             case ITEM_POTION_SPEED_BOOST:
                 // mastery was NONE
-                playerAffected->pPlayerBuffs[PLAYER_BUFF_SPEED].Apply(pParty->GetPlayingTime() + buffDuration, PLAYER_SKILL_MASTERY_MASTER,
+                playerAffected->pPlayerBuffs[CHARACTER_BUFF_SPEED].Apply(pParty->GetPlayingTime() + buffDuration, PLAYER_SKILL_MASTERY_MASTER,
                         potionStrength * 3, 0, 0);
                 break;
 
             case ITEM_POTION_ACCURACY_BOOST:
                 // mastery was NONE
-                playerAffected->pPlayerBuffs[PLAYER_BUFF_ACCURACY].Apply(pParty->GetPlayingTime() + buffDuration, PLAYER_SKILL_MASTERY_MASTER,
+                playerAffected->pPlayerBuffs[CHARACTER_BUFF_ACCURACY].Apply(pParty->GetPlayingTime() + buffDuration, PLAYER_SKILL_MASTERY_MASTER,
                         potionStrength * 3, 0, 0);
                 break;
 
@@ -3718,43 +3718,43 @@ void Player::useItem(int targetCharacter, bool isPortraitClick) {
 
             case ITEM_POTION_LUCK_BOOST:
                 // mastery was NONE
-                playerAffected->pPlayerBuffs[PLAYER_BUFF_LUCK].Apply(pParty->GetPlayingTime() + buffDuration, PLAYER_SKILL_MASTERY_MASTER,
+                playerAffected->pPlayerBuffs[CHARACTER_BUFF_LUCK].Apply(pParty->GetPlayingTime() + buffDuration, PLAYER_SKILL_MASTERY_MASTER,
                         potionStrength * 3, 0, 0);
                 break;
 
             case ITEM_POTION_FIRE_RESISTANCE:
                 // mastery was NONE
-                playerAffected->pPlayerBuffs[PLAYER_BUFF_RESIST_FIRE].Apply(pParty->GetPlayingTime() + buffDuration, PLAYER_SKILL_MASTERY_MASTER,
+                playerAffected->pPlayerBuffs[CHARACTER_BUFF_RESIST_FIRE].Apply(pParty->GetPlayingTime() + buffDuration, PLAYER_SKILL_MASTERY_MASTER,
                         potionStrength * 3, 0, 0);
                 break;
 
             case ITEM_POTION_AIR_RESISTANCE:
                 // mastery was NONE
-                playerAffected->pPlayerBuffs[PLAYER_BUFF_RESIST_AIR].Apply(pParty->GetPlayingTime() + buffDuration, PLAYER_SKILL_MASTERY_MASTER,
+                playerAffected->pPlayerBuffs[CHARACTER_BUFF_RESIST_AIR].Apply(pParty->GetPlayingTime() + buffDuration, PLAYER_SKILL_MASTERY_MASTER,
                         potionStrength * 3, 0, 0);
                 break;
 
             case ITEM_POTION_WATER_RESISTANCE:
                 // mastery was NONE
-                playerAffected->pPlayerBuffs[PLAYER_BUFF_RESIST_WATER].Apply(pParty->GetPlayingTime() + buffDuration, PLAYER_SKILL_MASTERY_MASTER,
+                playerAffected->pPlayerBuffs[CHARACTER_BUFF_RESIST_WATER].Apply(pParty->GetPlayingTime() + buffDuration, PLAYER_SKILL_MASTERY_MASTER,
                         potionStrength * 3, 0, 0);
                 break;
 
             case ITEM_POTION_EARTH_RESISTANCE:
                 // mastery was NONE
-                playerAffected->pPlayerBuffs[PLAYER_BUFF_RESIST_EARTH].Apply(pParty->GetPlayingTime() + buffDuration, PLAYER_SKILL_MASTERY_MASTER,
+                playerAffected->pPlayerBuffs[CHARACTER_BUFF_RESIST_EARTH].Apply(pParty->GetPlayingTime() + buffDuration, PLAYER_SKILL_MASTERY_MASTER,
                         potionStrength * 3, 0, 0);
                 break;
 
             case ITEM_POTION_MIND_RESISTANCE:
                 // mastery was NONE
-                playerAffected->pPlayerBuffs[PLAYER_BUFF_RESIST_MIND].Apply(pParty->GetPlayingTime() + buffDuration, PLAYER_SKILL_MASTERY_MASTER,
+                playerAffected->pPlayerBuffs[CHARACTER_BUFF_RESIST_MIND].Apply(pParty->GetPlayingTime() + buffDuration, PLAYER_SKILL_MASTERY_MASTER,
                         potionStrength * 3, 0, 0);
                 break;
 
             case ITEM_POTION_BODY_RESISTANCE:
                 // mastery was NONE
-                playerAffected->pPlayerBuffs[PLAYER_BUFF_RESIST_BODY].Apply(pParty->GetPlayingTime() + buffDuration, PLAYER_SKILL_MASTERY_MASTER,
+                playerAffected->pPlayerBuffs[CHARACTER_BUFF_RESIST_BODY].Apply(pParty->GetPlayingTime() + buffDuration, PLAYER_SKILL_MASTERY_MASTER,
                         potionStrength * 3, 0, 0);
                 break;
 
@@ -3821,7 +3821,7 @@ void Player::useItem(int targetCharacter, bool isPortraitClick) {
                 return;
         }
         if (pParty->pPickedItem.uItemID != ITEM_POTION_CATALYST) {
-            playerAffected->playReaction(SPEECH_DrinkPotion);
+            playerAffected->playReaction(SPEECH_DRINK_POTION);
         }
         pAudioPlayer->playUISound(SOUND_drink);
         if (pGUIWindow_CurrentMenu && pGUIWindow_CurrentMenu->eWindowType != WINDOW_null) {
@@ -3890,11 +3890,11 @@ void Player::useItem(int targetCharacter, bool isPortraitClick) {
 
         if (requiredMastery > val.mastery() || val.level() == 0) {
             GameUI_SetStatusBar(LSTR_FMT_DONT_HAVE_SKILL_TO_LEAN_S, pParty->pPickedItem.GetDisplayName().c_str());
-            playerAffected->playReaction(SPEECH_CantLearnSpell);
+            playerAffected->playReaction(SPEECH_CANT_LEARN_SPELL);
             return;
         }
         playerAffected->spellbook.bHaveSpell[bookSpellId - SPELL_FIRST_REGULAR] = 1;
-        playerAffected->playReaction(SPEECH_LearnSpell);
+        playerAffected->playReaction(SPEECH_LEARN_SPELL);
 
         // if (pGUIWindow_CurrentMenu && pGUIWindow_CurrentMenu->eWindowType != WINDOW_null) {
         //     if (!v73) { // v73 is always 0 at this point
@@ -3923,7 +3923,7 @@ void Player::useItem(int targetCharacter, bool isPortraitClick) {
     if (pParty->pPickedItem.isMessageScroll()) {
         if (playerAffected->CanAct()) {
             CreateMsgScrollWindow(pParty->pPickedItem.uItemID);
-            playerAffected->playReaction(SPEECH_ReadScroll);
+            playerAffected->playReaction(SPEECH_READ_SCROLL);
             return;
         }
 
@@ -4021,7 +4021,7 @@ void Player::useItem(int targetCharacter, bool isPortraitClick) {
             GameUI_SetStatusBar(status);
 
             spell_fx_renderer->SetPlayerBuffAnim(SPELL_QUEST_COMPLETED, targetCharacter);
-            playerAffected->playReaction(SPEECH_QuestGot);
+            playerAffected->playReaction(SPEECH_QUEST_GOT);
             pAudioPlayer->playUISound(SOUND_chimes);
             if (pParty->uCurrentDayOfMonth == 6 || pParty->uCurrentDayOfMonth == 20) {
                 playerAffected->SetCondition(CONDITION_ERADICATED, 0);
@@ -4519,7 +4519,7 @@ void Player::SetVariable(VariableType var_type, signed int var_value) {
 
     switch (var_type) {
         case VAR_Sex:
-            this->uSex = (PLAYER_SEX)var_value;
+            this->uSex = (CHARACTER_SEX)var_value;
             PlayAwardSound_Anim();
             return;
         case VAR_Class:
@@ -4584,7 +4584,7 @@ void Player::SetVariable(VariableType var_type, signed int var_value) {
         case VAR_Award:
             if (!this->_achievedAwardsBits[var_value] && !pAwards[var_value].pText.empty()) {
                 PlayAwardSound_Anim();
-                this->playReaction(SPEECH_AwardGot);
+                this->playReaction(SPEECH_AWARD_GOT);
             }
             this->_achievedAwardsBits.set(var_value);
             return;
@@ -4597,7 +4597,7 @@ void Player::SetVariable(VariableType var_type, signed int var_value) {
                 bFlashQuestBook = true;
                 spell_fx_renderer->SetPlayerBuffAnim(BECOME_MAGIC_GUILD_MEMBER, GetPlayerIndex());
                 PlayAwardSound();
-                this->playReaction(SPEECH_QuestGot);
+                this->playReaction(SPEECH_QUEST_GOT);
             }
             pParty->_questBits.set(var_value);
             return;
@@ -4631,149 +4631,149 @@ void Player::SetVariable(VariableType var_type, signed int var_value) {
             return;
         case VAR_BaseMight:
             this->uMight = (uint8_t)var_value;
-            PlayAwardSound_Anim_Face(SPEECH_StatBaseInc);
+            PlayAwardSound_Anim_Face(SPEECH_STAT_BASE_INC);
             return;
         case VAR_BaseIntellect:
             this->uIntelligence = (uint8_t)var_value;
-            PlayAwardSound_Anim_Face(SPEECH_StatBaseInc);
+            PlayAwardSound_Anim_Face(SPEECH_STAT_BASE_INC);
             return;
         case VAR_BasePersonality:
             this->uPersonality = (uint8_t)var_value;
-            PlayAwardSound_Anim_Face(SPEECH_StatBaseInc);
+            PlayAwardSound_Anim_Face(SPEECH_STAT_BASE_INC);
             return;
         case VAR_BaseEndurance:
             this->uEndurance = (uint8_t)var_value;
-            PlayAwardSound_Anim_Face(SPEECH_StatBaseInc);
+            PlayAwardSound_Anim_Face(SPEECH_STAT_BASE_INC);
             return;
         case VAR_BaseSpeed:
             this->uSpeed = (uint8_t)var_value;
-            PlayAwardSound_Anim_Face(SPEECH_StatBaseInc);
+            PlayAwardSound_Anim_Face(SPEECH_STAT_BASE_INC);
             return;
         case VAR_BaseAccuracy:
             this->uAccuracy = (uint8_t)var_value;
-            PlayAwardSound_Anim_Face(SPEECH_StatBaseInc);
+            PlayAwardSound_Anim_Face(SPEECH_STAT_BASE_INC);
             return;
         case VAR_BaseLuck:
             this->uLuck = (uint8_t)var_value;
-            PlayAwardSound_Anim_Face(SPEECH_StatBaseInc);
+            PlayAwardSound_Anim_Face(SPEECH_STAT_BASE_INC);
             return;
         case VAR_MightBonus:
         case VAR_ActualMight:
             this->uMightBonus = (uint8_t)var_value;
-            PlayAwardSound_Anim_Face(SPEECH_StatBonusInc);
+            PlayAwardSound_Anim_Face(SPEECH_STAT_BONUS_INC);
             return;
         case VAR_IntellectBonus:
         case VAR_ActualIntellect:
             this->uIntelligenceBonus = (uint8_t)var_value;
-            PlayAwardSound_Anim_Face(SPEECH_StatBonusInc);
+            PlayAwardSound_Anim_Face(SPEECH_STAT_BONUS_INC);
             return;
         case VAR_PersonalityBonus:
         case VAR_ActualPersonality:
             this->uPersonalityBonus = (uint8_t)var_value;
-            PlayAwardSound_Anim_Face(SPEECH_StatBonusInc);
+            PlayAwardSound_Anim_Face(SPEECH_STAT_BONUS_INC);
             return;
         case VAR_EnduranceBonus:
         case VAR_ActualEndurance:
             this->uEnduranceBonus = (uint8_t)var_value;
-            PlayAwardSound_Anim_Face(SPEECH_StatBonusInc);
+            PlayAwardSound_Anim_Face(SPEECH_STAT_BONUS_INC);
             return;
         case VAR_SpeedBonus:
         case VAR_ActualSpeed:
             this->uSpeedBonus = (uint8_t)var_value;
-            PlayAwardSound_Anim_Face(SPEECH_StatBonusInc);
+            PlayAwardSound_Anim_Face(SPEECH_STAT_BONUS_INC);
             return;
         case VAR_AccuracyBonus:
         case VAR_ActualAccuracy:
             this->uAccuracyBonus = (uint8_t)var_value;
-            PlayAwardSound_Anim_Face(SPEECH_StatBaseInc);
+            PlayAwardSound_Anim_Face(SPEECH_STAT_BASE_INC);
             return;
         case VAR_LuckBonus:
         case VAR_ActualLuck:
             this->uLuckBonus = (uint8_t)var_value;
-            PlayAwardSound_Anim_Face(SPEECH_StatBaseInc);
+            PlayAwardSound_Anim_Face(SPEECH_STAT_BASE_INC);
             return;
         case VAR_FireResistance:
             this->sResFireBase = (uint8_t)var_value;
-            PlayAwardSound_Anim_Face(SPEECH_StatBaseInc);
+            PlayAwardSound_Anim_Face(SPEECH_STAT_BASE_INC);
             return;
         case VAR_AirResistance:
             this->sResAirBase = (uint8_t)var_value;
-            PlayAwardSound_Anim_Face(SPEECH_StatBaseInc);
+            PlayAwardSound_Anim_Face(SPEECH_STAT_BASE_INC);
             return;
         case VAR_WaterResistance:
             this->sResWaterBase = (uint8_t)var_value;
-            PlayAwardSound_Anim_Face(SPEECH_StatBaseInc);
+            PlayAwardSound_Anim_Face(SPEECH_STAT_BASE_INC);
             return;
         case VAR_EarthResistance:
             this->sResEarthBase = (uint8_t)var_value;
-            PlayAwardSound_Anim_Face(SPEECH_StatBaseInc);
+            PlayAwardSound_Anim_Face(SPEECH_STAT_BASE_INC);
             return;
         case VAR_SpiritResistance:
             this->sResSpiritBase = (uint8_t)var_value;
-            PlayAwardSound_Anim_Face(SPEECH_StatBaseInc);
+            PlayAwardSound_Anim_Face(SPEECH_STAT_BASE_INC);
             return;
         case VAR_MindResistance:
             this->sResMindBase = (uint8_t)var_value;
-            PlayAwardSound_Anim_Face(SPEECH_StatBaseInc);
+            PlayAwardSound_Anim_Face(SPEECH_STAT_BASE_INC);
             return;
         case VAR_BodyResistance:
             this->sResBodyBase = (uint8_t)var_value;
-            PlayAwardSound_Anim_Face(SPEECH_StatBaseInc);
+            PlayAwardSound_Anim_Face(SPEECH_STAT_BASE_INC);
             return;
         case VAR_LightResistance:
             this->sResLightBase = (uint8_t)var_value;
-            PlayAwardSound_Anim_Face(SPEECH_StatBaseInc);
+            PlayAwardSound_Anim_Face(SPEECH_STAT_BASE_INC);
             return;
         case VAR_DarkResistance:
             this->sResDarkBase = (uint8_t)var_value;
-            PlayAwardSound_Anim_Face(SPEECH_StatBaseInc);
+            PlayAwardSound_Anim_Face(SPEECH_STAT_BASE_INC);
             return;
         case VAR_MagicResistance:
             this->sResMagicBase = (uint8_t)var_value;
-            PlayAwardSound_Anim_Face(SPEECH_StatBaseInc);
+            PlayAwardSound_Anim_Face(SPEECH_STAT_BASE_INC);
             return;
         case VAR_FireResistanceBonus:
             this->sResFireBonus = (uint8_t)var_value;
-            PlayAwardSound_Anim_Face(SPEECH_StatBonusInc);
+            PlayAwardSound_Anim_Face(SPEECH_STAT_BONUS_INC);
             return;
         case VAR_AirResistanceBonus:
             this->sResAirBonus = (uint8_t)var_value;
-            PlayAwardSound_Anim_Face(SPEECH_StatBonusInc);
+            PlayAwardSound_Anim_Face(SPEECH_STAT_BONUS_INC);
             return;
         case VAR_WaterResistanceBonus:
             this->sResWaterBonus = (uint8_t)var_value;
-            PlayAwardSound_Anim_Face(SPEECH_StatBonusInc);
+            PlayAwardSound_Anim_Face(SPEECH_STAT_BONUS_INC);
             return;
         case VAR_EarthResistanceBonus:
             this->sResEarthBonus = (uint8_t)var_value;
-            PlayAwardSound_Anim_Face(SPEECH_StatBonusInc);
+            PlayAwardSound_Anim_Face(SPEECH_STAT_BONUS_INC);
             return;
         case VAR_SpiritResistanceBonus:
             this->sResSpiritBonus = (uint8_t)var_value;
-            PlayAwardSound_Anim_Face(SPEECH_StatBonusInc);
+            PlayAwardSound_Anim_Face(SPEECH_STAT_BONUS_INC);
             return;
         case VAR_MindResistanceBonus:
             this->sResMindBonus = (uint8_t)var_value;
-            PlayAwardSound_Anim_Face(SPEECH_StatBonusInc);
+            PlayAwardSound_Anim_Face(SPEECH_STAT_BONUS_INC);
             return;
         case VAR_BodyResistanceBonus:
             this->sResBodyBonus = (uint8_t)var_value;
-            PlayAwardSound_Anim_Face(SPEECH_StatBonusInc);
+            PlayAwardSound_Anim_Face(SPEECH_STAT_BONUS_INC);
             return;
         case VAR_LightResistanceBonus:
             this->sResLightBonus = (uint8_t)var_value;
-            PlayAwardSound_Anim_Face(SPEECH_StatBonusInc);
+            PlayAwardSound_Anim_Face(SPEECH_STAT_BONUS_INC);
             return;
         case VAR_DarkResistanceBonus:
             this->sResDarkBonus = (uint8_t)var_value;
-            PlayAwardSound_Anim_Face(SPEECH_StatBonusInc);
+            PlayAwardSound_Anim_Face(SPEECH_STAT_BONUS_INC);
             return;
         case VAR_PhysicalResistanceBonus:
             Error("Physical res. bonus not used");
             return;
         case VAR_MagicResistanceBonus:
             this->sResMagicBonus = (uint8_t)var_value;
-            PlayAwardSound_Anim_Face(SPEECH_StatBonusInc);
+            PlayAwardSound_Anim_Face(SPEECH_STAT_BONUS_INC);
             return;
         case VAR_Cursed:
             this->SetCondition(CONDITION_CURSED, 1);
@@ -4851,7 +4851,7 @@ void Player::SetVariable(VariableType var_type, signed int var_value) {
             assert(var_value > 0);
             if (!pParty->_autonoteBits[var_value] && !pAutonoteTxt[var_value].pText.empty()) {
                 spell_fx_renderer->SetPlayerBuffAnim(BECOME_MAGIC_GUILD_MEMBER, GetPlayerIndex());
-                this->playReaction(SPEECH_AwardGot);
+                this->playReaction(SPEECH_AWARD_GOT);
                 bFlashAutonotesBook = true;
                 autonoteBookDisplayType = pAutonoteTxt[var_value].eType;  // dword_72371C[2 * a3];
             }
@@ -5081,7 +5081,7 @@ void Player::PlayAwardSound_Anim() {
 }
 
 //----- (new function) --------------------------------------------------------
-void Player::PlayAwardSound_Anim_Face(PlayerSpeech speech) {
+void Player::PlayAwardSound_Anim_Face(CharacterSpeech speech) {
     this->playReaction(speech);
     PlayAwardSound_Anim();
 }
@@ -5153,7 +5153,7 @@ void Player::AddVariable(VariableType var_type, signed int val) {
             PlayAwardSound();
             return;
         case VAR_Sex:
-            this->uSex = (PLAYER_SEX)val;
+            this->uSex = (CHARACTER_SEX)val;
             PlayAwardSound_Anim97();
             return;
         case VAR_Class:
@@ -5195,7 +5195,7 @@ void Player::AddVariable(VariableType var_type, signed int val) {
             return;
         case VAR_Award:
             if (this->_achievedAwardsBits[val] && !pAwards[val].pText.empty()) {
-                PlayAwardSound_Anim97_Face(SPEECH_AwardGot);
+                PlayAwardSound_Anim97_Face(SPEECH_AWARD_GOT);
             }
             this->_achievedAwardsBits.set(val);
             return;
@@ -5206,7 +5206,7 @@ void Player::AddVariable(VariableType var_type, signed int val) {
         case VAR_QBits_QuestsDone:
             if (!pParty->_questBits[val] && !pQuestTable[val].empty()) {
                 bFlashQuestBook = true;
-                PlayAwardSound_Anim97_Face(SPEECH_QuestGot);
+                PlayAwardSound_Anim97_Face(SPEECH_QUEST_GOT);
             }
             pParty->_questBits.set(val);
             return;
@@ -5227,31 +5227,31 @@ void Player::AddVariable(VariableType var_type, signed int val) {
             return;
         case VAR_BaseMight:
             this->uMight = std::min(this->uMight + val, 255);
-            PlayAwardSound_Anim97_Face(SPEECH_StatBaseInc);
+            PlayAwardSound_Anim97_Face(SPEECH_STAT_BASE_INC);
             return;
         case VAR_BaseIntellect:
             this->uIntelligence = std::min(this->uIntelligence + val, 255);
-            PlayAwardSound_Anim97_Face(SPEECH_StatBaseInc);
+            PlayAwardSound_Anim97_Face(SPEECH_STAT_BASE_INC);
             return;
         case VAR_BasePersonality:
             this->uPersonality = std::min(this->uPersonality + val, 255);
-            PlayAwardSound_Anim97_Face(SPEECH_StatBaseInc);
+            PlayAwardSound_Anim97_Face(SPEECH_STAT_BASE_INC);
             return;
         case VAR_BaseEndurance:
             this->uEndurance = std::min(this->uEndurance + val, 255);
-            PlayAwardSound_Anim97_Face(SPEECH_StatBaseInc);
+            PlayAwardSound_Anim97_Face(SPEECH_STAT_BASE_INC);
             return;
         case VAR_BaseSpeed:
             this->uSpeed = std::min(this->uSpeed + val, 255);
-            PlayAwardSound_Anim97_Face(SPEECH_StatBaseInc);
+            PlayAwardSound_Anim97_Face(SPEECH_STAT_BASE_INC);
             return;
         case VAR_BaseAccuracy:
             this->uAccuracy = std::min(this->uAccuracy + val, 255);
-            PlayAwardSound_Anim97_Face(SPEECH_StatBaseInc);
+            PlayAwardSound_Anim97_Face(SPEECH_STAT_BASE_INC);
             return;
         case VAR_BaseLuck:
             this->uLuck = std::min(this->uLuck + val, 255);
-            PlayAwardSound_Anim97_Face(SPEECH_StatBaseInc);
+            PlayAwardSound_Anim97_Face(SPEECH_STAT_BASE_INC);
             return;
         case VAR_FixedFood:
             pParty->GiveFood(val);
@@ -5261,117 +5261,117 @@ void Player::AddVariable(VariableType var_type, signed int val) {
         case VAR_MightBonus:
         case VAR_ActualMight:
             this->uMightBonus = std::min(this->uMightBonus + val, 255);
-            PlayAwardSound_Anim97_Face(SPEECH_StatBonusInc);
+            PlayAwardSound_Anim97_Face(SPEECH_STAT_BONUS_INC);
             return;
         case VAR_IntellectBonus:
         case VAR_ActualIntellect:
             this->uIntelligenceBonus = std::min(this->uIntelligenceBonus + val, 255);
-            PlayAwardSound_Anim97_Face(SPEECH_StatBonusInc);
+            PlayAwardSound_Anim97_Face(SPEECH_STAT_BONUS_INC);
             return;
         case VAR_PersonalityBonus:
         case VAR_ActualPersonality:
             this->uPersonalityBonus = std::min(this->uPersonalityBonus + val, 255);
-            PlayAwardSound_Anim97_Face(SPEECH_StatBonusInc);
+            PlayAwardSound_Anim97_Face(SPEECH_STAT_BONUS_INC);
             return;
         case VAR_EnduranceBonus:
         case VAR_ActualEndurance:
             this->uEnduranceBonus = std::min(this->uEnduranceBonus + val, 255);
-            PlayAwardSound_Anim97_Face(SPEECH_StatBonusInc);
+            PlayAwardSound_Anim97_Face(SPEECH_STAT_BONUS_INC);
             return;
         case VAR_SpeedBonus:
         case VAR_ActualSpeed:
             this->uSpeedBonus = std::min(this->uSpeedBonus + val, 255);
-            PlayAwardSound_Anim97_Face(SPEECH_StatBonusInc);
+            PlayAwardSound_Anim97_Face(SPEECH_STAT_BONUS_INC);
             return;
         case VAR_AccuracyBonus:
         case VAR_ActualAccuracy:
             this->uAccuracyBonus = std::min(this->uAccuracyBonus + val, 255);
-            PlayAwardSound_Anim97_Face(SPEECH_StatBonusInc);
+            PlayAwardSound_Anim97_Face(SPEECH_STAT_BONUS_INC);
             return;
         case VAR_LuckBonus:
         case VAR_ActualLuck:
             this->uLuckBonus = std::min(this->uLuckBonus + val, 255);
-            PlayAwardSound_Anim97_Face(SPEECH_StatBonusInc);
+            PlayAwardSound_Anim97_Face(SPEECH_STAT_BONUS_INC);
             return;
         case VAR_FireResistance:
             this->sResFireBase = std::min(this->sResFireBase + val, 255);
-            PlayAwardSound_Anim97_Face(SPEECH_StatBaseInc);
+            PlayAwardSound_Anim97_Face(SPEECH_STAT_BASE_INC);
             return;
         case VAR_AirResistance:
             this->sResAirBase = std::min(this->sResAirBase + val, 255);
-            PlayAwardSound_Anim97_Face(SPEECH_StatBaseInc);
+            PlayAwardSound_Anim97_Face(SPEECH_STAT_BASE_INC);
             return;
         case VAR_WaterResistance:
             this->sResWaterBase = std::min(this->sResWaterBase + val, 255);
-            PlayAwardSound_Anim97_Face(SPEECH_StatBaseInc);
+            PlayAwardSound_Anim97_Face(SPEECH_STAT_BASE_INC);
             return;
         case VAR_EarthResistance:
             this->sResEarthBase = std::min(this->sResEarthBase + val, 255);
-            PlayAwardSound_Anim97_Face(SPEECH_StatBaseInc);
+            PlayAwardSound_Anim97_Face(SPEECH_STAT_BASE_INC);
             return;
         case VAR_SpiritResistance:
             this->sResSpiritBase = std::min(this->sResSpiritBase + val, 255);
-            PlayAwardSound_Anim97_Face(SPEECH_StatBaseInc);
+            PlayAwardSound_Anim97_Face(SPEECH_STAT_BASE_INC);
             return;
         case VAR_MindResistance:
             this->sResMindBase = std::min(this->sResMindBase + val, 255);
-            PlayAwardSound_Anim97_Face(SPEECH_StatBaseInc);
+            PlayAwardSound_Anim97_Face(SPEECH_STAT_BASE_INC);
             return;
         case VAR_BodyResistance:
             this->sResBodyBase = std::min(this->sResBodyBase + val, 255);
-            PlayAwardSound_Anim97_Face(SPEECH_StatBaseInc);
+            PlayAwardSound_Anim97_Face(SPEECH_STAT_BASE_INC);
             return;
         case VAR_LightResistance:
             this->sResLightBase = std::min(this->sResLightBase + val, 255);
-            PlayAwardSound_Anim97_Face(SPEECH_StatBaseInc);
+            PlayAwardSound_Anim97_Face(SPEECH_STAT_BASE_INC);
             return;
         case VAR_DarkResistance:
             this->sResDarkBase = std::min(this->sResDarkBase + val, 255);
-            PlayAwardSound_Anim97_Face(SPEECH_StatBaseInc);
+            PlayAwardSound_Anim97_Face(SPEECH_STAT_BASE_INC);
             return;
         case VAR_MagicResistance:
             this->sResMagicBase = std::min(this->sResMagicBase + val, 255);
-            PlayAwardSound_Anim97_Face(SPEECH_StatBaseInc);
+            PlayAwardSound_Anim97_Face(SPEECH_STAT_BASE_INC);
             return;
         case VAR_FireResistanceBonus:
             this->sResFireBonus = std::min(this->sResFireBonus + val, 255);
-            PlayAwardSound_Anim97_Face(SPEECH_StatBonusInc);
+            PlayAwardSound_Anim97_Face(SPEECH_STAT_BONUS_INC);
             return;
         case VAR_AirResistanceBonus:
             this->sResAirBonus = std::min(this->sResAirBonus + val, 255);
-            PlayAwardSound_Anim97_Face(SPEECH_StatBonusInc);
+            PlayAwardSound_Anim97_Face(SPEECH_STAT_BONUS_INC);
             return;
         case VAR_WaterResistanceBonus:
             this->sResWaterBonus = std::min(this->sResWaterBonus + val, 255);
-            PlayAwardSound_Anim97_Face(SPEECH_StatBonusInc);
+            PlayAwardSound_Anim97_Face(SPEECH_STAT_BONUS_INC);
             return;
         case VAR_EarthResistanceBonus:
             this->sResEarthBonus = std::min(this->sResEarthBonus + val, 255);
-            PlayAwardSound_Anim97_Face(SPEECH_StatBonusInc);
+            PlayAwardSound_Anim97_Face(SPEECH_STAT_BONUS_INC);
             return;
         case VAR_SpiritResistanceBonus:
             this->sResSpiritBonus = std::min(this->sResSpiritBonus + val, 255);
-            PlayAwardSound_Anim97_Face(SPEECH_StatBonusInc);
+            PlayAwardSound_Anim97_Face(SPEECH_STAT_BONUS_INC);
             return;
         case VAR_MindResistanceBonus:
             this->sResMindBonus = std::min(this->sResMindBonus + val, 255);
-            PlayAwardSound_Anim97_Face(SPEECH_StatBonusInc);
+            PlayAwardSound_Anim97_Face(SPEECH_STAT_BONUS_INC);
             return;
         case VAR_BodyResistanceBonus:
             this->sResBodyBonus = std::min(this->sResBodyBonus + val, 255);
-            PlayAwardSound_Anim97_Face(SPEECH_StatBonusInc);
+            PlayAwardSound_Anim97_Face(SPEECH_STAT_BONUS_INC);
             return;
         case VAR_LightResistanceBonus:
             this->sResLightBonus = std::min(this->sResLightBonus + val, 255);
-            PlayAwardSound_Anim97_Face(SPEECH_StatBonusInc);
+            PlayAwardSound_Anim97_Face(SPEECH_STAT_BONUS_INC);
             return;
         case VAR_DarkResistanceBonus:
             this->sResDarkBonus = std::min(this->sResDarkBonus + val, 255);
-            PlayAwardSound_Anim97_Face(SPEECH_StatBonusInc);
+            PlayAwardSound_Anim97_Face(SPEECH_STAT_BONUS_INC);
             return;
         case VAR_MagicResistanceBonus:
             this->sResMagicBonus = std::min(this->sResMagicBonus + val, 255);
-            PlayAwardSound_Anim97_Face(SPEECH_StatBonusInc);
+            PlayAwardSound_Anim97_Face(SPEECH_STAT_BONUS_INC);
             return;
         case VAR_Cursed:
             this->SetCondition(CONDITION_CURSED, 1);
@@ -5448,7 +5448,7 @@ void Player::AddVariable(VariableType var_type, signed int val) {
         case VAR_AutoNotes:
             assert(val > 0);
             if (!pParty->_autonoteBits[val] && !pAutonoteTxt[val].pText.empty()) {
-                this->playReaction(SPEECH_AwardGot);
+                this->playReaction(SPEECH_AWARD_GOT);
                 bFlashAutonotesBook = true;
                 autonoteBookDisplayType = pAutonoteTxt[val].eType;
                 spell_fx_renderer->SetPlayerBuffAnim(SPELL_QUEST_COMPLETED, GetPlayerIndex());
@@ -5657,7 +5657,7 @@ void Player::PlayAwardSound_Anim97() {
 }
 
 //----- (new function) --------------------------------------------------------
-void Player::PlayAwardSound_Anim97_Face(PlayerSpeech speech) {
+void Player::PlayAwardSound_Anim97_Face(CharacterSpeech speech) {
     this->playReaction(speech);
     PlayAwardSound_Anim97();
 }
@@ -5718,7 +5718,7 @@ void Player::SubtractVariable(VariableType VarNum, signed int pValue) {
             return;
         case VAR_QBits_QuestsDone:
             pParty->_questBits.reset(pValue);
-            this->playReaction(SPEECH_AwardGot);
+            this->playReaction(SPEECH_AWARD_GOT);
             return;
         case VAR_PlayerItemInHands:
             for (ITEM_SLOT i : allItemSlots()) {
@@ -5776,145 +5776,145 @@ void Player::SubtractVariable(VariableType VarNum, signed int pValue) {
         case VAR_MightBonus:
         case VAR_ActualMight:
             this->uMightBonus -= (uint16_t)pValue;
-            this->PlayAwardSound_Anim98_Face(SPEECH_StatBonusInc);
+            this->PlayAwardSound_Anim98_Face(SPEECH_STAT_BONUS_INC);
             return;
         case VAR_IntellectBonus:
         case VAR_ActualIntellect:
             this->uIntelligenceBonus -= (uint16_t)pValue;
-            this->PlayAwardSound_Anim98_Face(SPEECH_StatBonusInc);
+            this->PlayAwardSound_Anim98_Face(SPEECH_STAT_BONUS_INC);
             return;
         case VAR_PersonalityBonus:
         case VAR_ActualPersonality:
             this->uPersonalityBonus -= (uint16_t)pValue;
-            this->PlayAwardSound_Anim98_Face(SPEECH_StatBonusInc);
+            this->PlayAwardSound_Anim98_Face(SPEECH_STAT_BONUS_INC);
             return;
         case VAR_EnduranceBonus:
         case VAR_ActualEndurance:
             this->uEnduranceBonus -= (uint16_t)pValue;
-            this->PlayAwardSound_Anim98_Face(SPEECH_StatBonusInc);
+            this->PlayAwardSound_Anim98_Face(SPEECH_STAT_BONUS_INC);
             return;
         case VAR_SpeedBonus:
         case VAR_ActualSpeed:
             this->uSpeedBonus -= (uint16_t)pValue;
-            this->PlayAwardSound_Anim98_Face(SPEECH_StatBonusInc);
+            this->PlayAwardSound_Anim98_Face(SPEECH_STAT_BONUS_INC);
             return;
         case VAR_AccuracyBonus:
         case VAR_ActualAccuracy:
             this->uAccuracyBonus -= (uint16_t)pValue;
-            this->PlayAwardSound_Anim98_Face(SPEECH_StatBonusInc);
+            this->PlayAwardSound_Anim98_Face(SPEECH_STAT_BONUS_INC);
             return;
         case VAR_LuckBonus:
         case VAR_ActualLuck:
             this->uLuckBonus -= (uint16_t)pValue;
-            this->PlayAwardSound_Anim98_Face(SPEECH_StatBonusInc);
+            this->PlayAwardSound_Anim98_Face(SPEECH_STAT_BONUS_INC);
             return;
         case VAR_BaseMight:
             this->uMight -= (uint16_t)pValue;
-            this->PlayAwardSound_Anim98_Face(SPEECH_StatBaseInc);
+            this->PlayAwardSound_Anim98_Face(SPEECH_STAT_BASE_INC);
             return;
         case VAR_BaseIntellect:
             this->uIntelligence -= (uint16_t)pValue;
-            this->PlayAwardSound_Anim98_Face(SPEECH_StatBaseInc);
+            this->PlayAwardSound_Anim98_Face(SPEECH_STAT_BASE_INC);
             return;
         case VAR_BasePersonality:
             this->uPersonality -= (uint16_t)pValue;
-            this->PlayAwardSound_Anim98_Face(SPEECH_StatBaseInc);
+            this->PlayAwardSound_Anim98_Face(SPEECH_STAT_BASE_INC);
             return;
         case VAR_BaseEndurance:
             this->uEndurance -= (uint16_t)pValue;
-            this->PlayAwardSound_Anim98_Face(SPEECH_StatBaseInc);
+            this->PlayAwardSound_Anim98_Face(SPEECH_STAT_BASE_INC);
             return;
         case VAR_BaseSpeed:
             this->uSpeed -= (uint16_t)pValue;
-            this->PlayAwardSound_Anim98_Face(SPEECH_StatBaseInc);
+            this->PlayAwardSound_Anim98_Face(SPEECH_STAT_BASE_INC);
             return;
         case VAR_BaseAccuracy:
             this->uAccuracy -= (uint16_t)pValue;
-            this->PlayAwardSound_Anim98_Face(SPEECH_StatBaseInc);
+            this->PlayAwardSound_Anim98_Face(SPEECH_STAT_BASE_INC);
             return;
         case VAR_BaseLuck:
             this->uLuck -= (uint16_t)pValue;
-            this->PlayAwardSound_Anim98_Face(SPEECH_StatBaseInc);
+            this->PlayAwardSound_Anim98_Face(SPEECH_STAT_BASE_INC);
             return;
         case VAR_FireResistance:
             this->sResFireBase -= (int16_t)pValue;
-            this->PlayAwardSound_Anim98_Face(SPEECH_StatBaseInc);
+            this->PlayAwardSound_Anim98_Face(SPEECH_STAT_BASE_INC);
             return;
         case VAR_AirResistance:
             this->sResAirBase -= (int16_t)pValue;
-            this->PlayAwardSound_Anim98_Face(SPEECH_StatBaseInc);
+            this->PlayAwardSound_Anim98_Face(SPEECH_STAT_BASE_INC);
             return;
         case VAR_WaterResistance:
             this->sResWaterBase -= (int16_t)pValue;
-            this->PlayAwardSound_Anim98_Face(SPEECH_StatBaseInc);
+            this->PlayAwardSound_Anim98_Face(SPEECH_STAT_BASE_INC);
             return;
         case VAR_EarthResistance:
             this->sResEarthBase -= (int16_t)pValue;
-            this->PlayAwardSound_Anim98_Face(SPEECH_StatBaseInc);
+            this->PlayAwardSound_Anim98_Face(SPEECH_STAT_BASE_INC);
             return;
         case VAR_SpiritResistance:
             this->sResSpiritBase -= (int16_t)pValue;
-            this->PlayAwardSound_Anim98_Face(SPEECH_StatBaseInc);
+            this->PlayAwardSound_Anim98_Face(SPEECH_STAT_BASE_INC);
             return;
         case VAR_MindResistance:
             this->sResMindBase -= (int16_t)pValue;
-            this->PlayAwardSound_Anim98_Face(SPEECH_StatBaseInc);
+            this->PlayAwardSound_Anim98_Face(SPEECH_STAT_BASE_INC);
             return;
         case VAR_BodyResistance:
             this->sResBodyBase -= (int16_t)pValue;
-            this->PlayAwardSound_Anim98_Face(SPEECH_StatBaseInc);
+            this->PlayAwardSound_Anim98_Face(SPEECH_STAT_BASE_INC);
             return;
         case VAR_LightResistance:
             this->sResLightBase -= (int16_t)pValue;
-            this->PlayAwardSound_Anim98_Face(SPEECH_StatBaseInc);
+            this->PlayAwardSound_Anim98_Face(SPEECH_STAT_BASE_INC);
             return;
         case VAR_DarkResistance:
             this->sResDarkBase -= (int16_t)pValue;
-            this->PlayAwardSound_Anim98_Face(SPEECH_StatBaseInc);
+            this->PlayAwardSound_Anim98_Face(SPEECH_STAT_BASE_INC);
             return;
         case VAR_MagicResistance:
             this->sResMagicBase -= (int16_t)pValue;
-            this->PlayAwardSound_Anim98_Face(SPEECH_StatBaseInc);
+            this->PlayAwardSound_Anim98_Face(SPEECH_STAT_BASE_INC);
             return;
         case VAR_FireResistanceBonus:
             this->sResFireBonus -= (int16_t)pValue;
-            this->PlayAwardSound_Anim98_Face(SPEECH_StatBaseInc);
+            this->PlayAwardSound_Anim98_Face(SPEECH_STAT_BASE_INC);
             return;
         case VAR_AirResistanceBonus:
             this->sResAirBonus -= (int16_t)pValue;
-            this->PlayAwardSound_Anim98_Face(SPEECH_StatBaseInc);
+            this->PlayAwardSound_Anim98_Face(SPEECH_STAT_BASE_INC);
             return;
         case VAR_WaterResistanceBonus:
             this->sResWaterBonus -= (int16_t)pValue;
-            this->PlayAwardSound_Anim98_Face(SPEECH_StatBonusInc);
+            this->PlayAwardSound_Anim98_Face(SPEECH_STAT_BONUS_INC);
             return;
         case VAR_EarthResistanceBonus:
             this->sResEarthBonus -= (int16_t)pValue;
-            this->PlayAwardSound_Anim98_Face(SPEECH_StatBonusInc);
+            this->PlayAwardSound_Anim98_Face(SPEECH_STAT_BONUS_INC);
             return;
         case VAR_SpiritResistanceBonus:
             this->sResSpiritBonus -= (int16_t)pValue;
-            this->PlayAwardSound_Anim98_Face(SPEECH_StatBonusInc);
+            this->PlayAwardSound_Anim98_Face(SPEECH_STAT_BONUS_INC);
             return;
         case VAR_MindResistanceBonus:
             this->sResMindBonus -= (int16_t)pValue;
-            this->PlayAwardSound_Anim98_Face(SPEECH_StatBonusInc);
+            this->PlayAwardSound_Anim98_Face(SPEECH_STAT_BONUS_INC);
             return;
         case VAR_BodyResistanceBonus:
             this->sResBodyBonus -= (int16_t)pValue;
-            this->PlayAwardSound_Anim98_Face(SPEECH_StatBonusInc);
+            this->PlayAwardSound_Anim98_Face(SPEECH_STAT_BONUS_INC);
             return;
         case VAR_LightResistanceBonus:
             this->sResLightBonus -= (int16_t)pValue;
-            this->PlayAwardSound_Anim98_Face(SPEECH_StatBonusInc);
+            this->PlayAwardSound_Anim98_Face(SPEECH_STAT_BONUS_INC);
             return;
         case VAR_DarkResistanceBonus:
             this->sResDarkBonus -= (int16_t)pValue;
-            this->PlayAwardSound_Anim98_Face(SPEECH_StatBonusInc);
+            this->PlayAwardSound_Anim98_Face(SPEECH_STAT_BONUS_INC);
             return;
         case VAR_MagicResistanceBonus:
             this->sResMagicBonus -= (int16_t)pValue;
-            this->PlayAwardSound_Anim98_Face(SPEECH_StatBonusInc);
+            this->PlayAwardSound_Anim98_Face(SPEECH_STAT_BONUS_INC);
             return;
         case VAR_StaffSkill:
             SubtractSkillByEvent(PLAYER_SKILL_STAFF, pValue);
@@ -6220,7 +6220,7 @@ void Player::PlayAwardSound_Anim98() {
 }
 
 //----- (new function) --------------------------------------------------------
-void Player::PlayAwardSound_Anim98_Face(PlayerSpeech speech) {
+void Player::PlayAwardSound_Anim98_Face(CharacterSpeech speech) {
     this->playReaction(speech);
     PlayAwardSound_Anim98();
 }
@@ -6321,7 +6321,7 @@ bool Player::hasItem(ITEM_TYPE uItemID, bool checkHeldItem) {
 //----- (0043EDB9) --------------------------------------------------------
 bool ShouldLoadTexturesForRaceAndGender(unsigned int _this) {
     CHARACTER_RACE race;  // edi@2
-    PLAYER_SEX sex;       // eax@2
+    CHARACTER_SEX sex;       // eax@2
 
     for (Player &player : pParty->pPlayers) {
         race = player.GetRace();
@@ -6403,7 +6403,7 @@ void DamagePlayerFromMonster(unsigned int uObjID, ABILITY_INDEX dmgSource, Vec3i
         if (playerPtr->getActualSkillValue(PLAYER_SKILL_UNARMED).mastery() >= PLAYER_SKILL_MASTERY_GRANDMASTER &&
             grng->random(100) < playerPtr->getActualSkillValue(PLAYER_SKILL_UNARMED).level()) {
             GameUI_SetStatusBar(LSTR_FMT_S_EVADES_DAMAGE, playerPtr->name.c_str());
-            playerPtr->playReaction(SPEECH_AvoidDamage);
+            playerPtr->playReaction(SPEECH_AVOID_DAMAGE);
             return;
         }
 
@@ -6488,7 +6488,7 @@ void DamagePlayerFromMonster(unsigned int uObjID, ABILITY_INDEX dmgSource, Vec3i
         dmgToReceive = playerPtr->receiveDamage(dmgToReceive, (DAMAGE_TYPE)damageType);
 
         // pain reflection back on attacker
-        if (playerPtr->pPlayerBuffs[PLAYER_BUFF_PAIN_REFLECTION].Active()) {
+        if (playerPtr->pPlayerBuffs[CHARACTER_BUFF_PAIN_REFLECTION].Active()) {
             AIState actorState = actorPtr->uAIState;
             if (actorState != Dying && actorState != Dead) {
                 int reflectedDamage = actorPtr->CalcMagicalDamageToActor((DAMAGE_TYPE)damageType, dmgToReceive);
@@ -6508,9 +6508,9 @@ void DamagePlayerFromMonster(unsigned int uObjID, ABILITY_INDEX dmgSource, Vec3i
                             pParty->GivePartyExp(pMonsterStats->pInfos[actorPtr->pMonsterInfo.uID].uExp);
 
                         // kill speech
-                        PlayerSpeech speechToPlay = SPEECH_AttackHit;
+                        CharacterSpeech speechToPlay = SPEECH_ATTACK_HIT;
                         if (vrng->random(100) < 20) {
-                            speechToPlay = actorPtr->pMonsterInfo.uHP >= 100 ? SPEECH_KillStrongEnemy : SPEECH_KillWeakEnemy;
+                            speechToPlay = actorPtr->pMonsterInfo.uHP >= 100 ? SPEECH_KILL_STRONG_ENEMY : SPEECH_KILL_WEAK_ENEMY;
                         }
                         playerPtr->playReaction(speechToPlay);
                     }
@@ -6537,7 +6537,7 @@ void DamagePlayerFromMonster(unsigned int uObjID, ABILITY_INDEX dmgSource, Vec3i
         if (yellThreshold > playerPtr->health &&
             yellThreshold <= healthBeforeRecvdDamage &&
             playerPtr->health > 0) {
-            playerPtr->playReaction(SPEECH_BadlyHurt);
+            playerPtr->playReaction(SPEECH_BADLY_HURT);
         }
         return;
     } else {  // is an item
@@ -6577,7 +6577,7 @@ void DamagePlayerFromMonster(unsigned int uObjID, ABILITY_INDEX dmgSource, Vec3i
             }
             playerPtr->receiveDamage(damage, (DAMAGE_TYPE)damagetype);
             if (uActorType == OBJECT_Player) {
-                pParty->setDelayedReaction(SPEECH_DamagedParty, uActorID);
+                pParty->setDelayedReaction(SPEECH_DAMAGED_PARTY, uActorID);
             }
             return;
         } else if (uActorType == OBJECT_Actor) {  // missile fired by actor
@@ -6592,7 +6592,7 @@ void DamagePlayerFromMonster(unsigned int uObjID, ABILITY_INDEX dmgSource, Vec3i
                 if (playerPtr->getActualSkillValue(PLAYER_SKILL_UNARMED).mastery() >= PLAYER_SKILL_MASTERY_GRANDMASTER &&
                     grng->random(100) < playerPtr->getActualSkillValue(PLAYER_SKILL_UNARMED).level()) {
                     GameUI_SetStatusBar(LSTR_FMT_S_EVADES_DAMAGE, playerPtr->name.c_str());
-                    playerPtr->playReaction(SPEECH_AvoidDamage);
+                    playerPtr->playReaction(SPEECH_AVOID_DAMAGE);
                     return;
                 }
             } else if (spriteType == SPRITE_BLASTER_PROJECTILE ||
@@ -6607,7 +6607,7 @@ void DamagePlayerFromMonster(unsigned int uObjID, ABILITY_INDEX dmgSource, Vec3i
                        spriteType == SPRITE_PROJECTILE_DARKBOLT) {
                 // reduce missle damage with skills / armour
                 if (!actorPtr->ActorHitOrMiss(playerPtr)) return;
-                if (playerPtr->pPlayerBuffs[PLAYER_BUFF_SHIELD].Active()) dmgToReceive >>= 1;
+                if (playerPtr->pPlayerBuffs[CHARACTER_BUFF_SHIELD].Active()) dmgToReceive >>= 1;
                 if (playerPtr->HasEnchantedItemEquipped(ITEM_ENCHANTMENT_OF_SHIELDING)) dmgToReceive >>= 1;
                 if (playerPtr->HasEnchantedItemEquipped(ITEM_ENCHANTMENT_OF_STORM)) dmgToReceive >>= 1;
                 if (playerPtr->HasItemEquipped(ITEM_SLOT_ARMOUR) &&
@@ -6659,7 +6659,7 @@ void DamagePlayerFromMonster(unsigned int uObjID, ABILITY_INDEX dmgSource, Vec3i
             }
 
             int reflectedDmg = playerPtr->receiveDamage(dmgToReceive, (DAMAGE_TYPE)damageType);
-            if (playerPtr->pPlayerBuffs[PLAYER_BUFF_PAIN_REFLECTION].Active()) {
+            if (playerPtr->pPlayerBuffs[CHARACTER_BUFF_PAIN_REFLECTION].Active()) {
                 AIState actorState = actorPtr->uAIState;
                 if (actorState != Dying && actorState != Dead) {
                     recvdMagicDmg = actorPtr->CalcMagicalDamageToActor((DAMAGE_TYPE)damageType, reflectedDmg);
@@ -6677,9 +6677,9 @@ void DamagePlayerFromMonster(unsigned int uObjID, ABILITY_INDEX dmgSource, Vec3i
                             if (actorPtr->pMonsterInfo.uExp)
                                 pParty->GivePartyExp(pMonsterStats->pInfos[actorPtr->pMonsterInfo.uID].uExp);
 
-                            PlayerSpeech speechToPlay = SPEECH_AttackHit;
+                            CharacterSpeech speechToPlay = SPEECH_ATTACK_HIT;
                             if (vrng->random(100) < 20) {
-                                speechToPlay = actorPtr->pMonsterInfo.uHP >= 100 ? SPEECH_KillStrongEnemy : SPEECH_KillWeakEnemy;
+                                speechToPlay = actorPtr->pMonsterInfo.uHP >= 100 ? SPEECH_KILL_STRONG_ENEMY : SPEECH_KILL_WEAK_ENEMY;
                             }
                             playerPtr->playReaction(speechToPlay);
                         }
@@ -6722,7 +6722,7 @@ void DamagePlayerFromMonster(unsigned int uObjID, ABILITY_INDEX dmgSource, Vec3i
 
             playerPtr->receiveDamage(damage, (DAMAGE_TYPE)damagetype);
             if (uActorType == OBJECT_Player) {
-                pParty->setDelayedReaction(SPEECH_DamagedParty, uActorID);
+                pParty->setDelayedReaction(SPEECH_DAMAGED_PARTY, uActorID);
             }
 
             return;
@@ -7200,7 +7200,7 @@ void Player::_42ECB5_PlayerAttacksActor() {
         return;
     } else if (shooting_bow) {
         skill = PLAYER_SKILL_BOW;
-        player->playReaction(SPEECH_Shoot);
+        player->playReaction(SPEECH_SHOOT);
     } else if (shotting_laser) {
         skill = PLAYER_SKILL_BLASTER;
     } else {
@@ -7302,7 +7302,7 @@ void Player::setSkillValue(PLAYER_SKILL_TYPE skill, const CombinedSkillValue &va
     pActiveSkills[skill] = value;
 }
 
-void Player::playReaction(PlayerSpeech speech, int a3) {
+void Player::playReaction(CharacterSpeech speech, int a3) {
     int speechCount = 0;
     int expressionCount = 0;
     int pickedSoundID = 0;

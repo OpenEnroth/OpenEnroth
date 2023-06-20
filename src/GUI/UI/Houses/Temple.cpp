@@ -64,7 +64,7 @@ void GUIWindow_Temple::healDialogue() {
     pParty->activeCharacter().health = pParty->activeCharacter().GetMaxHealth();
     pParty->activeCharacter().mana = pParty->activeCharacter().GetMaxMana();
     pAudioPlayer->playExclusiveSound(SOUND_heal);
-    pParty->activeCharacter().playReaction(SPEECH_TempleHeal);
+    pParty->activeCharacter().playReaction(SPEECH_TEMPLE_HEAL);
     pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 1, 0);
 }
 
@@ -97,7 +97,7 @@ void GUIWindow_Temple::donateDialogue() {
             }
         }
         _templeSpellCounter[pParty->activeCharacterIndex() - 1]++;
-        pParty->activeCharacter().playReaction(SPEECH_TempleDonate);
+        pParty->activeCharacter().playReaction(SPEECH_TEMPLE_DONATE);
         GameUI_SetStatusBar(LSTR_THANK_YOU);
     } else {
         GameUI_SetStatusBar(LSTR_NOT_ENOUGH_GOLD);

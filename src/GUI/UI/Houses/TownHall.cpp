@@ -90,7 +90,7 @@ void GUIWindow_TownHall::payFineDialogue() {
                 pParty->TakeGold(sum);
                 pParty->TakeFine(sum);
                 if (pParty->hasActiveCharacter())
-                    pParty->activeCharacter().playReaction(SPEECH_BankDeposit);
+                    pParty->activeCharacter().playReaction(SPEECH_BANK_DEPOSIT);
             }
         }
     }

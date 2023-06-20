@@ -180,7 +180,7 @@ void KeyboardInputHandler::GenerateGameplayActions() {
         case InputAction::Yell:
             if (current_screen_type == CURRENT_SCREEN::SCREEN_GAME && pParty->hasActiveCharacter()) {
                 pParty->yell();
-                pParty->activeCharacter().playReaction(SPEECH_Yell);
+                pParty->activeCharacter().playReaction(SPEECH_YELL);
             }
             break;
 

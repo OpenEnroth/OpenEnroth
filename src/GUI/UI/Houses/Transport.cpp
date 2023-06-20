@@ -179,11 +179,11 @@ void GUIWindow_Transport::transportDialogue() {
         pParty->TakeGold(pPrice);
         playHouseSound(houseId(), HOUSE_SOUND_TRANSPORT_TRAVEL);
 
-        PlayerSpeech pSpeech;
+        CharacterSpeech pSpeech;
         if (isBoat(houseId())) {
-            pSpeech = SPEECH_TravelBoat;
+            pSpeech = SPEECH_TRAVEL_BOAT;
         } else {
-            pSpeech = SPEECH_TravelHorse;
+            pSpeech = SPEECH_TRAVEL_HORSE;
         }
 
         restAndHeal(GameTime::FromDays(getTravelTimeTransportDays(transportRoutes[houseId()][choice_id])));

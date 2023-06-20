@@ -1823,7 +1823,7 @@ void OnPaperdollLeftClick() {
             if (shieldequip) {
                 // cant use spear in one hand till master
                 if (pParty->activeCharacter().getActualSkillValue(PLAYER_SKILL_SPEAR).mastery() < PLAYER_SKILL_MASTERY_MASTER) {
-                    pParty->activeCharacter().playReaction(SPEECH_CantEquip);
+                    pParty->activeCharacter().playReaction(SPEECH_CANT_EQUIP);
 
                     return;
                 }
@@ -1835,14 +1835,14 @@ void OnPaperdollLeftClick() {
                 pParty->activeCharacter().pInventoryItemList[mainhandequip - 1].GetPlayerSkillType() == PLAYER_SKILL_SPEAR) {
                 // cant use spear in one hand till master
                 if (pParty->activeCharacter().getActualSkillValue(PLAYER_SKILL_SPEAR).mastery() < PLAYER_SKILL_MASTERY_MASTER) {
-                    pParty->activeCharacter().playReaction(SPEECH_CantEquip);
+                    pParty->activeCharacter().playReaction(SPEECH_CANT_EQUIP);
                     return;
                 }
             }
         }
 
         if (!pParty->activeCharacter().CanEquip_RaceAndAlignmentCheck(pickeditem)) {  // special item checks
-            pParty->activeCharacter().playReaction(SPEECH_CantEquip);
+            pParty->activeCharacter().playReaction(SPEECH_CANT_EQUIP);
             return;
         }
 
@@ -1863,7 +1863,7 @@ void OnPaperdollLeftClick() {
             case EQUIP_AMULET:
 
                 if (!pParty->activeCharacter().HasSkill(pSkillType)) {  // hasnt got the skill to use that
-                    pParty->activeCharacter().playReaction(SPEECH_CantEquip);
+                    pParty->activeCharacter().playReaction(SPEECH_CANT_EQUIP);
                     return;
                 }
 
@@ -1962,7 +1962,7 @@ void OnPaperdollLeftClick() {
                     return;
                 }
                 if (!pParty->activeCharacter().HasSkill(pSkillType)) {  // нет навыка
-                    pParty->activeCharacter().playReaction(SPEECH_CantEquip);
+                    pParty->activeCharacter().playReaction(SPEECH_CANT_EQUIP);
                     return;
                 }
                 if (shieldequip) {  // смена щита щитом
@@ -2010,7 +2010,7 @@ void OnPaperdollLeftClick() {
                     return;
                 }
                 if (!pParty->activeCharacter().HasSkill(pSkillType)) {
-                    pParty->activeCharacter().playReaction(SPEECH_CantEquip);
+                    pParty->activeCharacter().playReaction(SPEECH_CANT_EQUIP);
                     return;
                 }
                 v50 = ITEM_NULL;
@@ -2077,7 +2077,7 @@ void OnPaperdollLeftClick() {
                     return;
                 }
                 if (!pParty->activeCharacter().HasSkill(pSkillType)) {
-                    pParty->activeCharacter().playReaction(SPEECH_CantEquip);
+                    pParty->activeCharacter().playReaction(SPEECH_CANT_EQUIP);
                     return;
                 }
                 if (mainhandequip) {  // взять двуручный меч когда нет

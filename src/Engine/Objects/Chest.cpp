@@ -127,7 +127,7 @@ bool Chest::open(int uChestID, int objectPid) {
             pSpellObject.explosionTraps();
             chest->uFlags &= ~CHEST_TRAPPED;
             if (pParty->hasActiveCharacter() && !OpenedTelekinesis) {
-                pParty->setDelayedReaction(SPEECH_TrapExploded, pParty->activeCharacterIndex() - 1);
+                pParty->setDelayedReaction(SPEECH_TRAP_EXPLODED, pParty->activeCharacterIndex() - 1);
             }
             OpenedTelekinesis = false;
             return false;
@@ -138,7 +138,7 @@ bool Chest::open(int uChestID, int objectPid) {
     pAudioPlayer->playUISound(SOUND_openchest0101);
     if (flag_shout == true) {
         if (!OpenedTelekinesis) {
-            pParty->activeCharacter().playReaction(SPEECH_TrapDisarmed);
+            pParty->activeCharacter().playReaction(SPEECH_TRAP_DISARMED);
         }
     }
     OpenedTelekinesis = false;
@@ -307,7 +307,7 @@ int Chest::PutItemInChest(int position, ItemGen *put_item, int uChestID) {
 
         if (test_pos == max_size) {  // limits check no room
             if (pParty->hasActiveCharacter()) {
-                pParty->activeCharacter().playReaction(SPEECH_NoRoom);
+                pParty->activeCharacter().playReaction(SPEECH_NO_ROOM);
             }
             return 0;
         }
@@ -529,7 +529,7 @@ void Chest::GrabItem(bool all) {  // new fucntion to grab items from chest using
             } else {  // no room so set as holding item
                 pParty->setHoldingItem(&chestitem);
                 RemoveItemAtChestIndex(loop);
-                pParty->activeCharacter().playReaction(SPEECH_NoRoom);
+                pParty->activeCharacter().playReaction(SPEECH_NO_ROOM);
                 break;
             }
         }

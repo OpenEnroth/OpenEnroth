@@ -257,7 +257,7 @@ struct Player {
     int GetSkillBonus(CHARACTER_ATTRIBUTE_TYPE a2) const;
     CHARACTER_RACE GetRace() const;
     std::string GetRaceName() const;
-    PLAYER_SEX GetSexByVoice() const;
+    CHARACTER_SEX GetSexByVoice() const;
     void SetInitialStats();
     void SetSexByVoice();
     void Reset(PLAYER_CLASS_TYPE classType);
@@ -312,7 +312,7 @@ struct Player {
     /**
      * @offset 0x4948B1
      */
-    void playReaction(PlayerSpeech speech, int a3 = 0);
+    void playReaction(CharacterSpeech speech, int a3 = 0);
 
     /**
      * @offset 0x494A25
@@ -352,12 +352,12 @@ struct Player {
     float GetArmorRecoveryMultiplierFromSkillLevel(PLAYER_SKILL_TYPE armour_skill_type, float param2, float param3, float param4, float param5) const;
     void SetSkillReaction();
     void PlayAwardSound_Anim();
-    void PlayAwardSound_Anim_Face(PlayerSpeech speech);
+    void PlayAwardSound_Anim_Face(CharacterSpeech speech);
     void PlayAwardSound_Anim97();
-    void PlayAwardSound_Anim97_Face(PlayerSpeech speech);
+    void PlayAwardSound_Anim97_Face(CharacterSpeech speech);
     void AddSkillByEvent(PLAYER_SKILL_TYPE, uint16_t addSkillValue);
     void PlayAwardSound_Anim98();
-    void PlayAwardSound_Anim98_Face(PlayerSpeech speech);
+    void PlayAwardSound_Anim98_Face(CharacterSpeech speech);
     void SubtractSkillByEvent(PLAYER_SKILL_TYPE skill, uint16_t subSkillValue);
 
     bool IsWeak() const;
@@ -452,7 +452,7 @@ struct Player {
     PlayerConditions conditions;
     uint64_t experience;
     std::string name;
-    PLAYER_SEX uSex;
+    CHARACTER_SEX uSex;
     PLAYER_CLASS_TYPE classType;
     uint8_t uCurrentFace;
     uint16_t uMight;

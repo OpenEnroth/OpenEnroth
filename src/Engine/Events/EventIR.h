@@ -26,7 +26,7 @@ class EventIR {
         HOUSE_ID house_id;
         int chest_id;
         CHARACTER_EXPRESSION_ID expr_id;
-        PlayerSpeech speech_id;
+        CharacterSpeech speech_id;
         int text_id;
         Season season;
         int event_id;

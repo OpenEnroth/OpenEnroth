@@ -335,7 +335,7 @@ bool enterHouse(HOUSE_ID uHouseID) {
 
         GameUI_SetStatusBar(LSTR_FMT_OPEN_TIME, uOpenTime, localization->GetAmPm(am_pm_flag_open), uCloseTime, localization->GetAmPm(am_pm_flag_close));
         if (pParty->hasActiveCharacter()) {
-            pParty->activeCharacter().playReaction(SPEECH_StoreClosed);
+            pParty->activeCharacter().playReaction(SPEECH_STORE_CLOSED);
         }
 
         return false;
@@ -1094,7 +1094,7 @@ void GUIWindow_House::learnSelectedSkill(PLAYER_SKILL_TYPE skill) {
                 pParty->TakeGold(pPrice);
                 _transactionPerformed = true;
                 pParty->activeCharacter().pActiveSkills[skill] = CombinedSkillValue::novice();
-                pParty->activeCharacter().playReaction(SPEECH_SkillLearned);
+                pParty->activeCharacter().playReaction(SPEECH_SKILL_LEARNED);
             }
         }
     }

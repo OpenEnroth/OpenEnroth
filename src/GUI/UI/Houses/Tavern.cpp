@@ -134,7 +134,7 @@ void GUIWindow_Tavern::buyFoodDialogue() {
     if ((double)pParty->GetFood() >= buildingTable[wData.val - 1].fPriceMultiplier) {
         GameUI_SetStatusBar(LSTR_RATIONS_FULL);
         if (pParty->hasActiveCharacter()) {
-            pParty->activeCharacter().playReaction(SPEECH_PacksFull);
+            pParty->activeCharacter().playReaction(SPEECH_PACKS_FULL);
         }
         pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 1, 0);
         return;

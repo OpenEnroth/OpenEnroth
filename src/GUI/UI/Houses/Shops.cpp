@@ -854,7 +854,7 @@ void GUIWindow_Shop::playHouseGoodbyeSpeech() {
         int id = pParty->getRandomActiveCharacterId(vrng.get());
 
         if (id != -1) {
-            pParty->setDelayedReaction(SPEECH_ShopRude, id);
+            pParty->setDelayedReaction(SPEECH_SHOP_RUDE, id);
             return;
         }
     }
@@ -895,11 +895,11 @@ void GUIWindow_Shop::houseScreenClick() {
                 _transactionPerformed = true;
                 pParty->activeCharacter().SalesProcess(invindex, pItemID - 1, wData.val);
                 render->ClearZBuffer();
-                pParty->activeCharacter().playReaction(SPEECH_ItemSold);
+                pParty->activeCharacter().playReaction(SPEECH_ITEM_SOLD);
                 return;
             }
 
-            pParty->activeCharacter().playReaction(SPEECH_WrongShop);
+            pParty->activeCharacter().playReaction(SPEECH_WRONG_SHOP);
             pAudioPlayer->playUISound(SOUND_error);
             break;
         }
@@ -925,7 +925,7 @@ void GUIWindow_Shop::houseScreenClick() {
                         _transactionPerformed = true;
                         pParty->TakeGold(uPriceItemService);
                         item.uAttributes |= ITEM_IDENTIFIED;
-                        pParty->activeCharacter().playReaction(SPEECH_ShopIdentify);
+                        pParty->activeCharacter().playReaction(SPEECH_SHOP_IDENTIFY);
                         GameUI_SetStatusBar(LSTR_DONE);
                         return;
                     }
@@ -936,11 +936,11 @@ void GUIWindow_Shop::houseScreenClick() {
                 }
 
                 pAudioPlayer->playUISound(SOUND_error);
-                pParty->activeCharacter().playReaction(SPEECH_WrongShop);
+                pParty->activeCharacter().playReaction(SPEECH_WRONG_SHOP);
                 return;
             }
 
-            pParty->activeCharacter().playReaction(SPEECH_AlreadyIdentified);
+            pParty->activeCharacter().playReaction(SPEECH_ALREADY_INDENTIFIED);
             break;
         }
 
@@ -965,7 +965,7 @@ void GUIWindow_Shop::houseScreenClick() {
                         _transactionPerformed = true;
                         pParty->TakeGold(uPriceItemService);
                         item.uAttributes = (item.uAttributes & ~ITEM_BROKEN) | ITEM_IDENTIFIED;
-                        pParty->activeCharacter().playReaction(SPEECH_ShopRepair);
+                        pParty->activeCharacter().playReaction(SPEECH_SHOP_REPAIR);
                         GameUI_SetStatusBar(LSTR_GOOD_AS_NEW);
                         return;
                     }
@@ -976,11 +976,11 @@ void GUIWindow_Shop::houseScreenClick() {
                 }
 
                 pAudioPlayer->playUISound(SOUND_error);
-                pParty->activeCharacter().playReaction(SPEECH_WrongShop);
+                pParty->activeCharacter().playReaction(SPEECH_WRONG_SHOP);
                 return;
             }
 
-            pParty->activeCharacter().playReaction(SPEECH_AlreadyIdentified);
+            pParty->activeCharacter().playReaction(SPEECH_ALREADY_INDENTIFIED);
             break;
         }
 
@@ -1109,10 +1109,10 @@ void GUIWindow_Shop::houseScreenClick() {
                 }
                 boughtItem->Reset();
                 render->ClearZBuffer();
-                pParty->activeCharacter().playReaction(SPEECH_ItemBuy);
+                pParty->activeCharacter().playReaction(SPEECH_ITEM_BUY);
                 return;
             } else {
-                pParty->activeCharacter().playReaction(SPEECH_NoRoom);
+                pParty->activeCharacter().playReaction(SPEECH_NO_ROOM);
                 GameUI_SetStatusBar(LSTR_INVENTORY_IS_FULL);
                 return;
             }

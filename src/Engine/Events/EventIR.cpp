@@ -1105,7 +1105,7 @@ EventIR EventIR::parse(const void *data, size_t maxSize) {
             break;
         case EVENT_CharacterAnimation:
             ir.who = (CharacterChoosePolicy)_evt->v5;
-            ir.data.speech_id = (PlayerSpeech)_evt->v6;
+            ir.data.speech_id = (CharacterSpeech)_evt->v6;
             break;
         case EVENT_SetActorItem:
             ir.data.npc_item_descr.id = EVT_DWORD(_evt->v5);
