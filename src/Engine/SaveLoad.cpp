@@ -159,7 +159,11 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld) {
 
     pParty->_viewYaw = pParty->_viewPrevYaw;
     pParty->_viewPitch = pParty->_viewPrevPitch;
-    currentLocationTime().last_visit = pParty->GetPlayingTime();
+    
+    // TODO(pskelton): savenewgame can cause us to get here without loaded level
+    // consider moving the autosave after level is loaded
+    if (uCurrentlyLoadedLevelType != LEVEL_NULL)
+        currentLocationTime().last_visit = pParty->GetPlayingTime();
 
     // saving - please wait
 
