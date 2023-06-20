@@ -205,7 +205,6 @@ class Actor {
     int id = -1; // Actor index in pActors array.
     std::string pActorName;
     int16_t sNPC_ID = 0;
-    int16_t field_22 = 0;
     ActorAttributes uAttributes = 0;
     int16_t sCurrentHP = 0;
     MonsterInfo pMonsterInfo;
@@ -227,8 +226,6 @@ class Actor {
     ActorAnimation uCurrentActionAnimation = ANIM_Standing;
     ITEM_TYPE uCarriedItemID = ITEM_NULL; // carried items are special items the
                                           // ncp carries (ie lute from bard)
-    char field_B6 = 0;
-    char field_B7 = 0;
     unsigned int uCurrentActionTime = 0;
     IndexedArray<uint16_t, ANIM_First, ANIM_Last> pSpriteIDs = {{}};
     std::array<uint16_t, 4> pSoundSampleIDs = {{}};  // 1 die     3 bored
@@ -240,7 +237,6 @@ class Actor {
     unsigned int uSummonerID = 0;
     unsigned int uLastCharacterIDToHit = 0;
     int dword_000334_unique_name = 0; // Index into pMonsterStats->pPlaceStrings for a unique monster name.
-    std::array<char, 12> field_338 = {{}};
     bool donebloodsplat{ false };
 };
 

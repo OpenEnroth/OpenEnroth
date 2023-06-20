@@ -1009,7 +1009,6 @@ void snapshot(const Actor &src, Actor_MM7 *dst) {
     snapshot(src.pActorName, &dst->pActorName);
 
     dst->sNPC_ID = src.sNPC_ID;
-    dst->field_22 = src.field_22;
     dst->uAttributes = std::to_underlying(src.uAttributes);
     dst->sCurrentHP = src.sCurrentHP;
 
@@ -1086,8 +1085,6 @@ void snapshot(const Actor &src, Actor_MM7 *dst) {
     dst->uAIState = std::to_underlying(src.uAIState);
     dst->uCurrentActionAnimation = std::to_underlying(src.uCurrentActionAnimation);
     dst->uCarriedItemID = std::to_underlying(src.uCarriedItemID);
-    dst->field_B6 = src.field_B6;
-    dst->field_B7 = src.field_B7;
     dst->uCurrentActionTime = src.uCurrentActionTime;
 
     snapshot(src.pSpriteIDs, &dst->pSpriteIDs);
@@ -1103,14 +1100,11 @@ void snapshot(const Actor &src, Actor_MM7 *dst) {
     dst->uSummonerID = src.uSummonerID;
     dst->uLastCharacterIDToHit = src.uLastCharacterIDToHit;
     dst->dword_000334_unique_name = src.dword_000334_unique_name;
-
-    snapshot(src.field_338, &dst->field_338);
 }
 
 void reconstruct(const Actor_MM7 &src, Actor *dst) {
     reconstruct(src.pActorName, &dst->pActorName);
     dst->sNPC_ID = src.sNPC_ID;
-    dst->field_22 = src.field_22;
     dst->uAttributes = ActorAttributes(src.uAttributes);
     dst->sCurrentHP = src.sCurrentHP;
 
@@ -1187,8 +1181,6 @@ void reconstruct(const Actor_MM7 &src, Actor *dst) {
     dst->uAIState = static_cast<AIState>(src.uAIState);
     dst->uCurrentActionAnimation = static_cast<ActorAnimation>(src.uCurrentActionAnimation);
     dst->uCarriedItemID = ITEM_TYPE(src.uCarriedItemID);
-    dst->field_B6 = src.field_B6;
-    dst->field_B7 = src.field_B7;
     dst->uCurrentActionTime = src.uCurrentActionTime;
 
     reconstruct(src.pSpriteIDs, &dst->pSpriteIDs);
@@ -1204,8 +1196,6 @@ void reconstruct(const Actor_MM7 &src, Actor *dst) {
     dst->uSummonerID = src.uSummonerID;
     dst->uLastCharacterIDToHit = src.uLastCharacterIDToHit;
     dst->dword_000334_unique_name = src.dword_000334_unique_name;
-
-    reconstruct(src.field_338, &dst->field_338);
 }
 
 void snapshot(const BLVDoor &src, BLVDoor_MM7 *dst) {
