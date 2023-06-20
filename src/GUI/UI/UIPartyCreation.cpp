@@ -795,6 +795,7 @@ bool PartyCreationUI_LoopInternal() {
     pGUIWindow_CurrentMenu->Release();
     pGUIWindow_CurrentMenu = nullptr;
 
+    // TODO(captainurist): drop this loop?
     memset(v20, 0, 32);
     for (int i = 0; i < 32; i++) {
         for (v8 = 0; v8 < 10; ++v8) {
@@ -809,7 +810,6 @@ bool PartyCreationUI_LoopInternal() {
                 } while (v20[v9]);
             }
         }
-        pParty->random_order_num_unused[i] = v9;
         v20[v9] = 1;
     }
 

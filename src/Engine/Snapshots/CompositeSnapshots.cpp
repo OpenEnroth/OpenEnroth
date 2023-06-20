@@ -353,7 +353,7 @@ void reconstruct(const OutdoorLocation_MM7 &src, OutdoorLocation *dst) {
     reconstruct(src.fileName, &dst->location_filename);
     reconstruct(src.desciption, &dst->location_file_description);
     reconstruct(src.skyTexture, &dst->sky_texture_filename);
-    // src.groundTileset is just dropped
+    // src.groundTilesetUnused is just dropped
     reconstruct(src.tileTypes, &dst->pTileTypes);
 
     dst->LoadTileGroupIds();
@@ -400,7 +400,7 @@ void deserialize(InputStream &src, OutdoorLocation_MM7 *dst) {
     deserialize(src, &dst->fileName);
     deserialize(src, &dst->desciption);
     deserialize(src, &dst->skyTexture);
-    deserialize(src, &dst->groundTileset);
+    deserialize(src, &dst->groundTilesetUnused);
     deserialize(src, &dst->tileTypes);
     deserialize(src, &dst->heightMap);
     deserialize(src, &dst->tileMap);

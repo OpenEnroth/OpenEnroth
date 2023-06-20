@@ -279,7 +279,7 @@ void reconstruct(const ItemGen_MM7 &src, ItemGen *dst) {
 void snapshot(const Party &src, Party_MM7 *dst) {
     memzero(dst);
 
-    dst->field_0 = src.field_0_set25_unused;
+    dst->field_0 = 25; // Vanilla set this to 25, so we're doing the same just in case.
     dst->partyHeight = src.uPartyHeight;
     dst->defaultPartyHeight = src.uDefaultPartyHeight;
     dst->eyeLevel = src.sEyelevel;
@@ -289,7 +289,6 @@ void snapshot(const Party &src, Party_MM7 *dst) {
     dst->walkSpeed = src.uWalkSpeed;
     dst->yawRotationSpeed = src._yawRotationSpeed;
     dst->jumpStrength = src.jump_strength;
-    dst->field_28 = src.field_28_set0_unused;
     dst->timePlayed = src.playing_time.value;
     dst->lastRegenerationTime = src.last_regenerated.value;
 
@@ -319,20 +318,15 @@ void snapshot(const Party &src, Party_MM7 *dst) {
     dst->viewPrevYaw = src._viewPrevYaw;
     dst->viewPrevPitch = src._viewPrevPitch;
     dst->prevEyeLevel = src.sPrevEyelevel;
-    dst->field_6E0 = src.field_6E0_set0_unused;
-    dst->field_6E4 = src.field_6E4_set0_unused;
     dst->fallSpeed = src.uFallSpeed;
-    dst->field_6EC = src.field_6EC_set0_unused;
-    dst->field_6F0 = src.sPartySavedFlightZ;
+    dst->savedFlightZ = src.sPartySavedFlightZ;
     dst->floorFacePid = src.floor_face_pid;
-    dst->walkSoundTimer = 0; // zero walking sound timer, in OE it was removed and it is little meaning saving it
     dst->waterLavaTimer = src._6FC_water_lava_timer;
     dst->fallStartZ = src.uFallStartZ;
     dst->flying = src.bFlying;
-    dst->field_708 = src.field_708_set15_unused;
+    dst->field_708 = 15; // Vanilla set this to 15, so we're doing the same just in case.
     dst->hirelingScrollPosition = src.hirelingScrollPosition;
     dst->field_70A = src.cNonHireFollowers;
-    dst->field_70B = src.field_70B_set0_unused;
     dst->currentYear = src.uCurrentYear;
     dst->currentMonth = src.uCurrentMonth;
     dst->currentMonthWeek = src.uCurrentMonthWeek;
@@ -341,15 +335,11 @@ void snapshot(const Party &src, Party_MM7 *dst) {
     dst->currentMinute = src.uCurrentMinute;
     dst->currentTimeSecond = src.uCurrentTimeSecond;
     dst->numFoodRations = src.GetFood();
-    dst->field_72C = src.field_72C_set0_unused;
-    dst->field_730 = src.field_730_set0_unused;
     dst->numGold = src.GetGold();
     dst->numGoldInBank = src.uNumGoldInBank;
     dst->numDeaths = src.uNumDeaths;
-    dst->field_740 = src.field_740_set0_unused;
     dst->numPrisonTerms = src.uNumPrisonTerms;
     dst->numBountiesCollected = src.uNumBountiesCollected;
-    dst->field_74C = src.field_74C_set0_unused;
 
     snapshot(src.monster_id_for_hunting, &dst->monsterIdForHunting);
     snapshot(src.monster_for_hunting_killed, &dst->monsterForHuntingKilled, convert<bool, int16_t>());
@@ -363,15 +353,11 @@ void snapshot(const Party &src, Party_MM7 *dst) {
     dst->numArenaWins = src.uNumArenaWins;
 
     snapshot(src.pIsArtifactFound, &dst->isArtifactFound);
-    snapshot(src.field_7d7_set0_unused, &dst->field_7d7);
     snapshot(src._autonoteBits, &dst->autonoteBits);
-    snapshot(src.field_818_set0_unused, &dst->field_818);
-    snapshot(src.random_order_num_unused, &dst->field_854);
 
     dst->numArcomageWins = src.uNumArcomageWins;
     dst->numArcomageLoses = src.uNumArcomageLoses;
     dst->turnBasedModeOn = src.bTurnBasedModeOn;
-    dst->field_880 = src.field_880_set0_unused;
     dst->flags2 = src.uFlags2;
 
     uint align = 0;
@@ -392,7 +378,6 @@ void snapshot(const Party &src, Party_MM7 *dst) {
     dst->specialItemsInShop0.fill({});
     snapshot(src.specialItemsInShops, &dst->specialItemsInShops);
     snapshot(src.spellBooksInGuilds, &dst->spellBooksInGuilds);
-    snapshot(src.field_1605C_set0_unused, &dst->field_1605C);
 
     snapshot(src.pHireling1Name, &dst->hireling1Name);
     snapshot(src.pHireling2Name, &dst->hireling2Name);
@@ -407,7 +392,6 @@ void snapshot(const Party &src, Party_MM7 *dst) {
 }
 
 void reconstruct(const Party_MM7 &src, Party *dst) {
-    dst->field_0_set25_unused = src.field_0;
     dst->uPartyHeight = src.partyHeight;
     dst->uDefaultPartyHeight = src.defaultPartyHeight;
     dst->sEyelevel = src.eyeLevel;
@@ -417,7 +401,6 @@ void reconstruct(const Party_MM7 &src, Party *dst) {
     dst->uWalkSpeed = src.walkSpeed;
     dst->_yawRotationSpeed = src.yawRotationSpeed;
     dst->jump_strength = src.jumpStrength;
-    dst->field_28_set0_unused = src.field_28;
     dst->playing_time.value = src.timePlayed;
     dst->last_regenerated.value = src.lastRegenerationTime;
 
@@ -440,21 +423,16 @@ void reconstruct(const Party_MM7 &src, Party *dst) {
     dst->_viewPrevYaw = src.viewPrevYaw;
     dst->_viewPrevPitch = src.viewPrevPitch;
     dst->sPrevEyelevel = src.prevEyeLevel;
-    dst->field_6E0_set0_unused = src.field_6E0;
-    dst->field_6E4_set0_unused = src.field_6E4;
     dst->uFallSpeed = src.fallSpeed;
-    dst->field_6EC_set0_unused = src.field_6EC;
-    dst->sPartySavedFlightZ = src.field_6F0;
+    dst->sPartySavedFlightZ = src.savedFlightZ;
     dst->floor_face_pid = src.floorFacePid;
     // Walking sound timer was removed from OE
     //dst->walk_sound_timer = src.walk_sound_timer;
     dst->_6FC_water_lava_timer = src.waterLavaTimer;
     dst->uFallStartZ = src.fallStartZ;
     dst->bFlying = src.flying;
-    dst->field_708_set15_unused = src.field_708;
     dst->hirelingScrollPosition = src.hirelingScrollPosition;
     dst->cNonHireFollowers = src.field_70A;
-    dst->field_70B_set0_unused = src.field_70B;
     dst->uCurrentYear = src.currentYear;
     dst->uCurrentMonth = src.currentMonth;
     dst->uCurrentMonthWeek = src.currentMonthWeek;
@@ -463,15 +441,11 @@ void reconstruct(const Party_MM7 &src, Party *dst) {
     dst->uCurrentMinute = src.currentMinute;
     dst->uCurrentTimeSecond = src.currentTimeSecond;
     dst->uNumFoodRations = src.numFoodRations;
-    dst->field_72C_set0_unused = src.field_72C;
-    dst->field_730_set0_unused = src.field_730;
     dst->uNumGold = src.numGold;
     dst->uNumGoldInBank = src.numGoldInBank;
     dst->uNumDeaths = src.numDeaths;
-    dst->field_740_set0_unused = src.field_740;
     dst->uNumPrisonTerms = src.numPrisonTerms;
     dst->uNumBountiesCollected = src.numBountiesCollected;
-    dst->field_74C_set0_unused = src.field_74C;
 
     reconstruct(src.monsterIdForHunting, &dst->monster_id_for_hunting);
     reconstruct(src.monsterForHuntingKilled, &dst->monster_for_hunting_killed, convert<int16_t, bool>());
@@ -485,15 +459,11 @@ void reconstruct(const Party_MM7 &src, Party *dst) {
     dst->uNumArenaWins = src.numArenaWins;
 
     reconstruct(src.isArtifactFound, &dst->pIsArtifactFound);
-    reconstruct(src.field_7d7, &dst->field_7d7_set0_unused);
     reconstruct(src.autonoteBits, &dst->_autonoteBits);
-    reconstruct(src.field_818, &dst->field_818_set0_unused);
-    reconstruct(src.field_854, &dst->random_order_num_unused);
 
     dst->uNumArcomageWins = src.numArcomageWins;
     dst->uNumArcomageLoses = src.numArcomageLoses;
     dst->bTurnBasedModeOn = src.turnBasedModeOn;
-    dst->field_880_set0_unused = src.field_880;
     dst->uFlags2 = src.flags2;
 
     switch (src.alignment) {
@@ -521,8 +491,6 @@ void reconstruct(const Party_MM7 &src, Party *dst) {
     reconstruct(src.standartItemsInShops, &dst->standartItemsInShops);
     reconstruct(src.specialItemsInShops, &dst->specialItemsInShops);
     reconstruct(src.spellBooksInGuilds, &dst->spellBooksInGuilds);
-
-    reconstruct(src.field_1605C, &dst->field_1605C_set0_unused);
 
     reconstruct(src.hireling1Name, &dst->pHireling1Name);
     reconstruct(src.hireling2Name, &dst->pHireling2Name);
@@ -1033,6 +1001,7 @@ void reconstruct(const MonsterDesc_MM7 &src, MonsterDesc *dst) {
 
 void snapshot(const ActorJob &src, ActorJob_MM7 *dst) {
     memzero(dst);
+
     dst->pos = src.vPos;
     dst->attributes = src.uAttributes;
     dst->action = src.uAction;
@@ -1693,6 +1662,8 @@ void reconstruct(const SoundInfo_MM7 &src, SoundInfo *dst) {
 }
 
 void snapshot(const LocationInfo &src, LocationInfo_MM7 *dst) {
+    memzero(dst);
+
     dst->respawnCount = src.respawnCount;
     dst->lastRespawnDay = src.lastRespawnDay;
     dst->reputation = src.reputation;

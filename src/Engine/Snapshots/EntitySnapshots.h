@@ -409,7 +409,7 @@ MM_DECLARE_MEMCOPY_SERIALIZABLE(PartyTimeStruct_MM7)
 
 
 struct Party_MM7 {
-    /* 00000 */ int32_t field_0;
+    /* 00000 */ int32_t field_0; // Was set to 25 in Party::Reset & Party::Zero, not used for anything.
     /* 00004 */ uint32_t partyHeight;
     /* 00008 */ uint32_t defaultPartyHeight;
     /* 0000C */ int32_t eyeLevel;
@@ -430,17 +430,17 @@ struct Party_MM7 {
     /* 006D4 */ int32_t viewPrevYaw;
     /* 006D8 */ int32_t viewPrevPitch;
     /* 006DC */ int32_t prevEyeLevel;
-    /* 006E0 */ int32_t field_6E0;
-    /* 006E4 */ int32_t field_6E4;
+    /* 006E0 */ int32_t field_6E0; // Party old x/y?
+    /* 006E4 */ int32_t field_6E4; // Party old x/y?
     /* 006E8 */ int32_t fallSpeed;
     /* 006EC */ int32_t field_6EC;
-    /* 006F0 */ int32_t field_6F0;
-    /* 006F4 */ int32_t floorFacePid;  // face we are standing at
-    /* 006F8 */ int32_t walkSoundTimer;
+    /* 006F0 */ int32_t savedFlightZ;
+    /* 006F4 */ int32_t floorFacePid; // face we are standing at
+    /* 006F8 */ int32_t walkSoundTimerUnused; // This was removed in OE and we're just saving 0 in this field.
     /* 006FC */ int32_t waterLavaTimer;
     /* 00700 */ int32_t fallStartZ;
     /* 00704 */ uint32_t flying;
-    /* 00708 */ char field_708;
+    /* 00708 */ char field_708; // Was set to 15 in Party::Reset & Party::Zero, not used for anything.
     /* 00709 */ uint8_t hirelingScrollPosition;
     /* 0070A */ char field_70A;
     /* 0070B */ char field_70B;
@@ -472,7 +472,9 @@ struct Party_MM7 {
     /* 007D7 */ std::array<char, 39> field_7d7;
     /* 007FE */ std::array<uint8_t, 26> autonoteBits;
     /* 00818 */ std::array<char, 60> field_818;
-    /* 00854 */ std::array<char, 32> field_854;
+    /* 00854 */ std::array<char, 32> randomNumbersUnused; // Array of random numbers, was filled during party creation
+                                                          // and not used for anything. Probably a remnant of the old
+                                                          // party creation code that randomized stats?
     /* 00874 */ int32_t numArcomageWins;
     /* 00878 */ int32_t numArcomageLoses;
     /* 0087C */ uint32_t turnBasedModeOn;

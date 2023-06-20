@@ -414,7 +414,6 @@ struct Party {
         }
     }
 
-    int field_0_set25_unused;
     int uPartyHeight;
     int uDefaultPartyHeight;
     int sEyelevel;
@@ -424,7 +423,6 @@ struct Party {
     int uWalkSpeed;
     int _yawRotationSpeed;  // deg/s
     int jump_strength; // jump strength, higher value => higher jumps, default 5.
-    int field_28_set0_unused;
     GameTime playing_time;  // uint64_t uTimePlayed;
     GameTime last_regenerated; // Timestamp when HP/MP regeneration was checked last time (using 5 minutes granularity)
     PartyTimeStruct PartyTimes;
@@ -435,20 +433,15 @@ struct Party {
     int _viewPrevYaw;
     int _viewPrevPitch;
     int sPrevEyelevel;
-    int field_6E0_set0_unused; // party old x/y ?
-    int field_6E4_set0_unused; // party old x/y ?
     int uFallSpeed; // party vertical speed, negative => falling, positive => jumping
-    int field_6EC_set0_unused;
     int sPartySavedFlightZ;  // this saves the Z position when flying without bob mods
     int floor_face_pid;  // face we are standing at
     SoundID currentWalkingSound; // previously was 'walk_sound_timer'
     int _6FC_water_lava_timer;
     int uFallStartZ;
     unsigned int bFlying;
-    char field_708_set15_unused;
     uint8_t hirelingScrollPosition;
     char cNonHireFollowers;  // number of non hireling party guests
-    char field_70B_set0_unused;
     unsigned int uCurrentYear;
     unsigned int uCurrentMonth;
     unsigned int uCurrentMonthWeek;
@@ -457,15 +450,11 @@ struct Party {
     unsigned int uCurrentMinute;
     unsigned int uCurrentTimeSecond;
     unsigned int uNumFoodRations;
-    int field_72C_set0_unused;
-    int field_730_set0_unused;
     unsigned int uNumGold;
     unsigned int uNumGoldInBank;
     unsigned int uNumDeaths;
-    int field_740_set0_unused;
     int uNumPrisonTerms;
     unsigned int uNumBountiesCollected;
-    int field_74C_set0_unused;
     IndexedArray<int16_t, HOUSE_FIRST_TOWNHALL, HOUSE_LAST_TOWNHALL> monster_id_for_hunting;
     IndexedArray<bool, HOUSE_FIRST_TOWNHALL, HOUSE_LAST_TOWNHALL> monster_for_hunting_killed;
     unsigned char days_played_without_rest;
@@ -474,14 +463,10 @@ struct Party {
     char field_7B5_in_arena_quest; // 0, DIALOGUE_ARENA_SELECT_PAGE..DIALOGUE_ARENA_SELECT_CHAMPION, or -1 for win
     std::array<char, 4> uNumArenaWins; // 0=page, 1=squire, 2=knight, 3=lord
     IndexedArray<bool, ITEM_FIRST_SPAWNABLE_ARTIFACT, ITEM_LAST_SPAWNABLE_ARTIFACT> pIsArtifactFound;  // 7ba
-    std::array<char, 39> field_7d7_set0_unused;
     IndexedBitset<1, 208> _autonoteBits;
-    std::array<char, 60> field_818_set0_unused;
-    std::array<char, 32> random_order_num_unused;
     int uNumArcomageWins;
     int uNumArcomageLoses;
     bool bTurnBasedModeOn;
-    int field_880_set0_unused;
     int uFlags2;
     PartyAlignment alignment;
     std::array<SpellBuff, 20> pPartyBuffs;
@@ -492,7 +477,6 @@ struct Party {
     IndexedArray<std::array<ItemGen, 12>, HOUSE_FIRST_SHOP, HOUSE_LAST_SHOP> standartItemsInShops;
     IndexedArray<std::array<ItemGen, 12>, HOUSE_FIRST_SHOP, HOUSE_LAST_SHOP> specialItemsInShops;
     IndexedArray<std::array<ItemGen, 12>, HOUSE_FIRST_MAGIC_GUILD, HOUSE_LAST_MAGIC_GUILD> spellBooksInGuilds;
-    std::array<char, 24> field_1605C_set0_unused;
     std::string pHireling1Name;
     std::string pHireling2Name;
     int armageddon_timer;

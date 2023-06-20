@@ -74,7 +74,6 @@ int Party::CountHirelings() {  // non hired followers
 // inlined
 //----- (mm6c::004858D0) --------------------------------------------------
 void Party::Zero() {
-    field_0_set25_unused = 25;
     uPartyHeight = uDefaultPartyHeight = engine->config->gameplay.PartyHeight.value();
     sEyelevel = uDefaultEyelevel = engine->config->gameplay.PartyEyeLevel.value();
     radius = 37;
@@ -82,7 +81,6 @@ void Party::Zero() {
     uWalkSpeed = engine->config->gameplay.PartyWalkSpeed.value();
     _yawRotationSpeed = 90;
     jump_strength = 5;
-    field_28_set0_unused = 0;
     playing_time = GameTime(0, 0, 0);
     last_regenerated = GameTime(0, 0, 0);
     PartyTimes.bountyHuntNextGenTime.fill(GameTime(0));
@@ -98,20 +96,15 @@ void Party::Zero() {
     _viewYaw = _viewPrevYaw = 0;
     _viewPitch = _viewPrevPitch = 0;
     sPrevEyelevel = 0;
-    field_6E0_set0_unused = 0;
-    field_6E4_set0_unused = 0;
     uFallSpeed = 0;
-    field_6EC_set0_unused = 0;
     sPartySavedFlightZ = 0;
     floor_face_pid = 0;
     currentWalkingSound = SOUND_Invalid;
     _6FC_water_lava_timer = 0;
     uFallStartZ = 0;
     bFlying = 0;
-    field_708_set15_unused = 15;
     hirelingScrollPosition = 0;
     cNonHireFollowers = 0;
-    field_70B_set0_unused = 0;
     uCurrentYear = 0;
     uCurrentMonth = 0;
     uCurrentMonthWeek = 0;
@@ -120,15 +113,11 @@ void Party::Zero() {
     uCurrentMinute = 0;
     uCurrentTimeSecond = 0;
     uNumFoodRations = 0;
-    field_72C_set0_unused = 0;
-    field_730_set0_unused = 0;
     uNumGold = 0;
     uNumGoldInBank = 0;
     uNumDeaths = 0;
-    field_740_set0_unused = 0;
     uNumPrisonTerms = 0;
     uNumBountiesCollected = 0;
-    field_74C_set0_unused = 0;
     monster_id_for_hunting.fill(0);
     monster_for_hunting_killed.fill(false);
     days_played_without_rest = 0;
@@ -137,14 +126,10 @@ void Party::Zero() {
     field_7B5_in_arena_quest = 0;
     uNumArenaWins.fill(0);
     pIsArtifactFound.fill(false);
-    field_7d7_set0_unused.fill(0);
     _autonoteBits.reset();
-    field_818_set0_unused.fill(0);
-    random_order_num_unused.fill(0);
     uNumArcomageWins = 0;
     uNumArcomageLoses = 0;
     bTurnBasedModeOn = false;
-    field_880_set0_unused = 0;
     uFlags2 = 0;
     alignment = PartyAlignment::PartyAlignment_Neutral;
     for (uint i = 0; i < 20; ++i) pPartyBuffs[i].Reset();
@@ -163,7 +148,6 @@ void Party::Zero() {
         for (int j = 0; j < 12; ++j)
             spellBooksInGuilds[i][j].Reset();
 
-    field_1605C_set0_unused.fill(0);
     pHireling1Name[0] = 0;
     pHireling2Name[0] = 0;
     armageddon_timer = 0;
@@ -624,7 +608,6 @@ void Party::createDefaultParty(bool bDebugGiveItems) {
 void Party::Reset() {
     Zero();
 
-    field_708_set15_unused = 15;
     sEyelevel = engine->config->gameplay.PartyEyeLevel.value();
     uNumGold = engine->config->gameplay.NewGameGold.value();
     uNumFoodRations = engine->config->gameplay.NewGameFood.value();
@@ -735,7 +718,6 @@ void Party::ResetPosMiscAndSpellBuffs() {
     this->_viewYaw = 0;
     this->_viewPitch = 0;
     this->uFallSpeed = 0;
-    this->field_28_set0_unused = 0;
     this->uDefaultPartyHeight = engine->config->gameplay.PartyHeight.value(); // was 120?
     this->radius = 37;
     this->_yawGranularity = 25;
@@ -743,8 +725,6 @@ void Party::ResetPosMiscAndSpellBuffs() {
     this->_yawRotationSpeed = 90;
     this->jump_strength = 5;
     this->_6FC_water_lava_timer = 0;
-    this->field_708_set15_unused = 15;
-    this->field_0_set25_unused = 25;
 
     for (Player &player : this->pPlayers) {
         for (SpellBuff &buff : player.pPlayerBuffs) {
