@@ -37,7 +37,7 @@ var searchData=
   ['eventstep_34',['eventStep',['../structMapTimer.html#a6580ab336871b052add0de8e8bd6bfc8',1,'MapTimer::eventStep()'],['../structEventTrigger.html#aacedaec7971de25c605aa0d6f6f9081f',1,'EventTrigger::eventStep()']]],
   ['eventtimer_35',['eventTimer',['../structSaveGame__MM7.html#a3ca09f9b3ec8662ee469abb474e7257b',1,'SaveGame_MM7']]],
   ['eventtrigger_36',['EventTrigger',['../classGameConfig_1_1Keybindings.html#acd91162e1fe252f1db2640efdce0bdd0',1,'GameConfig::Keybindings::EventTrigger()'],['../classGameConfig_1_1Gamepad.html#ad1ac31519ca97002f3f9757a255ebfa0',1,'GameConfig::Gamepad::EventTrigger()']]],
-  ['eventvariables_37',['eventVariables',['../structIndoorDelta__MM7.html#aafb17fd0c4b9f043662c215b46d39f7c',1,'IndoorDelta_MM7::eventVariables()'],['../structOutdoorDelta__MM7.html#a93f65af376fbf82a7cf6efe66f442ef8',1,'OutdoorDelta_MM7::eventVariables()']]],
+  ['eventvariables_37',['eventVariables',['../structIndoorDelta__MM7.html#a23f9f02e35d1d98982ff14444346cbee',1,'IndoorDelta_MM7::eventVariables()'],['../structOutdoorDelta__MM7.html#a74dc456ea4805ed48e9e4061acd29d67',1,'OutdoorDelta_MM7::eventVariables()']]],
   ['eventvarid_38',['eventVarId',['../structLevelDecoration__MM7.html#aba87effc9bf14b0ca854034cb12085ed',1,'LevelDecoration_MM7::eventVarId()'],['../structLevelDecoration.html#af25db1352448dc2d1bc8b514ef1b088f',1,'LevelDecoration::eventVarId()']]],
   ['evt_5fa_39',['evt_A',['../structNPCData__MM7.html#a0bba1e54748e52968cb4404988ed0e75',1,'NPCData_MM7']]],
   ['evt_5fb_40',['evt_B',['../structNPCData__MM7.html#aaeb8260468076c0d060558081a5604b3',1,'NPCData_MM7']]],
