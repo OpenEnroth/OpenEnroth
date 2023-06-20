@@ -1528,7 +1528,13 @@ std::string BuildDialogueString(std::string &str, uint8_t uPlayerID, ItemGen *a3
 
     pPlayer = &pParty->pCharacters[uPlayerID];
 
-    NPCData *npc = dialogueInteractiveList[currentDialogueInteractive].data.npc;
+    NPCData *npc;
+
+    if (dialogueInteractiveList.size()) {
+        npc = dialogueInteractiveList[currentDialogueInteractive].data.npc;
+    } else {
+        npc = GetNPCData(sDialogue_SpeakingActorNPC_ID);
+    }
 
     std::string result;
 

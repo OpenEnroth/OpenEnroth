@@ -986,7 +986,7 @@ void GUIWindow_House::houseDialogManager() {
         pWindow.DrawTitleText(pFontCreate, SIDE_TEXT_BOX_POS_X, SIDE_TEXT_BOX_POS_Y, colorTable.EasternBlue, nameAndTitle, 3);
         houseSpecificDialogue();
     }
-    if (dialogueInteractiveList[currentDialogueInteractive].type == HOUSE_INTERACTIVE_TRANSITION) {
+    if (currentDialogueInteractive != -1 && dialogueInteractiveList[currentDialogueInteractive].type == HOUSE_INTERACTIVE_TRANSITION) {
         render->DrawTextureNew(556 / 640.0f, 451 / 480.0f, dialogue_ui_x_x_u);
         render->DrawTextureNew(476 / 640.0f, 451 / 480.0f, dialogue_ui_x_ok_u);
     } else {
