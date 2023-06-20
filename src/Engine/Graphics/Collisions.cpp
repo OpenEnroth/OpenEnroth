@@ -108,7 +108,7 @@ static bool CollidePointWithFace(BLVFace *face, const Vec3f &pos, const Vec3f &d
     if (face->uAttributes & FACE_ETHEREAL)
         return false;
 
-    if (cos_dir_normal > 0 && !face->Portal())
+    if (cos_dir_normal > 0 && !face->isPortal())
         return false; // We're facing away && face is not a portal.
 
     float pos_face_distance = face->facePlane.signedDistanceTo(pos);
@@ -314,7 +314,7 @@ void CollideIndoorWithGeometry(bool ignore_ethereal) {
         int totalFaces = pSector->uNumFloors + pSector->uNumWalls + pSector->uNumCeilings;
         for (int j = 0; j < totalFaces; j++) {
             BLVFace *face = &pIndoor->pFaces[pSector->pFloors[j]];
-            if (face->Portal() || !collision_state.bbox.intersects(face->pBounding))
+            if (face->isPortal() || !collision_state.bbox.intersects(face->pBounding))
                 continue;
 
             int face_id = pSector->pFloors[j];
@@ -346,7 +346,7 @@ void CollideOutdoorWithModels(bool ignore_ethereal) {
             face.resource = mface.resource;
             face.pVertexIDs = mface.pVertexIDs.data();
 
-            if (face.Ethereal() || face.Portal()) // TODO: this doesn't respect ignore_ethereal parameter
+            if (face.Ethereal() || face.isPortal()) // TODO: this doesn't respect ignore_ethereal parameter
                 continue;
 
             int pid = PID(OBJECT_Face, (mface.index | (model.index << 6)));

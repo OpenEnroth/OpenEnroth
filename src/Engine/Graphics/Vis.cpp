@@ -541,7 +541,7 @@ bool Vis::Intersect_Ray_Face(RenderVertexSoft *pRayStart,
     float c2;                    // st7@11
     static Vec3s IntersectPoint;  // ST04_6@11
 
-    if (pFace->Portal() || pFace->Invisible()) return false;
+    if (pFace->isPortal() || pFace->Invisible()) return false;
 
     int ray_dir_x = pRayEnd->vWorldPosition.x -
                     pRayStart->vWorldPosition

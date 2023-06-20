@@ -1257,7 +1257,7 @@ bool Check_LOS_Obscurred_Indoors(const Vec3i &target, const Vec3i &from) {  // t
             bool FaceIsParallel = fuzzyIsNull(dirDotNormal);
 
             // skip further checks
-            if (face->Portal() || min_x > face->pBounding.x2 ||
+            if (face->isPortal() || min_x > face->pBounding.x2 ||
                 max_x < face->pBounding.x1 || min_y > face->pBounding.y2 ||
                 max_y < face->pBounding.y1 || min_z > face->pBounding.z2 ||
                 max_z < face->pBounding.z1 || FaceIsParallel)
