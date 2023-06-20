@@ -5,7 +5,7 @@
 
 #include "Engine/Events/EventEnums.h"
 #include "GUI/UI/UIHouseEnums.h"
-#include "Engine/Objects/PlayerEnums.h"
+#include "Engine/Objects/CharacterEnums.h"
 #include "Engine/Objects/ItemEnums.h"
 #include "Engine/Objects/Chest.h"
 #include "Engine/Objects/SpriteObjectType.h"

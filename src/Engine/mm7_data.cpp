@@ -148,7 +148,7 @@ std::array<int32_t, 128 * 3> array_4EBBD0_x = {  // indicies for triangle in sph
 #include "Engine/Tables/IconFrameTable.h"
 struct IconFrameTable *pIconsFrameTable;
 
-#include "Engine/Tables/PlayerFrameTable.h"
+#include "Engine/Tables/CharacterFrameTable.h"
 struct PlayerFrameTable *pPlayerFrameTable;  // idb
 
 //-------------------------------------------------------------------------

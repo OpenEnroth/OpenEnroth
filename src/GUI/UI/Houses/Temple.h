@@ -4,7 +4,7 @@
 
 #include "GUI/UI/UIHouses.h"
 #include "GUI/UI/UIHouseEnums.h"
-#include "Engine/Objects/Player.h"
+#include "Engine/Objects/Character.h"
 
 class GUIWindow_Temple : public GUIWindow_House {
  public:

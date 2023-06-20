@@ -1,4 +1,4 @@
-#include "Engine/Objects/Player.h"
+#include "Engine/Objects/Character.h"
 
 #include <algorithm>
 #include <memory>
@@ -18,7 +18,7 @@
 #include "Engine/SpellFxRenderer.h"
 #include "Engine/AttackList.h"
 #include "Engine/Tables/ItemTable.h"
-#include "Engine/Tables/PlayerFrameTable.h"
+#include "Engine/Tables/CharacterFrameTable.h"
 #include "Engine/Tables/StorylineTextTable.h"
 #include "Engine/Tables/AwardTable.h"
 #include "Engine/Tables/AutonoteTable.h"

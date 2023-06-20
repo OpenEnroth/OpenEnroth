@@ -1,4 +1,4 @@
-#include "PlayerFrameTable.h"
+#include "CharacterFrameTable.h"
 
 #include "Engine/Engine.h"
 #include "Engine/Snapshots/EntitySnapshots.h"

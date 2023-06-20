@@ -5,7 +5,7 @@
 #include <string>
 
 #include "Engine/Objects/ItemEnums.h"
-#include "Engine/Objects/PlayerEnums.h"
+#include "Engine/Objects/CharacterEnums.h"
 #include "Engine/Time.h"
 #include "Engine/MapInfo.h"
 

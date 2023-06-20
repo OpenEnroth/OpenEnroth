@@ -4,7 +4,7 @@
 #include <utility>
 
 #include "Engine/Objects/NPCEnums.h"
-#include "Engine/Objects/PlayerEnums.h"
+#include "Engine/Objects/CharacterEnums.h"
 #include "Engine/Conditions.h"
 
 #include "Utility/IndexedArray.h"

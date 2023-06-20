@@ -7,7 +7,7 @@
 #include "SpellEnums.h"
 
 #include "Engine/Objects/ItemEnums.h"
-#include "Engine/Objects/PlayerEnums.h"
+#include "Engine/Objects/CharacterEnums.h"
 #include "Engine/Objects/SpriteObjectType.h"
 #include "Engine/Time.h"
 

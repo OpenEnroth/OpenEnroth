@@ -4,7 +4,7 @@
 
 #include "Engine/Tables/BuildingTable.h"
 #include "Engine/Objects/Items.h"
-#include "Engine/Objects/Player.h"
+#include "Engine/Objects/Character.h"
 #include "Engine/Party.h"
 
 int PriceCalculator::baseItemIdentifyPrice(float priceMultiplier) {

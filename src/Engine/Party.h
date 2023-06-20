@@ -8,7 +8,7 @@
 
 #include "Engine/Objects/Items.h"
 #include "Engine/Objects/NPC.h"
-#include "Engine/Objects/Player.h"
+#include "Engine/Objects/Character.h"
 #include "Engine/Time.h"
 #include "GUI/UI/UIHouseEnums.h"
 #include "Library/Random/Random.h"

@@ -6,7 +6,7 @@
 #include "Engine/Graphics/Nuklear.h"
 #include "Engine/Graphics/ParticleEngine.h"
 #include "Engine/Graphics/Vis.h"
-#include "Engine/Objects/Player.h"
+#include "Engine/Objects/Character.h"
 #include "Engine/Objects/SpriteObject.h"
 
 #include "Io/Mouse.h"

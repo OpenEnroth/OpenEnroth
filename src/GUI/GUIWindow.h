@@ -7,7 +7,7 @@
 #include <vector>
 #include <string>
 
-#include "Engine/Objects/Player.h"
+#include "Engine/Objects/Character.h"
 #include "Engine/Party.h"
 
 #include "GUI/GUIEnums.h"

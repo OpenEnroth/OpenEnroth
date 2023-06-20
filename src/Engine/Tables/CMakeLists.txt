@@ -6,7 +6,7 @@ set(ENGINE_TABLES_SOURCES
         FactionTable.cpp
         FrameTableInc.cpp
         IconFrameTable.cpp
-        PlayerFrameTable.cpp
+        CharacterFrameTable.cpp
         StorylineTextTable.cpp
         TileTable.cpp
         BuildingTable.cpp
@@ -23,7 +23,7 @@ set(ENGINE_TABLES_HEADERS
         FactionTable.h
         FrameTableInc.h
         IconFrameTable.h
-        PlayerFrameTable.h
+        CharacterFrameTable.h
         StorylineTextTable.h
         TileFrameTable.h
         BuildingTable.h

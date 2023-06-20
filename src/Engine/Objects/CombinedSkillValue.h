@@ -1,6 +1,6 @@
 #pragma once
 #include <cstdint>
-#include "Engine/Objects/PlayerEnums.h"
+#include "Engine/Objects/CharacterEnums.h"
 #include "Utility/Segment.h"
 
 /* Skill encodes level and mastery where first 0x3F are for skill level and 0x1C0 bits are for skill mastery.

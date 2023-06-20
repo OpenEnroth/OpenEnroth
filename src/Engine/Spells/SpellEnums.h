@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Engine/Objects/PlayerEnums.h"
+#include "Engine/Objects/CharacterEnums.h"
 
 #include "Utility/Segment.h"
 

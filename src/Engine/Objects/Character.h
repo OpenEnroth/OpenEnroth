@@ -11,7 +11,7 @@
 #include "Engine/Objects/CombinedSkillValue.h"
 #include "Engine/Objects/Items.h"
 #include "Engine/Objects/ItemEnums.h"
-#include "Engine/Objects/PlayerEnums.h"
+#include "Engine/Objects/CharacterEnums.h"
 #include "Engine/Spells/Spells.h"
 #include "Engine/Tables/BuildingTable.h"
 
