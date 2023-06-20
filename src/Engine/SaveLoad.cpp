@@ -159,11 +159,6 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld) {
 
     pParty->_viewYaw = pParty->_viewPrevYaw;
     pParty->_viewPitch = pParty->_viewPrevPitch;
-    
-    // TODO(pskelton): savenewgame can cause us to get here without loaded level
-    // consider moving the autosave after level is loaded
-    if (uCurrentlyLoadedLevelType != LEVEL_NULL)
-        currentLocationTime().last_visit = pParty->GetPlayingTime();
 
     // saving - please wait
 
@@ -212,6 +207,7 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld) {
 
     Blob uncompressed;
     if (!NotSaveWorld) {  // autosave for change location
+        currentLocationTime().last_visit = pParty->GetPlayingTime();
         CompactLayingItemsList();
 
         if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
