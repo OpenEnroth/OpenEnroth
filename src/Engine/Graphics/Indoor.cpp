@@ -1529,7 +1529,7 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
         pParty->floor_face_pid = uFaceID;
 
     // party is on water?
-    if (pIndoor->pFaces[uFaceID].Fluid())
+    if (pIndoor->pFaces[uFaceID].isFluid())
         on_water = true;
 
     // Party angle in XY plane.

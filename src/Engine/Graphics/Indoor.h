@@ -100,7 +100,7 @@ struct BLVFace {  // 60h
     }
     inline bool Visible() const { return !Invisible(); }
     inline bool isPortal() const { return uAttributes & FACE_IsPortal; }
-    inline bool Fluid() const { return uAttributes & FACE_IsFluid; }
+    inline bool isFluid() const { return uAttributes & FACE_IsFluid; }
     inline bool Indoor_sky() const {
         return uAttributes & FACE_INDOOR_SKY;
     }
