@@ -101,8 +101,6 @@ void PrepareDrawLists_BLV() {
 
 //----- (004407D9) --------------------------------------------------------
 void BLVRenderParams::Reset() {
-    this->textureFrameTableTimer = pEventTimer->uTotalTimeElapsed;
-
     this->uPartySectorID = pIndoor->GetSector(pParty->vPosition);
     this->uPartyEyeSectorID = pIndoor->GetSector(pParty->vPosition + Vec3i(0, 0, pParty->sEyelevel));
 
@@ -168,7 +166,7 @@ void BLVFace::FromODM(ODMFace *face) {
 GraphicsImage *BLVFace::GetTexture() {
     if (this->IsTextureFrameTable())
         return pTextureFrameTable->GetFrameTexture(
-            (int64_t)this->resource, pBLVRenderParams->textureFrameTableTimer);
+            (int64_t)this->resource, pEventTimer->uTotalTimeElapsed);
     else
         return static_cast<GraphicsImage *>(this->resource);
 }
@@ -1107,7 +1105,7 @@ void IndoorLocation::PrepareDecorationsRenderList_BLV(unsigned int uDecorationID
          ((signed int)TrigLUT.uIntegerPi >> 3) - TrigLUT.atan2(pLevelDecorations[uDecorationID].vPosition.x - pCamera3D->vCameraPos.x,
                                                                pLevelDecorations[uDecorationID].vPosition.y - pCamera3D->vCameraPos.y);
     v9 = ((signed int)(TrigLUT.uIntegerPi + v8) >> 8) & 7;
-    int v37 = pBLVRenderParams->textureFrameTableTimer;
+    int v37 = pEventTimer->uTotalTimeElapsed;
     if (pParty->bTurnBasedModeOn) v37 = pMiscTimer->uTotalTimeElapsed;
     v10 = abs(pLevelDecorations[uDecorationID].vPosition.x +
               pLevelDecorations[uDecorationID].vPosition.y);
