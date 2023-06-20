@@ -57,13 +57,13 @@
 
 using Io::TextInputType;
 
-int uHouse_ExitPic;
-int dword_591080;               // 591080
-
 BuildingType in_current_building_type;  // 00F8B198
 DIALOGUE_TYPE dialog_menu_id;     // 00F8B19C
 
 GraphicsImage *_591428_endcap = nullptr;
+
+std::vector<HouseInteractionDesc> houseInteractionList;
+int currentHouseInteraction;
 
 std::array<const HouseAnimDescr, 196> pAnimatedRooms = { {  // 0x4E5F70
     { "", 0x4, 0x1F4, BUILDING_INVALID, 0, 0 },
@@ -299,8 +299,6 @@ IndexedArray<std::string, BUILDING_WEAPON_SHOP, BUILDING_MIRRORED_PATH_GUILD> sh
     {BUILDING_MIRRORED_PATH_GUILD,   "MAGSHELF"}
 }};
 
-std::array<std::string, 6> portraitClickLabel;
-
 bool enterHouse(HOUSE_ID uHouseID) {
     GameUI_StatusBar_Clear();
     GameUI_SetStatusBar("");
@@ -367,15 +365,15 @@ bool enterHouse(HOUSE_ID uHouseID) {
 
         std::string pContainer = DialogueBackgroundResourceByAlignment[pParty->alignment];
 
-        pDialogueNPCCount = 0;
+        currentHouseInteraction = -1;
         game_ui_dialogue_background = assets->getImage_Solid(pContainer);
 
         PrepareHouse(uHouseID);
 
-        if (pDialogueNPCPortraits.size() == 1)
-            pDialogueNPCCount = 1;
+        if (houseInteractionList.size() == 1) {
+            currentHouseInteraction = 0;
+        }
         pMediaPlayer->OpenHouseMovie(pAnimatedRooms[uCurrentHouse_Animation].video_name, 1u);
-        dword_5C35D4 = 1;
         if (isMagicGuild(uHouseID)) {
             // TODO(pskelton): check this behaviour
             if (!pParty->hasActiveCharacter())  // avoid nzi
@@ -389,45 +387,34 @@ bool enterHouse(HOUSE_ID uHouseID) {
             return true;
         }
         playHouseSound(uHouseID, HOUSE_SOUND_GENERAL_GREETING);
-        dword_5C35D4 = 1;
         return true;
     }
 }
 
 //----- (0044606A) --------------------------------------------------------
 void PrepareHouse(HOUSE_ID house) {
-    int16_t uExitMapID;  // ax@2
-                         //  int v7; // ebx@11
-                         //  int v13; // [sp+30h] [bp-30h]@11
-    int npc_id_arr[6];   // [sp+34h] [bp-2Ch]@1
-    int uAnimationID;    // [sp+50h] [bp-10h]@1
-    int npcs = 0;
+    // Default proprietor of non-simple houses
+    int proprietorId = pAnimatedRooms[buildingTable[house - 1].uAnimationID].house_npc_id;
+    if (proprietorId) {
+        HouseInteractionDesc desc;
+        desc.type = HOUSE_INTERACTION_PROPRIETOR;
+        desc.label = localization->FormatString(LSTR_FMT_CONVERSE_WITH_S, buildingTable[house - 1].pProprieterName.c_str());
+        desc.icon = assets->getImage_ColorKey(fmt::format("npc{:03}", proprietorId));
 
-    uAnimationID = buildingTable[house - 1].uAnimationID;
-    memset(npc_id_arr, 0, sizeof(npc_id_arr));
-    uHouse_ExitPic = buildingTable[house - 1].uExitPicID;
-    if (uHouse_ExitPic) {
-        uExitMapID = buildingTable[house - 1]._quest_bit;
-        if (uExitMapID > 0) {
-            if (pParty->_questBits[uExitMapID]) {
-                uHouse_ExitPic = 0;
-            }
-        }
+        houseInteractionList.push_back(desc);
     }
 
-    dword_591080 = pAnimatedRooms[uAnimationID].house_npc_id;
-    HouseNPCData[0] = 0;
-    if (dword_591080) {
-        npc_id_arr[0] = dword_591080;
-        npcs = 1;
-    }
-
+    // NPCs of this house
     for (int i = 1; i < pNPCStats->uNumNewNPCs; ++i) {
         if (pNPCStats->pNewNPCData[i].Location2D == house) {
             if (!(pNPCStats->pNewNPCData[i].uFlags & NPC_HIRED)) {
-                HouseNPCData[npcs + 1 - ((dword_591080 != 0) ? 1 : 0)] = &pNPCStats->pNewNPCData[i];
-                npc_id_arr[npcs] = pNPCStats->pNewNPCData[i].uPortraitID;
-                ++npcs;
+                HouseInteractionDesc desc;
+                desc.type = HOUSE_INTERACTION_NPC;
+                desc.label = localization->FormatString(LSTR_FMT_CONVERSE_WITH_S, pNPCStats->pNewNPCData[i].pName.c_str());
+                desc.icon = assets->getImage_ColorKey(fmt::format("npc{:03}", pNPCStats->pNewNPCData[i].uPortraitID));
+                desc.data.npc = &pNPCStats->pNewNPCData[i];
+
+                houseInteractionList.push_back(desc);
                 if (!(pNPCStats->pNewNPCData[i].uFlags & NPC_GREETED_SECOND)) {
                     if (pNPCStats->pNewNPCData[i].uFlags & NPC_GREETED_FIRST) {
                         pNPCStats->pNewNPCData[i].uFlags &= ~NPC_GREETED_FIRST;
@@ -440,18 +427,23 @@ void PrepareHouse(HOUSE_ID house) {
         }
     }
 
-    for (int i = 0; i < npcs; ++i) {
-        pDialogueNPCPortraits.push_back(assets->getImage_ColorKey(fmt::format("npc{:03}", npc_id_arr[i])));
-    }
+    // Dungeon entry (not present in MM7)
+    if (buildingTable[house - 1].uExitPicID) {
+        if (!buildingTable[house - 1]._quest_bit || !pParty->_questBits[buildingTable[house - 1]._quest_bit]) {
+            int id = buildingTable[house - 1].uExitMapID;
 
-    if (uHouse_ExitPic) {
-        pDialogueNPCPortraits.push_back(assets->getImage_ColorKey(pHouse_ExitPictures[uHouse_ExitPic]));
-        uHouse_ExitPic = buildingTable[house - 1].uExitMapID;
+            HouseInteractionDesc desc;
+            desc.type = HOUSE_INTERACTION_TRANSITION;
+            desc.label = localization->FormatString(LSTR_FMT_ENTER_S, pMapStats->pInfos[id].pName.c_str());
+            desc.icon = assets->getImage_ColorKey(pHouse_ExitPictures[id]);
+            desc.data.targetMapID = id;
+
+            houseInteractionList.push_back(desc);
+        }
     }
 }
 
 void SimpleHouseDialog() {
-    NPCData *pNPC;       // esi@6
     std::string v15;           // esi@14
     GUIButton *pButton;  // eax@15
     char *v29;           // esi@42
@@ -467,32 +459,32 @@ void SimpleHouseDialog() {
     std::string pInString;  // [sp+114h] [bp-8h]@12
 
     GUIWindow house_window = *pDialogueWindow;
-    if (pDialogueNPCCount == pDialogueNPCPortraits.size() && uHouse_ExitPic) {
+    if (houseInteractionList[currentHouseInteraction].type == HOUSE_INTERACTION_TRANSITION) {
+        int id = houseInteractionList[currentHouseInteraction].data.targetMapID;
         house_window.uFrameX = 493;
         house_window.uFrameWidth = 126;
         house_window.uFrameZ = 366;
-        house_window.DrawTitleText(pFontCreate, 0, 2, colorTable.White,
-            pMapStats->pInfos[uHouse_ExitPic].pName, 3);
+        house_window.DrawTitleText(pFontCreate, 0, 2, colorTable.White, pMapStats->pInfos[id].pName, 3);
         house_window.uFrameX = SIDE_TEXT_BOX_POS_X;
         house_window.uFrameWidth = SIDE_TEXT_BOX_WIDTH;
         house_window.uFrameZ = SIDE_TEXT_BOX_POS_Z;
-        if (pTransitionStrings[uHouse_ExitPic].empty()) {
-            auto str = localization->FormatString(LSTR_FMT_ENTER_S, pMapStats->pInfos[uHouse_ExitPic].pName.c_str());
+        if (pTransitionStrings[id].empty()) {
+            auto str = localization->FormatString(LSTR_FMT_ENTER_S, pMapStats->pInfos[id].pName.c_str());
             house_window.DrawTitleText(pFontCreate, 0, (212 - pFontCreate->CalcTextHeight(str, house_window.uFrameWidth, 0)) / 2 + 101, colorTable.White, str, 3);
             return;
         }
 
-        int vertMargin = (212 - pFontCreate->CalcTextHeight(pTransitionStrings[uHouse_ExitPic], house_window.uFrameWidth, 0)) / 2 + 101;
-        house_window.DrawTitleText(pFontCreate, 0, vertMargin, colorTable.White, pTransitionStrings[uHouse_ExitPic], 3);
+        int vertMargin = (212 - pFontCreate->CalcTextHeight(pTransitionStrings[id], house_window.uFrameWidth, 0)) / 2 + 101;
+        house_window.DrawTitleText(pFontCreate, 0, vertMargin, colorTable.White, pTransitionStrings[id], 3);
         return;
     }
     house_window.uFrameWidth -= 10;
     house_window.uFrameZ -= 10;
-    pNPC = HouseNPCData[pDialogueNPCCount + -(dword_591080 != 0)];  //- 1
+    NPCData *pNPC = houseInteractionList[currentHouseInteraction].data.npc;
 
     house_window.DrawTitleText(pFontCreate, SIDE_TEXT_BOX_POS_X, SIDE_TEXT_BOX_POS_Y, colorTable.EasternBlue, NameAndTitle(pNPC), 3);
 
-    if (!dword_591080) {
+    if (houseInteractionList[0].type != HOUSE_INTERACTION_PROPRIETOR) {
         if (uDialogueType == DIALOGUE_NULL) {
             if (pNPC->greet) {
                 house_window.uFrameWidth = game_viewport_width;
@@ -680,18 +672,18 @@ bool houseDialogPressEscape() {
     activeLevelDecoration = nullptr;
     current_npc_text.clear();
 
-    if (pDialogueNPCCount == 0) {
+    if (currentHouseInteraction == -1) {
         return false;
     }
 
     if (dialog_menu_id == DIALOGUE_OTHER) {
-        _4B4224_UpdateNPCTopics(pDialogueNPCCount - 1);
+        _4B4224_UpdateNPCTopics(currentHouseInteraction);
         BackToHouseMenu();
         return true;
     }
 
     if (dialog_menu_id == DIALOGUE_NULL || dialog_menu_id == DIALOGUE_MAIN) {
-        pDialogueNPCCount = 0;
+        currentHouseInteraction = -1;
         if (pDialogueWindow) {
             pDialogueWindow->Release();
         }
@@ -702,15 +694,15 @@ bool houseDialogPressEscape() {
         dialog_menu_id = DIALOGUE_NULL;
         pDialogueWindow = nullptr;
 
-        if (pDialogueNPCPortraits.size() == 1) {
+        if (houseInteractionList.size() == 1) {
             return false;
         }
 
         pBtn_ExitCancel = window_SpeakInHouse->vButtons.front();
-        for (int i = 0; i < pDialogueNPCPortraits.size(); ++i) {
-            Pointi pos = {pNPCPortraits_x[pDialogueNPCPortraits.size() - 1][i], pNPCPortraits_y[pDialogueNPCPortraits.size() - 1][i]};
-            HouseNPCPortraitsButtonsList[i] = window_SpeakInHouse->CreateButton(pos, {63, 73}, 1, 0, UIMSG_ClickHouseNPCPortrait, i,
-                                                                                InputAction::Invalid, portraitClickLabel[i]);
+        for (int i = 0; i < houseInteractionList.size(); ++i) {
+            Pointi pos = {pNPCPortraits_x[houseInteractionList.size() - 1][i], pNPCPortraits_y[houseInteractionList.size() - 1][i]};
+            houseInteractionList[i].button = window_SpeakInHouse->CreateButton(pos, {63, 73}, 1, 0, UIMSG_ClickHouseNPCPortrait, i,
+                                                                               InputAction::Invalid, houseInteractionList[i].label);
         }
 
         BackToHouseMenu();
@@ -784,7 +776,7 @@ void createHouseUI(HOUSE_ID houseId) {
     window_SpeakInHouse->CreateButton({292, 424}, {31, 0}, 2, 94, UIMSG_SelectCharacter, 3, InputAction::SelectChar3, "");
     window_SpeakInHouse->CreateButton({407, 424}, {31, 0}, 2, 94, UIMSG_SelectCharacter, 4, InputAction::SelectChar4, "");
     window_SpeakInHouse->CreateButton({0, 0}, {0, 0}, 1, 0, UIMSG_CycleCharacters, 0, InputAction::CharCycle, "");
-    if (pDialogueNPCPortraits.size() == 1) {
+    if (houseInteractionList.size() == 1) {
         _4B4224_UpdateNPCTopics(0);
     }
 }
@@ -916,7 +908,7 @@ void GUIWindow_House::houseDialogManager() {
     render->DrawTextureNew(477 / 640.0f, 0, game_ui_dialogue_background);
     render->DrawTextureNew(468 / 640.0f, 0, game_ui_right_panel_frame);
 
-    if (pDialogueNPCCount != pDialogueNPCPortraits.size() || !uHouse_ExitPic) {
+    if (currentHouseInteraction == -1 || houseInteractionList[currentHouseInteraction].type != HOUSE_INTERACTION_TRANSITION) {
         if (!buildingTable[wData.val - 1].pName.empty()) {
             if (current_screen_type != CURRENT_SCREEN::SCREEN_SHOP_INVENTORY) {
                 int v3 = 2 * pFontCreate->GetHeight() - 6 - pFontCreate->CalcTextHeight(buildingTable[wData.val - 1].pName, 130, 0);
@@ -929,15 +921,11 @@ void GUIWindow_House::houseDialogManager() {
 
     pWindow.uFrameWidth += 8;
     pWindow.uFrameZ += 8;
-    if (!pDialogueNPCCount) {
+    if (currentHouseInteraction == -1) {
+        render->DrawTextureNew(471 / 640.0f, 445 / 480.0f, ui_exit_cancel_button_background);
+
         if (in_current_building_type == BUILDING_JAIL) {
             houseSpecificDialogue();
-            if (pDialogueNPCCount == pDialogueNPCPortraits.size() && uHouse_ExitPic) {
-                render->DrawTextureNew(556 / 640.0f, 451 / 480.0f, dialogue_ui_x_x_u);
-                render->DrawTextureNew(476 / 640.0f, 451 / 480.0f, dialogue_ui_x_ok_u);
-            } else {
-                render->DrawTextureNew(471 / 640.0f, 445 / 480.0f, ui_exit_cancel_button_background);
-            }
             return;
         }
         if (!current_npc_text.empty()) {
@@ -950,54 +938,42 @@ void GUIWindow_House::houseDialogManager() {
             render->DrawTextureNew(8 / 640.0f, (347 - v6) / 480.0f, _591428_endcap);
             DrawText(pFontArrus, {13, 354 - v6}, colorTable.White, pFontArrus->FitTextInAWindow(current_npc_text, pDialogWindow.uFrameWidth, 13));
         }
-        if (pDialogueNPCPortraits.size() == 0) {
-            if (pDialogueNPCCount == pDialogueNPCPortraits.size() && uHouse_ExitPic) {
-                render->DrawTextureNew(556 / 640.0f, 451 / 480.0f, dialogue_ui_x_x_u);
-                render->DrawTextureNew(476 / 640.0f, 451 / 480.0f, dialogue_ui_x_ok_u);
-            } else {
-                render->DrawTextureNew(471 / 640.0f, 445 / 480.0f, ui_exit_cancel_button_background);
-            }
+        if (houseInteractionList.size() == 0) {
             return;
         }
 
-        for (int v8 = 0; v8 < pDialogueNPCPortraits.size(); ++v8) {
-            render->DrawTextureNew((pNPCPortraits_x[pDialogueNPCPortraits.size() - 1][v8] - 4) / 640.0f,
-                                   (pNPCPortraits_y[pDialogueNPCPortraits.size() - 1][v8] - 4) / 480.0f, game_ui_evtnpc);
-            render->DrawTextureNew(pNPCPortraits_x[pDialogueNPCPortraits.size() - 1][v8] / 640.0f,
-                                   pNPCPortraits_y[pDialogueNPCPortraits.size() - 1][v8] / 480.0f, pDialogueNPCPortraits[v8]);
-            if (pDialogueNPCPortraits.size() < 4) {
+        for (int v8 = 0; v8 < houseInteractionList.size(); ++v8) {
+            render->DrawTextureNew((pNPCPortraits_x[houseInteractionList.size() - 1][v8] - 4) / 640.0f,
+                                   (pNPCPortraits_y[houseInteractionList.size() - 1][v8] - 4) / 480.0f, game_ui_evtnpc);
+            render->DrawTextureNew(pNPCPortraits_x[houseInteractionList.size() - 1][v8] / 640.0f,
+                                   pNPCPortraits_y[houseInteractionList.size() - 1][v8] / 480.0f, houseInteractionList[v8].icon);
+            if (houseInteractionList.size() < 4) {
                 std::string pTitleText;
                 int v9 = 0;
-                if (v8 + 1 == pDialogueNPCPortraits.size() && uHouse_ExitPic) {
-                    pTitleText = pMapStats->pInfos[uHouse_ExitPic].pName;
+                if (houseInteractionList[v8].type == HOUSE_INTERACTION_TRANSITION) {
+                    pTitleText = pMapStats->pInfos[houseInteractionList[v8].data.targetMapID].pName;
                     v9 = 94 * v8 + SIDE_TEXT_BOX_POS_Y;
                 } else {
-                    if (!v8 && dword_591080) {
+                    if (!v8 && houseInteractionList[0].type == HOUSE_INTERACTION_PROPRIETOR) {
                         pTitleText = buildingTable[wData.val - 1].pProprieterTitle;
                         pWindow.DrawTitleText(pFontCreate, SIDE_TEXT_BOX_POS_X, SIDE_TEXT_BOX_POS_Y, colorTable.EasternBlue, pTitleText, 3);
                         continue;
                     }
-                    pTitleText = HouseNPCData[v8 + 1 - (dword_591080 != 0)]->pName;
-                    v9 = pNPCPortraits_y[pDialogueNPCPortraits.size() - 1][v8] + pDialogueNPCPortraits[v8]->height() + 2;
+                    pTitleText = houseInteractionList[v8].data.npc->pName;
+                    v9 = pNPCPortraits_y[houseInteractionList.size() - 1][v8] + houseInteractionList[v8].icon->height() + 2;
                 }
                 pWindow.DrawTitleText(pFontCreate, SIDE_TEXT_BOX_POS_X, v9, colorTable.EasternBlue, pTitleText, 3);
             }
         }
-        if (pDialogueNPCCount == pDialogueNPCPortraits.size() && uHouse_ExitPic) {
-            render->DrawTextureNew(556 / 640.0f, 451 / 480.0f, dialogue_ui_x_x_u);
-            render->DrawTextureNew(476 / 640.0f, 451 / 480.0f, dialogue_ui_x_ok_u);
-        } else {
-            render->DrawTextureNew(471 / 640.0f, 445 / 480.0f, ui_exit_cancel_button_background);
-        }
         return;
     }
 
-    int v4 = pDialogueNPCCount - 1;
+    int v4 = currentHouseInteraction;
     render->DrawTextureNew((pNPCPortraits_x[0][0] - 4) / 640.0f, (pNPCPortraits_y[0][0] - 4) / 480.0f, game_ui_evtnpc);
-    render->DrawTextureNew(pNPCPortraits_x[0][0] / 640.0f, pNPCPortraits_y[0][0] / 480.0f, pDialogueNPCPortraits[v4]);
+    render->DrawTextureNew(pNPCPortraits_x[0][0] / 640.0f, pNPCPortraits_y[0][0] / 480.0f, houseInteractionList[v4].icon);
     if (current_screen_type == CURRENT_SCREEN::SCREEN_SHOP_INVENTORY) {
         CharacterUI_InventoryTab_Draw(&pParty->activeCharacter(), true);
-        if (pDialogueNPCCount == pDialogueNPCPortraits.size() && uHouse_ExitPic) {
+        if (houseInteractionList[currentHouseInteraction].type == HOUSE_INTERACTION_TRANSITION) {
             render->DrawTextureNew(556 / 640.0f, 451 / 480.0f, dialogue_ui_x_x_u);
             render->DrawTextureNew(476 / 640.0f, 451 / 480.0f, dialogue_ui_x_ok_u);
         } else {
@@ -1005,14 +981,14 @@ void GUIWindow_House::houseDialogManager() {
         }
         return;
     }
-    if (v4 || !dword_591080) {  // emerald isle ship before quest's done
+    if (v4 || houseInteractionList[0].type != HOUSE_INTERACTION_PROPRIETOR) {  // emerald isle ship before quest's done
         SimpleHouseDialog();
     } else {
         std::string nameAndTitle = NameAndTitle(buildingTable[wData.val - 1].pProprieterName, buildingTable[wData.val - 1].pProprieterTitle);
         pWindow.DrawTitleText(pFontCreate, SIDE_TEXT_BOX_POS_X, SIDE_TEXT_BOX_POS_Y, colorTable.EasternBlue, nameAndTitle, 3);
         houseSpecificDialogue();
     }
-    if (pDialogueNPCCount == pDialogueNPCPortraits.size() && uHouse_ExitPic) {
+    if (houseInteractionList[currentHouseInteraction].type == HOUSE_INTERACTION_TRANSITION) {
         render->DrawTextureNew(556 / 640.0f, 451 / 480.0f, dialogue_ui_x_x_u);
         render->DrawTextureNew(476 / 640.0f, 451 / 480.0f, dialogue_ui_x_ok_u);
     } else {
@@ -1111,24 +1087,10 @@ GUIWindow_House::GUIWindow_House(HOUSE_ID houseId) : GUIWindow(WINDOW_HouseInter
         shop_ui_background = assets->getImage_ColorKey(shopBackgroundNames[in_current_building_type]);
     }
 
-    for (int curNpc = 0; curNpc < pDialogueNPCPortraits.size(); curNpc++) {
-        int labelFmt;
-        std::string labelData;
-        if (curNpc + 1 == pDialogueNPCPortraits.size() && uHouse_ExitPic) {
-            labelData = pMapStats->pInfos[uHouse_ExitPic].pName;
-            labelFmt = LSTR_FMT_ENTER_S;
-        } else {
-            if (curNpc || !dword_591080) {
-                labelData = HouseNPCData[curNpc + 1 - ((dword_591080 != 0) ? 1 : 0)]->pName;
-            } else {
-                labelData = buildingTable[houseId - 1].pProprieterName;
-            }
-            labelFmt = LSTR_FMT_CONVERSE_WITH_S;
-        }
-        portraitClickLabel[curNpc] = localization->FormatString(labelFmt, labelData.c_str());
-        HouseNPCPortraitsButtonsList[curNpc] = CreateButton(
-            {pNPCPortraits_x[pDialogueNPCPortraits.size() - 1][curNpc], pNPCPortraits_y[pDialogueNPCPortraits.size() - 1][curNpc]}, {63, 73}, 1, 0,
-            UIMSG_ClickHouseNPCPortrait, curNpc, InputAction::Invalid, portraitClickLabel[curNpc]);
+    for (int i = 0; i < houseInteractionList.size(); ++i) {
+        Pointi pos = {pNPCPortraits_x[houseInteractionList.size() - 1][i], pNPCPortraits_y[houseInteractionList.size() - 1][i]};
+        houseInteractionList[i].button = CreateButton(pos, {63, 73}, 1, 0, UIMSG_ClickHouseNPCPortrait, i,
+                                                      InputAction::Invalid, houseInteractionList[i].label);
     }
 }
 
@@ -1149,19 +1111,18 @@ void GUIWindow_House::Update() {
 }
 
 void GUIWindow_House::Release() {
-    for (GraphicsImage *image : pDialogueNPCPortraits) {
-        if (image) {
-            image->Release();
+    for (HouseInteractionDesc &desc : houseInteractionList) {
+        if (desc.icon) {
+            desc.icon->Release();
         }
     }
-    pDialogueNPCPortraits.clear();
+    houseInteractionList.clear();
 
     if (game_ui_dialogue_background) {
         game_ui_dialogue_background->Release();
         game_ui_dialogue_background = nullptr;
     }
 
-    dword_5C35D4 = 0;
     if (engine->config->settings.FlipOnExit.value()) {
         pParty->_viewYaw = (TrigLUT.uIntegerDoublePi - 1) & (TrigLUT.uIntegerPi + pParty->_viewYaw);
         pCamera3D->_viewYaw = pParty->_viewYaw;

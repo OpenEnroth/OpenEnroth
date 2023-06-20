@@ -22,9 +22,6 @@
 
 #include "Library/Random/Random.h"
 
-int pDialogueNPCCount;
-std::vector<GraphicsImage *> pDialogueNPCPortraits;
-
 bool CheckPortretAgainstSex(int portret_num, int sex);
 
 // All conditions for alive character excluding zombie
@@ -110,11 +107,9 @@ bool CheckHiredNPCSpeciality(NPCProf prof) {
 
 //----- (004B40E6) --------------------------------------------------------
 void NPCHireableDialogPrepare() {
-    signed int v0;  // ebx@1
-    NPCData *v1;    // edi@1
+    int v0 = 0;
+    NPCData *v1 = houseInteractionList[currentHouseInteraction].data.npc;
 
-    v0 = 0;
-    v1 = HouseNPCData[pDialogueNPCCount + -(dword_591080 != 0)];  //- 1
     pDialogueWindow->Release();
     pDialogueWindow = new GUIWindow(WINDOW_Dialogue, {0, 0}, {render->GetRenderDimensions().w, 350}, 0);
     pBtn_ExitCancel = pDialogueWindow->CreateButton({471, 445}, {169, 35}, 1, 0,
@@ -135,44 +130,37 @@ void NPCHireableDialogPrepare() {
 
 //----- (004B4224) --------------------------------------------------------
 void _4B4224_UpdateNPCTopics(int _this) {
-    int num_menu_buttons;  // ebx@1
-    NPCData *v17;          // [sp+10h] [bp-4h]@4
+    int num_menu_buttons = 0;
 
-    num_menu_buttons = 0;
-    pDialogueNPCCount = (_this + 1);
+    currentHouseInteraction = _this;
     Sizei renDims = render->GetRenderDimensions();
-    if (_this + 1 == pDialogueNPCPortraits.size() && uHouse_ExitPic) {
+    if (houseInteractionList[_this].type == HOUSE_INTERACTION_TRANSITION) {
         pDialogueWindow->Release();
         pDialogueWindow = new GUIWindow(WINDOW_Dialogue, {0, 0}, renDims, 0);
-        transition_button_label = localization->FormatString(LSTR_FMT_ENTER_S, pMapStats->pInfos[uHouse_ExitPic].pName.c_str()
-        );
-        pBtn_ExitCancel = pDialogueWindow->CreateButton({566, 445}, {75, 33}, 1, 0,
-            UIMSG_Escape, 0, InputAction::No, localization->GetString(LSTR_CANCEL), {ui_buttdesc2});
-        pBtn_YES = pDialogueWindow->CreateButton({486, 445}, {75, 33}, 1, 0,
-            UIMSG_BF, 1, InputAction::Yes, transition_button_label, {ui_buttyes2});
-        pDialogueWindow->CreateButton({pNPCPortraits_x[0][0], pNPCPortraits_y[0][0]}, {63, 73}, 1, 0,
-            UIMSG_BF, 1, InputAction::EventTrigger, transition_button_label);
-        pDialogueWindow->CreateButton({8, 8}, {460, 344}, 1, 0,
-            UIMSG_BF, 1, InputAction::Yes, transition_button_label
-        );
+        transition_button_label = houseInteractionList[_this].label;
+        pBtn_ExitCancel = pDialogueWindow->CreateButton({566, 445}, {75, 33}, 1, 0, UIMSG_Escape, 0, InputAction::No, localization->GetString(LSTR_CANCEL), {ui_buttdesc2});
+        pBtn_YES = pDialogueWindow->CreateButton({486, 445}, {75, 33}, 1, 0, UIMSG_BF, 1, InputAction::Yes, transition_button_label, {ui_buttyes2});
+        pDialogueWindow->CreateButton({pNPCPortraits_x[0][0], pNPCPortraits_y[0][0]}, {63, 73}, 1, 0, UIMSG_BF, 1, InputAction::EventTrigger, transition_button_label);
+        pDialogueWindow->CreateButton({8, 8}, {460, 344}, 1, 0, UIMSG_BF, 1, InputAction::Yes, transition_button_label);
     } else {
-        v17 = HouseNPCData[_this + 1 - ((dword_591080 != 0) ? 1 : 0)];  //+ 1
         if (dialog_menu_id == DIALOGUE_OTHER) {
             pDialogueWindow->Release();
         } else {
-            for (int i = 0; i < pDialogueNPCPortraits.size(); ++i)
-                HouseNPCPortraitsButtonsList[i]->Release();
+            for (int i = 0; i < houseInteractionList.size(); ++i) {
+                houseInteractionList[i].button->Release();
+                houseInteractionList[i].button = nullptr;
+            }
         }
         pDialogueWindow = new GUIWindow(WINDOW_Dialogue, {0, 0}, {renDims.w, 345}, 0);
-        pBtn_ExitCancel = pDialogueWindow->CreateButton({471, 445}, {169, 35}, 1, 0,
-            UIMSG_Escape, 0, InputAction::Invalid, localization->GetString(LSTR_END_CONVERSATION), {ui_exit_cancel_button_background}
-        );
+        pBtn_ExitCancel = pDialogueWindow->CreateButton({471, 445}, {169, 35}, 1, 0, UIMSG_Escape, 0, InputAction::Invalid,
+                                                        localization->GetString(LSTR_END_CONVERSATION), {ui_exit_cancel_button_background});
         pDialogueWindow->CreateButton({8, 8}, {450, 320}, 1, 0, UIMSG_HouseScreenClick, 0);
         dialog_menu_id = DIALOGUE_MAIN;
-        if (pDialogueNPCCount == 1 && dword_591080) {
+        if (houseInteractionList[_this].type == HOUSE_INTERACTION_PROPRIETOR) {
             window_SpeakInHouse->initializeDialog();
-        } else {
-            if (v17->is_joinable) {
+        } else { // NPC
+            NPCData *npc = houseInteractionList[_this].data.npc;
+            if (npc->is_joinable) {
                 num_menu_buttons = 1;
                 pDialogueWindow->CreateButton({480, 160}, {140, 30}, 1, 0, UIMSG_ClickNPCTopic, DIALOGUE_13_hiring_related);
             }
@@ -186,12 +174,12 @@ void _4B4224_UpdateNPCTopics(int _this) {
                     } \
                 }
 
-            AddScriptedDialogueLine(v17->dialogue_1_evt_id, DIALOGUE_SCRIPTED_LINE_1);
-            AddScriptedDialogueLine(v17->dialogue_2_evt_id, DIALOGUE_SCRIPTED_LINE_2);
-            AddScriptedDialogueLine(v17->dialogue_3_evt_id, DIALOGUE_SCRIPTED_LINE_3);
-            AddScriptedDialogueLine(v17->dialogue_4_evt_id, DIALOGUE_SCRIPTED_LINE_4);
-            AddScriptedDialogueLine(v17->dialogue_5_evt_id, DIALOGUE_SCRIPTED_LINE_5);
-            AddScriptedDialogueLine(v17->dialogue_6_evt_id, DIALOGUE_SCRIPTED_LINE_6);
+            AddScriptedDialogueLine(npc->dialogue_1_evt_id, DIALOGUE_SCRIPTED_LINE_1);
+            AddScriptedDialogueLine(npc->dialogue_2_evt_id, DIALOGUE_SCRIPTED_LINE_2);
+            AddScriptedDialogueLine(npc->dialogue_3_evt_id, DIALOGUE_SCRIPTED_LINE_3);
+            AddScriptedDialogueLine(npc->dialogue_4_evt_id, DIALOGUE_SCRIPTED_LINE_4);
+            AddScriptedDialogueLine(npc->dialogue_5_evt_id, DIALOGUE_SCRIPTED_LINE_5);
+            AddScriptedDialogueLine(npc->dialogue_6_evt_id, DIALOGUE_SCRIPTED_LINE_6);
 
             pDialogueWindow->_41D08F_set_keyboard_control_group(num_menu_buttons, 1, 0, 2);
             // TODO(Nik-RE-dev): initial number of buttons used only in non-simple houses now

@@ -239,7 +239,6 @@ int EventInterpreter::executeOneEvent(int step, bool isNpc) {
                         window_SpeakInHouse = nullptr;
                         pCurrentFrameMessageQueue->Flush();
                         current_screen_type = CURRENT_SCREEN::SCREEN_GAME;
-                        pDialogueNPCCount = 0;
                         if (pDialogueWindow) {
                             pDialogueWindow->Release();
                             pDialogueWindow = 0;

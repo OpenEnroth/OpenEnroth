@@ -10,9 +10,6 @@
 #include "Engine/Tables/NPCTable.h"
 #include "Engine/Graphics/Image.h"
 
-extern int pDialogueNPCCount;
-extern std::vector<GraphicsImage *> pDialogueNPCPortraits;
-
 // TODO(Nik-RE-dev): remove
 //----- (0047730C) --------------------------------------------------------
 inline bool CheckPortretAgainstSex(int a1, int) { return true; }

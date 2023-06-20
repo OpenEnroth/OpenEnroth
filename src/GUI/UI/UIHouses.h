@@ -16,8 +16,6 @@ constexpr int SIDE_TEXT_BOX_BODY_TEXT_HEIGHT = 174;
 constexpr int SIDE_TEXT_BOX_BODY_TEXT_OFFSET = 138;
 constexpr int SIDE_TEXT_BOX_MAX_SPACING = 32;
 
-void SimpleHouseDialog();
-
 void BackToHouseMenu();
 
 /**
@@ -39,6 +37,24 @@ bool houseDialogPressEscape();
  * @offset 0x4B1E92
  */
 void playHouseSound(HOUSE_ID houseID, HouseSoundType type);
+
+enum class HouseInteractionType {
+    HOUSE_INTERACTION_PROPRIETOR,
+    HOUSE_INTERACTION_NPC,
+    HOUSE_INTERACTION_TRANSITION
+};
+using enum HouseInteractionType;
+
+struct HouseInteractionDesc {
+    HouseInteractionType type;
+    std::string label = "";
+    GraphicsImage *icon = nullptr;
+    GUIButton *button = nullptr;
+    union {
+        int targetMapID;
+        NPCData *npc;
+    } data{};
+};
 
 class GUIWindow_House : public GUIWindow {
  public:
@@ -90,8 +106,6 @@ struct HouseAnimDescr {
     uint16_t padding_e;
 };
 
-extern int uHouse_ExitPic;
-extern int dword_591080;
 extern BuildingType in_current_building_type;  // 00F8B198
 extern DIALOGUE_TYPE dialog_menu_id;     // 00F8B19C
 
@@ -100,3 +114,6 @@ extern class GraphicsImage *_591428_endcap;
 extern std::array<const HouseAnimDescr, 196> pAnimatedRooms;
 
 extern IndexedArray<int, BUILDING_WEAPON_SHOP, BUILDING_DARK_GUILD> itemAmountInShop;
+
+extern std::vector<HouseInteractionDesc> houseInteractionList;
+extern int currentHouseInteraction;

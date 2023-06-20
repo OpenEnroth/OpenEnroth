@@ -1085,7 +1085,7 @@ void Game::processQueuedMessages() {
                 playButtonSoundOnEscape = false;
                 pAudioPlayer->playUISound(SOUND_StartMainChoice02);
                 SaveGame(1, 0);
-                pCurrentMapName = pMapStats->pInfos[uHouse_ExitPic].pFilename;
+                pCurrentMapName = pMapStats->pInfos[houseInteractionList[currentHouseInteraction].data.targetMapID].pFilename;
                 dword_6BE364_game_settings_1 |= GAME_SETTINGS_0001;
                 uGameState = GAME_STATE_CHANGE_LOCATION;
                 // v53 = buildingTable_minus1_::30[26 * (unsigned
