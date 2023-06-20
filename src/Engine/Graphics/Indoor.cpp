@@ -101,8 +101,6 @@ void PrepareDrawLists_BLV() {
 
 //----- (004407D9) --------------------------------------------------------
 void BLVRenderParams::Reset() {
-    this->textureFrameTableTimer = pEventTimer->uTotalTimeElapsed;
-
     this->uPartySectorID = pIndoor->GetSector(pParty->vPosition);
     this->uPartyEyeSectorID = pIndoor->GetSector(pParty->vPosition + Vec3i(0, 0, pParty->sEyelevel));
 
@@ -168,7 +166,7 @@ void BLVFace::FromODM(ODMFace *face) {
 GraphicsImage *BLVFace::GetTexture() {
     if (this->IsTextureFrameTable())
         return pTextureFrameTable->GetFrameTexture(
-            (int64_t)this->resource, pBLVRenderParams->textureFrameTableTimer);
+            (int64_t)this->resource, pEventTimer->uTotalTimeElapsed);
     else
         return static_cast<GraphicsImage *>(this->resource);
 }
@@ -1107,7 +1105,7 @@ void IndoorLocation::PrepareDecorationsRenderList_BLV(unsigned int uDecorationID
          ((signed int)TrigLUT.uIntegerPi >> 3) - TrigLUT.atan2(pLevelDecorations[uDecorationID].vPosition.x - pCamera3D->vCameraPos.x,
                                                                pLevelDecorations[uDecorationID].vPosition.y - pCamera3D->vCameraPos.y);
     v9 = ((signed int)(TrigLUT.uIntegerPi + v8) >> 8) & 7;
-    int v37 = pBLVRenderParams->textureFrameTableTimer;
+    int v37 = pEventTimer->uTotalTimeElapsed;
     if (pParty->bTurnBasedModeOn) v37 = pMiscTimer->uTotalTimeElapsed;
     v10 = abs(pLevelDecorations[uDecorationID].vPosition.x +
               pLevelDecorations[uDecorationID].vPosition.y);
@@ -1257,7 +1255,7 @@ bool Check_LOS_Obscurred_Indoors(const Vec3i &target, const Vec3i &from) {  // t
             bool FaceIsParallel = fuzzyIsNull(dirDotNormal);
 
             // skip further checks
-            if (face->Portal() || min_x > face->pBounding.x2 ||
+            if (face->isPortal() || min_x > face->pBounding.x2 ||
                 max_x < face->pBounding.x1 || min_y > face->pBounding.y2 ||
                 max_y < face->pBounding.y1 || min_z > face->pBounding.z2 ||
                 max_z < face->pBounding.z1 || FaceIsParallel)
@@ -1529,7 +1527,7 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
         pParty->floor_face_pid = uFaceID;
 
     // party is on water?
-    if (pIndoor->pFaces[uFaceID].Fluid())
+    if (pIndoor->pFaces[uFaceID].isFluid())
         on_water = true;
 
     // Party angle in XY plane.

@@ -33,7 +33,7 @@ LocationTime &currentLocationTime() {
     if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
         return pIndoor->stru1;
     } else {
-        // assert(uCurrentlyLoadedLevelType == LEVEL_OUTDOOR); // TODO(captainurist): this triggers in tests now.
+        assert(uCurrentlyLoadedLevelType == LEVEL_OUTDOOR);
         return pOutdoor->loc_time;
     }
 }

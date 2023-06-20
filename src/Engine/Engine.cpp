@@ -236,12 +236,7 @@ void Engine::DrawGUI() {
         uCurrentlyLoadedLevelType == LEVEL_OUTDOOR)
         pWeather->Draw();  // Ritor1: my include
 
-    if (current_screen_type != CURRENT_SCREEN::SCREEN_GAME) {
-        // TODO(Nik-RE-dev): this really doesn't belong to Engine::DrawGUI
-        pAudioPlayer->stopWalkingSounds();
-    }
-
-                           // while(GetTickCount() - last_frame_time < 33 );//FPS control
+    // while(GetTickCount() - last_frame_time < 33 );//FPS control
     uint frame_dt = platform->tickCount() - last_frame_time;
     last_frame_time = platform->tickCount();
     framerate_time_elapsed += frame_dt;
@@ -408,33 +403,6 @@ bool Engine::_44EEA7() {  // cursor picking - particle update
         uNumStationaryLights_in_pStationaryLightsStack = pStationaryLightsStack->uNumLightsActive;
     }
     return true;
-}
-
-//----- (0044EDE4) --------------------------------------------------------
-bool Engine::AlterGamma_BLV(BLVFace *pFace, Color *pColor) {
-    // TODO(captainurist): Is this function even needed?
-    //                     Also, it used to replace hue with 1.0f, which made no sense.
-    if (engine->IsSaturateFaces() && pFace->uAttributes & FACE_IsSecret) {
-        HsvColorf hsv = pColor->toColorf().toHsv();
-        hsv.s = fSaturation;
-        *pColor = hsv.toRgb().toColor();
-        return true;
-    } else {
-        return false;
-    }
-}
-
-bool Engine::AlterGamma_ODM(ODMFace *pFace, Color *pColor) {
-    // TODO(captainurist): Is this function even needed?
-    //                     Also, it used to replace hue with 1.0f, which made no sense.
-    if (engine->IsSaturateFaces() && pFace->uAttributes & FACE_IsSecret) {
-        HsvColorf hsv = pColor->toColorf().toHsv();
-        hsv.s = fSaturation;
-        *pColor = hsv.toRgb().toColor();
-        return true;
-    } else {
-        return false;
-    }
 }
 
 //----- (004645FA) --------------------------------------------------------
@@ -1043,10 +1011,6 @@ void MM6_Initialize() {
     pODMRenderParams->bNoSky = 0;
     pODMRenderParams->bDoNotRenderDecorations = 0;
     pODMRenderParams->outdoor_no_wavy_water = 0;
-    // outdoor_grid_band_1 = GetPrivateProfileIntW(L"outdoor", L"gridband1", 10,
-    // pIniFilename); outdoor_grid_band_2 = GetPrivateProfileIntW(L"outdoor",
-    // L"gridband2", 15, pIniFilename); outdoor_grid_band_3 =
-    // GetPrivateProfileIntW(L"outdoor", L"gridband3", 25, pIniFilename);
     pODMRenderParams->terrain_gamma = 0;
     pODMRenderParams->building_gamme = 0;
     pODMRenderParams->shading_dist_shade = 2048;
@@ -1073,11 +1037,6 @@ void MM7Initialization() {
         pODMRenderParams->building_gamme = 0;
         pODMRenderParams->shading_dist_shademist = 4096;
         pODMRenderParams->outdoor_no_wavy_water = 0;
-        // _47F4D3_initialize_terrain_bezier_stuff(outdoor_grid_band_1,
-        // outdoor_grid_band_2, outdoor_grid_band_3);
-        {
-            pODMRenderParams->outdoor_grid_band_3 = 25;  // outdoor_grid_band_3;
-        }
     } else {
         viewparams->field_20 &= 0xFFFFFF00;
     }

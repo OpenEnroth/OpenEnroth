@@ -3949,7 +3949,7 @@ void RenderOpenGL::DrawIndoorFaces() {
             for (int test = 0; test < pIndoor->pFaces.size(); test++) {
                 BLVFace *face = &pIndoor->pFaces[test];
 
-                if (face->Portal()) continue;
+                if (face->isPortal()) continue;
                 if (!face->GetTexture()) continue;
                 //if (face->uAttributes & FACE_IS_DOOR) continue;
 
@@ -4144,7 +4144,7 @@ void RenderOpenGL::DrawIndoorFaces() {
                     continue;
                 BLVFace *face = &pIndoor->pFaces[uFaceID];
 
-                if (face->Portal()) {
+                if (face->isPortal()) {
                     continue;
                 }
 
@@ -4573,7 +4573,7 @@ void RenderOpenGL::DrawIndoorFaces() {
         for (int test = 0; test < pIndoor->pFaces.size(); test++) {
             BLVFace *pface = &pIndoor->pFaces[test];
 
-            if (pface->Portal()) continue;
+            if (pface->isPortal()) continue;
             if (!pface->GetTexture()) continue;
 
             // check if faces is visible

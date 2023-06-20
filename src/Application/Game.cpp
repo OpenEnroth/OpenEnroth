@@ -2285,6 +2285,7 @@ void Game::gameLoop() {
         // if ( render->pRenderD3D )
         _vis->_4C1A02();
         _engine->Draw();
+        SaveGame(1, 0);
 
         bool game_finished = false;
         do {

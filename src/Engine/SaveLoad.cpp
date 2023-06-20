@@ -159,7 +159,6 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld) {
 
     pParty->_viewYaw = pParty->_viewPrevYaw;
     pParty->_viewPitch = pParty->_viewPrevPitch;
-    currentLocationTime().last_visit = pParty->GetPlayingTime();
 
     // saving - please wait
 
@@ -208,6 +207,7 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld) {
 
     Blob uncompressed;
     if (!NotSaveWorld) {  // autosave for change location
+        currentLocationTime().last_visit = pParty->GetPlayingTime();
         CompactLayingItemsList();
 
         if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {

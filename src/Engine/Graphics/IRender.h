@@ -73,7 +73,6 @@ struct ODMRenderParams {
     unsigned int _unused_uNumSpans = 0;
     unsigned int uNumBillboards = 0;
     float field_40 = 0;
-    int outdoor_grid_band_3 = 0; // TODO: drop?
     unsigned int bNoSky;
     unsigned int bDoNotRenderDecorations;
     int field_5C;

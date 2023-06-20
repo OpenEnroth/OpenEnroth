@@ -98,8 +98,8 @@ struct BLVFace {  // 60h
         return uAttributes & FACE_IsInvisible;
     }
     inline bool Visible() const { return !Invisible(); }
-    inline bool Portal() const { return uAttributes & FACE_IsPortal; } // TODO: rename IsPortal.
-    inline bool Fluid() const { return uAttributes & FACE_IsFluid; }
+    inline bool isPortal() const { return uAttributes & FACE_IsPortal; }
+    inline bool isFluid() const { return uAttributes & FACE_IsFluid; }
     inline bool Indoor_sky() const {
         return uAttributes & FACE_INDOOR_SKY;
     }
@@ -292,8 +292,6 @@ struct BLVRenderParams {
 
     void Reset();
 
-    // TODO(pskelton): Can this be dropped? - outdoors just uses pEventTimer->uTotalGameTimeElapsed
-    int textureFrameTableTimer = 0;
     int uPartySectorID = 0;
     int uPartyEyeSectorID = 0;
 
