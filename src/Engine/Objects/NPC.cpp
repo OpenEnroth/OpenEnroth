@@ -23,8 +23,7 @@
 #include "Library/Random/Random.h"
 
 int pDialogueNPCCount;
-std::array<class GraphicsImage *, 6> pDialogueNPCPortraits;
-int uNumDialogueNPCPortraits;
+std::vector<GraphicsImage *> pDialogueNPCPortraits;
 
 bool CheckPortretAgainstSex(int portret_num, int sex);
 
@@ -137,14 +136,12 @@ void NPCHireableDialogPrepare() {
 //----- (004B4224) --------------------------------------------------------
 void _4B4224_UpdateNPCTopics(int _this) {
     int num_menu_buttons;  // ebx@1
-    int i;                 // ebp@5
-                           // signed int v4; // ebp@9
     NPCData *v17;          // [sp+10h] [bp-4h]@4
 
     num_menu_buttons = 0;
     pDialogueNPCCount = (_this + 1);
     Sizei renDims = render->GetRenderDimensions();
-    if (_this + 1 == uNumDialogueNPCPortraits && uHouse_ExitPic) {
+    if (_this + 1 == pDialogueNPCPortraits.size() && uHouse_ExitPic) {
         pDialogueWindow->Release();
         pDialogueWindow = new GUIWindow(WINDOW_Dialogue, {0, 0}, renDims, 0);
         transition_button_label = localization->FormatString(LSTR_FMT_ENTER_S, pMapStats->pInfos[uHouse_ExitPic].pName.c_str()
@@ -163,7 +160,7 @@ void _4B4224_UpdateNPCTopics(int _this) {
         if (dialog_menu_id == DIALOGUE_OTHER) {
             pDialogueWindow->Release();
         } else {
-            for (i = 0; i < uNumDialogueNPCPortraits; ++i)
+            for (int i = 0; i < pDialogueNPCPortraits.size(); ++i)
                 HouseNPCPortraitsButtonsList[i]->Release();
         }
         pDialogueWindow = new GUIWindow(WINDOW_Dialogue, {0, 0}, {renDims.w, 345}, 0);

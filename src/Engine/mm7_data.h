@@ -187,7 +187,6 @@ extern int currentAddressingAwardBit;
 extern int guild_membership_approved;
 extern PLAYER_SKILL_MASTERY dword_F8B1B0_MasteryBeingTaught;
 extern int gold_transaction_amount;  // F8B1B4
-extern std::array<const char *, 4> pShopOptions; // TODO(Nik-RE-dev): used only for local pointers, not needed as global
 extern std::string current_npc_text;  // F8B1E8
 extern char dialogue_show_profession_details;
 

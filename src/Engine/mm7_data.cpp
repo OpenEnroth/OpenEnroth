@@ -2533,7 +2533,6 @@ int currentAddressingAwardBit;
 int guild_membership_approved;
 PLAYER_SKILL_MASTERY dword_F8B1B0_MasteryBeingTaught;
 int gold_transaction_amount;  // F8B1B4
-std::array<const char *, 4> pShopOptions;
 std::string current_npc_text;                        // F8B1E8
 char dialogue_show_profession_details = false;  // F8B1EC
 
