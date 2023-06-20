@@ -267,7 +267,7 @@ void GUIWindow_Shop::displayEquipmentDialogue() {
 
     std::vector<std::string> optionsText = {localization->GetString(LSTR_SELL), localization->GetString(LSTR_IDENTIFY)};
 
-    if (buildingType() != BuildingType_AlchemistShop) {
+    if (buildingType() != BUILDING_ALCHEMY_SHOP) {
         optionsText.push_back(localization->GetString(LSTR_REPAIR));
     }
 
@@ -421,7 +421,7 @@ void GUIWindow_WeaponShop::shopWaresDialogue(bool isSpecial) {
                         if (pt.y >= weaponYPos[testx] + 30 && pt.y < (weaponYPos[testx] + 30 + shop_ui_items_in_store[testx]->height())) {
                             std::string str;
                             if (!isStealingModeActive()) {
-                                MerchantPhrase phrase = pParty->activeCharacter().SelectPhrasesTransaction(item, BuildingType_WeaponShop, wData.val, 2);
+                                MerchantPhrase phrase = pParty->activeCharacter().SelectPhrasesTransaction(item, BUILDING_WEAPON_SHOP, wData.val, 2);
                                 str = BuildDialogueString(pMerchantsBuyPhrases[phrase], pParty->activeCharacterIndex() - 1, item, wData.val, 2);
                             } else {
                                 str = BuildDialogueString(localization->GetString(LSTR_STEAL_ITEM_FMT), pParty->activeCharacterIndex() - 1, item, wData.val, 2);
@@ -789,7 +789,7 @@ void GUIWindow_Shop::houseDialogueOptionSelected(DIALOGUE_TYPE option) {
                 shop_ui_items_in_store[i] = assets->getImage_ColorKey(itemArray[i].GetIconName());
             }
         }
-        if (shopType == BuildingType_WeaponShop) {
+        if (shopType == BUILDING_WEAPON_SHOP) {
             for (int i = 0; i < itemAmountInShop[shopType]; ++i) {
                 if (itemArray[i].uItemID != ITEM_NULL) {
                     // Note that we're using grng here for a reason - we want recorded mouse clicks to work.
@@ -991,7 +991,7 @@ void GUIWindow_Shop::houseScreenClick() {
             ItemGen *boughtItem = nullptr;
 
             switch (buildingType()) {
-              case BuildingType_WeaponShop:
+              case BUILDING_WEAPON_SHOP:
                 testx = (pt.x - 30) / 70;
                 if (testx >= 0 && testx < 6) {
                     if (dialog_menu_id == DIALOGUE_SHOP_BUY_STANDARD)
@@ -1010,7 +1010,7 @@ void GUIWindow_Shop::houseScreenClick() {
                 }
                 return;
 
-              case BuildingType_ArmorShop:
+              case BUILDING_ARMOR_SHOP:
                 testx = (pt.x - 40) / 105;
                 if (testx >= 0 && testx < 4) {
                     if (pt.y >= 126) {
@@ -1039,8 +1039,8 @@ void GUIWindow_Shop::houseScreenClick() {
                 }
                 return;
 
-              case BuildingType_AlchemistShop:
-              case BuildingType_MagicShop:
+              case BUILDING_ALCHEMY_SHOP:
+              case BUILDING_MAGIC_SHOP:
                 testx = (pt.x) / 75;
                 if (testx >= 0 && testx < 6) {
                     if (pt.y > 152) {

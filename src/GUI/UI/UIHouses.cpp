@@ -66,237 +66,237 @@ DIALOGUE_TYPE dialog_menu_id;     // 00F8B19C
 GraphicsImage *_591428_endcap = nullptr;
 
 std::array<const HouseAnimDescr, 196> pAnimatedRooms = { {  // 0x4E5F70
-    { "", 0x4, 0x1F4, BuildingType_Invalid, 0, 0 },
-    { "Human Armor01", 0x20, 0x2C0, BuildingType_ArmorShop, 58, 0 },
-    { "Necromancer Armor01", 0x20, 0x2D7, BuildingType_ArmorShop, 70, 0 },
-    { "Dwarven Armor01", 0x20, 0x2EE, BuildingType_ArmorShop, 5, 0 },
-    { "Wizard Armor", 0x20, 0x3BD, BuildingType_ArmorShop, 19, 0 },
-    { "Warlock Armor", 0x20, 0x2D6, BuildingType_ArmorShop, 35, 0 },
-    { "Elf Armor", 0x20, 0x2BC, BuildingType_ArmorShop, 79, 0 },
-    { "Human Alchemisht01", 0xE, 0x2BE, BuildingType_AlchemistShop, 95, 0 },
-    { "Necromancer Alchemist01", 0xE, 0x2D6, BuildingType_AlchemistShop, 69, 0 },
-    { "Dwarven Achemist01", 0xE, 0x387, BuildingType_AlchemistShop, 4, 0 },
-    { "Wizard Alchemist", 0xE, 0x232, BuildingType_AlchemistShop, 25, 0 },
-    { "Warlock Alchemist", 0xE, 0x2BE, BuildingType_AlchemistShop, 42, 0 },
-    { "Elf Alchemist", 0xE, 0x38A, BuildingType_AlchemistShop, 84, 0 },
-    { "Human Bank01", 0x6, 0x384, BuildingType_Bank, 52, 0 },
-    { "Necromancer Bank01", 0x6, 0x2D8, BuildingType_Bank, 71, 0 },
-    { "Dwarven Bank", 0x6, 0x2F3, BuildingType_Bank, 6, 0 },
-    { "Wizard Bank", 0x6, 0x3BA, BuildingType_Bank, 20, 0 },
-    { "Warlock Bank", 0x6, 0x39F, BuildingType_Bank, 36, 0 },
-    { "Elf Bank", 0x6, 0x2BC, BuildingType_Bank, 71, 0 },
-    { "Boat01", 0xF, 0x4C, BuildingType_Boats, 53, 3 },
-    { "Boat01d", 0xF, 0x4C, BuildingType_Boats, 53, 3 }, // this movie doesn't exist
-    { "Human Magic Shop01", 0xA, 0x2C8, BuildingType_MagicShop, 54, 0 },
-    { "Necromancer Magic Shop01", 0xE, 0x2DC, BuildingType_MagicShop, 66, 0 },
-    { "Dwarven Magic Shop01", 0x2A, 0x2EF, BuildingType_MagicShop, 91, 0 },
-    { "Wizard Magic Shop", 0x1E, 0x2DF, BuildingType_MagicShop, 15, 0 },
-    { "Warlock Magic Shop", 0x7, 0x3B9, BuildingType_MagicShop, 15, 0 },
-    { "Elf Magic Shop", 0x24, 0x2CC, BuildingType_MagicShop, 82, 0 },
-    { "Human Stables01", 0x21, 0x31, BuildingType_Stables, 48, 3 },
-    { "Necromancer Stables", 0x21, 0x2DD, BuildingType_Stables, 67, 3 },
-    { "", 0x21, 0x2F0, BuildingType_Stables, 91, 3 },
-    { "Wizard Stables", 0x21, 0x3BA, BuildingType_Stables, 16, 3 },
-    { "Warlock Stables", 0x21, 0x181, BuildingType_Stables, 77, 3 },  // movie exist but unused in MM7 as Nighon doesn't have stables
-    { "Elf Stables", 0x21, 0x195, BuildingType_Stables, 77, 3 },
-    { "Human Tavern01", 0xD, 0x2C2, BuildingType_Tavern, 49, 0 },
-    { "Necromancer Tavern 01", 0xD, 0x3B0, BuildingType_Tavern, 57, 0 },
-    { "Dwarven Tavern01", 0xD, 0x2FE, BuildingType_Tavern, 94, 0 },
-    { "Wizard Tavern", 0xD, 0x3BB, BuildingType_Tavern, 17, 0 },
-    { "Warlock Tavern", 0xD, 0x3A8, BuildingType_Tavern, 33, 0 },
-    { "Elf Tavern", 0xD, 0x2CD, BuildingType_Tavern, 78, 0 },
-    { "Human Temple01", 0x24, 0x2DB, BuildingType_Temple, 50, 3 },
-    { "Necromancer Temple", 0x24, 0x2DF, BuildingType_Temple, 60, 3 },
-    { "Dwarven Temple01", 0x24, 0x2F1, BuildingType_Temple, 86, 3 },
-    { "Wizard Temple", 0x24, 0x2E0, BuildingType_Temple, 10, 3 },
-    { "Warlock Temple", 0x24, 0x3A4, BuildingType_Temple, 27, 3 },
-    { "Elf Temple", 0x24, 0x2CE, BuildingType_Temple, 72, 3 },
-    { "Human Town Hall", 0x10, 0x39C, BuildingType_TownHall, 14, 0 },
-    { "Necromancer Town Hall01", 0x10, 0x3A4, BuildingType_TownHall, 61, 0 },
-    { "Dwarven Town Hall", 0x10, 0x2DB, BuildingType_TownHall, 88, 0 }, // this movie doesn't exist, stone city doesn't have town hall
-    { "Wizard Town Hall", 0x10, 0x3BD, BuildingType_TownHall, 11, 0 },
-    { "Warlock Town Hall", 0x10, 0x2DB, BuildingType_TownHall, 28, 0 },
-    { "Elf Town Hall", 0x10, 0x27A, BuildingType_TownHall, 73, 0 },
-    { "Human Training Ground01", 0x18, 0x2C7, BuildingType_Training, 44, 0 },
-    { "Necromancer Training Ground", 0x18, 0x3AD, BuildingType_Training, 62, 0 },
-    { "Dwarven Training Ground", 0x18, 0x2F2, BuildingType_Training, 89, 0 },
-    { "Wizard Training Ground", 0x18, 0x3A3, BuildingType_Training, 12, 0 },
-    { "Warlock Training Ground", 0x18, 0x3A6, BuildingType_Training, 29, 0 },
-    { "Elf Training Ground", 0x18, 0x19F, BuildingType_Training, 74, 0 },
-    { "Human Weapon Smith01", 0x16, 0x2C1, BuildingType_WeaponShop, 45, 4 },
-    { "Necromancer Weapon Smith01", 0x16, 0x2D9, BuildingType_WeaponShop, 63, 4 },
-    { "Dwarven Weapon Smith01", 0x16, 0x2EE, BuildingType_WeaponShop, 82, 4 },
-    { "Wizard Weapon Smith", 0x16, 0x2D5, BuildingType_WeaponShop, 13, 4 },
-    { "Warlock Weapon Smith", 0x16, 0x2D7, BuildingType_WeaponShop, 23, 4 },
-    { "Elf Weapon Smith", 0x16, 0x2CA, BuildingType_WeaponShop, 75, 4 },
-    { "Air Guild", 0x1D, 0xA4, BuildingType_AirGuild, 1, 3 },
-    { "Body Guild", 0x19, 0x3BF, BuildingType_BodyGuild, 2, 0 },
-    { "Dark Guild", 0x19, 0x2D1, BuildingType_DarkGuild, 3, 0 },
-    { "Earth Guild", 0x19, 0x2CB, BuildingType_EarthGuild, 83, 0 },
-    { "Fire Guild", 0x1C, 0x2BF, BuildingType_FireGuild, 56, 0 },
-    { "Light Guild", 0x1C, 0x2D5, BuildingType_LightGuild, 46, 0 },
-    { "Mind Guild", 0x1C, 0xE5, BuildingType_MindGuild, 40, 0 },
-    { "Spirit Guild", 0x1C, 0x2D2, BuildingType_SpiritGuild, 41, 0 },
-    { "Water Guild", 0x1B, 0x2D3, BuildingType_WaterGuild, 24, 0 },
-    { "Lord and Judge Out01", 1, 0, BuildingType_House, 39, 0 },
-    { "Human Poor House 1", 8, 0, BuildingType_House, 0, 0 },
-    { "Human Poor House 2", 8, 0, BuildingType_House, 0, 0 },
-    { "Human Poor House 3", 8, 0, BuildingType_House, 0, 0 },
-    { "Human Medium House 1", 8, 0, BuildingType_House, 0, 0 },
-    { "Human Medium House 2", 8, 0, BuildingType_House, 0, 0 },
-    { "Human Medium House 3", 8, 0, BuildingType_House, 0, 0 }, // this movie doesn't exist
-    { "Human Rich House 1", 8, 0, BuildingType_House, 0, 0 },
-    { "Human Rich House 2", 8, 0, BuildingType_House, 0, 0 },
-    { "Human Rich House 3", 8, 0, BuildingType_House, 0, 0 }, // this movie doesn't exist
-    { "Elven Poor House 1", 8, 0, BuildingType_House, 0, 0 },
-    { "Elven Poor House 2", 8, 0, BuildingType_House, 0, 0 },
-    { "Elven Poor House 3", 8, 0, BuildingType_House, 0, 0 }, // this movie doesn't exist
-    { "Elven Medium House 1", 8, 0, BuildingType_House, 0, 0 },
-    { "Elven Medium House 2", 8, 0, BuildingType_House, 0, 0 },
-    { "Elven Medium House 3", 8, 0, BuildingType_House, 0, 0 }, // this movie doesn't exist
-    { "Elven Rich House 1", 8, 0, BuildingType_House, 0, 0 },
-    { "Elven Rich House 2", 8, 0, BuildingType_House, 0, 0 },
-    { "Elven Rich House 3", 8, 0, BuildingType_House, 0, 0 },
-    { "Dwarven Poor House 1", 8, 0, BuildingType_House, 0, 0 },
-    { "Dwarven Poor House 2", 8, 0, BuildingType_House, 0, 0 },
-    { "Dwarven Poor House 3", 8, 0, BuildingType_House, 0, 0 }, // this movie doesn't exist
-    { "Dwarven Medium House 1", 8, 0, BuildingType_House, 0, 0 },
-    { "Dwarven Medium House 2", 8, 0, BuildingType_House, 0, 0 },
-    { "Dwarven Medium House 3", 8, 0, BuildingType_House, 0, 0 }, // this movie doesn't exist
-    { "Dwarven Rich House 1", 8, 0, BuildingType_House, 0, 0 },
-    { "Dwarven Rich House 2", 8, 0, BuildingType_House, 0, 0 },
-    { "Dwarven Rich House 3", 8, 0, BuildingType_House, 0, 0 }, // this movie doesn't exist
-    { "Wizard Poor House 1", 8, 0, BuildingType_House, 0, 0 },
-    { "Wizard Poor House 2", 8, 0, BuildingType_House, 0, 0 },
-    { "Wizard Poor House 3", 8, 0, BuildingType_House, 0, 0 }, // this movie doesn't exist
-    { "Wizard Medium House 1", 8, 0, BuildingType_House, 0, 0 },
-    { "Wizard Medium House 2", 8, 0, BuildingType_House, 0, 0 },
-    { "Wizard Medium House 3", 8, 0, BuildingType_House, 0, 0 }, // this movie doesn't exist
-    { "Wizard Rich House 1", 8, 0, BuildingType_House, 0, 0 },
-    { "Wizard Rich House 2", 8, 0, BuildingType_House, 0, 0 },
-    { "Wizard Rich House 3", 8, 0, BuildingType_House, 0, 0 }, // this movie doesn't exist
-    { "Necromancer Poor House 1", 8, 0, BuildingType_House, 0, 0 },
-    { "Necromancer Poor House 2", 8, 0, BuildingType_House, 0, 0 },
-    { "Necromancer Poor House 3", 8, 0, BuildingType_House, 0, 0 }, // this movie doesn't exist
-    { "Necromancer Medium House 1", 8, 0, BuildingType_House, 0, 0 },
-    { "Necromancer Medium House 2", 8, 0, BuildingType_House, 0, 0 },
-    { "Necromancer Medium House 3", 8, 0, BuildingType_House, 0, 0 }, // this movie doesn't exist
-    { "Necromancer Rich House 1", 8, 0, BuildingType_House, 0, 0 },
-    { "Necromancer Rich House 2", 8, 0, BuildingType_House, 0, 0 },
-    { "Necromancer Rich House 3", 8, 0, BuildingType_House, 0, 0 }, // this movie doesn't exist
-    { "Warlock Poor House 1", 8, 0, BuildingType_House, 0, 0 },
-    { "Warlock Poor House 2", 8, 0, BuildingType_House, 0, 0 },
-    { "Warlock Poor House 3", 8, 0, BuildingType_House, 0, 0 }, // this movie doesn't exist
-    { "Warlock Medium House 1", 8, 0, BuildingType_House, 0, 0 },
-    { "Warlock Medium House 2", 8, 0, BuildingType_House, 0, 0 },
-    { "Warlock Medium House 3", 8, 0, BuildingType_House, 0, 0 }, // this movie doesn't exist
-    { "Warlock Rich House 1", 8, 0, BuildingType_House, 0, 0 },
-    { "Warlock Rich House 2", 8, 0, BuildingType_House, 0, 0 },
-    { "Warlock Rich House 3", 8, 0, BuildingType_House, 0, 0 },
-    { "Out01 Temple of the Moon", 0x24, 0, BuildingType_Dungeon, 0, 0 },
-    { "Out01 Dragon Cave", 0x24, 0, BuildingType_Dungeon, 0, 0 },
-    { "Out02 Castle Harmondy", 0x24, 0, BuildingType_Castle, 0, 0 },
-    { "Out02 White Cliff Cave", 0x24, 0, BuildingType_Dungeon, 0, 0 },
-    { "Out03 Erathian Sewer", 0x24, 0, BuildingType_Dungeon, 0, 0 },
-    { "Out03 Fort Riverstride", 0x24, 0, BuildingType_Dungeon, 0, 0 },
-    { "Out03 Castle Gryphonheart", 0x24, 0, BuildingType_Castle, 0, 0 },
-    { "Out04 Elf Castle", 0x24, 0, BuildingType_Castle, 0, 0 },
-    { "Out04 Tularean Caves", 0x24, 0, BuildingType_Dungeon, 0, 0 },
-    { "Out04 Clanker's Laboratory", 0x24, 0, BuildingType_Dungeon, 0, 0 },
-    { "Out05 Hall of the Pit", 0x24, 0, BuildingType_Dungeon, 0, 0 },
-    { "Out05 Watchtower 6", 0x24, 0, BuildingType_Dungeon, 0, 0 },
-    { "Out06 School of Sorcery", 0x24, 0, BuildingType_Dungeon, 0, 0 },
-    { "Out06 Red Dwarf Mines", 0x24, 0, BuildingType_Dungeon, 0, 0 },
-    { "Out07 Castle Lambent", 0x24, 0, BuildingType_Castle, 0, 0 },
-    { "Out07 Walls of Mist", 0x24, 0, BuildingType_Dungeon, 0, 0 },
-    { "Out07 Temple of the Light", 0x24, 0, BuildingType_Dungeon, 0, 0 },
-    { "Out08 Evil Entrance", 0x24, 0, BuildingType_Dungeon, 0, 0 },
-    { "Out08 Breeding Zone", 0x24, 0, BuildingType_Dungeon, 0, 0 },
-    { "Out08 Temple of the Dark", 0x24, 0, BuildingType_Dungeon, 0, 0 },
-    { "Out09 Grand Temple of the Moon", 0x24, 0, BuildingType_Dungeon, 0, 0 },
-    { "Out09 Grand Temple of the Sun", 0x24, 0, BuildingType_Dungeon, 0, 0 },
-    { "Out10 Thunderfist Mountain", 0x24, 0, BuildingType_Dungeon, 0, 0 },
-    { "Out10 The Maze", 0x24, 0, BuildingType_Dungeon, 0, 0 },
-    { "Out10 Connecting Tunnel Cave #1", 0x24, 0, BuildingType_Dungeon, 0, 0 },
-    { "", 0x24, 0, BuildingType_Dungeon, 0, 0 },
-    { "", 0x24, 0, BuildingType_Dungeon, 0, 0 },
-    { "Out11 Stone City", 0x24, 0, BuildingType_Dungeon, 0, 0 },
-    { "", 0x24, 0, BuildingType_Dungeon, 0, 0 },
-    { "Out12 Colony Zod", 0x24, 0, BuildingType_Dungeon, 0, 0 },
-    { "Out12 Connecting Tunnel Cave #1", 0x24, 0, BuildingType_Dungeon, 0, 0 },
-    { "", 0x24, 0, BuildingType_Dungeon, 0, 0 },
-    { "", 0x24, 0, BuildingType_Dungeon, 0, 0 },
-    { "Out13 Mercenary Guild", 0x24, 0, BuildingType_Dungeon, 0, 0 },
-    { "Out13 Tidewater Caverns", 0x24, 0, BuildingType_Dungeon, 0, 0 },
-    { "Out13 Wine Cellar", 0x24, 0, BuildingType_Dungeon, 0, 0 },
-    { "Out14 Titan's Stronghold", 0x24, 0, BuildingType_Dungeon, 0, 0 },
-    { "Out14 Temple of Baa", 0x24, 0, BuildingType_Dungeon, 0, 0 },
-    { "Out14 Hall under the Hill", 0x24, 0, BuildingType_Dungeon, 0, 0 },
-    { "Out15 The Linclon", 0x24, 0, BuildingType_Dungeon, 0, 0 },
-    { "Jail", 0x24, 0, BuildingType_Jail, 0, 0 },
-    { "Harmondale Throne Room", 0x24, 0, BuildingType_House, 0, 0 },
-    { "Gryphonheart Throne Room", 0x24, 0, BuildingType_Throne_Room, 0, 0 },
-    { "Elf Castle Throne Room", 0x24, 0, BuildingType_Throne_Room, 0, 0 },
-    { "Wizard Castle Throne Room", 0x24, 0, BuildingType_Throne_Room, 0, 0 },
-    { "Necromancer Castle Throne Rooms", 0x24, 0, BuildingType_Throne_Room, 0, 0 },
-    { "Master Thief", 0x24, 0, BuildingType_House, 0, 0 },
-    { "Dwarven King", 0x24, 0, BuildingType_Throne_Room, 0, 0 },
-    { "Arms Master", 0x24, 0, BuildingType_House, 0, 0 },
-    { "Warlock", 0x24, 0, BuildingType_House, 0, 0 },
-    { "Lord Markam", 0x24, 0, BuildingType_Throne_Room, 0, 0 },
-    { "Arbiter Neutral Town", 0x24, 0, BuildingType_House, 0, 0 },
-    { "Arbiter Good Town", 0x24, 0, BuildingType_House, 0, 0 },
-    { "Arbiter Evil Town", 0x24, 0, BuildingType_House, 0, 0 },
-    { "Necromancer Throne Room Empty", 0x24, 0, BuildingType_Throne_Room, 0, 0 },
-    { "", 0x24, 0, BuildingType_House, 0, 0 },
-    { "", 0x24, 0, BuildingType_House, 0, 0 },
-    { "", 0x24, 0, BuildingType_House, 0, 0 },
-    { "", 0x24, 0, BuildingType_House, 0, 0 },
-    { "Boat01", 0xF, 0, BuildingType_House, 53, 3 },
-    { "", 0x24, 0, BuildingType_Boats, 0, 0 },
-    { "", 0x24, 0, BuildingType_Boats, 0, 0 },
-    { "", 0x24, 0, BuildingType_Boats, 0, 0 },
-    { "", 0x24, 0, BuildingType_House, 0, 0 },
-    { "Arbiter Room Neutral", 0x24, 0, BuildingType_House, 0, 0 }, // this movie doesn't exist
-    { "Out02 Castle Harmondy Abandoned", 0x24, 0, BuildingType_Castle, 0, 0 },
-    { "Human Temple02", 0x24, 0x3AB, BuildingType_Temple, 27, 0 },
-    { "Player Castle Good", 0x24, 0, BuildingType_Castle, 0, 0 },
-    { "Player Castle Bad", 0x24, 0, BuildingType_Castle, 0, 0 }
+    { "", 0x4, 0x1F4, BUILDING_INVALID, 0, 0 },
+    { "Human Armor01", 0x20, 0x2C0, BUILDING_ARMOR_SHOP, 58, 0 },
+    { "Necromancer Armor01", 0x20, 0x2D7, BUILDING_ARMOR_SHOP, 70, 0 },
+    { "Dwarven Armor01", 0x20, 0x2EE, BUILDING_ARMOR_SHOP, 5, 0 },
+    { "Wizard Armor", 0x20, 0x3BD, BUILDING_ARMOR_SHOP, 19, 0 },
+    { "Warlock Armor", 0x20, 0x2D6, BUILDING_ARMOR_SHOP, 35, 0 },
+    { "Elf Armor", 0x20, 0x2BC, BUILDING_ARMOR_SHOP, 79, 0 },
+    { "Human Alchemisht01", 0xE, 0x2BE, BUILDING_ALCHEMY_SHOP, 95, 0 },
+    { "Necromancer Alchemist01", 0xE, 0x2D6, BUILDING_ALCHEMY_SHOP, 69, 0 },
+    { "Dwarven Achemist01", 0xE, 0x387, BUILDING_ALCHEMY_SHOP, 4, 0 },
+    { "Wizard Alchemist", 0xE, 0x232, BUILDING_ALCHEMY_SHOP, 25, 0 },
+    { "Warlock Alchemist", 0xE, 0x2BE, BUILDING_ALCHEMY_SHOP, 42, 0 },
+    { "Elf Alchemist", 0xE, 0x38A, BUILDING_ALCHEMY_SHOP, 84, 0 },
+    { "Human Bank01", 0x6, 0x384, BUILDING_BANK, 52, 0 },
+    { "Necromancer Bank01", 0x6, 0x2D8, BUILDING_BANK, 71, 0 },
+    { "Dwarven Bank", 0x6, 0x2F3, BUILDING_BANK, 6, 0 },
+    { "Wizard Bank", 0x6, 0x3BA, BUILDING_BANK, 20, 0 },
+    { "Warlock Bank", 0x6, 0x39F, BUILDING_BANK, 36, 0 },
+    { "Elf Bank", 0x6, 0x2BC, BUILDING_BANK, 71, 0 },
+    { "Boat01", 0xF, 0x4C, BUILDING_BOAT, 53, 3 },
+    { "Boat01d", 0xF, 0x4C, BUILDING_BOAT, 53, 3 }, // this movie doesn't exist
+    { "Human Magic Shop01", 0xA, 0x2C8, BUILDING_MAGIC_SHOP, 54, 0 },
+    { "Necromancer Magic Shop01", 0xE, 0x2DC, BUILDING_MAGIC_SHOP, 66, 0 },
+    { "Dwarven Magic Shop01", 0x2A, 0x2EF, BUILDING_MAGIC_SHOP, 91, 0 },
+    { "Wizard Magic Shop", 0x1E, 0x2DF, BUILDING_MAGIC_SHOP, 15, 0 },
+    { "Warlock Magic Shop", 0x7, 0x3B9, BUILDING_MAGIC_SHOP, 15, 0 },
+    { "Elf Magic Shop", 0x24, 0x2CC, BUILDING_MAGIC_SHOP, 82, 0 },
+    { "Human Stables01", 0x21, 0x31, BUILDING_STABLE, 48, 3 },
+    { "Necromancer Stables", 0x21, 0x2DD, BUILDING_STABLE, 67, 3 },
+    { "", 0x21, 0x2F0, BUILDING_STABLE, 91, 3 },
+    { "Wizard Stables", 0x21, 0x3BA, BUILDING_STABLE, 16, 3 },
+    { "Warlock Stables", 0x21, 0x181, BUILDING_STABLE, 77, 3 },  // movie exist but unused in MM7 as Nighon doesn't have stables
+    { "Elf Stables", 0x21, 0x195, BUILDING_STABLE, 77, 3 },
+    { "Human Tavern01", 0xD, 0x2C2, BUILDING_TAVERN, 49, 0 },
+    { "Necromancer Tavern 01", 0xD, 0x3B0, BUILDING_TAVERN, 57, 0 },
+    { "Dwarven Tavern01", 0xD, 0x2FE, BUILDING_TAVERN, 94, 0 },
+    { "Wizard Tavern", 0xD, 0x3BB, BUILDING_TAVERN, 17, 0 },
+    { "Warlock Tavern", 0xD, 0x3A8, BUILDING_TAVERN, 33, 0 },
+    { "Elf Tavern", 0xD, 0x2CD, BUILDING_TAVERN, 78, 0 },
+    { "Human Temple01", 0x24, 0x2DB, BUILDING_TEMPLE, 50, 3 },
+    { "Necromancer Temple", 0x24, 0x2DF, BUILDING_TEMPLE, 60, 3 },
+    { "Dwarven Temple01", 0x24, 0x2F1, BUILDING_TEMPLE, 86, 3 },
+    { "Wizard Temple", 0x24, 0x2E0, BUILDING_TEMPLE, 10, 3 },
+    { "Warlock Temple", 0x24, 0x3A4, BUILDING_TEMPLE, 27, 3 },
+    { "Elf Temple", 0x24, 0x2CE, BUILDING_TEMPLE, 72, 3 },
+    { "Human Town Hall", 0x10, 0x39C, BUILDING_TOWN_HALL, 14, 0 },
+    { "Necromancer Town Hall01", 0x10, 0x3A4, BUILDING_TOWN_HALL, 61, 0 },
+    { "Dwarven Town Hall", 0x10, 0x2DB, BUILDING_TOWN_HALL, 88, 0 }, // this movie doesn't exist, stone city doesn't have town hall
+    { "Wizard Town Hall", 0x10, 0x3BD, BUILDING_TOWN_HALL, 11, 0 },
+    { "Warlock Town Hall", 0x10, 0x2DB, BUILDING_TOWN_HALL, 28, 0 },
+    { "Elf Town Hall", 0x10, 0x27A, BUILDING_TOWN_HALL, 73, 0 },
+    { "Human Training Ground01", 0x18, 0x2C7, BUILDING_TRAINING_GROUND, 44, 0 },
+    { "Necromancer Training Ground", 0x18, 0x3AD, BUILDING_TRAINING_GROUND, 62, 0 },
+    { "Dwarven Training Ground", 0x18, 0x2F2, BUILDING_TRAINING_GROUND, 89, 0 },
+    { "Wizard Training Ground", 0x18, 0x3A3, BUILDING_TRAINING_GROUND, 12, 0 },
+    { "Warlock Training Ground", 0x18, 0x3A6, BUILDING_TRAINING_GROUND, 29, 0 },
+    { "Elf Training Ground", 0x18, 0x19F, BUILDING_TRAINING_GROUND, 74, 0 },
+    { "Human Weapon Smith01", 0x16, 0x2C1, BUILDING_WEAPON_SHOP, 45, 4 },
+    { "Necromancer Weapon Smith01", 0x16, 0x2D9, BUILDING_WEAPON_SHOP, 63, 4 },
+    { "Dwarven Weapon Smith01", 0x16, 0x2EE, BUILDING_WEAPON_SHOP, 82, 4 },
+    { "Wizard Weapon Smith", 0x16, 0x2D5, BUILDING_WEAPON_SHOP, 13, 4 },
+    { "Warlock Weapon Smith", 0x16, 0x2D7, BUILDING_WEAPON_SHOP, 23, 4 },
+    { "Elf Weapon Smith", 0x16, 0x2CA, BUILDING_WEAPON_SHOP, 75, 4 },
+    { "Air Guild", 0x1D, 0xA4, BUILDING_AIR_GUILD, 1, 3 },
+    { "Body Guild", 0x19, 0x3BF, BUILDING_BODY_GUILD, 2, 0 },
+    { "Dark Guild", 0x19, 0x2D1, BUILDING_DARK_GUILD, 3, 0 },
+    { "Earth Guild", 0x19, 0x2CB, BUILDING_EARTH_GUILD, 83, 0 },
+    { "Fire Guild", 0x1C, 0x2BF, BUILDING_FIRE_GUILD, 56, 0 },
+    { "Light Guild", 0x1C, 0x2D5, BUILDING_LIGHT_GUILD, 46, 0 },
+    { "Mind Guild", 0x1C, 0xE5, BUILDING_MIND_GUILD, 40, 0 },
+    { "Spirit Guild", 0x1C, 0x2D2, BUILDING_SPIRIT_GUILD, 41, 0 },
+    { "Water Guild", 0x1B, 0x2D3, BUILDING_WATER_GUILD, 24, 0 },
+    { "Lord and Judge Out01", 1, 0, BUILDING_HOUSE, 39, 0 },
+    { "Human Poor House 1", 8, 0, BUILDING_HOUSE, 0, 0 },
+    { "Human Poor House 2", 8, 0, BUILDING_HOUSE, 0, 0 },
+    { "Human Poor House 3", 8, 0, BUILDING_HOUSE, 0, 0 },
+    { "Human Medium House 1", 8, 0, BUILDING_HOUSE, 0, 0 },
+    { "Human Medium House 2", 8, 0, BUILDING_HOUSE, 0, 0 },
+    { "Human Medium House 3", 8, 0, BUILDING_HOUSE, 0, 0 }, // this movie doesn't exist
+    { "Human Rich House 1", 8, 0, BUILDING_HOUSE, 0, 0 },
+    { "Human Rich House 2", 8, 0, BUILDING_HOUSE, 0, 0 },
+    { "Human Rich House 3", 8, 0, BUILDING_HOUSE, 0, 0 }, // this movie doesn't exist
+    { "Elven Poor House 1", 8, 0, BUILDING_HOUSE, 0, 0 },
+    { "Elven Poor House 2", 8, 0, BUILDING_HOUSE, 0, 0 },
+    { "Elven Poor House 3", 8, 0, BUILDING_HOUSE, 0, 0 }, // this movie doesn't exist
+    { "Elven Medium House 1", 8, 0, BUILDING_HOUSE, 0, 0 },
+    { "Elven Medium House 2", 8, 0, BUILDING_HOUSE, 0, 0 },
+    { "Elven Medium House 3", 8, 0, BUILDING_HOUSE, 0, 0 }, // this movie doesn't exist
+    { "Elven Rich House 1", 8, 0, BUILDING_HOUSE, 0, 0 },
+    { "Elven Rich House 2", 8, 0, BUILDING_HOUSE, 0, 0 },
+    { "Elven Rich House 3", 8, 0, BUILDING_HOUSE, 0, 0 },
+    { "Dwarven Poor House 1", 8, 0, BUILDING_HOUSE, 0, 0 },
+    { "Dwarven Poor House 2", 8, 0, BUILDING_HOUSE, 0, 0 },
+    { "Dwarven Poor House 3", 8, 0, BUILDING_HOUSE, 0, 0 }, // this movie doesn't exist
+    { "Dwarven Medium House 1", 8, 0, BUILDING_HOUSE, 0, 0 },
+    { "Dwarven Medium House 2", 8, 0, BUILDING_HOUSE, 0, 0 },
+    { "Dwarven Medium House 3", 8, 0, BUILDING_HOUSE, 0, 0 }, // this movie doesn't exist
+    { "Dwarven Rich House 1", 8, 0, BUILDING_HOUSE, 0, 0 },
+    { "Dwarven Rich House 2", 8, 0, BUILDING_HOUSE, 0, 0 },
+    { "Dwarven Rich House 3", 8, 0, BUILDING_HOUSE, 0, 0 }, // this movie doesn't exist
+    { "Wizard Poor House 1", 8, 0, BUILDING_HOUSE, 0, 0 },
+    { "Wizard Poor House 2", 8, 0, BUILDING_HOUSE, 0, 0 },
+    { "Wizard Poor House 3", 8, 0, BUILDING_HOUSE, 0, 0 }, // this movie doesn't exist
+    { "Wizard Medium House 1", 8, 0, BUILDING_HOUSE, 0, 0 },
+    { "Wizard Medium House 2", 8, 0, BUILDING_HOUSE, 0, 0 },
+    { "Wizard Medium House 3", 8, 0, BUILDING_HOUSE, 0, 0 }, // this movie doesn't exist
+    { "Wizard Rich House 1", 8, 0, BUILDING_HOUSE, 0, 0 },
+    { "Wizard Rich House 2", 8, 0, BUILDING_HOUSE, 0, 0 },
+    { "Wizard Rich House 3", 8, 0, BUILDING_HOUSE, 0, 0 }, // this movie doesn't exist
+    { "Necromancer Poor House 1", 8, 0, BUILDING_HOUSE, 0, 0 },
+    { "Necromancer Poor House 2", 8, 0, BUILDING_HOUSE, 0, 0 },
+    { "Necromancer Poor House 3", 8, 0, BUILDING_HOUSE, 0, 0 }, // this movie doesn't exist
+    { "Necromancer Medium House 1", 8, 0, BUILDING_HOUSE, 0, 0 },
+    { "Necromancer Medium House 2", 8, 0, BUILDING_HOUSE, 0, 0 },
+    { "Necromancer Medium House 3", 8, 0, BUILDING_HOUSE, 0, 0 }, // this movie doesn't exist
+    { "Necromancer Rich House 1", 8, 0, BUILDING_HOUSE, 0, 0 },
+    { "Necromancer Rich House 2", 8, 0, BUILDING_HOUSE, 0, 0 },
+    { "Necromancer Rich House 3", 8, 0, BUILDING_HOUSE, 0, 0 }, // this movie doesn't exist
+    { "Warlock Poor House 1", 8, 0, BUILDING_HOUSE, 0, 0 },
+    { "Warlock Poor House 2", 8, 0, BUILDING_HOUSE, 0, 0 },
+    { "Warlock Poor House 3", 8, 0, BUILDING_HOUSE, 0, 0 }, // this movie doesn't exist
+    { "Warlock Medium House 1", 8, 0, BUILDING_HOUSE, 0, 0 },
+    { "Warlock Medium House 2", 8, 0, BUILDING_HOUSE, 0, 0 },
+    { "Warlock Medium House 3", 8, 0, BUILDING_HOUSE, 0, 0 }, // this movie doesn't exist
+    { "Warlock Rich House 1", 8, 0, BUILDING_HOUSE, 0, 0 },
+    { "Warlock Rich House 2", 8, 0, BUILDING_HOUSE, 0, 0 },
+    { "Warlock Rich House 3", 8, 0, BUILDING_HOUSE, 0, 0 },
+    { "Out01 Temple of the Moon", 0x24, 0, BUILDING_DUNGEON, 0, 0 },
+    { "Out01 Dragon Cave", 0x24, 0, BUILDING_DUNGEON, 0, 0 },
+    { "Out02 Castle Harmondy", 0x24, 0, BUILDING_CASTLE, 0, 0 },
+    { "Out02 White Cliff Cave", 0x24, 0, BUILDING_DUNGEON, 0, 0 },
+    { "Out03 Erathian Sewer", 0x24, 0, BUILDING_DUNGEON, 0, 0 },
+    { "Out03 Fort Riverstride", 0x24, 0, BUILDING_DUNGEON, 0, 0 },
+    { "Out03 Castle Gryphonheart", 0x24, 0, BUILDING_CASTLE, 0, 0 },
+    { "Out04 Elf Castle", 0x24, 0, BUILDING_CASTLE, 0, 0 },
+    { "Out04 Tularean Caves", 0x24, 0, BUILDING_DUNGEON, 0, 0 },
+    { "Out04 Clanker's Laboratory", 0x24, 0, BUILDING_DUNGEON, 0, 0 },
+    { "Out05 Hall of the Pit", 0x24, 0, BUILDING_DUNGEON, 0, 0 },
+    { "Out05 Watchtower 6", 0x24, 0, BUILDING_DUNGEON, 0, 0 },
+    { "Out06 School of Sorcery", 0x24, 0, BUILDING_DUNGEON, 0, 0 },
+    { "Out06 Red Dwarf Mines", 0x24, 0, BUILDING_DUNGEON, 0, 0 },
+    { "Out07 Castle Lambent", 0x24, 0, BUILDING_CASTLE, 0, 0 },
+    { "Out07 Walls of Mist", 0x24, 0, BUILDING_DUNGEON, 0, 0 },
+    { "Out07 Temple of the Light", 0x24, 0, BUILDING_DUNGEON, 0, 0 },
+    { "Out08 Evil Entrance", 0x24, 0, BUILDING_DUNGEON, 0, 0 },
+    { "Out08 Breeding Zone", 0x24, 0, BUILDING_DUNGEON, 0, 0 },
+    { "Out08 Temple of the Dark", 0x24, 0, BUILDING_DUNGEON, 0, 0 },
+    { "Out09 Grand Temple of the Moon", 0x24, 0, BUILDING_DUNGEON, 0, 0 },
+    { "Out09 Grand Temple of the Sun", 0x24, 0, BUILDING_DUNGEON, 0, 0 },
+    { "Out10 Thunderfist Mountain", 0x24, 0, BUILDING_DUNGEON, 0, 0 },
+    { "Out10 The Maze", 0x24, 0, BUILDING_DUNGEON, 0, 0 },
+    { "Out10 Connecting Tunnel Cave #1", 0x24, 0, BUILDING_DUNGEON, 0, 0 },
+    { "", 0x24, 0, BUILDING_DUNGEON, 0, 0 },
+    { "", 0x24, 0, BUILDING_DUNGEON, 0, 0 },
+    { "Out11 Stone City", 0x24, 0, BUILDING_DUNGEON, 0, 0 },
+    { "", 0x24, 0, BUILDING_DUNGEON, 0, 0 },
+    { "Out12 Colony Zod", 0x24, 0, BUILDING_DUNGEON, 0, 0 },
+    { "Out12 Connecting Tunnel Cave #1", 0x24, 0, BUILDING_DUNGEON, 0, 0 },
+    { "", 0x24, 0, BUILDING_DUNGEON, 0, 0 },
+    { "", 0x24, 0, BUILDING_DUNGEON, 0, 0 },
+    { "Out13 Mercenary Guild", 0x24, 0, BUILDING_DUNGEON, 0, 0 },
+    { "Out13 Tidewater Caverns", 0x24, 0, BUILDING_DUNGEON, 0, 0 },
+    { "Out13 Wine Cellar", 0x24, 0, BUILDING_DUNGEON, 0, 0 },
+    { "Out14 Titan's Stronghold", 0x24, 0, BUILDING_DUNGEON, 0, 0 },
+    { "Out14 Temple of Baa", 0x24, 0, BUILDING_DUNGEON, 0, 0 },
+    { "Out14 Hall under the Hill", 0x24, 0, BUILDING_DUNGEON, 0, 0 },
+    { "Out15 The Linclon", 0x24, 0, BUILDING_DUNGEON, 0, 0 },
+    { "Jail", 0x24, 0, BUILDING_JAIL, 0, 0 },
+    { "Harmondale Throne Room", 0x24, 0, BUILDING_HOUSE, 0, 0 },
+    { "Gryphonheart Throne Room", 0x24, 0, BUILDING_THRONE_ROOM, 0, 0 },
+    { "Elf Castle Throne Room", 0x24, 0, BUILDING_THRONE_ROOM, 0, 0 },
+    { "Wizard Castle Throne Room", 0x24, 0, BUILDING_THRONE_ROOM, 0, 0 },
+    { "Necromancer Castle Throne Rooms", 0x24, 0, BUILDING_THRONE_ROOM, 0, 0 },
+    { "Master Thief", 0x24, 0, BUILDING_HOUSE, 0, 0 },
+    { "Dwarven King", 0x24, 0, BUILDING_THRONE_ROOM, 0, 0 },
+    { "Arms Master", 0x24, 0, BUILDING_HOUSE, 0, 0 },
+    { "Warlock", 0x24, 0, BUILDING_HOUSE, 0, 0 },
+    { "Lord Markam", 0x24, 0, BUILDING_THRONE_ROOM, 0, 0 },
+    { "Arbiter Neutral Town", 0x24, 0, BUILDING_HOUSE, 0, 0 },
+    { "Arbiter Good Town", 0x24, 0, BUILDING_HOUSE, 0, 0 },
+    { "Arbiter Evil Town", 0x24, 0, BUILDING_HOUSE, 0, 0 },
+    { "Necromancer Throne Room Empty", 0x24, 0, BUILDING_THRONE_ROOM, 0, 0 },
+    { "", 0x24, 0, BUILDING_HOUSE, 0, 0 },
+    { "", 0x24, 0, BUILDING_HOUSE, 0, 0 },
+    { "", 0x24, 0, BUILDING_HOUSE, 0, 0 },
+    { "", 0x24, 0, BUILDING_HOUSE, 0, 0 },
+    { "Boat01", 0xF, 0, BUILDING_HOUSE, 53, 3 },
+    { "", 0x24, 0, BUILDING_BOAT, 0, 0 },
+    { "", 0x24, 0, BUILDING_BOAT, 0, 0 },
+    { "", 0x24, 0, BUILDING_BOAT, 0, 0 },
+    { "", 0x24, 0, BUILDING_HOUSE, 0, 0 },
+    { "Arbiter Room Neutral", 0x24, 0, BUILDING_HOUSE, 0, 0 }, // this movie doesn't exist
+    { "Out02 Castle Harmondy Abandoned", 0x24, 0, BUILDING_CASTLE, 0, 0 },
+    { "Human Temple02", 0x24, 0x3AB, BUILDING_TEMPLE, 27, 0 },
+    { "Player Castle Good", 0x24, 0, BUILDING_CASTLE, 0, 0 },
+    { "Player Castle Bad", 0x24, 0, BUILDING_CASTLE, 0, 0 }
 } };
 
-IndexedArray<int, BuildingType_WeaponShop, BuildingType_DarkGuild> itemAmountInShop = {{
-    {BuildingType_WeaponShop, 6},
-    {BuildingType_ArmorShop, 8},
-    {BuildingType_MagicShop, 12},
-    {BuildingType_AlchemistShop, 12},
-    {BuildingType_FireGuild, 12},
-    {BuildingType_AirGuild, 12},
-    {BuildingType_WaterGuild, 12},
-    {BuildingType_EarthGuild, 12},
-    {BuildingType_SpiritGuild, 12},
-    {BuildingType_MindGuild, 12},
-    {BuildingType_BodyGuild, 12},
-    {BuildingType_LightGuild, 12},
-    {BuildingType_DarkGuild, 12}
+IndexedArray<int, BUILDING_WEAPON_SHOP, BUILDING_DARK_GUILD> itemAmountInShop = {{
+    {BUILDING_WEAPON_SHOP,   6},
+    {BUILDING_ARMOR_SHOP,    8},
+    {BUILDING_MAGIC_SHOP,   12},
+    {BUILDING_ALCHEMY_SHOP, 12},
+    {BUILDING_FIRE_GUILD,   12},
+    {BUILDING_AIR_GUILD,    12},
+    {BUILDING_WATER_GUILD,  12},
+    {BUILDING_EARTH_GUILD,  12},
+    {BUILDING_SPIRIT_GUILD, 12},
+    {BUILDING_MIND_GUILD,   12},
+    {BUILDING_BODY_GUILD,   12},
+    {BUILDING_LIGHT_GUILD,  12},
+    {BUILDING_DARK_GUILD,   12}
 }};
 
-IndexedArray<std::string, BuildingType_WeaponShop, BuildingType_MirroredPath> shopBackgroundNames = {{
-    {BuildingType_WeaponShop, "WEPNTABL"},
-    {BuildingType_ArmorShop, "ARMORY"},
-    {BuildingType_MagicShop, "MAGSHELF"},
-    {BuildingType_AlchemistShop, "MAGSHELF"},
-    {BuildingType_FireGuild, "MAGSHELF"},
-    {BuildingType_AirGuild, "MAGSHELF"},
-    {BuildingType_WaterGuild, "MAGSHELF"},
-    {BuildingType_EarthGuild, "MAGSHELF"},
-    {BuildingType_SpiritGuild, "MAGSHELF"},
-    {BuildingType_MindGuild, "MAGSHELF"},
-    {BuildingType_BodyGuild, "MAGSHELF"},
-    {BuildingType_LightGuild, "MAGSHELF"},
-    {BuildingType_DarkGuild, "MAGSHELF"},
-    {BuildingType_ElementalGuild, "MAGSHELF"},
-    {BuildingType_SelfGuild, "MAGSHELF"},
-    {BuildingType_MirroredPath, "MAGSHELF"}
+IndexedArray<std::string, BUILDING_WEAPON_SHOP, BUILDING_MIRRORED_PATH_GUILD> shopBackgroundNames = {{
+    {BUILDING_WEAPON_SHOP,           "WEPNTABL"},
+    {BUILDING_ARMOR_SHOP,            "ARMORY"},
+    {BUILDING_MAGIC_SHOP,            "MAGSHELF"},
+    {BUILDING_ALCHEMY_SHOP,          "MAGSHELF"},
+    {BUILDING_FIRE_GUILD,            "MAGSHELF"},
+    {BUILDING_AIR_GUILD,             "MAGSHELF"},
+    {BUILDING_WATER_GUILD,           "MAGSHELF"},
+    {BUILDING_EARTH_GUILD,           "MAGSHELF"},
+    {BUILDING_SPIRIT_GUILD,          "MAGSHELF"},
+    {BUILDING_MIND_GUILD,            "MAGSHELF"},
+    {BUILDING_BODY_GUILD,            "MAGSHELF"},
+    {BUILDING_LIGHT_GUILD,           "MAGSHELF"},
+    {BUILDING_DARK_GUILD,            "MAGSHELF"},
+    {BUILDING_ELEMENTAL_GUILD,       "MAGSHELF"},
+    {BUILDING_SELF_GUILD,            "MAGSHELF"},
+    {BUILDING_MIRRORED_PATH_GUILD,   "MAGSHELF"}
 }};
 
 std::array<std::string, 6> portraitClickLabel;
@@ -351,7 +351,7 @@ bool enterHouse(HOUSE_ID uHouseID) {
 
         uCurrentHouse_Animation = buildingTable[uHouseID - HOUSE_SMITH_EMERALD_ISLE].uAnimationID;
         in_current_building_type = pAnimatedRooms[uCurrentHouse_Animation].uBuildingType;
-        if (in_current_building_type == BuildingType_Throne_Room && pParty->uFine) {  // going to jail
+        if (in_current_building_type == BUILDING_THRONE_ROOM && pParty->uFine) {  // going to jail
             uHouseID = HOUSE_JAIL;
             uCurrentHouse_Animation = buildingTable[uHouseID - 1].uAnimationID;
             restAndHeal(GameTime::FromYears(1));
@@ -733,53 +733,53 @@ bool houseDialogPressEscape() {
 
 void createHouseUI(HOUSE_ID houseId) {
     switch (in_current_building_type) {
-      case BuildingType_FireGuild:
-      case BuildingType_AirGuild:
-      case BuildingType_WaterGuild:
-      case BuildingType_EarthGuild:
-      case BuildingType_SpiritGuild:
-      case BuildingType_MindGuild:
-      case BuildingType_BodyGuild:
-      case BuildingType_LightGuild:
-      case BuildingType_DarkGuild:
-      case BuildingType_MirroredPath:
+      case BUILDING_FIRE_GUILD:
+      case BUILDING_AIR_GUILD:
+      case BUILDING_WATER_GUILD:
+      case BUILDING_EARTH_GUILD:
+      case BUILDING_SPIRIT_GUILD:
+      case BUILDING_MIND_GUILD:
+      case BUILDING_BODY_GUILD:
+      case BUILDING_LIGHT_GUILD:
+      case BUILDING_DARK_GUILD:
+      case BUILDING_MIRRORED_PATH_GUILD:
         window_SpeakInHouse = new GUIWindow_MagicGuild(houseId);
         break;
-      case BuildingType_Bank:
+      case BUILDING_BANK:
         window_SpeakInHouse = new GUIWindow_Bank(houseId);
         break;
-      case BuildingType_Temple:
+      case BUILDING_TEMPLE:
         window_SpeakInHouse = new GUIWindow_Temple(houseId);
         break;
-      case BuildingType_Tavern:
+      case BUILDING_TAVERN:
         window_SpeakInHouse = new GUIWindow_Tavern(houseId);
         break;
-      case BuildingType_Training:
+      case BUILDING_TRAINING_GROUND:
         window_SpeakInHouse = new GUIWindow_Training(houseId);
         break;
-      case BuildingType_Stables:
-      case BuildingType_Boats:
+      case BUILDING_STABLE:
+      case BUILDING_BOAT:
         window_SpeakInHouse = new GUIWindow_Transport(houseId);
         break;
-      case BuildingType_TownHall:
+      case BUILDING_TOWN_HALL:
         window_SpeakInHouse = new GUIWindow_TownHall(houseId);
         break;
-      case BuildingType_Jail:
+      case BUILDING_JAIL:
         window_SpeakInHouse = new GUIWindow_Jail(houseId);
         break;
-      case BuildingType_MercenaryGuild:
+      case BUILDING_MERCENARY_GUILD:
         window_SpeakInHouse = new GUIWindow_MercenaryGuild(houseId);
         break;
-      case BuildingType_WeaponShop:
+      case BUILDING_WEAPON_SHOP:
         window_SpeakInHouse = new GUIWindow_WeaponShop(houseId);
         break;
-      case BuildingType_ArmorShop:
+      case BUILDING_ARMOR_SHOP:
         window_SpeakInHouse = new GUIWindow_ArmorShop(houseId);
         break;
-      case BuildingType_MagicShop:
+      case BUILDING_MAGIC_SHOP:
         window_SpeakInHouse = new GUIWindow_MagicShop(houseId);
         break;
-      case BuildingType_AlchemistShop:
+      case BUILDING_ALCHEMY_SHOP:
         window_SpeakInHouse = new GUIWindow_AlchemyShop(houseId);
         break;
       default:
@@ -937,7 +937,7 @@ void GUIWindow_House::houseDialogManager() {
     pWindow.uFrameWidth += 8;
     pWindow.uFrameZ += 8;
     if (!pDialogueNPCCount) {
-        if (in_current_building_type == BuildingType_Jail) {
+        if (in_current_building_type == BUILDING_JAIL) {
             houseSpecificDialogue();
             if (pDialogueNPCCount == uNumDialogueNPCPortraits && uHouse_ExitPic) {
                 render->DrawTextureNew(556 / 640.0f, 451 / 480.0f, dialogue_ui_x_x_u);
@@ -1091,9 +1091,9 @@ void GUIWindow_House::learnSelectedSkill(PLAYER_SKILL_TYPE skill) {
         if (!pParty->activeCharacter().pActiveSkills[skill]) {
             if (pParty->GetGold() < pPrice) {
                 GameUI_SetStatusBar(LSTR_NOT_ENOUGH_GOLD);
-                if (buildingType() == BuildingType_Training) {
+                if (buildingType() == BUILDING_TRAINING_GROUND) {
                     playHouseSound(houseId(), HOUSE_SOUND_TRAINING_NOT_ENOUGH_GOLD);
-                } else if (buildingType() == BuildingType_Tavern) {
+                } else if (buildingType() == BUILDING_TAVERN) {
                     playHouseSound(houseId(), HOUSE_SOUND_TAVERN_NOT_ENOUGH_GOLD);
                 } else {
                     playHouseSound(houseId(), HOUSE_SOUND_GENERAL_NOT_ENOUGH_GOLD);
@@ -1115,7 +1115,7 @@ GUIWindow_House::GUIWindow_House(HOUSE_ID houseId) : GUIWindow(WINDOW_HouseInter
     pBtn_ExitCancel = CreateButton({471, 445}, {169, 35}, 1, 0, UIMSG_Escape, 0, InputAction::Invalid,
                                    localization->GetString(LSTR_EXIT_BUILDING), {ui_exit_cancel_button_background});
 
-    if (in_current_building_type <= BuildingType_MirroredPath) {
+    if (in_current_building_type <= BUILDING_MIRRORED_PATH_GUILD) {
         shop_ui_background = assets->getImage_ColorKey(shopBackgroundNames[in_current_building_type]);
     }
 

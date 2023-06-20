@@ -23,28 +23,28 @@
 
 #include "Library/Random/Random.h"
 
-IndexedArray<DAMAGE_TYPE, BuildingType_FireGuild, BuildingType_DarkGuild> guildSpellsSchool = {
-    {BuildingType_FireGuild,   DMGT_FIRE},
-    {BuildingType_AirGuild,    DMGT_ELECTR},
-    {BuildingType_WaterGuild,  DMGT_COLD},
-    {BuildingType_EarthGuild,  DMGT_EARTH},
-    {BuildingType_SpiritGuild, DMGT_SPIRIT},
-    {BuildingType_MindGuild,   DMGT_MIND},
-    {BuildingType_BodyGuild,   DMGT_BODY},
-    {BuildingType_LightGuild,  DMGT_LIGHT},
-    {BuildingType_DarkGuild,   DMGT_DARK}
+IndexedArray<DAMAGE_TYPE, BUILDING_FIRE_GUILD, BUILDING_DARK_GUILD> guildSpellsSchool = {
+    {BUILDING_FIRE_GUILD,   DMGT_FIRE},
+    {BUILDING_AIR_GUILD,    DMGT_ELECTR},
+    {BUILDING_WATER_GUILD,  DMGT_COLD},
+    {BUILDING_EARTH_GUILD,  DMGT_EARTH},
+    {BUILDING_SPIRIT_GUILD, DMGT_SPIRIT},
+    {BUILDING_MIND_GUILD,   DMGT_MIND},
+    {BUILDING_BODY_GUILD,   DMGT_BODY},
+    {BUILDING_LIGHT_GUILD,  DMGT_LIGHT},
+    {BUILDING_DARK_GUILD,   DMGT_DARK}
 };
 
-IndexedArray<DIALOGUE_TYPE, BuildingType_FireGuild, BuildingType_DarkGuild> learnableMagicSkillDialogue = {
-    {BuildingType_FireGuild,   DIALOGUE_LEARN_FIRE},
-    {BuildingType_AirGuild,    DIALOGUE_LEARN_AIR},
-    {BuildingType_WaterGuild,  DIALOGUE_LEARN_WATER},
-    {BuildingType_EarthGuild,  DIALOGUE_LEARN_EARTH},
-    {BuildingType_SpiritGuild, DIALOGUE_LEARN_SPIRIT},
-    {BuildingType_MindGuild,   DIALOGUE_LEARN_MIND},
-    {BuildingType_BodyGuild,   DIALOGUE_LEARN_BODY},
-    {BuildingType_LightGuild,  DIALOGUE_LEARN_LIGHT},
-    {BuildingType_DarkGuild,   DIALOGUE_LEARN_DARK}
+IndexedArray<DIALOGUE_TYPE, BUILDING_FIRE_GUILD, BUILDING_DARK_GUILD> learnableMagicSkillDialogue = {
+    {BUILDING_FIRE_GUILD,   DIALOGUE_LEARN_FIRE},
+    {BUILDING_AIR_GUILD,    DIALOGUE_LEARN_AIR},
+    {BUILDING_WATER_GUILD,  DIALOGUE_LEARN_WATER},
+    {BUILDING_EARTH_GUILD,  DIALOGUE_LEARN_EARTH},
+    {BUILDING_SPIRIT_GUILD, DIALOGUE_LEARN_SPIRIT},
+    {BUILDING_MIND_GUILD,   DIALOGUE_LEARN_MIND},
+    {BUILDING_BODY_GUILD,   DIALOGUE_LEARN_BODY},
+    {BUILDING_LIGHT_GUILD,  DIALOGUE_LEARN_LIGHT},
+    {BUILDING_DARK_GUILD,   DIALOGUE_LEARN_DARK}
 };
 
 IndexedArray<PLAYER_SKILL_MASTERY, HOUSE_FIRST_MAGIC_GUILD, HOUSE_LAST_MAGIC_GUILD> guildSpellsMastery = {
@@ -219,7 +219,7 @@ void GUIWindow_MagicGuild::buyBooksDialogue() {
 
                 if (pt.x >= testpos && pt.x <= testpos + shop_ui_items_in_store[testx]->width()) {
                     if ((pt.y >= 90 && pt.y <= (90 + shop_ui_items_in_store[testx]->height())) || (pt.y >= 250 && pt.y <= (250 + shop_ui_items_in_store[testx]->height()))) {
-                        MerchantPhrase phrase = pParty->activeCharacter().SelectPhrasesTransaction(item, BuildingType_MagicShop, std::to_underlying(houseId()), 2);
+                        MerchantPhrase phrase = pParty->activeCharacter().SelectPhrasesTransaction(item, BUILDING_MAGIC_SHOP, std::to_underlying(houseId()), 2);
                         std::string str = BuildDialogueString(pMerchantsBuyPhrases[phrase], pParty->activeCharacterIndex() - 1, item, std::to_underlying(houseId()), 2);
                         int textHeight = pFontArrus->CalcTextHeight(str, working_window.uFrameWidth, 0);
                         working_window.DrawTitleText(pFontArrus, 0, (SIDE_TEXT_BOX_BODY_TEXT_HEIGHT - textHeight) / 2 + SIDE_TEXT_BOX_BODY_TEXT_OFFSET, colorTable.White, str, 3);
@@ -267,7 +267,7 @@ std::vector<DIALOGUE_TYPE> GUIWindow_MagicGuild::listDialogueOptions(DIALOGUE_TY
 
     switch (option) {
       case DIALOGUE_MAIN:
-        if (guildType == BuildingType_LightGuild || guildType == BuildingType_DarkGuild) {
+        if (guildType == BUILDING_LIGHT_GUILD || guildType == BUILDING_DARK_GUILD) {
             return {DIALOGUE_GUILD_BUY_BOOKS, learnableMagicSkillDialogue[guildType]};
         } else {
             return {DIALOGUE_GUILD_BUY_BOOKS, learnableMagicSkillDialogue[guildType], DIALOGUE_LEARN_MEDITATION};
@@ -336,7 +336,7 @@ void GUIWindow_MagicGuild::generateSpellBooksForGuild() {
     BuildingType guildType = buildingType();
 
     // Combined guilds exist only in MM6/MM8 and need to be processed separately
-    assert(guildType >= BuildingType_FireGuild && guildType <= BuildingType_DarkGuild);
+    assert(guildType >= BUILDING_FIRE_GUILD && guildType <= BUILDING_DARK_GUILD);
 
     DAMAGE_TYPE schoolType = guildSpellsSchool[guildType];
     PLAYER_SKILL_MASTERY maxMastery = guildSpellsMastery[houseId()];

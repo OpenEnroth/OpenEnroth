@@ -99,4 +99,4 @@ extern class GraphicsImage *_591428_endcap;
 
 extern std::array<const HouseAnimDescr, 196> pAnimatedRooms;
 
-extern IndexedArray<int, BuildingType_WeaponShop, BuildingType_DarkGuild> itemAmountInShop;
+extern IndexedArray<int, BUILDING_WEAPON_SHOP, BUILDING_DARK_GUILD> itemAmountInShop;

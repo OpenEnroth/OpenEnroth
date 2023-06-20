@@ -3,43 +3,43 @@
 #include <string>
 #include <array>
 
-enum class BuildingType: uint16_t {
-    BuildingType_Invalid = 0,
-    BuildingType_WeaponShop = 1,
-    BuildingType_ArmorShop = 2,
-    BuildingType_MagicShop = 3,
-    BuildingType_AlchemistShop = 4,
-    BuildingType_FireGuild = 5,
-    BuildingType_AirGuild = 6,
-    BuildingType_WaterGuild = 7,
-    BuildingType_EarthGuild = 8,
-    BuildingType_SpiritGuild = 9,
-    BuildingType_MindGuild = 10,
-    BuildingType_BodyGuild = 11,
-    BuildingType_LightGuild = 12,
-    BuildingType_DarkGuild = 13,
-    BuildingType_ElementalGuild = 14, // In MM6 it was Element Guild
-    BuildingType_SelfGuild = 15, // Exist only in MM6 and MM8
-    BuildingType_MirroredPath = 16, // Mirrored Path Guild of Light and Dark (not made it into any released game)
-    BuildingType_TownHall = 17,
-    BuildingType_MercenaryGuild = 18,
-    BuildingType_TownHall_MM6 = 19,
-    BuildingType_Throne_Room = 20,
-    BuildingType_Tavern = 21,
-    BuildingType_Bank = 22,
-    BuildingType_Temple = 23,
-    BuildingType_Castle = 24,
-    BuildingType_Dungeon = 25,
-    BuildingType_Seer = 26,
-    BuildingType_Stables = 27,
-    BuildingType_Boats = 28,
-    BuildingType_House = 29,
-    BuildingType_Training = 30,
-    BuildingType_Jail = 31,
-    BuildingType_Circus = 32, // MM6 Circus
-    BuildingType_GeneralStore = 33, // MM6 General Store (where it was 3)
-    BuildingType_ShadowGuild = 34, // MM6 Thieves Guild (where it was 17)
-    BuildingType_AdventuresInn = 35 // MM6 Adventurer's Inn
+enum class BuildingType : uint16_t {
+    BUILDING_INVALID = 0,
+    BUILDING_WEAPON_SHOP = 1,
+    BUILDING_ARMOR_SHOP = 2,
+    BUILDING_MAGIC_SHOP = 3,
+    BUILDING_ALCHEMY_SHOP = 4,
+    BUILDING_FIRE_GUILD = 5,
+    BUILDING_AIR_GUILD = 6,
+    BUILDING_WATER_GUILD = 7,
+    BUILDING_EARTH_GUILD = 8,
+    BUILDING_SPIRIT_GUILD = 9,
+    BUILDING_MIND_GUILD = 10,
+    BUILDING_BODY_GUILD = 11,
+    BUILDING_LIGHT_GUILD = 12,
+    BUILDING_DARK_GUILD = 13,
+    BUILDING_ELEMENTAL_GUILD = 14, // In MM6 it was Element Guild
+    BUILDING_SELF_GUILD = 15, // Exist only in MM6 and MM8
+    BUILDING_MIRRORED_PATH_GUILD = 16, // Mirrored Path Guild of Light and Dark (not made it into any released game)
+    BUILDING_TOWN_HALL = 17,
+    BUILDING_MERCENARY_GUILD = 18,
+    BUILDING_TOWN_HALL_MM6 = 19,
+    BUILDING_THRONE_ROOM = 20,
+    BUILDING_TAVERN = 21,
+    BUILDING_BANK = 22,
+    BUILDING_TEMPLE = 23,
+    BUILDING_CASTLE = 24,
+    BUILDING_DUNGEON = 25,
+    BUILDING_SEER = 26,
+    BUILDING_STABLE = 27,
+    BUILDING_BOAT = 28,
+    BUILDING_HOUSE = 29,
+    BUILDING_TRAINING_GROUND = 30,
+    BUILDING_JAIL = 31,
+    BUILDING_CIRCUS = 32, // MM6 Circus
+    BUILDING_GENERAL_STORE = 33, // MM6 General Store (where it was 3)
+    BUILDING_SHADOW_GUILD = 34, // MM6 Thieves Guild (where it was 17)
+    BUILDING_ADVENTURERS_INN = 35 // MM6 Adventurer's Inn
 };
 using enum BuildingType;
 

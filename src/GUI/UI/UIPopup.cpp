@@ -1402,17 +1402,17 @@ void ShowPopupShopItem() {
     int invindex;
     int testpos;
 
-    if (in_current_building_type == BuildingType_Invalid) return;
+    if (in_current_building_type == BUILDING_INVALID) return;
     if (dialog_menu_id < DIALOGUE_SHOP_BUY_STANDARD) return;
 
     Pointi pt = EngineIocContainer::ResolveMouse()->GetCursorPos();
     int testx;
 
-    if (in_current_building_type <= BuildingType_AlchemistShop) {
+    if (in_current_building_type <= BUILDING_ALCHEMY_SHOP) {
         if (dialog_menu_id == DIALOGUE_SHOP_BUY_STANDARD ||
             dialog_menu_id == DIALOGUE_SHOP_BUY_SPECIAL) {
             switch (in_current_building_type) {
-                case BuildingType_WeaponShop: {
+                case BUILDING_WEAPON_SHOP: {
                     testx = (pt.x - 30) / 70;
                     if (testx >= 0 && testx < 6) {
                         if (dialog_menu_id == DIALOGUE_SHOP_BUY_STANDARD)
@@ -1444,7 +1444,7 @@ void ShowPopupShopItem() {
                     break;
                 }
 
-                case BuildingType_ArmorShop:
+                case BUILDING_ARMOR_SHOP:
                     testx = (pt.x - 40) / 105;
                     if (testx >= 0 && testx < 4) {
                         if (pt.y >= 126) {
@@ -1487,8 +1487,8 @@ void ShowPopupShopItem() {
                     }
                     break;
 
-                case BuildingType_AlchemistShop:
-                case BuildingType_MagicShop:
+                case BUILDING_ALCHEMY_SHOP:
+                case BUILDING_MAGIC_SHOP:
                     testx = (pt.x) / 75;
                     // testx limits check
                     if (testx >= 0 && testx < 6) {
@@ -1564,7 +1564,7 @@ void ShowPopupShopItem() {
         }
     }
 
-    if (in_current_building_type <= BuildingType_MirroredPath && dialog_menu_id == DIALOGUE_GUILD_BUY_BOOKS) {
+    if (in_current_building_type <= BUILDING_MIRRORED_PATH_GUILD && dialog_menu_id == DIALOGUE_GUILD_BUY_BOOKS) {
         int testx = (pt.x - 32) / 70;
         if (testx >= 0 && testx < 6) {
             if (pt.y >= 250) {
