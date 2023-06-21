@@ -15,15 +15,15 @@
 
 static int totalPartyHealth() {
     int result = 0;
-    for (const Character &player : pParty->pCharacters)
-        result += player.health;
+    for (const Character &character : pParty->pCharacters)
+        result += character.health;
     return result;
 }
 
 static int partyItemCount() {
     int result = 0;
-    for (const Character &player : pParty->pCharacters)
-        for (const ItemGen &item : player.pOwnItems)
+    for (const Character &character : pParty->pCharacters)
+        for (const ItemGen &item : character.pOwnItems)
             result += item.uItemID != ITEM_NULL;
     return result;
 }
@@ -106,20 +106,20 @@ GAME_TEST(Issues, Issue163) {
 }
 
 GAME_TEST(Issues, Issue198) {
-    // Check that items can't end up out of bounds of player's inventory.
+    // Check that items can't end up out of bounds of character's inventory.
     test->playTraceFromTestData("issue_198.mm7", "issue_198.json");
 
     auto forEachInventoryItem = [](auto &&callback) {
-        for (const Character &player : pParty->pCharacters) {
+        for (const Character &character : pParty->pCharacters) {
             for (int inventorySlot = 0; inventorySlot < Character::INVENTORY_SLOT_COUNT; inventorySlot++) {
-                int itemIndex = player.pInventoryMatrix[inventorySlot];
+                int itemIndex = character.pInventoryMatrix[inventorySlot];
                 if (itemIndex <= 0)
                     continue; // Empty or non-primary cell.
 
                 int x = inventorySlot % Character::INVENTORY_SLOTS_WIDTH;
                 int y = inventorySlot / Character::INVENTORY_SLOTS_WIDTH;
 
-                callback(player.pInventoryItemList[itemIndex - 1], x, y);
+                callback(character.pInventoryItemList[itemIndex - 1], x, y);
             }
         }
     };
@@ -285,8 +285,8 @@ GAME_TEST(Issues, Issue293c) {
 GAME_TEST(Issues, Issue294) {
     auto partyExperience = [&] {
         uint64_t result = 0;
-        for (const Character &player : pParty->pCharacters)
-            result += player.experience;
+        for (const Character &character : pParty->pCharacters)
+            result += character.experience;
         return result;
     };
 
@@ -435,10 +435,10 @@ GAME_TEST(Issues, Issue417) {
 }
 
 static void check427Buffs(const char *ctx, std::initializer_list<int> players, bool hasBuff) {
-    for (int player : players) {
+    for (int character : players) {
         for (CharacterBuffs buff : {CHARACTER_BUFF_BLESS, CHARACTER_BUFF_PRESERVATION, CHARACTER_BUFF_HAMMERHANDS, CHARACTER_BUFF_PAIN_REFLECTION}) {
-            EXPECT_EQ(pParty->pCharacters[player].pCharacterBuffs[buff].Active(), hasBuff)
-                << "(with ctx=" << ctx << ", player=" << player << ", buff=" << buff << ")";
+            EXPECT_EQ(pParty->pCharacters[character].pCharacterBuffs[buff].Active(), hasBuff)
+                << "(with ctx=" << ctx << ", character=" << character << ", buff=" << buff << ")";
         }
     }
 }
@@ -459,7 +459,7 @@ GAME_TEST(Issues, Issue427_528) {
     // Check that all character have buffs
     check427Buffs("b", { 0, 1, 2, 3 }, true);
 
-    // 528 - Check that spells target single player or entire party depending on mastery drain mana
+    // 528 - Check that spells target single character or entire party depending on mastery drain mana
     EXPECT_EQ(pParty->pCharacters[2].mana, 40);
 }
 
@@ -838,8 +838,8 @@ GAME_TEST(Issues, Issue676) {
 GAME_TEST(Issues, Issue677) {
     // Haste doesn't impose weakness after it ends
     test->playTraceFromTestData("issue_677.mm7", "issue_677.json");
-    for (auto &player : pParty->pCharacters) {
-        EXPECT_EQ(player.conditions.Has(CONDITION_WEAK), true);
+    for (auto &character : pParty->pCharacters) {
+        EXPECT_EQ(character.conditions.Has(CONDITION_WEAK), true);
     }
 }
 
@@ -1005,7 +1005,7 @@ void check783784Buffs(bool haveBuffs) {
 }
 
 GAME_TEST(Issues, Issue783) {
-    // Check that all player buffs expire after rest.
+    // Check that all character buffs expire after rest.
     GameTime startTime;
     test->playTraceFromTestData("issue_783.mm7", "issue_783.json", [&] {
         startTime = pParty->GetPlayingTime();
@@ -1090,7 +1090,7 @@ GAME_TEST(Issues, Issue814) {
 }
 
 GAME_TEST(Issues, Issue815) {
-    // Test that subtract variable for player bits work
+    // Test that subtract variable for character bits work
     test->playTraceFromTestData("issue_815.mm7", "issue_815.json");
     EXPECT_EQ(pParty->pCharacters[0].uIntelligenceBonus, 25);
 }

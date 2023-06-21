@@ -49,7 +49,7 @@ void Arena_SelectionFightLevel() {
                     pActors[i].uAIState == Removed ||
                     pActors[i].uAIState == Disabled ||
                     pActors[i].uSummonerID != 0 &&
-                        PID_TYPE(pActors[i].uSummonerID) == OBJECT_Player)
+                        PID_TYPE(pActors[i].uSummonerID) == OBJECT_Character)
                     ++v0;
             }
             if (v0 >= (signed int)pActors.size() || (signed int)pActors.size() <= 0) {

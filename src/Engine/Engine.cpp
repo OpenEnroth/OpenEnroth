@@ -1412,54 +1412,54 @@ void _494035_timed_effects__water_walking_damage__etc() {
 
         ++pParty->days_played_without_rest;
         if (pParty->days_played_without_rest > 1) {
-            for (Character &player : pParty->pCharacters)
-                player.SetCondWeakWithBlockCheck(0);
+            for (Character &character : pParty->pCharacters)
+                character.SetCondWeakWithBlockCheck(0);
 
             // starving
             if (pParty->GetFood() > 0) {
                 pParty->TakeFood(1);
             } else {
-                for (Character &player : pParty->pCharacters) {
-                    player.health = player.health / (pParty->days_played_without_rest + 1) + 1;
+                for (Character &character : pParty->pCharacters) {
+                    character.health = character.health / (pParty->days_played_without_rest + 1) + 1;
                 }
             }
 
             // players go insane without rest
             if (pParty->days_played_without_rest > 3) {
-                for (Character &player : pParty->pCharacters) {
-                    player.resetTempBonuses();
-                    if (!player.IsPertified() && !player.IsEradicated() && !player.IsDead()) {
+                for (Character &character : pParty->pCharacters) {
+                    character.resetTempBonuses();
+                    if (!character.IsPertified() && !character.IsEradicated() && !character.IsDead()) {
                         if (grng->random(100) < 5 * pParty->days_played_without_rest)
-                            player.SetCondDeadWithBlockCheck(0);
+                            character.SetCondDeadWithBlockCheck(0);
                         if (grng->random(100) < 10 * pParty->days_played_without_rest)
-                            player.SetCondInsaneWithBlockCheck(0);
+                            character.SetCondInsaneWithBlockCheck(0);
                     }
                 }
             }
         }
         if (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR) pOutdoor->SetFog();
 
-        for (Character &player : pParty->pCharacters)
-            player.uNumDivineInterventionCastsThisDay = 0;
+        for (Character &character : pParty->pCharacters)
+            character.uNumDivineInterventionCastsThisDay = 0;
     }
 
     // water damage
     if (pParty->uFlags & PARTY_FLAGS_1_WATER_DAMAGE &&
         pParty->_6FC_water_lava_timer < pParty->GetPlayingTime().value) {
         pParty->_6FC_water_lava_timer = pParty->GetPlayingTime().value + 128;
-        for (Character &player : pParty->pCharacters) {
-            if (player.WearsItem(ITEM_RELIC_HARECKS_LEATHER, ITEM_SLOT_ARMOUR) ||
-                player.HasEnchantedItemEquipped(ITEM_ENCHANTMENT_OF_WATER_WALKING) ||
-                player.pCharacterBuffs[CHARACTER_BUFF_WATER_WALK].Active()) {
-                player.playEmotion(CHARACTER_EXPRESSION_SMILE, 0);
+        for (Character &character : pParty->pCharacters) {
+            if (character.WearsItem(ITEM_RELIC_HARECKS_LEATHER, ITEM_SLOT_ARMOUR) ||
+                character.HasEnchantedItemEquipped(ITEM_ENCHANTMENT_OF_WATER_WALKING) ||
+                character.pCharacterBuffs[CHARACTER_BUFF_WATER_WALK].Active()) {
+                character.playEmotion(CHARACTER_EXPRESSION_SMILE, 0);
             } else {
-                if (!player.hasUnderwaterSuitEquipped()) {
-                    player.receiveDamage((int64_t)player.GetMaxHealth() * 0.1, DMGT_FIRE);
+                if (!character.hasUnderwaterSuitEquipped()) {
+                    character.receiveDamage((int64_t)character.GetMaxHealth() * 0.1, DMGT_FIRE);
                     if (pParty->uFlags & PARTY_FLAGS_1_WATER_DAMAGE) {
                         GameUI_SetStatusBarShortNotification(localization->GetString(LSTR_YOURE_DROWNING));
                     }
                 } else {
-                    player.playEmotion(CHARACTER_EXPRESSION_SMILE, 0);
+                    character.playEmotion(CHARACTER_EXPRESSION_SMILE, 0);
                 }
             }
         }
@@ -1470,8 +1470,8 @@ void _494035_timed_effects__water_walking_damage__etc() {
         pParty->_6FC_water_lava_timer < pParty->GetPlayingTime().value) {
         pParty->_6FC_water_lava_timer = pParty->GetPlayingTime().value + 128;
 
-        for (Character &player : pParty->pCharacters) {
-            player.receiveDamage((int64_t)player.GetMaxHealth() * 0.1, DMGT_FIRE);
+        for (Character &character : pParty->pCharacters) {
+            character.receiveDamage((int64_t)character.GetMaxHealth() * 0.1, DMGT_FIRE);
             if (pParty->uFlags & PARTY_FLAGS_1_BURNING) {
                 GameUI_SetStatusBarShortNotification(localization->GetString(LSTR_ON_FIRE));
             }
@@ -1489,111 +1489,111 @@ void _494035_timed_effects__water_walking_damage__etc() {
     }
 
     uint numPlayersCouldAct = pParty->pCharacters.size();
-    for (Character &player : pParty->pCharacters) {
-        if (player.timeToRecovery && recoveryTimeDt > 0)
-            player.Recover(GameTime(recoveryTimeDt));
+    for (Character &character : pParty->pCharacters) {
+        if (character.timeToRecovery && recoveryTimeDt > 0)
+            character.Recover(GameTime(recoveryTimeDt));
 
-        if (player.GetItemsBonus(CHARACTER_ATTRIBUTE_ENDURANCE) +
-            player.health + player.uEndurance >= 1 ||
-            player.pCharacterBuffs[CHARACTER_BUFF_PRESERVATION].Active()) {
-            if (player.health < 1)
-                player.SetCondition(CONDITION_UNCONSCIOUS, 0);
+        if (character.GetItemsBonus(CHARACTER_ATTRIBUTE_ENDURANCE) +
+            character.health + character.uEndurance >= 1 ||
+            character.pCharacterBuffs[CHARACTER_BUFF_PRESERVATION].Active()) {
+            if (character.health < 1)
+                character.SetCondition(CONDITION_UNCONSCIOUS, 0);
         } else {
-            player.SetCondition(CONDITION_DEAD, 0);
+            character.SetCondition(CONDITION_DEAD, 0);
         }
 
-        if (player.field_E0) {
-            int v24 = player.field_E0 - pEventTimer->uTimeElapsed;
+        if (character.field_E0) {
+            int v24 = character.field_E0 - pEventTimer->uTimeElapsed;
             if (v24 > 0) {
-                player.field_E0 = v24;
+                character.field_E0 = v24;
             } else {
-                player.field_E0 = 0;
+                character.field_E0 = 0;
             }
         }
-        if (player.field_E4) {
-            int v26 = player.field_E4 - pEventTimer->uTimeElapsed;
+        if (character.field_E4) {
+            int v26 = character.field_E4 - pEventTimer->uTimeElapsed;
             if (v26 > 0) {
-                player.field_E4 = v26;
+                character.field_E4 = v26;
             } else {
-                player.field_E4 = 0;
+                character.field_E4 = 0;
             }
         }
-        if (player.field_E8) {
-            int v28 = player.field_E8 - pEventTimer->uTimeElapsed;
+        if (character.field_E8) {
+            int v28 = character.field_E8 - pEventTimer->uTimeElapsed;
             if (v28 > 0) {
-                player.field_E8 = v28;
+                character.field_E8 = v28;
             } else {
-                player.field_E8 = 0;
+                character.field_E8 = 0;
             }
         }
-        if (player.field_EC) {
-            int v30 = player.field_EC - pEventTimer->uTimeElapsed;
+        if (character.field_EC) {
+            int v30 = character.field_EC - pEventTimer->uTimeElapsed;
             if (v30 > 0) {
-                player.field_EC = v30;
+                character.field_EC = v30;
             } else {
-                player.field_EC = 0;
+                character.field_EC = 0;
             }
         }
-        if (player.field_F0) {
-            int v32 = player.field_F0 - pEventTimer->uTimeElapsed;
+        if (character.field_F0) {
+            int v32 = character.field_F0 - pEventTimer->uTimeElapsed;
             if (v32 > 0) {
-                player.field_F0 = v32;
+                character.field_F0 = v32;
             } else {
-                player.field_F0 = 0;
+                character.field_F0 = 0;
             }
         }
-        if (player.field_F4) {
-            int v34 = player.field_F4 - pEventTimer->uTimeElapsed;
+        if (character.field_F4) {
+            int v34 = character.field_F4 - pEventTimer->uTimeElapsed;
             if (v34 > 0) {
-                player.field_F4 = v34;
+                character.field_F4 = v34;
             } else {
-                player.field_F4 = 0;
+                character.field_F4 = 0;
             }
         }
-        if (player.field_F8) {
-            int v36 = player.field_F8 - pEventTimer->uTimeElapsed;
+        if (character.field_F8) {
+            int v36 = character.field_F8 - pEventTimer->uTimeElapsed;
             if (v36 > 0) {
-                player.field_F8 = v36;
+                character.field_F8 = v36;
             } else {
-                player.field_F8 = 0;
+                character.field_F8 = 0;
             }
         }
-        if (player.field_FC) {
-            int v38 = player.field_FC - pEventTimer->uTimeElapsed;
+        if (character.field_FC) {
+            int v38 = character.field_FC - pEventTimer->uTimeElapsed;
             if (v38 > 0) {
-                player.field_FC = v38;
+                character.field_FC = v38;
             } else {
-                player.field_FC = 0;
+                character.field_FC = 0;
             }
         }
-        if (player.field_100) {
-            int v40 = player.field_100 - pEventTimer->uTimeElapsed;
+        if (character.field_100) {
+            int v40 = character.field_100 - pEventTimer->uTimeElapsed;
             if (v40 > 0) {
-                player.field_100 = v40;
+                character.field_100 = v40;
             } else {
-                player.field_100 = 0;
+                character.field_100 = 0;
             }
         }
-        if (player.field_104) {
-            int v42 = player.field_104 - pEventTimer->uTimeElapsed;
+        if (character.field_104) {
+            int v42 = character.field_104 - pEventTimer->uTimeElapsed;
             if (v42 > 0) {
-                player.field_104 = v42;
+                character.field_104 = v42;
             } else {
-                player.field_104 = 0;
+                character.field_104 = 0;
             }
         }
 
-        if (!player.CanAct()) {
+        if (!character.CanAct()) {
             --numPlayersCouldAct;
         }
 
-        for (auto &playerBuff : player.pCharacterBuffs) {
+        for (auto &playerBuff : character.pCharacterBuffs) {
             playerBuff.IsBuffExpiredToTime(pParty->GetPlayingTime());
         }
 
-        if (player.pCharacterBuffs[CHARACTER_BUFF_HASTE].Expired()) {
-            player.SetCondition(CONDITION_WEAK, 0);
-            player.pCharacterBuffs[CHARACTER_BUFF_HASTE].Reset();
+        if (character.pCharacterBuffs[CHARACTER_BUFF_HASTE].Expired()) {
+            character.SetCondition(CONDITION_WEAK, 0);
+            character.pCharacterBuffs[CHARACTER_BUFF_HASTE].Reset();
         }
     }
 
@@ -1604,8 +1604,8 @@ void _494035_timed_effects__water_walking_damage__etc() {
     }
 
     if (pParty->pPartyBuffs[PARTY_BUFF_HASTE].Expired()) {
-        for (Character &player : pParty->pCharacters)
-            player.SetCondition(CONDITION_WEAK, 0);
+        for (Character &character : pParty->pCharacters)
+            character.SetCondition(CONDITION_WEAK, 0);
         pParty->pPartyBuffs[PARTY_BUFF_HASTE].Reset();
     }
 
@@ -1628,10 +1628,10 @@ void _494035_timed_effects__water_walking_damage__etc() {
 
     if (!numPlayersCouldAct) {
         if (current_screen_type != CURRENT_SCREEN::SCREEN_REST) {
-            for (Character &player : pParty->pCharacters) {
+            for (Character &character : pParty->pCharacters) {
                 // if someone is sleeping - wake them up
-                if (player.conditions.Has(CONDITION_SLEEP)) {
-                    player.conditions.Reset(CONDITION_SLEEP);
+                if (character.conditions.Has(CONDITION_SLEEP)) {
+                    character.conditions.Reset(CONDITION_SLEEP);
                     numPlayersCouldAct = 1;
                     break;
                 }
@@ -1665,7 +1665,7 @@ void RegeneratePartyHealthMana() {
         // repeat for missed intervals
         while (last_minutes + MINUTES_BETWEEN_REGEN <= cur_minutes) {
             // TODO: actually this looks like it never triggers.
-            // we get cursed_times, which is a time the player was cursed since the start of the game (a very large number),
+            // we get cursed_times, which is a time the character was cursed since the start of the game (a very large number),
             // and compare it with times_triggered, which is a small number
 
             // See #123 for discussion about this logic.
@@ -1758,7 +1758,7 @@ void RegeneratePartyHealthMana() {
                 spellSprite.uAttributes = 0;
                 spellSprite.uSectorID = 0;
                 spellSprite.uSpriteFrameID = 0;
-                spellSprite.spell_caster_pid = PID(OBJECT_Player, pParty->pPartyBuffs[PARTY_BUFF_IMMOLATION].caster);
+                spellSprite.spell_caster_pid = PID(OBJECT_Character, pParty->pPartyBuffs[PARTY_BUFF_IMMOLATION].caster);
                 spellSprite.uFacing = 0;
                 spellSprite.uSoundID = 0;
 
@@ -1775,14 +1775,14 @@ void RegeneratePartyHealthMana() {
             }
 
             // HP/SP regeneration and HP deterioration
-            for (Character &player : pParty->pCharacters) {
+            for (Character &character : pParty->pCharacters) {
                 for (ITEM_SLOT idx : allItemSlots()) {
                     bool recovery_HP = false;
                     bool decrease_HP = false;
                     bool recovery_SP = false;
-                    if (player.HasItemEquipped(idx)) {
-                        uint _idx = player.pEquipment.pIndices[idx];
-                        ItemGen equppedItem = player.pInventoryItemList[_idx - 1];
+                    if (character.HasItemEquipped(idx)) {
+                        uint _idx = character.pEquipment.pIndices[idx];
+                        ItemGen equppedItem = character.pInventoryItemList[_idx - 1];
                         if (!isRegular(equppedItem.uItemID)) {
                             if (equppedItem.uItemID == ITEM_RELIC_ETHRICS_STAFF) {
                                 decrease_HP = true;
@@ -1818,32 +1818,32 @@ void RegeneratePartyHealthMana() {
                             }
                         }
 
-                        if (recovery_HP && player.conditions.HasNone({ CONDITION_DEAD, CONDITION_ERADICATED })) {
-                            if (player.health < player.GetMaxHealth()) {
-                                player.health++;
+                        if (recovery_HP && character.conditions.HasNone({ CONDITION_DEAD, CONDITION_ERADICATED })) {
+                            if (character.health < character.GetMaxHealth()) {
+                                character.health++;
                             }
-                            if (player.conditions.Has(CONDITION_UNCONSCIOUS) && player.health > 0) {
-                                player.conditions.Reset(CONDITION_UNCONSCIOUS);
-                            }
-                        }
-
-                        if (recovery_SP && player.conditions.HasNone({ CONDITION_DEAD, CONDITION_ERADICATED })) {
-                            if (player.mana < player.GetMaxMana()) {
-                                player.mana++;
+                            if (character.conditions.Has(CONDITION_UNCONSCIOUS) && character.health > 0) {
+                                character.conditions.Reset(CONDITION_UNCONSCIOUS);
                             }
                         }
 
-                        if (decrease_HP && player.conditions.HasNone({ CONDITION_DEAD, CONDITION_ERADICATED })) {
-                            player.health--;
-                            if (!(player.conditions.Has(CONDITION_UNCONSCIOUS)) && player.health < 0) {
-                                player.conditions.Set(CONDITION_UNCONSCIOUS, pParty->GetPlayingTime());
+                        if (recovery_SP && character.conditions.HasNone({ CONDITION_DEAD, CONDITION_ERADICATED })) {
+                            if (character.mana < character.GetMaxMana()) {
+                                character.mana++;
                             }
-                            if (player.health < 1) {
-                                int enduranceCheck = player.health + player.uEndurance + player.GetItemsBonus(CHARACTER_ATTRIBUTE_ENDURANCE);
-                                if (enduranceCheck >= 1 || player.pCharacterBuffs[CHARACTER_BUFF_PRESERVATION].Active()) {
-                                    player.conditions.Set(CONDITION_UNCONSCIOUS, pParty->GetPlayingTime());
-                                } else if (!player.conditions.Has(CONDITION_DEAD)) {
-                                    player.conditions.Set(CONDITION_DEAD, pParty->GetPlayingTime());
+                        }
+
+                        if (decrease_HP && character.conditions.HasNone({ CONDITION_DEAD, CONDITION_ERADICATED })) {
+                            character.health--;
+                            if (!(character.conditions.Has(CONDITION_UNCONSCIOUS)) && character.health < 0) {
+                                character.conditions.Set(CONDITION_UNCONSCIOUS, pParty->GetPlayingTime());
+                            }
+                            if (character.health < 1) {
+                                int enduranceCheck = character.health + character.uEndurance + character.GetItemsBonus(CHARACTER_ATTRIBUTE_ENDURANCE);
+                                if (enduranceCheck >= 1 || character.pCharacterBuffs[CHARACTER_BUFF_PRESERVATION].Active()) {
+                                    character.conditions.Set(CONDITION_UNCONSCIOUS, pParty->GetPlayingTime());
+                                } else if (!character.conditions.Has(CONDITION_DEAD)) {
+                                    character.conditions.Set(CONDITION_DEAD, pParty->GetPlayingTime());
                                 }
                             }
                         }
@@ -1851,55 +1851,55 @@ void RegeneratePartyHealthMana() {
                 }
 
                 // regeneration buff
-                if (player.pCharacterBuffs[CHARACTER_BUFF_REGENERATION].Active() && player.conditions.HasNone({ CONDITION_DEAD, CONDITION_ERADICATED })) {
-                    player.health += 5 * player.pCharacterBuffs[CHARACTER_BUFF_REGENERATION].power;
-                    if (player.health > player.GetMaxHealth()) {
-                        player.health = player.GetMaxHealth();
+                if (character.pCharacterBuffs[CHARACTER_BUFF_REGENERATION].Active() && character.conditions.HasNone({ CONDITION_DEAD, CONDITION_ERADICATED })) {
+                    character.health += 5 * character.pCharacterBuffs[CHARACTER_BUFF_REGENERATION].power;
+                    if (character.health > character.GetMaxHealth()) {
+                        character.health = character.GetMaxHealth();
                     }
-                    if (player.conditions.Has(CONDITION_UNCONSCIOUS) && player.health > 0) {
-                        player.conditions.Reset(CONDITION_UNCONSCIOUS);
+                    if (character.conditions.Has(CONDITION_UNCONSCIOUS) && character.health > 0) {
+                        character.conditions.Reset(CONDITION_UNCONSCIOUS);
                     }
                 }
 
                 // for warlock
-                if (PartyHasDragon() && player.classType == CHARACTER_CLASS_WARLOCK) {
-                    if (player.mana < player.GetMaxMana()) {
-                        player.mana++;
+                if (PartyHasDragon() && character.classType == CHARACTER_CLASS_WARLOCK) {
+                    if (character.mana < character.GetMaxMana()) {
+                        character.mana++;
                     }
                 }
 
                 // for lich
-                if (player.classType == CHARACTER_CLASS_LICH) {
+                if (character.classType == CHARACTER_CLASS_LICH) {
                     bool lich_has_jar = false;
                     for (int idx = 0; idx < Character::INVENTORY_SLOT_COUNT; ++idx) {
-                        if (player.pInventoryItemList[idx].uItemID == ITEM_QUEST_LICH_JAR_FULL)
+                        if (character.pInventoryItemList[idx].uItemID == ITEM_QUEST_LICH_JAR_FULL)
                             lich_has_jar = true;
                     }
 
-                    if (player.conditions.HasNone({ CONDITION_DEAD, CONDITION_ERADICATED })) {
-                        if (player.health > (player.GetMaxHealth() / 2)) {
-                            player.health = player.health - 2;
+                    if (character.conditions.HasNone({ CONDITION_DEAD, CONDITION_ERADICATED })) {
+                        if (character.health > (character.GetMaxHealth() / 2)) {
+                            character.health = character.health - 2;
                         }
-                        if (player.mana > (player.GetMaxMana() / 2)) {
-                            player.mana = player.mana - 2;
+                        if (character.mana > (character.GetMaxMana() / 2)) {
+                            character.mana = character.mana - 2;
                         }
                     }
 
                     if (lich_has_jar) {
-                        if (player.mana < player.GetMaxMana()) {
-                            player.mana++;
+                        if (character.mana < character.GetMaxMana()) {
+                            character.mana++;
                         }
                     }
                 }
 
                 // for zombie
-                if (player.conditions.Has(CONDITION_ZOMBIE) &&
-                    player.conditions.HasNone({ CONDITION_DEAD, CONDITION_ERADICATED })) {
-                    if (player.health > (player.GetMaxHealth() / 2)) {
-                        player.health = player.health--;
+                if (character.conditions.Has(CONDITION_ZOMBIE) &&
+                    character.conditions.HasNone({ CONDITION_DEAD, CONDITION_ERADICATED })) {
+                    if (character.health > (character.GetMaxHealth() / 2)) {
+                        character.health = character.health--;
                     }
-                    if (player.mana > 0) {
-                        player.mana = player.mana--;
+                    if (character.mana > 0) {
+                        character.mana = character.mana--;
                     }
                 }
             }

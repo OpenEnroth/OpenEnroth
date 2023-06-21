@@ -1363,10 +1363,10 @@ void GameUI_DrawPortraits() {
     }
     if (pParty->bTurnBasedModeOn) {
         if (pTurnEngine->turn_stage != TE_WAIT) {
-            if (PID_TYPE(pTurnEngine->pQueue[0].uPackedID) == OBJECT_Player) {
+            if (PID_TYPE(pTurnEngine->pQueue[0].uPackedID) == OBJECT_Character) {
                 if (pTurnEngine->uActorQueueSize > 0) {
                     for (uint i = 0; i < (uint)pTurnEngine->uActorQueueSize; ++i) {
-                        if (PID_TYPE(pTurnEngine->pQueue[i].uPackedID) != OBJECT_Player)
+                        if (PID_TYPE(pTurnEngine->pQueue[i].uPackedID) != OBJECT_Character)
                             break;
 
                         auto alert_texture = game_ui_player_alert_green;

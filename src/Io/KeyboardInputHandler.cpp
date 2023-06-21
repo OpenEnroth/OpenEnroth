@@ -208,7 +208,7 @@ void KeyboardInputHandler::GenerateGameplayActions() {
             if (current_screen_type == CURRENT_SCREEN::SCREEN_GAME) {
                 if (pParty->bTurnBasedModeOn) {
                     if (pTurnEngine->turn_stage == TE_MOVEMENT ||
-                        PID_TYPE(pTurnEngine->pQueue[0].uPackedID) == OBJECT_Player) {
+                        PID_TYPE(pTurnEngine->pQueue[0].uPackedID) == OBJECT_Character) {
                         pParty->bTurnBasedModeOn = false;
                         pTurnEngine->End(true);
                     }

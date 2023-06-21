@@ -184,31 +184,31 @@ int CharacterCreation_GetUnspentAttributePointCount() {
     int PenaltyMult;
     int BonusMult;
 
-    for (Character &player : pParty->pCharacters) {
-        raceId = player.GetRace();
+    for (Character &character : pParty->pCharacters) {
+        raceId = character.GetRace();
 
         for (int statNum = 0; statNum <= 6; statNum++) {
             switch (statNum) {
                 case 0:
-                    CurrentStatValue = player.uMight;
+                    CurrentStatValue = character.uMight;
                     break;
                 case 1:
-                    CurrentStatValue = player.uIntelligence;
+                    CurrentStatValue = character.uIntelligence;
                     break;
                 case 2:
-                    CurrentStatValue = player.uPersonality;
+                    CurrentStatValue = character.uPersonality;
                     break;
                 case 3:
-                    CurrentStatValue = player.uEndurance;
+                    CurrentStatValue = character.uEndurance;
                     break;
                 case 4:
-                    CurrentStatValue = player.uAccuracy;
+                    CurrentStatValue = character.uAccuracy;
                     break;
                 case 5:
-                    CurrentStatValue = player.uSpeed;
+                    CurrentStatValue = character.uSpeed;
                     break;
                 case 6:
-                    CurrentStatValue = player.uLuck;
+                    CurrentStatValue = character.uLuck;
                     break;
             }
 
@@ -529,17 +529,17 @@ void Character::SetCondition(Condition uConditionIdx, int blockable) {
     }
 
     int playersBefore = 0;
-    for (Character &player : pParty->pCharacters) {  // count active players before activating condition
-        playersBefore += player.CanAct() ? 1 : 0;
+    for (Character &character : pParty->pCharacters) {  // count active players before activating condition
+        playersBefore += character.CanAct() ? 1 : 0;
     }
 
     conditions.Set(uConditionIdx, pParty->GetPlayingTime());  // set condition
 
     int playersAfter = 0;
     Character *remainingPlayer = nullptr;
-    for (Character &player : pParty->pCharacters) {
-        if (player.CanAct()) {
-            remainingPlayer = &player;
+    for (Character &character : pParty->pCharacters) {
+        if (character.CanAct()) {
+            remainingPlayer = &character;
             playersAfter++;
         }
     }
@@ -940,7 +940,7 @@ int Character::GetActualAttribute(CharacterAttributeType attrId,
 
     for (uint i = 0; i < 4; ++i) {
         if (uActualAge >=
-            pAgeingTable[i])  // is the player old enough to need attrib adjust
+            pAgeingTable[i])  // is the character old enough to need attrib adjust
             uAgeingMultiplier = pAgingAttributeModifier[attrId][i];
         else
             break;
@@ -1448,7 +1448,7 @@ int Character::StealFromActor(
     Actor *actroPtr;
     actroPtr = &pActors[uActorID];
 
-    if (!actroPtr || !CanAct()) {  // no actor to steal from or player cant act
+    if (!actroPtr || !CanAct()) {  // no actor to steal from or character cant act
         return STEAL_BUSTED;
     }
 
@@ -1576,7 +1576,7 @@ int Character::receiveDamage(signed int amount, DAMAGE_TYPE dmg_type) {
         health -= recieved_dmg;     // reduce health
     }
 
-    if (health < 1) {  // player unconscious or if too hurt - dead
+    if (health < 1) {  // character unconscious or if too hurt - dead
         if ((health + uEndurance + GetItemsBonus(CHARACTER_ATTRIBUTE_ENDURANCE) >= 1) ||
             pCharacterBuffs[CHARACTER_BUFF_PRESERVATION].Active()) {
             SetCondUnconsciousWithBlockCheck(false);
@@ -2695,7 +2695,7 @@ int Character::GetMagicalBonus(CharacterAttributeType a2) const {
         case CHARACTER_ATTRIBUTE_ATTACK:
         case CHARACTER_ATTRIBUTE_RANGED_ATTACK:
             v3 = this->pCharacterBuffs[CHARACTER_BUFF_BLESS]
-                     .power;  // only player effect spell in both VI and VII
+                     .power;  // only character effect spell in both VI and VII
             break;
         case CHARACTER_ATTRIBUTE_MELEE_DMG_BONUS:
             v3 = this->pCharacterBuffs[CHARACTER_BUFF_HEROISM].power;
@@ -4047,7 +4047,7 @@ void Character::useItem(int targetCharacter, bool isPortraitClick) {
             return;
         } else if (pParty->pPickedItem.uItemID == ITEM_HORSESHOE) {
             spell_fx_renderer->SetPlayerBuffAnim(SPELL_QUEST_COMPLETED, targetCharacter);
-            //v5 = PID(OBJECT_Player, player_num + 49);
+            //v5 = PID(OBJECT_Character, player_num + 49);
             //pAudioPlayer->playSound(SOUND_quest, v5);
             pAudioPlayer->playUISound(SOUND_quest);
             playerAffected->uSkillPoints += 2;
@@ -4394,14 +4394,14 @@ bool Character::CompareVariable(VariableType VarNum, int pValue) {
         case VAR_CircusPrises:  // isn't used in MM6 since 0x1D6u is a book of
                                 // regeneration
             v4 = 0;
-            for (Character &player : pParty->pCharacters) {
+            for (Character &character : pParty->pCharacters) {
                 for (int invPos = 0; invPos < TOTAL_ITEM_SLOT_COUNT; invPos++) {
                     ITEM_TYPE itemId;
 
                     if (invPos < INVENTORY_SLOT_COUNT) {
-                        itemId = player.pInventoryItemList[invPos].uItemID;
+                        itemId = character.pInventoryItemList[invPos].uItemID;
                     } else {
-                        itemId = player.pEquippedItems[invPos - INVENTORY_SLOT_COUNT].uItemID;
+                        itemId = character.pEquippedItems[invPos - INVENTORY_SLOT_COUNT].uItemID;
                     }
                     switch (itemId) {
                         case ITEM_SPELLBOOK_REGENERATION:
@@ -5068,7 +5068,7 @@ void Character::SetVariable(VariableType var_type, signed int var_value) {
 //----- (new function) --------------------------------------------------------
 void Character::PlayAwardSound() {
     //int playerIndex = getCharacterIndex();
-    //int v25 = PID(OBJECT_Player, playerIndex + 48);
+    //int v25 = PID(OBJECT_Character, playerIndex + 48);
     //pAudioPlayer->playSound(SOUND_quest, v25);
     pAudioPlayer->playUISound(SOUND_quest);
 }
@@ -6284,11 +6284,11 @@ int cycleCharacter(bool backwards) {
 
 bool Character::hasUnderwaterSuitEquipped() {
     // the original function took the
-    // player number as a parameter. if it
+    // character number as a parameter. if it
     // was 0, the whole party was checked.
     // calls with the parameter 0 have been
     // changed to calls to this for every
-    // player
+    // character
     if (GetArmorItem() == nullptr || GetArmorItem()->uItemID != ITEM_QUEST_WETSUIT) {
         return false;
     }
@@ -6323,9 +6323,9 @@ bool ShouldLoadTexturesForRaceAndGender(unsigned int _this) {
     CharacterRace race;  // edi@2
     CharacterSex sex;       // eax@2
 
-    for (Character &player : pParty->pCharacters) {
-        race = player.GetRace();
-        sex = player.GetSexByVoice();
+    for (Character &character : pParty->pCharacters) {
+        race = character.GetRace();
+        sex = character.GetSexByVoice();
         switch (_this) {
             case 0:
                 if ((race == CHARACTER_RACE_HUMAN ||
@@ -6356,8 +6356,8 @@ bool ShouldLoadTexturesForRaceAndGender(unsigned int _this) {
 
 //----- (0043ED6F) --------------------------------------------------------
 bool IsDwarfPresentInParty(bool a1) {
-    for (Character &player : pParty->pCharacters) {
-        CharacterRace race = player.GetRace();
+    for (Character &character : pParty->pCharacters) {
+        CharacterRace race = character.GetRace();
 
         if (race == CHARACTER_RACE_DWARF && a1)
             return true;
@@ -6369,7 +6369,7 @@ bool IsDwarfPresentInParty(bool a1) {
 
 //----- (00439FCB) --------------------------------------------------------
 void DamageCharacterFromMonster(unsigned int uObjID, ABILITY_INDEX dmgSource, Vec3i *pPos, signed int targetchar) {
-    // target player? if any
+    // target character? if any
 
     SPELL_TYPE spellId;
     signed int recvdMagicDmg;     // eax@139
@@ -6381,7 +6381,7 @@ void DamageCharacterFromMonster(unsigned int uObjID, ABILITY_INDEX dmgSource, Ve
     OBJECT_Door = 0x1,
     OBJECT_Item = 0x2,
     OBJECT_Actor = 0x3,
-    OBJECT_Player = 0x4,
+    OBJECT_Character = 0x4,
     OBJECT_Decoration = 0x5,
     OBJECT_Face = 0x6,*/
 
@@ -6450,7 +6450,7 @@ void DamageCharacterFromMonster(unsigned int uObjID, ABILITY_INDEX dmgSource, Ve
             }
         }
         // TODO(Nik-RE-dev): is it correct to use voice volume for strike sounds?
-        pAudioPlayer->playSound(soundToPlay, PID(OBJECT_Player, targetchar));
+        pAudioPlayer->playSound(soundToPlay, PID(OBJECT_Character, targetchar));
 
         // calc damage
         int dmgToReceive = actorPtr->_43B3E0_CalcDamage(dmgSource);
@@ -6495,7 +6495,7 @@ void DamageCharacterFromMonster(unsigned int uObjID, ABILITY_INDEX dmgSource, Ve
                 actorPtr->sCurrentHP -= reflectedDamage;
                 if (reflectedDamage >= 0) {
                     if (actorPtr->sCurrentHP >= 1) {
-                        Actor::AI_Stun(uActorID, PID(OBJECT_Player, targetchar), 0);  // todo extract this branch to a function
+                        Actor::AI_Stun(uActorID, PID(OBJECT_Character, targetchar), 0);  // todo extract this branch to a function
                                     // once Actor::functions are changed to
                                     // nonstatic actor functions
                         Actor::AggroSurroundingPeasants(uActorID, 1);
@@ -6565,7 +6565,7 @@ void DamageCharacterFromMonster(unsigned int uObjID, ABILITY_INDEX dmgSource, Ve
 
             int damage;
             int damagetype;
-            if (uActorType != OBJECT_Player ||spritefrom->uSpellID != SPELL_BOW_ARROW) {
+            if (uActorType != OBJECT_Character ||spritefrom->uSpellID != SPELL_BOW_ARROW) {
                 int playerMaxHp = playerPtr->GetMaxHealth();
                 damage = CalcSpellDamage(spritefrom->uSpellID,
                                          spritefrom->spell_level,
@@ -6576,7 +6576,7 @@ void DamageCharacterFromMonster(unsigned int uObjID, ABILITY_INDEX dmgSource, Ve
                 damagetype = 0;
             }
             playerPtr->receiveDamage(damage, (DAMAGE_TYPE)damagetype);
-            if (uActorType == OBJECT_Player) {
+            if (uActorType == OBJECT_Character) {
                 pParty->setDelayedReaction(SPEECH_DAMAGED_PARTY, uActorID);
             }
             return;
@@ -6667,7 +6667,7 @@ void DamageCharacterFromMonster(unsigned int uObjID, ABILITY_INDEX dmgSource, Ve
 
                     if (recvdMagicDmg >= 0) {
                         if (actorPtr->sCurrentHP >= 1) {
-                            Actor::AI_Stun(uActorID, PID(OBJECT_Player, targetchar), 0);
+                            Actor::AI_Stun(uActorID, PID(OBJECT_Character, targetchar), 0);
                             Actor::AggroSurroundingPeasants(uActorID, 1);
                         } else {
                             // actor killed by retaliation
@@ -6708,7 +6708,7 @@ void DamageCharacterFromMonster(unsigned int uObjID, ABILITY_INDEX dmgSource, Ve
             Character *playerPtr = &pParty->pCharacters[targetchar];
             int damage;
             int damagetype;
-            if (uActorType != OBJECT_Player ||
+            if (uActorType != OBJECT_Character ||
                 spritefrom->uSpellID != SPELL_BOW_ARROW) {
                 int playerMaxHp = playerPtr->GetMaxHealth();
                 damage = CalcSpellDamage(spritefrom->uSpellID,
@@ -6721,7 +6721,7 @@ void DamageCharacterFromMonster(unsigned int uObjID, ABILITY_INDEX dmgSource, Ve
             }
 
             playerPtr->receiveDamage(damage, (DAMAGE_TYPE)damagetype);
-            if (uActorType == OBJECT_Player) {
+            if (uActorType == OBJECT_Character) {
                 pParty->setDelayedReaction(SPEECH_DAMAGED_PARTY, uActorID);
             }
 
@@ -7048,7 +7048,7 @@ bool Character::characterHitOrMiss(Actor *pActor, int distancemod, CHARACTER_SKI
 
     int effectiveActorArmor = armorBuff + naturalArmor;
 
-    int attBonus;  // player attack bonus
+    int attBonus;  // character attack bonus
     if (distancemod)
         attBonus = this->GetRangedAttack();  // range
     else
@@ -7080,17 +7080,17 @@ void Character::_42ECB5_CharacterAttacksActor() {
     //  SoundID v24; // [sp-4h] [bp-40h]@58
 
     // result = pParty->activeCharacter().CanAct();
-    Character *player = &pParty->activeCharacter();
-    if (!player->CanAct()) return;
+    Character *character = &pParty->activeCharacter();
+    if (!character->CanAct()) return;
 
     CastSpellInfoHelpers::cancelSpellCastInProgress();
     // v3 = 0;
     if (pParty->Invisible())
         pParty->pPartyBuffs[PARTY_BUFF_INVISIBILITY].Reset();
 
-    // v31 = player->pEquipment.uBow;
-    int bow_idx = player->pEquipment.uBow;
-    if (bow_idx && player->pInventoryItemList[bow_idx - 1].IsBroken())
+    // v31 = character->pEquipment.uBow;
+    int bow_idx = character->pEquipment.uBow;
+    if (bow_idx && character->pInventoryItemList[bow_idx - 1].IsBroken())
         bow_idx = 0;
 
     // v32 = 0;
@@ -7099,16 +7099,16 @@ void Character::_42ECB5_CharacterAttacksActor() {
 
     ITEM_TYPE laser_weapon_item_id = ITEM_NULL;
 
-    int main_hand_idx = player->pEquipment.uMainHand;
+    int main_hand_idx = character->pEquipment.uMainHand;
     if (main_hand_idx) {
-        const ItemGen *item = &player->pInventoryItemList[main_hand_idx - 1];
+        const ItemGen *item = &character->pInventoryItemList[main_hand_idx - 1];
         // v5 = (char *)v1 + 36 * v4;
         if (!item->IsBroken()) {
             // v28b = &v1->pInventoryItems[v4].uItemID;
             // v6 = v1->pInventoryItems[v4].uItemID;//*((int *)v5 + 124);
             if (item->isWand()) {
                 if (item->uNumCharges <= 0)
-                    player->pEquipment.uMainHand =
+                    character->pEquipment.uMainHand =
                         0;  // wand discharged - unequip
                 else
                     wand_item_id = item->uItemID;  // *((int *)v5 + 124);
@@ -7160,22 +7160,22 @@ void Character::_42ECB5_CharacterAttacksActor() {
     } else if (wand_item_id != ITEM_NULL) {
         shooting_wand = true;
 
-        int main_hand_idx = player->pEquipment.uMainHand;
-        pushSpellOrRangedAttack(wandSpellIds[player->pInventoryItemList[main_hand_idx - 1].uItemID],
+        int main_hand_idx = character->pEquipment.uMainHand;
+        pushSpellOrRangedAttack(wandSpellIds[character->pInventoryItemList[main_hand_idx - 1].uItemID],
                                 pParty->activeCharacterIndex() - 1, 8, 0, pParty->activeCharacterIndex() + 8);
 
-        if (!--player->pInventoryItemList[main_hand_idx - 1].uNumCharges)
-            player->pEquipment.uMainHand = 0;
+        if (!--character->pInventoryItemList[main_hand_idx - 1].uNumCharges)
+            character->pEquipment.uMainHand = 0;
     } else if (target_type == OBJECT_Actor && actor_distance <= 407.2) {
         melee_attack = true;
 
         Vec3i a3 = actor->vPosition - pParty->vPosition;
         normalize_to_fixpoint(&a3.x, &a3.y, &a3.z);
 
-        Actor::DamageMonsterFromParty(PID(OBJECT_Player, pParty->activeCharacterIndex() - 1),
+        Actor::DamageMonsterFromParty(PID(OBJECT_Character, pParty->activeCharacterIndex() - 1),
                                       target_id, &a3);
-        if (player->WearsItem(ITEM_ARTIFACT_SPLITTER, ITEM_SLOT_MAIN_HAND) ||
-            player->WearsItem(ITEM_ARTIFACT_SPLITTER, ITEM_SLOT_OFF_HAND))
+        if (character->WearsItem(ITEM_ARTIFACT_SPLITTER, ITEM_SLOT_MAIN_HAND) ||
+            character->WearsItem(ITEM_ARTIFACT_SPLITTER, ITEM_SLOT_OFF_HAND))
             _42FA66_do_explosive_impact(
                 actor->vPosition.x, actor->vPosition.y,
                 actor->vPosition.z + actor->uActorHeight / 2, 0, 512,
@@ -7191,8 +7191,8 @@ void Character::_42ECB5_CharacterAttacksActor() {
 
     if (!pParty->bTurnBasedModeOn && melee_attack) {
         // wands, bows & lasers will add recovery while shooting spell effect
-        int recovery = player->GetAttackRecoveryTime(false);
-        player->SetRecoveryTime(static_cast<int>(debug_non_combat_recovery_mul * recovery * flt_debugrecmod3));
+        int recovery = character->GetAttackRecoveryTime(false);
+        character->SetRecoveryTime(static_cast<int>(debug_non_combat_recovery_mul * recovery * flt_debugrecmod3));
     }
 
     CharacterSkillType skill = CHARACTER_SKILL_STAFF;
@@ -7200,13 +7200,13 @@ void Character::_42ECB5_CharacterAttacksActor() {
         return;
     } else if (shooting_bow) {
         skill = CHARACTER_SKILL_BOW;
-        player->playReaction(SPEECH_SHOOT);
+        character->playReaction(SPEECH_SHOOT);
     } else if (shotting_laser) {
         skill = CHARACTER_SKILL_BLASTER;
     } else {
-        int main_hand_idx = player->pEquipment.uMainHand;
-        if (player->HasItemEquipped(ITEM_SLOT_MAIN_HAND) && main_hand_idx)
-            skill = player->pInventoryItemList[main_hand_idx - 1].GetPlayerSkillType();
+        int main_hand_idx = character->pEquipment.uMainHand;
+        if (character->HasItemEquipped(ITEM_SLOT_MAIN_HAND) && main_hand_idx)
+            skill = character->pInventoryItemList[main_hand_idx - 1].GetPlayerSkillType();
 
         pTurnEngine->ApplyPlayerAction();
     }
@@ -7267,7 +7267,7 @@ void Character::_42FA66_do_explosive_impact(int xpos, int ypos, int zpos, int a4
     a1a.uSoundID = 0;
 
     if (actchar >= 1 || actchar <= 4) {
-        a1a.spell_caster_pid = PID(OBJECT_Player, actchar - 1);
+        a1a.spell_caster_pid = PID(OBJECT_Character, actchar - 1);
     } else {
         a1a.spell_caster_pid = 0;
     }
@@ -7318,7 +7318,7 @@ void Character::playReaction(CharacterSpeech speech, int a3) {
             int numberOfSubvariants = byte_4ECF08[pickedVariant - 1][uVoiceID];
             if (numberOfSubvariants > 0) {
                 pickedSoundID = vrng->random(numberOfSubvariants) + 2 * (pickedVariant + 50 * uVoiceID) + 4998;
-                pAudioPlayer->playSound((SoundID)pickedSoundID, PID(OBJECT_Player, getCharacterIndex()));
+                pAudioPlayer->playSound((SoundID)pickedSoundID, PID(OBJECT_Character, getCharacterIndex()));
             }
         }
     }
@@ -7341,7 +7341,7 @@ void Character::playReaction(CharacterSpeech speech, int a3) {
 }
 
 void Character::playEmotion(CharacterExpressionID new_expression, int duration) {
-    // 38 - sparkles 1 player?
+    // 38 - sparkles 1 character?
 
     unsigned int currexpr = expression;
 

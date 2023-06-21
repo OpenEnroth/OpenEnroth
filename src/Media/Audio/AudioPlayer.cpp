@@ -286,7 +286,7 @@ void AudioPlayer::playSound(SoundID eSoundID, int pid, unsigned int uNumRepeats,
                 break;
             }
 
-            case OBJECT_Player: {
+            case OBJECT_Character: {
                 sample->SetVolume(uVoiceVolume);
                 result = _voiceSoundPool.playUniquePid(sample, si.dataSource, pid);
 

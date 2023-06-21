@@ -240,7 +240,7 @@ void Party::switchToNextActiveCharacter() {
         return;
 
     if (pParty->bTurnBasedModeOn) {
-        if (pTurnEngine->turn_stage != TE_ATTACK || PID_TYPE(pTurnEngine->pQueue[0].uPackedID) != OBJECT_Player) {
+        if (pTurnEngine->turn_stage != TE_ATTACK || PID_TYPE(pTurnEngine->pQueue[0].uPackedID) != OBJECT_Character) {
             _activeCharacter = 0;
         } else {
             _activeCharacter = PID_ID(pTurnEngine->pQueue[0].uPackedID) + 1;
@@ -1056,7 +1056,7 @@ void Party::dropHeldItem() {
     SpriteObject sprite;
     sprite.uType = (SPRITE_OBJECT_TYPE)pItemTable->pItems[pPickedItem.uItemID].uSpriteID;
     sprite.uObjectDescID = pObjectList->ObjectIDByItemID(sprite.uType);
-    sprite.spell_caster_pid = PID(OBJECT_Player, 0);
+    sprite.spell_caster_pid = PID(OBJECT_Character, 0);
     sprite.vPosition = vPosition + Vec3i(0, 0, sEyelevel);
     sprite.uSoundID = 0;
     sprite.uFacing = 0;
