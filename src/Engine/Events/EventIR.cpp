@@ -663,8 +663,8 @@ std::string EventIR::toString() const {
         case EVENT_Exit:
             return fmt::format("{}: Exit", step);
         case EVENT_SpeakInHouse:
-            if ((data.house_id - 1) < buildingTable.size() && !buildingTable[data.house_id - 1].pName.empty()) {
-                return fmt::format("{}: SpeakInHouse({}, \"{}\")", step, data.house_id, buildingTable[data.house_id - 1].pName);
+            if ((data.house_id - 1) < buildingTable.size() && !buildingTable[data.house_id].pName.empty()) {
+                return fmt::format("{}: SpeakInHouse({}, \"{}\")", step, data.house_id, buildingTable[data.house_id].pName);
             } else {
                 return fmt::format("{}: SpeakInHouse({})", step, data.house_id);
             }
@@ -679,7 +679,7 @@ std::string EventIR::toString() const {
         case EVENT_LocationName:
             return fmt::format("{}: LocationName", step);
         case EVENT_MoveToMap:
-            return fmt::format("{}: MoveToMap(({}, {}, {}), {}, {}, {}, {}, {}, \"{}\")", step, data.move_map_descr.x, data.move_map_descr.y, data.move_map_descr.z, data.move_map_descr.yaw, data.move_map_descr.pitch, data.move_map_descr.zspeed, data.move_map_descr.anim_id, data.move_map_descr.exit_pic_id, str);
+            return fmt::format("{}: MoveToMap(({}, {}, {}), {}, {}, {}, {}, {}, \"{}\")", step, data.move_map_descr.x, data.move_map_descr.y, data.move_map_descr.z, data.move_map_descr.yaw, data.move_map_descr.pitch, data.move_map_descr.zspeed, std::to_underlying(data.move_map_descr.house_id), data.move_map_descr.exit_pic_id, str);
         case EVENT_OpenChest:
             return fmt::format("{}: OpenChest({})", step, data.chest_id);
         case EVENT_ShowFace:
@@ -877,7 +877,7 @@ EventIR EventIR::parse(const void *data, size_t maxSize) {
             ir.data.move_map_descr.yaw = EVT_DWORD(_evt->v17);
             ir.data.move_map_descr.pitch = EVT_DWORD(_evt->v21);
             ir.data.move_map_descr.zspeed = EVT_DWORD(_evt->v25);
-            ir.data.move_map_descr.anim_id = _evt->v29;
+            ir.data.move_map_descr.house_id = (enum HOUSE_ID)_evt->v29;
             ir.data.move_map_descr.exit_pic_id = _evt->v30;
             ir.str = (char *)&_evt->v31;
             break;

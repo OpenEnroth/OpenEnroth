@@ -49,7 +49,7 @@ class GUIWindow_House : public GUIWindow {
     virtual void Release();
 
     BuildingType buildingType() const {
-        return buildingTable[wData.val - 1].uType;
+        return buildingTable[houseId()].uType;
     }
 
     HOUSE_ID houseId() const {

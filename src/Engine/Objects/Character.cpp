@@ -253,8 +253,8 @@ void Character::SpendMana(unsigned int uRequiredMana) {
 }
 
 //----- (004BE2DD) --------------------------------------------------------
-void Character::SalesProcess(unsigned int inventory_idnx, int item_index, int BuildingDesc_idx) {
-    float shop_mult = buildingTable[BuildingDesc_idx - 1].fPriceMultiplier;
+void Character::SalesProcess(unsigned int inventory_idnx, int item_index, HOUSE_ID houseId) {
+    float shop_mult = buildingTable[houseId].fPriceMultiplier;
     int sell_price = PriceCalculator::itemSellingPriceForPlayer(this, pOwnItems[item_index], shop_mult);
 
     // remove item and add gold
@@ -7402,7 +7402,7 @@ bool Character::isClass(CharacterClassType class_type, bool check_honorary) cons
 }
 
 //----- (00490EEE) --------------------------------------------------------
-MerchantPhrase Character::SelectPhrasesTransaction(ItemGen *pItem, BuildingType building_type, int BuildID_2Events, int ShopMenuType) {
+MerchantPhrase Character::SelectPhrasesTransaction(ItemGen *pItem, BuildingType building_type, HOUSE_ID houseId, int ShopMenuType) {
     // TODO(_): probably move this somewhere else, not really Character:: stuff
     ITEM_TYPE idemId;   // edx@1
     ITEM_EQUIP_TYPE equipType;  // esi@1
@@ -7448,7 +7448,7 @@ MerchantPhrase Character::SelectPhrasesTransaction(ItemGen *pItem, BuildingType 
     if (pItem->IsStolen())
         return MERCAHNT_PHRASE_STOLEN_ITEM;
 
-    multiplier = buildingTable[BuildID_2Events - 1].fPriceMultiplier;
+    multiplier = buildingTable[houseId].fPriceMultiplier;
     switch (ShopMenuType) {
         case 2:
             price = PriceCalculator::itemBuyingPriceForPlayer(this, itemValue, multiplier);

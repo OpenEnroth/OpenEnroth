@@ -11,6 +11,8 @@
 
 #include "Utility/IndexedArray.h"
 
+#include "GUI/UI/UIHouseEnums.h"
+
 struct Character;
 
 struct ItemGen {  // 0x24
@@ -62,7 +64,7 @@ struct ItemGen {  // 0x24
     uint8_t GetDamageDice() const;
     uint8_t GetDamageRoll() const;
     uint8_t GetDamageMod() const;
-    bool MerchandiseTest(int _2da_idx);
+    bool MerchandiseTest(HOUSE_ID houseId);
 
     bool isGold() const {
         return GetItemEquipType() == EQUIP_GOLD;

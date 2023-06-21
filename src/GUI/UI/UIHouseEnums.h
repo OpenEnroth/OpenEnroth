@@ -173,6 +173,9 @@ enum HOUSE_ID {
     HOUSE_472_HARMONDALE = 472,
     HOUSE_488_HARMONDALE = 488,
     HOUSE_489_HARMONDALE = 489,
+    HOUSE_524 = 524,
+
+    // These two are "pseudo" houses, they does not have entry in building table
     HOUSE_THRONEROOM_WIN_GOOD = 600,  // Final task completion for good side
     HOUSE_THRONEROOM_WIN_EVIL = 601,   // Final task completion for evil side
 
@@ -205,10 +208,17 @@ enum HOUSE_ID {
 
     HOUSE_FIRST_TOWNHALL = HOUSE_TOWNHALL_HARMONDALE,
     HOUSE_LAST_TOWNHALL = HOUSE_TOWNHALL_THE_PIT,
+
+    HOUSE_FIRST = HOUSE_SMITH_EMERALD_ISLE,
+    HOUSE_LAST = HOUSE_524
 };
 
 inline Segment<HOUSE_ID> allTownhallHouses() {
     return {HOUSE_FIRST_TOWNHALL, HOUSE_LAST_TOWNHALL};
+}
+
+inline Segment<HOUSE_ID> allHouses() {
+    return {HOUSE_FIRST, HOUSE_LAST};
 }
 
 inline bool isShop(HOUSE_ID houseId) {

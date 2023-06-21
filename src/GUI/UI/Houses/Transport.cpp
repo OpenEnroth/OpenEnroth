@@ -101,7 +101,7 @@ void GUIWindow_Transport::mainDialogue() {
     }
 
     std::vector<std::string> optionsText;
-    int price = PriceCalculator::transportCostForPlayer(&pParty->activeCharacter(), buildingTable[wData.val - 1]);
+    int price = PriceCalculator::transportCostForPlayer(&pParty->activeCharacter(), buildingTable[houseId()]);
     std::string travelCost = localization->FormatString(LSTR_FMT_TRAVEL_COST_D_GOLD, price);
     int startingOffset = pFontArrus->CalcTextHeight(travelCost, travel_window.uFrameWidth, 0) + (pFontArrus->GetHeight() - 3) + 146;
     int lastsched = 255;
@@ -137,7 +137,7 @@ void GUIWindow_Transport::mainDialogue() {
 }
 
 void GUIWindow_Transport::transportDialogue() {
-    int pPrice = PriceCalculator::transportCostForPlayer(&pParty->activeCharacter(), buildingTable[wData.val - 1]);
+    int pPrice = PriceCalculator::transportCostForPlayer(&pParty->activeCharacter(), buildingTable[houseId()]);
 
     if (pParty->GetGold() < pPrice) {
         GameUI_SetStatusBar(LSTR_NOT_ENOUGH_GOLD);

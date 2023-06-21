@@ -14,7 +14,7 @@
 #include "Engine/Spells/CastSpellInfo.h"
 
 void GUIWindow_Temple::mainDialogue() {
-    int price = PriceCalculator::templeHealingCostForPlayer(&pParty->activeCharacter(), buildingTable[wData.val - 1].fPriceMultiplier);
+    int price = PriceCalculator::templeHealingCostForPlayer(&pParty->activeCharacter(), buildingTable[houseId()].fPriceMultiplier);
     std::string healString = fmt::format("{} {} {}", localization->GetString(LSTR_HEAL), price, localization->GetString(LSTR_GOLD));
     std::vector<std::string> optionsText = {isPlayerHealableByTemple(pParty->activeCharacter()) ? healString : "",
                                             localization->GetString(LSTR_DONATE), localization->GetString(LSTR_LEARN_SKILLS)};
@@ -27,7 +27,7 @@ void GUIWindow_Temple::healDialogue() {
         return;
     }
 
-    int price = PriceCalculator::templeHealingCostForPlayer(&pParty->activeCharacter(), buildingTable[wData.val - 1].fPriceMultiplier);
+    int price = PriceCalculator::templeHealingCostForPlayer(&pParty->activeCharacter(), buildingTable[houseId()].fPriceMultiplier);
     if (pParty->GetGold() < price) {
         GameUI_SetStatusBar(LSTR_NOT_ENOUGH_GOLD);
         playHouseSound(houseId(), HOUSE_SOUND_GENERAL_NOT_ENOUGH_GOLD);
@@ -69,7 +69,7 @@ void GUIWindow_Temple::healDialogue() {
 }
 
 void GUIWindow_Temple::donateDialogue() {
-    int price = buildingTable[wData.val - 1].fPriceMultiplier;
+    int price = buildingTable[houseId()].fPriceMultiplier;
     if (pParty->GetGold() >= price) {
         pParty->TakeGold(price);
         LocationInfo *ddm = &currentLocationInfo();
