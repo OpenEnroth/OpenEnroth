@@ -209,7 +209,7 @@ void GUIWindow_AutonotesBook::Update() {
     autonotes_window.uFrameY = game_viewport_y;
     autonotes_window.uFrameZ = game_viewport_z;
     autonotes_window.uFrameW = game_viewport_w;
-    autonotes_window.DrawTitleText(pBook2Font, 0, 22, ui_book_autonotes_title_color, localization->GetString(LSTR_AUTONOTES), 3);
+    autonotes_window.DrawTitleText(pFontBookTitle, 0, 22, ui_book_autonotes_title_color, localization->GetString(LSTR_AUTONOTES), 3);
 
     // for other text
     autonotes_window.uFrameX = 48;
@@ -245,8 +245,8 @@ void GUIWindow_AutonotesBook::Update() {
     for (int i = _startingNotesIdx; i < _activeNotesIdx.size(); ++i) {
         _currentPageNotes++;
 
-        autonotes_window.DrawText(pAutonoteFont, {1, 0}, ui_book_autonotes_text_color, pAutonoteTxt[_activeNotesIdx[i]].pText);
-        pTextHeight = pAutonoteFont->CalcTextHeight(pAutonoteTxt[_activeNotesIdx[i]].pText, autonotes_window.uFrameWidth, 1);
+        autonotes_window.DrawText(pFontBookOnlyShadow, {1, 0}, ui_book_autonotes_text_color, pAutonoteTxt[_activeNotesIdx[i]].pText);
+        pTextHeight = pFontBookOnlyShadow->CalcTextHeight(pAutonoteTxt[_activeNotesIdx[i]].pText, autonotes_window.uFrameWidth, 1);
         if ((autonotes_window.uFrameY + pTextHeight) > autonotes_window.uFrameHeight) {
             break;
         }

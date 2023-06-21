@@ -16,30 +16,30 @@
 extern LODFile_IconsBitmaps *pIcons_LOD;
 
 // TODO(pskelton): Move these to asset manager
-GUIFont *pAutonoteFont = nullptr;
-GUIFont *pSpellFont = nullptr;
+GUIFont *pFontBookOnlyShadow = nullptr;
+GUIFont *pFontBookLloyds = nullptr;
 GUIFont *pFontArrus = nullptr;
 GUIFont *pFontLucida = nullptr;
-GUIFont *pBook2Font = nullptr;
-GUIFont *pBookFont = nullptr;
+GUIFont *pFontBookTitle = nullptr;
+GUIFont *pFontBookCalendar = nullptr;
 GUIFont *pFontCreate = nullptr;
 GUIFont *pFontCChar = nullptr;
 GUIFont *pFontComic = nullptr;
 GUIFont *pFontSmallnum = nullptr;
 
 void ReloadFonts() {
-    if (pAutonoteFont)
-        pAutonoteFont->CreateFontTex();
-    if (pSpellFont)
-        pSpellFont->CreateFontTex();
+    if (pFontBookOnlyShadow)
+        pFontBookOnlyShadow->CreateFontTex();
+    if (pFontBookLloyds)
+        pFontBookLloyds->CreateFontTex();
     if (pFontArrus)
         pFontArrus->CreateFontTex();
     if (pFontLucida)
         pFontLucida->CreateFontTex();
-    if (pBook2Font)
-        pBook2Font->CreateFontTex();
-    if (pBookFont)
-        pBookFont->CreateFontTex();
+    if (pFontBookTitle)
+        pFontBookTitle->CreateFontTex();
+    if (pFontBookCalendar)
+        pFontBookCalendar->CreateFontTex();
     if  (pFontCreate)
         pFontCreate->CreateFontTex();
     if (pFontCChar)

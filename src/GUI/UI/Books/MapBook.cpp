@@ -135,7 +135,7 @@ void GUIWindow_MapBook::Update() {
 
     uint map_id = pMapStats->GetMapInfo(pCurrentMapName);
     if (map_id) {
-        map_window.DrawTitleText(pBook2Font, -14, 12, ui_book_map_title_color, pMapStats->pInfos[map_id].pName, 3);
+        map_window.DrawTitleText(pFontBookTitle, -14, 12, ui_book_map_title_color, pMapStats->pInfos[map_id].pName, 3);
     }
 
     auto party_coordinates = localization->FormatString(LSTR_FMT_X_D_Y_D, pParty->vPosition.x, pParty->vPosition.y);

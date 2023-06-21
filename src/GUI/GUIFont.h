@@ -82,12 +82,12 @@ class GUIFont {
 
 void ReloadFonts();
 
-extern GUIFont *pAutonoteFont;
-extern GUIFont *pSpellFont;
+extern GUIFont *pFontBookOnlyShadow;
+extern GUIFont *pFontBookLloyds;
 extern GUIFont *pFontArrus;
 extern GUIFont *pFontLucida;
-extern GUIFont *pBook2Font;
-extern GUIFont *pBookFont;
+extern GUIFont *pFontBookTitle;
+extern GUIFont *pFontBookCalendar;
 extern GUIFont *pFontCreate;
 extern GUIFont *pFontComic;
 extern GUIFont *pFontSmallnum;
