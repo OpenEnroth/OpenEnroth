@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cstddef>
+#include <string>
 
 /**
  * Abstract base class for all data input streams.
@@ -31,6 +32,15 @@ class InputStream {
      * @throws Exception                On error.
      */
     void readOrFail(void *data, size_t size);
+
+    /**
+     * Reads everything that's in this stream, up to `maxSize` bytes.
+     *
+     * @param maxSize                   Maximal number of bytes to read from the stream.
+     * @returns                         Data read from the stream, as `std::string`.
+     * @throws Exception                On error.
+     */
+    [[nodiscard]] std::string readAll(size_t maxSize = -1);
 
     /**
      * @param size                      Number of bytes to skip.

@@ -5,19 +5,17 @@
 #pragma once
 
 #include <string>
-#include <fstream>
-#include <sstream>
-#include <iostream>
 #include <filesystem>
 
-#include "glad/gl.h"
-#include <glm.hpp>
+#include <glad/gl.h> // NOLINT: this is not a C system include.
 
 #include "Engine/EngineIocContainer.h"
 
 #include "Library/Logger/Logger.h"
 
+#include "Utility/Streams/FileInputStream.h"
 #include "Utility/DataPath.h"
+#include "Utility/Exception.h"
 
 class GLShader {
  public:
@@ -126,32 +124,16 @@ class GLShader {
         std::string path = makeDataPath(directory, filename + "." + shaderTypeToExtension(type));
 
         try {
-            // open files
-            if (!std::filesystem::exists(path)) {
-                if (!nonFatal)
-                    logger->warning("cannot find {} {} shader file at path {}", name, typeName, path);
-
-                return 0;
-            }
-
-            std::ifstream shaderFile;
-            shaderFile.exceptions(std::ifstream::failbit | std::ifstream::badbit);
-            shaderFile.open(path);
-
-            std::stringstream shaderStream;
+            std::string shaderString;
             if (!OpenGLES)
-                shaderStream << "#version 410 core" << std::endl;
+                shaderString = "#version 410 core\n";
             else
-                shaderStream << "#version 320 es" << std::endl;
+                shaderString = "#version 320 es\n";
 
-            // read file's buffer contents into stream
-            shaderStream << shaderFile.rdbuf();
-
-            // close file handler
-            shaderFile.close();
+            FileInputStream stream(path);
+            shaderString += stream.readAll();
 
             // compile shader
-            std::string shaderString = shaderStream.str();
             const char *shaderChar = shaderString.c_str();
             GLuint shaderHandler = glCreateShader(type);
             glShaderSource(shaderHandler, 1, &shaderChar, NULL);
@@ -159,9 +141,9 @@ class GLShader {
             checkCompileErrors(shaderHandler, name, shaderTypeToName(type));
 
             return shaderHandler;
-        }
-        catch (std::ifstream::failure &e) {
-            logger->warning("error occured during reading {} {} shader file at path {}: {}", name, typeName, path, e.what());
+        } catch (const Exception &e) {
+            if (!nonFatal)
+                logger->warning("error occured during reading {} {} shader file at path {}: {}", name, typeName, path, e.what());
             return 0;
         }
     }

@@ -5,6 +5,8 @@
 #include <map>
 #include <vector>
 
+#include <glm.hpp>
+
 #include "Engine/Graphics/FrameLimiter.h"
 #include "Engine/Graphics/Nuklear.h"
 #include "Engine/Graphics/RenderBase.h"
