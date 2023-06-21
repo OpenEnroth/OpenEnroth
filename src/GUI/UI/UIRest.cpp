@@ -70,7 +70,7 @@ static void calculateRequiredFood() {
     }
 
     if (PartyHasDragon()) {
-        for (Character &player : pParty->pPlayers) {
+        for (Character &player : pParty->pCharacters) {
             if (player.classType == CHARACTER_CLASS_WARLOCK) {
                 ++foodRequiredToRest;
             }
@@ -124,7 +124,7 @@ void GUIWindow_Rest::Update() {
     GUIButton tmp_button;
 
     int liveCharacters = 0;
-    for (Character &player : pParty->pPlayers) {
+    for (Character &player : pParty->pCharacters) {
         if (!player.IsDead() && !player.IsEradicated() && player.health > 0) {
             ++liveCharacters;
         }

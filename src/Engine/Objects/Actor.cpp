@@ -534,12 +534,12 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
             for (SpellBuff &buff : pParty->pPartyBuffs) {
                 buff.Reset();
             }
-            for (int i = 0; i < pParty->pPlayers.size(); i++) {
-                int willCheck = pParty->pPlayers[i].GetParameterBonus(pParty->pPlayers[i].GetActualPersonality()) / 2;
-                int intCheck = pParty->pPlayers[i].GetParameterBonus(pParty->pPlayers[i].GetActualIntelligence()) / 2;
-                int luckCheck = pParty->pPlayers[i].GetParameterBonus(pParty->pPlayers[i].GetActualLuck()) + 30;
+            for (int i = 0; i < pParty->pCharacters.size(); i++) {
+                int willCheck = pParty->pCharacters[i].GetParameterBonus(pParty->pCharacters[i].GetActualPersonality()) / 2;
+                int intCheck = pParty->pCharacters[i].GetParameterBonus(pParty->pCharacters[i].GetActualIntelligence()) / 2;
+                int luckCheck = pParty->pCharacters[i].GetParameterBonus(pParty->pCharacters[i].GetActualLuck()) + 30;
                 if (grng->random(willCheck + intCheck + luckCheck) < 30) {
-                    for (SpellBuff &buff : pParty->pPlayers[i].pCharacterBuffs) {
+                    for (SpellBuff &buff : pParty->pCharacters[i].pCharacterBuffs) {
                         buff.Reset();
                     }
                 }
@@ -1215,7 +1215,7 @@ void Actor::ApplyFineForKillingPeasant(unsigned int uActorID) {
         currentLocationInfo().reputation++;
 
     if (pParty->uFine) {
-        for (Character &player : pParty->pPlayers) {
+        for (Character &player : pParty->pCharacters) {
             if (!player._achievedAwardsBits[Award_Fine]) {
                 player._achievedAwardsBits.set(Award_Fine);
             }
@@ -1352,7 +1352,7 @@ void Actor::StealFrom(unsigned int uActorID) {
     LocationInfo *v6;  // esi@4
     int v8;              // [sp+8h] [bp-4h]@6
 
-    pPlayer = &pParty->pPlayers[pParty->activeCharacterIndex() - 1];
+    pPlayer = &pParty->pCharacters[pParty->activeCharacterIndex() - 1];
     if (pPlayer->CanAct()) {
         CastSpellInfoHelpers::cancelSpellCastInProgress();
         v4 = 0;
@@ -3158,7 +3158,7 @@ void Actor::DamageMonsterFromParty(signed int a1, unsigned int uActorID_Monster,
     if (PID_TYPE(a1) != OBJECT_Player) return;
 
     assert(PID_ID(abs(a1)) < 4);
-    Character *player = &pParty->pPlayers[PID_ID(a1)];
+    Character *player = &pParty->pCharacters[PID_ID(a1)];
     pMonster = &pActors[uActorID_Monster];
     if (pMonster->IsNotAlive()) return;
 
@@ -3533,19 +3533,19 @@ int stru319::which_player_to_attack(Actor *pActor) {
                         break;
                 }
                 v2 = 0;
-                for (int j = 0; j < pParty->pPlayers.size(); ++j) {
+                for (int j = 0; j < pParty->pCharacters.size(); ++j) {
                     bool flag = 0;
-                    if (for_class != -1 && for_class == pParty->pPlayers[j].classType) {
+                    if (for_class != -1 && for_class == pParty->pCharacters[j].classType) {
                         flag = true;
                     }
-                    if (for_sex != -1 && for_sex == pParty->pPlayers[j].uSex) {
+                    if (for_sex != -1 && for_sex == pParty->pCharacters[j].uSex) {
                         flag = true;
                     }
-                    if (for_race != -1 && for_race == pParty->pPlayers[j].GetRace()) {
+                    if (for_race != -1 && for_race == pParty->pCharacters[j].GetRace()) {
                         flag = true;
                     }
                     if (flag == true) {
-                        if (pParty->pPlayers[j].conditions.HasNone({CONDITION_PARALYZED, CONDITION_UNCONSCIOUS, CONDITION_DEAD,
+                        if (pParty->pCharacters[j].conditions.HasNone({CONDITION_PARALYZED, CONDITION_UNCONSCIOUS, CONDITION_DEAD,
                                                                     CONDITION_PETRIFIED, CONDITION_ERADICATED})) {
                             Victims_list[v2++] = j;
                         }
@@ -3555,8 +3555,8 @@ int stru319::which_player_to_attack(Actor *pActor) {
         }
         if (v2) return Victims_list[grng->random(v2)];
     }
-    for (int i = 0; i < pParty->pPlayers.size(); ++i) {
-        if (pParty->pPlayers[i].conditions.HasNone({CONDITION_PARALYZED, CONDITION_UNCONSCIOUS, CONDITION_DEAD,
+    for (int i = 0; i < pParty->pCharacters.size(); ++i) {
+        if (pParty->pCharacters[i].conditions.HasNone({CONDITION_PARALYZED, CONDITION_UNCONSCIOUS, CONDITION_DEAD,
                                                     CONDITION_PETRIFIED, CONDITION_ERADICATED}))
             Victims_list[v2++] = i;
     }
@@ -3901,7 +3901,7 @@ bool Actor::_427102_IsOkToCastSpell(SPELL_TYPE spell) {
                     return true;
                 }
             }
-            for (Character &player : pParty->pPlayers) {
+            for (Character &player : pParty->pCharacters) {
                 for (SpellBuff &buff : player.pCharacterBuffs) {
                     if (buff.Active()) {
                         return true;
@@ -4888,8 +4888,8 @@ void evaluateAoeDamage() {
             if (distanceSq < attackRangeSq) {  // party damage
                 // check line of sight to party
                 if (Check_LineOfSight(pParty->vPosition + Vec3i(0, 0, pParty->sEyelevel), attack.pos)) {
-                    for (int i = 0; i < pParty->pPlayers.size(); i++) {
-                        if (pParty->pPlayers[i].conditions.HasNone({CONDITION_DEAD, CONDITION_PETRIFIED, CONDITION_ERADICATED})) {
+                    for (int i = 0; i < pParty->pCharacters.size(); i++) {
+                        if (pParty->pCharacters[i].conditions.HasNone({CONDITION_DEAD, CONDITION_PETRIFIED, CONDITION_ERADICATED})) {
                             DamageCharacterFromMonster(attack.pid, attack.attackSpecial, &attackVector, i);
                         }
                     }

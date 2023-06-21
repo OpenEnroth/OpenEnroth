@@ -183,12 +183,12 @@ struct Party {
 
     void Zero();
 
-    void resetPlayerEmotions();
+    void resetCharacterEmotions();
 
     /**
      * @offset 0x4909F4
      */
-    void updatePlayersAndHirelingsEmotions();
+    void updateCharactersAndHirelingsEmotions();
 
     /**
      * @offset 0x490D02
@@ -341,8 +341,8 @@ struct Party {
      * @return                          Whether the provided item is worn by at least one member of the party.
      */
     bool wearsItemAnywhere(ITEM_TYPE item_id) const {
-        for (const Character &player : pPlayers) {
-            if (player.wearsItemAnywhere(item_id)) {
+        for (const Character &character : pCharacters) {
+            if (character.wearsItemAnywhere(item_id)) {
                 return true;
             }
         }
@@ -357,8 +357,8 @@ struct Party {
      */
     int getRandomActiveCharacterId(RandomEngine *rng) const {
         std::vector<int> activeCharacters = {};
-        for (int i = 0; i < pPlayers.size(); i++) {
-            if (pPlayers[i].CanAct()) {
+        for (int i = 0; i < pCharacters.size(); i++) {
+            if (pCharacters[i].CanAct()) {
                 activeCharacters.push_back(i);
             }
         }
@@ -371,12 +371,12 @@ struct Party {
     /**
      * Return id of character that is represented by given pointer.
      *
-     * @param player      Pointer to player class.
-     * @return            ID of character.
+     * @param character     Pointer to character class.
+     * @return              ID of character.
      */
-    int getCharacterIdInParty(Character *player) {
-        for (int i = 0; i < pPlayers.size(); i++) {
-            if (&pPlayers[i] == player) {
+    int getCharacterIdInParty(Character *character) {
+        for (int i = 0; i < pCharacters.size(); i++) {
+            if (&pCharacters[i] == character) {
                 return i;
             }
         }
@@ -406,8 +406,8 @@ struct Party {
         if (_delayedReactionTimer) {
             _delayedReactionTimer -= pMiscTimer->uTimeElapsed;
             if (_delayedReactionTimer <= 0) {
-                if (pPlayers[_delayedReactionCharacterId].CanAct()) {
-                    pPlayers[_delayedReactionCharacterId].playReaction(_delayedReactionSpeech);
+                if (pCharacters[_delayedReactionCharacterId].CanAct()) {
+                    pCharacters[_delayedReactionCharacterId].playReaction(_delayedReactionSpeech);
                 }
                 _delayedReactionTimer = 0;
             }
@@ -470,7 +470,7 @@ struct Party {
     int uFlags2;
     PartyAlignment alignment;
     std::array<SpellBuff, 20> pPartyBuffs;
-    std::array<Character, 4> pPlayers;
+    std::array<Character, 4> pCharacters;
     std::array<NPCData, 2> pHirelings;
     ItemGen pPickedItem;
     unsigned int uFlags; // TODO(captainurist): Flags
@@ -484,7 +484,7 @@ struct Party {
     // Keeps track of how many impulses have been applied to actors during armeggeddon
     // Stops actors being yeeted high in the air at high fps
     int armageddonForceCount{ 0 };
-    std::array<int, 4> pTurnBasedPlayerRecoveryTimes;
+    std::array<int, 4> pTurnBasedCharacterRecoveryTimes;
     std::array<int, 53> InTheShopFlags;
     int uFine;
     float TorchLightLastIntensity;
@@ -500,7 +500,7 @@ struct Party {
         return _activeCharacter;
     }
     inline void setActiveCharacterIndex(uint id) {
-        assert(id >= 0 && id <= pPlayers.size());
+        assert(id >= 0 && id <= pCharacters.size());
         _activeCharacter = id;
     }
     inline bool hasActiveCharacter() const {
@@ -508,7 +508,7 @@ struct Party {
     }
     inline Character &activeCharacter() {
         assert(hasActiveCharacter());
-        return pPlayers[_activeCharacter - 1];
+        return pCharacters[_activeCharacter - 1];
     }
 
  private:

@@ -41,7 +41,7 @@ GUIWindow_LloydsBook::GUIWindow_LloydsBook() : GUIWindow_Book() {
     pBtn_Book_1 = CreateButton({415, 13}, {39, 36}, 1, 0, UIMSG_LloydsBeacon_FlippingBtn, 0, InputAction::Invalid, localization->GetString(LSTR_SET_BEACON));
     pBtn_Book_2 = CreateButton({415, 48}, {39, 36}, 1, 0, UIMSG_LloydsBeacon_FlippingBtn, 1, InputAction::Invalid, localization->GetString(LSTR_RECALL_BEACON));
 
-    CharacterSkillMastery water_mastery = pParty->pPlayers[lloydsBeaconCasterId].getActualSkillValue(CHARACTER_SKILL_WATER).mastery();
+    CharacterSkillMastery water_mastery = pParty->pCharacters[lloydsBeaconCasterId].getActualSkillValue(CHARACTER_SKILL_WATER).mastery();
 
     _maxBeacons = 1;
     if (water_mastery == CHARACTER_SKILL_MASTERY_GRANDMASTER || water_mastery == CHARACTER_SKILL_MASTERY_MASTER) {
@@ -59,13 +59,13 @@ GUIWindow_LloydsBook::GUIWindow_LloydsBook() : GUIWindow_Book() {
     }
 
     // purges expired beacons
-    pParty->pPlayers[lloydsBeaconCasterId].CleanupBeacons();
+    pParty->pCharacters[lloydsBeaconCasterId].CleanupBeacons();
 }
 
 void GUIWindow_LloydsBook::Update() {
     render->DrawTextureNew(471 / 640.0f, 445 / 480.0f, ui_exit_cancel_button_background);
 
-    Character *pPlayer = &pParty->pPlayers[lloydsBeaconCasterId];
+    Character *pPlayer = &pParty->pCharacters[lloydsBeaconCasterId];
     render->DrawTextureNew(8 / 640.0f, 8 / 480.0f, ui_book_lloyds_backgrounds[bRecallingBeacon ? 1 : 0]);
     std::string pText = localization->GetString(LSTR_RECALL_BEACON);
 

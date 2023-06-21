@@ -358,7 +358,7 @@ void snapshot(const Party &src, Party_MM7 *dst) {
     dst->alignment = align;
 
     snapshot(src.pPartyBuffs, &dst->partyBuffs);
-    snapshot(src.pPlayers, &dst->players);
+    snapshot(src.pCharacters, &dst->players);
     snapshot(src.pHirelings, &dst->hirelings);
 
     snapshot(src.pPickedItem, &dst->pickedItem);
@@ -377,7 +377,7 @@ void snapshot(const Party &src, Party_MM7 *dst) {
     dst->armageddonTimer = src.armageddon_timer;
     dst->armageddonDamage = src.armageddonDamage;
 
-    snapshot(src.pTurnBasedPlayerRecoveryTimes, &dst->turnBasedPlayerRecoveryTimes);
+    snapshot(src.pTurnBasedCharacterRecoveryTimes, &dst->turnBasedPlayerRecoveryTimes);
     snapshot(src.InTheShopFlags, &dst->inTheShopFlags);
 
     dst->fine = src.uFine;
@@ -473,7 +473,7 @@ void reconstruct(const Party_MM7 &src, Party *dst) {
     }
 
     reconstruct(src.partyBuffs, &dst->pPartyBuffs);
-    reconstruct(src.players, &dst->pPlayers);
+    reconstruct(src.players, &dst->pCharacters);
     reconstruct(src.hirelings, &dst->pHirelings);
 
     reconstruct(src.pickedItem, &dst->pPickedItem);
@@ -490,7 +490,7 @@ void reconstruct(const Party_MM7 &src, Party *dst) {
     dst->armageddon_timer = src.armageddonTimer;
     dst->armageddonDamage = src.armageddonDamage;
 
-    reconstruct(src.turnBasedPlayerRecoveryTimes, &dst->pTurnBasedPlayerRecoveryTimes);
+    reconstruct(src.turnBasedPlayerRecoveryTimes, &dst->pTurnBasedCharacterRecoveryTimes);
     reconstruct(src.inTheShopFlags, &dst->InTheShopFlags);
 
     dst->uFine = src.fine;

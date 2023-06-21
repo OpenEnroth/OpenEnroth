@@ -75,7 +75,7 @@ void GUIWindow_QuickReference::Update() {
     pGUIWindow_CurrentMenu->DrawTextInRect(pFontArrus, {22, pY}, colorTable.White, localization->GetString(LSTR_QSPELL), 60, 0);
 
     int pX = 89;
-    for (Character &player : pParty->pPlayers) {
+    for (Character &player : pParty->pCharacters) {
         pGUIWindow_CurrentMenu->DrawTextInRect(pFontArrus, {pX, 18}, ui_character_header_text_color, player.name, 84, 0);
 
         pTextColor = (player.GetActualLevel() <= player.GetBaseLevel()) ? player.GetExperienceDisplayColor() : ui_character_bonus_text_color;

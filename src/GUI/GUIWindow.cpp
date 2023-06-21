@@ -1033,7 +1033,7 @@ void ClickNPCTopic(DIALOGUE_TYPE topic) {
                 if (topic == DIALOGUE_82_join_guild && guild_membership_approved) {
                     // join guild
                     pParty->TakeGold(gold_transaction_amount, true);
-                    for (Character &player : pParty->pPlayers)
+                    for (Character &player : pParty->pCharacters)
                         player.SetVariable(VAR_Award, dword_F8B1AC_award_bit_number);
 
                     switch (_dword_F8B1D8_last_npc_topic_menu) {
@@ -1180,7 +1180,7 @@ void OracleDialogue() {
 
     // missing item found
     if (item_id != ITEM_NULL) {
-        pParty->pPlayers[0].AddVariable(VAR_PlayerItemInHands, std::to_underlying(item_id));
+        pParty->pCharacters[0].AddVariable(VAR_PlayerItemInHands, std::to_underlying(item_id));
         // TODO(captainurist): what if fmt throws?
         current_npc_text = fmt::sprintf(pNPCTopics[666].pText, // "Here's %s that you lost. Be careful"
                                         fmt::format("{::}{}\f00000", colorTable.Jonquil.tag(),
@@ -1191,10 +1191,10 @@ void OracleDialogue() {
     // TODO(Nik-RE-dev): this code is walking only through inventory, but item was added to hand, so it will not bind new item if it was acquired
     //                   rather this code will bind jars that already present in inventory to liches that currently do not have binded jars
     if (item_id == ITEM_QUEST_LICH_JAR_FULL) {
-        for (int i = 0; i < pParty->pPlayers.size(); i++) {
-            if (pParty->pPlayers[i].classType == CHARACTER_CLASS_LICH) {
+        for (int i = 0; i < pParty->pCharacters.size(); i++) {
+            if (pParty->pCharacters[i].classType == CHARACTER_CLASS_LICH) {
                 bool have_vessels_soul = false;
-                for (Character &player : pParty->pPlayers) {
+                for (Character &player : pParty->pCharacters) {
                     for (int idx = 0; idx < Character::INVENTORY_SLOT_COUNT; idx++) {
                         if (player.pInventoryItemList[idx].uItemID == ITEM_QUEST_LICH_JAR_FULL) {
                             if (player.pInventoryItemList[idx].uHolderPlayer == -1) {
@@ -1526,7 +1526,7 @@ std::string BuildDialogueString(std::string &str, uint8_t uPlayerID, ItemGen *a3
     std::vector<int> addressingBits;
     SummonedItem v56;      // [sp+80h] [bp-B8h]@107
 
-    pPlayer = &pParty->pPlayers[uPlayerID];
+    pPlayer = &pParty->pCharacters[uPlayerID];
 
     NPCData *npc = nullptr;
     if (dword_5C35D4)
@@ -1739,7 +1739,7 @@ std::string BuildDialogueString(std::string &str, uint8_t uPlayerID, ItemGen *a3
             case 32:
             case 33:
             case 34:
-                result += pParty->pPlayers[mask - 31].name;
+                result += pParty->pCharacters[mask - 31].name;
                 break;
             default:
                 if (mask <= 50 || mask > 70) {

@@ -460,7 +460,7 @@ void Menu::MenuLoop() {
     render->SaveScreenshot("gamma.pcx", 155, 117);
     gamma_preview_image = assets->getImage_PCXFromFile("gamma.pcx");
 
-    pParty->resetPlayerEmotions();
+    pParty->resetCharacterEmotions();
 
     while (uGameState == GAME_STATE_PLAYING &&
            (current_screen_type == CURRENT_SCREEN::SCREEN_MENU ||

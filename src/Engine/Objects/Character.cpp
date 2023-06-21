@@ -184,7 +184,7 @@ int CharacterCreation_GetUnspentAttributePointCount() {
     int PenaltyMult;
     int BonusMult;
 
-    for (Character &player : pParty->pPlayers) {
+    for (Character &player : pParty->pCharacters) {
         raceId = player.GetRace();
 
         for (int statNum = 0; statNum <= 6; statNum++) {
@@ -529,7 +529,7 @@ void Character::SetCondition(Condition uConditionIdx, int blockable) {
     }
 
     int playersBefore = 0;
-    for (Character &player : pParty->pPlayers) {  // count active players before activating condition
+    for (Character &player : pParty->pCharacters) {  // count active players before activating condition
         playersBefore += player.CanAct() ? 1 : 0;
     }
 
@@ -537,7 +537,7 @@ void Character::SetCondition(Condition uConditionIdx, int blockable) {
 
     int playersAfter = 0;
     Character *remainingPlayer = nullptr;
-    for (Character &player : pParty->pPlayers) {
+    for (Character &player : pParty->pCharacters) {
         if (player.CanAct()) {
             remainingPlayer = &player;
             playersAfter++;
@@ -3524,7 +3524,7 @@ bool Character::DiscardConditionIfLastsLongerThan(Condition uCondition,
 }
 
 void Character::useItem(int targetCharacter, bool isPortraitClick) {
-    Character *playerAffected = &pParty->pPlayers[targetCharacter];
+    Character *playerAffected = &pParty->pCharacters[targetCharacter];
     if (pParty->bTurnBasedModeOn && (pTurnEngine->turn_stage == TE_WAIT || pTurnEngine->turn_stage == TE_MOVEMENT)) {
         return;
     }
@@ -3555,7 +3555,7 @@ void Character::useItem(int targetCharacter, bool isPortraitClick) {
         }
         //if (v73) {
             if (pParty->bTurnBasedModeOn) {
-                pParty->pTurnBasedPlayerRecoveryTimes[targetCharacter] = 100;
+                pParty->pTurnBasedCharacterRecoveryTimes[targetCharacter] = 100;
                 this->SetRecoveryTime(100);
                 pTurnEngine->ApplyPlayerAction();
             } else {
@@ -3828,7 +3828,7 @@ void Character::useItem(int targetCharacter, bool isPortraitClick) {
             pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 0, 0);
         }
         if (pParty->bTurnBasedModeOn) {
-            pParty->pTurnBasedPlayerRecoveryTimes[targetCharacter] = 100;
+            pParty->pTurnBasedCharacterRecoveryTimes[targetCharacter] = 100;
             this->SetRecoveryTime(100);
             pTurnEngine->ApplyPlayerAction();
         } else {
@@ -3907,7 +3907,7 @@ void Character::useItem(int targetCharacter, bool isPortraitClick) {
         //       {
         //         if ( pParty->bTurnBasedModeOn )
         //         {
-        //           pParty->pTurnBasedPlayerRecoveryTimes[player_num-1] = 100;
+        //           pParty->pTurnBasedCharacterRecoveryTimes[player_num-1] = 100;
         //           thisb->SetRecoveryTime(100);
         //           pTurnEngine->ApplyPlayerAction();
         //         }
@@ -4394,7 +4394,7 @@ bool Character::CompareVariable(VariableType VarNum, int pValue) {
         case VAR_CircusPrises:  // isn't used in MM6 since 0x1D6u is a book of
                                 // regeneration
             v4 = 0;
-            for (Character &player : pParty->pPlayers) {
+            for (Character &player : pParty->pCharacters) {
                 for (int invPos = 0; invPos < TOTAL_ITEM_SLOT_COUNT; invPos++) {
                     ITEM_TYPE itemId;
 
@@ -6266,15 +6266,15 @@ void Character::EquipBody(ITEM_EQUIP_TYPE uEquipType) {
 int cycleCharacter(bool backwards) {
     int currentId = pParty->activeCharacterIndex() - 1;
 
-    for (int i = 0; i < pParty->pPlayers.size(); i++) {
+    for (int i = 0; i < pParty->pCharacters.size(); i++) {
         currentId += (backwards ? -1 : 1);
 
         if (currentId < 0) {
-            currentId = pParty->pPlayers.size() - 1;
-        } else if (currentId >= pParty->pPlayers.size()) {
+            currentId = pParty->pCharacters.size() - 1;
+        } else if (currentId >= pParty->pCharacters.size()) {
             currentId = 0;
         }
-        if (pParty->pPlayers[currentId].timeToRecovery == 0) {
+        if (pParty->pCharacters[currentId].timeToRecovery == 0) {
             return currentId + 1;
         }
     }
@@ -6323,7 +6323,7 @@ bool ShouldLoadTexturesForRaceAndGender(unsigned int _this) {
     CharacterRace race;  // edi@2
     CharacterSex sex;       // eax@2
 
-    for (Character &player : pParty->pPlayers) {
+    for (Character &player : pParty->pCharacters) {
         race = player.GetRace();
         sex = player.GetSexByVoice();
         switch (_this) {
@@ -6356,7 +6356,7 @@ bool ShouldLoadTexturesForRaceAndGender(unsigned int _this) {
 
 //----- (0043ED6F) --------------------------------------------------------
 bool IsDwarfPresentInParty(bool a1) {
-    for (Character &player : pParty->pPlayers) {
+    for (Character &player : pParty->pCharacters) {
         CharacterRace race = player.GetRace();
 
         if (race == CHARACTER_RACE_DWARF && a1)
@@ -6393,7 +6393,7 @@ void DamageCharacterFromMonster(unsigned int uObjID, ABILITY_INDEX dmgSource, Ve
 
         unsigned int uActorID = PID_ID(uObjID);
 
-        Character *playerPtr = &pParty->pPlayers[targetchar];
+        Character *playerPtr = &pParty->pCharacters[targetchar];
         Actor *actorPtr = &pActors[uActorID];
         healthBeforeRecvdDamage = playerPtr->health;
         if (PID_TYPE(uObjID) != OBJECT_Actor || !actorPtr->ActorHitOrMiss(playerPtr))
@@ -6551,15 +6551,15 @@ void DamageCharacterFromMonster(unsigned int uObjID, ABILITY_INDEX dmgSource, Ve
 
             // select char target or pick random
             if (targetchar != -1) {
-                playerPtr = &pParty->pPlayers[targetchar];
+                playerPtr = &pParty->pCharacters[targetchar];
             } else {
                 int id = pParty->getRandomActiveCharacterId(grng.get());
 
                 if (id != -1) {
-                    playerPtr = &pParty->pPlayers[id];
+                    playerPtr = &pParty->pCharacters[id];
                 } else {
                     // for rare instances where party is "dead" at this point but still being damaged
-                    playerPtr = &pParty->pPlayers[grng->random(3)];
+                    playerPtr = &pParty->pCharacters[grng->random(3)];
                 }
             }
 
@@ -6572,7 +6572,7 @@ void DamageCharacterFromMonster(unsigned int uObjID, ABILITY_INDEX dmgSource, Ve
                                          spritefrom->spell_skill, playerMaxHp);
                 damagetype = pSpellStats->pInfos[spritefrom->uSpellID].uSchool;
             } else {
-                damage = pParty->pPlayers[uActorID].CalculateRangedDamageTo(0);
+                damage = pParty->pCharacters[uActorID].CalculateRangedDamageTo(0);
                 damagetype = 0;
             }
             playerPtr->receiveDamage(damage, (DAMAGE_TYPE)damagetype);
@@ -6583,7 +6583,7 @@ void DamageCharacterFromMonster(unsigned int uObjID, ABILITY_INDEX dmgSource, Ve
         } else if (uActorType == OBJECT_Actor) {  // missile fired by actor
             Actor *actorPtr = &pActors[uActorID];
             if (targetchar == -1) targetchar = stru_50C198.which_player_to_attack(actorPtr);
-            Character *playerPtr = &pParty->pPlayers[targetchar];
+            Character *playerPtr = &pParty->pCharacters[targetchar];
             int dmgToReceive = actorPtr->_43B3E0_CalcDamage(dmgSource);
             uint16_t spriteType = spritefrom->uType;
 
@@ -6705,7 +6705,7 @@ void DamageCharacterFromMonster(unsigned int uObjID, ABILITY_INDEX dmgSource, Ve
             return;
         } else {
             // party hits self
-            Character *playerPtr = &pParty->pPlayers[targetchar];
+            Character *playerPtr = &pParty->pCharacters[targetchar];
             int damage;
             int damagetype;
             if (uActorType != OBJECT_Player ||
@@ -6716,7 +6716,7 @@ void DamageCharacterFromMonster(unsigned int uObjID, ABILITY_INDEX dmgSource, Ve
                                          spritefrom->spell_skill, playerMaxHp);
                 damagetype = pSpellStats->pInfos[spritefrom->uSpellID].uSchool;
             } else {
-                damage = pParty->pPlayers[uActorID].CalculateRangedDamageTo(0);
+                damage = pParty->pCharacters[uActorID].CalculateRangedDamageTo(0);
                 damagetype = 0;
             }
 

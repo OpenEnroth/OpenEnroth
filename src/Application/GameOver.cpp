@@ -87,11 +87,11 @@ void CreateWinnerCertificate() {
             colorTable.Black,
             localization->FormatString(
                 LSTR_FMT_S_THE_LEVEL_D_S,
-                pParty->pPlayers[i].name.c_str(),
-                pParty->pPlayers[i].GetBaseLevel(),
-                localization->GetClassName(pParty->pPlayers[i].classType)),
+                pParty->pCharacters[i].name.c_str(),
+                pParty->pCharacters[i].GetBaseLevel(),
+                localization->GetClassName(pParty->pCharacters[i].classType)),
             3);
-        v23 += pParty->pPlayers[i].experience;
+        v23 += pParty->pCharacters[i].experience;
     }
     v23 = (int64_t)v23 / v19;
     std::string v6 = pFont->FitTextInAWindow(pInString, pWindow.uFrameWidth, 12);

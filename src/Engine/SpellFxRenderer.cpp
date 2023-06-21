@@ -1181,7 +1181,7 @@ void SpellFxRenderer::SetPlayerBuffAnim(SPELL_TYPE uSpellID,
 }
 
 void SpellFxRenderer::SetPartyBuffAnim(SPELL_TYPE uSpellID) {
-    for (int i = 0; i < pParty->pPlayers.size(); i++) {
+    for (int i = 0; i < pParty->pCharacters.size(); i++) {
         SetPlayerBuffAnim(uSpellID, i);
     }
 }

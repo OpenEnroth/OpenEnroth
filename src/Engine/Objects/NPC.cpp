@@ -242,13 +242,13 @@ const std::string &GetProfessionActionText(NPCProf prof) {
 int UseNPCSkill(NPCProf profession, int id) {
     switch (profession) {
         case Healer: {
-            for (Character &player : pParty->pPlayers) {
+            for (Character &player : pParty->pCharacters) {
                 player.health = player.GetMaxHealth();
             }
         } break;
 
         case ExpertHealer: {
-            for (Character &player : pParty->pPlayers) {
+            for (Character &player : pParty->pCharacters) {
                 player.health = player.GetMaxHealth();
 
                 for (Condition condition : standardConditionsExcludeDead) {
@@ -258,7 +258,7 @@ int UseNPCSkill(NPCProf profession, int id) {
         } break;
 
         case MasterHealer: {
-            for (Character &player : pParty->pPlayers) {
+            for (Character &player : pParty->pCharacters) {
                 player.health = player.GetMaxHealth();
 
                 for (Condition condition : standardConditionsIncludeDead) {
@@ -316,7 +316,7 @@ int UseNPCSkill(NPCProf profession, int id) {
 
         case GateMaster: {
             pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 0, 0);
-            pNextFrameMessageQueue->AddGUIMessage(UIMSG_OnCastTownPortal, PID(OBJECT_Player, pParty->pPlayers.size() + id), 0);
+            pNextFrameMessageQueue->AddGUIMessage(UIMSG_OnCastTownPortal, PID(OBJECT_Player, pParty->pCharacters.size() + id), 0);
         } break;
 
         case Acolyte:

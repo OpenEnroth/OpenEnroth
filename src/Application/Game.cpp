@@ -741,7 +741,7 @@ void Game::processQueuedMessages() {
                                 case CURRENT_SCREEN::SCREEN_REST:  // close rest screen
                                     if (currentRestType != REST_NONE) {
                                         Rest(remainingRestTime);
-                                        for (Character &player : pParty->pPlayers) {
+                                        for (Character &player : pParty->pCharacters) {
                                             player.SetAsleep(GameTime(0));
                                         }
                                     }
@@ -985,13 +985,13 @@ void Game::processQueuedMessages() {
                     if (pParty->GetFood() > 0) {
                         pParty->restAndHeal();
                         if (pParty->GetFood() < getTravelTime()) {
-                            for(Character &player : pParty->pPlayers)
+                            for(Character &player : pParty->pCharacters)
                                 player.SetCondition(CONDITION_WEAK, 0);
                             ++pParty->days_played_without_rest;
                         }
                         pParty->TakeFood(getTravelTime());
                     } else {
-                        for (Character &player : pParty->pPlayers)
+                        for (Character &player : pParty->pCharacters)
                             player.SetCondition(CONDITION_WEAK, 0);
                         ++pParty->days_played_without_rest;
                     }
@@ -1125,7 +1125,7 @@ void Game::processQueuedMessages() {
                 if (!pGUIWindow_CurrentMenu) {
                     continue;
                 }
-                Character &player = pParty->pPlayers[lloydsBeaconCasterId];
+                Character &player = pParty->pCharacters[lloydsBeaconCasterId];
                 if (uMessageParam >= player.vBeacons.size()) {
                     continue;
                 }
@@ -1156,7 +1156,7 @@ void Game::processQueuedMessages() {
                 pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 0, 0);
                 continue;
             case UIMSG_InstallBeacon: {
-                Character &player = pParty->pPlayers[lloydsBeaconCasterId];
+                Character &player = pParty->pCharacters[lloydsBeaconCasterId];
                 if ((player.vBeacons.size() <= uMessageParam) && bRecallingBeacon) {
                     continue;
                 }
@@ -1171,7 +1171,7 @@ void Game::processQueuedMessages() {
                 assert(pSpellDatas[SPELL_WATER_LLOYDS_BEACON].uNormalLevelRecovery == pSpellDatas[SPELL_WATER_LLOYDS_BEACON].uMagisterLevelRecovery);
                 signed int sRecoveryTime = pSpellDatas[SPELL_WATER_LLOYDS_BEACON].uNormalLevelRecovery;
                 if (pParty->bTurnBasedModeOn) {
-                    pParty->pTurnBasedPlayerRecoveryTimes[lloydsBeaconCasterId] = sRecoveryTime;
+                    pParty->pTurnBasedCharacterRecoveryTimes[lloydsBeaconCasterId] = sRecoveryTime;
                     player.SetRecoveryTime(sRecoveryTime);
                     pTurnEngine->ApplyPlayerAction();
                 } else {
@@ -1241,27 +1241,27 @@ void Game::processQueuedMessages() {
                 assert(PID_TYPE(townPortalCasterPid) == OBJECT_Player);
 
                 int casterId = PID_ID(townPortalCasterPid);
-                if (casterId < pParty->pPlayers.size()) {
+                if (casterId < pParty->pCharacters.size()) {
                     // Town portal casted by player
                     assert(pSpellDatas[SPELL_WATER_TOWN_PORTAL].uNormalLevelMana == pSpellDatas[SPELL_WATER_TOWN_PORTAL].uExpertLevelMana);
                     assert(pSpellDatas[SPELL_WATER_TOWN_PORTAL].uNormalLevelMana == pSpellDatas[SPELL_WATER_TOWN_PORTAL].uMasterLevelMana);
                     assert(pSpellDatas[SPELL_WATER_TOWN_PORTAL].uNormalLevelMana == pSpellDatas[SPELL_WATER_TOWN_PORTAL].uMagisterLevelMana);
-                    pParty->pPlayers[casterId].SpendMana(pSpellDatas[SPELL_WATER_TOWN_PORTAL].uNormalLevelMana);
+                    pParty->pCharacters[casterId].SpendMana(pSpellDatas[SPELL_WATER_TOWN_PORTAL].uNormalLevelMana);
 
                     assert(pSpellDatas[SPELL_WATER_TOWN_PORTAL].uNormalLevelRecovery == pSpellDatas[SPELL_WATER_TOWN_PORTAL].uExpertLevelRecovery);
                     assert(pSpellDatas[SPELL_WATER_TOWN_PORTAL].uNormalLevelRecovery == pSpellDatas[SPELL_WATER_TOWN_PORTAL].uMasterLevelRecovery);
                     assert(pSpellDatas[SPELL_WATER_TOWN_PORTAL].uNormalLevelRecovery == pSpellDatas[SPELL_WATER_TOWN_PORTAL].uMagisterLevelRecovery);
                     signed int sRecoveryTime = pSpellDatas[SPELL_WATER_TOWN_PORTAL].uNormalLevelRecovery;
                     if (pParty->bTurnBasedModeOn) {
-                        pParty->pTurnBasedPlayerRecoveryTimes[casterId] = sRecoveryTime;
-                        pParty->pPlayers[casterId].SetRecoveryTime(sRecoveryTime);
+                        pParty->pTurnBasedCharacterRecoveryTimes[casterId] = sRecoveryTime;
+                        pParty->pCharacters[casterId].SetRecoveryTime(sRecoveryTime);
                         pTurnEngine->ApplyPlayerAction();
                     } else {
-                        pParty->pPlayers[casterId].SetRecoveryTime(debug_non_combat_recovery_mul * sRecoveryTime * flt_debugrecmod3);
+                        pParty->pCharacters[casterId].SetRecoveryTime(debug_non_combat_recovery_mul * sRecoveryTime * flt_debugrecmod3);
                     }
                 } else {
                     // Town portal casted by hireling
-                    pParty->pHirelings[casterId - pParty->pPlayers.size()].bHasUsedTheAbility = 1;
+                    pParty->pHirelings[casterId - pParty->pCharacters.size()].bHasUsedTheAbility = 1;
                 }
 
                 pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 1, 0);
@@ -1330,7 +1330,7 @@ void Game::processQueuedMessages() {
 
                 uGameState = GAME_STATE_PLAYING;
 
-                for (Character &player : pParty->pPlayers) {
+                for (Character &player : pParty->pCharacters) {
                     player.playEmotion(CHARACTER_EXPRESSION_WIDE_SMILE, 0);
                 }
 
@@ -1485,7 +1485,7 @@ void Game::processQueuedMessages() {
                 currentRestType = REST_HEAL;
                 pParty->restAndHeal();
                 pParty->days_played_without_rest = 0;
-                for (Character &player : pParty->pPlayers) {
+                for (Character &player : pParty->pCharacters) {
                     player.SetAsleep(GameTime(1));
                 }
                 continue;
@@ -1555,7 +1555,7 @@ void Game::processQueuedMessages() {
                         pParty->activeCharacter().playReaction(SPEECH_NOT_ENOUGH_FOOD);
                     }
                 } else {
-                    for (Character &player : pParty->pPlayers) {
+                    for (Character &player : pParty->pCharacters) {
                         player.SetAsleep(pParty->GetPlayingTime());
                     }
                     MAP_TYPE mapIdx = pMapStats->GetMapInfo(pCurrentMapName);
@@ -1578,7 +1578,7 @@ void Game::processQueuedMessages() {
 
                         if (encounter_index) {
                             pPlayerNum = grng->random(4);
-                            pParty->pPlayers[pPlayerNum].conditions.Reset(CONDITION_SLEEP);
+                            pParty->pCharacters[pPlayerNum].conditions.Reset(CONDITION_SLEEP);
                             Rest(GameTime::FromHours(1).AddMinutes(grng->random(6)));
                             remainingRestTime = GameTime();
                             currentRestType = REST_NONE;
@@ -1594,7 +1594,7 @@ void Game::processQueuedMessages() {
                     currentRestType = REST_HEAL;
                     pParty->restAndHeal();
                     pParty->days_played_without_rest = 0;
-                    for (Character &player : pParty->pPlayers) {
+                    for (Character &player : pParty->pCharacters) {
                         player.SetAsleep(GameTime(1));
                     }
                 }
@@ -1947,7 +1947,7 @@ void Game::processQueuedMessages() {
             }
 
             case UIMSG_ShowStatus_Player: {
-                Character *player = &pParty->pPlayers[uMessageParam - 1];
+                Character *player = &pParty->pCharacters[uMessageParam - 1];
 
                 GameUI_StatusBar_Set(fmt::format("{}: {}", NameAndTitle(player->name, player->classType),
                                                  localization->GetCharacterConditionName(player->GetMajorConditionIdx())));
@@ -1957,7 +1957,7 @@ void Game::processQueuedMessages() {
             }
 
             case UIMSG_ShowStatus_ManaHP: {
-                Character *player = &pParty->pPlayers[uMessageParam - 1];
+                Character *player = &pParty->pCharacters[uMessageParam - 1];
 
                 GameUI_StatusBar_Set(fmt::format("{} / {} {}    {} / {} {}",
                                                  player->GetHealth(), player->GetMaxHealth(), localization->GetString(LSTR_HIT_POINTS),
@@ -2129,7 +2129,7 @@ void Game::processQueuedMessages() {
                 pParty->SetGold(0);
                 continue;
             case UIMSG_DebugLearnSkills:
-                for (Character &player : pParty->pPlayers) { // loop over players
+                for (Character &player : pParty->pCharacters) { // loop over players
                     for (CharacterSkillType ski : allSkills()) {  // loop over skills
                         // if class can learn this skill
                         if (skillMaxMasteryPerClass[player.classType][ski] > CHARACTER_SKILL_MASTERY_NONE) {
@@ -2141,14 +2141,14 @@ void Game::processQueuedMessages() {
                 }
                 continue;
             case UIMSG_DebugGiveSkillP:
-                for (Character &player : pParty->pPlayers) {
+                for (Character &player : pParty->pCharacters) {
                     player.uSkillPoints += 50;
                 }
-                pParty->pPlayers[std::max(pParty->activeCharacterIndex(), 1u) - 1].PlayAwardSound_Anim();
+                pParty->pCharacters[std::max(pParty->activeCharacterIndex(), 1u) - 1].PlayAwardSound_Anim();
                 continue;
             case UIMSG_DebugGiveEXP:
                 pParty->GivePartyExp(20000);
-                pParty->pPlayers[std::max(pParty->activeCharacterIndex(), 1u) - 1].PlayAwardSound_Anim();
+                pParty->pCharacters[std::max(pParty->activeCharacterIndex(), 1u) - 1].PlayAwardSound_Anim();
                 continue;
             case UIMSG_DebugGiveGold:
                 pParty->AddGold(10000);
@@ -2377,7 +2377,7 @@ void Game::gameLoop() {
                 if (pMovie_Track) pMediaPlayer->Unload();
                 SaveGame(0, 0);
                 ++pParty->uNumDeaths;
-                for (Character &player : pParty->pPlayers) {
+                for (Character &player : pParty->pCharacters) {
                     player.SetVariable(VAR_Award, Award_Deaths);
                 }
                 pParty->days_played_without_rest = 0;
@@ -2391,13 +2391,13 @@ void Game::gameLoop() {
                     pTurnEngine->End(true);
                     pParty->bTurnBasedModeOn = false;
                 }
-                for (Character &player : pParty->pPlayers) {
+                for (Character &player : pParty->pCharacters) {
                     player.conditions.ResetAll();
                     player.pCharacterBuffs.fill(
                         SpellBuff());  // ???
-                                       // memset(pParty->pPlayers[i].conditions_times.data(),
+                                       // memset(pParty->pCharacters[i].conditions_times.data(),
                                        // 0, 0xA0u);//(pConditions, 0, 160)
-                                       // memset(pParty->pPlayers[i].pCharacterBuffs.data(),
+                                       // memset(pParty->pCharacters[i].pCharacterBuffs.data(),
                                        // 0, 0x180u);//(pCharacterBuffs[0], 0, 384)
                     player.health = 1;
                 }
@@ -2436,7 +2436,7 @@ void Game::gameLoop() {
                 int playerId = pParty->getRandomActiveCharacterId(vrng.get());
 
                 if (playerId != -1) {
-                    pParty->pPlayers[playerId].playReaction(SPEECH_CHEATED_DEATH);
+                    pParty->pCharacters[playerId].playReaction(SPEECH_CHEATED_DEATH);
                 }
 
                 GameUI_SetStatusBar(LSTR_CHEATED_THE_DEATH);

@@ -1656,7 +1656,7 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
         pParty->uFallSpeed += -2 * pEventTimer->uTimeElapsed * GetGravityStrength();
         if (pParty->uFallSpeed <= 0) {
             if (pParty->uFallSpeed < -500) {
-                for (Character &player : pParty->pPlayers) {
+                for (Character &player : pParty->pCharacters) {
                     if (!player.HasEnchantedItemEquipped(ITEM_ENCHANTMENT_OF_FEATHER_FALLING) &&
                         !player.WearsItem(ITEM_ARTIFACT_HERMES_SANDALS, ITEM_SLOT_BOOTS)) {  // was 8
                         player.playEmotion(CHARACTER_EXPRESSION_SCARED, 0);

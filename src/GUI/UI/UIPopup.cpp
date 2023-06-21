@@ -984,8 +984,8 @@ std::string CharacterUI_GetSkillDescText(unsigned int uPlayerID, CharacterSkillT
         pFontSmallnum->GetLineWidth(localization->GetString(LSTR_BONUS_2))
     });
 
-    int base_skill = pParty->pPlayers[uPlayerID].getSkillValue(uPlayerSkillType).level();
-    int actual_skill = pParty->pPlayers[uPlayerID].getActualSkillValue(uPlayerSkillType).level();
+    int base_skill = pParty->pCharacters[uPlayerID].getSkillValue(uPlayerSkillType).level();
+    int actual_skill = pParty->pCharacters[uPlayerID].getActualSkillValue(uPlayerSkillType).level();
 
     const char *desc = localization->GetSkillDescription(uPlayerSkillType);
     std::string Description = desc ? desc : "";
@@ -995,7 +995,7 @@ std::string CharacterUI_GetSkillDescText(unsigned int uPlayerID, CharacterSkillT
         for (CharacterSkillMastery mastery : SkillMasteries()) {
             Description += fmt::format(
                 "{::}{}\t{:03}:\t{:03}{}\t000\n",
-                GetSkillColor(pParty->pPlayers[uPlayerID].classType, uPlayerSkillType, mastery).tag(),
+                GetSkillColor(pParty->pCharacters[uPlayerID].classType, uPlayerSkillType, mastery).tag(),
                 localization->MasteryName(mastery),
                 line_width + 3,
                 line_width + 10,
@@ -1758,7 +1758,7 @@ void UI_OnMouseRightClick(int mouse_x, int mouse_y) {
 
     if (pParty->pPickedItem.uItemID != ITEM_NULL) {
         // Use item on character portrait
-        for (int i = 0; i < pParty->pPlayers.size(); ++i) {
+        for (int i = 0; i < pParty->pCharacters.size(); ++i) {
             if (pX > RightClickPortraitXmin[i] && pX < RightClickPortraitXmax[i] && pY > 375 && pY < 466) {
                 pParty->activeCharacter().useItem(i, true);
                 // Do not enter right click mode
@@ -1834,7 +1834,7 @@ void UI_OnMouseRightClick(int mouse_x, int mouse_y) {
                     popup_window.uFrameX = 38;
                     popup_window.uFrameY = 60;
                     GameUI_CharacterQuickRecord_Draw(
-                        &popup_window, &pParty->pPlayers[popup_window.wData.val]);
+                        &popup_window, &pParty->pCharacters[popup_window.wData.val]);
                 }
             } else if ((int)pX > pViewport->uViewportBR_X) {
                 if (pY >= 130) {
@@ -1966,13 +1966,13 @@ void UI_OnMouseRightClick(int mouse_x, int mouse_y) {
                                                                      // button
                                                                      // info
                             pStr = localization->GetSkillName(
-                                pParty->pPlayers
+                                pParty->pCharacters
                                         [uPlayerCreationUI_SelectedCharacter]
                                     .GetSkillIdxByOrder(pButton->msg_param +
                                                         4));
                             popup_window
                                 .sHint = localization->GetSkillDescription(
-                                pParty->pPlayers
+                                pParty->pCharacters
                                         [uPlayerCreationUI_SelectedCharacter]
                                     .GetSkillIdxByOrder(pButton->msg_param +
                                                         4));
@@ -1997,10 +1997,10 @@ void UI_OnMouseRightClick(int mouse_x, int mouse_y) {
                             break;
                         case UIMSG_PlayerCreation_SelectAttribute:  // Character
                                                                     // info
-                            pStr = pParty->pPlayers[pButton->msg_param].name.c_str();
+                            pStr = pParty->pCharacters[pButton->msg_param].name.c_str();
                             popup_window
                                 .sHint = localization->GetClassDescription(
-                                pParty->pPlayers[pButton->msg_param].classType);
+                                pParty->pCharacters[pButton->msg_param].classType);
                             break;
                         default:
                             break;
@@ -2010,17 +2010,17 @@ void UI_OnMouseRightClick(int mouse_x, int mouse_y) {
                             UIMSG_PlayerCreationRemoveDownSkill) {  // Sellected
                                                                     // skills info
                         pY = 0;
-                        if (pParty->pPlayers[pButton->msg_param].GetSkillIdxByOrder(pButton->msg - UIMSG_48) != CHARACTER_SKILL_INVALID) {
+                        if (pParty->pCharacters[pButton->msg_param].GetSkillIdxByOrder(pButton->msg - UIMSG_48) != CHARACTER_SKILL_INVALID) {
                             static std::string hint_reference;
                             hint_reference = CharacterUI_GetSkillDescText(
                                 pButton->msg_param,
-                                pParty->pPlayers[pButton->msg_param]
+                                pParty->pCharacters[pButton->msg_param]
                                     .GetSkillIdxByOrder(pButton->msg -
                                                         UIMSG_48));
 
                             popup_window.sHint = hint_reference;
                             pStr = localization->GetSkillName(
-                                pParty->pPlayers[pButton->msg_param]
+                                pParty->pCharacters[pButton->msg_param]
                                     .GetSkillIdxByOrder(pButton->msg -
                                                         UIMSG_48));
                         }

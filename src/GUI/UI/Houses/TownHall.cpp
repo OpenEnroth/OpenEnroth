@@ -263,7 +263,7 @@ void GUIWindow_TownHall::bountyHuntingDialogueOptionClicked() {
             int bounty = 100 * pMonsterStats->pInfos[pParty->monster_id_for_hunting[house]].uLevel;
 
             pParty->partyFindsGold(bounty, GOLD_RECEIVE_SHARE);
-            for (Character &player : pParty->pPlayers) {
+            for (Character &player : pParty->pCharacters) {
                 player.SetVariable(VAR_Award, Award_BountiesCollected);
             }
             pParty->uNumBountiesCollected += bounty;

@@ -181,7 +181,7 @@ void Engine::Draw() {
     } else {
         DrawGUI();
         GUI_UpdateWindows();
-        pParty->updatePlayersAndHirelingsEmotions();
+        pParty->updateCharactersAndHirelingsEmotions();
 
         // if (v4)
     }
@@ -1412,21 +1412,21 @@ void _494035_timed_effects__water_walking_damage__etc() {
 
         ++pParty->days_played_without_rest;
         if (pParty->days_played_without_rest > 1) {
-            for (Character &player : pParty->pPlayers)
+            for (Character &player : pParty->pCharacters)
                 player.SetCondWeakWithBlockCheck(0);
 
             // starving
             if (pParty->GetFood() > 0) {
                 pParty->TakeFood(1);
             } else {
-                for (Character &player : pParty->pPlayers) {
+                for (Character &player : pParty->pCharacters) {
                     player.health = player.health / (pParty->days_played_without_rest + 1) + 1;
                 }
             }
 
             // players go insane without rest
             if (pParty->days_played_without_rest > 3) {
-                for (Character &player : pParty->pPlayers) {
+                for (Character &player : pParty->pCharacters) {
                     player.resetTempBonuses();
                     if (!player.IsPertified() && !player.IsEradicated() && !player.IsDead()) {
                         if (grng->random(100) < 5 * pParty->days_played_without_rest)
@@ -1439,7 +1439,7 @@ void _494035_timed_effects__water_walking_damage__etc() {
         }
         if (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR) pOutdoor->SetFog();
 
-        for (Character &player : pParty->pPlayers)
+        for (Character &player : pParty->pCharacters)
             player.uNumDivineInterventionCastsThisDay = 0;
     }
 
@@ -1447,7 +1447,7 @@ void _494035_timed_effects__water_walking_damage__etc() {
     if (pParty->uFlags & PARTY_FLAGS_1_WATER_DAMAGE &&
         pParty->_6FC_water_lava_timer < pParty->GetPlayingTime().value) {
         pParty->_6FC_water_lava_timer = pParty->GetPlayingTime().value + 128;
-        for (Character &player : pParty->pPlayers) {
+        for (Character &player : pParty->pCharacters) {
             if (player.WearsItem(ITEM_RELIC_HARECKS_LEATHER, ITEM_SLOT_ARMOUR) ||
                 player.HasEnchantedItemEquipped(ITEM_ENCHANTMENT_OF_WATER_WALKING) ||
                 player.pCharacterBuffs[CHARACTER_BUFF_WATER_WALK].Active()) {
@@ -1470,7 +1470,7 @@ void _494035_timed_effects__water_walking_damage__etc() {
         pParty->_6FC_water_lava_timer < pParty->GetPlayingTime().value) {
         pParty->_6FC_water_lava_timer = pParty->GetPlayingTime().value + 128;
 
-        for (Character &player : pParty->pPlayers) {
+        for (Character &player : pParty->pCharacters) {
             player.receiveDamage((int64_t)player.GetMaxHealth() * 0.1, DMGT_FIRE);
             if (pParty->uFlags & PARTY_FLAGS_1_BURNING) {
                 GameUI_SetStatusBarShortNotification(localization->GetString(LSTR_ON_FIRE));
@@ -1488,8 +1488,8 @@ void _494035_timed_effects__water_walking_damage__etc() {
         recoveryTimeDt /= 2;
     }
 
-    uint numPlayersCouldAct = pParty->pPlayers.size();
-    for (Character &player : pParty->pPlayers) {
+    uint numPlayersCouldAct = pParty->pCharacters.size();
+    for (Character &player : pParty->pCharacters) {
         if (player.timeToRecovery && recoveryTimeDt > 0)
             player.Recover(GameTime(recoveryTimeDt));
 
@@ -1604,7 +1604,7 @@ void _494035_timed_effects__water_walking_damage__etc() {
     }
 
     if (pParty->pPartyBuffs[PARTY_BUFF_HASTE].Expired()) {
-        for (Character &player : pParty->pPlayers)
+        for (Character &player : pParty->pCharacters)
             player.SetCondition(CONDITION_WEAK, 0);
         pParty->pPartyBuffs[PARTY_BUFF_HASTE].Reset();
     }
@@ -1617,7 +1617,7 @@ void _494035_timed_effects__water_walking_damage__etc() {
         }
 
         if (!pBuff->isGMBuff) {
-            if (!pParty->pPlayers[pBuff->caster - 1].CanAct()) {
+            if (!pParty->pCharacters[pBuff->caster - 1].CanAct()) {
                 pBuff->Reset();
                 if (buffIdx == PARTY_BUFF_FLY) {
                     pParty->bFlying = false;
@@ -1628,7 +1628,7 @@ void _494035_timed_effects__water_walking_damage__etc() {
 
     if (!numPlayersCouldAct) {
         if (current_screen_type != CURRENT_SCREEN::SCREEN_REST) {
-            for (Character &player : pParty->pPlayers) {
+            for (Character &player : pParty->pCharacters) {
                 // if someone is sleeping - wake them up
                 if (player.conditions.Has(CONDITION_SLEEP)) {
                     player.conditions.Reset(CONDITION_SLEEP);
@@ -1679,7 +1679,7 @@ void RegeneratePartyHealthMana() {
                         unsigned short spell_power = times_triggered * pParty->pPartyBuffs[PARTY_BUFF_FLY].uPower;
 
                         int caster = pParty->pPartyBuffs[PARTY_BUFF_FLY].uCaster - 1;
-                        GameTime cursed_times = pParty->pPlayers[caster].conditions.Get(CONDITION_CURSED);
+                        GameTime cursed_times = pParty->pCharacters[caster].conditions.Get(CONDITION_CURSED);
                         if (cursed_times.Valid() && cursed_times.value < spell_power) {
                             // TODO: cursed_times was a pointer before, and we had cursed_times = 0 here,
                             // was this meant to cancel the curse?
@@ -1699,13 +1699,13 @@ void RegeneratePartyHealthMana() {
                 if (pParty->uFlags & PARTY_FLAGS_1_STANDING_ON_WATER) {
                     if (!(pParty->pPartyBuffs[PARTY_BUFF_WATER_WALK].uFlags & 1)) {  // taking on water
                         int caster = pParty->pPartyBuffs[PARTY_BUFF_WATER_WALK].uCaster - 1;
-                        GameTime cursed_times = pParty->pPlayers[caster].conditions.Get(CONDITION_CURSED);
+                        GameTime cursed_times = pParty->pCharacters[caster].conditions.Get(CONDITION_CURSED);
                         cursed_times.value -= times_triggered;
                         if (cursed_times.value <= 0) {
                             cursed_times.value = 0;
                             pParty->uFlags &= ~PARTY_FLAGS_1_STANDING_ON_WATER;
                         }
-                        pParty->pPlayers[caster].conditions.Set(CONDITION_CURSED, cursed_times);
+                        pParty->pCharacters[caster].conditions.Set(CONDITION_CURSED, cursed_times);
                     }
                 }
             }
@@ -1717,8 +1717,8 @@ void RegeneratePartyHealthMana() {
                 if (pParty->bFlying) {
                     int caster = pParty->pPartyBuffs[PARTY_BUFF_FLY].caster - 1;
                     assert(caster >= 0);
-                    if (pParty->pPlayers[caster].mana > 0 && !engine->config->debug.AllMagic.value()) {
-                        pParty->pPlayers[caster].mana -= 1;
+                    if (pParty->pCharacters[caster].mana > 0 && !engine->config->debug.AllMagic.value()) {
+                        pParty->pCharacters[caster].mana -= 1;
                     }
                 }
             }
@@ -1734,8 +1734,8 @@ void RegeneratePartyHealthMana() {
                     if (engine->config->gameplay.FixWaterWalkManaDrain.value() && ((cur_minutes % 20) != 0)) {
                         mana_drain = 0;
                     }
-                    if (pParty->pPlayers[caster].mana > 0 && !engine->config->debug.AllMagic.value()) {
-                        pParty->pPlayers[caster].mana -= mana_drain;
+                    if (pParty->pCharacters[caster].mana > 0 && !engine->config->debug.AllMagic.value()) {
+                        pParty->pCharacters[caster].mana -= mana_drain;
                     }
                 }
             }
@@ -1775,7 +1775,7 @@ void RegeneratePartyHealthMana() {
             }
 
             // HP/SP regeneration and HP deterioration
-            for (Character &player : pParty->pPlayers) {
+            for (Character &player : pParty->pCharacters) {
                 for (ITEM_SLOT idx : allItemSlots()) {
                     bool recovery_HP = false;
                     bool decrease_HP = false;

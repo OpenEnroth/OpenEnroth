@@ -568,7 +568,7 @@ void SpriteObject::explosionTraps() {
             default:
                 return;
         }
-        for (Character &player : pParty->pPlayers) {
+        for (Character &player : pParty->pCharacters) {
             int perceptionCheckValue = player.GetPerception() + 20;
             if (player.CanAct() && (grng->random(perceptionCheckValue) > 20)) {
                 player.playReaction(SPEECH_AVOID_DAMAGE);

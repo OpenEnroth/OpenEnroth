@@ -358,7 +358,7 @@ bool enterHouse(HOUSE_ID uHouseID) {
             in_current_building_type = pAnimatedRooms[buildingTable[HOUSE_LORD_AND_JUDGE_EMERALD_ISLE].uAnimationID].uBuildingType;
             ++pParty->uNumPrisonTerms;
             pParty->uFine = 0;
-            for (Character &player : pParty->pPlayers) {
+            for (Character &player : pParty->pCharacters) {
                 player.timeToRecovery = 0;
                 player.uNumDivineInterventionCastsThisDay = 0;
                 player.SetVariable(VAR_Award, Award_PrisonTerms);

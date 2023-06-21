@@ -1401,8 +1401,8 @@ void CharacterUI_LoadPaperdollTextures() {
     ui_character_inventory_paperdoll_background = assets->getImage_ColorKey("BACKDOLL");
     ui_character_inventory_paperdoll_rings_background = assets->getImage_Alpha("BACKHAND");
 
-    for (int i = 0; i < pParty->pPlayers.size(); ++i) {
-        if (pParty->pPlayers[i].hasUnderwaterSuitEquipped()) {
+    for (int i = 0; i < pParty->pCharacters.size(); ++i) {
+        if (pParty->pCharacters[i].hasUnderwaterSuitEquipped()) {
             WetsuitOn(i + 1);
         } else {
             WetsuitOff(i + 1);
@@ -1724,7 +1724,7 @@ void GUIWindow_CharacterRecord::fillAwardsData() {
 void WetsuitOn(unsigned int uPlayerID) {
     if (uPlayerID > 0) {
         int playerId0 = uPlayerID - 1;
-        Character *player = &pParty->pPlayers[playerId0];
+        Character *player = &pParty->pCharacters[playerId0];
         int texture_num;
 
         if (player->GetRace() == CHARACTER_RACE_DWARF) {
@@ -1749,7 +1749,7 @@ void WetsuitOn(unsigned int uPlayerID) {
 void WetsuitOff(unsigned int uPlayerID) {
     if (uPlayerID > 0) {
         int playerId0 = uPlayerID - 1;
-        Character *player = &pParty->pPlayers[playerId0];
+        Character *player = &pParty->pCharacters[playerId0];
 
         paperdoll_dbods[playerId0] = assets->getImage_Alpha(dbod_texnames_by_face[player->uCurrentFace]);
         paperdoll_dlads[playerId0] = assets->getImage_Alpha(dlad_texnames_by_face[player->uCurrentFace]);
@@ -2226,7 +2226,7 @@ void OnPaperdollLeftClick() {
                 ->pActiveZBuffer[mouse->uMouseX + mouse->uMouseY * render->GetRenderDimensions().w] & 0xFFFF;
         if (v34) {
             // v36 = v34 - 1;
-            // v38 = &pPlayers[pParty->_activeCharacter]->pInventoryItemList[v34 - 1];
+            // v38 = &pCharacters[pParty->_activeCharacter]->pInventoryItemList[v34 - 1];
             pEquipType = pParty->activeCharacter().pInventoryItemList[v34 - 1].GetItemEquipType();
             if (pParty->activeCharacter().pInventoryItemList[v34 - 1].uItemID == ITEM_QUEST_WETSUIT) {
                 if (engine->IsUnderwater()) {

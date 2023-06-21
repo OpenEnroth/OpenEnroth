@@ -106,7 +106,7 @@ void GUIWindow_Temple::donateDialogue() {
 }
 
 GUIWindow_Temple::GUIWindow_Temple(HOUSE_ID houseId) : GUIWindow_House(houseId) {
-    _templeSpellCounter.resize(pParty->pPlayers.size());
+    _templeSpellCounter.resize(pParty->pCharacters.size());
     std::fill(_templeSpellCounter.begin(), _templeSpellCounter.end(), 0);
 }
 

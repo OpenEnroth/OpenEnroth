@@ -92,21 +92,21 @@ static void spawnMonsters(int16_t typeindex, int16_t level, int count,
 
 static bool doForChosenPlayer(CharacterChoosePolicy who, RandomEngine *rng, std::function<int(Character&)> func) {
     if (who >= CHOOSE_PLAYER1 && who <= CHOOSE_PLAYER4) {
-        return func(pParty->pPlayers[std::to_underlying(who)]);
+        return func(pParty->pCharacters[std::to_underlying(who)]);
     } else if (who == CHOOSE_ACTIVE) {
         if (pParty->hasActiveCharacter()) {
             return func(pParty->activeCharacter());
         }
         return false;
     } else if (who == CHOOSE_PARTY) {
-        for (Character &player : pParty->pPlayers) {
+        for (Character &player : pParty->pCharacters) {
             if (func(player)) {
                 return true;
             }
         }
         return false;
     } else if (who == CHOOSE_RANDOM) {
-        return func(pParty->pPlayers[rng->random(4)]);
+        return func(pParty->pCharacters[rng->random(4)]);
     }
 
     assert(false);
@@ -136,7 +136,7 @@ int EventInterpreter::executeOneEvent(int step, bool isNpc) {
                 return -1;
             case EVENT_OnCanShowDialogItemCmp:
                 _readyToExit = true;
-                for (Character &player : pParty->pPlayers) {
+                for (Character &player : pParty->pCharacters) {
                     if (player.CompareVariable(ir.data.variable_descr.type, ir.data.variable_descr.value)) {
                         return ir.target_step;
                     }
@@ -326,7 +326,7 @@ int EventInterpreter::executeOneEvent(int step, bool isNpc) {
             break;
         case EVENT_Substract:
             if (ir.data.variable_descr.type == VAR_PlayerItemInHands && _who == CHOOSE_PARTY) {
-                for (Character &player : pParty->pPlayers) {
+                for (Character &player : pParty->pCharacters) {
                     if (player.hasItem((ITEM_TYPE)ir.data.variable_descr.value, 1)) {
                         player.SubtractVariable(ir.data.variable_descr.type, ir.data.variable_descr.value);
                         break;  // only take one item

@@ -48,7 +48,7 @@ void stru262_TurnBased::SortTurnQueue() {
                 pActors[p_id].ResetQueue();
             }
         } else if (p_type == OBJECT_Player) {
-            if (!pParty->pPlayers[p_id].CanAct()) {
+            if (!pParty->pCharacters[p_id].CanAct()) {
                 --active_actors;
                 pQueue[i].actor_initiative = 1001;
             }
@@ -89,7 +89,7 @@ void stru262_TurnBased::SortTurnQueue() {
     for (i = 0; i < uActorQueueSize; ++i) {
         if (PID_TYPE(pQueue[i].uPackedID) ==
             OBJECT_Player)  // set recovery times
-            pParty->pPlayers[PID_ID(pQueue[i].uPackedID)].timeToRecovery =
+            pParty->pCharacters[PID_ID(pQueue[i].uPackedID)].timeToRecovery =
                 (uint16_t)((double)pQueue[i].actor_initiative * 0.46875);
     }
 }
@@ -115,7 +115,7 @@ void stru262_TurnBased::Start() {
     pTurnEngine->flags &= ~TE_HAVE_PENDING_ACTIONS;
     pEventTimer->TrackGameTime();
     pAudioPlayer->playUISound(SOUND_batllest);
-    // pPlayer = pParty->pPlayers.data();
+    // pPlayer = pParty->pCharacters.data();
     dword_50C998_turnbased_icon_1A =
         pIconsFrameTable->GetIcon(uIconID_TurnStart)->GetAnimLength();
     dword_50C994 = 0;
@@ -127,12 +127,12 @@ void stru262_TurnBased::Start() {
     this->uActorQueueSize = 0;
 
     for (uint pl_id = 0; pl_id < 4; ++pl_id) {
-        if (pParty->pPlayers[pl_id].CanAct()) {
+        if (pParty->pCharacters[pl_id].CanAct()) {
             this->pQueue[this->uActorQueueSize].uPackedID =
                 PID(OBJECT_Player, pl_id);
             this->pQueue[this->uActorQueueSize].AI_action_type = TE_AI_PURSUE;
             this->pQueue[this->uActorQueueSize].uActionLength = 0;
-            pParty->pTurnBasedPlayerRecoveryTimes[this->uActorQueueSize] = 0;
+            pParty->pTurnBasedCharacterRecoveryTimes[this->uActorQueueSize] = 0;
             ++this->uActorQueueSize;
         }
     }
@@ -162,8 +162,8 @@ void stru262_TurnBased::Start() {
     for (int k = 0; k < this->uActorQueueSize; ++k) {
         // set initial initiative for turn actors
         if (PID_TYPE(this->pQueue[k].uPackedID) == OBJECT_Player) {
-            if (pParty->pPlayers[PID_ID(this->pQueue[k].uPackedID)].timeToRecovery != 0) {
-                this->pQueue[k].actor_initiative = (int)((double)pParty->pPlayers[PID_ID(this->pQueue[k].uPackedID)].timeToRecovery * 0.46875);
+            if (pParty->pCharacters[PID_ID(this->pQueue[k].uPackedID)].timeToRecovery != 0) {
+                this->pQueue[k].actor_initiative = (int)((double)pParty->pCharacters[PID_ID(this->pQueue[k].uPackedID)].timeToRecovery * 0.46875);
             } else {
                 activ_players[a_players_count] = k;
                 ++a_players_count;
@@ -183,7 +183,7 @@ void stru262_TurnBased::Start() {
     if (a_players_count > 0) {
         for (i = 0; i < a_players_count; ++i)
             players_recovery_time[i] =
-                pParty->pPlayers[PID_ID(this->pQueue[activ_players[i]].uPackedID)].GetAttackRecoveryTime(false);
+                pParty->pCharacters[PID_ID(this->pQueue[activ_players[i]].uPackedID)].GetAttackRecoveryTime(false);
         // sort players by recovery time
         for (i = 0; i < a_players_count - 1; ++i) {
             for (j = i + 1; j < a_players_count; ++j) {
@@ -225,7 +225,7 @@ void stru262_TurnBased::End(bool bPlaySound) {
         objType = (ObjectType)PID_TYPE(pQueue[i].uPackedID);
         objID = PID_ID(pQueue[i].uPackedID);
         if (objType == OBJECT_Player)
-            pParty->pPlayers[objID].timeToRecovery = (uint16_t)((double)pQueue[i].actor_initiative * flt_debugrecmod3);
+            pParty->pCharacters[objID].timeToRecovery = (uint16_t)((double)pQueue[i].actor_initiative * flt_debugrecmod3);
         else if (objType == OBJECT_Actor)
             pActors[objID].pMonsterInfo.uRecoveryTime = (uint16_t)((double)pQueue[i].actor_initiative * flt_debugrecmod3);
     }
@@ -328,7 +328,7 @@ void stru262_TurnBased::StartTurn() {
     for (player_num = 0; player_num < 4; ++player_num) {
         for (j = 0; j < uActorQueueSize; ++j) {
             if (PID_TYPE(pQueue[j].uPackedID) == OBJECT_Player) {
-                if (pParty->pPlayers[PID_ID(pQueue[j].uPackedID)].CanAct() && (player_num != PID_ID(pQueue[j].uPackedID)))
+                if (pParty->pCharacters[PID_ID(pQueue[j].uPackedID)].CanAct() && (player_num != PID_ID(pQueue[j].uPackedID)))
                     break;
             }
         }
@@ -495,11 +495,11 @@ void stru262_TurnBased::_406457(int a2) {
     v6 = 0;
     if (PID_TYPE(pQueue[a2].uPackedID) == OBJECT_Player) {
         v4 = PID_ID(pQueue[a2].uPackedID);
-        if (pParty->pTurnBasedPlayerRecoveryTimes[v4]) {
-            v6 = pParty->pTurnBasedPlayerRecoveryTimes[v4];
-            pParty->pTurnBasedPlayerRecoveryTimes[v4] = 0;
+        if (pParty->pTurnBasedCharacterRecoveryTimes[v4]) {
+            v6 = pParty->pTurnBasedCharacterRecoveryTimes[v4];
+            pParty->pTurnBasedCharacterRecoveryTimes[v4] = 0;
         } else {
-            v6 = pParty->pPlayers[v4].GetAttackRecoveryTime(false);
+            v6 = pParty->pCharacters[v4].GetAttackRecoveryTime(false);
         }
         if (v6 < 30) v6 = 30;
     } else {
