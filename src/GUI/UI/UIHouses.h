@@ -38,22 +38,23 @@ bool houseDialogPressEscape();
  */
 void playHouseSound(HOUSE_ID houseID, HouseSoundType type);
 
-enum class HouseInteractiveType {
-    HOUSE_INTERACTIVE_PROPRIETOR,
-    HOUSE_INTERACTIVE_NPC,
-    HOUSE_INTERACTIVE_TRANSITION
+/**
+ * Type of NPC you can have dialogue with inside house.
+ */
+enum class HouseNpcType {
+    HOUSE_PROPRIETOR, // default resident in non-simple houses (shop owner, temple priest etc.).
+    HOUSE_NPC,        // regular NPC, have description in NPCs table, @npc field is points to it.
+    HOUSE_TRANSITION  // transition point to different map, @targetMapID contains ID of target map.
 };
-using enum HouseInteractiveType;
+using enum HouseNpcType;
 
-struct HouseInteractiveDesc {
-    HouseInteractiveType type;
+struct HouseNpcDesc {
+    HouseNpcType type;
     std::string label = "";
     GraphicsImage *icon = nullptr;
     GUIButton *button = nullptr;
-    union {
-        int targetMapID;
-        NPCData *npc;
-    } data{};
+    int targetMapID = 0;
+    NPCData *npc = nullptr;
 };
 
 class GUIWindow_House : public GUIWindow {
@@ -115,5 +116,5 @@ extern std::array<const HouseAnimDescr, 196> pAnimatedRooms;
 
 extern IndexedArray<int, BUILDING_WEAPON_SHOP, BUILDING_DARK_GUILD> itemAmountInShop;
 
-extern std::vector<HouseInteractiveDesc> dialogueInteractiveList;
-extern int currentDialogueInteractive;
+extern std::vector<HouseNpcDesc> houseNpcs;
+extern int currentHouseNpc;

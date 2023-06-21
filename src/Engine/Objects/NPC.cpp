@@ -108,7 +108,7 @@ bool CheckHiredNPCSpeciality(NPCProf prof) {
 //----- (004B40E6) --------------------------------------------------------
 void NPCHireableDialogPrepare() {
     int v0 = 0;
-    NPCData *v1 = dialogueInteractiveList[currentDialogueInteractive].data.npc;
+    NPCData *v1 = houseNpcs[currentHouseNpc].npc;
 
     pDialogueWindow->Release();
     pDialogueWindow = new GUIWindow(WINDOW_Dialogue, {0, 0}, {render->GetRenderDimensions().w, 350}, 0);
@@ -132,12 +132,12 @@ void NPCHireableDialogPrepare() {
 void _4B4224_UpdateNPCTopics(int _this) {
     int num_menu_buttons = 0;
 
-    currentDialogueInteractive = _this;
+    currentHouseNpc = _this;
     Sizei renDims = render->GetRenderDimensions();
-    if (dialogueInteractiveList[_this].type == HOUSE_INTERACTIVE_TRANSITION) {
+    if (houseNpcs[_this].type == HOUSE_TRANSITION) {
         pDialogueWindow->Release();
         pDialogueWindow = new GUIWindow(WINDOW_Dialogue, {0, 0}, renDims, 0);
-        transition_button_label = dialogueInteractiveList[_this].label;
+        transition_button_label = houseNpcs[_this].label;
         pBtn_ExitCancel = pDialogueWindow->CreateButton({566, 445}, {75, 33}, 1, 0, UIMSG_Escape, 0, InputAction::No, localization->GetString(LSTR_CANCEL), {ui_buttdesc2});
         pBtn_YES = pDialogueWindow->CreateButton({486, 445}, {75, 33}, 1, 0, UIMSG_BF, 1, InputAction::Yes, transition_button_label, {ui_buttyes2});
         pDialogueWindow->CreateButton({pNPCPortraits_x[0][0], pNPCPortraits_y[0][0]}, {63, 73}, 1, 0, UIMSG_BF, 1, InputAction::EventTrigger, transition_button_label);
@@ -146,9 +146,9 @@ void _4B4224_UpdateNPCTopics(int _this) {
         if (dialog_menu_id == DIALOGUE_OTHER) {
             pDialogueWindow->Release();
         } else {
-            for (int i = 0; i < dialogueInteractiveList.size(); ++i) {
-                dialogueInteractiveList[i].button->Release();
-                dialogueInteractiveList[i].button = nullptr;
+            for (int i = 0; i < houseNpcs.size(); ++i) {
+                houseNpcs[i].button->Release();
+                houseNpcs[i].button = nullptr;
             }
         }
         pDialogueWindow = new GUIWindow(WINDOW_Dialogue, {0, 0}, {renDims.w, 345}, 0);
@@ -156,10 +156,10 @@ void _4B4224_UpdateNPCTopics(int _this) {
                                                         localization->GetString(LSTR_END_CONVERSATION), {ui_exit_cancel_button_background});
         pDialogueWindow->CreateButton({8, 8}, {450, 320}, 1, 0, UIMSG_HouseScreenClick, 0);
         dialog_menu_id = DIALOGUE_MAIN;
-        if (dialogueInteractiveList[_this].type == HOUSE_INTERACTIVE_PROPRIETOR) {
+        if (houseNpcs[_this].type == HOUSE_PROPRIETOR) {
             window_SpeakInHouse->initializeDialog();
         } else { // NPC
-            NPCData *npc = dialogueInteractiveList[_this].data.npc;
+            NPCData *npc = houseNpcs[_this].npc;
             if (npc->is_joinable) {
                 num_menu_buttons = 1;
                 pDialogueWindow->CreateButton({480, 160}, {140, 30}, 1, 0, UIMSG_ClickNPCTopic, DIALOGUE_13_hiring_related);
