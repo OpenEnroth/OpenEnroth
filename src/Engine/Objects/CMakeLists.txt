@@ -8,7 +8,7 @@ set(ENGINE_OBJECTS_SOURCES
         Monsters.cpp
         NPC.cpp
         ObjectList.cpp
-        Player.cpp
+        Character.cpp
         SpriteObject.cpp)
 
 set(ENGINE_OBJECTS_HEADERS
@@ -23,8 +23,8 @@ set(ENGINE_OBJECTS_HEADERS
         NPC.h
         NPCEnums.h
         ObjectList.h
-        Player.h
-        PlayerEnums.h
+        Character.h
+        CharacterEnums.h
         SpriteObject.h)
 
 add_library(engine_objects STATIC ${ENGINE_OBJECTS_SOURCES} ${ENGINE_OBJECTS_HEADERS})

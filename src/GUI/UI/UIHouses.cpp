@@ -335,7 +335,7 @@ bool enterHouse(HOUSE_ID uHouseID) {
 
         GameUI_SetStatusBar(LSTR_FMT_OPEN_TIME, uOpenTime, localization->GetAmPm(am_pm_flag_open), uCloseTime, localization->GetAmPm(am_pm_flag_close));
         if (pParty->hasActiveCharacter()) {
-            pParty->activeCharacter().playReaction(SPEECH_StoreClosed);
+            pParty->activeCharacter().playReaction(SPEECH_STORE_CLOSED);
         }
 
         return false;
@@ -1046,7 +1046,7 @@ void GUIWindow_House::learnSkillsDialogue() {
     int cost = PriceCalculator::skillLearningCostForPlayer(&pParty->activeCharacter(), buildingTable[wData.val - 1]);
     int buttonsLimit = pDialogueWindow->pStartingPosActiveItem + pDialogueWindow->pNumPresenceButton;
     for (int i = pDialogueWindow->pStartingPosActiveItem; i < buttonsLimit; i++) {
-        PLAYER_SKILL_TYPE skill = GetLearningDialogueSkill((DIALOGUE_TYPE)pDialogueWindow->GetControl(i)->msg_param);
+        CharacterSkillType skill = GetLearningDialogueSkill((DIALOGUE_TYPE)pDialogueWindow->GetControl(i)->msg_param);
         if (skillMaxMasteryPerClass[pParty->activeCharacter().classType][skill] != PLAYER_SKILL_MASTERY_NONE &&
             !pParty->activeCharacter().pActiveSkills[skill]) {
             optionsText.push_back(localization->GetSkillName(skill));
@@ -1077,7 +1077,7 @@ void GUIWindow_House::learnSkillsDialogue() {
     drawOptions(optionsText, colorTable.Sunflower, 18);
 }
 
-void GUIWindow_House::learnSelectedSkill(PLAYER_SKILL_TYPE skill) {
+void GUIWindow_House::learnSelectedSkill(CharacterSkillType skill) {
     int pPrice = PriceCalculator::skillLearningCostForPlayer(&pParty->activeCharacter(), buildingTable[wData.val - 1]);
     if (skillMaxMasteryPerClass[pParty->activeCharacter().classType][skill] != PLAYER_SKILL_MASTERY_NONE) {
         if (!pParty->activeCharacter().pActiveSkills[skill]) {
@@ -1094,7 +1094,7 @@ void GUIWindow_House::learnSelectedSkill(PLAYER_SKILL_TYPE skill) {
                 pParty->TakeGold(pPrice);
                 _transactionPerformed = true;
                 pParty->activeCharacter().pActiveSkills[skill] = CombinedSkillValue::novice();
-                pParty->activeCharacter().playReaction(SPEECH_SkillLearned);
+                pParty->activeCharacter().playReaction(SPEECH_SKILL_LEARNED);
             }
         }
     }

@@ -144,7 +144,7 @@ void GUIWindow_MagicGuild::mainDialogue() {
         if (pDialogueWindow->GetControl(i)->msg_param == DIALOGUE_GUILD_BUY_BOOKS) {
             optionsText.push_back(localization->GetString(LSTR_BUY_SPELLS));
         } else {
-            PLAYER_SKILL_TYPE skill = GetLearningDialogueSkill((DIALOGUE_TYPE)pDialogueWindow->GetControl(i)->msg_param);
+            CharacterSkillType skill = GetLearningDialogueSkill((DIALOGUE_TYPE)pDialogueWindow->GetControl(i)->msg_param);
             if (skillMaxMasteryPerClass[pParty->activeCharacter().classType][skill] != PLAYER_SKILL_MASTERY_NONE &&
                 !pParty->activeCharacter().pActiveSkills[skill]) {
                 optionsText.push_back(localization->GetSkillName(skill));
@@ -320,11 +320,11 @@ void GUIWindow_MagicGuild::houseScreenClick() {
                         pParty->TakeGold(uPriceItemService);
                         boughtItem.Reset();
                         render->ClearZBuffer();
-                        pParty->activeCharacter().playReaction(SPEECH_ItemBuy);
+                        pParty->activeCharacter().playReaction(SPEECH_ITEM_BUY);
                         return;
                     }
 
-                    pParty->activeCharacter().playReaction(SPEECH_NoRoom);
+                    pParty->activeCharacter().playReaction(SPEECH_NO_ROOM);
                     GameUI_SetStatusBar(LSTR_INVENTORY_IS_FULL);
                 }
             }

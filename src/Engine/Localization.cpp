@@ -250,54 +250,54 @@ void Localization::InitializeCharacterConditionNames() {
 }
 
 void Localization::InitializeSkillNames() {
-    this->skill_names[PLAYER_SKILL_STAFF]       = this->localization_strings[271];  // Staff
-    this->skill_names[PLAYER_SKILL_SWORD]       = this->localization_strings[272];
-    this->skill_names[PLAYER_SKILL_DAGGER]      = this->localization_strings[273];
-    this->skill_names[PLAYER_SKILL_AXE]         = this->localization_strings[274];
-    this->skill_names[PLAYER_SKILL_SPEAR]       = this->localization_strings[275];
-    this->skill_names[PLAYER_SKILL_BOW]         = this->localization_strings[276];  // Bow
-    this->skill_names[PLAYER_SKILL_MACE]        = this->localization_strings[277];
-    this->skill_names[PLAYER_SKILL_BLASTER]     = this->localization_strings[278];
-    this->skill_names[PLAYER_SKILL_SHIELD]      = this->localization_strings[279];
-    this->skill_names[PLAYER_SKILL_LEATHER]     = this->localization_strings[280];
-    this->skill_names[PLAYER_SKILL_CHAIN]       = this->localization_strings[281];  // Chain
-    this->skill_names[PLAYER_SKILL_PLATE]       = this->localization_strings[282];
-    this->skill_names[PLAYER_SKILL_FIRE]        = this->localization_strings[283];
-    this->skill_names[PLAYER_SKILL_AIR]         = this->localization_strings[284];
-    this->skill_names[PLAYER_SKILL_WATER]       = this->localization_strings[285];
-    this->skill_names[PLAYER_SKILL_EARTH]       = this->localization_strings[286];  // Earth
-    this->skill_names[PLAYER_SKILL_SPIRIT]      = this->localization_strings[289];
-    this->skill_names[PLAYER_SKILL_MIND]        = this->localization_strings[290];
-    this->skill_names[PLAYER_SKILL_BODY]        = this->localization_strings[291];
-    this->skill_names[PLAYER_SKILL_LIGHT]       = this->localization_strings[287];
-    this->skill_names[PLAYER_SKILL_DARK]        = this->localization_strings[288];  // Dark
-    this->skill_names[PLAYER_SKILL_ITEM_ID]     = this->localization_strings[292];
-    this->skill_names[PLAYER_SKILL_MERCHANT]    = this->localization_strings[293];
-    this->skill_names[PLAYER_SKILL_REPAIR]      = this->localization_strings[294];
-    this->skill_names[PLAYER_SKILL_BODYBUILDING] = this->localization_strings[295];
-    this->skill_names[PLAYER_SKILL_MEDITATION]  = this->localization_strings[296];  // Meditation
-    this->skill_names[PLAYER_SKILL_PERCEPTION]  = this->localization_strings[297];
-    this->skill_names[PLAYER_SKILL_DIPLOMACY]   = this->localization_strings[298];
-    this->skill_names[PLAYER_SKILL_THIEVERY]    = this->localization_strings[299];
-    this->skill_names[PLAYER_SKILL_TRAP_DISARM] = this->localization_strings[300];
-    this->skill_names[PLAYER_SKILL_DODGE]       = this->localization_strings[50];  // Dodge
-    this->skill_names[PLAYER_SKILL_UNARMED]     = this->localization_strings[77];
-    this->skill_names[PLAYER_SKILL_MONSTER_ID]  = this->localization_strings[88];
-    this->skill_names[PLAYER_SKILL_ARMSMASTER]  = this->localization_strings[89];
-    this->skill_names[PLAYER_SKILL_STEALING]    = this->localization_strings[90];
-    this->skill_names[PLAYER_SKILL_ALCHEMY]     = this->localization_strings[95];  // Alchemy
-    this->skill_names[PLAYER_SKILL_LEARNING]    = this->localization_strings[301];
-    this->skill_names[PLAYER_SKILL_INVALID]     = this->localization_strings[153]; // "None", used during character creation.
+    this->skill_names[CHARACTER_SKILL_STAFF]       = this->localization_strings[271];  // Staff
+    this->skill_names[CHARACTER_SKILL_SWORD]       = this->localization_strings[272];
+    this->skill_names[CHARACTER_SKILL_DAGGER]      = this->localization_strings[273];
+    this->skill_names[CHARACTER_SKILL_AXE]         = this->localization_strings[274];
+    this->skill_names[CHARACTER_SKILL_SPEAR]       = this->localization_strings[275];
+    this->skill_names[CHARACTER_SKILL_BOW]         = this->localization_strings[276];  // Bow
+    this->skill_names[CHARACTER_SKILL_MACE]        = this->localization_strings[277];
+    this->skill_names[CHARACTER_SKILL_BLASTER]     = this->localization_strings[278];
+    this->skill_names[CHARACTER_SKILL_SHIELD]      = this->localization_strings[279];
+    this->skill_names[CHARACTER_SKILL_LEATHER]     = this->localization_strings[280];
+    this->skill_names[CHARACTER_SKILL_CHAIN]       = this->localization_strings[281];  // Chain
+    this->skill_names[CHARACTER_SKILL_PLATE]       = this->localization_strings[282];
+    this->skill_names[CHARACTER_SKILL_FIRE]        = this->localization_strings[283];
+    this->skill_names[CHARACTER_SKILL_AIR]         = this->localization_strings[284];
+    this->skill_names[CHARACTER_SKILL_WATER]       = this->localization_strings[285];
+    this->skill_names[CHARACTER_SKILL_EARTH]       = this->localization_strings[286];  // Earth
+    this->skill_names[CHARACTER_SKILL_SPIRIT]      = this->localization_strings[289];
+    this->skill_names[CHARACTER_SKILL_MIND]        = this->localization_strings[290];
+    this->skill_names[CHARACTER_SKILL_BODY]        = this->localization_strings[291];
+    this->skill_names[CHARACTER_SKILL_LIGHT]       = this->localization_strings[287];
+    this->skill_names[CHARACTER_SKILL_DARK]        = this->localization_strings[288];  // Dark
+    this->skill_names[CHARACTER_SKILL_ITEM_ID]     = this->localization_strings[292];
+    this->skill_names[CHARACTER_SKILL_MERCHANT]    = this->localization_strings[293];
+    this->skill_names[CHARACTER_SKILL_REPAIR]      = this->localization_strings[294];
+    this->skill_names[CHARACTER_SKILL_BODYBUILDING] = this->localization_strings[295];
+    this->skill_names[CHARACTER_SKILL_MEDITATION]  = this->localization_strings[296];  // Meditation
+    this->skill_names[CHARACTER_SKILL_PERCEPTION]  = this->localization_strings[297];
+    this->skill_names[CHARACTER_SKILL_DIPLOMACY]   = this->localization_strings[298];
+    this->skill_names[CHARACTER_SKILL_THIEVERY]    = this->localization_strings[299];
+    this->skill_names[CHARACTER_SKILL_TRAP_DISARM] = this->localization_strings[300];
+    this->skill_names[CHARACTER_SKILL_DODGE]       = this->localization_strings[50];  // Dodge
+    this->skill_names[CHARACTER_SKILL_UNARMED]     = this->localization_strings[77];
+    this->skill_names[CHARACTER_SKILL_MONSTER_ID]  = this->localization_strings[88];
+    this->skill_names[CHARACTER_SKILL_ARMSMASTER]  = this->localization_strings[89];
+    this->skill_names[CHARACTER_SKILL_STEALING]    = this->localization_strings[90];
+    this->skill_names[CHARACTER_SKILL_ALCHEMY]     = this->localization_strings[95];  // Alchemy
+    this->skill_names[CHARACTER_SKILL_LEARNING]    = this->localization_strings[301];
+    this->skill_names[CHARACTER_SKILL_INVALID]     = this->localization_strings[153]; // "None", used during character creation.
 
     // TODO(captainurist): Not currently used anywhere
-    // this->skill_names[PLAYER_SKILL_CLUB]        = this->localization_strings[568];
-    // this->skill_descriptions[PLAYER_SKILL_CLUB] = "Everyone is able to wield a club without any prior training and bonk anything with it. "
+    // this->skill_names[CHARACTER_SKILL_CLUB]        = this->localization_strings[568];
+    // this->skill_descriptions[CHARACTER_SKILL_CLUB] = "Everyone is able to wield a club without any prior training and bonk anything with it. "
     //    "But there is not much room to improve finesse or mastery for such a rudimentary weapon though. "
     //    "So don't expect to become thwonking killer and devastating anyone beyond weaklings.";
 
     skill_desc_raw = engine->_gameResourceManager->getEventsFile("skilldes.txt").string_view();
     strtok(skill_desc_raw.data(), "\r");
-    for (PLAYER_SKILL_TYPE i : allVisibleSkills()) {
+    for (CharacterSkillType i : allVisibleSkills()) {
         char *test_string = strtok(NULL, "\r") + 1;
 
         if (test_string != NULL && strlen(test_string) > 0) {

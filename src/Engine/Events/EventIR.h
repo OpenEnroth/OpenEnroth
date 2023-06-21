@@ -5,7 +5,7 @@
 
 #include "Engine/Events/EventEnums.h"
 #include "GUI/UI/UIHouseEnums.h"
-#include "Engine/Objects/PlayerEnums.h"
+#include "Engine/Objects/CharacterEnums.h"
 #include "Engine/Objects/ItemEnums.h"
 #include "Engine/Objects/Chest.h"
 #include "Engine/Objects/SpriteObjectType.h"
@@ -26,7 +26,7 @@ class EventIR {
         HOUSE_ID house_id;
         int chest_id;
         CHARACTER_EXPRESSION_ID expr_id;
-        PlayerSpeech speech_id;
+        CharacterSpeech speech_id;
         int text_id;
         Season season;
         int event_id;
@@ -162,7 +162,7 @@ class EventIR {
             int is_set;
         } chest_flag_descr;
         struct {
-            PLAYER_SKILL_TYPE skill_type;
+            CharacterSkillType skill_type;
             PLAYER_SKILL_MASTERY skill_mastery;
             PLAYER_SKILL_LEVEL skill_level;
         } check_skill_descr;

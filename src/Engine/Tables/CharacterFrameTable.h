@@ -2,7 +2,7 @@
 
 #include <vector>
 
-#include "Engine/Objects/Player.h"
+#include "Engine/Objects/Character.h"
 
 #include "Utility/Memory/Blob.h"
 

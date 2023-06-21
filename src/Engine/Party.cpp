@@ -16,7 +16,7 @@
 #include "Engine/Objects/SpriteObject.h"
 #include "Engine/Tables/ItemTable.h"
 #include "Engine/Tables/IconFrameTable.h"
-#include "Engine/Tables/PlayerFrameTable.h"
+#include "Engine/Tables/CharacterFrameTable.h"
 #include "Engine/Time.h"
 #include "Engine/TurnEngine/TurnEngine.h"
 
@@ -431,10 +431,10 @@ void Party::createDefaultParty(bool bDebugGiveItems) {
     this->pPlayers[0].uAccuracy = 13;
     this->pPlayers[0].uSpeed = 14;
     this->pPlayers[0].uLuck = 7;
-    this->pPlayers[0].pActiveSkills[PLAYER_SKILL_LEATHER] = CombinedSkillValue::novice();
-    this->pPlayers[0].pActiveSkills[PLAYER_SKILL_ARMSMASTER] = CombinedSkillValue::novice();
-    this->pPlayers[0].pActiveSkills[PLAYER_SKILL_BOW] = CombinedSkillValue::novice();
-    this->pPlayers[0].pActiveSkills[PLAYER_SKILL_SWORD] = CombinedSkillValue::novice();
+    this->pPlayers[0].pActiveSkills[CHARACTER_SKILL_LEATHER] = CombinedSkillValue::novice();
+    this->pPlayers[0].pActiveSkills[CHARACTER_SKILL_ARMSMASTER] = CombinedSkillValue::novice();
+    this->pPlayers[0].pActiveSkills[CHARACTER_SKILL_BOW] = CombinedSkillValue::novice();
+    this->pPlayers[0].pActiveSkills[CHARACTER_SKILL_SWORD] = CombinedSkillValue::novice();
 
     this->pPlayers[1].name = localization->GetString(LSTR_PC_NAME_RODERIC);
     this->pPlayers[1].uPrevFace = 3;
@@ -448,10 +448,10 @@ void Party::createDefaultParty(bool bDebugGiveItems) {
     this->pPlayers[1].uAccuracy = 13;
     this->pPlayers[1].uSpeed = 13;
     this->pPlayers[1].uLuck = 13;
-    this->pPlayers[1].pActiveSkills[PLAYER_SKILL_LEATHER] = CombinedSkillValue::novice();
-    this->pPlayers[1].pActiveSkills[PLAYER_SKILL_STEALING] = CombinedSkillValue::novice();
-    this->pPlayers[1].pActiveSkills[PLAYER_SKILL_DAGGER] = CombinedSkillValue::novice();
-    this->pPlayers[1].pActiveSkills[PLAYER_SKILL_TRAP_DISARM] = CombinedSkillValue::novice();
+    this->pPlayers[1].pActiveSkills[CHARACTER_SKILL_LEATHER] = CombinedSkillValue::novice();
+    this->pPlayers[1].pActiveSkills[CHARACTER_SKILL_STEALING] = CombinedSkillValue::novice();
+    this->pPlayers[1].pActiveSkills[CHARACTER_SKILL_DAGGER] = CombinedSkillValue::novice();
+    this->pPlayers[1].pActiveSkills[CHARACTER_SKILL_TRAP_DISARM] = CombinedSkillValue::novice();
 
     this->pPlayers[2].name = localization->GetString(LSTR_PC_NAME_SERENA);
     this->pPlayers[2].uPrevFace = 14;
@@ -465,10 +465,10 @@ void Party::createDefaultParty(bool bDebugGiveItems) {
     this->pPlayers[2].uAccuracy = 7;
     this->pPlayers[2].uSpeed = 13;
     this->pPlayers[2].uLuck = 7;
-    this->pPlayers[2].pActiveSkills[PLAYER_SKILL_ALCHEMY] = CombinedSkillValue::novice();
-    this->pPlayers[2].pActiveSkills[PLAYER_SKILL_LEATHER] = CombinedSkillValue::novice();
-    this->pPlayers[2].pActiveSkills[PLAYER_SKILL_BODY] = CombinedSkillValue::novice();
-    this->pPlayers[2].pActiveSkills[PLAYER_SKILL_MACE] = CombinedSkillValue::novice();
+    this->pPlayers[2].pActiveSkills[CHARACTER_SKILL_ALCHEMY] = CombinedSkillValue::novice();
+    this->pPlayers[2].pActiveSkills[CHARACTER_SKILL_LEATHER] = CombinedSkillValue::novice();
+    this->pPlayers[2].pActiveSkills[CHARACTER_SKILL_BODY] = CombinedSkillValue::novice();
+    this->pPlayers[2].pActiveSkills[CHARACTER_SKILL_MACE] = CombinedSkillValue::novice();
 
     this->pPlayers[3].name = localization->GetString(LSTR_PC_NAME_ALEXIS);
     this->pPlayers[3].uPrevFace = 10;
@@ -482,10 +482,10 @@ void Party::createDefaultParty(bool bDebugGiveItems) {
     this->pPlayers[3].uIntelligence = 30;
     this->pPlayers[3].uPersonality = 9;
     this->pPlayers[3].uLuck = 7;
-    this->pPlayers[3].pActiveSkills[PLAYER_SKILL_LEATHER] = CombinedSkillValue::novice();
-    this->pPlayers[3].pActiveSkills[PLAYER_SKILL_AIR] = CombinedSkillValue::novice();
-    this->pPlayers[3].pActiveSkills[PLAYER_SKILL_FIRE] = CombinedSkillValue::novice();
-    this->pPlayers[3].pActiveSkills[PLAYER_SKILL_STAFF] = CombinedSkillValue::novice();
+    this->pPlayers[3].pActiveSkills[CHARACTER_SKILL_LEATHER] = CombinedSkillValue::novice();
+    this->pPlayers[3].pActiveSkills[CHARACTER_SKILL_AIR] = CombinedSkillValue::novice();
+    this->pPlayers[3].pActiveSkills[CHARACTER_SKILL_FIRE] = CombinedSkillValue::novice();
+    this->pPlayers[3].pActiveSkills[CHARACTER_SKILL_STAFF] = CombinedSkillValue::novice();
 
     for (Player &pCharacter : pPlayers) {
         if (pCharacter.classType == PLAYER_CLASS_KNIGHT)
@@ -493,7 +493,7 @@ void Party::createDefaultParty(bool bDebugGiveItems) {
 
         pCharacter.lastOpenedSpellbookPage = 0;
         int count = 0;
-        for (PLAYER_SKILL_TYPE skill : allMagicSkills()) {  // for Magic Book
+        for (CharacterSkillType skill : allMagicSkills()) {  // for Magic Book
             if (pCharacter.pActiveSkills[skill]) {
                 pCharacter.lastOpenedSpellbookPage = count;
                 break;
@@ -509,77 +509,77 @@ void Party::createDefaultParty(bool bDebugGiveItems) {
             pItemTable->generateItem(ITEM_TREASURE_LEVEL_2, 40, &Dst);  // ring
             pCharacter.AddItem2(-1, &Dst);
             for (int uSkillIdx = 0; uSkillIdx < 36; uSkillIdx++) {
-                PLAYER_SKILL_TYPE skill = (PLAYER_SKILL_TYPE)uSkillIdx;
+                CharacterSkillType skill = (CharacterSkillType)uSkillIdx;
                 if (pCharacter.pActiveSkills[skill]) {
                     switch (skill) {
-                        case PLAYER_SKILL_STAFF:
+                        case CHARACTER_SKILL_STAFF:
                             pCharacter.WearItem(ITEM_STAFF);
                             break;
-                        case PLAYER_SKILL_SWORD:
+                        case CHARACTER_SKILL_SWORD:
                             pCharacter.WearItem(ITEM_CRUDE_LONGSWORD);
                             break;
-                        case PLAYER_SKILL_DAGGER:
+                        case CHARACTER_SKILL_DAGGER:
                             pCharacter.WearItem(ITEM_DAGGER);
                             break;
-                        case PLAYER_SKILL_AXE:
+                        case CHARACTER_SKILL_AXE:
                             pCharacter.WearItem(ITEM_CRUDE_AXE);
                             break;
-                        case PLAYER_SKILL_SPEAR:
+                        case CHARACTER_SKILL_SPEAR:
                             pCharacter.WearItem(ITEM_CRUDE_SPEAR);
                             break;
-                        case PLAYER_SKILL_BOW:
+                        case CHARACTER_SKILL_BOW:
                             pCharacter.WearItem(ITEM_CROSSBOW);
                             break;
-                        case PLAYER_SKILL_MACE:
+                        case CHARACTER_SKILL_MACE:
                             pCharacter.WearItem(ITEM_MACE);
                             break;
-                        case PLAYER_SKILL_SHIELD:
+                        case CHARACTER_SKILL_SHIELD:
                             pCharacter.WearItem(ITEM_WOODEN_BUCKLER);
                             break;
-                        case PLAYER_SKILL_LEATHER:
+                        case CHARACTER_SKILL_LEATHER:
                             pCharacter.WearItem(ITEM_LEATHER_ARMOR);
                             break;
-                        case PLAYER_SKILL_CHAIN:
+                        case CHARACTER_SKILL_CHAIN:
                             pCharacter.WearItem(ITEM_CHAIN_MAIL);
                             break;
-                        case PLAYER_SKILL_PLATE:
+                        case CHARACTER_SKILL_PLATE:
                             pCharacter.WearItem(ITEM_PLATE_ARMOR);
                             break;
-                        case PLAYER_SKILL_FIRE:
+                        case CHARACTER_SKILL_FIRE:
                             pCharacter.AddItem(-1, ITEM_SPELLBOOK_FIRE_BOLT);
                             break;
-                        case PLAYER_SKILL_AIR:
+                        case CHARACTER_SKILL_AIR:
                             pCharacter.AddItem(-1, ITEM_SPELLBOOK_FEATHER_FALL);
                             break;
-                        case PLAYER_SKILL_WATER:
+                        case CHARACTER_SKILL_WATER:
                             pCharacter.AddItem(-1, ITEM_SPELLBOOK_POISON_SPRAY);
                             break;
-                        case PLAYER_SKILL_EARTH:
+                        case CHARACTER_SKILL_EARTH:
                             pCharacter.AddItem(-1, ITEM_SPELLBOOK_SLOW);
                             break;
-                        case PLAYER_SKILL_SPIRIT:
+                        case CHARACTER_SKILL_SPIRIT:
                             pCharacter.AddItem(-1, ITEM_SPELLBOOK_BLESS);
                             break;
-                        case PLAYER_SKILL_MIND:
+                        case CHARACTER_SKILL_MIND:
                             pCharacter.AddItem(-1, ITEM_SPELLBOOK_MIND_BLAST);
                             break;
-                        case PLAYER_SKILL_BODY:
+                        case CHARACTER_SKILL_BODY:
                             pCharacter.AddItem(-1, ITEM_SPELLBOOK_HEAL);
                             break;
-                        case PLAYER_SKILL_ITEM_ID:
-                        case PLAYER_SKILL_REPAIR:
-                        case PLAYER_SKILL_MEDITATION:
-                        case PLAYER_SKILL_PERCEPTION:
-                        case PLAYER_SKILL_DIPLOMACY:
-                        case PLAYER_SKILL_TRAP_DISARM:
-                        case PLAYER_SKILL_LEARNING:
+                        case CHARACTER_SKILL_ITEM_ID:
+                        case CHARACTER_SKILL_REPAIR:
+                        case CHARACTER_SKILL_MEDITATION:
+                        case CHARACTER_SKILL_PERCEPTION:
+                        case CHARACTER_SKILL_DIPLOMACY:
+                        case CHARACTER_SKILL_TRAP_DISARM:
+                        case CHARACTER_SKILL_LEARNING:
                             pCharacter.AddItem(-1, ITEM_POTION_BOTTLE);
                             pCharacter.AddItem(-1, grng->randomSample(allLevel1Reagents())); // Add simple reagent.
                             break;
-                        case PLAYER_SKILL_DODGE:
+                        case CHARACTER_SKILL_DODGE:
                             pCharacter.AddItem(-1, ITEM_LEATHER_BOOTS);
                             break;
-                        case PLAYER_SKILL_UNARMED:
+                        case CHARACTER_SKILL_UNARMED:
                             pCharacter.AddItem(-1, ITEM_GAUNTLETS);
                             break;
                         default:
@@ -1101,7 +1101,7 @@ bool Party::addItemToParty(ItemGen *pItem, bool isSilent) {
                 pItem->Reset();
                 if (!isSilent) {
                     pAudioPlayer->playUISound(SOUND_gold01);
-                    pPlayers[playerId].playReaction(SPEECH_FoundItem);
+                    pPlayers[playerId].playReaction(SPEECH_FOUND_ITEM);
                 }
 
                 if (texture) {

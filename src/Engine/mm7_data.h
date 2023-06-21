@@ -9,7 +9,7 @@
 #include "Engine/MM7.h"
 #include "Engine/Objects/ItemEnums.h"
 #include "Engine/Objects/NPCEnums.h"
-#include "Engine/Objects/PlayerEnums.h"
+#include "Engine/Objects/CharacterEnums.h"
 #include "Engine/MapInfo.h"
 
 #include "GUI/GUIEnums.h"
@@ -60,10 +60,10 @@ extern std::array<std::array<unsigned char, 25>, 48> byte_4ECF08;
 extern IndexedArray<std::array<unsigned char, 3>, SPEECH_FIRST, SPEECH_LAST> speechVariants;
 extern IndexedArray<std::array<unsigned char, 5>, SPEECH_FIRST, SPEECH_LAST> expressionVariants;
 extern std::array<int16_t, 4> pPlayerPortraitsXCoords_For_PlayerBuffAnimsDrawing;
-extern IndexedArray<PLAYER_SKILL_LEVEL, PLAYER_SKILL_FIRST, PLAYER_SKILL_LAST> skills_max_level;
-extern IndexedArray<uint, PLAYER_SKILL_FIRST, PLAYER_SKILL_LAST> base_recovery_times_per_weapon_type;
-extern std::array<IndexedArray<ClassSkill, PLAYER_SKILL_FIRST, PLAYER_SKILL_LAST>, 9> pSkillAvailabilityPerClass;
-extern IndexedArray<IndexedArray<PLAYER_SKILL_MASTERY, PLAYER_SKILL_FIRST, PLAYER_SKILL_LAST>, PLAYER_CLASS_FIRST, PLAYER_CLASS_LAST> skillMaxMasteryPerClass;
+extern IndexedArray<PLAYER_SKILL_LEVEL, CHARACTER_SKILL_FIRST, CHARACTER_SKILL_LAST> skills_max_level;
+extern IndexedArray<uint, CHARACTER_SKILL_FIRST, CHARACTER_SKILL_LAST> base_recovery_times_per_weapon_type;
+extern std::array<IndexedArray<ClassSkillAffinity, CHARACTER_SKILL_FIRST, CHARACTER_SKILL_LAST>, 9> pSkillAvailabilityPerClass;
+extern IndexedArray<IndexedArray<PLAYER_SKILL_MASTERY, CHARACTER_SKILL_FIRST, CHARACTER_SKILL_LAST>, PLAYER_CLASS_FIRST, PLAYER_CLASS_LAST> skillMaxMasteryPerClass;
 
 extern std::array<std::pair<int16_t, ITEM_TYPE>, 27> _4F0882_evt_VAR_PlayerItemInHands_vals;
 extern std::array<int, 11> price_for_membership; // TODO(captainurist): IndexedArray<GUILD_FIRST, GUILD_LAST, int> - uses GUILD_ID.

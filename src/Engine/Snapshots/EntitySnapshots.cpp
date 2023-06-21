@@ -19,7 +19,7 @@
 #include "Engine/Party.h"
 #include "Engine/SaveLoad.h"
 #include "Engine/Tables/IconFrameTable.h"
-#include "Engine/Tables/PlayerFrameTable.h"
+#include "Engine/Tables/CharacterFrameTable.h"
 #include "Engine/Tables/TileFrameTable.h"
 #include "Engine/Time.h"
 
@@ -538,7 +538,7 @@ void snapshot(const Player &src, Player_MM7 *dst) {
     dst->field_100 = src.field_100;
     dst->field_104 = src.field_104;
 
-    snapshot(src.pActiveSkills, &dst->activeSkills, segment<PLAYER_SKILL_FIRST_VISIBLE, PLAYER_SKILL_LAST_VISIBLE>());
+    snapshot(src.pActiveSkills, &dst->activeSkills, segment<CHARACTER_SKILL_FIRST_VISIBLE, CHARACTER_SKILL_LAST_VISIBLE>());
     snapshot(src._achievedAwardsBits, &dst->achievedAwardsBits);
     snapshot(src.spellbook.bHaveSpell, &dst->spellbook.haveSpell);
 
@@ -789,7 +789,7 @@ void reconstruct(const Player_MM7 &src, Player *dst) {
     dst->field_100 = src.field_100;
     dst->field_104 = src.field_104;
 
-    reconstruct(src.activeSkills, &dst->pActiveSkills, segment<PLAYER_SKILL_FIRST_VISIBLE, PLAYER_SKILL_LAST_VISIBLE>());
+    reconstruct(src.activeSkills, &dst->pActiveSkills, segment<CHARACTER_SKILL_FIRST_VISIBLE, CHARACTER_SKILL_LAST_VISIBLE>());
     reconstruct(src.achievedAwardsBits, &dst->_achievedAwardsBits);
     reconstruct(src.spellbook.haveSpell, &dst->spellbook.bHaveSpell);
 

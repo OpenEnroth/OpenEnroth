@@ -37,7 +37,7 @@
 #include "Engine/Spells/CastSpellInfo.h"
 #include "Engine/Tables/ItemTable.h"
 #include "Engine/Tables/IconFrameTable.h"
-#include "Engine/Tables/PlayerFrameTable.h"
+#include "Engine/Tables/CharacterFrameTable.h"
 #include "Engine/Time.h"
 #include "Engine/AttackList.h"
 
@@ -1409,7 +1409,7 @@ void _494035_timed_effects__water_walking_damage__etc() {
         for (Player &player : pParty->pPlayers) {
             if (player.WearsItem(ITEM_RELIC_HARECKS_LEATHER, ITEM_SLOT_ARMOUR) ||
                 player.HasEnchantedItemEquipped(ITEM_ENCHANTMENT_OF_WATER_WALKING) ||
-                player.pPlayerBuffs[PLAYER_BUFF_WATER_WALK].Active()) {
+                player.pPlayerBuffs[CHARACTER_BUFF_WATER_WALK].Active()) {
                 player.playEmotion(CHARACTER_EXPRESSION_SMILE, 0);
             } else {
                 if (!player.hasUnderwaterSuitEquipped()) {
@@ -1454,7 +1454,7 @@ void _494035_timed_effects__water_walking_damage__etc() {
 
         if (player.GetItemsBonus(CHARACTER_ATTRIBUTE_ENDURANCE) +
             player.health + player.uEndurance >= 1 ||
-            player.pPlayerBuffs[PLAYER_BUFF_PRESERVATION].Active()) {
+            player.pPlayerBuffs[CHARACTER_BUFF_PRESERVATION].Active()) {
             if (player.health < 1)
                 player.SetCondition(CONDITION_UNCONSCIOUS, 0);
         } else {
@@ -1550,9 +1550,9 @@ void _494035_timed_effects__water_walking_damage__etc() {
             playerBuff.IsBuffExpiredToTime(pParty->GetPlayingTime());
         }
 
-        if (player.pPlayerBuffs[PLAYER_BUFF_HASTE].Expired()) {
+        if (player.pPlayerBuffs[CHARACTER_BUFF_HASTE].Expired()) {
             player.SetCondition(CONDITION_WEAK, 0);
-            player.pPlayerBuffs[PLAYER_BUFF_HASTE].Reset();
+            player.pPlayerBuffs[CHARACTER_BUFF_HASTE].Reset();
         }
     }
 
@@ -1799,7 +1799,7 @@ void RegeneratePartyHealthMana() {
                             }
                             if (player.health < 1) {
                                 int enduranceCheck = player.health + player.uEndurance + player.GetItemsBonus(CHARACTER_ATTRIBUTE_ENDURANCE);
-                                if (enduranceCheck >= 1 || player.pPlayerBuffs[PLAYER_BUFF_PRESERVATION].Active()) {
+                                if (enduranceCheck >= 1 || player.pPlayerBuffs[CHARACTER_BUFF_PRESERVATION].Active()) {
                                     player.conditions.Set(CONDITION_UNCONSCIOUS, pParty->GetPlayingTime());
                                 } else if (!player.conditions.Has(CONDITION_DEAD)) {
                                     player.conditions.Set(CONDITION_DEAD, pParty->GetPlayingTime());
@@ -1810,8 +1810,8 @@ void RegeneratePartyHealthMana() {
                 }
 
                 // regeneration buff
-                if (player.pPlayerBuffs[PLAYER_BUFF_REGENERATION].Active() && player.conditions.HasNone({ CONDITION_DEAD, CONDITION_ERADICATED })) {
-                    player.health += 5 * player.pPlayerBuffs[PLAYER_BUFF_REGENERATION].power;
+                if (player.pPlayerBuffs[CHARACTER_BUFF_REGENERATION].Active() && player.conditions.HasNone({ CONDITION_DEAD, CONDITION_ERADICATED })) {
+                    player.health += 5 * player.pPlayerBuffs[CHARACTER_BUFF_REGENERATION].power;
                     if (player.health > player.GetMaxHealth()) {
                         player.health = player.GetMaxHealth();
                     }

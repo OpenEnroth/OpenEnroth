@@ -5,236 +5,237 @@
 #include "Engine/Objects/CombinedSkillValue.h"
 #include "Utility/Segment.h"
 
-enum PLAYER_BUFFS {
-    PLAYER_BUFF_RESIST_AIR = 0,
-    PLAYER_BUFF_BLESS = 1,
-    PLAYER_BUFF_RESIST_BODY = 2,
-    PLAYER_BUFF_RESIST_EARTH = 3,
-    PLAYER_BUFF_FATE = 4,
-    PLAYER_BUFF_RESIST_FIRE = 5,
-    PLAYER_BUFF_HAMMERHANDS = 6,
-    PLAYER_BUFF_HASTE = 7,
-    PLAYER_BUFF_HEROISM = 8,
-    PLAYER_BUFF_RESIST_MIND = 9,
-    PLAYER_BUFF_PAIN_REFLECTION = 10,
-    PLAYER_BUFF_PRESERVATION = 11,
-    PLAYER_BUFF_REGENERATION = 12,
-    PLAYER_BUFF_SHIELD = 13,
-    PLAYER_BUFF_STONESKIN = 14,
-    PLAYER_BUFF_ACCURACY = 15,
-    PLAYER_BUFF_ENDURANCE = 16,
-    PLAYER_BUFF_INTELLIGENCE = 17,
-    PLAYER_BUFF_LUCK = 18,
-    PLAYER_BUFF_STRENGTH = 19,
-    PLAYER_BUFF_PERSONALITY = 20,
-    PLAYER_BUFF_SPEED = 21,
-    PLAYER_BUFF_RESIST_WATER = 22,
-    PLAYER_BUFF_WATER_WALK = 23
+// TODO(pskelton): drop CHARACTER_ at start?
+enum CharacterBuffs {
+    CHARACTER_BUFF_RESIST_AIR = 0,
+    CHARACTER_BUFF_BLESS = 1,
+    CHARACTER_BUFF_RESIST_BODY = 2,
+    CHARACTER_BUFF_RESIST_EARTH = 3,
+    CHARACTER_BUFF_FATE = 4,
+    CHARACTER_BUFF_RESIST_FIRE = 5,
+    CHARACTER_BUFF_HAMMERHANDS = 6,
+    CHARACTER_BUFF_HASTE = 7,
+    CHARACTER_BUFF_HEROISM = 8,
+    CHARACTER_BUFF_RESIST_MIND = 9,
+    CHARACTER_BUFF_PAIN_REFLECTION = 10,
+    CHARACTER_BUFF_PRESERVATION = 11,
+    CHARACTER_BUFF_REGENERATION = 12,
+    CHARACTER_BUFF_SHIELD = 13,
+    CHARACTER_BUFF_STONESKIN = 14,
+    CHARACTER_BUFF_ACCURACY = 15,
+    CHARACTER_BUFF_ENDURANCE = 16,
+    CHARACTER_BUFF_INTELLIGENCE = 17,
+    CHARACTER_BUFF_LUCK = 18,
+    CHARACTER_BUFF_STRENGTH = 19,
+    CHARACTER_BUFF_PERSONALITY = 20,
+    CHARACTER_BUFF_SPEED = 21,
+    CHARACTER_BUFF_RESIST_WATER = 22,
+    CHARACTER_BUFF_WATER_WALK = 23
 };
 
 
 /*  301 */
-enum PlayerSpeech {
-    SPEECH_None = 0,
-    SPEECH_KillWeakEnemy = 1,
-    SPEECH_KillStrongEnemy = 2,
-    SPEECH_StoreClosed = 3,
-    SPEECH_TrapDisarmed = 4,
-    SPEECH_TrapExploded = 5,
-    SPEECH_AvoidDamage = 6,
-    SPEECH_IndentifyItemWeak = 7,
-    SPEECH_IndentifyItemStrong = 8,
-    SPEECH_IndentifyItemFail = 9,
-    SPEECH_RepairSuccess = 10,
-    SPEECH_RepairFail = 11,
-    SPEECH_SetQuickSpell = 12,
-    SPEECH_CantRestHere = 13,
-    SPEECH_SkillIncrease = 14,
-    SPEECH_NoRoom = 15,
-    SPEECH_PotionSuccess = 16,
-    SPEECH_PotionExplode = 17,
-    SPEECH_DoorLocked = 18,
-    SPEECH_WontBudge = 19,
-    SPEECH_CantLearnSpell = 20,
-    SPEECH_LearnSpell = 21,
-    SPEECH_GoodDay = 22,
-    SPEECH_GoodEvening = 23,
-    SPEECH_Damaged = 24,
-    SPEECH_Weak = 25,
-    SPEECH_Fear = 26,
-    SPEECH_Poisoned = 27,
-    SPEECH_Diseased = 28,
-    SPEECH_Insane = 29,
-    SPEECH_Cursed = 30,
-    SPEECH_Drunk = 31,
-    SPEECH_Unconscious = 32,
-    SPEECH_Dead = 33,
-    SPEECH_Petrified = 34,
-    SPEECH_Eradicated = 35,
-    SPEECH_DrinkPotion = 36,
-    SPEECH_ReadScroll = 37,
-    SPEECH_NotEnoughGold = 38,
-    SPEECH_CantEquip = 39,
-    SPEECH_ItemBroken = 40,
-    SPEECH_SPDrained = 41,
-    SPEECH_Aging = 42,
-    SPEECH_SpellFailed = 43,
-    SPEECH_DamagedParty = 44,
-    SPEECH_Tired = 45,
-    SPEECH_EnterDungeon = 46,
-    SPEECH_LeaveDungeon = 47,
-    SPEECH_BadlyHurt = 48,
-    SPEECH_CastSpell = 49,
-    SPEECH_Shoot = 50,
-    SPEECH_AttackHit = 51,
-    SPEECH_AttackMiss = 52,
-    SPEECH_Beg = 53,
-    SPEECH_BegFail = 54,
-    SPEECH_Threat = 55,
-    SPEECH_ThreatFail = 56,
-    SPEECH_Bribe = 57,
-    SPEECH_BribeFail = 58,
-    SPEECH_NPCDontTalk = 59,
-    SPEECH_FoundItem = 60,
-    SPEECH_HireNPC = 61,
+enum CharacterSpeech {
+    SPEECH_NONE = 0,
+    SPEECH_KILL_WEAK_ENEMY = 1,
+    SPEECH_KILL_STRONG_ENEMY = 2,
+    SPEECH_STORE_CLOSED = 3,
+    SPEECH_TRAP_DISARMED = 4,
+    SPEECH_TRAP_EXPLODED = 5,
+    SPEECH_AVOID_DAMAGE = 6,
+    SPEECH_ID_ITEM_WEAK = 7,
+    SPEECH_ID_ITEM_STRONG = 8,
+    SPEECH_ID_ITEM_FAIL = 9,
+    SPEECH_REPAIR_SUCCESS = 10,
+    SPEECH_REPAIR_FAIL = 11,
+    SPEECH_SET_QUICK_SPELL = 12,
+    SPEECH_CANT_REST_HERE = 13,
+    SPEECH_SKILL_INCREASE = 14,
+    SPEECH_NO_ROOM = 15,
+    SPEECH_POTION_SUCCESS = 16,
+    SPEECH_POTION_EXPLODE = 17,
+    SPEECH_DOOR_LOCKED = 18,
+    SPEECH_WONT_BUDGE = 19,
+    SPEECH_CANT_LEARN_SPELL = 20,
+    SPEECH_LEARN_SPELL = 21,
+    SPEECH_GOOD_DAY = 22,
+    SPEECH_GOOD_EVENING = 23,
+    SPEECH_DAMAGED = 24,
+    SPEECH_WEAK = 25,
+    SPEECH_FEAR = 26,
+    SPEECH_POISONED = 27,
+    SPEECH_DISEASED = 28,
+    SPEECH_INSANE = 29,
+    SPEECH_CURSED = 30,
+    SPEECH_DRUNK = 31,
+    SPEECH_UNCONSCIOUS = 32,
+    SPEECH_DEAD = 33,
+    SPEECH_PETRIFIED = 34,
+    SPEECH_ERADICATED = 35,
+    SPEECH_DRINK_POTION = 36,
+    SPEECH_READ_SCROLL = 37,
+    SPEECH_NOT_ENOUGH_GOLD = 38,
+    SPEECH_CANT_EQUIP = 39,
+    SPEECH_ITEM_BROKEN = 40,
+    SPEECH_SP_DRAINED = 41,
+    SPEECH_AGING = 42,
+    SPEECH_SPELL_FAILED = 43,
+    SPEECH_DAMAGED_PARTY = 44,
+    SPEECH_TIRED = 45,
+    SPEECH_ENTER_DUNGEON = 46,
+    SPEECH_LEAVE_DUNGEON = 47,
+    SPEECH_BADLY_HURT = 48,
+    SPEECH_CAST_SPELL = 49,
+    SPEECH_SHOOT = 50,
+    SPEECH_ATTACK_HIT = 51,
+    SPEECH_ATTACK_MISS = 52,
+    SPEECH_BEG = 53,
+    SPEECH_BEG_FAIL = 54,
+    SPEECH_THREAT = 55,
+    SPEECH_THREAT_FAIL = 56,
+    SPEECH_BRIBE = 57,
+    SPEECH_BRIBE_FAIL = 58,
+    SPEECH_NPC_DONT_TALK = 59,
+    SPEECH_FOUND_ITEM = 60,
+    SPEECH_HIRE_NPC = 61,
     SPEECH_62 = 62,   // unknown
-    SPEECH_LookUp = 63,
-    SPEECH_LookDown = 64,
-    SPEECH_Yell = 65,
-    SPEECH_Falling = 66,
-    SPEECH_PacksFull = 67,
-    SPEECH_TavernDrink = 68,
-    SPEECH_TavernGotDrunk = 69,
-    SPEECH_TavernTip = 70,
-    SPEECH_TravelHorse = 71,
-    SPEECH_TravelBoat = 72,
-    SPEECH_ShopIdentify = 73,
-    SPEECH_ShopRepair = 74,
-    SPEECH_ItemBuy = 75,
-    SPEECH_AlreadyIdentified = 76,
-    SPEECH_ItemSold = 77,
-    SPEECH_SkillLearned = 78,
-    SPEECH_WrongShop = 79,
-    SPEECH_ShopRude = 80,
-    SPEECH_BankDeposit = 81,
-    SPEECH_TempleHeal = 82,
-    SPEECH_TempleDonate = 83,
-    SPEECH_HelloHouse = 84,
-    SPEECH_SkillMasteryInc = 85,
-    SPEECH_JoinedGuild = 86,
-    SPEECH_LevelUp = 87,
+    SPEECH_LOOK_UP = 63,
+    SPEECH_LOOK_DOWN = 64,
+    SPEECH_YELL = 65,
+    SPEECH_FALLING = 66,
+    SPEECH_PACKS_FULL = 67,
+    SPEECH_TAVERN_DRINK = 68,
+    SPEECH_TAVERN_GOT_DRUNK = 69,
+    SPEECH_TAVERN_TIP = 70,
+    SPEECH_TRAVEL_HORSE = 71,
+    SPEECH_TRAVEL_BOAT = 72,
+    SPEECH_SHOP_IDENTIFY = 73,
+    SPEECH_SHOP_REPAIR = 74,
+    SPEECH_ITEM_BUY = 75,
+    SPEECH_ALREADY_INDENTIFIED = 76,
+    SPEECH_ITEM_SOLD = 77,
+    SPEECH_SKILL_LEARNED = 78,
+    SPEECH_WRONG_SHOP = 79,
+    SPEECH_SHOP_RUDE = 80,
+    SPEECH_BANK_DEPOSIT = 81,
+    SPEECH_TEMPLE_HEAL = 82,
+    SPEECH_TEMPLE_DONATE = 83,
+    SPEECH_HELLO_HOUSE = 84,
+    SPEECH_SKILL_MASTERY_INC = 85,
+    SPEECH_JOINED_GUILD = 86,
+    SPEECH_LEVEL_UP = 87,
     SPEECH_88 = 88,  // unknown
     SPEECH_89 = 89,  // unknown
     SPEECH_90 = 90,  // unknown
-    SPEECH_StatBonusInc = 91,
-    SPEECH_StatBaseInc = 92,
-    SPEECH_QuestGot = 93,
+    SPEECH_STAT_BONUS_INC = 91,
+    SPEECH_STAT_BASE_INC = 92,
+    SPEECH_QUEST_GOT = 93,
     SPEECH_94 = 94,  // unknown
     SPEECH_95 = 95,  // unknown
-    SPEECH_AwardGot = 96,  // award
+    SPEECH_AWARD_GOT = 96,  // award
     SPEECH_97 = 97,  // unknown
-    SPEECH_AfraidSilent = 98,
-    SPEECH_CheatedDeath = 99,  // zombie/ death groan
-    SPEECH_InPrison = 100,
+    SPEECH_AFRAID_SILENT = 98,
+    SPEECH_CHEATED_DEATH = 99,  // zombie/ death groan
+    SPEECH_IN_PRISON = 100,
     SPEECH_101 = 101,  // unknown
-    SPEECH_PickMe = 102,
-    SPEECH_Awaken = 103,
-    SPEECH_IDMonsterWeak = 104,
-    SPEECH_IDMonsterStrong = 105,
-    SPEECH_IDMonsterFail = 106,
-    SPEECH_LastManStanding = 107,
-    SPEECH_NotEnoughFood = 108,
-    SPEECH_DeathBlow = 109,
+    SPEECH_PICK_ME = 102,
+    SPEECH_AWAKEN = 103,
+    SPEECH_ID_MONSTER_WEAK = 104,
+    SPEECH_ID_MONSTER_STRONG = 105,
+    SPEECH_ID_MONSTER_FAIL = 106,
+    SPEECH_LAST_MAN_STANDING = 107,
+    SPEECH_NOT_ENOUGH_FOOD = 108,
+    SPEECH_DEATH_BLOW = 109,
     SPEECH_110 = 110,  // unknown
 
-    SPEECH_FIRST = SPEECH_None,
+    SPEECH_FIRST = SPEECH_NONE,
     SPEECH_LAST = SPEECH_110
 };
 
-enum CHARACTER_RACE {
+enum CharacterRace {
     CHARACTER_RACE_HUMAN = 0,
     CHARACTER_RACE_ELF = 1,
     CHARACTER_RACE_GOBLIN = 2,
     CHARACTER_RACE_DWARF = 3,
 };
 
-// TODO(captainurist): think of a better name for this enum.
-enum ClassSkill : uint8_t {
+enum ClassSkillAffinity : uint8_t {
     CLASS_SKILL_DENIED = 0,
     CLASS_SKILL_AVAILABLE = 1,
     CLASS_SKILL_PRIMARY = 2
 };
-using enum ClassSkill;
+using enum ClassSkillAffinity;
 
-enum class PLAYER_SKILL_TYPE : int8_t {
-    PLAYER_SKILL_INVALID = -1,
-    PLAYER_SKILL_STAFF = 0,
-    PLAYER_SKILL_SWORD = 1,
-    PLAYER_SKILL_DAGGER = 2,
-    PLAYER_SKILL_AXE = 3,
-    PLAYER_SKILL_SPEAR = 4,
-    PLAYER_SKILL_BOW = 5,
-    PLAYER_SKILL_MACE = 6,
-    PLAYER_SKILL_BLASTER = 7,
-    PLAYER_SKILL_SHIELD = 8,
-    PLAYER_SKILL_LEATHER = 9,
-    PLAYER_SKILL_CHAIN = 10,
-    PLAYER_SKILL_PLATE = 11,
-    PLAYER_SKILL_FIRE = 12,
-    PLAYER_SKILL_AIR = 13,
-    PLAYER_SKILL_WATER = 14,
-    PLAYER_SKILL_EARTH = 15,
-    PLAYER_SKILL_SPIRIT = 16,
-    PLAYER_SKILL_MIND = 17,
-    PLAYER_SKILL_BODY = 18,
-    PLAYER_SKILL_LIGHT = 19,
-    PLAYER_SKILL_DARK = 20,
-    PLAYER_SKILL_ITEM_ID = 21,
-    PLAYER_SKILL_MERCHANT = 22,
-    PLAYER_SKILL_REPAIR = 23,
-    PLAYER_SKILL_BODYBUILDING = 24,
-    PLAYER_SKILL_MEDITATION = 25,
-    PLAYER_SKILL_PERCEPTION = 26,
-    PLAYER_SKILL_DIPLOMACY = 27,
-    PLAYER_SKILL_THIEVERY = 28,
-    PLAYER_SKILL_TRAP_DISARM = 29,
-    PLAYER_SKILL_DODGE = 30,
-    PLAYER_SKILL_UNARMED = 31,
-    PLAYER_SKILL_MONSTER_ID = 32,
-    PLAYER_SKILL_ARMSMASTER = 33,
-    PLAYER_SKILL_STEALING = 34,
-    PLAYER_SKILL_ALCHEMY = 35,
-    PLAYER_SKILL_LEARNING = 36,
-    PLAYER_SKILL_CLUB = 37, // In vanilla clubs are using separate hidden & non-upgradable skill.
-    PLAYER_SKILL_MISC = 38, // Hidden skill that's always 1. Used for wetsuits, for example.
+// TODO(pskelton): drop CHARACTER_ at start?
+enum class CharacterSkillType : int8_t {
+    CHARACTER_SKILL_INVALID = -1,
+    CHARACTER_SKILL_STAFF = 0,
+    CHARACTER_SKILL_SWORD = 1,
+    CHARACTER_SKILL_DAGGER = 2,
+    CHARACTER_SKILL_AXE = 3,
+    CHARACTER_SKILL_SPEAR = 4,
+    CHARACTER_SKILL_BOW = 5,
+    CHARACTER_SKILL_MACE = 6,
+    CHARACTER_SKILL_BLASTER = 7,
+    CHARACTER_SKILL_SHIELD = 8,
+    CHARACTER_SKILL_LEATHER = 9,
+    CHARACTER_SKILL_CHAIN = 10,
+    CHARACTER_SKILL_PLATE = 11,
+    CHARACTER_SKILL_FIRE = 12,
+    CHARACTER_SKILL_AIR = 13,
+    CHARACTER_SKILL_WATER = 14,
+    CHARACTER_SKILL_EARTH = 15,
+    CHARACTER_SKILL_SPIRIT = 16,
+    CHARACTER_SKILL_MIND = 17,
+    CHARACTER_SKILL_BODY = 18,
+    CHARACTER_SKILL_LIGHT = 19,
+    CHARACTER_SKILL_DARK = 20,
+    CHARACTER_SKILL_ITEM_ID = 21,
+    CHARACTER_SKILL_MERCHANT = 22,
+    CHARACTER_SKILL_REPAIR = 23,
+    CHARACTER_SKILL_BODYBUILDING = 24,
+    CHARACTER_SKILL_MEDITATION = 25,
+    CHARACTER_SKILL_PERCEPTION = 26,
+    CHARACTER_SKILL_DIPLOMACY = 27,
+    CHARACTER_SKILL_THIEVERY = 28,
+    CHARACTER_SKILL_TRAP_DISARM = 29,
+    CHARACTER_SKILL_DODGE = 30,
+    CHARACTER_SKILL_UNARMED = 31,
+    CHARACTER_SKILL_MONSTER_ID = 32,
+    CHARACTER_SKILL_ARMSMASTER = 33,
+    CHARACTER_SKILL_STEALING = 34,
+    CHARACTER_SKILL_ALCHEMY = 35,
+    CHARACTER_SKILL_LEARNING = 36,
+    CHARACTER_SKILL_CLUB = 37, // In vanilla clubs are using separate hidden & non-upgradable skill.
+    CHARACTER_SKILL_MISC = 38, // Hidden skill that's always 1. Used for wetsuits, for example.
 
-    PLAYER_SKILL_FIRST_VISIBLE = PLAYER_SKILL_STAFF,
-    PLAYER_SKILL_LAST_VISIBLE = PLAYER_SKILL_LEARNING,
+    CHARACTER_SKILL_FIRST_VISIBLE = CHARACTER_SKILL_STAFF,
+    CHARACTER_SKILL_LAST_VISIBLE = CHARACTER_SKILL_LEARNING,
 
-    PLAYER_SKILL_FIRST = PLAYER_SKILL_STAFF,
-    PLAYER_SKILL_LAST = PLAYER_SKILL_MISC,
+    CHARACTER_SKILL_FIRST = CHARACTER_SKILL_STAFF,
+    CHARACTER_SKILL_LAST = CHARACTER_SKILL_MISC,
 };
-using enum PLAYER_SKILL_TYPE;
+using enum CharacterSkillType;
 
-inline Segment<PLAYER_SKILL_TYPE> allSkills() {
-    return Segment(PLAYER_SKILL_FIRST, PLAYER_SKILL_LAST);
+inline Segment<CharacterSkillType> allSkills() {
+    return Segment(CHARACTER_SKILL_FIRST, CHARACTER_SKILL_LAST);
 }
 
 /**
  * @return                              List of skills that are visible to the player and that are stored in a savegame.
  */
-inline Segment<PLAYER_SKILL_TYPE> allVisibleSkills() {
-    return Segment(PLAYER_SKILL_FIRST_VISIBLE, PLAYER_SKILL_LAST_VISIBLE);
+inline Segment<CharacterSkillType> allVisibleSkills() {
+    return Segment(CHARACTER_SKILL_FIRST_VISIBLE, CHARACTER_SKILL_LAST_VISIBLE);
 }
 
 /**
  * @return                              List of skills that are drawn in the "Armor" section of the character
  *                                      screen's skills tab.
  */
-inline std::initializer_list<PLAYER_SKILL_TYPE> allArmorSkills() {
-    static constexpr std::initializer_list<PLAYER_SKILL_TYPE> result = {
-        PLAYER_SKILL_LEATHER, PLAYER_SKILL_CHAIN, PLAYER_SKILL_PLATE,
-        PLAYER_SKILL_SHIELD,  PLAYER_SKILL_DODGE
+inline std::initializer_list<CharacterSkillType> allArmorSkills() {
+    static constexpr std::initializer_list<CharacterSkillType> result = {
+        CHARACTER_SKILL_LEATHER, CHARACTER_SKILL_CHAIN, CHARACTER_SKILL_PLATE,
+        CHARACTER_SKILL_SHIELD,  CHARACTER_SKILL_DODGE
     };
 
     return result;
@@ -244,12 +245,12 @@ inline std::initializer_list<PLAYER_SKILL_TYPE> allArmorSkills() {
  * @return                              List of skills that are drawn in the "Weapons" section of the character
  *                                      screen's skills tab.
  */
-inline std::initializer_list<PLAYER_SKILL_TYPE> allWeaponSkills() {
-    static constexpr std::initializer_list<PLAYER_SKILL_TYPE> result = {
-        PLAYER_SKILL_AXE,   PLAYER_SKILL_BOW,     PLAYER_SKILL_DAGGER,
-        PLAYER_SKILL_MACE,  PLAYER_SKILL_SPEAR,   PLAYER_SKILL_STAFF,
-        PLAYER_SKILL_SWORD, PLAYER_SKILL_UNARMED, PLAYER_SKILL_BLASTER
-        // PLAYER_SKILL_CLUB is not displayed in skills.
+inline std::initializer_list<CharacterSkillType> allWeaponSkills() {
+    static constexpr std::initializer_list<CharacterSkillType> result = {
+        CHARACTER_SKILL_AXE,   CHARACTER_SKILL_BOW,     CHARACTER_SKILL_DAGGER,
+        CHARACTER_SKILL_MACE,  CHARACTER_SKILL_SPEAR,   CHARACTER_SKILL_STAFF,
+        CHARACTER_SKILL_SWORD, CHARACTER_SKILL_UNARMED, CHARACTER_SKILL_BLASTER
+        // CHARACTER_SKILL_CLUB is not displayed in skills.
     };
 
     return result;
@@ -259,14 +260,14 @@ inline std::initializer_list<PLAYER_SKILL_TYPE> allWeaponSkills() {
  * @return                              List of skills that are drawn in the "Misc" section of the character
  *                                      screen's skills tab.
  */
-inline std::initializer_list<PLAYER_SKILL_TYPE> allMiscSkills() {
-    static constexpr std::initializer_list<PLAYER_SKILL_TYPE> result = {
-        PLAYER_SKILL_ALCHEMY,      PLAYER_SKILL_ARMSMASTER,
-        PLAYER_SKILL_BODYBUILDING, PLAYER_SKILL_ITEM_ID,
-        PLAYER_SKILL_MONSTER_ID,   PLAYER_SKILL_LEARNING,
-        PLAYER_SKILL_TRAP_DISARM,  PLAYER_SKILL_MEDITATION,
-        PLAYER_SKILL_MERCHANT,     PLAYER_SKILL_PERCEPTION,
-        PLAYER_SKILL_REPAIR,       PLAYER_SKILL_STEALING
+inline std::initializer_list<CharacterSkillType> allMiscSkills() {
+    static constexpr std::initializer_list<CharacterSkillType> result = {
+        CHARACTER_SKILL_ALCHEMY,      CHARACTER_SKILL_ARMSMASTER,
+        CHARACTER_SKILL_BODYBUILDING, CHARACTER_SKILL_ITEM_ID,
+        CHARACTER_SKILL_MONSTER_ID,   CHARACTER_SKILL_LEARNING,
+        CHARACTER_SKILL_TRAP_DISARM,  CHARACTER_SKILL_MEDITATION,
+        CHARACTER_SKILL_MERCHANT,     CHARACTER_SKILL_PERCEPTION,
+        CHARACTER_SKILL_REPAIR,       CHARACTER_SKILL_STEALING
     };
 
     return result;
@@ -276,11 +277,11 @@ inline std::initializer_list<PLAYER_SKILL_TYPE> allMiscSkills() {
  * @return                              List of skills that are drawn in the "Magic" section of the character
  *                                      screen's skills tab.
  */
-inline std::initializer_list<PLAYER_SKILL_TYPE> allMagicSkills() {
-    static constexpr std::initializer_list<PLAYER_SKILL_TYPE> result = {
-        PLAYER_SKILL_FIRE,  PLAYER_SKILL_AIR,    PLAYER_SKILL_WATER,
-        PLAYER_SKILL_EARTH, PLAYER_SKILL_SPIRIT, PLAYER_SKILL_MIND,
-        PLAYER_SKILL_BODY,  PLAYER_SKILL_LIGHT,  PLAYER_SKILL_DARK
+inline std::initializer_list<CharacterSkillType> allMagicSkills() {
+    static constexpr std::initializer_list<CharacterSkillType> result = {
+        CHARACTER_SKILL_FIRE,  CHARACTER_SKILL_AIR,    CHARACTER_SKILL_WATER,
+        CHARACTER_SKILL_EARTH, CHARACTER_SKILL_SPIRIT, CHARACTER_SKILL_MIND,
+        CHARACTER_SKILL_BODY,  CHARACTER_SKILL_LIGHT,  CHARACTER_SKILL_DARK
     };
 
     return result;
@@ -431,7 +432,7 @@ enum CHARACTER_EXPRESSION_ID : uint16_t {
     CHARACTER_EXPRESSION_ERADICATED = 99,
 };
 
-enum PLAYER_SEX : uint8_t {
+enum CHARACTER_SEX : uint8_t {
     SEX_MALE = 0,
     SEX_FEMALE = 1
 };

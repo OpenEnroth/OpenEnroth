@@ -112,9 +112,9 @@ void GameUI_InitializeDialogue(Actor *actor, int bPlayerSaysHello) {
 
     if (bPlayerSaysHello && pParty->hasActiveCharacter() && !pNPCInfo->Hired()) {
         if (pParty->uCurrentHour < 5 || pParty->uCurrentHour > 21) {
-            pParty->activeCharacter().playReaction(SPEECH_GoodEvening);
+            pParty->activeCharacter().playReaction(SPEECH_GOOD_EVENING);
         } else {
-            pParty->activeCharacter().playReaction(SPEECH_GoodDay);
+            pParty->activeCharacter().playReaction(SPEECH_GOOD_DAY);
         }
     }
 }
@@ -609,7 +609,7 @@ void OnSelectNPCDialogueOption(DIALOGUE_TYPE option) {
                     dialogue_show_profession_details = false;
                     uDialogueType = DIALOGUE_13_hiring_related;
                     if (pParty->hasActiveCharacter()) {
-                        pParty->activeCharacter().playReaction(SPEECH_NotEnoughGold);
+                        pParty->activeCharacter().playReaction(SPEECH_NOT_ENOUGH_GOLD);
                     }
                     engine->Draw();
                     return;
@@ -630,7 +630,7 @@ void OnSelectNPCDialogueOption(DIALOGUE_TYPE option) {
             if (sDialogue_SpeakingActorNPC_ID >= 0)
                 pDialogue_SpeakingActor->uAIState = Removed;
             if (pParty->hasActiveCharacter()) {
-                pParty->activeCharacter().playReaction(SPEECH_HireNPC);
+                pParty->activeCharacter().playReaction(SPEECH_HIRE_NPC);
             }
         }
     } else if (option >= DIALOGUE_ARENA_SELECT_PAGE && option <= DIALOGUE_ARENA_SELECT_CHAMPION) {

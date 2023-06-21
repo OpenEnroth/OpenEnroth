@@ -15,7 +15,7 @@
 #include "Engine/Objects/ObjectList.h"
 #include "Engine/Objects/SpriteObject.h"
 #include "Engine/Tables/ItemTable.h"
-#include "Engine/Tables/PlayerFrameTable.h"
+#include "Engine/Tables/CharacterFrameTable.h"
 #include "Engine/Party.h"
 #include "Engine/Time.h"
 
@@ -251,13 +251,13 @@ void GameUI_DrawItemInfo(struct ItemGen *inspect_item) {
         if (!inspect_item->IsIdentified()) {
             if (pParty->activeCharacter().CanIdentify(inspect_item) == 1)
                 inspect_item->SetIdentified();
-            PlayerSpeech speech = SPEECH_IndentifyItemFail;
+            CharacterSpeech speech = SPEECH_ID_ITEM_FAIL;
             if (!inspect_item->IsIdentified()) {
                 GameUI_SetStatusBar(LSTR_IDENTIFY_FAILED);
             } else {
-                speech = SPEECH_IndentifyItemStrong;
+                speech = SPEECH_ID_ITEM_STRONG;
                 if (inspect_item->GetValue() < 100 * (pParty->activeCharacter().uLevel + 5)) {
-                    speech = SPEECH_IndentifyItemWeak;
+                    speech = SPEECH_ID_ITEM_WEAK;
                 }
             }
             if (!identifyOrRepairReactionPlayed) {
@@ -269,9 +269,9 @@ void GameUI_DrawItemInfo(struct ItemGen *inspect_item) {
         if (inspect_item->IsBroken()) {
             if (pParty->activeCharacter().CanRepair(inspect_item) == 1)
                 inspect_item->uAttributes = inspect_item->uAttributes & ~ITEM_BROKEN | ITEM_IDENTIFIED;
-            PlayerSpeech speech = SPEECH_RepairFail;
+            CharacterSpeech speech = SPEECH_REPAIR_FAIL;
             if (!inspect_item->IsBroken())
-                speech = SPEECH_RepairSuccess;
+                speech = SPEECH_REPAIR_SUCCESS;
             else
                 GameUI_SetStatusBar(LSTR_REPAIR_FAILED);
             if (!identifyOrRepairReactionPlayed) {
@@ -631,7 +631,7 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
     if (pParty->hasActiveCharacter()) {
         PLAYER_SKILL_LEVEL skill_points = 0;
         PLAYER_SKILL_MASTERY skill_mastery = PLAYER_SKILL_MASTERY_NONE;
-        CombinedSkillValue idMonsterSkill = pParty->activeCharacter().getActualSkillValue(PLAYER_SKILL_MONSTER_ID);
+        CombinedSkillValue idMonsterSkill = pParty->activeCharacter().getActualSkillValue(CHARACTER_SKILL_MONSTER_ID);
 
         if ((skill_points = idMonsterSkill.level()) > 0) {
             skill_mastery = idMonsterSkill.mastery();
@@ -663,14 +663,14 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
         // Only play reaction when right click on actor initially
         if (pActors[uActorID].uAIState != Dead && pActors[uActorID].uAIState != Dying &&
             !holdingMouseRightButton && skill_mastery != PLAYER_SKILL_MASTERY_NONE) {
-            PlayerSpeech speech;
+            CharacterSpeech speech;
             if (normal_level || expert_level || master_level || grandmaster_level) {
                 if (pActors[uActorID].pMonsterInfo.uLevel >= pParty->activeCharacter().uLevel - 5)
-                    speech = SPEECH_IDMonsterStrong;
+                    speech = SPEECH_ID_MONSTER_STRONG;
                 else
-                    speech = SPEECH_IDMonsterWeak;
+                    speech = SPEECH_ID_MONSTER_WEAK;
             } else {
-                speech = SPEECH_IDMonsterFail;
+                speech = SPEECH_ID_MONSTER_FAIL;
             }
             pParty->activeCharacter().playReaction(speech);
         }
@@ -975,7 +975,7 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
   * @param uPlayerID                     Character identifier.
   * @param uPlayerSkillType              Skill type identifier.
   */
-std::string CharacterUI_GetSkillDescText(unsigned int uPlayerID, PLAYER_SKILL_TYPE uPlayerSkillType) {
+std::string CharacterUI_GetSkillDescText(unsigned int uPlayerID, CharacterSkillType uPlayerSkillType) {
     size_t line_width = std::max({
         pFontSmallnum->GetLineWidth(localization->GetString(LSTR_NORMAL)),
         pFontSmallnum->GetLineWidth(localization->GetString(LSTR_EXPERT)),
@@ -1019,7 +1019,7 @@ void CharacterUI_SkillsTab_ShowHint() {
         for (GUIButton *pButton : pGUIWindow_CurrentMenu->vButtons) {
             if (pButton->msg == UIMSG_SkillUp && pX >= pButton->uX &&
                 pX < pButton->uZ && pY >= pButton->uY && pY < pButton->uW) {
-                PLAYER_SKILL_TYPE skill = static_cast<PLAYER_SKILL_TYPE>(pButton->msg_param);
+                CharacterSkillType skill = static_cast<CharacterSkillType>(pButton->msg_param);
                 std::string pSkillDescText = CharacterUI_GetSkillDescText(pParty->activeCharacterIndex() - 1, skill);
                 CharacterUI_DrawTooltip(localization->GetSkillName(skill), pSkillDescText);
             }
@@ -1249,7 +1249,7 @@ void DrawSpellDescriptionPopup(int spell_index_in_book) {
     spell_info_window.DrawText(pFontSmallnum, {120, 44}, colorTable.White, str);
     spell_info_window.uFrameWidth = 108;
     spell_info_window.uFrameZ = spell_info_window.uFrameX + 107;
-    PLAYER_SKILL_TYPE skill = static_cast<PLAYER_SKILL_TYPE>(pParty->activeCharacter().lastOpenedSpellbookPage + 12);
+    CharacterSkillType skill = static_cast<CharacterSkillType>(pParty->activeCharacter().lastOpenedSpellbookPage + 12);
     PLAYER_SKILL_MASTERY skill_mastery = pParty->activeCharacter().getSkillValue(skill).mastery();
     spell_info_window.DrawTitleText(pFontComic, 12, 75, colorTable.White, localization->GetSkillName(skill), 3);
 
@@ -1366,7 +1366,7 @@ void showSpellbookInfo(ITEM_TYPE spellItemId) {
     popup.DrawText(pFontSmallnum, {120, 44}, colorTable.White, str);
     popup.uFrameZ = popup.uFrameX + 107;
     popup.uFrameWidth = 108;
-    popup.DrawTitleText(pFontComic, 0xCu, 0x4Bu, colorTable.White, localization->GetSkillName(static_cast<PLAYER_SKILL_TYPE>(spellSchool / 4 + 12)), 3u);
+    popup.DrawTitleText(pFontComic, 0xCu, 0x4Bu, colorTable.White, localization->GetSkillName(static_cast<CharacterSkillType>(spellSchool / 4 + 12)), 3u);
 
     str = fmt::format("{}\n{}", localization->GetString(LSTR_SP_COST), pSpellDatas[spellId].uNormalLevelMana);
     popup.DrawTitleText(pFontComic, 0xCu, popup.uFrameHeight - pFontComic->GetHeight() - 16, colorTable.White, str, 3);
@@ -2010,7 +2010,7 @@ void UI_OnMouseRightClick(int mouse_x, int mouse_y) {
                             UIMSG_PlayerCreationRemoveDownSkill) {  // Sellected
                                                                     // skills info
                         pY = 0;
-                        if (pParty->pPlayers[pButton->msg_param].GetSkillIdxByOrder(pButton->msg - UIMSG_48) != PLAYER_SKILL_INVALID) {
+                        if (pParty->pPlayers[pButton->msg_param].GetSkillIdxByOrder(pButton->msg - UIMSG_48) != CHARACTER_SKILL_INVALID) {
                             static std::string hint_reference;
                             hint_reference = CharacterUI_GetSkillDescText(
                                 pButton->msg_param,
@@ -2159,7 +2159,7 @@ void Inventory_ItemPopupAndAlchemy() {
         return;
     }
 
-    CombinedSkillValue alchemySkill = pParty->activeCharacter().getActualSkillValue(PLAYER_SKILL_ALCHEMY);
+    CombinedSkillValue alchemySkill = pParty->activeCharacter().getActualSkillValue(CHARACTER_SKILL_ALCHEMY);
 
     if (pParty->pPickedItem.uItemID == ITEM_POTION_BOTTLE) {
         GameUI_DrawItemInfo(item);
@@ -2238,7 +2238,7 @@ void Inventory_ItemPopupAndAlchemy() {
             Vec3i::rotate(64, pParty->_viewYaw, pParty->_viewPitch, pParty->vPosition + Vec3i(0, 0, pParty->sEyelevel), &_viewPitch, &_viewYaw, &rot_z);
             SpriteObject::dropItemAt(SPRITE_SPELL_FIRE_FIREBALL_IMPACT, {_viewPitch, _viewYaw, rot_z}, 0);
             if (pParty->activeCharacter().CanAct()) {
-                pParty->activeCharacter().playReaction(SPEECH_PotionExplode);
+                pParty->activeCharacter().playReaction(SPEECH_POTION_EXPLODE);
             }
             GameUI_SetStatusBar(LSTR_OOPS);
             mouse->RemoveHoldingItem();
@@ -2267,7 +2267,7 @@ void Inventory_ItemPopupAndAlchemy() {
             if (!(pItemTable->pItems[item->uItemID].uItemID_Rep_St)) {
                 item->uAttributes |= ITEM_IDENTIFIED;
             }
-            pParty->activeCharacter().playReaction(SPEECH_PotionSuccess);
+            pParty->activeCharacter().playReaction(SPEECH_POTION_SUCCESS);
             mouse->RemoveHoldingItem();
             rightClickItemActionPerformed = true;
             int bottleId = pParty->activeCharacter().AddItem(-1, ITEM_POTION_BOTTLE);
@@ -2400,7 +2400,7 @@ void Inventory_ItemPopupAndAlchemy() {
                 break;
         }
 
-        pParty->activeCharacter().playReaction(SPEECH_PotionSuccess);
+        pParty->activeCharacter().playReaction(SPEECH_POTION_SUCCESS);
         mouse->RemoveHoldingItem();
         rightClickItemActionPerformed = true;
         return;

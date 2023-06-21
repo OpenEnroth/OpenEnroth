@@ -968,7 +968,7 @@ void PrepareToLoadBLV(bool bLoading) {
         int id = pParty->getRandomActiveCharacterId(vrng.get());
 
         if (id != -1) {
-            pParty->setDelayedReaction(SPEECH_EnterDungeon, id);
+            pParty->setDelayedReaction(SPEECH_ENTER_DUNGEON, id);
         }
     }
 }
@@ -1616,7 +1616,7 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
                 if (vertical_angle > 128)
                     vertical_angle = 128;
                 if (pParty->hasActiveCharacter())
-                    pParty->activeCharacter().playReaction(SPEECH_LookUp);
+                    pParty->activeCharacter().playReaction(SPEECH_LOOK_UP);
                 break;
 
             case PARTY_LookDown:
@@ -1624,7 +1624,7 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
                 if (vertical_angle < -128)
                     vertical_angle = -128;
                 if (pParty->hasActiveCharacter())
-                    pParty->activeCharacter().playReaction(SPEECH_LookDown);
+                    pParty->activeCharacter().playReaction(SPEECH_LOOK_DOWN);
                 break;
 
             case PARTY_CenterView:

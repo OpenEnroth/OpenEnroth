@@ -4,7 +4,7 @@
 #include <cstdint>
 #include <cstring>
 
-#include "Engine/Objects/PlayerEnums.h"
+#include "Engine/Objects/CharacterEnums.h"
 
 #include "Utility/Flags.h"
 

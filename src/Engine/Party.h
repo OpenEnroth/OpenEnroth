@@ -8,7 +8,7 @@
 
 #include "Engine/Objects/Items.h"
 #include "Engine/Objects/NPC.h"
-#include "Engine/Objects/Player.h"
+#include "Engine/Objects/Character.h"
 #include "Engine/Time.h"
 #include "GUI/UI/UIHouseEnums.h"
 #include "Library/Random/Random.h"
@@ -394,7 +394,7 @@ struct Party {
      */
     size_t immolationAffectedActors(int *affected, size_t affectedArrSize, size_t effectRange);
 
-    void setDelayedReaction(PlayerSpeech speech, int id) {
+    void setDelayedReaction(CharacterSpeech speech, int id) {
         if (!_delayedReactionTimer) {
             _delayedReactionTimer = Timer::Second * 2;
             _delayedReactionSpeech = speech;
@@ -492,7 +492,7 @@ struct Party {
     uint _roundingDt{ 0 };  // keeps track of rounding remainder for recovery
 
     int _delayedReactionTimer;
-    PlayerSpeech _delayedReactionSpeech;
+    CharacterSpeech _delayedReactionSpeech;
     int _delayedReactionCharacterId;
 
     inline uint activeCharacterIndex() const {

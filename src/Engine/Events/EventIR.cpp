@@ -1037,7 +1037,7 @@ EventIR EventIR::parse(const void *data, size_t maxSize) {
             ir.data.event_id = EVT_DWORD(_evt->v5);
             break;
         case EVENT_CheckSkill:
-            ir.data.check_skill_descr.skill_type = (PLAYER_SKILL_TYPE)_evt->v5;
+            ir.data.check_skill_descr.skill_type = (CharacterSkillType)_evt->v5;
             ir.data.check_skill_descr.skill_mastery = (PLAYER_SKILL_MASTERY)_evt->v6;
             ir.data.check_skill_descr.skill_level = (PLAYER_SKILL_LEVEL)EVT_DWORD(_evt->v7);
             ir.target_step = _evt->v11;
@@ -1105,7 +1105,7 @@ EventIR EventIR::parse(const void *data, size_t maxSize) {
             break;
         case EVENT_CharacterAnimation:
             ir.who = (CharacterChoosePolicy)_evt->v5;
-            ir.data.speech_id = (PlayerSpeech)_evt->v6;
+            ir.data.speech_id = (CharacterSpeech)_evt->v6;
             break;
         case EVENT_SetActorItem:
             ir.data.npc_item_descr.id = EVT_DWORD(_evt->v5);

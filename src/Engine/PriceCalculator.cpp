@@ -4,7 +4,7 @@
 
 #include "Engine/Tables/BuildingTable.h"
 #include "Engine/Objects/Items.h"
-#include "Engine/Objects/Player.h"
+#include "Engine/Objects/Character.h"
 #include "Engine/Party.h"
 
 int PriceCalculator::baseItemIdentifyPrice(float priceMultiplier) {
@@ -132,8 +132,8 @@ int PriceCalculator::templeHealingCostForPlayer(const Player *player, float pric
 }
 
 int PriceCalculator::playerMerchant(const Player *player) {
-    CombinedSkillValue merchantSkill = player->getActualSkillValue(PLAYER_SKILL_MERCHANT);
-    int multiplier = player->GetMultiplierForSkillLevel(PLAYER_SKILL_MERCHANT, 1, 2, 3, 5);
+    CombinedSkillValue merchantSkill = player->getActualSkillValue(CHARACTER_SKILL_MERCHANT);
+    int multiplier = player->GetMultiplierForSkillLevel(CHARACTER_SKILL_MERCHANT, 1, 2, 3, 5);
 
     if (merchantSkill.mastery() == PLAYER_SKILL_MASTERY_GRANDMASTER) {  // gm merchant
         return 10000;

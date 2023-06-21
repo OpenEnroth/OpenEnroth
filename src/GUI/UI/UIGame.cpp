@@ -32,7 +32,7 @@
 #include "Engine/Party.h"
 #include "Engine/Tables/ItemTable.h"
 #include "Engine/Tables/IconFrameTable.h"
-#include "Engine/Tables/PlayerFrameTable.h"
+#include "Engine/Tables/CharacterFrameTable.h"
 #include "Engine/Time.h"
 #include "Engine/TurnEngine/TurnEngine.h"
 
@@ -613,7 +613,7 @@ void GameUI_OnPlayerPortraitLeftClick(unsigned int uPlayerID) {
             player = &pParty->activeCharacter();
         }
         if (player->CanAct() || !pParty->activeCharacter().CanAct()) {
-            player->playReaction(SPEECH_NoRoom);
+            player->playReaction(SPEECH_NO_ROOM);
         }
     }
 
@@ -1099,7 +1099,7 @@ void GameUI_WritePointedObjectStatusString() {
                             break;
                         case 3:  // hovering over buttons
                             if (pButton->Contains(pX, pY)) {
-                                PLAYER_SKILL_TYPE skill = static_cast<PLAYER_SKILL_TYPE>(pButton->msg_param);
+                                CharacterSkillType skill = static_cast<CharacterSkillType>(pButton->msg_param);
                                 int skillLevel = pParty->activeCharacter().getSkillValue(skill).level();
                                 requiredSkillpoints = skillLevel + 1;
 
@@ -1294,13 +1294,13 @@ void GameUI_DrawPartySpells() {
     }
 
     for (int i = 0; i < pParty->pPlayers.size(); ++i) {
-        if (pParty->pPlayers[i].pPlayerBuffs[PLAYER_BUFF_HAMMERHANDS].Active())
+        if (pParty->pPlayers[i].pPlayerBuffs[CHARACTER_BUFF_HAMMERHANDS].Active())
             render->DrawTextureNew((pPlayerPortraitsXCoords_For_PlayerBuffAnimsDrawing[i] + 72) / 640.0f, 427 / 480.0f, game_ui_playerbuff_hammerhands);
-        if (pParty->pPlayers[i].pPlayerBuffs[PLAYER_BUFF_BLESS].Active())
+        if (pParty->pPlayers[i].pPlayerBuffs[CHARACTER_BUFF_BLESS].Active())
             render->DrawTextureNew((pPlayerPortraitsXCoords_For_PlayerBuffAnimsDrawing[i] + 72) / 640.0f, 393 / 480.0f, game_ui_playerbuff_bless);
-        if (pParty->pPlayers[i].pPlayerBuffs[PLAYER_BUFF_PRESERVATION].Active())
+        if (pParty->pPlayers[i].pPlayerBuffs[CHARACTER_BUFF_PRESERVATION].Active())
             render->DrawTextureNew((pPlayerPortraitsXCoords_For_PlayerBuffAnimsDrawing[i] + 72) / 640.0f, 410 / 480.0f, game_ui_playerbuff_preservation);
-        if (pParty->pPlayers[i].pPlayerBuffs[PLAYER_BUFF_PAIN_REFLECTION].Active())
+        if (pParty->pPlayers[i].pPlayerBuffs[CHARACTER_BUFF_PAIN_REFLECTION].Active())
             render->DrawTextureNew((pPlayerPortraitsXCoords_For_PlayerBuffAnimsDrawing[i] + 72) / 640.0f, 444 / 480.0f, game_ui_playerbuff_pain_reflection);
     }
 }

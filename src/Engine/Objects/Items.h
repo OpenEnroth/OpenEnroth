@@ -5,7 +5,7 @@
 #include <string>
 
 #include "Engine/Objects/ItemEnums.h"
-#include "Engine/Objects/PlayerEnums.h"
+#include "Engine/Objects/CharacterEnums.h"
 #include "Engine/Time.h"
 #include "Engine/MapInfo.h"
 
@@ -57,7 +57,7 @@ struct ItemGen {  // 0x24
     int _439DF3_get_additional_damage(DAMAGE_TYPE *a2, bool *vampiyr);
 
     ITEM_EQUIP_TYPE GetItemEquipType() const;
-    PLAYER_SKILL_TYPE GetPlayerSkillType() const;
+    CharacterSkillType GetPlayerSkillType() const;
     const std::string& GetIconName() const;
     uint8_t GetDamageDice() const;
     uint8_t GetDamageRoll() const;
@@ -132,7 +132,7 @@ struct ItemDesc {  // 30h
     int16_t uEquipX = 0;       // 18  1c
     int16_t uEquipY = 0;       // 1a  1e
     ITEM_EQUIP_TYPE uEquipType = EQUIP_NONE;   // 1c 20
-    PLAYER_SKILL_TYPE uSkillType = PLAYER_SKILL_MISC;   // 1d 21
+    CharacterSkillType uSkillType = CHARACTER_SKILL_MISC;   // 1d 21
     uint8_t uDamageDice = 0;  // 1e 22
     uint8_t uDamageRoll = 0;  // 1f 23
     uint8_t uDamageMod = 0;   // 20 24

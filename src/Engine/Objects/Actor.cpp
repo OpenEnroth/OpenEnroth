@@ -3169,23 +3169,23 @@ void Actor::DamageMonsterFromParty(signed int a1, unsigned int uActorID_Monster,
         int main_hand_idx = player->pEquipment.uMainHand;
         IsAdditionalDamagePossible = true;
         if (player->HasItemEquipped(ITEM_SLOT_MAIN_HAND)) {
-            PLAYER_SKILL_TYPE main_hand_skill = player->GetMainHandItem()->GetPlayerSkillType();
+            CharacterSkillType main_hand_skill = player->GetMainHandItem()->GetPlayerSkillType();
             PLAYER_SKILL_MASTERY main_hand_mastery = player->getSkillValue(main_hand_skill).mastery();
             switch (main_hand_skill) {
-                case PLAYER_SKILL_STAFF:
+                case CHARACTER_SKILL_STAFF:
                     if (main_hand_mastery >= PLAYER_SKILL_MASTERY_MASTER) {
-                        if (grng->random(100) < player->getActualSkillValue(PLAYER_SKILL_STAFF).level())
+                        if (grng->random(100) < player->getActualSkillValue(CHARACTER_SKILL_STAFF).level())
                             hit_will_stun = true;
                     }
                     break;
 
-                case PLAYER_SKILL_MACE:
+                case CHARACTER_SKILL_MACE:
                     if (main_hand_mastery >= PLAYER_SKILL_MASTERY_MASTER) {
-                        if (grng->random(100) < player->getActualSkillValue(PLAYER_SKILL_MACE).level())
+                        if (grng->random(100) < player->getActualSkillValue(CHARACTER_SKILL_MACE).level())
                             hit_will_stun = true;
                     }
                     if (main_hand_mastery >= PLAYER_SKILL_MASTERY_GRANDMASTER) {
-                        if (grng->random(100) < player->getActualSkillValue(PLAYER_SKILL_MACE).level())
+                        if (grng->random(100) < player->getActualSkillValue(CHARACTER_SKILL_MACE).level())
                             hit_will_paralyze = true;
                     }
                     break;
@@ -3194,7 +3194,7 @@ void Actor::DamageMonsterFromParty(signed int a1, unsigned int uActorID_Monster,
         attackElement = DMGT_PHISYCAL;
         uDamageAmount = player->CalculateMeleeDamageTo(false, false, pMonster->pMonsterInfo.uID);
         if (!player->PlayerHitOrMiss(pMonster, v61, skillLevel)) {
-            player->playReaction(SPEECH_AttackMiss);
+            player->playReaction(SPEECH_ATTACK_MISS);
             return;
         }
     } else {
@@ -3217,12 +3217,12 @@ void Actor::DamageMonsterFromParty(signed int a1, unsigned int uActorID_Monster,
             case SPELL_LASER_PROJECTILE:
                 // TODO: should be changed to GetActual* equivalents?
                 v61 = 1;
-                if (player->getSkillValue(PLAYER_SKILL_BLASTER).mastery() >= PLAYER_SKILL_MASTERY_MASTER)
-                    skillLevel = player->getSkillValue(PLAYER_SKILL_BLASTER).level();
+                if (player->getSkillValue(CHARACTER_SKILL_BLASTER).mastery() >= PLAYER_SKILL_MASTERY_MASTER)
+                    skillLevel = player->getSkillValue(CHARACTER_SKILL_BLASTER).level();
                 attackElement = DMGT_PHISYCAL;
                 uDamageAmount = player->CalculateMeleeDamageTo(true, true, 0);
                 if (!player->PlayerHitOrMiss(pMonster, v61, skillLevel)) {
-                    player->playReaction(SPEECH_AttackMiss);
+                    player->playReaction(SPEECH_ATTACK_MISS);
                     return;
                 }
                 break;
@@ -3233,7 +3233,7 @@ void Actor::DamageMonsterFromParty(signed int a1, unsigned int uActorID_Monster,
                     uDamageAmount >>= 1;
                 IsAdditionalDamagePossible = true;
                 if (!player->PlayerHitOrMiss(pMonster, v61, skillLevel)) {
-                    player->playReaction(SPEECH_AttackMiss);
+                    player->playReaction(SPEECH_ATTACK_MISS);
                     return;
                 }
                 break;
@@ -3248,7 +3248,7 @@ void Actor::DamageMonsterFromParty(signed int a1, unsigned int uActorID_Monster,
                     uDamageAmount >>= 1;
                 IsAdditionalDamagePossible = false;
                 if (!player->PlayerHitOrMiss(pMonster, v61, skillLevel)) {
-                    player->playReaction(SPEECH_AttackMiss);
+                    player->playReaction(SPEECH_ATTACK_MISS);
                     return;
                 }
                 break;
@@ -3257,7 +3257,7 @@ void Actor::DamageMonsterFromParty(signed int a1, unsigned int uActorID_Monster,
                 attackElement = DMGT_PHISYCAL;
                 hit_will_stun = 1;
                 if (!player->PlayerHitOrMiss(pMonster, v61, skillLevel)) {
-                    player->playReaction(SPEECH_AttackMiss);
+                    player->playReaction(SPEECH_ATTACK_MISS);
                     return;
                 }
                 break;
@@ -3272,7 +3272,7 @@ void Actor::DamageMonsterFromParty(signed int a1, unsigned int uActorID_Monster,
                     projectileSprite->containing_item.special_enchantment == ITEM_ENCHANTMENT_OF_CARNAGE) {
                     attackElement = DMGT_FIRE;
                 } else if (!player->PlayerHitOrMiss(pMonster, v61, skillLevel)) {
-                    player->playReaction(SPEECH_AttackMiss);
+                    player->playReaction(SPEECH_ATTACK_MISS);
                     return;
                 }
                 break;
@@ -3293,10 +3293,10 @@ void Actor::DamageMonsterFromParty(signed int a1, unsigned int uActorID_Monster,
     if (pMonster->pActorBuffs[ACTOR_BUFF_STONED].Active()) uDamageAmount = 0;
     v61 = pMonster->CalcMagicalDamageToActor(attackElement, uDamageAmount);
     if (!projectileSprite && player->IsUnarmed() &&
-        player->pPlayerBuffs[PLAYER_BUFF_HAMMERHANDS].Active()) {
+        player->pPlayerBuffs[CHARACTER_BUFF_HAMMERHANDS].Active()) {
         v61 += pMonster->CalcMagicalDamageToActor(
             DMGT_BODY,
-            player->pPlayerBuffs[PLAYER_BUFF_HAMMERHANDS].power);
+            player->pPlayerBuffs[CHARACTER_BUFF_HAMMERHANDS].power);
     }
     uDamageAmount = v61;
     if (IsAdditionalDamagePossible) {
@@ -3334,7 +3334,7 @@ void Actor::DamageMonsterFromParty(signed int a1, unsigned int uActorID_Monster,
     }
     pMonster->sCurrentHP -= uDamageAmount;
     if (uDamageAmount == 0 && !hit_will_stun) {
-        player->playReaction(SPEECH_AttackMiss);
+        player->playReaction(SPEECH_ATTACK_MISS);
         return;
     }
     if (pMonster->sCurrentHP > 0) {
@@ -3363,9 +3363,9 @@ void Actor::DamageMonsterFromParty(signed int a1, unsigned int uActorID_Monster,
         if (pMonster->pMonsterInfo.uExp)
             pParty->GivePartyExp(
                 pMonsterStats->pInfos[pMonster->pMonsterInfo.uID].uExp);
-        PlayerSpeech speech = SPEECH_AttackHit;
+        CharacterSpeech speech = SPEECH_ATTACK_HIT;
         if (vrng->random(100) < 20) {
-            speech = pMonster->pMonsterInfo.uHP >= 100 ? SPEECH_KillStrongEnemy : SPEECH_KillWeakEnemy;
+            speech = pMonster->pMonsterInfo.uHP >= 100 ? SPEECH_KILL_STRONG_ENEMY : SPEECH_KILL_WEAK_ENEMY;
         }
         player->playReaction(speech);
         if (engine->config->settings.ShowHits.value()) {
@@ -3397,7 +3397,7 @@ void Actor::DamageMonsterFromParty(signed int a1, unsigned int uActorID_Monster,
     }
     if (hit_will_paralyze && pMonster->CanAct() &&
         pMonster->DoesDmgTypeDoDamage(DMGT_EARTH)) {
-        CombinedSkillValue maceSkill = player->getActualSkillValue(PLAYER_SKILL_MACE);
+        CombinedSkillValue maceSkill = player->getActualSkillValue(CHARACTER_SKILL_MACE);
         GameTime v46 = GameTime(0, maceSkill.level());  // ??
         pMonster->pActorBuffs[ACTOR_BUFF_PARALYZED].Apply((pParty->GetPlayingTime() + v46), maceSkill.mastery(), 0, 0, 0);
         if (engine->config->settings.ShowHits.value()) {

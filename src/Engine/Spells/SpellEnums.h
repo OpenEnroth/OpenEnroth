@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Engine/Objects/PlayerEnums.h"
+#include "Engine/Objects/CharacterEnums.h"
 
 #include "Utility/Segment.h"
 
@@ -158,37 +158,37 @@ inline bool isRegularSpell(SPELL_TYPE uSpellID) {
 /**
  * Get skill used for casting given spell.
  */
-inline PLAYER_SKILL_TYPE getSkillTypeForSpell(SPELL_TYPE uSpellID) {
+inline CharacterSkillType getSkillTypeForSpell(SPELL_TYPE uSpellID) {
     assert(uSpellID != SPELL_NONE);
 
     if (uSpellID < SPELL_AIR_WIZARD_EYE) {
-        return PLAYER_SKILL_FIRE;
+        return CHARACTER_SKILL_FIRE;
     } else if (uSpellID < SPELL_WATER_AWAKEN) {
-        return PLAYER_SKILL_AIR;
+        return CHARACTER_SKILL_AIR;
     } else if (uSpellID < SPELL_EARTH_STUN) {
-        return PLAYER_SKILL_WATER;
+        return CHARACTER_SKILL_WATER;
     } else if (uSpellID < SPELL_SPIRIT_DETECT_LIFE) {
-        return PLAYER_SKILL_EARTH;
+        return CHARACTER_SKILL_EARTH;
     } else if (uSpellID < SPELL_MIND_REMOVE_FEAR) {
-        return PLAYER_SKILL_SPIRIT;
+        return CHARACTER_SKILL_SPIRIT;
     } else if (uSpellID < SPELL_BODY_CURE_WEAKNESS) {
-        return PLAYER_SKILL_MIND;
+        return CHARACTER_SKILL_MIND;
     } else if (uSpellID < SPELL_LIGHT_LIGHT_BOLT) {
-        return PLAYER_SKILL_BODY;
+        return CHARACTER_SKILL_BODY;
     } else if (uSpellID < SPELL_DARK_REANIMATE) {
-        return PLAYER_SKILL_LIGHT;
+        return CHARACTER_SKILL_LIGHT;
     } else if (uSpellID < SPELL_BOW_ARROW) {
-        return PLAYER_SKILL_DARK;
+        return CHARACTER_SKILL_DARK;
     } else if (uSpellID == SPELL_BOW_ARROW) {
-        return PLAYER_SKILL_BOW;
+        return CHARACTER_SKILL_BOW;
     } else if (uSpellID == SPELL_101 ||
                uSpellID == SPELL_LASER_PROJECTILE) {
-        return PLAYER_SKILL_BLASTER;
+        return CHARACTER_SKILL_BLASTER;
     } else {
         assert(false && "Unknown spell");
     }
 
-    return PLAYER_SKILL_INVALID;
+    return CHARACTER_SKILL_INVALID;
 }
 
 // TODO(captainurist): this is the same enum as DAMAGE_TYPE in ItemEnums.h

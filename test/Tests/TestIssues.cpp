@@ -28,28 +28,28 @@ static int partyItemCount() {
     return result;
 }
 
-static std::initializer_list<PLAYER_BUFFS> allPotionBuffs() {
-    static constexpr std::initializer_list<PLAYER_BUFFS> result = {
-        PLAYER_BUFF_RESIST_AIR,
-        PLAYER_BUFF_BLESS,
-        PLAYER_BUFF_RESIST_BODY,
-        PLAYER_BUFF_RESIST_EARTH,
-        PLAYER_BUFF_RESIST_FIRE,
-        PLAYER_BUFF_HASTE,
-        PLAYER_BUFF_HEROISM,
-        PLAYER_BUFF_RESIST_MIND,
-        PLAYER_BUFF_PRESERVATION,
-        PLAYER_BUFF_SHIELD,
-        PLAYER_BUFF_STONESKIN,
-        PLAYER_BUFF_ACCURACY,
-        PLAYER_BUFF_ENDURANCE,
-        PLAYER_BUFF_INTELLIGENCE,
-        PLAYER_BUFF_LUCK,
-        PLAYER_BUFF_STRENGTH,
-        PLAYER_BUFF_PERSONALITY,
-        PLAYER_BUFF_SPEED,
-        PLAYER_BUFF_RESIST_WATER,
-        PLAYER_BUFF_WATER_WALK
+static std::initializer_list<CharacterBuffs> allPotionBuffs() {
+    static constexpr std::initializer_list<CharacterBuffs> result = {
+        CHARACTER_BUFF_RESIST_AIR,
+        CHARACTER_BUFF_BLESS,
+        CHARACTER_BUFF_RESIST_BODY,
+        CHARACTER_BUFF_RESIST_EARTH,
+        CHARACTER_BUFF_RESIST_FIRE,
+        CHARACTER_BUFF_HASTE,
+        CHARACTER_BUFF_HEROISM,
+        CHARACTER_BUFF_RESIST_MIND,
+        CHARACTER_BUFF_PRESERVATION,
+        CHARACTER_BUFF_SHIELD,
+        CHARACTER_BUFF_STONESKIN,
+        CHARACTER_BUFF_ACCURACY,
+        CHARACTER_BUFF_ENDURANCE,
+        CHARACTER_BUFF_INTELLIGENCE,
+        CHARACTER_BUFF_LUCK,
+        CHARACTER_BUFF_STRENGTH,
+        CHARACTER_BUFF_PERSONALITY,
+        CHARACTER_BUFF_SPEED,
+        CHARACTER_BUFF_RESIST_WATER,
+        CHARACTER_BUFF_WATER_WALK
     };
     return result;
 }
@@ -436,7 +436,7 @@ GAME_TEST(Issues, Issue417) {
 
 static void check427Buffs(const char *ctx, std::initializer_list<int> players, bool hasBuff) {
     for (int player : players) {
-        for (PLAYER_BUFFS buff : {PLAYER_BUFF_BLESS, PLAYER_BUFF_PRESERVATION, PLAYER_BUFF_HAMMERHANDS, PLAYER_BUFF_PAIN_REFLECTION}) {
+        for (CharacterBuffs buff : {CHARACTER_BUFF_BLESS, CHARACTER_BUFF_PRESERVATION, CHARACTER_BUFF_HAMMERHANDS, CHARACTER_BUFF_PAIN_REFLECTION}) {
             EXPECT_EQ(pParty->pPlayers[player].pPlayerBuffs[buff].Active(), hasBuff)
                 << "(with ctx=" << ctx << ", player=" << player << ", buff=" << buff << ")";
         }
@@ -466,7 +466,7 @@ GAME_TEST(Issues, Issue427_528) {
 GAME_TEST(Issues, Issue442) {
     // Test that regular UI is blocked on spell cast
     test->playTraceFromTestData("issue_442.mm7", "issue_442.json");
-    EXPECT_EQ(pParty->pPlayers[1].pPlayerBuffs[PLAYER_BUFF_BLESS].Active(), true);
+    EXPECT_EQ(pParty->pPlayers[1].pPlayerBuffs[CHARACTER_BUFF_BLESS].Active(), true);
 }
 
 GAME_TEST(Prs, Pr469) {
@@ -777,7 +777,7 @@ GAME_TEST(Issues, Issue662) {
     test->loadGameFromTestData("issue_662.mm7");
     // currently air magic is (expert) 6
     EXPECT_EQ(pParty->pPlayers[3].GetItemsBonus(CHARACTER_ATTRIBUTE_SKILL_AIR), 3);
-    pParty->pPlayers[3].pActiveSkills[PLAYER_SKILL_AIR].setLevel(5);
+    pParty->pPlayers[3].pActiveSkills[CHARACTER_SKILL_AIR].setLevel(5);
     EXPECT_EQ(pParty->pPlayers[3].GetItemsBonus(CHARACTER_ATTRIBUTE_SKILL_AIR), 2);
 }
 
@@ -1000,7 +1000,7 @@ GAME_TEST(Issues, Issue779) {
 }
 
 void check783784Buffs(bool haveBuffs) {
-    for (PLAYER_BUFFS buff : allPotionBuffs())
+    for (CharacterBuffs buff : allPotionBuffs())
         EXPECT_EQ(pParty->pPlayers[0].pPlayerBuffs[buff].Active(), haveBuffs) << "buff=" << static_cast<int>(buff);
 }
 
@@ -1012,7 +1012,7 @@ GAME_TEST(Issues, Issue783) {
         check783784Buffs(true); // Should have all buffs at start.
 
         // And all buffs should expire way in the future.
-        for (PLAYER_BUFFS buff : allPotionBuffs())
+        for (CharacterBuffs buff : allPotionBuffs())
             EXPECT_GT(pParty->pPlayers[0].pPlayerBuffs[buff].GetExpireTime(), startTime + GameTime::FromHours(10));
     });
 
@@ -1034,18 +1034,18 @@ GAME_TEST(Issues, Issue784) {
     const Player &player0 = pParty->pPlayers[0];
 
     EXPECT_EQ(225, player0.GetMagicalBonus(CHARACTER_ATTRIBUTE_RESIST_AIR));
-    EXPECT_EQ(5, player0.GetMagicalBonus(CHARACTER_ATTRIBUTE_ATTACK)); // PLAYER_BUFF_BLESS.
-    EXPECT_EQ(5, player0.GetMagicalBonus(CHARACTER_ATTRIBUTE_RANGED_ATTACK)); // PLAYER_BUFF_BLESS.
+    EXPECT_EQ(5, player0.GetMagicalBonus(CHARACTER_ATTRIBUTE_ATTACK)); // CHARACTER_BUFF_BLESS.
+    EXPECT_EQ(5, player0.GetMagicalBonus(CHARACTER_ATTRIBUTE_RANGED_ATTACK)); // CHARACTER_BUFF_BLESS.
     EXPECT_EQ(225, player0.GetMagicalBonus(CHARACTER_ATTRIBUTE_RESIST_BODY));
     EXPECT_EQ(225, player0.GetMagicalBonus(CHARACTER_ATTRIBUTE_RESIST_EARTH));
     EXPECT_EQ(225, player0.GetMagicalBonus(CHARACTER_ATTRIBUTE_RESIST_FIRE));
-    EXPECT_EQ(58, player0.GetAttackRecoveryTime(false)); // PLAYER_BUFF_HASTE.
-    EXPECT_EQ(59, player0.GetAttackRecoveryTime(true)); // PLAYER_BUFF_HASTE.
-    EXPECT_EQ(5, player0.GetMagicalBonus(CHARACTER_ATTRIBUTE_MELEE_DMG_BONUS)); // PLAYER_BUFF_HEROISM.
+    EXPECT_EQ(58, player0.GetAttackRecoveryTime(false)); // CHARACTER_BUFF_HASTE.
+    EXPECT_EQ(59, player0.GetAttackRecoveryTime(true)); // CHARACTER_BUFF_HASTE.
+    EXPECT_EQ(5, player0.GetMagicalBonus(CHARACTER_ATTRIBUTE_MELEE_DMG_BONUS)); // CHARACTER_BUFF_HEROISM.
     EXPECT_EQ(225, player0.GetMagicalBonus(CHARACTER_ATTRIBUTE_RESIST_MIND));
-    // No check for PLAYER_BUFF_PRESERVATION.
-    // No check for PLAYER_BUFF_SHIELD.
-    EXPECT_EQ(5, player0.GetMagicalBonus(CHARACTER_ATTRIBUTE_AC_BONUS)); // PLAYER_BUFF_STONESKIN.
+    // No check for CHARACTER_BUFF_PRESERVATION.
+    // No check for CHARACTER_BUFF_SHIELD.
+    EXPECT_EQ(5, player0.GetMagicalBonus(CHARACTER_ATTRIBUTE_AC_BONUS)); // CHARACTER_BUFF_STONESKIN.
     EXPECT_EQ(225, player0.GetMagicalBonus(CHARACTER_ATTRIBUTE_ACCURACY));
     EXPECT_EQ(225, player0.GetMagicalBonus(CHARACTER_ATTRIBUTE_ENDURANCE));
     EXPECT_EQ(225, player0.GetMagicalBonus(CHARACTER_ATTRIBUTE_INTELLIGENCE));
@@ -1054,7 +1054,7 @@ GAME_TEST(Issues, Issue784) {
     EXPECT_EQ(225, player0.GetMagicalBonus(CHARACTER_ATTRIBUTE_PERSONALITY));
     EXPECT_EQ(225, player0.GetMagicalBonus(CHARACTER_ATTRIBUTE_SPEED));
     EXPECT_EQ(225, player0.GetMagicalBonus(CHARACTER_ATTRIBUTE_RESIST_WATER));
-    // No check for PLAYER_BUFF_WATER_WALK
+    // No check for CHARACTER_BUFF_WATER_WALK
 }
 
 GAME_TEST(Issues, Issue790) {
