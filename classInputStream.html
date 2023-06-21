@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;bc21fd8</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;0e07bd8</span>
    </div>
   </td>
  </tr>
@@ -97,6 +97,8 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a39ae65ea1ecb89c53f31aa0206d901c3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a07805609a6bab85285c492845c4ceaf5"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classInputStream.html#a07805609a6bab85285c492845c4ceaf5">readOrFail</a> (void *data, size_t size)</td></tr>
 <tr class="separator:a07805609a6bab85285c492845c4ceaf5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a01ce2c2eab02d9826c5db7321dccc5dc"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classInputStream.html#a01ce2c2eab02d9826c5db7321dccc5dc">readAll</a> (size_t maxSize=-1)</td></tr>
+<tr class="separator:a01ce2c2eab02d9826c5db7321dccc5dc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afb53adf30be18bfecda9cd4a42c03394"><td class="memItemLeft" align="right" valign="top">virtual size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classInputStream.html#afb53adf30be18bfecda9cd4a42c03394">skip</a> (size_t size)=0</td></tr>
 <tr class="separator:afb53adf30be18bfecda9cd4a42c03394"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0148f63b4e9e39a214362403a474a61c"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classInputStream.html#a0148f63b4e9e39a214362403a474a61c">close</a> ()=0</td></tr>
@@ -220,6 +222,38 @@ Public Member Functions</h2></td></tr>
 </dl>
 
 <p>Implemented in <a class="el" href="classBlobInputStream.html#a11d916f1d4bd8e57f658f62cd7856547">BlobInputStream</a>, <a class="el" href="classFileInputStream.html#a1908e3816662bda1bb2393af8959c91d">FileInputStream</a>, and <a class="el" href="classMemoryInputStream.html#a4986d3872a3360ff338987ce3980d963">MemoryInputStream</a>.</p>
+
+</div>
+</div>
+<a id="a01ce2c2eab02d9826c5db7321dccc5dc" name="a01ce2c2eab02d9826c5db7321dccc5dc"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a01ce2c2eab02d9826c5db7321dccc5dc">&#9670;&#160;</a></span>readAll()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::string InputStream::readAll </td>
+          <td>(</td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>maxSize</em> = <code>-1</code></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p >Reads everything that's in this stream, up to <code>maxSize</code> bytes.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">maxSize</td><td>Maximal number of bytes to read from the stream. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Data read from the stream, as <code>std::string</code>. </dd></dl>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname"><a class="el" href="classException.html">Exception</a></td><td>On error. </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
