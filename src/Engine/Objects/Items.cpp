@@ -23,9 +23,9 @@ ItemGen *ptr_50C9A4_ItemToEnchant;
 
 struct ItemTable *pItemTable;  // 005D29E0
 
-static std::map<int, std::map<CHARACTER_ATTRIBUTE_TYPE, CEnchantment>> regularBonusMap;
-static std::map<int, std::map<CHARACTER_ATTRIBUTE_TYPE, CEnchantment>> specialBonusMap;
-static std::map<ITEM_TYPE, std::map<CHARACTER_ATTRIBUTE_TYPE, CEnchantment>> artifactBonusMap;
+static std::map<int, std::map<CharacterAttributeType, CEnchantment>> regularBonusMap;
+static std::map<int, std::map<CharacterAttributeType, CEnchantment>> specialBonusMap;
+static std::map<ITEM_TYPE, std::map<CharacterAttributeType, CEnchantment>> artifactBonusMap;
 
 static std::unordered_map<ITEM_TYPE, ITEM_TYPE> itemTextureIdByItemId = {
     { ITEM_RELIC_HARECKS_LEATHER,       ITEM_POTION_STONESKIN },
@@ -267,8 +267,8 @@ bool ItemGen::GenerateArtifact() {
 }
 
 template<class Key, class ActualKey>
-static void AddToMap(std::map<Key, std::map<CHARACTER_ATTRIBUTE_TYPE, CEnchantment>> &map,
-                     ActualKey key, CHARACTER_ATTRIBUTE_TYPE subkey, int bonusValue = 0, CharacterSkillType skill = CHARACTER_SKILL_INVALID) {
+static void AddToMap(std::map<Key, std::map<CharacterAttributeType, CEnchantment>> &map,
+                     ActualKey key, CharacterAttributeType subkey, int bonusValue = 0, CharacterSkillType skill = CHARACTER_SKILL_INVALID) {
     auto &submap = map[key];
 
     Assert(!submap.contains(subkey));
@@ -636,7 +636,7 @@ void ItemGen::PopulateArtifactBonusMap() {
 }
 
 void ItemGen::GetItemBonusSpecialEnchantment(const Player *owner,
-                                             CHARACTER_ATTRIBUTE_TYPE attrToGet,
+                                             CharacterAttributeType attrToGet,
                                              int *additiveBonus,
                                              int *halfSkillBonus) const {
     auto pos = specialBonusMap.find(this->special_enchantment);
@@ -662,7 +662,7 @@ void ItemGen::GetItemBonusSpecialEnchantment(const Player *owner,
 }
 
 void ItemGen::GetItemBonusArtifact(const Player *owner,
-                                   CHARACTER_ATTRIBUTE_TYPE attrToGet,
+                                   CharacterAttributeType attrToGet,
                                    int *bonusSum) const {
     auto pos = artifactBonusMap.find(this->uItemID);
     if (pos == artifactBonusMap.end())
@@ -680,7 +680,7 @@ void ItemGen::GetItemBonusArtifact(const Player *owner,
     }
 }
 
-bool ItemGen::IsRegularEnchanmentForAttribute(CHARACTER_ATTRIBUTE_TYPE attrToGet) {
+bool ItemGen::IsRegularEnchanmentForAttribute(CharacterAttributeType attrToGet) {
     auto pos = specialBonusMap.find(this->uEnchantmentType);
     if (pos == specialBonusMap.end())
         return false;

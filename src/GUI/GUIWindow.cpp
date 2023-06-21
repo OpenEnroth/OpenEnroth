@@ -919,11 +919,11 @@ bool isHoldingMouseRightButton() {
     return holdingMouseRightButton;
 }
 
-Color GetSkillColor(PLAYER_CLASS_TYPE uPlayerClass, CharacterSkillType uPlayerSkillType, PLAYER_SKILL_MASTERY skill_mastery) {
+Color GetSkillColor(CharacterClassType uPlayerClass, CharacterSkillType uPlayerSkillType, PLAYER_SKILL_MASTERY skill_mastery) {
     if (skillMaxMasteryPerClass[uPlayerClass][uPlayerSkillType] >= skill_mastery) {
         return ui_character_skillinfo_can_learn;
     }
-    for (PLAYER_CLASS_TYPE promotionClass : getClassPromotions(uPlayerClass)) {
+    for (CharacterClassType promotionClass : getClassPromotions(uPlayerClass)) {
         if (skillMaxMasteryPerClass[promotionClass][uPlayerSkillType] >= skill_mastery) {
             return ui_character_skillinfo_can_learn_gm;
         }
@@ -1192,7 +1192,7 @@ void OracleDialogue() {
     //                   rather this code will bind jars that already present in inventory to liches that currently do not have binded jars
     if (item_id == ITEM_QUEST_LICH_JAR_FULL) {
         for (int i = 0; i < pParty->pPlayers.size(); i++) {
-            if (pParty->pPlayers[i].classType == PLAYER_CLASS_LICH) {
+            if (pParty->pPlayers[i].classType == CHARACTER_CLASS_LICH) {
                 bool have_vessels_soul = false;
                 for (Player &player : pParty->pPlayers) {
                     for (int idx = 0; idx < Player::INVENTORY_SLOT_COUNT; idx++) {
@@ -1221,7 +1221,7 @@ std::string _4B254D_SkillMasteryTeacher(int trainerInfo) {
     uint8_t teacherLevel = (trainerInfo - 200) % 3;
     CharacterSkillType skillBeingTaught = static_cast<CharacterSkillType>((trainerInfo - 200) / 3);
     Player *activePlayer = &pParty->activeCharacter();
-    PLAYER_CLASS_TYPE pClassType = activePlayer->classType;
+    CharacterClassType pClassType = activePlayer->classType;
     PLAYER_SKILL_MASTERY currClassMaxMastery = skillMaxMasteryPerClass[pClassType][skillBeingTaught];
     PLAYER_SKILL_MASTERY masteryLevelBeingTaught = dword_F8B1B0_MasteryBeingTaught = static_cast<PLAYER_SKILL_MASTERY>(teacherLevel + 2);
     guild_membership_approved = false;
@@ -1352,7 +1352,7 @@ std::string _4B254D_SkillMasteryTeacher(int trainerInfo) {
             gold_transaction_amount = 5000;
             break;
         case PLAYER_SKILL_MASTERY_GRANDMASTER:
-            if (!activePlayer->isClass(PLAYER_CLASS_ARCHMAGE) || !activePlayer->isClass(PLAYER_CLASS_PRIEST_OF_SUN))
+            if (!activePlayer->isClass(CHARACTER_CLASS_ARCHAMGE) || !activePlayer->isClass(CHARACTER_CLASS_PRIEST_OF_SUN))
                 return std::string(pNPCTopics[127].pText);
             gold_transaction_amount = 8000;
             break;
@@ -1371,7 +1371,7 @@ std::string _4B254D_SkillMasteryTeacher(int trainerInfo) {
             gold_transaction_amount = 5000;
             break;
         case PLAYER_SKILL_MASTERY_GRANDMASTER:
-            if (!activePlayer->isClass(PLAYER_CLASS_LICH) || !activePlayer->isClass(PLAYER_CLASS_PRIEST_OF_MOON))
+            if (!activePlayer->isClass(CHARACTER_CLASS_LICH) || !activePlayer->isClass(CHARACTER_CLASS_PRIEST_OF_MOON))
                 return std::string(pNPCTopics[127].pText);
             gold_transaction_amount = 8000;
             break;
@@ -1954,7 +1954,7 @@ std::string NameAndTitle(const std::string &name, const std::string &title) {
 }
 
 
-std::string NameAndTitle(const std::string &name, PLAYER_CLASS_TYPE class_type) {
+std::string NameAndTitle(const std::string &name, CharacterClassType class_type) {
     return NameAndTitle(
         name,
         localization->GetClassName(class_type)

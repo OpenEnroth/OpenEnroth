@@ -152,6 +152,7 @@ enum CharacterSpeech {
     SPEECH_LAST = SPEECH_110
 };
 
+// TODO(pskelton): drop CHARACTER_ at start?
 enum CharacterRace {
     CHARACTER_RACE_HUMAN = 0,
     CHARACTER_RACE_ELF = 1,
@@ -289,66 +290,67 @@ inline std::initializer_list<CharacterSkillType> allMagicSkills() {
 
 /*  329 */
 // TODO(Nik-RE-dev): turn it into enum class
-enum PLAYER_CLASS_TYPE : uint8_t {
-    PLAYER_CLASS_KNIGHT = 0,
-    PLAYER_CLASS_CHEVALIER = 1,
-    PLAYER_CLASS_CHAMPION = 2,
-    PLAYER_CLASS_BLACK_KNIGHT = 3,
-    PLAYER_CLASS_THIEF = 4,
-    PLAYER_CLASS_ROGUE = 5,
-    PLAYER_CLASS_SPY = 6,
-    PLAYER_CLASS_ASSASSIN = 7,
-    PLAYER_CLASS_MONK = 8,
-    PLAYER_CLASS_INITIATE = 9,
-    PLAYER_CLASS_MASTER = 10,
-    PLAYER_CLASS_NINJA = 11,
-    PLAYER_CLASS_PALADIN = 12,
-    PLAYER_CLASS_CRUSADER = 13,
-    PLAYER_CLASS_HERO = 14,
-    PLAYER_CLASS_VILLIAN = 15,
-    PLAYER_CLASS_ARCHER = 16,
-    PLAYER_CLASS_WARRIOR_MAGE = 17,
-    PLAYER_CLASS_MASTER_ARCHER = 18,
-    PLAYER_CLASS_SNIPER = 19,
-    PLAYER_CLASS_RANGER = 20,
-    PLAYER_CLASS_HUNTER = 21,
-    PLAYER_CLASS_RANGER_LORD = 22,
-    PLAYER_CLASS_BOUNTY_HUNTER = 23,
-    PLAYER_CLASS_CLERIC = 24,
-    PLAYER_CLASS_PRIEST = 25,
-    PLAYER_CLASS_PRIEST_OF_SUN = 26,
-    PLAYER_CLASS_PRIEST_OF_MOON = 27,
-    PLAYER_CLASS_DRUID = 28,
-    PLAYER_CLASS_GREAT_DRUID = 29,
-    PLAYER_CLASS_ARCH_DRUID = 30,
-    PLAYER_CLASS_WARLOCK = 31,
-    PLAYER_CLASS_SORCERER = 32,
-    PLAYER_CLASS_WIZARD = 33,
-    PLAYER_CLASS_ARCHMAGE = 34,
-    PLAYER_CLASS_LICH = 35,
+// TODO(pskelton): drop CHARACTER_ at start?
+enum CharacterClassType : uint8_t {
+    CHARACTER_CLASS_KNIGHT = 0,
+    CHARACTER_CLASS_CAVALIER = 1,
+    CHARACTER_CLASS_CHAMPION = 2,
+    CHARACTER_CLASS_BLACK_KNIGHT = 3,
+    CHARACTER_CLASS_THIEF = 4,
+    CHARACTER_CLASS_ROGUE = 5,
+    CHARACTER_CLASS_SPY = 6,
+    CHARACTER_CLASS_ASSASSIN = 7,
+    CHARACTER_CLASS_MONK = 8,
+    CHARACTER_CLASS_INITIATE = 9,
+    CHARACTER_CLASS_MASTER = 10,
+    CHARACTER_CLASS_NINJA = 11,
+    CHARACTER_CLASS_PALADIN = 12,
+    CHARACTER_CLASS_CRUSADER = 13,
+    CHARACTER_CLASS_HERO = 14,
+    CHARACTER_CLASS_VILLIAN = 15,
+    CHARACTER_CLASS_ARCHER = 16,
+    CHARACTER_CLASS_WARRIOR_MAGE = 17,
+    CHARACTER_CLASS_MASTER_ARCHER = 18,
+    CHARACTER_CLASS_SNIPER = 19,
+    CHARACTER_CLASS_RANGER = 20,
+    CHARACTER_CLASS_HUNTER = 21,
+    CHARACTER_CLASS_RANGER_LORD = 22,
+    CHARACTER_CLASS_BOUNTY_HUNTER = 23,
+    CHARACTER_CLASS_CLERIC = 24,
+    CHARACTER_CLASS_PRIEST = 25,
+    CHARACTER_CLASS_PRIEST_OF_SUN = 26,
+    CHARACTER_CLASS_PRIEST_OF_MOON = 27,
+    CHARACTER_CLASS_DRUID = 28,
+    CHARACTER_CLASS_GREAT_DRUID = 29,
+    CHARACTER_CLASS_ARCH_DRUID = 30,
+    CHARACTER_CLASS_WARLOCK = 31,
+    CHARACTER_CLASS_SORCERER = 32,
+    CHARACTER_CLASS_WIZARD = 33,
+    CHARACTER_CLASS_ARCHAMGE = 34,
+    CHARACTER_CLASS_LICH = 35,
 
-    PLAYER_CLASS_FIRST = PLAYER_CLASS_KNIGHT,
-    PLAYER_CLASS_LAST = PLAYER_CLASS_LICH
+    PLAYER_CLASS_FIRST = CHARACTER_CLASS_KNIGHT,
+    PLAYER_CLASS_LAST = CHARACTER_CLASS_LICH
 };
 
-inline PLAYER_CLASS_TYPE getTier1Class(PLAYER_CLASS_TYPE classType) {
+inline CharacterClassType getTier1Class(CharacterClassType classType) {
     int tier = classType % 4;
-    return (PLAYER_CLASS_TYPE)(classType - tier);
+    return (CharacterClassType)(classType - tier);
 }
 
-inline PLAYER_CLASS_TYPE getTier2Class(PLAYER_CLASS_TYPE classType) {
+inline CharacterClassType getTier2Class(CharacterClassType classType) {
     int tier = classType % 4;
-    return (PLAYER_CLASS_TYPE)(classType - tier + 1);
+    return (CharacterClassType)(classType - tier + 1);
 }
 
-inline PLAYER_CLASS_TYPE getTier3LightClass(PLAYER_CLASS_TYPE classType) {
+inline CharacterClassType getTier3LightClass(CharacterClassType classType) {
     int tier = classType % 4;
-    return (PLAYER_CLASS_TYPE)(classType - tier + 2);
+    return (CharacterClassType)(classType - tier + 2);
 }
 
-inline PLAYER_CLASS_TYPE getTier3DarkClass(PLAYER_CLASS_TYPE classType) {
+inline CharacterClassType getTier3DarkClass(CharacterClassType classType) {
     int tier = classType % 4;
-    return (PLAYER_CLASS_TYPE)(classType - tier + 3);
+    return (CharacterClassType)(classType - tier + 3);
 }
 
 /**
@@ -360,7 +362,7 @@ inline PLAYER_CLASS_TYPE getTier3DarkClass(PLAYER_CLASS_TYPE classType) {
  *
  * @param classType     Character class.
  */
-inline Segment<PLAYER_CLASS_TYPE> getClassPromotions(PLAYER_CLASS_TYPE classType) {
+inline Segment<CharacterClassType> getClassPromotions(CharacterClassType classType) {
     int tier = classType % 4;
 
     if (tier == 0) {
@@ -372,8 +374,8 @@ inline Segment<PLAYER_CLASS_TYPE> getClassPromotions(PLAYER_CLASS_TYPE classType
     }
 }
 
-// TODO(pskelton): decipher enum
-enum CHARACTER_EXPRESSION_ID : uint16_t {
+// TODO(pskelton): drop CHARACTER_ at start?
+enum CharacterExpressionID : uint16_t {
     CHARACTER_EXPRESSION_INVALID = 0,
     CHARACTER_EXPRESSION_NORMAL = 1,
     CHARACTER_EXPRESSION_CURSED = 2,
@@ -432,12 +434,13 @@ enum CHARACTER_EXPRESSION_ID : uint16_t {
     CHARACTER_EXPRESSION_ERADICATED = 99,
 };
 
-enum CHARACTER_SEX : uint8_t {
+enum CharacterSex : uint8_t {
     SEX_MALE = 0,
     SEX_FEMALE = 1
 };
 
-enum CHARACTER_ATTRIBUTE_TYPE {
+// TODO(pskelton): drop CHARACTER_ at start?
+enum CharacterAttributeType {
     CHARACTER_ATTRIBUTE_MIGHT = 0,
     CHARACTER_ATTRIBUTE_INTELLIGENCE = 1,
     CHARACTER_ATTRIBUTE_PERSONALITY = 2,

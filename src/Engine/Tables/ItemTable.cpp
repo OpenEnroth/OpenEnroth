@@ -606,7 +606,7 @@ void ItemTable::generateItem(ITEM_TREASURE_LEVEL treasure_level, unsigned int uT
 
                 outItem->m_enchantmentStrength = bonusRanges[treasure_level].minR +
                                                  grng->random(bonusRanges[treasure_level].maxR - bonusRanges[treasure_level].minR + 1);
-                CHARACTER_ATTRIBUTE_TYPE standardEnchantmentAttributeSkill = static_cast<CHARACTER_ATTRIBUTE_TYPE>(outItem->uEnchantmentType - 1);
+                CharacterAttributeType standardEnchantmentAttributeSkill = static_cast<CharacterAttributeType>(outItem->uEnchantmentType - 1);
                 if (standardEnchantmentAttributeSkill == CHARACTER_ATTRIBUTE_SKILL_ARMSMASTER ||
                     standardEnchantmentAttributeSkill == CHARACTER_ATTRIBUTE_SKILL_DODGE ||
                     standardEnchantmentAttributeSkill == CHARACTER_ATTRIBUTE_SKILL_UNARMED) {

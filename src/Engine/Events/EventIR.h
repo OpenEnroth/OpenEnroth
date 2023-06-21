@@ -25,7 +25,7 @@ class EventIR {
     union {
         HOUSE_ID house_id;
         int chest_id;
-        CHARACTER_EXPRESSION_ID expr_id;
+        CharacterExpressionID expr_id;
         CharacterSpeech speech_id;
         int text_id;
         Season season;

@@ -190,7 +190,7 @@ void CreateParty_EventLoop() {
             break;
         case UIMSG_PlayerCreationSelectClass:
             pPlayer[uPlayerCreationUI_SelectedCharacter].Reset(
-                (PLAYER_CLASS_TYPE)param);
+                (CharacterClassType)param);
             pAudioPlayer->playUISound(SOUND_SelectingANewCharacter);
             break;
         case UIMSG_PlayerCreationClickOK:
@@ -289,7 +289,7 @@ void GUIWindow_PartyCreation::Update() {
     int v17;                        // eax@33
     Color pStatColor;        // eax@44
     CharacterSkillType pSkillsType;  // eax@44
-    PLAYER_CLASS_TYPE uClassType;   // edi@53
+    CharacterClassType uClassType;   // edi@53
     Color pColorText;                 // eax@53
     CharacterSkillType pSkillId;     // edi@72
     size_t pLenText;                // eax@72
@@ -481,56 +481,56 @@ void GUIWindow_PartyCreation::Update() {
     pGUIWindow_CurrentMenu->DrawText(pFontCreate, {pTextCenter + 323, 417}, pColorText, localization->GetClassName(0));
 
     pColorText = colorTable.Aqua;
-    if (uClassType != PLAYER_CLASS_PALADIN)
+    if (uClassType != CHARACTER_CLASS_PALADIN)
         pColorText = colorTable.White;
     pTextCenter =
         pFontCreate->AlignText_Center(65, localization->GetClassName(12));
     pGUIWindow_CurrentMenu->DrawText(pFontCreate, {pTextCenter + 323, pIntervalY + 417}, pColorText, localization->GetClassName(12));
 
     pColorText = colorTable.Aqua;
-    if (uClassType != PLAYER_CLASS_RANGER)
+    if (uClassType != CHARACTER_CLASS_RANGER)
         pColorText = colorTable.White;
     pTextCenter =
         pFontCreate->AlignText_Center(65, localization->GetClassName(20));
     pGUIWindow_CurrentMenu->DrawText(pFontCreate, {pTextCenter + 323, 2 * pIntervalY + 417}, pColorText, localization->GetClassName(20));
 
     pColorText = colorTable.Aqua;
-    if (uClassType != PLAYER_CLASS_CLERIC)
+    if (uClassType != CHARACTER_CLASS_CLERIC)
         pColorText = colorTable.White;
     pTextCenter =
         pFontCreate->AlignText_Center(65, localization->GetClassName(24));
     pGUIWindow_CurrentMenu->DrawText(pFontCreate, {pTextCenter + 388, 417}, pColorText, localization->GetClassName(24));
 
     pColorText = colorTable.Aqua;
-    if (uClassType != PLAYER_CLASS_DRUID)
+    if (uClassType != CHARACTER_CLASS_DRUID)
         pColorText = colorTable.White;
     pTextCenter =
         pFontCreate->AlignText_Center(65, localization->GetClassName(28));
     pGUIWindow_CurrentMenu->DrawText(pFontCreate, {pTextCenter + 388, pIntervalY + 417}, pColorText, localization->GetClassName(28));
 
     pColorText = colorTable.Aqua;
-    if (uClassType != PLAYER_CLASS_SORCERER)
+    if (uClassType != CHARACTER_CLASS_SORCERER)
         pColorText = colorTable.White;
     pTextCenter =
         pFontCreate->AlignText_Center(65, localization->GetClassName(32));
     pGUIWindow_CurrentMenu->DrawText(pFontCreate, {pTextCenter + 388, 2 * pIntervalY + 417}, pColorText, localization->GetClassName(32));
 
     pColorText = colorTable.Aqua;
-    if (uClassType != PLAYER_CLASS_ARCHER)
+    if (uClassType != CHARACTER_CLASS_ARCHER)
         pColorText = colorTable.White;
     pTextCenter =
         pFontCreate->AlignText_Center(65, localization->GetClassName(16));
     pGUIWindow_CurrentMenu->DrawText(pFontCreate, {pTextCenter + 453, 417}, pColorText, localization->GetClassName(16));
 
     pColorText = colorTable.Aqua;
-    if (uClassType != PLAYER_CLASS_MONK)
+    if (uClassType != CHARACTER_CLASS_MONK)
         pColorText = colorTable.White;
     pTextCenter =
         pFontCreate->AlignText_Center(65, localization->GetClassName(8));
     pGUIWindow_CurrentMenu->DrawText(pFontCreate, {pTextCenter + 453, pIntervalY + 417}, pColorText, localization->GetClassName(8));
 
     pColorText = colorTable.Aqua;
-    if (uClassType != PLAYER_CLASS_THIEF)
+    if (uClassType != CHARACTER_CLASS_THIEF)
         pColorText = colorTable.White;
     pTextCenter = pFontCreate->AlignText_Center(65, localization->GetClassName(4));
     pGUIWindow_CurrentMenu->DrawText(pFontCreate, {pTextCenter + 453, 2 * pIntervalY + 417}, pColorText, localization->GetClassName(4));
@@ -814,7 +814,7 @@ bool PartyCreationUI_LoopInternal() {
 
     item.Reset();
     for (uint i = 0; i < 4; ++i) {
-        if (pParty->pPlayers[i].classType == PLAYER_CLASS_KNIGHT)
+        if (pParty->pPlayers[i].classType == CHARACTER_CLASS_KNIGHT)
             pParty->pPlayers[i].sResMagicBase = 10;
         // TODO(pskelton): why just 22?
         pParty->pPlayers[i].pPlayerBuffs[22].Reset();

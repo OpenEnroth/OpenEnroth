@@ -648,112 +648,112 @@ void reconstruct(const Player_MM7 &src, Player *dst) {
 
     switch (src.classType) {
     case 0:
-        dst->classType = PLAYER_CLASS_KNIGHT;
+        dst->classType = CHARACTER_CLASS_KNIGHT;
         break;
     case 1:
-        dst->classType = PLAYER_CLASS_CHEVALIER;
+        dst->classType = CHARACTER_CLASS_CAVALIER;
         break;
     case 2:
-        dst->classType = PLAYER_CLASS_CHAMPION;
+        dst->classType = CHARACTER_CLASS_CHAMPION;
         break;
     case 3:
-        dst->classType = PLAYER_CLASS_BLACK_KNIGHT;
+        dst->classType = CHARACTER_CLASS_BLACK_KNIGHT;
         break;
     case 4:
-        dst->classType = PLAYER_CLASS_THIEF;
+        dst->classType = CHARACTER_CLASS_THIEF;
         break;
     case 5:
-        dst->classType = PLAYER_CLASS_ROGUE;
+        dst->classType = CHARACTER_CLASS_ROGUE;
         break;
     case 6:
-        dst->classType = PLAYER_CLASS_SPY;
+        dst->classType = CHARACTER_CLASS_SPY;
         break;
     case 7:
-        dst->classType = PLAYER_CLASS_ASSASSIN;
+        dst->classType = CHARACTER_CLASS_ASSASSIN;
         break;
     case 8:
-        dst->classType = PLAYER_CLASS_MONK;
+        dst->classType = CHARACTER_CLASS_MONK;
         break;
     case 9:
-        dst->classType = PLAYER_CLASS_INITIATE;
+        dst->classType = CHARACTER_CLASS_INITIATE;
         break;
     case 10:
-        dst->classType = PLAYER_CLASS_MASTER;
+        dst->classType = CHARACTER_CLASS_MASTER;
         break;
     case 11:
-        dst->classType = PLAYER_CLASS_NINJA;
+        dst->classType = CHARACTER_CLASS_NINJA;
         break;
     case 12:
-        dst->classType = PLAYER_CLASS_PALADIN;
+        dst->classType = CHARACTER_CLASS_PALADIN;
         break;
     case 13:
-        dst->classType = PLAYER_CLASS_CRUSADER;
+        dst->classType = CHARACTER_CLASS_CRUSADER;
         break;
     case 14:
-        dst->classType = PLAYER_CLASS_HERO;
+        dst->classType = CHARACTER_CLASS_HERO;
         break;
     case 15:
-        dst->classType = PLAYER_CLASS_VILLIAN;
+        dst->classType = CHARACTER_CLASS_VILLIAN;
         break;
     case 16:
-        dst->classType = PLAYER_CLASS_ARCHER;
+        dst->classType = CHARACTER_CLASS_ARCHER;
         break;
     case 17:
-        dst->classType = PLAYER_CLASS_WARRIOR_MAGE;
+        dst->classType = CHARACTER_CLASS_WARRIOR_MAGE;
         break;
     case 18:
-        dst->classType = PLAYER_CLASS_MASTER_ARCHER;
+        dst->classType = CHARACTER_CLASS_MASTER_ARCHER;
         break;
     case 19:
-        dst->classType = PLAYER_CLASS_SNIPER;
+        dst->classType = CHARACTER_CLASS_SNIPER;
         break;
     case 20:
-        dst->classType = PLAYER_CLASS_RANGER;
+        dst->classType = CHARACTER_CLASS_RANGER;
         break;
     case 21:
-        dst->classType = PLAYER_CLASS_HUNTER;
+        dst->classType = CHARACTER_CLASS_HUNTER;
         break;
     case 22:
-        dst->classType = PLAYER_CLASS_RANGER_LORD;
+        dst->classType = CHARACTER_CLASS_RANGER_LORD;
         break;
     case 23:
-        dst->classType = PLAYER_CLASS_BOUNTY_HUNTER;
+        dst->classType = CHARACTER_CLASS_BOUNTY_HUNTER;
         break;
     case 24:
-        dst->classType = PLAYER_CLASS_CLERIC;
+        dst->classType = CHARACTER_CLASS_CLERIC;
         break;
     case 25:
-        dst->classType = PLAYER_CLASS_PRIEST;
+        dst->classType = CHARACTER_CLASS_PRIEST;
         break;
     case 26:
-        dst->classType = PLAYER_CLASS_PRIEST_OF_SUN;
+        dst->classType = CHARACTER_CLASS_PRIEST_OF_SUN;
         break;
     case 27:
-        dst->classType = PLAYER_CLASS_PRIEST_OF_MOON;
+        dst->classType = CHARACTER_CLASS_PRIEST_OF_MOON;
         break;
     case 28:
-        dst->classType = PLAYER_CLASS_DRUID;
+        dst->classType = CHARACTER_CLASS_DRUID;
         break;
     case 29:
-        dst->classType = PLAYER_CLASS_GREAT_DRUID;
+        dst->classType = CHARACTER_CLASS_GREAT_DRUID;
         break;
     case 30:
-        dst->classType = PLAYER_CLASS_ARCH_DRUID;
+        dst->classType = CHARACTER_CLASS_ARCH_DRUID;
         break;
     case 31:
-        dst->classType = PLAYER_CLASS_WARLOCK;
+        dst->classType = CHARACTER_CLASS_WARLOCK;
         break;
     case 32:
-        dst->classType = PLAYER_CLASS_SORCERER;
+        dst->classType = CHARACTER_CLASS_SORCERER;
         break;
     case 33:
-        dst->classType = PLAYER_CLASS_WIZARD;
+        dst->classType = CHARACTER_CLASS_WIZARD;
         break;
     case 34:
-        dst->classType = PLAYER_CLASS_ARCHMAGE;
+        dst->classType = CHARACTER_CLASS_ARCHAMGE;
         break;
     case 35:
-        dst->classType = PLAYER_CLASS_LICH;
+        dst->classType = CHARACTER_CLASS_LICH;
         break;
     default:
         Assert(false);
@@ -853,7 +853,7 @@ void reconstruct(const Player_MM7 &src, Player *dst) {
     dst->_health_related = src.healthRelated;
     dst->uFullManaBonus = src.fullManaBonus;
     dst->_mana_related = src.manaRelated;
-    dst->expression = (CHARACTER_EXPRESSION_ID)src.expression;
+    dst->expression = (CharacterExpressionID)src.expression;
     dst->uExpressionTimePassed = src.expressionTimePassed;
     dst->uExpressionTimeLength = src.expressionTimeLength;
     dst->uExpressionImageIndex = src.field_1AA2;
@@ -1459,7 +1459,7 @@ void reconstruct(const OverlayDesc_MM7 &src, OverlayDesc *dst) {
 }
 
 void reconstruct(const PlayerFrame_MM7 &src, PlayerFrame *dst) {
-    dst->expression = static_cast<CHARACTER_EXPRESSION_ID>(src.expression);
+    dst->expression = static_cast<CharacterExpressionID>(src.expression);
     dst->uTextureID = src.uTextureID;
     dst->uAnimTime = src.uAnimTime;
     dst->uAnimLength = src.uAnimLength;

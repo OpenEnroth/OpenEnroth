@@ -488,7 +488,7 @@ void Party::createDefaultParty(bool bDebugGiveItems) {
     this->pPlayers[3].pActiveSkills[CHARACTER_SKILL_STAFF] = CombinedSkillValue::novice();
 
     for (Player &pCharacter : pPlayers) {
-        if (pCharacter.classType == PLAYER_CLASS_KNIGHT)
+        if (pCharacter.classType == CHARACTER_CLASS_KNIGHT)
             pCharacter.sResMagicBase = 10;
 
         pCharacter.lastOpenedSpellbookPage = 0;
@@ -624,7 +624,7 @@ void Party::Reset() {
 
     pParty->_activeCharacter = 1;
 
-    pPlayers[0].Reset(PLAYER_CLASS_KNIGHT);
+    pPlayers[0].Reset(CHARACTER_CLASS_KNIGHT);
     pPlayers[0].uCurrentFace = 17;
     pPlayers[0].uPrevVoiceID = 17;
     pPlayers[0].uVoiceID = 17;
@@ -632,7 +632,7 @@ void Party::Reset() {
     pPlayers[0].uSex = pPlayers[0].GetSexByVoice();
     pPlayers[0].name = localization->GetString(LSTR_PC_NAME_ZOLTAN);
 
-    pPlayers[1].Reset(PLAYER_CLASS_THIEF);
+    pPlayers[1].Reset(CHARACTER_CLASS_THIEF);
     pPlayers[1].uCurrentFace = 3;
     pPlayers[1].uPrevVoiceID = 3;
     pPlayers[1].uVoiceID = 3;
@@ -640,7 +640,7 @@ void Party::Reset() {
     pPlayers[1].uSex = pPlayers[1].GetSexByVoice();
     pPlayers[1].name = localization->GetString(LSTR_PC_NAME_RODERIC);
 
-    pPlayers[2].Reset(PLAYER_CLASS_CLERIC);
+    pPlayers[2].Reset(CHARACTER_CLASS_CLERIC);
     pPlayers[2].uCurrentFace = 14;
     pPlayers[2].uPrevVoiceID = 14;
     pPlayers[2].uVoiceID = 14;
@@ -648,7 +648,7 @@ void Party::Reset() {
     pPlayers[2].uSex = pPlayers[3].GetSexByVoice();
     pPlayers[2].name = localization->GetString(LSTR_PC_NAME_SERENA);
 
-    pPlayers[3].Reset(PLAYER_CLASS_SORCERER);
+    pPlayers[3].Reset(CHARACTER_CLASS_SORCERER);
     pPlayers[3].uCurrentFace = 10;
     pPlayers[3].uPrevVoiceID = 10;
     pPlayers[3].uVoiceID = 10;
@@ -861,7 +861,7 @@ void Party::restAndHeal() {
         pPlayer->timeToRecovery = 0;
         pPlayer->health = pPlayer->GetMaxHealth();
         pPlayer->mana = pPlayer->GetMaxMana();
-        if (pPlayer->classType == PLAYER_CLASS_LICH) {
+        if (pPlayer->classType == CHARACTER_CLASS_LICH) {
             have_vessels_soul = false;
             for (uint i = 0; i < Player::INVENTORY_SLOT_COUNT; i++) {
                 if (pPlayer->pInventoryItemList[i].uItemID == ITEM_QUEST_LICH_JAR_FULL && pPlayer->pInventoryItemList[i].uHolderPlayer == pPlayerID)

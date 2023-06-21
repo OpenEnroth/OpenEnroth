@@ -1678,13 +1678,13 @@ void GUIWindow_CharacterRecord::CharacterUI_StatsTab_Draw(Player *player) {
                                                     player->GetBaseResistance(CHARACTER_ATTRIBUTE_RESIST_EARTH)));
 
     pY += pFontArrus->GetHeight() - 2;
-    bool immuneToMind = player->classType == PLAYER_CLASS_LICH && player->GetBaseResistance(CHARACTER_ATTRIBUTE_RESIST_MIND) == 200;
+    bool immuneToMind = player->classType == CHARACTER_CLASS_LICH && player->GetBaseResistance(CHARACTER_ATTRIBUTE_RESIST_MIND) == 200;
     pGUIWindow_CurrentMenu->DrawText(pFontArrus, {266, pY}, colorTable.White,
                                      formatRightCol(LSTR_MIND, player->GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_MIND),
                                                     player->GetBaseResistance(CHARACTER_ATTRIBUTE_RESIST_MIND), immuneToMind));
 
     pY += pFontArrus->GetHeight() - 2;
-    bool immuneToBody = player->classType == PLAYER_CLASS_LICH && player->GetBaseResistance(CHARACTER_ATTRIBUTE_RESIST_BODY) == 200;
+    bool immuneToBody = player->classType == CHARACTER_CLASS_LICH && player->GetBaseResistance(CHARACTER_ATTRIBUTE_RESIST_BODY) == 200;
     pGUIWindow_CurrentMenu->DrawText(pFontArrus, {266, pY}, colorTable.White,
                                      formatRightCol(LSTR_BODY, player->GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_BODY),
                                                     player->GetBaseResistance(CHARACTER_ATTRIBUTE_RESIST_BODY), immuneToBody));

@@ -178,7 +178,7 @@ struct Player {
      */
     void useItem(int targetCharacter, bool isPortraitClick);
     bool AddItem(ItemGen *pItem);
-    int GetActualAttribute(CHARACTER_ATTRIBUTE_TYPE attrId,
+    int GetActualAttribute(CharacterAttributeType attrId,
                            unsigned short Player::*attrValue,
                            unsigned short Player::*attrBonus) const;
     int GetBaseMight() const;
@@ -242,25 +242,25 @@ struct Player {
     int GetActualAC() const;
     unsigned int GetBaseAge() const;
     unsigned int GetActualAge() const;
-    int GetBaseResistance(CHARACTER_ATTRIBUTE_TYPE a2) const;
-    int GetActualResistance(CHARACTER_ATTRIBUTE_TYPE resistance) const;
+    int GetBaseResistance(CharacterAttributeType a2) const;
+    int GetActualResistance(CharacterAttributeType resistance) const;
     void SetRecoveryTime(signed int sRecoveryTime);
     void RandomizeName();
     Condition GetMajorConditionIdx() const;
     int GetParameterBonus(int player_parameter) const;
     int GetSpecialItemBonus(ITEM_ENCHANTMENT enchantment) const;
-    int GetItemsBonus(CHARACTER_ATTRIBUTE_TYPE attr, bool getOnlyMainHandDmg = false) const;
-    int GetMagicalBonus(CHARACTER_ATTRIBUTE_TYPE a2) const;
+    int GetItemsBonus(CharacterAttributeType attr, bool getOnlyMainHandDmg = false) const;
+    int GetMagicalBonus(CharacterAttributeType a2) const;
     PLAYER_SKILL_LEVEL GetActualSkillLevel(CharacterSkillType uSkillType) const;
     PLAYER_SKILL_MASTERY GetActualSkillMastery(CharacterSkillType uSkillType) const;
     CombinedSkillValue getActualSkillValue(CharacterSkillType skillType) const;
-    int GetSkillBonus(CHARACTER_ATTRIBUTE_TYPE a2) const;
+    int GetSkillBonus(CharacterAttributeType a2) const;
     CharacterRace GetRace() const;
     std::string GetRaceName() const;
-    CHARACTER_SEX GetSexByVoice() const;
+    CharacterSex GetSexByVoice() const;
     void SetInitialStats();
     void SetSexByVoice();
-    void Reset(PLAYER_CLASS_TYPE classType);
+    void Reset(CharacterClassType classType);
     CharacterSkillType GetSkillIdxByOrder(signed int order);
     void DecreaseAttribute(int eAttribute);
     void IncreaseAttribute(int eAttribute);
@@ -307,7 +307,7 @@ struct Player {
     /**
      * @offset 0x49327B
      */
-    bool isClass(PLAYER_CLASS_TYPE class_type, bool check_honorary = true) const;
+    bool isClass(CharacterClassType class_type, bool check_honorary = true) const;
 
     /**
      * @offset 0x4948B1
@@ -317,7 +317,7 @@ struct Player {
     /**
      * @offset 0x494A25
      */
-    void playEmotion(CHARACTER_EXPRESSION_ID expression, int duration);
+    void playEmotion(CharacterExpressionID expression, int duration);
     void ItemsPotionDmgBreak(int enchant_count);
     unsigned int GetItemListAtInventoryIndex(int inout_item_cell);
     unsigned int GetItemMainInventoryIndex(int inout_item_cell);
@@ -452,8 +452,8 @@ struct Player {
     PlayerConditions conditions;
     uint64_t experience;
     std::string name;
-    CHARACTER_SEX uSex;
-    PLAYER_CLASS_TYPE classType;
+    CharacterSex uSex;
+    CharacterClassType classType;
     uint8_t uCurrentFace;
     uint16_t uMight;
     uint16_t uMightBonus;
@@ -545,7 +545,7 @@ struct Player {
     char _health_related;
     char uFullManaBonus;
     char _mana_related;
-    CHARACTER_EXPRESSION_ID expression;
+    CharacterExpressionID expression;
     uint16_t uExpressionTimePassed;
     uint16_t uExpressionTimeLength;
     int16_t uExpressionImageIndex;
@@ -557,7 +557,7 @@ struct Player {
     char uNumFireSpikeCasts;
 };
 
-inline CHARACTER_EXPRESSION_ID expressionForCondition(Condition condition) {
+inline CharacterExpressionID expressionForCondition(Condition condition) {
     switch (condition) {
       case CONDITION_DEAD:
         return CHARACTER_EXPRESSION_DEAD;

@@ -503,7 +503,7 @@ void Player::SetCondition(Condition uConditionIdx, int blockable) {
             break;
 
         case CONDITION_ZOMBIE:
-            if (classType == PLAYER_CLASS_LICH || IsEradicated() || IsZombie() || !IsDead()) { // cant zombified
+            if (classType == CHARACTER_CLASS_LICH || IsEradicated() || IsZombie() || !IsDead()) { // cant zombified
                 return;
             }
 
@@ -932,7 +932,7 @@ int Player::GetActualLuck() const {
 }
 
 //----- (new function) --------------------------------------------------------
-int Player::GetActualAttribute(CHARACTER_ATTRIBUTE_TYPE attrId,
+int Player::GetActualAttribute(CharacterAttributeType attrId,
                                unsigned short Player::*attrValue,
                                unsigned short Player::*attrBonus) const {
     uint uActualAge = this->sAgeModifier + GetBaseAge();
@@ -1277,11 +1277,11 @@ Color Player::GetExperienceDisplayColor() {
 
 //----- (0048D4B3) --------------------------------------------------------
 int Player::CalculateIncommingDamage(DAMAGE_TYPE dmg_type, int dmg) {
-    // TODO(captainurist): these are some weird casts to CHARACTER_ATTRIBUTE_TYPE
-    if (classType == PLAYER_CLASS_LICH &&
-        ((CHARACTER_ATTRIBUTE_TYPE)dmg_type == CHARACTER_ATTRIBUTE_RESIST_MIND ||
-         (CHARACTER_ATTRIBUTE_TYPE)dmg_type == CHARACTER_ATTRIBUTE_RESIST_BODY ||
-         (CHARACTER_ATTRIBUTE_TYPE)dmg_type == CHARACTER_ATTRIBUTE_RESIST_SPIRIT))  // TODO(_): determine if spirit
+    // TODO(captainurist): these are some weird casts to CharacterAttributeType
+    if (classType == CHARACTER_CLASS_LICH &&
+        ((CharacterAttributeType)dmg_type == CHARACTER_ATTRIBUTE_RESIST_MIND ||
+         (CharacterAttributeType)dmg_type == CHARACTER_ATTRIBUTE_RESIST_BODY ||
+         (CharacterAttributeType)dmg_type == CHARACTER_ATTRIBUTE_RESIST_SPIRIT))  // TODO(_): determine if spirit
                                                           // resistance should be handled
                                                           // by body res. modifier
         return 0;  // liches are not affected by self magics
@@ -2116,45 +2116,45 @@ int Player::GetMaxMana() const {
     int addmanastat;
 
     switch (classType) {
-        case PLAYER_CLASS_ROGUE:
-        case PLAYER_CLASS_SPY:
-        case PLAYER_CLASS_ASSASSIN:
-        case PLAYER_CLASS_ARCHER:
-        case PLAYER_CLASS_WARRIOR_MAGE:
-        case PLAYER_CLASS_MASTER_ARCHER:
-        case PLAYER_CLASS_SNIPER:
-        case PLAYER_CLASS_SORCERER:
-        case PLAYER_CLASS_WIZARD:
-        case PLAYER_CLASS_ARCHMAGE:
-        case PLAYER_CLASS_LICH:
+        case CHARACTER_CLASS_ROGUE:
+        case CHARACTER_CLASS_SPY:
+        case CHARACTER_CLASS_ASSASSIN:
+        case CHARACTER_CLASS_ARCHER:
+        case CHARACTER_CLASS_WARRIOR_MAGE:
+        case CHARACTER_CLASS_MASTER_ARCHER:
+        case CHARACTER_CLASS_SNIPER:
+        case CHARACTER_CLASS_SORCERER:
+        case CHARACTER_CLASS_WIZARD:
+        case CHARACTER_CLASS_ARCHAMGE:
+        case CHARACTER_CLASS_LICH:
             // intelligence based mana
             mainmanastat = GetActualIntelligence();
             statbonus = GetParameterBonus(mainmanastat);
             break;
 
-        case PLAYER_CLASS_INITIATE:
-        case PLAYER_CLASS_MASTER:
-        case PLAYER_CLASS_NINJA:
-        case PLAYER_CLASS_PALADIN:
-        case PLAYER_CLASS_CRUSADER:
-        case PLAYER_CLASS_HERO:
-        case PLAYER_CLASS_VILLIAN:
-        case PLAYER_CLASS_CLERIC:
-        case PLAYER_CLASS_PRIEST:
-        case PLAYER_CLASS_PRIEST_OF_SUN:
-        case PLAYER_CLASS_PRIEST_OF_MOON:
+        case CHARACTER_CLASS_INITIATE:
+        case CHARACTER_CLASS_MASTER:
+        case CHARACTER_CLASS_NINJA:
+        case CHARACTER_CLASS_PALADIN:
+        case CHARACTER_CLASS_CRUSADER:
+        case CHARACTER_CLASS_HERO:
+        case CHARACTER_CLASS_VILLIAN:
+        case CHARACTER_CLASS_CLERIC:
+        case CHARACTER_CLASS_PRIEST:
+        case CHARACTER_CLASS_PRIEST_OF_SUN:
+        case CHARACTER_CLASS_PRIEST_OF_MOON:
             // personality based mana
             mainmanastat = GetActualPersonality();
             statbonus = GetParameterBonus(mainmanastat);
             break;
 
-        case PLAYER_CLASS_HUNTER:
-        case PLAYER_CLASS_RANGER_LORD:
-        case PLAYER_CLASS_BOUNTY_HUNTER:
-        case PLAYER_CLASS_DRUID:
-        case PLAYER_CLASS_GREAT_DRUID:
-        case PLAYER_CLASS_ARCH_DRUID:
-        case PLAYER_CLASS_WARLOCK:
+        case CHARACTER_CLASS_HUNTER:
+        case CHARACTER_CLASS_RANGER_LORD:
+        case CHARACTER_CLASS_BOUNTY_HUNTER:
+        case CHARACTER_CLASS_DRUID:
+        case CHARACTER_CLASS_GREAT_DRUID:
+        case CHARACTER_CLASS_ARCH_DRUID:
+        case CHARACTER_CLASS_WARLOCK:
             // mixed base mana
             mainmanastat = GetActualPersonality();
             statbonus = GetParameterBonus(mainmanastat);
@@ -2218,7 +2218,7 @@ unsigned int Player::GetActualAge() const {
 }
 
 //----- (0048E73F) --------------------------------------------------------
-int Player::GetBaseResistance(CHARACTER_ATTRIBUTE_TYPE a2) const {
+int Player::GetBaseResistance(CharacterAttributeType a2) const {
     int v7;  // esi@20
     int racialBonus = 0;
     const int16_t *resStat;
@@ -2255,14 +2255,14 @@ int Player::GetBaseResistance(CHARACTER_ATTRIBUTE_TYPE a2) const {
     }
     v7 = GetItemsBonus(a2) + racialBonus;
     result = v7 + *resStat;
-    if (classType == PLAYER_CLASS_LICH) {
+    if (classType == CHARACTER_CLASS_LICH) {
         if (result > 200) result = 200;
     }
     return result;
 }
 
 //----- (0048E7D0) --------------------------------------------------------
-int Player::GetActualResistance(CHARACTER_ATTRIBUTE_TYPE resistance) const {
+int Player::GetActualResistance(CharacterAttributeType resistance) const {
     signed int v10 = 0;  // [sp+14h] [bp-4h]@1
     const int16_t *resStat;
     int result;
@@ -2305,7 +2305,7 @@ int Player::GetActualResistance(CHARACTER_ATTRIBUTE_TYPE resistance) const {
     }
     baseRes = GetBaseResistance(resistance);
     result = v10 + GetMagicalBonus(resistance) + baseRes + *(resStat);
-    if (classType == PLAYER_CLASS_LICH) {
+    if (classType == CHARACTER_CLASS_LICH) {
         if (result > 200) result = 200;
     }
     return result;
@@ -2389,7 +2389,7 @@ int Player::GetSpecialItemBonus(ITEM_ENCHANTMENT enchantment) const {
 }
 
 //----- (0048EAAE) --------------------------------------------------------
-int Player::GetItemsBonus(CHARACTER_ATTRIBUTE_TYPE attr, bool getOnlyMainHandDmg /*= false*/) const {
+int Player::GetItemsBonus(CharacterAttributeType attr, bool getOnlyMainHandDmg /*= false*/) const {
     int v5;                     // edi@1
     int v14;                    // ecx@58
     int v15;                    // eax@58
@@ -2663,7 +2663,7 @@ int Player::GetItemsBonus(CHARACTER_ATTRIBUTE_TYPE attr, bool getOnlyMainHandDmg
 }
 
 //----- (0048F73C) --------------------------------------------------------
-int Player::GetMagicalBonus(CHARACTER_ATTRIBUTE_TYPE a2) const {
+int Player::GetMagicalBonus(CharacterAttributeType a2) const {
     int v3 = 0;  // eax@4
     int v4 = 0;  // ecx@5
 
@@ -2797,7 +2797,7 @@ PLAYER_SKILL_LEVEL Player::GetActualSkillLevel(CharacterSkillType uSkillType) co
             if (CheckHiredNPCSpeciality(Apprentice)) bonus_value = 2;
             if (CheckHiredNPCSpeciality(Mystic)) bonus_value += 3;
             if (CheckHiredNPCSpeciality(Spellmaster)) bonus_value += 4;
-            if (classType == PLAYER_CLASS_WARLOCK && PartyHasDragon())
+            if (classType == CHARACTER_CLASS_WARLOCK && PartyHasDragon())
                 bonus_value += 3;
             bonus_value += GetItemsBonus(CHARACTER_ATTRIBUTE_SKILL_EARTH);
             break;
@@ -2805,7 +2805,7 @@ PLAYER_SKILL_LEVEL Player::GetActualSkillLevel(CharacterSkillType uSkillType) co
             if (CheckHiredNPCSpeciality(Apprentice)) bonus_value = 2;
             if (CheckHiredNPCSpeciality(Mystic)) bonus_value += 3;
             if (CheckHiredNPCSpeciality(Spellmaster)) bonus_value += 4;
-            if (classType == PLAYER_CLASS_WARLOCK && PartyHasDragon())
+            if (classType == CHARACTER_CLASS_WARLOCK && PartyHasDragon())
                 bonus_value += 3;
             bonus_value += GetItemsBonus(CHARACTER_ATTRIBUTE_SKILL_FIRE);
             break;
@@ -2813,7 +2813,7 @@ PLAYER_SKILL_LEVEL Player::GetActualSkillLevel(CharacterSkillType uSkillType) co
             if (CheckHiredNPCSpeciality(Apprentice)) bonus_value = 2;
             if (CheckHiredNPCSpeciality(Mystic)) bonus_value += 3;
             if (CheckHiredNPCSpeciality(Spellmaster)) bonus_value += 4;
-            if (classType == PLAYER_CLASS_WARLOCK && PartyHasDragon())
+            if (classType == CHARACTER_CLASS_WARLOCK && PartyHasDragon())
                 bonus_value += 3;
             bonus_value += GetItemsBonus(CHARACTER_ATTRIBUTE_SKILL_AIR);
             break;
@@ -2821,7 +2821,7 @@ PLAYER_SKILL_LEVEL Player::GetActualSkillLevel(CharacterSkillType uSkillType) co
             if (CheckHiredNPCSpeciality(Apprentice)) bonus_value = 2;
             if (CheckHiredNPCSpeciality(Mystic)) bonus_value += 3;
             if (CheckHiredNPCSpeciality(Spellmaster)) bonus_value += 4;
-            if (classType == PLAYER_CLASS_WARLOCK && PartyHasDragon())
+            if (classType == CHARACTER_CLASS_WARLOCK && PartyHasDragon())
                 bonus_value += 3;
             bonus_value += GetItemsBonus(CHARACTER_ATTRIBUTE_SKILL_WATER);
             break;
@@ -2904,7 +2904,7 @@ CombinedSkillValue Player::getActualSkillValue(CharacterSkillType skillType) con
 }
 
 //----- (0048FC00) --------------------------------------------------------
-int Player::GetSkillBonus(CHARACTER_ATTRIBUTE_TYPE inSkill) const {
+int Player::GetSkillBonus(CharacterAttributeType inSkill) const {
                     // TODO(_): move the individual implementations to attribute
                     // classes once possible ?? check
     int armsMasterBonus;
@@ -3177,7 +3177,7 @@ std::string Player::GetRaceName() const {
 }
 
 //----- (00490141) --------------------------------------------------------
-CHARACTER_SEX Player::GetSexByVoice() const {
+CharacterSex Player::GetSexByVoice() const {
     switch (this->uVoiceID) {
         case 0u:
         case 1u:
@@ -3261,7 +3261,7 @@ void Player::SetSexByVoice() {
 }
 
 //----- (0049024A) --------------------------------------------------------
-void Player::Reset(PLAYER_CLASS_TYPE cls) {
+void Player::Reset(CharacterClassType cls) {
     sLevelModifier = 0;
     sAgeModifier = 0;
 
@@ -4519,12 +4519,12 @@ void Player::SetVariable(VariableType var_type, signed int var_value) {
 
     switch (var_type) {
         case VAR_Sex:
-            this->uSex = (CHARACTER_SEX)var_value;
+            this->uSex = (CharacterSex)var_value;
             PlayAwardSound_Anim();
             return;
         case VAR_Class:
-            this->classType = (PLAYER_CLASS_TYPE)var_value;
-            if ((PLAYER_CLASS_TYPE)var_value == PLAYER_CLASS_LICH) {
+            this->classType = (CharacterClassType)var_value;
+            if ((CharacterClassType)var_value == CHARACTER_CLASS_LICH) {
                 for (int i = 0; i < TOTAL_ITEM_SLOT_COUNT; i++) {
                     if (this->pOwnItems[i].uItemID == ITEM_QUEST_LICH_JAR_EMPTY) {
                         this->pOwnItems[i].uItemID = ITEM_QUEST_LICH_JAR_FULL;
@@ -5153,11 +5153,11 @@ void Player::AddVariable(VariableType var_type, signed int val) {
             PlayAwardSound();
             return;
         case VAR_Sex:
-            this->uSex = (CHARACTER_SEX)val;
+            this->uSex = (CharacterSex)val;
             PlayAwardSound_Anim97();
             return;
         case VAR_Class:
-            this->classType = (PLAYER_CLASS_TYPE)val;
+            this->classType = (CharacterClassType)val;
             PlayAwardSound_Anim97();
             return;
         case VAR_CurrentHP:
@@ -6321,7 +6321,7 @@ bool Player::hasItem(ITEM_TYPE uItemID, bool checkHeldItem) {
 //----- (0043EDB9) --------------------------------------------------------
 bool ShouldLoadTexturesForRaceAndGender(unsigned int _this) {
     CharacterRace race;  // edi@2
-    CHARACTER_SEX sex;       // eax@2
+    CharacterSex sex;       // eax@2
 
     for (Player &player : pParty->pPlayers) {
         race = player.GetRace();
@@ -7329,7 +7329,7 @@ void Player::playReaction(CharacterSpeech speech, int a3) {
         }
     }
     if (expressionCount) {
-        CHARACTER_EXPRESSION_ID expression = (CHARACTER_EXPRESSION_ID)expressionVariants[speech][vrng->random(expressionCount)];
+        CharacterExpressionID expression = (CharacterExpressionID)expressionVariants[speech][vrng->random(expressionCount)];
         int expressionDuration = 0;
         if (expression == CHARACTER_EXPRESSION_TALK && pickedSoundID) {
             if (pickedSoundID >= 0) {
@@ -7340,7 +7340,7 @@ void Player::playReaction(CharacterSpeech speech, int a3) {
     }
 }
 
-void Player::playEmotion(CHARACTER_EXPRESSION_ID new_expression, int duration) {
+void Player::playEmotion(CharacterExpressionID new_expression, int duration) {
     // 38 - sparkles 1 player?
 
     unsigned int currexpr = expression;
@@ -7375,7 +7375,7 @@ void Player::playEmotion(CHARACTER_EXPRESSION_ID new_expression, int duration) {
     expression = new_expression;
 }
 
-bool Player::isClass(PLAYER_CLASS_TYPE class_type, bool check_honorary) const {
+bool Player::isClass(CharacterClassType class_type, bool check_honorary) const {
     if (classType == class_type) {
         return true;
     }
@@ -7385,13 +7385,13 @@ bool Player::isClass(PLAYER_CLASS_TYPE class_type, bool check_honorary) const {
     }
 
     switch (class_type) {
-    case PLAYER_CLASS_PRIEST_OF_SUN:
+    case CHARACTER_CLASS_PRIEST_OF_SUN:
         return _achievedAwardsBits[Award_Promotion_PriestOfLight_Honorary];
-    case PLAYER_CLASS_PRIEST_OF_MOON:
+    case CHARACTER_CLASS_PRIEST_OF_MOON:
         return _achievedAwardsBits[Award_Promotion_PriestOfDark_Honorary];
-    case PLAYER_CLASS_ARCHMAGE:
+    case CHARACTER_CLASS_ARCHAMGE:
         return _achievedAwardsBits[Award_Promotion_Archmage_Honorary];
-    case PLAYER_CLASS_LICH:
+    case CHARACTER_CLASS_LICH:
         return _achievedAwardsBits[Award_Promotion_Lich_Honorary];
         break;
     default:

@@ -71,7 +71,7 @@ static void calculateRequiredFood() {
 
     if (PartyHasDragon()) {
         for (Player &player : pParty->pPlayers) {
-            if (player.classType == PLAYER_CLASS_WARLOCK) {
+            if (player.classType == CHARACTER_CLASS_WARLOCK) {
                 ++foodRequiredToRest;
             }
         }

@@ -886,7 +886,7 @@ EventIR EventIR::parse(const void *data, size_t maxSize) {
             break;
         case EVENT_ShowFace:
             ir.who = (CharacterChoosePolicy)_evt->v5;
-            ir.data.expr_id = (CHARACTER_EXPRESSION_ID)_evt->v6;
+            ir.data.expr_id = (CharacterExpressionID)_evt->v6;
             break;
         case EVENT_ReceiveDamage:
             ir.data.damage_descr.damage_type = (DAMAGE_TYPE)_evt->v6;

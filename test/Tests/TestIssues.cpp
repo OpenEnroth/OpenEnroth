@@ -178,7 +178,7 @@ GAME_TEST(Issues, Issue211) {
 
 GAME_TEST(Issues, Issue223) {
     // Fire and air resistance not resetting between games
-    auto checkResistances = [](CHARACTER_ATTRIBUTE_TYPE resistance, std::initializer_list<std::pair<int, int>> resistancePairs) {
+    auto checkResistances = [](CharacterAttributeType resistance, std::initializer_list<std::pair<int, int>> resistancePairs) {
         for (auto pair : resistancePairs) {
             EXPECT_EQ(pParty->pPlayers[pair.first].GetActualResistance(resistance), pair.second);
         }
@@ -308,10 +308,10 @@ GAME_TEST(Prs, Pr314) {
     for (int i = 0; i < 4; i++)
         EXPECT_EQ(pParty->pPlayers[i].uLuck, 20);
 
-    EXPECT_EQ(pParty->pPlayers[0].classType, PLAYER_CLASS_MONK);
-    EXPECT_EQ(pParty->pPlayers[1].classType, PLAYER_CLASS_THIEF);
-    EXPECT_EQ(pParty->pPlayers[2].classType, PLAYER_CLASS_RANGER);
-    EXPECT_EQ(pParty->pPlayers[3].classType, PLAYER_CLASS_CLERIC);
+    EXPECT_EQ(pParty->pPlayers[0].classType, CHARACTER_CLASS_MONK);
+    EXPECT_EQ(pParty->pPlayers[1].classType, CHARACTER_CLASS_THIEF);
+    EXPECT_EQ(pParty->pPlayers[2].classType, CHARACTER_CLASS_RANGER);
+    EXPECT_EQ(pParty->pPlayers[3].classType, CHARACTER_CLASS_CLERIC);
     EXPECT_EQ(pParty->pPlayers[0].GetRace(), CHARACTER_RACE_ELF);
     EXPECT_EQ(pParty->pPlayers[1].GetRace(), CHARACTER_RACE_ELF);
     EXPECT_EQ(pParty->pPlayers[2].GetRace(), CHARACTER_RACE_GOBLIN);
