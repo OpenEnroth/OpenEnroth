@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;69217f3</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;f7691f8</span>
    </div>
   </td>
  </tr>
@@ -82,7 +82,7 @@ $(function() {
 <div class="contents">
 <div class="textblock"><code>#include &lt;cstdint&gt;</code><br />
 <code>#include &quot;<a class="el" href="ErrorHandling_8h.html">Engine/ErrorHandling.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="PlayerEnums_8h.html">Engine/Objects/PlayerEnums.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="CharacterEnums_8h.html">Engine/Objects/CharacterEnums.h</a>&quot;</code><br />
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="define-members" name="define-members"></a>
 Macros</h2></td></tr>
@@ -123,54 +123,54 @@ Enumerations</h2></td></tr>
 , <a class="el" href="GUIDialogues_8h.html#afcd7885d9ec6583fa04d9e8f0f641d00aa8acb972bfbde8146e162e2032b87330">DIALOGUE_SCRIPTED_LINE_5</a> = 23
 , <br />
 &#160;&#160;<a class="el" href="GUIDialogues_8h.html#afcd7885d9ec6583fa04d9e8f0f641d00a704b476001a4399feba01d9328a2068d">DIALOGUE_SCRIPTED_LINE_6</a> = 24
-, <a class="el" href="GUIDialogues_8h.html#afcd7885d9ec6583fa04d9e8f0f641d00ae57034070467c91ebb25ff3e524495fc">DIALOGUE_LEARN_STAFF</a> = SKILL_TO_LEARNING_DIALOGUE_ID(PLAYER_SKILL_STAFF)
-, <a class="el" href="GUIDialogues_8h.html#afcd7885d9ec6583fa04d9e8f0f641d00aaaefda2bbe749246d7b9532723b28ebd">DIALOGUE_LEARN_SWORD</a> = SKILL_TO_LEARNING_DIALOGUE_ID(PLAYER_SKILL_SWORD)
-, <a class="el" href="GUIDialogues_8h.html#afcd7885d9ec6583fa04d9e8f0f641d00a10aa0e580869edff3bac025ece84ac7e">DIALOGUE_LEARN_DAGGER</a> = SKILL_TO_LEARNING_DIALOGUE_ID(PLAYER_SKILL_DAGGER)
+, <a class="el" href="GUIDialogues_8h.html#afcd7885d9ec6583fa04d9e8f0f641d00ae57034070467c91ebb25ff3e524495fc">DIALOGUE_LEARN_STAFF</a> = SKILL_TO_LEARNING_DIALOGUE_ID(CHARACTER_SKILL_STAFF)
+, <a class="el" href="GUIDialogues_8h.html#afcd7885d9ec6583fa04d9e8f0f641d00aaaefda2bbe749246d7b9532723b28ebd">DIALOGUE_LEARN_SWORD</a> = SKILL_TO_LEARNING_DIALOGUE_ID(CHARACTER_SKILL_SWORD)
+, <a class="el" href="GUIDialogues_8h.html#afcd7885d9ec6583fa04d9e8f0f641d00a10aa0e580869edff3bac025ece84ac7e">DIALOGUE_LEARN_DAGGER</a> = SKILL_TO_LEARNING_DIALOGUE_ID(CHARACTER_SKILL_DAGGER)
 , <br />
-&#160;&#160;<a class="el" href="GUIDialogues_8h.html#afcd7885d9ec6583fa04d9e8f0f641d00a7d2936edf22c159c9a79a3b211238051">DIALOGUE_LEARN_AXE</a> = SKILL_TO_LEARNING_DIALOGUE_ID(PLAYER_SKILL_AXE)
-, <a class="el" href="GUIDialogues_8h.html#afcd7885d9ec6583fa04d9e8f0f641d00ae834f63f3a99cd6eca6a48b202f9ce24">DIALOGUE_LEARN_SPEAR</a> = SKILL_TO_LEARNING_DIALOGUE_ID(PLAYER_SKILL_SPEAR)
-, <a class="el" href="GUIDialogues_8h.html#afcd7885d9ec6583fa04d9e8f0f641d00a2327c8506ac54fea59ea0e27ac51cf14">DIALOGUE_LEARN_BOW</a> = SKILL_TO_LEARNING_DIALOGUE_ID(PLAYER_SKILL_BOW)
-, <a class="el" href="GUIDialogues_8h.html#afcd7885d9ec6583fa04d9e8f0f641d00a6b6a72a216367ba07da8d7a2a421ba8a">DIALOGUE_LEARN_MACE</a> = SKILL_TO_LEARNING_DIALOGUE_ID(PLAYER_SKILL_MACE)
+&#160;&#160;<a class="el" href="GUIDialogues_8h.html#afcd7885d9ec6583fa04d9e8f0f641d00a7d2936edf22c159c9a79a3b211238051">DIALOGUE_LEARN_AXE</a> = SKILL_TO_LEARNING_DIALOGUE_ID(CHARACTER_SKILL_AXE)
+, <a class="el" href="GUIDialogues_8h.html#afcd7885d9ec6583fa04d9e8f0f641d00ae834f63f3a99cd6eca6a48b202f9ce24">DIALOGUE_LEARN_SPEAR</a> = SKILL_TO_LEARNING_DIALOGUE_ID(CHARACTER_SKILL_SPEAR)
+, <a class="el" href="GUIDialogues_8h.html#afcd7885d9ec6583fa04d9e8f0f641d00a2327c8506ac54fea59ea0e27ac51cf14">DIALOGUE_LEARN_BOW</a> = SKILL_TO_LEARNING_DIALOGUE_ID(CHARACTER_SKILL_BOW)
+, <a class="el" href="GUIDialogues_8h.html#afcd7885d9ec6583fa04d9e8f0f641d00a6b6a72a216367ba07da8d7a2a421ba8a">DIALOGUE_LEARN_MACE</a> = SKILL_TO_LEARNING_DIALOGUE_ID(CHARACTER_SKILL_MACE)
 , <br />
-&#160;&#160;<a class="el" href="GUIDialogues_8h.html#afcd7885d9ec6583fa04d9e8f0f641d00af579287964c5b36b89dc003f22361deb">DIALOGUE_LEARN_BLASTER</a> = SKILL_TO_LEARNING_DIALOGUE_ID(PLAYER_SKILL_BLASTER)
-, <a class="el" href="GUIDialogues_8h.html#afcd7885d9ec6583fa04d9e8f0f641d00a7ffdee4927545250ade2f3db6e325d1d">DIALOGUE_LEARN_SHIELD</a> = SKILL_TO_LEARNING_DIALOGUE_ID(PLAYER_SKILL_SHIELD)
-, <a class="el" href="GUIDialogues_8h.html#afcd7885d9ec6583fa04d9e8f0f641d00a69d36d6537007d5f8e12a5f36306af13">DIALOGUE_LEARN_LEATHER</a> = SKILL_TO_LEARNING_DIALOGUE_ID(PLAYER_SKILL_LEATHER)
-, <a class="el" href="GUIDialogues_8h.html#afcd7885d9ec6583fa04d9e8f0f641d00a4f996e33fa7996ad51b8ecaacd3e227f">DIALOGUE_LEARN_CHAIN</a> = SKILL_TO_LEARNING_DIALOGUE_ID(PLAYER_SKILL_CHAIN)
+&#160;&#160;<a class="el" href="GUIDialogues_8h.html#afcd7885d9ec6583fa04d9e8f0f641d00af579287964c5b36b89dc003f22361deb">DIALOGUE_LEARN_BLASTER</a> = SKILL_TO_LEARNING_DIALOGUE_ID(CHARACTER_SKILL_BLASTER)
+, <a class="el" href="GUIDialogues_8h.html#afcd7885d9ec6583fa04d9e8f0f641d00a7ffdee4927545250ade2f3db6e325d1d">DIALOGUE_LEARN_SHIELD</a> = SKILL_TO_LEARNING_DIALOGUE_ID(CHARACTER_SKILL_SHIELD)
+, <a class="el" href="GUIDialogues_8h.html#afcd7885d9ec6583fa04d9e8f0f641d00a69d36d6537007d5f8e12a5f36306af13">DIALOGUE_LEARN_LEATHER</a> = SKILL_TO_LEARNING_DIALOGUE_ID(CHARACTER_SKILL_LEATHER)
+, <a class="el" href="GUIDialogues_8h.html#afcd7885d9ec6583fa04d9e8f0f641d00a4f996e33fa7996ad51b8ecaacd3e227f">DIALOGUE_LEARN_CHAIN</a> = SKILL_TO_LEARNING_DIALOGUE_ID(CHARACTER_SKILL_CHAIN)
 , <br />
-&#160;&#160;<a class="el" href="GUIDialogues_8h.html#afcd7885d9ec6583fa04d9e8f0f641d00a49af7cd50967f1b6b7df4a6a2327a8b2">DIALOGUE_LEARN_PLATE</a> = SKILL_TO_LEARNING_DIALOGUE_ID(PLAYER_SKILL_PLATE)
-, <a class="el" href="GUIDialogues_8h.html#afcd7885d9ec6583fa04d9e8f0f641d00aab440f0eafd006dd894cb1a0b5d85b59">DIALOGUE_LEARN_FIRE</a> = SKILL_TO_LEARNING_DIALOGUE_ID(PLAYER_SKILL_FIRE)
-, <a class="el" href="GUIDialogues_8h.html#afcd7885d9ec6583fa04d9e8f0f641d00a9af8db4685653b95f328efbcf284eb9b">DIALOGUE_LEARN_AIR</a> = SKILL_TO_LEARNING_DIALOGUE_ID(PLAYER_SKILL_AIR)
-, <a class="el" href="GUIDialogues_8h.html#afcd7885d9ec6583fa04d9e8f0f641d00aff273a3f19e7dab28b96b3842e2e9be0">DIALOGUE_LEARN_WATER</a> = SKILL_TO_LEARNING_DIALOGUE_ID(PLAYER_SKILL_WATER)
+&#160;&#160;<a class="el" href="GUIDialogues_8h.html#afcd7885d9ec6583fa04d9e8f0f641d00a49af7cd50967f1b6b7df4a6a2327a8b2">DIALOGUE_LEARN_PLATE</a> = SKILL_TO_LEARNING_DIALOGUE_ID(CHARACTER_SKILL_PLATE)
+, <a class="el" href="GUIDialogues_8h.html#afcd7885d9ec6583fa04d9e8f0f641d00aab440f0eafd006dd894cb1a0b5d85b59">DIALOGUE_LEARN_FIRE</a> = SKILL_TO_LEARNING_DIALOGUE_ID(CHARACTER_SKILL_FIRE)
+, <a class="el" href="GUIDialogues_8h.html#afcd7885d9ec6583fa04d9e8f0f641d00a9af8db4685653b95f328efbcf284eb9b">DIALOGUE_LEARN_AIR</a> = SKILL_TO_LEARNING_DIALOGUE_ID(CHARACTER_SKILL_AIR)
+, <a class="el" href="GUIDialogues_8h.html#afcd7885d9ec6583fa04d9e8f0f641d00aff273a3f19e7dab28b96b3842e2e9be0">DIALOGUE_LEARN_WATER</a> = SKILL_TO_LEARNING_DIALOGUE_ID(CHARACTER_SKILL_WATER)
 , <br />
-&#160;&#160;<a class="el" href="GUIDialogues_8h.html#afcd7885d9ec6583fa04d9e8f0f641d00afe90ff9e3f72ab83adedce688ccfc1bc">DIALOGUE_LEARN_EARTH</a> = SKILL_TO_LEARNING_DIALOGUE_ID(PLAYER_SKILL_EARTH)
-, <a class="el" href="GUIDialogues_8h.html#afcd7885d9ec6583fa04d9e8f0f641d00ad8a5c80bf29dce7280ab6269585ccc32">DIALOGUE_LEARN_SPIRIT</a> = SKILL_TO_LEARNING_DIALOGUE_ID(PLAYER_SKILL_SPIRIT)
-, <a class="el" href="GUIDialogues_8h.html#afcd7885d9ec6583fa04d9e8f0f641d00aea65550185680f20baa21c4c174d10db">DIALOGUE_LEARN_MIND</a> = SKILL_TO_LEARNING_DIALOGUE_ID(PLAYER_SKILL_MIND)
-, <a class="el" href="GUIDialogues_8h.html#afcd7885d9ec6583fa04d9e8f0f641d00a22da202f3d2ade7eee28c91b3fa9ecac">DIALOGUE_LEARN_BODY</a> = SKILL_TO_LEARNING_DIALOGUE_ID(PLAYER_SKILL_BODY)
+&#160;&#160;<a class="el" href="GUIDialogues_8h.html#afcd7885d9ec6583fa04d9e8f0f641d00afe90ff9e3f72ab83adedce688ccfc1bc">DIALOGUE_LEARN_EARTH</a> = SKILL_TO_LEARNING_DIALOGUE_ID(CHARACTER_SKILL_EARTH)
+, <a class="el" href="GUIDialogues_8h.html#afcd7885d9ec6583fa04d9e8f0f641d00ad8a5c80bf29dce7280ab6269585ccc32">DIALOGUE_LEARN_SPIRIT</a> = SKILL_TO_LEARNING_DIALOGUE_ID(CHARACTER_SKILL_SPIRIT)
+, <a class="el" href="GUIDialogues_8h.html#afcd7885d9ec6583fa04d9e8f0f641d00aea65550185680f20baa21c4c174d10db">DIALOGUE_LEARN_MIND</a> = SKILL_TO_LEARNING_DIALOGUE_ID(CHARACTER_SKILL_MIND)
+, <a class="el" href="GUIDialogues_8h.html#afcd7885d9ec6583fa04d9e8f0f641d00a22da202f3d2ade7eee28c91b3fa9ecac">DIALOGUE_LEARN_BODY</a> = SKILL_TO_LEARNING_DIALOGUE_ID(CHARACTER_SKILL_BODY)
 , <br />
-&#160;&#160;<a class="el" href="GUIDialogues_8h.html#afcd7885d9ec6583fa04d9e8f0f641d00aa24be1d7c63b78561eb89d9e213c11cc">DIALOGUE_LEARN_LIGHT</a> = SKILL_TO_LEARNING_DIALOGUE_ID(PLAYER_SKILL_LIGHT)
-, <a class="el" href="GUIDialogues_8h.html#afcd7885d9ec6583fa04d9e8f0f641d00a20adc996271b312bb6c96602be5abacb">DIALOGUE_LEARN_DARK</a> = SKILL_TO_LEARNING_DIALOGUE_ID(PLAYER_SKILL_DARK)
-, <a class="el" href="GUIDialogues_8h.html#afcd7885d9ec6583fa04d9e8f0f641d00a42b3e1509c2f8398587602585796566b">DIALOGUE_LEARN_ITEM_ID</a> = SKILL_TO_LEARNING_DIALOGUE_ID(PLAYER_SKILL_ITEM_ID)
-, <a class="el" href="GUIDialogues_8h.html#afcd7885d9ec6583fa04d9e8f0f641d00a1ebba99f53781d2fb974bc44138abe42">DIALOGUE_LEARN_MERCHANT</a> = SKILL_TO_LEARNING_DIALOGUE_ID(PLAYER_SKILL_MERCHANT)
+&#160;&#160;<a class="el" href="GUIDialogues_8h.html#afcd7885d9ec6583fa04d9e8f0f641d00aa24be1d7c63b78561eb89d9e213c11cc">DIALOGUE_LEARN_LIGHT</a> = SKILL_TO_LEARNING_DIALOGUE_ID(CHARACTER_SKILL_LIGHT)
+, <a class="el" href="GUIDialogues_8h.html#afcd7885d9ec6583fa04d9e8f0f641d00a20adc996271b312bb6c96602be5abacb">DIALOGUE_LEARN_DARK</a> = SKILL_TO_LEARNING_DIALOGUE_ID(CHARACTER_SKILL_DARK)
+, <a class="el" href="GUIDialogues_8h.html#afcd7885d9ec6583fa04d9e8f0f641d00a42b3e1509c2f8398587602585796566b">DIALOGUE_LEARN_ITEM_ID</a> = SKILL_TO_LEARNING_DIALOGUE_ID(CHARACTER_SKILL_ITEM_ID)
+, <a class="el" href="GUIDialogues_8h.html#afcd7885d9ec6583fa04d9e8f0f641d00a1ebba99f53781d2fb974bc44138abe42">DIALOGUE_LEARN_MERCHANT</a> = SKILL_TO_LEARNING_DIALOGUE_ID(CHARACTER_SKILL_MERCHANT)
 , <br />
-&#160;&#160;<a class="el" href="GUIDialogues_8h.html#afcd7885d9ec6583fa04d9e8f0f641d00a0b78b630e4ecb1c857c7630af845bfd0">DIALOGUE_LEARN_REPAIR</a> = SKILL_TO_LEARNING_DIALOGUE_ID(PLAYER_SKILL_REPAIR)
-, <a class="el" href="GUIDialogues_8h.html#afcd7885d9ec6583fa04d9e8f0f641d00a3183f899770b9d60c6497d69cc22b1b6">DIALOGUE_LEARN_BODYBUILDING</a> = SKILL_TO_LEARNING_DIALOGUE_ID(PLAYER_SKILL_BODYBUILDING)
-, <a class="el" href="GUIDialogues_8h.html#afcd7885d9ec6583fa04d9e8f0f641d00a06b4ae2e20a6202281d4aed181ccf9d7">DIALOGUE_LEARN_MEDITATION</a> = SKILL_TO_LEARNING_DIALOGUE_ID(PLAYER_SKILL_MEDITATION)
-, <a class="el" href="GUIDialogues_8h.html#afcd7885d9ec6583fa04d9e8f0f641d00acdebd282663098d77604f09fe5a6e2b8">DIALOGUE_LEARN_PERCEPTION</a> = SKILL_TO_LEARNING_DIALOGUE_ID(PLAYER_SKILL_PERCEPTION)
+&#160;&#160;<a class="el" href="GUIDialogues_8h.html#afcd7885d9ec6583fa04d9e8f0f641d00a0b78b630e4ecb1c857c7630af845bfd0">DIALOGUE_LEARN_REPAIR</a> = SKILL_TO_LEARNING_DIALOGUE_ID(CHARACTER_SKILL_REPAIR)
+, <a class="el" href="GUIDialogues_8h.html#afcd7885d9ec6583fa04d9e8f0f641d00a3183f899770b9d60c6497d69cc22b1b6">DIALOGUE_LEARN_BODYBUILDING</a> = SKILL_TO_LEARNING_DIALOGUE_ID(CHARACTER_SKILL_BODYBUILDING)
+, <a class="el" href="GUIDialogues_8h.html#afcd7885d9ec6583fa04d9e8f0f641d00a06b4ae2e20a6202281d4aed181ccf9d7">DIALOGUE_LEARN_MEDITATION</a> = SKILL_TO_LEARNING_DIALOGUE_ID(CHARACTER_SKILL_MEDITATION)
+, <a class="el" href="GUIDialogues_8h.html#afcd7885d9ec6583fa04d9e8f0f641d00acdebd282663098d77604f09fe5a6e2b8">DIALOGUE_LEARN_PERCEPTION</a> = SKILL_TO_LEARNING_DIALOGUE_ID(CHARACTER_SKILL_PERCEPTION)
 , <br />
-&#160;&#160;<a class="el" href="GUIDialogues_8h.html#afcd7885d9ec6583fa04d9e8f0f641d00a08594337acace8a51d1cf2aae7ddce96">DIALOGUE_LEARN_DIPLOMACY</a> = SKILL_TO_LEARNING_DIALOGUE_ID(PLAYER_SKILL_DIPLOMACY)
-, <a class="el" href="GUIDialogues_8h.html#afcd7885d9ec6583fa04d9e8f0f641d00a18d1d09b1837b3b9f70afdf91edf5121">DIALOGUE_LEARN_THIEVERY</a> = SKILL_TO_LEARNING_DIALOGUE_ID(PLAYER_SKILL_THIEVERY)
-, <a class="el" href="GUIDialogues_8h.html#afcd7885d9ec6583fa04d9e8f0f641d00a159b7c652a3e001dc0d1bfdd455c15a9">DIALOGUE_LEARN_TRAP_DISARM</a> = SKILL_TO_LEARNING_DIALOGUE_ID(PLAYER_SKILL_TRAP_DISARM)
-, <a class="el" href="GUIDialogues_8h.html#afcd7885d9ec6583fa04d9e8f0f641d00a294c9b8773e7c94fcbe1e6f026e2eb97">DIALOGUE_LEARN_DODGE</a> = SKILL_TO_LEARNING_DIALOGUE_ID(PLAYER_SKILL_DODGE)
+&#160;&#160;<a class="el" href="GUIDialogues_8h.html#afcd7885d9ec6583fa04d9e8f0f641d00a08594337acace8a51d1cf2aae7ddce96">DIALOGUE_LEARN_DIPLOMACY</a> = SKILL_TO_LEARNING_DIALOGUE_ID(CHARACTER_SKILL_DIPLOMACY)
+, <a class="el" href="GUIDialogues_8h.html#afcd7885d9ec6583fa04d9e8f0f641d00a18d1d09b1837b3b9f70afdf91edf5121">DIALOGUE_LEARN_THIEVERY</a> = SKILL_TO_LEARNING_DIALOGUE_ID(CHARACTER_SKILL_THIEVERY)
+, <a class="el" href="GUIDialogues_8h.html#afcd7885d9ec6583fa04d9e8f0f641d00a159b7c652a3e001dc0d1bfdd455c15a9">DIALOGUE_LEARN_TRAP_DISARM</a> = SKILL_TO_LEARNING_DIALOGUE_ID(CHARACTER_SKILL_TRAP_DISARM)
+, <a class="el" href="GUIDialogues_8h.html#afcd7885d9ec6583fa04d9e8f0f641d00a294c9b8773e7c94fcbe1e6f026e2eb97">DIALOGUE_LEARN_DODGE</a> = SKILL_TO_LEARNING_DIALOGUE_ID(CHARACTER_SKILL_DODGE)
 , <br />
-&#160;&#160;<a class="el" href="GUIDialogues_8h.html#afcd7885d9ec6583fa04d9e8f0f641d00a2b489a091c62fb2afae33d01bc871cab">DIALOGUE_LEARN_UNARMED</a> = SKILL_TO_LEARNING_DIALOGUE_ID(PLAYER_SKILL_UNARMED)
-, <a class="el" href="GUIDialogues_8h.html#afcd7885d9ec6583fa04d9e8f0f641d00a31642788084703e20a15c0090b5d59e1">DIALOGUE_LEARN_MONSTER_ID</a> = SKILL_TO_LEARNING_DIALOGUE_ID(PLAYER_SKILL_MONSTER_ID)
-, <a class="el" href="GUIDialogues_8h.html#afcd7885d9ec6583fa04d9e8f0f641d00acf07a680bfc34c048269c2d86a702636">DIALOGUE_LEARN_ARMSMASTER</a> = SKILL_TO_LEARNING_DIALOGUE_ID(PLAYER_SKILL_ARMSMASTER)
-, <a class="el" href="GUIDialogues_8h.html#afcd7885d9ec6583fa04d9e8f0f641d00a6bf333e65bf47b867b7d8848dadd252f">DIALOGUE_LEARN_STEALING</a> = SKILL_TO_LEARNING_DIALOGUE_ID(PLAYER_SKILL_STEALING)
+&#160;&#160;<a class="el" href="GUIDialogues_8h.html#afcd7885d9ec6583fa04d9e8f0f641d00a2b489a091c62fb2afae33d01bc871cab">DIALOGUE_LEARN_UNARMED</a> = SKILL_TO_LEARNING_DIALOGUE_ID(CHARACTER_SKILL_UNARMED)
+, <a class="el" href="GUIDialogues_8h.html#afcd7885d9ec6583fa04d9e8f0f641d00a31642788084703e20a15c0090b5d59e1">DIALOGUE_LEARN_MONSTER_ID</a> = SKILL_TO_LEARNING_DIALOGUE_ID(CHARACTER_SKILL_MONSTER_ID)
+, <a class="el" href="GUIDialogues_8h.html#afcd7885d9ec6583fa04d9e8f0f641d00acf07a680bfc34c048269c2d86a702636">DIALOGUE_LEARN_ARMSMASTER</a> = SKILL_TO_LEARNING_DIALOGUE_ID(CHARACTER_SKILL_ARMSMASTER)
+, <a class="el" href="GUIDialogues_8h.html#afcd7885d9ec6583fa04d9e8f0f641d00a6bf333e65bf47b867b7d8848dadd252f">DIALOGUE_LEARN_STEALING</a> = SKILL_TO_LEARNING_DIALOGUE_ID(CHARACTER_SKILL_STEALING)
 , <br />
-&#160;&#160;<a class="el" href="GUIDialogues_8h.html#afcd7885d9ec6583fa04d9e8f0f641d00a3439c3ed631fc0df1a6819765fa86ad2">DIALOGUE_LEARN_ALCHEMY</a> = SKILL_TO_LEARNING_DIALOGUE_ID(PLAYER_SKILL_ALCHEMY)
-, <a class="el" href="GUIDialogues_8h.html#afcd7885d9ec6583fa04d9e8f0f641d00a74bb5b5598e81942e2f669fd844bf288">DIALOGUE_LEARN_LEARNING</a> = SKILL_TO_LEARNING_DIALOGUE_ID(PLAYER_SKILL_LEARNING)
-, <a class="el" href="GUIDialogues_8h.html#afcd7885d9ec6583fa04d9e8f0f641d00ab880b1c44a5f6767c5d73feb94d50dc0">DIALOGUE_LEARN_CLUB</a> = SKILL_TO_LEARNING_DIALOGUE_ID(PLAYER_SKILL_CLUB)
-, <a class="el" href="GUIDialogues_8h.html#afcd7885d9ec6583fa04d9e8f0f641d00a276a713c06cd566b368e13a72c79c24e">DIALOGUE_LEARN_MISC</a> = SKILL_TO_LEARNING_DIALOGUE_ID(PLAYER_SKILL_MISC)
+&#160;&#160;<a class="el" href="GUIDialogues_8h.html#afcd7885d9ec6583fa04d9e8f0f641d00a3439c3ed631fc0df1a6819765fa86ad2">DIALOGUE_LEARN_ALCHEMY</a> = SKILL_TO_LEARNING_DIALOGUE_ID(CHARACTER_SKILL_ALCHEMY)
+, <a class="el" href="GUIDialogues_8h.html#afcd7885d9ec6583fa04d9e8f0f641d00a74bb5b5598e81942e2f669fd844bf288">DIALOGUE_LEARN_LEARNING</a> = SKILL_TO_LEARNING_DIALOGUE_ID(CHARACTER_SKILL_LEARNING)
+, <a class="el" href="GUIDialogues_8h.html#afcd7885d9ec6583fa04d9e8f0f641d00ab880b1c44a5f6767c5d73feb94d50dc0">DIALOGUE_LEARN_CLUB</a> = SKILL_TO_LEARNING_DIALOGUE_ID(CHARACTER_SKILL_CLUB)
+, <a class="el" href="GUIDialogues_8h.html#afcd7885d9ec6583fa04d9e8f0f641d00a276a713c06cd566b368e13a72c79c24e">DIALOGUE_LEARN_MISC</a> = SKILL_TO_LEARNING_DIALOGUE_ID(CHARACTER_SKILL_MISC)
 , <br />
 &#160;&#160;<a class="el" href="GUIDialogues_8h.html#afcd7885d9ec6583fa04d9e8f0f641d00a6c8164493fc821d28d8c2a094adcfe8e">DIALOGUE_75</a> = 75
 , <a class="el" href="GUIDialogues_8h.html#afcd7885d9ec6583fa04d9e8f0f641d00ae19aadc8e61266cc6360ad36f871274a">DIALOGUE_HIRE_FIRE</a> = 76
@@ -223,8 +223,8 @@ Enumerations</h2></td></tr>
 Functions</h2></td></tr>
 <tr class="memitem:ad6e0874d44d74726f9b68c85e5494a53"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="GUIDialogues_8h.html#ad6e0874d44d74726f9b68c85e5494a53">IsSkillLearningDialogue</a> (<a class="el" href="GUIDialogues_8h.html#afcd7885d9ec6583fa04d9e8f0f641d00">DIALOGUE_TYPE</a> type)</td></tr>
 <tr class="separator:ad6e0874d44d74726f9b68c85e5494a53"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a683b1dd82222024660b3ddabb2204875"><td class="memItemLeft" align="right" valign="top"><a class="el" href="PlayerEnums_8h.html#a882aeeabc7e03f0fa334764a909ab3f5">PLAYER_SKILL_TYPE</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="GUIDialogues_8h.html#a683b1dd82222024660b3ddabb2204875">GetLearningDialogueSkill</a> (<a class="el" href="GUIDialogues_8h.html#afcd7885d9ec6583fa04d9e8f0f641d00">DIALOGUE_TYPE</a> type)</td></tr>
-<tr class="separator:a683b1dd82222024660b3ddabb2204875"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac7c0757df084a85238d75a120bfe35f7"><td class="memItemLeft" align="right" valign="top"><a class="el" href="CharacterEnums_8h.html#afb7e1cb64c82efee699c6bd5b7467bb3">CharacterSkillType</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="GUIDialogues_8h.html#ac7c0757df084a85238d75a120bfe35f7">GetLearningDialogueSkill</a> (<a class="el" href="GUIDialogues_8h.html#afcd7885d9ec6583fa04d9e8f0f641d00">DIALOGUE_TYPE</a> type)</td></tr>
+<tr class="separator:ac7c0757df084a85238d75a120bfe35f7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Macro Definition Documentation</h2>
 <a id="a0e0a2fa14fb92490ed6695b55d7e55ef" name="a0e0a2fa14fb92490ed6695b55d7e55ef"></a>
@@ -362,8 +362,8 @@ Functions</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Function Documentation</h2>
-<a id="a683b1dd82222024660b3ddabb2204875" name="a683b1dd82222024660b3ddabb2204875"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a683b1dd82222024660b3ddabb2204875">&#9670;&#160;</a></span>GetLearningDialogueSkill()</h2>
+<a id="ac7c0757df084a85238d75a120bfe35f7" name="ac7c0757df084a85238d75a120bfe35f7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac7c0757df084a85238d75a120bfe35f7">&#9670;&#160;</a></span>GetLearningDialogueSkill()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -372,7 +372,7 @@ Functions</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="PlayerEnums_8h.html#a882aeeabc7e03f0fa334764a909ab3f5">PLAYER_SKILL_TYPE</a> GetLearningDialogueSkill </td>
+          <td class="memname"><a class="el" href="CharacterEnums_8h.html#afb7e1cb64c82efee699c6bd5b7467bb3">CharacterSkillType</a> GetLearningDialogueSkill </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="GUIDialogues_8h.html#afcd7885d9ec6583fa04d9e8f0f641d00">DIALOGUE_TYPE</a>&#160;</td>
           <td class="paramname"><em>type</em></td><td>)</td>

@@ -18,7 +18,7 @@ var searchData=
   ['bard_15',['Bard',['../NPCEnums_8h.html#ae6501f571f97d74c2c78fddcb371bad4a51a547788c5ebad8e66b330b9fa747c5',1,'NPCEnums.h']]],
   ['base_16',['base',['../classProxyBase.html#a597c0e1dff33350cfff9b02a61ee9b63',1,'ProxyBase']]],
   ['base_5f_17',['base_',['../classProxyBase.html#a24fd6fa6bad5b7ea47fd041927e6a9a8',1,'ProxyBase']]],
-  ['base_5frecovery_5ftimes_5fper_5fweapon_5ftype_18',['base_recovery_times_per_weapon_type',['../mm7__data_8h.html#a486cbdbf871d6996a54b2a0472bd6779',1,'base_recovery_times_per_weapon_type():&#160;mm7_data.cpp'],['../mm7__data_8cpp.html#a486cbdbf871d6996a54b2a0472bd6779',1,'base_recovery_times_per_weapon_type():&#160;mm7_data.cpp']]],
+  ['base_5frecovery_5ftimes_5fper_5fweapon_5ftype_18',['base_recovery_times_per_weapon_type',['../mm7__data_8h.html#a2fe37621a649165a9e4c8c43cec22029',1,'base_recovery_times_per_weapon_type():&#160;mm7_data.cpp'],['../mm7__data_8cpp.html#a2fe37621a649165a9e4c8c43cec22029',1,'base_recovery_times_per_weapon_type():&#160;mm7_data.cpp']]],
   ['base_5ftype_19',['base_type',['../classIndexedArray.html#ab01ebf0cf0199075545beebfeb14e79e',1,'IndexedArray']]],
   ['basedamage_20',['baseDamage',['../classSpellData.html#a904cc9f132b6786270f1a4e68f59e91b',1,'SpellData']]],
   ['baseitembuyingprice_21',['baseItemBuyingPrice',['../classPriceCalculator.html#a7ffa98a80bd3cc9a90b6af5c25bf5e09',1,'PriceCalculator']]],

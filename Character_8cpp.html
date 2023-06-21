@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.9.5"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>OpenEnroth: src/Engine/Objects/Player.cpp File Reference</title>
+<title>OpenEnroth: src/Engine/Objects/Character.cpp File Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;69217f3</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;f7691f8</span>
    </div>
   </td>
  </tr>
@@ -77,10 +77,10 @@ $(function() {
 <a href="#nested-classes">Classes</a> &#124;
 <a href="#func-members">Functions</a> &#124;
 <a href="#var-members">Variables</a>  </div>
-  <div class="headertitle"><div class="title">Player.cpp File Reference</div></div>
+  <div class="headertitle"><div class="title">Character.cpp File Reference</div></div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><code>#include &quot;<a class="el" href="Player_8h.html">Engine/Objects/Player.h</a>&quot;</code><br />
+<div class="textblock"><code>#include &quot;<a class="el" href="Character_8h.html">Engine/Objects/Character.h</a>&quot;</code><br />
 <code>#include &lt;algorithm&gt;</code><br />
 <code>#include &lt;memory&gt;</code><br />
 <code>#include &quot;<a class="el" href="Engine_8h.html">Engine/Engine.h</a>&quot;</code><br />
@@ -98,7 +98,7 @@ $(function() {
 <code>#include &quot;<a class="el" href="SpellFxRenderer_8h.html">Engine/SpellFxRenderer.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="AttackList_8h.html">Engine/AttackList.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="ItemTable_8h.html">Engine/Tables/ItemTable.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="PlayerFrameTable_8h.html">Engine/Tables/PlayerFrameTable.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="CharacterFrameTable_8h.html">Engine/Tables/CharacterFrameTable.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="StorylineTextTable_8h.html">Engine/Tables/StorylineTextTable.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="AwardTable_8h.html">Engine/Tables/AwardTable.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="AutonoteTable_8h.html">Engine/Tables/AutonoteTable.h</a>&quot;</code><br />
@@ -122,52 +122,52 @@ Classes</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:a4f8f745d8a5e19a2f27c5ae1196a3967"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Player_8cpp.html#a4f8f745d8a5e19a2f27c5ae1196a3967">PlayerCreation_GetUnspentAttributePointCount</a> ()</td></tr>
+<tr class="memitem:a4f8f745d8a5e19a2f27c5ae1196a3967"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Character_8cpp.html#a4f8f745d8a5e19a2f27c5ae1196a3967">PlayerCreation_GetUnspentAttributePointCount</a> ()</td></tr>
 <tr class="separator:a4f8f745d8a5e19a2f27c5ae1196a3967"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4127c2dd36f413d4e9678b30b4f7948a"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Player_8cpp.html#a4127c2dd36f413d4e9678b30b4f7948a">CmpSkillValue</a> (<a class="el" href="CombinedSkillValue_8h.html#a014da852057119cf6298d27ce19c67cd">PLAYER_SKILL</a> valToCompare, <a class="el" href="CombinedSkillValue_8h.html#a014da852057119cf6298d27ce19c67cd">PLAYER_SKILL</a> skillValue)</td></tr>
+<tr class="memitem:a4127c2dd36f413d4e9678b30b4f7948a"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Character_8cpp.html#a4127c2dd36f413d4e9678b30b4f7948a">CmpSkillValue</a> (<a class="el" href="CombinedSkillValue_8h.html#a014da852057119cf6298d27ce19c67cd">PLAYER_SKILL</a> valToCompare, <a class="el" href="CombinedSkillValue_8h.html#a014da852057119cf6298d27ce19c67cd">PLAYER_SKILL</a> skillValue)</td></tr>
 <tr class="separator:a4127c2dd36f413d4e9678b30b4f7948a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa1f5ad27e0dd8e297ddd9b87f90aa9a8"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Player_8cpp.html#aa1f5ad27e0dd8e297ddd9b87f90aa9a8">cycleCharacter</a> (bool backwards)</td></tr>
+<tr class="memitem:aa1f5ad27e0dd8e297ddd9b87f90aa9a8"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Character_8cpp.html#aa1f5ad27e0dd8e297ddd9b87f90aa9a8">cycleCharacter</a> (bool backwards)</td></tr>
 <tr class="separator:aa1f5ad27e0dd8e297ddd9b87f90aa9a8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:abb181cd130e631d1c79d1d3507bcfe6f"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Player_8cpp.html#abb181cd130e631d1c79d1d3507bcfe6f">ShouldLoadTexturesForRaceAndGender</a> (unsigned int _this)</td></tr>
+<tr class="memitem:abb181cd130e631d1c79d1d3507bcfe6f"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Character_8cpp.html#abb181cd130e631d1c79d1d3507bcfe6f">ShouldLoadTexturesForRaceAndGender</a> (unsigned int _this)</td></tr>
 <tr class="separator:abb181cd130e631d1c79d1d3507bcfe6f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7b5a311f8164e95ad03d064553db1223"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Player_8cpp.html#a7b5a311f8164e95ad03d064553db1223">IsDwarfPresentInParty</a> (bool a1)</td></tr>
+<tr class="memitem:a7b5a311f8164e95ad03d064553db1223"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Character_8cpp.html#a7b5a311f8164e95ad03d064553db1223">IsDwarfPresentInParty</a> (bool a1)</td></tr>
 <tr class="separator:a7b5a311f8164e95ad03d064553db1223"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3274ccdfe2a20a6f5d5e267ab0006839"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Player_8cpp.html#a3274ccdfe2a20a6f5d5e267ab0006839">DamagePlayerFromMonster</a> (unsigned int uObjID, <a class="el" href="ActorEnums_8h.html#a224eb67ac920c1beeacc7956d5c95fa2">ABILITY_INDEX</a> dmgSource, <a class="el" href="Vec_8h.html#adf6e1d7d066bb09da957cc89f2b3ceb2">Vec3i</a> *pPos, signed int targetchar)</td></tr>
+<tr class="memitem:a3274ccdfe2a20a6f5d5e267ab0006839"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Character_8cpp.html#a3274ccdfe2a20a6f5d5e267ab0006839">DamagePlayerFromMonster</a> (unsigned int uObjID, <a class="el" href="ActorEnums_8h.html#a224eb67ac920c1beeacc7956d5c95fa2">ABILITY_INDEX</a> dmgSource, <a class="el" href="Vec_8h.html#adf6e1d7d066bb09da957cc89f2b3ceb2">Vec3i</a> *pPos, signed int targetchar)</td></tr>
 <tr class="separator:a3274ccdfe2a20a6f5d5e267ab0006839"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="var-members" name="var-members"></a>
 Variables</h2></td></tr>
-<tr class="memitem:a4be5eddf8db91559b1d06e3390387cc6"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="structDecalBuilder.html">DecalBuilder</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Player_8cpp.html#a4be5eddf8db91559b1d06e3390387cc6">decal_builder</a> = <a class="el" href="classEngineIocContainer.html#aa98cfa56243c2eb114b8917c4de6d2e6">EngineIocContainer::ResolveDecalBuilder</a>()</td></tr>
+<tr class="memitem:a4be5eddf8db91559b1d06e3390387cc6"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="structDecalBuilder.html">DecalBuilder</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Character_8cpp.html#a4be5eddf8db91559b1d06e3390387cc6">decal_builder</a> = <a class="el" href="classEngineIocContainer.html#aa98cfa56243c2eb114b8917c4de6d2e6">EngineIocContainer::ResolveDecalBuilder</a>()</td></tr>
 <tr class="separator:a4be5eddf8db91559b1d06e3390387cc6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad751f48ec25997384265298b15224f31"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="structSpellFxRenderer.html">SpellFxRenderer</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Player_8cpp.html#ad751f48ec25997384265298b15224f31">spell_fx_renderer</a> = <a class="el" href="classEngineIocContainer.html#a691e969b21ea43ae5a5f013015507bf2">EngineIocContainer::ResolveSpellFxRenderer</a>()</td></tr>
+<tr class="memitem:ad751f48ec25997384265298b15224f31"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="structSpellFxRenderer.html">SpellFxRenderer</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Character_8cpp.html#ad751f48ec25997384265298b15224f31">spell_fx_renderer</a> = <a class="el" href="classEngineIocContainer.html#a691e969b21ea43ae5a5f013015507bf2">EngineIocContainer::ResolveSpellFxRenderer</a>()</td></tr>
 <tr class="separator:ad751f48ec25997384265298b15224f31"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a923a38da02312cb2d4717a41e6cb6e18"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structPlayerCreation__AttributeProps.html">PlayerCreation_AttributeProps</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Player_8cpp.html#a923a38da02312cb2d4717a41e6cb6e18">StatTable</a> [4][7]</td></tr>
+<tr class="memitem:a923a38da02312cb2d4717a41e6cb6e18"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structPlayerCreation__AttributeProps.html">PlayerCreation_AttributeProps</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Character_8cpp.html#a923a38da02312cb2d4717a41e6cb6e18">StatTable</a> [4][7]</td></tr>
 <tr class="separator:a923a38da02312cb2d4717a41e6cb6e18"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4004d1c8ca6fe8c22d22b45699dba9b6"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classIndexedArray.html">IndexedArray</a>&lt; int, <a class="el" href="CombinedSkillValue_8h.html#ae7fdd356d1b4ddbdd59bcba036e6f942ae104ff021581230f1738b166fa9344b5">PLAYER_SKILL_MASTERY_FIRST</a>, <a class="el" href="CombinedSkillValue_8h.html#ae7fdd356d1b4ddbdd59bcba036e6f942a8bf040e078072832de4714e5d27a4aec">PLAYER_SKILL_MASTERY_LAST</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Player_8cpp.html#a4004d1c8ca6fe8c22d22b45699dba9b6">StealingMasteryBonuses</a></td></tr>
+<tr class="memitem:a4004d1c8ca6fe8c22d22b45699dba9b6"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classIndexedArray.html">IndexedArray</a>&lt; int, <a class="el" href="CombinedSkillValue_8h.html#ae7fdd356d1b4ddbdd59bcba036e6f942ae104ff021581230f1738b166fa9344b5">PLAYER_SKILL_MASTERY_FIRST</a>, <a class="el" href="CombinedSkillValue_8h.html#ae7fdd356d1b4ddbdd59bcba036e6f942a8bf040e078072832de4714e5d27a4aec">PLAYER_SKILL_MASTERY_LAST</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Character_8cpp.html#a4004d1c8ca6fe8c22d22b45699dba9b6">StealingMasteryBonuses</a></td></tr>
 <tr class="separator:a4004d1c8ca6fe8c22d22b45699dba9b6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a834d2c9dcd0b23d99af1b60fe4301bb8"><td class="memItemLeft" align="right" valign="top">std::array&lt; int, 5 &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Player_8cpp.html#a834d2c9dcd0b23d99af1b60fe4301bb8">StealingRandomBonuses</a> = { -200, -100, 0, 100, 200 }</td></tr>
+<tr class="memitem:a834d2c9dcd0b23d99af1b60fe4301bb8"><td class="memItemLeft" align="right" valign="top">std::array&lt; int, 5 &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Character_8cpp.html#a834d2c9dcd0b23d99af1b60fe4301bb8">StealingRandomBonuses</a> = { -200, -100, 0, 100, 200 }</td></tr>
 <tr class="separator:a834d2c9dcd0b23d99af1b60fe4301bb8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a817160d627012877551fa1c455383935"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classIndexedArray.html">IndexedArray</a>&lt; int, <a class="el" href="CombinedSkillValue_8h.html#ae7fdd356d1b4ddbdd59bcba036e6f942ae104ff021581230f1738b166fa9344b5">PLAYER_SKILL_MASTERY_FIRST</a>, <a class="el" href="CombinedSkillValue_8h.html#ae7fdd356d1b4ddbdd59bcba036e6f942a8bf040e078072832de4714e5d27a4aec">PLAYER_SKILL_MASTERY_LAST</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Player_8cpp.html#a817160d627012877551fa1c455383935">StealingEnchantmentBonusForSkill</a></td></tr>
+<tr class="memitem:a817160d627012877551fa1c455383935"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classIndexedArray.html">IndexedArray</a>&lt; int, <a class="el" href="CombinedSkillValue_8h.html#ae7fdd356d1b4ddbdd59bcba036e6f942ae104ff021581230f1738b166fa9344b5">PLAYER_SKILL_MASTERY_FIRST</a>, <a class="el" href="CombinedSkillValue_8h.html#ae7fdd356d1b4ddbdd59bcba036e6f942a8bf040e078072832de4714e5d27a4aec">PLAYER_SKILL_MASTERY_LAST</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Character_8cpp.html#a817160d627012877551fa1c455383935">StealingEnchantmentBonusForSkill</a></td></tr>
 <tr class="separator:a817160d627012877551fa1c455383935"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a69bca1cb51a7f3e468ed755af571aa9c"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classIndexedArray.html">IndexedArray</a>&lt; <a class="el" href="ItemEnums_8h.html#a0d39a5522e687048169a274163e6e2a6">ITEM_SLOT</a>, <a class="el" href="ItemEnums_8h.html#a6efba91e38f0848b5e0d1d4cc6011a2da552cfc15d6917760654f4dad6e87c22f">EQUIP_FIRST</a>, <a class="el" href="ItemEnums_8h.html#a6efba91e38f0848b5e0d1d4cc6011a2dab9da594b4154972bafab291a9d96f6dd">EQUIP_LAST</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Player_8cpp.html#a69bca1cb51a7f3e468ed755af571aa9c">pEquipTypeToBodyAnchor</a></td></tr>
+<tr class="memitem:a69bca1cb51a7f3e468ed755af571aa9c"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classIndexedArray.html">IndexedArray</a>&lt; <a class="el" href="ItemEnums_8h.html#a0d39a5522e687048169a274163e6e2a6">ITEM_SLOT</a>, <a class="el" href="ItemEnums_8h.html#a6efba91e38f0848b5e0d1d4cc6011a2da552cfc15d6917760654f4dad6e87c22f">EQUIP_FIRST</a>, <a class="el" href="ItemEnums_8h.html#a6efba91e38f0848b5e0d1d4cc6011a2dab9da594b4154972bafab291a9d96f6dd">EQUIP_LAST</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Character_8cpp.html#a69bca1cb51a7f3e468ed755af571aa9c">pEquipTypeToBodyAnchor</a></td></tr>
 <tr class="separator:a69bca1cb51a7f3e468ed755af571aa9c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a21b239e534b4c42326ed55b467f94e25"><td class="memItemLeft" align="right" valign="top">unsigned char&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Player_8cpp.html#a21b239e534b4c42326ed55b467f94e25">pBaseHealthByClass</a> [12]</td></tr>
+<tr class="memitem:a21b239e534b4c42326ed55b467f94e25"><td class="memItemLeft" align="right" valign="top">unsigned char&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Character_8cpp.html#a21b239e534b4c42326ed55b467f94e25">pBaseHealthByClass</a> [12]</td></tr>
 <tr class="separator:a21b239e534b4c42326ed55b467f94e25"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a241e8575eb236bcc34655e8be9ee842c"><td class="memItemLeft" align="right" valign="top">unsigned char&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Player_8cpp.html#a241e8575eb236bcc34655e8be9ee842c">pBaseManaByClass</a> [12] = {0, 0, 0, 5, 5, 0, 10, 10, 15, 0, 0, 0}</td></tr>
+<tr class="memitem:a241e8575eb236bcc34655e8be9ee842c"><td class="memItemLeft" align="right" valign="top">unsigned char&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Character_8cpp.html#a241e8575eb236bcc34655e8be9ee842c">pBaseManaByClass</a> [12] = {0, 0, 0, 5, 5, 0, 10, 10, 15, 0, 0, 0}</td></tr>
 <tr class="separator:a241e8575eb236bcc34655e8be9ee842c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a14107bb769cfac9950fd7bda0e38242c"><td class="memItemLeft" align="right" valign="top">unsigned char&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Player_8cpp.html#a14107bb769cfac9950fd7bda0e38242c">pBaseHealthPerLevelByClass</a> [36]</td></tr>
+<tr class="memitem:a14107bb769cfac9950fd7bda0e38242c"><td class="memItemLeft" align="right" valign="top">unsigned char&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Character_8cpp.html#a14107bb769cfac9950fd7bda0e38242c">pBaseHealthPerLevelByClass</a> [36]</td></tr>
 <tr class="separator:a14107bb769cfac9950fd7bda0e38242c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aab6be406c7468d740b092f35dc2443a5"><td class="memItemLeft" align="right" valign="top">unsigned char&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Player_8cpp.html#aab6be406c7468d740b092f35dc2443a5">pBaseManaPerLevelByClass</a> [36]</td></tr>
+<tr class="memitem:aab6be406c7468d740b092f35dc2443a5"><td class="memItemLeft" align="right" valign="top">unsigned char&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Character_8cpp.html#aab6be406c7468d740b092f35dc2443a5">pBaseManaPerLevelByClass</a> [36]</td></tr>
 <tr class="separator:aab6be406c7468d740b092f35dc2443a5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a56039558ea74529d8fa05eb9a37320c1"><td class="memItemLeft" align="right" valign="top">unsigned char&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Player_8cpp.html#a56039558ea74529d8fa05eb9a37320c1">pConditionAttributeModifier</a> [7][19]</td></tr>
+<tr class="memitem:a56039558ea74529d8fa05eb9a37320c1"><td class="memItemLeft" align="right" valign="top">unsigned char&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Character_8cpp.html#a56039558ea74529d8fa05eb9a37320c1">pConditionAttributeModifier</a> [7][19]</td></tr>
 <tr class="separator:a56039558ea74529d8fa05eb9a37320c1"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a835db60cc8d6275418c17ca90adec215"><td class="memItemLeft" align="right" valign="top">unsigned char&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Player_8cpp.html#a835db60cc8d6275418c17ca90adec215">pAgingAttributeModifier</a> [7][4]</td></tr>
+<tr class="memitem:a835db60cc8d6275418c17ca90adec215"><td class="memItemLeft" align="right" valign="top">unsigned char&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Character_8cpp.html#a835db60cc8d6275418c17ca90adec215">pAgingAttributeModifier</a> [7][4]</td></tr>
 <tr class="separator:a835db60cc8d6275418c17ca90adec215"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad8c7028649b9fc82f2f9c4bc89392b0c"><td class="memItemLeft" align="right" valign="top">unsigned int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Player_8cpp.html#ad8c7028649b9fc82f2f9c4bc89392b0c">pAgeingTable</a> [4] = {50, 100, 150, 0xFFFF}</td></tr>
+<tr class="memitem:ad8c7028649b9fc82f2f9c4bc89392b0c"><td class="memItemLeft" align="right" valign="top">unsigned int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Character_8cpp.html#ad8c7028649b9fc82f2f9c4bc89392b0c">pAgeingTable</a> [4] = {50, 100, 150, 0xFFFF}</td></tr>
 <tr class="separator:ad8c7028649b9fc82f2f9c4bc89392b0c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a480b3c380c741dbf550a379c99b6be27"><td class="memItemLeft" align="right" valign="top">short&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Player_8cpp.html#a480b3c380c741dbf550a379c99b6be27">param_to_bonus_table</a> [29]</td></tr>
+<tr class="memitem:a480b3c380c741dbf550a379c99b6be27"><td class="memItemLeft" align="right" valign="top">short&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Character_8cpp.html#a480b3c380c741dbf550a379c99b6be27">param_to_bonus_table</a> [29]</td></tr>
 <tr class="separator:a480b3c380c741dbf550a379c99b6be27"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7f9f15a7989d5582ad9503a58e2ad355"><td class="memItemLeft" align="right" valign="top">signed int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Player_8cpp.html#a7f9f15a7989d5582ad9503a58e2ad355">parameter_to_bonus_value</a> [29]</td></tr>
+<tr class="memitem:a7f9f15a7989d5582ad9503a58e2ad355"><td class="memItemLeft" align="right" valign="top">signed int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Character_8cpp.html#a7f9f15a7989d5582ad9503a58e2ad355">parameter_to_bonus_value</a> [29]</td></tr>
 <tr class="separator:a7f9f15a7989d5582ad9503a58e2ad355"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Function Documentation</h2>

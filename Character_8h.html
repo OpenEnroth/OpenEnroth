@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.9.5"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>OpenEnroth: src/Engine/Objects/Player.h File Reference</title>
+<title>OpenEnroth: src/Engine/Objects/Character.h File Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;69217f3</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;f7691f8</span>
    </div>
   </td>
  </tr>
@@ -77,7 +77,7 @@ $(function() {
 <a href="#nested-classes">Classes</a> &#124;
 <a href="#define-members">Macros</a> &#124;
 <a href="#func-members">Functions</a>  </div>
-  <div class="headertitle"><div class="title">Player.h File Reference</div></div>
+  <div class="headertitle"><div class="title">Character.h File Reference</div></div>
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><code>#include &lt;vector&gt;</code><br />
@@ -90,7 +90,7 @@ $(function() {
 <code>#include &quot;<a class="el" href="CombinedSkillValue_8h.html">Engine/Objects/CombinedSkillValue.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Items_8h.html">Engine/Objects/Items.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="ItemEnums_8h.html">Engine/Objects/ItemEnums.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="PlayerEnums_8h.html">Engine/Objects/PlayerEnums.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="CharacterEnums_8h.html">Engine/Objects/CharacterEnums.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Spells_8h.html">Engine/Spells/Spells.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="BuildingTable_8h.html">Engine/Tables/BuildingTable.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="IndexedArray_8h.html">Utility/IndexedArray.h</a>&quot;</code><br />
@@ -113,26 +113,26 @@ Classes</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="define-members" name="define-members"></a>
 Macros</h2></td></tr>
-<tr class="memitem:a9cd39d043f698a9e73f8295c8e198139"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Player_8h.html#a9cd39d043f698a9e73f8295c8e198139">STEAL_BUSTED</a>&#160;&#160;&#160;0</td></tr>
+<tr class="memitem:a9cd39d043f698a9e73f8295c8e198139"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Character_8h.html#a9cd39d043f698a9e73f8295c8e198139">STEAL_BUSTED</a>&#160;&#160;&#160;0</td></tr>
 <tr class="separator:a9cd39d043f698a9e73f8295c8e198139"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:abe87ae619ab973e6df3311be2b35521d"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Player_8h.html#abe87ae619ab973e6df3311be2b35521d">STEAL_NOTHING</a>&#160;&#160;&#160;1</td></tr>
+<tr class="memitem:abe87ae619ab973e6df3311be2b35521d"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Character_8h.html#abe87ae619ab973e6df3311be2b35521d">STEAL_NOTHING</a>&#160;&#160;&#160;1</td></tr>
 <tr class="separator:abe87ae619ab973e6df3311be2b35521d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a92c7cffaa8ba5ea64f301cb2b83cfb3d"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Player_8h.html#a92c7cffaa8ba5ea64f301cb2b83cfb3d">STEAL_SUCCESS</a>&#160;&#160;&#160;2</td></tr>
+<tr class="memitem:a92c7cffaa8ba5ea64f301cb2b83cfb3d"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Character_8h.html#a92c7cffaa8ba5ea64f301cb2b83cfb3d">STEAL_SUCCESS</a>&#160;&#160;&#160;2</td></tr>
 <tr class="separator:a92c7cffaa8ba5ea64f301cb2b83cfb3d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:a4b2de3d435fdb36658f196b94f3c50a8"><td class="memItemLeft" align="right" valign="top"><a class="el" href="PlayerEnums_8h.html#a5b65af143478e3a184dda249e34cedf2">CHARACTER_EXPRESSION_ID</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Player_8h.html#a4b2de3d435fdb36658f196b94f3c50a8">expressionForCondition</a> (<a class="el" href="Conditions_8h.html#a1675b922b385cf7d28bd256fd487a681">Condition</a> condition)</td></tr>
+<tr class="memitem:a4b2de3d435fdb36658f196b94f3c50a8"><td class="memItemLeft" align="right" valign="top"><a class="el" href="CharacterEnums_8h.html#a5b65af143478e3a184dda249e34cedf2">CHARACTER_EXPRESSION_ID</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Character_8h.html#a4b2de3d435fdb36658f196b94f3c50a8">expressionForCondition</a> (<a class="el" href="Conditions_8h.html#a1675b922b385cf7d28bd256fd487a681">Condition</a> condition)</td></tr>
 <tr class="separator:a4b2de3d435fdb36658f196b94f3c50a8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a01bbadf30f7ce71859f74f8bf33fc2f9"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Player_8h.html#a01bbadf30f7ce71859f74f8bf33fc2f9">DamagePlayerFromMonster</a> (unsigned int uObjID, <a class="el" href="ActorEnums_8h.html#a224eb67ac920c1beeacc7956d5c95fa2">ABILITY_INDEX</a> dmgSource, <a class="el" href="Vec_8h.html#adf6e1d7d066bb09da957cc89f2b3ceb2">Vec3i</a> *pPos, signed int a4)</td></tr>
+<tr class="memitem:a01bbadf30f7ce71859f74f8bf33fc2f9"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Character_8h.html#a01bbadf30f7ce71859f74f8bf33fc2f9">DamagePlayerFromMonster</a> (unsigned int uObjID, <a class="el" href="ActorEnums_8h.html#a224eb67ac920c1beeacc7956d5c95fa2">ABILITY_INDEX</a> dmgSource, <a class="el" href="Vec_8h.html#adf6e1d7d066bb09da957cc89f2b3ceb2">Vec3i</a> *pPos, signed int a4)</td></tr>
 <tr class="separator:a01bbadf30f7ce71859f74f8bf33fc2f9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2ba8f3184b97a7bae5235a13a21c60f3"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Player_8h.html#a2ba8f3184b97a7bae5235a13a21c60f3">IsDwarfPresentInParty</a> (bool b)</td></tr>
+<tr class="memitem:a2ba8f3184b97a7bae5235a13a21c60f3"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Character_8h.html#a2ba8f3184b97a7bae5235a13a21c60f3">IsDwarfPresentInParty</a> (bool b)</td></tr>
 <tr class="separator:a2ba8f3184b97a7bae5235a13a21c60f3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:abb181cd130e631d1c79d1d3507bcfe6f"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Player_8h.html#abb181cd130e631d1c79d1d3507bcfe6f">ShouldLoadTexturesForRaceAndGender</a> (unsigned int _this)</td></tr>
+<tr class="memitem:abb181cd130e631d1c79d1d3507bcfe6f"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Character_8h.html#abb181cd130e631d1c79d1d3507bcfe6f">ShouldLoadTexturesForRaceAndGender</a> (unsigned int _this)</td></tr>
 <tr class="separator:abb181cd130e631d1c79d1d3507bcfe6f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4f8f745d8a5e19a2f27c5ae1196a3967"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Player_8h.html#a4f8f745d8a5e19a2f27c5ae1196a3967">PlayerCreation_GetUnspentAttributePointCount</a> ()</td></tr>
+<tr class="memitem:a4f8f745d8a5e19a2f27c5ae1196a3967"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Character_8h.html#a4f8f745d8a5e19a2f27c5ae1196a3967">PlayerCreation_GetUnspentAttributePointCount</a> ()</td></tr>
 <tr class="separator:a4f8f745d8a5e19a2f27c5ae1196a3967"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa1f5ad27e0dd8e297ddd9b87f90aa9a8"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Player_8h.html#aa1f5ad27e0dd8e297ddd9b87f90aa9a8">cycleCharacter</a> (bool backwards)</td></tr>
+<tr class="memitem:aa1f5ad27e0dd8e297ddd9b87f90aa9a8"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Character_8h.html#aa1f5ad27e0dd8e297ddd9b87f90aa9a8">cycleCharacter</a> (bool backwards)</td></tr>
 <tr class="separator:aa1f5ad27e0dd8e297ddd9b87f90aa9a8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Macro Definition Documentation</h2>
@@ -248,7 +248,7 @@ Functions</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="PlayerEnums_8h.html#a5b65af143478e3a184dda249e34cedf2">CHARACTER_EXPRESSION_ID</a> expressionForCondition </td>
+          <td class="memname"><a class="el" href="CharacterEnums_8h.html#a5b65af143478e3a184dda249e34cedf2">CHARACTER_EXPRESSION_ID</a> expressionForCondition </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="Conditions_8h.html#a1675b922b385cf7d28bd256fd487a681">Condition</a>&#160;</td>
           <td class="paramname"><em>condition</em></td><td>)</td>
