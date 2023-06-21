@@ -242,13 +242,13 @@ const std::string &GetProfessionActionText(NPCProf prof) {
 int UseNPCSkill(NPCProf profession, int id) {
     switch (profession) {
         case Healer: {
-            for (Player &player : pParty->pPlayers) {
+            for (Character &player : pParty->pPlayers) {
                 player.health = player.GetMaxHealth();
             }
         } break;
 
         case ExpertHealer: {
-            for (Player &player : pParty->pPlayers) {
+            for (Character &player : pParty->pPlayers) {
                 player.health = player.GetMaxHealth();
 
                 for (Condition condition : standardConditionsExcludeDead) {
@@ -258,7 +258,7 @@ int UseNPCSkill(NPCProf profession, int id) {
         } break;
 
         case MasterHealer: {
-            for (Player &player : pParty->pPlayers) {
+            for (Character &player : pParty->pPlayers) {
                 player.health = player.GetMaxHealth();
 
                 for (Condition condition : standardConditionsIncludeDead) {

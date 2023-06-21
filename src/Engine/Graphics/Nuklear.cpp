@@ -3365,7 +3365,7 @@ static int lua_party_member_get(lua_State *L) {
     if (playerID < 1 || playerID > 4)
         return luaL_argerror(L, 2, lua_pushfstring(L, "member id '%d' is invalid", playerID));
 
-    Player player = pParty->pPlayers[playerID - 1];
+    Character player = pParty->pPlayers[playerID - 1];
     if (!strcmp(name, "age")) {
         actual = player.GetActualAge();
         base = player.GetBaseAge();

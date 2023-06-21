@@ -1412,21 +1412,21 @@ void _494035_timed_effects__water_walking_damage__etc() {
 
         ++pParty->days_played_without_rest;
         if (pParty->days_played_without_rest > 1) {
-            for (Player &player : pParty->pPlayers)
+            for (Character &player : pParty->pPlayers)
                 player.SetCondWeakWithBlockCheck(0);
 
             // starving
             if (pParty->GetFood() > 0) {
                 pParty->TakeFood(1);
             } else {
-                for (Player &player : pParty->pPlayers) {
+                for (Character &player : pParty->pPlayers) {
                     player.health = player.health / (pParty->days_played_without_rest + 1) + 1;
                 }
             }
 
             // players go insane without rest
             if (pParty->days_played_without_rest > 3) {
-                for (Player &player : pParty->pPlayers) {
+                for (Character &player : pParty->pPlayers) {
                     player.resetTempBonuses();
                     if (!player.IsPertified() && !player.IsEradicated() && !player.IsDead()) {
                         if (grng->random(100) < 5 * pParty->days_played_without_rest)
@@ -1439,7 +1439,7 @@ void _494035_timed_effects__water_walking_damage__etc() {
         }
         if (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR) pOutdoor->SetFog();
 
-        for (Player &player : pParty->pPlayers)
+        for (Character &player : pParty->pPlayers)
             player.uNumDivineInterventionCastsThisDay = 0;
     }
 
@@ -1447,10 +1447,10 @@ void _494035_timed_effects__water_walking_damage__etc() {
     if (pParty->uFlags & PARTY_FLAGS_1_WATER_DAMAGE &&
         pParty->_6FC_water_lava_timer < pParty->GetPlayingTime().value) {
         pParty->_6FC_water_lava_timer = pParty->GetPlayingTime().value + 128;
-        for (Player &player : pParty->pPlayers) {
+        for (Character &player : pParty->pPlayers) {
             if (player.WearsItem(ITEM_RELIC_HARECKS_LEATHER, ITEM_SLOT_ARMOUR) ||
                 player.HasEnchantedItemEquipped(ITEM_ENCHANTMENT_OF_WATER_WALKING) ||
-                player.pPlayerBuffs[CHARACTER_BUFF_WATER_WALK].Active()) {
+                player.pCharacterBuffs[CHARACTER_BUFF_WATER_WALK].Active()) {
                 player.playEmotion(CHARACTER_EXPRESSION_SMILE, 0);
             } else {
                 if (!player.hasUnderwaterSuitEquipped()) {
@@ -1470,7 +1470,7 @@ void _494035_timed_effects__water_walking_damage__etc() {
         pParty->_6FC_water_lava_timer < pParty->GetPlayingTime().value) {
         pParty->_6FC_water_lava_timer = pParty->GetPlayingTime().value + 128;
 
-        for (Player &player : pParty->pPlayers) {
+        for (Character &player : pParty->pPlayers) {
             player.receiveDamage((int64_t)player.GetMaxHealth() * 0.1, DMGT_FIRE);
             if (pParty->uFlags & PARTY_FLAGS_1_BURNING) {
                 GameUI_SetStatusBarShortNotification(localization->GetString(LSTR_ON_FIRE));
@@ -1489,13 +1489,13 @@ void _494035_timed_effects__water_walking_damage__etc() {
     }
 
     uint numPlayersCouldAct = pParty->pPlayers.size();
-    for (Player &player : pParty->pPlayers) {
+    for (Character &player : pParty->pPlayers) {
         if (player.timeToRecovery && recoveryTimeDt > 0)
             player.Recover(GameTime(recoveryTimeDt));
 
         if (player.GetItemsBonus(CHARACTER_ATTRIBUTE_ENDURANCE) +
             player.health + player.uEndurance >= 1 ||
-            player.pPlayerBuffs[CHARACTER_BUFF_PRESERVATION].Active()) {
+            player.pCharacterBuffs[CHARACTER_BUFF_PRESERVATION].Active()) {
             if (player.health < 1)
                 player.SetCondition(CONDITION_UNCONSCIOUS, 0);
         } else {
@@ -1587,13 +1587,13 @@ void _494035_timed_effects__water_walking_damage__etc() {
             --numPlayersCouldAct;
         }
 
-        for (auto &playerBuff : player.pPlayerBuffs) {
+        for (auto &playerBuff : player.pCharacterBuffs) {
             playerBuff.IsBuffExpiredToTime(pParty->GetPlayingTime());
         }
 
-        if (player.pPlayerBuffs[CHARACTER_BUFF_HASTE].Expired()) {
+        if (player.pCharacterBuffs[CHARACTER_BUFF_HASTE].Expired()) {
             player.SetCondition(CONDITION_WEAK, 0);
-            player.pPlayerBuffs[CHARACTER_BUFF_HASTE].Reset();
+            player.pCharacterBuffs[CHARACTER_BUFF_HASTE].Reset();
         }
     }
 
@@ -1604,7 +1604,7 @@ void _494035_timed_effects__water_walking_damage__etc() {
     }
 
     if (pParty->pPartyBuffs[PARTY_BUFF_HASTE].Expired()) {
-        for (Player &player : pParty->pPlayers)
+        for (Character &player : pParty->pPlayers)
             player.SetCondition(CONDITION_WEAK, 0);
         pParty->pPartyBuffs[PARTY_BUFF_HASTE].Reset();
     }
@@ -1628,7 +1628,7 @@ void _494035_timed_effects__water_walking_damage__etc() {
 
     if (!numPlayersCouldAct) {
         if (current_screen_type != CURRENT_SCREEN::SCREEN_REST) {
-            for (Player &player : pParty->pPlayers) {
+            for (Character &player : pParty->pPlayers) {
                 // if someone is sleeping - wake them up
                 if (player.conditions.Has(CONDITION_SLEEP)) {
                     player.conditions.Reset(CONDITION_SLEEP);
@@ -1775,7 +1775,7 @@ void RegeneratePartyHealthMana() {
             }
 
             // HP/SP regeneration and HP deterioration
-            for (Player &player : pParty->pPlayers) {
+            for (Character &player : pParty->pPlayers) {
                 for (ITEM_SLOT idx : allItemSlots()) {
                     bool recovery_HP = false;
                     bool decrease_HP = false;
@@ -1840,7 +1840,7 @@ void RegeneratePartyHealthMana() {
                             }
                             if (player.health < 1) {
                                 int enduranceCheck = player.health + player.uEndurance + player.GetItemsBonus(CHARACTER_ATTRIBUTE_ENDURANCE);
-                                if (enduranceCheck >= 1 || player.pPlayerBuffs[CHARACTER_BUFF_PRESERVATION].Active()) {
+                                if (enduranceCheck >= 1 || player.pCharacterBuffs[CHARACTER_BUFF_PRESERVATION].Active()) {
                                     player.conditions.Set(CONDITION_UNCONSCIOUS, pParty->GetPlayingTime());
                                 } else if (!player.conditions.Has(CONDITION_DEAD)) {
                                     player.conditions.Set(CONDITION_DEAD, pParty->GetPlayingTime());
@@ -1851,8 +1851,8 @@ void RegeneratePartyHealthMana() {
                 }
 
                 // regeneration buff
-                if (player.pPlayerBuffs[CHARACTER_BUFF_REGENERATION].Active() && player.conditions.HasNone({ CONDITION_DEAD, CONDITION_ERADICATED })) {
-                    player.health += 5 * player.pPlayerBuffs[CHARACTER_BUFF_REGENERATION].power;
+                if (player.pCharacterBuffs[CHARACTER_BUFF_REGENERATION].Active() && player.conditions.HasNone({ CONDITION_DEAD, CONDITION_ERADICATED })) {
+                    player.health += 5 * player.pCharacterBuffs[CHARACTER_BUFF_REGENERATION].power;
                     if (player.health > player.GetMaxHealth()) {
                         player.health = player.GetMaxHealth();
                     }
@@ -1871,7 +1871,7 @@ void RegeneratePartyHealthMana() {
                 // for lich
                 if (player.classType == CHARACTER_CLASS_LICH) {
                     bool lich_has_jar = false;
-                    for (int idx = 0; idx < Player::INVENTORY_SLOT_COUNT; ++idx) {
+                    for (int idx = 0; idx < Character::INVENTORY_SLOT_COUNT; ++idx) {
                         if (player.pInventoryItemList[idx].uItemID == ITEM_QUEST_LICH_JAR_FULL)
                             lich_has_jar = true;
                     }

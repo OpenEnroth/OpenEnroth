@@ -496,7 +496,7 @@ void reconstruct(const Party_MM7 &src, Party *dst) {
     dst->uFine = src.fine;
 }
 
-void snapshot(const Player &src, Player_MM7 *dst) {
+void snapshot(const Character &src, Player_MM7 *dst) {
     memzero(dst);
 
     for (unsigned int i = 0; i < 20; ++i)
@@ -576,7 +576,7 @@ void snapshot(const Player &src, Player_MM7 *dst) {
     dst->resLightBonus = src.sResLightBonus;
     dst->resDarkBonus = src.sResDarkBonus;
 
-    snapshot(src.pPlayerBuffs, &dst->playerBuffs);
+    snapshot(src.pCharacterBuffs, &dst->playerBuffs);
 
     dst->voiceId = src.uVoiceID;
     dst->prevVoiceId = src.uPrevVoiceID;
@@ -592,7 +592,7 @@ void snapshot(const Player &src, Player_MM7 *dst) {
     dst->lastOpenedSpellbookPage = src.lastOpenedSpellbookPage;
     dst->quickSpell = std::to_underlying(src.uQuickSpell);
 
-    snapshot(src._playerEventBits, &dst->playerEventBits);
+    snapshot(src._characterEventBits, &dst->playerEventBits);
 
     dst->someAttackBonus = src._some_attack_bonus;
     dst->meleeDmgBonus = src._melee_dmg_bonus;
@@ -627,7 +627,7 @@ void snapshot(const Player &src, Player_MM7 *dst) {
     dst->numFireSpikeCasts = src.uNumFireSpikeCasts;
 }
 
-void reconstruct(const Player_MM7 &src, Player *dst) {
+void reconstruct(const Player_MM7 &src, Character *dst) {
     for (unsigned int i = 0; i < 20; ++i)
         dst->conditions.Set(static_cast<Condition>(i), GameTime(src.conditions[i]));
 
@@ -827,7 +827,7 @@ void reconstruct(const Player_MM7 &src, Player *dst) {
     dst->sResLightBonus = src.resLightBonus;
     dst->sResDarkBonus = src.resDarkBonus;
 
-    reconstruct(src.playerBuffs, &dst->pPlayerBuffs);
+    reconstruct(src.playerBuffs, &dst->pCharacterBuffs);
 
     dst->uVoiceID = src.voiceId;
     dst->uPrevVoiceID = src.prevVoiceId;
@@ -843,7 +843,7 @@ void reconstruct(const Player_MM7 &src, Player *dst) {
     dst->lastOpenedSpellbookPage = src.lastOpenedSpellbookPage;
     dst->uQuickSpell = static_cast<SPELL_TYPE>(src.quickSpell);
 
-    reconstruct(src.playerEventBits, &dst->_playerEventBits);
+    reconstruct(src.playerEventBits, &dst->_characterEventBits);
 
     dst->_some_attack_bonus = src.someAttackBonus;
     dst->_melee_dmg_bonus = src.meleeDmgBonus;

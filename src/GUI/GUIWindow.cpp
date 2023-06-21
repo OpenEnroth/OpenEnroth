@@ -1033,7 +1033,7 @@ void ClickNPCTopic(DIALOGUE_TYPE topic) {
                 if (topic == DIALOGUE_82_join_guild && guild_membership_approved) {
                     // join guild
                     pParty->TakeGold(gold_transaction_amount, true);
-                    for (Player &player : pParty->pPlayers)
+                    for (Character &player : pParty->pPlayers)
                         player.SetVariable(VAR_Award, dword_F8B1AC_award_bit_number);
 
                     switch (_dword_F8B1D8_last_npc_topic_menu) {
@@ -1194,8 +1194,8 @@ void OracleDialogue() {
         for (int i = 0; i < pParty->pPlayers.size(); i++) {
             if (pParty->pPlayers[i].classType == CHARACTER_CLASS_LICH) {
                 bool have_vessels_soul = false;
-                for (Player &player : pParty->pPlayers) {
-                    for (int idx = 0; idx < Player::INVENTORY_SLOT_COUNT; idx++) {
+                for (Character &player : pParty->pPlayers) {
+                    for (int idx = 0; idx < Character::INVENTORY_SLOT_COUNT; idx++) {
                         if (player.pInventoryItemList[idx].uItemID == ITEM_QUEST_LICH_JAR_FULL) {
                             if (player.pInventoryItemList[idx].uHolderPlayer == -1) {
                                 item = &player.pInventoryItemList[idx];
@@ -1220,7 +1220,7 @@ void OracleDialogue() {
 std::string _4B254D_SkillMasteryTeacher(int trainerInfo) {
     uint8_t teacherLevel = (trainerInfo - 200) % 3;
     CharacterSkillType skillBeingTaught = static_cast<CharacterSkillType>((trainerInfo - 200) / 3);
-    Player *activePlayer = &pParty->activeCharacter();
+    Character *activePlayer = &pParty->activeCharacter();
     CharacterClassType pClassType = activePlayer->classType;
     PLAYER_SKILL_MASTERY currClassMaxMastery = skillMaxMasteryPerClass[pClassType][skillBeingTaught];
     PLAYER_SKILL_MASTERY masteryLevelBeingTaught = dword_F8B1B0_MasteryBeingTaught = static_cast<PLAYER_SKILL_MASTERY>(teacherLevel + 2);
@@ -1519,7 +1519,7 @@ std::string BuildDialogueString(const char *lpsz, uint8_t uPlayerID, ItemGen *a3
 //----- (00495461) --------------------------------------------------------
 std::string BuildDialogueString(std::string &str, uint8_t uPlayerID, ItemGen *a3, int eventId, int shop_screen, GameTime *a6) {
     std::string v1;
-    Player *pPlayer;       // ebx@3
+    Character *pPlayer;       // ebx@3
     const char *pText;     // esi@7
     int64_t v18;    // qax@18
     int v29;               // eax@68

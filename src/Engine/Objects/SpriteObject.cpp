@@ -568,7 +568,7 @@ void SpriteObject::explosionTraps() {
             default:
                 return;
         }
-        for (Player &player : pParty->pPlayers) {
+        for (Character &player : pParty->pPlayers) {
             int perceptionCheckValue = player.GetPerception() + 20;
             if (player.CanAct() && (grng->random(perceptionCheckValue) > 20)) {
                 player.playReaction(SPEECH_AVOID_DAMAGE);
@@ -1268,7 +1268,7 @@ void applySpellSpriteDamage(unsigned int uLayingItemID, int pid) {
     if (PID_TYPE(pid) == OBJECT_Player) {
         velocity = pSpriteObjects[uLayingItemID].vVelocity;
         normalize_to_fixpoint(&velocity.x, &velocity.y, &velocity.z);
-        DamagePlayerFromMonster(PID(OBJECT_Item, uLayingItemID), pSpriteObjects[uLayingItemID].spellCasterAbility, &velocity, -1);
+        DamageCharacterFromMonster(PID(OBJECT_Item, uLayingItemID), pSpriteObjects[uLayingItemID].spellCasterAbility, &velocity, -1);
     } else if (PID_TYPE(pid) == OBJECT_Actor) {
         velocity = pSpriteObjects[uLayingItemID].vVelocity;
         normalize_to_fixpoint(&velocity.x, &velocity.y, &velocity.z);

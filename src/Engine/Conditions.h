@@ -6,7 +6,7 @@
 #include "Utility/IndexedArray.h"
 #include "Utility/Segment.h"
 
-struct Player;
+struct Character;
 
 enum class Condition : uint32_t {
     CONDITION_CURSED = 0,
@@ -57,7 +57,7 @@ class ConditionProcessor {
         m_equipmentPairs[2].m_EquipSlot = itemslot3;
     }
 
-    static bool IsPlayerAffected(Player *, Condition, int);
+    static bool IsPlayerAffected(Character *, Condition, int);
 };
 
 extern IndexedArray<ConditionProcessor, CONDITION_CURSED, CONDITION_ZOMBIE> conditionArray;

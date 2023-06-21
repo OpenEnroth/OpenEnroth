@@ -11,7 +11,7 @@
 
 #include "Utility/IndexedArray.h"
 
-struct Player;
+struct Character;
 
 struct ItemGen {  // 0x24
     static void PopulateSpecialBonusMap();
@@ -19,8 +19,8 @@ struct ItemGen {  // 0x24
     static void PopulateArtifactBonusMap();
     static void ClearItemBonusMaps();
 
-    void GetItemBonusArtifact(const Player *owner, CharacterAttributeType attrToGet, int *bonusSum) const;
-    void GetItemBonusSpecialEnchantment(const Player *owner, CharacterAttributeType attrToGet, int *additiveBonus, int *halfSkillBonus) const;
+    void GetItemBonusArtifact(const Character *owner, CharacterAttributeType attrToGet, int *bonusSum) const;
+    void GetItemBonusSpecialEnchantment(const Character *owner, CharacterAttributeType attrToGet, int *additiveBonus, int *halfSkillBonus) const;
 
     inline void ResetEnchantAnimation() { uAttributes &= ~ITEM_ENCHANT_ANIMATION_MASK; }
     inline bool ItemEnchanted() const {

@@ -160,7 +160,7 @@ void Party::Zero() {
     _roundingDt = 0;
 
     // players
-    for (Player &player : this->pPlayers) {
+    for (Character &player : this->pPlayers) {
         player.resetTempBonuses();
         player.sResFireBase = 0;
         player.sResAirBase = 0;
@@ -202,7 +202,7 @@ bool Party::_497FC5_check_party_perception_against_level() {
     bool result;         // eax@7
 
     uMaxPerception = 0;
-    for (Player &player : this->pPlayers) {
+    for (Character &player : this->pPlayers) {
         if (player.CanAct()) {
             v5 = player.GetPerception();
             if (v5 > uMaxPerception) uMaxPerception = v5;
@@ -283,7 +283,7 @@ void Party::switchToNextActiveCharacter() {
 }
 
 bool Party::hasItem(ITEM_TYPE uItemID) {
-    for (Player &player : this->pPlayers) {
+    for (Character &player : this->pPlayers) {
         for (ItemGen &item : player.pOwnItems) {
             if (item.uItemID == uItemID)
                 return true;
@@ -402,7 +402,7 @@ void Party::TakeFine(int amount) {
 //----- (0049135E) --------------------------------------------------------
 unsigned int Party::getPartyFame() {
     uint64_t total_exp = 0;
-    for (Player &player : this->pPlayers) {
+    for (Character &player : this->pPlayers) {
         total_exp += player.experience;
     }
     return std::min(
@@ -487,7 +487,7 @@ void Party::createDefaultParty(bool bDebugGiveItems) {
     this->pPlayers[3].pActiveSkills[CHARACTER_SKILL_FIRE] = CombinedSkillValue::novice();
     this->pPlayers[3].pActiveSkills[CHARACTER_SKILL_STAFF] = CombinedSkillValue::novice();
 
-    for (Player &pCharacter : pPlayers) {
+    for (Character &pCharacter : pPlayers) {
         if (pCharacter.classType == CHARACTER_CLASS_KNIGHT)
             pCharacter.sResMagicBase = 10;
 
@@ -587,12 +587,12 @@ void Party::createDefaultParty(bool bDebugGiveItems) {
                     }
                 }
             }
-            for (int i = 0; i < Player::INVENTORY_SLOT_COUNT; i++) {
+            for (int i = 0; i < Character::INVENTORY_SLOT_COUNT; i++) {
                 if (pCharacter.pInventoryItemList[i].uItemID != ITEM_NULL) {
                     pCharacter.pInventoryItemList[i].SetIdentified();
                 }
             }
-            for (int i = 0; i < Player::ADDITIONAL_SLOT_COUNT; i++) {
+            for (int i = 0; i < Character::ADDITIONAL_SLOT_COUNT; i++) {
                 if (pCharacter.pEquippedItems[i].uItemID != ITEM_NULL) {
                     pCharacter.pEquippedItems[i].SetIdentified();
                 }
@@ -656,11 +656,11 @@ void Party::Reset() {
     pPlayers[3].uSex = pPlayers[3].GetSexByVoice();
     pPlayers[3].name = localization->GetString(LSTR_PC_NAME_ALEXIS);
 
-    for (Player &player : this->pPlayers) {
+    for (Character &player : this->pPlayers) {
         player.timeToRecovery = 0;
         player.conditions.ResetAll();
 
-        for (SpellBuff &buff : player.pPlayerBuffs) {
+        for (SpellBuff &buff : player.pCharacterBuffs) {
             buff.Reset();
         }
 
@@ -726,8 +726,8 @@ void Party::ResetPosMiscAndSpellBuffs() {
     this->jump_strength = 5;
     this->_6FC_water_lava_timer = 0;
 
-    for (Player &player : this->pPlayers) {
-        for (SpellBuff &buff : player.pPlayerBuffs) {
+    for (Character &player : this->pPlayers) {
+        for (SpellBuff &buff : player.pCharacterBuffs) {
             buff.Reset();
         }
     }
@@ -737,7 +737,7 @@ void Party::ResetPosMiscAndSpellBuffs() {
 }
 
 void Party::resetPlayerEmotions() {
-    for (Player &player : this->pPlayers) {
+    for (Character &player : this->pPlayers) {
         Condition condition = player.GetMajorConditionIdx();
         if (condition == CONDITION_GOOD || condition == CONDITION_ZOMBIE) {
             player.uExpressionTimeLength = 32;
@@ -755,7 +755,7 @@ void Party::updatePlayersAndHirelingsEmotions() {
         pParty->CountHirelings();
     }
 
-    for (Player &player : this->pPlayers) {
+    for (Character &player : this->pPlayers) {
         player.uExpressionTimePassed += (unsigned short)pMiscTimer->uTimeElapsed;
 
         Condition condition = player.GetMajorConditionIdx();
@@ -835,7 +835,7 @@ void Party::updatePlayersAndHirelingsEmotions() {
 }
 
 void Party::restAndHeal() {
-    Player *pPlayer;         // esi@4
+    Character *pPlayer;         // esi@4
     bool have_vessels_soul;  // [sp+10h] [bp-8h]@10
 
     for (SpellBuff &buff : pParty->pPartyBuffs) {
@@ -844,7 +844,7 @@ void Party::restAndHeal() {
 
     for (int pPlayerID = 0; pPlayerID < this->pPlayers.size(); ++pPlayerID) {
         pPlayer = &pParty->pPlayers[pPlayerID];
-        for (SpellBuff &buff : pPlayer->pPlayerBuffs)
+        for (SpellBuff &buff : pPlayer->pCharacterBuffs)
             buff.Reset();
 
         pPlayer->resetTempBonuses();
@@ -863,7 +863,7 @@ void Party::restAndHeal() {
         pPlayer->mana = pPlayer->GetMaxMana();
         if (pPlayer->classType == CHARACTER_CLASS_LICH) {
             have_vessels_soul = false;
-            for (uint i = 0; i < Player::INVENTORY_SLOT_COUNT; i++) {
+            for (uint i = 0; i < Character::INVENTORY_SLOT_COUNT; i++) {
                 if (pPlayer->pInventoryItemList[i].uItemID == ITEM_QUEST_LICH_JAR_FULL && pPlayer->pInventoryItemList[i].uHolderPlayer == pPlayerID)
                     have_vessels_soul = true;
             }
@@ -900,7 +900,7 @@ void Rest(GameTime restTime) {
 
     pParty->GetPlayingTime() += restTime;
 
-    for (Player &player : pParty->pPlayers) {
+    for (Character &player : pParty->pPlayers) {
         player.Recover(restTime);  // ??
     }
 
@@ -922,7 +922,7 @@ void restAndHeal(GameTime restTime) {
     pParty->uCurrentYear = pParty->GetPlayingTime().GetYears() + game_starting_year;
     pParty->restAndHeal();
 
-    for (Player &player : pParty->pPlayers) {
+    for (Character &player : pParty->pPlayers) {
         player.timeToRecovery = 0;
         player.uNumDivineInterventionCastsThisDay = 0;
         player.uNumArmageddonCasts = 0;
@@ -984,14 +984,14 @@ void Party::GivePartyExp(unsigned int pEXPNum) {
 
     if (pEXPNum > 0) {
         pActivePlayerCount = 0;
-        for (Player &player : this->pPlayers) {
+        for (Character &player : this->pPlayers) {
             if (player.conditions.HasNone({CONDITION_UNCONSCIOUS, CONDITION_DEAD, CONDITION_PETRIFIED, CONDITION_ERADICATED})) {
                 pActivePlayerCount++;
             }
         }
         if (pActivePlayerCount) {
             pEXPNum = pEXPNum / pActivePlayerCount;
-            for (Player &player : this->pPlayers) {
+            for (Character &player : this->pPlayers) {
                 if (player.conditions.HasNone({CONDITION_UNCONSCIOUS, CONDITION_DEAD, CONDITION_PETRIFIED, CONDITION_ERADICATED})) {
                     pLearningPercent = player.getLearningPercent();
                     playermodexp = pEXPNum + pEXPNum * pLearningPercent / 100;
@@ -1174,7 +1174,7 @@ PartyAction ActionQueue::Next() {
 }
 
 void Party::giveFallDamage(int distance) {
-    for (Player &player : pParty->pPlayers) {  // receive falling damage
+    for (Character &player : pParty->pPlayers) {  // receive falling damage
         if (!player.HasEnchantedItemEquipped(ITEM_ENCHANTMENT_OF_FEATHER_FALLING) &&
             !player.WearsItem(ITEM_ARTIFACT_HERMES_SANDALS, ITEM_SLOT_BOOTS)) {
             player.receiveDamage((int)((distance) * (uint64_t)(player.GetMaxHealth() / 10)) / 256, DMGT_PHISYCAL);

@@ -62,7 +62,7 @@ void LoadGame(unsigned int uSlot) {
     // TODO(captainurist): incapsulate this too
     pParty->bTurnBasedModeOn = false;  // We always start in realtime after loading a game.
     for (size_t i = 0; i < 4; i++) {
-        Player *player = &pParty->pPlayers[i];
+        Character *player = &pParty->pPlayers[i];
         for (size_t j = 0; j < 5; j++) {
             if (j >= player->vBeacons.size()) {
                 continue;
@@ -188,7 +188,7 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld) {
 
     // TODO(captainurist): incapsulate this too
     for (size_t i = 0; i < 4; ++i) {  // 4 - players
-        Player *player = &pParty->pPlayers[i];
+        Character *player = &pParty->pPlayers[i];
         for (size_t j = 0; j < 5; ++j) {  // 5 - images
             if (j >= player->vBeacons.size()) {
                 continue;

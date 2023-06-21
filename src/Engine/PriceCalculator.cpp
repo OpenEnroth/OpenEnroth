@@ -47,7 +47,7 @@ int PriceCalculator::baseItemSellingPrice(int uRealValue, float priceMultiplier)
     return baseCost;
 }
 
-int PriceCalculator::itemRepairPriceForPlayer(const Player *player, int uRealValue, float priceMultiplier) {
+int PriceCalculator::itemRepairPriceForPlayer(const Character *player, int uRealValue, float priceMultiplier) {
     int baseCost = (int)(uRealValue / (6.0f - priceMultiplier));
     int actualCost = applyMerchantDiscount(player, baseCost);
 
@@ -58,7 +58,7 @@ int PriceCalculator::itemRepairPriceForPlayer(const Player *player, int uRealVal
     return std::max(1, actualCost);
 }
 
-int PriceCalculator::itemIdentificationPriceForPlayer(const Player *player, float priceMultiplier) {
+int PriceCalculator::itemIdentificationPriceForPlayer(const Character *player, float priceMultiplier) {
     int baseCost = (int)(priceMultiplier * 50.0f);
     int actualCost = applyMerchantDiscount(player, baseCost);
 
@@ -69,7 +69,7 @@ int PriceCalculator::itemIdentificationPriceForPlayer(const Player *player, floa
     return std::max(1, actualCost);
 }
 
-int PriceCalculator::itemBuyingPriceForPlayer(const Player *player, unsigned int uRealValue, float priceMultiplier) {
+int PriceCalculator::itemBuyingPriceForPlayer(const Character *player, unsigned int uRealValue, float priceMultiplier) {
     int price = applyMerchantDiscount(player, uRealValue * priceMultiplier);
 
     if (price < uRealValue) {  // price should always be at least item value
@@ -79,7 +79,7 @@ int PriceCalculator::itemBuyingPriceForPlayer(const Player *player, unsigned int
     return price;
 }
 
-int PriceCalculator::itemSellingPriceForPlayer(const Player *player, const ItemGen &item, float priceMultiplier) {
+int PriceCalculator::itemSellingPriceForPlayer(const Character *player, const ItemGen &item, float priceMultiplier) {
     int uRealValue = item.GetValue();
     int result = static_cast<int>((uRealValue / (priceMultiplier + 2.0)) + uRealValue * playerMerchant(player) / 100.0);
 
@@ -98,7 +98,7 @@ int PriceCalculator::itemSellingPriceForPlayer(const Player *player, const ItemG
     return result;
 }
 
-int PriceCalculator::templeHealingCostForPlayer(const Player *player, float priceMultiplier) {
+int PriceCalculator::templeHealingCostForPlayer(const Character *player, float priceMultiplier) {
     Condition conditionIdx = player->GetMajorConditionIdx();  // get worst condition
     int conditionTimeMultiplier = 1;
     int baseConditionMultiplier = 1;  // condition good unless otherwise, base price for health and mana
@@ -131,7 +131,7 @@ int PriceCalculator::templeHealingCostForPlayer(const Player *player, float pric
     return result;
 }
 
-int PriceCalculator::playerMerchant(const Player *player) {
+int PriceCalculator::playerMerchant(const Character *player) {
     CombinedSkillValue merchantSkill = player->getActualSkillValue(CHARACTER_SKILL_MERCHANT);
     int multiplier = player->GetMultiplierForSkillLevel(CHARACTER_SKILL_MERCHANT, 1, 2, 3, 5);
 
@@ -149,15 +149,15 @@ int PriceCalculator::playerMerchant(const Player *player) {
     return bonus - rep + 7;
 }
 
-int PriceCalculator::applyMerchantDiscount(const Player *player, int goldAmount) {
+int PriceCalculator::applyMerchantDiscount(const Character *player, int goldAmount) {
     return goldAmount * (100 - playerMerchant(player)) / 100;
 }
 
-int PriceCalculator::applyMerchantDiscount(const Player *player, float goldAmount) {
+int PriceCalculator::applyMerchantDiscount(const Character *player, float goldAmount) {
     return goldAmount * (100 - playerMerchant(player)) / 100;
 }
 
-int PriceCalculator::skillLearningCostForPlayer(const Player *player, const BuildingDesc &house) {
+int PriceCalculator::skillLearningCostForPlayer(const Character *player, const BuildingDesc &house) {
     bool isGuild = house.uType >= BUILDING_FIRE_GUILD && house.uType <= BUILDING_SELF_GUILD;
     // guilds use different multiplier for skill learning
     int baseTeachPrice = (isGuild ? house.fPriceMultiplier : house.flt_24) * 500.0;
@@ -170,7 +170,7 @@ int PriceCalculator::skillLearningCostForPlayer(const Player *player, const Buil
     }
     return effectivePrice;
 }
-int PriceCalculator::transportCostForPlayer(const Player *player, const BuildingDesc &house) {
+int PriceCalculator::transportCostForPlayer(const Character *player, const BuildingDesc &house) {
     // boats are 2 times pricier than stables
     int basePrice = house.uType == BUILDING_STABLE ? 25 : 50;
 
@@ -181,7 +181,7 @@ int PriceCalculator::transportCostForPlayer(const Player *player, const Building
     return price;
 }
 
-int PriceCalculator::tavernRoomCostForPlayer(const Player *player, const BuildingDesc &house) {
+int PriceCalculator::tavernRoomCostForPlayer(const Character *player, const BuildingDesc &house) {
     float houseMult = house.fPriceMultiplier;
 
     int roomPrice = applyMerchantDiscount(player, houseMult * houseMult / 10), minRoomPrice = ((houseMult * houseMult) / 10) / 3;
@@ -197,7 +197,7 @@ int PriceCalculator::tavernRoomCostForPlayer(const Player *player, const Buildin
     return roomPrice;
 }
 
-int PriceCalculator::tavernFoodCostForPlayer(const Player *player, const BuildingDesc &house) {
+int PriceCalculator::tavernFoodCostForPlayer(const Character *player, const BuildingDesc &house) {
     float houseMult = house.fPriceMultiplier;
 
     int foodPrice = applyMerchantDiscount(player, static_cast<float>(pow(houseMult, 3) / 100)), minFoodPrice = pow(houseMult, 3) / 300;
@@ -211,7 +211,7 @@ int PriceCalculator::tavernFoodCostForPlayer(const Player *player, const Buildin
     return foodPrice;
 }
 
-int PriceCalculator::trainingCostForPlayer(const Player *player, const BuildingDesc &house) {
+int PriceCalculator::trainingCostForPlayer(const Character *player, const BuildingDesc &house) {
     int trainPrice = 0;
     uint64_t expForNextLevel = 1000ull * player->uLevel * (player->uLevel + 1) / 2;
     if (player->experience >= expForNextLevel) { // can train

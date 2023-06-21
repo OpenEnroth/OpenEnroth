@@ -342,7 +342,7 @@ bool OutdoorLocation::GetTravelDestination(int sPartyX, int sPartyZ, std::string
 
     if (mapNumberAsInt == MAP_AVLEE && direction == 4) {  // to Shoals
         bool wholePartyUnderwaterSuitEquipped = true;
-        for (Player &player : pParty->pPlayers) {
+        for (Character &player : pParty->pPlayers) {
             if (!player.hasUnderwaterSuitEquipped()) {
                 wholePartyUnderwaterSuitEquipped = false;
                 break;

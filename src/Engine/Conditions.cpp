@@ -70,7 +70,7 @@ std::array<Condition, 18> conditionImportancyTableAlternative = {{
     CONDITION_ZOMBIE
 }};
 
-bool ConditionProcessor::IsPlayerAffected(Player *inPlayer, Condition condToCheck, int blockable) {
+bool ConditionProcessor::IsPlayerAffected(Character *inPlayer, Condition condToCheck, int blockable) {
     if (!blockable) return true;
     ConditionProcessor *thisProc = &conditionArray[condToCheck];
     if (thisProc->m_IsBlockedByProtFromMagic &&

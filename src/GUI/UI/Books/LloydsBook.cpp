@@ -65,7 +65,7 @@ GUIWindow_LloydsBook::GUIWindow_LloydsBook() : GUIWindow_Book() {
 void GUIWindow_LloydsBook::Update() {
     render->DrawTextureNew(471 / 640.0f, 445 / 480.0f, ui_exit_cancel_button_background);
 
-    Player *pPlayer = &pParty->pPlayers[lloydsBeaconCasterId];
+    Character *pPlayer = &pParty->pPlayers[lloydsBeaconCasterId];
     render->DrawTextureNew(8 / 640.0f, 8 / 480.0f, ui_book_lloyds_backgrounds[bRecallingBeacon ? 1 : 0]);
     std::string pText = localization->GetString(LSTR_RECALL_BEACON);
 

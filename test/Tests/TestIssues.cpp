@@ -15,14 +15,14 @@
 
 static int totalPartyHealth() {
     int result = 0;
-    for (const Player &player : pParty->pPlayers)
+    for (const Character &player : pParty->pPlayers)
         result += player.health;
     return result;
 }
 
 static int partyItemCount() {
     int result = 0;
-    for (const Player &player : pParty->pPlayers)
+    for (const Character &player : pParty->pPlayers)
         for (const ItemGen &item : player.pOwnItems)
             result += item.uItemID != ITEM_NULL;
     return result;
@@ -110,14 +110,14 @@ GAME_TEST(Issues, Issue198) {
     test->playTraceFromTestData("issue_198.mm7", "issue_198.json");
 
     auto forEachInventoryItem = [](auto &&callback) {
-        for (const Player &player : pParty->pPlayers) {
-            for (int inventorySlot = 0; inventorySlot < Player::INVENTORY_SLOT_COUNT; inventorySlot++) {
+        for (const Character &player : pParty->pPlayers) {
+            for (int inventorySlot = 0; inventorySlot < Character::INVENTORY_SLOT_COUNT; inventorySlot++) {
                 int itemIndex = player.pInventoryMatrix[inventorySlot];
                 if (itemIndex <= 0)
                     continue; // Empty or non-primary cell.
 
-                int x = inventorySlot % Player::INVENTORY_SLOTS_WIDTH;
-                int y = inventorySlot / Player::INVENTORY_SLOTS_WIDTH;
+                int x = inventorySlot % Character::INVENTORY_SLOTS_WIDTH;
+                int y = inventorySlot / Character::INVENTORY_SLOTS_WIDTH;
 
                 callback(player.pInventoryItemList[itemIndex - 1], x, y);
             }
@@ -138,8 +138,8 @@ GAME_TEST(Issues, Issue198) {
         int width = GetSizeInInventorySlots(image->width());
         int height = GetSizeInInventorySlots(image->height());
 
-        EXPECT_LE(x + width, Player::INVENTORY_SLOTS_WIDTH);
-        EXPECT_LE(y + height, Player::INVENTORY_SLOTS_HEIGHT);
+        EXPECT_LE(x + width, Character::INVENTORY_SLOTS_WIDTH);
+        EXPECT_LE(y + height, Character::INVENTORY_SLOTS_HEIGHT);
     });
 }
 
@@ -285,7 +285,7 @@ GAME_TEST(Issues, Issue293c) {
 GAME_TEST(Issues, Issue294) {
     auto partyExperience = [&] {
         uint64_t result = 0;
-        for (const Player &player : pParty->pPlayers)
+        for (const Character &player : pParty->pPlayers)
             result += player.experience;
         return result;
     };
@@ -437,7 +437,7 @@ GAME_TEST(Issues, Issue417) {
 static void check427Buffs(const char *ctx, std::initializer_list<int> players, bool hasBuff) {
     for (int player : players) {
         for (CharacterBuffs buff : {CHARACTER_BUFF_BLESS, CHARACTER_BUFF_PRESERVATION, CHARACTER_BUFF_HAMMERHANDS, CHARACTER_BUFF_PAIN_REFLECTION}) {
-            EXPECT_EQ(pParty->pPlayers[player].pPlayerBuffs[buff].Active(), hasBuff)
+            EXPECT_EQ(pParty->pPlayers[player].pCharacterBuffs[buff].Active(), hasBuff)
                 << "(with ctx=" << ctx << ", player=" << player << ", buff=" << buff << ")";
         }
     }
@@ -466,7 +466,7 @@ GAME_TEST(Issues, Issue427_528) {
 GAME_TEST(Issues, Issue442) {
     // Test that regular UI is blocked on spell cast
     test->playTraceFromTestData("issue_442.mm7", "issue_442.json");
-    EXPECT_EQ(pParty->pPlayers[1].pPlayerBuffs[CHARACTER_BUFF_BLESS].Active(), true);
+    EXPECT_EQ(pParty->pPlayers[1].pCharacterBuffs[CHARACTER_BUFF_BLESS].Active(), true);
 }
 
 GAME_TEST(Prs, Pr469) {
@@ -555,7 +555,7 @@ GAME_TEST(Issues, Issue520) {
 }
 
 GAME_TEST(Issues, Issue521) {
-    // 500 endurance leads to asserts in Player::SetRecoveryTime
+    // 500 endurance leads to asserts in Character::SetRecoveryTime
     int oldActive{};
     test->playTraceFromTestData("issue_521.mm7", "issue_521.json", [&] { oldActive = pParty->activeCharacterIndex(); });
     EXPECT_EQ(oldActive, pParty->activeCharacterIndex());
@@ -1001,7 +1001,7 @@ GAME_TEST(Issues, Issue779) {
 
 void check783784Buffs(bool haveBuffs) {
     for (CharacterBuffs buff : allPotionBuffs())
-        EXPECT_EQ(pParty->pPlayers[0].pPlayerBuffs[buff].Active(), haveBuffs) << "buff=" << static_cast<int>(buff);
+        EXPECT_EQ(pParty->pPlayers[0].pCharacterBuffs[buff].Active(), haveBuffs) << "buff=" << static_cast<int>(buff);
 }
 
 GAME_TEST(Issues, Issue783) {
@@ -1013,7 +1013,7 @@ GAME_TEST(Issues, Issue783) {
 
         // And all buffs should expire way in the future.
         for (CharacterBuffs buff : allPotionBuffs())
-            EXPECT_GT(pParty->pPlayers[0].pPlayerBuffs[buff].GetExpireTime(), startTime + GameTime::FromHours(10));
+            EXPECT_GT(pParty->pPlayers[0].pCharacterBuffs[buff].GetExpireTime(), startTime + GameTime::FromHours(10));
     });
 
     GameTime endTime = pParty->GetPlayingTime();
@@ -1031,7 +1031,7 @@ GAME_TEST(Issues, Issue784) {
 
     // Check that buffs have effect.
     // Potions were at power 75, that's 75*3=225 points for attribute bonuses.
-    const Player &player0 = pParty->pPlayers[0];
+    const Character &player0 = pParty->pPlayers[0];
 
     EXPECT_EQ(225, player0.GetMagicalBonus(CHARACTER_ATTRIBUTE_RESIST_AIR));
     EXPECT_EQ(5, player0.GetMagicalBonus(CHARACTER_ATTRIBUTE_ATTACK)); // CHARACTER_BUFF_BLESS.

@@ -539,7 +539,7 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
                 int intCheck = pParty->pPlayers[i].GetParameterBonus(pParty->pPlayers[i].GetActualIntelligence()) / 2;
                 int luckCheck = pParty->pPlayers[i].GetParameterBonus(pParty->pPlayers[i].GetActualLuck()) + 30;
                 if (grng->random(willCheck + intCheck + luckCheck) < 30) {
-                    for (SpellBuff &buff : pParty->pPlayers[i].pPlayerBuffs) {
+                    for (SpellBuff &buff : pParty->pPlayers[i].pCharacterBuffs) {
                         buff.Reset();
                     }
                 }
@@ -1215,7 +1215,7 @@ void Actor::ApplyFineForKillingPeasant(unsigned int uActorID) {
         currentLocationInfo().reputation++;
 
     if (pParty->uFine) {
-        for (Player &player : pParty->pPlayers) {
+        for (Character &player : pParty->pPlayers) {
             if (!player._achievedAwardsBits[Award_Fine]) {
                 player._achievedAwardsBits.set(Award_Fine);
             }
@@ -1346,7 +1346,7 @@ bool Actor::IsPeasant() {
 
 //----- (0042EBEE) --------------------------------------------------------
 void Actor::StealFrom(unsigned int uActorID) {
-    Player *pPlayer;     // edi@1
+    Character *pPlayer;     // edi@1
     int v4;              // ebx@2
     unsigned int v5;     // eax@2
     LocationInfo *v6;  // esi@4
@@ -3158,7 +3158,7 @@ void Actor::DamageMonsterFromParty(signed int a1, unsigned int uActorID_Monster,
     if (PID_TYPE(a1) != OBJECT_Player) return;
 
     assert(PID_ID(abs(a1)) < 4);
-    Player *player = &pParty->pPlayers[PID_ID(a1)];
+    Character *player = &pParty->pPlayers[PID_ID(a1)];
     pMonster = &pActors[uActorID_Monster];
     if (pMonster->IsNotAlive()) return;
 
@@ -3193,7 +3193,7 @@ void Actor::DamageMonsterFromParty(signed int a1, unsigned int uActorID_Monster,
         }
         attackElement = DMGT_PHISYCAL;
         uDamageAmount = player->CalculateMeleeDamageTo(false, false, pMonster->pMonsterInfo.uID);
-        if (!player->PlayerHitOrMiss(pMonster, v61, skillLevel)) {
+        if (!player->characterHitOrMiss(pMonster, v61, skillLevel)) {
             player->playReaction(SPEECH_ATTACK_MISS);
             return;
         }
@@ -3221,7 +3221,7 @@ void Actor::DamageMonsterFromParty(signed int a1, unsigned int uActorID_Monster,
                     skillLevel = player->getSkillValue(CHARACTER_SKILL_BLASTER).level();
                 attackElement = DMGT_PHISYCAL;
                 uDamageAmount = player->CalculateMeleeDamageTo(true, true, 0);
-                if (!player->PlayerHitOrMiss(pMonster, v61, skillLevel)) {
+                if (!player->characterHitOrMiss(pMonster, v61, skillLevel)) {
                     player->playReaction(SPEECH_ATTACK_MISS);
                     return;
                 }
@@ -3232,7 +3232,7 @@ void Actor::DamageMonsterFromParty(signed int a1, unsigned int uActorID_Monster,
                 if (pMonster->pActorBuffs[ACTOR_BUFF_SHIELD].Active())
                     uDamageAmount >>= 1;
                 IsAdditionalDamagePossible = true;
-                if (!player->PlayerHitOrMiss(pMonster, v61, skillLevel)) {
+                if (!player->characterHitOrMiss(pMonster, v61, skillLevel)) {
                     player->playReaction(SPEECH_ATTACK_MISS);
                     return;
                 }
@@ -3247,7 +3247,7 @@ void Actor::DamageMonsterFromParty(signed int a1, unsigned int uActorID_Monster,
                 if (pMonster->pActorBuffs[ACTOR_BUFF_SHIELD].Active())
                     uDamageAmount >>= 1;
                 IsAdditionalDamagePossible = false;
-                if (!player->PlayerHitOrMiss(pMonster, v61, skillLevel)) {
+                if (!player->characterHitOrMiss(pMonster, v61, skillLevel)) {
                     player->playReaction(SPEECH_ATTACK_MISS);
                     return;
                 }
@@ -3256,7 +3256,7 @@ void Actor::DamageMonsterFromParty(signed int a1, unsigned int uActorID_Monster,
                 uDamageAmount = 0;
                 attackElement = DMGT_PHISYCAL;
                 hit_will_stun = 1;
-                if (!player->PlayerHitOrMiss(pMonster, v61, skillLevel)) {
+                if (!player->characterHitOrMiss(pMonster, v61, skillLevel)) {
                     player->playReaction(SPEECH_ATTACK_MISS);
                     return;
                 }
@@ -3271,7 +3271,7 @@ void Actor::DamageMonsterFromParty(signed int a1, unsigned int uActorID_Monster,
                 if (projectileSprite->containing_item.uItemID != ITEM_NULL &&
                     projectileSprite->containing_item.special_enchantment == ITEM_ENCHANTMENT_OF_CARNAGE) {
                     attackElement = DMGT_FIRE;
-                } else if (!player->PlayerHitOrMiss(pMonster, v61, skillLevel)) {
+                } else if (!player->characterHitOrMiss(pMonster, v61, skillLevel)) {
                     player->playReaction(SPEECH_ATTACK_MISS);
                     return;
                 }
@@ -3293,10 +3293,10 @@ void Actor::DamageMonsterFromParty(signed int a1, unsigned int uActorID_Monster,
     if (pMonster->pActorBuffs[ACTOR_BUFF_STONED].Active()) uDamageAmount = 0;
     v61 = pMonster->CalcMagicalDamageToActor(attackElement, uDamageAmount);
     if (!projectileSprite && player->IsUnarmed() &&
-        player->pPlayerBuffs[CHARACTER_BUFF_HAMMERHANDS].Active()) {
+        player->pCharacterBuffs[CHARACTER_BUFF_HAMMERHANDS].Active()) {
         v61 += pMonster->CalcMagicalDamageToActor(
             DMGT_BODY,
-            player->pPlayerBuffs[CHARACTER_BUFF_HAMMERHANDS].power);
+            player->pCharacterBuffs[CHARACTER_BUFF_HAMMERHANDS].power);
     }
     uDamageAmount = v61;
     if (IsAdditionalDamagePossible) {
@@ -3901,8 +3901,8 @@ bool Actor::_427102_IsOkToCastSpell(SPELL_TYPE spell) {
                     return true;
                 }
             }
-            for (Player &player : pParty->pPlayers) {
-                for (SpellBuff &buff : player.pPlayerBuffs) {
+            for (Character &player : pParty->pPlayers) {
+                for (SpellBuff &buff : player.pCharacterBuffs) {
                     if (buff.Active()) {
                         return true;
                     }
@@ -3984,7 +3984,7 @@ bool Actor::_4273BB_DoesHitOtherActor(Actor *defender, int a3, int a4) {
 }
 
 //----- (004274AD) --------------------------------------------------------
-bool Actor::ActorHitOrMiss(Player *pPlayer) {
+bool Actor::ActorHitOrMiss(Character *pPlayer) {
     signed int v3;  // edi@1
     signed int v4;  // esi@8
     int v5;         // esi@8
@@ -4858,7 +4858,7 @@ void evaluateAoeDamage() {
                     if (distanceSq < attackRangeSq) {
                         // check line of sight
                         if (Check_LineOfSight(pParty->vPosition + Vec3i(0, 0, pParty->sEyelevel), attack.pos)) {
-                            DamagePlayerFromMonster(attack.pid, attack.attackSpecial, &attackVector, stru_50C198.which_player_to_attack(&pActors[attackerId]));
+                            DamageCharacterFromMonster(attack.pid, attack.attackSpecial, &attackVector, stru_50C198.which_player_to_attack(&pActors[attackerId]));
                         }
                     }
                 }
@@ -4890,7 +4890,7 @@ void evaluateAoeDamage() {
                 if (Check_LineOfSight(pParty->vPosition + Vec3i(0, 0, pParty->sEyelevel), attack.pos)) {
                     for (int i = 0; i < pParty->pPlayers.size(); i++) {
                         if (pParty->pPlayers[i].conditions.HasNone({CONDITION_DEAD, CONDITION_PETRIFIED, CONDITION_ERADICATED})) {
-                            DamagePlayerFromMonster(attack.pid, attack.attackSpecial, &attackVector, i);
+                            DamageCharacterFromMonster(attack.pid, attack.attackSpecial, &attackVector, i);
                         }
                     }
                 }

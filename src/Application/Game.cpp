@@ -741,7 +741,7 @@ void Game::processQueuedMessages() {
                                 case CURRENT_SCREEN::SCREEN_REST:  // close rest screen
                                     if (currentRestType != REST_NONE) {
                                         Rest(remainingRestTime);
-                                        for (Player &player : pParty->pPlayers) {
+                                        for (Character &player : pParty->pPlayers) {
                                             player.SetAsleep(GameTime(0));
                                         }
                                     }
@@ -985,13 +985,13 @@ void Game::processQueuedMessages() {
                     if (pParty->GetFood() > 0) {
                         pParty->restAndHeal();
                         if (pParty->GetFood() < getTravelTime()) {
-                            for(Player &player : pParty->pPlayers)
+                            for(Character &player : pParty->pPlayers)
                                 player.SetCondition(CONDITION_WEAK, 0);
                             ++pParty->days_played_without_rest;
                         }
                         pParty->TakeFood(getTravelTime());
                     } else {
-                        for (Player &player : pParty->pPlayers)
+                        for (Character &player : pParty->pPlayers)
                             player.SetCondition(CONDITION_WEAK, 0);
                         ++pParty->days_played_without_rest;
                     }
@@ -1125,7 +1125,7 @@ void Game::processQueuedMessages() {
                 if (!pGUIWindow_CurrentMenu) {
                     continue;
                 }
-                Player &player = pParty->pPlayers[lloydsBeaconCasterId];
+                Character &player = pParty->pPlayers[lloydsBeaconCasterId];
                 if (uMessageParam >= player.vBeacons.size()) {
                     continue;
                 }
@@ -1156,7 +1156,7 @@ void Game::processQueuedMessages() {
                 pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 0, 0);
                 continue;
             case UIMSG_InstallBeacon: {
-                Player &player = pParty->pPlayers[lloydsBeaconCasterId];
+                Character &player = pParty->pPlayers[lloydsBeaconCasterId];
                 if ((player.vBeacons.size() <= uMessageParam) && bRecallingBeacon) {
                     continue;
                 }
@@ -1330,7 +1330,7 @@ void Game::processQueuedMessages() {
 
                 uGameState = GAME_STATE_PLAYING;
 
-                for (Player &player : pParty->pPlayers) {
+                for (Character &player : pParty->pPlayers) {
                     player.playEmotion(CHARACTER_EXPRESSION_WIDE_SMILE, 0);
                 }
 
@@ -1441,14 +1441,14 @@ void Game::processQueuedMessages() {
             case UIMSG_Attack:
                 if (!pParty->hasActiveCharacter()) continue;
                 if (!pParty->bTurnBasedModeOn) {
-                    Player::_42ECB5_PlayerAttacksActor();
+                    Character::_42ECB5_CharacterAttacksActor();
                     continue;
                 }
                 if (pTurnEngine->turn_stage == TE_WAIT ||
                     pTurnEngine->turn_stage == TE_MOVEMENT)
                     continue;
                 if (!(pTurnEngine->flags & TE_HAVE_PENDING_ACTIONS))
-                    Player::_42ECB5_PlayerAttacksActor();
+                    Character::_42ECB5_CharacterAttacksActor();
                 continue;
             case UIMSG_ExitRest:
                 new OnCancel({pButton_RestUI_Exit->uX, pButton_RestUI_Exit->uY}, {0, 0}, pButton_RestUI_Exit, localization->GetString(LSTR_EXIT_REST));
@@ -1485,7 +1485,7 @@ void Game::processQueuedMessages() {
                 currentRestType = REST_HEAL;
                 pParty->restAndHeal();
                 pParty->days_played_without_rest = 0;
-                for (Player &player : pParty->pPlayers) {
+                for (Character &player : pParty->pPlayers) {
                     player.SetAsleep(GameTime(1));
                 }
                 continue;
@@ -1555,7 +1555,7 @@ void Game::processQueuedMessages() {
                         pParty->activeCharacter().playReaction(SPEECH_NOT_ENOUGH_FOOD);
                     }
                 } else {
-                    for (Player &player : pParty->pPlayers) {
+                    for (Character &player : pParty->pPlayers) {
                         player.SetAsleep(pParty->GetPlayingTime());
                     }
                     MAP_TYPE mapIdx = pMapStats->GetMapInfo(pCurrentMapName);
@@ -1594,7 +1594,7 @@ void Game::processQueuedMessages() {
                     currentRestType = REST_HEAL;
                     pParty->restAndHeal();
                     pParty->days_played_without_rest = 0;
-                    for (Player &player : pParty->pPlayers) {
+                    for (Character &player : pParty->pPlayers) {
                         player.SetAsleep(GameTime(1));
                     }
                 }
@@ -1644,7 +1644,7 @@ void Game::processQueuedMessages() {
                 new OnButtonClick2({pBtn_InstallRemoveSpell->uX, pBtn_InstallRemoveSpell->uY}, {0, 0}, pBtn_InstallRemoveSpell);
                 if (!pParty->hasActiveCharacter())
                     continue;
-                Player *player = &pParty->activeCharacter();
+                Character *player = &pParty->activeCharacter();
                 if (spellbookSelectedSpell == SPELL_NONE || spellbookSelectedSpell == player->uQuickSpell) {
                     player->uQuickSpell = SPELL_NONE;
                     spellbookSelectedSpell = SPELL_NONE;
@@ -1706,7 +1706,7 @@ void Game::processQueuedMessages() {
                     continue;
                 }
 
-                Player *player = &pParty->activeCharacter();
+                Character *player = &pParty->activeCharacter();
                 if (player->spellbook.pChapters[player->lastOpenedSpellbookPage].bIsSpellAvailable[uMessageParam] || _engine->config->debug.AllMagic.value()) {
                     SPELL_TYPE selectedSpell = static_cast<SPELL_TYPE>(11 * player->lastOpenedSpellbookPage + uMessageParam + 1);
                     if (spellbookSelectedSpell == selectedSpell) {
@@ -1837,7 +1837,7 @@ void Game::processQueuedMessages() {
             case UIMSG_SkillUp:
             {
                 CharacterSkillType skill = static_cast<CharacterSkillType>(uMessageParam);
-                Player *player = &pParty->activeCharacter();
+                Character *player = &pParty->activeCharacter();
                 int skill_level = player->getSkillValue(skill).level();
                 const char *statusString;
                 if (player->uSkillPoints < skill_level + 1) {
@@ -1947,7 +1947,7 @@ void Game::processQueuedMessages() {
             }
 
             case UIMSG_ShowStatus_Player: {
-                Player *player = &pParty->pPlayers[uMessageParam - 1];
+                Character *player = &pParty->pPlayers[uMessageParam - 1];
 
                 GameUI_StatusBar_Set(fmt::format("{}: {}", NameAndTitle(player->name, player->classType),
                                                  localization->GetCharacterConditionName(player->GetMajorConditionIdx())));
@@ -1957,7 +1957,7 @@ void Game::processQueuedMessages() {
             }
 
             case UIMSG_ShowStatus_ManaHP: {
-                Player *player = &pParty->pPlayers[uMessageParam - 1];
+                Character *player = &pParty->pPlayers[uMessageParam - 1];
 
                 GameUI_StatusBar_Set(fmt::format("{} / {} {}    {} / {} {}",
                                                  player->GetHealth(), player->GetMaxHealth(), localization->GetString(LSTR_HIT_POINTS),
@@ -2129,7 +2129,7 @@ void Game::processQueuedMessages() {
                 pParty->SetGold(0);
                 continue;
             case UIMSG_DebugLearnSkills:
-                for (Player &player : pParty->pPlayers) { // loop over players
+                for (Character &player : pParty->pPlayers) { // loop over players
                     for (CharacterSkillType ski : allSkills()) {  // loop over skills
                         // if class can learn this skill
                         if (skillMaxMasteryPerClass[player.classType][ski] > PLAYER_SKILL_MASTERY_NONE) {
@@ -2141,7 +2141,7 @@ void Game::processQueuedMessages() {
                 }
                 continue;
             case UIMSG_DebugGiveSkillP:
-                for (Player &player : pParty->pPlayers) {
+                for (Character &player : pParty->pPlayers) {
                     player.uSkillPoints += 50;
                 }
                 pParty->pPlayers[std::max(pParty->activeCharacterIndex(), 1u) - 1].PlayAwardSound_Anim();
@@ -2377,7 +2377,7 @@ void Game::gameLoop() {
                 if (pMovie_Track) pMediaPlayer->Unload();
                 SaveGame(0, 0);
                 ++pParty->uNumDeaths;
-                for (Player &player : pParty->pPlayers) {
+                for (Character &player : pParty->pPlayers) {
                     player.SetVariable(VAR_Award, Award_Deaths);
                 }
                 pParty->days_played_without_rest = 0;
@@ -2391,14 +2391,14 @@ void Game::gameLoop() {
                     pTurnEngine->End(true);
                     pParty->bTurnBasedModeOn = false;
                 }
-                for (Player &player : pParty->pPlayers) {
+                for (Character &player : pParty->pPlayers) {
                     player.conditions.ResetAll();
-                    player.pPlayerBuffs.fill(
+                    player.pCharacterBuffs.fill(
                         SpellBuff());  // ???
                                        // memset(pParty->pPlayers[i].conditions_times.data(),
                                        // 0, 0xA0u);//(pConditions, 0, 160)
-                                       // memset(pParty->pPlayers[i].pPlayerBuffs.data(),
-                                       // 0, 0x180u);//(pPlayerBuffs[0], 0, 384)
+                                       // memset(pParty->pPlayers[i].pCharacterBuffs.data(),
+                                       // 0, 0x180u);//(pCharacterBuffs[0], 0, 384)
                     player.health = 1;
                 }
                 pParty->setActiveCharacterIndex(1);

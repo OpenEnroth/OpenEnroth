@@ -195,7 +195,7 @@ void CreateParty_EventLoop() {
             break;
         case UIMSG_PlayerCreationClickOK:
             new OnButtonClick2({580, 431}, {0, 0}, pPlayerCreationUI_BtnOK);
-            if (PlayerCreation_GetUnspentAttributePointCount() ||
+            if (CharacterCreation_GetUnspentAttributePointCount() ||
                 !PlayerCreation_Choose4Skills())
                 game_ui_status_bar_event_string_time_left =
                     platform->tickCount() + 4000;
@@ -583,7 +583,7 @@ void GUIWindow_PartyCreation::Update() {
     render->DrawTwodVerts();
     render->EndTextNew();
 
-    pBonusNum = PlayerCreation_GetUnspentAttributePointCount();
+    pBonusNum = CharacterCreation_GetUnspentAttributePointCount();
 
     auto unspent_attribute_bonus_label = fmt::format("{}", pBonusNum);
     pTextCenter =
@@ -817,7 +817,7 @@ bool PartyCreationUI_LoopInternal() {
         if (pParty->pPlayers[i].classType == CHARACTER_CLASS_KNIGHT)
             pParty->pPlayers[i].sResMagicBase = 10;
         // TODO(pskelton): why just 22?
-        pParty->pPlayers[i].pPlayerBuffs[22].Reset();
+        pParty->pPlayers[i].pCharacterBuffs[22].Reset();
         int page = 0;
         for (CharacterSkillType j : allMagicSkills()) {
             if (pParty->pPlayers[i].pActiveSkills[j]) {

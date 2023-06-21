@@ -82,7 +82,7 @@ IndexedArray<PLAYER_SKILL_MASTERY, HOUSE_FIRST_MAGIC_GUILD, HOUSE_LAST_MAGIC_GUI
     {HOUSE_DARK_GUILD_PARAMOUNT_PIT,           PLAYER_SKILL_MASTERY_GRANDMASTER}
 };
 
-// Values are in fact indexes for Player::_achievedAwardsBits
+// Values are in fact indexes for Character::_achievedAwardsBits
 IndexedArray<int, HOUSE_FIRST_MAGIC_GUILD, HOUSE_LAST_MAGIC_GUILD> guildMembershipFlags = {
     {HOUSE_FIRE_GUILD_INITIATE_EMERALD_ISLE,   54},
     {HOUSE_FIRE_GUILD_ADEPT_HARMONDALE,        54},

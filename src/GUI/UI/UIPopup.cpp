@@ -1071,7 +1071,7 @@ void CharacterUI_StatsTab_ShowHint() {
         case 9:  // Armour class
             CharacterUI_DrawTooltip(localization->GetString(LSTR_ARMOR_CLASS), localization->getArmourClassDescription());
             break;
-        case 10:  // Player Condition
+        case 10:  // Character Condition
         {
             std::string str = std::string(localization->getArmourClassDescription()) + "\n";
 
@@ -1592,7 +1592,7 @@ void ShowPopupShopItem() {
 }
 
 //----- (0041D3B7) --------------------------------------------------------
-void GameUI_CharacterQuickRecord_Draw(GUIWindow *window, Player *player) {
+void GameUI_CharacterQuickRecord_Draw(GUIWindow *window, Character *player) {
     GraphicsImage *v13;              // eax@6
     PlayerFrame *v15;        // eax@12
     std::string spellName;   // eax@16
@@ -1602,7 +1602,7 @@ void GameUI_CharacterQuickRecord_Draw(GUIWindow *window, Player *player) {
 
     uint numActivePlayerBuffs = 0;
     for (uint i = 0; i < 24; ++i) {
-        if (player->pPlayerBuffs[i].Active()) ++numActivePlayerBuffs;
+        if (player->pCharacterBuffs[i].Active()) ++numActivePlayerBuffs;
     }
 
     window->uFrameHeight =
@@ -1663,7 +1663,7 @@ void GameUI_CharacterQuickRecord_Draw(GUIWindow *window, Player *player) {
 
     uFramesetIDa = 0;
     for (uint i = 0; i < 24; ++i) {
-        SpellBuff *buff = &player->pPlayerBuffs[i];
+        SpellBuff *buff = &player->pCharacterBuffs[i];
         if (buff->Active()) {
             v36 = uFramesetIDa++ * pFontComic->GetHeight() + 134;
             window->DrawText(pFontComic, {52, v36},

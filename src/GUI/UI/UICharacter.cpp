@@ -786,7 +786,7 @@ GUIWindow *CastSpellInfo::GetCastSpellInInventoryWindow() {
 }
 
 static int CharacterUI_SkillsTab_Draw__DrawSkillTable(
-    Player *player, int x, int y, const std::initializer_list<CharacterSkillType> skill_list,
+    Character *player, int x, int y, const std::initializer_list<CharacterSkillType> skill_list,
     int right_margin, const char *skill_group_name) {
     int y_offset = y;
     Pointi pt = mouse->GetCursorPos();
@@ -858,7 +858,7 @@ static int CharacterUI_SkillsTab_Draw__DrawSkillTable(
 }
 
 //----- (00419719) --------------------------------------------------------
-void GUIWindow_CharacterRecord::CharacterUI_SkillsTab_Draw(Player *player) {
+void GUIWindow_CharacterRecord::CharacterUI_SkillsTab_Draw(Character *player) {
     render->DrawTextureNew(8 / 640.0f, 8 / 480.0f, ui_character_skills_background);
 
     auto str = fmt::format(
@@ -965,7 +965,7 @@ void GUIWindow_CharacterRecord::clickAwardsScroll(int yPos) {
     _startAwardElem = std::clamp((int)std::round((float)(yPos - pBtn_Scroll->uY) / segmentHeight), 0, _scrollableAwardSteps);
 }
 
-void GUIWindow_CharacterRecord::CharacterUI_AwardsTab_Draw(Player *player) {
+void GUIWindow_CharacterRecord::CharacterUI_AwardsTab_Draw(Character *player) {
     GUIWindow window = prepareAwardsWindow();
     int stopPos = 0;
 
@@ -1019,7 +1019,7 @@ void draw_leather() {
 }
 
 //----- (0043CC7C) --------------------------------------------------------
-void CharacterUI_DrawPaperdoll(Player *player) {
+void CharacterUI_DrawPaperdoll(Character *player) {
     int index;
     int item_X;
     int item_Y;
@@ -1300,7 +1300,7 @@ void CharacterUI_DrawPaperdoll(Player *player) {
 }
 
 //----- (0041A2D1) --------------------------------------------------------
-void CharacterUI_InventoryTab_Draw(Player *player, bool Cover_Strip) {
+void CharacterUI_InventoryTab_Draw(Character *player, bool Cover_Strip) {
     render->DrawTextureNew(8 / 640.0f, 8 / 480.0f, ui_character_inventory_background);
 
     if (Cover_Strip) {
@@ -1367,7 +1367,7 @@ static void CharacterUI_DrawItem(int x, int y, ItemGen *item, int id, GraphicsIm
 }
 
 //----- (0043E825) --------------------------------------------------------
-void CharacterUI_DrawPaperdollWithRingOverlay(Player *player) {
+void CharacterUI_DrawPaperdollWithRingOverlay(Character *player) {
     CharacterUI_DrawPaperdoll(player);
 
     render->DrawTextureNew(473 / 640.0f, 0, ui_character_inventory_paperdoll_rings_background);
@@ -1478,7 +1478,7 @@ void GUIWindow_CharacterRecord::CharacterUI_SkillsTab_CreateButtons() {
         buttons_count++;
     }
     int first_rows = 0;
-    Player *curr_player = &pParty->activeCharacter();
+    Character *curr_player = &pParty->activeCharacter();
 
     int uCurrFontHeght = pFontLucida->GetHeight();
     int current_Y = 2 * uCurrFontHeght + 13;
@@ -1530,7 +1530,7 @@ void GUIWindow_CharacterRecord::CharacterUI_SkillsTab_CreateButtons() {
     }
 }
 
-void GUIWindow_CharacterRecord::CharacterUI_StatsTab_Draw(Player *player) {
+void GUIWindow_CharacterRecord::CharacterUI_StatsTab_Draw(Character *player) {
     const char *text_format;  // [sp+14h] [bp-Ch]@4
 
     render->DrawTextureNew(8 / 640.0f, 8 / 480.0f,
@@ -1691,7 +1691,7 @@ void GUIWindow_CharacterRecord::CharacterUI_StatsTab_Draw(Player *player) {
 }
 
 void GUIWindow_CharacterRecord::fillAwardsData() {
-    Player *pPlayer = &pParty->activeCharacter();
+    Character *pPlayer = &pParty->activeCharacter();
 
     _awardsCharacterId = pParty->activeCharacterIndex();
     _startAwardElem = 0;
@@ -1724,7 +1724,7 @@ void GUIWindow_CharacterRecord::fillAwardsData() {
 void WetsuitOn(unsigned int uPlayerID) {
     if (uPlayerID > 0) {
         int playerId0 = uPlayerID - 1;
-        Player *player = &pParty->pPlayers[playerId0];
+        Character *player = &pParty->pPlayers[playerId0];
         int texture_num;
 
         if (player->GetRace() == CHARACTER_RACE_DWARF) {
@@ -1749,7 +1749,7 @@ void WetsuitOn(unsigned int uPlayerID) {
 void WetsuitOff(unsigned int uPlayerID) {
     if (uPlayerID > 0) {
         int playerId0 = uPlayerID - 1;
-        Player *player = &pParty->pPlayers[playerId0];
+        Character *player = &pParty->pPlayers[playerId0];
 
         paperdoll_dbods[playerId0] = assets->getImage_Alpha(dbod_texnames_by_face[player->uCurrentFace]);
         paperdoll_dlads[playerId0] = assets->getImage_Alpha(dlad_texnames_by_face[player->uCurrentFace]);

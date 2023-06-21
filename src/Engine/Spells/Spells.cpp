@@ -920,7 +920,7 @@ void eventCastSpell(SPELL_TYPE uSpellID, PLAYER_SKILL_MASTERY skillMastery, PLAY
                     spell_length = GameTime::FromHours(1).AddMinutes(4 * skillLevel);
                 }
             }
-            for (Player &player : pParty->pPlayers) {
+            for (Character &player : pParty->pPlayers) {
                 if (player.IsWeak()) {
                     return;
                 }
@@ -1133,7 +1133,7 @@ void armageddonProgress() {
         }
     }
 
-    for (Player &player : pParty->pPlayers) {
+    for (Character &player : pParty->pPlayers) {
         if (!player.conditions.HasAny({CONDITION_DEAD, CONDITION_PETRIFIED, CONDITION_ERADICATED})) {
             player.receiveDamage(outgoingDamage, DMGT_MAGICAL);
         }

@@ -635,7 +635,7 @@ void ItemGen::PopulateArtifactBonusMap() {
     AddToMap(artifactBonusMap, ITEM_ARTIFACT_LADYS_ESCORT, CHARACTER_ATTRIBUTE_RESIST_BODY, 10);
 }
 
-void ItemGen::GetItemBonusSpecialEnchantment(const Player *owner,
+void ItemGen::GetItemBonusSpecialEnchantment(const Character *owner,
                                              CharacterAttributeType attrToGet,
                                              int *additiveBonus,
                                              int *halfSkillBonus) const {
@@ -661,7 +661,7 @@ void ItemGen::GetItemBonusSpecialEnchantment(const Player *owner,
     }
 }
 
-void ItemGen::GetItemBonusArtifact(const Player *owner,
+void ItemGen::GetItemBonusArtifact(const Character *owner,
                                    CharacterAttributeType attrToGet,
                                    int *bonusSum) const {
     auto pos = artifactBonusMap.find(this->uItemID);

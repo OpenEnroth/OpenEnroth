@@ -601,7 +601,7 @@ void GUIWindow_GameOptions::Update() {
 }
 
 void GameUI_OnPlayerPortraitLeftClick(unsigned int uPlayerID) {
-    Player *player = &pParty->pPlayers[uPlayerID - 1];
+    Character *player = &pParty->pPlayers[uPlayerID - 1];
     if (pParty->pPickedItem.uItemID != ITEM_NULL) {
         if (int slot = player->AddItem(-1, pParty->pPickedItem.uItemID)) {
             player->pInventoryItemList[slot - 1] = pParty->pPickedItem;
@@ -1294,13 +1294,13 @@ void GameUI_DrawPartySpells() {
     }
 
     for (int i = 0; i < pParty->pPlayers.size(); ++i) {
-        if (pParty->pPlayers[i].pPlayerBuffs[CHARACTER_BUFF_HAMMERHANDS].Active())
+        if (pParty->pPlayers[i].pCharacterBuffs[CHARACTER_BUFF_HAMMERHANDS].Active())
             render->DrawTextureNew((pPlayerPortraitsXCoords_For_PlayerBuffAnimsDrawing[i] + 72) / 640.0f, 427 / 480.0f, game_ui_playerbuff_hammerhands);
-        if (pParty->pPlayers[i].pPlayerBuffs[CHARACTER_BUFF_BLESS].Active())
+        if (pParty->pPlayers[i].pCharacterBuffs[CHARACTER_BUFF_BLESS].Active())
             render->DrawTextureNew((pPlayerPortraitsXCoords_For_PlayerBuffAnimsDrawing[i] + 72) / 640.0f, 393 / 480.0f, game_ui_playerbuff_bless);
-        if (pParty->pPlayers[i].pPlayerBuffs[CHARACTER_BUFF_PRESERVATION].Active())
+        if (pParty->pPlayers[i].pCharacterBuffs[CHARACTER_BUFF_PRESERVATION].Active())
             render->DrawTextureNew((pPlayerPortraitsXCoords_For_PlayerBuffAnimsDrawing[i] + 72) / 640.0f, 410 / 480.0f, game_ui_playerbuff_preservation);
-        if (pParty->pPlayers[i].pPlayerBuffs[CHARACTER_BUFF_PAIN_REFLECTION].Active())
+        if (pParty->pPlayers[i].pCharacterBuffs[CHARACTER_BUFF_PAIN_REFLECTION].Active())
             render->DrawTextureNew((pPlayerPortraitsXCoords_For_PlayerBuffAnimsDrawing[i] + 72) / 640.0f, 444 / 480.0f, game_ui_playerbuff_pain_reflection);
     }
 }
@@ -1314,7 +1314,7 @@ void GameUI_DrawPortraits() {
     pParty->updateDelayedReaction();
 
     for (int i = 0; i < pParty->pPlayers.size(); ++i) {
-        Player *pPlayer = &pParty->pPlayers[i];
+        Character *pPlayer = &pParty->pPlayers[i];
         if (pPlayer->IsEradicated()) {
             pPortrait = game_ui_player_face_eradicated;
             if (pParty->pPartyBuffs[PARTY_BUFF_INVISIBILITY].Active())

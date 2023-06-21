@@ -296,9 +296,9 @@ void GameUI_DrawTorchlightAndWizardEye();
 void GameUI_DrawCharacterSelectionFrame();
 
 // character ui
-void CharacterUI_InventoryTab_Draw(Player *player, bool a2);
-void CharacterUI_DrawPaperdoll(Player *player);
-void CharacterUI_DrawPaperdollWithRingOverlay(Player *player);
+void CharacterUI_InventoryTab_Draw(Character *player, bool a2);
+void CharacterUI_DrawPaperdoll(Character *player);
+void CharacterUI_DrawPaperdollWithRingOverlay(Character *player);
 void CharacterUI_ReleaseButtons();
 
 /**

@@ -55,7 +55,7 @@ void Arena_SelectionFightLevel() {
             if (v0 >= (signed int)pActors.size() || (signed int)pActors.size() <= 0) {
                 uDialogueType = DIALOGUE_ARENA_REWARD;
                 pParty->uNumArenaWins[pParty->field_7B5_in_arena_quest - DIALOGUE_ARENA_SELECT_PAGE]++;
-                for (Player &player : pParty->pPlayers) {
+                for (Character &player : pParty->pPlayers) {
                     player.SetVariable(VAR_Award, (uint8_t)pParty->field_7B5_in_arena_quest + 3);
                 }
                 pParty->partyFindsGold(gold_transaction_amount, GOLD_RECEIVE_SHARE);

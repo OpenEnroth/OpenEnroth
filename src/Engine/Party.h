@@ -341,7 +341,7 @@ struct Party {
      * @return                          Whether the provided item is worn by at least one member of the party.
      */
     bool wearsItemAnywhere(ITEM_TYPE item_id) const {
-        for (const Player &player : pPlayers) {
+        for (const Character &player : pPlayers) {
             if (player.wearsItemAnywhere(item_id)) {
                 return true;
             }
@@ -374,7 +374,7 @@ struct Party {
      * @param player      Pointer to player class.
      * @return            ID of character.
      */
-    int getCharacterIdInParty(Player *player) {
+    int getCharacterIdInParty(Character *player) {
         for (int i = 0; i < pPlayers.size(); i++) {
             if (&pPlayers[i] == player) {
                 return i;
@@ -470,7 +470,7 @@ struct Party {
     int uFlags2;
     PartyAlignment alignment;
     std::array<SpellBuff, 20> pPartyBuffs;
-    std::array<Player, 4> pPlayers;
+    std::array<Character, 4> pPlayers;
     std::array<NPCData, 2> pHirelings;
     ItemGen pPickedItem;
     unsigned int uFlags; // TODO(captainurist): Flags
@@ -506,7 +506,7 @@ struct Party {
     inline bool hasActiveCharacter() const {
         return _activeCharacter > 0;
     }
-    inline Player &activeCharacter() {
+    inline Character &activeCharacter() {
         assert(hasActiveCharacter());
         return pPlayers[_activeCharacter - 1];
     }

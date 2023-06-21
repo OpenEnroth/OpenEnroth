@@ -198,7 +198,7 @@ class Actor {
     bool _427102_IsOkToCastSpell(SPELL_TYPE spell);
     ABILITY_INDEX special_ability_use_check(int a2);
     bool _4273BB_DoesHitOtherActor(Actor *defender, int a3, int a4);
-    bool ActorHitOrMiss(Player *pPlayer);
+    bool ActorHitOrMiss(Character *pPlayer);
     int CalcMagicalDamageToActor(DAMAGE_TYPE dmgType, int incomingDmg);
     bool DoesDmgTypeDoDamage(DAMAGE_TYPE uType);
 
