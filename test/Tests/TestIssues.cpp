@@ -222,6 +222,12 @@ GAME_TEST(Issues, Issue272) {
     EXPECT_EQ(current_screen_type, CURRENT_SCREEN::SCREEN_KEYBOARD_OPTIONS);
 }
 
+GAME_TEST(Issues, Issue290) {
+    // Town Hall bugs
+    test->playTraceFromTestData("issue_290.mm7", "issue_290.json", [] { EXPECT_EQ(pParty->GetFine(), 55500); });
+    EXPECT_EQ(pParty->GetFine(), 54500);
+}
+
 GAME_TEST(Issues, Issue293a) {
     // Test that barrels in castle Harmondale work and can be triggered only once, and that trash piles work,
     // give an item once, but give disease indefinitely.
