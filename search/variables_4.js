@@ -147,5 +147,5 @@ var searchData=
   ['dword_5fae3370_5flastmispronouncednameresult_144',['dword_AE3370_LastMispronouncedNameResult',['../structNPCStats.html#a0d928b01ce3cff5857fed82fe2220eec',1,'NPCStats']]],
   ['dword_5ff8b1ac_5faward_5fbit_5fnumber_145',['dword_F8B1AC_award_bit_number',['../GUIWindow_8cpp.html#ae88f1f886e60deb99ca183c11c0da4ea',1,'GUIWindow.cpp']]],
   ['dword_5ff8b1ac_5fskill_5fbeing_5ftaught_146',['dword_F8B1AC_skill_being_taught',['../GUIWindow_8cpp.html#a0755b064714354c78416e60f3e8b05b5',1,'GUIWindow.cpp']]],
-  ['dword_5ff8b1b0_5fmasterybeingtaught_147',['dword_F8B1B0_MasteryBeingTaught',['../mm7__data_8cpp.html#afbe206ab0eb29b56e62672d4c49d0de1',1,'dword_F8B1B0_MasteryBeingTaught():&#160;mm7_data.cpp'],['../mm7__data_8h.html#afbe206ab0eb29b56e62672d4c49d0de1',1,'dword_F8B1B0_MasteryBeingTaught():&#160;mm7_data.cpp']]]
+  ['dword_5ff8b1b0_5fmasterybeingtaught_147',['dword_F8B1B0_MasteryBeingTaught',['../mm7__data_8cpp.html#a9c3a09e73b63aa1df0ec3fa5faf1678f',1,'dword_F8B1B0_MasteryBeingTaught():&#160;mm7_data.cpp'],['../mm7__data_8h.html#a9c3a09e73b63aa1df0ec3fa5faf1678f',1,'dword_F8B1B0_MasteryBeingTaught():&#160;mm7_data.cpp']]]
 ];

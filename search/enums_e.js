@@ -20,8 +20,6 @@ var searchData=
   ['platformvsyncmode_17',['PlatformVSyncMode',['../PlatformOpenGLOptions_8h.html#a86988928758fb093416934fad8f60bbf',1,'PlatformOpenGLOptions.h']]],
   ['platformwindowmode_18',['PlatformWindowMode',['../PlatformEnums_8h.html#a7772d16a8207ba672642f139658d8f14',1,'PlatformEnums.h']]],
   ['platformwindoworientation_19',['PlatformWindowOrientation',['../PlatformEnums_8h.html#acef92f6f6dcb8940ab858cd4fe1c64bc',1,'PlatformEnums.h']]],
-  ['player_5fclass_5ftype_20',['PLAYER_CLASS_TYPE',['../CharacterEnums_8h.html#a8b0f780d4f163891fe834eebde9c9955',1,'CharacterEnums.h']]],
-  ['player_5fskill_5fmastery_21',['PLAYER_SKILL_MASTERY',['../CombinedSkillValue_8h.html#ae7fdd356d1b4ddbdd59bcba036e6f942',1,'CombinedSkillValue.h']]],
-  ['pointercreationtype_22',['PointerCreationType',['../structVis__SelectionList.html#a9e474fcb1237991d944eecc3f71c5ee3',1,'Vis_SelectionList']]],
-  ['polygontype_23',['PolygonType',['../BSPModel_8h.html#a91fb3e69af7609c2810f12d81ecf6fab',1,'BSPModel.h']]]
+  ['pointercreationtype_20',['PointerCreationType',['../structVis__SelectionList.html#a9e474fcb1237991d944eecc3f71c5ee3',1,'Vis_SelectionList']]],
+  ['polygontype_21',['PolygonType',['../BSPModel_8h.html#a91fb3e69af7609c2810f12d81ecf6fab',1,'BSPModel.h']]]
 ];

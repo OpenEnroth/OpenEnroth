@@ -101,8 +101,8 @@ var searchData=
   ['gpu_5fmax_5ftotal_5ftextures_98',['GPU_MAX_TOTAL_TEXTURES',['../classRenderOpenGL.html#a2c23a92dc42ecfb49936aabf9997891f',1,'RenderOpenGL']]],
   ['gpu_5fmax_5funiform_5fcomp_99',['GPU_MAX_UNIFORM_COMP',['../classRenderOpenGL.html#aa51bd7957e9c53bc3b4adde1ea00484e',1,'RenderOpenGL']]],
   ['graphics_100',['graphics',['../classGameConfig.html#a5d86fa127179e8646220060c18a463a6',1,'GameConfig']]],
-  ['gravity_101',['Gravity',['../classGameConfig_1_1Gameplay.html#a41ac5fbe41ff0a60999a2571e41c5602',1,'GameConfig::Gameplay']]],
-  ['gravity_102',['gravity',['../structexplosion__effect__struct.html#ad4e48e967dec8829e38247c9f80bc83c',1,'explosion_effect_struct']]],
+  ['gravity_101',['gravity',['../structexplosion__effect__struct.html#ad4e48e967dec8829e38247c9f80bc83c',1,'explosion_effect_struct']]],
+  ['gravity_102',['Gravity',['../classGameConfig_1_1Gameplay.html#a41ac5fbe41ff0a60999a2571e41c5602',1,'GameConfig::Gameplay']]],
   ['gravity_5facc_103',['gravity_acc',['../structeffect__params__struct.html#ae9c34c6b7a65410f28a2f9d069d7a0da',1,'effect_params_struct']]],
   ['gray_104',['Gray',['../classColorTable.html#a064537115cf47fa61f46657aa8404717',1,'ColorTable']]],
   ['grayblack_105',['GrayBlack',['../classColorTable.html#abbc0d03af7f5f291163ca90708ade4a2',1,'ColorTable']]],
@@ -120,7 +120,7 @@ var searchData=
   ['guildmembershipflags_117',['guildMembershipFlags',['../MagicGuild_8cpp.html#adf39b5426042c9598218329f1122846a',1,'guildMembershipFlags():&#160;MagicGuild.cpp'],['../MagicGuild_8h.html#adf39b5426042c9598218329f1122846a',1,'guildMembershipFlags():&#160;MagicGuild.cpp']]],
   ['guildnextrefreshtime_118',['guildNextRefreshTime',['../structPartyTimeStruct.html#ae1af9a593fec5cb8d7e9477f465cb9be',1,'PartyTimeStruct']]],
   ['guildsnextgenerationtime_119',['guildsNextGenerationTime',['../structPartyTimeStruct__MM7.html#a26cdec2d1bb29ec59e2a4801f86defc1',1,'PartyTimeStruct_MM7']]],
-  ['guildspellsmastery_120',['guildSpellsMastery',['../MagicGuild_8cpp.html#aa31b30faac8dedc6fea698ddf8f8cd81',1,'MagicGuild.cpp']]],
+  ['guildspellsmastery_120',['guildSpellsMastery',['../MagicGuild_8cpp.html#a31a0f2bd8d37d2d19cf1a373c8e0d95a',1,'MagicGuild.cpp']]],
   ['guildspellsschool_121',['guildSpellsSchool',['../MagicGuild_8cpp.html#af18e8011ba6ba400116c46c07ef3b02a',1,'MagicGuild.cpp']]],
   ['gunmetalgray_122',['GunmetalGray',['../classColorTable.html#ae1234cdd7eed7ece6a83ec22750bd79e',1,'ColorTable']]]
 ];

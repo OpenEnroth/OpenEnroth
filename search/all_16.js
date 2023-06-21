@@ -238,7 +238,7 @@ var searchData=
   ['var_5fweak_235',['VAR_Weak',['../EventEnums_8h.html#ac62972ff1b21a037e56530cde67309aba89654157052c3757d66807b200bb7d74',1,'EventEnums.h']]],
   ['variable_5fdescr_236',['variable_descr',['../classEventIR.html#a60d2c1fd5eab1ce29633dc181a0e2792',1,'EventIR']]],
   ['variabletype_237',['VariableType',['../EventEnums_8h.html#ac62972ff1b21a037e56530cde67309ab',1,'EventEnums.h']]],
-  ['vbeacons_238',['vBeacons',['../structPlayer.html#abf8028151ac9cbcaf4dbfc54e2439aa2',1,'Player']]],
+  ['vbeacons_238',['vBeacons',['../structCharacter.html#ae4690d0a322870e900e1433296d6471f',1,'Character']]],
   ['vbo_239',['vbo',['../structRenderOpenGL_1_1nk__device.html#a22ef5488704da07051c52f5364c9615c',1,'RenderOpenGL::nk_device']]],
   ['vboundingcenter_240',['vBoundingCenter',['../classBSPModel.html#a64a22b00a9885c0a8730412f9fb9e3d6',1,'BSPModel::vBoundingCenter()'],['../structBSPModelData__MM7.html#ad2d1f9f2a5e4ec64697e7d5029da11e6',1,'BSPModelData_MM7::vBoundingCenter()']]],
   ['vbuttons_241',['vButtons',['../classGUIWindow.html#aba80b69979e2d28049eb073dde019f82',1,'GUIWindow']]],

@@ -29,7 +29,7 @@ var searchData=
   ['onfocuslost_26',['OnFocusLost',['../classGameWindowHandler.html#a602ea52f4e99d64771f73c11e612b7db',1,'GameWindowHandler']]],
   ['ongameviewportclick_27',['onGameViewportClick',['../classEngine.html#a5474be1da5dc5a04ade92429402cf23e',1,'Engine']]],
   ['oninteraction_28',['OnInteraction',['../structSpriteObject.html#aba19a5c3248618b6104fdbb864522d54',1,'SpriteObject']]],
-  ['oninventoryleftclick_29',['OnInventoryLeftClick',['../structPlayer.html#ab816cb6218e284b05514fa90d8202b6d',1,'Player']]],
+  ['oninventoryleftclick_29',['OnInventoryLeftClick',['../structCharacter.html#a5930c52bb03a5a1c2620592beee5f902',1,'Character']]],
   ['onkey_30',['OnKey',['../classGameWindowHandler.html#afb16c3c32b894b5eae5974f69fa30fbc',1,'GameWindowHandler']]],
   ['onkeypress_31',['onKeyPress',['../structArcomageGame.html#a4bb72a952c8958d4d83cc7dfd116403b',1,'ArcomageGame']]],
   ['onmapleave_32',['onMapLeave',['../Processor_8h.html#aa64ebd79375dd046d0e54a883a1fa1b3',1,'onMapLeave():&#160;Processor.cpp'],['../Processor_8cpp.html#aa64ebd79375dd046d0e54a883a1fa1b3',1,'onMapLeave():&#160;Processor.cpp']]],

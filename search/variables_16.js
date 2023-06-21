@@ -37,7 +37,7 @@ var searchData=
   ['value_34',['value',['../classPlatformGamepadAxisEvent.html#a1fcda63b8faadbb81e5077ce5e3334cb',1,'PlatformGamepadAxisEvent::value()'],['../structGameTime.html#a19529c76d49c92dc7e664297b1d51244',1,'GameTime::value()'],['../classEventIR.html#a0096cb59f2f186fe87c97687f459c28a',1,'EventIR::value()'],['../structEventTraceConfigLine.html#af70497f44056335c669b1480a1bad62f',1,'EventTraceConfigLine::value()']]],
   ['vao_35',['vao',['../structRenderOpenGL_1_1nk__device.html#a493e29c5125f57f9584774125ccace30',1,'RenderOpenGL::nk_device']]],
   ['variable_5fdescr_36',['variable_descr',['../classEventIR.html#a60d2c1fd5eab1ce29633dc181a0e2792',1,'EventIR']]],
-  ['vbeacons_37',['vBeacons',['../structPlayer.html#abf8028151ac9cbcaf4dbfc54e2439aa2',1,'Player']]],
+  ['vbeacons_37',['vBeacons',['../structCharacter.html#ae4690d0a322870e900e1433296d6471f',1,'Character']]],
   ['vbo_38',['vbo',['../structRenderOpenGL_1_1nk__device.html#a22ef5488704da07051c52f5364c9615c',1,'RenderOpenGL::nk_device']]],
   ['vboundingcenter_39',['vBoundingCenter',['../classBSPModel.html#a64a22b00a9885c0a8730412f9fb9e3d6',1,'BSPModel::vBoundingCenter()'],['../structBSPModelData__MM7.html#ad2d1f9f2a5e4ec64697e7d5029da11e6',1,'BSPModelData_MM7::vBoundingCenter()']]],
   ['vbuttons_40',['vButtons',['../classGUIWindow.html#aba80b69979e2d28049eb073dde019f82',1,'GUIWindow']]],
