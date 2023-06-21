@@ -50,26 +50,26 @@ struct LloydBeacon {
     GraphicsImage *image;
 };
 
-struct PlayerSpellbookChapter {
+struct CharacterSpellbookChapter {
     std::array<char, 11> bIsSpellAvailable;
 };
 
-struct PlayerSpells {
+struct CharacterSpells {
     union {
         struct {
-            PlayerSpellbookChapter pFireSpellbook;
-            PlayerSpellbookChapter pAirSpellbook;
-            PlayerSpellbookChapter pWaterSpellbook;
-            PlayerSpellbookChapter pEarthSpellbook;
-            PlayerSpellbookChapter pSpiritSpellbook;
-            PlayerSpellbookChapter pMindSpellbook;
-            PlayerSpellbookChapter pBodySpellbook;
-            PlayerSpellbookChapter pLightSpellbook;
-            PlayerSpellbookChapter pDarkSpellbook;
+            CharacterSpellbookChapter pFireSpellbook;
+            CharacterSpellbookChapter pAirSpellbook;
+            CharacterSpellbookChapter pWaterSpellbook;
+            CharacterSpellbookChapter pEarthSpellbook;
+            CharacterSpellbookChapter pSpiritSpellbook;
+            CharacterSpellbookChapter pMindSpellbook;
+            CharacterSpellbookChapter pBodySpellbook;
+            CharacterSpellbookChapter pLightSpellbook;
+            CharacterSpellbookChapter pDarkSpellbook;
             char _pad_0;
         };
         struct {
-            std::array<PlayerSpellbookChapter, 9> pChapters;
+            std::array<CharacterSpellbookChapter, 9> pChapters;
             char _pad_1;
         };
         struct {
@@ -79,7 +79,7 @@ struct PlayerSpells {
     };
 };
 
-union PlayerEquipment {
+union CharacterEquipment {
     union {
         struct {
             unsigned int uOffHand;
@@ -102,7 +102,7 @@ union PlayerEquipment {
         IndexedArray<unsigned int, ITEM_SLOT_FIRST_VALID, ITEM_SLOT_LAST_VALID> pIndices;
     };
 
-    PlayerEquipment() : pIndices() {}
+    CharacterEquipment() : pIndices() {}
 };
 
 
@@ -112,7 +112,7 @@ union PlayerEquipment {
 #define STEAL_SUCCESS  2
 
 
-class PlayerConditions {
+class CharacterConditions {
  public:
     [[nodiscard]] bool Has(Condition condition) const {
         return this->times_[std::to_underlying(condition)].Valid();
@@ -152,16 +152,16 @@ class PlayerConditions {
 };
 
 // TODO(eksekk): Rename to "Character" (incl. all methods and helper functions, and probably enums too)
-struct Player {
+struct Character {
     static constexpr unsigned int INVENTORY_SLOTS_WIDTH = 14;
     static constexpr unsigned int INVENTORY_SLOTS_HEIGHT = 9;
 
-    // Maximum number of items the player inventory can hold
+    // Maximum number of items the character inventory can hold
     static constexpr unsigned int INVENTORY_SLOT_COUNT = INVENTORY_SLOTS_WIDTH*INVENTORY_SLOTS_HEIGHT;
     static constexpr unsigned int ADDITIONAL_SLOT_COUNT = 12; // TODO: investigate, these look unused
     static constexpr unsigned int TOTAL_ITEM_SLOT_COUNT = INVENTORY_SLOT_COUNT + ADDITIONAL_SLOT_COUNT;
 
-    Player();
+    Character();
 
     void SetVariable(VariableType var, signed int a3);
     void AddVariable(VariableType var, signed int val);
@@ -178,9 +178,9 @@ struct Player {
      */
     void useItem(int targetCharacter, bool isPortraitClick);
     bool AddItem(ItemGen *pItem);
-    int GetActualAttribute(CHARACTER_ATTRIBUTE_TYPE attrId,
-                           unsigned short Player::*attrValue,
-                           unsigned short Player::*attrBonus) const;
+    int GetActualAttribute(CharacterAttributeType attrId,
+                           unsigned short Character::*attrValue,
+                           unsigned short Character::*attrBonus) const;
     int GetBaseMight() const;
     int GetBaseIntelligence() const;
     int GetBasePersonality() const;
@@ -242,25 +242,25 @@ struct Player {
     int GetActualAC() const;
     unsigned int GetBaseAge() const;
     unsigned int GetActualAge() const;
-    int GetBaseResistance(CHARACTER_ATTRIBUTE_TYPE a2) const;
-    int GetActualResistance(CHARACTER_ATTRIBUTE_TYPE resistance) const;
+    int GetBaseResistance(CharacterAttributeType a2) const;
+    int GetActualResistance(CharacterAttributeType resistance) const;
     void SetRecoveryTime(signed int sRecoveryTime);
     void RandomizeName();
     Condition GetMajorConditionIdx() const;
-    int GetParameterBonus(int player_parameter) const;
+    int GetParameterBonus(int character_parameter) const;
     int GetSpecialItemBonus(ITEM_ENCHANTMENT enchantment) const;
-    int GetItemsBonus(CHARACTER_ATTRIBUTE_TYPE attr, bool getOnlyMainHandDmg = false) const;
-    int GetMagicalBonus(CHARACTER_ATTRIBUTE_TYPE a2) const;
-    PLAYER_SKILL_LEVEL GetActualSkillLevel(CharacterSkillType uSkillType) const;
-    PLAYER_SKILL_MASTERY GetActualSkillMastery(CharacterSkillType uSkillType) const;
+    int GetItemsBonus(CharacterAttributeType attr, bool getOnlyMainHandDmg = false) const;
+    int GetMagicalBonus(CharacterAttributeType a2) const;
+    CHARACTER_SKILL_LEVEL GetActualSkillLevel(CharacterSkillType uSkillType) const;
+    CharacterSkillMastery GetActualSkillMastery(CharacterSkillType uSkillType) const;
     CombinedSkillValue getActualSkillValue(CharacterSkillType skillType) const;
-    int GetSkillBonus(CHARACTER_ATTRIBUTE_TYPE a2) const;
+    int GetSkillBonus(CharacterAttributeType a2) const;
     CharacterRace GetRace() const;
     std::string GetRaceName() const;
-    CHARACTER_SEX GetSexByVoice() const;
+    CharacterSex GetSexByVoice() const;
     void SetInitialStats();
     void SetSexByVoice();
-    void Reset(PLAYER_CLASS_TYPE classType);
+    void Reset(CharacterClassType classType);
     CharacterSkillType GetSkillIdxByOrder(signed int order);
     void DecreaseAttribute(int eAttribute);
     void IncreaseAttribute(int eAttribute);
@@ -307,7 +307,7 @@ struct Player {
     /**
      * @offset 0x49327B
      */
-    bool isClass(PLAYER_CLASS_TYPE class_type, bool check_honorary = true) const;
+    bool isClass(CharacterClassType class_type, bool check_honorary = true) const;
 
     /**
      * @offset 0x4948B1
@@ -317,7 +317,7 @@ struct Player {
     /**
      * @offset 0x494A25
      */
-    void playEmotion(CHARACTER_EXPRESSION_ID expression, int duration);
+    void playEmotion(CharacterExpressionID expression, int duration);
     void ItemsPotionDmgBreak(int enchant_count);
     unsigned int GetItemListAtInventoryIndex(int inout_item_cell);
     unsigned int GetItemMainInventoryIndex(int inout_item_cell);
@@ -342,7 +342,7 @@ struct Player {
     bool hasItem(ITEM_TYPE uItemID, bool checkHeldItem);
     void OnInventoryLeftClick();
 
-    bool PlayerHitOrMiss(Actor *pActor, int distancemod, PLAYER_SKILL_LEVEL skillmod);
+    bool characterHitOrMiss(Actor *pActor, int distancemod, CHARACTER_SKILL_LEVEL skillmod);
 
     unsigned int GetMultiplierForSkillLevel(CharacterSkillType uSkillType, int mult1, int mult2, int mult3, int mult4) const;
     int CalculateMeleeDmgToEnemyWithWeapon(ItemGen *weapon,
@@ -415,7 +415,7 @@ struct Player {
     ItemGen *GetAmuletItem();
     ItemGen *GetNthRingItem(int ringNum);
     ItemGen *GetNthEquippedIndexItem(ITEM_SLOT index);
-    ItemGen *GetItem(unsigned int PlayerEquipment::*itemPos);
+    ItemGen *GetItem(unsigned int CharacterEquipment::*itemPos);
 
     const ItemGen *GetMainHandItem() const;
     const ItemGen *GetOffHandItem() const;
@@ -429,31 +429,31 @@ struct Player {
     const ItemGen *GetAmuletItem() const;
     const ItemGen *GetNthRingItem(int ringNum) const;
     const ItemGen *GetNthEquippedIndexItem(ITEM_SLOT index) const;
-    const ItemGen *GetItem(unsigned int PlayerEquipment::*itemPos) const;
+    const ItemGen *GetItem(unsigned int CharacterEquipment::*itemPos) const;
 
     // TODO(Nik-RE-dev): use getCharacterIdInParty directly where this function is called.
-    int GetPlayerIndex();
+    int getCharacterIndex();
 
-    static void _42ECB5_PlayerAttacksActor();
+    static void _42ECB5_CharacterAttacksActor();
     static void _42FA66_do_explosive_impact(int xpos, int ypos, int zpos,
                                             int a4, int16_t a5,
                                             signed int actchar);
     void CleanupBeacons();
     bool SetBeacon(size_t index, size_t power);
 
-    PLAYER_SKILL_LEVEL GetSkillLevel(CharacterSkillType skill) const;
-    PLAYER_SKILL_MASTERY GetSkillMastery(CharacterSkillType skill) const;
+    CHARACTER_SKILL_LEVEL GetSkillLevel(CharacterSkillType skill) const;
+    CharacterSkillMastery GetSkillMastery(CharacterSkillType skill) const;
     CombinedSkillValue getSkillValue(CharacterSkillType skill) const;
 
-    void SetSkillLevel(CharacterSkillType skill, PLAYER_SKILL_LEVEL level);
-    void SetSkillMastery(CharacterSkillType skill, PLAYER_SKILL_MASTERY mastery);
+    void SetSkillLevel(CharacterSkillType skill, CHARACTER_SKILL_LEVEL level);
+    void SetSkillMastery(CharacterSkillType skill, CharacterSkillMastery mastery);
     void setSkillValue(CharacterSkillType skill, const CombinedSkillValue &value);
 
-    PlayerConditions conditions;
+    CharacterConditions conditions;
     uint64_t experience;
     std::string name;
-    CHARACTER_SEX uSex;
-    PLAYER_CLASS_TYPE classType;
+    CharacterSex uSex;
+    CharacterClassType classType;
     uint8_t uCurrentFace;
     uint16_t uMight;
     uint16_t uMightBonus;
@@ -485,7 +485,7 @@ struct Player {
     int field_104;
     IndexedArray<CombinedSkillValue, CHARACTER_SKILL_FIRST, CHARACTER_SKILL_LAST> pActiveSkills;
     IndexedBitset<1, 512> _achievedAwardsBits;
-    PlayerSpells spellbook;
+    CharacterSpells spellbook;
     int pure_luck_used;
     int pure_speed_used;
     int pure_intellect_used;
@@ -524,7 +524,7 @@ struct Player {
     int16_t sResBodyBonus;
     int16_t sResLightBonus;
     int16_t sResDarkBonus;
-    std::array<SpellBuff, 24> pPlayerBuffs;
+    std::array<SpellBuff, 24> pCharacterBuffs;
     unsigned int uVoiceID;
     int uPrevVoiceID;
     int uPrevFace;
@@ -533,10 +533,10 @@ struct Player {
     int health;
     int mana;
     unsigned int uBirthYear;
-    PlayerEquipment pEquipment;
+    CharacterEquipment pEquipment;
     char lastOpenedSpellbookPage;
     SPELL_TYPE uQuickSpell;
-    IndexedBitset<1, 512> _playerEventBits;
+    IndexedBitset<1, 512> _characterEventBits;
     char _some_attack_bonus;
     char _melee_dmg_bonus;
     char _ranged_atk_bonus;
@@ -545,7 +545,7 @@ struct Player {
     char _health_related;
     char uFullManaBonus;
     char _mana_related;
-    CHARACTER_EXPRESSION_ID expression;
+    CharacterExpressionID expression;
     uint16_t uExpressionTimePassed;
     uint16_t uExpressionTimeLength;
     int16_t uExpressionImageIndex;
@@ -557,7 +557,7 @@ struct Player {
     char uNumFireSpikeCasts;
 };
 
-inline CHARACTER_EXPRESSION_ID expressionForCondition(Condition condition) {
+inline CharacterExpressionID expressionForCondition(Condition condition) {
     switch (condition) {
       case CONDITION_DEAD:
         return CHARACTER_EXPRESSION_DEAD;
@@ -596,10 +596,10 @@ inline CHARACTER_EXPRESSION_ID expressionForCondition(Condition condition) {
     return CHARACTER_EXPRESSION_NORMAL;
 }
 
-void DamagePlayerFromMonster(unsigned int uObjID, ABILITY_INDEX dmgSource, Vec3i *pPos, signed int a4);
+void DamageCharacterFromMonster(unsigned int uObjID, ABILITY_INDEX dmgSource, Vec3i *pPos, signed int a4);
 bool IsDwarfPresentInParty(bool b);
 bool ShouldLoadTexturesForRaceAndGender(unsigned int _this);
-int PlayerCreation_GetUnspentAttributePointCount();
+int CharacterCreation_GetUnspentAttributePointCount();
 
 /**
  * @offset 0x49387A

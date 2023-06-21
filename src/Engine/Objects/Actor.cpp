@@ -200,13 +200,13 @@ void Actor::SetRandomGoldIfTheresNoItem() {
 
 //----- (00404AC7) --------------------------------------------------------
 void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
-                           SPELL_TYPE uSpellID, ABILITY_INDEX a4, PLAYER_SKILL uSkillMastery) {
+                           SPELL_TYPE uSpellID, ABILITY_INDEX a4, CHARACTER_SKILL uSkillMastery) {
     GameTime spellLength = GameTime(0);
 
     SpriteObject sprite;
     Actor *actorPtr = &pActors[uActorID];
-    PLAYER_SKILL_LEVEL realPoints = GetSkillLevel(uSkillMastery);
-    PLAYER_SKILL_MASTERY masteryLevel = GetSkillMastery(uSkillMastery);
+    CHARACTER_SKILL_LEVEL realPoints = GetSkillLevel(uSkillMastery);
+    CharacterSkillMastery masteryLevel = GetSkillMastery(uSkillMastery);
     int distancemod = 3;
     int spriteId;
 
@@ -240,7 +240,7 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
             sprite.containing_item.Reset();
             sprite.uSpellID = uSpellID;
             sprite.spell_level = uSkillMastery;
-            sprite.spell_skill = PLAYER_SKILL_MASTERY_NONE;
+            sprite.spell_skill = CHARACTER_SKILL_MASTERY_NONE;
             sprite.vPosition = actorPtr->vPosition + Vec3i(0, 0, actorPtr->uActorHeight / 2);
             sprite.uFacing = (short)pDir->uYawAngle;
             sprite.uSoundID = 0;
@@ -261,14 +261,14 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
         case SPELL_FIRE_HASTE:
             // TODO(Nik-RE-dev): calculation of duration is strange
             switch (masteryLevel) {
-                case PLAYER_SKILL_MASTERY_NOVICE:
-                case PLAYER_SKILL_MASTERY_EXPERT:
+                case CHARACTER_SKILL_MASTERY_NOVICE:
+                case CHARACTER_SKILL_MASTERY_EXPERT:
                     spellLength = GameTime::FromHours(1).AddMinutes(realPoints);
                     break;
-                case PLAYER_SKILL_MASTERY_MASTER:
+                case CHARACTER_SKILL_MASTERY_MASTER:
                     spellLength = GameTime::FromMinutes(40 + 2 * realPoints);
                     break;
-                case PLAYER_SKILL_MASTERY_GRANDMASTER:
+                case CHARACTER_SKILL_MASTERY_GRANDMASTER:
                     spellLength = GameTime::FromMinutes(45 + 3 * realPoints);
                     break;
                 default:
@@ -289,16 +289,16 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
 
             int meteors;
             switch (masteryLevel) {
-                case PLAYER_SKILL_MASTERY_NOVICE:
+                case CHARACTER_SKILL_MASTERY_NOVICE:
                     meteors = 8;
                     break;
-                case PLAYER_SKILL_MASTERY_EXPERT:
+                case CHARACTER_SKILL_MASTERY_EXPERT:
                     meteors = 10;
                     break;
-                case PLAYER_SKILL_MASTERY_MASTER:
+                case CHARACTER_SKILL_MASTERY_MASTER:
                     meteors = 12;
                     break;
-                case PLAYER_SKILL_MASTERY_GRANDMASTER:
+                case CHARACTER_SKILL_MASTERY_GRANDMASTER:
                     meteors = 14;
                     break;
                 default:
@@ -323,7 +323,7 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
                 sprite.spell_level = uSkillMastery;
                 sprite.vPosition = pParty->vPosition + Vec3i(0, 0, originHeight + 2500);
                 sprite.uSpellID = SPELL_FIRE_METEOR_SHOWER;
-                sprite.spell_skill = PLAYER_SKILL_MASTERY_NONE;
+                sprite.spell_skill = CHARACTER_SKILL_MASTERY_NONE;
                 sprite.uAttributes = 0;
                 sprite.uSectorID = 0;
                 sprite.uSpriteFrameID = 0;
@@ -348,16 +348,16 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
         {
             int sparks;
             switch (masteryLevel) {
-                case PLAYER_SKILL_MASTERY_NOVICE:
+                case CHARACTER_SKILL_MASTERY_NOVICE:
                     sparks = 3;
                     break;
-                case PLAYER_SKILL_MASTERY_EXPERT:
+                case CHARACTER_SKILL_MASTERY_EXPERT:
                     sparks = 5;
                     break;
-                case PLAYER_SKILL_MASTERY_MASTER:
+                case CHARACTER_SKILL_MASTERY_MASTER:
                     sparks = 7;
                     break;
-                case PLAYER_SKILL_MASTERY_GRANDMASTER:
+                case CHARACTER_SKILL_MASTERY_GRANDMASTER:
                     sparks = 9;
                     break;
                 default:
@@ -370,7 +370,7 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
             sprite.containing_item.Reset();
             sprite.uSpellID = SPELL_AIR_SPARKS;
             sprite.spell_level = uSkillMastery;
-            sprite.spell_skill = PLAYER_SKILL_MASTERY_NONE;
+            sprite.spell_skill = CHARACTER_SKILL_MASTERY_NONE;
             sprite.vPosition = actorPtr->vPosition + Vec3i(0, 0, actorPtr->uActorHeight / 2);
             sprite.uFacing = pDir->uYawAngle;
             sprite.uSoundID = 0;
@@ -399,14 +399,14 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
         case SPELL_AIR_SHIELD:
             // TODO(Nik-RE-dev): calculation of duration is strange
             switch (masteryLevel) {
-                case PLAYER_SKILL_MASTERY_NOVICE:
-                case PLAYER_SKILL_MASTERY_EXPERT:
+                case CHARACTER_SKILL_MASTERY_NOVICE:
+                case CHARACTER_SKILL_MASTERY_EXPERT:
                     spellLength = GameTime::FromHours(1).AddMinutes(4 + 5 * realPoints);
                     break;
-                case PLAYER_SKILL_MASTERY_MASTER:
+                case CHARACTER_SKILL_MASTERY_MASTER:
                     spellLength = GameTime::FromHours(1).AddMinutes(4 + 15 * realPoints);
                     break;
-                case PLAYER_SKILL_MASTERY_GRANDMASTER:
+                case CHARACTER_SKILL_MASTERY_GRANDMASTER:
                     spellLength = GameTime::FromHours(64 + realPoints);
                     break;
                 default:
@@ -422,14 +422,14 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
         case SPELL_EARTH_STONESKIN:
             // TODO(Nik-RE-dev): calculation of duration is strange
             switch (masteryLevel) {
-                case PLAYER_SKILL_MASTERY_NOVICE:
-                case PLAYER_SKILL_MASTERY_EXPERT:
+                case CHARACTER_SKILL_MASTERY_NOVICE:
+                case CHARACTER_SKILL_MASTERY_EXPERT:
                     spellLength = GameTime::FromHours(1).AddMinutes(4 + 5 * realPoints);
                     break;
-                case PLAYER_SKILL_MASTERY_MASTER:
+                case CHARACTER_SKILL_MASTERY_MASTER:
                     spellLength = GameTime::FromHours(1).AddMinutes(4 + 15 * realPoints);
                     break;
-                case PLAYER_SKILL_MASTERY_GRANDMASTER:
+                case CHARACTER_SKILL_MASTERY_GRANDMASTER:
                     spellLength = GameTime::FromHours(64 + realPoints);
                     break;
                 default:
@@ -445,14 +445,14 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
         case SPELL_SPIRIT_BLESS:
             // TODO(Nik-RE-dev): calculation of duration is strange
             switch (masteryLevel) {
-                case PLAYER_SKILL_MASTERY_NOVICE:
-                case PLAYER_SKILL_MASTERY_EXPERT:
+                case CHARACTER_SKILL_MASTERY_NOVICE:
+                case CHARACTER_SKILL_MASTERY_EXPERT:
                     spellLength = GameTime::FromHours(1).AddMinutes(4 + 5 * realPoints);
                     break;
-                case PLAYER_SKILL_MASTERY_MASTER:
+                case CHARACTER_SKILL_MASTERY_MASTER:
                     spellLength = GameTime::FromHours(1).AddMinutes(4 + 15 * realPoints);
                     break;
-                case PLAYER_SKILL_MASTERY_GRANDMASTER:
+                case CHARACTER_SKILL_MASTERY_GRANDMASTER:
                     spellLength = GameTime::FromHours(1).AddMinutes(4 + 20 * realPoints);
                     break;
                 default:
@@ -469,14 +469,14 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
         {
             int spellPower;
             switch (masteryLevel) {
-                case PLAYER_SKILL_MASTERY_NOVICE:
-                case PLAYER_SKILL_MASTERY_EXPERT:
+                case CHARACTER_SKILL_MASTERY_NOVICE:
+                case CHARACTER_SKILL_MASTERY_EXPERT:
                     spellPower = 2 * realPoints + 40;
                     break;
-                case PLAYER_SKILL_MASTERY_MASTER:
+                case CHARACTER_SKILL_MASTERY_MASTER:
                     spellPower = 3 * realPoints + 60;
                     break;
-                case PLAYER_SKILL_MASTERY_GRANDMASTER:
+                case CHARACTER_SKILL_MASTERY_GRANDMASTER:
                     spellPower = 6 * realPoints + 120;
                     break;
                 default:
@@ -493,14 +493,14 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
         case SPELL_SPIRIT_HEROISM:
             // TODO(Nik-RE-dev): calculation of duration is strange
             switch (masteryLevel) {
-                case PLAYER_SKILL_MASTERY_NOVICE:
-                case PLAYER_SKILL_MASTERY_EXPERT:
+                case CHARACTER_SKILL_MASTERY_NOVICE:
+                case CHARACTER_SKILL_MASTERY_EXPERT:
                     spellLength = GameTime::FromHours(1).AddMinutes(4 + 5 * realPoints);
                     break;
-                case PLAYER_SKILL_MASTERY_MASTER:
+                case CHARACTER_SKILL_MASTERY_MASTER:
                     spellLength = GameTime::FromHours(1).AddMinutes(4 + 15 * realPoints);
                     break;
-                case PLAYER_SKILL_MASTERY_GRANDMASTER:
+                case CHARACTER_SKILL_MASTERY_GRANDMASTER:
                     spellLength = GameTime::FromHours(1).AddMinutes(4 + 20 * realPoints);
                     break;
                 default:
@@ -534,12 +534,12 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
             for (SpellBuff &buff : pParty->pPartyBuffs) {
                 buff.Reset();
             }
-            for (int i = 0; i < pParty->pPlayers.size(); i++) {
-                int willCheck = pParty->pPlayers[i].GetParameterBonus(pParty->pPlayers[i].GetActualPersonality()) / 2;
-                int intCheck = pParty->pPlayers[i].GetParameterBonus(pParty->pPlayers[i].GetActualIntelligence()) / 2;
-                int luckCheck = pParty->pPlayers[i].GetParameterBonus(pParty->pPlayers[i].GetActualLuck()) + 30;
+            for (int i = 0; i < pParty->pCharacters.size(); i++) {
+                int willCheck = pParty->pCharacters[i].GetParameterBonus(pParty->pCharacters[i].GetActualPersonality()) / 2;
+                int intCheck = pParty->pCharacters[i].GetParameterBonus(pParty->pCharacters[i].GetActualIntelligence()) / 2;
+                int luckCheck = pParty->pCharacters[i].GetParameterBonus(pParty->pCharacters[i].GetActualLuck()) + 30;
                 if (grng->random(willCheck + intCheck + luckCheck) < 30) {
-                    for (SpellBuff &buff : pParty->pPlayers[i].pPlayerBuffs) {
+                    for (SpellBuff &buff : pParty->pCharacters[i].pCharacterBuffs) {
                         buff.Reset();
                     }
                 }
@@ -552,16 +552,16 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
             // TODO(Nik-RE-dev): calculation of duration is strange
             int spellPower;
             switch (masteryLevel) {
-                case PLAYER_SKILL_MASTERY_NOVICE:
-                case PLAYER_SKILL_MASTERY_EXPERT:
+                case CHARACTER_SKILL_MASTERY_NOVICE:
+                case CHARACTER_SKILL_MASTERY_EXPERT:
                     spellLength = GameTime::FromMinutes(64 + 5 * realPoints);
                     spellPower = realPoints;
                     break;
-                case PLAYER_SKILL_MASTERY_MASTER:
+                case CHARACTER_SKILL_MASTERY_MASTER:
                     spellLength = GameTime::FromMinutes(64 + 15 * realPoints);
                     spellPower = 3 * realPoints;
                     break;
-                case PLAYER_SKILL_MASTERY_GRANDMASTER:
+                case CHARACTER_SKILL_MASTERY_GRANDMASTER:
                     spellLength = GameTime::FromMinutes(64 + 20 * realPoints);
                     spellPower = 4 * realPoints;
                     break;
@@ -579,14 +579,14 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
         case SPELL_LIGHT_HOUR_OF_POWER:
             // TODO(Nik-RE-dev): calculation of duration is strange
             switch (masteryLevel) {
-                case PLAYER_SKILL_MASTERY_NOVICE:
-                case PLAYER_SKILL_MASTERY_EXPERT:
+                case CHARACTER_SKILL_MASTERY_NOVICE:
+                case CHARACTER_SKILL_MASTERY_EXPERT:
                     spellLength = GameTime::FromMinutes(64 + 5 * realPoints);
                     break;
-                case PLAYER_SKILL_MASTERY_MASTER:
+                case CHARACTER_SKILL_MASTERY_MASTER:
                     spellLength = GameTime::FromMinutes(64 + 15 * realPoints);
                     break;
-                case PLAYER_SKILL_MASTERY_GRANDMASTER:
+                case CHARACTER_SKILL_MASTERY_GRANDMASTER:
                     spellLength = GameTime::FromMinutes(64 + 20 * realPoints);
                     break;
                 default:
@@ -603,16 +603,16 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
         {
             int pieces;
             switch (masteryLevel) {
-                case PLAYER_SKILL_MASTERY_NOVICE:
+                case CHARACTER_SKILL_MASTERY_NOVICE:
                     pieces = 3;
                     break;
-                case PLAYER_SKILL_MASTERY_EXPERT:
+                case CHARACTER_SKILL_MASTERY_EXPERT:
                     pieces = 5;
                     break;
-                case PLAYER_SKILL_MASTERY_MASTER:
+                case CHARACTER_SKILL_MASTERY_MASTER:
                     pieces = 7;
                     break;
-                case PLAYER_SKILL_MASTERY_GRANDMASTER:
+                case CHARACTER_SKILL_MASTERY_GRANDMASTER:
                     pieces = 9;
                     break;
                 default:
@@ -625,7 +625,7 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
             sprite.containing_item.Reset();
             sprite.uSpellID = uSpellID;
             sprite.spell_level = uSkillMastery;
-            sprite.spell_skill = PLAYER_SKILL_MASTERY_NONE;
+            sprite.spell_skill = CHARACTER_SKILL_MASTERY_NONE;
             sprite.vPosition = actorPtr->vPosition + Vec3i(0, 0, actorPtr->uActorHeight / 2);
             sprite.uFacing = pDir->uYawAngle;
             sprite.uSoundID = 0;
@@ -654,12 +654,12 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
         case SPELL_DARK_PAIN_REFLECTION:
             // TODO(Nik-RE-dev): calculation of duration is strange
             switch (masteryLevel) {
-                case PLAYER_SKILL_MASTERY_NOVICE:
-                case PLAYER_SKILL_MASTERY_EXPERT:
-                case PLAYER_SKILL_MASTERY_MASTER:
+                case CHARACTER_SKILL_MASTERY_NOVICE:
+                case CHARACTER_SKILL_MASTERY_EXPERT:
+                case CHARACTER_SKILL_MASTERY_MASTER:
                     spellLength = GameTime::FromMinutes(64).AddSeconds(5 * 30 * realPoints);
                     break;
-                case PLAYER_SKILL_MASTERY_GRANDMASTER:
+                case CHARACTER_SKILL_MASTERY_GRANDMASTER:
                     spellLength = GameTime::FromMinutes(64).AddSeconds(15 * 30 * realPoints);
                     break;
                 default:
@@ -783,7 +783,7 @@ void Actor::AI_RangedAttack(unsigned int uActorID, struct AIDirection *pDir,
     a1.vPosition.y = pActors[uActorID].vPosition.y;
     a1.vPosition.z = pActors[uActorID].vPosition.z + (pActors[uActorID].uActorHeight * 0.75);
     a1.spell_level = 0;
-    a1.spell_skill = PLAYER_SKILL_MASTERY_NONE;
+    a1.spell_skill = CHARACTER_SKILL_MASTERY_NONE;
     a1.uFacing = pDir->uYawAngle;
     a1.uSoundID = 0;
     a1.uAttributes = 0;
@@ -832,7 +832,7 @@ void Actor::Explode(unsigned int uActorID) {  // death explosion for some actors
     a1.containing_item.Reset();
     a1.uSpellID = SPELL_NONE;
     a1.spell_level = 0;
-    a1.spell_skill = PLAYER_SKILL_MASTERY_NONE;
+    a1.spell_skill = CHARACTER_SKILL_MASTERY_NONE;
     a1.vPosition.x = pActors[uActorID].vPosition.x;
     a1.vPosition.y = pActors[uActorID].vPosition.y;
     a1.vPosition.z = pActors[uActorID].vPosition.z + (pActors[uActorID].uActorHeight * 0.75);
@@ -898,7 +898,7 @@ void Actor::GetDirectionInfo(unsigned int uObj1ID, unsigned int uObj2ID,
             outz = pActors[v4].vPosition.z + (pActors[v4].uActorHeight * 0.75);
             break;
         }
-        case OBJECT_Player: {
+        case OBJECT_Character: {
             if (!v4) {
                 outx = pParty->vPosition.x;
                 outy = pParty->vPosition.y;
@@ -984,7 +984,7 @@ void Actor::GetDirectionInfo(unsigned int uObj1ID, unsigned int uObj2ID,
             PreferedZ = pActors[v5].vPosition.z + (pActors[v5].uActorHeight * 0.75);
             break;
         }
-        case OBJECT_Player: {
+        case OBJECT_Character: {
             outx2 = (float)pParty->vPosition.x;
             outy2 = (float)pParty->vPosition.y;
             if (!PreferedZ) PreferedZ = pParty->sEyelevel;
@@ -1145,7 +1145,7 @@ void Actor::AI_MeleeAttack(unsigned int uActorID, signed int sTargetPid,
         v6 = pActors[v8].vPosition.x;
         v7 = pActors[v8].vPosition.y;
         v23 = (int)(pActors[v8].uActorHeight * 0.75 + pActors[v8].vPosition.z);
-    } else if (PID_TYPE(sTargetPid) == OBJECT_Player) {
+    } else if (PID_TYPE(sTargetPid) == OBJECT_Character) {
         v6 = pParty->vPosition.x;
         v7 = pParty->vPosition.y;
         v23 = pParty->vPosition.z + pParty->sEyelevel;
@@ -1215,9 +1215,9 @@ void Actor::ApplyFineForKillingPeasant(unsigned int uActorID) {
         currentLocationInfo().reputation++;
 
     if (pParty->uFine) {
-        for (Player &player : pParty->pPlayers) {
-            if (!player._achievedAwardsBits[Award_Fine]) {
-                player._achievedAwardsBits.set(Award_Fine);
+        for (Character &character : pParty->pCharacters) {
+            if (!character._achievedAwardsBits[Award_Fine]) {
+                character._achievedAwardsBits.set(Award_Fine);
             }
         }
     }
@@ -1278,9 +1278,9 @@ int Actor::_43B3E0_CalcDamage(ABILITY_INDEX dmgSource) {
     int damageBonus;
     SPELL_TYPE spellID;
     int spellPower = 0;
-    PLAYER_SKILL skill;
-    PLAYER_SKILL_LEVEL skillLevel = 0;
-    PLAYER_SKILL_MASTERY skillMastery = PLAYER_SKILL_MASTERY_NONE;
+    CHARACTER_SKILL skill;
+    CHARACTER_SKILL_LEVEL skillLevel = 0;
+    CharacterSkillMastery skillMastery = CHARACTER_SKILL_MASTERY_NONE;
 
     switch (dmgSource) {
         case ABILITY_ATTACK1:
@@ -1346,13 +1346,13 @@ bool Actor::IsPeasant() {
 
 //----- (0042EBEE) --------------------------------------------------------
 void Actor::StealFrom(unsigned int uActorID) {
-    Player *pPlayer;     // edi@1
+    Character *pPlayer;     // edi@1
     int v4;              // ebx@2
     unsigned int v5;     // eax@2
     LocationInfo *v6;  // esi@4
     int v8;              // [sp+8h] [bp-4h]@6
 
-    pPlayer = &pParty->pPlayers[pParty->activeCharacterIndex() - 1];
+    pPlayer = &pParty->pCharacters[pParty->activeCharacterIndex() - 1];
     if (pPlayer->CanAct()) {
         CastSpellInfoHelpers::cancelSpellCastInProgress();
         v4 = 0;
@@ -1393,7 +1393,7 @@ void Actor::AI_SpellAttack2(unsigned int uActorID, signed int edx0,
         v4 = pActors[v6].vPosition.x;
         v5 = pActors[v6].vPosition.y;
         v21 = (int)(pActors[v6].uActorHeight * 0.75 + pActors[v6].vPosition.z);
-    } else if (PID_TYPE(edx0) == OBJECT_Player) {
+    } else if (PID_TYPE(edx0) == OBJECT_Character) {
         v4 = pParty->vPosition.x;
         v5 = pParty->vPosition.y;
         v21 = pParty->vPosition.z + pParty->sEyelevel;
@@ -1466,7 +1466,7 @@ void Actor::AI_SpellAttack1(unsigned int uActorID, signed int sTargetPid,
         v4 = pActors[v6].vPosition.x;
         v5 = pActors[v6].vPosition.y;
         v21 = (int)(pActors[v6].uActorHeight * 0.75 + pActors[v6].vPosition.z);
-    } else if (PID_TYPE(sTargetPid) == OBJECT_Player) {
+    } else if (PID_TYPE(sTargetPid) == OBJECT_Character) {
         v4 = pParty->vPosition.x;
         v5 = pParty->vPosition.y;
         v21 = pParty->vPosition.z + pParty->sEyelevel;
@@ -1541,7 +1541,7 @@ void Actor::AI_MissileAttack2(unsigned int uActorID, signed int sTargetPid,
         v4 = pActors[v6].vPosition.x;
         v5 = pActors[v6].vPosition.y;
         v20 = (int)(pActors[v6].uActorHeight * 0.75 + pActors[v6].vPosition.z);
-    } else if (PID_TYPE(sTargetPid) == OBJECT_Player) {
+    } else if (PID_TYPE(sTargetPid) == OBJECT_Character) {
         v4 = pParty->vPosition.x;
         v5 = pParty->vPosition.y;
         v20 = pParty->vPosition.z + pParty->sEyelevel;
@@ -1609,7 +1609,7 @@ void Actor::AI_MissileAttack1(unsigned int uActorID, signed int sTargetPid,
         ypos = pActors[v6].vPosition.y;
         zpos = (int)(pActors[v6].uActorHeight * 0.75 + pActors[v6].vPosition.z);
     } else {
-        if (PID_TYPE(sTargetPid) == OBJECT_Player) {
+        if (PID_TYPE(sTargetPid) == OBJECT_Character) {
             xpos = pParty->vPosition.x;
             ypos = pParty->vPosition.y;
             zpos = pParty->vPosition.z + pParty->sEyelevel;
@@ -1678,7 +1678,7 @@ void Actor::AI_RandomMove(unsigned int uActor_id, unsigned int uTarget_id,
     if (MonsterStats::BelongsToSupertype(pActors[uActor_id].pMonsterInfo.uID,
                                          MONSTER_SUPERTYPE_TREANT)) {
         if (!uActionLength) uActionLength = 256;
-        Actor::AI_StandOrBored(uActor_id, PID(OBJECT_Player, 0), uActionLength,
+        Actor::AI_StandOrBored(uActor_id, PID(OBJECT_Character, 0), uActionLength,
                                &doNotInitializeBecauseShouldBeRandom);
         return;
     }
@@ -2276,7 +2276,7 @@ void Actor::_SelectTarget(unsigned int uActorID, int *OutTargetPID,
             uint v17 = abs(thisActor->vPosition.z - pParty->vPosition.z);
             if (v16 <= v15 && v28 <= v15 && v17 <= v15 &&
                 (v16 * v16 + v28 * v28 + v17 * v17 < lowestRadius)) {
-                *OutTargetPID = PID(OBJECT_Player, 0);
+                *OutTargetPID = PID(OBJECT_Character, 0);
             }
         }
     }
@@ -2666,7 +2666,7 @@ void Actor::UpdateActorAI() {
     // this loops over all actors in background ai state
     for (uint i = 0; i < pActors.size(); ++i) {
         Actor *pActor = &pActors[i];
-        ai_near_actors_targets_pid[i] = PID(OBJECT_Player, 0);
+        ai_near_actors_targets_pid[i] = PID(OBJECT_Character, 0);
 
         // Skip actor if: Dead / Removed / Disabled / or in full ai state
         if (pActor->uAIState == Dead || pActor->uAIState == Removed ||
@@ -2717,7 +2717,7 @@ void Actor::UpdateActorAI() {
             pActor->uAIState = Dead;
         } else {
             if (pActor->uAIState != Summoned) {
-                Actor::AI_StandOrBored(i, PID(OBJECT_Player, 0), 256, nullptr);
+                Actor::AI_StandOrBored(i, PID(OBJECT_Character, 0), 256, nullptr);
                 continue;
             }
             pActor->uAIState = Standing;
@@ -3138,7 +3138,7 @@ void Actor::DamageMonsterFromParty(signed int a1, unsigned int uActorID_Monster,
     uint16_t v43{};            // ax@132
     uint16_t v45{};            // ax@132
     // uint64_t v46; // [sp+Ch] [bp-60h]@6
-    PLAYER_SKILL_LEVEL skillLevel = 0;                    // [sp+44h] [bp-28h]@1
+    CHARACTER_SKILL_LEVEL skillLevel = 0;                    // [sp+44h] [bp-28h]@1
     bool IsAdditionalDamagePossible;  // [sp+50h] [bp-1Ch]@1
     int v61;                          // [sp+58h] [bp-14h]@1
     bool isLifeStealing;              // [sp+5Ch] [bp-10h]@1
@@ -3155,10 +3155,10 @@ void Actor::DamageMonsterFromParty(signed int a1, unsigned int uActorID_Monster,
         v61 = projectileSprite->field_60_distance_related_prolly_lod;
         a1 = projectileSprite->spell_caster_pid;
     }
-    if (PID_TYPE(a1) != OBJECT_Player) return;
+    if (PID_TYPE(a1) != OBJECT_Character) return;
 
     assert(PID_ID(abs(a1)) < 4);
-    Player *player = &pParty->pPlayers[PID_ID(a1)];
+    Character *character = &pParty->pCharacters[PID_ID(a1)];
     pMonster = &pActors[uActorID_Monster];
     if (pMonster->IsNotAlive()) return;
 
@@ -3166,35 +3166,35 @@ void Actor::DamageMonsterFromParty(signed int a1, unsigned int uActorID_Monster,
     if (pMonster->uAIState == Fleeing) pMonster->uAttributes |= ACTOR_FLEEING;
     bool hit_will_stun = false, hit_will_paralyze = false;
     if (!projectileSprite) {
-        int main_hand_idx = player->pEquipment.uMainHand;
+        int main_hand_idx = character->pEquipment.uMainHand;
         IsAdditionalDamagePossible = true;
-        if (player->HasItemEquipped(ITEM_SLOT_MAIN_HAND)) {
-            CharacterSkillType main_hand_skill = player->GetMainHandItem()->GetPlayerSkillType();
-            PLAYER_SKILL_MASTERY main_hand_mastery = player->getSkillValue(main_hand_skill).mastery();
+        if (character->HasItemEquipped(ITEM_SLOT_MAIN_HAND)) {
+            CharacterSkillType main_hand_skill = character->GetMainHandItem()->GetPlayerSkillType();
+            CharacterSkillMastery main_hand_mastery = character->getSkillValue(main_hand_skill).mastery();
             switch (main_hand_skill) {
                 case CHARACTER_SKILL_STAFF:
-                    if (main_hand_mastery >= PLAYER_SKILL_MASTERY_MASTER) {
-                        if (grng->random(100) < player->getActualSkillValue(CHARACTER_SKILL_STAFF).level())
+                    if (main_hand_mastery >= CHARACTER_SKILL_MASTERY_MASTER) {
+                        if (grng->random(100) < character->getActualSkillValue(CHARACTER_SKILL_STAFF).level())
                             hit_will_stun = true;
                     }
                     break;
 
                 case CHARACTER_SKILL_MACE:
-                    if (main_hand_mastery >= PLAYER_SKILL_MASTERY_MASTER) {
-                        if (grng->random(100) < player->getActualSkillValue(CHARACTER_SKILL_MACE).level())
+                    if (main_hand_mastery >= CHARACTER_SKILL_MASTERY_MASTER) {
+                        if (grng->random(100) < character->getActualSkillValue(CHARACTER_SKILL_MACE).level())
                             hit_will_stun = true;
                     }
-                    if (main_hand_mastery >= PLAYER_SKILL_MASTERY_GRANDMASTER) {
-                        if (grng->random(100) < player->getActualSkillValue(CHARACTER_SKILL_MACE).level())
+                    if (main_hand_mastery >= CHARACTER_SKILL_MASTERY_GRANDMASTER) {
+                        if (grng->random(100) < character->getActualSkillValue(CHARACTER_SKILL_MACE).level())
                             hit_will_paralyze = true;
                     }
                     break;
             }
         }
         attackElement = DMGT_PHISYCAL;
-        uDamageAmount = player->CalculateMeleeDamageTo(false, false, pMonster->pMonsterInfo.uID);
-        if (!player->PlayerHitOrMiss(pMonster, v61, skillLevel)) {
-            player->playReaction(SPEECH_ATTACK_MISS);
+        uDamageAmount = character->CalculateMeleeDamageTo(false, false, pMonster->pMonsterInfo.uID);
+        if (!character->characterHitOrMiss(pMonster, v61, skillLevel)) {
+            character->playReaction(SPEECH_ATTACK_MISS);
             return;
         }
     } else {
@@ -3217,38 +3217,38 @@ void Actor::DamageMonsterFromParty(signed int a1, unsigned int uActorID_Monster,
             case SPELL_LASER_PROJECTILE:
                 // TODO: should be changed to GetActual* equivalents?
                 v61 = 1;
-                if (player->getSkillValue(CHARACTER_SKILL_BLASTER).mastery() >= PLAYER_SKILL_MASTERY_MASTER)
-                    skillLevel = player->getSkillValue(CHARACTER_SKILL_BLASTER).level();
+                if (character->getSkillValue(CHARACTER_SKILL_BLASTER).mastery() >= CHARACTER_SKILL_MASTERY_MASTER)
+                    skillLevel = character->getSkillValue(CHARACTER_SKILL_BLASTER).level();
                 attackElement = DMGT_PHISYCAL;
-                uDamageAmount = player->CalculateMeleeDamageTo(true, true, 0);
-                if (!player->PlayerHitOrMiss(pMonster, v61, skillLevel)) {
-                    player->playReaction(SPEECH_ATTACK_MISS);
+                uDamageAmount = character->CalculateMeleeDamageTo(true, true, 0);
+                if (!character->characterHitOrMiss(pMonster, v61, skillLevel)) {
+                    character->playReaction(SPEECH_ATTACK_MISS);
                     return;
                 }
                 break;
             case SPELL_101:
                 attackElement = DMGT_FIRE;
-                uDamageAmount = player->CalculateRangedDamageTo(0);
+                uDamageAmount = character->CalculateRangedDamageTo(0);
                 if (pMonster->pActorBuffs[ACTOR_BUFF_SHIELD].Active())
                     uDamageAmount >>= 1;
                 IsAdditionalDamagePossible = true;
-                if (!player->PlayerHitOrMiss(pMonster, v61, skillLevel)) {
-                    player->playReaction(SPEECH_ATTACK_MISS);
+                if (!character->characterHitOrMiss(pMonster, v61, skillLevel)) {
+                    character->playReaction(SPEECH_ATTACK_MISS);
                     return;
                 }
                 break;
             case SPELL_EARTH_BLADES:
                 skillLevel = 5 * projectileSprite->spell_level;
                 attackElement =
-                    (DAMAGE_TYPE)player->GetSpellSchool(SPELL_EARTH_BLADES);
+                    (DAMAGE_TYPE)character->GetSpellSchool(SPELL_EARTH_BLADES);
                 uDamageAmount = CalcSpellDamage(
                     SPELL_EARTH_BLADES, projectileSprite->spell_level,
                     projectileSprite->spell_skill, pMonster->sCurrentHP);
                 if (pMonster->pActorBuffs[ACTOR_BUFF_SHIELD].Active())
                     uDamageAmount >>= 1;
                 IsAdditionalDamagePossible = false;
-                if (!player->PlayerHitOrMiss(pMonster, v61, skillLevel)) {
-                    player->playReaction(SPEECH_ATTACK_MISS);
+                if (!character->characterHitOrMiss(pMonster, v61, skillLevel)) {
+                    character->playReaction(SPEECH_ATTACK_MISS);
                     return;
                 }
                 break;
@@ -3256,14 +3256,14 @@ void Actor::DamageMonsterFromParty(signed int a1, unsigned int uActorID_Monster,
                 uDamageAmount = 0;
                 attackElement = DMGT_PHISYCAL;
                 hit_will_stun = 1;
-                if (!player->PlayerHitOrMiss(pMonster, v61, skillLevel)) {
-                    player->playReaction(SPEECH_ATTACK_MISS);
+                if (!character->characterHitOrMiss(pMonster, v61, skillLevel)) {
+                    character->playReaction(SPEECH_ATTACK_MISS);
                     return;
                 }
                 break;
             case SPELL_BOW_ARROW:
                 attackElement = DMGT_PHISYCAL;
-                uDamageAmount = player->CalculateRangedDamageTo(
+                uDamageAmount = character->CalculateRangedDamageTo(
                     pMonster->word_000086_some_monster_id);
                 if (pMonster->pActorBuffs[ACTOR_BUFF_SHIELD].Active())
                     uDamageAmount /= 2;
@@ -3271,14 +3271,14 @@ void Actor::DamageMonsterFromParty(signed int a1, unsigned int uActorID_Monster,
                 if (projectileSprite->containing_item.uItemID != ITEM_NULL &&
                     projectileSprite->containing_item.special_enchantment == ITEM_ENCHANTMENT_OF_CARNAGE) {
                     attackElement = DMGT_FIRE;
-                } else if (!player->PlayerHitOrMiss(pMonster, v61, skillLevel)) {
-                    player->playReaction(SPEECH_ATTACK_MISS);
+                } else if (!character->characterHitOrMiss(pMonster, v61, skillLevel)) {
+                    character->playReaction(SPEECH_ATTACK_MISS);
                     return;
                 }
                 break;
 
             default:
-                attackElement = (DAMAGE_TYPE)player->GetSpellSchool(
+                attackElement = (DAMAGE_TYPE)character->GetSpellSchool(
                     projectileSprite->uSpellID);
                 IsAdditionalDamagePossible = false;
                 uDamageAmount = CalcSpellDamage(
@@ -3289,14 +3289,14 @@ void Actor::DamageMonsterFromParty(signed int a1, unsigned int uActorID_Monster,
         }
     }
 
-    if (player->IsWeak()) uDamageAmount /= 2;
+    if (character->IsWeak()) uDamageAmount /= 2;
     if (pMonster->pActorBuffs[ACTOR_BUFF_STONED].Active()) uDamageAmount = 0;
     v61 = pMonster->CalcMagicalDamageToActor(attackElement, uDamageAmount);
-    if (!projectileSprite && player->IsUnarmed() &&
-        player->pPlayerBuffs[CHARACTER_BUFF_HAMMERHANDS].Active()) {
+    if (!projectileSprite && character->IsUnarmed() &&
+        character->pCharacterBuffs[CHARACTER_BUFF_HAMMERHANDS].Active()) {
         v61 += pMonster->CalcMagicalDamageToActor(
             DMGT_BODY,
-            player->pPlayerBuffs[CHARACTER_BUFF_HAMMERHANDS].power);
+            character->pCharacterBuffs[CHARACTER_BUFF_HAMMERHANDS].power);
     }
     uDamageAmount = v61;
     if (IsAdditionalDamagePossible) {
@@ -3305,26 +3305,26 @@ void Actor::DamageMonsterFromParty(signed int a1, unsigned int uActorID_Monster,
                 projectileSprite->containing_item._439DF3_get_additional_damage(
                     &attackElement, &isLifeStealing);
             if (isLifeStealing && pMonster->sCurrentHP > 0) {
-                player->health += v61 / 5;
-                if (player->health > player->GetMaxHealth())
-                    player->health = player->GetMaxHealth();
+                character->health += v61 / 5;
+                if (character->health > character->GetMaxHealth())
+                    character->health = character->GetMaxHealth();
             }
             uDamageAmount +=
                 pMonster->CalcMagicalDamageToActor(attackElement, skillLevel);
         } else {
             for (ITEM_SLOT i : {ITEM_SLOT_OFF_HAND, ITEM_SLOT_MAIN_HAND}) {
-                if (player->HasItemEquipped(i)) {
+                if (character->HasItemEquipped(i)) {
                     ItemGen *item;
                     if (i == ITEM_SLOT_OFF_HAND)
-                        item = player->GetOffHandItem();
+                        item = character->GetOffHandItem();
                     else
-                        item = player->GetMainHandItem();
+                        item = character->GetMainHandItem();
                     skillLevel = item->_439DF3_get_additional_damage(&attackElement,
                                                              &isLifeStealing);
                     if (isLifeStealing && pMonster->sCurrentHP > 0) {
-                        player->health += v61 / 5;
-                        if (player->health > player->GetMaxHealth())
-                            player->health = player->GetMaxHealth();
+                        character->health += v61 / 5;
+                        if (character->health > character->GetMaxHealth())
+                            character->health = character->GetMaxHealth();
                     }
                     uDamageAmount +=
                         pMonster->CalcMagicalDamageToActor(attackElement, skillLevel);
@@ -3334,7 +3334,7 @@ void Actor::DamageMonsterFromParty(signed int a1, unsigned int uActorID_Monster,
     }
     pMonster->sCurrentHP -= uDamageAmount;
     if (uDamageAmount == 0 && !hit_will_stun) {
-        player->playReaction(SPEECH_ATTACK_MISS);
+        character->playReaction(SPEECH_ATTACK_MISS);
         return;
     }
     if (pMonster->sCurrentHP > 0) {
@@ -3344,14 +3344,14 @@ void Actor::DamageMonsterFromParty(signed int a1, unsigned int uActorID_Monster,
             if (projectileSprite)
                 GameUI_SetStatusBar(
                     LSTR_FMT_S_SHOOTS_S_FOR_U,
-                    player->name.c_str(),
+                    character->name.c_str(),
                     pMonster->pActorName.c_str(),
                     uDamageAmount
                 );
             else
                 GameUI_SetStatusBar(
                     LSTR_FMT_S_HITS_S_FOR_U,
-                    player->name.c_str(),
+                    character->name.c_str(),
                     pMonster->pActorName.c_str(),
                     uDamageAmount
                 );
@@ -3367,20 +3367,20 @@ void Actor::DamageMonsterFromParty(signed int a1, unsigned int uActorID_Monster,
         if (vrng->random(100) < 20) {
             speech = pMonster->pMonsterInfo.uHP >= 100 ? SPEECH_KILL_STRONG_ENEMY : SPEECH_KILL_WEAK_ENEMY;
         }
-        player->playReaction(speech);
+        character->playReaction(speech);
         if (engine->config->settings.ShowHits.value()) {
             GameUI_SetStatusBar(
                 LSTR_FMT_S_INFLICTS_U_KILLING_S,
-                player->name.c_str(),
+                character->name.c_str(),
                 uDamageAmount,
                 pMonster->pActorName.c_str()
             );
         }
     }
     if (pMonster->pActorBuffs[ACTOR_BUFF_PAIN_REFLECTION].Active() && uDamageAmount != 0)
-        player->receiveDamage(uDamageAmount, attackElement);
+        character->receiveDamage(uDamageAmount, attackElement);
     int knockbackValue = 20 * v61 / (signed int)pMonster->pMonsterInfo.uHP;
-    if ((player->GetSpecialItemBonus(ITEM_ENCHANTMENT_OF_FORCE) ||
+    if ((character->GetSpecialItemBonus(ITEM_ENCHANTMENT_OF_FORCE) ||
          hit_will_stun) && pMonster->DoesDmgTypeDoDamage(DMGT_EARTH)) {
         extraRecoveryTime = 20;
         knockbackValue = 10;
@@ -3390,20 +3390,20 @@ void Actor::DamageMonsterFromParty(signed int a1, unsigned int uActorID_Monster,
         if (engine->config->settings.ShowHits.value()) {
             GameUI_SetStatusBar(
                 LSTR_FMT_S_STUNS_S,
-                player->name.c_str(),
+                character->name.c_str(),
                 pMonster
             );
         }
     }
     if (hit_will_paralyze && pMonster->CanAct() &&
         pMonster->DoesDmgTypeDoDamage(DMGT_EARTH)) {
-        CombinedSkillValue maceSkill = player->getActualSkillValue(CHARACTER_SKILL_MACE);
+        CombinedSkillValue maceSkill = character->getActualSkillValue(CHARACTER_SKILL_MACE);
         GameTime v46 = GameTime(0, maceSkill.level());  // ??
         pMonster->pActorBuffs[ACTOR_BUFF_PARALYZED].Apply((pParty->GetPlayingTime() + v46), maceSkill.mastery(), 0, 0, 0);
         if (engine->config->settings.ShowHits.value()) {
             GameUI_SetStatusBar(
                 LSTR_FMT_S_PARALYZES_S,
-                player->name.c_str(),
+                character->name.c_str(),
                 pMonster
             );
         }
@@ -3533,19 +3533,19 @@ int stru319::which_player_to_attack(Actor *pActor) {
                         break;
                 }
                 v2 = 0;
-                for (int j = 0; j < pParty->pPlayers.size(); ++j) {
+                for (int j = 0; j < pParty->pCharacters.size(); ++j) {
                     bool flag = 0;
-                    if (for_class != -1 && for_class == pParty->pPlayers[j].classType) {
+                    if (for_class != -1 && for_class == pParty->pCharacters[j].classType) {
                         flag = true;
                     }
-                    if (for_sex != -1 && for_sex == pParty->pPlayers[j].uSex) {
+                    if (for_sex != -1 && for_sex == pParty->pCharacters[j].uSex) {
                         flag = true;
                     }
-                    if (for_race != -1 && for_race == pParty->pPlayers[j].GetRace()) {
+                    if (for_race != -1 && for_race == pParty->pCharacters[j].GetRace()) {
                         flag = true;
                     }
                     if (flag == true) {
-                        if (pParty->pPlayers[j].conditions.HasNone({CONDITION_PARALYZED, CONDITION_UNCONSCIOUS, CONDITION_DEAD,
+                        if (pParty->pCharacters[j].conditions.HasNone({CONDITION_PARALYZED, CONDITION_UNCONSCIOUS, CONDITION_DEAD,
                                                                     CONDITION_PETRIFIED, CONDITION_ERADICATED})) {
                             Victims_list[v2++] = j;
                         }
@@ -3555,8 +3555,8 @@ int stru319::which_player_to_attack(Actor *pActor) {
         }
         if (v2) return Victims_list[grng->random(v2)];
     }
-    for (int i = 0; i < pParty->pPlayers.size(); ++i) {
-        if (pParty->pPlayers[i].conditions.HasNone({CONDITION_PARALYZED, CONDITION_UNCONSCIOUS, CONDITION_DEAD,
+    for (int i = 0; i < pParty->pCharacters.size(); ++i) {
+        if (pParty->pCharacters[i].conditions.HasNone({CONDITION_PARALYZED, CONDITION_UNCONSCIOUS, CONDITION_DEAD,
                                                     CONDITION_PETRIFIED, CONDITION_ERADICATED}))
             Victims_list[v2++] = i;
     }
@@ -3901,8 +3901,8 @@ bool Actor::_427102_IsOkToCastSpell(SPELL_TYPE spell) {
                     return true;
                 }
             }
-            for (Player &player : pParty->pPlayers) {
-                for (SpellBuff &buff : player.pPlayerBuffs) {
+            for (Character &character : pParty->pCharacters) {
+                for (SpellBuff &buff : character.pCharacterBuffs) {
                     if (buff.Active()) {
                         return true;
                     }
@@ -3984,7 +3984,7 @@ bool Actor::_4273BB_DoesHitOtherActor(Actor *defender, int a3, int a4) {
 }
 
 //----- (004274AD) --------------------------------------------------------
-bool Actor::ActorHitOrMiss(Player *pPlayer) {
+bool Actor::ActorHitOrMiss(Character *pPlayer) {
     signed int v3;  // edi@1
     signed int v4;  // esi@8
     int v5;         // esi@8
@@ -4242,7 +4242,7 @@ int Actor::MakeActorAIList_BLV() {
 
     // checks nearby actors can detect player and take nearest 30
     for (const auto &[actorId, _] : activeActorsDistances) {
-        if (pActors[actorId].ActorNearby() || Detect_Between_Objects(PID(OBJECT_Actor, actorId), PID(OBJECT_Player, 0))) {
+        if (pActors[actorId].ActorNearby() || Detect_Between_Objects(PID(OBJECT_Actor, actorId), PID(OBJECT_Character, 0))) {
             pActors[actorId].uAttributes |= ACTOR_NEARBY;
             pickedActorIds.push_back(actorId);
             if (pickedActorIds.size() >= 30) {
@@ -4327,7 +4327,7 @@ bool Detect_Between_Objects(unsigned int uObjID, unsigned int uObj2ID) {
             obj2_y = pLevelDecorations[obj2_pid].vPosition.y;
             obj2_sector = pIndoor->GetSector(obj2_x, obj2_y, obj2_z);
             break;
-        case OBJECT_Player:
+        case OBJECT_Character:
             obj2_x = pParty->vPosition.x;
             obj2_z = pParty->sEyelevel + pParty->vPosition.z;
             obj2_y = pParty->vPosition.y;
@@ -4508,14 +4508,14 @@ bool SpawnActor(unsigned int uMonsterID) {
 }
 
 //----- (0044FA4C) --------------------------------------------------------
-void Spawn_Light_Elemental(int spell_power, PLAYER_SKILL_MASTERY caster_skill_mastery, int duration_game_seconds) {
+void Spawn_Light_Elemental(int spell_power, CharacterSkillMastery caster_skill_mastery, int duration_game_seconds) {
     unsigned int uFaceID;  // [sp+8h] [bp-18h]@16
     // size_t uActorIndex;            // [sp+10h] [bp-10h]@6
 
     const char *cMonsterName;       // [sp-4h] [bp-24h]@2
-    if (caster_skill_mastery == PLAYER_SKILL_MASTERY_GRANDMASTER)
+    if (caster_skill_mastery == CHARACTER_SKILL_MASTERY_GRANDMASTER)
         cMonsterName = "Elemental Light C";
-    else if (caster_skill_mastery == PLAYER_SKILL_MASTERY_MASTER)
+    else if (caster_skill_mastery == CHARACTER_SKILL_MASTERY_MASTER)
         cMonsterName = "Elemental Light B";
     else
         cMonsterName = "Elemental Light A";
@@ -4564,7 +4564,7 @@ void Spawn_Light_Elemental(int spell_power, PLAYER_SKILL_MASTERY caster_skill_ma
             sectorId == partySectorId &&
             (zlevel = BLV_GetFloorLevel(actor->vPosition, sectorId, &uFaceID), zlevel != -30000) &&
             (zdiff = abs(zlevel - pParty->vPosition.z), zdiff <= 1024)) {
-        actor->uSummonerID = PID(OBJECT_Player, spell_power);
+        actor->uSummonerID = PID(OBJECT_Character, spell_power);
 
         GameTime spell_length = GameTime::FromSeconds(duration_game_seconds);
 
@@ -4850,7 +4850,7 @@ void evaluateAoeDamage() {
             Actor *actor = &pActors[targetId];
 
             if (targetType != OBJECT_Actor) {
-                if (targetType == OBJECT_Player) {  // party damage from monsters
+                if (targetType == OBJECT_Character) {  // party damage from monsters
                     int distanceSq = (pParty->vPosition + Vec3i(0, 0, pParty->uPartyHeight / 2) - attack.pos).lengthSqr();
                     int attackRangeSq = (attack.attackRange + 32) * (attack.attackRange + 32);
 
@@ -4858,7 +4858,7 @@ void evaluateAoeDamage() {
                     if (distanceSq < attackRangeSq) {
                         // check line of sight
                         if (Check_LineOfSight(pParty->vPosition + Vec3i(0, 0, pParty->sEyelevel), attack.pos)) {
-                            DamagePlayerFromMonster(attack.pid, attack.attackSpecial, &attackVector, stru_50C198.which_player_to_attack(&pActors[attackerId]));
+                            DamageCharacterFromMonster(attack.pid, attack.attackSpecial, &attackVector, stru_50C198.which_player_to_attack(&pActors[attackerId]));
                         }
                     }
                 }
@@ -4888,9 +4888,9 @@ void evaluateAoeDamage() {
             if (distanceSq < attackRangeSq) {  // party damage
                 // check line of sight to party
                 if (Check_LineOfSight(pParty->vPosition + Vec3i(0, 0, pParty->sEyelevel), attack.pos)) {
-                    for (int i = 0; i < pParty->pPlayers.size(); i++) {
-                        if (pParty->pPlayers[i].conditions.HasNone({CONDITION_DEAD, CONDITION_PETRIFIED, CONDITION_ERADICATED})) {
-                            DamagePlayerFromMonster(attack.pid, attack.attackSpecial, &attackVector, i);
+                    for (int i = 0; i < pParty->pCharacters.size(); i++) {
+                        if (pParty->pCharacters[i].conditions.HasNone({CONDITION_DEAD, CONDITION_PETRIFIED, CONDITION_ERADICATED})) {
+                            DamageCharacterFromMonster(attack.pid, attack.attackSpecial, &attackVector, i);
                         }
                     }
                 }
@@ -4911,7 +4911,7 @@ void evaluateAoeDamage() {
                         if (Check_LineOfSight(pActors[actorID].vPosition + Vec3i(0, 0, 50), attack.pos)) {
                             normalize_to_fixpoint(&attackVector.x, &attackVector.y, &attackVector.z);
                             switch (attackerType) {
-                                case OBJECT_Player:
+                                case OBJECT_Character:
                                     Actor::DamageMonsterFromParty(attack.pid, actorID, &attackVector);
                                     break;
                                 case OBJECT_Actor:

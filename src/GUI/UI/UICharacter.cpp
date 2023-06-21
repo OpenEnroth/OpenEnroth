@@ -786,7 +786,7 @@ GUIWindow *CastSpellInfo::GetCastSpellInInventoryWindow() {
 }
 
 static int CharacterUI_SkillsTab_Draw__DrawSkillTable(
-    Player *player, int x, int y, const std::initializer_list<CharacterSkillType> skill_list,
+    Character *player, int x, int y, const std::initializer_list<CharacterSkillType> skill_list,
     int right_margin, const char *skill_group_name) {
     int y_offset = y;
     Pointi pt = mouse->GetCursorPos();
@@ -826,8 +826,8 @@ static int CharacterUI_SkillsTab_Draw__DrawSkillTable(
                 skill_color = skill_mastery_color;
             }
 
-            PLAYER_SKILL_MASTERY skill_mastery = player->getSkillValue(skill).mastery();
-            if (skill_mastery == PLAYER_SKILL_MASTERY_NOVICE) {
+            CharacterSkillMastery skill_mastery = player->getSkillValue(skill).mastery();
+            if (skill_mastery == CHARACTER_SKILL_MASTERY_NOVICE) {
                 std::string Strsk;
                 if (skills_max_level[skill] == 1) { // Non-investable skill
                     Strsk = fmt::format("{}\r{:03}-", localization->GetSkillName(skill), right_margin);
@@ -836,7 +836,7 @@ static int CharacterUI_SkillsTab_Draw__DrawSkillTable(
                 }
                 pGUIWindow_CurrentMenu->DrawText(pFontLucida, {x, button->uY}, skill_color, Strsk);
             } else {
-                const char *skill_level_str = skill_mastery == PLAYER_SKILL_MASTERY_NOVICE ? "" : localization->MasteryName(skill_mastery);
+                const char *skill_level_str = skill_mastery == CHARACTER_SKILL_MASTERY_NOVICE ? "" : localization->MasteryName(skill_mastery);
 
                 if (skill_mastery_color == Color()) {
                     skill_mastery_color = ui_character_header_text_color;
@@ -858,7 +858,7 @@ static int CharacterUI_SkillsTab_Draw__DrawSkillTable(
 }
 
 //----- (00419719) --------------------------------------------------------
-void GUIWindow_CharacterRecord::CharacterUI_SkillsTab_Draw(Player *player) {
+void GUIWindow_CharacterRecord::CharacterUI_SkillsTab_Draw(Character *player) {
     render->DrawTextureNew(8 / 640.0f, 8 / 480.0f, ui_character_skills_background);
 
     auto str = fmt::format(
@@ -965,7 +965,7 @@ void GUIWindow_CharacterRecord::clickAwardsScroll(int yPos) {
     _startAwardElem = std::clamp((int)std::round((float)(yPos - pBtn_Scroll->uY) / segmentHeight), 0, _scrollableAwardSteps);
 }
 
-void GUIWindow_CharacterRecord::CharacterUI_AwardsTab_Draw(Player *player) {
+void GUIWindow_CharacterRecord::CharacterUI_AwardsTab_Draw(Character *player) {
     GUIWindow window = prepareAwardsWindow();
     int stopPos = 0;
 
@@ -1019,7 +1019,7 @@ void draw_leather() {
 }
 
 //----- (0043CC7C) --------------------------------------------------------
-void CharacterUI_DrawPaperdoll(Player *player) {
+void CharacterUI_DrawPaperdoll(Character *player) {
     int index;
     int item_X;
     int item_Y;
@@ -1300,7 +1300,7 @@ void CharacterUI_DrawPaperdoll(Player *player) {
 }
 
 //----- (0041A2D1) --------------------------------------------------------
-void CharacterUI_InventoryTab_Draw(Player *player, bool Cover_Strip) {
+void CharacterUI_InventoryTab_Draw(Character *player, bool Cover_Strip) {
     render->DrawTextureNew(8 / 640.0f, 8 / 480.0f, ui_character_inventory_background);
 
     if (Cover_Strip) {
@@ -1367,7 +1367,7 @@ static void CharacterUI_DrawItem(int x, int y, ItemGen *item, int id, GraphicsIm
 }
 
 //----- (0043E825) --------------------------------------------------------
-void CharacterUI_DrawPaperdollWithRingOverlay(Player *player) {
+void CharacterUI_DrawPaperdollWithRingOverlay(Character *player) {
     CharacterUI_DrawPaperdoll(player);
 
     render->DrawTextureNew(473 / 640.0f, 0, ui_character_inventory_paperdoll_rings_background);
@@ -1401,8 +1401,8 @@ void CharacterUI_LoadPaperdollTextures() {
     ui_character_inventory_paperdoll_background = assets->getImage_ColorKey("BACKDOLL");
     ui_character_inventory_paperdoll_rings_background = assets->getImage_Alpha("BACKHAND");
 
-    for (int i = 0; i < pParty->pPlayers.size(); ++i) {
-        if (pParty->pPlayers[i].hasUnderwaterSuitEquipped()) {
+    for (int i = 0; i < pParty->pCharacters.size(); ++i) {
+        if (pParty->pCharacters[i].hasUnderwaterSuitEquipped()) {
             WetsuitOn(i + 1);
         } else {
             WetsuitOff(i + 1);
@@ -1478,7 +1478,7 @@ void GUIWindow_CharacterRecord::CharacterUI_SkillsTab_CreateButtons() {
         buttons_count++;
     }
     int first_rows = 0;
-    Player *curr_player = &pParty->activeCharacter();
+    Character *curr_player = &pParty->activeCharacter();
 
     int uCurrFontHeght = pFontLucida->GetHeight();
     int current_Y = 2 * uCurrFontHeght + 13;
@@ -1530,7 +1530,7 @@ void GUIWindow_CharacterRecord::CharacterUI_SkillsTab_CreateButtons() {
     }
 }
 
-void GUIWindow_CharacterRecord::CharacterUI_StatsTab_Draw(Player *player) {
+void GUIWindow_CharacterRecord::CharacterUI_StatsTab_Draw(Character *player) {
     const char *text_format;  // [sp+14h] [bp-Ch]@4
 
     render->DrawTextureNew(8 / 640.0f, 8 / 480.0f,
@@ -1678,20 +1678,20 @@ void GUIWindow_CharacterRecord::CharacterUI_StatsTab_Draw(Player *player) {
                                                     player->GetBaseResistance(CHARACTER_ATTRIBUTE_RESIST_EARTH)));
 
     pY += pFontArrus->GetHeight() - 2;
-    bool immuneToMind = player->classType == PLAYER_CLASS_LICH && player->GetBaseResistance(CHARACTER_ATTRIBUTE_RESIST_MIND) == 200;
+    bool immuneToMind = player->classType == CHARACTER_CLASS_LICH && player->GetBaseResistance(CHARACTER_ATTRIBUTE_RESIST_MIND) == 200;
     pGUIWindow_CurrentMenu->DrawText(pFontArrus, {266, pY}, colorTable.White,
                                      formatRightCol(LSTR_MIND, player->GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_MIND),
                                                     player->GetBaseResistance(CHARACTER_ATTRIBUTE_RESIST_MIND), immuneToMind));
 
     pY += pFontArrus->GetHeight() - 2;
-    bool immuneToBody = player->classType == PLAYER_CLASS_LICH && player->GetBaseResistance(CHARACTER_ATTRIBUTE_RESIST_BODY) == 200;
+    bool immuneToBody = player->classType == CHARACTER_CLASS_LICH && player->GetBaseResistance(CHARACTER_ATTRIBUTE_RESIST_BODY) == 200;
     pGUIWindow_CurrentMenu->DrawText(pFontArrus, {266, pY}, colorTable.White,
                                      formatRightCol(LSTR_BODY, player->GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_BODY),
                                                     player->GetBaseResistance(CHARACTER_ATTRIBUTE_RESIST_BODY), immuneToBody));
 }
 
 void GUIWindow_CharacterRecord::fillAwardsData() {
-    Player *pPlayer = &pParty->activeCharacter();
+    Character *pPlayer = &pParty->activeCharacter();
 
     _awardsCharacterId = pParty->activeCharacterIndex();
     _startAwardElem = 0;
@@ -1724,7 +1724,7 @@ void GUIWindow_CharacterRecord::fillAwardsData() {
 void WetsuitOn(unsigned int uPlayerID) {
     if (uPlayerID > 0) {
         int playerId0 = uPlayerID - 1;
-        Player *player = &pParty->pPlayers[playerId0];
+        Character *player = &pParty->pCharacters[playerId0];
         int texture_num;
 
         if (player->GetRace() == CHARACTER_RACE_DWARF) {
@@ -1749,7 +1749,7 @@ void WetsuitOn(unsigned int uPlayerID) {
 void WetsuitOff(unsigned int uPlayerID) {
     if (uPlayerID > 0) {
         int playerId0 = uPlayerID - 1;
-        Player *player = &pParty->pPlayers[playerId0];
+        Character *player = &pParty->pCharacters[playerId0];
 
         paperdoll_dbods[playerId0] = assets->getImage_Alpha(dbod_texnames_by_face[player->uCurrentFace]);
         paperdoll_dlads[playerId0] = assets->getImage_Alpha(dlad_texnames_by_face[player->uCurrentFace]);
@@ -1822,7 +1822,7 @@ void OnPaperdollLeftClick() {
         if (pSkillType == CHARACTER_SKILL_SPEAR) {
             if (shieldequip) {
                 // cant use spear in one hand till master
-                if (pParty->activeCharacter().getActualSkillValue(CHARACTER_SKILL_SPEAR).mastery() < PLAYER_SKILL_MASTERY_MASTER) {
+                if (pParty->activeCharacter().getActualSkillValue(CHARACTER_SKILL_SPEAR).mastery() < CHARACTER_SKILL_MASTERY_MASTER) {
                     pParty->activeCharacter().playReaction(SPEECH_CANT_EQUIP);
 
                     return;
@@ -1834,7 +1834,7 @@ void OnPaperdollLeftClick() {
             if ((pSkillType == CHARACTER_SKILL_SHIELD || pSkillType == CHARACTER_SKILL_SWORD || pSkillType == CHARACTER_SKILL_DAGGER) && mainhandequip &&
                 pParty->activeCharacter().pInventoryItemList[mainhandequip - 1].GetPlayerSkillType() == CHARACTER_SKILL_SPEAR) {
                 // cant use spear in one hand till master
-                if (pParty->activeCharacter().getActualSkillValue(CHARACTER_SKILL_SPEAR).mastery() < PLAYER_SKILL_MASTERY_MASTER) {
+                if (pParty->activeCharacter().getActualSkillValue(CHARACTER_SKILL_SPEAR).mastery() < CHARACTER_SKILL_MASTERY_MASTER) {
                     pParty->activeCharacter().playReaction(SPEECH_CANT_EQUIP);
                     return;
                 }
@@ -2015,8 +2015,8 @@ void OnPaperdollLeftClick() {
                 }
                 v50 = ITEM_NULL;
                 // dagger at expert or sword at master in left hand
-                if (pSkillType == CHARACTER_SKILL_DAGGER && (pParty->activeCharacter().getActualSkillValue(CHARACTER_SKILL_DAGGER).mastery() >= PLAYER_SKILL_MASTERY_EXPERT)
-                    || pSkillType == CHARACTER_SKILL_SWORD && (pParty->activeCharacter().getActualSkillValue(CHARACTER_SKILL_SWORD).mastery() >= PLAYER_SKILL_MASTERY_MASTER)) {
+                if (pSkillType == CHARACTER_SKILL_DAGGER && (pParty->activeCharacter().getActualSkillValue(CHARACTER_SKILL_DAGGER).mastery() >= CHARACTER_SKILL_MASTERY_EXPERT)
+                    || pSkillType == CHARACTER_SKILL_SWORD && (pParty->activeCharacter().getActualSkillValue(CHARACTER_SKILL_SWORD).mastery() >= CHARACTER_SKILL_MASTERY_MASTER)) {
                     if ((signed int)mouse->uMouseX >= 560) {
                         if (!twohandedequip) {
                             if (shieldequip) {
@@ -2226,7 +2226,7 @@ void OnPaperdollLeftClick() {
                 ->pActiveZBuffer[mouse->uMouseX + mouse->uMouseY * render->GetRenderDimensions().w] & 0xFFFF;
         if (v34) {
             // v36 = v34 - 1;
-            // v38 = &pPlayers[pParty->_activeCharacter]->pInventoryItemList[v34 - 1];
+            // v38 = &pCharacters[pParty->_activeCharacter]->pInventoryItemList[v34 - 1];
             pEquipType = pParty->activeCharacter().pInventoryItemList[v34 - 1].GetItemEquipType();
             if (pParty->activeCharacter().pInventoryItemList[v34 - 1].uItemID == ITEM_QUEST_WETSUIT) {
                 if (engine->IsUnderwater()) {

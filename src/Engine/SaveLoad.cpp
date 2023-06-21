@@ -62,7 +62,7 @@ void LoadGame(unsigned int uSlot) {
     // TODO(captainurist): incapsulate this too
     pParty->bTurnBasedModeOn = false;  // We always start in realtime after loading a game.
     for (size_t i = 0; i < 4; i++) {
-        Player *player = &pParty->pPlayers[i];
+        Character *player = &pParty->pCharacters[i];
         for (size_t j = 0; j < 5; j++) {
             if (j >= player->vBeacons.size()) {
                 continue;
@@ -80,15 +80,15 @@ void LoadGame(unsigned int uSlot) {
 
 /*
     for (uint i = 0; i < 4; ++i) {
-        if (pParty->pPlayers[i].uQuickSpell) {
+        if (pParty->pCharacters[i].uQuickSpell) {
             AA1058_PartyQuickSpellSound[i].AddPartySpellSound(
-                pParty->pPlayers[i].uQuickSpell, i + 1);
+                pParty->pCharacters[i].uQuickSpell, i + 1);
         }
 
         for (uint j = 0; j < 2; ++j) {
-            uint uEquipIdx = pParty->pPlayers[i].pEquipment.pIndices[j];
+            uint uEquipIdx = pParty->pCharacters[i].pEquipment.pIndices[j];
             if (uEquipIdx) {
-                int pItemID = pParty->pPlayers[i]
+                int pItemID = pParty->pCharacters[i]
                                   .pInventoryItemList[uEquipIdx - 1]
                                   .uItemID;
                 if (pItemTable->pItems[pItemID].uEquipType == EQUIP_WAND &&
@@ -187,7 +187,7 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld) {
 
     // TODO(captainurist): incapsulate this too
     for (size_t i = 0; i < 4; ++i) {  // 4 - players
-        Player *player = &pParty->pPlayers[i];
+        Character *player = &pParty->pCharacters[i];
         for (size_t j = 0; j < 5; ++j) {  // 5 - images
             if (j >= player->vBeacons.size()) {
                 continue;

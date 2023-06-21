@@ -106,7 +106,7 @@ void GUIWindow_Temple::donateDialogue() {
 }
 
 GUIWindow_Temple::GUIWindow_Temple(HOUSE_ID houseId) : GUIWindow_House(houseId) {
-    _templeSpellCounter.resize(pParty->pPlayers.size());
+    _templeSpellCounter.resize(pParty->pCharacters.size());
     std::fill(_templeSpellCounter.begin(), _templeSpellCounter.end(), 0);
 }
 
@@ -166,7 +166,7 @@ void GUIWindow_Temple::playHouseGoodbyeSpeech() {
     playHouseSound(houseId(), HOUSE_SOUND_TEMPLE_GOODBYE);
 }
 
-bool GUIWindow_Temple::isPlayerHealableByTemple(const Player &player) const {
+bool GUIWindow_Temple::isPlayerHealableByTemple(const Character &player) const {
     if (player.health >= player.GetMaxHealth() && player.mana >= player.GetMaxMana() && player.GetMajorConditionIdx() == CONDITION_GOOD) {
         // fully healthy
         return false;

@@ -165,7 +165,7 @@ class AudioPlayer {
      * @param id                        ID of sound.
      */
     void playWalkSound(SoundID id) {
-        // All walk sounds originally used PID 804 which is PID(OBJECT_Player, 100)
+        // All walk sounds originally used PID 804 which is PID(OBJECT_Character, 100)
         playSound(id, SOUND_PID_WALKING);
     }
 

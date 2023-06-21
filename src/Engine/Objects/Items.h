@@ -11,7 +11,7 @@
 
 #include "Utility/IndexedArray.h"
 
-struct Player;
+struct Character;
 
 struct ItemGen {  // 0x24
     static void PopulateSpecialBonusMap();
@@ -19,8 +19,8 @@ struct ItemGen {  // 0x24
     static void PopulateArtifactBonusMap();
     static void ClearItemBonusMaps();
 
-    void GetItemBonusArtifact(const Player *owner, CHARACTER_ATTRIBUTE_TYPE attrToGet, int *bonusSum) const;
-    void GetItemBonusSpecialEnchantment(const Player *owner, CHARACTER_ATTRIBUTE_TYPE attrToGet, int *additiveBonus, int *halfSkillBonus) const;
+    void GetItemBonusArtifact(const Character *owner, CharacterAttributeType attrToGet, int *bonusSum) const;
+    void GetItemBonusSpecialEnchantment(const Character *owner, CharacterAttributeType attrToGet, int *additiveBonus, int *halfSkillBonus) const;
 
     inline void ResetEnchantAnimation() { uAttributes &= ~ITEM_ENCHANT_ANIMATION_MASK; }
     inline bool ItemEnchanted() const {
@@ -39,7 +39,7 @@ struct ItemGen {  // 0x24
         return (uAttributes & ITEM_ENCHANT_ANIMATION_MASK) == ITEM_AURA_EFFECT_PURPLE;
     }
 
-    bool IsRegularEnchanmentForAttribute(CHARACTER_ATTRIBUTE_TYPE attrToGet);
+    bool IsRegularEnchanmentForAttribute(CharacterAttributeType attrToGet);
 
     inline bool IsBroken() const { return uAttributes & ITEM_BROKEN; }
     inline void SetBroken() { uAttributes |= ITEM_BROKEN; }
@@ -104,7 +104,7 @@ struct ItemGen {  // 0x24
 
 
     ITEM_TYPE uItemID = ITEM_NULL;        // 0
-    // TODO(captainurist): this is actually CHARACTER_ATTRIBUTE_TYPE plus one (because 0 means no enchantment),
+    // TODO(captainurist): this is actually CharacterAttributeType plus one (because 0 means no enchantment),
     // with values in [0..24], i.e. up to & including CHARACTER_ATTRIBUTE_SKILL_UNARMED
     int32_t uEnchantmentType = ITEM_ENCHANTMENT_NULL;       // 4 // For potion it's potion strength.
     int32_t m_enchantmentStrength = 0;  // 8

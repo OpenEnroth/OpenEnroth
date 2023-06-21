@@ -49,13 +49,13 @@ void Arena_SelectionFightLevel() {
                     pActors[i].uAIState == Removed ||
                     pActors[i].uAIState == Disabled ||
                     pActors[i].uSummonerID != 0 &&
-                        PID_TYPE(pActors[i].uSummonerID) == OBJECT_Player)
+                        PID_TYPE(pActors[i].uSummonerID) == OBJECT_Character)
                     ++v0;
             }
             if (v0 >= (signed int)pActors.size() || (signed int)pActors.size() <= 0) {
                 uDialogueType = DIALOGUE_ARENA_REWARD;
                 pParty->uNumArenaWins[pParty->field_7B5_in_arena_quest - DIALOGUE_ARENA_SELECT_PAGE]++;
-                for (Player &player : pParty->pPlayers) {
+                for (Character &player : pParty->pCharacters) {
                     player.SetVariable(VAR_Award, (uint8_t)pParty->field_7B5_in_arena_quest + 3);
                 }
                 pParty->partyFindsGold(gold_transaction_amount, GOLD_RECEIVE_SHARE);
@@ -150,13 +150,13 @@ void ArenaFight() {
     ++pCurrentFrameMessageQueue->uNumMessages;
     }*/
     pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 1, 0);
-    // v2 = pParty->pPlayers.data();
+    // v2 = pParty->pCharacters.data();
     for (uint i = 0; i < 4; i++) {
-        v3 = pParty->pPlayers[i].GetActualLevel();
+        v3 = pParty->pCharacters[i].GetActualLevel();
         v4 = v26;
         if (v3 > v26) {
-            v26 = pParty->pPlayers[i].GetActualLevel();
-            v4 = pParty->pPlayers[i].GetActualLevel();
+            v26 = pParty->pCharacters[i].GetActualLevel();
+            v4 = pParty->pCharacters[i].GetActualLevel();
         }
         // ++v2;
     }

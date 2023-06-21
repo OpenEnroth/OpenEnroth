@@ -629,29 +629,29 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
     bool for_effects = false;
 
     if (pParty->hasActiveCharacter()) {
-        PLAYER_SKILL_LEVEL skill_points = 0;
-        PLAYER_SKILL_MASTERY skill_mastery = PLAYER_SKILL_MASTERY_NONE;
+        CHARACTER_SKILL_LEVEL skill_points = 0;
+        CharacterSkillMastery skill_mastery = CHARACTER_SKILL_MASTERY_NONE;
         CombinedSkillValue idMonsterSkill = pParty->activeCharacter().getActualSkillValue(CHARACTER_SKILL_MONSTER_ID);
 
         if ((skill_points = idMonsterSkill.level()) > 0) {
             skill_mastery = idMonsterSkill.mastery();
-            if (skill_mastery == PLAYER_SKILL_MASTERY_NOVICE) {
+            if (skill_mastery == CHARACTER_SKILL_MASTERY_NOVICE) {
                 if (skill_points + 10 >= pActors[uActorID].pMonsterInfo.uLevel) {
                     normal_level = true;
                 }
-            } else if (skill_mastery == PLAYER_SKILL_MASTERY_EXPERT) {
+            } else if (skill_mastery == CHARACTER_SKILL_MASTERY_EXPERT) {
                 if (2 * skill_points + 10 >= pActors[uActorID].pMonsterInfo.uLevel) {
                     normal_level = true;
                     expert_level = true;
                 }
-            } else if (skill_mastery == PLAYER_SKILL_MASTERY_MASTER) {
+            } else if (skill_mastery == CHARACTER_SKILL_MASTERY_MASTER) {
                 if (3 * skill_points + 10 >= pActors[uActorID].pMonsterInfo.uLevel) {
                     normal_level = true;
                     expert_level = true;
                     master_level = true;
                     for_effects = true;
                 }
-            } else if (skill_mastery == PLAYER_SKILL_MASTERY_GRANDMASTER) {
+            } else if (skill_mastery == CHARACTER_SKILL_MASTERY_GRANDMASTER) {
                 normal_level = true;
                 expert_level = true;
                 master_level = true;
@@ -662,7 +662,7 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
 
         // Only play reaction when right click on actor initially
         if (pActors[uActorID].uAIState != Dead && pActors[uActorID].uAIState != Dying &&
-            !holdingMouseRightButton && skill_mastery != PLAYER_SKILL_MASTERY_NONE) {
+            !holdingMouseRightButton && skill_mastery != CHARACTER_SKILL_MASTERY_NONE) {
             CharacterSpeech speech;
             if (normal_level || expert_level || master_level || grandmaster_level) {
                 if (pActors[uActorID].pMonsterInfo.uLevel >= pParty->activeCharacter().uLevel - 5)
@@ -984,18 +984,18 @@ std::string CharacterUI_GetSkillDescText(unsigned int uPlayerID, CharacterSkillT
         pFontSmallnum->GetLineWidth(localization->GetString(LSTR_BONUS_2))
     });
 
-    int base_skill = pParty->pPlayers[uPlayerID].getSkillValue(uPlayerSkillType).level();
-    int actual_skill = pParty->pPlayers[uPlayerID].getActualSkillValue(uPlayerSkillType).level();
+    int base_skill = pParty->pCharacters[uPlayerID].getSkillValue(uPlayerSkillType).level();
+    int actual_skill = pParty->pCharacters[uPlayerID].getActualSkillValue(uPlayerSkillType).level();
 
     const char *desc = localization->GetSkillDescription(uPlayerSkillType);
     std::string Description = desc ? desc : "";
     if (localization->GetSkillDescriptionNormal(uPlayerSkillType)) {
         Description = fmt::format("{}\n\n", Description);
 
-        for (PLAYER_SKILL_MASTERY mastery : SkillMasteries()) {
+        for (CharacterSkillMastery mastery : SkillMasteries()) {
             Description += fmt::format(
                 "{::}{}\t{:03}:\t{:03}{}\t000\n",
-                GetSkillColor(pParty->pPlayers[uPlayerID].classType, uPlayerSkillType, mastery).tag(),
+                GetSkillColor(pParty->pCharacters[uPlayerID].classType, uPlayerSkillType, mastery).tag(),
                 localization->MasteryName(mastery),
                 line_width + 3,
                 line_width + 10,
@@ -1071,7 +1071,7 @@ void CharacterUI_StatsTab_ShowHint() {
         case 9:  // Armour class
             CharacterUI_DrawTooltip(localization->GetString(LSTR_ARMOR_CLASS), localization->getArmourClassDescription());
             break;
-        case 10:  // Player Condition
+        case 10:  // Character Condition
         {
             std::string str = std::string(localization->getArmourClassDescription()) + "\n";
 
@@ -1250,7 +1250,7 @@ void DrawSpellDescriptionPopup(int spell_index_in_book) {
     spell_info_window.uFrameWidth = 108;
     spell_info_window.uFrameZ = spell_info_window.uFrameX + 107;
     CharacterSkillType skill = static_cast<CharacterSkillType>(pParty->activeCharacter().lastOpenedSpellbookPage + 12);
-    PLAYER_SKILL_MASTERY skill_mastery = pParty->activeCharacter().getSkillValue(skill).mastery();
+    CharacterSkillMastery skill_mastery = pParty->activeCharacter().getSkillValue(skill).mastery();
     spell_info_window.DrawTitleText(pFontComic, 12, 75, colorTable.White, localization->GetSkillName(skill), 3);
 
     auto str2 = fmt::format(
@@ -1383,7 +1383,7 @@ void ShowPopupShopSkills() {
             if (pX >= pButton->uX && pX < pButton->uZ && pY >= pButton->uY && pY < pButton->uW) {
                 if (IsSkillLearningDialogue((DIALOGUE_TYPE)pButton->msg_param)) {
                     auto skill_id = GetLearningDialogueSkill((DIALOGUE_TYPE)pButton->msg_param);
-                    if (skillMaxMasteryPerClass[pParty->activeCharacter().classType][skill_id] != PLAYER_SKILL_MASTERY_NONE &&
+                    if (skillMaxMasteryPerClass[pParty->activeCharacter().classType][skill_id] != CHARACTER_SKILL_MASTERY_NONE &&
                         !pParty->activeCharacter().pActiveSkills[skill_id]) {
                         // is this skill visible
                         std::string pSkillDescText = CharacterUI_GetSkillDescText(pParty->activeCharacterIndex() - 1, skill_id);
@@ -1592,7 +1592,7 @@ void ShowPopupShopItem() {
 }
 
 //----- (0041D3B7) --------------------------------------------------------
-void GameUI_CharacterQuickRecord_Draw(GUIWindow *window, Player *player) {
+void GameUI_CharacterQuickRecord_Draw(GUIWindow *window, Character *player) {
     GraphicsImage *v13;              // eax@6
     PlayerFrame *v15;        // eax@12
     std::string spellName;   // eax@16
@@ -1602,7 +1602,7 @@ void GameUI_CharacterQuickRecord_Draw(GUIWindow *window, Player *player) {
 
     uint numActivePlayerBuffs = 0;
     for (uint i = 0; i < 24; ++i) {
-        if (player->pPlayerBuffs[i].Active()) ++numActivePlayerBuffs;
+        if (player->pCharacterBuffs[i].Active()) ++numActivePlayerBuffs;
     }
 
     window->uFrameHeight =
@@ -1663,7 +1663,7 @@ void GameUI_CharacterQuickRecord_Draw(GUIWindow *window, Player *player) {
 
     uFramesetIDa = 0;
     for (uint i = 0; i < 24; ++i) {
-        SpellBuff *buff = &player->pPlayerBuffs[i];
+        SpellBuff *buff = &player->pCharacterBuffs[i];
         if (buff->Active()) {
             v36 = uFramesetIDa++ * pFontComic->GetHeight() + 134;
             window->DrawText(pFontComic, {52, v36},
@@ -1758,7 +1758,7 @@ void UI_OnMouseRightClick(int mouse_x, int mouse_y) {
 
     if (pParty->pPickedItem.uItemID != ITEM_NULL) {
         // Use item on character portrait
-        for (int i = 0; i < pParty->pPlayers.size(); ++i) {
+        for (int i = 0; i < pParty->pCharacters.size(); ++i) {
             if (pX > RightClickPortraitXmin[i] && pX < RightClickPortraitXmax[i] && pY > 375 && pY < 466) {
                 pParty->activeCharacter().useItem(i, true);
                 // Do not enter right click mode
@@ -1834,7 +1834,7 @@ void UI_OnMouseRightClick(int mouse_x, int mouse_y) {
                     popup_window.uFrameX = 38;
                     popup_window.uFrameY = 60;
                     GameUI_CharacterQuickRecord_Draw(
-                        &popup_window, &pParty->pPlayers[popup_window.wData.val]);
+                        &popup_window, &pParty->pCharacters[popup_window.wData.val]);
                 }
             } else if ((int)pX > pViewport->uViewportBR_X) {
                 if (pY >= 130) {
@@ -1966,13 +1966,13 @@ void UI_OnMouseRightClick(int mouse_x, int mouse_y) {
                                                                      // button
                                                                      // info
                             pStr = localization->GetSkillName(
-                                pParty->pPlayers
+                                pParty->pCharacters
                                         [uPlayerCreationUI_SelectedCharacter]
                                     .GetSkillIdxByOrder(pButton->msg_param +
                                                         4));
                             popup_window
                                 .sHint = localization->GetSkillDescription(
-                                pParty->pPlayers
+                                pParty->pCharacters
                                         [uPlayerCreationUI_SelectedCharacter]
                                     .GetSkillIdxByOrder(pButton->msg_param +
                                                         4));
@@ -1997,10 +1997,10 @@ void UI_OnMouseRightClick(int mouse_x, int mouse_y) {
                             break;
                         case UIMSG_PlayerCreation_SelectAttribute:  // Character
                                                                     // info
-                            pStr = pParty->pPlayers[pButton->msg_param].name.c_str();
+                            pStr = pParty->pCharacters[pButton->msg_param].name.c_str();
                             popup_window
                                 .sHint = localization->GetClassDescription(
-                                pParty->pPlayers[pButton->msg_param].classType);
+                                pParty->pCharacters[pButton->msg_param].classType);
                             break;
                         default:
                             break;
@@ -2010,17 +2010,17 @@ void UI_OnMouseRightClick(int mouse_x, int mouse_y) {
                             UIMSG_PlayerCreationRemoveDownSkill) {  // Sellected
                                                                     // skills info
                         pY = 0;
-                        if (pParty->pPlayers[pButton->msg_param].GetSkillIdxByOrder(pButton->msg - UIMSG_48) != CHARACTER_SKILL_INVALID) {
+                        if (pParty->pCharacters[pButton->msg_param].GetSkillIdxByOrder(pButton->msg - UIMSG_48) != CHARACTER_SKILL_INVALID) {
                             static std::string hint_reference;
                             hint_reference = CharacterUI_GetSkillDescText(
                                 pButton->msg_param,
-                                pParty->pPlayers[pButton->msg_param]
+                                pParty->pCharacters[pButton->msg_param]
                                     .GetSkillIdxByOrder(pButton->msg -
                                                         UIMSG_48));
 
                             popup_window.sHint = hint_reference;
                             pStr = localization->GetSkillName(
-                                pParty->pPlayers[pButton->msg_param]
+                                pParty->pCharacters[pButton->msg_param]
                                     .GetSkillIdxByOrder(pButton->msg -
                                                         UIMSG_48));
                         }
@@ -2183,9 +2183,9 @@ void Inventory_ItemPopupAndAlchemy() {
             return;
         }
 
-        // TODO(Nik-RE-dev): need to allow GetSkillMastery return PLAYER_SKILL_MASTERY_NONE
+        // TODO(Nik-RE-dev): need to allow GetSkillMastery return CHARACTER_SKILL_MASTERY_NONE
         if (!alchemySkill.level()) {
-            alchemySkill.setMastery(PLAYER_SKILL_MASTERY_NONE);
+            alchemySkill.setMastery(CHARACTER_SKILL_MASTERY_NONE);
         }
 
         int damage_level = 0;
@@ -2196,21 +2196,21 @@ void Inventory_ItemPopupAndAlchemy() {
             // potionID >= ITEM_POTION_CURE_WOUNDS && potionID <= ITEM_POTION_CURE_WEAKNESS does not require skill
             if (potionID >= ITEM_POTION_CURE_DISEASE &&
                     potionID <= ITEM_POTION_AWAKEN &&
-                    alchemySkill.mastery() == PLAYER_SKILL_MASTERY_NONE) {
+                    alchemySkill.mastery() == CHARACTER_SKILL_MASTERY_NONE) {
                 damage_level = 1;
             }
             if (potionID >= ITEM_POTION_HASTE &&
                     potionID <= ITEM_POTION_CURE_INSANITY &&
-                    alchemySkill.mastery() <= PLAYER_SKILL_MASTERY_NOVICE) {
+                    alchemySkill.mastery() <= CHARACTER_SKILL_MASTERY_NOVICE) {
                 damage_level = 2;
             }
             if (potionID >= ITEM_POTION_MIGHT_BOOST &&
                     potionID <= ITEM_POTION_BODY_RESISTANCE &&
-                    alchemySkill.mastery() <= PLAYER_SKILL_MASTERY_EXPERT) {
+                    alchemySkill.mastery() <= CHARACTER_SKILL_MASTERY_EXPERT) {
                 damage_level = 3;
             }
             if (potionID >= ITEM_POTION_STONE_TO_FLESH &&
-                    alchemySkill.mastery() <= PLAYER_SKILL_MASTERY_MASTER) {
+                    alchemySkill.mastery() <= CHARACTER_SKILL_MASTERY_MASTER) {
                 damage_level = 4;
             }
         }

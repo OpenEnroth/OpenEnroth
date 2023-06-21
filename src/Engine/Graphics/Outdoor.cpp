@@ -342,7 +342,7 @@ bool OutdoorLocation::GetTravelDestination(int sPartyX, int sPartyZ, std::string
 
     if (mapNumberAsInt == MAP_AVLEE && direction == 4) {  // to Shoals
         bool wholePartyUnderwaterSuitEquipped = true;
-        for (Player &player : pParty->pPlayers) {
+        for (Character &player : pParty->pCharacters) {
             if (!player.hasUnderwaterSuitEquipped()) {
                 wholePartyUnderwaterSuitEquipped = false;
                 break;
@@ -1654,7 +1654,7 @@ void ODM_ProcessPartyActions() {
         waterWalkActive = true;
         engine->_persistentVariables.decorVars[20 * pParty->pPartyBuffs[PARTY_BUFF_WATER_WALK].overlayID + 119] |= 1;
         if (!pParty->pPartyBuffs[PARTY_BUFF_WATER_WALK].isGMBuff &&
-            pParty->pPlayers[pParty->pPartyBuffs[PARTY_BUFF_WATER_WALK].caster - 1].mana <= 0)
+            pParty->pCharacters[pParty->pPartyBuffs[PARTY_BUFF_WATER_WALK].caster - 1].mana <= 0)
             waterWalkActive = false;
     }
 
@@ -1743,7 +1743,7 @@ void ODM_ProcessPartyActions() {
                 pParty->bFlying = false;
                 if (engine->IsUnderwater() ||
                     pParty->pPartyBuffs[PARTY_BUFF_FLY].isGMBuff ||
-                    (pParty->pPlayers[pParty->pPartyBuffs[PARTY_BUFF_FLY].caster - 1].mana > 0 || engine->config->debug.AllMagic.value())) {
+                    (pParty->pCharacters[pParty->pPartyBuffs[PARTY_BUFF_FLY].caster - 1].mana > 0 || engine->config->debug.AllMagic.value())) {
                     if (pParty->sPartySavedFlightZ < engine->config->gameplay.MaxFlightHeight.value() || partyNotTouchingFloor) {
                         pParty->bFlying = true;
                         pParty->uFallSpeed = 0;
@@ -1958,7 +1958,7 @@ void ODM_ProcessPartyActions() {
             pParty->bFlying = false;
             if (engine->IsUnderwater() ||
                 pParty->pPartyBuffs[PARTY_BUFF_FLY].isGMBuff ||
-                (pParty->pPlayers[pParty->pPartyBuffs[PARTY_BUFF_FLY].caster - 1].mana > 0 || engine->config->debug.AllMagic.value())) {
+                (pParty->pCharacters[pParty->pPartyBuffs[PARTY_BUFF_FLY].caster - 1].mana > 0 || engine->config->debug.AllMagic.value())) {
                 partyOldFlightZ = pParty->vPosition.z;
                 partyInputZSpeed = -pParty->uWalkSpeed * 4;
                 pParty->bFlying = true;
@@ -2041,10 +2041,10 @@ void ODM_ProcessPartyActions() {
                 !pParty->FeatherFallActive() &&
                 !(pParty->uFlags & (PARTY_FLAGS_1_LANDING | PARTY_FLAGS_1_JUMPING))) {  // falling scream
                 for (int i = 0; i < 4; ++i) {
-                    if (!pParty->pPlayers[i].HasEnchantedItemEquipped(ITEM_ENCHANTMENT_OF_FEATHER_FALLING) &&
-                        !pParty->pPlayers[i].WearsItem(ITEM_ARTIFACT_HERMES_SANDALS, ITEM_SLOT_BOOTS) &&
-                        pParty->pPlayers[i].CanAct())
-                        pParty->pPlayers[i].playReaction(SPEECH_FALLING);
+                    if (!pParty->pCharacters[i].HasEnchantedItemEquipped(ITEM_ENCHANTMENT_OF_FEATHER_FALLING) &&
+                        !pParty->pCharacters[i].WearsItem(ITEM_ARTIFACT_HERMES_SANDALS, ITEM_SLOT_BOOTS) &&
+                        pParty->pCharacters[i].CanAct())
+                        pParty->pCharacters[i].playReaction(SPEECH_FALLING);
                 }
             }
         }

@@ -75,7 +75,7 @@ struct SpriteObject {
     ItemGen containing_item;
     SPELL_TYPE uSpellID = SPELL_NONE;
     int spell_level = 0;
-    PLAYER_SKILL_MASTERY spell_skill = PLAYER_SKILL_MASTERY_NONE;
+    CharacterSkillMastery spell_skill = CHARACTER_SKILL_MASTERY_NONE;
     int field_54 = 0;
     int spell_caster_pid = 0;
     int spell_target_pid = 0;

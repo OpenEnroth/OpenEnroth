@@ -358,7 +358,7 @@ bool enterHouse(HOUSE_ID uHouseID) {
             in_current_building_type = pAnimatedRooms[buildingTable[HOUSE_LORD_AND_JUDGE_EMERALD_ISLE].uAnimationID].uBuildingType;
             ++pParty->uNumPrisonTerms;
             pParty->uFine = 0;
-            for (Player &player : pParty->pPlayers) {
+            for (Character &player : pParty->pCharacters) {
                 player.timeToRecovery = 0;
                 player.uNumDivineInterventionCastsThisDay = 0;
                 player.SetVariable(VAR_Award, Award_PrisonTerms);
@@ -1047,7 +1047,7 @@ void GUIWindow_House::learnSkillsDialogue() {
     int buttonsLimit = pDialogueWindow->pStartingPosActiveItem + pDialogueWindow->pNumPresenceButton;
     for (int i = pDialogueWindow->pStartingPosActiveItem; i < buttonsLimit; i++) {
         CharacterSkillType skill = GetLearningDialogueSkill((DIALOGUE_TYPE)pDialogueWindow->GetControl(i)->msg_param);
-        if (skillMaxMasteryPerClass[pParty->activeCharacter().classType][skill] != PLAYER_SKILL_MASTERY_NONE &&
+        if (skillMaxMasteryPerClass[pParty->activeCharacter().classType][skill] != CHARACTER_SKILL_MASTERY_NONE &&
             !pParty->activeCharacter().pActiveSkills[skill]) {
             optionsText.push_back(localization->GetSkillName(skill));
             haveLearnableSkills = true;
@@ -1062,7 +1062,7 @@ void GUIWindow_House::learnSkillsDialogue() {
     dialogue.uFrameZ = SIDE_TEXT_BOX_POS_Z;
 
     if (!haveLearnableSkills) {
-        Player &player = pParty->activeCharacter();
+        Character &player = pParty->activeCharacter();
         std::string str = localization->FormatString(LSTR_FMT_SEEK_KNOWLEDGE_ELSEWHERE, player.name.c_str(), localization->GetClassName(player.classType));
         str = str + "\n \n" + localization->GetString(LSTR_NO_FURTHER_OFFERS);
 
@@ -1079,7 +1079,7 @@ void GUIWindow_House::learnSkillsDialogue() {
 
 void GUIWindow_House::learnSelectedSkill(CharacterSkillType skill) {
     int pPrice = PriceCalculator::skillLearningCostForPlayer(&pParty->activeCharacter(), buildingTable[wData.val - 1]);
-    if (skillMaxMasteryPerClass[pParty->activeCharacter().classType][skill] != PLAYER_SKILL_MASTERY_NONE) {
+    if (skillMaxMasteryPerClass[pParty->activeCharacter().classType][skill] != CHARACTER_SKILL_MASTERY_NONE) {
         if (!pParty->activeCharacter().pActiveSkills[skill]) {
             if (pParty->GetGold() < pPrice) {
                 GameUI_SetStatusBar(LSTR_NOT_ENOUGH_GOLD);

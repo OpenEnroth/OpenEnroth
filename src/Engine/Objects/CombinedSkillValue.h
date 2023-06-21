@@ -7,70 +7,71 @@
  * So max possible stored skill level is 63.
  */
 // TODO(pskelton): reduce or drop in favour of combined value
-typedef uint16_t PLAYER_SKILL;
-typedef uint8_t PLAYER_SKILL_LEVEL;
+typedef uint16_t CHARACTER_SKILL;
+typedef uint8_t CHARACTER_SKILL_LEVEL;
 
-enum class PLAYER_SKILL_MASTERY : int32_t {  // TODO: type could be changed to something else when SpriteObject_MM7 implemented in
+// TODO(pskelton): drop CHARACTER_ at start?
+enum class CharacterSkillMastery : int32_t {  // TODO: type could be changed to something else when SpriteObject_MM7 implemented in
                                              // LegacyImages
-    PLAYER_SKILL_MASTERY_NONE = 0,
-    PLAYER_SKILL_MASTERY_NOVICE = 1,
-    PLAYER_SKILL_MASTERY_EXPERT = 2,
-    PLAYER_SKILL_MASTERY_MASTER = 3,
-    PLAYER_SKILL_MASTERY_GRANDMASTER = 4,
+    CHARACTER_SKILL_MASTERY_NONE = 0,
+    CHARACTER_SKILL_MASTERY_NOVICE = 1,
+    CHARACTER_SKILL_MASTERY_EXPERT = 2,
+    CHARACTER_SKILL_MASTERY_MASTER = 3,
+    CHARACTER_SKILL_MASTERY_GRANDMASTER = 4,
 
-    PLAYER_SKILL_MASTERY_FIRST = PLAYER_SKILL_MASTERY_NOVICE,
-    PLAYER_SKILL_MASTERY_LAST = PLAYER_SKILL_MASTERY_GRANDMASTER
+    CHARACTER_SKILL_MASTERY_FIRST = CHARACTER_SKILL_MASTERY_NOVICE,
+    CHARACTER_SKILL_MASTERY_LAST = CHARACTER_SKILL_MASTERY_GRANDMASTER
 };
-using enum PLAYER_SKILL_MASTERY;
+using enum CharacterSkillMastery;
 
-inline Segment<PLAYER_SKILL_MASTERY> SkillMasteries() {
-    return Segment(PLAYER_SKILL_MASTERY_FIRST, PLAYER_SKILL_MASTERY_LAST);
+inline Segment<CharacterSkillMastery> SkillMasteries() {
+    return Segment(CHARACTER_SKILL_MASTERY_FIRST, CHARACTER_SKILL_MASTERY_LAST);
 }
 
-inline PLAYER_SKILL_LEVEL GetSkillLevel(const PLAYER_SKILL skill_value) {
+inline CHARACTER_SKILL_LEVEL GetSkillLevel(const CHARACTER_SKILL skill_value) {
     return skill_value & 0x3F;
 }
 
 /**
  * @offset 0x00458244.
  */
-inline PLAYER_SKILL_MASTERY GetSkillMastery(const PLAYER_SKILL skill_value) {
-    // PLAYER_SKILL_MASTERY_NONE equal PLAYER_SKILL_MASTERY_NOVICE with skill level 0.
+inline CharacterSkillMastery GetSkillMastery(const CHARACTER_SKILL skill_value) {
+    // CHARACTER_SKILL_MASTERY_NONE equal CHARACTER_SKILL_MASTERY_NOVICE with skill level 0.
     if (GetSkillLevel(skill_value) == 0)
-        return PLAYER_SKILL_MASTERY_NONE;
+        return CHARACTER_SKILL_MASTERY_NONE;
 
     switch (skill_value & 0x1C0) {
         case 0x100:
-            return PLAYER_SKILL_MASTERY_GRANDMASTER;
+            return CHARACTER_SKILL_MASTERY_GRANDMASTER;
         case 0x80:
-            return PLAYER_SKILL_MASTERY_MASTER;
+            return CHARACTER_SKILL_MASTERY_MASTER;
         case 0x40:
-            return PLAYER_SKILL_MASTERY_EXPERT;
+            return CHARACTER_SKILL_MASTERY_EXPERT;
         case 0x00:
-            return PLAYER_SKILL_MASTERY_NOVICE;
+            return CHARACTER_SKILL_MASTERY_NOVICE;
     }
 
     assert(false);  // should not get here
-    return PLAYER_SKILL_MASTERY_NONE;
+    return CHARACTER_SKILL_MASTERY_NONE;
 }
 
-inline void SetSkillLevel(PLAYER_SKILL *skill_value, PLAYER_SKILL_LEVEL level) {
+inline void SetSkillLevel(CHARACTER_SKILL *skill_value, CHARACTER_SKILL_LEVEL level) {
     *skill_value = (*skill_value & ~0x3F) | (level & 0x3F);
 }
 
-inline void SetSkillMastery(PLAYER_SKILL *skill_value, PLAYER_SKILL_MASTERY mastery) {
-    assert(mastery <= PLAYER_SKILL_MASTERY_GRANDMASTER);
+inline void SetSkillMastery(CHARACTER_SKILL *skill_value, CharacterSkillMastery mastery) {
+    assert(mastery <= CHARACTER_SKILL_MASTERY_GRANDMASTER);
 
     *skill_value &= 0x3F;
 
     switch (mastery) {
-        case (PLAYER_SKILL_MASTERY_EXPERT):
+        case (CHARACTER_SKILL_MASTERY_EXPERT):
             *skill_value |= 0x40;
             break;
-        case (PLAYER_SKILL_MASTERY_MASTER):
+        case (CHARACTER_SKILL_MASTERY_MASTER):
             *skill_value |= 0x80;
             break;
-        case (PLAYER_SKILL_MASTERY_GRANDMASTER):
+        case (CHARACTER_SKILL_MASTERY_GRANDMASTER):
             *skill_value |= 0x100;
             break;
         default:
@@ -80,10 +81,10 @@ inline void SetSkillMastery(PLAYER_SKILL *skill_value, PLAYER_SKILL_MASTERY mast
 
 // TODO(pskelton): drop
 /**
- * Construct player skill value using skill mastery and skill level
+ * Construct character skill value using skill mastery and skill level
  */
-inline PLAYER_SKILL ConstructSkillValue(PLAYER_SKILL_MASTERY mastery, PLAYER_SKILL_LEVEL level) {
-    PLAYER_SKILL skill = 0;
+inline CHARACTER_SKILL ConstructSkillValue(CharacterSkillMastery mastery, CHARACTER_SKILL_LEVEL level) {
+    CHARACTER_SKILL skill = 0;
 
     SetSkillMastery(&skill, mastery);
     SetSkillLevel(&skill, level);
@@ -94,11 +95,11 @@ inline PLAYER_SKILL ConstructSkillValue(PLAYER_SKILL_MASTERY mastery, PLAYER_SKI
 // Simple POD-like class for storing full skill value (level and mastery)
 class CombinedSkillValue {
     int _level = 0;
-    PLAYER_SKILL_MASTERY _mastery = PLAYER_SKILL_MASTERY_NONE;
+    CharacterSkillMastery _mastery = CHARACTER_SKILL_MASTERY_NONE;
 
  public:
     CombinedSkillValue();
-    CombinedSkillValue(int level, PLAYER_SKILL_MASTERY mastery);
+    CombinedSkillValue(int level, CharacterSkillMastery mastery);
 
     // joins level and mastery into one integer
     [[nodiscard]] uint16_t join() const;
@@ -106,11 +107,11 @@ class CombinedSkillValue {
     int level() const;
     CombinedSkillValue &setLevel(int level);
 
-    PLAYER_SKILL_MASTERY mastery() const;
-    CombinedSkillValue &setMastery(PLAYER_SKILL_MASTERY mastery);
+    CharacterSkillMastery mastery() const;
+    CombinedSkillValue &setMastery(CharacterSkillMastery mastery);
 
     static bool isLevelValid(int level);
-    static bool isMasteryValid(PLAYER_SKILL_MASTERY mastery);
+    static bool isMasteryValid(CharacterSkillMastery mastery);
     static CombinedSkillValue novice();
     static CombinedSkillValue fromJoined(uint16_t);
 

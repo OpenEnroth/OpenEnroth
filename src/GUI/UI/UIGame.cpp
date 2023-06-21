@@ -202,7 +202,7 @@ void GameUI_LoadPlayerPortraintsAndVoices() {
     for (uint i = 0; i < 4; ++i) {
         for (uint j = 0; j < 56; ++j) {
             game_ui_player_faces[i][j] = assets->getImage_ColorKey(
-                fmt::format("{}{:02}", pPlayerPortraitsNames[pParty->pPlayers[i].uCurrentFace], j + 1));
+                fmt::format("{}{:02}", pPlayerPortraitsNames[pParty->pCharacters[i].uCurrentFace], j + 1));
         }
     }
 
@@ -215,8 +215,8 @@ void GameUI_LoadPlayerPortraintsAndVoices() {
             for (uint i = 0; i < 4; ++i)
             {
                 pSoundList->LoadSound(2 * (SoundSetAction[24][0] + 50 *
-       pParty->pPlayers[i].uVoiceID) + 4998, 0); pSoundList->LoadSound(2 *
-       (SoundSetAction[24][0] + 50 * pParty->pPlayers[i].uVoiceID) + 4999, 0);
+       pParty->pCharacters[i].uVoiceID) + 4998, 0); pSoundList->LoadSound(2 *
+       (SoundSetAction[24][0] + 50 * pParty->pCharacters[i].uVoiceID) + 4999, 0);
             }
         }
     */
@@ -601,7 +601,7 @@ void GUIWindow_GameOptions::Update() {
 }
 
 void GameUI_OnPlayerPortraitLeftClick(unsigned int uPlayerID) {
-    Player *player = &pParty->pPlayers[uPlayerID - 1];
+    Character *player = &pParty->pCharacters[uPlayerID - 1];
     if (pParty->pPickedItem.uItemID != ITEM_NULL) {
         if (int slot = player->AddItem(-1, pParty->pPickedItem.uItemID)) {
             player->pInventoryItemList[slot - 1] = pParty->pPickedItem;
@@ -795,11 +795,11 @@ void GameUI_DrawFoodAndGold() {
 
 //----- (0041B0C9) --------------------------------------------------------
 void GameUI_DrawLifeManaBars() {
-    for (int i = 0; i < pParty->pPlayers.size(); ++i) {
-        if (pParty->pPlayers[i].health > 0) {
+    for (int i = 0; i < pParty->pCharacters.size(); ++i) {
+        if (pParty->pCharacters[i].health > 0) {
             int v17 = 0;
             if (i == 2 || i == 3) v17 = 2;
-            double hpFillRatio = (double)pParty->pPlayers[i].health / (double)pParty->pPlayers[i].GetMaxHealth();
+            double hpFillRatio = (double)pParty->pCharacters[i].health / (double)pParty->pCharacters[i].GetMaxHealth();
 
             auto pTextureHealth = game_ui_bar_green;
             if (hpFillRatio > 0.5) {
@@ -820,8 +820,8 @@ void GameUI_DrawLifeManaBars() {
                 render->ResetUIClipRect();
             }
         }
-        if (pParty->pPlayers[i].mana > 0) {
-            double mpFillRatio = (double)pParty->pPlayers[i].mana / (double)pParty->pPlayers[i].GetMaxMana();
+        if (pParty->pCharacters[i].mana > 0) {
+            double mpFillRatio = (double)pParty->pCharacters[i].mana / (double)pParty->pCharacters[i].GetMaxMana();
             if (mpFillRatio > 1.0) {
                 mpFillRatio = 1.0;
             }
@@ -1293,14 +1293,14 @@ void GameUI_DrawPartySpells() {
         }
     }
 
-    for (int i = 0; i < pParty->pPlayers.size(); ++i) {
-        if (pParty->pPlayers[i].pPlayerBuffs[CHARACTER_BUFF_HAMMERHANDS].Active())
+    for (int i = 0; i < pParty->pCharacters.size(); ++i) {
+        if (pParty->pCharacters[i].pCharacterBuffs[CHARACTER_BUFF_HAMMERHANDS].Active())
             render->DrawTextureNew((pPlayerPortraitsXCoords_For_PlayerBuffAnimsDrawing[i] + 72) / 640.0f, 427 / 480.0f, game_ui_playerbuff_hammerhands);
-        if (pParty->pPlayers[i].pPlayerBuffs[CHARACTER_BUFF_BLESS].Active())
+        if (pParty->pCharacters[i].pCharacterBuffs[CHARACTER_BUFF_BLESS].Active())
             render->DrawTextureNew((pPlayerPortraitsXCoords_For_PlayerBuffAnimsDrawing[i] + 72) / 640.0f, 393 / 480.0f, game_ui_playerbuff_bless);
-        if (pParty->pPlayers[i].pPlayerBuffs[CHARACTER_BUFF_PRESERVATION].Active())
+        if (pParty->pCharacters[i].pCharacterBuffs[CHARACTER_BUFF_PRESERVATION].Active())
             render->DrawTextureNew((pPlayerPortraitsXCoords_For_PlayerBuffAnimsDrawing[i] + 72) / 640.0f, 410 / 480.0f, game_ui_playerbuff_preservation);
-        if (pParty->pPlayers[i].pPlayerBuffs[CHARACTER_BUFF_PAIN_REFLECTION].Active())
+        if (pParty->pCharacters[i].pCharacterBuffs[CHARACTER_BUFF_PAIN_REFLECTION].Active())
             render->DrawTextureNew((pPlayerPortraitsXCoords_For_PlayerBuffAnimsDrawing[i] + 72) / 640.0f, 444 / 480.0f, game_ui_playerbuff_pain_reflection);
     }
 }
@@ -1313,8 +1313,8 @@ void GameUI_DrawPortraits() {
 
     pParty->updateDelayedReaction();
 
-    for (int i = 0; i < pParty->pPlayers.size(); ++i) {
-        Player *pPlayer = &pParty->pPlayers[i];
+    for (int i = 0; i < pParty->pCharacters.size(); ++i) {
+        Character *pPlayer = &pParty->pCharacters[i];
         if (pPlayer->IsEradicated()) {
             pPortrait = game_ui_player_face_eradicated;
             if (pParty->pPartyBuffs[PARTY_BUFF_INVISIBILITY].Active())
@@ -1363,10 +1363,10 @@ void GameUI_DrawPortraits() {
     }
     if (pParty->bTurnBasedModeOn) {
         if (pTurnEngine->turn_stage != TE_WAIT) {
-            if (PID_TYPE(pTurnEngine->pQueue[0].uPackedID) == OBJECT_Player) {
+            if (PID_TYPE(pTurnEngine->pQueue[0].uPackedID) == OBJECT_Character) {
                 if (pTurnEngine->uActorQueueSize > 0) {
                     for (uint i = 0; i < (uint)pTurnEngine->uActorQueueSize; ++i) {
-                        if (PID_TYPE(pTurnEngine->pQueue[i].uPackedID) != OBJECT_Player)
+                        if (PID_TYPE(pTurnEngine->pQueue[i].uPackedID) != OBJECT_Character)
                             break;
 
                         auto alert_texture = game_ui_player_alert_green;
@@ -1383,8 +1383,8 @@ void GameUI_DrawPortraits() {
             }
         }
     } else {
-        for (int i = 0; i < pParty->pPlayers.size(); ++i) {
-            if (pParty->pPlayers[i].CanAct() && !pParty->pPlayers[i].timeToRecovery) {
+        for (int i = 0; i < pParty->pCharacters.size(); ++i) {
+            if (pParty->pCharacters[i].CanAct() && !pParty->pCharacters[i].timeToRecovery) {
                 auto alert_texture = game_ui_player_alert_green;
                 if (pParty->GetRedAlert())
                     alert_texture = game_ui_player_alert_red;
@@ -1428,15 +1428,15 @@ void GameUI_DrawMinimap(unsigned int uX, unsigned int uY, unsigned int uZ,
     signed int uWidth = uZ - uX;
 
     bool bWizardEyeActive = pParty->wizardEyeActive();
-    PLAYER_SKILL_MASTERY uWizardEyeSkillLevel = pParty->wizardEyeSkillLevel();
+    CharacterSkillMastery uWizardEyeSkillLevel = pParty->wizardEyeSkillLevel();
     if (CheckHiredNPCSpeciality(Cartographer)) {
         bWizardEyeActive = true;
-        uWizardEyeSkillLevel = uWizardEyeSkillLevel > PLAYER_SKILL_MASTERY_EXPERT ? uWizardEyeSkillLevel : PLAYER_SKILL_MASTERY_EXPERT;
+        uWizardEyeSkillLevel = uWizardEyeSkillLevel > CHARACTER_SKILL_MASTERY_EXPERT ? uWizardEyeSkillLevel : CHARACTER_SKILL_MASTERY_EXPERT;
     }
 
     if (engine->config->debug.WizardEye.value()) {
         bWizardEyeActive = true;
-        uWizardEyeSkillLevel = PLAYER_SKILL_MASTERY_MASTER;
+        uWizardEyeSkillLevel = CHARACTER_SKILL_MASTERY_MASTER;
     }
 
     if (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR) {
@@ -1530,7 +1530,7 @@ void GameUI_DrawMinimap(unsigned int uX, unsigned int uY, unsigned int uZ,
                     int linez = uCenterX + fixpoint_mul(uZoom, Vert2X);
                     int linew = uCenterY - fixpoint_mul(uZoom, Vert2Y);
 
-                    if (bWizardEyeActive && uWizardEyeSkillLevel >= PLAYER_SKILL_MASTERY_MASTER &&
+                    if (bWizardEyeActive && uWizardEyeSkillLevel >= CHARACTER_SKILL_MASTERY_MASTER &&
                         (pIndoor->pFaces[pOutline->uFace1ID].Clickable() ||
                             pIndoor->pFaces[pOutline->uFace2ID].Clickable()) &&
                         (pIndoor->pFaceExtras[pIndoor->pFaces[pOutline->uFace1ID].uFaceExtraID].uEventID ||
@@ -1563,7 +1563,7 @@ void GameUI_DrawMinimap(unsigned int uX, unsigned int uY, unsigned int uZ,
 
     // draw objects on the minimap
     if (bWizardEyeActive) {
-        if (uWizardEyeSkillLevel >= PLAYER_SKILL_MASTERY_EXPERT) {
+        if (uWizardEyeSkillLevel >= CHARACTER_SKILL_MASTERY_EXPERT) {
             for (uint i = 0; i < pSpriteObjects.size(); ++i) {
                 if (!pSpriteObjects[i].uType ||
                     !pSpriteObjects[i].uObjectDescID)

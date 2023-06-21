@@ -25,7 +25,7 @@ class GUIWindow_Temple : public GUIWindow_House {
     /**
      * @offset 0x4B6FF9
      */
-    bool isPlayerHealableByTemple(const Player &player) const;
+    bool isPlayerHealableByTemple(const Character &player) const;
 
  private:
     std::vector<int> _templeSpellCounter;

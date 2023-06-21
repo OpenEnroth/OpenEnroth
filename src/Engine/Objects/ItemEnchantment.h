@@ -6,7 +6,7 @@
 
 #include "Utility/IndexedArray.h"
 
-struct Player;
+struct Character;
 
 struct CEnchantment {
     CEnchantment() {}

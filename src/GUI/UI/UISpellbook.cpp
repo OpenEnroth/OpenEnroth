@@ -69,11 +69,11 @@ void GUIWindow_Spellbook::openSpellbookPage(int page) {
 
 void GUIWindow_Spellbook::openSpellbook() {
     int pageSpells = 0;
-    const Player &player = pParty->activeCharacter();
+    const Character &player = pParty->activeCharacter();
 
     loadSpellbook();
 
-    const PlayerSpellbookChapter *chapter = &player.spellbook.pChapters[player.lastOpenedSpellbookPage];
+    const CharacterSpellbookChapter *chapter = &player.spellbook.pChapters[player.lastOpenedSpellbookPage];
     for (int i = 0; i < 11; ++i) {
         if (!chapter->bIsSpellAvailable[i] && !engine->config->debug.AllMagic.value())
             continue;
@@ -118,7 +118,7 @@ void GUIWindow_Spellbook::openSpellbook() {
 }
 
 void GUIWindow_Spellbook::Update() {
-    const Player &player = pParty->activeCharacter();
+    const Character &player = pParty->activeCharacter();
     unsigned int pX_coord, pY_coord;
 
     drawCurrentSchoolBackground();
@@ -140,7 +140,7 @@ void GUIWindow_Spellbook::Update() {
             }
             render->DrawTextureNew(pX_coord / 640.0f, pY_coord / 480.0f, pPageTexture);
 
-            const PlayerSpellbookChapter *chapter = &player.spellbook.pChapters[player.lastOpenedSpellbookPage];
+            const CharacterSpellbookChapter *chapter = &player.spellbook.pChapters[player.lastOpenedSpellbookPage];
             for (int i = 0; i < 11; ++i) {
                 if (chapter->bIsSpellAvailable[i] || engine->config->debug.AllMagic.value()) {
                     // this should check if player knows spell

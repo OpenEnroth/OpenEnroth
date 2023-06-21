@@ -8,7 +8,7 @@
 
 
 //----- (00494AED) --------------------------------------------------------
-unsigned int PlayerFrameTable::GetFrameIdByExpression(CHARACTER_EXPRESSION_ID expression) {
+unsigned int PlayerFrameTable::GetFrameIdByExpression(CharacterExpressionID expression) {
     for (size_t i = 0; i < this->pFrames.size(); i++) {
         if (this->pFrames[i].expression == expression) return i;
     }
@@ -141,7 +141,7 @@ void PlayerFrameTable::FromFile(const Blob &data_mm6, const Blob &data_mm7, cons
 //                // v8 = atoi(v24.pProperties[0]);
 //                // v9 = v24.pProperties[1];
 //                this->pFrames[this->uNumFrames].expression =
-//                    (CHARACTER_EXPRESSION_ID)atoi(v24.pProperties[0]);
+//                    (CharacterExpressionID)atoi(v24.pProperties[0]);
 //                // v10 = atoi(v9);
 //                // v11 = v24.pProperties[2];
 //                this->pFrames[this->uNumFrames].uTextureID =

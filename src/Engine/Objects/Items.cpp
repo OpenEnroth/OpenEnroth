@@ -23,9 +23,9 @@ ItemGen *ptr_50C9A4_ItemToEnchant;
 
 struct ItemTable *pItemTable;  // 005D29E0
 
-static std::map<int, std::map<CHARACTER_ATTRIBUTE_TYPE, CEnchantment>> regularBonusMap;
-static std::map<int, std::map<CHARACTER_ATTRIBUTE_TYPE, CEnchantment>> specialBonusMap;
-static std::map<ITEM_TYPE, std::map<CHARACTER_ATTRIBUTE_TYPE, CEnchantment>> artifactBonusMap;
+static std::map<int, std::map<CharacterAttributeType, CEnchantment>> regularBonusMap;
+static std::map<int, std::map<CharacterAttributeType, CEnchantment>> specialBonusMap;
+static std::map<ITEM_TYPE, std::map<CharacterAttributeType, CEnchantment>> artifactBonusMap;
 
 static std::unordered_map<ITEM_TYPE, ITEM_TYPE> itemTextureIdByItemId = {
     { ITEM_RELIC_HARECKS_LEATHER,       ITEM_POTION_STONESKIN },
@@ -194,8 +194,8 @@ std::string ItemGen::GetIdentifiedName() {
     }
 
     if (uItemID == ITEM_QUEST_LICH_JAR_FULL) {  // Lich Jar
-        if (uHolderPlayer >= 0 && uHolderPlayer < pParty->pPlayers.size()) {
-            const std::string &player_name = pParty->pPlayers[uHolderPlayer].name;
+        if (uHolderPlayer >= 0 && uHolderPlayer < pParty->pCharacters.size()) {
+            const std::string &player_name = pParty->pCharacters[uHolderPlayer].name;
             if (player_name.back() == 's')
                 return localization->FormatString(
                     LSTR_FMT_JAR,
@@ -267,8 +267,8 @@ bool ItemGen::GenerateArtifact() {
 }
 
 template<class Key, class ActualKey>
-static void AddToMap(std::map<Key, std::map<CHARACTER_ATTRIBUTE_TYPE, CEnchantment>> &map,
-                     ActualKey key, CHARACTER_ATTRIBUTE_TYPE subkey, int bonusValue = 0, CharacterSkillType skill = CHARACTER_SKILL_INVALID) {
+static void AddToMap(std::map<Key, std::map<CharacterAttributeType, CEnchantment>> &map,
+                     ActualKey key, CharacterAttributeType subkey, int bonusValue = 0, CharacterSkillType skill = CHARACTER_SKILL_INVALID) {
     auto &submap = map[key];
 
     Assert(!submap.contains(subkey));
@@ -635,8 +635,8 @@ void ItemGen::PopulateArtifactBonusMap() {
     AddToMap(artifactBonusMap, ITEM_ARTIFACT_LADYS_ESCORT, CHARACTER_ATTRIBUTE_RESIST_BODY, 10);
 }
 
-void ItemGen::GetItemBonusSpecialEnchantment(const Player *owner,
-                                             CHARACTER_ATTRIBUTE_TYPE attrToGet,
+void ItemGen::GetItemBonusSpecialEnchantment(const Character *owner,
+                                             CharacterAttributeType attrToGet,
                                              int *additiveBonus,
                                              int *halfSkillBonus) const {
     auto pos = specialBonusMap.find(this->special_enchantment);
@@ -661,8 +661,8 @@ void ItemGen::GetItemBonusSpecialEnchantment(const Player *owner,
     }
 }
 
-void ItemGen::GetItemBonusArtifact(const Player *owner,
-                                   CHARACTER_ATTRIBUTE_TYPE attrToGet,
+void ItemGen::GetItemBonusArtifact(const Character *owner,
+                                   CharacterAttributeType attrToGet,
                                    int *bonusSum) const {
     auto pos = artifactBonusMap.find(this->uItemID);
     if (pos == artifactBonusMap.end())
@@ -680,7 +680,7 @@ void ItemGen::GetItemBonusArtifact(const Player *owner,
     }
 }
 
-bool ItemGen::IsRegularEnchanmentForAttribute(CHARACTER_ATTRIBUTE_TYPE attrToGet) {
+bool ItemGen::IsRegularEnchanmentForAttribute(CharacterAttributeType attrToGet) {
     auto pos = specialBonusMap.find(this->uEnchantmentType);
     if (pos == specialBonusMap.end())
         return false;

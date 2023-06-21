@@ -7,7 +7,7 @@
 #include "Utility/Memory/Blob.h"
 
 struct PlayerFrame {
-    CHARACTER_EXPRESSION_ID expression;
+    CharacterExpressionID expression;
     uint16_t uTextureID;
     int16_t uAnimTime;
     int16_t uAnimLength;
@@ -15,7 +15,7 @@ struct PlayerFrame {
 };
 
 struct PlayerFrameTable {
-    unsigned int GetFrameIdByExpression(CHARACTER_EXPRESSION_ID expression);
+    unsigned int GetFrameIdByExpression(CharacterExpressionID expression);
     PlayerFrame *GetFrameBy_x(unsigned int uFramesetID, unsigned int uFrameID);
     PlayerFrame *GetFrameBy_y(int *a2, int *a3, int a4);
     void FromFile(const Blob &data_mm6, const Blob &data_mm7, const Blob &data_mm8);

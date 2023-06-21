@@ -47,8 +47,8 @@ void stru262_TurnBased::SortTurnQueue() {
                 pQueue[i].actor_initiative = 1001;
                 pActors[p_id].ResetQueue();
             }
-        } else if (p_type == OBJECT_Player) {
-            if (!pParty->pPlayers[p_id].CanAct()) {
+        } else if (p_type == OBJECT_Character) {
+            if (!pParty->pCharacters[p_id].CanAct()) {
                 --active_actors;
                 pQueue[i].actor_initiative = 1001;
             }
@@ -65,7 +65,7 @@ void stru262_TurnBased::SortTurnQueue() {
                             ->actor_initiative ||  // if less initiative -> top
                     ((test_element->actor_initiative ==
                       current_top->actor_initiative) &&
-                     (((PID_TYPE(test_element->uPackedID) == OBJECT_Player) &&
+                     (((PID_TYPE(test_element->uPackedID) == OBJECT_Character) &&
                        (PID_TYPE(current_top->uPackedID) ==
                         OBJECT_Actor)) ||  // player preferable
                       ((PID_TYPE(test_element->uPackedID) ==
@@ -79,7 +79,7 @@ void stru262_TurnBased::SortTurnQueue() {
         }
     }
     uActorQueueSize = active_actors;
-    if (PID_TYPE(pQueue[0].uPackedID) == OBJECT_Player) {  // we have player at queue top
+    if (PID_TYPE(pQueue[0].uPackedID) == OBJECT_Character) {  // we have player at queue top
         pParty->setActiveCharacterIndex(PID_ID(pQueue[0].uPackedID) + 1);
         flags |= TE_PLAYER_TURN;
     } else {
@@ -88,8 +88,8 @@ void stru262_TurnBased::SortTurnQueue() {
     }
     for (i = 0; i < uActorQueueSize; ++i) {
         if (PID_TYPE(pQueue[i].uPackedID) ==
-            OBJECT_Player)  // set recovery times
-            pParty->pPlayers[PID_ID(pQueue[i].uPackedID)].timeToRecovery =
+            OBJECT_Character)  // set recovery times
+            pParty->pCharacters[PID_ID(pQueue[i].uPackedID)].timeToRecovery =
                 (uint16_t)((double)pQueue[i].actor_initiative * 0.46875);
     }
 }
@@ -115,7 +115,7 @@ void stru262_TurnBased::Start() {
     pTurnEngine->flags &= ~TE_HAVE_PENDING_ACTIONS;
     pEventTimer->TrackGameTime();
     pAudioPlayer->playUISound(SOUND_batllest);
-    // pPlayer = pParty->pPlayers.data();
+    // pPlayer = pParty->pCharacters.data();
     dword_50C998_turnbased_icon_1A =
         pIconsFrameTable->GetIcon(uIconID_TurnStart)->GetAnimLength();
     dword_50C994 = 0;
@@ -127,12 +127,12 @@ void stru262_TurnBased::Start() {
     this->uActorQueueSize = 0;
 
     for (uint pl_id = 0; pl_id < 4; ++pl_id) {
-        if (pParty->pPlayers[pl_id].CanAct()) {
+        if (pParty->pCharacters[pl_id].CanAct()) {
             this->pQueue[this->uActorQueueSize].uPackedID =
-                PID(OBJECT_Player, pl_id);
+                PID(OBJECT_Character, pl_id);
             this->pQueue[this->uActorQueueSize].AI_action_type = TE_AI_PURSUE;
             this->pQueue[this->uActorQueueSize].uActionLength = 0;
-            pParty->pTurnBasedPlayerRecoveryTimes[this->uActorQueueSize] = 0;
+            pParty->pTurnBasedCharacterRecoveryTimes[this->uActorQueueSize] = 0;
             ++this->uActorQueueSize;
         }
     }
@@ -161,9 +161,9 @@ void stru262_TurnBased::Start() {
     a_players_count = 0;
     for (int k = 0; k < this->uActorQueueSize; ++k) {
         // set initial initiative for turn actors
-        if (PID_TYPE(this->pQueue[k].uPackedID) == OBJECT_Player) {
-            if (pParty->pPlayers[PID_ID(this->pQueue[k].uPackedID)].timeToRecovery != 0) {
-                this->pQueue[k].actor_initiative = (int)((double)pParty->pPlayers[PID_ID(this->pQueue[k].uPackedID)].timeToRecovery * 0.46875);
+        if (PID_TYPE(this->pQueue[k].uPackedID) == OBJECT_Character) {
+            if (pParty->pCharacters[PID_ID(this->pQueue[k].uPackedID)].timeToRecovery != 0) {
+                this->pQueue[k].actor_initiative = (int)((double)pParty->pCharacters[PID_ID(this->pQueue[k].uPackedID)].timeToRecovery * 0.46875);
             } else {
                 activ_players[a_players_count] = k;
                 ++a_players_count;
@@ -183,7 +183,7 @@ void stru262_TurnBased::Start() {
     if (a_players_count > 0) {
         for (i = 0; i < a_players_count; ++i)
             players_recovery_time[i] =
-                pParty->pPlayers[PID_ID(this->pQueue[activ_players[i]].uPackedID)].GetAttackRecoveryTime(false);
+                pParty->pCharacters[PID_ID(this->pQueue[activ_players[i]].uPackedID)].GetAttackRecoveryTime(false);
         // sort players by recovery time
         for (i = 0; i < a_players_count - 1; ++i) {
             for (j = i + 1; j < a_players_count; ++j) {
@@ -224,8 +224,8 @@ void stru262_TurnBased::End(bool bPlaySound) {
     for (i = 0; i < uActorQueueSize; ++i) {
         objType = (ObjectType)PID_TYPE(pQueue[i].uPackedID);
         objID = PID_ID(pQueue[i].uPackedID);
-        if (objType == OBJECT_Player)
-            pParty->pPlayers[objID].timeToRecovery = (uint16_t)((double)pQueue[i].actor_initiative * flt_debugrecmod3);
+        if (objType == OBJECT_Character)
+            pParty->pCharacters[objID].timeToRecovery = (uint16_t)((double)pQueue[i].actor_initiative * flt_debugrecmod3);
         else if (objType == OBJECT_Actor)
             pActors[objID].pMonsterInfo.uRecoveryTime = (uint16_t)((double)pQueue[i].actor_initiative * flt_debugrecmod3);
     }
@@ -327,13 +327,13 @@ void stru262_TurnBased::StartTurn() {
     // add player to queue if he can act
     for (player_num = 0; player_num < 4; ++player_num) {
         for (j = 0; j < uActorQueueSize; ++j) {
-            if (PID_TYPE(pQueue[j].uPackedID) == OBJECT_Player) {
-                if (pParty->pPlayers[PID_ID(pQueue[j].uPackedID)].CanAct() && (player_num != PID_ID(pQueue[j].uPackedID)))
+            if (PID_TYPE(pQueue[j].uPackedID) == OBJECT_Character) {
+                if (pParty->pCharacters[PID_ID(pQueue[j].uPackedID)].CanAct() && (player_num != PID_ID(pQueue[j].uPackedID)))
                     break;
             }
         }
         if (j == uActorQueueSize) {
-            pQueue[uActorQueueSize].uPackedID = PID(OBJECT_Player, player_num);
+            pQueue[uActorQueueSize].uPackedID = PID(OBJECT_Character, player_num);
             pQueue[uActorQueueSize].actor_initiative = 100;
             pQueue[uActorQueueSize].uActionLength = 0;
             pQueue[uActorQueueSize].AI_action_type = TE_AI_STAND;
@@ -363,7 +363,7 @@ void stru262_TurnBased::StartTurn() {
     }
     StepTurnQueue();
     for (i = 0; i < uActorQueueSize; ++i) {
-        if ((PID_TYPE(pQueue[i].uPackedID) == OBJECT_Player) ||
+        if ((PID_TYPE(pQueue[i].uPackedID) == OBJECT_Character) ||
             (pQueue[i].actor_initiative > 0))
             break;
         AI_Action_(i);
@@ -377,7 +377,7 @@ void stru262_TurnBased::NextTurn() {
     int monster_id;  // eax@5
 
     SortTurnQueue();
-    if (PID_TYPE(pQueue[0].uPackedID) == OBJECT_Player)
+    if (PID_TYPE(pQueue[0].uPackedID) == OBJECT_Character)
         pParty->setActiveCharacterIndex(PID_ID(pQueue[0].uPackedID) + 1);
     else
         pParty->setActiveCharacterIndex(0);
@@ -459,7 +459,7 @@ bool stru262_TurnBased::StepTurnQueue() {
 
     SortTurnQueue();
     if (pQueue[0].actor_initiative != 0) {
-        if (PID_TYPE(pQueue[0].uPackedID) == OBJECT_Player) {
+        if (PID_TYPE(pQueue[0].uPackedID) == OBJECT_Character) {
             do {
                 for (j = 0; j < uActorQueueSize; ++j)
                     --pQueue[j].actor_initiative;
@@ -493,13 +493,13 @@ void stru262_TurnBased::_406457(int a2) {
     signed int v6;  // eax@2
     int i;
     v6 = 0;
-    if (PID_TYPE(pQueue[a2].uPackedID) == OBJECT_Player) {
+    if (PID_TYPE(pQueue[a2].uPackedID) == OBJECT_Character) {
         v4 = PID_ID(pQueue[a2].uPackedID);
-        if (pParty->pTurnBasedPlayerRecoveryTimes[v4]) {
-            v6 = pParty->pTurnBasedPlayerRecoveryTimes[v4];
-            pParty->pTurnBasedPlayerRecoveryTimes[v4] = 0;
+        if (pParty->pTurnBasedCharacterRecoveryTimes[v4]) {
+            v6 = pParty->pTurnBasedCharacterRecoveryTimes[v4];
+            pParty->pTurnBasedCharacterRecoveryTimes[v4] = 0;
         } else {
-            v6 = pParty->pPlayers[v4].GetAttackRecoveryTime(false);
+            v6 = pParty->pCharacters[v4].GetAttackRecoveryTime(false);
         }
         if (v6 < 30) v6 = 30;
     } else {
@@ -511,7 +511,7 @@ void stru262_TurnBased::_406457(int a2) {
 
     pQueue[a2].actor_initiative = v6;
     SortTurnQueue();
-    if (PID_TYPE(pQueue[0].uPackedID) == OBJECT_Player)
+    if (PID_TYPE(pQueue[0].uPackedID) == OBJECT_Character)
         pParty->setActiveCharacterIndex(PID_ID(pQueue[0].uPackedID) + 1);
     else
         pParty->setActiveCharacterIndex(0);
@@ -532,7 +532,7 @@ void stru262_TurnBased::SetAIRecoveryTimes() {
 
     for (i = 0; i < uActorQueueSize; ++i) {
         if (pQueue[i].actor_initiative == 0) {
-            if (PID_TYPE(pQueue[i].uPackedID) == OBJECT_Player) break;
+            if (PID_TYPE(pQueue[i].uPackedID) == OBJECT_Character) break;
             monster = &pActors[PID_ID(pQueue[i].uPackedID)];
             monster_ai_state = monster->uAIState;
             if (monster_ai_state == Standing || monster_ai_state == Fleeing ||
@@ -554,7 +554,7 @@ void stru262_TurnBased::_4065B0() {
     SortTurnQueue();
     if (pQueue[0].actor_initiative <= 0) {
         for (i = 0; i < uActorQueueSize; ++i) {
-            if ((PID_TYPE(pQueue[i].uPackedID) == OBJECT_Player) ||
+            if ((PID_TYPE(pQueue[i].uPackedID) == OBJECT_Character) ||
                 (pQueue[i].actor_initiative > 0))
                 break;
             if ((pQueue[i].uActionLength <= 0) &&
@@ -563,7 +563,7 @@ void stru262_TurnBased::_4065B0() {
         }
     } else {
         StepTurnQueue();
-        if (PID_TYPE(pQueue[0].uPackedID) == OBJECT_Player)
+        if (PID_TYPE(pQueue[0].uPackedID) == OBJECT_Character)
             pParty->setActiveCharacterIndex(PID_ID(pQueue[0].uPackedID) + 1);
         else
             pParty->setActiveCharacterIndex(0);
@@ -864,7 +864,7 @@ bool stru262_TurnBased::ActorMove(signed int queue_position) {
     AIDirection pDir;              // [sp+28h] [bp-2Ch]@10
     unsigned int uActorID;         // [sp+50h] [bp-4h]@2
 
-    if (PID_TYPE(pQueue[queue_position].uPackedID) == OBJECT_Player) return 0;
+    if (PID_TYPE(pQueue[queue_position].uPackedID) == OBJECT_Character) return 0;
     uActorID = PID_ID(pQueue[queue_position].uPackedID);
     if (pActors[uActorID].uAIState == Dead ||
         pActors[uActorID].uAIState == Dying ||

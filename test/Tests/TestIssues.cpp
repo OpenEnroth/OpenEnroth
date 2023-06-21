@@ -15,15 +15,15 @@
 
 static int totalPartyHealth() {
     int result = 0;
-    for (const Player &player : pParty->pPlayers)
-        result += player.health;
+    for (const Character &character : pParty->pCharacters)
+        result += character.health;
     return result;
 }
 
 static int partyItemCount() {
     int result = 0;
-    for (const Player &player : pParty->pPlayers)
-        for (const ItemGen &item : player.pOwnItems)
+    for (const Character &character : pParty->pCharacters)
+        for (const ItemGen &item : character.pOwnItems)
             result += item.uItemID != ITEM_NULL;
     return result;
 }
@@ -106,20 +106,20 @@ GAME_TEST(Issues, Issue163) {
 }
 
 GAME_TEST(Issues, Issue198) {
-    // Check that items can't end up out of bounds of player's inventory.
+    // Check that items can't end up out of bounds of character's inventory.
     test->playTraceFromTestData("issue_198.mm7", "issue_198.json");
 
     auto forEachInventoryItem = [](auto &&callback) {
-        for (const Player &player : pParty->pPlayers) {
-            for (int inventorySlot = 0; inventorySlot < Player::INVENTORY_SLOT_COUNT; inventorySlot++) {
-                int itemIndex = player.pInventoryMatrix[inventorySlot];
+        for (const Character &character : pParty->pCharacters) {
+            for (int inventorySlot = 0; inventorySlot < Character::INVENTORY_SLOT_COUNT; inventorySlot++) {
+                int itemIndex = character.pInventoryMatrix[inventorySlot];
                 if (itemIndex <= 0)
                     continue; // Empty or non-primary cell.
 
-                int x = inventorySlot % Player::INVENTORY_SLOTS_WIDTH;
-                int y = inventorySlot / Player::INVENTORY_SLOTS_WIDTH;
+                int x = inventorySlot % Character::INVENTORY_SLOTS_WIDTH;
+                int y = inventorySlot / Character::INVENTORY_SLOTS_WIDTH;
 
-                callback(player.pInventoryItemList[itemIndex - 1], x, y);
+                callback(character.pInventoryItemList[itemIndex - 1], x, y);
             }
         }
     };
@@ -138,8 +138,8 @@ GAME_TEST(Issues, Issue198) {
         int width = GetSizeInInventorySlots(image->width());
         int height = GetSizeInInventorySlots(image->height());
 
-        EXPECT_LE(x + width, Player::INVENTORY_SLOTS_WIDTH);
-        EXPECT_LE(y + height, Player::INVENTORY_SLOTS_HEIGHT);
+        EXPECT_LE(x + width, Character::INVENTORY_SLOTS_WIDTH);
+        EXPECT_LE(y + height, Character::INVENTORY_SLOTS_HEIGHT);
     });
 }
 
@@ -178,9 +178,9 @@ GAME_TEST(Issues, Issue211) {
 
 GAME_TEST(Issues, Issue223) {
     // Fire and air resistance not resetting between games
-    auto checkResistances = [](CHARACTER_ATTRIBUTE_TYPE resistance, std::initializer_list<std::pair<int, int>> resistancePairs) {
+    auto checkResistances = [](CharacterAttributeType resistance, std::initializer_list<std::pair<int, int>> resistancePairs) {
         for (auto pair : resistancePairs) {
-            EXPECT_EQ(pParty->pPlayers[pair.first].GetActualResistance(resistance), pair.second);
+            EXPECT_EQ(pParty->pCharacters[pair.first].GetActualResistance(resistance), pair.second);
         }
     };
 
@@ -209,7 +209,7 @@ GAME_TEST(Issues, Issue268) {
 GAME_TEST(Issues, Issue271) {
     // Party shouldn't yell when landing from flight
     test->playTraceFromTestData("issue_271.mm7", "issue_271.json");
-    EXPECT_NE(pParty->pPlayers[1].expression, CHARACTER_EXPRESSION_FEAR);
+    EXPECT_NE(pParty->pCharacters[1].expression, CHARACTER_EXPRESSION_FEAR);
 }
 
 GAME_TEST(Issues, Issue272) {
@@ -226,32 +226,32 @@ GAME_TEST(Issues, Issue293a) {
     // Test that barrels in castle Harmondale work and can be triggered only once, and that trash piles work,
     // give an item once, but give disease indefinitely.
     test->playTraceFromTestData("issue_293a.mm7", "issue_293a.json", [] {
-        EXPECT_EQ(pParty->pPlayers[0].uMight, 30);
-        EXPECT_EQ(pParty->pPlayers[0].uIntelligence, 5);
-        EXPECT_EQ(pParty->pPlayers[0].uPersonality, 5);
-        EXPECT_EQ(pParty->pPlayers[0].uEndurance, 13);
-        EXPECT_EQ(pParty->pPlayers[0].uSpeed, 14);
-        EXPECT_EQ(pParty->pPlayers[0].uAccuracy, 13);
-        EXPECT_EQ(pParty->pPlayers[0].uLuck, 7);
+        EXPECT_EQ(pParty->pCharacters[0].uMight, 30);
+        EXPECT_EQ(pParty->pCharacters[0].uIntelligence, 5);
+        EXPECT_EQ(pParty->pCharacters[0].uPersonality, 5);
+        EXPECT_EQ(pParty->pCharacters[0].uEndurance, 13);
+        EXPECT_EQ(pParty->pCharacters[0].uSpeed, 14);
+        EXPECT_EQ(pParty->pCharacters[0].uAccuracy, 13);
+        EXPECT_EQ(pParty->pCharacters[0].uLuck, 7);
         EXPECT_EQ(partyItemCount(), 18);
-        EXPECT_FALSE(pParty->pPlayers[0].hasItem(ITEM_LEATHER_ARMOR, false));
+        EXPECT_FALSE(pParty->pCharacters[0].hasItem(ITEM_LEATHER_ARMOR, false));
         for (int i = 0; i < 4; i++)
-            EXPECT_EQ(pParty->pPlayers[i].GetMajorConditionIdx(), CONDITION_GOOD);
+            EXPECT_EQ(pParty->pCharacters[i].GetMajorConditionIdx(), CONDITION_GOOD);
     });
 
-    EXPECT_EQ(pParty->pPlayers[0].uMight, 30);
-    EXPECT_EQ(pParty->pPlayers[0].uIntelligence, 7); // +2
-    EXPECT_EQ(pParty->pPlayers[0].uPersonality, 5);
-    EXPECT_EQ(pParty->pPlayers[0].uEndurance, 13);
-    EXPECT_EQ(pParty->pPlayers[0].uSpeed, 14);
-    EXPECT_EQ(pParty->pPlayers[0].uAccuracy, 15); // +2
-    EXPECT_EQ(pParty->pPlayers[0].uLuck, 7);
+    EXPECT_EQ(pParty->pCharacters[0].uMight, 30);
+    EXPECT_EQ(pParty->pCharacters[0].uIntelligence, 7); // +2
+    EXPECT_EQ(pParty->pCharacters[0].uPersonality, 5);
+    EXPECT_EQ(pParty->pCharacters[0].uEndurance, 13);
+    EXPECT_EQ(pParty->pCharacters[0].uSpeed, 14);
+    EXPECT_EQ(pParty->pCharacters[0].uAccuracy, 15); // +2
+    EXPECT_EQ(pParty->pCharacters[0].uLuck, 7);
     EXPECT_EQ(partyItemCount(), 19); // +1
-    EXPECT_TRUE(pParty->pPlayers[0].hasItem(ITEM_CHAIN_MAIL, false)); // That's the item from the trash pile.
-    EXPECT_EQ(pParty->pPlayers[0].GetMajorConditionIdx(), CONDITION_DISEASE_WEAK);
-    EXPECT_EQ(pParty->pPlayers[1].GetMajorConditionIdx(), CONDITION_GOOD); // Good roll here, didn't get sick.
-    EXPECT_EQ(pParty->pPlayers[2].GetMajorConditionIdx(), CONDITION_DISEASE_WEAK);
-    EXPECT_EQ(pParty->pPlayers[3].GetMajorConditionIdx(), CONDITION_DISEASE_WEAK);
+    EXPECT_TRUE(pParty->pCharacters[0].hasItem(ITEM_CHAIN_MAIL, false)); // That's the item from the trash pile.
+    EXPECT_EQ(pParty->pCharacters[0].GetMajorConditionIdx(), CONDITION_DISEASE_WEAK);
+    EXPECT_EQ(pParty->pCharacters[1].GetMajorConditionIdx(), CONDITION_GOOD); // Good roll here, didn't get sick.
+    EXPECT_EQ(pParty->pCharacters[2].GetMajorConditionIdx(), CONDITION_DISEASE_WEAK);
+    EXPECT_EQ(pParty->pCharacters[3].GetMajorConditionIdx(), CONDITION_DISEASE_WEAK);
 }
 
 GAME_TEST(Issues, Issue293b) {
@@ -270,23 +270,23 @@ GAME_TEST(Issues, Issue293b) {
 GAME_TEST(Issues, Issue293c) {
     // Test that cauldrons work, and work only once. The cauldron tested is in the Barrow Downs.
     test->playTraceFromTestData("issue_293c.mm7", "issue_293c.json", [] {
-        EXPECT_EQ(pParty->pPlayers[0].sResAirBase, 230); // An interesting save we have here.
-        EXPECT_EQ(pParty->pPlayers[1].sResAirBase, 50);
-        EXPECT_EQ(pParty->pPlayers[2].sResAirBase, 24);
-        EXPECT_EQ(pParty->pPlayers[3].sResAirBase, 18);
+        EXPECT_EQ(pParty->pCharacters[0].sResAirBase, 230); // An interesting save we have here.
+        EXPECT_EQ(pParty->pCharacters[1].sResAirBase, 50);
+        EXPECT_EQ(pParty->pCharacters[2].sResAirBase, 24);
+        EXPECT_EQ(pParty->pCharacters[3].sResAirBase, 18);
     });
 
-    EXPECT_EQ(pParty->pPlayers[0].sResAirBase, 230);
-    EXPECT_EQ(pParty->pPlayers[1].sResAirBase, 52); // +2
-    EXPECT_EQ(pParty->pPlayers[2].sResAirBase, 24);
-    EXPECT_EQ(pParty->pPlayers[3].sResAirBase, 18);
+    EXPECT_EQ(pParty->pCharacters[0].sResAirBase, 230);
+    EXPECT_EQ(pParty->pCharacters[1].sResAirBase, 52); // +2
+    EXPECT_EQ(pParty->pCharacters[2].sResAirBase, 24);
+    EXPECT_EQ(pParty->pCharacters[3].sResAirBase, 18);
 }
 
 GAME_TEST(Issues, Issue294) {
     auto partyExperience = [&] {
         uint64_t result = 0;
-        for (const Player &player : pParty->pPlayers)
-            result += player.experience;
+        for (const Character &character : pParty->pCharacters)
+            result += character.experience;
         return result;
     };
 
@@ -306,16 +306,16 @@ GAME_TEST(Prs, Pr314) {
     test->playTraceFromTestData("pr_314.mm7", "pr_314.json");
 
     for (int i = 0; i < 4; i++)
-        EXPECT_EQ(pParty->pPlayers[i].uLuck, 20);
+        EXPECT_EQ(pParty->pCharacters[i].uLuck, 20);
 
-    EXPECT_EQ(pParty->pPlayers[0].classType, PLAYER_CLASS_MONK);
-    EXPECT_EQ(pParty->pPlayers[1].classType, PLAYER_CLASS_THIEF);
-    EXPECT_EQ(pParty->pPlayers[2].classType, PLAYER_CLASS_RANGER);
-    EXPECT_EQ(pParty->pPlayers[3].classType, PLAYER_CLASS_CLERIC);
-    EXPECT_EQ(pParty->pPlayers[0].GetRace(), CHARACTER_RACE_ELF);
-    EXPECT_EQ(pParty->pPlayers[1].GetRace(), CHARACTER_RACE_ELF);
-    EXPECT_EQ(pParty->pPlayers[2].GetRace(), CHARACTER_RACE_GOBLIN);
-    EXPECT_EQ(pParty->pPlayers[3].GetRace(), CHARACTER_RACE_ELF);
+    EXPECT_EQ(pParty->pCharacters[0].classType, CHARACTER_CLASS_MONK);
+    EXPECT_EQ(pParty->pCharacters[1].classType, CHARACTER_CLASS_THIEF);
+    EXPECT_EQ(pParty->pCharacters[2].classType, CHARACTER_CLASS_RANGER);
+    EXPECT_EQ(pParty->pCharacters[3].classType, CHARACTER_CLASS_CLERIC);
+    EXPECT_EQ(pParty->pCharacters[0].GetRace(), CHARACTER_RACE_ELF);
+    EXPECT_EQ(pParty->pCharacters[1].GetRace(), CHARACTER_RACE_ELF);
+    EXPECT_EQ(pParty->pCharacters[2].GetRace(), CHARACTER_RACE_GOBLIN);
+    EXPECT_EQ(pParty->pCharacters[3].GetRace(), CHARACTER_RACE_ELF);
 }
 
 GAME_TEST(Issues, Issue315) {
@@ -361,7 +361,7 @@ GAME_TEST(Issues, Issue395) {
     // Check that learning skill works as intended
     auto checkExperience = [](std::initializer_list<std::pair<int, int>> experiencePairs) {
         for (auto pair : experiencePairs) {
-            EXPECT_EQ(pParty->pPlayers[pair.first].experience, pair.second);
+            EXPECT_EQ(pParty->pCharacters[pair.first].experience, pair.second);
         }
     };
 
@@ -401,14 +401,14 @@ GAME_TEST(Issues, Issue405) {
     runTrace();
     game->tick(10);
     EXPECT_TRUE(pParty->pPartyBuffs[PARTY_BUFF_IMMOLATION].Active());
-    int firstRemainingRecovery = pParty->pPlayers[0].timeToRecovery;
+    int firstRemainingRecovery = pParty->pCharacters[0].timeToRecovery;
 
     // 2ms/frame
     test->startDeterministicSegment(2);
     runTrace();
     game->tick(150);
     EXPECT_TRUE(pParty->pPartyBuffs[PARTY_BUFF_IMMOLATION].Active());
-    int secondRemainingRecovery = pParty->pPlayers[0].timeToRecovery;
+    int secondRemainingRecovery = pParty->pCharacters[0].timeToRecovery;
 
     EXPECT_EQ(firstRemainingRecovery - 1, secondRemainingRecovery); // TODO(captainurist): where is this -1 coming from???
 }
@@ -435,10 +435,10 @@ GAME_TEST(Issues, Issue417) {
 }
 
 static void check427Buffs(const char *ctx, std::initializer_list<int> players, bool hasBuff) {
-    for (int player : players) {
+    for (int character : players) {
         for (CharacterBuffs buff : {CHARACTER_BUFF_BLESS, CHARACTER_BUFF_PRESERVATION, CHARACTER_BUFF_HAMMERHANDS, CHARACTER_BUFF_PAIN_REFLECTION}) {
-            EXPECT_EQ(pParty->pPlayers[player].pPlayerBuffs[buff].Active(), hasBuff)
-                << "(with ctx=" << ctx << ", player=" << player << ", buff=" << buff << ")";
+            EXPECT_EQ(pParty->pCharacters[character].pCharacterBuffs[buff].Active(), hasBuff)
+                << "(with ctx=" << ctx << ", character=" << character << ", buff=" << buff << ")";
         }
     }
 }
@@ -454,19 +454,19 @@ GAME_TEST(Issues, Issue427_528) {
     check427Buffs("a", { 1, 2, 3 }, false);
 
     // In this test mastery is enough for the whole party
-    test->playTraceFromTestData("issue_427b.mm7", "issue_427b.json", []() { EXPECT_EQ(pParty->pPlayers[2].mana, 100); });
+    test->playTraceFromTestData("issue_427b.mm7", "issue_427b.json", []() { EXPECT_EQ(pParty->pCharacters[2].mana, 100); });
 
     // Check that all character have buffs
     check427Buffs("b", { 0, 1, 2, 3 }, true);
 
-    // 528 - Check that spells target single player or entire party depending on mastery drain mana
-    EXPECT_EQ(pParty->pPlayers[2].mana, 40);
+    // 528 - Check that spells target single character or entire party depending on mastery drain mana
+    EXPECT_EQ(pParty->pCharacters[2].mana, 40);
 }
 
 GAME_TEST(Issues, Issue442) {
     // Test that regular UI is blocked on spell cast
     test->playTraceFromTestData("issue_442.mm7", "issue_442.json");
-    EXPECT_EQ(pParty->pPlayers[1].pPlayerBuffs[CHARACTER_BUFF_BLESS].Active(), true);
+    EXPECT_EQ(pParty->pCharacters[1].pCharacterBuffs[CHARACTER_BUFF_BLESS].Active(), true);
 }
 
 GAME_TEST(Prs, Pr469) {
@@ -494,8 +494,8 @@ GAME_TEST(Issues, Issue489) {
 
 GAME_TEST(Issues, Issue490) {
     // Check that Poison Spray sprites are moving and doing damage
-    test->playTraceFromTestData("issue_490.mm7", "issue_490.json", []() { EXPECT_EQ(pParty->pPlayers[0].experience, 279); });
-    EXPECT_EQ(pParty->pPlayers[0].experience, 285);
+    test->playTraceFromTestData("issue_490.mm7", "issue_490.json", []() { EXPECT_EQ(pParty->pCharacters[0].experience, 279); });
+    EXPECT_EQ(pParty->pCharacters[0].experience, 285);
 }
 
 GAME_TEST(Issues, Issue491) {
@@ -505,8 +505,8 @@ GAME_TEST(Issues, Issue491) {
 
 GAME_TEST(Issues, Issue492) {
     // Check that spells that target all visible actors work
-    test->playTraceFromTestData("issue_492.mm7", "issue_492.json", []() { EXPECT_EQ(pParty->pPlayers[0].experience, 279); });
-    EXPECT_EQ(pParty->pPlayers[0].experience, 287);
+    test->playTraceFromTestData("issue_492.mm7", "issue_492.json", []() { EXPECT_EQ(pParty->pCharacters[0].experience, 279); });
+    EXPECT_EQ(pParty->pCharacters[0].experience, 287);
 }
 
 // 500
@@ -518,7 +518,7 @@ GAME_TEST(Issues, Issue502) {
 
 static void check503health(std::initializer_list<std::pair<int, int>> playerhealthpairs) {
     for (auto pair : playerhealthpairs) {
-        EXPECT_EQ(pParty->pPlayers[pair.first].health, pair.second);
+        EXPECT_EQ(pParty->pCharacters[pair.first].health, pair.second);
     }
 }
 
@@ -555,7 +555,7 @@ GAME_TEST(Issues, Issue520) {
 }
 
 GAME_TEST(Issues, Issue521) {
-    // 500 endurance leads to asserts in Player::SetRecoveryTime
+    // 500 endurance leads to asserts in Character::SetRecoveryTime
     int oldActive{};
     test->playTraceFromTestData("issue_521.mm7", "issue_521.json", [&] { oldActive = pParty->activeCharacterIndex(); });
     EXPECT_EQ(oldActive, pParty->activeCharacterIndex());
@@ -563,8 +563,8 @@ GAME_TEST(Issues, Issue521) {
 
 GAME_TEST(Issues, Issue527) {
     // Check Cure Disease spell works
-    test->playTraceFromTestData("issue_527.mm7", "issue_527.json", []() { EXPECT_TRUE(pParty->pPlayers[0].conditions.Has(CONDITION_DISEASE_WEAK)); });
-    EXPECT_FALSE(pParty->pPlayers[0].conditions.Has(CONDITION_DISEASE_WEAK));
+    test->playTraceFromTestData("issue_527.mm7", "issue_527.json", []() { EXPECT_TRUE(pParty->pCharacters[0].conditions.Has(CONDITION_DISEASE_WEAK)); });
+    EXPECT_FALSE(pParty->pCharacters[0].conditions.Has(CONDITION_DISEASE_WEAK));
 }
 
 GAME_TEST(Issues, Issue540) {
@@ -597,8 +597,8 @@ GAME_TEST(Issues, Issue574) {
 
 GAME_TEST(Issues, Issue578) {
     // Check that rest & heal work after waiting
-    test->playTraceFromTestData("issue_578.mm7", "issue_578.json", []() { EXPECT_EQ(pParty->pPlayers[0].health, 66); });
-    EXPECT_EQ(pParty->pPlayers[0].health, 108);
+    test->playTraceFromTestData("issue_578.mm7", "issue_578.json", []() { EXPECT_EQ(pParty->pCharacters[0].health, 66); });
+    EXPECT_EQ(pParty->pCharacters[0].health, 108);
 }
 
 GAME_TEST(Issues, Issue598) {
@@ -611,8 +611,8 @@ GAME_TEST(Issues, Issue598) {
 
 static void check601Conds(std::array<Condition, 4> conds, std::array<int, 4> health) {
     for (int i = 0; i < conds.size(); i++) {
-        EXPECT_EQ(pParty->pPlayers[i].GetMajorConditionIdx(), conds[i]);
-        EXPECT_EQ(pParty->pPlayers[i].health, health[i]);
+        EXPECT_EQ(pParty->pCharacters[i].GetMajorConditionIdx(), conds[i]);
+        EXPECT_EQ(pParty->pCharacters[i].health, health[i]);
     }
 }
 
@@ -624,18 +624,18 @@ GAME_TEST(Issues, Issue601) {
 
 GAME_TEST(Issues, Issue608) {
     // Check that using Gate Master ability does not deplete mana of character
-    test->playTraceFromTestData("issue_608.mm7", "issue_608.json", []() { EXPECT_EQ(pParty->pPlayers[0].mana, 35); });
-    EXPECT_EQ(pParty->pPlayers[0].mana, 35);
+    test->playTraceFromTestData("issue_608.mm7", "issue_608.json", []() { EXPECT_EQ(pParty->pCharacters[0].mana, 35); });
+    EXPECT_EQ(pParty->pCharacters[0].mana, 35);
 }
 
 GAME_TEST(Issues, Issue611) {
     // Heal and reanimate dont work
     test->playTraceFromTestData("issue_611.mm7", "issue_611.json");
     // expect chars to be healed and zombies
-    EXPECT_EQ(pParty->pPlayers[0].health, 45);
-    EXPECT_EQ(pParty->pPlayers[1].health, 39);
-    EXPECT_EQ(pParty->pPlayers[2].conditions.Has(CONDITION_ZOMBIE), true);
-    EXPECT_EQ(pParty->pPlayers[3].conditions.Has(CONDITION_ZOMBIE), true);
+    EXPECT_EQ(pParty->pCharacters[0].health, 45);
+    EXPECT_EQ(pParty->pCharacters[1].health, 39);
+    EXPECT_EQ(pParty->pCharacters[2].conditions.Has(CONDITION_ZOMBIE), true);
+    EXPECT_EQ(pParty->pCharacters[3].conditions.Has(CONDITION_ZOMBIE), true);
 }
 
 GAME_TEST(Issues, Issue613) {
@@ -742,10 +742,10 @@ GAME_TEST(Issues, Issue626) {
 GAME_TEST(Issue, Issue645) {
     // Characters does not enter unconscious state
     test->playTraceFromTestData("issue_645.mm7", "issue_645.json");
-    EXPECT_EQ(pParty->pPlayers[0].conditions.Has(CONDITION_UNCONSCIOUS), true);
-    EXPECT_EQ(pParty->pPlayers[1].conditions.Has(CONDITION_UNCONSCIOUS), false);
-    EXPECT_EQ(pParty->pPlayers[2].conditions.Has(CONDITION_UNCONSCIOUS), true);
-    EXPECT_EQ(pParty->pPlayers[3].conditions.Has(CONDITION_UNCONSCIOUS), true);
+    EXPECT_EQ(pParty->pCharacters[0].conditions.Has(CONDITION_UNCONSCIOUS), true);
+    EXPECT_EQ(pParty->pCharacters[1].conditions.Has(CONDITION_UNCONSCIOUS), false);
+    EXPECT_EQ(pParty->pCharacters[2].conditions.Has(CONDITION_UNCONSCIOUS), true);
+    EXPECT_EQ(pParty->pCharacters[3].conditions.Has(CONDITION_UNCONSCIOUS), true);
 }
 
 GAME_TEST(Issues, Issue651) {
@@ -765,20 +765,20 @@ GAME_TEST(Issues, Issue661) {
     // HP/SP regen from items is too high
     int oldHealth = 0;
     int oldMana = 0;
-    test->playTraceFromTestData("issue_661.mm7", "issue_661.json", [&] { oldHealth = pParty->pPlayers[0].health; oldMana = pParty->pPlayers[0].mana; });
+    test->playTraceFromTestData("issue_661.mm7", "issue_661.json", [&] { oldHealth = pParty->pCharacters[0].health; oldMana = pParty->pCharacters[0].mana; });
     // two hour wait period is 24 blocks of 5 mins
     // one item that heals hp, three items heal mana
-    EXPECT_EQ(pParty->pPlayers[0].health, oldHealth + 24);
-    EXPECT_EQ(pParty->pPlayers[0].mana, oldMana + 24*3);
+    EXPECT_EQ(pParty->pCharacters[0].health, oldHealth + 24);
+    EXPECT_EQ(pParty->pCharacters[0].mana, oldMana + 24*3);
 }
 
 GAME_TEST(Issues, Issue662) {
     // "of Air magic" should give floor(skill / 2) skill level bonus (like all other such bonuses)
     test->loadGameFromTestData("issue_662.mm7");
     // currently air magic is (expert) 6
-    EXPECT_EQ(pParty->pPlayers[3].GetItemsBonus(CHARACTER_ATTRIBUTE_SKILL_AIR), 3);
-    pParty->pPlayers[3].pActiveSkills[CHARACTER_SKILL_AIR].setLevel(5);
-    EXPECT_EQ(pParty->pPlayers[3].GetItemsBonus(CHARACTER_ATTRIBUTE_SKILL_AIR), 2);
+    EXPECT_EQ(pParty->pCharacters[3].GetItemsBonus(CHARACTER_ATTRIBUTE_SKILL_AIR), 3);
+    pParty->pCharacters[3].pActiveSkills[CHARACTER_SKILL_AIR].setLevel(5);
+    EXPECT_EQ(pParty->pCharacters[3].GetItemsBonus(CHARACTER_ATTRIBUTE_SKILL_AIR), 2);
 }
 
 GAME_TEST(Issues, Issue663) {
@@ -801,8 +801,8 @@ GAME_TEST(Issues, Issue664) {
 GAME_TEST(Issues, Issue674) {
     // Check that map timers are working
     int oldHealth;
-    test->playTraceFromTestData("issue_674.mm7", "issue_674.json", [&] { oldHealth = pParty->pPlayers[0].health; });
-    EXPECT_EQ(pParty->pPlayers[0].health, oldHealth + 5);
+    test->playTraceFromTestData("issue_674.mm7", "issue_674.json", [&] { oldHealth = pParty->pCharacters[0].health; });
+    EXPECT_EQ(pParty->pCharacters[0].health, oldHealth + 5);
 }
 
 GAME_TEST(Issues, Issue675) {
@@ -838,8 +838,8 @@ GAME_TEST(Issues, Issue676) {
 GAME_TEST(Issues, Issue677) {
     // Haste doesn't impose weakness after it ends
     test->playTraceFromTestData("issue_677.mm7", "issue_677.json");
-    for (auto &player : pParty->pPlayers) {
-        EXPECT_EQ(player.conditions.Has(CONDITION_WEAK), true);
+    for (auto &character : pParty->pCharacters) {
+        EXPECT_EQ(character.conditions.Has(CONDITION_WEAK), true);
     }
 }
 
@@ -929,8 +929,8 @@ GAME_TEST(Issues, Issue720) {
 GAME_TEST(Issues, Issue724) {
     // Test that item potion can be applied to equipped items
     test->playTraceFromTestData("issue_724.mm7", "issue_724.json",
-                                [] { EXPECT_NE((pParty->pPlayers[3].GetNthEquippedIndexItem(ITEM_SLOT_MAIN_HAND)->uAttributes & ITEM_HARDENED), ITEM_HARDENED); });
-    EXPECT_EQ((pParty->pPlayers[3].GetNthEquippedIndexItem(ITEM_SLOT_MAIN_HAND)->uAttributes & ITEM_HARDENED), ITEM_HARDENED);
+                                [] { EXPECT_NE((pParty->pCharacters[3].GetNthEquippedIndexItem(ITEM_SLOT_MAIN_HAND)->uAttributes & ITEM_HARDENED), ITEM_HARDENED); });
+    EXPECT_EQ((pParty->pCharacters[3].GetNthEquippedIndexItem(ITEM_SLOT_MAIN_HAND)->uAttributes & ITEM_HARDENED), ITEM_HARDENED);
 }
 
 GAME_TEST(Issues, Issue728) {
@@ -1001,11 +1001,11 @@ GAME_TEST(Issues, Issue779) {
 
 void check783784Buffs(bool haveBuffs) {
     for (CharacterBuffs buff : allPotionBuffs())
-        EXPECT_EQ(pParty->pPlayers[0].pPlayerBuffs[buff].Active(), haveBuffs) << "buff=" << static_cast<int>(buff);
+        EXPECT_EQ(pParty->pCharacters[0].pCharacterBuffs[buff].Active(), haveBuffs) << "buff=" << static_cast<int>(buff);
 }
 
 GAME_TEST(Issues, Issue783) {
-    // Check that all player buffs expire after rest.
+    // Check that all character buffs expire after rest.
     GameTime startTime;
     test->playTraceFromTestData("issue_783.mm7", "issue_783.json", [&] {
         startTime = pParty->GetPlayingTime();
@@ -1013,7 +1013,7 @@ GAME_TEST(Issues, Issue783) {
 
         // And all buffs should expire way in the future.
         for (CharacterBuffs buff : allPotionBuffs())
-            EXPECT_GT(pParty->pPlayers[0].pPlayerBuffs[buff].GetExpireTime(), startTime + GameTime::FromHours(10));
+            EXPECT_GT(pParty->pCharacters[0].pCharacterBuffs[buff].GetExpireTime(), startTime + GameTime::FromHours(10));
     });
 
     GameTime endTime = pParty->GetPlayingTime();
@@ -1031,7 +1031,7 @@ GAME_TEST(Issues, Issue784) {
 
     // Check that buffs have effect.
     // Potions were at power 75, that's 75*3=225 points for attribute bonuses.
-    const Player &player0 = pParty->pPlayers[0];
+    const Character &player0 = pParty->pCharacters[0];
 
     EXPECT_EQ(225, player0.GetMagicalBonus(CHARACTER_ATTRIBUTE_RESIST_AIR));
     EXPECT_EQ(5, player0.GetMagicalBonus(CHARACTER_ATTRIBUTE_ATTACK)); // CHARACTER_BUFF_BLESS.
@@ -1086,13 +1086,13 @@ GAME_TEST(Issues, Issue808) {
 GAME_TEST(Issues, Issue814) {
     // Test that compare variable for autonotes do not assert
     test->playTraceFromTestData("issue_814.mm7", "issue_814.json"); // Should not assert
-    EXPECT_EQ(pParty->pPlayers[0].uIntelligenceBonus, 25);
+    EXPECT_EQ(pParty->pCharacters[0].uIntelligenceBonus, 25);
 }
 
 GAME_TEST(Issues, Issue815) {
-    // Test that subtract variable for player bits work
+    // Test that subtract variable for character bits work
     test->playTraceFromTestData("issue_815.mm7", "issue_815.json");
-    EXPECT_EQ(pParty->pPlayers[0].uIntelligenceBonus, 25);
+    EXPECT_EQ(pParty->pCharacters[0].uIntelligenceBonus, 25);
 }
 
 GAME_TEST(Issues, Issue816) {
@@ -1116,11 +1116,11 @@ GAME_TEST(Issues, Issue833) {
     uint64_t oldMana0 = 0;
     uint64_t oldMana1 = 0;
     test->playTraceFromTestData("issue_833.mm7", "issue_833.json", [&] {
-        oldMana0 = pParty->pPlayers[0].GetMana();
-        oldMana1 = pParty->pPlayers[1].GetMana();
+        oldMana0 = pParty->pCharacters[0].GetMana();
+        oldMana1 = pParty->pCharacters[1].GetMana();
     });
-    EXPECT_EQ(pParty->pPlayers[0].GetMana(), oldMana0 - 2);
-    EXPECT_EQ(pParty->pPlayers[1].GetMana(), oldMana1);
+    EXPECT_EQ(pParty->pCharacters[0].GetMana(), oldMana0 - 2);
+    EXPECT_EQ(pParty->pCharacters[1].GetMana(), oldMana1);
 }
 
 GAME_TEST(Issues, Issue840) {
@@ -1144,7 +1144,7 @@ GAME_TEST(Issues, Issue867) {
 GAME_TEST(Issues, Issue868) {
     // Test that ressurecting in evil temples set zombie status
     test->playTraceFromTestData("issue_868.mm7", "issue_868.json");
-    EXPECT_EQ(pParty->pPlayers[0].GetMajorConditionIdx(), CONDITION_ZOMBIE);
+    EXPECT_EQ(pParty->pCharacters[0].GetMajorConditionIdx(), CONDITION_ZOMBIE);
 }
 
 GAME_TEST(Issues, Issue872) {

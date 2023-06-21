@@ -43,14 +43,14 @@ static DecalBuilder *decal_builder = EngineIocContainer::ResolveDecalBuilder();
 static SpellFxRenderer *spell_fx_renderer = EngineIocContainer::ResolveSpellFxRenderer();
 
 // Race Stat Points Bonus/ Penalty
-struct PlayerCreation_AttributeProps {
+struct CharacterCreationAttributeProps {
     unsigned char uBaseValue;
     unsigned char uMaxValue;
     unsigned char uDroppedStep;
     unsigned char uBaseStep;
 };
 
-PlayerCreation_AttributeProps
+CharacterCreationAttributeProps
     StatTable[4][7] =  // [human , elf, goblin, dwarf] [might, int, per , end,
                        // acc, speed, luck]
     {{
@@ -88,22 +88,22 @@ PlayerCreation_AttributeProps
       {7, 15, 2, 1},
       {9, 20, 1, 1}}};
 
-IndexedArray<int, PLAYER_SKILL_MASTERY_FIRST, PLAYER_SKILL_MASTERY_LAST> StealingMasteryBonuses = {
-    // {PLAYER_SKILL_MASTERY_NONE, 0},
-    {PLAYER_SKILL_MASTERY_NOVICE, 100},
-    {PLAYER_SKILL_MASTERY_EXPERT, 200},
-    {PLAYER_SKILL_MASTERY_MASTER, 300},
-    {PLAYER_SKILL_MASTERY_GRANDMASTER, 500}
+IndexedArray<int, CHARACTER_SKILL_MASTERY_FIRST, CHARACTER_SKILL_MASTERY_LAST> StealingMasteryBonuses = {
+    // {CHARACTER_SKILL_MASTERY_NONE, 0},
+    {CHARACTER_SKILL_MASTERY_NOVICE, 100},
+    {CHARACTER_SKILL_MASTERY_EXPERT, 200},
+    {CHARACTER_SKILL_MASTERY_MASTER, 300},
+    {CHARACTER_SKILL_MASTERY_GRANDMASTER, 500}
 };  // dword_4EDEA0        //the zeroth element isn't accessed, it just
            // helps avoid -1 indexing, originally 4 element array off by one
 std::array<int, 5> StealingRandomBonuses = { -200, -100, 0, 100, 200 };  // dword_4EDEB4
 
-IndexedArray<int, PLAYER_SKILL_MASTERY_FIRST, PLAYER_SKILL_MASTERY_LAST> StealingEnchantmentBonusForSkill = {
-    // {PLAYER_SKILL_MASTERY_NONE, 0},
-    {PLAYER_SKILL_MASTERY_NOVICE, 2},
-    {PLAYER_SKILL_MASTERY_EXPERT, 4},
-    {PLAYER_SKILL_MASTERY_MASTER, 6},
-    {PLAYER_SKILL_MASTERY_GRANDMASTER, 10}
+IndexedArray<int, CHARACTER_SKILL_MASTERY_FIRST, CHARACTER_SKILL_MASTERY_LAST> StealingEnchantmentBonusForSkill = {
+    // {CHARACTER_SKILL_MASTERY_NONE, 0},
+    {CHARACTER_SKILL_MASTERY_NOVICE, 2},
+    {CHARACTER_SKILL_MASTERY_EXPERT, 4},
+    {CHARACTER_SKILL_MASTERY_MASTER, 6},
+    {CHARACTER_SKILL_MASTERY_GRANDMASTER, 10}
 };  // dword_4EDEC4      //the zeroth element isn't accessed, it just
           // helps avoid -1 indexing, originally 4 element array off by one
 
@@ -176,7 +176,7 @@ signed int parameter_to_bonus_value[29] = {
     7,  6,  5,  4,  3,  2,  1,  0,  -1, -2, -3, -4, -5, -6};
 
 //----- (00490913) --------------------------------------------------------
-int PlayerCreation_GetUnspentAttributePointCount() {
+int CharacterCreation_GetUnspentAttributePointCount() {
     int CurrentStatValue = 50;
     int RemainingStatPoints = 50;
     int raceId;
@@ -184,31 +184,31 @@ int PlayerCreation_GetUnspentAttributePointCount() {
     int PenaltyMult;
     int BonusMult;
 
-    for (Player &player : pParty->pPlayers) {
-        raceId = player.GetRace();
+    for (Character &character : pParty->pCharacters) {
+        raceId = character.GetRace();
 
         for (int statNum = 0; statNum <= 6; statNum++) {
             switch (statNum) {
                 case 0:
-                    CurrentStatValue = player.uMight;
+                    CurrentStatValue = character.uMight;
                     break;
                 case 1:
-                    CurrentStatValue = player.uIntelligence;
+                    CurrentStatValue = character.uIntelligence;
                     break;
                 case 2:
-                    CurrentStatValue = player.uPersonality;
+                    CurrentStatValue = character.uPersonality;
                     break;
                 case 3:
-                    CurrentStatValue = player.uEndurance;
+                    CurrentStatValue = character.uEndurance;
                     break;
                 case 4:
-                    CurrentStatValue = player.uAccuracy;
+                    CurrentStatValue = character.uAccuracy;
                     break;
                 case 5:
-                    CurrentStatValue = player.uSpeed;
+                    CurrentStatValue = character.uSpeed;
                     break;
                 case 6:
-                    CurrentStatValue = player.uLuck;
+                    CurrentStatValue = character.uLuck;
                     break;
             }
 
@@ -232,7 +232,7 @@ int PlayerCreation_GetUnspentAttributePointCount() {
 }
 
 //----- (00427730) --------------------------------------------------------
-bool Player::CanCastSpell(unsigned int uRequiredMana) {
+bool Character::CanCastSpell(unsigned int uRequiredMana) {
     if (engine->config->debug.AllMagic.value()) {
         return true;
     }
@@ -244,7 +244,7 @@ bool Player::CanCastSpell(unsigned int uRequiredMana) {
     return false;
 }
 
-void Player::SpendMana(unsigned int uRequiredMana) {
+void Character::SpendMana(unsigned int uRequiredMana) {
     if (engine->config->debug.AllMagic.value()) {
         return;
     }
@@ -253,7 +253,7 @@ void Player::SpendMana(unsigned int uRequiredMana) {
 }
 
 //----- (004BE2DD) --------------------------------------------------------
-void Player::SalesProcess(unsigned int inventory_idnx, int item_index, int BuildingDesc_idx) {
+void Character::SalesProcess(unsigned int inventory_idnx, int item_index, int BuildingDesc_idx) {
     float shop_mult = buildingTable[BuildingDesc_idx - 1].fPriceMultiplier;
     int sell_price = PriceCalculator::itemSellingPriceForPlayer(this, pOwnItems[item_index], shop_mult);
 
@@ -263,7 +263,7 @@ void Player::SalesProcess(unsigned int inventory_idnx, int item_index, int Build
 }
 
 //----- (0043EEF3) --------------------------------------------------------
-bool Player::NothingOrJustBlastersEquipped() const {
+bool Character::NothingOrJustBlastersEquipped() const {
     signed int item_idx;
     ITEM_TYPE item_id;
 
@@ -285,7 +285,7 @@ bool Player::NothingOrJustBlastersEquipped() const {
 }
 
 //----- (004B8040) --------------------------------------------------------
-int Player::GetConditionDaysPassed(Condition condition) const {
+int Character::GetConditionDaysPassed(Condition condition) const {
     // PS - CHECK ?? is this the intedned behavior - RETURN
     // NUMBER OF DAYS CONDITION HAS BEEN ACTIVE FOR
 
@@ -299,7 +299,7 @@ int Player::GetConditionDaysPassed(Condition condition) const {
     return diff.GetDays() + 1;
 }
 
-ItemGen *Player::GetItemAtInventoryIndex(int inout_item_cell) {
+ItemGen *Character::GetItemAtInventoryIndex(int inout_item_cell) {
     int inventory_index = this->GetItemListAtInventoryIndex(inout_item_cell);
 
     if (!inventory_index) {
@@ -310,7 +310,7 @@ ItemGen *Player::GetItemAtInventoryIndex(int inout_item_cell) {
 }
 
 //----- (00421E75) --------------------------------------------------------
-unsigned int Player::GetItemListAtInventoryIndex(int inout_item_cell) {
+unsigned int Character::GetItemListAtInventoryIndex(int inout_item_cell) {
     int cell_idx = inout_item_cell;
     if (cell_idx > 125 || cell_idx < 0) return 0;
 
@@ -322,7 +322,7 @@ unsigned int Player::GetItemListAtInventoryIndex(int inout_item_cell) {
     return inventory_index;  // returns item list position + 1
 }
 
-unsigned int Player::GetItemMainInventoryIndex(int inout_item_cell) {
+unsigned int Character::GetItemMainInventoryIndex(int inout_item_cell) {
     int cell_idx = inout_item_cell;
     if (cell_idx > 125 || cell_idx < 0) return 0;
 
@@ -335,7 +335,7 @@ unsigned int Player::GetItemMainInventoryIndex(int inout_item_cell) {
 }
 
 //----- (004160CA) --------------------------------------------------------
-void Player::ItemsPotionDmgBreak(int enchant_count) {
+void Character::ItemsPotionDmgBreak(int enchant_count) {
     int avalible_items = 0;
 
     int16_t item_index_tabl[TOTAL_ITEM_SLOT_COUNT];  // table holding items
@@ -366,7 +366,7 @@ void Player::ItemsPotionDmgBreak(int enchant_count) {
 }
 
 //----- (00492C0B) --------------------------------------------------------
-bool Player::CanAct() const {
+bool Character::CanAct() const {
     if (this->IsAsleep() || this->IsParalyzed() || this->IsUnconcious() ||
         this->IsDead() || this->IsPertified() || this->IsEradicated())
 
@@ -376,12 +376,12 @@ bool Player::CanAct() const {
 }
 
 //----- (00492C40) --------------------------------------------------------
-bool Player::CanSteal() const {
+bool Character::CanSteal() const {
     return getActualSkillValue(CHARACTER_SKILL_STEALING).level() != 0;
 }
 
 //----- (00492C4E) --------------------------------------------------------
-bool Player::CanEquip_RaceAndAlignmentCheck(ITEM_TYPE uItemID) const {
+bool Character::CanEquip_RaceAndAlignmentCheck(ITEM_TYPE uItemID) const {
     switch (uItemID) {
         case ITEM_RELIC_ETHRICS_STAFF:
         case ITEM_RELIC_OLD_NICK:
@@ -429,7 +429,7 @@ bool Player::CanEquip_RaceAndAlignmentCheck(ITEM_TYPE uItemID) const {
 }
 
 //----- (00492D65) --------------------------------------------------------
-void Player::SetCondition(Condition uConditionIdx, int blockable) {
+void Character::SetCondition(Condition uConditionIdx, int blockable) {
     if (conditions.Has(uConditionIdx))  // cant get the same condition twice
         return;
 
@@ -503,7 +503,7 @@ void Player::SetCondition(Condition uConditionIdx, int blockable) {
             break;
 
         case CONDITION_ZOMBIE:
-            if (classType == PLAYER_CLASS_LICH || IsEradicated() || IsZombie() || !IsDead()) { // cant zombified
+            if (classType == CHARACTER_CLASS_LICH || IsEradicated() || IsZombie() || !IsDead()) { // cant zombified
                 return;
             }
 
@@ -529,17 +529,17 @@ void Player::SetCondition(Condition uConditionIdx, int blockable) {
     }
 
     int playersBefore = 0;
-    for (Player &player : pParty->pPlayers) {  // count active players before activating condition
-        playersBefore += player.CanAct() ? 1 : 0;
+    for (Character &character : pParty->pCharacters) {  // count active players before activating condition
+        playersBefore += character.CanAct() ? 1 : 0;
     }
 
     conditions.Set(uConditionIdx, pParty->GetPlayingTime());  // set condition
 
     int playersAfter = 0;
-    Player *remainingPlayer = nullptr;
-    for (Player &player : pParty->pPlayers) {
-        if (player.CanAct()) {
-            remainingPlayer = &player;
+    Character *remainingPlayer = nullptr;
+    for (Character &character : pParty->pCharacters) {
+        if (character.CanAct()) {
+            remainingPlayer = &character;
             playersAfter++;
         }
     }
@@ -551,7 +551,7 @@ void Player::SetCondition(Condition uConditionIdx, int blockable) {
     return;
 }
 
-bool Player::canFitItem(unsigned int uSlot, ITEM_TYPE uItemID) const {
+bool Character::canFitItem(unsigned int uSlot, ITEM_TYPE uItemID) const {
     auto img = assets->getImage_ColorKey(pItemTable->pItems[uItemID].iconName);
     unsigned int slotWidth = GetSizeInInventorySlots(img->width());
     unsigned int slotHeight = GetSizeInInventorySlots(img->height());
@@ -572,7 +572,7 @@ bool Player::canFitItem(unsigned int uSlot, ITEM_TYPE uItemID) const {
     return false;
 }
 
-int Player::findFreeInventoryListSlot() const {
+int Character::findFreeInventoryListSlot() const {
     for (int i = 0; i < INVENTORY_SLOT_COUNT; i++) {
         if (pInventoryItemList[i].uItemID == ITEM_NULL) {
             return i;  // space at i
@@ -583,7 +583,7 @@ int Player::findFreeInventoryListSlot() const {
 }
 
 //----- (00492600) --------------------------------------------------------
-int Player::CreateItemInInventory(unsigned int uSlot, ITEM_TYPE uItemID) {
+int Character::CreateItemInInventory(unsigned int uSlot, ITEM_TYPE uItemID) {
     signed int freeSlot = findFreeInventoryListSlot();
 
     if (freeSlot == -1) {  // no room
@@ -601,7 +601,7 @@ int Player::CreateItemInInventory(unsigned int uSlot, ITEM_TYPE uItemID) {
 }
 
 //----- (00492700) --------------------------------------------------------
-int Player::HasSkill(CharacterSkillType uSkillType) const {
+int Character::HasSkill(CharacterSkillType uSkillType) const {
     if (this->pActiveSkills[uSkillType]) {
         return 1;
     } else {
@@ -615,7 +615,7 @@ int Player::HasSkill(CharacterSkillType uSkillType) const {
 }
 
 //----- (00492745) --------------------------------------------------------
-void Player::WearItem(ITEM_TYPE uItemID) {
+void Character::WearItem(ITEM_TYPE uItemID) {
     int item_indx = findFreeInventoryListSlot();
 
     if (item_indx != -1) {
@@ -627,7 +627,7 @@ void Player::WearItem(ITEM_TYPE uItemID) {
 }
 
 //----- (004927A8) --------------------------------------------------------
-int Player::AddItem(int index, ITEM_TYPE uItemID) {
+int Character::AddItem(int index, ITEM_TYPE uItemID) {
     if (uItemID == ITEM_NULL) {
         return 0;
     }
@@ -653,7 +653,7 @@ int Player::AddItem(int index, ITEM_TYPE uItemID) {
 }
 
 //----- (00492826) --------------------------------------------------------
-int Player::AddItem2(int index, ItemGen *Src) {  // are both required - check
+int Character::AddItem2(int index, ItemGen *Src) {  // are both required - check
     pItemTable->SetSpecialBonus(Src);
 
     if (index == -1) {  // no loaction specified
@@ -676,7 +676,7 @@ int Player::AddItem2(int index, ItemGen *Src) {  // are both required - check
 }
 
 //----- (0049289C) --------------------------------------------------------
-int Player::CreateItemInInventory2(unsigned int index,
+int Character::CreateItemInInventory2(unsigned int index,
                                    ItemGen *Src) {  // are both required - check
     signed int freeSlot = findFreeInventoryListSlot();
     int result;
@@ -693,7 +693,7 @@ int Player::CreateItemInInventory2(unsigned int index,
 }
 
 //----- (0049298B) --------------------------------------------------------
-void Player::PutItemArInventoryIndex(
+void Character::PutItemArInventoryIndex(
     ITEM_TYPE uItemID, int itemListPos,
     int index) {  // originally accepted ItemGen *but needed only its uItemID
 
@@ -716,7 +716,7 @@ void Player::PutItemArInventoryIndex(
 }
 
 //----- (00492A36) --------------------------------------------------------
-void Player::RemoveItemAtInventoryIndex(unsigned int index) {
+void Character::RemoveItemAtInventoryIndex(unsigned int index) {
     ItemGen *item_in_slot = this->GetItemAtInventoryIndex(index);
 
     auto img = assets->getImage_ColorKey(item_in_slot->GetIconName());
@@ -740,7 +740,7 @@ void Player::RemoveItemAtInventoryIndex(unsigned int index) {
 }
 
 //----- (0049107D) --------------------------------------------------------
-int Player::GetBodybuilding() const {
+int Character::GetBodybuilding() const {
     int multiplier =
         GetMultiplierForSkillLevel(CHARACTER_SKILL_BODYBUILDING, 1, 2, 3, 5);
 
@@ -748,7 +748,7 @@ int Player::GetBodybuilding() const {
 }
 
 //----- (004910A8) --------------------------------------------------------
-int Player::GetMeditation() const {
+int Character::GetMeditation() const {
     int multiplier =
         GetMultiplierForSkillLevel(CHARACTER_SKILL_MEDITATION, 1, 2, 3, 5);
 
@@ -756,12 +756,12 @@ int Player::GetMeditation() const {
 }
 
 //----- (004910D3) --------------------------------------------------------
-bool Player::CanIdentify(ItemGen *pItem) const {
+bool Character::CanIdentify(ItemGen *pItem) const {
     CombinedSkillValue val = getActualSkillValue(CHARACTER_SKILL_ITEM_ID);
     int multiplier =
         GetMultiplierForSkillLevel(CHARACTER_SKILL_ITEM_ID, 1, 2, 3, 5);
 
-    if (CheckHiredNPCSpeciality(Scholar) || val.mastery() == PLAYER_SKILL_MASTERY_GRANDMASTER)  // always identify
+    if (CheckHiredNPCSpeciality(Scholar) || val.mastery() == CHARACTER_SKILL_MASTERY_GRANDMASTER)  // always identify
         return true;
 
     // check item level against skill
@@ -772,7 +772,7 @@ bool Player::CanIdentify(ItemGen *pItem) const {
 }
 
 //----- (00491151) --------------------------------------------------------
-bool Player::CanRepair(ItemGen *pItem) const {
+bool Character::CanRepair(ItemGen *pItem) const {
     CombinedSkillValue val = getActualSkillValue(CHARACTER_SKILL_REPAIR);
     int multiplier = GetMultiplierForSkillLevel(CHARACTER_SKILL_REPAIR, 1, 2, 3, 5);
 
@@ -782,7 +782,7 @@ bool Player::CanRepair(ItemGen *pItem) const {
         CheckHiredNPCSpeciality(Alchemist) && pItem->GetItemEquipType() >= EQUIP_BOOTS)
         return true;  // check against hired help
 
-    if (val.mastery() == PLAYER_SKILL_MASTERY_GRANDMASTER)  // gm repair
+    if (val.mastery() == CHARACTER_SKILL_MASTERY_GRANDMASTER)  // gm repair
         return true;
 
     // check item level against skill
@@ -793,24 +793,24 @@ bool Player::CanRepair(ItemGen *pItem) const {
 }
 
 //----- (0049125A) --------------------------------------------------------
-int Player::GetPerception() const {
+int Character::GetPerception() const {
     CombinedSkillValue val = getActualSkillValue(CHARACTER_SKILL_PERCEPTION);
     int multiplier =
         GetMultiplierForSkillLevel(CHARACTER_SKILL_PERCEPTION, 1, 2, 3, 5);
 
-    if (val.mastery() == PLAYER_SKILL_MASTERY_GRANDMASTER)  // gm percept
+    if (val.mastery() == CHARACTER_SKILL_MASTERY_GRANDMASTER)  // gm percept
         return 10000;
 
     return multiplier * val.level();
 }
 
 //----- (004912B0) --------------------------------------------------------
-int Player::GetDisarmTrap() const {
+int Character::GetDisarmTrap() const {
     CombinedSkillValue val = getActualSkillValue(CHARACTER_SKILL_TRAP_DISARM);
     int multiplier =
         GetMultiplierForSkillLevel(CHARACTER_SKILL_TRAP_DISARM, 1, 2, 3, 5);
 
-    if (val.mastery() == PLAYER_SKILL_MASTERY_GRANDMASTER)  // gm disarm
+    if (val.mastery() == CHARACTER_SKILL_MASTERY_GRANDMASTER)  // gm disarm
         return 10000;
 
     if (HasEnchantedItemEquipped(ITEM_ENCHANTMENT_OF_THIEVERY))  // item has increased disarm
@@ -819,8 +819,8 @@ int Player::GetDisarmTrap() const {
     return multiplier * val.level();
 }
 
-char Player::getLearningPercent() const {
-    PLAYER_SKILL_LEVEL skill = getActualSkillValue(CHARACTER_SKILL_LEARNING).level();
+char Character::getLearningPercent() const {
+    CHARACTER_SKILL_LEVEL skill = getActualSkillValue(CHARACTER_SKILL_LEARNING).level();
 
     if (skill) {
         int multiplier = GetMultiplierForSkillLevel(CHARACTER_SKILL_LEARNING, 1, 2, 3, 5);
@@ -832,92 +832,92 @@ char Player::getLearningPercent() const {
 }
 
 //----- (0048C855) --------------------------------------------------------
-int Player::GetBaseMight() const {
+int Character::GetBaseMight() const {
     return this->uMight + GetItemsBonus(CHARACTER_ATTRIBUTE_MIGHT);
 }
 
 //----- (0048C86C) --------------------------------------------------------
-int Player::GetBaseIntelligence() const {
+int Character::GetBaseIntelligence() const {
     return this->uIntelligence +
            GetItemsBonus(CHARACTER_ATTRIBUTE_INTELLIGENCE);
 }
 
 //----- (0048C883) --------------------------------------------------------
-int Player::GetBasePersonality() const {
+int Character::GetBasePersonality() const {
     return this->uPersonality + GetItemsBonus(CHARACTER_ATTRIBUTE_PERSONALITY);
 }
 
 //----- (0048C89A) --------------------------------------------------------
-int Player::GetBaseEndurance() const {
+int Character::GetBaseEndurance() const {
     return this->uEndurance + GetItemsBonus(CHARACTER_ATTRIBUTE_ENDURANCE);
 }
 
 //----- (0048C8B1) --------------------------------------------------------
-int Player::GetBaseAccuracy() const {
+int Character::GetBaseAccuracy() const {
     return this->uAccuracy + GetItemsBonus(CHARACTER_ATTRIBUTE_ACCURACY);
 }
 
 //----- (0048C8C8) --------------------------------------------------------
-int Player::GetBaseSpeed() const {
+int Character::GetBaseSpeed() const {
     return this->uSpeed + GetItemsBonus(CHARACTER_ATTRIBUTE_SPEED);
 }
 
 //----- (0048C8DF) --------------------------------------------------------
-int Player::GetBaseLuck() const {
+int Character::GetBaseLuck() const {
     return this->uLuck + GetItemsBonus(CHARACTER_ATTRIBUTE_LUCK);
 }
 
 //----- (0048C8F6) --------------------------------------------------------
-int Player::GetBaseLevel() const {
+int Character::GetBaseLevel() const {
     return this->uLevel + GetItemsBonus(CHARACTER_ATTRIBUTE_LEVEL);
 }
 
 //----- (0048C90D) --------------------------------------------------------
-int Player::GetActualLevel() const {
+int Character::GetActualLevel() const {
     return uLevel + sLevelModifier +
            GetMagicalBonus(CHARACTER_ATTRIBUTE_LEVEL) +
            GetItemsBonus(CHARACTER_ATTRIBUTE_LEVEL);
 }
 
 //----- (0048C93C) --------------------------------------------------------
-int Player::GetActualMight() const {
-    return GetActualAttribute(CHARACTER_ATTRIBUTE_MIGHT, &Player::uMight,
-                              &Player::uMightBonus);
+int Character::GetActualMight() const {
+    return GetActualAttribute(CHARACTER_ATTRIBUTE_MIGHT, &Character::uMight,
+                              &Character::uMightBonus);
 }
 
 //----- (0048C9C2) --------------------------------------------------------
-int Player::GetActualIntelligence() const {
+int Character::GetActualIntelligence() const {
     return GetActualAttribute(CHARACTER_ATTRIBUTE_INTELLIGENCE,
-                              &Player::uIntelligence,
-                              &Player::uIntelligenceBonus);
+                              &Character::uIntelligence,
+                              &Character::uIntelligenceBonus);
 }
 
 //----- (0048CA3F) --------------------------------------------------------
-int Player::GetActualPersonality() const {
+int Character::GetActualPersonality() const {
     return GetActualAttribute(CHARACTER_ATTRIBUTE_PERSONALITY,
-                              &Player::uPersonality, &Player::uPersonalityBonus);
+                              &Character::uPersonality, &Character::uPersonalityBonus);
 }
 
 //----- (0048CABC) --------------------------------------------------------
-int Player::GetActualEndurance() const {
+int Character::GetActualEndurance() const {
     return GetActualAttribute(CHARACTER_ATTRIBUTE_ENDURANCE,
-                              &Player::uEndurance, &Player::uEnduranceBonus);
+                              &Character::uEndurance, &Character::uEnduranceBonus);
 }
 
 //----- (0048CB39) --------------------------------------------------------
-int Player::GetActualAccuracy() const {
-    return GetActualAttribute(CHARACTER_ATTRIBUTE_ACCURACY, &Player::uAccuracy,
-                              &Player::uAccuracyBonus);
+int Character::GetActualAccuracy() const {
+    return GetActualAttribute(CHARACTER_ATTRIBUTE_ACCURACY, &Character::uAccuracy,
+                              &Character::uAccuracyBonus);
 }
 
 //----- (0048CBB6) --------------------------------------------------------
-int Player::GetActualSpeed() const {
-    return GetActualAttribute(CHARACTER_ATTRIBUTE_SPEED, &Player::uSpeed,
-                              &Player::uSpeedBonus);
+int Character::GetActualSpeed() const {
+    return GetActualAttribute(CHARACTER_ATTRIBUTE_SPEED, &Character::uSpeed,
+                              &Character::uSpeedBonus);
 }
 
 //----- (0048CC33) --------------------------------------------------------
-int Player::GetActualLuck() const {
+int Character::GetActualLuck() const {
     signed int npc_luck_bonus = 0;
 
     if (CheckHiredNPCSpeciality(Fool)) npc_luck_bonus = 5;
@@ -926,21 +926,21 @@ int Player::GetActualLuck() const {
 
     if (CheckHiredNPCSpeciality(Psychic)) npc_luck_bonus += 10;
 
-    return GetActualAttribute(CHARACTER_ATTRIBUTE_LUCK, &Player::uLuck,
-                              &Player::uLuckBonus) +
+    return GetActualAttribute(CHARACTER_ATTRIBUTE_LUCK, &Character::uLuck,
+                              &Character::uLuckBonus) +
            npc_luck_bonus;
 }
 
 //----- (new function) --------------------------------------------------------
-int Player::GetActualAttribute(CHARACTER_ATTRIBUTE_TYPE attrId,
-                               unsigned short Player::*attrValue,
-                               unsigned short Player::*attrBonus) const {
+int Character::GetActualAttribute(CharacterAttributeType attrId,
+                               unsigned short Character::*attrValue,
+                               unsigned short Character::*attrBonus) const {
     uint uActualAge = this->sAgeModifier + GetBaseAge();
     uint uAgeingMultiplier = 100;
 
     for (uint i = 0; i < 4; ++i) {
         if (uActualAge >=
-            pAgeingTable[i])  // is the player old enough to need attrib adjust
+            pAgeingTable[i])  // is the character old enough to need attrib adjust
             uAgeingMultiplier = pAgingAttributeModifier[attrId][i];
         else
             break;
@@ -956,7 +956,7 @@ int Player::GetActualAttribute(CHARACTER_ATTRIBUTE_TYPE attrId,
 }
 
 //----- (0048CCF5) --------------------------------------------------------
-int Player::GetActualAttack(bool onlyMainHandDmg) const {
+int Character::GetActualAttack(bool onlyMainHandDmg) const {
     int parbonus = GetParameterBonus(
         GetActualAccuracy());  // bonus points for steps of accuracy level
     int atkskillbonus = GetSkillBonus(
@@ -970,7 +970,7 @@ int Player::GetActualAttack(bool onlyMainHandDmg) const {
 }
 
 //----- (0048CD45) --------------------------------------------------------
-int Player::GetMeleeDamageMinimal() const {
+int Character::GetMeleeDamageMinimal() const {
     int parbonus = GetParameterBonus(GetActualMight());
     int weapbonus = GetItemsBonus(CHARACTER_ATTRIBUTE_MELEE_DMG_MIN) + parbonus;
     int atkskillbonus =
@@ -986,7 +986,7 @@ int Player::GetMeleeDamageMinimal() const {
 }
 
 //----- (0048CD90) --------------------------------------------------------
-int Player::GetMeleeDamageMaximal() const {
+int Character::GetMeleeDamageMaximal() const {
     int parbonus = GetParameterBonus(GetActualMight());
     int weapbonus = GetItemsBonus(CHARACTER_ATTRIBUTE_MELEE_DMG_MAX) + parbonus;
     int atkskillbonus =
@@ -1002,7 +1002,7 @@ int Player::GetMeleeDamageMaximal() const {
 }
 
 //----- (0048CDDB) --------------------------------------------------------
-int Player::CalculateMeleeDamageTo(bool ignoreSkillBonus, bool ignoreOffhand,
+int Character::CalculateMeleeDamageTo(bool ignoreSkillBonus, bool ignoreOffhand,
                                    unsigned int uTargetActorID) {
     int mainWpnDmg = 0;
     int offHndWpnDmg = 0;
@@ -1054,7 +1054,7 @@ int Player::CalculateMeleeDamageTo(bool ignoreSkillBonus, bool ignoreOffhand,
     return dmgSum;
 }
 
-int Player::CalculateMeleeDmgToEnemyWithWeapon(ItemGen *weapon,
+int Character::CalculateMeleeDmgToEnemyWithWeapon(ItemGen *weapon,
                                                unsigned int uTargetActorID,
                                                bool addOneDice) {
     ITEM_TYPE itemId = weapon->uItemID;
@@ -1097,7 +1097,7 @@ int Player::CalculateMeleeDmgToEnemyWithWeapon(ItemGen *weapon,
     }
 
     // master dagger triple damage backstab
-    if (getActualSkillValue(CHARACTER_SKILL_DAGGER).mastery() >= PLAYER_SKILL_MASTERY_MASTER &&
+    if (getActualSkillValue(CHARACTER_SKILL_DAGGER).mastery() >= CHARACTER_SKILL_MASTERY_MASTER &&
         pItemTable->pItems[itemId].uSkillType == CHARACTER_SKILL_DAGGER && grng->random(100) < 10)
         totalDmg *= 3;
 
@@ -1105,7 +1105,7 @@ int Player::CalculateMeleeDmgToEnemyWithWeapon(ItemGen *weapon,
 }
 
 //----- (0048D0B9) --------------------------------------------------------
-int Player::GetRangedAttack() {
+int Character::GetRangedAttack() {
     int result;
     int weapbonus;
     int skillbonus;
@@ -1130,7 +1130,7 @@ int Player::GetRangedAttack() {
 }
 
 //----- (0048D124) --------------------------------------------------------
-int Player::GetRangedDamageMin() {
+int Character::GetRangedDamageMin() {
     int weapbonus = GetItemsBonus(CHARACTER_ATTRIBUTE_RANGED_DMG_MIN);
     int skillbonus =
         GetSkillBonus(CHARACTER_ATTRIBUTE_RANGED_DMG_BONUS) + weapbonus;
@@ -1145,7 +1145,7 @@ int Player::GetRangedDamageMin() {
 }
 
 //----- (0048D191) --------------------------------------------------------
-int Player::GetRangedDamageMax() {
+int Character::GetRangedDamageMax() {
     int weapbonus = GetItemsBonus(CHARACTER_ATTRIBUTE_RANGED_DMG_MAX);
     int skillbonus =
         GetSkillBonus(CHARACTER_ATTRIBUTE_RANGED_DMG_BONUS) + weapbonus;
@@ -1159,7 +1159,7 @@ int Player::GetRangedDamageMax() {
 }
 
 //----- (0048D1FE) --------------------------------------------------------
-int Player::CalculateRangedDamageTo(int uMonsterInfoID) {
+int Character::CalculateRangedDamageTo(int uMonsterInfoID) {
     if (!HasItemEquipped(ITEM_SLOT_BOW))  // no bow
         return 0;
 
@@ -1204,7 +1204,7 @@ int Player::CalculateRangedDamageTo(int uMonsterInfoID) {
 }
 
 //----- (0048D2EA) --------------------------------------------------------
-std::string Player::GetMeleeDamageString() {
+std::string Character::GetMeleeDamageString() {
     int min_damage;
     int max_damage;
 
@@ -1231,7 +1231,7 @@ std::string Player::GetMeleeDamageString() {
 }
 
 //----- (0048D396) --------------------------------------------------------
-std::string Player::GetRangedDamageString() {
+std::string Character::GetRangedDamageString() {
     int min_damage;
     int max_damage;
 
@@ -1261,14 +1261,14 @@ std::string Player::GetRangedDamageString() {
 }
 
 //----- (0048D45A) --------------------------------------------------------
-bool Player::CanTrainToNextLevel() {
+bool Character::CanTrainToNextLevel() {
     int lvl = this->uLevel + 1;
     int neededExp = ((lvl * (lvl - 1)) / 2 * 1000);
     return this->experience >= neededExp;
 }
 
 //----- (0048D498) --------------------------------------------------------
-Color Player::GetExperienceDisplayColor() {
+Color Character::GetExperienceDisplayColor() {
     if (CanTrainToNextLevel())
         return ui_character_bonus_text_color;
     else
@@ -1276,12 +1276,12 @@ Color Player::GetExperienceDisplayColor() {
 }
 
 //----- (0048D4B3) --------------------------------------------------------
-int Player::CalculateIncommingDamage(DAMAGE_TYPE dmg_type, int dmg) {
-    // TODO(captainurist): these are some weird casts to CHARACTER_ATTRIBUTE_TYPE
-    if (classType == PLAYER_CLASS_LICH &&
-        ((CHARACTER_ATTRIBUTE_TYPE)dmg_type == CHARACTER_ATTRIBUTE_RESIST_MIND ||
-         (CHARACTER_ATTRIBUTE_TYPE)dmg_type == CHARACTER_ATTRIBUTE_RESIST_BODY ||
-         (CHARACTER_ATTRIBUTE_TYPE)dmg_type == CHARACTER_ATTRIBUTE_RESIST_SPIRIT))  // TODO(_): determine if spirit
+int Character::CalculateIncommingDamage(DAMAGE_TYPE dmg_type, int dmg) {
+    // TODO(captainurist): these are some weird casts to CharacterAttributeType
+    if (classType == CHARACTER_CLASS_LICH &&
+        ((CharacterAttributeType)dmg_type == CHARACTER_ATTRIBUTE_RESIST_MIND ||
+         (CharacterAttributeType)dmg_type == CHARACTER_ATTRIBUTE_RESIST_BODY ||
+         (CharacterAttributeType)dmg_type == CHARACTER_ATTRIBUTE_RESIST_SPIRIT))  // TODO(_): determine if spirit
                                                           // resistance should be handled
                                                           // by body res. modifier
         return 0;  // liches are not affected by self magics
@@ -1334,13 +1334,13 @@ int Player::CalculateIncommingDamage(DAMAGE_TYPE dmg_type, int dmg) {
 
             // master and above half incoming damage
             if (armor_skill == CHARACTER_SKILL_PLATE) {
-                if (getActualSkillValue(CHARACTER_SKILL_PLATE).mastery() >= PLAYER_SKILL_MASTERY_MASTER)
+                if (getActualSkillValue(CHARACTER_SKILL_PLATE).mastery() >= CHARACTER_SKILL_MASTERY_MASTER)
                     return dmg / 2;
             }
 
             // grandmaster and chain damage reduce
             if (armor_skill == CHARACTER_SKILL_CHAIN) {
-                if (getActualSkillValue(CHARACTER_SKILL_CHAIN).mastery() == PLAYER_SKILL_MASTERY_GRANDMASTER)
+                if (getActualSkillValue(CHARACTER_SKILL_CHAIN).mastery() == CHARACTER_SKILL_MASTERY_GRANDMASTER)
                     return dmg * 2 / 3;
             }
         }
@@ -1350,24 +1350,24 @@ int Player::CalculateIncommingDamage(DAMAGE_TYPE dmg_type, int dmg) {
 }
 
 //----- (0048D62C) --------------------------------------------------------
-ITEM_EQUIP_TYPE Player::GetEquippedItemEquipType(ITEM_SLOT uEquipSlot) const {
+ITEM_EQUIP_TYPE Character::GetEquippedItemEquipType(ITEM_SLOT uEquipSlot) const {
     return GetNthEquippedIndexItem(uEquipSlot)->GetItemEquipType();
 }
 
 //----- (0048D651) --------------------------------------------------------
-CharacterSkillType Player::GetEquippedItemSkillType(ITEM_SLOT uEquipSlot) const {
+CharacterSkillType Character::GetEquippedItemSkillType(ITEM_SLOT uEquipSlot) const {
     return GetNthEquippedIndexItem(uEquipSlot)->GetPlayerSkillType();
 }
 
 //----- (0048D676) --------------------------------------------------------
-bool Player::IsUnarmed() const {
+bool Character::IsUnarmed() const {
     return !HasItemEquipped(ITEM_SLOT_MAIN_HAND) &&
            (!HasItemEquipped(ITEM_SLOT_OFF_HAND) ||
             GetOffHandItem()->isShield());
 }
 
 //----- (0048D6AA) --------------------------------------------------------
-bool Player::HasItemEquipped(ITEM_SLOT uEquipIndex) const {
+bool Character::HasItemEquipped(ITEM_SLOT uEquipIndex) const {
     uint i = pEquipment.pIndices[uEquipIndex];
     if (i)
         return !pOwnItems[i - 1].IsBroken();
@@ -1376,7 +1376,7 @@ bool Player::HasItemEquipped(ITEM_SLOT uEquipIndex) const {
 }
 
 //----- (0048D6D0) --------------------------------------------------------
-bool Player::HasEnchantedItemEquipped(int uEnchantment) const {
+bool Character::HasEnchantedItemEquipped(int uEnchantment) const {
     for (ITEM_SLOT i : allItemSlots()) {  // search over equipped inventory
         if (HasItemEquipped(i) &&
             GetNthEquippedIndexItem(i)->special_enchantment == uEnchantment)
@@ -1387,12 +1387,12 @@ bool Player::HasEnchantedItemEquipped(int uEnchantment) const {
 }
 
 //----- (0048D709) --------------------------------------------------------
-bool Player::WearsItem(ITEM_TYPE item_id, ITEM_SLOT equip_type) const {
+bool Character::WearsItem(ITEM_TYPE item_id, ITEM_SLOT equip_type) const {
     // check aginst specific item and slot
     return (HasItemEquipped(equip_type) && GetNthEquippedIndexItem(equip_type)->uItemID == item_id);
 }
 
-bool Player::wearsItemAnywhere(ITEM_TYPE item_id) const {
+bool Character::wearsItemAnywhere(ITEM_TYPE item_id) const {
     for (ITEM_SLOT i : allItemSlots())
         if (WearsItem(item_id, i))
             return true;
@@ -1400,7 +1400,7 @@ bool Player::wearsItemAnywhere(ITEM_TYPE item_id) const {
 }
 
 //----- (0048D76C) --------------------------------------------------------
-int Player::StealFromShop(
+int Character::StealFromShop(
     ItemGen *itemToSteal, int extraStealDifficulty, int reputation,
     int extraStealFine,
     int *fineIfFailed) {  // returns an int, but is the return value is compared
@@ -1441,14 +1441,14 @@ int Player::StealFromShop(
 }
 
 //----- (0048D88B) --------------------------------------------------------
-int Player::StealFromActor(
+int Character::StealFromActor(
     unsigned int uActorID, int _steal_perm,
     int reputation) {  // returns not used - should luck attribute affect
 
     Actor *actroPtr;
     actroPtr = &pActors[uActorID];
 
-    if (!actroPtr || !CanAct()) {  // no actor to steal from or player cant act
+    if (!actroPtr || !CanAct()) {  // no actor to steal from or character cant act
         return STEAL_BUSTED;
     }
 
@@ -1549,7 +1549,7 @@ int Player::StealFromActor(
 }
 
 //----- (0048DBB9) --------------------------------------------------------
-void Player::Heal(int amount) {
+void Character::Heal(int amount) {
     if (!IsEradicated() && !IsDead()) {  // cant heal
         int max_health = GetMaxHealth();
 
@@ -1568,7 +1568,7 @@ void Player::Heal(int amount) {
     }
 }
 
-int Player::receiveDamage(signed int amount, DAMAGE_TYPE dmg_type) {
+int Character::receiveDamage(signed int amount, DAMAGE_TYPE dmg_type) {
     SetAsleep(GameTime(0));  // wake up if asleep
     signed int recieved_dmg = CalculateIncommingDamage(dmg_type, amount);  // get damage
     // for no damage cheat - moved from elsewhere
@@ -1576,9 +1576,9 @@ int Player::receiveDamage(signed int amount, DAMAGE_TYPE dmg_type) {
         health -= recieved_dmg;     // reduce health
     }
 
-    if (health < 1) {  // player unconscious or if too hurt - dead
+    if (health < 1) {  // character unconscious or if too hurt - dead
         if ((health + uEndurance + GetItemsBonus(CHARACTER_ATTRIBUTE_ENDURANCE) >= 1) ||
-            pPlayerBuffs[CHARACTER_BUFF_PRESERVATION].Active()) {
+            pCharacterBuffs[CHARACTER_BUFF_PRESERVATION].Active()) {
             SetCondUnconsciousWithBlockCheck(false);
         } else {
             SetCondDeadWithBlockCheck(false);
@@ -1603,7 +1603,7 @@ int Player::receiveDamage(signed int amount, DAMAGE_TYPE dmg_type) {
 }
 
 //----- (0048DCF6) --------------------------------------------------------
-int Player::ReceiveSpecialAttackEffect(
+int Character::ReceiveSpecialAttackEffect(
     int attType,
     Actor *pActor) {  // long function - consider breaking into two??
 
@@ -1948,12 +1948,12 @@ int Player::ReceiveSpecialAttackEffect(
 // 48DCF6: using guessed type char var_94[140];
 
 //----- (0048E1A3) --------------------------------------------------------
-unsigned int Player::GetSpellSchool(SPELL_TYPE uSpellID) const {
+unsigned int Character::GetSpellSchool(SPELL_TYPE uSpellID) const {
     return pSpellStats->pInfos[uSpellID].uSchool;
 }
 
 //----- (0048E1B5) --------------------------------------------------------
-int Player::GetAttackRecoveryTime(bool bRangedAttack) const {
+int Character::GetAttackRecoveryTime(bool bRangedAttack) const {
     const ItemGen *weapon = nullptr;
     uint weapon_recovery = base_recovery_times_per_weapon_type[CHARACTER_SKILL_STAFF];
     if (bRangedAttack) {
@@ -2018,7 +2018,7 @@ int Player::GetAttackRecoveryTime(bool bRangedAttack) const {
              weapon->GetPlayerSkillType() == CHARACTER_SKILL_AXE ||
              weapon->GetPlayerSkillType() == CHARACTER_SKILL_BOW)) {
             // Expert Sword, Axe & Bow reduce recovery
-            if (weaponSkill.mastery() >= PLAYER_SKILL_MASTERY_EXPERT)
+            if (weaponSkill.mastery() >= CHARACTER_SKILL_MASTERY_EXPERT)
                 sword_axe_bow_recovery_reduction = weaponSkill.level();
         }
     }
@@ -2031,13 +2031,13 @@ int Player::GetAttackRecoveryTime(bool bRangedAttack) const {
         CombinedSkillValue armsmasterSkill = getActualSkillValue(CHARACTER_SKILL_ARMSMASTER);
         if (armsmasterSkill.level() > 0) {
             armsmaster_recovery_reduction = armsmasterSkill.level();
-            if (armsmasterSkill.mastery() >= PLAYER_SKILL_MASTERY_GRANDMASTER)
+            if (armsmasterSkill.mastery() >= CHARACTER_SKILL_MASTERY_GRANDMASTER)
                 armsmaster_recovery_reduction *= 2;
         }
     }
 
     uint hasteRecoveryReduction = 0;
-    if (pPlayerBuffs[CHARACTER_BUFF_HASTE].Active()) hasteRecoveryReduction = 25;
+    if (pCharacterBuffs[CHARACTER_BUFF_HASTE].Active()) hasteRecoveryReduction = 25;
     if (pParty->pPartyBuffs[PARTY_BUFF_HASTE].Active()) hasteRecoveryReduction = 25;
 
     uint weapon_enchantment_recovery_reduction = 0;
@@ -2070,20 +2070,20 @@ int Player::GetAttackRecoveryTime(bool bRangedAttack) const {
 }
 
 //----- new --------------------------------------------------------
-float Player::GetArmorRecoveryMultiplierFromSkillLevel(CharacterSkillType armour_skill_type, float mult1, float mult2, float mult3, float mult4) const {
-    PLAYER_SKILL_MASTERY skillMastery = getSkillValue(armour_skill_type).mastery();
+float Character::GetArmorRecoveryMultiplierFromSkillLevel(CharacterSkillType armour_skill_type, float mult1, float mult2, float mult3, float mult4) const {
+    CharacterSkillMastery skillMastery = getSkillValue(armour_skill_type).mastery();
 
     switch (skillMastery) {
-        case PLAYER_SKILL_MASTERY_NOVICE:
+        case CHARACTER_SKILL_MASTERY_NOVICE:
             return mult1;
             break;
-        case PLAYER_SKILL_MASTERY_EXPERT:
+        case CHARACTER_SKILL_MASTERY_EXPERT:
             return mult2;
             break;
-        case PLAYER_SKILL_MASTERY_MASTER:
+        case CHARACTER_SKILL_MASTERY_MASTER:
             return mult3;
             break;
-        case PLAYER_SKILL_MASTERY_GRANDMASTER:
+        case CHARACTER_SKILL_MASTERY_GRANDMASTER:
             return mult4;
             break;
         default:
@@ -2095,7 +2095,7 @@ float Player::GetArmorRecoveryMultiplierFromSkillLevel(CharacterSkillType armour
 }
 
 //----- (0048E4F8) --------------------------------------------------------
-int Player::GetMaxHealth() const {
+int Character::GetMaxHealth() const {
     int endbonus = GetParameterBonus(GetActualEndurance());
     int healthbylevel =
         pBaseHealthPerLevelByClass[classType] * (GetActualLevel() + endbonus);
@@ -2110,51 +2110,51 @@ int Player::GetMaxHealth() const {
 }
 
 //----- (0048E565) --------------------------------------------------------
-int Player::GetMaxMana() const {
+int Character::GetMaxMana() const {
     int mainmanastat;
     int statbonus;
     int addmanastat;
 
     switch (classType) {
-        case PLAYER_CLASS_ROGUE:
-        case PLAYER_CLASS_SPY:
-        case PLAYER_CLASS_ASSASSIN:
-        case PLAYER_CLASS_ARCHER:
-        case PLAYER_CLASS_WARRIOR_MAGE:
-        case PLAYER_CLASS_MASTER_ARCHER:
-        case PLAYER_CLASS_SNIPER:
-        case PLAYER_CLASS_SORCERER:
-        case PLAYER_CLASS_WIZARD:
-        case PLAYER_CLASS_ARCHMAGE:
-        case PLAYER_CLASS_LICH:
+        case CHARACTER_CLASS_ROGUE:
+        case CHARACTER_CLASS_SPY:
+        case CHARACTER_CLASS_ASSASSIN:
+        case CHARACTER_CLASS_ARCHER:
+        case CHARACTER_CLASS_WARRIOR_MAGE:
+        case CHARACTER_CLASS_MASTER_ARCHER:
+        case CHARACTER_CLASS_SNIPER:
+        case CHARACTER_CLASS_SORCERER:
+        case CHARACTER_CLASS_WIZARD:
+        case CHARACTER_CLASS_ARCHAMGE:
+        case CHARACTER_CLASS_LICH:
             // intelligence based mana
             mainmanastat = GetActualIntelligence();
             statbonus = GetParameterBonus(mainmanastat);
             break;
 
-        case PLAYER_CLASS_INITIATE:
-        case PLAYER_CLASS_MASTER:
-        case PLAYER_CLASS_NINJA:
-        case PLAYER_CLASS_PALADIN:
-        case PLAYER_CLASS_CRUSADER:
-        case PLAYER_CLASS_HERO:
-        case PLAYER_CLASS_VILLIAN:
-        case PLAYER_CLASS_CLERIC:
-        case PLAYER_CLASS_PRIEST:
-        case PLAYER_CLASS_PRIEST_OF_SUN:
-        case PLAYER_CLASS_PRIEST_OF_MOON:
+        case CHARACTER_CLASS_INITIATE:
+        case CHARACTER_CLASS_MASTER:
+        case CHARACTER_CLASS_NINJA:
+        case CHARACTER_CLASS_PALADIN:
+        case CHARACTER_CLASS_CRUSADER:
+        case CHARACTER_CLASS_HERO:
+        case CHARACTER_CLASS_VILLIAN:
+        case CHARACTER_CLASS_CLERIC:
+        case CHARACTER_CLASS_PRIEST:
+        case CHARACTER_CLASS_PRIEST_OF_SUN:
+        case CHARACTER_CLASS_PRIEST_OF_MOON:
             // personality based mana
             mainmanastat = GetActualPersonality();
             statbonus = GetParameterBonus(mainmanastat);
             break;
 
-        case PLAYER_CLASS_HUNTER:
-        case PLAYER_CLASS_RANGER_LORD:
-        case PLAYER_CLASS_BOUNTY_HUNTER:
-        case PLAYER_CLASS_DRUID:
-        case PLAYER_CLASS_GREAT_DRUID:
-        case PLAYER_CLASS_ARCH_DRUID:
-        case PLAYER_CLASS_WARLOCK:
+        case CHARACTER_CLASS_HUNTER:
+        case CHARACTER_CLASS_RANGER_LORD:
+        case CHARACTER_CLASS_BOUNTY_HUNTER:
+        case CHARACTER_CLASS_DRUID:
+        case CHARACTER_CLASS_GREAT_DRUID:
+        case CHARACTER_CLASS_ARCH_DRUID:
+        case CHARACTER_CLASS_WARLOCK:
             // mixed base mana
             mainmanastat = GetActualPersonality();
             statbonus = GetParameterBonus(mainmanastat);
@@ -2180,7 +2180,7 @@ int Player::GetMaxMana() const {
 }
 
 //----- (0048E656) --------------------------------------------------------
-int Player::GetBaseAC() const {
+int Character::GetBaseAC() const {
     int spd = GetActualSpeed();
     int spdbonus = GetParameterBonus(spd);
     int itembonus = GetItemsBonus(CHARACTER_ATTRIBUTE_AC_BONUS) + spdbonus;
@@ -2193,7 +2193,7 @@ int Player::GetBaseAC() const {
 }
 
 //----- (0048E68F) --------------------------------------------------------
-int Player::GetActualAC() const {
+int Character::GetActualAC() const {
     int spd = GetActualSpeed();
     int spdbonus = GetParameterBonus(spd);
     int itembonus = GetItemsBonus(CHARACTER_ATTRIBUTE_AC_BONUS) + spdbonus;
@@ -2208,17 +2208,17 @@ int Player::GetActualAC() const {
 }
 
 //----- (0048E6DC) --------------------------------------------------------
-unsigned int Player::GetBaseAge() const {
+unsigned int Character::GetBaseAge() const {
     return pParty->GetPlayingTime().GetYears() - this->uBirthYear + game_starting_year;
 }
 
 //----- (0048E72C) --------------------------------------------------------
-unsigned int Player::GetActualAge() const {
+unsigned int Character::GetActualAge() const {
     return this->sAgeModifier + GetBaseAge();
 }
 
 //----- (0048E73F) --------------------------------------------------------
-int Player::GetBaseResistance(CHARACTER_ATTRIBUTE_TYPE a2) const {
+int Character::GetBaseResistance(CharacterAttributeType a2) const {
     int v7;  // esi@20
     int racialBonus = 0;
     const int16_t *resStat;
@@ -2255,14 +2255,14 @@ int Player::GetBaseResistance(CHARACTER_ATTRIBUTE_TYPE a2) const {
     }
     v7 = GetItemsBonus(a2) + racialBonus;
     result = v7 + *resStat;
-    if (classType == PLAYER_CLASS_LICH) {
+    if (classType == CHARACTER_CLASS_LICH) {
         if (result > 200) result = 200;
     }
     return result;
 }
 
 //----- (0048E7D0) --------------------------------------------------------
-int Player::GetActualResistance(CHARACTER_ATTRIBUTE_TYPE resistance) const {
+int Character::GetActualResistance(CharacterAttributeType resistance) const {
     signed int v10 = 0;  // [sp+14h] [bp-4h]@1
     const int16_t *resStat;
     int result;
@@ -2275,7 +2275,7 @@ int Player::GetActualResistance(CHARACTER_ATTRIBUTE_TYPE resistance) const {
          resistance == CHARACTER_ATTRIBUTE_RESIST_AIR ||
          resistance == CHARACTER_ATTRIBUTE_RESIST_WATER ||
          resistance == CHARACTER_ATTRIBUTE_RESIST_EARTH) &&
-        leatherSkill.mastery() == PLAYER_SKILL_MASTERY_GRANDMASTER &&
+        leatherSkill.mastery() == CHARACTER_SKILL_MASTERY_GRANDMASTER &&
         HasItemEquipped(ITEM_SLOT_ARMOUR) &&
         GetEquippedItemSkillType(ITEM_SLOT_ARMOUR) == CHARACTER_SKILL_LEATHER)
         v10 += leatherSkill.level();
@@ -2305,14 +2305,14 @@ int Player::GetActualResistance(CHARACTER_ATTRIBUTE_TYPE resistance) const {
     }
     baseRes = GetBaseResistance(resistance);
     result = v10 + GetMagicalBonus(resistance) + baseRes + *(resStat);
-    if (classType == PLAYER_CLASS_LICH) {
+    if (classType == CHARACTER_CLASS_LICH) {
         if (result > 200) result = 200;
     }
     return result;
 }
 
 //----- (0048E8F5) --------------------------------------------------------
-bool Player::Recover(GameTime dt) {
+bool Character::Recover(GameTime dt) {
     int timepassed =
         dt.value * GetSpecialItemBonus(ITEM_ENCHANTMENT_OF_RECOVERY) * 0.01 + dt.value;
 
@@ -2330,7 +2330,7 @@ bool Player::Recover(GameTime dt) {
 }
 
 //----- (0048E96A) --------------------------------------------------------
-void Player::SetRecoveryTime(signed int rec) {
+void Character::SetRecoveryTime(signed int rec) {
     // to avoid switching characters if endurance eliminates hit recovery
     if (rec < 1) return;
 
@@ -2342,13 +2342,13 @@ void Player::SetRecoveryTime(signed int rec) {
 }
 
 //----- (0048E9B7) --------------------------------------------------------
-void Player::RandomizeName() {
+void Character::RandomizeName() {
     if (!uExpressionTimePassed)
         name = pNPCStats->pNPCNames[grng->random(pNPCStats->uNumNPCNames[uSex])][uSex];
 }
 
 //----- (0048E9F4) --------------------------------------------------------
-Condition Player::GetMajorConditionIdx() const {
+Condition Character::GetMajorConditionIdx() const {
     for (Condition condition : conditionImportancyTable()) {
         if (conditions.Has(condition))
             return condition;  // return worst condition
@@ -2357,7 +2357,7 @@ Condition Player::GetMajorConditionIdx() const {
 }
 
 //----- (0048EA1B) --------------------------------------------------------
-int Player::GetParameterBonus(int player_parameter) const {
+int Character::GetParameterBonus(int player_parameter) const {
     int i;  // eax@1
     i = 0;
     while (param_to_bonus_table[i]) {
@@ -2368,7 +2368,7 @@ int Player::GetParameterBonus(int player_parameter) const {
 }
 
 //----- (0048EA46) --------------------------------------------------------
-int Player::GetSpecialItemBonus(ITEM_ENCHANTMENT enchantment) const {
+int Character::GetSpecialItemBonus(ITEM_ENCHANTMENT enchantment) const {
     for (ITEM_SLOT i : allItemSlots()) {
         if (HasItemEquipped(i)) {
             if (enchantment == ITEM_ENCHANTMENT_OF_RECOVERY) {
@@ -2389,7 +2389,7 @@ int Player::GetSpecialItemBonus(ITEM_ENCHANTMENT enchantment) const {
 }
 
 //----- (0048EAAE) --------------------------------------------------------
-int Player::GetItemsBonus(CHARACTER_ATTRIBUTE_TYPE attr, bool getOnlyMainHandDmg /*= false*/) const {
+int Character::GetItemsBonus(CharacterAttributeType attr, bool getOnlyMainHandDmg /*= false*/) const {
     int v5;                     // edi@1
     int v14;                    // ecx@58
     int v15;                    // eax@58
@@ -2499,7 +2499,7 @@ int Player::GetItemsBonus(CHARACTER_ATTRIBUTE_TYPE attr, bool getOnlyMainHandDmg
             return v5 + v56;
 
         case CHARACTER_ATTRIBUTE_LEVEL:
-            if (!Player::HasEnchantedItemEquipped(ITEM_ENCHANTMENT_OF_POWER)) return 0;
+            if (!Character::HasEnchantedItemEquipped(ITEM_ENCHANTMENT_OF_POWER)) return 0;
             return 5;
             break;
 
@@ -2663,74 +2663,74 @@ int Player::GetItemsBonus(CHARACTER_ATTRIBUTE_TYPE attr, bool getOnlyMainHandDmg
 }
 
 //----- (0048F73C) --------------------------------------------------------
-int Player::GetMagicalBonus(CHARACTER_ATTRIBUTE_TYPE a2) const {
+int Character::GetMagicalBonus(CharacterAttributeType a2) const {
     int v3 = 0;  // eax@4
     int v4 = 0;  // ecx@5
 
     switch (a2) {
         case CHARACTER_ATTRIBUTE_RESIST_FIRE:
-            v3 = this->pPlayerBuffs[CHARACTER_BUFF_RESIST_FIRE].power;
+            v3 = this->pCharacterBuffs[CHARACTER_BUFF_RESIST_FIRE].power;
             v4 = pParty->pPartyBuffs[PARTY_BUFF_RESIST_FIRE].power;
             break;
         case CHARACTER_ATTRIBUTE_RESIST_AIR:
-            v3 = this->pPlayerBuffs[CHARACTER_BUFF_RESIST_AIR].power;
+            v3 = this->pCharacterBuffs[CHARACTER_BUFF_RESIST_AIR].power;
             v4 = pParty->pPartyBuffs[PARTY_BUFF_RESIST_AIR].power;
             break;
         case CHARACTER_ATTRIBUTE_RESIST_BODY:
-            v3 = this->pPlayerBuffs[CHARACTER_BUFF_RESIST_BODY].power;
+            v3 = this->pCharacterBuffs[CHARACTER_BUFF_RESIST_BODY].power;
             v4 = pParty->pPartyBuffs[PARTY_BUFF_RESIST_BODY].power;
             break;
         case CHARACTER_ATTRIBUTE_RESIST_WATER:
-            v3 = this->pPlayerBuffs[CHARACTER_BUFF_RESIST_WATER].power;
+            v3 = this->pCharacterBuffs[CHARACTER_BUFF_RESIST_WATER].power;
             v4 = pParty->pPartyBuffs[PARTY_BUFF_RESIST_WATER].power;
             break;
         case CHARACTER_ATTRIBUTE_RESIST_EARTH:
-            v3 = this->pPlayerBuffs[CHARACTER_BUFF_RESIST_EARTH].power;
+            v3 = this->pCharacterBuffs[CHARACTER_BUFF_RESIST_EARTH].power;
             v4 = pParty->pPartyBuffs[PARTY_BUFF_RESIST_EARTH].power;
             break;
         case CHARACTER_ATTRIBUTE_RESIST_MIND:
-            v3 = this->pPlayerBuffs[CHARACTER_BUFF_RESIST_MIND].power;
+            v3 = this->pCharacterBuffs[CHARACTER_BUFF_RESIST_MIND].power;
             v4 = pParty->pPartyBuffs[PARTY_BUFF_RESIST_MIND].power;
             break;
         case CHARACTER_ATTRIBUTE_ATTACK:
         case CHARACTER_ATTRIBUTE_RANGED_ATTACK:
-            v3 = this->pPlayerBuffs[CHARACTER_BUFF_BLESS]
-                     .power;  // only player effect spell in both VI and VII
+            v3 = this->pCharacterBuffs[CHARACTER_BUFF_BLESS]
+                     .power;  // only character effect spell in both VI and VII
             break;
         case CHARACTER_ATTRIBUTE_MELEE_DMG_BONUS:
-            v3 = this->pPlayerBuffs[CHARACTER_BUFF_HEROISM].power;
+            v3 = this->pCharacterBuffs[CHARACTER_BUFF_HEROISM].power;
             v4 = pParty->pPartyBuffs[PARTY_BUFF_HEROISM].power;
             break;
         case CHARACTER_ATTRIBUTE_MIGHT:
-            v3 = pPlayerBuffs[CHARACTER_BUFF_STRENGTH].power;
+            v3 = pCharacterBuffs[CHARACTER_BUFF_STRENGTH].power;
             v4 = pParty->pPartyBuffs[PARTY_BUFF_DAY_OF_GODS].power;
             break;
         case CHARACTER_ATTRIBUTE_INTELLIGENCE:
-            v3 = pPlayerBuffs[CHARACTER_BUFF_INTELLIGENCE].power;
+            v3 = pCharacterBuffs[CHARACTER_BUFF_INTELLIGENCE].power;
             v4 = pParty->pPartyBuffs[PARTY_BUFF_DAY_OF_GODS].power;
             break;
         case CHARACTER_ATTRIBUTE_PERSONALITY:
-            v3 = pPlayerBuffs[CHARACTER_BUFF_PERSONALITY].power;
+            v3 = pCharacterBuffs[CHARACTER_BUFF_PERSONALITY].power;
             v4 = pParty->pPartyBuffs[PARTY_BUFF_DAY_OF_GODS].power;
             break;
         case CHARACTER_ATTRIBUTE_ENDURANCE:
-            v3 = pPlayerBuffs[CHARACTER_BUFF_ENDURANCE].power;
+            v3 = pCharacterBuffs[CHARACTER_BUFF_ENDURANCE].power;
             v4 = pParty->pPartyBuffs[PARTY_BUFF_DAY_OF_GODS].power;
             break;
         case CHARACTER_ATTRIBUTE_ACCURACY:
-            v3 = pPlayerBuffs[CHARACTER_BUFF_ACCURACY].power;
+            v3 = pCharacterBuffs[CHARACTER_BUFF_ACCURACY].power;
             v4 = pParty->pPartyBuffs[PARTY_BUFF_DAY_OF_GODS].power;
             break;
         case CHARACTER_ATTRIBUTE_SPEED:
-            v3 = pPlayerBuffs[CHARACTER_BUFF_SPEED].power;
+            v3 = pCharacterBuffs[CHARACTER_BUFF_SPEED].power;
             v4 = pParty->pPartyBuffs[PARTY_BUFF_DAY_OF_GODS].power;
             break;
         case CHARACTER_ATTRIBUTE_LUCK:
-            v3 = pPlayerBuffs[CHARACTER_BUFF_LUCK].power;
+            v3 = pCharacterBuffs[CHARACTER_BUFF_LUCK].power;
             v4 = pParty->pPartyBuffs[PARTY_BUFF_DAY_OF_GODS].power;
             break;
         case CHARACTER_ATTRIBUTE_AC_BONUS:
-            v3 = this->pPlayerBuffs[CHARACTER_BUFF_STONESKIN].power;
+            v3 = this->pCharacterBuffs[CHARACTER_BUFF_STONESKIN].power;
             v4 = pParty->pPartyBuffs[PARTY_BUFF_STONE_SKIN].power;
             break;
         default:
@@ -2740,7 +2740,7 @@ int Player::GetMagicalBonus(CHARACTER_ATTRIBUTE_TYPE a2) const {
 }
 
 //----- (0048F882) --------------------------------------------------------
-PLAYER_SKILL_LEVEL Player::GetActualSkillLevel(CharacterSkillType uSkillType) const {
+CHARACTER_SKILL_LEVEL Character::GetActualSkillLevel(CharacterSkillType uSkillType) const {
     int bonus_value = 0;
     int result;
 
@@ -2797,7 +2797,7 @@ PLAYER_SKILL_LEVEL Player::GetActualSkillLevel(CharacterSkillType uSkillType) co
             if (CheckHiredNPCSpeciality(Apprentice)) bonus_value = 2;
             if (CheckHiredNPCSpeciality(Mystic)) bonus_value += 3;
             if (CheckHiredNPCSpeciality(Spellmaster)) bonus_value += 4;
-            if (classType == PLAYER_CLASS_WARLOCK && PartyHasDragon())
+            if (classType == CHARACTER_CLASS_WARLOCK && PartyHasDragon())
                 bonus_value += 3;
             bonus_value += GetItemsBonus(CHARACTER_ATTRIBUTE_SKILL_EARTH);
             break;
@@ -2805,7 +2805,7 @@ PLAYER_SKILL_LEVEL Player::GetActualSkillLevel(CharacterSkillType uSkillType) co
             if (CheckHiredNPCSpeciality(Apprentice)) bonus_value = 2;
             if (CheckHiredNPCSpeciality(Mystic)) bonus_value += 3;
             if (CheckHiredNPCSpeciality(Spellmaster)) bonus_value += 4;
-            if (classType == PLAYER_CLASS_WARLOCK && PartyHasDragon())
+            if (classType == CHARACTER_CLASS_WARLOCK && PartyHasDragon())
                 bonus_value += 3;
             bonus_value += GetItemsBonus(CHARACTER_ATTRIBUTE_SKILL_FIRE);
             break;
@@ -2813,7 +2813,7 @@ PLAYER_SKILL_LEVEL Player::GetActualSkillLevel(CharacterSkillType uSkillType) co
             if (CheckHiredNPCSpeciality(Apprentice)) bonus_value = 2;
             if (CheckHiredNPCSpeciality(Mystic)) bonus_value += 3;
             if (CheckHiredNPCSpeciality(Spellmaster)) bonus_value += 4;
-            if (classType == PLAYER_CLASS_WARLOCK && PartyHasDragon())
+            if (classType == CHARACTER_CLASS_WARLOCK && PartyHasDragon())
                 bonus_value += 3;
             bonus_value += GetItemsBonus(CHARACTER_ATTRIBUTE_SKILL_AIR);
             break;
@@ -2821,7 +2821,7 @@ PLAYER_SKILL_LEVEL Player::GetActualSkillLevel(CharacterSkillType uSkillType) co
             if (CheckHiredNPCSpeciality(Apprentice)) bonus_value = 2;
             if (CheckHiredNPCSpeciality(Mystic)) bonus_value += 3;
             if (CheckHiredNPCSpeciality(Spellmaster)) bonus_value += 4;
-            if (classType == PLAYER_CLASS_WARLOCK && PartyHasDragon())
+            if (classType == CHARACTER_CLASS_WARLOCK && PartyHasDragon())
                 bonus_value += 3;
             bonus_value += GetItemsBonus(CHARACTER_ATTRIBUTE_SKILL_WATER);
             break;
@@ -2895,16 +2895,16 @@ PLAYER_SKILL_LEVEL Player::GetActualSkillLevel(CharacterSkillType uSkillType) co
     return result;
 }
 
-PLAYER_SKILL_MASTERY Player::GetActualSkillMastery(CharacterSkillType uSkillType) const {
+CharacterSkillMastery Character::GetActualSkillMastery(CharacterSkillType uSkillType) const {
     return getSkillValue(uSkillType).mastery();
 }
 
-CombinedSkillValue Player::getActualSkillValue(CharacterSkillType skillType) const {
+CombinedSkillValue Character::getActualSkillValue(CharacterSkillType skillType) const {
     return CombinedSkillValue(GetActualSkillLevel(skillType), GetActualSkillMastery(skillType));
 }
 
 //----- (0048FC00) --------------------------------------------------------
-int Player::GetSkillBonus(CHARACTER_ATTRIBUTE_TYPE inSkill) const {
+int Character::GetSkillBonus(CharacterAttributeType inSkill) const {
                     // TODO(_): move the individual implementations to attribute
                     // classes once possible ?? check
     int armsMasterBonus;
@@ -2998,7 +2998,7 @@ int Player::GetSkillBonus(CHARACTER_ATTRIBUTE_TYPE inSkill) const {
             CombinedSkillValue dodgeValue = getActualSkillValue(CHARACTER_SKILL_DODGE);
             int multiplier =
                 GetMultiplierForSkillLevel(CHARACTER_SKILL_DODGE, 1, 2, 3, 3);
-            if (!wearingArmor && (!wearingLeather || dodgeValue.mastery() == PLAYER_SKILL_MASTERY_GRANDMASTER)) {
+            if (!wearingArmor && (!wearingLeather || dodgeValue.mastery() == CHARACTER_SKILL_MASTERY_GRANDMASTER)) {
                 ACSum += multiplier * dodgeValue.level();
             }
             return ACSum;
@@ -3076,7 +3076,7 @@ int Player::GetSkillBonus(CHARACTER_ATTRIBUTE_TYPE inSkill) const {
                         switch (currItemSkillType) {
                             case CHARACTER_SKILL_STAFF:
 
-                                if (this->getActualSkillValue(CHARACTER_SKILL_STAFF).mastery() >= PLAYER_SKILL_MASTERY_GRANDMASTER &&
+                                if (this->getActualSkillValue(CHARACTER_SKILL_STAFF).mastery() >= CHARACTER_SKILL_MASTERY_GRANDMASTER &&
                                     this->getActualSkillValue(CHARACTER_SKILL_UNARMED).level() > 0) {
                                     int unarmedSkillLevel = this->getActualSkillValue(CHARACTER_SKILL_UNARMED).level();
                                     int multiplier = GetMultiplierForSkillLevel(CHARACTER_SKILL_UNARMED, 0, 1, 2, 2);
@@ -3116,20 +3116,20 @@ int Player::GetSkillBonus(CHARACTER_ATTRIBUTE_TYPE inSkill) const {
     }
 }
 
-unsigned int Player::GetMultiplierForSkillLevel(
+unsigned int Character::GetMultiplierForSkillLevel(
     CharacterSkillType uSkillType, int mult1, int mult2, int mult3,
     int mult4) const {  // TODO(pskelton): ?? needs changing - check behavious
-    PLAYER_SKILL_MASTERY masteryLvl = GetActualSkillMastery(uSkillType);
+    CharacterSkillMastery masteryLvl = GetActualSkillMastery(uSkillType);
     switch (masteryLvl) {
-        case PLAYER_SKILL_MASTERY_NONE:
+        case CHARACTER_SKILL_MASTERY_NONE:
             return 0;
-        case PLAYER_SKILL_MASTERY_NOVICE:
+        case CHARACTER_SKILL_MASTERY_NOVICE:
             return mult1;
-        case PLAYER_SKILL_MASTERY_EXPERT:
+        case CHARACTER_SKILL_MASTERY_EXPERT:
             return mult2;
-        case PLAYER_SKILL_MASTERY_MASTER:
+        case CHARACTER_SKILL_MASTERY_MASTER:
             return mult3;
-        case PLAYER_SKILL_MASTERY_GRANDMASTER:
+        case CHARACTER_SKILL_MASTERY_GRANDMASTER:
             return mult4;
     }
     Error("(%u)", masteryLvl);
@@ -3150,7 +3150,7 @@ unsigned int Player::GetMultiplierForSkillLevel(
 //                     22   underwater suits (unused)
 //                     23   zombie male
 //                     24   zombie female
-enum CharacterRace Player::GetRace() const {
+enum CharacterRace Character::GetRace() const {
     if (uCurrentFace <= 7) {
         return CHARACTER_RACE_HUMAN;
     } else if (uCurrentFace <= 11) {
@@ -3164,7 +3164,7 @@ enum CharacterRace Player::GetRace() const {
     }
 }
 
-std::string Player::GetRaceName() const {
+std::string Character::GetRaceName() const {
     switch (GetRace()) {
         case CHARACTER_RACE_HUMAN: return localization->GetString(LSTR_RACE_HUMAN);
         case CHARACTER_RACE_ELF: return localization->GetString(LSTR_RACE_ELF);
@@ -3177,7 +3177,7 @@ std::string Player::GetRaceName() const {
 }
 
 //----- (00490141) --------------------------------------------------------
-CHARACTER_SEX Player::GetSexByVoice() const {
+CharacterSex Character::GetSexByVoice() const {
     switch (this->uVoiceID) {
         case 0u:
         case 1u:
@@ -3212,7 +3212,7 @@ CHARACTER_SEX Player::GetSexByVoice() const {
 }
 
 //----- (00490188) --------------------------------------------------------
-void Player::SetInitialStats() {
+void Character::SetInitialStats() {
     CharacterRace race = GetRace();
     uMight = StatTable[race][0].uBaseValue;
     uIntelligence = StatTable[race][1].uBaseValue;
@@ -3224,7 +3224,7 @@ void Player::SetInitialStats() {
 }
 
 //----- (004901FC) --------------------------------------------------------
-void Player::SetSexByVoice() {
+void Character::SetSexByVoice() {
     switch (this->uVoiceID) {
         case 0:
         case 1:
@@ -3261,7 +3261,7 @@ void Player::SetSexByVoice() {
 }
 
 //----- (0049024A) --------------------------------------------------------
-void Player::Reset(PLAYER_CLASS_TYPE cls) {
+void Character::Reset(CharacterClassType cls) {
     sLevelModifier = 0;
     sAgeModifier = 0;
 
@@ -3291,7 +3291,7 @@ void Player::Reset(PLAYER_CLASS_TYPE cls) {
         SetSkillLevel(i, 1);
     }
 
-    memset(&pEquipment, 0, sizeof(PlayerEquipment));
+    memset(&pEquipment, 0, sizeof(CharacterEquipment));
     pInventoryMatrix.fill(0);
     for (uint i = 0; i < INVENTORY_SLOT_COUNT; ++i) pInventoryItemList[i].Reset();
     for (uint i = 0; i < ADDITIONAL_SLOT_COUNT; ++i) pEquippedItems[i].Reset();
@@ -3301,7 +3301,7 @@ void Player::Reset(PLAYER_CLASS_TYPE cls) {
 }
 
 //----- (004903C9) --------------------------------------------------------
-CharacterSkillType Player::GetSkillIdxByOrder(signed int order) {
+CharacterSkillType Character::GetSkillIdxByOrder(signed int order) {
     int counter;  // edx@5
     bool canBeInactive;
     unsigned char requiredValue;
@@ -3335,8 +3335,8 @@ CharacterSkillType Player::GetSkillIdxByOrder(signed int order) {
 }
 
 //----- (0049048D) --------------------------------------------------------
-// uint16_t PartyCreation_BtnMinusClick(Player *_this, int eAttribute)
-void Player::DecreaseAttribute(int eAttribute) {
+// uint16_t PartyCreation_BtnMinusClick(Character *_this, int eAttribute)
+void Character::DecreaseAttribute(int eAttribute) {
     int pBaseValue;    // ecx@1
     int pDroppedStep;  // ebx@1
     int pStep;         // esi@1
@@ -3376,8 +3376,8 @@ void Player::DecreaseAttribute(int eAttribute) {
 }
 
 //----- (004905F5) --------------------------------------------------------
-// signed int  PartyCreation_BtnPlusClick(Player *this, int eAttribute)
-void Player::IncreaseAttribute(int eAttribute) {
+// signed int  PartyCreation_BtnPlusClick(Character *this, int eAttribute)
+void Character::IncreaseAttribute(int eAttribute) {
     int raceId;              // eax@1
     int maxValue;            // ebx@1
     signed int baseStep;     // edi@1
@@ -3392,7 +3392,7 @@ void Player::IncreaseAttribute(int eAttribute) {
     baseStep = StatTable[raceId][eAttribute].uBaseStep;
     baseValue = StatTable[raceId][eAttribute].uBaseValue;
     droppedStep = StatTable[raceId][eAttribute].uDroppedStep;
-    PlayerCreation_GetUnspentAttributePointCount();
+    CharacterCreation_GetUnspentAttributePointCount();
     switch (eAttribute) {
         case 0:
             statToChange = &this->uMight;
@@ -3424,14 +3424,14 @@ void Player::IncreaseAttribute(int eAttribute) {
         baseStep = droppedStep;
         droppedStep = tmp;
     }
-    result = PlayerCreation_GetUnspentAttributePointCount();
+    result = CharacterCreation_GetUnspentAttributePointCount();
     if (result >= droppedStep) {
         if (baseStep + *statToChange <= maxValue) *statToChange += baseStep;
     }
 }
 
 //----- (0049070F) --------------------------------------------------------
-void Player::resetTempBonuses() {
+void Character::resetTempBonuses() {
     // this is also used during party rest and heal so only buffs and bonuses are reset
     this->sLevelModifier = 0;
     this->sACModifier = 0;
@@ -3474,7 +3474,7 @@ void Player::resetTempBonuses() {
 }
 
 //----- (004907E7) --------------------------------------------------------
-Color Player::GetStatColor(int uStat) const {
+Color Character::GetStatColor(int uStat) const {
     int attribute_value;  // edx@1
 
     int base_attribute_value = StatTable[GetRace()][uStat].uBaseValue;
@@ -3513,7 +3513,7 @@ Color Player::GetStatColor(int uStat) const {
 }
 
 //----- (004908A8) --------------------------------------------------------
-bool Player::DiscardConditionIfLastsLongerThan(Condition uCondition,
+bool Character::DiscardConditionIfLastsLongerThan(Condition uCondition,
                                                GameTime time) {
     if (conditions.Has(uCondition) && time < conditions.Get(uCondition)) {
         conditions.Reset(uCondition);
@@ -3523,8 +3523,8 @@ bool Player::DiscardConditionIfLastsLongerThan(Condition uCondition,
     }
 }
 
-void Player::useItem(int targetCharacter, bool isPortraitClick) {
-    Player *playerAffected = &pParty->pPlayers[targetCharacter];
+void Character::useItem(int targetCharacter, bool isPortraitClick) {
+    Character *playerAffected = &pParty->pCharacters[targetCharacter];
     if (pParty->bTurnBasedModeOn && (pTurnEngine->turn_stage == TE_WAIT || pTurnEngine->turn_stage == TE_MOVEMENT)) {
         return;
     }
@@ -3555,7 +3555,7 @@ void Player::useItem(int targetCharacter, bool isPortraitClick) {
         }
         //if (v73) {
             if (pParty->bTurnBasedModeOn) {
-                pParty->pTurnBasedPlayerRecoveryTimes[targetCharacter] = 100;
+                pParty->pTurnBasedCharacterRecoveryTimes[targetCharacter] = 100;
                 this->SetRecoveryTime(100);
                 pTurnEngine->ApplyPlayerAction();
             } else {
@@ -3608,36 +3608,36 @@ void Player::useItem(int targetCharacter, bool isPortraitClick) {
 
             case ITEM_POTION_HASTE:
                 if (!playerAffected->conditions.Has(CONDITION_WEAK)) {
-                    playerAffected->pPlayerBuffs[CHARACTER_BUFF_HASTE].Apply(pParty->GetPlayingTime() + buffDuration, PLAYER_SKILL_MASTERY_MASTER, 5, 0, 0);
+                    playerAffected->pCharacterBuffs[CHARACTER_BUFF_HASTE].Apply(pParty->GetPlayingTime() + buffDuration, CHARACTER_SKILL_MASTERY_MASTER, 5, 0, 0);
                 }
                 break;
 
             case ITEM_POTION_HEROISM:
-                playerAffected->pPlayerBuffs[CHARACTER_BUFF_HEROISM].Apply(pParty->GetPlayingTime() + buffDuration, PLAYER_SKILL_MASTERY_MASTER, 5, 0, 0);
+                playerAffected->pCharacterBuffs[CHARACTER_BUFF_HEROISM].Apply(pParty->GetPlayingTime() + buffDuration, CHARACTER_SKILL_MASTERY_MASTER, 5, 0, 0);
                 break;
 
             case ITEM_POTION_BLESS:
-                playerAffected->pPlayerBuffs[CHARACTER_BUFF_BLESS].Apply(pParty->GetPlayingTime() + buffDuration, PLAYER_SKILL_MASTERY_MASTER, 5, 0, 0);
+                playerAffected->pCharacterBuffs[CHARACTER_BUFF_BLESS].Apply(pParty->GetPlayingTime() + buffDuration, CHARACTER_SKILL_MASTERY_MASTER, 5, 0, 0);
                 break;
 
             case ITEM_POTION_PRESERVATION:
                 // mastery was NONE
-                playerAffected->pPlayerBuffs[CHARACTER_BUFF_PRESERVATION].Apply(pParty->GetPlayingTime() + buffDuration, PLAYER_SKILL_MASTERY_MASTER,
+                playerAffected->pCharacterBuffs[CHARACTER_BUFF_PRESERVATION].Apply(pParty->GetPlayingTime() + buffDuration, CHARACTER_SKILL_MASTERY_MASTER,
                         potionStrength * 3, 0, 0);
                 break;
 
             case ITEM_POTION_SHIELD:
                 // mastery was NONE
-                playerAffected->pPlayerBuffs[CHARACTER_BUFF_SHIELD].Apply(pParty->GetPlayingTime() + buffDuration, PLAYER_SKILL_MASTERY_MASTER,
+                playerAffected->pCharacterBuffs[CHARACTER_BUFF_SHIELD].Apply(pParty->GetPlayingTime() + buffDuration, CHARACTER_SKILL_MASTERY_MASTER,
                         potionStrength * 3, 0, 0);
                 break;
 
             case ITEM_POTION_STONESKIN:
-                playerAffected->pPlayerBuffs[CHARACTER_BUFF_STONESKIN].Apply(pParty->GetPlayingTime() + buffDuration, PLAYER_SKILL_MASTERY_MASTER, 5, 0, 0);
+                playerAffected->pCharacterBuffs[CHARACTER_BUFF_STONESKIN].Apply(pParty->GetPlayingTime() + buffDuration, CHARACTER_SKILL_MASTERY_MASTER, 5, 0, 0);
                 break;
 
             case ITEM_POTION_WATER_BREATHING:
-                playerAffected->pPlayerBuffs[CHARACTER_BUFF_WATER_WALK].Apply(pParty->GetPlayingTime() + buffDuration, PLAYER_SKILL_MASTERY_MASTER, 5, 0, 0);
+                playerAffected->pCharacterBuffs[CHARACTER_BUFF_WATER_WALK].Apply(pParty->GetPlayingTime() + buffDuration, CHARACTER_SKILL_MASTERY_MASTER, 5, 0, 0);
                 // Drink potion reaction was missing
                 break;
 
@@ -3655,37 +3655,37 @@ void Player::useItem(int targetCharacter, bool isPortraitClick) {
 
             case ITEM_POTION_MIGHT_BOOST:
                 // mastery was NONE
-                playerAffected->pPlayerBuffs[CHARACTER_BUFF_STRENGTH].Apply(pParty->GetPlayingTime() + buffDuration, PLAYER_SKILL_MASTERY_MASTER,
+                playerAffected->pCharacterBuffs[CHARACTER_BUFF_STRENGTH].Apply(pParty->GetPlayingTime() + buffDuration, CHARACTER_SKILL_MASTERY_MASTER,
                         potionStrength * 3, 0, 0);
                 break;
 
             case ITEM_POTION_INTELLECT_BOOST:
                 // mastery was NONE
-                playerAffected->pPlayerBuffs[CHARACTER_BUFF_INTELLIGENCE].Apply(pParty->GetPlayingTime() + buffDuration, PLAYER_SKILL_MASTERY_MASTER,
+                playerAffected->pCharacterBuffs[CHARACTER_BUFF_INTELLIGENCE].Apply(pParty->GetPlayingTime() + buffDuration, CHARACTER_SKILL_MASTERY_MASTER,
                         potionStrength * 3, 0, 0);
                 break;
 
             case ITEM_POTION_PERSONALITY_BOOST:
                 // mastery was NONE
-                playerAffected->pPlayerBuffs[CHARACTER_BUFF_PERSONALITY].Apply(pParty->GetPlayingTime() + buffDuration, PLAYER_SKILL_MASTERY_MASTER,
+                playerAffected->pCharacterBuffs[CHARACTER_BUFF_PERSONALITY].Apply(pParty->GetPlayingTime() + buffDuration, CHARACTER_SKILL_MASTERY_MASTER,
                         potionStrength * 3, 0, 0);
                 break;
 
             case ITEM_POTION_ENDURANCE_BOOST:
                 // mastery was NONE
-                playerAffected->pPlayerBuffs[CHARACTER_BUFF_ENDURANCE].Apply(pParty->GetPlayingTime() + buffDuration, PLAYER_SKILL_MASTERY_MASTER,
+                playerAffected->pCharacterBuffs[CHARACTER_BUFF_ENDURANCE].Apply(pParty->GetPlayingTime() + buffDuration, CHARACTER_SKILL_MASTERY_MASTER,
                         potionStrength * 3, 0, 0);
                 break;
 
             case ITEM_POTION_SPEED_BOOST:
                 // mastery was NONE
-                playerAffected->pPlayerBuffs[CHARACTER_BUFF_SPEED].Apply(pParty->GetPlayingTime() + buffDuration, PLAYER_SKILL_MASTERY_MASTER,
+                playerAffected->pCharacterBuffs[CHARACTER_BUFF_SPEED].Apply(pParty->GetPlayingTime() + buffDuration, CHARACTER_SKILL_MASTERY_MASTER,
                         potionStrength * 3, 0, 0);
                 break;
 
             case ITEM_POTION_ACCURACY_BOOST:
                 // mastery was NONE
-                playerAffected->pPlayerBuffs[CHARACTER_BUFF_ACCURACY].Apply(pParty->GetPlayingTime() + buffDuration, PLAYER_SKILL_MASTERY_MASTER,
+                playerAffected->pCharacterBuffs[CHARACTER_BUFF_ACCURACY].Apply(pParty->GetPlayingTime() + buffDuration, CHARACTER_SKILL_MASTERY_MASTER,
                         potionStrength * 3, 0, 0);
                 break;
 
@@ -3718,43 +3718,43 @@ void Player::useItem(int targetCharacter, bool isPortraitClick) {
 
             case ITEM_POTION_LUCK_BOOST:
                 // mastery was NONE
-                playerAffected->pPlayerBuffs[CHARACTER_BUFF_LUCK].Apply(pParty->GetPlayingTime() + buffDuration, PLAYER_SKILL_MASTERY_MASTER,
+                playerAffected->pCharacterBuffs[CHARACTER_BUFF_LUCK].Apply(pParty->GetPlayingTime() + buffDuration, CHARACTER_SKILL_MASTERY_MASTER,
                         potionStrength * 3, 0, 0);
                 break;
 
             case ITEM_POTION_FIRE_RESISTANCE:
                 // mastery was NONE
-                playerAffected->pPlayerBuffs[CHARACTER_BUFF_RESIST_FIRE].Apply(pParty->GetPlayingTime() + buffDuration, PLAYER_SKILL_MASTERY_MASTER,
+                playerAffected->pCharacterBuffs[CHARACTER_BUFF_RESIST_FIRE].Apply(pParty->GetPlayingTime() + buffDuration, CHARACTER_SKILL_MASTERY_MASTER,
                         potionStrength * 3, 0, 0);
                 break;
 
             case ITEM_POTION_AIR_RESISTANCE:
                 // mastery was NONE
-                playerAffected->pPlayerBuffs[CHARACTER_BUFF_RESIST_AIR].Apply(pParty->GetPlayingTime() + buffDuration, PLAYER_SKILL_MASTERY_MASTER,
+                playerAffected->pCharacterBuffs[CHARACTER_BUFF_RESIST_AIR].Apply(pParty->GetPlayingTime() + buffDuration, CHARACTER_SKILL_MASTERY_MASTER,
                         potionStrength * 3, 0, 0);
                 break;
 
             case ITEM_POTION_WATER_RESISTANCE:
                 // mastery was NONE
-                playerAffected->pPlayerBuffs[CHARACTER_BUFF_RESIST_WATER].Apply(pParty->GetPlayingTime() + buffDuration, PLAYER_SKILL_MASTERY_MASTER,
+                playerAffected->pCharacterBuffs[CHARACTER_BUFF_RESIST_WATER].Apply(pParty->GetPlayingTime() + buffDuration, CHARACTER_SKILL_MASTERY_MASTER,
                         potionStrength * 3, 0, 0);
                 break;
 
             case ITEM_POTION_EARTH_RESISTANCE:
                 // mastery was NONE
-                playerAffected->pPlayerBuffs[CHARACTER_BUFF_RESIST_EARTH].Apply(pParty->GetPlayingTime() + buffDuration, PLAYER_SKILL_MASTERY_MASTER,
+                playerAffected->pCharacterBuffs[CHARACTER_BUFF_RESIST_EARTH].Apply(pParty->GetPlayingTime() + buffDuration, CHARACTER_SKILL_MASTERY_MASTER,
                         potionStrength * 3, 0, 0);
                 break;
 
             case ITEM_POTION_MIND_RESISTANCE:
                 // mastery was NONE
-                playerAffected->pPlayerBuffs[CHARACTER_BUFF_RESIST_MIND].Apply(pParty->GetPlayingTime() + buffDuration, PLAYER_SKILL_MASTERY_MASTER,
+                playerAffected->pCharacterBuffs[CHARACTER_BUFF_RESIST_MIND].Apply(pParty->GetPlayingTime() + buffDuration, CHARACTER_SKILL_MASTERY_MASTER,
                         potionStrength * 3, 0, 0);
                 break;
 
             case ITEM_POTION_BODY_RESISTANCE:
                 // mastery was NONE
-                playerAffected->pPlayerBuffs[CHARACTER_BUFF_RESIST_BODY].Apply(pParty->GetPlayingTime() + buffDuration, PLAYER_SKILL_MASTERY_MASTER,
+                playerAffected->pCharacterBuffs[CHARACTER_BUFF_RESIST_BODY].Apply(pParty->GetPlayingTime() + buffDuration, CHARACTER_SKILL_MASTERY_MASTER,
                         potionStrength * 3, 0, 0);
                 break;
 
@@ -3828,7 +3828,7 @@ void Player::useItem(int targetCharacter, bool isPortraitClick) {
             pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 0, 0);
         }
         if (pParty->bTurnBasedModeOn) {
-            pParty->pTurnBasedPlayerRecoveryTimes[targetCharacter] = 100;
+            pParty->pTurnBasedCharacterRecoveryTimes[targetCharacter] = 100;
             this->SetRecoveryTime(100);
             pTurnEngine->ApplyPlayerAction();
         } else {
@@ -3884,7 +3884,7 @@ void Player::useItem(int targetCharacter, bool isPortraitClick) {
             return;
         }
 
-        PLAYER_SKILL_MASTERY requiredMastery = pSpellDatas[bookSpellId].skillMastery;
+        CharacterSkillMastery requiredMastery = pSpellDatas[bookSpellId].skillMastery;
         CharacterSkillType skill = getSkillTypeForSpell(bookSpellId);
         CombinedSkillValue val = playerAffected->getSkillValue(skill);
 
@@ -3907,7 +3907,7 @@ void Player::useItem(int targetCharacter, bool isPortraitClick) {
         //       {
         //         if ( pParty->bTurnBasedModeOn )
         //         {
-        //           pParty->pTurnBasedPlayerRecoveryTimes[player_num-1] = 100;
+        //           pParty->pTurnBasedCharacterRecoveryTimes[player_num-1] = 100;
         //           thisb->SetRecoveryTime(100);
         //           pTurnEngine->ApplyPlayerAction();
         //         }
@@ -4047,7 +4047,7 @@ void Player::useItem(int targetCharacter, bool isPortraitClick) {
             return;
         } else if (pParty->pPickedItem.uItemID == ITEM_HORSESHOE) {
             spell_fx_renderer->SetPlayerBuffAnim(SPELL_QUEST_COMPLETED, targetCharacter);
-            //v5 = PID(OBJECT_Player, player_num + 49);
+            //v5 = PID(OBJECT_Character, player_num + 49);
             //pAudioPlayer->playSound(SOUND_quest, v5);
             pAudioPlayer->playUISound(SOUND_quest);
             playerAffected->uSkillPoints += 2;
@@ -4065,8 +4065,8 @@ void Player::useItem(int targetCharacter, bool isPortraitClick) {
     }
 }
 
-bool CmpSkillValue(PLAYER_SKILL valToCompare, PLAYER_SKILL skillValue) {
-    PLAYER_SKILL val;
+bool CmpSkillValue(CHARACTER_SKILL valToCompare, CHARACTER_SKILL skillValue) {
+    CHARACTER_SKILL val;
     if (valToCompare <= 63)
         val = skillValue & 0x3F;
     else
@@ -4075,7 +4075,7 @@ bool CmpSkillValue(PLAYER_SKILL valToCompare, PLAYER_SKILL skillValue) {
 }
 
 //----- (00449BB4) --------------------------------------------------------
-bool Player::CompareVariable(VariableType VarNum, int pValue) {
+bool Character::CompareVariable(VariableType VarNum, int pValue) {
     // in some cases this calls only calls v4 >= pValue, which i've
     // changed to return false, since these values are supposed to
     // be positive and v4 was -1 by default
@@ -4382,7 +4382,7 @@ bool Player::CompareVariable(VariableType VarNum, int pValue) {
             baseStat = GetBaseLuck();
             return (actStat >= baseStat);
         case VAR_PlayerBits:
-            return this->_playerEventBits[pValue];
+            return this->_characterEventBits[pValue];
         case VAR_NPCs2:
             return pNPCStats->pNewNPCData[pValue].Hired();
         case VAR_IsFlying:
@@ -4394,14 +4394,14 @@ bool Player::CompareVariable(VariableType VarNum, int pValue) {
         case VAR_CircusPrises:  // isn't used in MM6 since 0x1D6u is a book of
                                 // regeneration
             v4 = 0;
-            for (Player &player : pParty->pPlayers) {
+            for (Character &character : pParty->pCharacters) {
                 for (int invPos = 0; invPos < TOTAL_ITEM_SLOT_COUNT; invPos++) {
                     ITEM_TYPE itemId;
 
                     if (invPos < INVENTORY_SLOT_COUNT) {
-                        itemId = player.pInventoryItemList[invPos].uItemID;
+                        itemId = character.pInventoryItemList[invPos].uItemID;
                     } else {
-                        itemId = player.pEquippedItems[invPos - INVENTORY_SLOT_COUNT].uItemID;
+                        itemId = character.pEquippedItems[invPos - INVENTORY_SLOT_COUNT].uItemID;
                     }
                     switch (itemId) {
                         case ITEM_SPELLBOOK_REGENERATION:
@@ -4484,7 +4484,7 @@ bool Player::CompareVariable(VariableType VarNum, int pValue) {
 }
 
 //----- (0044A5CB) --------------------------------------------------------
-void Player::SetVariable(VariableType var_type, signed int var_value) {
+void Character::SetVariable(VariableType var_type, signed int var_value) {
     int gold{}, food{};
     LocationInfo *ddm;
     ItemGen item;
@@ -4519,16 +4519,16 @@ void Player::SetVariable(VariableType var_type, signed int var_value) {
 
     switch (var_type) {
         case VAR_Sex:
-            this->uSex = (CHARACTER_SEX)var_value;
+            this->uSex = (CharacterSex)var_value;
             PlayAwardSound_Anim();
             return;
         case VAR_Class:
-            this->classType = (PLAYER_CLASS_TYPE)var_value;
-            if ((PLAYER_CLASS_TYPE)var_value == PLAYER_CLASS_LICH) {
+            this->classType = (CharacterClassType)var_value;
+            if ((CharacterClassType)var_value == CHARACTER_CLASS_LICH) {
                 for (int i = 0; i < TOTAL_ITEM_SLOT_COUNT; i++) {
                     if (this->pOwnItems[i].uItemID == ITEM_QUEST_LICH_JAR_EMPTY) {
                         this->pOwnItems[i].uItemID = ITEM_QUEST_LICH_JAR_FULL;
-                        this->pOwnItems[i].uHolderPlayer = GetPlayerIndex();
+                        this->pOwnItems[i].uHolderPlayer = getCharacterIndex();
                     }
                 }
                 if (this->sResFireBase < 20) this->sResFireBase = 20;
@@ -4547,7 +4547,7 @@ void Player::SetVariable(VariableType var_type, signed int var_value) {
                     this->uCurrentFace = 20;
                     this->uVoiceID = 20;
                 }
-                GameUI_ReloadPlayerPortraits(GetPlayerIndex(),
+                GameUI_ReloadPlayerPortraits(getCharacterIndex(),
                                              this->uCurrentFace);
             }
             PlayAwardSound_Anim();
@@ -4595,7 +4595,7 @@ void Player::SetVariable(VariableType var_type, signed int var_value) {
         case VAR_QBits_QuestsDone:
             if (!pParty->_questBits[var_value] && !pQuestTable[var_value].empty()) {
                 bFlashQuestBook = true;
-                spell_fx_renderer->SetPlayerBuffAnim(BECOME_MAGIC_GUILD_MEMBER, GetPlayerIndex());
+                spell_fx_renderer->SetPlayerBuffAnim(BECOME_MAGIC_GUILD_MEMBER, getCharacterIndex());
                 PlayAwardSound();
                 this->playReaction(SPEECH_QUEST_GOT);
             }
@@ -4850,7 +4850,7 @@ void Player::SetVariable(VariableType var_type, signed int var_value) {
         case VAR_AutoNotes:
             assert(var_value > 0);
             if (!pParty->_autonoteBits[var_value] && !pAutonoteTxt[var_value].pText.empty()) {
-                spell_fx_renderer->SetPlayerBuffAnim(BECOME_MAGIC_GUILD_MEMBER, GetPlayerIndex());
+                spell_fx_renderer->SetPlayerBuffAnim(BECOME_MAGIC_GUILD_MEMBER, getCharacterIndex());
                 this->playReaction(SPEECH_AWARD_GOT);
                 bFlashAutonotesBook = true;
                 autonoteBookDisplayType = pAutonoteTxt[var_value].eType;  // dword_72371C[2 * a3];
@@ -4859,7 +4859,7 @@ void Player::SetVariable(VariableType var_type, signed int var_value) {
             PlayAwardSound();
             return;
         case VAR_PlayerBits:
-            _playerEventBits.set(var_value);
+            _characterEventBits.set(var_value);
             return;
         case VAR_NPCs2:
             pParty->hirelingScrollPosition = 0;
@@ -5066,35 +5066,35 @@ void Player::SetVariable(VariableType var_type, signed int var_value) {
 }
 
 //----- (new function) --------------------------------------------------------
-void Player::PlayAwardSound() {
-    //int playerIndex = GetPlayerIndex();
-    //int v25 = PID(OBJECT_Player, playerIndex + 48);
+void Character::PlayAwardSound() {
+    //int playerIndex = getCharacterIndex();
+    //int v25 = PID(OBJECT_Character, playerIndex + 48);
     //pAudioPlayer->playSound(SOUND_quest, v25);
     pAudioPlayer->playUISound(SOUND_quest);
 }
 
 //----- (new function) --------------------------------------------------------
-void Player::PlayAwardSound_Anim() {
-    int playerIndex = GetPlayerIndex();
+void Character::PlayAwardSound_Anim() {
+    int playerIndex = getCharacterIndex();
     spell_fx_renderer->SetPlayerBuffAnim(BECOME_MAGIC_GUILD_MEMBER, playerIndex);
     PlayAwardSound();
 }
 
 //----- (new function) --------------------------------------------------------
-void Player::PlayAwardSound_Anim_Face(CharacterSpeech speech) {
+void Character::PlayAwardSound_Anim_Face(CharacterSpeech speech) {
     this->playReaction(speech);
     PlayAwardSound_Anim();
 }
 
 //----- (new function) --------------------------------------------------------
-void Player::SetSkillReaction() {
-    int playerIndex = GetPlayerIndex();
+void Character::SetSkillReaction() {
+    int playerIndex = getCharacterIndex();
     spell_fx_renderer->SetPlayerBuffAnim(BECOME_MAGIC_GUILD_MEMBER, playerIndex);
     PlayAwardSound();
 }
 
 //----- (0044AFFB) --------------------------------------------------------
-void Player::AddVariable(VariableType var_type, signed int val) {
+void Character::AddVariable(VariableType var_type, signed int val) {
     int food{};
     LocationInfo *ddm;
     ItemGen item;
@@ -5153,11 +5153,11 @@ void Player::AddVariable(VariableType var_type, signed int val) {
             PlayAwardSound();
             return;
         case VAR_Sex:
-            this->uSex = (CHARACTER_SEX)val;
+            this->uSex = (CharacterSex)val;
             PlayAwardSound_Anim97();
             return;
         case VAR_Class:
-            this->classType = (PLAYER_CLASS_TYPE)val;
+            this->classType = (CharacterClassType)val;
             PlayAwardSound_Anim97();
             return;
         case VAR_CurrentHP:
@@ -5451,13 +5451,13 @@ void Player::AddVariable(VariableType var_type, signed int val) {
                 this->playReaction(SPEECH_AWARD_GOT);
                 bFlashAutonotesBook = true;
                 autonoteBookDisplayType = pAutonoteTxt[val].eType;
-                spell_fx_renderer->SetPlayerBuffAnim(SPELL_QUEST_COMPLETED, GetPlayerIndex());
+                spell_fx_renderer->SetPlayerBuffAnim(SPELL_QUEST_COMPLETED, getCharacterIndex());
             }
             pParty->_autonoteBits.set(val);
             PlayAwardSound();
             return;
         case VAR_PlayerBits:
-            _playerEventBits.set(val);
+            _characterEventBits.set(val);
             return;
         case VAR_NPCs2:
             pParty->hirelingScrollPosition = 0;
@@ -5650,27 +5650,27 @@ void Player::AddVariable(VariableType var_type, signed int val) {
 }
 
 //----- (new function) --------------------------------------------------------
-void Player::PlayAwardSound_Anim97() {
-    int playerIndex = GetPlayerIndex();
+void Character::PlayAwardSound_Anim97() {
+    int playerIndex = getCharacterIndex();
     spell_fx_renderer->SetPlayerBuffAnim(SPELL_QUEST_COMPLETED, playerIndex);
     PlayAwardSound();
 }
 
 //----- (new function) --------------------------------------------------------
-void Player::PlayAwardSound_Anim97_Face(CharacterSpeech speech) {
+void Character::PlayAwardSound_Anim97_Face(CharacterSpeech speech) {
     this->playReaction(speech);
     PlayAwardSound_Anim97();
 }
 
 //----- (new function) --------------------------------------------------------
-void Player::AddSkillByEvent(CharacterSkillType skill, uint16_t addSkillValue) {
+void Character::AddSkillByEvent(CharacterSkillType skill, uint16_t addSkillValue) {
     uint16_t newlevel = pActiveSkills[skill].level() + ::GetSkillLevel(addSkillValue);
-    PLAYER_SKILL_MASTERY newmast = std::max(pActiveSkills[skill].mastery(), ::GetSkillMastery(addSkillValue));
+    CharacterSkillMastery newmast = std::max(pActiveSkills[skill].mastery(), ::GetSkillMastery(addSkillValue));
     pActiveSkills[skill] = CombinedSkillValue(newlevel, newmast);
 }
 
 //----- (0044B9C4) --------------------------------------------------------
-void Player::SubtractVariable(VariableType VarNum, signed int pValue) {
+void Character::SubtractVariable(VariableType VarNum, signed int pValue) {
     LocationInfo *locationHeader;  // eax@90
     int randGold;
     int randFood;
@@ -6137,7 +6137,7 @@ void Player::SubtractVariable(VariableType VarNum, signed int pValue) {
             //pParty->_autonoteBits.reset(pValue - 1);
             return;
         case VAR_PlayerBits:
-            _playerEventBits.reset(pValue);
+            _characterEventBits.reset(pValue);
             return;
         case VAR_NPCs2:
             npcIndex = 0;
@@ -6213,20 +6213,20 @@ void Player::SubtractVariable(VariableType VarNum, signed int pValue) {
 }
 
 //----- (new function) --------------------------------------------------------
-void Player::PlayAwardSound_Anim98() {
-    int playerIndex = GetPlayerIndex();
+void Character::PlayAwardSound_Anim98() {
+    int playerIndex = getCharacterIndex();
     spell_fx_renderer->SetPlayerBuffAnim(SPELL_152, playerIndex);
     PlayAwardSound();
 }
 
 //----- (new function) --------------------------------------------------------
-void Player::PlayAwardSound_Anim98_Face(CharacterSpeech speech) {
+void Character::PlayAwardSound_Anim98_Face(CharacterSpeech speech) {
     this->playReaction(speech);
     PlayAwardSound_Anim98();
 }
 
 //----- (new function) --------------------------------------------------------
-void Player::SubtractSkillByEvent(CharacterSkillType skill, uint16_t subSkillValue) {
+void Character::SubtractSkillByEvent(CharacterSkillType skill, uint16_t subSkillValue) {
     uint16_t newlevel = pActiveSkills[skill].level() - ::GetSkillLevel(subSkillValue);
     newlevel = std::max(uint16_t(0), newlevel);
     pActiveSkills[skill] = CombinedSkillValue(newlevel, pActiveSkills[skill].mastery());
@@ -6235,7 +6235,7 @@ void Player::SubtractSkillByEvent(CharacterSkillType skill, uint16_t subSkillVal
 }
 
 //----- (00467E7F) --------------------------------------------------------
-void Player::EquipBody(ITEM_EQUIP_TYPE uEquipType) {
+void Character::EquipBody(ITEM_EQUIP_TYPE uEquipType) {
     ITEM_SLOT itemAnchor;          // ebx@1
     int itemInvLocation;     // edx@1
     int freeSlot;            // eax@3
@@ -6266,15 +6266,15 @@ void Player::EquipBody(ITEM_EQUIP_TYPE uEquipType) {
 int cycleCharacter(bool backwards) {
     int currentId = pParty->activeCharacterIndex() - 1;
 
-    for (int i = 0; i < pParty->pPlayers.size(); i++) {
+    for (int i = 0; i < pParty->pCharacters.size(); i++) {
         currentId += (backwards ? -1 : 1);
 
         if (currentId < 0) {
-            currentId = pParty->pPlayers.size() - 1;
-        } else if (currentId >= pParty->pPlayers.size()) {
+            currentId = pParty->pCharacters.size() - 1;
+        } else if (currentId >= pParty->pCharacters.size()) {
             currentId = 0;
         }
-        if (pParty->pPlayers[currentId].timeToRecovery == 0) {
+        if (pParty->pCharacters[currentId].timeToRecovery == 0) {
             return currentId + 1;
         }
     }
@@ -6282,20 +6282,20 @@ int cycleCharacter(bool backwards) {
     return pParty->activeCharacterIndex();
 }
 
-bool Player::hasUnderwaterSuitEquipped() {
+bool Character::hasUnderwaterSuitEquipped() {
     // the original function took the
-    // player number as a parameter. if it
+    // character number as a parameter. if it
     // was 0, the whole party was checked.
     // calls with the parameter 0 have been
     // changed to calls to this for every
-    // player
+    // character
     if (GetArmorItem() == nullptr || GetArmorItem()->uItemID != ITEM_QUEST_WETSUIT) {
         return false;
     }
     return true;
 }
 
-bool Player::hasItem(ITEM_TYPE uItemID, bool checkHeldItem) {
+bool Character::hasItem(ITEM_TYPE uItemID, bool checkHeldItem) {
     if (!checkHeldItem || pParty->pPickedItem.uItemID != uItemID) {
         for (uint i = 0; i < INVENTORY_SLOT_COUNT; ++i) {
             if (this->pInventoryMatrix[i] > 0) {
@@ -6321,11 +6321,11 @@ bool Player::hasItem(ITEM_TYPE uItemID, bool checkHeldItem) {
 //----- (0043EDB9) --------------------------------------------------------
 bool ShouldLoadTexturesForRaceAndGender(unsigned int _this) {
     CharacterRace race;  // edi@2
-    CHARACTER_SEX sex;       // eax@2
+    CharacterSex sex;       // eax@2
 
-    for (Player &player : pParty->pPlayers) {
-        race = player.GetRace();
-        sex = player.GetSexByVoice();
+    for (Character &character : pParty->pCharacters) {
+        race = character.GetRace();
+        sex = character.GetSexByVoice();
         switch (_this) {
             case 0:
                 if ((race == CHARACTER_RACE_HUMAN ||
@@ -6356,8 +6356,8 @@ bool ShouldLoadTexturesForRaceAndGender(unsigned int _this) {
 
 //----- (0043ED6F) --------------------------------------------------------
 bool IsDwarfPresentInParty(bool a1) {
-    for (Player &player : pParty->pPlayers) {
-        CharacterRace race = player.GetRace();
+    for (Character &character : pParty->pCharacters) {
+        CharacterRace race = character.GetRace();
 
         if (race == CHARACTER_RACE_DWARF && a1)
             return true;
@@ -6368,8 +6368,8 @@ bool IsDwarfPresentInParty(bool a1) {
 }
 
 //----- (00439FCB) --------------------------------------------------------
-void DamagePlayerFromMonster(unsigned int uObjID, ABILITY_INDEX dmgSource, Vec3i *pPos, signed int targetchar) {
-    // target player? if any
+void DamageCharacterFromMonster(unsigned int uObjID, ABILITY_INDEX dmgSource, Vec3i *pPos, signed int targetchar) {
+    // target character? if any
 
     SPELL_TYPE spellId;
     signed int recvdMagicDmg;     // eax@139
@@ -6381,7 +6381,7 @@ void DamagePlayerFromMonster(unsigned int uObjID, ABILITY_INDEX dmgSource, Vec3i
     OBJECT_Door = 0x1,
     OBJECT_Item = 0x2,
     OBJECT_Actor = 0x3,
-    OBJECT_Player = 0x4,
+    OBJECT_Character = 0x4,
     OBJECT_Decoration = 0x5,
     OBJECT_Face = 0x6,*/
 
@@ -6393,14 +6393,14 @@ void DamagePlayerFromMonster(unsigned int uObjID, ABILITY_INDEX dmgSource, Vec3i
 
         unsigned int uActorID = PID_ID(uObjID);
 
-        Player *playerPtr = &pParty->pPlayers[targetchar];
+        Character *playerPtr = &pParty->pCharacters[targetchar];
         Actor *actorPtr = &pActors[uActorID];
         healthBeforeRecvdDamage = playerPtr->health;
         if (PID_TYPE(uObjID) != OBJECT_Actor || !actorPtr->ActorHitOrMiss(playerPtr))
             return;
 
         // GM unarmed 1% chance to evade attacks per skill point
-        if (playerPtr->getActualSkillValue(CHARACTER_SKILL_UNARMED).mastery() >= PLAYER_SKILL_MASTERY_GRANDMASTER &&
+        if (playerPtr->getActualSkillValue(CHARACTER_SKILL_UNARMED).mastery() >= CHARACTER_SKILL_MASTERY_GRANDMASTER &&
             grng->random(100) < playerPtr->getActualSkillValue(CHARACTER_SKILL_UNARMED).level()) {
             GameUI_SetStatusBar(LSTR_FMT_S_EVADES_DAMAGE, playerPtr->name.c_str());
             playerPtr->playReaction(SPEECH_AVOID_DAMAGE);
@@ -6450,7 +6450,7 @@ void DamagePlayerFromMonster(unsigned int uObjID, ABILITY_INDEX dmgSource, Vec3i
             }
         }
         // TODO(Nik-RE-dev): is it correct to use voice volume for strike sounds?
-        pAudioPlayer->playSound(soundToPlay, PID(OBJECT_Player, targetchar));
+        pAudioPlayer->playSound(soundToPlay, PID(OBJECT_Character, targetchar));
 
         // calc damage
         int dmgToReceive = actorPtr->_43B3E0_CalcDamage(dmgSource);
@@ -6488,14 +6488,14 @@ void DamagePlayerFromMonster(unsigned int uObjID, ABILITY_INDEX dmgSource, Vec3i
         dmgToReceive = playerPtr->receiveDamage(dmgToReceive, (DAMAGE_TYPE)damageType);
 
         // pain reflection back on attacker
-        if (playerPtr->pPlayerBuffs[CHARACTER_BUFF_PAIN_REFLECTION].Active()) {
+        if (playerPtr->pCharacterBuffs[CHARACTER_BUFF_PAIN_REFLECTION].Active()) {
             AIState actorState = actorPtr->uAIState;
             if (actorState != Dying && actorState != Dead) {
                 int reflectedDamage = actorPtr->CalcMagicalDamageToActor((DAMAGE_TYPE)damageType, dmgToReceive);
                 actorPtr->sCurrentHP -= reflectedDamage;
                 if (reflectedDamage >= 0) {
                     if (actorPtr->sCurrentHP >= 1) {
-                        Actor::AI_Stun(uActorID, PID(OBJECT_Player, targetchar), 0);  // todo extract this branch to a function
+                        Actor::AI_Stun(uActorID, PID(OBJECT_Character, targetchar), 0);  // todo extract this branch to a function
                                     // once Actor::functions are changed to
                                     // nonstatic actor functions
                         Actor::AggroSurroundingPeasants(uActorID, 1);
@@ -6547,49 +6547,49 @@ void DamagePlayerFromMonster(unsigned int uObjID, ABILITY_INDEX dmgSource, Vec3i
         int uActorID = PID_ID(spritefrom->spell_caster_pid);
 
         if (uActorType == OBJECT_Item) {
-            Player *playerPtr;  // eax@81
+            Character *playerPtr;  // eax@81
 
             // select char target or pick random
             if (targetchar != -1) {
-                playerPtr = &pParty->pPlayers[targetchar];
+                playerPtr = &pParty->pCharacters[targetchar];
             } else {
                 int id = pParty->getRandomActiveCharacterId(grng.get());
 
                 if (id != -1) {
-                    playerPtr = &pParty->pPlayers[id];
+                    playerPtr = &pParty->pCharacters[id];
                 } else {
                     // for rare instances where party is "dead" at this point but still being damaged
-                    playerPtr = &pParty->pPlayers[grng->random(3)];
+                    playerPtr = &pParty->pCharacters[grng->random(3)];
                 }
             }
 
             int damage;
             int damagetype;
-            if (uActorType != OBJECT_Player ||spritefrom->uSpellID != SPELL_BOW_ARROW) {
+            if (uActorType != OBJECT_Character ||spritefrom->uSpellID != SPELL_BOW_ARROW) {
                 int playerMaxHp = playerPtr->GetMaxHealth();
                 damage = CalcSpellDamage(spritefrom->uSpellID,
                                          spritefrom->spell_level,
                                          spritefrom->spell_skill, playerMaxHp);
                 damagetype = pSpellStats->pInfos[spritefrom->uSpellID].uSchool;
             } else {
-                damage = pParty->pPlayers[uActorID].CalculateRangedDamageTo(0);
+                damage = pParty->pCharacters[uActorID].CalculateRangedDamageTo(0);
                 damagetype = 0;
             }
             playerPtr->receiveDamage(damage, (DAMAGE_TYPE)damagetype);
-            if (uActorType == OBJECT_Player) {
+            if (uActorType == OBJECT_Character) {
                 pParty->setDelayedReaction(SPEECH_DAMAGED_PARTY, uActorID);
             }
             return;
         } else if (uActorType == OBJECT_Actor) {  // missile fired by actor
             Actor *actorPtr = &pActors[uActorID];
             if (targetchar == -1) targetchar = stru_50C198.which_player_to_attack(actorPtr);
-            Player *playerPtr = &pParty->pPlayers[targetchar];
+            Character *playerPtr = &pParty->pCharacters[targetchar];
             int dmgToReceive = actorPtr->_43B3E0_CalcDamage(dmgSource);
             uint16_t spriteType = spritefrom->uType;
 
             if (spritefrom->uType == SPRITE_ARROW_PROJECTILE) {  // arrows
                 // GM unarmed 1% chance to evade attack per skill point
-                if (playerPtr->getActualSkillValue(CHARACTER_SKILL_UNARMED).mastery() >= PLAYER_SKILL_MASTERY_GRANDMASTER &&
+                if (playerPtr->getActualSkillValue(CHARACTER_SKILL_UNARMED).mastery() >= CHARACTER_SKILL_MASTERY_GRANDMASTER &&
                     grng->random(100) < playerPtr->getActualSkillValue(CHARACTER_SKILL_UNARMED).level()) {
                     GameUI_SetStatusBar(LSTR_FMT_S_EVADES_DAMAGE, playerPtr->name.c_str());
                     playerPtr->playReaction(SPEECH_AVOID_DAMAGE);
@@ -6607,7 +6607,7 @@ void DamagePlayerFromMonster(unsigned int uObjID, ABILITY_INDEX dmgSource, Vec3i
                        spriteType == SPRITE_PROJECTILE_DARKBOLT) {
                 // reduce missle damage with skills / armour
                 if (!actorPtr->ActorHitOrMiss(playerPtr)) return;
-                if (playerPtr->pPlayerBuffs[CHARACTER_BUFF_SHIELD].Active()) dmgToReceive >>= 1;
+                if (playerPtr->pCharacterBuffs[CHARACTER_BUFF_SHIELD].Active()) dmgToReceive >>= 1;
                 if (playerPtr->HasEnchantedItemEquipped(ITEM_ENCHANTMENT_OF_SHIELDING)) dmgToReceive >>= 1;
                 if (playerPtr->HasEnchantedItemEquipped(ITEM_ENCHANTMENT_OF_STORM)) dmgToReceive >>= 1;
                 if (playerPtr->HasItemEquipped(ITEM_SLOT_ARMOUR) &&
@@ -6617,14 +6617,14 @@ void DamagePlayerFromMonster(unsigned int uObjID, ABILITY_INDEX dmgSource, Vec3i
                     ItemGen *mainHandItem = playerPtr->GetMainHandItem();
                     if (mainHandItem->uItemID == ITEM_RELIC_KELEBRIM ||
                         mainHandItem->uItemID == ITEM_ARTIFACT_ELFBANE ||
-                        (mainHandItem->isShield() && playerPtr->getActualSkillValue(CHARACTER_SKILL_SHIELD).mastery() == PLAYER_SKILL_MASTERY_GRANDMASTER))
+                        (mainHandItem->isShield() && playerPtr->getActualSkillValue(CHARACTER_SKILL_SHIELD).mastery() == CHARACTER_SKILL_MASTERY_GRANDMASTER))
                         dmgToReceive >>= 1;
                 }
                 if (playerPtr->HasItemEquipped(ITEM_SLOT_OFF_HAND)) {
                     ItemGen *offHandItem = playerPtr->GetOffHandItem();
                     if (offHandItem->uItemID == ITEM_RELIC_KELEBRIM ||
                         offHandItem->uItemID == ITEM_ARTIFACT_ELFBANE ||
-                        (offHandItem->isShield() && playerPtr->getActualSkillValue(CHARACTER_SKILL_SHIELD).mastery() == PLAYER_SKILL_MASTERY_GRANDMASTER))
+                        (offHandItem->isShield() && playerPtr->getActualSkillValue(CHARACTER_SKILL_SHIELD).mastery() == CHARACTER_SKILL_MASTERY_GRANDMASTER))
                         dmgToReceive >>= 1;
                 }
             }
@@ -6659,7 +6659,7 @@ void DamagePlayerFromMonster(unsigned int uObjID, ABILITY_INDEX dmgSource, Vec3i
             }
 
             int reflectedDmg = playerPtr->receiveDamage(dmgToReceive, (DAMAGE_TYPE)damageType);
-            if (playerPtr->pPlayerBuffs[CHARACTER_BUFF_PAIN_REFLECTION].Active()) {
+            if (playerPtr->pCharacterBuffs[CHARACTER_BUFF_PAIN_REFLECTION].Active()) {
                 AIState actorState = actorPtr->uAIState;
                 if (actorState != Dying && actorState != Dead) {
                     recvdMagicDmg = actorPtr->CalcMagicalDamageToActor((DAMAGE_TYPE)damageType, reflectedDmg);
@@ -6667,7 +6667,7 @@ void DamagePlayerFromMonster(unsigned int uObjID, ABILITY_INDEX dmgSource, Vec3i
 
                     if (recvdMagicDmg >= 0) {
                         if (actorPtr->sCurrentHP >= 1) {
-                            Actor::AI_Stun(uActorID, PID(OBJECT_Player, targetchar), 0);
+                            Actor::AI_Stun(uActorID, PID(OBJECT_Character, targetchar), 0);
                             Actor::AggroSurroundingPeasants(uActorID, 1);
                         } else {
                             // actor killed by retaliation
@@ -6705,10 +6705,10 @@ void DamagePlayerFromMonster(unsigned int uObjID, ABILITY_INDEX dmgSource, Vec3i
             return;
         } else {
             // party hits self
-            Player *playerPtr = &pParty->pPlayers[targetchar];
+            Character *playerPtr = &pParty->pCharacters[targetchar];
             int damage;
             int damagetype;
-            if (uActorType != OBJECT_Player ||
+            if (uActorType != OBJECT_Character ||
                 spritefrom->uSpellID != SPELL_BOW_ARROW) {
                 int playerMaxHp = playerPtr->GetMaxHealth();
                 damage = CalcSpellDamage(spritefrom->uSpellID,
@@ -6716,12 +6716,12 @@ void DamagePlayerFromMonster(unsigned int uObjID, ABILITY_INDEX dmgSource, Vec3i
                                          spritefrom->spell_skill, playerMaxHp);
                 damagetype = pSpellStats->pInfos[spritefrom->uSpellID].uSchool;
             } else {
-                damage = pParty->pPlayers[uActorID].CalculateRangedDamageTo(0);
+                damage = pParty->pCharacters[uActorID].CalculateRangedDamageTo(0);
                 damagetype = 0;
             }
 
             playerPtr->receiveDamage(damage, (DAMAGE_TYPE)damagetype);
-            if (uActorType == OBJECT_Player) {
+            if (uActorType == OBJECT_Character) {
                 pParty->setDelayedReaction(SPEECH_DAMAGED_PARTY, uActorID);
             }
 
@@ -6730,7 +6730,7 @@ void DamagePlayerFromMonster(unsigned int uObjID, ABILITY_INDEX dmgSource, Vec3i
     }
 }
 
-void Player::OnInventoryLeftClick() {
+void Character::OnInventoryLeftClick() {
     ITEM_TYPE pickedItemId;  // esi@12
     unsigned int invItemIndex;  // eax@12
     unsigned int itemPos;       // eax@18
@@ -6840,170 +6840,170 @@ void Player::OnInventoryLeftClick() {
     }      // char wind
 }  // func
 
-bool Player::IsWeak() const {
+bool Character::IsWeak() const {
     return this->conditions.Has(CONDITION_WEAK);
 }
 
-bool Player::IsDead() const {
+bool Character::IsDead() const {
     return this->conditions.Has(CONDITION_DEAD);
 }
 
-bool Player::IsEradicated() const {
+bool Character::IsEradicated() const {
     return this->conditions.Has(CONDITION_ERADICATED);
 }
 
-bool Player::IsZombie() const {
+bool Character::IsZombie() const {
     return this->conditions.Has(CONDITION_ZOMBIE);
 }
 
-bool Player::IsCursed() const {
+bool Character::IsCursed() const {
     return this->conditions.Has(CONDITION_CURSED);
 }
 
-bool Player::IsPertified() const {
+bool Character::IsPertified() const {
     return this->conditions.Has(CONDITION_PETRIFIED);
 }
 
-bool Player::IsUnconcious() const {
+bool Character::IsUnconcious() const {
     return this->conditions.Has(CONDITION_UNCONSCIOUS);
 }
 
-bool Player::IsAsleep() const {
+bool Character::IsAsleep() const {
     return this->conditions.Has(CONDITION_SLEEP);
 }
 
-bool Player::IsParalyzed() const {
+bool Character::IsParalyzed() const {
     return this->conditions.Has(CONDITION_PARALYZED);
 }
 
-bool Player::IsDrunk() const {
+bool Character::IsDrunk() const {
     return this->conditions.Has(CONDITION_DRUNK);
 }
 
-void Player::SetCursed(GameTime time) {
+void Character::SetCursed(GameTime time) {
     this->conditions.Set(CONDITION_CURSED, time);
 }
 
-void Player::SetWeak(GameTime time) {
+void Character::SetWeak(GameTime time) {
     this->conditions.Set(CONDITION_WEAK, time);
 }
 
-void Player::SetAsleep(GameTime time) {
+void Character::SetAsleep(GameTime time) {
     this->conditions.Set(CONDITION_SLEEP, time);
 }
 
-void Player::SetAfraid(GameTime time) {
+void Character::SetAfraid(GameTime time) {
     this->conditions.Set(CONDITION_FEAR, time);
 }
 
-void Player::SetDrunk(GameTime time) {
+void Character::SetDrunk(GameTime time) {
     this->conditions.Set(CONDITION_DRUNK, time);
 }
 
-void Player::SetInsane(GameTime time) {
+void Character::SetInsane(GameTime time) {
     this->conditions.Set(CONDITION_INSANE, time);
 }
 
-void Player::SetPoisonWeak(GameTime time) {
+void Character::SetPoisonWeak(GameTime time) {
     this->conditions.Set(CONDITION_POISON_WEAK, time);
 }
 
-void Player::SetDiseaseWeak(GameTime time) {
+void Character::SetDiseaseWeak(GameTime time) {
     this->conditions.Set(CONDITION_DISEASE_WEAK, time);
 }
 
-void Player::SetPoisonMedium(GameTime time) {
+void Character::SetPoisonMedium(GameTime time) {
     this->conditions.Set(CONDITION_POISON_MEDIUM, time);
 }
 
-void Player::SetDiseaseMedium(GameTime time) {
+void Character::SetDiseaseMedium(GameTime time) {
     this->conditions.Set(CONDITION_DISEASE_MEDIUM, time);
 }
 
-void Player::SetPoisonSevere(GameTime time) {
+void Character::SetPoisonSevere(GameTime time) {
     this->conditions.Set(CONDITION_POISON_SEVERE, time);
 }
 
-void Player::SetDiseaseSevere(GameTime time) {
+void Character::SetDiseaseSevere(GameTime time) {
     this->conditions.Set(CONDITION_DISEASE_SEVERE, time);
 }
 
-void Player::SetParalyzed(GameTime time) {
+void Character::SetParalyzed(GameTime time) {
     this->conditions.Set(CONDITION_PARALYZED, time);
 }
 
-void Player::SetUnconcious(GameTime time) {
+void Character::SetUnconcious(GameTime time) {
     this->conditions.Set(CONDITION_UNCONSCIOUS, time);
 }
 
-void Player::SetDead(GameTime time) {
+void Character::SetDead(GameTime time) {
     this->conditions.Set(CONDITION_DEAD, time);
 }
 
-void Player::SetPertified(GameTime time) {
+void Character::SetPertified(GameTime time) {
     this->conditions.Set(CONDITION_PETRIFIED, time);
 }
 
-void Player::SetEradicated(GameTime time) {
+void Character::SetEradicated(GameTime time) {
     this->conditions.Set(CONDITION_ERADICATED, time);
 }
 
-void Player::SetZombie(GameTime time) {
+void Character::SetZombie(GameTime time) {
     this->conditions.Set(CONDITION_ZOMBIE, time);
 }
 
-void Player::SetCondWeakWithBlockCheck(int blockable) {
+void Character::SetCondWeakWithBlockCheck(int blockable) {
     SetCondition(CONDITION_WEAK, blockable);
 }
 
-void Player::SetCondInsaneWithBlockCheck(int blockable) {
+void Character::SetCondInsaneWithBlockCheck(int blockable) {
     SetCondition(CONDITION_INSANE, blockable);
 }
 
-void Player::SetCondDeadWithBlockCheck(int blockable) {
+void Character::SetCondDeadWithBlockCheck(int blockable) {
     SetCondition(CONDITION_DEAD, blockable);
 }
 
-void Player::SetCondUnconsciousWithBlockCheck(int blockable) {
+void Character::SetCondUnconsciousWithBlockCheck(int blockable) {
     SetCondition(CONDITION_UNCONSCIOUS, blockable);
 }
 
-ItemGen *Player::GetOffHandItem() { return GetItem(&PlayerEquipment::uOffHand); }
-const ItemGen *Player::GetOffHandItem() const { return GetItem(&PlayerEquipment::uOffHand); }
+ItemGen *Character::GetOffHandItem() { return GetItem(&CharacterEquipment::uOffHand); }
+const ItemGen *Character::GetOffHandItem() const { return GetItem(&CharacterEquipment::uOffHand); }
 
-ItemGen *Player::GetMainHandItem() { return GetItem(&PlayerEquipment::uMainHand); }
-const ItemGen *Player::GetMainHandItem() const { return GetItem(&PlayerEquipment::uMainHand); }
+ItemGen *Character::GetMainHandItem() { return GetItem(&CharacterEquipment::uMainHand); }
+const ItemGen *Character::GetMainHandItem() const { return GetItem(&CharacterEquipment::uMainHand); }
 
-ItemGen *Player::GetBowItem() { return GetItem(&PlayerEquipment::uBow); }
-const ItemGen *Player::GetBowItem() const { return GetItem(&PlayerEquipment::uBow); }
+ItemGen *Character::GetBowItem() { return GetItem(&CharacterEquipment::uBow); }
+const ItemGen *Character::GetBowItem() const { return GetItem(&CharacterEquipment::uBow); }
 
-ItemGen *Player::GetArmorItem() { return GetItem(&PlayerEquipment::uArmor); }
-const ItemGen *Player::GetArmorItem() const { return GetItem(&PlayerEquipment::uArmor); }
+ItemGen *Character::GetArmorItem() { return GetItem(&CharacterEquipment::uArmor); }
+const ItemGen *Character::GetArmorItem() const { return GetItem(&CharacterEquipment::uArmor); }
 
-ItemGen *Player::GetHelmItem() { return GetItem(&PlayerEquipment::uHelm); }
-const ItemGen *Player::GetHelmItem() const { return GetItem(&PlayerEquipment::uHelm); }
+ItemGen *Character::GetHelmItem() { return GetItem(&CharacterEquipment::uHelm); }
+const ItemGen *Character::GetHelmItem() const { return GetItem(&CharacterEquipment::uHelm); }
 
-ItemGen *Player::GetBeltItem() { return GetItem(&PlayerEquipment::uBelt); }
-const ItemGen *Player::GetBeltItem() const { return GetItem(&PlayerEquipment::uBelt); }
+ItemGen *Character::GetBeltItem() { return GetItem(&CharacterEquipment::uBelt); }
+const ItemGen *Character::GetBeltItem() const { return GetItem(&CharacterEquipment::uBelt); }
 
-ItemGen *Player::GetCloakItem() { return GetItem(&PlayerEquipment::uCloak); }
-const ItemGen *Player::GetCloakItem() const { return GetItem(&PlayerEquipment::uCloak); }
+ItemGen *Character::GetCloakItem() { return GetItem(&CharacterEquipment::uCloak); }
+const ItemGen *Character::GetCloakItem() const { return GetItem(&CharacterEquipment::uCloak); }
 
-ItemGen *Player::GetGloveItem() { return GetItem(&PlayerEquipment::uGlove); }
-const ItemGen *Player::GetGloveItem() const { return GetItem(&PlayerEquipment::uGlove); }
+ItemGen *Character::GetGloveItem() { return GetItem(&CharacterEquipment::uGlove); }
+const ItemGen *Character::GetGloveItem() const { return GetItem(&CharacterEquipment::uGlove); }
 
-ItemGen *Player::GetBootItem() { return GetItem(&PlayerEquipment::uBoot); }
-const ItemGen *Player::GetBootItem() const { return GetItem(&PlayerEquipment::uBoot); }
+ItemGen *Character::GetBootItem() { return GetItem(&CharacterEquipment::uBoot); }
+const ItemGen *Character::GetBootItem() const { return GetItem(&CharacterEquipment::uBoot); }
 
-ItemGen *Player::GetAmuletItem() { return GetItem(&PlayerEquipment::uAmulet); }
-const ItemGen *Player::GetAmuletItem() const { return GetItem(&PlayerEquipment::uAmulet); }
+ItemGen *Character::GetAmuletItem() { return GetItem(&CharacterEquipment::uAmulet); }
+const ItemGen *Character::GetAmuletItem() const { return GetItem(&CharacterEquipment::uAmulet); }
 
-ItemGen *Player::GetNthRingItem(int ringNum) {
+ItemGen *Character::GetNthRingItem(int ringNum) {
     return GetNthEquippedIndexItem(ringSlot(ringNum));
 }
-const ItemGen *Player::GetNthRingItem(int ringNum) const { return GetNthEquippedIndexItem(ringSlot(ringNum)); }
+const ItemGen *Character::GetNthRingItem(int ringNum) const { return GetNthEquippedIndexItem(ringSlot(ringNum)); }
 
-ItemGen *Player::GetNthEquippedIndexItem(ITEM_SLOT index) {
+ItemGen *Character::GetNthEquippedIndexItem(ITEM_SLOT index) {
     if (this->pEquipment.pIndices[index] == 0) {
         return nullptr;
     }
@@ -7011,27 +7011,27 @@ ItemGen *Player::GetNthEquippedIndexItem(ITEM_SLOT index) {
     return &this->pInventoryItemList[this->pEquipment.pIndices[index] - 1];
 }
 
-const ItemGen *Player::GetNthEquippedIndexItem(ITEM_SLOT index) const {
-    return const_cast<Player *>(this)->GetNthEquippedIndexItem(index);
+const ItemGen *Character::GetNthEquippedIndexItem(ITEM_SLOT index) const {
+    return const_cast<Character *>(this)->GetNthEquippedIndexItem(index);
 }
 
-ItemGen *Player::GetItem(unsigned int PlayerEquipment::*itemPos) {
+ItemGen *Character::GetItem(unsigned int CharacterEquipment::*itemPos) {
     if (this->pEquipment.*itemPos == 0) {
         return nullptr;
     }
 
     return &this->pInventoryItemList[this->pEquipment.*itemPos - 1];
 }
-const ItemGen *Player::GetItem(unsigned int PlayerEquipment::*itemPos) const {
-    return const_cast<Player *>(this)->GetItem(itemPos);
+const ItemGen *Character::GetItem(unsigned int CharacterEquipment::*itemPos) const {
+    return const_cast<Character *>(this)->GetItem(itemPos);
 }
 
-int Player::GetPlayerIndex() {
+int Character::getCharacterIndex() {
     return pParty->getCharacterIdInParty(this);
 }
 
 //----- (004272F5) --------------------------------------------------------
-bool Player::PlayerHitOrMiss(Actor *pActor, int distancemod, PLAYER_SKILL_LEVEL skillmod) {  // PS - RETURN IF ATTACK WILL HIT
+bool Character::characterHitOrMiss(Actor *pActor, int distancemod, CHARACTER_SKILL_LEVEL skillmod) {  // PS - RETURN IF ATTACK WILL HIT
     int naturalArmor = pActor->pMonsterInfo.uAC;  // actor usual armour
     int armorBuff = 0;
 
@@ -7048,7 +7048,7 @@ bool Player::PlayerHitOrMiss(Actor *pActor, int distancemod, PLAYER_SKILL_LEVEL 
 
     int effectiveActorArmor = armorBuff + naturalArmor;
 
-    int attBonus;  // player attack bonus
+    int attBonus;  // character attack bonus
     if (distancemod)
         attBonus = this->GetRangedAttack();  // range
     else
@@ -7072,7 +7072,7 @@ bool Player::PlayerHitOrMiss(Actor *pActor, int distancemod, PLAYER_SKILL_LEVEL 
 }
 
 //----- (0042ECB5) --------------------------------------------------------
-void Player::_42ECB5_PlayerAttacksActor() {
+void Character::_42ECB5_CharacterAttacksActor() {
     //  char *v5; // eax@8
     //  unsigned int v9; // ecx@21
     //  char *v11; // eax@26
@@ -7080,17 +7080,17 @@ void Player::_42ECB5_PlayerAttacksActor() {
     //  SoundID v24; // [sp-4h] [bp-40h]@58
 
     // result = pParty->activeCharacter().CanAct();
-    Player *player = &pParty->activeCharacter();
-    if (!player->CanAct()) return;
+    Character *character = &pParty->activeCharacter();
+    if (!character->CanAct()) return;
 
     CastSpellInfoHelpers::cancelSpellCastInProgress();
     // v3 = 0;
     if (pParty->Invisible())
         pParty->pPartyBuffs[PARTY_BUFF_INVISIBILITY].Reset();
 
-    // v31 = player->pEquipment.uBow;
-    int bow_idx = player->pEquipment.uBow;
-    if (bow_idx && player->pInventoryItemList[bow_idx - 1].IsBroken())
+    // v31 = character->pEquipment.uBow;
+    int bow_idx = character->pEquipment.uBow;
+    if (bow_idx && character->pInventoryItemList[bow_idx - 1].IsBroken())
         bow_idx = 0;
 
     // v32 = 0;
@@ -7099,16 +7099,16 @@ void Player::_42ECB5_PlayerAttacksActor() {
 
     ITEM_TYPE laser_weapon_item_id = ITEM_NULL;
 
-    int main_hand_idx = player->pEquipment.uMainHand;
+    int main_hand_idx = character->pEquipment.uMainHand;
     if (main_hand_idx) {
-        const ItemGen *item = &player->pInventoryItemList[main_hand_idx - 1];
+        const ItemGen *item = &character->pInventoryItemList[main_hand_idx - 1];
         // v5 = (char *)v1 + 36 * v4;
         if (!item->IsBroken()) {
             // v28b = &v1->pInventoryItems[v4].uItemID;
             // v6 = v1->pInventoryItems[v4].uItemID;//*((int *)v5 + 124);
             if (item->isWand()) {
                 if (item->uNumCharges <= 0)
-                    player->pEquipment.uMainHand =
+                    character->pEquipment.uMainHand =
                         0;  // wand discharged - unequip
                 else
                     wand_item_id = item->uItemID;  // *((int *)v5 + 124);
@@ -7160,22 +7160,22 @@ void Player::_42ECB5_PlayerAttacksActor() {
     } else if (wand_item_id != ITEM_NULL) {
         shooting_wand = true;
 
-        int main_hand_idx = player->pEquipment.uMainHand;
-        pushSpellOrRangedAttack(wandSpellIds[player->pInventoryItemList[main_hand_idx - 1].uItemID],
+        int main_hand_idx = character->pEquipment.uMainHand;
+        pushSpellOrRangedAttack(wandSpellIds[character->pInventoryItemList[main_hand_idx - 1].uItemID],
                                 pParty->activeCharacterIndex() - 1, 8, 0, pParty->activeCharacterIndex() + 8);
 
-        if (!--player->pInventoryItemList[main_hand_idx - 1].uNumCharges)
-            player->pEquipment.uMainHand = 0;
+        if (!--character->pInventoryItemList[main_hand_idx - 1].uNumCharges)
+            character->pEquipment.uMainHand = 0;
     } else if (target_type == OBJECT_Actor && actor_distance <= 407.2) {
         melee_attack = true;
 
         Vec3i a3 = actor->vPosition - pParty->vPosition;
         normalize_to_fixpoint(&a3.x, &a3.y, &a3.z);
 
-        Actor::DamageMonsterFromParty(PID(OBJECT_Player, pParty->activeCharacterIndex() - 1),
+        Actor::DamageMonsterFromParty(PID(OBJECT_Character, pParty->activeCharacterIndex() - 1),
                                       target_id, &a3);
-        if (player->WearsItem(ITEM_ARTIFACT_SPLITTER, ITEM_SLOT_MAIN_HAND) ||
-            player->WearsItem(ITEM_ARTIFACT_SPLITTER, ITEM_SLOT_OFF_HAND))
+        if (character->WearsItem(ITEM_ARTIFACT_SPLITTER, ITEM_SLOT_MAIN_HAND) ||
+            character->WearsItem(ITEM_ARTIFACT_SPLITTER, ITEM_SLOT_OFF_HAND))
             _42FA66_do_explosive_impact(
                 actor->vPosition.x, actor->vPosition.y,
                 actor->vPosition.z + actor->uActorHeight / 2, 0, 512,
@@ -7191,8 +7191,8 @@ void Player::_42ECB5_PlayerAttacksActor() {
 
     if (!pParty->bTurnBasedModeOn && melee_attack) {
         // wands, bows & lasers will add recovery while shooting spell effect
-        int recovery = player->GetAttackRecoveryTime(false);
-        player->SetRecoveryTime(static_cast<int>(debug_non_combat_recovery_mul * recovery * flt_debugrecmod3));
+        int recovery = character->GetAttackRecoveryTime(false);
+        character->SetRecoveryTime(static_cast<int>(debug_non_combat_recovery_mul * recovery * flt_debugrecmod3));
     }
 
     CharacterSkillType skill = CHARACTER_SKILL_STAFF;
@@ -7200,13 +7200,13 @@ void Player::_42ECB5_PlayerAttacksActor() {
         return;
     } else if (shooting_bow) {
         skill = CHARACTER_SKILL_BOW;
-        player->playReaction(SPEECH_SHOOT);
+        character->playReaction(SPEECH_SHOOT);
     } else if (shotting_laser) {
         skill = CHARACTER_SKILL_BLASTER;
     } else {
-        int main_hand_idx = player->pEquipment.uMainHand;
-        if (player->HasItemEquipped(ITEM_SLOT_MAIN_HAND) && main_hand_idx)
-            skill = player->pInventoryItemList[main_hand_idx - 1].GetPlayerSkillType();
+        int main_hand_idx = character->pEquipment.uMainHand;
+        if (character->HasItemEquipped(ITEM_SLOT_MAIN_HAND) && main_hand_idx)
+            skill = character->pInventoryItemList[main_hand_idx - 1].GetPlayerSkillType();
 
         pTurnEngine->ApplyPlayerAction();
     }
@@ -7242,7 +7242,7 @@ void Player::_42ECB5_PlayerAttacksActor() {
 }
 
 //----- (0042FA66) --------------------------------------------------------
-void Player::_42FA66_do_explosive_impact(int xpos, int ypos, int zpos, int a4,
+void Character::_42FA66_do_explosive_impact(int xpos, int ypos, int zpos, int a4,
                                          int16_t a5, signed int actchar) {
         // EXPLOSIVE IMPACT OF ARTIFACT SPLITTER
 
@@ -7253,7 +7253,7 @@ void Player::_42FA66_do_explosive_impact(int xpos, int ypos, int zpos, int a4,
     a1a.containing_item.Reset();
     a1a.uSpellID = SPELL_FIRE_FIREBALL;
     a1a.spell_level = 8;
-    a1a.spell_skill = PLAYER_SKILL_MASTERY_MASTER;
+    a1a.spell_skill = CHARACTER_SKILL_MASTERY_MASTER;
     a1a.uObjectDescID = pObjectList->ObjectIDByItemID(a1a.uType);
     a1a.vPosition.x = xpos;
     a1a.vPosition.y = ypos;
@@ -7267,7 +7267,7 @@ void Player::_42FA66_do_explosive_impact(int xpos, int ypos, int zpos, int a4,
     a1a.uSoundID = 0;
 
     if (actchar >= 1 || actchar <= 4) {
-        a1a.spell_caster_pid = PID(OBJECT_Player, actchar - 1);
+        a1a.spell_caster_pid = PID(OBJECT_Character, actchar - 1);
     } else {
         a1a.spell_caster_pid = 0;
     }
@@ -7278,31 +7278,31 @@ void Player::_42FA66_do_explosive_impact(int xpos, int ypos, int zpos, int a4,
     }
 }
 
-PLAYER_SKILL_LEVEL Player::GetSkillLevel(CharacterSkillType skill) const {
+CHARACTER_SKILL_LEVEL Character::GetSkillLevel(CharacterSkillType skill) const {
     return pActiveSkills[skill].level();
 }
 
-PLAYER_SKILL_MASTERY Player::GetSkillMastery(CharacterSkillType skill) const {
+CharacterSkillMastery Character::GetSkillMastery(CharacterSkillType skill) const {
     return pActiveSkills[skill].mastery();
 }
 
-CombinedSkillValue Player::getSkillValue(CharacterSkillType skill) const {
+CombinedSkillValue Character::getSkillValue(CharacterSkillType skill) const {
     return pActiveSkills[skill];
 }
 
-void Player::SetSkillLevel(CharacterSkillType skill, PLAYER_SKILL_LEVEL level) {
+void Character::SetSkillLevel(CharacterSkillType skill, CHARACTER_SKILL_LEVEL level) {
     pActiveSkills[skill].setLevel(level);
 }
 
-void Player::SetSkillMastery(CharacterSkillType skill, PLAYER_SKILL_MASTERY mastery) {
+void Character::SetSkillMastery(CharacterSkillType skill, CharacterSkillMastery mastery) {
     pActiveSkills[skill].setMastery(mastery);
 }
 
-void Player::setSkillValue(CharacterSkillType skill, const CombinedSkillValue &value) {
+void Character::setSkillValue(CharacterSkillType skill, const CombinedSkillValue &value) {
     pActiveSkills[skill] = value;
 }
 
-void Player::playReaction(CharacterSpeech speech, int a3) {
+void Character::playReaction(CharacterSpeech speech, int a3) {
     int speechCount = 0;
     int expressionCount = 0;
     int pickedSoundID = 0;
@@ -7318,7 +7318,7 @@ void Player::playReaction(CharacterSpeech speech, int a3) {
             int numberOfSubvariants = byte_4ECF08[pickedVariant - 1][uVoiceID];
             if (numberOfSubvariants > 0) {
                 pickedSoundID = vrng->random(numberOfSubvariants) + 2 * (pickedVariant + 50 * uVoiceID) + 4998;
-                pAudioPlayer->playSound((SoundID)pickedSoundID, PID(OBJECT_Player, GetPlayerIndex()));
+                pAudioPlayer->playSound((SoundID)pickedSoundID, PID(OBJECT_Character, getCharacterIndex()));
             }
         }
     }
@@ -7329,7 +7329,7 @@ void Player::playReaction(CharacterSpeech speech, int a3) {
         }
     }
     if (expressionCount) {
-        CHARACTER_EXPRESSION_ID expression = (CHARACTER_EXPRESSION_ID)expressionVariants[speech][vrng->random(expressionCount)];
+        CharacterExpressionID expression = (CharacterExpressionID)expressionVariants[speech][vrng->random(expressionCount)];
         int expressionDuration = 0;
         if (expression == CHARACTER_EXPRESSION_TALK && pickedSoundID) {
             if (pickedSoundID >= 0) {
@@ -7340,8 +7340,8 @@ void Player::playReaction(CharacterSpeech speech, int a3) {
     }
 }
 
-void Player::playEmotion(CHARACTER_EXPRESSION_ID new_expression, int duration) {
-    // 38 - sparkles 1 player?
+void Character::playEmotion(CharacterExpressionID new_expression, int duration) {
+    // 38 - sparkles 1 character?
 
     unsigned int currexpr = expression;
 
@@ -7375,7 +7375,7 @@ void Player::playEmotion(CHARACTER_EXPRESSION_ID new_expression, int duration) {
     expression = new_expression;
 }
 
-bool Player::isClass(PLAYER_CLASS_TYPE class_type, bool check_honorary) const {
+bool Character::isClass(CharacterClassType class_type, bool check_honorary) const {
     if (classType == class_type) {
         return true;
     }
@@ -7385,13 +7385,13 @@ bool Player::isClass(PLAYER_CLASS_TYPE class_type, bool check_honorary) const {
     }
 
     switch (class_type) {
-    case PLAYER_CLASS_PRIEST_OF_SUN:
+    case CHARACTER_CLASS_PRIEST_OF_SUN:
         return _achievedAwardsBits[Award_Promotion_PriestOfLight_Honorary];
-    case PLAYER_CLASS_PRIEST_OF_MOON:
+    case CHARACTER_CLASS_PRIEST_OF_MOON:
         return _achievedAwardsBits[Award_Promotion_PriestOfDark_Honorary];
-    case PLAYER_CLASS_ARCHMAGE:
+    case CHARACTER_CLASS_ARCHAMGE:
         return _achievedAwardsBits[Award_Promotion_Archmage_Honorary];
-    case PLAYER_CLASS_LICH:
+    case CHARACTER_CLASS_LICH:
         return _achievedAwardsBits[Award_Promotion_Lich_Honorary];
         break;
     default:
@@ -7402,8 +7402,8 @@ bool Player::isClass(PLAYER_CLASS_TYPE class_type, bool check_honorary) const {
 }
 
 //----- (00490EEE) --------------------------------------------------------
-MerchantPhrase Player::SelectPhrasesTransaction(ItemGen *pItem, BuildingType building_type, int BuildID_2Events, int ShopMenuType) {
-    // TODO(_): probably move this somewhere else, not really Player:: stuff
+MerchantPhrase Character::SelectPhrasesTransaction(ItemGen *pItem, BuildingType building_type, int BuildID_2Events, int ShopMenuType) {
+    // TODO(_): probably move this somewhere else, not really Character:: stuff
     ITEM_TYPE idemId;   // edx@1
     ITEM_EQUIP_TYPE equipType;  // esi@1
     float multiplier;      // ST04_4@26
@@ -7481,13 +7481,13 @@ MerchantPhrase Player::SelectPhrasesTransaction(ItemGen *pItem, BuildingType bui
 }
 
 //----- (0048C6AF) --------------------------------------------------------
-Player::Player() {
-    memset(&pEquipment, 0, sizeof(PlayerEquipment));
+Character::Character() {
+    memset(&pEquipment, 0, sizeof(CharacterEquipment));
     pInventoryMatrix.fill(0);
     for (uint i = 0; i < INVENTORY_SLOT_COUNT; ++i) pInventoryItemList[i].Reset();
     for (uint i = 0; i < ADDITIONAL_SLOT_COUNT; ++i) pEquippedItems[i].Reset();
 
-    for (auto &buf : pPlayerBuffs) {
+    for (auto &buf : pCharacterBuffs) {
         buf.Reset();
     }
 
@@ -7554,7 +7554,7 @@ Player::Player() {
     uNumArmageddonCasts = 0;
     uNumFireSpikeCasts = 0;
 
-    _playerEventBits.reset();
+    _characterEventBits.reset();
 
     field_E0 = 0;
     field_E4 = 0;
@@ -7573,7 +7573,7 @@ Player::Player() {
     lastOpenedSpellbookPage = 0;
 }
 
-void Player::CleanupBeacons() {
+void Character::CleanupBeacons() {
     struct delete_beacon {
         bool operator()(const LloydBeacon &beacon) const {
             return (beacon.uBeaconTime < pParty->GetPlayingTime());
@@ -7586,7 +7586,7 @@ void Player::CleanupBeacons() {
     );
 }
 
-bool Player::SetBeacon(size_t index, size_t power) {
+bool Character::SetBeacon(size_t index, size_t power) {
     int file_index = pGames_LOD->GetSubNodeIndex(pCurrentMapName);
     if (file_index < 0) {
         return false;

@@ -242,13 +242,13 @@ const std::string &GetProfessionActionText(NPCProf prof) {
 int UseNPCSkill(NPCProf profession, int id) {
     switch (profession) {
         case Healer: {
-            for (Player &player : pParty->pPlayers) {
+            for (Character &player : pParty->pCharacters) {
                 player.health = player.GetMaxHealth();
             }
         } break;
 
         case ExpertHealer: {
-            for (Player &player : pParty->pPlayers) {
+            for (Character &player : pParty->pCharacters) {
                 player.health = player.GetMaxHealth();
 
                 for (Condition condition : standardConditionsExcludeDead) {
@@ -258,7 +258,7 @@ int UseNPCSkill(NPCProf profession, int id) {
         } break;
 
         case MasterHealer: {
-            for (Player &player : pParty->pPlayers) {
+            for (Character &player : pParty->pCharacters) {
                 player.health = player.GetMaxHealth();
 
                 for (Condition condition : standardConditionsIncludeDead) {
@@ -299,7 +299,7 @@ int UseNPCSkill(NPCProf profession, int id) {
             } else {
                 // Spell power was changed to 0 because it does not have meaning for this buff
                 pParty->pPartyBuffs[PARTY_BUFF_FLY]
-                    .Apply(pParty->GetPlayingTime() + GameTime::FromHours(2), PLAYER_SKILL_MASTERY_MASTER, 0, 0, 0);
+                    .Apply(pParty->GetPlayingTime() + GameTime::FromHours(2), CHARACTER_SKILL_MASTERY_MASTER, 0, 0, 0);
                 // Mark buff as GM because NPC buff does not drain mana
                 pParty->pPartyBuffs[PARTY_BUFF_FLY].isGMBuff = true;
                 pAudioPlayer->playSpellSound(SPELL_AIR_FLY, 0, false);
@@ -308,7 +308,7 @@ int UseNPCSkill(NPCProf profession, int id) {
 
         case WaterMaster: {
             pParty->pPartyBuffs[PARTY_BUFF_WATER_WALK]
-                .Apply(pParty->GetPlayingTime() + GameTime::FromHours(3), PLAYER_SKILL_MASTERY_MASTER, 0, 0, 0);
+                .Apply(pParty->GetPlayingTime() + GameTime::FromHours(3), CHARACTER_SKILL_MASTERY_MASTER, 0, 0, 0);
             // Mark buff as GM because NPC buff does not drain mana
             pParty->pPartyBuffs[PARTY_BUFF_WATER_WALK].isGMBuff = true;
             pAudioPlayer->playSpellSound(SPELL_WATER_WATER_WALK, 0, false);
@@ -316,7 +316,7 @@ int UseNPCSkill(NPCProf profession, int id) {
 
         case GateMaster: {
             pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 0, 0);
-            pNextFrameMessageQueue->AddGUIMessage(UIMSG_OnCastTownPortal, PID(OBJECT_Player, pParty->pPlayers.size() + id), 0);
+            pNextFrameMessageQueue->AddGUIMessage(UIMSG_OnCastTownPortal, PID(OBJECT_Character, pParty->pCharacters.size() + id), 0);
         } break;
 
         case Acolyte:

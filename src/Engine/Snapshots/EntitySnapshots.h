@@ -51,7 +51,7 @@ struct OverlayDesc;
 struct ActiveOverlay;
 struct ActiveOverlayList;
 struct Party;
-struct Player;
+struct Character;
 struct PlayerFrame;
 struct SaveGameHeader;
 struct SpawnPoint;
@@ -387,8 +387,8 @@ struct Player_MM7 {
 static_assert(sizeof(Player_MM7) == 0x1B3C);
 MM_DECLARE_MEMCOPY_SERIALIZABLE(Player_MM7)
 
-void snapshot(const Player &src, Player_MM7 *dst);
-void reconstruct(const Player_MM7 &src, Player *dst);
+void snapshot(const Character &src, Player_MM7 *dst);
+void reconstruct(const Player_MM7 &src, Character *dst);
 
 
 struct PartyTimeStruct_MM7 {

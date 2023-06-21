@@ -1068,7 +1068,7 @@ void SpellFxRenderer::SetPlayerBuffAnim(SPELL_TYPE uSpellID,
     PlayerBuffAnim *v4;  // esi@1
     const char *v6;      // [sp-4h] [bp-10h]@2
 
-    v4 = &pPlayerBuffs[uPlayerID];
+    v4 = &pCharacterBuffs[uPlayerID];
     v4->uSpellAnimTimeElapsed = 0;
     v4->bRender = uSpellID != SPELL_NONE;
 
@@ -1181,7 +1181,7 @@ void SpellFxRenderer::SetPlayerBuffAnim(SPELL_TYPE uSpellID,
 }
 
 void SpellFxRenderer::SetPartyBuffAnim(SPELL_TYPE uSpellID) {
-    for (int i = 0; i < pParty->pPlayers.size(); i++) {
+    for (int i = 0; i < pParty->pCharacters.size(); i++) {
         SetPlayerBuffAnim(uSpellID, i);
     }
 }
@@ -1242,7 +1242,7 @@ void SpellFxRenderer::RenderSpecialEffects() {
 //----- (004A902A) --------------------------------------------------------
 void SpellFxRenderer::DrawPlayerBuffAnims() {
     for (uint i = 0; i < 4; ++i) {
-        PlayerBuffAnim *buff = &pPlayerBuffs[i];
+        PlayerBuffAnim *buff = &pCharacterBuffs[i];
         if (!buff->bRender) continue;
 
         buff->uSpellAnimTimeElapsed += pEventTimer->uTimeElapsed;

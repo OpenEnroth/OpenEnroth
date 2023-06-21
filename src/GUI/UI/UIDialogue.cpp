@@ -397,7 +397,7 @@ void GUIWindow_Dialogue::Update() {
                     ++num_dead_actors;
                 } else {
                     ObjectType sumonner_type = PID_TYPE(pActors[i].uSummonerID);
-                    if (sumonner_type == OBJECT_Player) ++num_dead_actors;
+                    if (sumonner_type == OBJECT_Character) ++num_dead_actors;
                 }
             }
             if (num_dead_actors == pActors.size()) {

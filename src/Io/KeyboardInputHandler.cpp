@@ -208,7 +208,7 @@ void KeyboardInputHandler::GenerateGameplayActions() {
             if (current_screen_type == CURRENT_SCREEN::SCREEN_GAME) {
                 if (pParty->bTurnBasedModeOn) {
                     if (pTurnEngine->turn_stage == TE_MOVEMENT ||
-                        PID_TYPE(pTurnEngine->pQueue[0].uPackedID) == OBJECT_Player) {
+                        PID_TYPE(pTurnEngine->pQueue[0].uPackedID) == OBJECT_Character) {
                         pParty->bTurnBasedModeOn = false;
                         pTurnEngine->End(true);
                     }
@@ -237,7 +237,7 @@ void KeyboardInputHandler::GenerateGameplayActions() {
 
             int uRequiredMana = 0;
             if (quickSpellNumber != SPELL_NONE && !engine->config->debug.AllMagic.value()) {
-                PLAYER_SKILL_MASTERY skill_mastery = pParty->activeCharacter().getActualSkillValue(getSkillTypeForSpell(quickSpellNumber)).mastery();
+                CharacterSkillMastery skill_mastery = pParty->activeCharacter().getActualSkillValue(getSkillTypeForSpell(quickSpellNumber)).mastery();
 
                 uRequiredMana = pSpellDatas[quickSpellNumber].mana_per_skill[std::to_underlying(skill_mastery) - 1];
             }

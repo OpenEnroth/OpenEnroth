@@ -149,7 +149,7 @@ struct SpellFxRenderer {
 
     int field_204;  // fireball sphere tally
 
-    std::array<PlayerBuffAnim, 4> pPlayerBuffs;
+    std::array<PlayerBuffAnim, 4> pCharacterBuffs;
     std::array<ProjectileAnim, 32> pProjectiles;
     int uNumProjectiles;
     SpellFX_Billboard *pStru1;

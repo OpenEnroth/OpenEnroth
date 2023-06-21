@@ -518,7 +518,7 @@ void ProcessActorCollisionsBLV(Actor &actor, bool isAboveGround, bool isFlying) 
 
             if (!isAboveGround && !isFlying) {
                 if (actor.pMonsterInfo.uHostilityType == MonsterInfo::Hostility_Friendly || isInCrowd)
-                    Actor::AI_StandOrBored(actor.id, PID(OBJECT_Player, 0), 0, nullptr);
+                    Actor::AI_StandOrBored(actor.id, PID(OBJECT_Character, 0), 0, nullptr);
 
                 break; // Trying to walk into indoor sky, bad idea!
             }
@@ -548,7 +548,7 @@ void ProcessActorCollisionsBLV(Actor &actor, bool isAboveGround, bool isFlying) 
                 bool isFriendly = actor.pMonsterInfo.uHostilityType == MonsterInfo::Hostility_Friendly;
                 bool otherFriendly = pActors[id].pMonsterInfo.uHostilityType == MonsterInfo::Hostility_Friendly;
                 if (isInCrowd) {
-                    Actor::AI_StandOrBored(actor.id, PID(OBJECT_Player, 0), 0, nullptr);
+                    Actor::AI_StandOrBored(actor.id, PID(OBJECT_Character, 0), 0, nullptr);
                 } else if (isFriendly && otherFriendly) {
                     Actor::AI_FaceObject(actor.id, collision_state.pid, 0, nullptr);
                 } else {
@@ -557,7 +557,7 @@ void ProcessActorCollisionsBLV(Actor &actor, bool isAboveGround, bool isFlying) 
             }
         }
 
-        if (type == OBJECT_Player) {
+        if (type == OBJECT_Character) {
             if (actor.GetActorsRelation(0)) {
                 actor.vVelocity.y = 0;
                 actor.vVelocity.x = 0;
@@ -670,7 +670,7 @@ void ProcessActorCollisionsODM(Actor &actor, bool isFlying) {
                 bool isFriendly = actor.pMonsterInfo.uHostilityType == MonsterInfo::Hostility_Friendly;
                 bool otherFriendly = pActors[id].pMonsterInfo.uHostilityType == MonsterInfo::Hostility_Friendly;
                 if (isInCrowd) {
-                    Actor::AI_StandOrBored(actor.id, PID(OBJECT_Player, 0), 0, nullptr);
+                    Actor::AI_StandOrBored(actor.id, PID(OBJECT_Character, 0), 0, nullptr);
                 } else if (isFriendly && otherFriendly) {
                     Actor::AI_FaceObject(actor.id, collision_state.pid, 0, nullptr);
                 } else {
@@ -679,7 +679,7 @@ void ProcessActorCollisionsODM(Actor &actor, bool isFlying) {
             }
         }
 
-        if (type == OBJECT_Player) {
+        if (type == OBJECT_Character) {
             if (actor.GetActorsRelation(0)) {
                 actor.vVelocity.y = 0;
                 actor.vVelocity.x = 0;

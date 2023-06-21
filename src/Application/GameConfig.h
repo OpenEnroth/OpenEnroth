@@ -163,7 +163,7 @@ class GameConfig : public Config {
 
         Float AoeDamageDistance = {this, "aoe_damage_distance", 512.0f, &ValidateAoeDistance,
                                    "Distance from point of impact of harmful AOE spell. "
-                                   "Player and monsters will suffer damage if they are close to point of impact by this value."};
+                                   "Characters and monsters will suffer damage if they are close to point of impact by this value."};
 
         Float ShrinkRayAoeDistance = {this, "shrink_ray_aoe_distance", 256.0f, &ValidateAoeDistance,
                                       "Distance from point of impact of Shrinking Ray cast at GM mastery. "

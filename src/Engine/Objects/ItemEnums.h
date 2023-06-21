@@ -1074,15 +1074,15 @@ inline ITEM_TREASURE_LEVEL randomItemTreasureLevel(ITEM_TYPE type) {
     return ITEM_TREASURE_LEVEL(-std::to_underlying(type));
 }
 
-inline int spellCountForMastery(PLAYER_SKILL_MASTERY maxMastery) {
+inline int spellCountForMastery(CharacterSkillMastery maxMastery) {
     switch(maxMastery) {
-      case PLAYER_SKILL_MASTERY_NOVICE:
+      case CHARACTER_SKILL_MASTERY_NOVICE:
         return 4;
-      case PLAYER_SKILL_MASTERY_EXPERT:
+      case CHARACTER_SKILL_MASTERY_EXPERT:
         return 7;
-      case PLAYER_SKILL_MASTERY_MASTER:
+      case CHARACTER_SKILL_MASTERY_MASTER:
         return 10;
-      case PLAYER_SKILL_MASTERY_GRANDMASTER:
+      case CHARACTER_SKILL_MASTERY_GRANDMASTER:
         return 11;
       default:
         assert(false);
@@ -1090,7 +1090,7 @@ inline int spellCountForMastery(PLAYER_SKILL_MASTERY maxMastery) {
     }
 }
 
-inline Segment<ITEM_TYPE> spellbooksOfSchool(DAMAGE_TYPE damage, PLAYER_SKILL_MASTERY maxMastery = PLAYER_SKILL_MASTERY_GRANDMASTER) {
+inline Segment<ITEM_TYPE> spellbooksOfSchool(DAMAGE_TYPE damage, CharacterSkillMastery maxMastery = CHARACTER_SKILL_MASTERY_GRANDMASTER) {
     assert(damage != DMGT_PHISYCAL && damage != DMGT_MAGICAL);
     int spellSchoolSequential = (damage >= DMGT_SPIRIT) ? std::to_underlying(damage) - 2 : std::to_underlying(damage);
     int firstSpell = std::to_underlying(ITEM_FIRST_SPELL_BOOK);
