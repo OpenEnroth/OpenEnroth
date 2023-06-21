@@ -811,7 +811,7 @@ static int CharacterUI_SkillsTab_Draw__DrawSkillTable(
 
             int skill_level = player->getSkillValue(skill).level();
 
-            Color skill_color;
+            Color skill_color = colorTable.White;
             Color skill_mastery_color;
             if (player->uSkillPoints > skill_level && skills_max_level[skill] != 1) {
                 skill_color = ui_character_skill_upgradeable_color;
