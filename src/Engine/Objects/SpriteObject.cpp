@@ -916,7 +916,7 @@ bool processSpellImpact(unsigned int uLayingItemID, int pid) {
                 SpriteObject::OnInteraction(uLayingItemID);
             }
             object->vVelocity = Vec3s(0.0, 0.0, 0.0);
-            int iceParticles = (object->spell_skill == PLAYER_SKILL_MASTERY_GRANDMASTER) ? 9 : 7;
+            int iceParticles = (object->spell_skill == CHARACTER_SKILL_MASTERY_GRANDMASTER) ? 9 : 7;
             int yaw = object->uFacing - TrigLUT.uIntegerDoublePi;
             SpriteObject temp = *object;
             for (int i = 0; i < iceParticles; i++) {
@@ -1079,7 +1079,7 @@ bool processSpellImpact(unsigned int uLayingItemID, int pid) {
             //         break;
             // }
             bool isDamaged = false;
-            bool isShrinkingRayAoe = (object->uType == SPRITE_SPELL_DARK_SHRINKING_RAY) && (object->spell_skill == PLAYER_SKILL_MASTERY_GRANDMASTER);
+            bool isShrinkingRayAoe = (object->uType == SPRITE_SPELL_DARK_SHRINKING_RAY) && (object->spell_skill == CHARACTER_SKILL_MASTERY_GRANDMASTER);
             if (PID_TYPE(pid) != OBJECT_Actor) {
                 if (!isShrinkingRayAoe) {
                     SpriteObject::OnInteraction(uLayingItemID);
@@ -1110,7 +1110,7 @@ bool processSpellImpact(unsigned int uLayingItemID, int pid) {
             int shrinkPower = 0;
             // Calculation was moved from initial sprite creation processing
             GameTime duration = GameTime::FromMinutes(object->spell_level * 5);
-            PLAYER_SKILL_MASTERY skillMastery = object->spell_skill;
+            CharacterSkillMastery skillMastery = object->spell_skill;
             DAMAGE_TYPE dmgType;
             ACTOR_BUFF_INDEX buffIdx;
             switch (object->uType) {
@@ -1129,14 +1129,14 @@ bool processSpellImpact(unsigned int uLayingItemID, int pid) {
             }
             if (object->uType == SPRITE_SPELL_DARK_SHRINKING_RAY) {
                 switch (skillMastery) {
-                    case PLAYER_SKILL_MASTERY_NOVICE:
+                    case CHARACTER_SKILL_MASTERY_NOVICE:
                         shrinkPower = 2;
                         break;
-                    case PLAYER_SKILL_MASTERY_EXPERT:
+                    case CHARACTER_SKILL_MASTERY_EXPERT:
                         shrinkPower = 3;
                         break;
-                    case PLAYER_SKILL_MASTERY_MASTER:
-                    case PLAYER_SKILL_MASTERY_GRANDMASTER:
+                    case CHARACTER_SKILL_MASTERY_MASTER:
+                    case CHARACTER_SKILL_MASTERY_GRANDMASTER:
                         shrinkPower = 4;
                         break;
                 }
@@ -1157,7 +1157,7 @@ bool processSpellImpact(unsigned int uLayingItemID, int pid) {
                 isDamaged = object->applyShrinkRayAoe();
             }
             object->spell_level = 0;
-            object->spell_skill = PLAYER_SKILL_MASTERY_NONE;
+            object->spell_skill = CHARACTER_SKILL_MASTERY_NONE;
             object->uSpellID = SPELL_NONE;
             if (isDamaged) {
                 updateSpriteOnImpact(object);

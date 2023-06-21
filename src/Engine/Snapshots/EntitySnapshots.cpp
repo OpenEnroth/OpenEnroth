@@ -232,7 +232,7 @@ void snapshot(const SpellBuff &src, SpellBuff_MM7 *dst) {
 void reconstruct(const SpellBuff_MM7 &src, SpellBuff *dst) {
     dst->expireTime.value = src.expireTime;
     dst->power = src.power;
-    dst->skillMastery = static_cast<PLAYER_SKILL_MASTERY>(src.skillMastery);
+    dst->skillMastery = static_cast<CharacterSkillMastery>(src.skillMastery);
     dst->overlayID = src.overlayId;
     dst->caster = src.caster;
     dst->isGMBuff = src.flags;
@@ -1382,7 +1382,7 @@ void reconstruct(const SpriteObject_MM7 &src, SpriteObject *dst) {
     reconstruct(src.containing_item, &dst->containing_item);
     dst->uSpellID = static_cast<SPELL_TYPE>(src.uSpellID);
     dst->spell_level = src.spell_level;
-    dst->spell_skill = static_cast<PLAYER_SKILL_MASTERY>(src.spell_skill);
+    dst->spell_skill = static_cast<CharacterSkillMastery>(src.spell_skill);
     dst->field_54 = src.field_54;
     dst->spell_caster_pid = src.spell_caster_pid;
     dst->spell_target_pid = src.spell_target_pid;

@@ -304,7 +304,7 @@ void CharacterUI_ReleaseButtons();
 /**
  * @offset 0x417AD4
  */
-Color GetSkillColor(CharacterClassType uPlayerClass, CharacterSkillType uPlayerSkillType, PLAYER_SKILL_MASTERY skill_mastery);
+Color GetSkillColor(CharacterClassType uPlayerClass, CharacterSkillType uPlayerSkillType, CharacterSkillMastery skill_mastery);
 
 void UI_OnMouseRightClick(int mouse_x, int mouse_y);
 

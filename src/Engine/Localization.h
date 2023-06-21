@@ -480,32 +480,32 @@ class Localization {
         return this->skill_names[index];
     }
 
-    const char *MasteryName(PLAYER_SKILL_MASTERY mastery) const {
+    const char *MasteryName(CharacterSkillMastery mastery) const {
         switch (mastery) {
-        case PLAYER_SKILL_MASTERY_NOVICE: return GetString(LSTR_NORMAL);
-        case PLAYER_SKILL_MASTERY_EXPERT: return GetString(LSTR_EXPERT);
-        case PLAYER_SKILL_MASTERY_MASTER: return GetString(LSTR_MASTER);
-        case PLAYER_SKILL_MASTERY_GRANDMASTER: return GetString(LSTR_GRAND);
+        case CHARACTER_SKILL_MASTERY_NOVICE: return GetString(LSTR_NORMAL);
+        case CHARACTER_SKILL_MASTERY_EXPERT: return GetString(LSTR_EXPERT);
+        case CHARACTER_SKILL_MASTERY_MASTER: return GetString(LSTR_MASTER);
+        case CHARACTER_SKILL_MASTERY_GRANDMASTER: return GetString(LSTR_GRAND);
         default:
             assert(false);
             return nullptr;
         }
     }
 
-    const char *MasteryNameLong(PLAYER_SKILL_MASTERY mastery) const {
-        return mastery == PLAYER_SKILL_MASTERY_GRANDMASTER ? GetString(LSTR_GRANDMASTER) : MasteryName(mastery);
+    const char *MasteryNameLong(CharacterSkillMastery mastery) const {
+        return mastery == CHARACTER_SKILL_MASTERY_GRANDMASTER ? GetString(LSTR_GRANDMASTER) : MasteryName(mastery);
     }
 
     const char *GetSkillDescription(CharacterSkillType index) const {
         return this->skill_descriptions[index];
     }
 
-    const char *GetSkillDescription(CharacterSkillType index, PLAYER_SKILL_MASTERY mastery) const {
+    const char *GetSkillDescription(CharacterSkillType index, CharacterSkillMastery mastery) const {
         switch(mastery) {
-        case PLAYER_SKILL_MASTERY_NOVICE: return GetSkillDescriptionNormal(index);
-        case PLAYER_SKILL_MASTERY_EXPERT: return GetSkillDescriptionExpert(index);
-        case PLAYER_SKILL_MASTERY_MASTER: return GetSkillDescriptionMaster(index);
-        case PLAYER_SKILL_MASTERY_GRANDMASTER: return GetSkillDescriptionGrand(index);
+        case CHARACTER_SKILL_MASTERY_NOVICE: return GetSkillDescriptionNormal(index);
+        case CHARACTER_SKILL_MASTERY_EXPERT: return GetSkillDescriptionExpert(index);
+        case CHARACTER_SKILL_MASTERY_MASTER: return GetSkillDescriptionMaster(index);
+        case CHARACTER_SKILL_MASTERY_GRANDMASTER: return GetSkillDescriptionGrand(index);
         default:
             assert(false);
             return nullptr;

@@ -1047,7 +1047,7 @@ void GUIWindow_House::learnSkillsDialogue() {
     int buttonsLimit = pDialogueWindow->pStartingPosActiveItem + pDialogueWindow->pNumPresenceButton;
     for (int i = pDialogueWindow->pStartingPosActiveItem; i < buttonsLimit; i++) {
         CharacterSkillType skill = GetLearningDialogueSkill((DIALOGUE_TYPE)pDialogueWindow->GetControl(i)->msg_param);
-        if (skillMaxMasteryPerClass[pParty->activeCharacter().classType][skill] != PLAYER_SKILL_MASTERY_NONE &&
+        if (skillMaxMasteryPerClass[pParty->activeCharacter().classType][skill] != CHARACTER_SKILL_MASTERY_NONE &&
             !pParty->activeCharacter().pActiveSkills[skill]) {
             optionsText.push_back(localization->GetSkillName(skill));
             haveLearnableSkills = true;
@@ -1079,7 +1079,7 @@ void GUIWindow_House::learnSkillsDialogue() {
 
 void GUIWindow_House::learnSelectedSkill(CharacterSkillType skill) {
     int pPrice = PriceCalculator::skillLearningCostForPlayer(&pParty->activeCharacter(), buildingTable[wData.val - 1]);
-    if (skillMaxMasteryPerClass[pParty->activeCharacter().classType][skill] != PLAYER_SKILL_MASTERY_NONE) {
+    if (skillMaxMasteryPerClass[pParty->activeCharacter().classType][skill] != CHARACTER_SKILL_MASTERY_NONE) {
         if (!pParty->activeCharacter().pActiveSkills[skill]) {
             if (pParty->GetGold() < pPrice) {
                 GameUI_SetStatusBar(LSTR_NOT_ENOUGH_GOLD);

@@ -919,7 +919,7 @@ bool isHoldingMouseRightButton() {
     return holdingMouseRightButton;
 }
 
-Color GetSkillColor(CharacterClassType uPlayerClass, CharacterSkillType uPlayerSkillType, PLAYER_SKILL_MASTERY skill_mastery) {
+Color GetSkillColor(CharacterClassType uPlayerClass, CharacterSkillType uPlayerSkillType, CharacterSkillMastery skill_mastery) {
     if (skillMaxMasteryPerClass[uPlayerClass][uPlayerSkillType] >= skill_mastery) {
         return ui_character_skillinfo_can_learn;
     }
@@ -1222,8 +1222,8 @@ std::string _4B254D_SkillMasteryTeacher(int trainerInfo) {
     CharacterSkillType skillBeingTaught = static_cast<CharacterSkillType>((trainerInfo - 200) / 3);
     Character *activePlayer = &pParty->activeCharacter();
     CharacterClassType pClassType = activePlayer->classType;
-    PLAYER_SKILL_MASTERY currClassMaxMastery = skillMaxMasteryPerClass[pClassType][skillBeingTaught];
-    PLAYER_SKILL_MASTERY masteryLevelBeingTaught = dword_F8B1B0_MasteryBeingTaught = static_cast<PLAYER_SKILL_MASTERY>(teacherLevel + 2);
+    CharacterSkillMastery currClassMaxMastery = skillMaxMasteryPerClass[pClassType][skillBeingTaught];
+    CharacterSkillMastery masteryLevelBeingTaught = dword_F8B1B0_MasteryBeingTaught = static_cast<CharacterSkillMastery>(teacherLevel + 2);
     guild_membership_approved = false;
 
     if (currClassMaxMastery < masteryLevelBeingTaught) {
@@ -1253,15 +1253,15 @@ std::string _4B254D_SkillMasteryTeacher(int trainerInfo) {
         return std::string(pNPCTopics[131].pText);
 
     // You are already have this mastery in this skill.
-    PLAYER_SKILL_MASTERY skillMastery = activePlayer->getSkillValue(skillBeingTaught).mastery();
+    CharacterSkillMastery skillMastery = activePlayer->getSkillValue(skillBeingTaught).mastery();
     if (std::to_underlying(skillMastery) > teacherLevel + 1)
         return std::string(pNPCTopics[teacherLevel + 128].pText);
 
     dword_F8B1AC_skill_being_taught = skillBeingTaught;
     // You don't meet the requirements, and cannot be taught until you do.
-    if (masteryLevelBeingTaught == PLAYER_SKILL_MASTERY_EXPERT && skillLevel < 4 ||
-        masteryLevelBeingTaught == PLAYER_SKILL_MASTERY_MASTER && skillLevel < 7 ||
-        masteryLevelBeingTaught == PLAYER_SKILL_MASTERY_GRANDMASTER && skillLevel < 10)
+    if (masteryLevelBeingTaught == CHARACTER_SKILL_MASTERY_EXPERT && skillLevel < 4 ||
+        masteryLevelBeingTaught == CHARACTER_SKILL_MASTERY_MASTER && skillLevel < 7 ||
+        masteryLevelBeingTaught == CHARACTER_SKILL_MASTERY_GRANDMASTER && skillLevel < 10)
         return std::string(pNPCTopics[127].pText);
 
     switch (dword_F8B1AC_skill_being_taught) {
@@ -1274,13 +1274,13 @@ std::string _4B254D_SkillMasteryTeacher(int trainerInfo) {
     case CHARACTER_SKILL_MACE:
     case CHARACTER_SKILL_ARMSMASTER:
         switch (masteryLevelBeingTaught) {
-        case PLAYER_SKILL_MASTERY_EXPERT:
+        case CHARACTER_SKILL_MASTERY_EXPERT:
             gold_transaction_amount = 2000;
             break;
-        case PLAYER_SKILL_MASTERY_MASTER:
+        case CHARACTER_SKILL_MASTERY_MASTER:
             gold_transaction_amount = 5000;
             break;
-        case PLAYER_SKILL_MASTERY_GRANDMASTER:
+        case CHARACTER_SKILL_MASTERY_GRANDMASTER:
             gold_transaction_amount = 8000;
             break;
         default:
@@ -1289,13 +1289,13 @@ std::string _4B254D_SkillMasteryTeacher(int trainerInfo) {
         break;
     case CHARACTER_SKILL_BLASTER:
         switch (masteryLevelBeingTaught) {
-        case PLAYER_SKILL_MASTERY_EXPERT:
+        case CHARACTER_SKILL_MASTERY_EXPERT:
             gold_transaction_amount = 0;
             break;
-        case PLAYER_SKILL_MASTERY_MASTER:
+        case CHARACTER_SKILL_MASTERY_MASTER:
             gold_transaction_amount = 0;
             break;
-        case PLAYER_SKILL_MASTERY_GRANDMASTER:
+        case CHARACTER_SKILL_MASTERY_GRANDMASTER:
             gold_transaction_amount = 0;
             break;
         default:
@@ -1307,13 +1307,13 @@ std::string _4B254D_SkillMasteryTeacher(int trainerInfo) {
     case CHARACTER_SKILL_CHAIN:
     case CHARACTER_SKILL_PLATE:
         switch (masteryLevelBeingTaught) {
-        case PLAYER_SKILL_MASTERY_EXPERT:
+        case CHARACTER_SKILL_MASTERY_EXPERT:
             gold_transaction_amount = 1000;
             break;
-        case PLAYER_SKILL_MASTERY_MASTER:
+        case CHARACTER_SKILL_MASTERY_MASTER:
             gold_transaction_amount = 3000;
             break;
-        case PLAYER_SKILL_MASTERY_GRANDMASTER:
+        case CHARACTER_SKILL_MASTERY_GRANDMASTER:
             gold_transaction_amount = 7000;
             break;
         default:
@@ -1328,13 +1328,13 @@ std::string _4B254D_SkillMasteryTeacher(int trainerInfo) {
     case CHARACTER_SKILL_MIND:
     case CHARACTER_SKILL_BODY:
         switch (masteryLevelBeingTaught) {
-        case PLAYER_SKILL_MASTERY_EXPERT:
+        case CHARACTER_SKILL_MASTERY_EXPERT:
             gold_transaction_amount = 1000;
             break;
-        case PLAYER_SKILL_MASTERY_MASTER:
+        case CHARACTER_SKILL_MASTERY_MASTER:
             gold_transaction_amount = 4000;
             break;
-        case PLAYER_SKILL_MASTERY_GRANDMASTER:
+        case CHARACTER_SKILL_MASTERY_GRANDMASTER:
             gold_transaction_amount = 8000;
             break;
         default:
@@ -1343,15 +1343,15 @@ std::string _4B254D_SkillMasteryTeacher(int trainerInfo) {
         break;
     case CHARACTER_SKILL_LIGHT:
         switch (masteryLevelBeingTaught) {
-        case PLAYER_SKILL_MASTERY_EXPERT:
+        case CHARACTER_SKILL_MASTERY_EXPERT:
             gold_transaction_amount = 2000;
             break;
-        case PLAYER_SKILL_MASTERY_MASTER:
+        case CHARACTER_SKILL_MASTERY_MASTER:
             if (!pParty->_questBits[114])
                 return std::string(pNPCTopics[127].pText);
             gold_transaction_amount = 5000;
             break;
-        case PLAYER_SKILL_MASTERY_GRANDMASTER:
+        case CHARACTER_SKILL_MASTERY_GRANDMASTER:
             if (!activePlayer->isClass(CHARACTER_CLASS_ARCHAMGE) || !activePlayer->isClass(CHARACTER_CLASS_PRIEST_OF_SUN))
                 return std::string(pNPCTopics[127].pText);
             gold_transaction_amount = 8000;
@@ -1362,15 +1362,15 @@ std::string _4B254D_SkillMasteryTeacher(int trainerInfo) {
         break;
     case CHARACTER_SKILL_DARK:
         switch (masteryLevelBeingTaught) {
-        case PLAYER_SKILL_MASTERY_EXPERT:
+        case CHARACTER_SKILL_MASTERY_EXPERT:
             gold_transaction_amount = 2000;
             break;
-        case PLAYER_SKILL_MASTERY_MASTER:
+        case CHARACTER_SKILL_MASTERY_MASTER:
             if (!pParty->_questBits[110])
                 return std::string(pNPCTopics[127].pText);
             gold_transaction_amount = 5000;
             break;
-        case PLAYER_SKILL_MASTERY_GRANDMASTER:
+        case CHARACTER_SKILL_MASTERY_GRANDMASTER:
             if (!activePlayer->isClass(CHARACTER_CLASS_LICH) || !activePlayer->isClass(CHARACTER_CLASS_PRIEST_OF_MOON))
                 return std::string(pNPCTopics[127].pText);
             gold_transaction_amount = 8000;
@@ -1389,13 +1389,13 @@ std::string _4B254D_SkillMasteryTeacher(int trainerInfo) {
     case CHARACTER_SKILL_ALCHEMY:
     case CHARACTER_SKILL_CLUB:
         switch (masteryLevelBeingTaught) {
-        case PLAYER_SKILL_MASTERY_EXPERT:
+        case CHARACTER_SKILL_MASTERY_EXPERT:
             gold_transaction_amount = 500;
             break;
-        case PLAYER_SKILL_MASTERY_MASTER:
+        case CHARACTER_SKILL_MASTERY_MASTER:
             gold_transaction_amount = 2500;
             break;
-        case PLAYER_SKILL_MASTERY_GRANDMASTER:
+        case CHARACTER_SKILL_MASTERY_GRANDMASTER:
             gold_transaction_amount = 6000;
             break;
         default:
@@ -1404,15 +1404,15 @@ std::string _4B254D_SkillMasteryTeacher(int trainerInfo) {
         break;
     case CHARACTER_SKILL_MERCHANT:
         switch (masteryLevelBeingTaught) {
-        case PLAYER_SKILL_MASTERY_EXPERT:
+        case CHARACTER_SKILL_MASTERY_EXPERT:
             gold_transaction_amount = 2000;
             break;
-        case PLAYER_SKILL_MASTERY_MASTER:
+        case CHARACTER_SKILL_MASTERY_MASTER:
             if (activePlayer->GetBasePersonality() < 50)
                 return std::string(pNPCTopics[127].pText);
             gold_transaction_amount = 5000;
             break;
-        case PLAYER_SKILL_MASTERY_GRANDMASTER:
+        case CHARACTER_SKILL_MASTERY_GRANDMASTER:
             gold_transaction_amount = 8000;
             break;
         default:
@@ -1421,15 +1421,15 @@ std::string _4B254D_SkillMasteryTeacher(int trainerInfo) {
         break;
     case CHARACTER_SKILL_BODYBUILDING:
         switch (masteryLevelBeingTaught) {
-        case PLAYER_SKILL_MASTERY_EXPERT:
+        case CHARACTER_SKILL_MASTERY_EXPERT:
             gold_transaction_amount = 500;
             break;
-        case PLAYER_SKILL_MASTERY_MASTER:
+        case CHARACTER_SKILL_MASTERY_MASTER:
             if (activePlayer->GetBaseEndurance() < 50)
                 return std::string(pNPCTopics[127].pText);
             gold_transaction_amount = 2500;
             break;
-        case PLAYER_SKILL_MASTERY_GRANDMASTER:
+        case CHARACTER_SKILL_MASTERY_GRANDMASTER:
             gold_transaction_amount = 6000;
             break;
         default:
@@ -1444,13 +1444,13 @@ std::string _4B254D_SkillMasteryTeacher(int trainerInfo) {
         break;
     case CHARACTER_SKILL_DODGE:
         switch (masteryLevelBeingTaught) {
-        case PLAYER_SKILL_MASTERY_EXPERT:
+        case CHARACTER_SKILL_MASTERY_EXPERT:
             gold_transaction_amount = 2000;
             break;
-        case PLAYER_SKILL_MASTERY_MASTER:
+        case CHARACTER_SKILL_MASTERY_MASTER:
             gold_transaction_amount = 5000;
             break;
-        case PLAYER_SKILL_MASTERY_GRANDMASTER:
+        case CHARACTER_SKILL_MASTERY_GRANDMASTER:
             if (activePlayer->pActiveSkills[CHARACTER_SKILL_UNARMED].level() < 10)
                 return std::string(pNPCTopics[127].pText);
             gold_transaction_amount = 8000;
@@ -1461,13 +1461,13 @@ std::string _4B254D_SkillMasteryTeacher(int trainerInfo) {
         break;
     case CHARACTER_SKILL_UNARMED:
         switch (masteryLevelBeingTaught) {
-        case PLAYER_SKILL_MASTERY_EXPERT:
+        case CHARACTER_SKILL_MASTERY_EXPERT:
             gold_transaction_amount = 2000;
             break;
-        case PLAYER_SKILL_MASTERY_MASTER:
+        case CHARACTER_SKILL_MASTERY_MASTER:
             gold_transaction_amount = 5000;
             break;
-        case PLAYER_SKILL_MASTERY_GRANDMASTER:
+        case CHARACTER_SKILL_MASTERY_GRANDMASTER:
             if (activePlayer->pActiveSkills[CHARACTER_SKILL_DODGE].level() < 10)
                 return std::string(pNPCTopics[127].pText);
             gold_transaction_amount = 8000;
@@ -1479,15 +1479,15 @@ std::string _4B254D_SkillMasteryTeacher(int trainerInfo) {
 
     case CHARACTER_SKILL_LEARNING:
         switch (masteryLevelBeingTaught) {
-        case PLAYER_SKILL_MASTERY_EXPERT:
+        case CHARACTER_SKILL_MASTERY_EXPERT:
             gold_transaction_amount = 2000;
             break;
-        case PLAYER_SKILL_MASTERY_MASTER:
+        case CHARACTER_SKILL_MASTERY_MASTER:
             if (activePlayer->GetBaseIntelligence() < 50)
                 return std::string(pNPCTopics[127].pText);
             gold_transaction_amount = 5000;
             break;
-        case PLAYER_SKILL_MASTERY_GRANDMASTER:
+        case CHARACTER_SKILL_MASTERY_GRANDMASTER:
             gold_transaction_amount = 8000;
             break;
         default:

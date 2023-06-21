@@ -251,8 +251,8 @@ struct Character {
     int GetSpecialItemBonus(ITEM_ENCHANTMENT enchantment) const;
     int GetItemsBonus(CharacterAttributeType attr, bool getOnlyMainHandDmg = false) const;
     int GetMagicalBonus(CharacterAttributeType a2) const;
-    PLAYER_SKILL_LEVEL GetActualSkillLevel(CharacterSkillType uSkillType) const;
-    PLAYER_SKILL_MASTERY GetActualSkillMastery(CharacterSkillType uSkillType) const;
+    CHARACTER_SKILL_LEVEL GetActualSkillLevel(CharacterSkillType uSkillType) const;
+    CharacterSkillMastery GetActualSkillMastery(CharacterSkillType uSkillType) const;
     CombinedSkillValue getActualSkillValue(CharacterSkillType skillType) const;
     int GetSkillBonus(CharacterAttributeType a2) const;
     CharacterRace GetRace() const;
@@ -342,7 +342,7 @@ struct Character {
     bool hasItem(ITEM_TYPE uItemID, bool checkHeldItem);
     void OnInventoryLeftClick();
 
-    bool characterHitOrMiss(Actor *pActor, int distancemod, PLAYER_SKILL_LEVEL skillmod);
+    bool characterHitOrMiss(Actor *pActor, int distancemod, CHARACTER_SKILL_LEVEL skillmod);
 
     unsigned int GetMultiplierForSkillLevel(CharacterSkillType uSkillType, int mult1, int mult2, int mult3, int mult4) const;
     int CalculateMeleeDmgToEnemyWithWeapon(ItemGen *weapon,
@@ -441,12 +441,12 @@ struct Character {
     void CleanupBeacons();
     bool SetBeacon(size_t index, size_t power);
 
-    PLAYER_SKILL_LEVEL GetSkillLevel(CharacterSkillType skill) const;
-    PLAYER_SKILL_MASTERY GetSkillMastery(CharacterSkillType skill) const;
+    CHARACTER_SKILL_LEVEL GetSkillLevel(CharacterSkillType skill) const;
+    CharacterSkillMastery GetSkillMastery(CharacterSkillType skill) const;
     CombinedSkillValue getSkillValue(CharacterSkillType skill) const;
 
-    void SetSkillLevel(CharacterSkillType skill, PLAYER_SKILL_LEVEL level);
-    void SetSkillMastery(CharacterSkillType skill, PLAYER_SKILL_MASTERY mastery);
+    void SetSkillLevel(CharacterSkillType skill, CHARACTER_SKILL_LEVEL level);
+    void SetSkillMastery(CharacterSkillType skill, CharacterSkillMastery mastery);
     void setSkillValue(CharacterSkillType skill, const CombinedSkillValue &value);
 
     CharacterConditions conditions;

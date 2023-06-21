@@ -70,8 +70,8 @@ class EventIR {
         } actor_flag_descr;
         struct {
             SPELL_TYPE spell_id;
-            PLAYER_SKILL_MASTERY spell_mastery;
-            PLAYER_SKILL_LEVEL spell_level;
+            CharacterSkillMastery spell_mastery;
+            CHARACTER_SKILL_LEVEL spell_level;
             int fromx;
             int fromy;
             int fromz;
@@ -163,8 +163,8 @@ class EventIR {
         } chest_flag_descr;
         struct {
             CharacterSkillType skill_type;
-            PLAYER_SKILL_MASTERY skill_mastery;
-            PLAYER_SKILL_LEVEL skill_level;
+            CharacterSkillMastery skill_mastery;
+            CHARACTER_SKILL_LEVEL skill_level;
         } check_skill_descr;
     } data;
 };

@@ -1428,15 +1428,15 @@ void GameUI_DrawMinimap(unsigned int uX, unsigned int uY, unsigned int uZ,
     signed int uWidth = uZ - uX;
 
     bool bWizardEyeActive = pParty->wizardEyeActive();
-    PLAYER_SKILL_MASTERY uWizardEyeSkillLevel = pParty->wizardEyeSkillLevel();
+    CharacterSkillMastery uWizardEyeSkillLevel = pParty->wizardEyeSkillLevel();
     if (CheckHiredNPCSpeciality(Cartographer)) {
         bWizardEyeActive = true;
-        uWizardEyeSkillLevel = uWizardEyeSkillLevel > PLAYER_SKILL_MASTERY_EXPERT ? uWizardEyeSkillLevel : PLAYER_SKILL_MASTERY_EXPERT;
+        uWizardEyeSkillLevel = uWizardEyeSkillLevel > CHARACTER_SKILL_MASTERY_EXPERT ? uWizardEyeSkillLevel : CHARACTER_SKILL_MASTERY_EXPERT;
     }
 
     if (engine->config->debug.WizardEye.value()) {
         bWizardEyeActive = true;
-        uWizardEyeSkillLevel = PLAYER_SKILL_MASTERY_MASTER;
+        uWizardEyeSkillLevel = CHARACTER_SKILL_MASTERY_MASTER;
     }
 
     if (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR) {
@@ -1530,7 +1530,7 @@ void GameUI_DrawMinimap(unsigned int uX, unsigned int uY, unsigned int uZ,
                     int linez = uCenterX + fixpoint_mul(uZoom, Vert2X);
                     int linew = uCenterY - fixpoint_mul(uZoom, Vert2Y);
 
-                    if (bWizardEyeActive && uWizardEyeSkillLevel >= PLAYER_SKILL_MASTERY_MASTER &&
+                    if (bWizardEyeActive && uWizardEyeSkillLevel >= CHARACTER_SKILL_MASTERY_MASTER &&
                         (pIndoor->pFaces[pOutline->uFace1ID].Clickable() ||
                             pIndoor->pFaces[pOutline->uFace2ID].Clickable()) &&
                         (pIndoor->pFaceExtras[pIndoor->pFaces[pOutline->uFace1ID].uFaceExtraID].uEventID ||
@@ -1563,7 +1563,7 @@ void GameUI_DrawMinimap(unsigned int uX, unsigned int uY, unsigned int uZ,
 
     // draw objects on the minimap
     if (bWizardEyeActive) {
-        if (uWizardEyeSkillLevel >= PLAYER_SKILL_MASTERY_EXPERT) {
+        if (uWizardEyeSkillLevel >= CHARACTER_SKILL_MASTERY_EXPERT) {
             for (uint i = 0; i < pSpriteObjects.size(); ++i) {
                 if (!pSpriteObjects[i].uType ||
                     !pSpriteObjects[i].uObjectDescID)

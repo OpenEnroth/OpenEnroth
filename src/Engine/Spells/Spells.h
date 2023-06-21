@@ -20,8 +20,8 @@ struct SpellBuff {
     /**
      * @offset 0x4584E0
      */
-    bool Apply(GameTime time, PLAYER_SKILL_MASTERY uSkillMastery,
-               PLAYER_SKILL_LEVEL uPower, int uOverlayID, uint8_t caster);
+    bool Apply(GameTime time, CharacterSkillMastery uSkillMastery,
+               CHARACTER_SKILL_LEVEL uPower, int uOverlayID, uint8_t caster);
 
     /**
      * @offset 0x458585
@@ -50,7 +50,7 @@ struct SpellBuff {
 
     GameTime expireTime;
     uint16_t power = 0; // Spell power, semantics are spell-specific.
-    PLAYER_SKILL_MASTERY skillMastery = PLAYER_SKILL_MASTERY_NONE; // 1-4, normal to grandmaster.
+    CharacterSkillMastery skillMastery = CHARACTER_SKILL_MASTERY_NONE; // 1-4, normal to grandmaster.
     uint16_t overlayID = 0;
     uint8_t caster = 0;
     bool isGMBuff = false; // Buff was casted at grandmaster mastery
@@ -79,13 +79,13 @@ struct SpellStats {
 
 class SpellData {
  public:
-    SpellData():SpellData(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, PLAYER_SKILL_MASTERY_NONE) {}
+    SpellData():SpellData(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, CHARACTER_SKILL_MASTERY_NONE) {}
     SpellData(int16_t inNormalMana, int16_t inExpertLevelMana,
               int16_t inMasterLevelMana, int16_t inMagisterLevelMana,
               int16_t inNormalLevelRecovery, int16_t inExpertLevelRecovery,
               int16_t inMasterLevelRecovery, int16_t inMagisterLevelRecovery,
               int8_t inBaseDamage, int8_t inBonusSkillDamage, int16_t inStats,
-              PLAYER_SKILL_MASTERY inSkillMastery);
+              CharacterSkillMastery inSkillMastery);
     union {
         uint16_t mana_per_skill[4];
         struct {
@@ -107,7 +107,7 @@ class SpellData {
     int8_t baseDamage;
     int8_t bonusSkillDamage;
     int16_t stats;
-    PLAYER_SKILL_MASTERY skillMastery;
+    CharacterSkillMastery skillMastery;
     // char field_12;
     // char field_13;
     // int16_t field_14;
@@ -142,7 +142,7 @@ extern IndexedArray<uint16_t, SPELL_FIRST_WITH_SPRITE, SPELL_LAST_WITH_SPRITE> S
 /**
  * @offset 0x43AFE3
  */
-int CalcSpellDamage(SPELL_TYPE uSpellID, PLAYER_SKILL_LEVEL spellLevel, PLAYER_SKILL_MASTERY skillMastery, int currentHp);
+int CalcSpellDamage(SPELL_TYPE uSpellID, CHARACTER_SKILL_LEVEL spellLevel, CharacterSkillMastery skillMastery, int currentHp);
 
 /**
  * @offset 0x427769
@@ -152,7 +152,7 @@ bool IsSpellQuickCastableOnShiftClick(SPELL_TYPE uSpellID);
 /**
  * Function for processing spells cast from game scripts.
  */
-void eventCastSpell(SPELL_TYPE uSpellID, PLAYER_SKILL_MASTERY skillMastery, PLAYER_SKILL_LEVEL skillLevel, int fromx,
+void eventCastSpell(SPELL_TYPE uSpellID, CharacterSkillMastery skillMastery, CHARACTER_SKILL_LEVEL skillLevel, int fromx,
                     int fromy, int fromz, int tox, int toy, int toz);  // sub_448DF8
 
 void armageddonProgress();

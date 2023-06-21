@@ -107,7 +107,7 @@ bool Chest::open(int uChestID, int objectPid) {
             Vec3i::rotate(pDepth, yawAngle, pitchAngle, Vec3i(pObjectX, pObjectY, pObjectZ), &pOut.x, &pOut.y, &pOut.z);
             SpriteObject::dropItemAt(pSpriteID[pRandom], pOut, 0, 1, false, SPRITE_IGNORE_RANGE | SPRITE_NO_Z_BUFFER);
             pSpellObject.containing_item.Reset();
-            pSpellObject.spell_skill = PLAYER_SKILL_MASTERY_NONE;
+            pSpellObject.spell_skill = CHARACTER_SKILL_MASTERY_NONE;
             pSpellObject.spell_level = 0;
             pSpellObject.uSpellID = SPELL_NONE;
             pSpellObject.field_54 = 0;

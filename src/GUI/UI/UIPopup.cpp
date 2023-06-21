@@ -629,29 +629,29 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
     bool for_effects = false;
 
     if (pParty->hasActiveCharacter()) {
-        PLAYER_SKILL_LEVEL skill_points = 0;
-        PLAYER_SKILL_MASTERY skill_mastery = PLAYER_SKILL_MASTERY_NONE;
+        CHARACTER_SKILL_LEVEL skill_points = 0;
+        CharacterSkillMastery skill_mastery = CHARACTER_SKILL_MASTERY_NONE;
         CombinedSkillValue idMonsterSkill = pParty->activeCharacter().getActualSkillValue(CHARACTER_SKILL_MONSTER_ID);
 
         if ((skill_points = idMonsterSkill.level()) > 0) {
             skill_mastery = idMonsterSkill.mastery();
-            if (skill_mastery == PLAYER_SKILL_MASTERY_NOVICE) {
+            if (skill_mastery == CHARACTER_SKILL_MASTERY_NOVICE) {
                 if (skill_points + 10 >= pActors[uActorID].pMonsterInfo.uLevel) {
                     normal_level = true;
                 }
-            } else if (skill_mastery == PLAYER_SKILL_MASTERY_EXPERT) {
+            } else if (skill_mastery == CHARACTER_SKILL_MASTERY_EXPERT) {
                 if (2 * skill_points + 10 >= pActors[uActorID].pMonsterInfo.uLevel) {
                     normal_level = true;
                     expert_level = true;
                 }
-            } else if (skill_mastery == PLAYER_SKILL_MASTERY_MASTER) {
+            } else if (skill_mastery == CHARACTER_SKILL_MASTERY_MASTER) {
                 if (3 * skill_points + 10 >= pActors[uActorID].pMonsterInfo.uLevel) {
                     normal_level = true;
                     expert_level = true;
                     master_level = true;
                     for_effects = true;
                 }
-            } else if (skill_mastery == PLAYER_SKILL_MASTERY_GRANDMASTER) {
+            } else if (skill_mastery == CHARACTER_SKILL_MASTERY_GRANDMASTER) {
                 normal_level = true;
                 expert_level = true;
                 master_level = true;
@@ -662,7 +662,7 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
 
         // Only play reaction when right click on actor initially
         if (pActors[uActorID].uAIState != Dead && pActors[uActorID].uAIState != Dying &&
-            !holdingMouseRightButton && skill_mastery != PLAYER_SKILL_MASTERY_NONE) {
+            !holdingMouseRightButton && skill_mastery != CHARACTER_SKILL_MASTERY_NONE) {
             CharacterSpeech speech;
             if (normal_level || expert_level || master_level || grandmaster_level) {
                 if (pActors[uActorID].pMonsterInfo.uLevel >= pParty->activeCharacter().uLevel - 5)
@@ -992,7 +992,7 @@ std::string CharacterUI_GetSkillDescText(unsigned int uPlayerID, CharacterSkillT
     if (localization->GetSkillDescriptionNormal(uPlayerSkillType)) {
         Description = fmt::format("{}\n\n", Description);
 
-        for (PLAYER_SKILL_MASTERY mastery : SkillMasteries()) {
+        for (CharacterSkillMastery mastery : SkillMasteries()) {
             Description += fmt::format(
                 "{::}{}\t{:03}:\t{:03}{}\t000\n",
                 GetSkillColor(pParty->pPlayers[uPlayerID].classType, uPlayerSkillType, mastery).tag(),
@@ -1250,7 +1250,7 @@ void DrawSpellDescriptionPopup(int spell_index_in_book) {
     spell_info_window.uFrameWidth = 108;
     spell_info_window.uFrameZ = spell_info_window.uFrameX + 107;
     CharacterSkillType skill = static_cast<CharacterSkillType>(pParty->activeCharacter().lastOpenedSpellbookPage + 12);
-    PLAYER_SKILL_MASTERY skill_mastery = pParty->activeCharacter().getSkillValue(skill).mastery();
+    CharacterSkillMastery skill_mastery = pParty->activeCharacter().getSkillValue(skill).mastery();
     spell_info_window.DrawTitleText(pFontComic, 12, 75, colorTable.White, localization->GetSkillName(skill), 3);
 
     auto str2 = fmt::format(
@@ -1383,7 +1383,7 @@ void ShowPopupShopSkills() {
             if (pX >= pButton->uX && pX < pButton->uZ && pY >= pButton->uY && pY < pButton->uW) {
                 if (IsSkillLearningDialogue((DIALOGUE_TYPE)pButton->msg_param)) {
                     auto skill_id = GetLearningDialogueSkill((DIALOGUE_TYPE)pButton->msg_param);
-                    if (skillMaxMasteryPerClass[pParty->activeCharacter().classType][skill_id] != PLAYER_SKILL_MASTERY_NONE &&
+                    if (skillMaxMasteryPerClass[pParty->activeCharacter().classType][skill_id] != CHARACTER_SKILL_MASTERY_NONE &&
                         !pParty->activeCharacter().pActiveSkills[skill_id]) {
                         // is this skill visible
                         std::string pSkillDescText = CharacterUI_GetSkillDescText(pParty->activeCharacterIndex() - 1, skill_id);
@@ -2183,9 +2183,9 @@ void Inventory_ItemPopupAndAlchemy() {
             return;
         }
 
-        // TODO(Nik-RE-dev): need to allow GetSkillMastery return PLAYER_SKILL_MASTERY_NONE
+        // TODO(Nik-RE-dev): need to allow GetSkillMastery return CHARACTER_SKILL_MASTERY_NONE
         if (!alchemySkill.level()) {
-            alchemySkill.setMastery(PLAYER_SKILL_MASTERY_NONE);
+            alchemySkill.setMastery(CHARACTER_SKILL_MASTERY_NONE);
         }
 
         int damage_level = 0;
@@ -2196,21 +2196,21 @@ void Inventory_ItemPopupAndAlchemy() {
             // potionID >= ITEM_POTION_CURE_WOUNDS && potionID <= ITEM_POTION_CURE_WEAKNESS does not require skill
             if (potionID >= ITEM_POTION_CURE_DISEASE &&
                     potionID <= ITEM_POTION_AWAKEN &&
-                    alchemySkill.mastery() == PLAYER_SKILL_MASTERY_NONE) {
+                    alchemySkill.mastery() == CHARACTER_SKILL_MASTERY_NONE) {
                 damage_level = 1;
             }
             if (potionID >= ITEM_POTION_HASTE &&
                     potionID <= ITEM_POTION_CURE_INSANITY &&
-                    alchemySkill.mastery() <= PLAYER_SKILL_MASTERY_NOVICE) {
+                    alchemySkill.mastery() <= CHARACTER_SKILL_MASTERY_NOVICE) {
                 damage_level = 2;
             }
             if (potionID >= ITEM_POTION_MIGHT_BOOST &&
                     potionID <= ITEM_POTION_BODY_RESISTANCE &&
-                    alchemySkill.mastery() <= PLAYER_SKILL_MASTERY_EXPERT) {
+                    alchemySkill.mastery() <= CHARACTER_SKILL_MASTERY_EXPERT) {
                 damage_level = 3;
             }
             if (potionID >= ITEM_POTION_STONE_TO_FLESH &&
-                    alchemySkill.mastery() <= PLAYER_SKILL_MASTERY_MASTER) {
+                    alchemySkill.mastery() <= CHARACTER_SKILL_MASTERY_MASTER) {
                 damage_level = 4;
             }
         }

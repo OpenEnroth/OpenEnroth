@@ -134,7 +134,7 @@ class Actor {
     static void AI_RangedAttack(unsigned int uActorID, struct AIDirection *a2,
                                 int type, ABILITY_INDEX a4);
     static void AI_SpellAttack(unsigned int uActorID, struct AIDirection *pDir,
-                               SPELL_TYPE uSpellID, ABILITY_INDEX a4, PLAYER_SKILL uSkill);
+                               SPELL_TYPE uSpellID, ABILITY_INDEX a4, CHARACTER_SKILL uSkill);
     static void ActorDamageFromMonster(int attacker_id, unsigned int actor_id,
                                        Vec3i *pVelocity, ABILITY_INDEX a4);
 
@@ -255,7 +255,7 @@ void npcSetItem(int npc, ITEM_TYPE item, int a3);
 void toggleActorGroupFlag(unsigned int uGroupID, ActorAttribute uFlag, bool bValue);
 bool Detect_Between_Objects(unsigned int uObjID, unsigned int uObj2ID);
 bool SpawnActor(unsigned int uMonsterID);
-void Spawn_Light_Elemental(int spell_power, PLAYER_SKILL_MASTERY caster_skill_mastery, int duration_game_seconds);
+void Spawn_Light_Elemental(int spell_power, CharacterSkillMastery caster_skill_mastery, int duration_game_seconds);
 void SpawnEncounter(struct MapInfo *pMapInfo, SpawnPoint *spawn, int a3, int a4, int a5);
 /**
  * @offset 0x438F8F

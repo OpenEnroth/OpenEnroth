@@ -135,7 +135,7 @@ int PriceCalculator::playerMerchant(const Character *player) {
     CombinedSkillValue merchantSkill = player->getActualSkillValue(CHARACTER_SKILL_MERCHANT);
     int multiplier = player->GetMultiplierForSkillLevel(CHARACTER_SKILL_MERCHANT, 1, 2, 3, 5);
 
-    if (merchantSkill.mastery() == PLAYER_SKILL_MASTERY_GRANDMASTER) {  // gm merchant
+    if (merchantSkill.mastery() == CHARACTER_SKILL_MASTERY_GRANDMASTER) {  // gm merchant
         return 10000;
     }
 

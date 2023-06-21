@@ -41,12 +41,12 @@ GUIWindow_LloydsBook::GUIWindow_LloydsBook() : GUIWindow_Book() {
     pBtn_Book_1 = CreateButton({415, 13}, {39, 36}, 1, 0, UIMSG_LloydsBeacon_FlippingBtn, 0, InputAction::Invalid, localization->GetString(LSTR_SET_BEACON));
     pBtn_Book_2 = CreateButton({415, 48}, {39, 36}, 1, 0, UIMSG_LloydsBeacon_FlippingBtn, 1, InputAction::Invalid, localization->GetString(LSTR_RECALL_BEACON));
 
-    PLAYER_SKILL_MASTERY water_mastery = pParty->pPlayers[lloydsBeaconCasterId].getActualSkillValue(CHARACTER_SKILL_WATER).mastery();
+    CharacterSkillMastery water_mastery = pParty->pPlayers[lloydsBeaconCasterId].getActualSkillValue(CHARACTER_SKILL_WATER).mastery();
 
     _maxBeacons = 1;
-    if (water_mastery == PLAYER_SKILL_MASTERY_GRANDMASTER || water_mastery == PLAYER_SKILL_MASTERY_MASTER) {
+    if (water_mastery == CHARACTER_SKILL_MASTERY_GRANDMASTER || water_mastery == CHARACTER_SKILL_MASTERY_MASTER) {
         _maxBeacons = 5;
-    } else if (water_mastery == PLAYER_SKILL_MASTERY_EXPERT) {
+    } else if (water_mastery == CHARACTER_SKILL_MASTERY_EXPERT) {
         _maxBeacons = 3;
     }
 

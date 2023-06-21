@@ -286,7 +286,7 @@ struct Party {
     inline bool wizardEyeActive() const {
         return pPartyBuffs[PARTY_BUFF_WIZARD_EYE].Active();
     }
-    inline PLAYER_SKILL_MASTERY wizardEyeSkillLevel() const {
+    inline CharacterSkillMastery wizardEyeSkillLevel() const {
         return pPartyBuffs[PARTY_BUFF_WIZARD_EYE].skillMastery;
     }
     inline bool TorchlightActive() const {
@@ -301,7 +301,7 @@ struct Party {
     inline bool ImmolationActive() const {
         return pPartyBuffs[PARTY_BUFF_IMMOLATION].Active();
     }
-    inline PLAYER_SKILL_MASTERY ImmolationSkillLevel() const {
+    inline CharacterSkillMastery ImmolationSkillLevel() const {
         return pPartyBuffs[PARTY_BUFF_IMMOLATION].skillMastery;
     }
     inline bool FeatherFallActive() const {

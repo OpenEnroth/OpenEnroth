@@ -60,10 +60,10 @@ extern std::array<std::array<unsigned char, 25>, 48> byte_4ECF08;
 extern IndexedArray<std::array<unsigned char, 3>, SPEECH_FIRST, SPEECH_LAST> speechVariants;
 extern IndexedArray<std::array<unsigned char, 5>, SPEECH_FIRST, SPEECH_LAST> expressionVariants;
 extern std::array<int16_t, 4> pPlayerPortraitsXCoords_For_PlayerBuffAnimsDrawing;
-extern IndexedArray<PLAYER_SKILL_LEVEL, CHARACTER_SKILL_FIRST, CHARACTER_SKILL_LAST> skills_max_level;
+extern IndexedArray<CHARACTER_SKILL_LEVEL, CHARACTER_SKILL_FIRST, CHARACTER_SKILL_LAST> skills_max_level;
 extern IndexedArray<uint, CHARACTER_SKILL_FIRST, CHARACTER_SKILL_LAST> base_recovery_times_per_weapon_type;
 extern std::array<IndexedArray<ClassSkillAffinity, CHARACTER_SKILL_FIRST, CHARACTER_SKILL_LAST>, 9> pSkillAvailabilityPerClass;
-extern IndexedArray<IndexedArray<PLAYER_SKILL_MASTERY, CHARACTER_SKILL_FIRST, CHARACTER_SKILL_LAST>, PLAYER_CLASS_FIRST, PLAYER_CLASS_LAST> skillMaxMasteryPerClass;
+extern IndexedArray<IndexedArray<CharacterSkillMastery, CHARACTER_SKILL_FIRST, CHARACTER_SKILL_LAST>, PLAYER_CLASS_FIRST, PLAYER_CLASS_LAST> skillMaxMasteryPerClass;
 
 extern std::array<std::pair<int16_t, ITEM_TYPE>, 27> _4F0882_evt_VAR_PlayerItemInHands_vals;
 extern std::array<int, 11> price_for_membership; // TODO(captainurist): IndexedArray<GUILD_FIRST, GUILD_LAST, int> - uses GUILD_ID.
@@ -185,7 +185,7 @@ extern std::array<unsigned int, 128 * 128 * 2> pTerrainSomeOtherData;
 extern unsigned int uPlayerCreationUI_SelectedCharacter;
 extern int currentAddressingAwardBit;
 extern int guild_membership_approved;
-extern PLAYER_SKILL_MASTERY dword_F8B1B0_MasteryBeingTaught;
+extern CharacterSkillMastery dword_F8B1B0_MasteryBeingTaught;
 extern int gold_transaction_amount;  // F8B1B4
 extern std::string current_npc_text;  // F8B1E8
 extern char dialogue_show_profession_details;

@@ -936,7 +936,7 @@ EventIR EventIR::parse(const void *data, size_t maxSize) {
             break;
         case EVENT_CastSpell:
             ir.data.spell_descr.spell_id = (SPELL_TYPE)_evt->v5;
-            ir.data.spell_descr.spell_mastery = (PLAYER_SKILL_MASTERY)(_evt->v6 + 1);
+            ir.data.spell_descr.spell_mastery = (CharacterSkillMastery)(_evt->v6 + 1);
             ir.data.spell_descr.spell_level = _evt->v7;
             ir.data.spell_descr.fromx = EVT_DWORD(_evt->v8);
             ir.data.spell_descr.fromy = EVT_DWORD(_evt->v12);
@@ -1038,8 +1038,8 @@ EventIR EventIR::parse(const void *data, size_t maxSize) {
             break;
         case EVENT_CheckSkill:
             ir.data.check_skill_descr.skill_type = (CharacterSkillType)_evt->v5;
-            ir.data.check_skill_descr.skill_mastery = (PLAYER_SKILL_MASTERY)_evt->v6;
-            ir.data.check_skill_descr.skill_level = (PLAYER_SKILL_LEVEL)EVT_DWORD(_evt->v7);
+            ir.data.check_skill_descr.skill_mastery = (CharacterSkillMastery)_evt->v6;
+            ir.data.check_skill_descr.skill_level = (CHARACTER_SKILL_LEVEL)EVT_DWORD(_evt->v7);
             ir.target_step = _evt->v11;
             break;
         case EVENT_OnCanShowDialogItemCmp:

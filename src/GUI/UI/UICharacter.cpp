@@ -826,8 +826,8 @@ static int CharacterUI_SkillsTab_Draw__DrawSkillTable(
                 skill_color = skill_mastery_color;
             }
 
-            PLAYER_SKILL_MASTERY skill_mastery = player->getSkillValue(skill).mastery();
-            if (skill_mastery == PLAYER_SKILL_MASTERY_NOVICE) {
+            CharacterSkillMastery skill_mastery = player->getSkillValue(skill).mastery();
+            if (skill_mastery == CHARACTER_SKILL_MASTERY_NOVICE) {
                 std::string Strsk;
                 if (skills_max_level[skill] == 1) { // Non-investable skill
                     Strsk = fmt::format("{}\r{:03}-", localization->GetSkillName(skill), right_margin);
@@ -836,7 +836,7 @@ static int CharacterUI_SkillsTab_Draw__DrawSkillTable(
                 }
                 pGUIWindow_CurrentMenu->DrawText(pFontLucida, {x, button->uY}, skill_color, Strsk);
             } else {
-                const char *skill_level_str = skill_mastery == PLAYER_SKILL_MASTERY_NOVICE ? "" : localization->MasteryName(skill_mastery);
+                const char *skill_level_str = skill_mastery == CHARACTER_SKILL_MASTERY_NOVICE ? "" : localization->MasteryName(skill_mastery);
 
                 if (skill_mastery_color == Color()) {
                     skill_mastery_color = ui_character_header_text_color;
@@ -1822,7 +1822,7 @@ void OnPaperdollLeftClick() {
         if (pSkillType == CHARACTER_SKILL_SPEAR) {
             if (shieldequip) {
                 // cant use spear in one hand till master
-                if (pParty->activeCharacter().getActualSkillValue(CHARACTER_SKILL_SPEAR).mastery() < PLAYER_SKILL_MASTERY_MASTER) {
+                if (pParty->activeCharacter().getActualSkillValue(CHARACTER_SKILL_SPEAR).mastery() < CHARACTER_SKILL_MASTERY_MASTER) {
                     pParty->activeCharacter().playReaction(SPEECH_CANT_EQUIP);
 
                     return;
@@ -1834,7 +1834,7 @@ void OnPaperdollLeftClick() {
             if ((pSkillType == CHARACTER_SKILL_SHIELD || pSkillType == CHARACTER_SKILL_SWORD || pSkillType == CHARACTER_SKILL_DAGGER) && mainhandequip &&
                 pParty->activeCharacter().pInventoryItemList[mainhandequip - 1].GetPlayerSkillType() == CHARACTER_SKILL_SPEAR) {
                 // cant use spear in one hand till master
-                if (pParty->activeCharacter().getActualSkillValue(CHARACTER_SKILL_SPEAR).mastery() < PLAYER_SKILL_MASTERY_MASTER) {
+                if (pParty->activeCharacter().getActualSkillValue(CHARACTER_SKILL_SPEAR).mastery() < CHARACTER_SKILL_MASTERY_MASTER) {
                     pParty->activeCharacter().playReaction(SPEECH_CANT_EQUIP);
                     return;
                 }
@@ -2015,8 +2015,8 @@ void OnPaperdollLeftClick() {
                 }
                 v50 = ITEM_NULL;
                 // dagger at expert or sword at master in left hand
-                if (pSkillType == CHARACTER_SKILL_DAGGER && (pParty->activeCharacter().getActualSkillValue(CHARACTER_SKILL_DAGGER).mastery() >= PLAYER_SKILL_MASTERY_EXPERT)
-                    || pSkillType == CHARACTER_SKILL_SWORD && (pParty->activeCharacter().getActualSkillValue(CHARACTER_SKILL_SWORD).mastery() >= PLAYER_SKILL_MASTERY_MASTER)) {
+                if (pSkillType == CHARACTER_SKILL_DAGGER && (pParty->activeCharacter().getActualSkillValue(CHARACTER_SKILL_DAGGER).mastery() >= CHARACTER_SKILL_MASTERY_EXPERT)
+                    || pSkillType == CHARACTER_SKILL_SWORD && (pParty->activeCharacter().getActualSkillValue(CHARACTER_SKILL_SWORD).mastery() >= CHARACTER_SKILL_MASTERY_MASTER)) {
                     if ((signed int)mouse->uMouseX >= 560) {
                         if (!twohandedequip) {
                             if (shieldequip) {

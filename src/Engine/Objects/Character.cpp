@@ -43,14 +43,14 @@ static DecalBuilder *decal_builder = EngineIocContainer::ResolveDecalBuilder();
 static SpellFxRenderer *spell_fx_renderer = EngineIocContainer::ResolveSpellFxRenderer();
 
 // Race Stat Points Bonus/ Penalty
-struct PlayerCreation_AttributeProps {
+struct CharacterCreationAttributeProps {
     unsigned char uBaseValue;
     unsigned char uMaxValue;
     unsigned char uDroppedStep;
     unsigned char uBaseStep;
 };
 
-PlayerCreation_AttributeProps
+CharacterCreationAttributeProps
     StatTable[4][7] =  // [human , elf, goblin, dwarf] [might, int, per , end,
                        // acc, speed, luck]
     {{
@@ -88,22 +88,22 @@ PlayerCreation_AttributeProps
       {7, 15, 2, 1},
       {9, 20, 1, 1}}};
 
-IndexedArray<int, PLAYER_SKILL_MASTERY_FIRST, PLAYER_SKILL_MASTERY_LAST> StealingMasteryBonuses = {
-    // {PLAYER_SKILL_MASTERY_NONE, 0},
-    {PLAYER_SKILL_MASTERY_NOVICE, 100},
-    {PLAYER_SKILL_MASTERY_EXPERT, 200},
-    {PLAYER_SKILL_MASTERY_MASTER, 300},
-    {PLAYER_SKILL_MASTERY_GRANDMASTER, 500}
+IndexedArray<int, CHARACTER_SKILL_MASTERY_FIRST, CHARACTER_SKILL_MASTERY_LAST> StealingMasteryBonuses = {
+    // {CHARACTER_SKILL_MASTERY_NONE, 0},
+    {CHARACTER_SKILL_MASTERY_NOVICE, 100},
+    {CHARACTER_SKILL_MASTERY_EXPERT, 200},
+    {CHARACTER_SKILL_MASTERY_MASTER, 300},
+    {CHARACTER_SKILL_MASTERY_GRANDMASTER, 500}
 };  // dword_4EDEA0        //the zeroth element isn't accessed, it just
            // helps avoid -1 indexing, originally 4 element array off by one
 std::array<int, 5> StealingRandomBonuses = { -200, -100, 0, 100, 200 };  // dword_4EDEB4
 
-IndexedArray<int, PLAYER_SKILL_MASTERY_FIRST, PLAYER_SKILL_MASTERY_LAST> StealingEnchantmentBonusForSkill = {
-    // {PLAYER_SKILL_MASTERY_NONE, 0},
-    {PLAYER_SKILL_MASTERY_NOVICE, 2},
-    {PLAYER_SKILL_MASTERY_EXPERT, 4},
-    {PLAYER_SKILL_MASTERY_MASTER, 6},
-    {PLAYER_SKILL_MASTERY_GRANDMASTER, 10}
+IndexedArray<int, CHARACTER_SKILL_MASTERY_FIRST, CHARACTER_SKILL_MASTERY_LAST> StealingEnchantmentBonusForSkill = {
+    // {CHARACTER_SKILL_MASTERY_NONE, 0},
+    {CHARACTER_SKILL_MASTERY_NOVICE, 2},
+    {CHARACTER_SKILL_MASTERY_EXPERT, 4},
+    {CHARACTER_SKILL_MASTERY_MASTER, 6},
+    {CHARACTER_SKILL_MASTERY_GRANDMASTER, 10}
 };  // dword_4EDEC4      //the zeroth element isn't accessed, it just
           // helps avoid -1 indexing, originally 4 element array off by one
 
@@ -761,7 +761,7 @@ bool Character::CanIdentify(ItemGen *pItem) const {
     int multiplier =
         GetMultiplierForSkillLevel(CHARACTER_SKILL_ITEM_ID, 1, 2, 3, 5);
 
-    if (CheckHiredNPCSpeciality(Scholar) || val.mastery() == PLAYER_SKILL_MASTERY_GRANDMASTER)  // always identify
+    if (CheckHiredNPCSpeciality(Scholar) || val.mastery() == CHARACTER_SKILL_MASTERY_GRANDMASTER)  // always identify
         return true;
 
     // check item level against skill
@@ -782,7 +782,7 @@ bool Character::CanRepair(ItemGen *pItem) const {
         CheckHiredNPCSpeciality(Alchemist) && pItem->GetItemEquipType() >= EQUIP_BOOTS)
         return true;  // check against hired help
 
-    if (val.mastery() == PLAYER_SKILL_MASTERY_GRANDMASTER)  // gm repair
+    if (val.mastery() == CHARACTER_SKILL_MASTERY_GRANDMASTER)  // gm repair
         return true;
 
     // check item level against skill
@@ -798,7 +798,7 @@ int Character::GetPerception() const {
     int multiplier =
         GetMultiplierForSkillLevel(CHARACTER_SKILL_PERCEPTION, 1, 2, 3, 5);
 
-    if (val.mastery() == PLAYER_SKILL_MASTERY_GRANDMASTER)  // gm percept
+    if (val.mastery() == CHARACTER_SKILL_MASTERY_GRANDMASTER)  // gm percept
         return 10000;
 
     return multiplier * val.level();
@@ -810,7 +810,7 @@ int Character::GetDisarmTrap() const {
     int multiplier =
         GetMultiplierForSkillLevel(CHARACTER_SKILL_TRAP_DISARM, 1, 2, 3, 5);
 
-    if (val.mastery() == PLAYER_SKILL_MASTERY_GRANDMASTER)  // gm disarm
+    if (val.mastery() == CHARACTER_SKILL_MASTERY_GRANDMASTER)  // gm disarm
         return 10000;
 
     if (HasEnchantedItemEquipped(ITEM_ENCHANTMENT_OF_THIEVERY))  // item has increased disarm
@@ -820,7 +820,7 @@ int Character::GetDisarmTrap() const {
 }
 
 char Character::getLearningPercent() const {
-    PLAYER_SKILL_LEVEL skill = getActualSkillValue(CHARACTER_SKILL_LEARNING).level();
+    CHARACTER_SKILL_LEVEL skill = getActualSkillValue(CHARACTER_SKILL_LEARNING).level();
 
     if (skill) {
         int multiplier = GetMultiplierForSkillLevel(CHARACTER_SKILL_LEARNING, 1, 2, 3, 5);
@@ -1097,7 +1097,7 @@ int Character::CalculateMeleeDmgToEnemyWithWeapon(ItemGen *weapon,
     }
 
     // master dagger triple damage backstab
-    if (getActualSkillValue(CHARACTER_SKILL_DAGGER).mastery() >= PLAYER_SKILL_MASTERY_MASTER &&
+    if (getActualSkillValue(CHARACTER_SKILL_DAGGER).mastery() >= CHARACTER_SKILL_MASTERY_MASTER &&
         pItemTable->pItems[itemId].uSkillType == CHARACTER_SKILL_DAGGER && grng->random(100) < 10)
         totalDmg *= 3;
 
@@ -1334,13 +1334,13 @@ int Character::CalculateIncommingDamage(DAMAGE_TYPE dmg_type, int dmg) {
 
             // master and above half incoming damage
             if (armor_skill == CHARACTER_SKILL_PLATE) {
-                if (getActualSkillValue(CHARACTER_SKILL_PLATE).mastery() >= PLAYER_SKILL_MASTERY_MASTER)
+                if (getActualSkillValue(CHARACTER_SKILL_PLATE).mastery() >= CHARACTER_SKILL_MASTERY_MASTER)
                     return dmg / 2;
             }
 
             // grandmaster and chain damage reduce
             if (armor_skill == CHARACTER_SKILL_CHAIN) {
-                if (getActualSkillValue(CHARACTER_SKILL_CHAIN).mastery() == PLAYER_SKILL_MASTERY_GRANDMASTER)
+                if (getActualSkillValue(CHARACTER_SKILL_CHAIN).mastery() == CHARACTER_SKILL_MASTERY_GRANDMASTER)
                     return dmg * 2 / 3;
             }
         }
@@ -2018,7 +2018,7 @@ int Character::GetAttackRecoveryTime(bool bRangedAttack) const {
              weapon->GetPlayerSkillType() == CHARACTER_SKILL_AXE ||
              weapon->GetPlayerSkillType() == CHARACTER_SKILL_BOW)) {
             // Expert Sword, Axe & Bow reduce recovery
-            if (weaponSkill.mastery() >= PLAYER_SKILL_MASTERY_EXPERT)
+            if (weaponSkill.mastery() >= CHARACTER_SKILL_MASTERY_EXPERT)
                 sword_axe_bow_recovery_reduction = weaponSkill.level();
         }
     }
@@ -2031,7 +2031,7 @@ int Character::GetAttackRecoveryTime(bool bRangedAttack) const {
         CombinedSkillValue armsmasterSkill = getActualSkillValue(CHARACTER_SKILL_ARMSMASTER);
         if (armsmasterSkill.level() > 0) {
             armsmaster_recovery_reduction = armsmasterSkill.level();
-            if (armsmasterSkill.mastery() >= PLAYER_SKILL_MASTERY_GRANDMASTER)
+            if (armsmasterSkill.mastery() >= CHARACTER_SKILL_MASTERY_GRANDMASTER)
                 armsmaster_recovery_reduction *= 2;
         }
     }
@@ -2071,19 +2071,19 @@ int Character::GetAttackRecoveryTime(bool bRangedAttack) const {
 
 //----- new --------------------------------------------------------
 float Character::GetArmorRecoveryMultiplierFromSkillLevel(CharacterSkillType armour_skill_type, float mult1, float mult2, float mult3, float mult4) const {
-    PLAYER_SKILL_MASTERY skillMastery = getSkillValue(armour_skill_type).mastery();
+    CharacterSkillMastery skillMastery = getSkillValue(armour_skill_type).mastery();
 
     switch (skillMastery) {
-        case PLAYER_SKILL_MASTERY_NOVICE:
+        case CHARACTER_SKILL_MASTERY_NOVICE:
             return mult1;
             break;
-        case PLAYER_SKILL_MASTERY_EXPERT:
+        case CHARACTER_SKILL_MASTERY_EXPERT:
             return mult2;
             break;
-        case PLAYER_SKILL_MASTERY_MASTER:
+        case CHARACTER_SKILL_MASTERY_MASTER:
             return mult3;
             break;
-        case PLAYER_SKILL_MASTERY_GRANDMASTER:
+        case CHARACTER_SKILL_MASTERY_GRANDMASTER:
             return mult4;
             break;
         default:
@@ -2275,7 +2275,7 @@ int Character::GetActualResistance(CharacterAttributeType resistance) const {
          resistance == CHARACTER_ATTRIBUTE_RESIST_AIR ||
          resistance == CHARACTER_ATTRIBUTE_RESIST_WATER ||
          resistance == CHARACTER_ATTRIBUTE_RESIST_EARTH) &&
-        leatherSkill.mastery() == PLAYER_SKILL_MASTERY_GRANDMASTER &&
+        leatherSkill.mastery() == CHARACTER_SKILL_MASTERY_GRANDMASTER &&
         HasItemEquipped(ITEM_SLOT_ARMOUR) &&
         GetEquippedItemSkillType(ITEM_SLOT_ARMOUR) == CHARACTER_SKILL_LEATHER)
         v10 += leatherSkill.level();
@@ -2740,7 +2740,7 @@ int Character::GetMagicalBonus(CharacterAttributeType a2) const {
 }
 
 //----- (0048F882) --------------------------------------------------------
-PLAYER_SKILL_LEVEL Character::GetActualSkillLevel(CharacterSkillType uSkillType) const {
+CHARACTER_SKILL_LEVEL Character::GetActualSkillLevel(CharacterSkillType uSkillType) const {
     int bonus_value = 0;
     int result;
 
@@ -2895,7 +2895,7 @@ PLAYER_SKILL_LEVEL Character::GetActualSkillLevel(CharacterSkillType uSkillType)
     return result;
 }
 
-PLAYER_SKILL_MASTERY Character::GetActualSkillMastery(CharacterSkillType uSkillType) const {
+CharacterSkillMastery Character::GetActualSkillMastery(CharacterSkillType uSkillType) const {
     return getSkillValue(uSkillType).mastery();
 }
 
@@ -2998,7 +2998,7 @@ int Character::GetSkillBonus(CharacterAttributeType inSkill) const {
             CombinedSkillValue dodgeValue = getActualSkillValue(CHARACTER_SKILL_DODGE);
             int multiplier =
                 GetMultiplierForSkillLevel(CHARACTER_SKILL_DODGE, 1, 2, 3, 3);
-            if (!wearingArmor && (!wearingLeather || dodgeValue.mastery() == PLAYER_SKILL_MASTERY_GRANDMASTER)) {
+            if (!wearingArmor && (!wearingLeather || dodgeValue.mastery() == CHARACTER_SKILL_MASTERY_GRANDMASTER)) {
                 ACSum += multiplier * dodgeValue.level();
             }
             return ACSum;
@@ -3076,7 +3076,7 @@ int Character::GetSkillBonus(CharacterAttributeType inSkill) const {
                         switch (currItemSkillType) {
                             case CHARACTER_SKILL_STAFF:
 
-                                if (this->getActualSkillValue(CHARACTER_SKILL_STAFF).mastery() >= PLAYER_SKILL_MASTERY_GRANDMASTER &&
+                                if (this->getActualSkillValue(CHARACTER_SKILL_STAFF).mastery() >= CHARACTER_SKILL_MASTERY_GRANDMASTER &&
                                     this->getActualSkillValue(CHARACTER_SKILL_UNARMED).level() > 0) {
                                     int unarmedSkillLevel = this->getActualSkillValue(CHARACTER_SKILL_UNARMED).level();
                                     int multiplier = GetMultiplierForSkillLevel(CHARACTER_SKILL_UNARMED, 0, 1, 2, 2);
@@ -3119,17 +3119,17 @@ int Character::GetSkillBonus(CharacterAttributeType inSkill) const {
 unsigned int Character::GetMultiplierForSkillLevel(
     CharacterSkillType uSkillType, int mult1, int mult2, int mult3,
     int mult4) const {  // TODO(pskelton): ?? needs changing - check behavious
-    PLAYER_SKILL_MASTERY masteryLvl = GetActualSkillMastery(uSkillType);
+    CharacterSkillMastery masteryLvl = GetActualSkillMastery(uSkillType);
     switch (masteryLvl) {
-        case PLAYER_SKILL_MASTERY_NONE:
+        case CHARACTER_SKILL_MASTERY_NONE:
             return 0;
-        case PLAYER_SKILL_MASTERY_NOVICE:
+        case CHARACTER_SKILL_MASTERY_NOVICE:
             return mult1;
-        case PLAYER_SKILL_MASTERY_EXPERT:
+        case CHARACTER_SKILL_MASTERY_EXPERT:
             return mult2;
-        case PLAYER_SKILL_MASTERY_MASTER:
+        case CHARACTER_SKILL_MASTERY_MASTER:
             return mult3;
-        case PLAYER_SKILL_MASTERY_GRANDMASTER:
+        case CHARACTER_SKILL_MASTERY_GRANDMASTER:
             return mult4;
     }
     Error("(%u)", masteryLvl);
@@ -3608,36 +3608,36 @@ void Character::useItem(int targetCharacter, bool isPortraitClick) {
 
             case ITEM_POTION_HASTE:
                 if (!playerAffected->conditions.Has(CONDITION_WEAK)) {
-                    playerAffected->pCharacterBuffs[CHARACTER_BUFF_HASTE].Apply(pParty->GetPlayingTime() + buffDuration, PLAYER_SKILL_MASTERY_MASTER, 5, 0, 0);
+                    playerAffected->pCharacterBuffs[CHARACTER_BUFF_HASTE].Apply(pParty->GetPlayingTime() + buffDuration, CHARACTER_SKILL_MASTERY_MASTER, 5, 0, 0);
                 }
                 break;
 
             case ITEM_POTION_HEROISM:
-                playerAffected->pCharacterBuffs[CHARACTER_BUFF_HEROISM].Apply(pParty->GetPlayingTime() + buffDuration, PLAYER_SKILL_MASTERY_MASTER, 5, 0, 0);
+                playerAffected->pCharacterBuffs[CHARACTER_BUFF_HEROISM].Apply(pParty->GetPlayingTime() + buffDuration, CHARACTER_SKILL_MASTERY_MASTER, 5, 0, 0);
                 break;
 
             case ITEM_POTION_BLESS:
-                playerAffected->pCharacterBuffs[CHARACTER_BUFF_BLESS].Apply(pParty->GetPlayingTime() + buffDuration, PLAYER_SKILL_MASTERY_MASTER, 5, 0, 0);
+                playerAffected->pCharacterBuffs[CHARACTER_BUFF_BLESS].Apply(pParty->GetPlayingTime() + buffDuration, CHARACTER_SKILL_MASTERY_MASTER, 5, 0, 0);
                 break;
 
             case ITEM_POTION_PRESERVATION:
                 // mastery was NONE
-                playerAffected->pCharacterBuffs[CHARACTER_BUFF_PRESERVATION].Apply(pParty->GetPlayingTime() + buffDuration, PLAYER_SKILL_MASTERY_MASTER,
+                playerAffected->pCharacterBuffs[CHARACTER_BUFF_PRESERVATION].Apply(pParty->GetPlayingTime() + buffDuration, CHARACTER_SKILL_MASTERY_MASTER,
                         potionStrength * 3, 0, 0);
                 break;
 
             case ITEM_POTION_SHIELD:
                 // mastery was NONE
-                playerAffected->pCharacterBuffs[CHARACTER_BUFF_SHIELD].Apply(pParty->GetPlayingTime() + buffDuration, PLAYER_SKILL_MASTERY_MASTER,
+                playerAffected->pCharacterBuffs[CHARACTER_BUFF_SHIELD].Apply(pParty->GetPlayingTime() + buffDuration, CHARACTER_SKILL_MASTERY_MASTER,
                         potionStrength * 3, 0, 0);
                 break;
 
             case ITEM_POTION_STONESKIN:
-                playerAffected->pCharacterBuffs[CHARACTER_BUFF_STONESKIN].Apply(pParty->GetPlayingTime() + buffDuration, PLAYER_SKILL_MASTERY_MASTER, 5, 0, 0);
+                playerAffected->pCharacterBuffs[CHARACTER_BUFF_STONESKIN].Apply(pParty->GetPlayingTime() + buffDuration, CHARACTER_SKILL_MASTERY_MASTER, 5, 0, 0);
                 break;
 
             case ITEM_POTION_WATER_BREATHING:
-                playerAffected->pCharacterBuffs[CHARACTER_BUFF_WATER_WALK].Apply(pParty->GetPlayingTime() + buffDuration, PLAYER_SKILL_MASTERY_MASTER, 5, 0, 0);
+                playerAffected->pCharacterBuffs[CHARACTER_BUFF_WATER_WALK].Apply(pParty->GetPlayingTime() + buffDuration, CHARACTER_SKILL_MASTERY_MASTER, 5, 0, 0);
                 // Drink potion reaction was missing
                 break;
 
@@ -3655,37 +3655,37 @@ void Character::useItem(int targetCharacter, bool isPortraitClick) {
 
             case ITEM_POTION_MIGHT_BOOST:
                 // mastery was NONE
-                playerAffected->pCharacterBuffs[CHARACTER_BUFF_STRENGTH].Apply(pParty->GetPlayingTime() + buffDuration, PLAYER_SKILL_MASTERY_MASTER,
+                playerAffected->pCharacterBuffs[CHARACTER_BUFF_STRENGTH].Apply(pParty->GetPlayingTime() + buffDuration, CHARACTER_SKILL_MASTERY_MASTER,
                         potionStrength * 3, 0, 0);
                 break;
 
             case ITEM_POTION_INTELLECT_BOOST:
                 // mastery was NONE
-                playerAffected->pCharacterBuffs[CHARACTER_BUFF_INTELLIGENCE].Apply(pParty->GetPlayingTime() + buffDuration, PLAYER_SKILL_MASTERY_MASTER,
+                playerAffected->pCharacterBuffs[CHARACTER_BUFF_INTELLIGENCE].Apply(pParty->GetPlayingTime() + buffDuration, CHARACTER_SKILL_MASTERY_MASTER,
                         potionStrength * 3, 0, 0);
                 break;
 
             case ITEM_POTION_PERSONALITY_BOOST:
                 // mastery was NONE
-                playerAffected->pCharacterBuffs[CHARACTER_BUFF_PERSONALITY].Apply(pParty->GetPlayingTime() + buffDuration, PLAYER_SKILL_MASTERY_MASTER,
+                playerAffected->pCharacterBuffs[CHARACTER_BUFF_PERSONALITY].Apply(pParty->GetPlayingTime() + buffDuration, CHARACTER_SKILL_MASTERY_MASTER,
                         potionStrength * 3, 0, 0);
                 break;
 
             case ITEM_POTION_ENDURANCE_BOOST:
                 // mastery was NONE
-                playerAffected->pCharacterBuffs[CHARACTER_BUFF_ENDURANCE].Apply(pParty->GetPlayingTime() + buffDuration, PLAYER_SKILL_MASTERY_MASTER,
+                playerAffected->pCharacterBuffs[CHARACTER_BUFF_ENDURANCE].Apply(pParty->GetPlayingTime() + buffDuration, CHARACTER_SKILL_MASTERY_MASTER,
                         potionStrength * 3, 0, 0);
                 break;
 
             case ITEM_POTION_SPEED_BOOST:
                 // mastery was NONE
-                playerAffected->pCharacterBuffs[CHARACTER_BUFF_SPEED].Apply(pParty->GetPlayingTime() + buffDuration, PLAYER_SKILL_MASTERY_MASTER,
+                playerAffected->pCharacterBuffs[CHARACTER_BUFF_SPEED].Apply(pParty->GetPlayingTime() + buffDuration, CHARACTER_SKILL_MASTERY_MASTER,
                         potionStrength * 3, 0, 0);
                 break;
 
             case ITEM_POTION_ACCURACY_BOOST:
                 // mastery was NONE
-                playerAffected->pCharacterBuffs[CHARACTER_BUFF_ACCURACY].Apply(pParty->GetPlayingTime() + buffDuration, PLAYER_SKILL_MASTERY_MASTER,
+                playerAffected->pCharacterBuffs[CHARACTER_BUFF_ACCURACY].Apply(pParty->GetPlayingTime() + buffDuration, CHARACTER_SKILL_MASTERY_MASTER,
                         potionStrength * 3, 0, 0);
                 break;
 
@@ -3718,43 +3718,43 @@ void Character::useItem(int targetCharacter, bool isPortraitClick) {
 
             case ITEM_POTION_LUCK_BOOST:
                 // mastery was NONE
-                playerAffected->pCharacterBuffs[CHARACTER_BUFF_LUCK].Apply(pParty->GetPlayingTime() + buffDuration, PLAYER_SKILL_MASTERY_MASTER,
+                playerAffected->pCharacterBuffs[CHARACTER_BUFF_LUCK].Apply(pParty->GetPlayingTime() + buffDuration, CHARACTER_SKILL_MASTERY_MASTER,
                         potionStrength * 3, 0, 0);
                 break;
 
             case ITEM_POTION_FIRE_RESISTANCE:
                 // mastery was NONE
-                playerAffected->pCharacterBuffs[CHARACTER_BUFF_RESIST_FIRE].Apply(pParty->GetPlayingTime() + buffDuration, PLAYER_SKILL_MASTERY_MASTER,
+                playerAffected->pCharacterBuffs[CHARACTER_BUFF_RESIST_FIRE].Apply(pParty->GetPlayingTime() + buffDuration, CHARACTER_SKILL_MASTERY_MASTER,
                         potionStrength * 3, 0, 0);
                 break;
 
             case ITEM_POTION_AIR_RESISTANCE:
                 // mastery was NONE
-                playerAffected->pCharacterBuffs[CHARACTER_BUFF_RESIST_AIR].Apply(pParty->GetPlayingTime() + buffDuration, PLAYER_SKILL_MASTERY_MASTER,
+                playerAffected->pCharacterBuffs[CHARACTER_BUFF_RESIST_AIR].Apply(pParty->GetPlayingTime() + buffDuration, CHARACTER_SKILL_MASTERY_MASTER,
                         potionStrength * 3, 0, 0);
                 break;
 
             case ITEM_POTION_WATER_RESISTANCE:
                 // mastery was NONE
-                playerAffected->pCharacterBuffs[CHARACTER_BUFF_RESIST_WATER].Apply(pParty->GetPlayingTime() + buffDuration, PLAYER_SKILL_MASTERY_MASTER,
+                playerAffected->pCharacterBuffs[CHARACTER_BUFF_RESIST_WATER].Apply(pParty->GetPlayingTime() + buffDuration, CHARACTER_SKILL_MASTERY_MASTER,
                         potionStrength * 3, 0, 0);
                 break;
 
             case ITEM_POTION_EARTH_RESISTANCE:
                 // mastery was NONE
-                playerAffected->pCharacterBuffs[CHARACTER_BUFF_RESIST_EARTH].Apply(pParty->GetPlayingTime() + buffDuration, PLAYER_SKILL_MASTERY_MASTER,
+                playerAffected->pCharacterBuffs[CHARACTER_BUFF_RESIST_EARTH].Apply(pParty->GetPlayingTime() + buffDuration, CHARACTER_SKILL_MASTERY_MASTER,
                         potionStrength * 3, 0, 0);
                 break;
 
             case ITEM_POTION_MIND_RESISTANCE:
                 // mastery was NONE
-                playerAffected->pCharacterBuffs[CHARACTER_BUFF_RESIST_MIND].Apply(pParty->GetPlayingTime() + buffDuration, PLAYER_SKILL_MASTERY_MASTER,
+                playerAffected->pCharacterBuffs[CHARACTER_BUFF_RESIST_MIND].Apply(pParty->GetPlayingTime() + buffDuration, CHARACTER_SKILL_MASTERY_MASTER,
                         potionStrength * 3, 0, 0);
                 break;
 
             case ITEM_POTION_BODY_RESISTANCE:
                 // mastery was NONE
-                playerAffected->pCharacterBuffs[CHARACTER_BUFF_RESIST_BODY].Apply(pParty->GetPlayingTime() + buffDuration, PLAYER_SKILL_MASTERY_MASTER,
+                playerAffected->pCharacterBuffs[CHARACTER_BUFF_RESIST_BODY].Apply(pParty->GetPlayingTime() + buffDuration, CHARACTER_SKILL_MASTERY_MASTER,
                         potionStrength * 3, 0, 0);
                 break;
 
@@ -3884,7 +3884,7 @@ void Character::useItem(int targetCharacter, bool isPortraitClick) {
             return;
         }
 
-        PLAYER_SKILL_MASTERY requiredMastery = pSpellDatas[bookSpellId].skillMastery;
+        CharacterSkillMastery requiredMastery = pSpellDatas[bookSpellId].skillMastery;
         CharacterSkillType skill = getSkillTypeForSpell(bookSpellId);
         CombinedSkillValue val = playerAffected->getSkillValue(skill);
 
@@ -4065,8 +4065,8 @@ void Character::useItem(int targetCharacter, bool isPortraitClick) {
     }
 }
 
-bool CmpSkillValue(PLAYER_SKILL valToCompare, PLAYER_SKILL skillValue) {
-    PLAYER_SKILL val;
+bool CmpSkillValue(CHARACTER_SKILL valToCompare, CHARACTER_SKILL skillValue) {
+    CHARACTER_SKILL val;
     if (valToCompare <= 63)
         val = skillValue & 0x3F;
     else
@@ -5665,7 +5665,7 @@ void Character::PlayAwardSound_Anim97_Face(CharacterSpeech speech) {
 //----- (new function) --------------------------------------------------------
 void Character::AddSkillByEvent(CharacterSkillType skill, uint16_t addSkillValue) {
     uint16_t newlevel = pActiveSkills[skill].level() + ::GetSkillLevel(addSkillValue);
-    PLAYER_SKILL_MASTERY newmast = std::max(pActiveSkills[skill].mastery(), ::GetSkillMastery(addSkillValue));
+    CharacterSkillMastery newmast = std::max(pActiveSkills[skill].mastery(), ::GetSkillMastery(addSkillValue));
     pActiveSkills[skill] = CombinedSkillValue(newlevel, newmast);
 }
 
@@ -6400,7 +6400,7 @@ void DamageCharacterFromMonster(unsigned int uObjID, ABILITY_INDEX dmgSource, Ve
             return;
 
         // GM unarmed 1% chance to evade attacks per skill point
-        if (playerPtr->getActualSkillValue(CHARACTER_SKILL_UNARMED).mastery() >= PLAYER_SKILL_MASTERY_GRANDMASTER &&
+        if (playerPtr->getActualSkillValue(CHARACTER_SKILL_UNARMED).mastery() >= CHARACTER_SKILL_MASTERY_GRANDMASTER &&
             grng->random(100) < playerPtr->getActualSkillValue(CHARACTER_SKILL_UNARMED).level()) {
             GameUI_SetStatusBar(LSTR_FMT_S_EVADES_DAMAGE, playerPtr->name.c_str());
             playerPtr->playReaction(SPEECH_AVOID_DAMAGE);
@@ -6589,7 +6589,7 @@ void DamageCharacterFromMonster(unsigned int uObjID, ABILITY_INDEX dmgSource, Ve
 
             if (spritefrom->uType == SPRITE_ARROW_PROJECTILE) {  // arrows
                 // GM unarmed 1% chance to evade attack per skill point
-                if (playerPtr->getActualSkillValue(CHARACTER_SKILL_UNARMED).mastery() >= PLAYER_SKILL_MASTERY_GRANDMASTER &&
+                if (playerPtr->getActualSkillValue(CHARACTER_SKILL_UNARMED).mastery() >= CHARACTER_SKILL_MASTERY_GRANDMASTER &&
                     grng->random(100) < playerPtr->getActualSkillValue(CHARACTER_SKILL_UNARMED).level()) {
                     GameUI_SetStatusBar(LSTR_FMT_S_EVADES_DAMAGE, playerPtr->name.c_str());
                     playerPtr->playReaction(SPEECH_AVOID_DAMAGE);
@@ -6617,14 +6617,14 @@ void DamageCharacterFromMonster(unsigned int uObjID, ABILITY_INDEX dmgSource, Ve
                     ItemGen *mainHandItem = playerPtr->GetMainHandItem();
                     if (mainHandItem->uItemID == ITEM_RELIC_KELEBRIM ||
                         mainHandItem->uItemID == ITEM_ARTIFACT_ELFBANE ||
-                        (mainHandItem->isShield() && playerPtr->getActualSkillValue(CHARACTER_SKILL_SHIELD).mastery() == PLAYER_SKILL_MASTERY_GRANDMASTER))
+                        (mainHandItem->isShield() && playerPtr->getActualSkillValue(CHARACTER_SKILL_SHIELD).mastery() == CHARACTER_SKILL_MASTERY_GRANDMASTER))
                         dmgToReceive >>= 1;
                 }
                 if (playerPtr->HasItemEquipped(ITEM_SLOT_OFF_HAND)) {
                     ItemGen *offHandItem = playerPtr->GetOffHandItem();
                     if (offHandItem->uItemID == ITEM_RELIC_KELEBRIM ||
                         offHandItem->uItemID == ITEM_ARTIFACT_ELFBANE ||
-                        (offHandItem->isShield() && playerPtr->getActualSkillValue(CHARACTER_SKILL_SHIELD).mastery() == PLAYER_SKILL_MASTERY_GRANDMASTER))
+                        (offHandItem->isShield() && playerPtr->getActualSkillValue(CHARACTER_SKILL_SHIELD).mastery() == CHARACTER_SKILL_MASTERY_GRANDMASTER))
                         dmgToReceive >>= 1;
                 }
             }
@@ -7031,7 +7031,7 @@ int Character::getCharacterIndex() {
 }
 
 //----- (004272F5) --------------------------------------------------------
-bool Character::characterHitOrMiss(Actor *pActor, int distancemod, PLAYER_SKILL_LEVEL skillmod) {  // PS - RETURN IF ATTACK WILL HIT
+bool Character::characterHitOrMiss(Actor *pActor, int distancemod, CHARACTER_SKILL_LEVEL skillmod) {  // PS - RETURN IF ATTACK WILL HIT
     int naturalArmor = pActor->pMonsterInfo.uAC;  // actor usual armour
     int armorBuff = 0;
 
@@ -7253,7 +7253,7 @@ void Character::_42FA66_do_explosive_impact(int xpos, int ypos, int zpos, int a4
     a1a.containing_item.Reset();
     a1a.uSpellID = SPELL_FIRE_FIREBALL;
     a1a.spell_level = 8;
-    a1a.spell_skill = PLAYER_SKILL_MASTERY_MASTER;
+    a1a.spell_skill = CHARACTER_SKILL_MASTERY_MASTER;
     a1a.uObjectDescID = pObjectList->ObjectIDByItemID(a1a.uType);
     a1a.vPosition.x = xpos;
     a1a.vPosition.y = ypos;
@@ -7278,11 +7278,11 @@ void Character::_42FA66_do_explosive_impact(int xpos, int ypos, int zpos, int a4
     }
 }
 
-PLAYER_SKILL_LEVEL Character::GetSkillLevel(CharacterSkillType skill) const {
+CHARACTER_SKILL_LEVEL Character::GetSkillLevel(CharacterSkillType skill) const {
     return pActiveSkills[skill].level();
 }
 
-PLAYER_SKILL_MASTERY Character::GetSkillMastery(CharacterSkillType skill) const {
+CharacterSkillMastery Character::GetSkillMastery(CharacterSkillType skill) const {
     return pActiveSkills[skill].mastery();
 }
 
@@ -7290,11 +7290,11 @@ CombinedSkillValue Character::getSkillValue(CharacterSkillType skill) const {
     return pActiveSkills[skill];
 }
 
-void Character::SetSkillLevel(CharacterSkillType skill, PLAYER_SKILL_LEVEL level) {
+void Character::SetSkillLevel(CharacterSkillType skill, CHARACTER_SKILL_LEVEL level) {
     pActiveSkills[skill].setLevel(level);
 }
 
-void Character::SetSkillMastery(CharacterSkillType skill, PLAYER_SKILL_MASTERY mastery) {
+void Character::SetSkillMastery(CharacterSkillType skill, CharacterSkillMastery mastery) {
     pActiveSkills[skill].setMastery(mastery);
 }
 

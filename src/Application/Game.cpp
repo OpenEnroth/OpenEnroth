@@ -2132,7 +2132,7 @@ void Game::processQueuedMessages() {
                 for (Character &player : pParty->pPlayers) { // loop over players
                     for (CharacterSkillType ski : allSkills()) {  // loop over skills
                         // if class can learn this skill
-                        if (skillMaxMasteryPerClass[player.classType][ski] > PLAYER_SKILL_MASTERY_NONE) {
+                        if (skillMaxMasteryPerClass[player.classType][ski] > CHARACTER_SKILL_MASTERY_NONE) {
                             if (player.getSkillValue(ski).level() == 0) {
                                 player.SetSkillLevel(ski, 1);
                             }

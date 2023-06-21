@@ -158,7 +158,7 @@ SpellData::SpellData(int16_t inNormalMana,
                      int8_t inBaseDamage,
                      int8_t inBonusSkillDamage,
                      int16_t inStats,
-                     PLAYER_SKILL_MASTERY inSkillMastery)
+                     CharacterSkillMastery inSkillMastery)
     : uNormalLevelMana(inNormalMana),
       uExpertLevelMana(inExpertLevelMana),
       uMasterLevelMana(inMasterLevelMana),
@@ -190,113 +190,113 @@ SpellData::SpellData(int16_t inNormalMana,
  *                                                 |   |   |   |     |     |     |     |   |   |  |  |
  */
 IndexedArray<SpellData, SPELL_FIRST_REGULAR, SPELL_LAST_REGULAR> pSpellDatas = {
-    {SPELL_FIRE_TORCH_LIGHT,            SpellData( 1,  1,  1,  1,   60,   60,   60,   40,  0,  0, 0, PLAYER_SKILL_MASTERY_NOVICE)},
-    {SPELL_FIRE_FIRE_BOLT,              SpellData( 2,  2,  2,  2,  110,  110,  100,   90,  0,  3, 0, PLAYER_SKILL_MASTERY_NOVICE)},
-    {SPELL_FIRE_PROTECTION_FROM_FIRE,   SpellData( 3,  3,  3,  3,  120,  120,  120,  120,  0,  0, 0, PLAYER_SKILL_MASTERY_NOVICE)},
-    {SPELL_FIRE_FIRE_AURA,              SpellData( 4,  4,  4,  4,  120,  120,  120,  120,  0,  0, 0, PLAYER_SKILL_MASTERY_NOVICE)},
-    {SPELL_FIRE_HASTE,                  SpellData( 5,  5,  5,  5,  120,  120,  120,  120,  0,  0, 0, PLAYER_SKILL_MASTERY_EXPERT)},
-    {SPELL_FIRE_FIREBALL,               SpellData( 8 , 8,  8,  8,  100,  100,   90,   80,  0,  6, 0, PLAYER_SKILL_MASTERY_EXPERT)},
-    {SPELL_FIRE_FIRE_SPIKE,             SpellData(10, 10, 10, 10,  150,  150,  150,  150,  0,  6, 0, PLAYER_SKILL_MASTERY_EXPERT)},
-    {SPELL_FIRE_IMMOLATION,             SpellData(15, 15, 15, 15,  120,  120,  120,  120,  0,  6, 0, PLAYER_SKILL_MASTERY_MASTER)},
-    {SPELL_FIRE_METEOR_SHOWER,          SpellData(20, 20, 20, 20,  100,  100,  100,   90,  8,  1, 0, PLAYER_SKILL_MASTERY_MASTER)},
-    {SPELL_FIRE_INFERNO,                SpellData(25, 25, 25, 25,  100,  100,  100,   90, 12,  1, 0, PLAYER_SKILL_MASTERY_MASTER)},
-    {SPELL_FIRE_INCINERATE,             SpellData(30, 30, 30, 30,   90,   90,   90,   90, 15, 15, 0, PLAYER_SKILL_MASTERY_GRANDMASTER)},
+    {SPELL_FIRE_TORCH_LIGHT,            SpellData( 1,  1,  1,  1,   60,   60,   60,   40,  0,  0, 0, CHARACTER_SKILL_MASTERY_NOVICE)},
+    {SPELL_FIRE_FIRE_BOLT,              SpellData( 2,  2,  2,  2,  110,  110,  100,   90,  0,  3, 0, CHARACTER_SKILL_MASTERY_NOVICE)},
+    {SPELL_FIRE_PROTECTION_FROM_FIRE,   SpellData( 3,  3,  3,  3,  120,  120,  120,  120,  0,  0, 0, CHARACTER_SKILL_MASTERY_NOVICE)},
+    {SPELL_FIRE_FIRE_AURA,              SpellData( 4,  4,  4,  4,  120,  120,  120,  120,  0,  0, 0, CHARACTER_SKILL_MASTERY_NOVICE)},
+    {SPELL_FIRE_HASTE,                  SpellData( 5,  5,  5,  5,  120,  120,  120,  120,  0,  0, 0, CHARACTER_SKILL_MASTERY_EXPERT)},
+    {SPELL_FIRE_FIREBALL,               SpellData( 8 , 8,  8,  8,  100,  100,   90,   80,  0,  6, 0, CHARACTER_SKILL_MASTERY_EXPERT)},
+    {SPELL_FIRE_FIRE_SPIKE,             SpellData(10, 10, 10, 10,  150,  150,  150,  150,  0,  6, 0, CHARACTER_SKILL_MASTERY_EXPERT)},
+    {SPELL_FIRE_IMMOLATION,             SpellData(15, 15, 15, 15,  120,  120,  120,  120,  0,  6, 0, CHARACTER_SKILL_MASTERY_MASTER)},
+    {SPELL_FIRE_METEOR_SHOWER,          SpellData(20, 20, 20, 20,  100,  100,  100,   90,  8,  1, 0, CHARACTER_SKILL_MASTERY_MASTER)},
+    {SPELL_FIRE_INFERNO,                SpellData(25, 25, 25, 25,  100,  100,  100,   90, 12,  1, 0, CHARACTER_SKILL_MASTERY_MASTER)},
+    {SPELL_FIRE_INCINERATE,             SpellData(30, 30, 30, 30,   90,   90,   90,   90, 15, 15, 0, CHARACTER_SKILL_MASTERY_GRANDMASTER)},
 
-    {SPELL_AIR_WIZARD_EYE,              SpellData( 1,  1,  1,  0,   60,   60,   60,   60,  0,  0, 0, PLAYER_SKILL_MASTERY_NOVICE)},
-    {SPELL_AIR_FEATHER_FALL,            SpellData( 2,  2,  2,  2,  120,  120,  120,  100,  0,  0, 0, PLAYER_SKILL_MASTERY_NOVICE)},
-    {SPELL_AIR_PROTECTION_FROM_AIR,     SpellData( 3,  3,  3,  3,  120,  120,  120,  120,  0,  0, 0, PLAYER_SKILL_MASTERY_NOVICE)},
-    {SPELL_AIR_SPARKS,                  SpellData( 4,  4,  4,  4,  110,  100,   90,   80,  2,  1, 0, PLAYER_SKILL_MASTERY_NOVICE)},
-    {SPELL_AIR_JUMP,                    SpellData( 5,  5,  5,  5,   90,   90,   70,   50,  0,  0, 0, PLAYER_SKILL_MASTERY_EXPERT)},
-    {SPELL_AIR_SHIELD,                  SpellData( 8,  8,  8,  8,  120,  120,  120,  120,  0,  0, 0, PLAYER_SKILL_MASTERY_EXPERT)},
-    {SPELL_AIR_LIGHTNING_BOLT,          SpellData(10, 10, 10, 10,  100,  100,   90,   70,  0,  8, 0, PLAYER_SKILL_MASTERY_EXPERT)},
-    {SPELL_AIR_INVISIBILITY,            SpellData(15, 15, 15, 15,  200,  200,  200,  200,  0,  0, 0, PLAYER_SKILL_MASTERY_MASTER)},
-    {SPELL_AIR_IMPLOSION,               SpellData(20, 20, 20, 20,  100,  100,  100,   90, 10, 10, 0, PLAYER_SKILL_MASTERY_MASTER)},
-    {SPELL_AIR_FLY,                     SpellData(25, 25, 25, 25,  250,  250,  250,  250,  0,  0, 0, PLAYER_SKILL_MASTERY_MASTER)},
-    {SPELL_AIR_STARBURST,               SpellData(30, 30, 30, 30,   90,   90,   90,   90, 20,  1, 0, PLAYER_SKILL_MASTERY_GRANDMASTER)},
+    {SPELL_AIR_WIZARD_EYE,              SpellData( 1,  1,  1,  0,   60,   60,   60,   60,  0,  0, 0, CHARACTER_SKILL_MASTERY_NOVICE)},
+    {SPELL_AIR_FEATHER_FALL,            SpellData( 2,  2,  2,  2,  120,  120,  120,  100,  0,  0, 0, CHARACTER_SKILL_MASTERY_NOVICE)},
+    {SPELL_AIR_PROTECTION_FROM_AIR,     SpellData( 3,  3,  3,  3,  120,  120,  120,  120,  0,  0, 0, CHARACTER_SKILL_MASTERY_NOVICE)},
+    {SPELL_AIR_SPARKS,                  SpellData( 4,  4,  4,  4,  110,  100,   90,   80,  2,  1, 0, CHARACTER_SKILL_MASTERY_NOVICE)},
+    {SPELL_AIR_JUMP,                    SpellData( 5,  5,  5,  5,   90,   90,   70,   50,  0,  0, 0, CHARACTER_SKILL_MASTERY_EXPERT)},
+    {SPELL_AIR_SHIELD,                  SpellData( 8,  8,  8,  8,  120,  120,  120,  120,  0,  0, 0, CHARACTER_SKILL_MASTERY_EXPERT)},
+    {SPELL_AIR_LIGHTNING_BOLT,          SpellData(10, 10, 10, 10,  100,  100,   90,   70,  0,  8, 0, CHARACTER_SKILL_MASTERY_EXPERT)},
+    {SPELL_AIR_INVISIBILITY,            SpellData(15, 15, 15, 15,  200,  200,  200,  200,  0,  0, 0, CHARACTER_SKILL_MASTERY_MASTER)},
+    {SPELL_AIR_IMPLOSION,               SpellData(20, 20, 20, 20,  100,  100,  100,   90, 10, 10, 0, CHARACTER_SKILL_MASTERY_MASTER)},
+    {SPELL_AIR_FLY,                     SpellData(25, 25, 25, 25,  250,  250,  250,  250,  0,  0, 0, CHARACTER_SKILL_MASTERY_MASTER)},
+    {SPELL_AIR_STARBURST,               SpellData(30, 30, 30, 30,   90,   90,   90,   90, 20,  1, 0, CHARACTER_SKILL_MASTERY_GRANDMASTER)},
 
-    {SPELL_WATER_AWAKEN,                SpellData( 1,  1,  1,  1,   60,   60,   60,   20,  0,  0, 0, PLAYER_SKILL_MASTERY_NOVICE)},
-    {SPELL_WATER_POISON_SPRAY,          SpellData( 2,  2,  2,  2,  110,  100,   90,   70,  2,  2, 0, PLAYER_SKILL_MASTERY_NOVICE)},
-    {SPELL_WATER_PROTECTION_FROM_WATER, SpellData( 3,  3,  3,  3,  120,  120,  120,  120,  0,  0, 0, PLAYER_SKILL_MASTERY_NOVICE)},
-    {SPELL_WATER_ICE_BOLT,              SpellData( 4,  4,  4,  4,  110,  100,   90,   80,  0,  4, 0, PLAYER_SKILL_MASTERY_NOVICE)},
-    {SPELL_WATER_WATER_WALK,            SpellData( 5,  5,  5,  5,  150,  150,  150,  150,  0,  0, 0, PLAYER_SKILL_MASTERY_EXPERT)},
-    {SPELL_WATER_RECHARGE_ITEM,         SpellData( 8,  8,  8,  8,  200,  200,  200,  200,  0,  0, 0, PLAYER_SKILL_MASTERY_EXPERT)},
-    {SPELL_WATER_ACID_BURST,            SpellData(10, 10, 10, 10,  100,  100,   90,   80,  9,  9, 0, PLAYER_SKILL_MASTERY_EXPERT)},
-    {SPELL_WATER_ENCHANT_ITEM,          SpellData(15, 15, 15, 15,  140,  140,  140,  140,  0,  0, 0, PLAYER_SKILL_MASTERY_MASTER)},
-    {SPELL_WATER_TOWN_PORTAL,           SpellData(20, 20, 20, 20,  200,  200,  200,  200,  0,  0, 0, PLAYER_SKILL_MASTERY_MASTER)},
-    {SPELL_WATER_ICE_BLAST,             SpellData(25, 25, 25, 25,   80,   80,   80,   80, 12,  3, 0, PLAYER_SKILL_MASTERY_MASTER)},
-    {SPELL_WATER_LLOYDS_BEACON,         SpellData(30, 30, 30, 30,  250,  250,  250,  250,  0,  0, 0, PLAYER_SKILL_MASTERY_GRANDMASTER)},
+    {SPELL_WATER_AWAKEN,                SpellData( 1,  1,  1,  1,   60,   60,   60,   20,  0,  0, 0, CHARACTER_SKILL_MASTERY_NOVICE)},
+    {SPELL_WATER_POISON_SPRAY,          SpellData( 2,  2,  2,  2,  110,  100,   90,   70,  2,  2, 0, CHARACTER_SKILL_MASTERY_NOVICE)},
+    {SPELL_WATER_PROTECTION_FROM_WATER, SpellData( 3,  3,  3,  3,  120,  120,  120,  120,  0,  0, 0, CHARACTER_SKILL_MASTERY_NOVICE)},
+    {SPELL_WATER_ICE_BOLT,              SpellData( 4,  4,  4,  4,  110,  100,   90,   80,  0,  4, 0, CHARACTER_SKILL_MASTERY_NOVICE)},
+    {SPELL_WATER_WATER_WALK,            SpellData( 5,  5,  5,  5,  150,  150,  150,  150,  0,  0, 0, CHARACTER_SKILL_MASTERY_EXPERT)},
+    {SPELL_WATER_RECHARGE_ITEM,         SpellData( 8,  8,  8,  8,  200,  200,  200,  200,  0,  0, 0, CHARACTER_SKILL_MASTERY_EXPERT)},
+    {SPELL_WATER_ACID_BURST,            SpellData(10, 10, 10, 10,  100,  100,   90,   80,  9,  9, 0, CHARACTER_SKILL_MASTERY_EXPERT)},
+    {SPELL_WATER_ENCHANT_ITEM,          SpellData(15, 15, 15, 15,  140,  140,  140,  140,  0,  0, 0, CHARACTER_SKILL_MASTERY_MASTER)},
+    {SPELL_WATER_TOWN_PORTAL,           SpellData(20, 20, 20, 20,  200,  200,  200,  200,  0,  0, 0, CHARACTER_SKILL_MASTERY_MASTER)},
+    {SPELL_WATER_ICE_BLAST,             SpellData(25, 25, 25, 25,   80,   80,   80,   80, 12,  3, 0, CHARACTER_SKILL_MASTERY_MASTER)},
+    {SPELL_WATER_LLOYDS_BEACON,         SpellData(30, 30, 30, 30,  250,  250,  250,  250,  0,  0, 0, CHARACTER_SKILL_MASTERY_GRANDMASTER)},
 
-    {SPELL_EARTH_STUN,                  SpellData( 1,  1,  1,  1,   80,   80,   80,   80,  0,  0, 0, PLAYER_SKILL_MASTERY_NOVICE)},
-    {SPELL_EARTH_SLOW,                  SpellData( 2,  2,  2,  2,  100,  100,  100,  100,  0,  0, 0, PLAYER_SKILL_MASTERY_NOVICE)},
-    {SPELL_EARTH_PROTECTION_FROM_EARTH, SpellData( 3,  3,  3,  3,  120,  120,  120,  120,  0,  0, 0, PLAYER_SKILL_MASTERY_NOVICE)},
-    {SPELL_EARTH_DEADLY_SWARM,          SpellData( 4,  4,  4,  4,  110,  100,   90,   80,  5,  3, 0, PLAYER_SKILL_MASTERY_NOVICE)},
-    {SPELL_EARTH_STONESKIN,             SpellData( 5,  5,  5,  5,  120,  120,  120,  120,  0,  0, 0, PLAYER_SKILL_MASTERY_EXPERT)},
-    {SPELL_EARTH_BLADES,                SpellData( 8,  8,  8,  8,  100,  100,   90,   80,  0,  9, 0, PLAYER_SKILL_MASTERY_EXPERT)},
-    {SPELL_EARTH_STONE_TO_FLESH,        SpellData(10, 10, 10, 10,  140,  140,  140,  140,  0,  0, 0, PLAYER_SKILL_MASTERY_EXPERT)},
-    {SPELL_EARTH_ROCK_BLAST,            SpellData(15, 15, 15, 15,   90,   90,   90,   80,  0,  8, 0, PLAYER_SKILL_MASTERY_MASTER)},
-    {SPELL_EARTH_TELEKINESIS,           SpellData(20, 20, 20, 20,  150,  150,  150,  150,  0,  0, 0, PLAYER_SKILL_MASTERY_MASTER)},
-    {SPELL_EARTH_DEATH_BLOSSOM,         SpellData(25, 25, 25, 25,  100,  100,  100,   90, 20,  1, 0, PLAYER_SKILL_MASTERY_MASTER)},
-    {SPELL_EARTH_MASS_DISTORTION,       SpellData(30, 30, 30, 30,   90,   90,   90,   90, 25,  0, 0, PLAYER_SKILL_MASTERY_GRANDMASTER)},
+    {SPELL_EARTH_STUN,                  SpellData( 1,  1,  1,  1,   80,   80,   80,   80,  0,  0, 0, CHARACTER_SKILL_MASTERY_NOVICE)},
+    {SPELL_EARTH_SLOW,                  SpellData( 2,  2,  2,  2,  100,  100,  100,  100,  0,  0, 0, CHARACTER_SKILL_MASTERY_NOVICE)},
+    {SPELL_EARTH_PROTECTION_FROM_EARTH, SpellData( 3,  3,  3,  3,  120,  120,  120,  120,  0,  0, 0, CHARACTER_SKILL_MASTERY_NOVICE)},
+    {SPELL_EARTH_DEADLY_SWARM,          SpellData( 4,  4,  4,  4,  110,  100,   90,   80,  5,  3, 0, CHARACTER_SKILL_MASTERY_NOVICE)},
+    {SPELL_EARTH_STONESKIN,             SpellData( 5,  5,  5,  5,  120,  120,  120,  120,  0,  0, 0, CHARACTER_SKILL_MASTERY_EXPERT)},
+    {SPELL_EARTH_BLADES,                SpellData( 8,  8,  8,  8,  100,  100,   90,   80,  0,  9, 0, CHARACTER_SKILL_MASTERY_EXPERT)},
+    {SPELL_EARTH_STONE_TO_FLESH,        SpellData(10, 10, 10, 10,  140,  140,  140,  140,  0,  0, 0, CHARACTER_SKILL_MASTERY_EXPERT)},
+    {SPELL_EARTH_ROCK_BLAST,            SpellData(15, 15, 15, 15,   90,   90,   90,   80,  0,  8, 0, CHARACTER_SKILL_MASTERY_MASTER)},
+    {SPELL_EARTH_TELEKINESIS,           SpellData(20, 20, 20, 20,  150,  150,  150,  150,  0,  0, 0, CHARACTER_SKILL_MASTERY_MASTER)},
+    {SPELL_EARTH_DEATH_BLOSSOM,         SpellData(25, 25, 25, 25,  100,  100,  100,   90, 20,  1, 0, CHARACTER_SKILL_MASTERY_MASTER)},
+    {SPELL_EARTH_MASS_DISTORTION,       SpellData(30, 30, 30, 30,   90,   90,   90,   90, 25,  0, 0, CHARACTER_SKILL_MASTERY_GRANDMASTER)},
 
-    {SPELL_SPIRIT_DETECT_LIFE,          SpellData( 1,  1,  1,  1,  100,  100,  100,  100,  0,  0, 0, PLAYER_SKILL_MASTERY_NOVICE)},
-    {SPELL_SPIRIT_BLESS,                SpellData( 2,  2,  2,  2,  100,  100,  100,  100,  0,  0, 0, PLAYER_SKILL_MASTERY_NOVICE)},
-    {SPELL_SPIRIT_FATE,                 SpellData( 3,  3,  3,  3,   90,   90,   90,   90,  0,  0, 0, PLAYER_SKILL_MASTERY_NOVICE)},
-    {SPELL_SPIRIT_TURN_UNDEAD,          SpellData( 4,  4,  4,  4,  120,  120,  120,  120,  0,  0, 0, PLAYER_SKILL_MASTERY_NOVICE)},
-    {SPELL_SPIRIT_REMOVE_CURSE,         SpellData( 5,  5,  5,  5,  120,  120,  120,  120,  0,  0, 0, PLAYER_SKILL_MASTERY_EXPERT)},
-    {SPELL_SPIRIT_PRESERVATION,         SpellData( 8,  8,  8,  8,  120,  120,  120,  120,  0,  0, 0, PLAYER_SKILL_MASTERY_EXPERT)},
-    {SPELL_SPIRIT_HEROISM,              SpellData(10, 10, 10, 10,  120,  120,  120,  120,  0,  0, 0, PLAYER_SKILL_MASTERY_EXPERT)},
-    {SPELL_SPIRIT_SPIRIT_LASH,          SpellData(15, 15, 15, 15,  100,  100,  100,  100, 10,  8, 0, PLAYER_SKILL_MASTERY_MASTER)},
-    {SPELL_SPIRIT_RAISE_DEAD,           SpellData(20, 20, 20, 20,  240,  240,  240,  240,  0,  0, 0, PLAYER_SKILL_MASTERY_MASTER)},
-    {SPELL_SPIRIT_SHARED_LIFE,          SpellData(25, 25, 25, 25,  150,  150,  150,  150,  0,  0, 0, PLAYER_SKILL_MASTERY_MASTER)},
-    {SPELL_SPIRIT_RESSURECTION,         SpellData(30, 30, 30, 30, 1000, 1000, 1000, 1000,  0,  0, 0, PLAYER_SKILL_MASTERY_GRANDMASTER)},
+    {SPELL_SPIRIT_DETECT_LIFE,          SpellData( 1,  1,  1,  1,  100,  100,  100,  100,  0,  0, 0, CHARACTER_SKILL_MASTERY_NOVICE)},
+    {SPELL_SPIRIT_BLESS,                SpellData( 2,  2,  2,  2,  100,  100,  100,  100,  0,  0, 0, CHARACTER_SKILL_MASTERY_NOVICE)},
+    {SPELL_SPIRIT_FATE,                 SpellData( 3,  3,  3,  3,   90,   90,   90,   90,  0,  0, 0, CHARACTER_SKILL_MASTERY_NOVICE)},
+    {SPELL_SPIRIT_TURN_UNDEAD,          SpellData( 4,  4,  4,  4,  120,  120,  120,  120,  0,  0, 0, CHARACTER_SKILL_MASTERY_NOVICE)},
+    {SPELL_SPIRIT_REMOVE_CURSE,         SpellData( 5,  5,  5,  5,  120,  120,  120,  120,  0,  0, 0, CHARACTER_SKILL_MASTERY_EXPERT)},
+    {SPELL_SPIRIT_PRESERVATION,         SpellData( 8,  8,  8,  8,  120,  120,  120,  120,  0,  0, 0, CHARACTER_SKILL_MASTERY_EXPERT)},
+    {SPELL_SPIRIT_HEROISM,              SpellData(10, 10, 10, 10,  120,  120,  120,  120,  0,  0, 0, CHARACTER_SKILL_MASTERY_EXPERT)},
+    {SPELL_SPIRIT_SPIRIT_LASH,          SpellData(15, 15, 15, 15,  100,  100,  100,  100, 10,  8, 0, CHARACTER_SKILL_MASTERY_MASTER)},
+    {SPELL_SPIRIT_RAISE_DEAD,           SpellData(20, 20, 20, 20,  240,  240,  240,  240,  0,  0, 0, CHARACTER_SKILL_MASTERY_MASTER)},
+    {SPELL_SPIRIT_SHARED_LIFE,          SpellData(25, 25, 25, 25,  150,  150,  150,  150,  0,  0, 0, CHARACTER_SKILL_MASTERY_MASTER)},
+    {SPELL_SPIRIT_RESSURECTION,         SpellData(30, 30, 30, 30, 1000, 1000, 1000, 1000,  0,  0, 0, CHARACTER_SKILL_MASTERY_GRANDMASTER)},
 
-    {SPELL_MIND_REMOVE_FEAR,            SpellData( 1,  1,  1,  1,  120,  120,  120,  120,  0,  0, 0, PLAYER_SKILL_MASTERY_NOVICE)},
-    {SPELL_MIND_MIND_BLAST,             SpellData( 2,  2,  2,  2,  110,  110,  110,  110,  3,  3, 0, PLAYER_SKILL_MASTERY_NOVICE)},
-    {SPELL_MIND_PROTECTION_FROM_MIND,   SpellData( 3,  3,  3,  3,  120,  120,  120,  120,  0,  0, 0, PLAYER_SKILL_MASTERY_NOVICE)},
-    {SPELL_MIND_TELEPATHY,              SpellData( 4,  4,  4,  4,  110,  100,   90,   80,  0,  0, 0, PLAYER_SKILL_MASTERY_NOVICE)},
-    {SPELL_MIND_CHARM,                  SpellData( 5,  5,  5,  5,  100,  100,  100,  100,  0,  0, 0, PLAYER_SKILL_MASTERY_EXPERT)},
-    {SPELL_MIND_CURE_PARALYSIS,         SpellData( 8,  8,  8,  8,  120,  120,  120,  120,  0,  0, 0, PLAYER_SKILL_MASTERY_EXPERT)},
-    {SPELL_MIND_BERSERK,                SpellData(10, 10, 10, 10,  120,  120,  120,  120,  0,  0, 0, PLAYER_SKILL_MASTERY_EXPERT)},
-    {SPELL_MIND_MASS_FEAR,              SpellData(15, 15, 15, 15,   80,   80,   80,   80,  0,  0, 0, PLAYER_SKILL_MASTERY_MASTER)},
-    {SPELL_MIND_CURE_INSANITY,          SpellData(20, 20, 20, 20,  120,  120,  120,  120,  0,  0, 0, PLAYER_SKILL_MASTERY_MASTER)},
-    {SPELL_MIND_PSYCHIC_SHOCK,          SpellData(25, 25, 25, 25,  110,  110,  110,  100, 12,  1, 0, PLAYER_SKILL_MASTERY_MASTER)},
-    {SPELL_MIND_ENSLAVE,                SpellData(30, 30, 30, 30,  120,  120,  120,  120,  0,  0, 0, PLAYER_SKILL_MASTERY_GRANDMASTER)},
+    {SPELL_MIND_REMOVE_FEAR,            SpellData( 1,  1,  1,  1,  120,  120,  120,  120,  0,  0, 0, CHARACTER_SKILL_MASTERY_NOVICE)},
+    {SPELL_MIND_MIND_BLAST,             SpellData( 2,  2,  2,  2,  110,  110,  110,  110,  3,  3, 0, CHARACTER_SKILL_MASTERY_NOVICE)},
+    {SPELL_MIND_PROTECTION_FROM_MIND,   SpellData( 3,  3,  3,  3,  120,  120,  120,  120,  0,  0, 0, CHARACTER_SKILL_MASTERY_NOVICE)},
+    {SPELL_MIND_TELEPATHY,              SpellData( 4,  4,  4,  4,  110,  100,   90,   80,  0,  0, 0, CHARACTER_SKILL_MASTERY_NOVICE)},
+    {SPELL_MIND_CHARM,                  SpellData( 5,  5,  5,  5,  100,  100,  100,  100,  0,  0, 0, CHARACTER_SKILL_MASTERY_EXPERT)},
+    {SPELL_MIND_CURE_PARALYSIS,         SpellData( 8,  8,  8,  8,  120,  120,  120,  120,  0,  0, 0, CHARACTER_SKILL_MASTERY_EXPERT)},
+    {SPELL_MIND_BERSERK,                SpellData(10, 10, 10, 10,  120,  120,  120,  120,  0,  0, 0, CHARACTER_SKILL_MASTERY_EXPERT)},
+    {SPELL_MIND_MASS_FEAR,              SpellData(15, 15, 15, 15,   80,   80,   80,   80,  0,  0, 0, CHARACTER_SKILL_MASTERY_MASTER)},
+    {SPELL_MIND_CURE_INSANITY,          SpellData(20, 20, 20, 20,  120,  120,  120,  120,  0,  0, 0, CHARACTER_SKILL_MASTERY_MASTER)},
+    {SPELL_MIND_PSYCHIC_SHOCK,          SpellData(25, 25, 25, 25,  110,  110,  110,  100, 12,  1, 0, CHARACTER_SKILL_MASTERY_MASTER)},
+    {SPELL_MIND_ENSLAVE,                SpellData(30, 30, 30, 30,  120,  120,  120,  120,  0,  0, 0, CHARACTER_SKILL_MASTERY_GRANDMASTER)},
 
-    {SPELL_BODY_CURE_WEAKNESS,          SpellData( 1,  1,  1,  1,  120,  120,  120,  120,  0,  0, 0, PLAYER_SKILL_MASTERY_NOVICE)},
-    {SPELL_BODY_FIRST_AID,              SpellData( 2,  2,  2,  2,  100,  100,  100,  100,  0,  0, 0, PLAYER_SKILL_MASTERY_NOVICE)},
-    {SPELL_BODY_PROTECTION_FROM_BODY,   SpellData( 3,  3,  3,  3,  120,  120,  120,  120,  0,  0, 0, PLAYER_SKILL_MASTERY_NOVICE)},
-    {SPELL_BODY_HARM,                   SpellData( 4,  4,  4,  4,  110,  100,   90,   80,  8,  2, 0, PLAYER_SKILL_MASTERY_NOVICE)},
-    {SPELL_BODY_REGENERATION,           SpellData( 5,  5,  5,  5,  110,  110,  110,  110,  0,  0, 0, PLAYER_SKILL_MASTERY_EXPERT)},
-    {SPELL_BODY_CURE_POISON,            SpellData( 8,  8,  8,  8,  120,  120,  120,  120,  0,  0, 0, PLAYER_SKILL_MASTERY_EXPERT)},
-    {SPELL_BODY_HAMMERHANDS,            SpellData(10, 10, 10, 10,  120,  120,  120,  120,  0,  0, 0, PLAYER_SKILL_MASTERY_EXPERT)},
-    {SPELL_BODY_CURE_DISEASE,           SpellData(15, 15, 15, 15,  120,  120,  120,  120,  0,  0, 0, PLAYER_SKILL_MASTERY_MASTER)},
-    {SPELL_BODY_PROTECTION_FROM_MAGIC,  SpellData(20, 20, 20, 20,  120,  120,  120,  120,  0,  0, 0, PLAYER_SKILL_MASTERY_MASTER)},
-    {SPELL_BODY_FLYING_FIST,            SpellData(25, 25, 25, 25,  110,  110,  110,  100, 30,  5, 0, PLAYER_SKILL_MASTERY_MASTER)},
-    {SPELL_BODY_POWER_CURE,             SpellData(30, 30, 30, 30,  100,  100,  100,  100,  0,  0, 0, PLAYER_SKILL_MASTERY_GRANDMASTER)},
+    {SPELL_BODY_CURE_WEAKNESS,          SpellData( 1,  1,  1,  1,  120,  120,  120,  120,  0,  0, 0, CHARACTER_SKILL_MASTERY_NOVICE)},
+    {SPELL_BODY_FIRST_AID,              SpellData( 2,  2,  2,  2,  100,  100,  100,  100,  0,  0, 0, CHARACTER_SKILL_MASTERY_NOVICE)},
+    {SPELL_BODY_PROTECTION_FROM_BODY,   SpellData( 3,  3,  3,  3,  120,  120,  120,  120,  0,  0, 0, CHARACTER_SKILL_MASTERY_NOVICE)},
+    {SPELL_BODY_HARM,                   SpellData( 4,  4,  4,  4,  110,  100,   90,   80,  8,  2, 0, CHARACTER_SKILL_MASTERY_NOVICE)},
+    {SPELL_BODY_REGENERATION,           SpellData( 5,  5,  5,  5,  110,  110,  110,  110,  0,  0, 0, CHARACTER_SKILL_MASTERY_EXPERT)},
+    {SPELL_BODY_CURE_POISON,            SpellData( 8,  8,  8,  8,  120,  120,  120,  120,  0,  0, 0, CHARACTER_SKILL_MASTERY_EXPERT)},
+    {SPELL_BODY_HAMMERHANDS,            SpellData(10, 10, 10, 10,  120,  120,  120,  120,  0,  0, 0, CHARACTER_SKILL_MASTERY_EXPERT)},
+    {SPELL_BODY_CURE_DISEASE,           SpellData(15, 15, 15, 15,  120,  120,  120,  120,  0,  0, 0, CHARACTER_SKILL_MASTERY_MASTER)},
+    {SPELL_BODY_PROTECTION_FROM_MAGIC,  SpellData(20, 20, 20, 20,  120,  120,  120,  120,  0,  0, 0, CHARACTER_SKILL_MASTERY_MASTER)},
+    {SPELL_BODY_FLYING_FIST,            SpellData(25, 25, 25, 25,  110,  110,  110,  100, 30,  5, 0, CHARACTER_SKILL_MASTERY_MASTER)},
+    {SPELL_BODY_POWER_CURE,             SpellData(30, 30, 30, 30,  100,  100,  100,  100,  0,  0, 0, CHARACTER_SKILL_MASTERY_GRANDMASTER)},
 
-    {SPELL_LIGHT_LIGHT_BOLT,            SpellData( 5,  5,  5,  5,  110,  100,   90,   80,  0,  4, 0, PLAYER_SKILL_MASTERY_NOVICE)},
-    {SPELL_LIGHT_DESTROY_UNDEAD,        SpellData(10, 10, 10, 10,  120,  110,  100,   90, 16, 16, 0, PLAYER_SKILL_MASTERY_NOVICE)},
-    {SPELL_LIGHT_DISPEL_MAGIC,          SpellData(15, 15, 15, 15,  120,  110,  100,   90,  0,  0, 0, PLAYER_SKILL_MASTERY_NOVICE)},
-    {SPELL_LIGHT_PARALYZE,              SpellData(20, 20, 20, 20,  160,  140,  120,  100,  0,  0, 0, PLAYER_SKILL_MASTERY_NOVICE)},
-    {SPELL_LIGHT_SUMMON_ELEMENTAL,      SpellData(25, 25, 25, 25,  140,  140,  140,  140,  0,  0, 0, PLAYER_SKILL_MASTERY_EXPERT)},
-    {SPELL_LIGHT_DAY_OF_THE_GODS,       SpellData(30, 30, 30, 30,  500,  500,  500,  500,  0,  0, 0, PLAYER_SKILL_MASTERY_EXPERT)},
-    {SPELL_LIGHT_PRISMATIC_LIGHT,       SpellData(35, 35, 35, 35,  135,  135,  120,  100, 25,  1, 0, PLAYER_SKILL_MASTERY_EXPERT)},
-    {SPELL_LIGHT_DAY_OF_PROTECTION,     SpellData(40, 40, 40, 40,  500,  500,  500,  500,  0,  0, 0, PLAYER_SKILL_MASTERY_MASTER)},
-    {SPELL_LIGHT_HOUR_OF_POWER,         SpellData(45, 45, 45, 45,  250,  250,  250,  250,  0,  0, 0, PLAYER_SKILL_MASTERY_MASTER)},
-    {SPELL_LIGHT_SUNRAY,                SpellData(50, 50, 50, 50,  150,  150,  150,  135, 20, 20, 0, PLAYER_SKILL_MASTERY_MASTER)},
-    {SPELL_LIGHT_DIVINE_INTERVENTION,   SpellData(55, 55, 55, 55,  300,  300,  300,  300,  0,  0, 0, PLAYER_SKILL_MASTERY_GRANDMASTER)},
+    {SPELL_LIGHT_LIGHT_BOLT,            SpellData( 5,  5,  5,  5,  110,  100,   90,   80,  0,  4, 0, CHARACTER_SKILL_MASTERY_NOVICE)},
+    {SPELL_LIGHT_DESTROY_UNDEAD,        SpellData(10, 10, 10, 10,  120,  110,  100,   90, 16, 16, 0, CHARACTER_SKILL_MASTERY_NOVICE)},
+    {SPELL_LIGHT_DISPEL_MAGIC,          SpellData(15, 15, 15, 15,  120,  110,  100,   90,  0,  0, 0, CHARACTER_SKILL_MASTERY_NOVICE)},
+    {SPELL_LIGHT_PARALYZE,              SpellData(20, 20, 20, 20,  160,  140,  120,  100,  0,  0, 0, CHARACTER_SKILL_MASTERY_NOVICE)},
+    {SPELL_LIGHT_SUMMON_ELEMENTAL,      SpellData(25, 25, 25, 25,  140,  140,  140,  140,  0,  0, 0, CHARACTER_SKILL_MASTERY_EXPERT)},
+    {SPELL_LIGHT_DAY_OF_THE_GODS,       SpellData(30, 30, 30, 30,  500,  500,  500,  500,  0,  0, 0, CHARACTER_SKILL_MASTERY_EXPERT)},
+    {SPELL_LIGHT_PRISMATIC_LIGHT,       SpellData(35, 35, 35, 35,  135,  135,  120,  100, 25,  1, 0, CHARACTER_SKILL_MASTERY_EXPERT)},
+    {SPELL_LIGHT_DAY_OF_PROTECTION,     SpellData(40, 40, 40, 40,  500,  500,  500,  500,  0,  0, 0, CHARACTER_SKILL_MASTERY_MASTER)},
+    {SPELL_LIGHT_HOUR_OF_POWER,         SpellData(45, 45, 45, 45,  250,  250,  250,  250,  0,  0, 0, CHARACTER_SKILL_MASTERY_MASTER)},
+    {SPELL_LIGHT_SUNRAY,                SpellData(50, 50, 50, 50,  150,  150,  150,  135, 20, 20, 0, CHARACTER_SKILL_MASTERY_MASTER)},
+    {SPELL_LIGHT_DIVINE_INTERVENTION,   SpellData(55, 55, 55, 55,  300,  300,  300,  300,  0,  0, 0, CHARACTER_SKILL_MASTERY_GRANDMASTER)},
 
-    {SPELL_DARK_REANIMATE,              SpellData(10, 10, 10, 10,  140,  140,  140,  140,  0,  0, 0, PLAYER_SKILL_MASTERY_NOVICE)},
-    {SPELL_DARK_TOXIC_CLOUD,            SpellData(15, 15, 15, 15,  120,  110,  100,   90, 25, 10, 0, PLAYER_SKILL_MASTERY_NOVICE)},
-    {SPELL_DARK_VAMPIRIC_WEAPON,        SpellData(20, 20, 20, 20,  120,  100,   90,  120,  0,  0, 0, PLAYER_SKILL_MASTERY_NOVICE)},
-    {SPELL_DARK_SHRINKING_RAY,          SpellData(25, 25, 25, 25,  120,  120,  120,  120,  0,  0, 0, PLAYER_SKILL_MASTERY_NOVICE)},
-    {SPELL_DARK_SHARPMETAL,             SpellData(30, 30, 30, 30,   90,   90,   80,   70,  6,  6, 0, PLAYER_SKILL_MASTERY_EXPERT)},
-    {SPELL_DARK_CONTROL_UNDEAD,         SpellData(35, 35, 35, 35,  120,  120,  100,   80,  0,  0, 0, PLAYER_SKILL_MASTERY_EXPERT)},
-    {SPELL_DARK_PAIN_REFLECTION,        SpellData(40, 40, 40, 40,  110,  110,  110,  110,  0,  0, 0, PLAYER_SKILL_MASTERY_EXPERT)},
-    {SPELL_DARK_SACRIFICE,              SpellData(45, 45, 45, 45,  200,  200,  200,  150,  0,  0, 0, PLAYER_SKILL_MASTERY_MASTER)},
-    {SPELL_DARK_DRAGON_BREATH,          SpellData(50, 50, 50, 50,  120,  120,  120,  100,  0, 25, 0, PLAYER_SKILL_MASTERY_MASTER)},
-    {SPELL_DARK_ARMAGEDDON,             SpellData(55, 55, 55, 55,  250,  250,  250,  250, 50,  1, 0, PLAYER_SKILL_MASTERY_MASTER)},
-    {SPELL_DARK_SOULDRINKER,            SpellData(60, 60, 60, 60,  300,  300,  300,  300, 25,  8, 0, PLAYER_SKILL_MASTERY_GRANDMASTER)}
+    {SPELL_DARK_REANIMATE,              SpellData(10, 10, 10, 10,  140,  140,  140,  140,  0,  0, 0, CHARACTER_SKILL_MASTERY_NOVICE)},
+    {SPELL_DARK_TOXIC_CLOUD,            SpellData(15, 15, 15, 15,  120,  110,  100,   90, 25, 10, 0, CHARACTER_SKILL_MASTERY_NOVICE)},
+    {SPELL_DARK_VAMPIRIC_WEAPON,        SpellData(20, 20, 20, 20,  120,  100,   90,  120,  0,  0, 0, CHARACTER_SKILL_MASTERY_NOVICE)},
+    {SPELL_DARK_SHRINKING_RAY,          SpellData(25, 25, 25, 25,  120,  120,  120,  120,  0,  0, 0, CHARACTER_SKILL_MASTERY_NOVICE)},
+    {SPELL_DARK_SHARPMETAL,             SpellData(30, 30, 30, 30,   90,   90,   80,   70,  6,  6, 0, CHARACTER_SKILL_MASTERY_EXPERT)},
+    {SPELL_DARK_CONTROL_UNDEAD,         SpellData(35, 35, 35, 35,  120,  120,  100,   80,  0,  0, 0, CHARACTER_SKILL_MASTERY_EXPERT)},
+    {SPELL_DARK_PAIN_REFLECTION,        SpellData(40, 40, 40, 40,  110,  110,  110,  110,  0,  0, 0, CHARACTER_SKILL_MASTERY_EXPERT)},
+    {SPELL_DARK_SACRIFICE,              SpellData(45, 45, 45, 45,  200,  200,  200,  150,  0,  0, 0, CHARACTER_SKILL_MASTERY_MASTER)},
+    {SPELL_DARK_DRAGON_BREATH,          SpellData(50, 50, 50, 50,  120,  120,  120,  100,  0, 25, 0, CHARACTER_SKILL_MASTERY_MASTER)},
+    {SPELL_DARK_ARMAGEDDON,             SpellData(55, 55, 55, 55,  250,  250,  250,  250, 50,  1, 0, CHARACTER_SKILL_MASTERY_MASTER)},
+    {SPELL_DARK_SOULDRINKER,            SpellData(60, 60, 60, 60,  300,  300,  300,  300, 25,  8, 0, CHARACTER_SKILL_MASTERY_GRANDMASTER)}
 };
 
 IndexedArray<SPELL_TYPE, ITEM_FIRST_WAND, ITEM_LAST_WAND> wandSpellIds = {
@@ -688,7 +688,7 @@ IndexedArray<uint16_t, SPELL_FIRST_WITH_SPRITE, SPELL_LAST_WITH_SPRITE> SpellSou
 }};
 
 void SpellBuff::Reset() {
-    skillMastery = PLAYER_SKILL_MASTERY_NONE;
+    skillMastery = CHARACTER_SKILL_MASTERY_NONE;
     power = 0;
     expireTime.Reset();
     caster = 0;
@@ -703,18 +703,18 @@ bool SpellBuff::IsBuffExpiredToTime(GameTime time) {
     if (this->expireTime && (this->expireTime < time)) {
         expireTime.SetExpired();
         power = 0;
-        skillMastery = PLAYER_SKILL_MASTERY_NONE;
+        skillMastery = CHARACTER_SKILL_MASTERY_NONE;
         overlayID = 0;
         return true;
     }
     return false;
 }
 
-bool SpellBuff::Apply(GameTime expire_time, PLAYER_SKILL_MASTERY uSkillMastery,
-                      PLAYER_SKILL_LEVEL uPower, int uOverlayID,
+bool SpellBuff::Apply(GameTime expire_time, CharacterSkillMastery uSkillMastery,
+                      CHARACTER_SKILL_LEVEL uPower, int uOverlayID,
                       uint8_t caster) {
     // For bug catching
-    Assert(uSkillMastery >= PLAYER_SKILL_MASTERY_NOVICE && uSkillMastery <= PLAYER_SKILL_MASTERY_GRANDMASTER
+    Assert(uSkillMastery >= CHARACTER_SKILL_MASTERY_NOVICE && uSkillMastery <= CHARACTER_SKILL_MASTERY_GRANDMASTER
         && "SpellBuff::Apply");
 
     if (this->expireTime && (expire_time < this->expireTime)) {
@@ -778,10 +778,10 @@ void SpellStats::Initialize() {
     }
 }
 
-void eventCastSpell(SPELL_TYPE uSpellID, PLAYER_SKILL_MASTERY skillMastery, PLAYER_SKILL_LEVEL skillLevel, int fromx,
+void eventCastSpell(SPELL_TYPE uSpellID, CharacterSkillMastery skillMastery, CHARACTER_SKILL_LEVEL skillLevel, int fromx,
                     int fromy, int fromz, int tox, int toy, int toz) {
     // For bug catching
-    Assert(skillMastery >= PLAYER_SKILL_MASTERY_NOVICE && skillMastery <= PLAYER_SKILL_MASTERY_GRANDMASTER,
+    Assert(skillMastery >= CHARACTER_SKILL_MASTERY_NOVICE && skillMastery <= CHARACTER_SKILL_MASTERY_GRANDMASTER,
           "eventCastSpell - Invalid mastery level");
 
     Vec3i from(fromx, fromy, fromz);
@@ -911,12 +911,12 @@ void eventCastSpell(SPELL_TYPE uSpellID, PLAYER_SKILL_MASTERY skillMastery, PLAY
             break;
 
         case SPELL_FIRE_HASTE:
-            if (skillMastery >= PLAYER_SKILL_MASTERY_NOVICE) {
-                if (skillMastery <= PLAYER_SKILL_MASTERY_EXPERT) {
+            if (skillMastery >= CHARACTER_SKILL_MASTERY_NOVICE) {
+                if (skillMastery <= CHARACTER_SKILL_MASTERY_EXPERT) {
                     spell_length = GameTime::FromHours(1).AddMinutes(skillLevel);
-                } else if (skillMastery == PLAYER_SKILL_MASTERY_MASTER) {
+                } else if (skillMastery == CHARACTER_SKILL_MASTERY_MASTER) {
                     spell_length = GameTime::FromHours(1).AddMinutes(3 * skillLevel);
-                } else if (skillMastery == PLAYER_SKILL_MASTERY_GRANDMASTER) {
+                } else if (skillMastery == CHARACTER_SKILL_MASTERY_GRANDMASTER) {
                     spell_length = GameTime::FromHours(1).AddMinutes(4 * skillLevel);
                 }
             }
@@ -936,14 +936,14 @@ void eventCastSpell(SPELL_TYPE uSpellID, PLAYER_SKILL_MASTERY skillMastery, PLAY
         case SPELL_EARTH_STONESKIN:
         case SPELL_SPIRIT_HEROISM:
             switch (skillMastery) {
-                case PLAYER_SKILL_MASTERY_NOVICE:
-                case PLAYER_SKILL_MASTERY_EXPERT:
+                case CHARACTER_SKILL_MASTERY_NOVICE:
+                case CHARACTER_SKILL_MASTERY_EXPERT:
                     spell_length = GameTime::FromHours(1).AddMinutes(5 * skillLevel);
                     break;
-                case PLAYER_SKILL_MASTERY_MASTER:
+                case CHARACTER_SKILL_MASTERY_MASTER:
                     spell_length = GameTime::FromHours(1).AddMinutes(15 * skillLevel);
                     break;
-                case PLAYER_SKILL_MASTERY_GRANDMASTER:
+                case CHARACTER_SKILL_MASTERY_GRANDMASTER:
                     spell_length = GameTime::FromHours(skillLevel + 1);
                     break;
                 default:
@@ -971,7 +971,7 @@ void eventCastSpell(SPELL_TYPE uSpellID, PLAYER_SKILL_MASTERY skillMastery, PLAY
             pAudioPlayer->playSpellSound(uSpellID, PID_INVALID);
             break;
         case SPELL_FIRE_IMMOLATION:
-            if (skillMastery == PLAYER_SKILL_MASTERY_GRANDMASTER) {
+            if (skillMastery == CHARACTER_SKILL_MASTERY_GRANDMASTER) {
                 spell_length = GameTime::FromMinutes(10 * skillLevel);
             } else {
                 spell_length = GameTime::FromMinutes(skillLevel);
@@ -1022,15 +1022,15 @@ void eventCastSpell(SPELL_TYPE uSpellID, PLAYER_SKILL_MASTERY skillMastery, PLAY
         case SPELL_LIGHT_DAY_OF_THE_GODS:
             // Spell lengths for master and grandmaster were mixed up
             switch (skillMastery) {
-                case PLAYER_SKILL_MASTERY_EXPERT:
+                case CHARACTER_SKILL_MASTERY_EXPERT:
                     spell_length = GameTime::FromHours(3 * skillLevel);
                     spell_power = 3 * skillLevel + 10;
                     break;
-                case PLAYER_SKILL_MASTERY_MASTER:
+                case CHARACTER_SKILL_MASTERY_MASTER:
                     spell_length = GameTime::FromHours(4 * skillLevel);
                     spell_power = 5 * skillLevel + 10;
                     break;
-                case PLAYER_SKILL_MASTERY_GRANDMASTER:
+                case CHARACTER_SKILL_MASTERY_GRANDMASTER:
                     spell_length = GameTime::FromHours(5 * skillLevel);
                     spell_power = 4 * skillLevel + 10;
                     break;
@@ -1054,21 +1054,21 @@ bool IsSpellQuickCastableOnShiftClick(SPELL_TYPE uSpellID) {
     return (pSpellDatas[uSpellID].stats & 0xC) != 0;
 }
 
-int CalcSpellDamage(SPELL_TYPE uSpellID, PLAYER_SKILL_LEVEL spellLevel, PLAYER_SKILL_MASTERY skillMastery, int currentHp) {
+int CalcSpellDamage(SPELL_TYPE uSpellID, CHARACTER_SKILL_LEVEL spellLevel, CharacterSkillMastery skillMastery, int currentHp) {
     int result;       // eax@1
     unsigned int diceSides;  // [sp-4h] [bp-8h]@9
 
     result = 0;
     if (uSpellID == SPELL_FIRE_FIRE_SPIKE) {
         switch (skillMastery) {
-            case PLAYER_SKILL_MASTERY_NOVICE:
-            case PLAYER_SKILL_MASTERY_EXPERT:
+            case CHARACTER_SKILL_MASTERY_NOVICE:
+            case CHARACTER_SKILL_MASTERY_EXPERT:
                 diceSides = 6;
                 break;
-            case PLAYER_SKILL_MASTERY_MASTER:
+            case CHARACTER_SKILL_MASTERY_MASTER:
                 diceSides = 8;
                 break;
-            case PLAYER_SKILL_MASTERY_GRANDMASTER:
+            case CHARACTER_SKILL_MASTERY_GRANDMASTER:
                 diceSides = 10;
                 break;
             default:
