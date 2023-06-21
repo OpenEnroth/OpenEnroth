@@ -876,9 +876,8 @@ void GameUI_WritePointedObjectStatusString() {
 
     mouse->uPointingObjectID = 0;
     mouse->GetClickPos(&pX, &pY);
-    Sizei renDims = render->GetPresentDimensions();
-    if (pX < 0 || pX > renDims.w - 1 || pY < 0 ||
-        pY > renDims.h - 1)
+    Sizei renDims = render->GetRenderDimensions();
+    if (pX < 0 || pX > renDims.w - 1 || pY < 0 || pY > renDims.h - 1)
         return;
 
     if (current_screen_type == CURRENT_SCREEN::SCREEN_GAME) {
