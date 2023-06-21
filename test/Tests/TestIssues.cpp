@@ -386,10 +386,10 @@ GAME_TEST(Issues, Issue403_970) {
     // Entering Lincoln shouldn't crash.
     test->playTraceFromTestData("issue_403.mm7", "issue_403.json");
     // 970 - Armor Class is wrong
-    EXPECT_EQ(pParty->pPlayers[0].GetActualAC(), 10);
-    EXPECT_EQ(pParty->pPlayers[1].GetActualAC(), 5);
-    EXPECT_EQ(pParty->pPlayers[2].GetActualAC(), 10);
-    EXPECT_EQ(pParty->pPlayers[3].GetActualAC(), 7);
+    EXPECT_EQ(pParty->pCharacters[0].GetActualAC(), 10);
+    EXPECT_EQ(pParty->pCharacters[1].GetActualAC(), 5);
+    EXPECT_EQ(pParty->pCharacters[2].GetActualAC(), 10);
+    EXPECT_EQ(pParty->pCharacters[3].GetActualAC(), 7);
 }
 
 GAME_TEST(Issues, Issue405) {
@@ -439,10 +439,10 @@ GAME_TEST(Issues, Issue408_970) {
     EXPECT_EQ(pCurrentMapName, "out02.odm");
 
     // 970 - Armor Class is wrong
-    EXPECT_EQ(pParty->pPlayers[0].GetActualAC(), 137);
-    EXPECT_EQ(pParty->pPlayers[1].GetActualAC(), 128);
-    EXPECT_EQ(pParty->pPlayers[2].GetActualAC(), 87);
-    EXPECT_EQ(pParty->pPlayers[3].GetActualAC(), 92);
+    EXPECT_EQ(pParty->pCharacters[0].GetActualAC(), 137);
+    EXPECT_EQ(pParty->pCharacters[1].GetActualAC(), 128);
+    EXPECT_EQ(pParty->pCharacters[2].GetActualAC(), 87);
+    EXPECT_EQ(pParty->pCharacters[3].GetActualAC(), 92);
 }
 
 GAME_TEST(Issues, Issue417) {
