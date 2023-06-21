@@ -222,6 +222,12 @@ GAME_TEST(Issues, Issue272) {
     EXPECT_EQ(current_screen_type, CURRENT_SCREEN::SCREEN_KEYBOARD_OPTIONS);
 }
 
+GAME_TEST(Issues, Issue290) {
+    // Town Hall bugs
+    test->playTraceFromTestData("issue_290.mm7", "issue_290.json", [] { EXPECT_EQ(pParty->GetFine(), 55500); });
+    EXPECT_EQ(pParty->GetFine(), 54500);
+}
+
 GAME_TEST(Issues, Issue293a) {
     // Test that barrels in castle Harmondale work and can be triggered only once, and that trash piles work,
     // give an item once, but give disease indefinitely.
@@ -376,9 +382,14 @@ GAME_TEST(Issues, Issue402) {
     test->playTraceFromTestData("issue_402.mm7", "issue_402.json");
 }
 
-GAME_TEST(Issues, Issue403) {
+GAME_TEST(Issues, Issue403_970) {
     // Entering Lincoln shouldn't crash.
     test->playTraceFromTestData("issue_403.mm7", "issue_403.json");
+    // 970 - Armor Class is wrong
+    EXPECT_EQ(pParty->pPlayers[0].GetActualAC(), 10);
+    EXPECT_EQ(pParty->pPlayers[1].GetActualAC(), 5);
+    EXPECT_EQ(pParty->pPlayers[2].GetActualAC(), 10);
+    EXPECT_EQ(pParty->pPlayers[3].GetActualAC(), 7);
 }
 
 GAME_TEST(Issues, Issue405) {
@@ -413,7 +424,7 @@ GAME_TEST(Issues, Issue405) {
     EXPECT_EQ(firstRemainingRecovery - 1, secondRemainingRecovery); // TODO(captainurist): where is this -1 coming from???
 }
 
-GAME_TEST(Issues, Issue408) {
+GAME_TEST(Issues, Issue408_970) {
     // testing that the gameover loop works
     CURRENT_SCREEN oldscreen = CURRENT_SCREEN::SCREEN_GAME;
     // enters throne room - resurecta - final task and exits gameover loop
@@ -426,6 +437,12 @@ GAME_TEST(Issues, Issue408) {
     EXPECT_NE(assets->winnerCert, nullptr);
     // we should be teleported to harmondale
     EXPECT_EQ(pCurrentMapName, "out02.odm");
+
+    // 970 - Armor Class is wrong
+    EXPECT_EQ(pParty->pPlayers[0].GetActualAC(), 137);
+    EXPECT_EQ(pParty->pPlayers[1].GetActualAC(), 128);
+    EXPECT_EQ(pParty->pPlayers[2].GetActualAC(), 87);
+    EXPECT_EQ(pParty->pPlayers[3].GetActualAC(), 92);
 }
 
 GAME_TEST(Issues, Issue417) {
