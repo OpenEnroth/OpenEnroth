@@ -856,7 +856,7 @@ EventIR EventIR::parse(const void *data, size_t maxSize) {
         case EVENT_Exit:
             break;
         case EVENT_SpeakInHouse:
-            ir.data.house_id = (enum HOUSE_ID)EVT_DWORD(_evt->v5);
+            ir.data.house_id = (HOUSE_ID)EVT_DWORD(_evt->v5);
             break;
         case EVENT_PlaySound:
             ir.data.sound_descr.sound_id = (SoundID)EVT_DWORD(_evt->v5);
@@ -877,7 +877,7 @@ EventIR EventIR::parse(const void *data, size_t maxSize) {
             ir.data.move_map_descr.yaw = EVT_DWORD(_evt->v17);
             ir.data.move_map_descr.pitch = EVT_DWORD(_evt->v21);
             ir.data.move_map_descr.zspeed = EVT_DWORD(_evt->v25);
-            ir.data.move_map_descr.house_id = (enum HOUSE_ID)_evt->v29;
+            ir.data.move_map_descr.house_id = (HOUSE_ID)_evt->v29;
             ir.data.move_map_descr.exit_pic_id = _evt->v30;
             ir.str = (char *)&_evt->v31;
             break;
@@ -911,7 +911,7 @@ EventIR EventIR::parse(const void *data, size_t maxSize) {
             break;
         case EVENT_Compare:
             ir.target_step = _evt->v11;
-            ir.data.variable_descr.type = (enum VariableType)EVT_WORD(_evt->v5);
+            ir.data.variable_descr.type = (VariableType)EVT_WORD(_evt->v5);
             ir.data.variable_descr.value = EVT_DWORD(_evt->v7);
             break;
         case EVENT_ChangeDoorState:
@@ -921,7 +921,7 @@ EventIR EventIR::parse(const void *data, size_t maxSize) {
         case EVENT_Add:
         case EVENT_Substract:
         case EVENT_Set:
-            ir.data.variable_descr.type = (enum VariableType)EVT_WORD(_evt->v5);
+            ir.data.variable_descr.type = (VariableType)EVT_WORD(_evt->v5);
             ir.data.variable_descr.value = EVT_DWORD(_evt->v7);
             break;
         case EVENT_SummonMonsters:
@@ -1044,7 +1044,7 @@ EventIR EventIR::parse(const void *data, size_t maxSize) {
             break;
         case EVENT_OnCanShowDialogItemCmp:
             ir.target_step = _evt->v11;
-            ir.data.variable_descr.type = (enum VariableType)EVT_WORD(_evt->v5);
+            ir.data.variable_descr.type = (VariableType)EVT_WORD(_evt->v5);
             ir.data.variable_descr.value = EVT_DWORD(_evt->v7);
             break;
         case EVENT_EndCanShowDialogItem:
