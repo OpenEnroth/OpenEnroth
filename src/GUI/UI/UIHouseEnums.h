@@ -16,6 +16,9 @@ enum GUILD_ID : int32_t {
     GUILD_OF_SPIRIT = 8,
     GUILD_OF_LIGHT = 9,
     GUILD_OF_DARK = 10,
+
+    GUILD_FIRST = GUILD_OF_ELEMENTS,
+    GUILD_LAST = GUILD_OF_DARK
 };
 
 enum HOUSE_ID {

@@ -101,6 +101,146 @@ std::array<int, 28> possibleAddressingAwardBits = {{1,  2,  3,  4,  5,  7,  32, 
                                                     38, 40, 41, 42, 43, 45, 46, 47, 48, 49,
                                                     50, 51, 52, 53, 54, 55, 56, 60}};
 
+IndexedArray<int, GUILD_FIRST, GUILD_LAST> priceForMembership = {{
+    {GUILD_OF_ELEMENTS, 100},
+    {GUILD_OF_SELF,     100},
+    {GUILD_OF_AIR,      50},
+    {GUILD_OF_EARTH,    50},
+    {GUILD_OF_FIRE,     50},
+    {GUILD_OF_WATER,    50},
+    {GUILD_OF_BODY,     50},
+    {GUILD_OF_MIND,     50},
+    {GUILD_OF_SPIRIT,   50},
+    {GUILD_OF_LIGHT,    1000},
+    {GUILD_OF_DARK,     1000}
+}};
+
+IndexedArray<int, CHARACTER_SKILL_FIRST, CHARACTER_SKILL_LAST> expertSkillMasteryCost = {{
+    {CHARACTER_SKILL_STAFF,        2000},
+    {CHARACTER_SKILL_SWORD,        2000},
+    {CHARACTER_SKILL_DAGGER,       2000},
+    {CHARACTER_SKILL_AXE,          2000},
+    {CHARACTER_SKILL_SPEAR,        2000},
+    {CHARACTER_SKILL_BOW,          2000},
+    {CHARACTER_SKILL_MACE,         2000},
+    {CHARACTER_SKILL_BLASTER,      0},
+    {CHARACTER_SKILL_SHIELD,       1000},
+    {CHARACTER_SKILL_LEATHER,      1000},
+    {CHARACTER_SKILL_CHAIN,        1000},
+    {CHARACTER_SKILL_PLATE,        1000},
+    {CHARACTER_SKILL_FIRE,         1000},
+    {CHARACTER_SKILL_AIR,          1000},
+    {CHARACTER_SKILL_WATER,        1000},
+    {CHARACTER_SKILL_EARTH,        1000},
+    {CHARACTER_SKILL_SPIRIT,       1000},
+    {CHARACTER_SKILL_MIND,         1000},
+    {CHARACTER_SKILL_BODY,         1000},
+    {CHARACTER_SKILL_LIGHT,        2000},
+    {CHARACTER_SKILL_DARK,         2000},
+    {CHARACTER_SKILL_ITEM_ID,      500},
+    {CHARACTER_SKILL_MERCHANT,     2000},
+    {CHARACTER_SKILL_REPAIR,       500},
+    {CHARACTER_SKILL_BODYBUILDING, 500},
+    {CHARACTER_SKILL_MEDITATION,   500},
+    {CHARACTER_SKILL_PERCEPTION,   500},
+    {CHARACTER_SKILL_DIPLOMACY,    0}, // not used
+    {CHARACTER_SKILL_THIEVERY,     0}, // not used
+    {CHARACTER_SKILL_TRAP_DISARM,  500},
+    {CHARACTER_SKILL_DODGE,        2000},
+    {CHARACTER_SKILL_UNARMED,      2000},
+    {CHARACTER_SKILL_MONSTER_ID,   500},
+    {CHARACTER_SKILL_ARMSMASTER,   2000},
+    {CHARACTER_SKILL_STEALING,     500},
+    {CHARACTER_SKILL_ALCHEMY,      500},
+    {CHARACTER_SKILL_LEARNING,     2000},
+    {CHARACTER_SKILL_CLUB,         500},
+    {CHARACTER_SKILL_MISC,         0} // hidden, not used
+}};
+
+IndexedArray<int, CHARACTER_SKILL_FIRST, CHARACTER_SKILL_LAST> masterSkillMasteryCost = {{
+    {CHARACTER_SKILL_STAFF,        5000},
+    {CHARACTER_SKILL_SWORD,        5000},
+    {CHARACTER_SKILL_DAGGER,       5000},
+    {CHARACTER_SKILL_AXE,          5000},
+    {CHARACTER_SKILL_SPEAR,        5000},
+    {CHARACTER_SKILL_BOW,          5000},
+    {CHARACTER_SKILL_MACE,         5000},
+    {CHARACTER_SKILL_BLASTER,      0},
+    {CHARACTER_SKILL_SHIELD,       3000},
+    {CHARACTER_SKILL_LEATHER,      3000},
+    {CHARACTER_SKILL_CHAIN,        3000},
+    {CHARACTER_SKILL_PLATE,        3000},
+    {CHARACTER_SKILL_FIRE,         4000},
+    {CHARACTER_SKILL_AIR,          4000},
+    {CHARACTER_SKILL_WATER,        4000},
+    {CHARACTER_SKILL_EARTH,        4000},
+    {CHARACTER_SKILL_SPIRIT,       4000},
+    {CHARACTER_SKILL_MIND,         4000},
+    {CHARACTER_SKILL_BODY,         4000},
+    {CHARACTER_SKILL_LIGHT,        5000},
+    {CHARACTER_SKILL_DARK,         5000},
+    {CHARACTER_SKILL_ITEM_ID,      2500},
+    {CHARACTER_SKILL_MERCHANT,     5000},
+    {CHARACTER_SKILL_REPAIR,       2500},
+    {CHARACTER_SKILL_BODYBUILDING, 2500},
+    {CHARACTER_SKILL_MEDITATION,   2500},
+    {CHARACTER_SKILL_PERCEPTION,   2500},
+    {CHARACTER_SKILL_DIPLOMACY,    0}, // not used
+    {CHARACTER_SKILL_THIEVERY,     0}, // not used
+    {CHARACTER_SKILL_TRAP_DISARM,  2500},
+    {CHARACTER_SKILL_DODGE,        5000},
+    {CHARACTER_SKILL_UNARMED,      5000},
+    {CHARACTER_SKILL_MONSTER_ID,   2500},
+    {CHARACTER_SKILL_ARMSMASTER,   5000},
+    {CHARACTER_SKILL_STEALING,     2500},
+    {CHARACTER_SKILL_ALCHEMY,      2500},
+    {CHARACTER_SKILL_LEARNING,     5000},
+    {CHARACTER_SKILL_CLUB,         2500},
+    {CHARACTER_SKILL_MISC,         0} // hidden, not used
+}};
+
+IndexedArray<int, CHARACTER_SKILL_FIRST, CHARACTER_SKILL_LAST> grandmasterSkillMasteryCost = {{
+    {CHARACTER_SKILL_STAFF,        8000},
+    {CHARACTER_SKILL_SWORD,        8000},
+    {CHARACTER_SKILL_DAGGER,       8000},
+    {CHARACTER_SKILL_AXE,          8000},
+    {CHARACTER_SKILL_SPEAR,        8000},
+    {CHARACTER_SKILL_BOW,          8000},
+    {CHARACTER_SKILL_MACE,         8000},
+    {CHARACTER_SKILL_BLASTER,      0},
+    {CHARACTER_SKILL_SHIELD,       7000},
+    {CHARACTER_SKILL_LEATHER,      7000},
+    {CHARACTER_SKILL_CHAIN,        7000},
+    {CHARACTER_SKILL_PLATE,        7000},
+    {CHARACTER_SKILL_FIRE,         8000},
+    {CHARACTER_SKILL_AIR,          8000},
+    {CHARACTER_SKILL_WATER,        8000},
+    {CHARACTER_SKILL_EARTH,        8000},
+    {CHARACTER_SKILL_SPIRIT,       8000},
+    {CHARACTER_SKILL_MIND,         8000},
+    {CHARACTER_SKILL_BODY,         8000},
+    {CHARACTER_SKILL_LIGHT,        8000},
+    {CHARACTER_SKILL_DARK,         8000},
+    {CHARACTER_SKILL_ITEM_ID,      6000},
+    {CHARACTER_SKILL_MERCHANT,     8000},
+    {CHARACTER_SKILL_REPAIR,       6000},
+    {CHARACTER_SKILL_BODYBUILDING, 6000},
+    {CHARACTER_SKILL_MEDITATION,   6000},
+    {CHARACTER_SKILL_PERCEPTION,   6000},
+    {CHARACTER_SKILL_DIPLOMACY,    0}, // not used
+    {CHARACTER_SKILL_THIEVERY,     0}, // not used
+    {CHARACTER_SKILL_TRAP_DISARM,  6000},
+    {CHARACTER_SKILL_DODGE,        8000},
+    {CHARACTER_SKILL_UNARMED,      8000},
+    {CHARACTER_SKILL_MONSTER_ID,   6000},
+    {CHARACTER_SKILL_ARMSMASTER,   8000},
+    {CHARACTER_SKILL_STEALING,     6000},
+    {CHARACTER_SKILL_ALCHEMY,      6000},
+    {CHARACTER_SKILL_LEARNING,     8000},
+    {CHARACTER_SKILL_CLUB,         6000},
+    {CHARACTER_SKILL_MISC,         0} // hidden, not used
+}};
+
 void SetCurrentMenuID(MENU_STATE uMenu) {
     sCurrentMenuID = uMenu;
     logger->warning("CurrentMenu = {} \n", toString(uMenu));
@@ -1243,269 +1383,92 @@ std::string _4B254D_SkillMasteryTeacher(int trainerInfo) {
     }
 
     // Not in your condition!
-    if (!activePlayer->CanAct())
+    if (!activePlayer->CanAct()) {
         return std::string(pNPCTopics[122].pText);
+    }
 
     // You must know the skill before you can become an expert in it!
     int skillLevel = activePlayer->getSkillValue(skillBeingTaught).level();
-    if (!skillLevel)
+    if (!skillLevel) {
         return std::string(pNPCTopics[131].pText);
+    }
 
     // You are already have this mastery in this skill.
     CharacterSkillMastery skillMastery = activePlayer->getSkillValue(skillBeingTaught).mastery();
-    if (std::to_underlying(skillMastery) > teacherLevel + 1)
+    if (std::to_underlying(skillMastery) > teacherLevel + 1) {
         return std::string(pNPCTopics[teacherLevel + 128].pText);
-
-    dword_F8B1AC_skill_being_taught = skillBeingTaught;
-    // You don't meet the requirements, and cannot be taught until you do.
-    if (masteryLevelBeingTaught == CHARACTER_SKILL_MASTERY_EXPERT && skillLevel < 4 ||
-        masteryLevelBeingTaught == CHARACTER_SKILL_MASTERY_MASTER && skillLevel < 7 ||
-        masteryLevelBeingTaught == CHARACTER_SKILL_MASTERY_GRANDMASTER && skillLevel < 10)
-        return std::string(pNPCTopics[127].pText);
-
-    switch (dword_F8B1AC_skill_being_taught) {
-    case CHARACTER_SKILL_STAFF:
-    case CHARACTER_SKILL_SWORD:
-    case CHARACTER_SKILL_DAGGER:
-    case CHARACTER_SKILL_AXE:
-    case CHARACTER_SKILL_SPEAR:
-    case CHARACTER_SKILL_BOW:
-    case CHARACTER_SKILL_MACE:
-    case CHARACTER_SKILL_ARMSMASTER:
-        switch (masteryLevelBeingTaught) {
-        case CHARACTER_SKILL_MASTERY_EXPERT:
-            gold_transaction_amount = 2000;
-            break;
-        case CHARACTER_SKILL_MASTERY_MASTER:
-            gold_transaction_amount = 5000;
-            break;
-        case CHARACTER_SKILL_MASTERY_GRANDMASTER:
-            gold_transaction_amount = 8000;
-            break;
-        default:
-            break;
-        }
-        break;
-    case CHARACTER_SKILL_BLASTER:
-        switch (masteryLevelBeingTaught) {
-        case CHARACTER_SKILL_MASTERY_EXPERT:
-            gold_transaction_amount = 0;
-            break;
-        case CHARACTER_SKILL_MASTERY_MASTER:
-            gold_transaction_amount = 0;
-            break;
-        case CHARACTER_SKILL_MASTERY_GRANDMASTER:
-            gold_transaction_amount = 0;
-            break;
-        default:
-            break;
-        }
-        break;
-    case CHARACTER_SKILL_SHIELD:
-    case CHARACTER_SKILL_LEATHER:
-    case CHARACTER_SKILL_CHAIN:
-    case CHARACTER_SKILL_PLATE:
-        switch (masteryLevelBeingTaught) {
-        case CHARACTER_SKILL_MASTERY_EXPERT:
-            gold_transaction_amount = 1000;
-            break;
-        case CHARACTER_SKILL_MASTERY_MASTER:
-            gold_transaction_amount = 3000;
-            break;
-        case CHARACTER_SKILL_MASTERY_GRANDMASTER:
-            gold_transaction_amount = 7000;
-            break;
-        default:
-            break;
-        }
-        break;
-    case CHARACTER_SKILL_FIRE:
-    case CHARACTER_SKILL_AIR:
-    case CHARACTER_SKILL_WATER:
-    case CHARACTER_SKILL_EARTH:
-    case CHARACTER_SKILL_SPIRIT:
-    case CHARACTER_SKILL_MIND:
-    case CHARACTER_SKILL_BODY:
-        switch (masteryLevelBeingTaught) {
-        case CHARACTER_SKILL_MASTERY_EXPERT:
-            gold_transaction_amount = 1000;
-            break;
-        case CHARACTER_SKILL_MASTERY_MASTER:
-            gold_transaction_amount = 4000;
-            break;
-        case CHARACTER_SKILL_MASTERY_GRANDMASTER:
-            gold_transaction_amount = 8000;
-            break;
-        default:
-            break;
-        }
-        break;
-    case CHARACTER_SKILL_LIGHT:
-        switch (masteryLevelBeingTaught) {
-        case CHARACTER_SKILL_MASTERY_EXPERT:
-            gold_transaction_amount = 2000;
-            break;
-        case CHARACTER_SKILL_MASTERY_MASTER:
-            if (!pParty->_questBits[114])
-                return std::string(pNPCTopics[127].pText);
-            gold_transaction_amount = 5000;
-            break;
-        case CHARACTER_SKILL_MASTERY_GRANDMASTER:
-            if (!activePlayer->isClass(CHARACTER_CLASS_ARCHAMGE) || !activePlayer->isClass(CHARACTER_CLASS_PRIEST_OF_SUN))
-                return std::string(pNPCTopics[127].pText);
-            gold_transaction_amount = 8000;
-            break;
-        default:
-            break;
-        }
-        break;
-    case CHARACTER_SKILL_DARK:
-        switch (masteryLevelBeingTaught) {
-        case CHARACTER_SKILL_MASTERY_EXPERT:
-            gold_transaction_amount = 2000;
-            break;
-        case CHARACTER_SKILL_MASTERY_MASTER:
-            if (!pParty->_questBits[110])
-                return std::string(pNPCTopics[127].pText);
-            gold_transaction_amount = 5000;
-            break;
-        case CHARACTER_SKILL_MASTERY_GRANDMASTER:
-            if (!activePlayer->isClass(CHARACTER_CLASS_LICH) || !activePlayer->isClass(CHARACTER_CLASS_PRIEST_OF_MOON))
-                return std::string(pNPCTopics[127].pText);
-            gold_transaction_amount = 8000;
-            break;
-        default:
-            break;
-        }
-        break;
-    case CHARACTER_SKILL_ITEM_ID:
-    case CHARACTER_SKILL_REPAIR:
-    case CHARACTER_SKILL_MEDITATION:
-    case CHARACTER_SKILL_PERCEPTION:
-    case CHARACTER_SKILL_TRAP_DISARM:
-    case CHARACTER_SKILL_MONSTER_ID:
-    case CHARACTER_SKILL_STEALING:
-    case CHARACTER_SKILL_ALCHEMY:
-    case CHARACTER_SKILL_CLUB:
-        switch (masteryLevelBeingTaught) {
-        case CHARACTER_SKILL_MASTERY_EXPERT:
-            gold_transaction_amount = 500;
-            break;
-        case CHARACTER_SKILL_MASTERY_MASTER:
-            gold_transaction_amount = 2500;
-            break;
-        case CHARACTER_SKILL_MASTERY_GRANDMASTER:
-            gold_transaction_amount = 6000;
-            break;
-        default:
-            break;
-        }
-        break;
-    case CHARACTER_SKILL_MERCHANT:
-        switch (masteryLevelBeingTaught) {
-        case CHARACTER_SKILL_MASTERY_EXPERT:
-            gold_transaction_amount = 2000;
-            break;
-        case CHARACTER_SKILL_MASTERY_MASTER:
-            if (activePlayer->GetBasePersonality() < 50)
-                return std::string(pNPCTopics[127].pText);
-            gold_transaction_amount = 5000;
-            break;
-        case CHARACTER_SKILL_MASTERY_GRANDMASTER:
-            gold_transaction_amount = 8000;
-            break;
-        default:
-            break;
-        }
-        break;
-    case CHARACTER_SKILL_BODYBUILDING:
-        switch (masteryLevelBeingTaught) {
-        case CHARACTER_SKILL_MASTERY_EXPERT:
-            gold_transaction_amount = 500;
-            break;
-        case CHARACTER_SKILL_MASTERY_MASTER:
-            if (activePlayer->GetBaseEndurance() < 50)
-                return std::string(pNPCTopics[127].pText);
-            gold_transaction_amount = 2500;
-            break;
-        case CHARACTER_SKILL_MASTERY_GRANDMASTER:
-            gold_transaction_amount = 6000;
-            break;
-        default:
-            break;
-        }
-        break;
-    case CHARACTER_SKILL_DIPLOMACY:
-        Error("Diplomacy not used");
-        break;
-    case CHARACTER_SKILL_THIEVERY:
-        Error("Thievery not used");
-        break;
-    case CHARACTER_SKILL_DODGE:
-        switch (masteryLevelBeingTaught) {
-        case CHARACTER_SKILL_MASTERY_EXPERT:
-            gold_transaction_amount = 2000;
-            break;
-        case CHARACTER_SKILL_MASTERY_MASTER:
-            gold_transaction_amount = 5000;
-            break;
-        case CHARACTER_SKILL_MASTERY_GRANDMASTER:
-            if (activePlayer->pActiveSkills[CHARACTER_SKILL_UNARMED].level() < 10)
-                return std::string(pNPCTopics[127].pText);
-            gold_transaction_amount = 8000;
-            break;
-        default:
-            break;
-        }
-        break;
-    case CHARACTER_SKILL_UNARMED:
-        switch (masteryLevelBeingTaught) {
-        case CHARACTER_SKILL_MASTERY_EXPERT:
-            gold_transaction_amount = 2000;
-            break;
-        case CHARACTER_SKILL_MASTERY_MASTER:
-            gold_transaction_amount = 5000;
-            break;
-        case CHARACTER_SKILL_MASTERY_GRANDMASTER:
-            if (activePlayer->pActiveSkills[CHARACTER_SKILL_DODGE].level() < 10)
-                return std::string(pNPCTopics[127].pText);
-            gold_transaction_amount = 8000;
-            break;
-        default:
-            break;
-        }
-        break;
-
-    case CHARACTER_SKILL_LEARNING:
-        switch (masteryLevelBeingTaught) {
-        case CHARACTER_SKILL_MASTERY_EXPERT:
-            gold_transaction_amount = 2000;
-            break;
-        case CHARACTER_SKILL_MASTERY_MASTER:
-            if (activePlayer->GetBaseIntelligence() < 50)
-                return std::string(pNPCTopics[127].pText);
-            gold_transaction_amount = 5000;
-            break;
-        case CHARACTER_SKILL_MASTERY_GRANDMASTER:
-            gold_transaction_amount = 8000;
-            break;
-        default:
-            break;
-        }
-        break;
-    default:
-        Error("Unknown skill");
     }
 
-    if (gold_transaction_amount > pParty->GetGold())
-        return std::string(pNPCTopics[124].pText);  // You don't have enough gold!
+    dword_F8B1AC_skill_being_taught = skillBeingTaught;
+
+    bool canLearn = true;
+
+    if (masteryLevelBeingTaught == CHARACTER_SKILL_MASTERY_EXPERT) {
+        canLearn = skillLevel >= 4;
+        gold_transaction_amount = expertSkillMasteryCost[skillBeingTaught];
+    }
+
+    if (masteryLevelBeingTaught == CHARACTER_SKILL_MASTERY_MASTER) {
+        switch (skillBeingTaught) {
+          case CHARACTER_SKILL_LIGHT:
+            canLearn = pParty->_questBits[114];
+            break;
+          case CHARACTER_SKILL_DARK:
+            canLearn = pParty->_questBits[110];
+            break;
+          case CHARACTER_SKILL_MERCHANT:
+            canLearn = activePlayer->GetBasePersonality() >= 50;
+            break;
+          case CHARACTER_SKILL_BODYBUILDING:
+            canLearn = activePlayer->GetBaseEndurance() >= 50;
+            break;
+          case CHARACTER_SKILL_LEARNING:
+            canLearn = activePlayer->GetBaseIntelligence() >= 50;
+            break;
+          default:
+            break;
+        }
+        canLearn = canLearn && (skillLevel >= 7);
+        gold_transaction_amount = masterSkillMasteryCost[skillBeingTaught];
+    }
+
+    if (masteryLevelBeingTaught == CHARACTER_SKILL_MASTERY_GRANDMASTER) {
+        switch (skillBeingTaught) {
+          case CHARACTER_SKILL_LIGHT:
+            canLearn = activePlayer->isClass(CHARACTER_CLASS_ARCHAMGE) || activePlayer->isClass(CHARACTER_CLASS_PRIEST_OF_SUN);
+            break;
+          case CHARACTER_SKILL_DARK:
+            canLearn = activePlayer->isClass(CHARACTER_CLASS_LICH) || activePlayer->isClass(CHARACTER_CLASS_PRIEST_OF_MOON);
+            break;
+          case CHARACTER_SKILL_DODGE:
+            canLearn = activePlayer->pActiveSkills[CHARACTER_SKILL_UNARMED].level() >= 10;
+            break;
+          case CHARACTER_SKILL_UNARMED:
+            canLearn = activePlayer->pActiveSkills[CHARACTER_SKILL_DODGE].level() >= 10;
+            break;
+          default:
+            break;
+        }
+        canLearn = canLearn && (skillLevel >= 10);
+        gold_transaction_amount = grandmasterSkillMasteryCost[skillBeingTaught];
+    }
+
+    // You don't meet the requirements, and cannot be taught until you do.
+    if (!canLearn) {
+        return std::string(pNPCTopics[127].pText);
+    }
+
+    // You don't have enough gold!
+    if (gold_transaction_amount > pParty->GetGold()) {
+        return std::string(pNPCTopics[124].pText);
+    }
 
     guild_membership_approved = true;
 
     return localization->FormatString(
         LSTR_FMT_BECOME_S_IN_S_FOR_D_GOLD,
         localization->MasteryNameLong(masteryLevelBeingTaught),
-        localization->GetSkillName(dword_F8B1AC_skill_being_taught),
+        localization->GetSkillName(skillBeingTaught),
         gold_transaction_amount
     );
 }
@@ -1993,7 +1956,7 @@ const std::string &GetJoinGuildDialogueOption(GUILD_ID guild_id) {
     static const int dialogue_base = 110;
     guild_membership_approved = false;
     dword_F8B1AC_award_bit_number = static_cast<AwardType>(Award_Membership_ElementalGuilds + std::to_underlying(guild_id));
-    gold_transaction_amount = price_for_membership[guild_id];
+    gold_transaction_amount = priceForMembership[guild_id];
 
     // TODO(pskelton): check this behaviour
     if (!pParty->hasActiveCharacter())
