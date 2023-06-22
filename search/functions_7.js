@@ -445,7 +445,7 @@ var searchData=
   ['guiwindow_5ftownhall_442',['GUIWindow_TownHall',['../classGUIWindow__TownHall.html#abec5554f9857291859acc9ae1829e656',1,'GUIWindow_TownHall']]],
   ['guiwindow_5ftownportalbook_443',['GUIWindow_TownPortalBook',['../structGUIWindow__TownPortalBook.html#a5d4207b75593974e4a96c37b5f5c9617',1,'GUIWindow_TownPortalBook']]],
   ['guiwindow_5ftraining_444',['GUIWindow_Training',['../classGUIWindow__Training.html#ae6816d22b60227ee25532eb465783780',1,'GUIWindow_Training']]],
-  ['guiwindow_5ftransition_445',['GUIWindow_Transition',['../classGUIWindow__Transition.html#abfad0b56326977cf0b3053c8e4a9d61f',1,'GUIWindow_Transition']]],
+  ['guiwindow_5ftransition_445',['GUIWindow_Transition',['../classGUIWindow__Transition.html#a9ab472004ba5d5a39a7badab1873e0fd',1,'GUIWindow_Transition']]],
   ['guiwindow_5ftransport_446',['GUIWindow_Transport',['../classGUIWindow__Transport.html#a96b5b4078fc17cfa523898b542fe7f14',1,'GUIWindow_Transport']]],
   ['guiwindow_5ftravel_447',['GUIWindow_Travel',['../classGUIWindow__Travel.html#a1f3b9024a3c831df4cb83c043ab8e725',1,'GUIWindow_Travel']]],
   ['guiwindow_5fweaponshop_448',['GUIWindow_WeaponShop',['../classGUIWindow__WeaponShop.html#aaa5f130d77d54fed5bb05e177f587df9',1,'GUIWindow_WeaponShop']]]
