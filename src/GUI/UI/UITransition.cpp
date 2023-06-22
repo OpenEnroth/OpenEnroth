@@ -64,7 +64,7 @@ void GUIWindow_Transition::Release() {
 }
 
 //----- (00444839) --------------------------------------------------------
-GUIWindow_Transition::GUIWindow_Transition(uint anim_id, uint exit_pic_id,
+GUIWindow_Transition::GUIWindow_Transition(HOUSE_ID transitionHouse, uint exit_pic_id,
                                            int x, int y, int z, int directiony,
                                            int directionx, int a8,
                                            const std::string &locationName)
@@ -76,7 +76,7 @@ GUIWindow_Transition::GUIWindow_Transition(uint anim_id, uint exit_pic_id,
     Party_Teleport_Cam_Pitch = directionx;
     Party_Teleport_Z_Speed = a8;
     Party_Teleport_Map_Name = locationName;
-    uCurrentHouse_Animation = anim_id;
+    uCurrentHouse_Animation = std::to_underlying(transitionHouse); // TODO(Nik-RE-dev): is this correct?
     pEventTimer->Pause();
     current_screen_type = CURRENT_SCREEN::SCREEN_CHANGE_LOCATION;
 
@@ -88,9 +88,9 @@ GUIWindow_Transition::GUIWindow_Transition(uint anim_id, uint exit_pic_id,
     transition_ui_icon = assets->getImage_Solid(pHouse_ExitPictures[exit_pic_id]);
 
     // animation or special transfer message
-    if (anim_id || IndoorLocation::GetLocationIndex(locationName)) {
+    if (transitionHouse != HOUSE_INVALID || IndoorLocation::GetLocationIndex(locationName)) {
         if (!IndoorLocation::GetLocationIndex(locationName))
-            pMediaPlayer->OpenHouseMovie(pAnimatedRooms[buildingTable[anim_id - 1].uAnimationID].video_name, 1);
+            pMediaPlayer->OpenHouseMovie(pAnimatedRooms[buildingTable[transitionHouse].uAnimationID].video_name, 1);
 
         std::string v15 = locationName;
         if (locationName[0] == '0') {
@@ -104,8 +104,8 @@ GUIWindow_Transition::GUIWindow_Transition(uint anim_id, uint exit_pic_id,
                 uCurrentHouse_Animation = IndoorLocation::GetLocationIndex(locationName);
         } else {
             transition_button_label = localization->FormatString(LSTR_FMT_ENTER_S, pMapStats->pInfos[pMapStats->GetMapInfo(v15)].pName.c_str());
-            if (pAnimatedRooms[buildingTable[anim_id].uAnimationID].uRoomSoundId)
-                playHouseSound((HOUSE_ID)anim_id, HOUSE_SOUND_GENERAL_GREETING);
+            if (transitionHouse != HOUSE_INVALID && pAnimatedRooms[buildingTable[transitionHouse].uAnimationID].uRoomSoundId)
+                playHouseSound(transitionHouse, HOUSE_SOUND_GENERAL_GREETING);
             if (uCurrentlyLoadedLevelType == LEVEL_INDOOR && pParty->hasActiveCharacter() && pParty->GetRedOrYellowAlert())
                 pParty->activeCharacter().playReaction(SPEECH_LEAVE_DUNGEON);
             if (IndoorLocation::GetLocationIndex(locationName))
@@ -114,16 +114,16 @@ GUIWindow_Transition::GUIWindow_Transition(uint anim_id, uint exit_pic_id,
     } else if (!IndoorLocation::GetLocationIndex(locationName)) { // transfer to outdoors - no special message
         if (pMapStats->GetMapInfo(pCurrentMapName)) {
             transition_button_label = localization->FormatString(LSTR_FMT_LEAVE_S, pMapStats->pInfos[pMapStats->GetMapInfo(pCurrentMapName)].pName.c_str());
-            if (pAnimatedRooms[buildingTable[anim_id].uAnimationID].uRoomSoundId)
-                playHouseSound((HOUSE_ID)anim_id, HOUSE_SOUND_GENERAL_GREETING);
+            if (transitionHouse != HOUSE_INVALID && pAnimatedRooms[buildingTable[transitionHouse].uAnimationID].uRoomSoundId)
+                playHouseSound(transitionHouse, HOUSE_SOUND_GENERAL_GREETING);
             if (uCurrentlyLoadedLevelType == LEVEL_INDOOR && pParty->hasActiveCharacter() && pParty->GetRedOrYellowAlert())
                 pParty->activeCharacter().playReaction(SPEECH_LEAVE_DUNGEON);
             if (IndoorLocation::GetLocationIndex(locationName))
                 uCurrentHouse_Animation = IndoorLocation::GetLocationIndex(locationName);
         } else {
             transition_button_label = localization->GetString(LSTR_DIALOGUE_EXIT);
-            if ( pAnimatedRooms[buildingTable[anim_id].uAnimationID].uRoomSoundId)
-                playHouseSound((HOUSE_ID)anim_id, HOUSE_SOUND_GENERAL_GREETING);
+            if (transitionHouse != HOUSE_INVALID && pAnimatedRooms[buildingTable[transitionHouse].uAnimationID].uRoomSoundId)
+                playHouseSound(transitionHouse, HOUSE_SOUND_GENERAL_GREETING);
             if (uCurrentlyLoadedLevelType == LEVEL_INDOOR && pParty->hasActiveCharacter() && pParty->GetRedOrYellowAlert())
                 pParty->activeCharacter().playReaction(SPEECH_LEAVE_DUNGEON);
             if (IndoorLocation::GetLocationIndex(locationName))

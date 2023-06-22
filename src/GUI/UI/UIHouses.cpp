@@ -312,8 +312,8 @@ bool enterHouse(HOUSE_ID uHouseID) {
         return false;
     }
 
-    int uOpenTime = buildingTable[uHouseID - 1].uOpenTime;
-    int uCloseTime = buildingTable[uHouseID - 1].uCloseTime;
+    int uOpenTime = buildingTable[uHouseID].uOpenTime;
+    int uCloseTime = buildingTable[uHouseID].uCloseTime;
     current_npc_text.clear();
     render->ClearZBuffer();
 
@@ -347,13 +347,13 @@ bool enterHouse(HOUSE_ID uHouseID) {
             }
         }
 
-        uCurrentHouse_Animation = buildingTable[uHouseID - 1].uAnimationID;
+        uCurrentHouse_Animation = buildingTable[uHouseID].uAnimationID;
         in_current_building_type = pAnimatedRooms[uCurrentHouse_Animation].uBuildingType;
         if (in_current_building_type == BUILDING_THRONE_ROOM && pParty->uFine) {  // going to jail
             uHouseID = HOUSE_JAIL;
-            uCurrentHouse_Animation = buildingTable[uHouseID - 1].uAnimationID;
+            uCurrentHouse_Animation = buildingTable[uHouseID].uAnimationID;
             restAndHeal(GameTime::FromYears(1));
-            in_current_building_type = pAnimatedRooms[buildingTable[HOUSE_LORD_AND_JUDGE_EMERALD_ISLE].uAnimationID].uBuildingType;
+            in_current_building_type = pAnimatedRooms[buildingTable[HOUSE_JAIL].uAnimationID].uBuildingType;
             ++pParty->uNumPrisonTerms;
             pParty->uFine = 0;
             for (Character &player : pParty->pCharacters) {
@@ -394,11 +394,11 @@ bool enterHouse(HOUSE_ID uHouseID) {
 //----- (0044606A) --------------------------------------------------------
 void PrepareHouse(HOUSE_ID house) {
     // Default proprietor of non-simple houses
-    int proprietorId = pAnimatedRooms[buildingTable[house - 1].uAnimationID].house_npc_id;
+    int proprietorId = pAnimatedRooms[buildingTable[house].uAnimationID].house_npc_id;
     if (proprietorId) {
         HouseNpcDesc desc;
         desc.type = HOUSE_PROPRIETOR;
-        desc.label = localization->FormatString(LSTR_FMT_CONVERSE_WITH_S, buildingTable[house - 1].pProprieterName.c_str());
+        desc.label = localization->FormatString(LSTR_FMT_CONVERSE_WITH_S, buildingTable[house].pProprieterName.c_str());
         desc.icon = assets->getImage_ColorKey(fmt::format("npc{:03}", proprietorId));
 
         houseNpcs.push_back(desc);
@@ -428,9 +428,9 @@ void PrepareHouse(HOUSE_ID house) {
     }
 
     // Dungeon entry (not present in MM7)
-    if (buildingTable[house - 1].uExitPicID) {
-        if (!buildingTable[house - 1]._quest_bit || !pParty->_questBits[buildingTable[house - 1]._quest_bit]) {
-            int id = buildingTable[house - 1].uExitMapID;
+    if (buildingTable[house].uExitPicID) {
+        if (!buildingTable[house]._quest_bit || !pParty->_questBits[buildingTable[house]._quest_bit]) {
+            int id = buildingTable[house].uExitMapID;
 
             HouseNpcDesc desc;
             desc.type = HOUSE_TRANSITION;
@@ -803,8 +803,8 @@ void BackToHouseMenu() {
 }
 
 void playHouseSound(HOUSE_ID houseID, HouseSoundType type) {
-    if (houseID != HOUSE_INVALID && pAnimatedRooms[buildingTable[std::to_underlying(houseID) - 1].uAnimationID].uRoomSoundId) {
-        int roomSoundId = pAnimatedRooms[buildingTable[std::to_underlying(houseID) - 1].uAnimationID].uRoomSoundId;
+    if (houseID != HOUSE_INVALID && pAnimatedRooms[buildingTable[houseID].uAnimationID].uRoomSoundId) {
+        int roomSoundId = pAnimatedRooms[buildingTable[houseID].uAnimationID].uRoomSoundId;
         SoundID soundId = SoundID(std::to_underlying(type) + 100 * (roomSoundId + 300));
         pAudioPlayer->playHouseSound(soundId, true);
     }
@@ -909,12 +909,12 @@ void GUIWindow_House::houseDialogManager() {
     render->DrawTextureNew(468 / 640.0f, 0, game_ui_right_panel_frame);
 
     if (currentHouseNpc == -1 || houseNpcs[currentHouseNpc].type != HOUSE_TRANSITION) {
-        if (!buildingTable[wData.val - 1].pName.empty()) {
+        if (!buildingTable[houseId()].pName.empty()) {
             if (current_screen_type != CURRENT_SCREEN::SCREEN_SHOP_INVENTORY) {
-                int yPos = 2 * pFontCreate->GetHeight() - 6 - pFontCreate->CalcTextHeight(buildingTable[wData.val - 1].pName, 130, 0);
+                int yPos = 2 * pFontCreate->GetHeight() - 6 - pFontCreate->CalcTextHeight(buildingTable[houseId()].pName, 130, 0);
                 if (yPos < 0)
                     yPos = 0;
-                pWindow.DrawTitleText(pFontCreate, 0x1EAu, yPos / 2 + 4, colorTable.White, buildingTable[wData.val - 1].pName, 3);
+                pWindow.DrawTitleText(pFontCreate, 0x1EAu, yPos / 2 + 4, colorTable.White, buildingTable[houseId()].pName, 3);
             }
         }
     }
@@ -953,7 +953,7 @@ void GUIWindow_House::houseDialogManager() {
                     yPos = 94 * i + SIDE_TEXT_BOX_POS_Y;
                     break;
                   case HOUSE_PROPRIETOR:
-                    pTitleText = buildingTable[wData.val - 1].pProprieterTitle;
+                    pTitleText = buildingTable[houseId()].pProprieterTitle;
                     yPos = SIDE_TEXT_BOX_POS_Y;
                     break;
                   case HOUSE_NPC:
@@ -982,7 +982,7 @@ void GUIWindow_House::houseDialogManager() {
     if (currentHouseNpc || houseNpcs[0].type != HOUSE_PROPRIETOR) {  // emerald isle ship before quest's done
         SimpleHouseDialog();
     } else {
-        std::string nameAndTitle = NameAndTitle(buildingTable[wData.val - 1].pProprieterName, buildingTable[wData.val - 1].pProprieterTitle);
+        std::string nameAndTitle = NameAndTitle(buildingTable[houseId()].pProprieterName, buildingTable[houseId()].pProprieterTitle);
         pWindow.DrawTitleText(pFontCreate, SIDE_TEXT_BOX_POS_X, SIDE_TEXT_BOX_POS_Y, colorTable.EasternBlue, nameAndTitle, 3);
         houseSpecificDialogue();
     }
@@ -1017,7 +1017,7 @@ void GUIWindow_House::learnSkillsDialogue() {
 
     bool haveLearnableSkills = false;
     std::vector<std::string> optionsText;
-    int cost = PriceCalculator::skillLearningCostForPlayer(&pParty->activeCharacter(), buildingTable[wData.val - 1]);
+    int cost = PriceCalculator::skillLearningCostForPlayer(&pParty->activeCharacter(), buildingTable[houseId()]);
     int buttonsLimit = pDialogueWindow->pStartingPosActiveItem + pDialogueWindow->pNumPresenceButton;
     for (int i = pDialogueWindow->pStartingPosActiveItem; i < buttonsLimit; i++) {
         CharacterSkillType skill = GetLearningDialogueSkill((DIALOGUE_TYPE)pDialogueWindow->GetControl(i)->msg_param);
@@ -1052,7 +1052,7 @@ void GUIWindow_House::learnSkillsDialogue() {
 }
 
 void GUIWindow_House::learnSelectedSkill(CharacterSkillType skill) {
-    int pPrice = PriceCalculator::skillLearningCostForPlayer(&pParty->activeCharacter(), buildingTable[wData.val - 1]);
+    int pPrice = PriceCalculator::skillLearningCostForPlayer(&pParty->activeCharacter(), buildingTable[houseId()]);
     if (skillMaxMasteryPerClass[pParty->activeCharacter().classType][skill] != CHARACTER_SKILL_MASTERY_NONE) {
         if (!pParty->activeCharacter().pActiveSkills[skill]) {
             if (pParty->GetGold() < pPrice) {

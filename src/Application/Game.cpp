@@ -1090,7 +1090,7 @@ void Game::processQueuedMessages() {
                 uGameState = GAME_STATE_CHANGE_LOCATION;
                 // v53 = buildingTable_minus1_::30[26 * (unsigned
                 // int)ptr_507BC0->ptr_1C];
-                v53 = buildingTable[window_SpeakInHouse->wData.val - 1]._quest_bit;
+                v53 = buildingTable[window_SpeakInHouse->houseId()]._quest_bit;
                 if (v53 < 0) {
                     v54 = abs(v53) - 1;
                     Party_Teleport_Cam_Pitch = 0;

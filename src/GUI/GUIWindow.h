@@ -333,10 +333,10 @@ void _4B3FE5_training_dialogue(int a4);
 void OracleDialogue();
 std::string _4B254D_SkillMasteryTeacher(int trainerInfo);
 std::string BuildDialogueString(const char *lpsz, uint8_t uPlayerID,
-                           struct ItemGen *a3, int eventId, int a5,
+                           struct ItemGen *a3, HOUSE_ID houseId, int a5,
                            GameTime *a6 = nullptr);
 std::string BuildDialogueString(std::string &str, uint8_t uPlayerID,
-                           struct ItemGen *a3, int eventId, int shop_screen,
+                           struct ItemGen *a3, HOUSE_ID houseId, int shop_screen,
                            GameTime *a6 = nullptr);
 
 

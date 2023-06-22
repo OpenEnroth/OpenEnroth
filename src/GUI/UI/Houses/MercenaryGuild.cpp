@@ -20,12 +20,12 @@ void GUIWindow_MercenaryGuild::houseSpecificDialogue() {
      * I believe it is 250 gold cost for mercenary guild from mm6 and 100 for all other skill-learning house types in mm6
      * but they aren't used in mm7, so I'm gonna assume 250 gold cost in price calculator
      *
-     *  int v32 = (uint8_t)(((buildingTable[window_SpeakInHouse->wData.val - 1].uType != BuildingType_MercenaryGuild) - 1) & 0x96) + 100;
-     *  int v3 = (int64_t)((double)v32 * buildingTable[window_SpeakInHouse->wData.val - 1].fPriceMultiplier);
+     *  int v32 = (uint8_t)(((buildingTable[window_SpeakInHouse->houseId()].uType != BuildingType_MercenaryGuild) - 1) & 0x96) + 100;
+     *  int v3 = (int64_t)((double)v32 * buildingTable[window_SpeakInHouse->houseId()].fPriceMultiplier);
      *  pPrice = v3 * (100 - PriceCalculator::playerMerchant(&pParty->activeCharacter())) / 100;
      *  if (pPrice < v3 / 3) pPrice = v3 / 3;
      */
-    int pPrice = PriceCalculator::skillLearningCostForPlayer(&pParty->activeCharacter(), buildingTable[window_SpeakInHouse->wData.val - 1]);
+    int pPrice = PriceCalculator::skillLearningCostForPlayer(&pParty->activeCharacter(), buildingTable[window_SpeakInHouse->houseId()]);
 
     if (dialog_menu_id == DIALOGUE_MAIN) {
         if (!pParty->activeCharacter()._achievedAwardsBits[word_4F0754[2 * window_SpeakInHouse->wData.val]]) {

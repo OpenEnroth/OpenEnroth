@@ -946,8 +946,7 @@ void ClickNPCTopic(DIALOGUE_TYPE topic) {
         case DIALOGUE_13_hiring_related:
             current_npc_text = BuildDialogueString(
                 pNPCStats->pProfessions[pCurrentNPCInfo->profession].pJoinText,
-                pParty->activeCharacterIndex() - 1, 0, 0, 0
-            );
+                pParty->activeCharacterIndex() - 1, 0, HOUSE_INVALID, 0);
             NPCHireableDialogPrepare();
             dialogue_show_profession_details = false;
             BackToHouseMenu();
@@ -1012,11 +1011,11 @@ void ClickNPCTopic(DIALOGUE_TYPE topic) {
             if (dialogue_show_profession_details) {
                 current_npc_text = BuildDialogueString(
                     pNPCStats->pProfessions[pCurrentNPCInfo->profession].pJoinText,
-                    pParty->activeCharacterIndex() - 1, 0, 0, 0);
+                    pParty->activeCharacterIndex() - 1, 0, HOUSE_INVALID, 0);
             } else {
                 current_npc_text = BuildDialogueString(
                     pNPCStats->pProfessions[pCurrentNPCInfo->profession].pBenefits,
-                    pParty->activeCharacterIndex() - 1, 0, 0, 0);
+                    pParty->activeCharacterIndex() - 1, 0, HOUSE_INVALID, 0);
             }
             dialogue_show_profession_details = ~dialogue_show_profession_details;
         } else {
@@ -1102,7 +1101,7 @@ void ClickNPCTopic(DIALOGUE_TYPE topic) {
             uDialogueType = DIALOGUE_13_hiring_related;
             current_npc_text = BuildDialogueString(
                 pNPCStats->pProfessions[pCurrentNPCInfo->profession].pJoinText,
-                pParty->activeCharacterIndex() - 1, 0, 0, 0);
+                pParty->activeCharacterIndex() - 1, 0, HOUSE_INVALID, 0);
             if (pParty->hasActiveCharacter()) {
                 pParty->activeCharacter().playReaction(SPEECH_NOT_ENOUGH_GOLD);
             }
@@ -1511,13 +1510,13 @@ std::string _4B254D_SkillMasteryTeacher(int trainerInfo) {
     );
 }
 
-std::string BuildDialogueString(const char *lpsz, uint8_t uPlayerID, ItemGen *a3, int eventId, int a5, GameTime *a6) {
+std::string BuildDialogueString(const char *lpsz, uint8_t uPlayerID, ItemGen *a3, HOUSE_ID houseId, int a5, GameTime *a6) {
     std::string str = std::string(lpsz);
-    return BuildDialogueString(str, uPlayerID, a3, eventId, a5, a6);
+    return BuildDialogueString(str, uPlayerID, a3, houseId, a5, a6);
 }
 
 //----- (00495461) --------------------------------------------------------
-std::string BuildDialogueString(std::string &str, uint8_t uPlayerID, ItemGen *a3, int eventId, int shop_screen, GameTime *a6) {
+std::string BuildDialogueString(std::string &str, uint8_t uPlayerID, ItemGen *a3, HOUSE_ID houseId, int shop_screen, GameTime *a6) {
     std::string v1;
     Character *pPlayer;       // ebx@3
     const char *pText;     // esi@7
@@ -1665,19 +1664,19 @@ std::string BuildDialogueString(std::string &str, uint8_t uPlayerID, ItemGen *a3
                 break;
 
             case 25:  // base prices
-                v29 = PriceCalculator::baseItemBuyingPrice(a3->GetValue(), buildingTable[eventId - 1].fPriceMultiplier);
+                v29 = PriceCalculator::baseItemBuyingPrice(a3->GetValue(), buildingTable[houseId].fPriceMultiplier);
                 switch (shop_screen) {
                 case 3:
-                    v29 = PriceCalculator::baseItemSellingPrice(a3->GetValue(), buildingTable[eventId - 1].fPriceMultiplier);
+                    v29 = PriceCalculator::baseItemSellingPrice(a3->GetValue(), buildingTable[houseId].fPriceMultiplier);
                     break;
                 case 4:
-                    v29 = PriceCalculator::baseItemIdentifyPrice(buildingTable[eventId - 1].fPriceMultiplier);
+                    v29 = PriceCalculator::baseItemIdentifyPrice(buildingTable[houseId].fPriceMultiplier);
                     break;
                 case 5:
-                    v29 = PriceCalculator::baseItemRepairPrice(a3->GetValue(), buildingTable[eventId - 1].fPriceMultiplier);
+                    v29 = PriceCalculator::baseItemRepairPrice(a3->GetValue(), buildingTable[houseId].fPriceMultiplier);
                     break;
                 case 6:
-                    v29 = PriceCalculator::baseItemSellingPrice(a3->GetValue(), buildingTable[eventId - 1].fPriceMultiplier) / 2;
+                    v29 = PriceCalculator::baseItemSellingPrice(a3->GetValue(), buildingTable[houseId].fPriceMultiplier) / 2;
                     break;
                 }
                 v1 = fmt::format("{}", v29);
@@ -1685,9 +1684,9 @@ std::string BuildDialogueString(std::string &str, uint8_t uPlayerID, ItemGen *a3
                 break;
 
             case 27:  // actual price
-                v29 = PriceCalculator::itemBuyingPriceForPlayer(pPlayer, a3->GetValue(), buildingTable[eventId - 1].fPriceMultiplier);
+                v29 = PriceCalculator::itemBuyingPriceForPlayer(pPlayer, a3->GetValue(), buildingTable[houseId].fPriceMultiplier);
                 if (shop_screen == 3) {
-                    v29 = PriceCalculator::itemSellingPriceForPlayer(pPlayer, *a3, buildingTable[eventId - 1].fPriceMultiplier);
+                    v29 = PriceCalculator::itemSellingPriceForPlayer(pPlayer, *a3, buildingTable[houseId].fPriceMultiplier);
                     v1 = fmt::format("{}", v29);
                     result += v1;
                     break;
@@ -1696,11 +1695,11 @@ std::string BuildDialogueString(std::string &str, uint8_t uPlayerID, ItemGen *a3
                     if (shop_screen == 5) {
                     v29 = PriceCalculator::itemRepairPriceForPlayer(
                         pPlayer, a3->GetValue(),
-                        buildingTable[eventId - 1].fPriceMultiplier);
+                        buildingTable[houseId].fPriceMultiplier);
                     } else {
                         if (shop_screen == 6) {
                             // TODO(captainurist): encapsulate this logic in PriceCalculator
-                            v29 = PriceCalculator::itemSellingPriceForPlayer(pPlayer, *a3, buildingTable[eventId - 1].fPriceMultiplier) / 2;
+                            v29 = PriceCalculator::itemSellingPriceForPlayer(pPlayer, *a3, buildingTable[houseId].fPriceMultiplier) / 2;
                             if (!v29)  // cannot be 0
                                 v29 = 1;
                             v1 = fmt::format("{}", v29);
@@ -1712,16 +1711,16 @@ std::string BuildDialogueString(std::string &str, uint8_t uPlayerID, ItemGen *a3
                     result += v1;
                     break;
                 }
-                v1 = fmt::format("{}", PriceCalculator::itemIdentificationPriceForPlayer(pPlayer, buildingTable[eventId - 1].fPriceMultiplier));
+                v1 = fmt::format("{}", PriceCalculator::itemIdentificationPriceForPlayer(pPlayer, buildingTable[houseId].fPriceMultiplier));
                 result += v1;
                 break;
 
             case 28:  // shop type - blacksmith ect..
-                result += buildingTable[eventId - 1].pProprieterTitle;
+                result += buildingTable[houseId].pProprieterTitle;
                 break;
 
             case 29:  // identify cost
-                v1 = fmt::format("{}", PriceCalculator::itemIdentificationPriceForPlayer(pPlayer, buildingTable[eventId - 1].fPriceMultiplier));
+                v1 = fmt::format("{}", PriceCalculator::itemIdentificationPriceForPlayer(pPlayer, buildingTable[houseId].fPriceMultiplier));
                 result += v1;
                 break;
             case 30:

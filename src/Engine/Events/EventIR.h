@@ -126,7 +126,7 @@ class EventIR {
             int yaw;
             int pitch;
             int zspeed;
-            int anim_id;
+            HOUSE_ID house_id;
             int exit_pic_id;
         } move_map_descr;
         struct {
