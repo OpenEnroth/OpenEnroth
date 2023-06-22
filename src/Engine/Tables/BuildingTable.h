@@ -3,6 +3,9 @@
 #include <string>
 #include <array>
 
+#include "GUI/UI/UIHouseEnums.h"
+#include "Utility/IndexedArray.h"
+
 enum class BuildingType : uint16_t {
     BUILDING_INVALID = 0,
     BUILDING_WEAPON_SHOP = 1,
@@ -68,5 +71,4 @@ struct BuildingDesc {
 
 void initializeBuildings();
 
-// TODO(captainurist): should be IndexedArray<HOUSE_SMITH_EMERALD_ISLE, SOME_OTHER_HOUSE, BuildingDesc>
-extern std::array<BuildingDesc, 525> buildingTable;
+extern IndexedArray<BuildingDesc, HOUSE_FIRST, HOUSE_LAST> buildingTable;

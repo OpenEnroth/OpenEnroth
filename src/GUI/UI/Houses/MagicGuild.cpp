@@ -155,7 +155,7 @@ void GUIWindow_MagicGuild::mainDialogue() {
         }
     }
 
-    int pPrice = PriceCalculator::skillLearningCostForPlayer(&pParty->activeCharacter(), buildingTable[wData.val - 1]);
+    int pPrice = PriceCalculator::skillLearningCostForPlayer(&pParty->activeCharacter(), buildingTable[houseId()]);
 
     if (haveLearnableSkills) {
         std::string skill_price_label = localization->FormatString(LSTR_FMT_SKILL_COST_D, pPrice);
@@ -219,8 +219,8 @@ void GUIWindow_MagicGuild::buyBooksDialogue() {
 
                 if (pt.x >= testpos && pt.x <= testpos + shop_ui_items_in_store[testx]->width()) {
                     if ((pt.y >= 90 && pt.y <= (90 + shop_ui_items_in_store[testx]->height())) || (pt.y >= 250 && pt.y <= (250 + shop_ui_items_in_store[testx]->height()))) {
-                        MerchantPhrase phrase = pParty->activeCharacter().SelectPhrasesTransaction(item, BUILDING_MAGIC_SHOP, std::to_underlying(houseId()), 2);
-                        std::string str = BuildDialogueString(pMerchantsBuyPhrases[phrase], pParty->activeCharacterIndex() - 1, item, std::to_underlying(houseId()), 2);
+                        MerchantPhrase phrase = pParty->activeCharacter().SelectPhrasesTransaction(item, BUILDING_MAGIC_SHOP, houseId(), 2);
+                        std::string str = BuildDialogueString(pMerchantsBuyPhrases[phrase], pParty->activeCharacterIndex() - 1, item, houseId(), 2);
                         int textHeight = pFontArrus->CalcTextHeight(str, working_window.uFrameWidth, 0);
                         working_window.DrawTitleText(pFontArrus, 0, (SIDE_TEXT_BOX_BODY_TEXT_HEIGHT - textHeight) / 2 + SIDE_TEXT_BOX_BODY_TEXT_OFFSET, colorTable.White, str, 3);
                         return;
@@ -239,7 +239,7 @@ void GUIWindow_MagicGuild::houseDialogueOptionSelected(DIALOGUE_TYPE option) {
                     shop_ui_items_in_store[i] = assets->getImage_ColorKey(pParty->spellBooksInGuilds[houseId()][i].GetIconName());
             }
         } else {
-            GameTime nextGenTime = pParty->GetPlayingTime() + GameTime::FromDays(buildingTable[wData.val - 1].generation_interval_days);
+            GameTime nextGenTime = pParty->GetPlayingTime() + GameTime::FromDays(buildingTable[houseId()].generation_interval_days);
             generateSpellBooksForGuild();
             pParty->PartyTimes.guildNextRefreshTime[houseId()] = nextGenTime;
         }
@@ -303,7 +303,7 @@ void GUIWindow_MagicGuild::houseScreenClick() {
             if (pt.x >= testpos && pt.x <= testpos + shop_ui_items_in_store[testx]->width()) {
                 if ((pt.y >= 90 && pt.y <= (90 + shop_ui_items_in_store[testx]->height())) ||
                     (pt.y >= 250 && pt.y <= (250 + shop_ui_items_in_store[testx]->height()))) {
-                    float fPriceMultiplier = buildingTable[wData.val - 1].fPriceMultiplier;
+                    float fPriceMultiplier = buildingTable[houseId()].fPriceMultiplier;
                     int uPriceItemService = PriceCalculator::itemBuyingPriceForPlayer(&pParty->activeCharacter(), boughtItem.GetValue(), fPriceMultiplier);
 
                     if (pParty->GetGold() < uPriceItemService) {

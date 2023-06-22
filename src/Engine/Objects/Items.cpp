@@ -746,16 +746,16 @@ std::string GetItemTextureFilename(ITEM_TYPE item_id, int index, int shoulder) {
 }
 
 //----- (004BDAAF) --------------------------------------------------------
-bool ItemGen::MerchandiseTest(int _2da_idx) {
+bool ItemGen::MerchandiseTest(HOUSE_ID houseId) {
     bool test;
 
     // TODO(captainurist): move these checks into functions in ItemEnums.h?
-    if ((buildingTable[_2da_idx - 1].uType != BUILDING_ALCHEMY_SHOP || !isRecipe(this->uItemID)) &&
+    if ((buildingTable[houseId].uType != BUILDING_ALCHEMY_SHOP || !isRecipe(this->uItemID)) &&
         (this->uItemID >= ITEM_QUEST_HEART_OF_THE_WOOD || this->uItemID >= ITEM_ARTIFACT_HERMES_SANDALS && this->uItemID <= ITEM_599) ||
         this->IsStolen())
         return false;
 
-    switch (buildingTable[_2da_idx - 1].uType) {
+    switch (buildingTable[houseId].uType) {
         case BUILDING_WEAPON_SHOP: {
             test = this->isWeapon();
             break;
