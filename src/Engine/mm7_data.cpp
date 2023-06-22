@@ -2423,8 +2423,6 @@ std::array<std::pair<int16_t, ITEM_TYPE>, 27> _4F0882_evt_VAR_PlayerItemInHands_
     {0x0F1, ITEM_RARE_THE_PERFECT_BOW}
 }};
 
-std::array<int, 11> price_for_membership = {{100, 100, 50, 50, 50, 50, 50, 50, 50, 1000, 1000}};
-
 int ai_arrays_size;
 std::array<int, 500> ai_near_actors_targets_pid;
 std::array<unsigned int, 500> ai_near_actors_ids;
