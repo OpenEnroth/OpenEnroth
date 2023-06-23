@@ -16,11 +16,11 @@ struct GUIFrameMessageQueue {
 
     void Flush();
     void Clear();
-    bool Empty() { return qMessages.empty(); }
+    bool Empty() { return messageQueue.empty(); }
     void PopMessage(UIMessageType *pMsg, int *pParam, int *a4);
     void AddGUIMessage(UIMessageType msg, int param, int a4);
 
-    std::queue<GUIMessage> qMessages;
+    std::queue<GUIMessage> messageQueue;
 };
 
 class GUIMessageQueue {
@@ -45,7 +45,7 @@ class GUIMessageQueue {
     }
 
     void swapFrames() {
-        _nextFrameQueue.qMessages.swap(_currentFrameQueue.qMessages);
+        _nextFrameQueue.messageQueue.swap(_currentFrameQueue.messageQueue);
     }
 
     void addMessageCurrentFrame(UIMessageType msg, int param, int a4) {

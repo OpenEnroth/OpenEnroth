@@ -3,18 +3,19 @@
 #include <utility>
 
 void GUIFrameMessageQueue::Flush() {
-    if (qMessages.size()) {
-        GUIMessage message = qMessages.front();
+    if (messageQueue.size()) {
+        GUIMessage message = messageQueue.front();
         Clear();
         if (message.field_8 != 0) { // TODO(Nik-RE-dev): what's the semantics here?
-            qMessages.push(message);
+            messageQueue.push(message);
         }
     }
 }
 
 void GUIFrameMessageQueue::Clear() {
     std::queue<GUIMessage> empty;
-    std::swap(qMessages, empty);
+
+    messageQueue.swap(empty);
 }
 
 void GUIFrameMessageQueue::PopMessage(UIMessageType *pType, int *pParam, int *a4) {
@@ -22,12 +23,12 @@ void GUIFrameMessageQueue::PopMessage(UIMessageType *pType, int *pParam, int *a4
     *pParam = 0;
     *a4 = 0;
 
-    if (qMessages.empty()) {
+    if (messageQueue.empty()) {
         return;
     }
 
-    GUIMessage message = qMessages.front();
-    qMessages.pop();
+    GUIMessage message = messageQueue.front();
+    messageQueue.pop();
 
     *pType = message.eType;
     *pParam = message.param;
@@ -39,5 +40,5 @@ void GUIFrameMessageQueue::AddGUIMessage(UIMessageType msg, int param, int a4) {
     message.eType = msg;
     message.param = param;
     message.field_8 = a4;
-    qMessages.push(message);
+    messageQueue.push(message);
 }
