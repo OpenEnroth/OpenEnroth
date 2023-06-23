@@ -101,6 +101,7 @@ std::array<int, 28> possibleAddressingAwardBits = {{1,  2,  3,  4,  5,  7,  32, 
                                                     38, 40, 41, 42, 43, 45, 46, 47, 48, 49,
                                                     50, 51, 52, 53, 54, 55, 56, 60}};
 
+// TODO(Nik-RE-dev): move somewhere along with guild join dialogue processing
 IndexedArray<int, GUILD_FIRST, GUILD_LAST> priceForMembership = {{
     {GUILD_OF_ELEMENTS, 100},
     {GUILD_OF_SELF,     100},
@@ -115,6 +116,7 @@ IndexedArray<int, GUILD_FIRST, GUILD_LAST> priceForMembership = {{
     {GUILD_OF_DARK,     1000}
 }};
 
+// TODO(Nik-RE-dev): move somewhere along with mastery teacing dialogue processing
 IndexedArray<int, CHARACTER_SKILL_FIRST, CHARACTER_SKILL_LAST> expertSkillMasteryCost = {{
     {CHARACTER_SKILL_STAFF,        2000},
     {CHARACTER_SKILL_SWORD,        2000},
