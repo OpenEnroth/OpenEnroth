@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;c2fce50</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;fe84c36</span>
    </div>
   </td>
  </tr>
@@ -75,8 +75,6 @@ $(function() {
 <div class="header">
   <div class="summary">
 <a href="#nested-classes">Classes</a> &#124;
-<a href="#define-members">Macros</a> &#124;
-<a href="#enum-members">Enumerations</a> &#124;
 <a href="#func-members">Functions</a> &#124;
 <a href="#var-members">Variables</a>  </div>
   <div class="headertitle"><div class="title">GUIWindow.h File Reference</div></div>
@@ -86,7 +84,6 @@ $(function() {
 <code>#include &lt;cstdint&gt;</code><br />
 <code>#include &lt;list&gt;</code><br />
 <code>#include &lt;memory&gt;</code><br />
-<code>#include &lt;queue&gt;</code><br />
 <code>#include &lt;vector&gt;</code><br />
 <code>#include &lt;string&gt;</code><br />
 <code>#include &quot;<a class="el" href="Character_8h.html">Engine/Objects/Character.h</a>&quot;</code><br />
@@ -122,66 +119,8 @@ Classes</h2></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classOnCancel3.html">OnCancel3</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structGUIMessage.html">GUIMessage</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structGUIMessageQueue.html">GUIMessageQueue</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classWindowManager.html">WindowManager</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="define-members" name="define-members"></a>
-Macros</h2></td></tr>
-<tr class="memitem:a25b68130b07896dbb9b5407382c8697f"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="GUIWindow_8h.html#a25b68130b07896dbb9b5407382c8697f">AddGUIMessage</a>(msg,  param,  a4)&#160;&#160;&#160;    AddMessageImpl((msg), (param), (a4), __FILE__, __LINE__)</td></tr>
-<tr class="separator:a25b68130b07896dbb9b5407382c8697f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="enum-members" name="enum-members"></a>
-Enumerations</h2></td></tr>
-<tr class="memitem:af188298480c77be8835d6760fa6edfd7"><td class="memItemLeft" align="right" valign="top">enum class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="GUIWindow_8h.html#af188298480c77be8835d6760fa6edfd7">CURRENT_SCREEN</a> { <br />
-&#160;&#160;<a class="el" href="GUIWindow_8h.html#af188298480c77be8835d6760fa6edfd7a1b14f33469f90b26e5f73747bcbd62f8">SCREEN_GAME</a> = 0
-, <a class="el" href="GUIWindow_8h.html#af188298480c77be8835d6760fa6edfd7a19ddf92f57d32890a98464b2870219b6">SCREEN_MENU</a> = 1
-, <a class="el" href="GUIWindow_8h.html#af188298480c77be8835d6760fa6edfd7a22c91e694ee06542d1e0127aa882af56">SCREEN_OPTIONS</a> = 2
-, <a class="el" href="GUIWindow_8h.html#af188298480c77be8835d6760fa6edfd7ac1b782db72da7c78232df2b8851a2779">SCREEN_BOOKS</a> = 3
-, <br />
-&#160;&#160;<a class="el" href="GUIWindow_8h.html#af188298480c77be8835d6760fa6edfd7a8cc2f70d4c48905abf66da5626ebd0a1">SCREEN_NPC_DIALOGUE</a> = 4
-, <a class="el" href="GUIWindow_8h.html#af188298480c77be8835d6760fa6edfd7af90d5ec2509b0019a55dbda2934e8e3f">SCREEN_REST</a> = 5
-, <a class="el" href="GUIWindow_8h.html#af188298480c77be8835d6760fa6edfd7a0e4b450bc31a0225aef08589ca5a43b8">SCREEN_6</a> = 6
-, <a class="el" href="GUIWindow_8h.html#af188298480c77be8835d6760fa6edfd7ac16accf9ebc265c5033fbb9b48f4f793">SCREEN_CHARACTERS</a> = 7
-, <br />
-&#160;&#160;<a class="el" href="GUIWindow_8h.html#af188298480c77be8835d6760fa6edfd7a7ef2fb8b19660a534b75c47b52be80ea">SCREEN_SPELL_BOOK</a> = 8
-, <a class="el" href="GUIWindow_8h.html#af188298480c77be8835d6760fa6edfd7ac60594c1ce2d2ab44aa727d96f1e08f3">SCREEN_CREATORS</a> = 9
-, <a class="el" href="GUIWindow_8h.html#af188298480c77be8835d6760fa6edfd7a824d4fbc703d3a8123139f04d520bd66">SCREEN_CHEST</a> = 10
-, <a class="el" href="GUIWindow_8h.html#af188298480c77be8835d6760fa6edfd7a69d8d443961e7a8d656b842b44aeb646">SCREEN_SAVEGAME</a> = 11
-, <br />
-&#160;&#160;<a class="el" href="GUIWindow_8h.html#af188298480c77be8835d6760fa6edfd7ae2b7fc562ff03dee8973b2037b171cc1">SCREEN_LOADGAME</a> = 12
-, <a class="el" href="GUIWindow_8h.html#af188298480c77be8835d6760fa6edfd7afedbaecf38d28fec777bfc552f4054f9">SCREEN_HOUSE</a> = 13
-, <a class="el" href="GUIWindow_8h.html#af188298480c77be8835d6760fa6edfd7aaa8b66423c586e6ae9bbf5c8e1c0688f">SCREEN_SHOP_INVENTORY</a> = 14
-, <a class="el" href="GUIWindow_8h.html#af188298480c77be8835d6760fa6edfd7ac24bed01bbe56e9e5176b9593a47d19c">SCREEN_CHEST_INVENTORY</a> = 15
-, <br />
-&#160;&#160;<a class="el" href="GUIWindow_8h.html#af188298480c77be8835d6760fa6edfd7a610e61ee058a5573d7e6b712d9d01d51">SCREEN_VIDEO</a> = 16
-, <a class="el" href="GUIWindow_8h.html#af188298480c77be8835d6760fa6edfd7a740b539cc3ef8738ee52a93457e569b1">SCREEN_CHANGE_LOCATION</a> = 17
-, <a class="el" href="GUIWindow_8h.html#af188298480c77be8835d6760fa6edfd7a0c07086b96fa23003a701b43499e9051">SCREEN_INPUT_BLV</a> = 18
-, <a class="el" href="GUIWindow_8h.html#af188298480c77be8835d6760fa6edfd7abd94aea101d02712ba0e9180e4d2aeb8">SCREEN_BRANCHLESS_NPC_DIALOG</a> = 19
-, <br />
-&#160;&#160;<a class="el" href="GUIWindow_8h.html#af188298480c77be8835d6760fa6edfd7abf5b300ca36edc663db5e48cd78be33a">SCREEN_20</a> = 20
-, <a class="el" href="GUIWindow_8h.html#af188298480c77be8835d6760fa6edfd7a938e92c82ac370aa0f5da77167c9bd2f">SCREEN_PARTY_CREATION</a> = 21
-, <a class="el" href="GUIWindow_8h.html#af188298480c77be8835d6760fa6edfd7a93a5582314bce83357b259093417a830">SCREEN_GAMEOVER_WINDOW</a> = 22
-, <a class="el" href="GUIWindow_8h.html#af188298480c77be8835d6760fa6edfd7a470a23fa2afcb1036ecbec032d6e838c">SCREEN_CASTING</a> = 23
-, <br />
-&#160;&#160;<a class="el" href="GUIWindow_8h.html#af188298480c77be8835d6760fa6edfd7a5d9d4d1d8a5446f96121272645a918d1">SCREEN_24</a> = 24
-, <a class="el" href="GUIWindow_8h.html#af188298480c77be8835d6760fa6edfd7aa1f8fb67b5aff5c3f8fd4e8e18af60b1">SCREEN_19</a> = 25
-, <a class="el" href="GUIWindow_8h.html#af188298480c77be8835d6760fa6edfd7a0032ca76f94863cbc955185412631c65">SCREEN_KEYBOARD_OPTIONS</a> = 26
-, <a class="el" href="GUIWindow_8h.html#af188298480c77be8835d6760fa6edfd7a251af45bcb09a9829a93fd66b4fd4a33">SCREEN_1B</a> = 27
-, <br />
-&#160;&#160;<a class="el" href="GUIWindow_8h.html#af188298480c77be8835d6760fa6edfd7a15881f4da26b67c7eff487770237a5c3">SCREEN_VIDEO_OPTIONS</a> = 28
-, <a class="el" href="GUIWindow_8h.html#af188298480c77be8835d6760fa6edfd7a2effc497289f20a7fec224b321f1d769">SCREEN_63</a> = 0x63
-, <a class="el" href="GUIWindow_8h.html#af188298480c77be8835d6760fa6edfd7a5acaae0ef29067bc25442ba866d11f6f">SCREEN_64</a> = 0x64
-, <a class="el" href="GUIWindow_8h.html#af188298480c77be8835d6760fa6edfd7a46f8c6dd6411d166b9388607a3ce2b80">SCREEN_67</a> = 0x67
-, <br />
-&#160;&#160;<a class="el" href="GUIWindow_8h.html#af188298480c77be8835d6760fa6edfd7a152b4a3c2c666b2bcabf186fb7799872">SCREEN_QUICK_REFERENCE</a> = 0x68
-, <a class="el" href="GUIWindow_8h.html#af188298480c77be8835d6760fa6edfd7accf69932e9d0480218028c068172de6e">SCREEN_DEBUG</a> = 999
-<br />
- }</td></tr>
-<tr class="separator:af188298480c77be8835d6760fa6edfd7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
@@ -287,10 +226,6 @@ Functions</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="var-members" name="var-members"></a>
 Variables</h2></td></tr>
-<tr class="memitem:a61cdbb275c8cc0ab21cfa9d6191b03f0"><td class="memItemLeft" align="right" valign="top">struct <a class="el" href="structGUIMessageQueue.html">GUIMessageQueue</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="GUIWindow_8h.html#a61cdbb275c8cc0ab21cfa9d6191b03f0">pCurrentFrameMessageQueue</a></td></tr>
-<tr class="separator:a61cdbb275c8cc0ab21cfa9d6191b03f0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ada5db3e64fea1b6658282b08e5b71094"><td class="memItemLeft" align="right" valign="top">struct <a class="el" href="structGUIMessageQueue.html">GUIMessageQueue</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="GUIWindow_8h.html#ada5db3e64fea1b6658282b08e5b71094">pNextFrameMessageQueue</a></td></tr>
-<tr class="separator:ada5db3e64fea1b6658282b08e5b71094"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a64f57b4f8081e247d7363918e79f74f5"><td class="memItemLeft" align="right" valign="top">enum <a class="el" href="GUIEnums_8h.html#a476342970f954b62d70552bcbb5ee509">WindowType</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="GUIWindow_8h.html#a64f57b4f8081e247d7363918e79f74f5">current_character_screen_window</a></td></tr>
 <tr class="separator:a64f57b4f8081e247d7363918e79f74f5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa00d8b3e2304a6143a2e364ccfeb696c"><td class="memItemLeft" align="right" valign="top">std::list&lt; <a class="el" href="classGUIWindow.html">GUIWindow</a> * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="GUIWindow_8h.html#aa00d8b3e2304a6143a2e364ccfeb696c">lWindowList</a></td></tr>
@@ -453,107 +388,13 @@ Variables</h2></td></tr>
 <tr class="separator:a1cbeb7fd47a46750bedca129a590bd20"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8bf4750f50fc8a84e1641e6689b4c168"><td class="memItemLeft" align="right" valign="top"><a class="el" href="GUIEnums_8h.html#a0be99aa2d974499af97de5b44821500d">MENU_STATE</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="GUIWindow_8h.html#a8bf4750f50fc8a84e1641e6689b4c168">sCurrentMenuID</a></td></tr>
 <tr class="separator:a8bf4750f50fc8a84e1641e6689b4c168"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9cf585dbf96fdd1acbe15981837ebdb2"><td class="memItemLeft" align="right" valign="top">enum <a class="el" href="GUIWindow_8h.html#af188298480c77be8835d6760fa6edfd7">CURRENT_SCREEN</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="GUIWindow_8h.html#a9cf585dbf96fdd1acbe15981837ebdb2">current_screen_type</a></td></tr>
+<tr class="memitem:a9cf585dbf96fdd1acbe15981837ebdb2"><td class="memItemLeft" align="right" valign="top">enum <a class="el" href="GUIEnums_8h.html#af188298480c77be8835d6760fa6edfd7">CURRENT_SCREEN</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="GUIWindow_8h.html#a9cf585dbf96fdd1acbe15981837ebdb2">current_screen_type</a></td></tr>
 <tr class="separator:a9cf585dbf96fdd1acbe15981837ebdb2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5023a0cbd3467c1ea375ffcfc7ef690e"><td class="memItemLeft" align="right" valign="top">enum <a class="el" href="GUIWindow_8h.html#af188298480c77be8835d6760fa6edfd7">CURRENT_SCREEN</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="GUIWindow_8h.html#a5023a0cbd3467c1ea375ffcfc7ef690e">prev_screen_type</a></td></tr>
+<tr class="memitem:a5023a0cbd3467c1ea375ffcfc7ef690e"><td class="memItemLeft" align="right" valign="top">enum <a class="el" href="GUIEnums_8h.html#af188298480c77be8835d6760fa6edfd7">CURRENT_SCREEN</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="GUIWindow_8h.html#a5023a0cbd3467c1ea375ffcfc7ef690e">prev_screen_type</a></td></tr>
 <tr class="separator:a5023a0cbd3467c1ea375ffcfc7ef690e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8836f873a14e52a50ced47a80750ae85"><td class="memItemLeft" align="right" valign="top"><a class="el" href="GUIDialogues_8h.html#afcd7885d9ec6583fa04d9e8f0f641d00">DIALOGUE_TYPE</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="GUIWindow_8h.html#a8836f873a14e52a50ced47a80750ae85">_dword_F8B1D8_last_npc_topic_menu</a></td></tr>
 <tr class="separator:a8836f873a14e52a50ced47a80750ae85"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Macro Definition Documentation</h2>
-<a id="a25b68130b07896dbb9b5407382c8697f" name="a25b68130b07896dbb9b5407382c8697f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a25b68130b07896dbb9b5407382c8697f">&#9670;&#160;</a></span>AddGUIMessage</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define AddGUIMessage</td>
-          <td>(</td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname">msg, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname">param, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname">a4&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td>&#160;&#160;&#160;    AddMessageImpl((msg), (param), (a4), __FILE__, __LINE__)</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<h2 class="groupheader">Enumeration Type Documentation</h2>
-<a id="af188298480c77be8835d6760fa6edfd7" name="af188298480c77be8835d6760fa6edfd7"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#af188298480c77be8835d6760fa6edfd7">&#9670;&#160;</a></span>CURRENT_SCREEN</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">enum class <a class="el" href="GUIWindow_8h.html#af188298480c77be8835d6760fa6edfd7">CURRENT_SCREEN</a></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">strong</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-<table class="fieldtable">
-<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="af188298480c77be8835d6760fa6edfd7a1b14f33469f90b26e5f73747bcbd62f8" name="af188298480c77be8835d6760fa6edfd7a1b14f33469f90b26e5f73747bcbd62f8"></a>SCREEN_GAME&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="af188298480c77be8835d6760fa6edfd7a19ddf92f57d32890a98464b2870219b6" name="af188298480c77be8835d6760fa6edfd7a19ddf92f57d32890a98464b2870219b6"></a>SCREEN_MENU&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="af188298480c77be8835d6760fa6edfd7a22c91e694ee06542d1e0127aa882af56" name="af188298480c77be8835d6760fa6edfd7a22c91e694ee06542d1e0127aa882af56"></a>SCREEN_OPTIONS&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="af188298480c77be8835d6760fa6edfd7ac1b782db72da7c78232df2b8851a2779" name="af188298480c77be8835d6760fa6edfd7ac1b782db72da7c78232df2b8851a2779"></a>SCREEN_BOOKS&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="af188298480c77be8835d6760fa6edfd7a8cc2f70d4c48905abf66da5626ebd0a1" name="af188298480c77be8835d6760fa6edfd7a8cc2f70d4c48905abf66da5626ebd0a1"></a>SCREEN_NPC_DIALOGUE&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="af188298480c77be8835d6760fa6edfd7af90d5ec2509b0019a55dbda2934e8e3f" name="af188298480c77be8835d6760fa6edfd7af90d5ec2509b0019a55dbda2934e8e3f"></a>SCREEN_REST&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="af188298480c77be8835d6760fa6edfd7a0e4b450bc31a0225aef08589ca5a43b8" name="af188298480c77be8835d6760fa6edfd7a0e4b450bc31a0225aef08589ca5a43b8"></a>SCREEN_6&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="af188298480c77be8835d6760fa6edfd7ac16accf9ebc265c5033fbb9b48f4f793" name="af188298480c77be8835d6760fa6edfd7ac16accf9ebc265c5033fbb9b48f4f793"></a>SCREEN_CHARACTERS&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="af188298480c77be8835d6760fa6edfd7a7ef2fb8b19660a534b75c47b52be80ea" name="af188298480c77be8835d6760fa6edfd7a7ef2fb8b19660a534b75c47b52be80ea"></a>SCREEN_SPELL_BOOK&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="af188298480c77be8835d6760fa6edfd7ac60594c1ce2d2ab44aa727d96f1e08f3" name="af188298480c77be8835d6760fa6edfd7ac60594c1ce2d2ab44aa727d96f1e08f3"></a>SCREEN_CREATORS&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="af188298480c77be8835d6760fa6edfd7a824d4fbc703d3a8123139f04d520bd66" name="af188298480c77be8835d6760fa6edfd7a824d4fbc703d3a8123139f04d520bd66"></a>SCREEN_CHEST&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="af188298480c77be8835d6760fa6edfd7a69d8d443961e7a8d656b842b44aeb646" name="af188298480c77be8835d6760fa6edfd7a69d8d443961e7a8d656b842b44aeb646"></a>SCREEN_SAVEGAME&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="af188298480c77be8835d6760fa6edfd7ae2b7fc562ff03dee8973b2037b171cc1" name="af188298480c77be8835d6760fa6edfd7ae2b7fc562ff03dee8973b2037b171cc1"></a>SCREEN_LOADGAME&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="af188298480c77be8835d6760fa6edfd7afedbaecf38d28fec777bfc552f4054f9" name="af188298480c77be8835d6760fa6edfd7afedbaecf38d28fec777bfc552f4054f9"></a>SCREEN_HOUSE&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="af188298480c77be8835d6760fa6edfd7aaa8b66423c586e6ae9bbf5c8e1c0688f" name="af188298480c77be8835d6760fa6edfd7aaa8b66423c586e6ae9bbf5c8e1c0688f"></a>SCREEN_SHOP_INVENTORY&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="af188298480c77be8835d6760fa6edfd7ac24bed01bbe56e9e5176b9593a47d19c" name="af188298480c77be8835d6760fa6edfd7ac24bed01bbe56e9e5176b9593a47d19c"></a>SCREEN_CHEST_INVENTORY&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="af188298480c77be8835d6760fa6edfd7a610e61ee058a5573d7e6b712d9d01d51" name="af188298480c77be8835d6760fa6edfd7a610e61ee058a5573d7e6b712d9d01d51"></a>SCREEN_VIDEO&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="af188298480c77be8835d6760fa6edfd7a740b539cc3ef8738ee52a93457e569b1" name="af188298480c77be8835d6760fa6edfd7a740b539cc3ef8738ee52a93457e569b1"></a>SCREEN_CHANGE_LOCATION&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="af188298480c77be8835d6760fa6edfd7a0c07086b96fa23003a701b43499e9051" name="af188298480c77be8835d6760fa6edfd7a0c07086b96fa23003a701b43499e9051"></a>SCREEN_INPUT_BLV&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="af188298480c77be8835d6760fa6edfd7abd94aea101d02712ba0e9180e4d2aeb8" name="af188298480c77be8835d6760fa6edfd7abd94aea101d02712ba0e9180e4d2aeb8"></a>SCREEN_BRANCHLESS_NPC_DIALOG&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="af188298480c77be8835d6760fa6edfd7abf5b300ca36edc663db5e48cd78be33a" name="af188298480c77be8835d6760fa6edfd7abf5b300ca36edc663db5e48cd78be33a"></a>SCREEN_20&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="af188298480c77be8835d6760fa6edfd7a938e92c82ac370aa0f5da77167c9bd2f" name="af188298480c77be8835d6760fa6edfd7a938e92c82ac370aa0f5da77167c9bd2f"></a>SCREEN_PARTY_CREATION&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="af188298480c77be8835d6760fa6edfd7a93a5582314bce83357b259093417a830" name="af188298480c77be8835d6760fa6edfd7a93a5582314bce83357b259093417a830"></a>SCREEN_GAMEOVER_WINDOW&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="af188298480c77be8835d6760fa6edfd7a470a23fa2afcb1036ecbec032d6e838c" name="af188298480c77be8835d6760fa6edfd7a470a23fa2afcb1036ecbec032d6e838c"></a>SCREEN_CASTING&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="af188298480c77be8835d6760fa6edfd7a5d9d4d1d8a5446f96121272645a918d1" name="af188298480c77be8835d6760fa6edfd7a5d9d4d1d8a5446f96121272645a918d1"></a>SCREEN_24&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="af188298480c77be8835d6760fa6edfd7aa1f8fb67b5aff5c3f8fd4e8e18af60b1" name="af188298480c77be8835d6760fa6edfd7aa1f8fb67b5aff5c3f8fd4e8e18af60b1"></a>SCREEN_19&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="af188298480c77be8835d6760fa6edfd7a0032ca76f94863cbc955185412631c65" name="af188298480c77be8835d6760fa6edfd7a0032ca76f94863cbc955185412631c65"></a>SCREEN_KEYBOARD_OPTIONS&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="af188298480c77be8835d6760fa6edfd7a251af45bcb09a9829a93fd66b4fd4a33" name="af188298480c77be8835d6760fa6edfd7a251af45bcb09a9829a93fd66b4fd4a33"></a>SCREEN_1B&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="af188298480c77be8835d6760fa6edfd7a15881f4da26b67c7eff487770237a5c3" name="af188298480c77be8835d6760fa6edfd7a15881f4da26b67c7eff487770237a5c3"></a>SCREEN_VIDEO_OPTIONS&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="af188298480c77be8835d6760fa6edfd7a2effc497289f20a7fec224b321f1d769" name="af188298480c77be8835d6760fa6edfd7a2effc497289f20a7fec224b321f1d769"></a>SCREEN_63&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="af188298480c77be8835d6760fa6edfd7a5acaae0ef29067bc25442ba866d11f6f" name="af188298480c77be8835d6760fa6edfd7a5acaae0ef29067bc25442ba866d11f6f"></a>SCREEN_64&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="af188298480c77be8835d6760fa6edfd7a46f8c6dd6411d166b9388607a3ce2b80" name="af188298480c77be8835d6760fa6edfd7a46f8c6dd6411d166b9388607a3ce2b80"></a>SCREEN_67&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="af188298480c77be8835d6760fa6edfd7a152b4a3c2c666b2bcabf186fb7799872" name="af188298480c77be8835d6760fa6edfd7a152b4a3c2c666b2bcabf186fb7799872"></a>SCREEN_QUICK_REFERENCE&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="af188298480c77be8835d6760fa6edfd7accf69932e9d0480218028c068172de6e" name="af188298480c77be8835d6760fa6edfd7accf69932e9d0480218028c068172de6e"></a>SCREEN_DEBUG&#160;</td><td class="fielddoc"></td></tr>
-</table>
-
-</div>
-</div>
 <h2 class="groupheader">Function Documentation</h2>
 <a id="a1d47d1cad06df6704c93798e109cbd8b" name="a1d47d1cad06df6704c93798e109cbd8b"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a1d47d1cad06df6704c93798e109cbd8b">&#9670;&#160;</a></span>_4B254D_SkillMasteryTeacher()</h2>
@@ -1723,7 +1564,7 @@ Variables</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">enum <a class="el" href="GUIWindow_8h.html#af188298480c77be8835d6760fa6edfd7">CURRENT_SCREEN</a> current_screen_type</td>
+          <td class="memname">enum <a class="el" href="GUIEnums_8h.html#af188298480c77be8835d6760fa6edfd7">CURRENT_SCREEN</a> current_screen_type</td>
         </tr>
       </table>
   </td>
@@ -1820,30 +1661,6 @@ Variables</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-
-</div>
-</div>
-<a id="a61cdbb275c8cc0ab21cfa9d6191b03f0" name="a61cdbb275c8cc0ab21cfa9d6191b03f0"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a61cdbb275c8cc0ab21cfa9d6191b03f0">&#9670;&#160;</a></span>pCurrentFrameMessageQueue</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">struct <a class="el" href="structGUIMessageQueue.html">GUIMessageQueue</a>* pCurrentFrameMessageQueue</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">extern</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-<p >Message queue for current frame.</p>
-<dl class="section user"><dt>Original binary offset:</dt><dd>0x50CBD0 </dd></dl>
 
 </div>
 </div>
@@ -1979,29 +1796,6 @@ Variables</h2></td></tr>
 
 </div>
 </div>
-<a id="ada5db3e64fea1b6658282b08e5b71094" name="ada5db3e64fea1b6658282b08e5b71094"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ada5db3e64fea1b6658282b08e5b71094">&#9670;&#160;</a></span>pNextFrameMessageQueue</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">struct <a class="el" href="structGUIMessageQueue.html">GUIMessageQueue</a>* pNextFrameMessageQueue</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">extern</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-<p >Message queue that will be processed on next frame. </p><dl class="section user"><dt>Original binary offset:</dt><dd>0x50C9E8 </dd></dl>
-
-</div>
-</div>
 <a id="ae2c9c502485c7db2c74ad737e3c5bd97" name="ae2c9c502485c7db2c74ad737e3c5bd97"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ae2c9c502485c7db2c74ad737e3c5bd97">&#9670;&#160;</a></span>pPrimaryWindow</h2>
 
@@ -2034,7 +1828,7 @@ Variables</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">enum <a class="el" href="GUIWindow_8h.html#af188298480c77be8835d6760fa6edfd7">CURRENT_SCREEN</a> prev_screen_type</td>
+          <td class="memname">enum <a class="el" href="GUIEnums_8h.html#af188298480c77be8835d6760fa6edfd7">CURRENT_SCREEN</a> prev_screen_type</td>
         </tr>
       </table>
   </td>

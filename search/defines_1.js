@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['addguimessage_0',['AddGUIMessage',['../GUIWindow_8h.html#a25b68130b07896dbb9b5407382c8697f',1,'GUIWindow.h']]],
+  ['addguimessage_0',['AddGUIMessage',['../GUIMessageQueue_8h.html#a25b68130b07896dbb9b5407382c8697f',1,'GUIMessageQueue.h']]],
   ['addscripteddialogueline_1',['AddScriptedDialogueLine',['../NPC_8cpp.html#a0bd00a26ea1d9d71b8c2d40f679b7309',1,'AddScriptedDialogueLine():&#160;NPC.cpp'],['../UIDialogue_8cpp.html#ab7ce8052db83f5649deb17f55ded6535',1,'AddScriptedDialogueLine():&#160;UIDialogue.cpp']]],
   ['apply_5fto_5fboth_2',['APPLY_TO_BOTH',['../Arcomage_8cpp.html#ab4b6e488f7717cbb1ea499cdc1c3b9aa',1,'Arcomage.cpp']]],
   ['apply_5fto_5fenemy_3',['APPLY_TO_ENEMY',['../Arcomage_8cpp.html#aad66a61c05caeb30d5c7cad1c7228ae3',1,'Arcomage.cpp']]],
