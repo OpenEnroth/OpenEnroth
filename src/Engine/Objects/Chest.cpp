@@ -13,6 +13,7 @@
 #include "Engine/Objects/Items.h"
 #include "Engine/Objects/ObjectList.h"
 #include "Engine/Objects/SpriteObject.h"
+#include "Engine/Graphics/Sprites.h"
 #include "Engine/Tables/ItemTable.h"
 #include "Engine/Snapshots/EntitySnapshots.h"
 #include "Engine/Snapshots/SnapshotSerialization.h"
@@ -102,16 +103,12 @@ bool Chest::open(int uChestID, int objectPid) {
                 pitchAngle = 256;
             }
 
-            // offset distances so sprites appear in similar positions
-            constexpr int distances[4] = { 32, 0, 32, -32 };
             pDepth = 96;
             if (length_vector < pDepth) {
                 pDepth = length_vector;
             }
-
             Vec3i::rotate(pDepth, yawAngle, pitchAngle, Vec3i(pObjectX, pObjectY, pObjectZ), &pOut.x, &pOut.y, &pOut.z);
-            // adjust height to account for different sprite sizes and offset
-            pOut += Vec3i(0, 0, distances[pRandom]);
+
             pSpellObject.containing_item.Reset();
             pSpellObject.spell_skill = CHARACTER_SKILL_MASTERY_NONE;
             pSpellObject.spell_level = 0;
@@ -119,7 +116,17 @@ bool Chest::open(int uChestID, int objectPid) {
             pSpellObject.field_54 = 0;
             pSpellObject.uType = pSpriteID[pRandom];
             pSpellObject.uObjectDescID = pObjectList->ObjectIDByItemID(pSpellObject.uType);
+
+            // adjust height to account for different sprite sizes and offset
+            SpriteFrame *frame = pSpellObject.getSpriteFrame();
+            if (frame->uFlags & 0x20) {
+                // centering
+                pOut += Vec3i(0, 0, frame->hw_sprites[0]->texture->height() / 4);
+            } else {
+                pOut -= Vec3i(0, 0, (frame->hw_sprites[0]->texture->height() - 64) / 2);
+            }
             pSpellObject.vPosition = pOut;
+
             pSpellObject.uSoundID = 0;
             pSpellObject.uAttributes = SPRITE_IGNORE_RANGE | SPRITE_NO_Z_BUFFER;
             pSpellObject.uSectorID = pIndoor->GetSector(pOut);
