@@ -22,7 +22,11 @@ void BackToHouseMenu();
  * @offset 0x4BCACC
  */
 void onSelectShopDialogueOption(DIALOGUE_TYPE option);
-void PrepareHouse(HOUSE_ID house);  // idb
+
+/**
+ * @offset 0x44606A
+ */
+void prepareHouse(HOUSE_ID house);
 
 void createHouseUI(HOUSE_ID houseId);
 
@@ -74,6 +78,7 @@ class GUIWindow_House : public GUIWindow {
     }
 
     void houseDialogManager();
+    void houseNPCDialogue();
     void initializeDialog();
     void learnSelectedSkill(CharacterSkillType skill);
     void reinitDialogueWindow();

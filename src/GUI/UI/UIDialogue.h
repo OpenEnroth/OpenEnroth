@@ -30,4 +30,4 @@ void ReleaseBranchlessDialogue();
 
 void OnSelectNPCDialogueOption(DIALOGUE_TYPE option);
 
-extern const IndexedArray<const char *, PartyAlignment_Good, PartyAlignment_Evil> DialogueBackgroundResourceByAlignment;
+extern const IndexedArray<std::string, PartyAlignment_Good, PartyAlignment_Evil> dialogueBackgroundResourceByAlignment;

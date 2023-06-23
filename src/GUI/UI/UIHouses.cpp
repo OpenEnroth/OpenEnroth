@@ -313,87 +313,102 @@ bool enterHouse(HOUSE_ID uHouseID) {
         return false;
     }
 
-    int uOpenTime = buildingTable[uHouseID].uOpenTime;
-    int uCloseTime = buildingTable[uHouseID].uCloseTime;
     current_npc_text.clear();
     render->ClearZBuffer();
 
-    if (((uCloseTime - 1 <= uOpenTime) && ((pParty->uCurrentHour < uOpenTime) && (pParty->uCurrentHour >(uCloseTime - 1)))) ||
-            ((uCloseTime - 1 > uOpenTime) && ((pParty->uCurrentHour < uOpenTime) ||
-            (pParty->uCurrentHour >(uCloseTime - 1))))) {
-        int am_pm_flag_open = 0;
-        int am_pm_flag_close = 0;
-        if (uOpenTime > 12) {
-            uOpenTime -= 12;
-            am_pm_flag_open = 1;
+    int openHours = buildingTable[uHouseID].uOpenTime;
+    int closeHours = buildingTable[uHouseID].uCloseTime;
+    GameTime currentTime = pParty->GetPlayingTime();
+    GameTime currentTimeDays = GameTime::FromDays(currentTime.GetDays());
+    bool isOpened = false;
+
+    if (closeHours > openHours) {
+        // Store opened within one day
+        GameTime openTime = currentTimeDays.AddHours(openHours);
+        GameTime closeTime = currentTimeDays.AddHours(closeHours);
+
+        isOpened = (currentTime >= openTime) && (currentTime <= closeTime);
+    } else {
+        // Store opens in one day and closes on next day
+        GameTime openTime = currentTimeDays.AddHours(openHours);
+        GameTime closeTime = currentTimeDays.AddHours(closeHours);
+
+        isOpened = (currentTime <= closeTime) || (currentTime >= openTime);
+    }
+
+    if (!isOpened) {
+        int amPmOpen = 0;
+        int amPmClose = 0;
+
+        if (openHours > 12) {
+            openHours -= 12;
+            amPmOpen = 1;
         }
-        if (uCloseTime > 12) {
-            uCloseTime -= 12;
-            am_pm_flag_close = 1;
+        if (closeHours > 12) {
+            closeHours -= 12;
+            amPmClose = 1;
         }
 
-        GameUI_SetStatusBar(LSTR_FMT_OPEN_TIME, uOpenTime, localization->GetAmPm(am_pm_flag_open), uCloseTime, localization->GetAmPm(am_pm_flag_close));
+        GameUI_SetStatusBar(LSTR_FMT_OPEN_TIME, openHours, localization->GetAmPm(amPmOpen), closeHours, localization->GetAmPm(amPmClose));
         if (pParty->hasActiveCharacter()) {
             pParty->activeCharacter().playReaction(SPEECH_STORE_CLOSED);
         }
 
         return false;
-    } else {
-        if (isShop(uHouseID)) {  // entering shops and guilds
-            if (!(pParty->PartyTimes.shopBanTimes[uHouseID]) || (pParty->PartyTimes.shopBanTimes[uHouseID] <= pParty->GetPlayingTime())) {
-                pParty->PartyTimes.shopBanTimes[uHouseID] = GameTime(0);
-            } else {
-                GameUI_SetStatusBar(LSTR_BANNED_FROM_SHOP);
-                return false;
-            }
-        }
+    }
 
+    if (isShop(uHouseID)) {
+        if (!(pParty->PartyTimes.shopBanTimes[uHouseID]) || (pParty->PartyTimes.shopBanTimes[uHouseID] <= pParty->GetPlayingTime())) {
+            pParty->PartyTimes.shopBanTimes[uHouseID] = GameTime(0);
+        } else {
+            GameUI_SetStatusBar(LSTR_BANNED_FROM_SHOP);
+            return false;
+        }
+    }
+
+    uCurrentHouse_Animation = buildingTable[uHouseID].uAnimationID;
+    in_current_building_type = pAnimatedRooms[uCurrentHouse_Animation].uBuildingType;
+    if (in_current_building_type == BUILDING_THRONE_ROOM && pParty->uFine) {  // going to jail
+        uHouseID = HOUSE_JAIL;
         uCurrentHouse_Animation = buildingTable[uHouseID].uAnimationID;
-        in_current_building_type = pAnimatedRooms[uCurrentHouse_Animation].uBuildingType;
-        if (in_current_building_type == BUILDING_THRONE_ROOM && pParty->uFine) {  // going to jail
-            uHouseID = HOUSE_JAIL;
-            uCurrentHouse_Animation = buildingTable[uHouseID].uAnimationID;
-            restAndHeal(GameTime::FromYears(1));
-            in_current_building_type = pAnimatedRooms[buildingTable[HOUSE_JAIL].uAnimationID].uBuildingType;
-            ++pParty->uNumPrisonTerms;
-            pParty->uFine = 0;
-            for (Character &player : pParty->pCharacters) {
-                player.timeToRecovery = 0;
-                player.uNumDivineInterventionCastsThisDay = 0;
-                player.SetVariable(VAR_Award, Award_PrisonTerms);
-            }
+        restAndHeal(GameTime::FromYears(1));
+        in_current_building_type = pAnimatedRooms[buildingTable[HOUSE_JAIL].uAnimationID].uBuildingType;
+        ++pParty->uNumPrisonTerms;
+        pParty->uFine = 0;
+        for (Character &player : pParty->pCharacters) {
+            player.timeToRecovery = 0;
+            player.uNumDivineInterventionCastsThisDay = 0;
+            player.SetVariable(VAR_Award, Award_PrisonTerms);
+        }
+    }
+
+    currentHouseNpc = -1;
+    game_ui_dialogue_background = assets->getImage_Solid(dialogueBackgroundResourceByAlignment[pParty->alignment]);
+
+    prepareHouse(uHouseID);
+
+    if (houseNpcs.size() == 1) {
+        currentHouseNpc = 0;
+    }
+    pMediaPlayer->OpenHouseMovie(pAnimatedRooms[uCurrentHouse_Animation].video_name, 1u);
+    if (isMagicGuild(uHouseID)) {
+        // TODO(pskelton): check this behaviour
+        if (!pParty->hasActiveCharacter()) { // avoid nzi
+            pParty->setActiveToFirstCanAct();
         }
 
-        std::string pContainer = DialogueBackgroundResourceByAlignment[pParty->alignment];
-
-        currentHouseNpc = -1;
-        game_ui_dialogue_background = assets->getImage_Solid(pContainer);
-
-        PrepareHouse(uHouseID);
-
-        if (houseNpcs.size() == 1) {
-            currentHouseNpc = 0;
-        }
-        pMediaPlayer->OpenHouseMovie(pAnimatedRooms[uCurrentHouse_Animation].video_name, 1u);
-        if (isMagicGuild(uHouseID)) {
-            // TODO(pskelton): check this behaviour
-            if (!pParty->hasActiveCharacter())  // avoid nzi
-                pParty->setActiveToFirstCanAct();
-
-            if (!pParty->activeCharacter()._achievedAwardsBits[guildMembershipFlags[uHouseID]]) {
-                playHouseSound(uHouseID, HOUSE_SOUND_MAGIC_GUILD_MEMBERS_ONLY);
-                return true;
-            }
-        } else if ((isStable(uHouseID) || isBoat(uHouseID)) && !isTravelAvailable(uHouseID)) {
+        if (!pParty->activeCharacter()._achievedAwardsBits[guildMembershipFlags[uHouseID]]) {
+            playHouseSound(uHouseID, HOUSE_SOUND_MAGIC_GUILD_MEMBERS_ONLY);
             return true;
         }
-        playHouseSound(uHouseID, HOUSE_SOUND_GENERAL_GREETING);
+    } else if ((isStable(uHouseID) || isBoat(uHouseID)) && !isTravelAvailable(uHouseID)) {
         return true;
     }
+    playHouseSound(uHouseID, HOUSE_SOUND_GENERAL_GREETING);
+    return true;
 }
 
-//----- (0044606A) --------------------------------------------------------
-void PrepareHouse(HOUSE_ID house) {
+void prepareHouse(HOUSE_ID house) {
     // Default proprietor of non-simple houses
     int proprietorId = pAnimatedRooms[buildingTable[house].uAnimationID].house_npc_id;
     if (proprietorId) {
@@ -444,215 +459,6 @@ void PrepareHouse(HOUSE_ID house) {
     }
 }
 
-void SimpleHouseDialog() {
-    std::string v15;           // esi@14
-    GUIButton *pButton;  // eax@15
-    char *v29;           // esi@42
-    int v31;             // ST1C_4@42
-    int index;           // esi@51
-    int v36;
-    signed int all_text_height;   // ecx@54
-    int v40;                      // edi@57
-    Color pTextColor;  // ax@60
-    GUIFont *pTextFont;           // ebx@64
-    int pTextHeight;
-    GUIWindow w;      // [sp+Ch] [bp-110h]@64
-    std::string pInString;  // [sp+114h] [bp-8h]@12
-
-    GUIWindow house_window = *pDialogueWindow;
-    if (houseNpcs[currentHouseNpc].type == HOUSE_TRANSITION) {
-        int id = houseNpcs[currentHouseNpc].targetMapID;
-        house_window.uFrameX = 493;
-        house_window.uFrameWidth = 126;
-        house_window.uFrameZ = 366;
-        house_window.DrawTitleText(pFontCreate, 0, 2, colorTable.White, pMapStats->pInfos[id].pName, 3);
-        house_window.uFrameX = SIDE_TEXT_BOX_POS_X;
-        house_window.uFrameWidth = SIDE_TEXT_BOX_WIDTH;
-        house_window.uFrameZ = SIDE_TEXT_BOX_POS_Z;
-        if (pTransitionStrings[id].empty()) {
-            auto str = localization->FormatString(LSTR_FMT_ENTER_S, pMapStats->pInfos[id].pName.c_str());
-            house_window.DrawTitleText(pFontCreate, 0, (212 - pFontCreate->CalcTextHeight(str, house_window.uFrameWidth, 0)) / 2 + 101, colorTable.White, str, 3);
-            return;
-        }
-
-        int vertMargin = (212 - pFontCreate->CalcTextHeight(pTransitionStrings[id], house_window.uFrameWidth, 0)) / 2 + 101;
-        house_window.DrawTitleText(pFontCreate, 0, vertMargin, colorTable.White, pTransitionStrings[id], 3);
-        return;
-    }
-    house_window.uFrameWidth -= 10;
-    house_window.uFrameZ -= 10;
-    NPCData *pNPC = houseNpcs[currentHouseNpc].npc;
-
-    house_window.DrawTitleText(pFontCreate, SIDE_TEXT_BOX_POS_X, SIDE_TEXT_BOX_POS_Y, colorTable.EasternBlue, NameAndTitle(pNPC), 3);
-
-    if (houseNpcs[0].type != HOUSE_PROPRIETOR) {
-        if (uDialogueType == DIALOGUE_NULL) {
-            if (pNPC->greet) {
-                house_window.uFrameWidth = game_viewport_width;
-                house_window.uFrameZ = 452;
-                if (pNPC->uFlags & NPC_GREETED_SECOND) {
-                    pInString = pNPCStats->pNPCGreetings[pNPC->greet].pGreeting2;
-                } else {
-                    pInString = pNPCStats->pNPCGreetings[pNPC->greet].pGreeting1;
-                }
-                // pInString = (char *)*(&pNPCStats->field_17884 +
-                // ((pNPC->uFlags & 3) == 2) + 2 * pNPC->greet);
-                render->DrawTextureCustomHeight(
-                    8 / 640.0f,
-                    (352 - (pFontArrus->CalcTextHeight(
-                        pInString, house_window.uFrameWidth, 13) +
-                        7)) / 480.0f,
-                    ui_leather_mm7,
-                    (pFontArrus->CalcTextHeight(pInString,
-                        house_window.uFrameWidth, 13) + 7));
-
-                int h = (pFontArrus->CalcTextHeight(pInString, house_window.uFrameWidth, 13) + 7);
-                render->DrawTextureNew(8 / 640.0f, (347 - h) / 480.0f, _591428_endcap);
-                pDialogueWindow->DrawText(pFontArrus, {13, 354 - h}, colorTable.White,
-                    pFontArrus->FitTextInAWindow(pInString, house_window.uFrameWidth, 13));
-            }
-        }
-    }
-    // for right panel
-    GUIWindow right_panel_window = *pDialogueWindow;
-    right_panel_window.uFrameX = SIDE_TEXT_BOX_POS_X;
-    right_panel_window.uFrameWidth = SIDE_TEXT_BOX_WIDTH;
-    right_panel_window.uFrameZ = SIDE_TEXT_BOX_POS_Z;
-    for (int i = right_panel_window.pStartingPosActiveItem;
-        i < right_panel_window.pStartingPosActiveItem +
-        right_panel_window.pNumPresenceButton;
-        ++i) {
-        pButton = right_panel_window.GetControl(i);
-        switch (pButton->msg_param) {
-        case DIALOGUE_SCRIPTED_LINE_1:
-            v15 = pNPCTopics[pNPC->dialogue_1_evt_id].pTopic;
-            if (v15.empty()) {
-                pButton->msg_param = 0;
-            }
-            pButton->sLabel = v15;
-            continue;
-        case DIALOGUE_SCRIPTED_LINE_2:
-            v15 = pNPCTopics[pNPC->dialogue_2_evt_id].pTopic;
-            if (v15.empty()) {
-                pButton->msg_param = 0;
-            }
-
-            pButton->sLabel = v15;
-            continue;
-
-        case DIALOGUE_SCRIPTED_LINE_3:
-            v15 = pNPCTopics[pNPC->dialogue_3_evt_id].pTopic;
-            if (v15.empty()) {
-                pButton->msg_param = 0;
-            }
-            pButton->sLabel = v15;
-            continue;
-        case DIALOGUE_SCRIPTED_LINE_4:
-            v15 = pNPCTopics[pNPC->dialogue_4_evt_id].pTopic;
-            if (v15.empty()) {
-                pButton->msg_param = 0;
-            }
-            pButton->sLabel = v15;
-            continue;
-        case DIALOGUE_SCRIPTED_LINE_5:
-            v15 = pNPCTopics[pNPC->dialogue_5_evt_id].pTopic;
-            if (v15.empty()) {
-                pButton->msg_param = 0;
-            }
-            pButton->sLabel = v15;
-            continue;
-        case DIALOGUE_SCRIPTED_LINE_6:
-            v15 = pNPCTopics[pNPC->dialogue_6_evt_id].pTopic;
-            if (v15.empty()) {
-                pButton->msg_param = 0;
-            }
-            pButton->sLabel = v15;
-            continue;
-        case DIALOGUE_HIRE_FIRE:
-            pButton->sLabel = localization->GetString(LSTR_HIRE);
-            continue;
-        case DIALOGUE_PROFESSION_DETAILS:
-            pButton->sLabel = localization->GetString(LSTR_MORE_INFORMATION);
-            continue;
-        case DIALOGUE_79_mastery_teacher:
-            pButton->sLabel = _4B254D_SkillMasteryTeacher(right_panel_window.wData.val);
-            continue;
-        case DIALOGUE_82_join_guild:
-            pButton->sLabel = GetJoinGuildDialogueOption(static_cast<GUILD_ID>(right_panel_window.wData.val));
-            continue;
-        case DIALOGUE_83_bounty_hunting:
-            current_npc_text = ((GUIWindow_TownHall*)window_SpeakInHouse)->bountyHuntingText();
-            pButton->sLabel.clear();
-            continue;
-        }
-        if (pButton->msg_param > 0 && pButton->msg_param < DIALOGUE_13_hiring_related) {
-            pButton->sLabel = localization->GetString(LSTR_JOIN);
-            continue;
-        }
-        if (pButton->msg_param > DIALOGUE_13_hiring_related && pButton->msg_param < DIALOGUE_SCRIPTED_LINE_1) {
-            pButton->sLabel.clear();
-            continue;
-        }
-        if (pButton->msg_param != DIALOGUE_93) {
-            pButton->sLabel.clear();
-            continue;
-        }
-    }
-    // DIALOGUE_93 fallthrough
-    index = 0;
-    all_text_height = 0;
-    for (int i = pDialogueWindow->pStartingPosActiveItem;
-        i < pDialogueWindow->pStartingPosActiveItem +
-        pDialogueWindow->pNumPresenceButton;
-        ++i) {
-        pButton = pDialogueWindow->GetControl(i);
-        all_text_height += pFontArrus->CalcTextHeight(
-            pButton->sLabel, right_panel_window.uFrameWidth, 0);
-        index++;
-    }
-    if (index) {
-        v36 = (SIDE_TEXT_BOX_BODY_TEXT_HEIGHT - all_text_height) / index;
-        if (v36 > SIDE_TEXT_BOX_MAX_SPACING) v36 = SIDE_TEXT_BOX_MAX_SPACING;
-        v40 = (SIDE_TEXT_BOX_BODY_TEXT_HEIGHT - v36 * index - all_text_height) / 2 - v36 / 2 + SIDE_TEXT_BOX_BODY_TEXT_OFFSET;
-        for (int i = pDialogueWindow->pStartingPosActiveItem;
-            i < pDialogueWindow->pNumPresenceButton +
-            pDialogueWindow->pStartingPosActiveItem;
-            ++i) {
-            pButton = pDialogueWindow->GetControl(i);
-            pButton->uY = v36 + v40;
-            pTextHeight = pFontArrus->CalcTextHeight(
-                pButton->sLabel, right_panel_window.uFrameWidth, 0);
-            pButton->uHeight = pTextHeight;
-            v40 = pButton->uY + pTextHeight - 1;
-            pButton->uW = v40 + 6;
-            pTextColor = colorTable.Jonquil;
-            if (pDialogueWindow->pCurrentPosActiveItem != i)
-                pTextColor = colorTable.White;
-            right_panel_window.DrawTitleText(pFontArrus, 0, pButton->uY,
-                pTextColor, pButton->sLabel, 3);
-        }
-    }
-    if (current_npc_text.length() > 0) {
-        w.uFrameWidth = 458;
-        w.uFrameZ = 457;
-        pTextFont = pFontArrus;
-        pTextHeight =
-            pFontArrus->CalcTextHeight(current_npc_text, w.uFrameWidth, 13) + 7;
-        if (352 - pTextHeight < 8) {
-            pTextFont = pFontCreate;
-            pTextHeight = pFontCreate->CalcTextHeight(current_npc_text,
-                w.uFrameWidth, 13) +
-                7;
-        }
-        render->DrawTextureCustomHeight(8 / 640.0f,
-            (352 - pTextHeight) / 480.0f,
-            ui_leather_mm7, pTextHeight);
-        render->DrawTextureNew(8 / 640.0f, (347 - pTextHeight) / 480.0f,
-            _591428_endcap);
-        house_window.DrawText(pTextFont, {13, 354 - pTextHeight}, colorTable.White, pTextFont->FitTextInAWindow(current_npc_text, w.uFrameWidth, 13));
-    }
-}
-
 void onSelectShopDialogueOption(DIALOGUE_TYPE option) {
     if (!pDialogueWindow || !pDialogueWindow->pNumPresenceButton) {
         return;
@@ -678,7 +484,7 @@ bool houseDialogPressEscape() {
     }
 
     if (dialog_menu_id == DIALOGUE_OTHER) {
-        _4B4224_UpdateNPCTopics(currentHouseNpc);
+        updateNPCTopics(currentHouseNpc);
         BackToHouseMenu();
         return true;
     }
@@ -728,6 +534,8 @@ void createHouseUI(HOUSE_ID houseId) {
       case BUILDING_BODY_GUILD:
       case BUILDING_LIGHT_GUILD:
       case BUILDING_DARK_GUILD:
+      case BUILDING_ELEMENTAL_GUILD:
+      case BUILDING_SELF_GUILD:
       case BUILDING_MIRRORED_PATH_GUILD:
         window_SpeakInHouse = new GUIWindow_MagicGuild(houseId);
         break;
@@ -778,7 +586,7 @@ void createHouseUI(HOUSE_ID houseId) {
     window_SpeakInHouse->CreateButton({407, 424}, {31, 0}, 2, 94, UIMSG_SelectCharacter, 4, InputAction::SelectChar4, "");
     window_SpeakInHouse->CreateButton({0, 0}, {0, 0}, 1, 0, UIMSG_CycleCharacters, 0, InputAction::CharCycle, "");
     if (houseNpcs.size() == 1) {
-        _4B4224_UpdateNPCTopics(0);
+        updateNPCTopics(0);
     }
 }
 
@@ -808,6 +616,168 @@ void playHouseSound(HOUSE_ID houseID, HouseSoundType type) {
         int roomSoundId = pAnimatedRooms[buildingTable[houseID].uAnimationID].uRoomSoundId;
         SoundID soundId = SoundID(std::to_underlying(type) + 100 * (roomSoundId + 300));
         pAudioPlayer->playHouseSound(soundId, true);
+    }
+}
+
+void GUIWindow_House::houseNPCDialogue() {
+    GUIWindow house_window = *pDialogueWindow;
+    if (houseNpcs[currentHouseNpc].type == HOUSE_TRANSITION) {
+        int id = houseNpcs[currentHouseNpc].targetMapID;
+        house_window.uFrameX = 493;
+        house_window.uFrameWidth = 126;
+        house_window.uFrameZ = 366;
+        house_window.DrawTitleText(pFontCreate, 0, 2, colorTable.White, pMapStats->pInfos[id].pName, 3);
+        house_window.uFrameX = SIDE_TEXT_BOX_POS_X;
+        house_window.uFrameWidth = SIDE_TEXT_BOX_WIDTH;
+        house_window.uFrameZ = SIDE_TEXT_BOX_POS_Z;
+        if (pTransitionStrings[id].empty()) {
+            auto str = localization->FormatString(LSTR_FMT_ENTER_S, pMapStats->pInfos[id].pName.c_str());
+            house_window.DrawTitleText(pFontCreate, 0, (212 - pFontCreate->CalcTextHeight(str, house_window.uFrameWidth, 0)) / 2 + 101, colorTable.White, str, 3);
+            return;
+        }
+
+        int vertMargin = (212 - pFontCreate->CalcTextHeight(pTransitionStrings[id], house_window.uFrameWidth, 0)) / 2 + 101;
+        house_window.DrawTitleText(pFontCreate, 0, vertMargin, colorTable.White, pTransitionStrings[id], 3);
+        return;
+    }
+
+    house_window.uFrameWidth -= 10;
+    house_window.uFrameZ -= 10;
+    NPCData *pNPC = houseNpcs[currentHouseNpc].npc;
+
+    house_window.DrawTitleText(pFontCreate, SIDE_TEXT_BOX_POS_X, SIDE_TEXT_BOX_POS_Y, colorTable.EasternBlue, NameAndTitle(pNPC), 3);
+
+    if (houseNpcs[0].type != HOUSE_PROPRIETOR) {
+        if (uDialogueType == DIALOGUE_NULL) {
+            if (pNPC->greet) {
+                std::string greetString;
+
+                house_window.uFrameWidth = game_viewport_width;
+                house_window.uFrameZ = 452;
+                if (pNPC->uFlags & NPC_GREETED_SECOND) {
+                    greetString = pNPCStats->pNPCGreetings[pNPC->greet].pGreeting2;
+                } else {
+                    greetString = pNPCStats->pNPCGreetings[pNPC->greet].pGreeting1;
+                }
+
+                int textHeight = pFontArrus->CalcTextHeight(greetString, house_window.uFrameWidth, 13) + 7;
+                render->DrawTextureCustomHeight(8 / 640.0f, (352 - textHeight) / 480.0f, ui_leather_mm7, textHeight);
+                render->DrawTextureNew(8 / 640.0f, (347 - textHeight) / 480.0f, _591428_endcap);
+                pDialogueWindow->DrawText(pFontArrus, {13, 354 - textHeight}, colorTable.White, pFontArrus->FitTextInAWindow(greetString, house_window.uFrameWidth, 13));
+            }
+        }
+    }
+
+    // for right panel
+    GUIWindow right_panel_window = *pDialogueWindow;
+    right_panel_window.uFrameX = SIDE_TEXT_BOX_POS_X;
+    right_panel_window.uFrameWidth = SIDE_TEXT_BOX_WIDTH;
+    right_panel_window.uFrameZ = SIDE_TEXT_BOX_POS_Z;
+
+    std::vector<std::string> optionsText;
+
+    int buttonLimit = pDialogueWindow->pStartingPosActiveItem + pDialogueWindow->pNumPresenceButton;
+    for (int i = pDialogueWindow->pStartingPosActiveItem; i < buttonLimit; ++i) {
+        GUIButton *pButton = right_panel_window.GetControl(i);
+        switch (pButton->msg_param) {
+          case DIALOGUE_SCRIPTED_LINE_1:
+            if (pNPCTopics[pNPC->dialogue_1_evt_id].pTopic.empty()) {
+                optionsText.push_back("");
+                pButton->msg_param = 0;
+            } else {
+                optionsText.push_back(pNPCTopics[pNPC->dialogue_1_evt_id].pTopic);
+            }
+            continue;
+          case DIALOGUE_SCRIPTED_LINE_2:
+            if (pNPCTopics[pNPC->dialogue_2_evt_id].pTopic.empty()) {
+                optionsText.push_back("");
+                pButton->msg_param = 0;
+            } else {
+                optionsText.push_back(pNPCTopics[pNPC->dialogue_2_evt_id].pTopic);
+            }
+            continue;
+          case DIALOGUE_SCRIPTED_LINE_3:
+            if (pNPCTopics[pNPC->dialogue_3_evt_id].pTopic.empty()) {
+                optionsText.push_back("");
+                pButton->msg_param = 0;
+            } else {
+                optionsText.push_back(pNPCTopics[pNPC->dialogue_3_evt_id].pTopic);
+            }
+            continue;
+          case DIALOGUE_SCRIPTED_LINE_4:
+            if (pNPCTopics[pNPC->dialogue_4_evt_id].pTopic.empty()) {
+                optionsText.push_back("");
+                pButton->msg_param = 0;
+            } else {
+                optionsText.push_back(pNPCTopics[pNPC->dialogue_4_evt_id].pTopic);
+            }
+            continue;
+          case DIALOGUE_SCRIPTED_LINE_5:
+            if (pNPCTopics[pNPC->dialogue_5_evt_id].pTopic.empty()) {
+                optionsText.push_back("");
+                pButton->msg_param = 0;
+            } else {
+                optionsText.push_back(pNPCTopics[pNPC->dialogue_5_evt_id].pTopic);
+            }
+            continue;
+          case DIALOGUE_SCRIPTED_LINE_6:
+            if (pNPCTopics[pNPC->dialogue_6_evt_id].pTopic.empty()) {
+                optionsText.push_back("");
+                pButton->msg_param = 0;
+            } else {
+                optionsText.push_back(pNPCTopics[pNPC->dialogue_6_evt_id].pTopic);
+            }
+            continue;
+          case DIALOGUE_HIRE_FIRE:
+            optionsText.push_back(localization->GetString(LSTR_HIRE));
+            continue;
+          case DIALOGUE_PROFESSION_DETAILS:
+            optionsText.push_back(localization->GetString(LSTR_MORE_INFORMATION));
+            continue;
+          case DIALOGUE_79_mastery_teacher:
+            optionsText.push_back(_4B254D_SkillMasteryTeacher(right_panel_window.wData.val));
+            continue;
+          case DIALOGUE_82_join_guild:
+            optionsText.push_back(GetJoinGuildDialogueOption(static_cast<GUILD_ID>(right_panel_window.wData.val)));
+            continue;
+          case DIALOGUE_83_bounty_hunting:
+            current_npc_text = ((GUIWindow_TownHall*)window_SpeakInHouse)->bountyHuntingText();
+            optionsText.push_back("");
+            continue;
+        }
+
+        if (pButton->msg_param > 0 && pButton->msg_param < DIALOGUE_13_hiring_related) {
+            optionsText.push_back(localization->GetString(LSTR_JOIN));
+            continue;
+        }
+        if (pButton->msg_param > DIALOGUE_13_hiring_related && pButton->msg_param < DIALOGUE_SCRIPTED_LINE_1) {
+            optionsText.push_back("");
+            continue;
+        }
+        if (pButton->msg_param != DIALOGUE_93) {
+            optionsText.push_back("");
+            continue;
+        }
+    }
+
+    if (optionsText.size()) {
+        drawOptions(optionsText, colorTable.Jonquil);
+    }
+
+    if (current_npc_text.length() > 0) {
+        GUIWindow win;
+
+        win.uFrameWidth = 458;
+        win.uFrameZ = 457;
+        GUIFont *pTextFont = pFontArrus;
+        int pTextHeight = pFontArrus->CalcTextHeight(current_npc_text, win.uFrameWidth, 13) + 7;
+        if (352 - pTextHeight < 8) {
+            pTextFont = pFontCreate;
+            pTextHeight = pFontCreate->CalcTextHeight(current_npc_text, win.uFrameWidth, 13) + 7;
+        }
+        render->DrawTextureCustomHeight(8 / 640.0f, (352 - pTextHeight) / 480.0f, ui_leather_mm7, pTextHeight);
+        render->DrawTextureNew(8 / 640.0f, (347 - pTextHeight) / 480.0f, _591428_endcap);
+        house_window.DrawText(pTextFont, {13, 354 - pTextHeight}, colorTable.White, pTextFont->FitTextInAWindow(current_npc_text, win.uFrameWidth, 13));
     }
 }
 
@@ -886,6 +856,7 @@ void GUIWindow_House::drawOptions(std::vector<std::string> &optionsText, Color s
             button->uY = spacing + offset;
             button->uHeight = textHeight;
             button->uW = button->uY + textHeight - 1 + 6;
+            button->sLabel = optionsText[i];
             if (denseSpacing) {
                 offset += pFontArrus->GetHeight() - 3 + textHeight;
             } else {
@@ -896,6 +867,7 @@ void GUIWindow_House::drawOptions(std::vector<std::string> &optionsText, Color s
             button->uW = 0;
             button->uHeight = 0;
             button->uY = 0;
+            button->sLabel.clear();
         }
     }
 }
@@ -910,11 +882,13 @@ void GUIWindow_House::houseDialogManager() {
     render->DrawTextureNew(468 / 640.0f, 0, game_ui_right_panel_frame);
 
     if (currentHouseNpc == -1 || houseNpcs[currentHouseNpc].type != HOUSE_TRANSITION) {
+        // Draw house title
         if (!buildingTable[houseId()].pName.empty()) {
             if (current_screen_type != CURRENT_SCREEN::SCREEN_SHOP_INVENTORY) {
                 int yPos = 2 * pFontCreate->GetHeight() - 6 - pFontCreate->CalcTextHeight(buildingTable[houseId()].pName, 130, 0);
-                if (yPos < 0)
+                if (yPos < 0) {
                     yPos = 0;
+                }
                 pWindow.DrawTitleText(pFontCreate, 0x1EAu, yPos / 2 + 4, colorTable.White, buildingTable[houseId()].pName, 3);
             }
         }
@@ -923,6 +897,7 @@ void GUIWindow_House::houseDialogManager() {
     pWindow.uFrameWidth += 8;
     pWindow.uFrameZ += 8;
     if (currentHouseNpc == -1) {
+        // Either house have no residents or current screen is for selecting resident to begin dialogue
         render->DrawTextureNew(471 / 640.0f, 445 / 480.0f, ui_exit_cancel_button_background);
 
         if (in_current_building_type == BUILDING_JAIL) {
@@ -930,14 +905,15 @@ void GUIWindow_House::houseDialogManager() {
             return;
         }
         if (!current_npc_text.empty()) {
+            // TODO(Nik-RE-dev): separate text field drawing and merge with similar code from other places
             GUIWindow pDialogWindow;
             pDialogWindow.uFrameWidth = 458;
             pDialogWindow.uFrameZ = 457;
             int pTextHeight = pFontArrus->CalcTextHeight(current_npc_text, pDialogWindow.uFrameWidth, 13);
-            int v6 = pTextHeight + 7;
-            render->DrawTextureCustomHeight(8 / 640.0f, (352 - (pTextHeight + 7)) / 480.0f, ui_leather_mm7, pTextHeight + 7);
-            render->DrawTextureNew(8 / 640.0f, (347 - v6) / 480.0f, _591428_endcap);
-            DrawText(pFontArrus, {13, 354 - v6}, colorTable.White, pFontArrus->FitTextInAWindow(current_npc_text, pDialogWindow.uFrameWidth, 13));
+            int pTextBackgroundHeight = pTextHeight + 7;
+            render->DrawTextureCustomHeight(8 / 640.0f, (352 - pTextBackgroundHeight) / 480.0f, ui_leather_mm7, pTextBackgroundHeight);
+            render->DrawTextureNew(8 / 640.0f, (347 - pTextBackgroundHeight) / 480.0f, _591428_endcap);
+            DrawText(pFontArrus, {13, 354 - pTextBackgroundHeight}, colorTable.White, pFontArrus->FitTextInAWindow(current_npc_text, pDialogWindow.uFrameWidth, 13));
         }
 
         for (int i = 0; i < houseNpcs.size(); ++i) {
@@ -972,16 +948,12 @@ void GUIWindow_House::houseDialogManager() {
     render->DrawTextureNew(pNPCPortraits_x[0][0] / 640.0f, pNPCPortraits_y[0][0] / 480.0f, houseNpcs[currentHouseNpc].icon);
     if (current_screen_type == CURRENT_SCREEN::SCREEN_SHOP_INVENTORY) {
         CharacterUI_InventoryTab_Draw(&pParty->activeCharacter(), true);
-        if (houseNpcs[currentHouseNpc].type == HOUSE_TRANSITION) {
-            render->DrawTextureNew(556 / 640.0f, 451 / 480.0f, dialogue_ui_x_x_u);
-            render->DrawTextureNew(476 / 640.0f, 451 / 480.0f, dialogue_ui_x_ok_u);
-        } else {
-            render->DrawTextureNew(471 / 640.0f, 445 / 480.0f, ui_exit_cancel_button_background);
-        }
+        render->DrawTextureNew(471 / 640.0f, 445 / 480.0f, ui_exit_cancel_button_background);
         return;
     }
-    if (currentHouseNpc || houseNpcs[0].type != HOUSE_PROPRIETOR) {  // emerald isle ship before quest's done
-        SimpleHouseDialog();
+    if (currentHouseNpc || houseNpcs[0].type != HOUSE_PROPRIETOR) {
+        // Dialogue with NPC in house
+        houseNPCDialogue();
     } else {
         std::string nameAndTitle = NameAndTitle(buildingTable[houseId()].pProprieterName, buildingTable[houseId()].pProprieterTitle);
         pWindow.DrawTitleText(pFontCreate, SIDE_TEXT_BOX_POS_X, SIDE_TEXT_BOX_POS_Y, colorTable.EasternBlue, nameAndTitle, 3);

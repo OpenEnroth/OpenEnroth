@@ -83,7 +83,7 @@ GUIWindow_Transition::GUIWindow_Transition(HOUSE_ID transitionHouse, uint exit_p
     mapid = pMapStats->GetMapInfo(pCurrentMapName);
     _mapName = locationName;
 
-    game_ui_dialogue_background = assets->getImage_Solid(DialogueBackgroundResourceByAlignment[pParty->alignment]);
+    game_ui_dialogue_background = assets->getImage_Solid(dialogueBackgroundResourceByAlignment[pParty->alignment]);
 
     transition_ui_icon = assets->getImage_Solid(pHouse_ExitPictures[exit_pic_id]);
 
@@ -145,7 +145,7 @@ GUIWindow_Transition::GUIWindow_Transition(HOUSE_ID transitionHouse, uint exit_p
 GUIWindow_Travel::GUIWindow_Travel() : GUIWindow(WINDOW_ChangeLocation, {0, 0}, render->GetRenderDimensions(), 0) {
     pEventTimer->Pause();
 
-    game_ui_dialogue_background = assets->getImage_Solid(DialogueBackgroundResourceByAlignment[pParty->alignment]);
+    game_ui_dialogue_background = assets->getImage_Solid(dialogueBackgroundResourceByAlignment[pParty->alignment]);
 
     transition_ui_icon = assets->getImage_Solid("outside");
     if (pMapStats->GetMapInfo(pCurrentMapName)) {

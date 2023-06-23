@@ -499,7 +499,7 @@ void Game::processQueuedMessages() {
                 OnSelectNPCDialogueOption((DIALOGUE_TYPE)uMessageParam);
                 continue;
             case UIMSG_ClickHouseNPCPortrait:
-                _4B4224_UpdateNPCTopics(uMessageParam);
+                updateNPCTopics(uMessageParam);
                 continue;
                 // case UIMSG_StartNewGame:
                 // Game_StartNewGameWhilePlaying(uMessageParam); continue;
@@ -1081,7 +1081,7 @@ void Game::processQueuedMessages() {
                 }
                 continue;
 
-            case UIMSG_BF:
+            case UIMSG_HouseTransitionConfirmation:
                 __debugbreak();
                 playButtonSoundOnEscape = false;
                 pAudioPlayer->playUISound(SOUND_StartMainChoice02);

@@ -1219,7 +1219,7 @@ void ClickNPCTopic(DIALOGUE_TYPE topic) {
     }
     pParty->hirelingScrollPosition = 0;
     pParty->CountHirelings();
-    PrepareHouse(static_cast<HOUSE_ID>(window_SpeakInHouse->wData.val));
+    prepareHouse(window_SpeakInHouse->houseId());
     dialog_menu_id = DIALOGUE_MAIN;
 
     pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 1, 0);
