@@ -39,7 +39,7 @@ struct FileCloser {
 
 inline int LODFile_IconsBitmaps::LoadDummyTexture() {
     for (unsigned int i = 0; i < uNumLoadedFiles; ++i)
-        if (!strcmp(pTextures[i].header.pName, "pending")) return i;
+        if (!strcmp(pTextures[i].header.pName.data(), "pending")) return i;
     return LoadTextureFromLOD(&pTextures[uNumLoadedFiles], "pending",
                               TEXTURE_24BIT_PALETTE);
 }
@@ -332,7 +332,7 @@ void LODFile_IconsBitmaps::ReleaseAll() {
 
 unsigned int LODFile_IconsBitmaps::FindTextureByName(const std::string &pName) {
     for (uint i = 0; i < this->uNumLoadedFiles; i++) {
-        if (iequals(this->pTextures[i].header.pName, pName))
+        if (iequals(this->pTextures[i].header.pName.data(), pName))
             return i;
     }
     return -1;
@@ -851,7 +851,7 @@ void LODFile_IconsBitmaps::SetupPalettes(unsigned int uTargetRBits,
         this->uTextureBlueBits = uTargetBBits;
         for (unsigned int i = 0; i < this->uNumLoadedFiles; ++i) {
             if (this->pTextures[i].pPalette24) {
-                FILE *File = FindContainer(this->pTextures[i].header.pName);
+                FILE *File = FindContainer(this->pTextures[i].header.pName.data());
                 if (File) {
                     TextureHeader DstBuf;
                     if (fread(&DstBuf, sizeof(TextureHeader), 1, File) != 1)
@@ -950,7 +950,7 @@ int LODFile_IconsBitmaps::ReloadTexture(Texture_MM7 *pDst,
     if (fread(pDst, 0x30u, 1, File) != 1)
         return -1;
 
-    strncpy(pDst->header.pName, pContainer.c_str(), 16);
+    strncpy(pDst->header.pName.data(), pContainer.c_str(), 16);
     v8 = pDst->header.uTextureSize;
 
     if ((int)v8 <= (int)v7) {
@@ -981,7 +981,7 @@ int LODFile_IconsBitmaps::LoadTextureFromLOD(Texture_MM7 *pOutTex, const std::st
     TextureHeader *header = &pOutTex->header;
     if (fread(header, sizeof(TextureHeader), 1, pFile) != 1)
         return -1;
-    strncpy(header->pName, pContainer.c_str(), 16);
+    strncpy(header->pName.data(), pContainer.c_str(), 16);
     data_size -= sizeof(TextureHeader);
 
     // ICONS
@@ -1055,7 +1055,7 @@ Texture_MM7 *LODFile_IconsBitmaps::LoadTexturePtr(const std::string &pContainer,
 
 unsigned int LODFile_IconsBitmaps::LoadTexture(const std::string &pContainer, TEXTURE_TYPE uTextureType) {
     for (uint i = 0; i < uNumLoadedFiles; ++i) {
-        if (iequals(pContainer, pTextures[i].header.pName)) {
+        if (iequals(pContainer.data(), pTextures[i].header.pName.data())) {
             return i;
         }
     }
@@ -1064,7 +1064,7 @@ unsigned int LODFile_IconsBitmaps::LoadTexture(const std::string &pContainer, TE
 
     if (LoadTextureFromLOD(&pTextures[uNumLoadedFiles], pContainer, uTextureType) == -1) {
         for (uint i = 0; i < uNumLoadedFiles; ++i) {
-            if (iequals(pTextures[i].header.pName, "pending")) {
+            if (iequals(pTextures[i].header.pName.data(), "pending")) {
                 return i;
             }
         }

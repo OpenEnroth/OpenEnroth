@@ -42,7 +42,7 @@ class Game {
     PlatformApplication *_application = nullptr;
     std::shared_ptr<GameConfig> _config;
     std::unique_ptr<NuklearEventHandler> _nuklearHandler;
-    std::shared_ptr<Engine> _engine;
+    std::unique_ptr<Engine> _engine;
     std::shared_ptr<IRender> _render;
     std::shared_ptr<Mouse> _mouse = nullptr;
     Logger *_log = nullptr;

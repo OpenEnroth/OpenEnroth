@@ -5,7 +5,6 @@ set(ENGINE_SOURCES
         AttackList.cpp
         Conditions.cpp
         Engine.cpp
-        EngineFactory.cpp
         EngineGlobals.cpp
         ErrorHandling.cpp
         EngineIocContainer.cpp
@@ -27,7 +26,6 @@ set(ENGINE_HEADERS
         AttackList.h
         Conditions.h
         Engine.h
-        EngineFactory.h
         EngineGlobals.h
         ErrorHandling.h
         EngineIocContainer.h

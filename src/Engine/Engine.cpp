@@ -95,7 +95,7 @@ torchB.icon->texture->GetWidth()) / 640.0f, 48 / 480.0f, icon->texture);
 
 */
 
-std::shared_ptr<Engine> engine;
+Engine *engine;
 GAME_STATE uGameState;
 
 void Engine_DeinitializeAndTerminate(int exitCode) {
