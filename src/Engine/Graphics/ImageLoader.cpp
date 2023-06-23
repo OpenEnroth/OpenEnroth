@@ -8,6 +8,7 @@
 #include "Engine/EngineIocContainer.h"
 #include "Engine/Graphics/IRender.h"
 #include "Engine/Graphics/Sprites.h"
+#include "Engine/Snapshots/CommonSnapshots.h"
 
 #include "Library/Image/ImageFunctions.h"
 #include "Library/Image/PCX.h"
@@ -204,12 +205,15 @@ bool Bitmaps_LOD_Loader::Load(RgbaImage *rgbaImage, GrayscaleImage *indexedImage
     Assert(tex->paletted_pixels);
     Assert(tex->pPalette24);
 
+    std::string name;
+    reconstruct(tex->header.pName, &name);
+
     size_t w = tex->header.uTextureWidth;
     size_t h = tex->header.uTextureHeight;
 
     *indexedImage = GrayscaleImage::copy(w, h, tex->paletted_pixels); // NOLINT: this is not std::copy.
 
-    if (!transparentTextures.contains(tex->header.pName)) {
+    if (!transparentTextures.contains(name)) {
         *palette = MakePaletteSolid(tex->pPalette24);
         *rgbaImage = makeRgbaImage(*indexedImage, *palette);
     } else {

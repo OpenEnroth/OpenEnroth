@@ -1,12 +1,13 @@
 #pragma once
 
 #include <cstdint>
+#include <array>
 
 #include "Library/Binary/MemCopySerialization.h"
 
 #pragma pack(push, 1)
 struct TextureHeader {
-    char pName[16];
+    std::array<char, 16> pName; // TODO(captainurist): there's quite a lot of unsafe .data() calls for this field.
     uint32_t uSizeOfMaxLevelOfDetail;
     uint32_t uTextureSize;
     uint16_t uTextureWidth;
