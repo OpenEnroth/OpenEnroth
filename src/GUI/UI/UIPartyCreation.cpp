@@ -1,8 +1,6 @@
 #include <cstdlib>
 #include <string>
 
-#include "Application/Game.h"
-
 #include "Engine/AssetsManager.h"
 #include "Engine/Engine.h"
 #include "Engine/EngineGlobals.h"
@@ -17,6 +15,7 @@
 
 #include "GUI/GUIButton.h"
 #include "GUI/GUIFont.h"
+#include "GUI/GUIMessageQueue.h"
 #include "GUI/UI/UIGame.h"
 #include "GUI/UI/UIPartyCreation.h"
 
@@ -25,9 +24,9 @@
 
 #include "Media/Audio/AudioPlayer.h"
 
-
 #include "Library/Random/Random.h"
 
+#include "Application/Game.h"
 
 using Io::TextInputType;
 

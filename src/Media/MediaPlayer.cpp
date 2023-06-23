@@ -28,16 +28,15 @@ extern "C" {
 #include "Engine/Graphics/IRender.h"
 #include "Library/Logger/Logger.h"
 
-#include "GUI/GUIWindow.h"
-
 #include "Io/Mouse.h"
 
 #include "Media/Audio/AudioPlayer.h"
 #include "Media/Audio/OpenALSoundProvider.h"
+#include "Media/MediaLogger.h"
 
 #include "Utility/Memory/FreeDeleter.h"
 
-#include "MediaLogger.h"
+#include "GUI/GUIMessageQueue.h"
 
 using namespace std::chrono_literals; // NOLINT
 

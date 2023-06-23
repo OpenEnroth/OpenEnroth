@@ -15,6 +15,7 @@
 
 #include "GUI/GUIButton.h"
 #include "GUI/GUIWindow.h"
+#include "GUI/GUIMessageQueue.h"
 #include "GUI/UI/UIDialogue.h"
 
 #include "Media/Audio/AudioPlayer.h"

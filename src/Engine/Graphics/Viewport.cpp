@@ -17,9 +17,9 @@
 #include "Engine/TurnEngine/TurnEngine.h"
 
 #include "GUI/GUIWindow.h"
+#include "GUI/GUIMessageQueue.h"
 #include "GUI/UI/UIDialogue.h"
 #include "GUI/UI/UIStatusBar.h"
-
 
 //----- (004C0262) --------------------------------------------------------
 void Viewport::SetScreen(int sTL_X, int sTL_Y, int sBR_X, int sBR_Y) {

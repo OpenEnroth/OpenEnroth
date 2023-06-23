@@ -31,6 +31,7 @@
 
 #include "GUI/GUIButton.h"
 #include "GUI/GUIFont.h"
+#include "GUI/GUIMessageQueue.h"
 #include "GUI/UI/UIBooks.h"
 #include "GUI/UI/UICharacter.h"
 #include "GUI/UI/UIGame.h"
@@ -70,9 +71,6 @@ MENU_STATE sCurrentMenuID;
 
 enum CURRENT_SCREEN current_screen_type = CURRENT_SCREEN::SCREEN_VIDEO;
 enum CURRENT_SCREEN prev_screen_type;
-
-struct GUIMessageQueue *pCurrentFrameMessageQueue = new GUIMessageQueue;
-struct GUIMessageQueue *pNextFrameMessageQueue = new GUIMessageQueue;
 
 GraphicsImage *ui_exit_cancel_button_background = nullptr;
 GraphicsImage *game_ui_right_panel_frame = nullptr;
@@ -118,39 +116,6 @@ bool PauseGameDrawing() {
         if (current_screen_type != CURRENT_SCREEN::SCREEN_BRANCHLESS_NPC_DIALOG) return true;
     }
     return false;
-}
-
-void GUIMessageQueue::Flush() {
-    if (qMessages.size()) {
-        GUIMessage message = qMessages.front();
-        Clear();
-        if (message.field_8 != 0) {
-            qMessages.push(message);
-        }
-    }
-}
-
-void GUIMessageQueue::Clear() {
-    std::queue<GUIMessage> empty;
-    std::swap(qMessages, empty);
-}
-
-void GUIMessageQueue::PopMessage(UIMessageType *pType, int *pParam,
-    int *a4) {
-    *pType = (UIMessageType)-1;
-    *pParam = 0;
-    *a4 = 0;
-
-    if (qMessages.empty()) {
-        return;
-    }
-
-    GUIMessage message = qMessages.front();
-    qMessages.pop();
-
-    *pType = message.eType;
-    *pParam = message.param;
-    *a4 = message.field_8;
 }
 
 GUIButton *GUI_HandleHotkey(PlatformKey hotkey) {
@@ -900,19 +865,6 @@ void SetUserInterface(PartyAlignment align, bool bReplace) {
 
 void DrawBuff_remaining_time_string(int uY, GUIWindow *window, GameTime remaining_time, GUIFont *Font) {
     window->DrawText(Font, {32, uY}, colorTable.White, "\r020" + MakeDateTimeString(remaining_time));
-}
-
-void GUIMessageQueue::AddMessageImpl(UIMessageType msg, int param,
-    unsigned int a4, const char *file,
-    int line) {
-    // logger->Warning("{} @ ({} {})", UIMessage2String(msg), file, line);
-    GUIMessage message;
-    message.eType = msg;
-    message.param = param;
-    message.field_8 = a4;
-    message.file = file;
-    message.line = line;
-    qMessages.push(message);
 }
 
 bool isHoldingMouseRightButton() {

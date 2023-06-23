@@ -12,6 +12,7 @@
 
 #include "GUI/GUIFont.h"
 #include "GUI/GUIButton.h"
+#include "GUI/GUIMessageQueue.h"
 #include "GUI/UI/UIGame.h"
 #include "GUI/UI/UIHouses.h"
 #include "GUI/UI/UIStatusBar.h"
@@ -20,7 +21,6 @@
 #include "Io/KeyboardInputHandler.h"
 
 #include "Media/Audio/AudioPlayer.h"
-
 
 using Io::TextInputType;
 
