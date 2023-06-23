@@ -99,17 +99,19 @@ bool Chest::open(int uChestID, int objectPid) {
             } else {
                 // sprite should be rotated towards the party and moved slightly forward
                 yawAngle = TrigLUT.atan2((int64_t) dir_y, (int64_t) dir_x);
-                pitchAngle = 128;
+                pitchAngle = 256;
             }
 
             // offset distances so sprites appear in similar positions
-            constexpr int distances[4] = { 160, 100, 160, 32 };
-            pDepth = distances[pRandom];
+            constexpr int distances[4] = { 32, 0, 32, -32 };
+            pDepth = 96;
             if (length_vector < pDepth) {
-                pDepth = (int64_t)length_vector / 4;
+                pDepth = length_vector;
             }
 
             Vec3i::rotate(pDepth, yawAngle, pitchAngle, Vec3i(pObjectX, pObjectY, pObjectZ), &pOut.x, &pOut.y, &pOut.z);
+            // adjust height to account for different sprite sizes and offset
+            pOut += Vec3i(0, 0, distances[pRandom]);
             pSpellObject.containing_item.Reset();
             pSpellObject.spell_skill = CHARACTER_SKILL_MASTERY_NONE;
             pSpellObject.spell_level = 0;
