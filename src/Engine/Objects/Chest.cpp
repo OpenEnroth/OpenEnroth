@@ -13,6 +13,7 @@
 #include "Engine/Objects/Items.h"
 #include "Engine/Objects/ObjectList.h"
 #include "Engine/Objects/SpriteObject.h"
+#include "Engine/Graphics/Sprites.h"
 #include "Engine/Tables/ItemTable.h"
 #include "Engine/Snapshots/EntitySnapshots.h"
 #include "Engine/Snapshots/SnapshotSerialization.h"
@@ -40,7 +41,6 @@ bool Chest::open(int uChestID, int objectPid) {
     int pObjectZ = 0;
     double dir_x;
     double dir_y;
-    double dir_z;
     double length_vector;
     int pDepth;
     bool flag_shout;
@@ -77,6 +77,7 @@ bool Chest::open(int uChestID, int objectPid) {
                     (pDecorationList->GetDecoration(pLevelDecorations[objId].uDecorationDescID)->uDecorationHeight / 2);
             }
             if (PID_TYPE(objectPid) == OBJECT_Face) {
+                // TODO(pskelton): trap explosion moves depending on what face is clicked
                 if (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR) {
                     pODMFace = &pOutdoor->pBModels[objectPid >> 9].pFaces[(objectPid >> 3) & 0x3F];
                     pObjectX = (pODMFace->pBoundingBox.x1 + pODMFace->pBoundingBox.x2) / 2;
@@ -89,23 +90,25 @@ bool Chest::open(int uChestID, int objectPid) {
                     pObjectZ = (pBLVFace->pBounding.z1 + pBLVFace->pBounding.z2) / 2;
                 }
             }
+
             dir_x = (double)pParty->vPosition.x - (double)pObjectX;
             dir_y = (double)pParty->vPosition.y - (double)pObjectY;
-            dir_z = ((double)pParty->sEyelevel + (double)pParty->vPosition.z) - (double)pObjectZ;
-            length_vector = sqrt((dir_x * dir_x) + (dir_y * dir_y) + (dir_z * dir_z));
+            length_vector = sqrt(dir_x * dir_x + dir_y * dir_y);
             if (length_vector <= 1.0) {
-                *(float*)&yawAngle = 0.0;
-                *(float*)&pitchAngle = 0.0;
+                yawAngle = 0;
+                pitchAngle = 0;
             } else {
-                pitchAngle = (int64_t)sqrt(dir_x * dir_x + dir_y * dir_y);
-                yawAngle = TrigLUT.atan2((int64_t) dir_x, (int64_t) dir_y);
-                pitchAngle = TrigLUT.atan2(dir_y * dir_y, (int64_t) dir_z);
+                // sprite should be rotated towards the party and moved slightly forward
+                yawAngle = TrigLUT.atan2((int64_t) dir_y, (int64_t) dir_x);
+                pitchAngle = 256;
             }
-            pDepth = 256;
-            if (length_vector < 256.0)
-                pDepth = (int64_t)length_vector / 4;
+
+            pDepth = 96;
+            if (length_vector < pDepth) {
+                pDepth = length_vector;
+            }
             Vec3i::rotate(pDepth, yawAngle, pitchAngle, Vec3i(pObjectX, pObjectY, pObjectZ), &pOut.x, &pOut.y, &pOut.z);
-            SpriteObject::dropItemAt(pSpriteID[pRandom], pOut, 0, 1, false, SPRITE_IGNORE_RANGE | SPRITE_NO_Z_BUFFER);
+
             pSpellObject.containing_item.Reset();
             pSpellObject.spell_skill = CHARACTER_SKILL_MASTERY_NONE;
             pSpellObject.spell_level = 0;
@@ -113,7 +116,17 @@ bool Chest::open(int uChestID, int objectPid) {
             pSpellObject.field_54 = 0;
             pSpellObject.uType = pSpriteID[pRandom];
             pSpellObject.uObjectDescID = pObjectList->ObjectIDByItemID(pSpellObject.uType);
+
+            // adjust height to account for different sprite sizes and offset
+            SpriteFrame *frame = pSpellObject.getSpriteFrame();
+            if (frame->uFlags & 0x20) {
+                // centering
+                pOut += Vec3i(0, 0, frame->hw_sprites[0]->texture->height() / 4);
+            } else {
+                pOut -= Vec3i(0, 0, (frame->hw_sprites[0]->texture->height() - 64) / 2);
+            }
             pSpellObject.vPosition = pOut;
+
             pSpellObject.uSoundID = 0;
             pSpellObject.uAttributes = SPRITE_IGNORE_RANGE | SPRITE_NO_Z_BUFFER;
             pSpellObject.uSectorID = pIndoor->GetSector(pOut);
