@@ -86,8 +86,6 @@ struct PersistentVariables {
 
 class Vis;
 class ParticleEngine;
-class CShow;
-class GammaController;
 struct ClippingFunctions;
 struct stru10;
 
@@ -98,8 +96,6 @@ class Engine {
 
     static void LogEngineBuildInfo();
 
-    // void _44E904_gamma_saturation_adjust();
-    // bool InitializeGammaController();
     void Initialize();
     bool PickMouse(float fPickDepth, unsigned int uMouseX, unsigned int uMouseY,
                    bool bOutline, struct Vis_SelectionFilter *sprite_filter,
@@ -112,12 +108,11 @@ class Engine {
      */
     void onGameViewportClick();
     void OutlineSelection();
-    int _44EC23_saturate_face_odm(struct Polygon *a2, int *a3, signed int a4);
+    int _44EC23_saturate_face_odm(struct Polygon *a2, int *a3, signed int a4); // TODO(captainurist): drop?
     int _44ED0A_saturate_face_blv(struct BLVFace *a2, int *a3, signed int a4);
     bool draw_debug_outlines();
     bool _44EEA7();
     void StackPartyTorchLight();
-    // void PrepareBloodsplats();
     void Deinitialize();
     void DrawParticles();
     void Draw();
@@ -144,52 +139,10 @@ class Engine {
     inline bool IsFog() const { return is_fog; }
     inline void SetFog(bool is_fog) { this->is_fog = is_fog; } // fog off rather than on??
 
-    std::shared_ptr<KeyboardInputHandler> GetKeyboardInputHandler() const {
-        return keyboardInputHandler;
-    }
-
-
     std::shared_ptr<GameConfig> config;
-    char field_2C0[1092];
-    Game_Bloodsplat pBloodsplats[20];
-    int field_938;
-    int field_93C;
-    int field_940;
-    int field_944;
-    int field_948;
-    int field_94C;
-    int field_950;
-    int field_954;
-    int field_958;
-    int field_95C;
-    int field_960;
-    int field_964;
-    int field_968;
-    int field_96C;
-    int field_970;
-    // Mouse *pMouse;
-    int field_978;
-    Game_stru0 stru_97C;
-    char field_98C[1148];
     int uNumStationaryLights_in_pStationaryLightsStack;
-    // unsigned int __depricated1;  // unsigned int bGammaControlInitialized;
     float fSaturation;
-    // uint64_t __depricated2;  // uint64_t uSomeGammaStartTime;
-    // uint64_t __depricated3;  // int64_t uSomeGammaDeltaTime;
-    // void ThreadWard *pThreadWardInstance;
-    // ParticleEngine *pParticleEngine;
-    // Mouse *pMouseInstance;
-    // Vis *pVisInstance;
-    // struct SpellFxRenderer *spellfx;
-    // Camera3D *pCamera3D;
     stru10 *pStru10Instance;
-    // void stru11 *pStru11Instance;
-    // void stru12 *pStru12Instance;
-    // void CShow *pCShow;
-    // Keyboard *pKeyboardInstance;
-    // GammaController *pGammaController;
-    // int field_E74;
-
     Logger *log = nullptr;
     BloodsplatContainer *bloodsplat_container = nullptr;
     DecalBuilder *decal_builder = nullptr;
@@ -221,13 +174,11 @@ void PrepareWorld(unsigned int _0_box_loading_1_fullscreen);
 void DoPrepareWorld(bool bLoading, int _1_fullscreen_loading_2_box);
 
 void FinalInitialization();
-bool CheckMM7CD(char c);
 
 void MM6_Initialize();
 void MM7Initialization();
 
 void PrepareToLoadODM(bool bLoading, struct ODMRenderParams *a2);
-void ResetCursor_Palettes_LODs_Level_Audio_SFT_Windows();
 void InitializeTurnBasedAnimations(void *);
 unsigned int GetGravityStrength();
 void GameUI_StatusBar_Update(bool force_hide = false);
@@ -269,6 +220,5 @@ void Level_LoadEvtAndStr(const std::string &pLevelName);
 bool _44100D_should_alter_right_panel();
 void Transition_StopSound_Autosave(const std::string &pMapName, MapStartPoint point);  // sub_44987B idb
 
-void OnTimer(int);
 void TeleportToNWCDungeon();
 
