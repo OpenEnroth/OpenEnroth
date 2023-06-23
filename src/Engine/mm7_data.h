@@ -105,8 +105,6 @@ extern DIALOGUE_TYPE uDialogueType;
 extern signed int sDialogue_SpeakingActorNPC_ID;
 extern int uCurrentHouse_Animation;
 
-extern std::array<struct NPCData *, 7> HouseNPCData;  // 0this array size temporarily increased to 60 from 6 to work aroud house overflow
-extern GUIButton *HouseNPCPortraitsButtonsList[6];
 extern std::string branchless_dialogue_str;
 
 extern std::string Party_Teleport_Map_Name;
@@ -127,7 +125,6 @@ extern int bForceDrawFooter;
 extern int _5C35C0_force_party_death;
 extern int bDialogueUI_InitializeActor_NPC_ID;
 
-extern int dword_5C35D4;
 extern std::array<char, 10000> pTmpBuf3;
 extern int64_t qword_5C6DF0;
 extern struct FactionTable *pFactionTable;

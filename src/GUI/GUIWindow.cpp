@@ -940,7 +940,7 @@ void ClickNPCTopic(DIALOGUE_TYPE topic) {
     int pPrice;        // ecx@70
 
     uDialogueType = (DIALOGUE_TYPE)(topic + 1);
-    NPCData *pCurrentNPCInfo = HouseNPCData[pDialogueNPCCount - ((dword_591080 != 0) ? 1 : 0)];  //- 1
+    NPCData *pCurrentNPCInfo = houseNpcs[currentHouseNpc].npc;
     if (topic <= DIALOGUE_SCRIPTED_LINE_6) {
         switch (topic) {
         case DIALOGUE_13_hiring_related:
@@ -1527,11 +1527,13 @@ std::string BuildDialogueString(std::string &str, uint8_t uPlayerID, ItemGen *a3
 
     pPlayer = &pParty->pCharacters[uPlayerID];
 
-    NPCData *npc = nullptr;
-    if (dword_5C35D4)
-        npc = HouseNPCData[pDialogueNPCCount - (dword_591080 != 0)];
-    else
+    NPCData *npc;
+
+    if (houseNpcs.size()) {
+        npc = houseNpcs[currentHouseNpc].npc;
+    } else {
         npc = GetNPCData(sDialogue_SpeakingActorNPC_ID);
+    }
 
     std::string result;
 

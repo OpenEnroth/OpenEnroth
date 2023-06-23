@@ -2471,8 +2471,6 @@ DIALOGUE_TYPE uDialogueType;
 int sDialogue_SpeakingActorNPC_ID;
 int uCurrentHouse_Animation;
 std::string Party_Teleport_Map_Name;
-std::array<struct NPCData *, 7> HouseNPCData;  // 0 zero element holds standart house npc
-GUIButton *HouseNPCPortraitsButtonsList[6];  // dword_5913F4
 std::string branchless_dialogue_str;
 int Party_Teleport_X_Pos;
 int Party_Teleport_Y_Pos;
@@ -2493,8 +2491,6 @@ unsigned int game_ui_status_bar_event_string_time_left; // this is platform->tic
 int bForceDrawFooter;
 int _5C35C0_force_party_death = false;
 int bDialogueUI_InitializeActor_NPC_ID;
-
-int dword_5C35D4;
 
 int64_t qword_5C6DF0;
 

@@ -16,8 +16,6 @@ constexpr int SIDE_TEXT_BOX_BODY_TEXT_HEIGHT = 174;
 constexpr int SIDE_TEXT_BOX_BODY_TEXT_OFFSET = 138;
 constexpr int SIDE_TEXT_BOX_MAX_SPACING = 32;
 
-void SimpleHouseDialog();
-
 void BackToHouseMenu();
 
 /**
@@ -39,6 +37,25 @@ bool houseDialogPressEscape();
  * @offset 0x4B1E92
  */
 void playHouseSound(HOUSE_ID houseID, HouseSoundType type);
+
+/**
+ * Type of NPC you can have dialogue with inside house.
+ */
+enum class HouseNpcType {
+    HOUSE_PROPRIETOR, // default resident in non-simple houses (shop owner, temple priest etc.).
+    HOUSE_NPC,        // regular NPC, have description in NPCs table, @npc field is points to it.
+    HOUSE_TRANSITION  // transition point to different map, @targetMapID contains ID of target map.
+};
+using enum HouseNpcType;
+
+struct HouseNpcDesc {
+    HouseNpcType type;
+    std::string label = "";
+    GraphicsImage *icon = nullptr;
+    GUIButton *button = nullptr;
+    int targetMapID = 0;
+    NPCData *npc = nullptr;
+};
 
 class GUIWindow_House : public GUIWindow {
  public:
@@ -90,8 +107,6 @@ struct HouseAnimDescr {
     uint16_t padding_e;
 };
 
-extern int uHouse_ExitPic;
-extern int dword_591080;
 extern BuildingType in_current_building_type;  // 00F8B198
 extern DIALOGUE_TYPE dialog_menu_id;     // 00F8B19C
 
@@ -100,3 +115,6 @@ extern class GraphicsImage *_591428_endcap;
 extern std::array<const HouseAnimDescr, 196> pAnimatedRooms;
 
 extern IndexedArray<int, BUILDING_WEAPON_SHOP, BUILDING_DARK_GUILD> itemAmountInShop;
+
+extern std::vector<HouseNpcDesc> houseNpcs;
+extern int currentHouseNpc;
