@@ -208,7 +208,7 @@ class Engine {
     std::unique_ptr<GameResourceManager> _gameResourceManager = nullptr;
 };
 
-extern std::shared_ptr<Engine> engine;
+extern Engine *engine;
 
 /**
  * @offset 0x42FC15

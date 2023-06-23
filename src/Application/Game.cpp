@@ -11,7 +11,6 @@
 #include "Engine/AssetsManager.h"
 #include "Engine/Engine.h"
 #include "Engine/EngineGlobals.h"
-#include "Engine/EngineFactory.h"
 #include "Engine/Events/Processor.h"
 #include "Engine/Graphics/DecalBuilder.h"
 #include "Engine/Graphics/IRender.h"
@@ -189,9 +188,8 @@ int Game::run() {
     _mouse = EngineIocContainer::ResolveMouse();
     ::mouse = _mouse;
 
-    EngineFactory engineFactory;
-    _engine = engineFactory.CreateEngine(_config);
-    ::engine = _engine;
+    _engine = std::make_unique<Engine>(_config);
+    ::engine = _engine.get();
 
     if (!_engine) {
         _log->warning("Engine creation failed");
