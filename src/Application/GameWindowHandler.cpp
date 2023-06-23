@@ -307,13 +307,13 @@ void GameWindowHandler::OnKey(PlatformKey key) {
             if (!viewparams->field_4C)
                 UI_OnKeyDown(key);
         } else if (keyboardActionMapping->IsKeyMatchAction(InputAction::Escape, key)) {
-            pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, window_SpeakInHouse != 0, 0);
+            engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, window_SpeakInHouse != 0, 0);
         } else if (keyboardActionMapping->IsKeyMatchAction(InputAction::ToggleFullscreen, key) && !pMovie_Track) {
             OnToggleFullscreen();
         } else if (keyboardActionMapping->IsKeyMatchAction(InputAction::Console, key)) {
-            pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_OpenDebugMenu, window_SpeakInHouse != 0, 0);
+            engine->_messageQueue->addMessageCurrentFrame(UIMSG_OpenDebugMenu, window_SpeakInHouse != 0, 0);
         } else if (keyboardActionMapping->IsKeyMatchAction(InputAction::ReloadShaders, key) && current_screen_type == CURRENT_SCREEN::SCREEN_GAME) {
-            pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_DebugReloadShader, window_SpeakInHouse != 0, 0);
+            engine->_messageQueue->addMessageCurrentFrame(UIMSG_DebugReloadShader, window_SpeakInHouse != 0, 0);
         } else if (keyboardActionMapping->IsKeyMatchAction(InputAction::DialogLeft, key) || keyboardActionMapping->IsKeyMatchAction(InputAction::DialogRight, key)
             || keyboardActionMapping->IsKeyMatchAction(InputAction::DialogUp, key) || keyboardActionMapping->IsKeyMatchAction(InputAction::DialogDown, key)
             || keyboardActionMapping->IsKeyMatchAction(InputAction::DialogSelect, key)) {

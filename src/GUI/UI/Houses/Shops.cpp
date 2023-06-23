@@ -769,7 +769,7 @@ void GUIWindow_Shop::houseSpecificDialogue() {
         learnSkillsDialogue();
         break;
       default:
-        pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 1, 0);
+        engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 1, 0);
         break;
     }
 }

@@ -31,6 +31,8 @@
 
 #include "Library/Logger/Logger.h"
 
+#include "GUI/GUIMessageQueue.h"
+
 class Nuklear;
 using Io::KeyboardActionMapping;
 using Io::KeyboardInputHandler;
@@ -205,6 +207,7 @@ class Engine {
     std::vector<std::string> _levelStrings;
     PersistentVariables _persistentVariables;
 
+    std::unique_ptr<GUIMessageQueue> _messageQueue = nullptr;
     std::unique_ptr<GameResourceManager> _gameResourceManager = nullptr;
 };
 

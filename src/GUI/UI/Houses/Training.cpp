@@ -56,7 +56,7 @@ void GUIWindow_Training::trainDialogue() {
     uint64_t expForNextLevel = 1000ull * pParty->activeCharacter().uLevel * (pParty->activeCharacter().uLevel + 1) / 2;
 
     if (!checkIfPlayerCanInteract()) {
-        pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 1, 0);
+        engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 1, 0);
         return;
     }
 
@@ -87,19 +87,19 @@ void GUIWindow_Training::trainDialogue() {
                 GameUI_SetStatusBar(LSTR_FMT_S_NOW_LEVEL_D, pParty->activeCharacter().name.c_str(),
                                     pParty->activeCharacter().uLevel, pParty->activeCharacter().uLevel / 10 + 5);
 
-                pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 1, 0);
+                engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 1, 0);
                 return;
             }
 
             GameUI_SetStatusBar(LSTR_NOT_ENOUGH_GOLD);
             playHouseSound(houseId(), HOUSE_SOUND_TRAINING_NOT_ENOUGH_GOLD);
-            pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 1, 0);
+            engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 1, 0);
             return;
         }
     }
 
     playHouseSound(houseId(), HOUSE_SOUND_TRAINING_CANT_TRAIN);
-    pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 1, 0);
+    engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 1, 0);
     return;
 }
 
@@ -131,7 +131,7 @@ void GUIWindow_Training::houseSpecificDialogue() {
         learnSkillsDialogue();
         break;
       default:
-        pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 1, 0);
+        engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 1, 0);
         break;
     }
 }

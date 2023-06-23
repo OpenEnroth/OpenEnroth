@@ -952,7 +952,7 @@ void Party::restOneFrame() {
         if (currentRestType == REST_HEAL) {
             // Close rest screen when healing is done.
             // Resting type is reset on Escape processing
-            pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 0, 0);
+            engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 0, 0);
         } else if (currentRestType == REST_WAIT) {
             // Reset resting type after waiting is done.
             currentRestType = REST_NONE;

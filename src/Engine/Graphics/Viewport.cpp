@@ -251,7 +251,7 @@ void InteractWithActor(unsigned int id) {
 
     Actor::AI_FaceObject(id, 4, 0, 0);
     if (pActors[id].sNPC_ID) {
-        pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_StartNPCDialogue, id, 0);
+        engine->_messageQueue->addMessageCurrentFrame(UIMSG_StartNPCDialogue, id, 0);
     } else {
         if (pNPCStats->pGroups_copy[pActors[id].uGroup]) {
             if (!pNPCStats->pCatchPhrases[pNPCStats->pGroups_copy[pActors[id].uGroup]].empty()) {
@@ -325,7 +325,7 @@ void Engine::onGameViewportClick() {
                 if (pParty->bTurnBasedModeOn && pTurnEngine->turn_stage == TE_MOVEMENT) {
                     pTurnEngine->flags |= TE_FLAG_8_finished;
                 } else {
-                    pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Attack, 0, 0);
+                    engine->_messageQueue->addMessageCurrentFrame(UIMSG_Attack, 0, 0);
                 }
             }
         } else if (pParty->bTurnBasedModeOn && pTurnEngine->turn_stage == TE_MOVEMENT) {
@@ -333,7 +333,7 @@ void Engine::onGameViewportClick() {
         } else if (pParty->hasActiveCharacter() &&
                    pParty->activeCharacter().uQuickSpell != SPELL_NONE &&
                    IsSpellQuickCastableOnShiftClick(pParty->activeCharacter().uQuickSpell)) {
-            pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_CastQuickSpell, 0, 0);
+            engine->_messageQueue->addMessageCurrentFrame(UIMSG_CastQuickSpell, 0, 0);
         } else if (pParty->pPickedItem.uItemID != ITEM_NULL) {
             pParty->dropHeldItem();
         } else {

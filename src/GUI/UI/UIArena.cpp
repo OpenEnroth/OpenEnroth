@@ -140,17 +140,7 @@ void ArenaFight() {
     pParty->_viewYaw = 512;
     pParty->_viewPitch = 0;
     pParty->uFallSpeed = 0;
-    /*if ( (signed int)pCurrentFrameMessageQueue->uNumMessages < 40 )
-    {
-    pCurrentFrameMessageQueue->pMessages[pCurrentFrameMessageQueue->uNumMessages].eType =
-    UIMSG_Escape;
-    pCurrentFrameMessageQueue->pMessages[pCurrentFrameMessageQueue->uNumMessages].param =
-    1;
-    *(&pCurrentFrameMessageQueue->uNumMessages + 3 *
-    pCurrentFrameMessageQueue->uNumMessages + 3) = 0;
-    ++pCurrentFrameMessageQueue->uNumMessages;
-    }*/
-    pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 1, 0);
+    engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 1, 0);
     // v2 = pParty->pCharacters.data();
     for (uint i = 0; i < 4; i++) {
         v3 = pParty->pCharacters[i].GetActualLevel();

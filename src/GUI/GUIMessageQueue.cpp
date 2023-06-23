@@ -2,26 +2,23 @@
 
 #include <utility>
 
-struct GUIMessageQueue *pCurrentFrameMessageQueue = new GUIMessageQueue;
-struct GUIMessageQueue *pNextFrameMessageQueue = new GUIMessageQueue;
-
-void GUIMessageQueue::Flush() {
+void GUIFrameMessageQueue::Flush() {
     if (qMessages.size()) {
         GUIMessage message = qMessages.front();
         Clear();
-        if (message.field_8 != 0) {
+        if (message.field_8 != 0) { // TODO(Nik-RE-dev): what's the semantics here?
             qMessages.push(message);
         }
     }
 }
 
-void GUIMessageQueue::Clear() {
+void GUIFrameMessageQueue::Clear() {
     std::queue<GUIMessage> empty;
     std::swap(qMessages, empty);
 }
 
-void GUIMessageQueue::PopMessage(UIMessageType *pType, int *pParam, int *a4) {
-    *pType = (UIMessageType)-1;
+void GUIFrameMessageQueue::PopMessage(UIMessageType *pType, int *pParam, int *a4) {
+    *pType = UIMSG_Invalid;
     *pParam = 0;
     *a4 = 0;
 
@@ -37,13 +34,10 @@ void GUIMessageQueue::PopMessage(UIMessageType *pType, int *pParam, int *a4) {
     *a4 = message.field_8;
 }
 
-void GUIMessageQueue::AddMessageImpl(UIMessageType msg, int param, unsigned int a4, const char *file, int line) {
-    // logger->Warning("{} @ ({} {})", UIMessage2String(msg), file, line);
+void GUIFrameMessageQueue::AddGUIMessage(UIMessageType msg, int param, int a4) {
     GUIMessage message;
     message.eType = msg;
     message.param = param;
     message.field_8 = a4;
-    message.file = file;
-    message.line = line;
     qMessages.push(message);
 }

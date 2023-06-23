@@ -362,7 +362,7 @@ GraphicsImage *gamma_preview_image = nullptr;  // 506E40
 
 void Game_StartDialogue(unsigned int actor_id) {
     if (pParty->hasActiveCharacter()) {
-        pCurrentFrameMessageQueue->Flush();
+        engine->_messageQueue->flush();
 
         GameUI_InitializeDialogue(&pActors[actor_id], true);
     }
@@ -371,7 +371,7 @@ void Game_StartDialogue(unsigned int actor_id) {
 void Game_StartHirelingDialogue(unsigned int hireling_id) {
     if (bNoNPCHiring || current_screen_type != CURRENT_SCREEN::SCREEN_GAME) return;
 
-    pCurrentFrameMessageQueue->Flush();
+    engine->_messageQueue->flush();
 
     FlatHirelings buf;
     buf.Prepare();
@@ -465,8 +465,8 @@ void Game::processQueuedMessages() {
         bDialogueUI_InitializeActor_NPC_ID = 0;
     }
 
-    while (!pCurrentFrameMessageQueue->Empty()) {
-        pCurrentFrameMessageQueue->PopMessage(&uMessage, &uMessageParam, &uMessageParam2);
+    while (engine->_messageQueue->haveMessages()) {
+        engine->_messageQueue->popMessage(&uMessage, &uMessageParam, &uMessageParam2);
         switch (uMessage) {
             case UIMSG_ChangeGameState:
                 uGameState = GAME_FINISHED;
@@ -519,10 +519,10 @@ void Game::processQueuedMessages() {
                 new OnCancel({350, 302}, {106, 42}, pBtnCancel);
                 continue;
             case UIMSG_OpenQuestBook:
-                pCurrentFrameMessageQueue->Flush();
+                engine->_messageQueue->flush();
                 // toggle
                 if (current_screen_type == CURRENT_SCREEN::SCREEN_BOOKS && pGUIWindow_CurrentMenu->eWindowType == WindowType::WINDOW_QuestBook) {
-                    pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 0, 0);
+                    engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 0, 0);
                     continue;
                 }
                 // cant open screen - talking or in shop or map transition
@@ -538,10 +538,10 @@ void Game::processQueuedMessages() {
                 pGUIWindow_CurrentMenu = new GUIWindow_QuestBook();
                 continue;
             case UIMSG_OpenAutonotes:
-                pCurrentFrameMessageQueue->Flush();
+                engine->_messageQueue->flush();
                 // toggle
                 if (current_screen_type == CURRENT_SCREEN::SCREEN_BOOKS && pGUIWindow_CurrentMenu->eWindowType == WindowType::WINDOW_AutonotesBook) {
-                    pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 0, 0);
+                    engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 0, 0);
                     continue;
                 }
                 // cant open screen - talking or in shop or map transition
@@ -557,10 +557,10 @@ void Game::processQueuedMessages() {
                 pGUIWindow_CurrentMenu = new GUIWindow_AutonotesBook();
                 continue;
             case UIMSG_OpenMapBook:
-                pCurrentFrameMessageQueue->Flush();
+                engine->_messageQueue->flush();
                 // toggle
                 if (current_screen_type == CURRENT_SCREEN::SCREEN_BOOKS && pGUIWindow_CurrentMenu->eWindowType == WindowType::WINDOW_MapsBook) {
-                    pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 0, 0);
+                    engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 0, 0);
                     continue;
                 }
                 // cant open screen - talking or in shop or map transition
@@ -576,10 +576,10 @@ void Game::processQueuedMessages() {
                 pGUIWindow_CurrentMenu = new GUIWindow_MapBook();
                 continue;
             case UIMSG_OpenCalendar:
-                pCurrentFrameMessageQueue->Flush();
+                engine->_messageQueue->flush();
                 // toggle
                 if (current_screen_type == CURRENT_SCREEN::SCREEN_BOOKS && pGUIWindow_CurrentMenu->eWindowType == WindowType::WINDOW_CalendarBook) {
-                    pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 0, 0);
+                    engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 0, 0);
                     continue;
                 }
                 // cant open screen - talking or in shop or map transition
@@ -595,10 +595,10 @@ void Game::processQueuedMessages() {
                 pGUIWindow_CurrentMenu = new GUIWindow_CalendarBook();
                 continue;
             case UIMSG_OpenHistoryBook:
-                pCurrentFrameMessageQueue->Flush();
+                engine->_messageQueue->flush();
                 // toggle
                 if (current_screen_type == CURRENT_SCREEN::SCREEN_BOOKS && pGUIWindow_CurrentMenu->eWindowType == WindowType::WINDOW_JournalBook) {
-                    pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 0, 0);
+                    engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 0, 0);
                     continue;
                 }
                 // cant open screen - talking or in shop or map transition
@@ -614,7 +614,7 @@ void Game::processQueuedMessages() {
                 pGUIWindow_CurrentMenu = new GUIWindow_JournalBook();
                 continue;
             case UIMSG_OpenDebugMenu:
-                pCurrentFrameMessageQueue->Flush();
+                engine->_messageQueue->flush();
                 if (current_screen_type == CURRENT_SCREEN::SCREEN_DEBUG) {
                     back_to_game();
                     onEscape();
@@ -628,7 +628,7 @@ void Game::processQueuedMessages() {
                 continue;
             case UIMSG_Escape:  // нажатие Escape and return to game
                 back_to_game();
-                pCurrentFrameMessageQueue->Flush();
+                engine->_messageQueue->flush();
                 switch (current_screen_type) {
                     case CURRENT_SCREEN::SCREEN_SHOP_INVENTORY:
                     case CURRENT_SCREEN::SCREEN_NPC_DIALOGUE:
@@ -667,7 +667,7 @@ void Game::processQueuedMessages() {
                     if (!pGUIWindow_CastTargetedSpell) {  // Draw Menu
                         new OnButtonClick2({602, 450}, {0, 0}, pBtn_GameSettings, std::string(), false);
 
-                        pCurrentFrameMessageQueue->Flush();
+                        engine->_messageQueue->flush();
                         _menu->MenuLoop();
                     } else {
                         pGUIWindow_CastTargetedSpell->Release();
@@ -883,7 +883,7 @@ void Game::processQueuedMessages() {
                 continue;
 
             case UIMSG_TransitionUI_Confirm:
-                pCurrentFrameMessageQueue->Flush();
+                engine->_messageQueue->flush();
                 playButtonSoundOnEscape = false;
                 // PID_INVALID was used (exclusive sound)
                 pAudioPlayer->playUISound(SOUND_StartMainChoice02);
@@ -955,7 +955,7 @@ void Game::processQueuedMessages() {
                 }
                 continue;
             case UIMSG_OnTravelByFoot:
-                pCurrentFrameMessageQueue->Flush();
+                engine->_messageQueue->flush();
                 playButtonSoundOnEscape = false;
 
                 pAudioPlayer->playUISound(SOUND_StartMainChoice02);
@@ -1070,7 +1070,7 @@ void Game::processQueuedMessages() {
             }
             case UIMSG_CastSpell_TargetCharacter:
             case UIMSG_CastSpell_Hireling:
-                pCurrentFrameMessageQueue->Flush();
+                engine->_messageQueue->flush();
                 if (IsEnchantingInProgress) {
                     // Change character while enchanting is active
                     // TODO(Nik-RE-dev): need separate message type
@@ -1107,7 +1107,7 @@ void Game::processQueuedMessages() {
                         v55 | Party_Teleport_Y_Pos | v56 | v57;
                 }
                 houseDialogPressEscape();
-                pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 1, 0);
+                engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 1, 0);
                 continue;
 
             case UIMSG_OnCastTownPortal:
@@ -1154,7 +1154,7 @@ void Game::processQueuedMessages() {
             }
             case UIMSG_CloseAfterInstallBeacon:
                 playButtonSoundOnEscape = false;
-                pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 0, 0);
+                engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 0, 0);
                 continue;
             case UIMSG_InstallBeacon: {
                 Character &character = pParty->pCharacters[lloydsBeaconCasterId];
@@ -1200,12 +1200,12 @@ void Game::processQueuedMessages() {
                         pParty->_viewYaw = character.vBeacons[uMessageParam]._partyViewYaw;
                         pParty->_viewPitch = character.vBeacons[uMessageParam]._partyViewPitch;
                     }
-                    pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 1, 0);
+                    engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 1, 0);
                     pGUIWindow_CurrentMenu->Release();
                     pGUIWindow_CurrentMenu = 0;
                 } else {
                     character.SetBeacon(uMessageParam, lloydsBeaconSpellDuration);
-                    pNextFrameMessageQueue->AddGUIMessage(UIMSG_CloseAfterInstallBeacon, 0, 0);
+                    engine->_messageQueue->addMessageNextFrame(UIMSG_CloseAfterInstallBeacon, 0, 0);
                 }
                 continue;
             }
@@ -1265,7 +1265,7 @@ void Game::processQueuedMessages() {
                     pParty->pHirelings[casterId - pParty->pCharacters.size()].bHasUsedTheAbility = 1;
                 }
 
-                pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 1, 0);
+                engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 1, 0);
                 continue;
             }
             case UIMSG_HintTownPortal: {
@@ -1491,10 +1491,10 @@ void Game::processQueuedMessages() {
                 }
                 continue;
             case UIMSG_RestWindow:
-                pCurrentFrameMessageQueue->Flush();
+                engine->_messageQueue->flush();
                 // toggle
                 //if (current_screen_type == CURRENT_SCREEN::SCREEN_REST) {
-                //    pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 0, 0);
+                //    engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 0, 0);
                 //    continue;
                 //}
                 if (current_screen_type != CURRENT_SCREEN::SCREEN_GAME) continue;
@@ -1544,7 +1544,7 @@ void Game::processQueuedMessages() {
                 pParty->activeCharacter().playReaction(SPEECH_CANT_REST_HERE);
                 continue;
             case UIMSG_Rest8Hour:
-                pCurrentFrameMessageQueue->Clear(); // TODO: sometimes it is called twice, prevent that for now and investigate why later
+                engine->_messageQueue->clear(); // TODO: sometimes it is called twice, prevent that for now and investigate why later
                 if (currentRestType != REST_NONE) {
                     GameUI_SetStatusBar(LSTR_ALREADY_RESTING);
                     pAudioPlayer->playUISound(SOUND_error);
@@ -1584,7 +1584,7 @@ void Game::processQueuedMessages() {
                             remainingRestTime = GameTime();
                             currentRestType = REST_NONE;
 
-                            pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 0, 0);
+                            engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 0, 0);
                             GameUI_SetStatusBar(LSTR_ENCOUNTER);
                             pAudioPlayer->playUISound(SOUND_encounter);
                             continue;
@@ -1716,7 +1716,7 @@ void Game::processQueuedMessages() {
                         current_screen_type = CURRENT_SCREEN::SCREEN_GAME;
                         // Processing must happen on next frame because need to close spell book and update
                         // drawing object list which is used to count actors for some spells
-                        pNextFrameMessageQueue->AddGUIMessage( UIMSG_CastSpellFromBook, selectedSpell, pParty->activeCharacterIndex() - 1);
+                        engine->_messageQueue->addMessageNextFrame( UIMSG_CastSpellFromBook, selectedSpell, pParty->activeCharacterIndex() - 1);
                     } else {
                         spellbookSelectedSpell = selectedSpell;
                     }
@@ -1744,12 +1744,12 @@ void Game::processQueuedMessages() {
                     GameUI_SetStatusBar(LSTR_CANT_DO_UNDERWATER);
                     pAudioPlayer->playUISound(SOUND_error);
                 } else {
-                    pCurrentFrameMessageQueue->Flush();
+                    engine->_messageQueue->flush();
                     if (pParty->hasActiveCharacter()) {
                         if (!pParty->activeCharacter().timeToRecovery) {
                             // toggle
                             if (current_screen_type == CURRENT_SCREEN::SCREEN_SPELL_BOOK) {
-                                pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 0, 0);
+                                engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 0, 0);
                                 continue;
                             }
                             // cant open screen - talking or in shop or map transition
@@ -1770,10 +1770,10 @@ void Game::processQueuedMessages() {
                 }
                 continue;
             case UIMSG_QuickReference:
-                pCurrentFrameMessageQueue->Flush();
+                engine->_messageQueue->flush();
                 // toggle
                 if (current_screen_type == CURRENT_SCREEN::SCREEN_QUICK_REFERENCE) {
-                    pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 0, 0);
+                    engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 0, 0);
                     continue;
                 }
                 // cant open screen - talking or in shop or map transition
@@ -1804,18 +1804,7 @@ void Game::processQueuedMessages() {
                 gamma_preview_image = assets->getImage_PCXFromFile("gamma.pcx");
 
                 new OnButtonClick({602, 450}, {0, 0}, pBtn_GameSettings);
-                // LABEL_453:
-                /*if ( (signed int)pCurrentFrameMessageQueue->uNumMessages >= 40
-                ) continue;
-                pCurrentFrameMessageQueue->pMessages[pCurrentFrameMessageQueue->uNumMessages].eType
-                = UIMSG_Escape;
-                //goto LABEL_770;
-                pCurrentFrameMessageQueue->pMessages[pCurrentFrameMessageQueue->uNumMessages].param
-                = 0;
-                *(&pCurrentFrameMessageQueue->uNumMessages + 3 *
-                pCurrentFrameMessageQueue->uNumMessages + 3) = 0;
-                ++pCurrentFrameMessageQueue->uNumMessages;*/
-                pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 0, 0);
+                engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 0, 0);
                 continue;
             case UIMSG_ClickAwardScrollBar:
                 ((GUIWindow_CharacterRecord *)pGUIWindow_CurrentMenu)->clickAwardsScroll(_mouse->GetCursorPos().y);
@@ -1910,7 +1899,7 @@ void Game::processQueuedMessages() {
                 ((GUIWindow_Book *)pGUIWindow_CurrentMenu)->bookButtonClicked(BookButtonAction(uMessageParam));
                 continue;
             case UIMSG_SelectCharacter:
-                pCurrentFrameMessageQueue->Flush();
+                engine->_messageQueue->flush();
                 GameUI_OnPlayerPortraitLeftClick(uMessageParam);
                 continue;
             case UIMSG_ShowStatus_Funds: {
@@ -1977,14 +1966,13 @@ void Game::processQueuedMessages() {
                 pParty->activeCharacter().OnInventoryLeftClick();
                 continue;
             case UIMSG_MouseLeftClickInGame:
-                pCurrentFrameMessageQueue->Flush();
-                pCurrentFrameMessageQueue->AddGUIMessage(
-                    UIMSG_MouseLeftClickInScreen, 0, 0);
+                engine->_messageQueue->flush();
+                engine->_messageQueue->addMessageCurrentFrame(UIMSG_MouseLeftClickInScreen, 0, 0);
                 continue;
             case UIMSG_MouseLeftClickInScreen:  // срабатывает при нажатии на
                                                 // правую кнопку мыши после
                                                 // UIMSG_MouseLeftClickInGame
-                pCurrentFrameMessageQueue->Flush();
+                engine->_messageQueue->flush();
                 _engine->onGameViewportClick();
                 continue;
             case UIMSG_F:  // what event?
@@ -1998,7 +1986,7 @@ void Game::processQueuedMessages() {
                 __debugbreak();  // GUIWindow::Create(0, 0, 0, 0, WINDOW_22, (int)pButton2, 0);
                 continue;
             case UIMSG_Game_Action:
-                pCurrentFrameMessageQueue->Flush();
+                engine->_messageQueue->flush();
                 // if currently in a chest
                 if (current_screen_type == CURRENT_SCREEN::SCREEN_CHEST) {
                     Chest::GrabItem(keyboardInputHandler->IsTakeAllToggled());
@@ -2223,13 +2211,12 @@ void Game::processQueuedMessages() {
         }
     }
 
-    std::swap(pCurrentFrameMessageQueue, pNextFrameMessageQueue);
-    assert(pNextFrameMessageQueue->Empty());
+    engine->_messageQueue->swapFrames();
 
     if (AfterEnchClickEventId != UIMSG_0) {
         AfterEnchClickEventTimeout -= pEventTimer->uTimeElapsed;
         if (AfterEnchClickEventTimeout <= 0) {
-            pCurrentFrameMessageQueue->AddGUIMessage(AfterEnchClickEventId, AfterEnchClickEventSecondParam, 0);
+            engine->_messageQueue->addMessageCurrentFrame(AfterEnchClickEventId, AfterEnchClickEventSecondParam, 0);
             AfterEnchClickEventId = UIMSG_0;
             AfterEnchClickEventSecondParam = 0;
             AfterEnchClickEventTimeout = 0;
@@ -2268,7 +2255,7 @@ void Game::gameLoop() {
     // pAudioPlayer->SetMusicVolume(engine->config->music_level);
 
     while (true) {
-        pCurrentFrameMessageQueue->Flush();
+        engine->_messageQueue->flush();
 
         pPartyActionQueue->uNumActions = 0;
 

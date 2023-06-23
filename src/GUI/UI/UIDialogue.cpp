@@ -599,7 +599,7 @@ void OnSelectNPCDialogueOption(DIALOGUE_TYPE option) {
                 pParty->pHirelings[1] = NPCData();
             pParty->hirelingScrollPosition = 0;
             pParty->CountHirelings();
-            pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 1, 0);
+            engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 1, 0);
             return;
         }
         if (!pParty->pHirelings[0].pName.empty() && !pParty->pHirelings[1].pName.empty()) {
@@ -629,7 +629,7 @@ void OnSelectNPCDialogueOption(DIALOGUE_TYPE option) {
             }
             pParty->hirelingScrollPosition = 0;
             pParty->CountHirelings();
-            pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 1, 0);
+            engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 1, 0);
             if (sDialogue_SpeakingActorNPC_ID >= 0)
                 pDialogue_SpeakingActor->uAIState = Removed;
             if (pParty->hasActiveCharacter()) {
@@ -651,7 +651,7 @@ void OnSelectNPCDialogueOption(DIALOGUE_TYPE option) {
             if (speakingNPC->profession != GateMaster) {
                 speakingNPC->bHasUsedTheAbility = 1;
             }
-            pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 1, 0);
+            engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 1, 0);
         } else {
             GameUI_SetStatusBar(LSTR_RATIONS_FULL);
         }
@@ -670,7 +670,7 @@ void OnSelectNPCDialogueOption(DIALOGUE_TYPE option) {
                 pParty->pHirelings[1] = NPCData();
             pParty->hirelingScrollPosition = 0;
             pParty->CountHirelings();
-            pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 1, 0);
+            engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 1, 0);
             return;
         }
     } else if (option >= DIALOGUE_SCRIPTED_LINE_1 && option <= DIALOGUE_SCRIPTED_LINE_6) {

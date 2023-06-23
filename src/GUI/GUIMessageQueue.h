@@ -9,34 +9,58 @@ struct GUIMessage {
     enum UIMessageType eType;
     int param;
     int field_8;
-    std::string file;
-    unsigned int line;
 };
 
-#define AddGUIMessage(msg, param, a4) \
-    AddMessageImpl((msg), (param), (a4), __FILE__, __LINE__)
-
-struct GUIMessageQueue {
-    GUIMessageQueue() {}
+struct GUIFrameMessageQueue {
+    GUIFrameMessageQueue() {}
 
     void Flush();
     void Clear();
     bool Empty() { return qMessages.empty(); }
     void PopMessage(UIMessageType *pMsg, int *pParam, int *a4);
-    void AddMessageImpl(UIMessageType msg, int param, unsigned int a4, const char *file = nullptr, int line = 0);
+    void AddGUIMessage(UIMessageType msg, int param, int a4);
 
     std::queue<GUIMessage> qMessages;
 };
 
-/**
- * Message queue for current frame.
- *
- * @offset 0x50CBD0
- */
-extern struct GUIMessageQueue *pCurrentFrameMessageQueue;
+class GUIMessageQueue {
+ public:
+    GUIMessageQueue() {}
 
-/**
- * Message queue that will be processed on next frame.
- * @offset 0x50C9E8
- */
-extern struct GUIMessageQueue *pNextFrameMessageQueue;
+    bool haveMessages() {
+        return !_currentFrameQueue.Empty();
+    }
+
+    void flush() {
+        _currentFrameQueue.Flush();
+    }
+
+    void clear() {
+        _currentFrameQueue.Clear();
+    }
+
+    void clearAll() {
+        _currentFrameQueue.Clear();
+        _nextFrameQueue.Clear();
+    }
+
+    void swapFrames() {
+        _nextFrameQueue.qMessages.swap(_currentFrameQueue.qMessages);
+    }
+
+    void addMessageCurrentFrame(UIMessageType msg, int param, int a4) {
+        _currentFrameQueue.AddGUIMessage(msg, param, a4);
+    }
+
+    void addMessageNextFrame(UIMessageType msg, int param, int a4) {
+        _nextFrameQueue.AddGUIMessage(msg, param, a4);
+    }
+
+    void popMessage(UIMessageType *msg, int *param, int *a4) {
+        _currentFrameQueue.PopMessage(msg, param, a4);
+    }
+
+ private:
+    GUIFrameMessageQueue _currentFrameQueue;
+    GUIFrameMessageQueue _nextFrameQueue;
+};

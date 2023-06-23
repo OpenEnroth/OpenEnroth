@@ -237,7 +237,7 @@ int EventInterpreter::executeOneEvent(int step, bool isNpc) {
                         pMediaPlayer->Unload();
                         window_SpeakInHouse->Release();
                         window_SpeakInHouse = nullptr;
-                        pCurrentFrameMessageQueue->Flush();
+                        engine->_messageQueue->flush();
                         current_screen_type = CURRENT_SCREEN::SCREEN_GAME;
                         if (pDialogueWindow) {
                             pDialogueWindow->Release();

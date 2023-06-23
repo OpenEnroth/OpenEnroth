@@ -258,7 +258,7 @@ void GUIWindow_MagicGuild::houseSpecificDialogue() {
         buyBooksDialogue();
         break;
       default:
-        pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 1, 0);
+        engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 1, 0);
         break;
     }
 }

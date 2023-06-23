@@ -2233,7 +2233,7 @@ void Inventory_ItemPopupAndAlchemy() {
             }
 
             pAudioPlayer->playUISound(SOUND_fireBall);
-            pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 0, 0);
+            engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 0, 0);
 
             int _viewPitch, _viewYaw, rot_z;
             Vec3i::rotate(64, pParty->_viewYaw, pParty->_viewPitch, pParty->vPosition + Vec3i(0, 0, pParty->sEyelevel), &_viewPitch, &_viewYaw, &rot_z);

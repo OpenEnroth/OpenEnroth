@@ -297,7 +297,7 @@ static void UI_DrawSaveLoad(bool save) {
     if (pGUIWindow_CurrentMenu->keyboard_input_status == WINDOW_INPUT_CONFIRMED) {
         pGUIWindow_CurrentMenu->keyboard_input_status = WINDOW_INPUT_NONE;
         pSavegameList->pSavegameHeader[pSavegameList->selectedSlot].name = keyboardInputHandler->GetTextInput();
-        pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_SaveGame, 0, 0);
+        engine->_messageQueue->addMessageCurrentFrame(UIMSG_SaveGame, 0, 0);
     } else {
         if (pGUIWindow_CurrentMenu->keyboard_input_status == WINDOW_INPUT_CANCELLED)
             pGUIWindow_CurrentMenu->keyboard_input_status = WINDOW_INPUT_NONE;
@@ -350,10 +350,10 @@ static void UI_DrawSaveLoad(bool save) {
 }
 
 void MainMenuLoad_EventLoop() {
-    while (!pCurrentFrameMessageQueue->Empty()) {
+    while (engine->_messageQueue->haveMessages()) {
         UIMessageType msg;
         int param, param2;
-        pCurrentFrameMessageQueue->PopMessage(&msg, &param, &param2);
+        engine->_messageQueue->popMessage(&msg, &param, &param2);
 
         switch (msg) {
         case UIMSG_LoadGame: {
@@ -369,9 +369,9 @@ void MainMenuLoad_EventLoop() {
                 keyboardInputHandler->SetWindowInputStatus(WINDOW_INPUT_NONE);
             assert(current_screen_type != CURRENT_SCREEN::SCREEN_SAVEGAME); // No savegame in main menu
             if (isLoadSlotClicked && pSavegameList->selectedSlot == param + pSavegameList->saveListPosition) {
-                pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_SaveLoadBtn, 0, 0);
+                engine->_messageQueue->addMessageCurrentFrame(UIMSG_SaveLoadBtn, 0, 0);
                 // Breaks UI interaction after save load
-                // pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_LoadGame, 0, 0);
+                // engine->_messageQueue->addMessageCurrentFrame(UIMSG_LoadGame, 0, 0);
             } else {
                 pSavegameList->selectedSlot = param + pSavegameList->saveListPosition;
                 isLoadSlotClicked = true;
