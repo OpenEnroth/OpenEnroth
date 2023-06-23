@@ -5,6 +5,7 @@ set(GUI_SOURCES
         GUIEnums.cpp
         GUIFont.cpp
         GUIProgressBar.cpp
+        GUIMessageQueue.cpp
         GUIWindow.cpp)
 
 set(GUI_HEADERS
@@ -13,6 +14,7 @@ set(GUI_HEADERS
         GUIEnums.h
         GUIFont.h
         GUIProgressBar.h
+        GUIMessageQueue.h
         GUIWindow.h)
 
 add_library(gui STATIC ${GUI_SOURCES} ${GUI_HEADERS})

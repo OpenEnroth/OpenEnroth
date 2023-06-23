@@ -20,6 +20,7 @@
 #include "GUI/GUIWindow.h"
 #include "GUI/GUIButton.h"
 #include "GUI/GUIFont.h"
+#include "GUI/GUIMessageQueue.h"
 #include "GUI/UI/UIHouses.h"
 #include "GUI/UI/UIStatusBar.h"
 #include "GUI/UI/UIPopup.h"

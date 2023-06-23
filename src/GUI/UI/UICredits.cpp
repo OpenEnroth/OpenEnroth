@@ -5,8 +5,11 @@
 #include "Engine/EngineGlobals.h"
 #include "Engine/Graphics/IRender.h"
 #include "Engine/LOD.h"
+
 #include "GUI/GUIFont.h"
 #include "GUI/GUIWindow.h"
+#include "GUI/GUIMessageQueue.h"
+
 #include "Media/Audio/AudioPlayer.h"
 
 GUICredits::GUICredits() :

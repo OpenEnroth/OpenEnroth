@@ -7,6 +7,7 @@
 #include "GUI/UI/UIStatusBar.h"
 #include "GUI/GUIFont.h"
 #include "GUI/GUIButton.h"
+#include "GUI/GUIMessageQueue.h"
 
 #include "Engine/Localization.h"
 #include "Engine/PriceCalculator.h"

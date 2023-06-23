@@ -3,7 +3,6 @@
 #include <cstdint>
 #include <list>
 #include <memory>
-#include <queue>
 #include <vector>
 #include <string>
 
@@ -184,82 +183,6 @@ class OnCancel3 : public GUIWindow {
 
     virtual void Update() override;
 };
-
-enum class CURRENT_SCREEN {
-    SCREEN_GAME = 0,
-    SCREEN_MENU = 1,
-    SCREEN_OPTIONS = 2,
-    SCREEN_BOOKS = 3,
-    SCREEN_NPC_DIALOGUE = 4,
-    SCREEN_REST = 5,
-    SCREEN_6 = 6,
-    SCREEN_CHARACTERS = 7,
-    SCREEN_SPELL_BOOK = 8,
-    SCREEN_CREATORS = 9,
-    SCREEN_CHEST = 10,
-    SCREEN_SAVEGAME = 11,
-    SCREEN_LOADGAME = 12,
-    SCREEN_HOUSE = 13,
-    SCREEN_SHOP_INVENTORY = 14,
-    SCREEN_CHEST_INVENTORY = 15,
-    SCREEN_VIDEO = 16,
-    SCREEN_CHANGE_LOCATION = 17,
-    SCREEN_INPUT_BLV = 18,
-    SCREEN_BRANCHLESS_NPC_DIALOG = 19,
-    SCREEN_20 = 20,
-    SCREEN_PARTY_CREATION = 21,
-    SCREEN_GAMEOVER_WINDOW = 22,
-    SCREEN_CASTING = 23,
-    SCREEN_24 = 24,
-    SCREEN_19 = 25,
-    SCREEN_KEYBOARD_OPTIONS = 26,
-    SCREEN_1B = 27,
-    SCREEN_VIDEO_OPTIONS = 28,
-
-    SCREEN_63 = 0x63,
-    SCREEN_64 = 0x64,
-    SCREEN_67 = 0x67,
-    SCREEN_QUICK_REFERENCE = 0x68,
-
-    SCREEN_DEBUG = 999,
-};
-
-struct GUIMessage {
-    enum UIMessageType eType;
-    int param;
-    int field_8;
-    std::string file;
-    unsigned int line;
-};
-
-#define AddGUIMessage(msg, param, a4) \
-    AddMessageImpl((msg), (param), (a4), __FILE__, __LINE__)
-
-struct GUIMessageQueue {
-    GUIMessageQueue() {}
-
-    void Flush();
-    void Clear();
-    bool Empty() { return qMessages.empty(); }
-    void PopMessage(UIMessageType *pMsg, int *pParam, int *a4);
-    void AddMessageImpl(UIMessageType msg, int param, unsigned int a4,
-                        const char *file = nullptr, int line = 0);
-
-    std::queue<GUIMessage> qMessages;
-};
-
-/**
- * Message queue for current frame.
- *
- * @offset 0x50CBD0
- */
-extern struct GUIMessageQueue *pCurrentFrameMessageQueue;
-
-/**
- * Message queue that will be processed on next frame.
- * @offset 0x50C9E8
- */
-extern struct GUIMessageQueue *pNextFrameMessageQueue;
 
 extern enum WindowType current_character_screen_window;
 extern std::list<GUIWindow*> lWindowList;

@@ -7,7 +7,7 @@
 #include "Engine/Tables/AwardTable.h"
 
 #include "GUI/UI/UIHouses.h"
-
+#include "GUI/GUIMessageQueue.h"
 #include "GUI/GUIWindow.h"
 #include "GUI/GUIButton.h"
 #include "GUI/GUIFont.h"

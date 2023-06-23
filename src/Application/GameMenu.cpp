@@ -22,6 +22,7 @@
 #include "Io/Mouse.h"
 
 #include "GUI/GUIButton.h"
+#include "GUI/GUIMessageQueue.h"
 #include "GUI/UI/UIGame.h"
 #include "GUI/UI/UIGameOver.h"
 #include "GUI/UI/UISaveLoad.h"

@@ -49,6 +49,7 @@
 #include "GUI/GUIButton.h"
 #include "GUI/GUIProgressBar.h"
 #include "GUI/GUIWindow.h"
+#include "GUI/GUIMessageQueue.h"
 #include "GUI/UI/Books/AutonotesBook.h"
 #include "GUI/UI/Books/CalendarBook.h"
 #include "GUI/UI/Books/JournalBook.h"
@@ -86,11 +87,11 @@
 #include "Utility/Format.h"
 #include "Library/Random/Random.h"
 
-#include "GameKeyboardController.h"
-#include "GameWindowHandler.h"
-#include "GamePathResolver.h"
-#include "GameTraceHandler.h"
-#include "GameMenu.h"
+#include "Application/GameKeyboardController.h"
+#include "Application/GameWindowHandler.h"
+#include "Application/GamePathResolver.h"
+#include "Application/GameTraceHandler.h"
+#include "Application/GameMenu.h"
 
 void ShowMM7IntroVideo_and_LoadingScreen();
 

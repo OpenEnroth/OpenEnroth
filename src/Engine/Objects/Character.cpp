@@ -30,6 +30,7 @@
 #include "Media/Audio/AudioPlayer.h"
 
 #include "GUI/GUIWindow.h"
+#include "GUI/GUIMessageQueue.h"
 #include "GUI/UI/UIGame.h"
 #include "GUI/UI/UIStatusBar.h"
 #include "GUI/UI/UIMessageScroll.h"

@@ -8,6 +8,7 @@
 #include "Engine/TurnEngine/TurnEngine.h"
 
 #include "GUI/GUIWindow.h"
+#include "GUI/GUIMessageQueue.h"
 
 using Io::InputAction;
 using Io::KeyboardInputHandler;

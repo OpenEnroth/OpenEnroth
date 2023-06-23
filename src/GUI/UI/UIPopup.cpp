@@ -23,6 +23,7 @@
 
 #include "GUI/GUIButton.h"
 #include "GUI/GUIFont.h"
+#include "GUI/GUIMessageQueue.h"
 #include "GUI/UI/Books/MapBook.h"
 #include "GUI/UI/UICharacter.h"
 #include "GUI/UI/UIPopup.h"

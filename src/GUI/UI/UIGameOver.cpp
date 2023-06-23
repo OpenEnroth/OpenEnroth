@@ -1,10 +1,13 @@
+#include "GUI/UI/UIGameOver.h"
+
+#include "GUI/GUIMessageQueue.h"
+
 #include "Engine/Engine.h"
 #include "Engine/EngineGlobals.h"
 #include "Engine/Localization.h"
 #include "Engine/Time.h"
 #include "Engine/Graphics/IRender.h"
 
-#include "GUI/UI/UIGameOver.h"
 #include "Application/GameOver.h"
 
 GUIWindow_GameOver::GUIWindow_GameOver(UIMessageType on_release_event)

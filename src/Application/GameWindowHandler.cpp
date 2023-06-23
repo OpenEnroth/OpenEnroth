@@ -14,6 +14,7 @@
 #include "Engine/Time.h"
 
 #include "GUI/GUIWindow.h"
+#include "GUI/GUIMessageQueue.h"
 
 #include "Io/InputAction.h"
 #include "Io/KeyboardInputHandler.h"
@@ -22,8 +23,7 @@
 #include "Media/Audio/AudioPlayer.h"
 #include "Media/MediaPlayer.h"
 
-#include "GameIocContainer.h"
-
+#include "Application/GameIocContainer.h"
 
 using Io::InputAction;
 

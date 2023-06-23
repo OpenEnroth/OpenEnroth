@@ -30,6 +30,7 @@
 #include "GUI/GUIButton.h"
 #include "GUI/GUIFont.h"
 #include "GUI/GUIWindow.h"
+#include "GUI/GUIMessageQueue.h"
 #include "GUI/UI/UIDialogue.h"
 #include "GUI/UI/UIGame.h"
 #include "GUI/UI/UIPartyCreation.h"
@@ -51,8 +52,8 @@
 #include "Media/Audio/AudioPlayer.h"
 #include "Media/MediaPlayer.h"
 
-#include "Utility/String.h"
 #include "Library/Random/Random.h"
+#include "Utility/String.h"
 #include "Utility/Math/TrigLut.h"
 
 using Io::TextInputType;
