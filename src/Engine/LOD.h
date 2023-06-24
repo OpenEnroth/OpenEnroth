@@ -2,15 +2,15 @@
 
 #include <cstring>
 #include <string>
+#include <deque>
 #include <vector>
 
 #include "Engine/Graphics/Texture_MM7.h"
+#include "Engine/Graphics/Sprites.h"
+
 #include "Utility/Memory/Blob.h"
 
 class Sprite;
-
-#define MAX_LOD_TEXTURES 1000
-#define MAX_LOD_SPRITES 1500
 
 /*  354 */
 enum class TEXTURE_TYPE {
@@ -157,17 +157,16 @@ class LODFile_IconsBitmaps : public LOD::File {
     void RemoveTexturesPackFromTextureList();
     void RemoveTexturesFromTextureList();
     void _inlined_sub0();
-    void _inlined_sub1();
+    void reserveLoadedTextures();
     void _inlined_sub2();
 
     int LoadDummyTexture();
 
     Texture_MM7 *GetTexture(int idx);
 
-    Texture_MM7 pTextures[MAX_LOD_TEXTURES];
-    unsigned int uNumLoadedFiles;
+    std::deque<Texture_MM7> pTextures;
     int dword_11B80;
-    int dword_11B84;  // bitmaps lod reserved
+    int reservedTextureCount;  // bitmaps lod reserved
     int dword_11B88;
     int uTextureRedBits;
     int uTextureGreenBits;
@@ -216,7 +215,7 @@ class LODFile_Sprites : public LOD::File {
 
     void DeleteSomeSprites();
     void DeleteSpritesRange(int uStartIndex, int uStopIndex);
-    int _461397();
+    void _461397();
     void DeleteSomeOtherSprites();
     int LoadSpriteFromFile(LODSprite *pSpriteHeader, const std::string &pContainer);
     bool Load(const std::string &pFilename, const std::string &folder);
@@ -228,11 +227,10 @@ class LODFile_Sprites : public LOD::File {
     void _inlined_sub0();
     void _inlined_sub1();
 
-    unsigned int uNumLoadedSprites;
-    int field_ECA0;  // reserved sprites -522
-    int field_ECA4;  // 2nd init sprites
+    int reservedSpriteCount;  // reserved sprites -522
+    int reservedSpriteCount2;  // 2nd init sprites
     int field_ECA8;
-    Sprite *pHardwareSprites;
+    std::deque<Sprite> pSprites;
 };
 
 extern LODFile_IconsBitmaps *pIcons_LOD;

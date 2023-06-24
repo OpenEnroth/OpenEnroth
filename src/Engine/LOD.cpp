@@ -38,44 +38,45 @@ struct FileCloser {
 };
 
 inline int LODFile_IconsBitmaps::LoadDummyTexture() {
-    for (unsigned int i = 0; i < uNumLoadedFiles; ++i)
-        if (!strcmp(pTextures[i].header.pName.data(), "pending")) return i;
-    return LoadTextureFromLOD(&pTextures[uNumLoadedFiles], "pending",
-                              TEXTURE_24BIT_PALETTE);
+    for (size_t i = 0; i < pTextures.size(); ++i)
+        if (!strcmp(pTextures[i].header.pName.data(), "pending"))
+            return i;
+    return LoadTextureFromLOD(&pTextures.emplace_back(), "pending", TEXTURE_24BIT_PALETTE);
 }
 
 void LODFile_IconsBitmaps::_inlined_sub2() {
     ++uTexturePacksCount;
-    if (!uNumPrevLoadedFiles) uNumPrevLoadedFiles = uNumLoadedFiles;
+    if (!uNumPrevLoadedFiles)
+        uNumPrevLoadedFiles = pTextures.size();
 }
 
-void LODFile_IconsBitmaps::_inlined_sub1() {
-    dword_11B84 = uNumLoadedFiles;
+void LODFile_IconsBitmaps::reserveLoadedTextures() {
+    reservedTextureCount = pTextures.size();
 }
 
 void LODFile_Sprites::_inlined_sub1() {  // final init
-    field_ECA0 = uNumLoadedSprites;
+    reservedSpriteCount = pSprites.size();
 }
 
 void LODFile_IconsBitmaps::_inlined_sub0() {
-    dword_11B80 = uNumLoadedFiles;
-    if (dword_11B84 < uNumLoadedFiles) dword_11B84 = uNumLoadedFiles;
+    if (reservedTextureCount < pTextures.size())
+        reservedTextureCount = pTextures.size();
 }
 
 void LODFile_Sprites::_inlined_sub0() {  // 2nd init
-    field_ECA4 = uNumLoadedSprites;
-    if (field_ECA0 < uNumLoadedSprites) field_ECA0 = uNumLoadedSprites;
+    reservedSpriteCount2 = pSprites.size();
+    if (reservedSpriteCount < pSprites.size())
+        reservedSpriteCount = pSprites.size();
 }
 
 void LODFile_IconsBitmaps::RemoveTexturesFromTextureList() {
     if (this->uTexturePacksCount) {
-        if ((this->uNumLoadedFiles - 1) >= this->uNumPrevLoadedFiles) {
-            for (uint i = this->uNumLoadedFiles - 1;
-                 i >= this->uNumPrevLoadedFiles; --i) {
+        if (this->pTextures.size() > this->uNumPrevLoadedFiles) {
+            for (size_t i = this->uNumPrevLoadedFiles; i < this->pTextures.size(); i++) {
                 this->pTextures[i].Release();
             }
         }
-        this->uNumLoadedFiles = this->uNumPrevLoadedFiles;
+        this->pTextures.resize(this->uNumPrevLoadedFiles);
         this->uNumPrevLoadedFiles = 0;
         this->uTexturePacksCount = 0;
     }
@@ -85,13 +86,12 @@ void LODFile_IconsBitmaps::RemoveTexturesPackFromTextureList() {
     if (this->uTexturePacksCount) {
         this->uTexturePacksCount--;
         if (!this->uTexturePacksCount) {
-            if ((this->uNumLoadedFiles - 1) >= this->uNumPrevLoadedFiles) {
-                for (uint i = this->uNumLoadedFiles - 1;
-                     i >= this->uNumPrevLoadedFiles; --i) {
+            if (this->pTextures.size() > this->uNumPrevLoadedFiles) {
+                for (size_t i = this->uNumPrevLoadedFiles; i < this->pTextures.size(); i++) {
                     this->pTextures[i].Release();
                 }
             }
-            this->uNumLoadedFiles = this->uNumPrevLoadedFiles;
+            this->pTextures.resize(this->uNumPrevLoadedFiles);
             this->uNumPrevLoadedFiles = 0;
         }
     }
@@ -145,17 +145,10 @@ bool LODFile_Sprites::Load(const std::string &pFilename, const std::string &fold
 }
 
 int LODFile_Sprites::LoadSprite(const std::string &pContainerName, unsigned int uPaletteID) {
-    for (int i = 0; i < uNumLoadedSprites; ++i) {
-        if (pHardwareSprites[i].pName == pContainerName) {
+    for (int i = 0; i < pSprites.size(); ++i) {
+        if (pSprites[i].pName == pContainerName) {
             return i;
         }
-    }
-
-    if (uNumLoadedSprites >= MAX_LOD_SPRITES) return -1;
-    // if not loaded - load from file
-
-    if (!pHardwareSprites) {
-        pHardwareSprites = new Sprite[MAX_LOD_SPRITES];
     }
 
     FILE *sprite_file = FindContainer(pContainerName, 0);
@@ -171,23 +164,23 @@ int LODFile_Sprites::LoadSprite(const std::string &pContainerName, unsigned int 
 
     // if (uNumLoadedSprites == 879) __debugbreak();
 
-    pHardwareSprites[uNumLoadedSprites].pName = pContainerName;
-    pHardwareSprites[uNumLoadedSprites].uBufferWidth = header->uWidth;
-    pHardwareSprites[uNumLoadedSprites].uBufferHeight = header->uHeight;
-    pHardwareSprites[uNumLoadedSprites].uAreaWidth = header->uWidth;
-    pHardwareSprites[uNumLoadedSprites].uAreaHeight = header->uHeight;
-    pHardwareSprites[uNumLoadedSprites].uPaletteID = uPaletteID;
-    pHardwareSprites[uNumLoadedSprites].texture = assets->getSprite(pContainerName, uPaletteID, uNumLoadedSprites);
-    pHardwareSprites[uNumLoadedSprites].sprite_header = header;
+    Sprite &sprite = pSprites.emplace_back();
+    sprite.pName = pContainerName;
+    sprite.uBufferWidth = header->uWidth;
+    sprite.uBufferHeight = header->uHeight;
+    sprite.uAreaWidth = header->uWidth;
+    sprite.uAreaHeight = header->uHeight;
+    sprite.uPaletteID = uPaletteID;
+    sprite.texture = assets->getSprite(pContainerName, uPaletteID);
+    sprite.sprite_header = header;
 
-    ++uNumLoadedSprites;
-    return uNumLoadedSprites - 1;
+    return pSprites.size() - 1;
 }
 
 Sprite *LODFile_Sprites::getSprite(std::string_view pContainerName) {
-    for (int i = 0; i < uNumLoadedSprites; ++i) {
-        if (pHardwareSprites[i].pName == pContainerName) {
-            return &pHardwareSprites[i];
+    for (size_t i = 0; i < pSprites.size(); ++i) {
+        if (pSprites[i].pName == pContainerName) {
+            return &pSprites[i];
         }
     }
     logger->warning("Sprite not found!");
@@ -201,17 +194,17 @@ void LODFile_Sprites::ReleaseAll() {}
 void LODFile_Sprites::MoveSpritesToVideoMemory() {}
 
 void LODFile_IconsBitmaps::ReleaseAll2() {
-    for (uint i = (uint)this->dword_11B84; i < this->uNumLoadedFiles; i++) {
+    for (size_t i = this->reservedTextureCount; i < this->pTextures.size(); i++) {
         this->pTextures[i].Release();
     }
     this->uTexturePacksCount = 0;
     this->uNumPrevLoadedFiles = 0;
-    this->uNumLoadedFiles = this->dword_11B84;
+    this->pTextures.resize(this->reservedTextureCount);
 }
 
 void LODFile_Sprites::DeleteSomeOtherSprites() {
-    DeleteSpritesRange(field_ECA0, uNumLoadedSprites);
-    uNumLoadedSprites = field_ECA0;
+    DeleteSpritesRange(reservedSpriteCount, pSprites.size());
+    pSprites.resize(reservedSpriteCount);
 }
 
 void LOD::File::Close() {
@@ -271,17 +264,15 @@ void LOD::WriteableFile::ResetSubIndices() {
 }
 
 void LODFile_Sprites::DeleteSomeSprites() {
-    int *v1 = (int *)&this->uNumLoadedSprites;
-    int *v2 = &this->field_ECA8;
-    DeleteSpritesRange(this->field_ECA8, this->uNumLoadedSprites);
-    *v1 = *v2;
+    DeleteSpritesRange(this->field_ECA8, this->pSprites.size());
+    this->pSprites.resize(this->field_ECA8);
 }
 
 void LODFile_Sprites::DeleteSpritesRange(int uStartIndex, int uStopIndex) {
-    if (this->pHardwareSprites) {
+    if (!this->pSprites.empty()) {
         if (uStartIndex < uStopIndex) {
             for (int i = uStartIndex; i < uStopIndex; i++) {
-                pHardwareSprites[i].Release();
+                pSprites[i].Release();
             }
         }
     }
@@ -320,18 +311,17 @@ bool LODFile_IconsBitmaps::Load(const std::string &pLODFilename, const std::stri
 }
 
 void LODFile_IconsBitmaps::ReleaseAll() {
-    for (uint i = 0; i < this->uNumLoadedFiles; i++) {
-        this->pTextures[i].Release();
+    for (Texture_MM7 &texture : pTextures) {
+        texture.Release();
     }
     this->uTexturePacksCount = 0;
     this->uNumPrevLoadedFiles = 0;
-    this->dword_11B84 = 0;
-    this->dword_11B80 = 0;
-    this->uNumLoadedFiles = 0;
+    this->reservedTextureCount = 0;
+    this->pTextures.clear();
 }
 
 unsigned int LODFile_IconsBitmaps::FindTextureByName(const std::string &pName) {
-    for (uint i = 0; i < this->uNumLoadedFiles; i++) {
+    for (size_t i = 0; i < this->pTextures.size(); i++) {
         if (iequals(this->pTextures[i].header.pName.data(), pName))
             return i;
     }
@@ -341,19 +331,21 @@ unsigned int LODFile_IconsBitmaps::FindTextureByName(const std::string &pName) {
 void LODFile_IconsBitmaps::SyncLoadedFilesCount() {
     Texture_MM7 *pTex;  // edx@1
 
-    int loaded_files = this->uNumLoadedFiles;
-    for (pTex = &this->pTextures[loaded_files]; !pTex->header.pName[0]; --pTex)
+    int loaded_files = this->pTextures.size();
+    loaded_files--;
+    while (!pTextures[loaded_files].header.pName[0])
         --loaded_files;
-    if (loaded_files < (signed int)this->uNumLoadedFiles) {
+
+    if (loaded_files < this->pTextures.size()) {
         ++loaded_files;
-        this->uNumLoadedFiles = loaded_files;
+        this->pTextures.resize(loaded_files);
     }
 }
 
 LODFile_Sprites::~LODFile_Sprites() {
-    if (this->pHardwareSprites) {
-        for (int i = 0; i < this->uNumLoadedSprites; ++i) {
-            this->pHardwareSprites[i].Release();
+    if (!this->pSprites.empty()) {
+        for (size_t i = 0; i < this->pSprites.size(); ++i) {
+            this->pSprites[i].Release();
         }
     }
 }
@@ -366,15 +358,13 @@ LODSprite::~LODSprite() {
 }
 
 LODFile_Sprites::LODFile_Sprites() : LOD::File() {
-    field_ECA4 = 0;
-    field_ECA0 = 0;
-    pHardwareSprites = 0;
-    uNumLoadedSprites = 0;
+    reservedSpriteCount2 = 0;
+    reservedSpriteCount = 0;
     field_ECA8 = 0;
 }
 
 LODFile_IconsBitmaps::~LODFile_IconsBitmaps() {
-    for (uint i = 0; i < this->uNumLoadedFiles; i++) {
+    for (uint i = 0; i < this->pTextures.size(); i++) {
         this->pTextures[i].Release();
     }
 }
@@ -391,9 +381,7 @@ LODFile_IconsBitmaps::LODFile_IconsBitmaps() : LOD::File() {
     while ( v3 );*/
     this->uTexturePacksCount = 0;
     this->uNumPrevLoadedFiles = 0;
-    this->dword_11B84 = 0;
-    this->dword_11B80 = 0;
-    this->uNumLoadedFiles = 0;
+    this->reservedTextureCount = 0;
     this->_011BA4_debug_paletted_pixels_uncompressed = false;
     this->uTextureRedBits = 0;
     this->uTextureGreenBits = 0;
@@ -811,12 +799,12 @@ bool LOD::File::DoesContainerExist(const std::string &pContainer) {
     return false;
 }
 
-int LODFile_Sprites::_461397() {
-    this->field_ECA8 = this->uNumLoadedSprites;
-    if (this->uNumLoadedSprites < this->field_ECA0)
-        this->field_ECA8 = this->field_ECA0;
-    if (this->field_ECA0 < this->field_ECA4) field_ECA0 = this->field_ECA4;
-    return this->uNumLoadedSprites;
+void LODFile_Sprites::_461397() {
+    this->field_ECA8 = this->pSprites.size();
+    if (this->pSprites.size() < this->reservedSpriteCount)
+        this->field_ECA8 = this->reservedSpriteCount;
+    if (this->reservedSpriteCount < this->reservedSpriteCount2)
+        reservedSpriteCount = this->reservedSpriteCount2;
 }
 
 FILE *LOD::File::FindContainer(const std::string &pContainer_Name, size_t *data_size) const {
@@ -849,7 +837,7 @@ void LODFile_IconsBitmaps::SetupPalettes(unsigned int uTargetRBits,
         this->uTextureRedBits = uTargetRBits;
         this->uTextureGreenBits = uTargetGBits;
         this->uTextureBlueBits = uTargetBBits;
-        for (unsigned int i = 0; i < this->uNumLoadedFiles; ++i) {
+        for (size_t i = 0; i < this->pTextures.size(); ++i) {
             if (this->pTextures[i].pPalette24) {
                 FILE *File = FindContainer(this->pTextures[i].header.pName.data());
                 if (File) {
@@ -1054,33 +1042,32 @@ Texture_MM7 *LODFile_IconsBitmaps::LoadTexturePtr(const std::string &pContainer,
 }
 
 unsigned int LODFile_IconsBitmaps::LoadTexture(const std::string &pContainer, TEXTURE_TYPE uTextureType) {
-    for (uint i = 0; i < uNumLoadedFiles; ++i) {
+    for (uint i = 0; i < pTextures.size(); ++i) {
         if (iequals(pContainer.data(), pTextures[i].header.pName.data())) {
             return i;
         }
     }
 
-    Assert(uNumLoadedFiles < 1000);
+    if (LoadTextureFromLOD(&pTextures.emplace_back(), pContainer, uTextureType) == -1) {
+        pTextures.pop_back();
 
-    if (LoadTextureFromLOD(&pTextures[uNumLoadedFiles], pContainer, uTextureType) == -1) {
-        for (uint i = 0; i < uNumLoadedFiles; ++i) {
+        for (uint i = 0; i < pTextures.size(); ++i) {
             if (iequals(pTextures[i].header.pName.data(), "pending")) {
                 return i;
             }
         }
-        LoadTextureFromLOD(&pTextures[uNumLoadedFiles], "pending", uTextureType);
+        LoadTextureFromLOD(&pTextures.emplace_back(), "pending", uTextureType);
     }
 
-    return uNumLoadedFiles++;
+    return pTextures.size() - 1;
 }
 
 Texture_MM7 *LODFile_IconsBitmaps::GetTexture(int idx) {
-    Assert(idx < MAX_LOD_TEXTURES, "Texture_MM7 index out of bounds (%u)", idx);
     if (idx == -1) {
         // logger->Warning("Texture_MM7 id = {} missing", idx);
-        return pTextures + LoadDummyTexture();
+        return &pTextures[LoadDummyTexture()];
     }
-    return pTextures + idx;
+    return &pTextures[idx];
 }
 
 bool Initialize_GamesLOD_NewLOD() {

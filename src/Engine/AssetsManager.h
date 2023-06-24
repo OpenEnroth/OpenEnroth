@@ -28,8 +28,7 @@ class AssetsManager {
     GraphicsImage *getImage_PCXFromNewLOD(const std::string &name);
 
     GraphicsImage *getBitmap(const std::string &name);
-    GraphicsImage *getSprite(const std::string &name, unsigned int palette_id,
-                       unsigned int lod_sprite_id);
+    GraphicsImage *getSprite(const std::string &name, unsigned int palette_id);
 
     // TODO(pskelton): Contain better
     // TODO(pskelton): Manager should have a ref to all loose textures created throuh CreateTexture_Blank also

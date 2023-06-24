@@ -2256,7 +2256,7 @@ void Game::gameLoop() {
 
     extern bool use_music_folder;
     GameUI_LoadPlayerPortraintsAndVoices();
-    pIcons_LOD->_inlined_sub1();
+    pIcons_LOD->reserveLoadedTextures();
     // pAudioPlayer->SetMusicVolume(engine->config->music_level);
 
     while (true) {

@@ -54,7 +54,7 @@ void SpriteFrameTable::InitializeSprite(signed int uSpriteID) {
                             }
                         } else {
                             for (uint i = 0; i < 8; ++i) {
-                                pSpriteSFrames[iter_uSpriteID].hw_sprites[i] = &pSprites_LOD->pHardwareSprites[v8];
+                                pSpriteSFrames[iter_uSpriteID].hw_sprites[i] = &pSprites_LOD->pSprites[v8];
                             }
                         }
 
@@ -79,7 +79,7 @@ void SpriteFrameTable::InitializeSprite(signed int uSpriteID) {
                             auto v12 = pSprites_LOD->LoadSprite(spriteName, pSpriteSFrames[iter_uSpriteID].uPaletteID);
                             // pSpriteSFrames[iter_uSpriteID].pHwSpriteIDs[i]=v12;
                             assert(v12 != -1);
-                            pSpriteSFrames[iter_uSpriteID].hw_sprites[i] = &pSprites_LOD->pHardwareSprites[v12];
+                            pSpriteSFrames[iter_uSpriteID].hw_sprites[i] = &pSprites_LOD->pSprites[v12];
                         }
 
                     } else if (uFlags & 0x40) {  // part of monster fidgeting seq
@@ -111,7 +111,7 @@ void SpriteFrameTable::InitializeSprite(signed int uSpriteID) {
                             auto v12 = pSprites_LOD->LoadSprite(spriteName, pSpriteSFrames[iter_uSpriteID].uPaletteID);
                             // pSpriteSFrames[iter_uSpriteID].pHwSpriteIDs[i]=v12;
                             assert(v12 != -1);
-                            pSpriteSFrames[iter_uSpriteID].hw_sprites[i] = &pSprites_LOD->pHardwareSprites[v12];
+                            pSpriteSFrames[iter_uSpriteID].hw_sprites[i] = &pSprites_LOD->pSprites[v12];
                         }
                     } else {
                         for (uint i = 0; i < 8; ++i) {
@@ -152,7 +152,7 @@ void SpriteFrameTable::InitializeSprite(signed int uSpriteID) {
                             auto v12 = pSprites_LOD->LoadSprite(spriteName, pSpriteSFrames[iter_uSpriteID].uPaletteID);
                             // pSpriteSFrames[iter_uSpriteID].pHwSpriteIDs[i]=v12;
                             assert(v12 != -1);
-                            pSpriteSFrames[iter_uSpriteID].hw_sprites[i] = &pSprites_LOD->pHardwareSprites[v12];
+                            pSpriteSFrames[iter_uSpriteID].hw_sprites[i] = &pSprites_LOD->pSprites[v12];
                         }
                     }
 

@@ -780,9 +780,9 @@ void FinalInitialization() {
     pViewport->ResetScreen();
 
     InitializeTurnBasedAnimations(&stru_50C198);
-    pBitmaps_LOD->_inlined_sub1();
+    pBitmaps_LOD->reserveLoadedTextures();
     pSprites_LOD->_inlined_sub1();
-    pIcons_LOD->_inlined_sub1();
+    pIcons_LOD->reserveLoadedTextures();
 }
 
 bool MM7_LoadLods() {
