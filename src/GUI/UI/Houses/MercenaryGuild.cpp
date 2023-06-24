@@ -68,7 +68,7 @@ void GUIWindow_MercenaryGuild::houseSpecificDialogue() {
             playHouseSound(houseId(), HouseSoundType(v27));
         }
     }
-    pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 1, 0);
+    engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 1, 0);
 }
 
 void GUIWindow_MercenaryGuild::houseDialogueOptionSelected(DIALOGUE_TYPE option) {

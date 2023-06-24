@@ -95,7 +95,7 @@ void GUIWindow_TownHall::payFineDialogue() {
         }
     }
     keyboard_input_status = WINDOW_INPUT_NONE;
-    pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 1, 0);
+    engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 1, 0);
 }
 
 void GUIWindow_TownHall::houseSpecificDialogue() {

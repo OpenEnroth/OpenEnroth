@@ -264,7 +264,7 @@ GUIButton *GUI_HandleHotkey(PlatformKey hotkey) {
     for (GUIWindow *pWindow : lWindowList) {
         for (GUIButton *result : pWindow->vButtons) {
             if (result->action != InputAction::Invalid && keyboardActionMapping->IsKeyMatchAction(result->action, hotkey)) {
-                pCurrentFrameMessageQueue->AddGUIMessage(result->msg, result->msg_param, 0);
+                engine->_messageQueue->addMessageCurrentFrame(result->msg, result->msg_param, 0);
                 return result;
             }
         }
@@ -666,9 +666,9 @@ void OnSaveLoad::Update() {
     Release();
 
     if (current_screen_type == CURRENT_SCREEN::SCREEN_SAVEGAME) {
-        pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_SaveGame, 0, 0);
+        engine->_messageQueue->addMessageCurrentFrame(UIMSG_SaveGame, 0, 0);
     } else {
-        pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_LoadGame, 0, 0);
+        engine->_messageQueue->addMessageCurrentFrame(UIMSG_LoadGame, 0, 0);
     }
 }
 
@@ -683,7 +683,7 @@ void OnCancel::Update() {
     }
     Release();
 
-    pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 0, 0);
+    engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 0, 0);
 }
 
 void OnCancel2::Update() {
@@ -697,7 +697,7 @@ void OnCancel2::Update() {
     }
     Release();
 
-    pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 0, 0);
+    engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 0, 0);
 }
 
 void OnCancel3::Update() {
@@ -712,7 +712,7 @@ void OnCancel3::Update() {
     }
     Release();
 
-    pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 0, 0);
+    engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 0, 0);
 }
 
 void GUI_UpdateWindows() {
@@ -1120,7 +1120,7 @@ void ClickNPCTopic(DIALOGUE_TYPE topic) {
                         pParty->activeCharacter().SetSkillMastery(dword_F8B1AC_skill_being_taught, dword_F8B1B0_MasteryBeingTaught);
                         pParty->activeCharacter().playReaction(SPEECH_SKILL_MASTERY_INC);
                     }
-                    pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 1, 0);
+                    engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 1, 0);
                 }
             } else {
                 if (topic == DIALOGUE_82_join_guild && guild_membership_approved) {
@@ -1163,7 +1163,7 @@ void ClickNPCTopic(DIALOGUE_TYPE topic) {
                     default:
                         break;
                     }
-                    pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 1, 0);
+                    engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 1, 0);
                     if (pParty->hasActiveCharacter()) {
                         pParty->activeCharacter().playReaction(SPEECH_JOINED_GUILD);
                         BackToHouseMenu();
@@ -1222,7 +1222,7 @@ void ClickNPCTopic(DIALOGUE_TYPE topic) {
     PrepareHouse(static_cast<HOUSE_ID>(window_SpeakInHouse->wData.val));
     dialog_menu_id = DIALOGUE_MAIN;
 
-    pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 1, 0);
+    engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 1, 0);
     if (pParty->hasActiveCharacter()) {
         pParty->activeCharacter().playReaction(SPEECH_HIRE_NPC);
     }
@@ -1709,8 +1709,7 @@ void WindowManager::DeleteAllVisibleWindows() {
     pGUIWindow_BranchlessDialogue = nullptr; // branchless dialougue
 
     current_screen_type = CURRENT_SCREEN::SCREEN_GAME;
-    pNextFrameMessageQueue->Clear();
-    pCurrentFrameMessageQueue->Clear();
+    engine->_messageQueue->clearAll();
     pMediaPlayer->Unload();
 }
 

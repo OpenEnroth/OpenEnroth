@@ -1,4 +1,5 @@
 #include <cstring>
+#include <memory>
 
 #include "Engine/Engine.h"
 #include "Engine/EngineGlobals.h"
@@ -827,6 +828,8 @@ bool Engine::MM7_Initialize() {
     pParty->uDefaultEyelevel = pParty->sEyelevel = engine->config->gameplay.PartyEyeLevel.value();
     pParty->uDefaultPartyHeight = pParty->uPartyHeight = engine->config->gameplay.PartyHeight.value();
     pParty->uWalkSpeed = engine->config->gameplay.PartyWalkSpeed.value();
+
+    _messageQueue = std::make_unique<GUIMessageQueue>();
 
     MM6_Initialize();
 

@@ -1063,7 +1063,7 @@ void GameUI_WritePointedObjectStatusString() {
                                 pMessageType1 =
                                     (UIMessageType)pButton->uData;
                                 if (pMessageType1)
-                                    pCurrentFrameMessageQueue->AddGUIMessage(
+                                    engine->_messageQueue->addMessageCurrentFrame(
                                         pMessageType1, pButton->msg_param, 0);
                                 GameUI_StatusBar_Set(pButton->sLabel);
                                 uLastPointedObjectID = 1;
@@ -1086,7 +1086,7 @@ void GameUI_WritePointedObjectStatusString() {
                                     pMessageType2 =
                                         (UIMessageType)pButton->uData;
                                     if (pMessageType2 != 0)
-                                        pCurrentFrameMessageQueue->AddGUIMessage(
+                                        engine->_messageQueue->addMessageCurrentFrame(
                                             pMessageType2, pButton->msg_param,
                                             0);
                                     GameUI_StatusBar_Set(
@@ -1180,7 +1180,7 @@ void GameUI_WritePointedObjectStatusString() {
                             if (pMessageType3 == 0) {  // For books
                                 GameUI_StatusBar_Set(pButton->sLabel);
                             } else {
-                                pCurrentFrameMessageQueue->AddGUIMessage(
+                                engine->_messageQueue->addMessageCurrentFrame(
                                     pMessageType3, pButton->msg_param, 0);
                             }
                             uLastPointedObjectID = 1;
@@ -1202,7 +1202,7 @@ void GameUI_WritePointedObjectStatusString() {
                                 pMessageType2 =
                                     (UIMessageType)pButton->uData;
                                 if (pMessageType2 != 0)
-                                    pCurrentFrameMessageQueue->AddGUIMessage(
+                                    engine->_messageQueue->addMessageCurrentFrame(
                                         pMessageType2, pButton->msg_param, 0);
                                 GameUI_StatusBar_Set(
                                     pButton->sLabel);  // for character name

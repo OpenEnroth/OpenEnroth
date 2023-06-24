@@ -100,15 +100,15 @@ void GUIWindow_MainMenu::Update() {
 
 void GUIWindow_MainMenu::EventLoop() {
     if (nuklear->Mode(WINDOW_MainMenu) == nuklear->NUKLEAR_MODE_EXCLUSIVE) {
-        pCurrentFrameMessageQueue->Clear();
+        engine->_messageQueue->clear();
         return;
     }
 
-    while (!pCurrentFrameMessageQueue->Empty()) {
+    while (engine->_messageQueue->haveMessages()) {
         UIMessageType pUIMessageType;
         int pParam;
         int param2;
-        pCurrentFrameMessageQueue->PopMessage(&pUIMessageType, &pParam, &param2);
+        engine->_messageQueue->popMessage(&pUIMessageType, &pParam, &param2);
 
         switch (pUIMessageType) {  // For buttons of window MainMenu
         case UIMSG_MainMenu_ShowPartyCreationWnd:

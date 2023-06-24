@@ -32,7 +32,7 @@ void GUIWindow_Temple::healDialogue() {
     if (pParty->GetGold() < price) {
         GameUI_SetStatusBar(LSTR_NOT_ENOUGH_GOLD);
         playHouseSound(houseId(), HOUSE_SOUND_GENERAL_NOT_ENOUGH_GOLD);
-        pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 1, 0);
+        engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 1, 0);
         return;
     }
 
@@ -66,7 +66,7 @@ void GUIWindow_Temple::healDialogue() {
     pParty->activeCharacter().mana = pParty->activeCharacter().GetMaxMana();
     pAudioPlayer->playExclusiveSound(SOUND_heal);
     pParty->activeCharacter().playReaction(SPEECH_TEMPLE_HEAL);
-    pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 1, 0);
+    engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 1, 0);
 }
 
 void GUIWindow_Temple::donateDialogue() {
@@ -103,7 +103,7 @@ void GUIWindow_Temple::donateDialogue() {
     } else {
         GameUI_SetStatusBar(LSTR_NOT_ENOUGH_GOLD);
     }
-    pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 1, 0);
+    engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 1, 0);
 }
 
 GUIWindow_Temple::GUIWindow_Temple(HOUSE_ID houseId) : GUIWindow_House(houseId) {
@@ -137,7 +137,7 @@ void GUIWindow_Temple::houseSpecificDialogue() {
         learnSkillsDialogue();
         break;
       default:
-        pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 1, 0);
+        engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 1, 0);
         break;
     }
 }

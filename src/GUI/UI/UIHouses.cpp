@@ -303,13 +303,13 @@ IndexedArray<std::string, BUILDING_WEAPON_SHOP, BUILDING_MIRRORED_PATH_GUILD> sh
 bool enterHouse(HOUSE_ID uHouseID) {
     GameUI_StatusBar_Clear();
     GameUI_SetStatusBar("");
-    pCurrentFrameMessageQueue->Flush();
+    engine->_messageQueue->flush();
     uDialogueType = DIALOGUE_NULL;
     keyboardInputHandler->SetWindowInputStatus(WINDOW_INPUT_CANCELLED);
     keyboardInputHandler->ResetKeys();
 
     if (uHouseID == HOUSE_THRONEROOM_WIN_GOOD || uHouseID == HOUSE_THRONEROOM_WIN_EVIL) {
-        pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_ShowGameOverWindow, 0, 0);
+        engine->_messageQueue->addMessageCurrentFrame(UIMSG_ShowGameOverWindow, 0, 0);
         return false;
     }
 
@@ -667,7 +667,7 @@ void onSelectShopDialogueOption(DIALOGUE_TYPE option) {
 }
 
 bool houseDialogPressEscape() {
-    pCurrentFrameMessageQueue->Flush();
+    engine->_messageQueue->flush();
     keyboardInputHandler->SetWindowInputStatus(WINDOW_INPUT_CANCELLED);
     keyboardInputHandler->ResetKeys();
     activeLevelDecoration = nullptr;
@@ -1106,7 +1106,7 @@ void GUIWindow_House::Update() {
         return;
     }
     // dialog_menu_id = DIALOGUE_MAIN;
-    pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 0, 0);  // banned from shop so leaving
+    engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 0, 0);  // banned from shop so leaving
 }
 
 void GUIWindow_House::Release() {

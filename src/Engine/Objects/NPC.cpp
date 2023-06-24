@@ -304,8 +304,8 @@ int UseNPCSkill(NPCProf profession, int id) {
         } break;
 
         case GateMaster: {
-            pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 0, 0);
-            pNextFrameMessageQueue->AddGUIMessage(UIMSG_OnCastTownPortal, PID(OBJECT_Character, pParty->pCharacters.size() + id), 0);
+            engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 0, 0);
+            engine->_messageQueue->addMessageNextFrame(UIMSG_OnCastTownPortal, PID(OBJECT_Character, pParty->pCharacters.size() + id), 0);
         } break;
 
         case Acolyte:

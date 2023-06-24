@@ -44,7 +44,7 @@ void GUIWindow_Bank::putGoldDialogue() {
     if (keyboard_input_status == WINDOW_INPUT_CONFIRMED) {
         int sum = atoi(keyboardInputHandler->GetTextInput().c_str());
         if (sum <= 0) {
-            pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 1, 0);
+            engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 1, 0);
             return;
         }
 
@@ -64,7 +64,7 @@ void GUIWindow_Bank::putGoldDialogue() {
         }
     }
     keyboard_input_status = WINDOW_INPUT_NONE;
-    pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 1, 0);
+    engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 1, 0);
 }
 
 void GUIWindow_Bank::getGoldDialogue() {
@@ -85,7 +85,7 @@ void GUIWindow_Bank::getGoldDialogue() {
         keyboard_input_status = WINDOW_INPUT_NONE;
         int sum = atoi(keyboardInputHandler->GetTextInput().c_str());
         if (sum <= 0) {
-            pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 1, 0);
+            engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 1, 0);
             return;
         }
 
@@ -102,7 +102,7 @@ void GUIWindow_Bank::getGoldDialogue() {
         }
     }
     keyboard_input_status = WINDOW_INPUT_NONE;
-    pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 1, 0);
+    engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 1, 0);
 }
 
 void GUIWindow_Bank::houseDialogueOptionSelected(DIALOGUE_TYPE option) {

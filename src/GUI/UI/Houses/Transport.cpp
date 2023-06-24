@@ -143,7 +143,7 @@ void GUIWindow_Transport::transportDialogue() {
     if (pParty->GetGold() < pPrice) {
         GameUI_SetStatusBar(LSTR_NOT_ENOUGH_GOLD);
         playHouseSound(houseId(), HOUSE_SOUND_TRANSPORT_NOT_ENOUGH_GOLD);
-        pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 1, 0);
+        engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 1, 0);
         return;
     }
 
@@ -194,7 +194,7 @@ void GUIWindow_Transport::transportDialogue() {
     } else {
         pAudioPlayer->playUISound(SOUND_error);
     }
-    pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 0, 0);
+    engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 0, 0);
 }
 
 void GUIWindow_Transport::houseSpecificDialogue() {

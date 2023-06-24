@@ -88,7 +88,7 @@ void GUIWindow_Tavern::arcomageResultDialogue() {
     dialog_window.uFrameZ = SIDE_TEXT_BOX_POS_Z;
 
     if (!pParty->hasItem(ITEM_QUEST_ARCOMAGE_DECK)) {
-        pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 1, 0);
+        engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 1, 0);
         return;
     }
 
@@ -119,14 +119,14 @@ void GUIWindow_Tavern::restDialogue() {
         playHouseGoodbyeSpeech();
         pMediaPlayer->Unload();
 
-        pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_RentRoom, wData.val, 1);
+        engine->_messageQueue->addMessageCurrentFrame(UIMSG_RentRoom, wData.val, 1);
         Release();
         window_SpeakInHouse = 0;
         return;
     }
     GameUI_SetStatusBar(LSTR_NOT_ENOUGH_GOLD);
     playHouseSound(houseId(), HOUSE_SOUND_TAVERN_NOT_ENOUGH_GOLD);
-    pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 1, 0);
+    engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 1, 0);
 }
 
 void GUIWindow_Tavern::buyFoodDialogue() {
@@ -137,24 +137,24 @@ void GUIWindow_Tavern::buyFoodDialogue() {
         if (pParty->hasActiveCharacter()) {
             pParty->activeCharacter().playReaction(SPEECH_PACKS_FULL);
         }
-        pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 1, 0);
+        engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 1, 0);
         return;
     }
     if (pParty->GetGold() >= pPriceFood) {
         pParty->TakeGold(pPriceFood);
         pParty->SetFood(buildingTable[houseId()].fPriceMultiplier);
         playHouseSound(houseId(), HOUSE_SOUND_TAVERN_BUY_FOOD);
-        pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 1, 0);
+        engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 1, 0);
         return;
     }
     GameUI_SetStatusBar(LSTR_NOT_ENOUGH_GOLD);
     playHouseSound(houseId(), HOUSE_SOUND_TAVERN_NOT_ENOUGH_GOLD);
-    pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 1, 0);
+    engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 1, 0);
 }
 
 void GUIWindow_Tavern::houseDialogueOptionSelected(DIALOGUE_TYPE option) {
     if (option == DIALOGUE_TAVERN_ARCOMAGE_RESULT) {
-        pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_PlayArcomage, 0, 0);
+        engine->_messageQueue->addMessageCurrentFrame(UIMSG_PlayArcomage, 0, 0);
     } else if (IsSkillLearningDialogue(option)) {
         learnSelectedSkill(GetLearningDialogueSkill(option));
     }
@@ -192,7 +192,7 @@ void GUIWindow_Tavern::houseSpecificDialogue() {
         learnSkillsDialogue();
         break;
       default:
-        pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 1, 0);
+        engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 1, 0);
         break;
     }
 }

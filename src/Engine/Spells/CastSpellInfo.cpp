@@ -303,13 +303,13 @@ void CastSpellInfoHelpers::castSpell() {
                     castSuccessful = false;
                 }
             }
-            pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_OnCastTownPortal, PID(OBJECT_Character, pCastSpell->uPlayerID), 0);
+            engine->_messageQueue->addMessageCurrentFrame(UIMSG_OnCastTownPortal, PID(OBJECT_Character, pCastSpell->uPlayerID), 0);
             pAudioPlayer->playSpellSound(pCastSpell->uSpellID, PID_INVALID);
         } else if (pCastSpell->uSpellID == SPELL_WATER_LLOYDS_BEACON) {
             if (pCurrentMapName == "d05.blv") {  // Arena
                 spellFailed(pCastSpell, LSTR_SPELL_FAILED);
             } else {
-                pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_OnCastLloydsBeacon, 0, 0);
+                engine->_messageQueue->addMessageCurrentFrame(UIMSG_OnCastLloydsBeacon, 0, 0);
                 lloydsBeaconCasterId = pCastSpell->uPlayerID;
                 lloydsBeaconSpellDuration = GameTime::FromDays(7 * spell_level).GetSeconds();
                 pCastSpell->uFlags |= ON_CAST_NoRecoverySpell;
