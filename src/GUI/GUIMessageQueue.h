@@ -2,6 +2,7 @@
 
 #include <queue>
 #include <string>
+#include <cassert>
 
 #include "GUI/GUIEnums.h"
 
@@ -46,6 +47,7 @@ class GUIMessageQueue {
 
     void swapFrames() {
         _nextFrameQueue.messageQueue.swap(_currentFrameQueue.messageQueue);
+        assert(_nextFrameQueue.Empty());
     }
 
     void addMessageCurrentFrame(UIMessageType msg, int param, int a4) {
