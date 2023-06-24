@@ -1836,11 +1836,11 @@ void UI_Create() {
                                                 UIMSG_ClickZoomOutBtn, 0, InputAction::ZoomOut,
                                                 localization->GetString(LSTR_ZOOM_OUT), { game_ui_btn_zoomout });
 
-    pPrimaryWindow->CreateButton({481, 0}, {153, 67}, 1, 92, UIMSG_0, 0);
+    pPrimaryWindow->CreateButton({484, 15}, {138, 116}, 1, UIMSG_ShowStatus_DateTime, UIMSG_0, 0);
     pPrimaryWindow->CreateButton({491, 149}, {64, 74}, 1, 0, UIMSG_StartHireling1Dialogue, 0, InputAction::SelectNPC1);
     pPrimaryWindow->CreateButton({561, 149}, {64, 74}, 1, 0, UIMSG_StartHireling2Dialogue, 0, InputAction::SelectNPC2);
-    pPrimaryWindow->CreateButton({476, 322}, {77, 17}, 1, 100, UIMSG_0, 0);
-    pPrimaryWindow->CreateButton({555, 322}, {77, 17}, 1, 101, UIMSG_0, 0);
+    pPrimaryWindow->CreateButton({476, 322}, {77, 17}, 1, UIMSG_ShowStatus_Food, UIMSG_0, 0);
+    pPrimaryWindow->CreateButton({555, 322}, {77, 17}, 1, UIMSG_ShowStatus_Funds, UIMSG_0, 0);
 
     pBtn_CastSpell = pPrimaryWindow->CreateButton("Game_CastSpell", {476, 450}, game_ui_btn_cast->size(), 1, 0,
                                                   UIMSG_SpellBookWindow, 0, InputAction::Cast,
