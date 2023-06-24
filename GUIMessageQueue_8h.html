@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;4345f08</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;7750d1d</span>
    </div>
   </td>
  </tr>
@@ -74,118 +74,24 @@ $(function() {
 </div><!-- top -->
 <div class="header">
   <div class="summary">
-<a href="#nested-classes">Classes</a> &#124;
-<a href="#define-members">Macros</a> &#124;
-<a href="#var-members">Variables</a>  </div>
+<a href="#nested-classes">Classes</a>  </div>
   <div class="headertitle"><div class="title">GUIMessageQueue.h File Reference</div></div>
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><code>#include &lt;queue&gt;</code><br />
 <code>#include &lt;string&gt;</code><br />
+<code>#include &lt;cassert&gt;</code><br />
 <code>#include &quot;<a class="el" href="GUIEnums_8h.html">GUI/GUIEnums.h</a>&quot;</code><br />
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structGUIMessage.html">GUIMessage</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structGUIMessageQueue.html">GUIMessageQueue</a></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structGUIFrameMessageQueue.html">GUIFrameMessageQueue</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="define-members" name="define-members"></a>
-Macros</h2></td></tr>
-<tr class="memitem:a25b68130b07896dbb9b5407382c8697f"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="GUIMessageQueue_8h.html#a25b68130b07896dbb9b5407382c8697f">AddGUIMessage</a>(msg,  param,  a4)&#160;&#160;&#160;    AddMessageImpl((msg), (param), (a4), __FILE__, __LINE__)</td></tr>
-<tr class="separator:a25b68130b07896dbb9b5407382c8697f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="var-members" name="var-members"></a>
-Variables</h2></td></tr>
-<tr class="memitem:a61cdbb275c8cc0ab21cfa9d6191b03f0"><td class="memItemLeft" align="right" valign="top">struct <a class="el" href="structGUIMessageQueue.html">GUIMessageQueue</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="GUIMessageQueue_8h.html#a61cdbb275c8cc0ab21cfa9d6191b03f0">pCurrentFrameMessageQueue</a></td></tr>
-<tr class="separator:a61cdbb275c8cc0ab21cfa9d6191b03f0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ada5db3e64fea1b6658282b08e5b71094"><td class="memItemLeft" align="right" valign="top">struct <a class="el" href="structGUIMessageQueue.html">GUIMessageQueue</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="GUIMessageQueue_8h.html#ada5db3e64fea1b6658282b08e5b71094">pNextFrameMessageQueue</a></td></tr>
-<tr class="separator:ada5db3e64fea1b6658282b08e5b71094"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGUIMessageQueue.html">GUIMessageQueue</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Macro Definition Documentation</h2>
-<a id="a25b68130b07896dbb9b5407382c8697f" name="a25b68130b07896dbb9b5407382c8697f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a25b68130b07896dbb9b5407382c8697f">&#9670;&#160;</a></span>AddGUIMessage</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define AddGUIMessage</td>
-          <td>(</td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname">msg, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname">param, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname">a4&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td>&#160;&#160;&#160;    AddMessageImpl((msg), (param), (a4), __FILE__, __LINE__)</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<h2 class="groupheader">Variable Documentation</h2>
-<a id="a61cdbb275c8cc0ab21cfa9d6191b03f0" name="a61cdbb275c8cc0ab21cfa9d6191b03f0"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a61cdbb275c8cc0ab21cfa9d6191b03f0">&#9670;&#160;</a></span>pCurrentFrameMessageQueue</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">struct <a class="el" href="structGUIMessageQueue.html">GUIMessageQueue</a>* pCurrentFrameMessageQueue</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">extern</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-<p >Message queue for current frame.</p>
-<dl class="section user"><dt>Original binary offset:</dt><dd>0x50CBD0 </dd></dl>
-
-</div>
-</div>
-<a id="ada5db3e64fea1b6658282b08e5b71094" name="ada5db3e64fea1b6658282b08e5b71094"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ada5db3e64fea1b6658282b08e5b71094">&#9670;&#160;</a></span>pNextFrameMessageQueue</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">struct <a class="el" href="structGUIMessageQueue.html">GUIMessageQueue</a>* pNextFrameMessageQueue</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">extern</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-<p >Message queue that will be processed on next frame. </p><dl class="section user"><dt>Original binary offset:</dt><dd>0x50C9E8 </dd></dl>
-
-</div>
-</div>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
