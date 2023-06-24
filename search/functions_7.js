@@ -333,7 +333,7 @@ var searchData=
   ['getspellname_330',['GetSpellName',['../classLocalization.html#a9b8208c58d7ccdd1b97dc9ca08d024fa',1,'Localization']]],
   ['getspellschool_331',['GetSpellSchool',['../structCharacter.html#a1f6b19da45c52bbbd322b56e075dca8f',1,'Character']]],
   ['getspellschoolname_332',['GetSpellSchoolName',['../classLocalization.html#a1f753991ed787d49343554f9387750ba',1,'Localization']]],
-  ['getsprite_333',['getSprite',['../classAssetsManager.html#a171c32cbe73b6416b4f5e7069beaee28',1,'AssetsManager::getSprite()'],['../classLODFile__Sprites.html#aaee700ecbe23eebb336be04a52d9fac8',1,'LODFile_Sprites::getSprite()']]],
+  ['getsprite_333',['getSprite',['../classAssetsManager.html#a18d3885df07dcc32e6bcf7a73819e4d1',1,'AssetsManager::getSprite()'],['../classLODFile__Sprites.html#aaee700ecbe23eebb336be04a52d9fac8',1,'LODFile_Sprites::getSprite()']]],
   ['getspriteframe_334',['getSpriteFrame',['../structSpriteObject.html#ae3889d1599fb7d222c101c42b992f35e',1,'SpriteObject']]],
   ['getstatcolor_335',['GetStatColor',['../structCharacter.html#ab3b118bc7ebeba5a8778263703d9fcf4',1,'Character']]],
   ['getstring_336',['GetString',['../classLocalization.html#a0eb0a17fdf90f6a420eeac65bf62436f',1,'Localization']]],
