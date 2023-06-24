@@ -321,18 +321,14 @@ bool enterHouse(HOUSE_ID uHouseID) {
     GameTime currentTime = pParty->GetPlayingTime();
     GameTime currentTimeDays = GameTime::FromDays(currentTime.GetDays());
     bool isOpened = false;
+    GameTime openTime = currentTimeDays.AddHours(openHours);
+    GameTime closeTime = currentTimeDays.AddHours(closeHours);
 
     if (closeHours > openHours) {
         // Store opened within one day
-        GameTime openTime = currentTimeDays.AddHours(openHours);
-        GameTime closeTime = currentTimeDays.AddHours(closeHours);
-
         isOpened = (currentTime >= openTime) && (currentTime <= closeTime);
     } else {
         // Store opens in one day and closes on next day
-        GameTime openTime = currentTimeDays.AddHours(openHours);
-        GameTime closeTime = currentTimeDays.AddHours(closeHours);
-
         isOpened = (currentTime <= closeTime) || (currentTime >= openTime);
     }
 
@@ -371,8 +367,8 @@ bool enterHouse(HOUSE_ID uHouseID) {
     if (in_current_building_type == BUILDING_THRONE_ROOM && pParty->uFine) {  // going to jail
         uHouseID = HOUSE_JAIL;
         uCurrentHouse_Animation = buildingTable[uHouseID].uAnimationID;
+        in_current_building_type = pAnimatedRooms[uCurrentHouse_Animation].uBuildingType;
         restAndHeal(GameTime::FromYears(1));
-        in_current_building_type = pAnimatedRooms[buildingTable[HOUSE_JAIL].uAnimationID].uBuildingType;
         ++pParty->uNumPrisonTerms;
         pParty->uFine = 0;
         for (Character &player : pParty->pCharacters) {
