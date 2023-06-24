@@ -1,6 +1,5 @@
 #include <string>
 
-
 class Platform;
 
 constexpr char mm6PathOverrideKey[] = "OPENENROTH_MM6_PATH";

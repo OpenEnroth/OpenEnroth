@@ -161,13 +161,12 @@ bool AssetsManager::releaseBitmap(const std::string &name) {
     return true;
 }
 
-GraphicsImage *AssetsManager::getSprite(const std::string &name, unsigned int palette_id,
-                                  unsigned int lod_sprite_id) {
+GraphicsImage *AssetsManager::getSprite(const std::string &name, unsigned int palette_id) {
     std::string filename = toLower(name);
 
     auto i = sprites.find(filename);
     if (i == sprites.end()) {
-        auto texture = render->CreateSprite(filename, palette_id, lod_sprite_id);
+        auto texture = render->CreateSprite(filename, palette_id);
         sprites[filename] = texture;
         return texture;
     }

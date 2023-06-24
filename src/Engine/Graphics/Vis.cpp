@@ -265,9 +265,9 @@ bool Vis::IsPointInsideD3DBillboard(RenderBillboardD3D *a1, float x, float y) {
     }
 
     Sprite *ownerSprite = nullptr;
-    for (int i = 0; i < pSprites_LOD->uNumLoadedSprites; ++i) {
-        if ((void *)pSprites_LOD->pHardwareSprites[i].texture == a1->texture) {
-            ownerSprite = &pSprites_LOD->pHardwareSprites[i];
+    for (int i = 0; i < pSprites_LOD->pSprites.size(); ++i) {
+        if ((void *)pSprites_LOD->pSprites[i].texture == a1->texture) {
+            ownerSprite = &pSprites_LOD->pSprites[i];
             break;
         }
     }

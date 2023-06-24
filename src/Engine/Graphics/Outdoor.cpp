@@ -1137,7 +1137,9 @@ bool OutdoorLocation::IsMapCellPartiallyRevealed(int x_pos, int y_pos) {
 
 //----- (0047F0E2) --------------------------------------------------------
 bool OutdoorLocation::_47F0E2() {
-    for (uint i = 0; i < (signed int)pBitmaps_LOD->uNumLoadedFiles; ++i) {
+    // TODO(captainurist): wtf is going on here? Can just drop this?
+
+    for (size_t i = 0; i < pBitmaps_LOD->pTextures.size(); ++i) {
         // if ( i != -1 ? (int)&pBitmaps_LOD->pTextures[i] : 0 )
         pBitmaps_LOD->pTextures[i].header.uDecompressedSize =
             this->pTerrain._47CB57(

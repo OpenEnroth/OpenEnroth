@@ -4,7 +4,6 @@
 #include <filesystem>
 #include <string>
 #include <utility>
-#include <vector>
 
 #include "Arcomage/Arcomage.h"
 
@@ -21,7 +20,6 @@
 #include "Engine/Graphics/Outdoor.h"
 #include "Engine/Graphics/Indoor.h"
 #include "Engine/Graphics/Overlays.h"
-#include "Engine/Graphics/PaletteManager.h"
 #include "Engine/Graphics/Sprites.h"
 #include "Engine/Graphics/Viewport.h"
 #include "Engine/Graphics/Vis.h"
@@ -70,7 +68,6 @@
 #include "GUI/UI/UIRest.h"
 #include "GUI/UI/UISaveLoad.h"
 #include "GUI/UI/UIStatusBar.h"
-#include "GUI/UI/Houses/Shops.h"
 
 #include "Io/Mouse.h"
 #include "Io/KeyboardInputHandler.h"
@@ -79,9 +76,6 @@
 #include "Media/MediaPlayer.h"
 
 #include "Library/Application/PlatformApplication.h"
-
-#include "Platform/Platform.h"
-#include "Platform/Filters/FilteringEventHandler.h"
 
 #include "Utility/Format.h"
 #include "Library/Random/Random.h"
@@ -2262,7 +2256,7 @@ void Game::gameLoop() {
 
     extern bool use_music_folder;
     GameUI_LoadPlayerPortraintsAndVoices();
-    pIcons_LOD->_inlined_sub1();
+    pIcons_LOD->reserveLoadedTextures();
     // pAudioPlayer->SetMusicVolume(engine->config->music_level);
 
     while (true) {

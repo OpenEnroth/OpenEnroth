@@ -2,15 +2,14 @@
 
 #include <memory>
 #include <tuple>
-#include <unordered_map>
 
 #include "Platform/PlatformEnums.h"
-#include "Platform/PlatformGamepad.h"
 #include "Platform/Filters/PlatformEventFilter.h"
-#include "Io/Mouse.h"
 #include "Utility/Geometry/Size.h"
 
-using Io::Mouse;
+namespace Io {
+class Mouse;
+} // namespace Io
 
 class GameConfig;
 
@@ -67,5 +66,5 @@ class GameWindowHandler : public PlatformEventFilter {
     virtual bool gamepadAxisEvent(const PlatformGamepadAxisEvent *event) override;
 
  private:
-    std::shared_ptr<Mouse> mouse = nullptr;
+    std::shared_ptr<Io::Mouse> mouse = nullptr;
 };

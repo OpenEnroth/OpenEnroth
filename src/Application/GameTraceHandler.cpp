@@ -1,8 +1,5 @@
 #include "GameTraceHandler.h"
 
-#include <cassert>
-
-#include "Engine/EngineIocContainer.h"
 #include "Engine/Components/Control/EngineControlComponent.h"
 #include "Engine/Components/Trace/EngineTraceRecorder.h"
 

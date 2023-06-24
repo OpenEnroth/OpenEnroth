@@ -137,13 +137,10 @@ class Bitmaps_LOD_Loader : public ImageLoader {
 
 class Sprites_LOD_Loader : public ImageLoader {
  public:
-    inline Sprites_LOD_Loader(LODFile_Sprites *lod, unsigned int palette_id,
-                              const std::string &filename,
-                              /*refactor*/ unsigned int lod_sprite_id) {
+    inline Sprites_LOD_Loader(LODFile_Sprites *lod, unsigned int palette_id, const std::string &filename) {
         this->resource_name = filename;
         this->lod = lod;
         this->palette_id = palette_id;
-        this->lod_sprite_id = lod_sprite_id;
     }
 
     virtual bool Load(RgbaImage *rgbaImage, GrayscaleImage *indexedImage, Palette *palette) override;
@@ -151,5 +148,4 @@ class Sprites_LOD_Loader : public ImageLoader {
  protected:
     LODFile_Sprites *lod;
     unsigned int palette_id;
-    /*refactor*/ unsigned int lod_sprite_id;
 };

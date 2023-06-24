@@ -19,7 +19,6 @@ using Io::Mouse;
 class IRender;
 class Platform;
 class PlatformApplication;
-class EngineTracer;
 class GameTraceHandler;
 class NuklearEventHandler;
 
