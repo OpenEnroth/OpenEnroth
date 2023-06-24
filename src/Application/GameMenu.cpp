@@ -9,12 +9,12 @@
 #include "Engine/Engine.h"
 #include "Engine/EngineGlobals.h"
 #include "Engine/Graphics/IRender.h"
-#include "Engine/Graphics/Viewport.h"
 #include "Engine/LOD.h"
 #include "Engine/Localization.h"
 #include "Engine/Party.h"
 #include "Engine/SaveLoad.h"
 #include "Engine/Time.h"
+#include "Engine/EngineIocContainer.h"
 
 #include "Platform/PlatformEnums.h"
 #include "Io/InputAction.h"
@@ -24,7 +24,6 @@
 #include "GUI/GUIButton.h"
 #include "GUI/GUIMessageQueue.h"
 #include "GUI/UI/UIGame.h"
-#include "GUI/UI/UIGameOver.h"
 #include "GUI/UI/UISaveLoad.h"
 #include "GUI/UI/UIStatusBar.h"
 
@@ -88,6 +87,12 @@ void Game_OpenLoadGameDialog() {
     pGUIWindow_CurrentMenu = new GUIWindow_Load(true);
     isLoadSlotClicked = false;
 }
+
+Menu::Menu() {
+    mouse = EngineIocContainer::ResolveMouse();
+}
+
+Menu::~Menu() = default;
 
 void Menu::EventLoop() {
     while (!pCurrentFrameMessageQueue->Empty()) {

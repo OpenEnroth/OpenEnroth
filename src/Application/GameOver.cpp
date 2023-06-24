@@ -10,21 +10,16 @@
 #include "Engine/LOD.h"
 #include "Engine/Localization.h"
 #include "Engine/Party.h"
-#include "Engine/SaveLoad.h"
 #include "Engine/Time.h"
 
 #include "GUI/GUIButton.h"
 #include "GUI/GUIFont.h"
 #include "GUI/GUIWindow.h"
-#include "GUI/UI/UIPartyCreation.h"
-#include "GUI/UI/UIStatusBar.h"
 #include "GUI/UI/UIHouses.h"
 
-#include "Io/KeyboardInputHandler.h"
 #include "Io/Mouse.h"
 
 #include "Media/Audio/AudioPlayer.h"
-#include "Media/MediaPlayer.h"
 
 
 //----- (004BF91E) --------------------------------------------------------

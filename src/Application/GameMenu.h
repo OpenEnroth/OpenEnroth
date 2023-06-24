@@ -2,22 +2,19 @@
 
 #include <memory>
 
-#include "Engine/EngineIocContainer.h"
-
-#include "Io/Mouse.h"
-
-using Io::Mouse;
+namespace Io {
+class Mouse;
+} // namespace Io
 
 class Menu {
  public:
-    inline Menu() {
-        this->mouse = EngineIocContainer::ResolveMouse();
-    }
+    Menu();
+    ~Menu();
 
     void MenuLoop();
 
  private:
-     std::shared_ptr<Mouse> mouse = nullptr;
+     std::shared_ptr<Io::Mouse> mouse = nullptr;
 
      void EventLoop();
 };
