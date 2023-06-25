@@ -1194,6 +1194,69 @@ GAME_TEST(Issues, Issue816) {
     test->playTraceFromTestData("issue_816.mm7", "issue_816.json"); // Should not assert
 }
 
+GAME_TEST(Issues, Issue830) {
+    // Mouseover hints for UI elements not showing
+    game->startNewGame();
+    game->tick(1);
+    game_ui_status_bar_event_string_time_left = 0;
+    // Portrait: Name and conditions of the character
+    game->moveMouse(65, 424);
+    game->tick(1);
+    EXPECT_EQ(game_ui_status_bar_string, "Zoltan the Knight: Good");
+    //HP / SP Bar(either one) : Display current and max HP and SP both
+    game->moveMouse(102, 426);
+    game->tick(1);
+    EXPECT_EQ(game_ui_status_bar_string, "45 / 45 Hit Points    0 / 0 Spell Points");
+    // Minimap : Display time, day of the week and full date
+    game->moveMouse(517, 111);
+    game->tick(1);
+    EXPECT_EQ(game_ui_status_bar_string, "9:00am Monday 1 January 1168");
+    //Zoom in / out minimap buttons : Display description of the button
+    game->moveMouse(523, 140);
+    game->tick(1);
+    EXPECT_EQ(game_ui_status_bar_string, "Zoom In");
+    game->moveMouse(577, 140);
+    game->tick(1);
+    EXPECT_EQ(game_ui_status_bar_string, "Zoom Out");
+    // Food : Display total amount of food(bit redundant, but it is there)
+    game->moveMouse(520, 329);
+    game->tick(1);
+    EXPECT_EQ(game_ui_status_bar_string, "You have 7 food");
+    // Gold : Display amount of gold on party and in bank
+    game->moveMouse(575, 327);
+    game->tick(1);
+    EXPECT_EQ(game_ui_status_bar_string, "You have 200 total gold, 0 in the Bank");
+    // Books : Description of each book(journal, autonotes etc)
+    game->moveMouse(513, 387);
+    game->tick(1);
+    EXPECT_EQ(game_ui_status_bar_string, "Current Quests");
+    game->moveMouse(540, 382);
+    game->tick(1);
+    EXPECT_EQ(game_ui_status_bar_string, "Auto Notes");
+    game->moveMouse(556, 381);
+    game->tick(1);
+    EXPECT_EQ(game_ui_status_bar_string, "Maps");
+    game->moveMouse(586, 396);
+    game->tick(1);
+    EXPECT_EQ(game_ui_status_bar_string, "Calendar");
+    game->moveMouse(611, 400);
+    game->tick(1);
+    EXPECT_EQ(game_ui_status_bar_string, "History");
+    // Buttons : Description of the 4 buttons in the corner(cast spell, rest, quick ref, game options)
+    game->moveMouse(494, 461);
+    game->tick(1);
+    EXPECT_EQ(game_ui_status_bar_string, "Cast Spell");
+    game->moveMouse(541, 460);
+    game->tick(1);
+    EXPECT_EQ(game_ui_status_bar_string, "Rest");
+    game->moveMouse(585, 461);
+    game->tick(1);
+    EXPECT_EQ(game_ui_status_bar_string, "Quick Reference");
+    game->moveMouse(621, 460);
+    game->tick(1);
+    EXPECT_EQ(game_ui_status_bar_string, "Game Options");
+}
+
 GAME_TEST(Issues, Issue832) {
     // Death Blossom + ice blast crash
     test->playTraceFromTestData("issue_832.mm7", "issue_832.json");
