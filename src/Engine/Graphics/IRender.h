@@ -133,7 +133,7 @@ struct RenderBillboardD3D {
     };
     using enum OpacityType;
 
-    GraphicsImage *texture;  // TODO(captainurist): this points into garbage, wtf
+    GraphicsImage *texture;
     unsigned int uNumVertices;
     std::array<RenderVertexD3D3, 4> pQuads;
     float z_order;
@@ -375,7 +375,8 @@ class IRender {
     int hd_water_current_frame;
     GraphicsImage *hd_water_tile_anim[7];
     RenderBillboardD3D pBillboardRenderListD3D[1000];
-    unsigned int uNumBillboardsToDraw;
+    unsigned int uNumBillboardsToDraw; // TODO(captainurist): this is not properly cleared if BeginScene3D is not called,
+                                       //                     resulting in dangling textures in pBillboardRenderListD3D.
 
     int drawcalls;
 
