@@ -5,8 +5,10 @@
 #include "Utility/Flags.h"
 
 #include "Engine/Graphics/IRender.h"
-#include "Engine/Objects/Actor.h"
+#include "Engine/Objects/ActorEnums.h"
 #include "Camera.h"
+
+class BSPModel;
 
 enum class VisObjectType : uint32_t {
     VisObjectType_Any = 0,
@@ -122,7 +124,7 @@ class Vis {
     void GetPolygonScreenSpaceCenter(struct RenderVertexSoft *vertices,
                                      int num_vertices, float *out_center_x,
                                      float *out_center_y);
-    bool IsPointInsideD3DBillboard(struct RenderBillboardD3D *a1, float x,
+    bool IsPointInsideD3DBillboard(struct RenderBillboardD3D *billboard, float x,
                                    float y);
     unsigned short PickClosestActor(ObjectType object_type, unsigned int pick_depth,
                                     VisSelectFlags selectFlags, int not_at_ai_state, int at_ai_state);

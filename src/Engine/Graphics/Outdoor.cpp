@@ -18,6 +18,7 @@
 #include "Engine/Graphics/Viewport.h"
 #include "Engine/Graphics/Weather.h"
 #include "Engine/Graphics/Indoor.h"
+#include "Engine/Graphics/Image.h"
 #include "Engine/LOD.h"
 #include "Engine/Objects/Actor.h"
 #include "Engine/Objects/SpriteObject.h"
@@ -1400,8 +1401,8 @@ void OutdoorLocation::PrepareActorsDrawList() {
                 pCamera3D->Project(view_x, view_y, view_z, &projected_x, &projected_y);
 
                 float proj_scale = frame->scale * (pCamera3D->ViewPlaneDist_X) / (view_x);
-                int screen_space_half_width = static_cast<int>(proj_scale * frame->hw_sprites[Sprite_Octant]->uBufferWidth / 2.0f);
-                int screen_space_height = static_cast<int>(proj_scale * frame->hw_sprites[Sprite_Octant]->uBufferHeight);
+                int screen_space_half_width = static_cast<int>(proj_scale * frame->hw_sprites[Sprite_Octant]->uWidth / 2.0f);
+                int screen_space_height = static_cast<int>(proj_scale * frame->hw_sprites[Sprite_Octant]->uHeight);
 
                 if (projected_x + screen_space_half_width >= (signed int)pViewport->uViewportTL_X &&
                     projected_x - screen_space_half_width <= (signed int)pViewport->uViewportBR_X) {

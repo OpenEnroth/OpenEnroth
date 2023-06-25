@@ -19,7 +19,7 @@ class ImageLoader;
 class GraphicsImage {
  public:
     explicit GraphicsImage(bool lazy_initialization = true);
-    virtual ~GraphicsImage();
+    ~GraphicsImage();
 
     static GraphicsImage *Create(RgbaImage image);
     static GraphicsImage *Create(size_t width, size_t height);
@@ -52,7 +52,7 @@ class GraphicsImage {
     Palette _palette;
     TextureRenderId _renderId;
 
-    virtual bool LoadImageData();
+    bool LoadImageData();
 };
 
 class ImageHelper {

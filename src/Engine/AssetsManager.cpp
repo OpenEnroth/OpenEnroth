@@ -4,7 +4,12 @@
 
 #include "Engine/Graphics/IRender.h"
 #include "Engine/Graphics/ImageLoader.h"
+#include "Engine/Graphics/Image.h"
+#include "Engine/EngineIocContainer.h"
+
 #include "GUI/GUIFont.h"
+
+#include "Library/Logger/Logger.h"
 
 #include "Utility/String.h"
 

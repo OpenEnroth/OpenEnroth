@@ -6,6 +6,7 @@
 #include "Engine/Engine.h"
 #include "Engine/MM7.h"
 #include "Engine/SpellFxRenderer.h"
+#include "Engine/Party.h"
 
 #include "Engine/Objects/Actor.h"
 #include "Engine/Objects/SpriteObject.h"
@@ -23,6 +24,7 @@
 #include "Engine/Graphics/ParticleEngine.h"
 #include "Engine/Graphics/Level/Decoration.h"
 #include "Engine/Graphics/DecorationList.h"
+#include "Engine/Graphics/Image.h"
 
 #include "Library/Image/PCX.h"
 #include "Library/Random/Random.h"
@@ -49,8 +51,7 @@ unsigned int RenderBase::Billboard_ProbablyAddToListAndSortByZOrder(float z) {
     }
 
     unsigned int v7 = 0;
-    for (int left = 0, right = uNumBillboardsToDraw;
-         left < right;) {  // binsearch
+    for (int left = 0, right = uNumBillboardsToDraw; left < right;) {  // binsearch
         v7 = left + (right - left) / 2;
         if (z <= render->pBillboardRenderListD3D[v7].z_order)
             right = v7;
@@ -63,14 +64,9 @@ unsigned int RenderBase::Billboard_ProbablyAddToListAndSortByZOrder(float z) {
             v7 = render->uNumBillboardsToDraw;
         } else {
             if (render->uNumBillboardsToDraw > v7) {
-                for (unsigned int i = 0; i < render->uNumBillboardsToDraw - v7;
-                     i++) {
-                    memcpy(&render->pBillboardRenderListD3D
-                                [render->uNumBillboardsToDraw - i],
-                           &render->pBillboardRenderListD3D
-                                [render->uNumBillboardsToDraw - (i + 1)],
-                           sizeof(render->pBillboardRenderListD3D
-                                      [render->uNumBillboardsToDraw - i]));
+                for (unsigned int i = 0; i < render->uNumBillboardsToDraw - v7; i++) {
+                    render->pBillboardRenderListD3D[render->uNumBillboardsToDraw - i] =
+                        render->pBillboardRenderListD3D[render->uNumBillboardsToDraw - (i + 1)];
                 }
             }
             ++v7;
@@ -81,14 +77,9 @@ unsigned int RenderBase::Billboard_ProbablyAddToListAndSortByZOrder(float z) {
 
     if (z <= render->pBillboardRenderListD3D[v7].z_order) {
         if (render->uNumBillboardsToDraw > v7) {
-            for (unsigned int i = 0; i < render->uNumBillboardsToDraw - v7;
-                 i++) {
-                memcpy(&render->pBillboardRenderListD3D
-                            [render->uNumBillboardsToDraw - i],
-                       &render->pBillboardRenderListD3D
-                            [render->uNumBillboardsToDraw - (i + 1)],
-                       sizeof(render->pBillboardRenderListD3D
-                                  [render->uNumBillboardsToDraw - i]));
+            for (unsigned int i = 0; i < render->uNumBillboardsToDraw - v7; i++) {
+                render->pBillboardRenderListD3D[render->uNumBillboardsToDraw - i] =
+                    render->pBillboardRenderListD3D[render->uNumBillboardsToDraw - (i + 1)];
             }
         }
         uNumBillboardsToDraw++;
@@ -159,7 +150,7 @@ void RenderBase::DrawSpriteObjects() {
 
             // centre sprite
             if (frame->uFlags & 0x20) {
-                z -= (frame->scale * frame->hw_sprites[octant]->uBufferHeight) / 2;
+                z -= (frame->scale * frame->hw_sprites[octant]->uHeight) / 2;
             }
 
             int16_t setflags = 0;
@@ -193,8 +184,8 @@ void RenderBase::DrawSpriteObjects() {
 
                     float billb_scale = frame->scale * pCamera3D->ViewPlaneDist_X / view_x;
 
-                    int screen_space_half_width = static_cast<int>(billb_scale * frame->hw_sprites[octant]->uBufferWidth / 2.0f);
-                    int screen_space_height = static_cast<int>(billb_scale * frame->hw_sprites[octant]->uBufferHeight);
+                    int screen_space_half_width = static_cast<int>(billb_scale * frame->hw_sprites[octant]->uWidth / 2.0f);
+                    int screen_space_height = static_cast<int>(billb_scale * frame->hw_sprites[octant]->uHeight);
 
                     if (projected_x + screen_space_half_width >= (signed int)pViewport->uViewportTL_X &&
                         projected_x - screen_space_half_width <= (signed int)pViewport->uViewportBR_X) {
@@ -331,8 +322,8 @@ void RenderBase::PrepareDecorationsRenderList_ODM() {
 
                             float _v41 = frame->scale * (pCamera3D->ViewPlaneDist_X) / (view_x);
 
-                            int screen_space_half_width = static_cast<int>(_v41 * frame->hw_sprites[(int64_t)v37]->uBufferWidth / 2.0f);
-                            int screen_space_height = static_cast<int>(_v41 * frame->hw_sprites[(int64_t)v37]->uBufferHeight);
+                            int screen_space_half_width = static_cast<int>(_v41 * frame->hw_sprites[(int64_t)v37]->uWidth / 2.0f);
+                            int screen_space_height = static_cast<int>(_v41 * frame->hw_sprites[(int64_t)v37]->uHeight);
 
                             if (projected_x + screen_space_half_width >= (signed int)pViewport->uViewportTL_X &&
                                 projected_x - screen_space_half_width <= (signed int)pViewport->uViewportBR_X) {
@@ -421,7 +412,7 @@ Color BlendColors(Color a1, Color a2) {
     return Color(red, green, blue, alpha);
 }
 
-void RenderBase::TransformBillboard(SoftwareBillboard *pSoftBillboard, RenderBillboard *pBillboard) {
+void RenderBase::TransformBillboard(const SoftwareBillboard *pSoftBillboard, const RenderBillboard *pBillboard) {
     Sprite *pSprite = pBillboard->hwsprite;
     // error catching
     if (pSprite->texture->height() == 0 || pSprite->texture->width() == 0)
@@ -456,49 +447,49 @@ void RenderBase::TransformBillboard(SoftwareBillboard *pSoftBillboard, RenderBil
 
     Color specular;
 
-    float v14 = (float)((int)pSprite->uBufferWidth / 2 - pSprite->uAreaX);
-    float v15 = (float)((int)pSprite->uBufferHeight - pSprite->uAreaY);
-    if (pSoftBillboard->uFlags & 4) v14 *= -1.f;
+    float point_x = pSprite->uWidth / 2 - pSprite->uAreaX;
+    float point_y = pSprite->uHeight - pSprite->uAreaY;
+    if (pSoftBillboard->uFlags & 4) point_x *= -1.f;
     billboard->pQuads[0].diffuse = diffuse;
-    billboard->pQuads[0].pos.x = (float)pSoftBillboard->screen_space_x - v14 * scr_proj_x;
-    billboard->pQuads[0].pos.y = (float)pSoftBillboard->screen_space_y - v15 * scr_proj_y;
+    billboard->pQuads[0].pos.x = pSoftBillboard->screen_space_x - point_x * scr_proj_x;
+    billboard->pQuads[0].pos.y = pSoftBillboard->screen_space_y - point_y * scr_proj_y;
     billboard->pQuads[0].pos.z = 1.f - 1.f / (pSoftBillboard->screen_space_z * 1000.f  / pCamera3D->GetFarClip());
     billboard->pQuads[0].rhw = 1.f / pSoftBillboard->screen_space_z;
     billboard->pQuads[0].specular = specular;
     billboard->pQuads[0].texcoord.x = 0.f;
     billboard->pQuads[0].texcoord.y = 0.f;
 
-    v14 = (float)((int)pSprite->uBufferWidth / 2 - pSprite->uAreaX);
-    v15 = (float)((int)pSprite->uBufferHeight - pSprite->uAreaHeight - pSprite->uAreaY);
-    if (pSoftBillboard->uFlags & 4) v14 = v14 * -1.f;
+    point_x = pSprite->uWidth / 2 - pSprite->uAreaX;
+    point_y = -pSprite->uAreaY;
+    if (pSoftBillboard->uFlags & 4) point_x = point_x * -1.f;
     billboard->pQuads[1].specular = specular;
     billboard->pQuads[1].diffuse = diffuse;
-    billboard->pQuads[1].pos.x = (float)pSoftBillboard->screen_space_x - v14 * scr_proj_x;
-    billboard->pQuads[1].pos.y = (float)pSoftBillboard->screen_space_y - v15 * scr_proj_y;
+    billboard->pQuads[1].pos.x = pSoftBillboard->screen_space_x - point_x * scr_proj_x;
+    billboard->pQuads[1].pos.y = pSoftBillboard->screen_space_y - point_y * scr_proj_y;
     billboard->pQuads[1].pos.z = 1.f - 1.f / (pSoftBillboard->screen_space_z * 1000.f / pCamera3D->GetFarClip());
     billboard->pQuads[1].rhw = 1.f / pSoftBillboard->screen_space_z;
     billboard->pQuads[1].texcoord.x = 0.f;
     billboard->pQuads[1].texcoord.y = 1.f;
 
-    v14 = (float)((int)pSprite->uAreaWidth + pSprite->uAreaX + pSprite->uBufferWidth / 2 - pSprite->uBufferWidth);
-    v15 = (float)((int)pSprite->uBufferHeight - pSprite->uAreaHeight - pSprite->uAreaY);
-    if (pSoftBillboard->uFlags & 4) v14 *= -1.f;
+    point_x = pSprite->uWidth / 2 + pSprite->uAreaX;
+    point_y = -pSprite->uAreaY;
+    if (pSoftBillboard->uFlags & 4) point_x *= -1.f;
     billboard->pQuads[2].diffuse = diffuse;
     billboard->pQuads[2].specular = specular;
-    billboard->pQuads[2].pos.x = (float)pSoftBillboard->screen_space_x + v14 * scr_proj_x;
-    billboard->pQuads[2].pos.y = (float)pSoftBillboard->screen_space_y - v15 * scr_proj_y;
+    billboard->pQuads[2].pos.x = pSoftBillboard->screen_space_x + point_x * scr_proj_x;
+    billboard->pQuads[2].pos.y = pSoftBillboard->screen_space_y - point_y * scr_proj_y;
     billboard->pQuads[2].pos.z = 1.f - 1.f / (pSoftBillboard->screen_space_z * 1000.f / pCamera3D->GetFarClip());
     billboard->pQuads[2].rhw = 1.f / pSoftBillboard->screen_space_z;
     billboard->pQuads[2].texcoord.x = 1.f;
     billboard->pQuads[2].texcoord.y = 1.f;
 
-    v14 = (float)((int)pSprite->uAreaWidth + pSprite->uAreaX + pSprite->uBufferWidth / 2 - pSprite->uBufferWidth);
-    v15 = (float)((int)pSprite->uBufferHeight - pSprite->uAreaY);
-    if (pSoftBillboard->uFlags & 4) v14 *= -1.f;
+    point_x = pSprite->uWidth / 2 + pSprite->uAreaX;
+    point_y = pSprite->uHeight - pSprite->uAreaY;
+    if (pSoftBillboard->uFlags & 4) point_x *= -1.f;
     billboard->pQuads[3].diffuse = diffuse;
     billboard->pQuads[3].specular = specular;
-    billboard->pQuads[3].pos.x = (float)pSoftBillboard->screen_space_x + v14 * scr_proj_x;
-    billboard->pQuads[3].pos.y = (float)pSoftBillboard->screen_space_y - v15 * scr_proj_y;
+    billboard->pQuads[3].pos.x = pSoftBillboard->screen_space_x + point_x * scr_proj_x;
+    billboard->pQuads[3].pos.y = pSoftBillboard->screen_space_y - point_y * scr_proj_y;
     billboard->pQuads[3].pos.z = 1.f - 1.f / (pSoftBillboard->screen_space_z * 1000.f / pCamera3D->GetFarClip());
     billboard->pQuads[3].rhw = 1.f / pSoftBillboard->screen_space_z;
     billboard->pQuads[3].texcoord.x = 1.f;
@@ -708,10 +699,10 @@ void RenderBase::BillboardSphereSpellFX(struct SpellFX_Billboard *a1, Color diff
 
 void RenderBase::DrawMonsterPortrait(Recti rc, SpriteFrame *Portrait, int Y_Offset) {
     Recti rct;
-    rct.x = rc.x + 64 + Portrait->hw_sprites[0]->uAreaX - Portrait->hw_sprites[0]->uBufferWidth / 2;
+    rct.x = rc.x + 64 + Portrait->hw_sprites[0]->uAreaX - Portrait->hw_sprites[0]->uWidth / 2;
     rct.y = rc.y + Y_Offset + Portrait->hw_sprites[0]->uAreaY;
-    rct.w = Portrait->hw_sprites[0]->uAreaWidth;
-    rct.h = Portrait->hw_sprites[0]->uAreaHeight;
+    rct.w = Portrait->hw_sprites[0]->uWidth;
+    rct.h = Portrait->hw_sprites[0]->uHeight;
 
     render->SetUIClipRect(rc.x, rc.y, rc.x + rc.w, rc.y + rc.h);
     render->DrawImage(Portrait->hw_sprites[0]->texture, rct, Portrait->GetPaletteIndex());

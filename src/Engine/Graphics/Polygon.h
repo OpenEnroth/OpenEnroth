@@ -1,6 +1,6 @@
 #pragma once
-#include <array>
 
+#include <array>
 
 struct ODMFace;
 struct Span;

@@ -6,7 +6,6 @@
 
 #include "Engine/Engine.h"
 #include "Engine/Conditions.h"
-#include "Engine/Graphics/Image.h"
 #include "Engine/Objects/Actor.h"
 #include "Engine/Objects/CombinedSkillValue.h"
 #include "Engine/Objects/Items.h"
@@ -17,6 +16,8 @@
 
 #include "Utility/IndexedArray.h"
 #include "Utility/IndexedBitset.h"
+
+class GraphicsImage;
 
 struct LloydBeacon {
     LloydBeacon() {

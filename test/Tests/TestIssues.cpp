@@ -9,6 +9,7 @@
 #include "Engine/Objects/SpriteObject.h"
 #include "Engine/SaveLoad.h"
 #include "Engine/Graphics/Indoor.h"
+#include "Engine/Graphics/Image.h"
 
 #include "Utility/DataPath.h"
 #include "Utility/ScopeGuard.h"

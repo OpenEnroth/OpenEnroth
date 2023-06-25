@@ -6,6 +6,7 @@
 #include "Engine/EngineGlobals.h"
 #include "Engine/Graphics/IRender.h"
 #include "Engine/Graphics/Viewport.h"
+#include "Engine/Graphics/Image.h"
 #include "Engine/LOD.h"
 #include "Engine/Localization.h"
 #include "Engine/Party.h"
@@ -16,7 +17,6 @@
 #include "GUI/GUIButton.h"
 #include "GUI/GUIFont.h"
 #include "GUI/GUIMessageQueue.h"
-#include "GUI/UI/UIGame.h"
 #include "GUI/UI/UIPartyCreation.h"
 
 #include "Io/Mouse.h"
@@ -25,8 +25,6 @@
 #include "Media/Audio/AudioPlayer.h"
 
 #include "Library/Random/Random.h"
-
-#include "Application/Game.h"
 
 using Io::TextInputType;
 

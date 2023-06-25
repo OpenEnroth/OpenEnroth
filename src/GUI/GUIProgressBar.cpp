@@ -8,8 +8,10 @@
 #include "Engine/Party.h"
 
 #include "Engine/Graphics/IRender.h"
-
+#include "Engine/Graphics/Image.h"
 #include "Engine/Tables/IconFrameTable.h"
+
+#include "GUI/GUIWindow.h"
 
 #include "Library/Random/Random.h"
 #include "Utility/IndexedArray.h"

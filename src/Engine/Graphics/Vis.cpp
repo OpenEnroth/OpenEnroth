@@ -16,6 +16,7 @@
 #include "Engine/Graphics/Indoor.h"
 #include "Engine/Graphics/Sprites.h"
 #include "Engine/Graphics/Viewport.h"
+#include "Engine/Graphics/Image.h"
 #include "Engine/Objects/Actor.h"
 
 #include "Utility/Math/TrigLut.h"
@@ -239,25 +240,25 @@ void Vis::PickBillboards_Mouse(float fPickDepth, float fX, float fY,
 }
 
 //----- (004C1607) --------------------------------------------------------
-bool Vis::IsPointInsideD3DBillboard(RenderBillboardD3D *a1, float x, float y) {
+bool Vis::IsPointInsideD3DBillboard(RenderBillboardD3D *billboard, float x, float y) {
     /*Not the original implementation.
     This function is redone to use GrayFace's mouse pick implementation to take
     only the visible
     parts of billboards into account - I don't really have too much of an idea
     how it actually works*/
 
-    if (a1->sParentBillboardID == -1) return false;
+    if (billboard->sParentBillboardID == -1) return false;
 
-    float drX = a1->pQuads[0].pos.x;
-    float drW = a1->pQuads[3].pos.x - drX;
-    float drY = a1->pQuads[0].pos.y;
-    float drH = a1->pQuads[1].pos.y - drY;
+    float drX = billboard->pQuads[0].pos.x;
+    float drW = billboard->pQuads[3].pos.x - drX;
+    float drY = billboard->pQuads[0].pos.y;
+    float drH = billboard->pQuads[1].pos.y - drY;
 
     // simple bounds check
-    if (x > drX && x > a1->pQuads[3].pos.x) return 0;
-    if (x < drX && x < a1->pQuads[3].pos.x) return 0;
-    if (y > drY && y > a1->pQuads[1].pos.y) return 0;
-    if (y < drY && y < a1->pQuads[1].pos.y) return 0;
+    if (x > drX && x > billboard->pQuads[3].pos.x) return 0;
+    if (x < drX && x < billboard->pQuads[3].pos.x) return 0;
+    if (y > drY && y > billboard->pQuads[1].pos.y) return 0;
+    if (y < drY && y < billboard->pQuads[1].pos.y) return 0;
 
     // for small items dont bother with the per pixel checks
     if (abs(drH) < 5 || abs(drW) < 5) {
@@ -266,7 +267,7 @@ bool Vis::IsPointInsideD3DBillboard(RenderBillboardD3D *a1, float x, float y) {
 
     Sprite *ownerSprite = nullptr;
     for (int i = 0; i < pSprites_LOD->pSprites.size(); ++i) {
-        if ((void *)pSprites_LOD->pSprites[i].texture == a1->texture) {
+        if ((void *)pSprites_LOD->pSprites[i].texture == billboard->texture) {
             ownerSprite = &pSprites_LOD->pSprites[i];
             break;
         }
@@ -275,16 +276,16 @@ bool Vis::IsPointInsideD3DBillboard(RenderBillboardD3D *a1, float x, float y) {
     if (ownerSprite == nullptr) return false;
 
     int sx =
-        ownerSprite->uAreaX + int(ownerSprite->uAreaWidth * (x - drX) / drW);
+        ownerSprite->uAreaX + int(ownerSprite->uWidth * (x - drX) / drW);
     int sy =
-        ownerSprite->uAreaY + int(ownerSprite->uAreaHeight * (y - drY) / drH);
+        ownerSprite->uAreaY + int(ownerSprite->uHeight * (y - drY) / drH);
 
     LODSprite *spriteHeader = ownerSprite->sprite_header;
 
     if (sy < 0 || sy >= spriteHeader->uHeight) return false;
     if (sx < 0 || sx >= spriteHeader->uWidth) return false;
 
-    return spriteHeader->bitmap[sy * spriteHeader->uWidth + sx] != 0;
+    return spriteHeader->bitmap[sy][sx] != 0;
 }
 
 //----- (004C16B4) --------------------------------------------------------

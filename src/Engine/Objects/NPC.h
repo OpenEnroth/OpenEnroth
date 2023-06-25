@@ -8,7 +8,6 @@
 
 #include "Engine/Objects/NPCEnums.h"
 #include "Engine/Tables/NPCTable.h"
-#include "Engine/Graphics/Image.h"
 
 // TODO(Nik-RE-dev): remove
 //----- (0047730C) --------------------------------------------------------

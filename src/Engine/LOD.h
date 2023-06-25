@@ -8,6 +8,8 @@
 #include "Engine/Graphics/Texture_MM7.h"
 #include "Engine/Graphics/Sprites.h"
 
+#include "Library/Image/Image.h"
+
 #include "Utility/Memory/Blob.h"
 
 class Sprite;
@@ -198,14 +200,9 @@ struct LODSpriteHeader {
 #pragma pack(pop)
 
 struct LODSprite : public LODSpriteHeader {
-    inline LODSprite() {
-        bitmap = nullptr;
-    }
-    ~LODSprite();
-
     void Release();
 
-    uint8_t *bitmap;
+    GrayscaleImage bitmap;
 };
 
 class LODFile_Sprites : public LOD::File {

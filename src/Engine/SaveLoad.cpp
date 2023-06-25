@@ -1,4 +1,4 @@
-#include "Engine/SaveLoad.h"
+#include "SaveLoad.h"
 
 #include <cstdlib>
 #include <filesystem>
@@ -16,6 +16,7 @@
 #include "Engine/Graphics/ImageLoader.h"
 #include "Engine/Graphics/Outdoor.h"
 #include "Engine/Graphics/Indoor.h"
+#include "Engine/Graphics/Image.h"
 #include "Library/Image/PCX.h"
 #include "Engine/Graphics/IRender.h"
 

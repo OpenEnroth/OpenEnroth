@@ -5,15 +5,21 @@
 #include <vector>
 #include <array>
 
-#include "Engine/Graphics/Image.h"
-#include "Engine/Graphics/Nuklear.h"
-#include "Engine/OurMath.h"
 #include "Application/GameConfig.h"
+
+#include "Engine/Graphics/Nuklear.h"
+#include "Engine/MM7.h"
+
+#include "Library/Image/Image.h"
 #include "Library/Color/Color.h"
+#include "Library/Color/ColorTable.h"
+
 #include "Utility/Geometry/Rect.h"
 
 #include "TextureRenderId.h"
 
+class Actor;
+class GraphicsImage;
 class Sprite;
 class SpriteFrame;
 struct SoftwareBillboard;
@@ -127,7 +133,7 @@ struct RenderBillboardD3D {
     };
     using enum OpacityType;
 
-    GraphicsImage *texture;  // void *gapi_texture;//IDirect3DTexture2 *pTexture; for d3d
+    GraphicsImage *texture;
     unsigned int uNumVertices;
     std::array<RenderVertexD3D3, 4> pQuads;
     float z_order;
@@ -330,7 +336,7 @@ class IRender {
     virtual void SavePCXScreenshot() = 0;
     virtual RgbaImage MakeScreenshot32(const int width, const int height) = 0;
 
-    virtual std::vector<Actor*> getActorsInViewport(int pDepth) = 0;
+    virtual std::vector<Actor *> getActorsInViewport(int pDepth) = 0;
 
     virtual void BeginLightmaps() = 0;
     virtual void EndLightmaps() = 0;
@@ -369,7 +375,8 @@ class IRender {
     int hd_water_current_frame;
     GraphicsImage *hd_water_tile_anim[7];
     RenderBillboardD3D pBillboardRenderListD3D[1000];
-    unsigned int uNumBillboardsToDraw;
+    unsigned int uNumBillboardsToDraw; // TODO(captainurist): this is not properly cleared if BeginScene3D is not called,
+                                       //                     resulting in dangling textures in pBillboardRenderListD3D.
 
     int drawcalls;
 
@@ -415,10 +422,8 @@ struct SkyBillboardStruct {
 
 extern SkyBillboardStruct SkyBillboard;
 
-Color GetActorTintColor(int max_dim, int min_dim, float distance, int a4,
-                        struct RenderBillboard *a5);
-int _43F55F_get_billboard_light_level(struct RenderBillboard *a1,
-                                      int uBaseLightLevel);
+Color GetActorTintColor(int max_dim, int min_dim, float distance, int a4, const RenderBillboard *a5);
+int _43F55F_get_billboard_light_level(const RenderBillboard *a1, int uBaseLightLevel);
 int GetLightLevelAtPoint(unsigned int uBaseLightLevel, int uSectorID, float x, float y, float z);
 
 void UpdateObjects();

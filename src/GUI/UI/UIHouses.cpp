@@ -1,30 +1,22 @@
 #include "UIHouses.h"
 
 #include <cstdlib>
-#include <limits>
 #include <vector>
-
-#include "Arcomage/Arcomage.h"
 
 #include "Engine/AssetsManager.h"
 #include "Engine/Engine.h"
-#include "Engine/EngineGlobals.h"
 #include "Engine/Graphics/Camera.h"
-#include "Engine/Graphics/Image.h"
 #include "Engine/Graphics/Level/Decoration.h"
 #include "Engine/Graphics/Indoor.h"
-#include "Engine/Graphics/Outdoor.h"
-#include "Engine/Graphics/Viewport.h"
+#include "Engine/Graphics/Image.h"
 #include "Engine/LOD.h"
 #include "Engine/Localization.h"
 #include "Engine/MapInfo.h"
 #include "Engine/Party.h"
 #include "Engine/PriceCalculator.h"
 #include "Engine/SaveLoad.h"
-#include "Engine/Spells/CastSpellInfo.h"
 #include "Engine/Tables/BuildingTable.h"
 #include "Engine/Tables/AwardTable.h"
-#include "Engine/Tables/MerchantTable.h"
 #include "Engine/Tables/TransitionTable.h"
 
 #include "GUI/GUIButton.h"
@@ -33,7 +25,6 @@
 #include "GUI/GUIMessageQueue.h"
 #include "GUI/UI/UIDialogue.h"
 #include "GUI/UI/UIGame.h"
-#include "GUI/UI/UIPartyCreation.h"
 #include "GUI/UI/UIStatusBar.h"
 #include "GUI/UI/Houses/MagicGuild.h"
 #include "GUI/UI/Houses/Bank.h"

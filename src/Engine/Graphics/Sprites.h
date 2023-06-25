@@ -4,12 +4,10 @@
 #include <string>
 #include <vector>
 
-#include "Engine/OurMath.h"
-
-#include "Engine/Graphics/DecorationList.h"
-
 #include "Utility/Memory/Blob.h"
 
+struct LODSprite;
+class DecorationDesc;
 class GraphicsImage;
 
 class Sprite {
@@ -19,26 +17,22 @@ class Sprite {
         texture = nullptr;
         uAreaX = 0;
         uAreaY = 0;
-        uBufferWidth = 0;
-        uBufferHeight = 0;
-        uAreaWidth = 0;
-        uAreaHeight = 0;
+        uWidth = 0;
+        uHeight = 0;
         sprite_header = nullptr;
     }
 
     void Release();
 
     std::string pName;
-    int uPaletteID; // this is repaint palette index if it doesnt match sprite header palette
+    int uPaletteID; // TODO(captainurist): why is this unused?
     GraphicsImage *texture;
-    int uAreaX;
-    int uAreaY;
-    int uBufferWidth;   // hardware width  (as opposed to LODSprite::Width)
-    int uBufferHeight;  // hardware sprite height
-    int uAreaWidth;
-    int uAreaHeight;
+    int uAreaX; // TODO(captainurist): always zero,
+    int uAreaY; // TODO(captainurist): was intended to support sprite maps?
+    int uWidth; // Same as texture->width().
+    int uHeight;
 
-    struct LODSprite *sprite_header;
+    LODSprite *sprite_header;
 };
 
 class SpriteFrame {

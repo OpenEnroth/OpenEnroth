@@ -2,9 +2,9 @@
 
 #include <array>
 
-#include "GUI/GUIWindow.h"
-#include "Engine/Graphics/Image.h"
 #include "Engine/Spells/SpellEnums.h"
+
+#include "GUI/GUIWindow.h"
 
 class GUIWindow_Spellbook : public GUIWindow {
  public:

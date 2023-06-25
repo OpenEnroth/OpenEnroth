@@ -1,4 +1,5 @@
 #pragma once
+
 #include <memory>
 #include <string>
 
@@ -69,5 +70,5 @@ class RenderBase : public IRender {
 
  protected:
     unsigned int Billboard_ProbablyAddToListAndSortByZOrder(float z);
-    void TransformBillboard(SoftwareBillboard *a2, RenderBillboard *pBillboard);
+    void TransformBillboard(const SoftwareBillboard *a2, const RenderBillboard *pBillboard);
 };

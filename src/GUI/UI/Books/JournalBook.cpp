@@ -9,6 +9,7 @@
 
 #include "Engine/Graphics/IRender.h"
 #include "Engine/Graphics/Viewport.h"
+#include "Engine/Graphics/Image.h"
 
 #include "Engine/Tables/StorylineTextTable.h"
 

@@ -7,7 +7,6 @@
 #include "Engine/Graphics/IRender.h"
 #include "Engine/Graphics/Image.h"
 #include "Engine/Graphics/LocationFunctions.h"
-#include "Engine/Graphics/Viewport.h"
 #include "Engine/Localization.h"
 #include "Engine/MapInfo.h"
 #include "Engine/Objects/Items.h"
@@ -23,7 +22,6 @@
 #include "GUI/GUIMessageQueue.h"
 #include "GUI/UI/UIHouses.h"
 #include "GUI/UI/UIStatusBar.h"
-#include "GUI/UI/UIPopup.h"
 #include "GUI/UI/Houses/Shops.h"
 
 #include "Io/Mouse.h"

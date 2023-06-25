@@ -8,7 +8,7 @@
 #include "Engine/Engine.h"
 #include "Engine/Graphics/Outdoor.h"
 #include "Engine/Graphics/Indoor.h"
-#include "Engine/Graphics/Viewport.h"
+#include "Engine/Graphics/Image.h"
 #include "Engine/Localization.h"
 #include "Engine/LOD.h"
 #include "Engine/Objects/Actor.h"
@@ -19,6 +19,7 @@
 #include "Engine/Tables/CharacterFrameTable.h"
 #include "Engine/Time.h"
 #include "Engine/TurnEngine/TurnEngine.h"
+#include "Engine/OurMath.h"
 
 #include "GUI/GUIWindow.h"
 #include "GUI/GUIMessageQueue.h"

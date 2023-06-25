@@ -9,6 +9,8 @@
 #include "Engine/Graphics/Indoor.h"
 #include "Engine/Graphics/ClippingFunctions.h"
 #include "Engine/Graphics/Weather.h"
+#include "Engine/OurMath.h"
+#include "Engine/Party.h"
 
 LightsStack_StationaryLight_ *pStationaryLightsStack = new LightsStack_StationaryLight_;
 LightsStack_MobileLight_ *pMobileLightsStack = new LightsStack_MobileLight_;
@@ -42,7 +44,7 @@ void DrawLightsDebugOutlines(
  *
  * @return                              Return 32bit colour ARGB.
  */
-Color GetActorTintColor(int max_dimm, int min_dimm, float distance, int bNoLight, RenderBillboard *pBillboard) {
+Color GetActorTintColor(int max_dimm, int min_dimm, float distance, int bNoLight, const RenderBillboard *pBillboard) {
     int dimminglevel = 0;
 
     if (uCurrentlyLoadedLevelType == LEVEL_INDOOR)
@@ -184,7 +186,7 @@ int GetLightLevelAtPoint(unsigned int uBaseLightLevel, int uSectorID, float x, f
  *
  * @return                              Billboard dimming value (0-31) with lights applied.
  */
-int _43F55F_get_billboard_light_level(RenderBillboard *a1, int uBaseLightLevel) {
+int _43F55F_get_billboard_light_level(const RenderBillboard *a1, int uBaseLightLevel) {
     int v3 = 0;
 
     if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {

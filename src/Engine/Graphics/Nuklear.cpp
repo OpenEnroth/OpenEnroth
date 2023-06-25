@@ -9,6 +9,7 @@
 #include "Engine/Graphics/Nuklear.h"
 #include "Engine/Graphics/ImageLoader.h"
 #include "Engine/Graphics/IRender.h"
+#include "Engine/Graphics/Image.h"
 
 #include "GUI/GUIWindow.h"
 #include "Platform/PlatformEnums.h"
