@@ -377,11 +377,7 @@ GAME_TEST(Prs, Pr314) {
 
 GAME_TEST(Issues, Issue315) {
     test->loadGameFromTestData("issue_315.mm7");
-    game->goToMainMenu();
-    game->pressGuiButton("MainMenu_NewGame");
-    game->tick(2);
-    game->pressGuiButton("PartyCreation_OK");
-    game->skipLoadingScreen(); // This shouldn't crash.
+    game->startNewGame(); // This shouldn't crash.
 }
 
 GAME_TEST(Issues, Issue331_679) {
@@ -771,11 +767,7 @@ GAME_TEST(Issues, Issue615) {
 
 GAME_TEST(Issues, Issue625) {
     // Every character getting club at the start of the game
-    game->pressGuiButton("MainMenu_NewGame");
-    game->tick(2);
-    game->pressGuiButton("PartyCreation_OK");
-    game->skipLoadingScreen();
-    game->tick(2);
+    game->startNewGame();
     EXPECT_FALSE(pParty->hasItem(ITEM_CLUB));
 }
 
@@ -806,11 +798,7 @@ GAME_TEST(Issues, Issue626) {
 
     std::filesystem::create_directory(savesDir);
 
-    game->pressGuiButton("MainMenu_NewGame");
-    game->tick(2);
-    game->pressGuiButton("PartyCreation_OK");
-    game->skipLoadingScreen();
-    game->tick(2);
+    game->startNewGame();
 
     game->pressAndReleaseKey(PlatformKey::KEY_ESCAPE);
     game->tick(2);
@@ -978,11 +966,7 @@ GAME_TEST(Issues, Issue689) {
 
     std::filesystem::create_directory(savesDir);
 
-    game->pressGuiButton("MainMenu_NewGame");
-    game->tick(2);
-    game->pressGuiButton("PartyCreation_OK");
-    game->skipLoadingScreen();
-    game->tick(2);
+    game->startNewGame();
 
     game->pressAndReleaseKey(PlatformKey::KEY_ESCAPE);
     game->tick(2);
@@ -1078,11 +1062,7 @@ GAME_TEST(Issues, Issue741) {
 
 GAME_TEST(Issues, Issue742) {
     // No starting Quests in Questbook
-    game->pressGuiButton("MainMenu_NewGame");
-    game->tick(2);
-    game->pressGuiButton("PartyCreation_OK");
-    game->skipLoadingScreen();
-    game->tick(2);
+    game->startNewGame();
     // check all starting quests
     EXPECT_TRUE(pParty->_questBits.test(QBIT_EMERALD_ISLAND_RED_POTION_ACTIVE));
     EXPECT_TRUE(pParty->_questBits.test(QBIT_EMERALD_ISLAND_SEASHELL_ACTIVE));

@@ -136,6 +136,15 @@ void EngineController::goToMainMenu() {
     }
 }
 
+void EngineController::startNewGame() {
+    goToMainMenu();
+    pressGuiButton("MainMenu_NewGame");
+    tick(2);
+    pressGuiButton("PartyCreation_OK");
+    skipLoadingScreen();
+    tick(2);
+}
+
 void EngineController::skipLoadingScreen() {
     int steps = 0;
     while (!pGameLoadingUI_ProgressBar->IsActive()) {

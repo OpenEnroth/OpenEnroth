@@ -57,6 +57,11 @@ class EngineController {
     void goToMainMenu();
 
     /**
+     * Start new game no matter the current game state.
+     */
+    void startNewGame();
+
+    /**
      * Waits for the loading screen to complete.
      *
      * @throws Exception                If there is no loading screen.
