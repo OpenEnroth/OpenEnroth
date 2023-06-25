@@ -80,6 +80,17 @@ void EngineController::releaseButton(PlatformMouseButton button, int x, int y) {
     postEvent(std::move(event));
 }
 
+void EngineController::moveMouse(int x, int y) {
+    std::unique_ptr<PlatformMouseEvent> event = std::make_unique<PlatformMouseEvent>();
+    event->type = EVENT_MOUSE_MOVE;
+    event->window = ::application->window();
+    event->button = BUTTON_NONE;
+    event->buttons = BUTTON_NONE;
+    event->pos = Pointi(x, y);
+    event->isDoubleClick = false;
+    postEvent(std::move(event));
+}
+
 void EngineController::pressAndReleaseKey(PlatformKey key) {
     pressKey(key);
     releaseKey(key);

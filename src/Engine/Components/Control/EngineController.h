@@ -4,6 +4,7 @@
 #include <memory>
 
 #include "Platform/PlatformEnums.h"
+#include "Platform/PlatformEvents.h"
 
 #include "EngineControlStateHandle.h"
 
@@ -39,6 +40,7 @@ class EngineController {
     void releaseKey(PlatformKey key);
     void pressButton(PlatformMouseButton button, int x, int y);
     void releaseButton(PlatformMouseButton button, int x, int y);
+    void moveMouse(int x, int y);
 
     void pressAndReleaseKey(PlatformKey key);
     void pressAndReleaseButton(PlatformMouseButton button, int x, int y);
