@@ -123,11 +123,10 @@ int LODFile_Sprites::LoadSpriteFromFile(LODSprite *pSprite, const std::string &p
     if (pSprite->uDecompressedSize)
         bytes = zlib::Uncompress(bytes, pSprite->uDecompressedSize);
 
-    pSprite->bitmap = new uint8_t[pSprite->uWidth * pSprite->uHeight];
-    memset(pSprite->bitmap, 0, pSprite->uWidth * pSprite->uHeight);
+    pSprite->bitmap = GrayscaleImage::solid(pSprite->uWidth, pSprite->uHeight, 0);
     for (uint i = 0; i < pSprite->uHeight; i++) {
         if (pSpriteLines[i].begin >= 0) {
-            memcpy(pSprite->bitmap + (i * pSprite->uWidth) + pSpriteLines[i].begin,
+            memcpy(pSprite->bitmap[i].data() + pSpriteLines[i].begin,
                 static_cast<const char *>(bytes.data()) + pSpriteLines[i].offset,
                 pSpriteLines[i].end - pSpriteLines[i].begin);
         }
@@ -279,12 +278,8 @@ void LODFile_Sprites::DeleteSpritesRange(int uStartIndex, int uStopIndex) {
 }
 
 void LODSprite::Release() {
-    if (!(this->word_1A & 0x400)) {
-        delete[] bitmap;
-    }
-
     this->word_1A = 0;
-    this->bitmap = nullptr;
+    this->bitmap.reset();
     this->pName[0] = 0;
     this->word_16 = 0;
     this->uPaletteId = 0;
@@ -348,13 +343,6 @@ LODFile_Sprites::~LODFile_Sprites() {
             this->pSprites[i].Release();
         }
     }
-}
-
-LODSprite::~LODSprite() {
-    if (!(this->word_1A & 0x400)) {
-        delete[] bitmap;
-    }
-    bitmap = nullptr;
 }
 
 LODFile_Sprites::LODFile_Sprites() : LOD::File() {

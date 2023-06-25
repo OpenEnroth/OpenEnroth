@@ -284,7 +284,7 @@ bool Vis::IsPointInsideD3DBillboard(RenderBillboardD3D *a1, float x, float y) {
     if (sy < 0 || sy >= spriteHeader->uHeight) return false;
     if (sx < 0 || sx >= spriteHeader->uWidth) return false;
 
-    return spriteHeader->bitmap[sy * spriteHeader->uWidth + sx] != 0;
+    return spriteHeader->bitmap[sy][sx] != 0;
 }
 
 //----- (004C16B4) --------------------------------------------------------

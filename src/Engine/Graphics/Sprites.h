@@ -29,10 +29,10 @@ class Sprite {
     void Release();
 
     std::string pName;
-    int uPaletteID; // this is repaint palette index if it doesnt match sprite header palette
+    int uPaletteID; // TODO(captainurist): why is this unused?
     GraphicsImage *texture;
-    int uAreaX;
-    int uAreaY;
+    int uAreaX; // TODO(captainurist): always zero,
+    int uAreaY; // TODO(captainurist): was intended to support sprite maps?
     int uBufferWidth;   // hardware width  (as opposed to LODSprite::Width)
     int uBufferHeight;  // hardware sprite height
     int uAreaWidth;

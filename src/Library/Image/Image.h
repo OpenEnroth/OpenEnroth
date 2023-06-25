@@ -65,6 +65,12 @@ class ImageBase {
         return static_cast<bool>(_pixels.get());
     }
 
+    void reset() {
+        _width = 0;
+        _height = 0;
+        _pixels.reset();
+    }
+
  protected: // Directly accessible from derived classes.
     size_t _width = 0;
     size_t _height = 0;

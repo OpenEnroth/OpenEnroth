@@ -245,20 +245,8 @@ bool Sprites_LOD_Loader::Load(RgbaImage *rgbaImage, GrayscaleImage *indexedImage
 
     for (size_t y = 0; y < h; y++) {
         for (size_t x = 0; x < w; x++) {
-            uint8_t bitpix = pSprite->sprite_header->bitmap[y * w + x];
-
-            int r = 0, g = 0, b = 0, a = 0;
-            r = bitpix;
-            g = 0;
-            b = 0;
-
-            if (bitpix == 0) {
-                a = r = g = b = 0;
-            } else {
-                a = 255;
-            }
-
-            (*rgbaImage)[y][x] = Color(r, g, b, a);
+            uint8_t index = pSprite->sprite_header->bitmap[y][x];
+            (*rgbaImage)[y][x] = Color(index, 0, 0, index == 0 ? 0 : 255);
         }
     }
 
