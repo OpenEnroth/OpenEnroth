@@ -133,7 +133,7 @@ struct RenderBillboardD3D {
     };
     using enum OpacityType;
 
-    GraphicsImage *texture;  // void *gapi_texture;//IDirect3DTexture2 *pTexture; for d3d
+    GraphicsImage *texture;  // TODO(captainurist): this points into garbage, wtf
     unsigned int uNumVertices;
     std::array<RenderVertexD3D3, 4> pQuads;
     float z_order;
