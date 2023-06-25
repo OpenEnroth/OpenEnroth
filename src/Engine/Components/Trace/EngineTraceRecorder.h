@@ -5,7 +5,6 @@
 
 #include "Library/Application/PlatformApplicationAware.h"
 
-class EventTrace;
 class EngineController;
 class EngineTraceComponent;
 class EngineDeterministicComponent;
@@ -15,11 +14,10 @@ class GameKeyboardController;
  * Component that exposes a trace recording interface. Doesn't have a `Component` in its name because who likes
  * class names half a screen long.
  *
- * Depends on `EngineControlComponent`, `EngineDeterministicComponent` and `EngineTraceComponent`, install them into
- * `PlatformApplication` first.
+ * Depends on `EngineDeterministicComponent` and `EngineTraceComponent`, install them into `PlatformApplication` first.
  *
  * Note that the difference from `EngineTraceComponent` is that this component isn't dumb and offers a complete solution
- * to trace recording. Traces that were recorded with `startTraceRecording` / `finishTraceRecording` can then be played
+ * to trace recording. Traces that were recorded with `startRecording` / `finishRecording` can then be played
  * back with `EngineTracePlayer`.
  *
  * Some notes on how this works. When starting trace recording:
@@ -30,6 +28,8 @@ class GameKeyboardController;
  * Why do we need to start trace recording with loading the game? Loading the game updates the states of all actors
  * on the map, and since trace recording and playback must start in the same state, the only option that we have is to
  * start both trace playback and trace recording by loading the same save.
+ *
+ * @see EngineTracePlayer
  */
 class EngineTraceRecorder : private PlatformApplicationAware {
  public:
@@ -39,11 +39,21 @@ class EngineTraceRecorder : private PlatformApplicationAware {
     /**
      * Starts trace recording.
      *
+     * Note that this method needs to be called from the control thread, see `EngineControlComponent`.
+     *
      * @param game                      Engine controller.
      * @param savePath                  Path to save file.
      * @param tracePath                 Path to trace file.
      */
     void startRecording(EngineController *game, const std::string &savePath, const std::string &tracePath);
+
+    /**
+     * Finishes trace recording & saves the trace file.
+     *
+     * Note that this method needs to be called from the control thread, see `EngineControlComponent`.
+     *
+     * @param game                      Engine controller.
+     */
     void finishRecording(EngineController *game);
 
     /**
@@ -52,7 +62,7 @@ class EngineTraceRecorder : private PlatformApplicationAware {
      *                                  state.
      */
     [[nodiscard]] bool isRecording() const {
-        return _trace != nullptr;
+        return !_saveFilePath.empty();
     }
 
  private:
@@ -62,7 +72,6 @@ class EngineTraceRecorder : private PlatformApplicationAware {
     virtual void removeNotify() override;
 
  private:
-    std::unique_ptr<EventTrace> _trace;
     std::string _saveFilePath;
     std::string _traceFilePath;
     int _oldFpsLimit = 0;

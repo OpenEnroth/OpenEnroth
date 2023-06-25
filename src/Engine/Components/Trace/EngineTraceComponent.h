@@ -1,6 +1,5 @@
 #pragma once
 
-#include <vector>
 #include <memory>
 
 #include "Platform/Proxy/ProxyOpenGLContext.h"
@@ -8,22 +7,35 @@
 
 #include "Library/Application/PlatformApplicationAware.h"
 
+struct EventTrace;
+
 /**
  * Component that can be used to record events.
  *
- * Note that this component is intentionally very dumb. Calling `start` starts recording events right away, and
- * calling `finish` just returns everything that was recorded.
+ * Note that this component is intentionally very dumb. Calling `startRecording` starts recording events right away,
+ * and calling `finishRecording` just returns everything that was recorded.
+ *
+ * @see EngineTraceRecorder
  */
 class EngineTraceComponent : private ProxyOpenGLContext, private PlatformEventFilter, private PlatformApplicationAware {
  public:
     EngineTraceComponent();
     virtual ~EngineTraceComponent();
 
-    void start();
-    std::vector<std::unique_ptr<PlatformEvent>> finish();
+    /**
+     * Starts trace recording.
+     */
+    void startRecording();
 
-    bool isTracing() const {
-        return _tracing;
+    /**
+     * @return                          Recorded trace. Note that it's up to the caller to fill the save file-related
+     *                                  fields of `EventTraceHeader` because `EngineTraceComponent` doesn't know
+     *                                  anything about save files.
+     */
+    EventTrace finishRecording();
+
+    bool isRecording() const {
+        return _trace != nullptr;
     }
 
  private:
@@ -33,6 +45,5 @@ class EngineTraceComponent : private ProxyOpenGLContext, private PlatformEventFi
     virtual bool event(const PlatformEvent *event) override;
 
  private:
-    bool _tracing = false;
-    std::vector<std::unique_ptr<PlatformEvent>> _trace;
+    std::unique_ptr<EventTrace> _trace;
 };
