@@ -2,6 +2,9 @@
 
 #include "Engine/Graphics/Indoor.h"
 #include "Engine/Graphics/PortalFunctions.h"
+#include "Engine/Engine.h"
+
+#include "Library/Logger/Logger.h"
 
 BspRenderer *pBspRenderer = new BspRenderer();
 

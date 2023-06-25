@@ -14,6 +14,7 @@
 #include "Engine/Objects/SpriteObject.h"
 #include "Engine/TurnEngine/TurnEngine.h"
 #include "Engine/OurMath.h"
+#include "Engine/Party.h"
 
 #include "Utility/Math/Float.h"
 #include "Utility/Math/TrigLut.h"

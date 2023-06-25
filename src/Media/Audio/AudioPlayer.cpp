@@ -20,6 +20,8 @@
 
 #include "Media/Audio/OpenALSoundProvider.h"
 
+#include "GUI/GUIWindow.h"
+
 #include "SoundInfo.h"
 
 int sLastTrackLengthMS;

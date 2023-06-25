@@ -7,6 +7,7 @@
 #include "Engine/OurMath.h"
 #include "Engine/Time.h"
 #include "Engine/stru160.h"
+#include "Engine/Party.h"
 
 #include "Engine/Graphics/Camera.h"
 #include "Engine/Graphics/Indoor.h"

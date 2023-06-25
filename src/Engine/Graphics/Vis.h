@@ -5,8 +5,10 @@
 #include "Utility/Flags.h"
 
 #include "Engine/Graphics/IRender.h"
-#include "Engine/Objects/Actor.h"
+#include "Engine/Objects/ActorEnums.h"
 #include "Camera.h"
+
+class BSPModel;
 
 enum class VisObjectType : uint32_t {
     VisObjectType_Any = 0,

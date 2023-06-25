@@ -10,6 +10,7 @@
 #include "Engine/Graphics/ClippingFunctions.h"
 #include "Engine/Graphics/Weather.h"
 #include "Engine/OurMath.h"
+#include "Engine/Party.h"
 
 LightsStack_StationaryLight_ *pStationaryLightsStack = new LightsStack_StationaryLight_;
 LightsStack_MobileLight_ *pMobileLightsStack = new LightsStack_MobileLight_;

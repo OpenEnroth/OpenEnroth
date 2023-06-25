@@ -1,7 +1,6 @@
 #pragma once
 
 #include <cstdint>
-#include <span> // NOLINT
 #include <array>
 #include <vector>
 #include <string>

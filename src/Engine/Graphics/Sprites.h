@@ -4,11 +4,10 @@
 #include <string>
 #include <vector>
 
-#include "Engine/Graphics/DecorationList.h"
-
 #include "Utility/Memory/Blob.h"
 
 struct LODSprite;
+class DecorationDesc;
 class GraphicsImage;
 
 class Sprite {

@@ -1,7 +1,5 @@
 #pragma once
 
-#include <memory>
-
 #include "Platform/Filters/PlatformEventFilter.h"
 
 class NuklearEventHandler : public PlatformEventFilter {

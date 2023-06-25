@@ -6,6 +6,7 @@
 #include "Engine/Engine.h"
 #include "Engine/MM7.h"
 #include "Engine/SpellFxRenderer.h"
+#include "Engine/Party.h"
 
 #include "Engine/Objects/Actor.h"
 #include "Engine/Objects/SpriteObject.h"

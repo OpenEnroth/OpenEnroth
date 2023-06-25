@@ -2,8 +2,9 @@
 
 #include <memory>
 
-#include "GUI/GUIWindow.h"
 #include "Platform/PlatformEnums.h"
+
+#include "GUI/GUIEnums.h"
 
 #include <lua.hpp>
 #include "nuklear/nuklear_config.h"
@@ -32,13 +33,13 @@ class Nuklear {
      Nuklear();
 
      static std::shared_ptr<Nuklear> Initialize();
-     bool Create(enum WindowType winType);
-     bool Draw(enum NUKLEAR_STAGE stage, enum WindowType winType, int type);
+     bool Create(WindowType winType);
+     bool Draw(NUKLEAR_STAGE stage, WindowType winType, int type);
      int KeyEvent(PlatformKey key);
      bool Reload();
-     void Release(enum WindowType winType);
+     void Release(WindowType winType);
      void Destroy();
-     enum NUKLEAR_MODE Mode(enum WindowType winType);
+     enum NUKLEAR_MODE Mode(WindowType winType);
 
      struct nk_context *ctx = nullptr;
 
@@ -46,7 +47,7 @@ class Nuklear {
      void Release(WindowType winType, bool reload);
      bool LuaInit();
      void LuaRelease();
-     bool LuaLoadTemplate(enum WindowType winType);
+     bool LuaLoadTemplate(WindowType winType);
 
  protected:
 };

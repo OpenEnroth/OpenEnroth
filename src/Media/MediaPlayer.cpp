@@ -37,6 +37,7 @@ extern "C" {
 #include "Utility/Memory/FreeDeleter.h"
 
 #include "GUI/GUIMessageQueue.h"
+#include "GUI/GUIWindow.h"
 
 using namespace std::chrono_literals; // NOLINT
 

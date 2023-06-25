@@ -12,6 +12,9 @@
 
 #include "Library/Image/ImageFunctions.h"
 #include "Library/Image/PCX.h"
+#include "Library/Logger/Logger.h"
+
+#include "Utility/DataPath.h"
 
 // List of textures that require additional processing for transparent pixels.
 // TODO: move to OpenEnroth config file.

@@ -8,14 +8,17 @@
 #include "Application/GameConfig.h"
 
 #include "Engine/Graphics/Nuklear.h"
+#include "Engine/MM7.h"
 
 #include "Library/Image/Image.h"
 #include "Library/Color/Color.h"
+#include "Library/Color/ColorTable.h"
 
 #include "Utility/Geometry/Rect.h"
 
 #include "TextureRenderId.h"
 
+class Actor;
 class GraphicsImage;
 class Sprite;
 class SpriteFrame;
@@ -333,7 +336,7 @@ class IRender {
     virtual void SavePCXScreenshot() = 0;
     virtual RgbaImage MakeScreenshot32(const int width, const int height) = 0;
 
-    virtual std::vector<Actor*> getActorsInViewport(int pDepth) = 0;
+    virtual std::vector<Actor *> getActorsInViewport(int pDepth) = 0;
 
     virtual void BeginLightmaps() = 0;
     virtual void EndLightmaps() = 0;
