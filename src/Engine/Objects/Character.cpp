@@ -1217,8 +1217,8 @@ std::string Character::GetMeleeDamageString() {
     } else if (mainHandItem != nullptr &&
                (mainHandItem->uItemID == ITEM_BLASTER ||
                 mainHandItem->uItemID == ITEM_BLASTER_RIFLE)) {
-        min_damage = GetItemsBonus(CHARACTER_ATTRIBUTE_MELEE_DMG_MIN, true);  // blasters
-        max_damage = GetItemsBonus(CHARACTER_ATTRIBUTE_MELEE_DMG_MAX, true);
+        min_damage = GetItemsBonus(CHARACTER_ATTRIBUTE_MELEE_DMG_MIN);  // blasters
+        max_damage = GetItemsBonus(CHARACTER_ATTRIBUTE_MELEE_DMG_MAX);
     } else {
         min_damage = GetMeleeDamageMinimal();  // weapons
         max_damage = GetMeleeDamageMaximal();
