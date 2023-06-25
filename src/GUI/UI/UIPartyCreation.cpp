@@ -753,14 +753,8 @@ void PartyCreationUI_DeleteFont() {
 
 //----- (00497526) --------------------------------------------------------
 bool PartyCreationUI_LoopInternal() {
-    // GUIButton *pControlsHead; // edx@6
-    // int pControlParam; // esi@12
-    signed int v8;                 // edi@30
-    int v9;                        // edx@31
-                                   //  char *v10; // ebx@37
-    ItemGen item;                  // [sp+Ch] [bp-74h]@37
-    char v20[32];                  // [sp+30h] [bp-50h]@29
-    bool party_not_creation_flag;  // [sp+74h] [bp-Ch]@1
+    ItemGen item;
+    bool party_not_creation_flag;
 
     party_not_creation_flag = false;
 
@@ -792,24 +786,6 @@ bool PartyCreationUI_LoopInternal() {
 
     pGUIWindow_CurrentMenu->Release();
     pGUIWindow_CurrentMenu = nullptr;
-
-    // TODO(captainurist): drop this loop?
-    memset(v20, 0, 32);
-    for (int i = 0; i < 32; i++) {
-        for (v8 = 0; v8 < 10; ++v8) {
-            v9 = grng->random(32);
-            if (!v20[v9]) break;
-        }
-        if (v8 == 10) {
-            v9 = 0;
-            if (v20[0]) {
-                do {
-                    ++v9;
-                } while (v20[v9]);
-            }
-        }
-        v20[v9] = 1;
-    }
 
     item.Reset();
     for (uint i = 0; i < 4; ++i) {
