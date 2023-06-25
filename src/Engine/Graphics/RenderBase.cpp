@@ -50,8 +50,7 @@ unsigned int RenderBase::Billboard_ProbablyAddToListAndSortByZOrder(float z) {
     }
 
     unsigned int v7 = 0;
-    for (int left = 0, right = uNumBillboardsToDraw;
-         left < right;) {  // binsearch
+    for (int left = 0, right = uNumBillboardsToDraw; left < right;) {  // binsearch
         v7 = left + (right - left) / 2;
         if (z <= render->pBillboardRenderListD3D[v7].z_order)
             right = v7;
@@ -64,14 +63,9 @@ unsigned int RenderBase::Billboard_ProbablyAddToListAndSortByZOrder(float z) {
             v7 = render->uNumBillboardsToDraw;
         } else {
             if (render->uNumBillboardsToDraw > v7) {
-                for (unsigned int i = 0; i < render->uNumBillboardsToDraw - v7;
-                     i++) {
-                    memcpy(&render->pBillboardRenderListD3D
-                                [render->uNumBillboardsToDraw - i],
-                           &render->pBillboardRenderListD3D
-                                [render->uNumBillboardsToDraw - (i + 1)],
-                           sizeof(render->pBillboardRenderListD3D
-                                      [render->uNumBillboardsToDraw - i]));
+                for (unsigned int i = 0; i < render->uNumBillboardsToDraw - v7; i++) {
+                    render->pBillboardRenderListD3D[render->uNumBillboardsToDraw - i] =
+                        render->pBillboardRenderListD3D[render->uNumBillboardsToDraw - (i + 1)];
                 }
             }
             ++v7;
@@ -82,14 +76,9 @@ unsigned int RenderBase::Billboard_ProbablyAddToListAndSortByZOrder(float z) {
 
     if (z <= render->pBillboardRenderListD3D[v7].z_order) {
         if (render->uNumBillboardsToDraw > v7) {
-            for (unsigned int i = 0; i < render->uNumBillboardsToDraw - v7;
-                 i++) {
-                memcpy(&render->pBillboardRenderListD3D
-                            [render->uNumBillboardsToDraw - i],
-                       &render->pBillboardRenderListD3D
-                            [render->uNumBillboardsToDraw - (i + 1)],
-                       sizeof(render->pBillboardRenderListD3D
-                                  [render->uNumBillboardsToDraw - i]));
+            for (unsigned int i = 0; i < render->uNumBillboardsToDraw - v7; i++) {
+                render->pBillboardRenderListD3D[render->uNumBillboardsToDraw - i] =
+                    render->pBillboardRenderListD3D[render->uNumBillboardsToDraw - (i + 1)];
             }
         }
         uNumBillboardsToDraw++;
