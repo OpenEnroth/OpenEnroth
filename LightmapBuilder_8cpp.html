@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;f4bb077</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;0c4e028</span>
    </div>
   </td>
  </tr>
@@ -86,17 +86,19 @@ $(function() {
 <code>#include &quot;<a class="el" href="Indoor_8h.html">Engine/Graphics/Indoor.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="ClippingFunctions_8h.html">Engine/Graphics/ClippingFunctions.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Weather_8h.html">Engine/Graphics/Weather.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="OurMath_8h.html">Engine/OurMath.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="Party_8h.html">Engine/Party.h</a>&quot;</code><br />
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
 <tr class="memitem:a64022f733863b5e73e67adee69bbcefb"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="LightmapBuilder_8cpp.html#a64022f733863b5e73e67adee69bbcefb">DrawLightsDebugOutlines</a> (char bit_one_for_list1__bit_two_for_list2)</td></tr>
 <tr class="separator:a64022f733863b5e73e67adee69bbcefb"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4b585c491ff75d214605b70cb8a4bef5"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structColor.html">Color</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="LightmapBuilder_8cpp.html#a4b585c491ff75d214605b70cb8a4bef5">GetActorTintColor</a> (int max_dimm, int min_dimm, float distance, int bNoLight, <a class="el" href="structRenderBillboard.html">RenderBillboard</a> *pBillboard)</td></tr>
-<tr class="separator:a4b585c491ff75d214605b70cb8a4bef5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afb638e29274fa67267c185b2eb2706ec"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structColor.html">Color</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="LightmapBuilder_8cpp.html#afb638e29274fa67267c185b2eb2706ec">GetActorTintColor</a> (int max_dimm, int min_dimm, float distance, int bNoLight, const <a class="el" href="structRenderBillboard.html">RenderBillboard</a> *pBillboard)</td></tr>
+<tr class="separator:afb638e29274fa67267c185b2eb2706ec"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ada8b47667f42abfcc781e1435aaf5b39"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="LightmapBuilder_8cpp.html#ada8b47667f42abfcc781e1435aaf5b39">GetLightLevelAtPoint</a> (unsigned int uBaseLightLevel, int uSectorID, float x, float y, float z)</td></tr>
 <tr class="separator:ada8b47667f42abfcc781e1435aaf5b39"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac91abbddf2a7fc9ee162e3fadf8534f6"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="LightmapBuilder_8cpp.html#ac91abbddf2a7fc9ee162e3fadf8534f6">_43F55F_get_billboard_light_level</a> (<a class="el" href="structRenderBillboard.html">RenderBillboard</a> *a1, int uBaseLightLevel)</td></tr>
-<tr class="separator:ac91abbddf2a7fc9ee162e3fadf8534f6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae9c04a501d9a011f780e3183b54a681d"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="LightmapBuilder_8cpp.html#ae9c04a501d9a011f780e3183b54a681d">_43F55F_get_billboard_light_level</a> (const <a class="el" href="structRenderBillboard.html">RenderBillboard</a> *a1, int uBaseLightLevel)</td></tr>
+<tr class="separator:ae9c04a501d9a011f780e3183b54a681d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="var-members" name="var-members"></a>
 Variables</h2></td></tr>
@@ -106,8 +108,8 @@ Variables</h2></td></tr>
 <tr class="separator:af463461dcf0805819742238f5a8bbadb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Function Documentation</h2>
-<a id="ac91abbddf2a7fc9ee162e3fadf8534f6" name="ac91abbddf2a7fc9ee162e3fadf8534f6"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ac91abbddf2a7fc9ee162e3fadf8534f6">&#9670;&#160;</a></span>_43F55F_get_billboard_light_level()</h2>
+<a id="ae9c04a501d9a011f780e3183b54a681d" name="ae9c04a501d9a011f780e3183b54a681d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae9c04a501d9a011f780e3183b54a681d">&#9670;&#160;</a></span>_43F55F_get_billboard_light_level()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -115,7 +117,7 @@ Variables</h2></td></tr>
         <tr>
           <td class="memname">int _43F55F_get_billboard_light_level </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="structRenderBillboard.html">RenderBillboard</a> *&#160;</td>
+          <td class="paramtype">const <a class="el" href="structRenderBillboard.html">RenderBillboard</a> *&#160;</td>
           <td class="paramname"><em>a1</em>, </td>
         </tr>
         <tr>
@@ -161,8 +163,8 @@ Variables</h2></td></tr>
 
 </div>
 </div>
-<a id="a4b585c491ff75d214605b70cb8a4bef5" name="a4b585c491ff75d214605b70cb8a4bef5"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a4b585c491ff75d214605b70cb8a4bef5">&#9670;&#160;</a></span>GetActorTintColor()</h2>
+<a id="afb638e29274fa67267c185b2eb2706ec" name="afb638e29274fa67267c185b2eb2706ec"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afb638e29274fa67267c185b2eb2706ec">&#9670;&#160;</a></span>GetActorTintColor()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -194,7 +196,7 @@ Variables</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="structRenderBillboard.html">RenderBillboard</a> *&#160;</td>
+          <td class="paramtype">const <a class="el" href="structRenderBillboard.html">RenderBillboard</a> *&#160;</td>
           <td class="paramname"><em>pBillboard</em>&#160;</td>
         </tr>
         <tr>

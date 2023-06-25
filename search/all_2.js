@@ -78,7 +78,7 @@ var searchData=
   ['binitialized_75',['bInitialized',['../classIo_1_1Mouse.html#abecb94979dbdb8ade1266df02c99963f',1,'Io::Mouse']]],
   ['birthyear_76',['birthYear',['../structPlayer__MM7.html#a4d5e6d27cef8ffa99e2e7ea0eedb760c',1,'Player_MM7']]],
   ['bisspellavailable_77',['bIsSpellAvailable',['../structCharacterSpellbookChapter.html#a5eeb980913c1332b88537117547a36ce',1,'CharacterSpellbookChapter']]],
-  ['bitmap_78',['bitmap',['../structLODSprite.html#a05a06f7027ea857f4ccc1737a49462a0',1,'LODSprite']]],
+  ['bitmap_78',['bitmap',['../structLODSprite.html#a30ca2eb644893e6b15fdd0116c86214a',1,'LODSprite']]],
   ['bitmapid_79',['bitmapId',['../structBLVFace__MM7.html#a1b53aecf5b50100c33c273d7d8cbc94a',1,'BLVFace_MM7::bitmapId()'],['../structTileDesc__MM7.html#a4870e85c37c6c76464ab5a34d1aaa035',1,'TileDesc_MM7::bitmapId()']]],
   ['bitmaps_80',['bitmaps',['../classAssetsManager.html#aee22e571e910db19832f9c88011b7a57',1,'AssetsManager']]],
   ['bitmaps_5flod_5floader_81',['Bitmaps_LOD_Loader',['../classBitmaps__LOD__Loader.html#aacd84c0d4a2c1f8e8998851e2dd7947c',1,'Bitmaps_LOD_Loader::Bitmaps_LOD_Loader()'],['../classBitmaps__LOD__Loader.html',1,'Bitmaps_LOD_Loader']]],

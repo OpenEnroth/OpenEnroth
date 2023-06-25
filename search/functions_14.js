@@ -75,7 +75,7 @@ var searchData=
   ['traindialogue_72',['trainDialogue',['../classGUIWindow__Training.html#a69abcba5e5ab4fd26425afee067023d1',1,'GUIWindow_Training']]],
   ['trainingcostforplayer_73',['trainingCostForPlayer',['../classPriceCalculator.html#a5e782524055603233b8fb5ed91f6dbc6',1,'PriceCalculator']]],
   ['trainingdialog_74',['TrainingDialog',['../Training_8h.html#a508cd0b3e4de36620322bbefc36c56cf',1,'Training.h']]],
-  ['transformbillboard_75',['TransformBillboard',['../classRenderBase.html#a2fffe899daa2365ffd63e61e690b4427',1,'RenderBase']]],
+  ['transformbillboard_75',['TransformBillboard',['../classRenderBase.html#a468bc785cae3aa536c23c6c1a603af11',1,'RenderBase']]],
   ['transformbillboardsandsetpalettesodm_76',['TransformBillboardsAndSetPalettesODM',['../classIRender.html#ab1d8850e09998cf0200dcf6657f297ff',1,'IRender::TransformBillboardsAndSetPalettesODM()'],['../classRenderBase.html#ae2d5141b76e82e0a604372d9ca308bb9',1,'RenderBase::TransformBillboardsAndSetPalettesODM()']]],
   ['transition_5fstopsound_5fautosave_77',['Transition_StopSound_Autosave',['../Engine_8h.html#a7a4592f9b64d929ea91623d21002dc2d',1,'Transition_StopSound_Autosave(const std::string &amp;pMapName, MapStartPoint point):&#160;Engine.cpp'],['../Engine_8cpp.html#a8e8fac3d8a00188e5f6d7c61fbaf3620',1,'Transition_StopSound_Autosave(const std::string &amp;pMapName, MapStartPoint start_point):&#160;Engine.cpp']]],
   ['translateplatformlogcategory_78',['translatePlatformLogCategory',['../SdlLogger_8cpp.html#a9fa85fcd024a4d2b6b60f6bd9f515c00',1,'SdlLogger.cpp']]],
