@@ -202,9 +202,60 @@ GAME_TEST(Issues, Issue248) {
     test->playTraceFromTestData("issue_248.mm7", "issue_248.json");
 }
 
-GAME_TEST(Issues, Issue268) {
+GAME_TEST(Issues, Issue268_939) {
     // Crash in ODM_GetFloorLevel
     test->playTraceFromTestData("issue_268.mm7", "issue_268.json");
+
+    // 939 - Quick reference doesn't match vanilla
+    // hp
+    EXPECT_EQ(pParty->pCharacters[0].GetHealth(), 71);
+    EXPECT_EQ(pParty->pCharacters[1].GetHealth(), 80);
+    EXPECT_EQ(pParty->pCharacters[2].GetHealth(), 154);
+    EXPECT_EQ(pParty->pCharacters[3].GetHealth(), 169);
+    // sp
+    EXPECT_EQ(pParty->pCharacters[0].GetMana(), 0);
+    EXPECT_EQ(pParty->pCharacters[1].GetMana(), 0);
+    EXPECT_EQ(pParty->pCharacters[2].GetMana(), 55);
+    EXPECT_EQ(pParty->pCharacters[3].GetMana(), 19);
+    // ac
+    EXPECT_EQ(pParty->pCharacters[0].GetActualAC(), 126);
+    EXPECT_EQ(pParty->pCharacters[1].GetActualAC(), 77);
+    EXPECT_EQ(pParty->pCharacters[2].GetActualAC(), 82);
+    EXPECT_EQ(pParty->pCharacters[3].GetActualAC(), 66);
+    // attack
+    EXPECT_EQ(pParty->pCharacters[0].GetActualAttack(false), 30);
+    EXPECT_EQ(pParty->pCharacters[1].GetActualAttack(false), 37);
+    EXPECT_EQ(pParty->pCharacters[2].GetActualAttack(false), 29);
+    EXPECT_EQ(pParty->pCharacters[3].GetActualAttack(false), 9);
+    // dmg
+    EXPECT_EQ(pParty->pCharacters[0].GetMeleeDamageString(), "35 - 41");
+    EXPECT_EQ(pParty->pCharacters[1].GetMeleeDamageString(), "39 - 55");
+    EXPECT_EQ(pParty->pCharacters[2].GetMeleeDamageString(), "35 - 39");
+    EXPECT_EQ(pParty->pCharacters[3].GetMeleeDamageString(), "Wand");
+    // shoot
+    EXPECT_EQ(pParty->pCharacters[0].GetRangedAttack(), 18);
+    EXPECT_EQ(pParty->pCharacters[1].GetRangedAttack(), 23);
+    EXPECT_EQ(pParty->pCharacters[2].GetRangedAttack(), 21);
+    EXPECT_EQ(pParty->pCharacters[3].GetRangedAttack(), 17);
+    // dmg
+    EXPECT_EQ(pParty->pCharacters[0].GetRangedDamageString(), "9 - 14");
+    EXPECT_EQ(pParty->pCharacters[1].GetRangedDamageString(), "11 - 16");
+    EXPECT_EQ(pParty->pCharacters[2].GetRangedDamageString(), "11 - 16");
+    EXPECT_EQ(pParty->pCharacters[3].GetRangedDamageString(), "Wand");
+    // skills
+    auto checkSkills = [](std::initializer_list<std::pair<int, int>> numSkillPairs) {
+        for (auto pair : numSkillPairs) {
+            int pSkillsCount = 0;
+            for (CharacterSkillType j : allVisibleSkills()) {
+                if (pParty->pCharacters[pair.first].pActiveSkills[j]) {
+                    ++pSkillsCount;
+                }
+            }
+            EXPECT_EQ(pSkillsCount, pair.second);
+        }
+    };
+    // NB vanilla gets wrong count for characters - doesnt count learning
+    checkSkills({ {0, 13}, {1, 11}, {2, 20}, {3, 11} });
 }
 
 GAME_TEST(Issues, Issue271) {
@@ -327,11 +378,7 @@ GAME_TEST(Prs, Pr314) {
 
 GAME_TEST(Issues, Issue315) {
     test->loadGameFromTestData("issue_315.mm7");
-    game->goToMainMenu();
-    game->pressGuiButton("MainMenu_NewGame");
-    game->tick(2);
-    game->pressGuiButton("PartyCreation_OK");
-    game->skipLoadingScreen(); // This shouldn't crash.
+    game->startNewGame(); // This shouldn't crash.
 }
 
 GAME_TEST(Issues, Issue331_679) {
@@ -425,7 +472,7 @@ GAME_TEST(Issues, Issue405) {
     EXPECT_EQ(firstRemainingRecovery - 1, secondRemainingRecovery); // TODO(captainurist): where is this -1 coming from???
 }
 
-GAME_TEST(Issues, Issue408_970) {
+GAME_TEST(Issues, Issue408_970_996) {
     // testing that the gameover loop works
     CURRENT_SCREEN oldscreen = CURRENT_SCREEN::SCREEN_GAME;
     // enters throne room - resurecta - final task and exits gameover loop
@@ -439,11 +486,57 @@ GAME_TEST(Issues, Issue408_970) {
     // we should be teleported to harmondale
     EXPECT_EQ(pCurrentMapName, "out02.odm");
 
-    // 970 - Armor Class is wrong
+    // 970 / 939 - Armor Class is wrong / quick reference doesnt match vanilla
+    // 996 - Wrong attack damage when dual wielding blaster and offhand weapon
+    // hp
+    EXPECT_EQ(pParty->pCharacters[0].GetHealth(), 1240);
+    EXPECT_EQ(pParty->pCharacters[1].GetHealth(), 397);
+    EXPECT_EQ(pParty->pCharacters[2].GetHealth(), 307);
+    EXPECT_EQ(pParty->pCharacters[3].GetHealth(), 285);
+    // sp
+    EXPECT_EQ(pParty->pCharacters[0].GetMana(), 0);
+    EXPECT_EQ(pParty->pCharacters[1].GetMana(), 77);
+    EXPECT_EQ(pParty->pCharacters[2].GetMana(), 57);
+    EXPECT_EQ(pParty->pCharacters[3].GetMana(), 543);
+    // ac
     EXPECT_EQ(pParty->pCharacters[0].GetActualAC(), 137);
     EXPECT_EQ(pParty->pCharacters[1].GetActualAC(), 128);
     EXPECT_EQ(pParty->pCharacters[2].GetActualAC(), 87);
     EXPECT_EQ(pParty->pCharacters[3].GetActualAC(), 92);
+    // attack
+    EXPECT_EQ(pParty->pCharacters[0].GetActualAttack(false), 75);
+    EXPECT_EQ(pParty->pCharacters[1].GetActualAttack(false), 100);
+    EXPECT_EQ(pParty->pCharacters[2].GetActualAttack(false), 96);
+    EXPECT_EQ(pParty->pCharacters[3].GetActualAttack(false), 97);
+    // dmg
+    EXPECT_EQ(pParty->pCharacters[0].GetMeleeDamageString(), "32 - 61");
+    EXPECT_EQ(pParty->pCharacters[1].GetMeleeDamageString(), "17 - 37");
+    EXPECT_EQ(pParty->pCharacters[2].GetMeleeDamageString(), "17 - 37");
+    EXPECT_EQ(pParty->pCharacters[3].GetMeleeDamageString(), "17 - 37");
+    // shoot
+    EXPECT_EQ(pParty->pCharacters[0].GetRangedAttack(), 63);
+    EXPECT_EQ(pParty->pCharacters[1].GetRangedAttack(), 100);
+    EXPECT_EQ(pParty->pCharacters[2].GetRangedAttack(), 96);
+    EXPECT_EQ(pParty->pCharacters[3].GetRangedAttack(), 97);
+    // dmg
+    EXPECT_EQ(pParty->pCharacters[0].GetRangedDamageString(), "17 - 37");
+    EXPECT_EQ(pParty->pCharacters[1].GetRangedDamageString(), "17 - 37");
+    EXPECT_EQ(pParty->pCharacters[2].GetRangedDamageString(), "17 - 37");
+    EXPECT_EQ(pParty->pCharacters[3].GetRangedDamageString(), "17 - 37");
+    // skills
+    auto checkSkills = [](std::initializer_list<std::pair<int, int>> numSkillPairs) {
+        for (auto pair : numSkillPairs) {
+            int pSkillsCount = 0;
+            for (CharacterSkillType j : allVisibleSkills()) {
+                if (pParty->pCharacters[pair.first].pActiveSkills[j]) {
+                    ++pSkillsCount;
+                }
+            }
+            EXPECT_EQ(pSkillsCount , pair.second);
+        }
+    };
+    // NB vanilla gets wrong count for character index 2 (13) - doesnt count learning
+    checkSkills({ {0, 10}, {1, 11}, {2, 14}, {3, 9} });
 }
 
 GAME_TEST(Issues, Issue417) {
@@ -675,11 +768,7 @@ GAME_TEST(Issues, Issue615) {
 
 GAME_TEST(Issues, Issue625) {
     // Every character getting club at the start of the game
-    game->pressGuiButton("MainMenu_NewGame");
-    game->tick(2);
-    game->pressGuiButton("PartyCreation_OK");
-    game->skipLoadingScreen();
-    game->tick(2);
+    game->startNewGame();
     EXPECT_FALSE(pParty->hasItem(ITEM_CLUB));
 }
 
@@ -710,11 +799,7 @@ GAME_TEST(Issues, Issue626) {
 
     std::filesystem::create_directory(savesDir);
 
-    game->pressGuiButton("MainMenu_NewGame");
-    game->tick(2);
-    game->pressGuiButton("PartyCreation_OK");
-    game->skipLoadingScreen();
-    game->tick(2);
+    game->startNewGame();
 
     game->pressAndReleaseKey(PlatformKey::KEY_ESCAPE);
     game->tick(2);
@@ -882,11 +967,7 @@ GAME_TEST(Issues, Issue689) {
 
     std::filesystem::create_directory(savesDir);
 
-    game->pressGuiButton("MainMenu_NewGame");
-    game->tick(2);
-    game->pressGuiButton("PartyCreation_OK");
-    game->skipLoadingScreen();
-    game->tick(2);
+    game->startNewGame();
 
     game->pressAndReleaseKey(PlatformKey::KEY_ESCAPE);
     game->tick(2);
@@ -982,11 +1063,7 @@ GAME_TEST(Issues, Issue741) {
 
 GAME_TEST(Issues, Issue742) {
     // No starting Quests in Questbook
-    game->pressGuiButton("MainMenu_NewGame");
-    game->tick(2);
-    game->pressGuiButton("PartyCreation_OK");
-    game->skipLoadingScreen();
-    game->tick(2);
+    game->startNewGame();
     // check all starting quests
     EXPECT_TRUE(pParty->_questBits.test(QBIT_EMERALD_ISLAND_RED_POTION_ACTIVE));
     EXPECT_TRUE(pParty->_questBits.test(QBIT_EMERALD_ISLAND_SEASHELL_ACTIVE));
@@ -1116,6 +1193,69 @@ GAME_TEST(Issues, Issue815) {
 GAME_TEST(Issues, Issue816) {
     // Test that encountering trigger event instruction does not assert
     test->playTraceFromTestData("issue_816.mm7", "issue_816.json"); // Should not assert
+}
+
+GAME_TEST(Issues, Issue830) {
+    // Mouseover hints for UI elements not showing
+    game->startNewGame();
+    game->tick(1);
+    game_ui_status_bar_event_string_time_left = 0;
+    // Portrait: Name and conditions of the character
+    game->moveMouse(65, 424);
+    game->tick(1);
+    EXPECT_EQ(game_ui_status_bar_string, "Zoltan the Knight: Good");
+    //HP / SP Bar(either one) : Display current and max HP and SP both
+    game->moveMouse(102, 426);
+    game->tick(1);
+    EXPECT_EQ(game_ui_status_bar_string, "45 / 45 Hit Points    0 / 0 Spell Points");
+    // Minimap : Display time, day of the week and full date
+    game->moveMouse(517, 111);
+    game->tick(1);
+    EXPECT_EQ(game_ui_status_bar_string, "9:00am Monday 1 January 1168");
+    //Zoom in / out minimap buttons : Display description of the button
+    game->moveMouse(523, 140);
+    game->tick(1);
+    EXPECT_EQ(game_ui_status_bar_string, "Zoom In");
+    game->moveMouse(577, 140);
+    game->tick(1);
+    EXPECT_EQ(game_ui_status_bar_string, "Zoom Out");
+    // Food : Display total amount of food(bit redundant, but it is there)
+    game->moveMouse(520, 329);
+    game->tick(1);
+    EXPECT_EQ(game_ui_status_bar_string, "You have 7 food");
+    // Gold : Display amount of gold on party and in bank
+    game->moveMouse(575, 327);
+    game->tick(1);
+    EXPECT_EQ(game_ui_status_bar_string, "You have 200 total gold, 0 in the Bank");
+    // Books : Description of each book(journal, autonotes etc)
+    game->moveMouse(513, 387);
+    game->tick(1);
+    EXPECT_EQ(game_ui_status_bar_string, "Current Quests");
+    game->moveMouse(540, 382);
+    game->tick(1);
+    EXPECT_EQ(game_ui_status_bar_string, "Auto Notes");
+    game->moveMouse(556, 381);
+    game->tick(1);
+    EXPECT_EQ(game_ui_status_bar_string, "Maps");
+    game->moveMouse(586, 396);
+    game->tick(1);
+    EXPECT_EQ(game_ui_status_bar_string, "Calendar");
+    game->moveMouse(611, 400);
+    game->tick(1);
+    EXPECT_EQ(game_ui_status_bar_string, "History");
+    // Buttons : Description of the 4 buttons in the corner(cast spell, rest, quick ref, game options)
+    game->moveMouse(494, 461);
+    game->tick(1);
+    EXPECT_EQ(game_ui_status_bar_string, "Cast Spell");
+    game->moveMouse(541, 460);
+    game->tick(1);
+    EXPECT_EQ(game_ui_status_bar_string, "Rest");
+    game->moveMouse(585, 461);
+    game->tick(1);
+    EXPECT_EQ(game_ui_status_bar_string, "Quick Reference");
+    game->moveMouse(621, 460);
+    game->tick(1);
+    EXPECT_EQ(game_ui_status_bar_string, "Game Options");
 }
 
 GAME_TEST(Issues, Issue832) {
