@@ -151,7 +151,7 @@ enum UIMessageType : uint32_t {
     UIMSG_ScrollNPCPanel = 188,
     UIMSG_BD = 189,
     UIMSG_CastSpell_Telekinesis = 190,
-    UIMSG_BF = 191,
+    UIMSG_HouseTransitionConfirmation = 191,
     UIMSG_ClickAwardScrollBar = 192,
     UIMSG_C1 = 192,
     UIMSG_C2 = 192,

@@ -57,10 +57,13 @@ struct GameTime {
         return *this + GameTime::FromHours(hours);
     }
     [[nodiscard]] GameTime SubtractHours(int hours) const {
-        return *this + GameTime::FromHours(hours);
+        return *this - GameTime::FromHours(hours);
     }
     [[nodiscard]] GameTime AddDays(int days) const {
         return *this + GameTime::FromDays(days);
+    }
+    [[nodiscard]] GameTime SubtractDays(int days) const {
+        return *this - GameTime::FromDays(days);
     }
     [[nodiscard]] GameTime AddYears(int years) const {
         return *this + GameTime::FromYears(years);

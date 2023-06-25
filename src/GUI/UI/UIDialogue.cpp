@@ -24,7 +24,7 @@
 
 using Io::TextInputType;
 
-const IndexedArray<const char *, PartyAlignment_Good, PartyAlignment_Evil> DialogueBackgroundResourceByAlignment = {
+const IndexedArray<std::string, PartyAlignment_Good, PartyAlignment_Evil> dialogueBackgroundResourceByAlignment = {
     {PartyAlignment_Good, "evt02-b"},
     {PartyAlignment_Neutral, "evt02"},
     {PartyAlignment_Evil, "evt02-c"}
@@ -48,8 +48,7 @@ void GameUI_InitializeDialogue(Actor *actor, int bPlayerSaysHello) {
         }
     }
 
-    std::string filename = DialogueBackgroundResourceByAlignment[pParty->alignment];
-    game_ui_dialogue_background = assets->getImage_Solid(filename);
+    game_ui_dialogue_background = assets->getImage_Solid(dialogueBackgroundResourceByAlignment[pParty->alignment]);
 
     currentHouseNpc = 0;
 
