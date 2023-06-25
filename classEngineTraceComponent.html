@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;8b6f068</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;2fc69c3</span>
    </div>
   </td>
  </tr>
@@ -98,12 +98,12 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:aed6392dd9ed374255e56303d76d328ef"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7e58e4b0fa1cf2f81115a1de3ce8846a"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEngineTraceComponent.html#a7e58e4b0fa1cf2f81115a1de3ce8846a">~EngineTraceComponent</a> ()</td></tr>
 <tr class="separator:a7e58e4b0fa1cf2f81115a1de3ce8846a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a916ee9d6242c4a409e4a622769c80ef9"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEngineTraceComponent.html#a916ee9d6242c4a409e4a622769c80ef9">start</a> ()</td></tr>
-<tr class="separator:a916ee9d6242c4a409e4a622769c80ef9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a48061ca85f12f8aef5aa673227f6474e"><td class="memItemLeft" align="right" valign="top">std::vector&lt; std::unique_ptr&lt; <a class="el" href="classPlatformEvent.html">PlatformEvent</a> &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEngineTraceComponent.html#a48061ca85f12f8aef5aa673227f6474e">finish</a> ()</td></tr>
-<tr class="separator:a48061ca85f12f8aef5aa673227f6474e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8239cb9642e6b09860038267d32a307f"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEngineTraceComponent.html#a8239cb9642e6b09860038267d32a307f">isTracing</a> () const</td></tr>
-<tr class="separator:a8239cb9642e6b09860038267d32a307f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a07bb0e6e42348c3af4767129ac37770e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEngineTraceComponent.html#a07bb0e6e42348c3af4767129ac37770e">startRecording</a> ()</td></tr>
+<tr class="separator:a07bb0e6e42348c3af4767129ac37770e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5e63976e9b1d52cd9ea5e1a4390ae502"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structEventTrace.html">EventTrace</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEngineTraceComponent.html#a5e63976e9b1d52cd9ea5e1a4390ae502">finishRecording</a> ()</td></tr>
+<tr class="separator:a5e63976e9b1d52cd9ea5e1a4390ae502"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a909d12c2a9ee3f14c6720035ce87141d"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEngineTraceComponent.html#a909d12c2a9ee3f14c6720035ce87141d">isRecording</a> () const</td></tr>
+<tr class="separator:a909d12c2a9ee3f14c6720035ce87141d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pri-methods" name="pri-methods"></a>
 Private Member Functions</h2></td></tr>
@@ -195,10 +195,8 @@ Private Member Functions</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pri-attribs" name="pri-attribs"></a>
 Private Attributes</h2></td></tr>
-<tr class="memitem:a03e0e2e9b327e8933c6bdb58c8f6fc17"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEngineTraceComponent.html#a03e0e2e9b327e8933c6bdb58c8f6fc17">_tracing</a> = false</td></tr>
-<tr class="separator:a03e0e2e9b327e8933c6bdb58c8f6fc17"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab97222c93cd124a8b86cafb885c6ac1d"><td class="memItemLeft" align="right" valign="top">std::vector&lt; std::unique_ptr&lt; <a class="el" href="classPlatformEvent.html">PlatformEvent</a> &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEngineTraceComponent.html#ab97222c93cd124a8b86cafb885c6ac1d">_trace</a></td></tr>
-<tr class="separator:ab97222c93cd124a8b86cafb885c6ac1d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a51a2f03c560480af7c7872183a53c675"><td class="memItemLeft" align="right" valign="top">std::unique_ptr&lt; <a class="el" href="structEventTrace.html">EventTrace</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEngineTraceComponent.html#a51a2f03c560480af7c7872183a53c675">_trace</a></td></tr>
+<tr class="separator:a51a2f03c560480af7c7872183a53c675"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="friends" name="friends"></a>
 Friends</h2></td></tr>
@@ -207,7 +205,8 @@ Friends</h2></td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p >Component that can be used to record events.</p>
-<p >Note that this component is intentionally very dumb. Calling <code>start</code> starts recording events right away, and calling <code>finish</code> just returns everything that was recorded. </p>
+<p >Note that this component is intentionally very dumb. Calling <code>startRecording</code> starts recording events right away, and calling <code>finishRecording</code> just returns everything that was recorded.</p>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="classEngineTraceRecorder.html">EngineTraceRecorder</a> </dd></dl>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="aed6392dd9ed374255e56303d76d328ef" name="aed6392dd9ed374255e56303d76d328ef"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#aed6392dd9ed374255e56303d76d328ef">&#9670;&#160;</a></span>EngineTraceComponent()</h2>
@@ -280,25 +279,26 @@ Friends</h2></td></tr>
 
 </div>
 </div>
-<a id="a48061ca85f12f8aef5aa673227f6474e" name="a48061ca85f12f8aef5aa673227f6474e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a48061ca85f12f8aef5aa673227f6474e">&#9670;&#160;</a></span>finish()</h2>
+<a id="a5e63976e9b1d52cd9ea5e1a4390ae502" name="a5e63976e9b1d52cd9ea5e1a4390ae502"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5e63976e9b1d52cd9ea5e1a4390ae502">&#9670;&#160;</a></span>finishRecording()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">std::vector&lt; std::unique_ptr&lt; <a class="el" href="classPlatformEvent.html">PlatformEvent</a> &gt; &gt; EngineTraceComponent::finish </td>
+          <td class="memname"><a class="el" href="structEventTrace.html">EventTrace</a> EngineTraceComponent::finishRecording </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
         </tr>
       </table>
 </div><div class="memdoc">
+<dl class="section return"><dt>Returns</dt><dd>Recorded trace. Note that it's up to the caller to fill the save file-related fields of <code><a class="el" href="structEventTraceHeader.html">EventTraceHeader</a></code> because <code><a class="el" href="classEngineTraceComponent.html">EngineTraceComponent</a></code> doesn't know anything about save files. </dd></dl>
 
 </div>
 </div>
-<a id="a8239cb9642e6b09860038267d32a307f" name="a8239cb9642e6b09860038267d32a307f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a8239cb9642e6b09860038267d32a307f">&#9670;&#160;</a></span>isTracing()</h2>
+<a id="a909d12c2a9ee3f14c6720035ce87141d" name="a909d12c2a9ee3f14c6720035ce87141d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a909d12c2a9ee3f14c6720035ce87141d">&#9670;&#160;</a></span>isRecording()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -307,7 +307,7 @@ Friends</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">bool EngineTraceComponent::isTracing </td>
+          <td class="memname">bool EngineTraceComponent::isRecording </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td> const</td>
@@ -322,20 +322,21 @@ Friends</h2></td></tr>
 
 </div>
 </div>
-<a id="a916ee9d6242c4a409e4a622769c80ef9" name="a916ee9d6242c4a409e4a622769c80ef9"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a916ee9d6242c4a409e4a622769c80ef9">&#9670;&#160;</a></span>start()</h2>
+<a id="a07bb0e6e42348c3af4767129ac37770e" name="a07bb0e6e42348c3af4767129ac37770e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a07bb0e6e42348c3af4767129ac37770e">&#9670;&#160;</a></span>startRecording()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">void EngineTraceComponent::start </td>
+          <td class="memname">void EngineTraceComponent::startRecording </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
         </tr>
       </table>
 </div><div class="memdoc">
+<p >Starts trace recording. </p>
 
 </div>
 </div>
@@ -390,8 +391,8 @@ Friends</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Data Documentation</h2>
-<a id="ab97222c93cd124a8b86cafb885c6ac1d" name="ab97222c93cd124a8b86cafb885c6ac1d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab97222c93cd124a8b86cafb885c6ac1d">&#9670;&#160;</a></span>_trace</h2>
+<a id="a51a2f03c560480af7c7872183a53c675" name="a51a2f03c560480af7c7872183a53c675"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a51a2f03c560480af7c7872183a53c675">&#9670;&#160;</a></span>_trace</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -400,29 +401,7 @@ Friends</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">std::vector&lt;std::unique_ptr&lt;<a class="el" href="classPlatformEvent.html">PlatformEvent</a>&gt; &gt; EngineTraceComponent::_trace</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">private</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a03e0e2e9b327e8933c6bdb58c8f6fc17" name="a03e0e2e9b327e8933c6bdb58c8f6fc17"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a03e0e2e9b327e8933c6bdb58c8f6fc17">&#9670;&#160;</a></span>_tracing</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">bool EngineTraceComponent::_tracing = false</td>
+          <td class="memname">std::unique_ptr&lt;<a class="el" href="structEventTrace.html">EventTrace</a>&gt; EngineTraceComponent::_trace</td>
         </tr>
       </table>
   </td>

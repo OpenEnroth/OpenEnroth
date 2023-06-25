@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;8b6f068</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;2fc69c3</span>
    </div>
   </td>
  </tr>
@@ -121,8 +121,6 @@ Private Member Functions</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pri-attribs" name="pri-attribs"></a>
 Private Attributes</h2></td></tr>
-<tr class="memitem:af944ae412ccf9ab1e0a1b41394a5ac6d"><td class="memItemLeft" align="right" valign="top">std::unique_ptr&lt; <a class="el" href="structEventTrace.html">EventTrace</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEngineTraceRecorder.html#af944ae412ccf9ab1e0a1b41394a5ac6d">_trace</a></td></tr>
-<tr class="separator:af944ae412ccf9ab1e0a1b41394a5ac6d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9b52436af26477a9ee4a2164612c38a3"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEngineTraceRecorder.html#a9b52436af26477a9ee4a2164612c38a3">_saveFilePath</a></td></tr>
 <tr class="separator:a9b52436af26477a9ee4a2164612c38a3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa22ad3fafdad2d4f97e36d27f9af6f1f"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEngineTraceRecorder.html#aa22ad3fafdad2d4f97e36d27f9af6f1f">_traceFilePath</a></td></tr>
@@ -143,14 +141,15 @@ Friends</h2></td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p >Component that exposes a trace recording interface. Doesn't have a <code>Component</code> in its name because who likes class names half a screen long.</p>
-<p >Depends on <code><a class="el" href="classEngineControlComponent.html">EngineControlComponent</a></code>, <code><a class="el" href="classEngineDeterministicComponent.html">EngineDeterministicComponent</a></code> and <code><a class="el" href="classEngineTraceComponent.html">EngineTraceComponent</a></code>, install them into <code><a class="el" href="classPlatformApplication.html">PlatformApplication</a></code> first.</p>
-<p >Note that the difference from <code><a class="el" href="classEngineTraceComponent.html">EngineTraceComponent</a></code> is that this component isn't dumb and offers a complete solution to trace recording. Traces that were recorded with <code>startTraceRecording</code> / <code>finishTraceRecording</code> can then be played back with <code><a class="el" href="classEngineTracePlayer.html">EngineTracePlayer</a></code>.</p>
+<p >Depends on <code><a class="el" href="classEngineDeterministicComponent.html">EngineDeterministicComponent</a></code> and <code><a class="el" href="classEngineTraceComponent.html">EngineTraceComponent</a></code>, install them into <code><a class="el" href="classPlatformApplication.html">PlatformApplication</a></code> first.</p>
+<p >Note that the difference from <code><a class="el" href="classEngineTraceComponent.html">EngineTraceComponent</a></code> is that this component isn't dumb and offers a complete solution to trace recording. Traces that were recorded with <code>startRecording</code> / <code>finishRecording</code> can then be played back with <code><a class="el" href="classEngineTracePlayer.html">EngineTracePlayer</a></code>.</p>
 <p >Some notes on how this works. When starting trace recording:</p><ul>
 <li>The game is saved.</li>
 <li>Then it is loaded right away. Loading is managed from the control thread.</li>
 <li>Then deterministic mode is entered, and actual event recording is started.</li>
 </ul>
-<p >Why do we need to start trace recording with loading the game? Loading the game updates the states of all actors on the map, and since trace recording and playback must start in the same state, the only option that we have is to start both trace playback and trace recording by loading the same save. </p>
+<p >Why do we need to start trace recording with loading the game? Loading the game updates the states of all actors on the map, and since trace recording and playback must start in the same state, the only option that we have is to start both trace playback and trace recording by loading the same save.</p>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="classEngineTracePlayer.html">EngineTracePlayer</a> </dd></dl>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="acd1ed55beb5b93dfd9ad455faa197b9f" name="acd1ed55beb5b93dfd9ad455faa197b9f"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#acd1ed55beb5b93dfd9ad455faa197b9f">&#9670;&#160;</a></span>EngineTraceRecorder()</h2>
@@ -202,6 +201,14 @@ Friends</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p >Finishes trace recording &amp; saves the trace file.</p>
+<p >Note that this method needs to be called from the control thread, see <code><a class="el" href="classEngineControlComponent.html">EngineControlComponent</a></code>.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">game</td><td><a class="el" href="classEngine.html">Engine</a> controller. </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
@@ -319,6 +326,7 @@ Friends</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <p >Starts trace recording.</p>
+<p >Note that this method needs to be called from the control thread, see <code><a class="el" href="classEngineControlComponent.html">EngineControlComponent</a></code>.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">game</td><td><a class="el" href="classEngine.html">Engine</a> controller. </td></tr>
@@ -431,28 +439,6 @@ Friends</h2></td></tr>
       <table class="memname">
         <tr>
           <td class="memname">std::string EngineTraceRecorder::_saveFilePath</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">private</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="af944ae412ccf9ab1e0a1b41394a5ac6d" name="af944ae412ccf9ab1e0a1b41394a5ac6d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#af944ae412ccf9ab1e0a1b41394a5ac6d">&#9670;&#160;</a></span>_trace</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">std::unique_ptr&lt;<a class="el" href="structEventTrace.html">EventTrace</a>&gt; EngineTraceRecorder::_trace</td>
         </tr>
       </table>
   </td>
