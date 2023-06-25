@@ -1,5 +1,6 @@
 #include <cstdio>
 #include <utility>
+#include <filesystem>
 
 #include "Engine/Components/Control/EngineControlComponent.h"
 #include "Engine/Components/Control/EngineController.h"
@@ -24,19 +25,18 @@ int runRetrace(GameOptions options) {
     starter.application()->get<EngineControlComponent>()->runControlRoutine([application = starter.application(), tracePaths = options.retrace.traces] (EngineController *game) {
         game->tick(10); // Let the game thread initialize everything.
 
+        EngineTracePlayer *player = application->get<EngineTracePlayer>();
+        EngineTraceComponent *tracer = application->get<EngineTraceComponent>();
+
         for (const std::string &tracePath : tracePaths) {
             std::string savePath = tracePath.substr(0, tracePath.length() - 5) + ".mm7";
 
-            game->goToMainMenu();
+            player->prepareTrace(game, savePath, tracePath);
+            tracer->startRecording();
+            player->playPreparedTrace(game, TRACE_PLAYBACK_SKIP_RANDOM_CHECKS | TRACE_PLAYBACK_SKIP_STATE_CHECKS);
 
-            // TODO(captainurist): encapsulate.
-            EventTrace trace = EventTrace::loadFromFile(tracePath, application->window());
-            application->get<EngineTracePlayer>()->prepareTrace(game, savePath, tracePath);
-            trace.header.startState = EngineTraceStateAccessor::makeGameState();
-            application->get<EngineTraceComponent>()->start();
-            application->get<EngineTracePlayer>()->playPreparedTrace(game, TRACE_PLAYBACK_SKIP_RANDOM_CHECKS | TRACE_PLAYBACK_SKIP_STATE_CHECKS);
-            trace.events = application->get<EngineTraceComponent>()->finish();
-            trace.header.endState = EngineTraceStateAccessor::makeGameState();
+            EventTrace trace = tracer->finishRecording();
+            trace.header.saveFileSize = std::filesystem::file_size(savePath);
             EventTrace::saveToFile(tracePath, trace);
         }
 

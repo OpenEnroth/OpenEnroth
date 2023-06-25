@@ -36,8 +36,7 @@ class EngineTracePlayer : private PlatformApplicationAware {
      * @param savePath                  Path to save file.
      * @param tracePath                 Path to trace file.
      * @param flags                     Playback flags.
-     * @param postLoadCallback          Callback to call once the savegame is loaded.
-     * @see EngineControlComponent
+     * @param postLoadCallback          Callback to call once the saved game is loaded.
      */
     void playTrace(EngineController *game, const std::string &savePath, const std::string &tracePath,
                    EngineTracePlaybackFlags flags = 0, std::function<void()> postLoadCallback = {});

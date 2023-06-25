@@ -19,7 +19,6 @@
 #include "Utility/ScopeGuard.h"
 #include "Utility/Exception.h"
 
-#include "EngineTraceComponent.h"
 #include "EngineTraceStateAccessor.h"
 
 EngineTracePlayer::EngineTracePlayer() {}

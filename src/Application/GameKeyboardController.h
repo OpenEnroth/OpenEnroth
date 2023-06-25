@@ -1,7 +1,5 @@
 #pragma once
 
-#include <array>
-
 #include "Utility/IndexedArray.h"
 
 #include "Platform/Filters/PlatformEventFilter.h"

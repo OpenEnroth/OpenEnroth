@@ -4,32 +4,43 @@
 #include <utility>
 #include <memory>
 
+#include "Engine/Engine.h"
+
 #include "Library/Application/PlatformApplication.h"
 #include "Library/Random/Random.h"
 #include "Library/Trace/PaintEvent.h"
 #include "Library/Trace/EventTrace.h"
 
+#include "EngineTraceStateAccessor.h"
+
 EngineTraceComponent::EngineTraceComponent(): PlatformEventFilter(EVENTS_ALL) {}
 EngineTraceComponent::~EngineTraceComponent() = default;
 
-void EngineTraceComponent::start() {
-    assert(!_tracing);
-    _tracing = true;
+void EngineTraceComponent::startRecording() {
+    assert(!_trace);
+
+    _trace = std::make_unique<EventTrace>();
+    _trace->header.config = EngineTraceStateAccessor::makeConfigPatch(engine->config.get());
+    _trace->header.startState = EngineTraceStateAccessor::makeGameState();
 }
 
-std::vector<std::unique_ptr<PlatformEvent>> EngineTraceComponent::finish() {
-    assert(_tracing);
-    _tracing = false;
-    return std::move(_trace);
+EventTrace EngineTraceComponent::finishRecording() {
+    assert(_trace);
+
+    _trace->header.endState = EngineTraceStateAccessor::makeGameState();
+
+    EventTrace result = std::move(*_trace);
+    _trace.reset();
+    return result;
 }
 
 void EngineTraceComponent::swapBuffers() {
-    if (_tracing) {
+    if (_trace) {
         std::unique_ptr<PaintEvent> e = std::make_unique<PaintEvent>();
         e->type = EVENT_PAINT;
         e->tickCount = application()->platform()->tickCount();
         e->randomState = grng->peek(1024);
-        _trace.push_back(std::move(e));
+        _trace->events.push_back(std::move(e));
     }
 
     // Tail calling is good practice - this way users can reason about the order of proxy execution.
@@ -37,7 +48,7 @@ void EngineTraceComponent::swapBuffers() {
 }
 
 bool EngineTraceComponent::event(const PlatformEvent *event) {
-    if (_tracing && EventTrace::isTraceable(event))
-        _trace.push_back(EventTrace::cloneEvent(event));
+    if (_trace && EventTrace::isTraceable(event))
+        _trace->events.push_back(EventTrace::cloneEvent(event));
     return false;
 }
