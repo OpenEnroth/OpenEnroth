@@ -143,10 +143,6 @@ struct ODMFace {
     int16_t sCogNumber = 0;
     int16_t sCogTriggeredID = 0;
     int16_t sCogTriggerType = 0;
-    uint8_t uGradientVertex1 = 0; // TODO(captainurist): can we drop these?
-    uint8_t uGradientVertex2 = 0;
-    uint8_t uGradientVertex3 = 0;
-    uint8_t uGradientVertex4 = 0;
     uint8_t uNumVertices = 0;
     PolygonType uPolygonType = POLYGON_Invalid;
     uint8_t uShadeType = 0;  // could be minimum shade

@@ -1315,10 +1315,6 @@ void reconstruct(const ODMFace_MM7 &src, ODMFace *dst) {
     dst->sCogNumber = src.sCogNumber;
     dst->sCogTriggeredID = src.sCogTriggeredID;
     dst->sCogTriggerType = src.sCogTriggerType;
-    dst->uGradientVertex1 = src.uGradientVertex1;
-    dst->uGradientVertex2 = src.uGradientVertex2;
-    dst->uGradientVertex3 = src.uGradientVertex3;
-    dst->uGradientVertex4 = src.uGradientVertex4;
     dst->uNumVertices = src.uNumVertices;
     dst->uPolygonType = static_cast<PolygonType>(src.uPolygonType);
     dst->uShadeType = src.uShadeType;

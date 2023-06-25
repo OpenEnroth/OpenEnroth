@@ -890,7 +890,7 @@ struct ODMFace_MM7 {
     int16_t sCogTriggerType;
     char field_128;
     char field_129;
-    uint8_t uGradientVertex1;
+    uint8_t uGradientVertex1; // Not sure what these are, unused in OpenEnroth.
     uint8_t uGradientVertex2;
     uint8_t uGradientVertex3;
     uint8_t uGradientVertex4;
