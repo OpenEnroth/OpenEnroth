@@ -422,10 +422,8 @@ struct SkyBillboardStruct {
 
 extern SkyBillboardStruct SkyBillboard;
 
-Color GetActorTintColor(int max_dim, int min_dim, float distance, int a4,
-                        struct RenderBillboard *a5);
-int _43F55F_get_billboard_light_level(struct RenderBillboard *a1,
-                                      int uBaseLightLevel);
+Color GetActorTintColor(int max_dim, int min_dim, float distance, int a4, const RenderBillboard *a5);
+int _43F55F_get_billboard_light_level(const RenderBillboard *a1, int uBaseLightLevel);
 int GetLightLevelAtPoint(unsigned int uBaseLightLevel, int uSectorID, float x, float y, float z);
 
 void UpdateObjects();

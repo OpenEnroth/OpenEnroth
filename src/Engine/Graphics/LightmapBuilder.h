@@ -2,10 +2,6 @@
 
 // TODO(pskelton): rename - lighting functions
 
-#include <vector>
-
-#include "Engine/Graphics/IRender.h"
-
 struct LightsStack_StationaryLight_;
 struct LightsStack_MobileLight_;
 
