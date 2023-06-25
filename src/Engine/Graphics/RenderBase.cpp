@@ -159,7 +159,7 @@ void RenderBase::DrawSpriteObjects() {
 
             // centre sprite
             if (frame->uFlags & 0x20) {
-                z -= (frame->scale * frame->hw_sprites[octant]->uBufferHeight) / 2;
+                z -= (frame->scale * frame->hw_sprites[octant]->uHeight) / 2;
             }
 
             int16_t setflags = 0;
@@ -193,8 +193,8 @@ void RenderBase::DrawSpriteObjects() {
 
                     float billb_scale = frame->scale * pCamera3D->ViewPlaneDist_X / view_x;
 
-                    int screen_space_half_width = static_cast<int>(billb_scale * frame->hw_sprites[octant]->uBufferWidth / 2.0f);
-                    int screen_space_height = static_cast<int>(billb_scale * frame->hw_sprites[octant]->uBufferHeight);
+                    int screen_space_half_width = static_cast<int>(billb_scale * frame->hw_sprites[octant]->uWidth / 2.0f);
+                    int screen_space_height = static_cast<int>(billb_scale * frame->hw_sprites[octant]->uHeight);
 
                     if (projected_x + screen_space_half_width >= (signed int)pViewport->uViewportTL_X &&
                         projected_x - screen_space_half_width <= (signed int)pViewport->uViewportBR_X) {
@@ -331,8 +331,8 @@ void RenderBase::PrepareDecorationsRenderList_ODM() {
 
                             float _v41 = frame->scale * (pCamera3D->ViewPlaneDist_X) / (view_x);
 
-                            int screen_space_half_width = static_cast<int>(_v41 * frame->hw_sprites[(int64_t)v37]->uBufferWidth / 2.0f);
-                            int screen_space_height = static_cast<int>(_v41 * frame->hw_sprites[(int64_t)v37]->uBufferHeight);
+                            int screen_space_half_width = static_cast<int>(_v41 * frame->hw_sprites[(int64_t)v37]->uWidth / 2.0f);
+                            int screen_space_height = static_cast<int>(_v41 * frame->hw_sprites[(int64_t)v37]->uHeight);
 
                             if (projected_x + screen_space_half_width >= (signed int)pViewport->uViewportTL_X &&
                                 projected_x - screen_space_half_width <= (signed int)pViewport->uViewportBR_X) {
@@ -456,8 +456,8 @@ void RenderBase::TransformBillboard(SoftwareBillboard *pSoftBillboard, RenderBil
 
     Color specular;
 
-    float v14 = (float)((int)pSprite->uBufferWidth / 2 - pSprite->uAreaX);
-    float v15 = (float)((int)pSprite->uBufferHeight - pSprite->uAreaY);
+    float v14 = (float)((int)pSprite->uWidth / 2 - pSprite->uAreaX);
+    float v15 = (float)((int)pSprite->uHeight - pSprite->uAreaY);
     if (pSoftBillboard->uFlags & 4) v14 *= -1.f;
     billboard->pQuads[0].diffuse = diffuse;
     billboard->pQuads[0].pos.x = (float)pSoftBillboard->screen_space_x - v14 * scr_proj_x;
@@ -468,8 +468,8 @@ void RenderBase::TransformBillboard(SoftwareBillboard *pSoftBillboard, RenderBil
     billboard->pQuads[0].texcoord.x = 0.f;
     billboard->pQuads[0].texcoord.y = 0.f;
 
-    v14 = (float)((int)pSprite->uBufferWidth / 2 - pSprite->uAreaX);
-    v15 = (float)((int)pSprite->uBufferHeight - pSprite->uAreaHeight - pSprite->uAreaY);
+    v14 = (float)((int)pSprite->uWidth / 2 - pSprite->uAreaX);
+    v15 = (float)((int)pSprite->uHeight - pSprite->uHeight - pSprite->uAreaY);
     if (pSoftBillboard->uFlags & 4) v14 = v14 * -1.f;
     billboard->pQuads[1].specular = specular;
     billboard->pQuads[1].diffuse = diffuse;
@@ -480,8 +480,8 @@ void RenderBase::TransformBillboard(SoftwareBillboard *pSoftBillboard, RenderBil
     billboard->pQuads[1].texcoord.x = 0.f;
     billboard->pQuads[1].texcoord.y = 1.f;
 
-    v14 = (float)((int)pSprite->uAreaWidth + pSprite->uAreaX + pSprite->uBufferWidth / 2 - pSprite->uBufferWidth);
-    v15 = (float)((int)pSprite->uBufferHeight - pSprite->uAreaHeight - pSprite->uAreaY);
+    v14 = (float)((int)pSprite->uWidth + pSprite->uAreaX + pSprite->uWidth / 2 - pSprite->uWidth);
+    v15 = (float)((int)pSprite->uHeight - pSprite->uHeight - pSprite->uAreaY);
     if (pSoftBillboard->uFlags & 4) v14 *= -1.f;
     billboard->pQuads[2].diffuse = diffuse;
     billboard->pQuads[2].specular = specular;
@@ -492,8 +492,8 @@ void RenderBase::TransformBillboard(SoftwareBillboard *pSoftBillboard, RenderBil
     billboard->pQuads[2].texcoord.x = 1.f;
     billboard->pQuads[2].texcoord.y = 1.f;
 
-    v14 = (float)((int)pSprite->uAreaWidth + pSprite->uAreaX + pSprite->uBufferWidth / 2 - pSprite->uBufferWidth);
-    v15 = (float)((int)pSprite->uBufferHeight - pSprite->uAreaY);
+    v14 = (float)((int)pSprite->uWidth + pSprite->uAreaX + pSprite->uWidth / 2 - pSprite->uWidth);
+    v15 = (float)((int)pSprite->uHeight - pSprite->uAreaY);
     if (pSoftBillboard->uFlags & 4) v14 *= -1.f;
     billboard->pQuads[3].diffuse = diffuse;
     billboard->pQuads[3].specular = specular;
@@ -708,10 +708,10 @@ void RenderBase::BillboardSphereSpellFX(struct SpellFX_Billboard *a1, Color diff
 
 void RenderBase::DrawMonsterPortrait(Recti rc, SpriteFrame *Portrait, int Y_Offset) {
     Recti rct;
-    rct.x = rc.x + 64 + Portrait->hw_sprites[0]->uAreaX - Portrait->hw_sprites[0]->uBufferWidth / 2;
+    rct.x = rc.x + 64 + Portrait->hw_sprites[0]->uAreaX - Portrait->hw_sprites[0]->uWidth / 2;
     rct.y = rc.y + Y_Offset + Portrait->hw_sprites[0]->uAreaY;
-    rct.w = Portrait->hw_sprites[0]->uAreaWidth;
-    rct.h = Portrait->hw_sprites[0]->uAreaHeight;
+    rct.w = Portrait->hw_sprites[0]->uWidth;
+    rct.h = Portrait->hw_sprites[0]->uHeight;
 
     render->SetUIClipRect(rc.x, rc.y, rc.x + rc.w, rc.y + rc.h);
     render->DrawImage(Portrait->hw_sprites[0]->texture, rct, Portrait->GetPaletteIndex());

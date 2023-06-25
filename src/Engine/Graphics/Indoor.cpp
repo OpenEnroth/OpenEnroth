@@ -1137,8 +1137,8 @@ void IndoorLocation::PrepareDecorationsRenderList_BLV(unsigned int uDecorationID
 
             float billb_scale = v11->scale * pCamera3D->ViewPlaneDist_X / view_x;
 
-            int screen_space_half_width = static_cast<int>(billb_scale * v11->hw_sprites[(int64_t)v9]->uBufferWidth / 2.0f);
-            int screen_space_height = static_cast<int>(billb_scale * v11->hw_sprites[(int64_t)v9]->uBufferHeight);
+            int screen_space_half_width = static_cast<int>(billb_scale * v11->hw_sprites[(int64_t)v9]->uWidth / 2.0f);
+            int screen_space_height = static_cast<int>(billb_scale * v11->hw_sprites[(int64_t)v9]->uHeight);
 
             if (projected_x + screen_space_half_width >= (signed int)pViewport->uViewportTL_X &&
                 projected_x - screen_space_half_width <= (signed int)pViewport->uViewportBR_X) {

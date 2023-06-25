@@ -275,9 +275,9 @@ bool Vis::IsPointInsideD3DBillboard(RenderBillboardD3D *a1, float x, float y) {
     if (ownerSprite == nullptr) return false;
 
     int sx =
-        ownerSprite->uAreaX + int(ownerSprite->uAreaWidth * (x - drX) / drW);
+        ownerSprite->uAreaX + int(ownerSprite->uWidth * (x - drX) / drW);
     int sy =
-        ownerSprite->uAreaY + int(ownerSprite->uAreaHeight * (y - drY) / drH);
+        ownerSprite->uAreaY + int(ownerSprite->uHeight * (y - drY) / drH);
 
     LODSprite *spriteHeader = ownerSprite->sprite_header;
 

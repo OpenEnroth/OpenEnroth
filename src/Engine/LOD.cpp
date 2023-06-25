@@ -165,10 +165,8 @@ int LODFile_Sprites::LoadSprite(const std::string &pContainerName, unsigned int 
 
     Sprite &sprite = pSprites.emplace_back();
     sprite.pName = pContainerName;
-    sprite.uBufferWidth = header->uWidth;
-    sprite.uBufferHeight = header->uHeight;
-    sprite.uAreaWidth = header->uWidth;
-    sprite.uAreaHeight = header->uHeight;
+    sprite.uWidth = header->uWidth;
+    sprite.uHeight = header->uHeight;
     sprite.uPaletteID = uPaletteID;
     sprite.texture = assets->getSprite(pContainerName, uPaletteID);
     sprite.sprite_header = header;
