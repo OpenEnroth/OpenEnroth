@@ -2067,11 +2067,11 @@ void ODM_ProcessPartyActions() {
     for (uint i = 0; i < 100; i++) {
         collision_state.position_hi.x = partyNewX;
         collision_state.position_hi.y = partyNewY;
-        collision_state.position_hi.z = (pParty->uPartyHeight - 32) + partyNewZ + 1;
+        collision_state.position_hi.z = partyNewZ + (pParty->uPartyHeight - 32) + 1;
 
         collision_state.position_lo.x = partyNewX;
         collision_state.position_lo.y = partyNewY;
-        collision_state.position_lo.z = collision_state.radius_lo + partyNewZ + 1;
+        collision_state.position_lo.z = partyNewZ + collision_state.radius_lo + 1;
 
         collision_state.velocity.x = partyInputXSpeed;
         collision_state.velocity.y = partyInputYSpeed;
@@ -2089,12 +2089,12 @@ void ODM_ProcessPartyActions() {
         CollideOutdoorWithDecorations(WorldPosToGridCellX(pParty->vPosition.x), WorldPosToGridCellY(pParty->vPosition.y));
         _46ED8A_collide_against_sprite_objects(4);
 
-        for (uint actor_id = 0; actor_id < (signed int)pActors.size(); ++actor_id)
+        for (size_t actor_id = 0; actor_id < pActors.size(); ++actor_id)
             CollideWithActor(actor_id, 0);
 
-        int new_pos_low_y{};
-        int new_pos_low_x{};
-        int new_pos_low_z{};
+        int new_pos_low_y = 0;
+        int new_pos_low_x = 0;
+        int new_pos_low_z = 0;
         if (collision_state.adjusted_move_distance >= collision_state.move_distance) {
             new_pos_low_x = collision_state.new_position_lo.x;
             new_pos_low_y = collision_state.new_position_lo.y;
