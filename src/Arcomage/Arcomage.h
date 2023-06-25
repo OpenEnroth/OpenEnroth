@@ -2,13 +2,14 @@
 
 #include <string>
 
-#include "Engine/Graphics/Image.h"
 #include "Engine/Graphics/FrameLimiter.h"
 
 #include "Utility/Geometry/Point.h"
 #include "Utility/Geometry/Rect.h"
 
 #include "Platform/PlatformEnums.h"
+
+class GraphicsImage;
 
 struct ArcomageCard {
     char pCardName[32];

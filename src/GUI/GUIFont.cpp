@@ -8,6 +8,7 @@
 #include "Engine/LOD.h"
 
 #include "Engine/Graphics/IRender.h"
+#include "Engine/Graphics/Image.h"
 
 #include "Engine/Snapshots/EntitySnapshots.h"
 

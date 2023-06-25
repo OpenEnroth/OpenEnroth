@@ -1,4 +1,4 @@
-#include "GUI/UI/UIDialogue.h"
+#include "UIDialogue.h"
 
 #include "Engine/Events/Processor.h"
 #include "Engine/EngineGlobals.h"

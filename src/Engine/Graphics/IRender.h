@@ -5,15 +5,19 @@
 #include <vector>
 #include <array>
 
-#include "Engine/Graphics/Image.h"
+#include "Application/GameConfig.h"
+
 #include "Engine/Graphics/Nuklear.h"
 #include "Engine/OurMath.h"
-#include "Application/GameConfig.h"
+
+#include "Library/Image/Image.h"
 #include "Library/Color/Color.h"
+
 #include "Utility/Geometry/Rect.h"
 
 #include "TextureRenderId.h"
 
+class GraphicsImage;
 class Sprite;
 class SpriteFrame;
 struct SoftwareBillboard;

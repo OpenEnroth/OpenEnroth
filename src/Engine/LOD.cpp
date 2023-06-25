@@ -9,6 +9,7 @@
 
 #include "Engine/Graphics/IRender.h"
 #include "Engine/Graphics/Sprites.h"
+#include "Engine/Graphics/Image.h"
 
 #include "Utility/Memory/FreeDeleter.h"
 

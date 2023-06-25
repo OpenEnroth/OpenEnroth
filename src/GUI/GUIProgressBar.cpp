@@ -8,6 +8,7 @@
 #include "Engine/Party.h"
 
 #include "Engine/Graphics/IRender.h"
+#include "Engine/Graphics/Image.h"
 
 #include "Engine/Tables/IconFrameTable.h"
 

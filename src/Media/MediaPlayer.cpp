@@ -26,7 +26,7 @@ extern "C" {
 #include "Engine/EngineGlobals.h"
 #include "Engine/ErrorHandling.h"
 #include "Engine/Graphics/IRender.h"
-#include "Library/Logger/Logger.h"
+#include "Engine/Graphics/Image.h"
 
 #include "Io/Mouse.h"
 

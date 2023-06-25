@@ -16,6 +16,7 @@
 #include "Engine/Graphics/Indoor.h"
 #include "Engine/Graphics/Sprites.h"
 #include "Engine/Graphics/Viewport.h"
+#include "Engine/Graphics/Image.h"
 #include "Engine/Objects/Actor.h"
 
 #include "Utility/Math/TrigLut.h"

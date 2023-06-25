@@ -3,7 +3,8 @@
 #include <string>
 
 #include "GUI/GUIWindow.h"
-#include "Engine/Graphics/Image.h"
+
+class GraphicsImage;
 
 enum class BookButtonAction {
     BOOK_ZOOM_IN = 0,

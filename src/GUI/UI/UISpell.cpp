@@ -6,6 +6,7 @@
 #include "Media/Audio/AudioPlayer.h"
 
 #include "Engine/Spells/CastSpellInfo.h"
+#include "Engine/Graphics/Image.h"
 #include "Engine/Localization.h"
 
 TargetedSpellUI::TargetedSpellUI(Pointi position, Sizei dimensions, WindowData data, const std::string &hint)

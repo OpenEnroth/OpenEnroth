@@ -3,7 +3,6 @@
 #include <algorithm>
 #include <type_traits>
 #include <string>
-#include <bitset>
 
 #include "Engine/Engine.h"
 #include "Engine/Graphics/Indoor.h"
@@ -12,6 +11,7 @@
 #include "Engine/Graphics/Overlays.h"
 #include "Engine/Graphics/Sprites.h"
 #include "Engine/Graphics/TextureFrameTable.h"
+#include "Engine/Graphics/Image.h"
 #include "Engine/Objects/Actor.h"
 #include "Engine/Objects/NPC.h"
 #include "Engine/Objects/ObjectList.h"

@@ -9,8 +9,6 @@
 #include "GUI/GUIFont.h"
 #include "GUI/GUIMessageQueue.h"
 
-#include "Io/Mouse.h"
-
 #include "Media/Audio/AudioPlayer.h"
 #include "Media/MediaPlayer.h"
 

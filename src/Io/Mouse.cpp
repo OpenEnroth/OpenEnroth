@@ -1,4 +1,4 @@
-#include "Io/Mouse.h"
+#include "Mouse.h"
 
 #include <cstdlib>
 #include <list>
@@ -7,6 +7,7 @@
 #include "Engine/EngineGlobals.h"
 #include "Engine/Graphics/Viewport.h"
 #include "Engine/Graphics/Vis.h"
+#include "Engine/Graphics/Image.h"
 #include "Engine/LOD.h"
 #include "Engine/Objects/Actor.h"
 #include "Engine/Tables/ItemTable.h"

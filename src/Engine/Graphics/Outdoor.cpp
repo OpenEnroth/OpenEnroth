@@ -18,6 +18,7 @@
 #include "Engine/Graphics/Viewport.h"
 #include "Engine/Graphics/Weather.h"
 #include "Engine/Graphics/Indoor.h"
+#include "Engine/Graphics/Image.h"
 #include "Engine/LOD.h"
 #include "Engine/Objects/Actor.h"
 #include "Engine/Objects/SpriteObject.h"

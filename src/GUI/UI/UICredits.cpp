@@ -4,6 +4,7 @@
 
 #include "Engine/EngineGlobals.h"
 #include "Engine/Graphics/IRender.h"
+#include "Engine/Graphics/Image.h"
 #include "Engine/LOD.h"
 
 #include "GUI/GUIFont.h"
