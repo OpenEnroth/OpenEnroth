@@ -1465,7 +1465,6 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
 
     unsigned int uSectorID = pBLVRenderParams->uPartySectorID;
     unsigned int uFaceID = -1;
-    int party_z = pParty->vPosition.z;
     int floor_z = GetIndoorFloorZ(pParty->vPosition + Vec3i(0, 0, 40), &uSectorID, &uFaceID);
 
     if (pParty->bFlying)  // disable flight
@@ -1494,26 +1493,26 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
         fall_start = pParty->uFallStartZ;
     }
 
-    if (fall_start - party_z > 512 && !bFeatherFall && party_z <= floor_z + 1) {  // fall damage
+    if (fall_start - pParty->vPosition.z > 512 && !bFeatherFall && pParty->vPosition.z <= floor_z + 1) {  // fall damage
         if (pParty->uFlags & (PARTY_FLAGS_1_LANDING | PARTY_FLAGS_1_JUMPING)) {
             // flying was previously used to prevent fall damage from jump spell
             pParty->uFlags &= ~(PARTY_FLAGS_1_LANDING | PARTY_FLAGS_1_JUMPING);
         } else {
-            pParty->giveFallDamage(pParty->uFallStartZ - party_z);
+            pParty->giveFallDamage(pParty->uFallStartZ - pParty->vPosition.z);
         }
     }
 
-    if (party_z > floor_z + 1)
+    if (pParty->vPosition.z > floor_z + 1)
         hovering = true;
 
-    if (party_z - floor_z <= 32) {
-        pParty->uFallStartZ = party_z;
+    if (pParty->vPosition.z - floor_z <= 32) {
+        pParty->uFallStartZ = pParty->vPosition.z;
         not_high_fall = true;
     }
 
     // party is below floor level?
-    if (party_z <= floor_z + 1) {
-        party_z = floor_z + 1;
+    if (pParty->vPosition.z <= floor_z + 1) {
+        pParty->vPosition.z = floor_z + 1;
         pParty->uFallStartZ = floor_z + 1;
 
         // not hovering & stepped onto a new face => activate potential pressure plate,
@@ -1632,7 +1631,7 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
                 break;
 
             case PARTY_Jump:
-                if ((!hovering || party_z <= floor_z + 6 && pParty->uFallSpeed <= 0) && pParty->jump_strength) {
+                if ((!hovering || pParty->vPosition.z <= floor_z + 6 && pParty->uFallSpeed <= 0) && pParty->jump_strength) {
                     hovering = true;
                     pParty->uFallSpeed += pParty->jump_strength * 96;
                 }
@@ -1662,22 +1661,22 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
                 }
             }
         } else {
-            pParty->uFallStartZ = party_z;
+            pParty->uFallStartZ = pParty->vPosition.z;
         }
     } else {
         if (pIndoor->pFaces[uFaceID].facePlane.normal.z < 0.5) {
             pParty->uFallSpeed -= pEventTimer->uTimeElapsed * GetGravityStrength();
-            pParty->uFallStartZ = party_z;
+            pParty->uFallStartZ = pParty->vPosition.z;
         } else {
             if (!(pParty->uFlags & PARTY_FLAGS_1_LANDING))
                 pParty->uFallSpeed = 0;
-            pParty->uFallStartZ = party_z;
+            pParty->uFallStartZ = pParty->vPosition.z;
         }
     }
 
     int new_party_x = pParty->vPosition.x;
     int new_party_y = pParty->vPosition.y;
-    int new_party_z = party_z;
+    int new_party_z = pParty->vPosition.z;
 
     collision_state.ignored_face_id = -1;
     collision_state.total_move_distance = 0;
@@ -1685,14 +1684,13 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
     collision_state.radius_hi = pParty->radius / 2;
     collision_state.check_hi = true;
     for (uint i = 0; i < 100; i++) {
-        new_party_z = party_z;
         collision_state.position_hi.x = new_party_x;
         collision_state.position_hi.y = new_party_y;
-        collision_state.position_hi.z = (pParty->uPartyHeight - 32.0f) + party_z + 1.0f;
+        collision_state.position_hi.z = new_party_z + (pParty->uPartyHeight - 32.0f) + 1.0f;
 
         collision_state.position_lo.x = new_party_x;
         collision_state.position_lo.y = new_party_y;
-        collision_state.position_lo.z = collision_state.radius_lo + party_z + 1.0f;
+        collision_state.position_lo.z = new_party_z + collision_state.radius_lo + 1.0f;
 
         collision_state.velocity.x = party_dx;
         collision_state.velocity.y = party_dy;
