@@ -6,15 +6,12 @@
 #include "Engine/LOD.h"
 #include "Engine/Localization.h"
 #include "Engine/Party.h"
-#include "Engine/Time.h"
 
 #include "Engine/Graphics/IRender.h"
 #include "Engine/Graphics/Viewport.h"
 
 #include "GUI/GUIButton.h"
 #include "GUI/GUIFont.h"
-
-#include "Media/Audio/AudioPlayer.h"
 
 GraphicsImage *ui_book_calendar_background = nullptr;
 

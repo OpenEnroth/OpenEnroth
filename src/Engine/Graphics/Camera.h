@@ -4,8 +4,6 @@
 
 #include <glm.hpp>
 
-#include "Engine/OurMath.h"
-
 #include "Engine/Graphics/IRender.h"
 
 // TODO(captainurist): this is actually Planef, but dot = -dist.
@@ -102,9 +100,9 @@ struct Camera3D {
 
     // Camera field of view angles in degrees and radians
     int odm_fov_deg = 75;
-    float odm_fov_rad = odm_fov_deg * pi / 180.0f;
+    float odm_fov_rad = odm_fov_deg * M_PI / 180.0f;
     int blv_fov_deg = 60;
-    float blv_fov_rad = blv_fov_deg * pi / 180.0f;
+    float blv_fov_rad = blv_fov_deg * M_PI / 180.0f;
 
     // game viewport aspect ratio
     float aspect = 0;

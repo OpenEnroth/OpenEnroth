@@ -5,7 +5,6 @@
 #include "Utility/Flags.h"
 
 #include "Engine/Graphics/IRender.h"
-#include "Engine/OurMath.h"
 
 enum class ParticleFlag : uint32_t {
     ParticleType_Invalid = 0,

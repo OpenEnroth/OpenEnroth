@@ -3,7 +3,6 @@
 #include <array>
 
 #include "Engine/Graphics/Camera.h"
-#include "Engine/Graphics/IRender.h"
 
 struct BspRenderer_ViewportNode {
     uint16_t uSectorID = 0;  // sector that this node shows

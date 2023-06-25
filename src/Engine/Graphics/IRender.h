@@ -8,7 +8,6 @@
 #include "Application/GameConfig.h"
 
 #include "Engine/Graphics/Nuklear.h"
-#include "Engine/OurMath.h"
 
 #include "Library/Image/Image.h"
 #include "Library/Color/Color.h"

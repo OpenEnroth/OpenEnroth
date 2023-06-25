@@ -4,8 +4,6 @@
 #include <string>
 #include <vector>
 
-#include "Engine/OurMath.h"
-
 #include "Engine/Graphics/DecorationList.h"
 
 #include "Utility/Memory/Blob.h"
