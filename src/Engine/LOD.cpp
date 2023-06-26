@@ -144,7 +144,7 @@ bool LODFile_Sprites::Load(const std::string &pFilename, const std::string &fold
     return LoadSubIndices(folder);
 }
 
-int LODFile_Sprites::LoadSprite(const std::string &pContainerName, unsigned int uPaletteID) {
+int LODFile_Sprites::LoadSprite(const std::string &pContainerName) {
     for (int i = 0; i < pSprites.size(); ++i) {
         if (pSprites[i].pName == pContainerName) {
             return i;
@@ -168,8 +168,7 @@ int LODFile_Sprites::LoadSprite(const std::string &pContainerName, unsigned int 
     sprite.pName = pContainerName;
     sprite.uWidth = header->uWidth;
     sprite.uHeight = header->uHeight;
-    sprite.uPaletteID = uPaletteID;
-    sprite.texture = assets->getSprite(pContainerName, uPaletteID);
+    sprite.texture = assets->getSprite(pContainerName);
     sprite.sprite_header = header;
 
     return pSprites.size() - 1;
@@ -293,7 +292,6 @@ void Sprite::Release() {
     this->texture->Release();
     this->texture = nullptr;
     this->pName = "null";
-    this->uPaletteID = 0;
 }
 
 bool LODFile_IconsBitmaps::Load(const std::string &pLODFilename, const std::string &pFolderName) {

@@ -232,7 +232,7 @@ class IRender {
     virtual GraphicsImage *CreateTexture_Blank(RgbaImage image) = 0;
 
     virtual GraphicsImage *CreateTexture(const std::string &name) = 0;
-    virtual GraphicsImage *CreateSprite(const std::string &name, unsigned int palette_id) = 0;
+    virtual GraphicsImage *CreateSprite(const std::string &name) = 0;
 
     virtual void ClearBlack() = 0;
     virtual void PresentBlackScreen() = 0;

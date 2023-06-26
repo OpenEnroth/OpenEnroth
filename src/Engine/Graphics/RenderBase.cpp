@@ -775,6 +775,6 @@ GraphicsImage *RenderBase::CreateTexture(const std::string &name) {
     return GraphicsImage::Create(std::make_unique<Bitmaps_LOD_Loader>(pBitmaps_LOD, name));
 }
 
-GraphicsImage *RenderBase::CreateSprite(const std::string &name, unsigned int palette_id) {
-    return GraphicsImage::Create(std::make_unique<Sprites_LOD_Loader>(pSprites_LOD, palette_id, name));
+GraphicsImage *RenderBase::CreateSprite(const std::string &name) {
+    return GraphicsImage::Create(std::make_unique<Sprites_LOD_Loader>(pSprites_LOD, name));
 }
