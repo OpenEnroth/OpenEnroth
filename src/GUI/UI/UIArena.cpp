@@ -64,13 +64,11 @@ void Arena_SelectionFightLevel() {
                 pParty->field_7B5_in_arena_quest = -1;
             } else {
                 uDialogueType = DIALOGUE_ARENA_WELCOME;
-                pParty->vPosition.x = 3849;
-                pParty->vPosition.y = 5770;
-                pParty->vPosition.z = 1;
+                pParty->vPosition = Vec3i(3849, 5770, 1);
+                pParty->speed = Vec3i();
                 pParty->uFallStartZ = 1;
                 pParty->_viewYaw = 512;
                 pParty->_viewPitch = 0;
-                pParty->uFallSpeed = 0;
                 pAudioPlayer->playUISound(SOUND_51heroism03);
             }
         }
@@ -133,13 +131,11 @@ void ArenaFight() {
         13);
     pDialogueWindow->DrawText(pFontArrus, {13, 354 - v0}, colorTable.White, v1);
     render->Present();
-    pParty->vPosition.x = 3849;
-    pParty->vPosition.y = 5770;
-    pParty->vPosition.z = 1;
+    pParty->vPosition = Vec3i(3849, 5770, 1);
+    pParty->speed = Vec3i();
     pParty->uFallStartZ = 1;
     pParty->_viewYaw = 512;
     pParty->_viewPitch = 0;
-    pParty->uFallSpeed = 0;
     engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 1, 0);
     // v2 = pParty->pCharacters.data();
     for (uint i = 0; i < 4; i++) {

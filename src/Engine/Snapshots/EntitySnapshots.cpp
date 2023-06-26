@@ -300,18 +300,14 @@ void snapshot(const Party &src, Party_MM7 *dst) {
     snapshot(src.PartyTimes.HistoryEventTimes, &dst->partyTimes.historyEventTimes);
     snapshot(src.PartyTimes._s_times, &dst->partyTimes.someOtherTimes);
 
-    dst->position.x = src.vPosition.x;
-    dst->position.y = src.vPosition.y;
-    dst->position.z = src.vPosition.z;
+    dst->position = src.vPosition;
     dst->viewYaw = src._viewYaw;
     dst->viewPitch = src._viewPitch;
-    dst->prevPosition.x = src.vPrevPosition.x;
-    dst->prevPosition.y = src.vPrevPosition.y;
-    dst->prevPosition.z = src.vPrevPosition.z;
+    dst->prevPosition = src.vPrevPosition;
     dst->viewPrevYaw = src._viewPrevYaw;
     dst->viewPrevPitch = src._viewPrevPitch;
     dst->prevEyeLevel = src.sPrevEyelevel;
-    dst->fallSpeed = src.uFallSpeed;
+    dst->fallSpeed = src.speed.z;
     dst->savedFlightZ = src.sPartySavedFlightZ;
     dst->floorFacePid = src.floor_face_pid;
     dst->waterLavaTimer = src._6FC_water_lava_timer;
@@ -405,22 +401,16 @@ void reconstruct(const Party_MM7 &src, Party *dst) {
     reconstruct(src.partyTimes.historyEventTimes, &dst->PartyTimes.HistoryEventTimes);
     reconstruct(src.partyTimes.someOtherTimes, &dst->PartyTimes._s_times);
 
-    dst->vPosition.x = src.position.x;
-    dst->vPosition.y = src.position.y;
-    dst->vPosition.z = src.position.z;
+    dst->vPosition = src.position;
     dst->_viewYaw = src.viewYaw;
     dst->_viewPitch = src.viewPitch;
-    dst->vPrevPosition.x = src.prevPosition.x;
-    dst->vPrevPosition.y = src.prevPosition.y;
-    dst->vPrevPosition.z = src.prevPosition.z;
+    dst->vPrevPosition = src.prevPosition;
     dst->_viewPrevYaw = src.viewPrevYaw;
     dst->_viewPrevPitch = src.viewPrevPitch;
     dst->sPrevEyelevel = src.prevEyeLevel;
-    dst->uFallSpeed = src.fallSpeed;
+    dst->speed = Vec3i(0, 0, src.fallSpeed);
     dst->sPartySavedFlightZ = src.savedFlightZ;
     dst->floor_face_pid = src.floorFacePid;
-    // Walking sound timer was removed from OE
-    //dst->walk_sound_timer = src.walk_sound_timer;
     dst->_6FC_water_lava_timer = src.waterLavaTimer;
     dst->uFallStartZ = src.fallStartZ;
     dst->bFlying = src.flying;

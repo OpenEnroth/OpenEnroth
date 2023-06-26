@@ -195,7 +195,7 @@ void SpriteObject::updateObjectODM(unsigned int uLayingItemID) {
             pSpriteObjects[uLayingItemID].vVelocity.x = fixpoint_mul(58500, pSpriteObjects[uLayingItemID].vVelocity.x);
             pSpriteObjects[uLayingItemID].vVelocity.y = fixpoint_mul(58500, pSpriteObjects[uLayingItemID].vVelocity.y);
             pSpriteObjects[uLayingItemID].vVelocity.z = fixpoint_mul(58500, pSpriteObjects[uLayingItemID].vVelocity.z);
-            if (pSpriteObjects[uLayingItemID].vVelocity.getXY().lengthSqr() < 400) {
+            if (pSpriteObjects[uLayingItemID].vVelocity.xy().lengthSqr() < 400) {
                 pSpriteObjects[uLayingItemID].vVelocity.x = 0;
                 pSpriteObjects[uLayingItemID].vVelocity.y = 0;
                 createSpriteTrailParticle(pSpriteObjects[uLayingItemID].vPosition, object->uFlags);
@@ -300,7 +300,7 @@ void SpriteObject::updateObjectODM(unsigned int uLayingItemID) {
             ODMFace *face = &bmodel->pFaces[PID_ID(collision_state.pid) & 0x3F];
             if (face->uPolygonType == POLYGON_Floor) {
                 pSpriteObjects[uLayingItemID].vPosition.z = bmodel->pVertices[face->pVertexIDs[0]].z + 1;
-                if (pSpriteObjects[uLayingItemID].vVelocity.getXY().lengthSqr() >= 400) {
+                if (pSpriteObjects[uLayingItemID].vVelocity.xy().lengthSqr() >= 400) {
                     if (face->uAttributes & FACE_TriggerByObject) {
                         eventProcessor(face->sCogTriggeredID, 0, 1);
                     }
@@ -330,8 +330,8 @@ void SpriteObject::updateObjectODM(unsigned int uLayingItemID) {
         pSpriteObjects[uLayingItemID].vVelocity.y = fixpoint_mul(58500, pSpriteObjects[uLayingItemID].vVelocity.y);
         pSpriteObjects[uLayingItemID].vVelocity.z = fixpoint_mul(58500, pSpriteObjects[uLayingItemID].vVelocity.z);
     }
-    Vec2i deltaXY = pSpriteObjects[uLayingItemID].vPosition.getXY() - pLevelDecorations[PID_ID(collision_state.pid)].vPosition.getXY();
-    int velLenXY = integer_sqrt(pSpriteObjects[uLayingItemID].vVelocity.getXY().lengthSqr());
+    Vec2i deltaXY = pSpriteObjects[uLayingItemID].vPosition.xy() - pLevelDecorations[PID_ID(collision_state.pid)].vPosition.xy();
+    int velLenXY = integer_sqrt(pSpriteObjects[uLayingItemID].vVelocity.xy().lengthSqr());
     int velRotXY = TrigLUT.atan2(deltaXY.x, deltaXY.y);
 
     pSpriteObjects[uLayingItemID].vVelocity.x = TrigLUT.cos(velRotXY) * velLenXY;
@@ -443,8 +443,8 @@ LABEL_25:
 
             int pidId = PID_ID(collision_state.pid);
             if (PID_TYPE(collision_state.pid) == OBJECT_Decoration) {
-                Vec2i deltaXY = pSpriteObject->vPosition.getXY() - pLevelDecorations[pidId].vPosition.getXY();
-                int velXYLen = integer_sqrt(pSpriteObject->vVelocity.getXY().lengthSqr());
+                Vec2i deltaXY = pSpriteObject->vPosition.xy() - pLevelDecorations[pidId].vPosition.xy();
+                int velXYLen = integer_sqrt(pSpriteObject->vVelocity.xy().lengthSqr());
                 int velXYRot = TrigLUT.atan2(deltaXY.x, deltaXY.y);
                 pSpriteObject->vVelocity.x = TrigLUT.cos(velXYRot) * velXYLen;
                 pSpriteObject->vVelocity.y = TrigLUT.sin(velXYRot) * velXYLen;
@@ -487,7 +487,7 @@ LABEL_25:
                     continue;
                 }
                 pSpriteObject->vVelocity.z = 0;
-                if (pSpriteObject->vVelocity.getXY().lengthSqr() >= 400) {
+                if (pSpriteObject->vVelocity.xy().lengthSqr() >= 400) {
                     if (pIndoor->pFaces[pidId].uAttributes & FACE_TriggerByObject) {
                         eventProcessor(pIndoor->pFaceExtras[pIndoor->pFaces[pidId].uFaceExtraID].uEventID, 0, 1);
                     }
@@ -518,7 +518,7 @@ LABEL_25:
         pSpriteObject->vVelocity.x = fixpoint_mul(58500, pSpriteObject->vVelocity.x);
         pSpriteObject->vVelocity.y = fixpoint_mul(58500, pSpriteObject->vVelocity.y);
         pSpriteObject->vVelocity.z = fixpoint_mul(58500, pSpriteObject->vVelocity.z);
-        if (pSpriteObject->vVelocity.getXY().lengthSqr() < 400) {
+        if (pSpriteObject->vVelocity.xy().lengthSqr() < 400) {
             pSpriteObject->vVelocity = Vec3s(0, 0, 0);
             if (!(pObject->uFlags & OBJECT_DESC_NO_SPRITE)) {
                 return;

@@ -92,13 +92,11 @@ void Party::Zero() {
     PartyTimes.guildNextRefreshTime.fill(GameTime(0));
     PartyTimes.shopBanTimes.fill(GameTime(0));
     PartyTimes._s_times.fill(GameTime(0));
-    vPosition.x = vPrevPosition.x = 0;
-    vPosition.y = vPrevPosition.y = 0;
-    vPosition.z = vPrevPosition.z = 0;
+    vPosition = vPrevPosition = Vec3i();
+    speed = Vec3i();
     _viewYaw = _viewPrevYaw = 0;
     _viewPitch = _viewPrevPitch = 0;
     sPrevEyelevel = 0;
-    uFallSpeed = 0;
     sPartySavedFlightZ = 0;
     floor_face_pid = 0;
     currentWalkingSound = SOUND_Invalid;
@@ -713,13 +711,11 @@ void Party::yell() {
 
 //----- (00491BF9) --------------------------------------------------------
 void Party::ResetPosMiscAndSpellBuffs() {
-    this->vPosition.y = 0;
-    this->vPosition.z = 0;
-    this->vPosition.x = 0;
+    this->vPosition = Vec3i();
+    this->speed = Vec3i();
     this->uFallStartZ = 0;
     this->_viewYaw = 0;
     this->_viewPitch = 0;
-    this->uFallSpeed = 0;
     this->uDefaultPartyHeight = engine->config->gameplay.PartyHeight.value(); // was 120?
     this->radius = 37;
     this->_yawGranularity = 25;

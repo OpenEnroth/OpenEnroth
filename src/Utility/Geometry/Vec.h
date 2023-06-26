@@ -84,7 +84,7 @@ struct Vec3 {
 
     Vec3(T a, T b, T c) : x(a), y(b), z(c) {}
 
-    Vec2<T> getXY() {
+    Vec2<T> xy() {
         return Vec2<T>(x, y);
     }
 

@@ -1720,7 +1720,7 @@ void ODM_ProcessPartyActions() {
     // set params before input
     int partyInputYSpeed = 0;
     int partyInputXSpeed = 0;
-    int partyInputZSpeed = pParty->uFallSpeed;
+    int partyInputZSpeed = pParty->speed.z;
     if (pParty->bFlying) {
         partyInputZSpeed = 0;
     }
@@ -1749,7 +1749,7 @@ void ODM_ProcessPartyActions() {
                     (pParty->pCharacters[pParty->pPartyBuffs[PARTY_BUFF_FLY].caster - 1].mana > 0 || engine->config->debug.AllMagic.value())) {
                     if (pParty->sPartySavedFlightZ < engine->config->gameplay.MaxFlightHeight.value() || partyNotTouchingFloor) {
                         pParty->bFlying = true;
-                        pParty->uFallSpeed = 0;
+                        pParty->speed.z = 0;
                         noFlightBob = true;
                         pParty->uFlags &= ~(PARTY_FLAGS_1_LANDING | PARTY_FLAGS_1_JUMPING);
                         if (pParty->sPartySavedFlightZ < engine->config->gameplay.MaxFlightHeight.value()) {
@@ -2273,9 +2273,9 @@ void ODM_ProcessPartyActions() {
         pParty->vPosition.y = partyNewY;
 
         if (partySlopeMod) {
-            pParty->uFallSpeed = partyNewZ - pParty->vPosition.z;
+            pParty->speed.z = partyNewZ - pParty->vPosition.z;
         } else {
-            pParty->uFallSpeed = partyInputZSpeed;
+            pParty->speed.z = partyInputZSpeed;
         }
 
         pParty->vPosition.z = partyNewZ;
@@ -2322,7 +2322,7 @@ void ODM_ProcessPartyActions() {
         }
 
         pParty->vPosition.z = partyNewZ;
-        pParty->uFallSpeed = partyInputZSpeed;
+        pParty->speed.z = partyInputZSpeed;
         pParty->sPartySavedFlightZ = partyOldFlightZ;
 
         pParty->uFlags &= ~(PARTY_FLAGS_1_BURNING | PARTY_FLAGS_1_WATER_DAMAGE);
@@ -2352,7 +2352,7 @@ void ODM_ProcessPartyActions() {
         (eventProcessor(triggerID, 0, 1), pParty->vPosition.x == partyNewX) &&
         pParty->vPosition.y == partyNewY && pParty->vPosition.z == partyNewZ) {
         if (((pParty->vPosition.z <= newGroundLevel || partyHasHitModel) && partyInputZSpeed < 0)) {
-            pParty->uFallSpeed = 0;
+            pParty->speed.z = 0;
             if (!partyHasHitModel)
                 pParty->vPosition.z = newGroundLevel;
             if (pParty->uFallStartZ - partyNewZ > 512 && !partyHasFeatherFall &&
@@ -2627,7 +2627,7 @@ void UpdateActors_ODM() {
 
         // TODO(pskelton): this cancels out the above - is this intended
         // MOVING TOO SLOW
-        if (pActors[Actor_ITR].vVelocity.getXY().lengthSqr() < 400 && Slope_High == 0) {
+        if (pActors[Actor_ITR].vVelocity.xy().lengthSqr() < 400 && Slope_High == 0) {
             pActors[Actor_ITR].vVelocity.y = 0;
             pActors[Actor_ITR].vVelocity.x = 0;
         }
