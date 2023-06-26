@@ -1,9 +1,9 @@
 #include "Engine/Graphics/Overlays.h"
 
-#include "Engine/Engine.h"
 #include "Engine/LOD.h"
 #include "Engine/Party.h"
 #include "Engine/Time.h"
+#include "Engine/mm7_data.h"
 
 #include "Engine/Graphics/IRender.h"
 
@@ -17,6 +17,8 @@
 
 #include "GUI/GUIWindow.h"
 
+#include "Utility/String.h"
+
 #include "Sprites.h"
 
 
@@ -26,14 +28,14 @@ struct OverlayList *pOverlayList = new OverlayList;
 // inlined
 //----- (mm6c::0045BD50) --------------------------------------------------
 void ActiveOverlayList::Reset() {
-    for (uint i = 0; i < 50; ++i) pOverlays[i].Reset();
+    for (unsigned int i = 0; i < 50; ++i) pOverlays[i].Reset();
 }
 
 //----- (004418B6) --------------------------------------------------------
 int ActiveOverlayList::_4418B6(int uOverlayID, int16_t pid, int animLength, int fpDamageMod, int16_t projSize) {
     int16_t v11;    // dx@11
 
-    for (uint i = 0; i < 50; ++i) {
+    for (unsigned int i = 0; i < 50; ++i) {
         if (this->pOverlays[i].animLength <= 0) {
             this->pOverlays[i].screenSpaceY = 0;
             this->pOverlays[i].screenSpaceX = 0;

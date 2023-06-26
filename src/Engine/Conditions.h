@@ -1,7 +1,8 @@
 #pragma once
+
 #include <array>
 
-#include "Engine/Objects/Items.h"
+#include "Engine/Objects/ItemEnums.h"
 
 #include "Utility/IndexedArray.h"
 #include "Utility/Segment.h"
@@ -30,6 +31,17 @@ enum class Condition : uint32_t {
     CONDITION_GOOD = 18,
 };
 using enum Condition;
+
+class EquipemntPair {
+ public:
+    ITEM_TYPE m_ItemId = ITEM_NULL;
+    ITEM_SLOT m_EquipSlot = ITEM_SLOT_INVALID;
+    EquipemntPair(ITEM_TYPE type, ITEM_SLOT slot) {
+        m_ItemId = type;
+        m_EquipSlot = slot;
+    }
+    EquipemntPair() {}
+};
 
 class ConditionProcessor {
  public:

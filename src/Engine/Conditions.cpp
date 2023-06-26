@@ -1,7 +1,7 @@
 #include <cstdlib>
 
 #include "Engine/Conditions.h"
-
+#include "Engine/Engine.h"
 #include "Engine/Party.h"
 
 IndexedArray<ConditionProcessor, CONDITION_CURSED, CONDITION_ZOMBIE> conditionArray = {

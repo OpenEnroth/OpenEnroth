@@ -4,19 +4,26 @@
 #include <string>
 #include <utility>
 
-#include "Engine/Engine.h"
 #include "Engine/Conditions.h"
-#include "Engine/Objects/Actor.h"
+#include "Engine/Objects/NPCEnums.h"
+#include "Engine/Objects/ActorEnums.h"
 #include "Engine/Objects/CombinedSkillValue.h"
 #include "Engine/Objects/Items.h"
 #include "Engine/Objects/ItemEnums.h"
 #include "Engine/Objects/CharacterEnums.h"
-#include "Engine/Spells/Spells.h"
+#include "Engine/Spells/SpellEnums.h"
+#include "Engine/Spells/SpellBuff.h"
 #include "Engine/Tables/BuildingTable.h"
+#include "Engine/Events/EventEnums.h"
+#include "Engine/ErrorHandling.h"
 
+#include "Library/Color/Color.h"
+
+#include "Utility/Geometry/Vec.h"
 #include "Utility/IndexedArray.h"
 #include "Utility/IndexedBitset.h"
 
+class Actor;
 class GraphicsImage;
 
 struct LloydBeacon {

@@ -6,7 +6,6 @@
 
 #include "Library/Color/Color.h"
 
-#include "Utility/String.h"
 #include "Utility/Flags.h"
 #include "Utility/Memory/Blob.h"
 

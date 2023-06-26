@@ -2,10 +2,8 @@
 
 #include "Engine/Localization.h"
 
-#include "Engine/Graphics/Viewport.h"
 #include "Engine/Graphics/IRender.h"
-
-#include "Engine/Objects/Actor.h"
+#include "Engine/Party.h"
 
 #include "GUI/GUIFont.h"
 #include "GUI/GUIButton.h"
@@ -40,7 +38,7 @@ void GUIWindow_Inventory::Update() {
 GUIWindow_Inventory_CastSpell::GUIWindow_Inventory_CastSpell(Pointi position, Sizei dimensions, CastSpellInfo *spellInfo, const std::string &hint) :
     GUIWindow(WINDOW_CastSpell_InInventory, position, dimensions, spellInfo, hint) {
     mouse->SetCursorImage("MICON2");
-    pBtn_ExitCancel = CreateButton({392, 318}, {75, 33}, 1, 0, UIMSG_Escape, 0, InputAction::Invalid, localization->GetString(LSTR_CANCEL), {ui_buttdesc2});
+    pBtn_ExitCancel = CreateButton({392, 318}, {75, 33}, 1, 0, UIMSG_Escape, 0, Io::InputAction::Invalid, localization->GetString(LSTR_CANCEL), {ui_buttdesc2});
     GameUI_SetStatusBar(LSTR_CHOOSE_TARGET);
     current_character_screen_window = WINDOW_CharacterWindow_Inventory;
     current_screen_type = CURRENT_SCREEN::SCREEN_CASTING;

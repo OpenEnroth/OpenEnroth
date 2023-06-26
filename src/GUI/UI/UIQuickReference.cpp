@@ -4,6 +4,7 @@
 #include "Engine/Engine.h"
 #include "Engine/EngineGlobals.h"
 #include "Engine/Graphics/IRender.h"
+#include "Engine/Spells/Spells.h"
 #include "Engine/LOD.h"
 #include "Engine/Localization.h"
 #include "Engine/Party.h"
@@ -29,7 +30,7 @@ GUIWindow_QuickReference::GUIWindow_QuickReference() : GUIWindow(WINDOW_QuickRef
         ui_game_quickref_background = assets->getImage_ColorKey("quikref");
 
     pBtn_ExitCancel = CreateButton({0x187u, 0x13Cu}, {0x4Bu, 0x21u}, 1, 0, UIMSG_Escape, 0,
-                                   InputAction::Invalid, localization->GetString(LSTR_DIALOGUE_EXIT), {ui_buttdesc2});
+                                   Io::InputAction::Invalid, localization->GetString(LSTR_DIALOGUE_EXIT), {ui_buttdesc2});
 }
 
 void GUIWindow_QuickReference::Update() {

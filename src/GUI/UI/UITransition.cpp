@@ -1,6 +1,7 @@
 #include <stdlib.h>
 
 #include "Engine/Engine.h"
+#include "Engine/AssetsManager.h"
 #include "Engine/Tables/BuildingTable.h"
 #include "Engine/Graphics/Outdoor.h"
 #include "Engine/Graphics/Indoor.h"
@@ -12,6 +13,7 @@
 #include "Engine/Party.h"
 #include "Engine/Time.h"
 #include "Engine/Tables/TransitionTable.h"
+#include "Engine/mm7_data.h"
 
 #include "GUI/GUIButton.h"
 #include "GUI/UI/UITransition.h"
@@ -137,10 +139,10 @@ GUIWindow_Transition::GUIWindow_Transition(HOUSE_ID transitionHouse, uint exit_p
     prev_screen_type = current_screen_type;
     current_screen_type = CURRENT_SCREEN::SCREEN_INPUT_BLV;
     pBtn_ExitCancel = CreateButton({556, 0x1BDu}, {0x4Bu, 0x21u}, 1, 0, UIMSG_TransitionWindowCloseBtn, 0,
-                                   InputAction::No, localization->GetString(LSTR_CANCEL), {ui_buttdesc2});
-    pBtn_YES = CreateButton({476, 0x1BDu}, {0x4Bu, 0x21u}, 1, 0, UIMSG_TransitionUI_Confirm, 0, InputAction::Yes, hint, {ui_buttyes2});
-    CreateButton({pNPCPortraits_x[0][0], pNPCPortraits_y[0][0]}, {0x3Fu, 0x49u}, 1, 0, UIMSG_TransitionUI_Confirm, 1, InputAction::EventTrigger, hint);
-    CreateButton({8, 8}, {0x1CCu, 0x158u}, 1, 0, UIMSG_TransitionUI_Confirm, 1u, InputAction::Invalid, hint);
+                                   Io::InputAction::No, localization->GetString(LSTR_CANCEL), {ui_buttdesc2});
+    pBtn_YES = CreateButton({476, 0x1BDu}, {0x4Bu, 0x21u}, 1, 0, UIMSG_TransitionUI_Confirm, 0, Io::InputAction::Yes, hint, {ui_buttyes2});
+    CreateButton({pNPCPortraits_x[0][0], pNPCPortraits_y[0][0]}, {0x3Fu, 0x49u}, 1, 0, UIMSG_TransitionUI_Confirm, 1, Io::InputAction::EventTrigger, hint);
+    CreateButton({8, 8}, {0x1CCu, 0x158u}, 1, 0, UIMSG_TransitionUI_Confirm, 1u, Io::InputAction::Invalid, hint);
 }
 
 GUIWindow_Travel::GUIWindow_Travel() : GUIWindow(WINDOW_ChangeLocation, {0, 0}, render->GetRenderDimensions(), 0) {
@@ -159,11 +161,11 @@ GUIWindow_Travel::GUIWindow_Travel() : GUIWindow(WINDOW_ChangeLocation, {0, 0}, 
 
     prev_screen_type = current_screen_type;
     current_screen_type = CURRENT_SCREEN::SCREEN_CHANGE_LOCATION;
-    pBtn_ExitCancel = CreateButton({566, 445}, {75, 33}, 1, 0, UIMSG_CHANGE_LOCATION_ClickCancelBtn, 0, InputAction::No,
+    pBtn_ExitCancel = CreateButton({566, 445}, {75, 33}, 1, 0, UIMSG_CHANGE_LOCATION_ClickCancelBtn, 0, Io::InputAction::No,
                                    localization->GetString(LSTR_STAY_IN_THIS_AREA), {ui_buttdesc2});
-    pBtn_YES = CreateButton({486, 445}, {75, 33}, 1, 0, UIMSG_OnTravelByFoot, 0, InputAction::Yes, hint, {ui_buttyes2});
-    CreateButton({pNPCPortraits_x[0][0], pNPCPortraits_y[0][0]}, {63, 73}, 1, 0, UIMSG_OnTravelByFoot, 1, InputAction::EventTrigger, hint);
-    CreateButton({8, 8}, {460, 344}, 1, 0, UIMSG_OnTravelByFoot, 1, InputAction::Invalid, hint);
+    pBtn_YES = CreateButton({486, 445}, {75, 33}, 1, 0, UIMSG_OnTravelByFoot, 0, Io::InputAction::Yes, hint, {ui_buttyes2});
+    CreateButton({pNPCPortraits_x[0][0], pNPCPortraits_y[0][0]}, {63, 73}, 1, 0, UIMSG_OnTravelByFoot, 1, Io::InputAction::EventTrigger, hint);
+    CreateButton({8, 8}, {460, 344}, 1, 0, UIMSG_OnTravelByFoot, 1, Io::InputAction::Invalid, hint);
 }
 
 void GUIWindow_Travel::Update() {

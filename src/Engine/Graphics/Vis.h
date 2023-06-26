@@ -4,11 +4,12 @@
 
 #include "Utility/Flags.h"
 
-#include "Engine/Graphics/IRender.h"
 #include "Engine/Objects/ActorEnums.h"
+#include "Engine/MM7.h"
 #include "Camera.h"
 
 class BSPModel;
+class Logger;
 
 enum class VisObjectType : uint32_t {
     VisObjectType_Any = 0,

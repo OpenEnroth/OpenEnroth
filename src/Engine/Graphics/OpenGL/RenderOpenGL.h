@@ -5,15 +5,15 @@
 #include <map>
 #include <vector>
 
+#include <glad/gl.h> // NOLINT: this is not a C system include.
 #include <glm.hpp>
 
 #include "Engine/Graphics/FrameLimiter.h"
-#include "Engine/Graphics/Nuklear.h"
 #include "Engine/Graphics/RenderBase.h"
-#include "Engine/MM7.h"
-#include "Engine/Graphics/OpenGL/GLShaderLoader.h"
 
 #include "Library/Color/Colorf.h"
+
+#include "GLShaderLoader.h"
 
 class PlatformOpenGLContext;
 
@@ -91,7 +91,7 @@ class RenderOpenGL : public RenderBase {
                                          int height) override;
     virtual void DrawTextureOffset(int x, int y, int offset_x, int offset_y,
                                    GraphicsImage *) override;
-    virtual void DrawImage(GraphicsImage *, const Recti &rect, uint paletteid = 0, Color colourmask = colorTable.White) override;
+    virtual void DrawImage(GraphicsImage *, const Recti &rect, unsigned int paletteid = 0, Color colourmask = colorTable.White) override;
 
     virtual void ZDrawTextureAlpha(float u, float v, GraphicsImage *pTexture, int zVal) override;
     virtual void BlendTextures(int a2, int a3, GraphicsImage *a4, GraphicsImage *a5, int t,
@@ -193,24 +193,24 @@ class RenderOpenGL : public RenderBase {
     GLuint terrainVBO{}, terrainVAO{};
     // all terrain textures are square
     GLuint terraintextures[8]{};
-    uint numterraintexloaded[8]{};
-    uint terraintexturesizes[8]{};
+    unsigned int numterraintexloaded[8]{};
+    unsigned int terraintexturesizes[8]{};
     std::map<std::string, int> terraintexmap;
 
     // outside building shader
     GLuint outbuildVBO[16]{}, outbuildVAO[16]{};
     GLuint outbuildtextures[16]{};
-    uint numoutbuildtexloaded[16]{};
-    uint outbuildtexturewidths[16]{};
-    uint outbuildtextureheights[16]{};
+    unsigned int numoutbuildtexloaded[16]{};
+    unsigned int outbuildtexturewidths[16]{};
+    unsigned int outbuildtextureheights[16]{};
     std::map<std::string, int> outbuildtexmap;
 
     // indoors bsp shader
     GLuint bspVBO[16]{}, bspVAO[16]{};
     GLuint bsptextures[16]{};
-    uint bsptexloaded[16]{};
-    uint bsptexturewidths[16]{};
-    uint bsptextureheights[16]{};
+    unsigned int bsptexloaded[16]{};
+    unsigned int bsptexturewidths[16]{};
+    unsigned int bsptextureheights[16]{};
     std::map<std::string, int> bsptexmap;
 
     // text shader

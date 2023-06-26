@@ -2,12 +2,16 @@
 
 #include <string>
 
-#include "Engine/LOD.h"
-
 #include "Library/Color/Color.h"
 #include "Library/Image/Image.h"
 #include "Library/Image/Palette.h"
 
+namespace LOD {
+class File;
+} // namespace LOD
+
+class LODFile_Sprites;
+class LODFile_IconsBitmaps;
 class Logger;
 
 class ImageLoader {

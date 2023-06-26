@@ -9,6 +9,7 @@
 #include "Engine/Graphics/Level/Decoration.h"
 #include "Engine/Graphics/Indoor.h"
 #include "Engine/Graphics/Image.h"
+#include "Engine/Graphics/IRender.h"
 #include "Engine/LOD.h"
 #include "Engine/Localization.h"
 #include "Engine/MapInfo.h"
@@ -18,6 +19,7 @@
 #include "Engine/Tables/BuildingTable.h"
 #include "Engine/Tables/AwardTable.h"
 #include "Engine/Tables/TransitionTable.h"
+#include "Engine/Objects/NPC.h"
 
 #include "GUI/GUIButton.h"
 #include "GUI/GUIFont.h"
@@ -496,7 +498,7 @@ bool houseDialogPressEscape() {
         for (int i = 0; i < houseNpcs.size(); ++i) {
             Pointi pos = {pNPCPortraits_x[houseNpcs.size() - 1][i], pNPCPortraits_y[houseNpcs.size() - 1][i]};
             houseNpcs[i].button = window_SpeakInHouse->CreateButton(pos, {63, 73}, 1, 0, UIMSG_ClickHouseNPCPortrait, i,
-                                                                               InputAction::Invalid, houseNpcs[i].label);
+                                                                               Io::InputAction::Invalid, houseNpcs[i].label);
         }
 
         BackToHouseMenu();
@@ -567,11 +569,11 @@ void createHouseUI(HOUSE_ID houseId) {
         window_SpeakInHouse = new GUIWindow_House(houseId);
         break;
     }
-    window_SpeakInHouse->CreateButton({61, 424}, {31, 0}, 2, 94, UIMSG_SelectCharacter, 1, InputAction::SelectChar1, "");
-    window_SpeakInHouse->CreateButton({177, 424}, {31, 0}, 2, 94, UIMSG_SelectCharacter, 2, InputAction::SelectChar2, "");
-    window_SpeakInHouse->CreateButton({292, 424}, {31, 0}, 2, 94, UIMSG_SelectCharacter, 3, InputAction::SelectChar3, "");
-    window_SpeakInHouse->CreateButton({407, 424}, {31, 0}, 2, 94, UIMSG_SelectCharacter, 4, InputAction::SelectChar4, "");
-    window_SpeakInHouse->CreateButton({0, 0}, {0, 0}, 1, 0, UIMSG_CycleCharacters, 0, InputAction::CharCycle, "");
+    window_SpeakInHouse->CreateButton({61, 424}, {31, 0}, 2, 94, UIMSG_SelectCharacter, 1, Io::InputAction::SelectChar1, "");
+    window_SpeakInHouse->CreateButton({177, 424}, {31, 0}, 2, 94, UIMSG_SelectCharacter, 2, Io::InputAction::SelectChar2, "");
+    window_SpeakInHouse->CreateButton({292, 424}, {31, 0}, 2, 94, UIMSG_SelectCharacter, 3, Io::InputAction::SelectChar3, "");
+    window_SpeakInHouse->CreateButton({407, 424}, {31, 0}, 2, 94, UIMSG_SelectCharacter, 4, Io::InputAction::SelectChar4, "");
+    window_SpeakInHouse->CreateButton({0, 0}, {0, 0}, 1, 0, UIMSG_CycleCharacters, 0, Io::InputAction::CharCycle, "");
     if (houseNpcs.size() == 1) {
         updateNPCTopics(0);
     }
@@ -774,9 +776,9 @@ void GUIWindow_House::reinitDialogueWindow() {
     }
 
     pDialogueWindow = new GUIWindow(WINDOW_Dialogue, {0, 0}, {render->GetPresentDimensions().w, 345}, 0);
-    pBtn_ExitCancel = pDialogueWindow->CreateButton({471, 445}, {169, 35}, 1, 0, UIMSG_Escape, 0, InputAction::Invalid,
+    pBtn_ExitCancel = pDialogueWindow->CreateButton({471, 445}, {169, 35}, 1, 0, UIMSG_Escape, 0, Io::InputAction::Invalid,
         localization->GetString(LSTR_END_CONVERSATION), {ui_exit_cancel_button_background});
-    pDialogueWindow->CreateButton({8, 8}, {450, 320}, 1, 0, UIMSG_HouseScreenClick, 0, InputAction::Invalid, "");
+    pDialogueWindow->CreateButton({8, 8}, {450, 320}, 1, 0, UIMSG_HouseScreenClick, 0, Io::InputAction::Invalid, "");
 }
 
 bool GUIWindow_House::checkIfPlayerCanInteract() {
@@ -1038,7 +1040,7 @@ GUIWindow_House::GUIWindow_House(HOUSE_ID houseId) : GUIWindow(WINDOW_HouseInter
     pEventTimer->Pause();  // pause timer so not attacked
 
     current_screen_type = CURRENT_SCREEN::SCREEN_HOUSE;
-    pBtn_ExitCancel = CreateButton({471, 445}, {169, 35}, 1, 0, UIMSG_Escape, 0, InputAction::Invalid,
+    pBtn_ExitCancel = CreateButton({471, 445}, {169, 35}, 1, 0, UIMSG_Escape, 0, Io::InputAction::Invalid,
                                    localization->GetString(LSTR_EXIT_BUILDING), {ui_exit_cancel_button_background});
 
     if (in_current_building_type <= BUILDING_MIRRORED_PATH_GUILD) {
@@ -1048,7 +1050,7 @@ GUIWindow_House::GUIWindow_House(HOUSE_ID houseId) : GUIWindow(WINDOW_HouseInter
     for (int i = 0; i < houseNpcs.size(); ++i) {
         Pointi pos = {pNPCPortraits_x[houseNpcs.size() - 1][i], pNPCPortraits_y[houseNpcs.size() - 1][i]};
         houseNpcs[i].button = CreateButton(pos, {63, 73}, 1, 0, UIMSG_ClickHouseNPCPortrait, i,
-                                                      InputAction::Invalid, houseNpcs[i].label);
+                                                      Io::InputAction::Invalid, houseNpcs[i].label);
     }
 }
 

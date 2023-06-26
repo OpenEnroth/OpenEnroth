@@ -5,10 +5,12 @@
 #include "Application/GameConfig.h"
 
 #include "Engine/Party.h"
+#include "Engine/mm7_data.h"
 
 #include "Library/Trace/EventTrace.h"
 
 #include "Utility/Exception.h"
+#include "Utility/String.h"
 
 static bool shouldSkip(const GameConfig *config, const ConfigSection *section) {
     return section == &config->window || section == &config->graphics;

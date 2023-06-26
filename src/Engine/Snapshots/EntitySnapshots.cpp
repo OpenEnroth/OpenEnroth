@@ -17,6 +17,7 @@
 #include "Engine/Objects/NPC.h"
 #include "Engine/Objects/ObjectList.h"
 #include "Engine/Objects/SpriteObject.h"
+#include "Engine/Objects/Chest.h"
 #include "Engine/Party.h"
 #include "Engine/SaveLoad.h"
 #include "Engine/Tables/IconFrameTable.h"
@@ -28,8 +29,10 @@
 
 #include "GUI/GUIFont.h"
 
+#include "Library/Color/ColorTable.h"
+
 #include "Utility/Memory/MemSet.h"
-#include "Utility/IndexedBitset.h"
+#include "Utility/String.h"
 
 #include "CommonSnapshots.h"
 

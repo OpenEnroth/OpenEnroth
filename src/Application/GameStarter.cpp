@@ -6,6 +6,7 @@
 #include "Engine/Engine.h"
 
 #include "Library/Application/PlatformApplication.h"
+#include "Library/Logger/Logger.h"
 
 #include "Platform/PlatformLogger.h"
 

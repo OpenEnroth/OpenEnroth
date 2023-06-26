@@ -15,6 +15,7 @@ set(ENGINE_OBJECTS_HEADERS
         Actor.h
         ActorEnums.h
         Chest.h
+        ChestEnums.h
         CombinedSkillValue.h
         ItemEnchantment.h
         ItemEnums.h

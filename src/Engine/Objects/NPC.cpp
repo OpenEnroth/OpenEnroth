@@ -4,10 +4,9 @@
 #include "Engine/EngineGlobals.h"
 #include "Engine/Events/Processor.h"
 #include "Engine/Graphics/Indoor.h"
-#include "Engine/Graphics/Overlays.h"
+#include "Engine/Graphics/IRender.h"
 #include "Engine/Localization.h"
 #include "Engine/LOD.h"
-#include "Engine/MapInfo.h"
 #include "Engine/Objects/Actor.h"
 #include "Engine/Party.h"
 #include "Engine/Spells/CastSpellInfo.h"
@@ -22,6 +21,7 @@
 #include "Media/Audio/AudioPlayer.h"
 
 #include "Library/Random/Random.h"
+#include "Library/Logger/Logger.h"
 
 bool CheckPortretAgainstSex(int portret_num, int sex);
 
@@ -114,17 +114,17 @@ void NPCHireableDialogPrepare() {
     pDialogueWindow->Release();
     pDialogueWindow = new GUIWindow(WINDOW_Dialogue, {0, 0}, {render->GetRenderDimensions().w, 350}, 0);
     pBtn_ExitCancel = pDialogueWindow->CreateButton({471, 445}, {169, 35}, 1, 0,
-        UIMSG_Escape, 0, InputAction::Invalid, localization->GetString(LSTR_CANCEL), {ui_exit_cancel_button_background}
+        UIMSG_Escape, 0, Io::InputAction::Invalid, localization->GetString(LSTR_CANCEL), {ui_exit_cancel_button_background}
     );
     pDialogueWindow->CreateButton({0, 0}, {0, 0}, 1, 0, UIMSG_HouseScreenClick, 0);
     if (!pNPCStats->pProfessions[v1->profession].pBenefits.empty()) {
         pDialogueWindow->CreateButton({480, 160}, {140, 30}, 1, 0,
-            UIMSG_ClickNPCTopic, DIALOGUE_PROFESSION_DETAILS, InputAction::Invalid, localization->GetString(LSTR_MORE_INFORMATION)
+            UIMSG_ClickNPCTopic, DIALOGUE_PROFESSION_DETAILS, Io::InputAction::Invalid, localization->GetString(LSTR_MORE_INFORMATION)
         );
         v0 = 1;
     }
     pDialogueWindow->CreateButton({480, 30 * v0 + 160}, {140, 30}, 1, 0,
-        UIMSG_ClickNPCTopic, DIALOGUE_HIRE_FIRE, InputAction::Invalid, localization->GetString(LSTR_HIRE));
+        UIMSG_ClickNPCTopic, DIALOGUE_HIRE_FIRE, Io::InputAction::Invalid, localization->GetString(LSTR_HIRE));
     pDialogueWindow->_41D08F_set_keyboard_control_group(v0 + 1, 1, 0, 2);
     dialog_menu_id = DIALOGUE_OTHER;
 }
@@ -138,11 +138,11 @@ void updateNPCTopics(int npc) {
         pDialogueWindow->Release();
         pDialogueWindow = new GUIWindow(WINDOW_Dialogue, {0, 0}, renDims, 0);
         transition_button_label = houseNpcs[npc].label;
-        pBtn_ExitCancel = pDialogueWindow->CreateButton({566, 445}, {75, 33}, 1, 0, UIMSG_Escape, 0, InputAction::No, localization->GetString(LSTR_CANCEL), {ui_buttdesc2});
-        pBtn_YES = pDialogueWindow->CreateButton({486, 445}, {75, 33}, 1, 0, UIMSG_HouseTransitionConfirmation, 1, InputAction::Yes, transition_button_label, {ui_buttyes2});
+        pBtn_ExitCancel = pDialogueWindow->CreateButton({566, 445}, {75, 33}, 1, 0, UIMSG_Escape, 0, Io::InputAction::No, localization->GetString(LSTR_CANCEL), {ui_buttdesc2});
+        pBtn_YES = pDialogueWindow->CreateButton({486, 445}, {75, 33}, 1, 0, UIMSG_HouseTransitionConfirmation, 1, Io::InputAction::Yes, transition_button_label, {ui_buttyes2});
         pDialogueWindow->CreateButton({pNPCPortraits_x[0][0], pNPCPortraits_y[0][0]}, {63, 73}, 1, 0, UIMSG_HouseTransitionConfirmation, 1,
-                                      InputAction::EventTrigger, transition_button_label);
-        pDialogueWindow->CreateButton({8, 8}, {460, 344}, 1, 0, UIMSG_HouseTransitionConfirmation, 1, InputAction::Yes, transition_button_label);
+                                      Io::InputAction::EventTrigger, transition_button_label);
+        pDialogueWindow->CreateButton({8, 8}, {460, 344}, 1, 0, UIMSG_HouseTransitionConfirmation, 1, Io::InputAction::Yes, transition_button_label);
     } else {
         if (dialog_menu_id == DIALOGUE_OTHER) {
             pDialogueWindow->Release();
@@ -153,7 +153,7 @@ void updateNPCTopics(int npc) {
             }
         }
         pDialogueWindow = new GUIWindow(WINDOW_Dialogue, {0, 0}, {renDims.w, 345}, 0);
-        pBtn_ExitCancel = pDialogueWindow->CreateButton({471, 445}, {169, 35}, 1, 0, UIMSG_Escape, 0, InputAction::Invalid,
+        pBtn_ExitCancel = pDialogueWindow->CreateButton({471, 445}, {169, 35}, 1, 0, UIMSG_Escape, 0, Io::InputAction::Invalid,
                                                         localization->GetString(LSTR_END_CONVERSATION), {ui_exit_cancel_button_background});
         pDialogueWindow->CreateButton({8, 8}, {450, 320}, 1, 0, UIMSG_HouseScreenClick, 0);
         dialog_menu_id = DIALOGUE_MAIN;

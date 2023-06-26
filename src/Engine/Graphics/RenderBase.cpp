@@ -7,6 +7,7 @@
 #include "Engine/MM7.h"
 #include "Engine/SpellFxRenderer.h"
 #include "Engine/Party.h"
+#include "Engine/LOD.h"
 
 #include "Engine/Objects/Actor.h"
 #include "Engine/Objects/SpriteObject.h"
@@ -28,9 +29,11 @@
 
 #include "Library/Image/PCX.h"
 #include "Library/Random/Random.h"
+#include "Library/Logger/Logger.h"
 
 #include "Utility/Math/TrigLut.h"
 #include "Utility/Streams/FileOutputStream.h"
+#include "Utility/DataPath.h"
 
 #include "ImageLoader.h"
 

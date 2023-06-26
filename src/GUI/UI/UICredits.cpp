@@ -6,6 +6,9 @@
 #include "Engine/Graphics/IRender.h"
 #include "Engine/Graphics/Image.h"
 #include "Engine/LOD.h"
+#include "Engine/AssetsManager.h"
+#include "Engine/Engine.h"
+#include "Engine/GameResourceManager.h"
 
 #include "GUI/GUIFont.h"
 #include "GUI/GUIWindow.h"
@@ -39,7 +42,7 @@ GUICredits::GUICredits() :
 
     move_Y = 0;
 
-    CreateButton({0, 0}, {0, 0}, 1, 0, UIMSG_Escape, 0, InputAction::Escape);
+    CreateButton({0, 0}, {0, 0}, 1, 0, UIMSG_Escape, 0, Io::InputAction::Escape);
 }
 
 GUICredits::~GUICredits() {

@@ -4,12 +4,17 @@
 #include <utility>
 
 #include "Engine/Engine.h"
+#include "Engine/EngineIocContainer.h"
 #include "Engine/Snapshots/EntitySnapshots.h"
 #include "Engine/Snapshots/SnapshotSerialization.h"
+#include "Engine/GameResourceManager.h"
 
 #include "../LOD.h"
 #include "../Tables/FrameTableInc.h"
 
+#include "Library/Logger/Logger.h"
+
+#include "Utility/String.h"
 
 struct MonsterStats *pMonsterStats;
 struct MonsterList *pMonsterList;

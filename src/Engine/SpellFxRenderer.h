@@ -4,7 +4,7 @@
 #include <memory>
 #include <cstdint>
 
-#include "Engine/Spells/Spells.h"
+#include "Engine/Spells/SpellEnums.h"
 
 #include "Library/Color/ColorTable.h"
 

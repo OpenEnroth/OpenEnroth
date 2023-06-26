@@ -4,7 +4,6 @@
 #include <cassert>
 #include <utility>
 
-#include "Engine/ErrorHandling.h"
 #include "Engine/Objects/CombinedSkillValue.h"
 
 #include "Utility/Flags.h"
@@ -1070,7 +1069,7 @@ inline bool isRandomItem(ITEM_TYPE type) {
 }
 
 inline ITEM_TREASURE_LEVEL randomItemTreasureLevel(ITEM_TYPE type) {
-    Assert(isRandomItem(type));
+    assert(isRandomItem(type));
     return ITEM_TREASURE_LEVEL(-std::to_underlying(type));
 }
 

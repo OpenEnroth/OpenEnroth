@@ -8,6 +8,7 @@
 #include "Engine/Graphics/IRender.h"
 #include "Engine/Graphics/Viewport.h"
 #include "Engine/Graphics/Image.h"
+#include "Engine/Spells/Spells.h"
 #include "Engine/LOD.h"
 #include "Engine/Localization.h"
 #include "Engine/Party.h"
@@ -88,33 +89,33 @@ void GUIWindow_Spellbook::openSpellbook() {
         pageSpells++;
     }
 
-    CreateButton({0, 0}, {0, 0}, 1, 0, UIMSG_SpellBook_PressTab, 0, InputAction::CharCycle);
+    CreateButton({0, 0}, {0, 0}, 1, 0, UIMSG_SpellBook_PressTab, 0, Io::InputAction::CharCycle);
     if (pageSpells) {
         _41D08F_set_keyboard_control_group(pageSpells, 0, 0, 0);
     }
 
     if (player.pActiveSkills[CHARACTER_SKILL_FIRE] || engine->config->debug.AllMagic.value())
-        CreateButton({399, 10}, {50, 36}, 1, 0, UIMSG_OpenSpellbookPage, 0, InputAction::Invalid, localization->GetSpellSchoolName(0));
+        CreateButton({399, 10}, {50, 36}, 1, 0, UIMSG_OpenSpellbookPage, 0, Io::InputAction::Invalid, localization->GetSpellSchoolName(0));
     if (player.pActiveSkills[CHARACTER_SKILL_AIR] || engine->config->debug.AllMagic.value())
-        CreateButton({399, 46}, {50, 36}, 1, 0, UIMSG_OpenSpellbookPage, 1, InputAction::Invalid, localization->GetSpellSchoolName(1));
+        CreateButton({399, 46}, {50, 36}, 1, 0, UIMSG_OpenSpellbookPage, 1, Io::InputAction::Invalid, localization->GetSpellSchoolName(1));
     if (player.pActiveSkills[CHARACTER_SKILL_WATER] || engine->config->debug.AllMagic.value())
-        CreateButton({399, 83}, {50, 36}, 1, 0, UIMSG_OpenSpellbookPage, 2, InputAction::Invalid, localization->GetSpellSchoolName(2));
+        CreateButton({399, 83}, {50, 36}, 1, 0, UIMSG_OpenSpellbookPage, 2, Io::InputAction::Invalid, localization->GetSpellSchoolName(2));
     if (player.pActiveSkills[CHARACTER_SKILL_EARTH] || engine->config->debug.AllMagic.value())
-        CreateButton({399, 121}, {50, 36}, 1, 0, UIMSG_OpenSpellbookPage, 3, InputAction::Invalid, localization->GetSpellSchoolName(3));
+        CreateButton({399, 121}, {50, 36}, 1, 0, UIMSG_OpenSpellbookPage, 3, Io::InputAction::Invalid, localization->GetSpellSchoolName(3));
     if (player.pActiveSkills[CHARACTER_SKILL_SPIRIT] || engine->config->debug.AllMagic.value())
-        CreateButton({399, 158}, {50, 36}, 1, 0, UIMSG_OpenSpellbookPage, 4, InputAction::Invalid, localization->GetSpellSchoolName(5));
+        CreateButton({399, 158}, {50, 36}, 1, 0, UIMSG_OpenSpellbookPage, 4, Io::InputAction::Invalid, localization->GetSpellSchoolName(5));
     if (player.pActiveSkills[CHARACTER_SKILL_MIND] || engine->config->debug.AllMagic.value())
-        CreateButton({400, 196}, {50, 36}, 1, 0, UIMSG_OpenSpellbookPage, 5, InputAction::Invalid, localization->GetSpellSchoolName(4));
+        CreateButton({400, 196}, {50, 36}, 1, 0, UIMSG_OpenSpellbookPage, 5, Io::InputAction::Invalid, localization->GetSpellSchoolName(4));
     if (player.pActiveSkills[CHARACTER_SKILL_BODY] || engine->config->debug.AllMagic.value())
-        CreateButton({400, 234}, {50, 36}, 1, 0, UIMSG_OpenSpellbookPage, 6, InputAction::Invalid, localization->GetSpellSchoolName(6));
+        CreateButton({400, 234}, {50, 36}, 1, 0, UIMSG_OpenSpellbookPage, 6, Io::InputAction::Invalid, localization->GetSpellSchoolName(6));
     if (player.pActiveSkills[CHARACTER_SKILL_LIGHT] || engine->config->debug.AllMagic.value())
-        CreateButton({400, 271}, {50, 36}, 1, 0, UIMSG_OpenSpellbookPage, 7, InputAction::Invalid, localization->GetSpellSchoolName(7));
+        CreateButton({400, 271}, {50, 36}, 1, 0, UIMSG_OpenSpellbookPage, 7, Io::InputAction::Invalid, localization->GetSpellSchoolName(7));
     if (player.pActiveSkills[CHARACTER_SKILL_DARK] || engine->config->debug.AllMagic.value())
-        CreateButton({400, 307}, {50, 36}, 1, 0, UIMSG_OpenSpellbookPage, 8, InputAction::Invalid, localization->GetSpellSchoolName(8));
+        CreateButton({400, 307}, {50, 36}, 1, 0, UIMSG_OpenSpellbookPage, 8, Io::InputAction::Invalid, localization->GetSpellSchoolName(8));
 
     pBtn_InstallRemoveSpell = CreateButton({476, 450}, ui_spellbook_btn_quckspell->size(), 1, UIMSG_HintSelectRemoveQuickSpellBtn,
-                                           UIMSG_ClickInstallRemoveQuickSpellBtn, 0, InputAction::Invalid, "", {ui_spellbook_btn_quckspell_click});
-    pBtn_CloseBook = CreateButton({561, 450}, ui_spellbook_btn_close->size(), 1, 0, UIMSG_Escape, 0, InputAction::Invalid,
+                                           UIMSG_ClickInstallRemoveQuickSpellBtn, 0, Io::InputAction::Invalid, "", {ui_spellbook_btn_quckspell_click});
+    pBtn_CloseBook = CreateButton({561, 450}, ui_spellbook_btn_close->size(), 1, 0, UIMSG_Escape, 0, Io::InputAction::Invalid,
                                   localization->GetString(LSTR_DIALOGUE_EXIT), {ui_spellbook_btn_close_click});
 }
 

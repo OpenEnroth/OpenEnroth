@@ -1,4 +1,5 @@
 #pragma once
+
 #include <array>
 #include <cstdint>
 #include <list>
@@ -6,28 +7,36 @@
 #include <vector>
 #include <string>
 
-#include "Engine/Objects/Character.h"
-#include "Engine/Party.h"
+#include "Engine/PartyEnums.h"
+#include "Engine/Conditions.h"
+#include "Engine/Objects/NPCEnums.h"
 
 #include "GUI/GUIEnums.h"
 #include "GUI/GUIDialogues.h"
+#include "GUI/UI/UIHouseEnums.h"
 
-#include "Platform/PlatformEnums.h"
-#include "Io/Mouse.h"
 #include "Io/InputAction.h"
 #include "Io/KeyboardInputHandler.h"
 
-#include "Library/Serialization/SerializationFwd.h"
+#include "Platform/PlatformEnums.h"
+
+#include "Library/Color/ColorTable.h"
 
 #include "Utility/Geometry/Size.h"
+#include "Utility/Geometry/Point.h"
 
-using Io::Mouse;
-using Io::InputAction;
+namespace Io {
+class Mouse;
+} // namespace Io
 
+class Actor;
 class GUIFont;
 class GUIButton;
 class GUIWindow_House;
 class GUIWindow_MessageScroll;
+class Character;
+class NPCData;
+class GraphicsImage;
 
 struct WindowData {
     WindowData() {}
@@ -45,11 +54,11 @@ class GUIWindow {
     virtual ~GUIWindow() {}
 
     GUIButton *CreateButton(Pointi position, Sizei dimensions, int uButtonType, int uData,
-                            UIMessageType msg, unsigned int msg_param, InputAction action = InputAction::Invalid, const std::string &label = {},
+                            UIMessageType msg, unsigned int msg_param, Io::InputAction action = Io::InputAction::Invalid, const std::string &label = {},
                             const std::vector<GraphicsImage *> &textures = {});
 
     GUIButton *CreateButton(std::string id, Pointi position, Sizei dimensions, int uButtonType, int uData,
-                            UIMessageType msg, unsigned int msg_param, InputAction action = InputAction::Invalid, const std::string &label = {},
+                            UIMessageType msg, unsigned int msg_param, Io::InputAction action = Io::InputAction::Invalid, const std::string &label = {},
                             const std::vector<GraphicsImage *> &textures = {});
 
     bool Contains(unsigned int x, unsigned int y);
@@ -92,7 +101,7 @@ class GUIWindow {
     std::string sHint;
     std::vector<GUIButton*> vButtons;
 
-    std::shared_ptr<Mouse> mouse = nullptr;
+    std::shared_ptr<Io::Mouse> mouse = nullptr;
     Logger *log = nullptr;
 };
 

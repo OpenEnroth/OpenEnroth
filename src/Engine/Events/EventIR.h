@@ -7,10 +7,12 @@
 #include "GUI/UI/UIHouseEnums.h"
 #include "Engine/Objects/CharacterEnums.h"
 #include "Engine/Objects/ItemEnums.h"
-#include "Engine/Objects/Chest.h"
-#include "Engine/Objects/SpriteObjectType.h"
-#include "Engine/Graphics/BSPModel.h"
-#include "Media/Audio/AudioPlayer.h"
+#include "Engine/Objects/ChestEnums.h"
+#include "Engine/Objects/SpriteObjectEnums.h"
+#include "Engine/Objects/ActorEnums.h"
+#include "Engine/Graphics/FaceEnums.h"
+#include "Engine/Spells/SpellEnums.h"
+#include "Media/Audio/SoundEnums.h"
 
 class EventIR {
  public:

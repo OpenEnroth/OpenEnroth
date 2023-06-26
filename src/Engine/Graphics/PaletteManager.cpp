@@ -3,11 +3,12 @@
 #include <algorithm>
 #include <string>
 
-#include "Engine/Engine.h"
+#include "Engine/EngineIocContainer.h"
 #include "Engine/LOD.h"
-#include "Engine/OurMath.h"
 
 #include "Library/Color/Color.h"
+#include "Library/Logger/Logger.h"
+
 #include "Utility/Format.h"
 
 PaletteManager *pPaletteManager = new PaletteManager;

@@ -1,7 +1,5 @@
 #pragma once
 
-#include <array>
-#include <map>
 #include <string>
 
 #include "Engine/Objects/ItemEnums.h"
@@ -169,18 +167,6 @@ struct SummonedItem {
     int field_10_expire_week = 0;
     int field_14_exprie_month = 0;
     int field_18_expire_year = 0;
-};
-
-
-class EquipemntPair {
- public:
-    ITEM_TYPE m_ItemId = ITEM_NULL;
-    ITEM_SLOT m_EquipSlot = ITEM_SLOT_INVALID;
-    EquipemntPair(ITEM_TYPE type, ITEM_SLOT slot) {
-        m_ItemId = type;
-        m_EquipSlot = slot;
-    }
-    EquipemntPair() {}
 };
 
 std::string GetItemTextureFilename(ITEM_TYPE item_id, int index, int shoulder);

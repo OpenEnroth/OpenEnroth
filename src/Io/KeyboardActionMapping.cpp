@@ -20,7 +20,7 @@ using Io::InputAction;
 using Io::KeyToggleType;
 
 
-std::shared_ptr<KeyboardActionMapping> keyboardActionMapping = nullptr;
+std::shared_ptr<Io::KeyboardActionMapping> keyboardActionMapping = nullptr;
 
 extern std::map<InputAction, bool> key_map_conflicted;  // 506E6C
 
@@ -39,117 +39,117 @@ class CKeyListElement {
 };
 
 std::array<CKeyListElement, std::to_underlying(InputAction::Count)> keyMappingParams = {
-    CKeyListElement("KEY_FORWARD", PlatformKey::KEY_UP, InputAction::MoveForward, KeyToggleType::TOGGLE_Continuously),
-    CKeyListElement("KEY_BACKWARD", PlatformKey::KEY_DOWN, InputAction::MoveBackwards, KeyToggleType::TOGGLE_Continuously),
-    CKeyListElement("KEY_LEFT", PlatformKey::KEY_LEFT, InputAction::TurnLeft, KeyToggleType::TOGGLE_Continuously),
-    CKeyListElement("KEY_RIGHT", PlatformKey::KEY_RIGHT, InputAction::TurnRight, KeyToggleType::TOGGLE_Continuously),
-    CKeyListElement("KEY_ATTACK", PlatformKey::KEY_A, InputAction::Attack, KeyToggleType::TOGGLE_OneTimePress),
-    CKeyListElement("KEY_CASTREADY", PlatformKey::KEY_S, InputAction::CastReady, KeyToggleType::TOGGLE_OneTimePress),
-    CKeyListElement("KEY_YELL", PlatformKey::KEY_Y, InputAction::Yell, KeyToggleType::TOGGLE_OneTimePress),
-    CKeyListElement("KEY_JUMP", PlatformKey::KEY_X, InputAction::Jump, KeyToggleType::TOGGLE_OneTimePress),
-    CKeyListElement("KEY_COMBAT", PlatformKey::KEY_RETURN, InputAction::Combat, KeyToggleType::TOGGLE_OneTimePress),
-    CKeyListElement("KEY_EVENTTRIGGER", PlatformKey::KEY_SPACE, InputAction::EventTrigger, KeyToggleType::TOGGLE_OneTimePress),
-    CKeyListElement("KEY_CAST", PlatformKey::KEY_C, InputAction::Cast, KeyToggleType::TOGGLE_OneTimePress),
-    CKeyListElement("KEY_PASS", PlatformKey::KEY_B, InputAction::Pass, KeyToggleType::TOGGLE_OneTimePress),
-    CKeyListElement("KEY_CHARCYCLE", PlatformKey::KEY_TAB, InputAction::CharCycle, KeyToggleType::TOGGLE_OneTimePress),
-    CKeyListElement("KEY_QUEST", PlatformKey::KEY_Q, InputAction::Quest, KeyToggleType::TOGGLE_OneTimePress),
-    CKeyListElement("KEY_QUICKREF", PlatformKey::KEY_Z, InputAction::QuickRef, KeyToggleType::TOGGLE_OneTimePress),
-    CKeyListElement("KEY_REST", PlatformKey::KEY_R, InputAction::Rest, KeyToggleType::TOGGLE_OneTimePress),
-    CKeyListElement("KEY_TIMECAL", PlatformKey::KEY_T, InputAction::TimeCal, KeyToggleType::TOGGLE_OneTimePress),
-    CKeyListElement("KEY_AUTONOTES", PlatformKey::KEY_N, InputAction::Autonotes, KeyToggleType::TOGGLE_OneTimePress),
-    CKeyListElement("KEY_MAPBOOK", PlatformKey::KEY_M, InputAction::Mapbook, KeyToggleType::TOGGLE_OneTimePress),
-    CKeyListElement("KEY_LOOKUP", PlatformKey::KEY_PAGEDOWN, InputAction::LookUp, KeyToggleType::TOGGLE_OneTimePress),
-    CKeyListElement("KEY_LOOKDOWN", PlatformKey::KEY_DELETE, InputAction::LookDown, KeyToggleType::TOGGLE_OneTimePress),
-    CKeyListElement("KEY_CENTERVIEWPT", PlatformKey::KEY_END, InputAction::CenterView, KeyToggleType::TOGGLE_OneTimePress),
-    CKeyListElement("KEY_ZOOMIN", PlatformKey::KEY_ADD, InputAction::ZoomIn, KeyToggleType::TOGGLE_OneTimePress),
-    CKeyListElement("KEY_ZOOMOUT", PlatformKey::KEY_SUBTRACT, InputAction::ZoomOut, KeyToggleType::TOGGLE_OneTimePress),
-    CKeyListElement("KEY_FLYUP", PlatformKey::KEY_PAGEUP, InputAction::FlyUp, KeyToggleType::TOGGLE_Continuously),
-    CKeyListElement("KEY_FLYDOWN", PlatformKey::KEY_INSERT, InputAction::FlyDown, KeyToggleType::TOGGLE_Continuously),
-    CKeyListElement("KEY_LAND", PlatformKey::KEY_HOME, InputAction::Land, KeyToggleType::TOGGLE_OneTimePress),
-    CKeyListElement("KEY_ALWAYSRUN", PlatformKey::KEY_U, InputAction::AlwaysRun, KeyToggleType::TOGGLE_OneTimePress),
-    CKeyListElement("KEY_STEPLEFT", PlatformKey::KEY_LEFTBRACKET, InputAction::StrafeLeft, KeyToggleType::TOGGLE_Continuously),
-    CKeyListElement("KEY_STEPRIGHT", PlatformKey::KEY_RIGHTBRACKET, InputAction::StrafeRight, KeyToggleType::TOGGLE_Continuously),
+    CKeyListElement("KEY_FORWARD", PlatformKey::KEY_UP, Io::InputAction::MoveForward, KeyToggleType::TOGGLE_Continuously),
+    CKeyListElement("KEY_BACKWARD", PlatformKey::KEY_DOWN, Io::InputAction::MoveBackwards, KeyToggleType::TOGGLE_Continuously),
+    CKeyListElement("KEY_LEFT", PlatformKey::KEY_LEFT, Io::InputAction::TurnLeft, KeyToggleType::TOGGLE_Continuously),
+    CKeyListElement("KEY_RIGHT", PlatformKey::KEY_RIGHT, Io::InputAction::TurnRight, KeyToggleType::TOGGLE_Continuously),
+    CKeyListElement("KEY_ATTACK", PlatformKey::KEY_A, Io::InputAction::Attack, KeyToggleType::TOGGLE_OneTimePress),
+    CKeyListElement("KEY_CASTREADY", PlatformKey::KEY_S, Io::InputAction::CastReady, KeyToggleType::TOGGLE_OneTimePress),
+    CKeyListElement("KEY_YELL", PlatformKey::KEY_Y, Io::InputAction::Yell, KeyToggleType::TOGGLE_OneTimePress),
+    CKeyListElement("KEY_JUMP", PlatformKey::KEY_X, Io::InputAction::Jump, KeyToggleType::TOGGLE_OneTimePress),
+    CKeyListElement("KEY_COMBAT", PlatformKey::KEY_RETURN, Io::InputAction::Combat, KeyToggleType::TOGGLE_OneTimePress),
+    CKeyListElement("KEY_EVENTTRIGGER", PlatformKey::KEY_SPACE, Io::InputAction::EventTrigger, KeyToggleType::TOGGLE_OneTimePress),
+    CKeyListElement("KEY_CAST", PlatformKey::KEY_C, Io::InputAction::Cast, KeyToggleType::TOGGLE_OneTimePress),
+    CKeyListElement("KEY_PASS", PlatformKey::KEY_B, Io::InputAction::Pass, KeyToggleType::TOGGLE_OneTimePress),
+    CKeyListElement("KEY_CHARCYCLE", PlatformKey::KEY_TAB, Io::InputAction::CharCycle, KeyToggleType::TOGGLE_OneTimePress),
+    CKeyListElement("KEY_QUEST", PlatformKey::KEY_Q, Io::InputAction::Quest, KeyToggleType::TOGGLE_OneTimePress),
+    CKeyListElement("KEY_QUICKREF", PlatformKey::KEY_Z, Io::InputAction::QuickRef, KeyToggleType::TOGGLE_OneTimePress),
+    CKeyListElement("KEY_REST", PlatformKey::KEY_R, Io::InputAction::Rest, KeyToggleType::TOGGLE_OneTimePress),
+    CKeyListElement("KEY_TIMECAL", PlatformKey::KEY_T, Io::InputAction::TimeCal, KeyToggleType::TOGGLE_OneTimePress),
+    CKeyListElement("KEY_AUTONOTES", PlatformKey::KEY_N, Io::InputAction::Autonotes, KeyToggleType::TOGGLE_OneTimePress),
+    CKeyListElement("KEY_MAPBOOK", PlatformKey::KEY_M, Io::InputAction::Mapbook, KeyToggleType::TOGGLE_OneTimePress),
+    CKeyListElement("KEY_LOOKUP", PlatformKey::KEY_PAGEDOWN, Io::InputAction::LookUp, KeyToggleType::TOGGLE_OneTimePress),
+    CKeyListElement("KEY_LOOKDOWN", PlatformKey::KEY_DELETE, Io::InputAction::LookDown, KeyToggleType::TOGGLE_OneTimePress),
+    CKeyListElement("KEY_CENTERVIEWPT", PlatformKey::KEY_END, Io::InputAction::CenterView, KeyToggleType::TOGGLE_OneTimePress),
+    CKeyListElement("KEY_ZOOMIN", PlatformKey::KEY_ADD, Io::InputAction::ZoomIn, KeyToggleType::TOGGLE_OneTimePress),
+    CKeyListElement("KEY_ZOOMOUT", PlatformKey::KEY_SUBTRACT, Io::InputAction::ZoomOut, KeyToggleType::TOGGLE_OneTimePress),
+    CKeyListElement("KEY_FLYUP", PlatformKey::KEY_PAGEUP, Io::InputAction::FlyUp, KeyToggleType::TOGGLE_Continuously),
+    CKeyListElement("KEY_FLYDOWN", PlatformKey::KEY_INSERT, Io::InputAction::FlyDown, KeyToggleType::TOGGLE_Continuously),
+    CKeyListElement("KEY_LAND", PlatformKey::KEY_HOME, Io::InputAction::Land, KeyToggleType::TOGGLE_OneTimePress),
+    CKeyListElement("KEY_ALWAYSRUN", PlatformKey::KEY_U, Io::InputAction::AlwaysRun, KeyToggleType::TOGGLE_OneTimePress),
+    CKeyListElement("KEY_STEPLEFT", PlatformKey::KEY_LEFTBRACKET, Io::InputAction::StrafeLeft, KeyToggleType::TOGGLE_Continuously),
+    CKeyListElement("KEY_STEPRIGHT", PlatformKey::KEY_RIGHTBRACKET, Io::InputAction::StrafeRight, KeyToggleType::TOGGLE_Continuously),
 
-    CKeyListElement("KEY_QUICKSAVE", PlatformKey::KEY_F5, InputAction::QuickSave, KeyToggleType::TOGGLE_OneTimePress),
-    CKeyListElement("KEY_QUICKLOAD", PlatformKey::KEY_F9, InputAction::QuickLoad, KeyToggleType::TOGGLE_OneTimePress),
-    CKeyListElement("KEY_HISTORY", PlatformKey::KEY_H, InputAction::History, KeyToggleType::TOGGLE_OneTimePress),
-    CKeyListElement("KEY_STATS", PlatformKey::KEY_C, InputAction::Stats, KeyToggleType::TOGGLE_OneTimePress),
-    CKeyListElement("KEY_SKILLS", PlatformKey::KEY_S, InputAction::Skills, KeyToggleType::TOGGLE_OneTimePress),
-    CKeyListElement("KEY_INVENTORY", PlatformKey::KEY_I, InputAction::Inventory, KeyToggleType::TOGGLE_OneTimePress),
-    CKeyListElement("KEY_AWARDS", PlatformKey::KEY_A, InputAction::Awards, KeyToggleType::TOGGLE_OneTimePress),
-    CKeyListElement("KEY_NEWGAME", PlatformKey::KEY_N, InputAction::NewGame, KeyToggleType::TOGGLE_OneTimePress),
-    CKeyListElement("KEY_SAVEGAME", PlatformKey::KEY_S, InputAction::SaveGame, KeyToggleType::TOGGLE_OneTimePress),
-    CKeyListElement("KEY_LOADGAME", PlatformKey::KEY_L, InputAction::LoadGame, KeyToggleType::TOGGLE_OneTimePress),
-    CKeyListElement("KEY_EXITGAME", PlatformKey::KEY_Q, InputAction::ExitGame, KeyToggleType::TOGGLE_OneTimePress),
-    CKeyListElement("KEY_RETURNTOGAME", PlatformKey::KEY_R, InputAction::ReturnToGame, KeyToggleType::TOGGLE_OneTimePress),
-    CKeyListElement("KEY_CONTROLS", PlatformKey::KEY_C, InputAction::Controls, KeyToggleType::TOGGLE_OneTimePress),
-    CKeyListElement("KEY_OPTIONS", PlatformKey::KEY_O, InputAction::Options, KeyToggleType::TOGGLE_OneTimePress),
-    CKeyListElement("KEY_CREDITS", PlatformKey::KEY_C, InputAction::Credits, KeyToggleType::TOGGLE_OneTimePress),
-    CKeyListElement("KEY_CLEAR", PlatformKey::KEY_C, InputAction::Clear, KeyToggleType::TOGGLE_OneTimePress),
-    CKeyListElement("KEY_RETURN", PlatformKey::KEY_RETURN, InputAction::Return, KeyToggleType::TOGGLE_OneTimePress),
-    CKeyListElement("KEY_SUBTRACT", PlatformKey::KEY_SUBTRACT, InputAction::Minus, KeyToggleType::TOGGLE_OneTimePress),
-    CKeyListElement("KEY_ADD", PlatformKey::KEY_ADD, InputAction::Plus, KeyToggleType::TOGGLE_OneTimePress),
-    CKeyListElement("KEY_YES", PlatformKey::KEY_Y, InputAction::Yes, KeyToggleType::TOGGLE_OneTimePress),
-    CKeyListElement("KEY_NO", PlatformKey::KEY_N, InputAction::No, KeyToggleType::TOGGLE_OneTimePress),
-    CKeyListElement("KEY_REST8HOURS", PlatformKey::KEY_R, InputAction::Rest8Hours, KeyToggleType::TOGGLE_OneTimePress),
-    CKeyListElement("KEY_WAITTILLDAWN", PlatformKey::KEY_D, InputAction::WaitTillDawn, KeyToggleType::TOGGLE_OneTimePress),
-    CKeyListElement("KEY_WAITHOUR", PlatformKey::KEY_H, InputAction::WaitHour, KeyToggleType::TOGGLE_OneTimePress),
-    CKeyListElement("KEY_WAIT5MINUTES", PlatformKey::KEY_M, InputAction::Wait5Minutes, KeyToggleType::TOGGLE_OneTimePress),
-    CKeyListElement("KEY_SCREENSHOT", PlatformKey::KEY_F2, InputAction::Screenshot, KeyToggleType::TOGGLE_OneTimePress),
-    CKeyListElement("KEY_CONSOLE", PlatformKey::KEY_TILDE, InputAction::Console, KeyToggleType::TOGGLE_OneTimePress),
-    CKeyListElement("KEY_TOGGLEMOUSEGRAB", PlatformKey::KEY_F1, InputAction::ToggleMouseGrab, KeyToggleType::TOGGLE_OneTimePress),
-    CKeyListElement("KEY_TOGGLEBORDERLESS", PlatformKey::KEY_F3, InputAction::ToggleBorderless, KeyToggleType::TOGGLE_OneTimePress),
-    CKeyListElement("KEY_TOGGLEFULLSCREEN", PlatformKey::KEY_F4, InputAction::ToggleFullscreen, KeyToggleType::TOGGLE_OneTimePress),
-    CKeyListElement("KEY_TOGGLERESIZABLE", PlatformKey::KEY_F6, InputAction::ToggleResizable, KeyToggleType::TOGGLE_OneTimePress),
-    CKeyListElement("KEY_CYCLEFILTER", PlatformKey::KEY_F7, InputAction::CycleFilter, KeyToggleType::TOGGLE_OneTimePress),
-    CKeyListElement("KEY_RELOADSHADERS", PlatformKey::KEY_BACKSPACE, InputAction::ReloadShaders, KeyToggleType::TOGGLE_OneTimePress),
-    CKeyListElement("KEY_SELECTCHAR1", PlatformKey::KEY_DIGIT_1, InputAction::SelectChar1, KeyToggleType::TOGGLE_OneTimePress),
-    CKeyListElement("KEY_SELECTCHAR2", PlatformKey::KEY_DIGIT_2, InputAction::SelectChar2, KeyToggleType::TOGGLE_OneTimePress),
-    CKeyListElement("KEY_SELECTCHAR3", PlatformKey::KEY_DIGIT_3, InputAction::SelectChar3, KeyToggleType::TOGGLE_OneTimePress),
-    CKeyListElement("KEY_SELECTCHAR4", PlatformKey::KEY_DIGIT_4, InputAction::SelectChar4, KeyToggleType::TOGGLE_OneTimePress),
-    CKeyListElement("KEY_SELECTNPC1", PlatformKey::KEY_DIGIT_5, InputAction::SelectNPC1, KeyToggleType::TOGGLE_OneTimePress),
-    CKeyListElement("KEY_SELECTNPC2", PlatformKey::KEY_DIGIT_6, InputAction::SelectNPC2, KeyToggleType::TOGGLE_OneTimePress),
-    CKeyListElement("KEY_DIALOGUP", PlatformKey::KEY_UP, InputAction::DialogUp, KeyToggleType::TOGGLE_OneTimePress),
-    CKeyListElement("KEY_DIALOGDOWN", PlatformKey::KEY_DOWN, InputAction::DialogDown, KeyToggleType::TOGGLE_OneTimePress),
-    CKeyListElement("KEY_DIALOGLEFT", PlatformKey::KEY_LEFT, InputAction::DialogLeft, KeyToggleType::TOGGLE_OneTimePress),
-    CKeyListElement("KEY_DIALOGRIGHT", PlatformKey::KEY_RIGHT, InputAction::DialogRight, KeyToggleType::TOGGLE_OneTimePress),
-    CKeyListElement("KEY_DIALOGSELECT", PlatformKey::KEY_PAGEDOWN, InputAction::DialogSelect, KeyToggleType::TOGGLE_OneTimePress),
-    CKeyListElement("KEY_ESCAPE", PlatformKey::KEY_ESCAPE, InputAction::Escape, KeyToggleType::TOGGLE_OneTimePress)};
+    CKeyListElement("KEY_QUICKSAVE", PlatformKey::KEY_F5, Io::InputAction::QuickSave, KeyToggleType::TOGGLE_OneTimePress),
+    CKeyListElement("KEY_QUICKLOAD", PlatformKey::KEY_F9, Io::InputAction::QuickLoad, KeyToggleType::TOGGLE_OneTimePress),
+    CKeyListElement("KEY_HISTORY", PlatformKey::KEY_H, Io::InputAction::History, KeyToggleType::TOGGLE_OneTimePress),
+    CKeyListElement("KEY_STATS", PlatformKey::KEY_C, Io::InputAction::Stats, KeyToggleType::TOGGLE_OneTimePress),
+    CKeyListElement("KEY_SKILLS", PlatformKey::KEY_S, Io::InputAction::Skills, KeyToggleType::TOGGLE_OneTimePress),
+    CKeyListElement("KEY_INVENTORY", PlatformKey::KEY_I, Io::InputAction::Inventory, KeyToggleType::TOGGLE_OneTimePress),
+    CKeyListElement("KEY_AWARDS", PlatformKey::KEY_A, Io::InputAction::Awards, KeyToggleType::TOGGLE_OneTimePress),
+    CKeyListElement("KEY_NEWGAME", PlatformKey::KEY_N, Io::InputAction::NewGame, KeyToggleType::TOGGLE_OneTimePress),
+    CKeyListElement("KEY_SAVEGAME", PlatformKey::KEY_S, Io::InputAction::SaveGame, KeyToggleType::TOGGLE_OneTimePress),
+    CKeyListElement("KEY_LOADGAME", PlatformKey::KEY_L, Io::InputAction::LoadGame, KeyToggleType::TOGGLE_OneTimePress),
+    CKeyListElement("KEY_EXITGAME", PlatformKey::KEY_Q, Io::InputAction::ExitGame, KeyToggleType::TOGGLE_OneTimePress),
+    CKeyListElement("KEY_RETURNTOGAME", PlatformKey::KEY_R, Io::InputAction::ReturnToGame, KeyToggleType::TOGGLE_OneTimePress),
+    CKeyListElement("KEY_CONTROLS", PlatformKey::KEY_C, Io::InputAction::Controls, KeyToggleType::TOGGLE_OneTimePress),
+    CKeyListElement("KEY_OPTIONS", PlatformKey::KEY_O, Io::InputAction::Options, KeyToggleType::TOGGLE_OneTimePress),
+    CKeyListElement("KEY_CREDITS", PlatformKey::KEY_C, Io::InputAction::Credits, KeyToggleType::TOGGLE_OneTimePress),
+    CKeyListElement("KEY_CLEAR", PlatformKey::KEY_C, Io::InputAction::Clear, KeyToggleType::TOGGLE_OneTimePress),
+    CKeyListElement("KEY_RETURN", PlatformKey::KEY_RETURN, Io::InputAction::Return, KeyToggleType::TOGGLE_OneTimePress),
+    CKeyListElement("KEY_SUBTRACT", PlatformKey::KEY_SUBTRACT, Io::InputAction::Minus, KeyToggleType::TOGGLE_OneTimePress),
+    CKeyListElement("KEY_ADD", PlatformKey::KEY_ADD, Io::InputAction::Plus, KeyToggleType::TOGGLE_OneTimePress),
+    CKeyListElement("KEY_YES", PlatformKey::KEY_Y, Io::InputAction::Yes, KeyToggleType::TOGGLE_OneTimePress),
+    CKeyListElement("KEY_NO", PlatformKey::KEY_N, Io::InputAction::No, KeyToggleType::TOGGLE_OneTimePress),
+    CKeyListElement("KEY_REST8HOURS", PlatformKey::KEY_R, Io::InputAction::Rest8Hours, KeyToggleType::TOGGLE_OneTimePress),
+    CKeyListElement("KEY_WAITTILLDAWN", PlatformKey::KEY_D, Io::InputAction::WaitTillDawn, KeyToggleType::TOGGLE_OneTimePress),
+    CKeyListElement("KEY_WAITHOUR", PlatformKey::KEY_H, Io::InputAction::WaitHour, KeyToggleType::TOGGLE_OneTimePress),
+    CKeyListElement("KEY_WAIT5MINUTES", PlatformKey::KEY_M, Io::InputAction::Wait5Minutes, KeyToggleType::TOGGLE_OneTimePress),
+    CKeyListElement("KEY_SCREENSHOT", PlatformKey::KEY_F2, Io::InputAction::Screenshot, KeyToggleType::TOGGLE_OneTimePress),
+    CKeyListElement("KEY_CONSOLE", PlatformKey::KEY_TILDE, Io::InputAction::Console, KeyToggleType::TOGGLE_OneTimePress),
+    CKeyListElement("KEY_TOGGLEMOUSEGRAB", PlatformKey::KEY_F1, Io::InputAction::ToggleMouseGrab, KeyToggleType::TOGGLE_OneTimePress),
+    CKeyListElement("KEY_TOGGLEBORDERLESS", PlatformKey::KEY_F3, Io::InputAction::ToggleBorderless, KeyToggleType::TOGGLE_OneTimePress),
+    CKeyListElement("KEY_TOGGLEFULLSCREEN", PlatformKey::KEY_F4, Io::InputAction::ToggleFullscreen, KeyToggleType::TOGGLE_OneTimePress),
+    CKeyListElement("KEY_TOGGLERESIZABLE", PlatformKey::KEY_F6, Io::InputAction::ToggleResizable, KeyToggleType::TOGGLE_OneTimePress),
+    CKeyListElement("KEY_CYCLEFILTER", PlatformKey::KEY_F7, Io::InputAction::CycleFilter, KeyToggleType::TOGGLE_OneTimePress),
+    CKeyListElement("KEY_RELOADSHADERS", PlatformKey::KEY_BACKSPACE, Io::InputAction::ReloadShaders, KeyToggleType::TOGGLE_OneTimePress),
+    CKeyListElement("KEY_SELECTCHAR1", PlatformKey::KEY_DIGIT_1, Io::InputAction::SelectChar1, KeyToggleType::TOGGLE_OneTimePress),
+    CKeyListElement("KEY_SELECTCHAR2", PlatformKey::KEY_DIGIT_2, Io::InputAction::SelectChar2, KeyToggleType::TOGGLE_OneTimePress),
+    CKeyListElement("KEY_SELECTCHAR3", PlatformKey::KEY_DIGIT_3, Io::InputAction::SelectChar3, KeyToggleType::TOGGLE_OneTimePress),
+    CKeyListElement("KEY_SELECTCHAR4", PlatformKey::KEY_DIGIT_4, Io::InputAction::SelectChar4, KeyToggleType::TOGGLE_OneTimePress),
+    CKeyListElement("KEY_SELECTNPC1", PlatformKey::KEY_DIGIT_5, Io::InputAction::SelectNPC1, KeyToggleType::TOGGLE_OneTimePress),
+    CKeyListElement("KEY_SELECTNPC2", PlatformKey::KEY_DIGIT_6, Io::InputAction::SelectNPC2, KeyToggleType::TOGGLE_OneTimePress),
+    CKeyListElement("KEY_DIALOGUP", PlatformKey::KEY_UP, Io::InputAction::DialogUp, KeyToggleType::TOGGLE_OneTimePress),
+    CKeyListElement("KEY_DIALOGDOWN", PlatformKey::KEY_DOWN, Io::InputAction::DialogDown, KeyToggleType::TOGGLE_OneTimePress),
+    CKeyListElement("KEY_DIALOGLEFT", PlatformKey::KEY_LEFT, Io::InputAction::DialogLeft, KeyToggleType::TOGGLE_OneTimePress),
+    CKeyListElement("KEY_DIALOGRIGHT", PlatformKey::KEY_RIGHT, Io::InputAction::DialogRight, KeyToggleType::TOGGLE_OneTimePress),
+    CKeyListElement("KEY_DIALOGSELECT", PlatformKey::KEY_PAGEDOWN, Io::InputAction::DialogSelect, KeyToggleType::TOGGLE_OneTimePress),
+    CKeyListElement("KEY_ESCAPE", PlatformKey::KEY_ESCAPE, Io::InputAction::Escape, KeyToggleType::TOGGLE_OneTimePress)};
 
 
-void KeyboardActionMapping::MapKey(InputAction action, PlatformKey key) {
+void Io::KeyboardActionMapping::MapKey(InputAction action, PlatformKey key) {
     actionKeyMap[action] = key;
 }
 //----- (00459C68) --------------------------------------------------------
-void KeyboardActionMapping::MapKey(InputAction action, PlatformKey key, KeyToggleType type) {
+void Io::KeyboardActionMapping::MapKey(InputAction action, PlatformKey key, KeyToggleType type) {
     actionKeyMap[action] = key;
     keyToggleMap[action] = type;
 }
 
-void KeyboardActionMapping::MapGamepadKey(InputAction action, PlatformKey key) {
+void Io::KeyboardActionMapping::MapGamepadKey(InputAction action, PlatformKey key) {
     gamepadKeyMap[action] = key;
 }
 
-PlatformKey KeyboardActionMapping::MapDefaultKey(InputAction action) {
+PlatformKey Io::KeyboardActionMapping::MapDefaultKey(InputAction action) {
     return ConfigDefaultKey(action);
 }
 
 //----- (00459C82) --------------------------------------------------------
-PlatformKey KeyboardActionMapping::GetKey(InputAction action) const {
+PlatformKey Io::KeyboardActionMapping::GetKey(InputAction action) const {
     return actionKeyMap.find(action)->second;
 }
 
-PlatformKey KeyboardActionMapping::GetGamepadKey(InputAction action) const {
+PlatformKey Io::KeyboardActionMapping::GetGamepadKey(InputAction action) const {
     return gamepadKeyMap.find(action)->second;
 }
 
-KeyToggleType KeyboardActionMapping::GetToggleType(InputAction action) const {
+KeyToggleType Io::KeyboardActionMapping::GetToggleType(InputAction action) const {
     return keyToggleMap.find(action)->second;
 }
 
 // TODO: maybe we need to split InputActions to sets by WindowType so guarantee of only one InputAction per key is restored.
-bool KeyboardActionMapping::IsKeyMatchAction(InputAction action, PlatformKey key) const {
-    if (action == InputAction::Invalid)
+bool Io::KeyboardActionMapping::IsKeyMatchAction(InputAction action, PlatformKey key) const {
+    if (action == Io::InputAction::Invalid)
         return false;
 
     if (actionKeyMap.find(action)->second == key)
@@ -162,7 +162,7 @@ bool KeyboardActionMapping::IsKeyMatchAction(InputAction action, PlatformKey key
 }
 
 //----- (00459C8D) --------------------------------------------------------
-KeyboardActionMapping::KeyboardActionMapping(std::shared_ptr<GameConfig> config) {
+Io::KeyboardActionMapping::KeyboardActionMapping(std::shared_ptr<GameConfig> config) {
     this->config = config;
 
     SetDefaultMapping();
@@ -170,7 +170,7 @@ KeyboardActionMapping::KeyboardActionMapping(std::shared_ptr<GameConfig> config)
 }
 
 //----- (00459CC4) --------------------------------------------------------
-void KeyboardActionMapping::SetDefaultMapping() {
+void Io::KeyboardActionMapping::SetDefaultMapping() {
     for (size_t i = 0; i < keyMappingParams.size(); i++) {
         //MapKey(keyMappingParams[i].m_cmdId, keyMappingParams[i].m_key, keyMappingParams[i].m_toggType);
         MapKey(keyMappingParams[i].m_cmdId, ConfigDefaultKey(keyMappingParams[i].m_cmdId), keyMappingParams[i].m_toggType);
@@ -179,7 +179,7 @@ void KeyboardActionMapping::SetDefaultMapping() {
 }
 
 //----- (00459FFC) --------------------------------------------------------
-void KeyboardActionMapping::ReadMappings() {
+void Io::KeyboardActionMapping::ReadMappings() {
     char str[32];
 
     for (size_t i = 0; i < keyMappingParams.size(); i++) {
@@ -209,7 +209,7 @@ void KeyboardActionMapping::ReadMappings() {
 }
 
 //----- (0045A960) --------------------------------------------------------
-void KeyboardActionMapping::StoreMappings() {
+void Io::KeyboardActionMapping::StoreMappings() {
     for (size_t i = 0; i < keyMappingParams.size(); i++) {
         //std::string display_name = GetDisplayName(GetKey(keyMappingParams[i].m_cmdId));
         //OS_SetAppString(keyMappingParams[i].m_keyName.c_str(), display_name.c_str());
@@ -220,12 +220,12 @@ void KeyboardActionMapping::StoreMappings() {
 KeyToggleType GetToggleType(InputAction action) {
     // TODO: TOGGLE_* values in the table above are not respected, instead toggle values from this function are used.
 
-    if (action == InputAction::StrafeLeft || action == InputAction::StrafeRight
-        || action == InputAction::FlyUp || action == InputAction::FlyDown) {
+    if (action == Io::InputAction::StrafeLeft || action == Io::InputAction::StrafeRight
+        || action == Io::InputAction::FlyUp || action == Io::InputAction::FlyDown) {
         return KeyToggleType::TOGGLE_Continuously;
     }
 
-    if (action == InputAction::Attack || action == InputAction::CastReady)
+    if (action == Io::InputAction::Attack || action == Io::InputAction::CastReady)
         return KeyToggleType::TOGGLE_DelayContinuous;
 
     int i = (int)action;
@@ -235,7 +235,7 @@ KeyToggleType GetToggleType(InputAction action) {
         return KeyToggleType::TOGGLE_Continuously;
 }
 
-GameConfig::Key *KeyboardActionMapping::InputActionToConfigKey(InputAction action) {
+GameConfig::Key *Io::KeyboardActionMapping::InputActionToConfigKey(InputAction action) {
     switch (action) {
         case(InputAction::MoveForward): return &config->keybindings.Forward;
         case(InputAction::MoveBackwards): return &config->keybindings.Backward;
@@ -318,27 +318,27 @@ GameConfig::Key *KeyboardActionMapping::InputActionToConfigKey(InputAction actio
     return nullptr;
 }
 
-PlatformKey KeyboardActionMapping::ConfigDefaultKey(InputAction action) {
+PlatformKey Io::KeyboardActionMapping::ConfigDefaultKey(InputAction action) {
     ConfigEntry<PlatformKey> *val = InputActionToConfigKey(action);
     return val ? val->defaultValue() : PlatformKey::KEY_NONE;
 }
 
-PlatformKey KeyboardActionMapping::ConfigGetKey(InputAction action) {
+PlatformKey Io::KeyboardActionMapping::ConfigGetKey(InputAction action) {
     ConfigEntry<PlatformKey> *val = InputActionToConfigKey(action);
     return val ? val->value() : PlatformKey::KEY_NONE;
 }
 
-void KeyboardActionMapping::ConfigSetKey(InputAction action, PlatformKey key) {
+void Io::KeyboardActionMapping::ConfigSetKey(InputAction action, PlatformKey key) {
     if (ConfigEntry<PlatformKey> *val = InputActionToConfigKey(action))
         val->setValue(key);
 }
 
-PlatformKey KeyboardActionMapping::ConfigDefaultGamepadKey(InputAction action) {
+PlatformKey Io::KeyboardActionMapping::ConfigDefaultGamepadKey(InputAction action) {
     GameConfig::Key *val = InputActionToConfigGamepadKey(action);
     return val ? val->defaultValue() : PlatformKey::KEY_NONE;
 }
 
-GameConfig::Key *KeyboardActionMapping::InputActionToConfigGamepadKey(InputAction action) {
+GameConfig::Key *Io::KeyboardActionMapping::InputActionToConfigGamepadKey(InputAction action) {
     switch (action) {
         case(InputAction::MoveForward): return &config->gamepad.Forward;
         case(InputAction::MoveBackwards): return &config->gamepad.Backward;
@@ -421,12 +421,12 @@ GameConfig::Key *KeyboardActionMapping::InputActionToConfigGamepadKey(InputActio
     return nullptr;
 }
 
-PlatformKey KeyboardActionMapping::ConfigGetGamepadKey(InputAction action) {
+PlatformKey Io::KeyboardActionMapping::ConfigGetGamepadKey(InputAction action) {
     GameConfig::Key *val = InputActionToConfigGamepadKey(action);
     return val ? val->value() : PlatformKey::KEY_NONE;
 }
 
-void KeyboardActionMapping::ConfigSetGamepadKey(InputAction action, PlatformKey key) {
+void Io::KeyboardActionMapping::ConfigSetGamepadKey(InputAction action, PlatformKey key) {
     if (GameConfig::Key *val = InputActionToConfigGamepadKey(action))
         val->setValue(key);
 }

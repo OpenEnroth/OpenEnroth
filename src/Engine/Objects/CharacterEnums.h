@@ -2,7 +2,6 @@
 
 #include <cassert>
 
-#include "Engine/Objects/CombinedSkillValue.h"
 #include "Utility/Segment.h"
 
 // TODO(pskelton): drop CHARACTER_ at start?

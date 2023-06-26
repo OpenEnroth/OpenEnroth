@@ -3,6 +3,7 @@
 
 #include "Engine/Engine.h"
 #include "Engine/EngineGlobals.h"
+#include "Engine/AssetsManager.h"
 
 #include "Engine/Events/Processor.h"
 #include "Engine/Events/Loader.h"
@@ -25,22 +26,27 @@
 #include "Engine/Graphics/Vis.h"
 #include "Engine/Graphics/Weather.h"
 #include "Engine/Graphics/PortalFunctions.h"
+#include "Engine/Graphics/Polygon.h"
 #include "Engine/LOD.h"
 #include "Engine/Localization.h"
 #include "Engine/Objects/Actor.h"
 #include "Engine/Objects/Chest.h"
 #include "Engine/Objects/ObjectList.h"
 #include "Engine/Objects/SpriteObject.h"
+#include "Engine/Objects/NPC.h"
 #include "Engine/OurMath.h"
 #include "Engine/Party.h"
 #include "Engine/SaveLoad.h"
 #include "Engine/SpellFxRenderer.h"
 #include "Engine/Spells/CastSpellInfo.h"
+#include "Engine/Spells/Spells.h"
 #include "Engine/Tables/ItemTable.h"
 #include "Engine/Tables/IconFrameTable.h"
 #include "Engine/Tables/CharacterFrameTable.h"
+#include "Engine/Tables/TileFrameTable.h"
 #include "Engine/Time.h"
 #include "Engine/AttackList.h"
+#include "Engine/GameResourceManager.h"
 
 #include "GUI/GUIButton.h"
 #include "GUI/GUIFont.h"
@@ -49,14 +55,17 @@
 #include "GUI/UI/UIStatusBar.h"
 #include "GUI/UI/UIPopup.h"
 #include "GUI/UI/UIMessageScroll.h"
-
-#include "Io/Mouse.h"
+#include "GUI/GUIMessageQueue.h"
 
 #include "Media/Audio/AudioPlayer.h"
 #include "Media/MediaPlayer.h"
 
+#include "Io/Mouse.h"
+
 #include "Library/Random/Random.h"
-#include "Library/Lod/LodReader.h"
+#include "Library/Logger/Logger.h"
+
+#include "Utility/DataPath.h"
 
 using Graphics::IRenderFactory;
 

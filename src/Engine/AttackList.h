@@ -3,7 +3,9 @@
 #include <cstdint>
 #include <vector>
 
-#include "Engine/Objects/Actor.h"
+#include "Engine/Objects/ActorEnums.h"
+
+#include "Utility/Geometry/Vec.h"
 
 struct AttackDescription {
     int16_t pid;

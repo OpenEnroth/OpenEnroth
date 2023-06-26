@@ -5,6 +5,7 @@
 
 #include "Engine/Engine.h"
 #include "Engine/EngineGlobals.h"
+#include "Engine/AssetsManager.h"
 #include "Engine/Events/Processor.h"
 #include "Engine/Graphics/BspRenderer.h"
 #include "Engine/Graphics/Collisions.h"
@@ -20,6 +21,7 @@
 #include "Engine/Graphics/PortalFunctions.h"
 #include "Engine/Graphics/Viewport.h"
 #include "Engine/Graphics/Image.h"
+#include "Engine/Graphics/IRender.h"
 #include "Engine/LOD.h"
 #include "Engine/Objects/Actor.h"
 #include "Engine/Objects/ObjectList.h"
@@ -40,6 +42,7 @@
 #include "Media/Audio/AudioPlayer.h"
 
 #include "Library/Random/Random.h"
+#include "Library/Logger/Logger.h"
 
 #include "Utility/Memory/FreeDeleter.h"
 #include "Utility/Math/TrigLut.h"

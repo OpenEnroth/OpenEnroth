@@ -9,6 +9,7 @@
 #include "Engine/Party.h"
 #include "Engine/Time.h"
 #include "Engine/Tables/AwardTable.h"
+#include "Engine/AssetsManager.h"
 
 #include "GUI/GUIFont.h"
 #include "GUI/GUIWindow.h"
@@ -224,13 +225,13 @@ void ArcomageGame::onKeyPress(PlatformKey key) {
         pArcomageGame->stru1.am_input_type = ARCO_MSG_KEYDOWN;
 
         set_stru1_field_8_InArcomage(0);
-        if (keyboardActionMapping->IsKeyMatchAction(InputAction::Escape, key)) {
+        if (keyboardActionMapping->IsKeyMatchAction(Io::InputAction::Escape, key)) {
             pArcomageGame->stru1.am_input_type = ARCO_MSG_ESCAPE;
         } else if (pArcomageGame->check_exit) {
             pArcomageGame->check_exit = 0;
         }
 
-        if (keyboardActionMapping->IsKeyMatchAction(InputAction::ToggleFullscreen, key) && !pMovie_Track) {
+        if (keyboardActionMapping->IsKeyMatchAction(Io::InputAction::ToggleFullscreen, key) && !pMovie_Track) {
             pArcomageGame->stru1.am_input_type = ARCO_MSG_SWITCH_FULLSCREEN;
         }
     }

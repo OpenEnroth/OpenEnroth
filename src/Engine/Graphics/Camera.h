@@ -4,7 +4,7 @@
 
 #include <glm.hpp>
 
-#include "Engine/Graphics/IRender.h"
+#include "Engine/Graphics/RenderEntities.h"
 
 // TODO(captainurist): this is actually Planef, but dot = -dist.
 struct IndoorCameraD3D_Vec4 {
@@ -78,8 +78,8 @@ struct Camera3D {
     bool is_face_faced_to_cameraODM(struct ODMFace *pFace, struct RenderVertexSoft *a2);
     static void GetFacetOrientation(const Vec3f &normal, Vec3f *outU, Vec3f *outV);
 
-    void CullByNearClip(struct RenderVertexSoft *pverts, uint *unumverts);
-    void CullByFarClip(struct RenderVertexSoft *pverts, uint *unumverts);
+    void CullByNearClip(struct RenderVertexSoft *pverts, unsigned int *unumverts);
+    void CullByFarClip(struct RenderVertexSoft *pverts, unsigned int *unumverts);
 
     float GetMouseInfoDepth();
 

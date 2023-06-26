@@ -656,25 +656,25 @@ GUIWindow_PartyCreation::GUIWindow_PartyCreation() :
         ++uControlParam;
     }
 
-    pCreationUI_BtnPressLeft[0] = CreateButton({10, 32}, {11, 13}, 1, 0, UIMSG_PlayerCreation_FacePrev, 0, InputAction::Invalid, "", {ui_partycreation_left});
-    pCreationUI_BtnPressLeft[1] = CreateButton({169, 32}, {11, 13}, 1, 0, UIMSG_PlayerCreation_FacePrev, 1, InputAction::Invalid, "", {ui_partycreation_left});
-    pCreationUI_BtnPressLeft[2] = CreateButton({327, 32}, {11, 13}, 1, 0, UIMSG_PlayerCreation_FacePrev, 2, InputAction::Invalid, "", {ui_partycreation_left});
-    pCreationUI_BtnPressLeft[3] = CreateButton({486, 32}, {11, 13}, 1, 0, UIMSG_PlayerCreation_FacePrev, 3, InputAction::Invalid, "", {ui_partycreation_left});
+    pCreationUI_BtnPressLeft[0] = CreateButton({10, 32}, {11, 13}, 1, 0, UIMSG_PlayerCreation_FacePrev, 0, Io::InputAction::Invalid, "", {ui_partycreation_left});
+    pCreationUI_BtnPressLeft[1] = CreateButton({169, 32}, {11, 13}, 1, 0, UIMSG_PlayerCreation_FacePrev, 1, Io::InputAction::Invalid, "", {ui_partycreation_left});
+    pCreationUI_BtnPressLeft[2] = CreateButton({327, 32}, {11, 13}, 1, 0, UIMSG_PlayerCreation_FacePrev, 2, Io::InputAction::Invalid, "", {ui_partycreation_left});
+    pCreationUI_BtnPressLeft[3] = CreateButton({486, 32}, {11, 13}, 1, 0, UIMSG_PlayerCreation_FacePrev, 3, Io::InputAction::Invalid, "", {ui_partycreation_left});
 
-    pCreationUI_BtnPressRight[0] = CreateButton({74, 32}, {11, 13}, 1, 0, UIMSG_PlayerCreation_FaceNext, 0, InputAction::Invalid, "", {ui_partycreation_right});
-    pCreationUI_BtnPressRight[1] = CreateButton({233, 32}, {11, 13}, 1, 0, UIMSG_PlayerCreation_FaceNext, 1, InputAction::Invalid, "", {ui_partycreation_right});
-    pCreationUI_BtnPressRight[2] = CreateButton({391, 32}, {11, 13}, 1, 0, UIMSG_PlayerCreation_FaceNext, 2, InputAction::Invalid, "", {ui_partycreation_right});
-    pCreationUI_BtnPressRight[3] = CreateButton({549, 32}, {11, 13}, 1, 0, UIMSG_PlayerCreation_FaceNext, 3, InputAction::Invalid, "", {ui_partycreation_right});
+    pCreationUI_BtnPressRight[0] = CreateButton({74, 32}, {11, 13}, 1, 0, UIMSG_PlayerCreation_FaceNext, 0, Io::InputAction::Invalid, "", {ui_partycreation_right});
+    pCreationUI_BtnPressRight[1] = CreateButton({233, 32}, {11, 13}, 1, 0, UIMSG_PlayerCreation_FaceNext, 1, Io::InputAction::Invalid, "", {ui_partycreation_right});
+    pCreationUI_BtnPressRight[2] = CreateButton({391, 32}, {11, 13}, 1, 0, UIMSG_PlayerCreation_FaceNext, 2, Io::InputAction::Invalid, "", {ui_partycreation_right});
+    pCreationUI_BtnPressRight[3] = CreateButton({549, 32}, {11, 13}, 1, 0, UIMSG_PlayerCreation_FaceNext, 3, Io::InputAction::Invalid, "", {ui_partycreation_right});
 
-    pCreationUI_BtnPressLeft2[0] = CreateButton({10, 103}, {11, 13}, 1, 0, UIMSG_PlayerCreation_VoicePrev, 0, InputAction::Invalid, "", {ui_partycreation_left});
-    pCreationUI_BtnPressLeft2[1] = CreateButton({169, 103}, {11, 13}, 1, 0, UIMSG_PlayerCreation_VoicePrev, 1, InputAction::Invalid, "", {ui_partycreation_left});
-    pCreationUI_BtnPressLeft2[2] = CreateButton({327, 103}, {11, 13}, 1, 0, UIMSG_PlayerCreation_VoicePrev, 2, InputAction::Invalid, "", {ui_partycreation_left});
-    pCreationUI_BtnPressLeft2[3] = CreateButton({486, 103}, {11, 13}, 1, 0, UIMSG_PlayerCreation_VoicePrev, 3, InputAction::Invalid, "", {ui_partycreation_left});
+    pCreationUI_BtnPressLeft2[0] = CreateButton({10, 103}, {11, 13}, 1, 0, UIMSG_PlayerCreation_VoicePrev, 0, Io::InputAction::Invalid, "", {ui_partycreation_left});
+    pCreationUI_BtnPressLeft2[1] = CreateButton({169, 103}, {11, 13}, 1, 0, UIMSG_PlayerCreation_VoicePrev, 1, Io::InputAction::Invalid, "", {ui_partycreation_left});
+    pCreationUI_BtnPressLeft2[2] = CreateButton({327, 103}, {11, 13}, 1, 0, UIMSG_PlayerCreation_VoicePrev, 2, Io::InputAction::Invalid, "", {ui_partycreation_left});
+    pCreationUI_BtnPressLeft2[3] = CreateButton({486, 103}, {11, 13}, 1, 0, UIMSG_PlayerCreation_VoicePrev, 3, Io::InputAction::Invalid, "", {ui_partycreation_left});
 
-    pCreationUI_BtnPressRight2[0] = CreateButton({74, 103}, {11, 13}, 1, 0, UIMSG_PlayerCreation_VoiceNext, 0, InputAction::Invalid, "", {ui_partycreation_right});
-    pCreationUI_BtnPressRight2[1] = CreateButton({233, 103}, {11, 13}, 1, 0, UIMSG_PlayerCreation_VoiceNext, 1, InputAction::Invalid, "", {ui_partycreation_right});
-    pCreationUI_BtnPressRight2[2] = CreateButton({391, 103}, {11, 13}, 1, 0, UIMSG_PlayerCreation_VoiceNext, 2, InputAction::Invalid, "", {ui_partycreation_right});
-    pCreationUI_BtnPressRight2[3] = CreateButton({549, 103}, {11, 13}, 1, 0, UIMSG_PlayerCreation_VoiceNext, 3, InputAction::Invalid, "", {ui_partycreation_right});
+    pCreationUI_BtnPressRight2[0] = CreateButton({74, 103}, {11, 13}, 1, 0, UIMSG_PlayerCreation_VoiceNext, 0, Io::InputAction::Invalid, "", {ui_partycreation_right});
+    pCreationUI_BtnPressRight2[1] = CreateButton({233, 103}, {11, 13}, 1, 0, UIMSG_PlayerCreation_VoiceNext, 1, Io::InputAction::Invalid, "", {ui_partycreation_right});
+    pCreationUI_BtnPressRight2[2] = CreateButton({391, 103}, {11, 13}, 1, 0, UIMSG_PlayerCreation_VoiceNext, 2, Io::InputAction::Invalid, "", {ui_partycreation_right});
+    pCreationUI_BtnPressRight2[3] = CreateButton({549, 103}, {11, 13}, 1, 0, UIMSG_PlayerCreation_VoiceNext, 3, Io::InputAction::Invalid, "", {ui_partycreation_right});
 
     uControlParam = 0;
     uX = 8;
@@ -688,10 +688,10 @@ GUIWindow_PartyCreation::GUIWindow_PartyCreation() :
         ++uControlParam;
     }
 
-    CreateButton({5, 21}, {153, 365}, 1, 0, UIMSG_PlayerCreation_SelectAttribute, 0, InputAction::SelectChar1);
-    CreateButton({163, 21}, {153, 365}, 1, 0, UIMSG_PlayerCreation_SelectAttribute, 1, InputAction::SelectChar2);
-    CreateButton({321, 21}, {153, 365}, 1, 0, UIMSG_PlayerCreation_SelectAttribute, 2, InputAction::SelectChar3);
-    CreateButton({479, 21}, {153, 365}, 1, 0, UIMSG_PlayerCreation_SelectAttribute, 3, InputAction::SelectChar4);
+    CreateButton({5, 21}, {153, 365}, 1, 0, UIMSG_PlayerCreation_SelectAttribute, 0, Io::InputAction::SelectChar1);
+    CreateButton({163, 21}, {153, 365}, 1, 0, UIMSG_PlayerCreation_SelectAttribute, 1, Io::InputAction::SelectChar2);
+    CreateButton({321, 21}, {153, 365}, 1, 0, UIMSG_PlayerCreation_SelectAttribute, 2, Io::InputAction::SelectChar3);
+    CreateButton({479, 21}, {153, 365}, 1, 0, UIMSG_PlayerCreation_SelectAttribute, 3, Io::InputAction::SelectChar4);
 
     uX = 23;
     uControlParam = 2;
@@ -732,10 +732,10 @@ GUIWindow_PartyCreation::GUIWindow_PartyCreation() :
     ui_partycreation_buttmake = assets->getImage_Solid("BUTTMAKE");
     ui_partycreation_buttmake2 = assets->getImage_Solid("BUTTMAKE2");
 
-    pPlayerCreationUI_BtnOK = CreateButton("PartyCreation_OK", {580, 431}, {51, 39}, 1, 0, UIMSG_PlayerCreationClickOK, 0, InputAction::Return, "", {ui_partycreation_buttmake});
-    pPlayerCreationUI_BtnReset = CreateButton("PartyCreation_Clear", {527, 431}, {51, 39}, 1, 0, UIMSG_PlayerCreationClickReset, 0, InputAction::Clear, "", {ui_partycreation_buttmake2});
-    pPlayerCreationUI_BtnMinus = CreateButton({523, 393}, {20, 35}, 1, 0, UIMSG_PlayerCreationClickMinus, 0, InputAction::Minus, "", {ui_partycreation_minus});
-    pPlayerCreationUI_BtnPlus = CreateButton({613, 393}, {20, 35}, 1, 0, UIMSG_PlayerCreationClickPlus, 1, InputAction::Plus, "", {ui_partycreation_plus});
+    pPlayerCreationUI_BtnOK = CreateButton("PartyCreation_OK", {580, 431}, {51, 39}, 1, 0, UIMSG_PlayerCreationClickOK, 0, Io::InputAction::Return, "", {ui_partycreation_buttmake});
+    pPlayerCreationUI_BtnReset = CreateButton("PartyCreation_Clear", {527, 431}, {51, 39}, 1, 0, UIMSG_PlayerCreationClickReset, 0, Io::InputAction::Clear, "", {ui_partycreation_buttmake2});
+    pPlayerCreationUI_BtnMinus = CreateButton({523, 393}, {20, 35}, 1, 0, UIMSG_PlayerCreationClickMinus, 0, Io::InputAction::Minus, "", {ui_partycreation_minus});
+    pPlayerCreationUI_BtnPlus = CreateButton({613, 393}, {20, 35}, 1, 0, UIMSG_PlayerCreationClickPlus, 1, Io::InputAction::Plus, "", {ui_partycreation_plus});
 
     ui_partycreation_font = GUIFont::LoadFont("cchar.fnt", "FONTPAL");
 }

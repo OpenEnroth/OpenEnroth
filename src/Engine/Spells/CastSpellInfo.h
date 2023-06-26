@@ -4,11 +4,11 @@
 #include <cstdint>
 #include <cstring>
 
-#include "Engine/Objects/CharacterEnums.h"
+#include "Engine/Objects/CombinedSkillValue.h"
 
 #include "Utility/Flags.h"
 
-#include "Spells.h"
+#include "SpellEnums.h"
 
 namespace CastSpellInfoHelpers {
     /**

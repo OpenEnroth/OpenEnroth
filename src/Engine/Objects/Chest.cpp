@@ -1,12 +1,13 @@
 #include "Engine/Objects/Chest.h"
 
 #include "Engine/Engine.h"
+#include "Engine/AssetsManager.h"
 #include "Engine/Graphics/DecorationList.h"
 #include "Engine/Graphics/Level/Decoration.h"
 #include "Engine/Graphics/Outdoor.h"
 #include "Engine/Graphics/Indoor.h"
-#include "Engine/Graphics/Viewport.h"
 #include "Engine/Graphics/Image.h"
+#include "Engine/Graphics/IRender.h"
 #include "Engine/LOD.h"
 #include "Engine/Localization.h"
 #include "Engine/MapInfo.h"
@@ -29,6 +30,8 @@
 #include "Media/Audio/AudioPlayer.h"
 
 #include "Library/Random/Random.h"
+#include "Library/Logger/Logger.h"
+
 #include "Utility/Math/TrigLut.h"
 
 ChestList *pChestList;

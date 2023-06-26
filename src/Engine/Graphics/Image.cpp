@@ -4,6 +4,7 @@
 #include <utility>
 
 #include "Engine/Engine.h"
+#include "Engine/AssetsManager.h"
 
 #include "Engine/Graphics/ImageLoader.h"
 

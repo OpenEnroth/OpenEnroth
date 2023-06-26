@@ -9,6 +9,9 @@
 #include "Engine/Objects/Actor.h"
 #include "Engine/Objects/NPC.h"
 #include "Engine/Party.h"
+#include "Engine/mm7_data.h"
+#include "Engine/AssetsManager.h"
+#include "Engine/Engine.h"
 
 #include "GUI/GUIFont.h"
 #include "GUI/GUIButton.h"
@@ -109,10 +112,10 @@ void GameUI_InitializeDialogue(Actor *actor, int bPlayerSaysHello) {
         }
     }
 
-    pDialogueWindow->CreateButton({61, 424}, {31, 40}, 2, 94, UIMSG_SelectCharacter, 1, InputAction::SelectChar1);
-    pDialogueWindow->CreateButton({177, 424}, {31, 40}, 2, 94, UIMSG_SelectCharacter, 2, InputAction::SelectChar2);
-    pDialogueWindow->CreateButton({292, 424}, {31, 40}, 2, 94, UIMSG_SelectCharacter, 3, InputAction::SelectChar3);
-    pDialogueWindow->CreateButton({407, 424}, {31, 40}, 2, 94, UIMSG_SelectCharacter, 4, InputAction::SelectChar4);
+    pDialogueWindow->CreateButton({61, 424}, {31, 40}, 2, 94, UIMSG_SelectCharacter, 1, Io::InputAction::SelectChar1);
+    pDialogueWindow->CreateButton({177, 424}, {31, 40}, 2, 94, UIMSG_SelectCharacter, 2, Io::InputAction::SelectChar2);
+    pDialogueWindow->CreateButton({292, 424}, {31, 40}, 2, 94, UIMSG_SelectCharacter, 3, Io::InputAction::SelectChar3);
+    pDialogueWindow->CreateButton({407, 424}, {31, 40}, 2, 94, UIMSG_SelectCharacter, 4, Io::InputAction::SelectChar4);
 
     if (bPlayerSaysHello && pParty->hasActiveCharacter() && !pNPCInfo->Hired()) {
         if (pParty->uCurrentHour < 5 || pParty->uCurrentHour > 21) {
@@ -128,7 +131,7 @@ GUIWindow_Dialogue::GUIWindow_Dialogue(Pointi position, Sizei dimensions, Window
     : GUIWindow(WINDOW_Dialogue, position, dimensions, data, hint) {
     prev_screen_type = current_screen_type;
     current_screen_type = CURRENT_SCREEN::SCREEN_NPC_DIALOGUE;
-    pBtn_ExitCancel = CreateButton({0x1D7u, 0x1BDu}, {0xA9u, 0x23u}, 1, 0, UIMSG_Escape, 0, InputAction::Invalid,
+    pBtn_ExitCancel = CreateButton({0x1D7u, 0x1BDu}, {0xA9u, 0x23u}, 1, 0, UIMSG_Escape, 0, Io::InputAction::Invalid,
         localization->GetString(LSTR_DIALOGUE_EXIT),
         {ui_exit_cancel_button_background}
     );
@@ -162,16 +165,16 @@ GUIWindow_Dialogue::GUIWindow_Dialogue(Pointi position, Sizei dimensions, Window
         } else {
             if (speakingNPC->is_joinable) {
                 CreateButton({480, 0x82u}, {140, text_line_height}, 1, 0,
-                    UIMSG_SelectNPCDialogueOption, DIALOGUE_PROFESSION_DETAILS, InputAction::Invalid,
+                    UIMSG_SelectNPCDialogueOption, DIALOGUE_PROFESSION_DETAILS, Io::InputAction::Invalid,
                     localization->GetString(LSTR_MORE_INFORMATION));
                 if (speakingNPC->Hired()) {
                     CreateButton({480, 130 + text_line_height}, {140, text_line_height}, 1, 0,
-                        UIMSG_SelectNPCDialogueOption, DIALOGUE_HIRE_FIRE, InputAction::Invalid,
+                        UIMSG_SelectNPCDialogueOption, DIALOGUE_HIRE_FIRE, Io::InputAction::Invalid,
                         localization->FormatString(LSTR_HIRE_RELEASE, speakingNPC->pName.c_str())
                     );
                 } else {
                     CreateButton({480, 130 + text_line_height}, {140, text_line_height}, 1, 0,
-                                 UIMSG_SelectNPCDialogueOption, DIALOGUE_HIRE_FIRE, InputAction::Invalid,
+                                 UIMSG_SelectNPCDialogueOption, DIALOGUE_HIRE_FIRE, Io::InputAction::Invalid,
                                  localization->GetString(LSTR_HIRE)
                     );
                 }
@@ -537,10 +540,10 @@ void StartBranchlessDialogue(int eventid, int entryline, int event) {
         savedEventStep = entryline;
         savedDecoration = activeLevelDecoration;
         pGUIWindow_BranchlessDialogue = new GUIWindow_GenericDialogue({0, 0}, render->GetRenderDimensions(), event);
-        pGUIWindow_BranchlessDialogue->CreateButton({61, 424}, {31, 40}, 2, 94, UIMSG_SelectCharacter, 1, InputAction::SelectChar1);
-        pGUIWindow_BranchlessDialogue->CreateButton({177, 424}, {31, 40}, 2, 94, UIMSG_SelectCharacter, 2, InputAction::SelectChar2);
-        pGUIWindow_BranchlessDialogue->CreateButton({292, 424}, {31, 40}, 2, 94, UIMSG_SelectCharacter, 3, InputAction::SelectChar3);
-        pGUIWindow_BranchlessDialogue->CreateButton({407, 424}, {31, 40}, 2, 94, UIMSG_SelectCharacter, 4, InputAction::SelectChar4);
+        pGUIWindow_BranchlessDialogue->CreateButton({61, 424}, {31, 40}, 2, 94, UIMSG_SelectCharacter, 1, Io::InputAction::SelectChar1);
+        pGUIWindow_BranchlessDialogue->CreateButton({177, 424}, {31, 40}, 2, 94, UIMSG_SelectCharacter, 2, Io::InputAction::SelectChar2);
+        pGUIWindow_BranchlessDialogue->CreateButton({292, 424}, {31, 40}, 2, 94, UIMSG_SelectCharacter, 3, Io::InputAction::SelectChar3);
+        pGUIWindow_BranchlessDialogue->CreateButton({407, 424}, {31, 40}, 2, 94, UIMSG_SelectCharacter, 4, Io::InputAction::SelectChar4);
     }
 }
 
@@ -565,12 +568,12 @@ void BuildHireableNpcDialogue() {
     pDialogueWindow = new GUIWindow_Dialogue({0, 0}, render->GetRenderDimensions(), 1);
     if (!pNPCStats->pProfessions[v0->profession].pBenefits.empty()) {
         pDialogueWindow->CreateButton({480, 160}, {140, 28}, 1, 0,
-            UIMSG_SelectNPCDialogueOption, DIALOGUE_PROFESSION_DETAILS, InputAction::Invalid,
+            UIMSG_SelectNPCDialogueOption, DIALOGUE_PROFESSION_DETAILS, Io::InputAction::Invalid,
             localization->GetString(LSTR_MORE_INFORMATION));
         v1 = 1;
     }
     pDialogueWindow->CreateButton({480, 30 * v1 + 160}, {140, 30}, 1, 0,
-        UIMSG_SelectNPCDialogueOption, DIALOGUE_HIRE_FIRE, InputAction::Invalid,
+        UIMSG_SelectNPCDialogueOption, DIALOGUE_HIRE_FIRE, Io::InputAction::Invalid,
         localization->GetString(LSTR_HIRE));
     pDialogueWindow->_41D08F_set_keyboard_control_group(v1 + 1, 1, 0, 1);
 }

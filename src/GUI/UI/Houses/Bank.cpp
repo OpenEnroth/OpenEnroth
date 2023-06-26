@@ -8,6 +8,8 @@
 #include "GUI/GUIButton.h"
 
 #include "Engine/Localization.h"
+#include "Engine/Party.h"
+#include "Engine/Engine.h"
 
 #include "Io/KeyboardActionMapping.h"
 
