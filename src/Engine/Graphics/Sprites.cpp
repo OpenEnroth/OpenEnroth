@@ -5,6 +5,7 @@
 #include <algorithm>
 
 #include "Engine/Engine.h"
+#include "Engine/EngineIocContainer.h"
 #include "Engine/LOD.h"
 #include "Engine/OurMath.h"
 
@@ -17,7 +18,10 @@
 #include "Engine/Graphics/DecorationList.h"
 #include "Engine/Graphics/PaletteManager.h"
 
+#include "Library/Logger/Logger.h"
+
 #include "Utility/Streams/BlobInputStream.h"
+#include "Utility/String.h"
 
 struct SpriteFrameTable *pSpriteFrameTable;
 

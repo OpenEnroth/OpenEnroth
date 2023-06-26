@@ -3,12 +3,8 @@
 #include <memory>
 #include <string>
 #include <vector>
-#include <array>
-
-#include "Application/GameConfig.h"
 
 #include "Engine/Graphics/Nuklear.h"
-#include "Engine/MM7.h"
 
 #include "Library/Image/Image.h"
 #include "Library/Color/Color.h"
@@ -17,9 +13,11 @@
 #include "Utility/Geometry/Rect.h"
 
 #include "TextureRenderId.h"
+#include "RenderEntities.h"
 
 class Actor;
 class GraphicsImage;
+class GameConfig;
 class Sprite;
 class SpriteFrame;
 struct SoftwareBillboard;
@@ -36,151 +34,9 @@ class File;
 
 bool PauseGameDrawing();
 
-struct RenderBillboard {
-    float screenspace_projection_factor_x;
-    float screenspace_projection_factor_y;
-    float fov_x;
-    float fov_y;
-    int field_14_actor_id;
-    Sprite *hwsprite;  // int16_t HwSpriteID;
-    int16_t uPaletteIndex;
-    int16_t uIndoorSectorID;
-    int16_t field_1E;  // flags
-    int16_t world_x;
-    int16_t world_y;
-    int16_t world_z;
-    int16_t screen_space_x;
-    int16_t screen_space_y;
-    int16_t screen_space_z;
-    uint16_t object_pid;
-    uint16_t dimming_level;
-    Color sTintColor;
-    SpriteFrame *pSpriteFrame;
-};
-
-/*   88 */
-struct ODMRenderParams {
-    ODMRenderParams() {
-        this->shading_dist_shade = 0x800;
-        shading_dist_shademist = 0x1000;
-        this->bNoSky = 0;
-        this->bDoNotRenderDecorations = 0;
-        this->field_5C = 0;
-        this->field_60 = 0;
-        this->outdoor_no_wavy_water = 0;
-        this->outdoor_no_mist = 0;
-    }
-
-    int shading_dist_shade;
-    int shading_dist_shademist;
-    int uNumPolygons = 0;
-    unsigned int _unused_uNumEdges = 0;
-    unsigned int _unused_uNumSurfs = 0;
-    unsigned int _unused_uNumSpans = 0;
-    unsigned int uNumBillboards = 0;
-    float field_40 = 0;
-    unsigned int bNoSky;
-    unsigned int bDoNotRenderDecorations;
-    int field_5C;
-    int field_60;
-    int outdoor_no_wavy_water;
-    int outdoor_no_mist;
-    int building_gamme = 0;
-    int terrain_gamma = 0;
-
-    unsigned int uMapGridCellX = 0;  // moved from 157 struct IndoorCamera::0C
-    unsigned int uMapGridCellY = 0;  // moved from 157 struct IndoorCamera::10
-};
-extern ODMRenderParams *pODMRenderParams;
-
-struct RenderVertexSoft {
-    Vec3f vWorldPosition {};
-    Vec3f vWorldViewPosition {};
-    float vWorldViewProjX = 0;
-    float vWorldViewProjY = 0;
-    float _rhw = 0;
-    float u = 0;
-    float v = 0;
-    float flt_2C = 0;
-};
-
-struct RenderVertexD3D3 {
-    Vec3f pos {};
-    float rhw = 0;
-    Color diffuse;
-    Color specular;
-    Vec2f texcoord {};
-};
-
-struct RenderBillboardD3D {
-    inline RenderBillboardD3D()
-        : texture(nullptr),
-          uNumVertices(4),
-          z_order(0.f),
-          opacity(Transparent),
-          field_90(-1),
-          object_pid(0),
-          screen_space_z(0),
-          sParentBillboardID(-1),
-          PaletteIndex(0) {}
-
-    enum class OpacityType : uint32_t {
-        Transparent = 0,
-        Opaque_1 = 1,
-        Opaque_2 = 2,
-        Opaque_3 = 3,
-        NoBlend = 0xFFFFFFFF
-    };
-    using enum OpacityType;
-
-    GraphicsImage *texture;
-    unsigned int uNumVertices;
-    std::array<RenderVertexD3D3, 4> pQuads;
-    float z_order;
-    OpacityType opacity;
-    int field_90;
-
-    unsigned short object_pid;
-    short screen_space_z;
-    int sParentBillboardID;
-
-    //int PaletteID;
-    int PaletteIndex;
-};
-
-// TODO(pskelton): Simplify/remove/combine different billboard structs
-struct SoftwareBillboard {
-    void *pTarget;
-    int *pTargetZ;
-    int screen_space_x;
-    int screen_space_y;
-    short screen_space_z;
-    float screenspace_projection_factor_x;
-    float screenspace_projection_factor_y;
-    char field_18[8];
-    uint16_t *pPalette;
-    uint16_t *pPalette2;
-    unsigned int uFlags;  // & 4   - mirror horizontally
-    unsigned int uTargetPitch;
-    unsigned int uViewportX;
-    unsigned int uViewportY;
-    unsigned int uViewportZ;
-    unsigned int uViewportW;
-    int field_44;
-    int sParentBillboardID;
-    Color sTintColor;
-    unsigned short object_pid;
-    int paletteID;
-};
-
-struct nk_tex_font {
-    uint32_t texid;
-    struct nk_font *font;
-};
-
 class IRender {
  public:
-    inline IRender(
+    IRender(
         std::shared_ptr<GameConfig> config,
         DecalBuilder *decal_builder,
         LightmapBuilder *lightmap_builder,
@@ -188,24 +44,8 @@ class IRender {
         std::shared_ptr<ParticleEngine> particle_engine,
         Vis *vis,
         Logger *logger
-    ) {
-        this->config = config;
-        this->decal_builder = decal_builder;
-        this->lightmap_builder = lightmap_builder;
-        this->spell_fx_renderer = spellfx;
-        this->particle_engine = particle_engine;
-        this->vis = vis;
-        this->log = logger;
-
-        pActiveZBuffer = 0;
-        uFogColor = Color();
-        memset(pHDWaterBitmapIDs, 0, sizeof(pHDWaterBitmapIDs));
-        hd_water_current_frame = 0;
-        memset(pBillboardRenderListD3D, 0, sizeof(pBillboardRenderListD3D));
-        uNumBillboardsToDraw = 0;
-        drawcalls = 0;
-    }
-    virtual ~IRender() {}
+    );
+    virtual ~IRender();
 
     virtual bool Initialize() = 0;
 
@@ -294,7 +134,7 @@ class IRender {
     virtual void DrawTextureNew(float u, float v, GraphicsImage *img, Color colourmask32 = colorTable.White) = 0;
     virtual void DrawTextureCustomHeight(float u, float v, GraphicsImage *, int height) = 0;
     virtual void DrawTextureOffset(int x, int y, int offset_x, int offset_y, GraphicsImage *) = 0;
-    virtual void DrawImage(GraphicsImage *, const Recti &rect, const uint paletteid = 0, Color colourmask32 = colorTable.White) = 0;
+    virtual void DrawImage(GraphicsImage *, const Recti &rect, const unsigned int paletteid = 0, Color colourmask32 = colorTable.White) = 0;
 
     virtual void ZDrawTextureAlpha(float u, float v, GraphicsImage *pTexture, int zVal) = 0;
     virtual void BlendTextures(int a2, int a3, GraphicsImage *a4, GraphicsImage *a5, int t, int start_opacity, int end_opacity) = 0;
@@ -423,7 +263,5 @@ struct SkyBillboardStruct {
 extern SkyBillboardStruct SkyBillboard;
 
 Color GetActorTintColor(int max_dim, int min_dim, float distance, int a4, const RenderBillboard *a5);
-int _43F55F_get_billboard_light_level(const RenderBillboard *a1, int uBaseLightLevel);
-int GetLightLevelAtPoint(unsigned int uBaseLightLevel, int uSectorID, float x, float y, float z);
 
 void UpdateObjects();

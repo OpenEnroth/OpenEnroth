@@ -2,7 +2,7 @@
 
 #include <vector>
 
-#include "Engine/Objects/Character.h"
+#include "Engine/Objects/CharacterEnums.h"
 
 #include "Utility/Memory/Blob.h"
 

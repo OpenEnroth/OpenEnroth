@@ -1,14 +1,12 @@
 #pragma once
 
-#include <array>
 #include <cstdint>
-#include <cstring>
 
-#include "Engine/Objects/CharacterEnums.h"
+#include "Engine/Objects/CombinedSkillValue.h"
 
 #include "Utility/Flags.h"
 
-#include "Spells.h"
+#include "SpellEnums.h"
 
 namespace CastSpellInfoHelpers {
     /**
@@ -59,9 +57,7 @@ static const uint16_t SPELL_FAILURE_RECOVERY_TIME_ON_CURSE = 100;
 
 /*  271 */
 struct CastSpellInfo {
-    inline CastSpellInfo() {
-        memset(this, 0, sizeof(*this));
-    }
+    CastSpellInfo();
 
     GUIWindow *GetCastSpellInInventoryWindow();
 

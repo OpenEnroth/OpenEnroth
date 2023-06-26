@@ -1,6 +1,17 @@
 #include "Library/Logger/Logger.h"
 
 #include "Engine/Graphics/LightsStack.h"
+#include "Engine/EngineIocContainer.h"
+
+LightsStack_StationaryLight_::LightsStack_StationaryLight_() {
+    this->log = EngineIocContainer::ResolveLogger();
+    this->uNumLightsActive = 0;
+}
+
+LightsStack_MobileLight_::LightsStack_MobileLight_() {
+    this->log = EngineIocContainer::ResolveLogger();
+    this->uNumLightsActive = 0;
+}
 
 //----- (00467D88) --------------------------------------------------------
 bool LightsStack_MobileLight_::AddLight(const Vec3f &pos, int16_t uSectorID, int uRadius, Color color, char uLightType) {

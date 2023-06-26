@@ -2,11 +2,13 @@
 
 #include <array>
 
-#include "Engine/EngineIocContainer.h"
-#include "Engine/Graphics/IRender.h"
-#include "Engine/Graphics/BSPModel.h"
+#include "Engine/Graphics/RenderEntities.h"
 
 #include "Utility/Flags.h"
+
+struct ODMFace;
+struct Planef;
+class Logger;
 
 enum class DecalFlag : int {
     DecalFlagsNone = 0x0,
@@ -42,7 +44,7 @@ struct BloodsplatContainer {
     void AddBloodsplat(const Vec3f &pos, float radius, Color color);
 
     std::array<Bloodsplat, 64> pBloodsplats_to_apply;
-    uint uNumBloodsplats = 0;  // this loops round so old bloodsplats are replaced
+    unsigned int uNumBloodsplats = 0;  // this loops round so old bloodsplats are replaced
 };
 
 // decal is the created geometry to display
@@ -70,12 +72,7 @@ struct Decal {
 
 // contains all of above
 struct DecalBuilder {
-    DecalBuilder() {
-        this->log = EngineIocContainer::ResolveLogger();
-        this->bloodsplat_container = EngineIocContainer::ResolveBloodsplatContainer();
-        this->DecalsCount = 0;
-    }
-
+    DecalBuilder();
     virtual ~DecalBuilder() {}
 
     void AddBloodsplat(const Vec3f &pos, Color color, float radius);

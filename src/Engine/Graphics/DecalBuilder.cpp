@@ -3,13 +3,16 @@
 #include "Engine/Engine.h"
 #include "Engine/Graphics/Camera.h"
 #include "Engine/Graphics/Indoor.h"
+#include "Engine/Graphics/Outdoor.h"
+#include "Engine/Graphics/IRender.h"
+#include "Engine/Graphics/ClippingFunctions.h"
 #include "Engine/OurMath.h"
 #include "Engine/Time.h"
 #include "Engine/stru314.h"
 
-#include "Outdoor.h"
+#include "Library/Logger/Logger.h"
 
-#include "Engine/Graphics/ClippingFunctions.h"
+#include "LightmapBuilder.h"
 
 //----- (0043B570) --------------------------------------------------------
 float Decal::Fade_by_time() {
@@ -37,6 +40,13 @@ void BloodsplatContainer::AddBloodsplat(const Vec3f &pos, float radius, Color co
 
     uNumBloodsplats = (uNumBloodsplats + 1) % 64;
 }
+
+DecalBuilder::DecalBuilder() {
+    this->log = EngineIocContainer::ResolveLogger();
+    this->bloodsplat_container = EngineIocContainer::ResolveBloodsplatContainer();
+    this->DecalsCount = 0;
+}
+
 
 //----- (0049B490) --------------------------------------------------------
 void DecalBuilder::AddBloodsplat(const Vec3f &pos, Color color, float radius) {

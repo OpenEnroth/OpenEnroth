@@ -5,8 +5,6 @@
 #include <algorithm>
 #include <string>
 
-#include "Library/Compression/Compression.h"
-
 #include "Engine/Engine.h"
 #include "Engine/LOD.h"
 #include "Engine/Localization.h"
@@ -17,7 +15,6 @@
 #include "Engine/Graphics/Outdoor.h"
 #include "Engine/Graphics/Indoor.h"
 #include "Engine/Graphics/Image.h"
-#include "Library/Image/PCX.h"
 #include "Engine/Graphics/IRender.h"
 
 #include "Engine/Objects/SpriteObject.h"
@@ -31,6 +28,12 @@
 #include "GUI/UI/UIStatusBar.h"
 
 #include "Media/Audio/AudioPlayer.h"
+
+#include "Library/Image/PCX.h"
+#include "Library/Compression/Compression.h"
+#include "Library/Logger/Logger.h"
+
+#include "Utility/DataPath.h"
 
 struct SavegameList *pSavegameList = new SavegameList;
 

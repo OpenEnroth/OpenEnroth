@@ -2,6 +2,7 @@
 
 #include "Engine/Engine.h"
 #include "Engine/LOD.h"
+#include "Engine/GameResourceManager.h"
 
 //----- (004547E4) --------------------------------------------------------
 void FactionTable::Initialize() {

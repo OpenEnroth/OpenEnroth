@@ -9,6 +9,8 @@
 #include "Engine/Objects/Character.h"
 #include "Engine/Objects/SpriteObject.h"
 
+#include "Library/Logger/Logger.h"
+
 #include "Io/Mouse.h"
 
 using Io::Mouse;

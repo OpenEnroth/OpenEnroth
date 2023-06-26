@@ -1,5 +1,7 @@
 #include "Engine/Tables/BuildingTable.h"
 #include "Engine/Engine.h"
+#include "Engine/GameResourceManager.h"
+
 #include "Utility/String.h"
 
 IndexedArray<BuildingDesc, HOUSE_FIRST, HOUSE_LAST> buildingTable;

@@ -6,16 +6,8 @@
 #include "Engine/Objects/Items.h"
 
 #include "Utility/Memory/Blob.h"
-#include "Utility/Flags.h"
 
-enum class ChestFlag : uint16_t {
-    CHEST_TRAPPED = 0x1,
-    CHEST_ITEMS_PLACED = 0x2,
-    CHEST_OPENED = 0x4,
-};
-using enum ChestFlag;
-MM_DECLARE_FLAGS(ChestFlags, ChestFlag)
-MM_DECLARE_OPERATORS_FOR_FLAGS(ChestFlags)
+#include "ChestEnums.h"
 
 struct ChestDesc {
     std::string sName;

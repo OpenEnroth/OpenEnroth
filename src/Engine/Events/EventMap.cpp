@@ -4,8 +4,12 @@
 #include "Engine/Party.h"
 #include "Engine/Events/EventMap.h"
 #include "Engine/Engine.h"
+#include "Engine/EngineIocContainer.h"
 #include "Engine/Graphics/Level/Decoration.h"
 #include "Engine/mm7_data.h"
+
+#include "Library/Logger/Logger.h"
+
 #include "Utility/MapAccess.h"
 
 void EventMap::add(int eventId, EventIR ir) {

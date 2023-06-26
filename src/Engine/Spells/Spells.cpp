@@ -5,6 +5,7 @@
 #include <vector>
 
 #include "Engine/Engine.h"
+#include "Engine/GameResourceManager.h"
 #include "Engine/Party.h"
 #include "Engine/Graphics/Indoor.h"
 #include "Engine/Graphics/Overlays.h"

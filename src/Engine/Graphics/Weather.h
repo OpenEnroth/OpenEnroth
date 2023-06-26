@@ -2,6 +2,7 @@
 
 #include <array>
 
+#include "Utility/Geometry/Point.h"
 
 class Weather {
  public:

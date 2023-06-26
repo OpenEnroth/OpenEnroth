@@ -1,5 +1,6 @@
 #include "Engine/Tables/MessageScrollTable.h"
 #include "Engine/Engine.h"
+#include "Engine/GameResourceManager.h"
 
 #include "Utility/String.h"
 

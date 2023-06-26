@@ -2,11 +2,24 @@
 
 #include "Engine/Snapshots/EntitySnapshots.h"
 #include "Engine/Snapshots/SnapshotSerialization.h"
+#include "Engine/AssetsManager.h"
+#include "Engine/EngineIocContainer.h"
 
 #include "Library/Random/Random.h"
+#include "Library/Logger/Logger.h"
+
+#include "Utility/String.h"
 
 #include "FrameTableInc.h"
 #include "TileFrameTable.h"
+
+
+GraphicsImage *TileDesc::GetTexture() {
+    if (!this->texture) {
+        this->texture = assets->getBitmap(this->name);
+    }
+    return this->texture;
+}
 
 
 //----- (00487E3B) --------------------------------------------------------

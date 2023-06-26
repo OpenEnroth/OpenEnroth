@@ -3,6 +3,7 @@
 #include "Engine/Engine.h"
 #include "Engine/LOD.h"
 #include "Engine/Localization.h"
+#include "Engine/AssetsManager.h"
 
 #include "Engine/Graphics/IRender.h"
 #include "Engine/Graphics/Image.h"
@@ -89,7 +90,7 @@ void GUIWindow_Book::Release() {
 
 GUIWindow_Book::GUIWindow_Book() : GUIWindow(WINDOW_Book, {0, 0}, render->GetRenderDimensions(), 0) {
     initializeFonts();
-    CreateButton({475, 445}, {158, 34}, 1, 0, UIMSG_Escape, 0, InputAction::Invalid, localization->GetString(LSTR_DIALOGUE_EXIT));
+    CreateButton({475, 445}, {158, 34}, 1, 0, UIMSG_Escape, 0, Io::InputAction::Invalid, localization->GetString(LSTR_DIALOGUE_EXIT));
     current_screen_type = CURRENT_SCREEN::SCREEN_BOOKS;
     pEventTimer->Pause();
 }

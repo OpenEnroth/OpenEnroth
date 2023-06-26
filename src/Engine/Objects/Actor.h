@@ -3,22 +3,21 @@
 #include <vector>
 #include <string>
 
-#include "Engine/EngineIocContainer.h"
-#include "Engine/Spells/Spells.h"
+#include "Engine/Spells/SpellBuff.h"
 #include "Engine/Objects/Items.h"
 #include "Engine/Objects/Monsters.h"
 
+#include "Utility/Geometry/Vec.h"
 #include "Utility/IndexedArray.h"
 
 #include "ActorEnums.h"
 
 class Actor;
+class Vis;
 struct SpawnPoint;
 
 struct stru319 {
-    inline stru319() {
-        this->vis = EngineIocContainer::ResolveVis();
-    }
+    stru319();
 
     int which_player_to_attack(Actor *pActor);
     int _427546(int a2);

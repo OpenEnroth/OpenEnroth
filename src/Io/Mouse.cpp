@@ -5,14 +5,17 @@
 
 #include "Engine/Engine.h"
 #include "Engine/EngineGlobals.h"
+#include "Engine/EngineIocContainer.h"
 #include "Engine/Graphics/Viewport.h"
 #include "Engine/Graphics/Vis.h"
 #include "Engine/Graphics/Image.h"
+#include "Engine/Graphics/IRender.h"
 #include "Engine/LOD.h"
 #include "Engine/Objects/Actor.h"
 #include "Engine/Tables/ItemTable.h"
 #include "Engine/Party.h"
 #include "Engine/TurnEngine/TurnEngine.h"
+#include "Engine/AssetsManager.h"
 
 #include "GUI/GUIButton.h"
 #include "GUI/GUIWindow.h"
@@ -21,27 +24,27 @@
 
 #include "Media/Audio/AudioPlayer.h"
 
-std::shared_ptr<Mouse> mouse = nullptr;
+std::shared_ptr<Io::Mouse> mouse = nullptr;
 
-void Mouse::GetClickPos(int *pX, int *pY) {
+void Io::Mouse::GetClickPos(int *pX, int *pY) {
     *pX = uMouseX;
     *pY = uMouseY;
 }
 
-void Mouse::RemoveHoldingItem() {
+void Io::Mouse::RemoveHoldingItem() {
     pParty->pPickedItem.Reset();
     if (this->cursor_name != "MICON2") {
         SetCursorImage("MICON1");
     }
 }
 
-void Mouse::SetCursorBitmapFromItemID(ITEM_TYPE uItemID) {
+void Io::Mouse::SetCursorBitmapFromItemID(ITEM_TYPE uItemID) {
     SetCursorImage(pItemTable->pItems[uItemID].iconName);
 }
 
-void Mouse::SetCurrentCursorBitmap() { SetCursorImage(this->cursor_name); }
+void Io::Mouse::SetCurrentCursorBitmap() { SetCursorImage(this->cursor_name); }
 
-void Mouse::SetCursorImage(const std::string &name) {
+void Io::Mouse::SetCursorImage(const std::string &name) {
     if (!this->bInitialized) {
         return;
     }
@@ -66,7 +69,7 @@ void Mouse::SetCursorImage(const std::string &name) {
     }
 }
 
-void Mouse::_469AE4() {
+void Io::Mouse::_469AE4() {
     this->field_8 = 1;
 
     Pointi pt = GetCursorPos();
@@ -92,7 +95,7 @@ void Mouse::_469AE4() {
     this->field_8 = 0;
 }
 
-void Mouse::ClearCursor() {
+void Io::Mouse::ClearCursor() {
     this->bActive = false;
     free(this->pCursorBitmap_sysmem);
     this->pCursorBitmap_sysmem = nullptr;
@@ -102,7 +105,7 @@ void Mouse::ClearCursor() {
     this->ptr_90 = nullptr;
 }
 
-void Mouse::AllocCursorSystemMem() {
+void Io::Mouse::AllocCursorSystemMem() {
     bActive = false;
     if (!pCursorBitmap_sysmem)
         pCursorBitmap_sysmem = (uint16_t *)DoAllocCursorMem();
@@ -110,13 +113,13 @@ void Mouse::AllocCursorSystemMem() {
         pCursorBitmap2_sysmem = (uint8_t *)DoAllocCursorMem();
 }
 
-void *Mouse::DoAllocCursorMem() { return nullptr; }
+void *Io::Mouse::DoAllocCursorMem() { return nullptr; }
 
-Pointi Mouse::GetCursorPos() {
+Pointi Io::Mouse::GetCursorPos() {
     return Pointi(this->uMouseX, this->uMouseY);
 }
 
-void Mouse::Initialize() {
+void Io::Mouse::Initialize() {
     this->bActive = false;
     this->bInitialized = true;
 
@@ -138,15 +141,15 @@ void Mouse::Initialize() {
     SetCursorImage("MICON1");
 }
 
-void Mouse::SetActive(bool active) { bActive = active; }
+void Io::Mouse::SetActive(bool active) { bActive = active; }
 
-void Mouse::Deactivate() {
+void Io::Mouse::Deactivate() {
     if (bInitialized) {
         SetActive(false);
     }
 }
 
-void Mouse::DrawCursor() {
+void Io::Mouse::DrawCursor() {
     // get mouse pos
     Pointi pos;
     this->GetClickPos(&pos.x, &pos.y);
@@ -219,11 +222,11 @@ void Mouse::DrawCursor() {
     */
 }
 
-void Mouse::Activate() { bActive = true; }
+void Io::Mouse::Activate() { bActive = true; }
 
-void Mouse::ClearPickedItem() { pPickedItem = nullptr; }
+void Io::Mouse::ClearPickedItem() { pPickedItem = nullptr; }
 
-void Mouse::DrawCursorToTarget() {  //??? DrawCursorWithItem
+void Io::Mouse::DrawCursorToTarget() {  //??? DrawCursorWithItem
     return;
 
     if (pPickedItem == nullptr) {
@@ -234,7 +237,7 @@ void Mouse::DrawCursorToTarget() {  //??? DrawCursorWithItem
                                 uCursorWithItemY / 480.0f, pPickedItem);
 }
 
-void Mouse::DrawPickedItem() {
+void Io::Mouse::DrawPickedItem() {
     if (pParty->pPickedItem.uItemID == ITEM_NULL)
         return;
 
@@ -250,14 +253,14 @@ void Mouse::DrawPickedItem() {
     }
 }
 
-void Mouse::ChangeActivation(int a1) { this->bActive = a1; }
+void Io::Mouse::ChangeActivation(int a1) { this->bActive = a1; }
 
-void Mouse::SetMouseClick(int x, int y) {
+void Io::Mouse::SetMouseClick(int x, int y) {
     uMouseX = x;
     uMouseY = y;
 }
 
-void Mouse::UI_OnMouseLeftClick() {
+void Io::Mouse::UI_OnMouseLeftClick() {
     if (current_screen_type == CURRENT_SCREEN::SCREEN_VIDEO || isHoldingMouseRightButton())
         return;
 
@@ -342,7 +345,7 @@ bool UI_OnKeyDown(PlatformKey key) {
             continue;
         }
 
-        if (keyboardActionMapping->IsKeyMatchAction(InputAction::DialogLeft, key)) {
+        if (keyboardActionMapping->IsKeyMatchAction(Io::InputAction::DialogLeft, key)) {
             int v12 = win->field_34;
             if (win->pCurrentPosActiveItem - win->pStartingPosActiveItem - v12 >= 0) {
                 win->pCurrentPosActiveItem -= v12;
@@ -356,7 +359,7 @@ bool UI_OnKeyDown(PlatformKey key) {
             GUIButton *pButton = win->GetControl(win->pCurrentPosActiveItem);
             engine->_messageQueue->addMessageCurrentFrame(pButton->msg, pButton->msg_param, 0);
             break;
-        } else if (keyboardActionMapping->IsKeyMatchAction(InputAction::DialogRight, key)) {
+        } else if (keyboardActionMapping->IsKeyMatchAction(Io::InputAction::DialogRight, key)) {
             int v7 = win->pCurrentPosActiveItem + win->field_34;
             if (v7 < win->pNumPresenceButton + win->pStartingPosActiveItem) {
                 win->pCurrentPosActiveItem = v7;
@@ -370,7 +373,7 @@ bool UI_OnKeyDown(PlatformKey key) {
             GUIButton *pButton = win->GetControl(win->pCurrentPosActiveItem);
             engine->_messageQueue->addMessageCurrentFrame(pButton->msg, pButton->msg_param, 0);
             break;
-        } else if (keyboardActionMapping->IsKeyMatchAction(InputAction::DialogDown, key)) {
+        } else if (keyboardActionMapping->IsKeyMatchAction(Io::InputAction::DialogDown, key)) {
             int v17 = win->pStartingPosActiveItem;
             int v18 = win->pCurrentPosActiveItem;
             if (v18 >= win->pNumPresenceButton + v17 - 1)
@@ -409,7 +412,7 @@ bool UI_OnKeyDown(PlatformKey key) {
                 return true;
             }
             break;
-        } else if (keyboardActionMapping->IsKeyMatchAction(InputAction::DialogUp, key)) {
+        } else if (keyboardActionMapping->IsKeyMatchAction(Io::InputAction::DialogUp, key)) {
             int v22 = win->pCurrentPosActiveItem;
             int v23 = win->pStartingPosActiveItem;
             if (v22 <= v23)
@@ -421,7 +424,7 @@ bool UI_OnKeyDown(PlatformKey key) {
             GUIButton *pButton = win->GetControl(win->pCurrentPosActiveItem);
             engine->_messageQueue->addMessageCurrentFrame(pButton->msg, pButton->msg_param, 0);
             return true;
-        } else if (keyboardActionMapping->IsKeyMatchAction(InputAction::DialogSelect, key)) {
+        } else if (keyboardActionMapping->IsKeyMatchAction(Io::InputAction::DialogSelect, key)) {
             GUIButton *pButton = win->GetControl(win->pCurrentPosActiveItem);
             engine->_messageQueue->addMessageCurrentFrame(pButton->msg, pButton->msg_param, 0);
         } else if (key == PlatformKey::KEY_PAGEDOWN) { // not button event from user, but a call from GUI_UpdateWindows to track mouse

@@ -12,12 +12,18 @@
 #include "Engine/LOD.h"
 #include "Engine/MapInfo.h"
 #include "Engine/mm7_data.h"
+#include "Engine/Engine.h"
+#include "Engine/Party.h"
+#include "Engine/EngineIocContainer.h"
+#include "Engine/GameResourceManager.h"
 
 #include "GUI/UI/UIHouses.h"
 
+#include "Library/Random/Random.h"
+#include "Library/Logger/Logger.h"
+
 #include "Utility/String.h"
 #include "Utility/MapAccess.h"
-#include "Library/Random/Random.h"
 
 //----- (0045814E) --------------------------------------------------------
 void ItemTable::Release() {

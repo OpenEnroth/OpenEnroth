@@ -3,8 +3,13 @@
 #include <vector>
 
 #include "Engine/Objects/Items.h"
-#include "Engine/Objects/SpriteObjectType.h"
-#include "Engine/Objects/Actor.h"
+#include "Engine/Objects/SpriteObjectEnums.h"
+#include "Engine/Objects/ActorEnums.h"
+#include "Engine/Spells/SpellEnums.h"
+
+#include "Library/Color/Color.h"
+
+#include "Utility/Geometry/Vec.h"
 
 class SpriteFrame;
 

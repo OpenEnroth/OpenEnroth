@@ -8,6 +8,7 @@
 #include "Engine/Time.h"
 #include "Engine/stru160.h"
 #include "Engine/Party.h"
+#include "Engine/AssetsManager.h"
 
 #include "Engine/Graphics/Camera.h"
 #include "Engine/Graphics/Indoor.h"
@@ -17,6 +18,7 @@
 #include "Engine/Graphics/ParticleEngine.h"
 #include "Engine/Graphics/Sprites.h"
 #include "Engine/Graphics/Viewport.h"
+#include "Engine/Graphics/IRender.h"
 
 #include "Engine/Objects/Actor.h"
 #include "Engine/Objects/SpriteObject.h"

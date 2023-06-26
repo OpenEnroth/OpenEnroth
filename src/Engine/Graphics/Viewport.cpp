@@ -9,9 +9,9 @@
 #include "Engine/Graphics/Vis.h"
 #include "Engine/Localization.h"
 #include "Engine/Objects/Actor.h"
-#include "Engine/Objects/ObjectList.h"
 #include "Engine/Objects/SpriteObject.h"
 #include "Engine/Tables/ItemTable.h"
+#include "Engine/Spells/Spells.h"
 #include "Engine/OurMath.h"
 #include "Engine/Party.h"
 #include "Engine/TurnEngine/TurnEngine.h"
@@ -20,6 +20,8 @@
 #include "GUI/GUIMessageQueue.h"
 #include "GUI/UI/UIDialogue.h"
 #include "GUI/UI/UIStatusBar.h"
+
+#include "Media/Audio/AudioPlayer.h"
 
 //----- (004C0262) --------------------------------------------------------
 void Viewport::SetScreen(int sTL_X, int sTL_Y, int sBR_X, int sBR_Y) {

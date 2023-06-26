@@ -4,6 +4,9 @@
 #include "Engine/Graphics/Camera.h"
 #include "Indoor.h"
 
+#include "Library/Color/ColorTable.h"
+#include "Library/Logger/Logger.h"
+
 int _49CE9E_sub0_x(RenderVertexSoft *pVertices, unsigned int uNumVertices,
                    float test_val) {
     float max_val = FLT_MAX;

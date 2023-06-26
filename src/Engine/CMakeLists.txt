@@ -35,6 +35,7 @@ set(ENGINE_HEADERS
         MapInfo.h
         OurMath.h
         Party.h
+        PartyEnums.h
         PriceCalculator.h
         SaveLoad.h
         SpellFxRenderer.h

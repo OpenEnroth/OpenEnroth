@@ -3,6 +3,7 @@
 #include <string>
 
 #include "Engine/Engine.h"
+#include "Engine/EngineIocContainer.h"
 #include "Engine/Tables/BuildingTable.h"
 #include "Engine/Graphics/IRender.h"
 #include "Engine/Graphics/Image.h"
@@ -12,6 +13,7 @@
 #include "Engine/Tables/MerchantTable.h"
 #include "Engine/Party.h"
 #include "Engine/PriceCalculator.h"
+#include "Engine/AssetsManager.h"
 
 #include "GUI/GUIWindow.h"
 #include "GUI/GUIButton.h"
@@ -19,6 +21,8 @@
 #include "GUI/GUIMessageQueue.h"
 #include "GUI/UI/UIStatusBar.h"
 #include "GUI/UI/Houses/Shops.h"
+
+#include "Media/Audio/AudioPlayer.h"
 
 #include "Io/Mouse.h"
 

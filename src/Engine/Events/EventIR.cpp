@@ -9,8 +9,11 @@
 #include "Engine/Graphics/Level/Decoration.h"
 #include "Engine/Objects/NPC.h"
 #include "Engine/Tables/BuildingTable.h"
+#include "Engine/Tables/NPCTable.h"
 #include "Engine/Engine.h"
 #include "Engine/mm7_data.h"
+
+#include "Utility/String.h"
 
 static std::string getVariableSetStr(VariableType type, int value) {
     if (type >= VAR_MapPersistentVariable_0 && type <= VAR_MapPersistentVariable_74) {

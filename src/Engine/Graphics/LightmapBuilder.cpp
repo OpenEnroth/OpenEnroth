@@ -12,6 +12,8 @@
 #include "Engine/OurMath.h"
 #include "Engine/Party.h"
 
+#include "Library/Color/ColorTable.h"
+
 LightsStack_StationaryLight_ *pStationaryLightsStack = new LightsStack_StationaryLight_;
 LightsStack_MobileLight_ *pMobileLightsStack = new LightsStack_MobileLight_;
 

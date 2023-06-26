@@ -1,42 +1,37 @@
 #pragma once
 
-#include <float.h>
-
 #include <memory>
 #include <string>
-#include <climits>
 #include <vector>
 #include <array>
 
-#include "Engine/Events/EventMap.h"
-#include "Engine/AssetsManager.h"
-#include "Engine/ErrorHandling.h"
-#include "Engine/MM7.h"
-#include "Engine/MapInfo.h"
-#include "Engine/EngineIocContainer.h"
-#include "Engine/mm7_data.h"
-#include "Engine/GameResourceManager.h"
-
-#include "Engine/Graphics/Polygon.h"
-#include "Engine/Graphics/BSPModel.h"
-
-#include "Io/KeyboardActionMapping.h"
-#include "Io/KeyboardInputHandler.h"
-#include "Io/Mouse.h"
-
 #include "Application/GameConfig.h"
 
-#include "Utility/DataPath.h"
-#include "Utility/String.h"
+#include "Engine/Events/EventMap.h"
+#include "Engine/mm7_data.h"
+#include "Engine/MapInfo.h"
+#include "Engine/Time.h"
 
-#include "Library/Logger/Logger.h"
+#include "Utility/Memory/Blob.h"
 
-#include "GUI/GUIMessageQueue.h"
+namespace Io {
+class Mouse;
+class KeyboardInputHandler;
+class KeyboardActionMapping;
+} // namespace Io
 
+struct Polygon;
+class DecalBuilder;
+class BloodsplatContainer;
+class SpellFxRenderer;
 class Nuklear;
-using Io::KeyboardActionMapping;
-using Io::KeyboardInputHandler;
-using Io::Mouse;
+class Vis;
+class ParticleEngine;
+struct ClippingFunctions;
+struct stru10;
+class Logger;
+class GUIMessageQueue;
+class GameResourceManager;
 
 void Engine_DeinitializeAndTerminate(int exitCode);
 
@@ -85,11 +80,6 @@ struct PersistentVariables {
     std::array<unsigned char, 75> mapVars;
     std::array<unsigned char, 125> decorVars;
 };
-
-class Vis;
-class ParticleEngine;
-struct ClippingFunctions;
-struct stru10;
 
 class Engine {
  public:
@@ -149,19 +139,19 @@ class Engine {
     BloodsplatContainer *bloodsplat_container = nullptr;
     DecalBuilder *decal_builder = nullptr;
     SpellFxRenderer *spell_fx_renedrer = nullptr;
-    std::shared_ptr<Mouse> mouse = nullptr;
-    std::shared_ptr<Nuklear> nuklear = nullptr;
-    std::shared_ptr<ParticleEngine> particle_engine = nullptr;
+    std::shared_ptr<Io::Mouse> mouse;
+    std::shared_ptr<Nuklear> nuklear;
+    std::shared_ptr<ParticleEngine> particle_engine;
     Vis *vis = nullptr;
-    std::shared_ptr<KeyboardInputHandler> keyboardInputHandler = nullptr;
-    std::shared_ptr<KeyboardActionMapping> keyboardActionMapping = nullptr;
+    std::shared_ptr<Io::KeyboardInputHandler> keyboardInputHandler;
+    std::shared_ptr<Io::KeyboardActionMapping> keyboardActionMapping;
     EventMap _globalEventMap;
     EventMap _localEventMap;
     std::vector<std::string> _levelStrings;
     PersistentVariables _persistentVariables;
 
-    std::unique_ptr<GUIMessageQueue> _messageQueue = nullptr;
-    std::unique_ptr<GameResourceManager> _gameResourceManager = nullptr;
+    std::unique_ptr<GUIMessageQueue> _messageQueue;
+    std::unique_ptr<GameResourceManager> _gameResourceManager;
 };
 
 extern Engine *engine;

@@ -3,6 +3,8 @@
 #include <string>
 #include <vector>
 
+#include "Engine/Tables/BuildingTable.h"
+
 #include "GUI/GUIWindow.h"
 #include "Utility/IndexedArray.h"
 #include "UIHouseEnums.h"

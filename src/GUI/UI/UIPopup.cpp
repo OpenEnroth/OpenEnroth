@@ -3,20 +3,26 @@
 #include <string>
 
 #include "Engine/Engine.h"
+#include "Engine/AssetsManager.h"
+#include "Engine/EngineIocContainer.h"
 #include "Engine/Graphics/Sprites.h"
 #include "Engine/Graphics/Viewport.h"
 #include "Engine/Graphics/Vis.h"
 #include "Engine/Graphics/Image.h"
+#include "Engine/Graphics/IRender.h"
 #include "Engine/LOD.h"
 #include "Engine/Localization.h"
 #include "Engine/Objects/Actor.h"
 #include "Engine/Objects/Chest.h"
 #include "Engine/Objects/ObjectList.h"
 #include "Engine/Objects/SpriteObject.h"
+#include "Engine/Objects/NPC.h"
 #include "Engine/Tables/ItemTable.h"
 #include "Engine/Tables/CharacterFrameTable.h"
+#include "Engine/Spells/Spells.h"
 #include "Engine/Party.h"
 #include "Engine/Time.h"
+#include "Engine/Conditions.h"
 
 #include "Io/Mouse.h"
 
@@ -33,6 +39,7 @@
 #include "Media/Audio/AudioPlayer.h"
 
 #include "Library/Random/Random.h"
+#include "Library/Logger/Logger.h"
 
 GraphicsImage *parchment = nullptr;
 GraphicsImage *messagebox_corner_x = nullptr;       // 5076AC

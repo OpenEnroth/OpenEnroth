@@ -1,6 +1,9 @@
 #include "Engine/Graphics/ClippingFunctions.h"
 
 #include "Engine/Engine.h"
+#include "Engine/EngineIocContainer.h"
+
+#include "Library/Logger/Logger.h"
 
 #include "Camera.h"
 

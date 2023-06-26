@@ -6,6 +6,7 @@
 #include "Engine/Localization.h"
 #include "Engine/Party.h"
 #include "Engine/SaveLoad.h"
+#include "Engine/AssetsManager.h"
 
 #include "GUI/GUIButton.h"
 #include "GUI/GUIFont.h"
@@ -38,8 +39,8 @@ GUIWindow_LloydsBook::GUIWindow_LloydsBook() : GUIWindow_Book() {
     ui_book_button1_on = assets->getImage_Alpha("tab-an-6b");
     ui_book_button1_off = assets->getImage_Alpha("tab-an-6a");
 
-    pBtn_Book_1 = CreateButton({415, 13}, {39, 36}, 1, 0, UIMSG_LloydsBeacon_FlippingBtn, 0, InputAction::Invalid, localization->GetString(LSTR_SET_BEACON));
-    pBtn_Book_2 = CreateButton({415, 48}, {39, 36}, 1, 0, UIMSG_LloydsBeacon_FlippingBtn, 1, InputAction::Invalid, localization->GetString(LSTR_RECALL_BEACON));
+    pBtn_Book_1 = CreateButton({415, 13}, {39, 36}, 1, 0, UIMSG_LloydsBeacon_FlippingBtn, 0, Io::InputAction::Invalid, localization->GetString(LSTR_SET_BEACON));
+    pBtn_Book_2 = CreateButton({415, 48}, {39, 36}, 1, 0, UIMSG_LloydsBeacon_FlippingBtn, 1, Io::InputAction::Invalid, localization->GetString(LSTR_RECALL_BEACON));
 
     CharacterSkillMastery water_mastery = pParty->pCharacters[lloydsBeaconCasterId].getActualSkillValue(CHARACTER_SKILL_WATER).mastery();
 

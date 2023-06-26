@@ -12,7 +12,6 @@ class GUIButton;
 class PlatformEvent;
 
 // TODO(captainurist): std::string vs std::string_view in interfaces? Spell this out in HACKING.
-// TODO(captainurist): this class should operate in terms of input actions, not platform keys?
 
 /**
  * This is the interface to be used from a control routine to control the game thread.

@@ -7,7 +7,8 @@
 #include "Utility/IndexedArray.h"
 
 #include "Engine/Objects/NPCEnums.h"
-#include "Engine/Tables/NPCTable.h"
+
+struct NPCData;
 
 // TODO(Nik-RE-dev): remove
 //----- (0047730C) --------------------------------------------------------
@@ -24,8 +25,8 @@ void NPCHireableDialogPrepare();
  */
 void updateNPCTopics(int npc);
 const std::string &GetProfessionActionText(NPCProf prof);
-struct NPCData *GetNPCData(signed int npcid);
-struct NPCData *GetNewNPCData(signed int npcid, int *npc_indx);
+NPCData *GetNPCData(signed int npcid);
+NPCData *GetNewNPCData(signed int npcid, int *npc_indx);
 int GetGreetType(signed int SpeakingNPC_ID);
 
 class FlatHirelings {

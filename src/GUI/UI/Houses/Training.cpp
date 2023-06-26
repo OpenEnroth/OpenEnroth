@@ -12,6 +12,8 @@
 #include "Engine/Localization.h"
 #include "Engine/PriceCalculator.h"
 #include "Engine/Graphics/Outdoor.h"
+#include "Engine/Party.h"
+#include "Engine/Engine.h"
 
 IndexedArray<int, HOUSE_TRAINING_HALL_EMERALD_ISLE, HOUSE_TRAINING_HALL_STONE_CITY> trainingHallMaxLevels = {
     {HOUSE_TRAINING_HALL_EMERALD_ISLE, 5},

@@ -18,11 +18,16 @@
 #include "Engine/MapInfo.h"
 #include "Engine/SaveLoad.h"
 
+#include "Media/Audio/AudioPlayer.h"
+
 #include "Io/KeyboardInputHandler.h"
+#include "Io/Mouse.h"
 
 #include "GUI/GUIButton.h"
 #include "GUI/GUIFont.h"
 #include "GUI/GUIMessageQueue.h"
+
+#include "Utility/DataPath.h"
 
 using Io::TextInputType;
 
@@ -105,10 +110,10 @@ GUIWindow_Save::GUIWindow_Save() :
     CreateButton("SaveMenu_Slot5", {21, 298}, {191, 18}, 1, 0, UIMSG_SelectLoadSlot, 5);
     CreateButton("SaveMenu_Slot6", {21, 318}, {191, 18}, 1, 0, UIMSG_SelectLoadSlot, 6);
 
-    pBtnLoadSlot = CreateButton("SaveMenu_Save", {241, 302}, {105, 40}, 1, 0, UIMSG_SaveLoadBtn, 0, InputAction::Invalid, "", {saveload_ui_ls_saved});
-    pBtnCancel = CreateButton({350, 302}, {105, 40}, 1, 0, UIMSG_Cancel, 0, InputAction::Invalid, "", {saveload_ui_x_d});
-    pBtnArrowUp = CreateButton({215, 199}, {17, 17}, 1, 0, UIMSG_ArrowUp, 0, InputAction::Invalid, "", {ui_ar_up_dn});
-    pBtnDownArrow = CreateButton({215, 323}, {17, 17}, 1, 0, UIMSG_DownArrow, MAX_SAVE_SLOTS, InputAction::Invalid, "", {ui_ar_dn_dn});
+    pBtnLoadSlot = CreateButton("SaveMenu_Save", {241, 302}, {105, 40}, 1, 0, UIMSG_SaveLoadBtn, 0, Io::InputAction::Invalid, "", {saveload_ui_ls_saved});
+    pBtnCancel = CreateButton({350, 302}, {105, 40}, 1, 0, UIMSG_Cancel, 0, Io::InputAction::Invalid, "", {saveload_ui_x_d});
+    pBtnArrowUp = CreateButton({215, 199}, {17, 17}, 1, 0, UIMSG_ArrowUp, 0, Io::InputAction::Invalid, "", {ui_ar_up_dn});
+    pBtnDownArrow = CreateButton({215, 323}, {17, 17}, 1, 0, UIMSG_DownArrow, MAX_SAVE_SLOTS, Io::InputAction::Invalid, "", {ui_ar_dn_dn});
 
     CreateButton({215, 216}, {17, 107}, 1, 0, UIMSG_SaveLoadScroll, MAX_SAVE_SLOTS);
 }
@@ -226,10 +231,10 @@ GUIWindow_Load::GUIWindow_Load(bool ingame) :
     CreateButton("LoadMenu_Slot5", {21, 303}, {191, 18}, 1, 0, UIMSG_SelectLoadSlot, 5);
     CreateButton("LoadMenu_Slot6", {21, 324}, {191, 18}, 1, 0, UIMSG_SelectLoadSlot, 6);
 
-    pBtnLoadSlot = CreateButton("LoadMenu_Load", {241, 302}, {105, 40}, 1, 0, UIMSG_SaveLoadBtn, 0, InputAction::Invalid, "", {saveload_ui_ls_saved});
-    pBtnCancel = CreateButton({350, 302}, {105, 40}, 1, 0, UIMSG_Cancel, 0, InputAction::Invalid, "", {saveload_ui_x_d});
-    pBtnArrowUp = CreateButton({215, 199}, {17, 17}, 1, 0, UIMSG_ArrowUp, 0, InputAction::Invalid, "", {ui_ar_up_dn});
-    pBtnDownArrow = CreateButton({215, 323}, {17, 17}, 1, 0, UIMSG_DownArrow, pSavegameList->numSavegameFiles, InputAction::Invalid, "", {ui_ar_dn_dn});
+    pBtnLoadSlot = CreateButton("LoadMenu_Load", {241, 302}, {105, 40}, 1, 0, UIMSG_SaveLoadBtn, 0, Io::InputAction::Invalid, "", {saveload_ui_ls_saved});
+    pBtnCancel = CreateButton({350, 302}, {105, 40}, 1, 0, UIMSG_Cancel, 0, Io::InputAction::Invalid, "", {saveload_ui_x_d});
+    pBtnArrowUp = CreateButton({215, 199}, {17, 17}, 1, 0, UIMSG_ArrowUp, 0, Io::InputAction::Invalid, "", {ui_ar_up_dn});
+    pBtnDownArrow = CreateButton({215, 323}, {17, 17}, 1, 0, UIMSG_DownArrow, pSavegameList->numSavegameFiles, Io::InputAction::Invalid, "", {ui_ar_dn_dn});
 
     CreateButton("LoadMenu_Scroll", {215, 216}, {17, 107}, 1, 0, UIMSG_SaveLoadScroll, pSavegameList->numSavegameFiles);
 }

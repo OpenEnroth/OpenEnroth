@@ -10,7 +10,6 @@
 #include "Engine/SpawnPoint.h"
 
 #include "BSPModel.h"
-#include "IRender.h"
 #include "LocationInfo.h"
 #include "LocationTime.h"
 #include "LocationEnums.h"

@@ -1,7 +1,8 @@
+#include "CastSpellInfo.h"
+
+#include <cstring>
 #include <vector>
 #include <string>
-
-#include "Engine/Spells/CastSpellInfo.h"
 
 #include "Engine/Engine.h"
 #include "Engine/EngineGlobals.h"
@@ -10,13 +11,14 @@
 #include "Engine/Graphics/Level/Decoration.h"
 #include "Engine/Graphics/Outdoor.h"
 #include "Engine/Graphics/Indoor.h"
-#include "Engine/Graphics/Overlays.h"
+#include "Engine/Graphics/IRender.h"
 #include "Engine/Graphics/Viewport.h"
 #include "Engine/LOD.h"
 #include "Engine/Localization.h"
 #include "Engine/Objects/Actor.h"
 #include "Engine/Objects/ObjectList.h"
 #include "Engine/Objects/SpriteObject.h"
+#include "Engine/Objects/NPC.h"
 #include "Engine/OurMath.h"
 #include "Engine/Party.h"
 #include "Engine/SpellFxRenderer.h"
@@ -24,6 +26,7 @@
 #include "Engine/Tables/IconFrameTable.h"
 #include "Engine/Time.h"
 #include "Engine/TurnEngine/TurnEngine.h"
+#include "Engine/Spells/Spells.h"
 
 #include "GUI/GUIButton.h"
 #include "GUI/GUIMessageQueue.h"
@@ -31,7 +34,6 @@
 #include "GUI/UI/UIStatusBar.h"
 #include "GUI/UI/UISpell.h"
 #include "GUI/UI/Books/LloydsBook.h"
-#include "GUI/UI/Books/TownPortalBook.h"
 
 #include "Io/Mouse.h"
 
@@ -44,6 +46,10 @@ static SpellFxRenderer *spell_fx_renderer = EngineIocContainer::ResolveSpellFxRe
 
 static const size_t CAST_SPELL_QUEUE_SIZE = 10;
 static std::array<CastSpellInfo, CAST_SPELL_QUEUE_SIZE> pCastSpellInfo;
+
+CastSpellInfo::CastSpellInfo() {
+    memset(this, 0, sizeof(*this));
+}
 
 /**
  * Common initialization of SpriteObject for spell casting

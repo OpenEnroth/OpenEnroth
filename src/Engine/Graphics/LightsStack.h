@@ -2,11 +2,11 @@
 
 #include <array>
 
-#include "Engine/EngineIocContainer.h"
-
 #include "Library/Color/Color.h"
 
 #include "Utility/Geometry/Vec.h"
+
+class Logger;
 
 struct StationaryLight {
     Vec3f vPosition {};
@@ -37,10 +37,7 @@ struct LightStack<T>
 
 struct LightsStack_StationaryLight_ {
     //----- (004AD385) --------------------------------------------------------
-    LightsStack_StationaryLight_() {
-        this->log = EngineIocContainer::ResolveLogger();
-        this->uNumLightsActive = 0;
-    }
+    LightsStack_StationaryLight_();
 
     //----- (004AD395) --------------------------------------------------------
     virtual ~LightsStack_StationaryLight_() { uNumLightsActive = 0; }
@@ -59,10 +56,8 @@ struct LightsStack_StationaryLight_ {
 
 struct LightsStack_MobileLight_ {
     //----- (00467D45) --------------------------------------------------------
-    inline LightsStack_MobileLight_() {
-        this->log = EngineIocContainer::ResolveLogger();
-        this->uNumLightsActive = 0;
-    }
+    LightsStack_MobileLight_();
+
     //----- (00467D55) --------------------------------------------------------
     virtual ~LightsStack_MobileLight_() { this->uNumLightsActive = 0; }
 
