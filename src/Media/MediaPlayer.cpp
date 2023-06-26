@@ -906,7 +906,7 @@ void MPlayer::PlayFullscreenMovie(const std::string &pFilename) {
     pMovie_Track = nullptr;
 
     // prevent passing UIMSG_Escape event if video stopped by ESC key
-    engine->_messageQueue->flush();
+    engine->_messageQueue->clear();
 
     platform->setCursorShown(true);
 }
