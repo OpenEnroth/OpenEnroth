@@ -1055,6 +1055,11 @@ GAME_TEST(Issues, Issue735b) {
     test->playTraceFromTestData("issue_735b.mm7", "issue_735b.json");
 }
 
+GAME_TEST(Issues, Issue735c) {
+    // Trace-only test: entering the dragon cave on Emerald Isle, hugging the walls and shooting fireballs.
+    test->playTraceFromTestData("issue_735c.mm7", "issue_735c.json");
+}
+
 GAME_TEST(Issues, Issue741) {
     // Game crashing when walking into a wall in Temple of the moon
     test->playTraceFromTestData("issue_741.mm7", "issue_741.json");
