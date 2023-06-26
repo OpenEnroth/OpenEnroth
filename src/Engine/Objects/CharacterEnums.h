@@ -4,6 +4,47 @@
 
 #include "Utility/Segment.h"
 
+// TODO(pskelton): reduce or drop in favour of combined value
+typedef uint16_t CHARACTER_SKILL;
+typedef uint8_t CHARACTER_SKILL_LEVEL;
+
+enum class Condition : uint32_t {
+    CONDITION_CURSED = 0,
+    CONDITION_WEAK = 1,
+    CONDITION_SLEEP = 2,
+    CONDITION_FEAR = 3,
+    CONDITION_DRUNK = 4,
+    CONDITION_INSANE = 5,
+    CONDITION_POISON_WEAK = 6,
+    CONDITION_DISEASE_WEAK = 7,
+    CONDITION_POISON_MEDIUM = 8,
+    CONDITION_DISEASE_MEDIUM = 9,
+    CONDITION_POISON_SEVERE = 10,
+    CONDITION_DISEASE_SEVERE = 11,
+    CONDITION_PARALYZED = 12,
+    CONDITION_UNCONSCIOUS = 13,
+    CONDITION_DEAD = 14,
+    CONDITION_PETRIFIED = 15,
+    CONDITION_ERADICATED = 16,
+    CONDITION_ZOMBIE = 17,
+    CONDITION_GOOD = 18,
+};
+using enum Condition;
+
+// TODO(pskelton): drop CHARACTER_ at start?
+enum class CharacterSkillMastery : int32_t {  // TODO: type could be changed to something else when SpriteObject_MM7 implemented in
+    // LegacyImages
+    CHARACTER_SKILL_MASTERY_NONE = 0,
+    CHARACTER_SKILL_MASTERY_NOVICE = 1,
+    CHARACTER_SKILL_MASTERY_EXPERT = 2,
+    CHARACTER_SKILL_MASTERY_MASTER = 3,
+    CHARACTER_SKILL_MASTERY_GRANDMASTER = 4,
+
+    CHARACTER_SKILL_MASTERY_FIRST = CHARACTER_SKILL_MASTERY_NOVICE,
+    CHARACTER_SKILL_MASTERY_LAST = CHARACTER_SKILL_MASTERY_GRANDMASTER
+};
+using enum CharacterSkillMastery;
+
 // TODO(pskelton): drop CHARACTER_ at start?
 enum CharacterBuffs {
     CHARACTER_BUFF_RESIST_AIR = 0,

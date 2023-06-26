@@ -1,8 +1,6 @@
 #pragma once
 
-#include <array>
 #include <cstdint>
-#include <cstring>
 
 #include "Engine/Objects/CombinedSkillValue.h"
 
@@ -59,9 +57,7 @@ static const uint16_t SPELL_FAILURE_RECOVERY_TIME_ON_CURSE = 100;
 
 /*  271 */
 struct CastSpellInfo {
-    inline CastSpellInfo() {
-        memset(this, 0, sizeof(*this));
-    }
+    CastSpellInfo();
 
     GUIWindow *GetCastSpellInInventoryWindow();
 

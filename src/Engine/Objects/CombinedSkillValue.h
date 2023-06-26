@@ -2,28 +2,13 @@
 
 #include <cstdint>
 
+#include "Engine/Objects/CharacterEnums.h"
+
 #include "Utility/Segment.h"
 
 /* Skill encodes level and mastery where first 0x3F are for skill level and 0x1C0 bits are for skill mastery.
  * So max possible stored skill level is 63.
  */
-// TODO(pskelton): reduce or drop in favour of combined value
-typedef uint16_t CHARACTER_SKILL;
-typedef uint8_t CHARACTER_SKILL_LEVEL;
-
-// TODO(pskelton): drop CHARACTER_ at start?
-enum class CharacterSkillMastery : int32_t {  // TODO: type could be changed to something else when SpriteObject_MM7 implemented in
-                                             // LegacyImages
-    CHARACTER_SKILL_MASTERY_NONE = 0,
-    CHARACTER_SKILL_MASTERY_NOVICE = 1,
-    CHARACTER_SKILL_MASTERY_EXPERT = 2,
-    CHARACTER_SKILL_MASTERY_MASTER = 3,
-    CHARACTER_SKILL_MASTERY_GRANDMASTER = 4,
-
-    CHARACTER_SKILL_MASTERY_FIRST = CHARACTER_SKILL_MASTERY_NOVICE,
-    CHARACTER_SKILL_MASTERY_LAST = CHARACTER_SKILL_MASTERY_GRANDMASTER
-};
-using enum CharacterSkillMastery;
 
 inline Segment<CharacterSkillMastery> SkillMasteries() {
     return Segment(CHARACTER_SKILL_MASTERY_FIRST, CHARACTER_SKILL_MASTERY_LAST);

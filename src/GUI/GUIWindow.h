@@ -8,8 +8,8 @@
 #include <string>
 
 #include "Engine/PartyEnums.h"
-#include "Engine/Conditions.h"
 #include "Engine/Objects/NPCEnums.h"
+#include "Engine/Objects/ItemEnums.h"
 
 #include "GUI/GUIEnums.h"
 #include "GUI/GUIDialogues.h"

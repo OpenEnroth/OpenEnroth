@@ -29,6 +29,7 @@
 #include "Engine/Tables/AutonoteTable.h"
 #include "Engine/Tables/QuestTable.h"
 #include "Engine/TurnEngine/TurnEngine.h"
+#include "Engine/Conditions.h"
 
 #include "Io/Mouse.h"
 

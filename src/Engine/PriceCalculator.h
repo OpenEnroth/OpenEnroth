@@ -1,6 +1,6 @@
 #pragma once
 
-struct Character;
+class Character;
 struct ItemGen;
 struct BuildingDesc;
 

@@ -4,7 +4,6 @@
 #include <string>
 #include <utility>
 
-#include "Engine/Conditions.h"
 #include "Engine/Objects/NPCEnums.h"
 #include "Engine/Objects/ActorEnums.h"
 #include "Engine/Objects/CombinedSkillValue.h"
@@ -160,7 +159,8 @@ class CharacterConditions {
 };
 
 // TODO(eksekk): Rename to "Character" (incl. all methods and helper functions, and probably enums too)
-struct Character {
+class Character {
+ public:
     static constexpr unsigned int INVENTORY_SLOTS_WIDTH = 14;
     static constexpr unsigned int INVENTORY_SLOTS_HEIGHT = 9;
 

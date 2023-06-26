@@ -1,7 +1,8 @@
+#include "CastSpellInfo.h"
+
+#include <cstring>
 #include <vector>
 #include <string>
-
-#include "Engine/Spells/CastSpellInfo.h"
 
 #include "Engine/Engine.h"
 #include "Engine/EngineGlobals.h"
@@ -33,7 +34,6 @@
 #include "GUI/UI/UIStatusBar.h"
 #include "GUI/UI/UISpell.h"
 #include "GUI/UI/Books/LloydsBook.h"
-#include "GUI/UI/Books/TownPortalBook.h"
 
 #include "Io/Mouse.h"
 
@@ -46,6 +46,10 @@ static SpellFxRenderer *spell_fx_renderer = EngineIocContainer::ResolveSpellFxRe
 
 static const size_t CAST_SPELL_QUEUE_SIZE = 10;
 static std::array<CastSpellInfo, CAST_SPELL_QUEUE_SIZE> pCastSpellInfo;
+
+CastSpellInfo::CastSpellInfo() {
+    memset(this, 0, sizeof(*this));
+}
 
 /**
  * Common initialization of SpriteObject for spell casting

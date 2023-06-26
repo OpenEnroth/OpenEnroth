@@ -7,7 +7,7 @@
 
 #include "Utility/IndexedArray.h"
 
-struct Character;
+class Character;
 
 struct CEnchantment {
     CEnchantment() {}

@@ -11,7 +11,7 @@
 
 #include "GUI/UI/UIHouseEnums.h"
 
-struct Character;
+class Character;
 
 struct ItemGen {  // 0x24
     static void PopulateSpecialBonusMap();

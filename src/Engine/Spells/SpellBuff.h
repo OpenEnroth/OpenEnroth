@@ -1,7 +1,8 @@
 #pragma once
 
 #include "Engine/Time.h"
-#include "Engine/Objects/CombinedSkillValue.h"
+
+#include "Engine/Objects/CharacterEnums.h"
 
 // TODO(pskelton): style
 struct SpellBuff {

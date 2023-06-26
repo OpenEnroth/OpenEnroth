@@ -4,7 +4,7 @@
 #include <cassert>
 #include <utility>
 
-#include "Engine/Objects/CombinedSkillValue.h"
+#include "Engine/Objects/CharacterEnums.h"
 
 #include "Utility/Flags.h"
 #include "Utility/Segment.h"
