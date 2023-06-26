@@ -426,13 +426,14 @@ struct Party {
     GameTime last_regenerated; // Timestamp when HP/MP regeneration was checked last time (using 5 minutes granularity)
     PartyTimeStruct PartyTimes;
     Vec3i vPosition;
+    Vec3i speed; // Party speed, negative z => falling, positive z => jumping.
+                 // Note that only z component is preserved between frames, x & y are fully determined by the keys pressed.
     int _viewYaw;
     int _viewPitch;
     Vec3i vPrevPosition;
     int _viewPrevYaw;
     int _viewPrevPitch;
     int sPrevEyelevel;
-    int uFallSpeed; // party vertical speed, negative => falling, positive => jumping
     int sPartySavedFlightZ;  // this saves the Z position when flying without bob mods
     int floor_face_pid;  // face we are standing at
     SoundID currentWalkingSound; // previously was 'walk_sound_timer'

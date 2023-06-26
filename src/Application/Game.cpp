@@ -909,7 +909,7 @@ void Game::processQueuedMessages() {
                     if (Party_Teleport_Cam_Pitch) {
                         pParty->_viewPitch = Party_Teleport_Cam_Pitch;
                         v38 = Party_Teleport_Z_Speed;
-                        pParty->uFallSpeed = Party_Teleport_Z_Speed;
+                        pParty->speed = Vec3i(0, 0, Party_Teleport_Z_Speed);
                     } else {
                         v38 = Party_Teleport_Z_Speed;
                     }
@@ -1303,13 +1303,11 @@ void Game::processQueuedMessages() {
                 pAudioPlayer->stopSounds();
                 SaveGame(1, 0);
 
-                pParty->vPosition.x = -17331;  // respawn point in Harmondale
-                pParty->vPosition.y = 12547;
-                pParty->vPosition.z = 465;
+                pParty->vPosition = Vec3i(-17331, 12547, 465); // respawn point in Harmondale
+                pParty->speed = Vec3i();
                 pParty->_viewYaw = 0;
                 pParty->uFallStartZ = pParty->vPosition.z;
                 pParty->_viewPitch = 0;
-                pParty->uFallSpeed = 0;
 
                 // change map to Harmondale
                 pCurrentMapName = "out02.odm";
@@ -1358,17 +1356,13 @@ void Game::processQueuedMessages() {
                     int z = atoi(frameTableTxtLine.pProperties[2]);
                     if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
                         if (pIndoor->GetSector(x, y, z)) {
-                            pParty->vPosition.x = x;
-                            pParty->vPosition.y = y;
-                            pParty->vPosition.z = z;
+                            pParty->vPosition = Vec3i(x, y, z);
                             pParty->uFallStartZ = z;
                             continue;
                         }
                     } else {
                         if ((x > -32768) && (x < 32768) && (y > -32768) && (y < 32768) && (z >= 0) && (z < 10000)) {
-                            pParty->vPosition.x = x;
-                            pParty->vPosition.y = y;
-                            pParty->vPosition.z = z;
+                            pParty->vPosition = Vec3i(x, y, z);
                             pParty->uFallStartZ = z;
                             continue;
                         }
@@ -2386,22 +2380,18 @@ void Game::gameLoop() {
                 pParty->setActiveCharacterIndex(1);
 
                 if (pParty->_questBits[QBIT_ESCAPED_EMERALD_ISLE]) {
-                    pParty->vPosition.x = -17331;  // respawn in harmondale
-                    pParty->vPosition.y = 12547;
-                    pParty->vPosition.z = 465;
+                    pParty->vPosition = Vec3i(-17331, 12547, 465); // respawn in harmondale
                     pParty->_viewYaw = 0;
                     pLocationName = "out02.odm";
                 } else {
-                    pParty->vPosition.x = 12552;  // respawn on emerald isle
-                    pParty->vPosition.y = 1816;
-                    pParty->vPosition.z = 193;
+                    pParty->vPosition = Vec3i(12552, 1816, 193); // respawn on emerald isle
                     pParty->_viewYaw = 512;
                     pLocationName = _config->gameplay.StartingMap.value().c_str();
                 }
                 strcpy(Source, pLocationName);
                 pParty->uFallStartZ = pParty->vPosition.z;
                 pParty->_viewPitch = 0;
-                pParty->uFallSpeed = 0;
+                pParty->speed = Vec3i();
                 // change map
                 if (pCurrentMapName != Source) {
                     pCurrentMapName = Source;

@@ -132,17 +132,13 @@ void Engine::Draw() {
         render->DrawBillboards_And_MaybeRenderSpecialEffects_And_EndScene();
         }*/
     } else {
-        if (pParty->vPosition.x != pParty->vPrevPosition.x ||
+        if (pParty->vPosition != pParty->vPrevPosition ||
             pParty->_viewYaw != pParty->_viewPrevYaw ||
-            pParty->vPosition.y != pParty->vPrevPosition.y ||
             pParty->_viewPitch != pParty->_viewPrevPitch ||
-            pParty->vPosition.z != pParty->vPrevPosition.z ||
             pParty->sEyelevel != pParty->sPrevEyelevel)
             pParty->uFlags |= PARTY_FLAGS_1_ForceRedraw;
 
-        pParty->vPrevPosition.x = pParty->vPosition.x;
-        pParty->vPrevPosition.y = pParty->vPosition.y;
-        pParty->vPrevPosition.z = pParty->vPosition.z;
+        pParty->vPrevPosition = pParty->vPosition;
         // v0 = &render;
         pParty->_viewPrevYaw = pParty->_viewYaw;
         pParty->_viewPrevPitch = pParty->_viewPitch;

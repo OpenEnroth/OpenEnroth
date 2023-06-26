@@ -207,15 +207,13 @@ int EventInterpreter::executeOneEvent(int step, bool isNpc) {
                 Party_Teleport_Cam_Yaw | Party_Teleport_Cam_Pitch | Party_Teleport_Z_Speed;
             if (ir.str[0] == '0') { // teleport within map
                 if (Start_Party_Teleport_Flag) {
-                    pParty->vPosition.x = ir.data.move_map_descr.x;
-                    pParty->vPosition.y = ir.data.move_map_descr.y;
-                    pParty->vPosition.z = ir.data.move_map_descr.z;
+                    pParty->vPosition = Vec3i(ir.data.move_map_descr.x, ir.data.move_map_descr.y, ir.data.move_map_descr.z);
+                    pParty->speed = Vec3i(0, 0, ir.data.move_map_descr.zspeed);
                     pParty->uFallStartZ = ir.data.move_map_descr.z;
                     if (Party_Teleport_Cam_Yaw != -1) {
                         pParty->_viewYaw = Party_Teleport_Cam_Yaw;
                     }
                     pParty->_viewPitch = ir.data.move_map_descr.pitch;
-                    pParty->uFallSpeed = ir.data.move_map_descr.zspeed;
 
                     Start_Party_Teleport_Flag = 0;
                     Party_Teleport_Cam_Yaw = -1;

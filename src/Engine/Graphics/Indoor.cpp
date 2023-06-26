@@ -952,11 +952,9 @@ void PrepareToLoadBLV(bool bLoading) {
     if (!bLoading) {
         pParty->_viewPitch = 0;
         pParty->_viewYaw = 0;
-        pParty->vPosition.z = 0;
-        pParty->vPosition.y = 0;
-        pParty->vPosition.x = 0;
+        pParty->vPosition = Vec3i();
+        pParty->speed = Vec3i();
         pParty->uFallStartZ = 0;
-        pParty->uFallSpeed = 0;
         TeleportToStartingPoint(uLevel_StartingPointType);
         pBLVRenderParams->Reset();
     }
@@ -1454,7 +1452,7 @@ void BLV_UpdateUserInputAndOther() {
 
 //----- (00472866) --------------------------------------------------------
 void BLV_ProcessPartyActions() {  // could this be combined with odm process actions?
-    unsigned int uFaceEvent = 0;
+    unsigned int faceEvent = 0;
 
     bool party_running_flag = false;
     bool party_walking_flag = false;
@@ -1464,15 +1462,15 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
     bool bFeatherFall;
 
     unsigned int sectorId = pBLVRenderParams->uPartySectorID;
-    unsigned int uFaceID = -1;
-    int floor_z = GetIndoorFloorZ(pParty->vPosition + Vec3i(0, 0, 40), &sectorId, &uFaceID);
+    unsigned int faceId = -1;
+    int floor_z = GetIndoorFloorZ(pParty->vPosition + Vec3i(0, 0, 40), &sectorId, &faceId);
 
     if (pParty->bFlying)  // disable flight
         pParty->bFlying = false;
 
-    if (floor_z == -30000 || uFaceID == -1) {
-        floor_z = GetApproximateIndoorFloorZ(pParty->vPosition + Vec3i(0, 0, 40), &sectorId, &uFaceID);
-        if (floor_z == -30000 || uFaceID == -1) {
+    if (floor_z == -30000 || faceId == -1) {
+        floor_z = GetApproximateIndoorFloorZ(pParty->vPosition + Vec3i(0, 0, 40), &sectorId, &faceId);
+        if (floor_z == -30000 || faceId == -1) {
             __debugbreak();  // level built with errors
             pParty->vPosition = blv_prev_party_pos;
             pParty->uFallStartZ = blv_prev_party_pos.z;
@@ -1517,16 +1515,16 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
 
         // not hovering & stepped onto a new face => activate potential pressure plate,
         // TODO: but why is this condition under "below floor level" if above?
-        if (!isAboveGround && pParty->floor_face_pid != uFaceID) {
-            if (pIndoor->pFaces[uFaceID].uAttributes & FACE_PRESSURE_PLATE)
-                uFaceEvent = pIndoor->pFaceExtras[pIndoor->pFaces[uFaceID].uFaceExtraID].uEventID;
+        if (!isAboveGround && pParty->floor_face_pid != faceId) {
+            if (pIndoor->pFaces[faceId].uAttributes & FACE_PRESSURE_PLATE)
+                faceEvent = pIndoor->pFaceExtras[pIndoor->pFaces[faceId].uFaceExtraID].uEventID;
         }
     }
     if (!isAboveGround)
-        pParty->floor_face_pid = uFaceID;
+        pParty->floor_face_pid = faceId;
 
     // party is on water?
-    if (pIndoor->pFaces[uFaceID].isFluid())
+    if (pIndoor->pFaces[faceId].isFluid())
         on_water = true;
 
     // Party angle in XY plane.
@@ -1539,7 +1537,7 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
     int rotation =
         (static_cast<int64_t>(pEventTimer->dt_fixpoint) * pParty->_yawRotationSpeed * TrigLUT.uIntegerPi / 180) >> 16;
 
-    Vec3i speed = Vec3i(0, 0, pParty->uFallSpeed);
+    Vec3i speed = Vec3i(0, 0, pParty->speed.z);
 
     while (pPartyActionQueue->uNumActions) {
         switch (pPartyActionQueue->Next()) {
@@ -1648,7 +1646,7 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
             }
         }
     } else {
-        if (pIndoor->pFaces[uFaceID].facePlane.normal.z < 0.5) {
+        if (pIndoor->pFaces[faceId].facePlane.normal.z < 0.5) {
             speed.z -= pEventTimer->uTimeElapsed * GetGravityStrength();
         } else {
             if (!(pParty->uFlags & PARTY_FLAGS_1_LANDING))
@@ -1698,7 +1696,7 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
         }
 
         Vec3i adjusted_pos = newPos + (collision_state.adjusted_move_distance * collision_state.direction).toInt();
-        int adjusted_floor_z = GetIndoorFloorZ(adjusted_pos + Vec3i(0, 0, 40), &collision_state.uSectorID, &uFaceID);
+        int adjusted_floor_z = GetIndoorFloorZ(adjusted_pos + Vec3i(0, 0, 40), &collision_state.uSectorID, &faceId);
         if (adjusted_floor_z == -30000 || adjusted_floor_z - newPos.z > 128)
             return; // TODO: whaaa?
 
@@ -1742,7 +1740,7 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
                     speed.x = 0;
                 }
                 if (pParty->floor_face_pid != PID_ID(collision_state.pid) && pFace->Pressure_Plate())
-                    uFaceEvent = pIndoor->pFaceExtras[pFace->uFaceExtraID].uEventID;
+                    faceEvent = pIndoor->pFaceExtras[pFace->uFaceExtraID].uEventID;
             } else { // Not floor
                 int speed_dot_normal = abs(
                     speed.x * pFace->facePlane.normal.x +
@@ -1766,11 +1764,11 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
                         new_party_z_tmp += -distance_to_face * pFace->facePlane.normal.z;
                     }
                     if (pParty->floor_face_pid != PID_ID(collision_state.pid) && pFace->Pressure_Plate())
-                        uFaceEvent = pIndoor->pFaceExtras[pFace->uFaceExtraID].uEventID;
+                        faceEvent = pIndoor->pFaceExtras[pFace->uFaceExtraID].uEventID;
                 } else { // between floor & wall
                     if (speed.x * speed.x + speed.y * speed.y >= min_party_move_delta_sqr) {
                         if (pParty->floor_face_pid != PID_ID(collision_state.pid) && pFace->Pressure_Plate())
-                            uFaceEvent = pIndoor->pFaceExtras[pFace->uFaceExtraID].uEventID;
+                            faceEvent = pIndoor->pFaceExtras[pFace->uFaceExtraID].uEventID;
                     } else {
                         speed = Vec3i();
                     }
@@ -1806,7 +1804,7 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
                         if (walkDelta >= 4) {
                             if (on_water) {
                                 sound = SOUND_RunWaterIndoor;
-                            } else if (pIndoor->pFaces[uFaceID].uAttributes & FACE_INDOOR_CARPET) {
+                            } else if (pIndoor->pFaces[faceId].uAttributes & FACE_INDOOR_CARPET) {
                                 sound = SOUND_RunCarpet;
                             } else {
                                 // TODO(Nik-RE-dev): need to probe surface
@@ -1817,7 +1815,7 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
                         if (walkDelta >= 2) {
                             if (on_water) {
                                 sound = SOUND_WalkWaterIndoor;
-                            } else if (pIndoor->pFaces[uFaceID].uAttributes & FACE_INDOOR_CARPET) {
+                            } else if (pIndoor->pFaces[faceId].uAttributes & FACE_INDOOR_CARPET) {
                                 sound = SOUND_WalkCarpet;
                             } else {
                                 // TODO(Nik-RE-dev): need to probe surface
@@ -1851,13 +1849,13 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
     pParty->vPosition = newPos;
     pParty->_viewYaw = angle;
     pParty->_viewPitch = vertical_angle;
-    pParty->uFallSpeed = speed.z;
+    pParty->speed.z = speed.z;
 
-    if (!isAboveGround && pIndoor->pFaces[uFaceID].uAttributes & FACE_IsLava)
+    if (!isAboveGround && pIndoor->pFaces[faceId].uAttributes & FACE_IsLava)
         pParty->uFlags |= PARTY_FLAGS_1_BURNING;
 
-    if (uFaceEvent)
-        eventProcessor(uFaceEvent, 0, 1);
+    if (faceEvent)
+        eventProcessor(faceEvent, 0, 1);
 }
 
 void switchDoorAnimation(unsigned int uDoorID, int a2) {
