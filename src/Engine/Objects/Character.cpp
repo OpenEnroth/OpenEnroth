@@ -6776,7 +6776,7 @@ void Character::OnInventoryLeftClick() {
                     ptr_50C9A4_ItemToEnchant = &this->pInventoryItemList[enchantedItemPos - 1];
                     IsEnchantingInProgress = false;
 
-                    engine->_messageQueue->flush();
+                    engine->_messageQueue->clear();
 
                     mouse->SetCursorImage("MICON1");
                     AfterEnchClickEventId = UIMSG_Escape;

@@ -2,26 +2,22 @@
 
 #include <utility>
 
-void GUIFrameMessageQueue::Flush() {
-    if (messageQueue.size()) {
-        GUIMessage message = messageQueue.front();
-        Clear();
-        if (message.field_8 != 0) { // TODO(Nik-RE-dev): what's the semantics here?
-            messageQueue.push(message);
-        }
-    }
-}
-
-void GUIFrameMessageQueue::Clear() {
+void GUIFrameMessageQueue::clear() {
     std::queue<GUIMessage> empty;
 
     messageQueue.swap(empty);
 }
 
-void GUIFrameMessageQueue::PopMessage(UIMessageType *pType, int *pParam, int *a4) {
-    *pType = UIMSG_Invalid;
-    *pParam = 0;
-    *a4 = 0;
+void GUIFrameMessageQueue::popMessage(UIMessageType *msg, int *param, int *param2) {
+    assert(msg != nullptr);
+
+    *msg = UIMSG_Invalid;
+    if (param) {
+        *param = 0;
+    }
+    if (param2) {
+        *param2 = 0;
+    }
 
     if (messageQueue.empty()) {
         return;
@@ -30,15 +26,19 @@ void GUIFrameMessageQueue::PopMessage(UIMessageType *pType, int *pParam, int *a4
     GUIMessage message = messageQueue.front();
     messageQueue.pop();
 
-    *pType = message.eType;
-    *pParam = message.param;
-    *a4 = message.field_8;
+    *msg = message.type;
+    if (param) {
+        *param = message.param;
+    }
+    if (param2) {
+        *param2 = message.param2;
+    }
 }
 
-void GUIFrameMessageQueue::AddGUIMessage(UIMessageType msg, int param, int a4) {
+void GUIFrameMessageQueue::addGUIMessage(UIMessageType msg, int param, int param2) {
     GUIMessage message;
-    message.eType = msg;
+    message.type = msg;
     message.param = param;
-    message.field_8 = a4;
+    message.param2 = param2;
     messageQueue.push(message);
 }

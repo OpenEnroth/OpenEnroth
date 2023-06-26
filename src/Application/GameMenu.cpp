@@ -52,7 +52,7 @@ std::map<InputAction, PlatformKey> curr_key_map;
 
 void Game_StartNewGameWhilePlaying(bool force_start) {
     if (confirmationState == CONFIRM_NEW_GAME || force_start) {
-        engine->_messageQueue->flush();
+        engine->_messageQueue->clear();
         // pGUIWindow_CurrentMenu->Release();
         uGameState = GAME_STATE_NEWGAME_OUT_GAMEMENU;
         current_screen_type = CURRENT_SCREEN::SCREEN_GAME;
@@ -65,7 +65,7 @@ void Game_StartNewGameWhilePlaying(bool force_start) {
 
 void Game_QuitGameWhilePlaying(bool force_quit) {
     if (confirmationState == CONFIRM_QUIT || force_quit) {
-        engine->_messageQueue->flush();
+        engine->_messageQueue->clear();
         // pGUIWindow_CurrentMenu->Release();
         current_screen_type = CURRENT_SCREEN::SCREEN_GAME;
         pAudioPlayer->stopSounds();
@@ -79,7 +79,7 @@ void Game_QuitGameWhilePlaying(bool force_quit) {
 }
 
 void Game_OpenLoadGameDialog() {
-    engine->_messageQueue->flush();
+    engine->_messageQueue->clear();
     pGUIWindow_CurrentMenu->Release();
     pGUIWindow_CurrentMenu = nullptr;
     game_ui_status_bar_event_string_time_left = 0;
@@ -198,7 +198,7 @@ void Menu::EventLoop() {
             }
             case UIMSG_Game_OpenOptionsDialog:  // Open
             {
-                engine->_messageQueue->flush();
+                engine->_messageQueue->clear();
 
                 pGUIWindow_CurrentMenu->Release();
                 pGUIWindow_CurrentMenu = new GUIWindow_GameOptions();  // GameMenuUI_Options_Load();
@@ -210,7 +210,7 @@ void Menu::EventLoop() {
 
             case UIMSG_OpenKeyMappingOptions:  // Open
             {
-                engine->_messageQueue->flush();
+                engine->_messageQueue->clear();
 
                 pGUIWindow_CurrentMenu->Release();
                 pGUIWindow_CurrentMenu = new GUIWindow_GameKeyBindings();  // GameMenuUI_OptionsKeymapping_Load();
@@ -253,7 +253,7 @@ void Menu::EventLoop() {
                 continue;
 
             case UIMSG_OpenVideoOptions: {
-                engine->_messageQueue->flush();
+                engine->_messageQueue->clear();
 
                 pGUIWindow_CurrentMenu->Release();
                 pGUIWindow_CurrentMenu = new GUIWindow_GameVideoOptions();

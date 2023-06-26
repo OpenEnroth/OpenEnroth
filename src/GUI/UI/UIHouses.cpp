@@ -296,7 +296,7 @@ IndexedArray<std::string, BUILDING_WEAPON_SHOP, BUILDING_MIRRORED_PATH_GUILD> sh
 bool enterHouse(HOUSE_ID uHouseID) {
     GameUI_StatusBar_Clear();
     GameUI_SetStatusBar("");
-    engine->_messageQueue->flush();
+    engine->_messageQueue->clear();
     uDialogueType = DIALOGUE_NULL;
     keyboardInputHandler->SetWindowInputStatus(WINDOW_INPUT_CANCELLED);
     keyboardInputHandler->ResetKeys();
@@ -462,7 +462,7 @@ void onSelectShopDialogueOption(DIALOGUE_TYPE option) {
 }
 
 bool houseDialogPressEscape() {
-    engine->_messageQueue->flush();
+    engine->_messageQueue->clear();
     keyboardInputHandler->SetWindowInputStatus(WINDOW_INPUT_CANCELLED);
     keyboardInputHandler->ResetKeys();
     activeLevelDecoration = nullptr;

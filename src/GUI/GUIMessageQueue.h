@@ -7,19 +7,18 @@
 #include "GUI/GUIEnums.h"
 
 struct GUIMessage {
-    enum UIMessageType eType;
+    UIMessageType type;
     int param;
-    int field_8;
+    int param2;
 };
 
 struct GUIFrameMessageQueue {
     GUIFrameMessageQueue() {}
 
-    void Flush();
-    void Clear();
-    bool Empty() { return messageQueue.empty(); }
-    void PopMessage(UIMessageType *pMsg, int *pParam, int *a4);
-    void AddGUIMessage(UIMessageType msg, int param, int a4);
+    void clear();
+    bool empty() { return messageQueue.empty(); }
+    void popMessage(UIMessageType *msg, int *param, int *param2);
+    void addGUIMessage(UIMessageType msg, int param, int param2);
 
     std::queue<GUIMessage> messageQueue;
 };
@@ -29,37 +28,33 @@ class GUIMessageQueue {
     GUIMessageQueue() {}
 
     bool haveMessages() {
-        return !_currentFrameQueue.Empty();
-    }
-
-    void flush() {
-        _currentFrameQueue.Flush();
+        return !_currentFrameQueue.empty();
     }
 
     void clear() {
-        _currentFrameQueue.Clear();
+        _currentFrameQueue.clear();
     }
 
     void clearAll() {
-        _currentFrameQueue.Clear();
-        _nextFrameQueue.Clear();
+        _currentFrameQueue.clear();
+        _nextFrameQueue.clear();
     }
 
     void swapFrames() {
         _nextFrameQueue.messageQueue.swap(_currentFrameQueue.messageQueue);
-        assert(_nextFrameQueue.Empty());
+        assert(_nextFrameQueue.empty());
     }
 
-    void addMessageCurrentFrame(UIMessageType msg, int param, int a4) {
-        _currentFrameQueue.AddGUIMessage(msg, param, a4);
+    void addMessageCurrentFrame(UIMessageType msg, int param = 0, int param2 = 0) {
+        _currentFrameQueue.addGUIMessage(msg, param, param2);
     }
 
-    void addMessageNextFrame(UIMessageType msg, int param, int a4) {
-        _nextFrameQueue.AddGUIMessage(msg, param, a4);
+    void addMessageNextFrame(UIMessageType msg, int param = 0, int param2 = 0) {
+        _nextFrameQueue.addGUIMessage(msg, param, param2);
     }
 
-    void popMessage(UIMessageType *msg, int *param, int *a4) {
-        _currentFrameQueue.PopMessage(msg, param, a4);
+    void popMessage(UIMessageType *msg, int *param, int *param2) {
+        _currentFrameQueue.popMessage(msg, param, param2);
     }
 
  private:

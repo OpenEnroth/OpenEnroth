@@ -287,7 +287,7 @@ void Io::Mouse::UI_OnMouseLeftClick() {
                     if (control->uButtonType == 1) {
                         if (control->Contains(x, y)) {
                             control->field_2C_is_pushed = true;
-                            engine->_messageQueue->flush();
+                            engine->_messageQueue->clear();
                             engine->_messageQueue->addMessageCurrentFrame(control->msg, control->msg_param, 0);
                             return;
                         }
@@ -298,7 +298,7 @@ void Io::Mouse::UI_OnMouseLeftClick() {
                                 (double)((x - control->uX) * (x - control->uX) +
                                          (y - control->uY) * (y - control->uY))) < (double)control->uWidth) {
                             control->field_2C_is_pushed = true;
-                            engine->_messageQueue->flush();
+                            engine->_messageQueue->clear();
                             engine->_messageQueue->addMessageCurrentFrame(control->msg, control->msg_param, 0);
                             return;
                         }
@@ -307,7 +307,7 @@ void Io::Mouse::UI_OnMouseLeftClick() {
                     if (control->uButtonType == 3) {  // clicking skills
                         if (control->Contains(x, y)) {
                             control->field_2C_is_pushed = true;
-                            engine->_messageQueue->flush();
+                            engine->_messageQueue->clear();
                             engine->_messageQueue->addMessageCurrentFrame(control->msg, control->msg_param, 0);
                             return;
                         }

@@ -91,7 +91,7 @@ void GUICredits::EventLoop() {
 }
 
 void GUICredits::ExecuteCredits() {
-    engine->_messageQueue->flush();
+    engine->_messageQueue->clear();
 
     pAudioPlayer->MusicPlayTrack(MUSIC_Credits);
 
