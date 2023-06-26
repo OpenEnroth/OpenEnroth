@@ -187,7 +187,7 @@ enum UIMessageType : uint32_t {
     UIMSG_ClickZoomInBtn = 368,
 
     UIMSG_Game_Action = 404,
-    UIMSG_SelectShopDialogueOption = 405,
+    UIMSG_SelectHouseDialogueOption = 405,
 
     UIMSG_RentRoom = 409,
     UIMSG_ClickHouseNPCPortrait = 410,

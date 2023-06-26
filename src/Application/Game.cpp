@@ -485,8 +485,8 @@ void Game::processQueuedMessages() {
             case UIMSG_ClickNPCTopic:
                 ClickNPCTopic((DIALOGUE_TYPE)uMessageParam);
                 continue;
-            case UIMSG_SelectShopDialogueOption:
-                onSelectShopDialogueOption((DIALOGUE_TYPE)uMessageParam);
+            case UIMSG_SelectHouseDialogueOption:
+                onSelectHouseDialogueOption((DIALOGUE_TYPE)uMessageParam);
                 continue;
             case UIMSG_SelectNPCDialogueOption:
                 OnSelectNPCDialogueOption((DIALOGUE_TYPE)uMessageParam);

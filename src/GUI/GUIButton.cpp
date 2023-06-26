@@ -107,7 +107,3 @@ void GUIButton::DrawLabel(const std::string &text, GUIFont *font, Color color, C
 bool GUIButton::Contains(unsigned int x, unsigned int y) {
     return (x >= uX && x <= uZ && y >= uY && y <= uW);
 }
-
-void CreateShopDialogueButtonAtRow(int row, DIALOGUE_TYPE type) {
-    pDialogueWindow->CreateButton({480, 146 + 30 * row}, {140, 30}, 1, 0, UIMSG_SelectShopDialogueOption, type, InputAction::Invalid, "");
-}
