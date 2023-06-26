@@ -13,7 +13,6 @@ class GraphicsImage;
 class Sprite {
  public:
     inline Sprite() {
-        uPaletteID = 0;
         texture = nullptr;
         uAreaX = 0;
         uAreaY = 0;
@@ -25,7 +24,6 @@ class Sprite {
     void Release();
 
     std::string pName;
-    int uPaletteID; // TODO(captainurist): why is this unused?
     GraphicsImage *texture;
     int uAreaX; // TODO(captainurist): always zero,
     int uAreaY; // TODO(captainurist): was intended to support sprite maps?

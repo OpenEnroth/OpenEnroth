@@ -66,7 +66,7 @@ class RenderBase : public IRender {
     virtual GraphicsImage *CreateTexture_Blank(RgbaImage image) override;
 
     virtual GraphicsImage *CreateTexture(const std::string &name) override;
-    virtual GraphicsImage *CreateSprite(const std::string &name, unsigned int palette_id) override;
+    virtual GraphicsImage *CreateSprite(const std::string &name) override;
 
  protected:
     unsigned int Billboard_ProbablyAddToListAndSortByZOrder(float z);
