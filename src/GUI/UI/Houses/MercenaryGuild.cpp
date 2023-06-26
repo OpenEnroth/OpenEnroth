@@ -7,6 +7,10 @@
 
 #include "Engine/Localization.h"
 #include "Engine/PriceCalculator.h"
+#include "Engine/Party.h"
+#include "Engine/Engine.h"
+
+#include "Media/Audio/AudioPlayer.h"
 
 std::array<int16_t, 49> word_4F0754;
 

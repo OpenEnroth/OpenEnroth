@@ -5,9 +5,13 @@
 #include "Engine/Tables/TransitionTable.h"
 #include "Engine/Tables/MerchantTable.h"
 #include "Engine/Tables/MessageScrollTable.h"
+#include "Engine/Objects/NPC.h"
 
 #include "Engine/Engine.h"
 #include "Engine/Party.h"
+#include "Engine/GameResourceManager.h"
+
+#include "Library/Random/Random.h"
 
 #include "Utility/String.h"
 

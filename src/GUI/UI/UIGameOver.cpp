@@ -6,6 +6,7 @@
 #include "Engine/EngineGlobals.h"
 #include "Engine/Localization.h"
 #include "Engine/Time.h"
+#include "Engine/AssetsManager.h"
 #include "Engine/Graphics/IRender.h"
 
 #include "Application/GameOver.h"

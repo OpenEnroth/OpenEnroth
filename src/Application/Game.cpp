@@ -7,6 +7,12 @@
 
 #include "Arcomage/Arcomage.h"
 
+#include "Application/GameKeyboardController.h"
+#include "Application/GameWindowHandler.h"
+#include "Application/GamePathResolver.h"
+#include "Application/GameTraceHandler.h"
+#include "Application/GameMenu.h"
+
 #include "Engine/AssetsManager.h"
 #include "Engine/Engine.h"
 #include "Engine/EngineGlobals.h"
@@ -35,9 +41,11 @@
 #include "Engine/Objects/Chest.h"
 #include "Engine/Objects/ObjectList.h"
 #include "Engine/Objects/SpriteObject.h"
+#include "Engine/Objects/NPC.h"
 #include "Engine/Party.h"
 #include "Engine/SaveLoad.h"
 #include "Engine/Spells/CastSpellInfo.h"
+#include "Engine/Spells/Spells.h"
 #include "Engine/Tables/ItemTable.h"
 #include "Engine/Tables/FrameTableInc.h"
 #include "Engine/Tables/AwardTable.h"
@@ -77,15 +85,11 @@
 #include "Media/MediaPlayer.h"
 
 #include "Library/Application/PlatformApplication.h"
+#include "Library/Random/Random.h"
+#include "Library/Logger/Logger.h"
 
 #include "Utility/Format.h"
-#include "Library/Random/Random.h"
-
-#include "Application/GameKeyboardController.h"
-#include "Application/GameWindowHandler.h"
-#include "Application/GamePathResolver.h"
-#include "Application/GameTraceHandler.h"
-#include "Application/GameMenu.h"
+#include "Utility/DataPath.h"
 
 void ShowMM7IntroVideo_and_LoadingScreen();
 
@@ -172,10 +176,10 @@ int Game::run() {
         _application->install(_nuklearHandler.get());
     }
 
-    keyboardActionMapping = std::make_shared<KeyboardActionMapping>(_config);
+    keyboardActionMapping = std::make_shared<Io::KeyboardActionMapping>(_config);
     ::keyboardActionMapping = keyboardActionMapping;
 
-    keyboardInputHandler = std::make_shared<KeyboardInputHandler>(
+    keyboardInputHandler = std::make_shared<Io::KeyboardInputHandler>(
         _application->get<GameKeyboardController>(),
         keyboardActionMapping
     );

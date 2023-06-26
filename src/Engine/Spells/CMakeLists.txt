@@ -6,6 +6,7 @@ set(ENGINE_SPELLS_SOURCES
 
 set(ENGINE_SPELLS_HEADERS
         CastSpellInfo.h
+        SpellBuff.h
         SpellEnums.h
         Spells.h)
 

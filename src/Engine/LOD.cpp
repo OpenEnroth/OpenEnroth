@@ -3,15 +3,19 @@
 #include <filesystem>
 #include <memory>
 
-#include "Library/Compression/Compression.h"
-
 #include "Engine/Engine.h"
+#include "Engine/AssetsManager.h"
+#include "Engine/EngineIocContainer.h"
 
-#include "Engine/Graphics/IRender.h"
 #include "Engine/Graphics/Sprites.h"
 #include "Engine/Graphics/Image.h"
 
+#include "Library/Compression/Compression.h"
+#include "Library/Logger/Logger.h"
+
 #include "Utility/Memory/FreeDeleter.h"
+#include "Utility/String.h"
+#include "Utility/DataPath.h"
 
 LODFile_IconsBitmaps *pIcons_LOD = nullptr;
 LODFile_IconsBitmaps *pIcons_LOD_mm6 = nullptr;

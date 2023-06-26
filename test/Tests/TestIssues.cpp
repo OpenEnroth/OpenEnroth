@@ -7,9 +7,14 @@
 
 #include "Engine/Tables/ItemTable.h"
 #include "Engine/Objects/SpriteObject.h"
+#include "Engine/Objects/NPC.h"
+#include "Engine/Objects/Actor.h"
 #include "Engine/SaveLoad.h"
 #include "Engine/Graphics/Indoor.h"
 #include "Engine/Graphics/Image.h"
+#include "Engine/Party.h"
+#include "Engine/AssetsManager.h"
+#include "Engine/Engine.h"
 
 #include "Utility/DataPath.h"
 #include "Utility/ScopeGuard.h"

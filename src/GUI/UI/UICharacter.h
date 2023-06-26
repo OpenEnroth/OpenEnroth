@@ -25,13 +25,13 @@ class GUIWindow_CharacterRecord : public GUIWindow {
     void releaseAwardsScrollBar();
 
  protected:
-    void CharacterUI_StatsTab_Draw(struct Character *);
-    void CharacterUI_SkillsTab_Draw(struct Character *);
+    void CharacterUI_StatsTab_Draw(Character *);
+    void CharacterUI_SkillsTab_Draw(Character *);
 
     /**
      * @offset 0x41A000
      */
-    void CharacterUI_AwardsTab_Draw(struct Character *);
+    void CharacterUI_AwardsTab_Draw(Character *);
 
     void CharacterUI_SkillsTab_CreateButtons();
 

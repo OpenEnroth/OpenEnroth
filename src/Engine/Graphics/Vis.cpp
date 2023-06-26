@@ -17,7 +17,10 @@
 #include "Engine/Graphics/Sprites.h"
 #include "Engine/Graphics/Viewport.h"
 #include "Engine/Graphics/Image.h"
+#include "Engine/Graphics/IRender.h"
 #include "Engine/Objects/Actor.h"
+
+#include "Library/Logger/Logger.h"
 
 #include "Utility/Math/TrigLut.h"
 

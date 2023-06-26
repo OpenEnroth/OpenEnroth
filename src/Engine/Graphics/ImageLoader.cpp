@@ -9,6 +9,7 @@
 #include "Engine/Graphics/IRender.h"
 #include "Engine/Graphics/Sprites.h"
 #include "Engine/Snapshots/CommonSnapshots.h"
+#include "Engine/LOD.h"
 
 #include "Library/Image/ImageFunctions.h"
 #include "Library/Image/PCX.h"

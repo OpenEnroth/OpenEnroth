@@ -14,12 +14,14 @@
 #include "Engine/Objects/Actor.h"
 #include "Engine/Objects/ObjectList.h"
 #include "Engine/Objects/SpriteObject.h"
+#include "Engine/Objects/NPC.h"
 #include "Engine/Tables/ItemTable.h"
 #include "Engine/Tables/IconFrameTable.h"
 #include "Engine/Tables/CharacterFrameTable.h"
 #include "Engine/Time.h"
 #include "Engine/TurnEngine/TurnEngine.h"
 #include "Engine/OurMath.h"
+#include "Engine/AssetsManager.h"
 
 #include "GUI/GUIWindow.h"
 #include "GUI/GUIMessageQueue.h"
@@ -31,6 +33,7 @@
 #include "Media/Audio/AudioPlayer.h"
 
 #include "Library/Random/Random.h"
+#include "Library/Logger/Logger.h"
 
 using Io::Mouse;
 
@@ -1115,6 +1118,19 @@ bool Party::addItemToParty(ItemGen *pItem, bool isSilent) {
         logger->warning("Invalid picture_name detected ::addItem()");
     }
     return false;
+}
+
+int Party::getRandomActiveCharacterId(RandomEngine *rng) const {
+    std::vector<int> activeCharacters = {};
+    for (int i = 0; i < pCharacters.size(); i++) {
+        if (pCharacters[i].CanAct()) {
+            activeCharacters.push_back(i);
+        }
+    }
+    if (!activeCharacters.empty()) {
+        return activeCharacters[rng->random(activeCharacters.size())];
+    }
+    return -1;
 }
 
 bool Party::isPartyEvil() { return _questBits[QBIT_DARK_PATH]; }

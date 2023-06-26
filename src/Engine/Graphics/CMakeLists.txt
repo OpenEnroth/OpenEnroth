@@ -14,6 +14,7 @@ set(ENGINE_GRAPHICS_SOURCES
         Image.cpp
         ImageLoader.cpp
         Indoor.cpp
+        IRender.cpp
         Level/Decoration.cpp
         LightmapBuilder.cpp
         LightsStack.cpp
@@ -43,6 +44,7 @@ set(ENGINE_GRAPHICS_HEADERS
         Collisions.h
         DecalBuilder.h
         DecorationList.h
+        FaceEnums.h
         FrameLimiter.h
         HWLContainer.h
         IRender.h
@@ -68,6 +70,7 @@ set(ENGINE_GRAPHICS_HEADERS
         Polygon.h
         PortalFunctions.h
         RenderBase.h
+        RenderEntities.h
         RendererType.h
         Sprites.h
         TextureRenderId.h

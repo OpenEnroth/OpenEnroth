@@ -1,12 +1,12 @@
 #include "Engine/Tables/IconFrameTable.h"
 
 #include "Engine/Engine.h"
-#include "Engine/Graphics/IRender.h"
+#include "Engine/AssetsManager.h"
+#include "Engine/LOD.h"
 #include "Engine/Snapshots/EntitySnapshots.h"
 #include "Engine/Snapshots/SnapshotSerialization.h"
 
-#include "../LOD.h"
-
+#include "Utility/String.h"
 
 GraphicsImage *Icon::GetTexture() {
     if (!this->img) {

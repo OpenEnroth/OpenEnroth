@@ -1,6 +1,9 @@
 #include "Engine/Tables/TransitionTable.h"
 
 #include "Engine/Engine.h"
+#include "Engine/GameResourceManager.h"
+
+#include "Utility/String.h"
 
 std::array<std::string, 465> pTransitionStrings;
 

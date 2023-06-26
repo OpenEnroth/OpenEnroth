@@ -4,6 +4,9 @@
 #include <cstdarg>
 
 #include "Engine/Engine.h"
+#include "Engine/EngineIocContainer.h"
+
+#include "Library/Logger/Logger.h"
 
 #ifdef _WINDOWS
 #   include <mbstring.h>

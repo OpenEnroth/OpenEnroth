@@ -22,7 +22,8 @@ namespace Io {
         Number = 2,
     };
 
-    struct KeyboardActionMapping {
+    class KeyboardActionMapping {
+     public:
         explicit KeyboardActionMapping(std::shared_ptr<GameConfig> config);
 
         void MapKey(InputAction action, PlatformKey key);

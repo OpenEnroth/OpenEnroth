@@ -8,19 +8,24 @@
 #include <vector>
 #include <thread>
 
-#include "Library/Compression/Compression.h"
-
 #include "Engine/Graphics/Indoor.h"
 #include "Engine/Graphics/Level/Decoration.h"
 #include "Engine/Objects/Actor.h"
 #include "Engine/Objects/SpriteObject.h"
+#include "Engine/Spells/Spells.h"
 #include "Engine/Party.h"
 #include "Engine/Snapshots/EntitySnapshots.h"
 #include "Engine/Snapshots/SnapshotSerialization.h"
+#include "Engine/Engine.h"
 
 #include "Media/Audio/OpenALSoundProvider.h"
 
 #include "GUI/GUIWindow.h"
+
+#include "Library/Compression/Compression.h"
+#include "Library/Logger/Logger.h"
+
+#include "Utility/DataPath.h"
 
 #include "SoundInfo.h"
 

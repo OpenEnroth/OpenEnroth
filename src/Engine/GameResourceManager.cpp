@@ -5,9 +5,13 @@
 #include "Engine/Graphics/Texture_MM7.h"
 
 #include "Library/Compression/Compression.h"
+#include "Library/Lod/LodReader.h"
 
 #include "Utility/DataPath.h"
 #include "Utility/Streams/BlobInputStream.h"
+
+GameResourceManager::GameResourceManager() = default;
+GameResourceManager::~GameResourceManager() = default;
 
 void GameResourceManager::openGameResources() {
     _eventsLodReader = LodReader::open(makeDataPath("data", "events.lod"));

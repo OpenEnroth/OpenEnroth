@@ -2,11 +2,12 @@
 
 #include <string>
 
-#include "Engine/Objects/Items.h"
+#include "Engine/Objects/CharacterEnums.h"
+#include "Engine/Objects/ItemEnums.h"
 
 #include "Utility/IndexedArray.h"
 
-struct Character;
+class Character;
 
 struct CEnchantment {
     CEnchantment() {}

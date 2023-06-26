@@ -2,7 +2,7 @@
 #include <sstream>
 
 #include "Engine/MapInfo.h"
-
+#include "Engine/GameResourceManager.h"
 #include "Engine/Engine.h"
 #include "Engine/Graphics/Indoor.h"
 #include "Engine/LOD.h"
@@ -16,6 +16,7 @@
 
 #include "Library/Random/Random.h"
 #include "Utility/Math/TrigLut.h"
+#include "Utility/String.h"
 
 #include "OurMath.h"
 #include "Party.h"

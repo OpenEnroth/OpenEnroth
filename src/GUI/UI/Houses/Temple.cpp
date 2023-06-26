@@ -13,6 +13,10 @@
 #include "Engine/Graphics/LocationInfo.h"
 #include "Engine/Graphics/LocationFunctions.h"
 #include "Engine/Spells/CastSpellInfo.h"
+#include "Engine/Party.h"
+#include "Engine/Engine.h"
+
+#include "Media/Audio/AudioPlayer.h"
 
 void GUIWindow_Temple::mainDialogue() {
     int price = PriceCalculator::templeHealingCostForPlayer(&pParty->activeCharacter(), buildingTable[houseId()].fPriceMultiplier);

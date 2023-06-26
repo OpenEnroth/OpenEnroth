@@ -4,7 +4,6 @@
 #include <memory>
 #include <utility>
 #include <map>
-#include <chrono>
 
 #include "glad/gl.h"
 #include <glm.hpp>
@@ -29,8 +28,10 @@
 #include "Engine/Graphics/Vis.h"
 #include "Engine/Graphics/Weather.h"
 #include "Engine/Graphics/PaletteManager.h"
+#include "Engine/Graphics/Polygon.h"
 #include "Engine/Objects/Actor.h"
 #include "Engine/Objects/SpriteObject.h"
+#include "Engine/Tables/TileFrameTable.h"
 #include "Engine/OurMath.h"
 #include "Engine/Party.h"
 #include "Engine/SpellFxRenderer.h"
@@ -41,6 +42,7 @@
 #include "Library/Serialization/EnumSerialization.h"
 #include "Library/Image/ImageFunctions.h"
 #include "Library/Color/Colorf.h"
+#include "Library/Logger/Logger.h"
 
 #include "Utility/Geometry/Size.h"
 #include "Utility/Format.h"
@@ -882,7 +884,7 @@ void RenderOpenGL::DrawIndoorSky(unsigned int uNumVertices, unsigned int uFaceID
     BLVFace *pFace = &pIndoor->pFaces[uFaceID];
     if (pFace->uNumVertices <= 0) return;
 
-    struct Polygon pSkyPolygon;
+    Polygon pSkyPolygon;
     pSkyPolygon.texture = nullptr;
     pSkyPolygon.texture = pFace->GetTexture();
     if (!pSkyPolygon.texture) return;

@@ -5,6 +5,7 @@
 #include "Engine/ErrorHandling.h"
 #include "Engine/Objects/CharacterEnums.h"
 
+#include "Utility/Workaround/ToUnderlying.h"
 
 #define SKILL_TO_LEARNING_DIALOGUE_ID(skill)  36 + std::to_underlying(skill)
 

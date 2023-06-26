@@ -18,6 +18,7 @@
  */
 
 class Actor;
+class Character;
 class Icon;
 class SpriteFrame;
 class TextureFrame;
@@ -51,7 +52,6 @@ struct OverlayDesc;
 struct ActiveOverlay;
 struct ActiveOverlayList;
 struct Party;
-struct Character;
 struct PlayerFrame;
 struct SaveGameHeader;
 struct SpawnPoint;

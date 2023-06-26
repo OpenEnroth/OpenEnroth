@@ -10,6 +10,7 @@
 #include "Engine/Graphics/Camera.h"
 #include "Engine/Graphics/Viewport.h"
 #include "Engine/Graphics/Vis.h"
+#include "Engine/Graphics/IRender.h"
 #include "Engine/EngineIocContainer.h"
 #include "Engine/Time.h"
 
@@ -22,6 +23,8 @@
 
 #include "Media/Audio/AudioPlayer.h"
 #include "Media/MediaPlayer.h"
+
+#include "Library/Logger/Logger.h"
 
 #include "Platform/PlatformGamepad.h"
 
@@ -292,7 +295,7 @@ void GameWindowHandler::OnKey(PlatformKey key) {
         return;
     }
 
-    if (currently_selected_action_for_binding != InputAction::Invalid) {
+    if (currently_selected_action_for_binding != Io::InputAction::Invalid) {
         // we're setting a key binding in options
         keyboardInputHandler->ProcessTextInput(key, -1);
     } else if (pArcomageGame->bGameInProgress) {

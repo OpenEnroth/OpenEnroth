@@ -1,6 +1,5 @@
 #include <string>
 #include <utility>
-#include <vector>
 #include <functional>
 
 #include "Engine/Events/EventInterpreter.h"
@@ -8,16 +7,21 @@
 #include "Engine/Events/Processor.h"
 #include "Engine/Party.h"
 #include "Engine/LOD.h"
-#include "Engine/Graphics/IRender.h"
 #include "Engine/Graphics/Indoor.h"
 #include "Engine/Graphics/Weather.h"
 #include "Engine/Graphics/Level/Decoration.h"
 #include "Engine/Objects/NPC.h"
 #include "Engine/Objects/SpriteObject.h"
+#include "Engine/Objects/Chest.h"
+#include "Engine/Objects/Actor.h"
 #include "Engine/Tables/ItemTable.h"
+#include "Engine/Spells/Spells.h"
+#include "Engine/Engine.h"
 
 #include "Media/Audio/AudioPlayer.h"
 #include "Media/MediaPlayer.h"
+
+#include "Library/Random/Random.h"
 
 #include "Utility/Math/TrigLut.h"
 

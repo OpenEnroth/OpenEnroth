@@ -46,7 +46,7 @@ static bool isLoadSlotClicked = false;
 
 CurrentConfirmationState confirmationState = CONFIRM_NONE;
 
-InputAction currently_selected_action_for_binding = InputAction::Invalid;  // 506E68
+InputAction currently_selected_action_for_binding = Io::InputAction::Invalid;  // 506E68
 std::map<InputAction, bool> key_map_conflicted;  // 506E6C
 std::map<InputAction, PlatformKey> curr_key_map;
 
@@ -221,7 +221,7 @@ void Menu::EventLoop() {
             }
 
             case UIMSG_ChangeKeyButton: {
-                if (currently_selected_action_for_binding != InputAction::Invalid) {
+                if (currently_selected_action_for_binding != Io::InputAction::Invalid) {
                     pAudioPlayer->playUISound(SOUND_error);
                 } else {
                     currently_selected_action_for_binding = (InputAction)param;

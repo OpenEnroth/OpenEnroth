@@ -1,6 +1,7 @@
 #include "Engine/Graphics/ParticleEngine.h"
 
 #include "Engine/Graphics/Camera.h"
+#include "Engine/Graphics/IRender.h"
 #include "Engine/LOD.h"
 #include "Engine/OurMath.h"
 #include "Engine/Time.h"
@@ -35,7 +36,7 @@ void TrailParticleGenerator::GenerateTrailParticles(int x, int y, int z,
 
 //----- (00440F07) --------------------------------------------------------
 void TrailParticleGenerator::UpdateParticles() {
-    for (uint i = 0; i < 100; ++i) {
+    for (unsigned int i = 0; i < 100; ++i) {
         if (particles[i].time_left > 0) {
             particles[i].x += vrng->random(5) + 4;
             particles[i].y += vrng->random(5) - 2;
@@ -121,7 +122,7 @@ void ParticleEngine::UpdateParticles() {
         return;
     }
 
-    for (uint i = uStartParticle; i <= uEndParticle; ++i) {
+    for (unsigned int i = uStartParticle; i <= uEndParticle; ++i) {
         Particle *p = &pParticles[i];
 
         if (p->type == ParticleType_Invalid) {
@@ -233,7 +234,7 @@ void ParticleEngine::DrawParticles_BLV() {
 
     v15.sParentBillboardID = -1;
 
-    for (uint i = uStartParticle; i <= uEndParticle; ++i) {
+    for (unsigned int i = uStartParticle; i <= uEndParticle; ++i) {
         Particle *p = &pParticles[i];
 
         if (p->type == ParticleType_Invalid) continue;

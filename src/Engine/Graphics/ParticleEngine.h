@@ -2,9 +2,13 @@
 
 #include <array>
 
+#include "Engine/Graphics/RenderEntities.h"
+
+#include "Library/Color/Color.h"
+
 #include "Utility/Flags.h"
 
-#include "Engine/Graphics/IRender.h"
+class GraphicsImage;
 
 enum class ParticleFlag : uint32_t {
     ParticleType_Invalid = 0,

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Engine/Graphics/IRender.h"
+#include "Engine/Graphics/RenderEntities.h"
 
 struct IndoorCameraD3D_Vec4;
 

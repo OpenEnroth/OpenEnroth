@@ -1,6 +1,9 @@
 #include "Engine/Tables/MerchantTable.h"
 
 #include "Engine/Engine.h"
+#include "Engine/GameResourceManager.h"
+
+#include "Utility/String.h"
 
 IndexedArray<std::string, MERCHANT_PHRASE_FIRST, MERCHANT_PHRASE_LAST> pMerchantsBuyPhrases;
 IndexedArray<std::string, MERCHANT_PHRASE_FIRST, MERCHANT_PHRASE_LAST> pMerchantsSellPhrases;

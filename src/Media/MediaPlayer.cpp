@@ -25,6 +25,7 @@ extern "C" {
 #include "Engine/Engine.h"
 #include "Engine/EngineGlobals.h"
 #include "Engine/ErrorHandling.h"
+#include "Engine/EngineIocContainer.h"
 #include "Engine/Graphics/IRender.h"
 #include "Engine/Graphics/Image.h"
 
@@ -35,6 +36,7 @@ extern "C" {
 #include "Media/MediaLogger.h"
 
 #include "Utility/Memory/FreeDeleter.h"
+#include "Utility/DataPath.h"
 
 #include "GUI/GUIMessageQueue.h"
 #include "GUI/GUIWindow.h"

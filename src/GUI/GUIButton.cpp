@@ -109,5 +109,5 @@ bool GUIButton::Contains(unsigned int x, unsigned int y) {
 }
 
 void CreateShopDialogueButtonAtRow(int row, DIALOGUE_TYPE type) {
-    pDialogueWindow->CreateButton({480, 146 + 30 * row}, {140, 30}, 1, 0, UIMSG_SelectShopDialogueOption, type, InputAction::Invalid, "");
+    pDialogueWindow->CreateButton({480, 146 + 30 * row}, {140, 30}, 1, 0, UIMSG_SelectShopDialogueOption, type, Io::InputAction::Invalid, "");
 }

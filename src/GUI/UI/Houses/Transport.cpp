@@ -12,6 +12,12 @@
 #include "Engine/SaveLoad.h"
 #include "Engine/PriceCalculator.h"
 #include "Engine/Graphics/Camera.h"
+#include "Engine/Objects/NPC.h"
+#include "Engine/MapInfo.h"
+#include "Engine/Party.h"
+#include "Engine/Engine.h"
+
+#include "Media/Audio/AudioPlayer.h"
 
 #include "Utility/IndexedArray.h"
 

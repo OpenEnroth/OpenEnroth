@@ -1,14 +1,17 @@
 #pragma once
 
+#include <array>
 #include <vector>
 #include <string>
 
 #include <glm.hpp>
 
-#include "Engine/Tables/TileFrameTable.h"
-
+#include "Engine/Tables/TileEnums.h"
 #include "Engine/SpawnPoint.h"
-#include "Media/Audio/AudioPlayer.h"
+
+#include "Media/Audio/SoundEnums.h"
+
+#include "Library/Color/Color.h"
 
 #include "BSPModel.h"
 #include "LocationInfo.h"
@@ -20,6 +23,7 @@ class Logger;
 class DecalBuilder;
 class SpellFxRenderer;
 class LightmapBuilder;
+class TileDesc;
 
 struct OutdoorLocationTileType {
     Tileset tileset;

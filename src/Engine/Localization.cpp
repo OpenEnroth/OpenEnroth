@@ -4,6 +4,9 @@
 #include "Engine/Engine.h"
 #include "Engine/LOD.h"
 #include "Engine/Localization.h"
+#include "Engine/GameResourceManager.h"
+
+#include "Utility/String.h"
 
 Localization *localization = nullptr;
 

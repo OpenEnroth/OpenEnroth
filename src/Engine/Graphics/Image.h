@@ -2,13 +2,9 @@
 
 #include <string>
 #include <memory>
-#include <vector>
 
-#include "Utility/IndexedArray.h"
 #include "Utility/Geometry/Size.h"
-#include "Utility/Memory/Blob.h"
 
-#include "Library/Color/Color.h"
 #include "Library/Image/Image.h"
 #include "Library/Image/Palette.h"
 

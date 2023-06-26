@@ -1,5 +1,9 @@
 #include "Engine/Graphics/IRenderFactory.h"
 
+#include "Application/GameConfig.h"
+
+#include "Library/Logger/Logger.h"
+
 #include "Engine/EngineIocContainer.h"
 #include "Engine/Graphics/OpenGL/RenderOpenGL.h"
 

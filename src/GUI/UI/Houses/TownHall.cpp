@@ -2,9 +2,13 @@
 
 #include "GUI/UI/Houses/TownHall.h"
 
+#include "Engine/Objects/Monsters.h"
 #include "Engine/Graphics/IRender.h"
 #include "Engine/Localization.h"
 #include "Engine/Tables/AwardTable.h"
+#include "Engine/Party.h"
+#include "Engine/mm7_data.h"
+#include "Engine/Engine.h"
 
 #include "GUI/UI/UIHouses.h"
 #include "GUI/GUIMessageQueue.h"
@@ -13,6 +17,8 @@
 #include "GUI/GUIFont.h"
 
 #include "Io/KeyboardActionMapping.h"
+
+#include "Library/Random/Random.h"
 
 using Io::TextInputType;
 

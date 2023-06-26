@@ -1,12 +1,12 @@
 #pragma once
+
 #include <memory>
 #include <string>
-
-#include "Application/GameConfig.h"
 
 #include "RendererType.h"
 
 class IRender;
+class GameConfig;
 
 namespace Graphics {
     class IRenderFactory {

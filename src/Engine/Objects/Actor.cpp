@@ -10,6 +10,7 @@
 #include "Engine/Graphics/DecalBuilder.h"
 #include "Engine/Graphics/Level/Decoration.h"
 #include "Engine/Graphics/Indoor.h"
+#include "Engine/Graphics/IRender.h"
 #include "Engine/Graphics/Overlays.h"
 #include "Engine/Graphics/Sprites.h"
 #include "Engine/Graphics/Vis.h"
@@ -21,6 +22,7 @@
 #include "Engine/Party.h"
 #include "Engine/SpellFxRenderer.h"
 #include "Engine/Spells/CastSpellInfo.h"
+#include "Engine/Spells/Spells.h"
 #include "Engine/AttackList.h"
 #include "Engine/Tables/ItemTable.h"
 #include "Engine/Tables/FactionTable.h"
@@ -34,8 +36,10 @@
 
 #include "Media/Audio/AudioPlayer.h"
 
-#include "Utility/Math/TrigLut.h"
 #include "Library/Random/Random.h"
+#include "Library/Logger/Logger.h"
+
+#include "Utility/Math/TrigLut.h"
 
 // should be injected into Actor but struct size cant be changed
 static DecalBuilder *decal_builder = EngineIocContainer::ResolveDecalBuilder();
@@ -48,6 +52,10 @@ stru319 stru_50C198;  // idb
 std::array<uint, 5> _4DF380_hostilityRanges = {0, 1024, 2560, 5120, 10240};
 
 std::array<int16_t, 11> word_4E8152 = {{0, 0, 0, 90, 8, 2, 70, 20, 10, 50, 30}};  // level spawn monster levels ABC
+
+stru319::stru319() {
+    this->vis = EngineIocContainer::ResolveVis();
+}
 
 //----- (0042FB5C) --------------------------------------------------------
 // True if monster should play attack animation when casting this spell.

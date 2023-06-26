@@ -13,12 +13,14 @@
 
 #include "Engine/SaveLoad.h"
 #include "Engine/EngineGlobals.h"
+#include "Engine/mm7_data.h"
 
 #include "Library/Application/PlatformApplication.h"
 
 #include "Platform/PlatformEvents.h"
 
 #include "Utility/Exception.h"
+#include "Utility/DataPath.h"
 
 EngineController::EngineController(EngineControlStateHandle state): _state(std::move(state)) {}
 

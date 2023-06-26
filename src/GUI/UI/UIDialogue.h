@@ -4,6 +4,7 @@
 
 #include "GUI/GUIWindow.h"
 
+#include "Utility/IndexedArray.h"
 
 class GUIWindow_Dialogue : public GUIWindow {
  public:

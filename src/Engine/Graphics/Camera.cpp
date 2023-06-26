@@ -6,6 +6,7 @@
 
 #include "Engine/Graphics/Indoor.h"
 #include "Engine/Graphics/Viewport.h"
+#include "Engine/Graphics/IRender.h"
 
 #include "Engine/Graphics/ClippingFunctions.h"
 

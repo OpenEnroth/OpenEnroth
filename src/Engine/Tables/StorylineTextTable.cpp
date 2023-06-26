@@ -1,9 +1,10 @@
 #include <vector>
 
 #include "Engine/Tables/StorylineTextTable.h"
+#include "Engine/Engine.h"
+#include "Engine/GameResourceManager.h"
 
 #include "Utility/String.h"
-#include "Engine/Engine.h"
 
 struct StorylineText *pStorylineText;
 

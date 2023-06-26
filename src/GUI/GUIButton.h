@@ -33,7 +33,7 @@ class GUIButton {
     bool field_2C_is_pushed = false;
     GUIWindow *pParent = nullptr;
     std::vector<GraphicsImage*> vTextures;
-    InputAction action = InputAction::Invalid;
+    Io::InputAction action = Io::InputAction::Invalid;
     std::string sLabel = "";
     std::string field_75 = "";
 };
