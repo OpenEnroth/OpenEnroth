@@ -45,19 +45,11 @@ void SpriteFrameTable::InitializeSprite(signed int uSpriteID) {
                     pSpriteSFrames[iter_uSpriteID].ResetPaletteIndex(pPaletteManager->paletteIndex(pSpriteSFrames[iter_uSpriteID].uPaletteID));
 
                     if (uFlags & 0x10) {  // single frame per frame sequence
-                        auto v8 = pSprites_LOD->LoadSprite(pSpriteSFrames[iter_uSpriteID].texture_name);
-
-                        if (v8 == -1) {
+                        Sprite *sprite = pSprites_LOD->LoadSprite(pSpriteSFrames[iter_uSpriteID].texture_name);
+                        if (sprite == nullptr)
                             logger->warning("Sprite {} not loaded!", pSpriteSFrames[iter_uSpriteID].texture_name);
-                            for (uint i = 0; i < 8; ++i) {
-                                pSpriteSFrames[iter_uSpriteID].hw_sprites[i] = nullptr;
-                            }
-                        } else {
-                            for (uint i = 0; i < 8; ++i) {
-                                pSpriteSFrames[iter_uSpriteID].hw_sprites[i] = &pSprites_LOD->pSprites[v8];
-                            }
-                        }
-
+                        for (uint i = 0; i < 8; ++i)
+                            pSpriteSFrames[iter_uSpriteID].hw_sprites[i] = sprite;
                     } else if (uFlags & 0x10000) {
                         for (uint i = 0; i < 8; ++i) {
                             switch (i) {
@@ -76,10 +68,10 @@ void SpriteFrameTable::InitializeSprite(signed int uSpriteID) {
                                     spriteName = pSpriteSFrames[iter_uSpriteID].texture_name + "0";
                                     break;
                             }
-                            auto v12 = pSprites_LOD->LoadSprite(spriteName);
+                            Sprite *sprite = pSprites_LOD->LoadSprite(spriteName);
                             // pSpriteSFrames[iter_uSpriteID].pHwSpriteIDs[i]=v12;
-                            assert(v12 != -1);
-                            pSpriteSFrames[iter_uSpriteID].hw_sprites[i] = &pSprites_LOD->pSprites[v12];
+                            assert(sprite);
+                            pSpriteSFrames[iter_uSpriteID].hw_sprites[i] = sprite;
                         }
 
                     } else if (uFlags & 0x40) {  // part of monster fidgeting seq
@@ -108,10 +100,10 @@ void SpriteFrameTable::InitializeSprite(signed int uSpriteID) {
                                     spriteName = pSpriteSFrames[iter_uSpriteID].texture_name + "1";
                                     break;
                             }
-                            auto v12 = pSprites_LOD->LoadSprite(spriteName);
+                            Sprite *sprite = pSprites_LOD->LoadSprite(spriteName);
                             // pSpriteSFrames[iter_uSpriteID].pHwSpriteIDs[i]=v12;
-                            assert(v12 != -1);
-                            pSpriteSFrames[iter_uSpriteID].hw_sprites[i] = &pSprites_LOD->pSprites[v12];
+                            assert(sprite);
+                            pSpriteSFrames[iter_uSpriteID].hw_sprites[i] = sprite;
                         }
                     } else {
                         for (uint i = 0; i < 8; ++i) {
@@ -149,10 +141,10 @@ void SpriteFrameTable::InitializeSprite(signed int uSpriteID) {
                                 }
                             }
 
-                            auto v12 = pSprites_LOD->LoadSprite(spriteName);
+                            Sprite *sprite = pSprites_LOD->LoadSprite(spriteName);
                             // pSpriteSFrames[iter_uSpriteID].pHwSpriteIDs[i]=v12;
-                            assert(v12 != -1);
-                            pSpriteSFrames[iter_uSpriteID].hw_sprites[i] = &pSprites_LOD->pSprites[v12];
+                            assert(sprite);
+                            pSpriteSFrames[iter_uSpriteID].hw_sprites[i] = sprite;
                         }
                     }
 

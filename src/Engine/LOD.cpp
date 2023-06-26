@@ -144,16 +144,16 @@ bool LODFile_Sprites::Load(const std::string &pFilename, const std::string &fold
     return LoadSubIndices(folder);
 }
 
-int LODFile_Sprites::LoadSprite(const std::string &pContainerName) {
+Sprite *LODFile_Sprites::LoadSprite(const std::string &pContainerName) {
     for (int i = 0; i < pSprites.size(); ++i) {
         if (pSprites[i].pName == pContainerName) {
-            return i;
+            return &pSprites[i];
         }
     }
 
     FILE *sprite_file = FindContainer(pContainerName, 0);
     if (!sprite_file) {
-        return -1;
+        return nullptr;
     }
 
     static_assert(sizeof(LODSpriteHeader) == 32, "Wrong type size");
@@ -170,8 +170,7 @@ int LODFile_Sprites::LoadSprite(const std::string &pContainerName) {
     sprite.uHeight = header->uHeight;
     sprite.texture = assets->getSprite(pContainerName);
     sprite.sprite_header = header;
-
-    return pSprites.size() - 1;
+    return &sprite;
 }
 
 Sprite *LODFile_Sprites::getSprite(std::string_view pContainerName) {
