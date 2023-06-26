@@ -501,8 +501,12 @@ void BLVFace::Flatten(FlatFace *points, int model_idx, FaceAttributes override_p
 }
 
 bool BLVFace::Contains(const Vec3i &pos, int model_idx, int slack, FaceAttributes override_plane) const {
-    Assert(!override_plane ||
+    assert(!override_plane ||
             override_plane == FACE_XY_PLANE || override_plane == FACE_YZ_PLANE || override_plane == FACE_XZ_PLANE);
+
+    // TODO(captainurist): uncomment this
+    // float d = std::abs(this->facePlane.signedDistanceTo(pos.toFloat()));
+    // assert(d < 0.01f);
 
     if (this->uNumVertices < 3)
         return false; // This does happen.

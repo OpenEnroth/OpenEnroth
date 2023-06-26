@@ -46,39 +46,35 @@ static bool CollideSphereWithFace(BLVFace *face, const Vec3f &pos, float radius,
     if (ignore_ethereal && face->Ethereal())
         return false;
 
-    // dot_product(dir, normal) is a cosine of an angle between them.
-    float cos_dir_normal = dot(dir, face->facePlane.normal);
+    float dir_normal_projection = dot(dir, face->facePlane.normal);
+    assert(dir_normal_projection < 0.01f); // Checked by the caller, we should be moving into the face or sideways.
+    if (std::abs(dir_normal_projection) < 0.01f)
+        return false; // Going sideways, no collision.
 
-    float pos_face_distance = face->facePlane.signedDistanceTo(pos);
+    float center_face_distance = face->facePlane.signedDistanceTo(pos);
+    assert(center_face_distance > 0); // Checked by the caller, we should be in front of the face, not behind it.
 
-    // How deep into the model that the face belongs to we already are,
-    // positive value => actor's sphere already intersects the model.
-    float overshoot = -pos_face_distance + radius;
-    float move_distance = 0;
-    if (abs(overshoot) < radius) {
-        // We got here => we're not that deep into the model. Can just push us back a little.
+    float move_distance;
+    Vec3f projected_pos = pos;
+
+    if (center_face_distance < radius) {
+        // Already colliding, can't go any further.
         move_distance = 0;
+        projected_pos += center_face_distance * -face->facePlane.normal;
     } else {
-        // We got here => we're already inside the model. Or way outside.
-        // We just say we overshot by radius. No idea why.
-        overshoot = radius;
+        // Can move along the dir vector until the sphere touches the face.
+        move_distance = (center_face_distance - radius) / -dir_normal_projection;
+        assert(move_distance >= 0);
 
-        // Then this is a correction needed to bring us to the point where actor's sphere is just touching the face.
-        move_distance = overshoot / cos_dir_normal;
+        projected_pos += move_distance * dir - radius * face->facePlane.normal;
     }
 
-    Vec3f new_pos =
-        pos + move_distance * dir - overshoot * face->facePlane.normal;
+    assert(std::abs(face->facePlane.signedDistanceTo(projected_pos)) < 0.01f); // TODO(captainurist): move into face->Contains.
 
-    if (!face->Contains(new_pos.toInt(), model_idx))
-        return false; // We've just managed to slide past the face, so pretend no collision happened.
+    if (!face->Contains(projected_pos.toInt(), model_idx))
+        return false; // We've just managed to slide past the face, no collision happened.
 
-    if (move_distance < 0) {
-        *out_move_distance = 0;
-    } else {
-        *out_move_distance = move_distance;
-    }
-
+    *out_move_distance = move_distance;
     return true;
 }
 
