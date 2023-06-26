@@ -32,15 +32,15 @@ enum class Condition : uint32_t {
 };
 using enum Condition;
 
-class EquipemntPair {
+class EquipmentPair {
  public:
     ITEM_TYPE m_ItemId = ITEM_NULL;
     ITEM_SLOT m_EquipSlot = ITEM_SLOT_INVALID;
-    EquipemntPair(ITEM_TYPE type, ITEM_SLOT slot) {
+    EquipmentPair(ITEM_TYPE type, ITEM_SLOT slot) {
         m_ItemId = type;
         m_EquipSlot = slot;
     }
-    EquipemntPair() {}
+    EquipmentPair() {}
 };
 
 class ConditionProcessor {
@@ -48,7 +48,7 @@ class ConditionProcessor {
     bool m_IsBlockedByProtFromMagic = false;
     bool m_DoesNeedGmProtFromMagic = false;
     ITEM_ENCHANTMENT m_WorkingEnchantment = ITEM_ENCHANTMENT_NULL;
-    std::array<EquipemntPair, 3> m_equipmentPairs = {{}};
+    std::array<EquipmentPair, 3> m_equipmentPairs = {{}};
 
     ConditionProcessor() {}
     ConditionProcessor(bool isblocked, bool needsGm, ITEM_ENCHANTMENT enchantment,
