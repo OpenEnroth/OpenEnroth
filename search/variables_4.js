@@ -88,7 +88,7 @@ var searchData=
   ['dif_5fm2_85',['Dif_M2',['../structMapInfo.html#aaa199ef1f52c63b338cfb7a28ca10321',1,'MapInfo']]],
   ['dif_5fm3_86',['Dif_M3',['../structMapInfo.html#af4a1fe2f6d5b67c5dc5d20c4513ebd4e',1,'MapInfo']]],
   ['diffuse_87',['diffuse',['../structRenderVertexD3D3.html#aa4e285cf862e6bfc2e27bcec7d9052a0',1,'RenderVertexD3D3::diffuse()'],['../structSpellFX__Billboard_1_1local__01.html#a5c410182c4ccd72efe88470b735904a8',1,'SpellFX_Billboard::local_01::diffuse()']]],
-  ['dimming_5flevel_88',['dimming_level',['../structRenderBillboard.html#a48a36645259e255dc3dcda842ec16d9f',1,'RenderBillboard::dimming_level()'],['../structPolygon.html#a78f28dadae8d96c1c8b90ed0fb15ee30',1,'Polygon::dimming_level()']]],
+  ['dimming_5flevel_88',['dimming_level',['../structPolygon.html#a78f28dadae8d96c1c8b90ed0fb15ee30',1,'Polygon::dimming_level()'],['../structRenderBillboard.html#a48a36645259e255dc3dcda842ec16d9f',1,'RenderBillboard::dimming_level()']]],
   ['dimminglevel_89',['DimmingLevel',['../structDecal.html#a173d2c162b3f0d15baf589f61e02b4d8',1,'Decal']]],
   ['direction_90',['direction',['../structCollisionState.html#a723d0fadbaaf2b10c825811ab9b89e79',1,'CollisionState']]],
   ['dirtyyellow_91',['DirtyYellow',['../classColorTable.html#ad867ba51bf787fd4a978ab01dd7fc361',1,'ColorTable']]],

@@ -131,9 +131,9 @@ var searchData=
   ['dmgt_5fmind_128',['DMGT_MIND',['../ItemEnums_8h.html#a55231e9660ce1c5b6f7613a3f9d66891a084127c13a0861151fd238ed8a438431',1,'ItemEnums.h']]],
   ['dmgt_5fphisycal_129',['DMGT_PHISYCAL',['../ItemEnums_8h.html#a55231e9660ce1c5b6f7613a3f9d66891a1e98024d16ffcffe406ae542d1bf6244',1,'ItemEnums.h']]],
   ['dmgt_5fspirit_130',['DMGT_SPIRIT',['../ItemEnums_8h.html#a55231e9660ce1c5b6f7613a3f9d66891aea04d53fa8bea0ffa86d3e1a5b01d555',1,'ItemEnums.h']]],
-  ['door_5fnosound_131',['DOOR_NOSOUND',['../BSPModel_8h.html#aca4fbb5b4731d33480ddc765e71c176eaf1bcbdf1a0baef9189e25188ba8b81ad',1,'BSPModel.h']]],
-  ['door_5fsetting_5fup_132',['DOOR_SETTING_UP',['../BSPModel_8h.html#aca4fbb5b4731d33480ddc765e71c176ea4cb8faa7bb18c8c47f8ab14fb871547b',1,'BSPModel.h']]],
-  ['door_5ftriggered_133',['DOOR_TRIGGERED',['../BSPModel_8h.html#aca4fbb5b4731d33480ddc765e71c176ea1f0f611f92f0d184b09f13a87480604b',1,'BSPModel.h']]],
+  ['door_5fnosound_131',['DOOR_NOSOUND',['../FaceEnums_8h.html#aca4fbb5b4731d33480ddc765e71c176eaf1bcbdf1a0baef9189e25188ba8b81ad',1,'FaceEnums.h']]],
+  ['door_5fsetting_5fup_132',['DOOR_SETTING_UP',['../FaceEnums_8h.html#aca4fbb5b4731d33480ddc765e71c176ea4cb8faa7bb18c8c47f8ab14fb871547b',1,'FaceEnums.h']]],
+  ['door_5ftriggered_133',['DOOR_TRIGGERED',['../FaceEnums_8h.html#aca4fbb5b4731d33480ddc765e71c176ea1f0f611f92f0d184b09f13a87480604b',1,'FaceEnums.h']]],
   ['duper_134',['Duper',['../NPCEnums_8h.html#ae6501f571f97d74c2c78fddcb371bad4ac3ec4265a411ae97d8dad58692cfb693',1,'NPCEnums.h']]],
   ['dying_135',['Dying',['../ActorEnums_8h.html#a75a2677e7281dc615368b0814c395feda2ef54119c1f0d131a1a60e7776fa78f0',1,'ActorEnums.h']]]
 ];

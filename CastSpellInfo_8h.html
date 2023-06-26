@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;f3b07a9</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;726b38d</span>
    </div>
   </td>
  </tr>
@@ -82,12 +82,10 @@ $(function() {
   <div class="headertitle"><div class="title">CastSpellInfo.h File Reference</div></div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><code>#include &lt;array&gt;</code><br />
-<code>#include &lt;cstdint&gt;</code><br />
-<code>#include &lt;cstring&gt;</code><br />
-<code>#include &quot;<a class="el" href="CharacterEnums_8h.html">Engine/Objects/CharacterEnums.h</a>&quot;</code><br />
+<div class="textblock"><code>#include &lt;cstdint&gt;</code><br />
+<code>#include &quot;<a class="el" href="CombinedSkillValue_8h.html">Engine/Objects/CombinedSkillValue.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Flags_8h.html">Utility/Flags.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="Spells_8h.html">Spells.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="SpellEnums_8h.html">SpellEnums.h</a>&quot;</code><br />
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Classes</h2></td></tr>
@@ -124,7 +122,7 @@ Functions</h2></td></tr>
 <tr class="separator:adff5953d72a48c4243d76db40aece228"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7381cc2179dc74d55b90c3e021805999"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceCastSpellInfoHelpers.html#a7381cc2179dc74d55b90c3e021805999">CastSpellInfoHelpers::cancelSpellCastInProgress</a> ()</td></tr>
 <tr class="separator:a7381cc2179dc74d55b90c3e021805999"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:abe1d56817ff95bacf75ac056f31c084a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="CastSpellInfo_8h.html#abe1d56817ff95bacf75ac056f31c084a">pushSpellOrRangedAttack</a> (<a class="el" href="SpellEnums_8h.html#a6ac7ece38acd196bf750bc353e00d088">SPELL_TYPE</a> spell, unsigned int uPlayerID, <a class="el" href="CombinedSkillValue_8h.html#a0cc96e568ff829281a069d99996cabcd">CHARACTER_SKILL</a> skill_value, SpellCastFlags flags, int a6)</td></tr>
+<tr class="memitem:abe1d56817ff95bacf75ac056f31c084a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="CastSpellInfo_8h.html#abe1d56817ff95bacf75ac056f31c084a">pushSpellOrRangedAttack</a> (<a class="el" href="SpellEnums_8h.html#a6ac7ece38acd196bf750bc353e00d088">SPELL_TYPE</a> spell, unsigned int uPlayerID, <a class="el" href="CharacterEnums_8h.html#a0cc96e568ff829281a069d99996cabcd">CHARACTER_SKILL</a> skill_value, SpellCastFlags flags, int a6)</td></tr>
 <tr class="separator:abe1d56817ff95bacf75ac056f31c084a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af966ca6737316bc582dca66265e66611"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="CastSpellInfo_8h.html#af966ca6737316bc582dca66265e66611">pushTempleSpell</a> (<a class="el" href="SpellEnums_8h.html#a6ac7ece38acd196bf750bc353e00d088">SPELL_TYPE</a> spell)</td></tr>
 <tr class="separator:af966ca6737316bc582dca66265e66611"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -137,7 +135,7 @@ Functions</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="var-members" name="var-members"></a>
 Variables</h2></td></tr>
-<tr class="memitem:a34a14f9476858493779c878d50c2b3e3"><td class="memItemLeft" align="right" valign="top">static const <a class="el" href="CombinedSkillValue_8h.html#a0cc96e568ff829281a069d99996cabcd">CHARACTER_SKILL</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="CastSpellInfo_8h.html#a34a14f9476858493779c878d50c2b3e3">SCROLL_OR_NPC_SPELL_SKILL_VALUE</a> = <a class="el" href="CombinedSkillValue_8h.html#a45f140ac055b4bc52d4c061b4fc8958e">ConstructSkillValue</a>(<a class="el" href="CombinedSkillValue_8h.html#aad588572e82b590e48058c9fe465b478a4d5d3c367bcce7e5af17d0c77212e289">CHARACTER_SKILL_MASTERY_MASTER</a>, 5)</td></tr>
+<tr class="memitem:a34a14f9476858493779c878d50c2b3e3"><td class="memItemLeft" align="right" valign="top">static const <a class="el" href="CharacterEnums_8h.html#a0cc96e568ff829281a069d99996cabcd">CHARACTER_SKILL</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="CastSpellInfo_8h.html#a34a14f9476858493779c878d50c2b3e3">SCROLL_OR_NPC_SPELL_SKILL_VALUE</a> = <a class="el" href="CombinedSkillValue_8h.html#a45f140ac055b4bc52d4c061b4fc8958e">ConstructSkillValue</a>(<a class="el" href="CharacterEnums_8h.html#aad588572e82b590e48058c9fe465b478a4d5d3c367bcce7e5af17d0c77212e289">CHARACTER_SKILL_MASTERY_MASTER</a>, 5)</td></tr>
 <tr class="separator:a34a14f9476858493779c878d50c2b3e3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac8b491e8289bc8139f7d74603da9af0b"><td class="memItemLeft" align="right" valign="top">static const uint16_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="CastSpellInfo_8h.html#ac8b491e8289bc8139f7d74603da9af0b">SPELL_FAILURE_RECOVERY_TIME_ON_CURSE</a> = 100</td></tr>
 <tr class="separator:ac8b491e8289bc8139f7d74603da9af0b"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -260,7 +258,7 @@ Variables</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="CombinedSkillValue_8h.html#a0cc96e568ff829281a069d99996cabcd">CHARACTER_SKILL</a>&#160;</td>
+          <td class="paramtype"><a class="el" href="CharacterEnums_8h.html#a0cc96e568ff829281a069d99996cabcd">CHARACTER_SKILL</a>&#160;</td>
           <td class="paramname"><em>skill_value</em>, </td>
         </tr>
         <tr>
@@ -371,7 +369,7 @@ Variables</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">const <a class="el" href="CombinedSkillValue_8h.html#a0cc96e568ff829281a069d99996cabcd">CHARACTER_SKILL</a> SCROLL_OR_NPC_SPELL_SKILL_VALUE = <a class="el" href="CombinedSkillValue_8h.html#a45f140ac055b4bc52d4c061b4fc8958e">ConstructSkillValue</a>(<a class="el" href="CombinedSkillValue_8h.html#aad588572e82b590e48058c9fe465b478a4d5d3c367bcce7e5af17d0c77212e289">CHARACTER_SKILL_MASTERY_MASTER</a>, 5)</td>
+          <td class="memname">const <a class="el" href="CharacterEnums_8h.html#a0cc96e568ff829281a069d99996cabcd">CHARACTER_SKILL</a> SCROLL_OR_NPC_SPELL_SKILL_VALUE = <a class="el" href="CombinedSkillValue_8h.html#a45f140ac055b4bc52d4c061b4fc8958e">ConstructSkillValue</a>(<a class="el" href="CharacterEnums_8h.html#aad588572e82b590e48058c9fe465b478a4d5d3c367bcce7e5af17d0c77212e289">CHARACTER_SKILL_MASTERY_MASTER</a>, 5)</td>
         </tr>
       </table>
   </td>

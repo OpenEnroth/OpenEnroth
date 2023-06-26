@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;f3b07a9</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;726b38d</span>
    </div>
   </td>
  </tr>
@@ -96,7 +96,9 @@ $(function() {
 <code>#include &quot;<a class="el" href="Sprites_8h.html">Engine/Graphics/Sprites.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Viewport_8h.html">Engine/Graphics/Viewport.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Engine_2Graphics_2Image_8h.html">Engine/Graphics/Image.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="IRender_8h.html">Engine/Graphics/IRender.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Actor_8h.html">Engine/Objects/Actor.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="Logger_8h.html">Library/Logger/Logger.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="TrigLut_8h.html">Utility/Math/TrigLut.h</a>&quot;</code><br />
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="define-members" name="define-members"></a>
@@ -340,9 +342,9 @@ Variables</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <b>Initial value:</b><div class="fragment"><div class="line">= {</div>
-<div class="line">    <a class="code hl_enumvalue" href="Vis_8h.html#ae18f1a9725894d10f4422f0ec7f3bc5eaa5dcb89edb2bb28bc49c43e75fe5704b">VisObjectType_Face</a>, <a class="code hl_enumvalue" href="ActorEnums_8h.html#a842c5e2e69277690b064bf363c017980a8bca9425f50200360cc7aa9ec10f9b2a">OBJECT_Door</a>, -1, <span class="keyword">static_cast&lt;</span><span class="keywordtype">int</span><span class="keyword">&gt;</span>(<a class="code hl_enumvalue" href="BSPModel_8h.html#a079bbade04352a97179d3cd8302d08aba2173d678f28bc40084cc39fa97538744">FACE_HAS_EVENT</a>), <a class="code hl_enumvalue" href="Vis_8h.html#a2865df6bc80c1bc4152df5c77cd624a4a6adf97f83acf6453d4a6a4b1070f3754">None</a> }</div>
+<div class="line">    <a class="code hl_enumvalue" href="Vis_8h.html#ae18f1a9725894d10f4422f0ec7f3bc5eaa5dcb89edb2bb28bc49c43e75fe5704b">VisObjectType_Face</a>, <a class="code hl_enumvalue" href="ActorEnums_8h.html#a842c5e2e69277690b064bf363c017980a8bca9425f50200360cc7aa9ec10f9b2a">OBJECT_Door</a>, -1, <span class="keyword">static_cast&lt;</span><span class="keywordtype">int</span><span class="keyword">&gt;</span>(<a class="code hl_enumvalue" href="FaceEnums_8h.html#a079bbade04352a97179d3cd8302d08aba2173d678f28bc40084cc39fa97538744">FACE_HAS_EVENT</a>), <a class="code hl_enumvalue" href="Vis_8h.html#a2865df6bc80c1bc4152df5c77cd624a4a6adf97f83acf6453d4a6a4b1070f3754">None</a> }</div>
 <div class="ttc" id="aActorEnums_8h_html_a842c5e2e69277690b064bf363c017980a8bca9425f50200360cc7aa9ec10f9b2a"><div class="ttname"><a href="ActorEnums_8h.html#a842c5e2e69277690b064bf363c017980a8bca9425f50200360cc7aa9ec10f9b2a">ObjectType::OBJECT_Door</a></div><div class="ttdeci">@ OBJECT_Door</div></div>
-<div class="ttc" id="aBSPModel_8h_html_a079bbade04352a97179d3cd8302d08aba2173d678f28bc40084cc39fa97538744"><div class="ttname"><a href="BSPModel_8h.html#a079bbade04352a97179d3cd8302d08aba2173d678f28bc40084cc39fa97538744">FaceAttribute::FACE_HAS_EVENT</a></div><div class="ttdeci">@ FACE_HAS_EVENT</div></div>
+<div class="ttc" id="aFaceEnums_8h_html_a079bbade04352a97179d3cd8302d08aba2173d678f28bc40084cc39fa97538744"><div class="ttname"><a href="FaceEnums_8h.html#a079bbade04352a97179d3cd8302d08aba2173d678f28bc40084cc39fa97538744">FaceAttribute::FACE_HAS_EVENT</a></div><div class="ttdeci">@ FACE_HAS_EVENT</div></div>
 <div class="ttc" id="aVis_8h_html_a2865df6bc80c1bc4152df5c77cd624a4a6adf97f83acf6453d4a6a4b1070f3754"><div class="ttname"><a href="Vis_8h.html#a2865df6bc80c1bc4152df5c77cd624a4a6adf97f83acf6453d4a6a4b1070f3754">VisSelectFlag::None</a></div><div class="ttdeci">@ None</div></div>
 <div class="ttc" id="aVis_8h_html_ae18f1a9725894d10f4422f0ec7f3bc5eaa5dcb89edb2bb28bc49c43e75fe5704b"><div class="ttname"><a href="Vis_8h.html#ae18f1a9725894d10f4422f0ec7f3bc5eaa5dcb89edb2bb28bc49c43e75fe5704b">VisObjectType::VisObjectType_Face</a></div><div class="ttdeci">@ VisObjectType_Face</div></div>
 </div><!-- fragment -->

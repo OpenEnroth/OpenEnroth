@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;f3b07a9</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;726b38d</span>
    </div>
   </td>
  </tr>
@@ -80,22 +80,25 @@ $(function() {
 <div class="contents">
 <div class="textblock"><code>#include &lt;string&gt;</code><br />
 <code>#include &lt;utility&gt;</code><br />
-<code>#include &lt;vector&gt;</code><br />
 <code>#include &lt;functional&gt;</code><br />
 <code>#include &quot;<a class="el" href="EventInterpreter_8h.html">Engine/Events/EventInterpreter.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="EventIR_8h.html">Engine/Events/EventIR.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Processor_8h.html">Engine/Events/Processor.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Party_8h.html">Engine/Party.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="LOD_8h.html">Engine/LOD.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="IRender_8h.html">Engine/Graphics/IRender.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Indoor_8h.html">Engine/Graphics/Indoor.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Weather_8h.html">Engine/Graphics/Weather.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Decoration_8h.html">Engine/Graphics/Level/Decoration.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="NPC_8h.html">Engine/Objects/NPC.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="SpriteObject_8h.html">Engine/Objects/SpriteObject.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="Chest_8h.html">Engine/Objects/Chest.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="Actor_8h.html">Engine/Objects/Actor.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="ItemTable_8h.html">Engine/Tables/ItemTable.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="Spells_8h.html">Engine/Spells/Spells.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="Engine_8h.html">Engine/Engine.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="AudioPlayer_8h.html">Media/Audio/AudioPlayer.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="MediaPlayer_8h.html">Media/MediaPlayer.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="Random_8h.html">Library/Random/Random.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="TrigLut_8h.html">Utility/Math/TrigLut.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="GUIMessageQueue_8h.html">GUI/GUIMessageQueue.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="GUIProgressBar_8h.html">GUI/GUIProgressBar.h</a>&quot;</code><br />
@@ -110,7 +113,7 @@ Functions</h2></td></tr>
 <tr class="separator:a96f7d3f0e3f97f50a853ffcb110f0443"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae5767fdde79d47e455e9430fa5db5fe9"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="EventInterpreter_8cpp.html#ae5767fdde79d47e455e9430fa5db5fe9">spawnMonsters</a> (int16_t typeindex, int16_t level, int count, <a class="el" href="Vec_8h.html#adf6e1d7d066bb09da957cc89f2b3ceb2">Vec3i</a> pos, int group, unsigned int uUniqueName)</td></tr>
 <tr class="separator:ae5767fdde79d47e455e9430fa5db5fe9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8081bf7f7f86de19bba0e18c7a2cdfd0"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="EventInterpreter_8cpp.html#a8081bf7f7f86de19bba0e18c7a2cdfd0">doForChosenPlayer</a> (<a class="el" href="EventEnums_8h.html#ac6ba0e8b31393d270ae04a8e97786a69">CharacterChoosePolicy</a> who, <a class="el" href="classRandomEngine.html">RandomEngine</a> *rng, std::function&lt; int(<a class="el" href="structCharacter.html">Character</a> &amp;)&gt; func)</td></tr>
+<tr class="memitem:a8081bf7f7f86de19bba0e18c7a2cdfd0"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="EventInterpreter_8cpp.html#a8081bf7f7f86de19bba0e18c7a2cdfd0">doForChosenPlayer</a> (<a class="el" href="EventEnums_8h.html#ac6ba0e8b31393d270ae04a8e97786a69">CharacterChoosePolicy</a> who, <a class="el" href="classRandomEngine.html">RandomEngine</a> *rng, std::function&lt; int(<a class="el" href="classCharacter.html">Character</a> &amp;)&gt; func)</td></tr>
 <tr class="separator:a8081bf7f7f86de19bba0e18c7a2cdfd0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Function Documentation</h2>
@@ -165,7 +168,7 @@ Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">std::function&lt; int(<a class="el" href="structCharacter.html">Character</a> &amp;)&gt;&#160;</td>
+          <td class="paramtype">std::function&lt; int(<a class="el" href="classCharacter.html">Character</a> &amp;)&gt;&#160;</td>
           <td class="paramname"><em>func</em>&#160;</td>
         </tr>
         <tr>

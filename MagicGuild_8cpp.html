@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;f3b07a9</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;726b38d</span>
    </div>
   </td>
  </tr>
@@ -81,6 +81,7 @@ $(function() {
 <div class="textblock"><code>#include &quot;<a class="el" href="MagicGuild_8h.html">GUI/UI/Houses/MagicGuild.h</a>&quot;</code><br />
 <code>#include &lt;string&gt;</code><br />
 <code>#include &quot;<a class="el" href="Engine_8h.html">Engine/Engine.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="EngineIocContainer_8h.html">Engine/EngineIocContainer.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="BuildingTable_8h.html">Engine/Tables/BuildingTable.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="IRender_8h.html">Engine/Graphics/IRender.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Engine_2Graphics_2Image_8h.html">Engine/Graphics/Image.h</a>&quot;</code><br />
@@ -90,12 +91,14 @@ $(function() {
 <code>#include &quot;<a class="el" href="MerchantTable_8h.html">Engine/Tables/MerchantTable.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Party_8h.html">Engine/Party.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="PriceCalculator_8h.html">Engine/PriceCalculator.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="AssetsManager_8h.html">Engine/AssetsManager.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="GUIWindow_8h.html">GUI/GUIWindow.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="GUIButton_8h.html">GUI/GUIButton.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="GUIFont_8h.html">GUI/GUIFont.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="GUIMessageQueue_8h.html">GUI/GUIMessageQueue.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="UIStatusBar_8h.html">GUI/UI/UIStatusBar.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Shops_8h.html">GUI/UI/Houses/Shops.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="AudioPlayer_8h.html">Media/Audio/AudioPlayer.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Mouse_8h.html">Io/Mouse.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Random_8h.html">Library/Random/Random.h</a>&quot;</code><br />
 </div><table class="memberdecls">
@@ -105,7 +108,7 @@ Variables</h2></td></tr>
 <tr class="separator:af18e8011ba6ba400116c46c07ef3b02a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3d49bb49f491db25369f2a1a8970dc3b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classIndexedArray.html">IndexedArray</a>&lt; <a class="el" href="GUIDialogues_8h.html#afcd7885d9ec6583fa04d9e8f0f641d00">DIALOGUE_TYPE</a>, <a class="el" href="BuildingTable_8h.html#a1e6330273dfb88062f9ac99d61322e80a8c71c0ea26026b6133d527aaefa98d1b">BUILDING_FIRE_GUILD</a>, <a class="el" href="BuildingTable_8h.html#a1e6330273dfb88062f9ac99d61322e80a8202bb3067b3dd43e620004f98f368bc">BUILDING_DARK_GUILD</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="MagicGuild_8cpp.html#a3d49bb49f491db25369f2a1a8970dc3b">learnableMagicSkillDialogue</a></td></tr>
 <tr class="separator:a3d49bb49f491db25369f2a1a8970dc3b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a31a0f2bd8d37d2d19cf1a373c8e0d95a"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classIndexedArray.html">IndexedArray</a>&lt; <a class="el" href="CombinedSkillValue_8h.html#aad588572e82b590e48058c9fe465b478">CharacterSkillMastery</a>, <a class="el" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fab3aba1f7bce84a78ac634095fc590779">HOUSE_FIRST_MAGIC_GUILD</a>, <a class="el" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405faf9b04ab721e3f5aa7a333226012bd407">HOUSE_LAST_MAGIC_GUILD</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="MagicGuild_8cpp.html#a31a0f2bd8d37d2d19cf1a373c8e0d95a">guildSpellsMastery</a></td></tr>
+<tr class="memitem:a31a0f2bd8d37d2d19cf1a373c8e0d95a"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classIndexedArray.html">IndexedArray</a>&lt; <a class="el" href="CharacterEnums_8h.html#aad588572e82b590e48058c9fe465b478">CharacterSkillMastery</a>, <a class="el" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fab3aba1f7bce84a78ac634095fc590779">HOUSE_FIRST_MAGIC_GUILD</a>, <a class="el" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405faf9b04ab721e3f5aa7a333226012bd407">HOUSE_LAST_MAGIC_GUILD</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="MagicGuild_8cpp.html#a31a0f2bd8d37d2d19cf1a373c8e0d95a">guildSpellsMastery</a></td></tr>
 <tr class="separator:a31a0f2bd8d37d2d19cf1a373c8e0d95a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:adf39b5426042c9598218329f1122846a"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classIndexedArray.html">IndexedArray</a>&lt; int, <a class="el" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fab3aba1f7bce84a78ac634095fc590779">HOUSE_FIRST_MAGIC_GUILD</a>, <a class="el" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405faf9b04ab721e3f5aa7a333226012bd407">HOUSE_LAST_MAGIC_GUILD</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="MagicGuild_8cpp.html#adf39b5426042c9598218329f1122846a">guildMembershipFlags</a></td></tr>
 <tr class="separator:adf39b5426042c9598218329f1122846a"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -132,7 +135,7 @@ Variables</h2></td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="classIndexedArray.html">IndexedArray</a>&lt;<a class="el" href="CombinedSkillValue_8h.html#aad588572e82b590e48058c9fe465b478">CharacterSkillMastery</a>, <a class="el" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fab3aba1f7bce84a78ac634095fc590779">HOUSE_FIRST_MAGIC_GUILD</a>, <a class="el" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405faf9b04ab721e3f5aa7a333226012bd407">HOUSE_LAST_MAGIC_GUILD</a>&gt; guildSpellsMastery</td>
+          <td class="memname"><a class="el" href="classIndexedArray.html">IndexedArray</a>&lt;<a class="el" href="CharacterEnums_8h.html#aad588572e82b590e48058c9fe465b478">CharacterSkillMastery</a>, <a class="el" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405fab3aba1f7bce84a78ac634095fc590779">HOUSE_FIRST_MAGIC_GUILD</a>, <a class="el" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405faf9b04ab721e3f5aa7a333226012bd407">HOUSE_LAST_MAGIC_GUILD</a>&gt; guildSpellsMastery</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -204,15 +207,15 @@ Variables</h2></td></tr>
 <div class="line">    {<a class="code hl_enumvalue" href="BuildingTable_8h.html#a1e6330273dfb88062f9ac99d61322e80a2b6aa27a06c670e68ae7f79bb8a27ef7">BUILDING_LIGHT_GUILD</a>,  <a class="code hl_enumvalue" href="GUIDialogues_8h.html#afcd7885d9ec6583fa04d9e8f0f641d00aa24be1d7c63b78561eb89d9e213c11cc">DIALOGUE_LEARN_LIGHT</a>},</div>
 <div class="line">    {<a class="code hl_enumvalue" href="BuildingTable_8h.html#a1e6330273dfb88062f9ac99d61322e80a8202bb3067b3dd43e620004f98f368bc">BUILDING_DARK_GUILD</a>,   <a class="code hl_enumvalue" href="GUIDialogues_8h.html#afcd7885d9ec6583fa04d9e8f0f641d00a20adc996271b312bb6c96602be5abacb">DIALOGUE_LEARN_DARK</a>}</div>
 <div class="line">}</div>
-<div class="ttc" id="aGUIDialogues_8h_html_afcd7885d9ec6583fa04d9e8f0f641d00a20adc996271b312bb6c96602be5abacb"><div class="ttname"><a href="GUIDialogues_8h.html#afcd7885d9ec6583fa04d9e8f0f641d00a20adc996271b312bb6c96602be5abacb">DIALOGUE_LEARN_DARK</a></div><div class="ttdeci">@ DIALOGUE_LEARN_DARK</div><div class="ttdef"><b>Definition:</b> GUIDialogues.h:58</div></div>
-<div class="ttc" id="aGUIDialogues_8h_html_afcd7885d9ec6583fa04d9e8f0f641d00a22da202f3d2ade7eee28c91b3fa9ecac"><div class="ttname"><a href="GUIDialogues_8h.html#afcd7885d9ec6583fa04d9e8f0f641d00a22da202f3d2ade7eee28c91b3fa9ecac">DIALOGUE_LEARN_BODY</a></div><div class="ttdeci">@ DIALOGUE_LEARN_BODY</div><div class="ttdef"><b>Definition:</b> GUIDialogues.h:56</div></div>
-<div class="ttc" id="aGUIDialogues_8h_html_afcd7885d9ec6583fa04d9e8f0f641d00a9af8db4685653b95f328efbcf284eb9b"><div class="ttname"><a href="GUIDialogues_8h.html#afcd7885d9ec6583fa04d9e8f0f641d00a9af8db4685653b95f328efbcf284eb9b">DIALOGUE_LEARN_AIR</a></div><div class="ttdeci">@ DIALOGUE_LEARN_AIR</div><div class="ttdef"><b>Definition:</b> GUIDialogues.h:51</div></div>
-<div class="ttc" id="aGUIDialogues_8h_html_afcd7885d9ec6583fa04d9e8f0f641d00aa24be1d7c63b78561eb89d9e213c11cc"><div class="ttname"><a href="GUIDialogues_8h.html#afcd7885d9ec6583fa04d9e8f0f641d00aa24be1d7c63b78561eb89d9e213c11cc">DIALOGUE_LEARN_LIGHT</a></div><div class="ttdeci">@ DIALOGUE_LEARN_LIGHT</div><div class="ttdef"><b>Definition:</b> GUIDialogues.h:57</div></div>
-<div class="ttc" id="aGUIDialogues_8h_html_afcd7885d9ec6583fa04d9e8f0f641d00aab440f0eafd006dd894cb1a0b5d85b59"><div class="ttname"><a href="GUIDialogues_8h.html#afcd7885d9ec6583fa04d9e8f0f641d00aab440f0eafd006dd894cb1a0b5d85b59">DIALOGUE_LEARN_FIRE</a></div><div class="ttdeci">@ DIALOGUE_LEARN_FIRE</div><div class="ttdef"><b>Definition:</b> GUIDialogues.h:50</div></div>
-<div class="ttc" id="aGUIDialogues_8h_html_afcd7885d9ec6583fa04d9e8f0f641d00ad8a5c80bf29dce7280ab6269585ccc32"><div class="ttname"><a href="GUIDialogues_8h.html#afcd7885d9ec6583fa04d9e8f0f641d00ad8a5c80bf29dce7280ab6269585ccc32">DIALOGUE_LEARN_SPIRIT</a></div><div class="ttdeci">@ DIALOGUE_LEARN_SPIRIT</div><div class="ttdef"><b>Definition:</b> GUIDialogues.h:54</div></div>
-<div class="ttc" id="aGUIDialogues_8h_html_afcd7885d9ec6583fa04d9e8f0f641d00aea65550185680f20baa21c4c174d10db"><div class="ttname"><a href="GUIDialogues_8h.html#afcd7885d9ec6583fa04d9e8f0f641d00aea65550185680f20baa21c4c174d10db">DIALOGUE_LEARN_MIND</a></div><div class="ttdeci">@ DIALOGUE_LEARN_MIND</div><div class="ttdef"><b>Definition:</b> GUIDialogues.h:55</div></div>
-<div class="ttc" id="aGUIDialogues_8h_html_afcd7885d9ec6583fa04d9e8f0f641d00afe90ff9e3f72ab83adedce688ccfc1bc"><div class="ttname"><a href="GUIDialogues_8h.html#afcd7885d9ec6583fa04d9e8f0f641d00afe90ff9e3f72ab83adedce688ccfc1bc">DIALOGUE_LEARN_EARTH</a></div><div class="ttdeci">@ DIALOGUE_LEARN_EARTH</div><div class="ttdef"><b>Definition:</b> GUIDialogues.h:53</div></div>
-<div class="ttc" id="aGUIDialogues_8h_html_afcd7885d9ec6583fa04d9e8f0f641d00aff273a3f19e7dab28b96b3842e2e9be0"><div class="ttname"><a href="GUIDialogues_8h.html#afcd7885d9ec6583fa04d9e8f0f641d00aff273a3f19e7dab28b96b3842e2e9be0">DIALOGUE_LEARN_WATER</a></div><div class="ttdeci">@ DIALOGUE_LEARN_WATER</div><div class="ttdef"><b>Definition:</b> GUIDialogues.h:52</div></div>
+<div class="ttc" id="aGUIDialogues_8h_html_afcd7885d9ec6583fa04d9e8f0f641d00a20adc996271b312bb6c96602be5abacb"><div class="ttname"><a href="GUIDialogues_8h.html#afcd7885d9ec6583fa04d9e8f0f641d00a20adc996271b312bb6c96602be5abacb">DIALOGUE_LEARN_DARK</a></div><div class="ttdeci">@ DIALOGUE_LEARN_DARK</div><div class="ttdef"><b>Definition:</b> GUIDialogues.h:59</div></div>
+<div class="ttc" id="aGUIDialogues_8h_html_afcd7885d9ec6583fa04d9e8f0f641d00a22da202f3d2ade7eee28c91b3fa9ecac"><div class="ttname"><a href="GUIDialogues_8h.html#afcd7885d9ec6583fa04d9e8f0f641d00a22da202f3d2ade7eee28c91b3fa9ecac">DIALOGUE_LEARN_BODY</a></div><div class="ttdeci">@ DIALOGUE_LEARN_BODY</div><div class="ttdef"><b>Definition:</b> GUIDialogues.h:57</div></div>
+<div class="ttc" id="aGUIDialogues_8h_html_afcd7885d9ec6583fa04d9e8f0f641d00a9af8db4685653b95f328efbcf284eb9b"><div class="ttname"><a href="GUIDialogues_8h.html#afcd7885d9ec6583fa04d9e8f0f641d00a9af8db4685653b95f328efbcf284eb9b">DIALOGUE_LEARN_AIR</a></div><div class="ttdeci">@ DIALOGUE_LEARN_AIR</div><div class="ttdef"><b>Definition:</b> GUIDialogues.h:52</div></div>
+<div class="ttc" id="aGUIDialogues_8h_html_afcd7885d9ec6583fa04d9e8f0f641d00aa24be1d7c63b78561eb89d9e213c11cc"><div class="ttname"><a href="GUIDialogues_8h.html#afcd7885d9ec6583fa04d9e8f0f641d00aa24be1d7c63b78561eb89d9e213c11cc">DIALOGUE_LEARN_LIGHT</a></div><div class="ttdeci">@ DIALOGUE_LEARN_LIGHT</div><div class="ttdef"><b>Definition:</b> GUIDialogues.h:58</div></div>
+<div class="ttc" id="aGUIDialogues_8h_html_afcd7885d9ec6583fa04d9e8f0f641d00aab440f0eafd006dd894cb1a0b5d85b59"><div class="ttname"><a href="GUIDialogues_8h.html#afcd7885d9ec6583fa04d9e8f0f641d00aab440f0eafd006dd894cb1a0b5d85b59">DIALOGUE_LEARN_FIRE</a></div><div class="ttdeci">@ DIALOGUE_LEARN_FIRE</div><div class="ttdef"><b>Definition:</b> GUIDialogues.h:51</div></div>
+<div class="ttc" id="aGUIDialogues_8h_html_afcd7885d9ec6583fa04d9e8f0f641d00ad8a5c80bf29dce7280ab6269585ccc32"><div class="ttname"><a href="GUIDialogues_8h.html#afcd7885d9ec6583fa04d9e8f0f641d00ad8a5c80bf29dce7280ab6269585ccc32">DIALOGUE_LEARN_SPIRIT</a></div><div class="ttdeci">@ DIALOGUE_LEARN_SPIRIT</div><div class="ttdef"><b>Definition:</b> GUIDialogues.h:55</div></div>
+<div class="ttc" id="aGUIDialogues_8h_html_afcd7885d9ec6583fa04d9e8f0f641d00aea65550185680f20baa21c4c174d10db"><div class="ttname"><a href="GUIDialogues_8h.html#afcd7885d9ec6583fa04d9e8f0f641d00aea65550185680f20baa21c4c174d10db">DIALOGUE_LEARN_MIND</a></div><div class="ttdeci">@ DIALOGUE_LEARN_MIND</div><div class="ttdef"><b>Definition:</b> GUIDialogues.h:56</div></div>
+<div class="ttc" id="aGUIDialogues_8h_html_afcd7885d9ec6583fa04d9e8f0f641d00afe90ff9e3f72ab83adedce688ccfc1bc"><div class="ttname"><a href="GUIDialogues_8h.html#afcd7885d9ec6583fa04d9e8f0f641d00afe90ff9e3f72ab83adedce688ccfc1bc">DIALOGUE_LEARN_EARTH</a></div><div class="ttdeci">@ DIALOGUE_LEARN_EARTH</div><div class="ttdef"><b>Definition:</b> GUIDialogues.h:54</div></div>
+<div class="ttc" id="aGUIDialogues_8h_html_afcd7885d9ec6583fa04d9e8f0f641d00aff273a3f19e7dab28b96b3842e2e9be0"><div class="ttname"><a href="GUIDialogues_8h.html#afcd7885d9ec6583fa04d9e8f0f641d00aff273a3f19e7dab28b96b3842e2e9be0">DIALOGUE_LEARN_WATER</a></div><div class="ttdeci">@ DIALOGUE_LEARN_WATER</div><div class="ttdef"><b>Definition:</b> GUIDialogues.h:53</div></div>
 </div><!-- fragment -->
 </div>
 </div>

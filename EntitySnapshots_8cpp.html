@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;f3b07a9</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;726b38d</span>
    </div>
   </td>
  </tr>
@@ -95,6 +95,7 @@ $(function() {
 <code>#include &quot;<a class="el" href="NPC_8h.html">Engine/Objects/NPC.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="ObjectList_8h.html">Engine/Objects/ObjectList.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="SpriteObject_8h.html">Engine/Objects/SpriteObject.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="Chest_8h.html">Engine/Objects/Chest.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Party_8h.html">Engine/Party.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="SaveLoad_8h.html">Engine/SaveLoad.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="IconFrameTable_8h.html">Engine/Tables/IconFrameTable.h</a>&quot;</code><br />
@@ -103,8 +104,9 @@ $(function() {
 <code>#include &quot;<a class="el" href="Time_8h.html">Engine/Time.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="SoundInfo_8h.html">Media/Audio/SoundInfo.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="GUIFont_8h.html">GUI/GUIFont.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="ColorTable_8h.html">Library/Color/ColorTable.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="MemSet_8h.html">Utility/Memory/MemSet.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="IndexedBitset_8h.html">Utility/IndexedBitset.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="String_8h.html">Utility/String.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="CommonSnapshots_8h.html">CommonSnapshots.h</a>&quot;</code><br />
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
@@ -153,9 +155,9 @@ Functions</h2></td></tr>
 <tr class="separator:a22c68c3b3a729f832e70dbfc30448b58"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a89104e5c3d12de2b09e74717cdec70a0"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="EntitySnapshots_8cpp.html#a89104e5c3d12de2b09e74717cdec70a0">reconstruct</a> (const <a class="el" href="structParty__MM7.html">Party_MM7</a> &amp;src, <a class="el" href="structParty.html">Party</a> *dst)</td></tr>
 <tr class="separator:a89104e5c3d12de2b09e74717cdec70a0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac03aa8a2ab8cb2d5e2d0a2ad58f5d3cc"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="EntitySnapshots_8cpp.html#ac03aa8a2ab8cb2d5e2d0a2ad58f5d3cc">snapshot</a> (const <a class="el" href="structCharacter.html">Character</a> &amp;src, <a class="el" href="structPlayer__MM7.html">Player_MM7</a> *dst)</td></tr>
+<tr class="memitem:ac03aa8a2ab8cb2d5e2d0a2ad58f5d3cc"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="EntitySnapshots_8cpp.html#ac03aa8a2ab8cb2d5e2d0a2ad58f5d3cc">snapshot</a> (const <a class="el" href="classCharacter.html">Character</a> &amp;src, <a class="el" href="structPlayer__MM7.html">Player_MM7</a> *dst)</td></tr>
 <tr class="separator:ac03aa8a2ab8cb2d5e2d0a2ad58f5d3cc"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1e8eb8ee6790077e569e02ae4e29f27b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="EntitySnapshots_8cpp.html#a1e8eb8ee6790077e569e02ae4e29f27b">reconstruct</a> (const <a class="el" href="structPlayer__MM7.html">Player_MM7</a> &amp;src, <a class="el" href="structCharacter.html">Character</a> *dst)</td></tr>
+<tr class="memitem:a1e8eb8ee6790077e569e02ae4e29f27b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="EntitySnapshots_8cpp.html#a1e8eb8ee6790077e569e02ae4e29f27b">reconstruct</a> (const <a class="el" href="structPlayer__MM7.html">Player_MM7</a> &amp;src, <a class="el" href="classCharacter.html">Character</a> *dst)</td></tr>
 <tr class="separator:a1e8eb8ee6790077e569e02ae4e29f27b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aad12cc1e8137819c8e29c1aade2eb86a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="EntitySnapshots_8cpp.html#aad12cc1e8137819c8e29c1aade2eb86a">snapshot</a> (const <a class="el" href="classIcon.html">Icon</a> &amp;src, <a class="el" href="structIconFrame__MM7.html">IconFrame_MM7</a> *dst)</td></tr>
 <tr class="separator:aad12cc1e8137819c8e29c1aade2eb86a"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -1172,7 +1174,7 @@ Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="structCharacter.html">Character</a> *&#160;</td>
+          <td class="paramtype"><a class="el" href="classCharacter.html">Character</a> *&#160;</td>
           <td class="paramname"><em>dst</em>&#160;</td>
         </tr>
         <tr>
@@ -1773,7 +1775,7 @@ Functions</h2></td></tr>
         <tr>
           <td class="memname">void snapshot </td>
           <td>(</td>
-          <td class="paramtype">const <a class="el" href="structCharacter.html">Character</a> &amp;&#160;</td>
+          <td class="paramtype">const <a class="el" href="classCharacter.html">Character</a> &amp;&#160;</td>
           <td class="paramname"><em>src</em>, </td>
         </tr>
         <tr>

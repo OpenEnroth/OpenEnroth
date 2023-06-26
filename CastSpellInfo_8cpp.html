@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;f3b07a9</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;726b38d</span>
    </div>
   </td>
  </tr>
@@ -79,9 +79,10 @@ $(function() {
   <div class="headertitle"><div class="title">CastSpellInfo.cpp File Reference</div></div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><code>#include &lt;vector&gt;</code><br />
+<div class="textblock"><code>#include &quot;<a class="el" href="CastSpellInfo_8h.html">CastSpellInfo.h</a>&quot;</code><br />
+<code>#include &lt;cstring&gt;</code><br />
+<code>#include &lt;vector&gt;</code><br />
 <code>#include &lt;string&gt;</code><br />
-<code>#include &quot;<a class="el" href="CastSpellInfo_8h.html">Engine/Spells/CastSpellInfo.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Engine_8h.html">Engine/Engine.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="EngineGlobals_8h.html">Engine/EngineGlobals.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Processor_8h.html">Engine/Events/Processor.h</a>&quot;</code><br />
@@ -89,13 +90,14 @@ $(function() {
 <code>#include &quot;<a class="el" href="Decoration_8h.html">Engine/Graphics/Level/Decoration.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Outdoor_8h.html">Engine/Graphics/Outdoor.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Indoor_8h.html">Engine/Graphics/Indoor.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="Overlays_8h.html">Engine/Graphics/Overlays.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="IRender_8h.html">Engine/Graphics/IRender.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Viewport_8h.html">Engine/Graphics/Viewport.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="LOD_8h.html">Engine/LOD.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Localization_8h.html">Engine/Localization.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Actor_8h.html">Engine/Objects/Actor.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="ObjectList_8h.html">Engine/Objects/ObjectList.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="SpriteObject_8h.html">Engine/Objects/SpriteObject.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="NPC_8h.html">Engine/Objects/NPC.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="OurMath_8h.html">Engine/OurMath.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Party_8h.html">Engine/Party.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="SpellFxRenderer_8h.html">Engine/SpellFxRenderer.h</a>&quot;</code><br />
@@ -103,13 +105,13 @@ $(function() {
 <code>#include &quot;<a class="el" href="IconFrameTable_8h.html">Engine/Tables/IconFrameTable.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Time_8h.html">Engine/Time.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="TurnEngine_8h.html">Engine/TurnEngine/TurnEngine.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="Spells_8h.html">Engine/Spells/Spells.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="GUIButton_8h.html">GUI/GUIButton.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="GUIMessageQueue_8h.html">GUI/GUIMessageQueue.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="UIGame_8h.html">GUI/UI/UIGame.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="UIStatusBar_8h.html">GUI/UI/UIStatusBar.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="UISpell_8h.html">GUI/UI/UISpell.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="LloydsBook_8h.html">GUI/UI/Books/LloydsBook.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="TownPortalBook_8h.html">GUI/UI/Books/TownPortalBook.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Mouse_8h.html">Io/Mouse.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="AudioPlayer_8h.html">Media/Audio/AudioPlayer.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="TrigLut_8h.html">Utility/Math/TrigLut.h</a>&quot;</code><br />
@@ -117,7 +119,7 @@ $(function() {
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:a340ce978479528126dde9574f509e058"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="CastSpellInfo_8cpp.html#a340ce978479528126dde9574f509e058">initSpellSprite</a> (<a class="el" href="structSpriteObject.html">SpriteObject</a> *spritePtr, <a class="el" href="CombinedSkillValue_8h.html#aded85857649763b7e9927c146899e501">CHARACTER_SKILL_LEVEL</a> spellLevel, <a class="el" href="CombinedSkillValue_8h.html#aad588572e82b590e48058c9fe465b478">CharacterSkillMastery</a> spellMastery, <a class="el" href="structCastSpellInfo.html">CastSpellInfo</a> *pCastSpell)</td></tr>
+<tr class="memitem:a340ce978479528126dde9574f509e058"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="CastSpellInfo_8cpp.html#a340ce978479528126dde9574f509e058">initSpellSprite</a> (<a class="el" href="structSpriteObject.html">SpriteObject</a> *spritePtr, <a class="el" href="CharacterEnums_8h.html#aded85857649763b7e9927c146899e501">CHARACTER_SKILL_LEVEL</a> spellLevel, <a class="el" href="CharacterEnums_8h.html#aad588572e82b590e48058c9fe465b478">CharacterSkillMastery</a> spellMastery, <a class="el" href="structCastSpellInfo.html">CastSpellInfo</a> *pCastSpell)</td></tr>
 <tr class="separator:a340ce978479528126dde9574f509e058"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a19ec3fa409280bffd996c0ee004e5b2d"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="CastSpellInfo_8cpp.html#a19ec3fa409280bffd996c0ee004e5b2d">spellFailed</a> (<a class="el" href="structCastSpellInfo.html">CastSpellInfo</a> *pCastSpell, int error_str_id)</td></tr>
 <tr class="separator:a19ec3fa409280bffd996c0ee004e5b2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -125,7 +127,7 @@ Functions</h2></td></tr>
 <tr class="separator:ad9de5b080f9428f861e8b62fcdcacd48"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7bd0bff39f077a18e7b94f0b7f957b9f"><td class="memItemLeft" align="right" valign="top">static size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="CastSpellInfo_8cpp.html#a7bd0bff39f077a18e7b94f0b7f957b9f">pushCastSpellInfo</a> (<a class="el" href="SpellEnums_8h.html#a6ac7ece38acd196bf750bc353e00d088">SPELL_TYPE</a> uSpellID, uint16_t uPlayerID, int16_t skill_level, SpellCastFlags uFlags, int spell_sound_id)</td></tr>
 <tr class="separator:a7bd0bff39f077a18e7b94f0b7f957b9f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:abe1d56817ff95bacf75ac056f31c084a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="CastSpellInfo_8cpp.html#abe1d56817ff95bacf75ac056f31c084a">pushSpellOrRangedAttack</a> (<a class="el" href="SpellEnums_8h.html#a6ac7ece38acd196bf750bc353e00d088">SPELL_TYPE</a> spell, unsigned int uPlayerID, <a class="el" href="CombinedSkillValue_8h.html#a0cc96e568ff829281a069d99996cabcd">CHARACTER_SKILL</a> skill_value, SpellCastFlags flags, int a6)</td></tr>
+<tr class="memitem:abe1d56817ff95bacf75ac056f31c084a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="CastSpellInfo_8cpp.html#abe1d56817ff95bacf75ac056f31c084a">pushSpellOrRangedAttack</a> (<a class="el" href="SpellEnums_8h.html#a6ac7ece38acd196bf750bc353e00d088">SPELL_TYPE</a> spell, unsigned int uPlayerID, <a class="el" href="CharacterEnums_8h.html#a0cc96e568ff829281a069d99996cabcd">CHARACTER_SKILL</a> skill_value, SpellCastFlags flags, int a6)</td></tr>
 <tr class="separator:abe1d56817ff95bacf75ac056f31c084a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af966ca6737316bc582dca66265e66611"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="CastSpellInfo_8cpp.html#af966ca6737316bc582dca66265e66611">pushTempleSpell</a> (<a class="el" href="SpellEnums_8h.html#a6ac7ece38acd196bf750bc353e00d088">SPELL_TYPE</a> spell)</td></tr>
 <tr class="separator:af966ca6737316bc582dca66265e66611"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -164,13 +166,13 @@ Variables</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="CombinedSkillValue_8h.html#aded85857649763b7e9927c146899e501">CHARACTER_SKILL_LEVEL</a>&#160;</td>
+          <td class="paramtype"><a class="el" href="CharacterEnums_8h.html#aded85857649763b7e9927c146899e501">CHARACTER_SKILL_LEVEL</a>&#160;</td>
           <td class="paramname"><em>spellLevel</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="CombinedSkillValue_8h.html#aad588572e82b590e48058c9fe465b478">CharacterSkillMastery</a>&#160;</td>
+          <td class="paramtype"><a class="el" href="CharacterEnums_8h.html#aad588572e82b590e48058c9fe465b478">CharacterSkillMastery</a>&#160;</td>
           <td class="paramname"><em>spellMastery</em>, </td>
         </tr>
         <tr>
@@ -334,7 +336,7 @@ Variables</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="CombinedSkillValue_8h.html#a0cc96e568ff829281a069d99996cabcd">CHARACTER_SKILL</a>&#160;</td>
+          <td class="paramtype"><a class="el" href="CharacterEnums_8h.html#a0cc96e568ff829281a069d99996cabcd">CHARACTER_SKILL</a>&#160;</td>
           <td class="paramname"><em>skill_value</em>, </td>
         </tr>
         <tr>

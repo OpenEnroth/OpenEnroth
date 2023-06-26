@@ -9,8 +9,8 @@ var searchData=
   ['spell_5fschool_6',['SPELL_SCHOOL',['../SpellEnums_8h.html#a95a3159696fbb6e2369334fddc57497d',1,'SpellEnums.h']]],
   ['spell_5ftype_7',['SPELL_TYPE',['../SpellEnums_8h.html#a6ac7ece38acd196bf750bc353e00d088',1,'SpellEnums.h']]],
   ['spellcastflag_8',['SpellCastFlag',['../CastSpellInfo_8h.html#a889063f13dc96df1a7636304713a022f',1,'CastSpellInfo.h']]],
-  ['sprite_5fobject_5ftype_9',['SPRITE_OBJECT_TYPE',['../SpriteObjectType_8h.html#adf728ba73bf3ba5ece5de3e673fedde9',1,'SpriteObjectType.h']]],
-  ['spriteattribute_10',['SpriteAttribute',['../SpriteObjectType_8h.html#a33ff8e5a067f92e0d66dc6534785ee25',1,'SpriteObjectType.h']]],
+  ['sprite_5fobject_5ftype_9',['SPRITE_OBJECT_TYPE',['../SpriteObjectEnums_8h.html#adf728ba73bf3ba5ece5de3e673fedde9',1,'SpriteObjectEnums.h']]],
+  ['spriteattribute_10',['SpriteAttribute',['../SpriteObjectEnums_8h.html#a33ff8e5a067f92e0d66dc6534785ee25',1,'SpriteObjectEnums.h']]],
   ['state_11',['State',['../structBLVDoor.html#a938bde09f5649e4d1982d7e51a31b832',1,'BLVDoor']]],
   ['subcommand_12',['Subcommand',['../structGameOptions.html#a1d654bf52496d8445e32d0fd3cb3647e',1,'GameOptions']]]
 ];

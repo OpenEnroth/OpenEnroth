@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;f3b07a9</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;726b38d</span>
    </div>
   </td>
  </tr>
@@ -84,14 +84,17 @@ $(function() {
 <code>#include &lt;list&gt;</code><br />
 <code>#include &quot;<a class="el" href="Engine_8h.html">Engine/Engine.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="EngineGlobals_8h.html">Engine/EngineGlobals.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="EngineIocContainer_8h.html">Engine/EngineIocContainer.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Viewport_8h.html">Engine/Graphics/Viewport.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Vis_8h.html">Engine/Graphics/Vis.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Engine_2Graphics_2Image_8h.html">Engine/Graphics/Image.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="IRender_8h.html">Engine/Graphics/IRender.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="LOD_8h.html">Engine/LOD.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Actor_8h.html">Engine/Objects/Actor.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="ItemTable_8h.html">Engine/Tables/ItemTable.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Party_8h.html">Engine/Party.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="TurnEngine_8h.html">Engine/TurnEngine/TurnEngine.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="AssetsManager_8h.html">Engine/AssetsManager.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="GUIButton_8h.html">GUI/GUIButton.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="GUIWindow_8h.html">GUI/GUIWindow.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="GUIMessageQueue_8h.html">GUI/GUIMessageQueue.h</a>&quot;</code><br />
@@ -105,8 +108,8 @@ Functions</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="var-members" name="var-members"></a>
 Variables</h2></td></tr>
-<tr class="memitem:a55f0f84b4b73bc6958ceaedd363cdc08"><td class="memItemLeft" align="right" valign="top">std::shared_ptr&lt; <a class="el" href="classIo_1_1Mouse.html">Mouse</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Mouse_8cpp.html#a55f0f84b4b73bc6958ceaedd363cdc08">mouse</a> = nullptr</td></tr>
-<tr class="separator:a55f0f84b4b73bc6958ceaedd363cdc08"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a254356d50f1ee890e659b77e48019f24"><td class="memItemLeft" align="right" valign="top">std::shared_ptr&lt; <a class="el" href="classIo_1_1Mouse.html">Io::Mouse</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Mouse_8cpp.html#a254356d50f1ee890e659b77e48019f24">mouse</a> = nullptr</td></tr>
+<tr class="separator:a254356d50f1ee890e659b77e48019f24"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Function Documentation</h2>
 <a id="ac7704639690d79bc0b3c1003999a51b5" name="ac7704639690d79bc0b3c1003999a51b5"></a>
@@ -128,14 +131,14 @@ Variables</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Variable Documentation</h2>
-<a id="a55f0f84b4b73bc6958ceaedd363cdc08" name="a55f0f84b4b73bc6958ceaedd363cdc08"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a55f0f84b4b73bc6958ceaedd363cdc08">&#9670;&#160;</a></span>mouse</h2>
+<a id="a254356d50f1ee890e659b77e48019f24" name="a254356d50f1ee890e659b77e48019f24"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a254356d50f1ee890e659b77e48019f24">&#9670;&#160;</a></span>mouse</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">std::shared_ptr&lt;<a class="el" href="classIo_1_1Mouse.html">Mouse</a>&gt; mouse = nullptr</td>
+          <td class="memname">std::shared_ptr&lt;<a class="el" href="classIo_1_1Mouse.html">Io::Mouse</a>&gt; mouse = nullptr</td>
         </tr>
       </table>
 </div><div class="memdoc">

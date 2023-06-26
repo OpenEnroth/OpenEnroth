@@ -4,7 +4,7 @@ var searchData=
   ['camera3d_1',['Camera3D',['../structCamera3D.html',1,'']]],
   ['castspellinfo_2',['CastSpellInfo',['../structCastSpellInfo.html',1,'']]],
   ['cenchantment_3',['CEnchantment',['../structCEnchantment.html',1,'']]],
-  ['character_4',['Character',['../structCharacter.html',1,'']]],
+  ['character_4',['Character',['../classCharacter.html',1,'']]],
   ['characterconditions_5',['CharacterConditions',['../classCharacterConditions.html',1,'']]],
   ['charactercreationattributeprops_6',['CharacterCreationAttributeProps',['../structCharacterCreationAttributeProps.html',1,'']]],
   ['characterequipment_7',['CharacterEquipment',['../unionCharacterEquipment.html',1,'']]],

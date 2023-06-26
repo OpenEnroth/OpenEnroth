@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;f3b07a9</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;726b38d</span>
    </div>
   </td>
  </tr>
@@ -83,18 +83,15 @@ $(function() {
 <div class="textblock"><code>#include &lt;cstdint&gt;</code><br />
 <code>#include &lt;array&gt;</code><br />
 <code>#include &lt;string&gt;</code><br />
-<code>#include &quot;<a class="el" href="SpellEnums_8h.html">SpellEnums.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="ItemEnums_8h.html">Engine/Objects/ItemEnums.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="CharacterEnums_8h.html">Engine/Objects/CharacterEnums.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="SpriteObjectType_8h.html">Engine/Objects/SpriteObjectType.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="Time_8h.html">Engine/Time.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="IndexedArray_8h.html">Utility/IndexedArray.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="SpriteObjectEnums_8h.html">Engine/Objects/SpriteObjectEnums.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Vec_8h.html">Utility/Geometry/Vec.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="IndexedArray_8h.html">Utility/IndexedArray.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="SpellEnums_8h.html">SpellEnums.h</a>&quot;</code><br />
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Classes</h2></td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structSpellBuff.html">SpellBuff</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structSpellInfo.html">SpellInfo</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structSpellStats.html">SpellStats</a></td></tr>
@@ -108,11 +105,11 @@ Classes</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:a995e33e8f1e07b4e46c355f4cde4a426"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Spells_8h.html#a995e33e8f1e07b4e46c355f4cde4a426">CalcSpellDamage</a> (<a class="el" href="SpellEnums_8h.html#a6ac7ece38acd196bf750bc353e00d088">SPELL_TYPE</a> uSpellID, <a class="el" href="CombinedSkillValue_8h.html#aded85857649763b7e9927c146899e501">CHARACTER_SKILL_LEVEL</a> spellLevel, <a class="el" href="CombinedSkillValue_8h.html#aad588572e82b590e48058c9fe465b478">CharacterSkillMastery</a> skillMastery, int currentHp)</td></tr>
+<tr class="memitem:a995e33e8f1e07b4e46c355f4cde4a426"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Spells_8h.html#a995e33e8f1e07b4e46c355f4cde4a426">CalcSpellDamage</a> (<a class="el" href="SpellEnums_8h.html#a6ac7ece38acd196bf750bc353e00d088">SPELL_TYPE</a> uSpellID, <a class="el" href="CharacterEnums_8h.html#aded85857649763b7e9927c146899e501">CHARACTER_SKILL_LEVEL</a> spellLevel, <a class="el" href="CharacterEnums_8h.html#aad588572e82b590e48058c9fe465b478">CharacterSkillMastery</a> skillMastery, int currentHp)</td></tr>
 <tr class="separator:a995e33e8f1e07b4e46c355f4cde4a426"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac2f7de2cf2c205cf725a55735ea65259"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Spells_8h.html#ac2f7de2cf2c205cf725a55735ea65259">IsSpellQuickCastableOnShiftClick</a> (<a class="el" href="SpellEnums_8h.html#a6ac7ece38acd196bf750bc353e00d088">SPELL_TYPE</a> uSpellID)</td></tr>
 <tr class="separator:ac2f7de2cf2c205cf725a55735ea65259"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a35cf781f61988f8319368402902aeb00"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Spells_8h.html#a35cf781f61988f8319368402902aeb00">eventCastSpell</a> (<a class="el" href="SpellEnums_8h.html#a6ac7ece38acd196bf750bc353e00d088">SPELL_TYPE</a> uSpellID, <a class="el" href="CombinedSkillValue_8h.html#aad588572e82b590e48058c9fe465b478">CharacterSkillMastery</a> skillMastery, <a class="el" href="CombinedSkillValue_8h.html#aded85857649763b7e9927c146899e501">CHARACTER_SKILL_LEVEL</a> skillLevel, int fromx, int fromy, int fromz, int tox, int toy, int toz)</td></tr>
+<tr class="memitem:a35cf781f61988f8319368402902aeb00"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Spells_8h.html#a35cf781f61988f8319368402902aeb00">eventCastSpell</a> (<a class="el" href="SpellEnums_8h.html#a6ac7ece38acd196bf750bc353e00d088">SPELL_TYPE</a> uSpellID, <a class="el" href="CharacterEnums_8h.html#aad588572e82b590e48058c9fe465b478">CharacterSkillMastery</a> skillMastery, <a class="el" href="CharacterEnums_8h.html#aded85857649763b7e9927c146899e501">CHARACTER_SKILL_LEVEL</a> skillLevel, int fromx, int fromy, int fromz, int tox, int toy, int toz)</td></tr>
 <tr class="separator:a35cf781f61988f8319368402902aeb00"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a62540915ac345d20b7cab6c85713f3c6"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Spells_8h.html#a62540915ac345d20b7cab6c85713f3c6">armageddonProgress</a> ()</td></tr>
 <tr class="separator:a62540915ac345d20b7cab6c85713f3c6"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -125,7 +122,7 @@ Variables</h2></td></tr>
 <tr class="separator:a627363ab8ebcce2dc02cc92efff9a04e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a65e903b3603561e27898c7292f91884c"><td class="memItemLeft" align="right" valign="top">std::array&lt; std::array&lt; struct <a class="el" href="structSpellBookIconPos.html">SpellBookIconPos</a>, 12 &gt;, 9 &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Spells_8h.html#a65e903b3603561e27898c7292f91884c">pIconPos</a></td></tr>
 <tr class="separator:a65e903b3603561e27898c7292f91884c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a40150921cef94d92221a2c84e2d93c0c"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classIndexedArray.html">IndexedArray</a>&lt; <a class="el" href="SpriteObjectType_8h.html#adf728ba73bf3ba5ece5de3e673fedde9">SPRITE_OBJECT_TYPE</a>, <a class="el" href="SpellEnums_8h.html#a6ac7ece38acd196bf750bc353e00d088a598bc4637e7b4dcf06fbde4b23063484">SPELL_FIRST_WITH_SPRITE</a>, <a class="el" href="SpellEnums_8h.html#a6ac7ece38acd196bf750bc353e00d088abf5444a33b006b4bd7eb70aedb070aea">SPELL_LAST_WITH_SPRITE</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Spells_8h.html#a40150921cef94d92221a2c84e2d93c0c">SpellSpriteMapping</a></td></tr>
+<tr class="memitem:a40150921cef94d92221a2c84e2d93c0c"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classIndexedArray.html">IndexedArray</a>&lt; <a class="el" href="SpriteObjectEnums_8h.html#adf728ba73bf3ba5ece5de3e673fedde9">SPRITE_OBJECT_TYPE</a>, <a class="el" href="SpellEnums_8h.html#a6ac7ece38acd196bf750bc353e00d088a598bc4637e7b4dcf06fbde4b23063484">SPELL_FIRST_WITH_SPRITE</a>, <a class="el" href="SpellEnums_8h.html#a6ac7ece38acd196bf750bc353e00d088abf5444a33b006b4bd7eb70aedb070aea">SPELL_LAST_WITH_SPRITE</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Spells_8h.html#a40150921cef94d92221a2c84e2d93c0c">SpellSpriteMapping</a></td></tr>
 <tr class="separator:a40150921cef94d92221a2c84e2d93c0c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5aec88e8f977edefdaca0ed8b995d493"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classIndexedArray.html">IndexedArray</a>&lt; <a class="el" href="classSpellData.html">SpellData</a>, <a class="el" href="SpellEnums_8h.html#a6ac7ece38acd196bf750bc353e00d088af0aadf4bfd8be3e389aec627620028a7">SPELL_FIRST_REGULAR</a>, <a class="el" href="SpellEnums_8h.html#a6ac7ece38acd196bf750bc353e00d088a9376fd86bf60836ed3f986cab76e7d4e">SPELL_LAST_REGULAR</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Spells_8h.html#a5aec88e8f977edefdaca0ed8b995d493">pSpellDatas</a></td></tr>
 <tr class="separator:a5aec88e8f977edefdaca0ed8b995d493"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -171,13 +168,13 @@ Variables</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="CombinedSkillValue_8h.html#aded85857649763b7e9927c146899e501">CHARACTER_SKILL_LEVEL</a>&#160;</td>
+          <td class="paramtype"><a class="el" href="CharacterEnums_8h.html#aded85857649763b7e9927c146899e501">CHARACTER_SKILL_LEVEL</a>&#160;</td>
           <td class="paramname"><em>spellLevel</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="CombinedSkillValue_8h.html#aad588572e82b590e48058c9fe465b478">CharacterSkillMastery</a>&#160;</td>
+          <td class="paramtype"><a class="el" href="CharacterEnums_8h.html#aad588572e82b590e48058c9fe465b478">CharacterSkillMastery</a>&#160;</td>
           <td class="paramname"><em>skillMastery</em>, </td>
         </tr>
         <tr>
@@ -212,13 +209,13 @@ Variables</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="CombinedSkillValue_8h.html#aad588572e82b590e48058c9fe465b478">CharacterSkillMastery</a>&#160;</td>
+          <td class="paramtype"><a class="el" href="CharacterEnums_8h.html#aad588572e82b590e48058c9fe465b478">CharacterSkillMastery</a>&#160;</td>
           <td class="paramname"><em>skillMastery</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="CombinedSkillValue_8h.html#aded85857649763b7e9927c146899e501">CHARACTER_SKILL_LEVEL</a>&#160;</td>
+          <td class="paramtype"><a class="el" href="CharacterEnums_8h.html#aded85857649763b7e9927c146899e501">CHARACTER_SKILL_LEVEL</a>&#160;</td>
           <td class="paramname"><em>skillLevel</em>, </td>
         </tr>
         <tr>
@@ -443,7 +440,7 @@ Variables</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="classIndexedArray.html">IndexedArray</a>&lt;<a class="el" href="SpriteObjectType_8h.html#adf728ba73bf3ba5ece5de3e673fedde9">SPRITE_OBJECT_TYPE</a>, <a class="el" href="SpellEnums_8h.html#a6ac7ece38acd196bf750bc353e00d088a598bc4637e7b4dcf06fbde4b23063484">SPELL_FIRST_WITH_SPRITE</a>, <a class="el" href="SpellEnums_8h.html#a6ac7ece38acd196bf750bc353e00d088abf5444a33b006b4bd7eb70aedb070aea">SPELL_LAST_WITH_SPRITE</a>&gt; SpellSpriteMapping</td>
+          <td class="memname"><a class="el" href="classIndexedArray.html">IndexedArray</a>&lt;<a class="el" href="SpriteObjectEnums_8h.html#adf728ba73bf3ba5ece5de3e673fedde9">SPRITE_OBJECT_TYPE</a>, <a class="el" href="SpellEnums_8h.html#a6ac7ece38acd196bf750bc353e00d088a598bc4637e7b4dcf06fbde4b23063484">SPELL_FIRST_WITH_SPRITE</a>, <a class="el" href="SpellEnums_8h.html#a6ac7ece38acd196bf750bc353e00d088abf5444a33b006b4bd7eb70aedb070aea">SPELL_LAST_WITH_SPRITE</a>&gt; SpellSpriteMapping</td>
         </tr>
       </table>
   </td>

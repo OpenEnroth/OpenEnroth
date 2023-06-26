@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;f3b07a9</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;726b38d</span>
    </div>
   </td>
  </tr>
@@ -84,32 +84,16 @@ $(function() {
 <div class="textblock"><code>#include &lt;memory&gt;</code><br />
 <code>#include &lt;string&gt;</code><br />
 <code>#include &lt;vector&gt;</code><br />
-<code>#include &lt;array&gt;</code><br />
-<code>#include &quot;<a class="el" href="GameConfig_8h.html">Application/GameConfig.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Nuklear_8h.html">Engine/Graphics/Nuklear.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="MM7_8h.html">Engine/MM7.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Library_2Image_2Image_8h.html">Library/Image/Image.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Color_8h.html">Library/Color/Color.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="ColorTable_8h.html">Library/Color/ColorTable.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Rect_8h.html">Utility/Geometry/Rect.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="TextureRenderId_8h.html">TextureRenderId.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="RenderEntities_8h.html">RenderEntities.h</a>&quot;</code><br />
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Classes</h2></td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structRenderBillboard.html">RenderBillboard</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structODMRenderParams.html">ODMRenderParams</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structRenderVertexSoft.html">RenderVertexSoft</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structRenderVertexD3D3.html">RenderVertexD3D3</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structRenderBillboardD3D.html">RenderBillboardD3D</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structSoftwareBillboard.html">SoftwareBillboard</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structnk__tex__font.html">nk_tex_font</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classIRender.html">IRender</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structSkyBillboardStruct.html">SkyBillboardStruct</a></td></tr>
@@ -130,17 +114,11 @@ Functions</h2></td></tr>
 <tr class="separator:ac2b8592615b91fc5af64de95b76d6dcd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad51724cd2e7d9a13d6a5d5261408f7a7"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structColor.html">Color</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="IRender_8h.html#ad51724cd2e7d9a13d6a5d5261408f7a7">GetActorTintColor</a> (int max_dim, int min_dim, float distance, int a4, const <a class="el" href="structRenderBillboard.html">RenderBillboard</a> *a5)</td></tr>
 <tr class="separator:ad51724cd2e7d9a13d6a5d5261408f7a7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae9c04a501d9a011f780e3183b54a681d"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="IRender_8h.html#ae9c04a501d9a011f780e3183b54a681d">_43F55F_get_billboard_light_level</a> (const <a class="el" href="structRenderBillboard.html">RenderBillboard</a> *a1, int uBaseLightLevel)</td></tr>
-<tr class="separator:ae9c04a501d9a011f780e3183b54a681d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ada8b47667f42abfcc781e1435aaf5b39"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="IRender_8h.html#ada8b47667f42abfcc781e1435aaf5b39">GetLightLevelAtPoint</a> (unsigned int uBaseLightLevel, int uSectorID, float x, float y, float z)</td></tr>
-<tr class="separator:ada8b47667f42abfcc781e1435aaf5b39"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a522912d67446895b0a03d01837b75a99"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="IRender_8h.html#a522912d67446895b0a03d01837b75a99">UpdateObjects</a> ()</td></tr>
 <tr class="separator:a522912d67446895b0a03d01837b75a99"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="var-members" name="var-members"></a>
 Variables</h2></td></tr>
-<tr class="memitem:aa885cc37fa7e1d5564042afa5f571d52"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structODMRenderParams.html">ODMRenderParams</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="IRender_8h.html#aa885cc37fa7e1d5564042afa5f571d52">pODMRenderParams</a></td></tr>
-<tr class="separator:aa885cc37fa7e1d5564042afa5f571d52"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a21d31464313b2c66ff88d4aa97b66143"><td class="memItemLeft" align="right" valign="top">std::shared_ptr&lt; <a class="el" href="classIRender.html">IRender</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="IRender_8h.html#a21d31464313b2c66ff88d4aa97b66143">render</a></td></tr>
 <tr class="separator:a21d31464313b2c66ff88d4aa97b66143"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af77da57a69c9069857ce9547af8c1d2a"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="IRender_8h.html#af77da57a69c9069857ce9547af8c1d2a">uNumDecorationsDrawnThisFrame</a></td></tr>
@@ -163,43 +141,6 @@ Variables</h2></td></tr>
 <tr class="separator:ac6a5bc5f62571e7c7a3fd042e445ba29"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Function Documentation</h2>
-<a id="ae9c04a501d9a011f780e3183b54a681d" name="ae9c04a501d9a011f780e3183b54a681d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae9c04a501d9a011f780e3183b54a681d">&#9670;&#160;</a></span>_43F55F_get_billboard_light_level()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">int _43F55F_get_billboard_light_level </td>
-          <td>(</td>
-          <td class="paramtype">const <a class="el" href="structRenderBillboard.html">RenderBillboard</a> *&#160;</td>
-          <td class="paramname"><em>a1</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>uBaseLightLevel</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<dl class="section user"><dt>Original binary offset:</dt><dd>0x0043F55F.</dd></dl>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">*a1</td><td>Pointer to billboard to check. </td></tr>
-    <tr><td class="paramname">uBaseLightLevel</td><td>Base light dimming value (0-31).</td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>Billboard dimming value (0-31) with lights applied. </dd></dl>
-
-</div>
-</div>
 <a id="ad51724cd2e7d9a13d6a5d5261408f7a7" name="ad51724cd2e7d9a13d6a5d5261408f7a7"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ad51724cd2e7d9a13d6a5d5261408f7a7">&#9670;&#160;</a></span>GetActorTintColor()</h2>
 
@@ -254,62 +195,6 @@ Variables</h2></td></tr>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Return 32bit colour ARGB. </dd></dl>
-
-</div>
-</div>
-<a id="ada8b47667f42abfcc781e1435aaf5b39" name="ada8b47667f42abfcc781e1435aaf5b39"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ada8b47667f42abfcc781e1435aaf5b39">&#9670;&#160;</a></span>GetLightLevelAtPoint()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">int GetLightLevelAtPoint </td>
-          <td>(</td>
-          <td class="paramtype">unsigned int&#160;</td>
-          <td class="paramname"><em>uBaseLightLevel</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>uSectorID</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">float&#160;</td>
-          <td class="paramname"><em>x</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">float&#160;</td>
-          <td class="paramname"><em>y</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">float&#160;</td>
-          <td class="paramname"><em>z</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<dl class="section user"><dt>Original binary offset:</dt><dd>0x0043F5C8.</dd></dl>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">uBaseLightLevel</td><td>Starting dimming level at point (0-31). </td></tr>
-    <tr><td class="paramname">uSectorID</td><td>Sector ID if indoors or 0. </td></tr>
-    <tr><td class="paramname">x,y,z</td><td>Co-ords of point.</td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>Dimming level (0-31) with lights effect added. </dd></dl>
 
 </div>
 </div>
@@ -461,28 +346,6 @@ Variables</h2></td></tr>
       <table class="memname">
         <tr>
           <td class="memname"><a class="el" href="structRenderBillboard.html">RenderBillboard</a> pBillboardRenderList[500]</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">extern</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="aa885cc37fa7e1d5564042afa5f571d52" name="aa885cc37fa7e1d5564042afa5f571d52"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa885cc37fa7e1d5564042afa5f571d52">&#9670;&#160;</a></span>pODMRenderParams</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="structODMRenderParams.html">ODMRenderParams</a>* pODMRenderParams</td>
         </tr>
       </table>
   </td>

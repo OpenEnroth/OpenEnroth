@@ -4,7 +4,7 @@ var searchData=
   ['ui_5fdrawsaveload_1',['UI_DrawSaveLoad',['../UISaveLoad_8cpp.html#adc9f057ec5f87bf3c586388900eddac9',1,'UISaveLoad.cpp']]],
   ['ui_5fgethealthmanaandotherqualitiesstringcolor_2',['UI_GetHealthManaAndOtherQualitiesStringColor',['../GUIWindow_8h.html#a99a180dbbdbd96e33efaaef393f630b0',1,'UI_GetHealthManaAndOtherQualitiesStringColor(int current_pos, int base_pos):&#160;UIGame.cpp'],['../UIGame_8cpp.html#a907e6a5dd8710474856980cbba504874',1,'UI_GetHealthManaAndOtherQualitiesStringColor(int actual_value, int base_value):&#160;UIGame.cpp']]],
   ['ui_5fonkeydown_3',['UI_OnKeyDown',['../KeyboardInputHandler_8h.html#ac7704639690d79bc0b3c1003999a51b5',1,'UI_OnKeyDown(PlatformKey key):&#160;Mouse.cpp'],['../Mouse_8cpp.html#ac7704639690d79bc0b3c1003999a51b5',1,'UI_OnKeyDown(PlatformKey key):&#160;Mouse.cpp']]],
-  ['ui_5fonmouseleftclick_4',['UI_OnMouseLeftClick',['../classIo_1_1Mouse.html#ae90d9b5b37b0f4612f6225982e1da13e',1,'Io::Mouse']]],
+  ['ui_5fonmouseleftclick_4',['UI_OnMouseLeftClick',['../classIo_1_1Mouse.html#ab668618e050f47340c5d2b833d6abe9e',1,'Io::Mouse']]],
   ['ui_5fonmouserightclick_5',['UI_OnMouseRightClick',['../GUIWindow_8h.html#a4b9d033e0116029f628ef0c4a9a7d306',1,'UI_OnMouseRightClick(int mouse_x, int mouse_y):&#160;UIPopup.cpp'],['../UIPopup_8cpp.html#a4b9d033e0116029f628ef0c4a9a7d306',1,'UI_OnMouseRightClick(int mouse_x, int mouse_y):&#160;UIPopup.cpp']]],
   ['ui_5fplay_5ffood_5fanim_6',['ui_play_food_anim',['../Party_8cpp.html#a25dbc18fe908ae3947a833127f1cf9e2',1,'Party.cpp']]],
   ['ui_5fplay_5fgold_5fanim_7',['ui_play_gold_anim',['../Party_8cpp.html#ab6af3751607396afcd1745c1a536ae1a',1,'Party.cpp']]],
@@ -46,6 +46,6 @@ var searchData=
   ['updateuserinput_5fand_5fmapspecificstuff_43',['UpdateUserInput_and_MapSpecificStuff',['../Engine_8cpp.html#a73fe5e8d7dc6ec78e5cc180d1915341b',1,'UpdateUserInput_and_MapSpecificStuff():&#160;Engine.cpp'],['../Engine_8h.html#a73fe5e8d7dc6ec78e5cc180d1915341b',1,'UpdateUserInput_and_MapSpecificStuff():&#160;Engine.cpp']]],
   ['updatewindowfromconfig_44',['UpdateWindowFromConfig',['../classGameWindowHandler.html#ab477fb7c84910c2c3b4fda658dc0c9ac',1,'GameWindowHandler']]],
   ['use_45',['use',['../classGLShader.html#af765a2607d1d4cc056aabd9295702e09',1,'GLShader']]],
-  ['useitem_46',['useItem',['../structCharacter.html#a9ed9309e2615635961a047eeb769783a',1,'Character']]],
+  ['useitem_46',['useItem',['../classCharacter.html#a9ed9309e2615635961a047eeb769783a',1,'Character']]],
   ['usenpcskill_47',['UseNPCSkill',['../NPC_8cpp.html#a57fa6cc058304f87cdb110cb5c342d8d',1,'UseNPCSkill(NPCProf profession, int id):&#160;NPC.cpp'],['../NPC_8h.html#a57fa6cc058304f87cdb110cb5c342d8d',1,'UseNPCSkill(NPCProf profession, int id):&#160;NPC.cpp']]]
 ];

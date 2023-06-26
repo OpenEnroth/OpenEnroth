@@ -1,7 +1,7 @@
 var searchData=
 [
   ['keybindings_0',['Keybindings',['../classGameConfig_1_1Keybindings.html#a6a50497b7b8c2e09e837d79e9a91084f',1,'GameConfig::Keybindings']]],
-  ['keyboardactionmapping_1',['KeyboardActionMapping',['../structIo_1_1KeyboardActionMapping.html#ae88d9831573782459e0c075138c6bcce',1,'Io::KeyboardActionMapping']]],
+  ['keyboardactionmapping_1',['KeyboardActionMapping',['../classIo_1_1KeyboardActionMapping.html#a7ccb5072e42816100c9c5a04e99200a9',1,'Io::KeyboardActionMapping']]],
   ['keyboardinputhandler_2',['KeyboardInputHandler',['../classIo_1_1KeyboardInputHandler.html#ae1387ea63f421ca0261e0b8f55c5140c',1,'Io::KeyboardInputHandler']]],
   ['keyevent_3',['KeyEvent',['../classNuklear.html#a7e860df223e8f333b530f1793096d82a',1,'Nuklear::KeyEvent()'],['../classNuklearEventHandler.html#ab81d25b54261688e2b0963814cf2423d',1,'NuklearEventHandler::KeyEvent(PlatformKey key, PlatformModifiers mods, bool down)']]],
   ['keypressevent_4',['keyPressEvent',['../classNuklearEventHandler.html#a8f07bfe57ee36afdf8aff6cb14433b80',1,'NuklearEventHandler::keyPressEvent()'],['../classPlatformEventHandler.html#aa61e05d7964c1ee873a72176209a1aa1',1,'PlatformEventHandler::keyPressEvent()'],['../classPlatformEventFilter.html#a31b2af9591a8f4c42768bed4805e506d',1,'PlatformEventFilter::keyPressEvent()'],['../classGameWindowHandler.html#a74a6b9a691b30884df03b125c09154e8',1,'GameWindowHandler::keyPressEvent()'],['../classGameTraceHandler.html#ada5c2ff7851a93fcaf4ee25975a94540',1,'GameTraceHandler::keyPressEvent()'],['../classGameKeyboardController.html#a35455a18bd25d2ff5176da72c9add79f',1,'GameKeyboardController::keyPressEvent(const PlatformKeyEvent *event) override']]],
