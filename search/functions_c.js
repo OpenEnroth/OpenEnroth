@@ -46,7 +46,7 @@ var searchData=
   ['loadroadtileset_43',['LoadRoadTileset',['../structOutdoorLocation.html#adf4599c0a38473eab693b1dd45ca1958',1,'OutdoorLocation']]],
   ['loadsound_44',['LoadSound',['../classAudioPlayer.html#a7d67b37579b1bf98c9c413633e9e9816',1,'AudioPlayer::LoadSound(int uSoundID)'],['../classAudioPlayer.html#a404da987053467a8a59a72dd66874199',1,'AudioPlayer::LoadSound(const std::string &amp;pSoundName)']]],
   ['loadspellbook_45',['loadSpellbook',['../classGUIWindow__Spellbook.html#a30efd5eb7191050b3c597b17931d971f',1,'GUIWindow_Spellbook']]],
-  ['loadsprite_46',['LoadSprite',['../classLODFile__Sprites.html#a33291fe7e2f3f984e5f47340d8547df7',1,'LODFile_Sprites']]],
+  ['loadsprite_46',['LoadSprite',['../classLODFile__Sprites.html#ae1daf959b8025ce3435852c2864b5f61',1,'LODFile_Sprites']]],
   ['loadspritefromfile_47',['LoadSpriteFromFile',['../classLODFile__Sprites.html#a658d6ecee3095a2d8afcf43ca3fe739e',1,'LODFile_Sprites']]],
   ['loadsprites_48',['LoadSprites',['../structArcomageGame.html#a5e632cce248759bfa53a957daf3d05f1',1,'ArcomageGame']]],
   ['loadsubindices_49',['LoadSubIndices',['../classLOD_1_1File.html#a9b4cc15f8a3567e58ffefb445da45670',1,'LOD::File']]],
