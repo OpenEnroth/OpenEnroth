@@ -15,7 +15,7 @@ struct Planei {
      *                                  means that `point` is in the half-space that the normal is pointing to,
      *                                  and this usually is "outside" the model that the face belongs to.
      */
-    int signedDistanceTo(const Vec3i &point) {
+    int signedDistanceTo(const Vec3i &point) const {
         return signedDistanceTo(point.x, point.y, point.z);
     }
 
@@ -25,28 +25,28 @@ struct Planei {
      *
      * @see signedDistanceTo(const Vec3i &)
      */
-    int signedDistanceToAsFixpoint(const Vec3i &point) {
+    int signedDistanceToAsFixpoint(const Vec3i &point) const {
         return signedDistanceToAsFixpoint(point.x, point.y, point.z);
     }
 
     /**
      * @see signedDistanceTo(const Vec3i &)
      */
-    int signedDistanceTo(const Vec3s &point) {
+    int signedDistanceTo(const Vec3s &point) const {
         return signedDistanceTo(point.x, point.y, point.z);
     }
 
     /**
      * @see signedDistanceTo(const Vec3i &)
      */
-    int signedDistanceTo(int x, int y, int z) {
+    int signedDistanceTo(int x, int y, int z) const {
         return signedDistanceToAsFixpoint(x, y, z) >> 16;
     }
 
     /**
      * @see signedDistanceToAsFixpoint(const Vec3i &)
      */
-    int signedDistanceToAsFixpoint(int x, int y, int z) {
+    int signedDistanceToAsFixpoint(int x, int y, int z) const {
         return this->dist + this->normal.x * x + this->normal.y * y + this->normal.z * z;
     }
 };
@@ -64,7 +64,7 @@ struct Planef {
      *                                  means that `point` is in the half-space that the normal is pointing to,
      *                                  and this usually is "outside" the model that the face belongs to.
      */
-    float signedDistanceTo(const Vec3f &point) {
+    float signedDistanceTo(const Vec3f &point) const {
         return this->dist + this->normal.x * point.x + this->normal.y * point.y + this->normal.z * point.z;
     }
 };
