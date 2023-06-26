@@ -2627,7 +2627,7 @@ void UpdateActors_ODM() {
 
         // TODO(pskelton): this cancels out the above - is this intended
         // MOVING TOO SLOW
-        if (pActors[Actor_ITR].vVelocity.getXY().lengthSqr() < 400 && Slope_High == 0) {
+        if (pActors[Actor_ITR].vVelocity.xy().lengthSqr() < 400 && Slope_High == 0) {
             pActors[Actor_ITR].vVelocity.y = 0;
             pActors[Actor_ITR].vVelocity.x = 0;
         }
