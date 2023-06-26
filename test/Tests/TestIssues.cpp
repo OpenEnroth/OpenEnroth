@@ -664,7 +664,7 @@ GAME_TEST(Issues, Issue506) {
     test->playTraceFromTestData("issue_506.mm7", "issue_506.json");
 }
 
-GAME_TEST(Issue, Issue518) {
+GAME_TEST(Issues, Issue518) {
     // Armageddon yeets the actors way too far into the sky & actors take stops when falling down
     test->playTraceFromTestData("issue_518.mm7", "issue_518.json");
     for (auto &actor : pActors) {
@@ -856,7 +856,7 @@ GAME_TEST(Issues, Issue626) {
     EXPECT_EQ(pSavegameList->selectedSlot, 1);
 }
 
-GAME_TEST(Issue, Issue645) {
+GAME_TEST(Issues, Issue645) {
     // Characters does not enter unconscious state
     test->playTraceFromTestData("issue_645.mm7", "issue_645.json");
     EXPECT_EQ(pParty->pCharacters[0].conditions.Has(CONDITION_UNCONSCIOUS), true);

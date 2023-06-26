@@ -29,7 +29,7 @@ GameTestOptions GameTestOptions::Parse(int argc, char **argv) {
     } catch (const CLI::ParseError &e) {
         if (app->get_help_ptr()->as<bool>()) {
             app->exit(e);
-            result.helpPrinted = true;
+            result.helpRequested = true;
         } else {
             throw; // Genuine parse error => propagate.
         }
