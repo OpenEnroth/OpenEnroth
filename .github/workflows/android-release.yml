@@ -38,10 +38,10 @@ jobs:
         java-version: 17
         cache: gradle
 
-  - uses: nttld/setup-ndk@v1
-    with:
-      ndk-version: r25c
-      local-cache: true
+    - uses: nttld/setup-ndk@v1
+      with:
+        ndk-version: r25c
+        local-cache: true
 
     - name: Build ffmpeg
       working-directory: openenroth/jni/FFmpeg
