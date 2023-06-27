@@ -40,8 +40,9 @@ jobs:
 
     - name: Build ffmpeg
       working-directory: openenroth/jni/FFmpeg
-      run: export NDK=/usr/local/lib/android/sdk/ndk/25.1.8937393      
-      run: ./build.sh
+      run: |
+        export NDK=/usr/local/lib/android/sdk/ndk/25.1.8937393      
+        ./build.sh
 
     - name: Build the app
       run: ./gradlew assembleDebug
