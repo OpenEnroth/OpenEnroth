@@ -112,8 +112,8 @@ void OutdoorLocation::ExecDraw(unsigned int bRedraw) {
 
     //}
 
-    pODMRenderParams->uMapGridCellX = WorldPosToGridCellX(pParty->vPosition.x);
-    pODMRenderParams->uMapGridCellY = WorldPosToGridCellY(pParty->vPosition.y);
+    pODMRenderParams->uMapGridCellX = WorldPosToGridCellX(pParty->pos.x);
+    pODMRenderParams->uMapGridCellY = WorldPosToGridCellY(pParty->pos.y);
 
     assert(pODMRenderParams->uMapGridCellX <= 127 && pODMRenderParams->uMapGridCellY <= 127);
 
@@ -144,8 +144,8 @@ void OutdoorLocation::ExecDraw(unsigned int bRedraw) {
 
     // engine->PrepareBloodsplats(); // not used?
     if (bRedraw)
-        UpdateDiscoveredArea(WorldPosToGridCellX(pParty->vPosition.x),
-                             WorldPosToGridCellY(pParty->vPosition.y),
+        UpdateDiscoveredArea(WorldPosToGridCellX(pParty->pos.x),
+                             WorldPosToGridCellY(pParty->pos.y),
                              1);
     engine->SetForceRedraw(false);
 
@@ -450,7 +450,7 @@ void OutdoorLocation::UpdateFog() {
 int OutdoorLocation::getNumFoodRequiredToRestInCurrentPos(const Vec3i &pos) {
     bool is_on_water = false;
     int bmodel_standing_on_pid = 0;
-    ODM_GetFloorLevel(pos, pParty->uDefaultPartyHeight, &is_on_water, &bmodel_standing_on_pid, 0);
+    ODM_GetFloorLevel(pos, pParty->defaultHeight, &is_on_water, &bmodel_standing_on_pid, 0);
     if (pParty->isAirborne() || bmodel_standing_on_pid || is_on_water) {
         return 2;
     }
@@ -1225,51 +1225,51 @@ bool OutdoorLocation::InitalizeActors(int a1) {
 
     alert_status = false;
     for (int i = 0; i < pActors.size(); ++i) {
-        if (!(pActors[i].uAttributes & ACTOR_UNKNOW7)) {
+        if (!(pActors[i].attributes & ACTOR_UNKNOW7)) {
             if (!alert_status) {
-                pActors[i].uCurrentActionTime = 0;
-                pActors[i].uCurrentActionLength = 0;
-                if (pActors[i].uAttributes & ACTOR_UNKNOW11)
-                    pActors[i].uAIState = AIState::Disabled;
-                if (pActors[i].uAIState != AIState::Removed &&
-                    pActors[i].uAIState != AIState::Disabled &&
-                    (pActors[i].sCurrentHP == 0 ||
-                     pActors[i].pMonsterInfo.uHP == 0))
-                    pActors[i].uAIState = AIState::Dead;
-                pActors[i].vVelocity.x = 0;
-                pActors[i].vVelocity.y = 0;
-                pActors[i].vVelocity.z = 0;
+                pActors[i].currentActionTime = 0;
+                pActors[i].currentActionLength = 0;
+                if (pActors[i].attributes & ACTOR_UNKNOW11)
+                    pActors[i].aiState = AIState::Disabled;
+                if (pActors[i].aiState != AIState::Removed &&
+                    pActors[i].aiState != AIState::Disabled &&
+                    (pActors[i].currentHP == 0 ||
+                     pActors[i].monsterInfo.uHP == 0))
+                    pActors[i].aiState = AIState::Dead;
+                pActors[i].speed.x = 0;
+                pActors[i].speed.y = 0;
+                pActors[i].speed.z = 0;
                 pActors[i].UpdateAnimation();
-                pActors[i].pMonsterInfo.uHostilityType =
+                pActors[i].monsterInfo.uHostilityType =
                     MonsterInfo::Hostility_Friendly;
                 pActors[i].PrepareSprites(0);
             } else {
-                pActors[i].uAIState = AIState::Disabled;
-                pActors[i].uAttributes |= ACTOR_UNKNOW11;
+                pActors[i].aiState = AIState::Disabled;
+                pActors[i].attributes |= ACTOR_UNKNOW11;
             }
         } else if (a1 == 0) {
-            pActors[i].uAIState = AIState::Disabled;
-            pActors[i].uAttributes |= ACTOR_UNKNOW11;
+            pActors[i].aiState = AIState::Disabled;
+            pActors[i].attributes |= ACTOR_UNKNOW11;
         } else if (alert_status) {
-            pActors[i].uCurrentActionTime = 0;
-            pActors[i].uCurrentActionLength = 0;
-            if (pActors[i].uAttributes & ACTOR_UNKNOW11)
-                pActors[i].uAIState = AIState::Disabled;
-            if (pActors[i].uAIState != AIState::Removed &&
-                pActors[i].uAIState != AIState::Disabled &&
-                (pActors[i].sCurrentHP == 0 ||
-                 pActors[i].pMonsterInfo.uHP == 0))
-                pActors[i].uAIState = AIState::Dead;
-            pActors[i].vVelocity.x = 0;
-            pActors[i].vVelocity.y = 0;
-            pActors[i].vVelocity.z = 0;
+            pActors[i].currentActionTime = 0;
+            pActors[i].currentActionLength = 0;
+            if (pActors[i].attributes & ACTOR_UNKNOW11)
+                pActors[i].aiState = AIState::Disabled;
+            if (pActors[i].aiState != AIState::Removed &&
+                pActors[i].aiState != AIState::Disabled &&
+                (pActors[i].currentHP == 0 ||
+                 pActors[i].monsterInfo.uHP == 0))
+                pActors[i].aiState = AIState::Dead;
+            pActors[i].speed.x = 0;
+            pActors[i].speed.y = 0;
+            pActors[i].speed.z = 0;
             pActors[i].UpdateAnimation();
-            pActors[i].pMonsterInfo.uHostilityType =
+            pActors[i].monsterInfo.uHostilityType =
                 MonsterInfo::Hostility_Friendly;
             pActors[i].PrepareSprites(0);
         } else {
-            pActors[i].uAIState = AIState::Disabled;
-            pActors[i].uAttributes |= ACTOR_UNKNOW11;
+            pActors[i].aiState = AIState::Disabled;
+            pActors[i].attributes |= ACTOR_UNKNOW11;
             alert_status = GetAlertStatus();
         }
     }
@@ -1309,8 +1309,8 @@ void OutdoorLocation::PrepareActorsDrawList() {
     int Sprite_Octant;           // [sp+24h] [bp-3Ch]@11
 
     for (int i = 0; i < pActors.size(); ++i) {
-        pActors[i].uAttributes &= ~ACTOR_VISIBLE;
-        if (pActors[i].uAIState == Removed || pActors[i].uAIState == Disabled) {
+        pActors[i].attributes &= ~ACTOR_VISIBLE;
+        if (pActors[i].aiState == Removed || pActors[i].aiState == Disabled) {
             continue;
         }
 
@@ -1320,66 +1320,66 @@ void OutdoorLocation::PrepareActorsDrawList() {
         if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
             bool onlist = false;
             for (uint j = 0; j < pBspRenderer->uNumVisibleNotEmptySectors; j++) {
-                if (pBspRenderer->pVisibleSectorIDs_toDrawDecorsActorsEtcFrom[j] == pActors[i].uSectorID) {
+                if (pBspRenderer->pVisibleSectorIDs_toDrawDecorsActorsEtcFrom[j] == pActors[i].sectorId) {
                     onlist = true;
                     break;
                 }
             }
             if (!onlist) continue;
         } else {
-            if (!IsCylinderInFrustum(pActors[i].vPosition.toFloat(), pActors[i].uActorRadius)) continue;
+            if (!IsCylinderInFrustum(pActors[i].pos.toFloat(), pActors[i].radius)) continue;
         }
 
-        int z = pActors[i].vPosition.z;
-        int x = pActors[i].vPosition.x;
-        int y = pActors[i].vPosition.y;
+        int z = pActors[i].pos.z;
+        int x = pActors[i].pos.x;
+        int y = pActors[i].pos.y;
 
-        Angle_To_Cam = TrigLUT.atan2(pActors[i].vPosition.x - pCamera3D->vCameraPos.x, pActors[i].vPosition.y - pCamera3D->vCameraPos.y);
+        Angle_To_Cam = TrigLUT.atan2(pActors[i].pos.x - pCamera3D->vCameraPos.x, pActors[i].pos.y - pCamera3D->vCameraPos.y);
 
         Sprite_Octant = ((signed int)(TrigLUT.uIntegerPi +
-                            ((signed int)TrigLUT.uIntegerPi >> 3) + pActors[i].uYawAngle -
-                            Angle_To_Cam) >> 8) & 7;
+                                      ((signed int)TrigLUT.uIntegerPi >> 3) + pActors[i].yawAngle -
+                                      Angle_To_Cam) >> 8) & 7;
 
-        Cur_Action_Time = pActors[i].uCurrentActionTime;
+        Cur_Action_Time = pActors[i].currentActionTime;
         if (pParty->bTurnBasedModeOn) {
-            if (pActors[i].uCurrentActionAnimation == ANIM_Walking)
+            if (pActors[i].currentActionAnimation == ANIM_Walking)
                 Cur_Action_Time = 32 * i + pMiscTimer->uTotalTimeElapsed;
         } else {
-            if (pActors[i].uCurrentActionAnimation == ANIM_Walking)
+            if (pActors[i].currentActionAnimation == ANIM_Walking)
                 Cur_Action_Time = 32 * i + pEventTimer->uTotalTimeElapsed;
         }
 
-        if (pActors[i].pActorBuffs[ACTOR_BUFF_STONED].Active() ||
-            pActors[i].pActorBuffs[ACTOR_BUFF_PARALYZED].Active())
+        if (pActors[i].buffs[ACTOR_BUFF_STONED].Active() ||
+            pActors[i].buffs[ACTOR_BUFF_PARALYZED].Active())
             Cur_Action_Time = 0;
 
         int v49 = 0;
         float v4 = 0.0f;
-        if (pActors[i].uAIState == Summoned) {
-            if (PID_TYPE(pActors[i].uSummonerID) != OBJECT_Actor ||
-                pActors[PID_ID(pActors[i].uSummonerID)]
-                .pMonsterInfo.uSpecialAbilityDamageDiceSides != 1) {
-                z += floorf(pActors[i].uActorHeight * 0.5f + 0.5f);
+        if (pActors[i].aiState == Summoned) {
+            if (PID_TYPE(pActors[i].summonerId) != OBJECT_Actor ||
+                pActors[PID_ID(pActors[i].summonerId)]
+                .monsterInfo.uSpecialAbilityDamageDiceSides != 1) {
+                z += floorf(pActors[i].height * 0.5f + 0.5f);
             } else {
                 v49 = 1;
-                spell_fx_renderer->_4A7F74(pActors[i].vPosition.x, pActors[i].vPosition.y, z);
-                v4 = (1.0 - (double)pActors[i].uCurrentActionTime /
-                    (double)pActors[i].uCurrentActionLength) *
-                    (double)(2 * pActors[i].uActorHeight);
+                spell_fx_renderer->_4A7F74(pActors[i].pos.x, pActors[i].pos.y, z);
+                v4 = (1.0 - (double)pActors[i].currentActionTime /
+                            (double)pActors[i].currentActionLength) *
+                     (double)(2 * pActors[i].height);
                 z -= floorf(v4 + 0.5f);
-                if (z > pActors[i].vPosition.z) z = pActors[i].vPosition.z;
+                if (z > pActors[i].pos.z) z = pActors[i].pos.z;
             }
         }
 
 
-        if (pActors[i].uAIState == Summoned && !v49)
+        if (pActors[i].aiState == Summoned && !v49)
             frame = pSpriteFrameTable->GetFrame(uSpriteID_Spell11, Cur_Action_Time);
-        else if (pActors[i].uAIState == Resurrected)
+        else if (pActors[i].aiState == Resurrected)
             frame = pSpriteFrameTable->GetFrameBy_x(
-                pActors[i].pSpriteIDs[pActors[i].uCurrentActionAnimation], Cur_Action_Time);
+                pActors[i].spriteIds[pActors[i].currentActionAnimation], Cur_Action_Time);
         else
             frame = pSpriteFrameTable->GetFrame(
-                pActors[i].pSpriteIDs[pActors[i].uCurrentActionAnimation], Cur_Action_Time);
+                pActors[i].spriteIds[pActors[i].currentActionAnimation], Cur_Action_Time);
 
         // no sprite frame to draw
         if (frame->icon_name == "null") continue;
@@ -1393,7 +1393,7 @@ void OutdoorLocation::PrepareActorsDrawList() {
         if (frame->uFlags & 0x20000) flags |= 0x80;
         if ((256 << Sprite_Octant) & frame->uFlags) flags |= 4;
         if (frame->uGlowRadius) {
-            pMobileLightsStack->AddLight(Vec3f(x, y, z), pActors[i].uSectorID, frame->uGlowRadius, colorTable.White,
+            pMobileLightsStack->AddLight(Vec3f(x, y, z), pActors[i].sectorId, frame->uGlowRadius, colorTable.White,
                                          _4E94D3_light_type);
         }
 
@@ -1416,21 +1416,21 @@ void OutdoorLocation::PrepareActorsDrawList() {
                         ++uNumBillboardsToDraw;
                         ++uNumSpritesDrawnThisFrame;
 
-                        pActors[i].uAttributes |= ACTOR_VISIBLE;
+                        pActors[i].attributes |= ACTOR_VISIBLE;
                         pBillboardRenderList[uNumBillboardsToDraw - 1].hwsprite = frame->hw_sprites[Sprite_Octant];
-                        pBillboardRenderList[uNumBillboardsToDraw - 1].uIndoorSectorID = pActors[i].uSectorID;
+                        pBillboardRenderList[uNumBillboardsToDraw - 1].uIndoorSectorID = pActors[i].sectorId;
                         pBillboardRenderList[uNumBillboardsToDraw - 1].uPaletteIndex = frame->GetPaletteIndex();
 
                         pBillboardRenderList[uNumBillboardsToDraw - 1].screenspace_projection_factor_x = proj_scale;
                         pBillboardRenderList[uNumBillboardsToDraw - 1].screenspace_projection_factor_y = proj_scale;
 
-                        if (pActors[i].pActorBuffs[ACTOR_BUFF_SHRINK].Active() &&
-                            pActors[i].pActorBuffs[ACTOR_BUFF_SHRINK].power > 0) {
+                        if (pActors[i].buffs[ACTOR_BUFF_SHRINK].Active() &&
+                            pActors[i].buffs[ACTOR_BUFF_SHRINK].power > 0) {
                             pBillboardRenderList[uNumBillboardsToDraw - 1]
-                                .screenspace_projection_factor_y = 1.0f / pActors[i].pActorBuffs[ACTOR_BUFF_SHRINK].power *
+                                .screenspace_projection_factor_y = 1.0f / pActors[i].buffs[ACTOR_BUFF_SHRINK].power *
                                                                    pBillboardRenderList[uNumBillboardsToDraw - 1]
                                 .screenspace_projection_factor_y;
-                        } else if (pActors[i].pActorBuffs[ACTOR_BUFF_MASS_DISTORTION].Active()) {
+                        } else if (pActors[i].buffs[ACTOR_BUFF_MASS_DISTORTION].Active()) {
                             pBillboardRenderList[uNumBillboardsToDraw - 1].screenspace_projection_factor_y =
                                 spell_fx_renderer->_4A806F_get_mass_distortion_value(&pActors[i]) *
                                 pBillboardRenderList[uNumBillboardsToDraw - 1].screenspace_projection_factor_y;
@@ -1449,8 +1449,8 @@ void OutdoorLocation::PrepareActorsDrawList() {
                         pBillboardRenderList[uNumBillboardsToDraw - 1].field_1E = flags | 0x200;
                         pBillboardRenderList[uNumBillboardsToDraw - 1].pSpriteFrame = frame;
                         pBillboardRenderList[uNumBillboardsToDraw - 1].sTintColor =
-                            pMonsterList->pMonsters[pActors[i].pMonsterInfo.uID - 1].sTintColor;  // *((int *)&v35[v36] - 36);
-                        if (pActors[i].pActorBuffs[ACTOR_BUFF_STONED].Active()) {
+                            pMonsterList->pMonsters[pActors[i].monsterInfo.uID - 1].sTintColor;  // *((int *)&v35[v36] - 36);
+                        if (pActors[i].buffs[ACTOR_BUFF_STONED].Active()) {
                             pBillboardRenderList[uNumBillboardsToDraw - 1].field_1E =
                                 flags | 0x100;
                         }
@@ -1600,17 +1600,17 @@ void ODM_UpdateUserInputAndOther() {
 
     UpdateObjects();
     ODM_ProcessPartyActions();
-    if (pParty->vPosition.x < -22528 || pParty->vPosition.x > 22528 ||
-        pParty->vPosition.y < -22528 || pParty->vPosition.y > 22528) {
+    if (pParty->pos.x < -22528 || pParty->pos.x > 22528 ||
+        pParty->pos.y < -22528 || pParty->pos.y > 22528) {
         pOutdoor->level_filename = pCurrentMapName;
-        v0 = pOutdoor->GetTravelDestination(pParty->vPosition.x, pParty->vPosition.y, &pOut);
+        v0 = pOutdoor->GetTravelDestination(pParty->pos.x, pParty->pos.y, &pOut);
         if (!engine->IsUnderwater() && (pParty->isAirborne() || (pParty->uFlags & (PARTY_FLAGS_1_STANDING_ON_WATER | PARTY_FLAGS_1_WATER_DAMAGE)) ||
                              pParty->uFlags & PARTY_FLAGS_1_BURNING || pParty->bFlying) ||
             !v0) {
-            if (pParty->vPosition.x < -22528) pParty->vPosition.x = -22528;
-            if (pParty->vPosition.x > 22528) pParty->vPosition.x = 22528;
-            if (pParty->vPosition.y < -22528) pParty->vPosition.y = -22528;
-            if (pParty->vPosition.y > 22528) pParty->vPosition.y = 22528;
+            if (pParty->pos.x < -22528) pParty->pos.x = -22528;
+            if (pParty->pos.x > 22528) pParty->pos.x = 22528;
+            if (pParty->pos.y < -22528) pParty->pos.y = -22528;
+            if (pParty->pos.y > 22528) pParty->pos.y = 22528;
         } else {
             pDialogueWindow = new GUIWindow_Travel();  // TravelUI_Load();
         }
@@ -1670,8 +1670,8 @@ void ODM_ProcessPartyActions() {
     int modelStandingOnPID{ 0 };
     bool partyIsOnWater = false;
 
-    int currentFloorLevel = ODM_GetFloorLevel(pParty->vPosition, pParty->uPartyHeight,
-                                    &partyIsOnWater, &modelStandingOnPID, waterWalkActive);
+    int currentFloorLevel = ODM_GetFloorLevel(pParty->pos, pParty->height,
+                                              &partyIsOnWater, &modelStandingOnPID, waterWalkActive);
     int partyNotOnModel = modelStandingOnPID == 0;
     int currentGroundLevel = currentFloorLevel + 1;
 
@@ -1688,11 +1688,11 @@ void ODM_ProcessPartyActions() {
     int ceilingHeight = -1;
 
     if (pParty->bFlying)
-        ceilingHeight = GetCeilingHeight(pParty->vPosition.x, pParty->vPosition.y, pParty->vPosition.z + pParty->uPartyHeight, &ceilingFaceID);
+        ceilingHeight = GetCeilingHeight(pParty->pos.x, pParty->pos.y, pParty->pos.z + pParty->height, &ceilingFaceID);
 
     // is the party in the air - NB not accurate when on slopes of models
     bool partyNotTouchingFloor = false;
-    if (pParty->vPosition.z <= currentGroundLevel) {  // landing from flight
+    if (pParty->pos.z <= currentGroundLevel) {  // landing from flight
         ceilingHeight = -1;
         pParty->bFlying = false;
         pParty->uFlags &= ~(PARTY_FLAGS_1_LANDING | PARTY_FLAGS_1_JUMPING);
@@ -1700,7 +1700,7 @@ void ODM_ProcessPartyActions() {
         partyNotTouchingFloor = true;
     }
 
-    bool partyCloseToGround = pParty->vPosition.z - currentGroundLevel <= 32;
+    bool partyCloseToGround = pParty->pos.z - currentGroundLevel <= 32;
 
     // check if we should be flying
     if (!engine->IsUnderwater() && !pParty->FlyActive()) {
@@ -1732,7 +1732,7 @@ void ODM_ProcessPartyActions() {
     }
     int partyOldFlightZ = pParty->sPartySavedFlightZ;
 
-    bool partyAtHighSlope = IsTerrainSlopeTooHigh(pParty->vPosition.x, pParty->vPosition.y);
+    bool partyAtHighSlope = IsTerrainSlopeTooHigh(pParty->pos.x, pParty->pos.y);
     bool partyIsRunning = false;
     bool partyIsWalking = false;
     bool noFlightBob = false;
@@ -1759,8 +1759,8 @@ void ODM_ProcessPartyActions() {
                         noFlightBob = true;
                         pParty->uFlags &= ~(PARTY_FLAGS_1_LANDING | PARTY_FLAGS_1_JUMPING);
                         if (pParty->sPartySavedFlightZ < engine->config->gameplay.MaxFlightHeight.value()) {
-                            partyInputZSpeed = pParty->uWalkSpeed * 4;
-                            partyOldFlightZ = pParty->vPosition.z;
+                            partyInputZSpeed = pParty->walkSpeed * 4;
+                            partyOldFlightZ = pParty->pos.z;
                         }
                     }
                 }
@@ -1810,11 +1810,11 @@ void ODM_ProcessPartyActions() {
             case PARTY_StrafeLeft:
             {
                 float sin_y = sinf(2 * pi_double * partyViewNewYaw / 2048.0);
-                int dx = sin_y * pParty->uWalkSpeed * fWalkSpeedMultiplier;
+                int dx = sin_y * pParty->walkSpeed * fWalkSpeedMultiplier;
                 partyInputXSpeed -= 3 * dx / 4;
 
                 float cos_y = cosf(2 * pi_double * partyViewNewYaw / 2048.0);
-                int dy = cos_y * pParty->uWalkSpeed * fWalkSpeedMultiplier;
+                int dy = cos_y * pParty->walkSpeed * fWalkSpeedMultiplier;
                 partyInputYSpeed += 3 * dy / 4;
 
                 partyIsWalking = true;
@@ -1823,11 +1823,11 @@ void ODM_ProcessPartyActions() {
             case PARTY_StrafeRight:
             {
                 float sin_y = sinf(2 * pi_double * partyViewNewYaw / 2048.0);
-                int dx = sin_y * pParty->uWalkSpeed * fWalkSpeedMultiplier;
+                int dx = sin_y * pParty->walkSpeed * fWalkSpeedMultiplier;
                 partyInputXSpeed += 3 * dx / 4;
 
                 float cos_y = cosf(2 * pi_double * partyViewNewYaw / 2048.0);
-                int dy = cos_y * pParty->uWalkSpeed * fWalkSpeedMultiplier;
+                int dy = cos_y * pParty->walkSpeed * fWalkSpeedMultiplier;
                 partyInputYSpeed -= 3 * dy / 4;
 
                 partyIsWalking = true;
@@ -1838,8 +1838,8 @@ void ODM_ProcessPartyActions() {
                 float sin_y = sinf(2 * pi_double * partyViewNewYaw / 2048.0),
                       cos_y = cosf(2 * pi_double * partyViewNewYaw / 2048.0);
 
-                int dx = cos_y * pParty->uWalkSpeed * fWalkSpeedMultiplier;
-                int dy = sin_y * pParty->uWalkSpeed * fWalkSpeedMultiplier;
+                int dx = cos_y * pParty->walkSpeed * fWalkSpeedMultiplier;
+                int dy = sin_y * pParty->walkSpeed * fWalkSpeedMultiplier;
 
                 if (engine->config->debug.TurboSpeed.value()) {
                     partyInputXSpeed += dx * 12;
@@ -1857,8 +1857,8 @@ void ODM_ProcessPartyActions() {
                 float sin_y = sinf(2 * pi_double * partyViewNewYaw / 2048.0);
                 float cos_y = cosf(2 * pi_double * partyViewNewYaw / 2048.0);
 
-                int dx = cos_y * pParty->uWalkSpeed * fWalkSpeedMultiplier;
-                int dy = sin_y * pParty->uWalkSpeed * fWalkSpeedMultiplier;
+                int dx = cos_y * pParty->walkSpeed * fWalkSpeedMultiplier;
+                int dy = sin_y * pParty->walkSpeed * fWalkSpeedMultiplier;
 
                 if (pParty->bFlying) {
                     if (engine->config->debug.TurboSpeed.value()) {
@@ -1889,10 +1889,10 @@ void ODM_ProcessPartyActions() {
                 float sin_y = sinf(2 * pi_double * partyViewNewYaw / 2048.0);
                 float cos_y = cosf(2 * pi_double * partyViewNewYaw / 2048.0);
 
-                int dx = cos_y * pParty->uWalkSpeed * fBackwardWalkSpeedMultiplier;
+                int dx = cos_y * pParty->walkSpeed * fBackwardWalkSpeedMultiplier;
                 partyInputXSpeed -= dx;
 
-                int dy = sin_y * pParty->uWalkSpeed * fBackwardWalkSpeedMultiplier;
+                int dy = sin_y * pParty->walkSpeed * fBackwardWalkSpeedMultiplier;
                 partyInputYSpeed -= dy;
                 partyIsWalking = true;
             } break;
@@ -1902,8 +1902,8 @@ void ODM_ProcessPartyActions() {
                 float sin_y = sinf(2 * pi_double * partyViewNewYaw / 2048.0);
                 float cos_y = cosf(2 * pi_double * partyViewNewYaw / 2048.0);
 
-                int dx = cos_y * pParty->uWalkSpeed * fBackwardWalkSpeedMultiplier;
-                int dy = sin_y * pParty->uWalkSpeed * fBackwardWalkSpeedMultiplier;
+                int dx = cos_y * pParty->walkSpeed * fBackwardWalkSpeedMultiplier;
+                int dy = sin_y * pParty->walkSpeed * fBackwardWalkSpeedMultiplier;
 
                 if (pParty->bFlying) {
                     partyInputXSpeed -= 4 * dx;
@@ -1945,7 +1945,7 @@ void ODM_ProcessPartyActions() {
                     partyNotTouchingFloor = true;
                     partyInputZSpeed += pParty->jump_strength * 96;
                     // boost party upwards slightly so we dont "land" straight away
-                    pParty->vPosition.z += 1;
+                    pParty->pos.z += 1;
                 }
                 break;
 
@@ -1968,8 +1968,8 @@ void ODM_ProcessPartyActions() {
             if (engine->IsUnderwater() ||
                 pParty->pPartyBuffs[PARTY_BUFF_FLY].isGMBuff ||
                 (pParty->pCharacters[pParty->pPartyBuffs[PARTY_BUFF_FLY].caster - 1].mana > 0 || engine->config->debug.AllMagic.value())) {
-                partyOldFlightZ = pParty->vPosition.z;
-                partyInputZSpeed = -pParty->uWalkSpeed * 4;
+                partyOldFlightZ = pParty->pos.z;
+                partyInputZSpeed = -pParty->walkSpeed * 4;
                 pParty->bFlying = true;
                 noFlightBob = true;
                 if (flyDown)
@@ -1987,9 +1987,9 @@ void ODM_ProcessPartyActions() {
     pParty->_viewYaw = partyViewNewYaw;
     pParty->_viewPitch = partyViewNewPitch;
 
-    int partyNewX = pParty->vPosition.x;
-    int partyNewY = pParty->vPosition.y;
-    int partyNewZ = pParty->vPosition.z;
+    int partyNewX = pParty->pos.x;
+    int partyNewY = pParty->pos.y;
+    int partyNewZ = pParty->pos.z;
 
     //-------------------------------------------
     if (pParty->bFlying) {
@@ -2046,7 +2046,7 @@ void ODM_ProcessPartyActions() {
     if (partyNotTouchingFloor) {
         if (!engine->IsUnderwater() && partyInputZSpeed <= 0) {
             if (partyInputZSpeed < -500 && !pParty->bFlying &&
-                pParty->vPosition.z - currentGroundLevel > 1000 &&
+                pParty->pos.z - currentGroundLevel > 1000 &&
                 !pParty->FeatherFallActive() &&
                 !(pParty->uFlags & (PARTY_FLAGS_1_LANDING | PARTY_FLAGS_1_JUMPING))) {  // falling scream
                 for (int i = 0; i < 4; ++i) {
@@ -2074,7 +2074,7 @@ void ODM_ProcessPartyActions() {
     for (uint i = 0; i < 100; i++) {
         collision_state.position_hi.x = partyNewX;
         collision_state.position_hi.y = partyNewY;
-        collision_state.position_hi.z = partyNewZ + (pParty->uPartyHeight - 32) + 1;
+        collision_state.position_hi.z = partyNewZ + (pParty->height - 32) + 1;
 
         collision_state.position_lo.x = partyNewX;
         collision_state.position_lo.y = partyNewY;
@@ -2093,7 +2093,7 @@ void ODM_ProcessPartyActions() {
             break;
 
         CollideOutdoorWithModels(true);
-        CollideOutdoorWithDecorations(WorldPosToGridCellX(pParty->vPosition.x), WorldPosToGridCellY(pParty->vPosition.y));
+        CollideOutdoorWithDecorations(WorldPosToGridCellX(pParty->pos.x), WorldPosToGridCellY(pParty->pos.y));
         _46ED8A_collide_against_sprite_objects(4);
 
         for (size_t actor_id = 0; actor_id < pActors.size(); ++actor_id)
@@ -2112,11 +2112,11 @@ void ODM_ProcessPartyActions() {
             new_pos_low_z = partyNewZ + collision_state.adjusted_move_distance * collision_state.direction.z;
         }
 
-        int allnewfloor = ODM_GetFloorLevel(Vec3i(new_pos_low_x, new_pos_low_y, new_pos_low_z), pParty->uPartyHeight, &partyIsOnWater, &modelStandingOnPID, 0);
+        int allnewfloor = ODM_GetFloorLevel(Vec3i(new_pos_low_x, new_pos_low_y, new_pos_low_z), pParty->height, &partyIsOnWater, &modelStandingOnPID, 0);
         int party_y_pid;
-        int x_advance_floor = ODM_GetFloorLevel(Vec3i(new_pos_low_x, partyNewY, new_pos_low_z), pParty->uPartyHeight, &partyIsOnWater, &party_y_pid, 0);
+        int x_advance_floor = ODM_GetFloorLevel(Vec3i(new_pos_low_x, partyNewY, new_pos_low_z), pParty->height, &partyIsOnWater, &party_y_pid, 0);
         int party_x_pid;
-        int y_advance_floor = ODM_GetFloorLevel(Vec3i(partyNewX, new_pos_low_y, new_pos_low_z), pParty->uPartyHeight, &partyIsOnWater, &party_x_pid, 0);
+        int y_advance_floor = ODM_GetFloorLevel(Vec3i(partyNewX, new_pos_low_y, new_pos_low_z), pParty->height, &partyIsOnWater, &party_x_pid, 0);
         bool terr_slope_advance_x = IsTerrainSlopeTooHigh(new_pos_low_x, partyNewY);
         bool terr_slope_advance_y = IsTerrainSlopeTooHigh(partyNewX, new_pos_low_y);
 
@@ -2255,9 +2255,9 @@ void ODM_ProcessPartyActions() {
     else
         pParty->setAirborne(true);
 
-    Vec3i partyOldPosition = pParty->vPosition;
-    int partyCurrentXGrid = WorldPosToGridCellX(pParty->vPosition.x);
-    int partyCurrentYGrid = WorldPosToGridCellY(pParty->vPosition.y);
+    Vec3i partyOldPosition = pParty->pos;
+    int partyCurrentXGrid = WorldPosToGridCellX(pParty->pos.x);
+    int partyCurrentYGrid = WorldPosToGridCellY(pParty->pos.y);
     int partyNewXGrid = WorldPosToGridCellX(partyNewX);
     int partyNewYGrid = WorldPosToGridCellY(partyNewY);
 
@@ -2275,16 +2275,16 @@ void ODM_ProcessPartyActions() {
         notWater = true;
 
     if (notWater) {
-        pParty->vPosition.x = partyNewX;
-        pParty->vPosition.y = partyNewY;
+        pParty->pos.x = partyNewX;
+        pParty->pos.y = partyNewY;
 
         if (partySlopeMod) {
-            pParty->speed.z = partyNewZ - pParty->vPosition.z;
+            pParty->speed.z = partyNewZ - pParty->pos.z;
         } else {
             pParty->speed.z = partyInputZSpeed;
         }
 
-        pParty->vPosition.z = partyNewZ;
+        pParty->pos.z = partyNewZ;
         pParty->sPartySavedFlightZ = partyOldFlightZ;
 
         pParty->uFlags &= ~(PARTY_FLAGS_1_BURNING | PARTY_FLAGS_1_WATER_DAMAGE);
@@ -2311,8 +2311,8 @@ void ODM_ProcessPartyActions() {
             waterMoveY = true;
         }
 
-        if (waterMoveX) pParty->vPosition.x = partyNewX;
-        if (waterMoveY) pParty->vPosition.y = partyNewY;
+        if (waterMoveX) pParty->pos.x = partyNewX;
+        if (waterMoveY) pParty->pos.y = partyNewY;
 
         if (waterMoveY || waterMoveX) {
             if (waterWalkActive) {
@@ -2327,7 +2327,7 @@ void ODM_ProcessPartyActions() {
             }
         }
 
-        pParty->vPosition.z = partyNewZ;
+        pParty->pos.z = partyNewZ;
         pParty->speed.z = partyInputZSpeed;
         pParty->sPartySavedFlightZ = partyOldFlightZ;
 
@@ -2335,46 +2335,46 @@ void ODM_ProcessPartyActions() {
 
         if (partyDrowningFlag) {
             bool onWater = false;
-            int pTerrainHeight = GetTerrainHeightsAroundParty2(pParty->vPosition.x, pParty->vPosition.y, &onWater, 1);
-            if (pParty->vPosition.z <= pTerrainHeight + 1) {
+            int pTerrainHeight = GetTerrainHeightsAroundParty2(pParty->pos.x, pParty->pos.y, &onWater, 1);
+            if (pParty->pos.z <= pTerrainHeight + 1) {
                 pParty->uFlags |= PARTY_FLAGS_1_WATER_DAMAGE;
             }
         }
     }
 
     // height restriction
-    if (pParty->vPosition.z > 8160) {
+    if (pParty->pos.z > 8160) {
         pParty->uFallStartZ = 8160;
-        pParty->vPosition.z = 8160;
+        pParty->pos.z = 8160;
     }
 
     // new ground level
-    int newFloorLevel = ODM_GetFloorLevel(Vec3i(partyNewX, partyNewY, partyNewZ), pParty->uPartyHeight,
+    int newFloorLevel = ODM_GetFloorLevel(Vec3i(partyNewX, partyNewY, partyNewZ), pParty->height,
             &partyIsOnWater, &modelStandingOnPID, waterWalkActive);
     int newGroundLevel = newFloorLevel + 1;
 
     // Falling damage
     if (!triggerID ||
-        (eventProcessor(triggerID, 0, 1), pParty->vPosition.x == partyNewX) &&
-        pParty->vPosition.y == partyNewY && pParty->vPosition.z == partyNewZ) {
-        if (((pParty->vPosition.z <= newGroundLevel || partyHasHitModel) && partyInputZSpeed < 0)) {
+        (eventProcessor(triggerID, 0, 1), pParty->pos.x == partyNewX) &&
+        pParty->pos.y == partyNewY && pParty->pos.z == partyNewZ) {
+        if (((pParty->pos.z <= newGroundLevel || partyHasHitModel) && partyInputZSpeed < 0)) {
             pParty->speed.z = 0;
             if (!partyHasHitModel)
-                pParty->vPosition.z = newGroundLevel;
+                pParty->pos.z = newGroundLevel;
             if (pParty->uFallStartZ - partyNewZ > 512 && !partyHasFeatherFall &&
                 (partyNewZ <= newGroundLevel || partyHasHitModel) &&
                 !engine->IsUnderwater()) {
                 if (pParty->uFlags & (PARTY_FLAGS_1_LANDING | PARTY_FLAGS_1_JUMPING)) {
                     pParty->uFlags &= ~(PARTY_FLAGS_1_LANDING | PARTY_FLAGS_1_JUMPING);
                 } else {
-                    pParty->giveFallDamage(pParty->uFallStartZ - pParty->vPosition.z);
+                    pParty->giveFallDamage(pParty->uFallStartZ - pParty->pos.z);
                 }
             }
             pParty->uFallStartZ = partyNewZ;
         }
-        if (ceilingFaceID && pParty->vPosition.z < ceilingHeight && (pParty->uPartyHeight + pParty->vPosition.z) >= ceilingHeight) {
-            pParty->vPosition.z = ceilingHeight - pParty->uPartyHeight - 1;
-            pParty->sPartySavedFlightZ = pParty->vPosition.z;
+        if (ceilingFaceID && pParty->pos.z < ceilingHeight && (pParty->height + pParty->pos.z) >= ceilingHeight) {
+            pParty->pos.z = ceilingHeight - pParty->height - 1;
+            pParty->sPartySavedFlightZ = pParty->pos.z;
         }
     }
 
@@ -2388,7 +2388,7 @@ void ODM_ProcessPartyActions() {
         // Start sound processing only when actual movement is performed to avoid stopping sounds on high FPS
         if (pEventTimer->uTimeElapsed) {
             // TODO(Nik-RE-dev): use calculated velocity of party and walk/run flags instead of delta
-            int walkDelta = integer_sqrt((partyOldPosition - pParty->vPosition).lengthSqr());
+            int walkDelta = integer_sqrt((partyOldPosition - pParty->pos).lengthSqr());
 
             if (walkDelta < 2) {
                 // mute the walking sound when stopping
@@ -2529,34 +2529,34 @@ void UpdateActors_ODM() {
         return;  // uNumActors = 0;
 
     for (unsigned int Actor_ITR = 0; Actor_ITR < pActors.size(); ++Actor_ITR) {
-        if (pActors[Actor_ITR].uAIState == Removed || pActors[Actor_ITR].uAIState == Disabled ||
-            pActors[Actor_ITR].uAIState == Summoned || !pActors[Actor_ITR].uMovementSpeed)
+        if (pActors[Actor_ITR].aiState == Removed || pActors[Actor_ITR].aiState == Disabled ||
+            pActors[Actor_ITR].aiState == Summoned || !pActors[Actor_ITR].moveSpeed)
                 continue;
 
-        bool Water_Walk = MonsterStats::BelongsToSupertype(pActors[Actor_ITR].pMonsterInfo.uID, MONSTER_SUPERTYPE_WATER_ELEMENTAL);
+        bool Water_Walk = MonsterStats::BelongsToSupertype(pActors[Actor_ITR].monsterInfo.uID, MONSTER_SUPERTYPE_WATER_ELEMENTAL);
 
-        pActors[Actor_ITR].uSectorID = 0;
+        pActors[Actor_ITR].sectorId = 0;
 
-        bool uIsFlying = pActors[Actor_ITR].pMonsterInfo.uFlying;
+        bool uIsFlying = pActors[Actor_ITR].monsterInfo.uFlying;
         if (!pActors[Actor_ITR].CanAct())
             uIsFlying = 0;
 
-        bool Slope_High = IsTerrainSlopeTooHigh(pActors[Actor_ITR].vPosition.x, pActors[Actor_ITR].vPosition.y);
+        bool Slope_High = IsTerrainSlopeTooHigh(pActors[Actor_ITR].pos.x, pActors[Actor_ITR].pos.y);
         int Model_On_PID = 0;
         bool uIsOnWater = false;
-        int Floor_Level = ODM_GetFloorLevel(pActors[Actor_ITR].vPosition, pActors[Actor_ITR].uActorHeight, &uIsOnWater, &Model_On_PID, Water_Walk);
+        int Floor_Level = ODM_GetFloorLevel(pActors[Actor_ITR].pos, pActors[Actor_ITR].height, &uIsOnWater, &Model_On_PID, Water_Walk);
         bool Actor_On_Terrain = Model_On_PID == 0;
 
-        bool uIsAboveFloor = (pActors[Actor_ITR].vPosition.z > (Floor_Level + 1));
+        bool uIsAboveFloor = (pActors[Actor_ITR].pos.z > (Floor_Level + 1));
 
         // make bloodsplat when the ground is hit
         if (!pActors[Actor_ITR].donebloodsplat) {
-            if (pActors[Actor_ITR].uAIState == Dead || pActors[Actor_ITR].uAIState == Dying) {
-                if (pActors[Actor_ITR].vPosition.z < Floor_Level + 30) { // 30 to provide small error / rounding factor
-                    if (pMonsterStats->pInfos[pActors[Actor_ITR].pMonsterInfo.uID].bBloodSplatOnDeath) {
+            if (pActors[Actor_ITR].aiState == Dead || pActors[Actor_ITR].aiState == Dying) {
+                if (pActors[Actor_ITR].pos.z < Floor_Level + 30) { // 30 to provide small error / rounding factor
+                    if (pMonsterStats->pInfos[pActors[Actor_ITR].monsterInfo.uID].bBloodSplatOnDeath) {
                         if (engine->config->graphics.BloodSplats.value()) {
-                            float splatRadius = pActors[Actor_ITR].uActorRadius * engine->config->graphics.BloodSplatsMultiplier.value();
-                            decal_builder->AddBloodsplat(Vec3f(pActors[Actor_ITR].vPosition.x, pActors[Actor_ITR].vPosition.y, Floor_Level + 30), colorTable.Red, splatRadius);
+                            float splatRadius = pActors[Actor_ITR].radius * engine->config->graphics.BloodSplatsMultiplier.value();
+                            decal_builder->AddBloodsplat(Vec3f(pActors[Actor_ITR].pos.x, pActors[Actor_ITR].pos.y, Floor_Level + 30), colorTable.Red, splatRadius);
                         }
                         pActors[Actor_ITR].donebloodsplat = true;
                     }
@@ -2564,17 +2564,17 @@ void UpdateActors_ODM() {
             }
         }
 
-        if (pActors[Actor_ITR].uAIState == Dead && uIsOnWater && !uIsAboveFloor) {
-            pActors[Actor_ITR].uAIState = Removed;
+        if (pActors[Actor_ITR].aiState == Dead && uIsOnWater && !uIsAboveFloor) {
+            pActors[Actor_ITR].aiState = Removed;
             continue;
         }
 
         // MOVEMENT
-        if (pActors[Actor_ITR].uCurrentActionAnimation == ANIM_Walking) {
-            int Actor_Speed = pActors[Actor_ITR].uMovementSpeed;
-            if (pActors[Actor_ITR].pActorBuffs[ACTOR_BUFF_SLOWED].Active())
+        if (pActors[Actor_ITR].currentActionAnimation == ANIM_Walking) {
+            int Actor_Speed = pActors[Actor_ITR].moveSpeed;
+            if (pActors[Actor_ITR].buffs[ACTOR_BUFF_SLOWED].Active())
                 Actor_Speed = Actor_Speed * 0.5;
-            if (pActors[Actor_ITR].uAIState == Fleeing || pActors[Actor_ITR].uAIState == Pursuing)
+            if (pActors[Actor_ITR].aiState == Fleeing || pActors[Actor_ITR].aiState == Pursuing)
                 Actor_Speed *= 2;
             if (pParty->bTurnBasedModeOn && pTurnEngine->turn_stage == TE_WAIT) {
                 Actor_Speed *= debug_turn_based_monster_movespeed_mul;
@@ -2582,60 +2582,60 @@ void UpdateActors_ODM() {
             if (Actor_Speed > 1000)
                 Actor_Speed = 1000;
 
-            pActors[Actor_ITR].vVelocity.x = TrigLUT.cos(pActors[Actor_ITR].uYawAngle) * Actor_Speed;
-            pActors[Actor_ITR].vVelocity.y = TrigLUT.sin(pActors[Actor_ITR].uYawAngle) * Actor_Speed;
+            pActors[Actor_ITR].speed.x = TrigLUT.cos(pActors[Actor_ITR].yawAngle) * Actor_Speed;
+            pActors[Actor_ITR].speed.y = TrigLUT.sin(pActors[Actor_ITR].yawAngle) * Actor_Speed;
             if (uIsFlying) {
-                pActors[Actor_ITR].vVelocity.z = TrigLUT.sin(pActors[Actor_ITR].uPitchAngle) * Actor_Speed;
+                pActors[Actor_ITR].speed.z = TrigLUT.sin(pActors[Actor_ITR].pitchAngle) * Actor_Speed;
             }
         } else {
-            pActors[Actor_ITR].vVelocity.x = fixpoint_mul(55000, pActors[Actor_ITR].vVelocity.x);
-            pActors[Actor_ITR].vVelocity.y = fixpoint_mul(55000, pActors[Actor_ITR].vVelocity.y);
+            pActors[Actor_ITR].speed.x = fixpoint_mul(55000, pActors[Actor_ITR].speed.x);
+            pActors[Actor_ITR].speed.y = fixpoint_mul(55000, pActors[Actor_ITR].speed.y);
             if (uIsFlying)
-                pActors[Actor_ITR].vVelocity.z = fixpoint_mul(55000, pActors[Actor_ITR].vVelocity.z);
+                pActors[Actor_ITR].speed.z = fixpoint_mul(55000, pActors[Actor_ITR].speed.z);
         }
 
         // BELOW FLOOR - POP UPWARDS
-        if (pActors[Actor_ITR].vPosition.z < Floor_Level) {
-            pActors[Actor_ITR].vPosition.z = Floor_Level;
-            pActors[Actor_ITR].vVelocity.z = uIsFlying != 0 ? 0x14 : 0;
+        if (pActors[Actor_ITR].pos.z < Floor_Level) {
+            pActors[Actor_ITR].pos.z = Floor_Level;
+            pActors[Actor_ITR].speed.z = uIsFlying != 0 ? 0x14 : 0;
         }
         // GRAVITY
         if (!uIsAboveFloor || uIsFlying) {
             if (Slope_High && !uIsAboveFloor && Actor_On_Terrain) {
                 Vec3i Terrain_Norm;
-                pActors[Actor_ITR].vPosition.z = Floor_Level;
-                ODM_GetTerrainNormalAt(pActors[Actor_ITR].vPosition.x, pActors[Actor_ITR].vPosition.y, &Terrain_Norm);
+                pActors[Actor_ITR].pos.z = Floor_Level;
+                ODM_GetTerrainNormalAt(pActors[Actor_ITR].pos.x, pActors[Actor_ITR].pos.y, &Terrain_Norm);
                 uint16_t Gravity = GetGravityStrength();
 
-                pActors[Actor_ITR].vVelocity.z += -16 * pEventTimer->uTimeElapsed * Gravity;
-                int v73 = abs(Terrain_Norm.x * pActors[Actor_ITR].vVelocity.x +
-                              Terrain_Norm.z * pActors[Actor_ITR].vVelocity.z +
-                              Terrain_Norm.y * pActors[Actor_ITR].vVelocity.y) >> 15;
+                pActors[Actor_ITR].speed.z += -16 * pEventTimer->uTimeElapsed * Gravity;
+                int v73 = abs(Terrain_Norm.x * pActors[Actor_ITR].speed.x +
+                              Terrain_Norm.z * pActors[Actor_ITR].speed.z +
+                              Terrain_Norm.y * pActors[Actor_ITR].speed.y) >> 15;
 
-                pActors[Actor_ITR].vVelocity.x += fixpoint_mul(v73, Terrain_Norm.x);
-                pActors[Actor_ITR].vVelocity.y += fixpoint_mul(v73, Terrain_Norm.y);
-                pActors[Actor_ITR].uYawAngle -= 32;
+                pActors[Actor_ITR].speed.x += fixpoint_mul(v73, Terrain_Norm.x);
+                pActors[Actor_ITR].speed.y += fixpoint_mul(v73, Terrain_Norm.y);
+                pActors[Actor_ITR].yawAngle -= 32;
                 // pActors[Actor_ITR].vVelocity.z += fixpoint_mul(v73, Terrain_Norm.z);
             }
         } else {
-            pActors[Actor_ITR].vVelocity.z -= pEventTimer->uTimeElapsed * GetGravityStrength();
+            pActors[Actor_ITR].speed.z -= pEventTimer->uTimeElapsed * GetGravityStrength();
         }
 
         // ARMAGEDDON PANIC
         if (pParty->armageddon_timer != 0 && pActors[Actor_ITR].CanAct() && pParty->armageddonForceCount > 0) {
-            pActors[Actor_ITR].vVelocity.x += grng->random(100) - 50;
-            pActors[Actor_ITR].vVelocity.y += grng->random(100) - 50;
-            pActors[Actor_ITR].vVelocity.z += grng->random(100) - 20;
-            pActors[Actor_ITR].uAIState = Stunned;
-            pActors[Actor_ITR].uYawAngle += grng->random(32) - 16;
+            pActors[Actor_ITR].speed.x += grng->random(100) - 50;
+            pActors[Actor_ITR].speed.y += grng->random(100) - 50;
+            pActors[Actor_ITR].speed.z += grng->random(100) - 20;
+            pActors[Actor_ITR].aiState = Stunned;
+            pActors[Actor_ITR].yawAngle += grng->random(32) - 16;
             pActors[Actor_ITR].UpdateAnimation();
         }
 
         // TODO(pskelton): this cancels out the above - is this intended
         // MOVING TOO SLOW
-        if (pActors[Actor_ITR].vVelocity.xy().lengthSqr() < 400 && Slope_High == 0) {
-            pActors[Actor_ITR].vVelocity.y = 0;
-            pActors[Actor_ITR].vVelocity.x = 0;
+        if (pActors[Actor_ITR].speed.xy().lengthSqr() < 400 && Slope_High == 0) {
+            pActors[Actor_ITR].speed.y = 0;
+            pActors[Actor_ITR].speed.x = 0;
         }
 
         // COLLISIONS
@@ -2645,23 +2645,23 @@ void UpdateActors_ODM() {
         if (!Water_Walk) {
             // tile on (1) tile heading (2)
             bool tile1IsLand, tile2IsLand;
-            tile1IsLand = !(pOutdoor->getTileAttribByPos(pActors[Actor_ITR].vPosition.x, pActors[Actor_ITR].vPosition.y) & TILE_DESC_WATER);
-            tile2IsLand = !(pOutdoor->getTileAttribByPos(pActors[Actor_ITR].vPosition.x + pActors[Actor_ITR].vVelocity.x,
-                                                         pActors[Actor_ITR].vPosition.y + pActors[Actor_ITR].vVelocity.y) & TILE_DESC_WATER);
+            tile1IsLand = !(pOutdoor->getTileAttribByPos(pActors[Actor_ITR].pos.x, pActors[Actor_ITR].pos.y) & TILE_DESC_WATER);
+            tile2IsLand = !(pOutdoor->getTileAttribByPos(pActors[Actor_ITR].pos.x + pActors[Actor_ITR].speed.x,
+                                                         pActors[Actor_ITR].pos.y + pActors[Actor_ITR].speed.y) & TILE_DESC_WATER);
             if (!uIsFlying && tile1IsLand && !tile2IsLand) {
                 // approaching water - turn away
                 if (pActors[Actor_ITR].CanAct()) {
-                    pActors[Actor_ITR].uYawAngle -= 32;
-                    pActors[Actor_ITR].uCurrentActionTime = 0;
-                    pActors[Actor_ITR].uCurrentActionLength = 128;
-                    pActors[Actor_ITR].uAIState = Fleeing;
+                    pActors[Actor_ITR].yawAngle -= 32;
+                    pActors[Actor_ITR].currentActionTime = 0;
+                    pActors[Actor_ITR].currentActionLength = 128;
+                    pActors[Actor_ITR].aiState = Fleeing;
                 }
             }
             if (!uIsFlying && !tile1IsLand && !uIsAboveFloor && Actor_On_Terrain) {
                 // on water and shouldnt be
                 bool tileTestLand = false;  // reset land found
-                int Grid_X = WorldPosToGridCellX(pActors[Actor_ITR].vPosition.x);
-                int Grid_Z = WorldPosToGridCellY(pActors[Actor_ITR].vPosition.y);
+                int Grid_X = WorldPosToGridCellX(pActors[Actor_ITR].pos.x);
+                int Grid_Z = WorldPosToGridCellY(pActors[Actor_ITR].pos.y);
                 for (int i = Grid_X - 1; i <= Grid_X + 1; i++) {
                     // scan surrounding cells for land
                     for (int j = Grid_Z - 1; j <= Grid_Z + 1; j++) {
@@ -2670,11 +2670,11 @@ void UpdateActors_ODM() {
                             int target_x = GridCellToWorldPosX(i);
                             int target_y = GridCellToWorldPosY(j);
                             if (pActors[Actor_ITR].CanAct()) {  // head to land
-                                pActors[Actor_ITR].uYawAngle = TrigLUT.atan2(target_x - pActors[Actor_ITR].vPosition.x,
-                                                                             target_y - pActors[Actor_ITR].vPosition.y);
-                                pActors[Actor_ITR].uCurrentActionTime = 0;
-                                pActors[Actor_ITR].uCurrentActionLength = 128;
-                                pActors[Actor_ITR].uAIState = Fleeing;
+                                pActors[Actor_ITR].yawAngle = TrigLUT.atan2(target_x - pActors[Actor_ITR].pos.x,
+                                                                             target_y - pActors[Actor_ITR].pos.y);
+                                pActors[Actor_ITR].currentActionTime = 0;
+                                pActors[Actor_ITR].currentActionLength = 128;
+                                pActors[Actor_ITR].aiState = Fleeing;
                                 break;
                             }
                         }

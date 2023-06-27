@@ -175,10 +175,10 @@ void GUIWindow_Transport::transportDialogue() {
             pCamera3D->_viewYaw = 0;
 
             pParty->uFlags |= PARTY_FLAGS_1_ForceRedraw;
-            pParty->vPosition.x = pTravel->arrival_x;
-            pParty->vPosition.y = pTravel->arrival_y;
-            pParty->vPosition.z = pTravel->arrival_z;
-            pParty->uFallStartZ = pParty->vPosition.z;
+            pParty->pos.x = pTravel->arrival_x;
+            pParty->pos.y = pTravel->arrival_y;
+            pParty->pos.z = pTravel->arrival_z;
+            pParty->uFallStartZ = pParty->pos.z;
             pParty->_viewPitch = 0;
             pParty->_viewYaw = pTravel->arrival_view_yaw;
         }

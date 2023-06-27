@@ -66,7 +66,7 @@ GAME_TEST(Issues, Issue123) {
     // Party falls when flying
     test->playTraceFromTestData("issue_123.mm7", "issue_123.json");
     // check party is still in the air
-    EXPECT_GT(pParty->vPosition.z, 512);
+    EXPECT_GT(pParty->pos.z, 512);
 }
 
 GAME_TEST(Issues, Issue125) {
@@ -199,7 +199,7 @@ GAME_TEST(Issues, Issue223) {
 GAME_TEST(Issues, Issue238) {
     // Party vertical flight speed doesnt use frame pacing
     test->playTraceFromTestData("issue_238.mm7", "issue_238.json");
-    EXPECT_LT(pParty->vPosition.z, 2500);
+    EXPECT_LT(pParty->pos.z, 2500);
 }
 
 GAME_TEST(Issues, Issue248) {
@@ -592,15 +592,15 @@ GAME_TEST(Prs, Pr469) {
 
 GAME_TEST(Issues, Issue488) {
     // Test that Mass Distortion spell works
-    test->playTraceFromTestData("issue_488.mm7", "issue_488.json", [] { EXPECT_EQ(pActors[24].sCurrentHP, 3); });
-    EXPECT_EQ(pActors[24].sCurrentHP, 2);
+    test->playTraceFromTestData("issue_488.mm7", "issue_488.json", [] { EXPECT_EQ(pActors[24].currentHP, 3); });
+    EXPECT_EQ(pActors[24].currentHP, 2);
 }
 
 GAME_TEST(Issues, Issue489) {
     // Test that AOE version of Shrinking Ray spell works
     auto countChibis = [] {
         return std::count_if(pActors.begin(), pActors.end(), [] (const Actor &actor) {
-            return actor.pActorBuffs[ACTOR_BUFF_SHRINK].Active();
+            return actor.buffs[ACTOR_BUFF_SHRINK].Active();
         });
     };
 
@@ -659,7 +659,7 @@ GAME_TEST(Issue, Issue518) {
     // Armageddon yeets the actors way too far into the sky & actors take stops when falling down
     test->playTraceFromTestData("issue_518.mm7", "issue_518.json");
     for (auto &actor : pActors) {
-        EXPECT_LT(actor.vPosition.z, 3500);
+        EXPECT_LT(actor.pos.z, 3500);
     }
 }
 
@@ -901,9 +901,9 @@ GAME_TEST(Issues, Issue664) {
     // Party sliding down shallow slopes outdoors
     test->playTraceFromTestData("issue_664.mm7", "issue_664.json");
     // shouldnt move
-    EXPECT_EQ(pParty->vPosition.x, 7323);
-    EXPECT_EQ(pParty->vPosition.y, 10375);
-    EXPECT_EQ(pParty->vPosition.z, 309);
+    EXPECT_EQ(pParty->pos.x, 7323);
+    EXPECT_EQ(pParty->pos.y, 10375);
+    EXPECT_EQ(pParty->pos.z, 309);
 }
 
 GAME_TEST(Issues, Issue674) {
@@ -940,7 +940,7 @@ GAME_TEST(Issues, Issue675) {
 GAME_TEST(Issues, Issue676) {
     // Jump spell doesn't work
     test->playTraceFromTestData("issue_676.mm7", "issue_676.json");
-    EXPECT_EQ(pParty->vPosition, Vec3i(11943, 11586, 857));
+    EXPECT_EQ(pParty->pos, Vec3i(11943, 11586, 857));
 }
 
 GAME_TEST(Issues, Issue677) {
@@ -1093,8 +1093,8 @@ GAME_TEST(Issues, Issue774) {
     // Background stunned actors do idle motions
     test->playTraceFromTestData("issue_774.mm7", "issue_774.json");
     for (auto &act : pActors) {
-        if (!(act.uAttributes & ACTOR_FULL_AI_STATE))
-            EXPECT_TRUE(act.uAIState == Stunned || act.uAIState == Dead);
+        if (!(act.attributes & ACTOR_FULL_AI_STATE))
+            EXPECT_TRUE(act.aiState == Stunned || act.aiState == Dead);
     }
 }
 
@@ -1274,7 +1274,7 @@ GAME_TEST(Issues, Issue832) {
     // expect 3 dead actors
     int count = 0;
     for (auto &act : pActors) {
-        if (act.uAIState == AIState::Dead) ++count;
+        if (act.aiState == AIState::Dead) ++count;
     }
     EXPECT_EQ(count, 3);
 }
@@ -1343,8 +1343,8 @@ GAME_TEST(Issues, Issue906_773) {
     // Issue with some use of Spellbuff Expired() - check actors cast buffs
     // AI_SpellAttack using wrong actor buff for bless #773
     test->playTraceFromTestData("issue_906.mm7", "issue_906.json");
-    EXPECT_TRUE(pActors[2].pActorBuffs[ACTOR_BUFF_BLESS].Active());
-    EXPECT_TRUE(pActors[2].pActorBuffs[ACTOR_BUFF_HEROISM].Active());
+    EXPECT_TRUE(pActors[2].buffs[ACTOR_BUFF_BLESS].Active());
+    EXPECT_TRUE(pActors[2].buffs[ACTOR_BUFF_HEROISM].Active());
 }
 
 GAME_TEST(Issues, Issue929) {

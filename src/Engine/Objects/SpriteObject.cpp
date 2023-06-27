@@ -397,7 +397,7 @@ LABEL_25:
                 for (int actloop = 0; actloop < (signed int)pActors.size(); ++actloop) {
                     // dont collide against self monster type
                     if (PID_TYPE(pSpriteObject->spell_caster_pid) == OBJECT_Actor) {
-                        if (pActors[PID_ID(pSpriteObject->spell_caster_pid)].pMonsterInfo.uID == pActors[actloop].pMonsterInfo.uID) {
+                        if (pActors[PID_ID(pSpriteObject->spell_caster_pid)].monsterInfo.uID == pActors[actloop].monsterInfo.uID) {
                             continue;
                         }
                     }
@@ -533,9 +533,9 @@ LABEL_25:
 
 void SpriteObject::explosionTraps() {
     MapInfo *pMapInfo = &pMapStats->pInfos[pMapStats->GetMapInfo(pCurrentMapName)];
-    int dir_x = abs(pParty->vPosition.x - this->vPosition.x);
-    int dir_y = abs(pParty->vPosition.y - this->vPosition.y);
-    int dir_z = abs(pParty->vPosition.z + pParty->sEyelevel - this->vPosition.z);
+    int dir_x = abs(pParty->pos.x - this->vPosition.x);
+    int dir_y = abs(pParty->pos.y - this->vPosition.y);
+    int dir_z = abs(pParty->pos.z + pParty->eyeLevel - this->vPosition.z);
     if (dir_x < dir_y) {
         std::swap(dir_x, dir_y);
     }
@@ -649,13 +649,13 @@ bool SpriteObject::applyShrinkRayAoe() {
     for (Actor &actor : pActors) {
         // TODO(Nik-RE-dev): paralyzed actor will not be affected?
         if (actor.CanAct()) {
-            int distanceSq = (actor.vPosition - this->vPosition + Vec3i(0, 0, actor.uActorHeight / 2)).lengthSqr();
-            int checkDistanceSq = (effectDistance + actor.uActorRadius) * (effectDistance + actor.uActorRadius);
+            int distanceSq = (actor.pos - this->vPosition + Vec3i(0, 0, actor.height / 2)).lengthSqr();
+            int checkDistanceSq = (effectDistance + actor.radius) * (effectDistance + actor.radius);
 
             if (distanceSq <= checkDistanceSq) {
                 if (actor.DoesDmgTypeDoDamage(DMGT_DARK)) {
-                    actor.pActorBuffs[ACTOR_BUFF_SHRINK].Apply(pParty->GetPlayingTime() + duration, this->spell_skill, shrinkPower, 0, 0);
-                    actor.uAttributes |= ACTOR_AGGRESSOR;
+                    actor.buffs[ACTOR_BUFF_SHRINK].Apply(pParty->GetPlayingTime() + duration, this->spell_skill, shrinkPower, 0, 0);
+                    actor.attributes |= ACTOR_AGGRESSOR;
                     isApplied = true;
                 }
             }
@@ -743,7 +743,7 @@ bool processSpellImpact(unsigned int uLayingItemID, int pid) {
     }
     if (PID_TYPE(pid) == OBJECT_Face && PID_TYPE(object->spell_caster_pid) != OBJECT_Character) {
         if (PID_ID(object->spell_caster_pid) < 500) {  // bugfix  PID_ID(v2->spell_caster_pid)==1000
-            pActors[PID_ID(object->spell_caster_pid)].uAttributes |= ACTOR_UNKNOW5;
+            pActors[PID_ID(object->spell_caster_pid)].attributes |= ACTOR_UNKNOW5;
         }
     }
 
@@ -1038,7 +1038,7 @@ bool processSpellImpact(unsigned int uLayingItemID, int pid) {
 
         case SPRITE_SPELL_LIGHT_DESTROY_UNDEAD: {
             if (PID_TYPE(pid) == OBJECT_Actor &&
-                MonsterStats::BelongsToSupertype(pActors[PID_ID(pid)].pMonsterInfo.uID, MONSTER_SUPERTYPE_UNDEAD)) {
+                MonsterStats::BelongsToSupertype(pActors[PID_ID(pid)].monsterInfo.uID, MONSTER_SUPERTYPE_UNDEAD)) {
                 applySpellSpriteDamage(uLayingItemID, pid);
             }
             updateSpriteOnImpact(object);
@@ -1140,7 +1140,7 @@ bool processSpellImpact(unsigned int uLayingItemID, int pid) {
                         shrinkPower = 4;
                         break;
                 }
-                pActors[PID_ID(pid)].uAttributes |= ACTOR_AGGRESSOR;
+                pActors[PID_ID(pid)].attributes |= ACTOR_AGGRESSOR;
             }
 
             if (!isShrinkingRayAoe) {
@@ -1148,10 +1148,10 @@ bool processSpellImpact(unsigned int uLayingItemID, int pid) {
                 if (pActors[PID_ID(pid)].DoesDmgTypeDoDamage(dmgType)) {
                     isDamaged = true;
                     if (object->uType == SPRITE_SPELL_LIGHT_PARALYZE) {
-                        pActors[actorId].uAIState = Standing;
+                        pActors[actorId].aiState = Standing;
                         pActors[actorId].UpdateAnimation();
                     }
-                    pActors[actorId].pActorBuffs[buffIdx].Apply(pParty->GetPlayingTime() + duration, skillMastery, shrinkPower, 0, 0);
+                    pActors[actorId].buffs[buffIdx].Apply(pParty->GetPlayingTime() + duration, skillMastery, shrinkPower, 0, 0);
                 }
             } else {
                 isDamaged = object->applyShrinkRayAoe();
@@ -1299,7 +1299,7 @@ void UpdateObjects() {
                 if (actorId > pActors.size()) {
                     continue;
                 }
-                pSpriteObjects[i].vPosition = pActors[actorId].vPosition + Vec3i(0, 0, pActors[actorId].uActorHeight);
+                pSpriteObjects[i].vPosition = pActors[actorId].pos + Vec3i(0, 0, pActors[actorId].height);
                 if (!pSpriteObjects[i].uObjectDescID) {
                     continue;
                 }
@@ -1342,7 +1342,7 @@ void UpdateObjects() {
                     if (!pParty->bTurnBasedModeOn || !(pSpriteObjects[i].uSectorID & 4)) {
                         continue;
                     }
-                    if ((pParty->vPosition - pSpriteObjects[i].vPosition).length() <= 5120) {
+                    if ((pParty->pos - pSpriteObjects[i].vPosition).length() <= 5120) {
                         continue;
                     }
                     SpriteObject::OnInteraction(i);

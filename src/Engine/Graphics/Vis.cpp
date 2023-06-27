@@ -968,7 +968,7 @@ bool Vis::is_part_of_selection(const Vis_Object &what, Vis_SelectionFilter *filt
                 }
 
                 // v10 = &pActors[object_idx];
-                int aiState = 1 << static_cast<int>(pActors[object_idx].uAIState); // TODO(captainurist): Flags.
+                int aiState = 1 << static_cast<int>(pActors[object_idx].aiState); // TODO(captainurist): Flags.
 
                 if (aiState & filter->no_at_ai_state)
                     return false;
@@ -976,7 +976,7 @@ bool Vis::is_part_of_selection(const Vis_Object &what, Vis_SelectionFilter *filt
                     return false;
 
                 auto only_target_undead = filter->select_flags & TargetUndead;
-                auto target_not_undead = MonsterStats::BelongsToSupertype(pActors[object_idx].pMonsterInfo.uID, MONSTER_SUPERTYPE_UNDEAD) == 0;
+                auto target_not_undead = MonsterStats::BelongsToSupertype(pActors[object_idx].monsterInfo.uID, MONSTER_SUPERTYPE_UNDEAD) == 0;
 
                 if (only_target_undead && target_not_undead)
                     return false;

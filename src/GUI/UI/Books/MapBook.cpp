@@ -32,8 +32,8 @@ GUIWindow_MapBook::GUIWindow_MapBook() : GUIWindow_Book() {
     this->wData.val = WINDOW_MapsBook;
     this->eWindowType = WindowType::WINDOW_MapsBook;
 
-    viewparams->sViewCenterX = pParty->vPosition.x;
-    viewparams->sViewCenterY = pParty->vPosition.y;
+    viewparams->sViewCenterX = pParty->pos.x;
+    viewparams->sViewCenterY = pParty->pos.y;
     pChildBooksOverlay = new GUIWindow_BooksButtonOverlay({546, 353}, {0, 0}, pBtn_Maps);
 
     ui_book_map_background = assets->getImage_ColorKey("sbmap");
@@ -139,7 +139,7 @@ void GUIWindow_MapBook::Update() {
         map_window.DrawTitleText(pFontBookTitle, -14, 12, ui_book_map_title_color, pMapStats->pInfos[map_id].pName, 3);
     }
 
-    auto party_coordinates = localization->FormatString(LSTR_FMT_X_D_Y_D, pParty->vPosition.x, pParty->vPosition.y);
+    auto party_coordinates = localization->FormatString(LSTR_FMT_X_D_Y_D, pParty->pos.x, pParty->pos.y);
 
     map_window.uFrameX = 0;
     map_window.DrawTitleText(pFontComic, 0, 320, ui_book_map_coordinates_color, party_coordinates, 0);
@@ -244,8 +244,8 @@ void DrawBook_Map_sub(unsigned int tl_x, unsigned int tl_y, unsigned int br_x, i
     }
 
     // Direction arrow drawing
-    int ArrowXPos = (fixpoint_mul((pParty->vPosition.x - pCenterX), viewparams->uMapBookMapZoom)) + ScreenCenterX - 3;
-    int ArrowYPos = ScreenCenterY - (fixpoint_mul((pParty->vPosition.y - pCenterY), viewparams->uMapBookMapZoom)) - 3;
+    int ArrowXPos = (fixpoint_mul((pParty->pos.x - pCenterX), viewparams->uMapBookMapZoom)) + ScreenCenterX - 3;
+    int ArrowYPos = ScreenCenterY - (fixpoint_mul((pParty->pos.y - pCenterY), viewparams->uMapBookMapZoom)) - 3;
     bool DrawArrow = 1;
 
     if (ArrowXPos >= (signed int)tl_x) {

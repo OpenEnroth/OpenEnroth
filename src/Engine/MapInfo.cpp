@@ -328,9 +328,9 @@ void TeleportToStartingPoint(MapStartPoint point) {
         if (!pLevelDecorations.empty()) {
             for (size_t i = 0; i < pLevelDecorations.size(); ++i) {
                 if (pLevelDecorations[i].uDecorationDescID == pDecorationList->GetDecorIdByName(pName)) {
-                    pParty->vPosition = pLevelDecorations[i].vPosition;
+                    pParty->pos = pLevelDecorations[i].vPosition;
                     pParty->speed = Vec3i();
-                    pParty->uFallStartZ = pParty->vPosition.z;
+                    pParty->uFallStartZ = pParty->pos.z;
                     pParty->_viewYaw = (TrigLUT.uIntegerHalfPi * pLevelDecorations[i].field_1A) / 90;
                     if (pLevelDecorations[i]._yawAngle)
                         pParty->_viewYaw = pLevelDecorations[i]._yawAngle;
@@ -340,11 +340,11 @@ void TeleportToStartingPoint(MapStartPoint point) {
         }
         if (Start_Party_Teleport_Flag) {
             if (Party_Teleport_X_Pos)
-                pParty->vPosition.x = Party_Teleport_X_Pos;
+                pParty->pos.x = Party_Teleport_X_Pos;
             if (Party_Teleport_Y_Pos)
-                pParty->vPosition.y = Party_Teleport_Y_Pos;
+                pParty->pos.y = Party_Teleport_Y_Pos;
             if (Party_Teleport_Z_Pos) {
-                pParty->vPosition.z = Party_Teleport_Z_Pos;
+                pParty->pos.z = Party_Teleport_Z_Pos;
                 pParty->uFallStartZ = Party_Teleport_Z_Pos;
             }
             if (Party_Teleport_Cam_Yaw != -1)

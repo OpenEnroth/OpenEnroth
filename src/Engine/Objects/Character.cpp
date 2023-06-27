@@ -1464,7 +1464,7 @@ int Character::StealFromActor(
 
     CombinedSkillValue stealingSkill = this->getActualSkillValue(CHARACTER_SKILL_STEALING);
     int currMaxItemValue = StealingRandomBonuses[grng->random(5)] + stealingSkill.level() * StealingMasteryBonuses[stealingSkill.mastery()];
-    int fineIfFailed = actroPtr->pMonsterInfo.uLevel + 100 * (_steal_perm + reputation);
+    int fineIfFailed = actroPtr->monsterInfo.uLevel + 100 * (_steal_perm + reputation);
 
     if (grng->random(100) < 5 || fineIfFailed > currMaxItemValue ||
         actroPtr->ActorEnemy()) {  // busted
@@ -1478,7 +1478,7 @@ int Character::StealFromActor(
         int random = grng->random(100);
 
         if (random >= 70) {  // stealing gold
-            if (!actroPtr->ActorHasItems[3].isGold()) {
+            if (!actroPtr->items[3].isGold()) {
                 // no gold to steal - fail
                 GameUI_SetStatusBar(
                     LSTR_FMT_S_FAILED_TO_STEAL,
@@ -1489,11 +1489,11 @@ int Character::StealFromActor(
 
             unsigned int enchBonusSum = grng->randomDice(stealingSkill.level(), StealingEnchantmentBonusForSkill[stealingSkill.mastery()]);
 
-            int *enchTypePtr = (int*)&actroPtr->ActorHasItems[3].special_enchantment;  // actor has this amount of gold
+            int *enchTypePtr = (int*)&actroPtr->items[3].special_enchantment;  // actor has this amount of gold
 
             if ((int)enchBonusSum >= *enchTypePtr) {  // steal all the gold
                 enchBonusSum = *enchTypePtr;
-                actroPtr->ActorHasItems[3].uItemID = ITEM_NULL;
+                actroPtr->items[3].uItemID = ITEM_NULL;
                 *enchTypePtr = 0;
             } else {
                 *enchTypePtr -= enchBonusSum;  // steal some of the gold
@@ -1515,12 +1515,12 @@ int Character::StealFromActor(
             tempItem.Reset();
 
             int randslot = grng->random(4);
-            ITEM_TYPE carriedItemId = actroPtr->uCarriedItemID;
+            ITEM_TYPE carriedItemId = actroPtr->carriedItemId;
 
             // check if we have an item to steal
-            if (carriedItemId != ITEM_NULL || actroPtr->ActorHasItems[randslot].uItemID != ITEM_NULL && !actroPtr->ActorHasItems[randslot].isGold()) {
+            if (carriedItemId != ITEM_NULL || actroPtr->items[randslot].uItemID != ITEM_NULL && !actroPtr->items[randslot].isGold()) {
                 if (carriedItemId != ITEM_NULL) {  // load item into tempitem
-                    actroPtr->uCarriedItemID = ITEM_NULL;
+                    actroPtr->carriedItemId = ITEM_NULL;
                     tempItem.uItemID = carriedItemId;
                     if (pItemTable->pItems[carriedItemId].uEquipType == EQUIP_WAND) {
                         tempItem.uNumCharges = grng->random(6) + pItemTable->pItems[carriedItemId].uDamageMod + 1;
@@ -1529,7 +1529,7 @@ int Character::StealFromActor(
                         tempItem.uEnchantmentType = 2 * grng->random(4) + 2;
                     }
                 } else {
-                    ItemGen *itemToSteal = &actroPtr->ActorHasItems[randslot];
+                    ItemGen *itemToSteal = &actroPtr->items[randslot];
                     memcpy(&tempItem, itemToSteal, sizeof(tempItem));
                     itemToSteal->Reset();
                     carriedItemId = tempItem.uItemID;
@@ -1904,10 +1904,10 @@ int Character::ReceiveSpecialAttackEffect(
 
             case SPECIAL_ATTACK_STEAL: {
                 playReaction(SPEECH_ITEM_BROKEN);
-                void *actoritems = &pActor->ActorHasItems[0];
-                if (pActor->ActorHasItems[0].uItemID != ITEM_NULL) {
-                    actoritems = &pActor->ActorHasItems[1];
-                    if (pActor->ActorHasItems[1].uItemID != ITEM_NULL) {
+                void *actoritems = &pActor->items[0];
+                if (pActor->items[0].uItemID != ITEM_NULL) {
+                    actoritems = &pActor->items[1];
+                    if (pActor->items[1].uItemID != ITEM_NULL) {
                         spell_fx_renderer->SetPlayerBuffAnim(SPELL_DISEASE, whichplayer);
                         return 1;
                     }
@@ -6461,8 +6461,8 @@ void DamageCharacterFromMonster(unsigned int uObjID, ABILITY_INDEX dmgSource, Ve
 
         // calc damage
         int dmgToReceive = actorPtr->_43B3E0_CalcDamage(dmgSource);
-        if (actorPtr->pActorBuffs[ACTOR_BUFF_SHRINK].Active()) {
-            int16_t spellPower = actorPtr->pActorBuffs[ACTOR_BUFF_SHRINK].power;
+        if (actorPtr->buffs[ACTOR_BUFF_SHRINK].Active()) {
+            int16_t spellPower = actorPtr->buffs[ACTOR_BUFF_SHRINK].power;
             if (spellPower > 0)
                 dmgToReceive /= spellPower;
         }
@@ -6470,21 +6470,21 @@ void DamageCharacterFromMonster(unsigned int uObjID, ABILITY_INDEX dmgSource, Ve
         int damageType;
         switch (dmgSource) {
             case ABILITY_ATTACK1:
-                damageType = actorPtr->pMonsterInfo.uAttack1Type;
+                damageType = actorPtr->monsterInfo.uAttack1Type;
                 break;
             case ABILITY_ATTACK2:
-                damageType = actorPtr->pMonsterInfo.uAttack2Type;
+                damageType = actorPtr->monsterInfo.uAttack2Type;
                 break;
             case ABILITY_SPELL1:
-                spellId = actorPtr->pMonsterInfo.uSpell1ID;
+                spellId = actorPtr->monsterInfo.uSpell1ID;
                 damageType = pSpellStats->pInfos[spellId].uSchool;
                 break;
             case ABILITY_SPELL2:
-                spellId = actorPtr->pMonsterInfo.uSpell2ID;
+                spellId = actorPtr->monsterInfo.uSpell2ID;
                 damageType = pSpellStats->pInfos[spellId].uSchool;
                 break;
             case ABILITY_SPECIAL:
-                damageType = actorPtr->pMonsterInfo.field_3C_some_special_attack;
+                damageType = actorPtr->monsterInfo.field_3C_some_special_attack;
                 break;
             default:
                 damageType = 4;  // DMGT_PHISYCAL
@@ -6496,12 +6496,12 @@ void DamageCharacterFromMonster(unsigned int uObjID, ABILITY_INDEX dmgSource, Ve
 
         // pain reflection back on attacker
         if (playerPtr->pCharacterBuffs[CHARACTER_BUFF_PAIN_REFLECTION].Active()) {
-            AIState actorState = actorPtr->uAIState;
+            AIState actorState = actorPtr->aiState;
             if (actorState != Dying && actorState != Dead) {
                 int reflectedDamage = actorPtr->CalcMagicalDamageToActor((DAMAGE_TYPE)damageType, dmgToReceive);
-                actorPtr->sCurrentHP -= reflectedDamage;
+                actorPtr->currentHP -= reflectedDamage;
                 if (reflectedDamage >= 0) {
-                    if (actorPtr->sCurrentHP >= 1) {
+                    if (actorPtr->currentHP >= 1) {
                         Actor::AI_Stun(uActorID, PID(OBJECT_Character, targetchar), 0);  // todo extract this branch to a function
                                     // once Actor::functions are changed to
                                     // nonstatic actor functions
@@ -6511,13 +6511,13 @@ void DamageCharacterFromMonster(unsigned int uObjID, ABILITY_INDEX dmgSource, Ve
                         Actor::Die(uActorID);
                         Actor::ApplyFineForKillingPeasant(uActorID);
                         Actor::AggroSurroundingPeasants(uActorID, 1);
-                        if (actorPtr->pMonsterInfo.uExp)
-                            pParty->GivePartyExp(pMonsterStats->pInfos[actorPtr->pMonsterInfo.uID].uExp);
+                        if (actorPtr->monsterInfo.uExp)
+                            pParty->GivePartyExp(pMonsterStats->pInfos[actorPtr->monsterInfo.uID].uExp);
 
                         // kill speech
                         CharacterSpeech speechToPlay = SPEECH_ATTACK_HIT;
                         if (vrng->random(100) < 20) {
-                            speechToPlay = actorPtr->pMonsterInfo.uHP >= 100 ? SPEECH_KILL_STRONG_ENEMY : SPEECH_KILL_WEAK_ENEMY;
+                            speechToPlay = actorPtr->monsterInfo.uHP >= 100 ? SPEECH_KILL_STRONG_ENEMY : SPEECH_KILL_WEAK_ENEMY;
                         }
                         playerPtr->playReaction(speechToPlay);
                     }
@@ -6526,9 +6526,9 @@ void DamageCharacterFromMonster(unsigned int uObjID, ABILITY_INDEX dmgSource, Ve
         }
 
         // special attack trigger
-        if (!engine->config->debug.NoDamage.value() && actorPtr->pMonsterInfo.uSpecialAttackType && grng->random(100) < actorPtr->pMonsterInfo.uLevel *
-                                actorPtr->pMonsterInfo.uSpecialAttackLevel) {
-            playerPtr->ReceiveSpecialAttackEffect(actorPtr->pMonsterInfo.uSpecialAttackType, actorPtr);
+        if (!engine->config->debug.NoDamage.value() && actorPtr->monsterInfo.uSpecialAttackType && grng->random(100) < actorPtr->monsterInfo.uLevel *
+                                                                                                                       actorPtr->monsterInfo.uSpecialAttackLevel) {
+            playerPtr->ReceiveSpecialAttackEffect(actorPtr->monsterInfo.uSpecialAttackType, actorPtr);
         }
 
         // add recovery after being hit
@@ -6636,29 +6636,29 @@ void DamageCharacterFromMonster(unsigned int uObjID, ABILITY_INDEX dmgSource, Ve
                 }
             }
 
-            if (actorPtr->pActorBuffs[ACTOR_BUFF_SHRINK].Active()) {
-                int spellPower = actorPtr->pActorBuffs[ACTOR_BUFF_SHRINK].power;
+            if (actorPtr->buffs[ACTOR_BUFF_SHRINK].Active()) {
+                int spellPower = actorPtr->buffs[ACTOR_BUFF_SHRINK].power;
                 if (spellPower > 0) dmgToReceive /= spellPower;
             }
 
             int damageType;
             switch (dmgSource) {
                 case ABILITY_ATTACK1:
-                    damageType = actorPtr->pMonsterInfo.uAttack1Type;
+                    damageType = actorPtr->monsterInfo.uAttack1Type;
                     break;
                 case ABILITY_ATTACK2:
-                    damageType = actorPtr->pMonsterInfo.uAttack2Type;
+                    damageType = actorPtr->monsterInfo.uAttack2Type;
                     break;
                 case ABILITY_SPELL1:
-                    spellId = actorPtr->pMonsterInfo.uSpell1ID;
+                    spellId = actorPtr->monsterInfo.uSpell1ID;
                     damageType = pSpellStats->pInfos[spellId].uSchool;
                     break;
                 case ABILITY_SPELL2:
-                    spellId = actorPtr->pMonsterInfo.uSpell2ID;
+                    spellId = actorPtr->monsterInfo.uSpell2ID;
                     damageType = pSpellStats->pInfos[spellId].uSchool;
                     break;
                 case ABILITY_SPECIAL:
-                    damageType = actorPtr->pMonsterInfo.field_3C_some_special_attack;
+                    damageType = actorPtr->monsterInfo.field_3C_some_special_attack;
                     break;
                 default:
                     damageType = 4;
@@ -6667,13 +6667,13 @@ void DamageCharacterFromMonster(unsigned int uObjID, ABILITY_INDEX dmgSource, Ve
 
             int reflectedDmg = playerPtr->receiveDamage(dmgToReceive, (DAMAGE_TYPE)damageType);
             if (playerPtr->pCharacterBuffs[CHARACTER_BUFF_PAIN_REFLECTION].Active()) {
-                AIState actorState = actorPtr->uAIState;
+                AIState actorState = actorPtr->aiState;
                 if (actorState != Dying && actorState != Dead) {
                     recvdMagicDmg = actorPtr->CalcMagicalDamageToActor((DAMAGE_TYPE)damageType, reflectedDmg);
-                    actorPtr->sCurrentHP -= recvdMagicDmg;
+                    actorPtr->currentHP -= recvdMagicDmg;
 
                     if (recvdMagicDmg >= 0) {
-                        if (actorPtr->sCurrentHP >= 1) {
+                        if (actorPtr->currentHP >= 1) {
                             Actor::AI_Stun(uActorID, PID(OBJECT_Character, targetchar), 0);
                             Actor::AggroSurroundingPeasants(uActorID, 1);
                         } else {
@@ -6681,12 +6681,12 @@ void DamageCharacterFromMonster(unsigned int uObjID, ABILITY_INDEX dmgSource, Ve
                             Actor::Die(uActorID);
                             Actor::ApplyFineForKillingPeasant(uActorID);
                             Actor::AggroSurroundingPeasants(uActorID, 1);
-                            if (actorPtr->pMonsterInfo.uExp)
-                                pParty->GivePartyExp(pMonsterStats->pInfos[actorPtr->pMonsterInfo.uID].uExp);
+                            if (actorPtr->monsterInfo.uExp)
+                                pParty->GivePartyExp(pMonsterStats->pInfos[actorPtr->monsterInfo.uID].uExp);
 
                             CharacterSpeech speechToPlay = SPEECH_ATTACK_HIT;
                             if (vrng->random(100) < 20) {
-                                speechToPlay = actorPtr->pMonsterInfo.uHP >= 100 ? SPEECH_KILL_STRONG_ENEMY : SPEECH_KILL_WEAK_ENEMY;
+                                speechToPlay = actorPtr->monsterInfo.uHP >= 100 ? SPEECH_KILL_STRONG_ENEMY : SPEECH_KILL_WEAK_ENEMY;
                             }
                             playerPtr->playReaction(speechToPlay);
                         }
@@ -6696,9 +6696,9 @@ void DamageCharacterFromMonster(unsigned int uObjID, ABILITY_INDEX dmgSource, Ve
 
             // special attack trigger
             if (dmgSource == ABILITY_ATTACK1 && !engine->config->debug.NoDamage.value() &&
-                actorPtr->pMonsterInfo.uSpecialAttackType && grng->random(100) < actorPtr->pMonsterInfo.uLevel *
-                                    actorPtr->pMonsterInfo.uSpecialAttackLevel) {
-                playerPtr->ReceiveSpecialAttackEffect(actorPtr->pMonsterInfo.uSpecialAttackType, actorPtr);
+                actorPtr->monsterInfo.uSpecialAttackType && grng->random(100) < actorPtr->monsterInfo.uLevel *
+                                                                                actorPtr->monsterInfo.uSpecialAttackLevel) {
+                playerPtr->ReceiveSpecialAttackEffect(actorPtr->monsterInfo.uSpecialAttackType, actorPtr);
             }
 
             // set recovery after hit
@@ -7039,19 +7039,19 @@ int Character::getCharacterIndex() {
 
 //----- (004272F5) --------------------------------------------------------
 bool Character::characterHitOrMiss(Actor *pActor, int distancemod, CHARACTER_SKILL_LEVEL skillmod) {  // PS - RETURN IF ATTACK WILL HIT
-    int naturalArmor = pActor->pMonsterInfo.uAC;  // actor usual armour
+    int naturalArmor = pActor->monsterInfo.uAC;  // actor usual armour
     int armorBuff = 0;
 
-    if (pActor->pActorBuffs[ACTOR_BUFF_SOMETHING_THAT_HALVES_AC]
+    if (pActor->buffs[ACTOR_BUFF_SOMETHING_THAT_HALVES_AC]
             .Active())  // gm axe effect??
         naturalArmor /= 2;
 
-    if (pActor->pActorBuffs[ACTOR_BUFF_HOUR_OF_POWER].Active())
-        armorBuff = pActor->pActorBuffs[ACTOR_BUFF_SHIELD].power;
+    if (pActor->buffs[ACTOR_BUFF_HOUR_OF_POWER].Active())
+        armorBuff = pActor->buffs[ACTOR_BUFF_SHIELD].power;
 
-    if (pActor->pActorBuffs[ACTOR_BUFF_STONESKIN].Active() &&
-        pActor->pActorBuffs[ACTOR_BUFF_STONESKIN].power > armorBuff)
-        armorBuff = pActor->pActorBuffs[ACTOR_BUFF_STONESKIN].power;
+    if (pActor->buffs[ACTOR_BUFF_STONESKIN].Active() &&
+        pActor->buffs[ACTOR_BUFF_STONESKIN].power > armorBuff)
+        armorBuff = pActor->buffs[ACTOR_BUFF_STONESKIN].power;
 
     int effectiveActorArmor = armorBuff + naturalArmor;
 
@@ -7147,13 +7147,13 @@ void Character::_42ECB5_CharacterAttacksActor() {
 
     int actor_distance = 0;
     if (target_type == OBJECT_Actor) {
-        int distance_x = actor->vPosition.x - pParty->vPosition.x,
-            distance_y = actor->vPosition.y - pParty->vPosition.y,
-            distance_z = actor->vPosition.z - pParty->vPosition.z;
+        int distance_x = actor->pos.x - pParty->pos.x,
+            distance_y = actor->pos.y - pParty->pos.y,
+            distance_z = actor->pos.z - pParty->pos.z;
         actor_distance =
             integer_sqrt(distance_x * distance_x + distance_y * distance_y +
                          distance_z * distance_z) -
-            actor->uActorRadius;
+            actor->radius;
         if (actor_distance < 0) actor_distance = 0;
     }
 
@@ -7176,7 +7176,7 @@ void Character::_42ECB5_CharacterAttacksActor() {
     } else if (target_type == OBJECT_Actor && actor_distance <= 407.2) {
         melee_attack = true;
 
-        Vec3i a3 = actor->vPosition - pParty->vPosition;
+        Vec3i a3 = actor->pos - pParty->pos;
         normalize_to_fixpoint(&a3.x, &a3.y, &a3.z);
 
         Actor::DamageMonsterFromParty(PID(OBJECT_Character, pParty->activeCharacterIndex() - 1),
@@ -7184,8 +7184,8 @@ void Character::_42ECB5_CharacterAttacksActor() {
         if (character->WearsItem(ITEM_ARTIFACT_SPLITTER, ITEM_SLOT_MAIN_HAND) ||
             character->WearsItem(ITEM_ARTIFACT_SPLITTER, ITEM_SLOT_OFF_HAND))
             _42FA66_do_explosive_impact(
-                actor->vPosition.x, actor->vPosition.y,
-                actor->vPosition.z + actor->uActorHeight / 2, 0, 512,
+                actor->pos.x, actor->pos.y,
+                actor->pos.z + actor->height / 2, 0, 512,
                 pParty->activeCharacterIndex());
     } else if (bow_idx) {
         shooting_bow = true;
@@ -7603,9 +7603,9 @@ bool Character::SetBeacon(size_t index, size_t power) {
 
     beacon.image = render->TakeScreenshot(92, 68);
     beacon.uBeaconTime = GameTime(pParty->GetPlayingTime() + GameTime::FromSeconds(power));
-    beacon.PartyPos_X = pParty->vPosition.x;
-    beacon.PartyPos_Y = pParty->vPosition.y;
-    beacon.PartyPos_Z = pParty->vPosition.z;
+    beacon.PartyPos_X = pParty->pos.x;
+    beacon.PartyPos_Y = pParty->pos.y;
+    beacon.PartyPos_Z = pParty->pos.z;
     beacon._partyViewYaw = pParty->_viewYaw;
     beacon._partyViewPitch = pParty->_viewPitch;
     beacon.SaveFileID = file_index;

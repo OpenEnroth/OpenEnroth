@@ -117,8 +117,8 @@ void ViewingParams::CenterOnPartyZoomOut() {
     this->uMapBookMapZoom /= 2;
     if (this->uMapBookMapZoom < 384) this->uMapBookMapZoom = 384;
 
-    this->sViewCenterX = pParty->vPosition.x;
-    this->sViewCenterY = pParty->vPosition.y;
+    this->sViewCenterX = pParty->pos.x;
+    this->sViewCenterY = pParty->pos.y;
     AdjustPosition();
 }
 
@@ -136,8 +136,8 @@ void ViewingParams::CenterOnPartyZoomIn() {
     this->uMapBookMapZoom *= 2;
     if (this->uMapBookMapZoom > MaxZoom) this->uMapBookMapZoom = MaxZoom;
 
-    this->sViewCenterX = pParty->vPosition.x;
-    this->sViewCenterY = pParty->vPosition.y;
+    this->sViewCenterX = pParty->pos.x;
+    this->sViewCenterY = pParty->pos.y;
     AdjustPosition();
 }
 
@@ -252,13 +252,13 @@ void InteractWithActor(unsigned int id) {
     assert(CanInteractWithActor(id));
 
     Actor::AI_FaceObject(id, 4, 0, 0);
-    if (pActors[id].sNPC_ID) {
+    if (pActors[id].npcId) {
         engine->_messageQueue->addMessageCurrentFrame(UIMSG_StartNPCDialogue, id, 0);
     } else {
-        if (pNPCStats->pGroups_copy[pActors[id].uGroup]) {
-            if (!pNPCStats->pCatchPhrases[pNPCStats->pGroups_copy[pActors[id].uGroup]].empty()) {
+        if (pNPCStats->pGroups_copy[pActors[id].group]) {
+            if (!pNPCStats->pCatchPhrases[pNPCStats->pGroups_copy[pActors[id].group]].empty()) {
                 pParty->uFlags |= PARTY_FLAGS_1_ForceRedraw;
-                branchless_dialogue_str = pNPCStats->pCatchPhrases[pNPCStats->pGroups_copy[pActors[id].uGroup]];
+                branchless_dialogue_str = pNPCStats->pCatchPhrases[pNPCStats->pGroups_copy[pActors[id].group]];
                 StartBranchlessDialogue(0, 0, 0);
             }
         }
@@ -305,7 +305,7 @@ void Engine::onGameViewportClick() {
     } else if (PID_TYPE(pid) == OBJECT_Actor) {
         int mon_id = PID_ID(pid);
 
-        if (pActors[mon_id].uAIState == Dead) {
+        if (pActors[mon_id].aiState == Dead) {
             if (in_range) {
                 pActors[mon_id].LootActor();
             } else {

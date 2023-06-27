@@ -39,9 +39,9 @@ void GameUI_InitializeDialogue(Actor *actor, int bPlayerSaysHello) {
     pEventTimer->Pause();
     pMiscTimer->Pause();
     uDialogueType = DIALOGUE_NULL;
-    sDialogue_SpeakingActorNPC_ID = actor->sNPC_ID;
+    sDialogue_SpeakingActorNPC_ID = actor->npcId;
     pDialogue_SpeakingActor = actor;
-    NPCData *pNPCInfo = GetNPCData(actor->sNPC_ID);
+    NPCData *pNPCInfo = GetNPCData(actor->npcId);
     if (!(pNPCInfo->uFlags & NPC_GREETED_SECOND)) {
         if (pNPCInfo->uFlags & NPC_GREETED_FIRST) {
             pNPCInfo->uFlags &= ~NPC_GREETED_FIRST;
@@ -396,12 +396,12 @@ void GUIWindow_Dialogue::Update() {
             pParty->field_7B5_in_arena_quest != -1) {
             int num_dead_actors = 0;
             for (uint i = 0; i < pActors.size(); ++i) {
-                if (pActors[i].uAIState == Dead ||
-                    pActors[i].uAIState == Removed ||
-                    pActors[i].uAIState == Disabled) {
+                if (pActors[i].aiState == Dead ||
+                    pActors[i].aiState == Removed ||
+                    pActors[i].aiState == Disabled) {
                     ++num_dead_actors;
                 } else {
-                    ObjectType sumonner_type = PID_TYPE(pActors[i].uSummonerID);
+                    ObjectType sumonner_type = PID_TYPE(pActors[i].summonerId);
                     if (sumonner_type == OBJECT_Character) ++num_dead_actors;
                 }
             }
@@ -633,7 +633,7 @@ void OnSelectNPCDialogueOption(DIALOGUE_TYPE option) {
             pParty->CountHirelings();
             engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 1, 0);
             if (sDialogue_SpeakingActorNPC_ID >= 0)
-                pDialogue_SpeakingActor->uAIState = Removed;
+                pDialogue_SpeakingActor->aiState = Removed;
             if (pParty->hasActiveCharacter()) {
                 pParty->activeCharacter().playReaction(SPEECH_HIRE_NPC);
             }
