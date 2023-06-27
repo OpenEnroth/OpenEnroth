@@ -828,7 +828,7 @@ void GUIWindow_House::drawOptions(std::vector<std::string> &optionsText, Color s
     int spacing = 0;
     int offset = topOptionShift;
     if (!denseSpacing) {
-        spacing = (SIDE_TEXT_BOX_BODY_TEXT_HEIGHT - topOptionShift - allTextHeight) / activeOptions;
+        spacing = (SIDE_TEXT_BOX_BODY_TEXT_HEIGHT - topOptionShift - allTextHeight) / (activeOptions ? activeOptions : 1);
         if (spacing > SIDE_TEXT_BOX_MAX_SPACING) {
             spacing = SIDE_TEXT_BOX_MAX_SPACING;
         }
