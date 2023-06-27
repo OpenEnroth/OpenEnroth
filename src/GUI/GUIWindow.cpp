@@ -1898,7 +1898,7 @@ std::string GetDisplayName(Actor *actor) {
     if (actor->dword_000334_unique_name)
         return pMonsterStats->pPlaceStrings[actor->dword_000334_unique_name];
     else
-        return pMonsterStats->pInfos[actor->pMonsterInfo.uID].pName;
+        return pMonsterStats->pInfos[actor->monsterInfo.uID].pName;
 }
 
 //----- (004B29F2) --------------------------------------------------------

@@ -79,11 +79,11 @@ int Party::CountHirelings() {  // non hired followers
 // inlined
 //----- (mm6c::004858D0) --------------------------------------------------
 void Party::Zero() {
-    uPartyHeight = uDefaultPartyHeight = engine->config->gameplay.PartyHeight.value();
-    sEyelevel = uDefaultEyelevel = engine->config->gameplay.PartyEyeLevel.value();
+    height = defaultHeight = engine->config->gameplay.PartyHeight.value();
+    eyeLevel = defaultEyeLevel = engine->config->gameplay.PartyEyeLevel.value();
     radius = 37;
     _yawGranularity = 25;
-    uWalkSpeed = engine->config->gameplay.PartyWalkSpeed.value();
+    walkSpeed = engine->config->gameplay.PartyWalkSpeed.value();
     _yawRotationSpeed = 90;
     jump_strength = 5;
     playing_time = GameTime(0, 0, 0);
@@ -95,11 +95,11 @@ void Party::Zero() {
     PartyTimes.guildNextRefreshTime.fill(GameTime(0));
     PartyTimes.shopBanTimes.fill(GameTime(0));
     PartyTimes._s_times.fill(GameTime(0));
-    vPosition = vPrevPosition = Vec3i();
+    pos = lastPos = Vec3i();
     speed = Vec3i();
     _viewYaw = _viewPrevYaw = 0;
     _viewPitch = _viewPrevPitch = 0;
-    sPrevEyelevel = 0;
+    lastEyeLevel = 0;
     sPartySavedFlightZ = 0;
     floor_face_pid = 0;
     currentWalkingSound = SOUND_Invalid;
@@ -611,7 +611,7 @@ void Party::createDefaultParty(bool bDebugGiveItems) {
 void Party::Reset() {
     Zero();
 
-    sEyelevel = engine->config->gameplay.PartyEyeLevel.value();
+    eyeLevel = engine->config->gameplay.PartyEyeLevel.value();
     uNumGold = engine->config->gameplay.NewGameGold.value();
     uNumFoodRations = engine->config->gameplay.NewGameFood.value();
 
@@ -702,9 +702,9 @@ void Party::yell() {
         for (int i = 0; i < pActors.size(); i++) {
             Actor &actor = pActors[i];
             if (actor.CanAct() &&
-                actor.pMonsterInfo.uHostilityType != MonsterInfo::Hostility_Long &&
-                actor.pMonsterInfo.uMovementType != MONSTER_MOVEMENT_TYPE_STATIONARY) {
-                if ((actor.vPosition - pParty->vPosition).length() < 512) {
+                actor.monsterInfo.uHostilityType != MonsterInfo::Hostility_Long &&
+                actor.monsterInfo.uMovementType != MONSTER_MOVEMENT_TYPE_STATIONARY) {
+                if ((actor.pos - pParty->pos).length() < 512) {
                     Actor::AI_Flee(i, 4, 0, 0);
                 }
             }
@@ -714,15 +714,15 @@ void Party::yell() {
 
 //----- (00491BF9) --------------------------------------------------------
 void Party::ResetPosMiscAndSpellBuffs() {
-    this->vPosition = Vec3i();
+    this->pos = Vec3i();
     this->speed = Vec3i();
     this->uFallStartZ = 0;
     this->_viewYaw = 0;
     this->_viewPitch = 0;
-    this->uDefaultPartyHeight = engine->config->gameplay.PartyHeight.value(); // was 120?
+    this->defaultHeight = engine->config->gameplay.PartyHeight.value(); // was 120?
     this->radius = 37;
     this->_yawGranularity = 25;
-    this->uWalkSpeed = engine->config->gameplay.PartyWalkSpeed.value();
+    this->walkSpeed = engine->config->gameplay.PartyWalkSpeed.value();
     this->_yawRotationSpeed = 90;
     this->jump_strength = 5;
     this->_6FC_water_lava_timer = 0;
@@ -1058,7 +1058,7 @@ void Party::dropHeldItem() {
     sprite.uType = (SPRITE_OBJECT_TYPE)pItemTable->pItems[pPickedItem.uItemID].uSpriteID;
     sprite.uObjectDescID = pObjectList->ObjectIDByItemID(sprite.uType);
     sprite.spell_caster_pid = PID(OBJECT_Character, 0);
-    sprite.vPosition = vPosition + Vec3i(0, 0, sEyelevel);
+    sprite.vPosition = pos + Vec3i(0, 0, eyeLevel);
     sprite.uSoundID = 0;
     sprite.uFacing = 0;
     sprite.uAttributes = SPRITE_DROPPED_BY_PLAYER;
@@ -1142,14 +1142,14 @@ size_t Party::immolationAffectedActors(int *affected, size_t affectedArrSize, si
     int affectedCount = 0;
 
     for (size_t i = 0; i < pActors.size(); ++i) {
-        x = abs(pActors[i].vPosition.x - this->vPosition.x);
-        y = abs(pActors[i].vPosition.y - this->vPosition.y);
-        z = abs(pActors[i].vPosition.z - this->vPosition.z);
+        x = abs(pActors[i].pos.x - this->pos.x);
+        y = abs(pActors[i].pos.y - this->pos.y);
+        z = abs(pActors[i].pos.z - this->pos.z);
         if (int_get_vector_length(x, y, z) <= effectRange) {
-            if (pActors[i].uAIState != Dead && pActors[i].uAIState != Dying &&
-                pActors[i].uAIState != Removed &&
-                pActors[i].uAIState != Disabled &&
-                pActors[i].uAIState != Summoned) {
+            if (pActors[i].aiState != Dead && pActors[i].aiState != Dying &&
+                pActors[i].aiState != Removed &&
+                pActors[i].aiState != Disabled &&
+                pActors[i].aiState != Summoned) {
                 affected[affectedCount] = i;
 
                 affectedCount++;

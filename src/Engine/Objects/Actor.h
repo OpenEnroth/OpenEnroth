@@ -65,24 +65,24 @@ class Actor {
     bool IsNotAlive();
     bool IsPeasant();
 
-    inline void ResetAnimation() { uAttributes &= ~ACTOR_ANIMATION; }
-    inline void ResetQueue() { uAttributes &= ~ACTOR_STAND_IN_QUEUE; }
-    inline void ResetActive() { uAttributes &= ~ACTOR_ACTIVE; }
-    inline void ResetFullAiState() { uAttributes &= ~ACTOR_FULL_AI_STATE; }
-    inline void ResetHasItem() { uAttributes &= ~ACTOR_HAS_ITEM; }
-    inline void ResetHostile() { uAttributes &= ~ACTOR_HOSTILE; }
-    inline void ResetAggressor() { uAttributes &= ~ACTOR_AGGRESSOR; }
+    inline void ResetAnimation() { attributes &= ~ACTOR_ANIMATION; }
+    inline void ResetQueue() { attributes &= ~ACTOR_STAND_IN_QUEUE; }
+    inline void ResetActive() { attributes &= ~ACTOR_ACTIVE; }
+    inline void ResetFullAiState() { attributes &= ~ACTOR_FULL_AI_STATE; }
+    inline void ResetHasItem() { attributes &= ~ACTOR_HAS_ITEM; }
+    inline void ResetHostile() { attributes &= ~ACTOR_HOSTILE; }
+    inline void ResetAggressor() { attributes &= ~ACTOR_AGGRESSOR; }
     inline bool ActorEnemy() const {
-        return uAttributes & ACTOR_AGGRESSOR;
+        return attributes & ACTOR_AGGRESSOR;
     }
     inline bool ActorFriend() const {
-        return !(uAttributes & ACTOR_AGGRESSOR);
+        return !(attributes & ACTOR_AGGRESSOR);
     }
     inline bool ActorHasItem() const {
-        return uAttributes & ACTOR_HAS_ITEM;
+        return attributes & ACTOR_HAS_ITEM;
     }
     inline bool ActorNearby() const {
-        return uAttributes & ACTOR_NEARBY;
+        return attributes & ACTOR_NEARBY;
     }
 
     static void _SelectTarget(unsigned int uActorID, int *OutTargetPID,
@@ -202,39 +202,39 @@ class Actor {
     bool DoesDmgTypeDoDamage(DAMAGE_TYPE uType);
 
     int id = -1; // Actor index in pActors array.
-    std::string pActorName;
-    int16_t sNPC_ID = 0;
-    ActorAttributes uAttributes = 0;
-    int16_t sCurrentHP = 0;
-    MonsterInfo pMonsterInfo;
+    std::string name;
+    int16_t npcId = 0;
+    ActorAttributes attributes = 0;
+    int16_t currentHP = 0;
+    MonsterInfo monsterInfo;
     int16_t word_000084_range_attack = 0;
     int16_t word_000086_some_monster_id = 0;  // base monster class monsterlist id
-    uint16_t uActorRadius = 32;
-    uint16_t uActorHeight = 128;
-    uint16_t uMovementSpeed = 200;
-    Vec3s vPosition;
-    Vec3s vVelocity;
-    uint16_t uYawAngle = 0;
-    uint16_t uPitchAngle = 0;
-    int16_t uSectorID = 0;
-    uint16_t uCurrentActionLength = 0;
-    Vec3s vInitialPosition;
-    Vec3s vGuardingPosition;
-    uint16_t uTetherDistance = 256;
-    AIState uAIState = Standing;
-    ActorAnimation uCurrentActionAnimation = ANIM_Standing;
-    ITEM_TYPE uCarriedItemID = ITEM_NULL; // carried items are special items the
-                                          // ncp carries (ie lute from bard)
-    unsigned int uCurrentActionTime = 0;
-    IndexedArray<uint16_t, ANIM_First, ANIM_Last> pSpriteIDs = {{}};
-    std::array<uint16_t, 4> pSoundSampleIDs = {{}};  // 1 die     3 bored
-    IndexedArray<SpellBuff, ACTOR_BUFF_FIRST, ACTOR_BUFF_LAST> pActorBuffs;
-    std::array<ItemGen, 4> ActorHasItems;
-    unsigned int uGroup = 0;
-    unsigned int uAlly = 0;
-    std::array<ActorJob, 8> pScheduledJobs;
-    unsigned int uSummonerID = 0;
-    unsigned int uLastCharacterIDToHit = 0;
+    uint16_t radius = 32;
+    uint16_t height = 128;
+    uint16_t moveSpeed = 200;
+    Vec3s pos;
+    Vec3s speed;
+    uint16_t yawAngle = 0;
+    uint16_t pitchAngle = 0;
+    int16_t sectorId = 0;
+    uint16_t currentActionLength = 0;
+    Vec3s initialPosition;
+    Vec3s guardingPosition;
+    uint16_t tetherDistance = 256;
+    AIState aiState = Standing;
+    ActorAnimation currentActionAnimation = ANIM_Standing;
+    ITEM_TYPE carriedItemId = ITEM_NULL; // carried items are special items the
+                                         // ncp carries (ie lute from bard)
+    unsigned int currentActionTime = 0;
+    IndexedArray<uint16_t, ANIM_First, ANIM_Last> spriteIds = {{}};
+    std::array<uint16_t, 4> soundSampleIds = {{}};  // 1 die     3 bored
+    IndexedArray<SpellBuff, ACTOR_BUFF_FIRST, ACTOR_BUFF_LAST> buffs;
+    std::array<ItemGen, 4> items;
+    unsigned int group = 0;
+    unsigned int ally = 0;
+    std::array<ActorJob, 8> scheduledJobs;
+    unsigned int summonerId = 0;
+    unsigned int lastCharacterIdToHit = 0;
     int dword_000334_unique_name = 0; // Index into pMonsterStats->pPlaceStrings for a unique monster name.
     bool donebloodsplat{ false };
 };

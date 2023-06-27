@@ -572,9 +572,9 @@ void SpellFxRenderer::sparklesOnActorAfterItCastsBuff(Actor *pActor, Color uDiff
     particle.particle_size = 1.0;
 
     for (int i = 0; i < 50; i++) {
-        particle.x = vrng->random(256) + pActor->vPosition.x - 127;
-        particle.y = vrng->random(256) + pActor->vPosition.y - 127;
-        particle.z = vrng->random(256) + pActor->vPosition.z;
+        particle.x = vrng->random(256) + pActor->pos.x - 127;
+        particle.y = vrng->random(256) + pActor->pos.y - 127;
+        particle.z = vrng->random(256) + pActor->pos.z;
         if (uDiffuse != Color()) {
             particle.uDiffuse = uDiffuse;
         } else {
@@ -622,7 +622,7 @@ float SpellFxRenderer::_4A806F_get_mass_distortion_value(Actor *pActor) {
     int v3;     // eax@1
     double v4;  // st7@2
 
-    v3 = *(int *)&pActor->pActorBuffs[ACTOR_BUFF_MASS_DISTORTION]
+    v3 = *(int *)&pActor->buffs[ACTOR_BUFF_MASS_DISTORTION]
               .expireTime.value -
          pMiscTimer->uTotalTimeElapsed;
     if (v3 > 64) {
@@ -632,7 +632,7 @@ float SpellFxRenderer::_4A806F_get_mass_distortion_value(Actor *pActor) {
         v2 = v3 * v3;
         v4 = 1.0 - (double)(signed int)(v3 * v3) / 5120.0;
     } else {
-        pActor->pActorBuffs[ACTOR_BUFF_MASS_DISTORTION].Reset();
+        pActor->buffs[ACTOR_BUFF_MASS_DISTORTION].Reset();
         v4 = 1.0;
     }
 

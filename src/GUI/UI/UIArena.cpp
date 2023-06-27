@@ -46,11 +46,11 @@ void Arena_SelectionFightLevel() {
         } else {
             int v0 = 0;
             for (size_t i = 0; i < pActors.size(); i++) {
-                if (pActors[i].uAIState == Dead ||
-                    pActors[i].uAIState == Removed ||
-                    pActors[i].uAIState == Disabled ||
-                    pActors[i].uSummonerID != 0 &&
-                        PID_TYPE(pActors[i].uSummonerID) == OBJECT_Character)
+                if (pActors[i].aiState == Dead ||
+                    pActors[i].aiState == Removed ||
+                    pActors[i].aiState == Disabled ||
+                    pActors[i].summonerId != 0 &&
+                    PID_TYPE(pActors[i].summonerId) == OBJECT_Character)
                     ++v0;
             }
             if (v0 >= (signed int)pActors.size() || (signed int)pActors.size() <= 0) {
@@ -64,7 +64,7 @@ void Arena_SelectionFightLevel() {
                 pParty->field_7B5_in_arena_quest = -1;
             } else {
                 uDialogueType = DIALOGUE_ARENA_WELCOME;
-                pParty->vPosition = Vec3i(3849, 5770, 1);
+                pParty->pos = Vec3i(3849, 5770, 1);
                 pParty->speed = Vec3i();
                 pParty->uFallStartZ = 1;
                 pParty->_viewYaw = 512;
@@ -131,7 +131,7 @@ void ArenaFight() {
         13);
     pDialogueWindow->DrawText(pFontArrus, {13, 354 - v0}, colorTable.White, v1);
     render->Present();
-    pParty->vPosition = Vec3i(3849, 5770, 1);
+    pParty->pos = Vec3i(3849, 5770, 1);
     pParty->speed = Vec3i();
     pParty->uFallStartZ = 1;
     pParty->_viewYaw = 512;

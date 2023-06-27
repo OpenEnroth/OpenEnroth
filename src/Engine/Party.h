@@ -266,27 +266,27 @@ struct Party {
         }
     }
 
-    int uPartyHeight;
-    int uDefaultPartyHeight;
-    int sEyelevel;
-    int uDefaultEyelevel;
-    int radius; // party radius, 37 by default.
+    int height; // Party height, 192 by default.
+    int defaultHeight; // TODO(captainurist): drop, party height is never changed.
+    int eyeLevel; // Party eye level, 160 by default.
+    int defaultEyeLevel; // TODO(captainurist): drop, party eye level is never changed.
+    int radius; // Party radius, 37 by default.
     int _yawGranularity;
-    int uWalkSpeed;
+    int walkSpeed; // Party walk speed, units per real time second.
     int _yawRotationSpeed;  // deg/s
     int jump_strength; // jump strength, higher value => higher jumps, default 5.
     GameTime playing_time;  // uint64_t uTimePlayed;
     GameTime last_regenerated; // Timestamp when HP/MP regeneration was checked last time (using 5 minutes granularity)
     PartyTimeStruct PartyTimes;
-    Vec3i vPosition;
+    Vec3i pos;
     Vec3i speed; // Party speed, negative z => falling, positive z => jumping.
                  // Note that only z component is preserved between frames, x & y are fully determined by the keys pressed.
     int _viewYaw;
     int _viewPitch;
-    Vec3i vPrevPosition;
+    Vec3i lastPos; // TODO(captainurist): drop
     int _viewPrevYaw;
     int _viewPrevPitch;
-    int sPrevEyelevel;
+    int lastEyeLevel; // TODO(captainurist): drop
     int sPartySavedFlightZ;  // this saves the Z position when flying without bob mods
     int floor_face_pid;  // face we are standing at
     SoundID currentWalkingSound; // previously was 'walk_sound_timer'

@@ -554,38 +554,38 @@ void GameUI_DrawItemInfo(struct ItemGen *inspect_item) {
 void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
     static Actor pMonsterInfoUI_Doll;
 
-    int Popup_Y_Offset = monster_popup_y_offsets[(pActors[uActorID].pMonsterInfo.uID - 1) / 3] - 40;
+    int Popup_Y_Offset = monster_popup_y_offsets[(pActors[uActorID].monsterInfo.uID - 1) / 3] - 40;
 
     uint16_t actionLen = 0;
-    if (pActors[uActorID].pMonsterInfo.uID == pMonsterInfoUI_Doll.pMonsterInfo.uID) {
-        actionLen = pMonsterInfoUI_Doll.uCurrentActionLength;
+    if (pActors[uActorID].monsterInfo.uID == pMonsterInfoUI_Doll.monsterInfo.uID) {
+        actionLen = pMonsterInfoUI_Doll.currentActionLength;
     } else {
         // copy actor info if different
         pMonsterInfoUI_Doll = pActors[uActorID];
-        pMonsterInfoUI_Doll.uCurrentActionAnimation = ANIM_Bored;
-        pMonsterInfoUI_Doll.uCurrentActionTime = 0;
+        pMonsterInfoUI_Doll.currentActionAnimation = ANIM_Bored;
+        pMonsterInfoUI_Doll.currentActionTime = 0;
         actionLen = vrng->random(256) + 128;
-        pMonsterInfoUI_Doll.uCurrentActionLength = actionLen;
+        pMonsterInfoUI_Doll.currentActionLength = actionLen;
     }
 
-    if (pMonsterInfoUI_Doll.uCurrentActionTime > actionLen) {
-        pMonsterInfoUI_Doll.uCurrentActionTime = 0;
-        if (pMonsterInfoUI_Doll.uCurrentActionAnimation == ANIM_Bored ||
-            pMonsterInfoUI_Doll.uCurrentActionAnimation == ANIM_AtkMelee) {
-            pMonsterInfoUI_Doll.uCurrentActionAnimation = ANIM_Standing;
-            pMonsterInfoUI_Doll.uCurrentActionLength = vrng->random(128) + 128;
+    if (pMonsterInfoUI_Doll.currentActionTime > actionLen) {
+        pMonsterInfoUI_Doll.currentActionTime = 0;
+        if (pMonsterInfoUI_Doll.currentActionAnimation == ANIM_Bored ||
+            pMonsterInfoUI_Doll.currentActionAnimation == ANIM_AtkMelee) {
+            pMonsterInfoUI_Doll.currentActionAnimation = ANIM_Standing;
+            pMonsterInfoUI_Doll.currentActionLength = vrng->random(128) + 128;
         } else {
             // rand();
-            pMonsterInfoUI_Doll.uCurrentActionAnimation = ANIM_Bored;
-            if ((pMonsterInfoUI_Doll.pMonsterInfo.uID < 115 ||
-                 pMonsterInfoUI_Doll.pMonsterInfo.uID > 186) &&
-                (pMonsterInfoUI_Doll.pMonsterInfo.uID < 232 ||
-                 pMonsterInfoUI_Doll.pMonsterInfo.uID > 249) && vrng->random(30) < 100)
-                pMonsterInfoUI_Doll.uCurrentActionAnimation = ANIM_AtkMelee;
-            pMonsterInfoUI_Doll.uCurrentActionLength =
+            pMonsterInfoUI_Doll.currentActionAnimation = ANIM_Bored;
+            if ((pMonsterInfoUI_Doll.monsterInfo.uID < 115 ||
+                 pMonsterInfoUI_Doll.monsterInfo.uID > 186) &&
+                (pMonsterInfoUI_Doll.monsterInfo.uID < 232 ||
+                 pMonsterInfoUI_Doll.monsterInfo.uID > 249) && vrng->random(30) < 100)
+                pMonsterInfoUI_Doll.currentActionAnimation = ANIM_AtkMelee;
+            pMonsterInfoUI_Doll.currentActionLength =
                 8 *
                 pSpriteFrameTable
-                    ->pSpriteSFrames[pActors[uActorID].pSpriteIDs[pMonsterInfoUI_Doll.uCurrentActionAnimation]]
+                    ->pSpriteSFrames[pActors[uActorID].spriteIds[pMonsterInfoUI_Doll.currentActionAnimation]]
                     .uAnimLength;
         }
     }
@@ -595,8 +595,8 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
     {
         SpriteFrame *Portrait_Sprite = pSpriteFrameTable->GetFrame(
             pActors[uActorID]
-                .pSpriteIDs[pMonsterInfoUI_Doll.uCurrentActionAnimation],
-            pMonsterInfoUI_Doll.uCurrentActionTime);
+                .spriteIds[pMonsterInfoUI_Doll.currentActionAnimation],
+            pMonsterInfoUI_Doll.currentActionTime);
 
         // Draw portrait border
         render->ResetUIClipRect();
@@ -615,12 +615,12 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
         // Draw portrait
         render->DrawMonsterPortrait(doll_rect, Portrait_Sprite, Popup_Y_Offset);
     }
-    pMonsterInfoUI_Doll.uCurrentActionTime += pMiscTimer->uTimeElapsed;
+    pMonsterInfoUI_Doll.currentActionTime += pMiscTimer->uTimeElapsed;
 
     // Draw name and profession
     std::string str;
-    if (pActors[uActorID].sNPC_ID) {
-        str = NameAndTitle(GetNPCData(pActors[uActorID].sNPC_ID));
+    if (pActors[uActorID].npcId) {
+        str = NameAndTitle(GetNPCData(pActors[uActorID].npcId));
     } else {
         str = GetDisplayName(&pActors[uActorID]);
     }
@@ -643,16 +643,16 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
         if ((skill_points = idMonsterSkill.level()) > 0) {
             skill_mastery = idMonsterSkill.mastery();
             if (skill_mastery == CHARACTER_SKILL_MASTERY_NOVICE) {
-                if (skill_points + 10 >= pActors[uActorID].pMonsterInfo.uLevel) {
+                if (skill_points + 10 >= pActors[uActorID].monsterInfo.uLevel) {
                     normal_level = true;
                 }
             } else if (skill_mastery == CHARACTER_SKILL_MASTERY_EXPERT) {
-                if (2 * skill_points + 10 >= pActors[uActorID].pMonsterInfo.uLevel) {
+                if (2 * skill_points + 10 >= pActors[uActorID].monsterInfo.uLevel) {
                     normal_level = true;
                     expert_level = true;
                 }
             } else if (skill_mastery == CHARACTER_SKILL_MASTERY_MASTER) {
-                if (3 * skill_points + 10 >= pActors[uActorID].pMonsterInfo.uLevel) {
+                if (3 * skill_points + 10 >= pActors[uActorID].monsterInfo.uLevel) {
                     normal_level = true;
                     expert_level = true;
                     master_level = true;
@@ -668,11 +668,11 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
         }
 
         // Only play reaction when right click on actor initially
-        if (pActors[uActorID].uAIState != Dead && pActors[uActorID].uAIState != Dying &&
+        if (pActors[uActorID].aiState != Dead && pActors[uActorID].aiState != Dying &&
             !holdingMouseRightButton && skill_mastery != CHARACTER_SKILL_MASTERY_NONE) {
             CharacterSpeech speech;
             if (normal_level || expert_level || master_level || grandmaster_level) {
-                if (pActors[uActorID].pMonsterInfo.uLevel >= pParty->activeCharacter().uLevel - 5)
+                if (pActors[uActorID].monsterInfo.uLevel >= pParty->activeCharacter().uLevel - 5)
                     speech = SPEECH_ID_MONSTER_STRONG;
                 else
                     speech = SPEECH_ID_MONSTER_WEAK;
@@ -702,8 +702,8 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
     } else {
         pText = "";
         pTextHeight = pFontSmallnum->GetHeight() + 193;
-        for (ACTOR_BUFF_INDEX i : pActors[uActorID].pActorBuffs.indices()) {
-            if (pActors[uActorID].pActorBuffs[i].Active()) {
+        for (ACTOR_BUFF_INDEX i : pActors[uActorID].buffs.indices()) {
+            if (pActors[uActorID].buffs[i].Active()) {
                 switch (i) {
                     case ACTOR_BUFF_CHARM:
                         pTextColorID = 60;
@@ -806,11 +806,11 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
     if (normal_level) {
         auto str =
             fmt::format("{}\f00000\t100{}\n", localization->GetString(LSTR_HIT_POINTS),
-                         pActors[uActorID].pMonsterInfo.uHP);
+                         pActors[uActorID].monsterInfo.uHP);
         pWindow->DrawText(pFontSmallnum, {150, doll_rect.y}, colorTable.Jonquil, str);
         pTextHeight = doll_rect.y + pFontSmallnum->GetHeight() - 3;
         txt2 = fmt::format("{}\f00000\t100{}\n", localization->GetString(LSTR_ARMOR_CLASS),
-                            pActors[uActorID].pMonsterInfo.uAC);
+                            pActors[uActorID].monsterInfo.uAC);
     } else {
         auto str = fmt::format(
             "{}\f00000\t100{}\n", localization->GetString(LSTR_HIT_POINTS),
@@ -842,21 +842,21 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
     if (expert_level) {
         auto txt3 = fmt::format(
             "{}\f00000\t080{}\n", localization->GetString(LSTR_ATTACK),
-            content[pActors[uActorID].pMonsterInfo.uAttack1Type]);
+            content[pActors[uActorID].monsterInfo.uAttack1Type]);
         pWindow->DrawText(pFontSmallnum, {150, pTextHeight}, colorTable.Jonquil, txt3);
 
         pTextHeight = pTextHeight + pFontSmallnum->GetHeight() - 3;
-        if (pActors[uActorID].pMonsterInfo.uAttack1DamageBonus)
+        if (pActors[uActorID].monsterInfo.uAttack1DamageBonus)
             txt4 = fmt::format(
                 "{}\f00000\t080{}d{}+{}\n", localization->GetString(LSTR_DAMAGE),
-                pActors[uActorID].pMonsterInfo.uAttack1DamageDiceRolls,
-                pActors[uActorID].pMonsterInfo.uAttack1DamageDiceSides,
-                pActors[uActorID].pMonsterInfo.uAttack1DamageBonus);
+                pActors[uActorID].monsterInfo.uAttack1DamageDiceRolls,
+                pActors[uActorID].monsterInfo.uAttack1DamageDiceSides,
+                pActors[uActorID].monsterInfo.uAttack1DamageBonus);
         else
             txt4 = fmt::format(
                 "{}\f00000\t080{}d{}\n", localization->GetString(LSTR_DAMAGE),
-                pActors[uActorID].pMonsterInfo.uAttack1DamageDiceRolls,
-                pActors[uActorID].pMonsterInfo.uAttack1DamageDiceSides);
+                pActors[uActorID].monsterInfo.uAttack1DamageDiceRolls,
+                pActors[uActorID].monsterInfo.uAttack1DamageDiceSides);
     } else {
         auto txt3 = fmt::format(
             "{}\f00000\t080{}\n", localization->GetString(LSTR_ATTACK),
@@ -882,26 +882,26 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
         pTextHeight = pTextHeight + pFontSmallnum->GetHeight() - 3;
     } else {
         pText = localization->GetString(LSTR_SPELL);
-        if (pActors[uActorID].pMonsterInfo.uSpell1ID != SPELL_NONE && pActors[uActorID].pMonsterInfo.uSpell2ID != SPELL_NONE)
+        if (pActors[uActorID].monsterInfo.uSpell1ID != SPELL_NONE && pActors[uActorID].monsterInfo.uSpell2ID != SPELL_NONE)
             pText = localization->GetString(LSTR_SPELLS);
-        if (pActors[uActorID].pMonsterInfo.uSpell1ID != SPELL_NONE) {
+        if (pActors[uActorID].monsterInfo.uSpell1ID != SPELL_NONE) {
             auto txt6 = fmt::format(
                 "{}\f00000\t070{}\n", pText,
-                pSpellStats->pInfos[pActors[uActorID].pMonsterInfo.uSpell1ID].pShortName
+                pSpellStats->pInfos[pActors[uActorID].monsterInfo.uSpell1ID].pShortName
             );  // "%s\f%05u\t060%s\n"
             pWindow->DrawText(pFontSmallnum, {150, pTextHeight}, colorTable.Jonquil, txt6);
             pTextHeight = pTextHeight + pFontSmallnum->GetHeight() - 3;
         }
-        if (pActors[uActorID].pMonsterInfo.uSpell2ID != SPELL_NONE) {
+        if (pActors[uActorID].monsterInfo.uSpell2ID != SPELL_NONE) {
             auto txt6 = fmt::format(
                 "\f00000\t070{}\n",
-                pSpellStats->pInfos[pActors[uActorID].pMonsterInfo.uSpell2ID]
+                pSpellStats->pInfos[pActors[uActorID].monsterInfo.uSpell2ID]
                     .pShortName);  // "%s\f%05u\t060%s\n"
             pWindow->DrawText(pFontSmallnum, {150, pTextHeight}, colorTable.Jonquil, txt6);
             pTextHeight = pTextHeight + pFontSmallnum->GetHeight() - 3;
         }
-        if (!pActors[uActorID].pMonsterInfo.uSpell1ID &&
-            !pActors[uActorID].pMonsterInfo.uSpell2ID) {
+        if (!pActors[uActorID].monsterInfo.uSpell1ID &&
+            !pActors[uActorID].monsterInfo.uSpell2ID) {
             auto txt6 = fmt::format(
                 "{}\f00000\t070{}\n", localization->GetString(LSTR_SPELL),
                 localization->GetString(LSTR_NONE));  // "%s\f%05u\t060%s\n"
@@ -927,16 +927,16 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
     string_name[9] = localization->GetString(LSTR_PHYSICAL);
 
     unsigned char resistances[11] = {0};
-    resistances[0] = pActors[uActorID].pMonsterInfo.uResFire;
-    resistances[1] = pActors[uActorID].pMonsterInfo.uResAir;
-    resistances[2] = pActors[uActorID].pMonsterInfo.uResWater;
-    resistances[3] = pActors[uActorID].pMonsterInfo.uResEarth;
-    resistances[4] = pActors[uActorID].pMonsterInfo.uResMind;
-    resistances[5] = pActors[uActorID].pMonsterInfo.uResSpirit;
-    resistances[6] = pActors[uActorID].pMonsterInfo.uResBody;
-    resistances[7] = pActors[uActorID].pMonsterInfo.uResLight;
-    resistances[8] = pActors[uActorID].pMonsterInfo.uResPhysical;
-    resistances[9] = pActors[uActorID].pMonsterInfo.uResDark;
+    resistances[0] = pActors[uActorID].monsterInfo.uResFire;
+    resistances[1] = pActors[uActorID].monsterInfo.uResAir;
+    resistances[2] = pActors[uActorID].monsterInfo.uResWater;
+    resistances[3] = pActors[uActorID].monsterInfo.uResEarth;
+    resistances[4] = pActors[uActorID].monsterInfo.uResMind;
+    resistances[5] = pActors[uActorID].monsterInfo.uResSpirit;
+    resistances[6] = pActors[uActorID].monsterInfo.uResBody;
+    resistances[7] = pActors[uActorID].monsterInfo.uResLight;
+    resistances[8] = pActors[uActorID].monsterInfo.uResPhysical;
+    resistances[9] = pActors[uActorID].monsterInfo.uResDark;
 
     if (grandmaster_level) {
         for (uint i = 0; i < 10; i++) {
@@ -961,14 +961,14 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
 
     // cast spell: Detect life
     if (pParty->pPartyBuffs[PARTY_BUFF_DETECT_LIFE].Active()) {
-        std::string str = fmt::format("{}: {}", localization->GetString(LSTR_CURRENT_HIT_POINTS), pActors[uActorID].sCurrentHP);
+        std::string str = fmt::format("{}: {}", localization->GetString(LSTR_CURRENT_HIT_POINTS), pActors[uActorID].currentHP);
         pFontSmallnum->GetLineWidth(str);
         pWindow->DrawTitleText(pFontSmallnum, 0, pWindow->uFrameHeight - pFontSmallnum->GetHeight() - 12, colorTable.White, str, 3);
     }
 
     // Debug - show actor AI state with full information
     if (monster_full_informations) {
-        std::string str = fmt::format("AI State: {}", std::to_underlying(pActors[uActorID].uAIState));
+        std::string str = fmt::format("AI State: {}", std::to_underlying(pActors[uActorID].aiState));
         pFontSmallnum->GetLineWidth(str);
         pWindow->DrawTitleText(pFontSmallnum, 0, pWindow->uFrameHeight - pFontSmallnum->GetHeight() - 12, colorTable.White, str, 3);
     }
@@ -2242,7 +2242,7 @@ void Inventory_ItemPopupAndAlchemy() {
             engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 0, 0);
 
             int _viewPitch, _viewYaw, rot_z;
-            Vec3i::rotate(64, pParty->_viewYaw, pParty->_viewPitch, pParty->vPosition + Vec3i(0, 0, pParty->sEyelevel), &_viewPitch, &_viewYaw, &rot_z);
+            Vec3i::rotate(64, pParty->_viewYaw, pParty->_viewPitch, pParty->pos + Vec3i(0, 0, pParty->eyeLevel), &_viewPitch, &_viewYaw, &rot_z);
             SpriteObject::dropItemAt(SPRITE_SPELL_FIRE_FIREBALL_IMPACT, {_viewPitch, _viewYaw, rot_z}, 0);
             if (pParty->activeCharacter().CanAct()) {
                 pParty->activeCharacter().playReaction(SPEECH_POTION_EXPLODE);

@@ -124,9 +124,9 @@ void Engine::Draw() {
 
     pCamera3D->_viewPitch = pParty->_viewPitch;
     pCamera3D->_viewYaw = pParty->_viewYaw;
-    pCamera3D->vCameraPos.x = pParty->vPosition.x - pParty->_yawGranularity * cosf(2 * pi_double * pParty->_viewYaw / 2048.0);
-    pCamera3D->vCameraPos.y = pParty->vPosition.y - pParty->_yawGranularity * sinf(2 * pi_double * pParty->_viewYaw / 2048.0);
-    pCamera3D->vCameraPos.z = pParty->vPosition.z + pParty->sEyelevel;  // 193, but real 353
+    pCamera3D->vCameraPos.x = pParty->pos.x - pParty->_yawGranularity * cosf(2 * pi_double * pParty->_viewYaw / 2048.0);
+    pCamera3D->vCameraPos.y = pParty->pos.y - pParty->_yawGranularity * sinf(2 * pi_double * pParty->_viewYaw / 2048.0);
+    pCamera3D->vCameraPos.z = pParty->pos.z + pParty->eyeLevel;  // 193, but real 353
 
     // pIndoorCamera->Initialize2();
     pCamera3D->CalculateRotations(pParty->_viewYaw, pParty->_viewPitch);
@@ -141,18 +141,18 @@ void Engine::Draw() {
         render->DrawBillboards_And_MaybeRenderSpecialEffects_And_EndScene();
         }*/
     } else {
-        if (pParty->vPosition != pParty->vPrevPosition ||
+        if (pParty->pos != pParty->lastPos ||
             pParty->_viewYaw != pParty->_viewPrevYaw ||
             pParty->_viewPitch != pParty->_viewPrevPitch ||
-            pParty->sEyelevel != pParty->sPrevEyelevel)
+            pParty->eyeLevel != pParty->lastEyeLevel)
             pParty->uFlags |= PARTY_FLAGS_1_ForceRedraw;
 
-        pParty->vPrevPosition = pParty->vPosition;
+        pParty->lastPos = pParty->pos;
         // v0 = &render;
         pParty->_viewPrevYaw = pParty->_viewYaw;
         pParty->_viewPrevPitch = pParty->_viewPitch;
 
-        pParty->sPrevEyelevel = pParty->sEyelevel;
+        pParty->lastEyeLevel = pParty->eyeLevel;
         render->BeginScene3D();
 
         // if ( !render->pRenderD3D )
@@ -267,7 +267,7 @@ void Engine::DrawGUI() {
 
         int debug_info_offset = 0;
         pPrimaryWindow->DrawText(pFontArrus, {16, debug_info_offset + 16}, colorTable.White,
-                                 fmt::format("Party position:         {} {} {}", pParty->vPosition.x, pParty->vPosition.y, pParty->vPosition.z));
+                                 fmt::format("Party position:         {} {} {}", pParty->pos.x, pParty->pos.y, pParty->pos.z));
 
         if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
             debug_info_offset += 16;
@@ -283,12 +283,12 @@ void Engine::DrawGUI() {
         } else if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
             uint uFaceID;
             int sector_id = pBLVRenderParams->uPartySectorID;
-            int floor_level = BLV_GetFloorLevel(pParty->vPosition/* + Vec3i(0,0,40) */, sector_id, &uFaceID);
+            int floor_level = BLV_GetFloorLevel(pParty->pos/* + Vec3i(0,0,40) */, sector_id, &uFaceID);
             floor_level_str = fmt::format("BLV_GetFloorLevel: {}   face_id {}\n", floor_level, uFaceID);
         } else if (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR) {
             bool on_water = false;
             int bmodel_pid;
-            int floor_level = ODM_GetFloorLevel(pParty->vPosition, 0, &on_water, &bmodel_pid, false);
+            int floor_level = ODM_GetFloorLevel(pParty->pos, 0, &on_water, &bmodel_pid, false);
             floor_level_str = fmt::format(
                 "ODM_GetFloorLevel: {}   on_water: {}  on: {}\n",
                 floor_level, on_water ? "true" : "false",
@@ -762,9 +762,9 @@ void DoPrepareWorld(bool bLoading, int _1_fullscreen_loading_2_box) {
         // spawning grounds & walls of mist - no loot & exp from monsters
 
         for (uint i = 0; i < pActors.size(); ++i) {
-            pActors[i].pMonsterInfo.uTreasureType = 0;
-            pActors[i].pMonsterInfo.uTreasureDiceRolls = 0;
-            pActors[i].pMonsterInfo.uExp = 0;
+            pActors[i].monsterInfo.uTreasureType = 0;
+            pActors[i].monsterInfo.uTreasureDiceRolls = 0;
+            pActors[i].monsterInfo.uExp = 0;
         }
     }
     bDialogueUI_InitializeActor_NPC_ID = 0;
@@ -830,9 +830,9 @@ bool Engine::MM7_Initialize() {
     pParty = new Party();
 
     pParty->pHirelings.fill(NPCData());
-    pParty->uDefaultEyelevel = pParty->sEyelevel = engine->config->gameplay.PartyEyeLevel.value();
-    pParty->uDefaultPartyHeight = pParty->uPartyHeight = engine->config->gameplay.PartyHeight.value();
-    pParty->uWalkSpeed = engine->config->gameplay.PartyWalkSpeed.value();
+    pParty->defaultEyeLevel = pParty->eyeLevel = engine->config->gameplay.PartyEyeLevel.value();
+    pParty->defaultHeight = pParty->height = engine->config->gameplay.PartyHeight.value();
+    pParty->walkSpeed = engine->config->gameplay.PartyWalkSpeed.value();
 
     _messageQueue = std::make_unique<GUIMessageQueue>();
 
@@ -1133,32 +1133,32 @@ void Engine::_461103_load_level_sub() {
         //{
         // v3 = pActors[i].pMonsterInfo.uID;
         v17 = 0;
-        if (pActors[i].pMonsterInfo.uID >= 115 &&
-                pActors[i].pMonsterInfo.uID <= 186 ||
-            pActors[i].pMonsterInfo.uID >= 232 &&
-                pActors[i].pMonsterInfo.uID <= 249)
+        if (pActors[i].monsterInfo.uID >= 115 &&
+            pActors[i].monsterInfo.uID <= 186 ||
+            pActors[i].monsterInfo.uID >= 232 &&
+            pActors[i].monsterInfo.uID <= 249)
             v17 = 1;
         // v1 = 0;
-        v4 = (pActors[i].pMonsterInfo.uID - 1) % 3;
+        v4 = (pActors[i].monsterInfo.uID - 1) % 3;
         if (2 == v4) {
-            if (pActors[i].sNPC_ID && pActors[i].sNPC_ID < 5000) continue;
+            if (pActors[i].npcId && pActors[i].npcId < 5000) continue;
         } else {
             if (v4 != 1) {
-                if (v4 == 0 && pActors[i].sNPC_ID == 0) pActors[i].sNPC_ID = 0;
+                if (v4 == 0 && pActors[i].npcId == 0) pActors[i].npcId = 0;
                 continue;
             }
         }
-        if (pActors[i].sNPC_ID > 0 && pActors[i].sNPC_ID < 5000) continue;
+        if (pActors[i].npcId > 0 && pActors[i].npcId < 5000) continue;
         if (v17) {
             pNPCStats->InitializeAdditionalNPCs(
                 &pNPCStats->pAdditionalNPC[pNPCStats->uNewlNPCBufPos],
-                pActors[i].pMonsterInfo.uID, 0, v19);
+                pActors[i].monsterInfo.uID, 0, v19);
             v14 = (unsigned short)pNPCStats->uNewlNPCBufPos + 5000;
             ++pNPCStats->uNewlNPCBufPos;
-            pActors[i].sNPC_ID = v14;
+            pActors[i].npcId = v14;
             continue;
         }
-        pActors[i].sNPC_ID = 0;
+        pActors[i].npcId = 0;
         // ++v15;
         // v2 += 836;
         //}
@@ -1177,11 +1177,11 @@ void Engine::_461103_load_level_sub() {
         // do
         //{
         for (v8 = 0; v8 < v6; ++v8) {
-            if (v21[v8] == pActors[i].pMonsterInfo.uID - 1) break;
+            if (v21[v8] == pActors[i].monsterInfo.uID - 1) break;
         }
 
         if (v8 == v6) {
-            v21[v6++] = pActors[i].pMonsterInfo.uID - 1;
+            v21[v6++] = pActors[i].monsterInfo.uID - 1;
             v20 = v6;
             if (v6 == 16) break;
         }
@@ -1733,9 +1733,9 @@ void RegeneratePartyHealthMana() {
                 size_t numberOfActorsAffected = pParty->immolationAffectedActors(actorsAffectedByImmolation, 100, 307);
                 for (size_t idx = 0; idx < numberOfActorsAffected; ++idx) {
                     int actorID = actorsAffectedByImmolation[idx];
-                    spellSprite.vPosition.x = pActors[actorID].vPosition.x;
-                    spellSprite.vPosition.y = pActors[actorID].vPosition.y;
-                    spellSprite.vPosition.z = pActors[actorID].vPosition.z;
+                    spellSprite.vPosition.x = pActors[actorID].pos.x;
+                    spellSprite.vPosition.y = pActors[actorID].pos.y;
+                    spellSprite.vPosition.z = pActors[actorID].pos.z;
                     spellSprite.spell_target_pid = PID(OBJECT_Actor, actorID);
                     Actor::DamageMonsterFromParty(PID(OBJECT_Item, spellSprite.Create(0, 0, 0, 0)), actorID, &cords);
                 }
