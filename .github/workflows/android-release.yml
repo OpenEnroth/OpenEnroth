@@ -45,6 +45,9 @@ jobs:
           java-version: 17
 
     - name: Build the app
+      run: ./gradlew build --scan
+
+    - name: Build the app
       run: ./gradlew assembleDebug
 
     - name: Upload apk
