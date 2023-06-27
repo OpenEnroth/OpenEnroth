@@ -42,6 +42,7 @@ jobs:
       working-directory: openenroth/jni/FFmpeg
       run: |
         ./build.sh
+        cat ffbuild/config.log
 
     - name: Build the app
       run: ./gradlew assembleDebug
