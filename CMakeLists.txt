@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.20.4 FATAL_ERROR)
 
 if(APPLE)
     set (CMAKE_OSX_DEPLOYMENT_TARGET "10.9" CACHE STRING "Minimum OS X deployment version" FORCE)
-    set (CMAKE_OSX_ARCHITECTURES "i386;x86_64" CACHE STRING "Architectures" FORCE)
+    set (CMAKE_OSX_ARCHITECTURES "x86_64" CACHE STRING "Architectures" FORCE)
 endif()
 
 project("OpenEnroth")
