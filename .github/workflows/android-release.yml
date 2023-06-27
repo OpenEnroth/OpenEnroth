@@ -1,0 +1,107 @@
+name: Android Release Build
+
+on:
+  schedule:
+    # schedule build every night
+    - cron: "0 0 * * *"
+  workflow_dispatch:
+  push:
+    tags:
+      - '*'
+
+env:
+  TAG_NAME: "nightly"
+  ANDROID_SIGNING_KEY: '${{ secrets.ANDROID_SIGNING_KEY }}'
+    
+jobs:
+  build_linux:
+    runs-on: ubuntu-22.04
+    strategy:
+      fail-fast: false
+      matrix:
+        job:
+          - {
+              arch: x86_64,
+              target: aarch64-linux-android,
+              os: ubuntu-22.04,
+              extra-build-features: "",
+            }
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+      with:
+        submodules: 'recursive'
+
+    - name: Install dependencies
+      run: |
+        if [ "${{ matrix.architecture }}" = "x86" ]; then
+          sudo dpkg --add-architecture i386
+        fi
+        sudo apt-get update
+        if [ "${{ matrix.architecture }}" = "x86" ]; then
+          sudo apt-get install -y gcc-12-multilib g++-12-multilib
+          # missing dependency workaround
+          sudo apt-get install -y libgcc-s1:i386 libstdc++6:i386 libatomic1:i386
+          sudo apt-get install -y libavcodec58:i386 libavformat58:i386 libgomp1:i386
+          sudo apt-get install -f libswresample3:i386
+          # -
+          sudo apt-get install -y libglu1-mesa-dev:i386 zlib1g-dev:i386
+          sudo apt-get install -y libavformat-dev:i386 libavcodec-dev:i386 libswscale-dev:i386
+          sudo apt-get install -y libopenal-dev:i386
+          sudo apt-get install -y libsdl2-dev:i386
+        fi
+        if [ "${{ matrix.architecture }}" = "x64" ]; then
+          sudo apt-get install -y gcc-12 g++-12
+          sudo apt-get install -y libglu1-mesa-dev zlib1g-dev
+          sudo apt-get install -y libavformat-dev libavcodec-dev libswscale-dev
+          sudo apt-get install -y libopenal-dev
+          sudo apt-get install -y libsdl2-dev
+        fi
+
+    - name: Build
+      working-directory: OpenEnroth_Android
+      run: |
+        make -j$(nproc)
+
+    - name: Tests
+      working-directory: build
+      run: |
+        make UnitTest
+
+      - uses: r0adkll/sign-android-release@v1
+        name: Sign app APK
+        if: env.ANDROID_SIGNING_KEY != null
+        id: sign-rustdesk
+        with:
+          releaseDirectory: ./signed-apk
+          signingKeyBase64: ${{ secrets.ANDROID_SIGNING_KEY }}
+          alias: ${{ secrets.ANDROID_ALIAS }}
+          keyStorePassword: ${{ secrets.ANDROID_KEY_STORE_PASSWORD }}
+          keyPassword: ${{ secrets.ANDROID_KEY_PASSWORD }}
+
+      - name: Upload Artifacts
+        if: env.ANDROID_SIGNING_KEY != null
+        uses: actions/upload-artifact@master
+        with:
+          name: rustdesk-${{ env.VERSION }}-${{ matrix.job.target }}-release-signed.apk
+          path: ${{steps.sign-rustdesk.outputs.signedReleaseFile}}
+
+      - name: Publish signed apk package
+        if: env.ANDROID_SIGNING_KEY != null
+        uses: softprops/action-gh-release@v1
+        with:
+          prerelease: true
+          tag_name: ${{ env.TAG_NAME }}
+          files: |
+            ${{steps.sign-rustdesk.outputs.signedReleaseFile}}
+      - name: Publish unsigned apk package
+        if: env.ANDROID_SIGNING_KEY == null
+        uses: softprops/action-gh-release@v1
+        with:
+          prerelease: true
+          tag_name: ${{ env.TAG_NAME }}
+          files: |
+            signed-apk/rustdesk-${{ env.VERSION }}-${{ matrix.job.target }}-release.apk
+        
+        
+        
