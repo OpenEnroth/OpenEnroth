@@ -1,0 +1,65 @@
+name: Android Release Build
+
+on:
+  pull_request:
+  push:
+  release:
+    types: [published]
+
+env:
+  TAG_NAME: "nightly"
+    
+jobs:
+  build_linux:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        job:
+          - {
+              arch: x86_64,
+              target: aarch64-linux-android,
+              os: ubuntu-22.04,
+              extra-build-features: "",
+            }
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+      with:
+        repository: botanicvelious/OpenEnroth_Android # OpenEnroth/OpenEnroth_Android
+        submodules: 'recursive'
+
+    - name: Install dependencies
+      run: |
+        sudo apt-get install yasm
+
+    - uses: actions/setup-java@v2
+      with:
+        distribution: temurin
+        java-version: 17
+        cache: gradle
+
+    - name: Build ffmpeg
+      working-directory: openenroth/jni/FFmpeg
+      run: |
+        ./build.sh
+
+    - name: Build the app
+      run: ./gradlew assembleDebug
+
+    - name: Upload apk
+      uses: actions/upload-artifact@v2
+      with:
+        name: debug apk
+        path: app/build/outputs/apk/debug/app-debug.apk
+          
+    - name: Publish unsigned apk package
+      uses: softprops/action-gh-release@v1
+      with:
+        prerelease: true
+        tag_name: ${{ env.TAG_NAME }}
+        files: |
+          app/build/outputs/apk/debug/app-debug.apk
+        
+        
+        
