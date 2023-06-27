@@ -58,9 +58,11 @@ jobs:
           dist/**
           
     - name: Zip Folder For Release
+      if: success() || failure()	    
       run: Compress-Archive -Path dist -DestinationPath ./Windows_${{ env.TAG_NAME }}_${{ matrix.configuration }}_${{ matrix.architecture }}.zip
 
     - name: Publish Release
+      if: success() || failure()	    
       uses: softprops/action-gh-release@v1
       with:
         prerelease: true
