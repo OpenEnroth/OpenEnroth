@@ -8,6 +8,9 @@ on:
   release:
     types: [published]
 
+env:
+  TAG_NAME: "nightly"
+
 jobs:
   build_windows:
     runs-on: windows-2022
@@ -49,13 +52,6 @@ jobs:
         copy build\OpenEnroth.exe dist\ /Y
         copy build\*.dll dist\ /Y
         xcopy resources dist\ /E/H/C/I
-
-    - name: Upload artifact
-      uses: actions/upload-artifact@v3
-      with:
-        name: OpenEnroth (Windows, ${{ matrix.configuration }}, ${{ matrix.architecture }})
-        path: |
-          dist/**
           
     - name: Zip Folder For Release
       if: success() || failure()	    
