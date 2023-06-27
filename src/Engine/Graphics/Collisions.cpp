@@ -48,8 +48,6 @@ static bool CollideSphereWithFace(BLVFace *face, const Vec3f &pos, float radius,
 
     float dir_normal_projection = dot(dir, face->facePlane.normal);
     assert(dir_normal_projection < 0.01f); // Checked by the caller, we should be moving into the face or sideways.
-    if (std::abs(dir_normal_projection) < 0.01f)
-        return false; // Going sideways, no collision.
 
     float center_face_distance = face->facePlane.signedDistanceTo(pos);
     assert(center_face_distance > 0); // Checked by the caller, we should be in front of the face, not behind it.
@@ -58,11 +56,15 @@ static bool CollideSphereWithFace(BLVFace *face, const Vec3f &pos, float radius,
     Vec3f projected_pos = pos;
 
     if (center_face_distance < radius) {
-        // Already colliding, can't go any further.
+        // Already colliding.
         move_distance = 0;
         projected_pos += center_face_distance * -face->facePlane.normal;
     } else {
-        // Can move along the dir vector until the sphere touches the face.
+        // Moving sideways & not already colliding? No collision.
+        if (std::abs(dir_normal_projection) < 0.01f)
+            return false;
+
+        // Otherwise can move along the dir vector until the sphere touches the face.
         move_distance = (center_face_distance - radius) / -dir_normal_projection;
         assert(move_distance >= 0);
 
@@ -339,7 +341,7 @@ void CollideOutdoorWithModels(bool ignore_ethereal) {
             face.uAttributes = mface.uAttributes;
             face.pBounding = mface.pBoundingBox;
             face.zCalc = mface.zCalc;
-            face.uPolygonType = (PolygonType)mface.uPolygonType;
+            face.uPolygonType = mface.uPolygonType;
             face.uNumVertices = mface.uNumVertices;
             face.resource = mface.resource;
             face.pVertexIDs = mface.pVertexIDs.data();

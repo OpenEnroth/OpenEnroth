@@ -1365,6 +1365,14 @@ GAME_TEST(Issues, Issue929) {
 
 // 1000
 
+GAME_TEST(Prs, Pr1005) {
+    // Testing collisions - stairs should work. In this test case the party is walking onto a wooden paving in Tatalia.
+    test->playTraceFromTestData("pr_1005.mm7", "pr_1005.json", [&] {
+        EXPECT_EQ(pParty->pos.z, 154);
+    });
+    EXPECT_EQ(pParty->pos.z, 193); // Paving is at z=192, party z should be this value +1.
+}
+
 GAME_TEST(Issues, Issue1020) {
     // Test finishing the scavenger hunt quest. The game should not crash when there is no dialogue options.
     test->playTraceFromTestData("issue_1020.mm7", "issue_1020.json"); // Should not assert
