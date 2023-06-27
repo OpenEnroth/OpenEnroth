@@ -83,6 +83,7 @@ class GUIWindow_AlchemyShop : public GUIWindow_MagicAlchemyShop {
     virtual ~GUIWindow_AlchemyShop() {}
 
     virtual std::vector<DIALOGUE_TYPE> listDialogueOptions(DIALOGUE_TYPE option) override;
+    virtual void playHouseGoodbyeSpeech() override;
 
  private:
     virtual void generateShopItems(bool isSpecial) override;

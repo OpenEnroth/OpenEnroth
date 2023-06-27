@@ -120,5 +120,3 @@ extern std::array<GUIButton*, 4> pCreationUI_BtnPressRight2;
 extern std::array<GUIButton*, 4> pCreationUI_BtnPressLeft2;
 extern std::array<GUIButton*, 4> pCreationUI_BtnPressLeft;
 extern std::array<GUIButton*, 4> pCreationUI_BtnPressRight;
-
-void CreateShopDialogueButtonAtRow(int row_index, DIALOGUE_TYPE type);

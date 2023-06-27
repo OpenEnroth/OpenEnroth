@@ -23,7 +23,7 @@ void BackToHouseMenu();
 /**
  * @offset 0x4BCACC
  */
-void onSelectShopDialogueOption(DIALOGUE_TYPE option);
+void onSelectHouseDialogueOption(DIALOGUE_TYPE option);
 
 /**
  * @offset 0x44606A

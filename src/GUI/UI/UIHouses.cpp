@@ -448,7 +448,7 @@ void prepareHouse(HOUSE_ID house) {
     }
 }
 
-void onSelectShopDialogueOption(DIALOGUE_TYPE option) {
+void onSelectHouseDialogueOption(DIALOGUE_TYPE option) {
     if (!pDialogueWindow || !pDialogueWindow->pNumPresenceButton) {
         return;
     }
@@ -965,7 +965,7 @@ void GUIWindow_House::initializeDialog() {
 
     if (optionList.size()) {
         for (int i = 0; i < optionList.size(); i++) {
-            CreateShopDialogueButtonAtRow(i, optionList[i]);
+            pDialogueWindow->CreateButton({480, 146 + 30 * i}, {140, 30}, 1, 0, UIMSG_SelectHouseDialogueOption, optionList[i], Io::InputAction::Invalid, "");
         }
         pDialogueWindow->_41D08F_set_keyboard_control_group(optionList.size(), 1, 0, 2);
     }
