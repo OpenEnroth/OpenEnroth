@@ -1,4 +1,11 @@
 cmake_minimum_required(VERSION 3.20.4 FATAL_ERROR)
+
+# Universal binary with 10.4 compatibility 
+if(APPLE)
+	set(CMAKE_OSX_ARCHITECTURES "ppc;i386;x86_64;arm64")
+	set(CMAKE_OSX_DEPLOYMENT_TARGET 10.4)
+endif(APPLE)
+
 project("OpenEnroth")
 add_compile_definitions(PACKAGE_BUGREPORT="https://github.com/OpenEnroth/OpenEnroth/issues")
 
