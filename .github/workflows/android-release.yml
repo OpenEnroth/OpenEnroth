@@ -40,7 +40,7 @@ jobs:
 
     - name: Build ffmpeg
       working-directory: openenroth/jni/FFmpeg
-      run: sh ./openenroth/jni/FFmpeg/build.sh
+      run: ls
 
     - name: Build the app
       run: ./gradlew assembleDebug
