@@ -46,8 +46,8 @@ jobs:
           java-version: 17
 
     - name: Build the app
+      working-directory: openenroth
       run: ./gradlew assembleDebug
-
 
     - name: Upload apk
       uses: actions/upload-artifact@v2
