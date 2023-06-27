@@ -44,6 +44,7 @@ jobs:
         ./build.sh
         
     - name: Build ffmpeg
+      if: always()
       working-directory: openenroth/jni/FFmpeg
       run: |
         cat ffbuild/config.log
