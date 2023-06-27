@@ -861,6 +861,8 @@ void GUIWindow_Shop::playHouseGoodbyeSpeech() {
     }
 }
 
+// Alchemy shop is special. Instead of polite and rude goodbye dialogue it have
+// polite and enthusiastic ones.
 void GUIWindow_AlchemyShop::playHouseGoodbyeSpeech() {
     if (pParty->PartyTimes.shopBanTimes[houseId()] <= pParty->GetPlayingTime()) {
         playHouseSound(houseId(), _transactionPerformed ? HOUSE_SOUND_ALCHEMY_SHOP_GOODBYE_BOUGHT : HOUSE_SOUND_ALCHEMY_SHOP_GOODBYE_REGULAR);
