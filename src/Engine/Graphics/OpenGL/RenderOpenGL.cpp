@@ -1066,11 +1066,11 @@ std::vector<Actor*> RenderOpenGL::getActorsInViewport(int pDepth) {
         if (PID_TYPE(pid) == OBJECT_Actor) {
             if (pBillboardRenderList[renderId].screen_space_z <= pDepth) {
                 int id = PID_ID(pid);
-                if (pActors[id].uAIState != Dead &&
-                    pActors[id].uAIState != Dying &&
-                    pActors[id].uAIState != Removed &&
-                    pActors[id].uAIState != Disabled &&
-                    pActors[id].uAIState != Summoned) {
+                if (pActors[id].aiState != Dead &&
+                    pActors[id].aiState != Dying &&
+                    pActors[id].aiState != Removed &&
+                    pActors[id].aiState != Disabled &&
+                    pActors[id].aiState != Summoned) {
                     if (vis->DoesRayIntersectBillboard(static_cast<float>(pDepth), i)) {
                         // Limit for 100 actors was removed
                         foundActors.push_back(&pActors[id]);
@@ -1802,9 +1802,9 @@ void RenderOpenGL::DrawOutdoorTerrain() {
     glUniform1f(glGetUniformLocation(terrainshader.ID, "fog.fogend"), GLfloat(fogend));
 
     GLfloat camera[3] {};
-    camera[0] = (float)(pParty->vPosition.x - pParty->_yawGranularity * cosf(2 * pi_double * pParty->_viewYaw / 2048.0));
-    camera[1] = (float)(pParty->vPosition.y - pParty->_yawGranularity * sinf(2 * pi_double * pParty->_viewYaw / 2048.0));
-    camera[2] = (float)(pParty->vPosition.z + pParty->sEyelevel);
+    camera[0] = (float)(pParty->pos.x - pParty->_yawGranularity * cosf(2 * pi_double * pParty->_viewYaw / 2048.0));
+    camera[1] = (float)(pParty->pos.y - pParty->_yawGranularity * sinf(2 * pi_double * pParty->_viewYaw / 2048.0));
+    camera[2] = (float)(pParty->pos.z + pParty->eyeLevel);
     glUniform3fv(glGetUniformLocation(terrainshader.ID, "CameraPos"), 1, &camera[0]);
 
 
@@ -3671,9 +3671,9 @@ void RenderOpenGL::DrawOutdoorBuildings() {
     glUniform1f(glGetUniformLocation(outbuildshader.ID, "fog.fogend"), GLfloat(fogend));
 
     GLfloat camera[3] {};
-    camera[0] = (float)(pParty->vPosition.x - pParty->_yawGranularity * cosf(2 * pi_double * pParty->_viewYaw / 2048.0f));
-    camera[1] = (float)(pParty->vPosition.y - pParty->_yawGranularity * sinf(2 * pi_double * pParty->_viewYaw / 2048.0f));
-    camera[2] = (float)(pParty->vPosition.z + pParty->sEyelevel);
+    camera[0] = (float)(pParty->pos.x - pParty->_yawGranularity * cosf(2 * pi_double * pParty->_viewYaw / 2048.0f));
+    camera[1] = (float)(pParty->pos.y - pParty->_yawGranularity * sinf(2 * pi_double * pParty->_viewYaw / 2048.0f));
+    camera[2] = (float)(pParty->pos.z + pParty->eyeLevel);
     glUniform3fv(glGetUniformLocation(outbuildshader.ID, "CameraPos"), 1, &camera[0]);
 
 
@@ -4357,9 +4357,9 @@ void RenderOpenGL::DrawIndoorFaces() {
 
 
         GLfloat camera[3] {};
-        camera[0] = (float)(pParty->vPosition.x - pParty->_yawGranularity * cosf(2 * pi_double * pParty->_viewYaw / 2048.0f));
-        camera[1] = (float)(pParty->vPosition.y - pParty->_yawGranularity * sinf(2 * pi_double * pParty->_viewYaw / 2048.0f));
-        camera[2] = (float)(pParty->vPosition.z + pParty->sEyelevel);
+        camera[0] = (float)(pParty->pos.x - pParty->_yawGranularity * cosf(2 * pi_double * pParty->_viewYaw / 2048.0f));
+        camera[1] = (float)(pParty->pos.y - pParty->_yawGranularity * sinf(2 * pi_double * pParty->_viewYaw / 2048.0f));
+        camera[2] = (float)(pParty->pos.z + pParty->eyeLevel);
         glUniform3fv(glGetUniformLocation(bspshader.ID, "CameraPos"), 1, &camera[0]);
 
 

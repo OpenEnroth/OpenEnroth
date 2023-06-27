@@ -104,8 +104,8 @@ void PrepareDrawLists_BLV() {
 
 //----- (004407D9) --------------------------------------------------------
 void BLVRenderParams::Reset() {
-    this->uPartySectorID = pIndoor->GetSector(pParty->vPosition);
-    this->uPartyEyeSectorID = pIndoor->GetSector(pParty->vPosition + Vec3i(0, 0, pParty->sEyelevel));
+    this->uPartySectorID = pIndoor->GetSector(pParty->pos);
+    this->uPartyEyeSectorID = pIndoor->GetSector(pParty->pos + Vec3i(0, 0, pParty->eyeLevel));
 
     if (!this->uPartySectorID) {
         __debugbreak();  // shouldnt happen, please provide savegame
@@ -692,33 +692,33 @@ void UpdateActors_BLV() {
         return;
 
     for (Actor &actor : pActors) {
-        if (actor.uAIState == Removed || actor.uAIState == Disabled || actor.uAIState == Summoned || actor.uMovementSpeed == 0)
+        if (actor.aiState == Removed || actor.aiState == Disabled || actor.aiState == Summoned || actor.moveSpeed == 0)
             continue;
 
         unsigned int uFaceID;
-        unsigned int uSectorID = actor.uSectorID;
-        int floorZ = GetIndoorFloorZ(actor.vPosition, &uSectorID, &uFaceID);
-        actor.uSectorID = uSectorID;
+        unsigned int uSectorID = actor.sectorId;
+        int floorZ = GetIndoorFloorZ(actor.pos, &uSectorID, &uFaceID);
+        actor.sectorId = uSectorID;
 
         if (uSectorID == 0 || floorZ <= -30000)
             continue;
 
-        bool isFlying = actor.pMonsterInfo.uFlying;
+        bool isFlying = actor.monsterInfo.uFlying;
         if (!actor.CanAct())
             isFlying = false;
 
         bool isAboveGround = false;
-        if (actor.vPosition.z > floorZ + 1)
+        if (actor.pos.z > floorZ + 1)
             isAboveGround = true;
 
         // make bloodsplat when the ground is hit
         if (!actor.donebloodsplat) {
-            if (actor.uAIState == Dead || actor.uAIState == Dying) {
-                if (actor.vPosition.z < floorZ + 30) { // 30 to provide small error / rounding factor
-                    if (pMonsterStats->pInfos[actor.pMonsterInfo.uID].bBloodSplatOnDeath) {
+            if (actor.aiState == Dead || actor.aiState == Dying) {
+                if (actor.pos.z < floorZ + 30) { // 30 to provide small error / rounding factor
+                    if (pMonsterStats->pInfos[actor.monsterInfo.uID].bBloodSplatOnDeath) {
                         if (engine->config->graphics.BloodSplats.value()) {
-                            float splatRadius = actor.uActorRadius * engine->config->graphics.BloodSplatsMultiplier.value();
-                            decal_builder->AddBloodsplat(Vec3f(actor.vPosition.x, actor.vPosition.y, floorZ + 30), colorTable.Red, splatRadius);
+                            float splatRadius = actor.radius * engine->config->graphics.BloodSplatsMultiplier.value();
+                            decal_builder->AddBloodsplat(Vec3f(actor.pos.x, actor.pos.y, floorZ + 30), colorTable.Red, splatRadius);
                         }
                         actor.donebloodsplat = true;
                     }
@@ -726,17 +726,17 @@ void UpdateActors_BLV() {
             }
         }
 
-        if (actor.uCurrentActionAnimation == ANIM_Walking) {  // actor is moving
-            int moveSpeed = actor.uMovementSpeed;
+        if (actor.currentActionAnimation == ANIM_Walking) {  // actor is moving
+            int moveSpeed = actor.moveSpeed;
 
-            if (actor.pActorBuffs[ACTOR_BUFF_SLOWED].Active()) {
-                if (actor.pActorBuffs[ACTOR_BUFF_SLOWED].power)
-                    moveSpeed = actor.uMovementSpeed / actor.pActorBuffs[ACTOR_BUFF_SLOWED].power;
+            if (actor.buffs[ACTOR_BUFF_SLOWED].Active()) {
+                if (actor.buffs[ACTOR_BUFF_SLOWED].power)
+                    moveSpeed = actor.moveSpeed / actor.buffs[ACTOR_BUFF_SLOWED].power;
                 else
-                    moveSpeed = actor.uMovementSpeed / 2;
+                    moveSpeed = actor.moveSpeed / 2;
             }
 
-            if (actor.uAIState == Pursuing || actor.uAIState == Fleeing)
+            if (actor.aiState == Pursuing || actor.aiState == Fleeing)
                 moveSpeed *= 2;
 
             if (pParty->bTurnBasedModeOn && pTurnEngine->turn_stage == TE_WAIT)
@@ -745,41 +745,41 @@ void UpdateActors_BLV() {
             if (moveSpeed > 1000)
                 moveSpeed = 1000;
 
-            actor.vVelocity.x = TrigLUT.cos(actor.uYawAngle) * moveSpeed;
-            actor.vVelocity.y = TrigLUT.sin(actor.uYawAngle) * moveSpeed;
+            actor.speed.x = TrigLUT.cos(actor.yawAngle) * moveSpeed;
+            actor.speed.y = TrigLUT.sin(actor.yawAngle) * moveSpeed;
             if (isFlying)
-                actor.vVelocity.z = TrigLUT.sin(actor.uPitchAngle) * moveSpeed;
+                actor.speed.z = TrigLUT.sin(actor.pitchAngle) * moveSpeed;
         } else {
             // actor is not moving
             // fixpoint(55000) = 0.83923339843, appears to be velocity decay.
-            actor.vVelocity.x = fixpoint_mul(55000, actor.vVelocity.x);
-            actor.vVelocity.y = fixpoint_mul(55000, actor.vVelocity.y);
+            actor.speed.x = fixpoint_mul(55000, actor.speed.x);
+            actor.speed.y = fixpoint_mul(55000, actor.speed.y);
             if (isFlying)
-                actor.vVelocity.z = fixpoint_mul(55000, actor.vVelocity.z);
+                actor.speed.z = fixpoint_mul(55000, actor.speed.z);
         }
 
-        if (actor.vPosition.z <= floorZ) {
-            actor.vPosition.z = floorZ + 1;
+        if (actor.pos.z <= floorZ) {
+            actor.pos.z = floorZ + 1;
             if (pIndoor->pFaces[uFaceID].uPolygonType == POLYGON_Floor) {
-                if (actor.vVelocity.z < 0)
-                    actor.vVelocity.z = 0;
+                if (actor.speed.z < 0)
+                    actor.speed.z = 0;
             } else {
                 // fixpoint(45000) = 0.68664550781, no idea what the actual semantics here is.
                 if (pIndoor->pFaces[uFaceID].facePlane.normal.z < 0.68664550781f) // was 45000 fixpoint
-                    actor.vVelocity.z -= pEventTimer->uTimeElapsed * GetGravityStrength();
+                    actor.speed.z -= pEventTimer->uTimeElapsed * GetGravityStrength();
             }
         } else {
             if (isAboveGround && !isFlying)
-                actor.vVelocity.z += -8 * pEventTimer->uTimeElapsed * GetGravityStrength();
+                actor.speed.z += -8 * pEventTimer->uTimeElapsed * GetGravityStrength();
         }
 
-        if (actor.vVelocity.lengthSqr() >= 400) {
+        if (actor.speed.lengthSqr() >= 400) {
             ProcessActorCollisionsBLV(actor, isAboveGround, isFlying);
         } else {
-            actor.vVelocity = Vec3s(0, 0, 0);
+            actor.speed = Vec3s(0, 0, 0);
             if (pIndoor->pFaces[uFaceID].uAttributes & FACE_INDOOR_SKY) {
-                if (actor.uAIState == Dead)
-                    actor.uAIState = Removed;
+                if (actor.aiState == Dead)
+                    actor.aiState = Removed;
             }
         }
     }
@@ -920,10 +920,10 @@ void PrepareToLoadBLV(bool bLoading) {
     alertStatus = false;
 
     for (uint i = 0; i < pActors.size(); ++i) {
-        if (pActors[i].uAttributes & ACTOR_UNKNOW7) {
+        if (pActors[i].attributes & ACTOR_UNKNOW7) {
             if (!map_id) {
-                pActors[i].pMonsterInfo.field_3E = 19;
-                pActors[i].uAttributes |= ACTOR_UNKNOW11;
+                pActors[i].monsterInfo.field_3E = 19;
+                pActors[i].attributes |= ACTOR_UNKNOW11;
                 continue;
             }
             v28 = !alertStatus;
@@ -933,16 +933,16 @@ void PrepareToLoadBLV(bool bLoading) {
 
         if (!v28) {
             pActors[i].PrepareSprites(0);
-            pActors[i].pMonsterInfo.uHostilityType = MonsterInfo::Hostility_Friendly;
-            if (pActors[i].pMonsterInfo.field_3E != 11 &&
-                pActors[i].pMonsterInfo.field_3E != 19 &&
-                (!pActors[i].sCurrentHP || !pActors[i].pMonsterInfo.uHP)) {
-                pActors[i].pMonsterInfo.field_3E = 5;
+            pActors[i].monsterInfo.uHostilityType = MonsterInfo::Hostility_Friendly;
+            if (pActors[i].monsterInfo.field_3E != 11 &&
+                pActors[i].monsterInfo.field_3E != 19 &&
+                (!pActors[i].currentHP || !pActors[i].monsterInfo.uHP)) {
+                pActors[i].monsterInfo.field_3E = 5;
                 pActors[i].UpdateAnimation();
             }
         } else {
-            pActors[i].pMonsterInfo.field_3E = 19;
-            pActors[i].uAttributes |= ACTOR_UNKNOW11;
+            pActors[i].monsterInfo.field_3E = 19;
+            pActors[i].attributes |= ACTOR_UNKNOW11;
         }
     }
 
@@ -950,12 +950,12 @@ void PrepareToLoadBLV(bool bLoading) {
 
     // Party to start position
     Actor this_;
-    this_.pMonsterInfo.uID = 45;
+    this_.monsterInfo.uID = 45;
     this_.PrepareSprites(0);
     if (!bLoading) {
         pParty->_viewPitch = 0;
         pParty->_viewYaw = 0;
-        pParty->vPosition = Vec3i();
+        pParty->pos = Vec3i();
         pParty->speed = Vec3i();
         pParty->uFallStartZ = 0;
         TeleportToStartingPoint(uLevel_StartingPointType);
@@ -1373,9 +1373,9 @@ char DoInteractionWithTopmostZObject(int pid) {
         }
 
         case OBJECT_Actor:
-            if (pActors[id].uAIState == Dying || pActors[id].uAIState == Summoned)
+            if (pActors[id].aiState == Dying || pActors[id].aiState == Summoned)
                 return 1;
-            if (pActors[id].uAIState == Dead) {
+            if (pActors[id].aiState == Dead) {
                 pActors[id].LootActor();
             } else {
                 extern bool CanInteractWithActor(unsigned int id);
@@ -1466,22 +1466,22 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
 
     unsigned int sectorId = pBLVRenderParams->uPartySectorID;
     unsigned int faceId = -1;
-    int floor_z = GetIndoorFloorZ(pParty->vPosition + Vec3i(0, 0, 40), &sectorId, &faceId);
+    int floor_z = GetIndoorFloorZ(pParty->pos + Vec3i(0, 0, 40), &sectorId, &faceId);
 
     if (pParty->bFlying)  // disable flight
         pParty->bFlying = false;
 
     if (floor_z == -30000 || faceId == -1) {
-        floor_z = GetApproximateIndoorFloorZ(pParty->vPosition + Vec3i(0, 0, 40), &sectorId, &faceId);
+        floor_z = GetApproximateIndoorFloorZ(pParty->pos + Vec3i(0, 0, 40), &sectorId, &faceId);
         if (floor_z == -30000 || faceId == -1) {
             __debugbreak();  // level built with errors
-            pParty->vPosition = blv_prev_party_pos;
+            pParty->pos = blv_prev_party_pos;
             pParty->uFallStartZ = blv_prev_party_pos.z;
             return;
         }
     }
 
-    blv_prev_party_pos = pParty->vPosition;
+    blv_prev_party_pos = pParty->pos;
 
     int fall_start;
     if (pParty->FeatherFallActive() || pParty->wearsItemAnywhere(ITEM_ARTIFACT_LADYS_ESCORT)
@@ -1494,26 +1494,26 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
         fall_start = pParty->uFallStartZ;
     }
 
-    if (fall_start - pParty->vPosition.z > 512 && !bFeatherFall && pParty->vPosition.z <= floor_z + 1) {  // fall damage
+    if (fall_start - pParty->pos.z > 512 && !bFeatherFall && pParty->pos.z <= floor_z + 1) {  // fall damage
         if (pParty->uFlags & (PARTY_FLAGS_1_LANDING | PARTY_FLAGS_1_JUMPING)) {
             // flying was previously used to prevent fall damage from jump spell
             pParty->uFlags &= ~(PARTY_FLAGS_1_LANDING | PARTY_FLAGS_1_JUMPING);
         } else {
-            pParty->giveFallDamage(pParty->uFallStartZ - pParty->vPosition.z);
+            pParty->giveFallDamage(pParty->uFallStartZ - pParty->pos.z);
         }
     }
 
-    if (pParty->vPosition.z > floor_z + 1)
+    if (pParty->pos.z > floor_z + 1)
         isAboveGround = true;
 
-    if (pParty->vPosition.z - floor_z <= 32) {
-        pParty->uFallStartZ = pParty->vPosition.z;
+    if (pParty->pos.z - floor_z <= 32) {
+        pParty->uFallStartZ = pParty->pos.z;
         not_high_fall = true;
     }
 
     // party is below floor level?
-    if (pParty->vPosition.z <= floor_z + 1) {
-        pParty->vPosition.z = floor_z + 1;
+    if (pParty->pos.z <= floor_z + 1) {
+        pParty->pos.z = floor_z + 1;
         pParty->uFallStartZ = floor_z + 1;
 
         // not hovering & stepped onto a new face => activate potential pressure plate,
@@ -1572,38 +1572,38 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
                 break;
 
             case PARTY_StrafeLeft:
-                pParty->speed.x -= TrigLUT.sin(angle) * pParty->uWalkSpeed * fWalkSpeedMultiplier / 2;
-                pParty->speed.y += TrigLUT.cos(angle) * pParty->uWalkSpeed * fWalkSpeedMultiplier / 2;
+                pParty->speed.x -= TrigLUT.sin(angle) * pParty->walkSpeed * fWalkSpeedMultiplier / 2;
+                pParty->speed.y += TrigLUT.cos(angle) * pParty->walkSpeed * fWalkSpeedMultiplier / 2;
                 party_walking_flag = true;
                 break;
 
             case PARTY_StrafeRight:
-                pParty->speed.y -= TrigLUT.cos(angle) * pParty->uWalkSpeed * fWalkSpeedMultiplier / 2;
-                pParty->speed.x += TrigLUT.sin(angle) * pParty->uWalkSpeed * fWalkSpeedMultiplier / 2;
+                pParty->speed.y -= TrigLUT.cos(angle) * pParty->walkSpeed * fWalkSpeedMultiplier / 2;
+                pParty->speed.x += TrigLUT.sin(angle) * pParty->walkSpeed * fWalkSpeedMultiplier / 2;
                 party_walking_flag = true;
                 break;
 
             case PARTY_WalkForward:
-                pParty->speed.x += TrigLUT.cos(angle) * pParty->uWalkSpeed * fWalkSpeedMultiplier;
-                pParty->speed.y += TrigLUT.sin(angle) * pParty->uWalkSpeed * fWalkSpeedMultiplier;
+                pParty->speed.x += TrigLUT.cos(angle) * pParty->walkSpeed * fWalkSpeedMultiplier;
+                pParty->speed.y += TrigLUT.sin(angle) * pParty->walkSpeed * fWalkSpeedMultiplier;
                 party_walking_flag = true;
                 break;
 
             case PARTY_WalkBackward:
-                pParty->speed.x -= TrigLUT.cos(angle) * pParty->uWalkSpeed * fBackwardWalkSpeedMultiplier;
-                pParty->speed.y -= TrigLUT.sin(angle) * pParty->uWalkSpeed * fBackwardWalkSpeedMultiplier;
+                pParty->speed.x -= TrigLUT.cos(angle) * pParty->walkSpeed * fBackwardWalkSpeedMultiplier;
+                pParty->speed.y -= TrigLUT.sin(angle) * pParty->walkSpeed * fBackwardWalkSpeedMultiplier;
                 party_walking_flag = true;
                 break;
 
             case PARTY_RunForward:
-                pParty->speed.x += TrigLUT.cos(angle) * 2 * pParty->uWalkSpeed * fWalkSpeedMultiplier;
-                pParty->speed.y += TrigLUT.sin(angle) * 2 * pParty->uWalkSpeed * fWalkSpeedMultiplier;
+                pParty->speed.x += TrigLUT.cos(angle) * 2 * pParty->walkSpeed * fWalkSpeedMultiplier;
+                pParty->speed.y += TrigLUT.sin(angle) * 2 * pParty->walkSpeed * fWalkSpeedMultiplier;
                 party_running_flag = true;
                 break;
 
             case PARTY_RunBackward:
-                pParty->speed.x -= TrigLUT.cos(angle) * pParty->uWalkSpeed * fBackwardWalkSpeedMultiplier;
-                pParty->speed.y -= TrigLUT.sin(angle) * pParty->uWalkSpeed * fBackwardWalkSpeedMultiplier;
+                pParty->speed.x -= TrigLUT.cos(angle) * pParty->walkSpeed * fBackwardWalkSpeedMultiplier;
+                pParty->speed.y -= TrigLUT.sin(angle) * pParty->walkSpeed * fBackwardWalkSpeedMultiplier;
                 party_walking_flag = true;
                 break;
 
@@ -1628,7 +1628,7 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
                 break;
 
             case PARTY_Jump:
-                if ((!isAboveGround || pParty->vPosition.z <= floor_z + 6 && pParty->speed.z <= 0) && pParty->jump_strength) {
+                if ((!isAboveGround || pParty->pos.z <= floor_z + 6 && pParty->speed.z <= 0) && pParty->jump_strength) {
                     isAboveGround = true;
                     pParty->speed.z += pParty->jump_strength * 96;
                 }
@@ -1658,7 +1658,7 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
     }
 
     if (!isAboveGround || pParty->speed.z > 0)
-        pParty->uFallStartZ = pParty->vPosition.z;
+        pParty->uFallStartZ = pParty->pos.z;
 
     // If party movement delta is lower then this number then the party remains stationary.
     int64_t elapsed_time_bounded = std::min(pEventTimer->uTimeElapsed, 10000);
@@ -1669,7 +1669,7 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
         pParty->speed.y = 0;
     }
 
-    Vec3i oldPos = pParty->vPosition;
+    Vec3i oldPos = pParty->pos;
 
     collision_state.ignored_face_id = -1;
     collision_state.total_move_distance = 0;
@@ -1677,8 +1677,8 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
     collision_state.radius_hi = pParty->radius / 2;
     collision_state.check_hi = true;
     for (uint i = 0; i < 100; i++) {
-        collision_state.position_hi = pParty->vPosition.toFloat() + Vec3f(0, 0, pParty->uPartyHeight - 32 + 1);
-        collision_state.position_lo = pParty->vPosition.toFloat() + Vec3f(0, 0, collision_state.radius_lo + 1);
+        collision_state.position_hi = pParty->pos.toFloat() + Vec3f(0, 0, pParty->height - 32 + 1);
+        collision_state.position_lo = pParty->pos.toFloat() + Vec3f(0, 0, collision_state.radius_lo + 1);
         collision_state.velocity = pParty->speed.toFloat();
 
         collision_state.uSectorID = sectorId;
@@ -1698,21 +1698,21 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
                 break; // No portal collisions => can break.
         }
 
-        Vec3i adjusted_pos = pParty->vPosition + (collision_state.adjusted_move_distance * collision_state.direction).toInt();
+        Vec3i adjusted_pos = pParty->pos + (collision_state.adjusted_move_distance * collision_state.direction).toInt();
         int adjusted_floor_z = GetIndoorFloorZ(adjusted_pos + Vec3i(0, 0, 40), &collision_state.uSectorID, &faceId);
-        if (adjusted_floor_z == -30000 || adjusted_floor_z - pParty->vPosition.z > 128)
+        if (adjusted_floor_z == -30000 || adjusted_floor_z - pParty->pos.z > 128)
             return; // TODO: whaaa?
 
         if (collision_state.adjusted_move_distance >= collision_state.move_distance) {
-            pParty->vPosition = (collision_state.new_position_lo - Vec3f(0, 0, collision_state.radius_lo + 1)).toIntTrunc();
+            pParty->pos = (collision_state.new_position_lo - Vec3f(0, 0, collision_state.radius_lo + 1)).toIntTrunc();
             break; // And we're done with collisions.
         }
 
         collision_state.total_move_distance += collision_state.adjusted_move_distance;
 
-        pParty->vPosition.x += collision_state.adjusted_move_distance * collision_state.direction.x;
-        pParty->vPosition.y += collision_state.adjusted_move_distance * collision_state.direction.y;
-        int new_party_z_tmp = pParty->vPosition.z +
+        pParty->pos.x += collision_state.adjusted_move_distance * collision_state.direction.x;
+        pParty->pos.y += collision_state.adjusted_move_distance * collision_state.direction.y;
+        int new_party_z_tmp = pParty->pos.z +
             collision_state.adjusted_move_distance * collision_state.direction.z;
 
         if (PID_TYPE(collision_state.pid) == OBJECT_Actor) {
@@ -1723,8 +1723,8 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
         if (PID_TYPE(collision_state.pid) == OBJECT_Decoration) {
             // Bounce back from a decoration & do another round of collision checks.
             // This way the party can "slide" along & past a decoration.
-            int angle = TrigLUT.atan2(pParty->vPosition.x - pLevelDecorations[PID_ID(collision_state.pid)].vPosition.x,
-                                      pParty->vPosition.y - pLevelDecorations[PID_ID(collision_state.pid)].vPosition.y);
+            int angle = TrigLUT.atan2(pParty->pos.x - pLevelDecorations[PID_ID(collision_state.pid)].vPosition.x,
+                                      pParty->pos.y - pLevelDecorations[PID_ID(collision_state.pid)].vPosition.y);
             int len = integer_sqrt(pParty->speed.xy().lengthSqr());
             pParty->speed.x = TrigLUT.cos(angle) * len;
             pParty->speed.y = TrigLUT.sin(angle) * len;
@@ -1758,12 +1758,12 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
                 pParty->speed.z += speed_dot_normal * pFace->facePlane.normal.z;
 
                 if (pFace->uPolygonType != POLYGON_InBetweenFloorAndWall) { // wall / ceiling
-                    int distance_to_face = pFace->facePlane.signedDistanceTo(Vec3f(pParty->vPosition.x, pParty->vPosition.y, new_party_z_tmp)) -
+                    int distance_to_face = pFace->facePlane.signedDistanceTo(Vec3f(pParty->pos.x, pParty->pos.y, new_party_z_tmp)) -
                                            collision_state.radius_lo;
                     if (distance_to_face < 0) {
                         // We're too close to the face, push back.
-                        pParty->vPosition.x += -distance_to_face * pFace->facePlane.normal.x;
-                        pParty->vPosition.y += -distance_to_face * pFace->facePlane.normal.y;
+                        pParty->pos.x += -distance_to_face * pFace->facePlane.normal.x;
+                        pParty->pos.y += -distance_to_face * pFace->facePlane.normal.y;
                         new_party_z_tmp += -distance_to_face * pFace->facePlane.normal.z;
                     }
                     if (pParty->floor_face_pid != PID_ID(collision_state.pid) && pFace->Pressure_Plate())
@@ -1791,7 +1791,7 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
         // Start sound processing only when actual movement is performed to avoid stopping sounds on high FPS
         if (pEventTimer->uTimeElapsed) {
             // TODO(Nik-RE-dev): use calculated velocity of party and walk/run flags instead of delta
-            int walkDelta = integer_sqrt((oldPos - pParty->vPosition).lengthSqr());
+            int walkDelta = integer_sqrt((oldPos - pParty->pos).lengthSqr());
 
             if (walkDelta < 2) {
                 // mute the walking sound when stopping
@@ -1991,9 +1991,9 @@ int SpawnEncounterMonsters(MapInfo *map_info, int enc_index) {
             // random x,y at distance from party
             dist_from_party = grng->random(1024) + 512;
             angle_from_party = (grng->random(TrigLUT.uIntegerDoublePi) * 2 * pi) / TrigLUT.uIntegerDoublePi;
-            enc_spawn_point.vPosition.x = pParty->vPosition.x + cos(angle_from_party) * dist_from_party;
-            enc_spawn_point.vPosition.y = pParty->vPosition.y + sin(angle_from_party) * dist_from_party;
-            enc_spawn_point.vPosition.z = pParty->vPosition.z;
+            enc_spawn_point.vPosition.x = pParty->pos.x + cos(angle_from_party) * dist_from_party;
+            enc_spawn_point.vPosition.y = pParty->pos.y + sin(angle_from_party) * dist_from_party;
+            enc_spawn_point.vPosition.z = pParty->pos.z;
             enc_spawn_point.uKind = OBJECT_Actor;
             enc_spawn_point.uMonsterIndex = enc_index;
 
@@ -2028,21 +2028,21 @@ int SpawnEncounterMonsters(MapInfo *map_info, int enc_index) {
             // random x,y at distance from party
             dist_from_party = grng->random(512) + 256;
             angle_from_party = (grng->random(TrigLUT.uIntegerDoublePi) * 2 * pi) / TrigLUT.uIntegerDoublePi;
-            enc_spawn_point.vPosition.x = pParty->vPosition.x + cos(angle_from_party) * dist_from_party;
-            enc_spawn_point.vPosition.y = pParty->vPosition.y + sin(angle_from_party) * dist_from_party;
-            enc_spawn_point.vPosition.z = pParty->vPosition.z;
+            enc_spawn_point.vPosition.x = pParty->pos.x + cos(angle_from_party) * dist_from_party;
+            enc_spawn_point.vPosition.y = pParty->pos.y + sin(angle_from_party) * dist_from_party;
+            enc_spawn_point.vPosition.z = pParty->pos.z;
             enc_spawn_point.uKind = OBJECT_Actor;
             enc_spawn_point.uMonsterIndex = enc_index;
 
             // get proposed sector
-            mon_sectorID = pIndoor->GetSector(enc_spawn_point.vPosition.x, enc_spawn_point.vPosition.y, pParty->vPosition.z);
+            mon_sectorID = pIndoor->GetSector(enc_spawn_point.vPosition.x, enc_spawn_point.vPosition.y, pParty->pos.z);
             if (mon_sectorID == party_sectorID) {
                 // check proposed floor level
                 indoor_floor_level = BLV_GetFloorLevel(enc_spawn_point.vPosition, mon_sectorID, &uFaceID);
                 enc_spawn_point.vPosition.z = indoor_floor_level;
                 if (indoor_floor_level != -30000) {
                     // break if spanwn point is okay
-                    if (abs(indoor_floor_level - pParty->vPosition.z) <= 1024) break;
+                    if (abs(indoor_floor_level - pParty->pos.z) <= 1024) break;
                 }
             }
         }

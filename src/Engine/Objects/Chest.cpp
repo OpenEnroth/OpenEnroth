@@ -95,8 +95,8 @@ bool Chest::open(int uChestID, int objectPid) {
                 }
             }
 
-            dir_x = (double)pParty->vPosition.x - (double)pObjectX;
-            dir_y = (double)pParty->vPosition.y - (double)pObjectY;
+            dir_x = (double)pParty->pos.x - (double)pObjectX;
+            dir_y = (double)pParty->pos.y - (double)pObjectY;
             length_vector = sqrt(dir_x * dir_x + dir_y * dir_y);
             if (length_vector <= 1.0) {
                 yawAngle = 0;

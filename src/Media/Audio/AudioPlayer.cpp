@@ -303,9 +303,9 @@ void AudioPlayer::playSound(SoundID eSoundID, int pid, unsigned int uNumRepeats,
             case OBJECT_Actor: {
                 assert(object_id < pActors.size());
 
-                sample->SetPosition(pActors[object_id].vPosition.x,
-                                    pActors[object_id].vPosition.y,
-                                    pActors[object_id].vPosition.z, MAX_SOUND_DIST);
+                sample->SetPosition(pActors[object_id].pos.x,
+                                    pActors[object_id].pos.y,
+                                    pActors[object_id].pos.z, MAX_SOUND_DIST);
 
                 result = _regularSoundPool.playUniquePid(sample, si.dataSource, pid, true);
 
@@ -369,7 +369,7 @@ void AudioPlayer::UpdateSounds() {
     float yaw = M_PI * pParty->_viewYaw / 1024.f;
 
     provider->SetOrientation(yaw, pitch);
-    provider->SetListenerPosition(pParty->vPosition.x, pParty->vPosition.y, pParty->vPosition.z);
+    provider->SetListenerPosition(pParty->pos.x, pParty->pos.y, pParty->pos.z);
 
     _voiceSoundPool.update();
     _regularSoundPool.update();

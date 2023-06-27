@@ -150,16 +150,16 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld) {
         return;
     }
 
-    int pPositionX = pParty->vPosition.x;
-    int pPositionY = pParty->vPosition.y;
-    int pPositionZ = pParty->vPosition.z;
+    int pPositionX = pParty->pos.x;
+    int pPositionY = pParty->pos.y;
+    int pPositionZ = pParty->pos.z;
     int partyViewYaw = pParty->_viewYaw;
     int partyViewPitch = pParty->_viewPitch;
-    pParty->vPosition.x = pParty->vPrevPosition.x;
-    pParty->vPosition.z = pParty->vPrevPosition.z;
-    pParty->vPosition.y = pParty->vPrevPosition.y;
+    pParty->pos.x = pParty->lastPos.x;
+    pParty->pos.z = pParty->lastPos.z;
+    pParty->pos.y = pParty->lastPos.y;
 
-    pParty->uFallStartZ = pParty->vPrevPosition.z;
+    pParty->uFallStartZ = pParty->lastPos.z;
 
     pParty->_viewYaw = pParty->_viewPrevYaw;
     pParty->_viewPitch = pParty->_viewPrevPitch;
@@ -250,9 +250,9 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld) {
         if (!std::filesystem::copy_file(src, dst, std::filesystem::copy_options::overwrite_existing, ec))
             logger->warning("Copying of autosave.mm7 failed");
     }
-    pParty->vPosition.x = pPositionX;
-    pParty->vPosition.y = pPositionY;
-    pParty->vPosition.z = pPositionZ;
+    pParty->pos.x = pPositionX;
+    pParty->pos.y = pPositionY;
+    pParty->pos.z = pPositionZ;
     pParty->uFallStartZ = pPositionZ;
     pParty->_viewYaw = partyViewYaw;
     pParty->_viewPitch = partyViewPitch;
@@ -367,13 +367,13 @@ void SaveNewGame() {
 
         pSave_LOD->FixDirectoryOffsets();
 
-        pParty->vPrevPosition.x = 12552;
-        pParty->vPrevPosition.y = 1816;
-        pParty->vPrevPosition.z = 193;
+        pParty->lastPos.x = 12552;
+        pParty->lastPos.y = 1816;
+        pParty->lastPos.z = 193;
 
-        pParty->vPosition.x = 12552;
-        pParty->vPosition.y = 1816;
-        pParty->vPosition.z = 193;
+        pParty->pos.x = 12552;
+        pParty->pos.y = 1816;
+        pParty->pos.z = 193;
 
         pParty->uFallStartZ = 193;
 

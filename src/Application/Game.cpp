@@ -375,7 +375,7 @@ void Game_StartHirelingDialogue(unsigned int hireling_id) {
 
     if ((signed int)hireling_id + (signed int)pParty->hirelingScrollPosition < buf.Size()) {
         Actor actor;
-        actor.sNPC_ID += -1 - pParty->hirelingScrollPosition - hireling_id;
+        actor.npcId += -1 - pParty->hirelingScrollPosition - hireling_id;
         GameUI_InitializeDialogue(&actor, true);
     }
 }
@@ -451,13 +451,13 @@ void Game::processQueuedMessages() {
     bool playButtonSoundOnEscape = true;
 
     if (!pEventTimer->bPaused) {
-        pParty->sEyelevel = pParty->uDefaultEyelevel;
-        pParty->uPartyHeight = pParty->uDefaultPartyHeight;
+        pParty->eyeLevel = pParty->defaultEyeLevel;
+        pParty->height = pParty->defaultHeight;
     }
     if (bDialogueUI_InitializeActor_NPC_ID) {
         // Actor::Actor(&actor);
         Actor actor = Actor();
-        actor.sNPC_ID = bDialogueUI_InitializeActor_NPC_ID;
+        actor.npcId = bDialogueUI_InitializeActor_NPC_ID;
         GameUI_InitializeDialogue(&actor, false);
         bDialogueUI_InitializeActor_NPC_ID = 0;
     }
@@ -815,14 +815,14 @@ void Game::processQueuedMessages() {
                                     current_screen_type = CURRENT_SCREEN::SCREEN_GAME;
                                     continue;
                                 case CURRENT_SCREEN::SCREEN_CHANGE_LOCATION: // escape
-                                    if (pParty->vPosition.x < -22528)
-                                        pParty->vPosition.x = -22528;
-                                    if (pParty->vPosition.x > 22528)
-                                        pParty->vPosition.x = 22528;
-                                    if (pParty->vPosition.y < -22528)
-                                        pParty->vPosition.y = -22528;
-                                    if (pParty->vPosition.y > 22528)
-                                        pParty->vPosition.y = 22528;
+                                    if (pParty->pos.x < -22528)
+                                        pParty->pos.x = -22528;
+                                    if (pParty->pos.x > 22528)
+                                        pParty->pos.x = 22528;
+                                    if (pParty->pos.y < -22528)
+                                        pParty->pos.y = -22528;
+                                    if (pParty->pos.y > 22528)
+                                        pParty->pos.y = 22528;
                                     pMediaPlayer->Unload();
                                     DialogueEnding();
                                     onEscape();
@@ -898,13 +898,13 @@ void Game::processQueuedMessages() {
                     Party_Teleport_Cam_Pitch |
                     Party_Teleport_Z_Speed) {
                     if (Party_Teleport_X_Pos) {
-                        pParty->vPosition.x = Party_Teleport_X_Pos;
+                        pParty->pos.x = Party_Teleport_X_Pos;
                     }
                     if (Party_Teleport_Y_Pos) {
-                        pParty->vPosition.y = Party_Teleport_Y_Pos;
+                        pParty->pos.y = Party_Teleport_Y_Pos;
                     }
                     if (Party_Teleport_Z_Pos) {
-                        pParty->vPosition.z = Party_Teleport_Z_Pos;
+                        pParty->pos.z = Party_Teleport_Z_Pos;
                         pParty->uFallStartZ = Party_Teleport_Z_Pos;
                     }
                     if (Party_Teleport_Cam_Yaw) {
@@ -959,16 +959,16 @@ void Game::processQueuedMessages() {
                 // encounter_index = (NPCData *)getTravelTime();
                 pOutdoor->level_filename = pCurrentMapName;
                 if (!_engine->IsUnderwater() && pParty->bFlying ||
-                    pOutdoor->GetTravelDestination(pParty->vPosition.x, pParty->vPosition.y, &pOut) != 1) {
+                    pOutdoor->GetTravelDestination(pParty->pos.x, pParty->pos.y, &pOut) != 1) {
                     PlayButtonClickSound();
-                    if (pParty->vPosition.x < -22528)
-                        pParty->vPosition.x = -22528;
-                    if (pParty->vPosition.x > 22528)
-                        pParty->vPosition.x = 22528;
-                    if (pParty->vPosition.y < -22528)
-                        pParty->vPosition.y = -22528;
-                    if (pParty->vPosition.y > 22528)
-                        pParty->vPosition.y = 22528;
+                    if (pParty->pos.x < -22528)
+                        pParty->pos.x = -22528;
+                    if (pParty->pos.x > 22528)
+                        pParty->pos.x = 22528;
+                    if (pParty->pos.y < -22528)
+                        pParty->pos.y = -22528;
+                    if (pParty->pos.y > 22528)
+                        pParty->pos.y = 22528;
                     DialogueEnding();
                     current_screen_type = CURRENT_SCREEN::SCREEN_GAME;
                 } else {
@@ -1012,9 +1012,9 @@ void Game::processQueuedMessages() {
                     pOutdoor->SetFog();
                     TeleportToStartingPoint(uLevel_StartingPointType);
                     bool bOnWater = false;
-                    pParty->vPosition.z = GetTerrainHeightsAroundParty2(
-                        pParty->vPosition.x, pParty->vPosition.y, &bOnWater, 0);
-                    pParty->uFallStartZ = pParty->vPosition.z;
+                    pParty->pos.z = GetTerrainHeightsAroundParty2(
+                        pParty->pos.x, pParty->pos.y, &bOnWater, 0);
+                    pParty->uFallStartZ = pParty->pos.z;
                     _engine->_461103_load_level_sub();
                     pEventTimer->Resume();
                     current_screen_type = CURRENT_SCREEN::SCREEN_GAME;
@@ -1023,14 +1023,14 @@ void Game::processQueuedMessages() {
                 continue;
             case UIMSG_CHANGE_LOCATION_ClickCancelBtn:
                 PlayButtonClickSound();
-                if (pParty->vPosition.x < -22528)
-                    pParty->vPosition.x = -22528;
-                if (pParty->vPosition.x > 22528)
-                    pParty->vPosition.x = 22528;
-                if (pParty->vPosition.y < -22528)
-                    pParty->vPosition.y = -22528;
-                if (pParty->vPosition.y > 22528)
-                    pParty->vPosition.y = 22528;
+                if (pParty->pos.x < -22528)
+                    pParty->pos.x = -22528;
+                if (pParty->pos.x > 22528)
+                    pParty->pos.x = 22528;
+                if (pParty->pos.y < -22528)
+                    pParty->pos.y = -22528;
+                if (pParty->pos.y > 22528)
+                    pParty->pos.y = 22528;
                 DialogueEnding();
                 current_screen_type = CURRENT_SCREEN::SCREEN_GAME;
                 continue;
@@ -1040,7 +1040,7 @@ void Game::processQueuedMessages() {
                 int id = PID_ID(pid);
                 bool interactionPossible = false;
                 if (type == OBJECT_Actor) {
-                    interactionPossible = pActors[id].uAIState == Dead;
+                    interactionPossible = pActors[id].aiState == Dead;
                 }
                 if (type == OBJECT_Item) {
                     interactionPossible = !(pObjectList->pObjects[pSpriteObjects[id].uObjectDescID].uFlags & OBJECT_DESC_UNPICKABLE);
@@ -1190,10 +1190,10 @@ void Game::processQueuedMessages() {
                         Party_Teleport_Cam_Pitch = character.vBeacons[uMessageParam]._partyViewPitch;
                         Start_Party_Teleport_Flag = 1;
                     } else {
-                        pParty->vPosition.x = character.vBeacons[uMessageParam].PartyPos_X;
-                        pParty->vPosition.y = character.vBeacons[uMessageParam].PartyPos_Y;
-                        pParty->vPosition.z = character.vBeacons[uMessageParam].PartyPos_Z;
-                        pParty->uFallStartZ = pParty->vPosition.z;
+                        pParty->pos.x = character.vBeacons[uMessageParam].PartyPos_X;
+                        pParty->pos.y = character.vBeacons[uMessageParam].PartyPos_Y;
+                        pParty->pos.z = character.vBeacons[uMessageParam].PartyPos_Z;
+                        pParty->uFallStartZ = pParty->pos.z;
                         pParty->_viewYaw = character.vBeacons[uMessageParam]._partyViewYaw;
                         pParty->_viewPitch = character.vBeacons[uMessageParam]._partyViewPitch;
                     }
@@ -1218,8 +1218,8 @@ void Game::processQueuedMessages() {
                 SaveGame(1, 0);
                 // if in current map
                 if (pMapStats->GetMapInfo(pCurrentMapName) == TownPortalList[uMessageParam].uMapInfoID) {
-                    pParty->vPosition = TownPortalList[uMessageParam].pos;
-                    pParty->uFallStartZ = pParty->vPosition.z;
+                    pParty->pos = TownPortalList[uMessageParam].pos;
+                    pParty->uFallStartZ = pParty->pos.z;
                     pParty->_viewYaw = TownPortalList[uMessageParam]._viewYaw;
                     pParty->_viewPitch = TownPortalList[uMessageParam]._viewPitch;
                 } else {  // if change map
@@ -1307,17 +1307,17 @@ void Game::processQueuedMessages() {
                 pAudioPlayer->stopSounds();
                 SaveGame(1, 0);
 
-                pParty->vPosition = Vec3i(-17331, 12547, 465); // respawn point in Harmondale
+                pParty->pos = Vec3i(-17331, 12547, 465); // respawn point in Harmondale
                 pParty->speed = Vec3i();
                 pParty->_viewYaw = 0;
-                pParty->uFallStartZ = pParty->vPosition.z;
+                pParty->uFallStartZ = pParty->pos.z;
                 pParty->_viewPitch = 0;
 
                 // change map to Harmondale
                 pCurrentMapName = "out02.odm";
-                Party_Teleport_X_Pos = pParty->vPosition.x;
-                Party_Teleport_Y_Pos = pParty->vPosition.y;
-                Party_Teleport_Z_Pos = pParty->vPosition.z;
+                Party_Teleport_X_Pos = pParty->pos.x;
+                Party_Teleport_Y_Pos = pParty->pos.y;
+                Party_Teleport_Z_Pos = pParty->pos.z;
                 Party_Teleport_Cam_Yaw = pParty->_viewYaw;
                 Party_Teleport_Cam_Pitch = pParty->_viewPitch;
                 Start_Party_Teleport_Flag = 1;
@@ -1360,13 +1360,13 @@ void Game::processQueuedMessages() {
                     int z = atoi(frameTableTxtLine.pProperties[2]);
                     if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
                         if (pIndoor->GetSector(x, y, z)) {
-                            pParty->vPosition = Vec3i(x, y, z);
+                            pParty->pos = Vec3i(x, y, z);
                             pParty->uFallStartZ = z;
                             continue;
                         }
                     } else {
                         if ((x > -32768) && (x < 32768) && (y > -32768) && (y < 32768) && (z >= 0) && (z < 10000)) {
-                            pParty->vPosition = Vec3i(x, y, z);
+                            pParty->pos = Vec3i(x, y, z);
                             pParty->uFallStartZ = z;
                             continue;
                         }
@@ -1413,7 +1413,7 @@ void Game::processQueuedMessages() {
             case UIMSG_STEALFROMACTOR:
                 if (!pParty->hasActiveCharacter()) continue;
                 if (!pParty->bTurnBasedModeOn) {
-                    if (pActors[uMessageParam].uAIState == AIState::Dead)
+                    if (pActors[uMessageParam].aiState == AIState::Dead)
                         pActors[uMessageParam].LootActor();
                     else
                         Actor::StealFrom(uMessageParam);
@@ -1423,7 +1423,7 @@ void Game::processQueuedMessages() {
                     pTurnEngine->turn_stage == TE_MOVEMENT)
                     continue;
                 if (!(pTurnEngine->flags & TE_HAVE_PENDING_ACTIONS)) {
-                    if (pActors[uMessageParam].uAIState == AIState::Dead)
+                    if (pActors[uMessageParam].aiState == AIState::Dead)
                         pActors[uMessageParam].LootActor();
                     else
                         Actor::StealFrom(uMessageParam);
@@ -2384,24 +2384,24 @@ void Game::gameLoop() {
                 pParty->setActiveCharacterIndex(1);
 
                 if (pParty->_questBits[QBIT_ESCAPED_EMERALD_ISLE]) {
-                    pParty->vPosition = Vec3i(-17331, 12547, 465); // respawn in harmondale
+                    pParty->pos = Vec3i(-17331, 12547, 465); // respawn in harmondale
                     pParty->_viewYaw = 0;
                     pLocationName = "out02.odm";
                 } else {
-                    pParty->vPosition = Vec3i(12552, 1816, 193); // respawn on emerald isle
+                    pParty->pos = Vec3i(12552, 1816, 193); // respawn on emerald isle
                     pParty->_viewYaw = 512;
                     pLocationName = _config->gameplay.StartingMap.value().c_str();
                 }
                 strcpy(Source, pLocationName);
-                pParty->uFallStartZ = pParty->vPosition.z;
+                pParty->uFallStartZ = pParty->pos.z;
                 pParty->_viewPitch = 0;
                 pParty->speed = Vec3i();
                 // change map
                 if (pCurrentMapName != Source) {
                     pCurrentMapName = Source;
-                    Party_Teleport_X_Pos = pParty->vPosition.x;
-                    Party_Teleport_Y_Pos = pParty->vPosition.y;
-                    Party_Teleport_Z_Pos = pParty->vPosition.z;
+                    Party_Teleport_X_Pos = pParty->pos.x;
+                    Party_Teleport_Y_Pos = pParty->pos.y;
+                    Party_Teleport_Z_Pos = pParty->pos.z;
                     Party_Teleport_Cam_Yaw = pParty->_viewYaw;
                     Party_Teleport_Cam_Pitch = pParty->_viewPitch;
                     Start_Party_Teleport_Flag = 1;

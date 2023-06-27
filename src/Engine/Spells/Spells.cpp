@@ -792,7 +792,7 @@ void eventCastSpell(SPELL_TYPE uSpellID, CharacterSkillMastery skillMastery, CHA
     if (tox || toy || toz) {
         coord_delta = to - from;
     } else {
-        coord_delta = pParty->vPosition - from + Vec3i(0, 0, pParty->sEyelevel);
+        coord_delta = pParty->pos - from + Vec3i(0, 0, pParty->eyeLevel);
     }
 
     int yaw = 0;
@@ -1122,14 +1122,14 @@ void armageddonProgress() {
 
         int incomingDamage = actor.CalcMagicalDamageToActor(DMGT_MAGICAL, outgoingDamage);
         if (incomingDamage > 0) {
-            actor.sCurrentHP -= incomingDamage;
+            actor.currentHP -= incomingDamage;
 
-            if (actor.sCurrentHP >= 0) {
+            if (actor.currentHP >= 0) {
                 Actor::AI_Stun(actor.id, 4, 0);
             } else {
                 Actor::Die(actor.id);
-                if (actor.pMonsterInfo.uExp) {
-                    pParty->GivePartyExp(pMonsterStats->pInfos[actor.pMonsterInfo.uID].uExp);
+                if (actor.monsterInfo.uExp) {
+                    pParty->GivePartyExp(pMonsterStats->pInfos[actor.monsterInfo.uID].uExp);
                 }
             }
         }
