@@ -38,6 +38,10 @@ jobs:
         java-version: 17
         cache: gradle
 
+    - name: Build ffmpeg
+      working-directory: openenroth/jni/FFmpeg
+      run: sh ./build.sh
+
     - name: Build the app
       run: ./gradlew assembleDebug
 
