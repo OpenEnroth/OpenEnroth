@@ -44,6 +44,13 @@ jobs:
       run: |
         make UnitTest
         
+    - name: Prepare artifact
+      run: |
+        mkdir dist
+        cp -r build/OpenEnroth.app dist/
+        cp -r resources/* dist/
+        hdiutil create OpenEnroth.dmg -ov -volname "OpenEnroth" -fs HFS+ -srcfolder dist
+        
     - name: Zip Folder For Release
       if: success() || failure()
       run: zip -r ./MacOS_${{ env.TAG_NAME }}_${{ matrix.configuration }}_${{ matrix.architecture }}.zip dist
