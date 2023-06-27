@@ -64,4 +64,4 @@ jobs:
       with:
         prerelease: true
         tag_name: ${{ env.TAG_NAME }}
-        files: Windows_${{ env.TAG_NAME }}_${{ matrix.configuration }}_${{ matrix.architecture }}.zip
+        files: ${{ runner.os }}_${{ env.TAG_NAME }}_${{ matrix.configuration }}_${{ matrix.architecture }}.zip
