@@ -8,6 +8,9 @@ on:
   release:
     types: [published]
 
+env:
+  TAG_NAME: "nightly"
+
 jobs:
   build_linux:
     runs-on: ubuntu-22.04
@@ -76,18 +79,6 @@ jobs:
       run: |
         mkdir libs
         ldd build/OpenEnroth | grep '=> /' | awk '{print $3;}' | xargs -I '{}' cp -v '{}' ./libs/
-
-    - name: Upload artifact
-      uses: actions/upload-artifact@v3
-      with:
-        name: OpenEnroth (Linux, ${{ matrix.configuration }}, ${{ matrix.architecture }})
-        path: dist/**
-
-    - name: Upload shared libs
-      uses: actions/upload-artifact@v3
-      with:
-        name: Shared Libraries (${{ matrix.architecture }})
-        path: libs/**
 
     - name: Zip Folder For Release
       if: success() || failure()
