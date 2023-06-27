@@ -5,9 +5,6 @@ on:
   push:
   release:
     types: [published]
-
-env:
-  TAG_NAME: "nightly"
     
 jobs:
   build_linux:
