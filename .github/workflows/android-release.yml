@@ -3,15 +3,14 @@ name: Android Release Build
 on:
   schedule:
     # schedule build every night
-    - cron: "0 0 * * *"
+    #- cron: "0 0 * * *"
   workflow_dispatch:
-  push:
-    tags:
-      - '*'
+  #push:
+  #  tags:
+  #    - '*'
 
 env:
   TAG_NAME: "nightly"
-  ANDROID_SIGNING_KEY: '${{ secrets.ANDROID_SIGNING_KEY }}'
     
 jobs:
   build_linux:
