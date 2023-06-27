@@ -7,7 +7,6 @@ on:
     types: [published]
     
 jobs:
-  name: Android Build
   build_linux:
     runs-on: ubuntu-latest
     strategy:
