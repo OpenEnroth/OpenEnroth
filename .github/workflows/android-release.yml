@@ -38,10 +38,14 @@ jobs:
         java-version: 17
         cache: gradle
 
+  - uses: nttld/setup-ndk@v1
+    with:
+      ndk-version: r25c
+      local-cache: true
+
     - name: Build ffmpeg
       working-directory: openenroth/jni/FFmpeg
       run: |
-        export NDK=/usr/local/lib/android/sdk/ndk/25.1.8937393      
         ./build.sh
 
     - name: Build the app
