@@ -315,9 +315,7 @@ void CastSpellInfoHelpers::castSpell() {
             if (pCurrentMapName == "d05.blv") {  // Arena
                 spellFailed(pCastSpell, LSTR_SPELL_FAILED);
             } else {
-                engine->_messageQueue->addMessageCurrentFrame(UIMSG_OnCastLloydsBeacon, 0, 0);
-                lloydsBeaconCasterId = pCastSpell->uPlayerID;
-                lloydsBeaconSpellDuration = GameTime::FromDays(7 * spell_level).GetSeconds();
+                engine->_messageQueue->addMessageCurrentFrame(UIMSG_OnCastLloydsBeacon, pCastSpell->uPlayerID, spell_level);
                 pCastSpell->uFlags |= ON_CAST_NoRecoverySpell;
             }
         } else {

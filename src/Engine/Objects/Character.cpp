@@ -7580,7 +7580,7 @@ Character::Character() {
     lastOpenedSpellbookPage = 0;
 }
 
-void Character::CleanupBeacons() {
+void Character::cleanupBeacons() {
     struct delete_beacon {
         bool operator()(const LloydBeacon &beacon) const {
             return (beacon.uBeaconTime < pParty->GetPlayingTime());
@@ -7593,7 +7593,7 @@ void Character::CleanupBeacons() {
     );
 }
 
-bool Character::SetBeacon(size_t index, size_t power) {
+bool Character::setBeacon(int index, GameTime duration) {
     int file_index = pGames_LOD->GetSubNodeIndex(pCurrentMapName);
     if (file_index < 0) {
         return false;
@@ -7602,7 +7602,7 @@ bool Character::SetBeacon(size_t index, size_t power) {
     LloydBeacon beacon;
 
     beacon.image = render->TakeScreenshot(92, 68);
-    beacon.uBeaconTime = GameTime(pParty->GetPlayingTime() + GameTime::FromSeconds(power));
+    beacon.uBeaconTime = pParty->GetPlayingTime() + duration;
     beacon.PartyPos_X = pParty->pos.x;
     beacon.PartyPos_Y = pParty->pos.y;
     beacon.PartyPos_Z = pParty->pos.z;

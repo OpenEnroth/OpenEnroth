@@ -434,7 +434,6 @@ void Game::processQueuedMessages() {
     int v55;                    // ecx@432
     int v56;                    // edx@432
     int v57;                    // eax@432
-    unsigned int pMapNum;       // eax@445
     GUIButton *pButton;         // eax@578
     int v91;                    // edx@605
     int v92;                    // eax@605
@@ -1112,100 +1111,32 @@ void Game::processQueuedMessages() {
                 continue;
 
             case UIMSG_OnCastLloydsBeacon:
-                pGUIWindow_CurrentMenu = new GUIWindow_LloydsBook();
+                pGUIWindow_CurrentMenu = new GUIWindow_LloydsBook(uMessageParam, uMessageParam2);
                 continue;
 
-            case UIMSG_LloydsBeacon_FlippingBtn:
-                bRecallingBeacon = uMessageParam;
-                pAudioPlayer->playUISound(bRecallingBeacon ? SOUND_TurnPage2 : SOUND_TurnPage1);
+            case UIMSG_LloydBookFlipButton:
+                if (pGUIWindow_CurrentMenu) {
+                    ((GUIWindow_LloydsBook *)pGUIWindow_CurrentMenu)->flipButtonClicked(uMessageParam != 0);
+                }
                 continue;
-            case UIMSG_HintBeaconSlot: {
-                if (!pGUIWindow_CurrentMenu) {
-                    continue;
-                }
-                Character &character = pParty->pCharacters[lloydsBeaconCasterId];
-                if (uMessageParam >= character.vBeacons.size()) {
-                    continue;
-                }
-                LloydBeacon &beacon = character.vBeacons[uMessageParam];
-                if (bRecallingBeacon) {
-                    if (beacon.uBeaconTime) {
-                        std::string pMapName = pMapStats->pInfos[pMapStats->sub_410D99_get_map_index(beacon.SaveFileID)].pName;
-                        GameUI_StatusBar_Set(localization->FormatString(LSTR_FMT_RECALL_TO_S, pMapName.c_str()));
-                    }
-                    continue;
-                }
-                pMapNum = pMapStats->GetMapInfo(pCurrentMapName);
-                std::string pMapName = "Not in Map Stats";
-                if (pMapNum) {
-                    pMapName = pMapStats->pInfos[pMapNum].pName;
-                }
 
-                if (beacon.uBeaconTime) {
-                    std::string pMapName2 = pMapStats->pInfos[pMapStats->sub_410D99_get_map_index(beacon.SaveFileID)].pName;
-                    GameUI_StatusBar_Set(localization->FormatString(LSTR_FMT_SET_S_OVER_S, pMapName.c_str(), pMapName2.c_str()));
-                } else {
-                    GameUI_StatusBar_Set(localization->FormatString(LSTR_FMT_SET_S_TO_S, pMapName.c_str()));
+            case UIMSG_HintBeaconSlot:
+                if (pGUIWindow_CurrentMenu) {
+                    ((GUIWindow_LloydsBook *)pGUIWindow_CurrentMenu)->hintBeaconSlot(uMessageParam);
                 }
                 continue;
-            }
+
             case UIMSG_CloseAfterInstallBeacon:
                 playButtonSoundOnEscape = false;
                 engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 0, 0);
                 continue;
-            case UIMSG_InstallBeacon: {
-                Character &character = pParty->pCharacters[lloydsBeaconCasterId];
-                if ((character.vBeacons.size() <= uMessageParam) && bRecallingBeacon) {
-                    continue;
-                }
 
-                assert(pSpellDatas[SPELL_WATER_LLOYDS_BEACON].uNormalLevelMana == pSpellDatas[SPELL_WATER_LLOYDS_BEACON].uExpertLevelMana);
-                assert(pSpellDatas[SPELL_WATER_LLOYDS_BEACON].uNormalLevelMana == pSpellDatas[SPELL_WATER_LLOYDS_BEACON].uMasterLevelMana);
-                assert(pSpellDatas[SPELL_WATER_LLOYDS_BEACON].uNormalLevelMana == pSpellDatas[SPELL_WATER_LLOYDS_BEACON].uMagisterLevelMana);
-                character.SpendMana(pSpellDatas[SPELL_WATER_LLOYDS_BEACON].uNormalLevelMana);
-
-                assert(pSpellDatas[SPELL_WATER_LLOYDS_BEACON].uNormalLevelRecovery == pSpellDatas[SPELL_WATER_LLOYDS_BEACON].uExpertLevelRecovery);
-                assert(pSpellDatas[SPELL_WATER_LLOYDS_BEACON].uNormalLevelRecovery == pSpellDatas[SPELL_WATER_LLOYDS_BEACON].uMasterLevelRecovery);
-                assert(pSpellDatas[SPELL_WATER_LLOYDS_BEACON].uNormalLevelRecovery == pSpellDatas[SPELL_WATER_LLOYDS_BEACON].uMagisterLevelRecovery);
-                signed int sRecoveryTime = pSpellDatas[SPELL_WATER_LLOYDS_BEACON].uNormalLevelRecovery;
-                if (pParty->bTurnBasedModeOn) {
-                    pParty->pTurnBasedCharacterRecoveryTimes[lloydsBeaconCasterId] = sRecoveryTime;
-                    character.SetRecoveryTime(sRecoveryTime);
-                    pTurnEngine->ApplyPlayerAction();
-                } else {
-                    character.SetRecoveryTime(debug_non_combat_recovery_mul * sRecoveryTime * flt_debugrecmod3);
-                }
-                pAudioPlayer->playSpellSound(SPELL_WATER_LLOYDS_BEACON, 0);
-                if (bRecallingBeacon) {
-                    if (pCurrentMapName != pGames_LOD->GetSubNodeName(character.vBeacons[uMessageParam].SaveFileID)) {
-                        SaveGame(1, 0);
-                        onMapLeave();
-                        pCurrentMapName = pGames_LOD->GetSubNodeName(character.vBeacons[uMessageParam].SaveFileID);
-                        dword_6BE364_game_settings_1 |= GAME_SETTINGS_0001;
-                        uGameState = GAME_STATE_CHANGE_LOCATION;
-                        Party_Teleport_X_Pos = character.vBeacons[uMessageParam].PartyPos_X;
-                        Party_Teleport_Y_Pos = character.vBeacons[uMessageParam].PartyPos_Y;
-                        Party_Teleport_Z_Pos = character.vBeacons[uMessageParam].PartyPos_Z;
-                        Party_Teleport_Cam_Yaw = character.vBeacons[uMessageParam]._partyViewYaw;
-                        Party_Teleport_Cam_Pitch = character.vBeacons[uMessageParam]._partyViewPitch;
-                        Start_Party_Teleport_Flag = 1;
-                    } else {
-                        pParty->pos.x = character.vBeacons[uMessageParam].PartyPos_X;
-                        pParty->pos.y = character.vBeacons[uMessageParam].PartyPos_Y;
-                        pParty->pos.z = character.vBeacons[uMessageParam].PartyPos_Z;
-                        pParty->uFallStartZ = pParty->pos.z;
-                        pParty->_viewYaw = character.vBeacons[uMessageParam]._partyViewYaw;
-                        pParty->_viewPitch = character.vBeacons[uMessageParam]._partyViewPitch;
-                    }
-                    engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 1, 0);
-                    pGUIWindow_CurrentMenu->Release();
-                    pGUIWindow_CurrentMenu = 0;
-                } else {
-                    character.SetBeacon(uMessageParam, lloydsBeaconSpellDuration);
-                    engine->_messageQueue->addMessageNextFrame(UIMSG_CloseAfterInstallBeacon, 0, 0);
+            case UIMSG_InstallOrRecallBeacon:
+                if (pGUIWindow_CurrentMenu) {
+                    ((GUIWindow_LloydsBook *)pGUIWindow_CurrentMenu)->installOrRecallBeacon(uMessageParam);
                 }
                 continue;
-            }
+
             case UIMSG_ClickTownInTP: {
                 //if (uGameState == GAME_STATE_CHANGE_LOCATION) continue;
 

@@ -14,6 +14,8 @@
 
 #include "Utility/Memory/Blob.h"
 
+#include "GUI/GUIMessageQueue.h"
+
 namespace Io {
 class Mouse;
 class KeyboardInputHandler;
