@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;ad8153a</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;0632f5a</span>
    </div>
   </td>
  </tr>
@@ -487,10 +487,10 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a59646cb74411cf36bc383d47cf97b648"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afa827986188490ec2cefb01b497aa85c"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classCharacter.html#afa827986188490ec2cefb01b497aa85c">getCharacterIndex</a> ()</td></tr>
 <tr class="separator:afa827986188490ec2cefb01b497aa85c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae325735599cd56df4e23c8e9f5301bed"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classCharacter.html#ae325735599cd56df4e23c8e9f5301bed">CleanupBeacons</a> ()</td></tr>
-<tr class="separator:ae325735599cd56df4e23c8e9f5301bed"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a19516b39a47d7961f481f9a75ec48ac3"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classCharacter.html#a19516b39a47d7961f481f9a75ec48ac3">SetBeacon</a> (size_t index, size_t power)</td></tr>
-<tr class="separator:a19516b39a47d7961f481f9a75ec48ac3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa484a04df31a083fb553ec7d07e3e33c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classCharacter.html#aa484a04df31a083fb553ec7d07e3e33c">cleanupBeacons</a> ()</td></tr>
+<tr class="separator:aa484a04df31a083fb553ec7d07e3e33c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a76a6a4f64fade02a2b3667208961d234"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classCharacter.html#a76a6a4f64fade02a2b3667208961d234">setBeacon</a> (int index, <a class="el" href="structGameTime.html">GameTime</a> duration)</td></tr>
+<tr class="separator:a76a6a4f64fade02a2b3667208961d234"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ada27980290df63f9584ba89e1615203d"><td class="memItemLeft" align="right" valign="top"><a class="el" href="CharacterEnums_8h.html#aded85857649763b7e9927c146899e501">CHARACTER_SKILL_LEVEL</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classCharacter.html#ada27980290df63f9584ba89e1615203d">GetSkillLevel</a> (<a class="el" href="CharacterEnums_8h.html#afb7e1cb64c82efee699c6bd5b7467bb3">CharacterSkillType</a> skill) const</td></tr>
 <tr class="separator:ada27980290df63f9584ba89e1615203d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2d2e0998908495fbc4e5f9e4c346c22b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="CharacterEnums_8h.html#aad588572e82b590e48058c9fe465b478">CharacterSkillMastery</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classCharacter.html#a2d2e0998908495fbc4e5f9e4c346c22b">GetSkillMastery</a> (<a class="el" href="CharacterEnums_8h.html#afb7e1cb64c82efee699c6bd5b7467bb3">CharacterSkillType</a> skill) const</td></tr>
@@ -1269,14 +1269,14 @@ Static Public Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="ae325735599cd56df4e23c8e9f5301bed" name="ae325735599cd56df4e23c8e9f5301bed"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae325735599cd56df4e23c8e9f5301bed">&#9670;&#160;</a></span>CleanupBeacons()</h2>
+<a id="aa484a04df31a083fb553ec7d07e3e33c" name="aa484a04df31a083fb553ec7d07e3e33c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa484a04df31a083fb553ec7d07e3e33c">&#9670;&#160;</a></span>cleanupBeacons()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">void Character::CleanupBeacons </td>
+          <td class="memname">void Character::cleanupBeacons </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
@@ -4224,23 +4224,23 @@ Static Public Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="a19516b39a47d7961f481f9a75ec48ac3" name="a19516b39a47d7961f481f9a75ec48ac3"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a19516b39a47d7961f481f9a75ec48ac3">&#9670;&#160;</a></span>SetBeacon()</h2>
+<a id="a76a6a4f64fade02a2b3667208961d234" name="a76a6a4f64fade02a2b3667208961d234"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a76a6a4f64fade02a2b3667208961d234">&#9670;&#160;</a></span>setBeacon()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">bool Character::SetBeacon </td>
+          <td class="memname">bool Character::setBeacon </td>
           <td>(</td>
-          <td class="paramtype">size_t&#160;</td>
+          <td class="paramtype">int&#160;</td>
           <td class="paramname"><em>index</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">size_t&#160;</td>
-          <td class="paramname"><em>power</em>&#160;</td>
+          <td class="paramtype"><a class="el" href="structGameTime.html">GameTime</a>&#160;</td>
+          <td class="paramname"><em>duration</em>&#160;</td>
         </tr>
         <tr>
           <td></td>

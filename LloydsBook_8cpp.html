@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;ad8153a</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;0632f5a</span>
    </div>
   </td>
  </tr>
@@ -86,125 +86,81 @@ $(function() {
 <code>#include &quot;<a class="el" href="Party_8h.html">Engine/Party.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="SaveLoad_8h.html">Engine/SaveLoad.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="AssetsManager_8h.html">Engine/AssetsManager.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="Processor_8h.html">Engine/Events/Processor.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="Spells_8h.html">Engine/Spells/Spells.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="TurnEngine_8h.html">Engine/TurnEngine/TurnEngine.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="GUIButton_8h.html">GUI/GUIButton.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="GUIFont_8h.html">GUI/GUIFont.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="LloydsBook_8h.html">GUI/UI/Books/LloydsBook.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="UIStatusBar_8h.html">GUI/UI/UIStatusBar.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="AudioPlayer_8h.html">Media/Audio/AudioPlayer.h</a>&quot;</code><br />
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="var-members" name="var-members"></a>
 Variables</h2></td></tr>
-<tr class="memitem:a40b54a688cbe702c49701284c9bfd47e"><td class="memItemLeft" align="right" valign="top">std::array&lt; int, 5 &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="LloydsBook_8cpp.html#a40b54a688cbe702c49701284c9bfd47e">pLloydsBeaconsPreviewXs</a> = {{61, 281, 61, 281, 171}}</td></tr>
-<tr class="separator:a40b54a688cbe702c49701284c9bfd47e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8e553bb01422c5a7249d1ed05270d0f9"><td class="memItemLeft" align="right" valign="top">std::array&lt; int, 5 &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="LloydsBook_8cpp.html#a8e553bb01422c5a7249d1ed05270d0f9">pLloydsBeaconsPreviewYs</a> = {{84, 84, 228, 228, 155}}</td></tr>
-<tr class="separator:a8e553bb01422c5a7249d1ed05270d0f9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad17350ff00ae6c12716934ab6c5470e7"><td class="memItemLeft" align="right" valign="top">std::array&lt; int, 5 &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="LloydsBook_8cpp.html#ad17350ff00ae6c12716934ab6c5470e7">pLloydsBeacons_SomeXs</a> = {{59, 279, 59, 279, 169}}</td></tr>
-<tr class="separator:ad17350ff00ae6c12716934ab6c5470e7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac050d9192ebf9b09e35f018df3c9f735"><td class="memItemLeft" align="right" valign="top">std::array&lt; int, 5 &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="LloydsBook_8cpp.html#ac050d9192ebf9b09e35f018df3c9f735">pLloydsBeacons_SomeYs</a> = {{82, 82, 226, 226, 153}}</td></tr>
-<tr class="separator:ac050d9192ebf9b09e35f018df3c9f735"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a56d7fce2df30fc9c997e7c64dbb01ea5"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="LloydsBook_8cpp.html#a56d7fce2df30fc9c997e7c64dbb01ea5">bRecallingBeacon</a></td></tr>
-<tr class="separator:a56d7fce2df30fc9c997e7c64dbb01ea5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a60da6d686400920b80e2ffada6b2ce8e"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="LloydsBook_8cpp.html#a60da6d686400920b80e2ffada6b2ce8e">lloydsBeaconCasterId</a></td></tr>
-<tr class="separator:a60da6d686400920b80e2ffada6b2ce8e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af8c98c9d8c0b89fa801b7d9c431b98c0"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="LloydsBook_8cpp.html#af8c98c9d8c0b89fa801b7d9c431b98c0">lloydsBeaconSpellDuration</a></td></tr>
-<tr class="separator:af8c98c9d8c0b89fa801b7d9c431b98c0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9841666701aaaab0baef4ed29c55621f"><td class="memItemLeft" align="right" valign="top">std::array&lt; int, 5 &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="LloydsBook_8cpp.html#a9841666701aaaab0baef4ed29c55621f">lloydsBeaconsPreviewXs</a> = {{61, 281, 61, 281, 171}}</td></tr>
+<tr class="separator:a9841666701aaaab0baef4ed29c55621f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab0517f17e6643bf71dd5c4adf4ad3d22"><td class="memItemLeft" align="right" valign="top">std::array&lt; int, 5 &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="LloydsBook_8cpp.html#ab0517f17e6643bf71dd5c4adf4ad3d22">lloydsBeaconsPreviewYs</a> = {{84, 84, 228, 228, 155}}</td></tr>
+<tr class="separator:ab0517f17e6643bf71dd5c4adf4ad3d22"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3e509e750f8849c4038e52cd93944ae8"><td class="memItemLeft" align="right" valign="top">std::array&lt; int, 5 &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="LloydsBook_8cpp.html#a3e509e750f8849c4038e52cd93944ae8">lloydsBeacons_SomeXs</a> = {{59, 279, 59, 279, 169}}</td></tr>
+<tr class="separator:a3e509e750f8849c4038e52cd93944ae8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a57940efa0a73b5e58b456d23e0ab016f"><td class="memItemLeft" align="right" valign="top">std::array&lt; int, 5 &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="LloydsBook_8cpp.html#a57940efa0a73b5e58b456d23e0ab016f">lloydsBeacons_SomeYs</a> = {{82, 82, 226, 226, 153}}</td></tr>
+<tr class="separator:a57940efa0a73b5e58b456d23e0ab016f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2849f5ba65fe13fff548bf2601202780"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classGraphicsImage.html">GraphicsImage</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="LloydsBook_8cpp.html#a2849f5ba65fe13fff548bf2601202780">ui_book_lloyds_border</a> = nullptr</td></tr>
 <tr class="separator:a2849f5ba65fe13fff548bf2601202780"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aab1ed81303236e61880d9460a39d9067"><td class="memItemLeft" align="right" valign="top">std::array&lt; <a class="el" href="classGraphicsImage.html">GraphicsImage</a> *, 2 &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="LloydsBook_8cpp.html#aab1ed81303236e61880d9460a39d9067">ui_book_lloyds_backgrounds</a></td></tr>
 <tr class="separator:aab1ed81303236e61880d9460a39d9067"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Variable Documentation</h2>
-<a id="a56d7fce2df30fc9c997e7c64dbb01ea5" name="a56d7fce2df30fc9c997e7c64dbb01ea5"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a56d7fce2df30fc9c997e7c64dbb01ea5">&#9670;&#160;</a></span>bRecallingBeacon</h2>
+<a id="a3e509e750f8849c4038e52cd93944ae8" name="a3e509e750f8849c4038e52cd93944ae8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3e509e750f8849c4038e52cd93944ae8">&#9670;&#160;</a></span>lloydsBeacons_SomeXs</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">bool bRecallingBeacon</td>
+          <td class="memname">std::array&lt;int, 5&gt; lloydsBeacons_SomeXs = {{59, 279, 59, 279, 169}}</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
 </div>
 </div>
-<a id="a60da6d686400920b80e2ffada6b2ce8e" name="a60da6d686400920b80e2ffada6b2ce8e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a60da6d686400920b80e2ffada6b2ce8e">&#9670;&#160;</a></span>lloydsBeaconCasterId</h2>
+<a id="a57940efa0a73b5e58b456d23e0ab016f" name="a57940efa0a73b5e58b456d23e0ab016f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a57940efa0a73b5e58b456d23e0ab016f">&#9670;&#160;</a></span>lloydsBeacons_SomeYs</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">int lloydsBeaconCasterId</td>
+          <td class="memname">std::array&lt;int, 5&gt; lloydsBeacons_SomeYs = {{82, 82, 226, 226, 153}}</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
 </div>
 </div>
-<a id="af8c98c9d8c0b89fa801b7d9c431b98c0" name="af8c98c9d8c0b89fa801b7d9c431b98c0"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#af8c98c9d8c0b89fa801b7d9c431b98c0">&#9670;&#160;</a></span>lloydsBeaconSpellDuration</h2>
+<a id="a9841666701aaaab0baef4ed29c55621f" name="a9841666701aaaab0baef4ed29c55621f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9841666701aaaab0baef4ed29c55621f">&#9670;&#160;</a></span>lloydsBeaconsPreviewXs</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">int lloydsBeaconSpellDuration</td>
+          <td class="memname">std::array&lt;int, 5&gt; lloydsBeaconsPreviewXs = {{61, 281, 61, 281, 171}}</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
 </div>
 </div>
-<a id="ad17350ff00ae6c12716934ab6c5470e7" name="ad17350ff00ae6c12716934ab6c5470e7"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ad17350ff00ae6c12716934ab6c5470e7">&#9670;&#160;</a></span>pLloydsBeacons_SomeXs</h2>
+<a id="ab0517f17e6643bf71dd5c4adf4ad3d22" name="ab0517f17e6643bf71dd5c4adf4ad3d22"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab0517f17e6643bf71dd5c4adf4ad3d22">&#9670;&#160;</a></span>lloydsBeaconsPreviewYs</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">std::array&lt;int, 5&gt; pLloydsBeacons_SomeXs = {{59, 279, 59, 279, 169}}</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="ac050d9192ebf9b09e35f018df3c9f735" name="ac050d9192ebf9b09e35f018df3c9f735"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ac050d9192ebf9b09e35f018df3c9f735">&#9670;&#160;</a></span>pLloydsBeacons_SomeYs</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">std::array&lt;int, 5&gt; pLloydsBeacons_SomeYs = {{82, 82, 226, 226, 153}}</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a40b54a688cbe702c49701284c9bfd47e" name="a40b54a688cbe702c49701284c9bfd47e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a40b54a688cbe702c49701284c9bfd47e">&#9670;&#160;</a></span>pLloydsBeaconsPreviewXs</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">std::array&lt;int, 5&gt; pLloydsBeaconsPreviewXs = {{61, 281, 61, 281, 171}}</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a8e553bb01422c5a7249d1ed05270d0f9" name="a8e553bb01422c5a7249d1ed05270d0f9"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a8e553bb01422c5a7249d1ed05270d0f9">&#9670;&#160;</a></span>pLloydsBeaconsPreviewYs</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">std::array&lt;int, 5&gt; pLloydsBeaconsPreviewYs = {{84, 84, 228, 228, 155}}</td>
+          <td class="memname">std::array&lt;int, 5&gt; lloydsBeaconsPreviewYs = {{84, 84, 228, 228, 155}}</td>
         </tr>
       </table>
 </div><div class="memdoc">
