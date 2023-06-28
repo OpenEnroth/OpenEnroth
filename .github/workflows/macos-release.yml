@@ -13,13 +13,25 @@ env:
   TAG_NAME: "nightly"
 
 jobs:
-  build_macos:
-    runs-on: macos-12
+  build:
+    name: "Build: ${{ matrix.config.name }} / ${{ matrix.config.architecture }}"
+    runs-on: ${{ matrix.config.os }}
     strategy:
-      fail-fast: false
+      fail-fast: true
       matrix:
-        configuration: [Debug, Release]
-        architecture: [x64]
+        config:
+          - {
+              name: "macOS M1 Latest Clang",
+              os: macos-latest,
+              cc: "clang",
+              architecture: arm64,
+            }
+          - {
+              name: "macOS Latest Clang",
+              os: macos-latest,
+              cc: "clang",
+              architecture: x64,
+            }
     steps:
     - name: Checkout
       uses: actions/checkout@v3
@@ -28,12 +40,8 @@ jobs:
 
     - name: Install dependencies
       run: |
-        brew uninstall --ignore-dependencies --force brotli giflib highway imath jpeg-turbo libpng xz lz4 zstd libtiff little-cms2 openexr webp jpeg-xl libvmaf aom dav1d freetype fontconfig frei0r ca-certificates gmp libunistring gettext libidn2 libtasn1 nettle p11-kit openssl@1.1 libevent libnghttp2 unbound gnutls lame fribidi pcre2 glib xorgproto libxau libxdmcp libxcb libx11 libxext libxrender lzo pixman cairo graphite2 icu4c harfbuzz libunibreak libass libbluray cjson mbedtls librist libsoxr libvidstab libogg libvorbis libvpx opencore-amr openjpeg opus rav1e libsamplerate flac mpg123 libsndfile rubberband snappy speex srt leptonica libb2 libarchive pango tesseract theora x264 x265 xvid libsodium zeromq zimg
-        brew fetch --force --bottle-tag=arm64_big_sur sdl2
-        brew install $(brew --cache --bottle-tag=arm64_big_sur sdl2)
-        brew fetch --force --bottle-tag=arm64_big_sur ffmpeg@4 
-        brew install $(brew --cache --bottle-tag=arm64_big_sur ffmpeg@4 )
-        brew install cmake
+        brew install ffmpeg@4
+        brew install sdl2
 
     - name: Configure
       run: |
