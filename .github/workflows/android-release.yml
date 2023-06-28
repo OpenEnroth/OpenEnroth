@@ -29,7 +29,7 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v3
       with:
-        repository: botanicvelious/OpenEnroth_Android # OpenEnroth/OpenEnroth_Android
+        repository: OpenEnroth/OpenEnroth_Android
         submodules: 'recursive'
 
     - name: Install dependencies
