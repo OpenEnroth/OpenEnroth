@@ -28,8 +28,16 @@ jobs:
 
     - name: Install dependencies
       run: |
-        brew fetch --force --bottle-tag=arm64_big_sur ffmpeg@4 sdl2
-        brew install $(brew --cache --bottle-tag=arm64_big_sur ffmpeg@4 sdl2)
+        for f in `brew list`; do 
+          brew uninstall --ignore-dependencies --force $f
+        done
+        for f in `brew list --cask`; do 
+          brew uninstall --ignore-dependencies --force $f
+        done
+        brew fetch --force --bottle-tag=arm64_big_sur sdl2
+        brew install $(brew --cache --bottle-tag=arm64_big_sur sdl2)
+        brew fetch --force --bottle-tag=arm64_big_sur ffmpeg@4 
+        brew install $(brew --cache --bottle-tag=arm64_big_sur ffmpeg@4 )
 
     - name: Configure
       run: |
