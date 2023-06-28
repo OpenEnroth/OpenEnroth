@@ -75,16 +75,6 @@ struct SpellBookIconPos {
     int32_t Ypos;
 };
 
-struct TownPortalData {
-    Vec3i pos;
-    int16_t _viewYaw;
-    int16_t _viewPitch;
-    uint16_t uMapInfoID;
-    int16_t field_12;
-};
-
-extern std::array<TownPortalData, 6> TownPortalList;  // 4ECBB8
-
 extern struct SpellStats *pSpellStats;
 
 extern std::array<std::array<struct SpellBookIconPos, 12>, 9> pIconPos;

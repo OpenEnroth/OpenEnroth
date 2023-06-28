@@ -4,38 +4,54 @@
 #include "Engine/LOD.h"
 #include "Engine/Localization.h"
 #include "Engine/Party.h"
+#include "Engine/SaveLoad.h"
+#include "Engine/Objects/Actor.h"
+#include "Engine/TurnEngine/TurnEngine.h"
+#include "Engine/Events/Processor.h"
+#include "Engine/Spells/Spells.h"
 
 #include "GUI/GUIFont.h"
 #include "GUI/UI/Books/TownPortalBook.h"
+#include "GUI/UI/UIStatusBar.h"
+#include "GUI/UI/UIGame.h"
 
 #include "Media/Audio/AudioPlayer.h"
 
 #include "Io/Mouse.h"
 
-static std::array<int, TOWN_PORTAL_DESTINATION_COUNT> pTownPortalBook_xs = {260, 324, 147, 385, 390, 19};
-static std::array<int, TOWN_PORTAL_DESTINATION_COUNT> pTownPortalBook_ys = {206, 84, 182, 239, 17, 283};
-static std::array<int, TOWN_PORTAL_DESTINATION_COUNT> pTownPortalBook_ws = {80, 66, 68, 72, 67, 74};
-static std::array<int, TOWN_PORTAL_DESTINATION_COUNT> pTownPortalBook_hs = {55, 56, 65, 67, 67, 59};
+struct TownPortalData {
+    Vec3i pos;
+    int viewYaw;
+    int viewPitch;
+    MAP_TYPE mapInfoID;
+    int qBit;
+};
+
+static const int TOWN_PORTAL_DESTINATION_COUNT = 6;
+
+std::array<TownPortalData, TOWN_PORTAL_DESTINATION_COUNT> townPortalList = {{
+    {Vec3i( -5121,   2107,    1), 1536, 0, MAP_CASTLE_HARMONDALE, QBIT_FOUNTAIN_IN_HARMONDALE_ACTIVATED},
+    {Vec3i(-15148, -10240, 1473),    0, 0, MAP_PIERPONT,          QBIT_FOUNTAIN_IN_PIERPONT_ACTIVATED},
+    {Vec3i(-10519,   5375,  753),  512, 0, MAP_STEADWICK,         QBIT_FOUNTAIN_IN_STEADWICK_ACTIVATED},
+    {Vec3i(  3114, -11055,  513),    0, 0, MAP_MOUNT_NIGHON,      QBIT_FOUNTAIN_IN_MOUNT_NIGHON_ACTIVATED},
+    {Vec3i(  -158,   7624,    1),  512, 0, MAP_CELESTIA,          QBIT_FOUNTAIN_IN_CELESTIA_ACTIVATED},
+    {Vec3i( -1837,  -4247,   65),   65, 0, MAP_THE_PIT,           QBIT_FOUNTAIN_IN_THE_PIT_ACTIVATED}
+}};
+
+static std::array<int, TOWN_PORTAL_DESTINATION_COUNT> pTownPortalBook_xs = {260, 324, 147, 385, 390,  19};
+static std::array<int, TOWN_PORTAL_DESTINATION_COUNT> pTownPortalBook_ys = {206,  84, 182, 239,  17, 283};
+static std::array<int, TOWN_PORTAL_DESTINATION_COUNT> pTownPortalBook_ws = { 80,  66,  68,  72,  67,  74};
+static std::array<int, TOWN_PORTAL_DESTINATION_COUNT> pTownPortalBook_hs = { 55,  56,  65,  67,  67,  59};
 
 static std::array<GraphicsImage *, TOWN_PORTAL_DESTINATION_COUNT> ui_book_townportal_icons;
 
-std::array<int, TOWN_PORTAL_DESTINATION_COUNT> townPortalQuestBits = {
-        QBIT_FOUNTAIN_IN_HARMONDALE_ACTIVATED,
-        QBIT_FOUNTAIN_IN_PIERPONT_ACTIVATED,
-        QBIT_FOUNTAIN_IN_MOUNT_NIGHON_ACTIVATED,
-        QBIT_FOUNTAIN_IN_EVENMORN_ISLE_ACTIVATED,
-        QBIT_FOUNTAIN_IN_CELESTIA_ACTIVATED,
-        QBIT_FOUNTAIN_IN_THE_PIT_ACTIVATED};
-
 GraphicsImage *ui_book_townportal_background = nullptr;
-
-int townPortalCasterPid;
 
 GUIWindow_TownPortalBook::GUIWindow_TownPortalBook(int casterPid) : GUIWindow_Book() {
     this->eWindowType = WindowType::WINDOW_TownPortal;
     this->wData.val = WINDOW_TownPortal;
 
-    townPortalCasterPid = casterPid;
+    _casterPid = casterPid;
 
     ui_book_townportal_background = assets->getImage_Solid("townport");
 
@@ -46,8 +62,8 @@ GUIWindow_TownPortalBook::GUIWindow_TownPortalBook(int casterPid) : GUIWindow_Bo
     ui_book_townportal_icons[4] = assets->getImage_ColorKey("tpheaven");
     ui_book_townportal_icons[5] = assets->getImage_ColorKey("tphell");
 
-    for (uint i = 0; i < TOWN_PORTAL_DESTINATION_COUNT; ++i) {
-        CreateButton({pTownPortalBook_xs[i], pTownPortalBook_ys[i]}, {pTownPortalBook_ws[i], pTownPortalBook_hs[i]}, 1, 182, UIMSG_ClickTownInTP, i);
+    for (int i = 0; i < TOWN_PORTAL_DESTINATION_COUNT; ++i) {
+        CreateButton({pTownPortalBook_xs[i], pTownPortalBook_ys[i]}, {pTownPortalBook_ws[i], pTownPortalBook_hs[i]}, 1, UIMSG_HintTownPortal, UIMSG_ClickTownInTP, i);
     }
 }
 
@@ -67,8 +83,8 @@ void GUIWindow_TownPortalBook::Update() {
     townPortalWindow.uFrameZ = game_viewport_z;
     townPortalWindow.uFrameW = game_viewport_w;
 
-    for (uint i = 0; i < TOWN_PORTAL_DESTINATION_COUNT; ++i) {
-        if (pParty->_questBits[townPortalQuestBits[i]] || engine->config->debug.TownPortal.value()) {
+    for (int i = 0; i < TOWN_PORTAL_DESTINATION_COUNT; ++i) {
+        if (pParty->_questBits[townPortalList[i].qBit] || engine->config->debug.TownPortal.value()) {
             render->ZDrawTextureAlpha(pTownPortalBook_xs[i] / 640.0f, pTownPortalBook_ys[i] / 480.0f, ui_book_townportal_icons[i], i + 1);
         }
     }
@@ -77,10 +93,77 @@ void GUIWindow_TownPortalBook::Update() {
     int iconPointing = render->pActiveZBuffer[pt.x + pt.y * render->GetRenderDimensions().w] & 0xFFFF;
 
     if (iconPointing) {
-        if (pParty->_questBits[townPortalQuestBits[iconPointing - 1]] || engine->config->debug.TownPortal.value()) {
+        if (pParty->_questBits[townPortalList[iconPointing - 1].qBit] || engine->config->debug.TownPortal.value()) {
             render->DrawTextureNew(pTownPortalBook_xs[iconPointing - 1] / 640.0f, pTownPortalBook_ys[iconPointing - 1] / 480.0f, ui_book_townportal_icons[iconPointing - 1]);
         }
     }
 
     townPortalWindow.DrawTitleText(pFontBookTitle, 0, 22, colorTable.White, localization->GetString(LSTR_TOWN_PORTAL), 3);
+}
+
+void GUIWindow_TownPortalBook::clickTown(int townId) {
+    // check if tp location is unlocked
+    if (!pParty->_questBits[townPortalList[townId].qBit] && !engine->config->debug.TownPortal.value()) {
+        return;
+    }
+
+    // begin TP
+    SaveGame(1, 0);
+    // if in current map
+    // TODO(Nik-RE-dev): need separate function for teleportation to other maps
+    if (pMapStats->GetMapInfo(pCurrentMapName) == townPortalList[townId].mapInfoID) {
+        pParty->pos = townPortalList[townId].pos;
+        pParty->uFallStartZ = pParty->pos.z;
+        pParty->_viewYaw = townPortalList[townId].viewYaw;
+        pParty->_viewPitch = townPortalList[townId].viewPitch;
+    } else {  // if change map
+        onMapLeave();
+        dword_6BE364_game_settings_1 |= GAME_SETTINGS_0001;
+        uGameState = GAME_STATE_CHANGE_LOCATION;
+        pCurrentMapName = pMapStats->pInfos[townPortalList[townId].mapInfoID].pFilename;
+        Start_Party_Teleport_Flag = 1;
+        Party_Teleport_X_Pos = townPortalList[townId].pos.x;
+        Party_Teleport_Y_Pos = townPortalList[townId].pos.y;
+        Party_Teleport_Z_Pos = townPortalList[townId].pos.z;
+        Party_Teleport_Cam_Yaw = townPortalList[townId].viewYaw;
+        Party_Teleport_Cam_Pitch = townPortalList[townId].viewPitch;
+        Actor::InitializeActors();
+    }
+
+    assert(PID_TYPE(_casterPid) == OBJECT_Character);
+
+    int casterId = PID_ID(_casterPid);
+    if (casterId < pParty->pCharacters.size()) {
+        // Town portal casted by character
+        assert(pSpellDatas[SPELL_WATER_TOWN_PORTAL].uNormalLevelMana == pSpellDatas[SPELL_WATER_TOWN_PORTAL].uExpertLevelMana);
+        assert(pSpellDatas[SPELL_WATER_TOWN_PORTAL].uNormalLevelMana == pSpellDatas[SPELL_WATER_TOWN_PORTAL].uMasterLevelMana);
+        assert(pSpellDatas[SPELL_WATER_TOWN_PORTAL].uNormalLevelMana == pSpellDatas[SPELL_WATER_TOWN_PORTAL].uMagisterLevelMana);
+        pParty->pCharacters[casterId].SpendMana(pSpellDatas[SPELL_WATER_TOWN_PORTAL].uNormalLevelMana);
+
+        assert(pSpellDatas[SPELL_WATER_TOWN_PORTAL].uNormalLevelRecovery == pSpellDatas[SPELL_WATER_TOWN_PORTAL].uExpertLevelRecovery);
+        assert(pSpellDatas[SPELL_WATER_TOWN_PORTAL].uNormalLevelRecovery == pSpellDatas[SPELL_WATER_TOWN_PORTAL].uMasterLevelRecovery);
+        assert(pSpellDatas[SPELL_WATER_TOWN_PORTAL].uNormalLevelRecovery == pSpellDatas[SPELL_WATER_TOWN_PORTAL].uMagisterLevelRecovery);
+        signed int sRecoveryTime = pSpellDatas[SPELL_WATER_TOWN_PORTAL].uNormalLevelRecovery;
+        if (pParty->bTurnBasedModeOn) {
+            pParty->pTurnBasedCharacterRecoveryTimes[casterId] = sRecoveryTime;
+            pParty->pCharacters[casterId].SetRecoveryTime(sRecoveryTime);
+            pTurnEngine->ApplyPlayerAction();
+        } else {
+            pParty->pCharacters[casterId].SetRecoveryTime(debug_non_combat_recovery_mul * sRecoveryTime * flt_debugrecmod3);
+        }
+    } else {
+        // Town portal casted by hireling
+        pParty->pHirelings[casterId - pParty->pCharacters.size()].bHasUsedTheAbility = 1;
+    }
+
+    engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 1, 0);
+}
+
+void GUIWindow_TownPortalBook::hintTown(int townId) {
+    if (!pParty->_questBits[townPortalList[townId].qBit] && !engine->config->debug.TownPortal.value()) {
+        render->DrawTextureNew(0, 352 / 480.0f, game_ui_statusbar);
+        return;
+    }
+
+    GameUI_StatusBar_Set(localization->FormatString(LSTR_TOWN_PORTAL_TO_S, pMapStats->pInfos[townPortalList[townId].mapInfoID].pName.c_str()));
 }
