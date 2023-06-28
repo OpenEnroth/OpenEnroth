@@ -28,8 +28,8 @@ jobs:
 
     - name: Install dependencies
       run: |
-        brew install ffmpeg@4
-        brew install sdl2
+        brew fetch --force --bottle-tag=arm64_big_sur ffmpeg@4 sdl2
+        brew install $(brew --cache --bottle-tag=arm64_big_sur ffmpeg@4 sdl2)
 
     - name: Configure
       run: |
