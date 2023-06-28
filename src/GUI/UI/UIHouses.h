@@ -4,6 +4,7 @@
 #include <vector>
 
 #include "Engine/Tables/BuildingTable.h"
+#include "Engine/Tables/AwardTable.h"
 
 #include "GUI/GUIWindow.h"
 #include "Utility/IndexedArray.h"
@@ -43,6 +44,12 @@ bool houseDialogPressEscape();
  * @offset 0x4B1E92
  */
 void playHouseSound(HOUSE_ID houseID, HouseSoundType type);
+
+void _4B3FE5_training_dialogue(int a4);
+void OracleDialogue();
+std::string _4B254D_SkillMasteryTeacher(int trainerInfo);
+void DrawJoinGuildWindow(GUILD_ID guild_id);
+const std::string &GetJoinGuildDialogueOption(GUILD_ID guild_id);
 
 /**
  * Type of NPC you can have dialogue with inside house.
@@ -125,3 +132,6 @@ extern IndexedArray<int, BUILDING_WEAPON_SHOP, BUILDING_DARK_GUILD> itemAmountIn
 
 extern std::vector<HouseNpcDesc> houseNpcs;
 extern int currentHouseNpc;
+
+extern AwardType dword_F8B1AC_award_bit_number;
+extern CharacterSkillType dword_F8B1AC_skill_being_taught;
