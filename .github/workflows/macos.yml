@@ -10,7 +10,7 @@ jobs:
   build:
     runs-on: macos-12
     strategy:
-      fail-fast: true
+      fail-fast: false
       matrix:
         configuration: [Debug, Release]
         architecture: [x64, arm64]
