@@ -4,7 +4,7 @@ if(APPLE)
     set (CMAKE_OSX_DEPLOYMENT_TARGET "11" CACHE STRING "Minimum OS X deployment version" FORCE)
     set (CMAKE_OSX_ARCHITECTURES "arm64" CACHE STRING "Architectures" FORCE)
     set (CMAKE_XCODE_ATTRIBUTE_MACOSX_DEPLOYMENT_TARGET[arch=arm64] "11.0" CACHE STRING "arm 64 minimum deployment target" FORCE)
-endif()```
+endif()
 
 project("OpenEnroth")
 add_compile_definitions(PACKAGE_BUGREPORT="https://github.com/OpenEnroth/OpenEnroth/issues")
