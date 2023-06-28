@@ -7,13 +7,13 @@ on:
     types: [published]
 
 jobs:
-  build_macos:
+  build:
     runs-on: macos-12
     strategy:
-      fail-fast: false
+      fail-fast: true
       matrix:
         configuration: [Debug, Release]
-        architecture: [x64]
+        architecture: [x64, arm64]
     steps:
     - name: Checkout
       uses: actions/checkout@v3
@@ -38,7 +38,7 @@ jobs:
       working-directory: build
       run: |
         make UnitTest
-
+        
     - name: Prepare artifact
       run: |
         mkdir dist
