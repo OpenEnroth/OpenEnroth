@@ -1353,3 +1353,8 @@ GAME_TEST(Issues, Issue929) {
     test->playTraceFromTestData("issue_929.mm7", "issue_929.json", [&] { oldGold = pParty->uNumGold; });
     EXPECT_EQ(oldGold + 1, pParty->uNumGold);
 }
+
+GAME_TEST(Issues, Issue1020) {
+    // Test finishing the scavenger hunt quest. The game should not crash when there is no dialogue options.
+    test->playTraceFromTestData("issue_1020.mm7", "issue_1020.json"); // Should not assert
+}
