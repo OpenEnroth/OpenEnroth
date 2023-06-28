@@ -15,23 +15,12 @@ env:
 jobs:
   build:
     name: "Build: ${{ matrix.config.name }} / ${{ matrix.config.architecture }}"
-    runs-on: ${{ matrix.config.os }}
+    runs-on: macos-12
     strategy:
       fail-fast: true
       matrix:
-        config:
-          - {
-              name: "macOS M1 Latest Clang",
-              os: macos-latest,
-              cc: "clang",
-              architecture: arm64,
-            }
-          - {
-              name: "macOS Latest Clang",
-              os: macos-latest,
-              cc: "clang",
-              architecture: x64,
-            }
+        configuration: [Debug, Release]
+        architecture: [x64, arm64]
     steps:
     - name: Checkout
       uses: actions/checkout@v3
