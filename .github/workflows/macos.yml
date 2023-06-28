@@ -7,7 +7,7 @@ on:
     types: [published]
 
 jobs:
-  build:
+  build_macos:
     runs-on: macos-12
     strategy:
       fail-fast: false
