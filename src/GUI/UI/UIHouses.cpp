@@ -22,6 +22,7 @@
 #include "Engine/Tables/TransitionTable.h"
 #include "Engine/Tables/ItemTable.h"
 #include "Engine/Objects/NPC.h"
+#include "Engine/Events/Processor.h"
 
 #include "GUI/GUIButton.h"
 #include "GUI/GUIFont.h"
@@ -30,6 +31,8 @@
 #include "GUI/UI/UIDialogue.h"
 #include "GUI/UI/UIGame.h"
 #include "GUI/UI/UIStatusBar.h"
+#include "GUI/UI/UITransition.h"
+#include "GUI/UI/NPCTopics.h"
 #include "GUI/UI/Houses/MagicGuild.h"
 #include "GUI/UI/Houses/Bank.h"
 #include "GUI/UI/Houses/Jail.h"
@@ -57,10 +60,6 @@ BuildingType in_current_building_type;  // 00F8B198
 DIALOGUE_TYPE dialog_menu_id;     // 00F8B19C
 
 GraphicsImage *_591428_endcap = nullptr;
-
-// TODO(Nik-RE-dev): refactor and remove
-AwardType dword_F8B1AC_award_bit_number;
-CharacterSkillType dword_F8B1AC_skill_being_taught; // Address the same as above --- splitting a union into two variables.
 
 std::vector<HouseNpcDesc> houseNpcs;
 int currentHouseNpc;
@@ -264,176 +263,6 @@ std::array<const HouseAnimDescr, 196> pAnimatedRooms = { {  // 0x4E5F70
     { "Player Castle Bad", 0x24, 0, BUILDING_CASTLE, 0, 0 }
 } };
 
-IndexedArray<int, GUILD_FIRST, GUILD_LAST> priceForMembership = {{
-    {GUILD_OF_ELEMENTS, 100},
-    {GUILD_OF_SELF,     100},
-    {GUILD_OF_AIR,      50},
-    {GUILD_OF_EARTH,    50},
-    {GUILD_OF_FIRE,     50},
-    {GUILD_OF_WATER,    50},
-    {GUILD_OF_BODY,     50},
-    {GUILD_OF_MIND,     50},
-    {GUILD_OF_SPIRIT,   50},
-    {GUILD_OF_LIGHT,    1000},
-    {GUILD_OF_DARK,     1000}
-}};
-
-IndexedArray<int, CHARACTER_SKILL_FIRST, CHARACTER_SKILL_LAST> expertSkillMasteryCost = {{
-    {CHARACTER_SKILL_STAFF,        2000},
-    {CHARACTER_SKILL_SWORD,        2000},
-    {CHARACTER_SKILL_DAGGER,       2000},
-    {CHARACTER_SKILL_AXE,          2000},
-    {CHARACTER_SKILL_SPEAR,        2000},
-    {CHARACTER_SKILL_BOW,          2000},
-    {CHARACTER_SKILL_MACE,         2000},
-    {CHARACTER_SKILL_BLASTER,      0},
-    {CHARACTER_SKILL_SHIELD,       1000},
-    {CHARACTER_SKILL_LEATHER,      1000},
-    {CHARACTER_SKILL_CHAIN,        1000},
-    {CHARACTER_SKILL_PLATE,        1000},
-    {CHARACTER_SKILL_FIRE,         1000},
-    {CHARACTER_SKILL_AIR,          1000},
-    {CHARACTER_SKILL_WATER,        1000},
-    {CHARACTER_SKILL_EARTH,        1000},
-    {CHARACTER_SKILL_SPIRIT,       1000},
-    {CHARACTER_SKILL_MIND,         1000},
-    {CHARACTER_SKILL_BODY,         1000},
-    {CHARACTER_SKILL_LIGHT,        2000},
-    {CHARACTER_SKILL_DARK,         2000},
-    {CHARACTER_SKILL_ITEM_ID,      500},
-    {CHARACTER_SKILL_MERCHANT,     2000},
-    {CHARACTER_SKILL_REPAIR,       500},
-    {CHARACTER_SKILL_BODYBUILDING, 500},
-    {CHARACTER_SKILL_MEDITATION,   500},
-    {CHARACTER_SKILL_PERCEPTION,   500},
-    {CHARACTER_SKILL_DIPLOMACY,    0}, // not used
-    {CHARACTER_SKILL_THIEVERY,     0}, // not used
-    {CHARACTER_SKILL_TRAP_DISARM,  500},
-    {CHARACTER_SKILL_DODGE,        2000},
-    {CHARACTER_SKILL_UNARMED,      2000},
-    {CHARACTER_SKILL_MONSTER_ID,   500},
-    {CHARACTER_SKILL_ARMSMASTER,   2000},
-    {CHARACTER_SKILL_STEALING,     500},
-    {CHARACTER_SKILL_ALCHEMY,      500},
-    {CHARACTER_SKILL_LEARNING,     2000},
-    {CHARACTER_SKILL_CLUB,         500},
-    {CHARACTER_SKILL_MISC,         0} // hidden, not used
-}};
-
-IndexedArray<int, CHARACTER_SKILL_FIRST, CHARACTER_SKILL_LAST> masterSkillMasteryCost = {{
-    {CHARACTER_SKILL_STAFF,        5000},
-    {CHARACTER_SKILL_SWORD,        5000},
-    {CHARACTER_SKILL_DAGGER,       5000},
-    {CHARACTER_SKILL_AXE,          5000},
-    {CHARACTER_SKILL_SPEAR,        5000},
-    {CHARACTER_SKILL_BOW,          5000},
-    {CHARACTER_SKILL_MACE,         5000},
-    {CHARACTER_SKILL_BLASTER,      0},
-    {CHARACTER_SKILL_SHIELD,       3000},
-    {CHARACTER_SKILL_LEATHER,      3000},
-    {CHARACTER_SKILL_CHAIN,        3000},
-    {CHARACTER_SKILL_PLATE,        3000},
-    {CHARACTER_SKILL_FIRE,         4000},
-    {CHARACTER_SKILL_AIR,          4000},
-    {CHARACTER_SKILL_WATER,        4000},
-    {CHARACTER_SKILL_EARTH,        4000},
-    {CHARACTER_SKILL_SPIRIT,       4000},
-    {CHARACTER_SKILL_MIND,         4000},
-    {CHARACTER_SKILL_BODY,         4000},
-    {CHARACTER_SKILL_LIGHT,        5000},
-    {CHARACTER_SKILL_DARK,         5000},
-    {CHARACTER_SKILL_ITEM_ID,      2500},
-    {CHARACTER_SKILL_MERCHANT,     5000},
-    {CHARACTER_SKILL_REPAIR,       2500},
-    {CHARACTER_SKILL_BODYBUILDING, 2500},
-    {CHARACTER_SKILL_MEDITATION,   2500},
-    {CHARACTER_SKILL_PERCEPTION,   2500},
-    {CHARACTER_SKILL_DIPLOMACY,    0}, // not used
-    {CHARACTER_SKILL_THIEVERY,     0}, // not used
-    {CHARACTER_SKILL_TRAP_DISARM,  2500},
-    {CHARACTER_SKILL_DODGE,        5000},
-    {CHARACTER_SKILL_UNARMED,      5000},
-    {CHARACTER_SKILL_MONSTER_ID,   2500},
-    {CHARACTER_SKILL_ARMSMASTER,   5000},
-    {CHARACTER_SKILL_STEALING,     2500},
-    {CHARACTER_SKILL_ALCHEMY,      2500},
-    {CHARACTER_SKILL_LEARNING,     5000},
-    {CHARACTER_SKILL_CLUB,         2500},
-    {CHARACTER_SKILL_MISC,         0} // hidden, not used
-}};
-
-IndexedArray<int, CHARACTER_SKILL_FIRST, CHARACTER_SKILL_LAST> grandmasterSkillMasteryCost = {{
-    {CHARACTER_SKILL_STAFF,        8000},
-    {CHARACTER_SKILL_SWORD,        8000},
-    {CHARACTER_SKILL_DAGGER,       8000},
-    {CHARACTER_SKILL_AXE,          8000},
-    {CHARACTER_SKILL_SPEAR,        8000},
-    {CHARACTER_SKILL_BOW,          8000},
-    {CHARACTER_SKILL_MACE,         8000},
-    {CHARACTER_SKILL_BLASTER,      0},
-    {CHARACTER_SKILL_SHIELD,       7000},
-    {CHARACTER_SKILL_LEATHER,      7000},
-    {CHARACTER_SKILL_CHAIN,        7000},
-    {CHARACTER_SKILL_PLATE,        7000},
-    {CHARACTER_SKILL_FIRE,         8000},
-    {CHARACTER_SKILL_AIR,          8000},
-    {CHARACTER_SKILL_WATER,        8000},
-    {CHARACTER_SKILL_EARTH,        8000},
-    {CHARACTER_SKILL_SPIRIT,       8000},
-    {CHARACTER_SKILL_MIND,         8000},
-    {CHARACTER_SKILL_BODY,         8000},
-    {CHARACTER_SKILL_LIGHT,        8000},
-    {CHARACTER_SKILL_DARK,         8000},
-    {CHARACTER_SKILL_ITEM_ID,      6000},
-    {CHARACTER_SKILL_MERCHANT,     8000},
-    {CHARACTER_SKILL_REPAIR,       6000},
-    {CHARACTER_SKILL_BODYBUILDING, 6000},
-    {CHARACTER_SKILL_MEDITATION,   6000},
-    {CHARACTER_SKILL_PERCEPTION,   6000},
-    {CHARACTER_SKILL_DIPLOMACY,    0}, // not used
-    {CHARACTER_SKILL_THIEVERY,     0}, // not used
-    {CHARACTER_SKILL_TRAP_DISARM,  6000},
-    {CHARACTER_SKILL_DODGE,        8000},
-    {CHARACTER_SKILL_UNARMED,      8000},
-    {CHARACTER_SKILL_MONSTER_ID,   6000},
-    {CHARACTER_SKILL_ARMSMASTER,   8000},
-    {CHARACTER_SKILL_STEALING,     6000},
-    {CHARACTER_SKILL_ALCHEMY,      6000},
-    {CHARACTER_SKILL_LEARNING,     8000},
-    {CHARACTER_SKILL_CLUB,         6000},
-    {CHARACTER_SKILL_MISC,         0} // hidden, not used
-}};
-
-std::array<std::pair<int16_t, ITEM_TYPE>, 27> _4F0882_evt_VAR_PlayerItemInHands_vals = {{
-    {0x0D4, ITEM_QUEST_VASE},
-    {0x0D5, ITEM_RARE_LADY_CARMINES_DAGGER},
-    {0x0D6, ITEM_MESSAGE_SCROLL_OF_WAVES},
-    {0x0D7, ITEM_MESSAGE_CIPHER},
-    {0x0D8, ITEM_QUEST_WORN_BELT},
-    {0x0D9, ITEM_QUEST_HEART_OF_THE_WOOD},
-    {0x0DA, ITEM_MESSAGE_MAP_TO_EVENMORN_ISLAND},
-    {0x0DB, ITEM_QUEST_GOLEM_HEAD},
-    {0x0DC, ITEM_QUEST_ABBEY_NORMAL_GOLEM_HEAD},
-    {0x0DD, ITEM_QUEST_GOLEM_RIGHT_ARM},
-    {0x0DE, ITEM_QUEST_GOLEM_LEFT_ARM},
-    {0x0DF, ITEM_QUEST_GOLEM_RIGHT_LEG},
-    {0x0E0, ITEM_QUEST_GOLEM_LEFT_LEG},
-    {0x0E1, ITEM_QUEST_GOLEM_CHEST},
-    {0x0E2, ITEM_SPELLBOOK_DIVINE_INTERVENTION},
-    {0x0E3, ITEM_QUEST_DRAGON_EGG},
-    {0x0E4, ITEM_QUEST_ZOKARR_IVS_SKULL},
-    {0x0E5, ITEM_QUEST_LICH_JAR_EMPTY},
-    {0x0E6, ITEM_QUEST_ELIXIR},
-    {0x0E7, ITEM_QUEST_CASE_OF_SOUL_JARS},
-    {0x0E8, ITEM_QUEST_ALTAR_PIECE_1},
-    {0x0E9, ITEM_QUEST_ALTAR_PIECE_2},
-    {0x0EA, ITEM_QUEST_CONTROL_CUBE},
-    {0x0EB, ITEM_QUEST_WETSUIT},
-    {0x0EC, ITEM_QUEST_OSCILLATION_OVERTHRUSTER},
-    {0x0ED, ITEM_QUEST_LICH_JAR_FULL},
-    {0x0F1, ITEM_RARE_THE_PERFECT_BOW}
-}};
-
 IndexedArray<int, BUILDING_WEAPON_SHOP, BUILDING_DARK_GUILD> itemAmountInShop = {{
     {BUILDING_WEAPON_SHOP,   6},
     {BUILDING_ARMOR_SHOP,    8},
@@ -624,6 +453,272 @@ void prepareHouse(HOUSE_ID house) {
     }
 }
 
+void ClickNPCTopic(DIALOGUE_TYPE topic) {
+    int pEventNumber;  // ecx@8
+    char *v12;         // eax@53
+    char *v13;         // eax@56
+    char *v14;         // eax@57
+    char *v15;         // eax@58
+    int pPrice;        // ecx@70
+
+    uDialogueType = (DIALOGUE_TYPE)(topic + 1);
+    NPCData *pCurrentNPCInfo = houseNpcs[currentHouseNpc].npc;
+    if (topic <= DIALOGUE_SCRIPTED_LINE_6) {
+        switch (topic) {
+        case DIALOGUE_13_hiring_related:
+            current_npc_text = BuildDialogueString(
+                pNPCStats->pProfessions[pCurrentNPCInfo->profession].pJoinText,
+                pParty->activeCharacterIndex() - 1, 0, HOUSE_INVALID, 0);
+            NPCHireableDialogPrepare();
+            dialogue_show_profession_details = false;
+            BackToHouseMenu();
+            return;
+        case DIALOGUE_SCRIPTED_LINE_1:
+            pEventNumber = pCurrentNPCInfo->dialogue_1_evt_id;
+            break;
+        case DIALOGUE_SCRIPTED_LINE_2:
+            pEventNumber = pCurrentNPCInfo->dialogue_2_evt_id;
+            break;
+        case DIALOGUE_SCRIPTED_LINE_3:
+            pEventNumber = pCurrentNPCInfo->dialogue_3_evt_id;
+            break;
+        case DIALOGUE_SCRIPTED_LINE_4:
+            pEventNumber = pCurrentNPCInfo->dialogue_4_evt_id;
+            break;
+        case DIALOGUE_SCRIPTED_LINE_5:
+            pEventNumber = pCurrentNPCInfo->dialogue_5_evt_id;
+            break;
+        case DIALOGUE_SCRIPTED_LINE_6:
+            pEventNumber = pCurrentNPCInfo->dialogue_6_evt_id;
+            break;
+        default:
+            BackToHouseMenu();
+            return;
+        }
+
+        if (pEventNumber < 200 || pEventNumber > 310) {
+            if (pEventNumber < 400 || pEventNumber > 410) {
+                if (pEventNumber == 139) {
+                    OracleDialogue();
+                } else {
+                    if (pEventNumber == 311) {
+                        // TODO(Nik-RE-dev): event 311 belongs to one of the teleports in Bracada
+                        __debugbreak();
+                        //openBountyHuntingDialogue();
+                    } else {
+                        current_npc_text.clear();
+                        activeLevelDecoration = (LevelDecoration *)1;
+                        eventProcessor(pEventNumber, 0, 1);
+                        activeLevelDecoration = nullptr;
+                    }
+                }
+            } else {
+                _dword_F8B1D8_last_npc_topic_menu = topic;
+                DrawJoinGuildWindow((GUILD_ID)(pEventNumber - 400));
+            }
+        } else {
+            _4B3FE5_training_dialogue(pEventNumber);
+        }
+        BackToHouseMenu();
+        return;
+    }
+    if (topic != DIALOGUE_HIRE_FIRE) {
+        if (topic == DIALOGUE_PROFESSION_DETAILS) {
+            // uBoxHeight = pCurrentNPCInfo->uProfession;
+            __debugbreak();  // probably hirelings found in buildings, not
+                             // present in MM7, changed
+                             // "pCurrentNPCInfo->uProfession - 1" to
+                             // "pCurrentNPCInfo->uProfession", have to check in
+                             // other versions whether it's ok
+            if (dialogue_show_profession_details) {
+                current_npc_text = BuildDialogueString(
+                    pNPCStats->pProfessions[pCurrentNPCInfo->profession].pJoinText,
+                    pParty->activeCharacterIndex() - 1, 0, HOUSE_INVALID, 0);
+            } else {
+                current_npc_text = BuildDialogueString(
+                    pNPCStats->pProfessions[pCurrentNPCInfo->profession].pBenefits,
+                    pParty->activeCharacterIndex() - 1, 0, HOUSE_INVALID, 0);
+            }
+            dialogue_show_profession_details = ~dialogue_show_profession_details;
+        } else {
+            if (topic == DIALOGUE_79_mastery_teacher) {
+                if (guild_membership_approved) {
+                    pParty->TakeGold(gold_transaction_amount);
+                    if (pParty->hasActiveCharacter()) {
+                        pParty->activeCharacter().SetSkillMastery(dword_F8B1AC_skill_being_taught, dword_F8B1B0_MasteryBeingTaught);
+                        pParty->activeCharacter().playReaction(SPEECH_SKILL_MASTERY_INC);
+                    }
+                    engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 1, 0);
+                }
+            } else {
+                if (topic == DIALOGUE_82_join_guild && guild_membership_approved) {
+                    // join guild
+                    pParty->TakeGold(gold_transaction_amount, true);
+                    for (Character &player : pParty->pCharacters)
+                        player.SetVariable(VAR_Award, dword_F8B1AC_award_bit_number);
+
+                    switch (_dword_F8B1D8_last_npc_topic_menu) {
+                    case DIALOGUE_SCRIPTED_LINE_1:
+                        pEventNumber = pCurrentNPCInfo->dialogue_1_evt_id;
+                        if (pEventNumber >= 400 && pEventNumber <= 416)
+                            pCurrentNPCInfo->dialogue_1_evt_id = 0;
+                        break;
+                    case DIALOGUE_SCRIPTED_LINE_2:
+                        pEventNumber = pCurrentNPCInfo->dialogue_2_evt_id;
+                        if (pEventNumber >= 400 && pEventNumber <= 416)
+                            pCurrentNPCInfo->dialogue_2_evt_id = 0;
+                        break;
+                    case DIALOGUE_SCRIPTED_LINE_3:
+                        pEventNumber = pCurrentNPCInfo->dialogue_3_evt_id;
+                        if (pEventNumber >= 400 && pEventNumber <= 416)
+                            pCurrentNPCInfo->dialogue_3_evt_id = 0;
+                        break;
+                    case DIALOGUE_SCRIPTED_LINE_4:
+                        pEventNumber = pCurrentNPCInfo->dialogue_4_evt_id;
+                        if (pEventNumber >= 400 && pEventNumber <= 416)
+                            pCurrentNPCInfo->dialogue_4_evt_id = 0;
+                        break;
+                    case DIALOGUE_SCRIPTED_LINE_5:
+                        pEventNumber = pCurrentNPCInfo->dialogue_5_evt_id;
+                        if (pEventNumber >= 400 && pEventNumber <= 416)
+                            pCurrentNPCInfo->dialogue_5_evt_id = 0;
+                        break;
+                    case DIALOGUE_SCRIPTED_LINE_6:
+                        pEventNumber = pCurrentNPCInfo->dialogue_6_evt_id;
+                        if (pEventNumber >= 400 && pEventNumber <= 416)
+                            pCurrentNPCInfo->dialogue_6_evt_id = 0;
+                        break;
+                    default:
+                        break;
+                    }
+                    engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 1, 0);
+                    if (pParty->hasActiveCharacter()) {
+                        pParty->activeCharacter().playReaction(SPEECH_JOINED_GUILD);
+                        BackToHouseMenu();
+                        return;
+                    }
+                }
+            }
+        }
+        BackToHouseMenu();
+        return;
+    }
+
+    if (!pParty->pHirelings[0].pName.empty() && !pParty->pHirelings[1].pName.empty()) {
+        GameUI_SetStatusBar(LSTR_HIRE_NO_ROOM);
+        BackToHouseMenu();
+        return;
+    }
+
+    if (pCurrentNPCInfo->profession != Burglar) {  // burglars have no hiring price
+        __debugbreak();  // probably hirelings found in buildings, not present
+                         // in MM7, changed "pCurrentNPCInfo->uProfession - 1"
+                         // to "pCurrentNPCInfo->uProfession", have to check in
+                         // other versions whether it's ok
+        pPrice =
+            pNPCStats->pProfessions[pCurrentNPCInfo->profession].uHirePrice;
+        if (pParty->GetGold() < (unsigned int)pPrice) {
+            GameUI_SetStatusBar(LSTR_NOT_ENOUGH_GOLD);
+            dialogue_show_profession_details = false;
+            uDialogueType = DIALOGUE_13_hiring_related;
+            current_npc_text = BuildDialogueString(
+                pNPCStats->pProfessions[pCurrentNPCInfo->profession].pJoinText,
+                pParty->activeCharacterIndex() - 1, 0, HOUSE_INVALID, 0);
+            if (pParty->hasActiveCharacter()) {
+                pParty->activeCharacter().playReaction(SPEECH_NOT_ENOUGH_GOLD);
+            }
+            GameUI_SetStatusBar(LSTR_NOT_ENOUGH_GOLD);
+            BackToHouseMenu();
+            return;
+        } else {
+            pParty->TakeGold(pPrice);
+        }
+    }
+
+    pCurrentNPCInfo->uFlags |= NPC_HIRED;
+    pParty->hirelingScrollPosition = 0;
+    pParty->CountHirelings();
+    if (!pParty->pHirelings[0].pName.empty()) {
+        pParty->pHirelings[1] = *pCurrentNPCInfo;
+        pParty->pHireling2Name = pCurrentNPCInfo->pName;
+    } else {
+        pParty->pHirelings[0] = *pCurrentNPCInfo;
+        pParty->pHireling1Name = pCurrentNPCInfo->pName;
+    }
+    pParty->hirelingScrollPosition = 0;
+    pParty->CountHirelings();
+    prepareHouse(window_SpeakInHouse->houseId());
+    dialog_menu_id = DIALOGUE_MAIN;
+
+    engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 1, 0);
+    if (pParty->hasActiveCharacter()) {
+        pParty->activeCharacter().playReaction(SPEECH_HIRE_NPC);
+    }
+
+    BackToHouseMenu();
+}
+
+void updateNPCTopics(int npc) {
+    int num_menu_buttons = 0;
+
+    currentHouseNpc = npc;
+    Sizei renDims = render->GetRenderDimensions();
+    if (houseNpcs[npc].type == HOUSE_TRANSITION) {
+        pDialogueWindow->Release();
+        pDialogueWindow = new GUIWindow(WINDOW_Dialogue, {0, 0}, renDims, 0);
+        transition_button_label = houseNpcs[npc].label;
+        pBtn_ExitCancel = pDialogueWindow->CreateButton({566, 445}, {75, 33}, 1, 0, UIMSG_Escape, 0, Io::InputAction::No, localization->GetString(LSTR_CANCEL), {ui_buttdesc2});
+        pBtn_YES = pDialogueWindow->CreateButton({486, 445}, {75, 33}, 1, 0, UIMSG_HouseTransitionConfirmation, 1, Io::InputAction::Yes, transition_button_label, {ui_buttyes2});
+        pDialogueWindow->CreateButton({pNPCPortraits_x[0][0], pNPCPortraits_y[0][0]}, {63, 73}, 1, 0, UIMSG_HouseTransitionConfirmation, 1,
+                                      Io::InputAction::EventTrigger, transition_button_label);
+        pDialogueWindow->CreateButton({8, 8}, {460, 344}, 1, 0, UIMSG_HouseTransitionConfirmation, 1, Io::InputAction::Yes, transition_button_label);
+    } else {
+        if (dialog_menu_id == DIALOGUE_OTHER) {
+            pDialogueWindow->Release();
+        } else {
+            for (int i = 0; i < houseNpcs.size(); ++i) {
+                houseNpcs[i].button->Release();
+                houseNpcs[i].button = nullptr;
+            }
+        }
+        pDialogueWindow = new GUIWindow(WINDOW_Dialogue, {0, 0}, {renDims.w, 345}, 0);
+        pBtn_ExitCancel = pDialogueWindow->CreateButton({471, 445}, {169, 35}, 1, 0, UIMSG_Escape, 0, Io::InputAction::Invalid,
+                                                        localization->GetString(LSTR_END_CONVERSATION), {ui_exit_cancel_button_background});
+        pDialogueWindow->CreateButton({8, 8}, {450, 320}, 1, 0, UIMSG_HouseScreenClick, 0);
+        dialog_menu_id = DIALOGUE_MAIN;
+        if (houseNpcs[npc].type == HOUSE_PROPRIETOR) {
+            window_SpeakInHouse->initializeDialog();
+        } else { // NPC
+            NPCData *npcData = houseNpcs[npc].npc;
+            if (npcData->is_joinable) {
+                num_menu_buttons = 1;
+                pDialogueWindow->CreateButton({480, 160}, {140, 30}, 1, 0, UIMSG_ClickNPCTopic, DIALOGUE_13_hiring_related);
+            }
+
+            #define AddScriptedDialogueLine(EVENT_ID, MSG_PARAM) \
+                if (EVENT_ID) { \
+                    if (num_menu_buttons < 4) { \
+                        int res = npcDialogueEventProcessor(EVENT_ID); \
+                        if (res == 1 || res == 2) \
+                            pDialogueWindow->CreateButton({480, 160 + 30 * num_menu_buttons++}, {140, 30}, 1, 0, UIMSG_ClickNPCTopic, MSG_PARAM); \
+                    } \
+                }
+
+            AddScriptedDialogueLine(npcData->dialogue_1_evt_id, DIALOGUE_SCRIPTED_LINE_1);
+            AddScriptedDialogueLine(npcData->dialogue_2_evt_id, DIALOGUE_SCRIPTED_LINE_2);
+            AddScriptedDialogueLine(npcData->dialogue_3_evt_id, DIALOGUE_SCRIPTED_LINE_3);
+            AddScriptedDialogueLine(npcData->dialogue_4_evt_id, DIALOGUE_SCRIPTED_LINE_4);
+            AddScriptedDialogueLine(npcData->dialogue_5_evt_id, DIALOGUE_SCRIPTED_LINE_5);
+            AddScriptedDialogueLine(npcData->dialogue_6_evt_id, DIALOGUE_SCRIPTED_LINE_6);
+
+            pDialogueWindow->_41D08F_set_keyboard_control_group(num_menu_buttons, 1, 0, 2);
+            // TODO(Nik-RE-dev): initial number of buttons used only in non-simple houses now
+            //                   but this causes situation where dead character can talk to someone
+            //dword_F8B1E0 = pDialogueWindow->pNumPresenceButton;
+        }
+    }
+}
+
 void onSelectHouseDialogueOption(DIALOGUE_TYPE option) {
     if (!pDialogueWindow || !pDialogueWindow->pNumPresenceButton) {
         return;
@@ -781,238 +876,6 @@ void playHouseSound(HOUSE_ID houseID, HouseSoundType type) {
         int roomSoundId = pAnimatedRooms[buildingTable[houseID].uAnimationID].uRoomSoundId;
         SoundID soundId = SoundID(std::to_underlying(type) + 100 * (roomSoundId + 300));
         pAudioPlayer->playHouseSound(soundId, true);
-    }
-}
-
-void DrawJoinGuildWindow(GUILD_ID guild_id) {
-    uDialogueType = DIALOGUE_81_join_guild;
-    current_npc_text = pNPCTopics[guild_id + 99].pText;
-    GetJoinGuildDialogueOption(guild_id);
-    pDialogueWindow->Release();
-    pDialogueWindow = new GUIWindow(WINDOW_Dialogue, {0, 0}, {render->GetRenderDimensions().w, 350}, guild_id);
-    pBtn_ExitCancel = pDialogueWindow->CreateButton({471, 445}, {169, 35}, 1, 0, UIMSG_Escape, 0, Io::InputAction::Invalid,
-        localization->GetString(LSTR_CANCEL), { ui_exit_cancel_button_background }
-    );
-    pDialogueWindow->CreateButton({0, 0}, {0, 0}, 1, 0, UIMSG_HouseScreenClick, 0, Io::InputAction::Invalid, "");
-    pDialogueWindow->CreateButton({480, 160}, {140, 30}, 1, 0, UIMSG_ClickNPCTopic, DIALOGUE_82_join_guild, Io::InputAction::Invalid,
-        localization->GetString(LSTR_JOIN));
-    pDialogueWindow->_41D08F_set_keyboard_control_group(1, 1, 0, 2);
-    dialog_menu_id = DIALOGUE_OTHER;
-}
-
-void _4B3FE5_training_dialogue(int eventId) {
-    uDialogueType = DIALOGUE_SKILL_TRAINER;
-    current_npc_text = std::string(pNPCTopics[eventId + 168].pText);
-    _4B254D_SkillMasteryTeacher(eventId);  // checks whether the facility can be used
-    pDialogueWindow->Release();
-    pDialogueWindow = new GUIWindow(WINDOW_Dialogue, {0, 0}, {render->GetRenderDimensions().w, 350}, eventId);
-    pBtn_ExitCancel = pDialogueWindow->CreateButton({471, 445}, {169, 35}, 1, 0, UIMSG_Escape, 0, Io::InputAction::Invalid,
-        localization->GetString(LSTR_CANCEL), { ui_exit_cancel_button_background }
-    );
-    pDialogueWindow->CreateButton({0, 0}, {0, 0}, 1, 0, UIMSG_HouseScreenClick, 0, Io::InputAction::Invalid, "");
-    pDialogueWindow->CreateButton({480, 160}, {0x8Cu, 0x1Eu}, 1, 0, UIMSG_ClickNPCTopic, DIALOGUE_79_mastery_teacher, Io::InputAction::Invalid,
-        guild_membership_approved ? localization->GetString(LSTR_LEARN) : "");
-    pDialogueWindow->_41D08F_set_keyboard_control_group(1, 1, 0, 2);
-    dialog_menu_id = DIALOGUE_OTHER;
-}
-
-void OracleDialogue() {
-    ItemGen *item = nullptr;
-    ITEM_TYPE item_id = ITEM_NULL;
-
-    // display "You never had it" if nothing missing will be found
-    current_npc_text = pNPCTopics[667].pText;
-
-    // only items with special subquest in range 212-237 and also 241 are recoverable
-    for (auto pair : _4F0882_evt_VAR_PlayerItemInHands_vals) {
-        int quest_id = pair.first;
-        if (pParty->_questBits[quest_id]) {
-            ITEM_TYPE search_item_id = pair.second;
-            if (!pParty->hasItem(search_item_id) && pParty->pPickedItem.uItemID != search_item_id) {
-                item_id = search_item_id;
-                break;
-            }
-        }
-    }
-
-    // missing item found
-    if (item_id != ITEM_NULL) {
-        pParty->pCharacters[0].AddVariable(VAR_PlayerItemInHands, std::to_underlying(item_id));
-        // TODO(captainurist): what if fmt throws?
-        current_npc_text = fmt::sprintf(pNPCTopics[666].pText, // "Here's %s that you lost. Be careful"
-                                        fmt::format("{::}{}\f00000", colorTable.Jonquil.tag(),
-                                                    pItemTable->pItems[item_id].pUnidentifiedName));
-    }
-
-    // missing item is lich jar and we need to bind soul vessel to lich class character
-    // TODO(Nik-RE-dev): this code is walking only through inventory, but item was added to hand, so it will not bind new item if it was acquired
-    //                   rather this code will bind jars that already present in inventory to liches that currently do not have binded jars
-    if (item_id == ITEM_QUEST_LICH_JAR_FULL) {
-        for (int i = 0; i < pParty->pCharacters.size(); i++) {
-            if (pParty->pCharacters[i].classType == CHARACTER_CLASS_LICH) {
-                bool have_vessels_soul = false;
-                for (Character &player : pParty->pCharacters) {
-                    for (int idx = 0; idx < Character::INVENTORY_SLOT_COUNT; idx++) {
-                        if (player.pInventoryItemList[idx].uItemID == ITEM_QUEST_LICH_JAR_FULL) {
-                            if (player.pInventoryItemList[idx].uHolderPlayer == -1) {
-                                item = &player.pInventoryItemList[idx];
-                            }
-                            if (player.pInventoryItemList[idx].uHolderPlayer == i) {
-                                have_vessels_soul = true;
-                            }
-                        }
-                    }
-                }
-
-                if (item && !have_vessels_soul) {
-                    item->uHolderPlayer = i;
-                    break;
-                }
-            }
-        }
-    }
-}
-
-std::string _4B254D_SkillMasteryTeacher(int trainerInfo) {
-    uint8_t teacherLevel = (trainerInfo - 200) % 3;
-    CharacterSkillType skillBeingTaught = static_cast<CharacterSkillType>((trainerInfo - 200) / 3);
-    Character *activePlayer = &pParty->activeCharacter();
-    CharacterClassType pClassType = activePlayer->classType;
-    CharacterSkillMastery currClassMaxMastery = skillMaxMasteryPerClass[pClassType][skillBeingTaught];
-    CharacterSkillMastery masteryLevelBeingTaught = dword_F8B1B0_MasteryBeingTaught = static_cast<CharacterSkillMastery>(teacherLevel + 2);
-    guild_membership_approved = false;
-
-    if (currClassMaxMastery < masteryLevelBeingTaught) {
-        if (skillMaxMasteryPerClass[getTier2Class(pClassType)][skillBeingTaught] >= masteryLevelBeingTaught) {
-            return localization->FormatString(LSTR_FMT_HAVE_TO_BE_PROMOTED, localization->GetClassName(getTier2Class(pClassType)));
-        } else if (skillMaxMasteryPerClass[getTier3LightClass(pClassType)][skillBeingTaught] >= masteryLevelBeingTaught &&
-                skillMaxMasteryPerClass[getTier3DarkClass(pClassType)][skillBeingTaught] >= masteryLevelBeingTaught) {
-            return localization->FormatString(LSTR_FMT_HAVE_TO_BE_PROMOTED_2,
-                    localization->GetClassName(getTier3LightClass(pClassType)),
-                    localization->GetClassName(getTier3DarkClass(pClassType)));
-        } else if (skillMaxMasteryPerClass[getTier3LightClass(pClassType)][skillBeingTaught] >= masteryLevelBeingTaught) {
-            return localization->FormatString(LSTR_FMT_HAVE_TO_BE_PROMOTED, localization->GetClassName(getTier3LightClass(pClassType)));
-        } else if (skillMaxMasteryPerClass[getTier3DarkClass(pClassType)][skillBeingTaught] >= masteryLevelBeingTaught) {
-            return localization->FormatString(LSTR_FMT_HAVE_TO_BE_PROMOTED, localization->GetClassName(getTier3DarkClass(pClassType)));
-        } else {
-            return localization->FormatString(LSTR_FMT_SKILL_CANT_BE_LEARNED, localization->GetClassName(pClassType));
-        }
-    }
-
-    // Not in your condition!
-    if (!activePlayer->CanAct()) {
-        return std::string(pNPCTopics[122].pText);
-    }
-
-    // You must know the skill before you can become an expert in it!
-    int skillLevel = activePlayer->getSkillValue(skillBeingTaught).level();
-    if (!skillLevel) {
-        return std::string(pNPCTopics[131].pText);
-    }
-
-    // You are already have this mastery in this skill.
-    CharacterSkillMastery skillMastery = activePlayer->getSkillValue(skillBeingTaught).mastery();
-    if (std::to_underlying(skillMastery) > teacherLevel + 1) {
-        return std::string(pNPCTopics[teacherLevel + 128].pText);
-    }
-
-    dword_F8B1AC_skill_being_taught = skillBeingTaught;
-
-    bool canLearn = true;
-
-    if (masteryLevelBeingTaught == CHARACTER_SKILL_MASTERY_EXPERT) {
-        canLearn = skillLevel >= 4;
-        gold_transaction_amount = expertSkillMasteryCost[skillBeingTaught];
-    }
-
-    if (masteryLevelBeingTaught == CHARACTER_SKILL_MASTERY_MASTER) {
-        switch (skillBeingTaught) {
-          case CHARACTER_SKILL_LIGHT:
-            canLearn = pParty->_questBits[114];
-            break;
-          case CHARACTER_SKILL_DARK:
-            canLearn = pParty->_questBits[110];
-            break;
-          case CHARACTER_SKILL_MERCHANT:
-            canLearn = activePlayer->GetBasePersonality() >= 50;
-            break;
-          case CHARACTER_SKILL_BODYBUILDING:
-            canLearn = activePlayer->GetBaseEndurance() >= 50;
-            break;
-          case CHARACTER_SKILL_LEARNING:
-            canLearn = activePlayer->GetBaseIntelligence() >= 50;
-            break;
-          default:
-            break;
-        }
-        canLearn = canLearn && (skillLevel >= 7);
-        gold_transaction_amount = masterSkillMasteryCost[skillBeingTaught];
-    }
-
-    if (masteryLevelBeingTaught == CHARACTER_SKILL_MASTERY_GRANDMASTER) {
-        switch (skillBeingTaught) {
-          case CHARACTER_SKILL_LIGHT:
-            canLearn = activePlayer->isClass(CHARACTER_CLASS_ARCHAMGE) || activePlayer->isClass(CHARACTER_CLASS_PRIEST_OF_SUN);
-            break;
-          case CHARACTER_SKILL_DARK:
-            canLearn = activePlayer->isClass(CHARACTER_CLASS_LICH) || activePlayer->isClass(CHARACTER_CLASS_PRIEST_OF_MOON);
-            break;
-          case CHARACTER_SKILL_DODGE:
-            canLearn = activePlayer->pActiveSkills[CHARACTER_SKILL_UNARMED].level() >= 10;
-            break;
-          case CHARACTER_SKILL_UNARMED:
-            canLearn = activePlayer->pActiveSkills[CHARACTER_SKILL_DODGE].level() >= 10;
-            break;
-          default:
-            break;
-        }
-        canLearn = canLearn && (skillLevel >= 10);
-        gold_transaction_amount = grandmasterSkillMasteryCost[skillBeingTaught];
-    }
-
-    // You don't meet the requirements, and cannot be taught until you do.
-    if (!canLearn) {
-        return std::string(pNPCTopics[127].pText);
-    }
-
-    // You don't have enough gold!
-    if (gold_transaction_amount > pParty->GetGold()) {
-        return std::string(pNPCTopics[124].pText);
-    }
-
-    guild_membership_approved = true;
-
-    return localization->FormatString(
-        LSTR_FMT_BECOME_S_IN_S_FOR_D_GOLD,
-        localization->MasteryNameLong(masteryLevelBeingTaught),
-        localization->GetSkillName(skillBeingTaught),
-        gold_transaction_amount
-    );
-}
-
-const std::string &GetJoinGuildDialogueOption(GUILD_ID guild_id) {
-    static const int dialogue_base = 110;
-    guild_membership_approved = false;
-    dword_F8B1AC_award_bit_number = static_cast<AwardType>(Award_Membership_ElementalGuilds + std::to_underlying(guild_id));
-    gold_transaction_amount = priceForMembership[guild_id];
-
-    // TODO(pskelton): check this behaviour
-    if (!pParty->hasActiveCharacter())
-        pParty->setActiveToFirstCanAct();  // avoid nzi
-
-    if (pParty->activeCharacter().CanAct()) {
-        if (pParty->activeCharacter()._achievedAwardsBits[dword_F8B1AC_award_bit_number]) {
-            return pNPCTopics[dialogue_base + 13].pText;
-        } else {
-            if (gold_transaction_amount <= pParty->GetGold()) {
-                guild_membership_approved = true;
-                return pNPCTopics[dialogue_base + guild_id].pText;
-            } else {
-                return pNPCTopics[dialogue_base + 14].pText;
-            }
-        }
-    } else {
-        return pNPCTopics[dialogue_base + 12].pText;
     }
 }
 

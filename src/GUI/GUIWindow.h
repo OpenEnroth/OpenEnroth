@@ -258,7 +258,7 @@ void DialogueEnding();
  * @offset 0x4637E0
  */
 bool isHoldingMouseRightButton();
-void ClickNPCTopic(DIALOGUE_TYPE topic);
+
 std::string BuildDialogueString(const char *lpsz, uint8_t uPlayerID,
                            struct ItemGen *a3, HOUSE_ID houseId, int a5,
                            GameTime *a6 = nullptr);
