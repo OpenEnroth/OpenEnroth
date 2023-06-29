@@ -19,6 +19,8 @@
 
 #include "Io/Mouse.h"
 
+#include "Utility/Geometry/Rect.h"
+
 struct TownPortalData {
     Vec3i pos;
     int viewYaw;
@@ -38,10 +40,14 @@ std::array<TownPortalData, TOWN_PORTAL_DESTINATION_COUNT> townPortalList = {{
     {Vec3i( -1837,  -4247,   65),   65, 0, MAP_THE_PIT,           QBIT_FOUNTAIN_IN_THE_PIT_ACTIVATED}
 }};
 
-static std::array<int, TOWN_PORTAL_DESTINATION_COUNT> pTownPortalBook_xs = {260, 324, 147, 385, 390,  19};
-static std::array<int, TOWN_PORTAL_DESTINATION_COUNT> pTownPortalBook_ys = {206,  84, 182, 239,  17, 283};
-static std::array<int, TOWN_PORTAL_DESTINATION_COUNT> pTownPortalBook_ws = { 80,  66,  68,  72,  67,  74};
-static std::array<int, TOWN_PORTAL_DESTINATION_COUNT> pTownPortalBook_hs = { 55,  56,  65,  67,  67,  59};
+static std::array<Recti, TOWN_PORTAL_DESTINATION_COUNT> townPortalButtonsPos = {{
+    {260, 206, 80, 55},
+    {324,  84, 66, 56},
+    {147, 182, 68, 65},
+    {385, 239, 72, 67},
+    {390,  17, 67, 67},
+    { 19, 283, 74, 59}
+}};
 
 static std::array<GraphicsImage *, TOWN_PORTAL_DESTINATION_COUNT> ui_book_townportal_icons;
 
@@ -63,7 +69,7 @@ GUIWindow_TownPortalBook::GUIWindow_TownPortalBook(int casterPid) : GUIWindow_Bo
     ui_book_townportal_icons[5] = assets->getImage_ColorKey("tphell");
 
     for (int i = 0; i < TOWN_PORTAL_DESTINATION_COUNT; ++i) {
-        CreateButton({pTownPortalBook_xs[i], pTownPortalBook_ys[i]}, {pTownPortalBook_ws[i], pTownPortalBook_hs[i]}, 1, UIMSG_HintTownPortal, UIMSG_ClickTownInTP, i);
+        CreateButton(townPortalButtonsPos[i].topLeft(), townPortalButtonsPos[i].size(), 1, UIMSG_HintTownPortal, UIMSG_ClickTownInTP, i);
     }
 }
 
@@ -85,7 +91,7 @@ void GUIWindow_TownPortalBook::Update() {
 
     for (int i = 0; i < TOWN_PORTAL_DESTINATION_COUNT; ++i) {
         if (pParty->_questBits[townPortalList[i].qBit] || engine->config->debug.TownPortal.value()) {
-            render->ZDrawTextureAlpha(pTownPortalBook_xs[i] / 640.0f, pTownPortalBook_ys[i] / 480.0f, ui_book_townportal_icons[i], i + 1);
+            render->ZDrawTextureAlpha(townPortalButtonsPos[i].x / 640.0f, townPortalButtonsPos[i].y / 480.0f, ui_book_townportal_icons[i], i + 1);
         }
     }
 
@@ -94,7 +100,8 @@ void GUIWindow_TownPortalBook::Update() {
 
     if (iconPointing) {
         if (pParty->_questBits[townPortalList[iconPointing - 1].qBit] || engine->config->debug.TownPortal.value()) {
-            render->DrawTextureNew(pTownPortalBook_xs[iconPointing - 1] / 640.0f, pTownPortalBook_ys[iconPointing - 1] / 480.0f, ui_book_townportal_icons[iconPointing - 1]);
+            render->DrawTextureNew(townPortalButtonsPos[iconPointing - 1].x / 640.0f, townPortalButtonsPos[iconPointing - 1].y / 480.0f,
+                                   ui_book_townportal_icons[iconPointing - 1]);
         }
     }
 
