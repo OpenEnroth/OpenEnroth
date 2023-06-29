@@ -252,8 +252,6 @@ void SetUserInterface(PartyAlignment alignment, bool bReplace);
 void CreateMsgScrollWindow(ITEM_TYPE mscroll_id);
 void CreateScrollWindow();
 void OnPaperdollLeftClick();
-void DrawJoinGuildWindow(GUILD_ID guild_id);
-const std::string &GetJoinGuildDialogueOption(GUILD_ID guild_id);
 void DialogueEnding();
 
 /**
@@ -261,9 +259,6 @@ void DialogueEnding();
  */
 bool isHoldingMouseRightButton();
 void ClickNPCTopic(DIALOGUE_TYPE topic);
-void _4B3FE5_training_dialogue(int a4);
-void OracleDialogue();
-std::string _4B254D_SkillMasteryTeacher(int trainerInfo);
 std::string BuildDialogueString(const char *lpsz, uint8_t uPlayerID,
                            struct ItemGen *a3, HOUSE_ID houseId, int a5,
                            GameTime *a6 = nullptr);
