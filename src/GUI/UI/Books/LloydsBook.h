@@ -1,7 +1,8 @@
 #pragma once
 #include "GUI/UI/UIBooks.h"
 
-struct GUIWindow_LloydsBook : public GUIWindow_Book {
+class GUIWindow_LloydsBook : public GUIWindow_Book {
+ public:
     GUIWindow_LloydsBook(int casterId, int spellLevel);
     virtual ~GUIWindow_LloydsBook() {}
 

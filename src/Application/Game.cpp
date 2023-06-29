@@ -1107,7 +1107,7 @@ void Game::processQueuedMessages() {
                 continue;
 
             case UIMSG_OnCastTownPortal:
-                pGUIWindow_CurrentMenu = new GUIWindow_TownPortalBook(uMessageParam);  // (char *)uMessageParam);
+                pGUIWindow_CurrentMenu = new GUIWindow_TownPortalBook(uMessageParam);
                 continue;
 
             case UIMSG_OnCastLloydsBeacon:
@@ -1137,98 +1137,18 @@ void Game::processQueuedMessages() {
                 }
                 continue;
 
-            case UIMSG_ClickTownInTP: {
-                //if (uGameState == GAME_STATE_CHANGE_LOCATION) continue;
-
-                // check if tp location is unlocked
-                if (!pParty->_questBits[townPortalQuestBits[uMessageParam]] && !_engine->config->debug.TownPortal.value()) {
-                    continue;
+            case UIMSG_ClickTownInTP:
+                if (pGUIWindow_CurrentMenu) {
+                    ((GUIWindow_TownPortalBook *)pGUIWindow_CurrentMenu)->clickTown(uMessageParam);
                 }
-
-                // begin TP
-                SaveGame(1, 0);
-                // if in current map
-                if (pMapStats->GetMapInfo(pCurrentMapName) == TownPortalList[uMessageParam].uMapInfoID) {
-                    pParty->pos = TownPortalList[uMessageParam].pos;
-                    pParty->uFallStartZ = pParty->pos.z;
-                    pParty->_viewYaw = TownPortalList[uMessageParam]._viewYaw;
-                    pParty->_viewPitch = TownPortalList[uMessageParam]._viewPitch;
-                } else {  // if change map
-                    onMapLeave();
-                    dword_6BE364_game_settings_1 |= GAME_SETTINGS_0001;
-                    uGameState = GAME_STATE_CHANGE_LOCATION;
-                    pCurrentMapName = pMapStats->pInfos[TownPortalList[uMessageParam].uMapInfoID].pFilename;
-                    Start_Party_Teleport_Flag = 1;
-                    Party_Teleport_X_Pos = TownPortalList[uMessageParam].pos.x;
-                    Party_Teleport_Y_Pos = TownPortalList[uMessageParam].pos.y;
-                    Party_Teleport_Z_Pos = TownPortalList[uMessageParam].pos.z;
-                    Party_Teleport_Cam_Yaw = TownPortalList[uMessageParam]._viewYaw;
-                    Party_Teleport_Cam_Pitch = TownPortalList[uMessageParam]._viewPitch;
-                    Actor::InitializeActors();
-                }
-
-                assert(PID_TYPE(townPortalCasterPid) == OBJECT_Character);
-
-                int casterId = PID_ID(townPortalCasterPid);
-                if (casterId < pParty->pCharacters.size()) {
-                    // Town portal casted by character
-                    assert(pSpellDatas[SPELL_WATER_TOWN_PORTAL].uNormalLevelMana == pSpellDatas[SPELL_WATER_TOWN_PORTAL].uExpertLevelMana);
-                    assert(pSpellDatas[SPELL_WATER_TOWN_PORTAL].uNormalLevelMana == pSpellDatas[SPELL_WATER_TOWN_PORTAL].uMasterLevelMana);
-                    assert(pSpellDatas[SPELL_WATER_TOWN_PORTAL].uNormalLevelMana == pSpellDatas[SPELL_WATER_TOWN_PORTAL].uMagisterLevelMana);
-                    pParty->pCharacters[casterId].SpendMana(pSpellDatas[SPELL_WATER_TOWN_PORTAL].uNormalLevelMana);
-
-                    assert(pSpellDatas[SPELL_WATER_TOWN_PORTAL].uNormalLevelRecovery == pSpellDatas[SPELL_WATER_TOWN_PORTAL].uExpertLevelRecovery);
-                    assert(pSpellDatas[SPELL_WATER_TOWN_PORTAL].uNormalLevelRecovery == pSpellDatas[SPELL_WATER_TOWN_PORTAL].uMasterLevelRecovery);
-                    assert(pSpellDatas[SPELL_WATER_TOWN_PORTAL].uNormalLevelRecovery == pSpellDatas[SPELL_WATER_TOWN_PORTAL].uMagisterLevelRecovery);
-                    signed int sRecoveryTime = pSpellDatas[SPELL_WATER_TOWN_PORTAL].uNormalLevelRecovery;
-                    if (pParty->bTurnBasedModeOn) {
-                        pParty->pTurnBasedCharacterRecoveryTimes[casterId] = sRecoveryTime;
-                        pParty->pCharacters[casterId].SetRecoveryTime(sRecoveryTime);
-                        pTurnEngine->ApplyPlayerAction();
-                    } else {
-                        pParty->pCharacters[casterId].SetRecoveryTime(debug_non_combat_recovery_mul * sRecoveryTime * flt_debugrecmod3);
-                    }
-                } else {
-                    // Town portal casted by hireling
-                    pParty->pHirelings[casterId - pParty->pCharacters.size()].bHasUsedTheAbility = 1;
-                }
-
-                engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 1, 0);
                 continue;
-            }
-            case UIMSG_HintTownPortal: {
-                if (!pParty->_questBits[townPortalQuestBits[uMessageParam]] && !_engine->config->debug.TownPortal.value()) {
-                    _render->DrawTextureNew(0, 352 / 480.0f, game_ui_statusbar);
-                    continue;
+
+            case UIMSG_HintTownPortal:
+                if (pGUIWindow_CurrentMenu) {
+                    ((GUIWindow_TownPortalBook *)pGUIWindow_CurrentMenu)->hintTown(uMessageParam);
                 }
-                // LABEL_506:
-                std::string townName = "";
-                switch (uMessageParam) {
-                    case 0:
-                        townName = pMapStats->pInfos[21].pName;
-                        break;
-                    case 1:
-                        townName = pMapStats->pInfos[4].pName;
-                        break;
-                    case 2:
-                        townName = pMapStats->pInfos[3].pName;
-                        break;
-                    case 3:
-                        townName = pMapStats->pInfos[10].pName;
-                        break;
-                    case 4:
-                        townName = pMapStats->pInfos[7].pName;
-                        break;
-                    case 5:
-                        townName = pMapStats->pInfos[8].pName;
-                        break;
-                    default:
-                        Assert(false && "Bad TP param");
-                        break;
-                }
-                GameUI_StatusBar_Set(localization->FormatString(LSTR_TOWN_PORTAL_TO_S, townName.c_str()));
                 continue;
-            }
+
             case UIMSG_ShowGameOverWindow: {
                 pGameOverWindow = new GUIWindow_GameOver();
                 uGameState = GAME_STATE_FINAL_WINDOW;
