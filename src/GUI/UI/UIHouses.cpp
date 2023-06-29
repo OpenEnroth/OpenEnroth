@@ -784,7 +784,6 @@ void playHouseSound(HOUSE_ID houseID, HouseSoundType type) {
     }
 }
 
-//----- (004B3EF0) --------------------------------------------------------
 void DrawJoinGuildWindow(GUILD_ID guild_id) {
     uDialogueType = DIALOGUE_81_join_guild;
     current_npc_text = pNPCTopics[guild_id + 99].pText;
@@ -817,11 +816,6 @@ void _4B3FE5_training_dialogue(int eventId) {
     dialog_menu_id = DIALOGUE_OTHER;
 }
 
-/**
- * @offset 0x004B1ECE.
- *
- * @brief Oracle's 'I lost it!' dialog option
- */
 void OracleDialogue() {
     ItemGen *item = nullptr;
     ITEM_TYPE item_id = ITEM_NULL;
@@ -879,7 +873,6 @@ void OracleDialogue() {
     }
 }
 
-//----- (004B254D) --------------------------------------------------------
 std::string _4B254D_SkillMasteryTeacher(int trainerInfo) {
     uint8_t teacherLevel = (trainerInfo - 200) % 3;
     CharacterSkillType skillBeingTaught = static_cast<CharacterSkillType>((trainerInfo - 200) / 3);
@@ -997,7 +990,6 @@ std::string _4B254D_SkillMasteryTeacher(int trainerInfo) {
     );
 }
 
-//----- (004B29F2) --------------------------------------------------------
 const std::string &GetJoinGuildDialogueOption(GUILD_ID guild_id) {
     static const int dialogue_base = 110;
     guild_membership_approved = false;
