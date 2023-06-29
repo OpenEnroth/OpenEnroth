@@ -11,6 +11,7 @@
 #include "Engine/AssetsManager.h"
 
 #include "GUI/GUIButton.h"
+#include "GUI/UI/ItemGrid.h"
 
 int pChestPixelOffsetX[8] = {42, 18, 18, 42, 42, 42, 18, 42};
 int pChestPixelOffsetY[8] = {34, 30, 30, 34, 34, 34, 30, 34};
@@ -54,16 +55,13 @@ void GUIWindow_Chest::Update() {
             int chest_item_index = vChests[uChestID].pInventoryIndices[item_counter];
             if (chest_item_index > 0) {
                 auto item_texture = assets->getImage_ColorKey(vChests[uChestID].igChestItems[chest_item_index - 1].GetIconName());
-                int itemPixelWidth = item_texture->width();
-                int itemPixelHeght = item_texture->height();
-                if (itemPixelWidth < 14)
-                    itemPixelWidth = 14;
-                if (itemPixelHeght < 14)
-                    itemPixelHeght = 14;
-                int X_offset = ((((itemPixelWidth - 14) & 0xFFFFFFE0) + 32) - itemPixelWidth) / 2;
-                int Y_offset = ((((itemPixelHeght - 14) & 0xFFFFFFE0) + 32) - itemPixelHeght) / 2;
+                int X_offset = itemOffset(item_texture->width());
+                int Y_offset = itemOffset(item_texture->height());
                 int itemPixelPosX = chest_offs_x + 32 * (item_counter % chestWidthCells) + X_offset;
                 int itemPixelPosY = chest_offs_y + 32 * (item_counter / chestHeghtCells) + Y_offset;
+
+                assert(0 < itemPixelPosX && itemPixelPosX < 640);
+                assert(0 < itemPixelPosY && itemPixelPosY < 480);
                 render->DrawTextureNew(itemPixelPosX / 640.0f, itemPixelPosY / 480.0f, item_texture);
             }
         }

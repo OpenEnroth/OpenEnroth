@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 3.20.4 FATAL_ERROR)
 
 set(GUI_UI_SOURCES
+        ItemGrid.cpp
         UISpellbook.cpp
         UIArena.cpp
         UIBooks.cpp
@@ -24,6 +25,7 @@ set(GUI_UI_SOURCES
         UIMessageScroll.cpp)
 
 set(GUI_UI_HEADERS
+        ItemGrid.h
         UISpellbook.h
         UIArena.h
         UIBooks.h
