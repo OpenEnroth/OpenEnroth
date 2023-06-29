@@ -491,7 +491,7 @@ var searchData=
   ['prevface_488',['prevFace',['../structPlayer__MM7.html#a6b53d0cb19fee019021e2c3236dee94e',1,'Player_MM7']]],
   ['prevposition_489',['prevPosition',['../structParty__MM7.html#ab0ecf0b108d26f07c26f134a05a0f818',1,'Party_MM7']]],
   ['prevvoiceid_490',['prevVoiceId',['../structPlayer__MM7.html#a8fa4415b7275965d939dc6f06478774c',1,'Player_MM7']]],
-  ['priceformembership_491',['priceForMembership',['../GUIWindow_8cpp.html#a0f5c7ab29fb162e5e98e37254366267c',1,'GUIWindow.cpp']]],
+  ['priceformembership_491',['priceForMembership',['../UIHouses_8cpp.html#a0f5c7ab29fb162e5e98e37254366267c',1,'UIHouses.cpp']]],
   ['primrose_492',['Primrose',['../classColorTable.html#a05045b27d673ca9556a3135d9469ee3d',1,'ColorTable']]],
   ['priority_493',['priority',['../structLOD_1_1Directory.html#a6eb5efcc045b07f5356a5483f78cf551',1,'LOD::Directory::priority()'],['../structLodDirectoryHeader__Mm6.html#a454efff07235fda6acb272244a284a27',1,'LodDirectoryHeader_Mm6::priority()'],['../structLodFileHeader__Mm6.html#a67662e51a5ba02bcd89c026b56cb4a7d',1,'LodFileHeader_Mm6::priority()']]],
   ['profession_494',['profession',['../structNPCData__MM7.html#acb032a8852c29e13027a73da57854331',1,'NPCData_MM7::profession()'],['../structNPCData.html#a0d24a4b7cdafdebd74458865bacbf978',1,'NPCData::profession()']]],

@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;08e9036</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;74ce9b4</span>
    </div>
   </td>
  </tr>
@@ -84,6 +84,7 @@ $(function() {
 <div class="textblock"><code>#include &lt;string&gt;</code><br />
 <code>#include &lt;vector&gt;</code><br />
 <code>#include &quot;<a class="el" href="BuildingTable_8h.html">Engine/Tables/BuildingTable.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="AwardTable_8h.html">Engine/Tables/AwardTable.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="GUIWindow_8h.html">GUI/GUIWindow.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="IndexedArray_8h.html">Utility/IndexedArray.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="UIHouseEnums_8h.html">UIHouseEnums.h</a>&quot;</code><br />
@@ -121,6 +122,17 @@ Functions</h2></td></tr>
 <tr class="separator:ab50814e24f412098388cc3a206867ea1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad54f0f46c4baa7db59a42190ce9fcc01"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="UIHouses_8h.html#ad54f0f46c4baa7db59a42190ce9fcc01">playHouseSound</a> (<a class="el" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405f">HOUSE_ID</a> houseID, <a class="el" href="UIHouseEnums_8h.html#af4c8362015fce1a0c3c9f9a7924dcada">HouseSoundType</a> type)</td></tr>
 <tr class="separator:ad54f0f46c4baa7db59a42190ce9fcc01"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac9811e84ae49203948b4fe17c3322f86"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="UIHouses_8h.html#ac9811e84ae49203948b4fe17c3322f86">OracleDialogue</a> ()</td></tr>
+<tr class="memdesc:ac9811e84ae49203948b4fe17c3322f86"><td class="mdescLeft">&#160;</td><td class="mdescRight">Oracle's 'I lost it!' dialog option.  <a href="UIHouses_8h.html#ac9811e84ae49203948b4fe17c3322f86">More...</a><br /></td></tr>
+<tr class="separator:ac9811e84ae49203948b4fe17c3322f86"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1d47d1cad06df6704c93798e109cbd8b"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="UIHouses_8h.html#a1d47d1cad06df6704c93798e109cbd8b">_4B254D_SkillMasteryTeacher</a> (int trainerInfo)</td></tr>
+<tr class="separator:a1d47d1cad06df6704c93798e109cbd8b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5336f922a30d07a89cd895ceeb7f8eb4"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="UIHouses_8h.html#a5336f922a30d07a89cd895ceeb7f8eb4">DrawJoinGuildWindow</a> (<a class="el" href="UIHouseEnums_8h.html#ad5b17819485bfe6ede8299978e6f0c34">GUILD_ID</a> guild_id)</td></tr>
+<tr class="separator:a5336f922a30d07a89cd895ceeb7f8eb4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adb3f8737af1e3e69531fe894767259e5"><td class="memItemLeft" align="right" valign="top">const std::string &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="UIHouses_8h.html#adb3f8737af1e3e69531fe894767259e5">GetJoinGuildDialogueOption</a> (<a class="el" href="UIHouseEnums_8h.html#ad5b17819485bfe6ede8299978e6f0c34">GUILD_ID</a> guild_id)</td></tr>
+<tr class="separator:adb3f8737af1e3e69531fe894767259e5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae5cd6e9d5abc01da6627f5600fd99faf"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="UIHouses_8h.html#ae5cd6e9d5abc01da6627f5600fd99faf">_4B3FE5_training_dialogue</a> (int a4)</td></tr>
+<tr class="separator:ae5cd6e9d5abc01da6627f5600fd99faf"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="var-members" name="var-members"></a>
 Variables</h2></td></tr>
@@ -152,6 +164,10 @@ Variables</h2></td></tr>
 <tr class="separator:ab315df385cac435b083f113ce91eb9a4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a186e5864d5cfc7e4f2f6d3d756216b43"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="UIHouses_8h.html#a186e5864d5cfc7e4f2f6d3d756216b43">currentHouseNpc</a></td></tr>
 <tr class="separator:a186e5864d5cfc7e4f2f6d3d756216b43"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae88f1f886e60deb99ca183c11c0da4ea"><td class="memItemLeft" align="right" valign="top"><a class="el" href="AwardTable_8h.html#affb7937911d9f95cf70e26a581d989c7">AwardType</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="UIHouses_8h.html#ae88f1f886e60deb99ca183c11c0da4ea">dword_F8B1AC_award_bit_number</a></td></tr>
+<tr class="separator:ae88f1f886e60deb99ca183c11c0da4ea"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0755b064714354c78416e60f3e8b05b5"><td class="memItemLeft" align="right" valign="top"><a class="el" href="CharacterEnums_8h.html#afb7e1cb64c82efee699c6bd5b7467bb3">CharacterSkillType</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="UIHouses_8h.html#a0755b064714354c78416e60f3e8b05b5">dword_F8B1AC_skill_being_taught</a></td></tr>
+<tr class="separator:a0755b064714354c78416e60f3e8b05b5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Enumeration Type Documentation</h2>
 <a id="a9faa43960b72a34903c1b46437828914" name="a9faa43960b72a34903c1b46437828914"></a>
@@ -183,6 +199,44 @@ Variables</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Function Documentation</h2>
+<a id="a1d47d1cad06df6704c93798e109cbd8b" name="a1d47d1cad06df6704c93798e109cbd8b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1d47d1cad06df6704c93798e109cbd8b">&#9670;&#160;</a></span>_4B254D_SkillMasteryTeacher()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::string _4B254D_SkillMasteryTeacher </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>trainerInfo</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<dl class="section user"><dt>Original binary offset:</dt><dd>0x4B254D </dd></dl>
+
+</div>
+</div>
+<a id="ae5cd6e9d5abc01da6627f5600fd99faf" name="ae5cd6e9d5abc01da6627f5600fd99faf"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae5cd6e9d5abc01da6627f5600fd99faf">&#9670;&#160;</a></span>_4B3FE5_training_dialogue()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void _4B3FE5_training_dialogue </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>a4</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<dl class="section user"><dt>Original binary offset:</dt><dd>0x4B3FE5 </dd></dl>
+
+</div>
+</div>
 <a id="a367ca93a4c306e3d85e764d52a71a2d2" name="a367ca93a4c306e3d85e764d52a71a2d2"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a367ca93a4c306e3d85e764d52a71a2d2">&#9670;&#160;</a></span>BackToHouseMenu()</h2>
 
@@ -218,6 +272,25 @@ Variables</h2></td></tr>
 
 </div>
 </div>
+<a id="a5336f922a30d07a89cd895ceeb7f8eb4" name="a5336f922a30d07a89cd895ceeb7f8eb4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5336f922a30d07a89cd895ceeb7f8eb4">&#9670;&#160;</a></span>DrawJoinGuildWindow()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void DrawJoinGuildWindow </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="UIHouseEnums_8h.html#ad5b17819485bfe6ede8299978e6f0c34">GUILD_ID</a>&#160;</td>
+          <td class="paramname"><em>guild_id</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<dl class="section user"><dt>Original binary offset:</dt><dd>0x4B3EF0 </dd></dl>
+
+</div>
+</div>
 <a id="ad6c0486935e2c520b805471c35d21f46" name="ad6c0486935e2c520b805471c35d21f46"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ad6c0486935e2c520b805471c35d21f46">&#9670;&#160;</a></span>enterHouse()</h2>
 
@@ -234,6 +307,25 @@ Variables</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <dl class="section user"><dt>Original binary offset:</dt><dd>0x44622E </dd></dl>
+
+</div>
+</div>
+<a id="adb3f8737af1e3e69531fe894767259e5" name="adb3f8737af1e3e69531fe894767259e5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#adb3f8737af1e3e69531fe894767259e5">&#9670;&#160;</a></span>GetJoinGuildDialogueOption()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">const std::string &amp; GetJoinGuildDialogueOption </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="UIHouseEnums_8h.html#ad5b17819485bfe6ede8299978e6f0c34">GUILD_ID</a>&#160;</td>
+          <td class="paramname"><em>guild_id</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<dl class="section user"><dt>Original binary offset:</dt><dd>0x4B29F2 </dd></dl>
 
 </div>
 </div>
@@ -270,6 +362,26 @@ Variables</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <dl class="section user"><dt>Original binary offset:</dt><dd>0x4BCACC </dd></dl>
+
+</div>
+</div>
+<a id="ac9811e84ae49203948b4fe17c3322f86" name="ac9811e84ae49203948b4fe17c3322f86"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac9811e84ae49203948b4fe17c3322f86">&#9670;&#160;</a></span>OracleDialogue()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void OracleDialogue </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Oracle's 'I lost it!' dialog option. </p>
+<dl class="section user"><dt>Original binary offset:</dt><dd>0x004B1ECE. </dd></dl>
 
 </div>
 </div>
@@ -377,6 +489,50 @@ Variables</h2></td></tr>
       <table class="memname">
         <tr>
           <td class="memname"><a class="el" href="GUIDialogues_8h.html#afcd7885d9ec6583fa04d9e8f0f641d00">DIALOGUE_TYPE</a> dialog_menu_id</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">extern</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ae88f1f886e60deb99ca183c11c0da4ea" name="ae88f1f886e60deb99ca183c11c0da4ea"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae88f1f886e60deb99ca183c11c0da4ea">&#9670;&#160;</a></span>dword_F8B1AC_award_bit_number</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="AwardTable_8h.html#affb7937911d9f95cf70e26a581d989c7">AwardType</a> dword_F8B1AC_award_bit_number</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">extern</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a0755b064714354c78416e60f3e8b05b5" name="a0755b064714354c78416e60f3e8b05b5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0755b064714354c78416e60f3e8b05b5">&#9670;&#160;</a></span>dword_F8B1AC_skill_being_taught</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="CharacterEnums_8h.html#afb7e1cb64c82efee699c6bd5b7467bb3">CharacterSkillType</a> dword_F8B1AC_skill_being_taught</td>
         </tr>
       </table>
   </td>

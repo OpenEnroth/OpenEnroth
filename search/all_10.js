@@ -826,7 +826,7 @@ var searchData=
   ['pricecalculator_823',['PriceCalculator',['../classPriceCalculator.html',1,'']]],
   ['pricecalculator_2ecpp_824',['PriceCalculator.cpp',['../PriceCalculator_8cpp.html',1,'']]],
   ['pricecalculator_2eh_825',['PriceCalculator.h',['../PriceCalculator_8h.html',1,'']]],
-  ['priceformembership_826',['priceForMembership',['../GUIWindow_8cpp.html#a0f5c7ab29fb162e5e98e37254366267c',1,'GUIWindow.cpp']]],
+  ['priceformembership_826',['priceForMembership',['../UIHouses_8cpp.html#a0f5c7ab29fb162e5e98e37254366267c',1,'UIHouses.cpp']]],
   ['primrose_827',['Primrose',['../classColorTable.html#a05045b27d673ca9556a3135d9469ee3d',1,'ColorTable']]],
   ['printgoogletesthelp_828',['printGoogleTestHelp',['../GameTestMain_8cpp.html#aa05d0414cd128051a88f3042255ffb9b',1,'GameTestMain.cpp']]],
   ['printitemtypesenum_829',['PrintItemTypesEnum',['../structItemTable.html#a578c2cbc00135bdd80a8a51854e4e6f3',1,'ItemTable']]],

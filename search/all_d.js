@@ -114,7 +114,7 @@ var searchData=
   ['margins_2eh_111',['Margins.h',['../Margins_8h.html',1,'']]],
   ['marginsi_112',['Marginsi',['../Margins_8h.html#af54b4ff4492cf2e8fcef8f00c26bb08e',1,'Margins.h']]],
   ['masterhealer_113',['MasterHealer',['../NPCEnums_8h.html#ae6501f571f97d74c2c78fddcb371bad4a807591eb5f8d2a03f99c297931628d69',1,'NPCEnums.h']]],
-  ['masterskillmasterycost_114',['masterSkillMasteryCost',['../GUIWindow_8cpp.html#a84ec1afee0f01c0a71ce45ed03a6e95d',1,'GUIWindow.cpp']]],
+  ['masterskillmasterycost_114',['masterSkillMasteryCost',['../UIHouses_8cpp.html#a84ec1afee0f01c0a71ce45ed03a6e95d',1,'UIHouses.cpp']]],
   ['mastery_115',['mastery',['../classCombinedSkillValue.html#a4ac44490952ebed9277adc2cb2c4a727',1,'CombinedSkillValue']]],
   ['mastery_5flvl_116',['mastery_lvl',['../structArcomageStartConditions.html#a6e2fe9e0f85b7ca46419e002d44013cf',1,'ArcomageStartConditions']]],
   ['masteryname_117',['MasteryName',['../classLocalization.html#afd68117e74638c36cc33f081d31061dd',1,'Localization']]],
