@@ -13,7 +13,7 @@ jobs:
       fail-fast: false
       matrix:
         configuration: [Debug, Release]
-        architecture: [x64, arm64]
+        architecture: [x64] #Todo: Change to [x64, arm64] when github adds m1 builds later this year
     steps:
     - name: Checkout
       uses: actions/checkout@v3
