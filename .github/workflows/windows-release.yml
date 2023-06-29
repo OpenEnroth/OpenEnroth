@@ -1,0 +1,77 @@
+name: Windows Release Build
+
+on:
+  schedule:
+    # schedule build every night
+    - cron: "0 0 * * *"
+  workflow_dispatch:
+  push:
+    tags:
+      - '*'
+
+env:
+  TAG_NAME: "nightly"
+
+jobs:
+  build_windows:
+    runs-on: windows-2022
+    strategy:
+      fail-fast: false
+      matrix:
+        configuration: [Debug, Release]
+        architecture: [x86, x64]
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+      with:
+        submodules: 'recursive'
+
+    - name: Setup environment
+      uses: ilammy/msvc-dev-cmd@v1
+      with:
+        arch: ${{ matrix.architecture }}
+
+    - name: Configure
+      run: |
+        cmake -B build -G "NMake Makefiles" -DCMAKE_BUILD_TYPE=${{ matrix.configuration }} -DENABLE_TESTS=On
+
+    - name: Build
+      working-directory: build
+      shell: cmd
+      run: |
+        nmake
+
+    - name: Tests
+      working-directory: build
+      run: |
+        nmake UnitTest
+
+    - name: Prepare artifact
+      shell: pwsh
+      run: |
+        mkdir dist
+        copy build\OpenEnroth.exe dist\ 
+        copy build\*.dll dist\ 
+        if ("${{ matrix.configuration }}" -eq "Debug" -And "${{ matrix.architecture }}" -eq "x86" ) {
+          copy c:\Windows\SysWOW64\msvcp140d.dll dist\ 
+          copy c:\Windows\SysWOW64\vcruntime140d.dll dist\  
+          copy c:\Windows\SysWOW64\ucrtbased.dll dist\
+        } ElseIf ("${{ matrix.configuration }}" -eq "Debug" -And "${{ matrix.architecture }}" -eq "x64") {
+          copy c:\Windows\System32\msvcp140d.dll dist\ 
+          copy c:\Windows\System32\vcruntime140_1d.dll dist\ 
+          copy c:\Windows\System32\vcruntime140d.dll dist\ 
+          copy c:\Windows\System32\ucrtbased.dll dist\ 
+        }
+        xcopy resources dist\ /E/H/C/I
+          
+    - name: Zip Folder For Release
+      if: success() || failure()	    
+      run: Compress-Archive -Path dist -DestinationPath ./Windows_${{ env.TAG_NAME }}_${{ matrix.configuration }}_${{ matrix.architecture }}.zip
+
+    - name: Publish Release
+      if: success() || failure()	    
+      uses: softprops/action-gh-release@v1
+      with:
+        prerelease: true
+        tag_name: ${{ env.TAG_NAME }}
+        files: ${{ runner.os }}_${{ env.TAG_NAME }}_${{ matrix.configuration }}_${{ matrix.architecture }}.zip

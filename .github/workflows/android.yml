@@ -1,0 +1,49 @@
+name: Android
+
+on:
+  pull_request:
+  push:
+  release:
+    types: [published]
+    
+jobs:
+  build_linux:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        job:
+          - {
+              arch: x86_64,
+              target: aarch64-linux-android,
+              os: ubuntu-22.04,
+              extra-build-features: "",
+            }
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+      with:
+        repository: OpenEnroth/OpenEnroth_Android 
+        submodules: 'recursive'
+
+    - name: Install dependencies
+      run: |
+        sudo apt-get install yasm
+
+    - uses: actions/setup-java@v2
+      with:
+        distribution: temurin
+        java-version: 17
+        cache: gradle
+
+    - name: Build ffmpeg
+      working-directory: openenroth/jni/FFmpeg
+      run: |
+        ./build.sh
+
+    - name: Build the app
+      run: ./gradlew assembleDebug
+
+        
+        
+        

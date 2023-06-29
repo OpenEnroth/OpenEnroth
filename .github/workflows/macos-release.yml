@@ -1,10 +1,16 @@
-name: MacOS
+name: MacOS Release Build
 
 on:
-  pull_request:
+  schedule:
+    # schedule build every night
+    - cron: "0 0 * * *"
+  workflow_dispatch:
   push:
-  release:
-    types: [published]
+    tags:
+      - '*'
+
+env:
+  TAG_NAME: "nightly"
 
 jobs:
   build_macos:
@@ -45,9 +51,16 @@ jobs:
         cp -r build/OpenEnroth.app dist/
         cp -r resources/* dist/
         hdiutil create OpenEnroth.dmg -ov -volname "OpenEnroth" -fs HFS+ -srcfolder dist
+        
+    - name: Zip Folder For Release
+      if: success() || failure()
+      run: zip -r ./MacOS_${{ env.TAG_NAME }}_${{ matrix.configuration }}_${{ matrix.architecture }}.zip dist
 
-    - name: Upload artifact
-      uses: actions/upload-artifact@v3
+    - name: Publish Release
+      if: success() || failure()	
+      uses: softprops/action-gh-release@v1
       with:
-        name: OpenEnroth (MacOS, ${{ matrix.configuration }}, ${{ matrix.architecture }})
-        path: OpenEnroth.dmg
+        prerelease: true
+        tag_name: ${{ env.TAG_NAME }}
+        files: ${{ runner.os }}_${{ env.TAG_NAME }}_${{ matrix.configuration }}_${{ matrix.architecture }}.zip
+        

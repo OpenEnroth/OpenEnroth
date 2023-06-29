@@ -1,5 +1,15 @@
 cmake_minimum_required(VERSION 3.20.4 FATAL_ERROR)
+
 project("OpenEnroth")
+
+if(APPLE)
+    if(CMAKE_OSX_ARCHITECTURES STREQUAL "arm64")
+        set (CMAKE_OSX_DEPLOYMENT_TARGET "11" CACHE STRING "Minimum OS X deployment version" FORCE)
+    else()
+        set (CMAKE_OSX_DEPLOYMENT_TARGET "10.15" CACHE STRING "Minimum OS X deployment version" FORCE)
+    endif()
+endif()
+
 add_compile_definitions(PACKAGE_BUGREPORT="https://github.com/OpenEnroth/OpenEnroth/issues")
 
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/CMakeModules)
