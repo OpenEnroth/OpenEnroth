@@ -47,12 +47,23 @@ jobs:
         nmake UnitTest
 
     - name: Prepare artifact
-      shell: cmd
+      shell: pwsh
       run: |
         mkdir dist
         copy build\OpenEnroth.exe dist\ /Y
         copy build\*.dll dist\ /Y
-        IF ["${{ matrix.configuration }}"]==["Debug"] copy c:\Windows\System32\msvcp140d.dll dist\ /Y
+        if (${{ matrix.configuration }} -eq "Debug" -And ${{ matrix.architecture }} -eq "x86" ) {
+          copy c:\Windows\SysWOW64\msvcp140d.dll dist\ /Y
+          copy c:\Windows\SysWOW64\ucrtbased.dll dist\ /Y
+          copy c:\Windows\SysWOW64\vcruntime140d.dll dist\ /Y          
+          copy c:\Windows\SysWOW64\vcruntime140d.dll dist\ /Y          
+        } ElseIf (${{ matrix.configuration }} -eq "Debug" -And ${{ matrix.architecture }} -eq "x64") {
+          copy c:\Windows\System32\msvcp140d.dll dist\ /Y
+          copy c:\Windows\System32\ucrtbased.dll dist\ /Y
+          copy c:\Windows\System32\vcruntime140_1d.dll dist\ /Y
+          copy c:\Windows\System32\vcruntime140d.dll dist\ /Y
+        }
+
         IF ["${{ matrix.configuration }}"]==["Debug"] copy c:\Windows\System32\ucrtbased.dll dist\ /Y
         IF ["${{ matrix.configuration }}"]==["Debug"] copy c:\Windows\System32\vcruntime140_1d.dll dist\ /Y
         IF ["${{ matrix.configuration }}"]==["Debug"] copy c:\Windows\System32\vcruntime140d.dll dist\ /Y
