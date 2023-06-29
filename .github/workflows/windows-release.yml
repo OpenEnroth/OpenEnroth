@@ -52,12 +52,10 @@ jobs:
         mkdir dist
         copy build\OpenEnroth.exe dist\ /Y
         copy build\*.dll dist\ /Y
-        if [ "${{ matrix.configuration }}" = "Debug" ]; then
-          copy c:\Windows\System32\msvcp140d.dll dist\ /Y
-          copy c:\Windows\System32\ucrtbased.dll dist\ /Y
-          copy c:\Windows\System32\vcruntime140_1d.dll dist\ /Y
-          copy c:\Windows\System32\vcruntime140d.dll dist\ /Y
-        fi
+        IF ["${{ matrix.configuration }}"]==["Debug"] copy c:\Windows\System32\msvcp140d.dll dist\ /Y
+        IF ["${{ matrix.configuration }}"]==["Debug"] copy c:\Windows\System32\ucrtbased.dll dist\ /Y
+        IF ["${{ matrix.configuration }}"]==["Debug"] copy c:\Windows\System32\vcruntime140_1d.dll dist\ /Y
+        IF ["${{ matrix.configuration }}"]==["Debug"] copy c:\Windows\System32\vcruntime140d.dll dist\ /Y
         xcopy resources dist\ /E/H/C/I
           
     - name: Zip Folder For Release
