@@ -22,6 +22,7 @@ enum MAP_TYPE : uint32_t {
     MAP_TATALIA = 13,
     MAP_AVLEE = 14,
     MAP_SHOALS = 15,
+    MAP_CASTLE_HARMONDALE = 21,
     //...
     MAP_ARENA = 76,
     //...

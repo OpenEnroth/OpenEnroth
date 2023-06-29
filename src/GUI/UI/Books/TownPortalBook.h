@@ -1,14 +1,15 @@
 #pragma once
 #include "GUI/UI/UIBooks.h"
 
-struct GUIWindow_TownPortalBook : public GUIWindow_Book {
-    explicit GUIWindow_TownPortalBook(int casterPid);  // const char *a1);
+class GUIWindow_TownPortalBook : public GUIWindow_Book {
+ public:
+    explicit GUIWindow_TownPortalBook(int casterPid);
     virtual ~GUIWindow_TownPortalBook() {}
 
     virtual void Update();
+
+    void clickTown(int townId);
+    void hintTown(int townId);
+ private:
+    int _casterPid;
 };
-
-static const int TOWN_PORTAL_DESTINATION_COUNT = 6;
-
-extern std::array<int, TOWN_PORTAL_DESTINATION_COUNT> townPortalQuestBits;
-extern int townPortalCasterPid;

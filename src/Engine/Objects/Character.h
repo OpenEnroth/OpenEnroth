@@ -446,8 +446,8 @@ class Character {
     static void _42FA66_do_explosive_impact(int xpos, int ypos, int zpos,
                                             int a4, int16_t a5,
                                             signed int actchar);
-    void CleanupBeacons();
-    bool SetBeacon(size_t index, size_t power);
+    void cleanupBeacons();
+    bool setBeacon(int index, GameTime duration);
 
     CHARACTER_SKILL_LEVEL GetSkillLevel(CharacterSkillType skill) const;
     CharacterSkillMastery GetSkillMastery(CharacterSkillType skill) const;
