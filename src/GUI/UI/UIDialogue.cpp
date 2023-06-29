@@ -19,7 +19,7 @@
 #include "GUI/UI/UIGame.h"
 #include "GUI/UI/UIHouses.h"
 #include "GUI/UI/UIStatusBar.h"
-#include "GUI/UI/UIArena.h"
+#include "GUI/UI/NPCTopics.h"
 
 #include "Io/KeyboardInputHandler.h"
 

@@ -18,12 +18,7 @@ bool PartyHasDragon();
 bool CheckHiredNPCSpeciality(NPCProf prof);
 
 int UseNPCSkill(NPCProf profession, int id);
-void NPCHireableDialogPrepare();
 
-/**
- * @offset 0x4B4224
- */
-void updateNPCTopics(int npc);
 const std::string &GetProfessionActionText(NPCProf prof);
 NPCData *GetNPCData(signed int npcid);
 NPCData *GetNewNPCData(signed int npcid, int *npc_indx);
