@@ -24,6 +24,7 @@
 #include "GUI/GUIButton.h"
 #include "GUI/GUIFont.h"
 #include "GUI/GUIMessageQueue.h"
+#include "GUI/UI/ItemGrid.h"
 #include "GUI/UI/UIInventory.h"
 
 #include "Io/Mouse.h"
@@ -1320,13 +1321,8 @@ void CharacterUI_InventoryTab_Draw(Character *player, bool Cover_Strip) {
 
         GraphicsImage *pTexture = assets->getImage_Alpha(player->pInventoryItemList[player->pInventoryMatrix[i] - 1].GetIconName());
 
-        int width = pTexture->width();
-        int height = pTexture->height();
-        if (width < 14) width = 14;
-        if (height < 14) height = 14;
-
-        signed int X_offset = (((signed int)((width - 14) & 0xFFFFFFE0) + 32) - width) / 2;
-        signed int Y_offset = (((signed int)((height - 14) & 0xFFFFFFE0) + 32) - height) / 2;
+        signed int X_offset = itemOffset(pTexture->width());
+        signed int Y_offset = itemOffset(pTexture->height());
         CharacterUI_DrawItem(uCellX + X_offset, uCellY + Y_offset, &(player->pInventoryItemList[player->pInventoryMatrix[i] - 1]), Cover_Strip);
     }
 }
