@@ -453,7 +453,7 @@ void prepareHouse(HOUSE_ID house) {
     }
 }
 
-void ClickNPCTopic(DIALOGUE_TYPE topic) {
+void selectHouseNPCDialogueOption(DIALOGUE_TYPE topic) {
     int pEventNumber;  // ecx@8
     char *v12;         // eax@53
     char *v13;         // eax@56
@@ -522,6 +522,7 @@ void ClickNPCTopic(DIALOGUE_TYPE topic) {
         BackToHouseMenu();
         return;
     }
+
     if (topic != DIALOGUE_HIRE_FIRE) {
         if (topic == DIALOGUE_PROFESSION_DETAILS) {
             // uBoxHeight = pCurrentNPCInfo->uProfession;
@@ -658,14 +659,13 @@ void ClickNPCTopic(DIALOGUE_TYPE topic) {
     BackToHouseMenu();
 }
 
-void updateNPCTopics(int npc) {
+void updateHouseNPCTopics(int npc) {
     int num_menu_buttons = 0;
 
     currentHouseNpc = npc;
-    Sizei renDims = render->GetRenderDimensions();
     if (houseNpcs[npc].type == HOUSE_TRANSITION) {
         pDialogueWindow->Release();
-        pDialogueWindow = new GUIWindow(WINDOW_Dialogue, {0, 0}, renDims, 0);
+        pDialogueWindow = new GUIWindow(WINDOW_Dialogue, {0, 0}, render->GetRenderDimensions(), 0);
         transition_button_label = houseNpcs[npc].label;
         pBtn_ExitCancel = pDialogueWindow->CreateButton({566, 445}, {75, 33}, 1, 0, UIMSG_Escape, 0, Io::InputAction::No, localization->GetString(LSTR_CANCEL), {ui_buttdesc2});
         pBtn_YES = pDialogueWindow->CreateButton({486, 445}, {75, 33}, 1, 0, UIMSG_HouseTransitionConfirmation, 1, Io::InputAction::Yes, transition_button_label, {ui_buttyes2});
@@ -681,45 +681,17 @@ void updateNPCTopics(int npc) {
                 houseNpcs[i].button = nullptr;
             }
         }
-        pDialogueWindow = new GUIWindow(WINDOW_Dialogue, {0, 0}, {renDims.w, 345}, 0);
-        pBtn_ExitCancel = pDialogueWindow->CreateButton({471, 445}, {169, 35}, 1, 0, UIMSG_Escape, 0, Io::InputAction::Invalid,
-                                                        localization->GetString(LSTR_END_CONVERSATION), {ui_exit_cancel_button_background});
-        pDialogueWindow->CreateButton({8, 8}, {450, 320}, 1, 0, UIMSG_HouseScreenClick, 0);
         dialog_menu_id = DIALOGUE_MAIN;
+        window_SpeakInHouse->reinitDialogueWindow();
         if (houseNpcs[npc].type == HOUSE_PROPRIETOR) {
-            window_SpeakInHouse->initializeDialog();
-        } else { // NPC
-            NPCData *npcData = houseNpcs[npc].npc;
-            if (npcData->is_joinable) {
-                num_menu_buttons = 1;
-                pDialogueWindow->CreateButton({480, 160}, {140, 30}, 1, 0, UIMSG_ClickNPCTopic, DIALOGUE_13_hiring_related);
-            }
-
-            #define AddScriptedDialogueLine(EVENT_ID, MSG_PARAM) \
-                if (EVENT_ID) { \
-                    if (num_menu_buttons < 4) { \
-                        int res = npcDialogueEventProcessor(EVENT_ID); \
-                        if (res == 1 || res == 2) \
-                            pDialogueWindow->CreateButton({480, 160 + 30 * num_menu_buttons++}, {140, 30}, 1, 0, UIMSG_ClickNPCTopic, MSG_PARAM); \
-                    } \
-                }
-
-            AddScriptedDialogueLine(npcData->dialogue_1_evt_id, DIALOGUE_SCRIPTED_LINE_1);
-            AddScriptedDialogueLine(npcData->dialogue_2_evt_id, DIALOGUE_SCRIPTED_LINE_2);
-            AddScriptedDialogueLine(npcData->dialogue_3_evt_id, DIALOGUE_SCRIPTED_LINE_3);
-            AddScriptedDialogueLine(npcData->dialogue_4_evt_id, DIALOGUE_SCRIPTED_LINE_4);
-            AddScriptedDialogueLine(npcData->dialogue_5_evt_id, DIALOGUE_SCRIPTED_LINE_5);
-            AddScriptedDialogueLine(npcData->dialogue_6_evt_id, DIALOGUE_SCRIPTED_LINE_6);
-
-            pDialogueWindow->_41D08F_set_keyboard_control_group(num_menu_buttons, 1, 0, 2);
-            // TODO(Nik-RE-dev): initial number of buttons used only in non-simple houses now
-            //                   but this causes situation where dead character can talk to someone
-            //dword_F8B1E0 = pDialogueWindow->pNumPresenceButton;
+            window_SpeakInHouse->initializeProprietorDialogue();
+        } else {
+            window_SpeakInHouse->initializeNPCDialogue(npc);
         }
     }
 }
 
-void onSelectHouseDialogueOption(DIALOGUE_TYPE option) {
+void selectProprietorDialogueOption(DIALOGUE_TYPE option) {
     if (!pDialogueWindow || !pDialogueWindow->pNumPresenceButton) {
         return;
     }
@@ -729,7 +701,7 @@ void onSelectHouseDialogueOption(DIALOGUE_TYPE option) {
     dialog_menu_id = option;
     window_SpeakInHouse->houseDialogueOptionSelected(option);
     window_SpeakInHouse->reinitDialogueWindow();
-    window_SpeakInHouse->initializeDialog();
+    window_SpeakInHouse->initializeProprietorDialogue();
 }
 
 bool houseDialogPressEscape() {
@@ -744,7 +716,7 @@ bool houseDialogPressEscape() {
     }
 
     if (dialog_menu_id == DIALOGUE_OTHER) {
-        updateNPCTopics(currentHouseNpc);
+        updateHouseNPCTopics(currentHouseNpc);
         BackToHouseMenu();
         return true;
     }
@@ -769,7 +741,7 @@ bool houseDialogPressEscape() {
         for (int i = 0; i < houseNpcs.size(); ++i) {
             Pointi pos = {pNPCPortraits_x[houseNpcs.size() - 1][i], pNPCPortraits_y[houseNpcs.size() - 1][i]};
             houseNpcs[i].button = window_SpeakInHouse->CreateButton(pos, {63, 73}, 1, 0, UIMSG_ClickHouseNPCPortrait, i,
-                                                                               Io::InputAction::Invalid, houseNpcs[i].label);
+                                                                    Io::InputAction::Invalid, houseNpcs[i].label);
         }
 
         BackToHouseMenu();
@@ -778,7 +750,7 @@ bool houseDialogPressEscape() {
 
     dialog_menu_id = window_SpeakInHouse->getOptionOnEscape();
     window_SpeakInHouse->reinitDialogueWindow();
-    window_SpeakInHouse->initializeDialog();
+    window_SpeakInHouse->initializeProprietorDialogue();
 
     return true;
 }
@@ -846,7 +818,7 @@ void createHouseUI(HOUSE_ID houseId) {
     window_SpeakInHouse->CreateButton({407, 424}, {31, 0}, 2, 94, UIMSG_SelectCharacter, 4, Io::InputAction::SelectChar4, "");
     window_SpeakInHouse->CreateButton({0, 0}, {0, 0}, 1, 0, UIMSG_CycleCharacters, 0, Io::InputAction::CharCycle, "");
     if (houseNpcs.size() == 1) {
-        updateNPCTopics(0);
+        updateHouseNPCTopics(0);
     }
 }
 
@@ -1227,7 +1199,7 @@ void GUIWindow_House::houseDialogManager() {
     }
 }
 
-void GUIWindow_House::initializeDialog() {
+void GUIWindow_House::initializeProprietorDialogue() {
     if (!pDialogueWindow) {
         return;
     }
@@ -1236,7 +1208,48 @@ void GUIWindow_House::initializeDialog() {
 
     if (optionList.size()) {
         for (int i = 0; i < optionList.size(); i++) {
-            pDialogueWindow->CreateButton({480, 146 + 30 * i}, {140, 30}, 1, 0, UIMSG_SelectHouseDialogueOption, optionList[i], Io::InputAction::Invalid, "");
+            pDialogueWindow->CreateButton({480, 146 + 30 * i}, {140, 30}, 1, 0, UIMSG_SelectProprietorDialogueOption, optionList[i], Io::InputAction::Invalid, "");
+        }
+        pDialogueWindow->_41D08F_set_keyboard_control_group(optionList.size(), 1, 0, 2);
+    }
+    _savedButtonsNum = pDialogueWindow->pNumPresenceButton;
+}
+
+void GUIWindow_House::initializeNPCDialogue(int npc) {
+    if (!pDialogueWindow) {
+        return;
+    }
+
+    NPCData *npcData = houseNpcs[npc].npc;
+    std::vector<DIALOGUE_TYPE> optionList;
+
+    if (npcData->is_joinable) {
+        optionList.push_back(DIALOGUE_13_hiring_related);
+    }
+
+    // TODO(Nik-RE-dev): place NPC events in array
+#define ADD_NPC_SCRIPTED_DIALOGUE(EVENT_ID, MSG_PARAM) \
+    if (EVENT_ID) { \
+        if (optionList.size() < 4) { \
+            int res = npcDialogueEventProcessor(EVENT_ID); \
+            if (res == 1 || res == 2) { \
+                optionList.push_back(MSG_PARAM); \
+            } \
+        } \
+    }
+
+    ADD_NPC_SCRIPTED_DIALOGUE(npcData->dialogue_1_evt_id, DIALOGUE_SCRIPTED_LINE_1);
+    ADD_NPC_SCRIPTED_DIALOGUE(npcData->dialogue_2_evt_id, DIALOGUE_SCRIPTED_LINE_2);
+    ADD_NPC_SCRIPTED_DIALOGUE(npcData->dialogue_3_evt_id, DIALOGUE_SCRIPTED_LINE_3);
+    ADD_NPC_SCRIPTED_DIALOGUE(npcData->dialogue_4_evt_id, DIALOGUE_SCRIPTED_LINE_4);
+    ADD_NPC_SCRIPTED_DIALOGUE(npcData->dialogue_5_evt_id, DIALOGUE_SCRIPTED_LINE_5);
+    ADD_NPC_SCRIPTED_DIALOGUE(npcData->dialogue_6_evt_id, DIALOGUE_SCRIPTED_LINE_6);
+
+#undef ADD_NPC_SCRIPTED_DIALOGUE
+
+    if (optionList.size()) {
+        for (int i = 0; i < optionList.size(); i++) {
+            pDialogueWindow->CreateButton({480, 160 + 30 * i}, {140, 30}, 1, 0, UIMSG_SelectHouseNPCDialogueOption, optionList[i], Io::InputAction::Invalid, "");
         }
         pDialogueWindow->_41D08F_set_keyboard_control_group(optionList.size(), 1, 0, 2);
     }

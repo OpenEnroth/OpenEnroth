@@ -24,7 +24,7 @@ void BackToHouseMenu();
 /**
  * @offset 0x4BCACC
  */
-void onSelectHouseDialogueOption(DIALOGUE_TYPE option);
+void selectProprietorDialogueOption(DIALOGUE_TYPE option);
 
 /**
  * @offset 0x44606A
@@ -45,12 +45,12 @@ bool houseDialogPressEscape();
  */
 void playHouseSound(HOUSE_ID houseID, HouseSoundType type);
 
-void ClickNPCTopic(DIALOGUE_TYPE topic);
+void selectHouseNPCDialogueOption(DIALOGUE_TYPE topic);
 
 /**
  * @offset 0x4B4224
  */
-void updateNPCTopics(int npc);
+void updateHouseNPCTopics(int npc);
 
 /**
  * Type of NPC you can have dialogue with inside house.
@@ -89,7 +89,8 @@ class GUIWindow_House : public GUIWindow {
 
     void houseDialogManager();
     void houseNPCDialogue();
-    void initializeDialog();
+    void initializeProprietorDialogue();
+    void initializeNPCDialogue(int npc);
     void learnSelectedSkill(CharacterSkillType skill);
     void reinitDialogueWindow();
     bool checkIfPlayerCanInteract();

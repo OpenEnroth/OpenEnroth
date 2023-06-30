@@ -485,17 +485,17 @@ void Game::processQueuedMessages() {
                     window_SpeakInHouse->houseScreenClick();
                 }
                 continue;
-            case UIMSG_ClickNPCTopic:
-                ClickNPCTopic((DIALOGUE_TYPE)uMessageParam);
+            case UIMSG_SelectHouseNPCDialogueOption:
+                selectHouseNPCDialogueOption((DIALOGUE_TYPE)uMessageParam);
                 continue;
-            case UIMSG_SelectHouseDialogueOption:
-                onSelectHouseDialogueOption((DIALOGUE_TYPE)uMessageParam);
+            case UIMSG_SelectProprietorDialogueOption:
+                selectProprietorDialogueOption((DIALOGUE_TYPE)uMessageParam);
                 continue;
             case UIMSG_SelectNPCDialogueOption:
                 OnSelectNPCDialogueOption((DIALOGUE_TYPE)uMessageParam);
                 continue;
             case UIMSG_ClickHouseNPCPortrait:
-                updateNPCTopics(uMessageParam);
+                updateHouseNPCTopics(uMessageParam);
                 continue;
                 // case UIMSG_StartNewGame:
                 // Game_StartNewGameWhilePlaying(uMessageParam); continue;
