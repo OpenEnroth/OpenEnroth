@@ -89,7 +89,7 @@ var searchData=
   ['operator_7e_86',['operator~',['../classFlags.html#ab70bdeda6a543c7a8079e679fe7c3f17',1,'Flags']]],
   ['opponentsaiturn_87',['OpponentsAITurn',['../Arcomage_8cpp.html#a1cc7fa71c0782bc6edd73578da1d83a0',1,'Arcomage.cpp']]],
   ['optionsmenuskin_88',['OptionsMenuSkin',['../structOptionsMenuSkin.html#a4f1b33b50a216c82b73e857e3ce10b90',1,'OptionsMenuSkin']]],
-  ['oracledialogue_89',['OracleDialogue',['../UIHouses_8cpp.html#ac9811e84ae49203948b4fe17c3322f86',1,'OracleDialogue():&#160;UIHouses.cpp'],['../UIHouses_8h.html#ac9811e84ae49203948b4fe17c3322f86',1,'OracleDialogue():&#160;UIHouses.cpp']]],
+  ['oracledialogue_89',['OracleDialogue',['../NPCTopics_8cpp.html#ac9811e84ae49203948b4fe17c3322f86',1,'OracleDialogue():&#160;NPCTopics.cpp'],['../NPCTopics_8h.html#ac9811e84ae49203948b4fe17c3322f86',1,'OracleDialogue():&#160;NPCTopics.cpp']]],
   ['orientations_90',['orientations',['../classPlatformWindow.html#aafd03f0e345d23c1eb1dfdd8b8f0313a',1,'PlatformWindow::orientations()'],['../classProxyWindow.html#a2c2d0b6d6b155a59926c9dc3081c7880',1,'ProxyWindow::orientations()'],['../classSdlWindow.html#ae1cd18fa23d48f1448971e8638d51f45',1,'SdlWindow::orientations()']]],
   ['os_5fgetappstringrecursive_91',['OS_GetAppStringRecursive',['../WinPlatform_8cpp.html#accc93512f07d76ba8fd42baf6e3bc552',1,'WinPlatform.cpp']]],
   ['otherside_92',['otherSide',['../structEngineControlStateHandle_1_1SharedData.html#a5f68c0e26a5caa87dd15e53d9b162daf',1,'EngineControlStateHandle::SharedData']]],

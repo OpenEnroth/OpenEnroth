@@ -421,7 +421,7 @@ var searchData=
   ['clickawardsdown_418',['clickAwardsDown',['../classGUIWindow__CharacterRecord.html#af4bed5f696b089120f09985594349d0a',1,'GUIWindow_CharacterRecord']]],
   ['clickawardsscroll_419',['clickAwardsScroll',['../classGUIWindow__CharacterRecord.html#a33ed0e6f4ac25d2a53af058691fa5137',1,'GUIWindow_CharacterRecord']]],
   ['clickawardsup_420',['clickAwardsUp',['../classGUIWindow__CharacterRecord.html#a299a12a6da4c41fcc4206f546665c61b',1,'GUIWindow_CharacterRecord']]],
-  ['clicknpctopic_421',['ClickNPCTopic',['../GUIWindow_8cpp.html#a2706ee0d26c5e93fd7eb31f540d22d86',1,'ClickNPCTopic(DIALOGUE_TYPE topic):&#160;GUIWindow.cpp'],['../GUIWindow_8h.html#a2706ee0d26c5e93fd7eb31f540d22d86',1,'ClickNPCTopic(DIALOGUE_TYPE topic):&#160;GUIWindow.cpp']]],
+  ['clicknpctopic_421',['ClickNPCTopic',['../UIHouses_8cpp.html#a2706ee0d26c5e93fd7eb31f540d22d86',1,'ClickNPCTopic(DIALOGUE_TYPE topic):&#160;UIHouses.cpp'],['../UIHouses_8h.html#a2706ee0d26c5e93fd7eb31f540d22d86',1,'ClickNPCTopic(DIALOGUE_TYPE topic):&#160;UIHouses.cpp']]],
   ['clicktown_422',['clickTown',['../classGUIWindow__TownPortalBook.html#aad6b15c4da50b6791174374eb6c3ee4b',1,'GUIWindow_TownPortalBook']]],
   ['clip_5fw_423',['clip_w',['../classRenderOpenGL.html#ad40ce3b8e5fc0ec0e86e2369d1cbdc3d',1,'RenderOpenGL']]],
   ['clip_5fx_424',['clip_x',['../classRenderOpenGL.html#a0551dded880d8a9dd7b584b978e0e636',1,'RenderOpenGL']]],
