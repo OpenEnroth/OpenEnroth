@@ -259,13 +259,6 @@ bool PartyCreationUI_Loop() {
     pParty->Reset();
     pParty->createDefaultParty();
 
-    pParty->_questBits.set(QBIT_EMERALD_ISLAND_RED_POTION_ACTIVE);
-    pParty->_questBits.set(QBIT_EMERALD_ISLAND_SEASHELL_ACTIVE);
-    pParty->_questBits.set(QBIT_EMERALD_ISLAND_LONGBOW_ACTIVE);
-    pParty->_questBits.set(QBIT_EMERALD_ISLAND_PLATE_ACTIVE);
-    pParty->_questBits.set(QBIT_EMERALD_ISLAND_LUTE_ACTIVE);
-    pParty->_questBits.set(QBIT_EMERALD_ISLAND_HAT_ACTIVE);
-
     pGUIWindow_CurrentMenu = new GUIWindow_PartyCreation();
     if (PartyCreationUI_LoopInternal()) {
         PartyCreationUI_DeleteFont();
