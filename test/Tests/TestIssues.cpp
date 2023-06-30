@@ -379,6 +379,14 @@ GAME_TEST(Prs, Pr314) {
     EXPECT_EQ(pParty->pCharacters[1].GetRace(), CHARACTER_RACE_ELF);
     EXPECT_EQ(pParty->pCharacters[2].GetRace(), CHARACTER_RACE_GOBLIN);
     EXPECT_EQ(pParty->pCharacters[3].GetRace(), CHARACTER_RACE_ELF);
+
+    // Check that party qbits are set even if we press Clear when creating a party. Related to #742
+    EXPECT_TRUE(pParty->_questBits.test(QBIT_EMERALD_ISLAND_RED_POTION_ACTIVE));
+    EXPECT_TRUE(pParty->_questBits.test(QBIT_EMERALD_ISLAND_SEASHELL_ACTIVE));
+    EXPECT_TRUE(pParty->_questBits.test(QBIT_EMERALD_ISLAND_LONGBOW_ACTIVE));
+    EXPECT_TRUE(pParty->_questBits.test(QBIT_EMERALD_ISLAND_PLATE_ACTIVE));
+    EXPECT_TRUE(pParty->_questBits.test(QBIT_EMERALD_ISLAND_LUTE_ACTIVE));
+    EXPECT_TRUE(pParty->_questBits.test(QBIT_EMERALD_ISLAND_HAT_ACTIVE));
 }
 
 GAME_TEST(Issues, Issue315) {
