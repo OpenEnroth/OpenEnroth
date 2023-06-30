@@ -139,7 +139,7 @@ GUIWindow_Dialogue::GUIWindow_Dialogue(Pointi position, Sizei dimensions, Window
         int num_dialugue_options = 0;
         int text_line_height = pFontArrus->GetHeight() - 3;
         NPCData *speakingNPC = GetNPCData(sDialogue_SpeakingActorNPC_ID);
-        if (GetGreetType(sDialogue_SpeakingActorNPC_ID) == 1) {  // QuestsNPC_greet
+        if (getNPCType(sDialogue_SpeakingActorNPC_ID) == NPC_TYPE_QUEST) {
             if (speakingNPC->is_joinable) {
                 CreateButton({480, 130}, {140, text_line_height}, 1, 0, UIMSG_SelectNPCDialogueOption, DIALOGUE_13_hiring_related);
                 num_dialugue_options = 1;
@@ -209,7 +209,7 @@ void GUIWindow_Dialogue::Update() {
     // Window title(Заголовок окна)----
     GUIWindow window = *pDialogueWindow;
     NPCData *pNPC = GetNPCData(sDialogue_SpeakingActorNPC_ID);
-    int pGreetType = GetGreetType(sDialogue_SpeakingActorNPC_ID);
+    NpcType npcType = getNPCType(sDialogue_SpeakingActorNPC_ID);
     window.uFrameWidth -= 10;
     window.uFrameZ -= 10;
     render->DrawTextureNew(477 / 640.0f, 0, game_ui_dialogue_background);
@@ -265,14 +265,14 @@ void GUIWindow_Dialogue::Update() {
             if (uDialogueType >= DIALOGUE_SCRIPTED_LINE_1 && uDialogueType < DIALOGUE_SCRIPTED_LINE_6 &&
                 branchless_dialogue_str.empty()) {
                 dialogue_string = current_npc_text;
-            } else if (pGreetType == 1) {  // QuestNPC_greet
+            } else if (npcType == NPC_TYPE_QUEST) {
                 if (pNPC->greet) {
                     if (pNPC->uFlags & NPC_GREETED_SECOND)
                         dialogue_string = pNPCStats->pNPCGreetings[pNPC->greet].pGreeting2;
                     else
                         dialogue_string = pNPCStats->pNPCGreetings[pNPC->greet].pGreeting1;
                 }
-            } else if (pGreetType == 2) {  // HiredNPC_greet
+            } else if (npcType == NPC_TYPE_HIREABLE) {
                 NPCProfession *prof = &pNPCStats->pProfessions[pNPC->profession];
 
                 if (pNPC->Hired())
