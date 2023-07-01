@@ -29,14 +29,7 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v3
       with:
-        repository: OpenEnroth/OpenEnroth_Android
         submodules: 'recursive'
-        
-    - name: Update submodules
-      working-directory: openenroth
-      run: |
-        git submodule update --recursive --remote
-        git submodule foreach --recursive git checkout master
 
     - name: Install dependencies
       run: |
@@ -49,20 +42,23 @@ jobs:
         cache: gradle
 
     - name: Build ffmpeg
-      working-directory: openenroth/jni/FFmpeg
+      working-directory: android/openenroth/jni/FFmpeg
       run: |
         ./build.sh
 
     - name: Build the app
+      working-directory: android
       run: ./gradlew assembleDebug
 
     - name: Upload apk
+      working-directory: android
       uses: actions/upload-artifact@v2
       with:
         name: debug apk
         path: app/build/outputs/apk/debug/app-debug.apk
           
     - name: Publish unsigned apk package
+      working-directory: android
       uses: softprops/action-gh-release@v1
       with:
         prerelease: true
