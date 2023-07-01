@@ -43,7 +43,7 @@ jobs:
         
     - name: check
       run: |
-        ls -lha android\openenroth\jni\FFmpeg
+        ls -lha android/openenroth/jni/FFmpeg
         
     - name: Build ffmpeg
       working-directory: android/openenroth/jni/FFmpeg
