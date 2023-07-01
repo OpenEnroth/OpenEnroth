@@ -99,7 +99,7 @@ COMMON_FF_CFG_FLAGS="${COMMON_FF_CFG_FLAGS} --disable-bsfs"
 # ./configure --list-protocols
 COMMON_FF_CFG_FLAGS="${COMMON_FF_CFG_FLAGS} --disable-protocols"
 COMMON_FF_CFG_FLAGS="${COMMON_FF_CFG_FLAGS} --enable-protocol=file"
-
+ls ../
 function build_ffmpeg
 {
     FFMPEG_DIR="ffmpeg-${FF_VER}_${ARCH_PREFIX}"
@@ -257,7 +257,7 @@ do
         SYSROOT=${ANDROID_NDK}/platforms/android-${ANDROID_PLATFORM}/arch-${ANDROID_PLATFORM_VARIANT}/
     fi
 
-
+	ls ../
     echo "[+++] building ffmpeg-${ARCH}..."
     build_ffmpeg
 done
