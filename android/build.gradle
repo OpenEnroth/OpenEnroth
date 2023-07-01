@@ -2,6 +2,7 @@ task copyToRelease(type: Copy) {
 	copy {
 		from fileTree('../')
 		into 'openenroth/jni/OpenEnroth'
+		exclude '**/android/**'
 	}
 
 }
