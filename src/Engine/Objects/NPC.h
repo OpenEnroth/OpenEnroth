@@ -10,6 +10,12 @@
 
 struct NPCData;
 
+enum class NpcType {
+    NPC_TYPE_QUEST = 1,
+    NPC_TYPE_HIREABLE = 2
+};
+using enum NpcType;
+
 // TODO(Nik-RE-dev): remove
 //----- (0047730C) --------------------------------------------------------
 inline bool CheckPortretAgainstSex(int a1, int) { return true; }
@@ -22,7 +28,11 @@ int UseNPCSkill(NPCProf profession, int id);
 const std::string &GetProfessionActionText(NPCProf prof);
 NPCData *GetNPCData(signed int npcid);
 NPCData *GetNewNPCData(signed int npcid, int *npc_indx);
-int GetGreetType(signed int SpeakingNPC_ID);
+
+/**
+ * @offset 0x445C8B
+ */
+NpcType getNPCType(int npcId);
 
 class FlatHirelings {
  public:

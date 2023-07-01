@@ -106,21 +106,18 @@ bool CheckHiredNPCSpeciality(NPCProf prof) {
         || pParty->pHirelings[1].profession == prof;
 }
 
-//----- (00445C8B) --------------------------------------------------------
-int GetGreetType(signed int SpeakingNPC_ID) {
-    if (SpeakingNPC_ID >= 0) {
-        if (SpeakingNPC_ID < 5000) return 1;  // QuestNPC_greet
-        return 2;                             // HiredNPC_greet
+NpcType getNPCType(int npcId) {
+    if (npcId >= 0) {
+        if (npcId < 5000) {
+            return NPC_TYPE_QUEST;
+        }
+        return NPC_TYPE_HIREABLE;
     }
-
-    if (SpeakingNPC_ID >= 5000) return 2;
-
-    int v3 = abs((int)sDialogue_SpeakingActorNPC_ID) - 1;
 
     FlatHirelings buf;
     buf.Prepare();
 
-    return buf.IsFollower(v3) ? 1 : 2;
+    return buf.IsFollower(abs(npcId) - 1) ? NPC_TYPE_QUEST : NPC_TYPE_HIREABLE;
 }
 
 //----- (00445308) --------------------------------------------------------
