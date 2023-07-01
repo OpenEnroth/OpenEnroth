@@ -40,7 +40,11 @@ jobs:
         distribution: temurin
         java-version: 17
         cache: gradle
-
+        
+    - name: check
+      run: |
+        ls -lha android\openenroth\jni\FFmpeg
+        
     - name: Build ffmpeg
       working-directory: android/openenroth/jni/FFmpeg
       run: |
