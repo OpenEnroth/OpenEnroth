@@ -53,7 +53,7 @@ static std::string _resolvePath(
 ) {
 #ifdef __ANDROID__
     // TODO: find a better way to deal with paths and remove this android specific block.
-    std::string result = platform->StoragePath(ANDROID_STORAGE_EXTERNAL);
+    std::string result = platform->storagePath(ANDROID_STORAGE_EXTERNAL);
     if (result.empty())
         result = platform->StoragePath(ANDROID_STORAGE_INTERNAL);
     if (result.empty())
