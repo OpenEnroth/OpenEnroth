@@ -679,7 +679,15 @@ void Party::Reset() {
     current_character_screen_window = WINDOW_CharacterWindow_Stats;  // default character ui - stats
     uFlags = 0;
     _autonoteBits.reset();
+
     _questBits.reset();
+    pParty->_questBits.set(QBIT_EMERALD_ISLAND_RED_POTION_ACTIVE);
+    pParty->_questBits.set(QBIT_EMERALD_ISLAND_SEASHELL_ACTIVE);
+    pParty->_questBits.set(QBIT_EMERALD_ISLAND_LONGBOW_ACTIVE);
+    pParty->_questBits.set(QBIT_EMERALD_ISLAND_PLATE_ACTIVE);
+    pParty->_questBits.set(QBIT_EMERALD_ISLAND_LUTE_ACTIVE);
+    pParty->_questBits.set(QBIT_EMERALD_ISLAND_HAT_ACTIVE);
+
     pIsArtifactFound.fill(false);
 
     PartyTimes.shopBanTimes.fill(GameTime(0));
