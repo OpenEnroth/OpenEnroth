@@ -112,7 +112,7 @@ function build_ffmpeg
     mkdir ${FFMPEG_DIR}
     tar jxf ffmpeg-${FF_VER}.tar.bz2 --strip-components=1 -C ${FFMPEG_DIR}
     pushd ${FFMPEG_DIR}
-	pwd
+	pwd ../
     patch -p1 < ../ffmpeg-so.patch
 
     echo "[+++] configuring ffmpeg v${FF_VER}:${ARCH_PREFIX}..."
