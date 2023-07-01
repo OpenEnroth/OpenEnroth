@@ -1366,3 +1366,10 @@ GAME_TEST(Issues, Issue1020) {
     // Test finishing the scavenger hunt quest. The game should not crash when there is no dialogue options.
     test->playTraceFromTestData("issue_1020.mm7", "issue_1020.json"); // Should not assert
 }
+
+GAME_TEST(Issues, Issue1036) {
+    // Test that elemental magic guilds teach Learning skill and self magic guilds teach Meditation skill.
+    test->playTraceFromTestData("issue_1036.mm7", "issue_1036.json");
+    EXPECT_TRUE(pParty->pCharacters[2].pActiveSkills[CHARACTER_SKILL_LEARNING]);
+    EXPECT_TRUE(pParty->pCharacters[2].pActiveSkills[CHARACTER_SKILL_MEDITATION]);
+}

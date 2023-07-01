@@ -52,6 +52,18 @@ IndexedArray<DIALOGUE_TYPE, BUILDING_FIRE_GUILD, BUILDING_DARK_GUILD> learnableM
     {BUILDING_DARK_GUILD,   DIALOGUE_LEARN_DARK}
 };
 
+IndexedArray<DIALOGUE_TYPE, BUILDING_FIRE_GUILD, BUILDING_DARK_GUILD> learnableAdditionalSkillDialogue = {
+    {BUILDING_FIRE_GUILD,   DIALOGUE_LEARN_LEARNING},
+    {BUILDING_AIR_GUILD,    DIALOGUE_LEARN_LEARNING},
+    {BUILDING_WATER_GUILD,  DIALOGUE_LEARN_LEARNING},
+    {BUILDING_EARTH_GUILD,  DIALOGUE_LEARN_LEARNING},
+    {BUILDING_SPIRIT_GUILD, DIALOGUE_LEARN_MEDITATION},
+    {BUILDING_MIND_GUILD,   DIALOGUE_LEARN_MEDITATION},
+    {BUILDING_BODY_GUILD,   DIALOGUE_LEARN_MEDITATION},
+    {BUILDING_LIGHT_GUILD,  DIALOGUE_NULL},
+    {BUILDING_DARK_GUILD,   DIALOGUE_NULL}
+};
+
 IndexedArray<CharacterSkillMastery, HOUSE_FIRST_MAGIC_GUILD, HOUSE_LAST_MAGIC_GUILD> guildSpellsMastery = {
     {HOUSE_FIRE_GUILD_INITIATE_EMERALD_ISLE,   CHARACTER_SKILL_MASTERY_NOVICE},
     {HOUSE_FIRE_GUILD_ADEPT_HARMONDALE,        CHARACTER_SKILL_MASTERY_EXPERT},
@@ -272,10 +284,10 @@ std::vector<DIALOGUE_TYPE> GUIWindow_MagicGuild::listDialogueOptions(DIALOGUE_TY
 
     switch (option) {
       case DIALOGUE_MAIN:
-        if (guildType == BUILDING_LIGHT_GUILD || guildType == BUILDING_DARK_GUILD) {
-            return {DIALOGUE_GUILD_BUY_BOOKS, learnableMagicSkillDialogue[guildType]};
+        if (learnableAdditionalSkillDialogue[guildType] != DIALOGUE_NULL) {
+            return {DIALOGUE_GUILD_BUY_BOOKS, learnableMagicSkillDialogue[guildType], learnableAdditionalSkillDialogue[guildType]};
         } else {
-            return {DIALOGUE_GUILD_BUY_BOOKS, learnableMagicSkillDialogue[guildType], DIALOGUE_LEARN_MEDITATION};
+            return {DIALOGUE_GUILD_BUY_BOOKS, learnableMagicSkillDialogue[guildType]};
         }
       default:
         return {};
