@@ -13,12 +13,14 @@ var searchData=
   ['npc_5fprofession_5ffirst_5fvalid_10',['NPC_PROFESSION_FIRST_VALID',['../NPCEnums_8h.html#ae6501f571f97d74c2c78fddcb371bad4aa80bdb406d2394454e3ecaab7799f062',1,'NPCEnums.h']]],
   ['npc_5fprofession_5flast_11',['NPC_PROFESSION_LAST',['../NPCEnums_8h.html#ae6501f571f97d74c2c78fddcb371bad4a7e04078b21df971e5dcbbc512dc2bbcd',1,'NPCEnums.h']]],
   ['npc_5fprofession_5flast_5fvalid_12',['NPC_PROFESSION_LAST_VALID',['../NPCEnums_8h.html#ae6501f571f97d74c2c78fddcb371bad4a0fdb4ff7c5a779e7e5fa0574d326b287',1,'NPCEnums.h']]],
-  ['nuklear_5faction_5fcreate_13',['NUKLEAR_ACTION_CREATE',['../classNuklear.html#a267bf08292d09792b96bfabe87bc4b1caf40660b79f848c216ffc7df5725f1a37',1,'Nuklear']]],
-  ['nuklear_5faction_5fdraw_14',['NUKLEAR_ACTION_DRAW',['../classNuklear.html#a267bf08292d09792b96bfabe87bc4b1cad89e559954e0922e6046723a64200ec2',1,'Nuklear']]],
-  ['nuklear_5faction_5frelease_15',['NUKLEAR_ACTION_RELEASE',['../classNuklear.html#a267bf08292d09792b96bfabe87bc4b1cad0a9025abcb7b6a157f0dd92cf391dcd',1,'Nuklear']]],
-  ['nuklear_5fmode_5fexclusive_16',['NUKLEAR_MODE_EXCLUSIVE',['../classNuklear.html#a54e0d3f4afb9724a4744dbf8b56b4bf0aabf2045e7b64634944edc1607e9fe5d7',1,'Nuklear']]],
-  ['nuklear_5fmode_5fshared_17',['NUKLEAR_MODE_SHARED',['../classNuklear.html#a54e0d3f4afb9724a4744dbf8b56b4bf0a7e2fc0df9bd307620a22916147ef78da',1,'Nuklear']]],
-  ['nuklear_5fstage_5fpost_18',['NUKLEAR_STAGE_POST',['../classNuklear.html#a7254a0bd933c66f285a875fbfa0129fba88c579f001df139428e1658a4503cebd',1,'Nuklear']]],
-  ['nuklear_5fstage_5fpre_19',['NUKLEAR_STAGE_PRE',['../classNuklear.html#a7254a0bd933c66f285a875fbfa0129fba96186d9f96305847ba40b7a03ee3f4cb',1,'Nuklear']]],
-  ['number_20',['Number',['../namespaceIo.html#abcac8783c22713c3acb7361b3006e7e1ab2ee912b91d69b435159c7c3f6df7f5f',1,'Io']]]
+  ['npc_5ftype_5fhireable_13',['NPC_TYPE_HIREABLE',['../NPC_8h.html#a1c8f4a8828794aed19879a9034c04ae4a9f651b1dd5d548db78e0d97d05960f13',1,'NPC.h']]],
+  ['npc_5ftype_5fquest_14',['NPC_TYPE_QUEST',['../NPC_8h.html#a1c8f4a8828794aed19879a9034c04ae4a0005c911c832c91f0e0d50af3c56d9fd',1,'NPC.h']]],
+  ['nuklear_5faction_5fcreate_15',['NUKLEAR_ACTION_CREATE',['../classNuklear.html#a267bf08292d09792b96bfabe87bc4b1caf40660b79f848c216ffc7df5725f1a37',1,'Nuklear']]],
+  ['nuklear_5faction_5fdraw_16',['NUKLEAR_ACTION_DRAW',['../classNuklear.html#a267bf08292d09792b96bfabe87bc4b1cad89e559954e0922e6046723a64200ec2',1,'Nuklear']]],
+  ['nuklear_5faction_5frelease_17',['NUKLEAR_ACTION_RELEASE',['../classNuklear.html#a267bf08292d09792b96bfabe87bc4b1cad0a9025abcb7b6a157f0dd92cf391dcd',1,'Nuklear']]],
+  ['nuklear_5fmode_5fexclusive_18',['NUKLEAR_MODE_EXCLUSIVE',['../classNuklear.html#a54e0d3f4afb9724a4744dbf8b56b4bf0aabf2045e7b64634944edc1607e9fe5d7',1,'Nuklear']]],
+  ['nuklear_5fmode_5fshared_19',['NUKLEAR_MODE_SHARED',['../classNuklear.html#a54e0d3f4afb9724a4744dbf8b56b4bf0a7e2fc0df9bd307620a22916147ef78da',1,'Nuklear']]],
+  ['nuklear_5fstage_5fpost_20',['NUKLEAR_STAGE_POST',['../classNuklear.html#a7254a0bd933c66f285a875fbfa0129fba88c579f001df139428e1658a4503cebd',1,'Nuklear']]],
+  ['nuklear_5fstage_5fpre_21',['NUKLEAR_STAGE_PRE',['../classNuklear.html#a7254a0bd933c66f285a875fbfa0129fba96186d9f96305847ba40b7a03ee3f4cb',1,'Nuklear']]],
+  ['number_22',['Number',['../namespaceIo.html#abcac8783c22713c3acb7361b3006e7e1ab2ee912b91d69b435159c7c3f6df7f5f',1,'Io']]]
 ];
