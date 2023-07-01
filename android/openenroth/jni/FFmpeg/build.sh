@@ -1,6 +1,5 @@
 #!/bin/bash
-ls ../
-ls ../*
+
 TOOLCHAIN_ARCH=linux-x86_64
 ALL_ARCHS="armeabi-v7a arm64-v8a x86 x86_64"
 FF_VER="4.4.3"
@@ -104,18 +103,15 @@ COMMON_FF_CFG_FLAGS="${COMMON_FF_CFG_FLAGS} --enable-protocol=file"
 function build_ffmpeg
 {
     FFMPEG_DIR="ffmpeg-${FF_VER}_${ARCH_PREFIX}"
-ls ../
-ls ../*
+
     if [[ -d ${FFMPEG_DIR} ]]; then
         rm -rf ${FFMPEG_DIR}
     fi
-ls ../
-ls ../*
+
     echo "[+++] unpacking ffmpeg v${FF_VER}:${ARCH_PREFIX}..."
     mkdir ${FFMPEG_DIR}
     tar jxf ffmpeg-${FF_VER}.tar.bz2 --strip-components=1 -C ${FFMPEG_DIR}
     pushd ${FFMPEG_DIR}
-	ls ../
     patch -p1 < ../ffmpeg-so.patch
 
     echo "[+++] configuring ffmpeg v${FF_VER}:${ARCH_PREFIX}..."
@@ -259,6 +255,7 @@ do
         CXX="${ARCH_PREFIX}-g++"
         SYSROOT=${ANDROID_NDK}/platforms/android-${ANDROID_PLATFORM}/arch-${ANDROID_PLATFORM_VARIANT}/
     fi
+
 
     echo "[+++] building ffmpeg-${ARCH}..."
     build_ffmpeg
