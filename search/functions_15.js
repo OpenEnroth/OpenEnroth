@@ -33,7 +33,7 @@ var searchData=
   ['updatediscoveredarea_30',['UpdateDiscoveredArea',['../structOutdoorLocation.html#a282d75e700f03ca87e719cd74c8a0ebf',1,'OutdoorLocation']]],
   ['updateeffect_31',['UpdateEffect',['../structexplosion__effect__struct.html#a436b1857a90644e9fe7e388415492944',1,'explosion_effect_struct']]],
   ['updatefog_32',['UpdateFog',['../structOutdoorLocation.html#a0a6da39ca4fa6c668663e87a51d706a2',1,'OutdoorLocation']]],
-  ['updatenpctopics_33',['updateNPCTopics',['../UIHouses_8cpp.html#a0444851049552369028c2d36ca892992',1,'updateNPCTopics(int npc):&#160;UIHouses.cpp'],['../UIHouses_8h.html#a0444851049552369028c2d36ca892992',1,'updateNPCTopics(int npc):&#160;UIHouses.cpp']]],
+  ['updatehousenpctopics_33',['updateHouseNPCTopics',['../UIHouses_8cpp.html#a0bfbd1d898fd51368b8eb7f1bfbbd43e',1,'updateHouseNPCTopics(int npc):&#160;UIHouses.cpp'],['../UIHouses_8h.html#a0bfbd1d898fd51368b8eb7f1bfbbd43e',1,'updateHouseNPCTopics(int npc):&#160;UIHouses.cpp']]],
   ['updateobjectblv_34',['updateObjectBLV',['../structSpriteObject.html#a93d360fb17d97ab9ee195483f2bf439c',1,'SpriteObject']]],
   ['updateobjectodm_35',['updateObjectODM',['../structSpriteObject.html#a7b880a5e537090039de57ab8f724a226',1,'SpriteObject']]],
   ['updateobjects_36',['UpdateObjects',['../SpriteObject_8cpp.html#a522912d67446895b0a03d01837b75a99',1,'UpdateObjects():&#160;SpriteObject.cpp'],['../IRender_8h.html#a522912d67446895b0a03d01837b75a99',1,'UpdateObjects():&#160;SpriteObject.cpp']]],
