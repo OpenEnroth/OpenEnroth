@@ -57,7 +57,7 @@ static std::string _resolvePath(
     if (result.empty())
         result = platform->storagePath(ANDROID_STORAGE_INTERNAL);
     if (result.empty())
-        platform->ShowMessageBox("Device currently unsupported", "Your device doesn't have any storage so it is unsupported!");
+        platform->showMessageBox("Device currently unsupported", "Your device doesn't have any storage so it is unsupported!");
     return result;
 #else
     // TODO (captainurist): we should consider reading Unicode (utf8) strings from win32 registry, as it might contain paths
