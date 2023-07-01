@@ -1424,6 +1424,9 @@ public class SDLActivity extends Activity implements View.OnSystemUiVisibilityCh
      * This method is called by SDL using JNI.
      * Shows the messagebox from UI thread and block calling thread.
      * buttonFlags, buttonIds and buttonTexts must have same length.
+     * @param flags specify flags such as fullscreen.
+     * @param title sets title on message.
+     * @param message message in the messagebox.
      * @param buttonFlags array containing flags for every button.
      * @param buttonIds array containing id for every button.
      * @param buttonTexts array containing text for every button.
