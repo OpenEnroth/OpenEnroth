@@ -31,6 +31,11 @@ jobs:
       with:
         repository: OpenEnroth/OpenEnroth_Android
         submodules: 'recursive'
+        
+    - name: Update submodules
+      working-directory: openenrot
+      run: |
+        git submodule update --recursive --remote
 
     - name: Install dependencies
       run: |
