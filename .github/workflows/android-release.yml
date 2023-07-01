@@ -52,8 +52,10 @@ jobs:
 
     - name: Build the app
       working-directory: android
-      run: ./gradlew assembleDebug
-
+      run: |
+        ./gradlew assembleDebug
+        ./gradlew assembleRelease
+        
     - name: Upload apk
       uses: actions/upload-artifact@v2
       with:
@@ -67,6 +69,7 @@ jobs:
         tag_name: ${{ env.TAG_NAME }}
         files: |
           android/app/build/outputs/apk/debug/app-debug.apk
+          android/app/build/outputs/apk/release/app-release.apk
         
         
         
