@@ -135,7 +135,7 @@ enum UIMessageType : uint32_t {
     UIMSG_PlayerCreation_FaceNext = 172,
     UIMSG_AD = 173,
     UIMSG_DebugBlv2 = 174,
-    UIMSG_ClickNPCTopic = 175,
+    UIMSG_SelectHouseNPCDialogueOption = 175,
     UIMSG_CycleCharacters = 176,
     UIMSG_OnCastLloydsBeacon = 177,
     UIMSG_LloydBookFlipButton = 178,
@@ -187,7 +187,7 @@ enum UIMessageType : uint32_t {
     UIMSG_ClickZoomInBtn = 368,
 
     UIMSG_Game_Action = 404,
-    UIMSG_SelectHouseDialogueOption = 405,
+    UIMSG_SelectProprietorDialogueOption = 405,
 
     UIMSG_RentRoom = 409,
     UIMSG_ClickHouseNPCPortrait = 410,

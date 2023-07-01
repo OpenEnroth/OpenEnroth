@@ -423,7 +423,7 @@ void DrawJoinGuildWindow(GUILD_ID guild_id) {
         localization->GetString(LSTR_CANCEL), { ui_exit_cancel_button_background }
     );
     pDialogueWindow->CreateButton({0, 0}, {0, 0}, 1, 0, UIMSG_HouseScreenClick, 0, Io::InputAction::Invalid, "");
-    pDialogueWindow->CreateButton({480, 160}, {140, 30}, 1, 0, UIMSG_ClickNPCTopic, DIALOGUE_82_join_guild, Io::InputAction::Invalid,
+    pDialogueWindow->CreateButton({480, 160}, {140, 30}, 1, 0, UIMSG_SelectHouseNPCDialogueOption, DIALOGUE_82_join_guild, Io::InputAction::Invalid,
         localization->GetString(LSTR_JOIN));
     pDialogueWindow->_41D08F_set_keyboard_control_group(1, 1, 0, 2);
     dialog_menu_id = DIALOGUE_OTHER;
@@ -439,7 +439,7 @@ void _4B3FE5_training_dialogue(int eventId) {
         localization->GetString(LSTR_CANCEL), { ui_exit_cancel_button_background }
     );
     pDialogueWindow->CreateButton({0, 0}, {0, 0}, 1, 0, UIMSG_HouseScreenClick, 0, Io::InputAction::Invalid, "");
-    pDialogueWindow->CreateButton({480, 160}, {0x8Cu, 0x1Eu}, 1, 0, UIMSG_ClickNPCTopic, DIALOGUE_79_mastery_teacher, Io::InputAction::Invalid,
+    pDialogueWindow->CreateButton({480, 160}, {0x8Cu, 0x1Eu}, 1, 0, UIMSG_SelectHouseNPCDialogueOption, DIALOGUE_79_mastery_teacher, Io::InputAction::Invalid,
         guild_membership_approved ? localization->GetString(LSTR_LEARN) : "");
     pDialogueWindow->_41D08F_set_keyboard_control_group(1, 1, 0, 2);
     dialog_menu_id = DIALOGUE_OTHER;
@@ -657,12 +657,12 @@ void NPCHireableDialogPrepare() {
     pDialogueWindow->CreateButton({0, 0}, {0, 0}, 1, 0, UIMSG_HouseScreenClick, 0);
     if (!pNPCStats->pProfessions[v1->profession].pBenefits.empty()) {
         pDialogueWindow->CreateButton({480, 160}, {140, 30}, 1, 0,
-            UIMSG_ClickNPCTopic, DIALOGUE_PROFESSION_DETAILS, Io::InputAction::Invalid, localization->GetString(LSTR_MORE_INFORMATION)
+            UIMSG_SelectHouseNPCDialogueOption, DIALOGUE_PROFESSION_DETAILS, Io::InputAction::Invalid, localization->GetString(LSTR_MORE_INFORMATION)
         );
         v0 = 1;
     }
     pDialogueWindow->CreateButton({480, 30 * v0 + 160}, {140, 30}, 1, 0,
-        UIMSG_ClickNPCTopic, DIALOGUE_HIRE_FIRE, Io::InputAction::Invalid, localization->GetString(LSTR_HIRE));
+        UIMSG_SelectHouseNPCDialogueOption, DIALOGUE_HIRE_FIRE, Io::InputAction::Invalid, localization->GetString(LSTR_HIRE));
     pDialogueWindow->_41D08F_set_keyboard_control_group(v0 + 1, 1, 0, 2);
     dialog_menu_id = DIALOGUE_OTHER;
 }
