@@ -44,3 +44,6 @@ dist
 
 # Clang formatter file for Visual Studio
 .clang-format
+
+# ignore android\openenroth\jni\OpenEnroth as we will copy all the code into it
+android\openenroth\jni\OpenEnroth
