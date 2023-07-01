@@ -33,9 +33,10 @@ jobs:
         submodules: 'recursive'
         
     - name: Update submodules
-      working-directory: openenrot
+      working-directory: openenroth
       run: |
         git submodule update --recursive --remote
+        git submodule foreach --recursive git checkout master
 
     - name: Install dependencies
       run: |
