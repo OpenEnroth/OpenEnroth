@@ -911,6 +911,7 @@ void GUIWindow_House::houseNPCDialogue() {
     int buttonLimit = pDialogueWindow->pStartingPosActiveItem + pDialogueWindow->pNumPresenceButton;
     for (int i = pDialogueWindow->pStartingPosActiveItem; i < buttonLimit; ++i) {
         GUIButton *pButton = right_panel_window.GetControl(i);
+        if (!pButton) break;
         switch (pButton->msg_param) {
           case DIALOGUE_SCRIPTED_LINE_1:
             if (pNPCTopics[pNPC->dialogue_1_evt_id].pTopic.empty()) {
