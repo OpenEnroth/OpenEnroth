@@ -25,6 +25,7 @@ jobs:
               os: ubuntu-22.04,
               extra-build-features: "",
             }
+            
     steps:
     - name: Checkout
       uses: actions/checkout@v3
@@ -40,10 +41,6 @@ jobs:
         distribution: temurin
         java-version: 17
         cache: gradle
-        
-    - name: check
-      run: |
-        ls -lha android/openenroth/jni/FFmpeg
         
     - name: Build ffmpeg
       working-directory: android/openenroth/jni/FFmpeg
