@@ -1362,6 +1362,8 @@ GAME_TEST(Issues, Issue929) {
     EXPECT_EQ(oldGold + 1, pParty->uNumGold);
 }
 
+// 1000
+
 GAME_TEST(Issues, Issue1020) {
     // Test finishing the scavenger hunt quest. The game should not crash when there is no dialogue options.
     test->playTraceFromTestData("issue_1020.mm7", "issue_1020.json"); // Should not assert
@@ -1372,4 +1374,13 @@ GAME_TEST(Issues, Issue1036) {
     test->playTraceFromTestData("issue_1036.mm7", "issue_1036.json");
     EXPECT_TRUE(pParty->pCharacters[2].pActiveSkills[CHARACTER_SKILL_LEARNING]);
     EXPECT_TRUE(pParty->pCharacters[2].pActiveSkills[CHARACTER_SKILL_MEDITATION]);
+}
+
+GAME_TEST(Issues, Issue1038) {
+    // Crash while fighting Eyes in Nighon Tunnels
+    test->playTraceFromTestData("issue_1038.mm7", "issue_1038.json", [] { EXPECT_EQ(pParty->pCharacters[0].GetMajorConditionIdx(), CONDITION_GOOD); });
+    EXPECT_EQ(pParty->pCharacters[0].GetMajorConditionIdx(), CONDITION_INSANE);
+    EXPECT_EQ(pParty->pCharacters[1].GetMajorConditionIdx(), CONDITION_INSANE);
+    EXPECT_EQ(pParty->pCharacters[2].GetMajorConditionIdx(), CONDITION_SLEEP);
+    EXPECT_EQ(pParty->pCharacters[3].GetMajorConditionIdx(), CONDITION_UNCONSCIOUS);
 }
