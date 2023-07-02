@@ -87,11 +87,11 @@ bool ConditionProcessor::IsPlayerAffected(Character *inPlayer, Condition condToC
         if (inPlayer->HasEnchantedItemEquipped(thisProc->m_WorkingEnchantment))
             return false;
     }
-    for (unsigned int i = 0; i < thisProc->m_equipmentPairs.size() / 2; i++) {
-        if (thisProc->m_equipmentPairs[i * 2].m_ItemId == (ITEM_TYPE)0)
+    for (unsigned int i = 0; i < thisProc->m_equipmentPairs.size(); i++) {
+        if (thisProc->m_equipmentPairs[i].m_ItemId == (ITEM_TYPE)0)
             return true;
-        ITEM_TYPE itemId = thisProc->m_equipmentPairs[i * 2].m_ItemId;
-        ITEM_SLOT slot = thisProc->m_equipmentPairs[i * 2 + 1].m_EquipSlot;
+        ITEM_TYPE itemId = thisProc->m_equipmentPairs[i].m_ItemId;
+        ITEM_SLOT slot = thisProc->m_equipmentPairs[i].m_EquipSlot;
         if (slot == ITEM_SLOT_ANY) {
             if (inPlayer->wearsItemAnywhere(itemId)) return false;
         } else {
