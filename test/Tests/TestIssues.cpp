@@ -3,6 +3,7 @@
 #include "Arcomage/Arcomage.h"
 
 #include "GUI/GUIWindow.h"
+#include "GUI/UI/UIHouses.h"
 #include "GUI/GUIProgressBar.h"
 
 #include "Engine/Tables/ItemTable.h"
@@ -1367,6 +1368,13 @@ GAME_TEST(Issues, Issue929) {
 GAME_TEST(Issues, Issue1020) {
     // Test finishing the scavenger hunt quest. The game should not crash when there is no dialogue options.
     test->playTraceFromTestData("issue_1020.mm7", "issue_1020.json"); // Should not assert
+}
+
+GAME_TEST(Issues, Issue1034) {
+    // Crash when casting telekinesis outdoors
+    test->playTraceFromTestData("issue_1034.mm7", "issue_1034.json");
+    // check we have entered into the shop
+    EXPECT_EQ(window_SpeakInHouse->houseId(), 1);
 }
 
 GAME_TEST(Issues, Issue1036) {
