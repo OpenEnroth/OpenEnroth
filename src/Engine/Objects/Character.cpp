@@ -1396,6 +1396,7 @@ bool Character::HasEnchantedItemEquipped(int uEnchantment) const {
 //----- (0048D709) --------------------------------------------------------
 bool Character::WearsItem(ITEM_TYPE item_id, ITEM_SLOT equip_type) const {
     // check aginst specific item and slot
+    assert(equip_type != ITEM_SLOT_INVALID && "Invalid item slot passed to WearsItem");
     return (HasItemEquipped(equip_type) && GetNthEquippedIndexItem(equip_type)->uItemID == item_id);
 }
 
