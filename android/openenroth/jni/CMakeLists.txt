@@ -4,4 +4,4 @@ project(GAME)
 
 add_subdirectory(../../../thirdparty/SDL SDL)
 add_subdirectory(../../../thirdparty/OpenAL OpenAL)
-add_subdirectory(../../../ OpenEnroch)
+add_subdirectory(../../../ OpenEnroth)
