@@ -27,14 +27,6 @@ jobs:
             }
             
     steps:
-    - name: Check NDK
-      run: |
-        pwd $ANDROID_NDK
-        ls -lha $ANDROID_NDK    
-        ls -lha $ANDROID_NDK_HOME    
-        ls -lha $ANDROID_NDK_LATEST_HOME    
-        ls -lha $ANDROID_NDK_ROOT    
-
     - name: Setup NDK
       run: |
         cd /usr/local/lib/android/sdk/ndk/
@@ -47,11 +39,10 @@ jobs:
         
     - name: Check NDK
       run: |
-        pwd $ANDROID_NDK
-        ls -lha $ANDROID_NDK    
-        ls -lha $ANDROID_NDK_HOME    
-        ls -lha $ANDROID_NDK_LATEST_HOME    
-        ls -lha $ANDROID_NDK_ROOT  
+        echo $ANDROID_NDK    
+        echo $ANDROID_NDK_HOME    
+        echo $ANDROID_NDK_LATEST_HOME    
+        echo $ANDROID_NDK_ROOT  
 
     - name: Checkout
       uses: actions/checkout@v3
@@ -76,6 +67,7 @@ jobs:
     - name: Build the app
       working-directory: android
       run: |
+        echo $ANDROID_NDK      
         ./gradlew assembleDebug
         ./gradlew assembleRelease
         
