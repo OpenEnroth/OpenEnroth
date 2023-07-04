@@ -21,7 +21,6 @@ jobs:
         job:
           - {
               arch: x86_64,
-              target: aarch64-linux-android,
               os: ubuntu-22.04,
               extra-build-features: "",
             }
