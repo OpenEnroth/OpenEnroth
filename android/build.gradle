@@ -1,9 +1,4 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
-
-android {
-    ndkVersion "27.0.10421692" // e.g.,  ndkVersion "21.3.6528147"
-}
-
 buildscript {
     repositories {
         mavenCentral()
