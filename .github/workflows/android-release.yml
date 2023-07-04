@@ -29,13 +29,13 @@ jobs:
     # Here we need to decode keystore.jks from base64 string and place it
     # in the folder specified in the release signing configuration
     # https://medium.com/geekculture/how-to-build-sign-and-publish-android-application-using-github-actions-aa6346679254
-    - name: Decode Keystore
-      id: decode_keystore
-      uses: timheuer/base64-to-file@v1.2
-      with:
-        fileName: 'android_keystore.jks'
-        fileDir: '/home/runner/work/OpenEnroth/OpenEnroth/app/keystore/'
-        encodedString: ${{ secrets.KEYSTORE }}
+    #- name: Decode Keystore
+    #  id: decode_keystore
+    #  uses: timheuer/base64-to-file@v1.2
+    #  with:
+    #    fileName: 'android_keystore.jks'
+    #    fileDir: '/home/runner/work/OpenEnroth/OpenEnroth/app/keystore/'
+    #    encodedString: ${{ secrets.KEYSTORE }}
           
     - name: Setup NDK
       run: |
@@ -83,10 +83,10 @@ jobs:
       run: |
         ./gradlew assembleDebug
         ./gradlew assembleRelease
-      env:
-        SIGNING_KEY_ALIAS: ${{ secrets.SIGNING_KEY_ALIAS }}
-        SIGNING_KEY_PASSWORD: ${{ secrets.SIGNING_KEY_PASSWORD }}
-        SIGNING_STORE_PASSWORD: ${{ secrets.SIGNING_STORE_PASSWORD }}
+      #env:
+        #SIGNING_KEY_ALIAS: ${{ secrets.SIGNING_KEY_ALIAS }}
+        #SIGNING_KEY_PASSWORD: ${{ secrets.SIGNING_KEY_PASSWORD }}
+        #SIGNING_STORE_PASSWORD: ${{ secrets.SIGNING_STORE_PASSWORD }}
           
     - name: Publish unsigned apk package
       uses: softprops/action-gh-release@v1
@@ -95,5 +95,16 @@ jobs:
         tag_name: ${{ env.TAG_NAME }}
         files: |
           android\openenroth\build\outputs\apk\debug\openenroth-debug.apk
-          android\openenroth\build\outputs\apk\debug\openenroth-release.apk
+          android\openenroth\build\outputs\apk\release\openenroth-release-unsigned.apk
+        
+    - name: check files
+      run: |
+        ls -lha 
+        ls -lha  android\
+        ls -lha  android\openenroth        
+        ls -lha android\openenroth\build        
+        ls -lha  android\openenroth\build\outputs\apk 
+        ls -lha  android\openenroth\build\outputs\apk\debug       
+        ls -lha  android\openenroth\build\outputs\apk\release        
+        
         
