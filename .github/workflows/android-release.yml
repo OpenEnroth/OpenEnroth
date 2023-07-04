@@ -70,7 +70,7 @@ jobs:
     - name: Build the app
       working-directory: android
       run: |
-        ./gradlew -d assembleDebug
+        ./gradlew assembleDebug
           
     - name: Publish unsigned apk package
       uses: softprops/action-gh-release@v1
