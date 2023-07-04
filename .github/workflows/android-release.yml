@@ -82,6 +82,7 @@ jobs:
       working-directory: android
       run: |
         ./gradlew assembleDebug
+        ./gradlew assembleRelease
       env:
         SIGNING_KEY_ALIAS: ${{ secrets.SIGNING_KEY_ALIAS }}
         SIGNING_KEY_PASSWORD: ${{ secrets.SIGNING_KEY_PASSWORD }}
@@ -94,4 +95,5 @@ jobs:
         tag_name: ${{ env.TAG_NAME }}
         files: |
           android\openenroth\build\outputs\apk\debug\openenroth-debug.apk
+          android\openenroth\build\outputs\apk\debug\openenroth-release.apk
         
