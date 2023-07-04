@@ -26,6 +26,10 @@ jobs:
             }
             
   steps:
+    - name: test
+      run: |
+        ls /home/runner/work/
+  
     # Here we need to decode keystore.jks from base64 string and place it
     # in the folder specified in the release signing configuration
     # https://medium.com/geekculture/how-to-build-sign-and-publish-android-application-using-github-actions-aa6346679254
