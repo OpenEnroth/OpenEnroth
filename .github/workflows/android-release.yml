@@ -94,23 +94,23 @@ jobs:
         prerelease: true
         tag_name: ${{ env.TAG_NAME }}
         files: |
-          android\openenroth\build\outputs\apk\debug\openenroth-debug.apk
-#          android\openenroth\build\outputs\apk\release\openenroth-release-unsigned.apk
+          android/openenroth/build/outputs/apk/debug/openenroth-debug.apk
+#          android/openenroth/build/outputs/apk/release/openenroth-release-unsigned.apk
         
     - name: check files
       run: |
-        ls android\openenroth        
+        ls android/openenroth        
     - name: check files
       run: |
-        ls android\openenroth\build        
+        ls android/openenroth/build        
     - name: check files
       run: |
-        ls android\openenroth\build\outputs\apk 
+        ls android/openenroth/build/outputs/apk 
     - name: check files
       run: |
-        ls android\openenroth\build\outputs\apk\debug       
+        ls android/openenroth/build/outputs/apk/debug       
     - name: check files
       run: |
-        ls android\openenroth\build\outputs\apk\release        
+        ls android/openenroth/build/outputs/apk/release        
         
         
