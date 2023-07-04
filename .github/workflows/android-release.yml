@@ -62,7 +62,6 @@ jobs:
       working-directory: android
       run: |
         ./gradlew assembleDebug
-        ./gradlew assembleRelease
         zip -r ../test.zip openenroth/build/outputs/apk
           
     - name: Publish unsigned apk package
