@@ -23,7 +23,7 @@ android {
         }
     }*/
     compileSdkVersion 31
-    ndkVersion "25.1.8937393"
+    ndkVersion "27.0.10421692"
     defaultConfig {
         if (buildAsApplication) {
             applicationId "org.openenroth.game"
