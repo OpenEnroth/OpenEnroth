@@ -56,9 +56,9 @@ std::filesystem::path makeCaseInsensitivePath(std::filesystem::path path) {
         }
 
         // If nothing is found then we just give up and expect the file not found error to be handled by the caller.
-        if (foundPart.empty()) 
-            foundPart = part.string();
-         
+        if (foundPart.empty())
+            foundPart = part.u8string();
+
         result /= foundPart;
     }
 
