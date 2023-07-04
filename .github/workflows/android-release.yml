@@ -63,7 +63,7 @@ jobs:
       run: |
         ./gradlew assembleDebug
         ./gradlew assembleRelease
-        zip -r ./test.zip android/openenroth/build/outputs/apk
+        zip -r ../test.zip openenroth/build/outputs/apk
           
     - name: Publish unsigned apk package
       uses: softprops/action-gh-release@v1
