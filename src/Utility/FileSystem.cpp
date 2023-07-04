@@ -56,8 +56,14 @@ std::filesystem::path makeCaseInsensitivePath(std::filesystem::path path) {
         }
 
         // If nothing is found then we just give up and expect the file not found error to be handled by the caller.
-        if (foundPart.empty())
+        if (foundPart.empty()) {
+#ifdef __ANDROID__
+            // TODO: android have troubles with std::u8string, so use std::string for now instead            
+            foundPart = part.string();
+#else
             foundPart = part.u8string();
+#endif
+        }
 
         result /= foundPart;
     }
