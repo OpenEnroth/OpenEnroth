@@ -63,12 +63,6 @@ jobs:
       run: |
         ./gradlew assembleDebug
         ./gradlew assembleRelease
-        
-    - name: Upload apk
-      uses: actions/upload-artifact@v2
-      with:
-        name: debug apk
-        path: android/app/build/outputs/apk/debug/app-debug.apk
           
     - name: Publish unsigned apk package
       uses: softprops/action-gh-release@v1
@@ -76,8 +70,10 @@ jobs:
         prerelease: true
         tag_name: ${{ env.TAG_NAME }}
         files: |
-          android/app/build/outputs/apk/debug/app-debug.apk
-          android/app/build/outputs/apk/release/app-release.apk
+          android/openenroth/build/outputs/apk/release
+          android/openenroth/build/outputs/apk/debug
+          android/openenroth/build/outputs/apk/release.apk
+          android/openenroth/build/outputs/apk/debug.apk          
         
     - name: files
       run: |
