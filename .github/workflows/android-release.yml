@@ -100,9 +100,17 @@ jobs:
     - name: check files
       run: |
         ls android\openenroth        
+    - name: check files
+      run: |
         ls android\openenroth\build        
+    - name: check files
+      run: |
         ls android\openenroth\build\outputs\apk 
+    - name: check files
+      run: |
         ls android\openenroth\build\outputs\apk\debug       
+    - name: check files
+      run: |
         ls android\openenroth\build\outputs\apk\release        
         
         
