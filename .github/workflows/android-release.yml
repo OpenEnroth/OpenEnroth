@@ -99,11 +99,10 @@ jobs:
         
     - name: check files
       run: |
-        ls -lha  android
-        ls -lha  android\openenroth        
-        ls -lha android\openenroth\build        
-        ls -lha  android\openenroth\build\outputs\apk 
-        ls -lha  android\openenroth\build\outputs\apk\debug       
-        ls -lha  android\openenroth\build\outputs\apk\release        
+        ls android\openenroth        
+        ls android\openenroth\build        
+        ls android\openenroth\build\outputs\apk 
+        ls android\openenroth\build\outputs\apk\debug       
+        ls android\openenroth\build\outputs\apk\release        
         
         
