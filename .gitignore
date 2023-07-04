@@ -48,3 +48,4 @@ dist
 # android
 .gradle
 .cxx
+local.properties
