@@ -95,12 +95,11 @@ jobs:
         tag_name: ${{ env.TAG_NAME }}
         files: |
           android\openenroth\build\outputs\apk\debug\openenroth-debug.apk
-          android\openenroth\build\outputs\apk\release\openenroth-release-unsigned.apk
+#          android\openenroth\build\outputs\apk\release\openenroth-release-unsigned.apk
         
     - name: check files
       run: |
-        ls -lha 
-        ls -lha  android\
+        ls -lha  android
         ls -lha  android\openenroth        
         ls -lha android\openenroth\build        
         ls -lha  android\openenroth\build\outputs\apk 
