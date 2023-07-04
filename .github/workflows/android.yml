@@ -15,24 +15,10 @@ jobs:
         job:
           - {
               arch: x86_64,
-              target: aarch64-linux-android,
+              target: android,
               os: ubuntu-22.04,
               extra-build-features: "",
             }
-            
-jobs:
-  build_linux:
-    runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        job:
-          - {
-              arch: x86_64,
-              os: ubuntu-22.04,
-              extra-build-features: "",
-            }
-            
     steps:
     # Here we need to decode keystore.jks from base64 string and place it
     # in the folder specified in the release signing configuration
