@@ -49,8 +49,8 @@ jobs:
 
     - uses: actions/setup-java@v2
       with:
-        distribution: oracle
-        java-version: 17
+        distribution: temurin
+        java-version: 17.0.6
         cache: gradle
         
     - name: Build ffmpeg
