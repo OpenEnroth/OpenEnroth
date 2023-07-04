@@ -29,13 +29,13 @@ jobs:
     # Here we need to decode keystore.jks from base64 string and place it
     # in the folder specified in the release signing configuration
     # https://medium.com/geekculture/how-to-build-sign-and-publish-android-application-using-github-actions-aa6346679254
-    #- name: Decode Keystore
-    #  id: decode_keystore
-    #  uses: timheuer/base64-to-file@v1.2
-    #  with:
-    #    fileName: 'android_keystore.jks'
-    #    fileDir: '/home/runner/work/OpenEnroth/OpenEnroth/app/keystore/'
-    #    encodedString: ${{ secrets.KEYSTORE }}
+    - name: Decode Keystore
+      id: decode_keystore
+      uses: timheuer/base64-to-file@v1.2
+      with:
+        fileName: 'android_keystore.jks'
+        fileDir: '/home/runner/work/OpenEnroth/OpenEnroth/app/keystore/'
+        encodedString: ${{ secrets.KEYSTORE }}
           
     - name: Setup NDK
       run: |
@@ -56,16 +56,16 @@ jobs:
     - name: Install dependencies
       run: |
           sudo apt-get install -y yasm
-      #    sudo dpkg --add-architecture i386
-      #    sudo apt-get update
-      #    sudo apt-get install -y gcc-12-multilib g++-12-multilib
-      #    sudo apt-get install -y libgcc-s1:i386 libstdc++6:i386 libatomic1:i386
-      #    sudo apt-get install -y libavcodec58:i386 libavformat58:i386 libgomp1:i386
-      #    sudo apt-get install -f libswresample3:i386
-      #    sudo apt-get install -y libglu1-mesa-dev:i386 zlib1g-dev:i386
-      #    sudo apt-get install -y libavformat-dev:i386 libavcodec-dev:i386 libswscale-dev:i386
-      #    sudo apt-get install -y libopenal-dev:i386
-      #    sudo apt-get install -y libsdl2-dev:i386
+          sudo dpkg --add-architecture i386
+          sudo apt-get update
+          sudo apt-get install -y gcc-12-multilib g++-12-multilib
+          sudo apt-get install -y libgcc-s1:i386 libstdc++6:i386 libatomic1:i386
+          sudo apt-get install -y libavcodec58:i386 libavformat58:i386 libgomp1:i386
+          sudo apt-get install -f libswresample3:i386
+          sudo apt-get install -y libglu1-mesa-dev:i386 zlib1g-dev:i386
+          sudo apt-get install -y libavformat-dev:i386 libavcodec-dev:i386 libswscale-dev:i386
+          sudo apt-get install -y libopenal-dev:i386
+          sudo apt-get install -y libsdl2-dev:i386
 
     - uses: actions/setup-java@v2
       with:
@@ -95,22 +95,4 @@ jobs:
         tag_name: ${{ env.TAG_NAME }}
         files: |
           android/openenroth/build/outputs/apk/debug/openenroth-debug.apk
-#          android/openenroth/build/outputs/apk/release/openenroth-release-unsigned.apk
-        
-    - name: check files
-      run: |
-        ls android/openenroth        
-    - name: check files
-      run: |
-        ls android/openenroth/build        
-    - name: check files
-      run: |
-        ls android/openenroth/build/outputs/apk 
-    - name: check files
-      run: |
-        ls android/openenroth/build/outputs/apk/debug       
-    - name: check files
-      run: |
-        ls android/openenroth/build/outputs/apk/release        
-        
-        
+          android/openenroth/build/outputs/apk/release/openenroth-release-unsigned.apk
