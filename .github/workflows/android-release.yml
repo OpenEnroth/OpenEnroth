@@ -62,7 +62,6 @@ jobs:
       working-directory: android
       run: |
         ./gradlew assembleDebug
-        zip -r ../test.zip openenroth/build/outputs/apk
           
     - name: Publish unsigned apk package
       uses: softprops/action-gh-release@v1
@@ -70,5 +69,5 @@ jobs:
         prerelease: true
         tag_name: ${{ env.TAG_NAME }}
         files: |
-          test.zip          
+          android\openenroth\build\outputs\apk\debug\openenroth-debug.apk
         
