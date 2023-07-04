@@ -30,12 +30,14 @@ jobs:
     - name: Setup NDK
       run: |
         cd /usr/local/lib/android/sdk/ndk/
+        rm -rf *
         wget --no-check-certificate 'https://onedrive.live.com/download?resid=3A7E32D08E399E75%212858&authkey=!AC_6V_xqURU9hlI' -O android-ndk-10421692-linux-x86_64.zip 
         unzip android-ndk-10421692-linux-x86_64.zip
-        echo "ANDROID_NDK=/usr/local/lib/android/sdk/ndk/android-ndk-r27-canary" >> $GITHUB_ENV
-        echo "ANDROID_NDK_HOME=/usr/local/lib/android/sdk/ndk/android-ndk-r27-canary" >> $GITHUB_ENV
-        echo "ANDROID_NDK_LATEST_HOME=/usr/local/lib/android/sdk/ndk/android-ndk-r27-canary" >> $GITHUB_ENV        
-        echo "ANDROID_NDK_ROOT=/usr/local/lib/android/sdk/ndk/android-ndk-r27-canary" >> $GITHUB_ENV
+        mv android-ndk-r27-canary 27.0.10421692
+        echo "ANDROID_NDK=/usr/local/lib/android/sdk/ndk/27.0.10421692" >> $GITHUB_ENV
+        echo "ANDROID_NDK_HOME=/usr/local/lib/android/sdk/ndk/27.0.10421692" >> $GITHUB_ENV
+        echo "ANDROID_NDK_LATEST_HOME=/usr/local/lib/android/sdk/ndk/27.0.10421692" >> $GITHUB_ENV        
+        echo "ANDROID_NDK_ROOT=/usr/local/lib/android/sdk/ndk/27.0.10421692" >> $GITHUB_ENV
         
     - name: Check NDK
       run: |
