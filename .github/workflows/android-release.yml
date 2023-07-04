@@ -25,7 +25,18 @@ jobs:
               extra-build-features: "",
             }
             
-    steps:
+  steps:
+    # Here we need to decode keystore.jks from base64 string and place it
+    # in the folder specified in the release signing configuration
+    # https://medium.com/geekculture/how-to-build-sign-and-publish-android-application-using-github-actions-aa6346679254
+    - name: Decode Keystore
+      id: decode_keystore
+      uses: timheuer/base64-to-file@v1.2
+      with:
+        fileName: 'android_keystore.jks'
+        fileDir: '/home/runner/work/OpenEnroth/OpenEnroth/app/keystore/'
+        encodedString: ${{ secrets.KEYSTORE }}
+          
     - name: Setup NDK
       run: |
         cd /usr/local/lib/android/sdk/ndk/
@@ -71,6 +82,10 @@ jobs:
       working-directory: android
       run: |
         ./gradlew assembleDebug
+      env:
+        SIGNING_KEY_ALIAS: ${{ secrets.SIGNING_KEY_ALIAS }}
+        SIGNING_KEY_PASSWORD: ${{ secrets.SIGNING_KEY_PASSWORD }}
+        SIGNING_STORE_PASSWORD: ${{ secrets.SIGNING_STORE_PASSWORD }}
           
     - name: Publish unsigned apk package
       uses: softprops/action-gh-release@v1
