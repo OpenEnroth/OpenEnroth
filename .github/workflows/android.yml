@@ -24,14 +24,16 @@ jobs:
     # in the folder specified in the release signing configuration
     # https://medium.com/geekculture/how-to-build-sign-and-publish-android-application-using-github-actions-aa6346679254
     - name: Decode Keystore
+      if: ${{ env.super_secret == '' }}    
       id: decode_keystore
       uses: timheuer/base64-to-file@v1.2
-      continue-on-error: true
       with:
         fileName: 'android_keystore.jks'
         fileDir: '/home/runner/work/OpenEnroth/OpenEnroth/app/keystore/'
         encodedString: ${{ secrets.KEYSTORE }}
-          
+        env: 
+            super_secret: ${{ secrets.KEYSTORE }}
+
     - name: Setup NDK
       run: |
         cd /usr/local/lib/android/sdk/ndk/
