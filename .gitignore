@@ -44,3 +44,8 @@ dist
 
 # Clang formatter file for Visual Studio
 .clang-format
+
+# android
+.gradle
+.cxx
+local.properties

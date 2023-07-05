@@ -53,11 +53,11 @@ static std::string _resolvePath(
 ) {
 #ifdef __ANDROID__
     // TODO: find a better way to deal with paths and remove this android specific block.
-    std::string result = platform->StoragePath(ANDROID_STORAGE_EXTERNAL);
+    std::string result = platform->storagePath(ANDROID_STORAGE_EXTERNAL);
     if (result.empty())
-        result = platform->StoragePath(ANDROID_STORAGE_INTERNAL);
+        result = platform->storagePath(ANDROID_STORAGE_INTERNAL);
     if (result.empty())
-        platform->ShowMessageBox("Device currently unsupported", "Your device doesn't have any storage so it is unsupported!");
+        platform->showMessageBox("Device currently unsupported", "Your device doesn't have any storage so it is unsupported!");
     return result;
 #else
     // TODO (captainurist): we should consider reading Unicode (utf8) strings from win32 registry, as it might contain paths
