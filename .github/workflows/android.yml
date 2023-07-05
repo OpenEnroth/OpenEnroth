@@ -26,6 +26,7 @@ jobs:
     - name: Decode Keystore
       id: decode_keystore
       uses: timheuer/base64-to-file@v1.2
+      continue-on-error: true
       with:
         fileName: 'android_keystore.jks'
         fileDir: '/home/runner/work/OpenEnroth/OpenEnroth/app/keystore/'
