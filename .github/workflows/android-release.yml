@@ -39,7 +39,7 @@ jobs:
         fileDir: '/home/runner/work/OpenEnroth/OpenEnroth/app/keystore/'
         encodedString: ${{ secrets.KEYSTORE }}
         env: 
-            super_secret: ${{ secrets.KEYSTORE }}
+          super_secret: ${{ secrets.KEYSTORE }}
           
     - name: Setup NDK
       run: |
