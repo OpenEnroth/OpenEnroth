@@ -1049,7 +1049,7 @@ void Game::processQueuedMessages() {
                 }
                 if (type == OBJECT_Face) {
                     if (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR) {
-                        ODMFace *pODMFace = &pOutdoor->pBModels[pid >> 9].pFaces[id];
+                        ODMFace *pODMFace = &pOutdoor->pBModels[id >> 6].pFaces[id & 0x3F];
                         interactionPossible = (pODMFace->Clickable() && pODMFace->sCogTriggeredID);
                     } else { // Indoor
                         BLVFace *pBLVFace = &pIndoor->pFaces[id];
