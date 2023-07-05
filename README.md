@@ -61,6 +61,8 @@ Development
 
 See the [HACKING](HACKING.md) document for information on how to compile or if you intend to contribute.
 
+See the code [DOCUMENTATION](https://openenroth.github.io/OpenEnroth/index.html).
+
 
 Screenshots
 -----------
