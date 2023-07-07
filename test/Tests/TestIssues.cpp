@@ -314,9 +314,9 @@ GAME_TEST(Issues, Issue293a) {
     EXPECT_EQ(partyItemCount(), 19); // +1
     EXPECT_TRUE(pParty->pCharacters[0].hasItem(ITEM_CHAIN_MAIL, false)); // That's the item from the trash pile.
     EXPECT_EQ(pParty->pCharacters[0].GetMajorConditionIdx(), CONDITION_DISEASE_WEAK);
-    EXPECT_EQ(pParty->pCharacters[1].GetMajorConditionIdx(), CONDITION_GOOD); // Good roll here, didn't get sick.
+    EXPECT_EQ(pParty->pCharacters[1].GetMajorConditionIdx(), CONDITION_DISEASE_WEAK);
     EXPECT_EQ(pParty->pCharacters[2].GetMajorConditionIdx(), CONDITION_DISEASE_WEAK);
-    EXPECT_EQ(pParty->pCharacters[3].GetMajorConditionIdx(), CONDITION_DISEASE_WEAK);
+    EXPECT_EQ(pParty->pCharacters[3].GetMajorConditionIdx(), CONDITION_GOOD); // Good roll here, didn't get sick.
 }
 
 GAME_TEST(Issues, Issue293b) {
