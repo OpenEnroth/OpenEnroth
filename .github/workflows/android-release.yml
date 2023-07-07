@@ -90,6 +90,7 @@ jobs:
         SIGNING_KEY_ALIAS: ${{ secrets.SIGNING_KEY_ALIAS }}
         SIGNING_KEY_PASSWORD: ${{ secrets.SIGNING_KEY_PASSWORD }}
         SIGNING_STORE_PASSWORD: ${{ secrets.SIGNING_STORE_PASSWORD }}
+        CMAKE_BUILD_PARALLEL_LEVEL: 3
           
     - name: Publish debug apk package
       if: ${{ matrix.configuration }} = "Debug"
