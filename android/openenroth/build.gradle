@@ -34,15 +34,18 @@ android {
         targetSdkVersion 31
         versionCode 1
         versionName "1.0"
-        externalNativeBuild {
-            //build all by default runner only build v8a
-            if ( System.env("GITHUBWORKER") != null ) { 
+        
+        //build all by default runner only build v8a
+        if ( System.env("GITHUBWORKER") != null ) { 
+            externalNativeBuild {
                 cmake {
                     arguments "-DANDROID_STL=c++_static"
                     abiFilters 'arm64-v8a' 
                     version "3.22.1"
                 }
-            } else {
+            }
+        } else {
+            externalNativeBuild {
                 cmake {
                     arguments "-DANDROID_STL=c++_static"
                     abiFilters 'arm64-v8a', 'armeabi-v7a', 'x86_64', 'x86' 
@@ -50,6 +53,7 @@ android {
                 }
             }
         }
+        
        if ( file("keystore/android_keystore.jks").exists() ) {
           signingConfig signingConfigs.release
        }
