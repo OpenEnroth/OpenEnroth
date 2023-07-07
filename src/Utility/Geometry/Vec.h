@@ -164,6 +164,10 @@ struct Vec3 {
         return r * l;
     }
 
+    friend Vec3 operator-(const Vec3 &v) {
+        return Vec3(-v.x, -v.y, -v.z);
+    }
+
     Vec3 &operator+=(const Vec3 &v) {
         *this = *this + v;
         return *this;

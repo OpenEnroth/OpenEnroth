@@ -43,6 +43,9 @@ void TestController::playTraceFromTestData(const std::string &saveName, const st
 
 void TestController::prepareForNextTest() {
     engine->config->resetForTest();
+
+    // This is frame time for tests that are implemented by manually sending events from the test code.
+    // For such tests, frame time value is taken from config defaults.
     restart(engine->config->debug.TraceFrameTimeMs.value());
     ::application->get<GameKeyboardController>()->reset();
     _controller->goToMainMenu();

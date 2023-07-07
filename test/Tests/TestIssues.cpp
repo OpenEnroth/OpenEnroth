@@ -19,6 +19,7 @@
 
 #include "Utility/DataPath.h"
 #include "Utility/ScopeGuard.h"
+#include "Utility/String.h"
 
 static int totalPartyHealth() {
     int result = 0;
@@ -313,9 +314,9 @@ GAME_TEST(Issues, Issue293a) {
     EXPECT_EQ(partyItemCount(), 19); // +1
     EXPECT_TRUE(pParty->pCharacters[0].hasItem(ITEM_CHAIN_MAIL, false)); // That's the item from the trash pile.
     EXPECT_EQ(pParty->pCharacters[0].GetMajorConditionIdx(), CONDITION_DISEASE_WEAK);
-    EXPECT_EQ(pParty->pCharacters[1].GetMajorConditionIdx(), CONDITION_GOOD); // Good roll here, didn't get sick.
+    EXPECT_EQ(pParty->pCharacters[1].GetMajorConditionIdx(), CONDITION_DISEASE_WEAK);
     EXPECT_EQ(pParty->pCharacters[2].GetMajorConditionIdx(), CONDITION_DISEASE_WEAK);
-    EXPECT_EQ(pParty->pCharacters[3].GetMajorConditionIdx(), CONDITION_DISEASE_WEAK);
+    EXPECT_EQ(pParty->pCharacters[3].GetMajorConditionIdx(), CONDITION_GOOD); // Good roll here, didn't get sick.
 }
 
 GAME_TEST(Issues, Issue293b) {
@@ -664,7 +665,7 @@ GAME_TEST(Issues, Issue506) {
     test->playTraceFromTestData("issue_506.mm7", "issue_506.json");
 }
 
-GAME_TEST(Issue, Issue518) {
+GAME_TEST(Issues, Issue518) {
     // Armageddon yeets the actors way too far into the sky & actors take stops when falling down
     test->playTraceFromTestData("issue_518.mm7", "issue_518.json");
     for (auto &actor : pActors) {
@@ -856,7 +857,7 @@ GAME_TEST(Issues, Issue626) {
     EXPECT_EQ(pSavegameList->selectedSlot, 1);
 }
 
-GAME_TEST(Issue, Issue645) {
+GAME_TEST(Issues, Issue645) {
     // Characters does not enter unconscious state
     test->playTraceFromTestData("issue_645.mm7", "issue_645.json");
     EXPECT_EQ(pParty->pCharacters[0].conditions.Has(CONDITION_UNCONSCIOUS), true);
@@ -1071,7 +1072,11 @@ GAME_TEST(Issues, Issue735b) {
 
 GAME_TEST(Issues, Issue735c) {
     // Trace-only test: entering the dragon cave on Emerald Isle, hugging the walls and shooting fireballs.
-    test->playTraceFromTestData("issue_735c.mm7", "issue_735c.json");
+    // Checking location names explicitly so that we'll notice if party misses cave entrance after retracing.
+    test->playTraceFromTestData("issue_735c.mm7", "issue_735c.json", [] {
+        EXPECT_EQ(toLower(pCurrentMapName), "out01.odm"); // Emerald Isle.
+    });
+    EXPECT_EQ(toLower(pCurrentMapName), "d28.blv"); // Dragon's cave.
 }
 
 GAME_TEST(Issues, Issue741) {
@@ -1364,6 +1369,14 @@ GAME_TEST(Issues, Issue929) {
 }
 
 // 1000
+
+GAME_TEST(Prs, Pr1005) {
+    // Testing collisions - stairs should work. In this test case the party is walking onto a wooden paving in Tatalia.
+    test->playTraceFromTestData("pr_1005.mm7", "pr_1005.json", [&] {
+        EXPECT_EQ(pParty->pos.z, 154);
+    });
+    EXPECT_EQ(pParty->pos.z, 193); // Paving is at z=192, party z should be this value +1.
+}
 
 GAME_TEST(Issues, Issue1020) {
     // Test finishing the scavenger hunt quest. The game should not crash when there is no dialogue options.

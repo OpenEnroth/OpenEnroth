@@ -8,7 +8,7 @@ class Platform;
 
 struct GameTestOptions : public GameStarterOptions {
     std::string testPath;
-    bool helpPrinted = false;
+    bool helpRequested = false;
 
     static GameTestOptions Parse(int argc, char **argv);
 };

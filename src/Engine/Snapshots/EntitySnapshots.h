@@ -144,8 +144,8 @@ void reconstruct(const TileDesc_MM7 &src, TileDesc *dst);
 struct TextureFrame_MM7 {
     std::array<char, 12> textureName;
     int16_t textureID;
-    int16_t animTime;
-    int16_t animLength;
+    int16_t animTime; // Total animation time, set only on the 1st frame, in 1/16th of a real-time second.
+    int16_t animLength; // Frame duration, in 1/16th of a real-time second.
     int16_t flags;
 };
 static_assert(sizeof(TextureFrame_MM7) == 20);
