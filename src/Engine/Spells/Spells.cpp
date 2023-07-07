@@ -828,6 +828,8 @@ void eventCastSpell(SPELL_TYPE uSpellID, CharacterSkillMastery skillMastery, CHA
             spell_sprites.spell_caster_pid = PID(OBJECT_Item, 1000); // 8000 | OBJECT_Item;
             spell_sprites.uSoundID = 0;
             break;
+        default:
+            break;
     }
 
     GameTime spell_length;
@@ -941,6 +943,7 @@ void eventCastSpell(SPELL_TYPE uSpellID, CharacterSkillMastery skillMastery, CHA
                     spell_length = GameTime::FromHours(skillLevel + 1);
                     break;
                 default:
+                    assert(false);
                     break;
             }
             switch (uSpellID) {
@@ -955,6 +958,9 @@ void eventCastSpell(SPELL_TYPE uSpellID, CharacterSkillMastery skillMastery, CHA
                 case SPELL_SPIRIT_HEROISM:
                     spell_power = skillLevel + 5;
                     buff_id = PARTY_BUFF_HEROISM;
+                    break;
+                default:
+                    assert(false);
                     break;
             }
             spell_fx_renderer->SetPartyBuffAnim(uSpellID);
@@ -1004,6 +1010,9 @@ void eventCastSpell(SPELL_TYPE uSpellID, CharacterSkillMastery skillMastery, CHA
                     break;
                 case SPELL_BODY_PROTECTION_FROM_BODY:
                     buff_id = PARTY_BUFF_RESIST_BODY;
+                    break;
+                default:
+                    assert(false);
                     break;
             }
             spell_fx_renderer->SetPartyBuffAnim(uSpellID);

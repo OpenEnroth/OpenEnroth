@@ -333,9 +333,9 @@ static std::string getVariableSetStr(VariableType type, int value) {
             return fmt::format("ERROR: Invisible, value");
         case VAR_ItemEquipped:
             return fmt::format("ERROR: ItemEquipped, value");
+        default:
+            return fmt::format("UNPROCESSED: [{}], {}", std::to_underlying(type), value);
     }
-
-    return fmt::format("UNPROCESSED: [{}], {}", std::to_underlying(type), value);
 }
 
 static std::string getVariableCompareStr(VariableType type, int value) {
@@ -656,9 +656,9 @@ static std::string getVariableCompareStr(VariableType type, int value) {
             return fmt::format("Invisible");
         case VAR_ItemEquipped:
             return fmt::format("ItemEquipped({})", value);
+        default:
+            return fmt::format("UNPROCESSED: [{}] ? {}", std::to_underlying(type), value);
     }
-
-    return fmt::format("UNPROCESSED: [{}] ? {}", std::to_underlying(type), value);
 }
 
 std::string EventIR::toString() const {

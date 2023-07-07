@@ -1133,6 +1133,10 @@ void GUIWindow_Shop::houseScreenClick() {
             }
             break;
         }
+
+        default:
+            assert(false);
+            break;
     }
 }
 

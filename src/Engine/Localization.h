@@ -8,7 +8,7 @@
 
 #include "Utility/Workaround/ToUnderlying.h"
 #include "Utility/IndexedArray.h"
-
+#include "Utility/Format.h"
 
 #define LSTR_AC                               0   // "AC"
 #define LSTR_ACCURACY                         1   // "Accuracy"
@@ -438,7 +438,13 @@ class Localization {
     bool Initialize();
 
     const char *GetString(unsigned int index) const;
-    std::string FormatString(unsigned int index, ...) const;
+
+    template<class... Args>
+    std::string FormatString(unsigned int index, Args &&... args) const {
+        // TODO(captainurist): what if fmt throws?
+        return fmt::sprintf(GetString(index), std::forward<Args>(args)...);
+        // TODO(captainurist): there was also a call to sprintfex_internal after a call to vsprintf.
+    }
 
     const char *GetDayName(unsigned int index) const {
         return this->day_names[index];

@@ -659,16 +659,6 @@ const char *GetSpecialCase(const char *ansi_name, char c) {
     return nullptr;
 }
 
-int sprintfex(char *buf, const char *format, ...) {
-    va_list args_ptr;
-    va_start(args_ptr, format);
-    { vsprintf(buf, format, args_ptr); }
-    va_end(args_ptr);
-
-    extern int sprintfex_internal(char *buf);
-    return sprintfex_internal(buf);
-}
-
 int sprintfex_internal(char *str) {
     auto p = strstr(str, "^");
     if (!p) return strlen(str);

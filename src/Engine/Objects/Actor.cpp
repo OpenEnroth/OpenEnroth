@@ -74,8 +74,9 @@ bool ShouldMonsterPlayAttackAnim(SPELL_TYPE spell_id) {
         case SPELL_LIGHT_HOUR_OF_POWER:
         case SPELL_DARK_PAIN_REFLECTION:
             return false;
+        default:
+            return true;
     }
-    return true;
 }
 
 //----- (0041AF52) --------------------------------------------------------
@@ -677,6 +678,10 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
             actorPtr->buffs[ACTOR_BUFF_PAIN_REFLECTION].Apply(pParty->GetPlayingTime() + spellLength, masteryLevel, 0, 0, 0);
             spell_fx_renderer->sparklesOnActorAfterItCastsBuff(actorPtr, colorTable.MediumGrey);
             pAudioPlayer->playSound(SOUND_Sacrifice2, PID(OBJECT_Actor, uActorID));
+            break;
+
+        default:
+            assert(false);
             break;
     }
 }
@@ -3185,6 +3190,9 @@ void Actor::DamageMonsterFromParty(signed int a1, unsigned int uActorID_Monster,
                             hit_will_paralyze = true;
                     }
                     break;
+
+                default:
+                    break;
             }
         }
         attackElement = DMGT_PHISYCAL;
@@ -3386,8 +3394,8 @@ void Actor::DamageMonsterFromParty(signed int a1, unsigned int uActorID_Monster,
         if (engine->config->settings.ShowHits.value()) {
             GameUI_SetStatusBar(
                 LSTR_FMT_S_STUNS_S,
-                character->name.c_str(),
-                pMonster
+                character->name,
+                pMonster->name
             );
         }
     }
@@ -3399,8 +3407,8 @@ void Actor::DamageMonsterFromParty(signed int a1, unsigned int uActorID_Monster,
         if (engine->config->settings.ShowHits.value()) {
             GameUI_SetStatusBar(
                 LSTR_FMT_S_PARALYZES_S,
-                character->name.c_str(),
-                pMonster
+                character->name,
+                pMonster->name
             );
         }
     }
@@ -4917,6 +4925,9 @@ void evaluateAoeDamage() {
                                     break;
                                 case OBJECT_Item:
                                     ItemDamageFromActor(attack.pid, actorID, &attackVector);
+                                    break;
+                                default:
+                                    assert(false);
                                     break;
                             }
                         }
