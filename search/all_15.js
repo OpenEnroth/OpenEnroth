@@ -187,7 +187,7 @@ var searchData=
   ['uheightminus1_184',['uHeightMinus1',['../structTextureHeader.html#a68c94e6460ab3bca2d8b6d8fd83b604b',1,'TextureHeader']]],
   ['uhelm_185',['uHelm',['../unionCharacterEquipment.html#a9e599244c643cf030d82992b9634b5bc',1,'CharacterEquipment']]],
   ['uhireprice_186',['uHirePrice',['../structNPCProfession.html#a580e68147595b34a94e0f49406324311',1,'NPCProfession']]],
-  ['uholderplayer_187',['uHolderPlayer',['../structItemGen.html#adb92645177d40a4b4d7ce6fedaadb342',1,'ItemGen']]],
+  ['uholderplayer_187',['uHolderPlayer',['../structItemGen.html#a2709c70cfbcf41157ee62a1cacc9b988',1,'ItemGen']]],
   ['uhostilitytype_188',['uHostilityType',['../structMonsterInfo.html#ae0b8f4806fe3da3fe4b50bd65f2e7fc2',1,'MonsterInfo']]],
   ['uhour_189',['uHour',['../structActorJob.html#a048f95d001fc78f92c63abb28b12691d',1,'ActorJob']]],
   ['uhp_190',['uHP',['../structMonsterInfo.html#a80854348f70004b64b5a276168867991',1,'MonsterInfo']]],

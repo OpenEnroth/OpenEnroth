@@ -41,7 +41,7 @@ var searchData=
   ['flush_38',['flush',['../classStringOutputStream.html#a43c745c1582a8cb5f6da485583fe6029',1,'StringOutputStream::flush()'],['../classOutputStream.html#a2b731aef87084c3779bea292f85e800d',1,'OutputStream::flush()'],['../classFileOutputStream.html#afc63785b8744278d51814c4892207414',1,'FileOutputStream::flush()']]],
   ['flyactive_39',['FlyActive',['../structParty.html#ac4cefb718be47ea0a540f18366e77f56',1,'Party']]],
   ['format_40',['format',['../structfmt_1_1formatter_3_01ColorTag_01_4.html#a3fecca0d544bcc21d44178b901b80299',1,'fmt::formatter&lt; ColorTag &gt;']]],
-  ['formatstring_41',['FormatString',['../classLocalization.html#afc4b38ecb7d49be7acb1b08a8b184ba2',1,'Localization']]],
+  ['formatstring_41',['FormatString',['../classLocalization.html#a984213807ef1983fd8a29dd28cb0c001',1,'Localization']]],
   ['fortype_42',['forType',['../classAnyHandler.html#ac7377d8fc4e97687b18ed6f537bb16c9',1,'AnyHandler']]],
   ['frame_5ftable_5ftxt_5fparser_43',['frame_table_txt_parser',['../FrameTableInc_8cpp.html#a39d450fec938881b88cebb43a38bdd8e',1,'frame_table_txt_parser(const char *str_to_parse, FrameTableTxtLine *tokens_table):&#160;FrameTableInc.cpp'],['../FrameTableInc_8h.html#af6a0457c02cc89a855b976c5affd025b',1,'frame_table_txt_parser(const char *pString, FrameTableTxtLine *a2):&#160;FrameTableInc.cpp']]],
   ['framelimiter_44',['FrameLimiter',['../classFrameLimiter.html#aff1b9dd8be02feaa2ed8b24c1fb1d5e2',1,'FrameLimiter']]],

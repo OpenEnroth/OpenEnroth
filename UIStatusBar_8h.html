@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;99568a9</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;c3b739a</span>
    </div>
   </td>
  </tr>
@@ -79,6 +79,8 @@ $(function() {
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><code>#include &lt;string&gt;</code><br />
+<code>#include &lt;utility&gt;</code><br />
+<code>#include &quot;<a class="el" href="Localization_8h.html">Engine/Localization.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Color_8h.html">Library/Color/Color.h</a>&quot;</code><br />
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
@@ -93,8 +95,9 @@ Functions</h2></td></tr>
 <tr class="separator:a7e726ffc3354113fbc3415e7cb658603"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac05660fee59d7b8d772a357ffe8f85e8"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="UIStatusBar_8h.html#ac05660fee59d7b8d772a357ffe8f85e8">GameUI_SetStatusBar</a> (const std::string &amp;str)</td></tr>
 <tr class="separator:ac05660fee59d7b8d772a357ffe8f85e8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0c0979a3712c630dabad50686419c9ee"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="UIStatusBar_8h.html#a0c0979a3712c630dabad50686419c9ee">GameUI_SetStatusBar</a> (int localization_string_id,...)</td></tr>
-<tr class="separator:a0c0979a3712c630dabad50686419c9ee"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5b366138c14c69da81613ba69a8b25ad"><td class="memTemplParams" colspan="2">template&lt;class... Args&gt; </td></tr>
+<tr class="memitem:a5b366138c14c69da81613ba69a8b25ad"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="UIStatusBar_8h.html#a5b366138c14c69da81613ba69a8b25ad">GameUI_SetStatusBar</a> (int localization_string_id, Args &amp;&amp;... args)</td></tr>
+<tr class="separator:a5b366138c14c69da81613ba69a8b25ad"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad4d30a14b422f66521a582f85c1c7456"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="UIStatusBar_8h.html#ad4d30a14b422f66521a582f85c1c7456">GameUI_SetStatusBarShortNotification</a> (const std::string &amp;str)</td></tr>
 <tr class="separator:ad4d30a14b422f66521a582f85c1c7456"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a127f5066d006717bae55e25121fa782e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="UIStatusBar_8h.html#a127f5066d006717bae55e25121fa782e">GameUI_StatusBar_ClearEventString</a> ()</td></tr>
@@ -129,11 +132,13 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="a0c0979a3712c630dabad50686419c9ee" name="a0c0979a3712c630dabad50686419c9ee"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a0c0979a3712c630dabad50686419c9ee">&#9670;&#160;</a></span>GameUI_SetStatusBar() <span class="overload">[2/2]</span></h2>
+<a id="a5b366138c14c69da81613ba69a8b25ad" name="a5b366138c14c69da81613ba69a8b25ad"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5b366138c14c69da81613ba69a8b25ad">&#9670;&#160;</a></span>GameUI_SetStatusBar() <span class="overload">[2/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
+<div class="memtemplate">
+template&lt;class... Args&gt; </div>
       <table class="memname">
         <tr>
           <td class="memname">void GameUI_SetStatusBar </td>
@@ -144,8 +149,8 @@ Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname"><em>...</em>&#160;</td>
+          <td class="paramtype">Args &amp;&amp;...&#160;</td>
+          <td class="paramname"><em>args</em>&#160;</td>
         </tr>
         <tr>
           <td></td>

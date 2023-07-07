@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;99568a9</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;c3b739a</span>
    </div>
   </td>
  </tr>
@@ -86,8 +86,9 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a76effecdc8b0d509e81e75f2273265af"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0eb0a17fdf90f6a420eeac65bf62436f"><td class="memItemLeft" align="right" valign="top">const char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classLocalization.html#a0eb0a17fdf90f6a420eeac65bf62436f">GetString</a> (unsigned int index) const</td></tr>
 <tr class="separator:a0eb0a17fdf90f6a420eeac65bf62436f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afc4b38ecb7d49be7acb1b08a8b184ba2"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classLocalization.html#afc4b38ecb7d49be7acb1b08a8b184ba2">FormatString</a> (unsigned int index,...) const</td></tr>
-<tr class="separator:afc4b38ecb7d49be7acb1b08a8b184ba2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a984213807ef1983fd8a29dd28cb0c001"><td class="memTemplParams" colspan="2">template&lt;class... Args&gt; </td></tr>
+<tr class="memitem:a984213807ef1983fd8a29dd28cb0c001"><td class="memTemplItemLeft" align="right" valign="top">std::string&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classLocalization.html#a984213807ef1983fd8a29dd28cb0c001">FormatString</a> (unsigned int index, Args &amp;&amp;... args) const</td></tr>
+<tr class="separator:a984213807ef1983fd8a29dd28cb0c001"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad943ce0e8c3b9428b732b58f8b259bcc"><td class="memItemLeft" align="right" valign="top">const char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classLocalization.html#ad943ce0e8c3b9428b732b58f8b259bcc">GetDayName</a> (unsigned int index) const</td></tr>
 <tr class="separator:ad943ce0e8c3b9428b732b58f8b259bcc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a05c8074bfd3ac8fcad57fb1ae504c7f7"><td class="memItemLeft" align="right" valign="top">const char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classLocalization.html#a05c8074bfd3ac8fcad57fb1ae504c7f7">GetMonthName</a> (unsigned int index) const</td></tr>
@@ -310,11 +311,16 @@ Private Attributes</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a id="afc4b38ecb7d49be7acb1b08a8b184ba2" name="afc4b38ecb7d49be7acb1b08a8b184ba2"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#afc4b38ecb7d49be7acb1b08a8b184ba2">&#9670;&#160;</a></span>FormatString()</h2>
+<a id="a984213807ef1983fd8a29dd28cb0c001" name="a984213807ef1983fd8a29dd28cb0c001"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a984213807ef1983fd8a29dd28cb0c001">&#9670;&#160;</a></span>FormatString()</h2>
 
 <div class="memitem">
 <div class="memproto">
+<div class="memtemplate">
+template&lt;class... Args&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname">std::string Localization::FormatString </td>
@@ -325,8 +331,8 @@ Private Attributes</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname"><em>...</em>&#160;</td>
+          <td class="paramtype">Args &amp;&amp;...&#160;</td>
+          <td class="paramname"><em>args</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -334,6 +340,11 @@ Private Attributes</h2></td></tr>
           <td></td><td> const</td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 
 </div>
