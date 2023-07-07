@@ -2,23 +2,28 @@
 
 #include <string>
 #include <memory>
+#include <vector>
 
 #include "Library/Application/PlatformApplicationAware.h"
 
+#include "EngineTraceEnums.h"
+
 class EngineController;
-class EngineTraceComponent;
+class EngineTraceSimpleRecorder;
 class EngineDeterministicComponent;
 class GameKeyboardController;
+class EventTrace;
 
 /**
  * Component that exposes a trace recording interface. Doesn't have a `Component` in its name because who likes
  * class names half a screen long.
  *
- * Depends on `EngineDeterministicComponent` and `EngineTraceComponent`, install them into `PlatformApplication` first.
+ * Depends on `EngineDeterministicComponent` and `EngineTraceSimpleRecorder`, install them into `PlatformApplication`
+ * first.
  *
- * Note that the difference from `EngineTraceComponent` is that this component isn't dumb and offers a complete solution
- * to trace recording. Traces that were recorded with `startRecording` / `finishRecording` can then be played
- * back with `EngineTracePlayer`.
+ * Note that the difference from `EngineTraceSimpleRecorder` is that this component isn't dumb and offers a
+ * complete solution to trace recording. Traces that were recorded with `startRecording` / `finishRecording` can
+ * then be played back with `EngineTracePlayer`.
  *
  * Some notes on how this works. When starting trace recording:
  * - The game is saved.
@@ -44,8 +49,9 @@ class EngineTraceRecorder : private PlatformApplicationAware {
      * @param game                      Engine controller.
      * @param savePath                  Path to save file.
      * @param tracePath                 Path to trace file.
+     * @param flags                     Recording flags.
      */
-    void startRecording(EngineController *game, const std::string &savePath, const std::string &tracePath);
+    void startRecording(EngineController *game, const std::string &savePath, const std::string &tracePath, EngineTraceRecordingFlags flags = 0);
 
     /**
      * Finishes trace recording & saves the trace file.
@@ -62,7 +68,7 @@ class EngineTraceRecorder : private PlatformApplicationAware {
      *                                  state.
      */
     [[nodiscard]] bool isRecording() const {
-        return !_saveFilePath.empty();
+        return _trace != nullptr;
     }
 
  private:
@@ -72,10 +78,11 @@ class EngineTraceRecorder : private PlatformApplicationAware {
     virtual void removeNotify() override;
 
  private:
-    std::string _saveFilePath;
-    std::string _traceFilePath;
+    std::string _savePath;
+    std::string _tracePath;
     int _oldFpsLimit = 0;
+    std::unique_ptr<EventTrace> _trace;
     EngineDeterministicComponent *_deterministicComponent = nullptr;
-    EngineTraceComponent *_traceComponent = nullptr;
+    EngineTraceSimpleRecorder *_simpleRecorder = nullptr;
     GameKeyboardController *_keyboardController = nullptr;
 };

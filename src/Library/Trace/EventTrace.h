@@ -33,6 +33,9 @@ struct EventTraceHeader {
     /** Game state at the end of the trace. */
     EventTraceGameState endState;
 
+    /** Random state after loading the save file associated with the trace, as returned by `grng->peek(1024)`. */
+    int afterLoadRandomState = -1;
+
     // TODO(captainurist): std::string saveFileChecksum;
 };
 
