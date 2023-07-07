@@ -35,23 +35,6 @@ void GameUI_SetStatusBar(const std::string &str) {
     GameUI_StatusBar_OnEvent_Internal(str, 2 * 1000);
 }
 
-
-void GameUI_SetStatusBar(int localization_string_id, ...) {
-    va_list args_ptr;
-
-    const char *format = localization->GetString(localization_string_id);
-    char buf[4096];
-
-    va_start(args_ptr, localization_string_id);
-    vsprintf(buf, format, args_ptr);
-    va_end(args_ptr);
-
-    extern int sprintfex_internal(char *str);
-    sprintfex_internal(buf);
-    GameUI_SetStatusBar(buf);
-}
-
-
 void GameUI_SetStatusBarShortNotification(const std::string &str) {
     GameUI_StatusBar_OnEvent_Internal(str, 128);
 }

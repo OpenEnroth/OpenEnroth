@@ -1126,6 +1126,9 @@ bool processSpellImpact(unsigned int uLayingItemID, int pid) {
                     dmgType = DMGT_DARK;
                     buffIdx = ACTOR_BUFF_SHRINK;
                     break;
+                default:
+                    assert(false);
+                    break;
             }
             if (object->uType == SPRITE_SPELL_DARK_SHRINKING_RAY) {
                 switch (skillMastery) {
@@ -1138,6 +1141,9 @@ bool processSpellImpact(unsigned int uLayingItemID, int pid) {
                     case CHARACTER_SKILL_MASTERY_MASTER:
                     case CHARACTER_SKILL_MASTERY_GRANDMASTER:
                         shrinkPower = 4;
+                        break;
+                    default:
+                        assert(false);
                         break;
                 }
                 pActors[PID_ID(pid)].attributes |= ACTOR_AGGRESSOR;

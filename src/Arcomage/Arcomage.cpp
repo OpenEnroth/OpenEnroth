@@ -1244,6 +1244,8 @@ char PlayerTurn(int player_num) {
                     pArcomageGame->check_exit = 1;
                 }
                 break;
+            default:
+                break;
         }
 
         // time to start the AIs turn

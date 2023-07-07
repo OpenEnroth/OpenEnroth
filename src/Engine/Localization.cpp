@@ -14,22 +14,6 @@ const char *Localization::GetString(unsigned int index) const {
     return this->localization_strings[index];
 }
 
-std::string Localization::FormatString(unsigned int index, ...) const {
-    va_list args_ptr;
-
-    const char *format = (this->GetString(index));
-    char buf[2048];
-
-    va_start(args_ptr, index);  // ?? sometimes args_ptr has junk at start ??
-                                // args must pass as type c_str() ??
-    vsprintf(buf, format, args_ptr);
-    va_end(args_ptr);
-
-    extern int sprintfex_internal(char *str);
-    sprintfex_internal(buf);
-    return std::string(buf);
-}
-
 //----- (00452C49) --------------------------------------------------------
 bool Localization::Initialize() {
     char *tmp_pos;     // eax@3

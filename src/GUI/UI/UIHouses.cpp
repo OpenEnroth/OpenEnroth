@@ -1083,7 +1083,7 @@ void GUIWindow_House::drawOptions(std::vector<std::string> &optionsText, Color s
         GUIButton *button = pDialogueWindow->GetControl(buttonIndex);
 
         if (!optionsText[i].empty()) {
-            Color textColor = (pDialogueWindow->pCurrentPosActiveItem == buttonIndex) ? selectColor : textColor = colorTable.White;
+            Color textColor = (pDialogueWindow->pCurrentPosActiveItem == buttonIndex) ? selectColor : colorTable.White;
             int textHeight = pFontArrus->CalcTextHeight(optionsText[i], window.uFrameWidth, 0);
             button->uY = spacing + offset;
             button->uHeight = textHeight;

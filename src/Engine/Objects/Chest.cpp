@@ -609,6 +609,9 @@ void GenerateItemsInChest() {
                                 goldAmount = grng->random(3001) + 2000;
                                 currItem->uItemID = ITEM_GOLD_LARGE;
                                 break;
+                            default:
+                                assert(false);
+                                break;
                             }
                             currItem->SetIdentified();
                             currItem->special_enchantment = (ITEM_ENCHANTMENT)goldAmount;
