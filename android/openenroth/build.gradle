@@ -36,7 +36,7 @@ android {
         versionName "1.0"
         externalNativeBuild {
             //build all by default runner only build v8a
-            if ( System.getProperty("GITHUBWORKER",null) != null ) { 
+            if ( System.env['GITHUBWORKER'] != null ) { 
                 cmake {
                     arguments "-DANDROID_STL=c++_static"
                     abiFilters 'arm64-v8a' 
