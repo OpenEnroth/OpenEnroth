@@ -6,12 +6,11 @@
 
 #include "Library/Application/PlatformApplicationAware.h"
 
-#include "Utility/Flags.h"
-
-#include "EngineTracePlaybackFlags.h"
+#include "EngineTraceEnums.h"
 
 class EngineController;
 class EngineDeterministicComponent;
+class EngineTraceSimplePlayer;
 class GameKeyboardController;
 class EventTrace;
 class EventTraceGameState;
@@ -20,7 +19,8 @@ class PaintEvent;
 /**
  * Component that exposes a trace playback interface.
  *
- * Depends on `EngineDeterministicComponent`, install it into `PlatformApplication` first.
+ * Depends on `EngineDeterministicComponent` and `EngineTraceSimplePlayer`, install them into `PlatformApplication`
+ * first.
  *
  * @see EngineTraceRecorder
  */
@@ -45,22 +45,22 @@ class EngineTracePlayer : private PlatformApplicationAware {
         return _trace != nullptr;
     }
 
-    void prepareTrace(EngineController *game, const std::string &savePath, const std::string &tracePath);
-    void playPreparedTrace(EngineController *game, EngineTracePlaybackFlags flags = 0);
-
  private:
     friend class PlatformIntrospection;
 
-    void checkTime(EngineTracePlaybackFlags flags, const PaintEvent *paintEvent);
-    void checkRng(EngineTracePlaybackFlags flags, const PaintEvent *paintEvent);
-    void checkState(EngineTracePlaybackFlags flags, const EventTraceGameState &expectedState, bool isStart);
+    void checkSaveFileSize(int expectedSaveFileSize);
+    void checkAfterLoadRng(int expectedRandomState);
+    void checkState(const EventTraceGameState &expectedState, bool isStart);
 
     virtual void installNotify() override;
     virtual void removeNotify() override;
 
  private:
     std::string _tracePath;
+    std::string _savePath;
+    EngineTracePlaybackFlags _flags;
     std::unique_ptr<EventTrace> _trace;
     EngineDeterministicComponent *_deterministicComponent = nullptr;
+    EngineTraceSimplePlayer *_simplePlayer = nullptr;
     GameKeyboardController *_keyboardController = nullptr;
 };

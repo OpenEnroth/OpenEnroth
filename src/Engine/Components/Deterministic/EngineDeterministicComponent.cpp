@@ -9,7 +9,7 @@
 EngineDeterministicComponent::EngineDeterministicComponent() = default;
 EngineDeterministicComponent::~EngineDeterministicComponent() = default;
 
-void EngineDeterministicComponent::startDeterministicSegment(int frameTimeMs) {
+void EngineDeterministicComponent::restart(int frameTimeMs) {
     assert(frameTimeMs >= 1 && frameTimeMs <= 1000);
 
     if (!isActive())

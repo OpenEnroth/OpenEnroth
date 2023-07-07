@@ -43,11 +43,11 @@ void TestController::playTraceFromTestData(const std::string &saveName, const st
 
 void TestController::prepareForNextTest() {
     engine->config->resetForTest();
-    startDeterministicSegment(engine->config->debug.TraceFrameTimeMs.value());
+    restart(engine->config->debug.TraceFrameTimeMs.value());
     ::application->get<GameKeyboardController>()->reset();
     _controller->goToMainMenu();
 }
 
-void TestController::startDeterministicSegment(int frameTimeMs) {
-    ::application->get<EngineDeterministicComponent>()->startDeterministicSegment(frameTimeMs);
+void TestController::restart(int frameTimeMs) {
+    ::application->get<EngineDeterministicComponent>()->restart(frameTimeMs);
 }

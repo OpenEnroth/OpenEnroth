@@ -1,13 +1,12 @@
 #pragma once
 
 #include <memory>
+#include <vector>
 
 #include "Platform/Proxy/ProxyOpenGLContext.h"
 #include "Platform/Filters/PlatformEventFilter.h"
 
 #include "Library/Application/PlatformApplicationAware.h"
-
-struct EventTrace;
 
 /**
  * Component that can be used to record events.
@@ -17,10 +16,10 @@ struct EventTrace;
  *
  * @see EngineTraceRecorder
  */
-class EngineTraceComponent : private ProxyOpenGLContext, private PlatformEventFilter, private PlatformApplicationAware {
+class EngineTraceSimpleRecorder : private ProxyOpenGLContext, private PlatformEventFilter, private PlatformApplicationAware {
  public:
-    EngineTraceComponent();
-    virtual ~EngineTraceComponent();
+    EngineTraceSimpleRecorder();
+    virtual ~EngineTraceSimpleRecorder();
 
     /**
      * Starts trace recording.
@@ -28,14 +27,12 @@ class EngineTraceComponent : private ProxyOpenGLContext, private PlatformEventFi
     void startRecording();
 
     /**
-     * @return                          Recorded trace. Note that it's up to the caller to fill the save file-related
-     *                                  fields of `EventTraceHeader` because `EngineTraceComponent` doesn't know
-     *                                  anything about save files.
+     * @return                          Recorded events.
      */
-    EventTrace finishRecording();
+    std::vector<std::unique_ptr<PlatformEvent>> finishRecording();
 
     bool isRecording() const {
-        return _trace != nullptr;
+        return _recording;
     }
 
  private:
@@ -45,5 +42,6 @@ class EngineTraceComponent : private ProxyOpenGLContext, private PlatformEventFi
     virtual bool event(const PlatformEvent *event) override;
 
  private:
-    std::unique_ptr<EventTrace> _trace;
+    bool _recording = false;
+    std::vector<std::unique_ptr<PlatformEvent>> _events;
 };

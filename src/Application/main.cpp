@@ -4,9 +4,10 @@
 
 #include "Engine/Components/Control/EngineControlComponent.h"
 #include "Engine/Components/Control/EngineController.h"
-#include "Engine/Components/Trace/EngineTracePlayer.h"
-#include "Engine/Components/Trace/EngineTraceComponent.h"
+#include "Engine/Components/Trace/EngineTraceSimplePlayer.h"
+#include "Engine/Components/Trace/EngineTraceRecorder.h"
 #include "Engine/Components/Trace/EngineTraceStateAccessor.h"
+#include "Engine/Engine.h"
 
 #include "Library/Application/PlatformApplication.h"
 #include "Library/Trace/EventTrace.h"
@@ -25,19 +26,19 @@ int runRetrace(GameOptions options) {
     starter.application()->get<EngineControlComponent>()->runControlRoutine([application = starter.application(), tracePaths = options.retrace.traces] (EngineController *game) {
         game->tick(10); // Let the game thread initialize everything.
 
-        EngineTracePlayer *player = application->get<EngineTracePlayer>();
-        EngineTraceComponent *tracer = application->get<EngineTraceComponent>();
+        EngineTraceSimplePlayer *player = application->get<EngineTraceSimplePlayer>();
+        EngineTraceRecorder *recorder = application->get<EngineTraceRecorder>();
 
         for (const std::string &tracePath : tracePaths) {
             std::string savePath = tracePath.substr(0, tracePath.length() - 5) + ".mm7";
 
-            player->prepareTrace(game, savePath, tracePath);
-            tracer->startRecording();
-            player->playPreparedTrace(game, TRACE_PLAYBACK_SKIP_RANDOM_CHECKS | TRACE_PLAYBACK_SKIP_STATE_CHECKS);
+            EventTrace oldTrace = EventTrace::loadFromFile(tracePath, application->window());
+            EngineTraceStateAccessor::patchConfig(engine->config.get(), oldTrace.header.config);
 
-            EventTrace trace = tracer->finishRecording();
-            trace.header.saveFileSize = std::filesystem::file_size(savePath);
-            EventTrace::saveToFile(tracePath, trace);
+            recorder->startRecording(game, savePath, tracePath, TRACE_RECORDING_LOAD_EXISTING_SAVE);
+            engine->config->graphics.FPSLimit.setValue(0);
+            player->playTrace(game, std::move(oldTrace.events), tracePath, TRACE_PLAYBACK_SKIP_RANDOM_CHECKS | TRACE_PLAYBACK_SKIP_STATE_CHECKS);
+            recorder->finishRecording(game);
         }
 
         game->goToMainMenu();

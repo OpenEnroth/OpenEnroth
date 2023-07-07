@@ -20,6 +20,7 @@
 #include "Utility/Exception.h"
 
 #include "EngineTraceStateAccessor.h"
+#include "EngineTraceSimplePlayer.h"
 
 EngineTracePlayer::EngineTracePlayer() {}
 
@@ -29,91 +30,65 @@ EngineTracePlayer::~EngineTracePlayer() {
 
 void EngineTracePlayer::playTrace(EngineController *game, const std::string &savePath, const std::string &tracePath,
                                   EngineTracePlaybackFlags flags, std::function<void()> postLoadCallback) {
-    prepareTrace(game, savePath, tracePath);
+    assert(!isPlaying());
 
-    if (postLoadCallback)
-        postLoadCallback();
+    _tracePath = tracePath;
+    _savePath = savePath;
+    _flags = flags;
+    _trace = std::make_unique<EventTrace>(EventTrace::loadFromFile(_tracePath, application()->window()));
 
-    playPreparedTrace(game, flags);
-}
+    MM_AT_SCOPE_EXIT({
+        _tracePath.clear();
+        _savePath.clear();
+        _flags = 0;
+        _trace.reset();
+        _deterministicComponent->finish();
+    });
 
-void EngineTracePlayer::prepareTrace(EngineController *game, const std::string &savePath, const std::string &tracePath) {
-    assert(!_trace);
-
-    std::unique_ptr<EventTrace> trace = std::make_unique<EventTrace>(EventTrace::loadFromFile(tracePath, application()->window()));
-
-    int saveFileSize = std::filesystem::file_size(savePath);
-    if (trace->header.saveFileSize != -1 && trace->header.saveFileSize != saveFileSize) {
-        throw Exception("Trace '{}' expected a savegame of size {} bytes, but the size of '{}' is {} bytes",
-                        tracePath, trace->header.saveFileSize, savePath, saveFileSize);
-    }
+    checkSaveFileSize(_trace->header.saveFileSize);
 
     game->resizeWindow(640, 480);
     game->tick();
 
-    EngineTraceStateAccessor::patchConfig(engine->config.get(), trace->header.config);
+    EngineTraceStateAccessor::patchConfig(engine->config.get(), _trace->header.config);
     int frameTimeMs = engine->config->debug.TraceFrameTimeMs.value();
 
-    _deterministicComponent->startDeterministicSegment(frameTimeMs);
-    game->loadGame(savePath);
-    _deterministicComponent->startDeterministicSegment(frameTimeMs);
+    game->goToMainMenu(); // This might call into a random engine.
+    _deterministicComponent->restart(frameTimeMs);
+    game->loadGame(_savePath);
+    checkAfterLoadRng(_trace->header.afterLoadRandomState);
+    _deterministicComponent->restart(frameTimeMs);
     _keyboardController->reset(); // Reset all pressed buttons.
 
-    _tracePath = tracePath;
-    _trace = std::move(trace);
+    if (postLoadCallback)
+        postLoadCallback();
+
+    checkState(_trace->header.startState, true);
+    _simplePlayer->playTrace(game, std::move(_trace->events), _tracePath, _flags);
+    checkState(_trace->header.endState, false);
 }
 
-void EngineTracePlayer::playPreparedTrace(EngineController *game, EngineTracePlaybackFlags flags) {
-    assert(_trace);
-
-    MM_AT_SCOPE_EXIT({
-        _deterministicComponent->finish();
-        _trace.reset();
-        _tracePath.clear();
-    });
-
-    checkState(flags, _trace->header.startState, true);
-
-    for (std::unique_ptr<PlatformEvent> &event : _trace->events) {
-        if (event->type == EVENT_PAINT) {
-            game->tick(1);
-
-            const PaintEvent *paintEvent = static_cast<const PaintEvent *>(event.get());
-            checkTime(flags, paintEvent);
-            checkRng(flags, paintEvent);
-        } else {
-            game->postEvent(std::move(event));
-        }
-    }
-
-    checkState(flags, _trace->header.endState, false);
-}
-
-void EngineTracePlayer::checkTime(EngineTracePlaybackFlags flags, const PaintEvent *paintEvent) {
-    if (flags & TRACE_PLAYBACK_SKIP_TIME_CHECKS)
-        return;
-
-    int64_t tickCount = application()->platform()->tickCount();
-    if (tickCount != paintEvent->tickCount) {
-        throw Exception("Tick count desynchronized when playing back trace '{}': expected {}, got {}",
-                        _tracePath, paintEvent->tickCount, tickCount);
+void EngineTracePlayer::checkSaveFileSize(int expectedSaveFileSize) {
+    int saveFileSize = std::filesystem::file_size(_savePath);
+    if (expectedSaveFileSize != -1 && expectedSaveFileSize != saveFileSize) { // TODO(captainurist): drop -1
+        throw Exception("Trace '{}' expected a savegame of size {} bytes, but the size of '{}' is {} bytes",
+                        _tracePath, expectedSaveFileSize, _savePath, saveFileSize);
     }
 }
 
-void EngineTracePlayer::checkRng(EngineTracePlaybackFlags flags, const PaintEvent *paintEvent) {
-    if (flags & TRACE_PLAYBACK_SKIP_RANDOM_CHECKS)
+void EngineTracePlayer::checkAfterLoadRng(int expectedRandomState) {
+    if (_flags & TRACE_PLAYBACK_SKIP_RANDOM_CHECKS)
         return;
 
     int randomState = grng->peek(1024);
-    int64_t tickCount = application()->platform()->tickCount();
-    if (randomState != paintEvent->randomState) {
-        throw Exception("Random state desynchronized when playing back trace '{}' at {}ms: expected {}, got {}",
-                        _tracePath, tickCount, paintEvent->randomState, randomState);
+    if (randomState != expectedRandomState && expectedRandomState != -1) { // TODO(captainurist): drop -1
+        throw Exception("Random state desynchronized after loading a save for trace '{}': expected {}, got {}",
+                        _tracePath, expectedRandomState, randomState);
     }
 }
 
-void EngineTracePlayer::checkState(EngineTracePlaybackFlags flags, const EventTraceGameState &expectedState, bool isStart) {
-    if (flags & TRACE_PLAYBACK_SKIP_STATE_CHECKS)
+void EngineTracePlayer::checkState(const EventTraceGameState &expectedState, bool isStart) {
+    if (_flags & TRACE_PLAYBACK_SKIP_STATE_CHECKS)
         return;
 
     std::string_view where = isStart ? "start" : "end";
@@ -133,10 +108,12 @@ void EngineTracePlayer::checkState(EngineTracePlaybackFlags flags, const EventTr
 
 void EngineTracePlayer::installNotify() {
     _deterministicComponent = application()->get<EngineDeterministicComponent>();
+    _simplePlayer = application()->get<EngineTraceSimplePlayer>();
     _keyboardController = application()->get<GameKeyboardController>();
 }
 
 void EngineTracePlayer::removeNotify() {
     _deterministicComponent = nullptr;
+    _simplePlayer = nullptr;
     _keyboardController = nullptr;
 }

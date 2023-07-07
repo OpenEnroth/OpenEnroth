@@ -4,10 +4,9 @@
 #include <string>
 #include <functional>
 
-#include "Engine/Components/Trace/EngineTracePlaybackFlags.h"
+#include "Engine/Components/Trace/EngineTraceEnums.h"
 
 class EngineController;
-class EngineTracer;
 
 class TestController {
  public:
@@ -21,7 +20,7 @@ class TestController {
 
     void prepareForNextTest();
 
-    void startDeterministicSegment(int frameTimeMs);
+    void restart(int frameTimeMs);
 
  private:
     EngineController *_controller;

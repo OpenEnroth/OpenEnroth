@@ -32,9 +32,10 @@
 #include "Engine/Graphics/Image.h"
 #include "Engine/Components/Trace/EngineTracePlayer.h"
 #include "Engine/Components/Trace/EngineTraceRecorder.h"
+#include "Engine/Components/Trace/EngineTraceSimplePlayer.h"
+#include "Engine/Components/Trace/EngineTraceSimpleRecorder.h"
 #include "Engine/Components/Control/EngineControlComponent.h"
 #include "Engine/Components/Deterministic/EngineDeterministicComponent.h"
-#include "Engine/Components/Trace/EngineTraceComponent.h"
 #include "Engine/Localization.h"
 #include "Engine/LOD.h"
 #include "Engine/Objects/Actor.h"
@@ -140,10 +141,11 @@ Game::Game(PlatformApplication *application, std::shared_ptr<GameConfig> config)
     _application->install(std::make_unique<GameKeyboardController>()); // This one should go before the window handler.
     _application->install(std::make_unique<GameWindowHandler>());
     _application->install(std::make_unique<EngineControlComponent>());
-    _application->install(std::make_unique<EngineTraceComponent>());
+    _application->install(std::make_unique<EngineTraceSimpleRecorder>());
+    _application->install(std::make_unique<EngineTraceSimplePlayer>());
     _application->install(std::make_unique<EngineDeterministicComponent>());
-    _application->install(std::make_unique<EngineTracePlayer>());
     _application->install(std::make_unique<EngineTraceRecorder>());
+    _application->install(std::make_unique<EngineTracePlayer>());
     _application->install(std::make_unique<GameTraceHandler>());
 }
 

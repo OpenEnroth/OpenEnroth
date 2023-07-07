@@ -111,7 +111,7 @@ MM_DEFINE_JSON_STRUCT_SERIALIZATION_FUNCTIONS(PaintEvent, (
 ))
 
 template<class Callable>
-inline void DispatchByEventType(PlatformEventType type, Callable &&callable) {
+inline void dispatchByEventType(PlatformEventType type, Callable &&callable) {
     switch (type) {
     case EVENT_KEY_PRESS:
     case EVENT_KEY_RELEASE:
@@ -149,7 +149,7 @@ static void to_json(Json &json, const std::unique_ptr<PlatformEvent> &value) {
         return;
     }
 
-    DispatchByEventType(value->type, [&]<class T>(T *) {
+    dispatchByEventType(value->type, [&]<class T>(T *) {
         to_json(json, *static_cast<T *>(value.get()));
     });
 }
@@ -163,7 +163,7 @@ static void from_json(const Json &json, std::unique_ptr<PlatformEvent> &value) {
     PlatformEvent event;
     from_json(json, event);
 
-    DispatchByEventType(event.type, [&]<class T>(T *) {
+    dispatchByEventType(event.type, [&]<class T>(T *) {
         value.reset(new T());
         from_json(json, *static_cast<T *>(value.get()));
     });
@@ -184,7 +184,8 @@ MM_DEFINE_JSON_STRUCT_SERIALIZATION_FUNCTIONS(EventTraceHeader, (
     (saveFileSize, "saveFileSize"),
     (config, "config"),
     (startState, "startState"),
-    (endState, "endState")
+    (endState, "endState"),
+    (afterLoadRandomState, "afterLoadRandomState")
 ))
 
 MM_DEFINE_JSON_STRUCT_SERIALIZATION_FUNCTIONS(EventTrace, (
@@ -211,7 +212,7 @@ EventTrace EventTrace::loadFromFile(std::string_view path, PlatformWindow *windo
     from_json(json, result);
 
     for (std::unique_ptr<PlatformEvent> &event : result.events) {
-        DispatchByEventType(event->type, [&]<class T>(T *) {
+        dispatchByEventType(event->type, [&]<class T>(T *) {
             if constexpr (std::is_base_of_v<PlatformWindowEvent, T>) {
                 static_cast<PlatformWindowEvent *>(event.get())->window = window;
             }
@@ -223,7 +224,7 @@ EventTrace EventTrace::loadFromFile(std::string_view path, PlatformWindow *windo
 
 bool EventTrace::isTraceable(const PlatformEvent *event) {
     bool result = false;
-    DispatchByEventType(event->type, [&](auto) { result = true; }); // Callback not invoked => not supported.
+    dispatchByEventType(event->type, [&](auto) { result = true; }); // Callback not invoked => not supported.
     return result;
 }
 
@@ -232,7 +233,7 @@ std::unique_ptr<PlatformEvent> EventTrace::cloneEvent(const PlatformEvent *event
 
     std::unique_ptr<PlatformEvent> result;
 
-    DispatchByEventType(event->type, [&]<class T>(T *) {
+    dispatchByEventType(event->type, [&]<class T>(T *) {
         result = std::make_unique<T>(*static_cast<const T *>(event));
     });
 
