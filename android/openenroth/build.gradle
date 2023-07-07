@@ -37,7 +37,7 @@ android {
         externalNativeBuild {
             cmake {
                 arguments "-DANDROID_STL=c++_static"
-                abiFilters 'arm64-v8a', 'armeabi-v7a', 'x86', 'x86_64'
+                abiFilters 'arm64-v8a', 'armeabi-v7a', 'x86_64' //,'x86' 
                 version "3.22.1"
             }
         }
