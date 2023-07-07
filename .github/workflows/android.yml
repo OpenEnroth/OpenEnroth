@@ -67,9 +67,9 @@ jobs:
       working-directory: android
       run: |
         if [ "${{ matrix.configuration }}" = "Debug" ]; then
-          ./gradlew assembleDebug
+          ./gradlew assembleDebug --stacktrace
         else 
-          ./gradlew assembleRelease
+          ./gradlew assembleRelease --stacktrace
         fi
       env:
         SIGNING_KEY_ALIAS: ${{ secrets.SIGNING_KEY_ALIAS }}
