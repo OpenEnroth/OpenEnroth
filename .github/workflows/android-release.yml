@@ -18,13 +18,9 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        job:
-          - {
-              arch: x86_64,
-              os: ubuntu-22.04,
-              target: android,
-              extra-build-features: "",
-            }
+        configuration: [Debug, Release]
+        architecture: [x64]
+        target: [android]
             
     steps:
     # Here we need to decode keystore.jks from base64 string and place it
@@ -85,8 +81,11 @@ jobs:
     - name: Build the app
       working-directory: android
       run: |
-        ./gradlew assembleDebug
-        ./gradlew assembleRelease
+        if [ "${{ matrix.configuration }}" = "Debug" ]; then
+          ./gradlew assembleDebug
+        else 
+          ./gradlew assembleRelease
+        fi
       env:
         SIGNING_KEY_ALIAS: ${{ secrets.SIGNING_KEY_ALIAS }}
         SIGNING_KEY_PASSWORD: ${{ secrets.SIGNING_KEY_PASSWORD }}
@@ -98,5 +97,8 @@ jobs:
         prerelease: true
         tag_name: ${{ env.TAG_NAME }}
         files: |
+        if [ "${{ matrix.configuration }}" = "Debug" ]; then        
           android/openenroth/build/outputs/apk/debug/openenroth-debug.apk
+        else
           android/openenroth/build/outputs/apk/release/openenroth-release-unsigned.apk
+        fi
