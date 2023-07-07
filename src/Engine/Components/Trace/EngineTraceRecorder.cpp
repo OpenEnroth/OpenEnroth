@@ -40,9 +40,9 @@ void EngineTraceRecorder::startRecording(EngineController *game, const std::stri
     _oldFpsLimit = engine->config->graphics.FPSLimit.value();
     engine->config->graphics.FPSLimit.setValue(0); // Load game real quick!
     game->saveGame(savePath);
-    _deterministicComponent->startDeterministicSegment(frameTimeMs);
+    _deterministicComponent->restart(frameTimeMs);
     game->loadGame(savePath);
-    _deterministicComponent->startDeterministicSegment(frameTimeMs);
+    _deterministicComponent->restart(frameTimeMs);
     _keyboardController->reset(); // Reset all pressed buttons.
 
     _traceComponent->startRecording();

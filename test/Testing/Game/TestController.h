@@ -21,7 +21,7 @@ class TestController {
 
     void prepareForNextTest();
 
-    void startDeterministicSegment(int frameTimeMs);
+    void restart(int frameTimeMs);
 
  private:
     EngineController *_controller;

@@ -21,9 +21,16 @@ struct EventTraceGameState {
 };
 
 struct EventTraceHeader {
+    /** Size of the save file associated with the trace. */
     int saveFileSize = -1;
+
+    /** Config diff relative to the default config. Applied before loading the save associated with the trace. */
     std::vector<EventTraceConfigLine> config;
+
+    /** Game state at the start of the trace, right after the save is loaded. */
     EventTraceGameState startState;
+
+    /** Game state at the end of the trace. */
     EventTraceGameState endState;
 
     // TODO(captainurist): std::string saveFileChecksum;

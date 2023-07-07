@@ -54,9 +54,11 @@ void EngineTracePlayer::prepareTrace(EngineController *game, const std::string &
     EngineTraceStateAccessor::patchConfig(engine->config.get(), trace->header.config);
     int frameTimeMs = engine->config->debug.TraceFrameTimeMs.value();
 
-    _deterministicComponent->startDeterministicSegment(frameTimeMs);
+    _deterministicComponent->restart(frameTimeMs);
+    game->goToMainMenu(); // This might call into a random engine, so need to restart again.
+    _deterministicComponent->restart(frameTimeMs);
     game->loadGame(savePath);
-    _deterministicComponent->startDeterministicSegment(frameTimeMs);
+    _deterministicComponent->restart(frameTimeMs);
     _keyboardController->reset(); // Reset all pressed buttons.
 
     _tracePath = tracePath;
