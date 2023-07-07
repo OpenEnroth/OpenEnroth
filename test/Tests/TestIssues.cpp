@@ -19,6 +19,7 @@
 
 #include "Utility/DataPath.h"
 #include "Utility/ScopeGuard.h"
+#include "Utility/String.h"
 
 static int totalPartyHealth() {
     int result = 0;
@@ -1071,7 +1072,11 @@ GAME_TEST(Issues, Issue735b) {
 
 GAME_TEST(Issues, Issue735c) {
     // Trace-only test: entering the dragon cave on Emerald Isle, hugging the walls and shooting fireballs.
-    test->playTraceFromTestData("issue_735c.mm7", "issue_735c.json");
+    // Checking location names explicitly so that we'll notice if party misses cave entrance after retracing.
+    test->playTraceFromTestData("issue_735c.mm7", "issue_735c.json", [] {
+        EXPECT_EQ(toLower(pCurrentMapName), "out01.odm"); // Emerald Isle.
+    });
+    EXPECT_EQ(toLower(pCurrentMapName), "d28.blv"); // Dragon's cave.
 }
 
 GAME_TEST(Issues, Issue741) {
