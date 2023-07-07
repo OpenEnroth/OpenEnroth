@@ -91,14 +91,21 @@ jobs:
         SIGNING_KEY_PASSWORD: ${{ secrets.SIGNING_KEY_PASSWORD }}
         SIGNING_STORE_PASSWORD: ${{ secrets.SIGNING_STORE_PASSWORD }}
           
-    - name: Publish unsigned apk package
+    - name: Publish debug apk package
+      if: ${{ matrix.configuration }} = "Debug"
       uses: softprops/action-gh-release@v1
       with:
         prerelease: true
         tag_name: ${{ env.TAG_NAME }}
         files: |
-        if [ "${{ matrix.configuration }}" = "Debug" ]; then        
           android/openenroth/build/outputs/apk/debug/openenroth-debug.apk
-        else
+        
+    - name: Publish release apk package
+      if: ${{ matrix.configuration }} = "Release"
+      uses: softprops/action-gh-release@v1
+      with:
+        prerelease: true
+        tag_name: ${{ env.TAG_NAME }}
+        files: |
           android/openenroth/build/outputs/apk/release/openenroth-release-unsigned.apk
-        fi
+        
