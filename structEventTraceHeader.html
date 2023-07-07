@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;6806fb7</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;77eb29d</span>
    </div>
   </td>
  </tr>
@@ -88,8 +88,25 @@ Public Attributes</h2></td></tr>
 <tr class="separator:ac3b3f534a5e81e04ccaca782b10833e1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9a785975c799c059d601e99525723b0c"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structEventTraceGameState.html">EventTraceGameState</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structEventTraceHeader.html#a9a785975c799c059d601e99525723b0c">endState</a></td></tr>
 <tr class="separator:a9a785975c799c059d601e99525723b0c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a97ce6e4c1f9307541b4ce5d5556308b2"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structEventTraceHeader.html#a97ce6e4c1f9307541b4ce5d5556308b2">afterLoadRandomState</a> = -1</td></tr>
+<tr class="separator:a97ce6e4c1f9307541b4ce5d5556308b2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Member Data Documentation</h2>
+<a id="a97ce6e4c1f9307541b4ce5d5556308b2" name="a97ce6e4c1f9307541b4ce5d5556308b2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a97ce6e4c1f9307541b4ce5d5556308b2">&#9670;&#160;</a></span>afterLoadRandomState</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int EventTraceHeader::afterLoadRandomState = -1</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p >Random state after loading the save file associated with the trace, as returned by <code>grng-&gt;peek(1024)</code>. </p>
+
+</div>
+</div>
 <a id="ac742985cc670b244c5fe58a8f204b5d6" name="ac742985cc670b244c5fe58a8f204b5d6"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ac742985cc670b244c5fe58a8f204b5d6">&#9670;&#160;</a></span>config</h2>
 
@@ -101,6 +118,7 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p ><a class="el" href="classConfig.html">Config</a> diff relative to the default config. Applied before loading the save associated with the trace. </p>
 
 </div>
 </div>
@@ -115,6 +133,7 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p ><a class="el" href="classGame.html">Game</a> state at the end of the trace. </p>
 
 </div>
 </div>
@@ -129,6 +148,7 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p ><a class="el" href="structSize.html">Size</a> of the save file associated with the trace. </p>
 
 </div>
 </div>
@@ -143,6 +163,7 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p ><a class="el" href="classGame.html">Game</a> state at the start of the trace, right after the save is loaded. </p>
 
 </div>
 </div>

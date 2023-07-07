@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;6806fb7</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;77eb29d</span>
    </div>
   </td>
  </tr>
@@ -97,8 +97,8 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:acfcd0ad13e5d85562ca37a93c2010480"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a10852e0704904fef89c35d4100a5b861"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEngineDeterministicComponent.html#a10852e0704904fef89c35d4100a5b861">~EngineDeterministicComponent</a> ()</td></tr>
 <tr class="separator:a10852e0704904fef89c35d4100a5b861"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8b2c12b55e1084b53bd295198536bfb6"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEngineDeterministicComponent.html#a8b2c12b55e1084b53bd295198536bfb6">startDeterministicSegment</a> (int frameTimeMs)</td></tr>
-<tr class="separator:a8b2c12b55e1084b53bd295198536bfb6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a90f05e88e12f55a7bdde1352ed7cb848"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEngineDeterministicComponent.html#a90f05e88e12f55a7bdde1352ed7cb848">restart</a> (int frameTimeMs)</td></tr>
+<tr class="separator:a90f05e88e12f55a7bdde1352ed7cb848"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abe8828fbdd4ee0207d0d5e7a6c2d0b15"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEngineDeterministicComponent.html#abe8828fbdd4ee0207d0d5e7a6c2d0b15">finish</a> ()</td></tr>
 <tr class="separator:abe8828fbdd4ee0207d0d5e7a6c2d0b15"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a22e8d6916c347d64a45dc9034ccdb38e"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEngineDeterministicComponent.html#a22e8d6916c347d64a45dc9034ccdb38e">isActive</a> () const</td></tr>
@@ -223,7 +223,7 @@ Additional Inherited Members</h2></td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p >This component can be used to make the engine more deterministic. It replaces the system timer with a fake one that advances by 16ms on each frame, and also resets the global random number generator.</p>
-<p >Note that this component is intentionally very dumb. All the methods just do exactly what you would expect right away, so where you're calling them from becomes very important. E.g. calling <code>startDeterministicSegment</code> from an event handler would probably make little sense. </p>
+<p >Note that this component is intentionally very dumb. All the methods just do exactly what you would expect right away, so where you're calling them from becomes very important. E.g. calling <code>restart</code> from an event handler would probably make little sense. </p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="acfcd0ad13e5d85562ca37a93c2010480" name="acfcd0ad13e5d85562ca37a93c2010480"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#acfcd0ad13e5d85562ca37a93c2010480">&#9670;&#160;</a></span>EngineDeterministicComponent()</h2>
@@ -319,14 +319,14 @@ Additional Inherited Members</h2></td></tr>
 
 </div>
 </div>
-<a id="a8b2c12b55e1084b53bd295198536bfb6" name="a8b2c12b55e1084b53bd295198536bfb6"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a8b2c12b55e1084b53bd295198536bfb6">&#9670;&#160;</a></span>startDeterministicSegment()</h2>
+<a id="a90f05e88e12f55a7bdde1352ed7cb848" name="a90f05e88e12f55a7bdde1352ed7cb848"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a90f05e88e12f55a7bdde1352ed7cb848">&#9670;&#160;</a></span>restart()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">void EngineDeterministicComponent::startDeterministicSegment </td>
+          <td class="memname">void EngineDeterministicComponent::restart </td>
           <td>(</td>
           <td class="paramtype">int&#160;</td>
           <td class="paramname"><em>frameTimeMs</em></td><td>)</td>
@@ -335,8 +335,7 @@ Additional Inherited Members</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <p >Starts a new deterministic segment, resetting all state - rolls the tick count back to zero, and resets <code>grng</code>.</p>
-<p >Note on why we're passing frame time in milliseconds here and not setting the target fps directly.</p>
-<p >It is possible to target e.g. 60fps, but since the platform API is in milliseconds, this will result in staggered frame times, with every 1st and 2nd frame taking 17ms, and every 3rd one taking 16ms. This might result in some non-determinism down the line, e.g. changing the code in level loading will change the number of frames it takes to load a level, and this will shift the timing sequence for the actual game frames after the level is loaded. Unlikely to really affect anything, but we'd rather not find out.</p>
+<p >Why we're passing frame time in milliseconds here and not setting the target fps directly? For example, it is possible to target 60fps, but since the platform API is in milliseconds, this will result in staggered frame times, with every 1st and 2nd frame taking 17ms, and every 3rd one taking 16ms. This might result in some non-determinism down the line, e.g. changing the code in level loading will change the number of frames it takes to load a level, and this will shift the timing sequence for the actual game frames after the level is loaded. Unlikely to really affect anything, but we'd rather not find out.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">frameTimeMs</td><td>Frame time to use inside the segment, in milliseconds. </td></tr>

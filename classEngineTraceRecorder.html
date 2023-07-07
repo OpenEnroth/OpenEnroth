@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;6806fb7</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;77eb29d</span>
    </div>
   </td>
  </tr>
@@ -96,8 +96,8 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:acd1ed55beb5b93dfd9ad455faa197b9f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3260d2bf193cd1c01286fb1e2a77bb09"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEngineTraceRecorder.html#a3260d2bf193cd1c01286fb1e2a77bb09">~EngineTraceRecorder</a> ()</td></tr>
 <tr class="separator:a3260d2bf193cd1c01286fb1e2a77bb09"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4d20343083eeae6f1b110bb63f45ea16"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEngineTraceRecorder.html#a4d20343083eeae6f1b110bb63f45ea16">startRecording</a> (<a class="el" href="classEngineController.html">EngineController</a> *game, const std::string &amp;savePath, const std::string &amp;tracePath)</td></tr>
-<tr class="separator:a4d20343083eeae6f1b110bb63f45ea16"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0c08046d35965af2177c7a56ecc57b5c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEngineTraceRecorder.html#a0c08046d35965af2177c7a56ecc57b5c">startRecording</a> (<a class="el" href="classEngineController.html">EngineController</a> *game, const std::string &amp;savePath, const std::string &amp;tracePath, EngineTraceRecordingFlags flags=0)</td></tr>
+<tr class="separator:a0c08046d35965af2177c7a56ecc57b5c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6a657c968efc8229f90716e8fac346d4"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEngineTraceRecorder.html#a6a657c968efc8229f90716e8fac346d4">finishRecording</a> (<a class="el" href="classEngineController.html">EngineController</a> *game)</td></tr>
 <tr class="separator:a6a657c968efc8229f90716e8fac346d4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a16c33f2dc904389d54b896e3283fab68"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEngineTraceRecorder.html#a16c33f2dc904389d54b896e3283fab68">isRecording</a> () const</td></tr>
@@ -121,16 +121,18 @@ Private Member Functions</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pri-attribs" name="pri-attribs"></a>
 Private Attributes</h2></td></tr>
-<tr class="memitem:a9b52436af26477a9ee4a2164612c38a3"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEngineTraceRecorder.html#a9b52436af26477a9ee4a2164612c38a3">_saveFilePath</a></td></tr>
-<tr class="separator:a9b52436af26477a9ee4a2164612c38a3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa22ad3fafdad2d4f97e36d27f9af6f1f"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEngineTraceRecorder.html#aa22ad3fafdad2d4f97e36d27f9af6f1f">_traceFilePath</a></td></tr>
-<tr class="separator:aa22ad3fafdad2d4f97e36d27f9af6f1f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a96069addb38148baf4951a7627bee550"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEngineTraceRecorder.html#a96069addb38148baf4951a7627bee550">_savePath</a></td></tr>
+<tr class="separator:a96069addb38148baf4951a7627bee550"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae7cf662c77d82cebb03ce84db5a63ee4"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEngineTraceRecorder.html#ae7cf662c77d82cebb03ce84db5a63ee4">_tracePath</a></td></tr>
+<tr class="separator:ae7cf662c77d82cebb03ce84db5a63ee4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a821aa80e1f886f39eb53a1815f819d93"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEngineTraceRecorder.html#a821aa80e1f886f39eb53a1815f819d93">_oldFpsLimit</a> = 0</td></tr>
 <tr class="separator:a821aa80e1f886f39eb53a1815f819d93"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af944ae412ccf9ab1e0a1b41394a5ac6d"><td class="memItemLeft" align="right" valign="top">std::unique_ptr&lt; <a class="el" href="structEventTrace.html">EventTrace</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEngineTraceRecorder.html#af944ae412ccf9ab1e0a1b41394a5ac6d">_trace</a></td></tr>
+<tr class="separator:af944ae412ccf9ab1e0a1b41394a5ac6d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a166df9687844d30424932166ef81c75e"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classEngineDeterministicComponent.html">EngineDeterministicComponent</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEngineTraceRecorder.html#a166df9687844d30424932166ef81c75e">_deterministicComponent</a> = nullptr</td></tr>
 <tr class="separator:a166df9687844d30424932166ef81c75e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a684da169eaf00220fc0927b1df441efe"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classEngineTraceComponent.html">EngineTraceComponent</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEngineTraceRecorder.html#a684da169eaf00220fc0927b1df441efe">_traceComponent</a> = nullptr</td></tr>
-<tr class="separator:a684da169eaf00220fc0927b1df441efe"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad5b2d03049a6065495e9798361653dd9"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classEngineTraceSimpleRecorder.html">EngineTraceSimpleRecorder</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEngineTraceRecorder.html#ad5b2d03049a6065495e9798361653dd9">_simpleRecorder</a> = nullptr</td></tr>
+<tr class="separator:ad5b2d03049a6065495e9798361653dd9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a98d4a9edbd1547e885f0ec812d1a58c8"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classGameKeyboardController.html">GameKeyboardController</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEngineTraceRecorder.html#a98d4a9edbd1547e885f0ec812d1a58c8">_keyboardController</a> = nullptr</td></tr>
 <tr class="separator:a98d4a9edbd1547e885f0ec812d1a58c8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
@@ -141,8 +143,8 @@ Friends</h2></td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p >Component that exposes a trace recording interface. Doesn't have a <code>Component</code> in its name because who likes class names half a screen long.</p>
-<p >Depends on <code><a class="el" href="classEngineDeterministicComponent.html">EngineDeterministicComponent</a></code> and <code><a class="el" href="classEngineTraceComponent.html">EngineTraceComponent</a></code>, install them into <code><a class="el" href="classPlatformApplication.html">PlatformApplication</a></code> first.</p>
-<p >Note that the difference from <code><a class="el" href="classEngineTraceComponent.html">EngineTraceComponent</a></code> is that this component isn't dumb and offers a complete solution to trace recording. Traces that were recorded with <code>startRecording</code> / <code>finishRecording</code> can then be played back with <code><a class="el" href="classEngineTracePlayer.html">EngineTracePlayer</a></code>.</p>
+<p >Depends on <code><a class="el" href="classEngineDeterministicComponent.html">EngineDeterministicComponent</a></code> and <code><a class="el" href="classEngineTraceSimpleRecorder.html">EngineTraceSimpleRecorder</a></code>, install them into <code><a class="el" href="classPlatformApplication.html">PlatformApplication</a></code> first.</p>
+<p >Note that the difference from <code><a class="el" href="classEngineTraceSimpleRecorder.html">EngineTraceSimpleRecorder</a></code> is that this component isn't dumb and offers a complete solution to trace recording. Traces that were recorded with <code>startRecording</code> / <code>finishRecording</code> can then be played back with <code><a class="el" href="classEngineTracePlayer.html">EngineTracePlayer</a></code>.</p>
 <p >Some notes on how this works. When starting trace recording:</p><ul>
 <li>The game is saved.</li>
 <li>Then it is loaded right away. Loading is managed from the control thread.</li>
@@ -294,8 +296,8 @@ Friends</h2></td></tr>
 
 </div>
 </div>
-<a id="a4d20343083eeae6f1b110bb63f45ea16" name="a4d20343083eeae6f1b110bb63f45ea16"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a4d20343083eeae6f1b110bb63f45ea16">&#9670;&#160;</a></span>startRecording()</h2>
+<a id="a0c08046d35965af2177c7a56ecc57b5c" name="a0c08046d35965af2177c7a56ecc57b5c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0c08046d35965af2177c7a56ecc57b5c">&#9670;&#160;</a></span>startRecording()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -316,7 +318,13 @@ Friends</h2></td></tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">const std::string &amp;&#160;</td>
-          <td class="paramname"><em>tracePath</em>&#160;</td>
+          <td class="paramname"><em>tracePath</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">EngineTraceRecordingFlags&#160;</td>
+          <td class="paramname"><em>flags</em> = <code>0</code>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -332,6 +340,7 @@ Friends</h2></td></tr>
     <tr><td class="paramname">game</td><td><a class="el" href="classEngine.html">Engine</a> controller. </td></tr>
     <tr><td class="paramname">savePath</td><td>Path to save file. </td></tr>
     <tr><td class="paramname">tracePath</td><td>Path to trace file. </td></tr>
+    <tr><td class="paramname">flags</td><td>Recording flags. </td></tr>
   </table>
   </dd>
 </dl>
@@ -428,8 +437,8 @@ Friends</h2></td></tr>
 
 </div>
 </div>
-<a id="a9b52436af26477a9ee4a2164612c38a3" name="a9b52436af26477a9ee4a2164612c38a3"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a9b52436af26477a9ee4a2164612c38a3">&#9670;&#160;</a></span>_saveFilePath</h2>
+<a id="a96069addb38148baf4951a7627bee550" name="a96069addb38148baf4951a7627bee550"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a96069addb38148baf4951a7627bee550">&#9670;&#160;</a></span>_savePath</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -438,7 +447,7 @@ Friends</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">std::string EngineTraceRecorder::_saveFilePath</td>
+          <td class="memname">std::string EngineTraceRecorder::_savePath</td>
         </tr>
       </table>
   </td>
@@ -450,8 +459,8 @@ Friends</h2></td></tr>
 
 </div>
 </div>
-<a id="a684da169eaf00220fc0927b1df441efe" name="a684da169eaf00220fc0927b1df441efe"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a684da169eaf00220fc0927b1df441efe">&#9670;&#160;</a></span>_traceComponent</h2>
+<a id="ad5b2d03049a6065495e9798361653dd9" name="ad5b2d03049a6065495e9798361653dd9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad5b2d03049a6065495e9798361653dd9">&#9670;&#160;</a></span>_simpleRecorder</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -460,7 +469,7 @@ Friends</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="classEngineTraceComponent.html">EngineTraceComponent</a>* EngineTraceRecorder::_traceComponent = nullptr</td>
+          <td class="memname"><a class="el" href="classEngineTraceSimpleRecorder.html">EngineTraceSimpleRecorder</a>* EngineTraceRecorder::_simpleRecorder = nullptr</td>
         </tr>
       </table>
   </td>
@@ -472,8 +481,8 @@ Friends</h2></td></tr>
 
 </div>
 </div>
-<a id="aa22ad3fafdad2d4f97e36d27f9af6f1f" name="aa22ad3fafdad2d4f97e36d27f9af6f1f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa22ad3fafdad2d4f97e36d27f9af6f1f">&#9670;&#160;</a></span>_traceFilePath</h2>
+<a id="af944ae412ccf9ab1e0a1b41394a5ac6d" name="af944ae412ccf9ab1e0a1b41394a5ac6d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af944ae412ccf9ab1e0a1b41394a5ac6d">&#9670;&#160;</a></span>_trace</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -482,7 +491,29 @@ Friends</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">std::string EngineTraceRecorder::_traceFilePath</td>
+          <td class="memname">std::unique_ptr&lt;<a class="el" href="structEventTrace.html">EventTrace</a>&gt; EngineTraceRecorder::_trace</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ae7cf662c77d82cebb03ce84db5a63ee4" name="ae7cf662c77d82cebb03ce84db5a63ee4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae7cf662c77d82cebb03ce84db5a63ee4">&#9670;&#160;</a></span>_tracePath</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::string EngineTraceRecorder::_tracePath</td>
         </tr>
       </table>
   </td>

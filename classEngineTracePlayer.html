@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;6806fb7</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;77eb29d</span>
    </div>
   </td>
  </tr>
@@ -100,19 +100,15 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a607827021c7b90550649bdb53754f60a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a06b9814100d9f37e4f458309e3b2789b"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEngineTracePlayer.html#a06b9814100d9f37e4f458309e3b2789b">isPlaying</a> () const</td></tr>
 <tr class="separator:a06b9814100d9f37e4f458309e3b2789b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a985c61e83596d07016c73069d386d7fe"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEngineTracePlayer.html#a985c61e83596d07016c73069d386d7fe">prepareTrace</a> (<a class="el" href="classEngineController.html">EngineController</a> *game, const std::string &amp;savePath, const std::string &amp;tracePath)</td></tr>
-<tr class="separator:a985c61e83596d07016c73069d386d7fe"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a54befa256b42445387d985939b217950"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEngineTracePlayer.html#a54befa256b42445387d985939b217950">playPreparedTrace</a> (<a class="el" href="classEngineController.html">EngineController</a> *game, EngineTracePlaybackFlags flags=0)</td></tr>
-<tr class="separator:a54befa256b42445387d985939b217950"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pri-methods" name="pri-methods"></a>
 Private Member Functions</h2></td></tr>
-<tr class="memitem:aeff2042e9fbcb008d644114d997ac485"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEngineTracePlayer.html#aeff2042e9fbcb008d644114d997ac485">checkTime</a> (EngineTracePlaybackFlags flags, const <a class="el" href="classPaintEvent.html">PaintEvent</a> *paintEvent)</td></tr>
-<tr class="separator:aeff2042e9fbcb008d644114d997ac485"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab33fe2522181ce3e908533620d41ee91"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEngineTracePlayer.html#ab33fe2522181ce3e908533620d41ee91">checkRng</a> (EngineTracePlaybackFlags flags, const <a class="el" href="classPaintEvent.html">PaintEvent</a> *paintEvent)</td></tr>
-<tr class="separator:ab33fe2522181ce3e908533620d41ee91"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3c9c37cc36afd5f833fb2cdc81a87edb"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEngineTracePlayer.html#a3c9c37cc36afd5f833fb2cdc81a87edb">checkState</a> (EngineTracePlaybackFlags flags, const <a class="el" href="structEventTraceGameState.html">EventTraceGameState</a> &amp;expectedState, bool isStart)</td></tr>
-<tr class="separator:a3c9c37cc36afd5f833fb2cdc81a87edb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5e086caa2af488d101ff8fec601cc8d9"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEngineTracePlayer.html#a5e086caa2af488d101ff8fec601cc8d9">checkSaveFileSize</a> (int expectedSaveFileSize)</td></tr>
+<tr class="separator:a5e086caa2af488d101ff8fec601cc8d9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa3db18cdb6b3e41174f2771b0aafccd2"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEngineTracePlayer.html#aa3db18cdb6b3e41174f2771b0aafccd2">checkAfterLoadRng</a> (int expectedRandomState)</td></tr>
+<tr class="separator:aa3db18cdb6b3e41174f2771b0aafccd2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a524881630a46b52d0be59ebed646a0c3"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEngineTracePlayer.html#a524881630a46b52d0be59ebed646a0c3">checkState</a> (const <a class="el" href="structEventTraceGameState.html">EventTraceGameState</a> &amp;expectedState, bool isStart)</td></tr>
+<tr class="separator:a524881630a46b52d0be59ebed646a0c3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9cf865826577437d6212db0db53678d7"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEngineTracePlayer.html#a9cf865826577437d6212db0db53678d7">installNotify</a> () override</td></tr>
 <tr class="separator:a9cf865826577437d6212db0db53678d7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:acdd99d210143f18042dfb5d15c221b50"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEngineTracePlayer.html#acdd99d210143f18042dfb5d15c221b50">removeNotify</a> () override</td></tr>
@@ -131,10 +127,16 @@ Private Member Functions</h2></td></tr>
 Private Attributes</h2></td></tr>
 <tr class="memitem:a7c0aaa6cb949521569e245d15165a9dd"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEngineTracePlayer.html#a7c0aaa6cb949521569e245d15165a9dd">_tracePath</a></td></tr>
 <tr class="separator:a7c0aaa6cb949521569e245d15165a9dd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a510240a44ebbbfb63a3a09b4514501c9"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEngineTracePlayer.html#a510240a44ebbbfb63a3a09b4514501c9">_savePath</a></td></tr>
+<tr class="separator:a510240a44ebbbfb63a3a09b4514501c9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0045fe1c6c050f8ff7c81aca45a42add"><td class="memItemLeft" align="right" valign="top">EngineTracePlaybackFlags&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEngineTracePlayer.html#a0045fe1c6c050f8ff7c81aca45a42add">_flags</a></td></tr>
+<tr class="separator:a0045fe1c6c050f8ff7c81aca45a42add"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7fb9b7c218585bf92bbcac346fd30a22"><td class="memItemLeft" align="right" valign="top">std::unique_ptr&lt; <a class="el" href="structEventTrace.html">EventTrace</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEngineTracePlayer.html#a7fb9b7c218585bf92bbcac346fd30a22">_trace</a></td></tr>
 <tr class="separator:a7fb9b7c218585bf92bbcac346fd30a22"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a901873b5a41667ea13b550549ea73c27"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classEngineDeterministicComponent.html">EngineDeterministicComponent</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEngineTracePlayer.html#a901873b5a41667ea13b550549ea73c27">_deterministicComponent</a> = nullptr</td></tr>
 <tr class="separator:a901873b5a41667ea13b550549ea73c27"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2a98f3c912d1a47fe76f5eb68f1b2561"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classEngineTraceSimplePlayer.html">EngineTraceSimplePlayer</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEngineTracePlayer.html#a2a98f3c912d1a47fe76f5eb68f1b2561">_simplePlayer</a> = nullptr</td></tr>
+<tr class="separator:a2a98f3c912d1a47fe76f5eb68f1b2561"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a17a57c497e6ac05f168714219734efe2"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classGameKeyboardController.html">GameKeyboardController</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEngineTracePlayer.html#a17a57c497e6ac05f168714219734efe2">_keyboardController</a> = nullptr</td></tr>
 <tr class="separator:a17a57c497e6ac05f168714219734efe2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
@@ -145,7 +147,7 @@ Friends</h2></td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p >Component that exposes a trace playback interface.</p>
-<p >Depends on <code><a class="el" href="classEngineDeterministicComponent.html">EngineDeterministicComponent</a></code>, install it into <code><a class="el" href="classPlatformApplication.html">PlatformApplication</a></code> first.</p>
+<p >Depends on <code><a class="el" href="classEngineDeterministicComponent.html">EngineDeterministicComponent</a></code> and <code><a class="el" href="classEngineTraceSimplePlayer.html">EngineTraceSimplePlayer</a></code>, install them into <code><a class="el" href="classPlatformApplication.html">PlatformApplication</a></code> first.</p>
 <dl class="section see"><dt>See also</dt><dd><a class="el" href="classEngineTraceRecorder.html">EngineTraceRecorder</a> </dd></dl>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a51628f2bc56cabc9de6df2450a481a19" name="a51628f2bc56cabc9de6df2450a481a19"></a>
@@ -183,8 +185,8 @@ Friends</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a id="ab33fe2522181ce3e908533620d41ee91" name="ab33fe2522181ce3e908533620d41ee91"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab33fe2522181ce3e908533620d41ee91">&#9670;&#160;</a></span>checkRng()</h2>
+<a id="aa3db18cdb6b3e41174f2771b0aafccd2" name="aa3db18cdb6b3e41174f2771b0aafccd2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa3db18cdb6b3e41174f2771b0aafccd2">&#9670;&#160;</a></span>checkAfterLoadRng()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -193,21 +195,11 @@ Friends</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">void EngineTracePlayer::checkRng </td>
+          <td class="memname">void EngineTracePlayer::checkAfterLoadRng </td>
           <td>(</td>
-          <td class="paramtype">EngineTracePlaybackFlags&#160;</td>
-          <td class="paramname"><em>flags</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>expectedRandomState</em></td><td>)</td>
           <td></td>
-          <td class="paramtype">const <a class="el" href="classPaintEvent.html">PaintEvent</a> *&#160;</td>
-          <td class="paramname"><em>paintEvent</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
         </tr>
       </table>
   </td>
@@ -219,8 +211,34 @@ Friends</h2></td></tr>
 
 </div>
 </div>
-<a id="a3c9c37cc36afd5f833fb2cdc81a87edb" name="a3c9c37cc36afd5f833fb2cdc81a87edb"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a3c9c37cc36afd5f833fb2cdc81a87edb">&#9670;&#160;</a></span>checkState()</h2>
+<a id="a5e086caa2af488d101ff8fec601cc8d9" name="a5e086caa2af488d101ff8fec601cc8d9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5e086caa2af488d101ff8fec601cc8d9">&#9670;&#160;</a></span>checkSaveFileSize()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void EngineTracePlayer::checkSaveFileSize </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>expectedSaveFileSize</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a524881630a46b52d0be59ebed646a0c3" name="a524881630a46b52d0be59ebed646a0c3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a524881630a46b52d0be59ebed646a0c3">&#9670;&#160;</a></span>checkState()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -231,12 +249,6 @@ Friends</h2></td></tr>
         <tr>
           <td class="memname">void EngineTracePlayer::checkState </td>
           <td>(</td>
-          <td class="paramtype">EngineTracePlaybackFlags&#160;</td>
-          <td class="paramname"><em>flags</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
           <td class="paramtype">const <a class="el" href="structEventTraceGameState.html">EventTraceGameState</a> &amp;&#160;</td>
           <td class="paramname"><em>expectedState</em>, </td>
         </tr>
@@ -245,42 +257,6 @@ Friends</h2></td></tr>
           <td></td>
           <td class="paramtype">bool&#160;</td>
           <td class="paramname"><em>isStart</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">private</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="aeff2042e9fbcb008d644114d997ac485" name="aeff2042e9fbcb008d644114d997ac485"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aeff2042e9fbcb008d644114d997ac485">&#9670;&#160;</a></span>checkTime()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">void EngineTracePlayer::checkTime </td>
-          <td>(</td>
-          <td class="paramtype">EngineTracePlaybackFlags&#160;</td>
-          <td class="paramname"><em>flags</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const <a class="el" href="classPaintEvent.html">PaintEvent</a> *&#160;</td>
-          <td class="paramname"><em>paintEvent</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -350,34 +326,6 @@ Friends</h2></td></tr>
 
 </div>
 </div>
-<a id="a54befa256b42445387d985939b217950" name="a54befa256b42445387d985939b217950"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a54befa256b42445387d985939b217950">&#9670;&#160;</a></span>playPreparedTrace()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void EngineTracePlayer::playPreparedTrace </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="classEngineController.html">EngineController</a> *&#160;</td>
-          <td class="paramname"><em>game</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">EngineTracePlaybackFlags&#160;</td>
-          <td class="paramname"><em>flags</em> = <code>0</code>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
 <a id="a607827021c7b90550649bdb53754f60a" name="a607827021c7b90550649bdb53754f60a"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a607827021c7b90550649bdb53754f60a">&#9670;&#160;</a></span>playTrace()</h2>
 
@@ -432,40 +380,6 @@ Friends</h2></td></tr>
   </table>
   </dd>
 </dl>
-
-</div>
-</div>
-<a id="a985c61e83596d07016c73069d386d7fe" name="a985c61e83596d07016c73069d386d7fe"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a985c61e83596d07016c73069d386d7fe">&#9670;&#160;</a></span>prepareTrace()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void EngineTracePlayer::prepareTrace </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="classEngineController.html">EngineController</a> *&#160;</td>
-          <td class="paramname"><em>game</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const std::string &amp;&#160;</td>
-          <td class="paramname"><em>savePath</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const std::string &amp;&#160;</td>
-          <td class="paramname"><em>tracePath</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
 
 </div>
 </div>
@@ -543,6 +457,28 @@ Friends</h2></td></tr>
 
 </div>
 </div>
+<a id="a0045fe1c6c050f8ff7c81aca45a42add" name="a0045fe1c6c050f8ff7c81aca45a42add"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0045fe1c6c050f8ff7c81aca45a42add">&#9670;&#160;</a></span>_flags</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">EngineTracePlaybackFlags EngineTracePlayer::_flags</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="a17a57c497e6ac05f168714219734efe2" name="a17a57c497e6ac05f168714219734efe2"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a17a57c497e6ac05f168714219734efe2">&#9670;&#160;</a></span>_keyboardController</h2>
 
@@ -554,6 +490,50 @@ Friends</h2></td></tr>
       <table class="memname">
         <tr>
           <td class="memname"><a class="el" href="classGameKeyboardController.html">GameKeyboardController</a>* EngineTracePlayer::_keyboardController = nullptr</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a510240a44ebbbfb63a3a09b4514501c9" name="a510240a44ebbbfb63a3a09b4514501c9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a510240a44ebbbfb63a3a09b4514501c9">&#9670;&#160;</a></span>_savePath</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::string EngineTracePlayer::_savePath</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a2a98f3c912d1a47fe76f5eb68f1b2561" name="a2a98f3c912d1a47fe76f5eb68f1b2561"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2a98f3c912d1a47fe76f5eb68f1b2561">&#9670;&#160;</a></span>_simplePlayer</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classEngineTraceSimplePlayer.html">EngineTraceSimplePlayer</a>* EngineTracePlayer::_simplePlayer = nullptr</td>
         </tr>
       </table>
   </td>
