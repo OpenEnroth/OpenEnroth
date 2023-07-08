@@ -34,16 +34,38 @@ jobs:
       env: 
         super_secret: ${{ secrets.KEYSTORE }}
 
-    - name: Setup NDK
+    - name: Restore cached NDK
+      id: cache-ndk
+      uses: actions/cache/restore@v3
+      with:
+        path: |
+          /usr/local/lib/android/sdk/ndk/android-ndk-10421692-linux-x86_64.zip
+        key: android-ndk-10421692-linux-x86_64
+
+      - name: Download NDK
+      if: steps.cache-ndk.outputs.cache-hit != 'true'
       run: |
         cd /usr/local/lib/android/sdk/ndk/
         wget --no-check-certificate 'https://onedrive.live.com/download?resid=3A7E32D08E399E75%212858&authkey=!AC_6V_xqURU9hlI' -O android-ndk-10421692-linux-x86_64.zip 
+
+    - name: Setup NDK
+      run: |
+        cd /usr/local/lib/android/sdk/ndk/
         unzip android-ndk-10421692-linux-x86_64.zip
         mv android-ndk-r27-canary 27.0.10421692
         echo "ANDROID_NDK=/usr/local/lib/android/sdk/ndk/27.0.10421692" >> $GITHUB_ENV
         echo "ANDROID_NDK_HOME=/usr/local/lib/android/sdk/ndk/27.0.10421692" >> $GITHUB_ENV
         echo "ANDROID_NDK_LATEST_HOME=/usr/local/lib/android/sdk/ndk/27.0.10421692" >> $GITHUB_ENV        
         echo "ANDROID_NDK_ROOT=/usr/local/lib/android/sdk/ndk/27.0.10421692" >> $GITHUB_ENV
+
+    - name: Save NDK cache
+      if: steps.cache-ndk.outputs.cache-hit != 'true'    
+      id: cache-ndk-save
+      uses: actions/cache/save@v3
+      with:
+        path: |
+          /usr/local/lib/android/sdk/ndk/android-ndk-10421692-linux-x86_64.zip
+        key: android-ndk-10421692-linux-x86_64
 
     - name: Checkout
       uses: actions/checkout@v3
