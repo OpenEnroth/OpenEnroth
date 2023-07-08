@@ -5,7 +5,7 @@
 #include "Engine/Graphics/Camera.h"
 
 struct BspRenderer_ViewportNode {
-    uint16_t uSectorID = 0;  // sector that this node shows
+    int uSectorID = 0;  // sector that this node shows
     uint16_t uFaceID = 0;
     unsigned int viewing_portal_id = 0;  // portal/ node through which we're seeing this node
     std::array<IndoorCameraD3D_Vec4, 4> ViewportNodeFrustum = {{}};  // frustum planes of portal
@@ -28,7 +28,7 @@ struct BspRenderer {
     std::array<BspRenderer_ViewportNode, 150> nodes = {{}};
 
     unsigned int uNumVisibleNotEmptySectors = 0;
-    std::array<uint16_t, 150> pVisibleSectorIDs_toDrawDecorsActorsEtcFrom = {{}};
+    std::array<int, 150> pVisibleSectorIDs_toDrawDecorsActorsEtcFrom = {{}};
 };
 
 extern BspRenderer *pBspRenderer;

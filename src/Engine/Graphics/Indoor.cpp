@@ -309,7 +309,9 @@ void IndoorLocation::Load(const std::string &filename, int num_days_played, int 
 
 //----- (0049AC17) --------------------------------------------------------
 int IndoorLocation::GetSector(int sX, int sY, int sZ) {
-    if (uCurrentlyLoadedLevelType != LEVEL_INDOOR) return 0;
+    if (uCurrentlyLoadedLevelType != LEVEL_INDOOR)
+        return 0;
+
     if (pSectors.size() < 2) {
         // __debugbreak();
         return 0;
@@ -700,11 +702,9 @@ void UpdateActors_BLV() {
             continue;
 
         unsigned int uFaceID;
-        unsigned int uSectorID = actor.sectorId;
-        int floorZ = GetIndoorFloorZ(actor.pos, &uSectorID, &uFaceID);
-        actor.sectorId = uSectorID;
+        int floorZ = GetIndoorFloorZ(actor.pos, &actor.sectorId, &uFaceID);
 
-        if (uSectorID == 0 || floorZ <= -30000)
+        if (actor.sectorId == 0 || floorZ <= -30000)
             continue;
 
         bool isFlying = actor.monsterInfo.uFlying;
@@ -979,7 +979,7 @@ void PrepareToLoadBLV(bool bLoading) {
 }
 
 //----- (0046CEC3) --------------------------------------------------------
-int BLV_GetFloorLevel(const Vec3i &pos, unsigned int uSectorID, unsigned int *pFaceID) {
+int BLV_GetFloorLevel(const Vec3i &pos, int uSectorID, unsigned int *pFaceID) {
     // stores faces and floor z levels
     int FacesFound = 0;
     int blv_floor_z[5] = { 0 };
@@ -1072,7 +1072,7 @@ int BLV_GetFloorLevel(const Vec3i &pos, unsigned int uSectorID, unsigned int *pF
 }
 
 //----- (0043FA33) --------------------------------------------------------
-void IndoorLocation::PrepareDecorationsRenderList_BLV(unsigned int uDecorationID, unsigned int uSectorID) {
+void IndoorLocation::PrepareDecorationsRenderList_BLV(unsigned int uDecorationID, int uSectorID) {
     unsigned int v8;       // edi@5
     int v9;                // edi@5
     int v10;               // eax@7
@@ -1468,7 +1468,7 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
     bool on_water = false;
     bool bFeatherFall;
 
-    unsigned int sectorId = pBLVRenderParams->uPartySectorID;
+    int sectorId = pBLVRenderParams->uPartySectorID;
     unsigned int faceId = -1;
     int floor_z = GetIndoorFloorZ(pParty->pos + Vec3i(0, 0, 40), &sectorId, &faceId);
 
@@ -2091,7 +2091,7 @@ void FindBillboardsLightLevels_BLV() {
     }
 }
 
-int GetIndoorFloorZ(const Vec3i &pos, unsigned int *pSectorID, unsigned int *pFaceID) {
+int GetIndoorFloorZ(const Vec3i &pos, int *pSectorID, unsigned int *pFaceID) {
     if (*pSectorID != 0) {
         int result = BLV_GetFloorLevel(pos, *pSectorID, pFaceID);
         if (result != -30000 && result <= pos.z + 50)
@@ -2108,7 +2108,7 @@ int GetIndoorFloorZ(const Vec3i &pos, unsigned int *pSectorID, unsigned int *pFa
 }
 
 //----- (0047272C) --------------------------------------------------------
-int GetApproximateIndoorFloorZ(const Vec3i &pos, unsigned int *pSectorID, unsigned int *pFaceID) {
+int GetApproximateIndoorFloorZ(const Vec3i &pos, int *pSectorID, unsigned int *pFaceID) {
     std::array<Vec3i, 5> attempts = {{
         pos + Vec3i(-2, 0, 40),
         pos + Vec3i(2, 0, 40),

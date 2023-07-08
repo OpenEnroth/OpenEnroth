@@ -10,7 +10,7 @@ BspRenderer *pBspRenderer = new BspRenderer();
 
 //----- (004B0EA8) --------------------------------------------------------
 void BspRenderer::AddFaceToRenderList_d3d(unsigned int node_id, unsigned int uFaceID) {
-    uint16_t pTransitionSector;  // ax@11
+    int pTransitionSector;  // ax@11
     // int dotdist;                              // edx@15
 
     nodes[num_nodes].viewing_portal_id = -1;

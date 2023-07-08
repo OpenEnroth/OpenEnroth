@@ -157,8 +157,8 @@ struct BLVFace {  // 60h
     int texunit = -1;
     int texlayer = -1;
 
-    uint16_t uSectorID{};
-    int16_t uBackSectorID{};
+    int uSectorID = 0;
+    int uBackSectorID = 0;
     // TODO(pskelton): Geometry should be float
     BBoxs pBounding;
     PolygonType uPolygonType{ POLYGON_Invalid };
@@ -249,7 +249,7 @@ struct IndoorLocation {
     static unsigned int GetLocationIndex(const std::string &locationName);
     void DrawIndoorFaces(bool bD3D);
     void PrepareActorRenderList_BLV();
-    void PrepareDecorationsRenderList_BLV(unsigned int uDecorationID, unsigned int uSectorID);
+    void PrepareDecorationsRenderList_BLV(unsigned int uDecorationID, int uSectorID);
     void PrepareItemsRenderList_BLV();
 
     std::string filename;
@@ -322,7 +322,7 @@ void BLV_UpdateUserInputAndOther();
  *                                      If wrong sector is supplied or actor is out of bounds, `-30000` is
  *                                      returned.
  */
-int BLV_GetFloorLevel(const Vec3i &pos, unsigned int uSectorID, unsigned int *pFaceID);
+int BLV_GetFloorLevel(const Vec3i &pos, int uSectorID, unsigned int *pFaceID);
 void BLV_UpdateDoors();
 void UpdateActors_BLV();
 void BLV_ProcessPartyActions();
@@ -352,7 +352,7 @@ void FindBillboardsLightLevels_BLV();
  * @return                              Z coordinate for the floor at (X, Y), or `-30000` if actor is outside the
  *                                      level boundaries.
  */
-int GetIndoorFloorZ(const Vec3i &pos, unsigned int *pSectorID, unsigned int *pFaceID);
+int GetIndoorFloorZ(const Vec3i &pos, int *pSectorID, unsigned int *pFaceID);
 
 /**
  * @offset 0x0047272C.
@@ -362,7 +362,7 @@ int GetIndoorFloorZ(const Vec3i &pos, unsigned int *pSectorID, unsigned int *pFa
  *
  * @see GetIndoorFloorZ
  */
-int GetApproximateIndoorFloorZ(const Vec3i &pos, unsigned int *pSectorID, unsigned int *pFaceID);
+int GetApproximateIndoorFloorZ(const Vec3i &pos, int *pSectorID, unsigned int *pFaceID);
 
 /**
  * @param target                         Vec3i of position to check line of sight to
