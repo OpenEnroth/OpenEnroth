@@ -2550,7 +2550,6 @@ void Actor::SummonMinion(int summonerId) {
     int64_t v15;                 // edi@10
     int64_t v17;                 // ebx@10
     unsigned int v19;        // qax@10
-    int result;              // eax@13
     unsigned int monsterId;  // [sp+10h] [bp-18h]@8
     int v27;                 // [sp+18h] [bp-10h]@10
     int actorSector;         // [sp+1Ch] [bp-Ch]@8
@@ -2570,11 +2569,11 @@ void Actor::SummonMinion(int summonerId) {
     v17 = TrigLUT.sin(v13) * v27 + this->pos.y;
 
     if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
-        result = pIndoor->GetSector(v15, v17, this->pos.z);
-        if (result != actorSector) return;
-        result = BLV_GetFloorLevel(Vec3i(v15, v17, v27), result, &monsterId);
-        if (result != -30000) return;
-        if (abs(result - v27) > 1024) return;
+        int sectorId = pIndoor->GetSector(v15, v17, this->pos.z);
+        if (sectorId != actorSector) return;
+        int z = BLV_GetFloorLevel(Vec3i(v15, v17, v27), sectorId);
+        if (z != -30000) return;
+        if (abs(z - v27) > 1024) return;
     }
 
     extraSummonLevel = this->monsterInfo.uSpecialAbilityDamageDiceRolls;
@@ -4513,7 +4512,6 @@ bool SpawnActor(unsigned int uMonsterID) {
 
 //----- (0044FA4C) --------------------------------------------------------
 void Spawn_Light_Elemental(int spell_power, CharacterSkillMastery caster_skill_mastery, int duration_game_seconds) {
-    unsigned int uFaceID;  // [sp+8h] [bp-18h]@16
     // size_t uActorIndex;            // [sp+10h] [bp-10h]@6
 
     const char *cMonsterName;       // [sp-4h] [bp-24h]@2
@@ -4566,7 +4564,7 @@ void Spawn_Light_Elemental(int spell_power, CharacterSkillMastery caster_skill_m
     int zdiff;
     if (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR ||
             sectorId == partySectorId &&
-            (zlevel = BLV_GetFloorLevel(actor->pos, sectorId, &uFaceID), zlevel != -30000) &&
+            (zlevel = BLV_GetFloorLevel(actor->pos, sectorId), zlevel != -30000) &&
             (zdiff = abs(zlevel - pParty->pos.z), zdiff <= 1024)) {
         actor->summonerId = PID(OBJECT_Character, spell_power);
 
@@ -4602,7 +4600,6 @@ void SpawnEncounter(MapInfo *pMapInfo, SpawnPoint *spawn, int a3, int a4, int a5
     std::string pTexture;        // [sp-4h] [bp-ECh]@9
                            //  char Str[32]; // [sp+Ch] [bp-DCh]@60
     std::string Str2;           // [sp+2Ch] [bp-BCh]@29
-    unsigned int uFaceID;  // [sp+A4h] [bp-44h]@52
     MonsterInfo *Src;      // [sp+A8h] [bp-40h]@50
     int v50;               // [sp+ACh] [bp-3Ch]@47
     std::string Source;         // [sp+B0h] [bp-38h]@20
@@ -4812,7 +4809,7 @@ void SpawnEncounter(MapInfo *pMapInfo, SpawnPoint *spawn, int a3, int a4, int a5
         }
         v37 = pIndoor->GetSector(pPosX, a4, spawn->vPosition.z);
         if (v37 == pSector) {
-            v38 = BLV_GetFloorLevel(Vec3i(pPosX, a4, a3), v37, &uFaceID);
+            v38 = BLV_GetFloorLevel(Vec3i(pPosX, a4, a3), v37);
             v39 = v38;
             if (v38 != -30000) {
                 if (abs(v38 - a3) <= 1024) {

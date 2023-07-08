@@ -12,8 +12,8 @@
 class GraphicsImage;
 
 struct BSPNode {
-    int16_t uFront;
-    int16_t uBack;
+    int uFront;
+    int uBack;
     int16_t uBSPFaceIDOffset;
     int16_t uNumBSPFaces;
 };

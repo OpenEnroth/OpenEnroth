@@ -281,7 +281,7 @@ void Engine::DrawGUI() {
         if (uGameState == GAME_STATE_CHANGE_LOCATION) {
             floor_level_str = "Loading Level!";
         } else if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
-            uint uFaceID;
+            int uFaceID;
             int sector_id = pBLVRenderParams->uPartySectorID;
             int floor_level = BLV_GetFloorLevel(pParty->pos/* + Vec3i(0,0,40) */, sector_id, &uFaceID);
             floor_level_str = fmt::format("BLV_GetFloorLevel: {}   face_id {}\n", floor_level, uFaceID);

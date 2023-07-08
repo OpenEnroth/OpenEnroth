@@ -108,7 +108,7 @@ class RenderOpenGL : public RenderBase {
 
     virtual void DrawOutdoorBuildings() override;
 
-    virtual void DrawIndoorSky(unsigned int uNumVertices, unsigned int uFaceID) override;
+    virtual void DrawIndoorSky(unsigned int uNumVertices, int uFaceID) override;
     virtual void DrawOutdoorSky() override;
     virtual void DrawOutdoorTerrain() override;
 

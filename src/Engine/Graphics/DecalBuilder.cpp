@@ -185,7 +185,7 @@ bool DecalBuilder::Build_Decal_Geometry(
 }
 
 //----- (0049BBBD) --------------------------------------------------------
-bool DecalBuilder::ApplyBloodsplatDecals_IndoorFace(unsigned int uFaceID) {
+bool DecalBuilder::ApplyBloodsplatDecals_IndoorFace(int uFaceID) {
     // reset splat count
     uNumSplatsThisFace = 0;
     BLVFace *pFace = &pIndoor->pFaces[uFaceID];

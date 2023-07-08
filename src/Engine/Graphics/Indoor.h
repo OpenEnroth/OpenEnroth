@@ -168,7 +168,7 @@ struct BLVFace {  // 60h
 struct BLVFaceExtra {
     bool HasEventHint();
 
-    int16_t face_id;
+    int face_id;
     uint16_t uAdditionalBitmapID; // TODO(captainurist): why is this one unused?
     int16_t sTextureDeltaU;
     int16_t sTextureDeltaV;
@@ -317,12 +317,12 @@ void BLV_UpdateUserInputAndOther();
  * @param pos                           Actor's position.
  * @param uSectorID                     Actor's sector id.
  * @param[out] pFaceID                  Id of the closest floor/ceiling face for the provided position, or `-1`
- *                                      if wrong sector is supplied or actor is out of bounds.
+ *                                      if wrong sector is supplied or actor is out of bounds. Pass `nullptr` to ignore.
  * @return                              Fixpoint Z coordinate of the floor/ceiling face for the given position.
  *                                      If wrong sector is supplied or actor is out of bounds, `-30000` is
  *                                      returned.
  */
-int BLV_GetFloorLevel(const Vec3i &pos, int uSectorID, unsigned int *pFaceID);
+int BLV_GetFloorLevel(const Vec3i &pos, int uSectorID, int *pFaceID = nullptr);
 void BLV_UpdateDoors();
 void UpdateActors_BLV();
 void BLV_ProcessPartyActions();
@@ -348,11 +348,11 @@ void FindBillboardsLightLevels_BLV();
  *                                      in this output parameter. If the actor moves out of level bounds (this happens),
  *                                      then this parameter is set to 0.
  * @param[out] pFaceID                  Id of the floor face on which the actor is standing, or `-1` if actor is outside
- *                                      the level boundaries.
+ *                                      the level boundaries. Pass `nullptr` to ignore.
  * @return                              Z coordinate for the floor at (X, Y), or `-30000` if actor is outside the
  *                                      level boundaries.
  */
-int GetIndoorFloorZ(const Vec3i &pos, int *pSectorID, unsigned int *pFaceID);
+int GetIndoorFloorZ(const Vec3i &pos, int *pSectorID, int *pFaceID = nullptr);
 
 /**
  * @offset 0x0047272C.
@@ -362,7 +362,7 @@ int GetIndoorFloorZ(const Vec3i &pos, int *pSectorID, unsigned int *pFaceID);
  *
  * @see GetIndoorFloorZ
  */
-int GetApproximateIndoorFloorZ(const Vec3i &pos, int *pSectorID, unsigned int *pFaceID);
+int GetApproximateIndoorFloorZ(const Vec3i &pos, int *pSectorID, int *pFaceID = nullptr);
 
 /**
  * @param target                         Vec3i of position to check line of sight to
