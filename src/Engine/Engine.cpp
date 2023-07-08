@@ -820,7 +820,7 @@ bool MM7_LoadLods() {
 }
 
 //----- (004651F4) --------------------------------------------------------
-bool Engine::MM7_Initialize() {
+void Engine::MM7_Initialize() {
     grng->seed(platform->tickCount());
     vrng->seed(platform->tickCount());
 
@@ -920,8 +920,6 @@ bool Engine::MM7_Initialize() {
     pMediaPlayer->Initialize();
 
     dword_6BE364_game_settings_1 |= GAME_SETTINGS_4000;
-
-    return true;
 }
 
 //----- (00465D0B) --------------------------------------------------------
@@ -986,14 +984,7 @@ void Engine::SecondaryInitialization() {
 }
 
 void Engine::Initialize() {
-    if (!MM7_Initialize()) {
-        log->warning("MM7_Initialize: failed");
-
-        if (engine != nullptr) {
-            engine->Deinitialize();
-        }
-        exit(-1);
-    }
+    MM7_Initialize();
 
     pEventTimer->Pause();
 

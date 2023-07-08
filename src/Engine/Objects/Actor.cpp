@@ -3098,9 +3098,6 @@ void Actor::InitializeActors() {
     if (pParty->isPartyGood()) good = true;
     if (pParty->isPartyEvil()) evil = true;
 
-    logger->warning("{} {} {}", __FILE__, __FUNCTION__, __LINE__);  // ai_near_actors_targets_pid[i] for AI_Stand seems always
-                                                                    // 0;  original code behaviour is identical
-
     ai_near_actors_targets_pid.fill(0);
 
     for (uint i = 0; i < pActors.size(); ++i) {

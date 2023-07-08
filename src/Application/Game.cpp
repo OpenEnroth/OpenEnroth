@@ -159,18 +159,18 @@ int Game::run() {
     ::render = _render;
 
     if (!_render) {
-        _log->warning("Render creation failed");
+        _log->error("Render creation failed");
         return -1;
     }
 
     if (!_render->Initialize()) {
-        _log->warning("Render failed to initialize");
+        _log->error("Render failed to initialize");
         return -1;
     }
 
     _nuklear = Nuklear::Initialize();
     if (!_nuklear) {
-        _log->warning("Nuklear failed to initialize");
+        _log->error("Nuklear failed to initialize");
     }
     ::nuklear = _nuklear;
     if (_nuklear) {
@@ -193,7 +193,7 @@ int Game::run() {
     ::engine = _engine.get();
 
     if (!_engine) {
-        _log->warning("Engine creation failed");
+        _log->error("Engine creation failed");
         return -1;
     }
 

@@ -71,7 +71,7 @@ int GLShader::build(const std::string &name, const std::string &filename, bool O
         return tempID;
     }
 
-    logger->warning("shader compilation failure: {}", filename);
+    logger->error("shader compilation failure: {}", filename);
     return 0;
 }
 
@@ -111,16 +111,14 @@ bool GLShader::checkCompileErrors(int shader, const std::string &name, const std
         glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
         if (!success) {
             glGetShaderInfoLog(shader, 1024, NULL, infoLog);
-            logger->warning("{} {} shader compilation error:", name, type);
-            logger->warning("{}", infoLog);
+            logger->error("{} {} shader compilation error:\n{}", name, type, infoLog);
             return false;
         }
     } else {
         glGetProgramiv(shader, GL_LINK_STATUS, &success);
         if (!success) {
             glGetProgramInfoLog(shader, 1024, NULL, infoLog);
-            logger->warning("{} {} linking error:", name, type);
-            logger->warning("{}", infoLog);
+            logger->error("{} {} linking error:\n{}", name, type, infoLog);
             return false;
         }
     }
@@ -152,7 +150,7 @@ int GLShader::load(const std::string &name, const std::string &filename, int typ
         return shaderHandler;
     } catch (const Exception &e) {
         if (!nonFatal)
-            logger->warning("error occured during reading {} {} shader file at path {}: {}", name, typeName, path, e.what());
+            logger->error("Error occured during reading {} {} shader file at path {}: {}", name, typeName, path, e.what());
         return 0;
     }
 }

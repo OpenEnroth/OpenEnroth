@@ -2761,7 +2761,7 @@ Color GetLevelFogColor() {
     if (day_attrib & DAY_ATTRIB_FOG) {
         if (pWeather->bNight) {  // night-time fog
             if (false) {
-                logger->warning("decompilation can be inaccurate, please send savegame to Nomad");
+                logger->error("decompilation can be inaccurate, please send savegame to Nomad");
                 __debugbreak();
             }
             if (pWeather->bNight) {
