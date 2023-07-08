@@ -5,7 +5,11 @@ on:
   push:
   release:
     types: [published]
-    
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   build_android:
     runs-on: ubuntu-latest
