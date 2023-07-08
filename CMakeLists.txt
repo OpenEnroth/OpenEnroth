@@ -52,6 +52,7 @@ endif()
 
 if(BUILD_COMPILER STREQUAL "msvc")
     add_compile_options(/we4834) # Discarding return value of function with 'nodiscard' attribute
+    add_definitions(/MP)
 else() # gcc or clang
     add_compile_options(-Werror=return-type) # Control reaches the end of non-void function, this is an error on MSVC
     add_compile_options(-Werror=unused-result) # Ignoring return value of function declared with 'nodiscard' attribute
