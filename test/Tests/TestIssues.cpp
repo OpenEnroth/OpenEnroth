@@ -308,7 +308,7 @@ GAME_TEST(Issues, Issue293a) {
         EXPECT_EQ(pParty->pCharacters[0].uAccuracy, 13);
         EXPECT_EQ(pParty->pCharacters[0].uLuck, 7);
         EXPECT_EQ(partyItemCount(), 18);
-        EXPECT_FALSE(pParty->pCharacters[0].hasItem(ITEM_CHAIN_MAIL, false));
+        EXPECT_FALSE(pParty->pCharacters[0].hasItem(ITEM_OFFICERS_LEATHER, false));
         for (int i = 0; i < 4; i++)
             EXPECT_EQ(pParty->pCharacters[i].GetMajorConditionIdx(), CONDITION_GOOD);
     });
@@ -321,11 +321,11 @@ GAME_TEST(Issues, Issue293a) {
     EXPECT_EQ(pParty->pCharacters[0].uAccuracy, 15); // +2
     EXPECT_EQ(pParty->pCharacters[0].uLuck, 7);
     EXPECT_EQ(partyItemCount(), 19); // +1
-    EXPECT_TRUE(pParty->pCharacters[0].hasItem(ITEM_CHAIN_MAIL, false)); // That's the item from the trash pile.
-    EXPECT_EQ(pParty->pCharacters[0].GetMajorConditionIdx(), CONDITION_DISEASE_WEAK);
+    EXPECT_TRUE(pParty->pCharacters[0].hasItem(ITEM_OFFICERS_LEATHER, false)); // That's the item from the trash pile.
+    EXPECT_EQ(pParty->pCharacters[0].GetMajorConditionIdx(), CONDITION_DISEASE_MEDIUM);
     EXPECT_EQ(pParty->pCharacters[1].GetMajorConditionIdx(), CONDITION_DISEASE_WEAK);
     EXPECT_EQ(pParty->pCharacters[2].GetMajorConditionIdx(), CONDITION_DISEASE_WEAK);
-    EXPECT_EQ(pParty->pCharacters[3].GetMajorConditionIdx(), CONDITION_GOOD); // Good roll here, didn't get sick.
+    EXPECT_EQ(pParty->pCharacters[3].GetMajorConditionIdx(), CONDITION_DISEASE_WEAK);
 }
 
 GAME_TEST(Issues, Issue293b) {
