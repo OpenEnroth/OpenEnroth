@@ -32,10 +32,11 @@ var searchData=
   ['configentry_3c_20float_20_3e_29',['ConfigEntry&lt; float &gt;',['../classConfigEntry.html',1,'']]],
   ['configentry_3c_20int_20_3e_30',['ConfigEntry&lt; int &gt;',['../classConfigEntry.html',1,'']]],
   ['configentry_3c_20platformkey_20_3e_31',['ConfigEntry&lt; PlatformKey &gt;',['../classConfigEntry.html',1,'']]],
-  ['configentry_3c_20platformwindowmode_20_3e_32',['ConfigEntry&lt; PlatformWindowMode &gt;',['../classConfigEntry.html',1,'']]],
-  ['configentry_3c_20renderertype_20_3e_33',['ConfigEntry&lt; RendererType &gt;',['../classConfigEntry.html',1,'']]],
-  ['configentry_3c_20std_3a_3astring_20_3e_34',['ConfigEntry&lt; std::string &gt;',['../classConfigEntry.html',1,'']]],
-  ['configsection_35',['ConfigSection',['../classConfigSection.html',1,'']]],
-  ['context_36',['context',['../structcontext.html',1,'']]],
-  ['converttag_37',['ConvertTag',['../structdetail_1_1ConvertTag.html',1,'detail']]]
+  ['configentry_3c_20platformloglevel_20_3e_32',['ConfigEntry&lt; PlatformLogLevel &gt;',['../classConfigEntry.html',1,'']]],
+  ['configentry_3c_20platformwindowmode_20_3e_33',['ConfigEntry&lt; PlatformWindowMode &gt;',['../classConfigEntry.html',1,'']]],
+  ['configentry_3c_20renderertype_20_3e_34',['ConfigEntry&lt; RendererType &gt;',['../classConfigEntry.html',1,'']]],
+  ['configentry_3c_20std_3a_3astring_20_3e_35',['ConfigEntry&lt; std::string &gt;',['../classConfigEntry.html',1,'']]],
+  ['configsection_36',['ConfigSection',['../classConfigSection.html',1,'']]],
+  ['context_37',['context',['../structcontext.html',1,'']]],
+  ['converttag_38',['ConvertTag',['../structdetail_1_1ConvertTag.html',1,'detail']]]
 ];

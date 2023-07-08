@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;0c07224</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;1c55e09</span>
    </div>
   </td>
  </tr>
@@ -155,8 +155,8 @@ Public Attributes</h2></td></tr>
 <tr class="separator:aee556eca85230a4724d40a1ca8a7bb43"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae84e58529c0d39a0f069cf5bf6ac20e1"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classGameConfig.html#a7be40f32922e33b7ecfd85e54cbc8b5b">Bool</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGameConfig_1_1Debug.html#ae84e58529c0d39a0f069cf5bf6ac20e1">NoMargaret</a> = {this, &quot;no_margareth&quot;, false, &quot;Disable Margaret'<a class="el" href="Json__ut_8cpp.html#a3691308f2a4c2f6983f2880d32e29c84">s</a> tour messages on Emerald Island.&quot;}</td></tr>
 <tr class="separator:ae84e58529c0d39a0f069cf5bf6ac20e1"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5519c0c48161f3c42cc7bbcda7793339"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classGameConfig.html#a7be40f32922e33b7ecfd85e54cbc8b5b">Bool</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGameConfig_1_1Debug.html#a5519c0c48161f3c42cc7bbcda7793339">VerboseLogging</a> = {this, &quot;verbose_logging&quot;, false, &quot;Verbose logging to <a class="el" href="classGameConfig.html#aa03e258316c33f6aac0f89c197391350">debug</a> console. Can be extremely spammy.&quot;}</td></tr>
-<tr class="separator:a5519c0c48161f3c42cc7bbcda7793339"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af56373cf324e143f53e9e42f01536ddb"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classConfigEntry.html">ConfigEntry</a>&lt; <a class="el" href="PlatformEnums_8h.html#aadaf937443899628d663afc0e3f95f7b">PlatformLogLevel</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGameConfig_1_1Debug.html#af56373cf324e143f53e9e42f01536ddb">LogLevel</a></td></tr>
+<tr class="separator:af56373cf324e143f53e9e42f01536ddb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aeecaaadbe018d0d75f496e4da856c5e0"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classGameConfig.html#a3280c7f3ce02ae12e250acc185ae33c0">Int</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGameConfig_1_1Debug.html#aeecaaadbe018d0d75f496e4da856c5e0">TraceFrameTimeMs</a></td></tr>
 <tr class="separator:aeecaaadbe018d0d75f496e4da856c5e0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5e5daf642b4d91532318644ae41e6a28"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classGameConfig.html#a7be40f32922e33b7ecfd85e54cbc8b5b">Bool</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGameConfig_1_1Debug.html#a5e5daf642b4d91532318644ae41e6a28">FullMonsterID</a> = { this, &quot;full_monster_id&quot;, false, &quot;Full monster info on popup.&quot; }</td></tr>
@@ -293,6 +293,23 @@ Static Private Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+</div>
+</div>
+<a id="af56373cf324e143f53e9e42f01536ddb" name="af56373cf324e143f53e9e42f01536ddb"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af56373cf324e143f53e9e42f01536ddb">&#9670;&#160;</a></span>LogLevel</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classConfigEntry.html">ConfigEntry</a>&lt;<a class="el" href="PlatformEnums_8h.html#aadaf937443899628d663afc0e3f95f7b">PlatformLogLevel</a>&gt; GameConfig::Debug::LogLevel</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<b>Initial value:</b><div class="fragment"><div class="line">= {<span class="keyword">this</span>, <span class="stringliteral">&quot;log_level&quot;</span>, <a class="code hl_enumvalue" href="PlatformEnums_8h.html#aadaf937443899628d663afc0e3f95f7ba4490aa3d29644e716440fada68f54032">LOG_ERROR</a>,</div>
+<div class="line">                                                  <span class="stringliteral">&quot;Default log level. One of &#39;verbose&#39;, &#39;debug&#39;, &#39;info&#39;, &#39;warning&#39;, &#39;error&#39; and &#39;critical&#39;.&quot;</span>}</div>
+<div class="ttc" id="aPlatformEnums_8h_html_aadaf937443899628d663afc0e3f95f7ba4490aa3d29644e716440fada68f54032"><div class="ttname"><a href="PlatformEnums_8h.html#aadaf937443899628d663afc0e3f95f7ba4490aa3d29644e716440fada68f54032">PlatformLogLevel::LOG_ERROR</a></div><div class="ttdeci">@ LOG_ERROR</div></div>
+</div><!-- fragment -->
 </div>
 </div>
 <a id="ab863633ed2da5aec8798a3fee03951b3" name="ab863633ed2da5aec8798a3fee03951b3"></a>
@@ -494,7 +511,7 @@ Static Private Member Functions</h2></td></tr>
 </div><div class="memdoc">
 <b>Initial value:</b><div class="fragment"><div class="line">= {<span class="keyword">this</span>, <span class="stringliteral">&quot;trace_frame_time_ms&quot;</span>, 50, &amp;<a class="code hl_function" href="classGameConfig_1_1Debug.html#a0e0b0eebbddc004958689cfe6980dc6c">ValidateFrameTime</a>,</div>
 <div class="line">                                <span class="stringliteral">&quot;Number of milliseconds per frame when recording game traces.&quot;</span>}</div>
-<div class="ttc" id="aclassGameConfig_1_1Debug_html_a0e0b0eebbddc004958689cfe6980dc6c"><div class="ttname"><a href="classGameConfig_1_1Debug.html#a0e0b0eebbddc004958689cfe6980dc6c">GameConfig::Debug::ValidateFrameTime</a></div><div class="ttdeci">static int ValidateFrameTime(int frameTime)</div><div class="ttdef"><b>Definition:</b> GameConfig.h:95</div></div>
+<div class="ttc" id="aclassGameConfig_1_1Debug_html_a0e0b0eebbddc004958689cfe6980dc6c"><div class="ttname"><a href="classGameConfig_1_1Debug.html#a0e0b0eebbddc004958689cfe6980dc6c">GameConfig::Debug::ValidateFrameTime</a></div><div class="ttdeci">static int ValidateFrameTime(int frameTime)</div><div class="ttdef"><b>Definition:</b> GameConfig.h:97</div></div>
 </div><!-- fragment -->
 </div>
 </div>
@@ -513,20 +530,6 @@ Static Private Member Functions</h2></td></tr>
 <div class="line">                           <span class="stringliteral">&quot;Increase party movement speed by 12x. Most likely you want to use that option with &quot;</span></div>
 <div class="line">                           <span class="stringliteral">&quot;no_damage option enabled as collision physics often will shoot you in the air.&quot;</span>}</div>
 </div><!-- fragment -->
-</div>
-</div>
-<a id="a5519c0c48161f3c42cc7bbcda7793339" name="a5519c0c48161f3c42cc7bbcda7793339"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a5519c0c48161f3c42cc7bbcda7793339">&#9670;&#160;</a></span>VerboseLogging</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="classGameConfig.html#a7be40f32922e33b7ecfd85e54cbc8b5b">Bool</a> GameConfig::Debug::VerboseLogging = {this, &quot;verbose_logging&quot;, false, &quot;Verbose logging to <a class="el" href="classGameConfig.html#aa03e258316c33f6aac0f89c197391350">debug</a> console. Can be extremely spammy.&quot;}</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
 </div>
 </div>
 <a id="a7b3e8716898305a8516d4026e9580cdd" name="a7b3e8716898305a8516d4026e9580cdd"></a>
