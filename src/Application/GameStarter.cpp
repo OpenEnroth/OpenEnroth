@@ -16,12 +16,12 @@
 
 GameStarter::GameStarter(GameStarterOptions options): _options(std::move(options)) {
     _logger = PlatformLogger::createStandardLogger(WIN_ENSURE_CONSOLE_OPTION);
-    auto setVerboseLogging = [logger = _logger.get()](bool verbose) {
-        logger->setLogLevel(APPLICATION_LOG, verbose ? LOG_VERBOSE : LOG_ERROR);
-        logger->setLogLevel(PLATFORM_LOG, verbose ? LOG_VERBOSE : LOG_ERROR);
+    auto setLogLevel = [logger = _logger.get()](PlatformLogLevel level) {
+        logger->setLogLevel(APPLICATION_LOG, level);
+        logger->setLogLevel(PLATFORM_LOG, level);
     };
-    // TODO(pskelton): should be able to pick log level rather than just verbose or not
-    setVerboseLogging(_options.verbose);
+    if (_options.logLevel)
+        setLogLevel(*_options.logLevel);
     EngineIocContainer::ResolveLogger()->setBaseLogger(_logger.get());
     Engine::LogEngineBuildInfo();
 
@@ -30,14 +30,14 @@ GameStarter::GameStarter(GameStarterOptions options): _options(std::move(options
     initDataPath(_options.dataPath);
 
     _config = std::make_shared<GameConfig>(_options.configPath);
-    _config->debug.VerboseLogging.subscribe([this, setVerboseLogging](bool value) {
-        setVerboseLogging(value || _options.verbose);
-    });
     if (_options.resetConfig) {
         _config->SaveConfiguration();
     } else {
         _config->LoadConfiguration();
     }
+
+    if (!_options.logLevel)
+        setLogLevel(_config->debug.LogLevel.value());
 
     _game = std::make_unique<Game>(_application.get(), _config);
 }

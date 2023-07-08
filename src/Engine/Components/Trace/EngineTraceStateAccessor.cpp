@@ -17,7 +17,7 @@ static bool shouldSkip(const GameConfig *config, const ConfigSection *section) {
 }
 
 static bool shouldSkip(const GameConfig *config, const AnyConfigEntry *entry) {
-    return entry == &config->debug.VerboseLogging;
+    return entry == &config->debug.LogLevel;
 }
 
 static bool shouldTake(const GameConfig *config, const AnyConfigEntry *entry) {

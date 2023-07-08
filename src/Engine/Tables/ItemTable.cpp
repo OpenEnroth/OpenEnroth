@@ -325,13 +325,13 @@ void ItemTable::LoadPotions() {
         test_string = strtok(NULL, "\r") + 1;
     }
     if (!test_string) {
-        logger->warning("Error Pre-Parsing Potion Table");
+        logger->error("Error Pre-Parsing Potion Table");
         return;
     }
 
     for (ITEM_TYPE row : Segment<ITEM_TYPE>(ITEM_FIRST_REAL_POTION, ITEM_LAST_REAL_POTION)) {
         if (tokens.size() < 50) {
-            logger->warning("Error Parsing Potion Table at Row: {} Column: {}", std::to_underlying(row) - std::to_underlying(ITEM_FIRST_REAL_POTION), tokens.size());
+            logger->error("Error Parsing Potion Table at Row: {} Column: {}", std::to_underlying(row) - std::to_underlying(ITEM_FIRST_REAL_POTION), tokens.size());
             return;
         }
         for (ITEM_TYPE column : Segment<ITEM_TYPE>(ITEM_FIRST_REAL_POTION, ITEM_LAST_REAL_POTION)) {
@@ -347,7 +347,7 @@ void ItemTable::LoadPotions() {
 
         test_string = strtok(NULL, "\r") + 1;
         if (!test_string) {
-            logger->warning("Error Parsing Potion Table at Row: {} Column: {}", std::to_underlying(row), 0);
+            logger->error("Error Parsing Potion Table at Row: {} Column: {}", std::to_underlying(row), 0);
             return;
         }
         tokens = tokenize(test_string, '\t');
@@ -369,13 +369,13 @@ void ItemTable::LoadPotionNotes() {
         test_string = strtok(NULL, "\r") + 1;
     }
     if (!test_string) {
-        logger->warning("Error Pre-Parsing Potion Table");
+        logger->error("Error Pre-Parsing Potion Table");
         return;
     }
 
     for (ITEM_TYPE row : Segment<ITEM_TYPE>(ITEM_FIRST_REAL_POTION, ITEM_LAST_REAL_POTION)) {
         if (tokens.size() < 50) {
-            logger->warning("Error Parsing Potion Table at Row: {} Column: {}", std::to_underlying(row), tokens.size());
+            logger->error("Error Parsing Potion Table at Row: {} Column: {}", std::to_underlying(row), tokens.size());
             return;
         }
         for (ITEM_TYPE column : Segment<ITEM_TYPE>(ITEM_FIRST_REAL_POTION, ITEM_LAST_REAL_POTION)) {
@@ -386,7 +386,7 @@ void ItemTable::LoadPotionNotes() {
 
         test_string = strtok(NULL, "\r") + 1;
         if (!test_string) {
-            logger->warning("Error Parsing Potion Table at Row: {} Column: {}", std::to_underlying(row) - std::to_underlying(ITEM_FIRST_REAL_POTION), 0);
+            logger->error("Error Parsing Potion Table at Row: {} Column: {}", std::to_underlying(row) - std::to_underlying(ITEM_FIRST_REAL_POTION), 0);
             return;
         }
         tokens = tokenize(test_string, '\t');
