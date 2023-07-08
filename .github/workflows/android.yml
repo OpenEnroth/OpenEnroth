@@ -42,7 +42,7 @@ jobs:
           /usr/local/lib/android/sdk/ndk/android-ndk-10421692-linux-x86_64.zip
         key: android-ndk-10421692-linux-x86_64
 
-      - name: Download NDK
+    - name: Download NDK
       if: steps.cache-ndk.outputs.cache-hit != 'true'
       run: |
         cd /usr/local/lib/android/sdk/ndk/
