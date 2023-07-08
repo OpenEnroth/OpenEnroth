@@ -75,16 +75,16 @@ int SpriteObject::Create(int yaw, int pitch, int speed, int which_char) {
         case 0:
             break;  // do nothing
         case 1:
-            Vec3i::rotate((24/*<<16*/), 2048 - uFacing, 0, vPosition, &vPosition.x, &vPosition.y, &vPosition.z);
+            vPosition += Vec3i::fromPolar(24, 2048 - uFacing, 0);
             break;
         case 2:
-            Vec3i::rotate((8/*<<16*/), 2048 - uFacing, 0, vPosition, &vPosition.x, &vPosition.y, &vPosition.z);
+            vPosition += Vec3i::fromPolar(8, 2048 - uFacing, 0);
             break;
         case 3:
-            Vec3i::rotate((8/*<<16*/), 1024 - uFacing, 0, vPosition, &vPosition.x, &vPosition.y, &vPosition.z);
+            vPosition += Vec3i::fromPolar(8, 1024 - uFacing, 0);
             break;
         case 4:
-            Vec3i::rotate((24/*<<16*/), 1024 - uFacing, 0, vPosition, &vPosition.x, &vPosition.y, &vPosition.z);
+            vPosition += Vec3i::fromPolar(24, 1024 - uFacing, 0);
             break;
         default:
             assert(false);

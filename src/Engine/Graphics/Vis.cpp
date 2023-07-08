@@ -697,9 +697,6 @@ int UnprojectY(int y) {
 void Vis::CastPickRay(RenderVertexSoft *pRay, float fMouseX, float fMouseY, float fPickDepth) {
     Vec3i pStartR;        // ST08_12@1
     RenderVertexSoft v11[2];  // [sp+2Ch] [bp-74h]@1
-    int outx;
-    int outz;  // [sp+94h] [bp-Ch]@1
-    int outy;  // [sp+98h] [bp-8h]@1
 
     int yawAngle = pCamera3D->_viewYaw + UnprojectX(fMouseX);
     int pitchAngle = -pCamera3D->_viewPitch + UnprojectY(fMouseY);
@@ -708,19 +705,14 @@ void Vis::CastPickRay(RenderVertexSoft *pRay, float fMouseX, float fMouseY, floa
     pStartR.x = pCamera3D->vCameraPos.x;
     pStartR.y = pCamera3D->vCameraPos.y;
 
-    v11[1].vWorldPosition.x = (double)pCamera3D->vCameraPos.x;
-    v11[1].vWorldPosition.y = (double)pCamera3D->vCameraPos.y;
-    v11[1].vWorldPosition.z = (double)pCamera3D->vCameraPos.z;
+    v11[1].vWorldPosition.x = pCamera3D->vCameraPos.x;
+    v11[1].vWorldPosition.y = pCamera3D->vCameraPos.y;
+    v11[1].vWorldPosition.z = pCamera3D->vCameraPos.z;
 
-    int depth = /*fixpoint_from_float*/(fPickDepth);
-    Vec3i::rotate(depth, yawAngle, pitchAngle, pStartR, &outx, &outy, &outz);
+    v11[0].vWorldPosition = pStartR.toFloat() + Vec3f::fromPolar(fPickDepth, yawAngle, pitchAngle);
 
-    v11[0].vWorldPosition.x = (double)outx;
-    v11[0].vWorldPosition.y = (double)outy;
-    v11[0].vWorldPosition.z = (double)outz;
-
-    memcpy(pRay + 0, &v11[1], sizeof(RenderVertexSoft));
-    memcpy(pRay + 1, &v11[0], sizeof(RenderVertexSoft));
+    pRay[0] = v11[1];
+    pRay[1] = v11[0];
 }
 
 //----- (004C2551) --------------------------------------------------------

@@ -111,7 +111,7 @@ bool Chest::open(int uChestID, int objectPid) {
             if (length_vector < pDepth) {
                 pDepth = length_vector;
             }
-            Vec3i::rotate(pDepth, yawAngle, pitchAngle, Vec3i(pObjectX, pObjectY, pObjectZ), &pOut.x, &pOut.y, &pOut.z);
+            pOut = Vec3i(pObjectX, pObjectY, pObjectZ) + Vec3i::fromPolar(pDepth, yawAngle, pitchAngle);
 
             pSpellObject.containing_item.Reset();
             pSpellObject.spell_skill = CHARACTER_SKILL_MASTERY_NONE;

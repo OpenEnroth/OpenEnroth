@@ -890,9 +890,7 @@ void Actor::GetDirectionInfo(unsigned int uObj1ID, unsigned int uObj2ID,
     AIDirection v41;  // [sp+14h] [bp-38h]@46
     float outy2 = 0;      // [sp+38h] [bp-14h]@33
     float outx2 = 0;      // [sp+3Ch] [bp-10h]@33
-    int outz = 0;         // [sp+40h] [bp-Ch]@6
-    int outy = 0;         // [sp+44h] [bp-8h]@6
-    int outx = 0;         // [sp+48h] [bp-4h]@6
+    Vec3i out;
     float a4a;        // [sp+58h] [bp+Ch]@45
 
     v4 = PID_ID(uObj1ID);
@@ -900,73 +898,56 @@ void Actor::GetDirectionInfo(unsigned int uObj1ID, unsigned int uObj2ID,
     v5 = PID_ID(uObj2ID);
     switch (PID_TYPE(uObj1ID)) {
         case OBJECT_Item: {
-            outx = pSpriteObjects[v4].vPosition.x;
-            outy = pSpriteObjects[v4].vPosition.y;
-            outz = pSpriteObjects[v4].vPosition.z;
+            out = pSpriteObjects[v4].vPosition;
             break;
         }
         case OBJECT_Actor: {
-            outx = pActors[v4].pos.x;
-            outy = pActors[v4].pos.y;
-            outz = pActors[v4].pos.z + (pActors[v4].height * 0.75);
+            out.x = pActors[v4].pos.x;
+            out.y = pActors[v4].pos.y;
+            out.z = pActors[v4].pos.z + (pActors[v4].height * 0.75);
             break;
         }
         case OBJECT_Character: {
             if (!v4) {
-                outx = pParty->pos.x;
-                outy = pParty->pos.y;
-                outz =
-                    pParty->pos.z + (signed int)pParty->height / 3;
+                out = pParty->pos + Vec3i(0, 0, pParty->height / 3);
                 break;
             }
             if (v4 == 4) {
                 v18 = pParty->_viewYaw - TrigLUT.uIntegerHalfPi;
                 v37 = pParty->pos + Vec3i(0, 0, pParty->height / 3);
-                Vec3i::rotate(24, v18, 0, v37, &outx, &outy, &outz);
+                out = v37 + Vec3i::fromPolar(24, v18, 0);
                 break;
             }
             if (v4 == 3) {
                 v18 = pParty->_viewYaw - TrigLUT.uIntegerHalfPi;
                 v37 = pParty->pos + Vec3i(0, 0, pParty->height / 3);
-                Vec3i::rotate(8, v18, 0, v37, &outx, &outy, &outz);
+                out = v37 + Vec3i::fromPolar(8, v18, 0);
                 break;
             }
             if (v4 == 2) {
                 v37 = pParty->pos + Vec3i(0, 0, pParty->height / 3);
                 v18 = TrigLUT.uIntegerHalfPi + pParty->_viewYaw;
-                Vec3i::rotate(8, v18, 0, v37, &outx, &outy, &outz);
+                out = v37 + Vec3i::fromPolar(8, v18, 0);
                 break;
             }
             if (v4 == 1) {
                 v37 = pParty->pos + Vec3i(0, 0, pParty->height / 3);
                 v18 = TrigLUT.uIntegerHalfPi + pParty->_viewYaw;
-                Vec3i::rotate(24, v18, 0, v37, &outx, &outy, &outz);
+                out = v37 + Vec3i::fromPolar(24, v18, 0);
                 break;
             }
         }
         case OBJECT_Decoration: {
-            outx = pLevelDecorations[v4].vPosition.x;
-            outy = pLevelDecorations[v4].vPosition.y;
-            outz = pLevelDecorations[v4].vPosition.z;
+            out = pLevelDecorations[v4].vPosition;
             break;
         }
         default: {
-            outz = 0;
-            outy = 0;
-            outx = 0;
+            out = Vec3i();
             break;
         }
         case OBJECT_Face: {
             if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
-                outx = (pIndoor->pFaces[v4].pBounding.x1 +
-                        pIndoor->pFaces[v4].pBounding.x2) >>
-                       1;
-                outy = (pIndoor->pFaces[v4].pBounding.y1 +
-                        pIndoor->pFaces[v4].pBounding.y2) >>
-                       1;
-                outz = (pIndoor->pFaces[v4].pBounding.z1 +
-                        pIndoor->pFaces[v4].pBounding.z2) >>
-                       1;
+                out = pIndoor->pFaces[v4].pBounding.center();
             }
             break;
         }
@@ -1020,9 +1001,9 @@ void Actor::GetDirectionInfo(unsigned int uObj1ID, unsigned int uObj2ID,
         }
     }
 
-    v31 = (float)outx2 - (float)outx;
-    v32 = (float)outy2 - (float)outy;
-    a4a = (float)PreferedZ - (float)outz;
+    v31 = (float)outx2 - (float)out.x;
+    v32 = (float)outy2 - (float)out.y;
+    a4a = (float)PreferedZ - (float)out.z;
     outx2 = v32 * v32;
     outy2 = v31 * v31;
     v33 = sqrt(a4a * a4a + outy2 + outx2);
@@ -4482,8 +4463,7 @@ bool SpawnActor(unsigned int uMonsterID) {
     if (uMonsterID >= pMonsterList->pMonsters.size())
         v1 = 0;
 
-    Vec3i pOut;
-    Vec3i::rotate(200, pParty->_viewYaw, 0, pParty->pos, &pOut.x, &pOut.y, &pOut.z);
+    Vec3i pOut = pParty->pos + Vec3i::fromPolar(200, pParty->_viewYaw, 0);
 
     actor->name = pMonsterStats->pInfos[v1 + 1].pName;
     actor->currentHP = pMonsterStats->pInfos[v1 + 1].uHP;
