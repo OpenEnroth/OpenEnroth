@@ -29,13 +29,13 @@ void reconstruct(const IndoorLocation_MM7 &src, IndoorLocation *dst) {
         pFace->pVertexIDs = dst->pLFaces.data() + j;
         j += pFace->uNumVertices + 1;
 
-        pFace->pXInterceptDisplacements = dst->pLFaces.data() + j;
+        // Skipping pXInterceptDisplacements.
         j += pFace->uNumVertices + 1;
 
-        pFace->pYInterceptDisplacements = dst->pLFaces.data() + j;
+        // Skipping pYInterceptDisplacements.
         j += pFace->uNumVertices + 1;
 
-        pFace->pZInterceptDisplacements = dst->pLFaces.data() + j;
+        // Skipping pZInterceptDisplacements.
         j += pFace->uNumVertices + 1;
 
         pFace->pVertexUIDs = dst->pLFaces.data() + j;

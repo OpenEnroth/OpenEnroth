@@ -77,9 +77,6 @@ void reconstruct(const BLVFace_MM7 &src, BLVFace *dst) {
     dst->zCalc.init(dst->facePlane);
     dst->uAttributes = static_cast<FaceAttributes>(src.attributes);
     dst->pVertexIDs = nullptr;
-    dst->pXInterceptDisplacements = nullptr;
-    dst->pYInterceptDisplacements = nullptr;
-    dst->pZInterceptDisplacements = nullptr;
     dst->pVertexUIDs = nullptr;
     dst->pVertexVIDs = nullptr;
     dst->uFaceExtraID = src.faceExtraId;
@@ -1299,9 +1296,6 @@ void reconstruct(const ODMFace_MM7 &src, ODMFace *dst) {
     dst->pVertexIDs = src.pVertexIDs;
     dst->pTextureUIDs = src.pTextureUIDs;
     dst->pTextureVIDs = src.pTextureVIDs;
-    dst->pXInterceptDisplacements = src.pXInterceptDisplacements;
-    dst->pYInterceptDisplacements = src.pYInterceptDisplacements;
-    dst->pZInterceptDisplacements = src.pZInterceptDisplacements;
     dst->resource = nullptr;
     dst->sTextureDeltaU = src.sTextureDeltaU;
     dst->sTextureDeltaV = src.sTextureDeltaV;
