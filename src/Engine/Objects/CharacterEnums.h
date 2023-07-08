@@ -32,8 +32,7 @@ enum class Condition : uint32_t {
 using enum Condition;
 
 // TODO(pskelton): drop CHARACTER_ at start?
-enum class CharacterSkillMastery : int32_t {  // TODO: type could be changed to something else when SpriteObject_MM7 implemented in
-    // LegacyImages
+enum class CharacterSkillMastery {
     CHARACTER_SKILL_MASTERY_NONE = 0,
     CHARACTER_SKILL_MASTERY_NOVICE = 1,
     CHARACTER_SKILL_MASTERY_EXPERT = 2,
