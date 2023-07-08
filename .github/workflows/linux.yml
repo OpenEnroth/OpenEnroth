@@ -75,11 +75,6 @@ jobs:
         mkdir libs
         ldd build/OpenEnroth | grep '=> /' | awk '{print $3;}' | xargs -I '{}' cp -v '{}' ./libs/
 
-    - name: Upload artifact
-      uses: actions/upload-artifact@v3
-      with:
-        name: OpenEnroth (Linux, ${{ matrix.configuration }}, ${{ matrix.architecture }})
-        path: dist/**
 
     - name: Upload shared libs
       uses: actions/upload-artifact@v3
