@@ -52,22 +52,6 @@ endif()
 
 if(BUILD_COMPILER STREQUAL "msvc")
     add_compile_options(/we4834) # Discarding return value of function with 'nodiscard' attribute
-
-    set(CMake_MSVC_PARALLEL ON CACHE STRING "\
-        Enables /MP flag for parallel builds using MSVC. Specify an \
-        integer value to control the number of threads used (Only \
-        works on some older versions of Visual Studio). Setting to \
-        ON lets the toolchain decide how many threads to use. Set to \
-        OFF to disable /MP completely." )
-        if(CMake_MSVC_PARALLEL)
-            if(CMake_MSVC_PARALLEL GREATER 0)
-              string(APPEND CMAKE_C_FLAGS " /MP${CMake_MSVC_PARALLEL}")
-              string(APPEND CMAKE_CXX_FLAGS " /MP${CMake_MSVC_PARALLEL}")
-            else()
-              string(APPEND CMAKE_C_FLAGS " /MP")
-              string(APPEND CMAKE_CXX_FLAGS " /MP")
-            endif()
-        endif()
 else() # gcc or clang
     add_compile_options(-Werror=return-type) # Control reaches the end of non-void function, this is an error on MSVC
     add_compile_options(-Werror=unused-result) # Ignoring return value of function declared with 'nodiscard' attribute
