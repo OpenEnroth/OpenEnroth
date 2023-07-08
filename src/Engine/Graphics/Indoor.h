@@ -76,17 +76,6 @@ struct FlatFace {
 
 /*   93 */
 struct BLVFace {  // 60h
-    //----- (0046ED02) --------------------------------------------------------
-    inline BLVFace() {
-        this->uNumVertices = 0;
-        this->uAttributes = 0;
-        this->uFaceExtraID = 0;
-        this->pVertexIDs = nullptr;
-        this->pZInterceptDisplacements = nullptr;
-        this->pYInterceptDisplacements = nullptr;
-        this->pXInterceptDisplacements = nullptr;
-    }
-
     void _get_normals(Vec3f *outU, Vec3f *outV);
     void FromODM(struct ODMFace *face);
 
@@ -147,12 +136,9 @@ struct BLVFace {  // 60h
     PlaneZCalcf zCalc;
     FaceAttributes uAttributes;
     int16_t *pVertexIDs = nullptr;
-    int16_t *pXInterceptDisplacements;
-    int16_t *pYInterceptDisplacements;
-    int16_t *pZInterceptDisplacements;
     int16_t *pVertexUIDs = nullptr;
     int16_t *pVertexVIDs = nullptr;
-    uint16_t uFaceExtraID;
+    uint16_t uFaceExtraID = 0;
     void *resource = nullptr;  // uint16_t  uBitmapID;
     int texunit = -1;
     int texlayer = -1;
@@ -161,8 +147,8 @@ struct BLVFace {  // 60h
     int uBackSectorID = 0;
     // TODO(pskelton): Geometry should be float
     BBoxs pBounding;
-    PolygonType uPolygonType{ POLYGON_Invalid };
-    uint8_t uNumVertices;
+    PolygonType uPolygonType = POLYGON_Invalid;
+    uint8_t uNumVertices = 0;
 };
 
 struct BLVFaceExtra {

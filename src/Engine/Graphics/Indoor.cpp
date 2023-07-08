@@ -156,10 +156,7 @@ void BLVFace::FromODM(ODMFace *face) {
     this->uAttributes = face->uAttributes;
     this->pBounding = face->pBoundingBox;
     this->zCalc = face->zCalc;
-    this->pXInterceptDisplacements = face->pXInterceptDisplacements.data();
-    this->pYInterceptDisplacements = face->pYInterceptDisplacements.data();
-    this->pZInterceptDisplacements = face->pZInterceptDisplacements.data();
-    this->uPolygonType = (PolygonType)face->uPolygonType;
+    this->uPolygonType = face->uPolygonType;
     this->uNumVertices = face->uNumVertices;
     this->resource = face->resource;
     this->pVertexIDs = face->pVertexIDs.data();
