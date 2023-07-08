@@ -66,11 +66,11 @@ jobs:
     - name: Build the app
       working-directory: android
       run: |
-        if [ "${{ matrix.configuration }}" = "Debug" ]; then
-          ./gradlew assembleDebug --stacktrace
-        else 
-          ./gradlew assembleRelease --stacktrace
-        fi
+        #if [ "${{ matrix.configuration }}" = "Debug" ]; then
+        ./gradlew assembleDebug --stacktrace
+        #else 
+        #  ./gradlew assembleRelease --stacktrace
+        #fi
       env:
         SIGNING_KEY_ALIAS: ${{ secrets.SIGNING_KEY_ALIAS }}
         SIGNING_KEY_PASSWORD: ${{ secrets.SIGNING_KEY_PASSWORD }}
