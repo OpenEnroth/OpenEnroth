@@ -36,10 +36,10 @@ android {
         versionName "1.0"
         externalNativeBuild {
             //build all by default runner only build v8a
-            if ( System.env['GITHUBWORKER'] != null ) { 
+            if ( System.env['GITHUBARCH'] != null ) { 
                 cmake {
                     arguments "-DANDROID_STL=c++_static"
-                    abiFilters 'arm64-v8a' 
+                    abiFilters System.env['GITHUBARCH']
                     version "3.22.1"
                 }
             } else {
