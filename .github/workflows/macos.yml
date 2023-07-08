@@ -32,7 +32,7 @@ jobs:
     - name: Build
       working-directory: build
       run: |
-        make -j$(sysctl -n hw.logicalcpu)
+        make -j4
 
     - name: Tests
       working-directory: build
