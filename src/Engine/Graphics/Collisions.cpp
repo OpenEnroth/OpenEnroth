@@ -502,7 +502,7 @@ void ProcessActorCollisionsBLV(Actor &actor, bool isAboveGround, bool isFlying) 
         bool isInCrowd = actorCollisions > 1;
 
         Vec3f newPos = actor.pos.toFloat() + collision_state.adjusted_move_distance * collision_state.direction;
-        unsigned int newFaceID = -1;
+        int newFaceID = -1;
         int newFloorZ = GetIndoorFloorZ(newPos.toInt(), &collision_state.uSectorID, &newFaceID);
         if (newFloorZ == -30000)
             break; // New pos is out of bounds, running more iterations won't help.

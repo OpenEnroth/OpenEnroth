@@ -217,7 +217,7 @@ class Actor {
     Vec3s speed;
     uint16_t yawAngle = 0;
     uint16_t pitchAngle = 0;
-    int16_t sectorId = 0;
+    int sectorId = 0;
     uint16_t currentActionLength = 0;
     Vec3s initialPosition;
     Vec3s guardingPosition;

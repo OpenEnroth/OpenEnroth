@@ -224,9 +224,7 @@ void GameUI_LoadPlayerPortraintsAndVoices() {
 }
 
 //----- (00491DE7) --------------------------------------------------------
-void GameUI_ReloadPlayerPortraits(
-    int player_id,
-    int face_id) {  // the transition from the zombies to the normal state
+void GameUI_ReloadPlayerPortraits(int player_id, int face_id) {  // the transition from the zombies to the normal state
     for (uint i = 0; i <= 55; ++i) {
         auto filename =
             fmt::format("{}{:02}", pPlayerPortraitsNames[face_id], i + 1);

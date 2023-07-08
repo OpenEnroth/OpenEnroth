@@ -63,7 +63,7 @@ void DecalBuilder::Reset(bool bPreserveBloodsplats) {
 
 //----- (0049B540) --------------------------------------------------------
 char DecalBuilder::BuildAndApplyDecals(int light_level, LocationFlags locationFlags, const Planef &FacePlane, int NumFaceVerts,
-                                       RenderVertexSoft *FaceVerts, char ClipFlags, unsigned int uSectorID) {
+                                       RenderVertexSoft *FaceVerts, char ClipFlags, int uSectorID) {
     if (!NumFaceVerts) return 0;
 
     static stru314 static_FacePlane;
@@ -185,7 +185,7 @@ bool DecalBuilder::Build_Decal_Geometry(
 }
 
 //----- (0049BBBD) --------------------------------------------------------
-bool DecalBuilder::ApplyBloodsplatDecals_IndoorFace(unsigned int uFaceID) {
+bool DecalBuilder::ApplyBloodsplatDecals_IndoorFace(int uFaceID) {
     // reset splat count
     uNumSplatsThisFace = 0;
     BLVFace *pFace = &pIndoor->pFaces[uFaceID];

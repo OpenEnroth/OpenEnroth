@@ -33,7 +33,7 @@ struct CollisionState {
     float total_move_distance;  // Total move distance, accumulated between collision iterations, starts at 0.
     float move_distance;  // Desired movement distance for current iteration, minus the distance already covered.
     float adjusted_move_distance;  // Movement distance for current iteration, adjusted after collision checks.
-    unsigned int uSectorID = 0;  // Indoor sector id.
+    int uSectorID = 0;  // Indoor sector id.
     unsigned int pid;  // PID of the object that we're collided with.
     int ignored_face_id;  // Don't check collisions with this face.
     BBoxf bbox;

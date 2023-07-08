@@ -14,7 +14,7 @@ LightsStack_MobileLight_::LightsStack_MobileLight_() {
 }
 
 //----- (00467D88) --------------------------------------------------------
-bool LightsStack_MobileLight_::AddLight(const Vec3f &pos, int16_t uSectorID, int uRadius, Color color, char uLightType) {
+bool LightsStack_MobileLight_::AddLight(const Vec3f &pos, int uSectorID, int uRadius, Color color, char uLightType) {
     if (uNumLightsActive >= 400) {
         log->warning("Too many mobile lights!");
         return false;
@@ -31,7 +31,7 @@ bool LightsStack_MobileLight_::AddLight(const Vec3f &pos, int16_t uSectorID, int
     return true;
 }
 
-bool LightsStack_StationaryLight_::AddLight(const Vec3f &pos, int16_t a5, Color color, char uLightType) {
+bool LightsStack_StationaryLight_::AddLight(const Vec3f &pos, int16_t radius, Color color, char uLightType) {
     if (uNumLightsActive >= 400) {
         log->warning("Too many stationary lights!");
         return false;
@@ -39,7 +39,7 @@ bool LightsStack_StationaryLight_::AddLight(const Vec3f &pos, int16_t a5, Color 
 
     StationaryLight *pLight = &pLights[uNumLightsActive++];
     pLight->vPosition = pos;
-    pLight->uRadius = a5;
+    pLight->uRadius = radius;
     pLight->uLightColor = color;
     pLight->uLightType = uLightType;
     return true;

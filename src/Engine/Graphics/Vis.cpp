@@ -1117,7 +1117,7 @@ bool Vis::DoesRayIntersectBillboard(float fDepth, unsigned int uD3DBillboardIdx)
 //----- (004C0D32) --------------------------------------------------------
 void Vis::PickIndoorFaces_Keyboard(float pick_depth, Vis_SelectionList *list, Vis_SelectionFilter *filter) {
     for (int i = 0; i < pBspRenderer->num_faces; ++i) {
-        int16_t pFaceID = pBspRenderer->faces[i].uFaceID;
+        int pFaceID = pBspRenderer->faces[i].uFaceID;
         BLVFace *pFace = &pIndoor->pFaces[pFaceID];
         if (pCamera3D->is_face_faced_to_cameraBLV(pFace)) {
             if (is_part_of_selection(pFace, filter)) {

@@ -19,7 +19,7 @@ struct RenderBillboard {
     int field_14_actor_id;
     Sprite *hwsprite;  // int16_t HwSpriteID;
     int16_t uPaletteIndex;
-    int16_t uIndoorSectorID;
+    int uIndoorSectorID;
     int16_t field_1E;  // flags
     int16_t world_x;
     int16_t world_y;
