@@ -792,11 +792,8 @@ void Nuklear::Release(WindowType winType, bool is_reload) {
         for (auto it = wins[winType].imgs.begin(); it != wins[winType].imgs.end(); it++, i++) {
             if ((*it)->asset) {
                 render->NuklearImageFree((*it)->asset);
-                if ((*it)->asset->Release())
-                    logger->info("Nuklear: [{}] asset {} unloaded", wins[winType].tmpl, i);
-                else
-                    logger->warning("Nuklear: [{}] asset {} unloading failed!", wins[winType].tmpl, i);
-
+                (*it)->asset->Release();
+                logger->info("Nuklear: [{}] asset {} unloaded", wins[winType].tmpl, i);
                 delete *it;
             }
         }
