@@ -85,7 +85,7 @@ class GameConfig : public Config {
 
         Bool NoMargaret = {this, "no_margareth", false, "Disable Margaret's tour messages on Emerald Island."};
 
-        ConfigEntry<PlatformLogLevel> LogLevel = {this, "log_level", LOG_INFO,
+        ConfigEntry<PlatformLogLevel> LogLevel = {this, "log_level", LOG_ERROR,
                                                   "Default log level. One of 'verbose', 'debug', 'info', 'warning', 'error' and 'critical'."};
 
         Int TraceFrameTimeMs = {this, "trace_frame_time_ms", 50, &ValidateFrameTime,
