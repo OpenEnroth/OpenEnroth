@@ -20,6 +20,7 @@ class Logger;
 
 MM_DECLARE_SERIALIZATION_FUNCTIONS(RendererType)
 MM_DECLARE_SERIALIZATION_FUNCTIONS(PlatformWindowMode)
+MM_DECLARE_SERIALIZATION_FUNCTIONS(PlatformLogLevel)
 
 class GameConfig : public Config {
  public:
@@ -84,7 +85,8 @@ class GameConfig : public Config {
 
         Bool NoMargaret = {this, "no_margareth", false, "Disable Margaret's tour messages on Emerald Island."};
 
-        Bool VerboseLogging = {this, "verbose_logging", false, "Verbose logging to debug console. Can be extremely spammy."};
+        ConfigEntry<PlatformLogLevel> LogLevel = {this, "log_level", LOG_INFO,
+                                                  "Default log level. One of 'verbose', 'debug', 'info', 'warning', 'error' and 'critical'."};
 
         Int TraceFrameTimeMs = {this, "trace_frame_time_ms", 50, &ValidateFrameTime,
                                 "Number of milliseconds per frame when recording game traces."};

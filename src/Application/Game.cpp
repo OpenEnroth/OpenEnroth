@@ -2043,10 +2043,6 @@ void Game::processQueuedMessages() {
                 _engine->config->graphics.SeasonsChange.toggle();
                 pAudioPlayer->playUISound(SOUND_StartMainChoice02);
                 continue;
-            case UIMSG_DebugVerboseLogging:
-                _engine->config->debug.VerboseLogging.toggle();
-                pAudioPlayer->playUISound(SOUND_StartMainChoice02);
-                continue;
             case UIMSG_DebugReloadShader:
                 _render->ReloadShaders();
                 pAudioPlayer->playUISound(SOUND_StartMainChoice02);

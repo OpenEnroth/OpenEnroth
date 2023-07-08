@@ -26,6 +26,15 @@ MM_DEFINE_ENUM_SERIALIZATION_FUNCTIONS(PlatformWindowMode, CASE_INSENSITIVE, {
     {WINDOW_MODE_FULLSCREEN_BORDERLESS, "3"}
 })
 
+MM_DEFINE_ENUM_SERIALIZATION_FUNCTIONS(PlatformLogLevel, CASE_INSENSITIVE, {
+    {LOG_VERBOSE, "verbose"},
+    {LOG_DEBUG, "debug"},
+    {LOG_INFO, "info"},
+    {LOG_WARNING, "warning"},
+    {LOG_ERROR, "error"},
+    {LOG_CRITICAL, "critical"},
+})
+
 GameConfig::GameConfig(const std::string &path) : _path(path) {
     _logger = EngineIocContainer::ResolveLogger();
 }
@@ -54,7 +63,6 @@ void GameConfig::resetForTest() {
     settings.VoiceLevel.setValue(1);
     settings.SoundLevel.setValue(1);
     debug.NoVideo.setValue(true);
-    debug.VerboseLogging.setValue(false);
     window.MouseGrab.setValue(false);
     graphics.FPSLimit.setValue(0); // Unlimited
 }
