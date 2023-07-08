@@ -39,7 +39,7 @@ jobs:
       working-directory: build
       shell: cmd
       run: |
-        jom
+        jom -j3
 
     - name: Tests
       working-directory: build
