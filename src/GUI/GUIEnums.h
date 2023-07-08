@@ -153,8 +153,8 @@ enum UIMessageType : uint32_t {
     UIMSG_CastSpell_Telekinesis = 190,
     UIMSG_HouseTransitionConfirmation = 191,
     UIMSG_ClickAwardScrollBar = 192,
-    UIMSG_C1 = 192,
-    UIMSG_C2 = 192,
+    UIMSG_C1 = 193,
+    UIMSG_C2 = 194,
 
     UIMSG_OnCastTownPortal = 195,
     UIMSG_OnGameOverWindowClose = 196,

@@ -7,7 +7,7 @@ on:
     types: [published]
     
 jobs:
-  build_linux:
+  build_android:
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
