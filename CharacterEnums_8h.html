@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;7a08333</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;0c07224</span>
    </div>
   </td>
  </tr>
@@ -74,7 +74,6 @@ $(function() {
 </div><!-- top -->
 <div class="header">
   <div class="summary">
-<a href="#typedef-members">Typedefs</a> &#124;
 <a href="#enum-members">Enumerations</a> &#124;
 <a href="#func-members">Functions</a>  </div>
   <div class="headertitle"><div class="title">CharacterEnums.h File Reference</div></div>
@@ -83,13 +82,6 @@ $(function() {
 <div class="textblock"><code>#include &lt;cassert&gt;</code><br />
 <code>#include &quot;<a class="el" href="Segment_8h.html">Utility/Segment.h</a>&quot;</code><br />
 </div><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="typedef-members" name="typedef-members"></a>
-Typedefs</h2></td></tr>
-<tr class="memitem:a0cc96e568ff829281a069d99996cabcd"><td class="memItemLeft" align="right" valign="top">typedef uint16_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="CharacterEnums_8h.html#a0cc96e568ff829281a069d99996cabcd">CHARACTER_SKILL</a></td></tr>
-<tr class="separator:a0cc96e568ff829281a069d99996cabcd"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aded85857649763b7e9927c146899e501"><td class="memItemLeft" align="right" valign="top">typedef uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="CharacterEnums_8h.html#aded85857649763b7e9927c146899e501">CHARACTER_SKILL_LEVEL</a></td></tr>
-<tr class="separator:aded85857649763b7e9927c146899e501"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="enum-members" name="enum-members"></a>
 Enumerations</h2></td></tr>
 <tr class="memitem:a1675b922b385cf7d28bd256fd487a681"><td class="memItemLeft" align="right" valign="top">enum class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="CharacterEnums_8h.html#a1675b922b385cf7d28bd256fd487a681">Condition</a> : uint32_t { <br />
@@ -119,18 +111,18 @@ Enumerations</h2></td></tr>
 <br />
  }</td></tr>
 <tr class="separator:a1675b922b385cf7d28bd256fd487a681"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aad588572e82b590e48058c9fe465b478"><td class="memItemLeft" align="right" valign="top">enum class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="CharacterEnums_8h.html#aad588572e82b590e48058c9fe465b478">CharacterSkillMastery</a> : int32_t { <br />
-&#160;&#160;<a class="el" href="CharacterEnums_8h.html#aad588572e82b590e48058c9fe465b478aed21722ac41def1fe6ca65f31d5638f2">CHARACTER_SKILL_MASTERY_NONE</a> = 0
-, <a class="el" href="CharacterEnums_8h.html#aad588572e82b590e48058c9fe465b478a5a8d3640f36063cfa6a58956a0415c89">CHARACTER_SKILL_MASTERY_NOVICE</a> = 1
-, <a class="el" href="CharacterEnums_8h.html#aad588572e82b590e48058c9fe465b478a6054481605c9518c82afce5f9be1fd43">CHARACTER_SKILL_MASTERY_EXPERT</a> = 2
-, <a class="el" href="CharacterEnums_8h.html#aad588572e82b590e48058c9fe465b478a4d5d3c367bcce7e5af17d0c77212e289">CHARACTER_SKILL_MASTERY_MASTER</a> = 3
+<tr class="memitem:acabc944d4fe41d7186df3033b0607d2a"><td class="memItemLeft" align="right" valign="top">enum class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="CharacterEnums_8h.html#acabc944d4fe41d7186df3033b0607d2a">CharacterSkillMastery</a> { <br />
+&#160;&#160;<a class="el" href="CharacterEnums_8h.html#acabc944d4fe41d7186df3033b0607d2aaed21722ac41def1fe6ca65f31d5638f2">CHARACTER_SKILL_MASTERY_NONE</a> = 0
+, <a class="el" href="CharacterEnums_8h.html#acabc944d4fe41d7186df3033b0607d2aa5a8d3640f36063cfa6a58956a0415c89">CHARACTER_SKILL_MASTERY_NOVICE</a> = 1
+, <a class="el" href="CharacterEnums_8h.html#acabc944d4fe41d7186df3033b0607d2aa6054481605c9518c82afce5f9be1fd43">CHARACTER_SKILL_MASTERY_EXPERT</a> = 2
+, <a class="el" href="CharacterEnums_8h.html#acabc944d4fe41d7186df3033b0607d2aa4d5d3c367bcce7e5af17d0c77212e289">CHARACTER_SKILL_MASTERY_MASTER</a> = 3
 , <br />
-&#160;&#160;<a class="el" href="CharacterEnums_8h.html#aad588572e82b590e48058c9fe465b478a3bf2aa76560f36066814a5e95692838e">CHARACTER_SKILL_MASTERY_GRANDMASTER</a> = 4
-, <a class="el" href="CharacterEnums_8h.html#aad588572e82b590e48058c9fe465b478a932417942f235551afd6b026cdee8c15">CHARACTER_SKILL_MASTERY_FIRST</a> = CHARACTER_SKILL_MASTERY_NOVICE
-, <a class="el" href="CharacterEnums_8h.html#aad588572e82b590e48058c9fe465b478a0480ca5d7051a9722f8901193e9a265f">CHARACTER_SKILL_MASTERY_LAST</a> = CHARACTER_SKILL_MASTERY_GRANDMASTER
+&#160;&#160;<a class="el" href="CharacterEnums_8h.html#acabc944d4fe41d7186df3033b0607d2aa3bf2aa76560f36066814a5e95692838e">CHARACTER_SKILL_MASTERY_GRANDMASTER</a> = 4
+, <a class="el" href="CharacterEnums_8h.html#acabc944d4fe41d7186df3033b0607d2aa932417942f235551afd6b026cdee8c15">CHARACTER_SKILL_MASTERY_FIRST</a> = CHARACTER_SKILL_MASTERY_NOVICE
+, <a class="el" href="CharacterEnums_8h.html#acabc944d4fe41d7186df3033b0607d2aa0480ca5d7051a9722f8901193e9a265f">CHARACTER_SKILL_MASTERY_LAST</a> = CHARACTER_SKILL_MASTERY_GRANDMASTER
 <br />
  }</td></tr>
-<tr class="separator:aad588572e82b590e48058c9fe465b478"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="separator:acabc944d4fe41d7186df3033b0607d2a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7b9cbb74f2ba0de133004db7917479b6"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="CharacterEnums_8h.html#a7b9cbb74f2ba0de133004db7917479b6">CharacterBuffs</a> { <br />
 &#160;&#160;<a class="el" href="CharacterEnums_8h.html#a7b9cbb74f2ba0de133004db7917479b6afea12581708b9aac2a01f39f0d5d6938">CHARACTER_BUFF_RESIST_AIR</a> = 0
 , <a class="el" href="CharacterEnums_8h.html#a7b9cbb74f2ba0de133004db7917479b6a9241ccb31e845c9fcd5e70956f4bb6ad">CHARACTER_BUFF_BLESS</a> = 1
@@ -563,6 +555,8 @@ Enumerations</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
+<tr class="memitem:ae9e5414afcb649b3c9e494b38bbe2814"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classSegment.html">Segment</a>&lt; <a class="el" href="CharacterEnums_8h.html#acabc944d4fe41d7186df3033b0607d2a">CharacterSkillMastery</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="CharacterEnums_8h.html#ae9e5414afcb649b3c9e494b38bbe2814">SkillMasteries</a> ()</td></tr>
+<tr class="separator:ae9e5414afcb649b3c9e494b38bbe2814"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:affd307cf9aafead6334d3c9594e94cc9"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classSegment.html">Segment</a>&lt; <a class="el" href="CharacterEnums_8h.html#afb7e1cb64c82efee699c6bd5b7467bb3">CharacterSkillType</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="CharacterEnums_8h.html#affd307cf9aafead6334d3c9594e94cc9">allSkills</a> ()</td></tr>
 <tr class="separator:affd307cf9aafead6334d3c9594e94cc9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac9c457fd6021fb4339c0fadaa2997480"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classSegment.html">Segment</a>&lt; <a class="el" href="CharacterEnums_8h.html#afb7e1cb64c82efee699c6bd5b7467bb3">CharacterSkillType</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="CharacterEnums_8h.html#ac9c457fd6021fb4339c0fadaa2997480">allVisibleSkills</a> ()</td></tr>
@@ -586,35 +580,6 @@ Functions</h2></td></tr>
 <tr class="memitem:a85faf7b64c4b87e2a2a435cf8b44cf0b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classSegment.html">Segment</a>&lt; <a class="el" href="CharacterEnums_8h.html#affc99db0cab57aa5ce6f7f21cf5d56b6">CharacterClassType</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="CharacterEnums_8h.html#a85faf7b64c4b87e2a2a435cf8b44cf0b">getClassPromotions</a> (<a class="el" href="CharacterEnums_8h.html#affc99db0cab57aa5ce6f7f21cf5d56b6">CharacterClassType</a> classType)</td></tr>
 <tr class="separator:a85faf7b64c4b87e2a2a435cf8b44cf0b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Typedef Documentation</h2>
-<a id="a0cc96e568ff829281a069d99996cabcd" name="a0cc96e568ff829281a069d99996cabcd"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a0cc96e568ff829281a069d99996cabcd">&#9670;&#160;</a></span>CHARACTER_SKILL</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">typedef uint16_t <a class="el" href="CharacterEnums_8h.html#a0cc96e568ff829281a069d99996cabcd">CHARACTER_SKILL</a></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="aded85857649763b7e9927c146899e501" name="aded85857649763b7e9927c146899e501"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aded85857649763b7e9927c146899e501">&#9670;&#160;</a></span>CHARACTER_SKILL_LEVEL</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">typedef uint8_t <a class="el" href="CharacterEnums_8h.html#aded85857649763b7e9927c146899e501">CHARACTER_SKILL_LEVEL</a></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
 <h2 class="groupheader">Enumeration Type Documentation</h2>
 <a id="a5283119c60345ad4a9e4af5f447f5aa2" name="a5283119c60345ad4a9e4af5f447f5aa2"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a5283119c60345ad4a9e4af5f447f5aa2">&#9670;&#160;</a></span>CharacterAttributeType</h2>
@@ -876,8 +841,8 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="aad588572e82b590e48058c9fe465b478" name="aad588572e82b590e48058c9fe465b478"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aad588572e82b590e48058c9fe465b478">&#9670;&#160;</a></span>CharacterSkillMastery</h2>
+<a id="acabc944d4fe41d7186df3033b0607d2a" name="acabc944d4fe41d7186df3033b0607d2a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#acabc944d4fe41d7186df3033b0607d2a">&#9670;&#160;</a></span>CharacterSkillMastery</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -886,7 +851,7 @@ Functions</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">enum class <a class="el" href="CharacterEnums_8h.html#aad588572e82b590e48058c9fe465b478">CharacterSkillMastery</a> : int32_t</td>
+          <td class="memname">enum class <a class="el" href="CharacterEnums_8h.html#acabc944d4fe41d7186df3033b0607d2a">CharacterSkillMastery</a></td>
         </tr>
       </table>
   </td>
@@ -896,13 +861,13 @@ Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 <table class="fieldtable">
-<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="aad588572e82b590e48058c9fe465b478aed21722ac41def1fe6ca65f31d5638f2" name="aad588572e82b590e48058c9fe465b478aed21722ac41def1fe6ca65f31d5638f2"></a>CHARACTER_SKILL_MASTERY_NONE&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="aad588572e82b590e48058c9fe465b478a5a8d3640f36063cfa6a58956a0415c89" name="aad588572e82b590e48058c9fe465b478a5a8d3640f36063cfa6a58956a0415c89"></a>CHARACTER_SKILL_MASTERY_NOVICE&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="aad588572e82b590e48058c9fe465b478a6054481605c9518c82afce5f9be1fd43" name="aad588572e82b590e48058c9fe465b478a6054481605c9518c82afce5f9be1fd43"></a>CHARACTER_SKILL_MASTERY_EXPERT&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="aad588572e82b590e48058c9fe465b478a4d5d3c367bcce7e5af17d0c77212e289" name="aad588572e82b590e48058c9fe465b478a4d5d3c367bcce7e5af17d0c77212e289"></a>CHARACTER_SKILL_MASTERY_MASTER&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="aad588572e82b590e48058c9fe465b478a3bf2aa76560f36066814a5e95692838e" name="aad588572e82b590e48058c9fe465b478a3bf2aa76560f36066814a5e95692838e"></a>CHARACTER_SKILL_MASTERY_GRANDMASTER&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="aad588572e82b590e48058c9fe465b478a932417942f235551afd6b026cdee8c15" name="aad588572e82b590e48058c9fe465b478a932417942f235551afd6b026cdee8c15"></a>CHARACTER_SKILL_MASTERY_FIRST&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="aad588572e82b590e48058c9fe465b478a0480ca5d7051a9722f8901193e9a265f" name="aad588572e82b590e48058c9fe465b478a0480ca5d7051a9722f8901193e9a265f"></a>CHARACTER_SKILL_MASTERY_LAST&#160;</td><td class="fielddoc"></td></tr>
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="acabc944d4fe41d7186df3033b0607d2aaed21722ac41def1fe6ca65f31d5638f2" name="acabc944d4fe41d7186df3033b0607d2aaed21722ac41def1fe6ca65f31d5638f2"></a>CHARACTER_SKILL_MASTERY_NONE&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="acabc944d4fe41d7186df3033b0607d2aa5a8d3640f36063cfa6a58956a0415c89" name="acabc944d4fe41d7186df3033b0607d2aa5a8d3640f36063cfa6a58956a0415c89"></a>CHARACTER_SKILL_MASTERY_NOVICE&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="acabc944d4fe41d7186df3033b0607d2aa6054481605c9518c82afce5f9be1fd43" name="acabc944d4fe41d7186df3033b0607d2aa6054481605c9518c82afce5f9be1fd43"></a>CHARACTER_SKILL_MASTERY_EXPERT&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="acabc944d4fe41d7186df3033b0607d2aa4d5d3c367bcce7e5af17d0c77212e289" name="acabc944d4fe41d7186df3033b0607d2aa4d5d3c367bcce7e5af17d0c77212e289"></a>CHARACTER_SKILL_MASTERY_MASTER&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="acabc944d4fe41d7186df3033b0607d2aa3bf2aa76560f36066814a5e95692838e" name="acabc944d4fe41d7186df3033b0607d2aa3bf2aa76560f36066814a5e95692838e"></a>CHARACTER_SKILL_MASTERY_GRANDMASTER&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="acabc944d4fe41d7186df3033b0607d2aa932417942f235551afd6b026cdee8c15" name="acabc944d4fe41d7186df3033b0607d2aa932417942f235551afd6b026cdee8c15"></a>CHARACTER_SKILL_MASTERY_FIRST&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="acabc944d4fe41d7186df3033b0607d2aa0480ca5d7051a9722f8901193e9a265f" name="acabc944d4fe41d7186df3033b0607d2aa0480ca5d7051a9722f8901193e9a265f"></a>CHARACTER_SKILL_MASTERY_LAST&#160;</td><td class="fielddoc"></td></tr>
 </table>
 
 </div>
@@ -1448,6 +1413,31 @@ Functions</h2></td></tr>
           <td>(</td>
           <td class="paramtype"><a class="el" href="CharacterEnums_8h.html#affc99db0cab57aa5ce6f7f21cf5d56b6">CharacterClassType</a>&#160;</td>
           <td class="paramname"><em>classType</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ae9e5414afcb649b3c9e494b38bbe2814" name="ae9e5414afcb649b3c9e494b38bbe2814"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae9e5414afcb649b3c9e494b38bbe2814">&#9670;&#160;</a></span>SkillMasteries()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classSegment.html">Segment</a>&lt; <a class="el" href="CharacterEnums_8h.html#acabc944d4fe41d7186df3033b0607d2a">CharacterSkillMastery</a> &gt; SkillMasteries </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
           <td></td>
         </tr>
       </table>
