@@ -29,10 +29,9 @@
 [submodule "thirdparty/mio"]
 	path = thirdparty/mio
 	url = https://github.com/mandreyel/mio
-[submodule "thirdparty/SDL"]
-	path = thirdparty/SDL
+[submodule "thirdparty/sdl"]
+	path = thirdparty/sdl
 	url = https://github.com/libsdl-org/SDL.git
-	branch = SDL2
-[submodule "thirdparty/OpenAL"]
-	path = thirdparty/OpenAL
+[submodule "thirdparty/openal_soft"]
+	path = thirdparty/openal_soft
 	url = https://github.com/kcat/openal-soft.git

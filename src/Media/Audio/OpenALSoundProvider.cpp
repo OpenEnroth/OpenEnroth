@@ -1,12 +1,7 @@
 #include "Media/Audio/OpenALSoundProvider.h"
 
-#ifdef __APPLE__
-#include <OpenAL/al.h>
-#include <OpenAL/alc.h>
-#else
 #include <AL/al.h>
 #include <AL/alc.h>
-#endif
 
 #include <atomic>
 #include <memory>
@@ -154,11 +149,7 @@ void OpenALSoundProvider::DeleteStreamingTrack(StreamingTrackBuffer **buffer) {
     int status;
     alGetSourcei(track->source_id, AL_SOURCE_STATE, &status);
     if (status == AL_PLAYING) {
-#ifdef __APPLE__
-        alSourcePause(track->source_id);
-#else  // __APPLE__
         alSourceStop(track->source_id);
-#endif  // __APPLE__
         if (CheckError()) assert(false);
     }
     alSourcei(track->source_id, AL_LOOPING, AL_FALSE);
@@ -170,10 +161,6 @@ void OpenALSoundProvider::DeleteStreamingTrack(StreamingTrackBuffer **buffer) {
     DeleteBuffers(track, AL_BUFFERS_PROCESSED);
     DeleteBuffers(track, AL_BUFFERS_QUEUED);
 
-#ifdef __APPLE__
-    alSourceStop(track->source_id);
-    if (CheckError()) assert(false);
-#endif  // __APPLE__
     alDeleteSources(1, &track->source_id);
     if (CheckError()) assert(false);
 
