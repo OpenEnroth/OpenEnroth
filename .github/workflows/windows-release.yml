@@ -31,6 +31,10 @@ jobs:
       with:
         arch: ${{ matrix.architecture }}
 
+    - name: Install jom
+      run: |
+        choco install jom
+
     - name: Configure
       run: |
         cmake -B build -G "NMake Makefiles" -DCMAKE_BUILD_TYPE=${{ matrix.configuration }} -DENABLE_TESTS=On
