@@ -258,37 +258,25 @@ bool Vis::IsPointInsideD3DBillboard(RenderBillboardD3D *billboard, float x, floa
     float drH = billboard->pQuads[1].pos.y - drY;
 
     // simple bounds check
-    if (x > drX && x > billboard->pQuads[3].pos.x) return 0;
-    if (x < drX && x < billboard->pQuads[3].pos.x) return 0;
-    if (y > drY && y > billboard->pQuads[1].pos.y) return 0;
-    if (y < drY && y < billboard->pQuads[1].pos.y) return 0;
+    if (x > drX && x > billboard->pQuads[3].pos.x) return false;
+    if (x < drX && x < billboard->pQuads[3].pos.x) return false;
+    if (y > drY && y > billboard->pQuads[1].pos.y) return false;
+    if (y < drY && y < billboard->pQuads[1].pos.y) return false;
 
     // for small items dont bother with the per pixel checks
     if (abs(drH) < 5 || abs(drW) < 5) {
-            return 1;
+        return true;
     }
 
-    Sprite *ownerSprite = nullptr;
-    for (int i = 0; i < pSprites_LOD->pSprites.size(); ++i) {
-        if ((void *)pSprites_LOD->pSprites[i].texture == billboard->texture) {
-            ownerSprite = &pSprites_LOD->pSprites[i];
-            break;
-        }
-    }
+    RgbaImageView rgba = billboard->texture->rgba();
 
-    if (ownerSprite == nullptr) return false;
+    int sx = rgba.width() * (x - drX) / drW;
+    int sy = rgba.height() * (y - drY) / drH;
 
-    int sx =
-        ownerSprite->uAreaX + int(ownerSprite->uWidth * (x - drX) / drW);
-    int sy =
-        ownerSprite->uAreaY + int(ownerSprite->uHeight * (y - drY) / drH);
+    if (sx < 0 || sx >= rgba.width()) return false;
+    if (sy < 0 || sy >= rgba.height()) return false;
 
-    LODSprite *spriteHeader = ownerSprite->sprite_header;
-
-    if (sy < 0 || sy >= spriteHeader->uHeight) return false;
-    if (sx < 0 || sx >= spriteHeader->uWidth) return false;
-
-    return spriteHeader->bitmap[sy][sx] != 0;
+    return rgba[sy][sx] != Color();
 }
 
 //----- (004C16B4) --------------------------------------------------------
@@ -1129,7 +1117,7 @@ bool Vis::DoesRayIntersectBillboard(float fDepth, unsigned int uD3DBillboardIdx)
 //----- (004C0D32) --------------------------------------------------------
 void Vis::PickIndoorFaces_Keyboard(float pick_depth, Vis_SelectionList *list, Vis_SelectionFilter *filter) {
     for (int i = 0; i < pBspRenderer->num_faces; ++i) {
-        int16_t pFaceID = pBspRenderer->faces[i].uFaceID;
+        int pFaceID = pBspRenderer->faces[i].uFaceID;
         BLVFace *pFace = &pIndoor->pFaces[pFaceID];
         if (pCamera3D->is_face_faced_to_cameraBLV(pFace)) {
             if (is_part_of_selection(pFace, filter)) {

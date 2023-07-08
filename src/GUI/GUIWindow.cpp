@@ -93,7 +93,6 @@ std::array<int, 28> possibleAddressingAwardBits = {{1,  2,  3,  4,  5,  7,  32, 
                                                     50, 51, 52, 53, 54, 55, 56, 60}};
 void SetCurrentMenuID(MENU_STATE uMenu) {
     sCurrentMenuID = uMenu;
-    logger->warning("CurrentMenu = {} \n", toString(uMenu));
 }
 
 MENU_STATE GetCurrentMenuID() {
@@ -182,7 +181,7 @@ void GUIWindow::Release() {
     if (this->eWindowType == WINDOW_GameUI)
         nuklear->Release(WINDOW_GameUI);
 
-    log->info("Release window: {}", toString(eWindowType));
+    log->verbose("Release window: {}", toString(eWindowType));
 }
 
 void GUIWindow::DeleteButtons() {
@@ -411,7 +410,7 @@ GUIWindow::GUIWindow(WindowType windowType, Pointi position, Sizei dimensions, W
     this->mouse = EngineIocContainer::ResolveMouse();
     this->log = EngineIocContainer::ResolveLogger();
 
-    log->info("New window: {}", toString(windowType));
+    log->verbose("New window: {}", toString(windowType));
     lWindowList.push_front(this);
     this->uFrameWidth = dimensions.w;
     this->uFrameHeight = dimensions.h;

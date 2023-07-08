@@ -880,7 +880,7 @@ void RenderOpenGL::TexturePixelRotateDraw(float u, float v, GraphicsImage *img, 
 }
 
 // TODO(pskelton): renderbase
-void RenderOpenGL::DrawIndoorSky(unsigned int uNumVertices, unsigned int uFaceID) {
+void RenderOpenGL::DrawIndoorSky(unsigned int uNumVertices, int uFaceID) {
     BLVFace *pFace = &pIndoor->pFaces[uFaceID];
     if (pFace->uNumVertices <= 0) return;
 
@@ -4141,7 +4141,7 @@ void RenderOpenGL::DrawIndoorFaces() {
             bool drawnsky = false;
 
             for (uint i = 0; i < pBspRenderer->num_faces; ++i) {
-                unsigned int uFaceID = pBspRenderer->faces[i].uFaceID;
+                int uFaceID = pBspRenderer->faces[i].uFaceID;
                 if (uFaceID >= pIndoor->pFaces.size())
                     continue;
                 BLVFace *face = &pIndoor->pFaces[uFaceID];

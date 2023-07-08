@@ -764,7 +764,7 @@ int lua_handle_error(lua_State *L) {
 
 bool lua_error_check(WindowType winType, lua_State *L, int err) {
     if (err != 0) {
-        logger->warning("Nuklear: [{}] LUA error: {}\n", wins[winType].tmpl, lua_tostring(L, -1));
+        logger->error("Nuklear: [{}] LUA error: {}\n", wins[winType].tmpl, lua_tostring(L, -1));
         lua_pop(L, 1);
         return true;
     }
@@ -792,11 +792,8 @@ void Nuklear::Release(WindowType winType, bool is_reload) {
         for (auto it = wins[winType].imgs.begin(); it != wins[winType].imgs.end(); it++, i++) {
             if ((*it)->asset) {
                 render->NuklearImageFree((*it)->asset);
-                if ((*it)->asset->Release())
-                    logger->info("Nuklear: [{}] asset {} unloaded", wins[winType].tmpl, i);
-                else
-                    logger->warning("Nuklear: [{}] asset {} unloading failed!", wins[winType].tmpl, i);
-
+                (*it)->asset->Release();
+                logger->verbose("Nuklear: [{}] asset {} unloaded", wins[winType].tmpl, i);
                 delete *it;
             }
         }
@@ -821,7 +818,7 @@ void Nuklear::Release(WindowType winType, bool is_reload) {
         if (!is_reload && (wins[winType].state == WINDOW_INITIALIZED || wins[winType].state == WINDOW_TEMPLATE_ERROR))
             wins[winType].state = WINDOW_NOT_LOADED;
 
-        logger->info("Nuklear: [{}] template unloaded", wins[winType].tmpl);
+        logger->verbose("Nuklear: [{}] template unloaded", wins[winType].tmpl);
     } else {
         logger->warning("Nuklear: [{}] template is not loaded", wins[winType].tmpl);
     }

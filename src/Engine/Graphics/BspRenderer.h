@@ -5,20 +5,20 @@
 #include "Engine/Graphics/Camera.h"
 
 struct BspRenderer_ViewportNode {
-    uint16_t uSectorID = 0;  // sector that this node shows
-    uint16_t uFaceID = 0;
-    unsigned int viewing_portal_id = 0;  // portal/ node through which we're seeing this node
+    int uSectorID = 0;  // sector that this node shows
+    int uFaceID = 0;
+    int viewing_portal_id = 0;  // face id of the portal through which we're seeing this node
     std::array<IndoorCameraD3D_Vec4, 4> ViewportNodeFrustum = {{}};  // frustum planes of portal
     std::array<RenderVertexSoft, 4> pPortalBounding = {{}};  // extents of portal
 };
 
 struct BspFace {
-    uint16_t uFaceID = 0;
-    uint16_t uNodeID = 0;
+    int uFaceID = 0;
+    int uNodeID = 0;
 };
 
 struct BspRenderer {
-    void AddFaceToRenderList_d3d(unsigned int node_id, unsigned int uFaceID);
+    void AddFaceToRenderList_d3d(int node_id, int uFaceID);
     void MakeVisibleSectorList();
 
     unsigned int num_faces = 0;
@@ -28,12 +28,12 @@ struct BspRenderer {
     std::array<BspRenderer_ViewportNode, 150> nodes = {{}};
 
     unsigned int uNumVisibleNotEmptySectors = 0;
-    std::array<uint16_t, 150> pVisibleSectorIDs_toDrawDecorsActorsEtcFrom = {{}};
+    std::array<int, 150> pVisibleSectorIDs_toDrawDecorsActorsEtcFrom = {{}};
 };
 
 extern BspRenderer *pBspRenderer;
 
 void PrepareBspRenderList_BLV();
-void AddBspNodeToRenderList(unsigned int node_id);
-void AddNodeBSPFaces(unsigned int node_id, unsigned int uFirstNode);  // idb
+void AddBspNodeToRenderList(int node_id);
+void AddNodeBSPFaces(int node_id, int uFirstNode);  // idb
 

@@ -12,5 +12,7 @@
     [[nodiscard]] bool trySerialize(const TYPE &src, std::string *dst);                                                 \
     [[nodiscard]] bool tryDeserialize(std::string_view src, TYPE *dst);                                                 \
     void serialize(const TYPE &src, std::string *dst);                                                                  \
-    void deserialize(std::string_view src, TYPE *dst);
-
+    void deserialize(std::string_view src, TYPE *dst);                                                                  \
+    inline bool lexical_cast(const std::string& src, TYPE& dst) { /* CLI11 support. */                                  \
+        return tryDeserialize(src, &dst);                                                                               \
+    }

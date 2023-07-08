@@ -114,7 +114,7 @@ class Engine {
     void ResetCursor_Palettes_LODs_Level_Audio_SFT_Windows();
     void SecondaryInitialization();
     void _461103_load_level_sub();
-    bool MM7_Initialize();
+    void MM7_Initialize();
 
     bool is_underwater = false;
     bool is_targeting = false;

@@ -352,15 +352,12 @@ void SpriteObject::updateObjectBLV(unsigned int uLayingItemID) {
         return;
     }
 
-    unsigned int uFaceID;
-    unsigned int uSectorID = pSpriteObject->uSectorID; // TODO: this should go straight into GetIndoorFloorZ as a pointer.
-    int floor_lvl = GetIndoorFloorZ(pSpriteObject->vPosition, &uSectorID, &uFaceID);
+    int uFaceID;
+    int floor_lvl = GetIndoorFloorZ(pSpriteObject->vPosition, &pSpriteObject->uSectorID, &uFaceID);
     if (floor_lvl <= -30000) {
         SpriteObject::OnInteraction(uLayingItemID);
         return;
     }
-
-    pSpriteObject->uSectorID = uSectorID;
 
     if (pObject->uFlags & OBJECT_DESC_NO_GRAVITY) {
         goto LABEL_25;
@@ -1345,7 +1342,7 @@ void UpdateObjects() {
                     } else {
                         SpriteObject::updateObjectODM(i);
                     }
-                    if (!pParty->bTurnBasedModeOn || !(pSpriteObjects[i].uSectorID & 4)) {
+                    if (!pParty->bTurnBasedModeOn || !(pSpriteObjects[i].uSectorID & 4)) { // TODO(captainurist): wtf is this (pSpriteObjects[i].uSectorID & 4) ???
                         continue;
                     }
                     if ((pParty->pos - pSpriteObjects[i].vPosition).length() <= 5120) {

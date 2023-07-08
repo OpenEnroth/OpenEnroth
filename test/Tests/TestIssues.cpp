@@ -167,9 +167,12 @@ GAME_TEST(Issues, Issue201) {
 }
 
 GAME_TEST(Issues, Issue202) {
-    //Judge doesn't move to house and stays with the party
-    int oldhirecount{};
-    test->playTraceFromTestData("issue_202.mm7", "issue_202.json", [&]() {oldhirecount = pParty->CountHirelings(); });
+    // Judge doesn't move to house and stays with the party.
+    int oldhirecount = 0;
+    test->playTraceFromTestData("issue_202.mm7", "issue_202.json", [&] {
+        oldhirecount = pParty->CountHirelings();
+        EXPECT_EQ(pParty->alignment, PartyAlignment_Neutral);
+    });
     EXPECT_EQ(oldhirecount - 1, pParty->CountHirelings()); // judge shouldn't be with party anymore
     EXPECT_EQ(pParty->alignment, PartyAlignment_Evil); // party align evil
 }
@@ -192,7 +195,10 @@ GAME_TEST(Issues, Issue223) {
         }
     };
 
-    test->playTraceFromTestData("issue_223.mm7", "issue_223.json");
+    test->playTraceFromTestData("issue_223.mm7", "issue_223.json", [&] {
+        checkResistances(CHARACTER_ATTRIBUTE_RESIST_FIRE, { {0, 280}, {1, 262}, {2, 390}, {3, 241} });
+        checkResistances(CHARACTER_ATTRIBUTE_RESIST_AIR, { {0, 389}, {1, 385}, {2, 385}, {3, 381} });
+    });
     // expect normal resistances 55-00-00-00
     checkResistances(CHARACTER_ATTRIBUTE_RESIST_FIRE, { {0, 5}, {1, 0}, {2, 0}, {3, 0} });
     checkResistances(CHARACTER_ATTRIBUTE_RESIST_AIR, { {0, 5}, {1, 0}, {2, 0}, {3, 0} });
@@ -210,10 +216,10 @@ GAME_TEST(Issues, Issue248) {
 }
 
 GAME_TEST(Issues, Issue268_939) {
-    // Crash in ODM_GetFloorLevel
+    // Crash in ODM_GetFloorLevel.
     test->playTraceFromTestData("issue_268.mm7", "issue_268.json");
 
-    // 939 - Quick reference doesn't match vanilla
+    // #939: Quick reference doesn't match vanilla.
     // hp
     EXPECT_EQ(pParty->pCharacters[0].GetHealth(), 71);
     EXPECT_EQ(pParty->pCharacters[1].GetHealth(), 80);
@@ -266,9 +272,12 @@ GAME_TEST(Issues, Issue268_939) {
 }
 
 GAME_TEST(Issues, Issue271) {
-    // Party shouldn't yell when landing from flight
-    test->playTraceFromTestData("issue_271.mm7", "issue_271.json");
+    // Party shouldn't yell when landing from flight.
+    test->playTraceFromTestData("issue_271.mm7", "issue_271.json", [] {
+        EXPECT_FALSE(pParty->uFlags & PARTY_FLAGS_1_LANDING);
+    });
     EXPECT_NE(pParty->pCharacters[1].expression, CHARACTER_EXPRESSION_FEAR);
+    EXPECT_TRUE(pParty->uFlags & PARTY_FLAGS_1_LANDING);
 }
 
 GAME_TEST(Issues, Issue272) {
@@ -282,7 +291,7 @@ GAME_TEST(Issues, Issue272) {
 }
 
 GAME_TEST(Issues, Issue290) {
-    // Town Hall bugs
+    // Town Hall bugs.
     test->playTraceFromTestData("issue_290.mm7", "issue_290.json", [] { EXPECT_EQ(pParty->GetFine(), 55500); });
     EXPECT_EQ(pParty->GetFine(), 54500);
 }
@@ -299,7 +308,7 @@ GAME_TEST(Issues, Issue293a) {
         EXPECT_EQ(pParty->pCharacters[0].uAccuracy, 13);
         EXPECT_EQ(pParty->pCharacters[0].uLuck, 7);
         EXPECT_EQ(partyItemCount(), 18);
-        EXPECT_FALSE(pParty->pCharacters[0].hasItem(ITEM_LEATHER_ARMOR, false));
+        EXPECT_FALSE(pParty->pCharacters[0].hasItem(ITEM_OFFICERS_LEATHER, false));
         for (int i = 0; i < 4; i++)
             EXPECT_EQ(pParty->pCharacters[i].GetMajorConditionIdx(), CONDITION_GOOD);
     });
@@ -312,11 +321,11 @@ GAME_TEST(Issues, Issue293a) {
     EXPECT_EQ(pParty->pCharacters[0].uAccuracy, 15); // +2
     EXPECT_EQ(pParty->pCharacters[0].uLuck, 7);
     EXPECT_EQ(partyItemCount(), 19); // +1
-    EXPECT_TRUE(pParty->pCharacters[0].hasItem(ITEM_CHAIN_MAIL, false)); // That's the item from the trash pile.
-    EXPECT_EQ(pParty->pCharacters[0].GetMajorConditionIdx(), CONDITION_DISEASE_WEAK);
+    EXPECT_TRUE(pParty->pCharacters[0].hasItem(ITEM_OFFICERS_LEATHER, false)); // That's the item from the trash pile.
+    EXPECT_EQ(pParty->pCharacters[0].GetMajorConditionIdx(), CONDITION_DISEASE_MEDIUM);
     EXPECT_EQ(pParty->pCharacters[1].GetMajorConditionIdx(), CONDITION_DISEASE_WEAK);
     EXPECT_EQ(pParty->pCharacters[2].GetMajorConditionIdx(), CONDITION_DISEASE_WEAK);
-    EXPECT_EQ(pParty->pCharacters[3].GetMajorConditionIdx(), CONDITION_GOOD); // Good roll here, didn't get sick.
+    EXPECT_EQ(pParty->pCharacters[3].GetMajorConditionIdx(), CONDITION_DISEASE_WEAK);
 }
 
 GAME_TEST(Issues, Issue293b) {
@@ -365,7 +374,7 @@ GAME_TEST(Issues, Issue294) {
 
 // 300
 
-GAME_TEST(Prs, Pr314) {
+GAME_TEST(Prs, Pr314_742) {
     // Check that character creating menu works.
     // Trace pretty much presses all the buttons and opens all the popups possible.
     test->playTraceFromTestData("pr_314.mm7", "pr_314.json");
@@ -382,7 +391,7 @@ GAME_TEST(Prs, Pr314) {
     EXPECT_EQ(pParty->pCharacters[2].GetRace(), CHARACTER_RACE_GOBLIN);
     EXPECT_EQ(pParty->pCharacters[3].GetRace(), CHARACTER_RACE_ELF);
 
-    // Check that party qbits are set even if we press Clear when creating a party. Related to #742
+    // #742: Check that party qbits are set even if we press Clear when creating a party.
     EXPECT_TRUE(pParty->_questBits.test(QBIT_EMERALD_ISLAND_RED_POTION_ACTIVE));
     EXPECT_TRUE(pParty->_questBits.test(QBIT_EMERALD_ISLAND_SEASHELL_ACTIVE));
     EXPECT_TRUE(pParty->_questBits.test(QBIT_EMERALD_ISLAND_LONGBOW_ACTIVE));
@@ -397,11 +406,11 @@ GAME_TEST(Issues, Issue315) {
 }
 
 GAME_TEST(Issues, Issue331_679) {
-    // Assert when traveling by horse caused by out of bound access to pObjectList->pObjects
+    // Assert when traveling by horse caused by out of bound access to pObjectList->pObjects.
     int prevGold = -1;
     test->playTraceFromTestData("issue_331.mm7", "issue_331.json", [&] { prevGold = pParty->GetGold(); });
 
-    // 679 - Loading autosave after travelling by stables / boat results in gold loss
+    // #679: Loading autosave after travelling by stables / boat results in gold loss
     EXPECT_EQ(prevGold, pParty->GetGold());
 }
 
@@ -413,28 +422,32 @@ GAME_TEST(Prs, Pr347) {
 }
 
 GAME_TEST(Issues, Issue388) {
-    // Testing that Arcomage works
+    // Testing that Arcomage works.
+    // Trace enters tavern, plays arcomage, plays a couple of cards then exits and leaves tavern.
     int oldfpslimit = pArcomageGame->_targetFPS;
     pArcomageGame->_targetFPS = 500;
-    // Trace enters tavern, plays arcomage, plays a couple of cards then exits and leaves tavern
     CURRENT_SCREEN oldscreen = CURRENT_SCREEN::SCREEN_GAME;
     test->playTraceFromTestData("issue_388.mm7", "issue_388.json", [&] { oldscreen = current_screen_type; });
-    // we should return to game screen
-    EXPECT_EQ(oldscreen, current_screen_type);
-    // with arcomage exit flag
-    EXPECT_EQ(pArcomageGame->GameOver, 1);
+    EXPECT_EQ(oldscreen, current_screen_type); // We should return to game screen.
+    EXPECT_EQ(pArcomageGame->GameOver, 1); // With arcomage exit flag.
     pArcomageGame->_targetFPS = oldfpslimit;
 }
 
 GAME_TEST(Issues, Issue395) {
-    // Check that learning skill works as intended
+    // Check that learning skill works as intended.
     auto checkExperience = [](std::initializer_list<std::pair<int, int>> experiencePairs) {
         for (auto pair : experiencePairs) {
             EXPECT_EQ(pParty->pCharacters[pair.first].experience, pair.second);
         }
     };
 
-    test->playTraceFromTestData("issue_395.mm7", "issue_395.json", [&] { checkExperience({ {0, 100}, {1, 100}, {2, 100}, {3, 100} }); });
+    test->playTraceFromTestData("issue_395.mm7", "issue_395.json", [&] {
+        EXPECT_EQ(pParty->pCharacters[0].getSkillValue(CHARACTER_SKILL_LEARNING).level(), 0);
+        EXPECT_EQ(pParty->pCharacters[1].getSkillValue(CHARACTER_SKILL_LEARNING).level(), 4);
+        EXPECT_EQ(pParty->pCharacters[2].getSkillValue(CHARACTER_SKILL_LEARNING).level(), 6);
+        EXPECT_EQ(pParty->pCharacters[3].getSkillValue(CHARACTER_SKILL_LEARNING).level(), 10);
+        checkExperience({ {0, 100}, {1, 100}, {2, 100}, {3, 100} });
+    });
     checkExperience({ {0, 214}, {1, 228}, {2, 237}, {3, 258} });
 }
 
@@ -442,13 +455,25 @@ GAME_TEST(Issues, Issue395) {
 
 GAME_TEST(Issues, Issue402) {
     // Attacking while wearing wetsuits shouldn't assert.
-    test->playTraceFromTestData("issue_402.mm7", "issue_402.json");
+    auto checkCharactersWearWetsuits = [] {
+        for (int i = 0; i < 4; i++)
+            EXPECT_TRUE(pParty->pCharacters[i].wearsItemAnywhere(ITEM_QUEST_WETSUIT));
+    };
+
+    test->playTraceFromTestData("issue_402.mm7", "issue_402.json", [&] {
+        checkCharactersWearWetsuits();
+    });
+    checkCharactersWearWetsuits();
 }
 
 GAME_TEST(Issues, Issue403_970) {
     // Entering Lincoln shouldn't crash.
-    test->playTraceFromTestData("issue_403.mm7", "issue_403.json");
-    // 970 - Armor Class is wrong
+    test->playTraceFromTestData("issue_403.mm7", "issue_403.json", [&] {
+        EXPECT_EQ(toLower(pCurrentMapName), "out15.odm"); // Shoals.
+    });
+    EXPECT_EQ(toLower(pCurrentMapName), "d23.blv"); // Lincoln.
+
+    // #970: Armor Class is wrong.
     EXPECT_EQ(pParty->pCharacters[0].GetActualAC(), 10);
     EXPECT_EQ(pParty->pCharacters[1].GetActualAC(), 5);
     EXPECT_EQ(pParty->pCharacters[2].GetActualAC(), 10);
@@ -893,9 +918,9 @@ GAME_TEST(Issues, Issue661) {
 GAME_TEST(Issues, Issue662) {
     // "of Air magic" should give floor(skill / 2) skill level bonus (like all other such bonuses)
     test->loadGameFromTestData("issue_662.mm7");
-    // currently air magic is (expert) 6
+    EXPECT_EQ(pParty->pCharacters[3].pActiveSkills[CHARACTER_SKILL_AIR], CombinedSkillValue(6, CHARACTER_SKILL_MASTERY_EXPERT));
     EXPECT_EQ(pParty->pCharacters[3].GetItemsBonus(CHARACTER_ATTRIBUTE_SKILL_AIR), 3);
-    pParty->pCharacters[3].pActiveSkills[CHARACTER_SKILL_AIR].setLevel(5);
+    pParty->pCharacters[3].pActiveSkills[CHARACTER_SKILL_AIR] = CombinedSkillValue(5, CHARACTER_SKILL_MASTERY_EXPERT);
     EXPECT_EQ(pParty->pCharacters[3].GetItemsBonus(CHARACTER_ATTRIBUTE_SKILL_AIR), 2);
 }
 
@@ -1404,4 +1429,12 @@ GAME_TEST(Issues, Issue1038) {
     EXPECT_EQ(pParty->pCharacters[1].GetMajorConditionIdx(), CONDITION_INSANE);
     EXPECT_EQ(pParty->pCharacters[2].GetMajorConditionIdx(), CONDITION_SLEEP);
     EXPECT_EQ(pParty->pCharacters[3].GetMajorConditionIdx(), CONDITION_UNCONSCIOUS);
+}
+
+GAME_TEST(Issues, Issue1051) {
+    // Collision code asserts when fighting Magogs in Nighon Tunnels.
+    // Note that the bug only reproduces on high fps, the trace is shot at 15ms per frame.
+    test->playTraceFromTestData("issue_1051.mm7", "issue_1051.json", [] {
+        EXPECT_EQ(engine->config->debug.TraceFrameTimeMs.value(), 15); // Don't redo this at different FPS.
+    });
 }

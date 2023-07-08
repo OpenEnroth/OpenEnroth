@@ -705,7 +705,7 @@ bool SpellBuff::IsBuffExpiredToTime(GameTime time) {
 }
 
 bool SpellBuff::Apply(GameTime expire_time, CharacterSkillMastery uSkillMastery,
-                      CHARACTER_SKILL_LEVEL uPower, int uOverlayID,
+                      int uPower, int uOverlayID,
                       uint8_t caster) {
     // For bug catching
     Assert(uSkillMastery >= CHARACTER_SKILL_MASTERY_NOVICE && uSkillMastery <= CHARACTER_SKILL_MASTERY_GRANDMASTER
@@ -772,7 +772,7 @@ void SpellStats::Initialize() {
     }
 }
 
-void eventCastSpell(SPELL_TYPE uSpellID, CharacterSkillMastery skillMastery, CHARACTER_SKILL_LEVEL skillLevel, int fromx,
+void eventCastSpell(SPELL_TYPE uSpellID, CharacterSkillMastery skillMastery, int skillLevel, int fromx,
                     int fromy, int fromz, int tox, int toy, int toz) {
     // For bug catching
     Assert(skillMastery >= CHARACTER_SKILL_MASTERY_NOVICE && skillMastery <= CHARACTER_SKILL_MASTERY_GRANDMASTER,
@@ -1057,7 +1057,7 @@ bool IsSpellQuickCastableOnShiftClick(SPELL_TYPE uSpellID) {
     return (pSpellDatas[uSpellID].stats & 0xC) != 0;
 }
 
-int CalcSpellDamage(SPELL_TYPE uSpellID, CHARACTER_SKILL_LEVEL spellLevel, CharacterSkillMastery skillMastery, int currentHp) {
+int CalcSpellDamage(SPELL_TYPE uSpellID, int spellLevel, CharacterSkillMastery skillMastery, int currentHp) {
     int result;       // eax@1
     unsigned int diceSides;  // [sp-4h] [bp-8h]@9
 

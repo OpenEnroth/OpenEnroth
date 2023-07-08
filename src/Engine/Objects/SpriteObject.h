@@ -73,7 +73,7 @@ struct SpriteObject {
     uint16_t uFacing = 0;
     uint16_t uSoundID = 0;
     SpriteAttributes uAttributes = 0;
-    int16_t uSectorID = 0;
+    int uSectorID = 0;
     uint16_t uSpriteFrameID = 0;
     int16_t tempLifetime = 0;
     int16_t field_22_glow_radius_multiplier = 1;

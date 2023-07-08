@@ -159,7 +159,7 @@ class IRender {
 
     virtual void DrawOutdoorBuildings() = 0;
 
-    virtual void DrawIndoorSky(unsigned int uNumVertices, unsigned int uFaceID = 0) = 0;
+    virtual void DrawIndoorSky(unsigned int uNumVertices, int uFaceID = 0) = 0;
     virtual void DrawOutdoorSky() = 0;
 
     virtual void PrepareDecorationsRenderList_ODM() = 0;

@@ -281,7 +281,7 @@ void Engine::DrawGUI() {
         if (uGameState == GAME_STATE_CHANGE_LOCATION) {
             floor_level_str = "Loading Level!";
         } else if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
-            uint uFaceID;
+            int uFaceID;
             int sector_id = pBLVRenderParams->uPartySectorID;
             int floor_level = BLV_GetFloorLevel(pParty->pos/* + Vec3i(0,0,40) */, sector_id, &uFaceID);
             floor_level_str = fmt::format("BLV_GetFloorLevel: {}   face_id {}\n", floor_level, uFaceID);
@@ -820,7 +820,7 @@ bool MM7_LoadLods() {
 }
 
 //----- (004651F4) --------------------------------------------------------
-bool Engine::MM7_Initialize() {
+void Engine::MM7_Initialize() {
     grng->seed(platform->tickCount());
     vrng->seed(platform->tickCount());
 
@@ -920,8 +920,6 @@ bool Engine::MM7_Initialize() {
     pMediaPlayer->Initialize();
 
     dword_6BE364_game_settings_1 |= GAME_SETTINGS_4000;
-
-    return true;
 }
 
 //----- (00465D0B) --------------------------------------------------------
@@ -986,14 +984,7 @@ void Engine::SecondaryInitialization() {
 }
 
 void Engine::Initialize() {
-    if (!MM7_Initialize()) {
-        log->warning("MM7_Initialize: failed");
-
-        if (engine != nullptr) {
-            engine->Deinitialize();
-        }
-        exit(-1);
-    }
+    MM7_Initialize();
 
     pEventTimer->Pause();
 
@@ -1083,6 +1074,9 @@ void PrepareToLoadODM(bool bLoading, ODMRenderParams *a2) {
 void Engine::ResetCursor_Palettes_LODs_Level_Audio_SFT_Windows() {
     if (mouse)
         mouse->SetCursorImage("MICON1");
+
+    // Render billboards are used in hit tests, but we're releasing textures, so can't use them anymore.
+    render->uNumBillboardsToDraw = 0;
 
     pBitmaps_LOD->ReleaseAll2();
     pSprites_LOD->DeleteSomeOtherSprites();

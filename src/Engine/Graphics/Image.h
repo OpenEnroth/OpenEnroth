@@ -15,7 +15,6 @@ class ImageLoader;
 class GraphicsImage {
  public:
     explicit GraphicsImage(bool lazy_initialization = true);
-    ~GraphicsImage();
 
     static GraphicsImage *Create(RgbaImage image);
     static GraphicsImage *Create(size_t width, size_t height);
@@ -33,10 +32,13 @@ class GraphicsImage {
 
     std::string *GetName();
 
-    bool Release();
+    void Release();
 
     [[nodiscard]] TextureRenderId renderId(bool load = true);
     void releaseRenderId();
+
+ protected:
+    ~GraphicsImage(); // Call Release() instead.
 
  protected:
     bool _lazyInitialization = false;

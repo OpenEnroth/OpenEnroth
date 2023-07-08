@@ -47,7 +47,10 @@ static bool CollideSphereWithFace(BLVFace *face, const Vec3f &pos, float radius,
         return false;
 
     float dir_normal_projection = dot(dir, face->facePlane.normal);
-    assert(dir_normal_projection < 0.01f); // Checked by the caller, we should be moving into the face or sideways.
+
+    // This is checked by the caller, we should be moving into the face or sideways, so projection of dir onto the
+    // face normal should either be negative or close to zero.
+    assert(dir_normal_projection < 0.01f);
 
     float center_face_distance = face->facePlane.signedDistanceTo(pos);
     assert(center_face_distance > 0); // Checked by the caller, we should be in front of the face, not behind it.
@@ -167,18 +170,12 @@ static void CollideBodyWithFace(BLVFace *face, int face_pid, bool ignore_etherea
         }
     };
 
-    collide_once(
-        collision_state.position_lo,
-        collision_state.new_position_lo,
-        collision_state.direction,
-        collision_state.radius_lo);
+    collide_once(collision_state.position_lo, collision_state.new_position_lo, collision_state.direction, collision_state.radius_lo);
 
-    if(collision_state.check_hi)
-        collide_once(
-            collision_state.position_hi,
-            collision_state.new_position_hi,
-            collision_state.direction,
-            collision_state.radius_hi);
+    if (!collision_state.check_hi)
+        return;
+
+    collide_once(collision_state.position_hi, collision_state.new_position_hi, collision_state.direction, collision_state.radius_hi);
 }
 
 /**
@@ -269,7 +266,7 @@ bool CollisionState::PrepareAndCheckIfStationary(int dt_fp) {
     }
 
     this->move_distance = dt * this->speed - this->total_move_distance;
-    if (this->move_distance <= 0)
+    if (this->move_distance <= this->min_move_distance)
         return true;
 
     this->new_position_hi = this->position_hi + this->move_distance * this->direction;
@@ -505,7 +502,7 @@ void ProcessActorCollisionsBLV(Actor &actor, bool isAboveGround, bool isFlying) 
         bool isInCrowd = actorCollisions > 1;
 
         Vec3f newPos = actor.pos.toFloat() + collision_state.adjusted_move_distance * collision_state.direction;
-        unsigned int newFaceID = -1;
+        int newFaceID = -1;
         int newFloorZ = GetIndoorFloorZ(newPos.toInt(), &collision_state.uSectorID, &newFaceID);
         if (newFloorZ == -30000)
             break; // New pos is out of bounds, running more iterations won't help.

@@ -156,10 +156,7 @@ void BLVFace::FromODM(ODMFace *face) {
     this->uAttributes = face->uAttributes;
     this->pBounding = face->pBoundingBox;
     this->zCalc = face->zCalc;
-    this->pXInterceptDisplacements = face->pXInterceptDisplacements.data();
-    this->pYInterceptDisplacements = face->pYInterceptDisplacements.data();
-    this->pZInterceptDisplacements = face->pZInterceptDisplacements.data();
-    this->uPolygonType = (PolygonType)face->uPolygonType;
+    this->uPolygonType = face->uPolygonType;
     this->uNumVertices = face->uNumVertices;
     this->resource = face->resource;
     this->pVertexIDs = face->pVertexIDs.data();
@@ -309,7 +306,9 @@ void IndoorLocation::Load(const std::string &filename, int num_days_played, int 
 
 //----- (0049AC17) --------------------------------------------------------
 int IndoorLocation::GetSector(int sX, int sY, int sZ) {
-    if (uCurrentlyLoadedLevelType != LEVEL_INDOOR) return 0;
+    if (uCurrentlyLoadedLevelType != LEVEL_INDOOR)
+        return 0;
+
     if (pSectors.size() < 2) {
         // __debugbreak();
         return 0;
@@ -341,7 +340,7 @@ int IndoorLocation::GetSector(int sX, int sY, int sZ) {
 
         // loop over check faces
         for (uint z = 0; z < FloorsAndPortals; ++z) {
-            uint uFaceID;
+            int uFaceID;
             if (z < pSector->uNumFloors)
                 uFaceID = pSector->pFloors[z];
             else
@@ -699,12 +698,10 @@ void UpdateActors_BLV() {
         if (actor.aiState == Removed || actor.aiState == Disabled || actor.aiState == Summoned || actor.moveSpeed == 0)
             continue;
 
-        unsigned int uFaceID;
-        unsigned int uSectorID = actor.sectorId;
-        int floorZ = GetIndoorFloorZ(actor.pos, &uSectorID, &uFaceID);
-        actor.sectorId = uSectorID;
+        int uFaceID;
+        int floorZ = GetIndoorFloorZ(actor.pos, &actor.sectorId, &uFaceID);
 
-        if (uSectorID == 0 || floorZ <= -30000)
+        if (actor.sectorId == 0 || floorZ <= -30000)
             continue;
 
         bool isFlying = actor.monsterInfo.uFlying;
@@ -979,7 +976,7 @@ void PrepareToLoadBLV(bool bLoading) {
 }
 
 //----- (0046CEC3) --------------------------------------------------------
-int BLV_GetFloorLevel(const Vec3i &pos, unsigned int uSectorID, unsigned int *pFaceID) {
+int BLV_GetFloorLevel(const Vec3i &pos, int uSectorID, int *pFaceID) {
     // stores faces and floor z levels
     int FacesFound = 0;
     int blv_floor_z[5] = { 0 };
@@ -1038,7 +1035,8 @@ int BLV_GetFloorLevel(const Vec3i &pos, unsigned int uSectorID, unsigned int *pF
 
     // one face found
     if (FacesFound == 1) {
-        *pFaceID = blv_floor_id[0];
+        if (pFaceID)
+            *pFaceID = blv_floor_id[0];
         if (blv_floor_z[0] <= -29000) {
             /*__debugbreak();*/
         }
@@ -1049,30 +1047,33 @@ int BLV_GetFloorLevel(const Vec3i &pos, unsigned int uSectorID, unsigned int *pF
     if (!FacesFound) {
         logger->verbose("Floorlvl fail: {} {} {}", pos.x, pos.y, pos.z);
 
-        *pFaceID = -1;
+        if (pFaceID)
+            *pFaceID = -1;
         return -30000;
     }
 
     // multiple faces found - pick nearest
     int result = blv_floor_z[0];
-    *pFaceID = blv_floor_id[0];
+    int faceId = blv_floor_id[0];
     for (uint i = 1; i < FacesFound; ++i) {
         int v38 = blv_floor_z[i];
 
         if (abs(pos.z - v38) <= abs(pos.z - result)) {
             result = blv_floor_z[i];
             if (blv_floor_z[i] <= -29000) __debugbreak();
-            *pFaceID = blv_floor_id[i];
+            faceId = blv_floor_id[i];
         }
     }
 
     if (result <= -29000) __debugbreak();
 
+    if (pFaceID)
+        *pFaceID = faceId;
     return result;
 }
 
 //----- (0043FA33) --------------------------------------------------------
-void IndoorLocation::PrepareDecorationsRenderList_BLV(unsigned int uDecorationID, unsigned int uSectorID) {
+void IndoorLocation::PrepareDecorationsRenderList_BLV(unsigned int uDecorationID, int uSectorID) {
     unsigned int v8;       // edi@5
     int v9;                // edi@5
     int v10;               // eax@7
@@ -1468,8 +1469,8 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
     bool on_water = false;
     bool bFeatherFall;
 
-    unsigned int sectorId = pBLVRenderParams->uPartySectorID;
-    unsigned int faceId = -1;
+    int sectorId = pBLVRenderParams->uPartySectorID;
+    int faceId = -1;
     int floor_z = GetIndoorFloorZ(pParty->pos + Vec3i(0, 0, 40), &sectorId, &faceId);
 
     if (pParty->bFlying)  // disable flight
@@ -1519,6 +1520,9 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
     if (pParty->pos.z <= floor_z + 1) {
         pParty->pos.z = floor_z + 1;
         pParty->uFallStartZ = floor_z + 1;
+
+        // TODO(captainurist): there's some very weird logic with faceId / faceEvent processing in this function.
+        //                     We check first face, then move, then check the new face. Why not check once?
 
         // not hovering & stepped onto a new face => activate potential pressure plate,
         // TODO: but why is this condition under "below floor level" if above?
@@ -2025,7 +2029,6 @@ int SpawnEncounterMonsters(MapInfo *map_info, int enc_index) {
         int party_sectorID = pBLVRenderParams->uPartySectorID;
         int mon_sectorID;
         int indoor_floor_level;
-        unsigned int uFaceID;
 
         // 100 attempts to make a usuable spawn point
         for (loop_cnt = 0; loop_cnt < 100; ++loop_cnt) {
@@ -2042,7 +2045,7 @@ int SpawnEncounterMonsters(MapInfo *map_info, int enc_index) {
             mon_sectorID = pIndoor->GetSector(enc_spawn_point.vPosition.x, enc_spawn_point.vPosition.y, pParty->pos.z);
             if (mon_sectorID == party_sectorID) {
                 // check proposed floor level
-                indoor_floor_level = BLV_GetFloorLevel(enc_spawn_point.vPosition, mon_sectorID, &uFaceID);
+                indoor_floor_level = BLV_GetFloorLevel(enc_spawn_point.vPosition, mon_sectorID);
                 enc_spawn_point.vPosition.z = indoor_floor_level;
                 if (indoor_floor_level != -30000) {
                     // break if spanwn point is okay
@@ -2091,7 +2094,7 @@ void FindBillboardsLightLevels_BLV() {
     }
 }
 
-int GetIndoorFloorZ(const Vec3i &pos, unsigned int *pSectorID, unsigned int *pFaceID) {
+int GetIndoorFloorZ(const Vec3i &pos, int *pSectorID, int *pFaceID) {
     if (*pSectorID != 0) {
         int result = BLV_GetFloorLevel(pos, *pSectorID, pFaceID);
         if (result != -30000 && result <= pos.z + 50)
@@ -2100,7 +2103,8 @@ int GetIndoorFloorZ(const Vec3i &pos, unsigned int *pSectorID, unsigned int *pFa
 
     *pSectorID = pIndoor->GetSector(pos);
     if (*pSectorID == 0) {
-        *pFaceID = -1;
+        if (pFaceID)
+            *pFaceID = -1;
         return -30000;
     }
 
@@ -2108,7 +2112,7 @@ int GetIndoorFloorZ(const Vec3i &pos, unsigned int *pSectorID, unsigned int *pFa
 }
 
 //----- (0047272C) --------------------------------------------------------
-int GetApproximateIndoorFloorZ(const Vec3i &pos, unsigned int *pSectorID, unsigned int *pFaceID) {
+int GetApproximateIndoorFloorZ(const Vec3i &pos, int *pSectorID, int *pFaceID) {
     std::array<Vec3i, 5> attempts = {{
         pos + Vec3i(-2, 0, 40),
         pos + Vec3i(2, 0, 40),

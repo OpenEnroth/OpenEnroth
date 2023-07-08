@@ -159,18 +159,18 @@ int Game::run() {
     ::render = _render;
 
     if (!_render) {
-        _log->warning("Render creation failed");
+        _log->error("Render creation failed");
         return -1;
     }
 
     if (!_render->Initialize()) {
-        _log->warning("Render failed to initialize");
+        _log->error("Render failed to initialize");
         return -1;
     }
 
     _nuklear = Nuklear::Initialize();
     if (!_nuklear) {
-        _log->warning("Nuklear failed to initialize");
+        _log->error("Nuklear failed to initialize");
     }
     ::nuklear = _nuklear;
     if (_nuklear) {
@@ -193,7 +193,7 @@ int Game::run() {
     ::engine = _engine.get();
 
     if (!_engine) {
-        _log->warning("Engine creation failed");
+        _log->error("Engine creation failed");
         return -1;
     }
 
@@ -1239,7 +1239,8 @@ void Game::processQueuedMessages() {
                 if (!pParty->hasActiveCharacter() || pParty->activeCharacter().timeToRecovery) {
                     continue;
                 }
-                pushSpellOrRangedAttack(pParty->activeCharacter().uQuickSpell, pParty->activeCharacterIndex() - 1, 0, 0, pParty->activeCharacterIndex());
+                pushSpellOrRangedAttack(pParty->activeCharacter().uQuickSpell, pParty->activeCharacterIndex() - 1,
+                                        CombinedSkillValue::none(), 0, pParty->activeCharacterIndex());
                 continue;
             }
 
@@ -1570,7 +1571,7 @@ void Game::processQueuedMessages() {
 
             case UIMSG_CastSpellFromBook:
                 if (pTurnEngine->turn_stage != TE_MOVEMENT) {
-                    pushSpellOrRangedAttack(static_cast<SPELL_TYPE>(uMessageParam), uMessageParam2, 0, 0, 0);
+                    pushSpellOrRangedAttack(static_cast<SPELL_TYPE>(uMessageParam), uMessageParam2, CombinedSkillValue::none(), 0, 0);
                 }
                 continue;
 
@@ -1672,21 +1673,21 @@ void Game::processQueuedMessages() {
             {
                 CharacterSkillType skill = static_cast<CharacterSkillType>(uMessageParam);
                 Character *character = &pParty->activeCharacter();
-                int skill_level = character->getSkillValue(skill).level();
-                const char *statusString;
-                if (character->uSkillPoints < skill_level + 1) {
-                    statusString = localization->GetString(LSTR_NOT_ENOUGH_SKILL_POINTS);
+                CombinedSkillValue skillValue = character->getSkillValue(skill);
+                int cost = skillValue.level() + 1;
+
+                if (character->uSkillPoints < cost) {
+                    GameUI_SetStatusBar(LSTR_NOT_ENOUGH_SKILL_POINTS);
                 } else {
-                    if (skill_level < skills_max_level[skill]) {
-                        character->SetSkillLevel(skill, skill_level + 1);
-                        character->uSkillPoints -= skill_level + 1;
+                    if (skillValue.level() < skills_max_level[skill]) {
+                        character->setSkillValue(skill, CombinedSkillValue::increaseLevel(skillValue));
+                        character->uSkillPoints -= cost;
                         character->playReaction(SPEECH_SKILL_INCREASE);
                         pAudioPlayer->playUISound(SOUND_quest);
-                        continue;
+                    } else {
+                        GameUI_SetStatusBar(LSTR_SKILL_ALREADY_MASTERED);
                     }
-                    statusString = localization->GetString(LSTR_SKILL_ALREADY_MASTERED);
                 }
-                GameUI_SetStatusBar(statusString);
                 continue;
             }
             case UIMSG_ClickStatsBtn:
@@ -1963,11 +1964,11 @@ void Game::processQueuedMessages() {
                 continue;
             case UIMSG_DebugLearnSkills:
                 for (Character &character : pParty->pCharacters) { // loop over players
-                    for (CharacterSkillType ski : allSkills()) {  // loop over skills
+                    for (CharacterSkillType skill : allSkills()) {  // loop over skills
                         // if class can learn this skill
-                        if (skillMaxMasteryPerClass[character.classType][ski] > CHARACTER_SKILL_MASTERY_NONE) {
-                            if (character.getSkillValue(ski).level() == 0) {
-                                character.SetSkillLevel(ski, 1);
+                        if (skillMaxMasteryPerClass[character.classType][skill] > CHARACTER_SKILL_MASTERY_NONE) {
+                            if (character.getSkillValue(skill) == CombinedSkillValue::none()) {
+                                character.setSkillValue(skill, CombinedSkillValue::novice());
                             }
                         }
                     }
@@ -2040,10 +2041,6 @@ void Game::processQueuedMessages() {
                 continue;
             case UIMSG_DebugSeasonsChange:
                 _engine->config->graphics.SeasonsChange.toggle();
-                pAudioPlayer->playUISound(SOUND_StartMainChoice02);
-                continue;
-            case UIMSG_DebugVerboseLogging:
-                _engine->config->debug.VerboseLogging.toggle();
                 pAudioPlayer->playUISound(SOUND_StartMainChoice02);
                 continue;
             case UIMSG_DebugReloadShader:

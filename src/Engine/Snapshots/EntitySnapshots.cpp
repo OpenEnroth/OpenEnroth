@@ -45,7 +45,7 @@ static void reconstruct(int64_t src, GameTime *dst) {
 }
 
 static void snapshot(const CombinedSkillValue &src, uint16_t *dst) {
-    *dst = src.join();
+    *dst = src.joined();
 }
 
 static void reconstruct(const uint16_t &src, CombinedSkillValue *dst) {
@@ -77,9 +77,6 @@ void reconstruct(const BLVFace_MM7 &src, BLVFace *dst) {
     dst->zCalc.init(dst->facePlane);
     dst->uAttributes = static_cast<FaceAttributes>(src.attributes);
     dst->pVertexIDs = nullptr;
-    dst->pXInterceptDisplacements = nullptr;
-    dst->pYInterceptDisplacements = nullptr;
-    dst->pZInterceptDisplacements = nullptr;
     dst->pVertexUIDs = nullptr;
     dst->pVertexVIDs = nullptr;
     dst->uFaceExtraID = src.faceExtraId;
@@ -1028,8 +1025,8 @@ void snapshot(const Actor &src, Actor_MM7 *dst) {
     dst->pMonsterInfo.numCharactersAttackedPerSpecialAbility = src.monsterInfo.uNumCharactersAttackedPerSpecialAbility;
     dst->pMonsterInfo.id = src.monsterInfo.uID;
     dst->pMonsterInfo.bloodSplatOnDeath = src.monsterInfo.bBloodSplatOnDeath;
-    dst->pMonsterInfo.spellSkillAndMastery1 = src.monsterInfo.uSpellSkillAndMastery1;
-    dst->pMonsterInfo.spellSkillAndMastery2 = src.monsterInfo.uSpellSkillAndMastery2;
+    snapshot(src.monsterInfo.uSpellSkillAndMastery1, &dst->pMonsterInfo.spellSkillAndMastery1);
+    snapshot(src.monsterInfo.uSpellSkillAndMastery2, &dst->pMonsterInfo.spellSkillAndMastery2);
     dst->pMonsterInfo.field_3C_some_special_attack = src.monsterInfo.field_3C_some_special_attack;
     dst->pMonsterInfo.field_3E = src.monsterInfo.field_3E;
     dst->pMonsterInfo.hp = src.monsterInfo.uHP;
@@ -1122,8 +1119,8 @@ void reconstruct(const Actor_MM7 &src, Actor *dst) {
     dst->monsterInfo.uNumCharactersAttackedPerSpecialAbility = src.pMonsterInfo.numCharactersAttackedPerSpecialAbility;
     dst->monsterInfo.uID = src.pMonsterInfo.id;
     dst->monsterInfo.bBloodSplatOnDeath = src.pMonsterInfo.bloodSplatOnDeath;
-    dst->monsterInfo.uSpellSkillAndMastery1 = src.pMonsterInfo.spellSkillAndMastery1;
-    dst->monsterInfo.uSpellSkillAndMastery2 = src.pMonsterInfo.spellSkillAndMastery2;
+    reconstruct(src.pMonsterInfo.spellSkillAndMastery1, &dst->monsterInfo.uSpellSkillAndMastery1);
+    reconstruct(src.pMonsterInfo.spellSkillAndMastery2, &dst->monsterInfo.uSpellSkillAndMastery2);
     dst->monsterInfo.field_3C_some_special_attack = src.pMonsterInfo.field_3C_some_special_attack;
     dst->monsterInfo.field_3E = src.pMonsterInfo.field_3E;
     dst->monsterInfo.uHP = src.pMonsterInfo.hp;
@@ -1299,9 +1296,6 @@ void reconstruct(const ODMFace_MM7 &src, ODMFace *dst) {
     dst->pVertexIDs = src.pVertexIDs;
     dst->pTextureUIDs = src.pTextureUIDs;
     dst->pTextureVIDs = src.pTextureVIDs;
-    dst->pXInterceptDisplacements = src.pXInterceptDisplacements;
-    dst->pYInterceptDisplacements = src.pYInterceptDisplacements;
-    dst->pZInterceptDisplacements = src.pZInterceptDisplacements;
     dst->resource = nullptr;
     dst->sTextureDeltaU = src.sTextureDeltaU;
     dst->sTextureDeltaV = src.sTextureDeltaV;

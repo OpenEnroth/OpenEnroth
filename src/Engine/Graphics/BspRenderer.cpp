@@ -9,8 +9,8 @@
 BspRenderer *pBspRenderer = new BspRenderer();
 
 //----- (004B0EA8) --------------------------------------------------------
-void BspRenderer::AddFaceToRenderList_d3d(unsigned int node_id, unsigned int uFaceID) {
-    uint16_t pTransitionSector;  // ax@11
+void BspRenderer::AddFaceToRenderList_d3d(int node_id, int uFaceID) {
+    int pTransitionSector;  // ax@11
     // int dotdist;                              // edx@15
 
     nodes[num_nodes].viewing_portal_id = -1;
@@ -168,7 +168,7 @@ void PrepareBspRenderList_BLV() {
 
 
 //----- (00440639) --------------------------------------------------------
-void AddBspNodeToRenderList(unsigned int node_id) {
+void AddBspNodeToRenderList(int node_id) {
     BLVSector *pSector = &pIndoor->pSectors[pBspRenderer->nodes[node_id].uSectorID];
 
     for (uint i = 0; i < pSector->uNumNonBSPFaces; ++i)
@@ -181,14 +181,14 @@ void AddBspNodeToRenderList(unsigned int node_id) {
 
 
 //----- (004406BC) --------------------------------------------------------
-void AddNodeBSPFaces(unsigned int node_id, unsigned int uFirstNode) {
+void AddNodeBSPFaces(int node_id, int uFirstNode) {
     BLVSector *pSector;       // esi@2
     BSPNode *pNode;           // edi@2
     BLVFace *pFace;           // eax@2
-    int16_t v6;               // ax@6
+    int v6;               // ax@6
     int v7;                   // ebp@10
     int v8;                   // ebx@10
-    int16_t v9;               // di@18
+    int v9;               // di@18
 
     BspRenderer_ViewportNode *node = &pBspRenderer->nodes[node_id];
 

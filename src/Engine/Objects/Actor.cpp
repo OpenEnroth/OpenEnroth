@@ -209,13 +209,13 @@ void Actor::SetRandomGoldIfTheresNoItem() {
 
 //----- (00404AC7) --------------------------------------------------------
 void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
-                           SPELL_TYPE uSpellID, ABILITY_INDEX a4, CHARACTER_SKILL uSkillMastery) {
+                           SPELL_TYPE uSpellID, ABILITY_INDEX a4, CombinedSkillValue uSkillMastery) {
     GameTime spellLength = GameTime(0);
 
     SpriteObject sprite;
     Actor *actorPtr = &pActors[uActorID];
-    CHARACTER_SKILL_LEVEL realPoints = GetSkillLevel(uSkillMastery);
-    CharacterSkillMastery masteryLevel = GetSkillMastery(uSkillMastery);
+    int realPoints = uSkillMastery.level();
+    CharacterSkillMastery masteryLevel = uSkillMastery.mastery();
     int distancemod = 3;
     int spriteId;
 
@@ -248,8 +248,8 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
             sprite.uObjectDescID = GetObjDescId(uSpellID);
             sprite.containing_item.Reset();
             sprite.uSpellID = uSpellID;
-            sprite.spell_level = uSkillMastery;
-            sprite.spell_skill = CHARACTER_SKILL_MASTERY_NONE;
+            sprite.spell_level = uSkillMastery.level();
+            sprite.spell_skill = CHARACTER_SKILL_MASTERY_NONE; // TODO(captainurist): why do we ignore passed skill mastery?
             sprite.vPosition = actorPtr->pos + Vec3i(0, 0, actorPtr->height / 2);
             sprite.uFacing = (short)pDir->uYawAngle;
             sprite.uSoundID = 0;
@@ -329,10 +329,10 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
                 sprite.containing_item.Reset();
                 sprite.uType = SpellSpriteMapping[uSpellID];
                 sprite.uObjectDescID = GetObjDescId(uSpellID);
-                sprite.spell_level = uSkillMastery;
+                sprite.spell_level = uSkillMastery.level();
+                sprite.spell_skill = CHARACTER_SKILL_MASTERY_NONE; // TODO(captainurist): why do we ignore passed skill mastery?
                 sprite.vPosition = pParty->pos + Vec3i(0, 0, originHeight + 2500);
                 sprite.uSpellID = SPELL_FIRE_METEOR_SHOWER;
-                sprite.spell_skill = CHARACTER_SKILL_MASTERY_NONE;
                 sprite.uAttributes = 0;
                 sprite.uSectorID = 0;
                 sprite.uSpriteFrameID = 0;
@@ -378,8 +378,8 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
             sprite.uObjectDescID = GetObjDescId(uSpellID);
             sprite.containing_item.Reset();
             sprite.uSpellID = SPELL_AIR_SPARKS;
-            sprite.spell_level = uSkillMastery;
-            sprite.spell_skill = CHARACTER_SKILL_MASTERY_NONE;
+            sprite.spell_level = uSkillMastery.level();
+            sprite.spell_skill = CHARACTER_SKILL_MASTERY_NONE; // TODO(captainurist): why do we ignore passed skill mastery?
             sprite.vPosition = actorPtr->pos + Vec3i(0, 0, actorPtr->height / 2);
             sprite.uFacing = pDir->uYawAngle;
             sprite.uSoundID = 0;
@@ -633,8 +633,8 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
             sprite.uObjectDescID = GetObjDescId(uSpellID);
             sprite.containing_item.Reset();
             sprite.uSpellID = uSpellID;
-            sprite.spell_level = uSkillMastery;
-            sprite.spell_skill = CHARACTER_SKILL_MASTERY_NONE;
+            sprite.spell_level = uSkillMastery.level();
+            sprite.spell_skill = CHARACTER_SKILL_MASTERY_NONE; // TODO(captainurist): why do we ignore passed skill mastery?
             sprite.vPosition = actorPtr->pos + Vec3i(0, 0, actorPtr->height / 2);
             sprite.uFacing = pDir->uYawAngle;
             sprite.uSoundID = 0;
@@ -1279,8 +1279,8 @@ int Actor::_43B3E0_CalcDamage(ABILITY_INDEX dmgSource) {
     int damageBonus;
     SPELL_TYPE spellID;
     int spellPower = 0;
-    CHARACTER_SKILL skill;
-    CHARACTER_SKILL_LEVEL skillLevel = 0;
+    CombinedSkillValue skill;
+    int skillLevel = 0;
     CharacterSkillMastery skillMastery = CHARACTER_SKILL_MASTERY_NONE;
 
     switch (dmgSource) {
@@ -1303,15 +1303,15 @@ int Actor::_43B3E0_CalcDamage(ABILITY_INDEX dmgSource) {
         case ABILITY_SPELL1:
             spellID = this->monsterInfo.uSpell1ID;
             skill = this->monsterInfo.uSpellSkillAndMastery2;
-            skillLevel = GetSkillLevel(skill);
-            skillMastery = GetSkillMastery(skill);
+            skillLevel = skill.level();
+            skillMastery = skill.mastery();
             return CalcSpellDamage(spellID, skillLevel, skillMastery, 0);
             break;
         case ABILITY_SPELL2:
             spellID = this->monsterInfo.uSpell2ID;
             skill = this->monsterInfo.uSpellSkillAndMastery2;
-            skillLevel = GetSkillLevel(skill);
-            skillMastery = GetSkillMastery(skill);
+            skillLevel = skill.level();
+            skillMastery = skill.mastery();
             return CalcSpellDamage(spellID, skillLevel, skillMastery, 0);
             break;
         case ABILITY_SPECIAL:
@@ -2550,7 +2550,6 @@ void Actor::SummonMinion(int summonerId) {
     int64_t v15;                 // edi@10
     int64_t v17;                 // ebx@10
     unsigned int v19;        // qax@10
-    int result;              // eax@13
     unsigned int monsterId;  // [sp+10h] [bp-18h]@8
     int v27;                 // [sp+18h] [bp-10h]@10
     int actorSector;         // [sp+1Ch] [bp-Ch]@8
@@ -2570,11 +2569,11 @@ void Actor::SummonMinion(int summonerId) {
     v17 = TrigLUT.sin(v13) * v27 + this->pos.y;
 
     if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
-        result = pIndoor->GetSector(v15, v17, this->pos.z);
-        if (result != actorSector) return;
-        result = BLV_GetFloorLevel(Vec3i(v15, v17, v27), result, &monsterId);
-        if (result != -30000) return;
-        if (abs(result - v27) > 1024) return;
+        int sectorId = pIndoor->GetSector(v15, v17, this->pos.z);
+        if (sectorId != actorSector) return;
+        int z = BLV_GetFloorLevel(Vec3i(v15, v17, v27), sectorId);
+        if (z != -30000) return;
+        if (abs(z - v27) > 1024) return;
     }
 
     extraSummonLevel = this->monsterInfo.uSpecialAbilityDamageDiceRolls;
@@ -3099,9 +3098,6 @@ void Actor::InitializeActors() {
     if (pParty->isPartyGood()) good = true;
     if (pParty->isPartyEvil()) evil = true;
 
-    logger->warning("{} {} {}", __FILE__, __FUNCTION__, __LINE__);  // ai_near_actors_targets_pid[i] for AI_Stand seems always
-                                                                    // 0;  original code behaviour is identical
-
     ai_near_actors_targets_pid.fill(0);
 
     for (uint i = 0; i < pActors.size(); ++i) {
@@ -3139,7 +3135,7 @@ void Actor::DamageMonsterFromParty(signed int a1, unsigned int uActorID_Monster,
     uint16_t v43{};            // ax@132
     uint16_t v45{};            // ax@132
     // uint64_t v46; // [sp+Ch] [bp-60h]@6
-    CHARACTER_SKILL_LEVEL skillLevel = 0;                    // [sp+44h] [bp-28h]@1
+    int skillLevel = 0;                    // [sp+44h] [bp-28h]@1
     bool IsAdditionalDamagePossible;  // [sp+50h] [bp-1Ch]@1
     int v61;                          // [sp+58h] [bp-14h]@1
     bool isLifeStealing;              // [sp+5Ch] [bp-10h]@1
@@ -4513,7 +4509,6 @@ bool SpawnActor(unsigned int uMonsterID) {
 
 //----- (0044FA4C) --------------------------------------------------------
 void Spawn_Light_Elemental(int spell_power, CharacterSkillMastery caster_skill_mastery, int duration_game_seconds) {
-    unsigned int uFaceID;  // [sp+8h] [bp-18h]@16
     // size_t uActorIndex;            // [sp+10h] [bp-10h]@6
 
     const char *cMonsterName;       // [sp-4h] [bp-24h]@2
@@ -4566,7 +4561,7 @@ void Spawn_Light_Elemental(int spell_power, CharacterSkillMastery caster_skill_m
     int zdiff;
     if (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR ||
             sectorId == partySectorId &&
-            (zlevel = BLV_GetFloorLevel(actor->pos, sectorId, &uFaceID), zlevel != -30000) &&
+            (zlevel = BLV_GetFloorLevel(actor->pos, sectorId), zlevel != -30000) &&
             (zdiff = abs(zlevel - pParty->pos.z), zdiff <= 1024)) {
         actor->summonerId = PID(OBJECT_Character, spell_power);
 
@@ -4602,7 +4597,6 @@ void SpawnEncounter(MapInfo *pMapInfo, SpawnPoint *spawn, int a3, int a4, int a5
     std::string pTexture;        // [sp-4h] [bp-ECh]@9
                            //  char Str[32]; // [sp+Ch] [bp-DCh]@60
     std::string Str2;           // [sp+2Ch] [bp-BCh]@29
-    unsigned int uFaceID;  // [sp+A4h] [bp-44h]@52
     MonsterInfo *Src;      // [sp+A8h] [bp-40h]@50
     int v50;               // [sp+ACh] [bp-3Ch]@47
     std::string Source;         // [sp+B0h] [bp-38h]@20
@@ -4812,7 +4806,7 @@ void SpawnEncounter(MapInfo *pMapInfo, SpawnPoint *spawn, int a3, int a4, int a5
         }
         v37 = pIndoor->GetSector(pPosX, a4, spawn->vPosition.z);
         if (v37 == pSector) {
-            v38 = BLV_GetFloorLevel(Vec3i(pPosX, a4, a3), v37, &uFaceID);
+            v38 = BLV_GetFloorLevel(Vec3i(pPosX, a4, a3), v37);
             v39 = v38;
             if (v38 != -30000) {
                 if (abs(v38 - a3) <= 1024) {

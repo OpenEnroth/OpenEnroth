@@ -6,6 +6,7 @@
 #include "Engine/Spells/SpellBuff.h"
 #include "Engine/Objects/Items.h"
 #include "Engine/Objects/Monsters.h"
+#include "Engine/Objects/CombinedSkillValue.h"
 
 #include "Utility/Geometry/Vec.h"
 #include "Utility/IndexedArray.h"
@@ -133,7 +134,7 @@ class Actor {
     static void AI_RangedAttack(unsigned int uActorID, struct AIDirection *a2,
                                 int type, ABILITY_INDEX a4);
     static void AI_SpellAttack(unsigned int uActorID, struct AIDirection *pDir,
-                               SPELL_TYPE uSpellID, ABILITY_INDEX a4, CHARACTER_SKILL uSkill);
+                               SPELL_TYPE uSpellID, ABILITY_INDEX a4, CombinedSkillValue uSkill);
     static void ActorDamageFromMonster(int attacker_id, unsigned int actor_id,
                                        Vec3i *pVelocity, ABILITY_INDEX a4);
 
@@ -216,7 +217,7 @@ class Actor {
     Vec3s speed;
     uint16_t yawAngle = 0;
     uint16_t pitchAngle = 0;
-    int16_t sectorId = 0;
+    int sectorId = 0;
     uint16_t currentActionLength = 0;
     Vec3s initialPosition;
     Vec3s guardingPosition;

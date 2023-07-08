@@ -76,7 +76,7 @@ class AVStreamWrapper {
         if (dec_ctx != nullptr) {
             // Close the codec
             avcodec_close(dec_ctx);
-            logger->warning("ffmpeg: close decoder context file");
+            logger->verbose("ffmpeg: close decoder context file");
             dec_ctx = nullptr;
         }
     }
@@ -339,7 +339,7 @@ class Movie : public IMovie {
         if (format_ctx) {
             // Close the video file
             avformat_close_input(&format_ctx);
-            logger->warning("close video format context file\n");
+            logger->verbose("close video format context file\n");
             format_ctx = nullptr;
         }
         if (avioContext) {
@@ -499,18 +499,18 @@ class Movie : public IMovie {
                 if (buffer) buffq.push(buffer);
             }
         }
-        logger->info("Audio Packets Queued");
+        logger->verbose("Audio Packets Queued");
 
         // reset video to start
         int err = avformat_seek_file(format_ctx, -1, 0, 0, 0, AVSEEK_FLAG_BACKWARD);
         //int err = av_seek_frame(format_ctx, -1, 0, AVSEEK_FLAG_BACKWARD | AVSEEK_FLAG_ANY);
         if (err < 0) {
-            logger->info("Seek to start failed! - Exit Movie");
+            logger->warning("Seek to start failed! - Exit Movie");
             tex->Release();
             return;
         }
         start_time = std::chrono::system_clock::now();
-        logger->info("Video stream reset");
+        logger->verbose("Video stream reset");
 
         int lastvideopts = -1;
         int desired_frame_number;
@@ -874,7 +874,7 @@ void MPlayer::PlayFullscreenMovie(const std::string &pFilename) {
     GraphicsImage *tex = render->CreateTexture_Blank(pMovie_Track->GetWidth(), pMovie_Track->GetHeight());
 
     if (pMovie->GetFormat() == "bink") {
-        logger->info("bink file");
+        logger->verbose("bink file");
         pMovie->PlayBink();
     } else {
         while (true) {
