@@ -14,7 +14,7 @@ jobs:
       fail-fast: false
       matrix:
         configuration: [Debug, Release]
-        architecture: [x64]
+        architecture: ['arm64-v8a', 'armeabi-v7a', 'x86_64', 'x86']
         target: [android]
         
     steps:
