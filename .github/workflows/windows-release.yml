@@ -44,7 +44,7 @@ jobs:
     - name: Tests
       working-directory: build
       run: |
-        ninja tests
+        nmake UnitTest
 
     - name: Prepare artifact
       shell: pwsh
