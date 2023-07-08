@@ -893,9 +893,9 @@ GAME_TEST(Issues, Issue661) {
 GAME_TEST(Issues, Issue662) {
     // "of Air magic" should give floor(skill / 2) skill level bonus (like all other such bonuses)
     test->loadGameFromTestData("issue_662.mm7");
-    // currently air magic is (expert) 6
+    EXPECT_EQ(pParty->pCharacters[3].pActiveSkills[CHARACTER_SKILL_AIR], CombinedSkillValue(6, CHARACTER_SKILL_MASTERY_EXPERT));
     EXPECT_EQ(pParty->pCharacters[3].GetItemsBonus(CHARACTER_ATTRIBUTE_SKILL_AIR), 3);
-    pParty->pCharacters[3].pActiveSkills[CHARACTER_SKILL_AIR].setLevel(5);
+    pParty->pCharacters[3].pActiveSkills[CHARACTER_SKILL_AIR] = CombinedSkillValue(5, CHARACTER_SKILL_MASTERY_EXPERT);
     EXPECT_EQ(pParty->pCharacters[3].GetItemsBonus(CHARACTER_ATTRIBUTE_SKILL_AIR), 2);
 }
 

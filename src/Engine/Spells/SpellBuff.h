@@ -10,7 +10,7 @@ struct SpellBuff {
      * @offset 0x4584E0
      */
     bool Apply(GameTime time, CharacterSkillMastery uSkillMastery,
-               CHARACTER_SKILL_LEVEL uPower, int uOverlayID, uint8_t caster);
+               int uPower, int uOverlayID, uint8_t caster);
 
     /**
      * @offset 0x458585

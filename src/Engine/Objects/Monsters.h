@@ -11,6 +11,7 @@
 #include "Library/Color/Color.h"
 
 #include "Engine/Spells/SpellEnums.h"
+#include "Engine/Objects/CombinedSkillValue.h"
 
 #include "ActorEnums.h"
 #include "ItemEnums.h"
@@ -175,8 +176,8 @@ struct MonsterInfo {
     uint8_t uNumCharactersAttackedPerSpecialAbility = 0;
     uint16_t uID = 0;
     bool bBloodSplatOnDeath = 0;  // true for bloodsplat on death
-    uint16_t uSpellSkillAndMastery1 = 0;
-    uint16_t uSpellSkillAndMastery2 = 0;
+    CombinedSkillValue uSpellSkillAndMastery1;
+    CombinedSkillValue uSpellSkillAndMastery2;
     int16_t field_3C_some_special_attack = 0;
     int16_t field_3E = 0;
     unsigned int uHP = 0;

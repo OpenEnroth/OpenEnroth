@@ -827,7 +827,7 @@ int Character::GetDisarmTrap() const {
 }
 
 char Character::getLearningPercent() const {
-    CHARACTER_SKILL_LEVEL skill = getActualSkillValue(CHARACTER_SKILL_LEARNING).level();
+    int skill = getActualSkillValue(CHARACTER_SKILL_LEARNING).level();
 
     if (skill) {
         int multiplier = GetMultiplierForSkillLevel(CHARACTER_SKILL_LEARNING, 1, 2, 3, 5);
@@ -2748,7 +2748,7 @@ int Character::GetMagicalBonus(CharacterAttributeType a2) const {
 }
 
 //----- (0048F882) --------------------------------------------------------
-CHARACTER_SKILL_LEVEL Character::GetActualSkillLevel(CharacterSkillType uSkillType) const {
+int Character::GetActualSkillLevel(CharacterSkillType uSkillType) const {
     int bonus_value = 0;
     int result;
 
@@ -3296,7 +3296,7 @@ void Character::Reset(CharacterClassType cls) {
         if (pSkillAvailabilityPerClass[classType / 4][i] != 2)
             continue;
 
-        SetSkillLevel(i, 1);
+        setSkillValue(i, CombinedSkillValue::novice());
     }
 
     memset(&pEquipment, 0, sizeof(CharacterEquipment));
@@ -4073,12 +4073,12 @@ void Character::useItem(int targetCharacter, bool isPortraitClick) {
     }
 }
 
-bool CmpSkillValue(CHARACTER_SKILL valToCompare, CHARACTER_SKILL skillValue) {
-    CHARACTER_SKILL val;
+bool CmpSkillValue(int valToCompare, CombinedSkillValue skillValue) {
+    int val;
     if (valToCompare <= 63)
-        val = skillValue & 0x3F;
+        val = skillValue.level();
     else
-        val = skillValue & skillValue;
+        val = skillValue.joined();
     return val >= valToCompare;
 }
 
@@ -4243,81 +4243,81 @@ bool Character::CompareVariable(VariableType VarNum, int pValue) {
         case VAR_MagicResistanceBonus:
             return this->sResMagicBonus >= pValue;
         case VAR_StaffSkill:
-            return CmpSkillValue(pValue, this->pActiveSkills[CHARACTER_SKILL_STAFF].join());
+            return CmpSkillValue(pValue, this->pActiveSkills[CHARACTER_SKILL_STAFF]);
         case VAR_SwordSkill:
-            return CmpSkillValue(pValue, this->pActiveSkills[CHARACTER_SKILL_SWORD].join());
+            return CmpSkillValue(pValue, this->pActiveSkills[CHARACTER_SKILL_SWORD]);
         case VAR_DaggerSkill:
-            return CmpSkillValue(pValue, this->pActiveSkills[CHARACTER_SKILL_DAGGER].join());
+            return CmpSkillValue(pValue, this->pActiveSkills[CHARACTER_SKILL_DAGGER]);
         case VAR_AxeSkill:
-            return CmpSkillValue(pValue, this->pActiveSkills[CHARACTER_SKILL_AXE].join());
+            return CmpSkillValue(pValue, this->pActiveSkills[CHARACTER_SKILL_AXE]);
         case VAR_SpearSkill:
-            return CmpSkillValue(pValue, this->pActiveSkills[CHARACTER_SKILL_SPEAR].join());
+            return CmpSkillValue(pValue, this->pActiveSkills[CHARACTER_SKILL_SPEAR]);
         case VAR_BowSkill:
-            return CmpSkillValue(pValue, this->pActiveSkills[CHARACTER_SKILL_BOW].join());
+            return CmpSkillValue(pValue, this->pActiveSkills[CHARACTER_SKILL_BOW]);
         case VAR_MaceSkill:
-            return CmpSkillValue(pValue, this->pActiveSkills[CHARACTER_SKILL_MACE].join());
+            return CmpSkillValue(pValue, this->pActiveSkills[CHARACTER_SKILL_MACE]);
         case VAR_BlasterSkill:
-            return CmpSkillValue(pValue, this->pActiveSkills[CHARACTER_SKILL_BLASTER].join());
+            return CmpSkillValue(pValue, this->pActiveSkills[CHARACTER_SKILL_BLASTER]);
         case VAR_ShieldSkill:
-            return CmpSkillValue(pValue, this->pActiveSkills[CHARACTER_SKILL_SHIELD].join());
+            return CmpSkillValue(pValue, this->pActiveSkills[CHARACTER_SKILL_SHIELD]);
         case VAR_LeatherSkill:
-            return CmpSkillValue(pValue, this->pActiveSkills[CHARACTER_SKILL_LEATHER].join());
+            return CmpSkillValue(pValue, this->pActiveSkills[CHARACTER_SKILL_LEATHER]);
         case VAR_SkillChain:
-            return CmpSkillValue(pValue, this->pActiveSkills[CHARACTER_SKILL_CHAIN].join());
+            return CmpSkillValue(pValue, this->pActiveSkills[CHARACTER_SKILL_CHAIN]);
         case VAR_PlateSkill:
-            return CmpSkillValue(pValue, this->pActiveSkills[CHARACTER_SKILL_PLATE].join());
+            return CmpSkillValue(pValue, this->pActiveSkills[CHARACTER_SKILL_PLATE]);
         case VAR_FireSkill:
-            return CmpSkillValue(pValue, this->pActiveSkills[CHARACTER_SKILL_FIRE].join());
+            return CmpSkillValue(pValue, this->pActiveSkills[CHARACTER_SKILL_FIRE]);
         case VAR_AirSkill:
-            return CmpSkillValue(pValue, this->pActiveSkills[CHARACTER_SKILL_AIR].join());
+            return CmpSkillValue(pValue, this->pActiveSkills[CHARACTER_SKILL_AIR]);
         case VAR_WaterSkill:
-            return CmpSkillValue(pValue, this->pActiveSkills[CHARACTER_SKILL_WATER].join());
+            return CmpSkillValue(pValue, this->pActiveSkills[CHARACTER_SKILL_WATER]);
         case VAR_EarthSkill:
-            return CmpSkillValue(pValue, this->pActiveSkills[CHARACTER_SKILL_EARTH].join());
+            return CmpSkillValue(pValue, this->pActiveSkills[CHARACTER_SKILL_EARTH]);
         case VAR_SpiritSkill:
-            return CmpSkillValue(pValue, this->pActiveSkills[CHARACTER_SKILL_SPIRIT].join());
+            return CmpSkillValue(pValue, this->pActiveSkills[CHARACTER_SKILL_SPIRIT]);
         case VAR_MindSkill:
-            return CmpSkillValue(pValue, this->pActiveSkills[CHARACTER_SKILL_MIND].join());
+            return CmpSkillValue(pValue, this->pActiveSkills[CHARACTER_SKILL_MIND]);
         case VAR_BodySkill:
-            return CmpSkillValue(pValue, this->pActiveSkills[CHARACTER_SKILL_BODY].join());
+            return CmpSkillValue(pValue, this->pActiveSkills[CHARACTER_SKILL_BODY]);
         case VAR_LightSkill:
-            return CmpSkillValue(pValue, this->pActiveSkills[CHARACTER_SKILL_LIGHT].join());
+            return CmpSkillValue(pValue, this->pActiveSkills[CHARACTER_SKILL_LIGHT]);
         case VAR_DarkSkill:
-            return CmpSkillValue(pValue, this->pActiveSkills[CHARACTER_SKILL_DARK].join());
+            return CmpSkillValue(pValue, this->pActiveSkills[CHARACTER_SKILL_DARK]);
         case VAR_IdentifyItemSkill:
-            return CmpSkillValue(pValue, this->pActiveSkills[CHARACTER_SKILL_ITEM_ID].join());
+            return CmpSkillValue(pValue, this->pActiveSkills[CHARACTER_SKILL_ITEM_ID]);
         case VAR_MerchantSkill:
-            return CmpSkillValue(pValue, this->pActiveSkills[CHARACTER_SKILL_MERCHANT].join());
+            return CmpSkillValue(pValue, this->pActiveSkills[CHARACTER_SKILL_MERCHANT]);
         case VAR_RepairSkill:
-            return CmpSkillValue(pValue, this->pActiveSkills[CHARACTER_SKILL_REPAIR].join());
+            return CmpSkillValue(pValue, this->pActiveSkills[CHARACTER_SKILL_REPAIR]);
         case VAR_BodybuildingSkill:
-            return CmpSkillValue(pValue, this->pActiveSkills[CHARACTER_SKILL_BODYBUILDING].join());
+            return CmpSkillValue(pValue, this->pActiveSkills[CHARACTER_SKILL_BODYBUILDING]);
         case VAR_MeditationSkill:
-            return CmpSkillValue(pValue, this->pActiveSkills[CHARACTER_SKILL_MEDITATION].join());
+            return CmpSkillValue(pValue, this->pActiveSkills[CHARACTER_SKILL_MEDITATION]);
         case VAR_PerceptionSkill:
-            return CmpSkillValue(pValue, this->pActiveSkills[CHARACTER_SKILL_PERCEPTION].join());
+            return CmpSkillValue(pValue, this->pActiveSkills[CHARACTER_SKILL_PERCEPTION]);
         case VAR_DiplomacySkill:
-            return CmpSkillValue(pValue, this->pActiveSkills[CHARACTER_SKILL_DIPLOMACY].join());
+            return CmpSkillValue(pValue, this->pActiveSkills[CHARACTER_SKILL_DIPLOMACY]);
         case VAR_ThieverySkill:
             //Error("Thievery isn't used in events");
             //return false;
-            return CmpSkillValue(pValue, this->pActiveSkills[CHARACTER_SKILL_THIEVERY].join());  // wasn't in the original
+            return CmpSkillValue(pValue, this->pActiveSkills[CHARACTER_SKILL_THIEVERY]);  // wasn't in the original
         case VAR_DisarmTrapSkill:  // wasn't in the original
-            return CmpSkillValue(pValue, this->pActiveSkills[CHARACTER_SKILL_TRAP_DISARM].join());
+            return CmpSkillValue(pValue, this->pActiveSkills[CHARACTER_SKILL_TRAP_DISARM]);
         case VAR_DodgeSkill:  // wasn't in the original
-            return CmpSkillValue(pValue, this->pActiveSkills[CHARACTER_SKILL_DODGE].join());
+            return CmpSkillValue(pValue, this->pActiveSkills[CHARACTER_SKILL_DODGE]);
         case VAR_UnarmedSkill:  // wasn't in the original
-            return CmpSkillValue(pValue, this->pActiveSkills[CHARACTER_SKILL_UNARMED].join());
+            return CmpSkillValue(pValue, this->pActiveSkills[CHARACTER_SKILL_UNARMED]);
         case VAR_IdentifyMonsterSkill:  // wasn't in the original
-            return CmpSkillValue(pValue, this->pActiveSkills[CHARACTER_SKILL_MONSTER_ID].join());
+            return CmpSkillValue(pValue, this->pActiveSkills[CHARACTER_SKILL_MONSTER_ID]);
         case VAR_ArmsmasterSkill:  // wasn't in the original
-            return CmpSkillValue(pValue, this->pActiveSkills[CHARACTER_SKILL_ARMSMASTER].join());
+            return CmpSkillValue(pValue, this->pActiveSkills[CHARACTER_SKILL_ARMSMASTER]);
         case VAR_StealingSkill:  // wasn't in the original
-            return CmpSkillValue(pValue, this->pActiveSkills[CHARACTER_SKILL_STEALING].join());
+            return CmpSkillValue(pValue, this->pActiveSkills[CHARACTER_SKILL_STEALING]);
         case VAR_AlchemySkill:  // wasn't in the original
-            return CmpSkillValue(pValue, this->pActiveSkills[CHARACTER_SKILL_ALCHEMY].join());
+            return CmpSkillValue(pValue, this->pActiveSkills[CHARACTER_SKILL_ALCHEMY]);
         case VAR_LearningSkill:
-            return CmpSkillValue(pValue, this->pActiveSkills[CHARACTER_SKILL_LEARNING].join());
+            return CmpSkillValue(pValue, this->pActiveSkills[CHARACTER_SKILL_LEARNING]);
         case VAR_Cursed:
             return conditions.Has(CONDITION_CURSED);
         case VAR_Weak:
@@ -5672,9 +5672,12 @@ void Character::PlayAwardSound_Anim97_Face(CharacterSpeech speech) {
 
 //----- (new function) --------------------------------------------------------
 void Character::AddSkillByEvent(CharacterSkillType skill, uint16_t addSkillValue) {
-    uint16_t newlevel = pActiveSkills[skill].level() + ::GetSkillLevel(addSkillValue);
-    CharacterSkillMastery newmast = std::max(pActiveSkills[skill].mastery(), ::GetSkillMastery(addSkillValue));
-    pActiveSkills[skill] = CombinedSkillValue(newlevel, newmast);
+    auto [addLevel, addMastery] = CombinedSkillValue::fromJoinedUnchecked(addSkillValue);
+
+    int newLevel = pActiveSkills[skill].level() + addLevel;
+    CharacterSkillMastery newMastery = std::max(pActiveSkills[skill].mastery(), addMastery);
+
+    pActiveSkills[skill] = CombinedSkillValue(newLevel, newMastery);
 }
 
 //----- (0044B9C4) --------------------------------------------------------
@@ -6235,9 +6238,13 @@ void Character::PlayAwardSound_Anim98_Face(CharacterSpeech speech) {
 
 //----- (new function) --------------------------------------------------------
 void Character::SubtractSkillByEvent(CharacterSkillType skill, uint16_t subSkillValue) {
-    uint16_t newlevel = pActiveSkills[skill].level() - ::GetSkillLevel(subSkillValue);
-    newlevel = std::max(uint16_t(0), newlevel);
-    pActiveSkills[skill] = CombinedSkillValue(newlevel, pActiveSkills[skill].mastery());
+    auto [subLevel, subMastery] = CombinedSkillValue::fromJoinedUnchecked(subSkillValue);
+
+    if (pActiveSkills[skill] == CombinedSkillValue::none())
+        return; // Already at zero!
+
+    int newLevel = std::max(1, pActiveSkills[skill].level() - subLevel);
+    pActiveSkills[skill] = CombinedSkillValue(newLevel, pActiveSkills[skill].mastery());
     // TODO(pskelton): check - should this be able to forget a skill '0' or min of '1'
     // TODO(pskelton): check - should this modify mastery as well
 }
@@ -7039,7 +7046,7 @@ int Character::getCharacterIndex() {
 }
 
 //----- (004272F5) --------------------------------------------------------
-bool Character::characterHitOrMiss(Actor *pActor, int distancemod, CHARACTER_SKILL_LEVEL skillmod) {  // PS - RETURN IF ATTACK WILL HIT
+bool Character::characterHitOrMiss(Actor *pActor, int distancemod, int skillmod) {  // PS - RETURN IF ATTACK WILL HIT
     int naturalArmor = pActor->monsterInfo.uAC;  // actor usual armour
     int armorBuff = 0;
 
@@ -7163,14 +7170,14 @@ void Character::_42ECB5_CharacterAttacksActor() {
     if (laser_weapon_item_id != ITEM_NULL) {
         shotting_laser = true;
         pushSpellOrRangedAttack(SPELL_LASER_PROJECTILE,
-                                pParty->activeCharacterIndex() - 1, 0, 0,
+                                pParty->activeCharacterIndex() - 1, CombinedSkillValue::none(), 0,
                                 pParty->activeCharacterIndex() + 8);
     } else if (wand_item_id != ITEM_NULL) {
         shooting_wand = true;
 
         int main_hand_idx = character->pEquipment.uMainHand;
         pushSpellOrRangedAttack(wandSpellIds[character->pInventoryItemList[main_hand_idx - 1].uItemID],
-                                pParty->activeCharacterIndex() - 1, 8, 0, pParty->activeCharacterIndex() + 8);
+                                pParty->activeCharacterIndex() - 1, CombinedSkillValue::novice(8), 0, pParty->activeCharacterIndex() + 8);
 
         if (!--character->pInventoryItemList[main_hand_idx - 1].uNumCharges)
             character->pEquipment.uMainHand = 0;
@@ -7190,7 +7197,7 @@ void Character::_42ECB5_CharacterAttacksActor() {
                 pParty->activeCharacterIndex());
     } else if (bow_idx) {
         shooting_bow = true;
-        pushSpellOrRangedAttack(SPELL_BOW_ARROW, pParty->activeCharacterIndex() - 1, 0, 0, 0);
+        pushSpellOrRangedAttack(SPELL_BOW_ARROW, pParty->activeCharacterIndex() - 1, CombinedSkillValue::none(), 0, 0);
     } else {
         melee_attack = true;
         // ; // actor out of range or no actor; no ranged weapon so melee
@@ -7286,24 +7293,8 @@ void Character::_42FA66_do_explosive_impact(int xpos, int ypos, int zpos, int a4
     }
 }
 
-CHARACTER_SKILL_LEVEL Character::GetSkillLevel(CharacterSkillType skill) const {
-    return pActiveSkills[skill].level();
-}
-
-CharacterSkillMastery Character::GetSkillMastery(CharacterSkillType skill) const {
-    return pActiveSkills[skill].mastery();
-}
-
 CombinedSkillValue Character::getSkillValue(CharacterSkillType skill) const {
     return pActiveSkills[skill];
-}
-
-void Character::SetSkillLevel(CharacterSkillType skill, CHARACTER_SKILL_LEVEL level) {
-    pActiveSkills[skill].setLevel(level);
-}
-
-void Character::SetSkillMastery(CharacterSkillType skill, CharacterSkillMastery mastery) {
-    pActiveSkills[skill].setMastery(mastery);
 }
 
 void Character::setSkillValue(CharacterSkillType skill, const CombinedSkillValue &value) {

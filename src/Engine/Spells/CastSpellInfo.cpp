@@ -58,7 +58,7 @@ CastSpellInfo::CastSpellInfo() {
  * because initialization depends on it.
  */
 static void initSpellSprite(SpriteObject *spritePtr,
-                            CHARACTER_SKILL_LEVEL spellLevel,
+                            int spellLevel,
                             CharacterSkillMastery spellMastery,
                             CastSpellInfo *pCastSpell) {
     assert(spritePtr && spritePtr->uType != SPRITE_NULL);
@@ -182,12 +182,12 @@ void CastSpellInfoHelpers::castSpell() {
             }
         }
 
-        CHARACTER_SKILL_LEVEL spell_level;
+        int spell_level;
         CharacterSkillMastery spell_mastery;
         if (pCastSpell->forced_spell_skill_level) {
             // for spell scrolls - decode spell power and mastery
-            spell_level = GetSkillLevel(pCastSpell->forced_spell_skill_level);
-            spell_mastery = GetSkillMastery(pCastSpell->forced_spell_skill_level);
+            spell_level = pCastSpell->forced_spell_skill_level.level();
+            spell_mastery = pCastSpell->forced_spell_skill_level.mastery();
         } else {
             which_skill = getSkillTypeForSpell(pCastSpell->uSpellID);
 
@@ -2534,7 +2534,7 @@ void CastSpellInfoHelpers::castSpell() {
                     // Spell power for subsequent buffs is the same as for their single spell versions
                     // Which somehow contradicts with spell description in-game about power being
                     // 4 times light skill for Master and 5 times light skill for Grandmaster
-                    CHARACTER_SKILL_LEVEL target_skill_level = spell_level + 5;
+                    int target_skill_level = spell_level + 5;
                     GameTime haste_duration, other_duration;
                     int target_spell_level;
 
@@ -2928,7 +2928,7 @@ void CastSpellInfoHelpers::castSpell() {
  */
 static size_t pushCastSpellInfo(SPELL_TYPE uSpellID,
                                 uint16_t uPlayerID,
-                                int16_t skill_level,
+                                CombinedSkillValue skill_level,
                                 SpellCastFlags uFlags,
                                 int spell_sound_id) {
     for (size_t i = 0; i < pCastSpellInfo.size(); i++) {
@@ -2977,7 +2977,7 @@ void CastSpellInfoHelpers::cancelSpellCastInProgress() {
 
 void pushSpellOrRangedAttack(SPELL_TYPE spell,
                              unsigned int uPlayerID,
-                             CHARACTER_SKILL skill_value,
+                             CombinedSkillValue skill_value,
                              SpellCastFlags flags,
                              int a6) {
     if (pParty->bTurnBasedModeOn) {
@@ -2987,7 +2987,7 @@ void pushSpellOrRangedAttack(SPELL_TYPE spell,
         }
     }
 
-    CHARACTER_SKILL checkSkill = skill_value;
+    CombinedSkillValue checkSkill = skill_value;
     assert(uPlayerID < 4);
     Character *character = &pParty->pCharacters[uPlayerID];
     if (!(flags & ON_CAST_TargetIsParty)) {
@@ -3051,36 +3051,36 @@ void pushSpellOrRangedAttack(SPELL_TYPE spell,
 
             case SPELL_SPIRIT_BLESS:
                 if (!checkSkill) {
-                    checkSkill = character->pActiveSkills[CHARACTER_SKILL_SPIRIT].join();
+                    checkSkill = character->pActiveSkills[CHARACTER_SKILL_SPIRIT];
                 }
-                if (GetSkillMastery(checkSkill) < CHARACTER_SKILL_MASTERY_EXPERT && !engine->config->debug.AllMagic.value()) {
+                if (checkSkill.mastery() < CHARACTER_SKILL_MASTERY_EXPERT && !engine->config->debug.AllMagic.value()) {
                     flags |= ON_CAST_TargetedCharacter;
                 }
                 break;
 
             case SPELL_SPIRIT_PRESERVATION:
                 if (!checkSkill) {
-                    checkSkill = character->pActiveSkills[CHARACTER_SKILL_SPIRIT].join();
+                    checkSkill = character->pActiveSkills[CHARACTER_SKILL_SPIRIT];
                 }
-                if (GetSkillMastery(checkSkill) < CHARACTER_SKILL_MASTERY_MASTER && !engine->config->debug.AllMagic.value()) {
+                if (checkSkill.mastery() < CHARACTER_SKILL_MASTERY_MASTER && !engine->config->debug.AllMagic.value()) {
                     flags |= ON_CAST_TargetedCharacter;
                 }
                 break;
 
             case SPELL_DARK_PAIN_REFLECTION:
                 if (!checkSkill) {
-                    checkSkill = character->pActiveSkills[CHARACTER_SKILL_DARK].join();
+                    checkSkill = character->pActiveSkills[CHARACTER_SKILL_DARK];
                 }
-                if (GetSkillMastery(checkSkill) < CHARACTER_SKILL_MASTERY_MASTER && !engine->config->debug.AllMagic.value()) {
+                if (checkSkill.mastery() < CHARACTER_SKILL_MASTERY_MASTER && !engine->config->debug.AllMagic.value()) {
                     flags |= ON_CAST_TargetedCharacter;
                 }
                 break;
 
             case SPELL_BODY_HAMMERHANDS:
                 if (!checkSkill) {
-                    checkSkill = character->pActiveSkills[CHARACTER_SKILL_BODY].join();
+                    checkSkill = character->pActiveSkills[CHARACTER_SKILL_BODY];
                 }
-                if (GetSkillMastery(checkSkill) < CHARACTER_SKILL_MASTERY_GRANDMASTER && !engine->config->debug.AllMagic.value()) {
+                if (checkSkill.mastery() < CHARACTER_SKILL_MASTERY_GRANDMASTER && !engine->config->debug.AllMagic.value()) {
                     flags |= ON_CAST_TargetedCharacter;
                 }
                 break;
@@ -3167,7 +3167,7 @@ void pushSpellOrRangedAttack(SPELL_TYPE spell,
 }
 
 void pushTempleSpell(SPELL_TYPE spell) {
-    CHARACTER_SKILL skill_value = ConstructSkillValue(CHARACTER_SKILL_MASTERY_MASTER, pParty->uCurrentDayOfMonth % 7 + 1);
+    CombinedSkillValue skill_value = CombinedSkillValue(pParty->uCurrentDayOfMonth % 7 + 1, CHARACTER_SKILL_MASTERY_MASTER);
 
     pushSpellOrRangedAttack(spell, pParty->activeCharacterIndex() - 1, skill_value,
                             ON_CAST_TargetIsParty | ON_CAST_NoRecoverySpell, 0);

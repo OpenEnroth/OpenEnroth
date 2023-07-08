@@ -501,7 +501,7 @@ IndexedArray<std::array<unsigned char, 5>, SPEECH_FIRST, SPEECH_LAST> expression
 
 std::array<int16_t, 4> pPlayerPortraitsXCoords_For_PlayerBuffAnimsDrawing = {{34, 149, 264, 379}};
 
-IndexedArray<CHARACTER_SKILL_LEVEL, CHARACTER_SKILL_FIRST, CHARACTER_SKILL_LAST> skills_max_level = {
+IndexedArray<int, CHARACTER_SKILL_FIRST, CHARACTER_SKILL_LAST> skills_max_level = {
     {CHARACTER_SKILL_STAFF, 60},        {CHARACTER_SKILL_SWORD, 60},      {CHARACTER_SKILL_DAGGER, 60},
     {CHARACTER_SKILL_AXE, 60},          {CHARACTER_SKILL_SPEAR, 60},      {CHARACTER_SKILL_BOW, 60},
     {CHARACTER_SKILL_MACE, 60},         {CHARACTER_SKILL_BLASTER, 60},    {CHARACTER_SKILL_SHIELD, 60},

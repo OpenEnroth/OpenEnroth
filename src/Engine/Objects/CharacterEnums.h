@@ -4,10 +4,6 @@
 
 #include "Utility/Segment.h"
 
-// TODO(pskelton): reduce or drop in favour of combined value
-typedef uint16_t CHARACTER_SKILL;
-typedef uint8_t CHARACTER_SKILL_LEVEL;
-
 enum class Condition : uint32_t {
     CONDITION_CURSED = 0,
     CONDITION_WEAK = 1,
@@ -32,8 +28,7 @@ enum class Condition : uint32_t {
 using enum Condition;
 
 // TODO(pskelton): drop CHARACTER_ at start?
-enum class CharacterSkillMastery : int32_t {  // TODO: type could be changed to something else when SpriteObject_MM7 implemented in
-    // LegacyImages
+enum class CharacterSkillMastery {
     CHARACTER_SKILL_MASTERY_NONE = 0,
     CHARACTER_SKILL_MASTERY_NOVICE = 1,
     CHARACTER_SKILL_MASTERY_EXPERT = 2,
@@ -44,6 +39,10 @@ enum class CharacterSkillMastery : int32_t {  // TODO: type could be changed to 
     CHARACTER_SKILL_MASTERY_LAST = CHARACTER_SKILL_MASTERY_GRANDMASTER
 };
 using enum CharacterSkillMastery;
+
+inline Segment<CharacterSkillMastery> SkillMasteries() {
+    return Segment(CHARACTER_SKILL_MASTERY_FIRST, CHARACTER_SKILL_MASTERY_LAST);
+}
 
 // TODO(pskelton): drop CHARACTER_ at start?
 enum CharacterBuffs {

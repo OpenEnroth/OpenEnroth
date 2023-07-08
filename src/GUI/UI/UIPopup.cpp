@@ -636,7 +636,7 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
     bool for_effects = false;
 
     if (pParty->hasActiveCharacter()) {
-        CHARACTER_SKILL_LEVEL skill_points = 0;
+        int skill_points = 0;
         CharacterSkillMastery skill_mastery = CHARACTER_SKILL_MASTERY_NONE;
         CombinedSkillValue idMonsterSkill = pParty->activeCharacter().getActualSkillValue(CHARACTER_SKILL_MONSTER_ID);
 
@@ -2188,11 +2188,6 @@ void Inventory_ItemPopupAndAlchemy() {
             // Combining same potions
             GameUI_DrawItemInfo(item);
             return;
-        }
-
-        // TODO(Nik-RE-dev): need to allow GetSkillMastery return CHARACTER_SKILL_MASTERY_NONE
-        if (!alchemySkill.level()) {
-            alchemySkill.setMastery(CHARACTER_SKILL_MASTERY_NONE);
         }
 
         int damage_level = 0;

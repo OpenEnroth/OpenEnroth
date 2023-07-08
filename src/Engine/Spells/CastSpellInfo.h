@@ -50,7 +50,7 @@ MM_DECLARE_FLAGS(SpellCastFlags, SpellCastFlag)
 MM_DECLARE_OPERATORS_FOR_FLAGS(SpellCastFlags)
 
 // Scrolls or NPC spells casted with MASTER mastery of skill level 5
-static const CHARACTER_SKILL SCROLL_OR_NPC_SPELL_SKILL_VALUE = ConstructSkillValue(CHARACTER_SKILL_MASTERY_MASTER, 5);
+static const CombinedSkillValue SCROLL_OR_NPC_SPELL_SKILL_VALUE(5, CHARACTER_SKILL_MASTERY_MASTER);
 
 // Recovery time when spell failed because of curse
 static const uint16_t SPELL_FAILURE_RECOVERY_TIME_ON_CURSE = 100;
@@ -66,7 +66,7 @@ struct CastSpellInfo {
     uint16_t uPlayerID_2;
     int16_t field_6; // ITEM_EQUIP_TYPE when enchanting.
     SpellCastFlags uFlags;
-    int16_t forced_spell_skill_level;
+    CombinedSkillValue forced_spell_skill_level;
     int spell_target_pid;
     int sound_id;
 };
@@ -85,15 +85,15 @@ struct CastSpellInfo {
  *
  * @offset 0x0042777D
  *
- * @param spell          ID of spell.
- * @param uPlayerID      ID of player casting spell.
- * @param skill_value    Skill value (mastery+skill level) spell is casted with.
- * @param flags          Spell flags. Can be empty or have several flags.
- * @param a6             ???
+ * @param spell                         ID of spell.
+ * @param uPlayerID                     ID of player casting spell.
+ * @param skill_value                   Skill value that the spell is cast with.
+ * @param flags                         Spell flags. Can be empty or have several flags.
+ * @param a6                            ???
  */
 void pushSpellOrRangedAttack(SPELL_TYPE spell,
                              unsigned int uPlayerID,
-                             CHARACTER_SKILL skill_value,
+                             CombinedSkillValue skill_value,
                              SpellCastFlags flags,
                              int a6);
 
@@ -101,7 +101,7 @@ void pushSpellOrRangedAttack(SPELL_TYPE spell,
  * Register spell cast on party with temple donation.
  * Temple spells are cast with MASTER mastery of skill level equal to the day of week.
  *
- * @param spell        ID of spell.
+ * @param spell                         ID of spell.
  */
 void pushTempleSpell(SPELL_TYPE spell);
 
