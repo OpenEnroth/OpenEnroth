@@ -1405,3 +1405,11 @@ GAME_TEST(Issues, Issue1038) {
     EXPECT_EQ(pParty->pCharacters[2].GetMajorConditionIdx(), CONDITION_SLEEP);
     EXPECT_EQ(pParty->pCharacters[3].GetMajorConditionIdx(), CONDITION_UNCONSCIOUS);
 }
+
+GAME_TEST(Issues, Issue1051) {
+    // Collision code asserts when fighting Magogs in Nighon Tunnels.
+    // Note that the bug only reproduces on high fps, the trace is shot at 15ms per frame.
+    test->playTraceFromTestData("issue_1051.mm7", "issue_1051.json", [] {
+        EXPECT_EQ(engine->config->debug.TraceFrameTimeMs.value(), 15); // Don't redo this at different FPS.
+    });
+}
