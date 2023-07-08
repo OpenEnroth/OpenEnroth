@@ -50,7 +50,6 @@ jobs:
     - name: Install 32 bit dependencies
       if: ${{ matrix.architecture == 'armeabi-v7a' || matrix.architecture == 'x86' }}   
       run: |
-          sudo apt-get install -y yasm
           sudo dpkg --add-architecture i386
           sudo apt-get update
           sudo apt-get install -y gcc-12-multilib g++-12-multilib
