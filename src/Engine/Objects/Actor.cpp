@@ -209,13 +209,13 @@ void Actor::SetRandomGoldIfTheresNoItem() {
 
 //----- (00404AC7) --------------------------------------------------------
 void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
-                           SPELL_TYPE uSpellID, ABILITY_INDEX a4, CHARACTER_SKILL uSkillMastery) {
+                           SPELL_TYPE uSpellID, ABILITY_INDEX a4, CombinedSkillValue uSkillMastery) {
     GameTime spellLength = GameTime(0);
 
     SpriteObject sprite;
     Actor *actorPtr = &pActors[uActorID];
-    CHARACTER_SKILL_LEVEL realPoints = GetSkillLevel(uSkillMastery);
-    CharacterSkillMastery masteryLevel = GetSkillMastery(uSkillMastery);
+    int realPoints = uSkillMastery.level();
+    CharacterSkillMastery masteryLevel = uSkillMastery.mastery();
     int distancemod = 3;
     int spriteId;
 
@@ -248,8 +248,8 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
             sprite.uObjectDescID = GetObjDescId(uSpellID);
             sprite.containing_item.Reset();
             sprite.uSpellID = uSpellID;
-            sprite.spell_level = uSkillMastery;
-            sprite.spell_skill = CHARACTER_SKILL_MASTERY_NONE;
+            sprite.spell_level = uSkillMastery.level();
+            sprite.spell_skill = CHARACTER_SKILL_MASTERY_NONE; // TODO(captainurist): why do we ignore passed skill mastery?
             sprite.vPosition = actorPtr->pos + Vec3i(0, 0, actorPtr->height / 2);
             sprite.uFacing = (short)pDir->uYawAngle;
             sprite.uSoundID = 0;
@@ -329,10 +329,10 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
                 sprite.containing_item.Reset();
                 sprite.uType = SpellSpriteMapping[uSpellID];
                 sprite.uObjectDescID = GetObjDescId(uSpellID);
-                sprite.spell_level = uSkillMastery;
+                sprite.spell_level = uSkillMastery.level();
+                sprite.spell_skill = CHARACTER_SKILL_MASTERY_NONE; // TODO(captainurist): why do we ignore passed skill mastery?
                 sprite.vPosition = pParty->pos + Vec3i(0, 0, originHeight + 2500);
                 sprite.uSpellID = SPELL_FIRE_METEOR_SHOWER;
-                sprite.spell_skill = CHARACTER_SKILL_MASTERY_NONE;
                 sprite.uAttributes = 0;
                 sprite.uSectorID = 0;
                 sprite.uSpriteFrameID = 0;
@@ -378,8 +378,8 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
             sprite.uObjectDescID = GetObjDescId(uSpellID);
             sprite.containing_item.Reset();
             sprite.uSpellID = SPELL_AIR_SPARKS;
-            sprite.spell_level = uSkillMastery;
-            sprite.spell_skill = CHARACTER_SKILL_MASTERY_NONE;
+            sprite.spell_level = uSkillMastery.level();
+            sprite.spell_skill = CHARACTER_SKILL_MASTERY_NONE; // TODO(captainurist): why do we ignore passed skill mastery?
             sprite.vPosition = actorPtr->pos + Vec3i(0, 0, actorPtr->height / 2);
             sprite.uFacing = pDir->uYawAngle;
             sprite.uSoundID = 0;
@@ -633,8 +633,8 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
             sprite.uObjectDescID = GetObjDescId(uSpellID);
             sprite.containing_item.Reset();
             sprite.uSpellID = uSpellID;
-            sprite.spell_level = uSkillMastery;
-            sprite.spell_skill = CHARACTER_SKILL_MASTERY_NONE;
+            sprite.spell_level = uSkillMastery.level();
+            sprite.spell_skill = CHARACTER_SKILL_MASTERY_NONE; // TODO(captainurist): why do we ignore passed skill mastery?
             sprite.vPosition = actorPtr->pos + Vec3i(0, 0, actorPtr->height / 2);
             sprite.uFacing = pDir->uYawAngle;
             sprite.uSoundID = 0;
@@ -1279,8 +1279,8 @@ int Actor::_43B3E0_CalcDamage(ABILITY_INDEX dmgSource) {
     int damageBonus;
     SPELL_TYPE spellID;
     int spellPower = 0;
-    CHARACTER_SKILL skill;
-    CHARACTER_SKILL_LEVEL skillLevel = 0;
+    CombinedSkillValue skill;
+    int skillLevel = 0;
     CharacterSkillMastery skillMastery = CHARACTER_SKILL_MASTERY_NONE;
 
     switch (dmgSource) {
@@ -1303,15 +1303,15 @@ int Actor::_43B3E0_CalcDamage(ABILITY_INDEX dmgSource) {
         case ABILITY_SPELL1:
             spellID = this->monsterInfo.uSpell1ID;
             skill = this->monsterInfo.uSpellSkillAndMastery2;
-            skillLevel = GetSkillLevel(skill);
-            skillMastery = GetSkillMastery(skill);
+            skillLevel = skill.level();
+            skillMastery = skill.mastery();
             return CalcSpellDamage(spellID, skillLevel, skillMastery, 0);
             break;
         case ABILITY_SPELL2:
             spellID = this->monsterInfo.uSpell2ID;
             skill = this->monsterInfo.uSpellSkillAndMastery2;
-            skillLevel = GetSkillLevel(skill);
-            skillMastery = GetSkillMastery(skill);
+            skillLevel = skill.level();
+            skillMastery = skill.mastery();
             return CalcSpellDamage(spellID, skillLevel, skillMastery, 0);
             break;
         case ABILITY_SPECIAL:
@@ -3139,7 +3139,7 @@ void Actor::DamageMonsterFromParty(signed int a1, unsigned int uActorID_Monster,
     uint16_t v43{};            // ax@132
     uint16_t v45{};            // ax@132
     // uint64_t v46; // [sp+Ch] [bp-60h]@6
-    CHARACTER_SKILL_LEVEL skillLevel = 0;                    // [sp+44h] [bp-28h]@1
+    int skillLevel = 0;                    // [sp+44h] [bp-28h]@1
     bool IsAdditionalDamagePossible;  // [sp+50h] [bp-1Ch]@1
     int v61;                          // [sp+58h] [bp-14h]@1
     bool isLifeStealing;              // [sp+5Ch] [bp-10h]@1

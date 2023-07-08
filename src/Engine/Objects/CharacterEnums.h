@@ -4,10 +4,6 @@
 
 #include "Utility/Segment.h"
 
-// TODO(pskelton): reduce or drop in favour of combined value
-typedef uint16_t CHARACTER_SKILL;
-typedef uint8_t CHARACTER_SKILL_LEVEL;
-
 enum class Condition : uint32_t {
     CONDITION_CURSED = 0,
     CONDITION_WEAK = 1,
@@ -43,6 +39,10 @@ enum class CharacterSkillMastery {
     CHARACTER_SKILL_MASTERY_LAST = CHARACTER_SKILL_MASTERY_GRANDMASTER
 };
 using enum CharacterSkillMastery;
+
+inline Segment<CharacterSkillMastery> SkillMasteries() {
+    return Segment(CHARACTER_SKILL_MASTERY_FIRST, CHARACTER_SKILL_MASTERY_LAST);
+}
 
 // TODO(pskelton): drop CHARACTER_ at start?
 enum CharacterBuffs {

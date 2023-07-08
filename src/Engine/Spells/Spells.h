@@ -89,7 +89,7 @@ extern IndexedArray<uint16_t, SPELL_FIRST_WITH_SPRITE, SPELL_LAST_WITH_SPRITE> S
 /**
  * @offset 0x43AFE3
  */
-int CalcSpellDamage(SPELL_TYPE uSpellID, CHARACTER_SKILL_LEVEL spellLevel, CharacterSkillMastery skillMastery, int currentHp);
+int CalcSpellDamage(SPELL_TYPE uSpellID, int spellLevel, CharacterSkillMastery skillMastery, int currentHp);
 
 /**
  * @offset 0x427769
@@ -99,7 +99,7 @@ bool IsSpellQuickCastableOnShiftClick(SPELL_TYPE uSpellID);
 /**
  * Function for processing spells cast from game scripts.
  */
-void eventCastSpell(SPELL_TYPE uSpellID, CharacterSkillMastery skillMastery, CHARACTER_SKILL_LEVEL skillLevel, int fromx,
+void eventCastSpell(SPELL_TYPE uSpellID, CharacterSkillMastery skillMastery, int skillLevel, int fromx,
                     int fromy, int fromz, int tox, int toy, int toz);  // sub_448DF8
 
 void armageddonProgress();

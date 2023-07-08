@@ -19,8 +19,8 @@ CombinedSkillValue CombinedSkillValue::none() {
     return CombinedSkillValue();
 }
 
-CombinedSkillValue CombinedSkillValue::novice() {
-    return CombinedSkillValue(1, CHARACTER_SKILL_MASTERY_NOVICE);
+CombinedSkillValue CombinedSkillValue::novice(int level) {
+    return CombinedSkillValue(level, CHARACTER_SKILL_MASTERY_NOVICE);
 }
 
 CombinedSkillValue CombinedSkillValue::increaseLevel(CombinedSkillValue current) {
@@ -35,13 +35,43 @@ CombinedSkillValue CombinedSkillValue::increaseMastery(CombinedSkillValue curren
 }
 
 CombinedSkillValue CombinedSkillValue::fromJoined(uint16_t joinedValue) {
-    CHARACTER_SKILL_LEVEL lvl  = ::GetSkillLevel(joinedValue);
-    CharacterSkillMastery mst = ::GetSkillMastery(joinedValue);
-    return CombinedSkillValue(lvl, mst);
+    auto [level, mastery] = fromJoinedUnchecked(joinedValue);
+    return CombinedSkillValue(level, mastery);
 }
 
-uint16_t CombinedSkillValue::join() const {
-    return ::ConstructSkillValue(_mastery, _level);
+std::pair<int, CharacterSkillMastery> CombinedSkillValue::fromJoinedUnchecked(uint16_t joinedValue) {
+    // Skill encodes level and mastery where first 0x3F are for skill level and 0x1C0 bits are for skill mastery.
+    // So max possible stored skill level is 63.
+    int level = joinedValue & 0x3F;
+
+    CharacterSkillMastery mastery;
+    if (joinedValue & 0x100) {
+        mastery = CHARACTER_SKILL_MASTERY_GRANDMASTER;
+    } else if (joinedValue & 0x80) {
+        mastery = CHARACTER_SKILL_MASTERY_MASTER;
+    } else if (joinedValue & 0x40) {
+        mastery = CHARACTER_SKILL_MASTERY_EXPERT;
+    } else if (level != 0) {
+        mastery = CHARACTER_SKILL_MASTERY_NOVICE;
+    } else {
+        mastery = CHARACTER_SKILL_MASTERY_NONE;
+    }
+
+    return {level, mastery};
+}
+
+uint16_t CombinedSkillValue::joined() const {
+    uint16_t result = _level;
+
+    if (_mastery == CHARACTER_SKILL_MASTERY_EXPERT) {
+        result |= 0x40;
+    } else if (_mastery == CHARACTER_SKILL_MASTERY_MASTER) {
+        result |= 0x80;
+    } else if (_mastery == CHARACTER_SKILL_MASTERY_GRANDMASTER) {
+        result |= 0x100;
+    }
+
+    return result;
 }
 
 int CombinedSkillValue::level() const {

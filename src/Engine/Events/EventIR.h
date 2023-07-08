@@ -73,7 +73,7 @@ class EventIR {
         struct {
             SPELL_TYPE spell_id;
             CharacterSkillMastery spell_mastery;
-            CHARACTER_SKILL_LEVEL spell_level;
+            int spell_level;
             int fromx;
             int fromy;
             int fromz;
@@ -166,7 +166,7 @@ class EventIR {
         struct {
             CharacterSkillType skill_type;
             CharacterSkillMastery skill_mastery;
-            CHARACTER_SKILL_LEVEL skill_level;
+            int skill_level;
         } check_skill_descr;
     } data;
 };

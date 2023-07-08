@@ -1042,7 +1042,7 @@ EventIR EventIR::parse(const void *data, size_t maxSize) {
         case EVENT_CheckSkill:
             ir.data.check_skill_descr.skill_type = (CharacterSkillType)_evt->v5;
             ir.data.check_skill_descr.skill_mastery = (CharacterSkillMastery)_evt->v6;
-            ir.data.check_skill_descr.skill_level = (CHARACTER_SKILL_LEVEL)EVT_DWORD(_evt->v7);
+            ir.data.check_skill_descr.skill_level = EVT_DWORD(_evt->v7);
             ir.target_step = _evt->v11;
             break;
         case EVENT_OnCanShowDialogItemCmp:

@@ -259,7 +259,7 @@ class Character {
     int GetSpecialItemBonus(ITEM_ENCHANTMENT enchantment) const;
     int GetItemsBonus(CharacterAttributeType attr, bool getOnlyMainHandDmg = false) const;
     int GetMagicalBonus(CharacterAttributeType a2) const;
-    CHARACTER_SKILL_LEVEL GetActualSkillLevel(CharacterSkillType uSkillType) const;
+    int GetActualSkillLevel(CharacterSkillType uSkillType) const;
     CharacterSkillMastery GetActualSkillMastery(CharacterSkillType uSkillType) const;
     CombinedSkillValue getActualSkillValue(CharacterSkillType skillType) const;
     int GetSkillBonus(CharacterAttributeType a2) const;
@@ -350,7 +350,7 @@ class Character {
     bool hasItem(ITEM_TYPE uItemID, bool checkHeldItem);
     void OnInventoryLeftClick();
 
-    bool characterHitOrMiss(Actor *pActor, int distancemod, CHARACTER_SKILL_LEVEL skillmod);
+    bool characterHitOrMiss(Actor *pActor, int distancemod, int skillmod);
 
     unsigned int GetMultiplierForSkillLevel(CharacterSkillType uSkillType, int mult1, int mult2, int mult3, int mult4) const;
     int CalculateMeleeDmgToEnemyWithWeapon(ItemGen *weapon,

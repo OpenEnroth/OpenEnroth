@@ -128,6 +128,31 @@ SPELL_TYPE ParseSpellType(struct FrameTableTxtLine *tbl, int *next_token) {
     }
 }
 
+CombinedSkillValue ParseSkillValue(std::string_view skillString, std::string_view masteryString) {
+    if (skillString == "t") {
+        int a = 10;
+    }
+
+    int skill;
+    if (!tryDeserialize(skillString, &skill))
+        return CombinedSkillValue::none(); // TODO(captainurist): this does happen, investigate.
+
+    CharacterSkillMastery mastery;
+    if (masteryString == "N") {
+        mastery = CHARACTER_SKILL_MASTERY_NOVICE;
+    } else if (masteryString == "E") {
+        mastery = CHARACTER_SKILL_MASTERY_EXPERT;
+    } else if (masteryString == "M") {
+        mastery = CHARACTER_SKILL_MASTERY_MASTER;
+    } else if (masteryString == "G") {
+        mastery = CHARACTER_SKILL_MASTERY_GRANDMASTER;
+    } else {
+        assert(false); // TODO(captainurist): throw.
+    }
+
+    return CombinedSkillValue(skill, mastery);
+}
+
 //----- (00454CB4) --------------------------------------------------------
 int ParseAttackType(const char *damage_type_str) {
     switch (tolower(*damage_type_str)) {
@@ -857,7 +882,6 @@ void MonsterStats::Initialize() {
                         break;
                     case 25: {
                         int param_num;
-                        char type_flag;
                         strcpy(parse_str, test_string);
                         parse_str[0] = ' ';
                         parse_str[strlen(parse_str) - 1] = ' ';
@@ -866,27 +890,11 @@ void MonsterStats::Initialize() {
                             param_num = 1;
                             pInfos[curr_rec_num].uSpell1ID =
                                 ParseSpellType(&parsed_field, &param_num);
-                            type_flag = *parsed_field.pProperties[param_num];
                             pInfos[curr_rec_num].uSpellSkillAndMastery1 =
-                                atoi(parsed_field.pProperties[param_num + 1]) &
-                                0x003F;
-                            switch (type_flag) {
-                                case 'E':
-                                    pInfos[curr_rec_num]
-                                        .uSpellSkillAndMastery1 |= 0x0040;
-                                    break;
-                                case 'M':
-                                    pInfos[curr_rec_num]
-                                        .uSpellSkillAndMastery1 |= 0x0080;
-                                    break;
-                                case 'G':
-                                    pInfos[curr_rec_num]
-                                        .uSpellSkillAndMastery1 |= 0x0100;
-                                    break;
-                            }
+                                ParseSkillValue(parsed_field.pProperties[param_num + 1], parsed_field.pProperties[param_num]);
                         } else {
                             pInfos[curr_rec_num].uSpell1ID = SPELL_NONE;
-                            pInfos[curr_rec_num].uSpellSkillAndMastery1 = 0;
+                            pInfos[curr_rec_num].uSpellSkillAndMastery1 = CombinedSkillValue::none();
                         }
                     } break;
                     case 26:
@@ -895,7 +903,6 @@ void MonsterStats::Initialize() {
                         break;
                     case 27: {
                         int param_num;
-                        char type_flag;
                         strcpy(parse_str, test_string);
                         parse_str[0] = ' ';
                         parse_str[strlen(parse_str) - 1] = ' ';
@@ -904,27 +911,11 @@ void MonsterStats::Initialize() {
                             param_num = 1;
                             pInfos[curr_rec_num].uSpell2ID =
                                 ParseSpellType(&parsed_field, &param_num);
-                            type_flag = *parsed_field.pProperties[param_num];
                             pInfos[curr_rec_num].uSpellSkillAndMastery2 =
-                                atoi(parsed_field.pProperties[param_num + 1]) &
-                                0x003F;
-                            switch (type_flag) {
-                                case 'E':
-                                    pInfos[curr_rec_num]
-                                        .uSpellSkillAndMastery2 |= 0x0040;
-                                    break;
-                                case 'M':
-                                    pInfos[curr_rec_num]
-                                        .uSpellSkillAndMastery2 |= 0x0080;
-                                    break;
-                                case 'G':
-                                    pInfos[curr_rec_num]
-                                        .uSpellSkillAndMastery2 |= 0x0100;
-                                    break;
-                            }
+                                ParseSkillValue(parsed_field.pProperties[param_num + 1], parsed_field.pProperties[param_num]);
                         } else {
                             pInfos[curr_rec_num].uSpell2ID = SPELL_NONE;
-                            pInfos[curr_rec_num].uSpellSkillAndMastery2 = 0;
+                            pInfos[curr_rec_num].uSpellSkillAndMastery2 = CombinedSkillValue::none();
                         }
                     } break;
                     case 28: {

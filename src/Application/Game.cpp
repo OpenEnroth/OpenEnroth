@@ -1239,7 +1239,8 @@ void Game::processQueuedMessages() {
                 if (!pParty->hasActiveCharacter() || pParty->activeCharacter().timeToRecovery) {
                     continue;
                 }
-                pushSpellOrRangedAttack(pParty->activeCharacter().uQuickSpell, pParty->activeCharacterIndex() - 1, 0, 0, pParty->activeCharacterIndex());
+                pushSpellOrRangedAttack(pParty->activeCharacter().uQuickSpell, pParty->activeCharacterIndex() - 1,
+                                        CombinedSkillValue::none(), 0, pParty->activeCharacterIndex());
                 continue;
             }
 
@@ -1570,7 +1571,7 @@ void Game::processQueuedMessages() {
 
             case UIMSG_CastSpellFromBook:
                 if (pTurnEngine->turn_stage != TE_MOVEMENT) {
-                    pushSpellOrRangedAttack(static_cast<SPELL_TYPE>(uMessageParam), uMessageParam2, 0, 0, 0);
+                    pushSpellOrRangedAttack(static_cast<SPELL_TYPE>(uMessageParam), uMessageParam2, CombinedSkillValue::none(), 0, 0);
                 }
                 continue;
 
