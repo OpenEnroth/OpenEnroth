@@ -15,11 +15,11 @@ GraphicsImage::GraphicsImage(bool lazy_initialization): _lazyInitialization(lazy
 GraphicsImage::~GraphicsImage() = default;
 
 GraphicsImage *GraphicsImage::Create(RgbaImage image) {
-    std::unique_ptr<GraphicsImage> result = std::make_unique<GraphicsImage>(false);
+    GraphicsImage *result = new GraphicsImage(false);
     result->_initialized = true;
     result->_rgbaImage = std::move(image);
     result->_renderId = render->CreateTexture(result->_rgbaImage);
-    return result.release();
+    return result;
 }
 
 GraphicsImage *GraphicsImage::Create(size_t width, size_t height) {
@@ -66,7 +66,7 @@ std::string *GraphicsImage::GetName() {
     return _loader->GetResourceNamePtr();
 }
 
-bool GraphicsImage::Release() {
+void GraphicsImage::Release() {
     if (_loader) {
         if (!assets->releaseSprite(_loader->GetResourceName()))
             if (!assets->releaseImage(_loader->GetResourceName()))
@@ -76,7 +76,6 @@ bool GraphicsImage::Release() {
     releaseRenderId();
 
     delete this;
-    return true;
 }
 
 [[nodiscard]] TextureRenderId GraphicsImage::renderId(bool load) {
