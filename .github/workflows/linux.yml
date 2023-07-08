@@ -64,20 +64,3 @@ jobs:
       run: |
         make UnitTest
 
-    - name: Prepare artifact
-      run: |
-        mkdir dist
-        cp build/OpenEnroth dist/
-        cp -r resources/* dist/
-
-    - name: Copy Shared libs
-      run: |
-        mkdir libs
-        ldd build/OpenEnroth | grep '=> /' | awk '{print $3;}' | xargs -I '{}' cp -v '{}' ./libs/
-
-
-    - name: Upload shared libs
-      uses: actions/upload-artifact@v3
-      with:
-        name: Shared Libraries (${{ matrix.architecture }})
-        path: libs/**
