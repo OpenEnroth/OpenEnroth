@@ -2190,11 +2190,6 @@ void Inventory_ItemPopupAndAlchemy() {
             return;
         }
 
-        // TODO(Nik-RE-dev): need to allow GetSkillMastery return CHARACTER_SKILL_MASTERY_NONE
-        if (!alchemySkill.level()) {
-            alchemySkill.setMastery(CHARACTER_SKILL_MASTERY_NONE);
-        }
-
         int damage_level = 0;
         if (!isPotion(potionID)) {
             // In this case potionID represent damage level

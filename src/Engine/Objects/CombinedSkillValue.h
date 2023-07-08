@@ -80,27 +80,30 @@ inline CHARACTER_SKILL ConstructSkillValue(CharacterSkillMastery mastery, CHARAC
 
 // Simple POD-like class for storing full skill value (level and mastery)
 class CombinedSkillValue {
-    int _level = 0;
-    CharacterSkillMastery _mastery = CHARACTER_SKILL_MASTERY_NONE;
-
  public:
     CombinedSkillValue();
     CombinedSkillValue(int level, CharacterSkillMastery mastery);
 
-    // joins level and mastery into one integer
-    [[nodiscard]] uint16_t join() const;
-
-    int level() const;
-    CombinedSkillValue &setLevel(int level);
-
-    CharacterSkillMastery mastery() const;
-    CombinedSkillValue &setMastery(CharacterSkillMastery mastery);
-
-    static bool isLevelValid(int level);
-    static bool isMasteryValid(CharacterSkillMastery mastery);
+    static CombinedSkillValue none();
     static CombinedSkillValue novice();
+    static CombinedSkillValue increaseLevel(CombinedSkillValue current);
+    static CombinedSkillValue increaseMastery(CombinedSkillValue current, CharacterSkillMastery newMastery);
     static CombinedSkillValue fromJoined(uint16_t);
 
+    /**
+     * @return                          Binary representation of a skill-mastery pair, as it was originally stored
+     *                                  in M&M data structures.
+     */
+    [[nodiscard]] uint16_t join() const;
+
+    [[nodiscard]] int level() const;
+    [[nodiscard]] CharacterSkillMastery mastery() const;
+
     explicit operator bool() const { return _level > 0; }
-    void reset();
+
+    friend bool operator==(const CombinedSkillValue &l, const CombinedSkillValue &r) = default;
+
+ private:
+    int _level = 0;
+    CharacterSkillMastery _mastery = CHARACTER_SKILL_MASTERY_NONE;
 };

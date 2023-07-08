@@ -449,12 +449,7 @@ class Character {
     void cleanupBeacons();
     bool setBeacon(int index, GameTime duration);
 
-    CHARACTER_SKILL_LEVEL GetSkillLevel(CharacterSkillType skill) const;
-    CharacterSkillMastery GetSkillMastery(CharacterSkillType skill) const;
     CombinedSkillValue getSkillValue(CharacterSkillType skill) const;
-
-    void SetSkillLevel(CharacterSkillType skill, CHARACTER_SKILL_LEVEL level);
-    void SetSkillMastery(CharacterSkillType skill, CharacterSkillMastery mastery);
     void setSkillValue(CharacterSkillType skill, const CombinedSkillValue &value);
 
     CharacterConditions conditions;

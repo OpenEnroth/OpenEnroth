@@ -3296,7 +3296,7 @@ void Character::Reset(CharacterClassType cls) {
         if (pSkillAvailabilityPerClass[classType / 4][i] != 2)
             continue;
 
-        SetSkillLevel(i, 1);
+        setSkillValue(i, CombinedSkillValue::novice());
     }
 
     memset(&pEquipment, 0, sizeof(CharacterEquipment));
@@ -7286,24 +7286,8 @@ void Character::_42FA66_do_explosive_impact(int xpos, int ypos, int zpos, int a4
     }
 }
 
-CHARACTER_SKILL_LEVEL Character::GetSkillLevel(CharacterSkillType skill) const {
-    return pActiveSkills[skill].level();
-}
-
-CharacterSkillMastery Character::GetSkillMastery(CharacterSkillType skill) const {
-    return pActiveSkills[skill].mastery();
-}
-
 CombinedSkillValue Character::getSkillValue(CharacterSkillType skill) const {
     return pActiveSkills[skill];
-}
-
-void Character::SetSkillLevel(CharacterSkillType skill, CHARACTER_SKILL_LEVEL level) {
-    pActiveSkills[skill].setLevel(level);
-}
-
-void Character::SetSkillMastery(CharacterSkillType skill, CharacterSkillMastery mastery) {
-    pActiveSkills[skill].setMastery(mastery);
 }
 
 void Character::setSkillValue(CharacterSkillType skill, const CombinedSkillValue &value) {

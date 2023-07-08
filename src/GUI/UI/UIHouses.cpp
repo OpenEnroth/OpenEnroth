@@ -546,7 +546,9 @@ void selectHouseNPCDialogueOption(DIALOGUE_TYPE topic) {
                 if (guild_membership_approved) {
                     pParty->TakeGold(gold_transaction_amount);
                     if (pParty->hasActiveCharacter()) {
-                        pParty->activeCharacter().SetSkillMastery(dword_F8B1AC_skill_being_taught, dword_F8B1B0_MasteryBeingTaught);
+                        CombinedSkillValue skillValue = pParty->activeCharacter().getSkillValue(dword_F8B1AC_skill_being_taught);
+                        pParty->activeCharacter().setSkillValue(dword_F8B1AC_skill_being_taught,
+                                                                CombinedSkillValue::increaseMastery(skillValue, dword_F8B1B0_MasteryBeingTaught));
                         pParty->activeCharacter().playReaction(SPEECH_SKILL_MASTERY_INC);
                     }
                     engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 1, 0);

@@ -1672,21 +1672,21 @@ void Game::processQueuedMessages() {
             {
                 CharacterSkillType skill = static_cast<CharacterSkillType>(uMessageParam);
                 Character *character = &pParty->activeCharacter();
-                int skill_level = character->getSkillValue(skill).level();
-                const char *statusString;
-                if (character->uSkillPoints < skill_level + 1) {
-                    statusString = localization->GetString(LSTR_NOT_ENOUGH_SKILL_POINTS);
+                CombinedSkillValue skillValue = character->getSkillValue(skill);
+                int cost = skillValue.level() + 1;
+
+                if (character->uSkillPoints < cost) {
+                    GameUI_SetStatusBar(LSTR_NOT_ENOUGH_SKILL_POINTS);
                 } else {
-                    if (skill_level < skills_max_level[skill]) {
-                        character->SetSkillLevel(skill, skill_level + 1);
-                        character->uSkillPoints -= skill_level + 1;
+                    if (skillValue.level() < skills_max_level[skill]) {
+                        character->setSkillValue(skill, CombinedSkillValue::increaseLevel(skillValue));
+                        character->uSkillPoints -= cost;
                         character->playReaction(SPEECH_SKILL_INCREASE);
                         pAudioPlayer->playUISound(SOUND_quest);
-                        continue;
+                    } else {
+                        GameUI_SetStatusBar(LSTR_SKILL_ALREADY_MASTERED);
                     }
-                    statusString = localization->GetString(LSTR_SKILL_ALREADY_MASTERED);
                 }
-                GameUI_SetStatusBar(statusString);
                 continue;
             }
             case UIMSG_ClickStatsBtn:
@@ -1963,11 +1963,11 @@ void Game::processQueuedMessages() {
                 continue;
             case UIMSG_DebugLearnSkills:
                 for (Character &character : pParty->pCharacters) { // loop over players
-                    for (CharacterSkillType ski : allSkills()) {  // loop over skills
+                    for (CharacterSkillType skill : allSkills()) {  // loop over skills
                         // if class can learn this skill
-                        if (skillMaxMasteryPerClass[character.classType][ski] > CHARACTER_SKILL_MASTERY_NONE) {
-                            if (character.getSkillValue(ski).level() == 0) {
-                                character.SetSkillLevel(ski, 1);
+                        if (skillMaxMasteryPerClass[character.classType][skill] > CHARACTER_SKILL_MASTERY_NONE) {
+                            if (character.getSkillValue(skill) == CombinedSkillValue::none()) {
+                                character.setSkillValue(skill, CombinedSkillValue::novice());
                             }
                         }
                     }
