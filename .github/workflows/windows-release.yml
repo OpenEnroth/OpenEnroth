@@ -37,18 +37,18 @@ jobs:
 
     - name: Configure
       run: |
-        cmake -B build -G "NMake Makefiles JOM" -DCMAKE_BUILD_TYPE=${{ matrix.configuration }} -DENABLE_TESTS=On --parallel
+        cmake -B build -G "Ninja" -DCMAKE_BUILD_TYPE=${{ matrix.configuration }} -DENABLE_TESTS=On
 
     - name: Build
       working-directory: build
       shell: cmd
       run: |
-        jom -j3
+        ninja
 
     - name: Tests
       working-directory: build
       run: |
-        jom UnitTest
+        ninja test
 
     - name: Prepare artifact
       shell: pwsh
