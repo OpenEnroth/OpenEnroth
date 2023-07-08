@@ -63,7 +63,7 @@ jobs:
     - name: Build
       working-directory: build
       run: |
-        make -j$(nproc)
+        make -j3
 
     - name: Tests
       working-directory: build
