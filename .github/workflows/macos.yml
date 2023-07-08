@@ -45,9 +45,3 @@ jobs:
         cp -r build/OpenEnroth.app dist/
         cp -r resources/* dist/
         hdiutil create OpenEnroth.dmg -ov -volname "OpenEnroth" -fs HFS+ -srcfolder dist
-
-    - name: Upload artifact
-      uses: actions/upload-artifact@v3
-      with:
-        name: OpenEnroth (MacOS, ${{ matrix.configuration }}, ${{ matrix.architecture }})
-        path: OpenEnroth.dmg
