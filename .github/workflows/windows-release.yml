@@ -48,7 +48,7 @@ jobs:
     - name: Tests
       working-directory: build
       run: |
-        ninja test
+        ninja tests
 
     - name: Prepare artifact
       shell: pwsh
