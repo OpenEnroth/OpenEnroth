@@ -26,27 +26,25 @@ jobs:
         ./doxygen Doxyfile
         touch docs/html/.nojekyll
 
-    - name: Upload Artifact
-      uses: actions/upload-artifact@v3
-      with:
-        name: Documentation
-        path: docs/html
-
   deploy_documentation:
     if: github.ref == 'refs/heads/master'
     runs-on: ubuntu-22.04
-    needs: generate_documentation
     steps:
     - name: Checkout
       uses: actions/checkout@v3
       with:
         submodules: "recursive"
 
-    - name: Download Artifact
-      uses: actions/download-artifact@v3
-      with:
-        name: Documentation
-        path: docs/html
+    - name: Install Doxygen
+      run: |
+        # sudo apt-get install doxygen -y
+        curl https://www.doxygen.nl/files/doxygen-1.9.5.linux.bin.tar.gz | tar xzf - --strip-components=2 doxygen-1.9.5/bin/doxygen -C .
+
+    - name: Generate Documentation
+      run: |
+        export PROJECT_NUMBER="$(git describe --always --tags --dirty)"
+        ./doxygen Doxyfile
+        touch docs/html/.nojekyll
 
     - name: Deploy to GitHub Pages
       uses: JamesIves/github-pages-deploy-action@v4.4.0
