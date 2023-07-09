@@ -800,7 +800,6 @@ bool MM7_LoadLods() {
         Error(localization->GetString(LSTR_PLEASE_REINSTALL), localization->GetString(LSTR_REINSTALL_NECESSARY));
         return false;
     }
-    pIcons_LOD->_011BA4_debug_paletted_pixels_uncompressed = false;
 
     pBitmaps_LOD = new LODFile_IconsBitmaps;
     if (!pBitmaps_LOD->Load(makeDataPath("data", "bitmaps.lod"), "bitmaps")) {
@@ -928,16 +927,6 @@ void Engine::SecondaryInitialization() {
 
     pItemTable = new ItemTable;
     pItemTable->Initialize();
-
-    // pBitmaps_LOD->SetupPalettes(render->uTargetRBits, render->uTargetGBits,
-    // render->uTargetBBits);
-    pBitmaps_LOD->SetupPalettes(5, 6, 5);
-    // pIcons_LOD->SetupPalettes(render->uTargetRBits, render->uTargetGBits,
-    // render->uTargetBBits);
-    pIcons_LOD->SetupPalettes(5, 6, 5);
-    // pPaletteManager->SetColorChannelInfo(render->uTargetRBits,
-    // render->uTargetGBits, render->uTargetBBits);
-    //pPaletteManager->SetColorChannelInfo(5, 6, 5);
 
     //pPaletteManager->SetMistColor(128, 128, 128);
     //pPaletteManager->RecalculateAll();

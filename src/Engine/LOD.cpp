@@ -74,19 +74,6 @@ void LODFile_Sprites::_inlined_sub0() {  // 2nd init
         reservedSpriteCount = pSprites.size();
 }
 
-void LODFile_IconsBitmaps::RemoveTexturesFromTextureList() {
-    if (this->uTexturePacksCount) {
-        if (this->pTextures.size() > this->uNumPrevLoadedFiles) {
-            for (size_t i = this->uNumPrevLoadedFiles; i < this->pTextures.size(); i++) {
-                this->pTextures[i].Release();
-            }
-        }
-        this->pTextures.resize(this->uNumPrevLoadedFiles);
-        this->uNumPrevLoadedFiles = 0;
-        this->uTexturePacksCount = 0;
-    }
-}
-
 void LODFile_IconsBitmaps::RemoveTexturesPackFromTextureList() {
     if (this->uTexturePacksCount) {
         this->uTexturePacksCount--;
@@ -305,24 +292,6 @@ bool LODFile_IconsBitmaps::Load(const std::string &pLODFilename, const std::stri
     return LoadSubIndices(pFolderName);
 }
 
-void LODFile_IconsBitmaps::ReleaseAll() {
-    for (Texture_MM7 &texture : pTextures) {
-        texture.Release();
-    }
-    this->uTexturePacksCount = 0;
-    this->uNumPrevLoadedFiles = 0;
-    this->reservedTextureCount = 0;
-    this->pTextures.clear();
-}
-
-unsigned int LODFile_IconsBitmaps::FindTextureByName(const std::string &pName) {
-    for (size_t i = 0; i < this->pTextures.size(); i++) {
-        if (iequals(this->pTextures[i].header.pName.data(), pName))
-            return i;
-    }
-    return -1;
-}
-
 void LODFile_IconsBitmaps::SyncLoadedFilesCount() {
     Texture_MM7 *pTex;  // edx@1
 
@@ -358,24 +327,9 @@ LODFile_IconsBitmaps::~LODFile_IconsBitmaps() {
 }
 
 LODFile_IconsBitmaps::LODFile_IconsBitmaps() : LOD::File() {
-    /*v2 = v1->pTextures;
-    v3 = 1000;
-    do
-    {
-      Texture_MM7::Texture_MM7(v2);
-      ++v2;
-      --v3;
-    }
-    while ( v3 );*/
     this->uTexturePacksCount = 0;
     this->uNumPrevLoadedFiles = 0;
     this->reservedTextureCount = 0;
-    this->_011BA4_debug_paletted_pixels_uncompressed = false;
-    this->uTextureRedBits = 0;
-    this->uTextureGreenBits = 0;
-    this->uTextureBlueBits = 0;
-    this->pFacesLock = 0;
-    this->dword_11B88 = 0;
 }
 
 bool LOD::WriteableFile::_4621A7() {  // закрыть и загрузить записываемый ф-л(при
@@ -816,31 +770,6 @@ FILE *LOD::File::FindContainer(const std::string &pContainer_Name, size_t *data_
     return nullptr;
 }
 
-void LODFile_IconsBitmaps::SetupPalettes(unsigned int uTargetRBits,
-                                         unsigned int uTargetGBits,
-                                         unsigned int uTargetBBits) {
-    if (this->uTextureRedBits != uTargetRBits ||
-        this->uTextureGreenBits != uTargetGBits ||
-        this->uTextureBlueBits != uTargetBBits) {  // Uninitialized memory access
-        this->uTextureRedBits = uTargetRBits;
-        this->uTextureGreenBits = uTargetGBits;
-        this->uTextureBlueBits = uTargetBBits;
-        for (size_t i = 0; i < this->pTextures.size(); ++i) {
-            if (this->pTextures[i].pPalette24) {
-                FILE *File = FindContainer(this->pTextures[i].header.pName.data());
-                if (File) {
-                    TextureHeader DstBuf;
-                    if (fread(&DstBuf, sizeof(TextureHeader), 1, File) != 1)
-                        continue;
-                    fseek(File, DstBuf.uTextureSize, 1);
-                    if (fread(this->pTextures[i].pPalette24, 0x300, 1, File) != 1)
-                        continue;
-                }
-            }
-        }
-    }
-}
-
 Blob LOD::File::LoadRaw(const std::string &pContainer) const {
     size_t size = 0;
     FILE *File = FindContainer(pContainer, &size);
@@ -902,50 +831,6 @@ int LOD::File::GetSubNodeIndex(const std::string &name) const {
     return -1;
 }
 
-void LODFile_IconsBitmaps::ReleaseHardwareTextures() {}
-
-void LODFile_IconsBitmaps::ReleaseLostHardwareTextures() {}
-
-int LODFile_IconsBitmaps::ReloadTexture(Texture_MM7 *pDst,
-                                        const std::string &pContainer, int mode) {
-    unsigned int v7;  // ebx@6
-    unsigned int v8;  // ecx@6
-    // uint8_t v15;      // [sp+11h] [bp-3h]@13
-    // uint8_t v16;      // [sp+12h] [bp-2h]@13
-    // uint8_t DstBuf;   // [sp+13h] [bp-1h]@13
-
-    FILE *File = FindContainer(pContainer);
-    if (File == nullptr) {
-        return -1;
-    }
-
-    if (!pDst->paletted_pixels || mode != 2 || !pDst->pPalette24)
-        return -1;
-
-    v7 = pDst->header.uTextureSize;
-    if (fread(pDst, 0x30u, 1, File) != 1)
-        return -1;
-
-    strncpy(pDst->header.pName.data(), pContainer.c_str(), 16);
-    v8 = pDst->header.uTextureSize;
-
-    if ((int)v8 <= (int)v7) {
-        if (!pDst->header.uDecompressedSize || this->_011BA4_debug_paletted_pixels_uncompressed) {
-            if (fread(pDst->paletted_pixels, pDst->header.uTextureSize, 1, File) != 1)
-                return -1;
-        } else {
-            Blob bytes = zlib::Uncompress(Blob::read(File, pDst->header.uTextureSize), pDst->header.uDecompressedSize);
-            pDst->header.uTextureSize = pDst->header.uDecompressedSize;
-            memcpy(pDst->paletted_pixels, bytes.data(), bytes.size());
-        }
-        if (fread(pDst->pPalette24, 0x300, 1, File) != 1)
-            return -1;
-        return 1;
-    } else {
-        return -1;
-    }
-}
-
 int LODFile_IconsBitmaps::LoadTextureFromLOD(Texture_MM7 *pOutTex, const std::string &pContainer,
                                              TEXTURE_TYPE eTextureType) {
     size_t data_size = 0;
@@ -961,7 +846,7 @@ int LODFile_IconsBitmaps::LoadTextureFromLOD(Texture_MM7 *pOutTex, const std::st
     data_size -= sizeof(TextureHeader);
 
     // ICONS
-    if (!header->uDecompressedSize || _011BA4_debug_paletted_pixels_uncompressed) {
+    if (!header->uDecompressedSize) {
         if (header->uTextureSize > data_size) {
             assert(false);
         }
@@ -1019,14 +904,6 @@ int LODFile_IconsBitmaps::LoadTextureFromLOD(Texture_MM7 *pOutTex, const std::st
     header->uHeightMinus1 = (1 << header->uHeightLn2) - 1;
 
     return 1;
-}
-
-Texture_MM7 *LODFile_IconsBitmaps::LoadTexturePtr(const std::string &pContainer, TEXTURE_TYPE uTextureType) {
-    uint id = LoadTexture(pContainer, uTextureType);
-
-    Assert(id != -1 && L"Texture_MM7 not found");
-
-    return &pTextures[id];
 }
 
 unsigned int LODFile_IconsBitmaps::LoadTexture(const std::string &pContainer, TEXTURE_TYPE uTextureType) {

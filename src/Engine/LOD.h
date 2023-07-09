@@ -142,22 +142,11 @@ class LODFile_IconsBitmaps : public LOD::File {
     LODFile_IconsBitmaps();
     virtual ~LODFile_IconsBitmaps();
     void SyncLoadedFilesCount();
-    unsigned int FindTextureByName(const std::string &pName);
     bool Load(const std::string &pFilename, const std::string &pFolderName);
-    void ReleaseAll();
     unsigned int LoadTexture(const std::string &pContainer, TEXTURE_TYPE uTextureType = TEXTURE_DEFAULT);
-    struct Texture_MM7 *LoadTexturePtr(const std::string &pContainer, TEXTURE_TYPE uTextureType = TEXTURE_DEFAULT);
     int LoadTextureFromLOD(struct Texture_MM7 *pOutTex, const std::string &pContainer, TEXTURE_TYPE eTextureType);
-    int ReloadTexture(struct Texture_MM7 *pDst, const std::string &pContainer,
-                      int mode);
-    void ReleaseHardwareTextures();
-    void ReleaseLostHardwareTextures();
-    // void _410423_move_textures_to_device();
-    void SetupPalettes(unsigned int uTargetRBits, unsigned int uTargetGBits,
-                       unsigned int uTargetBBits);
     void ReleaseAll2();
     void RemoveTexturesPackFromTextureList();
-    void RemoveTexturesFromTextureList();
     void _inlined_sub0();
     void reserveLoadedTextures();
     void _inlined_sub2();
@@ -167,16 +156,9 @@ class LODFile_IconsBitmaps : public LOD::File {
     Texture_MM7 *GetTexture(int idx);
 
     std::deque<Texture_MM7> pTextures;
-    int dword_11B80;
     int reservedTextureCount;  // bitmaps lod reserved
-    int dword_11B88;
-    int uTextureRedBits;
-    int uTextureGreenBits;
-    int uTextureBlueBits;
     int uNumPrevLoadedFiles;
     int uTexturePacksCount;
-    int pFacesLock;
-    int _011BA4_debug_paletted_pixels_uncompressed;
 };
 
 #pragma pack(push, 1)
