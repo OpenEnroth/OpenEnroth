@@ -3832,7 +3832,7 @@ void RenderOpenGL::DrawOutdoorBuildings() {
         bool found{ false };
         for (int splat = 0; splat < decal_builder->bloodsplat_container->uNumBloodsplats; ++splat) {
             Bloodsplat *thissplat = &decal_builder->bloodsplat_container->pBloodsplats_to_apply[splat];
-            if (model.pBoundingBox.intersectsCube(thissplat->pos.toInt(), thissplat->radius)) {
+            if (model.pBoundingBox.intersectsCube(thissplat->pos, thissplat->radius)) {
                 found = true;
                 break;
             }
@@ -4435,7 +4435,7 @@ void RenderOpenGL::DrawIndoorFaces() {
             // does light sphere collide with current sector
             // expanded current sector
             bool fromexpanded{ false };
-            if (pIndoor->pSectors[pBLVRenderParams->uPartySectorID].pBounding.intersectsCube(test.vPosition.toShort(), test.uRadius)) {
+            if (pIndoor->pSectors[pBLVRenderParams->uPartySectorID].pBounding.intersectsCube(test.vPosition, test.uRadius)) {
                 onlist = true;
                 fromexpanded = true;
             }

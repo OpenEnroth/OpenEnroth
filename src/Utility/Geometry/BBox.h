@@ -63,7 +63,8 @@ struct BBox {
             z1 <= other.z2 && z2 >= other.z1;
     }
 
-    [[nodiscard]] bool intersectsCube(const Vec3<T> &center, T halfSide) const {
+    template<class U, class V>
+    [[nodiscard]] bool intersectsCube(const Vec3<U> &center, V halfSide) const {
         assert(halfSide >= 0);
 
         return

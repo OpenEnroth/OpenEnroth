@@ -37,12 +37,7 @@ void BspRenderer::AddFaceToRenderList_d3d(int node_id, int uFaceID) {
     int boundingslack = 128;
 
     if (!node_id &&
-        pCamera3D->vCameraPos.x >= pFace->pBounding.x1 - boundingslack &&
-        pCamera3D->vCameraPos.x <= pFace->pBounding.x2 + boundingslack &&
-        pCamera3D->vCameraPos.y >= pFace->pBounding.y1 - boundingslack &&
-        pCamera3D->vCameraPos.y <= pFace->pBounding.y2 + boundingslack &&
-        pCamera3D->vCameraPos.z >= pFace->pBounding.z1 - boundingslack &&
-        pCamera3D->vCameraPos.z <= pFace->pBounding.z2 + boundingslack) {
+        pFace->pBounding.intersectsCube(Vec3f(pCamera3D->vCameraPos.x, pCamera3D->vCameraPos.y, pCamera3D->vCameraPos.z), boundingslack)) {
         // we are standing at the portal plane
         pTransitionSector = pFace->uSectorID;
         // draw back sector if we are already doing this sector
