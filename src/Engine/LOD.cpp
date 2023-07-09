@@ -49,44 +49,18 @@ inline int LODFile_IconsBitmaps::LoadDummyTexture() {
     return LoadTextureFromLOD(&pTextures.emplace_back(), "pending", TEXTURE_24BIT_PALETTE);
 }
 
-void LODFile_IconsBitmaps::_inlined_sub2() {
-    ++uTexturePacksCount;
-    if (!uNumPrevLoadedFiles)
-        uNumPrevLoadedFiles = pTextures.size();
-}
-
 void LODFile_IconsBitmaps::reserveLoadedTextures() {
     reservedTextureCount = pTextures.size();
 }
 
-void LODFile_Sprites::_inlined_sub1() {  // final init
+void LODFile_Sprites::reserveLoadedSprites() {  // final init
     reservedSpriteCount = pSprites.size();
-}
-
-void LODFile_IconsBitmaps::_inlined_sub0() {
-    if (reservedTextureCount < pTextures.size())
-        reservedTextureCount = pTextures.size();
 }
 
 void LODFile_Sprites::_inlined_sub0() {  // 2nd init
     reservedSpriteCount2 = pSprites.size();
     if (reservedSpriteCount < pSprites.size())
         reservedSpriteCount = pSprites.size();
-}
-
-void LODFile_IconsBitmaps::RemoveTexturesPackFromTextureList() {
-    if (this->uTexturePacksCount) {
-        this->uTexturePacksCount--;
-        if (!this->uTexturePacksCount) {
-            if (this->pTextures.size() > this->uNumPrevLoadedFiles) {
-                for (size_t i = this->uNumPrevLoadedFiles; i < this->pTextures.size(); i++) {
-                    this->pTextures[i].Release();
-                }
-            }
-            this->pTextures.resize(this->uNumPrevLoadedFiles);
-            this->uNumPrevLoadedFiles = 0;
-        }
-    }
 }
 
 #pragma pack(push, 1)
@@ -174,12 +148,6 @@ Sprite *LODFile_Sprites::getSprite(std::string_view pContainerName) {
     return nullptr;
 }
 
-void LODFile_Sprites::ReleaseLostHardwareSprites() {}
-
-void LODFile_Sprites::ReleaseAll() {}
-
-void LODFile_Sprites::MoveSpritesToVideoMemory() {}
-
 void LODFile_IconsBitmaps::ReleaseAll2() {
     for (size_t i = this->reservedTextureCount; i < this->pTextures.size(); i++) {
         this->pTextures[i].Release();
@@ -250,11 +218,6 @@ void LOD::WriteableFile::ResetSubIndices() {
     uLODDataSize = 0;
 }
 
-void LODFile_Sprites::DeleteSomeSprites() {
-    DeleteSpritesRange(this->field_ECA8, this->pSprites.size());
-    this->pSprites.resize(this->field_ECA8);
-}
-
 void LODFile_Sprites::DeleteSpritesRange(int uStartIndex, int uStopIndex) {
     if (!this->pSprites.empty()) {
         if (uStartIndex < uStopIndex) {
@@ -317,7 +280,6 @@ LODFile_Sprites::~LODFile_Sprites() {
 LODFile_Sprites::LODFile_Sprites() : LOD::File() {
     reservedSpriteCount2 = 0;
     reservedSpriteCount = 0;
-    field_ECA8 = 0;
 }
 
 LODFile_IconsBitmaps::~LODFile_IconsBitmaps() {
@@ -742,9 +704,6 @@ bool LOD::File::DoesContainerExist(const std::string &pContainer) {
 }
 
 void LODFile_Sprites::_461397() {
-    this->field_ECA8 = this->pSprites.size();
-    if (this->pSprites.size() < this->reservedSpriteCount)
-        this->field_ECA8 = this->reservedSpriteCount;
     if (this->reservedSpriteCount < this->reservedSpriteCount2)
         reservedSpriteCount = this->reservedSpriteCount2;
 }

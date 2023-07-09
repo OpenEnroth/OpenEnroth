@@ -46,7 +46,6 @@ GUICredits::GUICredits() :
 }
 
 GUICredits::~GUICredits() {
-    pIcons_LOD->RemoveTexturesPackFromTextureList();
     mm6title->Release();
     cred_texture->Release();
 }

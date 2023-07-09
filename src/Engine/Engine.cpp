@@ -787,7 +787,7 @@ void FinalInitialization() {
 
     InitializeTurnBasedAnimations(&stru_50C198);
     pBitmaps_LOD->reserveLoadedTextures();
-    pSprites_LOD->_inlined_sub1();
+    pSprites_LOD->reserveLoadedSprites();
     pIcons_LOD->reserveLoadedTextures();
 }
 
@@ -966,7 +966,7 @@ void Engine::SecondaryInitialization() {
     pNPCStats->Initialize();
 
     initGlobalEvents();
-    pBitmaps_LOD->_inlined_sub0();
+    pBitmaps_LOD->reserveLoadedTextures();
     pSprites_LOD->_inlined_sub0();
 
     Initialize_GamesLOD_NewLOD();

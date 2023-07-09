@@ -146,10 +146,7 @@ class LODFile_IconsBitmaps : public LOD::File {
     unsigned int LoadTexture(const std::string &pContainer, TEXTURE_TYPE uTextureType = TEXTURE_DEFAULT);
     int LoadTextureFromLOD(struct Texture_MM7 *pOutTex, const std::string &pContainer, TEXTURE_TYPE eTextureType);
     void ReleaseAll2();
-    void RemoveTexturesPackFromTextureList();
-    void _inlined_sub0();
     void reserveLoadedTextures();
-    void _inlined_sub2();
 
     int LoadDummyTexture();
 
@@ -192,7 +189,6 @@ class LODFile_Sprites : public LOD::File {
     LODFile_Sprites();
     virtual ~LODFile_Sprites();
 
-    void DeleteSomeSprites();
     void DeleteSpritesRange(int uStartIndex, int uStopIndex);
     void _461397();
     void DeleteSomeOtherSprites();
@@ -200,15 +196,11 @@ class LODFile_Sprites : public LOD::File {
     bool Load(const std::string &pFilename, const std::string &folder);
     Sprite *LoadSprite(const std::string &pContainerName);
     Sprite *getSprite(std::string_view pContainerName);
-    void ReleaseLostHardwareSprites();
-    void ReleaseAll();
-    void MoveSpritesToVideoMemory();
     void _inlined_sub0();
-    void _inlined_sub1();
+    void reserveLoadedSprites();
 
     int reservedSpriteCount;  // reserved sprites -522
     int reservedSpriteCount2;  // 2nd init sprites
-    int field_ECA8;
     std::deque<Sprite> pSprites;
 };
 
