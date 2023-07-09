@@ -62,6 +62,14 @@ static std::initializer_list<CharacterBuffs> allPotionBuffs() {
     return result;
 }
 
+static auto makeHealthTape(TestController *test) {
+    return test->tape(&totalPartyHealth);
+}
+
+static auto makeMapTape(TestController *test) {
+    return test->tape([] { return toLower(pCurrentMapName); });
+}
+
 // 100
 
 GAME_TEST(Issues, Issue123) {
@@ -73,14 +81,14 @@ GAME_TEST(Issues, Issue123) {
 
 GAME_TEST(Issues, Issue125) {
     // check that fireballs hurt party
-    auto healthTape = test->tape(&totalPartyHealth);
+    auto healthTape = makeHealthTape(test);
     test->playTraceFromTestData("issue_125.mm7", "issue_125.json");
     EXPECT_LT(healthTape.delta(), 0);
 }
 
 GAME_TEST(Issues, Issue159) {
     // Exception when entering Tidewater Caverns
-    auto mapTape = test->tape([] { return toLower(pCurrentMapName); });
+    auto mapTape = makeMapTape(test);
     test->playTraceFromTestData("issue_159.mm7", "issue_159.json");
     EXPECT_EQ(mapTape, tape("out13.odm", "d17.blv", "out13.odm"));
 }
@@ -156,12 +164,12 @@ GAME_TEST(Issues, Issue198) {
 
 GAME_TEST(Issues, Issue201) {
     // Unhandled EVENT_ShowMovie in Event Processor
-    auto healthTape = test->tape(&totalPartyHealth);
+    auto healthTape = makeHealthTape(test);
+    auto mapTape = makeMapTape(test);
     auto daysTape = test->tape([] { return pParty->GetPlayingTime().GetDays(); });
-    auto mapTape = test->tape([] { return toLower(pCurrentMapName); });
     test->playTraceFromTestData("issue_201.mm7", "issue_201.json");
     EXPECT_GT(healthTape.delta(), 0); // Party should heal.
-    EXPECT_EQ(mapTape, tape("out01.odm", "out02.odm")); // Emerald isle to harmondale.
+    EXPECT_EQ(mapTape, tape("out01.odm", "out02.odm")); // Emerald isle to Harmondale.
     EXPECT_EQ(daysTape.delta(), 7); // Time should advance by a week.
 }
 
@@ -211,7 +219,7 @@ GAME_TEST(Issues, Issue248) {
     // Crash in NPC dialog.
     auto screenTape = test->tape([] { return current_screen_type; });
     test->playTraceFromTestData("issue_248.mm7", "issue_248.json");
-    EXPECT_EQ(screenTape, tape(CURRENT_SCREEN::SCREEN_GAME, CURRENT_SCREEN::SCREEN_NPC_DIALOGUE, CURRENT_SCREEN::SCREEN_GAME));
+    EXPECT_EQ(screenTape, tape(SCREEN_GAME, SCREEN_NPC_DIALOGUE, SCREEN_GAME));
 }
 
 GAME_TEST(Issues, Issue268_939) {
