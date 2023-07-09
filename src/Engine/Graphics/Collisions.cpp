@@ -189,13 +189,7 @@ static void CollideBodyWithFace(BLVFace *face, int face_pid, bool ignore_etherea
  * @return                              Whether there is a collision.
  */
 static bool CollideWithCylinder(const Vec3f &center_lo, float radius, float height, int pid, bool jagged_top) {
-    BBoxf bbox;
-    bbox.x1 = center_lo.x - radius;
-    bbox.x2 = center_lo.x + radius;
-    bbox.y1 = center_lo.y - radius;
-    bbox.y2 = center_lo.y + radius;
-    bbox.z1 = center_lo.z;
-    bbox.z2 = center_lo.z + height;
+    BBoxf bbox = BBoxf::forCylinder(center_lo, radius, height);
     if (!collision_state.bbox.intersects(bbox))
         return false;
 
@@ -435,13 +429,7 @@ void _46ED8A_collide_against_sprite_objects(unsigned int pid) {
         // This code is very close to what we have in CollideWithCylinder, but factoring out common parts just
         // seemed not worth it.
 
-        BBoxf bbox;
-        bbox.x1 = pSpriteObjects[i].vPosition.x - object->uRadius;
-        bbox.x2 = pSpriteObjects[i].vPosition.x + object->uRadius;
-        bbox.y1 = pSpriteObjects[i].vPosition.y - object->uRadius;
-        bbox.y2 = pSpriteObjects[i].vPosition.y + object->uRadius;
-        bbox.z1 = pSpriteObjects[i].vPosition.z;
-        bbox.z2 = pSpriteObjects[i].vPosition.z + object->uHeight;
+        BBoxf bbox = BBoxf::forCylinder(pSpriteObjects[i].vPosition.toFloat(), object->uRadius, object->uHeight);
         if (!collision_state.bbox.intersects(bbox))
             continue;
 

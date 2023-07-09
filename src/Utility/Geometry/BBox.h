@@ -46,6 +46,19 @@ struct BBox {
         return result;
     }
 
+    [[nodiscard]] static BBox forCylinder(const Vec3<T> bottomCenter, T radius, T height) {
+        assert(radius >= 0 && height >= 0);
+
+        BBox result;
+        result.x1 = bottomCenter.x - radius;
+        result.x2 = bottomCenter.x + radius;
+        result.y1 = bottomCenter.y - radius;
+        result.y2 = bottomCenter.y + radius;
+        result.z1 = bottomCenter.z;
+        result.z2 = bottomCenter.z + height;
+        return result;
+    }
+
     [[nodiscard]] bool containsXY(T x, T y) const {
         return x >= x1 && x <= x2 && y >= y1 && y <= y2;
     }
@@ -72,6 +85,16 @@ struct BBox {
             z1 <= center.z + halfSide && z2 >= center.z - halfSide;
     }
 
+    template<class U>
+    [[nodiscard]] bool intersectsCuboid(const Vec3<U> &center, const Vec3<U> &halfSize) const {
+        assert(halfSize.x >= 0 && halfSize.y >= 0 && halfSize.z >= 0);
+
+        return
+            x1 <= center.x + halfSize.x && x2 >= center.x - halfSize.x &&
+            y1 <= center.y + halfSize.y && y2 >= center.y - halfSize.y &&
+            z1 <= center.z + halfSize.z && z2 >= center.z - halfSize.z;
+    }
+
     [[nodiscard]] friend BBox operator|(const BBox &l, const BBox &r) {
         BBox result;
         result.x1 = std::min(l.x1, r.x1);
@@ -83,9 +106,12 @@ struct BBox {
         return result;
     }
 
-    // TODO(captainurist): propagate usage, we have a couple places where this is inlined.
     [[nodiscard]] Vec3<T> center() const {
         return Vec3<T>((x1 + x2) / 2, (y1 + y2) / 2, (z1 + z2) / 2);
+    }
+
+    [[nodiscard]] Vec3<T> size() const {
+        return Vec3<T>(x2 - x1, y2 - y1, z2 - z1);
     }
 };
 
