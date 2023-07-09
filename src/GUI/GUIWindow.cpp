@@ -64,7 +64,7 @@ std::list<GUIWindow*> lWindowList;
 
 MENU_STATE sCurrentMenuID;
 
-enum CURRENT_SCREEN current_screen_type = CURRENT_SCREEN::SCREEN_VIDEO;
+enum CURRENT_SCREEN current_screen_type = SCREEN_VIDEO;
 enum CURRENT_SCREEN prev_screen_type;
 
 GraphicsImage *ui_exit_cancel_button_background = nullptr;
@@ -100,11 +100,11 @@ MENU_STATE GetCurrentMenuID() {
 }
 
 bool PauseGameDrawing() {
-    if (current_screen_type != CURRENT_SCREEN::SCREEN_GAME &&
-        current_screen_type != CURRENT_SCREEN::SCREEN_NPC_DIALOGUE &&
-        current_screen_type != CURRENT_SCREEN::SCREEN_CHANGE_LOCATION) {
-        if (current_screen_type == CURRENT_SCREEN::SCREEN_INPUT_BLV) return false; // uCurrentHouse_Animation;
-        if (current_screen_type != CURRENT_SCREEN::SCREEN_BRANCHLESS_NPC_DIALOG) return true;
+    if (current_screen_type != SCREEN_GAME &&
+        current_screen_type != SCREEN_NPC_DIALOGUE &&
+        current_screen_type != SCREEN_CHANGE_LOCATION) {
+        if (current_screen_type == SCREEN_INPUT_BLV) return false; // uCurrentHouse_Animation;
+        if (current_screen_type != SCREEN_BRANCHLESS_NPC_DIALOG) return true;
     }
     return false;
 }
@@ -497,7 +497,7 @@ void OnSaveLoad::Update() {
     }
     Release();
 
-    if (current_screen_type == CURRENT_SCREEN::SCREEN_SAVEGAME) {
+    if (current_screen_type == SCREEN_SAVEGAME) {
         engine->_messageQueue->addMessageCurrentFrame(UIMSG_SaveGame, 0, 0);
     } else {
         engine->_messageQueue->addMessageCurrentFrame(UIMSG_LoadGame, 0, 0);
@@ -1138,7 +1138,7 @@ void WindowManager::DeleteAllVisibleWindows() {
     pGameOverWindow = nullptr; // UIMSG_ShowGameOverWindow
     pGUIWindow_BranchlessDialogue = nullptr; // branchless dialougue
 
-    current_screen_type = CURRENT_SCREEN::SCREEN_GAME;
+    current_screen_type = SCREEN_GAME;
     engine->_messageQueue->clearAll();
     pMediaPlayer->Unload();
 }

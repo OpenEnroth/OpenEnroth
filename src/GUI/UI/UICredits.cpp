@@ -96,7 +96,7 @@ void GUICredits::ExecuteCredits() {
     pAudioPlayer->MusicPlayTrack(MUSIC_Credits);
 
     GUICredits *pWindow_Credits = new GUICredits();
-    current_screen_type = CURRENT_SCREEN::SCREEN_CREATORS;
+    current_screen_type = SCREEN_CREATORS;
     SetCurrentMenuID(MENU_CREDITSPROC);
 
     while (GetCurrentMenuID() == MENU_CREDITSPROC) {

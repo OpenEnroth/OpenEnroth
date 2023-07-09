@@ -876,7 +876,7 @@ void GUIWindow_AlchemyShop::playHouseGoodbyeSpeech() {
 }
 
 void GUIWindow_Shop::houseScreenClick() {
-    if (current_screen_type == CURRENT_SCREEN::SCREEN_SHOP_INVENTORY) {
+    if (current_screen_type == SCREEN_SHOP_INVENTORY) {
         pParty->activeCharacter().OnInventoryLeftClick();
         return;
     }

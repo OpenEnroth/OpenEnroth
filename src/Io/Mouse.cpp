@@ -261,7 +261,7 @@ void Io::Mouse::SetMouseClick(int x, int y) {
 }
 
 void Io::Mouse::UI_OnMouseLeftClick() {
-    if (current_screen_type == CURRENT_SCREEN::SCREEN_VIDEO || isHoldingMouseRightButton())
+    if (current_screen_type == SCREEN_VIDEO || isHoldingMouseRightButton())
         return;
 
     if (pGUIWindow_BranchlessDialogue && pGUIWindow_BranchlessDialogue->wData.val == (int)EVENT_PressAnyKey) {
@@ -273,7 +273,7 @@ void Io::Mouse::UI_OnMouseLeftClick() {
     int y = 0;
     GetClickPos(&x, &y);
 
-    if (GetCurrentMenuID() != -1 || current_screen_type != CURRENT_SCREEN::SCREEN_GAME ||
+    if (GetCurrentMenuID() != -1 || current_screen_type != SCREEN_GAME ||
         !keyboardInputHandler->IsStealingToggled() || !pViewport->Contains(x, y)) {
         std::list<GUIWindow*> targetedSpellUI = {pGUIWindow_CastTargetedSpell};
         std::list<GUIWindow*> *checkWindowList = &lWindowList;
@@ -349,7 +349,7 @@ bool UI_OnKeyDown(PlatformKey key) {
             int v12 = win->field_34;
             if (win->pCurrentPosActiveItem - win->pStartingPosActiveItem - v12 >= 0) {
                 win->pCurrentPosActiveItem -= v12;
-                if (current_screen_type == CURRENT_SCREEN::SCREEN_PARTY_CREATION) {
+                if (current_screen_type == SCREEN_PARTY_CREATION) {
                     pAudioPlayer->playUISound(SOUND_SelectingANewCharacter);
                 }
             }
@@ -363,7 +363,7 @@ bool UI_OnKeyDown(PlatformKey key) {
             int v7 = win->pCurrentPosActiveItem + win->field_34;
             if (v7 < win->pNumPresenceButton + win->pStartingPosActiveItem) {
                 win->pCurrentPosActiveItem = v7;
-                if (current_screen_type == CURRENT_SCREEN::SCREEN_PARTY_CREATION) {
+                if (current_screen_type == SCREEN_PARTY_CREATION) {
                     pAudioPlayer->playUISound(SOUND_SelectingANewCharacter);
                 }
             }

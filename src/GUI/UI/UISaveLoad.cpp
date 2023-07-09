@@ -130,7 +130,7 @@ void GUIWindow_Save::Update() {
 
 GUIWindow_Load::GUIWindow_Load(bool ingame) :
     GUIWindow(WINDOW_Load, {0, 0}, {0, 0}, 0) {
-    current_screen_type = CURRENT_SCREEN::SCREEN_LOADGAME;
+    current_screen_type = SCREEN_LOADGAME;
 
     pIcons_LOD->_inlined_sub2();
 
@@ -373,7 +373,7 @@ void MainMenuLoad_EventLoop() {
             // main menu save/load wnd   clicking on savegame lines
             if (pGUIWindow_CurrentMenu->keyboard_input_status == WINDOW_INPUT_IN_PROGRESS)
                 keyboardInputHandler->SetWindowInputStatus(WINDOW_INPUT_NONE);
-            assert(current_screen_type != CURRENT_SCREEN::SCREEN_SAVEGAME); // No savegame in main menu
+            assert(current_screen_type != SCREEN_SAVEGAME); // No savegame in main menu
             if (isLoadSlotClicked && pSavegameList->selectedSlot == param + pSavegameList->saveListPosition) {
                 engine->_messageQueue->addMessageCurrentFrame(UIMSG_SaveLoadBtn, 0, 0);
                 // Breaks UI interaction after save load
@@ -412,7 +412,7 @@ void MainMenuLoad_EventLoop() {
                 // crt_deconstruct_ptr_6A0118();
 
                 SetCurrentMenuID(MENU_MAIN);
-                current_screen_type = CURRENT_SCREEN::SCREEN_GAME;
+                current_screen_type = SCREEN_GAME;
                 pEventTimer->Resume();
                 break;
             }
@@ -443,11 +443,11 @@ void MainMenuLoad_EventLoop() {
 }
 
 void MainMenuLoad_Loop() {
-    current_screen_type = CURRENT_SCREEN::SCREEN_LOADGAME;
+    current_screen_type = SCREEN_LOADGAME;
     pGUIWindow_CurrentMenu = new GUIWindow_Load(false);
     isLoadSlotClicked = false;
 
-    while (GetCurrentMenuID() == MENU_SAVELOAD && current_screen_type == CURRENT_SCREEN::SCREEN_LOADGAME) {
+    while (GetCurrentMenuID() == MENU_SAVELOAD && current_screen_type == SCREEN_LOADGAME) {
         MessageLoopWithWait();
 
         render->BeginScene2D();

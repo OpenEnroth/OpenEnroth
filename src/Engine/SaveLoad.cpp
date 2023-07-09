@@ -106,7 +106,7 @@ void LoadGame(unsigned int uSlot) {
         }
     }
 */
-    current_screen_type = CURRENT_SCREEN::SCREEN_GAME;
+    current_screen_type = SCREEN_GAME;
 
     SetUserInterface(pParty->alignment, true);
 
@@ -281,7 +281,7 @@ void DoSavegame(unsigned int uSlot) {
 
     GUI_UpdateWindows();
     pGUIWindow_CurrentMenu->Release();
-    current_screen_type = CURRENT_SCREEN::SCREEN_GAME;
+    current_screen_type = SCREEN_GAME;
 
     for (int i = 0; i < MAX_SAVE_SLOTS; i++) {
         if (pSavegameList->pSavegameThumbnails[i] != nullptr) {

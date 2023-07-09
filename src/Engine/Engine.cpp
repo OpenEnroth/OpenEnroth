@@ -238,7 +238,7 @@ void Engine::DrawGUI() {
     static uint last_frame_time = platform->tickCount();
     static uint framerate_time_elapsed = 0;
 
-    if (current_screen_type == CURRENT_SCREEN::SCREEN_GAME &&
+    if (current_screen_type == SCREEN_GAME &&
         uCurrentlyLoadedLevelType == LEVEL_OUTDOOR)
         pWeather->Draw();  // Ritor1: my include
 
@@ -622,7 +622,7 @@ bool Engine::PickMouse(float fPickDepth, unsigned int uMouseX,
 //----- (0044EB12) --------------------------------------------------------
 bool Engine::PickKeyboard(float pick_depth, bool bOutline, Vis_SelectionFilter *sprite_filter,
                           Vis_SelectionFilter *face_filter) {
-    if (current_screen_type == CURRENT_SCREEN::SCREEN_GAME) {
+    if (current_screen_type == SCREEN_GAME) {
         bool r = vis->PickKeyboard(pick_depth, &vis->default_list, sprite_filter, face_filter);
 
         if (bOutline)
@@ -1341,7 +1341,7 @@ void back_to_game() {
         pGUIWindow_ScrollWindow = nullptr;
     }
 
-    if (current_screen_type == CURRENT_SCREEN::SCREEN_GAME && !pGUIWindow_CastTargetedSpell) {
+    if (current_screen_type == SCREEN_GAME && !pGUIWindow_CastTargetedSpell) {
         pEventTimer->Resume();
     }
 }
@@ -1588,7 +1588,7 @@ void _494035_timed_effects__water_walking_damage__etc() {
     }
 
     if (!numPlayersCouldAct) {
-        if (current_screen_type != CURRENT_SCREEN::SCREEN_REST) {
+        if (current_screen_type != SCREEN_REST) {
             for (Character &character : pParty->pCharacters) {
                 // if someone is sleeping - wake them up
                 if (character.conditions.Has(CONDITION_SLEEP)) {
@@ -1603,7 +1603,7 @@ void _494035_timed_effects__water_walking_damage__etc() {
     }
 
     if (pParty->hasActiveCharacter()) {
-        if (current_screen_type != CURRENT_SCREEN::SCREEN_REST) {
+        if (current_screen_type != SCREEN_REST) {
             if (!pParty->activeCharacter().CanAct()) {
                 pParty->switchToNextActiveCharacter();
             }
@@ -1903,13 +1903,13 @@ void Level_LoadEvtAndStr(const std::string &pLevelName) {
 }
 
 bool _44100D_should_alter_right_panel() {
-    return current_screen_type == CURRENT_SCREEN::SCREEN_NPC_DIALOGUE ||
-           current_screen_type == CURRENT_SCREEN::SCREEN_CHARACTERS ||
-           current_screen_type == CURRENT_SCREEN::SCREEN_HOUSE ||
-           current_screen_type == CURRENT_SCREEN::SCREEN_SHOP_INVENTORY ||
-           current_screen_type == CURRENT_SCREEN::SCREEN_CHANGE_LOCATION ||
-           current_screen_type == CURRENT_SCREEN::SCREEN_INPUT_BLV ||
-           current_screen_type == CURRENT_SCREEN::SCREEN_CASTING;
+    return current_screen_type == SCREEN_NPC_DIALOGUE ||
+           current_screen_type == SCREEN_CHARACTERS ||
+           current_screen_type == SCREEN_HOUSE ||
+           current_screen_type == SCREEN_SHOP_INVENTORY ||
+           current_screen_type == SCREEN_CHANGE_LOCATION ||
+           current_screen_type == SCREEN_INPUT_BLV ||
+           current_screen_type == SCREEN_CASTING;
 }
 
 void Transition_StopSound_Autosave(const std::string &pMapName,
@@ -1946,6 +1946,6 @@ void TeleportToNWCDungeon() {
     // start tranistion to dungeon
     pGameLoadingUI_ProgressBar->Initialize(GUIProgressBar::TYPE_Fullscreen);
     Transition_StopSound_Autosave("nwc.blv", MapStartPoint_Party);
-    current_screen_type = CURRENT_SCREEN::SCREEN_GAME;
+    current_screen_type = SCREEN_GAME;
     return;
 }

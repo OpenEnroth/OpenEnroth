@@ -616,7 +616,7 @@ void GameUI_OnPlayerPortraitLeftClick(unsigned int uPlayerID) {
         }
     }
 
-    if (current_screen_type == CURRENT_SCREEN::SCREEN_GAME) {
+    if (current_screen_type == SCREEN_GAME) {
         if (pParty->hasActiveCharacter()) {
             if (pParty->activeCharacterIndex() != uPlayerID) {
                 if (player->timeToRecovery || !player->CanAct()) {
@@ -626,20 +626,20 @@ void GameUI_OnPlayerPortraitLeftClick(unsigned int uPlayerID) {
                 pParty->setActiveCharacterIndex(uPlayerID);
                 return;
             }
-            pGUIWindow_CurrentMenu = new GUIWindow_CharacterRecord(pParty->activeCharacterIndex(), CURRENT_SCREEN::SCREEN_CHARACTERS);
+            pGUIWindow_CurrentMenu = new GUIWindow_CharacterRecord(pParty->activeCharacterIndex(), SCREEN_CHARACTERS);
             return;
         }
         return;
     }
 
-    if (current_screen_type == CURRENT_SCREEN::SCREEN_SPELL_BOOK) {
+    if (current_screen_type == SCREEN_SPELL_BOOK) {
         return;
     }
 
-    if (current_screen_type == CURRENT_SCREEN::SCREEN_CHEST) {
+    if (current_screen_type == SCREEN_CHEST) {
         if (pParty->activeCharacterIndex() == uPlayerID) {
             current_character_screen_window = WINDOW_CharacterWindow_Inventory;
-            current_screen_type = CURRENT_SCREEN::SCREEN_CHEST_INVENTORY;
+            current_screen_type = SCREEN_CHEST_INVENTORY;
             return;
         }
         if (player->timeToRecovery) {
@@ -648,18 +648,18 @@ void GameUI_OnPlayerPortraitLeftClick(unsigned int uPlayerID) {
         pParty->setActiveCharacterIndex(uPlayerID);
         return;
     }
-    if (current_screen_type != CURRENT_SCREEN::SCREEN_HOUSE) {
-        if (current_screen_type == CURRENT_SCREEN::SCREEN_SHOP_INVENTORY || current_screen_type == CURRENT_SCREEN::SCREEN_CHEST_INVENTORY) {
+    if (current_screen_type != SCREEN_HOUSE) {
+        if (current_screen_type == SCREEN_SHOP_INVENTORY || current_screen_type == SCREEN_CHEST_INVENTORY) {
             pParty->setActiveCharacterIndex(uPlayerID);
             return;
         }
-        if (current_screen_type != CURRENT_SCREEN::SCREEN_CHEST_INVENTORY) {
+        if (current_screen_type != SCREEN_CHEST_INVENTORY) {
             pParty->setActiveCharacterIndex(uPlayerID);
             return;
         }
         if (pParty->activeCharacterIndex() == uPlayerID) {
             current_character_screen_window = WINDOW_CharacterWindow_Inventory;
-            current_screen_type = CURRENT_SCREEN::SCREEN_CHEST_INVENTORY;
+            current_screen_type = SCREEN_CHEST_INVENTORY;
             pParty->setActiveCharacterIndex(uPlayerID);
             return;
         }
@@ -680,7 +680,7 @@ void GameUI_OnPlayerPortraitLeftClick(unsigned int uPlayerID) {
 
     if (dialog_menu_id == DIALOGUE_SHOP_BUY_STANDARD || dialog_menu_id == DIALOGUE_SHOP_BUY_SPECIAL) {
         current_character_screen_window = WINDOW_CharacterWindow_Inventory;
-        pGUIWindow_CurrentMenu = new GUIWindow_CharacterRecord(pParty->activeCharacterIndex(), CURRENT_SCREEN::SCREEN_SHOP_INVENTORY);
+        pGUIWindow_CurrentMenu = new GUIWindow_CharacterRecord(pParty->activeCharacterIndex(), SCREEN_SHOP_INVENTORY);
         return;
     }
 }
@@ -747,7 +747,7 @@ void GameUI_DrawRightPanelItems() {
         bookFlashState = !bookFlashState;
     }
 
-    if (bookFlashState && current_screen_type != CURRENT_SCREEN::SCREEN_REST) {
+    if (bookFlashState && current_screen_type != SCREEN_REST) {
         if (bFlashQuestBook) {
             render->DrawTextureNew(493 / 640.0f, 355 / 480.0f, game_ui_tome_quests);
         }
@@ -759,7 +759,7 @@ void GameUI_DrawRightPanelItems() {
         }
     }
 
-    if (current_screen_type ==  CURRENT_SCREEN::SCREEN_BOOKS) {
+    if (current_screen_type ==  SCREEN_BOOKS) {
         if (pGUIWindow_CurrentMenu->eWindowType == WINDOW_QuestBook) {
             render->DrawTextureNew(493 / 640.0f, 355 / 480.0f, game_ui_tome_quests);
         }
@@ -879,7 +879,7 @@ void GameUI_WritePointedObjectStatusString() {
     if (pX < 0 || pX > renDims.w - 1 || pY < 0 || pY > renDims.h - 1)
         return;
 
-    if (current_screen_type == CURRENT_SCREEN::SCREEN_GAME) {
+    if (current_screen_type == SCREEN_GAME) {
         if (pX <= (renDims.w - 1) * 0.73125 &&
             pY <= (renDims.h - 1) * 0.73125) {
             if (!pViewport->Contains(pX, pY)) {
@@ -987,7 +987,7 @@ void GameUI_WritePointedObjectStatusString() {
             uLastPointedObjectID = mouse->uPointingObjectID;
             return;
         }
-    } else if (current_screen_type == CURRENT_SCREEN::SCREEN_CHEST) {
+    } else if (current_screen_type == SCREEN_CHEST) {
         if (pX <= (renDims.w - 1) * 0.73125 &&
             pY <= (renDims.h - 1) * 0.73125) {  // if in chest area
             if (Chest::ChestUI_WritePointedObjectStatusString()) {
@@ -1002,7 +1002,7 @@ void GameUI_WritePointedObjectStatusString() {
     } else {
         // if (pX <= (window->GetWidth() - 1) * 0.73125 && pY <=
         // (window->GetHeight() - 1) * 0.73125) {
-        if (current_screen_type == CURRENT_SCREEN::SCREEN_CHARACTERS) {
+        if (current_screen_type == SCREEN_CHARACTERS) {
             if (current_character_screen_window ==
                 WINDOW_CharacterWindow_Inventory) {
                 if (pY > 0 && pY < 350 && pX >= 13 &&
@@ -1273,8 +1273,8 @@ void GameUI_DrawPartySpells() {
         }
     }
 
-    if (current_screen_type == CURRENT_SCREEN::SCREEN_GAME ||
-        current_screen_type == CURRENT_SCREEN::SCREEN_NPC_DIALOGUE) {
+    if (current_screen_type == SCREEN_GAME ||
+        current_screen_type == SCREEN_NPC_DIALOGUE) {
         if (pParty->FlyActive()) {
             if (pParty->bFlying)
                 spell_texture = pIconsFrameTable->GetFrame(uIconIdx_FlySpell, frameNum)->GetTexture();
@@ -1701,17 +1701,17 @@ void GameUI_DrawMinimap(unsigned int uX, unsigned int uY, unsigned int uZ,
 
 //----- (00441498) --------------------------------------------------------
 void GameUI_DrawTorchlightAndWizardEye() {
-    if (current_screen_type == CURRENT_SCREEN::SCREEN_GAME ||
-        current_screen_type == CURRENT_SCREEN::SCREEN_MENU ||
-        current_screen_type == CURRENT_SCREEN::SCREEN_OPTIONS ||
-        current_screen_type == CURRENT_SCREEN::SCREEN_REST ||
-        current_screen_type == CURRENT_SCREEN::SCREEN_SPELL_BOOK ||
-        current_screen_type == CURRENT_SCREEN::SCREEN_CHEST ||
-        current_screen_type == CURRENT_SCREEN::SCREEN_SAVEGAME ||
-        current_screen_type == CURRENT_SCREEN::SCREEN_LOADGAME ||
-        current_screen_type == CURRENT_SCREEN::SCREEN_CHEST_INVENTORY ||
-        current_screen_type == CURRENT_SCREEN::SCREEN_BOOKS ||
-        current_screen_type == CURRENT_SCREEN::SCREEN_BRANCHLESS_NPC_DIALOG) {
+    if (current_screen_type == SCREEN_GAME ||
+        current_screen_type == SCREEN_MENU ||
+        current_screen_type == SCREEN_OPTIONS ||
+        current_screen_type == SCREEN_REST ||
+        current_screen_type == SCREEN_SPELL_BOOK ||
+        current_screen_type == SCREEN_CHEST ||
+        current_screen_type == SCREEN_SAVEGAME ||
+        current_screen_type == SCREEN_LOADGAME ||
+        current_screen_type == SCREEN_CHEST_INVENTORY ||
+        current_screen_type == SCREEN_BOOKS ||
+        current_screen_type == SCREEN_BRANCHLESS_NPC_DIALOG) {
         if (pParty->TorchlightActive()) {
             render->DrawTextureNew(
                 pUIAnum_Torchlight->x / 640.0f, pUIAnum_Torchlight->y / 480.0f,

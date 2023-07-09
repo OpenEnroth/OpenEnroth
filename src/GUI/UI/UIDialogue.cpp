@@ -130,7 +130,7 @@ void GameUI_InitializeDialogue(Actor *actor, int bPlayerSaysHello) {
 GUIWindow_Dialogue::GUIWindow_Dialogue(Pointi position, Sizei dimensions, WindowData data, const std::string &hint)
     : GUIWindow(WINDOW_Dialogue, position, dimensions, data, hint) {
     prev_screen_type = current_screen_type;
-    current_screen_type = CURRENT_SCREEN::SCREEN_NPC_DIALOGUE;
+    current_screen_type = SCREEN_NPC_DIALOGUE;
     pBtn_ExitCancel = CreateButton({0x1D7u, 0x1BDu}, {0xA9u, 0x23u}, 1, 0, UIMSG_Escape, 0, Io::InputAction::Invalid,
         localization->GetString(LSTR_DIALOGUE_EXIT),
         {ui_exit_cancel_button_background}
@@ -458,7 +458,7 @@ GUIWindow_GenericDialogue::GUIWindow_GenericDialogue(Pointi position, Sizei dime
 : GUIWindow(WINDOW_GreetingNPC, position, dimensions, data, hint) {
     prev_screen_type = current_screen_type;
     keyboardInputHandler->StartTextInput(TextInputType::Text, 15, this);
-    current_screen_type = CURRENT_SCREEN::SCREEN_BRANCHLESS_NPC_DIALOG;
+    current_screen_type = SCREEN_BRANCHLESS_NPC_DIALOG;
 }
 
 void GUIWindow_GenericDialogue::Release() {

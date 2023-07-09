@@ -605,7 +605,7 @@ GUIWindow_PartyCreation::GUIWindow_PartyCreation() :
 
     main_menu_background = assets->getImage_PCXFromIconsLOD("makeme.pcx");
 
-    current_screen_type = CURRENT_SCREEN::SCREEN_PARTY_CREATION;
+    current_screen_type = SCREEN_PARTY_CREATION;
     uPlayerCreationUI_SelectedCharacter = 0;
     int v0 = pFontCreate->GetHeight() - 2;
 

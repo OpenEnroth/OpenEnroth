@@ -15,7 +15,7 @@ GUIWindow_GameOver::GUIWindow_GameOver(UIMessageType on_release_event)
     : GUIWindow(WINDOW_GameOverWindow, {0, 0}, render->GetRenderDimensions(), on_release_event) {
     pEventTimer->Pause();
     prev_screen_type = current_screen_type;
-    current_screen_type = CURRENT_SCREEN::SCREEN_GAMEOVER_WINDOW;
+    current_screen_type = SCREEN_GAMEOVER_WINDOW;
     _tickcount = platform->tickCount() + 5000;
     GameOver_Loop(0);
     this->sHint = fmt::format(

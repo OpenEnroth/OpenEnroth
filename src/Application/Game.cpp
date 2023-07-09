@@ -368,7 +368,7 @@ void Game_StartDialogue(unsigned int actor_id) {
 }
 
 void Game_StartHirelingDialogue(unsigned int hireling_id) {
-    if (bNoNPCHiring || current_screen_type != CURRENT_SCREEN::SCREEN_GAME) return;
+    if (bNoNPCHiring || current_screen_type != SCREEN_GAME) return;
 
     engine->_messageQueue->clear();
 
@@ -384,7 +384,7 @@ void Game_StartHirelingDialogue(unsigned int hireling_id) {
 
 void Game::closeTargetedSpellWindow() {
     if (pGUIWindow_CastTargetedSpell) {
-        if (current_screen_type == CURRENT_SCREEN::SCREEN_CHARACTERS) {
+        if (current_screen_type == SCREEN_CHARACTERS) {
             _mouse->SetCursorImage("MICON2");
         } else {
             pGUIWindow_CastTargetedSpell->Release();  // test to fix enchanting issue
@@ -414,12 +414,12 @@ void Game::onEscape() {
         pGUIWindow_CurrentMenu = nullptr;
     }
     pEventTimer->Resume();
-    current_screen_type = CURRENT_SCREEN::SCREEN_GAME;
+    current_screen_type = SCREEN_GAME;
 }
 
 bool IsWindowSwitchable() {
-    if (current_screen_type == CURRENT_SCREEN::SCREEN_NPC_DIALOGUE || current_screen_type == CURRENT_SCREEN::SCREEN_HOUSE
-        || current_screen_type == CURRENT_SCREEN::SCREEN_INPUT_BLV || current_screen_type == CURRENT_SCREEN::SCREEN_CHANGE_LOCATION) {
+    if (current_screen_type == SCREEN_NPC_DIALOGUE || current_screen_type == SCREEN_HOUSE
+        || current_screen_type == SCREEN_INPUT_BLV || current_screen_type == SCREEN_CHANGE_LOCATION) {
         return false;
     }
     return true;
@@ -507,7 +507,7 @@ void Game::processQueuedMessages() {
             case UIMSG_80:
                 __debugbreak();
                 pGUIWindow_CurrentMenu->Release();
-                current_screen_type = CURRENT_SCREEN::SCREEN_OPTIONS;
+                current_screen_type = SCREEN_OPTIONS;
                 __debugbreak();  // pGUIWindow_CurrentMenu =
                                  // GUIWindow::Create(0, 0,
                                  // window->GetWidth(), window->GetHeight(),
@@ -519,7 +519,7 @@ void Game::processQueuedMessages() {
             case UIMSG_OpenQuestBook:
                 engine->_messageQueue->clear();
                 // toggle
-                if (current_screen_type == CURRENT_SCREEN::SCREEN_BOOKS && pGUIWindow_CurrentMenu->eWindowType == WindowType::WINDOW_QuestBook) {
+                if (current_screen_type == SCREEN_BOOKS && pGUIWindow_CurrentMenu->eWindowType == WindowType::WINDOW_QuestBook) {
                     engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 0, 0);
                     continue;
                 }
@@ -538,7 +538,7 @@ void Game::processQueuedMessages() {
             case UIMSG_OpenAutonotes:
                 engine->_messageQueue->clear();
                 // toggle
-                if (current_screen_type == CURRENT_SCREEN::SCREEN_BOOKS && pGUIWindow_CurrentMenu->eWindowType == WindowType::WINDOW_AutonotesBook) {
+                if (current_screen_type == SCREEN_BOOKS && pGUIWindow_CurrentMenu->eWindowType == WindowType::WINDOW_AutonotesBook) {
                     engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 0, 0);
                     continue;
                 }
@@ -557,7 +557,7 @@ void Game::processQueuedMessages() {
             case UIMSG_OpenMapBook:
                 engine->_messageQueue->clear();
                 // toggle
-                if (current_screen_type == CURRENT_SCREEN::SCREEN_BOOKS && pGUIWindow_CurrentMenu->eWindowType == WindowType::WINDOW_MapsBook) {
+                if (current_screen_type == SCREEN_BOOKS && pGUIWindow_CurrentMenu->eWindowType == WindowType::WINDOW_MapsBook) {
                     engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 0, 0);
                     continue;
                 }
@@ -576,7 +576,7 @@ void Game::processQueuedMessages() {
             case UIMSG_OpenCalendar:
                 engine->_messageQueue->clear();
                 // toggle
-                if (current_screen_type == CURRENT_SCREEN::SCREEN_BOOKS && pGUIWindow_CurrentMenu->eWindowType == WindowType::WINDOW_CalendarBook) {
+                if (current_screen_type == SCREEN_BOOKS && pGUIWindow_CurrentMenu->eWindowType == WindowType::WINDOW_CalendarBook) {
                     engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 0, 0);
                     continue;
                 }
@@ -595,7 +595,7 @@ void Game::processQueuedMessages() {
             case UIMSG_OpenHistoryBook:
                 engine->_messageQueue->clear();
                 // toggle
-                if (current_screen_type == CURRENT_SCREEN::SCREEN_BOOKS && pGUIWindow_CurrentMenu->eWindowType == WindowType::WINDOW_JournalBook) {
+                if (current_screen_type == SCREEN_BOOKS && pGUIWindow_CurrentMenu->eWindowType == WindowType::WINDOW_JournalBook) {
                     engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 0, 0);
                     continue;
                 }
@@ -613,34 +613,34 @@ void Game::processQueuedMessages() {
                 continue;
             case UIMSG_OpenDebugMenu:
                 engine->_messageQueue->clear();
-                if (current_screen_type == CURRENT_SCREEN::SCREEN_DEBUG) {
+                if (current_screen_type == SCREEN_DEBUG) {
                     back_to_game();
                     onEscape();
                     GameUI_StatusBar_Clear();
                     break;
                 }
-                if (current_screen_type != CURRENT_SCREEN::SCREEN_GAME) continue;
+                if (current_screen_type != SCREEN_GAME) continue;
                     // pGUIWindow_CurrentMenu->Release();
                 pGUIWindow_CurrentMenu = new GUIWindow_DebugMenu();
-                current_screen_type = CURRENT_SCREEN::SCREEN_DEBUG;
+                current_screen_type = SCREEN_DEBUG;
                 continue;
             case UIMSG_Escape:  // нажатие Escape and return to game
                 back_to_game();
                 engine->_messageQueue->clear();
                 switch (current_screen_type) {
-                    case CURRENT_SCREEN::SCREEN_SHOP_INVENTORY:
-                    case CURRENT_SCREEN::SCREEN_NPC_DIALOGUE:
-                    case CURRENT_SCREEN::SCREEN_CHEST:
-                    case CURRENT_SCREEN::SCREEN_CHEST_INVENTORY:
-                    case CURRENT_SCREEN::SCREEN_CHANGE_LOCATION:
-                    case CURRENT_SCREEN::SCREEN_INPUT_BLV:
-                    case CURRENT_SCREEN::SCREEN_QUICK_REFERENCE:
+                    case SCREEN_SHOP_INVENTORY:
+                    case SCREEN_NPC_DIALOGUE:
+                    case SCREEN_CHEST:
+                    case SCREEN_CHEST_INVENTORY:
+                    case SCREEN_CHANGE_LOCATION:
+                    case SCREEN_INPUT_BLV:
+                    case SCREEN_QUICK_REFERENCE:
                         if (playButtonSoundOnEscape) {
                             PlayButtonClickSound();
                             uMessageParam = 1;
                         }
                         break;
-                    case CURRENT_SCREEN::SCREEN_HOUSE:
+                    case SCREEN_HOUSE:
                         if (playButtonSoundOnEscape) {
                             PlayButtonClickSound();
                             uMessageParam = 1;
@@ -661,7 +661,7 @@ void Game::processQueuedMessages() {
                     }
                 }
                 _render->ClearZBuffer();
-                if (current_screen_type == CURRENT_SCREEN::SCREEN_GAME) {
+                if (current_screen_type == SCREEN_GAME) {
                     if (!pGUIWindow_CastTargetedSpell) {  // Draw Menu
                         new OnButtonClick2({602, 450}, {0, 0}, pBtn_GameSettings, std::string(), false);
 
@@ -676,28 +676,28 @@ void Game::processQueuedMessages() {
                         back_to_game();
                     }
                     continue;
-                } else if (current_screen_type == CURRENT_SCREEN::SCREEN_MENU) {
+                } else if (current_screen_type == SCREEN_MENU) {
                     break;
                 } else if (
-                    current_screen_type == CURRENT_SCREEN::SCREEN_SAVEGAME ||
-                    current_screen_type == CURRENT_SCREEN::SCREEN_LOADGAME) {
+                    current_screen_type == SCREEN_SAVEGAME ||
+                    current_screen_type == SCREEN_LOADGAME) {
                     break;
-                } else if (current_screen_type == CURRENT_SCREEN::SCREEN_OPTIONS) {
+                } else if (current_screen_type == SCREEN_OPTIONS) {
                     break;
-                } else if (current_screen_type == CURRENT_SCREEN::SCREEN_VIDEO_OPTIONS) {
+                } else if (current_screen_type == SCREEN_VIDEO_OPTIONS) {
                     break;
-                } else if (current_screen_type == CURRENT_SCREEN::SCREEN_KEYBOARD_OPTIONS) {
+                } else if (current_screen_type == SCREEN_KEYBOARD_OPTIONS) {
                     break;
                 } else {
-                    if (current_screen_type > CURRENT_SCREEN::SCREEN_67) {
-                        if (current_screen_type == CURRENT_SCREEN::SCREEN_QUICK_REFERENCE) {
+                    if (current_screen_type > SCREEN_67) {
+                        if (current_screen_type == SCREEN_QUICK_REFERENCE) {
                             onEscape();
                             continue;
                         }
                     } else {
-                        if (current_screen_type < CURRENT_SCREEN::SCREEN_64) {
+                        if (current_screen_type < SCREEN_64) {
                             switch (current_screen_type) {
-                                case CURRENT_SCREEN::SCREEN_CASTING:
+                                case SCREEN_CASTING:
                                     if (enchantingActiveCharacter) {
                                         pParty->setActiveCharacterIndex(enchantingActiveCharacter);
                                         pParty->switchToNextActiveCharacter();
@@ -717,27 +717,27 @@ void Game::processQueuedMessages() {
                                     }
                                     onEscape();
                                     continue;
-                                case CURRENT_SCREEN::SCREEN_BOOKS:
+                                case SCREEN_BOOKS:
                                     pEventTimer->Resume();
                                     onEscape();
                                     continue;
-                                case CURRENT_SCREEN::SCREEN_CHEST_INVENTORY:
-                                    current_screen_type = CURRENT_SCREEN::SCREEN_CHEST;
+                                case SCREEN_CHEST_INVENTORY:
+                                    current_screen_type = SCREEN_CHEST;
                                     continue;
-                                case CURRENT_SCREEN::SCREEN_CHEST:
+                                case SCREEN_CHEST:
                                     pWindow2 = pGUIWindow_CurrentMenu;
                                     pWindow2->Release();
-                                    current_screen_type = CURRENT_SCREEN::SCREEN_GAME;
+                                    current_screen_type = SCREEN_GAME;
                                     pEventTimer->Resume();
                                     continue;
-                                case CURRENT_SCREEN::SCREEN_19:
+                                case SCREEN_19:
                                     __debugbreak();
                                     pWindow2 = ptr_507BC8;
                                     pWindow2->Release();
-                                    current_screen_type = CURRENT_SCREEN::SCREEN_GAME;
+                                    current_screen_type = SCREEN_GAME;
                                     pEventTimer->Resume();
                                     continue;
-                                case CURRENT_SCREEN::SCREEN_REST:  // close rest screen
+                                case SCREEN_REST:  // close rest screen
                                     if (currentRestType != REST_NONE) {
                                         Rest(remainingRestTime);
                                         for (Character &character : pParty->pCharacters) {
@@ -762,11 +762,11 @@ void Game::processQueuedMessages() {
                                     currentRestType = REST_NONE;
                                     onEscape();
                                     continue;
-                                case CURRENT_SCREEN::SCREEN_SHOP_INVENTORY:
+                                case SCREEN_SHOP_INVENTORY:
                                     pGUIWindow_CurrentMenu->Release();
-                                    current_screen_type = CURRENT_SCREEN::SCREEN_HOUSE;
+                                    current_screen_type = SCREEN_HOUSE;
                                     continue;
-                                case CURRENT_SCREEN::SCREEN_HOUSE:
+                                case SCREEN_HOUSE:
                                     if (uDialogueType != DIALOGUE_NULL) {
                                         uDialogueType = DIALOGUE_NULL;
                                     }
@@ -783,7 +783,7 @@ void Game::processQueuedMessages() {
 
                                     onEscape();
                                     continue;
-                                case CURRENT_SCREEN::SCREEN_INPUT_BLV:  // click escape
+                                case SCREEN_INPUT_BLV:  // click escape
                                     if (uCurrentHouse_Animation == 153)
                                         playHouseSound((HOUSE_ID)0x99u, HouseSoundType(3)); // TODO(Nik-RE-dev): what is this?
                                     pMediaPlayer->Unload();
@@ -794,9 +794,9 @@ void Game::processQueuedMessages() {
                                         npcIdToDismissAfterDialogue = 0;
                                     }
                                     DialogueEnding();
-                                    current_screen_type = CURRENT_SCREEN::SCREEN_GAME;
+                                    current_screen_type = SCREEN_GAME;
                                     continue;
-                                case CURRENT_SCREEN::SCREEN_NPC_DIALOGUE:  // click escape
+                                case SCREEN_NPC_DIALOGUE:  // click escape
                                     if (npcIdToDismissAfterDialogue) {
                                         pParty->hirelingScrollPosition = 0;
                                         pNPCStats->pNewNPCData[npcIdToDismissAfterDialogue].uFlags &= ~NPC_HIRED;
@@ -805,17 +805,17 @@ void Game::processQueuedMessages() {
                                     }
                                     // goto LABEL_317;
                                     DialogueEnding();
-                                    current_screen_type = CURRENT_SCREEN::SCREEN_GAME;
+                                    current_screen_type = SCREEN_GAME;
                                     continue;
-                                case CURRENT_SCREEN::SCREEN_BRANCHLESS_NPC_DIALOG:  // click
+                                case SCREEN_BRANCHLESS_NPC_DIALOG:  // click
                                                                     // escape
                                     GameUI_StatusBar_ClearEventString();
 
                                     ReleaseBranchlessDialogue();
                                     DialogueEnding();
-                                    current_screen_type = CURRENT_SCREEN::SCREEN_GAME;
+                                    current_screen_type = SCREEN_GAME;
                                     continue;
-                                case CURRENT_SCREEN::SCREEN_CHANGE_LOCATION: // escape
+                                case SCREEN_CHANGE_LOCATION: // escape
                                     if (pParty->pos.x < -22528)
                                         pParty->pos.x = -22528;
                                     if (pParty->pos.x > 22528)
@@ -828,15 +828,15 @@ void Game::processQueuedMessages() {
                                     DialogueEnding();
                                     onEscape();
                                     continue;
-                                case CURRENT_SCREEN::SCREEN_VIDEO:
+                                case SCREEN_VIDEO:
                                     pMediaPlayer->Unload();
                                     continue;
-                                case CURRENT_SCREEN::SCREEN_CHARACTERS:
+                                case SCREEN_CHARACTERS:
                                     CharacterUI_ReleaseButtons();
                                     ((GUIWindow_CharacterRecord *)pGUIWindow_CurrentMenu)->releaseAwardsScrollBar();
                                     onEscape();
                                     continue;
-                                case CURRENT_SCREEN::SCREEN_SPELL_BOOK:
+                                case SCREEN_SPELL_BOOK:
                                     onEscape();
                                     continue;
 
@@ -971,7 +971,7 @@ void Game::processQueuedMessages() {
                     if (pParty->pos.y > 22528)
                         pParty->pos.y = 22528;
                     DialogueEnding();
-                    current_screen_type = CURRENT_SCREEN::SCREEN_GAME;
+                    current_screen_type = SCREEN_GAME;
                 } else {
                     CastSpellInfoHelpers::cancelSpellCastInProgress();
                     DialogueEnding();
@@ -1018,7 +1018,7 @@ void Game::processQueuedMessages() {
                     pParty->uFallStartZ = pParty->pos.z;
                     _engine->_461103_load_level_sub();
                     pEventTimer->Resume();
-                    current_screen_type = CURRENT_SCREEN::SCREEN_GAME;
+                    current_screen_type = SCREEN_GAME;
                     pGameLoadingUI_ProgressBar->Release();
                 }
                 continue;
@@ -1033,7 +1033,7 @@ void Game::processQueuedMessages() {
                 if (pParty->pos.y > 22528)
                     pParty->pos.y = 22528;
                 DialogueEnding();
-                current_screen_type = CURRENT_SCREEN::SCREEN_GAME;
+                current_screen_type = SCREEN_GAME;
                 continue;
             case UIMSG_CastSpell_Telekinesis: {
                 int pid = _vis->get_picked_object_zbuf_val().object_pid;
@@ -1256,12 +1256,12 @@ void Game::processQueuedMessages() {
             }
             case UIMSG_1C:
                 __debugbreak();
-                if (!pParty->hasActiveCharacter() || current_screen_type != CURRENT_SCREEN::SCREEN_GAME)
+                if (!pParty->hasActiveCharacter() || current_screen_type != SCREEN_GAME)
                     continue;
                 __debugbreak();  // ptr_507BC8 = GUIWindow::Create(0, 0,
                                  // window->GetWidth(), window->GetHeight(),
                                  // WINDOW_68, uMessageParam, 0);
-                current_screen_type = CURRENT_SCREEN::SCREEN_19;
+                current_screen_type = SCREEN_19;
                 pEventTimer->Pause();
                 continue;
             case UIMSG_STEALFROMACTOR:
@@ -1338,11 +1338,11 @@ void Game::processQueuedMessages() {
             case UIMSG_RestWindow:
                 engine->_messageQueue->clear();
                 // toggle
-                //if (current_screen_type == CURRENT_SCREEN::SCREEN_REST) {
+                //if (current_screen_type == SCREEN_REST) {
                 //    engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 0, 0);
                 //    continue;
                 //}
-                if (current_screen_type != CURRENT_SCREEN::SCREEN_GAME) continue;
+                if (current_screen_type != SCREEN_GAME) continue;
                 closeTargetedSpellWindow();
 
                 if (CheckActors_proximity()) {
@@ -1558,7 +1558,7 @@ void Game::processQueuedMessages() {
                     if (spellbookSelectedSpell == selectedSpell) {
                         pGUIWindow_CurrentMenu->Release();  // spellbook close
                         pEventTimer->Resume();
-                        current_screen_type = CURRENT_SCREEN::SCREEN_GAME;
+                        current_screen_type = SCREEN_GAME;
                         // Processing must happen on next frame because need to close spell book and update
                         // drawing object list which is used to count actors for some spells
                         engine->_messageQueue->addMessageNextFrame( UIMSG_CastSpellFromBook, selectedSpell, pParty->activeCharacterIndex() - 1);
@@ -1593,7 +1593,7 @@ void Game::processQueuedMessages() {
                     if (pParty->hasActiveCharacter()) {
                         if (!pParty->activeCharacter().timeToRecovery) {
                             // toggle
-                            if (current_screen_type == CURRENT_SCREEN::SCREEN_SPELL_BOOK) {
+                            if (current_screen_type == SCREEN_SPELL_BOOK) {
                                 engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 0, 0);
                                 continue;
                             }
@@ -1617,7 +1617,7 @@ void Game::processQueuedMessages() {
             case UIMSG_QuickReference:
                 engine->_messageQueue->clear();
                 // toggle
-                if (current_screen_type == CURRENT_SCREEN::SCREEN_QUICK_REFERENCE) {
+                if (current_screen_type == SCREEN_QUICK_REFERENCE) {
                     engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 0, 0);
                     continue;
                 }
@@ -1635,10 +1635,10 @@ void Game::processQueuedMessages() {
                 pGUIWindow_CurrentMenu = new GUIWindow_QuickReference();
                 continue;
             case UIMSG_GameMenuButton:
-                if (current_screen_type != CURRENT_SCREEN::SCREEN_GAME) {
+                if (current_screen_type != SCREEN_GAME) {
                     pGUIWindow_CurrentMenu->Release();
                     pEventTimer->Resume();
-                    current_screen_type = CURRENT_SCREEN::SCREEN_GAME;
+                    current_screen_type = SCREEN_GAME;
                 }
 
                 if (gamma_preview_image) {
@@ -1801,7 +1801,7 @@ void Game::processQueuedMessages() {
             }
 
             case UIMSG_CHEST_ClickItem:
-                if (current_screen_type == CURRENT_SCREEN::SCREEN_CHEST_INVENTORY) {
+                if (current_screen_type == SCREEN_CHEST_INVENTORY) {
                     pParty->activeCharacter().OnInventoryLeftClick();
                     continue;
                 }
@@ -1833,14 +1833,14 @@ void Game::processQueuedMessages() {
             case UIMSG_Game_Action:
                 engine->_messageQueue->clear();
                 // if currently in a chest
-                if (current_screen_type == CURRENT_SCREEN::SCREEN_CHEST) {
+                if (current_screen_type == SCREEN_CHEST) {
                     Chest::GrabItem(keyboardInputHandler->IsTakeAllToggled());
                 } else {
                     onPressSpace();
                 }
                 continue;
             case UIMSG_ClickZoomInBtn:
-                if (!(current_screen_type == CURRENT_SCREEN::SCREEN_GAME)) continue;
+                if (!(current_screen_type == SCREEN_GAME)) continue;
                 pParty->uFlags |= 2u;
                 new OnButtonClick2({519, 136}, {0, 0}, pBtn_ZoomIn);
                 uNumSeconds = 131072;
@@ -1862,7 +1862,7 @@ void Game::processQueuedMessages() {
 
                 break;
             case UIMSG_ClickZoomOutBtn:
-                if (!(current_screen_type == CURRENT_SCREEN::SCREEN_GAME)) continue;
+                if (!(current_screen_type == SCREEN_GAME)) continue;
                 pParty->uFlags |= 2;
                 new OnButtonClick2({574, 136}, {0, 0}, pBtn_ZoomOut);
                 uNumSeconds = 32768;
@@ -1886,7 +1886,7 @@ void Game::processQueuedMessages() {
 
             case UIMSG_OpenInventory: {
                 if (pParty->hasActiveCharacter()) {
-                    pGUIWindow_CurrentMenu = new GUIWindow_CharacterRecord(pParty->activeCharacterIndex(), CURRENT_SCREEN::SCREEN_CHARACTERS);
+                    pGUIWindow_CurrentMenu = new GUIWindow_CharacterRecord(pParty->activeCharacterIndex(), SCREEN_CHARACTERS);
                     ((GUIWindow_CharacterRecord *)pGUIWindow_CurrentMenu)->ShowInventoryTab();
                 }
                 break;
@@ -2109,7 +2109,7 @@ void Game::gameLoop() {
             GAME_SETTINGS_0080_SKIP_USER_INPUT_THIS_FRAME;
         // uGame_if_0_else_ui_id__11_save__else_load__8_drawSpellInfoPopup__22_final_window__26_keymapOptions__2_options__28_videoOptions
         // = 0;
-        current_screen_type = CURRENT_SCREEN::SCREEN_GAME;
+        current_screen_type = SCREEN_GAME;
 
         // if ( render->pRenderD3D )
         _vis->_4C1A02();
@@ -2282,5 +2282,5 @@ void Game::gameLoop() {
         }
         break;
     }
-    current_screen_type = CURRENT_SCREEN::SCREEN_VIDEO;
+    current_screen_type = SCREEN_VIDEO;
 }

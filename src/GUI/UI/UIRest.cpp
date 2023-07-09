@@ -51,11 +51,11 @@ void GUIWindow_RestWindow::Update() {
 #endif
 
 static void prepareToLoadRestUI() {
-    if (current_screen_type != CURRENT_SCREEN::SCREEN_GAME) {
+    if (current_screen_type != SCREEN_GAME) {
         if (pGUIWindow_CurrentMenu) {
             pGUIWindow_CurrentMenu->Release();
         }
-        current_screen_type = CURRENT_SCREEN::SCREEN_GAME;
+        current_screen_type = SCREEN_GAME;
     }
     pEventTimer->Pause();
     if (currentRestType != REST_HEAL) {
@@ -102,7 +102,7 @@ GUIWindow_Rest::GUIWindow_Rest()
     prepareToLoadRestUI();
     calculateRequiredFood();
 
-    current_screen_type = CURRENT_SCREEN::SCREEN_REST;
+    current_screen_type = SCREEN_REST;
 
     hourglassLoopTimer = 0;
     rest_ui_restmain = assets->getImage_Alpha("restmain");

@@ -116,13 +116,13 @@ void EngineController::goToMainMenu() {
     };
 
     // Can't always leave key settings menu by pressing ESC, so need custom handling.
-    if (current_screen_type == CURRENT_SCREEN::SCREEN_KEYBOARD_OPTIONS) {
+    if (current_screen_type == SCREEN_KEYBOARD_OPTIONS) {
         pressGuiButton("KeyBinding_Default");
         tick(1);
     }
 
     // Leave to game screen if we're in the game, or to main menu if we're in menus.
-    while (current_screen_type != CURRENT_SCREEN::SCREEN_GAME && GetCurrentMenuID() != MENU_MAIN) {
+    while (current_screen_type != SCREEN_GAME && GetCurrentMenuID() != MENU_MAIN) {
         maybeThrow();
         pressAndReleaseKey(PlatformKey::KEY_ESCAPE);
         tick(1);
@@ -133,7 +133,7 @@ void EngineController::goToMainMenu() {
     assert(GetCurrentMenuID() == MENU_NONE);
 
     // Go to in-game menu.
-    while (current_screen_type != CURRENT_SCREEN::SCREEN_MENU) {
+    while (current_screen_type != SCREEN_MENU) {
         maybeThrow();
         pressAndReleaseKey(PlatformKey::KEY_ESCAPE);
         tick(1);

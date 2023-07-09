@@ -109,7 +109,7 @@ GAME_TEST(Issues, Issue163) {
 
     game->pressGuiButton("LoadMenu_Load");
     game->tick(10);
-    EXPECT_EQ(current_screen_type, CURRENT_SCREEN::SCREEN_LOADGAME);
+    EXPECT_EQ(current_screen_type, SCREEN_LOADGAME);
     EXPECT_FALSE(pGameLoadingUI_ProgressBar->IsActive()); // Load button shouldn't do anything.
 }
 
@@ -287,7 +287,7 @@ GAME_TEST(Issues, Issue272) {
     EXPECT_EQ(engine->config->keybindings.Right.value(), engine->config->keybindings.Right.defaultValue());
     // Check you cant leave menu with conflicting keys
     test->playTraceFromTestData("issue_272b.mm7", "issue_272b.json");
-    EXPECT_EQ(current_screen_type, CURRENT_SCREEN::SCREEN_KEYBOARD_OPTIONS);
+    EXPECT_EQ(current_screen_type, SCREEN_KEYBOARD_OPTIONS);
 }
 
 GAME_TEST(Issues, Issue290) {
@@ -426,7 +426,7 @@ GAME_TEST(Issues, Issue388) {
     // Trace enters tavern, plays arcomage, plays a couple of cards then exits and leaves tavern.
     int oldfpslimit = pArcomageGame->_targetFPS;
     pArcomageGame->_targetFPS = 500;
-    CURRENT_SCREEN oldscreen = CURRENT_SCREEN::SCREEN_GAME;
+    CURRENT_SCREEN oldscreen = SCREEN_GAME;
     test->playTraceFromTestData("issue_388.mm7", "issue_388.json", [&] { oldscreen = current_screen_type; });
     EXPECT_EQ(oldscreen, current_screen_type); // We should return to game screen.
     EXPECT_EQ(pArcomageGame->GameOver, 1); // With arcomage exit flag.
@@ -514,7 +514,7 @@ GAME_TEST(Issues, Issue405) {
 
 GAME_TEST(Issues, Issue408_970_996) {
     // testing that the gameover loop works
-    CURRENT_SCREEN oldscreen = CURRENT_SCREEN::SCREEN_GAME;
+    CURRENT_SCREEN oldscreen = SCREEN_GAME;
     // enters throne room - resurecta - final task and exits gameover loop
     test->playTraceFromTestData("issue_408.mm7", "issue_408.json", [&] { oldscreen = current_screen_type; });
     // we should return to game screen
@@ -755,7 +755,7 @@ GAME_TEST(Issues, Issue578) {
 GAME_TEST(Issues, Issue598) {
     // Assert when accessing character inventory from the shop screen
     test->playTraceFromTestData("issue_598.mm7", "issue_598.json");
-    EXPECT_EQ(current_screen_type, CURRENT_SCREEN::SCREEN_SHOP_INVENTORY);
+    EXPECT_EQ(current_screen_type, SCREEN_SHOP_INVENTORY);
 }
 
 // 600
@@ -1047,7 +1047,7 @@ GAME_TEST(Issues, Issue689) {
 GAME_TEST(Issues, Issue691) {
     // Test that hitting escape when in transition window does not crash
     test->playTraceFromTestData("issue_691.mm7", "issue_691.json");
-    EXPECT_EQ(current_screen_type, CURRENT_SCREEN::SCREEN_GAME);
+    EXPECT_EQ(current_screen_type, SCREEN_GAME);
 }
 
 // 700
@@ -1061,7 +1061,7 @@ GAME_TEST(Issues, Issue700) {
 GAME_TEST(Issues, Issue720) {
     // Test that quest book is opening fine
     test->playTraceFromTestData("issue_720.mm7", "issue_720.json");
-    EXPECT_EQ(current_screen_type, CURRENT_SCREEN::SCREEN_BOOKS);
+    EXPECT_EQ(current_screen_type, SCREEN_BOOKS);
     EXPECT_EQ(pGUIWindow_CurrentMenu->eWindowType, WINDOW_QuestBook);
 }
 
@@ -1140,7 +1140,7 @@ GAME_TEST(Issues, Issue774) {
 GAME_TEST(Issues, Issue779) {
     // Test that you can't load game from save menu
     test->playTraceFromTestData("issue_779.mm7", "issue_779.json");
-    EXPECT_EQ(current_screen_type, CURRENT_SCREEN::SCREEN_SAVEGAME);
+    EXPECT_EQ(current_screen_type, SCREEN_SAVEGAME);
 }
 
 void check783784Buffs(bool haveBuffs) {
@@ -1204,13 +1204,13 @@ GAME_TEST(Issues, Issue784) {
 GAME_TEST(Issues, Issue790) {
     // Test that pressing New Game button in game menu works
     test->playTraceFromTestData("issue_790.mm7", "issue_790.json");
-    EXPECT_EQ(current_screen_type, CURRENT_SCREEN::SCREEN_PARTY_CREATION);
+    EXPECT_EQ(current_screen_type, SCREEN_PARTY_CREATION);
 }
 
 GAME_TEST(Issues, Issue792) {
     // Test that event timers do not fire in-between game loading process
     test->playTraceFromTestData("issue_792.mm7", "issue_792.json"); // Should not assert
-    EXPECT_EQ(current_screen_type, CURRENT_SCREEN::SCREEN_GAME);
+    EXPECT_EQ(current_screen_type, SCREEN_GAME);
 }
 
 GAME_TEST(Issues, Issue797) {
@@ -1333,13 +1333,13 @@ GAME_TEST(Issues, Issue833) {
 GAME_TEST(Issues, Issue840) {
     // Test that entering Body Guild in erathia does not crash
     test->playTraceFromTestData("issue_840.mm7", "issue_840.json"); // Should not crash
-    EXPECT_EQ(current_screen_type, CURRENT_SCREEN::SCREEN_HOUSE);
+    EXPECT_EQ(current_screen_type, SCREEN_HOUSE);
 }
 
 GAME_TEST(Issues, Issue844) {
     // Test that entering trainer in Stone City does not assert
     test->playTraceFromTestData("issue_844.mm7", "issue_844.json"); // Should not assert
-    EXPECT_EQ(current_screen_type, CURRENT_SCREEN::SCREEN_HOUSE);
+    EXPECT_EQ(current_screen_type, SCREEN_HOUSE);
 }
 
 GAME_TEST(Issues, Issue867) {

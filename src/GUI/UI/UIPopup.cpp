@@ -1745,7 +1745,7 @@ void UI_OnMouseRightClick(int mouse_x, int mouse_y) {
     // const char *pHint;       // edx@113
     GUIWindow popup_window;  // [sp+4h] [bp-74h]@32
 
-    if (current_screen_type == CURRENT_SCREEN::SCREEN_VIDEO || GetCurrentMenuID() == MENU_MAIN)
+    if (current_screen_type == SCREEN_VIDEO || GetCurrentMenuID() == MENU_MAIN)
         return;
 
 
@@ -1777,11 +1777,11 @@ void UI_OnMouseRightClick(int mouse_x, int mouse_y) {
     // Otherwise pause game and enter right click mode until button will be released
     pEventTimer->Pause();
     switch (current_screen_type) {
-        case CURRENT_SCREEN::SCREEN_CASTING: {
+        case SCREEN_CASTING: {
             Inventory_ItemPopupAndAlchemy();
             break;
         }
-        case CURRENT_SCREEN::SCREEN_CHEST: {
+        case SCREEN_CHEST: {
             if (!pParty->activeCharacter().CanAct()) {
                 static std::string hint_reference;
                 hint_reference = localization->FormatString(
@@ -1828,7 +1828,7 @@ void UI_OnMouseRightClick(int mouse_x, int mouse_y) {
             break;
         }
 
-        case CURRENT_SCREEN::SCREEN_GAME:  // In the main menu displays a pop-up window(В
+        case SCREEN_GAME:  // In the main menu displays a pop-up window(В
                            // главном меню показывает всплывающее окно)
         {
             if (GetCurrentMenuID() > 0) break;
@@ -1890,7 +1890,7 @@ void UI_OnMouseRightClick(int mouse_x, int mouse_y) {
             }
             break;
         }
-        case CURRENT_SCREEN::SCREEN_BOOKS: {
+        case SCREEN_BOOKS: {
             if (pGUIWindow_CurrentMenu->eWindowType != WINDOW_MapsBook ||
                 (signed int)pX < (signed int)pViewport->uViewportTL_X ||
                 (signed int)pX > (signed int)pViewport->uViewportBR_X ||
@@ -1906,10 +1906,10 @@ void UI_OnMouseRightClick(int mouse_x, int mouse_y) {
             popup_window.DrawMessageBox(0);
             break;
         }
-        case CURRENT_SCREEN::SCREEN_CHARACTERS:
-        case CURRENT_SCREEN::SCREEN_SHOP_INVENTORY:
-        case CURRENT_SCREEN::SCREEN_CHEST_INVENTORY: {
-            if ((signed int)pX > 467 && current_screen_type != CURRENT_SCREEN::SCREEN_SHOP_INVENTORY)
+        case SCREEN_CHARACTERS:
+        case SCREEN_SHOP_INVENTORY:
+        case SCREEN_CHEST_INVENTORY: {
+            if ((signed int)pX > 467 && current_screen_type != SCREEN_SHOP_INVENTORY)
                 Inventory_ItemPopupAndAlchemy();
             else if ((signed int)pY >= 345)
                 break;
@@ -1928,20 +1928,20 @@ void UI_OnMouseRightClick(int mouse_x, int mouse_y) {
                 Inventory_ItemPopupAndAlchemy();
             break;
         }
-        case CURRENT_SCREEN::SCREEN_SPELL_BOOK: {
+        case SCREEN_SPELL_BOOK: {
             if (dword_507B00_spell_info_to_draw_in_popup)
                 DrawSpellDescriptionPopup(
                     dword_507B00_spell_info_to_draw_in_popup - 1);
             break;
         }
-        case CURRENT_SCREEN::SCREEN_HOUSE: {
+        case SCREEN_HOUSE: {
             if ((signed int)pY < 345 && (signed int)pX < 469)
                 ShowPopupShopItem();
             if ((signed int)pX >= 469)
                 ShowPopupShopSkills();
             break;
         }
-        case CURRENT_SCREEN::SCREEN_PARTY_CREATION: {
+        case SCREEN_PARTY_CREATION: {
             popup_window.sHint.clear();
             pStr = 0;
             for (GUIButton *pButton : pGUIWindow_CurrentMenu->vButtons) {

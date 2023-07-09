@@ -60,11 +60,11 @@ void Io::KeyboardInputHandler::GeneratePausedActions() {
         }
 
         if (action == Io::InputAction::EventTrigger) {
-            if (current_screen_type == CURRENT_SCREEN::SCREEN_GAME || current_screen_type == CURRENT_SCREEN::SCREEN_CHEST) {
+            if (current_screen_type == SCREEN_GAME || current_screen_type == SCREEN_CHEST) {
                 engine->_messageQueue->addMessageCurrentFrame(UIMSG_Game_Action, 0, 0);
                 continue;
             }
-            if (current_screen_type == CURRENT_SCREEN::SCREEN_NPC_DIALOGUE || current_screen_type == CURRENT_SCREEN::SCREEN_BRANCHLESS_NPC_DIALOG) {
+            if (current_screen_type == SCREEN_NPC_DIALOGUE || current_screen_type == SCREEN_BRANCHLESS_NPC_DIALOG) {
                 // engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 0, 0);
             }
         }
@@ -104,31 +104,31 @@ void Io::KeyboardInputHandler::GenerateGameplayActions() {
 
         switch (action) {
         case Io::InputAction::MoveForward:
-            if (current_screen_type == CURRENT_SCREEN::SCREEN_GAME) {
+            if (current_screen_type == SCREEN_GAME) {
                 PartyMove(pParty->uFlags2 & PARTY_FLAGS_2_RUNNING ? PARTY_RunForward : PARTY_WalkForward);
             }
             break;
 
         case Io::InputAction::MoveBackwards:
-            if (current_screen_type == CURRENT_SCREEN::SCREEN_GAME) {
+            if (current_screen_type == SCREEN_GAME) {
                 PartyMove(pParty->uFlags2 & PARTY_FLAGS_2_RUNNING ? PARTY_RunBackward : PARTY_WalkBackward);
             }
             break;
 
         case Io::InputAction::StrafeLeft:
-            if (current_screen_type == CURRENT_SCREEN::SCREEN_GAME) {
+            if (current_screen_type == SCREEN_GAME) {
                 PartyStrafe(PARTY_StrafeLeft);
             }
             break;
 
         case Io::InputAction::StrafeRight:
-            if (current_screen_type == CURRENT_SCREEN::SCREEN_GAME) {
+            if (current_screen_type == SCREEN_GAME) {
                 PartyStrafe(PARTY_StrafeRight);
             }
             break;
 
         case Io::InputAction::TurnLeft:
-            if (current_screen_type == CURRENT_SCREEN::SCREEN_GAME) {
+            if (current_screen_type == SCREEN_GAME) {
                 if (IsTurnStrafingToggled()) {
                     if (!PartyStrafe(PARTY_StrafeLeft)) {
                         break;
@@ -142,7 +142,7 @@ void Io::KeyboardInputHandler::GenerateGameplayActions() {
             }
             break;
         case Io::InputAction::TurnRight:
-            if (current_screen_type == CURRENT_SCREEN::SCREEN_GAME) {
+            if (current_screen_type == SCREEN_GAME) {
                 if (IsTurnStrafingToggled()) {
                     if (!PartyStrafe(PARTY_StrafeRight)) {
                         break;
@@ -157,20 +157,20 @@ void Io::KeyboardInputHandler::GenerateGameplayActions() {
             break;
 
         case Io::InputAction::Jump:
-            if (current_screen_type == CURRENT_SCREEN::SCREEN_GAME && !pParty->bTurnBasedModeOn) {
+            if (current_screen_type == SCREEN_GAME && !pParty->bTurnBasedModeOn) {
                 pPartyActionQueue->Add(PARTY_Jump);
             }
             break;
 
         case Io::InputAction::Yell:
-            if (current_screen_type == CURRENT_SCREEN::SCREEN_GAME && pParty->hasActiveCharacter()) {
+            if (current_screen_type == SCREEN_GAME && pParty->hasActiveCharacter()) {
                 pParty->yell();
                 pParty->activeCharacter().playReaction(SPEECH_YELL);
             }
             break;
 
         case Io::InputAction::Pass:
-            if (current_screen_type != CURRENT_SCREEN::SCREEN_GAME) break;
+            if (current_screen_type != SCREEN_GAME) break;
 
             if (pParty->bTurnBasedModeOn && pTurnEngine->turn_stage == TE_MOVEMENT) {
                 pTurnEngine->flags |= TE_FLAG_8_finished;
@@ -190,7 +190,7 @@ void Io::KeyboardInputHandler::GenerateGameplayActions() {
             break;
 
         case Io::InputAction::Combat:
-            if (current_screen_type == CURRENT_SCREEN::SCREEN_GAME) {
+            if (current_screen_type == SCREEN_GAME) {
                 if (pParty->bTurnBasedModeOn) {
                     if (pTurnEngine->turn_stage == TE_MOVEMENT ||
                         PID_TYPE(pTurnEngine->pQueue[0].uPackedID) == OBJECT_Character) {
@@ -205,7 +205,7 @@ void Io::KeyboardInputHandler::GenerateGameplayActions() {
             break;
 
         case Io::InputAction::CastReady: {
-            if (current_screen_type != CURRENT_SCREEN::SCREEN_GAME) {
+            if (current_screen_type != SCREEN_GAME) {
                 break;
             }
 
@@ -240,7 +240,7 @@ void Io::KeyboardInputHandler::GenerateGameplayActions() {
         }
 
         case Io::InputAction::Attack:
-            if (current_screen_type != CURRENT_SCREEN::SCREEN_GAME) {
+            if (current_screen_type != SCREEN_GAME) {
                 break;
             }
 
@@ -253,19 +253,19 @@ void Io::KeyboardInputHandler::GenerateGameplayActions() {
             break;
 
         case Io::InputAction::EventTrigger:
-            if (current_screen_type == CURRENT_SCREEN::SCREEN_GAME) {
+            if (current_screen_type == SCREEN_GAME) {
                 engine->_messageQueue->addMessageCurrentFrame(UIMSG_Game_Action, 0, 0);
                 break;
             }
 
-            if (current_screen_type == CURRENT_SCREEN::SCREEN_NPC_DIALOGUE) {
+            if (current_screen_type == SCREEN_NPC_DIALOGUE) {
                 engine->_messageQueue->clear();
                 engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 0, 0);
             }
             break;
 
         case Io::InputAction::CharCycle:
-            if (current_screen_type != CURRENT_SCREEN::SCREEN_SPELL_BOOK) {
+            if (current_screen_type != SCREEN_SPELL_BOOK) {
                 // TODO(Nik-RE-dev): why next frame?
                 engine->_messageQueue->addMessageNextFrame(UIMSG_CycleCharacters, 0, 0);
             }
@@ -284,19 +284,19 @@ void Io::KeyboardInputHandler::GenerateGameplayActions() {
             break;
 
         case Io::InputAction::FlyUp:
-            if (current_screen_type == CURRENT_SCREEN::SCREEN_GAME) {
+            if (current_screen_type == SCREEN_GAME) {
                 pPartyActionQueue->Add(PARTY_FlyUp);
             }
             break;
 
         case Io::InputAction::Land:
-            if (current_screen_type == CURRENT_SCREEN::SCREEN_GAME) {
+            if (current_screen_type == SCREEN_GAME) {
                 pPartyActionQueue->Add(PARTY_Land);
             }
             break;
 
         case Io::InputAction::FlyDown:
-            if (current_screen_type == CURRENT_SCREEN::SCREEN_GAME) {
+            if (current_screen_type == SCREEN_GAME) {
                 pPartyActionQueue->Add(PARTY_FlyDown);
             }
             break;
@@ -318,7 +318,7 @@ void Io::KeyboardInputHandler::GenerateGameplayActions() {
             break;
 
         case Io::InputAction::Inventory:
-            if (current_screen_type == CURRENT_SCREEN::SCREEN_GAME) {
+            if (current_screen_type == SCREEN_GAME) {
                 engine->_messageQueue->addMessageNextFrame(UIMSG_OpenInventory, 0, 0);
             }
             break;
