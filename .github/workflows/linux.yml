@@ -6,6 +6,10 @@ on:
   release:
     types: [published]
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   build_linux:
     runs-on: ubuntu-22.04
@@ -57,32 +61,10 @@ jobs:
     - name: Build
       working-directory: build
       run: |
-        make -j$(nproc)
+        make -j3
 
     - name: Tests
       working-directory: build
       run: |
         make UnitTest
 
-    - name: Prepare artifact
-      run: |
-        mkdir dist
-        cp build/OpenEnroth dist/
-        cp -r resources/* dist/
-
-    - name: Copy Shared libs
-      run: |
-        mkdir libs
-        ldd build/OpenEnroth | grep '=> /' | awk '{print $3;}' | xargs -I '{}' cp -v '{}' ./libs/
-
-    - name: Upload artifact
-      uses: actions/upload-artifact@v3
-      with:
-        name: OpenEnroth (Linux, ${{ matrix.configuration }}, ${{ matrix.architecture }})
-        path: dist/**
-
-    - name: Upload shared libs
-      uses: actions/upload-artifact@v3
-      with:
-        name: Shared Libraries (${{ matrix.architecture }})
-        path: libs/**

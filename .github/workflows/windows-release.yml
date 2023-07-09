@@ -33,18 +33,18 @@ jobs:
 
     - name: Configure
       run: |
-        cmake -B build -G "NMake Makefiles" -DCMAKE_BUILD_TYPE=${{ matrix.configuration }} -DENABLE_TESTS=On
+        cmake -B build -G "Ninja" -DCMAKE_BUILD_TYPE=${{ matrix.configuration }} -DENABLE_TESTS=On
 
     - name: Build
       working-directory: build
       shell: cmd
       run: |
-        nmake
+        ninja
 
     - name: Tests
       working-directory: build
       run: |
-        nmake UnitTest
+        ninja UnitTest
 
     - name: Prepare artifact
       shell: pwsh

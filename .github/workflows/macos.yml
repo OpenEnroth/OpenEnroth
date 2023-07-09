@@ -6,6 +6,10 @@ on:
   release:
     types: [published]
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   build_macos:
     runs-on: macos-12
@@ -32,22 +36,10 @@ jobs:
     - name: Build
       working-directory: build
       run: |
-        make -j$(sysctl -n hw.logicalcpu)
+        make -j4
 
     - name: Tests
       working-directory: build
       run: |
         make UnitTest
-        
-    - name: Prepare artifact
-      run: |
-        mkdir dist
-        cp -r build/OpenEnroth.app dist/
-        cp -r resources/* dist/
-        hdiutil create OpenEnroth.dmg -ov -volname "OpenEnroth" -fs HFS+ -srcfolder dist
 
-    - name: Upload artifact
-      uses: actions/upload-artifact@v3
-      with:
-        name: OpenEnroth (MacOS, ${{ matrix.configuration }}, ${{ matrix.architecture }})
-        path: OpenEnroth.dmg

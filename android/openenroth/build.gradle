@@ -35,10 +35,19 @@ android {
         versionCode 1
         versionName "1.0"
         externalNativeBuild {
-            cmake {
-                arguments "-DANDROID_STL=c++_static"
-                abiFilters 'arm64-v8a', 'armeabi-v7a', 'x86', 'x86_64'
-                version "3.22.1"
+            //build all by default runner only build v8a
+            if ( System.env['GITHUBARCH'] != null ) { 
+                cmake {
+                    arguments "-DANDROID_STL=c++_static"
+                    abiFilters System.env['GITHUBARCH']
+                    version "3.22.1"
+                }
+            } else {
+                cmake {
+                    arguments "-DANDROID_STL=c++_static"
+                    abiFilters 'arm64-v8a', 'armeabi-v7a', 'x86_64', 'x86' 
+                    version "3.22.1"
+                }
             }
         }
        if ( file("keystore/android_keystore.jks").exists() ) {

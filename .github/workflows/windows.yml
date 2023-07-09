@@ -6,6 +6,10 @@ on:
   release:
     types: [published]
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   build_windows:
     runs-on: windows-2022
@@ -27,30 +31,16 @@ jobs:
 
     - name: Configure
       run: |
-        cmake -B build -G "NMake Makefiles" -DCMAKE_BUILD_TYPE=${{ matrix.configuration }} -DENABLE_TESTS=On
+        cmake -B build -G "Ninja" -DCMAKE_BUILD_TYPE=${{ matrix.configuration }} -DENABLE_TESTS=On
 
     - name: Build
       working-directory: build
       shell: cmd
       run: |
-        nmake
+        ninja
 
     - name: Tests
       working-directory: build
       run: |
-        nmake UnitTest
+        ninja UnitTest
 
-    - name: Prepare artifact
-      shell: cmd
-      run: |
-        mkdir dist
-        copy build\OpenEnroth.exe dist\ /Y
-        copy build\*.dll dist\ /Y
-        xcopy resources dist\ /E/H/C/I
-
-    - name: Upload artifact
-      uses: actions/upload-artifact@v3
-      with:
-        name: OpenEnroth (Windows, ${{ matrix.configuration }}, ${{ matrix.architecture }})
-        path: |
-          dist/**
