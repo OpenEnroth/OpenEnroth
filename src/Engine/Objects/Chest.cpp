@@ -40,9 +40,7 @@ std::vector<Chest> vChests;
 bool Chest::open(int uChestID, int objectPid) {
     ODMFace *pODMFace;
     BLVFace *pBLVFace;
-    int pObjectX = 0;
-    int pObjectY = 0;
-    int pObjectZ = 0;
+    Vec3i objectPos;
     double dir_x;
     double dir_y;
     double length_vector;
@@ -75,28 +73,22 @@ bool Chest::open(int uChestID, int objectPid) {
             int pRandom = grng->random(4); // Not sure if this should be grng or vrng, so we'd rather err on the side of safety.
             int objId = PID_ID(objectPid);
             if (PID_TYPE(objectPid) == OBJECT_Decoration) {
-                pObjectX = pLevelDecorations[objId].vPosition.x;
-                pObjectY = pLevelDecorations[objId].vPosition.y;
-                pObjectZ = pLevelDecorations[objId].vPosition.z +
-                    (pDecorationList->GetDecoration(pLevelDecorations[objId].uDecorationDescID)->uDecorationHeight / 2);
+                objectPos = pLevelDecorations[objId].vPosition +
+                    Vec3i(0, 0, pDecorationList->GetDecoration(pLevelDecorations[objId].uDecorationDescID)->uDecorationHeight / 2);
             }
             if (PID_TYPE(objectPid) == OBJECT_Face) {
                 // TODO(pskelton): trap explosion moves depending on what face is clicked
                 if (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR) {
                     pODMFace = &pOutdoor->pBModels[objectPid >> 9].pFaces[(objectPid >> 3) & 0x3F];
-                    pObjectX = (pODMFace->pBoundingBox.x1 + pODMFace->pBoundingBox.x2) / 2;
-                    pObjectY = (pODMFace->pBoundingBox.y1 + pODMFace->pBoundingBox.y2) / 2;
-                    pObjectZ = (pODMFace->pBoundingBox.z1 + pODMFace->pBoundingBox.z2) / 2;
+                    objectPos = pODMFace->pBoundingBox.center();
                 } else {  // Indoor
                     pBLVFace = &pIndoor->pFaces[objId];
-                    pObjectX = (pBLVFace->pBounding.x1 + pBLVFace->pBounding.x2) / 2;
-                    pObjectY = (pBLVFace->pBounding.y1 + pBLVFace->pBounding.y2) / 2;
-                    pObjectZ = (pBLVFace->pBounding.z1 + pBLVFace->pBounding.z2) / 2;
+                    objectPos = pBLVFace->pBounding.center();
                 }
             }
 
-            dir_x = (double)pParty->pos.x - (double)pObjectX;
-            dir_y = (double)pParty->pos.y - (double)pObjectY;
+            dir_x = (double)pParty->pos.x - (double)objectPos.x;
+            dir_y = (double)pParty->pos.y - (double)objectPos.y;
             length_vector = sqrt(dir_x * dir_x + dir_y * dir_y);
             if (length_vector <= 1.0) {
                 yawAngle = 0;
@@ -111,7 +103,7 @@ bool Chest::open(int uChestID, int objectPid) {
             if (length_vector < pDepth) {
                 pDepth = length_vector;
             }
-            pOut = Vec3i(pObjectX, pObjectY, pObjectZ) + Vec3i::fromPolar(pDepth, yawAngle, pitchAngle);
+            pOut = objectPos + Vec3i::fromPolar(pDepth, yawAngle, pitchAngle);
 
             pSpellObject.containing_item.Reset();
             pSpellObject.spell_skill = CHARACTER_SKILL_MASTERY_NONE;

@@ -380,10 +380,8 @@ void reconstruct(const OutdoorLocation_MM7 &src, OutdoorLocation *dst) {
         reconstruct(std::forward_as_tuple(src.models[i], src.modelExtras[i]), &model);
 
         // Recalculate bounding spheres, the ones stored in data files are borked.
-        Vec3f topLeft = Vec3f(model.pBoundingBox.x1, model.pBoundingBox.y1, model.pBoundingBox.z1);
-        Vec3f bottomRight = Vec3f(model.pBoundingBox.x2, model.pBoundingBox.y2, model.pBoundingBox.z2);
-        model.vBoundingCenter = ((topLeft + bottomRight) / 2.0f).toInt();
-        model.sBoundingRadius = (topLeft - model.vBoundingCenter.toFloat()).length();
+        model.vBoundingCenter = model.pBoundingBox.center();
+        model.sBoundingRadius = model.pBoundingBox.size().toFloat().length() / 2.0f;
     }
 
     reconstruct(src.decorations, &pLevelDecorations);

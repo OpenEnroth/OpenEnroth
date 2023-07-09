@@ -2,6 +2,7 @@
 
 #include <cassert>
 #include <algorithm>
+#include <tuple> // For std::tie.
 
 #include "Vec.h"
 
@@ -14,16 +15,47 @@ struct BBox {
     T z1 = 0;
     T z2 = 0;
 
-    [[nodiscard]] static BBox fromPoint(const Vec3<T> &center, T radius) {
-        assert(radius >= 0);
+    /**
+     * @param center                    Center of the bounding box.
+     * @param halfSide                  Half the length of the edge of the resulting bounding box cube.
+     * @return                          Cubic bounding box centered at `center` with sides twice the `halfSide`.
+     */
+    [[nodiscard]] static BBox cubic(const Vec3<T> &center, T halfSide) {
+        assert(halfSide >= 0);
 
         BBox result;
-        result.x1 = center.x - radius;
-        result.x2 = center.x + radius;
-        result.y1 = center.y - radius;
-        result.y2 = center.y + radius;
-        result.z1 = center.z - radius;
-        result.z2 = center.z + radius;
+        result.x1 = center.x - halfSide;
+        result.x2 = center.x + halfSide;
+        result.y1 = center.y - halfSide;
+        result.y2 = center.y + halfSide;
+        result.z1 = center.z - halfSide;
+        result.z2 = center.z + halfSide;
+        return result;
+    }
+
+    /**
+     * @param a                         Point a.
+     * @param b                         Point b.
+     * @return                          Bounding box containing both passed points.
+     */
+    [[nodiscard]] static BBox forPoints(const Vec3<T> &a, const Vec3<T> &b) {
+        BBox result;
+        std::tie(result.x1, result.x2) = std::minmax(a.x, b.x);
+        std::tie(result.y1, result.y2) = std::minmax(a.y, b.y);
+        std::tie(result.z1, result.z2) = std::minmax(a.z, b.z);
+        return result;
+    }
+
+    [[nodiscard]] static BBox forCylinder(const Vec3<T> bottomCenter, T radius, T height) {
+        assert(radius >= 0 && height >= 0);
+
+        BBox result;
+        result.x1 = bottomCenter.x - radius;
+        result.x2 = bottomCenter.x + radius;
+        result.y1 = bottomCenter.y - radius;
+        result.y2 = bottomCenter.y + radius;
+        result.z1 = bottomCenter.z;
+        result.z2 = bottomCenter.z + height;
         return result;
     }
 
@@ -43,13 +75,24 @@ struct BBox {
             z1 <= other.z2 && z2 >= other.z1;
     }
 
-    [[nodiscard]] bool intersectsCube(const Vec3<T> &center, T halfSide) const {
+    template<class U, class V>
+    [[nodiscard]] bool intersectsCube(const Vec3<U> &center, V halfSide) const {
         assert(halfSide >= 0);
 
         return
             x1 <= center.x + halfSide && x2 >= center.x - halfSide &&
             y1 <= center.y + halfSide && y2 >= center.y - halfSide &&
             z1 <= center.z + halfSide && z2 >= center.z - halfSide;
+    }
+
+    template<class U>
+    [[nodiscard]] bool intersectsCuboid(const Vec3<U> &center, const Vec3<U> &halfSize) const {
+        assert(halfSize.x >= 0 && halfSize.y >= 0 && halfSize.z >= 0);
+
+        return
+            x1 <= center.x + halfSize.x && x2 >= center.x - halfSize.x &&
+            y1 <= center.y + halfSize.y && y2 >= center.y - halfSize.y &&
+            z1 <= center.z + halfSize.z && z2 >= center.z - halfSize.z;
     }
 
     [[nodiscard]] friend BBox operator|(const BBox &l, const BBox &r) {
@@ -63,9 +106,12 @@ struct BBox {
         return result;
     }
 
-    // TODO(captainurist): propagate usage, we have a couple places where this is inlined.
     [[nodiscard]] Vec3<T> center() const {
         return Vec3<T>((x1 + x2) / 2, (y1 + y2) / 2, (z1 + z2) / 2);
+    }
+
+    [[nodiscard]] Vec3<T> size() const {
+        return Vec3<T>(x2 - x1, y2 - y1, z2 - z1);
     }
 };
 

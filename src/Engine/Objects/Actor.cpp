@@ -880,132 +880,98 @@ void Actor::Explode(unsigned int uActorID) {  // death explosion for some actors
 // way
 void Actor::GetDirectionInfo(unsigned int uObj1ID, unsigned int uObj2ID,
                              struct AIDirection *pOut, int PreferedZ) {
-    signed int v4;    // eax@1
-    signed int v5;    // ecx@1
-    int v18;          // edx@15
     float v31;        // st7@45
     float v32;        // st6@45
     float v33;        // st7@45
-    Vec3i v37;    // [sp-10h] [bp-5Ch]@15
-    AIDirection v41;  // [sp+14h] [bp-38h]@46
-    float outy2 = 0;      // [sp+38h] [bp-14h]@33
-    float outx2 = 0;      // [sp+3Ch] [bp-10h]@33
-    Vec3i out;
+    Vec3i out1;
+    Vec3i out2;
     float a4a;        // [sp+58h] [bp+Ch]@45
 
-    v4 = PID_ID(uObj1ID);
-    // v6 = uObj2ID;
-    v5 = PID_ID(uObj2ID);
+    int id1 = PID_ID(uObj1ID);
+    int id2 = PID_ID(uObj2ID);
     switch (PID_TYPE(uObj1ID)) {
         case OBJECT_Item: {
-            out = pSpriteObjects[v4].vPosition;
+            out1 = pSpriteObjects[id1].vPosition;
             break;
         }
         case OBJECT_Actor: {
-            out.x = pActors[v4].pos.x;
-            out.y = pActors[v4].pos.y;
-            out.z = pActors[v4].pos.z + (pActors[v4].height * 0.75);
+            // TODO(captainurist): write this out as a vector expression & retrace.
+            out1.x = pActors[id1].pos.x;
+            out1.y = pActors[id1].pos.y;
+            out1.z = pActors[id1].pos.z + (pActors[id1].height * 0.75);
             break;
         }
         case OBJECT_Character: {
-            if (!v4) {
-                out = pParty->pos + Vec3i(0, 0, pParty->height / 3);
-                break;
+            out1 = pParty->pos + Vec3i(0, 0, pParty->height / 3);
+            if (id1 == 0) {
+                // Do nothing.
+            } else if (id1 == 4) {
+                out1 += Vec3i::fromPolar(24, pParty->_viewYaw - TrigLUT.uIntegerHalfPi, 0);
+            } else if (id1 == 3) {
+                out1 += Vec3i::fromPolar(8, pParty->_viewYaw - TrigLUT.uIntegerHalfPi, 0);
+            } else if (id1 == 2) {
+                out1 += Vec3i::fromPolar(8, TrigLUT.uIntegerHalfPi + pParty->_viewYaw, 0);
+            } else if (id1 == 1) {
+                out1 += Vec3i::fromPolar(24, TrigLUT.uIntegerHalfPi + pParty->_viewYaw, 0);
             }
-            if (v4 == 4) {
-                v18 = pParty->_viewYaw - TrigLUT.uIntegerHalfPi;
-                v37 = pParty->pos + Vec3i(0, 0, pParty->height / 3);
-                out = v37 + Vec3i::fromPolar(24, v18, 0);
-                break;
-            }
-            if (v4 == 3) {
-                v18 = pParty->_viewYaw - TrigLUT.uIntegerHalfPi;
-                v37 = pParty->pos + Vec3i(0, 0, pParty->height / 3);
-                out = v37 + Vec3i::fromPolar(8, v18, 0);
-                break;
-            }
-            if (v4 == 2) {
-                v37 = pParty->pos + Vec3i(0, 0, pParty->height / 3);
-                v18 = TrigLUT.uIntegerHalfPi + pParty->_viewYaw;
-                out = v37 + Vec3i::fromPolar(8, v18, 0);
-                break;
-            }
-            if (v4 == 1) {
-                v37 = pParty->pos + Vec3i(0, 0, pParty->height / 3);
-                v18 = TrigLUT.uIntegerHalfPi + pParty->_viewYaw;
-                out = v37 + Vec3i::fromPolar(24, v18, 0);
-                break;
-            }
-        }
-        case OBJECT_Decoration: {
-            out = pLevelDecorations[v4].vPosition;
             break;
         }
-        default: {
-            out = Vec3i();
+        case OBJECT_Decoration: {
+            out1 = pLevelDecorations[id1].vPosition;
             break;
         }
         case OBJECT_Face: {
             if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
-                out = pIndoor->pFaces[v4].pBounding.center();
+                out1 = pIndoor->pFaces[id1].pBounding.center();
             }
+            break;
+        }
+        default: {
+            out1 = Vec3i();
             break;
         }
     }
 
     switch (PID_TYPE(uObj2ID)) {
         case OBJECT_Item: {
-            outx2 = (float)pSpriteObjects[v5].vPosition.x;
-            outy2 = (float)pSpriteObjects[v5].vPosition.y;
-            PreferedZ = pSpriteObjects[v5].vPosition.z;
+            out2 = pSpriteObjects[id2].vPosition;
             break;
         }
         case OBJECT_Actor: {
-            outx2 = (float)pActors[v5].pos.x;
-            outy2 = (float)pActors[v5].pos.y;
-            PreferedZ = pActors[v5].pos.z + (pActors[v5].height * 0.75);
+            // TODO(captainurist): write this out as a vector expression & retrace.
+            out2.x = pActors[id2].pos.x;
+            out2.y = pActors[id2].pos.y;
+            out2.z = pActors[id2].pos.z + (pActors[id2].height * 0.75);
             break;
         }
         case OBJECT_Character: {
-            outx2 = (float)pParty->pos.x;
-            outy2 = (float)pParty->pos.y;
-            if (!PreferedZ) PreferedZ = pParty->eyeLevel;
-            PreferedZ = pParty->pos.z + PreferedZ;
+            if (!PreferedZ)
+                PreferedZ = pParty->eyeLevel;
+
+            out2 = pParty->pos + Vec3i(0, 0, PreferedZ);
             break;
         }
         case OBJECT_Decoration: {
-            outx2 = (float)pLevelDecorations[v5].vPosition.x;
-            outy2 = (float)pLevelDecorations[v5].vPosition.y;
-            PreferedZ = pLevelDecorations[v5].vPosition.z;
-            break;
-        }
-        default: {
-            outx2 = 0.0;
-            outy2 = 0.0;
-            PreferedZ = 0;
+            out2 = pLevelDecorations[id2].vPosition;
             break;
         }
         case OBJECT_Face: {
             if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
-                outx2 = (float)((pIndoor->pFaces[v5].pBounding.x1 +
-                                 pIndoor->pFaces[v5].pBounding.x2) >>
-                                1);
-                outy2 = (float)((pIndoor->pFaces[v5].pBounding.y1 +
-                                 pIndoor->pFaces[v5].pBounding.y2) >>
-                                1);
-                PreferedZ = (pIndoor->pFaces[v5].pBounding.z1 +
-                      pIndoor->pFaces[v5].pBounding.z2) >>
-                     1;
+                out2 = pIndoor->pFaces[id2].pBounding.center();
             }
+            break;
+        }
+        default: {
+            out2 = Vec3i();
             break;
         }
     }
 
-    v31 = (float)outx2 - (float)out.x;
-    v32 = (float)outy2 - (float)out.y;
-    a4a = (float)PreferedZ - (float)out.z;
-    outx2 = v32 * v32;
-    outy2 = v31 * v31;
+    v31 = out2.x - out1.x;
+    v32 = out2.y - out1.y;
+    a4a = out2.z - out1.z;
+    float outx2 = v32 * v32;
+    float outy2 = v31 * v31;
     v33 = sqrt(a4a * a4a + outy2 + outx2);
     if (v33 <= 1.0) {
         pOut->vDirection.x = 65536;
@@ -4269,27 +4235,20 @@ int Actor::MakeActorAIList_BLV() {
 bool Detect_Between_Objects(unsigned int uObjID, unsigned int uObj2ID) {
     // get object 1 info
     int obj1_pid = PID_ID(uObjID);
-    int obj1_x, obj1_y, obj1_z, eyeheight;
     int obj1_sector;
+    Vec3i pos1;
 
     switch (PID_TYPE(uObjID)) {
         case OBJECT_Decoration:
-            obj1_x = pLevelDecorations[obj1_pid].vPosition.x;
-            obj1_y = pLevelDecorations[obj1_pid].vPosition.y;
-            obj1_z = pLevelDecorations[obj1_pid].vPosition.z;
-            obj1_sector = pIndoor->GetSector(obj1_x, obj1_y, obj1_z);
+            pos1 = pLevelDecorations[obj1_pid].vPosition;
+            obj1_sector = pIndoor->GetSector(pos1);
             break;
         case OBJECT_Actor:
-            obj1_x = pActors[obj1_pid].pos.x;
-            obj1_y = pActors[obj1_pid].pos.y;
-            eyeheight = (float)pActors[obj1_pid].height * 0.69999999;
-            obj1_z = eyeheight + pActors[obj1_pid].pos.z;
+            pos1 = pActors[obj1_pid].pos + Vec3i(0, 0, pActors[obj1_pid].height * 0.69999999);
             obj1_sector = pActors[obj1_pid].sectorId;
             break;
         case OBJECT_Item:
-            obj1_x = pSpriteObjects[obj1_pid].vPosition.x;
-            obj1_y = pSpriteObjects[obj1_pid].vPosition.y;
-            obj1_z = pSpriteObjects[obj1_pid].vPosition.z;
+            pos1 = pSpriteObjects[obj1_pid].vPosition;
             obj1_sector = pSpriteObjects[obj1_pid].uSectorID;
             break;
         default:
@@ -4298,33 +4257,24 @@ bool Detect_Between_Objects(unsigned int uObjID, unsigned int uObj2ID) {
 
     // get object 2 info
     int obj2_pid = PID_ID(uObj2ID);
-    int obj2_x, obj2_y, obj2_z, eyeheight2;
     int obj2_sector;
+    Vec3i pos2;
 
     switch (PID_TYPE(uObj2ID)) {
         case OBJECT_Decoration:
-            obj2_z = pLevelDecorations[obj2_pid].vPosition.z;
-            obj2_x = pLevelDecorations[obj2_pid].vPosition.x;
-            obj2_y = pLevelDecorations[obj2_pid].vPosition.y;
-            obj2_sector = pIndoor->GetSector(obj2_x, obj2_y, obj2_z);
+            pos2 = pLevelDecorations[obj2_pid].vPosition;
+            obj2_sector = pIndoor->GetSector(pos2);
             break;
         case OBJECT_Character:
-            obj2_x = pParty->pos.x;
-            obj2_z = pParty->eyeLevel + pParty->pos.z;
-            obj2_y = pParty->pos.y;
+            pos2 = pParty->pos + Vec3i(0, 0, pParty->eyeLevel);
             obj2_sector = pBLVRenderParams->uPartyEyeSectorID;
             break;
         case OBJECT_Actor:
-            obj2_y = pActors[obj2_pid].pos.y;
-            obj2_x = pActors[obj2_pid].pos.x;
-            eyeheight2 = (float)pActors[obj2_pid].height * 0.69999999;
-            obj2_z = eyeheight2 + pActors[obj2_pid].pos.z;
+            pos2 = pActors[obj2_pid].pos + Vec3i(0, 0, pActors[obj2_pid].height * 0.69999999);
             obj2_sector = pActors[obj2_pid].sectorId;
             break;
         case OBJECT_Item:
-            obj2_x = pSpriteObjects[obj2_pid].vPosition.x;
-            obj2_z = pSpriteObjects[obj2_pid].vPosition.z;
-            obj2_y = pSpriteObjects[obj2_pid].vPosition.y;
+            pos2 = pSpriteObjects[obj2_pid].vPosition;
             obj2_sector = pSpriteObjects[obj2_pid].uSectorID;
             break;
         default:
@@ -4332,9 +4282,9 @@ bool Detect_Between_Objects(unsigned int uObjID, unsigned int uObj2ID) {
     }
 
     // get distance between objects
-    float dist_x = obj2_x - obj1_x;
-    float dist_y = obj2_y - obj1_y;
-    float dist_z = obj2_z - obj1_z;
+    float dist_x = pos2.x - pos1.x;
+    float dist_y = pos2.y - pos1.y;
+    float dist_z = pos2.z - pos1.z;
     float dist_3d = sqrt(dist_x * dist_x + dist_y * dist_y + dist_z * dist_z);
     // range check
     if (dist_3d > 5120) return 0;
@@ -4351,12 +4301,7 @@ bool Detect_Between_Objects(unsigned int uObjID, unsigned int uObj2ID) {
     float rayznorm = dist_z / dist_3d;
 
     // extents for boundary checks
-    int higher_z = std::max(obj1_z, obj2_z);
-    int lower_z = std::min(obj1_z, obj2_z);
-    int higher_y = std::max(obj1_y, obj2_y);
-    int lower_y = std::min(obj1_y, obj2_y);
-    int higher_x = std::max(obj1_x, obj2_x);
-    int lower_x = std::min(obj1_x, obj2_x);
+    BBoxi bbox = BBoxi::forPoints(pos1, pos2);
 
     // search starts for object
     int sectors_visited = 0;
@@ -4370,22 +4315,18 @@ bool Detect_Between_Objects(unsigned int uObjID, unsigned int uObj2ID) {
         portalface = &pIndoor->pFaces[pIndoor->pSectors[current_sector].pPortals[current_portal]];
         portalverts = &pIndoor->pVertices[*portalface->pVertexIDs];
 
-        // fixpoint   ray ob1 to portal dot normal
-        float obj1portaldot = portalface->facePlane.normal.z * (portalverts->z - obj1_z) +
-                              portalface->facePlane.normal.y * (portalverts->y - obj1_y) +
-                              portalface->facePlane.normal.x * (portalverts->x - obj1_x);
+        // ray ob1 to portal dot normal
+        float obj1portaldot = dot(portalface->facePlane.normal, (*portalverts - pos1).toFloat());
 
         // flip norm if we are not looking out from current sector
         if (current_sector != portalface->uSectorID) obj1portaldot = -obj1portaldot;
 
         // obj1 sees back of, but is not on the portal so skip
-        if (obj1portaldot >= 0 && portalverts->x != obj1_x && portalverts->y != obj1_y && portalverts->z != obj1_z)
+        if (obj1portaldot >= 0 && portalverts->x != pos1.x && portalverts->y != pos1.y && portalverts->z != pos1.z)
             continue;
 
         // bounds check
-        if (lower_x > portalface->pBounding.x2 || higher_x < portalface->pBounding.x1 ||
-            lower_y > portalface->pBounding.y2 || higher_y < portalface->pBounding.y1 ||
-            lower_z > portalface->pBounding.z2 || higher_z < portalface->pBounding.z1) {
+        if (!bbox.intersects(portalface->pBounding)) {
             continue;
         }
 
@@ -4398,10 +4339,7 @@ bool Detect_Between_Objects(unsigned int uObjID, unsigned int uObj2ID) {
         float facenotparallel = v32 + v33 + v34;
         if (facenotparallel) {
             // point to plance distance
-            float pointplanedist = -(portalface->facePlane.dist +
-                  obj1_z * portalface->facePlane.normal.z +
-                  obj1_x * portalface->facePlane.normal.x +
-                  obj1_y * portalface->facePlane.normal.y);
+            float pointplanedist = -portalface->facePlane.signedDistanceTo(pos1.toFloat());
 
             // epsilon check?
             if (abs(pointplanedist) / 16384.0 > abs(facenotparallel)) continue;
@@ -4413,9 +4351,9 @@ bool Detect_Between_Objects(unsigned int uObjID, unsigned int uObj2ID) {
             if (intersect < 0) continue;
 
             // check if point along ray is in portal face
-            Vec3i pos = Vec3i(obj1_x + (rayxnorm * intersect) + 0.5,
-                obj1_y + (rayynorm * intersect) + 0.5,
-                obj1_z + (rayznorm * intersect) + 0.5);
+            Vec3i pos = Vec3i(pos1.x + (rayxnorm * intersect) + 0.5,
+                pos1.y + (rayynorm * intersect) + 0.5,
+                pos1.z + (rayznorm * intersect) + 0.5);
             if (!portalface->Contains(pos, MODEL_INDOOR)) {
                 // not visible through this portal
                 continue;

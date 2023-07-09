@@ -325,9 +325,7 @@ int IndoorLocation::GetSector(int sX, int sY, int sZ) {
 
         BLVSector *pSector = &pSectors[i];
 
-        if ((pSector->pBounding.x1 - 5) > sX || (pSector->pBounding.x2 + 5) < sX ||
-            (pSector->pBounding.y1 - 5) > sY || (pSector->pBounding.y2 + 5) < sY ||
-            (pSector->pBounding.z1 - 64) > sZ || (pSector->pBounding.z2 + 64) < sZ)
+        if (!pSector->pBounding.intersectsCuboid(Vec3i(sX, sY, sZ), Vec3i(5, 5, 64)))
             continue;  // outside sector bounding
 
         if (!backupboundingsector) backupboundingsector = i;
@@ -1230,14 +1228,7 @@ bool Check_LOS_Obscurred_Indoors(const Vec3i &target, const Vec3i &from) {  // t
     Vec3f dir = (from - target).toFloat();
     dir.normalize();
 
-    int max_x = std::max(from.x, target.x);
-    int min_x = std::min(from.x, target.x);
-
-    int max_y = std::max(from.y, target.y);
-    int min_y = std::min(from.y, target.y);
-
-    int max_z = std::max(from.z, target.z);
-    int min_z = std::min(from.z, target.z);
+    BBoxi bbox = BBoxi::forPoints(from, target);
 
     for (int sectargetrflip = 0; sectargetrflip < 2; sectargetrflip++) {
         int SectargetrID = 0;
@@ -1249,16 +1240,17 @@ bool Check_LOS_Obscurred_Indoors(const Vec3i &target, const Vec3i &from) {  // t
         // loop over sectargetr faces
         for (int FaceLoop = 0; FaceLoop < pIndoor->pSectors[SectargetrID].uNumFaces; ++FaceLoop) {
             BLVFace *face = &pIndoor->pFaces[pIndoor->pSectors[SectargetrID].pFaceIDs[FaceLoop]];
+            if (face->isPortal())
+                continue;
 
             // dot product
             float dirDotNormal = dot(dir, face->facePlane.normal);
             bool FaceIsParallel = fuzzyIsNull(dirDotNormal);
+            if (FaceIsParallel)
+                continue;
 
             // skip further checks
-            if (face->isPortal() || min_x > face->pBounding.x2 ||
-                max_x < face->pBounding.x1 || min_y > face->pBounding.y2 ||
-                max_y < face->pBounding.y1 || min_z > face->pBounding.z2 ||
-                max_z < face->pBounding.z1 || FaceIsParallel)
+            if (!bbox.intersects(face->pBounding))
                 continue;
 
             float NegFacePlaceDist = -face->facePlane.signedDistanceTo(target.toFloat());
@@ -1292,28 +1284,18 @@ bool Check_LOS_Obscurred_Outdoors_Bmodels(const Vec3i &target, const Vec3i &from
     Vec3f dir = (from - target).toFloat();
     dir.normalize();
 
-    int max_x = std::max(from.x, target.x);
-    int min_x = std::min(from.x, target.x);
-
-    int max_y = std::max(from.y, target.y);
-    int min_y = std::min(from.y, target.y);
-
-    int max_z = std::max(from.z, target.z);
-    int min_z = std::min(from.z, target.z);
+    BBoxi bbox = BBoxi::forPoints(from, target);
 
     for (BSPModel &model : pOutdoor->pBModels) {
         if (CalcDistPointToLine(target.x, target.y, from.x, from.y, model.vPosition.x, model.vPosition.y) <= model.sBoundingRadius + 128) {
             for (ODMFace &face : model.pFaces) {
                 float dirDotNormal = dot(dir, face.facePlane.normal);
                 bool FaceIsParallel = fuzzyIsNull(dirDotNormal);
+                if (FaceIsParallel)
+                    continue;
 
                 // bounds check
-                if (min_x > face.pBoundingBox.x2 ||
-                    max_x < face.pBoundingBox.x1 ||
-                    min_y > face.pBoundingBox.y2 ||
-                    max_y < face.pBoundingBox.y1 ||
-                    min_z > face.pBoundingBox.z2 ||
-                    max_z < face.pBoundingBox.z1 || FaceIsParallel)
+                if (!bbox.intersects(face.pBoundingBox))
                     continue;
 
                 // point target plane distacne
