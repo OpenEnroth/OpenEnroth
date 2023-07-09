@@ -141,7 +141,6 @@ class LODFile_IconsBitmaps : public LOD::File {
  public:
     LODFile_IconsBitmaps();
     virtual ~LODFile_IconsBitmaps();
-    void SyncLoadedFilesCount();
     bool Load(const std::string &pFilename, const std::string &pFolderName);
     unsigned int LoadTexture(const std::string &pContainer, TEXTURE_TYPE uTextureType = TEXTURE_DEFAULT);
     int LoadTextureFromLOD(struct Texture_MM7 *pOutTex, const std::string &pContainer, TEXTURE_TYPE eTextureType);
@@ -154,8 +153,6 @@ class LODFile_IconsBitmaps : public LOD::File {
 
     std::deque<Texture_MM7> pTextures;
     int reservedTextureCount;  // bitmaps lod reserved
-    int uNumPrevLoadedFiles;
-    int uTexturePacksCount;
 };
 
 #pragma pack(push, 1)

@@ -32,9 +32,6 @@ LODFile_Sprites *pSprites_LOD_mm8 = nullptr;
 LOD::WriteableFile *pSave_LOD = nullptr; // LOD pointing to the savegame file currently being processed
 LOD::File *pGames_LOD = nullptr; // LOD pointing to data/games.lod
 
-int _6A0CA4_lod_binary_search;
-int _6A0CA8_lod_unused;
-
 struct FileCloser {
     void operator()(FILE *file) {
         if (file)
@@ -152,8 +149,6 @@ void LODFile_IconsBitmaps::ReleaseAll2() {
     for (size_t i = this->reservedTextureCount; i < this->pTextures.size(); i++) {
         this->pTextures[i].Release();
     }
-    this->uTexturePacksCount = 0;
-    this->uNumPrevLoadedFiles = 0;
     this->pTextures.resize(this->reservedTextureCount);
 }
 
@@ -173,7 +168,6 @@ void LOD::File::Close() {
     pSubIndices = nullptr;
     fclose(pFile);
     isFileOpened = false;
-    _6A0CA8_lod_unused = 0;
 }
 
 int LOD::WriteableFile::CreateNewLod(LOD::FileHeader *pHeader,
@@ -255,20 +249,6 @@ bool LODFile_IconsBitmaps::Load(const std::string &pLODFilename, const std::stri
     return LoadSubIndices(pFolderName);
 }
 
-void LODFile_IconsBitmaps::SyncLoadedFilesCount() {
-    Texture_MM7 *pTex;  // edx@1
-
-    int loaded_files = this->pTextures.size();
-    loaded_files--;
-    while (!pTextures[loaded_files].header.pName[0])
-        --loaded_files;
-
-    if (loaded_files < this->pTextures.size()) {
-        ++loaded_files;
-        this->pTextures.resize(loaded_files);
-    }
-}
-
 LODFile_Sprites::~LODFile_Sprites() {
     if (!this->pSprites.empty()) {
         for (size_t i = 0; i < this->pSprites.size(); ++i) {
@@ -289,8 +269,6 @@ LODFile_IconsBitmaps::~LODFile_IconsBitmaps() {
 }
 
 LODFile_IconsBitmaps::LODFile_IconsBitmaps() : LOD::File() {
-    this->uTexturePacksCount = 0;
-    this->uNumPrevLoadedFiles = 0;
     this->reservedTextureCount = 0;
 }
 
@@ -384,7 +362,6 @@ int LOD::WriteableFile::CreateTempFile() {
 void LOD::WriteableFile::CloseWriteFile() {
     if (isFileOpened) {
         pContainerName[0] = 0;
-        _6A0CA8_lod_unused = 0;
 
         isFileOpened = false;
         fflush(pFile);
