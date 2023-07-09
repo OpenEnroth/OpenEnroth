@@ -39,13 +39,6 @@ struct FileCloser {
     }
 };
 
-inline int LODFile_IconsBitmaps::LoadDummyTexture() {
-    for (size_t i = 0; i < pTextures.size(); ++i)
-        if (!strcmp(pTextures[i].header.pName.data(), "pending"))
-            return i;
-    return LoadTextureFromLOD(&pTextures.emplace_back(), "pending");
-}
-
 void LODFile_IconsBitmaps::reserveLoadedTextures() {
     reservedTextureCount = pTextures.size();
 }
@@ -92,7 +85,7 @@ int LODFile_Sprites::LoadSpriteFromFile(LODSprite *pSprite, const std::string &p
     return 1;
 }
 
-bool LODFile_Sprites::Load(const std::string &pFilename, const std::string &folder) {
+bool LODFile_Sprites::open(const std::string &pFilename, const std::string &folder) {
     if (!Open(pFilename)) {
         return false;
     }
@@ -100,10 +93,10 @@ bool LODFile_Sprites::Load(const std::string &pFilename, const std::string &fold
     return LoadSubIndices(folder);
 }
 
-Sprite *LODFile_Sprites::LoadSprite(const std::string &pContainerName) {
-    for (int i = 0; i < pSprites.size(); ++i) {
-        if (pSprites[i].pName == pContainerName) {
-            return &pSprites[i];
+Sprite *LODFile_Sprites::loadSprite(const std::string &pContainerName) {
+    for (Sprite &pSprite : pSprites) {
+        if (pSprite.pName == pContainerName) {
+            return &pSprite;
         }
     }
 
@@ -127,16 +120,6 @@ Sprite *LODFile_Sprites::LoadSprite(const std::string &pContainerName) {
     sprite.texture = assets->getSprite(pContainerName);
     sprite.sprite_header = header;
     return &sprite;
-}
-
-Sprite *LODFile_Sprites::getSprite(std::string_view pContainerName) {
-    for (size_t i = 0; i < pSprites.size(); ++i) {
-        if (pSprites[i].pName == pContainerName) {
-            return &pSprites[i];
-        }
-    }
-    logger->warning("Sprite not found!");
-    return nullptr;
 }
 
 void LODFile_IconsBitmaps::releaseUnreserved() {
@@ -227,8 +210,8 @@ void Sprite::Release() {
     this->pName = "null";
 }
 
-bool LODFile_IconsBitmaps::Load(const std::string &pLODFilename, const std::string &pFolderName) {
-    if (!Open(pLODFilename)) {
+bool LODFile_IconsBitmaps::open(const std::string &pFilename, const std::string &pFolderName) {
+    if (!Open(pFilename)) {
         return false;
     }
 
@@ -817,33 +800,31 @@ int LODFile_IconsBitmaps::LoadTextureFromLOD(Texture_MM7 *pOutTex, const std::st
     return 1;
 }
 
-unsigned int LODFile_IconsBitmaps::LoadTexture(const std::string &pContainer) {
-    for (uint i = 0; i < pTextures.size(); ++i) {
-        if (iequals(pContainer.data(), pTextures[i].header.pName.data())) {
-            return i;
+Texture_MM7 *LODFile_IconsBitmaps::loadTexture(const std::string &pContainer, bool useDummyOnError) {
+    for (Texture_MM7 &pTexture : pTextures) {
+        if (iequals(pContainer.data(), pTexture.header.pName.data())) {
+            return &pTexture;
         }
     }
 
-    if (LoadTextureFromLOD(&pTextures.emplace_back(), pContainer) == -1) {
-        pTextures.pop_back();
+    if (LoadTextureFromLOD(&pTextures.emplace_back(), pContainer) != -1)
+        return &pTextures.back();
+    pTextures.pop_back();
 
-        for (uint i = 0; i < pTextures.size(); ++i) {
-            if (iequals(pTextures[i].header.pName.data(), "pending")) {
-                return i;
-            }
+    if (!useDummyOnError)
+        return nullptr;
+
+    for (Texture_MM7 &pTexture : pTextures) {
+        if (iequals(pTexture.header.pName.data(), "pending")) {
+            return &pTexture;
         }
-        LoadTextureFromLOD(&pTextures.emplace_back(), "pending");
     }
 
-    return pTextures.size() - 1;
-}
+    if (LoadTextureFromLOD(&pTextures.emplace_back(), "pending") != -1)
+        return &pTextures.back();
+    pTextures.pop_back();
 
-Texture_MM7 *LODFile_IconsBitmaps::GetTexture(int idx) {
-    if (idx == -1) {
-        // logger->Warning("Texture_MM7 id = {} missing", idx);
-        return &pTextures[LoadDummyTexture()];
-    }
-    return &pTextures[idx];
+    return nullptr;
 }
 
 bool Initialize_GamesLOD_NewLOD() {

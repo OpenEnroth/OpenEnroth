@@ -932,8 +932,6 @@ void OutdoorLocation::Load(const std::string &filename, int days_played, int res
     pTileTable->InitializeTileset(pTileTypes[2].tileset);
     pTileTable->InitializeTileset(pTileTypes[3].tileset);
 
-    _47F0E2();
-
     // LABEL_150:
     if (pWeather->bRenderSnow) {  // Ritor1: it's include for snow
         loc_time.sky_texture_name = "sky19";
@@ -1141,22 +1139,6 @@ bool OutdoorLocation::IsMapCellPartiallyRevealed(int x_pos, int y_pos) {
         return false;
     else
         return (uPartiallyRevealedCellOnMap[y_pos][x_pos / 8] & (1 << (7 - (x_pos) % 8))) != 0;
-}
-
-//----- (0047F0E2) --------------------------------------------------------
-bool OutdoorLocation::_47F0E2() {
-    // TODO(captainurist): wtf is going on here? Can just drop this?
-
-    for (size_t i = 0; i < pBitmaps_LOD->pTextures.size(); ++i) {
-        // if ( i != -1 ? (int)&pBitmaps_LOD->pTextures[i] : 0 )
-        pBitmaps_LOD->pTextures[i].header.uDecompressedSize =
-            this->pTerrain._47CB57(
-                pBitmaps_LOD->pTextures[i].paletted_pixels,
-                pBitmaps_LOD->pTextures[i].header.palette_id2,
-                pBitmaps_LOD->pTextures[i].header.uTextureWidth *
-                pBitmaps_LOD->pTextures[i].header.uTextureHeight);
-    }
-    return 1;
 }
 
 //----- (0047F138) --------------------------------------------------------

@@ -19,7 +19,6 @@ IRender::IRender(
 
     pActiveZBuffer = 0;
     uFogColor = Color();
-    memset(pHDWaterBitmapIDs, 0, sizeof(pHDWaterBitmapIDs));
     hd_water_current_frame = 0;
     memset(pBillboardRenderListD3D, 0, sizeof(pBillboardRenderListD3D));
     uNumBillboardsToDraw = 0;

@@ -796,19 +796,19 @@ bool MM7_LoadLods() {
     engine->_gameResourceManager->openGameResources();
 
     pIcons_LOD = new LODFile_IconsBitmaps;
-    if (!pIcons_LOD->Load(makeDataPath("data", "icons.lod"), "icons")) {
+    if (!pIcons_LOD->open(makeDataPath("data", "icons.lod"), "icons")) {
         Error(localization->GetString(LSTR_PLEASE_REINSTALL), localization->GetString(LSTR_REINSTALL_NECESSARY));
         return false;
     }
 
     pBitmaps_LOD = new LODFile_IconsBitmaps;
-    if (!pBitmaps_LOD->Load(makeDataPath("data", "bitmaps.lod"), "bitmaps")) {
+    if (!pBitmaps_LOD->open(makeDataPath("data", "bitmaps.lod"), "bitmaps")) {
         Error(localization->GetString(LSTR_PLEASE_REINSTALL), localization->GetString(LSTR_REINSTALL_NECESSARY));
         return false;
     }
 
     pSprites_LOD = new LODFile_Sprites;
-    if (!pSprites_LOD->Load(makeDataPath("data", "sprites.lod"), "sprites08")) {
+    if (!pSprites_LOD->open(makeDataPath("data", "sprites.lod"), "sprites08")) {
         Error(localization->GetString(LSTR_PLEASE_REINSTALL), localization->GetString(LSTR_REINSTALL_NECESSARY));
         return false;
     }
@@ -956,8 +956,6 @@ void Engine::SecondaryInitialization() {
 
     for (uint i = 0; i < 7; ++i) {
         std::string container_name = fmt::format("HDWTR{:03}", i);
-        render->pHDWaterBitmapIDs[i] =
-            pBitmaps_LOD->LoadTexture(container_name);
         render->hd_water_tile_anim[i] = assets->getBitmap(container_name);
     }
 

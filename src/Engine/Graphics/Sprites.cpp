@@ -48,7 +48,7 @@ void SpriteFrameTable::InitializeSprite(signed int uSpriteID) {
                     pSpriteSFrames[iter_uSpriteID].ResetPaletteIndex(pPaletteManager->paletteIndex(pSpriteSFrames[iter_uSpriteID].uPaletteID));
 
                     if (uFlags & 0x10) {  // single frame per frame sequence
-                        Sprite *sprite = pSprites_LOD->LoadSprite(pSpriteSFrames[iter_uSpriteID].texture_name);
+                        Sprite *sprite = pSprites_LOD->loadSprite(pSpriteSFrames[iter_uSpriteID].texture_name);
                         if (sprite == nullptr)
                             logger->warning("Sprite {} not loaded!", pSpriteSFrames[iter_uSpriteID].texture_name);
                         for (uint i = 0; i < 8; ++i)
@@ -71,7 +71,7 @@ void SpriteFrameTable::InitializeSprite(signed int uSpriteID) {
                                     spriteName = pSpriteSFrames[iter_uSpriteID].texture_name + "0";
                                     break;
                             }
-                            Sprite *sprite = pSprites_LOD->LoadSprite(spriteName);
+                            Sprite *sprite = pSprites_LOD->loadSprite(spriteName);
                             // pSpriteSFrames[iter_uSpriteID].pHwSpriteIDs[i]=v12;
                             assert(sprite);
                             pSpriteSFrames[iter_uSpriteID].hw_sprites[i] = sprite;
@@ -103,7 +103,7 @@ void SpriteFrameTable::InitializeSprite(signed int uSpriteID) {
                                     spriteName = pSpriteSFrames[iter_uSpriteID].texture_name + "1";
                                     break;
                             }
-                            Sprite *sprite = pSprites_LOD->LoadSprite(spriteName);
+                            Sprite *sprite = pSprites_LOD->loadSprite(spriteName);
                             // pSpriteSFrames[iter_uSpriteID].pHwSpriteIDs[i]=v12;
                             assert(sprite);
                             pSpriteSFrames[iter_uSpriteID].hw_sprites[i] = sprite;
@@ -144,7 +144,7 @@ void SpriteFrameTable::InitializeSprite(signed int uSpriteID) {
                                 }
                             }
 
-                            Sprite *sprite = pSprites_LOD->LoadSprite(spriteName);
+                            Sprite *sprite = pSprites_LOD->loadSprite(spriteName);
                             // pSpriteSFrames[iter_uSpriteID].pHwSpriteIDs[i]=v12;
                             assert(sprite);
                             pSpriteSFrames[iter_uSpriteID].hw_sprites[i] = sprite;

@@ -14,13 +14,6 @@
 
 class Sprite;
 
-/*  354 */
-enum class TEXTURE_TYPE {
-    TEXTURE_DEFAULT = 0,
-    TEXTURE_24BIT_PALETTE = 0x1,
-};
-using enum TEXTURE_TYPE;
-
 namespace LOD {
 #pragma pack(push, 1)
 struct FileHeader {
@@ -142,18 +135,17 @@ class LODFile_IconsBitmaps : public LOD::File {
     LODFile_IconsBitmaps();
     virtual ~LODFile_IconsBitmaps();
 
-    bool Load(const std::string &pFilename, const std::string &pFolderName);
-
-    unsigned int LoadTexture(const std::string &pContainer);
-    int LoadTextureFromLOD(struct Texture_MM7 *pOutTex, const std::string &pContainer);
+    bool open(const std::string &pFilename, const std::string &pFolderName);
 
     void releaseUnreserved();
     void reserveLoadedTextures();
 
-    int LoadDummyTexture();
+    Texture_MM7 *loadTexture(const std::string &pContainer, bool useDummyOnError = true);
 
-    Texture_MM7 *GetTexture(int idx);
+private:
+    int LoadTextureFromLOD(struct Texture_MM7 *pOutTex, const std::string &pContainer);
 
+ private:
     int reservedTextureCount = 0;  // bitmaps lod reserved
     std::deque<Texture_MM7> pTextures;
 };
@@ -189,15 +181,17 @@ class LODFile_Sprites : public LOD::File {
     LODFile_Sprites();
     virtual ~LODFile_Sprites();
 
-    bool Load(const std::string &pFilename, const std::string &folder);
+    bool open(const std::string &pFilename, const std::string &folder);
 
     void releaseUnreserved();
     void reserveLoadedSprites();
 
-    int LoadSpriteFromFile(LODSprite *pSpriteHeader, const std::string &pContainer);
-    Sprite *LoadSprite(const std::string &pContainerName);
-    Sprite *getSprite(std::string_view pContainerName);
+    Sprite *loadSprite(const std::string &pContainerName);
 
+ private:
+    int LoadSpriteFromFile(LODSprite *pSpriteHeader, const std::string &pContainer);
+
+ private:
     int reservedSpriteCount = 0;  // reserved sprites -522
     std::deque<Sprite> pSprites;
 };
