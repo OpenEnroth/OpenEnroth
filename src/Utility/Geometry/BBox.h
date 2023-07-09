@@ -17,20 +17,19 @@ struct BBox {
 
     /**
      * @param center                    Center of the bounding box.
-     * @param radius                    "Radius" of the bounding box, effectively half the length of the edge of the
-     *                                  resulting bounding box cube.
-     * @return                          Cubic bounding box centered at `center` with sides twice the `radius`.
+     * @param halfSide                  Half the length of the edge of the resulting bounding box cube.
+     * @return                          Cubic bounding box centered at `center` with sides twice the `halfSide`.
      */
-    [[nodiscard]] static BBox cubic(const Vec3<T> &center, T radius) {
-        assert(radius >= 0);
+    [[nodiscard]] static BBox cubic(const Vec3<T> &center, T halfSide) {
+        assert(halfSide >= 0);
 
         BBox result;
-        result.x1 = center.x - radius;
-        result.x2 = center.x + radius;
-        result.y1 = center.y - radius;
-        result.y2 = center.y + radius;
-        result.z1 = center.z - radius;
-        result.z2 = center.z + radius;
+        result.x1 = center.x - halfSide;
+        result.x2 = center.x + halfSide;
+        result.y1 = center.y - halfSide;
+        result.y2 = center.y + halfSide;
+        result.z1 = center.z - halfSide;
+        result.z2 = center.z + halfSide;
         return result;
     }
 
