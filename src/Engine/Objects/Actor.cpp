@@ -880,132 +880,98 @@ void Actor::Explode(unsigned int uActorID) {  // death explosion for some actors
 // way
 void Actor::GetDirectionInfo(unsigned int uObj1ID, unsigned int uObj2ID,
                              struct AIDirection *pOut, int PreferedZ) {
-    signed int v4;    // eax@1
-    signed int v5;    // ecx@1
-    int v18;          // edx@15
     float v31;        // st7@45
     float v32;        // st6@45
     float v33;        // st7@45
-    Vec3i v37;    // [sp-10h] [bp-5Ch]@15
-    AIDirection v41;  // [sp+14h] [bp-38h]@46
-    float outy2 = 0;      // [sp+38h] [bp-14h]@33
-    float outx2 = 0;      // [sp+3Ch] [bp-10h]@33
-    Vec3i out;
+    Vec3i out1;
+    Vec3i out2;
     float a4a;        // [sp+58h] [bp+Ch]@45
 
-    v4 = PID_ID(uObj1ID);
-    // v6 = uObj2ID;
-    v5 = PID_ID(uObj2ID);
+    int id1 = PID_ID(uObj1ID);
+    int id2 = PID_ID(uObj2ID);
     switch (PID_TYPE(uObj1ID)) {
         case OBJECT_Item: {
-            out = pSpriteObjects[v4].vPosition;
+            out1 = pSpriteObjects[id1].vPosition;
             break;
         }
         case OBJECT_Actor: {
-            out.x = pActors[v4].pos.x;
-            out.y = pActors[v4].pos.y;
-            out.z = pActors[v4].pos.z + (pActors[v4].height * 0.75);
+            // TODO(captainurist): write this out as a vector expression & retrace.
+            out1.x = pActors[id1].pos.x;
+            out1.y = pActors[id1].pos.y;
+            out1.z = pActors[id1].pos.z + (pActors[id1].height * 0.75);
             break;
         }
         case OBJECT_Character: {
-            if (!v4) {
-                out = pParty->pos + Vec3i(0, 0, pParty->height / 3);
-                break;
+            out1 = pParty->pos + Vec3i(0, 0, pParty->height / 3);
+            if (id1 == 0) {
+                // Do nothing.
+            } else if (id1 == 4) {
+                out1 += Vec3i::fromPolar(24, pParty->_viewYaw - TrigLUT.uIntegerHalfPi, 0);
+            } else if (id1 == 3) {
+                out1 += Vec3i::fromPolar(8, pParty->_viewYaw - TrigLUT.uIntegerHalfPi, 0);
+            } else if (id1 == 2) {
+                out1 += Vec3i::fromPolar(8, TrigLUT.uIntegerHalfPi + pParty->_viewYaw, 0);
+            } else if (id1 == 1) {
+                out1 += Vec3i::fromPolar(24, TrigLUT.uIntegerHalfPi + pParty->_viewYaw, 0);
             }
-            if (v4 == 4) {
-                v18 = pParty->_viewYaw - TrigLUT.uIntegerHalfPi;
-                v37 = pParty->pos + Vec3i(0, 0, pParty->height / 3);
-                out = v37 + Vec3i::fromPolar(24, v18, 0);
-                break;
-            }
-            if (v4 == 3) {
-                v18 = pParty->_viewYaw - TrigLUT.uIntegerHalfPi;
-                v37 = pParty->pos + Vec3i(0, 0, pParty->height / 3);
-                out = v37 + Vec3i::fromPolar(8, v18, 0);
-                break;
-            }
-            if (v4 == 2) {
-                v37 = pParty->pos + Vec3i(0, 0, pParty->height / 3);
-                v18 = TrigLUT.uIntegerHalfPi + pParty->_viewYaw;
-                out = v37 + Vec3i::fromPolar(8, v18, 0);
-                break;
-            }
-            if (v4 == 1) {
-                v37 = pParty->pos + Vec3i(0, 0, pParty->height / 3);
-                v18 = TrigLUT.uIntegerHalfPi + pParty->_viewYaw;
-                out = v37 + Vec3i::fromPolar(24, v18, 0);
-                break;
-            }
-        }
-        case OBJECT_Decoration: {
-            out = pLevelDecorations[v4].vPosition;
             break;
         }
-        default: {
-            out = Vec3i();
+        case OBJECT_Decoration: {
+            out1 = pLevelDecorations[id1].vPosition;
             break;
         }
         case OBJECT_Face: {
             if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
-                out = pIndoor->pFaces[v4].pBounding.center();
+                out1 = pIndoor->pFaces[id1].pBounding.center();
             }
+            break;
+        }
+        default: {
+            out1 = Vec3i();
             break;
         }
     }
 
     switch (PID_TYPE(uObj2ID)) {
         case OBJECT_Item: {
-            outx2 = (float)pSpriteObjects[v5].vPosition.x;
-            outy2 = (float)pSpriteObjects[v5].vPosition.y;
-            PreferedZ = pSpriteObjects[v5].vPosition.z;
+            out2 = pSpriteObjects[id2].vPosition;
             break;
         }
         case OBJECT_Actor: {
-            outx2 = (float)pActors[v5].pos.x;
-            outy2 = (float)pActors[v5].pos.y;
-            PreferedZ = pActors[v5].pos.z + (pActors[v5].height * 0.75);
+            // TODO(captainurist): write this out as a vector expression & retrace.
+            out2.x = pActors[id2].pos.x;
+            out2.y = pActors[id2].pos.y;
+            out2.z = pActors[id2].pos.z + (pActors[id2].height * 0.75);
             break;
         }
         case OBJECT_Character: {
-            outx2 = (float)pParty->pos.x;
-            outy2 = (float)pParty->pos.y;
-            if (!PreferedZ) PreferedZ = pParty->eyeLevel;
-            PreferedZ = pParty->pos.z + PreferedZ;
+            if (!PreferedZ)
+                PreferedZ = pParty->eyeLevel;
+
+            out2 = pParty->pos + Vec3i(0, 0, PreferedZ);
             break;
         }
         case OBJECT_Decoration: {
-            outx2 = (float)pLevelDecorations[v5].vPosition.x;
-            outy2 = (float)pLevelDecorations[v5].vPosition.y;
-            PreferedZ = pLevelDecorations[v5].vPosition.z;
-            break;
-        }
-        default: {
-            outx2 = 0.0;
-            outy2 = 0.0;
-            PreferedZ = 0;
+            out2 = pLevelDecorations[id2].vPosition;
             break;
         }
         case OBJECT_Face: {
             if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
-                outx2 = (float)((pIndoor->pFaces[v5].pBounding.x1 +
-                                 pIndoor->pFaces[v5].pBounding.x2) >>
-                                1);
-                outy2 = (float)((pIndoor->pFaces[v5].pBounding.y1 +
-                                 pIndoor->pFaces[v5].pBounding.y2) >>
-                                1);
-                PreferedZ = (pIndoor->pFaces[v5].pBounding.z1 +
-                      pIndoor->pFaces[v5].pBounding.z2) >>
-                     1;
+                out2 = pIndoor->pFaces[id2].pBounding.center();
             }
+            break;
+        }
+        default: {
+            out2 = Vec3i();
             break;
         }
     }
 
-    v31 = (float)outx2 - (float)out.x;
-    v32 = (float)outy2 - (float)out.y;
-    a4a = (float)PreferedZ - (float)out.z;
-    outx2 = v32 * v32;
-    outy2 = v31 * v31;
+    v31 = out2.x - out1.x;
+    v32 = out2.y - out1.y;
+    a4a = out2.z - out1.z;
+    float outx2 = v32 * v32;
+    float outy2 = v31 * v31;
     v33 = sqrt(a4a * a4a + outy2 + outx2);
     if (v33 <= 1.0) {
         pOut->vDirection.x = 65536;
