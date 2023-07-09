@@ -43,6 +43,15 @@ struct BBox {
             z1 <= other.z2 && z2 >= other.z1;
     }
 
+    [[nodiscard]] bool intersectsCube(const Vec3<T> &center, T halfSide) const {
+        assert(halfSide >= 0);
+
+        return
+            x1 <= center.x + halfSide && x2 >= center.x - halfSide &&
+            y1 <= center.y + halfSide && y2 >= center.y - halfSide &&
+            z1 <= center.z + halfSide && z2 >= center.z - halfSide;
+    }
+
     [[nodiscard]] friend BBox operator|(const BBox &l, const BBox &r) {
         BBox result;
         result.x1 = std::min(l.x1, r.x1);
@@ -54,13 +63,9 @@ struct BBox {
         return result;
     }
 
-    [[nodiscard]] bool intersectsCube(const Vec3<T> &center, T halfSide) const {
-        assert(halfSide >= 0);
-
-        return
-            x1 <= center.x + halfSide && x2 >= center.x - halfSide &&
-            y1 <= center.y + halfSide && y2 >= center.y - halfSide &&
-            z1 <= center.z + halfSide && z2 >= center.z - halfSide;
+    // TODO(captainurist): propagate usage, we have a couple places where this is inlined.
+    [[nodiscard]] Vec3<T> center() const {
+        return Vec3<T>((x1 + x2) / 2, (y1 + y2) / 2, (z1 + z2) / 2);
     }
 };
 

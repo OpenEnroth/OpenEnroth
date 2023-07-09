@@ -1200,31 +1200,25 @@ bool Check_LineOfSight(const Vec3i &target, const Vec3i &from) {  // target from
     bool LOS_Obscurred2 = 0;
 
     if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
-        Vec3i targetmod{};
-        Vec3i frommod{};
-
         // offset 32 to side and check LOS
-        Vec3i::rotate(32, TrigLUT.uIntegerHalfPi + AngleToTarget, 0, target, &targetmod.x, &targetmod.y, &targetmod.z);
-        Vec3i::rotate(32, TrigLUT.uIntegerHalfPi + AngleToTarget, 0, from, &frommod.x, &frommod.y, &frommod.z);
+        Vec3i targetmod = target + Vec3i::fromPolar(32, AngleToTarget + TrigLUT.uIntegerHalfPi, 0);
+        Vec3i frommod = from + Vec3i::fromPolar(32, AngleToTarget + TrigLUT.uIntegerHalfPi, 0);
         LOS_Obscurred2 = Check_LOS_Obscurred_Indoors(targetmod, frommod);
 
         // offset other side and repeat check
-        Vec3i::rotate(32, AngleToTarget - TrigLUT.uIntegerHalfPi, 0, target, &targetmod.x, &targetmod.y, &targetmod.z);
-        Vec3i::rotate(32, AngleToTarget - TrigLUT.uIntegerHalfPi, 0, from, &frommod.x, &frommod.y, &frommod.z);
+        targetmod = target + Vec3i::fromPolar(32, AngleToTarget - TrigLUT.uIntegerHalfPi, 0);
+        frommod = from + Vec3i::fromPolar(32, AngleToTarget - TrigLUT.uIntegerHalfPi, 0);
         LOS_Obscurred = Check_LOS_Obscurred_Indoors(targetmod, frommod);
     } else if (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR) {
         // TODO(pskelton): Need to add check against terrain
-        Vec3i targetmod{};
-        Vec3i frommod{};
-
         // offset 32 to side and check LOS
-        Vec3i::rotate(32, TrigLUT.uIntegerHalfPi + AngleToTarget, 0, target, &targetmod.x, &targetmod.y, &targetmod.z);
-        Vec3i::rotate(32, TrigLUT.uIntegerHalfPi + AngleToTarget, 0, from, &frommod.x, &frommod.y, &frommod.z);
+        Vec3i targetmod = target + Vec3i::fromPolar(32, AngleToTarget + TrigLUT.uIntegerHalfPi, 0);
+        Vec3i frommod = from + Vec3i::fromPolar(32, AngleToTarget + TrigLUT.uIntegerHalfPi, 0);
         LOS_Obscurred2 = Check_LOS_Obscurred_Outdoors_Bmodels(targetmod, frommod);
 
         // offset other side and repeat check
-        Vec3i::rotate(32, AngleToTarget - TrigLUT.uIntegerHalfPi, 0, target, &targetmod.x, &targetmod.y, &targetmod.z);
-        Vec3i::rotate(32, AngleToTarget - TrigLUT.uIntegerHalfPi, 0, from, &frommod.x, &frommod.y, &frommod.z);
+        targetmod = target + Vec3i::fromPolar(32, AngleToTarget - TrigLUT.uIntegerHalfPi, 0);
+        frommod = from + Vec3i::fromPolar(32, AngleToTarget - TrigLUT.uIntegerHalfPi, 0);
         LOS_Obscurred = Check_LOS_Obscurred_Outdoors_Bmodels(targetmod, frommod);
     }
 

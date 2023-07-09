@@ -4,6 +4,8 @@
 #include <cstdint>
 #include <type_traits>
 
+#include "Utility/Math/TrigLut.h"
+
 template<class From, class To>
 struct vector_conversion_allowed : std::false_type {};
 
@@ -84,19 +86,16 @@ struct Vec3 {
 
     Vec3(T a, T b, T c) : x(a), y(b), z(c) {}
 
-    Vec2<T> xy() {
-        return Vec2<T>(x, y);
+    static Vec3 fromPolar(T length, int yaw, int pitch) {
+        float cosPitch = TrigLUT.cos(pitch);
+        float sinPitch = TrigLUT.sin(pitch);
+        float cosYaw = TrigLUT.cos(yaw);
+        float sinYaw = TrigLUT.sin(yaw);
+        return Vec3(sinYaw * cosPitch * length, cosYaw * cosPitch * length, sinPitch * length);
     }
 
-    static void rotate(T sDepth, T yaw, T pitch, Vec3<T> v, T *outx, T *outy, T *outz) {
-        float cosf_x = cos(M_PI * pitch / 1024.0f);
-        float sinf_x = sin(M_PI * pitch / 1024.0f);
-        float cosf_y = cos(M_PI * yaw / 1024.0f);
-        float sinf_y = sin(M_PI * yaw / 1024.0f);
-
-        *outx = v.x + (int)(sinf_y * cosf_x * (float)(sDepth /*>> 16*/));
-        *outy = v.y + (int)(cosf_y * cosf_x * (float)(sDepth /*>> 16*/));
-        *outz = v.z + (int)(sinf_x * (float)(sDepth /*>> 16*/));
+    Vec2<T> xy() {
+        return Vec2<T>(x, y);
     }
 
     void normalize() requires std::is_floating_point_v<T> {
