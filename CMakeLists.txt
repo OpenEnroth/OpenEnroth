@@ -55,6 +55,8 @@ if(BUILD_COMPILER STREQUAL "msvc")
 else() # gcc or clang
     add_compile_options(-Werror=return-type) # Control reaches the end of non-void function, this is an error on MSVC
     add_compile_options(-Werror=unused-result) # Ignoring return value of function declared with 'nodiscard' attribute
+    # add_compile_options(-Werror=unused-comparison) # Comparison result unused # TODO(captainurist): doesn't work with gcc, redo
+    add_compile_options(-Werror=unused-value) # Expression result unused
 endif()
 
 add_compile_definitions(FMT_USE_NONTYPE_TEMPLATE_ARGS) # Enable _cf literals
