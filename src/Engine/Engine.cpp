@@ -967,7 +967,7 @@ void Engine::SecondaryInitialization() {
 
     initGlobalEvents();
     pBitmaps_LOD->reserveLoadedTextures();
-    pSprites_LOD->_inlined_sub0();
+    pSprites_LOD->reserveLoadedSprites();
 
     Initialize_GamesLOD_NewLOD();
 }
@@ -1067,9 +1067,9 @@ void Engine::ResetCursor_Palettes_LODs_Level_Audio_SFT_Windows() {
     // Render billboards are used in hit tests, but we're releasing textures, so can't use them anymore.
     render->uNumBillboardsToDraw = 0;
 
-    pBitmaps_LOD->ReleaseAll2();
-    pSprites_LOD->DeleteSomeOtherSprites();
-    pIcons_LOD->ReleaseAll2();
+    pBitmaps_LOD->releaseUnreserved();
+    pSprites_LOD->releaseUnreserved();
+    pIcons_LOD->releaseUnreserved();
 
     if (uCurrentlyLoadedLevelType == LEVEL_INDOOR)
         pIndoor->Release();
@@ -1190,7 +1190,6 @@ void Engine::_461103_load_level_sub() {
     pCamera3D->_viewPitch = 0;
     pCamera3D->_viewYaw = 0;
     uLevel_StartingPointType = MapStartPoint_Party;
-    pSprites_LOD->_461397();
     if (pParty->pPickedItem.uItemID != ITEM_NULL)
         mouse->SetCursorBitmapFromItemID(pParty->pPickedItem.uItemID);
 }

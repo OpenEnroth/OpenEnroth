@@ -23,7 +23,7 @@ void PaletteManager::load(LODFile_IconsBitmaps *lod) {
         std::string paletteName = fmt::format("pal{:03}", paletteId);
 
         Texture_MM7 texture;
-        if (lod->LoadTextureFromLOD(&texture, paletteName, TEXTURE_24BIT_PALETTE) != 1)
+        if (lod->LoadTextureFromLOD(&texture, paletteName) != 1)
             continue;
 
         _paletteIds.push_back(paletteId);

@@ -77,7 +77,7 @@ GUIFont *GUIFont::LoadFont(const char *pFontFile, const char *pFontPalette) {
     Blob tmp_font = pIcons_LOD->LoadCompressedTexture(pFontFile);
     reconstruct(*static_cast<const FontData_MM7 *>(tmp_font.data()), tmp_font.size(), pFont->pData);
 
-    int pallete_index = pIcons_LOD->LoadTexture(pFontPalette, TEXTURE_24BIT_PALETTE);
+    int pallete_index = pIcons_LOD->LoadTexture(pFontPalette);
     if (pallete_index == -1)
         Error("Unable to open %s", pFontPalette);
 
