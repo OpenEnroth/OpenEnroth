@@ -273,10 +273,10 @@ bool CollisionState::PrepareAndCheckIfStationary(int dt_fp) {
     this->new_position_lo = this->position_lo + this->move_distance * this->direction;
 
     this->bbox =
-        BBoxf::fromPoint(this->position_lo, this->radius_lo) |
-        BBoxf::fromPoint(this->new_position_lo, this->radius_lo) |
-        BBoxf::fromPoint(this->position_hi, this->radius_hi) |
-        BBoxf::fromPoint(this->new_position_hi, this->radius_hi);
+        BBoxf::cubic(this->position_lo, this->radius_lo) |
+        BBoxf::cubic(this->new_position_lo, this->radius_lo) |
+        BBoxf::cubic(this->position_hi, this->radius_hi) |
+        BBoxf::cubic(this->new_position_hi, this->radius_hi);
 
     this->pid = 0;
     this->adjusted_move_distance = this->move_distance;

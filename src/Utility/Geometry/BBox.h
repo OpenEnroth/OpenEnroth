@@ -2,6 +2,7 @@
 
 #include <cassert>
 #include <algorithm>
+#include <tuple> // For std::tie.
 
 #include "Vec.h"
 
@@ -14,7 +15,13 @@ struct BBox {
     T z1 = 0;
     T z2 = 0;
 
-    [[nodiscard]] static BBox fromPoint(const Vec3<T> &center, T radius) {
+    /**
+     * @param center                    Center of the bounding box.
+     * @param radius                    "Radius" of the bounding box, effectively half the length of the edge of the
+     *                                  resulting bounding box cube.
+     * @return                          Cubic bounding box centered at `center` with sides twice the `radius`.
+     */
+    [[nodiscard]] static BBox cubic(const Vec3<T> &center, T radius) {
         assert(radius >= 0);
 
         BBox result;
@@ -24,6 +31,19 @@ struct BBox {
         result.y2 = center.y + radius;
         result.z1 = center.z - radius;
         result.z2 = center.z + radius;
+        return result;
+    }
+
+    /**
+     * @param a                         Point a.
+     * @param b                         Point b.
+     * @return                          Bounding box containing both passed points.
+     */
+    [[nodiscard]] static BBox forPoints(const Vec3<T> &a, const Vec3<T> &b) {
+        BBox result;
+        std::tie(result.x1, result.x2) = std::minmax(a.x, b.x);
+        std::tie(result.y1, result.y2) = std::minmax(a.y, b.y);
+        std::tie(result.z1, result.z2) = std::minmax(a.z, b.z);
         return result;
     }
 

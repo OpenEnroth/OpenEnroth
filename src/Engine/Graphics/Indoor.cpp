@@ -1292,28 +1292,18 @@ bool Check_LOS_Obscurred_Outdoors_Bmodels(const Vec3i &target, const Vec3i &from
     Vec3f dir = (from - target).toFloat();
     dir.normalize();
 
-    int max_x = std::max(from.x, target.x);
-    int min_x = std::min(from.x, target.x);
-
-    int max_y = std::max(from.y, target.y);
-    int min_y = std::min(from.y, target.y);
-
-    int max_z = std::max(from.z, target.z);
-    int min_z = std::min(from.z, target.z);
+    BBoxi bbox = BBoxi::forPoints(from, target);
 
     for (BSPModel &model : pOutdoor->pBModels) {
         if (CalcDistPointToLine(target.x, target.y, from.x, from.y, model.vPosition.x, model.vPosition.y) <= model.sBoundingRadius + 128) {
             for (ODMFace &face : model.pFaces) {
                 float dirDotNormal = dot(dir, face.facePlane.normal);
                 bool FaceIsParallel = fuzzyIsNull(dirDotNormal);
+                if (FaceIsParallel)
+                    continue;
 
                 // bounds check
-                if (min_x > face.pBoundingBox.x2 ||
-                    max_x < face.pBoundingBox.x1 ||
-                    min_y > face.pBoundingBox.y2 ||
-                    max_y < face.pBoundingBox.y1 ||
-                    min_z > face.pBoundingBox.z2 ||
-                    max_z < face.pBoundingBox.z1 || FaceIsParallel)
+                if (!bbox.intersects(face.pBoundingBox))
                     continue;
 
                 // point target plane distacne
