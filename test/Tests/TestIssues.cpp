@@ -21,6 +21,13 @@
 #include "Utility/ScopeGuard.h"
 #include "Utility/String.h"
 
+static int64_t totalPartyExperience() {
+    int64_t result = 0;
+    for (const Character &character : pParty->pCharacters)
+        result += character.experience;
+    return result;
+}
+
 static int totalPartyHealth() {
     int result = 0;
     for (const Character &character : pParty->pCharacters)
@@ -33,6 +40,7 @@ static int totalPartyItems() {
     for (const Character &character : pParty->pCharacters)
         for (const ItemGen &item : character.pOwnItems)
             result += item.uItemID != ITEM_NULL;
+    result += pParty->pPickedItem.uItemID != ITEM_NULL;
     return result;
 }
 
@@ -62,12 +70,52 @@ static std::initializer_list<CharacterBuffs> allPotionBuffs() {
     return result;
 }
 
-static auto makeHealthTape(TestController *test) {
+static auto makeTotalExperienceTape(TestController *test) {
+    return test->tape(&totalPartyExperience);
+}
+
+static auto makeTotalHealthTape(TestController *test) {
     return test->tape(&totalPartyHealth);
+}
+
+static auto makeTotalItemsTape(TestController *test) {
+    return test->tape(&totalPartyItems);
+}
+
+static auto makeHasItemTape(TestController *test, ITEM_TYPE item) {
+    return test->tape([item] { return pParty->hasItem(item); });
 }
 
 static auto makeMapTape(TestController *test) {
     return test->tape([] { return toLower(pCurrentMapName); });
+}
+
+static auto makeScreenTape(TestController *test) {
+    return test->tape([] { return current_screen_type; });
+}
+
+static auto makeGoldTape(TestController *test) {
+    return test->tape([] { return pParty->GetGold(); });
+}
+
+static auto makeFoodTape(TestController *test) {
+    return test->tape([] { return pParty->GetFood(); });
+}
+
+static auto makeCharacterExperienceTape(TestController *test, int character) {
+    return test->tape([character] { return pParty->pCharacters[character].experience; });
+}
+
+static auto makeCharacterExpressionTape(TestController *test, int character) {
+    return test->tape([character] { return pParty->pCharacters[character].expression; });
+}
+
+static auto makeCharacterHealthTape(TestController *test, int character) {
+    return test->tape([character] { return pParty->pCharacters[character].health; });
+}
+
+static auto makeCharacterManaTape(TestController *test, int character) {
+    return test->tape([character] { return pParty->pCharacters[character].mana; });
 }
 
 // 100
@@ -81,7 +129,7 @@ GAME_TEST(Issues, Issue123) {
 
 GAME_TEST(Issues, Issue125) {
     // check that fireballs hurt party
-    auto healthTape = makeHealthTape(test);
+    auto healthTape = makeTotalHealthTape(test);
     test->playTraceFromTestData("issue_125.mm7", "issue_125.json");
     EXPECT_LT(healthTape.delta(), 0);
 }
@@ -164,7 +212,7 @@ GAME_TEST(Issues, Issue198) {
 
 GAME_TEST(Issues, Issue201) {
     // Unhandled EVENT_ShowMovie in Event Processor
-    auto healthTape = makeHealthTape(test);
+    auto healthTape = makeTotalHealthTape(test);
     auto mapTape = makeMapTape(test);
     auto daysTape = test->tape([] { return pParty->GetPlayingTime().GetDays(); });
     test->playTraceFromTestData("issue_201.mm7", "issue_201.json");
@@ -217,7 +265,7 @@ GAME_TEST(Issues, Issue238) {
 
 GAME_TEST(Issues, Issue248) {
     // Crash in NPC dialog.
-    auto screenTape = test->tape([] { return current_screen_type; });
+    auto screenTape = makeScreenTape(test);
     test->playTraceFromTestData("issue_248.mm7", "issue_248.json");
     EXPECT_EQ(screenTape, tape(SCREEN_GAME, SCREEN_NPC_DIALOGUE, SCREEN_GAME));
 }
@@ -280,32 +328,42 @@ GAME_TEST(Issues, Issue268_939) {
 
 GAME_TEST(Issues, Issue271) {
     // Party shouldn't yell when landing from flight.
-    test->playTraceFromTestData("issue_271.mm7", "issue_271.json", [] {
-        EXPECT_FALSE(pParty->uFlags & PARTY_FLAGS_1_LANDING);
-    });
-    EXPECT_NE(pParty->pCharacters[1].expression, CHARACTER_EXPRESSION_FEAR);
-    EXPECT_TRUE(pParty->uFlags & PARTY_FLAGS_1_LANDING);
+    auto expressionTape = makeCharacterExpressionTape(test, 1);
+    auto landingTape = test->tape([] { return !!(pParty->uFlags & PARTY_FLAGS_1_LANDING); });
+    auto zTape = test->tape([] { return pParty->pos.z; });
+    test->playTraceFromTestData("issue_271.mm7", "issue_271.json");
+    EXPECT_FALSE(expressionTape.contains(CHARACTER_EXPRESSION_FEAR));
+    EXPECT_EQ(landingTape, tape(false, true));
+    EXPECT_LT(zTape.delta(), -1000);
 }
 
-GAME_TEST(Issues, Issue272) {
-    // Controls menu bugs
-    // Check default resets keys
+GAME_TEST(Issues, Issue272a) {
+    // Controls menu bugs - resetting controls doesn't work.
+    auto rightTape = test->tape([] { return engine->config->keybindings.Right.value(); });
     test->playTraceFromTestData("issue_272a.mm7", "issue_272a.json");
-    EXPECT_EQ(engine->config->keybindings.Right.value(), engine->config->keybindings.Right.defaultValue());
-    // Check you cant leave menu with conflicting keys
+    EXPECT_EQ(rightTape, tape(PlatformKey::KEY_RIGHT, PlatformKey::KEY_H, PlatformKey::KEY_RIGHT)); // Pressing 'default' resets keys.
+}
+
+GAME_TEST(Issues, Issue272b) {
+    // Check you cant leave menu with conflicting keys.
     test->playTraceFromTestData("issue_272b.mm7", "issue_272b.json");
     EXPECT_EQ(current_screen_type, SCREEN_KEYBOARD_OPTIONS);
+    EXPECT_EQ(game_ui_status_bar_event_string, "Please resolve all key conflicts!");
 }
 
 GAME_TEST(Issues, Issue290) {
     // Town Hall bugs.
-    test->playTraceFromTestData("issue_290.mm7", "issue_290.json", [] { EXPECT_EQ(pParty->GetFine(), 55500); });
-    EXPECT_EQ(pParty->GetFine(), 54500);
+    auto fineTape = test->tape([] { return pParty->GetFine(); });
+    auto goldTape = makeGoldTape(test);
+    test->playTraceFromTestData("issue_290.mm7", "issue_290.json");
+    EXPECT_EQ(fineTape.delta(), -1000);
+    EXPECT_EQ(goldTape.delta(), -1000);
 }
 
 GAME_TEST(Issues, Issue293a) {
     // Test that barrels in castle Harmondale work and can be triggered only once, and that trash piles work,
     // give an item once, but give disease indefinitely.
+    auto totalItemsTape = makeTotalItemsTape(test);
     test->playTraceFromTestData("issue_293a.mm7", "issue_293a.json", [] {
         EXPECT_EQ(pParty->pCharacters[0].uMight, 30);
         EXPECT_EQ(pParty->pCharacters[0].uIntelligence, 5);
@@ -314,12 +372,11 @@ GAME_TEST(Issues, Issue293a) {
         EXPECT_EQ(pParty->pCharacters[0].uSpeed, 14);
         EXPECT_EQ(pParty->pCharacters[0].uAccuracy, 13);
         EXPECT_EQ(pParty->pCharacters[0].uLuck, 7);
-        EXPECT_EQ(totalPartyItems(), 18);
-        EXPECT_FALSE(pParty->pCharacters[0].hasItem(ITEM_OFFICERS_LEATHER, false));
         for (int i = 0; i < 4; i++)
             EXPECT_EQ(pParty->pCharacters[i].GetMajorConditionIdx(), CONDITION_GOOD);
     });
 
+    EXPECT_EQ(totalItemsTape.delta(), +1);
     EXPECT_EQ(pParty->pCharacters[0].uMight, 30);
     EXPECT_EQ(pParty->pCharacters[0].uIntelligence, 7); // +2
     EXPECT_EQ(pParty->pCharacters[0].uPersonality, 5);
@@ -327,8 +384,6 @@ GAME_TEST(Issues, Issue293a) {
     EXPECT_EQ(pParty->pCharacters[0].uSpeed, 14);
     EXPECT_EQ(pParty->pCharacters[0].uAccuracy, 15); // +2
     EXPECT_EQ(pParty->pCharacters[0].uLuck, 7);
-    EXPECT_EQ(totalPartyItems(), 19); // +1
-    EXPECT_TRUE(pParty->pCharacters[0].hasItem(ITEM_OFFICERS_LEATHER, false)); // That's the item from the trash pile.
     EXPECT_EQ(pParty->pCharacters[0].GetMajorConditionIdx(), CONDITION_DISEASE_MEDIUM);
     EXPECT_EQ(pParty->pCharacters[1].GetMajorConditionIdx(), CONDITION_DISEASE_WEAK);
     EXPECT_EQ(pParty->pCharacters[2].GetMajorConditionIdx(), CONDITION_DISEASE_WEAK);
@@ -337,15 +392,13 @@ GAME_TEST(Issues, Issue293a) {
 
 GAME_TEST(Issues, Issue293b) {
     // Test that table food in castle Harmondale is pickable only once and gives apples.
-    test->playTraceFromTestData("issue_293b.mm7", "issue_293b.json", [] {
-        EXPECT_EQ(pParty->uNumFoodRations, 7);
-        EXPECT_EQ(totalPartyItems(), 18);
-        EXPECT_FALSE(pParty->hasItem(ITEM_RED_APPLE));
-    });
-
-    EXPECT_EQ(pParty->uNumFoodRations, 7); // No change.
-    EXPECT_EQ(totalPartyItems(), 19); // +1
-    EXPECT_TRUE(pParty->hasItem(ITEM_RED_APPLE)); // That's the table food item.
+    auto foodTape = makeFoodTape(test);
+    auto totalItemsTape = makeTotalItemsTape(test);
+    auto hasAppleTape = makeHasItemTape(test, ITEM_RED_APPLE);
+    test->playTraceFromTestData("issue_293b.mm7", "issue_293b.json");
+    EXPECT_EQ(foodTape, tape(7));
+    EXPECT_EQ(totalItemsTape, tape(18, 19));
+    EXPECT_EQ(hasAppleTape, tape(false, true)); // Got an apple!
 }
 
 GAME_TEST(Issues, Issue293c) {
@@ -364,18 +417,10 @@ GAME_TEST(Issues, Issue293c) {
 }
 
 GAME_TEST(Issues, Issue294) {
-    auto partyExperience = [&] {
-        uint64_t result = 0;
-        for (const Character &character : pParty->pCharacters)
-            result += character.experience;
-        return result;
-    };
-
     // Testing that party auto-casting shrapnel successfully targets rats & kills them, gaining experience.
-    uint64_t oldExperience = 0;
-    test->playTraceFromTestData("issue_294.mm7", "issue_294.json", [&] { oldExperience = partyExperience(); });
-    uint64_t newExperience = partyExperience();
-    // EXPECT_GT(newExperience, oldExperience); // Expect the giant rat to be dead after four shrapnel casts from character #4.
+    auto experienceTape = makeTotalExperienceTape(test);
+    test->playTraceFromTestData("issue_294.mm7", "issue_294.json");
+    // EXPECT_GT(experienceTape.delta(), 0); // Expect the giant rat to be dead after four shrapnel casts from character #4.
     // TODO(captainurist): ^passes now, but for the wrong reason - the rat decided to move after recent patches
 }
 
@@ -414,18 +459,21 @@ GAME_TEST(Issues, Issue315) {
 
 GAME_TEST(Issues, Issue331_679) {
     // Assert when traveling by horse caused by out of bound access to pObjectList->pObjects.
-    int prevGold = -1;
-    test->playTraceFromTestData("issue_331.mm7", "issue_331.json", [&] { prevGold = pParty->GetGold(); });
+    auto goldTape = makeGoldTape(test);
+    test->playTraceFromTestData("issue_331.mm7", "issue_331.json");
 
-    // #679: Loading autosave after travelling by stables / boat results in gold loss
-    EXPECT_EQ(prevGold, pParty->GetGold());
+    // #679: Loading autosave after travelling by stables / boat results in gold loss.
+    EXPECT_EQ(goldTape.delta(), 0);
+    EXPECT_LT(goldTape.min(), goldTape.values().front()); // We did spend money.
 }
 
 GAME_TEST(Prs, Pr347) {
     // Testing that shops work.
-    int oldGold = 0;
-    test->playTraceFromTestData("pr_347.mm7", "pr_347.json", [&] { oldGold = pParty->uNumGold; });
-    EXPECT_NE(oldGold, pParty->uNumGold); // Spent on items.
+    auto itemsTape = makeTotalItemsTape(test);
+    auto goldTape = makeGoldTape(test);
+    test->playTraceFromTestData("pr_347.mm7", "pr_347.json");
+    EXPECT_GT(itemsTape.delta(), 0); // Bought smth.
+    EXPECT_LT(goldTape.delta(), 0); // Spent on items.
 }
 
 GAME_TEST(Issues, Issue388) {
@@ -433,10 +481,14 @@ GAME_TEST(Issues, Issue388) {
     // Trace enters tavern, plays arcomage, plays a couple of cards then exits and leaves tavern.
     int oldfpslimit = pArcomageGame->_targetFPS;
     pArcomageGame->_targetFPS = 500;
-    CURRENT_SCREEN oldscreen = SCREEN_GAME;
-    test->playTraceFromTestData("issue_388.mm7", "issue_388.json", [&] { oldscreen = current_screen_type; });
-    EXPECT_EQ(oldscreen, current_screen_type); // We should return to game screen.
+
+    auto arcomageTape = test->tape([] { return !!pArcomageGame->bGameInProgress; });
+    auto screenTape = makeScreenTape(test);
+    test->playTraceFromTestData("issue_388.mm7", "issue_388.json");
+    EXPECT_EQ(arcomageTape, tape(false, true, false)); // We've played arcomage.
+    EXPECT_EQ(screenTape, tape(SCREEN_GAME, SCREEN_HOUSE, SCREEN_GAME)); // And returned to game screen.
     EXPECT_EQ(pArcomageGame->GameOver, 1); // With arcomage exit flag.
+
     pArcomageGame->_targetFPS = oldfpslimit;
 }
 
@@ -475,10 +527,9 @@ GAME_TEST(Issues, Issue402) {
 
 GAME_TEST(Issues, Issue403_970) {
     // Entering Lincoln shouldn't crash.
-    test->playTraceFromTestData("issue_403.mm7", "issue_403.json", [&] {
-        EXPECT_EQ(toLower(pCurrentMapName), "out15.odm"); // Shoals.
-    });
-    EXPECT_EQ(toLower(pCurrentMapName), "d23.blv"); // Lincoln.
+    auto mapTape = makeMapTape(test);
+    test->playTraceFromTestData("issue_403.mm7", "issue_403.json");
+    EXPECT_EQ(mapTape, tape("out15.odm", "d23.blv")); // Shoals -> Lincoln.
 
     // #970: Armor Class is wrong.
     EXPECT_EQ(pParty->pCharacters[0].GetActualAC(), 10);
@@ -520,18 +571,19 @@ GAME_TEST(Issues, Issue405) {
 }
 
 GAME_TEST(Issues, Issue408_939_970_996) {
-    // testing that the gameover loop works
-    CURRENT_SCREEN oldscreen = SCREEN_GAME;
-    // enters throne room - resurecta - final task and exits gameover loop
-    test->playTraceFromTestData("issue_408.mm7", "issue_408.json", [&] { oldscreen = current_screen_type; });
+    // Testing that the gameover loop works.
+    // Trace enters throne room - resurecta - final task and exits gameover loop.
+    auto screenTape = makeScreenTape(test);
+    auto mapTape = makeMapTape(test);
+    test->playTraceFromTestData("issue_408.mm7", "issue_408.json");
     // we should return to game screen
-    EXPECT_EQ(oldscreen, current_screen_type);
+    EXPECT_EQ(screenTape, tape(SCREEN_GAME, SCREEN_HOUSE, SCREEN_GAMEOVER_WINDOW, SCREEN_GAME));
     // windowlist size should be 1
     EXPECT_EQ(lWindowList.size(), 1);
     // should have save a winner cert tex
     EXPECT_NE(assets->winnerCert, nullptr);
     // we should be teleported to harmondale
-    EXPECT_EQ(pCurrentMapName, "out02.odm");
+    EXPECT_EQ(mapTape, tape("d30.blv", "out02.odm"));
 
     // #970: Armor Class is wrong.
     // #939: Quick reference doesnt match vanilla.
@@ -619,21 +671,21 @@ GAME_TEST(Issues, Issue427a) {
 GAME_TEST(Issues, Issue427b_528) {
     // Test that some of the buff spells that start to affect whole party starting from certain mastery work correctly.
     // In this test mastery is enough for the whole party.
-    test->playTraceFromTestData("issue_427b.mm7", "issue_427b.json", []() { EXPECT_EQ(pParty->pCharacters[2].mana, 100); });
+    auto manaTape = makeCharacterManaTape(test, 2);
+    test->playTraceFromTestData("issue_427b.mm7", "issue_427b.json");
 
     // Check that all character have buffs.
     check427Buffs("b", {0, 1, 2, 3}, true);
 
     // #528: Check that spells that target single character or entire party depending on mastery drain mana.
-    EXPECT_EQ(pParty->pCharacters[2].mana, 40);
+    EXPECT_EQ(manaTape.delta(), -60);
 }
 
 GAME_TEST(Issues, Issue442) {
-    // Test that regular UI is blocked on spell cast
-    test->playTraceFromTestData("issue_442.mm7", "issue_442.json", [] {
-        EXPECT_FALSE(pParty->pCharacters[1].pCharacterBuffs[CHARACTER_BUFF_BLESS].Active());
-    });
-    EXPECT_TRUE(pParty->pCharacters[1].pCharacterBuffs[CHARACTER_BUFF_BLESS].Active());
+    // Test that regular UI is blocked on spell cast.
+    auto blessTape = test->tape([] { return pParty->pCharacters[1].pCharacterBuffs[CHARACTER_BUFF_BLESS].Active(); });
+    test->playTraceFromTestData("issue_442.mm7", "issue_442.json");
+    EXPECT_EQ(blessTape, tape(false, true));
 }
 
 GAME_TEST(Prs, Pr469) {
@@ -646,44 +698,51 @@ GAME_TEST(Prs, Pr469) {
 
 GAME_TEST(Issues, Issue488) {
     // Test that Mass Distortion spell works.
-    test->playTraceFromTestData("issue_488.mm7", "issue_488.json", [] { EXPECT_EQ(pActors[24].currentHP, 3); });
-    EXPECT_EQ(pActors[24].currentHP, 2);
+    auto actorHpTape = test->tape([] { return pActors[24].currentHP; });
+    test->playTraceFromTestData("issue_488.mm7", "issue_488.json");
+    EXPECT_EQ(actorHpTape, tape(3, 2));
 }
 
 GAME_TEST(Issues, Issue489) {
     // Test that AOE version of Shrinking Ray spell works.
-    auto countChibis = [] {
+    auto chibisTape = test->tape([] {
         return std::count_if(pActors.begin(), pActors.end(), [] (const Actor &actor) {
             return actor.buffs[ACTOR_BUFF_SHRINK].Active();
         });
-    };
+    });
 
-    test->playTraceFromTestData("issue_489.mm7", "issue_489.json", [&] { EXPECT_EQ(countChibis(), 0); });
-    EXPECT_EQ(countChibis(), 21);
+    test->playTraceFromTestData("issue_489.mm7", "issue_489.json");
+    EXPECT_EQ(chibisTape, tape(0, 21));
 }
 
 GAME_TEST(Issues, Issue490) {
     // Check that Poison Spray sprites are moving and doing damage.
-    test->playTraceFromTestData("issue_490.mm7", "issue_490.json", []() { EXPECT_EQ(pParty->pCharacters[0].experience, 279); });
-    EXPECT_EQ(pParty->pCharacters[0].experience, 285);
+    auto experienceTape = makeCharacterExperienceTape(test, 0);
+    test->playTraceFromTestData("issue_490.mm7", "issue_490.json");
+    EXPECT_EQ(experienceTape, tape(279, 285));
 }
 
 GAME_TEST(Issues, Issue491) {
     // Check that opening and closing Lloyd book does not cause Segmentation Fault.
+    auto screenTape = makeScreenTape(test);
     test->playTraceFromTestData("issue_491.mm7", "issue_491.json");
+    EXPECT_EQ(screenTape, tape(SCREEN_GAME, SCREEN_SPELL_BOOK, SCREEN_GAME, SCREEN_BOOKS, SCREEN_GAME));
 }
 
 GAME_TEST(Issues, Issue492) {
     // Check that spells that target all visible actors work.
-    test->playTraceFromTestData("issue_492.mm7", "issue_492.json", []() { EXPECT_EQ(pParty->pCharacters[0].experience, 279); });
-    EXPECT_EQ(pParty->pCharacters[0].experience, 287);
+    auto experienceTape = makeCharacterExperienceTape(test, 0);
+    test->playTraceFromTestData("issue_492.mm7", "issue_492.json");
+    EXPECT_EQ(experienceTape, tape(279, 287));
 }
 
 // 500
 
 GAME_TEST(Issues, Issue502) {
     // Check that script face animation and voice indexes right characters.
+    auto expressionTape = makeCharacterExpressionTape(test, 3);
     test->playTraceFromTestData("issue_502.mm7", "issue_502.json");
+    EXPECT_TRUE(expressionTape.contains(CHARACTER_EXPRESSION_NO));
     EXPECT_EQ(pParty->activeCharacterIndex(), 4);
 }
 
@@ -701,34 +760,29 @@ GAME_TEST(Issues, Issue503) {
 
 GAME_TEST(Issues, Issue504) {
     // Going to prison doesn't recharge hirelings.
-    int oldYear = 0;
-    test->playTraceFromTestData("issue_504.mm7", "issue_504.json", [&] {
-        oldYear = pParty->GetPlayingTime().GetYears();
-        EXPECT_FALSE(pParty->pPartyBuffs[PARTY_BUFF_HEROISM].Active());
-    });
-    int newYear = pParty->GetPlayingTime().GetYears();
-    EXPECT_TRUE(pParty->pPartyBuffs[PARTY_BUFF_HEROISM].Active());
-    EXPECT_EQ(oldYear + 1, newYear); // A year spent in prison.
+    auto yearsTape = test->tape([] { return pParty->GetPlayingTime().GetYears(); });
+    auto heroismTape = test->tape([] { return pParty->pPartyBuffs[PARTY_BUFF_HEROISM].Active(); });
+    auto castsTape = test->tape([] { return pParty->pHirelings[0].bHasUsedTheAbility; });
+    test->playTraceFromTestData("issue_504.mm7", "issue_504.json");
+    EXPECT_EQ(yearsTape.delta(), +1); // A year spent in prison.
+    EXPECT_EQ(heroismTape, tape(false, true, false, true)); // Two casts, before & after prison.
+    EXPECT_EQ(castsTape, tape(0, 1, 0, 1)); // Two casts, staying in prison recharges casts.
 }
 
 GAME_TEST(Issues, Issue506) {
     // Check that scroll use does not assert.
-    int oldItemCount = 0;
-    test->playTraceFromTestData("issue_506.mm7", "issue_506.json", [&] {
-        oldItemCount = totalPartyItems();
-        EXPECT_FALSE(pParty->pPartyBuffs[PARTY_BUFF_FLY].Active());
-    });
-    int newItemCount = totalPartyItems();
-    EXPECT_TRUE(pParty->pPartyBuffs[PARTY_BUFF_FLY].Active()); // Using fly scroll.
-    EXPECT_EQ(oldItemCount - 1, newItemCount); // Scroll used up.
+    auto itemsTape = makeTotalItemsTape(test);
+    auto flyTape = test->tape([] { return pParty->pPartyBuffs[PARTY_BUFF_FLY].Active(); });
+    test->playTraceFromTestData("issue_506.mm7", "issue_506.json");
+    EXPECT_EQ(itemsTape.delta(), -1); // Scroll used up.
+    EXPECT_EQ(flyTape, tape(false, true)); // Fly was cast.
 }
 
 GAME_TEST(Issues, Issue518) {
     // Armageddon yeets the actors way too far into the sky & actors take stops when falling down.
-    test->playTraceFromTestData("issue_518.mm7", "issue_518.json", [] {
-        EXPECT_EQ(pParty->pCharacters[0].uNumArmageddonCasts, 2);
-    });
-    EXPECT_EQ(pParty->pCharacters[0].uNumArmageddonCasts, 3); // +1
+    auto armageddonTape = test->tape([] { return pParty->pCharacters[0].uNumArmageddonCasts; });
+    test->playTraceFromTestData("issue_518.mm7", "issue_518.json");
+    EXPECT_EQ(armageddonTape, tape(2, 3)); // +1 armageddon cast.
 
     for (auto &actor : pActors) {
         EXPECT_LT(actor.pos.z, 3500);
@@ -737,22 +791,25 @@ GAME_TEST(Issues, Issue518) {
 
 GAME_TEST(Issues, Issue520) {
     // Party should take fall damage
-    uint64_t oldHealth = 0;
-    test->playTraceFromTestData("issue_520.mm7", "issue_520.json", [&] { oldHealth = totalPartyHealth(); });
-    EXPECT_LT(totalPartyHealth(), oldHealth);
+    auto healthTape = makeTotalHealthTape(test);
+    test->playTraceFromTestData("issue_520.mm7", "issue_520.json");
+    EXPECT_LT(healthTape.delta(), 0);
 }
 
 GAME_TEST(Issues, Issue521) {
     // 500 endurance leads to asserts in Character::SetRecoveryTime
-    int oldActive{};
-    test->playTraceFromTestData("issue_521.mm7", "issue_521.json", [&] { oldActive = pParty->activeCharacterIndex(); });
-    EXPECT_EQ(oldActive, pParty->activeCharacterIndex());
+    auto healthTape = makeTotalHealthTape(test);
+    auto activeCharTape = test->tape([] { return pParty->activeCharacterIndex(); });
+    test->playTraceFromTestData("issue_521.mm7", "issue_521.json");
+    EXPECT_LT(healthTape.delta(), 0); // Party took fall damage.
+    EXPECT_EQ(activeCharTape, tape(1)); // First char didn't flinch.
 }
 
 GAME_TEST(Issues, Issue527) {
     // Check Cure Disease spell works
-    test->playTraceFromTestData("issue_527.mm7", "issue_527.json", []() { EXPECT_TRUE(pParty->pCharacters[0].conditions.Has(CONDITION_DISEASE_WEAK)); });
-    EXPECT_FALSE(pParty->pCharacters[0].conditions.Has(CONDITION_DISEASE_WEAK));
+    auto diseaseTape = test->tape([] { return pParty->pCharacters[0].conditions.Has(CONDITION_DISEASE_WEAK); });
+    test->playTraceFromTestData("issue_527.mm7", "issue_527.json");
+    EXPECT_EQ(diseaseTape, tape(true, false)); // Disease healed!
 }
 
 GAME_TEST(Issues, Issue540) {
@@ -773,26 +830,32 @@ GAME_TEST(Issues, Issue563) {
 
 GAME_TEST(Issues, Issue571) {
     // Check that item potion cannot be wastefully applied to unrelated item
+    auto itemsTape = makeTotalItemsTape(test);
     test->playTraceFromTestData("issue_571.mm7", "issue_571.json");
+    EXPECT_EQ(itemsTape.delta(), 0);
     EXPECT_NE(pParty->pPickedItem.uItemID, ITEM_NULL);
 }
 
 GAME_TEST(Issues, Issue574) {
     // Check that applying recharge item potion produces correct number of charges
+    auto itemsTape = makeTotalItemsTape(test);
     test->playTraceFromTestData("issue_574.mm7", "issue_574.json");
+    EXPECT_EQ(itemsTape.delta(), -1); // Minus potion.
     EXPECT_EQ(pParty->pPickedItem.uMaxCharges, pParty->pPickedItem.uNumCharges);
 }
 
 GAME_TEST(Issues, Issue578) {
     // Check that rest & heal work after waiting
-    test->playTraceFromTestData("issue_578.mm7", "issue_578.json", []() { EXPECT_EQ(pParty->pCharacters[0].health, 66); });
-    EXPECT_EQ(pParty->pCharacters[0].health, 108);
+    auto healthTape = makeTotalHealthTape(test);
+    test->playTraceFromTestData("issue_578.mm7", "issue_578.json");
+    EXPECT_EQ(healthTape, tape(350, 419)); // TODO(captainurist): is it OK that we only have two elements here?
 }
 
 GAME_TEST(Issues, Issue598) {
     // Assert when accessing character inventory from the shop screen
+    auto screenTape = makeScreenTape(test);
     test->playTraceFromTestData("issue_598.mm7", "issue_598.json");
-    EXPECT_EQ(current_screen_type, SCREEN_SHOP_INVENTORY);
+    EXPECT_EQ(screenTape, tape(SCREEN_GAME, SCREEN_HOUSE, SCREEN_SHOP_INVENTORY, SCREEN_HOUSE, SCREEN_SHOP_INVENTORY));
 }
 
 // 600
@@ -812,8 +875,9 @@ GAME_TEST(Issues, Issue601) {
 
 GAME_TEST(Issues, Issue608) {
     // Check that using Gate Master ability does not deplete mana of character
-    test->playTraceFromTestData("issue_608.mm7", "issue_608.json", []() { EXPECT_EQ(pParty->pCharacters[0].mana, 35); });
-    EXPECT_EQ(pParty->pCharacters[0].mana, 35);
+    auto manaTape = makeCharacterManaTape(test, 0);
+    test->playTraceFromTestData("issue_608.mm7", "issue_608.json");
+    EXPECT_EQ(manaTape.delta(), 0);
 }
 
 GAME_TEST(Issues, Issue611) {
@@ -826,12 +890,18 @@ GAME_TEST(Issues, Issue611) {
     EXPECT_EQ(pParty->pCharacters[3].conditions.Has(CONDITION_ZOMBIE), true);
 }
 
-GAME_TEST(Issues, Issue613) {
-    // Check that maximum food cooked by NPC is 14
-    test->playTraceFromTestData("issue_613a.mm7", "issue_613a.json", []() { EXPECT_EQ(pParty->GetFood(), 13); });
-    EXPECT_EQ(pParty->GetFood(), 14);
-    test->playTraceFromTestData("issue_613b.mm7", "issue_613b.json", []() { EXPECT_EQ(pParty->GetFood(), 13); });
-    EXPECT_EQ(pParty->GetFood(), 14);
+GAME_TEST(Issues, Issue613a) {
+    // Check that maximum food cooked by NPC is 14. "Prepare feast" option.
+    auto foodTape = makeFoodTape(test);
+    test->playTraceFromTestData("issue_613a.mm7", "issue_613a.json");
+    EXPECT_EQ(foodTape, tape(13, 14));
+}
+
+GAME_TEST(Issues, Issue613b) {
+    // Check that maximum food cooked by NPC is 14. "Prepare meal" option.
+    auto foodTape = makeFoodTape(test);
+    test->playTraceFromTestData("issue_613b.mm7", "issue_613b.json");
+    EXPECT_EQ(foodTape, tape(13, 14));
 }
 
 GAME_TEST(Issues, Issue615) {
@@ -942,14 +1012,14 @@ GAME_TEST(Issues, Issue651) {
 }
 
 GAME_TEST(Issues, Issue661) {
-    // HP/SP regen from items is too high
-    int oldHealth = 0;
-    int oldMana = 0;
-    test->playTraceFromTestData("issue_661.mm7", "issue_661.json", [&] { oldHealth = pParty->pCharacters[0].health; oldMana = pParty->pCharacters[0].mana; });
+    // HP/SP regen from items is too high.
+    auto healthTape = makeCharacterHealthTape(test, 0);
+    auto manaTape = makeCharacterManaTape(test, 0);
+    test->playTraceFromTestData("issue_661.mm7", "issue_661.json");
     // two hour wait period is 24 blocks of 5 mins
     // one item that heals hp, three items heal mana
-    EXPECT_EQ(pParty->pCharacters[0].health, oldHealth + 24);
-    EXPECT_EQ(pParty->pCharacters[0].mana, oldMana + 24*3);
+    EXPECT_EQ(healthTape.delta(), +24);
+    EXPECT_EQ(manaTape.delta(), +3 * 24);
 }
 
 GAME_TEST(Issues, Issue662) {
@@ -963,7 +1033,9 @@ GAME_TEST(Issues, Issue662) {
 
 GAME_TEST(Issues, Issue663) {
     // Cant switch between inactive char inventory in chests
+    auto screenTape = makeScreenTape(test);
     test->playTraceFromTestData("issue_663.mm7", "issue_663.json");
+    EXPECT_EQ(screenTape, tape(SCREEN_GAME, SCREEN_CHEST, SCREEN_CHEST_INVENTORY));
     // should switch to char 2 inv
     EXPECT_EQ(pParty->activeCharacterIndex(), 2);
     EXPECT_GT(pParty->activeCharacter().timeToRecovery, 0);
@@ -980,9 +1052,9 @@ GAME_TEST(Issues, Issue664) {
 
 GAME_TEST(Issues, Issue674) {
     // Check that map timers are working
-    int oldHealth;
-    test->playTraceFromTestData("issue_674.mm7", "issue_674.json", [&] { oldHealth = pParty->pCharacters[0].health; });
-    EXPECT_EQ(pParty->pCharacters[0].health, oldHealth + 5);
+    auto healthTape = makeCharacterHealthTape(test, 0);
+    test->playTraceFromTestData("issue_674.mm7", "issue_674.json");
+    EXPECT_EQ(healthTape.delta(), +5);
 }
 
 GAME_TEST(Issues, Issue675) {
@@ -1017,7 +1089,9 @@ GAME_TEST(Issues, Issue676) {
 
 GAME_TEST(Issues, Issue677) {
     // Haste doesn't impose weakness after it ends
+    auto hasteTape = test->tape([] { return pParty->pPartyBuffs[PARTY_BUFF_HASTE].Active(); });
     test->playTraceFromTestData("issue_677.mm7", "issue_677.json");
+    EXPECT_EQ(hasteTape, tape(true, false));
     for (auto &character : pParty->pCharacters) {
         EXPECT_EQ(character.conditions.Has(CONDITION_WEAK), true);
     }

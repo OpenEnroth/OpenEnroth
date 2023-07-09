@@ -48,8 +48,21 @@ class TestTape {
 
     T delta() {
         assert(!values().empty());
-
         return values().back() - values().front();
+    }
+
+    T min() const {
+        assert(!values().empty());
+        return *std::min_element(values().begin(), values().end());
+    }
+
+    T max() const {
+        assert(!values().empty());
+        return *std::max_element(values().begin(), values().end());
+    }
+
+    bool contains(T value) {
+        return std::find(values().begin(), values().end(), value) != values().end();
     }
 
     template<class Y>
