@@ -3,8 +3,13 @@
 #include <filesystem>
 #include <string>
 #include <functional>
+#include <utility>
+#include <vector>
+#include <memory>
 
 #include "Engine/Components/Trace/EngineTraceEnums.h"
+
+#include "TestTape.h"
 
 class EngineController;
 
@@ -22,7 +27,18 @@ class TestController {
 
     void restart(int frameTimeMs);
 
+    template<class Callback, class T = std::invoke_result_t<Callback>>
+    TestTape<T> tape(Callback callback) {
+        auto state = std::make_shared<detail::TestTapeState<T>>(std::move(callback));
+        _tapeCallbacks.push_back([state] { state->tick(); });
+        return TestTape<T>(std::move(state));
+    }
+
+ private:
+    void runTapeCallbacks();
+
  private:
     EngineController *_controller;
     std::filesystem::path _testDataPath;
+    std::vector<std::function<void()>> _tapeCallbacks;
 };

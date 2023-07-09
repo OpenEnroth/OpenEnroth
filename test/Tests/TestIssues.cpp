@@ -28,7 +28,7 @@ static int totalPartyHealth() {
     return result;
 }
 
-static int partyItemCount() {
+static int totalPartyItems() {
     int result = 0;
     for (const Character &character : pParty->pCharacters)
         for (const ItemGen &item : character.pOwnItems)
@@ -73,15 +73,16 @@ GAME_TEST(Issues, Issue123) {
 
 GAME_TEST(Issues, Issue125) {
     // check that fireballs hurt party
-    int oldHealth = 0;
-    test->playTraceFromTestData("issue_125.mm7", "issue_125.json", [&] { oldHealth = totalPartyHealth(); });
-    int newHealth = totalPartyHealth();
-    EXPECT_LT(newHealth, oldHealth);
+    auto healthTape = test->tape(&totalPartyHealth);
+    test->playTraceFromTestData("issue_125.mm7", "issue_125.json");
+    EXPECT_LT(healthTape.delta(), 0);
 }
 
 GAME_TEST(Issues, Issue159) {
     // Exception when entering Tidewater Caverns
+    auto mapTape = test->tape([] { return toLower(pCurrentMapName); });
     test->playTraceFromTestData("issue_159.mm7", "issue_159.json");
+    EXPECT_EQ(mapTape, tape("out13.odm", "d17.blv", "out13.odm"));
 }
 
 GAME_TEST(Issues, Issue163) {
@@ -155,26 +156,22 @@ GAME_TEST(Issues, Issue198) {
 
 GAME_TEST(Issues, Issue201) {
     // Unhandled EVENT_ShowMovie in Event Processor
-    int oldHealth = 0;
-    uint64_t oldTime = 0;
-    test->playTraceFromTestData("issue_201.mm7", "issue_201.json", [&] { oldHealth = totalPartyHealth(); oldTime = pParty->GetPlayingTime().GetDays(); });
-
-    int newHealth = totalPartyHealth();
-    uint64_t newTime = pParty->GetPlayingTime().GetDays();
-    EXPECT_GT(newHealth, oldHealth); // party should heal
-    EXPECT_EQ(pCurrentMapName, "Out02.odm"); // we should be teleported to harmondale
-    EXPECT_EQ((oldTime + GameTime(0, 0, 0, 0, 1).GetDays()), newTime); // time should advance by a week
+    auto healthTape = test->tape(&totalPartyHealth);
+    auto daysTape = test->tape([] { return pParty->GetPlayingTime().GetDays(); });
+    auto mapTape = test->tape([] { return toLower(pCurrentMapName); });
+    test->playTraceFromTestData("issue_201.mm7", "issue_201.json");
+    EXPECT_GT(healthTape.delta(), 0); // Party should heal.
+    EXPECT_EQ(mapTape, tape("out01.odm", "out02.odm")); // Emerald isle to harmondale.
+    EXPECT_EQ(daysTape.delta(), 7); // Time should advance by a week.
 }
 
 GAME_TEST(Issues, Issue202) {
     // Judge doesn't move to house and stays with the party.
-    int oldhirecount = 0;
-    test->playTraceFromTestData("issue_202.mm7", "issue_202.json", [&] {
-        oldhirecount = pParty->CountHirelings();
-        EXPECT_EQ(pParty->alignment, PartyAlignment_Neutral);
-    });
-    EXPECT_EQ(oldhirecount - 1, pParty->CountHirelings()); // judge shouldn't be with party anymore
-    EXPECT_EQ(pParty->alignment, PartyAlignment_Evil); // party align evil
+    auto hirelingsTape = test->tape([] { return pParty->CountHirelings(); });
+    auto alignmentTape = test->tape([] { return pParty->alignment; });
+    test->playTraceFromTestData("issue_202.mm7", "issue_202.json");
+    EXPECT_EQ(hirelingsTape.delta(), -1); // Judge shouldn't be with party anymore.
+    EXPECT_EQ(alignmentTape, tape(PartyAlignment_Neutral, PartyAlignment_Evil)); // Party should turn evil.
 }
 
 GAME_TEST(Issues, Issue203) {
@@ -211,8 +208,10 @@ GAME_TEST(Issues, Issue238) {
 }
 
 GAME_TEST(Issues, Issue248) {
-    // Crash in NPC dialog
+    // Crash in NPC dialog.
+    auto screenTape = test->tape([] { return current_screen_type; });
     test->playTraceFromTestData("issue_248.mm7", "issue_248.json");
+    EXPECT_EQ(screenTape, tape(CURRENT_SCREEN::SCREEN_GAME, CURRENT_SCREEN::SCREEN_NPC_DIALOGUE, CURRENT_SCREEN::SCREEN_GAME));
 }
 
 GAME_TEST(Issues, Issue268_939) {
@@ -307,7 +306,7 @@ GAME_TEST(Issues, Issue293a) {
         EXPECT_EQ(pParty->pCharacters[0].uSpeed, 14);
         EXPECT_EQ(pParty->pCharacters[0].uAccuracy, 13);
         EXPECT_EQ(pParty->pCharacters[0].uLuck, 7);
-        EXPECT_EQ(partyItemCount(), 18);
+        EXPECT_EQ(totalPartyItems(), 18);
         EXPECT_FALSE(pParty->pCharacters[0].hasItem(ITEM_OFFICERS_LEATHER, false));
         for (int i = 0; i < 4; i++)
             EXPECT_EQ(pParty->pCharacters[i].GetMajorConditionIdx(), CONDITION_GOOD);
@@ -320,7 +319,7 @@ GAME_TEST(Issues, Issue293a) {
     EXPECT_EQ(pParty->pCharacters[0].uSpeed, 14);
     EXPECT_EQ(pParty->pCharacters[0].uAccuracy, 15); // +2
     EXPECT_EQ(pParty->pCharacters[0].uLuck, 7);
-    EXPECT_EQ(partyItemCount(), 19); // +1
+    EXPECT_EQ(totalPartyItems(), 19); // +1
     EXPECT_TRUE(pParty->pCharacters[0].hasItem(ITEM_OFFICERS_LEATHER, false)); // That's the item from the trash pile.
     EXPECT_EQ(pParty->pCharacters[0].GetMajorConditionIdx(), CONDITION_DISEASE_MEDIUM);
     EXPECT_EQ(pParty->pCharacters[1].GetMajorConditionIdx(), CONDITION_DISEASE_WEAK);
@@ -332,12 +331,12 @@ GAME_TEST(Issues, Issue293b) {
     // Test that table food in castle Harmondale is pickable only once and gives apples.
     test->playTraceFromTestData("issue_293b.mm7", "issue_293b.json", [] {
         EXPECT_EQ(pParty->uNumFoodRations, 7);
-        EXPECT_EQ(partyItemCount(), 18);
+        EXPECT_EQ(totalPartyItems(), 18);
         EXPECT_FALSE(pParty->hasItem(ITEM_RED_APPLE));
     });
 
     EXPECT_EQ(pParty->uNumFoodRations, 7); // No change.
-    EXPECT_EQ(partyItemCount(), 19); // +1
+    EXPECT_EQ(totalPartyItems(), 19); // +1
     EXPECT_TRUE(pParty->hasItem(ITEM_RED_APPLE)); // That's the table food item.
 }
 
@@ -607,7 +606,6 @@ GAME_TEST(Issues, Issue427a) {
     // Check that spell targeting works correctly - 1st char is getting the buffs.
     check427Buffs("a", {0}, true);
     check427Buffs("a", {1, 2, 3}, false);
-
 }
 
 GAME_TEST(Issues, Issue427b_528) {
@@ -709,10 +707,10 @@ GAME_TEST(Issues, Issue506) {
     // Check that scroll use does not assert.
     int oldItemCount = 0;
     test->playTraceFromTestData("issue_506.mm7", "issue_506.json", [&] {
-        oldItemCount = partyItemCount();
+        oldItemCount = totalPartyItems();
         EXPECT_FALSE(pParty->pPartyBuffs[PARTY_BUFF_FLY].Active());
     });
-    int newItemCount = partyItemCount();
+    int newItemCount = totalPartyItems();
     EXPECT_TRUE(pParty->pPartyBuffs[PARTY_BUFF_FLY].Active()); // Using fly scroll.
     EXPECT_EQ(oldItemCount - 1, newItemCount); // Scroll used up.
 }
