@@ -495,24 +495,24 @@ GAME_TEST(Issues, Issue405) {
     };
     engine->config->debug.AllMagic.setValue(true);
 
-    // 30ms/frame
-    test->restart(30);
+    // 100ms/frame
+    test->restart(100);
     runTrace();
     game->tick(10);
     EXPECT_TRUE(pParty->pPartyBuffs[PARTY_BUFF_IMMOLATION].Active());
     int firstRemainingRecovery = pParty->pCharacters[0].timeToRecovery;
 
-    // 2ms/frame
-    test->restart(2);
+    // 10ms/frame
+    test->restart(10);
     runTrace();
-    game->tick(150);
+    game->tick(100);
     EXPECT_TRUE(pParty->pPartyBuffs[PARTY_BUFF_IMMOLATION].Active());
     int secondRemainingRecovery = pParty->pCharacters[0].timeToRecovery;
 
-    EXPECT_EQ(firstRemainingRecovery - 1, secondRemainingRecovery); // TODO(captainurist): where is this -1 coming from???
+    EXPECT_EQ(firstRemainingRecovery, secondRemainingRecovery);
 }
 
-GAME_TEST(Issues, Issue408_970_996) {
+GAME_TEST(Issues, Issue408_939_970_996) {
     // testing that the gameover loop works
     CURRENT_SCREEN oldscreen = SCREEN_GAME;
     // enters throne room - resurecta - final task and exits gameover loop
@@ -526,8 +526,9 @@ GAME_TEST(Issues, Issue408_970_996) {
     // we should be teleported to harmondale
     EXPECT_EQ(pCurrentMapName, "out02.odm");
 
-    // 970 / 939 - Armor Class is wrong / quick reference doesnt match vanilla
-    // 996 - Wrong attack damage when dual wielding blaster and offhand weapon
+    // #970: Armor Class is wrong.
+    // #939: Quick reference doesnt match vanilla.
+    // #996: Wrong attack damage when dual wielding blaster and offhand weapon.
     // hp
     EXPECT_EQ(pParty->pCharacters[0].GetHealth(), 1240);
     EXPECT_EQ(pParty->pCharacters[1].GetHealth(), 397);
@@ -579,9 +580,13 @@ GAME_TEST(Issues, Issue408_970_996) {
     checkSkills({ {0, 10}, {1, 11}, {2, 14}, {3, 9} });
 }
 
-GAME_TEST(Issues, Issue417) {
-    // testing that portal nodes looping doesnt assert
+GAME_TEST(Issues, Issue417a) {
+    // Testing that portal nodes looping doesnt assert.
     test->playTraceFromTestData("issue_417a.mm7", "issue_417a.json");
+}
+
+GAME_TEST(Issues, Issue417b) {
+    // Testing that portal nodes looping doesnt assert.
     test->playTraceFromTestData("issue_417b.mm7", "issue_417b.json");
 }
 
@@ -594,45 +599,53 @@ static void check427Buffs(const char *ctx, std::initializer_list<int> players, b
     }
 }
 
-GAME_TEST(Issues, Issue427_528) {
-    // 427 - Test that some of the buff spells that start to affect whole party starting from certain mastery work correctly.
-
-    // In this test mastery is not enough for the whole party buff
+GAME_TEST(Issues, Issue427a) {
+    // Test that some of the buff spells that start to affect whole party starting from certain mastery work correctly.
+    // In this test mastery is not enough for the whole party buff.
     test->playTraceFromTestData("issue_427a.mm7", "issue_427a.json");
 
     // Check that spell targeting works correctly - 1st char is getting the buffs.
-    check427Buffs("a", { 0 }, true);
-    check427Buffs("a", { 1, 2, 3 }, false);
+    check427Buffs("a", {0}, true);
+    check427Buffs("a", {1, 2, 3}, false);
 
-    // In this test mastery is enough for the whole party
+}
+
+GAME_TEST(Issues, Issue427b_528) {
+    // Test that some of the buff spells that start to affect whole party starting from certain mastery work correctly.
+    // In this test mastery is enough for the whole party.
     test->playTraceFromTestData("issue_427b.mm7", "issue_427b.json", []() { EXPECT_EQ(pParty->pCharacters[2].mana, 100); });
 
-    // Check that all character have buffs
-    check427Buffs("b", { 0, 1, 2, 3 }, true);
+    // Check that all character have buffs.
+    check427Buffs("b", {0, 1, 2, 3}, true);
 
-    // 528 - Check that spells target single character or entire party depending on mastery drain mana
+    // #528: Check that spells that target single character or entire party depending on mastery drain mana.
     EXPECT_EQ(pParty->pCharacters[2].mana, 40);
 }
 
 GAME_TEST(Issues, Issue442) {
     // Test that regular UI is blocked on spell cast
-    test->playTraceFromTestData("issue_442.mm7", "issue_442.json");
-    EXPECT_EQ(pParty->pCharacters[1].pCharacterBuffs[CHARACTER_BUFF_BLESS].Active(), true);
+    test->playTraceFromTestData("issue_442.mm7", "issue_442.json", [] {
+        EXPECT_FALSE(pParty->pCharacters[1].pCharacterBuffs[CHARACTER_BUFF_BLESS].Active());
+    });
+    EXPECT_TRUE(pParty->pCharacters[1].pCharacterBuffs[CHARACTER_BUFF_BLESS].Active());
 }
 
 GAME_TEST(Prs, Pr469) {
-    // Assert when using Quick Spell button when spell is not set
-    test->playTraceFromTestData("pr_469.mm7", "pr_469.json");
+    // Assert when using Quick Spell button when spell is not set.
+    test->playTraceFromTestData("pr_469.mm7", "pr_469.json", [] {
+        for (int i = 0; i < 4; i++)
+            EXPECT_EQ(pParty->pCharacters[i].uQuickSpell, SPELL_NONE);
+    });
 }
 
 GAME_TEST(Issues, Issue488) {
-    // Test that Mass Distortion spell works
+    // Test that Mass Distortion spell works.
     test->playTraceFromTestData("issue_488.mm7", "issue_488.json", [] { EXPECT_EQ(pActors[24].currentHP, 3); });
     EXPECT_EQ(pActors[24].currentHP, 2);
 }
 
 GAME_TEST(Issues, Issue489) {
-    // Test that AOE version of Shrinking Ray spell works
+    // Test that AOE version of Shrinking Ray spell works.
     auto countChibis = [] {
         return std::count_if(pActors.begin(), pActors.end(), [] (const Actor &actor) {
             return actor.buffs[ACTOR_BUFF_SHRINK].Active();
@@ -644,18 +657,18 @@ GAME_TEST(Issues, Issue489) {
 }
 
 GAME_TEST(Issues, Issue490) {
-    // Check that Poison Spray sprites are moving and doing damage
+    // Check that Poison Spray sprites are moving and doing damage.
     test->playTraceFromTestData("issue_490.mm7", "issue_490.json", []() { EXPECT_EQ(pParty->pCharacters[0].experience, 279); });
     EXPECT_EQ(pParty->pCharacters[0].experience, 285);
 }
 
 GAME_TEST(Issues, Issue491) {
-    // Check that opening and closing Lloyd book does not cause Segmentation Fault
+    // Check that opening and closing Lloyd book does not cause Segmentation Fault.
     test->playTraceFromTestData("issue_491.mm7", "issue_491.json");
 }
 
 GAME_TEST(Issues, Issue492) {
-    // Check that spells that target all visible actors work
+    // Check that spells that target all visible actors work.
     test->playTraceFromTestData("issue_492.mm7", "issue_492.json", []() { EXPECT_EQ(pParty->pCharacters[0].experience, 279); });
     EXPECT_EQ(pParty->pCharacters[0].experience, 287);
 }
@@ -663,8 +676,9 @@ GAME_TEST(Issues, Issue492) {
 // 500
 
 GAME_TEST(Issues, Issue502) {
-    // Check that script face animation and voice indexes right characters
+    // Check that script face animation and voice indexes right characters.
     test->playTraceFromTestData("issue_502.mm7", "issue_502.json");
+    EXPECT_EQ(pParty->activeCharacterIndex(), 4);
 }
 
 static void check503health(std::initializer_list<std::pair<int, int>> playerhealthpairs) {
@@ -674,25 +688,42 @@ static void check503health(std::initializer_list<std::pair<int, int>> playerheal
 }
 
 GAME_TEST(Issues, Issue503) {
-    // Check that town portal book actually pauses game
+    // Check that town portal book actually pauses game.
     test->playTraceFromTestData("issue_503.mm7", "issue_503.json", []() { check503health({ {0, 1147}, {1, 699}, {2, 350}, {3, 242} }); });
     check503health({ {0, 1147}, {1, 699}, {2, 350}, {3, 242} });
 }
 
 GAME_TEST(Issues, Issue504) {
-    // Going to prison doesn't recharge hirelings
-    test->playTraceFromTestData("issue_504.mm7", "issue_504.json");
+    // Going to prison doesn't recharge hirelings.
+    int oldYear = 0;
+    test->playTraceFromTestData("issue_504.mm7", "issue_504.json", [&] {
+        oldYear = pParty->GetPlayingTime().GetYears();
+        EXPECT_FALSE(pParty->pPartyBuffs[PARTY_BUFF_HEROISM].Active());
+    });
+    int newYear = pParty->GetPlayingTime().GetYears();
     EXPECT_TRUE(pParty->pPartyBuffs[PARTY_BUFF_HEROISM].Active());
+    EXPECT_EQ(oldYear + 1, newYear); // A year spent in prison.
 }
 
 GAME_TEST(Issues, Issue506) {
-    // Check that scroll use does not assert
-    test->playTraceFromTestData("issue_506.mm7", "issue_506.json");
+    // Check that scroll use does not assert.
+    int oldItemCount = 0;
+    test->playTraceFromTestData("issue_506.mm7", "issue_506.json", [&] {
+        oldItemCount = partyItemCount();
+        EXPECT_FALSE(pParty->pPartyBuffs[PARTY_BUFF_FLY].Active());
+    });
+    int newItemCount = partyItemCount();
+    EXPECT_TRUE(pParty->pPartyBuffs[PARTY_BUFF_FLY].Active()); // Using fly scroll.
+    EXPECT_EQ(oldItemCount - 1, newItemCount); // Scroll used up.
 }
 
 GAME_TEST(Issues, Issue518) {
-    // Armageddon yeets the actors way too far into the sky & actors take stops when falling down
-    test->playTraceFromTestData("issue_518.mm7", "issue_518.json");
+    // Armageddon yeets the actors way too far into the sky & actors take stops when falling down.
+    test->playTraceFromTestData("issue_518.mm7", "issue_518.json", [] {
+        EXPECT_EQ(pParty->pCharacters[0].uNumArmageddonCasts, 2);
+    });
+    EXPECT_EQ(pParty->pCharacters[0].uNumArmageddonCasts, 3); // +1
+
     for (auto &actor : pActors) {
         EXPECT_LT(actor.pos.z, 3500);
     }
