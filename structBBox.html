@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;64fd649</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;fe75db7</span>
    </div>
   </td>
  </tr>
@@ -90,15 +90,25 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:af68d3a984897712087f732183c1f5c80"><td class="memTemplParams" colspan="2">template&lt;class U &gt; </td></tr>
 <tr class="memitem:af68d3a984897712087f732183c1f5c80"><td class="memTemplItemLeft" align="right" valign="top">bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="structBBox.html#af68d3a984897712087f732183c1f5c80">intersects</a> (const <a class="el" href="structBBox.html">BBox</a>&lt; U &gt; &amp;other) const</td></tr>
 <tr class="separator:af68d3a984897712087f732183c1f5c80"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3ae268239951076e424247d8cc6b5f60"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structBBox.html#a3ae268239951076e424247d8cc6b5f60">intersectsCube</a> (const <a class="el" href="structVec3.html">Vec3</a>&lt; T &gt; &amp;<a class="el" href="structBBox.html#a074f6e111802ff7841dbcef34f402339">center</a>, T halfSide) const</td></tr>
-<tr class="separator:a3ae268239951076e424247d8cc6b5f60"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3dbbbfc1b1ca102d3c7d7e3d279004ea"><td class="memTemplParams" colspan="2">template&lt;class U , class V &gt; </td></tr>
+<tr class="memitem:a3dbbbfc1b1ca102d3c7d7e3d279004ea"><td class="memTemplItemLeft" align="right" valign="top">bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="structBBox.html#a3dbbbfc1b1ca102d3c7d7e3d279004ea">intersectsCube</a> (const <a class="el" href="structVec3.html">Vec3</a>&lt; U &gt; &amp;<a class="el" href="structBBox.html#a074f6e111802ff7841dbcef34f402339">center</a>, V halfSide) const</td></tr>
+<tr class="separator:a3dbbbfc1b1ca102d3c7d7e3d279004ea"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7668d173d66fea989f6879566bfe61b3"><td class="memTemplParams" colspan="2">template&lt;class U &gt; </td></tr>
+<tr class="memitem:a7668d173d66fea989f6879566bfe61b3"><td class="memTemplItemLeft" align="right" valign="top">bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="structBBox.html#a7668d173d66fea989f6879566bfe61b3">intersectsCuboid</a> (const <a class="el" href="structVec3.html">Vec3</a>&lt; U &gt; &amp;<a class="el" href="structBBox.html#a074f6e111802ff7841dbcef34f402339">center</a>, const <a class="el" href="structVec3.html">Vec3</a>&lt; U &gt; &amp;halfSize) const</td></tr>
+<tr class="separator:a7668d173d66fea989f6879566bfe61b3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a074f6e111802ff7841dbcef34f402339"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structVec3.html">Vec3</a>&lt; T &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structBBox.html#a074f6e111802ff7841dbcef34f402339">center</a> () const</td></tr>
 <tr class="separator:a074f6e111802ff7841dbcef34f402339"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aae5714ca283625da5330415218efb5ae"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structVec3.html">Vec3</a>&lt; T &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structBBox.html#aae5714ca283625da5330415218efb5ae">size</a> () const</td></tr>
+<tr class="separator:aae5714ca283625da5330415218efb5ae"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-static-methods" name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
-<tr class="memitem:a95cba703d29fe55be25a2d51ddcdb569"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="structBBox.html">BBox</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structBBox.html#a95cba703d29fe55be25a2d51ddcdb569">fromPoint</a> (const <a class="el" href="structVec3.html">Vec3</a>&lt; T &gt; &amp;<a class="el" href="structBBox.html#a074f6e111802ff7841dbcef34f402339">center</a>, T radius)</td></tr>
-<tr class="separator:a95cba703d29fe55be25a2d51ddcdb569"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5ae8258c76b07a7b57ea110ebe26c2f6"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="structBBox.html">BBox</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structBBox.html#a5ae8258c76b07a7b57ea110ebe26c2f6">cubic</a> (const <a class="el" href="structVec3.html">Vec3</a>&lt; T &gt; &amp;<a class="el" href="structBBox.html#a074f6e111802ff7841dbcef34f402339">center</a>, T halfSide)</td></tr>
+<tr class="separator:a5ae8258c76b07a7b57ea110ebe26c2f6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a859c7ec0852841b844028f2607cbb526"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="structBBox.html">BBox</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structBBox.html#a859c7ec0852841b844028f2607cbb526">forPoints</a> (const <a class="el" href="structVec3.html">Vec3</a>&lt; T &gt; &amp;a, const <a class="el" href="structVec3.html">Vec3</a>&lt; T &gt; &amp;b)</td></tr>
+<tr class="separator:a859c7ec0852841b844028f2607cbb526"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ace34ce7ae26ce8b9b36c4b892247d26c"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="structBBox.html">BBox</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structBBox.html#ace34ce7ae26ce8b9b36c4b892247d26c">forCylinder</a> (const <a class="el" href="structVec3.html">Vec3</a>&lt; T &gt; bottomCenter, T radius, T height)</td></tr>
+<tr class="separator:ace34ce7ae26ce8b9b36c4b892247d26c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
@@ -214,8 +224,8 @@ template&lt;class T &gt; </div>
 
 </div>
 </div>
-<a id="a95cba703d29fe55be25a2d51ddcdb569" name="a95cba703d29fe55be25a2d51ddcdb569"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a95cba703d29fe55be25a2d51ddcdb569">&#9670;&#160;</a></span>fromPoint()</h2>
+<a id="a5ae8258c76b07a7b57ea110ebe26c2f6" name="a5ae8258c76b07a7b57ea110ebe26c2f6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5ae8258c76b07a7b57ea110ebe26c2f6">&#9670;&#160;</a></span>cubic()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -226,7 +236,7 @@ template&lt;class T &gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">static <a class="el" href="structBBox.html">BBox</a> <a class="el" href="structBBox.html">BBox</a>&lt; T &gt;::fromPoint </td>
+          <td class="memname">static <a class="el" href="structBBox.html">BBox</a> <a class="el" href="structBBox.html">BBox</a>&lt; T &gt;::cubic </td>
           <td>(</td>
           <td class="paramtype">const <a class="el" href="structVec3.html">Vec3</a>&lt; T &gt; &amp;&#160;</td>
           <td class="paramname"><em>center</em>, </td>
@@ -235,7 +245,7 @@ template&lt;class T &gt; </div>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">T&#160;</td>
-          <td class="paramname"><em>radius</em>&#160;</td>
+          <td class="paramname"><em>halfSide</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -249,6 +259,104 @@ template&lt;class T &gt; </div>
   </tr>
 </table>
 </div><div class="memdoc">
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">center</td><td>Center of the bounding box. </td></tr>
+    <tr><td class="paramname">halfSide</td><td>Half the length of the edge of the resulting bounding box cube. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Cubic bounding box centered at <code>center</code> with sides twice the <code>halfSide</code>. </dd></dl>
+
+</div>
+</div>
+<a id="ace34ce7ae26ce8b9b36c4b892247d26c" name="ace34ce7ae26ce8b9b36c4b892247d26c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ace34ce7ae26ce8b9b36c4b892247d26c">&#9670;&#160;</a></span>forCylinder()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class T &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static <a class="el" href="structBBox.html">BBox</a> <a class="el" href="structBBox.html">BBox</a>&lt; T &gt;::forCylinder </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="structVec3.html">Vec3</a>&lt; T &gt;&#160;</td>
+          <td class="paramname"><em>bottomCenter</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">T&#160;</td>
+          <td class="paramname"><em>radius</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">T&#160;</td>
+          <td class="paramname"><em>height</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a859c7ec0852841b844028f2607cbb526" name="a859c7ec0852841b844028f2607cbb526"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a859c7ec0852841b844028f2607cbb526">&#9670;&#160;</a></span>forPoints()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class T &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static <a class="el" href="structBBox.html">BBox</a> <a class="el" href="structBBox.html">BBox</a>&lt; T &gt;::forPoints </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="structVec3.html">Vec3</a>&lt; T &gt; &amp;&#160;</td>
+          <td class="paramname"><em>a</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="structVec3.html">Vec3</a>&lt; T &gt; &amp;&#160;</td>
+          <td class="paramname"><em>b</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">a</td><td>Point a. </td></tr>
+    <tr><td class="paramname">b</td><td>Point b. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Bounding box containing both passed points. </dd></dl>
 
 </div>
 </div>
@@ -282,8 +390,88 @@ template&lt;class U &gt; </div>
 
 </div>
 </div>
-<a id="a3ae268239951076e424247d8cc6b5f60" name="a3ae268239951076e424247d8cc6b5f60"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a3ae268239951076e424247d8cc6b5f60">&#9670;&#160;</a></span>intersectsCube()</h2>
+<a id="a3dbbbfc1b1ca102d3c7d7e3d279004ea" name="a3dbbbfc1b1ca102d3c7d7e3d279004ea"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3dbbbfc1b1ca102d3c7d7e3d279004ea">&#9670;&#160;</a></span>intersectsCube()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class T &gt; </div>
+<div class="memtemplate">
+template&lt;class U , class V &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool <a class="el" href="structBBox.html">BBox</a>&lt; T &gt;::intersectsCube </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="structVec3.html">Vec3</a>&lt; U &gt; &amp;&#160;</td>
+          <td class="paramname"><em>center</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">V&#160;</td>
+          <td class="paramname"><em>halfSide</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a7668d173d66fea989f6879566bfe61b3" name="a7668d173d66fea989f6879566bfe61b3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7668d173d66fea989f6879566bfe61b3">&#9670;&#160;</a></span>intersectsCuboid()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class T &gt; </div>
+<div class="memtemplate">
+template&lt;class U &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool <a class="el" href="structBBox.html">BBox</a>&lt; T &gt;::intersectsCuboid </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="structVec3.html">Vec3</a>&lt; U &gt; &amp;&#160;</td>
+          <td class="paramname"><em>center</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="structVec3.html">Vec3</a>&lt; U &gt; &amp;&#160;</td>
+          <td class="paramname"><em>halfSize</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="aae5714ca283625da5330415218efb5ae" name="aae5714ca283625da5330415218efb5ae"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aae5714ca283625da5330415218efb5ae">&#9670;&#160;</a></span>size()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -294,21 +482,10 @@ template&lt;class T &gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">bool <a class="el" href="structBBox.html">BBox</a>&lt; T &gt;::intersectsCube </td>
+          <td class="memname"><a class="el" href="structVec3.html">Vec3</a>&lt; T &gt; <a class="el" href="structBBox.html">BBox</a>&lt; T &gt;::size </td>
           <td>(</td>
-          <td class="paramtype">const <a class="el" href="structVec3.html">Vec3</a>&lt; T &gt; &amp;&#160;</td>
-          <td class="paramname"><em>center</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">T&#160;</td>
-          <td class="paramname"><em>halfSide</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td> const</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
         </tr>
       </table>
   </td>
