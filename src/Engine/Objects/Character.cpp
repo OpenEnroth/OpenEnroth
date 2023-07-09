@@ -3847,7 +3847,7 @@ void Character::useItem(int targetCharacter, bool isPortraitClick) {
     }
 
     if (pParty->pPickedItem.isSpellScroll()) {
-        if (current_screen_type == CURRENT_SCREEN::SCREEN_CASTING) {
+        if (current_screen_type == SCREEN_CASTING) {
             return;
         }
         if (!playerAffected->CanAct()) {
@@ -3866,13 +3866,13 @@ void Character::useItem(int targetCharacter, bool isPortraitClick) {
         if (isSpellTargetsItem(scrollSpellId)) {
             mouse->RemoveHoldingItem();
             pGUIWindow_CurrentMenu->Release();
-            current_screen_type = CURRENT_SCREEN::SCREEN_GAME;
+            current_screen_type = SCREEN_GAME;
             pushScrollSpell(scrollSpellId, targetCharacter);
         } else {
             mouse->RemoveHoldingItem();
             // Process spell on next frame after game exits inventory window.
             engine->_messageQueue->addMessageNextFrame(UIMSG_SpellScrollUse, scrollSpellId, targetCharacter);
-            if (current_screen_type != CURRENT_SCREEN::SCREEN_GAME && pGUIWindow_CurrentMenu && (pGUIWindow_CurrentMenu->eWindowType != WINDOW_null)) {
+            if (current_screen_type != SCREEN_GAME && pGUIWindow_CurrentMenu && (pGUIWindow_CurrentMenu->eWindowType != WINDOW_null)) {
                 engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 0, 0);
             }
         }

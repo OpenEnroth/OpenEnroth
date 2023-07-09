@@ -52,7 +52,7 @@ std::array<std::array<int, 2>, 9> texture_tab_coord0 = {{
 SPELL_TYPE spellbookSelectedSpell;
 
 GUIWindow_Spellbook::GUIWindow_Spellbook() : GUIWindow(WINDOW_SpellBook, {0, 0}, render->GetRenderDimensions(), 0) {
-    current_screen_type = CURRENT_SCREEN::SCREEN_SPELL_BOOK;
+    current_screen_type = SCREEN_SPELL_BOOK;
     pEventTimer->Pause();
 
     initializeTextures();

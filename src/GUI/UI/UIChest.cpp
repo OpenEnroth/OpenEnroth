@@ -28,17 +28,17 @@ GUIWindow_Chest::GUIWindow_Chest(unsigned int chest_id) : GUIWindow(WINDOW_Chest
     pBtn_ExitCancel = CreateButton({471, 445}, {169, 35}, 1, 0, UIMSG_Escape, 0, Io::InputAction::Invalid,
                                    localization->GetString(LSTR_DIALOGUE_EXIT), {ui_exit_cancel_button_background});
     CreateButton({7, 8}, {460, 343}, 1, 0, UIMSG_CHEST_ClickItem, 0);
-    current_screen_type = CURRENT_SCREEN::SCREEN_CHEST;
+    current_screen_type = SCREEN_CHEST;
     pEventTimer->Pause();
 }
 
 void GUIWindow_Chest::Update() {
-    if (current_screen_type == CURRENT_SCREEN::SCREEN_CHEST_INVENTORY) {
+    if (current_screen_type == SCREEN_CHEST_INVENTORY) {
         render->ClearZBuffer();
         draw_leather();
         CharacterUI_InventoryTab_Draw(&pParty->activeCharacter(), true);
         render->DrawTextureNew(pBtn_ExitCancel->uX / 640.0f, pBtn_ExitCancel->uY / 480.0f, ui_exit_cancel_button_background);
-    } else if (current_screen_type == CURRENT_SCREEN::SCREEN_CHEST) {
+    } else if (current_screen_type == SCREEN_CHEST) {
         render->ClearZBuffer();
 
         int uChestID = wData.val;

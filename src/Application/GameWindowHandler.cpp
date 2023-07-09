@@ -315,13 +315,13 @@ void GameWindowHandler::OnKey(PlatformKey key) {
             OnToggleFullscreen();
         } else if (keyboardActionMapping->IsKeyMatchAction(InputAction::Console, key)) {
             engine->_messageQueue->addMessageCurrentFrame(UIMSG_OpenDebugMenu, window_SpeakInHouse != 0, 0);
-        } else if (keyboardActionMapping->IsKeyMatchAction(InputAction::ReloadShaders, key) && current_screen_type == CURRENT_SCREEN::SCREEN_GAME) {
+        } else if (keyboardActionMapping->IsKeyMatchAction(InputAction::ReloadShaders, key) && current_screen_type == SCREEN_GAME) {
             engine->_messageQueue->addMessageCurrentFrame(UIMSG_DebugReloadShader, window_SpeakInHouse != 0, 0);
         } else if (keyboardActionMapping->IsKeyMatchAction(InputAction::DialogLeft, key) || keyboardActionMapping->IsKeyMatchAction(InputAction::DialogRight, key)
             || keyboardActionMapping->IsKeyMatchAction(InputAction::DialogUp, key) || keyboardActionMapping->IsKeyMatchAction(InputAction::DialogDown, key)
             || keyboardActionMapping->IsKeyMatchAction(InputAction::DialogSelect, key)) {
-            if (current_screen_type != CURRENT_SCREEN::SCREEN_GAME &&
-                current_screen_type != CURRENT_SCREEN::SCREEN_GAMEOVER_WINDOW) {
+            if (current_screen_type != SCREEN_GAME &&
+                current_screen_type != SCREEN_GAMEOVER_WINDOW) {
                 if (!viewparams->field_4C) {
                     UI_OnKeyDown(key);
                 }

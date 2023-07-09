@@ -1118,7 +1118,7 @@ void GUIWindow_House::houseDialogManager() {
     if (currentHouseNpc == -1 || houseNpcs[currentHouseNpc].type != HOUSE_TRANSITION) {
         // Draw house title
         if (!buildingTable[houseId()].pName.empty()) {
-            if (current_screen_type != CURRENT_SCREEN::SCREEN_SHOP_INVENTORY) {
+            if (current_screen_type != SCREEN_SHOP_INVENTORY) {
                 int yPos = 2 * pFontCreate->GetHeight() - 6 - pFontCreate->CalcTextHeight(buildingTable[houseId()].pName, 130, 0);
                 if (yPos < 0) {
                     yPos = 0;
@@ -1180,7 +1180,7 @@ void GUIWindow_House::houseDialogManager() {
 
     render->DrawTextureNew((pNPCPortraits_x[0][0] - 4) / 640.0f, (pNPCPortraits_y[0][0] - 4) / 480.0f, game_ui_evtnpc);
     render->DrawTextureNew(pNPCPortraits_x[0][0] / 640.0f, pNPCPortraits_y[0][0] / 480.0f, houseNpcs[currentHouseNpc].icon);
-    if (current_screen_type == CURRENT_SCREEN::SCREEN_SHOP_INVENTORY) {
+    if (current_screen_type == SCREEN_SHOP_INVENTORY) {
         CharacterUI_InventoryTab_Draw(&pParty->activeCharacter(), true);
         render->DrawTextureNew(471 / 640.0f, 445 / 480.0f, ui_exit_cancel_button_background);
         return;
@@ -1325,7 +1325,7 @@ void GUIWindow_House::learnSelectedSkill(CharacterSkillType skill) {
 GUIWindow_House::GUIWindow_House(HOUSE_ID houseId) : GUIWindow(WINDOW_HouseInterior, {0, 0}, render->GetRenderDimensions(), houseId) {
     pEventTimer->Pause();  // pause timer so not attacked
 
-    current_screen_type = CURRENT_SCREEN::SCREEN_HOUSE;
+    current_screen_type = SCREEN_HOUSE;
     pBtn_ExitCancel = CreateButton({471, 445}, {169, 35}, 1, 0, UIMSG_Escape, 0, Io::InputAction::Invalid,
                                    localization->GetString(LSTR_EXIT_BUILDING), {ui_exit_cancel_button_background});
 

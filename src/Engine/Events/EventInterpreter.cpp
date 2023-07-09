@@ -232,7 +232,7 @@ int EventInterpreter::executeOneEvent(int step, bool isNpc) {
                 pGameLoadingUI_ProgressBar->Initialize((GUIProgressBar::Type)((activeLevelDecoration == NULL) + 1));
                 Transition_StopSound_Autosave(ir.str, MapStartPoint_Party);
                 _mapExitTriggered = true;
-                if (current_screen_type == CURRENT_SCREEN::SCREEN_HOUSE) {
+                if (current_screen_type == SCREEN_HOUSE) {
                     if (uGameState == GAME_STATE_CHANGE_LOCATION) {
                         dialog_menu_id = DIALOGUE_NULL;
                         while (houseDialogPressEscape()) {}
@@ -240,7 +240,7 @@ int EventInterpreter::executeOneEvent(int step, bool isNpc) {
                         window_SpeakInHouse->Release();
                         window_SpeakInHouse = nullptr;
                         engine->_messageQueue->clear();
-                        current_screen_type = CURRENT_SCREEN::SCREEN_GAME;
+                        current_screen_type = SCREEN_GAME;
                         if (pDialogueWindow) {
                             pDialogueWindow->Release();
                             pDialogueWindow = 0;
@@ -297,12 +297,12 @@ int EventInterpreter::executeOneEvent(int step, bool isNpc) {
             }
 
             // is this block is needed anymore?
-            if (!ir.data.movie_unknown_field || current_screen_type == CURRENT_SCREEN::SCREEN_BOOKS) {
-                if (current_screen_type == CURRENT_SCREEN::SCREEN_BOOKS) {
+            if (!ir.data.movie_unknown_field || current_screen_type == SCREEN_BOOKS) {
+                if (current_screen_type == SCREEN_BOOKS) {
                     pGameLoadingUI_ProgressBar->Initialize(GUIProgressBar::TYPE_Fullscreen);
                 }
 
-                if (current_screen_type == CURRENT_SCREEN::SCREEN_HOUSE) {
+                if (current_screen_type == SCREEN_HOUSE) {
                     pMediaPlayer->OpenHouseMovie(pAnimatedRooms[uCurrentHouse_Animation].video_name, 1);
                 }
             }

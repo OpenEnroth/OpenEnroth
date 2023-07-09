@@ -303,6 +303,7 @@ enum class CURRENT_SCREEN {
 
     SCREEN_DEBUG = 999,
 };
+using enum CURRENT_SCREEN;
 
 enum WindowType {
     WINDOW_null = 0,

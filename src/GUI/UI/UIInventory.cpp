@@ -26,7 +26,7 @@ void GUIWindow_Inventory::Update() {
     //    ItemGen2.Reset();
     //    Release();
     //    pEventTimer->Resume();
-    //    current_screen_type = CURRENT_SCREEN::SCREEN_GAME;
+    //    current_screen_type = SCREEN_GAME;
     //    int v39 = atoi(userInputHandler->GetTextInput().c_str());
     //    if (v39 > 0 && v39 < 800) {
     //        SpawnActor(v39);
@@ -41,7 +41,7 @@ GUIWindow_Inventory_CastSpell::GUIWindow_Inventory_CastSpell(Pointi position, Si
     pBtn_ExitCancel = CreateButton({392, 318}, {75, 33}, 1, 0, UIMSG_Escape, 0, Io::InputAction::Invalid, localization->GetString(LSTR_CANCEL), {ui_buttdesc2});
     GameUI_SetStatusBar(LSTR_CHOOSE_TARGET);
     current_character_screen_window = WINDOW_CharacterWindow_Inventory;
-    current_screen_type = CURRENT_SCREEN::SCREEN_CASTING;
+    current_screen_type = SCREEN_CASTING;
 }
 
 void GUIWindow_Inventory_CastSpell::Update() {

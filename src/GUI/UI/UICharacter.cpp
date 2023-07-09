@@ -773,7 +773,7 @@ GUIWindow *CastSpellInfo::GetCastSpellInInventoryWindow() {
     pEventTimer->Pause();
     bRingsShownInCharScreen = 0;
     CharacterUI_LoadPaperdollTextures();
-    current_screen_type = CURRENT_SCREEN::SCREEN_CASTING;
+    current_screen_type = SCREEN_CASTING;
     GUIWindow *CS_inventory_window = new GUIWindow_Inventory_CastSpell({0, 0}, render->GetRenderDimensions(), this, "");
     pCharacterScreen_ExitBtn = CS_inventory_window->CreateButton({394, 318}, {75, 33}, 1, 0,
         UIMSG_ClickExitCharacterWindowBtn, 0, Io::InputAction::Invalid, localization->GetString(LSTR_DIALOGUE_EXIT),

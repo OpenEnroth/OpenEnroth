@@ -81,7 +81,7 @@ GUIWindow_Transition::GUIWindow_Transition(HOUSE_ID transitionHouse, uint exit_p
     Party_Teleport_Map_Name = locationName;
     uCurrentHouse_Animation = std::to_underlying(transitionHouse); // TODO(Nik-RE-dev): is this correct?
     pEventTimer->Pause();
-    current_screen_type = CURRENT_SCREEN::SCREEN_CHANGE_LOCATION;
+    current_screen_type = SCREEN_CHANGE_LOCATION;
 
     mapid = pMapStats->GetMapInfo(pCurrentMapName);
     _mapName = locationName;
@@ -137,7 +137,7 @@ GUIWindow_Transition::GUIWindow_Transition(HOUSE_ID transitionHouse, uint exit_p
     std::string hint = this->sHint = transition_button_label;
 
     prev_screen_type = current_screen_type;
-    current_screen_type = CURRENT_SCREEN::SCREEN_INPUT_BLV;
+    current_screen_type = SCREEN_INPUT_BLV;
     pBtn_ExitCancel = CreateButton({556, 0x1BDu}, {0x4Bu, 0x21u}, 1, 0, UIMSG_TransitionWindowCloseBtn, 0,
                                    Io::InputAction::No, localization->GetString(LSTR_CANCEL), {ui_buttdesc2});
     pBtn_YES = CreateButton({476, 0x1BDu}, {0x4Bu, 0x21u}, 1, 0, UIMSG_TransitionUI_Confirm, 0, Io::InputAction::Yes, hint, {ui_buttyes2});
@@ -160,7 +160,7 @@ GUIWindow_Travel::GUIWindow_Travel() : GUIWindow(WINDOW_ChangeLocation, {0, 0}, 
     std::string hint = this->sHint = transition_button_label;
 
     prev_screen_type = current_screen_type;
-    current_screen_type = CURRENT_SCREEN::SCREEN_CHANGE_LOCATION;
+    current_screen_type = SCREEN_CHANGE_LOCATION;
     pBtn_ExitCancel = CreateButton({566, 445}, {75, 33}, 1, 0, UIMSG_CHANGE_LOCATION_ClickCancelBtn, 0, Io::InputAction::No,
                                    localization->GetString(LSTR_STAY_IN_THIS_AREA), {ui_buttdesc2});
     pBtn_YES = CreateButton({486, 445}, {75, 33}, 1, 0, UIMSG_OnTravelByFoot, 0, Io::InputAction::Yes, hint, {ui_buttyes2});

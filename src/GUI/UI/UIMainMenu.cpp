@@ -192,7 +192,7 @@ void GUIWindow_MainMenu::loop() {
     pAudioPlayer->stopSounds();
     pAudioPlayer->MusicPlayTrack(MUSIC_MainMenu);
 
-    current_screen_type = CURRENT_SCREEN::SCREEN_GAME;
+    current_screen_type = SCREEN_GAME;
 
     pGUIWindow_BranchlessDialogue = nullptr;
 
