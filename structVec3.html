@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;a2f386e</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;64fd649</span>
    </div>
   </td>
  </tr>
@@ -120,8 +120,8 @@ requires <a class="el" href="structvector__conversion__allowed.html">vector_conv
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-static-methods" name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
-<tr class="memitem:abcc21cd759cf22ac25d7bf10b69800e2"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structVec3.html#abcc21cd759cf22ac25d7bf10b69800e2">rotate</a> (T sDepth, T yaw, T pitch, <a class="el" href="structVec3.html">Vec3</a>&lt; T &gt; <a class="el" href="Json__ut_8cpp.html#a3ed32accd846b2ea66b4133b8b0bacbd">v</a>, T *outx, T *outy, T *outz)</td></tr>
-<tr class="separator:abcc21cd759cf22ac25d7bf10b69800e2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab4fd7b365cb15c25d81898bd80c36262"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="structVec3.html">Vec3</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structVec3.html#ab4fd7b365cb15c25d81898bd80c36262">fromPolar</a> (T <a class="el" href="structVec3.html#a129e719058dc74a0eec615d6090f1256">length</a>, int yaw, int pitch)</td></tr>
+<tr class="separator:ab4fd7b365cb15c25d81898bd80c36262"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
@@ -285,6 +285,50 @@ template&lt;class T &gt; </div>
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
+<a id="ab4fd7b365cb15c25d81898bd80c36262" name="ab4fd7b365cb15c25d81898bd80c36262"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab4fd7b365cb15c25d81898bd80c36262">&#9670;&#160;</a></span>fromPolar()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class T &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static <a class="el" href="structVec3.html">Vec3</a> <a class="el" href="structVec3.html">Vec3</a>&lt; T &gt;::fromPolar </td>
+          <td>(</td>
+          <td class="paramtype">T&#160;</td>
+          <td class="paramname"><em>length</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>yaw</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>pitch</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="a129e719058dc74a0eec615d6090f1256" name="a129e719058dc74a0eec615d6090f1256"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a129e719058dc74a0eec615d6090f1256">&#9670;&#160;</a></span>length()</h2>
 
@@ -416,74 +460,6 @@ template&lt;class T &gt; </div>
   </td>
   <td class="mlabels-right">
 <span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="abcc21cd759cf22ac25d7bf10b69800e2" name="abcc21cd759cf22ac25d7bf10b69800e2"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#abcc21cd759cf22ac25d7bf10b69800e2">&#9670;&#160;</a></span>rotate()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;class T &gt; </div>
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">static void <a class="el" href="structVec3.html">Vec3</a>&lt; T &gt;::rotate </td>
-          <td>(</td>
-          <td class="paramtype">T&#160;</td>
-          <td class="paramname"><em>sDepth</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">T&#160;</td>
-          <td class="paramname"><em>yaw</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">T&#160;</td>
-          <td class="paramname"><em>pitch</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="structVec3.html">Vec3</a>&lt; T &gt;&#160;</td>
-          <td class="paramname"><em>v</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">T *&#160;</td>
-          <td class="paramname"><em>outx</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">T *&#160;</td>
-          <td class="paramname"><em>outy</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">T *&#160;</td>
-          <td class="paramname"><em>outz</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
