@@ -29,7 +29,7 @@ void GUIWindow_Inventory::Update() {
     //    current_screen_type = SCREEN_GAME;
     //    int v39 = atoi(userInputHandler->GetTextInput().c_str());
     //    if (v39 > 0 && v39 < 800) {
-    //        SpawnActor(v39);
+    //        // SpawnActor(v39);
     //    }
     // }
 }

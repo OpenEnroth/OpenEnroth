@@ -4386,40 +4386,6 @@ bool Detect_Between_Objects(unsigned int uObjID, unsigned int uObj2ID) {
     return 1;
 }
 
-//----- (00450B0A) --------------------------------------------------------
-bool SpawnActor(unsigned int uMonsterID) {
-    Actor *actor = AllocateActor(true);
-    if (!actor)
-        return false;
-
-    unsigned int v1 = uMonsterID;
-    if (uMonsterID >= pMonsterList->pMonsters.size())
-        v1 = 0;
-
-    Vec3i pOut = pParty->pos + Vec3i::fromPolar(200, pParty->_viewYaw, 0);
-
-    actor->name = pMonsterStats->pInfos[v1 + 1].pName;
-    actor->currentHP = pMonsterStats->pInfos[v1 + 1].uHP;
-    actor->monsterInfo = pMonsterStats->pInfos[v1 + 1];
-    actor->word_000086_some_monster_id = v1 + 1;
-    actor->radius = pMonsterList->pMonsters[v1].uMonsterRadius;
-    actor->height = pMonsterList->pMonsters[v1].uMonsterHeight;
-    actor->moveSpeed = pMonsterList->pMonsters[v1].uMovementSpeed;
-    actor->initialPosition.x = pOut.x;
-    actor->pos.x = pOut.x;
-    actor->tetherDistance = 256;
-    actor->initialPosition.y = pOut.y;
-    actor->pos.y = pOut.y;
-    actor->initialPosition.z = pOut.z;
-    actor->pos.z = pOut.z;
-
-    pSprites_LOD->DeleteSomeSprites();
-
-    actor->PrepareSprites(1);
-
-    return true;
-}
-
 //----- (0044FA4C) --------------------------------------------------------
 void Spawn_Light_Elemental(int spell_power, CharacterSkillMastery caster_skill_mastery, int duration_game_seconds) {
     // size_t uActorIndex;            // [sp+10h] [bp-10h]@6
