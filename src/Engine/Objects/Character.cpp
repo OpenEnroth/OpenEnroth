@@ -436,15 +436,14 @@ bool Character::CanEquip_RaceAndAlignmentCheck(ITEM_TYPE uItemID) const {
 }
 
 //----- (00492D65) --------------------------------------------------------
-void Character::SetCondition(Condition uConditionIdx, int blockable) {
-    if (conditions.Has(uConditionIdx))  // cant get the same condition twice
+void Character::SetCondition(Condition condition, int blockable) {
+    if (conditions.Has(condition))  // cant get the same condition twice
         return;
 
-    if (!IsPlayerAffected(this, uConditionIdx, blockable)) {  // block check
+    if (blockable && blockCondition(this, condition))
         return;
-    }
 
-    switch (uConditionIdx) {  // conditions noises
+    switch (condition) {  // conditions noises
         case CONDITION_CURSED:
             playReaction(SPEECH_CURSED);
             break;
@@ -540,7 +539,7 @@ void Character::SetCondition(Condition uConditionIdx, int blockable) {
         playersBefore += character.CanAct() ? 1 : 0;
     }
 
-    conditions.Set(uConditionIdx, pParty->GetPlayingTime());  // set condition
+    conditions.Set(condition, pParty->GetPlayingTime());  // set condition
 
     int playersAfter = 0;
     Character *remainingPlayer = nullptr;

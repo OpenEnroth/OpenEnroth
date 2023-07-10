@@ -1,5 +1,7 @@
 #include "Engine/Conditions.h"
 
+#include <cassert>
+
 #include "Engine/Engine.h"
 #include "Engine/Party.h"
 
@@ -115,7 +117,7 @@ static std::array<Condition, 18> conditionImportancyTableAlternative = {{
     CONDITION_ZOMBIE
 }};
 
-static bool blockWithProtectionFromMagic(const ConditionTableEntry &entry) {
+static bool blockConditionWithProtectionFromMagic(const ConditionTableEntry &entry) {
     if (!(entry.flags & AFFECTED_BY_PROTECTION_FROM_MAGIC))
         return false;
 
@@ -134,16 +136,15 @@ static bool blockWithProtectionFromMagic(const ConditionTableEntry &entry) {
     return true;
 }
 
-bool IsPlayerAffected(Character *character, Condition condition, bool blockable) {
-    if (!blockable)
-        return true;
+bool blockCondition(Character *character, Condition condition) {
+    assert(!character->conditions.Has(condition)); // Expected to be checked externally.
 
     const ConditionTableEntry &entry = conditionArray[condition];
-    if (blockWithProtectionFromMagic(entry))
-        return false;
+    if (blockConditionWithProtectionFromMagic(entry))
+        return true;
 
     if (entry.enchantment != ITEM_ENCHANTMENT_NULL && character->HasEnchantedItemEquipped(entry.enchantment))
-        return false;
+        return true;
 
     for (const ConditionEquipment &pair : entry.equipment) {
         if (pair.item == ITEM_NULL)
@@ -151,14 +152,14 @@ bool IsPlayerAffected(Character *character, Condition condition, bool blockable)
 
         if (pair.slot == ITEM_SLOT_ANY) {
             if (character->wearsItemAnywhere(pair.item))
-                return false;
+                return true;
         } else {
             if (character->WearsItem(pair.item, pair.slot))
-                return false;
+                return true;
         }
     }
 
-    return true;
+    return false;
 }
 
 const std::array<Condition, 18> &conditionImportancyTable() {

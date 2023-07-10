@@ -310,7 +310,7 @@ class Character {
     bool CanAct() const;
     bool CanSteal() const;
     bool CanEquip_RaceAndAlignmentCheck(ITEM_TYPE uItemID) const;
-    void SetCondition(Condition uConditionIdx, int blockable);
+    void SetCondition(Condition condition, int blockable);
 
     /**
      * @offset 0x49327B
