@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <functional>
 
 #include "Library/Color/Color.h"
 #include "Library/Image/Image.h"
@@ -115,15 +116,19 @@ class PCX_LOD_Raw_Loader : public PCX_Loader {
 
 class PCX_LOD_Compressed_Loader : public PCX_Loader {
  public:
-    inline PCX_LOD_Compressed_Loader(LOD::File *lod, const std::string &filename) {
-        this->resource_name = filename;
-        this->lod = lod;
+    // TODO(captainurist): this is the next level of ugly, redo.
+    template<class Lod>
+    inline PCX_LOD_Compressed_Loader(Lod *lod, const std::string &filename) {
+        resource_name = filename;
+        blob_func = [this, lod] {
+            return lod->LoadCompressedTexture(resource_name);
+        };
     }
 
     virtual bool Load(RgbaImage *rgbaImage, GrayscaleImage *indexedImage, Palette *palette) override;
 
  protected:
-    LOD::File *lod;
+    std::function<Blob()> blob_func;
 };
 
 class Bitmaps_LOD_Loader : public ImageLoader {

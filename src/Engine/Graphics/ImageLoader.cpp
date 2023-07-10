@@ -148,7 +148,7 @@ bool PCX_LOD_Raw_Loader::Load(RgbaImage *rgbaImage, GrayscaleImage *indexedImage
 }
 
 bool PCX_LOD_Compressed_Loader::Load(RgbaImage *rgbaImage, GrayscaleImage *indexedImage, Palette *palette) {
-    Blob pcx_data = lod->LoadCompressedTexture(resource_name);
+    Blob pcx_data = blob_func();
     if (!pcx_data) {
         log->warning("Unable to load {}", resource_name);
         return false;
