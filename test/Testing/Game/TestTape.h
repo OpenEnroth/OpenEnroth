@@ -11,6 +11,21 @@
 namespace testing {} // Forward-declare gtest namespace.
 
 namespace detail {
+/**
+ * Vector wrapper that can be compared via operator== with other vectors that have different element types.
+ */
+template<class T>
+class ComparableVector : public std::vector<T> {
+    using base_type = std::vector<T>;
+ public:
+    using base_type::base_type;
+
+    template<class Y>
+    friend bool operator==(const ComparableVector &l, const ComparableVector<Y> &r) {
+        return std::equal(l.begin(), l.end(), r.begin(), r.end());
+    }
+};
+
 template<class T>
 class TestTapeState {
  public:
@@ -24,13 +39,13 @@ class TestTapeState {
             _values.push_back(std::move(value));
     }
 
-    const std::vector<T> &values() const {
+    const ComparableVector<T> &values() const {
         return _values;
     }
 
  private:
     std::function<T()> _callback;
-    std::vector<T> _values;
+    ComparableVector<T> _values;
 };
 } // namespace detail
 
@@ -42,8 +57,15 @@ class TestTape {
         assert(_state);
     }
 
-    const std::vector<T> &values() const {
+    const detail::ComparableVector<T> &values() const {
         return _state->values();
+    }
+
+    detail::ComparableVector<T> firstLast() const {
+        detail::ComparableVector<T> result;
+        result.push_back(values().front());
+        result.push_back(values().back());
+        return result;
     }
 
     T delta() {
@@ -66,8 +88,8 @@ class TestTape {
     }
 
     template<class Y>
-    friend bool operator==(const TestTape &l, const std::vector<Y> &r) {
-        return std::equal(l.values().begin(), l.values().end(), r.begin(), r.end());
+    friend bool operator==(const TestTape &l, const detail::ComparableVector<Y> &r) {
+        return l.values() == r;
     }
 
     // operator!= and operators with switched arguments are auto-generated.
@@ -82,7 +104,7 @@ class TestTape {
 };
 
 /**
- * Basically a convenient shortcut to create vectors that can then be compared with `TestTape` objects inside
+ * Shortcut function to create vectors that can then be compared with `TestTape` objects inside
  * the `EXPECT_EQ` and `ASSERT_EQ` gtest macros.
  *
  * Example code:
@@ -91,6 +113,6 @@ class TestTape {
  * ```
  */
 template<class T, class... Tail>
-std::vector<T> tape(T first, Tail... tail) {
+detail::ComparableVector<T> tape(T first, Tail... tail) {
     return std::initializer_list<T>{std::move(first), std::move(tail)...};
 }
