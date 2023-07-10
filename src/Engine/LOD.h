@@ -4,6 +4,7 @@
 #include <string>
 #include <deque>
 #include <vector>
+#include <memory>
 
 #include "Engine/Graphics/Texture_MM7.h"
 #include "Engine/Graphics/Sprites.h"
@@ -13,6 +14,7 @@
 #include "Utility/Memory/Blob.h"
 
 class Sprite;
+class LodReader;
 
 namespace LOD {
 #pragma pack(push, 1)
@@ -179,10 +181,10 @@ struct LODSprite : public LODSpriteHeader {
     GrayscaleImage bitmap;
 };
 
-class LODFile_Sprites : public LOD::File {
+class LODFile_Sprites {
  public:
     LODFile_Sprites();
-    virtual ~LODFile_Sprites();
+    ~LODFile_Sprites();
 
     bool open(const std::string &pFilename, const std::string &folder);
 
@@ -192,9 +194,10 @@ class LODFile_Sprites : public LOD::File {
     Sprite *loadSprite(const std::string &pContainerName);
 
  private:
-    int LoadSpriteFromFile(LODSprite *pSpriteHeader, const std::string &pContainer);
+    bool LoadSpriteFromFile(LODSprite *pSpriteHeader, const std::string &pContainer);
 
  private:
+    std::unique_ptr<LodReader> _reader;
     int _reservedCount = 0;
     std::deque<Sprite> _sprites;
 };

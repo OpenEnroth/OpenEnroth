@@ -12,8 +12,10 @@
 
 #include "Library/Compression/Compression.h"
 #include "Library/Logger/Logger.h"
+#include "Library/Lod/LodReader.h"
 
 #include "Utility/Memory/FreeDeleter.h"
+#include "Utility/Streams/BlobInputStream.h"
 #include "Utility/String.h"
 #include "Utility/DataPath.h"
 
@@ -55,42 +57,37 @@ struct LODSpriteLine {
 };
 #pragma pack(pop)
 
-int LODFile_Sprites::LoadSpriteFromFile(LODSprite *pSprite, const std::string &pContainer) {
-    FILE *File = FindContainer(pContainer, 0);
-    if (File == nullptr) {
-        return -1;
-    }
+bool LODFile_Sprites::LoadSpriteFromFile(LODSprite *pSprite, const std::string &pContainer) {
+    if (!_reader->exists(pContainer))
+        return false;
 
-    if (fread(pSprite, sizeof(LODSpriteHeader), 1, File) != 1)
-        return -1;
+    BlobInputStream input(_reader->read(pContainer));
+    input.readOrFail(pSprite, sizeof(LODSpriteHeader));
 
     strcpy(pSprite->pName, pContainer.c_str());
-    std::unique_ptr<LODSpriteLine[]> pSpriteLines(new LODSpriteLine[pSprite->uHeight]);
-    if (fread(pSpriteLines.get(), sizeof(LODSpriteLine) * pSprite->uHeight, 1, File) != 1)
-        return -1;
 
-    Blob bytes = Blob::read(File, pSprite->uSpriteSize);
+    std::unique_ptr<LODSpriteLine[]> pSpriteLines(new LODSpriteLine[pSprite->uHeight]);
+    input.readOrFail(pSpriteLines.get(), sizeof(LODSpriteLine) * pSprite->uHeight);
+
+    Blob pixels = input.readBlobOrFail(pSprite->uSpriteSize);
     if (pSprite->uDecompressedSize)
-        bytes = zlib::Uncompress(bytes, pSprite->uDecompressedSize);
+        pixels = zlib::Uncompress(pixels, pSprite->uDecompressedSize);
 
     pSprite->bitmap = GrayscaleImage::solid(pSprite->uWidth, pSprite->uHeight, 0);
     for (uint i = 0; i < pSprite->uHeight; i++) {
         if (pSpriteLines[i].begin >= 0) {
             memcpy(pSprite->bitmap[i].data() + pSpriteLines[i].begin,
-                static_cast<const char *>(bytes.data()) + pSpriteLines[i].offset,
-                pSpriteLines[i].end - pSpriteLines[i].begin);
+                   static_cast<const char *>(pixels.data()) + pSpriteLines[i].offset,
+                   pSpriteLines[i].end - pSpriteLines[i].begin);
         }
     }
 
-    return 1;
+    return true;
 }
 
 bool LODFile_Sprites::open(const std::string &pFilename, const std::string &folder) {
-    if (!Open(pFilename)) {
-        return false;
-    }
-
-    return LoadSubIndices(folder);
+    _reader = LodReader::open(pFilename);
+    return true;
 }
 
 Sprite *LODFile_Sprites::loadSprite(const std::string &pContainerName) {
@@ -100,16 +97,11 @@ Sprite *LODFile_Sprites::loadSprite(const std::string &pContainerName) {
         }
     }
 
-    FILE *sprite_file = FindContainer(pContainerName, 0);
-    if (!sprite_file) {
-        return nullptr;
-    }
-
     static_assert(sizeof(LODSpriteHeader) == 32, "Wrong type size");
 
-    LODSprite *header = new LODSprite();
-    LoadSpriteFromFile(header, pContainerName);  // this line is not present here in the original.
-                                                 // necessary for GrayFace's mouse picking fix
+    std::unique_ptr<LODSprite> header = std::make_unique<LODSprite>();
+    if (!LoadSpriteFromFile(header.get(), pContainerName))
+        return nullptr;
 
     // if (uNumLoadedSprites == 879) __debugbreak();
 
@@ -118,7 +110,7 @@ Sprite *LODFile_Sprites::loadSprite(const std::string &pContainerName) {
     sprite.uWidth = header->uWidth;
     sprite.uHeight = header->uHeight;
     sprite.texture = assets->getSprite(pContainerName);
-    sprite.sprite_header = header;
+    sprite.sprite_header = header.release();
     return &sprite;
 }
 
@@ -221,7 +213,7 @@ LODFile_Sprites::~LODFile_Sprites() {
     }
 }
 
-LODFile_Sprites::LODFile_Sprites() : LOD::File() {}
+LODFile_Sprites::LODFile_Sprites() = default;
 
 LODFile_IconsBitmaps::~LODFile_IconsBitmaps() {
     for (uint i = 0; i < this->_textures.size(); i++) {
