@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;0173f63</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;448b827</span>
    </div>
   </td>
  </tr>
@@ -84,6 +84,7 @@ $(function() {
 <div class="contents">
 <div class="textblock"><code>#include &lt;variant&gt;</code><br />
 <code>#include &quot;<a class="el" href="Flags_8h.html">Utility/Flags.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="Plane_8h.html">Utility/Geometry/Plane.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="ActorEnums_8h.html">Engine/Objects/ActorEnums.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="MM7_8h.html">Engine/MM7.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Camera_8h.html">Camera.h</a>&quot;</code><br />
@@ -128,8 +129,8 @@ Enumerations</h2></td></tr>
 Functions</h2></td></tr>
 <tr class="memitem:a258a00a10314a1783c87252bfb3608fa"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Vis_8h.html#a258a00a10314a1783c87252bfb3608fa">IsBModelVisible</a> (<a class="el" href="classBSPModel.html">BSPModel</a> *model, int reachable_depth, bool *reachable)</td></tr>
 <tr class="separator:a258a00a10314a1783c87252bfb3608fa"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8c37adac2f10c5eeb895e97ad1dc5dc3"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Vis_8h.html#a8c37adac2f10c5eeb895e97ad1dc5dc3">IsSphereInFrustum</a> (<a class="el" href="Vec_8h.html#a40b8356e33151c22cb4d1adaf2b762a8">Vec3f</a> center, float radius, <a class="el" href="structIndoorCameraD3D__Vec4.html">IndoorCameraD3D_Vec4</a> *frustum=nullptr)</td></tr>
-<tr class="separator:a8c37adac2f10c5eeb895e97ad1dc5dc3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad394bec1730f8838c4b9b675a5071484"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Vis_8h.html#ad394bec1730f8838c4b9b675a5071484">IsSphereInFrustum</a> (<a class="el" href="Vec_8h.html#a40b8356e33151c22cb4d1adaf2b762a8">Vec3f</a> center, float radius, <a class="el" href="structPlanef.html">Planef</a> *frustum=nullptr)</td></tr>
+<tr class="separator:ad394bec1730f8838c4b9b675a5071484"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aad634e7f4f6e46e144db7345596c9c2e"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Vis_8h.html#aad634e7f4f6e46e144db7345596c9c2e">IsCylinderInFrustum</a> (<a class="el" href="Vec_8h.html#a40b8356e33151c22cb4d1adaf2b762a8">Vec3f</a> center, float radius)</td></tr>
 <tr class="separator:aad634e7f4f6e46e144db7345596c9c2e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
@@ -300,8 +301,8 @@ Variables</h2></td></tr>
 
 </div>
 </div>
-<a id="a8c37adac2f10c5eeb895e97ad1dc5dc3" name="a8c37adac2f10c5eeb895e97ad1dc5dc3"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a8c37adac2f10c5eeb895e97ad1dc5dc3">&#9670;&#160;</a></span>IsSphereInFrustum()</h2>
+<a id="ad394bec1730f8838c4b9b675a5071484" name="ad394bec1730f8838c4b9b675a5071484"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad394bec1730f8838c4b9b675a5071484">&#9670;&#160;</a></span>IsSphereInFrustum()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -321,7 +322,7 @@ Variables</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="structIndoorCameraD3D__Vec4.html">IndoorCameraD3D_Vec4</a> *&#160;</td>
+          <td class="paramtype"><a class="el" href="structPlanef.html">Planef</a> *&#160;</td>
           <td class="paramname"><em>frustum</em> = <code>nullptr</code>&#160;</td>
         </tr>
         <tr>
@@ -335,7 +336,7 @@ Variables</h2></td></tr>
   <table class="params">
     <tr><td class="paramname">center</td><td>Vec3f of centre point of sphere. </td></tr>
     <tr><td class="paramname">radius</td><td>Float of sphere radius. </td></tr>
-    <tr><td class="paramname">frustum</td><td>Ptr to vec4f set of planes to check against - camera used in not supplied</td></tr>
+    <tr><td class="paramname">frustum</td><td>Ptr to set of planes to check against - camera used in not supplied.</td></tr>
   </table>
   </dd>
 </dl>

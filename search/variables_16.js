@@ -68,7 +68,7 @@ var searchData=
   ['viewpitch_65',['viewPitch',['../structTownPortalData.html#a9ed8c6945cf3183953f94fe70ab4f2c2',1,'TownPortalData::viewPitch()'],['../structParty__MM7.html#ad33fde4863474c36538cf2e98ffdf11f',1,'Party_MM7::viewPitch()']]],
   ['viewplanedist_5fx_66',['ViewPlaneDist_X',['../structCamera3D.html#a3a99d5590314cb50411aa869fac0d824',1,'Camera3D']]],
   ['viewplanedist_5fy_67',['ViewPlaneDist_Y',['../structCamera3D.html#a81594d7d1865c0ef03f6cf7dc6136b63',1,'Camera3D']]],
-  ['viewportnodefrustum_68',['ViewportNodeFrustum',['../structBspRenderer__ViewportNode.html#ae352e12b619f299e8e3486e9ccdc70ea',1,'BspRenderer_ViewportNode']]],
+  ['viewportnodefrustum_68',['ViewportNodeFrustum',['../structBspRenderer__ViewportNode.html#a333e73f9a09ed1ddf4944e6781a19c21',1,'BspRenderer_ViewportNode']]],
   ['viewportx1_69',['ViewPortX1',['../classGameConfig_1_1Graphics.html#a626a13ad513eff87553ad0d31470a8ed',1,'GameConfig::Graphics']]],
   ['viewportx2_70',['ViewPortX2',['../classGameConfig_1_1Graphics.html#a00bc77a0c95c580e34819b4207901e84',1,'GameConfig::Graphics']]],
   ['viewporty1_71',['ViewPortY1',['../classGameConfig_1_1Graphics.html#ac94a540670b3d5fe2c4f6f714eb3e388',1,'GameConfig::Graphics']]],
