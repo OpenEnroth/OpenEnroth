@@ -6,13 +6,7 @@
 
 #include "Engine/Graphics/RenderEntities.h"
 
-// TODO(captainurist): this is actually Planef, but dot = -dist.
-struct IndoorCameraD3D_Vec4 {
-    float x = 0;
-    float y = 0;
-    float z = 0;
-    float dot = 0;
-};
+#include "Utility/Geometry/Plane.h"
 
 struct Camera3D {
     void ViewTransform(int x, int y, int z, int *transformed_x, int *transformed_y, int *transformed_z);
@@ -53,14 +47,14 @@ struct Camera3D {
 
     bool CullFaceToFrustum(struct RenderVertexSoft *inVerts,
         unsigned int *pOutNumVertices,
-        struct RenderVertexSoft *pOutVertices, struct IndoorCameraD3D_Vec4 *frustum, signed int uNumPlanes);
+        struct RenderVertexSoft *pOutVertices, Planef *frustum, signed int uNumPlanes);
 
     bool ClipFaceToFrustum(RenderVertexSoft *pInVertices,
-        unsigned int *pOutNumVertices,
-        RenderVertexSoft *pVertices,
-        IndoorCameraD3D_Vec4 *CameraFrustrum,
-        signed int NumFrustumPlanes, char DebugLines,
-        int _unused);
+                           unsigned int *pOutNumVertices,
+                           RenderVertexSoft *pVertices,
+                           Planef *CameraFrustrum,
+                           int NumFrustumPlanes, char DebugLines,
+                           int _unused);
 
     void BuildViewFrustum();
     void CreateViewMatrixAndProjectionScale();

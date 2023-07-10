@@ -3,6 +3,7 @@
 #include <variant>
 
 #include "Utility/Flags.h"
+#include "Utility/Geometry/Plane.h"
 
 #include "Engine/Objects/ActorEnums.h"
 #include "Engine/MM7.h"
@@ -174,11 +175,11 @@ bool IsBModelVisible(BSPModel *model, int reachable_depth, bool *reachable);
 /**
  * @param center                        Vec3f of centre point of sphere.
  * @param radius                        Float of sphere radius.
- * @param frustum                       Ptr to vec4f set of planes to check against - camera used in not supplied
+ * @param frustum                       Ptr to set of planes to check against - camera used in not supplied.
  *
  * @return                              Whether the bounding radius of the sphere is visible within the frustum planes.
  */
-bool IsSphereInFrustum(Vec3f center, float radius, IndoorCameraD3D_Vec4 *frustum = nullptr);
+bool IsSphereInFrustum(Vec3f center, float radius, Planef *frustum = nullptr);
 
 /**
  * @param center                        Vec3f of centre point of cylinder.
