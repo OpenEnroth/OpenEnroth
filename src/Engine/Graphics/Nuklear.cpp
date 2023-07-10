@@ -3424,8 +3424,8 @@ static int lua_load_raw_from_lod(lua_State *L) {
         content = pGames_LOD->LoadCompressedTexture(resource);
     else if (!strcmp(lod_name, "icons"))
         content = pIcons_LOD->LoadCompressedTexture(resource);
-    else if (!strcmp(lod_name, "sprites"))
-        content = pSprites_LOD->LoadCompressedTexture(resource);
+    // else if (!strcmp(lod_name, "sprites"))
+    //    content = pSprites_LOD->LoadCompressedTexture(resource); // TODO(captainurist): temporarily commented out.
 
     if (!content)
         return luaL_argerror(L, 2, lua_pushfstring(L, "resource '%s' couldn't be loaded", resource));
