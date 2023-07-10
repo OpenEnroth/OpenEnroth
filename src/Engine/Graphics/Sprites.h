@@ -12,25 +12,15 @@ class GraphicsImage;
 
 class Sprite {
  public:
-    inline Sprite() {
-        texture = nullptr;
-        uAreaX = 0;
-        uAreaY = 0;
-        uWidth = 0;
-        uHeight = 0;
-        sprite_header = nullptr;
-    }
-
     void Release();
 
     std::string pName;
-    GraphicsImage *texture;
-    int uAreaX; // TODO(captainurist): always zero,
-    int uAreaY; // TODO(captainurist): was intended to support sprite maps?
-    int uWidth; // Same as texture->width().
-    int uHeight;
-
-    LODSprite *sprite_header;
+    GraphicsImage *texture = nullptr;
+    int uAreaX = 0; // TODO(captainurist): always zero,
+    int uAreaY = 0; // TODO(captainurist): was intended to support sprite maps?
+    int uWidth = 0; // Same as texture->width().
+    int uHeight = 0;
+    LODSprite *sprite_header = nullptr;
 };
 
 class SpriteFrame {
