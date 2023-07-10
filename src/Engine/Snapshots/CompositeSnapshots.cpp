@@ -556,3 +556,15 @@ void deserialize(const LOD::File &src, SaveGame_MM7 *dst) {
     deserialize(src.LoadRaw("npcdata.bin"), &dst->npcData);
     deserialize(src.LoadRaw("npcgroup.bin"), &dst->npcGroup);
 }
+
+void reconstruct(const SpriteFrameTable_MM7 &src, SpriteFrameTable *dst) {
+    reconstruct(src.frames, &dst->pSpriteSFrames);
+    reconstruct(src.eframes, &dst->pSpriteEFrames);
+}
+
+void deserialize(InputStream &src, SpriteFrameTable_MM7 *dst) {
+    deserialize(src, &dst->frameCount);
+    deserialize(src, &dst->eframeCount);
+    deserialize(src, &dst->frames, presized(dst->frameCount));
+    deserialize(src, &dst->eframes, presized(dst->eframeCount));
+}

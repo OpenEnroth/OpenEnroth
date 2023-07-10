@@ -11,9 +11,8 @@
 
 #include "Engine/Objects/Actor.h"
 
-#include "Engine/Snapshots/EntitySnapshots.h"
-#include "Engine/Snapshots/CommonSnapshots.h"
 #include "Engine/Snapshots/SnapshotSerialization.h"
+#include "Engine/Snapshots/CompositeSnapshots.h"
 
 #include "Engine/Graphics/DecorationList.h"
 #include "Engine/Graphics/PaletteManager.h"
@@ -253,18 +252,7 @@ void SpriteFrameTable::FromFile(const Blob &data_mm6, const Blob &data_mm7, cons
     (void) data_mm6;
     (void) data_mm8;
 
-    BlobInputStream src(data_mm7); // TODO(captainurist): encapsulate
-    uint32_t frameCount = 0;
-    uint32_t eframeCount = 0;
-    deserialize(src, &frameCount);
-    deserialize(src, &eframeCount);
-
-    std::vector<SpriteFrame_MM7> tmp;
-    deserialize(src, &tmp, presized(frameCount));
-    reconstruct(tmp, &pSpriteSFrames);
-    deserialize(src, &pSpriteEFrames, presized(eframeCount));
-
-    assert(!pSpriteSFrames.empty());
+    deserialize(data_mm7, this, via<SpriteFrameTable_MM7>());
 }
 
 SpriteFrame *LevelDecorationChangeSeason(const DecorationDesc *desc, int t, int month) {
