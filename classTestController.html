@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;0aeb9df</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;ce1bef1</span>
    </div>
   </td>
  </tr>
@@ -71,6 +71,7 @@ $(function() {
 <div class="header">
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
+<a href="#pri-methods">Private Member Functions</a> &#124;
 <a href="#pri-attribs">Private Attributes</a> &#124;
 <a href="classTestController-members.html">List of all members</a>  </div>
   <div class="headertitle"><div class="title">TestController Class Reference</div></div>
@@ -95,6 +96,14 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a93aef5be2ca5bf87f4d07b4ea8f37a4b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1ff30dc88fe58ac10dbf0b085a2c6ff4"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTestController.html#a1ff30dc88fe58ac10dbf0b085a2c6ff4">restart</a> (int frameTimeMs)</td></tr>
 <tr class="separator:a1ff30dc88fe58ac10dbf0b085a2c6ff4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a891326ab7549ce29b7b6d2043f082aed"><td class="memTemplParams" colspan="2">template&lt;class Callback , class T  = std::invoke_result_t&lt;Callback&gt;&gt; </td></tr>
+<tr class="memitem:a891326ab7549ce29b7b6d2043f082aed"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="classTestTape.html">TestTape</a>&lt; T &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classTestController.html#a891326ab7549ce29b7b6d2043f082aed">tape</a> (Callback callback)</td></tr>
+<tr class="separator:a891326ab7549ce29b7b6d2043f082aed"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pri-methods" name="pri-methods"></a>
+Private Member Functions</h2></td></tr>
+<tr class="memitem:aa168b554b4e18e1fc0cfe9dc205ce938"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTestController.html#aa168b554b4e18e1fc0cfe9dc205ce938">runTapeCallbacks</a> ()</td></tr>
+<tr class="separator:aa168b554b4e18e1fc0cfe9dc205ce938"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pri-attribs" name="pri-attribs"></a>
 Private Attributes</h2></td></tr>
@@ -102,6 +111,8 @@ Private Attributes</h2></td></tr>
 <tr class="separator:ae075fa14f491f257f0c33938049abe4f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a764482ace97412ce36a3fd248ca0078d"><td class="memItemLeft" align="right" valign="top">std::filesystem::path&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTestController.html#a764482ace97412ce36a3fd248ca0078d">_testDataPath</a></td></tr>
 <tr class="separator:a764482ace97412ce36a3fd248ca0078d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a229d6ae9a9c165ea7de02b7c3b417455"><td class="memItemLeft" align="right" valign="top">std::vector&lt; std::function&lt; void()&gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTestController.html#a229d6ae9a9c165ea7de02b7c3b417455">_tapeCallbacks</a></td></tr>
+<tr class="separator:a229d6ae9a9c165ea7de02b7c3b417455"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a99052f8ad73bcbefd65b3d52b6c5e2a6" name="a99052f8ad73bcbefd65b3d52b6c5e2a6"></a>
@@ -278,6 +289,69 @@ Private Attributes</h2></td></tr>
 
 </div>
 </div>
+<a id="aa168b554b4e18e1fc0cfe9dc205ce938" name="aa168b554b4e18e1fc0cfe9dc205ce938"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa168b554b4e18e1fc0cfe9dc205ce938">&#9670;&#160;</a></span>runTapeCallbacks()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void TestController::runTapeCallbacks </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a891326ab7549ce29b7b6d2043f082aed" name="a891326ab7549ce29b7b6d2043f082aed"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a891326ab7549ce29b7b6d2043f082aed">&#9670;&#160;</a></span>tape()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class Callback , class T  = std::invoke_result_t&lt;Callback&gt;&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classTestTape.html">TestTape</a>&lt; T &gt; TestController::tape </td>
+          <td>(</td>
+          <td class="paramtype">Callback&#160;</td>
+          <td class="paramname"><em>callback</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p >Creates a tape object that will record changes in a value computed by the provided callback throughout the execution of a trace.</p>
+<p >The callback is called on every frame, and also before and after running the trace, and unique values are stored on a tape. This effectively means that if, for example, the provided callback always returns the same value, then you'll get a tape of size 1.</p>
+<p >A typical use case is to create a tape, call <code>playTraceFromTestData</code> to play a trace, then check the data stored on the tape.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">callback</td><td>Callback that will calculate the values to store on a tape. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Tape object. </dd></dl>
+
+</div>
+</div>
 <h2 class="groupheader">Member Data Documentation</h2>
 <a id="ae075fa14f491f257f0c33938049abe4f" name="ae075fa14f491f257f0c33938049abe4f"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ae075fa14f491f257f0c33938049abe4f">&#9670;&#160;</a></span>_controller</h2>
@@ -290,6 +364,28 @@ Private Attributes</h2></td></tr>
       <table class="memname">
         <tr>
           <td class="memname"><a class="el" href="classEngineController.html">EngineController</a>* TestController::_controller</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a229d6ae9a9c165ea7de02b7c3b417455" name="a229d6ae9a9c165ea7de02b7c3b417455"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a229d6ae9a9c165ea7de02b7c3b417455">&#9670;&#160;</a></span>_tapeCallbacks</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::vector&lt;std::function&lt;void()&gt; &gt; TestController::_tapeCallbacks</td>
         </tr>
       </table>
   </td>
