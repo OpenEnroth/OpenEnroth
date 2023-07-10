@@ -440,7 +440,7 @@ void Character::SetCondition(Condition uConditionIdx, int blockable) {
     if (conditions.Has(uConditionIdx))  // cant get the same condition twice
         return;
 
-    if (!ConditionProcessor::IsPlayerAffected(this, uConditionIdx, blockable)) {  // block check
+    if (!IsPlayerAffected(this, uConditionIdx, blockable)) {  // block check
         return;
     }
 
