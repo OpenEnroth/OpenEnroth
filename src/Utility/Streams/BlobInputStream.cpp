@@ -3,14 +3,17 @@
 #include <cassert>
 #include <cstring>
 #include <algorithm>
+#include <utility>
 
 #include "Utility/Exception.h"
 
-BlobInputStream::BlobInputStream(const Blob &blob) {
-    _blob = &blob;
-    _pos = static_cast<const char *>(blob.data());
-    _end = _pos + blob.size();
+BlobInputStream::BlobInputStream(Blob &&blob) {
+    _blob = std::move(blob);
+    _pos = static_cast<const char *>(_blob.data());
+    _end = _pos + _blob.size();
 }
+
+BlobInputStream::BlobInputStream(const Blob &blob): BlobInputStream(Blob::share(blob)) {}
 
 size_t BlobInputStream::read(void *data, size_t size) {
     assert(_pos);
@@ -31,7 +34,7 @@ size_t BlobInputStream::skip(size_t size) {
 }
 
 void BlobInputStream::close() {
-    _blob = nullptr;
+    _blob = Blob();
     _pos = nullptr;
     _end = nullptr;
 }
@@ -39,14 +42,15 @@ void BlobInputStream::close() {
 Blob BlobInputStream::tail() const {
     assert(_pos);
 
-    return _blob->subBlob(offset());
+    return _blob.subBlob(offset());
 }
 
 Blob BlobInputStream::readBlob(size_t size) {
     assert(_pos);
 
     size = std::min(size, remaining());
-    Blob result = _blob->subBlob(offset(), size);
+    Blob result = _blob.subBlob(offset(), size);
+    assert(result.size() == size);
     _pos += size;
     return result;
 }
@@ -57,7 +61,7 @@ Blob BlobInputStream::readBlobOrFail(size_t size) {
     if (size > remaining())
         throw Exception("Failed to read the requested number of bytes from a blob stream, requested {}, got {}", size, remaining());
 
-    Blob result = _blob->subBlob(offset(), size);
+    Blob result = _blob.subBlob(offset(), size);
     assert(result.size() == size);
     _pos += size;
     return result;
@@ -66,7 +70,7 @@ Blob BlobInputStream::readBlobOrFail(size_t size) {
 size_t BlobInputStream::offset() const {
     assert(_pos);
 
-    return _pos - static_cast<const char *>(_blob->data());
+    return _pos - static_cast<const char *>(_blob.data());
 }
 
 size_t BlobInputStream::remaining() const {
