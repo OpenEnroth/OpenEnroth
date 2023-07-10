@@ -309,7 +309,6 @@ void snapshot(const Party &src, Party_MM7 *dst) {
     dst->prevEyeLevel = src.lastEyeLevel;
     dst->fallSpeed = src.speed.z;
     dst->savedFlightZ = src.sPartySavedFlightZ;
-    dst->floorFacePid = src.floor_face_pid;
     dst->waterLavaTimer = src._6FC_water_lava_timer;
     dst->fallStartZ = src.uFallStartZ;
     dst->flying = src.bFlying;
@@ -410,7 +409,6 @@ void reconstruct(const Party_MM7 &src, Party *dst) {
     dst->lastEyeLevel = src.prevEyeLevel;
     dst->speed = Vec3i(0, 0, src.fallSpeed);
     dst->sPartySavedFlightZ = src.savedFlightZ;
-    dst->floor_face_pid = src.floorFacePid;
     dst->_6FC_water_lava_timer = src.waterLavaTimer;
     dst->uFallStartZ = src.fallStartZ;
     dst->bFlying = src.flying;

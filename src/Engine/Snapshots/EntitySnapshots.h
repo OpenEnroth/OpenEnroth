@@ -442,7 +442,9 @@ struct Party_MM7 {
     /* 006E8 */ int32_t fallSpeed;
     /* 006EC */ int32_t field_6EC;
     /* 006F0 */ int32_t savedFlightZ;
-    /* 006F4 */ int32_t floorFacePid; // face we are standing at
+    /* 006F4 */ int32_t floorFacePidUnused; // Face the party is standing at. Face id indoors, face pid outdoors.
+                                            // Always set to zero on level loading, so in OE we are just saving 0 and
+                                            // not using it when loading a savegame.
     /* 006F8 */ int32_t walkSoundTimerUnused; // This was removed in OE and we're just saving 0 in this field.
     /* 006FC */ int32_t waterLavaTimer;
     /* 00700 */ int32_t fallStartZ;

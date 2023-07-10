@@ -1441,21 +1441,20 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
 
     bool party_running_flag = false;
     bool party_walking_flag = false;
-    bool isAboveGround = false;
     bool not_high_fall = false;
     bool on_water = false;
     bool bFeatherFall;
 
     int sectorId = pBLVRenderParams->uPartySectorID;
     int faceId = -1;
-    int floor_z = GetIndoorFloorZ(pParty->pos + Vec3i(0, 0, 40), &sectorId, &faceId);
+    int floorZ = GetIndoorFloorZ(pParty->pos + Vec3i(0, 0, 40), &sectorId, &faceId);
 
     if (pParty->bFlying)  // disable flight
         pParty->bFlying = false;
 
-    if (floor_z == -30000 || faceId == -1) {
-        floor_z = GetApproximateIndoorFloorZ(pParty->pos + Vec3i(0, 0, 40), &sectorId, &faceId);
-        if (floor_z == -30000 || faceId == -1) {
+    if (floorZ == -30000 || faceId == -1) {
+        floorZ = GetApproximateIndoorFloorZ(pParty->pos + Vec3i(0, 0, 40), &sectorId, &faceId);
+        if (floorZ == -30000 || faceId == -1) {
             __debugbreak();  // level built with errors
             pParty->pos = blv_prev_party_pos;
             pParty->uFallStartZ = blv_prev_party_pos.z;
@@ -1468,15 +1467,15 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
     int fall_start;
     if (pParty->FeatherFallActive() || pParty->wearsItemAnywhere(ITEM_ARTIFACT_LADYS_ESCORT)
         || pParty->uFlags & (PARTY_FLAGS_1_LANDING | PARTY_FLAGS_1_JUMPING)) {
-        fall_start = floor_z;
+        fall_start = floorZ;
         bFeatherFall = true;
-        pParty->uFallStartZ = floor_z;
+        pParty->uFallStartZ = floorZ;
     } else {
         bFeatherFall = false;
         fall_start = pParty->uFallStartZ;
     }
 
-    if (fall_start - pParty->pos.z > 512 && !bFeatherFall && pParty->pos.z <= floor_z + 1) {  // fall damage
+    if (fall_start - pParty->pos.z > 512 && !bFeatherFall && pParty->pos.z <= floorZ + 1) {  // fall damage
         if (pParty->uFlags & (PARTY_FLAGS_1_LANDING | PARTY_FLAGS_1_JUMPING)) {
             // flying was previously used to prevent fall damage from jump spell
             pParty->uFlags &= ~(PARTY_FLAGS_1_LANDING | PARTY_FLAGS_1_JUMPING);
@@ -1485,31 +1484,24 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
         }
     }
 
-    if (pParty->pos.z > floor_z + 1)
-        isAboveGround = true;
+    bool isAboveGround = pParty->pos.z > floorZ + 1;
 
-    if (pParty->pos.z - floor_z <= 32) {
+    if (!isAboveGround) {
+        pParty->pos.z = floorZ + 1; // Snap to floor if party is below.
         pParty->uFallStartZ = pParty->pos.z;
+    } else if (pParty->pos.z <= floorZ + 32) {
         not_high_fall = true;
+        pParty->uFallStartZ = pParty->pos.z;
     }
 
-    // party is below floor level?
-    if (pParty->pos.z <= floor_z + 1) {
-        pParty->pos.z = floor_z + 1;
-        pParty->uFallStartZ = floor_z + 1;
-
-        // TODO(captainurist): there's some very weird logic with faceId / faceEvent processing in this function.
-        //                     We check first face, then move, then check the new face. Why not check once?
-
-        // not hovering & stepped onto a new face => activate potential pressure plate,
-        // TODO: but why is this condition under "below floor level" if above?
-        if (!isAboveGround && pParty->floor_face_pid != faceId) {
-            if (pIndoor->pFaces[faceId].uAttributes & FACE_PRESSURE_PLATE)
-                faceEvent = pIndoor->pFaceExtras[pIndoor->pFaces[faceId].uFaceExtraID].uEventID;
-        }
+    // not hovering & stepped onto a new face => activate potential pressure plate.
+    if (!isAboveGround && pParty->floor_face_id != faceId) {
+        if (pIndoor->pFaces[faceId].uAttributes & FACE_PRESSURE_PLATE)
+            faceEvent = pIndoor->pFaceExtras[pIndoor->pFaces[faceId].uFaceExtraID].uEventID;
     }
+
     if (!isAboveGround)
-        pParty->floor_face_pid = faceId;
+        pParty->floor_face_id = faceId;
 
     // party is on water?
     if (pIndoor->pFaces[faceId].isFluid())
@@ -1613,7 +1605,7 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
                 break;
 
             case PARTY_Jump:
-                if ((!isAboveGround || pParty->pos.z <= floor_z + 6 && pParty->speed.z <= 0) && pParty->jump_strength) {
+                if ((!isAboveGround || pParty->pos.z <= floorZ + 6 && pParty->speed.z <= 0) && pParty->jump_strength) {
                     isAboveGround = true;
                     pParty->speed.z += pParty->jump_strength * 96;
                 }
@@ -1727,7 +1719,7 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
                     pParty->speed.y = 0;
                     pParty->speed.x = 0;
                 }
-                if (pParty->floor_face_pid != PID_ID(collision_state.pid) && pFace->Pressure_Plate())
+                if (pParty->floor_face_id != PID_ID(collision_state.pid) && pFace->Pressure_Plate())
                     faceEvent = pIndoor->pFaceExtras[pFace->uFaceExtraID].uEventID;
             } else { // Not floor
                 int speed_dot_normal = abs(
@@ -1751,11 +1743,11 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
                         pParty->pos.y += -distance_to_face * pFace->facePlane.normal.y;
                         new_party_z_tmp += -distance_to_face * pFace->facePlane.normal.z;
                     }
-                    if (pParty->floor_face_pid != PID_ID(collision_state.pid) && pFace->Pressure_Plate())
+                    if (pParty->floor_face_id != PID_ID(collision_state.pid) && pFace->Pressure_Plate())
                         faceEvent = pIndoor->pFaceExtras[pFace->uFaceExtraID].uEventID;
                 } else { // between floor & wall
                     if (pParty->speed.xy().lengthSqr() >= min_party_move_delta_sqr) {
-                        if (pParty->floor_face_pid != PID_ID(collision_state.pid) && pFace->Pressure_Plate())
+                        if (pParty->floor_face_id != PID_ID(collision_state.pid) && pFace->Pressure_Plate())
                             faceEvent = pIndoor->pFaceExtras[pFace->uFaceExtraID].uEventID;
                     } else {
                         pParty->speed = Vec3i();

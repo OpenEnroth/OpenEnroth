@@ -101,7 +101,7 @@ void Party::Zero() {
     _viewPitch = _viewPrevPitch = 0;
     lastEyeLevel = 0;
     sPartySavedFlightZ = 0;
-    floor_face_pid = 0;
+    floor_face_id = 0;
     currentWalkingSound = SOUND_Invalid;
     _6FC_water_lava_timer = 0;
     uFallStartZ = 0;
