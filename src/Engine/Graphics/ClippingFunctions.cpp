@@ -43,7 +43,7 @@ bool ClippingFunctions::ClipVertsToPortal(RenderVertexSoft *pPortalBounding,  //
       static_AE3FB4.flt_2C = 0.0;
     }*/
 
-    static stru312 static_AE3FA4;  // idb
+    static Vec3f static_AE3FA4;  // idb
     /*static bool __init_flag2 = false;
     if (!__init_flag2) {
       __init_flag2 = true;
@@ -262,7 +262,7 @@ void ClippingFunctions::AddVertex(VertexBuffer *pVertexBuffer,
 // this adjusts the vert to the face
 //----- (00498774) --------------------------------------------------------
 bool ClippingFunctions::AdjustVertToClipEdge(RenderVertexSoft *a1, RenderVertexSoft *a2,
-                                             RenderVertexSoft *a3, stru312 *a4,
+                                             RenderVertexSoft *a3, Vec3f *a4,
                                              RenderVertexSoft *a5) {
     // this looks like it is meant to clip the light map / decal verts to the face plane verts
 
@@ -286,8 +286,8 @@ bool ClippingFunctions::AdjustVertToClipEdge(RenderVertexSoft *a1, RenderVertexS
 
     // __debugbreak();
 
-    static stru312 static_AE3388;
-    static stru312 static_AE3378;
+    static Vec3f static_AE3388;
+    static Vec3f static_AE3378;
 
     v6 = a1;
     static_AE3378.x = a1->vWorldPosition.x - a3->vWorldPosition.x;
@@ -348,10 +348,10 @@ bool ClippingFunctions::AdjustVertToClipEdge(RenderVertexSoft *a1, RenderVertexS
 //----- (0049895A) --------------------------------------------------------
 bool ClippingFunctions::AreVectorsCollinear(RenderVertexSoft *a1,
                                             RenderVertexSoft *a2,
-                                            stru312 *a3) {
+                                            Vec3f *a3) {
     // is vector a2->a1 in same semiplane as a3
 
-    /*static */stru312 static_F942A0;
+    /*static */Vec3f static_F942A0;
 
     static_F942A0.x = a1->vWorldPosition.x - a2->vWorldPosition.x;
     static_F942A0.y = a1->vWorldPosition.y - a2->vWorldPosition.y;
@@ -365,7 +365,7 @@ bool ClippingFunctions::AreVectorsCollinear(RenderVertexSoft *a1,
 
 //----- (004989E1) --------------------------------------------------------
 bool ClippingFunctions::DoDecalVertsNeedClipping(RenderVertexSoft *a1, RenderVertexSoft *a2,
-                                                 RenderVertexSoft *a3, stru312 *a4) {
+                                                 RenderVertexSoft *a3, Vec3f *a4) {
     // lightmap/decal first two verts
     // 3rd is face vert
     // 4th is vec along face
@@ -402,7 +402,7 @@ bool ClippingFunctions::ClipVertsToFace(RenderVertexSoft *a1, unsigned int uNumV
     signed int v25;         // [sp+18h] [bp-Ch]@7
 
     static RenderVertexSoft stru_AE4BFC;
-    static stru312 static_sub_4980B9_stru_AE4BEC;       // idb
+    static Vec3f static_sub_4980B9_stru_AE4BEC;       // idb
     static VertexBuffer static_sub_4980B9_stru_AE3FE8;  // idb
 
     v25 = 0;

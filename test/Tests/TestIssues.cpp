@@ -852,7 +852,7 @@ GAME_TEST(Issues, Issue578) {
     // Check that rest & heal work after waiting
     auto healthTape = makeTotalHealthTape(test);
     test->playTraceFromTestData("issue_578.mm7", "issue_578.json");
-    EXPECT_EQ(healthTape, tape(350, 419)); // TODO(captainurist): is it OK that we only have two elements here?
+    EXPECT_EQ(healthTape, tape(350, 419));
 }
 
 GAME_TEST(Issues, Issue598) {

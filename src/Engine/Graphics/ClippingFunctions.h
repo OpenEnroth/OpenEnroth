@@ -11,13 +11,6 @@ struct VertexBuffer {
     int uNumVertices;
 };
 
-// TODO(captainurist): this is just Vec3f
-struct stru312 {
-    float x = 0;
-    float y = 0;
-    float z = 0;
-};
-
 struct ClippingFunctions {
     static bool ClipVertsToFace(RenderVertexSoft *a1, unsigned int uNumVertices, float a3, float a4, float a5,
                                 RenderVertexSoft *pOutVertices, signed int *pOutNumVertices);
@@ -30,9 +23,9 @@ struct ClippingFunctions {
 
     static void AddVertex(VertexBuffer *pVertexBuffer, RenderVertexSoft *pVertex);
 
-    static bool AdjustVertToClipEdge(RenderVertexSoft *a1, RenderVertexSoft *a2, RenderVertexSoft *a3, stru312 *a4, RenderVertexSoft *a5);
+    static bool AdjustVertToClipEdge(RenderVertexSoft *a1, RenderVertexSoft *a2, RenderVertexSoft *a3, Vec3f *a4, RenderVertexSoft *a5);
 
-    static bool AreVectorsCollinear(RenderVertexSoft *a1, RenderVertexSoft *a2, stru312 *a3);
+    static bool AreVectorsCollinear(RenderVertexSoft *a1, RenderVertexSoft *a2, Vec3f *a3);
 
-    static bool DoDecalVertsNeedClipping(RenderVertexSoft *a1, RenderVertexSoft *a2, RenderVertexSoft *a3, stru312 *a4);
+    static bool DoDecalVertsNeedClipping(RenderVertexSoft *a1, RenderVertexSoft *a2, RenderVertexSoft *a3, Vec3f *a4);
 };

@@ -896,10 +896,7 @@ void Actor::GetDirectionInfo(unsigned int uObj1ID, unsigned int uObj2ID,
             break;
         }
         case OBJECT_Actor: {
-            // TODO(captainurist): write this out as a vector expression & retrace.
-            out1.x = pActors[id1].pos.x;
-            out1.y = pActors[id1].pos.y;
-            out1.z = pActors[id1].pos.z + (pActors[id1].height * 0.75);
+            out1 = (pActors[id1].pos.toFloat() + Vec3f(0, 0, pActors[id1].height * 0.75f)).toIntTrunc();
             break;
         }
         case OBJECT_Character: {
@@ -939,10 +936,7 @@ void Actor::GetDirectionInfo(unsigned int uObj1ID, unsigned int uObj2ID,
             break;
         }
         case OBJECT_Actor: {
-            // TODO(captainurist): write this out as a vector expression & retrace.
-            out2.x = pActors[id2].pos.x;
-            out2.y = pActors[id2].pos.y;
-            out2.z = pActors[id2].pos.z + (pActors[id2].height * 0.75);
+            out2 = (pActors[id2].pos.toFloat() + Vec3f(0, 0, pActors[id2].height * 0.75f)).toIntTrunc();
             break;
         }
         case OBJECT_Character: {

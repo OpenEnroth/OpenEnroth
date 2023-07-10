@@ -747,7 +747,9 @@ struct Actor_MM7 {
     uint32_t uCurrentActionTime;
     std::array<uint16_t, 8> pSpriteIDs;
     std::array<uint16_t, 4> pSoundSampleIDs;  // 1 die     3 bored
-    std::array<SpellBuff_MM7, 22> pActorBuffs;
+    SpellBuff_MM7 actorBuffZeroUnused; // An artifact of the original memory layout, zero is ACTOR_BUFF_NONE.
+                                       // It's not used for anything in vanilla and simply dropped in OE.
+    std::array<SpellBuff_MM7, 21> pActorBuffs;
     std::array<ItemGen_MM7, 4> ActorHasItems;
     uint32_t uGroup;
     uint32_t uAlly;

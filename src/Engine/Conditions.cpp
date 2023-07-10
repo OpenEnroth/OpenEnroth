@@ -1,34 +1,81 @@
-#include <cstdlib>
-
 #include "Engine/Conditions.h"
+
+#include <cassert>
+
 #include "Engine/Engine.h"
 #include "Engine/Party.h"
 
-IndexedArray<ConditionProcessor, CONDITION_CURSED, CONDITION_ZOMBIE> conditionArray = {
-    // hint: condname, protfrommagic, gmprot, enchantment, ...
-    {CONDITION_CURSED, {false, false, ITEM_ENCHANTMENT_NULL}},
-    {CONDITION_WEAK, {true, false, ITEM_ENCHANTMENT_NULL}},
-    {CONDITION_SLEEP, {false, false, ITEM_ENCHANTMENT_OF_ALARMS, ITEM_ARTIFACT_YORUBA, ITEM_SLOT_ARMOUR}},
-    {CONDITION_FEAR, {false, false, ITEM_ENCHANTMENT_NULL}},
-    {CONDITION_DRUNK, {false, false, ITEM_ENCHANTMENT_NULL}},
-    {CONDITION_INSANE, {false, false, ITEM_ENCHANTMENT_OF_SANITY, ITEM_ARTIFACT_YORUBA, ITEM_SLOT_ARMOUR, ITEM_ARTIFACT_CLOAK_OF_THE_SHEEP, ITEM_SLOT_CLOAK}},
-    {CONDITION_POISON_WEAK, {true, false, ITEM_ENCHANTMENT_OF_ANTIDOTES, ITEM_ARTIFACT_YORUBA, ITEM_SLOT_ARMOUR, ITEM_ARTIFACT_CLOAK_OF_THE_SHEEP, ITEM_SLOT_CLOAK}},
-    {CONDITION_DISEASE_WEAK, {true, false, ITEM_ENCHANTMENT_OF_IMMUNITY, ITEM_ARTIFACT_YORUBA, ITEM_SLOT_ARMOUR, ITEM_ARTIFACT_CLOAK_OF_THE_SHEEP, ITEM_SLOT_CLOAK}},
-    {CONDITION_POISON_MEDIUM, {true, false, ITEM_ENCHANTMENT_OF_ANTIDOTES, ITEM_ARTIFACT_YORUBA, ITEM_SLOT_ARMOUR, ITEM_ARTIFACT_CLOAK_OF_THE_SHEEP, ITEM_SLOT_CLOAK}},
-    {CONDITION_DISEASE_MEDIUM, {true, false, ITEM_ENCHANTMENT_OF_IMMUNITY, ITEM_ARTIFACT_YORUBA, ITEM_SLOT_ARMOUR, ITEM_ARTIFACT_CLOAK_OF_THE_SHEEP, ITEM_SLOT_CLOAK}},
-    {CONDITION_POISON_SEVERE, {true, false, ITEM_ENCHANTMENT_OF_ANTIDOTES, ITEM_ARTIFACT_YORUBA, ITEM_SLOT_ARMOUR, ITEM_ARTIFACT_CLOAK_OF_THE_SHEEP, ITEM_SLOT_CLOAK}},
-    {CONDITION_DISEASE_SEVERE, {true, false, ITEM_ENCHANTMENT_OF_IMMUNITY, ITEM_ARTIFACT_YORUBA, ITEM_SLOT_ARMOUR, ITEM_ARTIFACT_CLOAK_OF_THE_SHEEP, ITEM_SLOT_CLOAK}},
-    {CONDITION_PARALYZED, {false, false, ITEM_ENCHANTMENT_OF_FREEDOM, ITEM_ARTIFACT_YORUBA, ITEM_SLOT_ARMOUR, ITEM_ARTIFACT_CLOAK_OF_THE_SHEEP, ITEM_SLOT_CLOAK,
-                       ITEM_ARTIFACT_GHOULSBANE, ITEM_SLOT_ANY}},
-    {CONDITION_UNCONSCIOUS, {false, false, ITEM_ENCHANTMENT_NULL}},
-    {CONDITION_DEAD, {true, true, ITEM_ENCHANTMENT_NULL}},
-    {CONDITION_PETRIFIED, {true, false, ITEM_ENCHANTMENT_OF_MEDUSA, ITEM_ARTIFACT_YORUBA, ITEM_SLOT_ARMOUR, ITEM_ARTIFACT_CLOAK_OF_THE_SHEEP, ITEM_SLOT_CLOAK,
-                       ITEM_RELIC_KELEBRIM, ITEM_SLOT_ANY}},
-    {CONDITION_ERADICATED, {true, true, ITEM_ENCHANTMENT_NULL}},
-    {CONDITION_ZOMBIE, {false, false, ITEM_ENCHANTMENT_NULL}}
+struct ConditionEquipment {
+    ITEM_TYPE item = ITEM_NULL;
+    ITEM_SLOT slot = ITEM_SLOT_INVALID;
 };
 
-std::array<Condition, 18> conditionImportancyTableDefault = {{
+enum class ConditionFlag {
+    AFFECTED_BY_PROTECTION_FROM_MAGIC = 0x1,
+    REQUIRES_GM_PROTECTION_FROM_MAGIC = 0x2
+};
+using enum ConditionFlag;
+MM_DECLARE_FLAGS(ConditionFlags, ConditionFlag)
+MM_DECLARE_OPERATORS_FOR_FLAGS(ConditionFlags)
+
+struct ConditionTableEntry {
+    ConditionFlags flags;
+    ITEM_ENCHANTMENT enchantment = ITEM_ENCHANTMENT_NULL;
+    std::array<ConditionEquipment, 3> equipment = {{}};
+
+    constexpr ConditionTableEntry() = default;
+    constexpr ConditionTableEntry(ConditionFlags flags,
+                                  ITEM_ENCHANTMENT enchantment = ITEM_ENCHANTMENT_NULL,
+                                  ITEM_TYPE item1 = ITEM_NULL,
+                                  ITEM_SLOT slot1 = ITEM_SLOT_INVALID,
+                                  ITEM_TYPE item2 = ITEM_NULL,
+                                  ITEM_SLOT slot2 = ITEM_SLOT_INVALID,
+                                  ITEM_TYPE item3 = ITEM_NULL,
+                                  ITEM_SLOT slot3 = ITEM_SLOT_INVALID) { // NOLINT: we want an explicit constructor.
+        flags = flags;
+        enchantment = enchantment;
+        equipment[0].item = item1;
+        equipment[0].slot = slot1;
+        equipment[1].item = item2;
+        equipment[1].slot = slot2;
+        equipment[2].item = item3;
+        equipment[2].slot = slot3;
+    }
+};
+
+static constexpr IndexedArray<ConditionTableEntry, CONDITION_CURSED, CONDITION_ZOMBIE> conditionArray = {
+    // hint: condname, protfrommagic, enchantment, ...
+    {CONDITION_CURSED,          {0}},
+    {CONDITION_WEAK,            {AFFECTED_BY_PROTECTION_FROM_MAGIC}},
+    {CONDITION_SLEEP,           {0, ITEM_ENCHANTMENT_OF_ALARMS,
+                                 ITEM_ARTIFACT_YORUBA, ITEM_SLOT_ARMOUR}},
+    {CONDITION_FEAR,            {0}},
+    {CONDITION_DRUNK,           {0}},
+    {CONDITION_INSANE,          {0, ITEM_ENCHANTMENT_OF_SANITY,
+                                 ITEM_ARTIFACT_YORUBA, ITEM_SLOT_ARMOUR, ITEM_ARTIFACT_CLOAK_OF_THE_SHEEP, ITEM_SLOT_CLOAK}},
+    {CONDITION_POISON_WEAK,     {AFFECTED_BY_PROTECTION_FROM_MAGIC, ITEM_ENCHANTMENT_OF_ANTIDOTES,
+                                 ITEM_ARTIFACT_YORUBA, ITEM_SLOT_ARMOUR, ITEM_ARTIFACT_CLOAK_OF_THE_SHEEP, ITEM_SLOT_CLOAK}},
+    {CONDITION_DISEASE_WEAK,    {AFFECTED_BY_PROTECTION_FROM_MAGIC, ITEM_ENCHANTMENT_OF_IMMUNITY,
+                                 ITEM_ARTIFACT_YORUBA, ITEM_SLOT_ARMOUR, ITEM_ARTIFACT_CLOAK_OF_THE_SHEEP, ITEM_SLOT_CLOAK}},
+    {CONDITION_POISON_MEDIUM,   {AFFECTED_BY_PROTECTION_FROM_MAGIC, ITEM_ENCHANTMENT_OF_ANTIDOTES,
+                                 ITEM_ARTIFACT_YORUBA, ITEM_SLOT_ARMOUR, ITEM_ARTIFACT_CLOAK_OF_THE_SHEEP, ITEM_SLOT_CLOAK}},
+    {CONDITION_DISEASE_MEDIUM,  {AFFECTED_BY_PROTECTION_FROM_MAGIC, ITEM_ENCHANTMENT_OF_IMMUNITY,
+                                 ITEM_ARTIFACT_YORUBA, ITEM_SLOT_ARMOUR, ITEM_ARTIFACT_CLOAK_OF_THE_SHEEP, ITEM_SLOT_CLOAK}},
+    {CONDITION_POISON_SEVERE,   {AFFECTED_BY_PROTECTION_FROM_MAGIC, ITEM_ENCHANTMENT_OF_ANTIDOTES,
+                                 ITEM_ARTIFACT_YORUBA, ITEM_SLOT_ARMOUR, ITEM_ARTIFACT_CLOAK_OF_THE_SHEEP, ITEM_SLOT_CLOAK}},
+    {CONDITION_DISEASE_SEVERE,  {AFFECTED_BY_PROTECTION_FROM_MAGIC, ITEM_ENCHANTMENT_OF_IMMUNITY,
+                                 ITEM_ARTIFACT_YORUBA, ITEM_SLOT_ARMOUR, ITEM_ARTIFACT_CLOAK_OF_THE_SHEEP, ITEM_SLOT_CLOAK}},
+    {CONDITION_PARALYZED,       {0, ITEM_ENCHANTMENT_OF_FREEDOM,
+                                 ITEM_ARTIFACT_YORUBA, ITEM_SLOT_ARMOUR, ITEM_ARTIFACT_CLOAK_OF_THE_SHEEP, ITEM_SLOT_CLOAK, ITEM_ARTIFACT_GHOULSBANE, ITEM_SLOT_ANY}},
+    {CONDITION_UNCONSCIOUS,     {0}},
+    {CONDITION_DEAD,            {AFFECTED_BY_PROTECTION_FROM_MAGIC | REQUIRES_GM_PROTECTION_FROM_MAGIC}},
+    {CONDITION_PETRIFIED,       {AFFECTED_BY_PROTECTION_FROM_MAGIC, ITEM_ENCHANTMENT_OF_MEDUSA,
+                                 ITEM_ARTIFACT_YORUBA, ITEM_SLOT_ARMOUR, ITEM_ARTIFACT_CLOAK_OF_THE_SHEEP, ITEM_SLOT_CLOAK, ITEM_RELIC_KELEBRIM, ITEM_SLOT_ANY}},
+    {CONDITION_ERADICATED,      {AFFECTED_BY_PROTECTION_FROM_MAGIC | REQUIRES_GM_PROTECTION_FROM_MAGIC}},
+    {CONDITION_ZOMBIE,          {0}}
+};
+
+static std::array<Condition, 18> conditionImportancyTableDefault = {{
     CONDITION_ERADICATED,
     CONDITION_PETRIFIED,
     CONDITION_DEAD,
@@ -49,7 +96,7 @@ std::array<Condition, 18> conditionImportancyTableDefault = {{
     CONDITION_CURSED
 }};
 
-std::array<Condition, 18> conditionImportancyTableAlternative = {{
+static std::array<Condition, 18> conditionImportancyTableAlternative = {{
     CONDITION_ERADICATED,
     CONDITION_DEAD,
     CONDITION_PETRIFIED,
@@ -70,35 +117,49 @@ std::array<Condition, 18> conditionImportancyTableAlternative = {{
     CONDITION_ZOMBIE
 }};
 
-bool ConditionProcessor::IsPlayerAffected(Character *inPlayer, Condition condToCheck, int blockable) {
-    if (!blockable) return true;
-    ConditionProcessor *thisProc = &conditionArray[condToCheck];
-    if (thisProc->m_IsBlockedByProtFromMagic &&
-        pParty->pPartyBuffs[PARTY_BUFF_PROTECTION_FROM_MAGIC].Active()) {
-        if (!(thisProc->m_DoesNeedGmProtFromMagic &&
-              pParty->pPartyBuffs[PARTY_BUFF_PROTECTION_FROM_MAGIC].skillMastery < CHARACTER_SKILL_MASTERY_GRANDMASTER)) {
-            --pParty->pPartyBuffs[PARTY_BUFF_PROTECTION_FROM_MAGIC].power;
-            if (pParty->pPartyBuffs[PARTY_BUFF_PROTECTION_FROM_MAGIC].power < 1)
-                pParty->pPartyBuffs[PARTY_BUFF_PROTECTION_FROM_MAGIC].Reset();
-            return false;
-        }
-    }
-    if (thisProc->m_WorkingEnchantment != ITEM_ENCHANTMENT_NULL) {
-        if (inPlayer->HasEnchantedItemEquipped(thisProc->m_WorkingEnchantment))
-            return false;
-    }
-    for (unsigned int i = 0; i < thisProc->m_equipmentPairs.size(); i++) {
-        if (thisProc->m_equipmentPairs[i].m_ItemId == (ITEM_TYPE)0)
-            return true;
-        ITEM_TYPE itemId = thisProc->m_equipmentPairs[i].m_ItemId;
-        ITEM_SLOT slot = thisProc->m_equipmentPairs[i].m_EquipSlot;
-        if (slot == ITEM_SLOT_ANY) {
-            if (inPlayer->wearsItemAnywhere(itemId)) return false;
-        } else {
-            if (inPlayer->WearsItem(itemId, slot)) return false;
-        }
-    }
+static bool blockConditionWithProtectionFromMagic(const ConditionTableEntry &entry) {
+    if (!(entry.flags & AFFECTED_BY_PROTECTION_FROM_MAGIC))
+        return false;
+
+    SpellBuff &protectionBuff = pParty->pPartyBuffs[PARTY_BUFF_PROTECTION_FROM_MAGIC];
+    if (!protectionBuff.Active())
+        return false;
+
+    if ((entry.flags & REQUIRES_GM_PROTECTION_FROM_MAGIC) && protectionBuff.skillMastery < CHARACTER_SKILL_MASTERY_GRANDMASTER)
+        return false;
+
+    assert(protectionBuff.power != 0); // Otherwise the decrement below will overflow.
+
+    --protectionBuff.power;
+    if (protectionBuff.power < 1)
+        protectionBuff.Reset();
     return true;
+}
+
+bool blockCondition(Character *character, Condition condition) {
+    assert(!character->conditions.Has(condition)); // Expected to be checked externally.
+
+    const ConditionTableEntry &entry = conditionArray[condition];
+    if (blockConditionWithProtectionFromMagic(entry))
+        return true;
+
+    if (entry.enchantment != ITEM_ENCHANTMENT_NULL && character->HasEnchantedItemEquipped(entry.enchantment))
+        return true;
+
+    for (const ConditionEquipment &pair : entry.equipment) {
+        if (pair.item == ITEM_NULL)
+            break;
+
+        if (pair.slot == ITEM_SLOT_ANY) {
+            if (character->wearsItemAnywhere(pair.item))
+                return true;
+        } else {
+            if (character->WearsItem(pair.item, pair.slot))
+                return true;
+        }
+    }
+
+    return false;
 }
 
 const std::array<Condition, 18> &conditionImportancyTable() {
