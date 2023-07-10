@@ -19,7 +19,7 @@ var searchData=
   ['persistentvariables_16',['PersistentVariables',['../structPersistentVariables.html',1,'']]],
   ['persistentvariables_5fmm7_17',['PersistentVariables_MM7',['../structPersistentVariables__MM7.html',1,'']]],
   ['planef_18',['Planef',['../structPlanef.html',1,'']]],
-  ['planei_19',['Planei',['../structPlanei.html',1,'']]],
+  ['planei_5fmm7_19',['Planei_MM7',['../structPlanei__MM7.html',1,'']]],
   ['planezcalcf_20',['PlaneZCalcf',['../structPlaneZCalcf.html',1,'']]],
   ['platform_21',['Platform',['../classPlatform.html',1,'']]],
   ['platformapplication_22',['PlatformApplication',['../classPlatformApplication.html',1,'']]],
