@@ -81,9 +81,8 @@ var searchData=
   ['stru16x_78',['stru16x',['../structstru16x.html',1,'']]],
   ['stru262_5fturnbased_79',['stru262_TurnBased',['../structstru262__TurnBased.html',1,'']]],
   ['stru2_5flinelist_80',['stru2_LineList',['../structstru2__LineList.html',1,'']]],
-  ['stru312_81',['stru312',['../structstru312.html',1,'']]],
-  ['stru314_82',['stru314',['../structstru314.html',1,'']]],
-  ['stru319_83',['stru319',['../structstru319.html',1,'']]],
-  ['stru6_5fstru2_84',['stru6_stru2',['../structstru6__stru2.html',1,'']]],
-  ['summoneditem_85',['SummonedItem',['../structSummonedItem.html',1,'']]]
+  ['stru314_81',['stru314',['../structstru314.html',1,'']]],
+  ['stru319_82',['stru319',['../structstru319.html',1,'']]],
+  ['stru6_5fstru2_83',['stru6_stru2',['../structstru6__stru2.html',1,'']]],
+  ['summoneditem_84',['SummonedItem',['../structSummonedItem.html',1,'']]]
 ];

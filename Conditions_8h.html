@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;3e0fdc2</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;c7151c5</span>
    </div>
   </td>
  </tr>
@@ -74,35 +74,57 @@ $(function() {
 </div><!-- top -->
 <div class="header">
   <div class="summary">
-<a href="#nested-classes">Classes</a> &#124;
-<a href="#func-members">Functions</a> &#124;
-<a href="#var-members">Variables</a>  </div>
+<a href="#func-members">Functions</a>  </div>
   <div class="headertitle"><div class="title">Conditions.h File Reference</div></div>
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><code>#include &lt;array&gt;</code><br />
-<code>#include &quot;<a class="el" href="ItemEnums_8h.html">Engine/Objects/ItemEnums.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="CharacterEnums_8h.html">Engine/Objects/CharacterEnums.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="IndexedArray_8h.html">Utility/IndexedArray.h</a>&quot;</code><br />
 </div><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
-Classes</h2></td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEquipmentPair.html">EquipmentPair</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classConditionProcessor.html">ConditionProcessor</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
+<tr class="memitem:ad98633c264fbfc5753e96532e030dbd4"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Conditions_8h.html#ad98633c264fbfc5753e96532e030dbd4">blockCondition</a> (<a class="el" href="classCharacter.html">Character</a> *character, <a class="el" href="CharacterEnums_8h.html#a1675b922b385cf7d28bd256fd487a681">Condition</a> condition)</td></tr>
+<tr class="separator:ad98633c264fbfc5753e96532e030dbd4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:adf1015e7a3727a95e56fb2282351f0fc"><td class="memItemLeft" align="right" valign="top">const std::array&lt; <a class="el" href="CharacterEnums_8h.html#a1675b922b385cf7d28bd256fd487a681">Condition</a>, 18 &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Conditions_8h.html#adf1015e7a3727a95e56fb2282351f0fc">conditionImportancyTable</a> ()</td></tr>
 <tr class="separator:adf1015e7a3727a95e56fb2282351f0fc"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="var-members" name="var-members"></a>
-Variables</h2></td></tr>
-<tr class="memitem:a09d0100dc7e6de99e0ed420cbc0beda7"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classIndexedArray.html">IndexedArray</a>&lt; <a class="el" href="classConditionProcessor.html">ConditionProcessor</a>, <a class="el" href="CharacterEnums_8h.html#a1675b922b385cf7d28bd256fd487a681a07ccf08cf8e00993f9b3f8e7ee19811c">CONDITION_CURSED</a>, <a class="el" href="CharacterEnums_8h.html#a1675b922b385cf7d28bd256fd487a681ab53c83d708a60244e5dc91745ed08d7c">CONDITION_ZOMBIE</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Conditions_8h.html#a09d0100dc7e6de99e0ed420cbc0beda7">conditionArray</a></td></tr>
-<tr class="separator:a09d0100dc7e6de99e0ed420cbc0beda7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Function Documentation</h2>
+<a id="ad98633c264fbfc5753e96532e030dbd4" name="ad98633c264fbfc5753e96532e030dbd4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad98633c264fbfc5753e96532e030dbd4">&#9670;&#160;</a></span>blockCondition()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool blockCondition </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classCharacter.html">Character</a> *&#160;</td>
+          <td class="paramname"><em>character</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="CharacterEnums_8h.html#a1675b922b385cf7d28bd256fd487a681">Condition</a>&#160;</td>
+          <td class="paramname"><em>condition</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">character</td><td><a class="el" href="classCharacter.html">Character</a> that's about to receive a condition. </td></tr>
+    <tr><td class="paramname">condition</td><td>Condition in question. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Whether the condition was successfully blocked, either by protection from magic spell, or by an item. In the former case, this function will decrement the protection from magic counter &amp; expire the buff if the counter reaches zero. </dd></dl>
+
+</div>
+</div>
 <a id="adf1015e7a3727a95e56fb2282351f0fc" name="adf1015e7a3727a95e56fb2282351f0fc"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#adf1015e7a3727a95e56fb2282351f0fc">&#9670;&#160;</a></span>conditionImportancyTable()</h2>
 
@@ -116,29 +138,6 @@ Variables</h2></td></tr>
           <td></td>
         </tr>
       </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<h2 class="groupheader">Variable Documentation</h2>
-<a id="a09d0100dc7e6de99e0ed420cbc0beda7" name="a09d0100dc7e6de99e0ed420cbc0beda7"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a09d0100dc7e6de99e0ed420cbc0beda7">&#9670;&#160;</a></span>conditionArray</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="classIndexedArray.html">IndexedArray</a>&lt;<a class="el" href="classConditionProcessor.html">ConditionProcessor</a>, <a class="el" href="CharacterEnums_8h.html#a1675b922b385cf7d28bd256fd487a681a07ccf08cf8e00993f9b3f8e7ee19811c">CONDITION_CURSED</a>, <a class="el" href="CharacterEnums_8h.html#a1675b922b385cf7d28bd256fd487a681ab53c83d708a60244e5dc91745ed08d7c">CONDITION_ZOMBIE</a>&gt; conditionArray</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">extern</span></span>  </td>
-  </tr>
-</table>
 </div><div class="memdoc">
 
 </div>
