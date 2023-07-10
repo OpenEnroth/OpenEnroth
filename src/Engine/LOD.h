@@ -146,8 +146,8 @@ private:
     int LoadTextureFromLOD(struct Texture_MM7 *pOutTex, const std::string &pContainer);
 
  private:
-    int reservedTextureCount = 0;  // bitmaps lod reserved
-    std::deque<Texture_MM7> pTextures;
+    int _reservedCount = 0;
+    std::deque<Texture_MM7> _textures;
 };
 
 #pragma pack(push, 1)
@@ -192,8 +192,8 @@ class LODFile_Sprites : public LOD::File {
     int LoadSpriteFromFile(LODSprite *pSpriteHeader, const std::string &pContainer);
 
  private:
-    int reservedSpriteCount = 0;  // reserved sprites -522
-    std::deque<Sprite> pSprites;
+    int _reservedCount = 0;
+    std::deque<Sprite> _sprites;
 };
 
 extern LODFile_IconsBitmaps *pIcons_LOD;

@@ -40,11 +40,11 @@ struct FileCloser {
 };
 
 void LODFile_IconsBitmaps::reserveLoadedTextures() {
-    reservedTextureCount = pTextures.size();
+    _reservedCount = _textures.size();
 }
 
 void LODFile_Sprites::reserveLoadedSprites() {  // final init
-    reservedSpriteCount = pSprites.size();
+    _reservedCount = _sprites.size();
 }
 
 #pragma pack(push, 1)
@@ -94,7 +94,7 @@ bool LODFile_Sprites::open(const std::string &pFilename, const std::string &fold
 }
 
 Sprite *LODFile_Sprites::loadSprite(const std::string &pContainerName) {
-    for (Sprite &pSprite : pSprites) {
+    for (Sprite &pSprite : _sprites) {
         if (pSprite.pName == pContainerName) {
             return &pSprite;
         }
@@ -113,7 +113,7 @@ Sprite *LODFile_Sprites::loadSprite(const std::string &pContainerName) {
 
     // if (uNumLoadedSprites == 879) __debugbreak();
 
-    Sprite &sprite = pSprites.emplace_back();
+    Sprite &sprite = _sprites.emplace_back();
     sprite.pName = pContainerName;
     sprite.uWidth = header->uWidth;
     sprite.uHeight = header->uHeight;
@@ -123,17 +123,17 @@ Sprite *LODFile_Sprites::loadSprite(const std::string &pContainerName) {
 }
 
 void LODFile_IconsBitmaps::releaseUnreserved() {
-    for (size_t i = this->reservedTextureCount; i < this->pTextures.size(); i++) {
-        this->pTextures[i].Release();
+    for (size_t i = this->_reservedCount; i < this->_textures.size(); i++) {
+        this->_textures[i].Release();
     }
-    this->pTextures.resize(this->reservedTextureCount);
+    this->_textures.resize(this->_reservedCount);
 }
 
 void LODFile_Sprites::releaseUnreserved() {
-    for (size_t i = this->reservedSpriteCount; i < this->pSprites.size(); i++) {
-        this->pSprites[i].Release();
+    for (size_t i = this->_reservedCount; i < this->_sprites.size(); i++) {
+        this->_sprites[i].Release();
     }
-    this->pSprites.resize(this->reservedSpriteCount);
+    this->_sprites.resize(this->_reservedCount);
 }
 
 void LOD::File::Close() {
@@ -219,9 +219,9 @@ bool LODFile_IconsBitmaps::open(const std::string &pFilename, const std::string 
 }
 
 LODFile_Sprites::~LODFile_Sprites() {
-    if (!this->pSprites.empty()) {
-        for (size_t i = 0; i < this->pSprites.size(); ++i) {
-            this->pSprites[i].Release();
+    if (!this->_sprites.empty()) {
+        for (size_t i = 0; i < this->_sprites.size(); ++i) {
+            this->_sprites[i].Release();
         }
     }
 }
@@ -229,8 +229,8 @@ LODFile_Sprites::~LODFile_Sprites() {
 LODFile_Sprites::LODFile_Sprites() : LOD::File() {}
 
 LODFile_IconsBitmaps::~LODFile_IconsBitmaps() {
-    for (uint i = 0; i < this->pTextures.size(); i++) {
-        this->pTextures[i].Release();
+    for (uint i = 0; i < this->_textures.size(); i++) {
+        this->_textures[i].Release();
     }
 }
 
@@ -801,28 +801,28 @@ int LODFile_IconsBitmaps::LoadTextureFromLOD(Texture_MM7 *pOutTex, const std::st
 }
 
 Texture_MM7 *LODFile_IconsBitmaps::loadTexture(const std::string &pContainer, bool useDummyOnError) {
-    for (Texture_MM7 &pTexture : pTextures) {
+    for (Texture_MM7 &pTexture : _textures) {
         if (iequals(pContainer.data(), pTexture.header.pName.data())) {
             return &pTexture;
         }
     }
 
-    if (LoadTextureFromLOD(&pTextures.emplace_back(), pContainer) != -1)
-        return &pTextures.back();
-    pTextures.pop_back();
+    if (LoadTextureFromLOD(&_textures.emplace_back(), pContainer) != -1)
+        return &_textures.back();
+    _textures.pop_back();
 
     if (!useDummyOnError)
         return nullptr;
 
-    for (Texture_MM7 &pTexture : pTextures) {
+    for (Texture_MM7 &pTexture : _textures) {
         if (iequals(pTexture.header.pName.data(), "pending")) {
             return &pTexture;
         }
     }
 
-    if (LoadTextureFromLOD(&pTextures.emplace_back(), "pending") != -1)
-        return &pTextures.back();
-    pTextures.pop_back();
+    if (LoadTextureFromLOD(&_textures.emplace_back(), "pending") != -1)
+        return &_textures.back();
+    _textures.pop_back();
 
     return nullptr;
 }
