@@ -7,7 +7,7 @@ var searchData=
   ['takefood_4',['TakeFood',['../structParty.html#a10acbfe965f51c4b6a102bee41c3f009',1,'Party']]],
   ['takegold_5',['TakeGold',['../structParty.html#af20c92d34e297c7bcf02a4defa378d52',1,'Party']]],
   ['takescreenshot_6',['TakeScreenshot',['../classIRender.html#ab73758f39cf9238cccc71e2b686eddba',1,'IRender::TakeScreenshot()'],['../classRenderBase.html#aa952b5f0b8bdb128d70b7a29f67c673f',1,'RenderBase::TakeScreenshot()']]],
-  ['tape_7',['tape',['../classTestController.html#a891326ab7549ce29b7b6d2043f082aed',1,'TestController::tape()'],['../TestTape_8h.html#aca3f32aee7e5b3e9088ba9d3293b8630',1,'tape():&#160;TestTape.h']]],
+  ['tape_7',['tape',['../classTestController.html#a891326ab7549ce29b7b6d2043f082aed',1,'TestController::tape()'],['../TestTape_8h.html#af4fa0e009a258ea315ba0f6a52c7695b',1,'tape():&#160;TestTape.h']]],
   ['targetedspellui_8',['TargetedSpellUI',['../classTargetedSpellUI.html#ad7645c5850969301d273c5ed1d88cba2',1,'TargetedSpellUI']]],
   ['targetedspellui_5factor_9',['TargetedSpellUI_Actor',['../classTargetedSpellUI__Actor.html#a10188d5339e0624d7ac3ac7cc554b6f6',1,'TargetedSpellUI_Actor']]],
   ['targetedspellui_5factororcharacter_10',['TargetedSpellUI_ActorOrCharacter',['../classTargetedSpellUI__ActorOrCharacter.html#a6979b6dac571301c83e3fbb963aa7068',1,'TargetedSpellUI_ActorOrCharacter']]],

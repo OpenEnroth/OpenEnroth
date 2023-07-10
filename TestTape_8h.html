@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;661e60a</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;2c4a408</span>
    </div>
   </td>
  </tr>
@@ -90,6 +90,8 @@ $(function() {
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Classes</h2></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdetail_1_1ComparableVector.html">detail::ComparableVector&lt; T &gt;</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdetail_1_1TestTapeState.html">detail::TestTapeState&lt; T &gt;</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTestTape.html">TestTape&lt; T &gt;</a></td></tr>
@@ -104,13 +106,13 @@ Namespaces</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:aca3f32aee7e5b3e9088ba9d3293b8630"><td class="memTemplParams" colspan="2">template&lt;class T , class... Tail&gt; </td></tr>
-<tr class="memitem:aca3f32aee7e5b3e9088ba9d3293b8630"><td class="memTemplItemLeft" align="right" valign="top">std::vector&lt; T &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="TestTape_8h.html#aca3f32aee7e5b3e9088ba9d3293b8630">tape</a> (T first, Tail... tail)</td></tr>
-<tr class="separator:aca3f32aee7e5b3e9088ba9d3293b8630"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af4fa0e009a258ea315ba0f6a52c7695b"><td class="memTemplParams" colspan="2">template&lt;class T , class... Tail&gt; </td></tr>
+<tr class="memitem:af4fa0e009a258ea315ba0f6a52c7695b"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="classdetail_1_1ComparableVector.html">detail::ComparableVector</a>&lt; T &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="TestTape_8h.html#af4fa0e009a258ea315ba0f6a52c7695b">tape</a> (T first, Tail... tail)</td></tr>
+<tr class="separator:af4fa0e009a258ea315ba0f6a52c7695b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Function Documentation</h2>
-<a id="aca3f32aee7e5b3e9088ba9d3293b8630" name="aca3f32aee7e5b3e9088ba9d3293b8630"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aca3f32aee7e5b3e9088ba9d3293b8630">&#9670;&#160;</a></span>tape()</h2>
+<a id="af4fa0e009a258ea315ba0f6a52c7695b" name="af4fa0e009a258ea315ba0f6a52c7695b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af4fa0e009a258ea315ba0f6a52c7695b">&#9670;&#160;</a></span>tape()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -118,7 +120,7 @@ Functions</h2></td></tr>
 template&lt;class T , class... Tail&gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname">std::vector&lt; T &gt; tape </td>
+          <td class="memname"><a class="el" href="classdetail_1_1ComparableVector.html">detail::ComparableVector</a>&lt; T &gt; tape </td>
           <td>(</td>
           <td class="paramtype">T&#160;</td>
           <td class="paramname"><em>first</em>, </td>
@@ -136,10 +138,10 @@ template&lt;class T , class... Tail&gt; </div>
         </tr>
       </table>
 </div><div class="memdoc">
-<p >Basically a convenient shortcut to create vectors that can then be compared with <code><a class="el" href="classTestTape.html">TestTape</a></code> objects inside the <code>EXPECT_EQ</code> and <code>ASSERT_EQ</code> gtest macros.</p>
-<p >Example code: </p><div class="fragment"><div class="line"><a class="code hl_function" href="Serialization__ut_8cpp.html#a7fc7ee24f5551f6f6bdd447161977786">EXPECT_EQ</a>(strengthTape, <a class="code hl_function" href="TestTape_8h.html#aca3f32aee7e5b3e9088ba9d3293b8630">tape</a>(2, 4, 6)); <span class="comment">// Two +2 strength barrels.</span></div>
+<p >Shortcut function to create vectors that can then be compared with <code><a class="el" href="classTestTape.html">TestTape</a></code> objects inside the <code>EXPECT_EQ</code> and <code>ASSERT_EQ</code> gtest macros.</p>
+<p >Example code: </p><div class="fragment"><div class="line"><a class="code hl_function" href="Serialization__ut_8cpp.html#a7fc7ee24f5551f6f6bdd447161977786">EXPECT_EQ</a>(strengthTape, <a class="code hl_function" href="TestTape_8h.html#af4fa0e009a258ea315ba0f6a52c7695b">tape</a>(2, 4, 6)); <span class="comment">// Two +2 strength barrels.</span></div>
 <div class="ttc" id="aSerialization__ut_8cpp_html_a7fc7ee24f5551f6f6bdd447161977786"><div class="ttname"><a href="Serialization__ut_8cpp.html#a7fc7ee24f5551f6f6bdd447161977786">EXPECT_EQ</a></div><div class="ttdeci">EXPECT_EQ(toString(TestFlags()), &quot;0&quot;)</div></div>
-<div class="ttc" id="aTestTape_8h_html_aca3f32aee7e5b3e9088ba9d3293b8630"><div class="ttname"><a href="TestTape_8h.html#aca3f32aee7e5b3e9088ba9d3293b8630">tape</a></div><div class="ttdeci">std::vector&lt; T &gt; tape(T first, Tail... tail)</div><div class="ttdef"><b>Definition:</b> TestTape.h:94</div></div>
+<div class="ttc" id="aTestTape_8h_html_af4fa0e009a258ea315ba0f6a52c7695b"><div class="ttname"><a href="TestTape_8h.html#af4fa0e009a258ea315ba0f6a52c7695b">tape</a></div><div class="ttdeci">detail::ComparableVector&lt; T &gt; tape(T first, Tail... tail)</div><div class="ttdef"><b>Definition:</b> TestTape.h:116</div></div>
 </div><!-- fragment --> 
 </div>
 </div>
