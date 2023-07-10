@@ -52,6 +52,7 @@ target_check_style(utility)
 if(ENABLE_TESTS)
     set(TEST_UTILITY_SOURCES
             Math/Tests/Float_ut.cpp
+            Memory/Tests/Blob_ut.cpp
             Streams/Tests/FileOutputStream_ut.cpp
             Tests/IndexedArray_ut.cpp
             Tests/IndexedBitset_ut.cpp
