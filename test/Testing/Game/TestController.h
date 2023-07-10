@@ -3,8 +3,13 @@
 #include <filesystem>
 #include <string>
 #include <functional>
+#include <utility>
+#include <vector>
+#include <memory>
 
 #include "Engine/Components/Trace/EngineTraceEnums.h"
+
+#include "TestTape.h"
 
 class EngineController;
 
@@ -20,9 +25,34 @@ class TestController {
 
     void prepareForNextTest();
 
-    void restart(int frameTimeMs);
+    void restart(int frameTimeMs); // TODO(captainurist): need a better name here.
+
+    /**
+     * Creates a tape object that will record changes in a value computed by the provided callback throughout the
+     * execution of a trace.
+     *
+     * The callback is called on every frame, and also before and after running the trace, and unique values are stored
+     * on a tape. This effectively means that if, for example, the provided callback always returns the same value,
+     * then you'll get a tape of size 1.
+     *
+     * A typical use case is to create a tape, call `playTraceFromTestData` to play a trace, then check the data
+     * stored on the tape.
+     *
+     * @param callback                  Callback that will calculate the values to store on a tape.
+     * @return                          Tape object.
+     */
+    template<class Callback, class T = std::invoke_result_t<Callback>>
+    TestTape<T> tape(Callback callback) {
+        auto state = std::make_shared<detail::TestTapeState<T>>(std::move(callback));
+        _tapeCallbacks.push_back([state] { state->tick(); });
+        return TestTape<T>(std::move(state));
+    }
+
+ private:
+    void runTapeCallbacks();
 
  private:
     EngineController *_controller;
     std::filesystem::path _testDataPath;
+    std::vector<std::function<void()>> _tapeCallbacks;
 };

@@ -37,12 +37,16 @@ void TestController::playTraceFromTestData(const std::string &saveName, const st
         fullPathInTestData(saveName),
         fullPathInTestData(traceName),
         flags,
-        std::move(postLoadCallback)
+        std::move(postLoadCallback),
+        [this] {
+            runTapeCallbacks();
+        }
     );
 }
 
 void TestController::prepareForNextTest() {
     engine->config->resetForTest();
+    _tapeCallbacks.clear();
 
     // This is frame time for tests that are implemented by manually sending events from the test code.
     // For such tests, frame time value is taken from config defaults.
@@ -53,4 +57,9 @@ void TestController::prepareForNextTest() {
 
 void TestController::restart(int frameTimeMs) {
     ::application->get<EngineDeterministicComponent>()->restart(frameTimeMs);
+}
+
+void TestController::runTapeCallbacks() {
+    for (const auto &callback : _tapeCallbacks)
+        callback();
 }
