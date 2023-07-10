@@ -46,6 +46,7 @@
 
 #include "Utility/Memory/FreeDeleter.h"
 #include "Utility/Math/TrigLut.h"
+#include "Utility/Math/FixPoint.h"
 #include "Utility/Exception.h"
 
 // TODO(pskelton): make this neater

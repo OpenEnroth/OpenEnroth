@@ -18,6 +18,7 @@
 
 #include "Utility/Math/Float.h"
 #include "Utility/Math/TrigLut.h"
+#include "Utility/Math/FixPoint.h"
 
 CollisionState collision_state;
 

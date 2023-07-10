@@ -29,8 +29,10 @@
 
 #include "Media/Audio/AudioPlayer.h"
 
-#include "Utility/Math/TrigLut.h"
 #include "Library/Random/Random.h"
+
+#include "Utility/Math/TrigLut.h"
+#include "Utility/Math/FixPoint.h"
 
 // should be injected in SpriteObject but struct size cant be changed
 static SpellFxRenderer *spell_fx_renderer = EngineIocContainer::ResolveSpellFxRenderer();
