@@ -130,10 +130,10 @@ class WriteableFile : public File {
 };
 };  // namespace LOD
 
-class LODFile_IconsBitmaps : public LOD::File {
+class LODFile_IconsBitmaps {
  public:
     LODFile_IconsBitmaps();
-    virtual ~LODFile_IconsBitmaps();
+    ~LODFile_IconsBitmaps();
 
     bool open(const std::string &pFilename, const std::string &pFolderName);
 
@@ -142,10 +142,13 @@ class LODFile_IconsBitmaps : public LOD::File {
 
     Texture_MM7 *loadTexture(const std::string &pContainer, bool useDummyOnError = true);
 
-private:
+    Blob LoadCompressedTexture(const std::string &pContainer); // TODO(captainurist): doesn't belong here.
+
+ private:
     int LoadTextureFromLOD(struct Texture_MM7 *pOutTex, const std::string &pContainer);
 
  private:
+    std::unique_ptr<LodReader> _reader;
     int _reservedCount = 0;
     std::deque<Texture_MM7> _textures;
 };

@@ -211,11 +211,8 @@ void Sprite::Release() {
 }
 
 bool LODFile_IconsBitmaps::open(const std::string &pFilename, const std::string &pFolderName) {
-    if (!Open(pFilename)) {
-        return false;
-    }
-
-    return LoadSubIndices(pFolderName);
+    _reader = LodReader::open(pFilename);
+    return true;
 }
 
 LODFile_Sprites::~LODFile_Sprites() {
@@ -232,7 +229,7 @@ LODFile_IconsBitmaps::~LODFile_IconsBitmaps() {
     }
 }
 
-LODFile_IconsBitmaps::LODFile_IconsBitmaps() : LOD::File() {}
+LODFile_IconsBitmaps::LODFile_IconsBitmaps() = default;
 
 bool LOD::WriteableFile::_4621A7() {  // закрыть и загрузить записываемый ф-л(при
                                     // сохранении)
@@ -725,52 +722,31 @@ int LOD::File::GetSubNodeIndex(const std::string &name) const {
 }
 
 int LODFile_IconsBitmaps::LoadTextureFromLOD(Texture_MM7 *pOutTex, const std::string &pContainer) {
-    size_t data_size = 0;
-    FILE *pFile = FindContainer(pContainer, &data_size);
-    if (pFile == nullptr) {
+    if (!_reader->exists(pContainer))
         return -1;
-    }
+
+    BlobInputStream input(_reader->read(pContainer));
 
     TextureHeader *header = &pOutTex->header;
-    if (fread(header, sizeof(TextureHeader), 1, pFile) != 1)
-        return -1;
+    input.readOrFail(header, sizeof(TextureHeader));
+
     strncpy(header->pName.data(), pContainer.c_str(), 16);
-    data_size -= sizeof(TextureHeader);
 
     // ICONS
     if (!header->uDecompressedSize) {
-        if (header->uTextureSize > data_size) {
-            assert(false);
-        }
         pOutTex->paletted_pixels = (uint8_t *)malloc(header->uTextureSize);
-        if (header->uTextureSize && fread(pOutTex->paletted_pixels, header->uTextureSize, 1, pFile) != 1)
-            return -1;
-        data_size -= header->uTextureSize;
+        if (header->uTextureSize)
+            input.readOrFail(pOutTex->paletted_pixels, header->uTextureSize);
     } else {
-        if (header->uTextureSize > data_size) {
-            assert(false);
-        }
-        pOutTex->paletted_pixels = (uint8_t *)malloc(header->uDecompressedSize);
-        std::unique_ptr<void, FreeDeleter> tmp_buf(malloc(header->uTextureSize));
-        if (fread(tmp_buf.get(), header->uTextureSize, 1, pFile) != 1)
-            return -1;
-        data_size -= header->uTextureSize;
-        zlib::Uncompress(pOutTex->paletted_pixels, &header->uDecompressedSize,
-                         tmp_buf.get(), header->uTextureSize);
-        header->uTextureSize = header->uDecompressedSize;
+        // TODO(captainurist): just store Blob in pOutTex
+        Blob pixels = zlib::Uncompress(input.readBlobOrFail(header->uTextureSize), header->uDecompressedSize);
+        pOutTex->paletted_pixels = (uint8_t *)malloc(pixels.size());
+        memcpy(pOutTex->paletted_pixels, pixels.data(), pixels.size());
+        header->uTextureSize = pixels.size();
     }
 
-    pOutTex->pPalette24 = nullptr;
-
-    if (0x300 > data_size) {
-        assert(false);
-    }
     pOutTex->pPalette24 = (uint8_t *)malloc(0x300);
-    if (fread(pOutTex->pPalette24, 0x300, 1, pFile) != 1)
-        return -1;
-    data_size -= 0x300;
-
-    assert(data_size == 0);
+    input.readOrFail(pOutTex->pPalette24, 0x300);
 
     if (header->pBits & 2) {
         pOutTex->pLevelOfDetail1 =
@@ -823,6 +799,19 @@ Texture_MM7 *LODFile_IconsBitmaps::loadTexture(const std::string &pContainer, bo
     _textures.pop_back();
 
     return nullptr;
+}
+
+Blob LODFile_IconsBitmaps::LoadCompressedTexture(const std::string &pContainer) {
+    BlobInputStream input(_reader->read(pContainer));
+
+    TextureHeader DstBuf;
+    input.readOrFail(&DstBuf, sizeof(TextureHeader));
+
+    if (DstBuf.uDecompressedSize) {
+        return zlib::Uncompress(input.readBlobOrFail(DstBuf.uTextureSize), DstBuf.uDecompressedSize);
+    } else {
+        return input.readBlobOrFail(DstBuf.uTextureSize);
+    }
 }
 
 bool Initialize_GamesLOD_NewLOD() {
