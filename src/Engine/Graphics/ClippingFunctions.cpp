@@ -10,7 +10,7 @@
 //----- (00498377) --------------------------------------------------------
 bool ClippingFunctions::ClipVertsToPortal(RenderVertexSoft *pPortalBounding,  // test skipping this
                                           unsigned int uNumfrust,
-                                          IndoorCameraD3D_Vec4 *pfrustnorm,
+                                          Planef *pfrustnorm,
                                           RenderVertexSoft *pVertices2,
                                           unsigned int *pOutNumVertices) {
     // portal corners
@@ -83,9 +83,9 @@ bool ClippingFunctions::ClipVertsToPortal(RenderVertexSoft *pPortalBounding,  //
             // result = 0;
             static_AE33A0.uNumVertices = 0;
             // a3a = 0;
-            static_AE3FA4.x = pfrustnorm->x;
-            static_AE3FA4.y = pfrustnorm->y;
-            static_AE3FA4.z = pfrustnorm->z;
+            static_AE3FA4.x = pfrustnorm->normal.x;
+            static_AE3FA4.y = pfrustnorm->normal.y;
+            static_AE3FA4.z = pfrustnorm->normal.z;
             if ((signed int)*pOutNumVertices <= 0) {
                 *pOutNumVertices = 0;
                 return true;

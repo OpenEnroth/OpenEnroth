@@ -4160,7 +4160,7 @@ void RenderOpenGL::DrawIndoorFaces() {
                     continue;
                 }
 
-                IndoorCameraD3D_Vec4 *portalfrustumnorm = pBspRenderer->nodes[pBspRenderer->faces[i].uNodeID].ViewportNodeFrustum.data();
+                Planef *portalfrustumnorm = pBspRenderer->nodes[pBspRenderer->faces[i].uNodeID].ViewportNodeFrustum.data();
                 unsigned int uNumFrustums = 4;
                 RenderVertexSoft *pPortalBounding = pBspRenderer->nodes[pBspRenderer->faces[i].uNodeID].pPortalBounding.data();
 

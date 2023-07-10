@@ -48,10 +48,10 @@ void BspRenderer::AddFaceToRenderList_d3d(int node_id, int uFaceID) {
 
         // set furstum to cam frustum
         for (int loop = 0; loop < 4; loop++) {
-            nodes[num_nodes].ViewportNodeFrustum[loop].x = pCamera3D->FrustumPlanes[loop].x;
-            nodes[num_nodes].ViewportNodeFrustum[loop].y = pCamera3D->FrustumPlanes[loop].y;
-            nodes[num_nodes].ViewportNodeFrustum[loop].z = pCamera3D->FrustumPlanes[loop].z;
-            nodes[num_nodes].ViewportNodeFrustum[loop].dot = pCamera3D->FrustumPlanes[loop].w;
+            nodes[num_nodes].ViewportNodeFrustum[loop].normal.x = pCamera3D->FrustumPlanes[loop].x;
+            nodes[num_nodes].ViewportNodeFrustum[loop].normal.y = pCamera3D->FrustumPlanes[loop].y;
+            nodes[num_nodes].ViewportNodeFrustum[loop].normal.z = pCamera3D->FrustumPlanes[loop].z;
+            nodes[num_nodes].ViewportNodeFrustum[loop].dist = -pCamera3D->FrustumPlanes[loop].w;
         }
 
         AddBspNodeToRenderList(++num_nodes - 1);
@@ -145,10 +145,10 @@ void PrepareBspRenderList_BLV() {
         pBspRenderer->nodes[0].uSectorID = pBLVRenderParams->uPartySectorID;
         // set furstum to cam frustum
         for (int loop = 0; loop < 4; loop++) {
-            pBspRenderer->nodes[0].ViewportNodeFrustum[loop].x = pCamera3D->FrustumPlanes[loop].x;
-            pBspRenderer->nodes[0].ViewportNodeFrustum[loop].y = pCamera3D->FrustumPlanes[loop].y;
-            pBspRenderer->nodes[0].ViewportNodeFrustum[loop].z = pCamera3D->FrustumPlanes[loop].z;
-            pBspRenderer->nodes[0].ViewportNodeFrustum[loop].dot = pCamera3D->FrustumPlanes[loop].w;
+            pBspRenderer->nodes[0].ViewportNodeFrustum[loop].normal.x = pCamera3D->FrustumPlanes[loop].x;
+            pBspRenderer->nodes[0].ViewportNodeFrustum[loop].normal.y = pCamera3D->FrustumPlanes[loop].y;
+            pBspRenderer->nodes[0].ViewportNodeFrustum[loop].normal.z = pCamera3D->FrustumPlanes[loop].z;
+            pBspRenderer->nodes[0].ViewportNodeFrustum[loop].dist = -pCamera3D->FrustumPlanes[loop].w;
         }
 
         // blank viewing node

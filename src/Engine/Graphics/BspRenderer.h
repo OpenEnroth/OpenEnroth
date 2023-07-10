@@ -2,13 +2,15 @@
 
 #include <array>
 
+#include "Utility/Geometry/Plane.h"
+
 #include "Engine/Graphics/Camera.h"
 
 struct BspRenderer_ViewportNode {
     int uSectorID = 0;  // sector that this node shows
     int uFaceID = 0;
     int viewing_portal_id = 0;  // face id of the portal through which we're seeing this node
-    std::array<IndoorCameraD3D_Vec4, 4> ViewportNodeFrustum = {{}};  // frustum planes of portal
+    std::array<Planef, 4> ViewportNodeFrustum = {{}};  // frustum planes of portal
     std::array<RenderVertexSoft, 4> pPortalBounding = {{}};  // extents of portal
 };
 

@@ -355,7 +355,7 @@ bool Camera3D::CullFaceToCameraFrustum(RenderVertexSoft *pInVertices,
 // very sloppy check when using early break - different points could be passing plane checks
 // NB only reliable where size of face is small in relation to size frustum
 bool Camera3D::CullFaceToFrustum(struct RenderVertexSoft *a1, unsigned int *pOutNumVertices,
-                    struct RenderVertexSoft *pVertices, struct IndoorCameraD3D_Vec4 *frustum,
+                    struct RenderVertexSoft *pVertices, Planef *frustum,
                     signed int NumFrustumPlanes) {
     if (NumFrustumPlanes <= 0) return false;
     if (*pOutNumVertices <= 0) return false;
@@ -365,11 +365,9 @@ bool Camera3D::CullFaceToFrustum(struct RenderVertexSoft *a1, unsigned int *pOut
     for (int p = 0; p < NumFrustumPlanes; p++) {
         inside = false;
         for (int v = 0; v < *pOutNumVertices; v++) {
-            float pLinelength1 = a1[v].vWorldPosition.x * frustum[p].x +
-                a1[v].vWorldPosition.y * frustum[p].y +
-                a1[v].vWorldPosition.z * frustum[p].z;
+            float pLinelength1 = dot(a1[v].vWorldPosition, frustum[p].normal);
 
-            inside = (pLinelength1 + 5.0) >= frustum[p].dot;  // added 5 for a bit of epsilon
+            inside = (pLinelength1 + 5.0) >= -frustum[p].dist;  // added 5 for a bit of epsilon
             // break early when one passing vert is found for this plane
             if (inside == true) break;  // true for early break -  false for all points must be in
         }
@@ -395,7 +393,7 @@ bool Camera3D::CullFaceToFrustum(struct RenderVertexSoft *a1, unsigned int *pOut
 bool Camera3D::ClipFaceToFrustum(RenderVertexSoft *pInVertices,
     unsigned int *pOutNumVertices,
     RenderVertexSoft *pVertices,
-    IndoorCameraD3D_Vec4 *CameraFrustrum,
+    Planef *CameraFrustrum,
     signed int NumFrustumPlanes, char DebugLines,
     int _unused) {
     // NumFrustumPlanes usually 4 - top, bottom, left, right - near and far done elsewhere
@@ -403,7 +401,6 @@ bool Camera3D::ClipFaceToFrustum(RenderVertexSoft *pInVertices,
 
     RenderVertexSoft *v14;  // eax@8
     RenderVertexSoft *v15;  // edx@8
-    Vec3f FrustumPlaneVec {};         // [sp+18h] [bp-3Ch]@12
     // float v17; // [sp+44h] [bp-10h]@1
     // int v18; // [sp+48h] [bp-Ch]@5
     int VertsAdjusted = 0;  // [sp+53h] [bp-1h]@5
@@ -435,12 +432,9 @@ bool Camera3D::ClipFaceToFrustum(RenderVertexSoft *pInVertices,
         }
 
         if (i == NumFrustumPlanes - 1) v14 = pVertices;
-        FrustumPlaneVec.x = CameraFrustrum[i].x;
-        FrustumPlaneVec.y = CameraFrustrum[i].y;
-        FrustumPlaneVec.z = CameraFrustrum[i].z;
 
         ClippingFunctions::ClipVertsToFrustumPlane(
-            v15, *pOutNumVertices, v14, pOutNumVertices, &FrustumPlaneVec, CameraFrustrum[i].dot,
+            v15, *pOutNumVertices, v14, pOutNumVertices, &CameraFrustrum[i].normal, -CameraFrustrum[i].dist,
             (char*)&VertsAdjusted, _unused);
 
         // v12 = *pOutNumVertices;

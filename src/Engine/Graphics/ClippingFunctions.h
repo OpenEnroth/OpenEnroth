@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Utility/Geometry/Plane.h"
+
 #include "Engine/Graphics/RenderEntities.h"
 
 struct IndoorCameraD3D_Vec4;
@@ -20,7 +22,7 @@ struct ClippingFunctions {
     static bool ClipVertsToFace(RenderVertexSoft *a1, unsigned int uNumVertices, float a3, float a4, float a5,
                                 RenderVertexSoft *pOutVertices, signed int *pOutNumVertices);
 
-    static bool ClipVertsToPortal(RenderVertexSoft *pPortalBounding, unsigned int uNumVertices, IndoorCameraD3D_Vec4 *pVertices,
+    static bool ClipVertsToPortal(RenderVertexSoft *pPortalBounding, unsigned int uNumVertices, Planef *pVertices,
                                   RenderVertexSoft *pVertices2, unsigned int *pOutNumVertices);
 
     static bool ClipVertsToFrustumPlane(RenderVertexSoft *pInVertices, signed int pInNumVertices, RenderVertexSoft *pOutVertices,

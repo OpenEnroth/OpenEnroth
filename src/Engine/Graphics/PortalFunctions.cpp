@@ -347,7 +347,7 @@ stru10::~stru10() {}
 
 //----- (0049C5DA) --------------------------------------------------------
 bool stru10::CalcPortalShapePoly(BLVFace *pFace, RenderVertexSoft *pVertices,
-                     unsigned int *pNumVertices, IndoorCameraD3D_Vec4 *pOutFrustum,
+                     unsigned int *pNumVertices, Planef *pOutFrustum,
                      RenderVertexSoft *pOutBounding) {
     // calc poly limits
     RenderVertexSoft pLimits[4];
@@ -373,10 +373,10 @@ bool stru10::CalcPortalShapePoly(BLVFace *pFace, RenderVertexSoft *pVertices,
         // if normal in z - portals dont work out so use camera
         if (pFace->facePlane.normal.z == 1.0 || pFace->facePlane.normal.z == -1.0) {
             for (int i = 0; i < 4; i++) {
-                pOutFrustum[i].x = pCamera3D->FrustumPlanes[i].x;
-                pOutFrustum[i].y = pCamera3D->FrustumPlanes[i].y;
-                pOutFrustum[i].z = pCamera3D->FrustumPlanes[i].z;
-                pOutFrustum[i].dot = pCamera3D->FrustumPlanes[i].w;
+                pOutFrustum[i].normal.x = pCamera3D->FrustumPlanes[i].x;
+                pOutFrustum[i].normal.y = pCamera3D->FrustumPlanes[i].y;
+                pOutFrustum[i].normal.z = pCamera3D->FrustumPlanes[i].z;
+                pOutFrustum[i].dist = -pCamera3D->FrustumPlanes[i].w;
             }
         }
 
@@ -387,7 +387,7 @@ bool stru10::CalcPortalShapePoly(BLVFace *pFace, RenderVertexSoft *pVertices,
 }
 
 //----- (0049C720) --------------------------------------------------------
-bool stru10::CalcPortalFrustum(RenderVertexSoft *pFaceBounding, IndoorCameraD3D_Vec4 *pPortalDataFrustum) {
+bool stru10::CalcPortalFrustum(RenderVertexSoft *pFaceBounding, Planef *pPortalDataFrustum) {
     Vec3f pRayStart;
     pRayStart.x = pCamera3D->vCameraPos.x;
     pRayStart.y = pCamera3D->vCameraPos.y;
@@ -407,7 +407,7 @@ bool stru10::CalcPortalFrustum(RenderVertexSoft *pFaceBounding, IndoorCameraD3D_
 bool stru10::CalcPortalFrustumPlane(RenderVertexSoft *pFaceBounding1,
                                     RenderVertexSoft *pFaceBounding2,
                                     Vec3f *pRayStart,
-                                    IndoorCameraD3D_Vec4 *pPortalDataFrustum) {
+                                    Planef *pPortalDataFrustum) {
     Vec3f ray_dir = pFaceBounding1->vWorldPosition - *pRayStart; // get ray for cmera to bounding1
     Vec3f pRay2 = cross(ray_dir, pFaceBounding2->vWorldPosition - pFaceBounding1->vWorldPosition);
 
@@ -419,12 +419,10 @@ bool stru10::CalcPortalFrustumPlane(RenderVertexSoft *pFaceBounding1,
         pRay2.z *= inv_mag;
         pRay2.normalize();
 
-        pPortalDataFrustum->x = pRay2.x;
-        pPortalDataFrustum->y = pRay2.y;
-        pPortalDataFrustum->z = pRay2.z;
-        pPortalDataFrustum->dot = pRayStart->z * pRay2.z +
-                                  pRayStart->y * pRay2.y +
-                                  pRayStart->x * pRay2.x;
+        pPortalDataFrustum->normal.x = pRay2.x;
+        pPortalDataFrustum->normal.y = pRay2.y;
+        pPortalDataFrustum->normal.z = pRay2.z;
+        pPortalDataFrustum->dist = -dot(*pRayStart, pRay2);
         return true;
     }
     return false;
