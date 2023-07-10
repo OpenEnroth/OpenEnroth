@@ -4,10 +4,17 @@
 
 #include "InputStream.h"
 
+/**
+ * Input stream that reads from a `Blob`.
+ *
+ * Besides the `InputStream` interface, this class also offers an interface for reading subblobs which share memory
+ * with the source blob, and thus no memory copying occurs.
+ */
 class BlobInputStream : public InputStream {
  public:
     BlobInputStream() = default;
-    explicit BlobInputStream(const Blob &blob); // TODO(captainurist): Maybe `const Blob *` here?
+    explicit BlobInputStream(Blob &&blob);
+    explicit BlobInputStream(const Blob &blob); // Shares the blob and stores the shared copy in this stream object.
 
     virtual size_t read(void *data, size_t size) override;
     virtual size_t skip(size_t size) override;
@@ -45,7 +52,7 @@ class BlobInputStream : public InputStream {
     [[nodiscard]] size_t remaining() const;
 
  private:
-    const Blob *_blob = nullptr;
+    Blob _blob;
     const char *_pos = nullptr;
     const char *_end = nullptr;
 };
