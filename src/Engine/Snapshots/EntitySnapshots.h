@@ -62,17 +62,23 @@ struct Timer;
 static_assert(sizeof(Vec3s) == 6);
 static_assert(sizeof(Vec3i) == 12);
 static_assert(sizeof(Vec3f) == 12);
-static_assert(sizeof(Planei) == 16);
 static_assert(sizeof(Planef) == 16);
 static_assert(sizeof(BBoxs) == 12);
 MM_DECLARE_MEMCOPY_SERIALIZABLE(Vec3s)
 MM_DECLARE_MEMCOPY_SERIALIZABLE(Vec3i)
 MM_DECLARE_MEMCOPY_SERIALIZABLE(Vec3f)
-MM_DECLARE_MEMCOPY_SERIALIZABLE(Planei)
 MM_DECLARE_MEMCOPY_SERIALIZABLE(Planef)
 MM_DECLARE_MEMCOPY_SERIALIZABLE(BBoxs)
 
 #pragma pack(push, 1)
+
+struct Planei_MM7 {
+    Vec3i normal; // Fixpoint normal.
+    int32_t dist; // Fixpoint -dot(normal, origin). Plane equation is dot(normal, x) + dist = 0.
+};
+static_assert(sizeof(Planei_MM7) == 16);
+MM_DECLARE_MEMCOPY_SERIALIZABLE(Planei_MM7)
+
 
 struct SpriteFrame_MM6 {
     std::array<char, 12> iconName;
@@ -101,7 +107,7 @@ void reconstruct(const SpriteFrame_MM7 &src, SpriteFrame *dst);
 
 struct BLVFace_MM7 {
     Planef facePlane;
-    Planei facePlaneOld;
+    Planei_MM7 facePlaneOld;
     int32_t zCalc1;
     int32_t zCalc2;
     int32_t zCalc3;
@@ -870,7 +876,7 @@ void reconstruct(const FontData_MM7 &src, size_t size, FontData *dst);
 
 
 struct ODMFace_MM7 {
-    Planei facePlane;
+    Planei_MM7 facePlane;
     int32_t zCalc1;
     int32_t zCalc2;
     int32_t zCalc3;
