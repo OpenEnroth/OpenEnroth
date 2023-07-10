@@ -11,9 +11,8 @@
 
 #include "Engine/Objects/Actor.h"
 
-#include "Engine/Snapshots/EntitySnapshots.h"
-#include "Engine/Snapshots/CommonSnapshots.h"
 #include "Engine/Snapshots/SnapshotSerialization.h"
+#include "Engine/Snapshots/CompositeSnapshots.h"
 
 #include "Engine/Graphics/DecorationList.h"
 #include "Engine/Graphics/PaletteManager.h"
@@ -164,29 +163,15 @@ void SpriteFrameTable::InitializeSprite(signed int uSpriteID) {
 
 //----- (0044D813) --------------------------------------------------------
 int SpriteFrameTable::FastFindSprite(std::string_view pSpriteName) {
-    signed int result;  // eax@2
+    auto cmp = [this] (uint16_t index, std::string_view name) {
+        return iless(pSpriteSFrames[index].icon_name, name);
+    };
 
-    int searchResult = BinarySearch(pSpriteName);
-    if (searchResult < 0)
-        result = 0;
-    else
-        result = this->pSpriteEFrames[searchResult];
-    return result;
-}
+    auto pos = std::lower_bound(pSpriteEFrames.begin(), pSpriteEFrames.end(), pSpriteName, cmp);
+    if (pos == pSpriteEFrames.end())
+        return 0;
 
-//----- (0044D83A) --------------------------------------------------------
-int SpriteFrameTable::BinarySearch(std::string_view pSpriteName) {
-    auto pos = std::lower_bound(pSpritePFrames.begin(), pSpritePFrames.end(), pSpriteName,
-        [](SpriteFrame *l, std::string_view r) {
-            return iless(l->icon_name, r);
-        }
-    );
-
-    if (iequals((*pos)->icon_name, pSpriteName)) {
-        return pos - pSpritePFrames.begin();
-    } else {
-        return -1;
-    }
+    return iequals(pSpriteSFrames[*pos].icon_name, pSpriteName) ? *pos : 0;
 }
 
 //----- (0044D8D0) --------------------------------------------------------
@@ -267,22 +252,7 @@ void SpriteFrameTable::FromFile(const Blob &data_mm6, const Blob &data_mm7, cons
     (void) data_mm6;
     (void) data_mm8;
 
-    BlobInputStream src(data_mm7); // TODO(captainurist): encapsulate
-    uint32_t frameCount = 0;
-    uint32_t eframeCount = 0;
-    deserialize(src, &frameCount);
-    deserialize(src, &eframeCount);
-
-    std::vector<SpriteFrame_MM7> tmp;
-    deserialize(src, &tmp, presized(frameCount));
-    reconstruct(tmp, &pSpriteSFrames);
-    deserialize(src, &pSpriteEFrames, presized(eframeCount));
-
-    pSpritePFrames.clear();
-    for (uint16_t index : pSpriteEFrames)
-        pSpritePFrames.push_back(&pSpriteSFrames[index]);
-
-    assert(!pSpriteSFrames.empty());
+    deserialize(data_mm7, this, via<SpriteFrameTable_MM7>());
 }
 
 SpriteFrame *LevelDecorationChangeSeason(const DecorationDesc *desc, int t, int month) {
