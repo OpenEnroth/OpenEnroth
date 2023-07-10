@@ -201,7 +201,7 @@ extern OutdoorLocation *pOutdoor;
 
 void ODM_UpdateUserInputAndOther();
 int ODM_GetFloorLevel(const Vec3i &pos, int unused, bool *pOnWater,
-                      int *bmodel_pid, int bWaterWalk);
+                      int *faceId, int bWaterWalk);
 int GetCeilingHeight(int Party_X, signed int Party_Y, int Party_ZHeight,
                      int *pFaceID);
 void ODM_GetTerrainNormalAt(int pos_x, int pos_y, Vec3i *out);

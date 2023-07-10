@@ -288,7 +288,7 @@ struct Party {
     int _viewPrevPitch;
     int lastEyeLevel; // TODO(captainurist): drop
     int sPartySavedFlightZ;  // this saves the Z position when flying without bob mods
-    int floor_face_pid;  // face we are standing at
+    int floor_face_id;  // face we are standing at
     SoundID currentWalkingSound; // previously was 'walk_sound_timer'
     int _6FC_water_lava_timer;
     int uFallStartZ;

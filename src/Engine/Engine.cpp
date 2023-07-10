@@ -749,7 +749,7 @@ void DoPrepareWorld(bool bLoading, int _1_fullscreen_loading_2_box) {
 
     engine->SetUnderwater(Is_out15odm_underwater());
 
-    pParty->floor_face_pid = 0;
+    pParty->floor_face_id = 0;
     if (iequals(mapExt, "blv"))
         PrepareToLoadBLV(bLoading);
     else
