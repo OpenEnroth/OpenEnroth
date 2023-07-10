@@ -164,29 +164,15 @@ void SpriteFrameTable::InitializeSprite(signed int uSpriteID) {
 
 //----- (0044D813) --------------------------------------------------------
 int SpriteFrameTable::FastFindSprite(std::string_view pSpriteName) {
-    signed int result;  // eax@2
+    auto cmp = [this] (uint16_t index, std::string_view name) {
+        return iless(pSpriteSFrames[index].icon_name, name);
+    };
 
-    int searchResult = BinarySearch(pSpriteName);
-    if (searchResult < 0)
-        result = 0;
-    else
-        result = this->pSpriteEFrames[searchResult];
-    return result;
-}
+    auto pos = std::lower_bound(pSpriteEFrames.begin(), pSpriteEFrames.end(), pSpriteName, cmp);
+    if (pos == pSpriteEFrames.end())
+        return 0;
 
-//----- (0044D83A) --------------------------------------------------------
-int SpriteFrameTable::BinarySearch(std::string_view pSpriteName) {
-    auto pos = std::lower_bound(pSpritePFrames.begin(), pSpritePFrames.end(), pSpriteName,
-        [](SpriteFrame *l, std::string_view r) {
-            return iless(l->icon_name, r);
-        }
-    );
-
-    if (iequals((*pos)->icon_name, pSpriteName)) {
-        return pos - pSpritePFrames.begin();
-    } else {
-        return -1;
-    }
+    return iequals(pSpriteSFrames[*pos].icon_name, pSpriteName) ? *pos : 0;
 }
 
 //----- (0044D8D0) --------------------------------------------------------
@@ -277,10 +263,6 @@ void SpriteFrameTable::FromFile(const Blob &data_mm6, const Blob &data_mm7, cons
     deserialize(src, &tmp, presized(frameCount));
     reconstruct(tmp, &pSpriteSFrames);
     deserialize(src, &pSpriteEFrames, presized(eframeCount));
-
-    pSpritePFrames.clear();
-    for (uint16_t index : pSpriteEFrames)
-        pSpritePFrames.push_back(&pSpriteSFrames[index]);
 
     assert(!pSpriteSFrames.empty());
 }

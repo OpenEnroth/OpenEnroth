@@ -52,8 +52,13 @@ struct SpriteFrameTable {
     void FromFile(const Blob &data_mm6, const Blob &data_mm7, const Blob &data_mm8);
     void ResetLoadedFlags();
     void InitializeSprite(signed int uSpriteID);
+
+    /**
+     * @param pSpriteName               Name of the sprite to find. Names are case-insensitive.
+     * @return                          Index in `pSpriteSFrames` for the sprite, or 0 if sprite wasn't found.
+     *                                  Conveniently, sprite 0 is a dummy sprite that actually exists.
+     */
     int FastFindSprite(std::string_view pSpriteName);
-    int BinarySearch(std::string_view pSpriteName);
     SpriteFrame *GetFrame(unsigned int uSpriteID, unsigned int uTime);
     SpriteFrame *GetFrameBy_x(unsigned int uSpriteID, signed int time);
 
@@ -63,7 +68,9 @@ struct SpriteFrameTable {
     void ResetPaletteIndexes();
 
     std::vector<SpriteFrame> pSpriteSFrames;
-    std::vector<SpriteFrame *> pSpritePFrames;
+
+    /** Indices into `pSpriteSFrames`, sorted by sprite name. Note that `pSpriteSFrames` itself is not sorted.
+     * Contains only indices for 'a' (frontal?) sprites, so smaller in size than `pSpriteSFrames`. */
     std::vector<uint16_t> pSpriteEFrames;
 };
 
