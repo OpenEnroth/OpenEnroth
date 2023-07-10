@@ -219,10 +219,8 @@ bool LODFile_IconsBitmaps::open(const std::string &pFilename, const std::string 
 }
 
 LODFile_Sprites::~LODFile_Sprites() {
-    if (!this->_sprites.empty()) {
-        for (size_t i = 0; i < this->_sprites.size(); ++i) {
-            this->_sprites[i].Release();
-        }
+    for (size_t i = 0; i < this->_sprites.size(); ++i) {
+        this->_sprites[i].Release();
     }
 }
 
