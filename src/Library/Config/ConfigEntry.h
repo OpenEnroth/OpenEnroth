@@ -5,8 +5,6 @@
 #include <string>
 #include <utility>
 
-#include "Library/Serialization/Serialization.h"
-
 #include "ConfigFwd.h"
 #include "AnyConfigEntry.h"
 #include "AnyHandler.h"

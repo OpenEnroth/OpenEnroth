@@ -66,8 +66,13 @@ concept Serializable = requires (T value, std::string str, std::string_view view
     { tryDeserialize(view, &value) } -> std::same_as<bool>;
 }; // NOLINT: linter doesn't know anything about concepts.
 
+namespace CLI::detail {
+enum class enabler;
+constexpr enabler dummy2 = {};
+}
+
 // CLI11 support for `Serializable` types.
-template<Serializable T>
+template<Serializable T, CLI::detail::enabler = CLI::detail::dummy2> requires (!std::is_arithmetic_v<T>) // Don't override arithmetic type handling.
 inline bool lexical_cast(const std::string& src, T& dst) {
     return tryDeserialize(src, &dst);
 }
