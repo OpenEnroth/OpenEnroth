@@ -1557,3 +1557,8 @@ GAME_TEST(Issues, Issue1051) {
         EXPECT_EQ(engine->config->debug.TraceFrameTimeMs.value(), 15); // Don't redo this at different FPS.
     });
 }
+
+GAME_TEST(Issues, Issue1068) {
+    // Kills assert if characters don't have learning skill, but party has an npc that gives learning boost.
+    test->playTraceFromTestData("issue_1068.mm7", "issue_1068.json");
+}
