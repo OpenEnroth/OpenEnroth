@@ -252,7 +252,7 @@ void RenderOpenGL::CreateZBuffer() {
 
     pActiveZBuffer = (int*)malloc(outputRender.w * outputRender.h * sizeof(int));
     if (!pActiveZBuffer)
-        Error("Failed to create zbuffer");
+        Error1("Failed to create zbuffer");
 
     ClearZBuffer();
 }

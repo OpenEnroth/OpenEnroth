@@ -373,7 +373,7 @@ class Movie : public IMovie {
         audio.open(format_ctx);
 
         if (!video.open(format_ctx)) {
-            Error("Cannot open video stream: %s", filename);
+            Error1("Cannot open video stream: %s", filename);
             Close();
             return false;
         }

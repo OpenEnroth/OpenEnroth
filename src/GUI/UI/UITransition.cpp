@@ -230,6 +230,6 @@ void GUIWindow_Transition::Update() {
         unsigned int vertMargin = (212 - pFontCreate->CalcTextHeight(str, transition_window.uFrameWidth, 0)) / 2 + 101;
         transition_window.DrawTitleText(pFontCreate, 0, vertMargin, colorTable.White, str, 3);
     } else {
-        Error("Troubles in da house");
+        Error1("Troubles in da house");
     }
 }

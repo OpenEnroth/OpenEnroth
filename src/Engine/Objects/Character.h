@@ -593,7 +593,7 @@ inline CharacterExpressionID expressionForCondition(Condition condition) {
       case CONDITION_UNCONSCIOUS:
         return CHARACTER_EXPRESSION_UNCONCIOUS;
       default:
-        Error("Invalid condition: %u", condition);
+        Error1("Invalid condition: %u", condition);
     }
 
     return CHARACTER_EXPRESSION_NORMAL;

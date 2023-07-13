@@ -49,6 +49,7 @@ add_library(engine STATIC ${ENGINE_SOURCES} ${ENGINE_HEADERS})
 target_check_style(engine)
 
 target_link_libraries(engine
+        application
         engine_graphics
         engine_objects
         engine_serialization

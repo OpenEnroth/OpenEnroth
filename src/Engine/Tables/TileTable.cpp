@@ -104,7 +104,7 @@ int TileTable::FromFileTxt(const char *pFilename) {
     v2 = this;
     v3 = fopen(pFilename, "r");
     File = v3;
-    if (!v3) Error("TileTable::load - Unable to open file: %s.");
+    if (!v3) Error1("TileTable::load - Unable to open file: %s.");
     v4 = 0;
     for (i = v3; fgets(Buf, sizeof(Buf), i); i = File) {
         *strchr(Buf, 10) = 0;

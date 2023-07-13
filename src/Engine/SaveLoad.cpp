@@ -56,7 +56,7 @@ void LoadGame(unsigned int uSlot) {
 
     std::error_code ec;
     if (!std::filesystem::copy_file(filename, to_file_path, std::filesystem::copy_options::overwrite_existing, ec))
-        Error("Failed to copy: %s", filename.c_str());
+        Error1("Failed to copy: %s", filename.c_str());
 
     pSave_LOD->LoadFile(to_file_path, 0);
 
@@ -114,7 +114,7 @@ void LoadGame(unsigned int uSlot) {
     pEventTimer->StopGameTime();
 
     if (!pGames_LOD->DoesContainerExist(header.locationName)) {
-        Error("Unable to find: %s!", header.locationName.c_str());
+        Error1("Unable to find: %s!", header.locationName.c_str());
     }
 
     pCurrentMapName = header.locationName;
@@ -275,7 +275,7 @@ void DoSavegame(unsigned int uSlot) {
         std::string dst = makeDataPath("saves", fmt::format("save{:03}.mm7", uSlot));
         std::error_code ec;
         if (!std::filesystem::copy_file(src, dst, std::filesystem::copy_options::overwrite_existing, ec))
-            Error("Failed to copy: %s", src.c_str());
+            Error1("Failed to copy: %s", src.c_str());
     }
     pSavegameList->selectedSlot = uSlot;
 

@@ -23,7 +23,7 @@ static size_t getDirectoryHeaderImgSize(LodVersion lod_version) {
         return sizeof(LodDirectoryHeader_Mm6);
     }
 
-    Error("Unknown LOD version: %u", lod_version);
+    Error1("Unknown LOD version: %u", lod_version);
     return 0;
 }
 

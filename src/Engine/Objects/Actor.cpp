@@ -788,7 +788,7 @@ void Actor::AI_RangedAttack(unsigned int uActorID, struct AIDirection *pDir,
     bool found = false;
     a1.uObjectDescID = pObjectList->ObjectIDByItemID(a1.uType);
     if (a1.uObjectDescID == 0) {
-        Error("Item not found");
+        Error1("Item not found");
         return;
     }
     a1.containing_item.Reset();
@@ -1093,7 +1093,7 @@ void Actor::AI_MeleeAttack(unsigned int uActorID, signed int sTargetPid,
         v7 = pParty->pos.y;
         v23 = pParty->pos.z + pParty->eyeLevel;
     } else {
-        Error("Should not get here");
+        Error1("Should not get here");
         return;
     }
 
@@ -1341,7 +1341,7 @@ void Actor::AI_SpellAttack2(unsigned int uActorID, signed int edx0,
         v5 = pParty->pos.y;
         v21 = pParty->pos.z + pParty->eyeLevel;
     } else {
-        Error("Should not get here");
+        Error1("Should not get here");
         return;
     }
     v19 = v3->height;
@@ -1414,7 +1414,7 @@ void Actor::AI_SpellAttack1(unsigned int uActorID, signed int sTargetPid,
         v5 = pParty->pos.y;
         v21 = pParty->pos.z + pParty->eyeLevel;
     } else {
-        Error("Should not get here");
+        Error1("Should not get here");
         return;
     }
     v19 = v3->height;
@@ -1489,7 +1489,7 @@ void Actor::AI_MissileAttack2(unsigned int uActorID, signed int sTargetPid,
         v5 = pParty->pos.y;
         v20 = pParty->pos.z + pParty->eyeLevel;
     } else {
-        Error("Should not get here");
+        Error1("Should not get here");
         return;
     }
     v18 = v3->height;

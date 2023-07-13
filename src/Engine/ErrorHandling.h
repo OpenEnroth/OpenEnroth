@@ -9,7 +9,7 @@
     } while (0)
 
 
-#define Error(...)                                                  \
+#define Error1(...)                                                  \
     do {                                                            \
         Error_impl_(__FILE__, __FUNCTION__, __LINE__, __VA_ARGS__); \
         assert(false);                                              \

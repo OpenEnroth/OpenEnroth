@@ -222,7 +222,7 @@ OpenALSoundProvider::CreateStreamingTrack16(int num_channels, int sample_rate,
                         break;
                 }
             }
-            Error("Unsupported number of audio channels: %u", num_channels);
+            Error1("Unsupported number of audio channels: %u", num_channels);
     }
 
     unsigned int al_source = -1;
@@ -312,7 +312,7 @@ OpenALSoundProvider::TrackBuffer *OpenALSoundProvider::CreateTrack16(
                         break;
                 }
             }
-            Error("Unsupported number of audio channels: %u", num_channels);
+            Error1("Unsupported number of audio channels: %u", num_channels);
         }
     }
 
@@ -729,7 +729,7 @@ bool OpenALAudioDataSource::Open() {
                         break;
                 }
             }
-            Error("Unsupported number of audio channels: %u", num_channels);
+            Error1("Unsupported number of audio channels: %u", num_channels);
     }
 
     while (true) {

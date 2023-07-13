@@ -5,6 +5,8 @@
 #include <string>
 #include <string_view>
 
+#include <CLI/CLI.hpp>
+
 #include "SerializationFwd.h"
 #include "StandardSerialization.h"
 
@@ -32,7 +34,7 @@ void printToStream(const std::string &string, std::ostream *stream); // This one
 
 } // namespace detail
 
-/**
+/**g
  * Ranges-friendly serialization object.
  *
  * Can be used as `range | std::views::transform(ToString)`. Or directly, as `return ToString(some_integer);`.
@@ -66,19 +68,15 @@ concept Serializable = requires (T value, std::string str, std::string_view view
     { tryDeserialize(view, &value) } -> std::same_as<bool>;
 }; // NOLINT: linter doesn't know anything about concepts.
 
-namespace CLI::detail {
-enum class enabler;
-constexpr enabler dummy2 = {};
-}
-
 // CLI11 support for `Serializable` types.
-template<Serializable T, CLI::detail::enabler = CLI::detail::dummy2> requires (!std::is_arithmetic_v<T>) // Don't override arithmetic type handling.
+template<Serializable T,
+    std::enable_if_t<CLI::detail::classify_object<T>::value == CLI::detail::object_category::enumeration, CLI::detail::enabler> = CLI::detail::dummy>
 inline bool lexical_cast(const std::string& src, T& dst) {
     return tryDeserialize(src, &dst);
 }
 
 // Google test printers support for `Serializable` types.
-template<Serializable T> requires (!std::is_arithmetic_v<T>) // Don't override arithmetic type handling.
+template<Serializable T>
 inline void PrintTo(const T &src, std::ostream *dst) {
     std::string tmp;
     serialize(src, &tmp);

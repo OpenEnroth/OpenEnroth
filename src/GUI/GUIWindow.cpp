@@ -812,7 +812,7 @@ void SetUserInterface(PartyAlignment align, bool bReplace) {
         uGameUIFontMain = colorTable.MediumBlue;
         uGameUIFontShadow = colorTable.White;
     } else {
-        Error("Invalid alignment type: %u", align);
+        Error1("Invalid alignment type: %u", align);
     }
 }
 

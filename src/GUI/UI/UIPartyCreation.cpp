@@ -318,7 +318,7 @@ void GUIWindow_PartyCreation::Update() {
             pX = 488;
             break;
         default:
-            Error("Invalid selected character");
+            Error1("Invalid selected character");
     }
 
     pTextCenter = ui_partycreation_font->AlignText_Center(
@@ -823,7 +823,7 @@ bool PartyCreationUI_LoopInternal() {
                 pParty->pCharacters[i].AddItem(-1, ITEM_MACE);
                 break;
             case CHARACTER_SKILL_BLASTER:
-                Error("No blasters at startup :p");
+                Error1("No blasters at startup :p");
             case CHARACTER_SKILL_SHIELD:
                 pParty->pCharacters[i].AddItem(-1, ITEM_WOODEN_BUCKLER);
                 break;
@@ -879,7 +879,7 @@ bool PartyCreationUI_LoopInternal() {
             case CHARACTER_SKILL_LIGHT:
             case CHARACTER_SKILL_DARK:
             case CHARACTER_SKILL_DIPLOMACY:
-                Error("No dimoplacy in mm7 (yet)");
+                Error1("No dimoplacy in mm7 (yet)");
                 break;
             case CHARACTER_SKILL_ITEM_ID:
             case CHARACTER_SKILL_REPAIR:

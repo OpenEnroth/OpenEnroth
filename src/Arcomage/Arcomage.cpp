@@ -240,7 +240,7 @@ void ArcomageGame::onKeyPress(PlatformKey key) {
 explosion_effect_struct *explosion_effect_struct::New() {
     explosion_effect_struct *v2 = (explosion_effect_struct *)malloc(sizeof(explosion_effect_struct));
     if (v2 == nullptr) {
-        Error("Malloc - explosion_effect_struct::New()");
+        Error1("Malloc - explosion_effect_struct::New()");
     }
     v2->mem_signature = SIG_MEMALOC;
     v2->remaining_sparks_to_init = 0;

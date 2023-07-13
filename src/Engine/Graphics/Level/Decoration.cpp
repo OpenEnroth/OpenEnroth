@@ -306,7 +306,7 @@ int LevelDecoration::GetGlobalEvent() {
             return 0;
 
         default:
-            Error("Invalid DecorationDescID: %u", uDecorationDescID);
+            Error1("Invalid DecorationDescID: %u", uDecorationDescID);
     }
 }
 

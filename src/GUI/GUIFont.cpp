@@ -79,7 +79,7 @@ GUIFont *GUIFont::LoadFont(const char *pFontFile, const char *pFontPalette) {
 
     Texture_MM7 *pallete_texture = pIcons_LOD->loadTexture(pFontPalette);
     if (!pallete_texture)
-        Error("Unable to open %s", pFontPalette);
+        Error1("Unable to open %s", pFontPalette);
 
     pFont->pData->pFontPalettes[0] = pallete_texture->pPalette24;
     pFont->pData->palletes_count = 1;

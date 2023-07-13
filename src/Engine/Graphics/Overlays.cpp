@@ -131,7 +131,7 @@ bool OverlayList::FromFileTxt(const char *Args) {
     pOverlays.clear();
     v4 = fopen(Args, "r");
     File = v4;
-    if (!v4) Error("ObjectDescriptionList::load - Unable to open file: %s.");
+    if (!v4) Error1("ObjectDescriptionList::load - Unable to open file: %s.");
 
     v5 = 0;
     Argsa = 0;

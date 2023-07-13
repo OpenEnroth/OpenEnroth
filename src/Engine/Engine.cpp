@@ -172,7 +172,7 @@ void Engine::Draw() {
             else if (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR)
                 pOutdoor->Draw();
             else
-                Error("Invalid level type: %u", uCurrentlyLoadedLevelType);
+                Error1("Invalid level type: %u", uCurrentlyLoadedLevelType);
 
              decal_builder->DrawBloodsplats();
         }
@@ -673,12 +673,12 @@ void Engine::OutlineSelection() {
                     else
                         face->uAttributes |= FACE_OUTLINED;
                 } else {
-                    Error("Invalid level type", uCurrentlyLoadedLevelType);
+                    Error1("Invalid level type", uCurrentlyLoadedLevelType);
                 }
             } break;
 
             default: {
-                Error(
+                Error1(
                     "Undefined CObjectInfo type requested in "
                     "CGame::outline_selection()");
                 Engine_DeinitializeAndTerminate(0);
@@ -797,19 +797,19 @@ bool MM7_LoadLods() {
 
     pIcons_LOD = new LODFile_IconsBitmaps;
     if (!pIcons_LOD->open(makeDataPath("data", "icons.lod"), "icons")) {
-        Error(localization->GetString(LSTR_PLEASE_REINSTALL), localization->GetString(LSTR_REINSTALL_NECESSARY));
+        Error1(localization->GetString(LSTR_PLEASE_REINSTALL), localization->GetString(LSTR_REINSTALL_NECESSARY));
         return false;
     }
 
     pBitmaps_LOD = new LODFile_IconsBitmaps;
     if (!pBitmaps_LOD->open(makeDataPath("data", "bitmaps.lod"), "bitmaps")) {
-        Error(localization->GetString(LSTR_PLEASE_REINSTALL), localization->GetString(LSTR_REINSTALL_NECESSARY));
+        Error1(localization->GetString(LSTR_PLEASE_REINSTALL), localization->GetString(LSTR_REINSTALL_NECESSARY));
         return false;
     }
 
     pSprites_LOD = new LODFile_Sprites;
     if (!pSprites_LOD->open(makeDataPath("data", "sprites.lod"), "sprites08")) {
-        Error(localization->GetString(LSTR_PLEASE_REINSTALL), localization->GetString(LSTR_REINSTALL_NECESSARY));
+        Error1(localization->GetString(LSTR_PLEASE_REINSTALL), localization->GetString(LSTR_REINSTALL_NECESSARY));
         return false;
     }
 
@@ -1881,7 +1881,7 @@ void initLevelStrings(Blob &blob) {
 void Level_LoadEvtAndStr(const std::string &pLevelName) {
     Blob blob = engine->_gameResourceManager->getEventsFile(pLevelName + ".str");
     if (!blob || (blob.size() > 9216)) {
-        Error("File %s Size %lu - Buffer size %lu", (pLevelName + ".str").c_str(), blob.size(), 9216);
+        Error1("File %s Size %lu - Buffer size %lu", (pLevelName + ".str").c_str(), blob.size(), 9216);
     }
 
     initLevelStrings(blob);

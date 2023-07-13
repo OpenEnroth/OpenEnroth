@@ -656,7 +656,7 @@ Blob LOD::File::LoadRaw(const std::string &pContainer) const {
     size_t size = 0;
     FILE *File = FindContainer(pContainer, &size);
     if (!File) {
-        Error("Unable to load %s", pContainer.c_str());
+        Error1("Unable to load %s", pContainer.c_str());
         return Blob();
     }
 
@@ -666,7 +666,7 @@ Blob LOD::File::LoadRaw(const std::string &pContainer) const {
 Blob LOD::File::LoadCompressedTexture(const std::string &pContainer) {
     FILE *File = FindContainer(pContainer, 0);
     if (!File) {
-        Error("Unable to load %s", pContainer.c_str());
+        Error1("Unable to load %s", pContainer.c_str());
         return Blob();
     }
 
@@ -684,7 +684,7 @@ Blob LOD::File::LoadCompressedTexture(const std::string &pContainer) {
 Blob LOD::File::LoadCompressed(const std::string &pContainer) {
     FILE *File = FindContainer(pContainer, 0);
     if (!File) {
-        Error("Unable to load %s", pContainer.c_str());
+        Error1("Unable to load %s", pContainer.c_str());
         return Blob();
     }
 
@@ -693,7 +693,7 @@ Blob LOD::File::LoadCompressed(const std::string &pContainer) {
         return Blob();
 
     if (header.uVersion != 91969 || (memcmp(&header.pMagic, "mvii", 4) != 0)) {
-        Error("Unable to load %s", pContainer.c_str());
+        Error1("Unable to load %s", pContainer.c_str());
         return Blob();
     }
 

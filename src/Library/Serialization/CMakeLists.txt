@@ -15,7 +15,7 @@ set(LIBRARY_SERIALIZATION_HEADERS
         StandardSerialization.h)
 
 add_library(library_serialization STATIC ${LIBRARY_SERIALIZATION_SOURCES} ${LIBRARY_SERIALIZATION_HEADERS})
-target_link_libraries(library_serialization utility magic_enum::magic_enum FastFloat::fast_float)
+target_link_libraries(library_serialization utility magic_enum::magic_enum FastFloat::fast_float CLI11::CLI11)
 target_check_style(library_serialization)
 
 

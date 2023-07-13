@@ -1819,7 +1819,7 @@ Color GetConditionDrawColor(Condition uConditionIdx) {
         case CONDITION_ERADICATED:
             return ui_character_condition_severe_color;
     }
-    Error("Invalid condition (%u)", uConditionIdx);
+    Error1("Invalid condition (%u)", uConditionIdx);
 }
 
 //----- (00495430) --------------------------------------------------------

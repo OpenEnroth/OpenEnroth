@@ -40,7 +40,7 @@ bool GUIProgressBar::Initialize(Type type) {
             break;
 
         default:
-            Error("Invalid GUIProgressBar type: %u", type);
+            Error1("Invalid GUIProgressBar type: %u", type);
     }
 
     uType = type;

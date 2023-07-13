@@ -224,7 +224,7 @@ int MapStats::sub_410D99_get_map_index(int a1) {
             return i;
         }
     }
-    Error("Map not found");
+    Error1("Map not found");
     return -1;
 }
 
@@ -239,7 +239,7 @@ MAP_TYPE MapStats::GetMapInfo(const std::string &Str2) {
         }
     }
 
-    Error("Map not found!");
+    Error1("Map not found!");
     return (MAP_TYPE)-1;  // @TODO: This should be MAP_INVALID!, as it's if'ed later.
 }
 

@@ -189,7 +189,7 @@ bool stru10::CalcFaceBounding(BLVFace *pFace, RenderVertexSoft *pFaceLimits,
             break;
 
         default:
-            Error("Invalid polygon type (%u)", pFace->uPolygonType);
+            Error1("Invalid polygon type (%u)", pFace->uPolygonType);
     }
 
     float face_center_x = 0;

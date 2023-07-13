@@ -234,14 +234,14 @@ void IndoorLocation::Load(const std::string &filename, int num_days_played, int 
     decal_builder->Reset(0);
 
     if (bLoaded)
-        Error("BLV is already loaded");
+        Error1("BLV is already loaded");
 
     auto blv_filename = std::string(filename);
     blv_filename.replace(blv_filename.length() - 4, 4, ".blv");
 
     this->filename = std::string(filename);
     if (!pGames_LOD->DoesContainerExist(blv_filename))
-        Error("Unable to find %s in Games.LOD", blv_filename.c_str());
+        Error1("Unable to find %s in Games.LOD", blv_filename.c_str());
 
     Release();
 
@@ -1845,7 +1845,7 @@ void switchDoorAnimation(unsigned int uDoorID, int a2) {
         if (pIndoor->pDoors[door_id].uDoorID == uDoorID) break;
     }
     if (door_id >= 200) {
-        Error("Unable to find Door ID: %i!", uDoorID);
+        Error1("Unable to find Door ID: %i!", uDoorID);
     }
     old_state = pIndoor->pDoors[door_id].uState;
     // old_state: 0 - в нижнем положении/закрыто

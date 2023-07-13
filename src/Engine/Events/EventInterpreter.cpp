@@ -61,7 +61,7 @@ static bool checkSeason(Season season) {
                     monthPlusOne == 6 && daysPlusOne <= 20);
 
         default:
-            Error("Unknown season");
+            Error1("Unknown season");
     }
 
     return false;

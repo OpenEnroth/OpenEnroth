@@ -327,7 +327,7 @@ bool MonsterList::FromFileTxt(const char *Args) {
 
     v3 = fopen(Args, "r");
     File = v3;
-    if (!v3) Error("MonsterRaceListStruct::load - Unable to open file: %s.");
+    if (!v3) Error1("MonsterRaceListStruct::load - Unable to open file: %s.");
 
     v4 = 0;
     Argsa = 0;
@@ -1110,7 +1110,7 @@ int16_t MonsterList::GetMonsterIDByName(const std::string &pMonsterName) {
         if (iequals(pMonsters[i].pMonsterName, pMonsterName))
             return i;
     }
-    Error("Monster not found: %s", pMonsterName.c_str());
+    Error1("Monster not found: %s", pMonsterName.c_str());
 }
 //----- (00438BDF) --------------------------------------------------------
 bool MonsterStats::BelongsToSupertype(unsigned int uMonsterInfoID,

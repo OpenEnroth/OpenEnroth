@@ -852,7 +852,7 @@ void OutdoorLocation::Load(const std::string &filename, int days_played, int res
     //}
 
     if (!pGames_LOD->DoesContainerExist(filename))
-        Error("Unable to find %s in Games.LOD", filename.c_str());
+        Error1("Unable to find %s in Games.LOD", filename.c_str());
 
     std::string minimap_filename = filename.substr(0, filename.length() - 4);
     viewparams->location_minimap = assets->getImage_Solid(minimap_filename);

@@ -760,7 +760,7 @@ int sprintfex_internal(char *str) {
                     actual_ending = ending3;
                     actual_ending_len = src - ending3 - 1;
                 } else {
-                    Error("Invalid gender token");
+                    Error1("Invalid gender token");
                 }
 
                 strncpy(dst, actual_ending, actual_ending_len);
@@ -843,7 +843,7 @@ int sprintfex_internal(char *str) {
                 strncpy(token, token_begin, token_len);
                 token[token_len] = 0;
 
-                Error("Invalid format token: %s", token);
+                Error1("Invalid format token: %s", token);
             } break;
         }
 

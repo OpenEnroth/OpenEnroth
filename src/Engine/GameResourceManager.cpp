@@ -16,7 +16,7 @@ GameResourceManager::~GameResourceManager() = default;
 void GameResourceManager::openGameResources() {
     _eventsLodReader = LodReader::open(makeDataPath("data", "events.lod"));
     if (!_eventsLodReader) {
-        Error(localization->GetString(LSTR_PLEASE_REINSTALL), localization->GetString(LSTR_REINSTALL_NECESSARY));
+        Error1(localization->GetString(LSTR_PLEASE_REINSTALL), localization->GetString(LSTR_REINSTALL_NECESSARY));
     }
 }
 
