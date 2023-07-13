@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.9.5"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>OpenEnroth: detail::ComparableVector&lt; T &gt; Class Template Reference</title>
+<title>OpenEnroth: TestVector&lt; T &gt; Class Template Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;7c81117</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;ce667dd</span>
    </div>
   </td>
  </tr>
@@ -67,45 +67,41 @@ $(function() {
 </div>
 </div>
 
-<div id="nav-path" class="navpath">
-  <ul>
-<li class="navelem"><a class="el" href="namespacedetail.html">detail</a></li><li class="navelem"><a class="el" href="classdetail_1_1ComparableVector.html">ComparableVector</a></li>  </ul>
-</div>
 </div><!-- top -->
 <div class="header">
   <div class="summary">
 <a href="#pri-types">Private Types</a> &#124;
 <a href="#friends">Friends</a> &#124;
-<a href="classdetail_1_1ComparableVector-members.html">List of all members</a>  </div>
-  <div class="headertitle"><div class="title">detail::ComparableVector&lt; T &gt; Class Template Reference</div></div>
+<a href="classTestVector-members.html">List of all members</a>  </div>
+  <div class="headertitle"><div class="title">TestVector&lt; T &gt; Class Template Reference</div></div>
 </div><!--header-->
 <div class="contents">
 
-<p><code>#include &lt;TestTape.h&gt;</code></p>
+<p><code>#include &lt;TestVector.h&gt;</code></p>
 <div class="dynheader">
-Inheritance diagram for detail::ComparableVector&lt; T &gt;:</div>
+Inheritance diagram for TestVector&lt; T &gt;:</div>
 <div class="dyncontent">
  <div class="center">
-  <img src="classdetail_1_1ComparableVector.png" alt=""/>
+  <img src="classTestVector.png" alt=""/>
  </div></div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pri-types" name="pri-types"></a>
 Private Types</h2></td></tr>
-<tr class="memitem:ab0246ec35fee75b9bf873b7d208d1a48"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdetail_1_1ComparableVector.html#ab0246ec35fee75b9bf873b7d208d1a48">base_type</a> = std::vector&lt; T &gt;</td></tr>
-<tr class="separator:ab0246ec35fee75b9bf873b7d208d1a48"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac381b867ac960a679d32c795b7e434e2"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTestVector.html#ac381b867ac960a679d32c795b7e434e2">base_type</a> = std::vector&lt; T &gt;</td></tr>
+<tr class="separator:ac381b867ac960a679d32c795b7e434e2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="friends" name="friends"></a>
 Friends</h2></td></tr>
-<tr class="memitem:a7b6e456e9bd7d9473f23a141eb630f78"><td class="memTemplParams" colspan="2">template&lt;class Y &gt; </td></tr>
-<tr class="memitem:a7b6e456e9bd7d9473f23a141eb630f78"><td class="memTemplItemLeft" align="right" valign="top">bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classdetail_1_1ComparableVector.html#a7b6e456e9bd7d9473f23a141eb630f78">operator==</a> (const <a class="el" href="classdetail_1_1ComparableVector.html">ComparableVector</a> &amp;l, const <a class="el" href="classdetail_1_1ComparableVector.html">ComparableVector</a>&lt; Y &gt; &amp;r)</td></tr>
-<tr class="separator:a7b6e456e9bd7d9473f23a141eb630f78"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acf3b8764059e0f187a573b042bbbc7b4"><td class="memTemplParams" colspan="2">template&lt;class Y &gt; </td></tr>
+<tr class="memitem:acf3b8764059e0f187a573b042bbbc7b4"><td class="memTemplItemLeft" align="right" valign="top">bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classTestVector.html#acf3b8764059e0f187a573b042bbbc7b4">operator==</a> (const <a class="el" href="classTestVector.html">TestVector</a> &amp;l, const <a class="el" href="classTestVector.html">TestVector</a>&lt; Y &gt; &amp;r)</td></tr>
+<tr class="separator:acf3b8764059e0f187a573b042bbbc7b4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><div class="compoundTemplParams">template&lt;class T&gt;<br />
-class detail::ComparableVector&lt; T &gt;</div><p >Vector wrapper that can be compared via operator== with other vectors that have different element types. </p>
+class TestVector&lt; T &gt;</div><p >Vector wrapper that provides operator== for instantiations that have different element types. Used only in tests. </p>
 </div><h2 class="groupheader">Member Typedef Documentation</h2>
-<a id="ab0246ec35fee75b9bf873b7d208d1a48" name="ab0246ec35fee75b9bf873b7d208d1a48"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab0246ec35fee75b9bf873b7d208d1a48">&#9670;&#160;</a></span>base_type</h2>
+<a id="ac381b867ac960a679d32c795b7e434e2" name="ac381b867ac960a679d32c795b7e434e2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac381b867ac960a679d32c795b7e434e2">&#9670;&#160;</a></span>base_type</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -116,7 +112,7 @@ template&lt;class T &gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">using <a class="el" href="classdetail_1_1ComparableVector.html">detail::ComparableVector</a>&lt; T &gt;::base_type =  std::vector&lt;T&gt;</td>
+          <td class="memname">using <a class="el" href="classTestVector.html">TestVector</a>&lt; T &gt;::base_type =  std::vector&lt;T&gt;</td>
         </tr>
       </table>
   </td>
@@ -129,8 +125,8 @@ template&lt;class T &gt; </div>
 </div>
 </div>
 <h2 class="groupheader">Friends And Related Function Documentation</h2>
-<a id="a7b6e456e9bd7d9473f23a141eb630f78" name="a7b6e456e9bd7d9473f23a141eb630f78"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a7b6e456e9bd7d9473f23a141eb630f78">&#9670;&#160;</a></span>operator==</h2>
+<a id="acf3b8764059e0f187a573b042bbbc7b4" name="acf3b8764059e0f187a573b042bbbc7b4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#acf3b8764059e0f187a573b042bbbc7b4">&#9670;&#160;</a></span>operator==</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -145,13 +141,13 @@ template&lt;class Y &gt; </div>
         <tr>
           <td class="memname">bool operator== </td>
           <td>(</td>
-          <td class="paramtype">const <a class="el" href="classdetail_1_1ComparableVector.html">ComparableVector</a>&lt; T &gt; &amp;&#160;</td>
+          <td class="paramtype">const <a class="el" href="classTestVector.html">TestVector</a>&lt; T &gt; &amp;&#160;</td>
           <td class="paramname"><em>l</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const <a class="el" href="classdetail_1_1ComparableVector.html">ComparableVector</a>&lt; Y &gt; &amp;&#160;</td>
+          <td class="paramtype">const <a class="el" href="classTestVector.html">TestVector</a>&lt; Y &gt; &amp;&#160;</td>
           <td class="paramname"><em>r</em>&#160;</td>
         </tr>
         <tr>
@@ -170,7 +166,7 @@ template&lt;class Y &gt; </div>
 </div>
 </div>
 <hr/>The documentation for this class was generated from the following file:<ul>
-<li>test/Testing/Game/<a class="el" href="TestTape_8h.html">TestTape.h</a></li>
+<li>test/Testing/Game/<a class="el" href="TestVector_8h.html">TestVector.h</a></li>
 </ul>
 </div><!-- contents -->
 <!-- start footer part -->

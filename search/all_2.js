@@ -19,7 +19,7 @@ var searchData=
   ['base_16',['base',['../classProxyBase.html#a597c0e1dff33350cfff9b02a61ee9b63',1,'ProxyBase']]],
   ['base_5f_17',['base_',['../classProxyBase.html#a24fd6fa6bad5b7ea47fd041927e6a9a8',1,'ProxyBase']]],
   ['base_5frecovery_5ftimes_5fper_5fweapon_5ftype_18',['base_recovery_times_per_weapon_type',['../mm7__data_8h.html#a2fe37621a649165a9e4c8c43cec22029',1,'base_recovery_times_per_weapon_type():&#160;mm7_data.cpp'],['../mm7__data_8cpp.html#a2fe37621a649165a9e4c8c43cec22029',1,'base_recovery_times_per_weapon_type():&#160;mm7_data.cpp']]],
-  ['base_5ftype_19',['base_type',['../classdetail_1_1ComparableVector.html#ab0246ec35fee75b9bf873b7d208d1a48',1,'detail::ComparableVector::base_type()'],['../classIndexedArray.html#ab01ebf0cf0199075545beebfeb14e79e',1,'IndexedArray::base_type()']]],
+  ['base_5ftype_19',['base_type',['../classTestVector.html#ac381b867ac960a679d32c795b7e434e2',1,'TestVector::base_type()'],['../classIndexedArray.html#ab01ebf0cf0199075545beebfeb14e79e',1,'IndexedArray::base_type()']]],
   ['basedamage_20',['baseDamage',['../classSpellData.html#a904cc9f132b6786270f1a4e68f59e91b',1,'SpellData']]],
   ['baseitembuyingprice_21',['baseItemBuyingPrice',['../classPriceCalculator.html#a7ffa98a80bd3cc9a90b6af5c25bf5e09',1,'PriceCalculator']]],
   ['baseitemidentifyprice_22',['baseItemIdentifyPrice',['../classPriceCalculator.html#a6f6c77b10de0ae3ad8db801bf669116a',1,'PriceCalculator']]],

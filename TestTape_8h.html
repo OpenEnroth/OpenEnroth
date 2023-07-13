@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;7c81117</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;ce667dd</span>
    </div>
   </td>
  </tr>
@@ -84,14 +84,12 @@ $(function() {
 <code>#include &lt;algorithm&gt;</code><br />
 <code>#include &lt;functional&gt;</code><br />
 <code>#include &lt;ostream&gt;</code><br />
-<code>#include &lt;vector&gt;</code><br />
 <code>#include &lt;memory&gt;</code><br />
 <code>#include &lt;utility&gt;</code><br />
+<code>#include &quot;<a class="el" href="TestVector_8h.html">TestVector.h</a>&quot;</code><br />
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Classes</h2></td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdetail_1_1ComparableVector.html">detail::ComparableVector&lt; T &gt;</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdetail_1_1TestTapeState.html">detail::TestTapeState&lt; T &gt;</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTestTape.html">TestTape&lt; T &gt;</a></td></tr>
@@ -106,13 +104,16 @@ Namespaces</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:af4fa0e009a258ea315ba0f6a52c7695b"><td class="memTemplParams" colspan="2">template&lt;class T , class... Tail&gt; </td></tr>
-<tr class="memitem:af4fa0e009a258ea315ba0f6a52c7695b"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="classdetail_1_1ComparableVector.html">detail::ComparableVector</a>&lt; T &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="TestTape_8h.html#af4fa0e009a258ea315ba0f6a52c7695b">tape</a> (T first, Tail... tail)</td></tr>
-<tr class="separator:af4fa0e009a258ea315ba0f6a52c7695b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa3655616a1469a2e5909b60244064fd5"><td class="memTemplParams" colspan="2">template&lt;class T , class... Tail&gt; </td></tr>
+<tr class="memitem:aa3655616a1469a2e5909b60244064fd5"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="classTestVector.html">TestVector</a>&lt; T &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="TestTape_8h.html#aa3655616a1469a2e5909b60244064fd5">tape</a> (T first, Tail... tail)</td></tr>
+<tr class="separator:aa3655616a1469a2e5909b60244064fd5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5311c962115d3b70e20c30cedaa5c56e"><td class="memTemplParams" colspan="2">template&lt;class T , class... Tail&gt; </td></tr>
+<tr class="memitem:a5311c962115d3b70e20c30cedaa5c56e"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="classTestVector.html">TestVector</a>&lt; <a class="el" href="classTestVector.html">TestVector</a>&lt; T &gt; &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="TestTape_8h.html#a5311c962115d3b70e20c30cedaa5c56e">tape</a> (std::initializer_list&lt; T &gt; first, std::initializer_list&lt; Tail &gt;... tail)</td></tr>
+<tr class="separator:a5311c962115d3b70e20c30cedaa5c56e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Function Documentation</h2>
-<a id="af4fa0e009a258ea315ba0f6a52c7695b" name="af4fa0e009a258ea315ba0f6a52c7695b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#af4fa0e009a258ea315ba0f6a52c7695b">&#9670;&#160;</a></span>tape()</h2>
+<a id="a5311c962115d3b70e20c30cedaa5c56e" name="a5311c962115d3b70e20c30cedaa5c56e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5311c962115d3b70e20c30cedaa5c56e">&#9670;&#160;</a></span>tape() <span class="overload">[1/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -120,7 +121,37 @@ Functions</h2></td></tr>
 template&lt;class T , class... Tail&gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="classdetail_1_1ComparableVector.html">detail::ComparableVector</a>&lt; T &gt; tape </td>
+          <td class="memname"><a class="el" href="classTestVector.html">TestVector</a>&lt; <a class="el" href="classTestVector.html">TestVector</a>&lt; T &gt; &gt; tape </td>
+          <td>(</td>
+          <td class="paramtype">std::initializer_list&lt; T &gt;&#160;</td>
+          <td class="paramname"><em>first</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::initializer_list&lt; Tail &gt;...&#160;</td>
+          <td class="paramname"><em>tail</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="aa3655616a1469a2e5909b60244064fd5" name="aa3655616a1469a2e5909b60244064fd5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa3655616a1469a2e5909b60244064fd5">&#9670;&#160;</a></span>tape() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class T , class... Tail&gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classTestVector.html">TestVector</a>&lt; T &gt; tape </td>
           <td>(</td>
           <td class="paramtype">T&#160;</td>
           <td class="paramname"><em>first</em>, </td>
@@ -139,9 +170,9 @@ template&lt;class T , class... Tail&gt; </div>
       </table>
 </div><div class="memdoc">
 <p >Shortcut function to create vectors that can then be compared with <code><a class="el" href="classTestTape.html">TestTape</a></code> objects inside the <code>EXPECT_EQ</code> and <code>ASSERT_EQ</code> gtest macros.</p>
-<p >Example code: </p><div class="fragment"><div class="line"><a class="code hl_function" href="Serialization__ut_8cpp.html#a7fc7ee24f5551f6f6bdd447161977786">EXPECT_EQ</a>(strengthTape, <a class="code hl_function" href="TestTape_8h.html#af4fa0e009a258ea315ba0f6a52c7695b">tape</a>(2, 4, 6)); <span class="comment">// Two +2 strength barrels.</span></div>
+<p >Example code: </p><div class="fragment"><div class="line"><a class="code hl_function" href="Serialization__ut_8cpp.html#a7fc7ee24f5551f6f6bdd447161977786">EXPECT_EQ</a>(strengthTape, <a class="code hl_function" href="TestTape_8h.html#aa3655616a1469a2e5909b60244064fd5">tape</a>(2, 4, 6)); <span class="comment">// Two +2 strength barrels.</span></div>
 <div class="ttc" id="aSerialization__ut_8cpp_html_a7fc7ee24f5551f6f6bdd447161977786"><div class="ttname"><a href="Serialization__ut_8cpp.html#a7fc7ee24f5551f6f6bdd447161977786">EXPECT_EQ</a></div><div class="ttdeci">EXPECT_EQ(toString(TestFlags()), &quot;0&quot;)</div></div>
-<div class="ttc" id="aTestTape_8h_html_af4fa0e009a258ea315ba0f6a52c7695b"><div class="ttname"><a href="TestTape_8h.html#af4fa0e009a258ea315ba0f6a52c7695b">tape</a></div><div class="ttdeci">detail::ComparableVector&lt; T &gt; tape(T first, Tail... tail)</div><div class="ttdef"><b>Definition:</b> TestTape.h:116</div></div>
+<div class="ttc" id="aTestTape_8h_html_aa3655616a1469a2e5909b60244064fd5"><div class="ttname"><a href="TestTape_8h.html#aa3655616a1469a2e5909b60244064fd5">tape</a></div><div class="ttdeci">TestVector&lt; T &gt; tape(T first, Tail... tail)</div><div class="ttdef"><b>Definition:</b> TestTape.h:102</div></div>
 </div><!-- fragment --> 
 </div>
 </div>
