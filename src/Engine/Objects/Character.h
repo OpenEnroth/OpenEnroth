@@ -259,9 +259,8 @@ class Character {
     int GetSpecialItemBonus(ITEM_ENCHANTMENT enchantment) const;
     int GetItemsBonus(CharacterAttributeType attr, bool getOnlyMainHandDmg = false) const;
     int GetMagicalBonus(CharacterAttributeType a2) const;
-    int GetActualSkillLevel(CharacterSkillType uSkillType) const;
-    CharacterSkillMastery GetActualSkillMastery(CharacterSkillType uSkillType) const;
-    CombinedSkillValue getActualSkillValue(CharacterSkillType skillType) const;
+    int actualSkillLevel(CharacterSkillType skill) const;
+    CombinedSkillValue getActualSkillValue(CharacterSkillType skill) const;
     int GetSkillBonus(CharacterAttributeType a2) const;
     CharacterRace GetRace() const;
     std::string GetRaceName() const;
@@ -300,7 +299,7 @@ class Character {
      */
     int findFreeInventoryListSlot() const;
     int CreateItemInInventory(unsigned int uSlot, ITEM_TYPE uItemID);
-    int HasSkill(CharacterSkillType uSkillType) const;
+    int HasSkill(CharacterSkillType skill) const;
     void WearItem(ITEM_TYPE uItemID);
     int AddItem(int uSlot, ITEM_TYPE uItemID);
     int AddItem2(int uSlot, ItemGen *Src);
@@ -449,6 +448,7 @@ class Character {
     void cleanupBeacons();
     bool setBeacon(int index, GameTime duration);
 
+    // TODO(captainurist): check all usages, most should be using getActualSkillValue.
     CombinedSkillValue getSkillValue(CharacterSkillType skill) const;
     void setSkillValue(CharacterSkillType skill, const CombinedSkillValue &value);
 

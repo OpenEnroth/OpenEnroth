@@ -8,6 +8,8 @@
 #include <memory>
 
 #include "Engine/Components/Trace/EngineTraceEnums.h"
+#include "Engine/Objects/Character.h"
+#include "Engine/Party.h"
 
 #include "TestTape.h"
 
@@ -46,6 +48,20 @@ class TestController {
         auto state = std::make_shared<detail::TestTapeState<T>>(std::move(callback));
         _tapeCallbacks.push_back([state] { state->tick(); });
         return TestTape<T>(std::move(state));
+    }
+
+    template<class Callback, class T = std::invoke_result_t<Callback, const Character &>>
+    TestTape<TestVector<T>> tape(Callback callback) {
+        auto actualCallback = [callback = std::move(callback)] {
+            TestVector<T> result;
+            for (const Character &character : pParty->pCharacters)
+                result.push_back(callback(character));
+            return result;
+        };
+
+        auto state = std::make_shared<detail::TestTapeState<TestVector<T>>>(std::move(actualCallback));
+        _tapeCallbacks.push_back([state] { state->tick(); });
+        return TestTape<TestVector<T>>(std::move(state));
     }
 
  private:
