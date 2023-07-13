@@ -80,7 +80,6 @@ class GUIWindow {
     void DeleteButtons();
 
     static void InitializeGUI();
-    void pInit();
 
     int uFrameX = 0;
     int uFrameY = 0;
