@@ -2,6 +2,8 @@
 
 #include <cassert>
 
+#include "Library/Serialization/SerializationFwd.h"
+
 #include "Utility/Segment.h"
 
 enum class Condition : uint32_t {
@@ -26,6 +28,7 @@ enum class Condition : uint32_t {
     CONDITION_GOOD = 18,
 };
 using enum Condition;
+MM_DECLARE_SERIALIZATION_FUNCTIONS(Condition)
 
 // TODO(pskelton): drop CHARACTER_ at start?
 enum class CharacterSkillMastery {

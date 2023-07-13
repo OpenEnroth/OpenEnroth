@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 3.20.4 FATAL_ERROR)
 
 set(LIBRARY_SERIALIZATION_SOURCES
         EnumSerializer.cpp
+        Serialization.cpp
         SerializationExceptions.cpp
         StandardSerialization.cpp)
 

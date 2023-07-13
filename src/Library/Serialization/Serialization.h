@@ -1,5 +1,7 @@
 #pragma once
 
+#include <concepts>
+#include <iosfwd>
 #include <string>
 #include <string_view>
 
@@ -26,6 +28,8 @@ struct StringDeserializer {
     }
 };
 
+void printToStream(const std::string &string, std::ostream *stream); // This one is here so that we don't have to include <iostream>.
+
 } // namespace detail
 
 /**
@@ -50,3 +54,28 @@ constexpr detail::StringSerializer toString;
  */
 template<class T>
 constexpr detail::StringDeserializer<T> fromString;
+
+/**
+ * Concept for serializable types.
+ */
+template<class T>
+concept Serializable = requires (T value, std::string str, std::string_view view) {
+    { serialize(value, &str) } -> std::same_as<void>;
+    { deserialize(view, &value) } -> std::same_as<void>;
+    { trySerialize(value, &str) } -> std::same_as<bool>;
+    { tryDeserialize(view, &value) } -> std::same_as<bool>;
+}; // NOLINT: linter doesn't know anything about concepts.
+
+// CLI11 support for `Serializable` types.
+template<Serializable T>
+inline bool lexical_cast(const std::string& src, T& dst) {
+    return tryDeserialize(src, &dst);
+}
+
+// Google test printers support for `Serializable` types.
+template<Serializable T> requires (!std::is_arithmetic_v<T>) // Don't override arithmetic type handling.
+inline void PrintTo(const T &src, std::ostream *dst) {
+    std::string tmp;
+    serialize(src, &tmp);
+    detail::printToStream(tmp, dst);
+}
