@@ -62,7 +62,7 @@ ImageLoader::ImageLoader() {
 }
 
 bool Paletted_Img_Loader::Load(RgbaImage *rgbaImage, GrayscaleImage *indexedImage, Palette *palette) {
-    Texture_MM7 *tex = lod->GetTexture(lod->LoadTexture(resource_name, TEXTURE_24BIT_PALETTE));
+    Texture_MM7 *tex = lod->loadTexture(resource_name);
     if ((tex == nullptr) || (tex->pPalette24 == nullptr) || (tex->paletted_pixels == nullptr))
         return false;
 
@@ -74,7 +74,7 @@ bool Paletted_Img_Loader::Load(RgbaImage *rgbaImage, GrayscaleImage *indexedImag
 }
 
 bool ColorKey_LOD_Loader::Load(RgbaImage *rgbaImage, GrayscaleImage *indexedImage, Palette *palette) {
-    Texture_MM7 *tex = lod->GetTexture(lod->LoadTexture(resource_name, TEXTURE_24BIT_PALETTE));
+    Texture_MM7 *tex = lod->loadTexture(resource_name);
     if ((tex == nullptr) || (tex->pPalette24 == nullptr) || (tex->paletted_pixels == nullptr))
         return false;
 
@@ -92,7 +92,7 @@ bool ColorKey_LOD_Loader::Load(RgbaImage *rgbaImage, GrayscaleImage *indexedImag
 }
 
 bool Image16bit_LOD_Loader::Load(RgbaImage *rgbaImage, GrayscaleImage *indexedImage, Palette *palette) {
-    Texture_MM7 *tex = lod->GetTexture(lod->LoadTexture(resource_name, TEXTURE_24BIT_PALETTE));
+    Texture_MM7 *tex = lod->loadTexture(resource_name);
     if ((tex == nullptr) || (tex->pPalette24 == nullptr) || (tex->paletted_pixels == nullptr))
         return false;
 
@@ -110,7 +110,7 @@ bool Image16bit_LOD_Loader::Load(RgbaImage *rgbaImage, GrayscaleImage *indexedIm
 }
 
 bool Alpha_LOD_Loader::Load(RgbaImage *rgbaImage, GrayscaleImage *indexedImage, Palette *palette) {
-    Texture_MM7 *tex = lod->GetTexture(lod->LoadTexture(resource_name, TEXTURE_24BIT_PALETTE));
+    Texture_MM7 *tex = lod->loadTexture(resource_name);
     if ((tex == nullptr) || (tex->pPalette24 == nullptr) || (tex->paletted_pixels == nullptr))
         return false;
 
@@ -148,7 +148,7 @@ bool PCX_LOD_Raw_Loader::Load(RgbaImage *rgbaImage, GrayscaleImage *indexedImage
 }
 
 bool PCX_LOD_Compressed_Loader::Load(RgbaImage *rgbaImage, GrayscaleImage *indexedImage, Palette *palette) {
-    Blob pcx_data = lod->LoadCompressedTexture(resource_name);
+    Blob pcx_data = blob_func();
     if (!pcx_data) {
         log->warning("Unable to load {}", resource_name);
         return false;
@@ -203,7 +203,7 @@ static Color ProcessTransparentPixel(const GrayscaleImage &image, const Palette 
 }
 
 bool Bitmaps_LOD_Loader::Load(RgbaImage *rgbaImage, GrayscaleImage *indexedImage, Palette *palette) {
-    Texture_MM7 *tex = lod->GetTexture(lod->LoadTexture(this->resource_name));
+    Texture_MM7 *tex = lod->loadTexture(this->resource_name);
     int num_pixels = tex->header.uTextureWidth * tex->header.uTextureHeight;
 
     Assert(tex->paletted_pixels);
@@ -240,7 +240,7 @@ bool Bitmaps_LOD_Loader::Load(RgbaImage *rgbaImage, GrayscaleImage *indexedImage
 }
 
 bool Sprites_LOD_Loader::Load(RgbaImage *rgbaImage, GrayscaleImage *indexedImage, Palette *palette) {
-    Sprite *pSprite = lod->getSprite(this->resource_name);
+    Sprite *pSprite = lod->loadSprite(this->resource_name);
 
     size_t w = pSprite->sprite_header->uWidth;
     size_t h = pSprite->sprite_header->uHeight;

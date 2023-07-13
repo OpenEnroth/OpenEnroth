@@ -90,7 +90,6 @@ struct OutdoorLocation {
     int UpdateDiscoveredArea(int a2, int a3, int unused);
     bool IsMapCellFullyRevealed(signed int a2, signed int a3);
     bool IsMapCellPartiallyRevealed(signed int a2, signed int a3);
-    bool _47F0E2();
     bool PrepareDecorations();
     void ArrangeSpriteObjects();
     bool InitalizeActors(int a1);

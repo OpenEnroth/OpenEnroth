@@ -211,7 +211,6 @@ class IRender {
     std::shared_ptr<GameConfig> config = nullptr;
     int *pActiveZBuffer;
     Color uFogColor;
-    unsigned int pHDWaterBitmapIDs[7];
     int hd_water_current_frame;
     GraphicsImage *hd_water_tile_anim[7];
     RenderBillboardD3D pBillboardRenderListD3D[1000];

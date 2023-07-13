@@ -77,11 +77,11 @@ GUIFont *GUIFont::LoadFont(const char *pFontFile, const char *pFontPalette) {
     Blob tmp_font = pIcons_LOD->LoadCompressedTexture(pFontFile);
     reconstruct(*static_cast<const FontData_MM7 *>(tmp_font.data()), tmp_font.size(), pFont->pData);
 
-    int pallete_index = pIcons_LOD->LoadTexture(pFontPalette, TEXTURE_24BIT_PALETTE);
-    if (pallete_index == -1)
+    Texture_MM7 *pallete_texture = pIcons_LOD->loadTexture(pFontPalette);
+    if (!pallete_texture)
         Error("Unable to open %s", pFontPalette);
 
-    pFont->pData->pFontPalettes[0] = pIcons_LOD->pTextures[pallete_index].pPalette24;
+    pFont->pData->pFontPalettes[0] = pallete_texture->pPalette24;
     pFont->pData->palletes_count = 1;
 
     // get max xhar width

@@ -787,7 +787,7 @@ void FinalInitialization() {
 
     InitializeTurnBasedAnimations(&stru_50C198);
     pBitmaps_LOD->reserveLoadedTextures();
-    pSprites_LOD->_inlined_sub1();
+    pSprites_LOD->reserveLoadedSprites();
     pIcons_LOD->reserveLoadedTextures();
 }
 
@@ -796,20 +796,19 @@ bool MM7_LoadLods() {
     engine->_gameResourceManager->openGameResources();
 
     pIcons_LOD = new LODFile_IconsBitmaps;
-    if (!pIcons_LOD->Load(makeDataPath("data", "icons.lod"), "icons")) {
+    if (!pIcons_LOD->open(makeDataPath("data", "icons.lod"), "icons")) {
         Error(localization->GetString(LSTR_PLEASE_REINSTALL), localization->GetString(LSTR_REINSTALL_NECESSARY));
         return false;
     }
-    pIcons_LOD->_011BA4_debug_paletted_pixels_uncompressed = false;
 
     pBitmaps_LOD = new LODFile_IconsBitmaps;
-    if (!pBitmaps_LOD->Load(makeDataPath("data", "bitmaps.lod"), "bitmaps")) {
+    if (!pBitmaps_LOD->open(makeDataPath("data", "bitmaps.lod"), "bitmaps")) {
         Error(localization->GetString(LSTR_PLEASE_REINSTALL), localization->GetString(LSTR_REINSTALL_NECESSARY));
         return false;
     }
 
     pSprites_LOD = new LODFile_Sprites;
-    if (!pSprites_LOD->Load(makeDataPath("data", "sprites.lod"), "sprites08")) {
+    if (!pSprites_LOD->open(makeDataPath("data", "sprites.lod"), "sprites08")) {
         Error(localization->GetString(LSTR_PLEASE_REINSTALL), localization->GetString(LSTR_REINSTALL_NECESSARY));
         return false;
     }
@@ -929,16 +928,6 @@ void Engine::SecondaryInitialization() {
     pItemTable = new ItemTable;
     pItemTable->Initialize();
 
-    // pBitmaps_LOD->SetupPalettes(render->uTargetRBits, render->uTargetGBits,
-    // render->uTargetBBits);
-    pBitmaps_LOD->SetupPalettes(5, 6, 5);
-    // pIcons_LOD->SetupPalettes(render->uTargetRBits, render->uTargetGBits,
-    // render->uTargetBBits);
-    pIcons_LOD->SetupPalettes(5, 6, 5);
-    // pPaletteManager->SetColorChannelInfo(render->uTargetRBits,
-    // render->uTargetGBits, render->uTargetBBits);
-    //pPaletteManager->SetColorChannelInfo(5, 6, 5);
-
     //pPaletteManager->SetMistColor(128, 128, 128);
     //pPaletteManager->RecalculateAll();
     pObjectList->InitializeSprites();
@@ -967,8 +956,6 @@ void Engine::SecondaryInitialization() {
 
     for (uint i = 0; i < 7; ++i) {
         std::string container_name = fmt::format("HDWTR{:03}", i);
-        render->pHDWaterBitmapIDs[i] =
-            pBitmaps_LOD->LoadTexture(container_name);
         render->hd_water_tile_anim[i] = assets->getBitmap(container_name);
     }
 
@@ -977,8 +964,8 @@ void Engine::SecondaryInitialization() {
     pNPCStats->Initialize();
 
     initGlobalEvents();
-    pBitmaps_LOD->_inlined_sub0();
-    pSprites_LOD->_inlined_sub0();
+    pBitmaps_LOD->reserveLoadedTextures();
+    pSprites_LOD->reserveLoadedSprites();
 
     Initialize_GamesLOD_NewLOD();
 }
@@ -1078,9 +1065,9 @@ void Engine::ResetCursor_Palettes_LODs_Level_Audio_SFT_Windows() {
     // Render billboards are used in hit tests, but we're releasing textures, so can't use them anymore.
     render->uNumBillboardsToDraw = 0;
 
-    pBitmaps_LOD->ReleaseAll2();
-    pSprites_LOD->DeleteSomeOtherSprites();
-    pIcons_LOD->ReleaseAll2();
+    pBitmaps_LOD->releaseUnreserved();
+    pSprites_LOD->releaseUnreserved();
+    pIcons_LOD->releaseUnreserved();
 
     if (uCurrentlyLoadedLevelType == LEVEL_INDOOR)
         pIndoor->Release();
@@ -1201,7 +1188,6 @@ void Engine::_461103_load_level_sub() {
     pCamera3D->_viewPitch = 0;
     pCamera3D->_viewYaw = 0;
     uLevel_StartingPointType = MapStartPoint_Party;
-    pSprites_LOD->_461397();
     if (pParty->pPickedItem.uItemID != ITEM_NULL)
         mouse->SetCursorBitmapFromItemID(pParty->pPickedItem.uItemID);
 }

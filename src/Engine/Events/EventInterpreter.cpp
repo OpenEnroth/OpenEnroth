@@ -246,7 +246,6 @@ int EventInterpreter::executeOneEvent(int step, bool isNpc) {
                             pDialogueWindow = 0;
                         }
                         dialog_menu_id = DIALOGUE_NULL;
-                        pIcons_LOD->SyncLoadedFilesCount();
                     }
                     return -1;
                 }

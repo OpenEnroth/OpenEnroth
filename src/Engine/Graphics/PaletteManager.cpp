@@ -22,14 +22,14 @@ void PaletteManager::load(LODFile_IconsBitmaps *lod) {
     for (int paletteId = 1; paletteId <= 999; paletteId++) {
         std::string paletteName = fmt::format("pal{:03}", paletteId);
 
-        Texture_MM7 texture;
-        if (lod->LoadTextureFromLOD(&texture, paletteName, TEXTURE_24BIT_PALETTE) != 1)
+        Texture_MM7 *texture = lod->loadTexture(paletteName, false);
+        if (!texture)
             continue;
 
         _paletteIds.push_back(paletteId);
-        _palettes.push_back(createLoadedPalette(texture.pPalette24));
+        _palettes.push_back(createLoadedPalette(texture->pPalette24));
 
-        texture.Release();
+        texture->Release();
     }
 }
 

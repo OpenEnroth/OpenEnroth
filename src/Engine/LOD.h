@@ -4,6 +4,7 @@
 #include <string>
 #include <deque>
 #include <vector>
+#include <memory>
 
 #include "Engine/Graphics/Texture_MM7.h"
 #include "Engine/Graphics/Sprites.h"
@@ -13,13 +14,7 @@
 #include "Utility/Memory/Blob.h"
 
 class Sprite;
-
-/*  354 */
-enum class TEXTURE_TYPE {
-    TEXTURE_DEFAULT = 0,
-    TEXTURE_24BIT_PALETTE = 0x1,
-};
-using enum TEXTURE_TYPE;
+class LodReader;
 
 namespace LOD {
 #pragma pack(push, 1)
@@ -137,46 +132,27 @@ class WriteableFile : public File {
 };
 };  // namespace LOD
 
-class LODFile_IconsBitmaps : public LOD::File {
+class LODFile_IconsBitmaps {
  public:
     LODFile_IconsBitmaps();
-    virtual ~LODFile_IconsBitmaps();
-    void SyncLoadedFilesCount();
-    unsigned int FindTextureByName(const std::string &pName);
-    bool Load(const std::string &pFilename, const std::string &pFolderName);
-    void ReleaseAll();
-    unsigned int LoadTexture(const std::string &pContainer, TEXTURE_TYPE uTextureType = TEXTURE_DEFAULT);
-    struct Texture_MM7 *LoadTexturePtr(const std::string &pContainer, TEXTURE_TYPE uTextureType = TEXTURE_DEFAULT);
-    int LoadTextureFromLOD(struct Texture_MM7 *pOutTex, const std::string &pContainer, TEXTURE_TYPE eTextureType);
-    int ReloadTexture(struct Texture_MM7 *pDst, const std::string &pContainer,
-                      int mode);
-    void ReleaseHardwareTextures();
-    void ReleaseLostHardwareTextures();
-    // void _410423_move_textures_to_device();
-    void SetupPalettes(unsigned int uTargetRBits, unsigned int uTargetGBits,
-                       unsigned int uTargetBBits);
-    void ReleaseAll2();
-    void RemoveTexturesPackFromTextureList();
-    void RemoveTexturesFromTextureList();
-    void _inlined_sub0();
+    ~LODFile_IconsBitmaps();
+
+    bool open(const std::string &pFilename, const std::string &pFolderName);
+
+    void releaseUnreserved();
     void reserveLoadedTextures();
-    void _inlined_sub2();
 
-    int LoadDummyTexture();
+    Texture_MM7 *loadTexture(const std::string &pContainer, bool useDummyOnError = true);
 
-    Texture_MM7 *GetTexture(int idx);
+    Blob LoadCompressedTexture(const std::string &pContainer); // TODO(captainurist): doesn't belong here.
 
-    std::deque<Texture_MM7> pTextures;
-    int dword_11B80;
-    int reservedTextureCount;  // bitmaps lod reserved
-    int dword_11B88;
-    int uTextureRedBits;
-    int uTextureGreenBits;
-    int uTextureBlueBits;
-    int uNumPrevLoadedFiles;
-    int uTexturePacksCount;
-    int pFacesLock;
-    int _011BA4_debug_paletted_pixels_uncompressed;
+ private:
+    int LoadTextureFromLOD(struct Texture_MM7 *pOutTex, const std::string &pContainer);
+
+ private:
+    std::unique_ptr<LodReader> _reader;
+    int _reservedCount = 0;
+    std::deque<Texture_MM7> _textures;
 };
 
 #pragma pack(push, 1)
@@ -205,29 +181,25 @@ struct LODSprite : public LODSpriteHeader {
     GrayscaleImage bitmap;
 };
 
-class LODFile_Sprites : public LOD::File {
+class LODFile_Sprites {
  public:
     LODFile_Sprites();
-    virtual ~LODFile_Sprites();
+    ~LODFile_Sprites();
 
-    void DeleteSomeSprites();
-    void DeleteSpritesRange(int uStartIndex, int uStopIndex);
-    void _461397();
-    void DeleteSomeOtherSprites();
-    int LoadSpriteFromFile(LODSprite *pSpriteHeader, const std::string &pContainer);
-    bool Load(const std::string &pFilename, const std::string &folder);
-    Sprite *LoadSprite(const std::string &pContainerName);
-    Sprite *getSprite(std::string_view pContainerName);
-    void ReleaseLostHardwareSprites();
-    void ReleaseAll();
-    void MoveSpritesToVideoMemory();
-    void _inlined_sub0();
-    void _inlined_sub1();
+    bool open(const std::string &pFilename, const std::string &folder);
 
-    int reservedSpriteCount;  // reserved sprites -522
-    int reservedSpriteCount2;  // 2nd init sprites
-    int field_ECA8;
-    std::deque<Sprite> pSprites;
+    void releaseUnreserved();
+    void reserveLoadedSprites();
+
+    Sprite *loadSprite(const std::string &pContainerName);
+
+ private:
+    bool LoadSpriteFromFile(LODSprite *pSpriteHeader, const std::string &pContainer);
+
+ private:
+    std::unique_ptr<LodReader> _reader;
+    int _reservedCount = 0;
+    std::deque<Sprite> _sprites;
 };
 
 extern LODFile_IconsBitmaps *pIcons_LOD;

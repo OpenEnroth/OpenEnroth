@@ -128,17 +128,7 @@ bool LodReader::parseDirectories(size_t numDirectories, size_t dirOffset) {
 std::unique_ptr<LodReader> LodReader::open(const std::string &filename) {
     std::unique_ptr<LodReader> lod = std::make_unique<LodReader>();
 
-    if (nullptr == lod) {
-        Warn("LodReader::open: out of memory loading: %s", filename.c_str());
-        return nullptr;
-    }
-
     lod->_lod = Blob::fromFile(filename);
-    if (lod->_lod.size() == 0) {
-        Warn("LodReader::open: file not found: %s", filename.c_str());
-        return nullptr;
-    }
-
     if (lod->_lod.size() < sizeof(LodHeader_Mm6)) {
         Warn("LodReader::open: invalid LOD file: %s", filename.c_str());
         return nullptr;

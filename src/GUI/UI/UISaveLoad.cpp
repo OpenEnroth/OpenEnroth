@@ -132,8 +132,6 @@ GUIWindow_Load::GUIWindow_Load(bool ingame) :
     GUIWindow(WINDOW_Load, {0, 0}, {0, 0}, 0) {
     current_screen_type = SCREEN_LOADGAME;
 
-    pIcons_LOD->_inlined_sub2();
-
     pSavegameList->pSavegameUsedSlots.fill(false);
     pSavegameList->pSavegameThumbnails.fill(nullptr);
 

@@ -254,7 +254,6 @@ void npcSetItem(int npc, ITEM_TYPE item, int a3);
  */
 void toggleActorGroupFlag(unsigned int uGroupID, ActorAttribute uFlag, bool bValue);
 bool Detect_Between_Objects(unsigned int uObjID, unsigned int uObj2ID);
-bool SpawnActor(unsigned int uMonsterID);
 void Spawn_Light_Elemental(int spell_power, CharacterSkillMastery caster_skill_mastery, int duration_game_seconds);
 void SpawnEncounter(struct MapInfo *pMapInfo, SpawnPoint *spawn, int a3, int a4, int a5);
 /**

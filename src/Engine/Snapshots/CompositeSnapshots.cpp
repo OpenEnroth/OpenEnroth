@@ -64,7 +64,7 @@ void reconstruct(const IndoorLocation_MM7 &src, IndoorLocation *dst) {
         if (textureName.empty())
             dst->pFaceExtras[i].uAdditionalBitmapID = -1;
         else
-            dst->pFaceExtras[i].uAdditionalBitmapID = pBitmaps_LOD->LoadTexture(textureName);
+            dst->pFaceExtras[i].uAdditionalBitmapID = -1; //pBitmaps_LOD->loadTexture(textureName); // TODO(captainurist): unused for some reason.
     }
 
     for (size_t i = 0; i < dst->pFaces.size(); ++i) {
