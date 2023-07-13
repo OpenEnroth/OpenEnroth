@@ -286,7 +286,6 @@ void GUIWindow_PartyCreation::Update() {
     signed int v104;                // ecx@72
     signed int pBonusNum;           // edi@82
     char pText[200];                // [sp+10h] [bp-160h]@14
-    GUIWindow message_window;       // [sp+D8h] [bp-98h]@83
     int v126;                       // [sp+148h] [bp-28h]@25
     int pIntervalY;                 // [sp+150h] [bp-20h]@14
     int pX_Numbers;                 // [sp+154h] [bp-1Ch]@18
@@ -580,7 +579,7 @@ void GUIWindow_PartyCreation::Update() {
         pFontCreate->AlignText_Center(84, unspent_attribute_bonus_label);
     pGUIWindow_CurrentMenu->DrawText(pFontCreate, {pTextCenter + 530, 410}, colorTable.White, unspent_attribute_bonus_label);
     if (game_ui_status_bar_event_string_time_left > platform->tickCount()) {
-        message_window.Init();
+        GUIWindow message_window;
         message_window.sHint = localization->GetString(LSTR_PARTY_UNASSIGNED_POINTS);
         if (pBonusNum < 0)
             message_window.sHint = localization->GetString(LSTR_PARTY_TOO_MUCH_POINTS);

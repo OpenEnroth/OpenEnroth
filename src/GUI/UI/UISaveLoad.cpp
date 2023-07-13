@@ -251,10 +251,8 @@ void GUIWindow_Load::Update() {
 }
 
 static void UI_DrawSaveLoad(bool save) {
-    GUIWindow save_load_window;
-
     if (pSavegameList->pSavegameUsedSlots[pSavegameList->selectedSlot]) {
-        save_load_window.Init();
+        GUIWindow save_load_window;
         save_load_window.uFrameX = pGUIWindow_CurrentMenu->uFrameX + 240;
         save_load_window.uFrameWidth = 220;
         save_load_window.uFrameY = (pGUIWindow_CurrentMenu->uFrameY - pFontSmallnum->GetHeight()) + 157;
