@@ -609,8 +609,8 @@ int Character::CreateItemInInventory(unsigned int uSlot, ITEM_TYPE uItemID) {
 }
 
 //----- (00492700) --------------------------------------------------------
-int Character::HasSkill(CharacterSkillType uSkillType) const {
-    if (this->pActiveSkills[uSkillType]) {
+int Character::HasSkill(CharacterSkillType skill) const {
+    if (this->pActiveSkills[skill]) {
         return 1;
     } else {
         // TODO(captainurist): this doesn't belong to a getter!!!
@@ -2749,167 +2749,161 @@ int Character::GetMagicalBonus(CharacterAttributeType a2) const {
 }
 
 //----- (0048F882) --------------------------------------------------------
-int Character::GetActualSkillLevel(CharacterSkillType uSkillType) const {
-    int bonus_value = 0;
-    int result;
+int Character::actualSkillLevel(CharacterSkillType skill) const {
+    if (skill == CHARACTER_SKILL_CLUB && engine->config->gameplay.TreatClubAsMace.value()) {
+        // some items loaded in as clubs
+        skill = CHARACTER_SKILL_MACE;
+    }
 
-    bonus_value = 0;
-    switch (uSkillType) {
+    // Vanilla returned 0 for CHARACTER_SKILL_MISC here, we return 1.
+    int base = getSkillValue(skill).level();
+
+    int bonus = 0;
+    switch (skill) {
         case CHARACTER_SKILL_MONSTER_ID: {
-            if (CheckHiredNPCSpeciality(Hunter)) bonus_value = 6;
-            if (CheckHiredNPCSpeciality(Sage)) bonus_value += 6;
-            bonus_value += GetItemsBonus(CHARACTER_ATTRIBUTE_SKILL_MONSTER_ID);
+            if (CheckHiredNPCSpeciality(Hunter)) bonus = 6;
+            if (CheckHiredNPCSpeciality(Sage)) bonus += 6;
+            bonus += GetItemsBonus(CHARACTER_ATTRIBUTE_SKILL_MONSTER_ID);
         } break;
 
         case CHARACTER_SKILL_ARMSMASTER: {
-            if (CheckHiredNPCSpeciality(Armsmaster)) bonus_value = 2;
-            if (CheckHiredNPCSpeciality(Weaponsmaster)) bonus_value += 3;
-            bonus_value += GetItemsBonus(CHARACTER_ATTRIBUTE_SKILL_ARMSMASTER);
+            if (CheckHiredNPCSpeciality(Armsmaster)) bonus = 2;
+            if (CheckHiredNPCSpeciality(Weaponsmaster)) bonus += 3;
+            bonus += GetItemsBonus(CHARACTER_ATTRIBUTE_SKILL_ARMSMASTER);
         } break;
 
         case CHARACTER_SKILL_STEALING: {
-            if (CheckHiredNPCSpeciality(Burglar)) bonus_value = 8;
-            bonus_value += GetItemsBonus(CHARACTER_ATTRIBUTE_SKILL_STEALING);
+            if (CheckHiredNPCSpeciality(Burglar)) bonus = 8;
+            bonus += GetItemsBonus(CHARACTER_ATTRIBUTE_SKILL_STEALING);
         } break;
 
         case CHARACTER_SKILL_ALCHEMY: {
-            if (CheckHiredNPCSpeciality(Herbalist)) bonus_value = 4;
-            if (CheckHiredNPCSpeciality(Apothecary)) bonus_value += 8;
-            bonus_value += GetItemsBonus(CHARACTER_ATTRIBUTE_SKILL_ALCHEMY);
+            if (CheckHiredNPCSpeciality(Herbalist)) bonus = 4;
+            if (CheckHiredNPCSpeciality(Apothecary)) bonus += 8;
+            bonus += GetItemsBonus(CHARACTER_ATTRIBUTE_SKILL_ALCHEMY);
         } break;
 
         case CHARACTER_SKILL_LEARNING: {
-            if (CheckHiredNPCSpeciality(Teacher)) bonus_value = 10;
-            if (CheckHiredNPCSpeciality(Instructor)) bonus_value += 15;
-            if (CheckHiredNPCSpeciality(Scholar)) bonus_value += 5;
-            bonus_value += GetItemsBonus(CHARACTER_ATTRIBUTE_SKILL_LEARNING);
+            if (CheckHiredNPCSpeciality(Teacher)) bonus = 10;
+            if (CheckHiredNPCSpeciality(Instructor)) bonus += 15;
+            if (CheckHiredNPCSpeciality(Scholar)) bonus += 5;
+            bonus += GetItemsBonus(CHARACTER_ATTRIBUTE_SKILL_LEARNING);
         } break;
 
         case CHARACTER_SKILL_UNARMED: {
-            if (CheckHiredNPCSpeciality(Monk)) bonus_value = 2;
-            bonus_value += GetItemsBonus(CHARACTER_ATTRIBUTE_SKILL_UNARMED);
+            if (CheckHiredNPCSpeciality(Monk)) bonus = 2;
+            bonus += GetItemsBonus(CHARACTER_ATTRIBUTE_SKILL_UNARMED);
         } break;
 
         case CHARACTER_SKILL_DODGE: {
-            if (CheckHiredNPCSpeciality(Monk)) bonus_value = 2;
-            bonus_value += GetItemsBonus(CHARACTER_ATTRIBUTE_SKILL_DODGE);
+            if (CheckHiredNPCSpeciality(Monk)) bonus = 2;
+            bonus += GetItemsBonus(CHARACTER_ATTRIBUTE_SKILL_DODGE);
         } break;
 
         case CHARACTER_SKILL_BOW:
-            bonus_value += GetItemsBonus(CHARACTER_ATTRIBUTE_SKILL_BOW);
+            bonus += GetItemsBonus(CHARACTER_ATTRIBUTE_SKILL_BOW);
             break;
         case CHARACTER_SKILL_SHIELD:
-            bonus_value += GetItemsBonus(CHARACTER_ATTRIBUTE_SKILL_SHIELD);
+            bonus += GetItemsBonus(CHARACTER_ATTRIBUTE_SKILL_SHIELD);
             break;
 
         case CHARACTER_SKILL_EARTH:
-            if (CheckHiredNPCSpeciality(Apprentice)) bonus_value = 2;
-            if (CheckHiredNPCSpeciality(Mystic)) bonus_value += 3;
-            if (CheckHiredNPCSpeciality(Spellmaster)) bonus_value += 4;
+            if (CheckHiredNPCSpeciality(Apprentice)) bonus = 2;
+            if (CheckHiredNPCSpeciality(Mystic)) bonus += 3;
+            if (CheckHiredNPCSpeciality(Spellmaster)) bonus += 4;
             if (classType == CHARACTER_CLASS_WARLOCK && PartyHasDragon())
-                bonus_value += 3;
-            bonus_value += GetItemsBonus(CHARACTER_ATTRIBUTE_SKILL_EARTH);
+                bonus += 3;
+            bonus += GetItemsBonus(CHARACTER_ATTRIBUTE_SKILL_EARTH);
             break;
         case CHARACTER_SKILL_FIRE:
-            if (CheckHiredNPCSpeciality(Apprentice)) bonus_value = 2;
-            if (CheckHiredNPCSpeciality(Mystic)) bonus_value += 3;
-            if (CheckHiredNPCSpeciality(Spellmaster)) bonus_value += 4;
+            if (CheckHiredNPCSpeciality(Apprentice)) bonus = 2;
+            if (CheckHiredNPCSpeciality(Mystic)) bonus += 3;
+            if (CheckHiredNPCSpeciality(Spellmaster)) bonus += 4;
             if (classType == CHARACTER_CLASS_WARLOCK && PartyHasDragon())
-                bonus_value += 3;
-            bonus_value += GetItemsBonus(CHARACTER_ATTRIBUTE_SKILL_FIRE);
+                bonus += 3;
+            bonus += GetItemsBonus(CHARACTER_ATTRIBUTE_SKILL_FIRE);
             break;
         case CHARACTER_SKILL_AIR:
-            if (CheckHiredNPCSpeciality(Apprentice)) bonus_value = 2;
-            if (CheckHiredNPCSpeciality(Mystic)) bonus_value += 3;
-            if (CheckHiredNPCSpeciality(Spellmaster)) bonus_value += 4;
+            if (CheckHiredNPCSpeciality(Apprentice)) bonus = 2;
+            if (CheckHiredNPCSpeciality(Mystic)) bonus += 3;
+            if (CheckHiredNPCSpeciality(Spellmaster)) bonus += 4;
             if (classType == CHARACTER_CLASS_WARLOCK && PartyHasDragon())
-                bonus_value += 3;
-            bonus_value += GetItemsBonus(CHARACTER_ATTRIBUTE_SKILL_AIR);
+                bonus += 3;
+            bonus += GetItemsBonus(CHARACTER_ATTRIBUTE_SKILL_AIR);
             break;
         case CHARACTER_SKILL_WATER:
-            if (CheckHiredNPCSpeciality(Apprentice)) bonus_value = 2;
-            if (CheckHiredNPCSpeciality(Mystic)) bonus_value += 3;
-            if (CheckHiredNPCSpeciality(Spellmaster)) bonus_value += 4;
+            if (CheckHiredNPCSpeciality(Apprentice)) bonus = 2;
+            if (CheckHiredNPCSpeciality(Mystic)) bonus += 3;
+            if (CheckHiredNPCSpeciality(Spellmaster)) bonus += 4;
             if (classType == CHARACTER_CLASS_WARLOCK && PartyHasDragon())
-                bonus_value += 3;
-            bonus_value += GetItemsBonus(CHARACTER_ATTRIBUTE_SKILL_WATER);
+                bonus += 3;
+            bonus += GetItemsBonus(CHARACTER_ATTRIBUTE_SKILL_WATER);
             break;
         case CHARACTER_SKILL_SPIRIT:
-            if (CheckHiredNPCSpeciality(Acolyte2)) bonus_value = 2;
-            if (CheckHiredNPCSpeciality(Initiate)) bonus_value += 3;
-            if (CheckHiredNPCSpeciality(Prelate)) bonus_value += 4;
-            bonus_value += GetItemsBonus(CHARACTER_ATTRIBUTE_SKILL_SPIRIT);
+            if (CheckHiredNPCSpeciality(Acolyte2)) bonus = 2;
+            if (CheckHiredNPCSpeciality(Initiate)) bonus += 3;
+            if (CheckHiredNPCSpeciality(Prelate)) bonus += 4;
+            bonus += GetItemsBonus(CHARACTER_ATTRIBUTE_SKILL_SPIRIT);
             break;
         case CHARACTER_SKILL_MIND:
-            if (CheckHiredNPCSpeciality(Acolyte2)) bonus_value = 2;
-            if (CheckHiredNPCSpeciality(Initiate)) bonus_value += 3;
-            if (CheckHiredNPCSpeciality(Prelate)) bonus_value += 4;
-            bonus_value += GetItemsBonus(CHARACTER_ATTRIBUTE_SKILL_MIND);
+            if (CheckHiredNPCSpeciality(Acolyte2)) bonus = 2;
+            if (CheckHiredNPCSpeciality(Initiate)) bonus += 3;
+            if (CheckHiredNPCSpeciality(Prelate)) bonus += 4;
+            bonus += GetItemsBonus(CHARACTER_ATTRIBUTE_SKILL_MIND);
             break;
         case CHARACTER_SKILL_BODY:
-            if (CheckHiredNPCSpeciality(Acolyte2)) bonus_value = 2;
-            if (CheckHiredNPCSpeciality(Initiate)) bonus_value += 3;
-            if (CheckHiredNPCSpeciality(Prelate)) bonus_value += 4;
-            bonus_value += GetItemsBonus(CHARACTER_ATTRIBUTE_SKILL_BODY);
+            if (CheckHiredNPCSpeciality(Acolyte2)) bonus = 2;
+            if (CheckHiredNPCSpeciality(Initiate)) bonus += 3;
+            if (CheckHiredNPCSpeciality(Prelate)) bonus += 4;
+            bonus += GetItemsBonus(CHARACTER_ATTRIBUTE_SKILL_BODY);
             break;
         case CHARACTER_SKILL_LIGHT:
-            bonus_value += GetItemsBonus(CHARACTER_ATTRIBUTE_SKILL_LIGHT);
+            bonus += GetItemsBonus(CHARACTER_ATTRIBUTE_SKILL_LIGHT);
             break;
         case CHARACTER_SKILL_DARK: {
-            bonus_value += GetItemsBonus(CHARACTER_ATTRIBUTE_SKILL_DARK);
+            bonus += GetItemsBonus(CHARACTER_ATTRIBUTE_SKILL_DARK);
         } break;
 
         case CHARACTER_SKILL_MERCHANT: {
-            if (CheckHiredNPCSpeciality(Trader)) bonus_value = 4;
-            if (CheckHiredNPCSpeciality(Merchant)) bonus_value += 6;
-            if (CheckHiredNPCSpeciality(Gypsy)) bonus_value += 3;
-            if (CheckHiredNPCSpeciality(Duper)) bonus_value += 8;
+            if (CheckHiredNPCSpeciality(Trader)) bonus = 4;
+            if (CheckHiredNPCSpeciality(Merchant)) bonus += 6;
+            if (CheckHiredNPCSpeciality(Gypsy)) bonus += 3;
+            if (CheckHiredNPCSpeciality(Duper)) bonus += 8;
         } break;
 
         case CHARACTER_SKILL_PERCEPTION: {
-            if (CheckHiredNPCSpeciality(Scout)) bonus_value = 6;
-            if (CheckHiredNPCSpeciality(Psychic)) bonus_value += 5;
+            if (CheckHiredNPCSpeciality(Scout)) bonus = 6;
+            if (CheckHiredNPCSpeciality(Psychic)) bonus += 5;
         } break;
 
         case CHARACTER_SKILL_ITEM_ID:
-            bonus_value += GetItemsBonus(CHARACTER_ATTRIBUTE_SKILL_ITEM_ID);
+            bonus += GetItemsBonus(CHARACTER_ATTRIBUTE_SKILL_ITEM_ID);
             break;
         case CHARACTER_SKILL_MEDITATION:
-            bonus_value += GetItemsBonus(CHARACTER_ATTRIBUTE_SKILL_MEDITATION);
+            bonus += GetItemsBonus(CHARACTER_ATTRIBUTE_SKILL_MEDITATION);
             break;
         case CHARACTER_SKILL_TRAP_DISARM: {
-            if (CheckHiredNPCSpeciality(Tinker)) bonus_value = 4;
-            if (CheckHiredNPCSpeciality(Locksmith)) bonus_value += 6;
-            if (CheckHiredNPCSpeciality(Burglar)) bonus_value += 8;
-            bonus_value += GetItemsBonus(CHARACTER_ATTRIBUTE_SKILL_TRAP_DISARM);
+            if (CheckHiredNPCSpeciality(Tinker)) bonus = 4;
+            if (CheckHiredNPCSpeciality(Locksmith)) bonus += 6;
+            if (CheckHiredNPCSpeciality(Burglar)) bonus += 8;
+            bonus += GetItemsBonus(CHARACTER_ATTRIBUTE_SKILL_TRAP_DISARM);
         } break;
         default:
             break;
     }
 
-    if (uSkillType == CHARACTER_SKILL_CLUB && engine->config->gameplay.TreatClubAsMace.value()) {
-        // some items loaded in as clubs
-        uSkillType = CHARACTER_SKILL_MACE;
-    }
-
-    // Vanilla returned 0 for CHARACTER_SKILL_MISC here, we return 1.
-    int skill_level = getSkillValue(uSkillType).level();
-
-    result = bonus_value + skill_level;
-
-    // cap skill and bonus at 60
-    if (result > 60)
-        result = 60;
-
-    return result;
+    // Cap skill and bonus at 60.
+    return std::min(skills_max_level[skill], bonus + base);
 }
 
-CharacterSkillMastery Character::GetActualSkillMastery(CharacterSkillType uSkillType) const {
-    return getSkillValue(uSkillType).mastery();
-}
+CombinedSkillValue Character::getActualSkillValue(CharacterSkillType skill) const {
+    int level = actualSkillLevel(skill);
+    CharacterSkillMastery mastery = pActiveSkills[skill].mastery();
 
-CombinedSkillValue Character::getActualSkillValue(CharacterSkillType skillType) const {
-    return CombinedSkillValue(GetActualSkillLevel(skillType), GetActualSkillMastery(skillType));
+    if (level > 0)
+        mastery = std::max(mastery, CHARACTER_SKILL_MASTERY_NOVICE);
+
+    return CombinedSkillValue(level, mastery);
 }
 
 //----- (0048FC00) --------------------------------------------------------
@@ -3128,7 +3122,7 @@ int Character::GetSkillBonus(CharacterAttributeType inSkill) const {
 unsigned int Character::GetMultiplierForSkillLevel(
     CharacterSkillType uSkillType, int mult1, int mult2, int mult3,
     int mult4) const {  // TODO(pskelton): ?? needs changing - check behavious
-    CharacterSkillMastery masteryLvl = GetActualSkillMastery(uSkillType);
+    CharacterSkillMastery masteryLvl = getActualSkillValue(uSkillType).mastery();
     switch (masteryLvl) {
         case CHARACTER_SKILL_MASTERY_NONE:
             return 0;
@@ -3294,7 +3288,7 @@ void Character::Reset(CharacterClassType cls) {
     uQuickSpell = SPELL_NONE;
 
     for (CharacterSkillType i : allSkills()) {
-        if (pSkillAvailabilityPerClass[classType / 4][i] != 2)
+        if (pSkillAvailabilityPerClass[classType / 4][i] != CLASS_SKILL_PRIMARY)
             continue;
 
         setSkillValue(i, CombinedSkillValue::novice());
@@ -3313,20 +3307,20 @@ void Character::Reset(CharacterClassType cls) {
 CharacterSkillType Character::GetSkillIdxByOrder(signed int order) {
     int counter;  // edx@5
     bool canBeInactive;
-    unsigned char requiredValue;
+    ClassSkillAffinity requiredValue;
     signed int offset;
 
     if (order <= 1) {
         canBeInactive = false;
-        requiredValue = 2;  // 2 - primary skill
+        requiredValue = CLASS_SKILL_PRIMARY;  // 2 - primary skill
         offset = 0;
     } else if (order <= 3) {
         canBeInactive = false;
-        requiredValue = 1;  // 1 - available
+        requiredValue = CLASS_SKILL_AVAILABLE;  // 1 - available
         offset = 2;
     } else if (order <= 12) {
         canBeInactive = true;
-        requiredValue = 1;  // 1 - available
+        requiredValue = CLASS_SKILL_AVAILABLE;  // 1 - available
         offset = 4;
     } else {
         return CHARACTER_SKILL_INVALID;
