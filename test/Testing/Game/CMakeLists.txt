@@ -7,7 +7,8 @@ if(ENABLE_TESTS)
     set(TESTING_GAME_HEADERS
             GameTest.h
             TestTape.h
-            TestController.h)
+            TestController.h
+            TestVector.h)
 
     add_library(testing_game ${TESTING_GAME_SOURCES} ${TESTING_GAME_HEADERS})
     target_link_libraries(testing_game application testing_extensions GTest::gtest)

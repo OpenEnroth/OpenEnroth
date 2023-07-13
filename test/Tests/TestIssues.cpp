@@ -122,6 +122,26 @@ static auto makeCharacterManaTape(TestController *test, int character) {
     return test->tape([character] { return pParty->pCharacters[character].mana; });
 }
 
+static auto makeCharactersExperienceTape(TestController *test) {
+    return test->tape([] (const Character &character) { return character.experience; });
+}
+
+static auto makeCharactersSkillTape(TestController *test, CharacterSkillType skill) {
+    return test->tape([skill] (const Character &character) { return character.pActiveSkills[skill].level(); });
+}
+
+static auto makeCharactersConditionTape(TestController *test) {
+    return test->tape([] (const Character &character) { return character.GetMajorConditionIdx(); });
+}
+
+static auto makeCharactersActualResistanceTape(TestController *test, CharacterAttributeType resistance) {
+    return test->tape([resistance] (const Character &character) { return character.GetActualResistance(resistance); });
+}
+
+static auto makeCharactersHealthTape(TestController *test) {
+    return test->tape([] (const Character &character) { return character.health; });
+}
+
 // 100
 
 GAME_TEST(Issues, Issue123) {
@@ -246,19 +266,12 @@ GAME_TEST(Issues, Issue211) {
 
 GAME_TEST(Issues, Issue223) {
     // Fire and air resistance not resetting between games
-    auto checkResistances = [](CharacterAttributeType resistance, std::initializer_list<std::pair<int, int>> resistancePairs) {
-        for (auto pair : resistancePairs) {
-            EXPECT_EQ(pParty->pCharacters[pair.first].GetActualResistance(resistance), pair.second);
-        }
-    };
-
-    test->playTraceFromTestData("issue_223.mm7", "issue_223.json", [&] {
-        checkResistances(CHARACTER_ATTRIBUTE_RESIST_FIRE, { {0, 280}, {1, 262}, {2, 390}, {3, 241} });
-        checkResistances(CHARACTER_ATTRIBUTE_RESIST_AIR, { {0, 389}, {1, 385}, {2, 385}, {3, 381} });
-    });
-    // expect normal resistances 55-00-00-00
-    checkResistances(CHARACTER_ATTRIBUTE_RESIST_FIRE, { {0, 5}, {1, 0}, {2, 0}, {3, 0} });
-    checkResistances(CHARACTER_ATTRIBUTE_RESIST_AIR, { {0, 5}, {1, 0}, {2, 0}, {3, 0} });
+    auto fireTape = makeCharactersActualResistanceTape(test, CHARACTER_ATTRIBUTE_RESIST_FIRE);
+    auto airTape = makeCharactersActualResistanceTape(test, CHARACTER_ATTRIBUTE_RESIST_AIR);
+    test->playTraceFromTestData("issue_223.mm7", "issue_223.json");
+    // expect normal resistances after restart 55-00-00-00.
+    EXPECT_EQ(fireTape.firstLast(), tape({280, 262, 390, 241}, {5, 0, 0, 0}));
+    EXPECT_EQ(airTape.firstLast(), tape({389, 385, 385, 381}, {5, 0, 0, 0}));
 }
 
 GAME_TEST(Issues, Issue238) {
@@ -368,6 +381,7 @@ GAME_TEST(Issues, Issue293a) {
     // Test that barrels in castle Harmondale work and can be triggered only once, and that trash piles work,
     // give an item once, but give disease indefinitely.
     auto totalItemsTape = makeTotalItemsTape(test);
+    auto conditionsTape = makeCharactersConditionTape(test);
     test->playTraceFromTestData("issue_293a.mm7", "issue_293a.json", [] {
         EXPECT_EQ(pParty->pCharacters[0].uMight, 30);
         EXPECT_EQ(pParty->pCharacters[0].uIntelligence, 5);
@@ -376,11 +390,11 @@ GAME_TEST(Issues, Issue293a) {
         EXPECT_EQ(pParty->pCharacters[0].uSpeed, 14);
         EXPECT_EQ(pParty->pCharacters[0].uAccuracy, 13);
         EXPECT_EQ(pParty->pCharacters[0].uLuck, 7);
-        for (int i = 0; i < 4; i++)
-            EXPECT_EQ(pParty->pCharacters[i].GetMajorConditionIdx(), CONDITION_GOOD);
     });
 
     EXPECT_EQ(totalItemsTape.delta(), +1);
+    EXPECT_EQ(conditionsTape.firstLast(), tape({CONDITION_GOOD, CONDITION_GOOD, CONDITION_GOOD, CONDITION_GOOD},
+                                               {CONDITION_DISEASE_MEDIUM, CONDITION_DISEASE_WEAK, CONDITION_DISEASE_WEAK, CONDITION_DISEASE_WEAK}));
     EXPECT_EQ(pParty->pCharacters[0].uMight, 30);
     EXPECT_EQ(pParty->pCharacters[0].uIntelligence, 7); // +2
     EXPECT_EQ(pParty->pCharacters[0].uPersonality, 5);
@@ -388,10 +402,6 @@ GAME_TEST(Issues, Issue293a) {
     EXPECT_EQ(pParty->pCharacters[0].uSpeed, 14);
     EXPECT_EQ(pParty->pCharacters[0].uAccuracy, 15); // +2
     EXPECT_EQ(pParty->pCharacters[0].uLuck, 7);
-    EXPECT_EQ(pParty->pCharacters[0].GetMajorConditionIdx(), CONDITION_DISEASE_MEDIUM);
-    EXPECT_EQ(pParty->pCharacters[1].GetMajorConditionIdx(), CONDITION_DISEASE_WEAK);
-    EXPECT_EQ(pParty->pCharacters[2].GetMajorConditionIdx(), CONDITION_DISEASE_WEAK);
-    EXPECT_EQ(pParty->pCharacters[3].GetMajorConditionIdx(), CONDITION_DISEASE_WEAK);
 }
 
 GAME_TEST(Issues, Issue293b) {
@@ -498,20 +508,11 @@ GAME_TEST(Issues, Issue388) {
 
 GAME_TEST(Issues, Issue395) {
     // Check that learning skill works as intended.
-    auto checkExperience = [](std::initializer_list<std::pair<int, int>> experiencePairs) {
-        for (auto pair : experiencePairs) {
-            EXPECT_EQ(pParty->pCharacters[pair.first].experience, pair.second);
-        }
-    };
-
-    test->playTraceFromTestData("issue_395.mm7", "issue_395.json", [&] {
-        EXPECT_EQ(pParty->pCharacters[0].getSkillValue(CHARACTER_SKILL_LEARNING).level(), 0);
-        EXPECT_EQ(pParty->pCharacters[1].getSkillValue(CHARACTER_SKILL_LEARNING).level(), 4);
-        EXPECT_EQ(pParty->pCharacters[2].getSkillValue(CHARACTER_SKILL_LEARNING).level(), 6);
-        EXPECT_EQ(pParty->pCharacters[3].getSkillValue(CHARACTER_SKILL_LEARNING).level(), 10);
-        checkExperience({ {0, 100}, {1, 100}, {2, 100}, {3, 100} });
-    });
-    checkExperience({ {0, 214}, {1, 228}, {2, 237}, {3, 258} });
+    auto expTape = makeCharactersExperienceTape(test);
+    auto learningTape = makeCharactersSkillTape(test, CHARACTER_SKILL_LEARNING);
+    test->playTraceFromTestData("issue_395.mm7", "issue_395.json");
+    EXPECT_EQ(expTape.firstLast(), tape({100, 100, 100, 100}, {214, 228, 237, 258}));
+    EXPECT_EQ(learningTape, tape({0, 4, 6, 10}));
 }
 
 // 400
@@ -735,9 +736,9 @@ GAME_TEST(Issues, Issue491) {
 
 GAME_TEST(Issues, Issue492) {
     // Check that spells that target all visible actors work.
-    auto experienceTape = makeCharacterExperienceTape(test, 0);
+    auto experienceTape = makeCharactersExperienceTape(test);
     test->playTraceFromTestData("issue_492.mm7", "issue_492.json");
-    EXPECT_EQ(experienceTape, tape(279, 287));
+    EXPECT_EQ(experienceTape.firstLast(), tape({279, 311, 266, 260}, {287, 319, 274, 268}));
 }
 
 // 500
@@ -750,16 +751,11 @@ GAME_TEST(Issues, Issue502) {
     EXPECT_EQ(pParty->activeCharacterIndex(), 4);
 }
 
-static void check503health(std::initializer_list<std::pair<int, int>> playerhealthpairs) {
-    for (auto pair : playerhealthpairs) {
-        EXPECT_EQ(pParty->pCharacters[pair.first].health, pair.second);
-    }
-}
-
 GAME_TEST(Issues, Issue503) {
     // Check that town portal book actually pauses game.
-    test->playTraceFromTestData("issue_503.mm7", "issue_503.json", []() { check503health({ {0, 1147}, {1, 699}, {2, 350}, {3, 242} }); });
-    check503health({ {0, 1147}, {1, 699}, {2, 350}, {3, 242} });
+    auto hpTape = makeCharactersHealthTape(test);
+    test->playTraceFromTestData("issue_503.mm7", "issue_503.json");
+    EXPECT_EQ(hpTape, tape({1147, 699, 350, 242})); // Game was paused, the party wasn't shot at, no HP change.
 }
 
 GAME_TEST(Issues, Issue504) {
@@ -864,17 +860,14 @@ GAME_TEST(Issues, Issue598) {
 
 // 600
 
-static void check601Conds(std::array<Condition, 4> conds, std::array<int, 4> health) {
-    for (int i = 0; i < conds.size(); i++) {
-        EXPECT_EQ(pParty->pCharacters[i].GetMajorConditionIdx(), conds[i]);
-        EXPECT_EQ(pParty->pCharacters[i].health, health[i]);
-    }
-}
-
 GAME_TEST(Issues, Issue601) {
     // Check that Master Healer NPC skill work and does not assert
-    test->playTraceFromTestData("issue_601.mm7", "issue_601.json", []() { check601Conds({CONDITION_SLEEP, CONDITION_CURSED, CONDITION_FEAR, CONDITION_DEAD}, {66, 128, 86, 70}); });
-    check601Conds({CONDITION_GOOD, CONDITION_GOOD, CONDITION_GOOD, CONDITION_GOOD}, {126, 190, 96, 80});
+    auto conditionsTape = makeCharactersConditionTape(test);
+    auto hpTape = makeCharactersHealthTape(test);
+    test->playTraceFromTestData("issue_601.mm7", "issue_601.json");
+    EXPECT_EQ(conditionsTape.firstLast(), tape({CONDITION_SLEEP, CONDITION_CURSED, CONDITION_FEAR, CONDITION_DEAD},
+                                               {CONDITION_GOOD, CONDITION_GOOD, CONDITION_GOOD, CONDITION_GOOD}));
+    EXPECT_EQ(hpTape.firstLast(), tape({66, 128, 86, 70}, {126, 190, 96, 80}));
 }
 
 GAME_TEST(Issues, Issue608) {
@@ -995,11 +988,10 @@ GAME_TEST(Issues, Issue626) {
 
 GAME_TEST(Issues, Issue645) {
     // Characters does not enter unconscious state
+    auto conditionsTape = makeCharactersConditionTape(test);
     test->playTraceFromTestData("issue_645.mm7", "issue_645.json");
-    EXPECT_EQ(pParty->pCharacters[0].conditions.Has(CONDITION_UNCONSCIOUS), true);
-    EXPECT_EQ(pParty->pCharacters[1].conditions.Has(CONDITION_UNCONSCIOUS), false);
-    EXPECT_EQ(pParty->pCharacters[2].conditions.Has(CONDITION_UNCONSCIOUS), true);
-    EXPECT_EQ(pParty->pCharacters[3].conditions.Has(CONDITION_UNCONSCIOUS), true);
+    EXPECT_EQ(conditionsTape.firstLast(), tape({CONDITION_GOOD, CONDITION_GOOD, CONDITION_GOOD, CONDITION_GOOD},
+                                               {CONDITION_UNCONSCIOUS, CONDITION_GOOD, CONDITION_UNCONSCIOUS, CONDITION_UNCONSCIOUS}));
 }
 
 GAME_TEST(Issues, Issue651) {
@@ -1094,11 +1086,11 @@ GAME_TEST(Issues, Issue676) {
 GAME_TEST(Issues, Issue677) {
     // Haste doesn't impose weakness after it ends
     auto hasteTape = test->tape([] { return pParty->pPartyBuffs[PARTY_BUFF_HASTE].Active(); });
+    auto conditionsTape = makeCharactersConditionTape(test);
     test->playTraceFromTestData("issue_677.mm7", "issue_677.json");
     EXPECT_EQ(hasteTape, tape(true, false));
-    for (auto &character : pParty->pCharacters) {
-        EXPECT_EQ(character.conditions.Has(CONDITION_WEAK), true);
-    }
+    EXPECT_EQ(conditionsTape, tape({CONDITION_GOOD, CONDITION_CURSED, CONDITION_GOOD, CONDITION_GOOD},
+                                   {CONDITION_WEAK, CONDITION_WEAK, CONDITION_WEAK, CONDITION_WEAK}));
 }
 
 GAME_TEST(Issues, Issue689) {
@@ -1543,11 +1535,10 @@ GAME_TEST(Issues, Issue1036) {
 
 GAME_TEST(Issues, Issue1038) {
     // Crash while fighting Eyes in Nighon Tunnels
-    test->playTraceFromTestData("issue_1038.mm7", "issue_1038.json", [] { EXPECT_EQ(pParty->pCharacters[0].GetMajorConditionIdx(), CONDITION_GOOD); });
-    EXPECT_EQ(pParty->pCharacters[0].GetMajorConditionIdx(), CONDITION_INSANE);
-    EXPECT_EQ(pParty->pCharacters[1].GetMajorConditionIdx(), CONDITION_INSANE);
-    EXPECT_EQ(pParty->pCharacters[2].GetMajorConditionIdx(), CONDITION_SLEEP);
-    EXPECT_EQ(pParty->pCharacters[3].GetMajorConditionIdx(), CONDITION_UNCONSCIOUS);
+    auto conditionsTape = makeCharactersConditionTape(test);
+    test->playTraceFromTestData("issue_1038.mm7", "issue_1038.json");
+    EXPECT_EQ(conditionsTape.firstLast(), tape({CONDITION_GOOD, CONDITION_INSANE, CONDITION_GOOD, CONDITION_INSANE},
+                                               {CONDITION_INSANE, CONDITION_INSANE, CONDITION_SLEEP, CONDITION_UNCONSCIOUS}));
 }
 
 GAME_TEST(Issues, Issue1051) {
@@ -1560,5 +1551,7 @@ GAME_TEST(Issues, Issue1051) {
 
 GAME_TEST(Issues, Issue1068) {
     // Kills assert if characters don't have learning skill, but party has an npc that gives learning boost.
+    auto expTape = makeCharactersExperienceTape(test);
     test->playTraceFromTestData("issue_1068.mm7", "issue_1068.json");
+    EXPECT_EQ(expTape.firstLast(), tape({158039, 156727, 157646, 157417}, {158518, 157206, 158125, 157896}));
 }

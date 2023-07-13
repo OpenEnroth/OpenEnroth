@@ -4,28 +4,14 @@
 #include <algorithm>
 #include <functional>
 #include <ostream>
-#include <vector>
 #include <memory>
 #include <utility>
+
+#include "TestVector.h"
 
 namespace testing {} // Forward-declare gtest namespace.
 
 namespace detail {
-/**
- * Vector wrapper that can be compared via operator== with other vectors that have different element types.
- */
-template<class T>
-class ComparableVector : public std::vector<T> {
-    using base_type = std::vector<T>;
- public:
-    using base_type::base_type;
-
-    template<class Y>
-    friend bool operator==(const ComparableVector &l, const ComparableVector<Y> &r) {
-        return std::equal(l.begin(), l.end(), r.begin(), r.end());
-    }
-};
-
 template<class T>
 class TestTapeState {
  public:
@@ -39,13 +25,13 @@ class TestTapeState {
             _values.push_back(std::move(value));
     }
 
-    const ComparableVector<T> &values() const {
+    const TestVector<T> &values() const {
         return _values;
     }
 
  private:
     std::function<T()> _callback;
-    ComparableVector<T> _values;
+    TestVector<T> _values;
 };
 } // namespace detail
 
@@ -57,12 +43,12 @@ class TestTape {
         assert(_state);
     }
 
-    const detail::ComparableVector<T> &values() const {
+    const TestVector<T> &values() const {
         return _state->values();
     }
 
-    detail::ComparableVector<T> firstLast() const {
-        detail::ComparableVector<T> result;
+    TestVector<T> firstLast() const {
+        TestVector<T> result;
         result.push_back(values().front());
         result.push_back(values().back());
         return result;
@@ -88,7 +74,7 @@ class TestTape {
     }
 
     template<class Y>
-    friend bool operator==(const TestTape &l, const detail::ComparableVector<Y> &r) {
+    friend bool operator==(const TestTape &l, const TestVector<Y> &r) {
         return l.values() == r;
     }
 
@@ -113,6 +99,11 @@ class TestTape {
  * ```
  */
 template<class T, class... Tail>
-detail::ComparableVector<T> tape(T first, Tail... tail) {
+TestVector<T> tape(T first, Tail... tail) {
     return std::initializer_list<T>{std::move(first), std::move(tail)...};
+}
+
+template<class T, class... Tail>
+TestVector<TestVector<T>> tape(std::initializer_list<T> first, std::initializer_list<Tail>... tail) {
+    return std::initializer_list<TestVector<T>>{first, tail...};
 }
