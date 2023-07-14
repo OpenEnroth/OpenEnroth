@@ -6,7 +6,7 @@
 
 class GUIWindow_CharacterRecord : public GUIWindow {
  public:
-    GUIWindow_CharacterRecord(unsigned int uActiveCharacter, CURRENT_SCREEN screen);
+    GUIWindow_CharacterRecord(unsigned int uActiveCharacter, ScreenType screen);
     virtual ~GUIWindow_CharacterRecord() {}
 
     virtual void Update();

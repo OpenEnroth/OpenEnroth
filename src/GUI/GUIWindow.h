@@ -365,7 +365,7 @@ extern MENU_STATE sCurrentMenuID;
 void SetCurrentMenuID(MENU_STATE);
 MENU_STATE GetCurrentMenuID();
 
-extern enum CURRENT_SCREEN current_screen_type;
-extern enum CURRENT_SCREEN prev_screen_type;
+extern ScreenType current_screen_type;
+extern ScreenType prev_screen_type;
 
 extern DIALOGUE_TYPE _dword_F8B1D8_last_npc_topic_menu;

@@ -265,7 +265,7 @@ enum MENU_STATE : int32_t {
     MENU_NONE = -1,
 };
 
-enum class CURRENT_SCREEN {
+enum class ScreenType {
     SCREEN_GAME = 0,
     SCREEN_MENU = 1,
     SCREEN_OPTIONS = 2,
@@ -303,7 +303,7 @@ enum class CURRENT_SCREEN {
 
     SCREEN_DEBUG = 999,
 };
-using enum CURRENT_SCREEN;
+using enum ScreenType;
 
 enum WindowType {
     WINDOW_null = 0,

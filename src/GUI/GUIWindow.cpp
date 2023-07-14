@@ -64,8 +64,8 @@ std::list<GUIWindow*> lWindowList;
 
 MENU_STATE sCurrentMenuID;
 
-enum CURRENT_SCREEN current_screen_type = SCREEN_VIDEO;
-enum CURRENT_SCREEN prev_screen_type;
+ScreenType current_screen_type = SCREEN_VIDEO;
+ScreenType prev_screen_type;
 
 GraphicsImage *ui_exit_cancel_button_background = nullptr;
 GraphicsImage *game_ui_right_panel_frame = nullptr;
