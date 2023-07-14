@@ -273,7 +273,7 @@ void Io::Mouse::UI_OnMouseLeftClick() {
     int y = 0;
     GetClickPos(&x, &y);
 
-    if (GetCurrentMenuID() != -1 || current_screen_type != SCREEN_GAME ||
+    if (GetCurrentMenuID() != MENU_NONE || current_screen_type != SCREEN_GAME ||
         !keyboardInputHandler->IsStealingToggled() || !pViewport->Contains(x, y)) {
         std::list<GUIWindow*> targetedSpellUI = {pGUIWindow_CastTargetedSpell};
         std::list<GUIWindow*> *checkWindowList = &lWindowList;

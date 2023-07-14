@@ -62,7 +62,7 @@ GUIWindow *pGUIWindow_BranchlessDialogue; // branchless dialougue
 enum WindowType current_character_screen_window;
 std::list<GUIWindow*> lWindowList;
 
-MENU_STATE sCurrentMenuID;
+MenuType sCurrentMenuID;
 
 ScreenType current_screen_type = SCREEN_VIDEO;
 ScreenType prev_screen_type;
@@ -91,11 +91,11 @@ DIALOGUE_TYPE _dword_F8B1D8_last_npc_topic_menu;
 std::array<int, 28> possibleAddressingAwardBits = {{1,  2,  3,  4,  5,  7,  32, 33, 36, 37,
                                                     38, 40, 41, 42, 43, 45, 46, 47, 48, 49,
                                                     50, 51, 52, 53, 54, 55, 56, 60}};
-void SetCurrentMenuID(MENU_STATE uMenu) {
+void SetCurrentMenuID(MenuType uMenu) {
     sCurrentMenuID = uMenu;
 }
 
-MENU_STATE GetCurrentMenuID() {
+MenuType GetCurrentMenuID() {
     return sCurrentMenuID;
 }
 
@@ -541,7 +541,7 @@ void GUI_UpdateWindows() {
         pWindow->Update();
     }
 
-    if (GetCurrentMenuID() == -1) {
+    if (GetCurrentMenuID() == MENU_NONE) {
         GameUI_DrawFoodAndGold();
     }
 

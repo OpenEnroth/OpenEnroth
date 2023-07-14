@@ -361,9 +361,9 @@ extern GraphicsImage *ui_ar_up_up;
 extern GraphicsImage *ui_leather_mm6;
 extern GraphicsImage *ui_leather_mm7;
 
-extern MENU_STATE sCurrentMenuID;
-void SetCurrentMenuID(MENU_STATE);
-MENU_STATE GetCurrentMenuID();
+extern MenuType sCurrentMenuID;
+void SetCurrentMenuID(MenuType);
+MenuType GetCurrentMenuID();
 
 extern ScreenType current_screen_type;
 extern ScreenType prev_screen_type;
