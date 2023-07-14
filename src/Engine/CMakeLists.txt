@@ -40,6 +40,7 @@ set(ENGINE_HEADERS
         OurMath.h
         Party.h
         PartyEnums.h
+        Pid.h
         PriceCalculator.h
         SaveLoad.h
         SpellFxRenderer.h
