@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;3b0efa9</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;8a116fc</span>
    </div>
   </td>
  </tr>
@@ -380,6 +380,14 @@ template&lt;class Callback , class T  = std::invoke_result_t&lt;Callback, const 
   </tr>
 </table>
 </div><div class="memdoc">
+<p >Like the other <code>tape</code> overload, but records per-character values, and produces a tape that has vectors as individual values.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">callback</td><td>Callback taking a <code>const <a class="el" href="classCharacter.html">Character</a> &amp;</code> reference that will calculate per-character values to store on a tape. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Tape object. </dd></dl>
 
 </div>
 </div>
