@@ -147,7 +147,7 @@ static bool CollidePointWithFace(BLVFace *face, const Vec3f &pos, const Vec3f &d
  * @param ignore_ethereal               Whether ethereal faces should be ignored by this function.
  * @param model_idx                     Model index, or `MODEL_INDOOR`.
 */
-static void CollideBodyWithFace(BLVFace *face, int face_pid, bool ignore_ethereal, int model_idx) {
+static void CollideBodyWithFace(BLVFace *face, Pid face_pid, bool ignore_ethereal, int model_idx) {
     auto collide_once = [&](const Vec3f &old_pos, const Vec3f &new_pos, const Vec3f &dir, int radius) {
         float distance_old = face->facePlane.signedDistanceTo(old_pos);
         float distance_new = face->facePlane.signedDistanceTo(new_pos);
@@ -189,7 +189,7 @@ static void CollideBodyWithFace(BLVFace *face, int face_pid, bool ignore_etherea
  * @param jagged_top                    See `CollideWithParty`.
  * @return                              Whether there is a collision.
  */
-static bool CollideWithCylinder(const Vec3f &center_lo, float radius, float height, int pid, bool jagged_top) {
+static bool CollideWithCylinder(const Vec3f &center_lo, float radius, float height, Pid pid, bool jagged_top) {
     BBoxf bbox = BBoxf::forCylinder(center_lo, radius, height);
     if (!collision_state.bbox.intersects(bbox))
         return false;
@@ -273,7 +273,7 @@ bool CollisionState::PrepareAndCheckIfStationary(int dt_fp) {
         BBoxf::cubic(this->position_hi, this->radius_hi) |
         BBoxf::cubic(this->new_position_hi, this->radius_hi);
 
-    this->pid = 0;
+    this->pid = Pid();
     this->adjusted_move_distance = this->move_distance;
 
     return false;
@@ -341,7 +341,7 @@ void CollideOutdoorWithModels(bool ignore_ethereal) {
             if (face.Ethereal() || face.isPortal()) // TODO: this doesn't respect ignore_ethereal parameter
                 continue;
 
-            int pid = PID(OBJECT_Face, (mface.index | (model.index << 6)));
+            Pid pid = Pid::odmFace(model.index, mface.index);
             CollideBodyWithFace(&face, pid, ignore_ethereal, model.index);
         }
     }
@@ -457,7 +457,7 @@ void _46ED8A_collide_against_sprite_objects(unsigned int pid) {
 }
 
 void CollideWithParty(bool jagged_top) {
-    CollideWithCylinder(pParty->pos.toFloat(), 2 * pParty->radius, pParty->height, 4, jagged_top);
+    CollideWithCylinder(pParty->pos.toFloat(), 2 * pParty->radius, pParty->height, Pid::character(0), jagged_top);
 }
 
 void ProcessActorCollisionsBLV(Actor &actor, bool isAboveGround, bool isFlying) {
