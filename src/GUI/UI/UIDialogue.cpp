@@ -9,6 +9,7 @@
 #include "Engine/Objects/Actor.h"
 #include "Engine/Objects/NPC.h"
 #include "Engine/Party.h"
+#include "Engine/Pid.h"
 #include "Engine/mm7_data.h"
 #include "Engine/AssetsManager.h"
 #include "Engine/Engine.h"

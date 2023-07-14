@@ -409,7 +409,7 @@ void Vis::PickOutdoorFaces_Mouse(float fDepth, RenderVertexSoft *pRay,
                     // int v13 = fixpoint_from_float(/*v12,
                     // */intersection.vWorldViewPosition.x); v13 &= 0xFFFF0000;
                     // v13 += PID(OBJECT_Face, j | (i << 6));
-                    uint32_t pid =
+                    Pid pid =
                         PID(OBJECT_Face, face.index | (model.index << 6));
                     list->AddObject(&face, VisObjectType_Face,
                                     intersection.vWorldViewPosition.x, pid);
@@ -426,7 +426,7 @@ void Vis::PickOutdoorFaces_Mouse(float fDepth, RenderVertexSoft *pRay,
 }
 
 //----- (004C1944) --------------------------------------------------------
-unsigned short Vis::PickClosestActor(ObjectType object_type, unsigned int pick_depth,
+Pid Vis::PickClosestActor(ObjectType object_type, unsigned int pick_depth,
                                      VisSelectFlags select_flags, int not_at_ai_state, int at_ai_state) {
     Vis_SelectionFilter selectionFilter;  // [sp+18h] [bp-20h]@3
 
@@ -443,7 +443,7 @@ unsigned short Vis::PickClosestActor(ObjectType object_type, unsigned int pick_d
     Vis_static_sub_4C1944_stru_F8BDE8.create_object_pointers(Vis_SelectionList::Unique);
     Vis_static_sub_4C1944_stru_F8BDE8.sort_object_pointers();
 
-    if (!Vis_static_sub_4C1944_stru_F8BDE8.uSize) return -1;
+    if (!Vis_static_sub_4C1944_stru_F8BDE8.uSize) return Pid();
     return Vis_static_sub_4C1944_stru_F8BDE8.object_pointers[0]->object_pid;
 }
 
@@ -494,7 +494,7 @@ void Vis::SortVectors_x(RenderVertexSoft *pArray, int start, int end) {
 Vis_PIDAndDepth InvalidPIDAndDepth() {
     Vis_PIDAndDepth result;
     result.depth = 0;
-    result.object_pid = PID_INVALID;
+    result.object_pid = Pid();
     return result;
 }
 

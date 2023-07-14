@@ -988,7 +988,7 @@ void Actor::GetDirectionInfo(unsigned int uObj1ID, unsigned int uObj2ID,
 }
 
 //----- (00404030) --------------------------------------------------------
-void Actor::AI_FaceObject(unsigned int uActorID, unsigned int uObjID, int UNUSED,
+void Actor::AI_FaceObject(unsigned int uActorID, Pid uObjID, int UNUSED,
                           AIDirection *Dir_In) {
     AIDirection *Dir_Out;
     AIDirection Dir_Ret;
@@ -1016,7 +1016,7 @@ void Actor::AI_FaceObject(unsigned int uActorID, unsigned int uObjID, int UNUSED
 }
 
 //----- (00403F58) --------------------------------------------------------
-void Actor::AI_StandOrBored(unsigned int uActorID, signed int uObjID,
+void Actor::AI_StandOrBored(unsigned int uActorID, Pid uObjID,
                             int uActionLength, AIDirection *a4) {
     if (grng->random(2))  // 0 or 1
         AI_Bored(uActorID, uObjID, a4);
@@ -1063,7 +1063,7 @@ void Actor::StandAwhile(unsigned int uActorID) {
 }
 
 //----- (00403C6C) --------------------------------------------------------
-void Actor::AI_MeleeAttack(unsigned int uActorID, signed int sTargetPid,
+void Actor::AI_MeleeAttack(unsigned int uActorID, Pid sTargetPid,
                            struct AIDirection *arg0) {
     int16_t v6;        // esi@6
     int16_t v7;        // edi@6
@@ -1313,7 +1313,7 @@ void Actor::StealFrom(unsigned int uActorID) {
 }
 
 //----- (00403A60) --------------------------------------------------------
-void Actor::AI_SpellAttack2(unsigned int uActorID, signed int edx0,
+void Actor::AI_SpellAttack2(unsigned int uActorID, Pid edx0,
                             AIDirection *pDir) {
     Actor *v3;           // ebx@1
     int16_t v4;          // esi@3
@@ -1325,7 +1325,7 @@ void Actor::AI_SpellAttack2(unsigned int uActorID, signed int edx0,
     AIDirection a3;      // [sp+Ch] [bp-48h]@9
     AIDirection v18;     // [sp+28h] [bp-2Ch]@9
     int v19;             // [sp+44h] [bp-10h]@6
-    signed int a2;       // [sp+48h] [bp-Ch]@1
+    Pid a2;       // [sp+48h] [bp-Ch]@1
     int v21;             // [sp+4Ch] [bp-8h]@3
     unsigned int pDira;  // [sp+5Ch] [bp+8h]@10
 
@@ -1387,7 +1387,7 @@ void Actor::AI_SpellAttack2(unsigned int uActorID, signed int edx0,
 }
 
 //----- (00403854) --------------------------------------------------------
-void Actor::AI_SpellAttack1(unsigned int uActorID, signed int sTargetPid,
+void Actor::AI_SpellAttack1(unsigned int uActorID, Pid sTargetPid,
                             AIDirection *pDir) {
     Actor *v3;           // ebx@1
     int16_t v4;          // esi@3
@@ -1463,7 +1463,7 @@ void Actor::AI_SpellAttack1(unsigned int uActorID, signed int sTargetPid,
 }
 
 //----- (0040368B) --------------------------------------------------------
-void Actor::AI_MissileAttack2(unsigned int uActorID, signed int sTargetPid,
+void Actor::AI_MissileAttack2(unsigned int uActorID, Pid sTargetPid,
                               AIDirection *pDir) {
     Actor *v3;           // ebx@1
     int16_t v4;          // esi@3
@@ -1528,7 +1528,7 @@ void Actor::AI_MissileAttack2(unsigned int uActorID, signed int sTargetPid,
 }
 
 //----- (00403476) --------------------------------------------------------
-void Actor::AI_MissileAttack1(unsigned int uActorID, signed int sTargetPid,
+void Actor::AI_MissileAttack1(unsigned int uActorID, Pid sTargetPid,
                               AIDirection *pDir) {
     Actor *v3;         // ebx@1
     int xpos;            // esi@3
@@ -1599,7 +1599,7 @@ void Actor::AI_MissileAttack1(unsigned int uActorID, signed int sTargetPid,
 }
 
 //----- (004032B2) --------------------------------------------------------
-void Actor::AI_RandomMove(unsigned int uActor_id, unsigned int uTarget_id,
+void Actor::AI_RandomMove(unsigned int uActor_id, Pid uTarget_id,
                           int radius, int uActionLength) {
     int x;                                             // ebx@1
     int absy;                                          // eax@1
@@ -1721,7 +1721,7 @@ char Actor::_4031C1_update_job_never_gets_called(
 }
 
 //----- (004030AD) --------------------------------------------------------
-void Actor::AI_Stun(unsigned int uActorID, signed int edx0,
+void Actor::AI_Stun(unsigned int uActorID, Pid edx0,
                     int stunRegardlessOfState) {
     int16_t v7;      // ax@16
     AIDirection a3;  // [sp+Ch] [bp-40h]@16
@@ -1758,7 +1758,7 @@ void Actor::AI_Stun(unsigned int uActorID, signed int edx0,
 }
 
 //----- (00402F87) --------------------------------------------------------
-void Actor::AI_Bored(unsigned int uActorID, unsigned int uObjID,
+void Actor::AI_Bored(unsigned int uActorID, Pid uObjID,
                      AIDirection *a4) {
     unsigned int v7;  // eax@3
     unsigned int v9;  // eax@3
@@ -1918,7 +1918,7 @@ void Actor::playSound(unsigned int uActorID, ActorSounds uSoundID) {
 }
 
 //----- (00402AD7) --------------------------------------------------------
-void Actor::AI_Pursue1(unsigned int uActorID, unsigned int a2, signed int arg0,
+void Actor::AI_Pursue1(unsigned int uActorID, Pid a2, signed int arg0,
                        signed int uActionLength, AIDirection *pDir) {
     Actor *v7;         // ebx@1
     unsigned int v8;   // ecx@1
@@ -1945,7 +1945,7 @@ void Actor::AI_Pursue1(unsigned int uActorID, unsigned int a2, signed int arg0,
     if (MonsterStats::BelongsToSupertype(v7->monsterInfo.uID,
                                          MONSTER_SUPERTYPE_TREANT)) {
         if (!uActionLength) uActionLength = 256;
-        Actor::AI_StandOrBored(uActorID, 4, uActionLength, v10);
+        Actor::AI_StandOrBored(uActorID, Pid::character(0), uActionLength, v10);
         return;
     }
     if (v10->uDistance < 307.2) {
@@ -1974,7 +1974,7 @@ void Actor::AI_Pursue1(unsigned int uActorID, unsigned int a2, signed int arg0,
 }
 
 //----- (00402968) --------------------------------------------------------
-void Actor::AI_Flee(unsigned int uActorID, signed int sTargetPid,
+void Actor::AI_Flee(unsigned int uActorID, Pid sTargetPid,
                     int uActionLength, AIDirection *a4) {
     Actor *v5;         // ebx@1
     int v7;            // ecx@2
@@ -1996,7 +1996,7 @@ void Actor::AI_Flee(unsigned int uActorID, signed int sTargetPid,
                                              MONSTER_SUPERTYPE_TREANT) ||
             PID_TYPE(sTargetPid) == OBJECT_Actor && v13->uDistance < 307.2) {
             if (!uActionLength) uActionLength = 256;
-            Actor::AI_StandOrBored(uActorID, 4, uActionLength, v13);
+            Actor::AI_StandOrBored(uActorID, Pid::character(0), uActionLength, v13);
         } else {
             if (v5->moveSpeed)
                 v5->currentActionLength =
@@ -2018,7 +2018,7 @@ void Actor::AI_Flee(unsigned int uActorID, signed int sTargetPid,
 }
 
 //----- (0040281C) --------------------------------------------------------
-void Actor::AI_Pursue2(unsigned int uActorID, unsigned int a2,
+void Actor::AI_Pursue2(unsigned int uActorID, Pid a2,
                        signed int uActionLength, AIDirection *pDir, int a5) {
     int v6;                // eax@1
     Actor *v7;             // ebx@1
@@ -2047,7 +2047,7 @@ void Actor::AI_Pursue2(unsigned int uActorID, unsigned int a2,
     if (MonsterStats::BelongsToSupertype(v7->monsterInfo.uID,
                                          MONSTER_SUPERTYPE_TREANT)) {
         if (!uActionLength) uActionLength = 256;
-        Actor::AI_StandOrBored(uActorID, 4, uActionLength, v10);
+        Actor::AI_StandOrBored(uActorID, Pid::character(0), uActionLength, v10);
         return;
     }
     if ((signed int)v10->uDistance < a5) {
@@ -2075,7 +2075,7 @@ void Actor::AI_Pursue2(unsigned int uActorID, unsigned int a2,
 }
 
 //----- (00402686) --------------------------------------------------------
-void Actor::AI_Pursue3(unsigned int uActorID, unsigned int a2,
+void Actor::AI_Pursue3(unsigned int uActorID, Pid a2,
                        signed int uActionLength, AIDirection *a4) {
     int v5;                // eax@1
     Actor *v6;             // ebx@1
@@ -2103,7 +2103,7 @@ void Actor::AI_Pursue3(unsigned int uActorID, unsigned int a2,
     if (MonsterStats::BelongsToSupertype(v6->monsterInfo.uID,
                                          MONSTER_SUPERTYPE_TREANT)) {
         if (!uActionLength) uActionLength = 256;
-        return Actor::AI_StandOrBored(uActorID, 4, uActionLength, a4);
+        return Actor::AI_StandOrBored(uActorID, Pid::character(0), uActionLength, a4);
     }
     if (a4->uDistance < 307.2) {
         if (!uActionLength) uActionLength = 256;
@@ -2136,7 +2136,7 @@ void Actor::AI_Pursue3(unsigned int uActorID, unsigned int a2,
 }
 
 //----- (00401221) --------------------------------------------------------
-void Actor::_SelectTarget(unsigned int uActorID, int *OutTargetPID,
+void Actor::_SelectTarget(unsigned int uActorID, Pid *OutTargetPID,
                           bool can_target_party) {
     int v5;                     // ecx@1
     signed int v10;             // eax@13
@@ -2155,7 +2155,7 @@ void Actor::_SelectTarget(unsigned int uActorID, int *OutTargetPID,
     lowestRadius = UINT_MAX;
     v5 = 0;
     // TODO(pskelton): change to PID_INVALID and sort logic in calling funcs
-    *OutTargetPID = 0;
+    *OutTargetPID = Pid();
     closestId = 0;
     assert(uActorID < pActors.size());
     Actor *thisActor = &pActors[uActorID];
@@ -2382,7 +2382,7 @@ void Actor::PrepareSprites(char load_sounds_if_bit1_set) {
 void Actor::Remove() { this->aiState = Removed; }
 
 //----- (0043B1B0) --------------------------------------------------------
-void Actor::ActorDamageFromMonster(signed int attacker_id,
+void Actor::ActorDamageFromMonster(Pid attacker_id,
                                    unsigned int actor_id, Vec3i *pVelocity,
                                    ABILITY_INDEX a4) {
     int v4;            // ebx@1
@@ -2586,7 +2586,7 @@ void Actor::UpdateActorAI() {
     ObjectType target_pid_type;     // [sp+70h] [bp-40h]@83
     AIDirection *pDir;       // [sp+7Ch] [bp-34h]@129
     int v81;                 // [sp+9Ch] [bp-14h]@100
-    signed int target_pid;   // [sp+ACh] [bp-4h]@83
+    Pid target_pid;   // [sp+ACh] [bp-4h]@83
     uint v38;
 
     // Build AI array
@@ -2674,7 +2674,7 @@ void Actor::UpdateActorAI() {
     for (int v78 = 0; v78 < ai_arrays_size; ++v78) {
         uint actor_id = ai_near_actors_ids[v78];
         assert(actor_id < pActors.size());
-        int actorPid = PID(OBJECT_Actor, actor_id);
+        Pid actorPid = PID(OBJECT_Actor, actor_id);
 
         Actor *pActor = &pActors[actor_id];
 
@@ -2897,13 +2897,13 @@ void Actor::UpdateActorAI() {
         if (pActor->monsterInfo.uHostilityType != MonsterInfo::Hostility_Long ||
             !target_pid || v81 >= 5120 || v45 != ABILITY_ATTACK2) {
             if (pActor->monsterInfo.uMovementType == MONSTER_MOVEMENT_TYPE_SHORT) {
-                Actor::AI_RandomMove(actor_id, 4, 1024, 0);
+                Actor::AI_RandomMove(actor_id, Pid::character(0), 1024, 0);
             } else if (pActor->monsterInfo.uMovementType == MONSTER_MOVEMENT_TYPE_MEDIUM) {
-                Actor::AI_RandomMove(actor_id, 4, 2560, 0);
+                Actor::AI_RandomMove(actor_id, Pid::character(0), 2560, 0);
             } else if (pActor->monsterInfo.uMovementType == MONSTER_MOVEMENT_TYPE_LONG) {
-                Actor::AI_RandomMove(actor_id, 4, 5120, 0);
+                Actor::AI_RandomMove(actor_id, Pid::character(0), 5120, 0);
             } else if (pActor->monsterInfo.uMovementType == MONSTER_MOVEMENT_TYPE_FREE) {
-                Actor::AI_RandomMove(actor_id, 4, 10240, 0);
+                Actor::AI_RandomMove(actor_id, Pid::character(0), 10240, 0);
             } else if (pActor->monsterInfo.uMovementType == MONSTER_MOVEMENT_TYPE_STATIONARY) {
                 Actor::GetDirectionInfo(actorPid, 4, &v72, 0);
                 v58 = (pActor->monsterInfo.uRecoveryTime * flt_debugrecmod3);
@@ -3040,7 +3040,7 @@ void Actor::InitializeActors() {
     if (pParty->isPartyGood()) good = true;
     if (pParty->isPartyEvil()) evil = true;
 
-    ai_near_actors_targets_pid.fill(0);
+    ai_near_actors_targets_pid.fill(Pid());
 
     for (uint i = 0; i < pActors.size(); ++i) {
         Actor *actor = &pActors[i];
@@ -3069,7 +3069,7 @@ void Actor::InitializeActors() {
     }
 }
 //----- (00439474) --------------------------------------------------------
-void Actor::DamageMonsterFromParty(signed int a1, unsigned int uActorID_Monster,
+void Actor::DamageMonsterFromParty(Pid a1, unsigned int uActorID_Monster,
                                    Vec3i *pVelocity) {
     SpriteObject *projectileSprite;  // ebx@1
     Actor *pMonster;                 // esi@7
@@ -3523,7 +3523,7 @@ int stru319::_427546(int a2) {
     return result;
 }
 //----- (0042F184) --------------------------------------------------------
-int stru319::FindClosestActor(int pick_depth, int a3 /*Relates to targeting/not targeting allies?*/, int target_undead) {
+Pid stru319::FindClosestActor(int pick_depth, int a3 /*Relates to targeting/not targeting allies?*/, int target_undead) {
     int v4;       // edi@1
     stru319 *v5;  // esi@1
     VisSelectFlags select_flags;       // eax@2
@@ -3561,11 +3561,7 @@ int stru319::FindClosestActor(int pick_depth, int a3 /*Relates to targeting/not 
     {
         select_flags = (a3 != 0) ? VisSelectFlags_1 : None;
         if (target_undead) select_flags |= TargetUndead;
-        v7 = vis->PickClosestActor(OBJECT_Actor, pick_depth, static_cast<VisSelectFlags>(select_flags), 657456, -1);
-        if (v7 != -1)
-            return (uint16_t)v7;
-        else
-            return 0;
+        return vis->PickClosestActor(OBJECT_Actor, pick_depth, static_cast<VisSelectFlags>(select_flags), 657456, -1);
     }
     /*else // software impl
     {
@@ -4227,7 +4223,7 @@ int Actor::MakeActorAIList_BLV() {
 }
 
 //----- (004070EF) --------------------------------------------------------
-bool Detect_Between_Objects(unsigned int uObjID, unsigned int uObj2ID) {
+bool Detect_Between_Objects(Pid uObjID, Pid uObj2ID) {
     // get object 1 info
     int obj1_pid = PID_ID(uObjID);
     int obj1_sector;
@@ -4838,7 +4834,7 @@ double sub_43AE12(signed int a1) {
 }
 
 //----- (0043B057) --------------------------------------------------------
-void ItemDamageFromActor(unsigned int uObjID, unsigned int uActorID,
+void ItemDamageFromActor(Pid uObjID, unsigned int uActorID,
                          Vec3i *pVelocity) {
     int v6;      // eax@4
     int damage;  // edi@4

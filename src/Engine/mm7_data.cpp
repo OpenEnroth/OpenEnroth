@@ -2394,7 +2394,7 @@ IndexedArray<IndexedArray<CharacterSkillMastery, CHARACTER_SKILL_FIRST, CHARACTE
 }};
 
 int ai_arrays_size;
-std::array<int, 500> ai_near_actors_targets_pid;
+std::array<Pid, 500> ai_near_actors_targets_pid;
 std::array<unsigned int, 500> ai_near_actors_ids;
 
 char byte_4FAA24;  // turn over break??

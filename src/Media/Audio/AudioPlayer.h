@@ -3,7 +3,6 @@
 #include <map>
 #include <unordered_set>
 #include <string>
-#include <memory>
 #include <list>
 
 #include "Utility/Workaround/ToUnderlying.h"
@@ -12,7 +11,7 @@
 #include "Utility/Memory/Blob.h"
 #include "Utility/Streams/FileInputStream.h"
 #include "Media/Media.h"
-#include "Engine/MM7.h"
+#include "Engine/Pid.h"
 #include "Engine/Spells/SpellEnums.h"
 #include "Engine/Objects/ActorEnums.h"
 

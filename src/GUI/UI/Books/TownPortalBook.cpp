@@ -4,6 +4,7 @@
 #include "Engine/LOD.h"
 #include "Engine/Localization.h"
 #include "Engine/Party.h"
+#include "Engine/Pid.h"
 #include "Engine/SaveLoad.h"
 #include "Engine/Objects/Actor.h"
 #include "Engine/TurnEngine/TurnEngine.h"

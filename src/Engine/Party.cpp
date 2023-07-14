@@ -713,7 +713,7 @@ void Party::yell() {
                 actor.monsterInfo.uHostilityType != MonsterInfo::Hostility_Long &&
                 actor.monsterInfo.uMovementType != MONSTER_MOVEMENT_TYPE_STATIONARY) {
                 if ((actor.pos - pParty->pos).length() < 512) {
-                    Actor::AI_Flee(i, 4, 0, 0);
+                    Actor::AI_Flee(i, Pid::character(0), 0, 0);
                 }
             }
         }

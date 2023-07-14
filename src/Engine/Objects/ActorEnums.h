@@ -51,19 +51,6 @@ enum class ACTOR_BUFF_INDEX {
 };
 using enum ACTOR_BUFF_INDEX;
 
-/*  295 */
-enum class ObjectType {
-    OBJECT_None = 0x0,
-    OBJECT_Door = 0x1,          // PID_ID is index in pIndoor->pDoors.
-    OBJECT_Item = 0x2,          // PID_ID is index in pSpriteObjects array. Note that not all sprite objects are items.
-    OBJECT_Actor = 0x3,         // PID_ID is index in pActors array.
-    OBJECT_Character = 0x4,        // PID_ID is character index in [0..3].
-    OBJECT_Decoration = 0x5,    // PID_ID is index in pLevelDecorations array.
-    OBJECT_Face = 0x6,          // PID_ID is ((model_id << 6) + face_id) outdoors, face_id indoors.
-    OBJECT_Light = 0x7,
-};
-using enum ObjectType;
-
 /*  264 */
 enum class AIState : uint16_t {
     Standing = 0x0,

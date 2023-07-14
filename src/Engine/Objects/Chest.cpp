@@ -127,7 +127,7 @@ bool Chest::open(int uChestID, int objectPid) {
             pSpellObject.uAttributes = SPRITE_IGNORE_RANGE | SPRITE_NO_Z_BUFFER;
             pSpellObject.uSectorID = pIndoor->GetSector(pOut);
             pSpellObject.uSpriteFrameID = 0;
-            pSpellObject.spell_caster_pid = 0;
+            pSpellObject.spell_caster_pid = Pid();
             pSpellObject.spell_target_pid = 0;
             pSpellObject.uFacing = 0;
             pSpellObject.Create(0, 0, 0, 0);

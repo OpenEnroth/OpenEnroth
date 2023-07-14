@@ -1,5 +1,9 @@
 #pragma once
 
+#include <vector>
+
+#include "Engine/Pid.h"
+
 #include "Utility/Flags.h"
 
 enum class TurnEngineFlag {
@@ -31,12 +35,12 @@ using enum TURN_ENGINE_TURN_STAGE;
 
 struct TurnBased_QueueElem {
     inline TurnBased_QueueElem() {
-        uPackedID = 0;
+        uPackedID = Pid();
         actor_initiative = 0;
         uActionLength = 0;
         AI_action_type = TE_AI_STAND;
     }
-    int uPackedID;
+    Pid uPackedID;
     int actor_initiative;  // act first who have less
     int uActionLength;
     TURN_ENGINE_AI_ACTION AI_action_type;
@@ -47,7 +51,6 @@ struct stru262_TurnBased {
         turns_count = 0;
         turn_stage = TE_NONE;
         ai_turn_timer = 0;
-        uActorQueueSize = 0;
         turn_initiative = 0;
         uActionPointsLeft = 0;
         flags = 0;
@@ -76,12 +79,11 @@ struct stru262_TurnBased {
     int turns_count;
     TURN_ENGINE_TURN_STAGE turn_stage;  // if = 2 - action
     int ai_turn_timer;
-    int uActorQueueSize;  // c
     int turn_initiative;
     int uActionPointsLeft;  // 14
     TurnEngineFlags flags;
     int pending_actions;
-    TurnBased_QueueElem pQueue[530];  // 20
+    std::vector<TurnBased_QueueElem> pQueue;  // 20
 };
 
 extern struct stru262_TurnBased *pTurnEngine;

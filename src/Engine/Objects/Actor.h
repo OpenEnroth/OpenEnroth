@@ -7,6 +7,7 @@
 #include "Engine/Objects/Items.h"
 #include "Engine/Objects/Monsters.h"
 #include "Engine/Objects/CombinedSkillValue.h"
+#include "Engine/Pid.h"
 
 #include "Utility/Geometry/Vec.h"
 #include "Utility/IndexedArray.h"
@@ -22,7 +23,7 @@ struct stru319 {
 
     int which_player_to_attack(Actor *pActor);
     int _427546(int a2);
-    int FindClosestActor(int pick_depth, int a3, int target_undead);
+    Pid FindClosestActor(int pick_depth, int a3, int target_undead);
 
     char field_0 = 0;
 
@@ -86,16 +87,16 @@ class Actor {
         return attributes & ACTOR_NEARBY;
     }
 
-    static void _SelectTarget(unsigned int uActorID, int *OutTargetPID,
+    static void _SelectTarget(unsigned int uActorID, Pid *OutTargetPID,
                               bool can_target_party);
-    static void AI_Pursue3(unsigned int uActorID, unsigned int a2,
+    static void AI_Pursue3(unsigned int uActorID, Pid a2,
                            signed int uActionLength, struct AIDirection *a4);
-    static void AI_Pursue2(unsigned int uActorID, unsigned int a2,
+    static void AI_Pursue2(unsigned int uActorID, Pid a2,
                            signed int uActionLength, struct AIDirection *pDir,
                            int a5);
-    static void AI_Flee(unsigned int uActorID, signed int edx0,
+    static void AI_Flee(unsigned int uActorID, Pid edx0,
                         int uActionLength, struct AIDirection *a4);
-    static void AI_Pursue1(unsigned int uActorID, unsigned int a2,
+    static void AI_Pursue1(unsigned int uActorID, Pid a2,
                            signed int arg0, signed int uActionLength,
                            struct AIDirection *pDir);
     /**
@@ -104,29 +105,29 @@ class Actor {
     static void playSound(unsigned int uActorID, ActorSounds uSoundID);
     static void Die(unsigned int uActorID);
     static void resurrect(unsigned int uActorID);
-    static void AI_Bored(unsigned int uActorID, unsigned int uObjID,
+    static void AI_Bored(unsigned int uActorID, Pid uObjID,
                          struct AIDirection *a4);
-    static void AI_Stun(unsigned int uActorID, signed int edx0, int arg0);
+    static void AI_Stun(unsigned int uActorID, Pid edx0, int arg0);
     static char _4031C1_update_job_never_gets_called(unsigned int uActorID,
                                                      signed int a2, int a3);
-    static void AI_RandomMove(unsigned int uActor_id, unsigned int uTarget_id,
+    static void AI_RandomMove(unsigned int uActor_id, Pid uTarget_id,
                               int radius, int uActionLength);
-    static void AI_MissileAttack1(unsigned int uActorID, signed int sTargetPid,
+    static void AI_MissileAttack1(unsigned int uActorID, Pid sTargetPid,
                                   struct AIDirection *pDir);
-    static void AI_MissileAttack2(unsigned int uActorID, signed int sTargetPid,
+    static void AI_MissileAttack2(unsigned int uActorID, Pid sTargetPid,
                                   struct AIDirection *pDir);
-    static void AI_SpellAttack1(unsigned int uActorID, signed int sTargetPid,
+    static void AI_SpellAttack1(unsigned int uActorID, Pid sTargetPid,
                                 struct AIDirection *pDir);
-    static void AI_SpellAttack2(unsigned int uActorID, signed int sTargetPid,
+    static void AI_SpellAttack2(unsigned int uActorID, Pid sTargetPid,
                                 struct AIDirection *pDir);
-    static void AI_MeleeAttack(unsigned int uActorID, signed int sTargetPid,
+    static void AI_MeleeAttack(unsigned int uActorID, Pid sTargetPid,
                                struct AIDirection *arg0);
     static void StandAwhile(unsigned int uActorID);
     static void AI_Stand(unsigned int uActorID, unsigned int object_to_face_pid,
                          unsigned int uActionLength, struct AIDirection *a4);
-    static void AI_StandOrBored(unsigned int uActorID, signed int uObjID,
+    static void AI_StandOrBored(unsigned int uActorID, Pid uObjID,
                                 int uActionLength, struct AIDirection *a4);
-    static void AI_FaceObject(unsigned int uActorID, unsigned int uObjID,
+    static void AI_FaceObject(unsigned int uActorID, Pid uObjID,
                               int UNUSED, struct AIDirection *Dir_In);
     static void GetDirectionInfo(unsigned int uObj1ID, unsigned int uObj2ID,
                                  struct AIDirection *pOut, int a4);
@@ -135,7 +136,7 @@ class Actor {
                                 int type, ABILITY_INDEX a4);
     static void AI_SpellAttack(unsigned int uActorID, struct AIDirection *pDir,
                                SPELL_TYPE uSpellID, ABILITY_INDEX a4, CombinedSkillValue uSkill);
-    static void ActorDamageFromMonster(int attacker_id, unsigned int actor_id,
+    static void ActorDamageFromMonster(Pid attacker_id, unsigned int actor_id,
                                        Vec3i *pVelocity, ABILITY_INDEX a4);
 
     static unsigned short GetObjDescId(SPELL_TYPE spellId);
@@ -159,7 +160,7 @@ class Actor {
     static void AddOnDamageOverlay(unsigned int uActorID, int overlayType, int damage);
 
     static void Arena_summon_actor(int monster_id, int x, int y, int z);
-    static void DamageMonsterFromParty(int a1, unsigned int uActorID_Monster,
+    static void DamageMonsterFromParty(Pid a1, unsigned int uActorID_Monster,
                                        Vec3i *pVelocity);
     static void MakeActorAIList_ODM();
     static int MakeActorAIList_BLV();
@@ -253,7 +254,7 @@ void npcSetItem(int npc, ITEM_TYPE item, int a3);
  * @offset 0x448A98
  */
 void toggleActorGroupFlag(unsigned int uGroupID, ActorAttribute uFlag, bool bValue);
-bool Detect_Between_Objects(unsigned int uObjID, unsigned int uObj2ID);
+bool Detect_Between_Objects(Pid uObjID, Pid uObj2ID);
 void Spawn_Light_Elemental(int spell_power, CharacterSkillMastery caster_skill_mastery, int duration_game_seconds);
 void SpawnEncounter(struct MapInfo *pMapInfo, SpawnPoint *spawn, int a3, int a4, int a5);
 /**
@@ -261,7 +262,7 @@ void SpawnEncounter(struct MapInfo *pMapInfo, SpawnPoint *spawn, int a3, int a4,
  */
 void evaluateAoeDamage();
 double sub_43AE12(signed int a1);
-void ItemDamageFromActor(unsigned int uObjID, unsigned int uActorID,
+void ItemDamageFromActor(Pid uObjID, unsigned int uActorID,
                          Vec3i *pVelocity);
 
 // TODO: in original binary almost all calls are with appendOnly=true, only Spawn_Light_Elemental uses

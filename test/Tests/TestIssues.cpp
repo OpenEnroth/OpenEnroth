@@ -1223,6 +1223,13 @@ GAME_TEST(Issues, Issue735c) {
     EXPECT_EQ(mapTape, tape("out01.odm", "d28.blv")); // Emerald Isle -> Dragon's cave.
 }
 
+GAME_TEST(Issues, Issue735d) {
+    // Trace-only test: turn-based battle with ~60 monsters in a dungeon, casting poison cloud.
+    auto turnBasedTape = test->tape([] { return pParty->bTurnBasedModeOn; });
+    test->playTraceFromTestData("issue_735d.mm7", "issue_735d.json");
+    EXPECT_EQ(turnBasedTape, tape(false, true, false));
+}
+
 GAME_TEST(Issues, Issue741) {
     // Game crashing when walking into a wall in Temple of the moon
     test->playTraceFromTestData("issue_741.mm7", "issue_741.json");
