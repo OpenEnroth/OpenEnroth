@@ -7,6 +7,7 @@
 #include "Engine/Objects/Items.h"
 #include "Engine/Objects/Monsters.h"
 #include "Engine/Objects/CombinedSkillValue.h"
+#include "Engine/Pid.h"
 
 #include "Utility/Geometry/Vec.h"
 #include "Utility/IndexedArray.h"
@@ -253,7 +254,7 @@ void npcSetItem(int npc, ITEM_TYPE item, int a3);
  * @offset 0x448A98
  */
 void toggleActorGroupFlag(unsigned int uGroupID, ActorAttribute uFlag, bool bValue);
-bool Detect_Between_Objects(unsigned int uObjID, unsigned int uObj2ID);
+bool Detect_Between_Objects(Pid uObjID, Pid uObj2ID);
 void Spawn_Light_Elemental(int spell_power, CharacterSkillMastery caster_skill_mastery, int duration_game_seconds);
 void SpawnEncounter(struct MapInfo *pMapInfo, SpawnPoint *spawn, int a3, int a4, int a5);
 /**

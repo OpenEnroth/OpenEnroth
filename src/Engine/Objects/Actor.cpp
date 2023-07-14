@@ -4227,7 +4227,7 @@ int Actor::MakeActorAIList_BLV() {
 }
 
 //----- (004070EF) --------------------------------------------------------
-bool Detect_Between_Objects(unsigned int uObjID, unsigned int uObj2ID) {
+bool Detect_Between_Objects(Pid uObjID, Pid uObj2ID) {
     // get object 1 info
     int obj1_pid = PID_ID(uObjID);
     int obj1_sector;
