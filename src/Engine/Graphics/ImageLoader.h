@@ -11,8 +11,8 @@ namespace LOD {
 class File;
 } // namespace LOD
 
-class LODFile_Sprites;
-class LODFile_IconsBitmaps;
+class LodSpriteCache;
+class LodTextureCache;
 class Logger;
 
 class ImageLoader {
@@ -31,7 +31,7 @@ class ImageLoader {
 
 class Paletted_Img_Loader : public ImageLoader {
  public:
-    inline Paletted_Img_Loader(LODFile_IconsBitmaps *lod, const std::string &filename) {
+    inline Paletted_Img_Loader(LodTextureCache *lod, const std::string &filename) {
         this->resource_name = filename;
         this->lod = lod;
     }
@@ -39,12 +39,12 @@ class Paletted_Img_Loader : public ImageLoader {
     virtual bool Load(RgbaImage *rgbaImage, GrayscaleImage *indexedImage, Palette *palette) override;
 
  protected:
-    LODFile_IconsBitmaps *lod;
+    LodTextureCache *lod;
 };
 
 class ColorKey_LOD_Loader : public ImageLoader {
  public:
-    inline ColorKey_LOD_Loader(LODFile_IconsBitmaps *lod,
+    inline ColorKey_LOD_Loader(LodTextureCache *lod,
                                const std::string &filename, Color colorkey) {
         this->resource_name = filename;
         this->colorkey = colorkey;
@@ -55,12 +55,12 @@ class ColorKey_LOD_Loader : public ImageLoader {
 
  protected:
     Color colorkey;
-    LODFile_IconsBitmaps *lod;
+    LodTextureCache *lod;
 };
 
 class Image16bit_LOD_Loader : public ImageLoader {
  public:
-    inline Image16bit_LOD_Loader(LODFile_IconsBitmaps *lod,
+    inline Image16bit_LOD_Loader(LodTextureCache *lod,
                                  const std::string &filename) {
         this->resource_name = filename;
         this->lod = lod;
@@ -69,12 +69,12 @@ class Image16bit_LOD_Loader : public ImageLoader {
     virtual bool Load(RgbaImage *rgbaImage, GrayscaleImage *indexedImage, Palette *palette) override;
 
  protected:
-    LODFile_IconsBitmaps *lod;
+    LodTextureCache *lod;
 };
 
 class Alpha_LOD_Loader : public ImageLoader {
  public:
-    inline Alpha_LOD_Loader(LODFile_IconsBitmaps *lod, const std::string &filename) {
+    inline Alpha_LOD_Loader(LodTextureCache *lod, const std::string &filename) {
         this->resource_name = filename;
         this->lod = lod;
     }
@@ -82,7 +82,7 @@ class Alpha_LOD_Loader : public ImageLoader {
     virtual bool Load(RgbaImage *rgbaImage, GrayscaleImage *indexedImage, Palette *palette) override;
 
  protected:
-    LODFile_IconsBitmaps *lod;
+    LodTextureCache *lod;
 };
 
 class PCX_Loader : public ImageLoader {
@@ -98,7 +98,7 @@ class PCX_File_Loader : public PCX_Loader {
 
     virtual bool Load(RgbaImage *rgbaImage, GrayscaleImage *indexedImage, Palette *palette) override;
 
-    LODFile_IconsBitmaps *lod;
+    LodTextureCache *lod;
 };
 
 class PCX_LOD_Raw_Loader : public PCX_Loader {
@@ -133,7 +133,7 @@ class PCX_LOD_Compressed_Loader : public PCX_Loader {
 
 class Bitmaps_LOD_Loader : public ImageLoader {
  public:
-    inline Bitmaps_LOD_Loader(LODFile_IconsBitmaps *lod, const std::string &filename) {
+    inline Bitmaps_LOD_Loader(LodTextureCache *lod, const std::string &filename) {
         this->resource_name = filename;
         this->lod = lod;
     }
@@ -141,12 +141,12 @@ class Bitmaps_LOD_Loader : public ImageLoader {
     virtual bool Load(RgbaImage *rgbaImage, GrayscaleImage *indexedImage, Palette *palette) override;
 
  protected:
-    LODFile_IconsBitmaps *lod;
+    LodTextureCache *lod;
 };
 
 class Sprites_LOD_Loader : public ImageLoader {
  public:
-    inline Sprites_LOD_Loader(LODFile_Sprites *lod, const std::string &filename) {
+    inline Sprites_LOD_Loader(LodSpriteCache *lod, const std::string &filename) {
         this->resource_name = filename;
         this->lod = lod;
     }
@@ -154,5 +154,5 @@ class Sprites_LOD_Loader : public ImageLoader {
     virtual bool Load(RgbaImage *rgbaImage, GrayscaleImage *indexedImage, Palette *palette) override;
 
  protected:
-    LODFile_Sprites *lod;
+    LodSpriteCache *lod;
 };

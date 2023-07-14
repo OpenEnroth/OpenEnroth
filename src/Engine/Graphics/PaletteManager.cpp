@@ -3,8 +3,9 @@
 #include <algorithm>
 #include <string>
 
+#include "Engine/Graphics/Texture_MM7.h"
 #include "Engine/EngineIocContainer.h"
-#include "Engine/LOD.h"
+#include "Engine/LodTextureCache.h"
 
 #include "Library/Color/Color.h"
 #include "Library/Logger/Logger.h"
@@ -13,7 +14,7 @@
 
 PaletteManager *pPaletteManager = new PaletteManager;
 
-void PaletteManager::load(LODFile_IconsBitmaps *lod) {
+void PaletteManager::load(LodTextureCache *lod) {
     // Palette #0 is grayscale.
     _paletteIds.push_back(0);
     _palettes.push_back(createGrayscalePalette());

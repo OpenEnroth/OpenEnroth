@@ -2,19 +2,9 @@
 
 #include <cstring>
 #include <string>
-#include <deque>
 #include <vector>
-#include <memory>
-
-#include "Engine/Graphics/Texture_MM7.h"
-#include "Engine/Graphics/Sprites.h"
-
-#include "Library/Image/Image.h"
 
 #include "Utility/Memory/Blob.h"
-
-class Sprite;
-class LodReader;
 
 namespace LOD {
 #pragma pack(push, 1)
@@ -131,88 +121,6 @@ class WriteableFile : public File {
     unsigned int uLODDataSize;
 };
 };  // namespace LOD
-
-class LODFile_IconsBitmaps {
- public:
-    LODFile_IconsBitmaps();
-    ~LODFile_IconsBitmaps();
-
-    bool open(const std::string &pFilename, const std::string &pFolderName);
-
-    void releaseUnreserved();
-    void reserveLoadedTextures();
-
-    Texture_MM7 *loadTexture(const std::string &pContainer, bool useDummyOnError = true);
-
-    Blob LoadCompressedTexture(const std::string &pContainer); // TODO(captainurist): doesn't belong here.
-
- private:
-    int LoadTextureFromLOD(struct Texture_MM7 *pOutTex, const std::string &pContainer);
-
- private:
-    std::unique_ptr<LodReader> _reader;
-    int _reservedCount = 0;
-    std::deque<Texture_MM7> _textures;
-};
-
-#pragma pack(push, 1)
-struct LODSpriteHeader {
-    inline LODSpriteHeader() {
-        uHeight = 0;
-        uPaletteId = 0;
-        word_1A = 0;
-    }
-
-    char pName[12] {};         // 0
-    uint32_t uSpriteSize = 0;        // C
-    uint16_t uWidth = 0;         // 10  SW width (as opposed to Sprite::BufferWidth)
-    uint16_t uHeight = 0;        // 12  SW height
-    uint16_t uPaletteId = 0;     // 14
-    uint16_t word_16 = 0;        // 16
-    uint16_t uTexturePitch = 0;  // 18
-    uint16_t word_1A = 0;        // 1a  flags - 1024 delete bitmap
-    uint32_t uDecompressedSize = 0;  // 1c
-};
-#pragma pack(pop)
-
-struct LODSprite : public LODSpriteHeader {
-    void Release();
-
-    GrayscaleImage bitmap;
-};
-
-class LODFile_Sprites {
- public:
-    LODFile_Sprites();
-    ~LODFile_Sprites();
-
-    bool open(const std::string &pFilename, const std::string &folder);
-
-    void releaseUnreserved();
-    void reserveLoadedSprites();
-
-    Sprite *loadSprite(const std::string &pContainerName);
-
- private:
-    bool LoadSpriteFromFile(LODSprite *pSpriteHeader, const std::string &pContainer);
-
- private:
-    std::unique_ptr<LodReader> _reader;
-    int _reservedCount = 0;
-    std::deque<Sprite> _sprites;
-};
-
-extern LODFile_IconsBitmaps *pIcons_LOD;
-extern LODFile_IconsBitmaps *pIcons_LOD_mm6;
-extern LODFile_IconsBitmaps *pIcons_LOD_mm8;
-
-extern LODFile_IconsBitmaps *pBitmaps_LOD;
-extern LODFile_IconsBitmaps *pBitmaps_LOD_mm6;
-extern LODFile_IconsBitmaps *pBitmaps_LOD_mm8;
-
-extern LODFile_Sprites *pSprites_LOD;
-extern LODFile_Sprites *pSprites_LOD_mm6;
-extern LODFile_Sprites *pSprites_LOD_mm8;
 
 extern LOD::WriteableFile *pSave_LOD;
 extern LOD::File *pGames_LOD;

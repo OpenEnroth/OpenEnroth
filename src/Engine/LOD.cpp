@@ -4,32 +4,16 @@
 #include <memory>
 
 #include "Engine/Engine.h"
-#include "Engine/AssetsManager.h"
 #include "Engine/EngineIocContainer.h"
 
-#include "Engine/Graphics/Sprites.h"
-#include "Engine/Graphics/Image.h"
+#include "Engine/Graphics/Texture_MM7.h"
 
 #include "Library/Compression/Compression.h"
 #include "Library/Logger/Logger.h"
-#include "Library/Lod/LodReader.h"
 
 #include "Utility/Memory/FreeDeleter.h"
-#include "Utility/Streams/BlobInputStream.h"
 #include "Utility/String.h"
 #include "Utility/DataPath.h"
-
-LODFile_IconsBitmaps *pIcons_LOD = nullptr;
-LODFile_IconsBitmaps *pIcons_LOD_mm6 = nullptr;
-LODFile_IconsBitmaps *pIcons_LOD_mm8 = nullptr;
-
-LODFile_IconsBitmaps *pBitmaps_LOD = nullptr;
-LODFile_IconsBitmaps *pBitmaps_LOD_mm6 = nullptr;
-LODFile_IconsBitmaps *pBitmaps_LOD_mm8 = nullptr;
-
-LODFile_Sprites *pSprites_LOD = nullptr;
-LODFile_Sprites *pSprites_LOD_mm6 = nullptr;
-LODFile_Sprites *pSprites_LOD_mm8 = nullptr;
 
 LOD::WriteableFile *pSave_LOD = nullptr; // LOD pointing to the savegame file currently being processed
 LOD::File *pGames_LOD = nullptr; // LOD pointing to data/games.lod
@@ -41,92 +25,6 @@ struct FileCloser {
     }
 };
 
-void LODFile_IconsBitmaps::reserveLoadedTextures() {
-    _reservedCount = _textures.size();
-}
-
-void LODFile_Sprites::reserveLoadedSprites() {  // final init
-    _reservedCount = _sprites.size();
-}
-
-#pragma pack(push, 1)
-struct LODSpriteLine {
-    int16_t begin;
-    int16_t end;
-    uint32_t offset;
-};
-#pragma pack(pop)
-
-bool LODFile_Sprites::LoadSpriteFromFile(LODSprite *pSprite, const std::string &pContainer) {
-    if (!_reader->exists(pContainer))
-        return false;
-
-    BlobInputStream input(_reader->read(pContainer));
-    input.readOrFail(pSprite, sizeof(LODSpriteHeader));
-
-    strcpy(pSprite->pName, pContainer.c_str());
-
-    std::unique_ptr<LODSpriteLine[]> pSpriteLines(new LODSpriteLine[pSprite->uHeight]);
-    input.readOrFail(pSpriteLines.get(), sizeof(LODSpriteLine) * pSprite->uHeight);
-
-    Blob pixels = input.readBlobOrFail(pSprite->uSpriteSize);
-    if (pSprite->uDecompressedSize)
-        pixels = zlib::Uncompress(pixels, pSprite->uDecompressedSize);
-
-    pSprite->bitmap = GrayscaleImage::solid(pSprite->uWidth, pSprite->uHeight, 0);
-    for (uint i = 0; i < pSprite->uHeight; i++) {
-        if (pSpriteLines[i].begin >= 0) {
-            memcpy(pSprite->bitmap[i].data() + pSpriteLines[i].begin,
-                   static_cast<const char *>(pixels.data()) + pSpriteLines[i].offset,
-                   pSpriteLines[i].end - pSpriteLines[i].begin);
-        }
-    }
-
-    return true;
-}
-
-bool LODFile_Sprites::open(const std::string &pFilename, const std::string &folder) {
-    _reader = LodReader::open(pFilename);
-    return true;
-}
-
-Sprite *LODFile_Sprites::loadSprite(const std::string &pContainerName) {
-    for (Sprite &pSprite : _sprites) {
-        if (pSprite.pName == pContainerName) {
-            return &pSprite;
-        }
-    }
-
-    static_assert(sizeof(LODSpriteHeader) == 32, "Wrong type size");
-
-    std::unique_ptr<LODSprite> header = std::make_unique<LODSprite>();
-    if (!LoadSpriteFromFile(header.get(), pContainerName))
-        return nullptr;
-
-    // if (uNumLoadedSprites == 879) __debugbreak();
-
-    Sprite &sprite = _sprites.emplace_back();
-    sprite.pName = pContainerName;
-    sprite.uWidth = header->uWidth;
-    sprite.uHeight = header->uHeight;
-    sprite.texture = assets->getSprite(pContainerName);
-    sprite.sprite_header = header.release();
-    return &sprite;
-}
-
-void LODFile_IconsBitmaps::releaseUnreserved() {
-    for (size_t i = this->_reservedCount; i < this->_textures.size(); i++) {
-        this->_textures[i].Release();
-    }
-    this->_textures.resize(this->_reservedCount);
-}
-
-void LODFile_Sprites::releaseUnreserved() {
-    for (size_t i = this->_reservedCount; i < this->_sprites.size(); i++) {
-        this->_sprites[i].Release();
-    }
-    this->_sprites.resize(this->_reservedCount);
-}
 
 void LOD::File::Close() {
     if (!isFileOpened) {
@@ -182,46 +80,6 @@ void LOD::WriteableFile::ResetSubIndices() {
     LOD::File::ResetSubIndices();
     uLODDataSize = 0;
 }
-
-void LODSprite::Release() {
-    this->word_1A = 0;
-    this->bitmap.reset();
-    this->pName[0] = 0;
-    this->word_16 = 0;
-    this->uPaletteId = 0;
-    this->uTexturePitch = 0;
-    this->uHeight = 0;
-    this->uWidth = 0;
-    this->uSpriteSize = 0;
-}
-
-void Sprite::Release() {
-    this->sprite_header->Release();
-    this->texture->Release();
-    this->texture = nullptr;
-    this->pName = "null";
-}
-
-bool LODFile_IconsBitmaps::open(const std::string &pFilename, const std::string &pFolderName) {
-    _reader = LodReader::open(pFilename);
-    return true;
-}
-
-LODFile_Sprites::~LODFile_Sprites() {
-    for (size_t i = 0; i < this->_sprites.size(); ++i) {
-        this->_sprites[i].Release();
-    }
-}
-
-LODFile_Sprites::LODFile_Sprites() = default;
-
-LODFile_IconsBitmaps::~LODFile_IconsBitmaps() {
-    for (uint i = 0; i < this->_textures.size(); i++) {
-        this->_textures[i].Release();
-    }
-}
-
-LODFile_IconsBitmaps::LODFile_IconsBitmaps() = default;
 
 bool LOD::WriteableFile::_4621A7() {  // закрыть и загрузить записываемый ф-л(при
                                     // сохранении)
@@ -711,99 +569,6 @@ int LOD::File::GetSubNodeIndex(const std::string &name) const {
     }
 
     return -1;
-}
-
-int LODFile_IconsBitmaps::LoadTextureFromLOD(Texture_MM7 *pOutTex, const std::string &pContainer) {
-    if (!_reader->exists(pContainer))
-        return -1;
-
-    BlobInputStream input(_reader->read(pContainer));
-
-    TextureHeader *header = &pOutTex->header;
-    input.readOrFail(header, sizeof(TextureHeader));
-
-    strncpy(header->pName.data(), pContainer.c_str(), 16);
-
-    // ICONS
-    if (!header->uDecompressedSize) {
-        pOutTex->paletted_pixels = (uint8_t *)malloc(header->uTextureSize);
-        if (header->uTextureSize)
-            input.readOrFail(pOutTex->paletted_pixels, header->uTextureSize);
-    } else {
-        // TODO(captainurist): just store Blob in pOutTex
-        Blob pixels = zlib::Uncompress(input.readBlobOrFail(header->uTextureSize), header->uDecompressedSize);
-        pOutTex->paletted_pixels = (uint8_t *)malloc(pixels.size());
-        memcpy(pOutTex->paletted_pixels, pixels.data(), pixels.size());
-        header->uTextureSize = pixels.size();
-    }
-
-    pOutTex->pPalette24 = (uint8_t *)malloc(0x300);
-    input.readOrFail(pOutTex->pPalette24, 0x300);
-
-    if (header->pBits & 2) {
-        pOutTex->pLevelOfDetail1 =
-            &pOutTex->paletted_pixels[header->uSizeOfMaxLevelOfDetail];
-        // v8->pLevelOfDetail2 =
-        // &v8->pLevelOfDetail1[v8->uSizeOfMaxLevelOfDetail >> 2];
-        // v8->pLevelOfDetail3 =
-        // &v8->pLevelOfDetail2[v8->uSizeOfMaxLevelOfDetail >> 4];
-    } else {
-        pOutTex->pLevelOfDetail1 = 0;
-        // v8->pLevelOfDetail2 = 0;
-        // v8->pLevelOfDetail3 = 0;
-    }
-
-    for (int v41 = 1; v41 < 15; ++v41) {
-        if (1 << v41 == header->uTextureWidth) header->uWidthLn2 = v41;
-    }
-    for (int v42 = 1; v42 < 15; ++v42) {
-        if (1 << v42 == header->uTextureHeight) header->uHeightLn2 = v42;
-    }
-
-    header->uWidthMinus1 = (1 << header->uWidthLn2) - 1;
-    header->uHeightMinus1 = (1 << header->uHeightLn2) - 1;
-
-    return 1;
-}
-
-Texture_MM7 *LODFile_IconsBitmaps::loadTexture(const std::string &pContainer, bool useDummyOnError) {
-    for (Texture_MM7 &pTexture : _textures) {
-        if (iequals(pContainer.data(), pTexture.header.pName.data())) {
-            return &pTexture;
-        }
-    }
-
-    if (LoadTextureFromLOD(&_textures.emplace_back(), pContainer) != -1)
-        return &_textures.back();
-    _textures.pop_back();
-
-    if (!useDummyOnError)
-        return nullptr;
-
-    for (Texture_MM7 &pTexture : _textures) {
-        if (iequals(pTexture.header.pName.data(), "pending")) {
-            return &pTexture;
-        }
-    }
-
-    if (LoadTextureFromLOD(&_textures.emplace_back(), "pending") != -1)
-        return &_textures.back();
-    _textures.pop_back();
-
-    return nullptr;
-}
-
-Blob LODFile_IconsBitmaps::LoadCompressedTexture(const std::string &pContainer) {
-    BlobInputStream input(_reader->read(pContainer));
-
-    TextureHeader DstBuf;
-    input.readOrFail(&DstBuf, sizeof(TextureHeader));
-
-    if (DstBuf.uDecompressedSize) {
-        return zlib::Uncompress(input.readBlobOrFail(DstBuf.uTextureSize), DstBuf.uDecompressedSize);
-    } else {
-        return input.readBlobOrFail(DstBuf.uTextureSize);
-    }
 }
 
 bool Initialize_GamesLOD_NewLOD() {

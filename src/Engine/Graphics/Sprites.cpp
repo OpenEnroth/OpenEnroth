@@ -6,16 +6,15 @@
 
 #include "Engine/Engine.h"
 #include "Engine/EngineIocContainer.h"
-#include "Engine/LOD.h"
 #include "Engine/OurMath.h"
-
-#include "Engine/Objects/Actor.h"
 
 #include "Engine/Snapshots/SnapshotSerialization.h"
 #include "Engine/Snapshots/CompositeSnapshots.h"
 
 #include "Engine/Graphics/DecorationList.h"
 #include "Engine/Graphics/PaletteManager.h"
+#include "Engine/Graphics/Image.h"
+#include "Engine/LodSpriteCache.h"
 
 #include "Library/Logger/Logger.h"
 
@@ -23,6 +22,13 @@
 #include "Utility/String.h"
 
 struct SpriteFrameTable *pSpriteFrameTable;
+
+void Sprite::Release() {
+    this->sprite_header->Release();
+    this->texture->Release();
+    this->texture = nullptr;
+    this->pName = "null";
+}
 
 //----- (0044D4F6) --------------------------------------------------------
 void SpriteFrameTable::ResetLoadedFlags() {

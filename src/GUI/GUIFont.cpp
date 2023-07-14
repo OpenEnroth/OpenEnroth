@@ -5,7 +5,7 @@
 #include <sstream>
 
 #include "Engine/Engine.h"
-#include "Engine/LOD.h"
+#include "Engine/LodTextureCache.h"
 
 #include "Engine/Graphics/IRender.h"
 #include "Engine/Graphics/Image.h"
@@ -13,8 +13,6 @@
 #include "Engine/Snapshots/EntitySnapshots.h"
 
 #include "GUI/GUIWindow.h"
-
-extern LODFile_IconsBitmaps *pIcons_LOD;
 
 // TODO(pskelton): Move these to asset manager
 GUIFont *pFontBookOnlyShadow = nullptr;

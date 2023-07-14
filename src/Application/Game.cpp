@@ -38,6 +38,7 @@
 #include "Engine/Components/Deterministic/EngineDeterministicComponent.h"
 #include "Engine/Localization.h"
 #include "Engine/LOD.h"
+#include "Engine/LodTextureCache.h"
 #include "Engine/Objects/Actor.h"
 #include "Engine/Objects/Chest.h"
 #include "Engine/Objects/ObjectList.h"

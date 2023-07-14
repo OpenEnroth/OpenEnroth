@@ -12,6 +12,7 @@
 #include "Engine/Graphics/ImageLoader.h"
 #include "Engine/Graphics/IRender.h"
 #include "Engine/Graphics/Image.h"
+#include "Engine/LodTextureCache.h"
 #include "Engine/LOD.h"
 #include "Engine/Party.h"
 

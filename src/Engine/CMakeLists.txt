@@ -9,6 +9,8 @@ set(ENGINE_SOURCES
         ErrorHandling.cpp
         EngineIocContainer.cpp
         LOD.cpp
+        LodTextureCache.cpp
+        LodSpriteCache.cpp
         Localization.cpp
         MapInfo.cpp
         OurMath.cpp
@@ -30,6 +32,8 @@ set(ENGINE_HEADERS
         ErrorHandling.h
         EngineIocContainer.h
         LOD.h
+        LodTextureCache.h
+        LodSpriteCache.h
         Localization.h
         MM7.h
         MapInfo.h
