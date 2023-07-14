@@ -50,18 +50,22 @@ class TestController {
         return TestTape<T>(std::move(state));
     }
 
+    /**
+     * Like the other `tape` overload, but records per-character values, and produces a tape that has vectors
+     * as individual values.
+     *
+     * @param callback                  Callback taking a `const Character &` reference that will
+     *                                  calculate per-character values to store on a tape.
+     * @return                          Tape object.
+     */
     template<class Callback, class T = std::invoke_result_t<Callback, const Character &>>
     TestTape<TestVector<T>> tape(Callback callback) {
-        auto actualCallback = [callback = std::move(callback)] {
+        return tape([callback = std::move(callback)] {
             TestVector<T> result;
             for (const Character &character : pParty->pCharacters)
                 result.push_back(callback(character));
             return result;
-        };
-
-        auto state = std::make_shared<detail::TestTapeState<TestVector<T>>>(std::move(actualCallback));
-        _tapeCallbacks.push_back([state] { state->tick(); });
-        return TestTape<TestVector<T>>(std::move(state));
+        });
     }
 
  private:

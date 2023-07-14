@@ -106,6 +106,11 @@ static auto makeTimeTape(TestController *test) {
     return test->tape([] { return pParty->GetPlayingTime(); });
 }
 
+template<class T>
+static auto makeConfigTape(TestController *test, const ConfigEntry<T> &entry) {
+    return test->tape([&] { return entry.value(); });
+}
+
 static auto makeCharacterExperienceTape(TestController *test, int character) {
     return test->tape([character] { return pParty->pCharacters[character].experience; });
 }
@@ -356,7 +361,7 @@ GAME_TEST(Issues, Issue271) {
 
 GAME_TEST(Issues, Issue272a) {
     // Controls menu bugs - resetting controls doesn't work.
-    auto rightTape = test->tape([] { return engine->config->keybindings.Right.value(); });
+    auto rightTape = makeConfigTape(test, engine->config->keybindings.Right);
     test->playTraceFromTestData("issue_272a.mm7", "issue_272a.json");
     EXPECT_EQ(rightTape, tape(PlatformKey::KEY_RIGHT, PlatformKey::KEY_H, PlatformKey::KEY_RIGHT)); // Pressing 'default' resets keys.
 }
@@ -754,8 +759,14 @@ GAME_TEST(Issues, Issue502) {
 GAME_TEST(Issues, Issue503) {
     // Check that town portal book actually pauses game.
     auto hpTape = makeCharactersHealthTape(test);
+    auto noDamageTape = makeConfigTape(test, engine->config->debug.NoDamage);
+    auto screenTape = makeScreenTape(test);
+    auto mapTape = makeMapTape(test);
     test->playTraceFromTestData("issue_503.mm7", "issue_503.json");
     EXPECT_EQ(hpTape, tape({1147, 699, 350, 242})); // Game was paused, the party wasn't shot at, no HP change.
+    EXPECT_EQ(noDamageTape, tape(false)); // HP change was actually possible.
+    EXPECT_EQ(screenTape, tape(SCREEN_GAME, SCREEN_BOOKS, SCREEN_GAME)); // TP book was opened.
+    EXPECT_EQ(mapTape, tape("mdt12.blv", "d29.blv")); // And party was teleported to Harmondale.
 }
 
 GAME_TEST(Issues, Issue504) {
@@ -1551,9 +1562,9 @@ GAME_TEST(Issues, Issue1040) {
 GAME_TEST(Issues, Issue1051) {
     // Collision code asserts when fighting Magogs in Nighon Tunnels.
     // Note that the bug only reproduces on high fps, the trace is shot at 15ms per frame.
-    test->playTraceFromTestData("issue_1051.mm7", "issue_1051.json", [] {
-        EXPECT_EQ(engine->config->debug.TraceFrameTimeMs.value(), 15); // Don't redo this at different FPS.
-    });
+    auto frameTimeTape = makeConfigTape(test, engine->config->debug.TraceFrameTimeMs);
+    test->playTraceFromTestData("issue_1051.mm7", "issue_1051.json");
+    EXPECT_EQ(frameTimeTape, tape(15)); // Don't redo this at different FPS, the problem won't reproduce.
 }
 
 GAME_TEST(Issues, Issue1068) {

@@ -48,6 +48,7 @@ class TestTape {
     }
 
     TestVector<T> firstLast() const {
+        assert(!values().empty());
         TestVector<T> result;
         result.push_back(values().front());
         result.push_back(values().back());
@@ -103,6 +104,14 @@ TestVector<T> tape(T first, Tail... tail) {
     return std::initializer_list<T>{std::move(first), std::move(tail)...};
 }
 
+/**
+ * Same as the other `tape` overload, but for per-character tapes.
+ *
+ * Example code:
+ * ```
+ * EXPECT_EQ(expTape.firstLast(), tape({100, 100, 100, 100}, {254, 250, 254, 254}));
+ * ```
+ */
 template<class T, class... Tail>
 TestVector<TestVector<T>> tape(std::initializer_list<T> first, std::initializer_list<Tail>... tail) {
     return std::initializer_list<TestVector<T>>{first, tail...};
