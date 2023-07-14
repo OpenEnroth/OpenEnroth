@@ -145,7 +145,7 @@ void stru262_TurnBased::Start() {
                     PID(OBJECT_Actor, ai_near_actors_ids[i]),
                     ai_near_actors_targets_pid[ai_near_actors_ids[i]], &v31, 0);
                 v30 = v31;
-                Actor::AI_StandOrBored(ai_near_actors_ids[i], 4, 32, &v30);
+                Actor::AI_StandOrBored(ai_near_actors_ids[i], Pid::character(0), 32, &v30);
 
                 TurnBased_QueueElem &element = this->pQueue.emplace_back();
                 element.uPackedID = PID(OBJECT_Actor, ai_near_actors_ids[i]);
@@ -244,7 +244,7 @@ void stru262_TurnBased::AITurnBasedAction() {
     AIDirection v14;    // [sp+20h] [bp-4Ch]@21
     AIDirection v15;    // [sp+3Ch] [bp-30h]@21
     Actor *curr_actor;  // [sp+58h] [bp-14h]@2
-    int target_pid;     // [sp+5Ch] [bp-10h]@6
+    Pid target_pid;     // [sp+5Ch] [bp-10h]@6
     int j;
 
     for (uint i = 0; i < pActors.size(); ++i) {
@@ -992,7 +992,7 @@ void stru262_TurnBased::ActorAIChooseNewTargets() {
     AIDirection a3;           // [sp+Ch] [bp-6Ch]@8
     AIDirection v9;           // [sp+28h] [bp-50h]@8
     AIDirection a4;           // [sp+44h] [bp-34h]@8
-    unsigned int target_pid;  // [sp+60h] [bp-18h]@1
+    Pid target_pid;  // [sp+60h] [bp-18h]@1
     int uActorID;             // [sp+68h] [bp-10h]@4
     int i;
 

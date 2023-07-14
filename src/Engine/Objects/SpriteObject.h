@@ -6,6 +6,7 @@
 #include "Engine/Objects/SpriteObjectEnums.h"
 #include "Engine/Objects/ActorEnums.h"
 #include "Engine/Spells/SpellEnums.h"
+#include "Engine/Pid.h"
 
 #include "Library/Color/Color.h"
 
@@ -82,7 +83,7 @@ struct SpriteObject {
     int spell_level = 0;
     CharacterSkillMastery spell_skill = CHARACTER_SKILL_MASTERY_NONE;
     int field_54 = 0;
-    int spell_caster_pid = 0;
+    Pid spell_caster_pid;
     int spell_target_pid = 0;
     char field_60_distance_related_prolly_lod = 0;
     ABILITY_INDEX spellCasterAbility = ABILITY_ATTACK1;

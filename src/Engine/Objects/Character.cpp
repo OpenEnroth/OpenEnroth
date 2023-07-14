@@ -7279,7 +7279,7 @@ void Character::_42FA66_do_explosive_impact(int xpos, int ypos, int zpos, int a4
     if (actchar >= 1 || actchar <= 4) {
         a1a.spell_caster_pid = PID(OBJECT_Character, actchar - 1);
     } else {
-        a1a.spell_caster_pid = 0;
+        a1a.spell_caster_pid = Pid();
     }
 
     int id = a1a.Create(0, 0, 0, 0);

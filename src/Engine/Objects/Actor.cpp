@@ -988,7 +988,7 @@ void Actor::GetDirectionInfo(unsigned int uObj1ID, unsigned int uObj2ID,
 }
 
 //----- (00404030) --------------------------------------------------------
-void Actor::AI_FaceObject(unsigned int uActorID, unsigned int uObjID, int UNUSED,
+void Actor::AI_FaceObject(unsigned int uActorID, Pid uObjID, int UNUSED,
                           AIDirection *Dir_In) {
     AIDirection *Dir_Out;
     AIDirection Dir_Ret;
@@ -1016,7 +1016,7 @@ void Actor::AI_FaceObject(unsigned int uActorID, unsigned int uObjID, int UNUSED
 }
 
 //----- (00403F58) --------------------------------------------------------
-void Actor::AI_StandOrBored(unsigned int uActorID, signed int uObjID,
+void Actor::AI_StandOrBored(unsigned int uActorID, Pid uObjID,
                             int uActionLength, AIDirection *a4) {
     if (grng->random(2))  // 0 or 1
         AI_Bored(uActorID, uObjID, a4);
@@ -1599,7 +1599,7 @@ void Actor::AI_MissileAttack1(unsigned int uActorID, Pid sTargetPid,
 }
 
 //----- (004032B2) --------------------------------------------------------
-void Actor::AI_RandomMove(unsigned int uActor_id, unsigned int uTarget_id,
+void Actor::AI_RandomMove(unsigned int uActor_id, Pid uTarget_id,
                           int radius, int uActionLength) {
     int x;                                             // ebx@1
     int absy;                                          // eax@1
@@ -1721,7 +1721,7 @@ char Actor::_4031C1_update_job_never_gets_called(
 }
 
 //----- (004030AD) --------------------------------------------------------
-void Actor::AI_Stun(unsigned int uActorID, signed int edx0,
+void Actor::AI_Stun(unsigned int uActorID, Pid edx0,
                     int stunRegardlessOfState) {
     int16_t v7;      // ax@16
     AIDirection a3;  // [sp+Ch] [bp-40h]@16
@@ -1758,7 +1758,7 @@ void Actor::AI_Stun(unsigned int uActorID, signed int edx0,
 }
 
 //----- (00402F87) --------------------------------------------------------
-void Actor::AI_Bored(unsigned int uActorID, unsigned int uObjID,
+void Actor::AI_Bored(unsigned int uActorID, Pid uObjID,
                      AIDirection *a4) {
     unsigned int v7;  // eax@3
     unsigned int v9;  // eax@3
@@ -1945,7 +1945,7 @@ void Actor::AI_Pursue1(unsigned int uActorID, Pid a2, signed int arg0,
     if (MonsterStats::BelongsToSupertype(v7->monsterInfo.uID,
                                          MONSTER_SUPERTYPE_TREANT)) {
         if (!uActionLength) uActionLength = 256;
-        Actor::AI_StandOrBored(uActorID, 4, uActionLength, v10);
+        Actor::AI_StandOrBored(uActorID, Pid::character(0), uActionLength, v10);
         return;
     }
     if (v10->uDistance < 307.2) {
@@ -1974,7 +1974,7 @@ void Actor::AI_Pursue1(unsigned int uActorID, Pid a2, signed int arg0,
 }
 
 //----- (00402968) --------------------------------------------------------
-void Actor::AI_Flee(unsigned int uActorID, signed int sTargetPid,
+void Actor::AI_Flee(unsigned int uActorID, Pid sTargetPid,
                     int uActionLength, AIDirection *a4) {
     Actor *v5;         // ebx@1
     int v7;            // ecx@2
@@ -1996,7 +1996,7 @@ void Actor::AI_Flee(unsigned int uActorID, signed int sTargetPid,
                                              MONSTER_SUPERTYPE_TREANT) ||
             PID_TYPE(sTargetPid) == OBJECT_Actor && v13->uDistance < 307.2) {
             if (!uActionLength) uActionLength = 256;
-            Actor::AI_StandOrBored(uActorID, 4, uActionLength, v13);
+            Actor::AI_StandOrBored(uActorID, Pid::character(0), uActionLength, v13);
         } else {
             if (v5->moveSpeed)
                 v5->currentActionLength =
@@ -2047,7 +2047,7 @@ void Actor::AI_Pursue2(unsigned int uActorID, Pid a2,
     if (MonsterStats::BelongsToSupertype(v7->monsterInfo.uID,
                                          MONSTER_SUPERTYPE_TREANT)) {
         if (!uActionLength) uActionLength = 256;
-        Actor::AI_StandOrBored(uActorID, 4, uActionLength, v10);
+        Actor::AI_StandOrBored(uActorID, Pid::character(0), uActionLength, v10);
         return;
     }
     if ((signed int)v10->uDistance < a5) {
@@ -2103,7 +2103,7 @@ void Actor::AI_Pursue3(unsigned int uActorID, Pid a2,
     if (MonsterStats::BelongsToSupertype(v6->monsterInfo.uID,
                                          MONSTER_SUPERTYPE_TREANT)) {
         if (!uActionLength) uActionLength = 256;
-        return Actor::AI_StandOrBored(uActorID, 4, uActionLength, a4);
+        return Actor::AI_StandOrBored(uActorID, Pid::character(0), uActionLength, a4);
     }
     if (a4->uDistance < 307.2) {
         if (!uActionLength) uActionLength = 256;
@@ -2382,7 +2382,7 @@ void Actor::PrepareSprites(char load_sounds_if_bit1_set) {
 void Actor::Remove() { this->aiState = Removed; }
 
 //----- (0043B1B0) --------------------------------------------------------
-void Actor::ActorDamageFromMonster(signed int attacker_id,
+void Actor::ActorDamageFromMonster(Pid attacker_id,
                                    unsigned int actor_id, Vec3i *pVelocity,
                                    ABILITY_INDEX a4) {
     int v4;            // ebx@1
@@ -2897,13 +2897,13 @@ void Actor::UpdateActorAI() {
         if (pActor->monsterInfo.uHostilityType != MonsterInfo::Hostility_Long ||
             !target_pid || v81 >= 5120 || v45 != ABILITY_ATTACK2) {
             if (pActor->monsterInfo.uMovementType == MONSTER_MOVEMENT_TYPE_SHORT) {
-                Actor::AI_RandomMove(actor_id, 4, 1024, 0);
+                Actor::AI_RandomMove(actor_id, Pid::character(0), 1024, 0);
             } else if (pActor->monsterInfo.uMovementType == MONSTER_MOVEMENT_TYPE_MEDIUM) {
-                Actor::AI_RandomMove(actor_id, 4, 2560, 0);
+                Actor::AI_RandomMove(actor_id, Pid::character(0), 2560, 0);
             } else if (pActor->monsterInfo.uMovementType == MONSTER_MOVEMENT_TYPE_LONG) {
-                Actor::AI_RandomMove(actor_id, 4, 5120, 0);
+                Actor::AI_RandomMove(actor_id, Pid::character(0), 5120, 0);
             } else if (pActor->monsterInfo.uMovementType == MONSTER_MOVEMENT_TYPE_FREE) {
-                Actor::AI_RandomMove(actor_id, 4, 10240, 0);
+                Actor::AI_RandomMove(actor_id, Pid::character(0), 10240, 0);
             } else if (pActor->monsterInfo.uMovementType == MONSTER_MOVEMENT_TYPE_STATIONARY) {
                 Actor::GetDirectionInfo(actorPid, 4, &v72, 0);
                 v58 = (pActor->monsterInfo.uRecoveryTime * flt_debugrecmod3);
@@ -3069,7 +3069,7 @@ void Actor::InitializeActors() {
     }
 }
 //----- (00439474) --------------------------------------------------------
-void Actor::DamageMonsterFromParty(signed int a1, unsigned int uActorID_Monster,
+void Actor::DamageMonsterFromParty(Pid a1, unsigned int uActorID_Monster,
                                    Vec3i *pVelocity) {
     SpriteObject *projectileSprite;  // ebx@1
     Actor *pMonster;                 // esi@7
