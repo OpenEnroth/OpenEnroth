@@ -1362,21 +1362,19 @@ void GameUI_DrawPortraits() {
     if (pParty->bTurnBasedModeOn) {
         if (pTurnEngine->turn_stage != TE_WAIT) {
             if (PID_TYPE(pTurnEngine->pQueue[0].uPackedID) == OBJECT_Character) {
-                if (pTurnEngine->uActorQueueSize > 0) {
-                    for (uint i = 0; i < (uint)pTurnEngine->uActorQueueSize; ++i) {
-                        if (PID_TYPE(pTurnEngine->pQueue[i].uPackedID) != OBJECT_Character)
-                            break;
+                for (uint i = 0; i < pTurnEngine->pQueue.size(); ++i) {
+                    if (PID_TYPE(pTurnEngine->pQueue[i].uPackedID) != OBJECT_Character)
+                        break;
 
-                        auto alert_texture = game_ui_player_alert_green;
-                        if (pParty->GetRedAlert())
-                            alert_texture = game_ui_player_alert_red;
-                        else if (pParty->GetYellowAlert())
-                            alert_texture = game_ui_player_alert_yellow;
+                    auto alert_texture = game_ui_player_alert_green;
+                    if (pParty->GetRedAlert())
+                        alert_texture = game_ui_player_alert_red;
+                    else if (pParty->GetYellowAlert())
+                        alert_texture = game_ui_player_alert_yellow;
 
-                        render->DrawTextureNew(
-                            (pPlayerPortraitsXCoords_For_PlayerBuffAnimsDrawing[PID_ID(pTurnEngine->pQueue[i].uPackedID)] - 4) / 640.0f,
-                            384 / 480.0f, alert_texture); // was 385
-                    }
+                    render->DrawTextureNew(
+                        (pPlayerPortraitsXCoords_For_PlayerBuffAnimsDrawing[PID_ID(pTurnEngine->pQueue[i].uPackedID)] - 4) / 640.0f,
+                        384 / 480.0f, alert_texture); // was 385
                 }
             }
         }

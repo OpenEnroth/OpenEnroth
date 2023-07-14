@@ -1,5 +1,7 @@
 #pragma once
 
+#include <vector>
+
 #include "Utility/Flags.h"
 
 enum class TurnEngineFlag {
@@ -47,7 +49,6 @@ struct stru262_TurnBased {
         turns_count = 0;
         turn_stage = TE_NONE;
         ai_turn_timer = 0;
-        uActorQueueSize = 0;
         turn_initiative = 0;
         uActionPointsLeft = 0;
         flags = 0;
@@ -76,12 +77,11 @@ struct stru262_TurnBased {
     int turns_count;
     TURN_ENGINE_TURN_STAGE turn_stage;  // if = 2 - action
     int ai_turn_timer;
-    int uActorQueueSize;  // c
     int turn_initiative;
     int uActionPointsLeft;  // 14
     TurnEngineFlags flags;
     int pending_actions;
-    TurnBased_QueueElem pQueue[530];  // 20
+    std::vector<TurnBased_QueueElem> pQueue;  // 20
 };
 
 extern struct stru262_TurnBased *pTurnEngine;
