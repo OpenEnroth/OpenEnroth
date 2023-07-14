@@ -3,6 +3,8 @@
 #include <cstdint>
 #include <array>
 
+#include "Engine/Pid.h"
+
 #include "Library/Color/Color.h"
 
 #include "Utility/Geometry/Vec.h"
@@ -27,7 +29,7 @@ struct RenderBillboard {
     int16_t screen_space_x;
     int16_t screen_space_y;
     int16_t screen_space_z;
-    uint16_t object_pid;
+    Pid object_pid;
     uint16_t dimming_level;
     Color sTintColor;
     SpriteFrame *pSpriteFrame;

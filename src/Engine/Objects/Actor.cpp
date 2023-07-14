@@ -3523,7 +3523,7 @@ int stru319::_427546(int a2) {
     return result;
 }
 //----- (0042F184) --------------------------------------------------------
-int stru319::FindClosestActor(int pick_depth, int a3 /*Relates to targeting/not targeting allies?*/, int target_undead) {
+Pid stru319::FindClosestActor(int pick_depth, int a3 /*Relates to targeting/not targeting allies?*/, int target_undead) {
     int v4;       // edi@1
     stru319 *v5;  // esi@1
     VisSelectFlags select_flags;       // eax@2

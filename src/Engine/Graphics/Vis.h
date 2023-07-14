@@ -47,7 +47,7 @@ extern Vis_SelectionFilter vis_sprite_filter_3;  // 00F93E6C
 extern Vis_SelectionFilter vis_sprite_filter_4;  // static to sub_44EEA7
 
 struct Vis_PIDAndDepth {
-    uint16_t object_pid;
+    Pid object_pid;
     int16_t depth;
 };
 
@@ -55,7 +55,7 @@ using Vis_Object = std::variant<std::monostate, int /* index */, ODMFace *, BLVF
 
 struct Vis_ObjectInfo {
     Vis_Object object;
-    uint16_t object_pid = 0;
+    Pid object_pid = Pid();
     int16_t depth = -1;
     VisObjectType object_type = VisObjectType_Any;
 };
@@ -68,7 +68,7 @@ struct Vis_SelectionList {
     void create_object_pointers(PointerCreationType type = All);
     void sort_object_pointers();
 
-    inline void AddObject(Vis_Object object, VisObjectType type, int depth, int pid) {
+    inline void AddObject(Vis_Object object, VisObjectType type, int depth, Pid pid) {
         object_pool[uSize].object = object;
         object_pool[uSize].object_type = type;
         object_pool[uSize].depth = depth;
@@ -128,7 +128,7 @@ class Vis {
                                      float *out_center_y);
     bool IsPointInsideD3DBillboard(struct RenderBillboardD3D *billboard, float x,
                                    float y);
-    unsigned short PickClosestActor(ObjectType object_type, unsigned int pick_depth,
+    Pid PickClosestActor(ObjectType object_type, unsigned int pick_depth,
                                     VisSelectFlags selectFlags, int not_at_ai_state, int at_ai_state);
     void _4C1A02();
     void SortVectors_x(RenderVertexSoft *pArray, int start, int end);
