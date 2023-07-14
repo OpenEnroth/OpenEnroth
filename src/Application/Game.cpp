@@ -2074,7 +2074,7 @@ void Game::onPressSpace() {
                           &vis_sprite_filter_3, &vis_door_filter);
 
     uint16_t pid = _vis->get_picked_object_zbuf_val().object_pid;
-    if (pid != PID_INVALID) {
+    if (pid != 0) {
         DoInteractionWithTopmostZObject(pid);
     }
 }

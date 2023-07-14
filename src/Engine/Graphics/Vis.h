@@ -55,7 +55,7 @@ using Vis_Object = std::variant<std::monostate, int /* index */, ODMFace *, BLVF
 
 struct Vis_ObjectInfo {
     Vis_Object object;
-    uint16_t object_pid = PID_INVALID;
+    uint16_t object_pid = 0;
     int16_t depth = -1;
     VisObjectType object_type = VisObjectType_Any;
 };

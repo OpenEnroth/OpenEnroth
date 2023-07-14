@@ -3561,11 +3561,7 @@ int stru319::FindClosestActor(int pick_depth, int a3 /*Relates to targeting/not 
     {
         select_flags = (a3 != 0) ? VisSelectFlags_1 : None;
         if (target_undead) select_flags |= TargetUndead;
-        v7 = vis->PickClosestActor(OBJECT_Actor, pick_depth, static_cast<VisSelectFlags>(select_flags), 657456, -1);
-        if (v7 != -1)
-            return (uint16_t)v7;
-        else
-            return 0;
+        return vis->PickClosestActor(OBJECT_Actor, pick_depth, static_cast<VisSelectFlags>(select_flags), 657456, -1);
     }
     /*else // software impl
     {

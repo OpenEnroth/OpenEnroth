@@ -443,7 +443,7 @@ unsigned short Vis::PickClosestActor(ObjectType object_type, unsigned int pick_d
     Vis_static_sub_4C1944_stru_F8BDE8.create_object_pointers(Vis_SelectionList::Unique);
     Vis_static_sub_4C1944_stru_F8BDE8.sort_object_pointers();
 
-    if (!Vis_static_sub_4C1944_stru_F8BDE8.uSize) return -1;
+    if (!Vis_static_sub_4C1944_stru_F8BDE8.uSize) return 0;
     return Vis_static_sub_4C1944_stru_F8BDE8.object_pointers[0]->object_pid;
 }
 
@@ -494,7 +494,7 @@ void Vis::SortVectors_x(RenderVertexSoft *pArray, int start, int end) {
 Vis_PIDAndDepth InvalidPIDAndDepth() {
     Vis_PIDAndDepth result;
     result.depth = 0;
-    result.object_pid = PID_INVALID;
+    result.object_pid = 0;
     return result;
 }
 
