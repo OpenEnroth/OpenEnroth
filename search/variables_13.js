@@ -63,7 +63,7 @@ var searchData=
   ['scrollspellids_60',['scrollSpellIds',['../Spells_8cpp.html#a1d4bec23e7173b325ff905e473182692',1,'scrollSpellIds():&#160;Spells.cpp'],['../Spells_8h.html#a1d4bec23e7173b325ff905e473182692',1,'scrollSpellIds():&#160;Spells.cpp']]],
   ['scrollstop_61',['scrollstop',['../UISaveLoad_8cpp.html#a4ed05540a012f883160cf3f1d81ebcf8',1,'scrollstop():&#160;UISaveLoad.cpp'],['../UICharacter_8cpp.html#a4ed05540a012f883160cf3f1d81ebcf8',1,'scrollstop():&#160;UICharacter.cpp']]],
   ['scurrenthp_62',['sCurrentHP',['../structActor__MM7.html#a0bbbe29e6fae5e43781ad127b4a36885',1,'Actor_MM7']]],
-  ['scurrentmenuid_63',['sCurrentMenuID',['../GUIWindow_8h.html#a8bf4750f50fc8a84e1641e6689b4c168',1,'sCurrentMenuID():&#160;GUIWindow.cpp'],['../GUIWindow_8cpp.html#a8bf4750f50fc8a84e1641e6689b4c168',1,'sCurrentMenuID():&#160;GUIWindow.cpp']]],
+  ['scurrentmenuid_63',['sCurrentMenuID',['../GUIWindow_8h.html#a10d9c9a212b3a46316be8a7a64e19c3d',1,'sCurrentMenuID():&#160;GUIWindow.cpp'],['../GUIWindow_8cpp.html#a10d9c9a212b3a46316be8a7a64e19c3d',1,'sCurrentMenuID():&#160;GUIWindow.cpp']]],
   ['sdialogue_5fspeakingactornpc_5fid_64',['sDialogue_SpeakingActorNPC_ID',['../mm7__data_8h.html#affe6fe1317886078fdcf8e09a6f7b963',1,'sDialogue_SpeakingActorNPC_ID():&#160;mm7_data.cpp'],['../mm7__data_8cpp.html#a8c6a73b2f10ee048758f64bf2d019ef5',1,'sDialogue_SpeakingActorNPC_ID():&#160;mm7_data.cpp']]],
   ['sdl_5fmajor_5fversion_65',['SDL_MAJOR_VERSION',['../classorg_1_1libsdl_1_1app_1_1SDLActivity.html#a862d67687092a6bd59edc21c9c2ee52d',1,'org::libsdl::app::SDLActivity']]],
   ['sdl_5fmicro_5fversion_66',['SDL_MICRO_VERSION',['../classorg_1_1libsdl_1_1app_1_1SDLActivity.html#a709e7abb41da40efb46dfb635ab80864',1,'org::libsdl::app::SDLActivity']]],

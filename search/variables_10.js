@@ -483,7 +483,7 @@ var searchData=
   ['prev_5finit_5foverflow_480',['prev_init_overflow',['../structexplosion__effect__struct.html#a8af36d01a93e0a892fe2f3d2dc0055ca',1,'explosion_effect_struct']]],
   ['prev_5fmouse_5fleft_481',['prev_mouse_left',['../structArcomageGame.html#a68650a5f01fb70a89246e0d5f2362dfe',1,'ArcomageGame']]],
   ['prev_5fmouse_5fright_482',['prev_mouse_right',['../structArcomageGame.html#a0d3736283ca4af12a324e7597006f4ff',1,'ArcomageGame']]],
-  ['prev_5fscreen_5ftype_483',['prev_screen_type',['../GUIWindow_8cpp.html#a5023a0cbd3467c1ea375ffcfc7ef690e',1,'prev_screen_type():&#160;GUIWindow.cpp'],['../GUIWindow_8h.html#a5023a0cbd3467c1ea375ffcfc7ef690e',1,'prev_screen_type():&#160;GUIWindow.cpp'],['../classGUIWindow__GameOver.html#a9954ff997db6e5559117c108ff539921',1,'GUIWindow_GameOver::prev_screen_type()']]],
+  ['prev_5fscreen_5ftype_483',['prev_screen_type',['../GUIWindow_8cpp.html#ab3710b35f2f02bb4bcb416f455842b03',1,'prev_screen_type():&#160;GUIWindow.cpp'],['../GUIWindow_8h.html#ab3710b35f2f02bb4bcb416f455842b03',1,'prev_screen_type():&#160;GUIWindow.cpp'],['../classGUIWindow__GameOver.html#a24286950c824cf2b917c6931708426b4',1,'GUIWindow_GameOver::prev_screen_type()']]],
   ['preveyelevel_484',['prevEyeLevel',['../structParty__MM7.html#a4d46dced7ddbc29504b1a576ede0a766',1,'Party_MM7']]],
   ['prevface_485',['prevFace',['../structPlayer__MM7.html#a6b53d0cb19fee019021e2c3236dee94e',1,'Player_MM7']]],
   ['prevposition_486',['prevPosition',['../structParty__MM7.html#ab0ecf0b108d26f07c26f134a05a0f818',1,'Party_MM7']]],

@@ -86,7 +86,7 @@ var searchData=
   ['setcondweakwithblockcheck_83',['SetCondWeakWithBlockCheck',['../classCharacter.html#a3b6dce1c7ef8e19544bcce05bc988da1',1,'Character']]],
   ['setcontext_84',['setContext',['../classorg_1_1libsdl_1_1app_1_1SDLAudioManager.html#af3e7c7f5a83ecc6e11df4a1ea847baef',1,'org.libsdl.app.SDLAudioManager.setContext()'],['../classorg_1_1libsdl_1_1app_1_1SDL.html#a052982f1cf0e1c8eb36369b50a89f49f',1,'org.libsdl.app.SDL.setContext()']]],
   ['setcurrentcursorbitmap_85',['SetCurrentCursorBitmap',['../classIo_1_1Mouse.html#adcca2f11d2efbc4ff9ec32af93a33700',1,'Io::Mouse']]],
-  ['setcurrentmenuid_86',['SetCurrentMenuID',['../GUIWindow_8h.html#abd4c5e08edeb1e1b1235d15c11010380',1,'SetCurrentMenuID(MENU_STATE):&#160;GUIWindow.cpp'],['../GUIWindow_8cpp.html#aca0ff8541e8260e43b99836c51395283',1,'SetCurrentMenuID(MENU_STATE uMenu):&#160;GUIWindow.cpp']]],
+  ['setcurrentmenuid_86',['SetCurrentMenuID',['../GUIWindow_8h.html#ae1949ab018e322aabeefb97a640dec74',1,'SetCurrentMenuID(MenuType):&#160;GUIWindow.cpp'],['../GUIWindow_8cpp.html#abbf907aaf1f2457ae5069bfc54f6be89',1,'SetCurrentMenuID(MenuType uMenu):&#160;GUIWindow.cpp']]],
   ['setcursed_87',['SetCursed',['../classCharacter.html#ab42551f7f0c636bd6e6713f74a138541',1,'Character']]],
   ['setcursorbitmapfromitemid_88',['SetCursorBitmapFromItemID',['../classIo_1_1Mouse.html#a76086782862aa855554bffb3d68aaf38',1,'Io::Mouse']]],
   ['setcursorimage_89',['SetCursorImage',['../classIo_1_1Mouse.html#a32cdb8caa9c4582a36c391d93e58cbc4',1,'Io::Mouse']]],
