@@ -1191,22 +1191,22 @@ void Actor::AddOnDamageOverlay(unsigned int uActorID, int overlayType, signed in
                                            (int)(sub_43AE12(damage) * 65536.0), 0);
             return;
         case 5:
-            pActiveOverlayList->_4418B6(901, actorPID, 0, actorPID, 0);
+            pActiveOverlayList->_4418B6(901, actorPID, 0, 0, 0); // 4th param was actorPID.
             return;
         case 6:
-            pActiveOverlayList->_4418B6(902, actorPID, 0, actorPID, 0);
+            pActiveOverlayList->_4418B6(902, actorPID, 0, 0, 0); // 4th param was actorPID.
             return;
         case 7:
-            pActiveOverlayList->_4418B6(903, actorPID, 0, actorPID, 0);
+            pActiveOverlayList->_4418B6(903, actorPID, 0, 0, 0); // 4th param was actorPID.
             return;
         case 8:
-            pActiveOverlayList->_4418B6(900, actorPID, 0, actorPID, 0);
+            pActiveOverlayList->_4418B6(900, actorPID, 0, 0, 0); // 4th param was actorPID.
             return;
         case 9:
-            pActiveOverlayList->_4418B6(909, actorPID, 0, actorPID, 0);
+            pActiveOverlayList->_4418B6(909, actorPID, 0, 0, 0); // 4th param was actorPID.
             return;
         case 10:
-            pActiveOverlayList->_4418B6(908, actorPID, 0, actorPID, 0);
+            pActiveOverlayList->_4418B6(908, actorPID, 0, 0, 0); // 4th param was actorPID.
             return;
         default:
             return;
