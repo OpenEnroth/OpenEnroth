@@ -11,6 +11,6 @@ class GUIWindow_GameOver : public GUIWindow {
     virtual void Release();
 
  protected:
-    CURRENT_SCREEN prev_screen_type;
+    ScreenType prev_screen_type;
     int64_t _tickcount{};
 };

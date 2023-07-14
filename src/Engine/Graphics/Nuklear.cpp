@@ -3207,7 +3207,7 @@ static int lua_set_game_current_menu(lua_State *L) {
     lua_check_ret(lua_check_args(L, lua_gettop(L) == 2));
 
     int id = luaL_checkinteger(L, 2);
-    SetCurrentMenuID(MENU_STATE(id));
+    SetCurrentMenuID(MenuType(id));
 
     return 4;
 }

@@ -1828,7 +1828,7 @@ void UI_OnMouseRightClick(int mouse_x, int mouse_y) {
         case SCREEN_GAME:  // In the main menu displays a pop-up window(В
                            // главном меню показывает всплывающее окно)
         {
-            if (GetCurrentMenuID() > 0) break;
+            if (GetCurrentMenuID() > MENU_MAIN) break;
             if ((signed int)pY > (signed int)pViewport->uViewportBR_Y) {
                 popup_window.wData.val = pX / 118;
                 if ((signed int)pX / 118 < 4) {  // portaits zone

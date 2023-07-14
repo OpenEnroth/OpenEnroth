@@ -2085,7 +2085,7 @@ void Game::gameLoop() {
     char Source[64];            // [sp+44h] [bp-20h]@76
 
     bLoading = sCurrentMenuID == MENU_LoadingProcInMainMenu;
-    SetCurrentMenuID((MENU_STATE)-1);
+    SetCurrentMenuID(MENU_NONE);
     if (bLoading) {
         uGameState = GAME_STATE_PLAYING;
         LoadGame(pSavegameList->selectedSlot);

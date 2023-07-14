@@ -248,7 +248,7 @@ enum UIMessageType : uint32_t {
 };
 
 /*  251 */
-enum MENU_STATE : int32_t {
+enum class MenuType {
     MENU_MAIN = 0,
     MENU_NEWGAME = 1,
     MENU_CREDITS = 2,
@@ -264,8 +264,9 @@ enum MENU_STATE : int32_t {
     MENU_MMT_MAIN_MENU = 12,
     MENU_NONE = -1,
 };
+using enum MenuType;
 
-enum class CURRENT_SCREEN {
+enum class ScreenType {
     SCREEN_GAME = 0,
     SCREEN_MENU = 1,
     SCREEN_OPTIONS = 2,
@@ -303,7 +304,7 @@ enum class CURRENT_SCREEN {
 
     SCREEN_DEBUG = 999,
 };
-using enum CURRENT_SCREEN;
+using enum ScreenType;
 
 enum WindowType {
     WINDOW_null = 0,
