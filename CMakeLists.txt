@@ -66,24 +66,7 @@ include(CppLint)
 include(Dependencies)
 
 add_subdirectory(thirdparty)
-
 include_directories(${INCLUDE_DIRECTORIES} ${CMAKE_CURRENT_SOURCE_DIR}/src ${CMAKE_CURRENT_SOURCE_DIR}/test ${INCLUDE_THIRDPARTY_DIRS})
 add_subdirectory(test)
 add_subdirectory(src)
 
-if(BUILD_PLATFORM STREQUAL "android")
-    add_library(main SHARED)
-    target_sources(main PUBLIC src/Application/main.cpp src/Platform/Sdl/SdlMain.cpp)
-    target_check_style(main)
-    target_link_libraries(main application)
-else()
-    add_executable(OpenEnroth MACOSX_BUNDLE WIN32 src/Application/main.cpp)
-    target_check_style(OpenEnroth)
-    target_fix_libcxx_assertions(OpenEnroth)
-
-    target_link_libraries(OpenEnroth application)
-
-    set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT OpenEnroth)
-
-    PREBUILT_DEPENDENCIES_RESOLVE(OpenEnroth)
-endif()

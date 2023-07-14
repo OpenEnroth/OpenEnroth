@@ -2,6 +2,9 @@
 #include <utility>
 #include <filesystem>
 
+#include "Application/GameStarter.h"
+#include "Application/GameOptions.h"
+
 #include "Engine/Components/Control/EngineControlComponent.h"
 #include "Engine/Components/Control/EngineController.h"
 #include "Engine/Components/Trace/EngineTraceSimplePlayer.h"
@@ -13,10 +16,6 @@
 #include "Library/Trace/EventTrace.h"
 
 #include "Utility/Format.h"
-
-#include "GameStarter.h"
-#include "GameOptions.h"
-#include "GameConfig.h"
 
 
 int runRetrace(GameOptions options) {
