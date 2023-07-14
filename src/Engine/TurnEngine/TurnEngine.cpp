@@ -235,6 +235,7 @@ void stru262_TurnBased::End(bool bPlaySound) {
     pEventTimer->StopGameTime();
     dword_50C994 = 0;
     dword_50C998_turnbased_icon_1A = 0;
+    uActorQueueSize = 0;
 }
 // 50C994: using guessed type int dword_50C994;
 // 50C998: using guessed type int dword_50C998_turnbased_icon_1A;
