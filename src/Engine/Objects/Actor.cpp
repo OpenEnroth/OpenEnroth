@@ -1063,7 +1063,7 @@ void Actor::StandAwhile(unsigned int uActorID) {
 }
 
 //----- (00403C6C) --------------------------------------------------------
-void Actor::AI_MeleeAttack(unsigned int uActorID, signed int sTargetPid,
+void Actor::AI_MeleeAttack(unsigned int uActorID, Pid sTargetPid,
                            struct AIDirection *arg0) {
     int16_t v6;        // esi@6
     int16_t v7;        // edi@6
@@ -1313,7 +1313,7 @@ void Actor::StealFrom(unsigned int uActorID) {
 }
 
 //----- (00403A60) --------------------------------------------------------
-void Actor::AI_SpellAttack2(unsigned int uActorID, signed int edx0,
+void Actor::AI_SpellAttack2(unsigned int uActorID, Pid edx0,
                             AIDirection *pDir) {
     Actor *v3;           // ebx@1
     int16_t v4;          // esi@3
@@ -1325,7 +1325,7 @@ void Actor::AI_SpellAttack2(unsigned int uActorID, signed int edx0,
     AIDirection a3;      // [sp+Ch] [bp-48h]@9
     AIDirection v18;     // [sp+28h] [bp-2Ch]@9
     int v19;             // [sp+44h] [bp-10h]@6
-    signed int a2;       // [sp+48h] [bp-Ch]@1
+    Pid a2;       // [sp+48h] [bp-Ch]@1
     int v21;             // [sp+4Ch] [bp-8h]@3
     unsigned int pDira;  // [sp+5Ch] [bp+8h]@10
 
@@ -1387,7 +1387,7 @@ void Actor::AI_SpellAttack2(unsigned int uActorID, signed int edx0,
 }
 
 //----- (00403854) --------------------------------------------------------
-void Actor::AI_SpellAttack1(unsigned int uActorID, signed int sTargetPid,
+void Actor::AI_SpellAttack1(unsigned int uActorID, Pid sTargetPid,
                             AIDirection *pDir) {
     Actor *v3;           // ebx@1
     int16_t v4;          // esi@3
@@ -1463,7 +1463,7 @@ void Actor::AI_SpellAttack1(unsigned int uActorID, signed int sTargetPid,
 }
 
 //----- (0040368B) --------------------------------------------------------
-void Actor::AI_MissileAttack2(unsigned int uActorID, signed int sTargetPid,
+void Actor::AI_MissileAttack2(unsigned int uActorID, Pid sTargetPid,
                               AIDirection *pDir) {
     Actor *v3;           // ebx@1
     int16_t v4;          // esi@3
@@ -1528,7 +1528,7 @@ void Actor::AI_MissileAttack2(unsigned int uActorID, signed int sTargetPid,
 }
 
 //----- (00403476) --------------------------------------------------------
-void Actor::AI_MissileAttack1(unsigned int uActorID, signed int sTargetPid,
+void Actor::AI_MissileAttack1(unsigned int uActorID, Pid sTargetPid,
                               AIDirection *pDir) {
     Actor *v3;         // ebx@1
     int xpos;            // esi@3
@@ -1918,7 +1918,7 @@ void Actor::playSound(unsigned int uActorID, ActorSounds uSoundID) {
 }
 
 //----- (00402AD7) --------------------------------------------------------
-void Actor::AI_Pursue1(unsigned int uActorID, unsigned int a2, signed int arg0,
+void Actor::AI_Pursue1(unsigned int uActorID, Pid a2, signed int arg0,
                        signed int uActionLength, AIDirection *pDir) {
     Actor *v7;         // ebx@1
     unsigned int v8;   // ecx@1
@@ -2018,7 +2018,7 @@ void Actor::AI_Flee(unsigned int uActorID, signed int sTargetPid,
 }
 
 //----- (0040281C) --------------------------------------------------------
-void Actor::AI_Pursue2(unsigned int uActorID, unsigned int a2,
+void Actor::AI_Pursue2(unsigned int uActorID, Pid a2,
                        signed int uActionLength, AIDirection *pDir, int a5) {
     int v6;                // eax@1
     Actor *v7;             // ebx@1
@@ -2075,7 +2075,7 @@ void Actor::AI_Pursue2(unsigned int uActorID, unsigned int a2,
 }
 
 //----- (00402686) --------------------------------------------------------
-void Actor::AI_Pursue3(unsigned int uActorID, unsigned int a2,
+void Actor::AI_Pursue3(unsigned int uActorID, Pid a2,
                        signed int uActionLength, AIDirection *a4) {
     int v5;                // eax@1
     Actor *v6;             // ebx@1
@@ -2136,7 +2136,7 @@ void Actor::AI_Pursue3(unsigned int uActorID, unsigned int a2,
 }
 
 //----- (00401221) --------------------------------------------------------
-void Actor::_SelectTarget(unsigned int uActorID, int *OutTargetPID,
+void Actor::_SelectTarget(unsigned int uActorID, Pid *OutTargetPID,
                           bool can_target_party) {
     int v5;                     // ecx@1
     signed int v10;             // eax@13
@@ -2155,7 +2155,7 @@ void Actor::_SelectTarget(unsigned int uActorID, int *OutTargetPID,
     lowestRadius = UINT_MAX;
     v5 = 0;
     // TODO(pskelton): change to PID_INVALID and sort logic in calling funcs
-    *OutTargetPID = 0;
+    *OutTargetPID = Pid();
     closestId = 0;
     assert(uActorID < pActors.size());
     Actor *thisActor = &pActors[uActorID];
@@ -2586,7 +2586,7 @@ void Actor::UpdateActorAI() {
     ObjectType target_pid_type;     // [sp+70h] [bp-40h]@83
     AIDirection *pDir;       // [sp+7Ch] [bp-34h]@129
     int v81;                 // [sp+9Ch] [bp-14h]@100
-    signed int target_pid;   // [sp+ACh] [bp-4h]@83
+    Pid target_pid;   // [sp+ACh] [bp-4h]@83
     uint v38;
 
     // Build AI array
@@ -3040,7 +3040,7 @@ void Actor::InitializeActors() {
     if (pParty->isPartyGood()) good = true;
     if (pParty->isPartyEvil()) evil = true;
 
-    ai_near_actors_targets_pid.fill(0);
+    ai_near_actors_targets_pid.fill(Pid());
 
     for (uint i = 0; i < pActors.size(); ++i) {
         Actor *actor = &pActors[i];

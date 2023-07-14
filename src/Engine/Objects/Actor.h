@@ -87,16 +87,16 @@ class Actor {
         return attributes & ACTOR_NEARBY;
     }
 
-    static void _SelectTarget(unsigned int uActorID, int *OutTargetPID,
+    static void _SelectTarget(unsigned int uActorID, Pid *OutTargetPID,
                               bool can_target_party);
-    static void AI_Pursue3(unsigned int uActorID, unsigned int a2,
+    static void AI_Pursue3(unsigned int uActorID, Pid a2,
                            signed int uActionLength, struct AIDirection *a4);
-    static void AI_Pursue2(unsigned int uActorID, unsigned int a2,
+    static void AI_Pursue2(unsigned int uActorID, Pid a2,
                            signed int uActionLength, struct AIDirection *pDir,
                            int a5);
     static void AI_Flee(unsigned int uActorID, signed int edx0,
                         int uActionLength, struct AIDirection *a4);
-    static void AI_Pursue1(unsigned int uActorID, unsigned int a2,
+    static void AI_Pursue1(unsigned int uActorID, Pid a2,
                            signed int arg0, signed int uActionLength,
                            struct AIDirection *pDir);
     /**
@@ -112,15 +112,15 @@ class Actor {
                                                      signed int a2, int a3);
     static void AI_RandomMove(unsigned int uActor_id, unsigned int uTarget_id,
                               int radius, int uActionLength);
-    static void AI_MissileAttack1(unsigned int uActorID, signed int sTargetPid,
+    static void AI_MissileAttack1(unsigned int uActorID, Pid sTargetPid,
                                   struct AIDirection *pDir);
-    static void AI_MissileAttack2(unsigned int uActorID, signed int sTargetPid,
+    static void AI_MissileAttack2(unsigned int uActorID, Pid sTargetPid,
                                   struct AIDirection *pDir);
-    static void AI_SpellAttack1(unsigned int uActorID, signed int sTargetPid,
+    static void AI_SpellAttack1(unsigned int uActorID, Pid sTargetPid,
                                 struct AIDirection *pDir);
-    static void AI_SpellAttack2(unsigned int uActorID, signed int sTargetPid,
+    static void AI_SpellAttack2(unsigned int uActorID, Pid sTargetPid,
                                 struct AIDirection *pDir);
-    static void AI_MeleeAttack(unsigned int uActorID, signed int sTargetPid,
+    static void AI_MeleeAttack(unsigned int uActorID, Pid sTargetPid,
                                struct AIDirection *arg0);
     static void StandAwhile(unsigned int uActorID);
     static void AI_Stand(unsigned int uActorID, unsigned int object_to_face_pid,

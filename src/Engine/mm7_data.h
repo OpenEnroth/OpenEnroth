@@ -6,6 +6,7 @@
 #include <utility>
 
 #include "Engine/MM7.h"
+#include "Engine/Pid.h"
 #include "Engine/Objects/ItemEnums.h"
 #include "Engine/Objects/CharacterEnums.h"
 
@@ -62,7 +63,7 @@ extern IndexedArray<uint, CHARACTER_SKILL_FIRST, CHARACTER_SKILL_LAST> base_reco
 extern std::array<IndexedArray<ClassSkillAffinity, CHARACTER_SKILL_FIRST, CHARACTER_SKILL_LAST>, 9> pSkillAvailabilityPerClass;
 extern IndexedArray<IndexedArray<CharacterSkillMastery, CHARACTER_SKILL_FIRST, CHARACTER_SKILL_LAST>, PLAYER_CLASS_FIRST, PLAYER_CLASS_LAST> skillMaxMasteryPerClass;
 
-extern std::array<int, 500> ai_near_actors_targets_pid;
+extern std::array<Pid, 500> ai_near_actors_targets_pid;
 extern std::array<unsigned int, 500> ai_near_actors_ids;
 extern int ai_arrays_size;
 

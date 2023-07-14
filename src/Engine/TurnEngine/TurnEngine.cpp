@@ -647,7 +647,7 @@ void stru262_TurnBased::AI_Action_(int queue_index) {
     ABILITY_INDEX v14;                // eax@29
     AIDirection a3;         // [sp+Ch] [bp-44h]@10
     AIDirection v18;        // [sp+28h] [bp-28h]@10
-    signed int v22;         // [sp+58h] [bp+8h]@10
+    Pid v22;         // [sp+58h] [bp+8h]@10
 
     pQueue[queue_index].uActionLength = 0;
     if (PID_TYPE(pQueue[queue_index].uPackedID) == OBJECT_Actor) {
