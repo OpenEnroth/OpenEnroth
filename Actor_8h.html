@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;5e8adb8</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;a7dad34</span>
    </div>
   </td>
  </tr>
@@ -86,6 +86,7 @@ $(function() {
 <code>#include &quot;<a class="el" href="Items_8h.html">Engine/Objects/Items.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Monsters_8h.html">Engine/Objects/Monsters.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="CombinedSkillValue_8h.html">Engine/Objects/CombinedSkillValue.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="Pid_8h.html">Engine/Pid.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Vec_8h.html">Utility/Geometry/Vec.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="IndexedArray_8h.html">Utility/IndexedArray.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="ActorEnums_8h.html">ActorEnums.h</a>&quot;</code><br />
@@ -109,8 +110,8 @@ Functions</h2></td></tr>
 <tr class="separator:ac1de5d39efd4c35ab1d72516f79bb945"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a88921894f5038c49be5897f9d61ba47b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Actor_8h.html#a88921894f5038c49be5897f9d61ba47b">toggleActorGroupFlag</a> (unsigned int uGroupID, <a class="el" href="ActorEnums_8h.html#a0449589ea79a89a7e564d1cf1b0a9b5f">ActorAttribute</a> uFlag, bool bValue)</td></tr>
 <tr class="separator:a88921894f5038c49be5897f9d61ba47b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad98ef34ccd5beb3aa2c086853f73b9bc"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Actor_8h.html#ad98ef34ccd5beb3aa2c086853f73b9bc">Detect_Between_Objects</a> (unsigned int uObjID, unsigned int uObj2ID)</td></tr>
-<tr class="separator:ad98ef34ccd5beb3aa2c086853f73b9bc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0cbd5c9f5e2b9c934bac6d2e7ef3124f"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Actor_8h.html#a0cbd5c9f5e2b9c934bac6d2e7ef3124f">Detect_Between_Objects</a> (<a class="el" href="classPid.html">Pid</a> uObjID, <a class="el" href="classPid.html">Pid</a> uObj2ID)</td></tr>
+<tr class="separator:a0cbd5c9f5e2b9c934bac6d2e7ef3124f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aed3c0acf25d60543a83a32525ebc04bb"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Actor_8h.html#aed3c0acf25d60543a83a32525ebc04bb">Spawn_Light_Elemental</a> (int spell_power, <a class="el" href="CharacterEnums_8h.html#acabc944d4fe41d7186df3033b0607d2a">CharacterSkillMastery</a> caster_skill_mastery, int duration_game_seconds)</td></tr>
 <tr class="separator:aed3c0acf25d60543a83a32525ebc04bb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a85e1f950937d5adc6314fb345a17234f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Actor_8h.html#a85e1f950937d5adc6314fb345a17234f">SpawnEncounter</a> (struct <a class="el" href="structMapInfo.html">MapInfo</a> *pMapInfo, <a class="el" href="structSpawnPoint.html">SpawnPoint</a> *spawn, int a3, int a4, int a5)</td></tr>
@@ -119,8 +120,8 @@ Functions</h2></td></tr>
 <tr class="separator:a522877adf494c0d2e73b4c4c0f100028"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a56a1c5009cf33ef6363ecf94804686c4"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Actor_8h.html#a56a1c5009cf33ef6363ecf94804686c4">sub_43AE12</a> (signed int a1)</td></tr>
 <tr class="separator:a56a1c5009cf33ef6363ecf94804686c4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a812345669ace3abe38c75ec103db7ab5"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Actor_8h.html#a812345669ace3abe38c75ec103db7ab5">ItemDamageFromActor</a> (unsigned int uObjID, unsigned int uActorID, <a class="el" href="Vec_8h.html#adf6e1d7d066bb09da957cc89f2b3ceb2">Vec3i</a> *pVelocity)</td></tr>
-<tr class="separator:a812345669ace3abe38c75ec103db7ab5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae7a3499483c420189193183f9bb46a4a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Actor_8h.html#ae7a3499483c420189193183f9bb46a4a">ItemDamageFromActor</a> (<a class="el" href="classPid.html">Pid</a> uObjID, unsigned int uActorID, <a class="el" href="Vec_8h.html#adf6e1d7d066bb09da957cc89f2b3ceb2">Vec3i</a> *pVelocity)</td></tr>
+<tr class="separator:ae7a3499483c420189193183f9bb46a4a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a11f0e5830746921e41b31a47ea54fe69"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classActor.html">Actor</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Actor_8h.html#a11f0e5830746921e41b31a47ea54fe69">AllocateActor</a> (bool appendOnly)</td></tr>
 <tr class="separator:a11f0e5830746921e41b31a47ea54fe69"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
@@ -175,8 +176,8 @@ Variables</h2></td></tr>
 
 </div>
 </div>
-<a id="ad98ef34ccd5beb3aa2c086853f73b9bc" name="ad98ef34ccd5beb3aa2c086853f73b9bc"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ad98ef34ccd5beb3aa2c086853f73b9bc">&#9670;&#160;</a></span>Detect_Between_Objects()</h2>
+<a id="a0cbd5c9f5e2b9c934bac6d2e7ef3124f" name="a0cbd5c9f5e2b9c934bac6d2e7ef3124f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0cbd5c9f5e2b9c934bac6d2e7ef3124f">&#9670;&#160;</a></span>Detect_Between_Objects()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -184,13 +185,13 @@ Variables</h2></td></tr>
         <tr>
           <td class="memname">bool Detect_Between_Objects </td>
           <td>(</td>
-          <td class="paramtype">unsigned int&#160;</td>
+          <td class="paramtype"><a class="el" href="classPid.html">Pid</a>&#160;</td>
           <td class="paramname"><em>uObjID</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">unsigned int&#160;</td>
+          <td class="paramtype"><a class="el" href="classPid.html">Pid</a>&#160;</td>
           <td class="paramname"><em>uObj2ID</em>&#160;</td>
         </tr>
         <tr>
@@ -221,8 +222,8 @@ Variables</h2></td></tr>
 
 </div>
 </div>
-<a id="a812345669ace3abe38c75ec103db7ab5" name="a812345669ace3abe38c75ec103db7ab5"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a812345669ace3abe38c75ec103db7ab5">&#9670;&#160;</a></span>ItemDamageFromActor()</h2>
+<a id="ae7a3499483c420189193183f9bb46a4a" name="ae7a3499483c420189193183f9bb46a4a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae7a3499483c420189193183f9bb46a4a">&#9670;&#160;</a></span>ItemDamageFromActor()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -230,7 +231,7 @@ Variables</h2></td></tr>
         <tr>
           <td class="memname">void ItemDamageFromActor </td>
           <td>(</td>
-          <td class="paramtype">unsigned int&#160;</td>
+          <td class="paramtype"><a class="el" href="classPid.html">Pid</a>&#160;</td>
           <td class="paramname"><em>uObjID</em>, </td>
         </tr>
         <tr>

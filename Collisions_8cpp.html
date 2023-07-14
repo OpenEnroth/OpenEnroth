@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;5e8adb8</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;a7dad34</span>
    </div>
   </td>
  </tr>
@@ -104,10 +104,10 @@ Functions</h2></td></tr>
 <tr class="separator:a655ea37401ef9dfb782f732a63447450"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab13618a0d4aed0bbf49190322093c789"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Collisions_8cpp.html#ab13618a0d4aed0bbf49190322093c789">CollidePointWithFace</a> (<a class="el" href="structBLVFace.html">BLVFace</a> *face, const <a class="el" href="Vec_8h.html#a40b8356e33151c22cb4d1adaf2b762a8">Vec3f</a> &amp;pos, const <a class="el" href="Vec_8h.html#a40b8356e33151c22cb4d1adaf2b762a8">Vec3f</a> &amp;dir, float *out_move_distance, int model_idx)</td></tr>
 <tr class="separator:ab13618a0d4aed0bbf49190322093c789"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2701a97658403e7fdda9d074a1666926"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Collisions_8cpp.html#a2701a97658403e7fdda9d074a1666926">CollideBodyWithFace</a> (<a class="el" href="structBLVFace.html">BLVFace</a> *face, int face_pid, bool ignore_ethereal, int model_idx)</td></tr>
-<tr class="separator:a2701a97658403e7fdda9d074a1666926"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1622aa5d77381935f0769c419b443de8"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Collisions_8cpp.html#a1622aa5d77381935f0769c419b443de8">CollideWithCylinder</a> (const <a class="el" href="Vec_8h.html#a40b8356e33151c22cb4d1adaf2b762a8">Vec3f</a> &amp;center_lo, float radius, float height, int pid, bool jagged_top)</td></tr>
-<tr class="separator:a1622aa5d77381935f0769c419b443de8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a69e058fb1c000286fbbce64396f64eb8"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Collisions_8cpp.html#a69e058fb1c000286fbbce64396f64eb8">CollideBodyWithFace</a> (<a class="el" href="structBLVFace.html">BLVFace</a> *face, <a class="el" href="classPid.html">Pid</a> face_pid, bool ignore_ethereal, int model_idx)</td></tr>
+<tr class="separator:a69e058fb1c000286fbbce64396f64eb8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3602d16525b37128185de77fa91e574a"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Collisions_8cpp.html#a3602d16525b37128185de77fa91e574a">CollideWithCylinder</a> (const <a class="el" href="Vec_8h.html#a40b8356e33151c22cb4d1adaf2b762a8">Vec3f</a> &amp;center_lo, float radius, float height, <a class="el" href="classPid.html">Pid</a> pid, bool jagged_top)</td></tr>
+<tr class="separator:a3602d16525b37128185de77fa91e574a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a923f898f6deb9db4826f20993aa7bfd3"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Collisions_8cpp.html#a923f898f6deb9db4826f20993aa7bfd3">CollideWithDecoration</a> (int id)</td></tr>
 <tr class="separator:a923f898f6deb9db4826f20993aa7bfd3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7f30ed1b280bdd8ec00aa81b409e1c15"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Collisions_8cpp.html#a7f30ed1b280bdd8ec00aa81b409e1c15">CollideIndoorWithGeometry</a> (bool ignore_ethereal)</td></tr>
@@ -155,8 +155,8 @@ Variables</h2></td></tr>
 
 </div>
 </div>
-<a id="a2701a97658403e7fdda9d074a1666926" name="a2701a97658403e7fdda9d074a1666926"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a2701a97658403e7fdda9d074a1666926">&#9670;&#160;</a></span>CollideBodyWithFace()</h2>
+<a id="a69e058fb1c000286fbbce64396f64eb8" name="a69e058fb1c000286fbbce64396f64eb8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a69e058fb1c000286fbbce64396f64eb8">&#9670;&#160;</a></span>CollideBodyWithFace()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -173,7 +173,7 @@ Variables</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">int&#160;</td>
+          <td class="paramtype"><a class="el" href="classPid.html">Pid</a>&#160;</td>
           <td class="paramname"><em>face_pid</em>, </td>
         </tr>
         <tr>
@@ -204,7 +204,7 @@ Variables</h2></td></tr>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">face</td><td>Face to check. </td></tr>
-    <tr><td class="paramname">face_pid</td><td>Pid of the provided face. </td></tr>
+    <tr><td class="paramname">face_pid</td><td><a class="el" href="classPid.html">Pid</a> of the provided face. </td></tr>
     <tr><td class="paramname">ignore_ethereal</td><td>Whether ethereal faces should be ignored by this function. </td></tr>
     <tr><td class="paramname">model_idx</td><td>Model index, or <code>MODEL_INDOOR</code>. </td></tr>
   </table>
@@ -522,8 +522,8 @@ Variables</h2></td></tr>
 
 </div>
 </div>
-<a id="a1622aa5d77381935f0769c419b443de8" name="a1622aa5d77381935f0769c419b443de8"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a1622aa5d77381935f0769c419b443de8">&#9670;&#160;</a></span>CollideWithCylinder()</h2>
+<a id="a3602d16525b37128185de77fa91e574a" name="a3602d16525b37128185de77fa91e574a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3602d16525b37128185de77fa91e574a">&#9670;&#160;</a></span>CollideWithCylinder()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -552,7 +552,7 @@ Variables</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">int&#160;</td>
+          <td class="paramtype"><a class="el" href="classPid.html">Pid</a>&#160;</td>
           <td class="paramname"><em>pid</em>, </td>
         </tr>
         <tr>
@@ -579,7 +579,7 @@ Variables</h2></td></tr>
     <tr><td class="paramname">center_lo</td><td>Center of the cylinder's base. </td></tr>
     <tr><td class="paramname">radius</td><td>Cylinder radius. </td></tr>
     <tr><td class="paramname">height</td><td>Cylinder height. </td></tr>
-    <tr><td class="paramname">pid</td><td>Pid of the object represented by the cylinder. </td></tr>
+    <tr><td class="paramname">pid</td><td><a class="el" href="classPid.html">Pid</a> of the object represented by the cylinder. </td></tr>
     <tr><td class="paramname">jagged_top</td><td>See <code>CollideWithParty</code>. </td></tr>
   </table>
   </dd>

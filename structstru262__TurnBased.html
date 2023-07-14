@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;5e8adb8</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;a7dad34</span>
    </div>
   </td>
  </tr>
@@ -128,8 +128,6 @@ Public Attributes</h2></td></tr>
 <tr class="separator:a387677ebd13143c117de530fd4c32b1f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a71a8fd9a432e5770f2f8a8797c4cfa2f"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structstru262__TurnBased.html#a71a8fd9a432e5770f2f8a8797c4cfa2f">ai_turn_timer</a></td></tr>
 <tr class="separator:a71a8fd9a432e5770f2f8a8797c4cfa2f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:add4fc39f752bfb4b862425f4589ec07d"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structstru262__TurnBased.html#add4fc39f752bfb4b862425f4589ec07d">uActorQueueSize</a></td></tr>
-<tr class="separator:add4fc39f752bfb4b862425f4589ec07d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3e761a764c584f7b17a9c4aac0a06f02"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structstru262__TurnBased.html#a3e761a764c584f7b17a9c4aac0a06f02">turn_initiative</a></td></tr>
 <tr class="separator:a3e761a764c584f7b17a9c4aac0a06f02"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af9ab044f080ddd5fa1eee00365fea6b6"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structstru262__TurnBased.html#af9ab044f080ddd5fa1eee00365fea6b6">uActionPointsLeft</a></td></tr>
@@ -138,8 +136,8 @@ Public Attributes</h2></td></tr>
 <tr class="separator:ad53b065f1dda74475953e1a7986e831e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4c56e50cbe09c6ef8fa53eff646f2bbb"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structstru262__TurnBased.html#a4c56e50cbe09c6ef8fa53eff646f2bbb">pending_actions</a></td></tr>
 <tr class="separator:a4c56e50cbe09c6ef8fa53eff646f2bbb"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:adaea0957ff131c4cb392e7b5ea77f59e"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structTurnBased__QueueElem.html">TurnBased_QueueElem</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structstru262__TurnBased.html#adaea0957ff131c4cb392e7b5ea77f59e">pQueue</a> [530]</td></tr>
-<tr class="separator:adaea0957ff131c4cb392e7b5ea77f59e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad401f4ac0ae14b577f6f94bf012d2d95"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="structTurnBased__QueueElem.html">TurnBased_QueueElem</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structstru262__TurnBased.html#ad401f4ac0ae14b577f6f94bf012d2d95">pQueue</a></td></tr>
+<tr class="separator:ad401f4ac0ae14b577f6f94bf012d2d95"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="ae37fcddcf189199c80c2fcd5de719fc2" name="ae37fcddcf189199c80c2fcd5de719fc2"></a>
@@ -522,14 +520,14 @@ Public Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="adaea0957ff131c4cb392e7b5ea77f59e" name="adaea0957ff131c4cb392e7b5ea77f59e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#adaea0957ff131c4cb392e7b5ea77f59e">&#9670;&#160;</a></span>pQueue</h2>
+<a id="ad401f4ac0ae14b577f6f94bf012d2d95" name="ad401f4ac0ae14b577f6f94bf012d2d95"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad401f4ac0ae14b577f6f94bf012d2d95">&#9670;&#160;</a></span>pQueue</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="structTurnBased__QueueElem.html">TurnBased_QueueElem</a> stru262_TurnBased::pQueue[530]</td>
+          <td class="memname">std::vector&lt;<a class="el" href="structTurnBased__QueueElem.html">TurnBased_QueueElem</a>&gt; stru262_TurnBased::pQueue</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -586,20 +584,6 @@ Public Attributes</h2></td></tr>
       <table class="memname">
         <tr>
           <td class="memname">int stru262_TurnBased::uActionPointsLeft</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="add4fc39f752bfb4b862425f4589ec07d" name="add4fc39f752bfb4b862425f4589ec07d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#add4fc39f752bfb4b862425f4589ec07d">&#9670;&#160;</a></span>uActorQueueSize</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">int stru262_TurnBased::uActorQueueSize</td>
         </tr>
       </table>
 </div><div class="memdoc">

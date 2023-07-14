@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;5e8adb8</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;a7dad34</span>
    </div>
   </td>
  </tr>
@@ -74,7 +74,6 @@ $(function() {
 </div><!-- top -->
 <div class="header">
   <div class="summary">
-<a href="#define-members">Macros</a> &#124;
 <a href="#typedef-members">Typedefs</a> &#124;
 <a href="#enum-members">Enumerations</a>  </div>
   <div class="headertitle"><div class="title">MM7.h File Reference</div></div>
@@ -82,17 +81,6 @@ $(function() {
 <div class="contents">
 <div class="textblock"><code>#include &lt;cstdint&gt;</code><br />
 </div><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="define-members" name="define-members"></a>
-Macros</h2></td></tr>
-<tr class="memitem:a6fa21b10ef8fe82bdc1df5e108443326"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="MM7_8h.html#a6fa21b10ef8fe82bdc1df5e108443326">PID</a>(type,  id)&#160;&#160;&#160;(uint16_t)((((8 * (id))) | (<a class="el" href="namespacestd.html#a3a31c7a5a45f5c168f309a3066d4d6ae">std::to_underlying</a>(type))) &amp; 0xFFFF)</td></tr>
-<tr class="separator:a6fa21b10ef8fe82bdc1df5e108443326"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac4903b6581bb3f493187d6f1ab22b067"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="MM7_8h.html#ac4903b6581bb3f493187d6f1ab22b067">PID_TYPE</a>(pid)&#160;&#160;&#160;static_cast&lt;<a class="el" href="ActorEnums_8h.html#a842c5e2e69277690b064bf363c017980">ObjectType</a>&gt;((pid)&amp;7)</td></tr>
-<tr class="separator:ac4903b6581bb3f493187d6f1ab22b067"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a68568b83affb311e29e223a91832ccf3"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="MM7_8h.html#a68568b83affb311e29e223a91832ccf3">PID_ID</a>(pid)&#160;&#160;&#160;(uint32_t)(((pid)&amp;0xFFFF) &gt;&gt; 3)</td></tr>
-<tr class="separator:a68568b83affb311e29e223a91832ccf3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a51fcc1ce2e7a0c1f057fc1e2d54b5e2d"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="MM7_8h.html#a51fcc1ce2e7a0c1f057fc1e2d54b5e2d">PID_INVALID</a>&#160;&#160;&#160;(uint16_t)(-1)</td></tr>
-<tr class="separator:a51fcc1ce2e7a0c1f057fc1e2d54b5e2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="typedef-members" name="typedef-members"></a>
 Typedefs</h2></td></tr>
 <tr class="memitem:a91ad9478d81a7aaf2593e8d9c3d06a14"><td class="memItemLeft" align="right" valign="top">typedef unsigned int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="MM7_8h.html#a91ad9478d81a7aaf2593e8d9c3d06a14">uint</a></td></tr>
@@ -112,85 +100,6 @@ Enumerations</h2></td></tr>
  }</td></tr>
 <tr class="separator:ad2af16bf27c1b83797f1c32686caf1a3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Macro Definition Documentation</h2>
-<a id="a6fa21b10ef8fe82bdc1df5e108443326" name="a6fa21b10ef8fe82bdc1df5e108443326"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a6fa21b10ef8fe82bdc1df5e108443326">&#9670;&#160;</a></span>PID</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define PID</td>
-          <td>(</td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname">type, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname">id&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td>&#160;&#160;&#160;(uint16_t)((((8 * (id))) | (<a class="el" href="namespacestd.html#a3a31c7a5a45f5c168f309a3066d4d6ae">std::to_underlying</a>(type))) &amp; 0xFFFF)</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a68568b83affb311e29e223a91832ccf3" name="a68568b83affb311e29e223a91832ccf3"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a68568b83affb311e29e223a91832ccf3">&#9670;&#160;</a></span>PID_ID</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define PID_ID</td>
-          <td>(</td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname">pid</td><td>)</td>
-          <td>&#160;&#160;&#160;(uint32_t)(((pid)&amp;0xFFFF) &gt;&gt; 3)</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a51fcc1ce2e7a0c1f057fc1e2d54b5e2d" name="a51fcc1ce2e7a0c1f057fc1e2d54b5e2d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a51fcc1ce2e7a0c1f057fc1e2d54b5e2d">&#9670;&#160;</a></span>PID_INVALID</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define PID_INVALID&#160;&#160;&#160;(uint16_t)(-1)</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="ac4903b6581bb3f493187d6f1ab22b067" name="ac4903b6581bb3f493187d6f1ab22b067"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ac4903b6581bb3f493187d6f1ab22b067">&#9670;&#160;</a></span>PID_TYPE</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define PID_TYPE</td>
-          <td>(</td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname">pid</td><td>)</td>
-          <td>&#160;&#160;&#160;static_cast&lt;<a class="el" href="ActorEnums_8h.html#a842c5e2e69277690b064bf363c017980">ObjectType</a>&gt;((pid)&amp;7)</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
 <h2 class="groupheader">Typedef Documentation</h2>
 <a id="a65f85814a8290f9797005d3b28e7e5fc" name="a65f85814a8290f9797005d3b28e7e5fc"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a65f85814a8290f9797005d3b28e7e5fc">&#9670;&#160;</a></span>uchar</h2>
