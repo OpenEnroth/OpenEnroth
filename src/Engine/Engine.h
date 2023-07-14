@@ -38,7 +38,7 @@ class GameResourceManager;
 void Engine_DeinitializeAndTerminate(int exitCode);
 
 /*  320 */
-enum class GAME_STATE {
+enum class GameState {
     GAME_STATE_PLAYING = 0,
     GAME_FINISHED = 1,
     GAME_STATE_CHANGE_LOCATION = 2,
@@ -51,9 +51,9 @@ enum class GAME_STATE {
     GAME_STATE_FINAL_WINDOW = 9,
     GAME_STATE_A = 10
 };
-using enum GAME_STATE;
+using enum GameState;
 
-extern GAME_STATE uGameState;
+extern GameState uGameState;
 
 struct Game__StationaryLight {
     Vec3f vPosition;

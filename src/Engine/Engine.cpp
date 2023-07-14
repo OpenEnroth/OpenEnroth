@@ -108,7 +108,7 @@ torchB.icon->texture->GetWidth()) / 640.0f, 48 / 480.0f, icon->texture);
 */
 
 Engine *engine;
-GAME_STATE uGameState;
+GameState uGameState;
 
 void Engine_DeinitializeAndTerminate(int exitCode) {
     engine->ResetCursor_Palettes_LODs_Level_Audio_SFT_Windows();
