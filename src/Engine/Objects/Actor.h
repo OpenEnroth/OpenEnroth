@@ -262,7 +262,7 @@ void SpawnEncounter(struct MapInfo *pMapInfo, SpawnPoint *spawn, int a3, int a4,
  */
 void evaluateAoeDamage();
 double sub_43AE12(signed int a1);
-void ItemDamageFromActor(unsigned int uObjID, unsigned int uActorID,
+void ItemDamageFromActor(Pid uObjID, unsigned int uActorID,
                          Vec3i *pVelocity);
 
 // TODO: in original binary almost all calls are with appendOnly=true, only Spawn_Light_Elemental uses

@@ -2674,7 +2674,7 @@ void Actor::UpdateActorAI() {
     for (int v78 = 0; v78 < ai_arrays_size; ++v78) {
         uint actor_id = ai_near_actors_ids[v78];
         assert(actor_id < pActors.size());
-        int actorPid = PID(OBJECT_Actor, actor_id);
+        Pid actorPid = PID(OBJECT_Actor, actor_id);
 
         Actor *pActor = &pActors[actor_id];
 
@@ -4838,7 +4838,7 @@ double sub_43AE12(signed int a1) {
 }
 
 //----- (0043B057) --------------------------------------------------------
-void ItemDamageFromActor(unsigned int uObjID, unsigned int uActorID,
+void ItemDamageFromActor(Pid uObjID, unsigned int uActorID,
                          Vec3i *pVelocity) {
     int v6;      // eax@4
     int damage;  // edi@4

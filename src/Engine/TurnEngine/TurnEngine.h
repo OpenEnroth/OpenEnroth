@@ -2,6 +2,8 @@
 
 #include <vector>
 
+#include "Engine/Pid.h"
+
 #include "Utility/Flags.h"
 
 enum class TurnEngineFlag {
@@ -33,12 +35,12 @@ using enum TURN_ENGINE_TURN_STAGE;
 
 struct TurnBased_QueueElem {
     inline TurnBased_QueueElem() {
-        uPackedID = 0;
+        uPackedID = Pid();
         actor_initiative = 0;
         uActionLength = 0;
         AI_action_type = TE_AI_STAND;
     }
-    int uPackedID;
+    Pid uPackedID;
     int actor_initiative;  // act first who have less
     int uActionLength;
     TURN_ENGINE_AI_ACTION AI_action_type;
