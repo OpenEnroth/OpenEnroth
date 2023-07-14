@@ -6,11 +6,11 @@
 
 #include "Library/Image/Palette.h"
 
-class LODFile_IconsBitmaps;
+class LodTextureCache;
 
 class PaletteManager {
  public:
-    void load(LODFile_IconsBitmaps *lod);
+    void load(LodTextureCache *lod);
 
     /**
      * @param paletteId                 Palette identifier, a number in [0, 999].

@@ -28,6 +28,8 @@
 #include "Engine/Graphics/PortalFunctions.h"
 #include "Engine/Graphics/Polygon.h"
 #include "Engine/LOD.h"
+#include "Engine/LodTextureCache.h"
+#include "Engine/LodSpriteCache.h"
 #include "Engine/Localization.h"
 #include "Engine/Objects/Actor.h"
 #include "Engine/Objects/Chest.h"
@@ -795,19 +797,19 @@ bool MM7_LoadLods() {
     engine->_gameResourceManager = std::make_unique<GameResourceManager>();
     engine->_gameResourceManager->openGameResources();
 
-    pIcons_LOD = new LODFile_IconsBitmaps;
+    pIcons_LOD = new LodTextureCache;
     if (!pIcons_LOD->open(makeDataPath("data", "icons.lod"), "icons")) {
         Error(localization->GetString(LSTR_PLEASE_REINSTALL), localization->GetString(LSTR_REINSTALL_NECESSARY));
         return false;
     }
 
-    pBitmaps_LOD = new LODFile_IconsBitmaps;
+    pBitmaps_LOD = new LodTextureCache;
     if (!pBitmaps_LOD->open(makeDataPath("data", "bitmaps.lod"), "bitmaps")) {
         Error(localization->GetString(LSTR_PLEASE_REINSTALL), localization->GetString(LSTR_REINSTALL_NECESSARY));
         return false;
     }
 
-    pSprites_LOD = new LODFile_Sprites;
+    pSprites_LOD = new LodSpriteCache;
     if (!pSprites_LOD->open(makeDataPath("data", "sprites.lod"), "sprites08")) {
         Error(localization->GetString(LSTR_PLEASE_REINSTALL), localization->GetString(LSTR_REINSTALL_NECESSARY));
         return false;
