@@ -80,7 +80,7 @@ var searchData=
   ['bitmap_77',['bitmap',['../structLODSprite.html#a30ca2eb644893e6b15fdd0116c86214a',1,'LODSprite']]],
   ['bitmapid_78',['bitmapId',['../structBLVFace__MM7.html#a1b53aecf5b50100c33c273d7d8cbc94a',1,'BLVFace_MM7::bitmapId()'],['../structTileDesc__MM7.html#a4870e85c37c6c76464ab5a34d1aaa035',1,'TileDesc_MM7::bitmapId()']]],
   ['bitmaps_79',['bitmaps',['../classAssetsManager.html#aee22e571e910db19832f9c88011b7a57',1,'AssetsManager']]],
-  ['bitmaps_5flod_5floader_80',['Bitmaps_LOD_Loader',['../classBitmaps__LOD__Loader.html',1,'Bitmaps_LOD_Loader'],['../classBitmaps__LOD__Loader.html#aacd84c0d4a2c1f8e8998851e2dd7947c',1,'Bitmaps_LOD_Loader::Bitmaps_LOD_Loader()']]],
+  ['bitmaps_5flod_5floader_80',['Bitmaps_LOD_Loader',['../classBitmaps__LOD__Loader.html',1,'Bitmaps_LOD_Loader'],['../classBitmaps__LOD__Loader.html#a81e0221c4286a8520c2347b7cd77f280',1,'Bitmaps_LOD_Loader::Bitmaps_LOD_Loader()']]],
   ['black_81',['Black',['../classColorTable.html#accc8b6035a84b1308261bcde227036ff',1,'ColorTable']]],
   ['blend_82',['blend',['../structbillbverts.html#af93be8514de386ad2e54a1cb1360dc5d',1,'billbverts']]],
   ['blendcolors_83',['BlendColors',['../RenderBase_8cpp.html#a3b6aa605fa2454b6e22807d58cf0c494',1,'RenderBase.cpp']]],

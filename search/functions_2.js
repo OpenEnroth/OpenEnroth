@@ -24,7 +24,7 @@ var searchData=
   ['billboard_5fprobablyaddtolistandsortbyzorder_21',['Billboard_ProbablyAddToListAndSortByZOrder',['../classRenderBase.html#a18f94bfc431e24e140d93e7521bd270a',1,'RenderBase']]],
   ['billboardspherespellfx_22',['BillboardSphereSpellFX',['../classRenderBase.html#a42333919c0855de6ff8313ffd2cb18a7',1,'RenderBase::BillboardSphereSpellFX()'],['../classIRender.html#a3775b4725352a7879f7e77e317bd535c',1,'IRender::BillboardSphereSpellFX()']]],
   ['bind_23',['bind',['../classSdlOpenGLContext.html#a827bc1dc8610dba418ec463fbc737ee9',1,'SdlOpenGLContext::bind()'],['../classProxyOpenGLContext.html#aeed052f589e1b39bbb002113be03cfdd',1,'ProxyOpenGLContext::bind()'],['../classPlatformOpenGLContext.html#adc75ee2e5b6736369658848bb170f830',1,'PlatformOpenGLContext::bind()']]],
-  ['bitmaps_5flod_5floader_24',['Bitmaps_LOD_Loader',['../classBitmaps__LOD__Loader.html#aacd84c0d4a2c1f8e8998851e2dd7947c',1,'Bitmaps_LOD_Loader']]],
+  ['bitmaps_5flod_5floader_24',['Bitmaps_LOD_Loader',['../classBitmaps__LOD__Loader.html#a81e0221c4286a8520c2347b7cd77f280',1,'Bitmaps_LOD_Loader']]],
   ['blendcolors_25',['BlendColors',['../RenderBase_8cpp.html#a3b6aa605fa2454b6e22807d58cf0c494',1,'RenderBase.cpp']]],
   ['blendtextures_26',['BlendTextures',['../classRenderOpenGL.html#ab6273b2f9d3b35dd6876cdd03f8f03b1',1,'RenderOpenGL::BlendTextures()'],['../classIRender.html#a0938c52ff291e7f6c60b9eaabdd0428d',1,'IRender::BlendTextures()']]],
   ['blob_27',['Blob',['../classBlob.html#ac6aa6cc91070d2b633247f2db4a75981',1,'Blob::Blob(const Blob &amp;)=delete'],['../classBlob.html#a6a0d29e3183e1458d1b9e6a5ca584826',1,'Blob::Blob()'],['../classBlob.html#ad22686b374be22a9e5651c726fc683c9',1,'Blob::Blob(Blob &amp;&amp;other)']]],

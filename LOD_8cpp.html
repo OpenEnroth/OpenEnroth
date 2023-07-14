@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;2d8a339</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;80ecd5f</span>
    </div>
   </td>
  </tr>
@@ -84,23 +84,17 @@ $(function() {
 <code>#include &lt;filesystem&gt;</code><br />
 <code>#include &lt;memory&gt;</code><br />
 <code>#include &quot;<a class="el" href="Engine_8h.html">Engine/Engine.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="AssetsManager_8h.html">Engine/AssetsManager.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="EngineIocContainer_8h.html">Engine/EngineIocContainer.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="Sprites_8h.html">Engine/Graphics/Sprites.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="Engine_2Graphics_2Image_8h.html">Engine/Graphics/Image.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="Texture__MM7_8h.html">Engine/Graphics/Texture_MM7.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Compression_8h.html">Library/Compression/Compression.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Logger_8h.html">Library/Logger/Logger.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="LodReader_8h.html">Library/Lod/LodReader.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="FreeDeleter_8h.html">Utility/Memory/FreeDeleter.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="BlobInputStream_8h.html">Utility/Streams/BlobInputStream.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="String_8h.html">Utility/String.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="DataPath_8h.html">Utility/DataPath.h</a>&quot;</code><br />
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structFileCloser.html">FileCloser</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structLODSpriteLine.html">LODSpriteLine</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
@@ -110,24 +104,6 @@ Functions</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="var-members" name="var-members"></a>
 Variables</h2></td></tr>
-<tr class="memitem:a69a9d0df11a07a79c1ecd460419cfcce"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classLODFile__IconsBitmaps.html">LODFile_IconsBitmaps</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="LOD_8cpp.html#a69a9d0df11a07a79c1ecd460419cfcce">pIcons_LOD</a> = nullptr</td></tr>
-<tr class="separator:a69a9d0df11a07a79c1ecd460419cfcce"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afac4ba24476c632e2a452eaab3439550"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classLODFile__IconsBitmaps.html">LODFile_IconsBitmaps</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="LOD_8cpp.html#afac4ba24476c632e2a452eaab3439550">pIcons_LOD_mm6</a> = nullptr</td></tr>
-<tr class="separator:afac4ba24476c632e2a452eaab3439550"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab53efa2baacbef257db3bd287ce711b8"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classLODFile__IconsBitmaps.html">LODFile_IconsBitmaps</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="LOD_8cpp.html#ab53efa2baacbef257db3bd287ce711b8">pIcons_LOD_mm8</a> = nullptr</td></tr>
-<tr class="separator:ab53efa2baacbef257db3bd287ce711b8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a35656858648d76649773ca0750c63b04"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classLODFile__IconsBitmaps.html">LODFile_IconsBitmaps</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="LOD_8cpp.html#a35656858648d76649773ca0750c63b04">pBitmaps_LOD</a> = nullptr</td></tr>
-<tr class="separator:a35656858648d76649773ca0750c63b04"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a894b58714517c46b214d4b948a07d10f"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classLODFile__IconsBitmaps.html">LODFile_IconsBitmaps</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="LOD_8cpp.html#a894b58714517c46b214d4b948a07d10f">pBitmaps_LOD_mm6</a> = nullptr</td></tr>
-<tr class="separator:a894b58714517c46b214d4b948a07d10f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a00006d21981954ed6eb9dc215311a9f4"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classLODFile__IconsBitmaps.html">LODFile_IconsBitmaps</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="LOD_8cpp.html#a00006d21981954ed6eb9dc215311a9f4">pBitmaps_LOD_mm8</a> = nullptr</td></tr>
-<tr class="separator:a00006d21981954ed6eb9dc215311a9f4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a620d8339d97670d600bd1bc9330b559c"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classLODFile__Sprites.html">LODFile_Sprites</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="LOD_8cpp.html#a620d8339d97670d600bd1bc9330b559c">pSprites_LOD</a> = nullptr</td></tr>
-<tr class="separator:a620d8339d97670d600bd1bc9330b559c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3e10725e973e2619743db9acd84c7556"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classLODFile__Sprites.html">LODFile_Sprites</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="LOD_8cpp.html#a3e10725e973e2619743db9acd84c7556">pSprites_LOD_mm6</a> = nullptr</td></tr>
-<tr class="separator:a3e10725e973e2619743db9acd84c7556"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac5f9511afbcbfb324aaeb8ecc66f45b5"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classLODFile__Sprites.html">LODFile_Sprites</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="LOD_8cpp.html#ac5f9511afbcbfb324aaeb8ecc66f45b5">pSprites_LOD_mm8</a> = nullptr</td></tr>
-<tr class="separator:ac5f9511afbcbfb324aaeb8ecc66f45b5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6e5fd2182db76c3430f30c9f05fa1b79"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classLOD_1_1WriteableFile.html">LOD::WriteableFile</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="LOD_8cpp.html#a6e5fd2182db76c3430f30c9f05fa1b79">pSave_LOD</a> = nullptr</td></tr>
 <tr class="separator:a6e5fd2182db76c3430f30c9f05fa1b79"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a137bcff77c678b90cc1007a592cbb644"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classLOD_1_1File.html">LOD::File</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="LOD_8cpp.html#a137bcff77c678b90cc1007a592cbb644">pGames_LOD</a> = nullptr</td></tr>
@@ -152,48 +128,6 @@ Variables</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Variable Documentation</h2>
-<a id="a35656858648d76649773ca0750c63b04" name="a35656858648d76649773ca0750c63b04"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a35656858648d76649773ca0750c63b04">&#9670;&#160;</a></span>pBitmaps_LOD</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="classLODFile__IconsBitmaps.html">LODFile_IconsBitmaps</a>* pBitmaps_LOD = nullptr</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a894b58714517c46b214d4b948a07d10f" name="a894b58714517c46b214d4b948a07d10f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a894b58714517c46b214d4b948a07d10f">&#9670;&#160;</a></span>pBitmaps_LOD_mm6</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="classLODFile__IconsBitmaps.html">LODFile_IconsBitmaps</a>* pBitmaps_LOD_mm6 = nullptr</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a00006d21981954ed6eb9dc215311a9f4" name="a00006d21981954ed6eb9dc215311a9f4"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a00006d21981954ed6eb9dc215311a9f4">&#9670;&#160;</a></span>pBitmaps_LOD_mm8</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="classLODFile__IconsBitmaps.html">LODFile_IconsBitmaps</a>* pBitmaps_LOD_mm8 = nullptr</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
 <a id="a137bcff77c678b90cc1007a592cbb644" name="a137bcff77c678b90cc1007a592cbb644"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a137bcff77c678b90cc1007a592cbb644">&#9670;&#160;</a></span>pGames_LOD</h2>
 
@@ -208,48 +142,6 @@ Variables</h2></td></tr>
 
 </div>
 </div>
-<a id="a69a9d0df11a07a79c1ecd460419cfcce" name="a69a9d0df11a07a79c1ecd460419cfcce"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a69a9d0df11a07a79c1ecd460419cfcce">&#9670;&#160;</a></span>pIcons_LOD</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="classLODFile__IconsBitmaps.html">LODFile_IconsBitmaps</a>* pIcons_LOD = nullptr</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="afac4ba24476c632e2a452eaab3439550" name="afac4ba24476c632e2a452eaab3439550"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#afac4ba24476c632e2a452eaab3439550">&#9670;&#160;</a></span>pIcons_LOD_mm6</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="classLODFile__IconsBitmaps.html">LODFile_IconsBitmaps</a>* pIcons_LOD_mm6 = nullptr</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="ab53efa2baacbef257db3bd287ce711b8" name="ab53efa2baacbef257db3bd287ce711b8"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab53efa2baacbef257db3bd287ce711b8">&#9670;&#160;</a></span>pIcons_LOD_mm8</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="classLODFile__IconsBitmaps.html">LODFile_IconsBitmaps</a>* pIcons_LOD_mm8 = nullptr</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
 <a id="a6e5fd2182db76c3430f30c9f05fa1b79" name="a6e5fd2182db76c3430f30c9f05fa1b79"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a6e5fd2182db76c3430f30c9f05fa1b79">&#9670;&#160;</a></span>pSave_LOD</h2>
 
@@ -258,48 +150,6 @@ Variables</h2></td></tr>
       <table class="memname">
         <tr>
           <td class="memname"><a class="el" href="classLOD_1_1WriteableFile.html">LOD::WriteableFile</a>* pSave_LOD = nullptr</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a620d8339d97670d600bd1bc9330b559c" name="a620d8339d97670d600bd1bc9330b559c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a620d8339d97670d600bd1bc9330b559c">&#9670;&#160;</a></span>pSprites_LOD</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="classLODFile__Sprites.html">LODFile_Sprites</a>* pSprites_LOD = nullptr</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a3e10725e973e2619743db9acd84c7556" name="a3e10725e973e2619743db9acd84c7556"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a3e10725e973e2619743db9acd84c7556">&#9670;&#160;</a></span>pSprites_LOD_mm6</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="classLODFile__Sprites.html">LODFile_Sprites</a>* pSprites_LOD_mm6 = nullptr</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="ac5f9511afbcbfb324aaeb8ecc66f45b5" name="ac5f9511afbcbfb324aaeb8ecc66f45b5"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ac5f9511afbcbfb324aaeb8ecc66f45b5">&#9670;&#160;</a></span>pSprites_LOD_mm8</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="classLODFile__Sprites.html">LODFile_Sprites</a>* pSprites_LOD_mm8 = nullptr</td>
         </tr>
       </table>
 </div><div class="memdoc">
