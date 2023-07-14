@@ -1541,6 +1541,13 @@ GAME_TEST(Issues, Issue1038) {
                                                {CONDITION_INSANE, CONDITION_INSANE, CONDITION_SLEEP, CONDITION_UNCONSCIOUS}));
 }
 
+GAME_TEST(Issues, Issue1040) {
+    // Crash when talking to 4-th dark advisor
+    auto screenTape = makeScreenTape(test);
+    test->playTraceFromTestData("issue_1040.mm7", "issue_1040.json");
+    EXPECT_EQ(screenTape, tape(SCREEN_GAME, SCREEN_HOUSE, SCREEN_GAME));
+}
+
 GAME_TEST(Issues, Issue1051) {
     // Collision code asserts when fighting Magogs in Nighon Tunnels.
     // Note that the bug only reproduces on high fps, the trace is shot at 15ms per frame.

@@ -26,7 +26,6 @@ GUICredits::GUICredits() :
     std::string text{ engine->_gameResourceManager->getEventsFile("credits.txt").string_view() };
 
     GUIWindow credit_window;
-    credit_window.Init();
     credit_window.uFrameWidth = 250;
     credit_window.uFrameHeight = 440;
     credit_window.uFrameX = 389;
@@ -52,7 +51,6 @@ GUICredits::~GUICredits() {
 
 void GUICredits::Update() {
     GUIWindow credit_window;
-    credit_window.Init();
     credit_window.uFrameWidth = 250;
     credit_window.uFrameHeight = 440;
     credit_window.uFrameX = 389;

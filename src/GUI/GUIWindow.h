@@ -80,24 +80,23 @@ class GUIWindow {
     void DeleteButtons();
 
     static void InitializeGUI();
-    void Init();
 
-    int uFrameX;
-    int uFrameY;
-    int uFrameWidth;
-    int uFrameHeight;
-    int uFrameZ;
-    int uFrameW;
-    WindowType eWindowType;
+    int uFrameX = 0;
+    int uFrameY = 0;
+    int uFrameWidth = 0;
+    int uFrameHeight = 0;
+    int uFrameZ = 0;
+    int uFrameW = 0;
+    WindowType eWindowType = WINDOW_null;
     WindowData wData; // Window-specific
-    int field_24;
-    int pNumPresenceButton;
-    int pCurrentPosActiveItem;
-    int field_30;
-    int field_34;
-    int pStartingPosActiveItem;
-    WindowInputStatus keyboard_input_status;
-    bool receives_keyboard_input;
+    int field_24 = 0;
+    int pNumPresenceButton = 0;
+    int pCurrentPosActiveItem = 0;
+    int field_30 = 0;
+    int field_34 = 0;
+    int pStartingPosActiveItem = 0;
+    WindowInputStatus keyboard_input_status = WINDOW_INPUT_NONE;
+    bool receives_keyboard_input = false;
     std::string sHint;
     std::vector<GUIButton*> vButtons;
 

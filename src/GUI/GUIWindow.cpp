@@ -147,27 +147,6 @@ void GUIWindow::_41D08F_set_keyboard_control_group(int num_buttons, int a3,
     }
 }
 
-void GUIWindow::Init() {
-    this->uFrameX = 0;
-    this->uFrameY = 0;
-    this->uFrameWidth = 0;
-    this->uFrameHeight = 0;
-    this->uFrameZ = 0;
-    this->uFrameW = 0;
-    this->eWindowType = WINDOW_null;
-    this->field_24 = 0;
-    this->pNumPresenceButton = 0;
-    this->pCurrentPosActiveItem = 0;
-    this->field_30 = 0;
-    this->field_34 = 0;
-    this->pStartingPosActiveItem = 0;
-    this->keyboard_input_status = WINDOW_INPUT_NONE;
-    this->receives_keyboard_input = false;
-    this->sHint.clear();
-
-    DeleteButtons();
-}
-
 void GUIWindow::Release() {
     if (!this || this->eWindowType == WINDOW_null) {
         // added the check to avoid releasing

@@ -36,7 +36,6 @@ void GUIWindow_GameOver::Update() {
     // draw pop up box
     if (bGameOverWindowCheckExit) {
         GUIWindow pWindow;
-        pWindow.Init();
         pWindow.sHint = fmt::format("{}\n \n{}", pGameOverWindow->sHint, localization->GetString(LSTR_PRESS_ESCAPE));
         pWindow.uFrameWidth = 400;
         pWindow.uFrameHeight = 100;

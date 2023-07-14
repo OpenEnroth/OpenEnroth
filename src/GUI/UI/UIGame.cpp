@@ -407,8 +407,6 @@ GUIWindow_GameVideoOptions::GUIWindow_GameVideoOptions()
 void GUIWindow_GameVideoOptions::Update() {
     // -----------------------------------
     // 004156F0 GUI_UpdateWindows --- part
-    GUIWindow msg_window;  // [sp+8h] [bp-54h]@3
-
     int gammalevel = engine->config->graphics.Gamma.value();
 
     render->DrawTextureNew(
@@ -422,7 +420,8 @@ void GUIWindow_GameVideoOptions::Update() {
 
         if (gamma_preview_image)
             render->DrawTextureNew(274 / 640.0f, 169 / 480.0f, gamma_preview_image);
-        msg_window.Init();
+
+        GUIWindow msg_window;
         msg_window.uFrameX = 22;
         msg_window.uFrameY = 190;
         msg_window.uFrameWidth = 211;

@@ -469,18 +469,15 @@ void GUIWindow_GenericDialogue::Release() {
 }
 
 void GUIWindow_GenericDialogue::Update() {
-    int pTextHeight;                 // esi@4
-    GUIWindow BranchlessDlg_window;  // [sp+D4h] [bp-58h]@4
-    GUIFont *pFont;                  // [sp+128h] [bp-4h]@1
+    GUIFont *pFont = pFontArrus;
 
-    pFont = pFontArrus;
     if (current_npc_text.length() > 0 && branchless_dialogue_str.empty())
         branchless_dialogue_str = current_npc_text;
 
-    BranchlessDlg_window.Init();
+    GUIWindow BranchlessDlg_window;
     BranchlessDlg_window.uFrameWidth = game_viewport_width;
     BranchlessDlg_window.uFrameZ = 452;
-    pTextHeight =
+    int pTextHeight =
         pFontArrus->CalcTextHeight(branchless_dialogue_str,
                                    BranchlessDlg_window.uFrameWidth, 12) +
         7;

@@ -96,11 +96,9 @@ uint64_t GetExperienceRequiredForLevel(int level);
 
 //----- (004179BC) --------------------------------------------------------
 void CharacterUI_DrawTooltip(const char *title, std::string &content) {
-    GUIWindow popup_window;  // [sp+Ch] [bp-5Ch]@1
-
     Pointi pt = mouse->GetCursorPos();
 
-    popup_window.Init();
+    GUIWindow popup_window;
     popup_window.uFrameWidth = 384;
     popup_window.uFrameHeight = 256;
     popup_window.uFrameX = 128;
@@ -1338,7 +1336,6 @@ void showSpellbookInfo(ITEM_TYPE spellItemId) {
     }
 
     GUIWindow popup;
-    popup.Init();
     popup.uFrameY = popupVertPos;
     popup.uFrameWidth = 328;
     popup.uFrameHeight = 68;
@@ -1691,7 +1688,6 @@ void GameUI_CharacterQuickRecord_Draw(GUIWindow *window, Character *player) {
 void GameUI_DrawNPCPopup(void *_this) {  // PopupWindowForBenefitAndJoinText
     NPCData *pNPC;           // eax@16
     std::string pText;       // eax@18
-    GUIWindow popup_window;  // [sp+Ch] [bp-60h]@23
     int a2;                  // [sp+60h] [bp-Ch]@16
 
     if (bNoNPCHiring != 1) {
@@ -1709,7 +1705,8 @@ void GameUI_DrawNPCPopup(void *_this) {  // PopupWindowForBenefitAndJoinText
                 if (pText.empty()) {
                     pText = pNPCStats->pProfessions[pNPC->profession].pJoinText;
                 }
-                popup_window.Init();
+
+                GUIWindow popup_window;
                 popup_window.sHint.clear();
                 popup_window.uFrameX = 38;
                 popup_window.uFrameY = 60;
