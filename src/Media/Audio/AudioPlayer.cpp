@@ -39,8 +39,6 @@ std::array<float, 10> pSoundVolumeLevels = {
 
 std::map<uint32_t, SoundInfo> mapSounds;
 
-void SoundList::Initialize() {}
-
 void SoundList::FromFile(const Blob &data_mm6, const Blob &data_mm7, const Blob &data_mm8) {
     std::vector<SoundInfo> sounds;
 

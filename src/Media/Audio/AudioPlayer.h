@@ -202,7 +202,6 @@ class SoundList {
  public:
     inline SoundList() {}
 
-    void Initialize();
     void FromFile(const Blob &data_mm6, const Blob &data_mm7, const Blob &data_mm8);
 };
 

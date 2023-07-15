@@ -935,9 +935,6 @@ void Engine::SecondaryInitialization() {
     pObjectList->InitializeSprites();
     pOverlayList->InitializeSprites();
 
-    if (!engine->config->debug.NoSound.value())
-        pSoundList->Initialize();
-
     for (uint i = 0; i < 4; ++i) {
         static const char *pUIAnimNames[4] = {"glow03", "glow05", "torchA", "wizeyeA"};
         static unsigned short _4E98D0[4][4] = { {479, 0, 329, 0}, {585, 0, 332, 0}, {468, 0, 0, 0}, {606, 0, 0, 0} };
