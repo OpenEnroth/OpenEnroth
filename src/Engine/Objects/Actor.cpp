@@ -879,7 +879,7 @@ void Actor::Explode(unsigned int uActorID) {  // death explosion for some actors
 // object2, signed int a4)
 // // but compiler converts functions returning structures by value in the such
 // way
-void Actor::GetDirectionInfo(unsigned int uObj1ID, unsigned int uObj2ID,
+void Actor::GetDirectionInfo(Pid uObj1ID, Pid uObj2ID,
                              struct AIDirection *pOut, int PreferedZ) {
     float v31;        // st7@45
     float v32;        // st6@45
@@ -1025,7 +1025,7 @@ void Actor::AI_StandOrBored(unsigned int uActorID, Pid uObjID,
 }
 
 //----- (00403EB6) --------------------------------------------------------
-void Actor::AI_Stand(unsigned int uActorID, unsigned int object_to_face_pid,
+void Actor::AI_Stand(unsigned int uActorID, Pid object_to_face_pid,
                      unsigned int uActionLength, AIDirection *a4) {
     assert(uActorID < pActors.size());
     // Actor *actor = &pActors[uActorID];
@@ -1921,7 +1921,7 @@ void Actor::playSound(unsigned int uActorID, ActorSounds uSoundID) {
 void Actor::AI_Pursue1(unsigned int uActorID, Pid a2, signed int arg0,
                        signed int uActionLength, AIDirection *pDir) {
     Actor *v7;         // ebx@1
-    unsigned int v8;   // ecx@1
+    Pid v8;   // ecx@1
     AIDirection *v10;  // esi@6
     AIDirection a3;    // [sp+Ch] [bp-5Ch]@7
     unsigned int v18;  // [sp+64h] [bp-4h]@1
@@ -1977,7 +1977,7 @@ void Actor::AI_Pursue1(unsigned int uActorID, Pid a2, signed int arg0,
 void Actor::AI_Flee(unsigned int uActorID, Pid sTargetPid,
                     int uActionLength, AIDirection *a4) {
     Actor *v5;         // ebx@1
-    int v7;            // ecx@2
+    Pid v7;            // ecx@2
     AIDirection v10;   // [sp+8h] [bp-7Ch]@4
     AIDirection a3;    // [sp+24h] [bp-60h]@3
     AIDirection *v13;  // [sp+5Ch] [bp-28h]@4
@@ -1990,7 +1990,7 @@ void Actor::AI_Flee(unsigned int uActorID, Pid sTargetPid,
                                     v5->monsterInfo.uFlying);
             a4 = &a3;
         }
-        Actor::GetDirectionInfo(v7, 4u, &v10, 0);
+        Actor::GetDirectionInfo(v7, Pid::character(0), &v10, 0);
         v13 = &v10;
         if (MonsterStats::BelongsToSupertype(v5->monsterInfo.uID,
                                              MONSTER_SUPERTYPE_TREANT) ||
@@ -2022,7 +2022,7 @@ void Actor::AI_Pursue2(unsigned int uActorID, Pid a2,
                        signed int uActionLength, AIDirection *pDir, int a5) {
     int v6;                // eax@1
     Actor *v7;             // ebx@1
-    unsigned int v8;       // ecx@1
+    Pid v8;       // ecx@1
     AIDirection *v10;      // esi@7
     int16_t v13;    // cx@19
     uint16_t v14;  // ax@25
@@ -2079,7 +2079,7 @@ void Actor::AI_Pursue3(unsigned int uActorID, Pid a2,
                        signed int uActionLength, AIDirection *a4) {
     int v5;                // eax@1
     Actor *v6;             // ebx@1
-    int v7;                // ecx@1
+    Pid v7;                // ecx@1
     int16_t v12;    // cx@19
     int16_t v14;           // ax@25
     uint16_t v16;  // ax@28
@@ -2905,9 +2905,9 @@ void Actor::UpdateActorAI() {
             } else if (pActor->monsterInfo.uMovementType == MONSTER_MOVEMENT_TYPE_FREE) {
                 Actor::AI_RandomMove(actor_id, Pid::character(0), 10240, 0);
             } else if (pActor->monsterInfo.uMovementType == MONSTER_MOVEMENT_TYPE_STATIONARY) {
-                Actor::GetDirectionInfo(actorPid, 4, &v72, 0);
+                Actor::GetDirectionInfo(actorPid, Pid::character(0), &v72, 0);
                 v58 = (pActor->monsterInfo.uRecoveryTime * flt_debugrecmod3);
-                Actor::AI_Stand(actor_id, 4, v58, &v72);
+                Actor::AI_Stand(actor_id, Pid::character(0), v58, &v72);
             }
         } else if (!pActor->monsterInfo.uMissleAttack2Type) {
             if (v81 >= radiusMultiplier * 307.2) {

@@ -765,7 +765,6 @@ void stru262_TurnBased::AI_Action_(int queue_index) {
 void stru262_TurnBased::ActorAISetMovementDecision() {
     AIDirection a3;           // [sp+8h] [bp-44h]@5
     AIDirection v7;           // [sp+24h] [bp-28h]@5
-    unsigned int target_pid;  // [sp+40h] [bp-Ch]@5
     int i;
 
     this->ai_turn_timer = 64;
@@ -773,7 +772,7 @@ void stru262_TurnBased::ActorAISetMovementDecision() {
     pParty->setActiveCharacterIndex(0);
     for (i = 0; i < this->pQueue.size(); ++i) {
         if (PID_TYPE(pQueue[i].uPackedID) == OBJECT_Actor) {
-            target_pid =
+            Pid target_pid =
                 ai_near_actors_targets_pid[PID_ID(pQueue[i].uPackedID)];
             Actor::GetDirectionInfo(pQueue[i].uPackedID, target_pid, &v7, 0);
             if (!ActorMove(i))
@@ -788,12 +787,11 @@ void stru262_TurnBased::ActorAISetMovementDecision() {
 void stru262_TurnBased::ActorAIStopMovement() {
     AIDirection a3;  // [sp+4h] [bp-48h]@5
     AIDirection v7;  // [sp+20h] [bp-2Ch]@5
-    unsigned int target_pid;
     int i;
 
     for (i = 0; i < this->pQueue.size(); ++i) {
         if (PID_TYPE(pQueue[i].uPackedID) == OBJECT_Actor) {
-            target_pid =
+            Pid target_pid =
                 ai_near_actors_targets_pid[PID_ID(pQueue[i].uPackedID)];
             Actor::GetDirectionInfo(pQueue[i].uPackedID, target_pid, &v7, 0);
             Actor::AI_Stand(PID_ID(pQueue[i].uPackedID), target_pid, 32, &v7);
@@ -809,7 +807,6 @@ void stru262_TurnBased::ActorAIStopMovement() {
 void stru262_TurnBased::ActorAIDoAdditionalMove() {
     AIDirection a3;    // [sp+0h] [bp-50h]@15
     AIDirection v9;    // [sp+1Ch] [bp-34h]@15
-    unsigned int v13;  // [sp+44h] [bp-Ch]@8
     unsigned int monster_id;
 
     for (int i = 0; i < this->pQueue.size(); ++i) {
@@ -822,7 +819,7 @@ void stru262_TurnBased::ActorAIDoAdditionalMove() {
                   pActors[monster_id].aiState == Dead ||
                   pActors[monster_id].aiState == Removed ||
                   pActors[monster_id].aiState == Disabled)) {
-                v13 = ai_near_actors_targets_pid[PID_ID(pQueue[i].uPackedID)];
+                Pid v13 = ai_near_actors_targets_pid[PID_ID(pQueue[i].uPackedID)];
                 Actor::GetDirectionInfo(pQueue[i].uPackedID, v13, &v9, 0);
                 if (pActors[monster_id].aiState == Pursuing ||
                     pActors[monster_id].aiState == Tethered) {

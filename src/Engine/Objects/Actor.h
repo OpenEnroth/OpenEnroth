@@ -123,13 +123,13 @@ class Actor {
     static void AI_MeleeAttack(unsigned int uActorID, Pid sTargetPid,
                                struct AIDirection *arg0);
     static void StandAwhile(unsigned int uActorID);
-    static void AI_Stand(unsigned int uActorID, unsigned int object_to_face_pid,
+    static void AI_Stand(unsigned int uActorID, Pid object_to_face_pid,
                          unsigned int uActionLength, struct AIDirection *a4);
     static void AI_StandOrBored(unsigned int uActorID, Pid uObjID,
                                 int uActionLength, struct AIDirection *a4);
     static void AI_FaceObject(unsigned int uActorID, Pid uObjID,
                               int UNUSED, struct AIDirection *Dir_In);
-    static void GetDirectionInfo(unsigned int uObj1ID, unsigned int uObj2ID,
+    static void GetDirectionInfo(Pid uObj1ID, Pid uObj2ID,
                                  struct AIDirection *pOut, int a4);
     static void Explode(unsigned int uActorID);
     static void AI_RangedAttack(unsigned int uActorID, struct AIDirection *a2,
