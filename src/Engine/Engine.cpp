@@ -421,9 +421,6 @@ void Engine::Deinitialize() {
     if (mouse)
         mouse->Deactivate();
 
-    if (pItemTable)
-        pItemTable->Release();
-
     if (pSave_LOD)
         pSave_LOD->FreeSubIndexAndIO();
 
@@ -947,7 +944,7 @@ void Engine::SecondaryInitialization() {
     pStorylineText->Initialize(engine->_gameResourceManager->getEventsFile("history.txt"));
 
     pItemTable = new ItemTable();
-    pItemTable->Initialize();
+    pItemTable->Initialize(engine->_gameResourceManager.get());
 
     initializeBuildings(engine->_gameResourceManager->getEventsFile("2dEvents.txt"));
 

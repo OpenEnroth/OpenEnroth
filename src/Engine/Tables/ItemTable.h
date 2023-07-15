@@ -7,15 +7,18 @@
 
 #include "Utility/IndexedArray.h"
 
+class GameResourceManager;
+class Blob;
+
 struct BonusRange {
     unsigned int minR;
     unsigned int maxR;
 }; // TODO(captainurist): Segment<int>?
 
 struct ItemTable {
-    void Initialize();
-    void LoadPotions();
-    void LoadPotionNotes();
+    void Initialize(GameResourceManager *resourceManager);
+    void LoadPotions(const Blob &potions);
+    void LoadPotionNotes(const Blob &potionNotes);
 
     /**
      * @offset 0x456620
@@ -24,7 +27,6 @@ struct ItemTable {
     void SetSpecialBonus(ItemGen *pItem);
     bool IsMaterialSpecial(const ItemGen *pItem);
     bool IsMaterialNonCommon(const ItemGen *pItem);
-    void Release();
     void PrintItemTypesEnum();
 
     IndexedArray<ItemDesc, ITEM_FIRST_VALID, ITEM_LAST_VALID> pItems;                   // 4-9604h
@@ -52,4 +54,4 @@ struct ItemTable {
     char field_1179F;
 };
 
-extern struct ItemTable *pItemTable;
+extern ItemTable *pItemTable;
