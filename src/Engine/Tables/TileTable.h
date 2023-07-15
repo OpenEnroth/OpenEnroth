@@ -7,6 +7,8 @@
 
 #include "TileEnums.h"
 
+class GraphicsImage;
+
 class TileDesc {
  public:
     inline TileDesc() : texture(nullptr) {}

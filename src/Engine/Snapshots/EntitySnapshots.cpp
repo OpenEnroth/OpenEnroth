@@ -22,7 +22,7 @@
 #include "Engine/SaveLoad.h"
 #include "Engine/Tables/IconFrameTable.h"
 #include "Engine/Tables/CharacterFrameTable.h"
-#include "Engine/Tables/TileFrameTable.h"
+#include "Engine/Tables/TileTable.h"
 #include "Engine/Time.h"
 
 #include "Media/Audio/SoundInfo.h"

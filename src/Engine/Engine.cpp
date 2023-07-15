@@ -45,7 +45,7 @@
 #include "Engine/Tables/ItemTable.h"
 #include "Engine/Tables/IconFrameTable.h"
 #include "Engine/Tables/CharacterFrameTable.h"
-#include "Engine/Tables/TileFrameTable.h"
+#include "Engine/Tables/TileTable.h"
 #include "Engine/Tables/FactionTable.h"
 #include "Engine/Tables/StorylineTextTable.h"
 #include "Engine/Tables/AwardTable.h"

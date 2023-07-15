@@ -1,10 +1,11 @@
+#include "ItemTable.h"
+
 #include <map>
 #include <vector>
 #include <string>
 #include <unordered_map>
 #include <utility>
 
-#include "Engine/Tables/ItemTable.h"
 #include "Engine/Spells/Spells.h"
 #include "Engine/Engine.h"
 #include "Engine/Party.h"

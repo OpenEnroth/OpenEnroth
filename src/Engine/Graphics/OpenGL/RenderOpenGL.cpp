@@ -31,7 +31,7 @@
 #include "Engine/Graphics/Polygon.h"
 #include "Engine/Objects/Actor.h"
 #include "Engine/Objects/SpriteObject.h"
-#include "Engine/Tables/TileFrameTable.h"
+#include "Engine/Tables/TileTable.h"
 #include "Engine/OurMath.h"
 #include "Engine/Party.h"
 #include "Engine/SpellFxRenderer.h"

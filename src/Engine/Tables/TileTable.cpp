@@ -1,4 +1,6 @@
-#include "Engine/Engine.h"
+#include "TileTable.h"
+
+#include "Engine/ErrorHandling.h"
 
 #include "Engine/Snapshots/EntitySnapshots.h"
 #include "Engine/Snapshots/SnapshotSerialization.h"
@@ -11,7 +13,6 @@
 #include "Utility/String.h"
 
 #include "FrameTableInc.h"
-#include "TileFrameTable.h"
 
 
 GraphicsImage *TileDesc::GetTexture() {
