@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cstdint>
+#include <array>
 #include <string>
 
 #include "MapEnums.h"
@@ -49,7 +50,7 @@ struct MapStats {
     void Initialize(const Blob &mapStats);
     MAP_TYPE GetMapInfo(const std::string &Str2);
     int sub_410D99_get_map_index(int a1);
-    MapInfo pInfos[77];
+    std::array<MapInfo, 77> pInfos;
     unsigned int uNumMaps;
 };
 

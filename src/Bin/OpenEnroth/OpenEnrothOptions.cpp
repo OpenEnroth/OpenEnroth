@@ -34,8 +34,8 @@ OpenEnrothOptions OpenEnrothOptions::Parse(int argc, char **argv) {
     retrace->add_option("TRACE", result.retrace.traces,
                         "Path to trace file(s) to retrace.")->check(CLI::ExistingFile)->required()->option_text("...");
     retrace->callback([&] {
+        result.useConfig = false; // Don't use external config if retracing.
         result.subcommand = SUBCOMMAND_RETRACE;
-        result.configPath = "openenroth_retrace.ini"; // TODO(captainurist): we should just skip saving/loading the config.
     });
 
     try {
