@@ -5,7 +5,6 @@
 #include <string>
 #include <vector>
 
-#include "Utility/Memory/Blob.h"
 #include "Utility/IndexedArray.h"
 
 #include "Library/Color/Color.h"
@@ -15,6 +14,8 @@
 
 #include "ActorEnums.h"
 #include "ItemEnums.h"
+
+class Blob;
 
 /*  334 */
 enum MONSTER_TYPE {
@@ -189,8 +190,8 @@ struct MonsterInfo {
 };
 
 struct MonsterStats {
-    void Initialize();
-    void InitializePlacements();
+    void Initialize(const Blob &monsters);
+    void InitializePlacements(const Blob &placements);
     signed int FindMonsterByTextureName(const std::string &Str2);
 
     static bool BelongsToSupertype(unsigned int uMonsterInfoID,

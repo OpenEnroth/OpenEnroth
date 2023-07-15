@@ -88,8 +88,8 @@ void ItemTable::Initialize() {
     pMapStats->Initialize(engine->_gameResourceManager->getEventsFile("MapStats.txt"));
 
     pMonsterStats = new MonsterStats;
-    pMonsterStats->Initialize();
-    pMonsterStats->InitializePlacements();
+    pMonsterStats->Initialize(engine->_gameResourceManager->getEventsFile("monsters.txt"));
+    pMonsterStats->InitializePlacements(engine->_gameResourceManager->getEventsFile("placemon.txt"));
 
     pSpellStats = new SpellStats;
     pSpellStats->Initialize();
