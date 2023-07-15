@@ -35,8 +35,6 @@ class Logger;
 class GUIMessageQueue;
 class GameResourceManager;
 
-void Engine_DeinitializeAndTerminate(int exitCode);
-
 /*  320 */
 enum class GameState {
     GAME_STATE_PLAYING = 0,

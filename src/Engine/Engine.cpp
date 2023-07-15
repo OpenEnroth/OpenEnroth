@@ -110,16 +110,6 @@ torchB.icon->texture->GetWidth()) / 640.0f, 48 / 480.0f, icon->texture);
 Engine *engine;
 GameState uGameState;
 
-void Engine_DeinitializeAndTerminate(int exitCode) {
-    engine->ResetCursor_Palettes_LODs_Level_Audio_SFT_Windows();
-    engine->Deinitialize();  // called twice?
-
-    if (render)
-        render->Release();
-
-    exit(exitCode);
-}
-
 //----- (0044103C) --------------------------------------------------------
 void Engine::Draw() {
     engine->SetSaturateFaces(pParty->_497FC5_check_party_perception_against_level());
@@ -679,12 +669,8 @@ void Engine::OutlineSelection() {
                 }
             } break;
 
-            default: {
-                Error(
-                    "Undefined CObjectInfo type requested in "
-                    "CGame::outline_selection()");
-                Engine_DeinitializeAndTerminate(0);
-            }
+            default:
+                Error("Undefined CObjectInfo type requested in CGame::outline_selection()");
         }
     }
 }

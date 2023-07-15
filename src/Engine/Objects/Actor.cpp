@@ -4639,7 +4639,7 @@ void SpawnEncounter(MapInfo *pMapInfo, SpawnPoint *spawn, int a3, int a4, int a5
         pTexture = Str2;
         if ((int16_t)v50 == -1) {
             logger->warning("Can't create random monster: '{}'! See MapStats.txt and Monsters.txt!", pTexture);
-            Engine_DeinitializeAndTerminate(0);
+            Error("Can't create random monster!");
         }
 
         v27 = &pMonsterList->pMonsters[(int16_t)v50];
