@@ -99,14 +99,14 @@ extern std::vector<SpriteObject> pSpriteObjects;
 /**
  * @offset 0x46BFFA
  */
-bool processSpellImpact(unsigned int uLayingItemID, signed int pid);
+bool processSpellImpact(unsigned int uLayingItemID, Pid pid);
 
 /**
  * @offset 0x43A97E
  */
-void applySpellSpriteDamage(unsigned int uLayingItemID, signed int pid);  // idb
+void applySpellSpriteDamage(unsigned int uLayingItemID, Pid pid);  // idb
 
 /**
  * @offset 0x46DEF2
  */
-unsigned int collideWithActor(unsigned int uLayingItemID, signed int pid);
+unsigned int collideWithActor(unsigned int uLayingItemID, Pid pid);

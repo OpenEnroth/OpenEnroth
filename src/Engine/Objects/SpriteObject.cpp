@@ -179,7 +179,7 @@ void SpriteObject::updateObjectODM(unsigned int uLayingItemID) {
                 if (pSpriteObjects[uLayingItemID].vPosition.z < level) {
                     pSpriteObjects[uLayingItemID].vPosition.z = level + 1;
                 }
-                if (!processSpellImpact(uLayingItemID, 0)) {
+                if (!processSpellImpact(uLayingItemID, Pid())) {
                     return;
                 }
             }
@@ -213,7 +213,7 @@ void SpriteObject::updateObjectODM(unsigned int uLayingItemID) {
             if (pSpriteObjects[uLayingItemID].vPosition.z < level) {
                 pSpriteObjects[uLayingItemID].vPosition.z = level + 1;
             }
-            if (!processSpellImpact(uLayingItemID, 0)) {
+            if (!processSpellImpact(uLayingItemID, Pid())) {
                 return;
             }
         }
@@ -304,7 +304,7 @@ void SpriteObject::updateObjectODM(unsigned int uLayingItemID) {
                 pSpriteObjects[uLayingItemID].vPosition.z = bmodel->pVertices[face->pVertexIDs[0]].z + 1;
                 if (pSpriteObjects[uLayingItemID].vVelocity.xy().lengthSqr() >= 400) {
                     if (face->uAttributes & FACE_TriggerByObject) {
-                        eventProcessor(face->sCogTriggeredID, 0, 1);
+                        eventProcessor(face->sCogTriggeredID, Pid(), 1);
                     }
                 } else {
                     pSpriteObjects[uLayingItemID].vVelocity = Vec3s(0, 0, 0);
@@ -323,7 +323,7 @@ void SpriteObject::updateObjectODM(unsigned int uLayingItemID) {
                 }
                 pSpriteObjects[uLayingItemID].vVelocity.z += newZVel;
                 if (face->uAttributes & FACE_TriggerByObject) {
-                    eventProcessor(face->sCogTriggeredID, 0, 1);
+                    eventProcessor(face->sCogTriggeredID, Pid(), 1);
                 }
             }
         }
@@ -465,7 +465,7 @@ LABEL_25:
                     }
                     pSpriteObject->vVelocity.z += newZVel;
                     if (pIndoor->pFaces[pidId].uAttributes & FACE_TriggerByObject) {
-                        eventProcessor(pIndoor->pFaceExtras[pIndoor->pFaces[pidId].uFaceExtraID].uEventID, 0, 1);
+                        eventProcessor(pIndoor->pFaceExtras[pIndoor->pFaces[pidId].uFaceExtraID].uEventID, Pid(), 1);
                     }
                     pSpriteObject->vVelocity.x = fixpoint_mul(58500, pSpriteObject->vVelocity.x);
                     pSpriteObject->vVelocity.y = fixpoint_mul(58500, pSpriteObject->vVelocity.y);
@@ -478,7 +478,7 @@ LABEL_25:
                         pSpriteObject->vVelocity.z = 0;
                     }
                     if (pIndoor->pFaces[pidId].uAttributes & FACE_TriggerByObject) {
-                        eventProcessor(pIndoor->pFaceExtras[pIndoor->pFaces[pidId].uFaceExtraID].uEventID, 0, 1);
+                        eventProcessor(pIndoor->pFaceExtras[pIndoor->pFaces[pidId].uFaceExtraID].uEventID, Pid(), 1);
                     }
                     pSpriteObject->vVelocity.x = fixpoint_mul(58500, pSpriteObject->vVelocity.x);
                     pSpriteObject->vVelocity.y = fixpoint_mul(58500, pSpriteObject->vVelocity.y);
@@ -488,7 +488,7 @@ LABEL_25:
                 pSpriteObject->vVelocity.z = 0;
                 if (pSpriteObject->vVelocity.xy().lengthSqr() >= 400) {
                     if (pIndoor->pFaces[pidId].uAttributes & FACE_TriggerByObject) {
-                        eventProcessor(pIndoor->pFaceExtras[pIndoor->pFaces[pidId].uFaceExtraID].uEventID, 0, 1);
+                        eventProcessor(pIndoor->pFaceExtras[pIndoor->pFaces[pidId].uFaceExtraID].uEventID, Pid(), 1);
                     }
                     pSpriteObject->vVelocity.x = fixpoint_mul(58500, pSpriteObject->vVelocity.x);
                     pSpriteObject->vVelocity.y = fixpoint_mul(58500, pSpriteObject->vVelocity.y);
@@ -505,7 +505,7 @@ LABEL_25:
         // end loop
     }
 
-    if (!(pObject->uFlags & OBJECT_DESC_INTERACTABLE) || processSpellImpact(uLayingItemID, 0)) {
+    if (!(pObject->uFlags & OBJECT_DESC_INTERACTABLE) || processSpellImpact(uLayingItemID, Pid())) {
         pSpriteObject->vPosition.z = floor_lvl + 1;
         if (pIndoor->pFaces[uFaceID].uPolygonType == POLYGON_Floor) {
             pSpriteObject->vVelocity.z = 0;
@@ -720,7 +720,7 @@ static void updateSpriteOnImpact(SpriteObject *object) {
     object->uObjectDescID = pObjectList->ObjectIDByItemID(object->uType);
 }
 
-bool processSpellImpact(unsigned int uLayingItemID, int pid) {
+bool processSpellImpact(unsigned int uLayingItemID, Pid pid) {
     SpriteObject *object = &pSpriteObjects[uLayingItemID];
     ObjectDesc *objectDesc = &pObjectList->pObjects[object->uObjectDescID];
 
@@ -1267,7 +1267,7 @@ bool processSpellImpact(unsigned int uLayingItemID, int pid) {
     }
 }
 
-void applySpellSpriteDamage(unsigned int uLayingItemID, int pid) {
+void applySpellSpriteDamage(unsigned int uLayingItemID, Pid pid) {
     Vec3i velocity;
 
     if (PID_TYPE(pid) == OBJECT_Character) {
@@ -1363,7 +1363,7 @@ void UpdateObjects() {
     }
 }
 
-unsigned int collideWithActor(unsigned int uLayingItemID, signed int pid) {
+unsigned int collideWithActor(unsigned int uLayingItemID, Pid pid) {
     unsigned int result = uLayingItemID;
     if (pObjectList->pObjects[pSpriteObjects[uLayingItemID].uObjectDescID].uFlags & OBJECT_DESC_UNPICKABLE) {
         result = processSpellImpact(uLayingItemID, pid);

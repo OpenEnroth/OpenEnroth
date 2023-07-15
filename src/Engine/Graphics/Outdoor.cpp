@@ -2078,7 +2078,7 @@ void ODM_ProcessPartyActions() {
 
         CollideOutdoorWithModels(true);
         CollideOutdoorWithDecorations(WorldPosToGridCellX(pParty->pos.x), WorldPosToGridCellY(pParty->pos.y));
-        _46ED8A_collide_against_sprite_objects(4);
+        _46ED8A_collide_against_sprite_objects(Pid::character(0));
 
         for (size_t actor_id = 0; actor_id < pActors.size(); ++actor_id)
             CollideWithActor(actor_id, 0);
@@ -2339,7 +2339,7 @@ void ODM_ProcessPartyActions() {
 
     // Falling damage
     if (!triggerID ||
-        (eventProcessor(triggerID, 0, 1), pParty->pos.x == partyNewX) &&
+        (eventProcessor(triggerID, Pid(), 1), pParty->pos.x == partyNewX) &&
         pParty->pos.y == partyNewY && pParty->pos.z == partyNewZ) {
         if (((pParty->pos.z <= newGroundLevel || partyHasHitModel) && partyInputZSpeed < 0)) {
             pParty->speed.z = 0;

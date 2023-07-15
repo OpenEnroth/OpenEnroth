@@ -295,7 +295,7 @@ struct BLVRenderParams {
 };
 extern BLVRenderParams *pBLVRenderParams;
 
-char DoInteractionWithTopmostZObject(int pid);
+char DoInteractionWithTopmostZObject(Pid pid);
 // int sub_4AAEA6_transform(struct RenderVertexSoft *a1);
 void BLV_UpdateUserInputAndOther();
 

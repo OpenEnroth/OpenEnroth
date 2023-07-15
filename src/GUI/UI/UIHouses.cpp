@@ -508,7 +508,7 @@ void selectHouseNPCDialogueOption(DIALOGUE_TYPE topic) {
                     } else {
                         current_npc_text.clear();
                         activeLevelDecoration = (LevelDecoration *)1;
-                        eventProcessor(pEventNumber, 0, 1);
+                        eventProcessor(pEventNumber, Pid(), 1);
                         activeLevelDecoration = nullptr;
                     }
                 }

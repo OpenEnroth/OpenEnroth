@@ -146,14 +146,14 @@ void CastSpellInfoHelpers::castSpell() {
         Character *pPlayer = &pParty->pCharacters[pCastSpell->uPlayerID];
 
         // Pid of target or 0 if spell was quick casted
-        int spell_targeted_at = pCastSpell->spell_target_pid;
+        Pid spell_targeted_at = Pid::fromPacked(pCastSpell->spell_target_pid); // TODO(captainurist): #pid
 
         // First try to pick live actor mouse is pointing at
         if (spell_targeted_at == 0 &&
                 mouse->uPointingObjectID &&
                 PID_TYPE(mouse->uPointingObjectID) == OBJECT_Actor &&
                 pActors[PID_ID(mouse->uPointingObjectID)].CanAct()) {
-            spell_targeted_at = mouse->uPointingObjectID;
+            spell_targeted_at = Pid::fromPacked(mouse->uPointingObjectID); // TODO(captainurist): #pid
         }
 
         // Otherwise pick closest live actor
@@ -174,7 +174,7 @@ void CastSpellInfoHelpers::castSpell() {
 
         if (pSpellSprite.uType != SPRITE_NULL) {
             if (PID_TYPE(spell_targeted_at) == OBJECT_Actor) {
-                int player_pid = PID(OBJECT_Character, pCastSpell->uPlayerID + 1);
+                Pid player_pid = PID(OBJECT_Character, pCastSpell->uPlayerID + 1);
                 Actor::GetDirectionInfo(player_pid, spell_targeted_at, &target_direction, 0);  // target direciton
             } else {
                 target_direction.uYawAngle = pParty->_viewYaw;  // spray infront of party
@@ -555,7 +555,7 @@ void CastSpellInfoHelpers::castSpell() {
                     }
                     int monster_id = PID_ID(spell_targeted_at);
                     if (pActors[monster_id].DoesDmgTypeDoDamage(DMGT_LIGHT)) {
-                        Actor::AI_Stand(monster_id, 4, 0x80, 0);
+                        Actor::AI_Stand(monster_id, Pid::character(0), 0x80, 0);
                         pActors[monster_id].buffs[ACTOR_BUFF_PARALYZED]
                             .Apply(pParty->GetPlayingTime() + GameTime::FromMinutes(3 * spell_level), spell_mastery, 0, 0, 0);
                         pActors[monster_id].attributes |= ACTOR_AGGRESSOR;
@@ -2190,7 +2190,7 @@ void CastSpellInfoHelpers::castSpell() {
                         // TODO(captainurist): investigate, that's a very weird std::to_underlying call.
                         if (pLevelDecorations[std::to_underlying(pSpriteObjects[obj_id].containing_item.uItemID)].IsInteractive()) {
                             activeLevelDecoration = &pLevelDecorations[obj_id];
-                            eventProcessor(engine->_persistentVariables.decorVars[pLevelDecorations[obj_id].eventVarId] + 380, 0, 1);
+                            eventProcessor(engine->_persistentVariables.decorVars[pLevelDecorations[obj_id].eventVarId] + 380, Pid(), 1);
                             activeLevelDecoration = nullptr;
                         }
                     }

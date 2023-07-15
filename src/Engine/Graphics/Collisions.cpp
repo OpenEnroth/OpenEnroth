@@ -418,7 +418,7 @@ bool CollideWithActor(int actor_idx, int override_radius) {
     return CollideWithCylinder(actor->pos.toFloat(), radius, actor->height, PID(OBJECT_Actor, actor_idx), true);
 }
 
-void _46ED8A_collide_against_sprite_objects(unsigned int pid) {
+void _46ED8A_collide_against_sprite_objects(Pid pid) {
     for (uint i = 0; i < pSpriteObjects.size(); ++i) {
         if (pSpriteObjects[i].uObjectDescID == 0)
             continue;
@@ -587,7 +587,7 @@ void ProcessActorCollisionsBLV(Actor &actor, bool isAboveGround, bool isFlying) 
                 }
             }
             if (pIndoor->pFaces[id].uAttributes & FACE_TriggerByMonster)
-                eventProcessor(pIndoor->pFaceExtras[pIndoor->pFaces[id].uFaceExtraID].uEventID, 0, 1);
+                eventProcessor(pIndoor->pFaceExtras[pIndoor->pFaces[id].uFaceExtraID].uEventID, Pid(), 1);
         }
 
         actor.speed.x = fixpoint_mul(58500, actor.speed.x);
