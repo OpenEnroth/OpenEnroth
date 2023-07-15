@@ -1,9 +1,7 @@
 #include <cstdio>
 #include <utility>
-#include <filesystem>
 
 #include "Application/GameStarter.h"
-#include "Application/GameOptions.h"
 
 #include "Engine/Components/Control/EngineControlComponent.h"
 #include "Engine/Components/Control/EngineController.h"
@@ -17,18 +15,20 @@
 
 #include "Utility/Format.h"
 
+#include "OpenEnrothOptions.h"
 
-int runRetrace(GameOptions options) {
+
+int runRetrace(OpenEnrothOptions options) {
     GameStarter starter(options);
     starter.config()->resetForTest();
 
-    starter.application()->get<EngineControlComponent>()->runControlRoutine([application = starter.application(), tracePaths = options.retrace.traces] (EngineController *game) {
+    starter.application()->get<EngineControlComponent>()->runControlRoutine([options, application = starter.application()] (EngineController *game) {
         game->tick(10); // Let the game thread initialize everything.
 
         EngineTraceSimplePlayer *player = application->get<EngineTraceSimplePlayer>();
         EngineTraceRecorder *recorder = application->get<EngineTraceRecorder>();
 
-        for (const std::string &tracePath : tracePaths) {
+        for (const std::string &tracePath : options.retrace.traces) {
             std::string savePath = tracePath.substr(0, tracePath.length() - 5) + ".mm7";
 
             EventTrace oldTrace = EventTrace::loadFromFile(tracePath, application->window());
@@ -48,20 +48,20 @@ int runRetrace(GameOptions options) {
     return 0;
 }
 
-int runOpenEnroth(GameOptions options) {
+int runOpenEnroth(OpenEnrothOptions options) {
     GameStarter(options).run();
     return 0;
 }
 
 int openEnrothMain(int argc, char **argv) {
     try {
-        GameOptions options = GameOptions::Parse(argc, argv);
+        OpenEnrothOptions options = OpenEnrothOptions::Parse(argc, argv);
         if (options.helpPrinted)
             return 1;
 
         switch (options.subcommand) {
-        case GameOptions::SUBCOMMAND_GAME: return runOpenEnroth(std::move(options));
-        case GameOptions::SUBCOMMAND_RETRACE: return runRetrace(std::move(options));
+        case OpenEnrothOptions::SUBCOMMAND_GAME: return runOpenEnroth(std::move(options));
+        case OpenEnrothOptions::SUBCOMMAND_RETRACE: return runRetrace(std::move(options));
         default:
             assert(false);
             return 1;

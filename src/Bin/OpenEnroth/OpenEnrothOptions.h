@@ -3,12 +3,12 @@
 #include <string>
 #include <vector>
 
-#include "GameStarterOptions.h"
+#include "Application/GameStarterOptions.h"
 
 class GameConfig;
 class Platform;
 
-struct GameOptions : public GameStarterOptions {
+struct OpenEnrothOptions : public GameStarterOptions {
     enum class Subcommand {
         SUBCOMMAND_GAME,
         SUBCOMMAND_RETRACE
@@ -30,5 +30,5 @@ struct GameOptions : public GameStarterOptions {
      * @param argv                      argv as passed to main.
      * @throw std::exception            On errors.
      */
-    static GameOptions Parse(int argc, char **argv);
+    static OpenEnrothOptions Parse(int argc, char **argv);
 };

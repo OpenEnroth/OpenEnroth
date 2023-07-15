@@ -1,4 +1,4 @@
-#include "GameOptions.h"
+#include "OpenEnrothOptions.h"
 
 #include <memory>
 
@@ -6,11 +6,11 @@
 
 #include "Utility/Format.h"
 
-#include "GamePathResolver.h"
-#include "GameConfig.h" // For PlatformLogLevel serialization.
+#include "Application/GamePathResolver.h"
+#include "Application/GameConfig.h" // For PlatformLogLevel serialization.
 
-GameOptions GameOptions::Parse(int argc, char **argv) {
-    GameOptions result;
+OpenEnrothOptions OpenEnrothOptions::Parse(int argc, char **argv) {
+    OpenEnrothOptions result;
     std::unique_ptr<CLI::App> app = std::make_unique<CLI::App>();
 
     app->add_option(
