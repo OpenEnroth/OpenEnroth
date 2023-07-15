@@ -1,11 +1,11 @@
 cmake_minimum_required(VERSION 3.20.4 FATAL_ERROR)
 
 set(BIN_OPENENROTH_SOURCES
-        GameOptions.cpp
-        main.cpp)
+        OpenEnroth.cpp
+        OpenEnrothOptions.cpp)
 
 set(BIN_OPENENROTH_HEADERS
-        GameOptions.h)
+        OpenEnrothOptions.h)
 
 if(BUILD_PLATFORM STREQUAL "android")
     add_library(main SHARED)
