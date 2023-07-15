@@ -6,8 +6,8 @@
 
 #include "Utility/Format.h"
 
-#include "GamePathResolver.h"
-#include "GameConfig.h" // For PlatformLogLevel serialization.
+#include "Application/GamePathResolver.h"
+#include "Application/GameConfig.h" // For PlatformLogLevel serialization.
 
 GameOptions GameOptions::Parse(int argc, char **argv) {
     GameOptions result;

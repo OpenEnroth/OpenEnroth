@@ -5,7 +5,6 @@ set(APPLICATION_SOURCES
         GameConfig.cpp
         GameKeyboardController.cpp
         GameMenu.cpp
-        GameOptions.cpp
         GameOver.cpp
         GamePathResolver.cpp
         GameStarter.cpp
@@ -18,7 +17,6 @@ set(APPLICATION_HEADERS
         GameConfig.h
         GameKeyboardController.h
         GameMenu.h
-        GameOptions.h
         GameOver.h
         GamePathResolver.h
         GameStarter.h

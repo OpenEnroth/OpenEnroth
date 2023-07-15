@@ -3,7 +3,7 @@
 #include <string>
 #include <vector>
 
-#include "GameStarterOptions.h"
+#include "Application/GameStarterOptions.h"
 
 class GameConfig;
 class Platform;

@@ -1,9 +1,7 @@
 #include <cstdio>
 #include <utility>
-#include <filesystem>
 
 #include "Application/GameStarter.h"
-#include "Application/GameOptions.h"
 
 #include "Engine/Components/Control/EngineControlComponent.h"
 #include "Engine/Components/Control/EngineController.h"
@@ -16,6 +14,8 @@
 #include "Library/Trace/EventTrace.h"
 
 #include "Utility/Format.h"
+
+#include "GameOptions.h"
 
 
 int runRetrace(GameOptions options) {
