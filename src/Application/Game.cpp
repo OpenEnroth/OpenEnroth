@@ -231,7 +231,6 @@ int Game::run() {
 
     if (window) {
         _application->get<GameWindowHandler>()->UpdateConfigFromWindow(_config.get());
-        _config->SaveConfiguration();
     }
 
     if (_engine) {

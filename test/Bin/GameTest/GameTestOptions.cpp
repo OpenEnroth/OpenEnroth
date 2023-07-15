@@ -9,8 +9,7 @@
 
 GameTestOptions GameTestOptions::Parse(int argc, char **argv) {
     GameTestOptions result;
-    result.configPath = "openenroth_test.ini"; // Default config is different from the one used by the game.
-    result.resetConfig = true; // Tests start with a default config.
+    result.useConfig = false; // Tests don't need an external config.
 
     std::unique_ptr<CLI::App> app = std::make_unique<CLI::App>();
 
