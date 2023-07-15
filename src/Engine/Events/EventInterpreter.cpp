@@ -644,7 +644,7 @@ bool EventInterpreter::executeNpcDialogue(int startStep) {
     return !_readyToExit || _canShowOption;
 }
 
-void EventInterpreter::prepare(const EventMap &eventMap, int eventId, int objectPid, bool canShowMessages) {
+void EventInterpreter::prepare(const EventMap &eventMap, int eventId, Pid objectPid, bool canShowMessages) {
     _eventId = eventId;
     _canShowMessages = canShowMessages;
     _objectPid = objectPid;

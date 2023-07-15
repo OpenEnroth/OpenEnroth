@@ -1736,7 +1736,7 @@ void GameUI_DrawNPCPopup(void *_this) {  // PopupWindowForBenefitAndJoinText
 
 //----- (00416D62) --------------------------------------------------------
 void UI_OnMouseRightClick(int mouse_x, int mouse_y) {
-    int v5;                  // esi@62
+    Pid v5;                  // esi@62
     // GUIButton *pButton;      // esi@84
     const char *pStr;        // edi@85
     // const char *pHint;       // edx@113
