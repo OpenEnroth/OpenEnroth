@@ -978,7 +978,7 @@ void Engine::SecondaryInitialization() {
 
     pNPCStats = new NPCStats;
     pNPCStats->pNPCData.fill(NPCData());
-    pNPCStats->Initialize();
+    pNPCStats->Initialize(engine->_gameResourceManager.get());
 
     initGlobalEvents();
     pBitmaps_LOD->reserveLoadedTextures();

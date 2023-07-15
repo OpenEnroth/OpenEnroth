@@ -1,13 +1,11 @@
-#include "Engine/Tables/TransitionTable.h"
+#include "TransitionTable.h"
 
-#include "Engine/Engine.h"
-#include "Engine/GameResourceManager.h"
-
+#include "Utility/Memory/Blob.h"
 #include "Utility/String.h"
 
 std::array<std::string, 465> pTransitionStrings;
 
-void initializeTransitions() {
+void initializeTransitions(const Blob &transitions) {
     char *test_string;
     unsigned char c;
     bool break_loop;
@@ -15,7 +13,7 @@ void initializeTransitions() {
     char *tmp_pos;
     int decode_step;
 
-    std::string txtRaw{ engine->_gameResourceManager->getEventsFile("trans.txt").string_view() };
+    std::string txtRaw(transitions.string_view());
     strtok(txtRaw.data(), "\r");
 
     pTransitionStrings[0] = "";

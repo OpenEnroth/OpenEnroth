@@ -7,7 +7,6 @@
 #include "Engine/Tables/MessageScrollTable.h"
 #include "Engine/Objects/NPC.h"
 
-#include "Engine/Engine.h"
 #include "Engine/Party.h"
 #include "Engine/GameResourceManager.h"
 
@@ -22,7 +21,7 @@ int NPCStats::dword_AE336C_LastMispronouncedNameFirstLetter = -1;
 int NPCStats::dword_AE3370_LastMispronouncedNameResult = -1;
 
 //----- (00476977) --------------------------------------------------------
-void NPCStats::InitializeNPCText() {
+void NPCStats::InitializeNPCText(const Blob &npcText) {
     int i;
     char *test_string;
     unsigned char c;
@@ -31,8 +30,7 @@ void NPCStats::InitializeNPCText() {
     char *tmp_pos;
     int decode_step;
 
-    std::string txtRaw;
-    txtRaw = engine->_gameResourceManager->getEventsFile("npctext.txt").string_view();
+    std::string txtRaw(npcText.string_view());
     strtok(txtRaw.data(), "\r");
 
     for (i = 0; i < 789; ++i) {
@@ -59,10 +57,20 @@ void NPCStats::InitializeNPCText() {
             test_string = tmp_pos + 1;
         } while ((decode_step < 2) && !break_loop);
     }
-    txtRaw = engine->_gameResourceManager->getEventsFile("npctopic.txt").string_view();
+}
+
+void NPCStats::InitializeNPCTopics(const Blob &npcTopics) {
+    std::string txtRaw(npcTopics.string_view());
     strtok(txtRaw.data(), "\r");
 
-    for (i = 1; i <= 579; ++i) {  // NPC topics count limit
+    char *test_string;
+    unsigned char c;
+    bool break_loop;
+    unsigned int temp_str_len;
+    char *tmp_pos;
+    int decode_step;
+
+    for (int i = 1; i <= 579; ++i) {  // NPC topics count limit
         test_string = strtok(NULL, "\r") + 1;
         break_loop = false;
         decode_step = 0;
@@ -86,12 +94,21 @@ void NPCStats::InitializeNPCText() {
             test_string = tmp_pos + 1;
         } while ((decode_step < 2) && !break_loop);
     }
+}
 
-    txtRaw = engine->_gameResourceManager->getEventsFile("npcdist.txt").string_view();
+void NPCStats::InitializeNPCDist(const Blob &npcDist) {
+    std::string txtRaw(npcDist.string_view());
     strtok(txtRaw.data(), "\r");
     strtok(NULL, "\r");
 
-    for (i = 1; i < 59; ++i) {
+    char *test_string;
+    unsigned char c;
+    bool break_loop;
+    unsigned int temp_str_len;
+    char *tmp_pos;
+    int decode_step;
+
+    for (int i = 1; i < 59; ++i) {
         test_string = strtok(NULL, "\r") + 1;
         break_loop = false;
         decode_step = 0;
@@ -119,7 +136,7 @@ void NPCStats::InitializeNPCText() {
         } while ((decode_step < 78) && !break_loop);
     }
 
-    for (i = 0; i < 77; ++i) {
+    for (int i = 0; i < 77; ++i) {
         pProfessionChance[i].uTotalprofChance = 0;
         for (int ii = 1; ii < 59; ++ii) {
             pProfessionChance[i].uTotalprofChance += pProfessionChance[i].professionChancePerArea[ii];
@@ -141,7 +158,7 @@ void NPCStats::setNPCNamesOnLoad() {
 }
 
 //----- (00476CB5) --------------------------------------------------------
-void NPCStats::InitializeNPCData() {
+void NPCStats::InitializeNPCData(const Blob &npcData) {
     int i;
     char *test_string;
     unsigned char c;
@@ -150,8 +167,7 @@ void NPCStats::InitializeNPCData() {
     char *tmp_pos;
     int decode_step;
 
-    std::string txtRaw;
-    txtRaw = engine->_gameResourceManager->getEventsFile("npcdata.txt").string_view();
+    std::string txtRaw(npcData.string_view());
     strtok(txtRaw.data(), "\r");
     strtok(NULL, "\r");
 
@@ -215,9 +231,20 @@ void NPCStats::InitializeNPCData() {
         } while ((decode_step < 16) && !break_loop);
     }
     uNumNewNPCs = 501;
-    txtRaw = engine->_gameResourceManager->getEventsFile("npcgreet.txt").string_view();
+}
+
+void NPCStats::InitializeNPCGreets(const Blob &npcGreets) {
+    std::string txtRaw(npcGreets.string_view());
     strtok(txtRaw.data(), "\r");
-    for (i = 1; i <= 205; ++i) {
+
+    char *test_string;
+    unsigned char c;
+    bool break_loop;
+    unsigned int temp_str_len;
+    char *tmp_pos;
+    int decode_step;
+
+    for (int i = 1; i <= 205; ++i) {
         test_string = strtok(NULL, "\r") + 1;
         break_loop = false;
         decode_step = 0;
@@ -245,11 +272,20 @@ void NPCStats::InitializeNPCData() {
             test_string = tmp_pos + 1;
         } while ((decode_step < 3) && !break_loop);
     }
+}
 
-    txtRaw = engine->_gameResourceManager->getEventsFile("npcgroup.txt").string_view();
+void NPCStats::InitializeNPCGroups(const Blob &npcGroups) {
+    std::string txtRaw(npcGroups.string_view());
     strtok(txtRaw.data(), "\r");
 
-    for (i = 0; i < 51; ++i) {
+    char *test_string;
+    unsigned char c;
+    bool break_loop;
+    unsigned int temp_str_len;
+    char *tmp_pos;
+    int decode_step;
+
+    for (int i = 0; i < 51; ++i) {
         test_string = strtok(NULL, "\r") + 1;
         break_loop = false;
         decode_step = 0;
@@ -272,11 +308,20 @@ void NPCStats::InitializeNPCData() {
             test_string = tmp_pos + 1;
         } while ((decode_step < 2) && !break_loop);
     }
+}
 
-    txtRaw = engine->_gameResourceManager->getEventsFile("npcnews.txt").string_view();
+void NPCStats::InitializeNPCNews(const Blob &npcNews) {
+    std::string txtRaw(npcNews.string_view());
     strtok(txtRaw.data(), "\r");
 
-    for (i = 0; i < 51; ++i) {
+    char *test_string;
+    unsigned char c;
+    bool break_loop;
+    unsigned int temp_str_len;
+    char *tmp_pos;
+    int decode_step;
+
+    for (int i = 0; i < 51; ++i) {
         test_string = strtok(NULL, "\r") + 1;
         break_loop = false;
         decode_step = 0;
@@ -301,7 +346,30 @@ void NPCStats::InitializeNPCData() {
 }
 
 //----- (0047702F) --------------------------------------------------------
-void NPCStats::Initialize() {
+void NPCStats::Initialize(GameResourceManager *resourceManager) {
+    InitializeNPCData(resourceManager->getEventsFile("npcdata.txt"));
+    InitializeNPCGreets(resourceManager->getEventsFile("npcgreet.txt"));
+    InitializeNPCGroups(resourceManager->getEventsFile("npcgroup.txt"));
+    InitializeNPCNews(resourceManager->getEventsFile("npcnews.txt"));
+    InitializeNPCText(resourceManager->getEventsFile("npctext.txt"));
+    InitializeNPCTopics(resourceManager->getEventsFile("npctopic.txt"));
+    InitializeNPCDist(resourceManager->getEventsFile("npcdist.txt"));
+
+    initializeQuests(resourceManager->getEventsFile("quests.txt"));
+    initializeAutonotes(resourceManager->getEventsFile("autonote.txt"));
+    initializeAwards(resourceManager->getEventsFile("awards.txt"));
+    initializeTransitions(resourceManager->getEventsFile("trans.txt"));
+    initializeMerchants(resourceManager->getEventsFile("merchant.txt"));
+    initializeMessageScrolls(resourceManager->getEventsFile("scroll.txt"));
+
+    InitializeNPCNames(resourceManager->getEventsFile("npcnames.txt"));
+    InitializeNPCProfs(resourceManager->getEventsFile("npcprof.txt"));
+}
+
+void NPCStats::InitializeNPCNames(const Blob &npcNames) {
+    std::string txtRaw(npcNames.string_view());
+    strtok(txtRaw.data(), "\r");
+
     int i;
     char *test_string;
     unsigned char c;
@@ -309,19 +377,6 @@ void NPCStats::Initialize() {
     unsigned int temp_str_len;
     char *tmp_pos = nullptr;
     int decode_step;
-
-    InitializeNPCData();
-    InitializeNPCText();
-    initializeQuests();
-    initializeAutonotes();
-    initializeAwards();
-    initializeTransitions();
-    initializeMerchants();
-    initializeMessageScrolls();
-
-    std::string txtRaw;
-    txtRaw = engine->_gameResourceManager->getEventsFile("npcnames.txt").string_view();
-    strtok(txtRaw.data(), "\r");
 
     uNewlNPCBufPos = 0;
 
@@ -359,12 +414,22 @@ void NPCStats::Initialize() {
         } while ((decode_step < 2) && !break_loop);
     }
     uNumNPCNames[0] = i;
+}
 
-    txtRaw = engine->_gameResourceManager->getEventsFile("npcprof.txt").string_view();
+void NPCStats::InitializeNPCProfs(const Blob &npcProfs) {
+    std::string txtRaw(npcProfs.string_view());
     strtok(txtRaw.data(), "\r");
     strtok(NULL, "\r");
     strtok(NULL, "\r");
     strtok(NULL, "\r");
+
+    int i;
+    char *test_string;
+    unsigned char c;
+    bool break_loop;
+    unsigned int temp_str_len;
+    char *tmp_pos = nullptr;
+    int decode_step;
 
     for (NPCProf i : Segment(NPC_PROFESSION_FIRST_VALID, NPC_PROFESSION_LAST_VALID)) {
         test_string = strtok(NULL, "\r") + 1;
@@ -558,7 +623,7 @@ const std::string &NPCStats::sub_495366_MispronounceName(uint8_t firstLetter, ui
         } else {
             int rangeBottom = 0;
             int rangeTop = 0;
-            for (uint i = 0; i < this->uNumNPCNames[genderId]; ++i) {
+            for (int i = 0; i < this->uNumNPCNames[genderId]; ++i) {
                 if (tolower(this->pNPCNames[i][genderId][0])) {
                     if (rangeBottom)
                         rangeTop = i;

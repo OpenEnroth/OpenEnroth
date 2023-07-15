@@ -4,6 +4,8 @@
 #include <cstdint>
 #include <string>
 
+class Blob;
+
 /*  351 */
 enum class AUTONOTE_TYPE : uint32_t {
     AUTONOTE_POTION_RECEPIE = 0,
@@ -23,6 +25,6 @@ struct Autonote {
 /**
  * @offset 0x476750
  */
-void initializeAutonotes();
+void initializeAutonotes(const Blob &autonotes);
 
 extern std::array<Autonote, 196> pAutonoteTxt;
