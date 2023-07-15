@@ -3,8 +3,7 @@
 #include <cstdlib>
 #include <sstream>
 
-#include "Engine/GameResourceManager.h"
-#include "Engine/Engine.h"
+#include "Engine/ErrorHandling.h"
 #include "Engine/LOD.h"
 
 #include "Utility/String.h"
@@ -40,8 +39,8 @@ const char *location_type[] = {
     "PSYCHOTIC"
 };
 
-void MapStats::Initialize() {
-    std::string pMapStatsTXT = std::string(engine->_gameResourceManager->getEventsFile("MapStats.txt").string_view());
+void MapStats::Initialize(const Blob &mapStats) {
+    std::string pMapStatsTXT(mapStats.string_view());
     std::stringstream stream(pMapStatsTXT);
     std::string tmpString;
     std::getline(stream, tmpString);

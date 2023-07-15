@@ -5,6 +5,8 @@
 
 #include "MapEnums.h"
 
+class Blob;
+
 struct MapInfo {
     std::string pName;
     std::string pFilename;
@@ -44,7 +46,7 @@ struct MapInfo {
 };
 
 struct MapStats {
-    void Initialize();
+    void Initialize(const Blob &mapStats);
     MAP_TYPE GetMapInfo(const std::string &Str2);
     int sub_410D99_get_map_index(int a1);
     MapInfo pInfos[77];

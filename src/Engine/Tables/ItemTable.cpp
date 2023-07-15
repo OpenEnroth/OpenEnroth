@@ -85,7 +85,7 @@ void ItemTable::Initialize() {
     char *lineContent;
 
     pMapStats = new MapStats;
-    pMapStats->Initialize();
+    pMapStats->Initialize(engine->_gameResourceManager->getEventsFile("MapStats.txt"));
 
     pMonsterStats = new MonsterStats;
     pMonsterStats->Initialize();
