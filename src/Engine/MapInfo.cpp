@@ -4,21 +4,14 @@
 #include "Engine/MapInfo.h"
 #include "Engine/GameResourceManager.h"
 #include "Engine/Engine.h"
-#include "Engine/Graphics/Indoor.h"
 #include "Engine/LOD.h"
-#include "Engine/Tables/ItemTable.h"
-#include "Engine/Objects/ObjectList.h"
-#include "Engine/Objects/SpriteObject.h"
 #include "Engine/Graphics/DecorationList.h"
 #include "Engine/Graphics/Level/Decoration.h"
 
 #include "Library/Serialization/EnumSerialization.h"
 
-#include "Library/Random/Random.h"
-#include "Utility/Math/TrigLut.h"
 #include "Utility/String.h"
 
-#include "OurMath.h"
 #include "Party.h"
 
 const char *location_type[] = {
@@ -241,76 +234,6 @@ MAP_TYPE MapStats::GetMapInfo(const std::string &Str2) {
 
     Error("Map not found!");
     return (MAP_TYPE)-1;  // @TODO: This should be MAP_INVALID!, as it's if'ed later.
-}
-
-void MapInfo::SpawnRandomTreasure(SpawnPoint *a2) {
-    Assert(a2->uKind == OBJECT_Item);
-
-    SpriteObject a1a;
-    a1a.containing_item.Reset();
-
-    int v34 = 0;
-    int v5 = grng->random(100);
-    ITEM_TREASURE_LEVEL v13 = grng->randomSample(RemapTreasureLevel(a2->uItemIndex, Treasure_prob));
-    if (v13 != ITEM_TREASURE_LEVEL_GUARANTEED_ARTIFACT) {
-        // [0, 20) -- nothing
-        // [20, 60) -- gold
-        // [60, 100) -- item
-
-        if (v5 < 20)
-            return;
-
-        if (v5 >= 60) {
-            DropTreasureAt(v13, grng->random(27) + 20, a2->vPosition.x,
-                           a2->vPosition.y,
-                           a2->vPosition.z, 0);
-            return;
-        }
-
-        if (a2->uItemIndex == ITEM_TREASURE_LEVEL_1) {
-            a1a.containing_item.uItemID = ITEM_GOLD_SMALL;
-            v34 = grng->random(51) + 50;
-        } else if (a2->uItemIndex == ITEM_TREASURE_LEVEL_2) {
-            a1a.containing_item.uItemID = ITEM_GOLD_SMALL;
-            v34 = grng->random(101) + 100;
-        } else if (a2->uItemIndex == ITEM_TREASURE_LEVEL_3) {
-            a1a.containing_item.uItemID = ITEM_GOLD_MEDIUM;
-            v34 = grng->random(301) + 200;
-        } else if (a2->uItemIndex == ITEM_TREASURE_LEVEL_4) {
-            a1a.containing_item.uItemID = ITEM_GOLD_MEDIUM;
-            v34 = grng->random(501) + 500;
-        } else if (a2->uItemIndex == ITEM_TREASURE_LEVEL_5) {
-            a1a.containing_item.uItemID = ITEM_GOLD_LARGE;
-            v34 = grng->random(1001) + 1000;
-        } else if (a2->uItemIndex == ITEM_TREASURE_LEVEL_6) {
-            a1a.containing_item.uItemID = ITEM_GOLD_LARGE;
-            v34 = grng->random(3001) + 2000;
-        }
-        a1a.uType = (SPRITE_OBJECT_TYPE)pItemTable->pItems[a1a.containing_item.uItemID].uSpriteID;
-        a1a.containing_item.SetIdentified();
-        a1a.uObjectDescID = pObjectList->ObjectIDByItemID(a1a.uType);
-        a1a.containing_item.special_enchantment = (ITEM_ENCHANTMENT)v34;
-    } else {
-        if (!a1a.containing_item.GenerateArtifact())
-            return;
-        a1a.uType = (SPRITE_OBJECT_TYPE)pItemTable->pItems[a1a.containing_item.uItemID].uSpriteID;
-        a1a.uObjectDescID = pObjectList->ObjectIDByItemID(a1a.uType);
-        a1a.containing_item.Reset();  // TODO(captainurist): this needs checking
-    }
-    a1a.vPosition.y = a2->vPosition.y;
-    a1a.uAttributes = 0;
-    a1a.uSoundID = 0;
-    a1a.uFacing = 0;
-    a1a.vPosition.z = a2->vPosition.z;
-    a1a.vPosition.x = a2->vPosition.x;
-    a1a.spell_skill = CHARACTER_SKILL_MASTERY_NONE;
-    a1a.spell_level = 0;
-    a1a.uSpellID = SPELL_NONE;
-    a1a.spell_target_pid = 0;
-    a1a.spell_caster_pid = Pid();
-    a1a.uSpriteFrameID = 0;
-    a1a.uSectorID = pIndoor->GetSector(a2->vPosition.x, a2->vPosition.y, a2->vPosition.z);
-    a1a.Create(0, 0, 0, 0);
 }
 
 MM_DEFINE_ENUM_SERIALIZATION_FUNCTIONS(MapStartPoint, CASE_SENSITIVE, {

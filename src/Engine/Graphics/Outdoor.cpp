@@ -2712,7 +2712,7 @@ void ODM_LoadAndInitialize(const std::string &pFilename, ODMRenderParams *thisa)
             if (spawn->uKind == OBJECT_Actor)
                 SpawnEncounter(map_info, spawn, 0, 0, 0);
             else
-                map_info->SpawnRandomTreasure(spawn);
+                SpawnRandomTreasure(map_info, spawn);
         }
         RespawnGlobalDecorations();
     }

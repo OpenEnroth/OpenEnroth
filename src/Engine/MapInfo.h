@@ -3,8 +3,6 @@
 #include <cstdint>
 #include <string>
 
-struct SpawnPoint;
-
 enum MAP_TYPE : uint32_t {
     MAP_INVALID = 0,
     MAP_EMERALD_ISLE = 1,
@@ -59,8 +57,6 @@ enum class MAP_TREASURE_LEVEL : int8_t {
 using enum MAP_TREASURE_LEVEL;
 
 struct MapInfo {
-    void SpawnRandomTreasure(SpawnPoint *a2);
-
     std::string pName;
     std::string pFilename;
     std::string pEncounterMonster1Texture;
