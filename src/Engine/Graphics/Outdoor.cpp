@@ -2077,7 +2077,7 @@ void ODM_ProcessPartyActions() {
 
         CollideOutdoorWithModels(true);
         CollideOutdoorWithDecorations(WorldPosToGridCellX(pParty->pos.x), WorldPosToGridCellY(pParty->pos.y));
-        _46ED8A_collide_against_sprite_objects(4);
+        _46ED8A_collide_against_sprite_objects(Pid::character(0));
 
         for (size_t actor_id = 0; actor_id < pActors.size(); ++actor_id)
             CollideWithActor(actor_id, 0);

@@ -179,7 +179,7 @@ void SpriteObject::updateObjectODM(unsigned int uLayingItemID) {
                 if (pSpriteObjects[uLayingItemID].vPosition.z < level) {
                     pSpriteObjects[uLayingItemID].vPosition.z = level + 1;
                 }
-                if (!processSpellImpact(uLayingItemID, 0)) {
+                if (!processSpellImpact(uLayingItemID, Pid())) {
                     return;
                 }
             }
@@ -213,7 +213,7 @@ void SpriteObject::updateObjectODM(unsigned int uLayingItemID) {
             if (pSpriteObjects[uLayingItemID].vPosition.z < level) {
                 pSpriteObjects[uLayingItemID].vPosition.z = level + 1;
             }
-            if (!processSpellImpact(uLayingItemID, 0)) {
+            if (!processSpellImpact(uLayingItemID, Pid())) {
                 return;
             }
         }
@@ -505,7 +505,7 @@ LABEL_25:
         // end loop
     }
 
-    if (!(pObject->uFlags & OBJECT_DESC_INTERACTABLE) || processSpellImpact(uLayingItemID, 0)) {
+    if (!(pObject->uFlags & OBJECT_DESC_INTERACTABLE) || processSpellImpact(uLayingItemID, Pid())) {
         pSpriteObject->vPosition.z = floor_lvl + 1;
         if (pIndoor->pFaces[uFaceID].uPolygonType == POLYGON_Floor) {
             pSpriteObject->vVelocity.z = 0;
@@ -720,7 +720,7 @@ static void updateSpriteOnImpact(SpriteObject *object) {
     object->uObjectDescID = pObjectList->ObjectIDByItemID(object->uType);
 }
 
-bool processSpellImpact(unsigned int uLayingItemID, int pid) {
+bool processSpellImpact(unsigned int uLayingItemID, Pid pid) {
     SpriteObject *object = &pSpriteObjects[uLayingItemID];
     ObjectDesc *objectDesc = &pObjectList->pObjects[object->uObjectDescID];
 
@@ -1267,7 +1267,7 @@ bool processSpellImpact(unsigned int uLayingItemID, int pid) {
     }
 }
 
-void applySpellSpriteDamage(unsigned int uLayingItemID, int pid) {
+void applySpellSpriteDamage(unsigned int uLayingItemID, Pid pid) {
     Vec3i velocity;
 
     if (PID_TYPE(pid) == OBJECT_Character) {
@@ -1363,7 +1363,7 @@ void UpdateObjects() {
     }
 }
 
-unsigned int collideWithActor(unsigned int uLayingItemID, signed int pid) {
+unsigned int collideWithActor(unsigned int uLayingItemID, Pid pid) {
     unsigned int result = uLayingItemID;
     if (pObjectList->pObjects[pSpriteObjects[uLayingItemID].uObjectDescID].uFlags & OBJECT_DESC_UNPICKABLE) {
         result = processSpellImpact(uLayingItemID, pid);

@@ -418,7 +418,7 @@ bool CollideWithActor(int actor_idx, int override_radius) {
     return CollideWithCylinder(actor->pos.toFloat(), radius, actor->height, PID(OBJECT_Actor, actor_idx), true);
 }
 
-void _46ED8A_collide_against_sprite_objects(unsigned int pid) {
+void _46ED8A_collide_against_sprite_objects(Pid pid) {
     for (uint i = 0; i < pSpriteObjects.size(); ++i) {
         if (pSpriteObjects[i].uObjectDescID == 0)
             continue;

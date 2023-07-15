@@ -95,7 +95,7 @@ bool CollideIndoorWithPortals();
 bool CollideWithActor(int actor_idx, int override_radius);
 
 
-void _46ED8A_collide_against_sprite_objects(unsigned int pid);
+void _46ED8A_collide_against_sprite_objects(Pid pid);
 
 /**
  * @offset 0x0046EF01.
