@@ -5,7 +5,7 @@
 #include "Engine/Objects/ItemEnums.h"
 #include "Engine/Objects/CharacterEnums.h"
 #include "Engine/Time.h"
-#include "Engine/MapInfo.h"
+#include "Engine/MapEnums.h"
 
 #include "Utility/IndexedArray.h"
 

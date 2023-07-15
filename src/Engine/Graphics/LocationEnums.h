@@ -1,5 +1,7 @@
 #pragma once
 
+// TODO(captainurist): merge with MapEnums.h
+
 // TODO(captainurist): enum?
 #define DAY_ATTRIB_FOG 1
 

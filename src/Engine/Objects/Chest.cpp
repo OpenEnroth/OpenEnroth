@@ -10,7 +10,6 @@
 #include "Engine/Graphics/IRender.h"
 #include "Engine/LOD.h"
 #include "Engine/Localization.h"
-#include "Engine/MapInfo.h"
 #include "Engine/Objects/Actor.h"
 #include "Engine/Objects/Items.h"
 #include "Engine/Objects/ObjectList.h"
@@ -21,6 +20,7 @@
 #include "Engine/Snapshots/SnapshotSerialization.h"
 #include "Engine/OurMath.h"
 #include "Engine/Party.h"
+#include "Engine/MapInfo.h"
 
 #include "GUI/UI/UIChest.h"
 #include "GUI/UI/UIStatusBar.h"

@@ -1,13 +1,9 @@
 #include "Engine/mm7_data.h"
 
-#include "Party.h"
-
 #include "Engine/Graphics/Viewport.h"
 #include "Engine/stru160.h"
-#include "MapInfo.h"
 #include "OurMath.h"
 
-MapStats *pMapStats;
 Viewport *pViewport = new Viewport;
 ViewingParams *viewparams = new ViewingParams;
 

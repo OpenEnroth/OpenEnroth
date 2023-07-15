@@ -8,6 +8,7 @@
 
 #include "Engine/Tables/TileEnums.h"
 #include "Engine/SpawnPoint.h"
+#include "Engine/MapEnums.h"
 
 #include "Media/Audio/SoundEnums.h"
 
@@ -220,3 +221,6 @@ int GridCellToWorldPosY(int);
 void sub_481ED9_MessWithODMRenderParams();
 bool IsTerrainSlopeTooHigh(int pos_x, int pos_y);
 int GetTerrainHeightsAroundParty2(int x, int y, bool *pIsOnWater, int bFloatAboveWater);
+void TeleportToStartingPoint(MapStartPoint point);  // idb
+
+extern MapStartPoint uLevel_StartingPointType;

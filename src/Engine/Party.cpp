@@ -10,7 +10,6 @@
 #include "Engine/Graphics/Indoor.h"
 #include "Engine/Graphics/Image.h"
 #include "Engine/Localization.h"
-#include "Engine/LOD.h"
 #include "Engine/Objects/Actor.h"
 #include "Engine/Objects/ObjectList.h"
 #include "Engine/Objects/SpriteObject.h"
@@ -22,6 +21,7 @@
 #include "Engine/TurnEngine/TurnEngine.h"
 #include "Engine/OurMath.h"
 #include "Engine/AssetsManager.h"
+#include "Engine/MapInfo.h"
 
 #include "GUI/GUIWindow.h"
 #include "GUI/GUIMessageQueue.h"

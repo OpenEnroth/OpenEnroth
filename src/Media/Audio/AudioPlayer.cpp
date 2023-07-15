@@ -17,6 +17,7 @@
 #include "Engine/Snapshots/EntitySnapshots.h"
 #include "Engine/Snapshots/SnapshotSerialization.h"
 #include "Engine/Engine.h"
+#include "Engine/MapInfo.h"
 
 #include "Media/Audio/OpenALSoundProvider.h"
 

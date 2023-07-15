@@ -29,6 +29,7 @@
 #include "Engine/Tables/AwardTable.h"
 #include "Engine/Time.h"
 #include "Engine/TurnEngine/TurnEngine.h"
+#include "Engine/MapInfo.h"
 
 #include "GUI/GUIWindow.h"
 #include "GUI/UI/UIGame.h"

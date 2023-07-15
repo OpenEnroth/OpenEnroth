@@ -1,18 +1,15 @@
+#include "MapInfo.h"
+
 #include <cstdlib>
 #include <sstream>
 
-#include "Engine/MapInfo.h"
 #include "Engine/GameResourceManager.h"
 #include "Engine/Engine.h"
 #include "Engine/LOD.h"
-#include "Engine/Graphics/DecorationList.h"
-#include "Engine/Graphics/Level/Decoration.h"
-
-#include "Library/Serialization/EnumSerialization.h"
 
 #include "Utility/String.h"
 
-#include "Party.h"
+MapStats *pMapStats;
 
 const char *location_type[] = {
     "GENERIC",
@@ -234,55 +231,4 @@ MAP_TYPE MapStats::GetMapInfo(const std::string &Str2) {
 
     Error("Map not found!");
     return (MAP_TYPE)-1;  // @TODO: This should be MAP_INVALID!, as it's if'ed later.
-}
-
-MM_DEFINE_ENUM_SERIALIZATION_FUNCTIONS(MapStartPoint, CASE_SENSITIVE, {
-    {MapStartPoint_Party, "Party Start"},
-    {MapStartPoint_North, "North Start"},
-    {MapStartPoint_South, "South Start"},
-    {MapStartPoint_East, "East Start"},
-    {MapStartPoint_West, "West Start"}
-})
-
-void TeleportToStartingPoint(MapStartPoint point) {
-    std::string pName = toString(point);
-
-    if (pDecorationList->GetDecorIdByName(pName)) {
-        if (!pLevelDecorations.empty()) {
-            for (size_t i = 0; i < pLevelDecorations.size(); ++i) {
-                if (pLevelDecorations[i].uDecorationDescID == pDecorationList->GetDecorIdByName(pName)) {
-                    pParty->pos = pLevelDecorations[i].vPosition;
-                    pParty->speed = Vec3i();
-                    pParty->uFallStartZ = pParty->pos.z;
-                    pParty->_viewYaw = (TrigLUT.uIntegerHalfPi * pLevelDecorations[i].field_1A) / 90;
-                    if (pLevelDecorations[i]._yawAngle)
-                        pParty->_viewYaw = pLevelDecorations[i]._yawAngle;
-                    pParty->_viewPitch = 0;
-                }
-            }
-        }
-        if (Start_Party_Teleport_Flag) {
-            if (Party_Teleport_X_Pos)
-                pParty->pos.x = Party_Teleport_X_Pos;
-            if (Party_Teleport_Y_Pos)
-                pParty->pos.y = Party_Teleport_Y_Pos;
-            if (Party_Teleport_Z_Pos) {
-                pParty->pos.z = Party_Teleport_Z_Pos;
-                pParty->uFallStartZ = Party_Teleport_Z_Pos;
-            }
-            if (Party_Teleport_Cam_Yaw != -1)
-                pParty->_viewYaw = Party_Teleport_Cam_Yaw;
-            if (Party_Teleport_Cam_Pitch)
-                pParty->_viewPitch = Party_Teleport_Cam_Pitch;
-            if (Party_Teleport_Z_Speed)
-                pParty->speed = Vec3i(0, 0, Party_Teleport_Z_Speed);
-        }
-        Party_Teleport_Cam_Yaw = -1;
-        Start_Party_Teleport_Flag = 0;
-        Party_Teleport_Z_Speed = 0;
-        Party_Teleport_Cam_Pitch = 0;
-        Party_Teleport_Z_Pos = 0;
-        Party_Teleport_Y_Pos = 0;
-        Party_Teleport_X_Pos = 0;
-    }
 }

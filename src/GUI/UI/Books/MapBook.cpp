@@ -12,6 +12,7 @@
 #include "Engine/OurMath.h"
 #include "Engine/Party.h"
 #include "Engine/Time.h"
+#include "Engine/MapInfo.h"
 
 #include "GUI/GUIButton.h"
 #include "GUI/GUIFont.h"

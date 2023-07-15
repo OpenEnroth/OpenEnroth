@@ -53,6 +53,7 @@
 #include "Engine/Tables/AwardTable.h"
 #include "Engine/Time.h"
 #include "Engine/TurnEngine/TurnEngine.h"
+#include "Engine/MapInfo.h"
 
 #include "GUI/GUIButton.h"
 #include "GUI/GUIProgressBar.h"

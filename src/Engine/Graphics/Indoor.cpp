@@ -34,6 +34,7 @@
 #include "Engine/Time.h"
 #include "Engine/TurnEngine/TurnEngine.h"
 #include "Engine/Localization.h"
+#include "Engine/MapInfo.h"
 
 #include "GUI/GUIProgressBar.h"
 #include "GUI/GUIWindow.h"

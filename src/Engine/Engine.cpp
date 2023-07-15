@@ -49,6 +49,7 @@
 #include "Engine/Time.h"
 #include "Engine/AttackList.h"
 #include "Engine/GameResourceManager.h"
+#include "Engine/MapInfo.h"
 
 #include "GUI/GUIButton.h"
 #include "GUI/GUIFont.h"
