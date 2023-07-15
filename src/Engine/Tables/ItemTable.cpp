@@ -91,17 +91,17 @@ void ItemTable::Initialize() {
     pMonsterStats->Initialize(engine->_gameResourceManager->getEventsFile("monsters.txt"));
     pMonsterStats->InitializePlacements(engine->_gameResourceManager->getEventsFile("placemon.txt"));
 
-    pSpellStats = new SpellStats;
-    pSpellStats->Initialize();
+    pSpellStats = new SpellStats();
+    pSpellStats->Initialize(engine->_gameResourceManager->getEventsFile("spells.txt"));
 
     LoadPotions();
     LoadPotionNotes();
 
-    pFactionTable = new FactionTable;
-    pFactionTable->Initialize();
+    pFactionTable = new FactionTable();
+    pFactionTable->Initialize(engine->_gameResourceManager->getEventsFile("hostile.txt"));
 
-    pStorylineText = new StorylineText;
-    pStorylineText->Initialize();
+    pStorylineText = new StorylineText();
+    pStorylineText->Initialize(engine->_gameResourceManager->getEventsFile("history.txt"));
 
     std::string txtRaw;
 
@@ -162,7 +162,7 @@ void ItemTable::Initialize() {
 
     pSpecialEnchantments_count = 72;
 
-    initializeBuildings();
+    initializeBuildings(engine->_gameResourceManager->getEventsFile("2dEvents.txt"));
 
     txtRaw = engine->_gameResourceManager->getEventsFile("items.txt").string_view();
     strtok(txtRaw.data(), "\r");

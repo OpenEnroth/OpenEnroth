@@ -2,14 +2,10 @@
 
 #include <map>
 #include <string>
-#include <vector>
 
-#include "Engine/Engine.h"
-#include "Engine/GameResourceManager.h"
 #include "Engine/Party.h"
 #include "Engine/Graphics/Indoor.h"
 #include "Engine/Graphics/Overlays.h"
-#include "Engine/LOD.h"
 #include "Engine/Objects/Actor.h"
 #include "Engine/Objects/ObjectList.h"
 #include "Engine/Objects/SpriteObject.h"
@@ -728,7 +724,7 @@ bool SpellBuff::Apply(GameTime expire_time, CharacterSkillMastery uSkillMastery,
     return true;
 }
 
-void SpellStats::Initialize() {
+void SpellStats::Initialize(const Blob &spells) {
     std::map<std::string, SPELL_SCHOOL, ILess> spellSchoolMaps;
     spellSchoolMaps["fire"] = SPELL_SCHOOL_FIRE;
     spellSchoolMaps["air"] = SPELL_SCHOOL_AIR;
@@ -743,7 +739,7 @@ void SpellStats::Initialize() {
 
     char *test_string;
 
-    std::string txtRaw{ engine->_gameResourceManager->getEventsFile("spells.txt").string_view() };
+    std::string txtRaw(spells.string_view());
 
     strtok(txtRaw.data(), "\r");
     for (SPELL_TYPE uSpellID : allRegularSpells()) {

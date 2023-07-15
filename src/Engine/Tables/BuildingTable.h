@@ -2,10 +2,11 @@
 
 #include <cstdint>
 #include <string>
-#include <array>
 
 #include "GUI/UI/UIHouseEnums.h"
 #include "Utility/IndexedArray.h"
+
+class Blob;
 
 enum class BuildingType : uint16_t {
     BUILDING_INVALID = 0,
@@ -70,6 +71,6 @@ struct BuildingDesc {
     int16_t field_32;
 };
 
-void initializeBuildings();
+void initializeBuildings(const Blob &buildings);
 
 extern IndexedArray<BuildingDesc, HOUSE_FIRST, HOUSE_LAST> buildingTable;
