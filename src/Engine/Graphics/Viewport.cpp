@@ -265,14 +265,14 @@ void InteractWithActor(unsigned int id) {
     }
 }
 
-void DecorationInteraction(unsigned int id, unsigned int pid) {
+void DecorationInteraction(unsigned int id, Pid pid) {
     if (pLevelDecorations[id].uEventID) {
         eventProcessor(pLevelDecorations[id].uEventID, pid, 1);
         pLevelDecorations[id].uFlags |= LEVEL_DECORATION_VISIBLE_ON_MAP;
     } else {
         if (pLevelDecorations[id].IsInteractive()) {
             activeLevelDecoration = &pLevelDecorations[id];
-            eventProcessor(engine->_persistentVariables.decorVars[pLevelDecorations[id].eventVarId] + 380, 0, 1);
+            eventProcessor(engine->_persistentVariables.decorVars[pLevelDecorations[id].eventVarId] + 380, Pid(), 1);
             activeLevelDecoration = nullptr;
         }
     }
@@ -288,7 +288,7 @@ void Engine::onGameViewportClick() {
     }
 
     auto pidAndDepth = vis->get_picked_object_zbuf_val();
-    uint16_t pid = pidAndDepth.object_pid;
+    Pid pid = pidAndDepth.object_pid;
     int16_t distance = pidAndDepth.depth;
     bool in_range = distance < clickable_distance;
     // else

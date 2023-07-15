@@ -552,7 +552,7 @@ void ReleaseBranchlessDialogue() {
         // Do not run event engine whith no event, it may happen when you close talk window
         // with NPC that only say catch phrases
         activeLevelDecoration = savedDecoration;
-        eventProcessor(savedEventID, 0, 1, savedEventStep);
+        eventProcessor(savedEventID, Pid(), 1, savedEventStep);
     }
     activeLevelDecoration = nullptr;
     pEventTimer->Resume();
@@ -717,7 +717,7 @@ void OnSelectNPCDialogueOption(DIALOGUE_TYPE option) {
                 default:
                     activeLevelDecoration = (LevelDecoration *)1;
                     current_npc_text.clear();
-                    eventProcessor(npc_event_id, 0, 1);
+                    eventProcessor(npc_event_id, Pid(), 1);
                     activeLevelDecoration = nullptr;
                     break;
             }

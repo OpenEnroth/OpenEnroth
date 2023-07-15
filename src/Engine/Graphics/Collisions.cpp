@@ -587,7 +587,7 @@ void ProcessActorCollisionsBLV(Actor &actor, bool isAboveGround, bool isFlying) 
                 }
             }
             if (pIndoor->pFaces[id].uAttributes & FACE_TriggerByMonster)
-                eventProcessor(pIndoor->pFaceExtras[pIndoor->pFaces[id].uFaceExtraID].uEventID, 0, 1);
+                eventProcessor(pIndoor->pFaceExtras[pIndoor->pFaces[id].uFaceExtraID].uEventID, Pid(), 1);
         }
 
         actor.speed.x = fixpoint_mul(58500, actor.speed.x);

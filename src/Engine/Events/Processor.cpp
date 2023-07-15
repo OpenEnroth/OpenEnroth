@@ -69,7 +69,7 @@ void checkDecorationEvents() {
         if (decoration.uFlags & LEVEL_DECORATION_TRIGGERED_BY_MONSTER) {
             for (int i = 0; i < pActors.size(); i++) {
                 if ((decoration.vPosition - pActors[i].pos).length() < decoration.uTriggerRange) {
-                    eventProcessor(decoration.uEventID, 0, 1);
+                    eventProcessor(decoration.uEventID, Pid(), 1);
                 }
             }
         }
@@ -77,7 +77,7 @@ void checkDecorationEvents() {
         if (decoration.uFlags & LEVEL_DECORATION_TRIGGERED_BY_OBJECT) {
             for (int i = 0; i < pSpriteObjects.size(); i++) {
                 if ((decoration.vPosition - pSpriteObjects[i].vPosition).length() < decoration.uTriggerRange) {
-                    eventProcessor(decoration.uEventID, 0, 1);
+                    eventProcessor(decoration.uEventID, Pid(), 1);
                 }
             }
         }
@@ -144,7 +144,7 @@ static void registerTimerTriggers(EventType triggerType, std::vector<MapTimer> *
     }
 }
 
-void eventProcessor(int eventId, int targetObj, bool canShowMessages, int startStep) {
+void eventProcessor(int eventId, Pid targetObj, bool canShowMessages, int startStep) {
     if (!eventId) {
         return;
     }
@@ -215,13 +215,13 @@ void onMapLoad() {
     timerGuard = pParty->GetPlayingTime();
 
     for (EventTrigger &triggers : onMapLoadTriggers) {
-        eventProcessor(triggers.eventId, 0, false, triggers.eventStep + 1);
+        eventProcessor(triggers.eventId, Pid(), false, triggers.eventStep + 1);
     }
 }
 
 void onMapLeave() {
     for (EventTrigger &triggers : onMapLeaveTriggers) {
-        eventProcessor(triggers.eventId, 0, true, triggers.eventStep + 1);
+        eventProcessor(triggers.eventId, Pid(), true, triggers.eventStep + 1);
     }
 
     // Cleanup timers to avoid firing while map transition is in process
@@ -231,7 +231,7 @@ void onMapLeave() {
 
 static void checkTimer(MapTimer &timer) {
     if (pParty->GetPlayingTime() >= timer.alarmTime) {
-        eventProcessor(timer.eventId, 0, true, timer.eventStep + 1);
+        eventProcessor(timer.eventId, Pid(), true, timer.eventStep + 1);
         if (timer.altInterval) {
             timer.alarmTime = pParty->GetPlayingTime() + timer.altInterval;
         } else {

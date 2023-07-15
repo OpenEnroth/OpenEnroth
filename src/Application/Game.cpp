@@ -931,7 +931,7 @@ void Game::processQueuedMessages() {
                         Transition_StopSound_Autosave(Party_Teleport_Map_Name, MapStartPoint_Party);
                     }
                 } else {
-                    eventProcessor(savedEventID, 0, 1, savedEventStep);
+                    eventProcessor(savedEventID, Pid(), 1, savedEventStep);
                 }
                 if (iequals(s_SavedMapName.data(), "d05.blv"))
                     pParty->GetPlayingTime() += GameTime::FromDays(4);
@@ -2073,8 +2073,8 @@ void Game::onPressSpace() {
                           keyboardInputHandler->IsKeyboardPickingOutlineToggled(),
                           &vis_sprite_filter_3, &vis_door_filter);
 
-    uint16_t pid = _vis->get_picked_object_zbuf_val().object_pid;
-    if (pid != 0) {
+    Pid pid = _vis->get_picked_object_zbuf_val().object_pid;
+    if (pid) {
         DoInteractionWithTopmostZObject(pid);
     }
 }
