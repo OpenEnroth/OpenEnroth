@@ -115,6 +115,13 @@ void EngineController::goToMainMenu() {
             throw Exception("Couldn't return to main menu");
     };
 
+    // Skip movies.
+    while (current_screen_type == SCREEN_VIDEO) {
+        maybeThrow();
+        pressAndReleaseKey(PlatformKey::KEY_ESCAPE);
+        tick(1);
+    }
+
     // Can't always leave key settings menu by pressing ESC, so need custom handling.
     if (current_screen_type == SCREEN_KEYBOARD_OPTIONS) {
         pressGuiButton("KeyBinding_Default");
@@ -125,6 +132,12 @@ void EngineController::goToMainMenu() {
     while (current_screen_type != SCREEN_GAME && GetCurrentMenuID() != MENU_MAIN) {
         maybeThrow();
         pressAndReleaseKey(PlatformKey::KEY_ESCAPE);
+        tick(2); // Somehow tick(1) is not enough when we're trying to leave the game loading menu.
+    }
+
+    // If game is starting up - wait for main menu to appear.
+    while (GetCurrentMenuID() == MENU_MAIN && lWindowList.empty()) {
+        maybeThrow();
         tick(1);
     }
 

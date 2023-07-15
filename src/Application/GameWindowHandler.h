@@ -5,6 +5,7 @@
 
 #include "Platform/PlatformEnums.h"
 #include "Platform/Filters/PlatformEventFilter.h"
+#include "Library/Application/PlatformApplicationAware.h"
 #include "Utility/Geometry/Size.h"
 
 namespace Io {
@@ -13,7 +14,7 @@ class Mouse;
 
 class GameConfig;
 
-class GameWindowHandler : public PlatformEventFilter {
+class GameWindowHandler : public PlatformEventFilter, private PlatformApplicationAware {
  public:
     GameWindowHandler();
     virtual ~GameWindowHandler();
@@ -25,6 +26,8 @@ class GameWindowHandler : public PlatformEventFilter {
     std::tuple<int, Pointi, Sizei> GetWindowRelativePosition(Pointi *position = nullptr);
 
  private:
+    friend class PlatformIntrospection;
+
     Pointi MapToRender(Pointi position);
     void OnMouseLeftClick(Pointi position);
     void OnMouseRightClick(Pointi position);
@@ -67,4 +70,5 @@ class GameWindowHandler : public PlatformEventFilter {
 
  private:
     std::shared_ptr<Io::Mouse> mouse = nullptr;
+    bool _closing = false;
 };

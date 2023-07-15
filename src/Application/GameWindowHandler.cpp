@@ -7,6 +7,8 @@
 
 #include "Engine/Engine.h"
 #include "Engine/EngineGlobals.h"
+#include "Engine/Components/Control/EngineControlComponent.h"
+#include "Engine/Components/Control/EngineController.h"
 #include "Engine/Graphics/Camera.h"
 #include "Engine/Graphics/Viewport.h"
 #include "Engine/Graphics/Vis.h"
@@ -25,6 +27,7 @@
 #include "Media/MediaPlayer.h"
 
 #include "Library/Logger/Logger.h"
+#include "Library/Application/PlatformApplication.h"
 
 #include "Platform/PlatformGamepad.h"
 
@@ -565,9 +568,17 @@ bool GameWindowHandler::activationEvent(const PlatformWindowEvent *event) {
 }
 
 bool GameWindowHandler::closeEvent(const PlatformWindowEvent *event) {
-    UpdateConfigFromWindow(engine->config.get());
-    engine->config->SaveConfiguration();
-    Engine_DeinitializeAndTerminate(0);
+    if (_closing)
+        return false;
+    _closing = true;
+
+    // TODO(captainurist): That's a very convoluted way to exit the game, redo this properly once we have a unified
+    //                     event loop.
+    application()->get<EngineControlComponent>()->runControlRoutine([] (EngineController *game) {
+        game->goToMainMenu();
+        game->pressGuiButton("MainMenu_ExitGame");
+    });
+
     return false;
 }
 
