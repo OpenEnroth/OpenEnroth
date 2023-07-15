@@ -82,7 +82,7 @@ static void spawnMonsters(int16_t typeindex, int16_t level, int count,
     pSpawnPoint.uKind = OBJECT_Actor;
     pSpawnPoint.uMonsterIndex = typeindex + 2 * level + level;
 
-    if (mapId) {
+    if (mapId != MAP_INVALID) {
         AIDirection direction;
         int oldNumActors = pActors.size();
         SpawnEncounter(&pMapStats->pInfos[mapId], &pSpawnPoint, 0, count, 0);

@@ -4,6 +4,7 @@
 #include <array>
 
 #include "Engine/Objects/NPCEnums.h"
+#include "Engine/MapEnums.h"
 
 #include "Utility/IndexedArray.h"
 #include "Utility/Flags.h"
@@ -87,7 +88,7 @@ struct NPCStats {
     void InitializeNPCGroups(const Blob &npcGroups);
     void InitializeNPCNews(const Blob &npcNews);
     void InitializeAdditionalNPCs(NPCData *pNPCDataBuff, int npc_uid,
-                                  int uLocation2D, int uMapId);
+                                  int uLocation2D, MAP_TYPE uMapId);
     /**
      * @offset 0x476C60
      */
@@ -101,7 +102,7 @@ struct NPCStats {
     std::array<NPCData, 100> pAdditionalNPC = {{}};
     std::array<std::string, 52> pCatchPhrases{};   // 15CA4h
     std::array<std::string, 500> pNPCUnicNames{};  // from first batch
-    NPCProfessionChance pProfessionChance[77];  // 16544h profession chance in each area
+    NPCProfessionChance pProfessionChance[77];  // 16544h profession chance in each area // TODO(captainurist): IndexedArray
     int field_17884 = 0;
     int field_17888 = 0;
     NPCGreeting pNPCGreetings[206];

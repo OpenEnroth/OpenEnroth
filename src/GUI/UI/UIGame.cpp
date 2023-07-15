@@ -688,7 +688,7 @@ void GameUI_OnPlayerPortraitLeftClick(unsigned int uPlayerID) {
 std::string GameUI_GetMinimapHintText() {
     double v3;            // st7@1
     int v7;               // eax@4
-    unsigned int pMapID;  // eax@14
+    MAP_TYPE pMapID;  // eax@14
     int global_coord_X;   // [sp+10h] [bp-1Ch]@1
     int global_coord_Y;   // [sp+14h] [bp-18h]@1
     int pY;      // [sp+1Ch] [bp-10h]@1
@@ -704,7 +704,7 @@ std::string GameUI_GetMinimapHintText() {
     if (uCurrentlyLoadedLevelType != LEVEL_OUTDOOR ||
         pOutdoor->pBModels.empty()) {
         pMapID = pMapStats->GetMapInfo(pCurrentMapName);
-        if (pMapID == 0)
+        if (pMapID == MAP_INVALID)
             result = "No Maze Info for this maze on file!";
         else
             result = pMapStats->pInfos[pMapID].pName;
@@ -727,7 +727,7 @@ std::string GameUI_GetMinimapHintText() {
             }
         }
         pMapID = pMapStats->GetMapInfo(pCurrentMapName);
-        if (pMapID == 0)
+        if (pMapID == MAP_INVALID)
             result = "No Maze Info for this maze on file!";
         else
             result = pMapStats->pInfos[pMapID].pName;

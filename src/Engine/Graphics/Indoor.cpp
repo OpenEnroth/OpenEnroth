@@ -56,6 +56,7 @@ static DecalBuilder *decal_builder = EngineIocContainer::ResolveDecalBuilder();
 IndoorLocation *pIndoor = new IndoorLocation;
 BLVRenderParams *pBLVRenderParams = new BLVRenderParams;
 
+// TODO(captainurist): IndexedArray
 uint16_t pDoorSoundIDsByLocationID[78] = {
     300, 300, 300, 300, 300, 300, 300, 300, 300, 300, 300, 300, 300,
     300, 300, 300, 404, 302, 306, 308, 304, 308, 302, 400, 302, 300,
@@ -585,7 +586,7 @@ bool BLVFaceExtra::HasEventHint() {
 
 //----- (0046F228) --------------------------------------------------------
 void BLV_UpdateDoors() {
-    SoundID eDoorSoundID = (SoundID)pDoorSoundIDsByLocationID[dword_6BE13C_uCurrentlyLoadedLocationID];
+    SoundID eDoorSoundID = (SoundID)pDoorSoundIDsByLocationID[std::to_underlying(dword_6BE13C_uCurrentlyLoadedLocationID)];
 
     // loop over all doors
     for (uint i = 0; i < pIndoor->pDoors.size(); ++i) {
@@ -812,7 +813,7 @@ void PrepareToLoadBLV(bool bLoading) {
     //pPaletteManager->RecalculateAll();
     pParty->_delayedReactionTimer = 0;
     MAP_TYPE map_id = pMapStats->GetMapInfo(pCurrentMapName);
-    if (map_id) {
+    if (map_id != MAP_INVALID) {
         map_info = &pMapStats->pInfos[map_id];
         respawn_interval = pMapStats->pInfos[map_id].uRespawnIntervalDays;
         alertStatus = GetAlertStatus();
@@ -828,7 +829,7 @@ void PrepareToLoadBLV(bool bLoading) {
         SpriteObject::InitializeSpriteObjects();
     }
     dword_6BE364_game_settings_1 &= ~GAME_SETTINGS_LOADING_SAVEGAME_SKIP_RESPAWN;
-    if (!map_id)
+    if (map_id == MAP_INVALID)
         indoor_was_respawned = false;
 
     if (indoor_was_respawned) {
@@ -922,7 +923,7 @@ void PrepareToLoadBLV(bool bLoading) {
 
     for (uint i = 0; i < pActors.size(); ++i) {
         if (pActors[i].attributes & ACTOR_UNKNOW7) {
-            if (!map_id) {
+            if (map_id == MAP_INVALID) {
                 pActors[i].monsterInfo.field_3E = 19;
                 pActors[i].attributes |= ACTOR_UNKNOW11;
                 continue;

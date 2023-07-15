@@ -465,7 +465,7 @@ void NPCStats::InitializeNPCProfs(const Blob &npcProfs) {
 
 //----- (0047732C) --------------------------------------------------------
 void NPCStats::InitializeAdditionalNPCs(NPCData *pNPCDataBuff, int npc_uid,
-                                        int uLocation2D, int uMapId) {
+                                        int uLocation2D, MAP_TYPE uMapId) {
     int rep_gen;
     int uNPCSex;              // esi@1
     int uGeneratedPortret;    // ecx@23
@@ -573,13 +573,13 @@ void NPCStats::InitializeAdditionalNPCs(NPCData *pNPCDataBuff, int npc_uid,
         pNPCDataBuff->rep = 0;
     }
 
-    max_prof_cap = grng->random(pProfessionChance[uMapId].uTotalprofChance) + 1;
+    max_prof_cap = grng->random(pProfessionChance[std::to_underlying(uMapId)].uTotalprofChance) + 1;
     test_prof_summ = 0;
     gen_profession = 0;
 
     if (max_prof_cap > 0) {
         do {
-            test_prof_summ += pProfessionChance[uMapId]
+            test_prof_summ += pProfessionChance[std::to_underlying(uMapId)]
                 .professionChancePerArea[gen_profession++];
         } while (test_prof_summ < max_prof_cap);
     }

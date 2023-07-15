@@ -22,7 +22,7 @@
 #include "Utility/IndexedArray.h"
 
 struct TransportInfo {
-    unsigned char uMapInfoID;
+    MAP_TYPE uMapInfoID;
     unsigned char pSchedule[7];
     unsigned int uTravelTime; // In days.
     int arrival_x;

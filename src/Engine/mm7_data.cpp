@@ -2467,12 +2467,12 @@ int day_attrib;
 int day_fogrange_1; // fog start dist
 int day_fogrange_2; // fog end dist
 struct TileTable *pTileTable;                                        // idb
-int dword_6BE13C_uCurrentlyLoadedLocationID;
+MAP_TYPE dword_6BE13C_uCurrentlyLoadedLocationID;
 float fWalkSpeedMultiplier = 1.0f;
 float fBackwardWalkSpeedMultiplier = 1.0f;
 float fTurnSpeedMultiplier = 1.0f;
 std::string pCurrentMapName;
-unsigned int uLevelMapStatsID;
+MAP_TYPE uLevelMapStatsID;
 int dword_6BE364_game_settings_1 = 0;
 
 float debug_non_combat_recovery_mul;

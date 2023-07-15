@@ -4,6 +4,8 @@
 #include <array>
 #include <string>
 
+#include "Utility/IndexedArray.h"
+
 #include "MapEnums.h"
 
 class Blob;
@@ -49,8 +51,7 @@ struct MapInfo {
 struct MapStats {
     void Initialize(const Blob &mapStats);
     MAP_TYPE GetMapInfo(const std::string &Str2);
-    std::array<MapInfo, 77> pInfos;
-    unsigned int uNumMaps;
+    IndexedArray<MapInfo, MAP_FIRST, MAP_LAST> pInfos;
 };
 
 extern struct MapStats *pMapStats;

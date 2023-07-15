@@ -5,6 +5,7 @@
 
 #include "Engine/Tables/BuildingTable.h"
 #include "Engine/Tables/AwardTable.h"
+#include "Engine/MapEnums.h"
 
 #include "GUI/GUIWindow.h"
 #include "Utility/IndexedArray.h"
@@ -67,7 +68,7 @@ struct HouseNpcDesc {
     std::string label = "";
     GraphicsImage *icon = nullptr;
     GUIButton *button = nullptr;
-    int targetMapID = 0;
+    MAP_TYPE targetMapID = MAP_INVALID;
     NPCData *npc = nullptr;
 };
 

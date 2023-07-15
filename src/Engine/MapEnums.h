@@ -11,7 +11,7 @@
  *
  * @see runMapIdCodeGen
  */
-enum MAP_TYPE : uint32_t {
+enum class MAP_TYPE : uint32_t {
     MAP_INVALID = 0,
     MAP_EMERALD_ISLAND = 1,
     MAP_HARMONDALE = 2,
@@ -89,7 +89,11 @@ enum MAP_TYPE : uint32_t {
     MAP_STRANGE_TEMPLE = 74,
     MAP_SMALL_HOUSE = 75,
     MAP_ARENA = 76,
+
+    MAP_FIRST = MAP_EMERALD_ISLAND,
+    MAP_LAST = MAP_ARENA,
 };
+using enum MAP_TYPE;
 
 /**
  * Map treasure / danger level, determines how treasure levels of random items are handled by the game.

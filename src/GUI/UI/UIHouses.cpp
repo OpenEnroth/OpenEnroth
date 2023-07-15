@@ -440,12 +440,12 @@ void prepareHouse(HOUSE_ID house) {
     // Dungeon entry (not present in MM7)
     if (buildingTable[house].uExitPicID) {
         if (!buildingTable[house]._quest_bit || !pParty->_questBits[buildingTable[house]._quest_bit]) {
-            int id = buildingTable[house].uExitMapID;
+            MAP_TYPE id = buildingTable[house].uExitMapID;
 
             HouseNpcDesc desc;
             desc.type = HOUSE_TRANSITION;
             desc.label = localization->FormatString(LSTR_FMT_ENTER_S, pMapStats->pInfos[id].pName.c_str());
-            desc.icon = assets->getImage_ColorKey(pHouse_ExitPictures[id]);
+            desc.icon = assets->getImage_ColorKey(pHouse_ExitPictures[static_cast<int>(id)]);
             desc.targetMapID = id;
 
             houseNpcs.push_back(desc);
@@ -856,7 +856,7 @@ void playHouseSound(HOUSE_ID houseID, HouseSoundType type) {
 void GUIWindow_House::houseNPCDialogue() {
     GUIWindow house_window = *pDialogueWindow;
     if (houseNpcs[currentHouseNpc].type == HOUSE_TRANSITION) {
-        int id = houseNpcs[currentHouseNpc].targetMapID;
+        MAP_TYPE id = houseNpcs[currentHouseNpc].targetMapID;
         house_window.uFrameX = 493;
         house_window.uFrameWidth = 126;
         house_window.uFrameZ = 366;
@@ -864,14 +864,14 @@ void GUIWindow_House::houseNPCDialogue() {
         house_window.uFrameX = SIDE_TEXT_BOX_POS_X;
         house_window.uFrameWidth = SIDE_TEXT_BOX_WIDTH;
         house_window.uFrameZ = SIDE_TEXT_BOX_POS_Z;
-        if (pTransitionStrings[id].empty()) {
+        if (pTransitionStrings[std::to_underlying(id)].empty()) { // TODO(captainurist): this is a weird access into pTransitionStrings, investigate & add docs
             auto str = localization->FormatString(LSTR_FMT_ENTER_S, pMapStats->pInfos[id].pName.c_str());
             house_window.DrawTitleText(pFontCreate, 0, (212 - pFontCreate->CalcTextHeight(str, house_window.uFrameWidth, 0)) / 2 + 101, colorTable.White, str, 3);
             return;
         }
 
-        int vertMargin = (212 - pFontCreate->CalcTextHeight(pTransitionStrings[id], house_window.uFrameWidth, 0)) / 2 + 101;
-        house_window.DrawTitleText(pFontCreate, 0, vertMargin, colorTable.White, pTransitionStrings[id], 3);
+        int vertMargin = (212 - pFontCreate->CalcTextHeight(pTransitionStrings[std::to_underlying(id)], house_window.uFrameWidth, 0)) / 2 + 101;
+        house_window.DrawTitleText(pFontCreate, 0, vertMargin, colorTable.White, pTransitionStrings[std::to_underlying(id)], 3);
         return;
     }
 

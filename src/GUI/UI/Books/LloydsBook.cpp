@@ -157,9 +157,9 @@ void GUIWindow_LloydsBook::hintBeaconSlot(int beaconId) {
             GameUI_StatusBar_Set(localization->FormatString(LSTR_FMT_RECALL_TO_S, mapName.c_str()));
         }
     } else {
-        int mapId = pMapStats->GetMapInfo(pCurrentMapName);
+        MAP_TYPE mapId = pMapStats->GetMapInfo(pCurrentMapName);
         std::string mapName = "Not in Map Stats";
-        if (mapId) {
+        if (mapId != MAP_INVALID) {
             mapName = pMapStats->pInfos[mapId].pName;
         }
 
