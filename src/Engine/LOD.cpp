@@ -16,7 +16,7 @@
 #include "Utility/DataPath.h"
 
 LOD::WriteableFile *pSave_LOD = nullptr; // LOD pointing to the savegame file currently being processed
-LOD::File *pGames_LOD = nullptr; // LOD pointing to data/games.lod
+std::unique_ptr<LodReader> pGames_LOD = nullptr; // LOD pointing to data/games.lod
 
 struct FileCloser {
     void operator()(FILE *file) {
@@ -572,11 +572,8 @@ int LOD::File::GetSubNodeIndex(const std::string &name) const {
 }
 
 bool Initialize_GamesLOD_NewLOD() {
-    pGames_LOD = new LOD::File();
-    if (pGames_LOD->Open(makeDataPath("data", "games.lod"))) {
-        pSave_LOD = new LOD::WriteableFile;
-        pSave_LOD->AllocSubIndicesAndIO(300, 100000);
-        return true;
-    }
-    return false;
+    pGames_LOD = LodReader::open(makeDataPath("data", "games.lod"));
+    pSave_LOD = new LOD::WriteableFile;
+    pSave_LOD->AllocSubIndicesAndIO(300, 100000);
+    return true;
 }

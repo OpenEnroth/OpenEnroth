@@ -3421,8 +3421,8 @@ static int lua_load_raw_from_lod(lua_State *L) {
         content = pBitmaps_LOD->LoadCompressedTexture(resource);
     else if (!strcmp(lod_name, "events"))
         content = engine->_gameResourceManager->getEventsFile(resource);
-    else if (!strcmp(lod_name, "games"))
-        content = pGames_LOD->LoadCompressedTexture(resource);
+    // else if (!strcmp(lod_name, "games"))
+    //     content = pGames_LOD->LoadCompressedTexture(resource); // TODO(captainurist): temporarily commented out.
     else if (!strcmp(lod_name, "icons"))
         content = pIcons_LOD->LoadCompressedTexture(resource);
     // else if (!strcmp(lod_name, "sprites"))

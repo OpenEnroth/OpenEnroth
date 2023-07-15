@@ -21,7 +21,11 @@ class LodReader final {
     inline ~LodReader() {}
 
     bool exists(const std::string &filename) const;
+
+    // TODO(captainurist): compression should be handled at the next layer, we should only have read() here, and it
+    //                     should do what readRaw does now.
     Blob read(const std::string &filename);
+    Blob readRaw(const std::string &filename);
 
     std::vector<std::string> ls() const;
 

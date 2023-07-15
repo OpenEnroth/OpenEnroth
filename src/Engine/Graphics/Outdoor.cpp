@@ -857,7 +857,7 @@ void OutdoorLocation::Load(const std::string &filename, int days_played, int res
     //    }
     //}
 
-    if (!pGames_LOD->DoesContainerExist(filename))
+    if (!pGames_LOD->exists(filename))
         Error("Unable to find %s in Games.LOD", filename.c_str());
 
     std::string minimap_filename = filename.substr(0, filename.length() - 4);
@@ -867,7 +867,7 @@ void OutdoorLocation::Load(const std::string &filename, int days_played, int res
     odm_filename.replace(odm_filename.length() - 4, 4, ".odm");
 
     OutdoorLocation_MM7 location;
-    deserialize(pGames_LOD->LoadCompressed(odm_filename), &location);
+    deserialize(pGames_LOD->read(odm_filename), &location);
     reconstruct(location, this);
 
     // ****************.ddm file*********************//
@@ -909,13 +909,13 @@ void OutdoorLocation::Load(const std::string &filename, int days_played, int res
     assert(respawnInitial + respawnTimed <= 1);
 
     if (respawnInitial) {
-        deserialize(pGames_LOD->LoadCompressed(ddm_filename), &delta, location);
+        deserialize(pGames_LOD->read(ddm_filename), &delta, location);
         *outdoors_was_respawned = true;
     } else if (respawnTimed) {
         auto header = delta.header;
         auto fullyRevealedCells = delta.fullyRevealedCells;
         auto partiallyRevealedCells = delta.partiallyRevealedCells;
-        deserialize(pGames_LOD->LoadCompressed(ddm_filename), &delta, location);
+        deserialize(pGames_LOD->read(ddm_filename), &delta, location);
         delta.header = header;
         delta.fullyRevealedCells = fullyRevealedCells;
         delta.partiallyRevealedCells = partiallyRevealedCells;

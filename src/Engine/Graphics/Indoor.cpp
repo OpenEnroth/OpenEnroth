@@ -242,7 +242,7 @@ void IndoorLocation::Load(const std::string &filename, int num_days_played, int 
     blv_filename.replace(blv_filename.length() - 4, 4, ".blv");
 
     this->filename = std::string(filename);
-    if (!pGames_LOD->DoesContainerExist(blv_filename))
+    if (!pGames_LOD->exists(blv_filename))
         Error("Unable to find %s in Games.LOD", blv_filename.c_str());
 
     Release();
@@ -250,7 +250,7 @@ void IndoorLocation::Load(const std::string &filename, int num_days_played, int 
     bLoaded = true;
 
     IndoorLocation_MM7 location;
-    deserialize(pGames_LOD->LoadCompressed(blv_filename), &location);
+    deserialize(pGames_LOD->read(blv_filename), &location);
     reconstruct(location, this);
 
     std::string dlv_filename = filename;
@@ -286,12 +286,12 @@ void IndoorLocation::Load(const std::string &filename, int num_days_played, int 
     assert(respawnInitial + respawnTimed <= 1);
 
     if (respawnInitial) {
-        deserialize(pGames_LOD->LoadCompressed(dlv_filename), &delta, location);
+        deserialize(pGames_LOD->read(dlv_filename), &delta, location);
         *indoor_was_respawned = true;
     } else if (respawnTimed) {
         auto header = delta.header;
         auto visibleOutlines = delta.visibleOutlines;
-        deserialize(pGames_LOD->LoadCompressed(dlv_filename), &delta, location);
+        deserialize(pGames_LOD->read(dlv_filename), &delta, location);
         delta.header = header;
         delta.visibleOutlines = visibleOutlines;
         *indoor_was_respawned = true;
