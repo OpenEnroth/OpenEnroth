@@ -123,7 +123,6 @@ extern int bDialogueUI_InitializeActor_NPC_ID;
 
 extern std::array<char, 10000> pTmpBuf3;
 extern int64_t qword_5C6DF0;
-extern struct FactionTable *pFactionTable;
 
 extern int uDefaultTravelTime_ByFoot;
 extern int day_attrib;

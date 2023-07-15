@@ -8,6 +8,9 @@
 #include "Utility/IndexedArray.h"
 #include "Utility/Flags.h"
 
+class Blob;
+class GameResourceManager;
+
 // TODO(Nik-RE-dev): It seems that two greet flags are used purely because it's modification is performed
 //                   before greeting string is constructed. It is also ensures that NPC in multi-NPC houses
 //                   always greet you with first line until you leave the house.
@@ -73,9 +76,16 @@ struct NPCStats {
         uNumNPCNames[0] = uNumNPCNames[1] = 0;
     }
 
-    void InitializeNPCText();
-    void InitializeNPCData();
-    void Initialize();
+    void Initialize(GameResourceManager *resourceManager);
+    void InitializeNPCNames(const Blob &npcNames);
+    void InitializeNPCProfs(const Blob &npcProfs);
+    void InitializeNPCText(const Blob &npcText);
+    void InitializeNPCTopics(const Blob &npcTopics);
+    void InitializeNPCDist(const Blob &npcDist);
+    void InitializeNPCData(const Blob &npcData);
+    void InitializeNPCGreets(const Blob &npcGreets);
+    void InitializeNPCGroups(const Blob &npcGroups);
+    void InitializeNPCNews(const Blob &npcNews);
     void InitializeAdditionalNPCs(NPCData *pNPCDataBuff, int npc_uid,
                                   int uLocation2D, int uMapId);
     /**

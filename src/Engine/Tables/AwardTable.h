@@ -4,6 +4,8 @@
 #include <array>
 #include <string>
 
+class Blob;
+
 enum AwardType : uint32_t {
     Award_Invalid = 0,
     Award_Fine = 1,
@@ -120,6 +122,6 @@ struct Award {
 /**
  * @offset 0x4763E0
  */
-void initializeAwards();
+void initializeAwards(const Blob &awards);
 
 extern std::array<Award, 105> pAwards;

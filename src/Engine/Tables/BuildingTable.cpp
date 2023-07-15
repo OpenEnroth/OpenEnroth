@@ -1,12 +1,11 @@
-#include "Engine/Tables/BuildingTable.h"
-#include "Engine/Engine.h"
-#include "Engine/GameResourceManager.h"
+#include "BuildingTable.h"
 
+#include "Utility/Memory/Blob.h"
 #include "Utility/String.h"
 
 IndexedArray<BuildingDesc, HOUSE_FIRST, HOUSE_LAST> buildingTable;
 
-void initializeBuildings() {
+void initializeBuildings(const Blob &buildings) {
     char *test_string;
     unsigned char c;
     bool break_loop;
@@ -14,7 +13,7 @@ void initializeBuildings() {
     char *tmp_pos;
     int decode_step;
 
-    std::string txtRaw{ engine->_gameResourceManager->getEventsFile("2dEvents.txt").string_view() };
+    std::string txtRaw(buildings.string_view());
     strtok(txtRaw.data(), "\r");
     strtok(NULL, "\r");
 

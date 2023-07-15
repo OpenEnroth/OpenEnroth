@@ -1,25 +1,14 @@
+#include "MapInfo.h"
+
 #include <cstdlib>
 #include <sstream>
 
-#include "Engine/MapInfo.h"
-#include "Engine/GameResourceManager.h"
-#include "Engine/Engine.h"
-#include "Engine/Graphics/Indoor.h"
+#include "Engine/ErrorHandling.h"
 #include "Engine/LOD.h"
-#include "Engine/Tables/ItemTable.h"
-#include "Engine/Objects/ObjectList.h"
-#include "Engine/Objects/SpriteObject.h"
-#include "Engine/Graphics/DecorationList.h"
-#include "Engine/Graphics/Level/Decoration.h"
 
-#include "Library/Serialization/EnumSerialization.h"
-
-#include "Library/Random/Random.h"
-#include "Utility/Math/TrigLut.h"
 #include "Utility/String.h"
 
-#include "OurMath.h"
-#include "Party.h"
+MapStats *pMapStats;
 
 const char *location_type[] = {
     "GENERIC",
@@ -50,8 +39,8 @@ const char *location_type[] = {
     "PSYCHOTIC"
 };
 
-void MapStats::Initialize() {
-    std::string pMapStatsTXT = std::string(engine->_gameResourceManager->getEventsFile("MapStats.txt").string_view());
+void MapStats::Initialize(const Blob &mapStats) {
+    std::string pMapStatsTXT(mapStats.string_view());
     std::stringstream stream(pMapStatsTXT);
     std::string tmpString;
     std::getline(stream, tmpString);
@@ -233,7 +222,7 @@ MAP_TYPE MapStats::GetMapInfo(const std::string &Str2) {
 
     std::string map_name = toLower(Str2);
 
-    for (uint i = 1; i < uNumMaps; ++i) {
+    for (int i = 1; i < uNumMaps; ++i) {
         if (pInfos[i].pFilename == map_name) {
             return (MAP_TYPE)i;
         }
@@ -241,125 +230,4 @@ MAP_TYPE MapStats::GetMapInfo(const std::string &Str2) {
 
     Error("Map not found!");
     return (MAP_TYPE)-1;  // @TODO: This should be MAP_INVALID!, as it's if'ed later.
-}
-
-void MapInfo::SpawnRandomTreasure(SpawnPoint *a2) {
-    Assert(a2->uKind == OBJECT_Item);
-
-    SpriteObject a1a;
-    a1a.containing_item.Reset();
-
-    int v34 = 0;
-    int v5 = grng->random(100);
-    ITEM_TREASURE_LEVEL v13 = grng->randomSample(RemapTreasureLevel(a2->uItemIndex, Treasure_prob));
-    if (v13 != ITEM_TREASURE_LEVEL_GUARANTEED_ARTIFACT) {
-        // [0, 20) -- nothing
-        // [20, 60) -- gold
-        // [60, 100) -- item
-
-        if (v5 < 20)
-            return;
-
-        if (v5 >= 60) {
-            DropTreasureAt(v13, grng->random(27) + 20, a2->vPosition.x,
-                           a2->vPosition.y,
-                           a2->vPosition.z, 0);
-            return;
-        }
-
-        if (a2->uItemIndex == ITEM_TREASURE_LEVEL_1) {
-            a1a.containing_item.uItemID = ITEM_GOLD_SMALL;
-            v34 = grng->random(51) + 50;
-        } else if (a2->uItemIndex == ITEM_TREASURE_LEVEL_2) {
-            a1a.containing_item.uItemID = ITEM_GOLD_SMALL;
-            v34 = grng->random(101) + 100;
-        } else if (a2->uItemIndex == ITEM_TREASURE_LEVEL_3) {
-            a1a.containing_item.uItemID = ITEM_GOLD_MEDIUM;
-            v34 = grng->random(301) + 200;
-        } else if (a2->uItemIndex == ITEM_TREASURE_LEVEL_4) {
-            a1a.containing_item.uItemID = ITEM_GOLD_MEDIUM;
-            v34 = grng->random(501) + 500;
-        } else if (a2->uItemIndex == ITEM_TREASURE_LEVEL_5) {
-            a1a.containing_item.uItemID = ITEM_GOLD_LARGE;
-            v34 = grng->random(1001) + 1000;
-        } else if (a2->uItemIndex == ITEM_TREASURE_LEVEL_6) {
-            a1a.containing_item.uItemID = ITEM_GOLD_LARGE;
-            v34 = grng->random(3001) + 2000;
-        }
-        a1a.uType = (SPRITE_OBJECT_TYPE)pItemTable->pItems[a1a.containing_item.uItemID].uSpriteID;
-        a1a.containing_item.SetIdentified();
-        a1a.uObjectDescID = pObjectList->ObjectIDByItemID(a1a.uType);
-        a1a.containing_item.special_enchantment = (ITEM_ENCHANTMENT)v34;
-    } else {
-        if (!a1a.containing_item.GenerateArtifact())
-            return;
-        a1a.uType = (SPRITE_OBJECT_TYPE)pItemTable->pItems[a1a.containing_item.uItemID].uSpriteID;
-        a1a.uObjectDescID = pObjectList->ObjectIDByItemID(a1a.uType);
-        a1a.containing_item.Reset();  // TODO(captainurist): this needs checking
-    }
-    a1a.vPosition.y = a2->vPosition.y;
-    a1a.uAttributes = 0;
-    a1a.uSoundID = 0;
-    a1a.uFacing = 0;
-    a1a.vPosition.z = a2->vPosition.z;
-    a1a.vPosition.x = a2->vPosition.x;
-    a1a.spell_skill = CHARACTER_SKILL_MASTERY_NONE;
-    a1a.spell_level = 0;
-    a1a.uSpellID = SPELL_NONE;
-    a1a.spell_target_pid = 0;
-    a1a.spell_caster_pid = Pid();
-    a1a.uSpriteFrameID = 0;
-    a1a.uSectorID = pIndoor->GetSector(a2->vPosition.x, a2->vPosition.y, a2->vPosition.z);
-    a1a.Create(0, 0, 0, 0);
-}
-
-MM_DEFINE_ENUM_SERIALIZATION_FUNCTIONS(MapStartPoint, CASE_SENSITIVE, {
-    {MapStartPoint_Party, "Party Start"},
-    {MapStartPoint_North, "North Start"},
-    {MapStartPoint_South, "South Start"},
-    {MapStartPoint_East, "East Start"},
-    {MapStartPoint_West, "West Start"}
-})
-
-void TeleportToStartingPoint(MapStartPoint point) {
-    std::string pName = toString(point);
-
-    if (pDecorationList->GetDecorIdByName(pName)) {
-        if (!pLevelDecorations.empty()) {
-            for (size_t i = 0; i < pLevelDecorations.size(); ++i) {
-                if (pLevelDecorations[i].uDecorationDescID == pDecorationList->GetDecorIdByName(pName)) {
-                    pParty->pos = pLevelDecorations[i].vPosition;
-                    pParty->speed = Vec3i();
-                    pParty->uFallStartZ = pParty->pos.z;
-                    pParty->_viewYaw = (TrigLUT.uIntegerHalfPi * pLevelDecorations[i].field_1A) / 90;
-                    if (pLevelDecorations[i]._yawAngle)
-                        pParty->_viewYaw = pLevelDecorations[i]._yawAngle;
-                    pParty->_viewPitch = 0;
-                }
-            }
-        }
-        if (Start_Party_Teleport_Flag) {
-            if (Party_Teleport_X_Pos)
-                pParty->pos.x = Party_Teleport_X_Pos;
-            if (Party_Teleport_Y_Pos)
-                pParty->pos.y = Party_Teleport_Y_Pos;
-            if (Party_Teleport_Z_Pos) {
-                pParty->pos.z = Party_Teleport_Z_Pos;
-                pParty->uFallStartZ = Party_Teleport_Z_Pos;
-            }
-            if (Party_Teleport_Cam_Yaw != -1)
-                pParty->_viewYaw = Party_Teleport_Cam_Yaw;
-            if (Party_Teleport_Cam_Pitch)
-                pParty->_viewPitch = Party_Teleport_Cam_Pitch;
-            if (Party_Teleport_Z_Speed)
-                pParty->speed = Vec3i(0, 0, Party_Teleport_Z_Speed);
-        }
-        Party_Teleport_Cam_Yaw = -1;
-        Start_Party_Teleport_Flag = 0;
-        Party_Teleport_Z_Speed = 0;
-        Party_Teleport_Cam_Pitch = 0;
-        Party_Teleport_Z_Pos = 0;
-        Party_Teleport_Y_Pos = 0;
-        Party_Teleport_X_Pos = 0;
-    }
 }

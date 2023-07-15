@@ -1,8 +1,6 @@
-#include "Engine/Tables/MerchantTable.h"
+#include "MerchantTable.h"
 
-#include "Engine/Engine.h"
-#include "Engine/GameResourceManager.h"
-
+#include "Utility/Memory/Blob.h"
 #include "Utility/String.h"
 
 IndexedArray<std::string, MERCHANT_PHRASE_FIRST, MERCHANT_PHRASE_LAST> pMerchantsBuyPhrases;
@@ -10,7 +8,7 @@ IndexedArray<std::string, MERCHANT_PHRASE_FIRST, MERCHANT_PHRASE_LAST> pMerchant
 IndexedArray<std::string, MERCHANT_PHRASE_FIRST, MERCHANT_PHRASE_LAST> pMerchantsRepairPhrases;
 IndexedArray<std::string, MERCHANT_PHRASE_FIRST, MERCHANT_PHRASE_LAST> pMerchantsIdentifyPhrases;
 
-void initializeMerchants() {
+void initializeMerchants(const Blob &merchants) {
     char *test_string;
     unsigned char c;
     bool break_loop;
@@ -18,7 +16,7 @@ void initializeMerchants() {
     char *tmp_pos;
     int decode_step;
 
-    std::string txtRaw{ engine->_gameResourceManager->getEventsFile("merchant.txt").string_view() };
+    std::string txtRaw(merchants.string_view());
     strtok(txtRaw.data(), "\r");
 
     for (MerchantPhrase i : MerchantPhrases()) {

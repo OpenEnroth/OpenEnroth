@@ -10,7 +10,6 @@
 #include "Engine/Graphics/IRender.h"
 #include "Engine/LOD.h"
 #include "Engine/Localization.h"
-#include "Engine/MapInfo.h"
 #include "Engine/Objects/Actor.h"
 #include "Engine/Objects/Items.h"
 #include "Engine/Objects/ObjectList.h"
@@ -21,6 +20,7 @@
 #include "Engine/Snapshots/SnapshotSerialization.h"
 #include "Engine/OurMath.h"
 #include "Engine/Party.h"
+#include "Engine/MapInfo.h"
 
 #include "GUI/UI/UIChest.h"
 #include "GUI/UI/UIStatusBar.h"
@@ -420,19 +420,6 @@ void Chest::toggleFlag(int uChestID, ChestFlag uFlag, bool bValue) {
         else
             vChests[uChestID].uFlags &= ~uFlag;
     }
-}
-
-void ChestList::FromFile(const Blob &data_mm6, const Blob &data_mm7, const Blob &data_mm8) {
-    vChests.clear();
-
-    if (data_mm6)
-        deserialize(data_mm6, &vChests, appendVia<ChestDesc_MM7>());
-    if (data_mm7)
-        deserialize(data_mm7, &vChests, appendVia<ChestDesc_MM7>());
-    if (data_mm8)
-        deserialize(data_mm8, &vChests, appendVia<ChestDesc_MM7>());
-
-    assert(!vChests.empty());
 }
 
 void RemoveItemAtChestIndex(int index) {

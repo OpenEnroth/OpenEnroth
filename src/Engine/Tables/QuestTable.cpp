@@ -1,12 +1,11 @@
-#include "Engine/Tables/QuestTable.h"
-#include "Engine/Engine.h"
-#include "Engine/GameResourceManager.h"
+#include "QuestTable.h"
 
+#include "Utility/Memory/Blob.h"
 #include "Utility/String.h"
 
 std::array<std::string, 513> pQuestTable;
 
-void initializeQuests() {
+void initializeQuests(const Blob &quests) {
     char *test_string;
     unsigned char c;
     bool break_loop;
@@ -14,7 +13,7 @@ void initializeQuests() {
     char *tmp_pos;
     int decode_step;
 
-    std::string txtRaw{ engine->_gameResourceManager->getEventsFile("quests.txt").string_view() };
+    std::string txtRaw(quests.string_view());
     strtok(txtRaw.data(), "\r");
     memset(pQuestTable.data(), 0, sizeof(pQuestTable));
     for (int i = 1; i < pQuestTable.size(); ++i) {

@@ -10,6 +10,7 @@
 #include "Engine/Events/Processor.h"
 #include "Engine/Spells/Spells.h"
 #include "Engine/TurnEngine/TurnEngine.h"
+#include "Engine/MapInfo.h"
 
 #include "GUI/GUIButton.h"
 #include "GUI/GUIFont.h"

@@ -1,17 +1,12 @@
+#include "ItemTable.h"
+
 #include <map>
 #include <vector>
 #include <string>
 #include <unordered_map>
 #include <utility>
 
-#include "Engine/Tables/ItemTable.h"
-#include "Engine/Tables/StorylineTextTable.h"
-#include "Engine/Tables/FactionTable.h"
 #include "Engine/Spells/Spells.h"
-#include "Engine/Objects/Monsters.h"
-#include "Engine/LOD.h"
-#include "Engine/MapInfo.h"
-#include "Engine/mm7_data.h"
 #include "Engine/Engine.h"
 #include "Engine/Party.h"
 #include "Engine/EngineIocContainer.h"
@@ -25,10 +20,6 @@
 #include "Utility/String.h"
 #include "Utility/MapAccess.h"
 
-//----- (0045814E) --------------------------------------------------------
-void ItemTable::Release() {
-}
-
 static void strtokSkipLines(int n) {
     for (int i = 0; i < n; ++i) {
         (void)strtok(NULL, "\r");
@@ -36,7 +27,7 @@ static void strtokSkipLines(int n) {
 }
 
 //----- (00456D84) --------------------------------------------------------
-void ItemTable::Initialize() {
+void ItemTable::Initialize(GameResourceManager *resourceManager) {
     std::map<std::string, ITEM_EQUIP_TYPE, ILess> equipStatMap;
     equipStatMap["weapon"] = EQUIP_SINGLE_HANDED;
     equipStatMap["weapon2"] = EQUIP_TWO_HANDED;
@@ -84,28 +75,12 @@ void ItemTable::Initialize() {
 
     char *lineContent;
 
-    pMapStats = new MapStats;
-    pMapStats->Initialize();
-
-    pMonsterStats = new MonsterStats;
-    pMonsterStats->Initialize();
-    pMonsterStats->InitializePlacements();
-
-    pSpellStats = new SpellStats;
-    pSpellStats->Initialize();
-
-    LoadPotions();
-    LoadPotionNotes();
-
-    pFactionTable = new FactionTable;
-    pFactionTable->Initialize();
-
-    pStorylineText = new StorylineText;
-    pStorylineText->Initialize();
+    LoadPotions(resourceManager->getEventsFile("potion.txt"));
+    LoadPotionNotes(resourceManager->getEventsFile("potnotes.txt"));
 
     std::string txtRaw;
 
-    txtRaw = engine->_gameResourceManager->getEventsFile("stditems.txt").string_view();
+    txtRaw = resourceManager->getEventsFile("stditems.txt").string_view();
     strtok(txtRaw.data(), "\r");
     strtokSkipLines(3);
     // Standard Bonuses by Group
@@ -133,7 +108,7 @@ void ItemTable::Initialize() {
         bonusRanges[i].maxR = atoi(tokens[3]);
     }
 
-    txtRaw = engine->_gameResourceManager->getEventsFile("spcitems.txt").string_view();
+    txtRaw = resourceManager->getEventsFile("spcitems.txt").string_view();
     strtok(txtRaw.data(), "\r");
     strtokSkipLines(3);
     for (ITEM_ENCHANTMENT i : pSpecialEnchantments.indices()) {
@@ -162,9 +137,7 @@ void ItemTable::Initialize() {
 
     pSpecialEnchantments_count = 72;
 
-    initializeBuildings();
-
-    txtRaw = engine->_gameResourceManager->getEventsFile("items.txt").string_view();
+    txtRaw = resourceManager->getEventsFile("items.txt").string_view();
     strtok(txtRaw.data(), "\r");
     strtokSkipLines(1);
     for (size_t line = 0; line < 799; line++) {
@@ -227,7 +200,7 @@ void ItemTable::Initialize() {
         pItems[item_counter].pDescription = removeQuotes(tokens[16]);
     }
 
-    txtRaw = engine->_gameResourceManager->getEventsFile("rnditems.txt").string_view();
+    txtRaw = resourceManager->getEventsFile("rnditems.txt").string_view();
     strtok(txtRaw.data(), "\r");
     strtokSkipLines(3);
     for(size_t line = 0; line < 618; line++) {
@@ -311,13 +284,13 @@ bool ItemTable::IsMaterialNonCommon(const ItemGen *pItem) {
 }
 
 //----- (00453B3C) --------------------------------------------------------
-void ItemTable::LoadPotions() {
+void ItemTable::LoadPotions(const Blob &potions) {
     //    char Text[90];
     char *test_string;
     uint8_t potion_value;
 
     std::vector<char *> tokens;
-    std::string txtRaw{ engine->_gameResourceManager->getEventsFile("potion.txt").string_view() };
+    std::string txtRaw(potions.string_view());
     test_string = strtok(txtRaw.data(), "\r") + 1;
     while (test_string) {
         tokens = tokenize(test_string, '\t');
@@ -355,13 +328,13 @@ void ItemTable::LoadPotions() {
 }
 
 //----- (00453CE5) --------------------------------------------------------
-void ItemTable::LoadPotionNotes() {
+void ItemTable::LoadPotionNotes(const Blob &potionNotes) {
     //  char Text[90];
     char *test_string;
     uint8_t potion_note;
 
     std::vector<char *> tokens;
-    std::string txtRaw{ engine->_gameResourceManager->getEventsFile("potnotes.txt").string_view() };
+    std::string txtRaw(potionNotes.string_view());
     test_string = strtok(txtRaw.data(), "\r") + 1;
     while (test_string) {
         tokens = tokenize(test_string, '\t');

@@ -1,10 +1,6 @@
 #include "Engine/Tables/IconFrameTable.h"
 
-#include "Engine/Engine.h"
 #include "Engine/AssetsManager.h"
-#include "Engine/LOD.h"
-#include "Engine/Snapshots/EntitySnapshots.h"
-#include "Engine/Snapshots/SnapshotSerialization.h"
 
 #include "Utility/String.h"
 
@@ -31,7 +27,7 @@ Icon *IconFrameTable::GetIcon(const char *pIconName) {
 
 //----- (00494F3A) --------------------------------------------------------
 unsigned int IconFrameTable::FindIcon(const std::string &pIconName) {
-    for (uint i = 0; i < pIcons.size(); i++) {
+    for (size_t i = 0; i < pIcons.size(); i++) {
         if (iequals(pIconName, this->pIcons[i].GetAnimationName()))
             return i;
     }
@@ -41,11 +37,11 @@ unsigned int IconFrameTable::FindIcon(const std::string &pIconName) {
 //----- (00494F70) --------------------------------------------------------
 Icon *IconFrameTable::GetFrame(unsigned int uIconID, unsigned int frame_time) {
     //    int v6; // edx@3
-    uint i;
+    int i;
 
     if (this->pIcons[uIconID].uFlags & 1 &&
         this->pIcons[uIconID].GetAnimLength() != 0) {
-        uint t = frame_time;
+        int t = frame_time;
 
         t = (t /*/ 8*/) %
             (uint16_t)this->pIcons[uIconID].GetAnimLength();
@@ -61,26 +57,12 @@ Icon *IconFrameTable::GetFrame(unsigned int uIconID, unsigned int frame_time) {
 //----- (00494FBF) --------------------------------------------------------
 void IconFrameTable::InitializeAnimation(unsigned int uIconID) {
     if (uIconID && uIconID <= pIcons.size()) {
-        for (uint i = uIconID;; ++i) {
+        for (int i = uIconID;; ++i) {
             if (!(this->pIcons[i].uFlags & 1)) {
                 break;
             }
         }
     }
-}
-
-//----- (00495056) --------------------------------------------------------
-void IconFrameTable::FromFile(const Blob &data_mm6, const Blob &data_mm7, const Blob &data_mm8) {
-    (void) data_mm6;
-    (void) data_mm8;
-
-    pIcons.clear();
-    deserialize(data_mm7, &pIcons, appendVia<IconFrame_MM7>());
-
-    for (size_t i = 0; i < pIcons.size(); ++i)
-        pIcons[i].id = i;
-
-    assert(!pIcons.empty());
 }
 
 /*

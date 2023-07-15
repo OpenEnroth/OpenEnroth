@@ -39,16 +39,26 @@
 #include "Engine/OurMath.h"
 #include "Engine/Party.h"
 #include "Engine/SaveLoad.h"
+#include "Engine/Snapshots/TableSerialization.h"
 #include "Engine/SpellFxRenderer.h"
 #include "Engine/Spells/CastSpellInfo.h"
 #include "Engine/Spells/Spells.h"
 #include "Engine/Tables/ItemTable.h"
 #include "Engine/Tables/IconFrameTable.h"
 #include "Engine/Tables/CharacterFrameTable.h"
-#include "Engine/Tables/TileFrameTable.h"
+#include "Engine/Tables/TileTable.h"
+#include "Engine/Tables/FactionTable.h"
+#include "Engine/Tables/StorylineTextTable.h"
+#include "Engine/Tables/AwardTable.h"
+#include "Engine/Tables/AutonoteTable.h"
+#include "Engine/Tables/QuestTable.h"
+#include "Engine/Tables/TransitionTable.h"
+#include "Engine/Tables/MerchantTable.h"
+#include "Engine/Tables/MessageScrollTable.h"
 #include "Engine/Time.h"
 #include "Engine/AttackList.h"
 #include "Engine/GameResourceManager.h"
+#include "Engine/MapInfo.h"
 
 #include "GUI/GUIButton.h"
 #include "GUI/GUIFont.h"
@@ -417,9 +427,6 @@ bool Engine::_44EEA7() {  // cursor picking - particle update
 void Engine::Deinitialize() {
     if (mouse)
         mouse->Deactivate();
-
-    if (pItemTable)
-        pItemTable->Release();
 
     if (pSave_LOD)
         pSave_LOD->FreeSubIndexAndIO();
@@ -846,73 +853,49 @@ void Engine::MM7_Initialize() {
     localization = new Localization();
     localization->Initialize();
 
-    {
-        Blob sft_mm6 = pIcons_LOD_mm6 ? pIcons_LOD_mm6->LoadCompressedTexture("dsft.bin") : Blob();
-        Blob sft_mm8;
-        Blob sft_mm7 = engine->_gameResourceManager->getEventsFile("dsft.bin");
-        pSpriteFrameTable = new SpriteFrameTable;
-        pSpriteFrameTable->FromFile(sft_mm6, sft_mm7, sft_mm8);
+    auto triLoad = [](const std::string &name) {
+        TriBlob result;
+        result.mm6 = pIcons_LOD_mm6 ? pIcons_LOD_mm6->LoadCompressedTexture(name) : Blob();
+        result.mm7 = engine->_gameResourceManager->getEventsFile(name);
+        return result;
+    };
 
-        Blob tft_mm6 = pIcons_LOD_mm6 ? pIcons_LOD_mm6->LoadCompressedTexture("dtft.bin") : Blob();
-        Blob tft_mm8;
-        Blob tft_mm7 = engine->_gameResourceManager->getEventsFile("dtft.bin");
-        pTextureFrameTable = new TextureFrameTable;
-        pTextureFrameTable->FromFile(tft_mm6, tft_mm7, tft_mm8);
+    pSpriteFrameTable = new SpriteFrameTable;
+    deserialize(triLoad("dsft.bin"), pSpriteFrameTable);
 
-        Blob tiles_mm6 = pIcons_LOD_mm6 ? pIcons_LOD_mm6->LoadCompressedTexture("dtile.bin") : Blob();
-        Blob tiles_mm8;
-        Blob tiles_mm7 = engine->_gameResourceManager->getEventsFile("dtile.bin");
-        pTileTable = new TileTable;
-        pTileTable->FromFile(tiles_mm6, tiles_mm7, tiles_mm8);
+    pTextureFrameTable = new TextureFrameTable;
+    deserialize(triLoad("dtft.bin"), pTextureFrameTable);
 
-        Blob pft_mm6 = pIcons_LOD_mm6 ? pIcons_LOD_mm6->LoadCompressedTexture("dpft.bin") : Blob();
-        Blob pft_mm8;
-        Blob pft_mm7 = engine->_gameResourceManager->getEventsFile("dpft.bin");
-        pPlayerFrameTable = new PlayerFrameTable;
-        pPlayerFrameTable->FromFile(pft_mm6, pft_mm7, pft_mm8);
+    pTileTable = new TileTable;
+    deserialize(triLoad("dtile.bin"), pTileTable);
 
-        Blob ift_mm6 = pIcons_LOD_mm6 ? pIcons_LOD_mm6->LoadCompressedTexture("dift.bin") : Blob();
-        Blob ift_mm8;
-        Blob ift_mm7 = engine->_gameResourceManager->getEventsFile("dift.bin");
-        pIconsFrameTable = new IconFrameTable;
-        pIconsFrameTable->FromFile(ift_mm6, ift_mm7, ift_mm8);
+    pPlayerFrameTable = new PlayerFrameTable;
+    deserialize(triLoad("dpft.bin"), pPlayerFrameTable);
 
-        Blob decs_mm6 = pIcons_LOD_mm6 ? pIcons_LOD_mm6->LoadCompressedTexture("ddeclist.bin") : Blob();
-        Blob decs_mm8;
-        Blob decs_mm7 = engine->_gameResourceManager->getEventsFile("ddeclist.bin");
-        pDecorationList = new DecorationList;
-        pDecorationList->FromFile(decs_mm6, decs_mm7, decs_mm8);
+    pIconsFrameTable = new IconFrameTable;
+    deserialize(triLoad("dift.bin"), pIconsFrameTable);
 
-        Blob objs_mm6 = pIcons_LOD_mm6 ? pIcons_LOD_mm6->LoadCompressedTexture("dobjlist.bin") : Blob();
-        Blob objs_mm8;
-        Blob objs_mm7 = engine->_gameResourceManager->getEventsFile("dobjlist.bin");
-        pObjectList = new ObjectList;
-        pObjectList->FromFile(objs_mm6, objs_mm7, objs_mm8);
+    pDecorationList = new DecorationList;
+    deserialize(triLoad("ddeclist.bin"), pDecorationList);
 
-        Blob mons_mm6 = pIcons_LOD_mm6 ? pIcons_LOD_mm6->LoadCompressedTexture("dmonlist.bin") : Blob();
-        Blob mons_mm8;
-        Blob mons_mm7 = engine->_gameResourceManager->getEventsFile("dmonlist.bin");
-        pMonsterList = new MonsterList;
-        pMonsterList->FromFile(mons_mm6, mons_mm7, mons_mm8);
+    pObjectList = new ObjectList;
+    deserialize(triLoad("dobjlist.bin"), pObjectList);
 
-        Blob chests_mm6 = pIcons_LOD_mm6 ? pIcons_LOD_mm6->LoadCompressedTexture("dchest.bin") : Blob();
-        Blob chests_mm8;
-        Blob chests_mm7 = engine->_gameResourceManager->getEventsFile("dchest.bin");
-        pChestList = new ChestList;
-        pChestList->FromFile(chests_mm6, chests_mm7, chests_mm8);
+    pMonsterList = new MonsterList;
+    deserialize(triLoad("dmonlist.bin"), pMonsterList);
 
-        Blob overlays_mm6 = pIcons_LOD_mm6 ? pIcons_LOD_mm6->LoadCompressedTexture("doverlay.bin") : Blob();
-        Blob overlays_mm8;
-        Blob overlays_mm7 = engine->_gameResourceManager->getEventsFile("doverlay.bin");
-        pOverlayList = new OverlayList;
-        pOverlayList->FromFile(overlays_mm6, overlays_mm7, overlays_mm8);
+    pChestList = new ChestList;
+    deserialize(triLoad("dchest.bin"), pChestList);
 
-        Blob sounds_mm6 = pIcons_LOD_mm6 ? pIcons_LOD_mm6->LoadCompressedTexture("dsounds.bin") : Blob();
-        Blob sounds_mm8;
-        Blob sounds_mm7 = engine->_gameResourceManager->getEventsFile("dsounds.bin");
-        pSoundList = new SoundList;
-        pSoundList->FromFile(sounds_mm6, sounds_mm7, sounds_mm8);
-    }
+    pOverlayList = new OverlayList;
+    deserialize(triLoad("doverlay.bin"), pOverlayList);
+
+    // TODO(captainurist): move to TableSnapshots.h/cpp
+    Blob sounds_mm6 = pIcons_LOD_mm6 ? pIcons_LOD_mm6->LoadCompressedTexture("dsounds.bin") : Blob();
+    Blob sounds_mm8;
+    Blob sounds_mm7 = engine->_gameResourceManager->getEventsFile("dsounds.bin");
+    pSoundList = new SoundList;
+    pSoundList->FromFile(sounds_mm6, sounds_mm7, sounds_mm8);
 
     if (!config->debug.NoSound.value())
         pAudioPlayer->Initialize();
@@ -927,16 +910,31 @@ void Engine::MM7_Initialize() {
 void Engine::SecondaryInitialization() {
     mouse->Initialize();
 
-    pItemTable = new ItemTable;
-    pItemTable->Initialize();
+    pMapStats = new MapStats();
+    pMapStats->Initialize(engine->_gameResourceManager->getEventsFile("MapStats.txt"));
+
+    pMonsterStats = new MonsterStats();
+    pMonsterStats->Initialize(engine->_gameResourceManager->getEventsFile("monsters.txt"));
+    pMonsterStats->InitializePlacements(engine->_gameResourceManager->getEventsFile("placemon.txt"));
+
+    pSpellStats = new SpellStats();
+    pSpellStats->Initialize(engine->_gameResourceManager->getEventsFile("spells.txt"));
+
+    pFactionTable = new FactionTable();
+    pFactionTable->Initialize(engine->_gameResourceManager->getEventsFile("hostile.txt"));
+
+    pStorylineText = new StorylineText();
+    pStorylineText->Initialize(engine->_gameResourceManager->getEventsFile("history.txt"));
+
+    pItemTable = new ItemTable();
+    pItemTable->Initialize(engine->_gameResourceManager.get());
+
+    initializeBuildings(engine->_gameResourceManager->getEventsFile("2dEvents.txt"));
 
     //pPaletteManager->SetMistColor(128, 128, 128);
     //pPaletteManager->RecalculateAll();
     pObjectList->InitializeSprites();
     pOverlayList->InitializeSprites();
-
-    if (!engine->config->debug.NoSound.value())
-        pSoundList->Initialize();
 
     for (uint i = 0; i < 4; ++i) {
         static const char *pUIAnimNames[4] = {"glow03", "glow05", "torchA", "wizeyeA"};
@@ -961,9 +959,15 @@ void Engine::SecondaryInitialization() {
         render->hd_water_tile_anim[i] = assets->getBitmap(container_name);
     }
 
-    pNPCStats = new NPCStats;
-    pNPCStats->pNPCData.fill(NPCData());
-    pNPCStats->Initialize();
+    pNPCStats = new NPCStats();
+    pNPCStats->Initialize(engine->_gameResourceManager.get());
+
+    initializeQuests(engine->_gameResourceManager->getEventsFile("quests.txt"));
+    initializeAutonotes(engine->_gameResourceManager->getEventsFile("autonote.txt"));
+    initializeAwards(engine->_gameResourceManager->getEventsFile("awards.txt"));
+    initializeTransitions(engine->_gameResourceManager->getEventsFile("trans.txt"));
+    initializeMerchants(engine->_gameResourceManager->getEventsFile("merchant.txt"));
+    initializeMessageScrolls(engine->_gameResourceManager->getEventsFile("scroll.txt"));
 
     initGlobalEvents();
     pBitmaps_LOD->reserveLoadedTextures();

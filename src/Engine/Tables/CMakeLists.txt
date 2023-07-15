@@ -26,7 +26,7 @@ set(ENGINE_TABLES_HEADERS
         CharacterFrameTable.h
         StorylineTextTable.h
         TileEnums.h
-        TileFrameTable.h
+        TileTable.h
         BuildingTable.h
         AwardTable.h
         AutonoteTable.h

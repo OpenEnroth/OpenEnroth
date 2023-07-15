@@ -15,15 +15,6 @@ GraphicsImage *TextureFrame::GetTexture() {
     return this->tex;
 }
 
-void TextureFrameTable::FromFile(const Blob &data_mm6, const Blob &data_mm7, const Blob &data_mm8) {
-    (void) data_mm6;
-    (void) data_mm8;
-
-    deserialize(data_mm7, &textures, appendVia<TextureFrame_MM7>());
-
-    assert(!textures.empty());
-}
-
 void TextureFrameTable::LoadAnimationSequenceAndPalettes(int uFrameID) {
     if (uFrameID <= textures.size() && uFrameID >= 0) {
         for (unsigned int i = uFrameID;; ++i) {

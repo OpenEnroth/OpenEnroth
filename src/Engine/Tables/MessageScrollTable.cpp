@@ -1,12 +1,11 @@
-#include "Engine/Tables/MessageScrollTable.h"
-#include "Engine/Engine.h"
-#include "Engine/GameResourceManager.h"
+#include "MessageScrollTable.h"
 
+#include "Utility/Memory/Blob.h"
 #include "Utility/String.h"
 
 IndexedArray<std::string, ITEM_FIRST_MESSAGE_SCROLL, ITEM_LAST_MESSAGE_SCROLL> pMessageScrolls;
 
-void initializeMessageScrolls() {
+void initializeMessageScrolls(const Blob &scrolls) {
     char *test_string;
     unsigned char c;
     bool break_loop;
@@ -14,7 +13,7 @@ void initializeMessageScrolls() {
     char *tmp_pos;
     int decode_step;
 
-    std::string txtRaw{ engine->_gameResourceManager->getEventsFile("scroll.txt").string_view() };
+    std::string txtRaw(scrolls.string_view());
     strtok(txtRaw.data(), "\r");
     for (ITEM_TYPE i : pMessageScrolls.indices()) {
         test_string = strtok(NULL, "\r") + 1;

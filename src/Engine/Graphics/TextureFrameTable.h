@@ -30,7 +30,6 @@ class TextureFrame {
 };
 
 struct TextureFrameTable {
-    void FromFile(const Blob &data_mm6, const Blob &data_mm7, const Blob &data_mm8);
     void LoadAnimationSequenceAndPalettes(int uIconID);
     GraphicsImage *GetFrameTexture(int frameId, int time);
     /**

@@ -1,12 +1,11 @@
-#include "Engine/Tables/AwardTable.h"
-#include "Engine/Engine.h"
-#include "Engine/GameResourceManager.h"
+#include "AwardTable.h"
 
+#include "Utility/Memory/Blob.h"
 #include "Utility/String.h"
 
 std::array<Award, 105> pAwards;
 
-void initializeAwards() {
+void initializeAwards(const Blob &awards) {
     char *test_string;
     unsigned char c;
     bool break_loop;
@@ -14,7 +13,7 @@ void initializeAwards() {
     char *tmp_pos;
     int decode_step;
 
-    std::string txtRaw{ engine->_gameResourceManager->getEventsFile("awards.txt").string_view() };
+    std::string txtRaw(awards.string_view());
     strtok(txtRaw.data(), "\r");
 
     for (int i = 1; i < pAwards.size(); ++i) {

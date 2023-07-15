@@ -3,6 +3,8 @@
 #include <cstdint>
 #include <string>
 
+class Blob;
+
 struct StorylineRecord {
     std::string pText;
     std::string pPageTitle;
@@ -13,7 +15,7 @@ struct StorylineRecord {
 };
 
 struct StorylineText {
-    void Initialize();
+    void Initialize(const Blob &history);
     StorylineRecord StoreLine[29];
     int field_15C;
     // int field_0;

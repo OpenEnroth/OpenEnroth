@@ -7,6 +7,8 @@
 
 #include "TileEnums.h"
 
+class GraphicsImage;
+
 class TileDesc {
  public:
     inline TileDesc() : texture(nullptr) {}
@@ -36,7 +38,6 @@ struct TileTable {
     void InitializeTileset(Tileset tileset);
     int GetTileForTerrainType(signed int a1, bool a2);
     unsigned int GetTileId(unsigned int uTerrainType, unsigned int uSection);
-    void FromFile(const Blob &data_mm6, const Blob &data_mm7, const Blob &data_mm8);
     int FromFileTxt(const char *pFilename);
 
     std::vector<TileDesc> tiles;

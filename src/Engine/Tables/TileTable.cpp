@@ -1,7 +1,7 @@
-#include "Engine/Engine.h"
+#include "TileTable.h"
 
-#include "Engine/Snapshots/EntitySnapshots.h"
-#include "Engine/Snapshots/SnapshotSerialization.h"
+#include "Engine/ErrorHandling.h"
+
 #include "Engine/AssetsManager.h"
 #include "Engine/EngineIocContainer.h"
 
@@ -11,7 +11,6 @@
 #include "Utility/String.h"
 
 #include "FrameTableInc.h"
-#include "TileFrameTable.h"
 
 
 GraphicsImage *TileDesc::GetTexture() {
@@ -70,16 +69,6 @@ unsigned int TileTable::GetTileId(unsigned int uTerrainType, unsigned int uSecti
             return i;
     }
     return 0;
-}
-
-//----- (00488000) --------------------------------------------------------
-void TileTable::FromFile(const Blob &data_mm6, const Blob &data_mm7, const Blob &data_mm8) {
-    (void) data_mm6;
-    (void) data_mm8;
-
-    deserialize(data_mm7, &tiles, appendVia<TileDesc_MM7>());
-
-    assert(!tiles.empty());
 }
 
 //----- (00488047) --------------------------------------------------------

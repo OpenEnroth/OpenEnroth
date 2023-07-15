@@ -8,11 +8,11 @@
 #include "Engine/SpellFxRenderer.h"
 #include "Engine/Time.h"
 #include "Engine/Events/Processor.h"
-#include "Engine/LOD.h"
 #include "Engine/OurMath.h"
 #include "Engine/Party.h"
 #include "Engine/TurnEngine/TurnEngine.h"
 #include "Engine/AttackList.h"
+#include "Engine/MapInfo.h"
 
 #include "Engine/Objects/Actor.h"
 #include "Engine/Objects/ObjectList.h"

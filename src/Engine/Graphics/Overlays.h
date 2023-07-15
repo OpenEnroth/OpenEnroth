@@ -38,7 +38,6 @@ struct OverlayDesc {
 };
 
 struct OverlayList {
-    void FromFile(const Blob &data_mm6, const Blob &data_mm7, const Blob &data_mm8);
     bool FromFileTxt(const char *Args);
     void InitializeSprites();
 

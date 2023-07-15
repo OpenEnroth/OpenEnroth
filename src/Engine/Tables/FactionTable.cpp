@@ -1,11 +1,14 @@
-#include "Engine/Tables/FactionTable.h"
+#include "FactionTable.h"
 
-#include "Engine/Engine.h"
-#include "Engine/LOD.h"
-#include "Engine/GameResourceManager.h"
+#include <cstring>
+#include <string>
+
+#include "Utility/Memory/Blob.h"
+
+struct FactionTable *pFactionTable;
 
 //----- (004547E4) --------------------------------------------------------
-void FactionTable::Initialize() {
+void FactionTable::Initialize(const Blob &factions) {
     int i;
     char *test_string;
     unsigned char c;
@@ -15,7 +18,7 @@ void FactionTable::Initialize() {
     int decode_step;
     //  int item_counter;
 
-    std::string txtRaw{ engine->_gameResourceManager->getEventsFile("hostile.txt").string_view() };
+    std::string txtRaw(factions.string_view());
     strtok(txtRaw.data(), "\r");
     for (i = 0; i < 89; ++i) {
         test_string = strtok(NULL, "\r") + 1;

@@ -1,12 +1,11 @@
-#include "Engine/Tables/AutonoteTable.h"
-#include "Engine/Engine.h"
-#include "Engine/GameResourceManager.h"
+#include "AutonoteTable.h"
 
+#include "Utility/Memory/Blob.h"
 #include "Utility/String.h"
 
 std::array<Autonote, 196> pAutonoteTxt;
 
-void initializeAutonotes() {
+void initializeAutonotes(const Blob &autonotes) {
     char *test_string;
     unsigned char c;
     bool break_loop;
@@ -14,7 +13,7 @@ void initializeAutonotes() {
     char *tmp_pos;
     int decode_step;
 
-    std::string txtRaw{ engine->_gameResourceManager->getEventsFile("autonote.txt").string_view() };
+    std::string txtRaw(autonotes.string_view());
     strtok(txtRaw.data(), "\r");
 
     for (int i = 1; i < pAutonoteTxt.size(); ++i) {

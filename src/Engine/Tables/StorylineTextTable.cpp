@@ -1,18 +1,15 @@
-#include <vector>
+#include "StorylineTextTable.h"
 
-#include "Engine/Tables/StorylineTextTable.h"
-#include "Engine/Engine.h"
-#include "Engine/GameResourceManager.h"
-
+#include "Utility/Memory/Blob.h"
 #include "Utility/String.h"
 
 struct StorylineText *pStorylineText;
 
 //----- (00453E6D) --------------------------------------------------------
-void StorylineText::Initialize() {
+void StorylineText::Initialize(const Blob &history) {
     char *test_string;
 
-    std::string txtRaw{ engine->_gameResourceManager->getEventsFile("history.txt").string_view() };
+    std::string txtRaw(history.string_view());
     strtok(txtRaw.data(), "\r");
 
     StoreLine[0].pText = "";

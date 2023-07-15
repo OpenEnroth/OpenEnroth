@@ -1,9 +1,5 @@
 #include "CharacterFrameTable.h"
 
-#include "Engine/Engine.h"
-#include "Engine/Snapshots/EntitySnapshots.h"
-#include "Engine/Snapshots/SnapshotSerialization.h"
-
 #include "Library/Random/Random.h"
 
 
@@ -58,20 +54,6 @@ PlayerFrame *PlayerFrameTable::GetFrameBy_y(int *pFramesetID, int *pAnimTime,
         *pAnimTime = 8 * v5 % this->pFrames[v6].uAnimTime;
     }
     return &this->pFrames[*pFramesetID];
-}
-
-//----- (00494C0F) --------------------------------------------------------
-void PlayerFrameTable::FromFile(const Blob &data_mm6, const Blob &data_mm7, const Blob &data_mm8) {
-    pFrames.clear();
-
-    if (data_mm6)
-        deserialize(data_mm6, &pFrames, appendVia<PlayerFrame_MM7>());
-    if (data_mm7)
-        deserialize(data_mm7, &pFrames, appendVia<PlayerFrame_MM7>());
-    if (data_mm8)
-        deserialize(data_mm8, &pFrames, appendVia<PlayerFrame_MM7>());
-
-    assert(!pFrames.empty());
 }
 
 //----- (00494C5A) --------------------------------------------------------

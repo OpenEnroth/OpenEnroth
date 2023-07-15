@@ -3,16 +3,15 @@
 #include <string>
 #include <utility>
 
-#include "Engine/Engine.h"
+#include "Engine/ErrorHandling.h"
 #include "Engine/EngineIocContainer.h"
 #include "Engine/Snapshots/EntitySnapshots.h"
 #include "Engine/Snapshots/SnapshotSerialization.h"
-#include "Engine/GameResourceManager.h"
 
-#include "../LOD.h"
 #include "../Tables/FrameTableInc.h"
 
 #include "Library/Logger/Logger.h"
+#include "Library/Serialization/Serialization.h"
 
 #include "Utility/String.h"
 
@@ -129,10 +128,6 @@ SPELL_TYPE ParseSpellType(struct FrameTableTxtLine *tbl, int *next_token) {
 }
 
 CombinedSkillValue ParseSkillValue(std::string_view skillString, std::string_view masteryString) {
-    if (skillString == "t") {
-        int a = 10;
-    }
-
     int skill;
     if (!tryDeserialize(skillString, &skill))
         return CombinedSkillValue::none(); // TODO(captainurist): this does happen, investigate.
@@ -396,20 +391,6 @@ bool MonsterList::FromFileTxt(const char *Args) {
     return 1;
 }
 
-//----- (004598AF) --------------------------------------------------------
-void MonsterList::FromFile(const Blob &data_mm6, const Blob &data_mm7, const Blob &data_mm8) {
-    pMonsters.clear();
-
-    if (data_mm6)
-        deserialize(data_mm6, &pMonsters, appendVia<MonsterDesc_MM6>());
-    if (data_mm7)
-        deserialize(data_mm7, &pMonsters, appendVia<MonsterDesc_MM7>());
-    if (data_mm8)
-        deserialize(data_mm8, &pMonsters, appendVia<MonsterDesc_MM7>());
-
-    assert(!pMonsters.empty());
-}
-
 //----- (004563FF) --------------------------------------------------------
 signed int MonsterStats::FindMonsterByTextureName(const std::string &monster_textr_name) {
     for (int i = 1; i < uNumMonsters; ++i) {
@@ -420,7 +401,7 @@ signed int MonsterStats::FindMonsterByTextureName(const std::string &monster_tex
 }
 
 //----- (00454F4E) --------------------------------------------------------
-void MonsterStats::InitializePlacements() {
+void MonsterStats::InitializePlacements(const Blob &placements) {
     int i;
     char *test_string;
     unsigned char c;
@@ -430,7 +411,7 @@ void MonsterStats::InitializePlacements() {
     int decode_step;
     //  int item_counter;
 
-    std::string txtRaw{ engine->_gameResourceManager->getEventsFile("placemon.txt").string_view() };
+    std::string txtRaw(placements.string_view());
     strtok(txtRaw.data(), "\r");
     for (i = 1; i < 31; ++i) {
         test_string = strtok(NULL, "\r") + 1;
@@ -460,7 +441,7 @@ void MonsterStats::InitializePlacements() {
 }
 
 //----- (0045501E) --------------------------------------------------------
-void MonsterStats::Initialize() {
+void MonsterStats::Initialize(const Blob &monsters) {
     int i;  // ,j;
     char *test_string;
     unsigned char c;
@@ -475,7 +456,7 @@ void MonsterStats::Initialize() {
     FrameTableTxtLine parsed_field;
     std::string str;
 
-    std::string txtRaw{ engine->_gameResourceManager->getEventsFile("monsters.txt").string_view() };
+    std::string txtRaw(monsters.string_view());
     strtok(txtRaw.data(), "\r");
     strtok(NULL, "\r");
     strtok(NULL, "\r");

@@ -17,6 +17,7 @@
 #include "Engine/Snapshots/EntitySnapshots.h"
 #include "Engine/Snapshots/SnapshotSerialization.h"
 #include "Engine/Engine.h"
+#include "Engine/MapInfo.h"
 
 #include "Media/Audio/OpenALSoundProvider.h"
 
@@ -38,8 +39,6 @@ std::array<float, 10> pSoundVolumeLevels = {
      0.6600000f, 0.7699999f, 0.8799999f, 0.9700000f}};
 
 std::map<uint32_t, SoundInfo> mapSounds;
-
-void SoundList::Initialize() {}
 
 void SoundList::FromFile(const Blob &data_mm6, const Blob &data_mm7, const Blob &data_mm8) {
     std::vector<SoundInfo> sounds;

@@ -12,6 +12,7 @@ set(ENGINE_SOURCES
         LodTextureCache.cpp
         LodSpriteCache.cpp
         Localization.cpp
+        MapEnums.cpp
         MapInfo.cpp
         OurMath.cpp
         Party.cpp
@@ -36,6 +37,7 @@ set(ENGINE_HEADERS
         LodSpriteCache.h
         Localization.h
         MM7.h
+        MapEnums.h
         MapInfo.h
         OurMath.h
         Party.h

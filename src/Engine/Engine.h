@@ -8,8 +8,8 @@
 #include "Application/GameConfig.h"
 
 #include "Engine/Events/EventMap.h"
+#include "Engine/MapEnums.h"
 #include "Engine/mm7_data.h"
-#include "Engine/MapInfo.h"
 #include "Engine/Time.h"
 
 #include "Utility/Memory/Blob.h"

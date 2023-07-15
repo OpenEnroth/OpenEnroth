@@ -253,14 +253,6 @@ void SpriteFrameTable::ResetPaletteIndexes() {
         spriteFrame.ResetPaletteIndex();
 }
 
-//----- (0044D9D7) --------------------------------------------------------
-void SpriteFrameTable::FromFile(const Blob &data_mm6, const Blob &data_mm7, const Blob &data_mm8) {
-    (void) data_mm6;
-    (void) data_mm8;
-
-    deserialize(data_mm7, this, via<SpriteFrameTable_MM7>());
-}
-
 SpriteFrame *LevelDecorationChangeSeason(const DecorationDesc *desc, int t, int month) {
     switch (month/*pParty->uCurrentMonth*/) {
         // case 531 (tree60), 536 (tree65), 537 (tree66) have no autumn/winter

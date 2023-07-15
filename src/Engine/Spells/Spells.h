@@ -8,10 +8,11 @@
 #include "Engine/Objects/CharacterEnums.h"
 #include "Engine/Objects/SpriteObjectEnums.h"
 
-#include "Utility/Geometry/Vec.h"
 #include "Utility/IndexedArray.h"
 
 #include "SpellEnums.h"
+
+class Blob;
 
 struct SpellInfo {
     std::string name;
@@ -29,7 +30,7 @@ struct SpellStats {
     /**
      * @offset 0x45384A
      */
-    void Initialize();
+    void Initialize(const Blob &spells);
 
     IndexedArray<SpellInfo, SPELL_FIRST_REGULAR, SPELL_LAST_REGULAR> pInfos;
 };
