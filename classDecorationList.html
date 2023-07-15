@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;319a2d0</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;2b7074d</span>
    </div>
   </td>
  </tr>
@@ -71,7 +71,7 @@ $(function() {
 <div class="header">
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
-<a href="#pro-attribs">Protected Attributes</a> &#124;
+<a href="#pub-attribs">Public Attributes</a> &#124;
 <a href="classDecorationList-members.html">List of all members</a>  </div>
   <div class="headertitle"><div class="title">DecorationList Class Reference</div></div>
 </div><!--header-->
@@ -83,10 +83,6 @@ $(function() {
 Public Member Functions</h2></td></tr>
 <tr class="memitem:af9e35b3130f602370c01d53c72548b40"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDecorationList.html#af9e35b3130f602370c01d53c72548b40">DecorationList</a> ()</td></tr>
 <tr class="separator:af9e35b3130f602370c01d53c72548b40"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a73e73210a81b54176a61a7756f3bb91c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDecorationList.html#a73e73210a81b54176a61a7756f3bb91c">ToFile</a> ()</td></tr>
-<tr class="separator:a73e73210a81b54176a61a7756f3bb91c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a740c5f04c0f00f13b1a357fa8e868b23"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDecorationList.html#a740c5f04c0f00f13b1a357fa8e868b23">FromFile</a> (const <a class="el" href="classBlob.html">Blob</a> &amp;data_mm6, const <a class="el" href="classBlob.html">Blob</a> &amp;data_mm7, const <a class="el" href="classBlob.html">Blob</a> &amp;data_mm8)</td></tr>
-<tr class="separator:a740c5f04c0f00f13b1a357fa8e868b23"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1365a60cf178388d9b1eb5bfb1a09a78"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDecorationList.html#a1365a60cf178388d9b1eb5bfb1a09a78">InitializeDecorationSprite</a> (unsigned int uDecID)</td></tr>
 <tr class="separator:a1365a60cf178388d9b1eb5bfb1a09a78"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a10590fa0e7ee47ae42bc925febda5910"><td class="memItemLeft" align="right" valign="top">uint16_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDecorationList.html#a10590fa0e7ee47ae42bc925febda5910">GetDecorIdByName</a> (std::string_view pName)</td></tr>
@@ -94,8 +90,8 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:af09fd14191b26653f1719235fe21672f"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="structDecorationDesc.html">DecorationDesc</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDecorationList.html#af09fd14191b26653f1719235fe21672f">GetDecoration</a> (unsigned int index) const</td></tr>
 <tr class="separator:af09fd14191b26653f1719235fe21672f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pro-attribs" name="pro-attribs"></a>
-Protected Attributes</h2></td></tr>
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
+Public Attributes</h2></td></tr>
 <tr class="memitem:a445605a03aa67c9a58d88355ce6c39dd"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="structDecorationDesc.html">DecorationDesc</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDecorationList.html#a445605a03aa67c9a58d88355ce6c39dd">pDecorations</a></td></tr>
 <tr class="separator:a445605a03aa67c9a58d88355ce6c39dd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
@@ -126,40 +122,6 @@ Protected Attributes</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a id="a740c5f04c0f00f13b1a357fa8e868b23" name="a740c5f04c0f00f13b1a357fa8e868b23"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a740c5f04c0f00f13b1a357fa8e868b23">&#9670;&#160;</a></span>FromFile()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void DecorationList::FromFile </td>
-          <td>(</td>
-          <td class="paramtype">const <a class="el" href="classBlob.html">Blob</a> &amp;&#160;</td>
-          <td class="paramname"><em>data_mm6</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const <a class="el" href="classBlob.html">Blob</a> &amp;&#160;</td>
-          <td class="paramname"><em>data_mm7</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const <a class="el" href="classBlob.html">Blob</a> &amp;&#160;</td>
-          <td class="paramname"><em>data_mm8</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
 <a id="af09fd14191b26653f1719235fe21672f" name="af09fd14191b26653f1719235fe21672f"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#af09fd14191b26653f1719235fe21672f">&#9670;&#160;</a></span>GetDecoration()</h2>
 
@@ -222,42 +184,17 @@ Protected Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="a73e73210a81b54176a61a7756f3bb91c" name="a73e73210a81b54176a61a7756f3bb91c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a73e73210a81b54176a61a7756f3bb91c">&#9670;&#160;</a></span>ToFile()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void DecorationList::ToFile </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
 <h2 class="groupheader">Member Data Documentation</h2>
 <a id="a445605a03aa67c9a58d88355ce6c39dd" name="a445605a03aa67c9a58d88355ce6c39dd"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a445605a03aa67c9a58d88355ce6c39dd">&#9670;&#160;</a></span>pDecorations</h2>
 
 <div class="memitem">
 <div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname">std::vector&lt;<a class="el" href="structDecorationDesc.html">DecorationDesc</a>&gt; DecorationList::pDecorations</td>
         </tr>
       </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
-  </tr>
-</table>
 </div><div class="memdoc">
 
 </div>

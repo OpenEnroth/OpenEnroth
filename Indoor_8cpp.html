@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;319a2d0</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;2b7074d</span>
    </div>
   </td>
  </tr>
@@ -113,6 +113,7 @@ $(function() {
 <code>#include &quot;<a class="el" href="Time_8h.html">Engine/Time.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="TurnEngine_8h.html">Engine/TurnEngine/TurnEngine.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Localization_8h.html">Engine/Localization.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="MapInfo_8h.html">Engine/MapInfo.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="GUIProgressBar_8h.html">GUI/GUIProgressBar.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="GUIWindow_8h.html">GUI/GUIWindow.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="UIStatusBar_8h.html">GUI/UI/UIStatusBar.h</a>&quot;</code><br />
@@ -156,6 +157,8 @@ Functions</h2></td></tr>
 <tr class="separator:a9b37ce513996c958704b75ff9e7cdbef"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afe5fefe7269b2747edf2d6095266e8ab"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Indoor_8cpp.html#afe5fefe7269b2747edf2d6095266e8ab">DropTreasureAt</a> (<a class="el" href="ItemEnums_8h.html#ad20c3ee7b5967d80cee8e0ec3e061a9c">ITEM_TREASURE_LEVEL</a> trs_level, int trs_type, int x, int y, int z, uint16_t facing)</td></tr>
 <tr class="separator:afe5fefe7269b2747edf2d6095266e8ab"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5d104b32eac49edd22f15beca1800985"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Indoor_8cpp.html#a5d104b32eac49edd22f15beca1800985">SpawnRandomTreasure</a> (<a class="el" href="structMapInfo.html">MapInfo</a> *mapInfo, <a class="el" href="structSpawnPoint.html">SpawnPoint</a> *a2)</td></tr>
+<tr class="separator:a5d104b32eac49edd22f15beca1800985"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad10cfdae51ef0087519a5060919d2e6f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Indoor_8cpp.html#ad10cfdae51ef0087519a5060919d2e6f">FindBillboardsLightLevels_BLV</a> ()</td></tr>
 <tr class="separator:ad10cfdae51ef0087519a5060919d2e6f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a269c06cfbb2276c940958a47eeba9d1b"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Indoor_8cpp.html#a269c06cfbb2276c940958a47eeba9d1b">GetIndoorFloorZ</a> (const <a class="el" href="Vec_8h.html#adf6e1d7d066bb09da957cc89f2b3ceb2">Vec3i</a> &amp;pos, int *pSectorID, int *pFaceID)</td></tr>
@@ -651,6 +654,34 @@ Variables</h2></td></tr>
           <td></td>
           <td class="paramtype">int&#160;</td>
           <td class="paramname"><em>enc_index</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a5d104b32eac49edd22f15beca1800985" name="a5d104b32eac49edd22f15beca1800985"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5d104b32eac49edd22f15beca1800985">&#9670;&#160;</a></span>SpawnRandomTreasure()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void SpawnRandomTreasure </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structMapInfo.html">MapInfo</a> *&#160;</td>
+          <td class="paramname"><em>mapInfo</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="structSpawnPoint.html">SpawnPoint</a> *&#160;</td>
+          <td class="paramname"><em>a2</em>&#160;</td>
         </tr>
         <tr>
           <td></td>

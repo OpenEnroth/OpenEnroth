@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;319a2d0</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;2b7074d</span>
    </div>
   </td>
  </tr>
@@ -74,75 +74,24 @@ $(function() {
 </div><!-- top -->
 <div class="header">
   <div class="summary">
-<a href="#func-members">Functions</a> &#124;
 <a href="#var-members">Variables</a>  </div>
   <div class="headertitle"><div class="title">MapInfo.cpp File Reference</div></div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><code>#include &lt;cstdlib&gt;</code><br />
+<div class="textblock"><code>#include &quot;<a class="el" href="MapInfo_8h.html">MapInfo.h</a>&quot;</code><br />
+<code>#include &lt;cstdlib&gt;</code><br />
 <code>#include &lt;sstream&gt;</code><br />
-<code>#include &quot;<a class="el" href="MapInfo_8h.html">Engine/MapInfo.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="GameResourceManager_8h.html">Engine/GameResourceManager.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="Engine_8h.html">Engine/Engine.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="Indoor_8h.html">Engine/Graphics/Indoor.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="ErrorHandling_8h.html">Engine/ErrorHandling.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="LOD_8h.html">Engine/LOD.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="ItemTable_8h.html">Engine/Tables/ItemTable.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="ObjectList_8h.html">Engine/Objects/ObjectList.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="SpriteObject_8h.html">Engine/Objects/SpriteObject.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="DecorationList_8h.html">Engine/Graphics/DecorationList.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="Decoration_8h.html">Engine/Graphics/Level/Decoration.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="EnumSerialization_8h.html">Library/Serialization/EnumSerialization.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="Random_8h.html">Library/Random/Random.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="TrigLut_8h.html">Utility/Math/TrigLut.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="String_8h.html">Utility/String.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="OurMath_8h.html">OurMath.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="Party_8h.html">Party.h</a>&quot;</code><br />
 </div><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
-Functions</h2></td></tr>
-<tr class="memitem:a7a9791e42aa176a61c2594a4b6fa6843"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="MapInfo_8cpp.html#a7a9791e42aa176a61c2594a4b6fa6843">MM_DEFINE_ENUM_SERIALIZATION_FUNCTIONS</a> (<a class="el" href="MapInfo_8h.html#adad43ef8fbf56e2a3bc00fd08cca312f">MapStartPoint</a>, <a class="el" href="EventTrace_8cpp.html#a00391c70427a88ef01f5a197763a2fab">CASE_SENSITIVE</a>, { {<a class="el" href="MapInfo_8h.html#adad43ef8fbf56e2a3bc00fd08cca312fa894ff85c1a2b84a9fbcf98958e5cf943">MapStartPoint_Party</a>, &quot;Party Start&quot;}, {<a class="el" href="MapInfo_8h.html#adad43ef8fbf56e2a3bc00fd08cca312faa71727ebd5078eb3155d1080807d152b">MapStartPoint_North</a>, &quot;North Start&quot;}, {<a class="el" href="MapInfo_8h.html#adad43ef8fbf56e2a3bc00fd08cca312fa08a6e041b97028eb16fd386af18474aa">MapStartPoint_South</a>, &quot;South Start&quot;}, {<a class="el" href="MapInfo_8h.html#adad43ef8fbf56e2a3bc00fd08cca312fa1280f76e73c09850ea446d603f08282c">MapStartPoint_East</a>, &quot;East Start&quot;}, {<a class="el" href="MapInfo_8h.html#adad43ef8fbf56e2a3bc00fd08cca312face0f20399f9ed8f385c77fc2e887ed4d">MapStartPoint_West</a>, &quot;West Start&quot;} }) void <a class="el" href="MapInfo_8h.html#ab77e6eeddb252822cbab29444d66a41c">TeleportToStartingPoint</a>(<a class="el" href="MapInfo_8h.html#adad43ef8fbf56e2a3bc00fd08cca312f">MapStartPoint</a> point)</td></tr>
-<tr class="separator:a7a9791e42aa176a61c2594a4b6fa6843"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="var-members" name="var-members"></a>
 Variables</h2></td></tr>
+<tr class="memitem:a73eb86352d19871e98b9b637c499717e"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structMapStats.html">MapStats</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="MapInfo_8cpp.html#a73eb86352d19871e98b9b637c499717e">pMapStats</a></td></tr>
+<tr class="separator:a73eb86352d19871e98b9b637c499717e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8a7cf96be8fe34afc4c23f7894301b5f"><td class="memItemLeft" align="right" valign="top">const char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="MapInfo_8cpp.html#a8a7cf96be8fe34afc4c23f7894301b5f">location_type</a> []</td></tr>
 <tr class="separator:a8a7cf96be8fe34afc4c23f7894301b5f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Function Documentation</h2>
-<a id="a7a9791e42aa176a61c2594a4b6fa6843" name="a7a9791e42aa176a61c2594a4b6fa6843"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a7a9791e42aa176a61c2594a4b6fa6843">&#9670;&#160;</a></span>MM_DEFINE_ENUM_SERIALIZATION_FUNCTIONS()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">MM_DEFINE_ENUM_SERIALIZATION_FUNCTIONS </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="MapInfo_8h.html#adad43ef8fbf56e2a3bc00fd08cca312f">MapStartPoint</a>&#160;</td>
-          <td class="paramname">, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="EventTrace_8cpp.html#a00391c70427a88ef01f5a197763a2fab">CASE_SENSITIVE</a>&#160;</td>
-          <td class="paramname">, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">{ {<a class="el" href="MapInfo_8h.html#adad43ef8fbf56e2a3bc00fd08cca312fa894ff85c1a2b84a9fbcf98958e5cf943">MapStartPoint_Party</a>, &quot;Party Start&quot;}, {<a class="el" href="MapInfo_8h.html#adad43ef8fbf56e2a3bc00fd08cca312faa71727ebd5078eb3155d1080807d152b">MapStartPoint_North</a>, &quot;North Start&quot;}, {<a class="el" href="MapInfo_8h.html#adad43ef8fbf56e2a3bc00fd08cca312fa08a6e041b97028eb16fd386af18474aa">MapStartPoint_South</a>, &quot;South Start&quot;}, {<a class="el" href="MapInfo_8h.html#adad43ef8fbf56e2a3bc00fd08cca312fa1280f76e73c09850ea446d603f08282c">MapStartPoint_East</a>, &quot;East Start&quot;}, {<a class="el" href="MapInfo_8h.html#adad43ef8fbf56e2a3bc00fd08cca312face0f20399f9ed8f385c77fc2e887ed4d">MapStartPoint_West</a>, &quot;West Start&quot;} }&#160;</td>
-          <td class="paramname">&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
 <h2 class="groupheader">Variable Documentation</h2>
 <a id="a8a7cf96be8fe34afc4c23f7894301b5f" name="a8a7cf96be8fe34afc4c23f7894301b5f"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a8a7cf96be8fe34afc4c23f7894301b5f">&#9670;&#160;</a></span>location_type</h2>
@@ -184,6 +133,20 @@ Variables</h2></td></tr>
 <div class="line">    <span class="stringliteral">&quot;PSYCHOTIC&quot;</span></div>
 <div class="line">}</div>
 </div><!-- fragment -->
+</div>
+</div>
+<a id="a73eb86352d19871e98b9b637c499717e" name="a73eb86352d19871e98b9b637c499717e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a73eb86352d19871e98b9b637c499717e">&#9670;&#160;</a></span>pMapStats</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structMapStats.html">MapStats</a>* pMapStats</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
 </div>
 </div>
 </div><!-- contents -->

@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;319a2d0</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;2b7074d</span>
    </div>
   </td>
  </tr>
@@ -118,16 +118,26 @@ $(function() {
 <code>#include &quot;<a class="el" href="OurMath_8h.html">Engine/OurMath.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Party_8h.html">Engine/Party.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="SaveLoad_8h.html">Engine/SaveLoad.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="TableSerialization_8h.html">Engine/Snapshots/TableSerialization.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="SpellFxRenderer_8h.html">Engine/SpellFxRenderer.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="CastSpellInfo_8h.html">Engine/Spells/CastSpellInfo.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Spells_8h.html">Engine/Spells/Spells.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="ItemTable_8h.html">Engine/Tables/ItemTable.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="IconFrameTable_8h.html">Engine/Tables/IconFrameTable.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="CharacterFrameTable_8h.html">Engine/Tables/CharacterFrameTable.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="TileFrameTable_8h.html">Engine/Tables/TileFrameTable.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="TileTable_8h.html">Engine/Tables/TileTable.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="FactionTable_8h.html">Engine/Tables/FactionTable.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="StorylineTextTable_8h.html">Engine/Tables/StorylineTextTable.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="AwardTable_8h.html">Engine/Tables/AwardTable.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="AutonoteTable_8h.html">Engine/Tables/AutonoteTable.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="QuestTable_8h.html">Engine/Tables/QuestTable.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="TransitionTable_8h.html">Engine/Tables/TransitionTable.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="MerchantTable_8h.html">Engine/Tables/MerchantTable.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="MessageScrollTable_8h.html">Engine/Tables/MessageScrollTable.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Time_8h.html">Engine/Time.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="AttackList_8h.html">Engine/AttackList.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="GameResourceManager_8h.html">Engine/GameResourceManager.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="MapInfo_8h.html">Engine/MapInfo.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="GUIButton_8h.html">GUI/GUIButton.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="GUIFont_8h.html">GUI/GUIFont.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="GUIProgressBar_8h.html">GUI/GUIProgressBar.h</a>&quot;</code><br />
@@ -195,7 +205,7 @@ Functions</h2></td></tr>
 <tr class="separator:a1ec9273d2cd901e48e54eedaecd87b1b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4c7c70729a3af9d53e1c4fe25879f2cb"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Engine_8cpp.html#a4c7c70729a3af9d53e1c4fe25879f2cb">_44100D_should_alter_right_panel</a> ()</td></tr>
 <tr class="separator:a4c7c70729a3af9d53e1c4fe25879f2cb"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8e8fac3d8a00188e5f6d7c61fbaf3620"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Engine_8cpp.html#a8e8fac3d8a00188e5f6d7c61fbaf3620">Transition_StopSound_Autosave</a> (const std::string &amp;pMapName, <a class="el" href="MapInfo_8h.html#adad43ef8fbf56e2a3bc00fd08cca312f">MapStartPoint</a> start_point)</td></tr>
+<tr class="memitem:a8e8fac3d8a00188e5f6d7c61fbaf3620"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Engine_8cpp.html#a8e8fac3d8a00188e5f6d7c61fbaf3620">Transition_StopSound_Autosave</a> (const std::string &amp;pMapName, <a class="el" href="MapEnums_8h.html#adad43ef8fbf56e2a3bc00fd08cca312f">MapStartPoint</a> start_point)</td></tr>
 <tr class="separator:a8e8fac3d8a00188e5f6d7c61fbaf3620"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac081aee5cb02b8e5dfb077674a160d68"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Engine_8cpp.html#ac081aee5cb02b8e5dfb077674a160d68">TeleportToNWCDungeon</a> ()</td></tr>
 <tr class="separator:ac081aee5cb02b8e5dfb077674a160d68"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -751,7 +761,7 @@ Variables</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="MapInfo_8h.html#adad43ef8fbf56e2a3bc00fd08cca312f">MapStartPoint</a>&#160;</td>
+          <td class="paramtype"><a class="el" href="MapEnums_8h.html#adad43ef8fbf56e2a3bc00fd08cca312f">MapStartPoint</a>&#160;</td>
           <td class="paramname"><em>start_point</em>&#160;</td>
         </tr>
         <tr>
