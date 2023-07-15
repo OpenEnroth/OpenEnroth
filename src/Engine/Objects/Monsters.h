@@ -217,7 +217,6 @@ struct MonsterDesc {
 
 struct MonsterList {
     int16_t GetMonsterIDByName(const std::string &pMonsterName);
-    void FromFile(const Blob &data_mm6, const Blob &data_mm7, const Blob &data_mm8);
     bool FromFileTxt(const char *Args);
 
     std::vector<MonsterDesc> pMonsters;

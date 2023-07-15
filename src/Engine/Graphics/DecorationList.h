@@ -55,8 +55,6 @@ class DecorationList {
  public:
     inline DecorationList() {}
 
-    void ToFile();
-    void FromFile(const Blob &data_mm6, const Blob &data_mm7, const Blob &data_mm8);
     void InitializeDecorationSprite(unsigned int uDecID);
     uint16_t GetDecorIdByName(std::string_view pName);
 
@@ -64,7 +62,7 @@ class DecorationList {
         return &pDecorations[index];
     }
 
- protected:
+ public:
     std::vector<DecorationDesc> pDecorations;
 };
 

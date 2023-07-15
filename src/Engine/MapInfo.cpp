@@ -222,7 +222,7 @@ MAP_TYPE MapStats::GetMapInfo(const std::string &Str2) {
 
     std::string map_name = toLower(Str2);
 
-    for (uint i = 1; i < uNumMaps; ++i) {
+    for (int i = 1; i < uNumMaps; ++i) {
         if (pInfos[i].pFilename == map_name) {
             return (MAP_TYPE)i;
         }

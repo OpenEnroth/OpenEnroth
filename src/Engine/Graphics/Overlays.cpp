@@ -101,20 +101,6 @@ void OverlayList::InitializeSprites() {
         pSpriteFrameTable->InitializeSprite(pOverlays[i].uSpriteFramesetID);
 }
 
-//----- (00458E08) --------------------------------------------------------
-void OverlayList::FromFile(const Blob &data_mm6, const Blob &data_mm7, const Blob &data_mm8) {
-    pOverlays.clear();
-
-    if (data_mm6)
-        deserialize(data_mm6, &pOverlays, appendVia<OverlayDesc_MM7>());
-    if (data_mm7)
-        deserialize(data_mm7, &pOverlays, appendVia<OverlayDesc_MM7>());
-    if (data_mm8)
-        deserialize(data_mm8, &pOverlays, appendVia<OverlayDesc_MM7>());
-
-    assert(!pOverlays.empty());
-}
-
 //----- (00458E4F) --------------------------------------------------------
 bool OverlayList::FromFileTxt(const char *Args) {
     FILE *v4;         // eax@1

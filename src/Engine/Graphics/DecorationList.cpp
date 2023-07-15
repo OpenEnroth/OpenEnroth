@@ -13,20 +13,6 @@
 
 DecorationList *pDecorationList;
 
-//----- (0045864C) --------------------------------------------------------
-void DecorationList::FromFile(const Blob &data_mm6, const Blob &data_mm7, const Blob &data_mm8) {
-    pDecorations.clear();
-
-    if (data_mm6)
-        deserialize(data_mm6, &pDecorations, appendVia<DecorationDesc_MM6>());
-    if (data_mm7)
-        deserialize(data_mm7, &pDecorations, appendVia<DecorationDesc_MM7>());
-    if (data_mm8)
-        deserialize(data_mm8, &pDecorations, appendVia<DecorationDesc_MM7>());
-
-    assert(!pDecorations.empty());
-}
-
 void DecorationList::InitializeDecorationSprite(unsigned int uDecID) {
     pSpriteFrameTable->InitializeSprite(this->pDecorations[uDecID].uSpriteID);
 }

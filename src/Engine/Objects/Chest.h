@@ -20,8 +20,6 @@ class ChestList {
  public:
     ChestList() {}
 
-    void FromFile(const Blob &data_mm6, const Blob &data_mm7, const Blob &data_mm8);
-
  public:
     std::vector<ChestDesc> vChests;
 };

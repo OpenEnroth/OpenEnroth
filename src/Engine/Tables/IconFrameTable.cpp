@@ -1,8 +1,6 @@
 #include "Engine/Tables/IconFrameTable.h"
 
 #include "Engine/AssetsManager.h"
-#include "Engine/Snapshots/EntitySnapshots.h"
-#include "Engine/Snapshots/SnapshotSerialization.h"
 
 #include "Utility/String.h"
 
@@ -65,20 +63,6 @@ void IconFrameTable::InitializeAnimation(unsigned int uIconID) {
             }
         }
     }
-}
-
-//----- (00495056) --------------------------------------------------------
-void IconFrameTable::FromFile(const Blob &data_mm6, const Blob &data_mm7, const Blob &data_mm8) {
-    (void) data_mm6;
-    (void) data_mm8;
-
-    pIcons.clear();
-    deserialize(data_mm7, &pIcons, appendVia<IconFrame_MM7>());
-
-    for (size_t i = 0; i < pIcons.size(); ++i)
-        pIcons[i].id = i;
-
-    assert(!pIcons.empty());
 }
 
 /*

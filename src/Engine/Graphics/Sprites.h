@@ -49,7 +49,6 @@ class SpriteFrame {
 };
 
 struct SpriteFrameTable {
-    void FromFile(const Blob &data_mm6, const Blob &data_mm7, const Blob &data_mm8);
     void ResetLoadedFlags();
     void InitializeSprite(signed int uSpriteID);
 
