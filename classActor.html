@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;49da93f</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;2312469</span>
    </div>
   </td>
  </tr>
@@ -183,14 +183,14 @@ Static Public Member Functions</h2></td></tr>
 <tr class="separator:aabfe5267433f5ac535ea0f587f5583ec"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abcdcd09bde265d5b55d08ad248f5c473"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classActor.html#abcdcd09bde265d5b55d08ad248f5c473">StandAwhile</a> (unsigned int uActorID)</td></tr>
 <tr class="separator:abcdcd09bde265d5b55d08ad248f5c473"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a29eeb19ef703b8a1b9b31e5fbaa7b5e3"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classActor.html#a29eeb19ef703b8a1b9b31e5fbaa7b5e3">AI_Stand</a> (unsigned int uActorID, unsigned int object_to_face_pid, unsigned int uActionLength, struct <a class="el" href="structAIDirection.html">AIDirection</a> *a4)</td></tr>
-<tr class="separator:a29eeb19ef703b8a1b9b31e5fbaa7b5e3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae8fce8eb7dd17993322ac35502c0abef"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classActor.html#ae8fce8eb7dd17993322ac35502c0abef">AI_Stand</a> (unsigned int uActorID, <a class="el" href="classPid.html">Pid</a> object_to_face_pid, unsigned int uActionLength, struct <a class="el" href="structAIDirection.html">AIDirection</a> *a4)</td></tr>
+<tr class="separator:ae8fce8eb7dd17993322ac35502c0abef"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad0a9899d8b44acf045914beddb38e454"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classActor.html#ad0a9899d8b44acf045914beddb38e454">AI_StandOrBored</a> (unsigned int uActorID, <a class="el" href="classPid.html">Pid</a> uObjID, int uActionLength, struct <a class="el" href="structAIDirection.html">AIDirection</a> *a4)</td></tr>
 <tr class="separator:ad0a9899d8b44acf045914beddb38e454"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a32cf625106c3faad3ced3320d86db1f2"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classActor.html#a32cf625106c3faad3ced3320d86db1f2">AI_FaceObject</a> (unsigned int uActorID, <a class="el" href="classPid.html">Pid</a> uObjID, int UNUSED, struct <a class="el" href="structAIDirection.html">AIDirection</a> *Dir_In)</td></tr>
 <tr class="separator:a32cf625106c3faad3ced3320d86db1f2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1263c7717de137c127b39df0cf4593c0"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classActor.html#a1263c7717de137c127b39df0cf4593c0">GetDirectionInfo</a> (unsigned int uObj1ID, unsigned int uObj2ID, struct <a class="el" href="structAIDirection.html">AIDirection</a> *pOut, int a4)</td></tr>
-<tr class="separator:a1263c7717de137c127b39df0cf4593c0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4483f034bdc08bff333d86d69f55c50a"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classActor.html#a4483f034bdc08bff333d86d69f55c50a">GetDirectionInfo</a> (<a class="el" href="classPid.html">Pid</a> uObj1ID, <a class="el" href="classPid.html">Pid</a> uObj2ID, struct <a class="el" href="structAIDirection.html">AIDirection</a> *pOut, int a4)</td></tr>
+<tr class="separator:a4483f034bdc08bff333d86d69f55c50a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa03a8044db9c631c68d58499d4f630d0"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classActor.html#aa03a8044db9c631c68d58499d4f630d0">Explode</a> (unsigned int uActorID)</td></tr>
 <tr class="separator:aa03a8044db9c631c68d58499d4f630d0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a21e41a27011d8e1a88fa6cfc3f993bc6"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classActor.html#a21e41a27011d8e1a88fa6cfc3f993bc6">AI_RangedAttack</a> (unsigned int uActorID, struct <a class="el" href="structAIDirection.html">AIDirection</a> *a2, int type, <a class="el" href="ActorEnums_8h.html#a224eb67ac920c1beeacc7956d5c95fa2">ABILITY_INDEX</a> a4)</td></tr>
@@ -1418,8 +1418,8 @@ Public Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="a29eeb19ef703b8a1b9b31e5fbaa7b5e3" name="a29eeb19ef703b8a1b9b31e5fbaa7b5e3"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a29eeb19ef703b8a1b9b31e5fbaa7b5e3">&#9670;&#160;</a></span>AI_Stand()</h2>
+<a id="ae8fce8eb7dd17993322ac35502c0abef" name="ae8fce8eb7dd17993322ac35502c0abef"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae8fce8eb7dd17993322ac35502c0abef">&#9670;&#160;</a></span>AI_Stand()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1436,7 +1436,7 @@ Public Attributes</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">unsigned int&#160;</td>
+          <td class="paramtype"><a class="el" href="classPid.html">Pid</a>&#160;</td>
           <td class="paramname"><em>object_to_face_pid</em>, </td>
         </tr>
         <tr>
@@ -1877,8 +1877,8 @@ Public Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="a1263c7717de137c127b39df0cf4593c0" name="a1263c7717de137c127b39df0cf4593c0"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a1263c7717de137c127b39df0cf4593c0">&#9670;&#160;</a></span>GetDirectionInfo()</h2>
+<a id="a4483f034bdc08bff333d86d69f55c50a" name="a4483f034bdc08bff333d86d69f55c50a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4483f034bdc08bff333d86d69f55c50a">&#9670;&#160;</a></span>GetDirectionInfo()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1889,13 +1889,13 @@ Public Attributes</h2></td></tr>
         <tr>
           <td class="memname">void Actor::GetDirectionInfo </td>
           <td>(</td>
-          <td class="paramtype">unsigned int&#160;</td>
+          <td class="paramtype"><a class="el" href="classPid.html">Pid</a>&#160;</td>
           <td class="paramname"><em>uObj1ID</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">unsigned int&#160;</td>
+          <td class="paramtype"><a class="el" href="classPid.html">Pid</a>&#160;</td>
           <td class="paramname"><em>uObj2ID</em>, </td>
         </tr>
         <tr>

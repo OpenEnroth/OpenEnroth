@@ -167,7 +167,7 @@ var searchData=
   ['getdeviceidforidentifier_164',['getDeviceIDForIdentifier',['../classorg_1_1libsdl_1_1app_1_1HIDDeviceManager.html#a86f9aa986c62949a15e7a128c1418439',1,'org::libsdl::app::HIDDeviceManager']]],
   ['getdevicename_165',['getDeviceName',['../classorg_1_1libsdl_1_1app_1_1HIDDeviceUSB.html#adfca1d1de822485d91afabce8437cb0b',1,'org::libsdl::app::HIDDeviceUSB']]],
   ['getdiagonal_166',['getDiagonal',['../classorg_1_1libsdl_1_1app_1_1SDLActivity.html#a394ee33a0c581602db8ab36cf7bbb64c',1,'org::libsdl::app::SDLActivity']]],
-  ['getdirectioninfo_167',['GetDirectionInfo',['../classActor.html#a1263c7717de137c127b39df0cf4593c0',1,'Actor']]],
+  ['getdirectioninfo_167',['GetDirectionInfo',['../classActor.html#a4483f034bdc08bff333d86d69f55c50a',1,'Actor']]],
   ['getdirectoryheaderimgsize_168',['getDirectoryHeaderImgSize',['../LodReader_8cpp.html#aa7d115a10dc60ce2f191a09fe17c88b0',1,'LodReader.cpp']]],
   ['getdisarmtrap_169',['GetDisarmTrap',['../classCharacter.html#ab53ad1c1d9dc5fe073dfab912d7884ce',1,'Character']]],
   ['getdisplaydpi_170',['getDisplayDPI',['../classorg_1_1libsdl_1_1app_1_1SDLActivity.html#a127b7575fb04e4c340d7879783f81ed6',1,'org::libsdl::app::SDLActivity']]],

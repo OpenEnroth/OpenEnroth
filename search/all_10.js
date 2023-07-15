@@ -845,7 +845,7 @@ var searchData=
   ['processor_2ecpp_842',['Processor.cpp',['../Processor_8cpp.html',1,'']]],
   ['processor_2eh_843',['Processor.h',['../Processor_8h.html',1,'']]],
   ['processqueuedmessages_844',['processQueuedMessages',['../classGame.html#ae49ce8824159c3276c91b682d85e5ece',1,'Game']]],
-  ['processspellimpact_845',['processSpellImpact',['../SpriteObject_8h.html#aca60e0baed93dfd2afb55dd546b2a8ab',1,'processSpellImpact(unsigned int uLayingItemID, signed int pid):&#160;SpriteObject.h'],['../SpriteObject_8cpp.html#a6f59e69db23d5a9bcb0b3b01ce260416',1,'processSpellImpact(unsigned int uLayingItemID, int pid):&#160;SpriteObject.cpp']]],
+  ['processspellimpact_845',['processSpellImpact',['../SpriteObject_8h.html#ac0f504ebb21bca2e33450d1f3a169410',1,'processSpellImpact(unsigned int uLayingItemID, Pid pid):&#160;SpriteObject.cpp'],['../SpriteObject_8cpp.html#ac0f504ebb21bca2e33450d1f3a169410',1,'processSpellImpact(unsigned int uLayingItemID, Pid pid):&#160;SpriteObject.cpp']]],
   ['processstealingresult_846',['processStealingResult',['../classGUIWindow__Shop.html#a9b29092cef7b471f55d8e8f51e225d61',1,'GUIWindow_Shop']]],
   ['processsyntheticevents_847',['processSyntheticEvents',['../classEngineControlComponent.html#abd88883d43b7c63473802bc029ffcd7d',1,'EngineControlComponent']]],
   ['processtextinput_848',['ProcessTextInput',['../classIo_1_1KeyboardInputHandler.html#a024dae2e3d6b98d4f3b7ca434c2021e2',1,'Io::KeyboardInputHandler']]],
