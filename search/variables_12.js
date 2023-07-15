@@ -91,7 +91,7 @@ var searchData=
   ['reswater_88',['resWater',['../structMonsterInfo__MM7.html#a14f515e3918c184df9a362e055038ad8',1,'MonsterInfo_MM7']]],
   ['reswaterbase_89',['resWaterBase',['../structPlayer__MM7.html#a7d133f5d9d323e30f3b52efb33cb0904',1,'Player_MM7']]],
   ['reswaterbonus_90',['resWaterBonus',['../structPlayer__MM7.html#a8728274faea6eb216629f93ac1213f56',1,'Player_MM7']]],
-  ['retrace_91',['retrace',['../structGameOptions.html#ab258fb21e793646e0358e7224364dc53',1,'GameOptions']]],
+  ['retrace_91',['retrace',['../structOpenEnrothOptions.html#ae0fc5429cc7d64465bc64c43743fb10f',1,'OpenEnrothOptions']]],
   ['return_92',['Return',['../classGameConfig_1_1Keybindings.html#a55b39dfacbc37f2f442d93304d6c4965',1,'GameConfig::Keybindings::Return()'],['../classGameConfig_1_1Gamepad.html#a312339e61d60b8f331b6a25f5a9ddb4b',1,'GameConfig::Gamepad::Return()']]],
   ['returntogame_93',['ReturnToGame',['../classGameConfig_1_1Keybindings.html#a3c0b4f19f99896ac5fbf29556ba6675a',1,'GameConfig::Keybindings::ReturnToGame()'],['../classGameConfig_1_1Gamepad.html#ae8b3d4244a53ff98bb37b0b8870eaab8',1,'GameConfig::Gamepad::ReturnToGame()']]],
   ['rhw_94',['rhw',['../structRenderVertexD3D3.html#a20896950efa27111b72e1f8f1ab8faab',1,'RenderVertexD3D3']]],

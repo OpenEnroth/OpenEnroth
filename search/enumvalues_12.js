@@ -676,7 +676,7 @@ var searchData=
   ['strafeleft_673',['StrafeLeft',['../namespaceIo.html#a547e2ba6c6a5bb3a0b5987131e62a90ca619850cebb4607f51de326bd78c27429',1,'Io']]],
   ['straferight_674',['StrafeRight',['../namespaceIo.html#a547e2ba6c6a5bb3a0b5987131e62a90ca9b4d85f3d87b8e67d74e087541ed3743',1,'Io']]],
   ['stunned_675',['Stunned',['../ActorEnums_8h.html#a75a2677e7281dc615368b0814c395fedaeb8ab7d98634514cc61c2b0a0c8d93a2',1,'ActorEnums.h']]],
-  ['subcommand_5fgame_676',['SUBCOMMAND_GAME',['../structGameOptions.html#a1d654bf52496d8445e32d0fd3cb3647eadfa64152c822d782307622bce9795853',1,'GameOptions']]],
-  ['subcommand_5fretrace_677',['SUBCOMMAND_RETRACE',['../structGameOptions.html#a1d654bf52496d8445e32d0fd3cb3647eaf67b035a3a3941ba21dbe7245a72cb32',1,'GameOptions']]],
+  ['subcommand_5fgame_676',['SUBCOMMAND_GAME',['../structOpenEnrothOptions.html#a4bbb727c7a75a2faa5102089da3963c2adfa64152c822d782307622bce9795853',1,'OpenEnrothOptions']]],
+  ['subcommand_5fretrace_677',['SUBCOMMAND_RETRACE',['../structOpenEnrothOptions.html#a4bbb727c7a75a2faa5102089da3963c2af67b035a3a3941ba21dbe7245a72cb32',1,'OpenEnrothOptions']]],
   ['summoned_678',['Summoned',['../ActorEnums_8h.html#a75a2677e7281dc615368b0814c395feda046bfcaf387649f3c78b193d321d4dd6',1,'ActorEnums.h']]]
 ];
