@@ -46,6 +46,8 @@
 #include "Engine/Tables/IconFrameTable.h"
 #include "Engine/Tables/CharacterFrameTable.h"
 #include "Engine/Tables/TileFrameTable.h"
+#include "Engine/Tables/FactionTable.h"
+#include "Engine/Tables/StorylineTextTable.h"
 #include "Engine/Time.h"
 #include "Engine/AttackList.h"
 #include "Engine/GameResourceManager.h"
@@ -928,8 +930,26 @@ void Engine::MM7_Initialize() {
 void Engine::SecondaryInitialization() {
     mouse->Initialize();
 
-    pItemTable = new ItemTable;
+    pMapStats = new MapStats();
+    pMapStats->Initialize(engine->_gameResourceManager->getEventsFile("MapStats.txt"));
+
+    pMonsterStats = new MonsterStats();
+    pMonsterStats->Initialize(engine->_gameResourceManager->getEventsFile("monsters.txt"));
+    pMonsterStats->InitializePlacements(engine->_gameResourceManager->getEventsFile("placemon.txt"));
+
+    pSpellStats = new SpellStats();
+    pSpellStats->Initialize(engine->_gameResourceManager->getEventsFile("spells.txt"));
+
+    pFactionTable = new FactionTable();
+    pFactionTable->Initialize(engine->_gameResourceManager->getEventsFile("hostile.txt"));
+
+    pStorylineText = new StorylineText();
+    pStorylineText->Initialize(engine->_gameResourceManager->getEventsFile("history.txt"));
+
+    pItemTable = new ItemTable();
     pItemTable->Initialize();
+
+    initializeBuildings(engine->_gameResourceManager->getEventsFile("2dEvents.txt"));
 
     //pPaletteManager->SetMistColor(128, 128, 128);
     //pPaletteManager->RecalculateAll();

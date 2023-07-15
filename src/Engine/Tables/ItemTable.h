@@ -4,6 +4,7 @@
 
 #include "Engine/Objects/ItemEnchantment.h"
 #include "Engine/Objects/Items.h"
+
 #include "Utility/IndexedArray.h"
 
 struct BonusRange {

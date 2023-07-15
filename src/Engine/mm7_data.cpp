@@ -2458,7 +2458,6 @@ int bDialogueUI_InitializeActor_NPC_ID;
 
 int64_t qword_5C6DF0;
 
-struct FactionTable *pFactionTable;
 // std::array<char, 777> byte_5C8D1A;
 
 std::array<char, 777> byte_5E4C15;

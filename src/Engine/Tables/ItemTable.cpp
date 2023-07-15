@@ -5,13 +5,7 @@
 #include <utility>
 
 #include "Engine/Tables/ItemTable.h"
-#include "Engine/Tables/StorylineTextTable.h"
-#include "Engine/Tables/FactionTable.h"
 #include "Engine/Spells/Spells.h"
-#include "Engine/Objects/Monsters.h"
-#include "Engine/LOD.h"
-#include "Engine/MapInfo.h"
-#include "Engine/mm7_data.h"
 #include "Engine/Engine.h"
 #include "Engine/Party.h"
 #include "Engine/EngineIocContainer.h"
@@ -84,24 +78,8 @@ void ItemTable::Initialize() {
 
     char *lineContent;
 
-    pMapStats = new MapStats;
-    pMapStats->Initialize(engine->_gameResourceManager->getEventsFile("MapStats.txt"));
-
-    pMonsterStats = new MonsterStats;
-    pMonsterStats->Initialize(engine->_gameResourceManager->getEventsFile("monsters.txt"));
-    pMonsterStats->InitializePlacements(engine->_gameResourceManager->getEventsFile("placemon.txt"));
-
-    pSpellStats = new SpellStats();
-    pSpellStats->Initialize(engine->_gameResourceManager->getEventsFile("spells.txt"));
-
     LoadPotions();
     LoadPotionNotes();
-
-    pFactionTable = new FactionTable();
-    pFactionTable->Initialize(engine->_gameResourceManager->getEventsFile("hostile.txt"));
-
-    pStorylineText = new StorylineText();
-    pStorylineText->Initialize(engine->_gameResourceManager->getEventsFile("history.txt"));
 
     std::string txtRaw;
 
@@ -161,8 +139,6 @@ void ItemTable::Initialize() {
     }
 
     pSpecialEnchantments_count = 72;
-
-    initializeBuildings(engine->_gameResourceManager->getEventsFile("2dEvents.txt"));
 
     txtRaw = engine->_gameResourceManager->getEventsFile("items.txt").string_view();
     strtok(txtRaw.data(), "\r");

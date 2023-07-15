@@ -1,8 +1,11 @@
 #include "FactionTable.h"
 
 #include <cstring>
+#include <string>
 
 #include "Utility/Memory/Blob.h"
+
+struct FactionTable *pFactionTable;
 
 //----- (004547E4) --------------------------------------------------------
 void FactionTable::Initialize(const Blob &factions) {

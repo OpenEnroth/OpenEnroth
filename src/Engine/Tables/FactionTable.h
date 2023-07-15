@@ -1,7 +1,5 @@
 #pragma once
 
-#include <string>
-
 class Blob;
 
 struct FactionTable {
@@ -9,3 +7,5 @@ struct FactionTable {
 
     char relations[89][89];
 };
+
+extern FactionTable *pFactionTable;
