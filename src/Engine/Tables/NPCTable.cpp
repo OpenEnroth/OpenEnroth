@@ -1,12 +1,6 @@
-#include "Engine/Tables/NPCTable.h"
-#include "Engine/Tables/AwardTable.h"
-#include "Engine/Tables/AutonoteTable.h"
-#include "Engine/Tables/QuestTable.h"
-#include "Engine/Tables/TransitionTable.h"
-#include "Engine/Tables/MerchantTable.h"
-#include "Engine/Tables/MessageScrollTable.h"
-#include "Engine/Objects/NPC.h"
+#include "NPCTable.h"
 
+#include "Engine/Objects/NPC.h"
 #include "Engine/Party.h"
 #include "Engine/GameResourceManager.h"
 
@@ -347,6 +341,7 @@ void NPCStats::InitializeNPCNews(const Blob &npcNews) {
 
 //----- (0047702F) --------------------------------------------------------
 void NPCStats::Initialize(GameResourceManager *resourceManager) {
+    pNPCData.fill(NPCData());
     InitializeNPCData(resourceManager->getEventsFile("npcdata.txt"));
     InitializeNPCGreets(resourceManager->getEventsFile("npcgreet.txt"));
     InitializeNPCGroups(resourceManager->getEventsFile("npcgroup.txt"));
@@ -354,14 +349,6 @@ void NPCStats::Initialize(GameResourceManager *resourceManager) {
     InitializeNPCText(resourceManager->getEventsFile("npctext.txt"));
     InitializeNPCTopics(resourceManager->getEventsFile("npctopic.txt"));
     InitializeNPCDist(resourceManager->getEventsFile("npcdist.txt"));
-
-    initializeQuests(resourceManager->getEventsFile("quests.txt"));
-    initializeAutonotes(resourceManager->getEventsFile("autonote.txt"));
-    initializeAwards(resourceManager->getEventsFile("awards.txt"));
-    initializeTransitions(resourceManager->getEventsFile("trans.txt"));
-    initializeMerchants(resourceManager->getEventsFile("merchant.txt"));
-    initializeMessageScrolls(resourceManager->getEventsFile("scroll.txt"));
-
     InitializeNPCNames(resourceManager->getEventsFile("npcnames.txt"));
     InitializeNPCProfs(resourceManager->getEventsFile("npcprof.txt"));
 }

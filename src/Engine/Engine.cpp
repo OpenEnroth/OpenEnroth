@@ -48,6 +48,12 @@
 #include "Engine/Tables/TileFrameTable.h"
 #include "Engine/Tables/FactionTable.h"
 #include "Engine/Tables/StorylineTextTable.h"
+#include "Engine/Tables/AwardTable.h"
+#include "Engine/Tables/AutonoteTable.h"
+#include "Engine/Tables/QuestTable.h"
+#include "Engine/Tables/TransitionTable.h"
+#include "Engine/Tables/MerchantTable.h"
+#include "Engine/Tables/MessageScrollTable.h"
 #include "Engine/Time.h"
 #include "Engine/AttackList.h"
 #include "Engine/GameResourceManager.h"
@@ -976,9 +982,15 @@ void Engine::SecondaryInitialization() {
         render->hd_water_tile_anim[i] = assets->getBitmap(container_name);
     }
 
-    pNPCStats = new NPCStats;
-    pNPCStats->pNPCData.fill(NPCData());
+    pNPCStats = new NPCStats();
     pNPCStats->Initialize(engine->_gameResourceManager.get());
+
+    initializeQuests(engine->_gameResourceManager->getEventsFile("quests.txt"));
+    initializeAutonotes(engine->_gameResourceManager->getEventsFile("autonote.txt"));
+    initializeAwards(engine->_gameResourceManager->getEventsFile("awards.txt"));
+    initializeTransitions(engine->_gameResourceManager->getEventsFile("trans.txt"));
+    initializeMerchants(engine->_gameResourceManager->getEventsFile("merchant.txt"));
+    initializeMessageScrolls(engine->_gameResourceManager->getEventsFile("scroll.txt"));
 
     initGlobalEvents();
     pBitmaps_LOD->reserveLoadedTextures();
