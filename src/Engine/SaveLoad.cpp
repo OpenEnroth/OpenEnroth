@@ -351,7 +351,8 @@ void SaveNewGame() {
         pSave_LOD->CreateTempFile();  // создаётся временный файл OutputFileHandle
         pSave_LOD->ClearSubNodes();
 
-        for (size_t i = pGames_LOD->GetSubNodesCount() / 2; i < pGames_LOD->GetSubNodesCount(); ++i) {  // копирование файлов с 76 по 151
+        // Copy ddm & dlv files, can actually just filter by extension instead.
+        for (size_t i = pGames_LOD->GetSubNodesCount() / 2; i < pGames_LOD->GetSubNodesCount(); ++i) {
             std::string name = pGames_LOD->GetSubNodeName(i);
             Blob data = pGames_LOD->LoadRaw(name);
             pSave_LOD->AppendDirectory(name, data.data(), data.size());

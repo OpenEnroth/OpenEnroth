@@ -133,7 +133,7 @@ extern int dword_6BE13C_uCurrentlyLoadedLocationID;
 extern float fWalkSpeedMultiplier;
 extern float fBackwardWalkSpeedMultiplier;
 extern float fTurnSpeedMultiplier;
-extern std::string pCurrentMapName;
+extern std::string pCurrentMapName; // TODO(captainurist): replace with MAP_TYPE
 extern unsigned int uLevelMapStatsID;
 
 #define GAME_SETTINGS_0001 0x0001  // Skip AI next frame due to changing levels etc.

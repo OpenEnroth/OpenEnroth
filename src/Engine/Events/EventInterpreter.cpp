@@ -73,7 +73,7 @@ static bool checkSeason(Season season) {
  */
 static void spawnMonsters(int16_t typeindex, int16_t level, int count,
                           Vec3i pos, int group, unsigned int uUniqueName) {
-    int mapId = pMapStats->GetMapInfo(pCurrentMapName);
+    MAP_TYPE mapId = pMapStats->GetMapInfo(pCurrentMapName);
     SpawnPoint pSpawnPoint;
 
     pSpawnPoint.vPosition = pos;

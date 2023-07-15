@@ -24,10 +24,13 @@ CodeGenOptions CodeGenOptions::Parse(int argc, char **argv) {
     CLI::App *maps = app->add_subcommand("maps", "Generate map ids enum.")->fallthrough();
     maps->callback([&] { result.subcommand = SUBCOMMAND_MAP_ID; });
 
+    CLI::App *beacons = app->add_subcommand("beacons", "Generate beacons mapping.")->fallthrough();
+    beacons->callback([&] { result.subcommand = SUBCOMMAND_BEACON_MAPPING; });
+
     try {
         app->parse(argc, argv);
     } catch (const CLI::ParseError &e) {
-        if (app->get_help_ptr()->as<bool>() || items->get_help_ptr()->as<bool>() || maps->get_help_ptr()->as<bool>()) {
+        if (app->get_help_ptr()->as<bool>() || items->get_help_ptr()->as<bool>() || maps->get_help_ptr()->as<bool>() || beacons->get_help_ptr()->as<bool>()) {
             app->exit(e);
             result.helpPrinted = true;
         } else {

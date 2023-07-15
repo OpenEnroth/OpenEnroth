@@ -49,7 +49,6 @@ struct MapInfo {
 struct MapStats {
     void Initialize(const Blob &mapStats);
     MAP_TYPE GetMapInfo(const std::string &Str2);
-    int sub_410D99_get_map_index(int a1);
     std::array<MapInfo, 77> pInfos;
     unsigned int uNumMaps;
 };

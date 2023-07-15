@@ -4,8 +4,8 @@
 #include <sstream>
 
 #include "Engine/ErrorHandling.h"
-#include "Engine/LOD.h"
 
+#include "Utility/Memory/Blob.h"
 #include "Utility/String.h"
 
 MapStats *pMapStats;
@@ -205,18 +205,6 @@ void MapStats::Initialize(const Blob &mapStats) {
     uNumMaps = i - 1;
 }
 
-int MapStats::sub_410D99_get_map_index(int a1) {
-    std::string name = pGames_LOD->GetSubNodeName(a1);
-
-    for (int i = 1; i <= pMapStats->uNumMaps; i++) {
-        if (pMapStats->pInfos[i].pFilename == name) {
-            return i;
-        }
-    }
-    Error("Map not found");
-    return -1;
-}
-
 MAP_TYPE MapStats::GetMapInfo(const std::string &Str2) {
     Assert(uNumMaps >= 2);
 
@@ -229,5 +217,5 @@ MAP_TYPE MapStats::GetMapInfo(const std::string &Str2) {
     }
 
     Error("Map not found!");
-    return (MAP_TYPE)-1;  // @TODO: This should be MAP_INVALID!, as it's if'ed later.
+    return MAP_INVALID;
 }

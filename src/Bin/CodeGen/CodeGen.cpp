@@ -9,7 +9,12 @@
 #include "Engine/GameResourceManager.h"
 #include "Engine/MapInfo.h"
 
+#include "Library/Lod/LodReader.h"
+
 #include "Utility/Format.h"
+#include "Utility/DataPath.h"
+#include "Utility/Exception.h"
+#include "Utility/String.h"
 
 // TODO(captainurist): use std::string::contains once Android have full C++23 support.
 static auto contains = [](const std::string &haystack, const std::string &needle) {
@@ -109,7 +114,7 @@ int runItemIdCodeGen(CodeGenOptions options, GameResourceManager *resourceManage
             } else if (description == "A large pile of gold coins.") {
                 enumName = "GOLD_LARGE";
             } else {
-                assert(false);
+                throw Exception("Unrecognized gold pile description '{}'", description);
             }
         } else if (desc.uEquipType == EQUIP_GEM) {
             enumName = "GEM_" + enumName;
@@ -150,6 +155,13 @@ int runItemIdCodeGen(CodeGenOptions options, GameResourceManager *resourceManage
     return 0;
 }
 
+std::string mapIdEnumName(const MapInfo &mapInfo) {
+    std::string result = toUpperCaseEnum(mapInfo.pName);
+    if (result.starts_with("THE_"))
+        result = result.substr(4);
+    return result;
+}
+
 int runMapIdCodeGen(CodeGenOptions options, GameResourceManager *resourceManager) {
     MapStats mapStats;
     mapStats.Initialize(resourceManager->getEventsFile("MapStats.txt"));
@@ -157,20 +169,37 @@ int runMapIdCodeGen(CodeGenOptions options, GameResourceManager *resourceManager
     std::vector<std::string> maps;
 
     maps.emplace_back("INVALID");
-
-    for (size_t i = 1; i < mapStats.pInfos.size(); i++) {
-        std::string name = mapStats.pInfos[i].pName;
-
-        std::string enumName = toUpperCaseEnum(name);
-
-        if (enumName.starts_with("THE_"))
-            enumName = enumName.substr(4);
-
-        maps.emplace_back(enumName);
-    }
+    for (size_t i = 1; i < mapStats.pInfos.size(); i++)
+        maps.emplace_back(mapIdEnumName(mapStats.pInfos[i]));
 
     for (size_t i = 0; i < maps.size(); i++)
         fmt::print("    MAP_{} = {},\n", maps[i], i);
+
+    return 0;
+}
+
+int runBeaconsCodeGen(CodeGenOptions options, GameResourceManager *resourceManager) {
+    MapStats mapStats;
+    mapStats.Initialize(resourceManager->getEventsFile("MapStats.txt"));
+
+    std::unique_ptr<LodReader> gamesLod = LodReader::open(makeDataPath("data", "games.lod"));
+
+    std::vector<std::string> fileNames = gamesLod->ls();
+
+    for (size_t i = 0; i < fileNames.size(); i++) {
+        const std::string &fileName = fileNames[i];
+
+        if (!fileName.ends_with(".odm") && !fileName.ends_with(".blv"))
+            continue; // Not a level file.
+
+        auto pos = std::find_if(mapStats.pInfos.begin(), mapStats.pInfos.end(), [&] (const MapInfo &mapInfo) {
+            return toLower(mapInfo.pFilename) == toLower(fileName);
+        });
+        if (pos == mapStats.pInfos.end())
+            throw Exception("Unrecognized map '{}'", fileName);
+
+        fmt::println("    {{MAP_{}, {}}},", mapIdEnumName(*pos), i);
+    }
 
     return 0;
 }
@@ -189,6 +218,7 @@ int platformMain(int argc, char **argv) {
         switch (options.subcommand) {
         case CodeGenOptions::SUBCOMMAND_ITEM_ID: return runItemIdCodeGen(std::move(options), &resourceManager);
         case CodeGenOptions::SUBCOMMAND_MAP_ID: return runMapIdCodeGen(std::move(options), &resourceManager);
+        case CodeGenOptions::SUBCOMMAND_BEACON_MAPPING: return runBeaconsCodeGen(std::move(options), &resourceManager);
         default:
             assert(false);
             return 1;

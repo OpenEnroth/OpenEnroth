@@ -259,15 +259,15 @@ MM_DECLARE_MEMCOPY_SERIALIZABLE(PlayerEquipment_MM7)
 
 
 struct LloydBeacon_MM7 {
-    /* 00 */ uint64_t beaconTime;
-    /* 08 */ int32_t partyPosX;
-    /* 0C */ int32_t partyPosY;
-    /* 10 */ int32_t partyPosZ;
-    /* 14 */ int16_t partyViewYaw;
-    /* 16 */ int16_t partyViewPitch;
-    /* 18 */ uint16_t field_18;
-    /* 1A */ uint16_t saveFileId;
-    /* 1C */
+    uint64_t beaconTime;
+    int32_t partyPosX;
+    int32_t partyPosY;
+    int32_t partyPosZ;
+    int16_t partyViewYaw;
+    int16_t partyViewPitch;
+    uint16_t field_18;
+    uint16_t mapIndexInGamesLod; // This one is convoluted - sane people would have stored a map id here,
+                                 // but what we have here instead is the index of the map in games.lod.
 };
 static_assert(sizeof(LloydBeacon_MM7) == 0x1C);
 MM_DECLARE_MEMCOPY_SERIALIZABLE(LloydBeacon_MM7)

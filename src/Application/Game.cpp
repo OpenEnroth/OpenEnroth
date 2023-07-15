@@ -1199,14 +1199,11 @@ void Game::processQueuedMessages() {
                     size_t map_index = atoi(frameTableTxtLine.pProperties[0]);
                     if (map_index <= 0 || map_index >= 77) continue;
                     std::string map_name = pMapStats->pInfos[map_index].pFilename;
-                    if (pGames_LOD->GetSubNodeIndex(map_name) < (pGames_LOD->GetSubNodesCount() / 2)) {
-                        pCurrentMapName = map_name;
-                        dword_6BE364_game_settings_1 |= GAME_SETTINGS_0001;
-                        uGameState = GAME_STATE_CHANGE_LOCATION;
-                        onMapLeave();
-                        continue;
-                    }
-                    status_string = fmt::format("No map found for {}", pMapStats->pInfos[map_index].pName);
+                    pCurrentMapName = map_name;
+                    dword_6BE364_game_settings_1 |= GAME_SETTINGS_0001;
+                    uGameState = GAME_STATE_CHANGE_LOCATION;
+                    onMapLeave();
+                    continue;
                 } else {
                     if (frameTableTxtLine.uPropCount != 3) continue;
                     int x = atoi(frameTableTxtLine.pProperties[0]);
