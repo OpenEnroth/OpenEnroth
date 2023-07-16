@@ -145,10 +145,10 @@ void Localization::InitializeSpellNames() {
 }
 
 void Localization::InitializeNpcProfessionNames() {
-    this->npc_profession_names[NoProfession]    = this->localization_strings[153];  // Nothing
-    this->npc_profession_names[Smith]           = this->localization_strings[308];  // smith
-    this->npc_profession_names[Armorer]         = this->localization_strings[309];  // armsmaster // TODO(captainurist): the comment is off here, investigate
-    this->npc_profession_names[Alchemist]       = this->localization_strings[7];  // alchemist
+    this->npc_profession_names[NoProfession]    = this->localization_strings[153];
+    this->npc_profession_names[Smith]           = this->localization_strings[308];
+    this->npc_profession_names[Armorer]         = this->localization_strings[309];
+    this->npc_profession_names[Alchemist]       = this->localization_strings[7];
     this->npc_profession_names[Scholar]         = this->localization_strings[306];
     this->npc_profession_names[Guide]           = this->localization_strings[310];
     this->npc_profession_names[Tracker]         = this->localization_strings[311];
