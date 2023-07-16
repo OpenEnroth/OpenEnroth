@@ -90,8 +90,7 @@ MM_DEFINE_JSON_STRUCT_SERIALIZATION_FUNCTIONS(PlatformMouseEvent, (
 
 MM_DEFINE_JSON_STRUCT_SERIALIZATION_FUNCTIONS(PlatformWheelEvent, (
     (type, "type"),
-    (angleDelta, "angleDelta"),
-    (inverted, "inverted")
+    (angleDelta, "angleDelta")
 ))
 
 MM_DEFINE_JSON_STRUCT_SERIALIZATION_FUNCTIONS(PlatformMoveEvent, (

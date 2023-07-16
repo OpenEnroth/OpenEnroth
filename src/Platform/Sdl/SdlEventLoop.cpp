@@ -203,7 +203,7 @@ void SdlEventLoop::dispatchMouseWheelEvent(PlatformEventHandler *eventHandler, c
     PlatformWheelEvent e;
     e.type = EVENT_MOUSE_WHEEL;
     e.window = _state->window(event->windowID);
-    e.inverted = event->direction == SDL_MOUSEWHEEL_FLIPPED;
+    // SDL inverts event->y for us when event->direction == SDL_MOUSEWHEEL_FLIPPED, so we don't need to check for it.
     e.angleDelta = {event->x, event->y};
     dispatchEvent(eventHandler, &e);
 }
