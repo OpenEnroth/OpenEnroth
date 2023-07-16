@@ -34,7 +34,7 @@ struct LloydBeacon {
         _partyViewYaw = 0;
         _partyViewPitch = 0;
         unknown = 0;
-        SaveFileID = 0;
+        mapId = MAP_INVALID;
         image = nullptr;
     }
 
@@ -53,7 +53,7 @@ struct LloydBeacon {
     int16_t _partyViewYaw;
     int16_t _partyViewPitch;
     uint16_t unknown;
-    uint16_t SaveFileID;
+    MAP_TYPE mapId;
     GraphicsImage *image;
 };
 

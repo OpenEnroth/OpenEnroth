@@ -231,7 +231,6 @@ int Game::run() {
 
     if (window) {
         _application->get<GameWindowHandler>()->UpdateConfigFromWindow(_config.get());
-        _config->SaveConfiguration();
     }
 
     if (_engine) {
@@ -1197,17 +1196,14 @@ void Game::processQueuedMessages() {
                 txt_file_frametable_parser(keyboardInputHandler->GetTextInput().c_str(), &frameTableTxtLine);
                 std::string status_string;
                 if (frameTableTxtLine.uPropCount == 1) {
-                    size_t map_index = atoi(frameTableTxtLine.pProperties[0]);
-                    if (map_index <= 0 || map_index >= 77) continue;
+                    MAP_TYPE map_index = static_cast<MAP_TYPE>(atoi(frameTableTxtLine.pProperties[0]));
+                    if (map_index < MAP_FIRST || map_index > MAP_LAST) continue;
                     std::string map_name = pMapStats->pInfos[map_index].pFilename;
-                    if (pGames_LOD->GetSubNodeIndex(map_name) < (pGames_LOD->GetSubNodesCount() / 2)) {
-                        pCurrentMapName = map_name;
-                        dword_6BE364_game_settings_1 |= GAME_SETTINGS_0001;
-                        uGameState = GAME_STATE_CHANGE_LOCATION;
-                        onMapLeave();
-                        continue;
-                    }
-                    status_string = fmt::format("No map found for {}", pMapStats->pInfos[map_index].pName);
+                    pCurrentMapName = map_name;
+                    dword_6BE364_game_settings_1 |= GAME_SETTINGS_0001;
+                    uGameState = GAME_STATE_CHANGE_LOCATION;
+                    onMapLeave();
+                    continue;
                 } else {
                     if (frameTableTxtLine.uPropCount != 3) continue;
                     int x = atoi(frameTableTxtLine.pProperties[0]);
@@ -1407,9 +1403,10 @@ void Game::processQueuedMessages() {
                         character.SetAsleep(pParty->GetPlayingTime());
                     }
                     MAP_TYPE mapIdx = pMapStats->GetMapInfo(pCurrentMapName);
-                    if (mapIdx == MAP_INVALID) {
-                        mapIdx = static_cast<MAP_TYPE>(grng->random(pMapStats->uNumMaps + 1));
-                    }
+                    assert(mapIdx != MAP_INVALID);
+                    // Was this, which made exactly zero sense:
+                    // if (mapIdx == MAP_INVALID)
+                    //    mapIdx = static_cast<MAP_TYPE>(grng->random(pMapStats->uNumMaps + 1));
                     MapInfo *pMapInfo = &pMapStats->pInfos[mapIdx];
 
                     if (grng->random(100) + 1 <= pMapInfo->Encounter_percent) {

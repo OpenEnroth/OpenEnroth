@@ -978,7 +978,7 @@ std::string BuildDialogueString(std::string &str, uint8_t uPlayerID, ItemGen *a3
                 result += v1;
                 break;
             case 23:
-                if (pMapStats->GetMapInfo(pCurrentMapName))
+                if (pMapStats->GetMapInfo(pCurrentMapName) != MAP_INVALID)
                     result += pMapStats->pInfos[pMapStats->GetMapInfo(pCurrentMapName)].pName;
                 else
                     result += localization->GetString(LSTR_UNKNOWN);

@@ -63,8 +63,8 @@ bool Chest::open(int uChestID, Pid objectPid) {
     if (!pParty->hasActiveCharacter())
         return false;
     flag_shout = false;
-    unsigned int pMapID = pMapStats->GetMapInfo(pCurrentMapName);
-    if (chest->Trapped() && pMapID) {
+    MAP_TYPE pMapID = pMapStats->GetMapInfo(pCurrentMapName);
+    if (chest->Trapped() && pMapID != MAP_INVALID) {
         if (pParty->activeCharacter().GetDisarmTrap() < 2 * pMapStats->pInfos[pMapID].LockX5) {
             pSpriteID[0] = SPRITE_TRAP_FIRE;
             pSpriteID[1] = SPRITE_TRAP_LIGHTNING;
@@ -543,7 +543,7 @@ void Chest::GrabItem(bool all) {  // new fucntion to grab items from chest using
 }
 
 void GenerateItemsInChest() {
-    unsigned int mapType = pMapStats->GetMapInfo(pCurrentMapName);
+    MAP_TYPE mapType = pMapStats->GetMapInfo(pCurrentMapName);
     MapInfo *currMapInfo = &pMapStats->pInfos[mapType];
     for (int i = 0; i < 20; ++i) {
         for (int j = 0; j < 140; ++j) {

@@ -9,6 +9,7 @@
 #include "Engine/Pid.h"
 #include "Engine/Objects/ItemEnums.h"
 #include "Engine/Objects/CharacterEnums.h"
+#include "Engine/MapEnums.h"
 
 #include "GUI/GUIEnums.h"
 #include "GUI/GUIDialogues.h"
@@ -129,12 +130,12 @@ extern int day_attrib;
 extern int day_fogrange_1;
 extern int day_fogrange_2;
 extern struct TileTable *pTileTable;              // idb
-extern int dword_6BE13C_uCurrentlyLoadedLocationID;
 extern float fWalkSpeedMultiplier;
 extern float fBackwardWalkSpeedMultiplier;
 extern float fTurnSpeedMultiplier;
-extern std::string pCurrentMapName;
-extern unsigned int uLevelMapStatsID;
+extern std::string pCurrentMapName; // TODO(captainurist): replace with MAP_TYPE & drop!
+extern MAP_TYPE dword_6BE13C_uCurrentlyLoadedLocationID;
+extern MAP_TYPE uLevelMapStatsID;
 
 #define GAME_SETTINGS_0001 0x0001  // Skip AI next frame due to changing levels etc.
 #define GAME_SETTINGS_INVALID_RESOLUTION 0x0002

@@ -1139,14 +1139,12 @@ void Actor::AI_MeleeAttack(unsigned int uActorID, Pid sTargetPid,
 
 //----- (00438CF3) --------------------------------------------------------
 void Actor::ApplyFineForKillingPeasant(unsigned int uActorID) {
-    if (uLevelMapStatsID == 0 || !pActors[uActorID].IsPeasant()) return;
+    if (uLevelMapStatsID == MAP_INVALID || !pActors[uActorID].IsPeasant()) return;
 
-    if ((uLevelMapStatsID == 6 || uLevelMapStatsID == 7) &&
-        pParty->isPartyEvil())  // celeste and bracada
+    if ((uLevelMapStatsID == MAP_BRACADA_DESERT || uLevelMapStatsID == MAP_CELESTE) && pParty->isPartyEvil())
         return;
 
-    if ((uLevelMapStatsID == 5 || uLevelMapStatsID == 8) &&
-        pParty->isPartyGood())  // the pit and deyja
+    if ((uLevelMapStatsID == MAP_DEYJA || uLevelMapStatsID == MAP_PIT) && pParty->isPartyGood())
         return;
 
     pParty->uFine += 100 * (pMapStats->pInfos[uLevelMapStatsID]._steal_perm +
@@ -1292,7 +1290,7 @@ bool Actor::IsPeasant() {
 void Actor::StealFrom(unsigned int uActorID) {
     Character *pPlayer;     // edi@1
     int v4;              // ebx@2
-    unsigned int v5;     // eax@2
+    MAP_TYPE v5;     // eax@2
     LocationInfo *v6;  // esi@4
     int v8;              // [sp+8h] [bp-4h]@6
 
@@ -1301,7 +1299,7 @@ void Actor::StealFrom(unsigned int uActorID) {
         CastSpellInfoHelpers::cancelSpellCastInProgress();
         v4 = 0;
         v5 = pMapStats->GetMapInfo(pCurrentMapName);
-        if (v5) v4 = pMapStats->pInfos[v5]._steal_perm;
+        if (v5 != MAP_INVALID) v4 = pMapStats->pInfos[v5]._steal_perm;
         v6 = &currentLocationInfo();
         pPlayer->StealFromActor(uActorID, v4, v6->reputation++);
         v8 = pPlayer->GetAttackRecoveryTime(false);

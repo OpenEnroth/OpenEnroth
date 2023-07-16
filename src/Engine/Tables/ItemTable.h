@@ -27,7 +27,6 @@ struct ItemTable {
     void SetSpecialBonus(ItemGen *pItem);
     bool IsMaterialSpecial(const ItemGen *pItem);
     bool IsMaterialNonCommon(const ItemGen *pItem);
-    void PrintItemTypesEnum();
 
     IndexedArray<ItemDesc, ITEM_FIRST_VALID, ITEM_LAST_VALID> pItems;                   // 4-9604h
     std::array<ItemEnchantment, 24> standardEnchantments;                // 9604h

@@ -112,7 +112,7 @@ void GUIWindow_LloydsBook::Update() {
         if (beaconId < pPlayer->vBeacons.size()) {
             LloydBeacon &beacon = pPlayer->vBeacons[beaconId];
             render->DrawTextureNew(lloydsBeaconsPreviewXs[beaconId] / 640.0f, lloydsBeaconsPreviewYs[beaconId] / 480.0f, beacon.image);
-            std::string Str = pMapStats->pInfos[pMapStats->sub_410D99_get_map_index(beacon.SaveFileID)].pName;
+            std::string Str = pMapStats->pInfos[beacon.mapId].pName;
             unsigned int pTextHeight = pFontBookLloyds->CalcTextHeight(Str, pWindow.uFrameWidth, 0);
             pWindow.uFrameY -= 6 + pTextHeight;
             pWindow.DrawTitleText(pFontBookLloyds, 0, 0, colorTable.Black, Str, 3);
@@ -153,18 +153,18 @@ void GUIWindow_LloydsBook::hintBeaconSlot(int beaconId) {
     LloydBeacon &beacon = character.vBeacons[beaconId];
     if (_recallingBeacon) {
         if (beacon.uBeaconTime) {
-            std::string mapName = pMapStats->pInfos[pMapStats->sub_410D99_get_map_index(beacon.SaveFileID)].pName;
+            std::string mapName = pMapStats->pInfos[beacon.mapId].pName;
             GameUI_StatusBar_Set(localization->FormatString(LSTR_FMT_RECALL_TO_S, mapName.c_str()));
         }
     } else {
-        int mapId = pMapStats->GetMapInfo(pCurrentMapName);
+        MAP_TYPE mapId = pMapStats->GetMapInfo(pCurrentMapName);
         std::string mapName = "Not in Map Stats";
-        if (mapId) {
+        if (mapId != MAP_INVALID) {
             mapName = pMapStats->pInfos[mapId].pName;
         }
 
         if (beacon.uBeaconTime) {
-            std::string mapName2 = pMapStats->pInfos[pMapStats->sub_410D99_get_map_index(beacon.SaveFileID)].pName;
+            std::string mapName2 = pMapStats->pInfos[beacon.mapId].pName;
             GameUI_StatusBar_Set(localization->FormatString(LSTR_FMT_SET_S_OVER_S, mapName.c_str(), mapName2.c_str()));
         } else {
             GameUI_StatusBar_Set(localization->FormatString(LSTR_FMT_SET_S_TO_S, mapName.c_str()));
@@ -197,11 +197,11 @@ void GUIWindow_LloydsBook::installOrRecallBeacon(int beaconId) {
     }
     pAudioPlayer->playSpellSound(SPELL_WATER_LLOYDS_BEACON, 0);
     if (_recallingBeacon) {
-        if (pCurrentMapName != pGames_LOD->GetSubNodeName(character.vBeacons[beaconId].SaveFileID)) {
+        if (toLower(pCurrentMapName) != toLower(pMapStats->pInfos[character.vBeacons[beaconId].mapId].pFilename)) {
             // TODO(Nik-RE-dev): need separate function for teleportation to other maps
             SaveGame(1, 0);
             onMapLeave();
-            pCurrentMapName = pGames_LOD->GetSubNodeName(character.vBeacons[beaconId].SaveFileID);
+            pCurrentMapName = pMapStats->pInfos[character.vBeacons[beaconId].mapId].pFilename;
             dword_6BE364_game_settings_1 |= GAME_SETTINGS_0001;
             uGameState = GAME_STATE_CHANGE_LOCATION;
             Party_Teleport_X_Pos = character.vBeacons[beaconId].PartyPos_X;

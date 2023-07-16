@@ -3,6 +3,7 @@
 #include <cstdint>
 #include <string>
 
+#include "Engine/MapEnums.h"
 #include "GUI/UI/UIHouseEnums.h"
 #include "Utility/IndexedArray.h"
 
@@ -66,7 +67,7 @@ struct BuildingDesc {
     uint16_t uOpenTime;
     uint16_t uCloseTime;
     int16_t uExitPicID;
-    int16_t uExitMapID;
+    MAP_TYPE uExitMapID;
     int16_t _quest_bit;
     int16_t field_32;
 };

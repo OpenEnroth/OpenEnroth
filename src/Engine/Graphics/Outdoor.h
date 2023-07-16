@@ -93,7 +93,7 @@ struct OutdoorLocation {
     bool IsMapCellPartiallyRevealed(signed int a2, signed int a3);
     bool PrepareDecorations();
     void ArrangeSpriteObjects();
-    bool InitalizeActors(int a1);
+    bool InitalizeActors(MAP_TYPE a1);
     bool LoadRoadTileset();
     bool LoadTileGroupIds();
     double GetFogDensityByTime();

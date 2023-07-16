@@ -1,7 +1,10 @@
 #pragma once
 
 #include <cstdint>
+#include <array>
 #include <string>
+
+#include "Utility/IndexedArray.h"
 
 #include "MapEnums.h"
 
@@ -48,9 +51,7 @@ struct MapInfo {
 struct MapStats {
     void Initialize(const Blob &mapStats);
     MAP_TYPE GetMapInfo(const std::string &Str2);
-    int sub_410D99_get_map_index(int a1);
-    MapInfo pInfos[77];
-    unsigned int uNumMaps;
+    IndexedArray<MapInfo, MAP_FIRST, MAP_LAST> pInfos;
 };
 
 extern struct MapStats *pMapStats;

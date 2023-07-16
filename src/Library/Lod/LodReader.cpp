@@ -162,14 +162,7 @@ bool LodReader::exists(const std::string &filename) const {
 }
 
 Blob LodReader::read(const std::string &filename) {
-    const auto &file = std::find_if(_files.cbegin(), _files.cend(), [&](const FileEntryDesc &file) { return iequals(file.name, filename); });
-
-    if (_files.cend() == file) {
-        Warn("LodReader::read: file not found: %s", filename.c_str());
-        return Blob();
-    }
-
-    Blob result = _lod.subBlob(file->offset, file->size);
+    Blob result = readRaw(filename);
     if (result.size() < sizeof(LodFileCompressionHeader_Mm6))
         return result;
 
@@ -183,6 +176,17 @@ Blob LodReader::read(const std::string &filename) {
     if (header.decompressedSize)
         result = zlib::Uncompress(result, header.decompressedSize);
     return result;
+}
+
+Blob LodReader::readRaw(const std::string &filename) {
+    const auto &file = std::find_if(_files.cbegin(), _files.cend(), [&](const FileEntryDesc &file) { return iequals(file.name, filename); });
+
+    if (_files.cend() == file) {
+        Warn("LodReader::read: file not found: %s", filename.c_str());
+        return Blob();
+    }
+
+    return _lod.subBlob(file->offset, file->size);
 }
 
 std::vector<std::string> LodReader::ls() const {

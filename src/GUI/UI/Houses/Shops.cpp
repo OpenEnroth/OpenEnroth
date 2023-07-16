@@ -1094,7 +1094,7 @@ void GUIWindow_Shop::houseScreenClick() {
             int stealResult = 0;
             int stealDifficulty = 0;
             int fine;
-            if (pMapStats->GetMapInfo(pCurrentMapName)) {
+            if (pMapStats->GetMapInfo(pCurrentMapName) != MAP_INVALID) {
                 stealDifficulty = pMapStats->pInfos[pMapStats->GetMapInfo(pCurrentMapName)]._steal_perm;
             }
             int partyReputation = pParty->GetPartyReputation();

@@ -564,8 +564,8 @@ void AudioPlayer::Initialize() {
 }
 
 void PlayLevelMusic() {
-    unsigned int map_id = pMapStats->GetMapInfo(pCurrentMapName);
-    if (map_id) {
+    MAP_TYPE map_id = pMapStats->GetMapInfo(pCurrentMapName);
+    if (map_id != MAP_INVALID) {
         pAudioPlayer->MusicPlayTrack((MusicID)pMapStats->pInfos[map_id].uRedbookTrackID);
     }
 }

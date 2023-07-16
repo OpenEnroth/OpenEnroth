@@ -37,6 +37,7 @@ class GUIWindow_MessageScroll;
 class Character;
 class NPCData;
 class GraphicsImage;
+class Logger;
 
 struct WindowData {
     WindowData() {}

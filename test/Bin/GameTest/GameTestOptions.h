@@ -4,9 +4,7 @@
 
 #include "Application/GameStarterOptions.h"
 
-class Platform;
-
-struct GameTestOptions : public GameStarterOptions {
+struct GameTestOptions : GameStarterOptions {
     std::string testPath;
     bool helpRequested = false;
 

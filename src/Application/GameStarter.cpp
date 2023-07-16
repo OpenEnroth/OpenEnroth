@@ -1,6 +1,7 @@
 #include "GameStarter.h"
 
 #include <utility>
+#include <filesystem>
 
 #include "Engine/EngineIocContainer.h"
 #include "Engine/Engine.h"
@@ -29,11 +30,15 @@ GameStarter::GameStarter(GameStarterOptions options): _options(std::move(options
     resolveDefaults(_application->platform(), &_options);
     initDataPath(_options.dataPath);
 
-    _config = std::make_shared<GameConfig>(_options.configPath);
-    if (_options.resetConfig) {
-        _config->SaveConfiguration();
-    } else {
-        _config->LoadConfiguration();
+    _config = std::make_shared<GameConfig>();
+    if (_options.useConfig) {
+        if (std::filesystem::exists(_options.configPath)) {
+            _config->load(_options.configPath);
+            logger->info("Configuration file '{}' loaded!", _options.configPath);
+        } else {
+            _config->reset();
+            logger->warning("Could not read configuration file '{}'! Loaded default configuration instead!", _options.configPath);
+        }
     }
 
     if (!_options.logLevel)
@@ -50,7 +55,7 @@ void GameStarter::resolveDefaults(Platform *platform, GameStarterOptions* option
     if (options->dataPath.empty())
         options->dataPath = resolveMm7Path(platform);
 
-    if (options->configPath.empty()) {
+    if (options->useConfig && options->configPath.empty()) {
         options->configPath = "openenroth.ini";
         if (!options->dataPath.empty())
             options->configPath = options->dataPath + "/" + options->configPath;
@@ -59,4 +64,9 @@ void GameStarter::resolveDefaults(Platform *platform, GameStarterOptions* option
 
 void GameStarter::run() {
     _game->run();
+
+    if (_options.useConfig) {
+        _config->save(_options.configPath);
+        logger->info("Configuration file '{}' saved!", _options.configPath);
+    }
 }

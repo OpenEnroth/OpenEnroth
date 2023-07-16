@@ -35,26 +35,8 @@ MM_DEFINE_ENUM_SERIALIZATION_FUNCTIONS(PlatformLogLevel, CASE_INSENSITIVE, {
     {LOG_CRITICAL, "critical"},
 })
 
-GameConfig::GameConfig(const std::string &path) : _path(path) {
-    _logger = EngineIocContainer::ResolveLogger();
-}
-
-GameConfig::~GameConfig() {}
-
-void GameConfig::LoadConfiguration() {
-    if (std::filesystem::exists(_path)) {
-        Config::load(_path);
-        _logger->info("Configuration file '{}' loaded!", _path);
-    } else {
-        Config::reset();
-        _logger->warning("Could not read configuration file '{}'! Loaded default configuration instead!", _path);
-    }
-}
-
-void GameConfig::SaveConfiguration() {
-    Config::save(_path);
-    _logger->info("Configuration file '{}' saved!", _path);
-}
+GameConfig::GameConfig() = default;
+GameConfig::~GameConfig() = default;
 
 void GameConfig::resetForTest() {
     reset();

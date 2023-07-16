@@ -16,21 +16,15 @@
 #define ConfigWindowMode WINDOW_MODE_WINDOWED
 #endif
 
-class Logger;
-
 MM_DECLARE_SERIALIZATION_FUNCTIONS(RendererType)
 MM_DECLARE_SERIALIZATION_FUNCTIONS(PlatformWindowMode)
 MM_DECLARE_SERIALIZATION_FUNCTIONS(PlatformLogLevel)
 
 class GameConfig : public Config {
  public:
-    explicit GameConfig(const std::string &path);
+    GameConfig();
     ~GameConfig();
 
-    void LoadConfiguration();
-    void SaveConfiguration();
-
-    using Config::reset;
     void resetForTest();
 
     using Bool = ConfigEntry<bool>;
@@ -584,9 +578,5 @@ class GameConfig : public Config {
     };
 
     Window window{ this };
-
- private:
-    std::string _path;
-    Logger *_logger = nullptr;
 };
 

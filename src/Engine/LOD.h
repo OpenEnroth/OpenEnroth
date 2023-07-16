@@ -3,6 +3,9 @@
 #include <cstring>
 #include <string>
 #include <vector>
+#include <memory>
+
+#include "Library/Lod/LodReader.h"
 
 #include "Utility/Memory/Blob.h"
 
@@ -123,4 +126,4 @@ class WriteableFile : public File {
 };  // namespace LOD
 
 extern LOD::WriteableFile *pSave_LOD;
-extern LOD::File *pGames_LOD;
+extern std::unique_ptr<LodReader> pGames_LOD;

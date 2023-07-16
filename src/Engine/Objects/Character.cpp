@@ -13,6 +13,7 @@
 #include "Engine/Graphics/IRender.h"
 #include "Engine/Localization.h"
 #include "Engine/LOD.h"
+#include "Engine/MapInfo.h"
 #include "Engine/Objects/Actor.h"
 #include "Engine/Objects/ObjectList.h"
 #include "Engine/Objects/SpriteObject.h"
@@ -7581,8 +7582,8 @@ void Character::cleanupBeacons() {
 }
 
 bool Character::setBeacon(int index, GameTime duration) {
-    int file_index = pGames_LOD->GetSubNodeIndex(pCurrentMapName);
-    if (file_index < 0) {
+    MAP_TYPE file_index = pMapStats->GetMapInfo(pCurrentMapName);
+    if (file_index == MAP_INVALID) {
         return false;
     }
 
@@ -7595,7 +7596,7 @@ bool Character::setBeacon(int index, GameTime duration) {
     beacon.PartyPos_Z = pParty->pos.z;
     beacon._partyViewYaw = pParty->_viewYaw;
     beacon._partyViewPitch = pParty->_viewPitch;
-    beacon.SaveFileID = file_index;
+    beacon.mapId = file_index;
 
     if (index < vBeacons.size()) {
         // overwrite so clear image

@@ -113,7 +113,7 @@ void LoadGame(unsigned int uSlot) {
     pEventTimer->Resume();
     pEventTimer->StopGameTime();
 
-    if (!pGames_LOD->DoesContainerExist(header.locationName)) {
+    if (!pGames_LOD->exists(header.locationName)) {
         Error("Unable to find: %s!", header.locationName.c_str());
     }
 
@@ -351,9 +351,12 @@ void SaveNewGame() {
         pSave_LOD->CreateTempFile();  // создаётся временный файл OutputFileHandle
         pSave_LOD->ClearSubNodes();
 
-        for (size_t i = pGames_LOD->GetSubNodesCount() / 2; i < pGames_LOD->GetSubNodesCount(); ++i) {  // копирование файлов с 76 по 151
-            std::string name = pGames_LOD->GetSubNodeName(i);
-            Blob data = pGames_LOD->LoadRaw(name);
+        // Copy ddm & dlv files, can actually just filter by extension instead.
+        for (const std::string &name : pGames_LOD->ls()) {
+            if (!name.ends_with(".ddm") && !name.ends_with(".dlv"))
+                continue;
+
+            Blob data = pGames_LOD->readRaw(name);
             pSave_LOD->AppendDirectory(name, data.data(), data.size());
         }
 

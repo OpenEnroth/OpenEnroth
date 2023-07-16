@@ -99,7 +99,7 @@ GUIWindow_Transition::GUIWindow_Transition(HOUSE_ID transitionHouse, uint exit_p
         if (locationName[0] == '0') {
             v15 = pCurrentMapName;
         }
-        if (pMapStats->GetMapInfo(v15)) {
+        if (pMapStats->GetMapInfo(v15) != MAP_INVALID) {
             transition_button_label = localization->FormatString(LSTR_FMT_ENTER_S, pMapStats->pInfos[pMapStats->GetMapInfo(v15)].pName.c_str());
             if (uCurrentlyLoadedLevelType == LEVEL_INDOOR && pParty->hasActiveCharacter() && pParty->GetRedOrYellowAlert())
                 pParty->activeCharacter().playReaction(SPEECH_LEAVE_DUNGEON);
@@ -115,7 +115,7 @@ GUIWindow_Transition::GUIWindow_Transition(HOUSE_ID transitionHouse, uint exit_p
                 uCurrentHouse_Animation = IndoorLocation::GetLocationIndex(locationName);
         }
     } else if (!IndoorLocation::GetLocationIndex(locationName)) { // transfer to outdoors - no special message
-        if (pMapStats->GetMapInfo(pCurrentMapName)) {
+        if (pMapStats->GetMapInfo(pCurrentMapName) != MAP_INVALID) {
             transition_button_label = localization->FormatString(LSTR_FMT_LEAVE_S, pMapStats->pInfos[pMapStats->GetMapInfo(pCurrentMapName)].pName.c_str());
             if (transitionHouse != HOUSE_INVALID && pAnimatedRooms[buildingTable[transitionHouse].uAnimationID].uRoomSoundId)
                 playHouseSound(transitionHouse, HOUSE_SOUND_GENERAL_GREETING);
@@ -151,7 +151,7 @@ GUIWindow_Travel::GUIWindow_Travel() : GUIWindow(WINDOW_ChangeLocation, {0, 0}, 
     game_ui_dialogue_background = assets->getImage_Solid(dialogueBackgroundResourceByAlignment[pParty->alignment]);
 
     transition_ui_icon = assets->getImage_Solid("outside");
-    if (pMapStats->GetMapInfo(pCurrentMapName)) {
+    if (pMapStats->GetMapInfo(pCurrentMapName) != MAP_INVALID) {
         transition_button_label = localization->FormatString( LSTR_FMT_LEAVE_S, pMapStats->pInfos[pMapStats->GetMapInfo(pCurrentMapName)].pName.c_str());
     } else {
         transition_button_label = localization->GetString(LSTR_DIALOGUE_EXIT);
@@ -177,7 +177,7 @@ void GUIWindow_Travel::Update() {
     render->DrawTextureNew(pNPCPortraits_x[0][0] / 640.0f, pNPCPortraits_y[0][0] / 480.0f, transition_ui_icon);
     render->DrawTextureNew(556 / 640.0f, 451 / 480.0f, dialogue_ui_x_x_u);
     render->DrawTextureNew(476 / 640.0f, 451 / 480.0f, dialogue_ui_x_ok_u);
-    if (pMapStats->GetMapInfo(pDestinationMapName)) {
+    if (pMapStats->GetMapInfo(pDestinationMapName) != MAP_INVALID) {
         GUIWindow travel_window = *pPrimaryWindow;
         travel_window.uFrameX = 493;
         travel_window.uFrameWidth = 126;
@@ -208,7 +208,7 @@ void GUIWindow_Transition::Update() {
     render->DrawTextureNew(556 / 640.0f, 451 / 480.0f, dialogue_ui_x_x_u);
     render->DrawTextureNew(476 / 640.0f, 451 / 480.0f, dialogue_ui_x_ok_u);
 
-    unsigned int map_id = mapid;
+    MAP_TYPE map_id = mapid;
     if ((pMovie_Track || IndoorLocation::GetLocationIndex(_mapName)) && Party_Teleport_Map_Name[0] != ' ') {
         map_id = pMapStats->GetMapInfo(_mapName);
     }
@@ -225,7 +225,7 @@ void GUIWindow_Transition::Update() {
     if (uCurrentHouse_Animation) {
         unsigned int vertMargin = (212 - pFontCreate->CalcTextHeight(pTransitionStrings[uCurrentHouse_Animation], transition_window.uFrameWidth, 0)) / 2 + 101;
         transition_window.DrawTitleText(pFontCreate, 0, vertMargin, colorTable.White, pTransitionStrings[uCurrentHouse_Animation], 3);
-    } else if (map_id) {
+    } else if (map_id != MAP_INVALID) {
         std::string str = localization->FormatString(LSTR_FMT_DO_YOU_WISH_TO_LEAVE_S_2, pMapStats->pInfos[map_id].pName.c_str());
         unsigned int vertMargin = (212 - pFontCreate->CalcTextHeight(str, transition_window.uFrameWidth, 0)) / 2 + 101;
         transition_window.DrawTitleText(pFontCreate, 0, vertMargin, colorTable.White, str, 3);
