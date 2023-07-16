@@ -14,5 +14,5 @@ struct CodeGenOptions : GameStarterOptions {
     Subcommand subcommand = SUBCOMMAND_NONE;
     bool helpPrinted = false; // True means that help message was already printed.
 
-    static CodeGenOptions Parse(int argc, char **argv);
+    static CodeGenOptions parse(int argc, char **argv);
 };

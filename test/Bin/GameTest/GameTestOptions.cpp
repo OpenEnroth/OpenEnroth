@@ -7,7 +7,7 @@
 #include "Application/GamePathResolver.h"
 
 
-GameTestOptions GameTestOptions::Parse(int argc, char **argv) {
+GameTestOptions GameTestOptions::parse(int argc, char **argv) {
     GameTestOptions result;
     result.useConfig = false; // Tests don't need an external config.
 

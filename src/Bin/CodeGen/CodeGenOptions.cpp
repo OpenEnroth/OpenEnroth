@@ -6,7 +6,7 @@
 
 #include "Utility/Format.h"
 
-CodeGenOptions CodeGenOptions::Parse(int argc, char **argv) {
+CodeGenOptions CodeGenOptions::parse(int argc, char **argv) {
     CodeGenOptions result;
     result.useConfig = false; // CodeGen doesn't use external config.
     result.logLevel = LOG_CRITICAL; // CodeGen doesn't need logging.

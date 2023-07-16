@@ -9,7 +9,7 @@
 #include "Application/GamePathResolver.h"
 #include "Application/GameConfig.h" // For PlatformLogLevel serialization.
 
-OpenEnrothOptions OpenEnrothOptions::Parse(int argc, char **argv) {
+OpenEnrothOptions OpenEnrothOptions::parse(int argc, char **argv) {
     OpenEnrothOptions result;
     std::unique_ptr<CLI::App> app = std::make_unique<CLI::App>();
 

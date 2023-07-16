@@ -24,7 +24,7 @@ void printGoogleTestHelp(char *app) {
 
 int platformMain(int argc, char **argv) {
     try {
-        GameTestOptions opts = GameTestOptions::Parse(argc, argv);
+        GameTestOptions opts = GameTestOptions::parse(argc, argv);
         if (opts.helpRequested) {
             fmt::print(stdout, "\n");
             printGoogleTestHelp(argv[0]);
