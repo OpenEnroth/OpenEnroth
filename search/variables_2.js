@@ -67,7 +67,7 @@ var searchData=
   ['bonusskilldamage_64',['bonusSkillDamage',['../classSpellData.html#a4676eb5661a72b83e72d2511fb3c339a',1,'SpellData']]],
   ['bookflashstate_65',['bookFlashState',['../UIGame_8cpp.html#aa55f9cc1c11ab47de036a5bf5a65e3b3',1,'UIGame.cpp']]],
   ['bookflashtimer_66',['bookFlashTimer',['../UIGame_8cpp.html#ab11f377820d5a75638ebf052741fe77a',1,'UIGame.cpp']]],
-  ['bookspellids_67',['bookSpellIds',['../Spells_8cpp.html#a7a364aed9e470cef8b857b5106ef55d7',1,'bookSpellIds():&#160;Spells.cpp'],['../Spells_8h.html#a7a364aed9e470cef8b857b5106ef55d7',1,'bookSpellIds():&#160;Spells.cpp']]],
+  ['bookspellids_67',['bookSpellIds',['../Spells_8cpp.html#aab05d3636a15b2272f12e60e8fadf9a2',1,'bookSpellIds():&#160;Spells.cpp'],['../Spells_8h.html#aab05d3636a15b2272f12e60e8fadf9a2',1,'bookSpellIds():&#160;Spells.cpp']]],
   ['bopened_68',['bOpened',['../classAudioBaseDataSource.html#aa6300c7739d5d86ebb0867df5dd7d840',1,'AudioBaseDataSource']]],
   ['bottom_69',['bottom',['../structMargins.html#a46534118e9dca596379eb16a2a42c8f9',1,'Margins']]],
   ['bounding_70',['bounding',['../structBLVFace__MM7.html#a3c2f538d42034be3ca2df216ab87f28b',1,'BLVFace_MM7']]],

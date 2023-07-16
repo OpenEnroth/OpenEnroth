@@ -163,7 +163,7 @@ var searchData=
   ['bookbuttonclicked_160',['bookButtonClicked',['../classGUIWindow__Book.html#aab7bb09370b069c6a26ff66877ea381b',1,'GUIWindow_Book']]],
   ['bookflashstate_161',['bookFlashState',['../UIGame_8cpp.html#aa55f9cc1c11ab47de036a5bf5a65e3b3',1,'UIGame.cpp']]],
   ['bookflashtimer_162',['bookFlashTimer',['../UIGame_8cpp.html#ab11f377820d5a75638ebf052741fe77a',1,'UIGame.cpp']]],
-  ['bookspellids_163',['bookSpellIds',['../Spells_8h.html#a7a364aed9e470cef8b857b5106ef55d7',1,'bookSpellIds():&#160;Spells.cpp'],['../Spells_8cpp.html#a7a364aed9e470cef8b857b5106ef55d7',1,'bookSpellIds():&#160;Spells.cpp']]],
+  ['bookspellids_163',['bookSpellIds',['../Spells_8h.html#aab05d3636a15b2272f12e60e8fadf9a2',1,'bookSpellIds():&#160;Spells.cpp'],['../Spells_8cpp.html#aab05d3636a15b2272f12e60e8fadf9a2',1,'bookSpellIds():&#160;Spells.cpp']]],
   ['bool_164',['Bool',['../classGameConfig.html#a7be40f32922e33b7ecfd85e54cbc8b5b',1,'GameConfig']]],
   ['bopened_165',['bOpened',['../classAudioBaseDataSource.html#aa6300c7739d5d86ebb0867df5dd7d840',1,'AudioBaseDataSource']]],
   ['bottom_166',['bottom',['../structMargins.html#a46534118e9dca596379eb16a2a42c8f9',1,'Margins']]],

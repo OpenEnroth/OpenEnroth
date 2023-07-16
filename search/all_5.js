@@ -299,7 +299,7 @@ var searchData=
   ['expect_5ftrue_296',['EXPECT_TRUE',['../Serialization__ut_8cpp.html#a9f7bd25194414a468a396821defa4acd',1,'Serialization_ut.cpp']]],
   ['experience_297',['experience',['../structPlayer__MM7.html#a4f98304770743ae318137f7e9af6f397',1,'Player_MM7::experience()'],['../classCharacter.html#a48e1e1c0150884f332453fd385a00148',1,'Character::experience()']]],
   ['experthealer_298',['ExpertHealer',['../NPCEnums_8h.html#ae6501f571f97d74c2c78fddcb371bad4a5e4f5ca6885ca8fa15f2fa3cb4832b3f',1,'NPCEnums.h']]],
-  ['expertskillmasterycost_299',['expertSkillMasteryCost',['../NPCTopics_8cpp.html#a84f75f85fd387874504d257c4dde7e28',1,'NPCTopics.cpp']]],
+  ['expertskillmasterycost_299',['expertSkillMasteryCost',['../NPCTopics_8cpp.html#a69cb59fa9b67147d8b9459391bed602a',1,'NPCTopics.cpp']]],
   ['expired_300',['Expired',['../structSpellBuff.html#a82ae66dc29fa0c9404dc1044aa0ae922',1,'SpellBuff::Expired()'],['../structGameTime.html#a2bbb50b8823c7e0366bfeb221c38eeae',1,'GameTime::Expired()']]],
   ['expiretime_301',['expireTime',['../structItemGen__MM7.html#a07e49df7d7db512acef32913ecb65d8e',1,'ItemGen_MM7::expireTime()'],['../structSpellBuff__MM7.html#ab74076d372df2c2543479fb8f66c91bf',1,'SpellBuff_MM7::expireTime()'],['../structSpellBuff.html#a9441304a879a45110889cf211ac973b0',1,'SpellBuff::expireTime()']]],
   ['explode_302',['Explode',['../classActor.html#aa03a8044db9c631c68d58499d4f630d0',1,'Actor']]],
