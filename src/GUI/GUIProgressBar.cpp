@@ -16,7 +16,7 @@
 #include "Library/Random/Random.h"
 #include "Utility/IndexedArray.h"
 
-static const IndexedArray<const char *, PartyAlignment_Good, PartyAlignment_Evil> ProgressBarResourceByAlignment = {
+static constexpr IndexedArray<const char *, PartyAlignment_Good, PartyAlignment_Evil> ProgressBarResourceByAlignment = {
     {PartyAlignment_Good, "bardata-b"},
     {PartyAlignment_Neutral, "bardata"},
     {PartyAlignment_Evil, "bardata-c"}

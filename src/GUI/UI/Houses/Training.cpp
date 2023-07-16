@@ -15,7 +15,7 @@
 #include "Engine/Party.h"
 #include "Engine/Engine.h"
 
-IndexedArray<int, HOUSE_TRAINING_HALL_EMERALD_ISLE, HOUSE_TRAINING_HALL_STONE_CITY> trainingHallMaxLevels = {
+static constexpr IndexedArray<int, HOUSE_TRAINING_HALL_EMERALD_ISLE, HOUSE_TRAINING_HALL_STONE_CITY> trainingHallMaxLevels = {
     {HOUSE_TRAINING_HALL_EMERALD_ISLE, 5},
     {HOUSE_TRAINING_HALL_HARMONDALE, 15},
     {HOUSE_TRAINING_HALL_ERATHIA, 25},
