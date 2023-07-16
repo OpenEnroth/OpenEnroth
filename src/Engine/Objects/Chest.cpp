@@ -37,7 +37,7 @@
 ChestList *pChestList;
 std::vector<Chest> vChests;
 
-bool Chest::open(int uChestID, int objectPid) {
+bool Chest::open(int uChestID, Pid objectPid) {
     ODMFace *pODMFace;
     BLVFace *pBLVFace;
     Vec3i objectPos;

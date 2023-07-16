@@ -686,12 +686,12 @@ void ProcessActorCollisionsODM(Actor &actor, bool isFlying) {
         }
 
         if (type == OBJECT_Face) {
-            ODMFace *face = &pOutdoor->pBModels[collision_state.pid >> 9].pFaces[id & 0x3F];
+            const ODMFace *face = &pOutdoor->face(collision_state.pid);
 
             if (!face->Ethereal()) {
                 if (face->uPolygonType == POLYGON_Floor) {
                     actor.speed.z = 0;
-                    actor.pos.z = pOutdoor->pBModels[collision_state.pid >> 9].pVertices[face->pVertexIDs[0]].z + 1;
+                    actor.pos.z = pOutdoor->model(collision_state.pid).pVertices[face->pVertexIDs[0]].z + 1;
                     if (actor.speed.lengthSqr() < 400) {
                         actor.speed.y = 0;
                         actor.speed.x = 0;

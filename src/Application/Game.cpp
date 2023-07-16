@@ -1038,7 +1038,7 @@ void Game::processQueuedMessages() {
                 current_screen_type = SCREEN_GAME;
                 continue;
             case UIMSG_CastSpell_Telekinesis: {
-                int pid = _vis->get_picked_object_zbuf_val().object_pid;
+                Pid pid = _vis->get_picked_object_zbuf_val().object_pid;
                 ObjectType type = PID_TYPE(pid);
                 int id = PID_ID(pid);
                 bool interactionPossible = false;

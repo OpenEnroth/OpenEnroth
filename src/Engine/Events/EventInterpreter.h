@@ -11,7 +11,7 @@ class EventInterpreter {
      bool executeRegular(int startStep);
      bool executeNpcDialogue(int startStep);
 
-     void prepare(const EventMap &eventMap, int eventId, int objectPid, bool canShowMessages);
+     void prepare(const EventMap &eventMap, int eventId, Pid objectPid, bool canShowMessages);
 
  protected:
      int executeOneEvent(int step, bool isNpc);
@@ -19,7 +19,7 @@ class EventInterpreter {
  private:
      int _eventId = 0;
      std::vector<EventIR> _events;
-     int _objectPid = PID_INVALID;
+     Pid _objectPid = Pid();
      bool _canShowMessages = false;
      bool _canShowOption = true;
      bool _readyToExit = false;

@@ -3097,7 +3097,7 @@ void Actor::DamageMonsterFromParty(Pid a1, unsigned int uActorID_Monster,
     }
     if (PID_TYPE(a1) != OBJECT_Character) return;
 
-    assert(PID_ID(abs(a1)) < 4);
+    assert(PID_ID(a1) < 4);
     Character *character = &pParty->pCharacters[PID_ID(a1)];
     pMonster = &pActors[uActorID_Monster];
     if (pMonster->IsNotAlive()) return;

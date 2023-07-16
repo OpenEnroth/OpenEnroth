@@ -186,7 +186,7 @@ bool npcDialogueEventProcessor(int eventId, int startStep) {
     activeLevelDecoration = (LevelDecoration *)1; // Required for correct printing of messages
     engine->_globalEventMap.dump(eventId);
     activeLevelDecoration = oldDecoration;
-    interpreter.prepare(engine->_globalEventMap, eventId, PID_INVALID, false);
+    interpreter.prepare(engine->_globalEventMap, eventId, Pid(), false);
     return interpreter.executeNpcDialogue(startStep);
 }
 

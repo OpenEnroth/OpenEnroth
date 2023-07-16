@@ -4,6 +4,7 @@
 #include <string>
 
 #include "Engine/Objects/Items.h"
+#include "Engine/Pid.h"
 
 #include "Utility/Memory/Blob.h"
 
@@ -41,7 +42,7 @@ struct Chest {
     static int PutItemInChest(int a1, struct ItemGen *a2, int uChestID);
     static void PlaceItemAt(unsigned int put_cell_pos, unsigned int uItemIdx, int uChestID);
     static void PlaceItems(int uChestID);
-    static bool open(int uChestID, int objectPid);
+    static bool open(int uChestID, Pid objectPid);
     static void toggleFlag(int uChestID, ChestFlag uFlag, bool bValue);
     static bool ChestUI_WritePointedObjectStatusString();
     static void OnChestLeftClick();
