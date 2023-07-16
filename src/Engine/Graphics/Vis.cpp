@@ -346,7 +346,6 @@ bool IsBModelVisible(BSPModel *model, int reachable_depth, bool *reachable) {
     return IsSphereInFrustum(model->vBoundingCenter.toFloat(), radius);
 }
 
-// TODO(pskelton): consider use of vec4f or glm::vec4 instead of IndoorCameraD3D_Vec4s
 bool IsSphereInFrustum(Vec3f center, float radius, Planef *frustum) {
     // center must be within all four of the camera frustum planes to be visible
     Vec3f planenormal;
