@@ -71,13 +71,13 @@ jobs:
     - name: Prepare artifact
       run: |
         mkdir dist
-        cp -r build/src/Bin/OpenEnroth/ dist/
+        cp build/src/Bin/OpenEnroth/OpenEnroth dist/
         cp -r resources/* dist/
 
     - name: Copy Shared libs
       run: |
         mkdir libs
-        ldd build/src/Bin/OpenEnroth/OpenEnroth | grep '=> /' | awk '{print $3;}' | xargs -I '{}' cp -v '{}' ./libs/
+        ldd build/src/Bin/OpenEnroth/OpenEnroth | grep '=> /' | awk '{print $3;}' | xargs -I '{}' cp -v '{}' ./dist/
 
     - name: Zip Folder For Release
       if: success() || failure()
