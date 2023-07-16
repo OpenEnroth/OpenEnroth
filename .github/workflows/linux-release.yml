@@ -74,11 +74,6 @@ jobs:
         cp build/src/Bin/OpenEnroth/OpenEnroth dist/
         cp -r resources/* dist/
 
-    - name: Copy Shared libs
-      run: |
-        mkdir libs
-        ldd build/src/Bin/OpenEnroth/OpenEnroth | grep '=> /' | awk '{print $3;}' | xargs -I '{}' cp -v '{}' ./dist/
-
     - name: Zip Folder For Release
       if: success() || failure()
       run: zip -r ./Linux_${{ env.TAG_NAME }}_${{ matrix.configuration }}_${{ matrix.architecture }}.zip dist
