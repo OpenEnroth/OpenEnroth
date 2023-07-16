@@ -5,9 +5,12 @@
 #include <utility>
 #include <map>
 
-#include "glad/gl.h"
-#include <glm.hpp>
-#include <glm/glm/gtc/matrix_transform.hpp>
+#include <glad/gl.h> // NOLINT: not a C system header.
+
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+
+#include <nuklear_config.h> // NOLINT: not a C system header.
 
 #include "Engine/Engine.h"
 #include "Engine/EngineGlobals.h"
@@ -70,6 +73,29 @@ Sizei outputPresent = {0, 0};
 GLuint framebuffer = 0;
 GLuint framebufferTextures[2] = {0, 0};
 bool OpenGLES = false;
+
+struct nk_vertex {
+    float position[2]{};
+    float uv[2]{};
+    nk_byte col[4]{};
+};
+
+struct nk_device {
+    struct nk_buffer cmds;
+    struct nk_draw_null_texture null;
+    struct nk_font_atlas atlas;
+    uint32_t vbo{}, vao{}, ebo{};
+    int32_t attrib_pos{};
+    int32_t attrib_uv{};
+    int32_t attrib_col{};
+    int32_t uniform_tex{};
+    int32_t uniform_proj{};
+};
+
+struct nk_state {
+    struct nk_vertex vertex;
+    struct nk_device dev;
+};
 
 namespace detail_gl_error {
 MM_DEFINE_ENUM_SERIALIZATION_FUNCTIONS(GLenum, CASE_SENSITIVE, {
@@ -188,6 +214,7 @@ RenderOpenGL::RenderOpenGL(
     Vis *vis,
     Logger *logger
 ) : RenderBase(config, decal_builder, lightmap_builder, spellfx, particle_engine, vis, logger) {
+    nk = std::make_unique<nk_state>();
     clip_w = 0;
     clip_x = 0;
     clip_y = 0;
@@ -1813,7 +1840,7 @@ void RenderOpenGL::DrawOutdoorTerrain() {
     ambient = 0.15 + (sinf(((ambient - 360.0) * 2 * pi_double) / 1440) + 1) * 0.27;
     float diffuseon = pWeather->bNight ? 0 : 1;
 
-    glUniform3fv(glGetUniformLocation(terrainshader.ID, "sun.direction"), 1, &pOutdoor->vSunlight[0]);
+    glUniform3fv(glGetUniformLocation(terrainshader.ID, "sun.direction"), 1, &pOutdoor->vSunlight.x);
     glUniform3f(glGetUniformLocation(terrainshader.ID, "sun.ambient"), ambient, ambient, ambient);
     glUniform3f(glGetUniformLocation(terrainshader.ID, "sun.diffuse"), diffuseon * (ambient + 0.3), diffuseon * (ambient + 0.3), diffuseon * (ambient + 0.3));
     glUniform3f(glGetUniformLocation(terrainshader.ID, "sun.specular"), /*diffuseon * 0.35f * ambient*/ 0.0f, /*diffuseon * 0.28f * ambient*/ 0.0f, 0.0f);
@@ -3682,7 +3709,7 @@ void RenderOpenGL::DrawOutdoorBuildings() {
     ambient = 0.15 + (sinf(((ambient - 360.0f) * 2 * pi_double) / 1440) + 1) * 0.27f;
     float diffuseon = pWeather->bNight ? 0.0f : 1.0f;
 
-    glUniform3fv(glGetUniformLocation(outbuildshader.ID, "sun.direction"), 1, &pOutdoor->vSunlight[0]);
+    glUniform3fv(glGetUniformLocation(outbuildshader.ID, "sun.direction"), 1, &pOutdoor->vSunlight.x);
     glUniform3f(glGetUniformLocation(outbuildshader.ID, "sun.ambient"), ambient, ambient, ambient);
     glUniform3f(glGetUniformLocation(outbuildshader.ID, "sun.diffuse"), diffuseon * (ambient + 0.3f), diffuseon * (ambient + 0.3f), diffuseon * (ambient + 0.3f));
     glUniform3f(glGetUniformLocation(outbuildshader.ID, "sun.specular"), diffuseon * 0.35f * ambient, diffuseon * 0.28f * ambient, 0.0f);
@@ -5055,11 +5082,11 @@ void RenderOpenGL::ReloadShaders() {
         if (!nuklearshader.reload(name, OpenGLES)) {
             logger->warning("{} {}", name, message);
         } else {
-            nk_dev.uniform_tex = glGetUniformLocation(nuklearshader.ID, "Texture");
-            nk_dev.uniform_proj = glGetUniformLocation(nuklearshader.ID, "ProjMtx");
-            nk_dev.attrib_pos = glGetAttribLocation(nuklearshader.ID, "Position");
-            nk_dev.attrib_uv = glGetAttribLocation(nuklearshader.ID, "TexCoord");
-            nk_dev.attrib_col = glGetAttribLocation(nuklearshader.ID, "Color");
+            nk->dev.uniform_tex = glGetUniformLocation(nuklearshader.ID, "Texture");
+            nk->dev.uniform_proj = glGetUniformLocation(nuklearshader.ID, "ProjMtx");
+            nk->dev.attrib_pos = glGetAttribLocation(nuklearshader.ID, "Position");
+            nk->dev.attrib_uv = glGetAttribLocation(nuklearshader.ID, "TexCoord");
+            nk->dev.attrib_col = glGetAttribLocation(nuklearshader.ID, "Color");
         }
     }
 }
@@ -5279,10 +5306,10 @@ bool RenderOpenGL::NuklearInitialize(struct nk_tex_font *tfont) {
         return false;
     }
 
-    nk_font_atlas_init_default(&nk_dev.atlas);
+    nk_font_atlas_init_default(&nk->dev.atlas);
     struct nk_tex_font *font = NuklearFontLoad(NULL, 13);
-    nk_dev.atlas.default_font = font->font;
-    if (!nk_dev.atlas.default_font) {
+    nk->dev.atlas.default_font = font->font;
+    if (!nk->dev.atlas.default_font) {
         log->warning("Nuklear default font loading failed");
         NuklearRelease();
         return false;
@@ -5290,13 +5317,13 @@ bool RenderOpenGL::NuklearInitialize(struct nk_tex_font *tfont) {
 
     memcpy(tfont, font, sizeof(struct nk_tex_font));
 
-    if (!nk_init_default(nk_ctx, &nk_dev.atlas.default_font->handle)) {
+    if (!nk_init_default(nk_ctx, &nk->dev.atlas.default_font->handle)) {
         log->warning("Nuklear initialization failed");
         NuklearRelease();
         return false;
     }
 
-    nk_buffer_init_default(&nk_dev.cmds);
+    nk_buffer_init_default(&nk->dev.cmds);
 
     return true;
 }
@@ -5308,33 +5335,33 @@ bool RenderOpenGL::NuklearCreateDevice() {
         return false;
     }
 
-    nk_buffer_init_default(&nk_dev.cmds);
-    nk_dev.uniform_tex = glGetUniformLocation(nuklearshader.ID, "Texture");
-    nk_dev.uniform_proj = glGetUniformLocation(nuklearshader.ID, "ProjMtx");
-    nk_dev.attrib_pos = glGetAttribLocation(nuklearshader.ID, "Position");
-    nk_dev.attrib_uv = glGetAttribLocation(nuklearshader.ID, "TexCoord");
-    nk_dev.attrib_col = glGetAttribLocation(nuklearshader.ID, "Color");
+    nk_buffer_init_default(&nk->dev.cmds);
+    nk->dev.uniform_tex = glGetUniformLocation(nuklearshader.ID, "Texture");
+    nk->dev.uniform_proj = glGetUniformLocation(nuklearshader.ID, "ProjMtx");
+    nk->dev.attrib_pos = glGetAttribLocation(nuklearshader.ID, "Position");
+    nk->dev.attrib_uv = glGetAttribLocation(nuklearshader.ID, "TexCoord");
+    nk->dev.attrib_col = glGetAttribLocation(nuklearshader.ID, "Color");
     {
         GLsizei vs = sizeof(struct nk_vertex);
         size_t vp = offsetof(struct nk_vertex, position);
         size_t vt = offsetof(struct nk_vertex, uv);
         size_t vc = offsetof(struct nk_vertex, col);
 
-        glGenBuffers(1, &nk_dev.vbo);
-        glGenBuffers(1, &nk_dev.ebo);
-        glGenVertexArrays(1, &nk_dev.vao);
+        glGenBuffers(1, &nk->dev.vbo);
+        glGenBuffers(1, &nk->dev.ebo);
+        glGenVertexArrays(1, &nk->dev.vao);
 
-        glBindVertexArray(nk_dev.vao);
-        glBindBuffer(GL_ARRAY_BUFFER, nk_dev.vbo);
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, nk_dev.ebo);
+        glBindVertexArray(nk->dev.vao);
+        glBindBuffer(GL_ARRAY_BUFFER, nk->dev.vbo);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, nk->dev.ebo);
 
-        glEnableVertexAttribArray((GLuint)nk_dev.attrib_pos);
-        glEnableVertexAttribArray((GLuint)nk_dev.attrib_uv);
-        glEnableVertexAttribArray((GLuint)nk_dev.attrib_col);
+        glEnableVertexAttribArray((GLuint)nk->dev.attrib_pos);
+        glEnableVertexAttribArray((GLuint)nk->dev.attrib_uv);
+        glEnableVertexAttribArray((GLuint)nk->dev.attrib_col);
 
-        glVertexAttribPointer((GLuint)nk_dev.attrib_pos, 2, GL_FLOAT, GL_FALSE, vs, (void*)vp);
-        glVertexAttribPointer((GLuint)nk_dev.attrib_uv, 2, GL_FLOAT, GL_FALSE, vs, (void*)vt);
-        glVertexAttribPointer((GLuint)nk_dev.attrib_col, 4, GL_UNSIGNED_BYTE, GL_TRUE, vs, (void*)vc);
+        glVertexAttribPointer((GLuint)nk->dev.attrib_pos, 2, GL_FLOAT, GL_FALSE, vs, (void*)vp);
+        glVertexAttribPointer((GLuint)nk->dev.attrib_uv, 2, GL_FLOAT, GL_FALSE, vs, (void*)vt);
+        glVertexAttribPointer((GLuint)nk->dev.attrib_col, 4, GL_UNSIGNED_BYTE, GL_TRUE, vs, (void*)vc);
     }
 
     glBindTexture(GL_TEXTURE_2D, 0);
@@ -5345,7 +5372,7 @@ bool RenderOpenGL::NuklearCreateDevice() {
     return true;
 }
 
-bool RenderOpenGL::NuklearRender(enum nk_anti_aliasing AA, int max_vertex_buffer, int max_element_buffer) {
+bool RenderOpenGL::NuklearRender(/*enum nk_anti_aliasing*/ int AA, int max_vertex_buffer, int max_element_buffer) {
     struct nk_context *nk_ctx = nuklear->ctx;
     if (!nk_ctx)
         return false;
@@ -5386,8 +5413,8 @@ bool RenderOpenGL::NuklearRender(enum nk_anti_aliasing AA, int max_vertex_buffer
 
     /* setup program */
     glUseProgram(nuklearshader.ID);
-    glUniform1i(nk_dev.uniform_tex, 0);
-    glUniformMatrix4fv(nk_dev.uniform_proj, 1, GL_FALSE, &ortho[0][0]);
+    glUniform1i(nk->dev.uniform_tex, 0);
+    glUniformMatrix4fv(nk->dev.uniform_proj, 1, GL_FALSE, &ortho[0][0]);
     {
         /* convert from command queue into draw list and draw to screen */
         const struct nk_draw_command *cmd;
@@ -5396,9 +5423,9 @@ bool RenderOpenGL::NuklearRender(enum nk_anti_aliasing AA, int max_vertex_buffer
         struct nk_buffer vbuf, ebuf;
 
         /* allocate vertex and element buffer */
-        glBindVertexArray(nk_dev.vao);
-        glBindBuffer(GL_ARRAY_BUFFER, nk_dev.vbo);
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, nk_dev.ebo);
+        glBindVertexArray(nk->dev.vao);
+        glBindBuffer(GL_ARRAY_BUFFER, nk->dev.vbo);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, nk->dev.ebo);
 
         glBufferData(GL_ARRAY_BUFFER, max_vertex_buffer, NULL, GL_STREAM_DRAW);
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, max_element_buffer, NULL, GL_STREAM_DRAW);
@@ -5424,24 +5451,24 @@ bool RenderOpenGL::NuklearRender(enum nk_anti_aliasing AA, int max_vertex_buffer
             config.vertex_layout = vertex_layout;
             config.vertex_size = sizeof(struct nk_vertex);
             config.vertex_alignment = NK_ALIGNOF(struct nk_vertex);
-            config.null = nk_dev.null;
+            config.null = nk->dev.null;
             config.circle_segment_count = 22;
             config.curve_segment_count = 22;
             config.arc_segment_count = 22;
             config.global_alpha = 1.0f;
-            config.shape_AA = AA;
-            config.line_AA = AA;
+            config.shape_AA = (nk_anti_aliasing) AA;
+            config.line_AA = (nk_anti_aliasing) AA;
 
             /* setup buffers to load vertices and elements */
             nk_buffer_init_fixed(&vbuf, vertices, (nk_size)max_vertex_buffer);
             nk_buffer_init_fixed(&ebuf, elements, (nk_size)max_element_buffer);
-            nk_convert(nk_ctx, &nk_dev.cmds, &vbuf, &ebuf, &config);
+            nk_convert(nk_ctx, &nk->dev.cmds, &vbuf, &ebuf, &config);
         }
         glUnmapBuffer(GL_ARRAY_BUFFER);
         glUnmapBuffer(GL_ELEMENT_ARRAY_BUFFER);
 
         /* iterate over and execute each draw command */
-        nk_draw_foreach(cmd, nk_ctx, &nk_dev.cmds) {
+        nk_draw_foreach(cmd, nk_ctx, &nk->dev.cmds) {
             if (!cmd->elem_count) continue;
             glBindTexture(GL_TEXTURE_2D, (GLuint)cmd->texture.id);
             glScissor((GLint)(cmd->clip_rect.x * scale.x),
@@ -5453,7 +5480,7 @@ bool RenderOpenGL::NuklearRender(enum nk_anti_aliasing AA, int max_vertex_buffer
             offset += cmd->elem_count;
         }
         nk_clear(nk_ctx);
-        nk_buffer_clear(&nk_dev.cmds);
+        nk_buffer_clear(&nk->dev.cmds);
     }
 
     glUseProgram(0);
@@ -5467,16 +5494,16 @@ bool RenderOpenGL::NuklearRender(enum nk_anti_aliasing AA, int max_vertex_buffer
 }
 
 void RenderOpenGL::NuklearRelease() {
-    nk_font_atlas_clear(&nk_dev.atlas);
+    nk_font_atlas_clear(&nk->dev.atlas);
 
     glDeleteProgram(nuklearshader.ID);
-    glDeleteBuffers(1, &nk_dev.vbo);
-    glDeleteBuffers(1, &nk_dev.ebo);
-    glDeleteVertexArrays(1, &nk_dev.vao);
+    glDeleteBuffers(1, &nk->dev.vbo);
+    glDeleteBuffers(1, &nk->dev.ebo);
+    glDeleteVertexArrays(1, &nk->dev.vao);
 
-    nk_buffer_free(&nk_dev.cmds);
+    nk_buffer_free(&nk->dev.cmds);
 
-    memset(&nk_dev, 0, sizeof(nk_dev));
+    memset(&nk->dev, 0, sizeof(nk->dev));
 }
 
 struct nk_tex_font *RenderOpenGL::NuklearFontLoad(const char *font_path, size_t font_size) {
@@ -5499,14 +5526,14 @@ struct nk_tex_font *RenderOpenGL::NuklearFontLoad(const char *font_path, size_t 
     cfg.pixel_snap = 0;
     cfg.fallback_glyph = '?';
 
-    nk_font_atlas_begin(&nk_dev.atlas);
+    nk_font_atlas_begin(&nk->dev.atlas);
 
     if (!font_path)
-        tfont->font = nk_font_atlas_add_default(&nk_dev.atlas, font_size, 0);
+        tfont->font = nk_font_atlas_add_default(&nk->dev.atlas, font_size, 0);
     else
-        tfont->font = nk_font_atlas_add_from_file(&nk_dev.atlas, font_path, font_size, &cfg);
+        tfont->font = nk_font_atlas_add_from_file(&nk->dev.atlas, font_path, font_size, &cfg);
 
-    image = nk_font_atlas_bake(&nk_dev.atlas, &w, &h, NK_FONT_ATLAS_RGBA32);
+    image = nk_font_atlas_bake(&nk->dev.atlas, &w, &h, NK_FONT_ATLAS_RGBA32);
 
     glGenTextures(1, &texid);
     glBindTexture(GL_TEXTURE_2D, texid);
@@ -5515,7 +5542,7 @@ struct nk_tex_font *RenderOpenGL::NuklearFontLoad(const char *font_path, size_t 
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, (GLsizei)w, (GLsizei)h, 0, GL_RGBA, GL_UNSIGNED_BYTE, image);
 
     tfont->texid = texid;
-    nk_font_atlas_end(&nk_dev.atlas, nk_handle_id(texid), &nk_dev.null);
+    nk_font_atlas_end(&nk->dev.atlas, nk_handle_id(texid), &nk->dev.null);
 
     return tfont;
 }

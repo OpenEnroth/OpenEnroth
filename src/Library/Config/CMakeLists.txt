@@ -14,5 +14,5 @@ set(LIBRARY_CONFIG_HEADERS
         ConfigEntry.h)
 
 add_library(library_config STATIC ${LIBRARY_CONFIG_SOURCES} ${LIBRARY_CONFIG_HEADERS})
-target_link_libraries(library_config utility library_serialization)
+target_link_libraries(library_config utility library_serialization mini::mini)
 target_check_style(library_config)

@@ -6,7 +6,7 @@
 #include <vector>
 
 #include <glad/gl.h> // NOLINT: this is not a C system include.
-#include <glm.hpp>
+#include <glm/glm.hpp>
 
 #include "Engine/Graphics/FrameLimiter.h"
 #include "Engine/Graphics/RenderBase.h"
@@ -16,6 +16,7 @@
 #include "GLShaderLoader.h"
 
 class PlatformOpenGLContext;
+struct nk_state;
 
 class RenderOpenGL : public RenderBase {
  public:
@@ -33,7 +34,7 @@ class RenderOpenGL : public RenderBase {
 
     virtual bool NuklearInitialize(struct nk_tex_font *tfont) override;
     virtual bool NuklearCreateDevice() override;
-    virtual bool NuklearRender(enum nk_anti_aliasing AA, int max_vertex_buffer, int max_element_buffer) override;
+    virtual bool NuklearRender(/*enum nk_anti_aliasing*/ int AA, int max_vertex_buffer, int max_element_buffer) override;
     virtual void NuklearRelease() override;
     virtual struct nk_tex_font *NuklearFontLoad(const char *font_path, size_t font_size) override;
     virtual void NuklearFontFree(struct nk_tex_font *tfont) override;
@@ -241,22 +242,7 @@ class RenderOpenGL : public RenderBase {
 
     float gamma{};
 
-    struct nk_vertex {
-        float position[2]{};
-        float uv[2]{};
-        nk_byte col[4]{};
-    } nk_vertex;
-    struct nk_device {
-        struct nk_buffer cmds;
-        struct nk_draw_null_texture null;
-        struct nk_font_atlas atlas;
-        uint32_t vbo{}, vao{}, ebo{};
-        int32_t attrib_pos{};
-        int32_t attrib_uv{};
-        int32_t attrib_col{};
-        int32_t uniform_tex{};
-        int32_t uniform_proj{};
-    } nk_dev;
+    std::unique_ptr<nk_state> nk;
 };
 
 

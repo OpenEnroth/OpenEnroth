@@ -20,7 +20,6 @@
 #include "Engine/Tables/BuildingTable.h"
 #include "Engine/Tables/AwardTable.h"
 #include "Engine/Tables/TransitionTable.h"
-#include "Engine/Tables/ItemTable.h"
 #include "Engine/Objects/NPC.h"
 #include "Engine/Events/Processor.h"
 

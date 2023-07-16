@@ -39,14 +39,12 @@ jobs:
           # -
           sudo apt-get install -y libglu1-mesa-dev:i386 zlib1g-dev:i386
           sudo apt-get install -y libavformat-dev:i386 libavcodec-dev:i386 libswscale-dev:i386
-          sudo apt-get install -y libopenal-dev:i386
           sudo apt-get install -y libsdl2-dev:i386
         fi
         if [ "${{ matrix.architecture }}" = "x64" ]; then
           sudo apt-get install -y gcc-12 g++-12
           sudo apt-get install -y libglu1-mesa-dev zlib1g-dev
           sudo apt-get install -y libavformat-dev libavcodec-dev libswscale-dev
-          sudo apt-get install -y libopenal-dev
           sudo apt-get install -y libsdl2-dev
         fi
 

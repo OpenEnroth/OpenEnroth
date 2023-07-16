@@ -1,5 +1,7 @@
 #include "NuklearEventHandler.h"
 
+#include <nuklear_config.h>
+
 #include "Nuklear.h"
 
 NuklearEventHandler::NuklearEventHandler() : PlatformEventFilter(EVENTS_ALL) {}
