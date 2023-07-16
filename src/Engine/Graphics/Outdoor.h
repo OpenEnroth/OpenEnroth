@@ -4,8 +4,6 @@
 #include <vector>
 #include <string>
 
-#include <glm.hpp>
-
 #include "Engine/Tables/TileEnums.h"
 #include "Engine/SpawnPoint.h"
 #include "Engine/MapEnums.h"
@@ -185,7 +183,7 @@ struct OutdoorLocation {
     int field_D24;
     int field_D28;
     int field_D2C;
-    glm::vec3 vSunlight;
+    Vec3f vSunlight;
     unsigned int *field_D3C;
     int field_D40;
     int field_D44;

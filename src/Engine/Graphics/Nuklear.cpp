@@ -2,6 +2,10 @@
 #include <string>
 #include <vector>
 
+#include <lua.hpp>
+
+#include <nuklear_config.h> // NOLINT: not a C system header.
+
 #include "Engine/AssetsManager.h"
 #include "Engine/Engine.h"
 #include "Engine/EngineGlobals.h"

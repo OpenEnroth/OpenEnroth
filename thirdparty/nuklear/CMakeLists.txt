@@ -49,4 +49,5 @@ set(NUKLEAR_HEADERS nuklear_config.h
                     stb_truetype.h)
 
 add_library(nuklear STATIC ${NUKLEAR_SOURCES} ${NUKLEAR_HEADERS})
+target_include_directories(nuklear INTERFACE ${CMAKE_CURRENT_SOURCE_DIR})
 target_check_style(nuklear)

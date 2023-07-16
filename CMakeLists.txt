@@ -66,7 +66,7 @@ include(CppLint)
 include(Dependencies)
 
 add_subdirectory(thirdparty)
-include_directories(${INCLUDE_DIRECTORIES} ${CMAKE_CURRENT_SOURCE_DIR}/src ${CMAKE_CURRENT_SOURCE_DIR}/test ${INCLUDE_THIRDPARTY_DIRS})
+include_directories(${INCLUDE_DIRECTORIES} ${CMAKE_CURRENT_SOURCE_DIR}/src ${CMAKE_CURRENT_SOURCE_DIR}/test)
 add_subdirectory(test)
 add_subdirectory(src)
 

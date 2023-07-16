@@ -61,7 +61,7 @@ if(ENABLE_TESTS)
 
     add_library(test_utility OBJECT ${TEST_UTILITY_SOURCES})
     target_compile_definitions(test_utility PRIVATE TEST_GROUP=Utility)
-    target_link_libraries(test_utility utility)
+    target_link_libraries(test_utility testing_unit utility)
 
     target_check_style(test_utility)
 

@@ -5,12 +5,15 @@
 #include "Utility/Flags.h"
 #include "Utility/Geometry/Plane.h"
 
+#include "Engine/Graphics/RenderEntities.h"
 #include "Engine/Objects/ActorEnums.h"
 #include "Engine/Pid.h"
-#include "Camera.h"
 
 class BSPModel;
 class Logger;
+struct ODMFace;
+struct BLVFace;
+struct RenderVertexD3D3;
 
 enum class VisObjectType : uint32_t {
     VisObjectType_Any = 0,

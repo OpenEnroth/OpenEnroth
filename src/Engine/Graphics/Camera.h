@@ -2,7 +2,7 @@
 
 #include <array>
 
-#include <glm.hpp>
+#include <glm/glm.hpp>
 
 #include "Engine/Graphics/RenderEntities.h"
 

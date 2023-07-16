@@ -4,7 +4,7 @@ if(ENABLE_TESTS)
     set(TESTS_SOURCES TestIssues.cpp)
 
     add_library(tests OBJECT ${TESTS_SOURCES})
-    target_link_libraries(tests utility)
+    target_link_libraries(tests testing_game utility)
     target_compile_definitions(tests PRIVATE TEST_GROUP=Tests)
 
     target_check_style(tests)
