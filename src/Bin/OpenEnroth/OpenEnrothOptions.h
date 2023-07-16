@@ -30,5 +30,5 @@ struct OpenEnrothOptions : public GameStarterOptions {
      * @param argv                      argv as passed to main.
      * @throw std::exception            On errors.
      */
-    static OpenEnrothOptions Parse(int argc, char **argv);
+    static OpenEnrothOptions parse(int argc, char **argv);
 };

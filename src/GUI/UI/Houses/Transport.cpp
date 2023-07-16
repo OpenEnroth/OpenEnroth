@@ -33,7 +33,7 @@ struct TransportInfo {
 };
 
 // 004F09B0
-std::array<TransportInfo, 35> transportSchedule = {{
+static constexpr std::array<TransportInfo, 35> transportSchedule = {{
     // location name   days    x        y       z
     { MAP_ERATHIA, {1, 0, 1, 0, 1, 0, 0 }, 2, -18048, 4636, 833, 1536, 0 },  // for stable
     { MAP_TULAREAN_FOREST, {0, 1, 0, 1, 0, 1, 0 }, 2, -2527, -6773, 1153, 896, 0 },
@@ -72,7 +72,7 @@ std::array<TransportInfo, 35> transportSchedule = {{
     { MAP_ARENA, { 0, 0, 0, 0, 0, 0, 1 }, 4, 3844, 2906, 193, 512, 0 }
 }};
 
-IndexedArray<std::array<int, 4>, HOUSE_FIRST_TRANSPORT, HOUSE_LAST_TRANSPORT> transportRoutes = {
+static constexpr IndexedArray<std::array<int, 4>, HOUSE_FIRST_TRANSPORT, HOUSE_LAST_TRANSPORT> transportRoutes = {
     {HOUSE_STABLES_HARMONDALE,      { 0, 1, 1, 34 }},
     {HOUSE_STABLES_STEADWICK,       { 2, 3, 4, 5 }},
     {HOUSE_STABLES_TULAREAN_FOREST, { 6, 7, 8, 8 }},
@@ -154,7 +154,7 @@ void GUIWindow_Transport::transportDialogue() {
     }
 
     int choice_id = dialog_menu_id - DIALOGUE_TRANSPORT_SCHEDULE_1;
-    TransportInfo *pTravel = &transportSchedule[transportRoutes[houseId()][choice_id]];
+    const TransportInfo *pTravel = &transportSchedule[transportRoutes[houseId()][choice_id]];
 
     if (pTravel->pSchedule[pParty->uCurrentDayOfMonth % 7]) {
         if (pCurrentMapName != pMapStats->pInfos[pTravel->uMapInfoID].pFilename) {

@@ -71,7 +71,7 @@ void EngineTracePlayer::playTrace(EngineController *game, const std::string &sav
 
 void EngineTracePlayer::checkSaveFileSize(int expectedSaveFileSize) {
     int saveFileSize = std::filesystem::file_size(_savePath);
-    if (expectedSaveFileSize != -1 && expectedSaveFileSize != saveFileSize) { // TODO(captainurist): drop -1
+    if (expectedSaveFileSize != saveFileSize) {
         throw Exception("Trace '{}' expected a savegame of size {} bytes, but the size of '{}' is {} bytes",
                         _tracePath, expectedSaveFileSize, _savePath, saveFileSize);
     }
@@ -82,7 +82,7 @@ void EngineTracePlayer::checkAfterLoadRng(int expectedRandomState) {
         return;
 
     int randomState = grng->peek(1024);
-    if (randomState != expectedRandomState && expectedRandomState != -1) { // TODO(captainurist): drop -1
+    if (randomState != expectedRandomState) {
         throw Exception("Random state desynchronized after loading a save for trace '{}': expected {}, got {}",
                         _tracePath, expectedRandomState, randomState);
     }

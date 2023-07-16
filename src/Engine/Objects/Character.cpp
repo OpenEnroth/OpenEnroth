@@ -60,7 +60,7 @@ struct CharacterCreationAttributeProps {
     unsigned char uBaseStep;
 };
 
-CharacterCreationAttributeProps
+static constexpr CharacterCreationAttributeProps
     StatTable[4][7] =  // [human , elf, goblin, dwarf] [might, int, per , end,
                        // acc, speed, luck]
     {{
@@ -98,7 +98,7 @@ CharacterCreationAttributeProps
       {7, 15, 2, 1},
       {9, 20, 1, 1}}};
 
-IndexedArray<int, CHARACTER_SKILL_MASTERY_FIRST, CHARACTER_SKILL_MASTERY_LAST> StealingMasteryBonuses = {
+static constexpr IndexedArray<int, CHARACTER_SKILL_MASTERY_FIRST, CHARACTER_SKILL_MASTERY_LAST> StealingMasteryBonuses = {
     // {CHARACTER_SKILL_MASTERY_NONE, 0},
     {CHARACTER_SKILL_MASTERY_NOVICE, 100},
     {CHARACTER_SKILL_MASTERY_EXPERT, 200},
@@ -106,9 +106,9 @@ IndexedArray<int, CHARACTER_SKILL_MASTERY_FIRST, CHARACTER_SKILL_MASTERY_LAST> S
     {CHARACTER_SKILL_MASTERY_GRANDMASTER, 500}
 };  // dword_4EDEA0        //the zeroth element isn't accessed, it just
            // helps avoid -1 indexing, originally 4 element array off by one
-std::array<int, 5> StealingRandomBonuses = { -200, -100, 0, 100, 200 };  // dword_4EDEB4
+static constexpr std::array<int, 5> StealingRandomBonuses = { -200, -100, 0, 100, 200 };  // dword_4EDEB4
 
-IndexedArray<int, CHARACTER_SKILL_MASTERY_FIRST, CHARACTER_SKILL_MASTERY_LAST> StealingEnchantmentBonusForSkill = {
+static constexpr IndexedArray<int, CHARACTER_SKILL_MASTERY_FIRST, CHARACTER_SKILL_MASTERY_LAST> StealingEnchantmentBonusForSkill = {
     // {CHARACTER_SKILL_MASTERY_NONE, 0},
     {CHARACTER_SKILL_MASTERY_NOVICE, 2},
     {CHARACTER_SKILL_MASTERY_EXPERT, 4},
@@ -117,7 +117,7 @@ IndexedArray<int, CHARACTER_SKILL_MASTERY_FIRST, CHARACTER_SKILL_MASTERY_LAST> S
 };  // dword_4EDEC4      //the zeroth element isn't accessed, it just
           // helps avoid -1 indexing, originally 4 element array off by one
 
-IndexedArray<ITEM_SLOT, EQUIP_FIRST, EQUIP_LAST> pEquipTypeToBodyAnchor = {  // 4E8398
+static constexpr IndexedArray<ITEM_SLOT, EQUIP_FIRST, EQUIP_LAST> pEquipTypeToBodyAnchor = {  // 4E8398
     {EQUIP_SINGLE_HANDED,  ITEM_SLOT_MAIN_HAND},
     {EQUIP_TWO_HANDED,     ITEM_SLOT_MAIN_HAND},
     {EQUIP_BOW,            ITEM_SLOT_BOW},
@@ -141,17 +141,17 @@ IndexedArray<ITEM_SLOT, EQUIP_FIRST, EQUIP_LAST> pEquipTypeToBodyAnchor = {  // 
     {EQUIP_NONE,           ITEM_SLOT_INVALID}
 };
 
-unsigned char pBaseHealthByClass[12] = {40, 35, 35, 30, 30, 30,
+static constexpr unsigned char pBaseHealthByClass[12] = {40, 35, 35, 30, 30, 30,
                                         25, 20, 20, 0,  0,  0};
-unsigned char pBaseManaByClass[12] = {0, 0, 0, 5, 5, 0, 10, 10, 15, 0, 0, 0};
-unsigned char pBaseHealthPerLevelByClass[36] = {
+static constexpr unsigned char pBaseManaByClass[12] = {0, 0, 0, 5, 5, 0, 10, 10, 15, 0, 0, 0};
+static constexpr unsigned char pBaseHealthPerLevelByClass[36] = {
     5, 7, 9, 9, 4, 6, 8, 8, 5, 6, 8, 8, 4, 5, 6, 6, 3, 4,
     6, 6, 4, 5, 6, 6, 2, 3, 4, 4, 2, 3, 4, 4, 2, 3, 3, 3};
-unsigned char pBaseManaPerLevelByClass[36] = {
+static constexpr unsigned char pBaseManaPerLevelByClass[36] = {
     0, 0, 0, 0, 0, 1, 1, 1, 0, 1, 1, 1, 1, 2, 3, 3, 1, 2,
     3, 3, 0, 2, 3, 3, 3, 4, 5, 5, 3, 4, 5, 5, 3, 4, 6, 6};
 
-unsigned char pConditionAttributeModifier[7][19] = {
+static constexpr unsigned char pConditionAttributeModifier[7][19] = {
     {100, 100, 100, 120, 50, 200, 75, 60, 50, 30, 25, 10, 100, 100, 100, 100,
      100, 100, 100},  // Might
     {100, 100, 100, 50, 25, 10, 100, 100, 75, 60, 50, 30, 100, 100, 100, 100,
@@ -167,7 +167,7 @@ unsigned char pConditionAttributeModifier[7][19] = {
     {100, 100, 100, 100, 200, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100,
      100, 100, 100, 100}};  // Luck
 
-unsigned char pAgingAttributeModifier[7][4] = {
+static constexpr unsigned char pAgingAttributeModifier[7][4] = {
     {100, 75, 40, 10},      // Might
     {100, 150, 100, 10},    // Intelligence
     {100, 150, 100, 10},    // Personality
@@ -176,12 +176,12 @@ unsigned char pAgingAttributeModifier[7][4] = {
     {100, 100, 40, 10},     // Speed
     {100, 100, 100, 100}};  // Luck
 
-unsigned int pAgeingTable[4] = {50, 100, 150, 0xFFFF};
+static constexpr unsigned int pAgeingTable[4] = {50, 100, 150, 0xFFFF};
 
-short param_to_bonus_table[29] = {
+static constexpr short param_to_bonus_table[29] = {
     500, 400, 350, 300, 275, 250, 225, 200, 175, 150, 125, 100, 75, 50, 40,
     35,  30,  25,  21,  19,  17,  15,  13,  11,  9,   7,   5,   3,  0};
-signed int parameter_to_bonus_value[29] = {
+static constexpr signed int parameter_to_bonus_value[29] = {
     30, 25, 20, 19, 18, 17, 16, 15, 14, 13, 12, 11, 10, 9, 8,
     7,  6,  5,  4,  3,  2,  1,  0,  -1, -2, -3, -4, -5, -6};
 

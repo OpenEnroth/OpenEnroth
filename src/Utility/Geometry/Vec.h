@@ -22,8 +22,8 @@ struct Vec2 {
     T x = 0;
     T y = 0;
 
-    Vec2() = default;
-    Vec2(T a, T b) : x(a), y(b) {}
+    constexpr Vec2() = default;
+    constexpr Vec2(T a, T b) : x(a), y(b) {}
 
     [[nodiscard]] auto lengthSqr() const {
         // Note that auto return type is important because this way Vec2s::LengthSqr returns int.
@@ -78,13 +78,13 @@ struct Vec3 {
     T y = 0;
     T z = 0;
 
-    Vec3() = default;
-    Vec3(const Vec3 &other) = default;
+    constexpr Vec3() = default;
+    constexpr Vec3(const Vec3 &other) = default;
 
     template<class OtherT> requires vector_conversion_allowed<OtherT, T>::value
-    Vec3(const Vec3<OtherT> &other) : x(other.x), y(other.y), z(other.z) {}
+    constexpr Vec3(const Vec3<OtherT> &other) : x(other.x), y(other.y), z(other.z) {}
 
-    Vec3(T a, T b, T c) : x(a), y(b), z(c) {}
+    constexpr Vec3(T a, T b, T c) : x(a), y(b), z(c) {}
 
     static Vec3 fromPolar(T length, int yaw, int pitch) {
         float cosPitch = TrigLUT.cos(pitch);

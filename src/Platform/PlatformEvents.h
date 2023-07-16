@@ -40,9 +40,6 @@ class PlatformMouseEvent: public PlatformWindowEvent {
 class PlatformWheelEvent: public PlatformWindowEvent {
  public:
     Pointi angleDelta; // 1 unit = 1/8 degree.
-
-    // TODO(captainurist): why are we even exposing this? drop!
-    bool inverted = false; // Whether delta values delivered with the event are inverted.
 };
 
 class PlatformMoveEvent: public PlatformWindowEvent {

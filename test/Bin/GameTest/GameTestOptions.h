@@ -8,5 +8,5 @@ struct GameTestOptions : GameStarterOptions {
     std::string testPath;
     bool helpRequested = false;
 
-    static GameTestOptions Parse(int argc, char **argv);
+    static GameTestOptions parse(int argc, char **argv);
 };

@@ -56,14 +56,84 @@ static DecalBuilder *decal_builder = EngineIocContainer::ResolveDecalBuilder();
 IndoorLocation *pIndoor = new IndoorLocation;
 BLVRenderParams *pBLVRenderParams = new BLVRenderParams;
 
-// TODO(captainurist): IndexedArray
-uint16_t pDoorSoundIDsByLocationID[78] = {
-    300, 300, 300, 300, 300, 300, 300, 300, 300, 300, 300, 300, 300,
-    300, 300, 300, 404, 302, 306, 308, 304, 308, 302, 400, 302, 300,
-    308, 308, 306, 308, 308, 304, 300, 404, 406, 300, 400, 406, 404,
-    306, 302, 408, 304, 300, 300, 300, 300, 300, 300, 300, 300, 300,
-    300, 300, 300, 300, 300, 300, 300, 300, 300, 300, 300, 404, 304,
-    400, 300, 300, 404, 304, 400, 300, 300, 404, 304, 400, 300, 300};
+static constexpr IndexedArray<uint16_t, MAP_FIRST, MAP_LAST> pDoorSoundIDsByLocationID = {
+    {MAP_EMERALD_ISLAND, 300},
+    {MAP_HARMONDALE, 300},
+    {MAP_ERATHIA, 300},
+    {MAP_TULAREAN_FOREST, 300},
+    {MAP_DEYJA, 300},
+    {MAP_BRACADA_DESERT, 300},
+    {MAP_CELESTE, 300},
+    {MAP_PIT, 300},
+    {MAP_EVENMORN_ISLAND, 300},
+    {MAP_MOUNT_NIGHON, 300},
+    {MAP_BARROW_DOWNS, 300},
+    {MAP_LAND_OF_THE_GIANTS, 300},
+    {MAP_TATALIA, 300},
+    {MAP_AVLEE, 300},
+    {MAP_SHOALS, 300},
+    {MAP_DRAGON_CAVES, 404},
+    {MAP_LORD_MARKHAMS_MANOR, 302},
+    {MAP_BANDIT_CAVES, 306},
+    {MAP_HAUNTED_MANSION, 308},
+    {MAP_TEMPLE_OF_THE_MOON, 304},
+    {MAP_CASTLE_HARMONDALE, 308},
+    {MAP_WHITE_CLIFF_CAVE, 302},
+    {MAP_ERATHIAN_SEWERS, 400},
+    {MAP_FORT_RIVERSTRIDE, 302},
+    {MAP_TULAREAN_CAVES, 300},
+    {MAP_CLANKERS_LABORATORY, 308},
+    {MAP_HALL_OF_THE_PIT, 308},
+    {MAP_WATCHTOWER_6, 306},
+    {MAP_SCHOOL_OF_SORCERY, 308},
+    {MAP_RED_DWARF_MINES, 308},
+    {MAP_WALLS_OF_MIST, 304},
+    {MAP_TEMPLE_OF_THE_LIGHT, 300},
+    {MAP_BREEDING_ZONE, 404},
+    {MAP_TEMPLE_OF_THE_DARK, 406},
+    {MAP_GRAND_TEMPLE_OF_THE_MOON, 300},
+    {MAP_GRAND_TEMPLE_OF_THE_SUN, 400},
+    {MAP_THUNDERFIST_MOUNTAIN, 406},
+    {MAP_MAZE, 404},
+    {MAP_STONE_CITY, 306},
+    {MAP_COLONY_ZOD, 302},
+    {MAP_MERCENARY_GUILD, 408},
+    {MAP_TIDEWATER_CAVERNS, 304},
+    {MAP_WINE_CELLAR, 300},
+    {MAP_TITANS_STRONGHOLD, 300},
+    {MAP_TEMPLE_OF_BAA, 300},
+    {MAP_HALL_UNDER_THE_HILL, 300},
+    {MAP_LINCOLN, 300},
+    {MAP_CASTLE_GRYPHONHEART, 300},
+    {MAP_CASTLE_NAVAN, 300},
+    {MAP_CASTLE_LAMBENT, 300},
+    {MAP_CASTLE_GLOAMING, 300},
+    {MAP_DRAGONS_LAIR, 300},
+    {MAP_BARROW_VII, 300},
+    {MAP_BARROW_IV, 300},
+    {MAP_BARROW_II, 300},
+    {MAP_BARROW_XIV, 300},
+    {MAP_BARROW_III, 300},
+    {MAP_BARROW_IX, 300},
+    {MAP_BARROW_VI, 300},
+    {MAP_BARROW_I, 300},
+    {MAP_BARROW_VIII, 300},
+    {MAP_BARROW_XIII, 300},
+    {MAP_BARROW_X, 404},
+    {MAP_BARROW_XII, 304},
+    {MAP_BARROW_V, 400},
+    {MAP_BARROW_XI, 300},
+    {MAP_BARROW_XV, 300},
+    {MAP_ZOKARRS_TOMB, 404},
+    {MAP_NIGHON_TUNNELS, 304},
+    {MAP_TUNNELS_TO_EEOFOL, 400},
+    {MAP_WILLIAM_SETAGS_TOWER, 300},
+    {MAP_WROMTHRAXS_CAVE, 300},
+    {MAP_HIDDEN_TOMB, 404},
+    {MAP_STRANGE_TEMPLE, 304},
+    {MAP_SMALL_HOUSE, 400},
+    {MAP_ARENA, 300}
+};
 
 // all locations which should have special tranfer message
 // dragon caves, markham, bandit cave, haunted mansion
@@ -586,7 +656,9 @@ bool BLVFaceExtra::HasEventHint() {
 
 //----- (0046F228) --------------------------------------------------------
 void BLV_UpdateDoors() {
-    SoundID eDoorSoundID = (SoundID)pDoorSoundIDsByLocationID[std::to_underlying(dword_6BE13C_uCurrentlyLoadedLocationID)];
+    SoundID eDoorSoundID = (SoundID)300;
+    if (dword_6BE13C_uCurrentlyLoadedLocationID != MAP_INVALID)
+        eDoorSoundID = (SoundID)pDoorSoundIDsByLocationID[dword_6BE13C_uCurrentlyLoadedLocationID];
 
     // loop over all doors
     for (uint i = 0; i < pIndoor->pDoors.size(); ++i) {

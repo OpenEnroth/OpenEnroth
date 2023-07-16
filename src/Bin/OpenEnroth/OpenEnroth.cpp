@@ -55,7 +55,7 @@ int runOpenEnroth(OpenEnrothOptions options) {
 
 int openEnrothMain(int argc, char **argv) {
     try {
-        OpenEnrothOptions options = OpenEnrothOptions::Parse(argc, argv);
+        OpenEnrothOptions options = OpenEnrothOptions::parse(argc, argv);
         if (options.helpPrinted)
             return 1;
 

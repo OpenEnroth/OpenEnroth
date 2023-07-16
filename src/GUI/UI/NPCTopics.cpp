@@ -28,7 +28,7 @@
 AwardType dword_F8B1AC_award_bit_number;
 CharacterSkillType dword_F8B1AC_skill_being_taught; // Address the same as above --- splitting a union into two variables.
 
-std::array<Vec2i, 20> pMonsterArenaPlacements = {{
+static constexpr std::array<Vec2i, 20> pMonsterArenaPlacements = {{
     Vec2i(1524, 8332),    Vec2i(2186, 8844),
     Vec2i(3219, 9339),    Vec2i(4500, 9339),
     Vec2i(5323, 9004),    Vec2i(0x177D, 0x2098),
@@ -41,7 +41,7 @@ std::array<Vec2i, 20> pMonsterArenaPlacements = {{
     Vec2i(0x50B, 0x1B15), Vec2i(0x18FF, 0xD69),
 }};
 
-IndexedArray<int, GUILD_FIRST, GUILD_LAST> priceForMembership = {{
+static constexpr IndexedArray<int, GUILD_FIRST, GUILD_LAST> priceForMembership = {{
     {GUILD_OF_ELEMENTS, 100},
     {GUILD_OF_SELF,     100},
     {GUILD_OF_AIR,      50},
@@ -55,7 +55,7 @@ IndexedArray<int, GUILD_FIRST, GUILD_LAST> priceForMembership = {{
     {GUILD_OF_DARK,     1000}
 }};
 
-IndexedArray<int, CHARACTER_SKILL_FIRST, CHARACTER_SKILL_LAST> expertSkillMasteryCost = {{
+static constexpr IndexedArray<int, CHARACTER_SKILL_FIRST, CHARACTER_SKILL_LAST> expertSkillMasteryCost = {{
     {CHARACTER_SKILL_STAFF,        2000},
     {CHARACTER_SKILL_SWORD,        2000},
     {CHARACTER_SKILL_DAGGER,       2000},
@@ -97,7 +97,7 @@ IndexedArray<int, CHARACTER_SKILL_FIRST, CHARACTER_SKILL_LAST> expertSkillMaster
     {CHARACTER_SKILL_MISC,         0} // hidden, not used
 }};
 
-IndexedArray<int, CHARACTER_SKILL_FIRST, CHARACTER_SKILL_LAST> masterSkillMasteryCost = {{
+static constexpr IndexedArray<int, CHARACTER_SKILL_FIRST, CHARACTER_SKILL_LAST> masterSkillMasteryCost = {{
     {CHARACTER_SKILL_STAFF,        5000},
     {CHARACTER_SKILL_SWORD,        5000},
     {CHARACTER_SKILL_DAGGER,       5000},
@@ -139,7 +139,7 @@ IndexedArray<int, CHARACTER_SKILL_FIRST, CHARACTER_SKILL_LAST> masterSkillMaster
     {CHARACTER_SKILL_MISC,         0} // hidden, not used
 }};
 
-IndexedArray<int, CHARACTER_SKILL_FIRST, CHARACTER_SKILL_LAST> grandmasterSkillMasteryCost = {{
+static constexpr IndexedArray<int, CHARACTER_SKILL_FIRST, CHARACTER_SKILL_LAST> grandmasterSkillMasteryCost = {{
     {CHARACTER_SKILL_STAFF,        8000},
     {CHARACTER_SKILL_SWORD,        8000},
     {CHARACTER_SKILL_DAGGER,       8000},
@@ -181,7 +181,7 @@ IndexedArray<int, CHARACTER_SKILL_FIRST, CHARACTER_SKILL_LAST> grandmasterSkillM
     {CHARACTER_SKILL_MISC,         0} // hidden, not used
 }};
 
-std::array<std::pair<int16_t, ITEM_TYPE>, 27> _4F0882_evt_VAR_PlayerItemInHands_vals = {{
+static constexpr std::array<std::pair<int16_t, ITEM_TYPE>, 27> _4F0882_evt_VAR_PlayerItemInHands_vals = {{
     {0x0D4, ITEM_QUEST_VASE},
     {0x0D5, ITEM_RARE_LADY_CARMINES_DAGGER},
     {0x0D6, ITEM_MESSAGE_SCROLL_OF_WAVES},

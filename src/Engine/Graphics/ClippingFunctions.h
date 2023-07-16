@@ -4,8 +4,6 @@
 
 #include "Engine/Graphics/RenderEntities.h"
 
-struct IndoorCameraD3D_Vec4;
-
 struct VertexBuffer {
     std::array<RenderVertexSoft, 64> pVertices = {{}};
     int uNumVertices;

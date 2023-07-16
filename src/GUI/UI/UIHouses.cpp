@@ -263,7 +263,7 @@ std::array<const HouseAnimDescr, 196> pAnimatedRooms = { {  // 0x4E5F70
     { "Player Castle Bad", 0x24, 0, BUILDING_CASTLE, 0, 0 }
 } };
 
-IndexedArray<int, BUILDING_WEAPON_SHOP, BUILDING_DARK_GUILD> itemAmountInShop = {{
+const IndexedArray<int, BUILDING_WEAPON_SHOP, BUILDING_DARK_GUILD> itemAmountInShop = {{
     {BUILDING_WEAPON_SHOP,   6},
     {BUILDING_ARMOR_SHOP,    8},
     {BUILDING_MAGIC_SHOP,   12},
@@ -279,7 +279,7 @@ IndexedArray<int, BUILDING_WEAPON_SHOP, BUILDING_DARK_GUILD> itemAmountInShop = 
     {BUILDING_DARK_GUILD,   12}
 }};
 
-IndexedArray<std::string, BUILDING_WEAPON_SHOP, BUILDING_MIRRORED_PATH_GUILD> shopBackgroundNames = {{
+static constexpr IndexedArray<const char *, BUILDING_WEAPON_SHOP, BUILDING_MIRRORED_PATH_GUILD> shopBackgroundNames = {{
     {BUILDING_WEAPON_SHOP,           "WEPNTABL"},
     {BUILDING_ARMOR_SHOP,            "ARMORY"},
     {BUILDING_MAGIC_SHOP,            "MAGSHELF"},

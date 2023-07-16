@@ -206,7 +206,7 @@ int runBeaconsCodeGen(CodeGenOptions options, GameResourceManager *resourceManag
 
 int platformMain(int argc, char **argv) {
     try {
-        CodeGenOptions options = CodeGenOptions::Parse(argc, argv);
+        CodeGenOptions options = CodeGenOptions::parse(argc, argv);
         if (options.helpPrinted)
             return 1;
 

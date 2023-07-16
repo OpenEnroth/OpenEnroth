@@ -70,7 +70,7 @@ struct FogProbabilityTableEntry {
     unsigned char unused;
 };
 
-IndexedArray<FogProbabilityTableEntry, MAP_EMERALD_ISLAND, MAP_SHOALS> fog_probability_table = {
+static constexpr IndexedArray<FogProbabilityTableEntry, MAP_EMERALD_ISLAND, MAP_SHOALS> fog_probability_table = {
     {MAP_EMERALD_ISLAND,        {20, 10, 5, 0}},
     {MAP_HARMONDALE,            {20, 10, 5, 0}},
     {MAP_ERATHIA,               {20, 10, 5, 0}},
@@ -89,8 +89,8 @@ IndexedArray<FogProbabilityTableEntry, MAP_EMERALD_ISLAND, MAP_SHOALS> fog_proba
 };
 
 // for future sky textures?
-std::array<int, 9> skyTexturesIds1 = {{3, 3, 3, 3, 3, 3, 3, 3, 3}};
-std::array<int, 7> skyTexturesIds2 = {{3, 3, 3, 3, 3, 3, 3}};
+static constexpr std::array<int, 9> skyTexturesIds1 = {{3, 3, 3, 3, 3, 3, 3, 3, 3}};
+static constexpr std::array<int, 7> skyTexturesIds2 = {{3, 3, 3, 3, 3, 3, 3}};
 
 //----- (0047A59E) --------------------------------------------------------
 void OutdoorLocation::ExecDraw(unsigned int bRedraw) {
@@ -273,7 +273,7 @@ bool OutdoorLocation::Initialize(const std::string &filename, int days_played,
     return false;
 }
 
-IndexedArray<std::array<MAP_TYPE, 4>, MAP_EMERALD_ISLAND, MAP_SHOALS> foot_travel_destinations = {
+static constexpr IndexedArray<std::array<MAP_TYPE, 4>, MAP_EMERALD_ISLAND, MAP_SHOALS> foot_travel_destinations = {
     // from                      north                south                east                 west
     {MAP_EMERALD_ISLAND,        {MAP_INVALID,         MAP_INVALID,         MAP_INVALID,         MAP_INVALID}},
     {MAP_HARMONDALE,            {MAP_TULAREAN_FOREST, MAP_BARROW_DOWNS,    MAP_TULAREAN_FOREST, MAP_ERATHIA}},
@@ -292,7 +292,7 @@ IndexedArray<std::array<MAP_TYPE, 4>, MAP_EMERALD_ISLAND, MAP_SHOALS> foot_trave
     {MAP_SHOALS,                {MAP_INVALID,         MAP_INVALID,         MAP_INVALID,         MAP_INVALID}}
 };
 
-IndexedArray<std::array<int, 4>, MAP_EMERALD_ISLAND, MAP_SHOALS> foot_travel_times = {
+static constexpr IndexedArray<std::array<int, 4>, MAP_EMERALD_ISLAND, MAP_SHOALS> foot_travel_times = {
     // from                  north south east west
     {MAP_EMERALD_ISLAND,        {0, 0, 0, 0}},
     {MAP_HARMONDALE,            {5, 5, 7, 5}},
@@ -311,7 +311,7 @@ IndexedArray<std::array<int, 4>, MAP_EMERALD_ISLAND, MAP_SHOALS> foot_travel_tim
     {MAP_SHOALS,                {0, 0, 0, 0}},
 };
 
-IndexedArray<std::array<MapStartPoint, 4>, MAP_EMERALD_ISLAND, MAP_SHOALS> foot_travel_arrival_points = {
+static constexpr IndexedArray<std::array<MapStartPoint, 4>, MAP_EMERALD_ISLAND, MAP_SHOALS> foot_travel_arrival_points = {
     // from                      north                south                east                 west
     {MAP_EMERALD_ISLAND,        {MapStartPoint_Party, MapStartPoint_Party, MapStartPoint_Party, MapStartPoint_Party}},
     {MAP_HARMONDALE,            {MapStartPoint_South, MapStartPoint_North, MapStartPoint_South, MapStartPoint_East}},

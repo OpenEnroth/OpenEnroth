@@ -27,4 +27,4 @@ class GUIWindow_MagicGuild : public GUIWindow_House {
     void buyBooksDialogue();
 };
 
-extern IndexedArray<int, HOUSE_FIRST_MAGIC_GUILD, HOUSE_LAST_MAGIC_GUILD> guildMembershipFlags;
+extern const IndexedArray<int, HOUSE_FIRST_MAGIC_GUILD, HOUSE_LAST_MAGIC_GUILD> guildMembershipFlags;
