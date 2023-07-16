@@ -13,5 +13,5 @@ var searchData=
   ['sprite_5fobject_5ftype_10',['SPRITE_OBJECT_TYPE',['../SpriteObjectEnums_8h.html#adf728ba73bf3ba5ece5de3e673fedde9',1,'SpriteObjectEnums.h']]],
   ['spriteattribute_11',['SpriteAttribute',['../SpriteObjectEnums_8h.html#a33ff8e5a067f92e0d66dc6534785ee25',1,'SpriteObjectEnums.h']]],
   ['state_12',['State',['../structBLVDoor.html#a938bde09f5649e4d1982d7e51a31b832',1,'BLVDoor']]],
-  ['subcommand_13',['Subcommand',['../structOpenEnrothOptions.html#a4bbb727c7a75a2faa5102089da3963c2',1,'OpenEnrothOptions']]]
+  ['subcommand_13',['Subcommand',['../structCodeGenOptions.html#a9bb003af95e5f619b8827faf6eac5226',1,'CodeGenOptions::Subcommand()'],['../structOpenEnrothOptions.html#a4bbb727c7a75a2faa5102089da3963c2',1,'OpenEnrothOptions::Subcommand()']]]
 ];

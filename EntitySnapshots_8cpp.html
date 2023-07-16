@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;8a3b96f</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;efe02e4</span>
    </div>
   </td>
  </tr>
@@ -74,7 +74,8 @@ $(function() {
 </div><!-- top -->
 <div class="header">
   <div class="summary">
-<a href="#func-members">Functions</a>  </div>
+<a href="#func-members">Functions</a> &#124;
+<a href="#var-members">Variables</a>  </div>
   <div class="headertitle"><div class="title">EntitySnapshots.cpp File Reference</div></div>
 </div><!--header-->
 <div class="contents">
@@ -82,6 +83,7 @@ $(function() {
 <code>#include &lt;algorithm&gt;</code><br />
 <code>#include &lt;type_traits&gt;</code><br />
 <code>#include &lt;string&gt;</code><br />
+<code>#include &lt;unordered_map&gt;</code><br />
 <code>#include &quot;<a class="el" href="Engine_8h.html">Engine/Engine.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Indoor_8h.html">Engine/Graphics/Indoor.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Decoration_8h.html">Engine/Graphics/Level/Decoration.h</a>&quot;</code><br />
@@ -107,6 +109,7 @@ $(function() {
 <code>#include &quot;<a class="el" href="ColorTable_8h.html">Library/Color/ColorTable.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="MemSet_8h.html">Utility/Memory/MemSet.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="String_8h.html">Utility/String.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="MapAccess_8h.html">Utility/MapAccess.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="CommonSnapshots_8h.html">CommonSnapshots.h</a>&quot;</code><br />
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
@@ -255,6 +258,13 @@ Functions</h2></td></tr>
 <tr class="separator:ae6a7dd2a8964ce23eec9db345d405461"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a67c1abe345723b91476257c6c539a3f6"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="EntitySnapshots_8cpp.html#a67c1abe345723b91476257c6c539a3f6">reconstruct</a> (const <a class="el" href="structSaveGameHeader__MM7.html">SaveGameHeader_MM7</a> &amp;src, <a class="el" href="structSaveGameHeader.html">SaveGameHeader</a> *dst)</td></tr>
 <tr class="separator:a67c1abe345723b91476257c6c539a3f6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="var-members" name="var-members"></a>
+Variables</h2></td></tr>
+<tr class="memitem:a43932e2a21b825b3b4cd3622e72ec653"><td class="memItemLeft" align="right" valign="top">static const std::unordered_map&lt; <a class="el" href="MapEnums_8h.html#adf27fa94c483739f6a21ebe139e71e26">MAP_TYPE</a>, uint16_t &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="EntitySnapshots_8cpp.html#a43932e2a21b825b3b4cd3622e72ec653">gamesLodIndexByMapId</a></td></tr>
+<tr class="separator:a43932e2a21b825b3b4cd3622e72ec653"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a23b60295f80fc29003733cb7a3625321"><td class="memItemLeft" align="right" valign="top">static const std::unordered_map&lt; uint16_t, <a class="el" href="MapEnums_8h.html#adf27fa94c483739f6a21ebe139e71e26">MAP_TYPE</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="EntitySnapshots_8cpp.html#a23b60295f80fc29003733cb7a3625321">mapIdByGamesLodIndex</a> = <a class="el" href="MapAccess_8h.html#a2aed0bc8463ae11d4e4926066c245f8d">inverted</a>(<a class="el" href="EntitySnapshots_8cpp.html#a43932e2a21b825b3b4cd3622e72ec653">gamesLodIndexByMapId</a>)</td></tr>
+<tr class="separator:a23b60295f80fc29003733cb7a3625321"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Function Documentation</h2>
 <a id="a3bc5196b39e922c39b40071d2c3863c0" name="a3bc5196b39e922c39b40071d2c3863c0"></a>
@@ -2310,6 +2320,54 @@ Functions</h2></td></tr>
           <td></td><td></td>
         </tr>
       </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<h2 class="groupheader">Variable Documentation</h2>
+<a id="a43932e2a21b825b3b4cd3622e72ec653" name="a43932e2a21b825b3b4cd3622e72ec653"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a43932e2a21b825b3b4cd3622e72ec653">&#9670;&#160;</a></span>gamesLodIndexByMapId</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const std::unordered_map&lt;<a class="el" href="MapEnums_8h.html#adf27fa94c483739f6a21ebe139e71e26">MAP_TYPE</a>, uint16_t&gt; gamesLodIndexByMapId</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p >Mapping used for beacon map id serialization.</p>
+<p >DON'T EDIT, THIS IS AUTOGENERATED CODE.</p>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="CodeGen_8cpp.html#aecaef5ecfc7460980092c5372b247eb2">runBeaconsCodeGen</a> </dd></dl>
+
+</div>
+</div>
+<a id="a23b60295f80fc29003733cb7a3625321" name="a23b60295f80fc29003733cb7a3625321"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a23b60295f80fc29003733cb7a3625321">&#9670;&#160;</a></span>mapIdByGamesLodIndex</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const std::unordered_map&lt;uint16_t, <a class="el" href="MapEnums_8h.html#adf27fa94c483739f6a21ebe139e71e26">MAP_TYPE</a>&gt; mapIdByGamesLodIndex = <a class="el" href="MapAccess_8h.html#a2aed0bc8463ae11d4e4926066c245f8d">inverted</a>(<a class="el" href="EntitySnapshots_8cpp.html#a43932e2a21b825b3b4cd3622e72ec653">gamesLodIndexByMapId</a>)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 
 </div>

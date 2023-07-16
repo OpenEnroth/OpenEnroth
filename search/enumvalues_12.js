@@ -676,7 +676,11 @@ var searchData=
   ['strafeleft_673',['StrafeLeft',['../namespaceIo.html#a547e2ba6c6a5bb3a0b5987131e62a90ca619850cebb4607f51de326bd78c27429',1,'Io']]],
   ['straferight_674',['StrafeRight',['../namespaceIo.html#a547e2ba6c6a5bb3a0b5987131e62a90ca9b4d85f3d87b8e67d74e087541ed3743',1,'Io']]],
   ['stunned_675',['Stunned',['../ActorEnums_8h.html#a75a2677e7281dc615368b0814c395fedaeb8ab7d98634514cc61c2b0a0c8d93a2',1,'ActorEnums.h']]],
-  ['subcommand_5fgame_676',['SUBCOMMAND_GAME',['../structOpenEnrothOptions.html#a4bbb727c7a75a2faa5102089da3963c2adfa64152c822d782307622bce9795853',1,'OpenEnrothOptions']]],
-  ['subcommand_5fretrace_677',['SUBCOMMAND_RETRACE',['../structOpenEnrothOptions.html#a4bbb727c7a75a2faa5102089da3963c2af67b035a3a3941ba21dbe7245a72cb32',1,'OpenEnrothOptions']]],
-  ['summoned_678',['Summoned',['../ActorEnums_8h.html#a75a2677e7281dc615368b0814c395feda046bfcaf387649f3c78b193d321d4dd6',1,'ActorEnums.h']]]
+  ['subcommand_5fbeacon_5fmapping_676',['SUBCOMMAND_BEACON_MAPPING',['../structCodeGenOptions.html#a9bb003af95e5f619b8827faf6eac5226ab833bc6c9142dc6fdffa9c0a9b535448',1,'CodeGenOptions']]],
+  ['subcommand_5fgame_677',['SUBCOMMAND_GAME',['../structOpenEnrothOptions.html#a4bbb727c7a75a2faa5102089da3963c2adfa64152c822d782307622bce9795853',1,'OpenEnrothOptions']]],
+  ['subcommand_5fitem_5fid_678',['SUBCOMMAND_ITEM_ID',['../structCodeGenOptions.html#a9bb003af95e5f619b8827faf6eac5226a29f567fa151ccc2ce5988d5fa2cfbde2',1,'CodeGenOptions']]],
+  ['subcommand_5fmap_5fid_679',['SUBCOMMAND_MAP_ID',['../structCodeGenOptions.html#a9bb003af95e5f619b8827faf6eac5226a34adb4fefc0687679d00c93a3e21ce91',1,'CodeGenOptions']]],
+  ['subcommand_5fnone_680',['SUBCOMMAND_NONE',['../structCodeGenOptions.html#a9bb003af95e5f619b8827faf6eac5226a745ca9977da10b91ea23c9ff55d82975',1,'CodeGenOptions']]],
+  ['subcommand_5fretrace_681',['SUBCOMMAND_RETRACE',['../structOpenEnrothOptions.html#a4bbb727c7a75a2faa5102089da3963c2af67b035a3a3941ba21dbe7245a72cb32',1,'OpenEnrothOptions']]],
+  ['summoned_682',['Summoned',['../ActorEnums_8h.html#a75a2677e7281dc615368b0814c395feda046bfcaf387649f3c78b193d321d4dd6',1,'ActorEnums.h']]]
 ];
