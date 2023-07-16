@@ -1,0 +1,29 @@
+name: Bump nightly release tag
+
+on:
+  schedule:
+    # schedule build every night
+    - cron: "0 0 * * *"
+  workflow_dispatch:
+  push:
+    tags:
+      - '*'
+
+env:
+  TAG_NAME: "nightly"
+    
+jobs:
+  bump_tag:
+    runs-on: ubuntu-22.04
+    strategy:
+      fail-fast: false
+      matrix:
+        configuration: [Release]
+        architecture: [x64]
+        
+    steps:
+    - name: Bump version and push tag
+      uses: anothrNick/github-tag-action@1.64.0 # Don't use @master or @v1 unless you're happy to test the latest version
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # if you don't want to set write permissions use a PAT token
+        CUSTOM_TAG: nightly
