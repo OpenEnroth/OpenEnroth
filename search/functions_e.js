@@ -49,5 +49,5 @@ var searchData=
   ['nuklearimageload_46',['NuklearImageLoad',['../classIRender.html#a784317cf8ec9c07977e8e5b3e83017ca',1,'IRender::NuklearImageLoad()'],['../classRenderOpenGL.html#acfd13de74670c228e23b955bd8423eb3',1,'RenderOpenGL::NuklearImageLoad()']]],
   ['nuklearinitialize_47',['NuklearInitialize',['../classIRender.html#a3228020b04dbdb24af060bf490559da7',1,'IRender::NuklearInitialize()'],['../classRenderOpenGL.html#a1fc1828276c8fee1d9dac8dc3f99d408',1,'RenderOpenGL::NuklearInitialize()']]],
   ['nuklearrelease_48',['NuklearRelease',['../classIRender.html#a600aaa5d653b47b0d5652f8023bec2ed',1,'IRender::NuklearRelease()'],['../classRenderOpenGL.html#af9f59a159d0f8f1b08bb06c4c856e7bc',1,'RenderOpenGL::NuklearRelease()']]],
-  ['nuklearrender_49',['NuklearRender',['../classIRender.html#a436d36149d5aba06b0e0e456bd49f637',1,'IRender::NuklearRender()'],['../classRenderOpenGL.html#a0ffbd912e8e67b4839807b250e1d5df1',1,'RenderOpenGL::NuklearRender()']]]
+  ['nuklearrender_49',['NuklearRender',['../classIRender.html#a8ee6edd1447404f7b67f3af2526e7ca0',1,'IRender::NuklearRender()'],['../classRenderOpenGL.html#ade407743a2aa697f2c23018fade49546',1,'RenderOpenGL::NuklearRender()']]]
 ];
