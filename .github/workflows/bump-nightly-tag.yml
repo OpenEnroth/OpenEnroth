@@ -38,7 +38,7 @@ jobs:
           })
 
     - name: Get release
-      id: get_release
+      id: nightly
       uses: bruceadams/get-release@v1.3.2
       env:
         GITHUB_TOKEN: ${{ github.token }}
