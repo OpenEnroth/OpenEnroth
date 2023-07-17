@@ -38,12 +38,14 @@ jobs:
             sha: context.sha
           })
 
-    - uses: cardinalby/git-get-release-action@v1
-      id: getByTag
-      env:
-        GITHUB_TOKEN: ${{ github.token }}
+    - name: Get latest release
+      id: latest_release
+      uses: kaliber5/action-get-release@v1
       with:
+        token: ${{ github.token }}
+        latest: true
         tag: 'nightly'
+        draft: true
 
     - uses: eregon/publish-release@v1
       env:
