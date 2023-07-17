@@ -16,11 +16,12 @@ jobs:
   advanceNightlyTag:
     runs-on: ubuntu-latest
     steps:
-    - name: Get release
-      id: get_release
-      uses: bruceadams/get-release@v1.3.2
+    - uses: cardinalby/git-get-release-action@v1
+      id: getByTag
       env:
         GITHUB_TOKEN: ${{ github.token }}
+      with:
+        tag: 'nightly'    
           
     - name: Advance nightly tag
       uses: actions/github-script@v3
