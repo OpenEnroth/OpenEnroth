@@ -36,18 +36,3 @@ jobs:
             ref: "refs/tags/nightly",
             sha: context.sha
           })
-
-    - name: Get release
-      id: nightly
-      uses: bruceadams/get-release@v1.3.2
-      env:
-        GITHUB_TOKEN: ${{ github.token }}
-
-    - name: Change Release to Pre-release
-      uses: irongut/EditRelease@v1.2.0
-      with:
-        draft: false
-        prerelease: true
-        token: ${{ secrets.GITHUB_TOKEN }}
-        id: ${{ steps.get_release.outputs.id }}
-        body: "Released to GitHub Packages."
