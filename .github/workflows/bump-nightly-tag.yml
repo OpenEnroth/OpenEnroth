@@ -43,7 +43,7 @@ jobs:
       uses: kaliber5/action-get-release@v1
       with:
         token: ${{ github.token }}
-        tag: 'nightly'
+        tag_name: 'nightly'
         draft: true
 
     - uses: eregon/publish-release@v1
