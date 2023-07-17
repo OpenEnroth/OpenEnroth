@@ -8,7 +8,10 @@ on:
   push:
     tags:
       - '*'
-    
+
+env:
+  TAG_NAME: "nightly"
+
 jobs:
     advanceNightlyTag:
       runs-on: ubuntu-latest
