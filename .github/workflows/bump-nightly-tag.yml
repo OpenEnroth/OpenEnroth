@@ -33,3 +33,9 @@ jobs:
               ref: "refs/tags/nightly",
               sha: context.sha
             })
+
+    - name: Publish Release
+      uses: softprops/action-gh-release@v1
+      with:
+        prerelease: true
+        tag_name: ${{ env.TAG_NAME }}
