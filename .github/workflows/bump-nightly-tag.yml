@@ -16,6 +16,12 @@ jobs:
   advanceNightlyTag:
     runs-on: ubuntu-latest
     steps:
+    - name: Get release
+      id: get_release
+      uses: bruceadams/get-release@v1.3.2
+      env:
+        GITHUB_TOKEN: ${{ github.token }}
+          
     - name: Advance nightly tag
       uses: actions/github-script@v3
       with:
@@ -36,3 +42,9 @@ jobs:
             ref: "refs/tags/nightly",
             sha: context.sha
           })
+
+    - uses: eregon/publish-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        release_id: ${{ steps.get_release.outputs.id }}
