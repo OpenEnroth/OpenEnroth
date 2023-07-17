@@ -44,3 +44,10 @@ jobs:
       run: |
         ninja UnitTest
 
+    - name: Prepare artifact
+      shell: pwsh
+      run: |
+        mkdir dist
+        copy build\src\Bin\OpenEnroth\OpenEnroth.exe dist\ 
+        copy build\src\Bin\OpenEnroth\*.dll dist\ 
+        xcopy resources dist\ /E/H/C/I

@@ -66,3 +66,8 @@ jobs:
       run: |
         make UnitTest
 
+    - name: Prepare artifact
+      run: |
+        mkdir dist
+        cp build/src/Bin/OpenEnroth/OpenEnroth dist/
+        cp -r resources/* dist/
