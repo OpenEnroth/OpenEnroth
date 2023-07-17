@@ -49,7 +49,7 @@ class GUIFont {
 
     std::string GetPageTop(const std::string &pInString, GUIWindow *pWindow,
                       unsigned int uX, int a5);
-    void DrawTextLine(const std::string &text, Color color, Pointi position, int max_len_pix);
+    Color DrawTextLine(const std::string &text, Color color, Color defaultColor, Pointi position, int max_len_pix);
     void DrawText(GUIWindow *window, Pointi position, Color color, const std::string &text, int maxHeight, Color shadowColor);
     int DrawTextInRect(GUIWindow *window, Pointi position,
                        Color color, const std::string &text, int rect_width,

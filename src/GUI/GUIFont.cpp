@@ -145,11 +145,11 @@ int GUIFont::GetHeight() const {
     return pData->uFontHeight;
 }
 
-void GUIFont::DrawTextLine(const std::string &text, Color color, Pointi position, int max_len_pix) {
+Color GUIFont::DrawTextLine(const std::string &text, Color color, Color defaultColor, Pointi position, int max_len_pix) {
     assert(color.a > 0);
 
     if (text.empty()) {
-        return;
+        return color;
     }
     render->BeginTextNew(fonttex, fontshadow);
 
@@ -161,10 +161,10 @@ void GUIFont::DrawTextLine(const std::string &text, Color color, Pointi position
         if (IsCharValid(c)) {
             switch (c) {
             case '\n':  // Line Feed 0A 10:
-                return;
+                return text_color;
                 break;
             case '\f':  // Form Feed, page eject  0C 12
-                text_color = parseColorTag(&text[i + 1], color);
+                text_color = parseColorTag(&text[i + 1], defaultColor);
                 i += 5;
                 break;
             case '\t':  // Horizontal tab 09
@@ -196,7 +196,7 @@ void GUIFont::DrawTextLine(const std::string &text, Color color, Pointi position
             }
         }
     }
-    // render->EndTextNew();
+    return text_color;
 }
 
 void DrawCharToBuff(Color *draw_buff, const uint8_t *pCharPixels, int uCharWidth, int uCharHeight,
@@ -352,7 +352,7 @@ int GUIFont::GetLineWidth(const std::string &inString) {
                     string_line_width += pData->pMetrics[c].uLeftSpacing;
                 }
                 string_line_width += pData->pMetrics[c].uWidth;
-                if (i < str_len) {
+                if (i < str_len - 1) {
                     string_line_width += pData->pMetrics[c].uRightSpacing;
                 }
             }
@@ -418,20 +418,19 @@ std::string GUIFont::FitTextInAWindow(const std::string &inString, unsigned int 
                     if (i > possible_transition_point)
                         string_pixel_Width += pData->pMetrics[c].uLeftSpacing;
                     string_pixel_Width += pData->pMetrics[c].uWidth;
-                    if (i < uInStrLen)
+                    if (i < uInStrLen - 1)
                         string_pixel_Width += pData->pMetrics[c].uRightSpacing;
                 } else {  // перенос строки и слова
                     temp_string[possible_transition_point] = '\n';
                     string_pixel_Width = start_pixel_offset;
                     if (i > possible_transition_point) {
-                        for (int j = possible_transition_point; j < i; ++j) {
+                        for (int j = possible_transition_point; j <= i; ++j) {
                             c = temp_string[j];
                             if (IsCharValid(c)) {
                                 if (j > possible_transition_point)
                                     string_pixel_Width += pData->pMetrics[c].uLeftSpacing;
                                 string_pixel_Width += pData->pMetrics[c].uWidth;
-                                if (j < i)
-                                    string_pixel_Width += pData->pMetrics[c].uRightSpacing;
+                                string_pixel_Width += pData->pMetrics[c].uRightSpacing;
                             }
                         }
                     }

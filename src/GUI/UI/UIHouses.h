@@ -12,8 +12,8 @@
 #include "UIHouseEnums.h"
 
 // Right hand side dialogue writing constants
-constexpr int SIDE_TEXT_BOX_WIDTH = 143;
-constexpr int SIDE_TEXT_BOX_POS_X = 483;
+constexpr int SIDE_TEXT_BOX_WIDTH = 144;
+constexpr int SIDE_TEXT_BOX_POS_X = 484;
 constexpr int SIDE_TEXT_BOX_POS_Z = 334;
 constexpr int SIDE_TEXT_BOX_POS_Y = 113;
 constexpr int SIDE_TEXT_BOX_BODY_TEXT_HEIGHT = 174;
