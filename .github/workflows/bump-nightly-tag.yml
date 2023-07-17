@@ -8,41 +8,47 @@ on:
   push:
     tags:
       - '*'
-
+      
 env:
   TAG_NAME: "nightly"
 
 jobs:
-    advanceNightlyTag:
-      runs-on: ubuntu-latest
-      steps:
-      - name: Advance nightly tag
-        uses: actions/github-script@v3
-        with:
-          github-token: ${{secrets.GITHUB_TOKEN}}          
-          script: |
-            try {
-                await github.git.deleteRef({
-                  owner: context.repo.owner,
-                  repo: context.repo.repo,
-                  ref: "tags/nightly"
-                })
-            } catch (e) {
-              console.log("The nightly tag doesn't exist yet: " + e)
-            }
-            await github.git.createRef({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              ref: "refs/tags/nightly",
-              sha: context.sha
-            })
+  advanceNightlyTag:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Advance nightly tag
+      uses: actions/github-script@v3
+      with:
+        github-token: ${{secrets.GITHUB_TOKEN}}          
+        script: |
+          try {
+              await github.git.deleteRef({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                ref: "tags/nightly"
+              })
+          } catch (e) {
+            console.log("The nightly tag doesn't exist yet: " + e)
+          }
+          await github.git.createRef({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            ref: "refs/tags/nightly",
+            sha: context.sha
+          })
 
-      - name: Change Release to Pre-release
-        uses: irongut/EditRelease@v1.2.0
-        with:
-          draft: false
-          prerelease: true
-          token: ${{ secrets.GITHUB_TOKEN }}
-          id: ${{ github.event.release.id }}
-          body: "Released to GitHub Packages."
+    - name: Get release
+      id: get_release
+      uses: bruceadams/get-release@v1.3.2
+      env:
+        GITHUB_TOKEN: ${{ github.token }}
 
+
+    - name: Change Release to Pre-release
+      uses: irongut/EditRelease@v1.2.0
+      with:
+        draft: false
+        prerelease: true
+        token: ${{ secrets.GITHUB_TOKEN }}
+        id: ${{ steps.get_release.outputs.id }}
+        body: "Released to GitHub Packages."
