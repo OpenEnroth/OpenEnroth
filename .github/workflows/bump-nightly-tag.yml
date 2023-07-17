@@ -43,7 +43,6 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ github.token }}
 
-
     - name: Change Release to Pre-release
       uses: irongut/EditRelease@v1.2.0
       with:
