@@ -422,7 +422,7 @@ var searchData=
   ['drawterrainpolygon_419',['DrawTerrainPolygon',['../classRenderOpenGL.html#a89bfd46d0d1dca5fff0cf95fd701d0f1',1,'RenderOpenGL::DrawTerrainPolygon()'],['../classIRender.html#a7c34fd8ecbe93d9a2ff53833fffca2a4',1,'IRender::DrawTerrainPolygon()']]],
   ['drawtext_420',['DrawText',['../classGUIFont.html#a8a369603805074a2008c3dd22b11d039',1,'GUIFont::DrawText()'],['../classGUIWindow.html#a2b11eddd2128cd6424feddcaa87fb483',1,'GUIWindow::DrawText(GUIFont *font, Pointi position, Color color, const std::string &amp;text, int maxHeight=0, Color shadowColor=colorTable.Black)']]],
   ['drawtextinrect_421',['DrawTextInRect',['../classGUIWindow.html#ad6639995122df509c8fd5e89420daa4e',1,'GUIWindow::DrawTextInRect()'],['../classGUIFont.html#a5a162e999b7e922de64083a5991d1610',1,'GUIFont::DrawTextInRect(GUIWindow *window, Pointi position, Color color, const std::string &amp;text, int rect_width, int reverse_text)']]],
-  ['drawtextline_422',['DrawTextLine',['../classGUIFont.html#a25b0ad03b003a94d64f99fa14072b247',1,'GUIFont']]],
+  ['drawtextline_422',['DrawTextLine',['../classGUIFont.html#aaaa344b5a5635b1df2aacc5bd16aefc4',1,'GUIFont']]],
   ['drawtextlinetobuff_423',['DrawTextLineToBuff',['../classGUIFont.html#ae89e5876c24fb5d476d5ad0a112e9e45',1,'GUIFont']]],
   ['drawtextnew_424',['DrawTextNew',['../classRenderOpenGL.html#a3a0202a3d36ce936b21b11b56b6dfea0',1,'RenderOpenGL::DrawTextNew()'],['../classIRender.html#a4af279486b07b6869224a85a9d6a0f66',1,'IRender::DrawTextNew()']]],
   ['drawtexturecustomheight_425',['DrawTextureCustomHeight',['../classRenderOpenGL.html#aa14765fb35cb9bf9d4b4d9d279393a58',1,'RenderOpenGL::DrawTextureCustomHeight()'],['../classIRender.html#a18e68b0029ba1cf1113d5b007d50249a',1,'IRender::DrawTextureCustomHeight()']]],

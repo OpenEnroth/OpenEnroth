@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;13c409b</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;9eb64c2</span>
    </div>
   </td>
  </tr>
@@ -102,8 +102,8 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a4b55cc42ed89cd832f24b90c0092b931"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a621cd0a0bb13177ed58682a9f3554138"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGUIFont.html#a621cd0a0bb13177ed58682a9f3554138">GetPageTop</a> (const std::string &amp;pInString, <a class="el" href="classGUIWindow.html">GUIWindow</a> *pWindow, unsigned int uX, int a5)</td></tr>
 <tr class="separator:a621cd0a0bb13177ed58682a9f3554138"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a25b0ad03b003a94d64f99fa14072b247"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGUIFont.html#a25b0ad03b003a94d64f99fa14072b247">DrawTextLine</a> (const std::string &amp;text, <a class="el" href="structColor.html">Color</a> color, <a class="el" href="Point_8h.html#a8b0ce454185fa95a760b07d84d3decb4">Pointi</a> position, int max_len_pix)</td></tr>
-<tr class="separator:a25b0ad03b003a94d64f99fa14072b247"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aaaa344b5a5635b1df2aacc5bd16aefc4"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structColor.html">Color</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGUIFont.html#aaaa344b5a5635b1df2aacc5bd16aefc4">DrawTextLine</a> (const std::string &amp;text, <a class="el" href="structColor.html">Color</a> color, <a class="el" href="structColor.html">Color</a> defaultColor, <a class="el" href="Point_8h.html#a8b0ce454185fa95a760b07d84d3decb4">Pointi</a> position, int max_len_pix)</td></tr>
+<tr class="separator:aaaa344b5a5635b1df2aacc5bd16aefc4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8a369603805074a2008c3dd22b11d039"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGUIFont.html#a8a369603805074a2008c3dd22b11d039">DrawText</a> (<a class="el" href="classGUIWindow.html">GUIWindow</a> *<a class="el" href="EngineGlobals_8cpp.html#a88500cd1785fee2e88c7a54241cb6a4e">window</a>, <a class="el" href="Point_8h.html#a8b0ce454185fa95a760b07d84d3decb4">Pointi</a> position, <a class="el" href="structColor.html">Color</a> color, const std::string &amp;text, int maxHeight, <a class="el" href="structColor.html">Color</a> shadowColor)</td></tr>
 <tr class="separator:a8a369603805074a2008c3dd22b11d039"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5a162e999b7e922de64083a5991d1610"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGUIFont.html#a5a162e999b7e922de64083a5991d1610">DrawTextInRect</a> (<a class="el" href="classGUIWindow.html">GUIWindow</a> *<a class="el" href="EngineGlobals_8cpp.html#a88500cd1785fee2e88c7a54241cb6a4e">window</a>, <a class="el" href="Point_8h.html#a8b0ce454185fa95a760b07d84d3decb4">Pointi</a> position, <a class="el" href="structColor.html">Color</a> color, const std::string &amp;text, int rect_width, int reverse_text)</td></tr>
@@ -427,14 +427,14 @@ Protected Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="a25b0ad03b003a94d64f99fa14072b247" name="a25b0ad03b003a94d64f99fa14072b247"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a25b0ad03b003a94d64f99fa14072b247">&#9670;&#160;</a></span>DrawTextLine()</h2>
+<a id="aaaa344b5a5635b1df2aacc5bd16aefc4" name="aaaa344b5a5635b1df2aacc5bd16aefc4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aaaa344b5a5635b1df2aacc5bd16aefc4">&#9670;&#160;</a></span>DrawTextLine()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">void GUIFont::DrawTextLine </td>
+          <td class="memname"><a class="el" href="structColor.html">Color</a> GUIFont::DrawTextLine </td>
           <td>(</td>
           <td class="paramtype">const std::string &amp;&#160;</td>
           <td class="paramname"><em>text</em>, </td>
@@ -444,6 +444,12 @@ Protected Attributes</h2></td></tr>
           <td></td>
           <td class="paramtype"><a class="el" href="structColor.html">Color</a>&#160;</td>
           <td class="paramname"><em>color</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="structColor.html">Color</a>&#160;</td>
+          <td class="paramname"><em>defaultColor</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -464,6 +470,18 @@ Protected Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p >Draws a single line of text.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">text</td><td>Input line of text. </td></tr>
+    <tr><td class="paramname">color</td><td><a class="el" href="structColor.html">Color</a> that the text should be started to be drawn at - this allows feeding in the color returned from the previous call to maintain correct color when its split onto a new line. </td></tr>
+    <tr><td class="paramname">defaultColor</td><td>The color that the text should return to on hitting a default color tag. </td></tr>
+    <tr><td class="paramname">position</td><td>Position to draw the text line to. </td></tr>
+    <tr><td class="paramname">max_len_pix</td><td>The maximum allowed width for this line of text.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="structColor.html">Color</a> that was used to draw text at the end of the line. </dd></dl>
 
 </div>
 </div>
