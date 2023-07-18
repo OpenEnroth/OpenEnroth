@@ -49,6 +49,20 @@ class GUIFont {
 
     std::string GetPageTop(const std::string &pInString, GUIWindow *pWindow,
                       unsigned int uX, int a5);
+
+    /**
+     * Draws a single line of text.
+     *
+     * @param text                          Input line of text.
+     * @param color                         Color that the text should be started to be drawn at - this allows feeding
+     *                                      in the color returned from the previous call to maintain correct color when
+     *                                      its split onto a new line.
+     * @param defaultColor                  The color that the text should return to on hitting a default color tag.
+     * @param position                      Position to draw the text line to.
+     * @param max_len_pix                   The maximum allowed width for this line of text.
+     * 
+     * @return                              Color that was used to draw text at the end of the line.
+     */
     Color DrawTextLine(const std::string &text, Color color, Color defaultColor, Pointi position, int max_len_pix);
     void DrawText(GUIWindow *window, Pointi position, Color color, const std::string &text, int maxHeight, Color shadowColor);
     int DrawTextInRect(GUIWindow *window, Pointi position,
