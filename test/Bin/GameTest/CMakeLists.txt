@@ -9,11 +9,11 @@ if(ENABLE_TESTS)
 
     add_executable(OpenEnroth_GameTest ${GAME_TEST_MAIN_SOURCES} ${GAME_TEST_MAIN_HEADERS})
     target_fix_libcxx_assertions(OpenEnroth_GameTest)
-    target_link_libraries(OpenEnroth_GameTest application testing_game GTest::gtest)
+    target_link_libraries(OpenEnroth_GameTest PUBLIC application testing_game GTest::gtest CLI11::CLI11)
     target_compile_definitions(OpenEnroth_GameTest PRIVATE TEST_GROUP=None)
 
     target_check_style(OpenEnroth_GameTest)
-    PREBUILT_DEPENDENCIES_RESOLVE(OpenEnroth_GameTest)
+    target_resolve_prebuilt_dependencies(OpenEnroth_GameTest)
 
 
     # OpenEnroth_TestData

@@ -53,11 +53,12 @@ add_library(gui_ui STATIC ${GUI_UI_SOURCES} ${GUI_UI_HEADERS})
 target_check_style(gui_ui)
 
 target_link_libraries(gui_ui
-                      gui_ui_books
-                      gui_ui_houses
-                      arcomage
-                      engine_spells
-                      utility)
+        PUBLIC
+        gui_ui_books
+        gui_ui_houses
+        arcomage
+        engine_spells
+        utility)
 
 add_subdirectory(Books)
 add_subdirectory(Houses)

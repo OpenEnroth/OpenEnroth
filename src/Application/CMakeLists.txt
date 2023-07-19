@@ -29,7 +29,7 @@ add_library(application STATIC ${APPLICATION_SOURCES} ${APPLICATION_HEADERS})
 target_check_style(application)
 
 target_link_libraries(application
-        CLI11::CLI11
+        PUBLIC
         engine
         engine_components_control
         engine_components_deterministic

@@ -11,6 +11,10 @@ set(MEDIA_AUDIO_HEADERS
         SoundInfo.h)
 
 add_library(media_audio STATIC ${MEDIA_AUDIO_SOURCES} ${MEDIA_AUDIO_HEADERS})
-target_link_libraries(media_audio utility application OpenAL)
-
 target_check_style(media_audio)
+target_link_libraries(media_audio
+        PUBLIC
+        utility
+        application
+        # PRIVATE # TODO(captainurist): should be private
+        OpenAL)

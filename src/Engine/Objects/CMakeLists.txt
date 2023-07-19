@@ -31,4 +31,4 @@ set(ENGINE_OBJECTS_HEADERS
 add_library(engine_objects STATIC ${ENGINE_OBJECTS_SOURCES} ${ENGINE_OBJECTS_HEADERS})
 target_check_style(engine_objects)
 
-target_link_libraries(engine_objects engine gui library_random library_color utility)
+target_link_libraries(engine_objects PUBLIC engine gui library_random library_color utility)

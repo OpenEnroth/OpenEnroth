@@ -46,8 +46,12 @@ set(UTILITY_HEADERS
         String.h)
 
 add_library(utility STATIC ${UTILITY_SOURCES} ${UTILITY_HEADERS})
-target_link_libraries(utility fmt::fmt mio::mio)
 target_check_style(utility)
+target_link_libraries(utility
+        PUBLIC
+        fmt::fmt
+        PRIVATE
+        mio::mio)
 
 if(ENABLE_TESTS)
     set(TEST_UTILITY_SOURCES
@@ -61,9 +65,9 @@ if(ENABLE_TESTS)
 
     add_library(test_utility OBJECT ${TEST_UTILITY_SOURCES})
     target_compile_definitions(test_utility PRIVATE TEST_GROUP=Utility)
-    target_link_libraries(test_utility testing_unit utility)
+    target_link_libraries(test_utility PUBLIC testing_unit utility)
 
     target_check_style(test_utility)
 
-    target_link_libraries(OpenEnroth_UnitTest test_utility)
+    target_link_libraries(OpenEnroth_UnitTest PUBLIC test_utility)
 endif()

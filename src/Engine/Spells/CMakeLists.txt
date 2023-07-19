@@ -11,5 +11,5 @@ set(ENGINE_SPELLS_HEADERS
         Spells.h)
 
 add_library(engine_spells STATIC ${ENGINE_SPELLS_SOURCES} ${ENGINE_SPELLS_HEADERS})
-target_link_libraries(engine_spells engine)
+target_link_libraries(engine_spells PUBLIC engine)
 target_check_style(engine_spells)

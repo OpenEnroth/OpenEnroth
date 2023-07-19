@@ -9,5 +9,5 @@ set(LIBRARY_LOD_HEADERS
         LodDefinitions.h)
 
 add_library(library_lod STATIC ${LIBRARY_LOD_SOURCES} ${LIBRARY_LOD_HEADERS})
-target_link_libraries(library_lod library_compression utility)
+target_link_libraries(library_lod PUBLIC library_compression utility)
 target_check_style(library_lod)

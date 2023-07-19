@@ -54,11 +54,8 @@ else()
   list(APPEND PLATFORM_SOURCES Posix/PosixPlatform.cpp)
 endif()
 
-include_directories(${INCLUDE_DIRECTORIES} ${SDL2_INCLUDE_DIRS})
+include_directories(${INCLUDE_DIRECTORIES})
 
 add_library(platform STATIC ${PLATFORM_SOURCES} ${PLATFORM_HEADERS})
 target_check_style(platform)
-
-target_link_libraries(platform ${SDL2_LIBRARIES})
-
-message(VERBOSE "SDL2_LIBRARIES: ${SDL2_LIBRARIES}")
+target_link_libraries(platform PRIVATE SDL2::SDL2)

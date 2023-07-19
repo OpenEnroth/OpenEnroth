@@ -19,6 +19,7 @@ add_library(engine_components_trace STATIC ${ENGINE_COMPONENTS_TRACE_SOURCES} ${
 target_check_style(engine_components_trace)
 
 target_link_libraries(engine_components_trace
+        PUBLIC
         engine
         engine_components_control
         engine_components_deterministic

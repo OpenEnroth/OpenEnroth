@@ -9,5 +9,5 @@ set(LIBRARY_APPLICATION_HEADERS
         PlatformIntrospection.h)
 
 add_library(library_application STATIC ${LIBRARY_APPLICATION_SOURCES} ${LIBRARY_APPLICATION_HEADERS})
-target_link_libraries(library_application platform)
+target_link_libraries(library_application PUBLIC platform)
 target_check_style(library_application)
