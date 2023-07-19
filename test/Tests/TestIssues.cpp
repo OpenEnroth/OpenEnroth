@@ -1580,3 +1580,12 @@ GAME_TEST(Issues, Issue1068) {
     test->playTraceFromTestData("issue_1068.mm7", "issue_1068.json");
     EXPECT_EQ(expTape.firstLast(), tape({158039, 156727, 157646, 157417}, {158518, 157206, 158125, 157896}));
 }
+
+GAME_TEST(Issues, Issue1093) {
+    // Town Portal on master can be cast near enemies
+    auto screenTape = makeScreenTape(test);
+    auto manaTape = makeCharacterManaTape(test, 3);
+    test->playTraceFromTestData("issue_1093.mm7", "issue_1093.json");
+    EXPECT_EQ(screenTape, tape(SCREEN_GAME, SCREEN_SPELL_BOOK, SCREEN_GAME));
+    EXPECT_EQ(manaTape, tape(355));
+}

@@ -309,8 +309,10 @@ void CastSpellInfoHelpers::castSpell() {
                     castSuccessful = false;
                 }
             }
-            engine->_messageQueue->addMessageCurrentFrame(UIMSG_OnCastTownPortal, PID(OBJECT_Character, pCastSpell->uPlayerID), 0);
-            pAudioPlayer->playSpellSound(pCastSpell->uSpellID, PID_INVALID);
+            if (castSuccessful) {
+                engine->_messageQueue->addMessageCurrentFrame(UIMSG_OnCastTownPortal, PID(OBJECT_Character, pCastSpell->uPlayerID), 0);
+                pAudioPlayer->playSpellSound(pCastSpell->uSpellID, PID_INVALID);
+            }
         } else if (pCastSpell->uSpellID == SPELL_WATER_LLOYDS_BEACON) {
             if (pCurrentMapName == "d05.blv") {  // Arena
                 spellFailed(pCastSpell, LSTR_SPELL_FAILED);
