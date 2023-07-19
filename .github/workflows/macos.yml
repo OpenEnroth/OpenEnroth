@@ -27,7 +27,6 @@ jobs:
     - name: Install dependencies
       run: |
         brew install ffmpeg@4
-        brew install sdl2
 
     - name: Configure
       run: |

@@ -23,7 +23,7 @@ include(CppLint)
 include(Dependencies)
 
 # Settings defaults.
-if(BUILD_COMPILER STREQUAL "msvc")
+if(BUILD_PLATFORM STREQUAL "windows")
     set(PREBUILT_DEPENDENCIES_DEFAULT ON)
 else()
     set(PREBUILT_DEPENDENCIES_DEFAULT OFF)

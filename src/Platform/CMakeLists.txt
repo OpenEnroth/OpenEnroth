@@ -48,14 +48,12 @@ set(PLATFORM_HEADERS
         Sdl/SdlWindow.h)
 
 if(BUILD_PLATFORM STREQUAL "windows")
-  list(APPEND PLATFORM_SOURCES Win/WinPlatform.cpp)
-  list(APPEND PLATFORM_HEADERS Win/WinPlatform.h)
+    list(APPEND PLATFORM_SOURCES Win/WinPlatform.cpp)
+    list(APPEND PLATFORM_HEADERS Win/WinPlatform.h)
 else()
-  list(APPEND PLATFORM_SOURCES Posix/PosixPlatform.cpp)
+    list(APPEND PLATFORM_SOURCES Posix/PosixPlatform.cpp)
 endif()
-
-include_directories(${INCLUDE_DIRECTORIES})
 
 add_library(platform STATIC ${PLATFORM_SOURCES} ${PLATFORM_HEADERS})
 target_check_style(platform)
-target_link_libraries(platform PRIVATE SDL2::SDL2)
+target_link_libraries(platform PRIVATE SDL2::SDL2OE)

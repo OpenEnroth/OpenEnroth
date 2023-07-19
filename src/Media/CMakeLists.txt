@@ -16,8 +16,6 @@ target_link_libraries(media PRIVATE ${AVCODEC_LIBRARIES} ${AVFORMAT_LIBRARIES} $
 target_compile_definitions(media PRIVATE FF_API_NEXT)
 target_include_directories(media PRIVATE ${FFMPEG_INCLUDE_DIRS})
 
-message(STATUS "FFMPEG_INCLUDE_DIRS = ${FFMPEG_INCLUDE_DIRS}")
-
 target_check_style(media)
 
 add_subdirectory(Audio)

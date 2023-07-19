@@ -135,19 +135,6 @@ macro(resolve_dependencies) # Intentionally a macro - we want set() to work in p
                     "${FFMPEG_BIN_DIR}/swresample-3.dll"
                     "${FFMPEG_BIN_DIR}/swscale-5.dll")
 
-            set(SDL2_DIR "${LIBRARY_DIR}/sdl2-2.0.12")
-            set(SDL2_INCLUDE_DIRS "${SDL2_DIR}/include")
-            set(SDL2_BIN_DIR "${SDL2_DIR}/bin")
-            set(SDL2_LIB_DIR "${SDL2_DIR}/lib")
-            set(SDL2_LIBRARIES "${SDL2_LIB_DIR}/SDL2.lib"
-                    "${SDL2_LIB_DIR}/SDL2main.lib")
-            prebuilt_dependencies_add("${SDL2_BIN_DIR}/SDL2.dll")
-
-            add_library(SDL2 INTERFACE)
-            add_library(SDL2::SDL2 ALIAS SDL2)
-            target_link_libraries(SDL2 INTERFACE ${SDL2_LIBRARIES})
-            target_include_directories(SDL2 INTERFACE ${SDL2_INCLUDE_DIRS})
-
             set(ZLIB_DIR "${LIBRARY_DIR}/zlib-1.2.11")
             set(ZLIB_INCLUDE_DIRS "${ZLIB_DIR}/include")
             set(ZLIB_BIN_DIR "${ZLIB_DIR}/bin")
@@ -165,6 +152,5 @@ macro(resolve_dependencies) # Intentionally a macro - we want set() to work in p
         find_package(FFmpeg REQUIRED)
         find_package(OpenGL REQUIRED)
         find_package(ZLIB REQUIRED)
-        find_package(SDL2 CONFIG REQUIRED)
     endif()
 endmacro()
