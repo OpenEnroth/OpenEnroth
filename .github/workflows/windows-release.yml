@@ -2,8 +2,8 @@ name: Windows Release Build
 
 on:
   schedule:
-    # schedule build every night
-    - cron: "0 0 * * *"
+    # schedule build once per day
+    - cron: "16 11 * * *"
   workflow_dispatch:
   push:
     tags:
