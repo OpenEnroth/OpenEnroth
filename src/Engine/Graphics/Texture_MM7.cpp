@@ -6,9 +6,9 @@
 #include "Engine/ErrorHandling.h"
 
 void Texture_MM7::Release() {
-    header.pName[0] = 0;
+    header.name[0] = 0;
 
-    if (header.pBits & 0x0400) {
+    if (header.flags & 0x0400) {
         __debugbreak();
     }
 
