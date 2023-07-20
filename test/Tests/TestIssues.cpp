@@ -4,6 +4,7 @@
 
 #include "GUI/GUIWindow.h"
 #include "GUI/UI/UIHouses.h"
+#include "GUI/UI/UIStatusBar.h"
 #include "GUI/GUIProgressBar.h"
 
 #include "Engine/Tables/ItemTable.h"
@@ -109,6 +110,10 @@ static auto makeTimeTape(TestController *test) {
 template<class T>
 static auto makeConfigTape(TestController *test, const ConfigEntry<T> &entry) {
     return test->tape([&] { return entry.value(); });
+}
+
+static auto makeStatusBarTape(TestController *test) {
+    return test->tape([] { return GameUI_StatusBar_Get(); });
 }
 
 static auto makeCharacterExperienceTape(TestController *test, int character) {
@@ -370,7 +375,7 @@ GAME_TEST(Issues, Issue272b) {
     // Check you cant leave menu with conflicting keys.
     test->playTraceFromTestData("issue_272b.mm7", "issue_272b.json");
     EXPECT_EQ(current_screen_type, SCREEN_KEYBOARD_OPTIONS);
-    EXPECT_EQ(game_ui_status_bar_event_string, "Please resolve all key conflicts!");
+    EXPECT_EQ(GameUI_StatusBar_Get(), "Please resolve all key conflicts!");
 }
 
 GAME_TEST(Issues, Issue290) {
@@ -1380,59 +1385,59 @@ GAME_TEST(Issues, Issue830) {
     // Portrait: Name and conditions of the character
     game->moveMouse(65, 424);
     game->tick(1);
-    EXPECT_EQ(game_ui_status_bar_string, "Zoltan the Knight: Good");
+    EXPECT_EQ(GameUI_StatusBar_Get(), "Zoltan the Knight: Good");
     //HP / SP Bar(either one) : Display current and max HP and SP both
     game->moveMouse(102, 426);
     game->tick(1);
-    EXPECT_EQ(game_ui_status_bar_string, "45 / 45 Hit Points    0 / 0 Spell Points");
+    EXPECT_EQ(GameUI_StatusBar_Get(), "45 / 45 Hit Points    0 / 0 Spell Points");
     // Minimap : Display time, day of the week and full date
     game->moveMouse(517, 111);
     game->tick(1);
-    EXPECT_EQ(game_ui_status_bar_string, "9:00am Monday 1 January 1168");
+    EXPECT_EQ(GameUI_StatusBar_Get(), "9:00am Monday 1 January 1168");
     //Zoom in / out minimap buttons : Display description of the button
     game->moveMouse(523, 140);
     game->tick(1);
-    EXPECT_EQ(game_ui_status_bar_string, "Zoom In");
+    EXPECT_EQ(GameUI_StatusBar_Get(), "Zoom In");
     game->moveMouse(577, 140);
     game->tick(1);
-    EXPECT_EQ(game_ui_status_bar_string, "Zoom Out");
+    EXPECT_EQ(GameUI_StatusBar_Get(), "Zoom Out");
     // Food : Display total amount of food(bit redundant, but it is there)
     game->moveMouse(520, 329);
     game->tick(1);
-    EXPECT_EQ(game_ui_status_bar_string, "You have 7 food");
+    EXPECT_EQ(GameUI_StatusBar_Get(), "You have 7 food");
     // Gold : Display amount of gold on party and in bank
     game->moveMouse(575, 327);
     game->tick(1);
-    EXPECT_EQ(game_ui_status_bar_string, "You have 200 total gold, 0 in the Bank");
+    EXPECT_EQ(GameUI_StatusBar_Get(), "You have 200 total gold, 0 in the Bank");
     // Books : Description of each book(journal, autonotes etc)
     game->moveMouse(513, 387);
     game->tick(1);
-    EXPECT_EQ(game_ui_status_bar_string, "Current Quests");
+    EXPECT_EQ(GameUI_StatusBar_Get(), "Current Quests");
     game->moveMouse(540, 382);
     game->tick(1);
-    EXPECT_EQ(game_ui_status_bar_string, "Auto Notes");
+    EXPECT_EQ(GameUI_StatusBar_Get(), "Auto Notes");
     game->moveMouse(556, 381);
     game->tick(1);
-    EXPECT_EQ(game_ui_status_bar_string, "Maps");
+    EXPECT_EQ(GameUI_StatusBar_Get(), "Maps");
     game->moveMouse(586, 396);
     game->tick(1);
-    EXPECT_EQ(game_ui_status_bar_string, "Calendar");
+    EXPECT_EQ(GameUI_StatusBar_Get(), "Calendar");
     game->moveMouse(611, 400);
     game->tick(1);
-    EXPECT_EQ(game_ui_status_bar_string, "History");
+    EXPECT_EQ(GameUI_StatusBar_Get(), "History");
     // Buttons : Description of the 4 buttons in the corner(cast spell, rest, quick ref, game options)
     game->moveMouse(494, 461);
     game->tick(1);
-    EXPECT_EQ(game_ui_status_bar_string, "Cast Spell");
+    EXPECT_EQ(GameUI_StatusBar_Get(), "Cast Spell");
     game->moveMouse(541, 460);
     game->tick(1);
-    EXPECT_EQ(game_ui_status_bar_string, "Rest");
+    EXPECT_EQ(GameUI_StatusBar_Get(), "Rest");
     game->moveMouse(585, 461);
     game->tick(1);
-    EXPECT_EQ(game_ui_status_bar_string, "Quick Reference");
+    EXPECT_EQ(GameUI_StatusBar_Get(), "Quick Reference");
     game->moveMouse(621, 460);
     game->tick(1);
-    EXPECT_EQ(game_ui_status_bar_string, "Game Options");
+    EXPECT_EQ(GameUI_StatusBar_Get(), "Game Options");
 }
 
 GAME_TEST(Issues, Issue832) {
@@ -1585,7 +1590,10 @@ GAME_TEST(Issues, Issue1093) {
     // Town Portal on master can be cast near enemies
     auto screenTape = makeScreenTape(test);
     auto manaTape = makeCharacterManaTape(test, 3);
+    auto statusTape = makeStatusBarTape(test);
     test->playTraceFromTestData("issue_1093.mm7", "issue_1093.json");
     EXPECT_EQ(screenTape, tape(SCREEN_GAME, SCREEN_SPELL_BOOK, SCREEN_GAME));
-    EXPECT_EQ(manaTape, tape(355));
+    EXPECT_EQ(manaTape, tape(355)); // Character's mana didn't change.
+    EXPECT_TRUE(statusTape.contains("Cast Town Portal"));
+    EXPECT_TRUE(statusTape.contains("Spell failed"));
 }
