@@ -22,12 +22,8 @@ std::string SdlGamepad::model() const {
 }
 
 std::string SdlGamepad::serial() const {
-    // TODO: Just update SDL
-#if SDL_VERSION_ATLEAST(2, 0, 14)
     const char *serial = SDL_GameControllerGetSerial(_gamepad);
     if (serial != NULL)
         return serial;
-#endif
-
     return {};
 }

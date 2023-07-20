@@ -120,12 +120,7 @@ void SdlPlatform::showMessageBox(const std::string &title, const std::string &me
 }
 
 int64_t SdlPlatform::tickCount() const {
-    // TODO(captainurist): Just update SDL
-#if SDL_VERSION_ATLEAST(2, 0, 18)
     return SDL_GetTicks64();
-#else
-    return SDL_GetTicks();
-#endif
 }
 
 std::string SdlPlatform::winQueryRegistry(const std::wstring &) const {
