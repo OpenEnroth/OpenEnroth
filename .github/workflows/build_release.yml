@@ -17,11 +17,6 @@ jobs:
     name: Advance Nightly Sourcode
     runs-on: ubuntu-latest
     steps:    
-
-    - name: Checkout
-      uses: actions/checkout@v3
-      with:
-        submodules: 'recursive'
         
     - uses: actions/upload-artifact@v3
       with:
@@ -74,10 +69,11 @@ jobs:
         target: [android]
             
     steps:
-    - uses: actions/download-artifact@v3
+
+    - name: Checkout
+      uses: actions/checkout@v3
       with:
-        name: sourcecode
-        path: ./
+        submodules: 'recursive'
 
     # Here we need to decode keystore.jks from base64 string and place it
     # in the folder specified in the release signing configuration
@@ -188,10 +184,11 @@ jobs:
         configuration: [Debug, Release]
         architecture: [x86, x64]
     steps:
-    - uses: actions/download-artifact@v3
+
+    - name: Checkout
+      uses: actions/checkout@v3
       with:
-        name: sourcecode
-        path: ./
+        submodules: 'recursive'
 
     - name: Install dependencies
       run: |
@@ -264,10 +261,11 @@ jobs:
         configuration: [Debug, Release]
         architecture: [x64] #Todo: Change to [x64, arm64] when github adds m1 builds later this year
     steps:
-    - uses: actions/download-artifact@v3
+
+    - name: Checkout
+      uses: actions/checkout@v3
       with:
-        name: sourcecode
-        path: ./
+        submodules: 'recursive'
 
     - name: Install dependencies
       run: |
@@ -318,10 +316,11 @@ jobs:
         configuration: [Debug, Release]
         architecture: [x86, x64]
     steps:
-    - uses: actions/download-artifact@v3
+
+    - name: Checkout
+      uses: actions/checkout@v3
       with:
-        name: sourcecode
-        path: ./
+        submodules: 'recursive'
         
     - name: Setup environment
       uses: ilammy/msvc-dev-cmd@v1
