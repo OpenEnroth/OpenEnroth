@@ -615,10 +615,7 @@ int Character::HasSkill(CharacterSkillType skill) const {
         return 1;
     } else {
         // TODO(captainurist): this doesn't belong to a getter!!!
-        GameUI_SetStatusBar(
-            LSTR_FMT_S_DOES_NOT_HAVE_SKILL,
-            this->name.c_str()
-        );
+        GameUI_SetStatusBar(LSTR_FMT_S_DOES_NOT_HAVE_SKILL, this->name);
         return 0;
     }
 }
@@ -1472,10 +1469,7 @@ int Character::StealFromActor(
     if (grng->random(100) < 5 || fineIfFailed > currMaxItemValue ||
         actroPtr->ActorEnemy()) {  // busted
         Actor::AggroSurroundingPeasants(uActorID, 1);
-        GameUI_SetStatusBar(
-            LSTR_FMT_S_WAS_CAUGHT_STEALING,
-            this->name.c_str()
-        );
+        GameUI_SetStatusBar(LSTR_FMT_S_WAS_CAUGHT_STEALING, this->name);
         return STEAL_BUSTED;
     } else {
         int random = grng->random(100);
@@ -1483,10 +1477,7 @@ int Character::StealFromActor(
         if (random >= 70) {  // stealing gold
             if (!actroPtr->items[3].isGold()) {
                 // no gold to steal - fail
-                GameUI_SetStatusBar(
-                    LSTR_FMT_S_FAILED_TO_STEAL,
-                    this->name.c_str()
-                );
+                GameUI_SetStatusBar(LSTR_FMT_S_FAILED_TO_STEAL, this->name);
                 return STEAL_NOTHING;
             }
 
@@ -1504,12 +1495,9 @@ int Character::StealFromActor(
 
             if (enchBonusSum) {
                 pParty->partyFindsGold(enchBonusSum, GOLD_RECEIVE_NOSHARE_SILENT);
-                GameUI_SetStatusBar(LSTR_FMT_S_STOLE_D_GOLD, this->name.c_str(), enchBonusSum);
+                GameUI_SetStatusBar(LSTR_FMT_S_STOLE_D_GOLD, this->name, enchBonusSum);
             } else {
-                GameUI_SetStatusBar(
-                    LSTR_FMT_S_FAILED_TO_STEAL,
-                    this->name.c_str()
-                );
+                GameUI_SetStatusBar(LSTR_FMT_S_FAILED_TO_STEAL, this->name);
             }
 
             return STEAL_SUCCESS;
@@ -1539,21 +1527,14 @@ int Character::StealFromActor(
                 }
 
                 if (carriedItemId != ITEM_NULL) {
-                    GameUI_SetStatusBar(
-                        LSTR_FMT_S_STOLE_D_ITEM,
-                        this->name.c_str(),
-                        pItemTable->pItems[carriedItemId].pUnidentifiedName.c_str()
-                    );
+                    GameUI_SetStatusBar(LSTR_FMT_S_STOLE_D_ITEM, this->name, pItemTable->pItems[carriedItemId].pUnidentifiedName);
                     pParty->setHoldingItem(&tempItem);
                     return STEAL_SUCCESS;
                 }
             }
         }
 
-        GameUI_SetStatusBar(
-            LSTR_FMT_S_FAILED_TO_STEAL,
-            this->name.c_str()
-        );
+        GameUI_SetStatusBar(LSTR_FMT_S_FAILED_TO_STEAL, this->name);
         return STEAL_NOTHING;
     }
 }
@@ -3547,7 +3528,7 @@ void Character::useItem(int targetCharacter, bool isPortraitClick) {
             playerAffected->Heal(2);
             playerAffected->playReaction(SPEECH_DRINK_POTION);
         } else {
-            GameUI_SetStatusBar(LSTR_FMT_S_CANT_BE_USED_THIS_WAY, pParty->pPickedItem.GetDisplayName().c_str());
+            GameUI_SetStatusBar(LSTR_FMT_S_CANT_BE_USED_THIS_WAY, pParty->pPickedItem.GetDisplayName());
             pAudioPlayer->playUISound(SOUND_error);
             return;
         }
@@ -3820,7 +3801,7 @@ void Character::useItem(int targetCharacter, bool isPortraitClick) {
                 break;
 
             default:
-                GameUI_SetStatusBar(LSTR_FMT_S_CANT_BE_USED_THIS_WAY, pParty->pPickedItem.GetDisplayName().c_str());
+                GameUI_SetStatusBar(LSTR_FMT_S_CANT_BE_USED_THIS_WAY, pParty->pPickedItem.GetDisplayName());
                 pAudioPlayer->playUISound(SOUND_error);
                 return;
         }
@@ -3878,7 +3859,7 @@ void Character::useItem(int targetCharacter, bool isPortraitClick) {
     if (pParty->pPickedItem.isBook()) {
         SPELL_TYPE bookSpellId = bookSpellIds[pParty->pPickedItem.uItemID];
         if (playerAffected->spellbook.bHaveSpell[bookSpellId - SPELL_FIRST_REGULAR]) {
-            GameUI_SetStatusBar(LSTR_FMT_YOU_ALREADY_KNOW_S_SPELL, pParty->pPickedItem.GetDisplayName().c_str());
+            GameUI_SetStatusBar(LSTR_FMT_YOU_ALREADY_KNOW_S_SPELL, pParty->pPickedItem.GetDisplayName());
             pAudioPlayer->playUISound(SOUND_error);
             return;
         }
@@ -3893,7 +3874,7 @@ void Character::useItem(int targetCharacter, bool isPortraitClick) {
         CombinedSkillValue val = playerAffected->getSkillValue(skill);
 
         if (requiredMastery > val.mastery() || val.level() == 0) {
-            GameUI_SetStatusBar(LSTR_FMT_DONT_HAVE_SKILL_TO_LEAN_S, pParty->pPickedItem.GetDisplayName().c_str());
+            GameUI_SetStatusBar(LSTR_FMT_DONT_HAVE_SKILL_TO_LEAN_S, pParty->pPickedItem.GetDisplayName());
             playerAffected->playReaction(SPEECH_CANT_LEARN_SPELL);
             return;
         }
@@ -4059,7 +4040,7 @@ void Character::useItem(int targetCharacter, bool isPortraitClick) {
             TeleportToNWCDungeon();
             return;
         } else {
-            GameUI_SetStatusBar(LSTR_FMT_S_CANT_BE_USED_THIS_WAY, pParty->pPickedItem.GetDisplayName().c_str());
+            GameUI_SetStatusBar(LSTR_FMT_S_CANT_BE_USED_THIS_WAY, pParty->pPickedItem.GetDisplayName());
             pAudioPlayer->playUISound(SOUND_error);
             return;
         }
@@ -6413,7 +6394,7 @@ void DamageCharacterFromMonster(unsigned int uObjID, ABILITY_INDEX dmgSource, Ve
         // GM unarmed 1% chance to evade attacks per skill point
         if (playerPtr->getActualSkillValue(CHARACTER_SKILL_UNARMED).mastery() >= CHARACTER_SKILL_MASTERY_GRANDMASTER &&
             grng->random(100) < playerPtr->getActualSkillValue(CHARACTER_SKILL_UNARMED).level()) {
-            GameUI_SetStatusBar(LSTR_FMT_S_EVADES_DAMAGE, playerPtr->name.c_str());
+            GameUI_SetStatusBar(LSTR_FMT_S_EVADES_DAMAGE, playerPtr->name);
             playerPtr->playReaction(SPEECH_AVOID_DAMAGE);
             return;
         }
@@ -6602,7 +6583,7 @@ void DamageCharacterFromMonster(unsigned int uObjID, ABILITY_INDEX dmgSource, Ve
                 // GM unarmed 1% chance to evade attack per skill point
                 if (playerPtr->getActualSkillValue(CHARACTER_SKILL_UNARMED).mastery() >= CHARACTER_SKILL_MASTERY_GRANDMASTER &&
                     grng->random(100) < playerPtr->getActualSkillValue(CHARACTER_SKILL_UNARMED).level()) {
-                    GameUI_SetStatusBar(LSTR_FMT_S_EVADES_DAMAGE, playerPtr->name.c_str());
+                    GameUI_SetStatusBar(LSTR_FMT_S_EVADES_DAMAGE, playerPtr->name);
                     playerPtr->playReaction(SPEECH_AVOID_DAMAGE);
                     return;
                 }

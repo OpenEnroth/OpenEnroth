@@ -407,7 +407,7 @@ void prepareHouse(HOUSE_ID house) {
     if (proprietorId) {
         HouseNpcDesc desc;
         desc.type = HOUSE_PROPRIETOR;
-        desc.label = localization->FormatString(LSTR_FMT_CONVERSE_WITH_S, buildingTable[house].pProprieterName.c_str());
+        desc.label = localization->FormatString(LSTR_FMT_CONVERSE_WITH_S, buildingTable[house].pProprieterName);
         desc.icon = assets->getImage_ColorKey(fmt::format("npc{:03}", proprietorId));
 
         houseNpcs.push_back(desc);
@@ -419,7 +419,7 @@ void prepareHouse(HOUSE_ID house) {
             if (!(pNPCStats->pNewNPCData[i].uFlags & NPC_HIRED)) {
                 HouseNpcDesc desc;
                 desc.type = HOUSE_NPC;
-                desc.label = localization->FormatString(LSTR_FMT_CONVERSE_WITH_S, pNPCStats->pNewNPCData[i].pName.c_str());
+                desc.label = localization->FormatString(LSTR_FMT_CONVERSE_WITH_S, pNPCStats->pNewNPCData[i].pName);
                 desc.icon = assets->getImage_ColorKey(fmt::format("npc{:03}", pNPCStats->pNewNPCData[i].uPortraitID));
                 desc.npc = &pNPCStats->pNewNPCData[i];
 
@@ -443,7 +443,7 @@ void prepareHouse(HOUSE_ID house) {
 
             HouseNpcDesc desc;
             desc.type = HOUSE_TRANSITION;
-            desc.label = localization->FormatString(LSTR_FMT_ENTER_S, pMapStats->pInfos[id].pName.c_str());
+            desc.label = localization->FormatString(LSTR_FMT_ENTER_S, pMapStats->pInfos[id].pName);
             desc.icon = assets->getImage_ColorKey(pHouse_ExitPictures[static_cast<int>(id)]);
             desc.targetMapID = id;
 
@@ -864,7 +864,7 @@ void GUIWindow_House::houseNPCDialogue() {
         house_window.uFrameWidth = SIDE_TEXT_BOX_WIDTH;
         house_window.uFrameZ = SIDE_TEXT_BOX_POS_Z;
         if (pTransitionStrings[std::to_underlying(id)].empty()) { // TODO(captainurist): this is a weird access into pTransitionStrings, investigate & add docs
-            auto str = localization->FormatString(LSTR_FMT_ENTER_S, pMapStats->pInfos[id].pName.c_str());
+            auto str = localization->FormatString(LSTR_FMT_ENTER_S, pMapStats->pInfos[id].pName);
             house_window.DrawTitleText(pFontCreate, 0, (212 - pFontCreate->CalcTextHeight(str, house_window.uFrameWidth, 0)) / 2 + 101, colorTable.White, str, 3);
             return;
         }
@@ -1045,7 +1045,7 @@ bool GUIWindow_House::checkIfPlayerCanInteract() {
         window.uFrameWidth = SIDE_TEXT_BOX_WIDTH;
         window.uFrameZ = SIDE_TEXT_BOX_POS_Z;
 
-        std::string str = localization->FormatString(LSTR_FMT_S_IS_IN_NO_CODITION_TO_S, pParty->activeCharacter().name.c_str(), localization->GetString(LSTR_DO_ANYTHING));
+        std::string str = localization->FormatString(LSTR_FMT_S_IS_IN_NO_CODITION_TO_S, pParty->activeCharacter().name, localization->GetString(LSTR_DO_ANYTHING));
         window.DrawTitleText(pFontArrus, 0, (212 - pFontArrus->CalcTextHeight(str, window.uFrameWidth, 0)) / 2 + 101, ui_house_player_cant_interact_color, str, 3);
         return false;
     }
@@ -1284,7 +1284,7 @@ void GUIWindow_House::learnSkillsDialogue() {
 
     if (!haveLearnableSkills) {
         Character &player = pParty->activeCharacter();
-        std::string str = localization->FormatString(LSTR_FMT_SEEK_KNOWLEDGE_ELSEWHERE, player.name.c_str(), localization->GetClassName(player.classType));
+        std::string str = localization->FormatString(LSTR_FMT_SEEK_KNOWLEDGE_ELSEWHERE, player.name, localization->GetClassName(player.classType));
         str = str + "\n \n" + localization->GetString(LSTR_NO_FURTHER_OFFERS);
 
         int text_height = pFontArrus->CalcTextHeight(str, dialogue.uFrameWidth, 0);

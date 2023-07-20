@@ -1267,11 +1267,7 @@ void UI_Create() {
 
 
 std::string NameAndTitle(const std::string &name, const std::string &title) {
-    return localization->FormatString(
-        LSTR_FMT_S_THE_S,
-        name.c_str(),
-        title.c_str()
-    );
+    return localization->FormatString(LSTR_FMT_S_THE_S, name, title);
 }
 
 

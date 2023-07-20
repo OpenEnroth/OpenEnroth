@@ -83,7 +83,7 @@ void CreateWinnerCertificate() {
             colorTable.Black,
             localization->FormatString(
                 LSTR_FMT_S_THE_LEVEL_D_S,
-                pParty->pCharacters[i].name.c_str(),
+                pParty->pCharacters[i].name,
                 pParty->pCharacters[i].GetBaseLevel(),
                 localization->GetClassName(pParty->pCharacters[i].classType)),
             3);

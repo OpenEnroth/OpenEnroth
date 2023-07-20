@@ -126,7 +126,7 @@ void GUIWindow_Transport::mainDialogue() {
 
         if (routeActive && (!transportSchedule[schedule_id].uQuestBit || pParty->_questBits[transportSchedule[schedule_id].uQuestBit])) {
             int travel_time = getTravelTimeTransportDays(schedule_id);
-            optionsText.push_back(localization->FormatString(LSTR_FMT_D_DAYS_TO_S, travel_time, pMapStats->pInfos[transportSchedule[schedule_id].uMapInfoID].pName.c_str()));
+            optionsText.push_back(localization->FormatString(LSTR_FMT_D_DAYS_TO_S, travel_time, pMapStats->pInfos[transportSchedule[schedule_id].uMapInfoID].pName));
             hasActiveRoute = true;
         } else {
             optionsText.push_back("");
