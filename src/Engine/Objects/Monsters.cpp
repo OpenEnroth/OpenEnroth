@@ -5,14 +5,13 @@
 
 #include "Engine/ErrorHandling.h"
 #include "Engine/EngineIocContainer.h"
-#include "Engine/Snapshots/EntitySnapshots.h"
-#include "Engine/Snapshots/SnapshotSerialization.h"
 
 #include "../Tables/FrameTableInc.h"
 
 #include "Library/Logger/Logger.h"
 #include "Library/Serialization/Serialization.h"
 
+#include "Utility/Memory/Blob.h"
 #include "Utility/String.h"
 
 struct MonsterStats *pMonsterStats;

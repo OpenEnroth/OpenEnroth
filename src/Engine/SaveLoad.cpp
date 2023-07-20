@@ -20,7 +20,6 @@
 #include "Engine/Objects/SpriteObject.h"
 
 #include "Engine/Snapshots/CompositeSnapshots.h"
-#include "Engine/Snapshots/SnapshotSerialization.h"
 
 #include "GUI/GUIFont.h"
 #include "GUI/GUIWindow.h"
@@ -29,6 +28,7 @@
 
 #include "Media/Audio/AudioPlayer.h"
 
+#include "Library/Snapshots/SnapshotSerialization.h"
 #include "Library/Image/PCX.h"
 #include "Library/Compression/Compression.h"
 #include "Library/Logger/Logger.h"

@@ -161,37 +161,3 @@ void reconstruct(const std::array<T1, N> &src, IndexedArray<T2, L, H> *dst, deta
     for (size_t i = 0; auto index : tag.segment())
         reconstruct(src[i++], &(*dst)[index]);
 }
-
-
-//
-// IndexedBitset support.
-//
-
-template<class T, size_t N, auto L, auto H>
-void snapshot(const IndexedBitset<L, H> &src, std::array<T, N> *dst) {
-    assert(dst->size() * sizeof(T) * 8 == src.size());
-    size_t i = 1, j = 0;
-    while (i < src.size()) {
-        T val = 0;
-        // Bits inside each array element indexed backwards
-        for (size_t k = 0; k < (sizeof(T) * 8); k++, i++) {
-            val |= src[i] << ((sizeof(T) * 8) - k - 1);
-        }
-        (*dst)[j] = val;
-        j++;
-    }
-}
-
-template<class T, size_t N, auto L, auto H>
-void reconstruct(const std::array<T, N> &src, IndexedBitset<L, H> *dst) {
-    assert(dst->size() == src.size() * sizeof(T) * 8);
-    size_t i = 1, j = 0;
-    while (i < dst->size()) {
-        T val = src[j];
-        // Bits inside each array element indexed backwards
-        for (size_t k = 0; k < (sizeof(T) * 8); k++, i++) {
-            dst->set(i, !!(val & (1 << ((sizeof(T) * 8) - k - 1))));
-        }
-        j++;
-    }
-}

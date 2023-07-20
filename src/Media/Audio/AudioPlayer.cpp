@@ -15,7 +15,6 @@
 #include "Engine/Spells/Spells.h"
 #include "Engine/Party.h"
 #include "Engine/Snapshots/EntitySnapshots.h"
-#include "Engine/Snapshots/SnapshotSerialization.h"
 #include "Engine/Engine.h"
 #include "Engine/MapInfo.h"
 
@@ -23,6 +22,7 @@
 
 #include "GUI/GUIWindow.h"
 
+#include "Library/Snapshots/SnapshotSerialization.h"
 #include "Library/Compression/Compression.h"
 #include "Library/Logger/Logger.h"
 

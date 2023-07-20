@@ -16,8 +16,6 @@
 #include "Engine/Objects/SpriteObject.h"
 #include "Engine/Graphics/Sprites.h"
 #include "Engine/Tables/ItemTable.h"
-#include "Engine/Snapshots/EntitySnapshots.h"
-#include "Engine/Snapshots/SnapshotSerialization.h"
 #include "Engine/OurMath.h"
 #include "Engine/Party.h"
 #include "Engine/MapInfo.h"
