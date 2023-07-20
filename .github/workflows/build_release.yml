@@ -1,4 +1,4 @@
-name: Bump nightly release tag
+name: Build Release
 
 on:
   schedule:
