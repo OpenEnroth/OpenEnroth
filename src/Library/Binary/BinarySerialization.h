@@ -3,6 +3,7 @@
 #include "ContainerSerialization.h"
 #include "BlobSerialization.h"
 #include "MemCopySerialization.h"
+#include "BinaryConcepts.h"
 
 namespace detail {
 struct BlobSerializer {

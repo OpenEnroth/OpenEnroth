@@ -66,7 +66,7 @@ struct IndoorDelta_MM7 {
 void snapshot(const IndoorLocation &src, IndoorDelta_MM7 *dst);
 void reconstruct(const IndoorDelta_MM7 &src, IndoorLocation *dst);
 void serialize(const IndoorDelta_MM7 &src, OutputStream *dst);
-void deserialize(InputStream &src, IndoorDelta_MM7 *dst, const IndoorLocation_MM7 &ctx);
+void deserialize(InputStream &src, IndoorDelta_MM7 *dst, ContextTag<IndoorLocation_MM7> ctx);
 
 
 struct BSPModelExtras_MM7 {
@@ -122,7 +122,7 @@ struct OutdoorDelta_MM7 {
 void snapshot(const OutdoorLocation &src, OutdoorDelta_MM7 *dst);
 void reconstruct(const OutdoorDelta_MM7 &src, OutdoorLocation *dst);
 void serialize(const OutdoorDelta_MM7 &src, OutputStream *dst);
-void deserialize(InputStream &src, OutdoorDelta_MM7 *dst, const OutdoorLocation_MM7 &ctx);
+void deserialize(InputStream &src, OutdoorDelta_MM7 *dst, ContextTag<OutdoorLocation_MM7> ctx);
 
 
 struct SaveGame_MM7 {

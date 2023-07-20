@@ -113,14 +113,14 @@ void reconstruct(const std::array<T1, N1> &src, std::array<T2, N2> *dst, const T
 // IndexedArray support
 //
 
-template<class T1, size_t N, class T2, auto L, auto H, class... Tag> requires (sizeof...(Tag) <= 1)
+template<class T1, size_t N, class T2, auto L, auto H, class... Tag>
 void snapshot(const IndexedArray<T2, L, H> &src, std::array<T1, N> *dst, const Tag &... tag) {
     static_assert(IndexedArray<T2, L, H>::SIZE == N, "Expected arrays of equal size.");
     for (size_t i = 0; auto index : src.indices())
         snapshot(src[index], &(*dst)[i++], tag...);
 }
 
-template<class T1, size_t N, class T2, auto L, auto H, class... Tag> requires (sizeof...(Tag) <= 1)
+template<class T1, size_t N, class T2, auto L, auto H, class... Tag>
 void reconstruct(const std::array<T1, N> &src, IndexedArray<T2, L, H> *dst, const Tag &... tag) {
     static_assert(IndexedArray<T2, L, H>::SIZE == N, "Expected arrays of equal size.");
     for (size_t i = 0; auto index : dst->indices())

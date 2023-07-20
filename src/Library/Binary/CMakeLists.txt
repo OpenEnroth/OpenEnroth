@@ -4,8 +4,10 @@ set(LIBRARY_BINARY_SOURCES
         BinaryExceptions.cpp)
 
 set(LIBRARY_BINARY_HEADERS
+        BinaryConcepts.h
         BinaryExceptions.h
         BinarySerialization.h
+        BinaryTags.h
         BlobSerialization.h
         ContainerSerialization.h
         MemCopySerialization.h)
