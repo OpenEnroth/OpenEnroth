@@ -290,16 +290,16 @@ void serialize(const IndoorDelta_MM7 &src, OutputStream *dst) {
     serialize(src.locationTime, dst);
 }
 
-void deserialize(InputStream &src, IndoorDelta_MM7 *dst, const IndoorLocation_MM7 &ctx) {
+void deserialize(InputStream &src, IndoorDelta_MM7 *dst, ContextTag<IndoorLocation_MM7> ctx) {
     deserialize(src, &dst->header);
     deserialize(src, &dst->visibleOutlines);
-    deserialize(src, &dst->faceAttributes, presized(ctx.faces.size()));
-    deserialize(src, &dst->decorationFlags, presized(ctx.decorations.size()));
+    deserialize(src, &dst->faceAttributes, presized(ctx->faces.size()));
+    deserialize(src, &dst->decorationFlags, presized(ctx->decorations.size()));
     deserialize(src, &dst->actors);
     deserialize(src, &dst->spriteObjects);
     deserialize(src, &dst->chests);
-    deserialize(src, &dst->doors, presized(ctx.doorCount));
-    deserialize(src, &dst->doorsData, presized(ctx.header.uDoors_ddata_Size / sizeof(int16_t)));
+    deserialize(src, &dst->doors, presized(ctx->doorCount));
+    deserialize(src, &dst->doorsData, presized(ctx->header.uDoors_ddata_Size / sizeof(int16_t)));
     deserialize(src, &dst->eventVariables);
     deserialize(src, &dst->locationTime);
 }
@@ -505,16 +505,16 @@ void serialize(const OutdoorDelta_MM7 &src, OutputStream *dst) {
     serialize(src.locationTime, dst);
 }
 
-void deserialize(InputStream &src, OutdoorDelta_MM7 *dst, const OutdoorLocation_MM7 &ctx) {
+void deserialize(InputStream &src, OutdoorDelta_MM7 *dst, ContextTag<OutdoorLocation_MM7> ctx) {
     size_t totalFaces = 0;
-    for (const BSPModelData_MM7 &model : ctx.models)
+    for (const BSPModelData_MM7 &model : ctx->models)
         totalFaces += model.uNumFaces;
 
     deserialize(src, &dst->header);
     deserialize(src, &dst->fullyRevealedCells);
     deserialize(src, &dst->partiallyRevealedCells);
     deserialize(src, &dst->faceAttributes, presized(totalFaces));
-    deserialize(src, &dst->decorationFlags, presized(ctx.decorations.size()));
+    deserialize(src, &dst->decorationFlags, presized(ctx->decorations.size()));
     deserialize(src, &dst->actors);
     deserialize(src, &dst->spriteObjects);
     deserialize(src, &dst->chests);
