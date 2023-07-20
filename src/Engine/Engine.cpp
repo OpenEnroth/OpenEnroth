@@ -1209,15 +1209,6 @@ unsigned int GetGravityStrength() {
     return engine->config->gameplay.Gravity.value();
 }
 
-//----- (00448B45) --------------------------------------------------------
-void GameUI_StatusBar_Update(bool force_hide) {
-    if (force_hide ||
-        game_ui_status_bar_event_string_time_left &&
-            platform->tickCount() >= game_ui_status_bar_event_string_time_left && !pEventTimer->bPaused) {
-        game_ui_status_bar_event_string_time_left = 0;
-    }
-}
-
 void sub_44861E_set_texture_indoor(unsigned int uFaceCog,
                                    const std::string &filename) {
     for (uint i = 1; i < pIndoor->pFaceExtras.size(); ++i) {

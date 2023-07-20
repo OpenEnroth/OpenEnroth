@@ -21,9 +21,26 @@ void GameUI_StatusBar_Set(const std::string &str) {
     }
 }
 
+const std::string &GameUI_StatusBar_Get() {
+    if (game_ui_status_bar_event_string_time_left) {
+        return game_ui_status_bar_event_string;
+    } else {
+        return game_ui_status_bar_string;
+    }
+}
+
 void GameUI_StatusBar_Clear() {
     game_ui_status_bar_string.clear();
     GameUI_StatusBar_ClearEventString();
+}
+
+//----- (00448B45) --------------------------------------------------------
+void GameUI_StatusBar_Update(bool force_hide) {
+    if (force_hide ||
+        game_ui_status_bar_event_string_time_left &&
+        platform->tickCount() >= game_ui_status_bar_event_string_time_left && !pEventTimer->bPaused) {
+        game_ui_status_bar_event_string_time_left = 0;
+    }
 }
 
 void GameUI_StatusBar_OnEvent_Internal(const std::string &str, unsigned int ms) {
@@ -72,13 +89,7 @@ void GameUI_StatusBar_DrawForced() {
 void GameUI_StatusBar_Draw() {
     render->DrawTextureNew(0, 352 / 480.0f, game_ui_statusbar);
 
-    std::string status;
-    if (game_ui_status_bar_event_string_time_left) {
-        status = game_ui_status_bar_event_string;
-    } else {
-        status = game_ui_status_bar_string;
-    }
-
+    const std::string &status = GameUI_StatusBar_Get();
     if (status.length() > 0) {
         pPrimaryWindow->DrawText(pFontLucida, {pFontLucida->AlignText_Center(450, status) + 11, 357}, uGameUIFontMain, status, 0, uGameUIFontShadow);
     }

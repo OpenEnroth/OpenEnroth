@@ -174,7 +174,6 @@ void MM7Initialization();
 void PrepareToLoadODM(bool bLoading, struct ODMRenderParams *a2);
 void InitializeTurnBasedAnimations(void *);
 unsigned int GetGravityStrength();
-void GameUI_StatusBar_Update(bool force_hide = false);
 
 /**
  * @offset 0x44861E
