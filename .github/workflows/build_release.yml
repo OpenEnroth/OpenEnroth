@@ -43,6 +43,11 @@ jobs:
             ref: "refs/tags/nightly",
             sha: context.sha
           })
+          
+    - name: Sleep for 10 seconds #github api takes a second to catch up sometimes...
+      run: sleep 10s
+      shell: bash
+
     - name: Get latest release
       id: latest_release
       uses: kaliber5/action-get-release@v1
