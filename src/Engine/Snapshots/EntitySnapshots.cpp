@@ -31,12 +31,11 @@
 #include "GUI/GUIFont.h"
 
 #include "Library/Color/ColorTable.h"
+#include "Library/Snapshots/CommonSnapshots.h"
 
 #include "Utility/Memory/MemSet.h"
 #include "Utility/String.h"
 #include "Utility/MapAccess.h"
-
-#include "CommonSnapshots.h"
 
 /**
  * Mapping used for beacon map id serialization.
@@ -139,6 +138,37 @@ static void snapshot(const CombinedSkillValue &src, uint16_t *dst) {
 
 static void reconstruct(const uint16_t &src, CombinedSkillValue *dst) {
     *dst = CombinedSkillValue::fromJoined(src);
+}
+
+// Note: IndexedBitset snapshots are very MM-specific, so they stay here instead of going to Library/Snapshots.
+
+template<class T, size_t N, auto L, auto H>
+void snapshot(const IndexedBitset<L, H> &src, std::array<T, N> *dst) {
+    assert(dst->size() * sizeof(T) * 8 == src.size());
+    size_t i = 1, j = 0;
+    while (i < src.size()) {
+        T val = 0;
+        // Bits inside each array element indexed backwards
+        for (size_t k = 0; k < (sizeof(T) * 8); k++, i++) {
+            val |= src[i] << ((sizeof(T) * 8) - k - 1);
+        }
+        (*dst)[j] = val;
+        j++;
+    }
+}
+
+template<class T, size_t N, auto L, auto H>
+void reconstruct(const std::array<T, N> &src, IndexedBitset<L, H> *dst) {
+    assert(dst->size() == src.size() * sizeof(T) * 8);
+    size_t i = 1, j = 0;
+    while (i < dst->size()) {
+        T val = src[j];
+        // Bits inside each array element indexed backwards
+        for (size_t k = 0; k < (sizeof(T) * 8); k++, i++) {
+            dst->set(i, !!(val & (1 << ((sizeof(T) * 8) - k - 1))));
+        }
+        j++;
+    }
 }
 
 void reconstruct(const SpriteFrame_MM7 &src, SpriteFrame *dst) {

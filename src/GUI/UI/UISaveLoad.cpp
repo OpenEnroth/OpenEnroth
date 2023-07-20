@@ -12,7 +12,6 @@
 #include "Engine/Graphics/Viewport.h"
 #include "Engine/Graphics/Image.h"
 #include "Engine/Snapshots/EntitySnapshots.h"
-#include "Engine/Snapshots/SnapshotSerialization.h"
 #include "Engine/Localization.h"
 #include "Engine/LOD.h"
 #include "Engine/MapInfo.h"
@@ -26,6 +25,8 @@
 #include "GUI/GUIButton.h"
 #include "GUI/GUIFont.h"
 #include "GUI/GUIMessageQueue.h"
+
+#include "Library/Snapshots/SnapshotSerialization.h"
 
 #include "Utility/DataPath.h"
 

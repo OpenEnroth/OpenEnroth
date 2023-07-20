@@ -4,16 +4,10 @@
 #include "Engine/Party.h"
 #include "Engine/Time.h"
 #include "Engine/mm7_data.h"
-
 #include "Engine/Graphics/IRender.h"
-
 #include "Engine/Tables/FrameTableInc.h"
 #include "Engine/Tables/IconFrameTable.h"
-
 #include "Engine/TurnEngine/TurnEngine.h"
-
-#include "Engine/Snapshots/EntitySnapshots.h"
-#include "Engine/Snapshots/SnapshotSerialization.h"
 
 #include "GUI/GUIWindow.h"
 

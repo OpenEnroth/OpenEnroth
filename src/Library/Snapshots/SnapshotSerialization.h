@@ -6,11 +6,9 @@
 #include "Library/Binary/BinarySerialization.h"
 
 class InputStream;
-
 namespace detail {
 template<class Via>
 struct AppendViaTag {};
-
 template<class Via>
 struct ViaTag {};
 } // namespace detail
@@ -68,7 +66,7 @@ detail::ViaTag<Via> via() {
 }
 
 template<RegularBinarySource Src, class Dst, class Via>
-void deserialize(Src &&src, Dst *dst, const detail::ViaTag<Via> &) {
+void deserialize(Src &&src, Dst *dst, detail::ViaTag<Via>) {
     static_assert(!std::is_same_v<Via, Dst>, "Intermediate and target types must be different.");
 
     Via tmp;

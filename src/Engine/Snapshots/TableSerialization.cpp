@@ -11,7 +11,8 @@
 #include "Engine/Graphics/Sprites.h"
 #include "Engine/Graphics/TextureFrameTable.h"
 
-#include "SnapshotSerialization.h"
+#include "Library/Snapshots/SnapshotSerialization.h"
+
 #include "EntitySnapshots.h"
 #include "CompositeSnapshots.h"
 

@@ -2,9 +2,6 @@
 
 #include "Engine/Graphics/Sprites.h"
 
-#include "Engine/Snapshots/EntitySnapshots.h"
-#include "Engine/Snapshots/SnapshotSerialization.h"
-
 struct ObjectList *pObjectList;
 
 unsigned int ObjectList::ObjectIDByItemID(unsigned int uItemID) {
