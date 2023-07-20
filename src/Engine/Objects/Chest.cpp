@@ -518,10 +518,7 @@ void Chest::GrabItem(bool all) {  // new fucntion to grab items from chest using
             if (pParty->hasActiveCharacter() && (InventSlot = pParty->activeCharacter().AddItem(-1, chestitem.uItemID)) != 0) {  // can place
                 memcpy(&pParty->activeCharacter().pInventoryItemList[InventSlot - 1], &chestitem, 0x24u);
                 grabcount++;
-                GameUI_SetStatusBar(
-                    LSTR_FMT_YOU_FOUND_ITEM,
-                    pItemTable->pItems[chestitem.uItemID].pUnidentifiedName.c_str()
-                );
+                GameUI_SetStatusBar(LSTR_FMT_YOU_FOUND_ITEM, pItemTable->pItems[chestitem.uItemID].pUnidentifiedName);
             } else {  // no room so set as holding item
                 pParty->setHoldingItem(&chestitem);
                 RemoveItemAtChestIndex(loop);

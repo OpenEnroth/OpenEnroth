@@ -912,8 +912,7 @@ void GameUI_WritePointedObjectStatusString() {
                 } else {
                     GameUI_StatusBar_Set(localization->FormatString(
                         LSTR_FMT_GET_S,
-                        pSpriteObjects[pickedObjectID].containing_item.GetDisplayName()
-                        .c_str()));
+                        pSpriteObjects[pickedObjectID].containing_item.GetDisplayName()));
                 }  // intentional fallthrough
             } else if (PID_TYPE(pickedObject.object_pid) == OBJECT_Decoration) {
                 if (!pLevelDecorations[pickedObjectID].uEventID) {

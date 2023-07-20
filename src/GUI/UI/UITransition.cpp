@@ -100,13 +100,13 @@ GUIWindow_Transition::GUIWindow_Transition(HOUSE_ID transitionHouse, uint exit_p
             v15 = pCurrentMapName;
         }
         if (pMapStats->GetMapInfo(v15) != MAP_INVALID) {
-            transition_button_label = localization->FormatString(LSTR_FMT_ENTER_S, pMapStats->pInfos[pMapStats->GetMapInfo(v15)].pName.c_str());
+            transition_button_label = localization->FormatString(LSTR_FMT_ENTER_S, pMapStats->pInfos[pMapStats->GetMapInfo(v15)].pName);
             if (uCurrentlyLoadedLevelType == LEVEL_INDOOR && pParty->hasActiveCharacter() && pParty->GetRedOrYellowAlert())
                 pParty->activeCharacter().playReaction(SPEECH_LEAVE_DUNGEON);
             if (IndoorLocation::GetLocationIndex(locationName))
                 uCurrentHouse_Animation = IndoorLocation::GetLocationIndex(locationName);
         } else {
-            transition_button_label = localization->FormatString(LSTR_FMT_ENTER_S, pMapStats->pInfos[pMapStats->GetMapInfo(v15)].pName.c_str());
+            transition_button_label = localization->FormatString(LSTR_FMT_ENTER_S, pMapStats->pInfos[pMapStats->GetMapInfo(v15)].pName);
             if (transitionHouse != HOUSE_INVALID && pAnimatedRooms[buildingTable[transitionHouse].uAnimationID].uRoomSoundId)
                 playHouseSound(transitionHouse, HOUSE_SOUND_GENERAL_GREETING);
             if (uCurrentlyLoadedLevelType == LEVEL_INDOOR && pParty->hasActiveCharacter() && pParty->GetRedOrYellowAlert())
@@ -116,7 +116,7 @@ GUIWindow_Transition::GUIWindow_Transition(HOUSE_ID transitionHouse, uint exit_p
         }
     } else if (!IndoorLocation::GetLocationIndex(locationName)) { // transfer to outdoors - no special message
         if (pMapStats->GetMapInfo(pCurrentMapName) != MAP_INVALID) {
-            transition_button_label = localization->FormatString(LSTR_FMT_LEAVE_S, pMapStats->pInfos[pMapStats->GetMapInfo(pCurrentMapName)].pName.c_str());
+            transition_button_label = localization->FormatString(LSTR_FMT_LEAVE_S, pMapStats->pInfos[pMapStats->GetMapInfo(pCurrentMapName)].pName);
             if (transitionHouse != HOUSE_INVALID && pAnimatedRooms[buildingTable[transitionHouse].uAnimationID].uRoomSoundId)
                 playHouseSound(transitionHouse, HOUSE_SOUND_GENERAL_GREETING);
             if (uCurrentlyLoadedLevelType == LEVEL_INDOOR && pParty->hasActiveCharacter() && pParty->GetRedOrYellowAlert())
@@ -152,7 +152,7 @@ GUIWindow_Travel::GUIWindow_Travel() : GUIWindow(WINDOW_ChangeLocation, {0, 0}, 
 
     transition_ui_icon = assets->getImage_Solid("outside");
     if (pMapStats->GetMapInfo(pCurrentMapName) != MAP_INVALID) {
-        transition_button_label = localization->FormatString( LSTR_FMT_LEAVE_S, pMapStats->pInfos[pMapStats->GetMapInfo(pCurrentMapName)].pName.c_str());
+        transition_button_label = localization->FormatString( LSTR_FMT_LEAVE_S, pMapStats->pInfos[pMapStats->GetMapInfo(pCurrentMapName)].pName);
     } else {
         transition_button_label = localization->GetString(LSTR_DIALOGUE_EXIT);
     }
@@ -189,12 +189,12 @@ void GUIWindow_Travel::Update() {
 
         std::string str;
         if (getTravelTime() == 1) {
-            str = localization->FormatString(LSTR_FMT_IT_TAKES_D_DAY_TO_S, 1, pMapStats->pInfos[pMapStats->GetMapInfo(pDestinationMapName)].pName.c_str());
+            str = localization->FormatString(LSTR_FMT_IT_TAKES_D_DAY_TO_S, 1, pMapStats->pInfos[pMapStats->GetMapInfo(pDestinationMapName)].pName);
         } else {
-            str = localization->FormatString(LSTR_FMT_IT_TAKES_D_DAYS_TO_S, getTravelTime(), pMapStats->pInfos[pMapStats->GetMapInfo(pDestinationMapName)].pName.c_str());
+            str = localization->FormatString(LSTR_FMT_IT_TAKES_D_DAYS_TO_S, getTravelTime(), pMapStats->pInfos[pMapStats->GetMapInfo(pDestinationMapName)].pName);
         }
         str += "\n \n";
-        str += localization->FormatString(LSTR_FMT_DO_YOU_WISH_TO_LEAVE_S, pMapStats->pInfos[pMapStats->GetMapInfo(pCurrentMapName)].pName.c_str());
+        str += localization->FormatString(LSTR_FMT_DO_YOU_WISH_TO_LEAVE_S, pMapStats->pInfos[pMapStats->GetMapInfo(pCurrentMapName)].pName);
 
         travel_window.DrawTitleText(pFontCreate, 0, (212 - pFontCreate->CalcTextHeight(str, travel_window.uFrameWidth, 0)) / 2 + 101, colorTable.White, str, 3);
     }
@@ -226,7 +226,7 @@ void GUIWindow_Transition::Update() {
         unsigned int vertMargin = (212 - pFontCreate->CalcTextHeight(pTransitionStrings[uCurrentHouse_Animation], transition_window.uFrameWidth, 0)) / 2 + 101;
         transition_window.DrawTitleText(pFontCreate, 0, vertMargin, colorTable.White, pTransitionStrings[uCurrentHouse_Animation], 3);
     } else if (map_id != MAP_INVALID) {
-        std::string str = localization->FormatString(LSTR_FMT_DO_YOU_WISH_TO_LEAVE_S_2, pMapStats->pInfos[map_id].pName.c_str());
+        std::string str = localization->FormatString(LSTR_FMT_DO_YOU_WISH_TO_LEAVE_S_2, pMapStats->pInfos[map_id].pName);
         unsigned int vertMargin = (212 - pFontCreate->CalcTextHeight(str, transition_window.uFrameWidth, 0)) / 2 + 101;
         transition_window.DrawTitleText(pFontCreate, 0, vertMargin, colorTable.White, str, 3);
     } else {

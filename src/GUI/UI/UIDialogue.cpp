@@ -58,7 +58,7 @@ void GameUI_InitializeDialogue(Actor *actor, int bPlayerSaysHello) {
 
     HouseNpcDesc desc;
     desc.type = HOUSE_NPC;
-    desc.label = localization->FormatString(LSTR_FMT_CONVERSE_WITH_S, pNPCInfo->pName.c_str());
+    desc.label = localization->FormatString(LSTR_FMT_CONVERSE_WITH_S, pNPCInfo->pName);
     desc.icon = assets->getImage_ColorKey(fmt::format("npc{:03}", pNPCInfo->uPortraitID));
     desc.npc = pNPCInfo;
 
@@ -171,7 +171,7 @@ GUIWindow_Dialogue::GUIWindow_Dialogue(Pointi position, Sizei dimensions, Window
                 if (speakingNPC->Hired()) {
                     CreateButton({480, 130 + text_line_height}, {140, text_line_height}, 1, 0,
                         UIMSG_SelectNPCDialogueOption, DIALOGUE_HIRE_FIRE, Io::InputAction::Invalid,
-                        localization->FormatString(LSTR_HIRE_RELEASE, speakingNPC->pName.c_str())
+                        localization->FormatString(LSTR_HIRE_RELEASE, speakingNPC->pName)
                     );
                 } else {
                     CreateButton({480, 130 + text_line_height}, {140, text_line_height}, 1, 0,
@@ -254,8 +254,7 @@ void GUIWindow_Dialogue::Update() {
             break;
 
         case DIALOGUE_ARENA_REWARD:
-            dialogue_string = localization->FormatString(
-                LSTR_ARENA_REWARD, gold_transaction_amount);
+            dialogue_string = localization->FormatString(LSTR_ARENA_REWARD, gold_transaction_amount);
             break;
 
         case DIALOGUE_ARENA_ALREADY_WON:
@@ -384,8 +383,7 @@ void GUIWindow_Dialogue::Update() {
             }
         } else if (pButton->msg_param == DIALOGUE_13_hiring_related) {
             if (pNPC->Hired()) {
-                pButton->sLabel = localization->FormatString(
-                    LSTR_HIRE_RELEASE, pNPC->pName.c_str());
+                pButton->sLabel = localization->FormatString(LSTR_HIRE_RELEASE, pNPC->pName);
             } else {
                 pButton->sLabel = localization->GetString(LSTR_JOIN);
             }

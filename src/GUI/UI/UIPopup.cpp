@@ -353,7 +353,7 @@ void GameUI_DrawItemInfo(struct ItemGen *inspect_item) {
 
     text[0] = localization->FormatString(
         LSTR_FMT_TYPE_S,
-        pItemTable->pItems[inspect_item->uItemID].pUnidentifiedName.c_str());
+        pItemTable->pItems[inspect_item->uItemID].pUnidentifiedName);
 
     switch (inspect_item->GetItemEquipType()) {
         case EQUIP_SINGLE_HANDED:
@@ -1738,7 +1738,7 @@ void GameUI_DrawNPCPopup(void *_this) {  // PopupWindowForBenefitAndJoinText
 void UI_OnMouseRightClick(int mouse_x, int mouse_y) {
     Pid v5;                  // esi@62
     // GUIButton *pButton;      // esi@84
-    const char *pStr;        // edi@85
+    std::string pStr;        // edi@85
     // const char *pHint;       // edx@113
     GUIWindow popup_window;  // [sp+4h] [bp-74h]@32
 
@@ -1783,7 +1783,7 @@ void UI_OnMouseRightClick(int mouse_x, int mouse_y) {
                 static std::string hint_reference;
                 hint_reference = localization->FormatString(
                     LSTR_FMT_S_IS_IN_NO_CODITION_TO_S,
-                    pParty->activeCharacter().name.c_str(),
+                    pParty->activeCharacter().name,
                     localization->GetString(LSTR_IDENTIFY_ITEMS)
                 );
 
@@ -1940,7 +1940,7 @@ void UI_OnMouseRightClick(int mouse_x, int mouse_y) {
         }
         case SCREEN_PARTY_CREATION: {
             popup_window.sHint.clear();
-            pStr = 0;
+            pStr = "";
             for (GUIButton *pButton : pGUIWindow_CurrentMenu->vButtons) {
                 if (pButton->uButtonType == 1 && pButton->uButtonType != 3 &&
                     (signed int)pX > (signed int)pButton->uX &&
@@ -1949,21 +1949,17 @@ void UI_OnMouseRightClick(int mouse_x, int mouse_y) {
                     (signed int)pY < (signed int)pButton->uW) {
                     switch (pButton->msg) {
                         case UIMSG_0:  // stats info
-                            popup_window.sHint = localization->GetAttributeDescription(
-                                (int)pButton->msg_param % 7);
-                            pStr = localization->GetAttirubteName(
-                                (int)pButton->msg_param % 7);
+                            popup_window.sHint = localization->GetAttributeDescription(pButton->msg_param % 7);
+                            pStr = localization->GetAttirubteName(pButton->msg_param % 7);
                             break;
                         case UIMSG_PlayerCreationClickPlus:  // Plus button info
                             pStr = localization->GetString(LSTR_ADD);
-                            popup_window.sHint = localization->GetString(
-                                LSTR_SKILL_INCREASE_HINT);
+                            popup_window.sHint = localization->GetString(LSTR_SKILL_INCREASE_HINT);
                             break;
                         case UIMSG_PlayerCreationClickMinus:  // Minus button
                                                               // info
                             pStr = localization->GetString(LSTR_SUBTRACT);
-                            popup_window.sHint = localization->GetString(
-                                LSTR_SKILL_DECREASE_HINT);
+                            popup_window.sHint = localization->GetString(LSTR_SKILL_DECREASE_HINT);
                             break;
                         case UIMSG_PlayerCreationSelectActiveSkill:  // Available
                                                                      // skill
@@ -2001,7 +1997,7 @@ void UI_OnMouseRightClick(int mouse_x, int mouse_y) {
                             break;
                         case UIMSG_PlayerCreation_SelectAttribute:  // Character
                                                                     // info
-                            pStr = pParty->pCharacters[pButton->msg_param].name.c_str();
+                            pStr = pParty->pCharacters[pButton->msg_param].name;
                             popup_window
                                 .sHint = localization->GetClassDescription(
                                 pParty->pCharacters[pButton->msg_param].classType);
@@ -2146,7 +2142,7 @@ void Inventory_ItemPopupAndAlchemy() {
     // check character condition
     if (!pParty->activeCharacter().CanAct()) {
         static std::string hint_reference;
-        hint_reference = localization->FormatString(LSTR_FMT_S_IS_IN_NO_CODITION_TO_S, pParty->activeCharacter().name.c_str(),
+        hint_reference = localization->FormatString(LSTR_FMT_S_IS_IN_NO_CODITION_TO_S, pParty->activeCharacter().name,
                                                     localization->GetString(LSTR_IDENTIFY_ITEMS));
 
         GUIWindow message_window;

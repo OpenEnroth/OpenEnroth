@@ -1458,7 +1458,7 @@ void Game::processQueuedMessages() {
 
             case UIMSG_HintSelectRemoveQuickSpellBtn: {
                 if (spellbookSelectedSpell != SPELL_NONE && spellbookSelectedSpell != pParty->activeCharacter().uQuickSpell) {
-                    GameUI_StatusBar_Set(localization->FormatString(LSTR_FMT_SET_S_AS_READY_SPELL, pSpellStats->pInfos[spellbookSelectedSpell].name.c_str()));
+                    GameUI_StatusBar_Set(localization->FormatString(LSTR_FMT_SET_S_AS_READY_SPELL, pSpellStats->pInfos[spellbookSelectedSpell].name));
                 } else {
                     if (pParty->activeCharacter().uQuickSpell != SPELL_NONE)
                         GameUI_StatusBar_Set(localization->GetString(LSTR_CLICK_TO_REMOVE_QUICKSPELL));
@@ -1478,9 +1478,9 @@ void Game::processQueuedMessages() {
                 }
                 SPELL_TYPE selectedSpell = static_cast<SPELL_TYPE>(11 * pParty->activeCharacter().lastOpenedSpellbookPage + uMessageParam + 1);
                 if (spellbookSelectedSpell == selectedSpell) {
-                    GameUI_StatusBar_Set(localization->FormatString(LSTR_CAST_S, pSpellStats->pInfos[selectedSpell].name.c_str()));
+                    GameUI_StatusBar_Set(localization->FormatString(LSTR_CAST_S, pSpellStats->pInfos[selectedSpell].name));
                 } else {
-                    GameUI_StatusBar_Set(localization->FormatString(LSTR_SELECT_S, pSpellStats->pInfos[selectedSpell].name.c_str()));
+                    GameUI_StatusBar_Set(localization->FormatString(LSTR_SELECT_S, pSpellStats->pInfos[selectedSpell].name));
                 }
                 continue;
             }
@@ -2078,9 +2078,9 @@ void Game::onPressSpace() {
 }
 
 void Game::gameLoop() {
-    const char *pLocationName;  // [sp-4h] [bp-68h]@74
+    std::string pLocationName;  // [sp-4h] [bp-68h]@74
     bool bLoading;              // [sp+10h] [bp-54h]@1
-    char Source[64];            // [sp+44h] [bp-20h]@76
+    std::string Source;            // [sp+44h] [bp-20h]@76
 
     bLoading = sCurrentMenuID == MENU_LoadingProcInMainMenu;
     SetCurrentMenuID(MENU_NONE);
@@ -2239,9 +2239,9 @@ void Game::gameLoop() {
                 } else {
                     pParty->pos = Vec3i(12552, 1816, 193); // respawn on emerald isle
                     pParty->_viewYaw = 512;
-                    pLocationName = _config->gameplay.StartingMap.value().c_str();
+                    pLocationName = _config->gameplay.StartingMap.value();
                 }
-                strcpy(Source, pLocationName);
+                Source = pLocationName;
                 pParty->uFallStartZ = pParty->pos.z;
                 pParty->_viewPitch = 0;
                 pParty->speed = Vec3i();

@@ -86,7 +86,7 @@ void GUIWindow_Training::trainDialogue() {
                 }
                 pParty->activeCharacter().playReaction(SPEECH_LEVEL_UP);
 
-                GameUI_SetStatusBar(LSTR_FMT_S_NOW_LEVEL_D, pParty->activeCharacter().name.c_str(),
+                GameUI_SetStatusBar(LSTR_FMT_S_NOW_LEVEL_D, pParty->activeCharacter().name,
                                     pParty->activeCharacter().uLevel, pParty->activeCharacter().uLevel / 10 + 5);
 
                 engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 1, 0);
