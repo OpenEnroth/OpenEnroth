@@ -532,10 +532,10 @@ Blob LOD::File::LoadCompressedTexture(const std::string &pContainer) {
     if (fread(&DstBuf, sizeof(TextureHeader), 1, File) != 1)
         return Blob();
 
-    if (DstBuf.uDecompressedSize) {
-        return zlib::Uncompress(Blob::read(File, DstBuf.uTextureSize), DstBuf.uDecompressedSize);
+    if (DstBuf.decompressedSize) {
+        return zlib::Uncompress(Blob::read(File, DstBuf.dataSize), DstBuf.decompressedSize);
     } else {
-        return Blob::read(File, DstBuf.uTextureSize);
+        return Blob::read(File, DstBuf.dataSize);
     }
 }
 
