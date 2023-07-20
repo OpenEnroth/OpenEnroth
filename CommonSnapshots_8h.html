@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.9.5"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>OpenEnroth: src/Engine/Snapshots/CommonSnapshots.h File Reference</title>
+<title>OpenEnroth: src/Library/Snapshots/CommonSnapshots.h File Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;0d0acc9</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;7e08331</span>
    </div>
   </td>
  </tr>
@@ -69,7 +69,7 @@ $(function() {
 
 <div id="nav-path" class="navpath">
   <ul>
-<li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li><li class="navelem"><a class="el" href="dir_3072bc1f55ed1280fe4fbe6b21c78379.html">Engine</a></li><li class="navelem"><a class="el" href="dir_77799ea05893c550e88723bafc2987d1.html">Snapshots</a></li>  </ul>
+<li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li><li class="navelem"><a class="el" href="dir_f741251061e5c7c7ed48ab45c3348f11.html">Library</a></li><li class="navelem"><a class="el" href="dir_9f35b090d1cb7677cc8cd0edb4d30c12.html">Snapshots</a></li>  </ul>
 </div>
 </div><!-- top -->
 <div class="header">
@@ -156,12 +156,6 @@ requires (!std::is_same_v&lt;T1, T2&gt; &amp;&amp; sizeof...(Tag) &lt;= 1)</td><
 <tr class="memitem:abe2d3656df9320e5943d514da4d884fb"><td class="memTemplParams" colspan="2">template&lt;class T1 , size_t N, class T2 , auto L, auto H, auto LL, auto HH&gt; </td></tr>
 <tr class="memitem:abe2d3656df9320e5943d514da4d884fb"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="CommonSnapshots_8h.html#abe2d3656df9320e5943d514da4d884fb">reconstruct</a> (const std::array&lt; T1, N &gt; &amp;src, <a class="el" href="classIndexedArray.html">IndexedArray</a>&lt; T2, L, H &gt; *dst, <a class="el" href="structdetail_1_1SegmentTag.html">detail::SegmentTag</a>&lt; LL, HH &gt; tag)</td></tr>
 <tr class="separator:abe2d3656df9320e5943d514da4d884fb"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac6ba8409daef73a939dc1093e5f51f5a"><td class="memTemplParams" colspan="2">template&lt;class T , size_t N, auto L, auto H&gt; </td></tr>
-<tr class="memitem:ac6ba8409daef73a939dc1093e5f51f5a"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="CommonSnapshots_8h.html#ac6ba8409daef73a939dc1093e5f51f5a">snapshot</a> (const <a class="el" href="classIndexedBitset.html">IndexedBitset</a>&lt; L, H &gt; &amp;src, std::array&lt; T, N &gt; *dst)</td></tr>
-<tr class="separator:ac6ba8409daef73a939dc1093e5f51f5a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af6748b45acc5aad3a1f3f4e82670d9a6"><td class="memTemplParams" colspan="2">template&lt;class T , size_t N, auto L, auto H&gt; </td></tr>
-<tr class="memitem:af6748b45acc5aad3a1f3f4e82670d9a6"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="CommonSnapshots_8h.html#af6748b45acc5aad3a1f3f4e82670d9a6">reconstruct</a> (const std::array&lt; T, N &gt; &amp;src, <a class="el" href="classIndexedBitset.html">IndexedBitset</a>&lt; L, H &gt; *dst)</td></tr>
-<tr class="separator:af6748b45acc5aad3a1f3f4e82670d9a6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Function Documentation</h2>
 <a id="ab885963d9fbe9f6d1573cc8684ce4623" name="ab885963d9fbe9f6d1573cc8684ce4623"></a>
@@ -192,7 +186,7 @@ template&lt;class From , class To &gt; </div>
 </div>
 </div>
 <a id="ad1a960c1639bc2f5c0bb901570f1a96e" name="ad1a960c1639bc2f5c0bb901570f1a96e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ad1a960c1639bc2f5c0bb901570f1a96e">&#9670;&#160;</a></span>reconstruct() <span class="overload">[1/8]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#ad1a960c1639bc2f5c0bb901570f1a96e">&#9670;&#160;</a></span>reconstruct() <span class="overload">[1/7]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -221,38 +215,8 @@ template&lt;size_t N&gt; </div>
 
 </div>
 </div>
-<a id="af6748b45acc5aad3a1f3f4e82670d9a6" name="af6748b45acc5aad3a1f3f4e82670d9a6"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#af6748b45acc5aad3a1f3f4e82670d9a6">&#9670;&#160;</a></span>reconstruct() <span class="overload">[2/8]</span></h2>
-
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;class T , size_t N, auto L, auto H&gt; </div>
-      <table class="memname">
-        <tr>
-          <td class="memname">void reconstruct </td>
-          <td>(</td>
-          <td class="paramtype">const std::array&lt; T, N &gt; &amp;&#160;</td>
-          <td class="paramname"><em>src</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="classIndexedBitset.html">IndexedBitset</a>&lt; L, H &gt; *&#160;</td>
-          <td class="paramname"><em>dst</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
 <a id="ad7885bab69ecb9b643a56ed11669d4d7" name="ad7885bab69ecb9b643a56ed11669d4d7"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ad7885bab69ecb9b643a56ed11669d4d7">&#9670;&#160;</a></span>reconstruct() <span class="overload">[3/8]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#ad7885bab69ecb9b643a56ed11669d4d7">&#9670;&#160;</a></span>reconstruct() <span class="overload">[2/7]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -288,7 +252,7 @@ template&lt;class T1 , size_t N, class T2 , auto L, auto H, class... Tag&gt; </d
 </div>
 </div>
 <a id="abe2d3656df9320e5943d514da4d884fb" name="abe2d3656df9320e5943d514da4d884fb"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#abe2d3656df9320e5943d514da4d884fb">&#9670;&#160;</a></span>reconstruct() <span class="overload">[4/8]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#abe2d3656df9320e5943d514da4d884fb">&#9670;&#160;</a></span>reconstruct() <span class="overload">[3/7]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -324,7 +288,7 @@ template&lt;class T1 , size_t N, class T2 , auto L, auto H, auto LL, auto HH&gt;
 </div>
 </div>
 <a id="a6932718941a72a13f486b2d2c931e95b" name="a6932718941a72a13f486b2d2c931e95b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a6932718941a72a13f486b2d2c931e95b">&#9670;&#160;</a></span>reconstruct() <span class="overload">[5/8]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a6932718941a72a13f486b2d2c931e95b">&#9670;&#160;</a></span>reconstruct() <span class="overload">[4/7]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -361,7 +325,7 @@ requires (!std::is_same_v&lt;T1, T2&gt; &amp;&amp; sizeof...(Tag) &lt;= 1)</div>
 </div>
 </div>
 <a id="aea77ebca7a96d91dd46db472328cfbd6" name="aea77ebca7a96d91dd46db472328cfbd6"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aea77ebca7a96d91dd46db472328cfbd6">&#9670;&#160;</a></span>reconstruct() <span class="overload">[6/8]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#aea77ebca7a96d91dd46db472328cfbd6">&#9670;&#160;</a></span>reconstruct() <span class="overload">[5/7]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -398,7 +362,7 @@ requires (!std::is_same_v&lt;T1, T2&gt; &amp;&amp; sizeof...(Tag) &lt;= 1)</div>
 </div>
 </div>
 <a id="a5acc70236fd798c511aa27eea409f8c2" name="a5acc70236fd798c511aa27eea409f8c2"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a5acc70236fd798c511aa27eea409f8c2">&#9670;&#160;</a></span>reconstruct() <span class="overload">[7/8]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a5acc70236fd798c511aa27eea409f8c2">&#9670;&#160;</a></span>reconstruct() <span class="overload">[6/7]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -428,7 +392,7 @@ template&lt;class T &gt; </div>
 </div>
 </div>
 <a id="a868533509fb9aa43e8896e688f1761f3" name="a868533509fb9aa43e8896e688f1761f3"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a868533509fb9aa43e8896e688f1761f3">&#9670;&#160;</a></span>reconstruct() <span class="overload">[8/8]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a868533509fb9aa43e8896e688f1761f3">&#9670;&#160;</a></span>reconstruct() <span class="overload">[7/7]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -483,7 +447,7 @@ template&lt;auto First, auto Last&gt; </div>
 </div>
 </div>
 <a id="abc88e5f9c320a947b144c318d7ff93bf" name="abc88e5f9c320a947b144c318d7ff93bf"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#abc88e5f9c320a947b144c318d7ff93bf">&#9670;&#160;</a></span>snapshot() <span class="overload">[1/8]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#abc88e5f9c320a947b144c318d7ff93bf">&#9670;&#160;</a></span>snapshot() <span class="overload">[1/7]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -519,7 +483,7 @@ template&lt;class T1 , size_t N, class T2 , auto L, auto H, class... Tag&gt; </d
 </div>
 </div>
 <a id="a196c47cb820f2abc95e5b12d116ad8d5" name="a196c47cb820f2abc95e5b12d116ad8d5"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a196c47cb820f2abc95e5b12d116ad8d5">&#9670;&#160;</a></span>snapshot() <span class="overload">[2/8]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a196c47cb820f2abc95e5b12d116ad8d5">&#9670;&#160;</a></span>snapshot() <span class="overload">[2/7]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -554,38 +518,8 @@ template&lt;class T1 , size_t N, class T2 , auto L, auto H, auto LL, auto HH&gt;
 
 </div>
 </div>
-<a id="ac6ba8409daef73a939dc1093e5f51f5a" name="ac6ba8409daef73a939dc1093e5f51f5a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ac6ba8409daef73a939dc1093e5f51f5a">&#9670;&#160;</a></span>snapshot() <span class="overload">[3/8]</span></h2>
-
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;class T , size_t N, auto L, auto H&gt; </div>
-      <table class="memname">
-        <tr>
-          <td class="memname">void snapshot </td>
-          <td>(</td>
-          <td class="paramtype">const <a class="el" href="classIndexedBitset.html">IndexedBitset</a>&lt; L, H &gt; &amp;&#160;</td>
-          <td class="paramname"><em>src</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">std::array&lt; T, N &gt; *&#160;</td>
-          <td class="paramname"><em>dst</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
 <a id="a138defa7e0c1f38cfe2656ed3d542c9e" name="a138defa7e0c1f38cfe2656ed3d542c9e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a138defa7e0c1f38cfe2656ed3d542c9e">&#9670;&#160;</a></span>snapshot() <span class="overload">[4/8]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a138defa7e0c1f38cfe2656ed3d542c9e">&#9670;&#160;</a></span>snapshot() <span class="overload">[3/7]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -622,7 +556,7 @@ requires (!std::is_same_v&lt;T1, T2&gt; &amp;&amp; sizeof...(Tag) &lt;= 1)</div>
 </div>
 </div>
 <a id="abd599780f62289c9b9c81e5b16c16f39" name="abd599780f62289c9b9c81e5b16c16f39"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#abd599780f62289c9b9c81e5b16c16f39">&#9670;&#160;</a></span>snapshot() <span class="overload">[5/8]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#abd599780f62289c9b9c81e5b16c16f39">&#9670;&#160;</a></span>snapshot() <span class="overload">[4/7]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -652,7 +586,7 @@ template&lt;size_t N&gt; </div>
 </div>
 </div>
 <a id="a9d11b7ea251b2714981155d689ab73f4" name="a9d11b7ea251b2714981155d689ab73f4"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a9d11b7ea251b2714981155d689ab73f4">&#9670;&#160;</a></span>snapshot() <span class="overload">[6/8]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a9d11b7ea251b2714981155d689ab73f4">&#9670;&#160;</a></span>snapshot() <span class="overload">[5/7]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -689,7 +623,7 @@ requires (!std::is_same_v&lt;T1, T2&gt; &amp;&amp; sizeof...(Tag) &lt;= 1)</div>
 </div>
 </div>
 <a id="a1f0f2388e8fed123396a5528122ecd17" name="a1f0f2388e8fed123396a5528122ecd17"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a1f0f2388e8fed123396a5528122ecd17">&#9670;&#160;</a></span>snapshot() <span class="overload">[7/8]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a1f0f2388e8fed123396a5528122ecd17">&#9670;&#160;</a></span>snapshot() <span class="overload">[6/7]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -719,7 +653,7 @@ template&lt;class T &gt; </div>
 </div>
 </div>
 <a id="a482518f4a7bbd9d733f6a0dd4a23091f" name="a482518f4a7bbd9d733f6a0dd4a23091f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a482518f4a7bbd9d733f6a0dd4a23091f">&#9670;&#160;</a></span>snapshot() <span class="overload">[8/8]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a482518f4a7bbd9d733f6a0dd4a23091f">&#9670;&#160;</a></span>snapshot() <span class="overload">[7/7]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
