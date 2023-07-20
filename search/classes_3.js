@@ -40,5 +40,6 @@ var searchData=
   ['configentry_3c_20std_3a_3astring_20_3e_37',['ConfigEntry&lt; std::string &gt;',['../classConfigEntry.html',1,'']]],
   ['configsection_38',['ConfigSection',['../classConfigSection.html',1,'']]],
   ['context_39',['context',['../structcontext.html',1,'']]],
-  ['converttag_40',['ConvertTag',['../structdetail_1_1ConvertTag.html',1,'detail']]]
+  ['contexttag_40',['ContextTag',['../classContextTag.html',1,'']]],
+  ['converttag_41',['ConvertTag',['../structdetail_1_1ConvertTag.html',1,'detail']]]
 ];

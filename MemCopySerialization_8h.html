@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;6f6c26f</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;9f71337</span>
    </div>
   </td>
  </tr>
@@ -99,9 +99,6 @@ Macros</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:a9f79293cdcf50ae91bb23b4799c9821f"><td class="memTemplParams" colspan="2">template&lt;class T &gt; </td></tr>
-<tr class="memitem:a9f79293cdcf50ae91bb23b4799c9821f"><td class="memTemplItemLeft" align="right" valign="top">constexpr std::is_arithmetic&lt; T &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="MemCopySerialization_8h.html#a9f79293cdcf50ae91bb23b4799c9821f">isMemCopySerializable</a> (std::type_identity&lt; T &gt;)</td></tr>
-<tr class="separator:a9f79293cdcf50ae91bb23b4799c9821f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a10f1523217d3404f3478eacb12cb78dc"><td class="memTemplParams" colspan="2">template&lt;class T &gt; <br />
 requires <a class="el" href="MemCopySerialization_8h.html#a1020e86d4a3a2f3646c53d69404efd48">is_memcopy_serializable_v</a>&lt;T&gt;</td></tr>
 <tr class="memitem:a10f1523217d3404f3478eacb12cb78dc"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="MemCopySerialization_8h.html#a10f1523217d3404f3478eacb12cb78dc">serialize</a> (const T &amp;src, <a class="el" href="classOutputStream.html">OutputStream</a> *dst)</td></tr>
@@ -133,10 +130,9 @@ Variables</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<b>Value:</b><div class="fragment"><div class="line"><span class="keyword">constexpr</span> std::true_type <a class="code hl_function" href="MemCopySerialization_8h.html#a9f79293cdcf50ae91bb23b4799c9821f">isMemCopySerializable</a>(std::type_identity&lt;T&gt;) {                                                 \</div>
-<div class="line">    <span class="keywordflow">return</span> {};                                                                                                          \</div>
-<div class="line">}</div>
-<div class="ttc" id="aMemCopySerialization_8h_html_a9f79293cdcf50ae91bb23b4799c9821f"><div class="ttname"><a href="MemCopySerialization_8h.html#a9f79293cdcf50ae91bb23b4799c9821f">isMemCopySerializable</a></div><div class="ttdeci">constexpr std::is_arithmetic&lt; T &gt; isMemCopySerializable(std::type_identity&lt; T &gt;)</div><div class="ttdef"><b>Definition:</b> MemCopySerialization.h:12</div></div>
+<b>Value:</b><div class="fragment"><div class="line"><span class="keyword">template</span>&lt;&gt;                                                                                                              \</div>
+<div class="line"><span class="keyword">struct </span><a class="code hl_struct" href="structis__memcopy__serializable.html">is_memcopy_serializable</a>&lt;T&gt; : std::true_type {};</div>
+<div class="ttc" id="astructis__memcopy__serializable_html"><div class="ttname"><a href="structis__memcopy__serializable.html">is_memcopy_serializable</a></div><div class="ttdef"><b>Definition:</b> MemCopySerialization.h:24</div></div>
 </div><!-- fragment --><p >Invoke this macro for a type to use it with binary serialization functions via simple memory copy.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
@@ -175,34 +171,6 @@ requires <a class="el" href="MemCopySerialization_8h.html#a1020e86d4a3a2f3646c53
           <td></td><td></td>
         </tr>
       </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a9f79293cdcf50ae91bb23b4799c9821f" name="a9f79293cdcf50ae91bb23b4799c9821f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a9f79293cdcf50ae91bb23b4799c9821f">&#9670;&#160;</a></span>isMemCopySerializable()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;class T &gt; </div>
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">constexpr std::is_arithmetic&lt; T &gt; isMemCopySerializable </td>
-          <td>(</td>
-          <td class="paramtype">std::type_identity&lt; T &gt;&#160;</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">constexpr</span></span>  </td>
-  </tr>
-</table>
 </div><div class="memdoc">
 
 </div>

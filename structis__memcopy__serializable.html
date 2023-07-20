@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;6f6c26f</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;9f71337</span>
    </div>
   </td>
  </tr>
@@ -83,6 +83,7 @@ Inheritance diagram for is_memcopy_serializable&lt; T &gt;:</div>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><div class="compoundTemplParams">template&lt;class T&gt;<br />
 struct is_memcopy_serializable&lt; T &gt;</div><p >Type trait that's used by the binary serialization framework to check if a type can be binary-serialized with a simple <code>memcpy</code> call.</p>
+<p >By default, only arithmetic (floating point or integral) types are memcopy-serializable.</p>
 <p >Instead of specializing this trait directly for your class, use <code>MM_DECLARE_MEMCOPY_SERIALIZABLE</code>.</p>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">

@@ -54,7 +54,7 @@ var searchData=
   ['playerspellbookchapter_5fmm7_51',['PlayerSpellbookChapter_MM7',['../structPlayerSpellbookChapter__MM7.html',1,'']]],
   ['playerspells_5fmm7_52',['PlayerSpells_MM7',['../structPlayerSpells__MM7.html',1,'']]],
   ['polygon_53',['Polygon',['../structPolygon.html',1,'']]],
-  ['presizedtag_54',['PresizedTag',['../structdetail_1_1PresizedTag.html',1,'detail']]],
+  ['presizedtag_54',['PresizedTag',['../structPresizedTag.html',1,'']]],
   ['pricecalculator_55',['PriceCalculator',['../classPriceCalculator.html',1,'']]],
   ['projectileanim_56',['ProjectileAnim',['../structProjectileAnim.html',1,'']]],
   ['proxybase_57',['ProxyBase',['../classProxyBase.html',1,'']]],
