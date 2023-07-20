@@ -21,5 +21,4 @@ set(GUI_UI_BOOKS_HEADERS
 add_library(gui_ui_books STATIC ${GUI_UI_BOOKS_SOURCES} ${GUI_UI_BOOKS_HEADERS})
 target_check_style(gui_ui_books)
 
-target_link_libraries(gui_ui_books
-                      utility)
+target_link_libraries(gui_ui_books PUBLIC utility)

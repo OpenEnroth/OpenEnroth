@@ -7,7 +7,7 @@ if(ENABLE_TESTS)
             UnitTest.h)
 
     add_library(testing_unit ${TESTING_UNIT_SOURCES} ${TESTING_UNIT_HEADERS})
-    target_link_libraries(testing_unit GTest::gtest)
+    target_link_libraries(testing_unit PUBLIC GTest::gtest)
     target_compile_definitions(testing_unit PRIVATE TEST_GROUP=None)
 
     target_check_style(testing_unit)

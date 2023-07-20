@@ -6,7 +6,7 @@ if(ENABLE_TESTS)
 
     add_executable(OpenEnroth_UnitTest ${UNIT_TEST_MAIN_SOURCES})
     target_fix_libcxx_assertions(OpenEnroth_UnitTest)
-    target_link_libraries(OpenEnroth_UnitTest testing_unit)
+    target_link_libraries(OpenEnroth_UnitTest PUBLIC testing_unit CLI11::CLI11)
 
     add_custom_target(UnitTest OpenEnroth_UnitTest
             DEPENDS OpenEnroth_UnitTest
