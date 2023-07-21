@@ -26,6 +26,9 @@ template<class Via>
 constexpr ViaTag<Via> via;
 } // namespace tags
 
+// Note: in theory the overloads below could accept a Tags... tail parameter and forward it to reconstruct / snapshot,
+// but I can't think of any sane use case where this would be needed. So, no tag tails.
+
 template<NonBinaryProxy Src, NonBinaryProxy Dst, class Via> requires (!StdSpan<Dst>) // std::span is handled below.
 void deserialize(Src &src, Dst *dst, ViaTag<Via>) {
     static_assert(!std::is_same_v<Via, Dst>, "Intermediate and target types must be different.");

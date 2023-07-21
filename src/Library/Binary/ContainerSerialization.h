@@ -70,15 +70,15 @@ void serialize(const Span &src, OutputStream *dst) {
 template<class T, size_t N>
 struct is_binary_serialization_proxy<std::array<T, N>> : std::true_type {}; // std::array forwards to std::span.
 
-template<class T, size_t N>
-void serialize(const std::array<T, N> &src, OutputStream *dst) {
-    serialize(std::span(src), dst);
+template<class T, size_t N, class... Tags>
+void serialize(const std::array<T, N> &src, OutputStream *dst, const Tags &... tags) {
+    serialize(std::span(src), dst, tags...);
 }
 
-template<class T, size_t N>
-void deserialize(InputStream &src, std::array<T, N> *dst) {
+template<class T, size_t N, class... Tags>
+void deserialize(InputStream &src, std::array<T, N> *dst, const Tags &... tags) {
     std::span span(*dst);
-    deserialize(src, &span);
+    deserialize(src, &span, tags...);
 }
 
 
