@@ -75,3 +75,13 @@ UNIT_TEST(Snapshots, AppendVia) {
     deserialize(input4, &ref, tags::append, tags::via<Int_MM>);
     EXPECT_EQ(ref, ints012345);
 }
+
+UNIT_TEST(Snapshots, ArrayVia) {
+    const std::array<int, 3> ints123 = {1, 2, 3};
+
+    Blob blob;
+    std::array<int, 3> ref;
+    serialize(ints123, &blob, tags::via<Int_MM>);
+    deserialize(blob, &ref, tags::via<Int_MM>);
+    EXPECT_EQ(ref, ints123);
+}
