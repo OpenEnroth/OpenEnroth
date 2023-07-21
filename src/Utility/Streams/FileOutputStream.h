@@ -14,7 +14,7 @@ class FileOutputStream : public OutputStream {
 
     void open(std::string_view path);
 
-    bool isOpen() const {
+    [[nodiscard]] bool isOpen() const {
         return _file != nullptr;
     }
 
@@ -23,7 +23,7 @@ class FileOutputStream : public OutputStream {
     virtual void flush() override;
     virtual void close() override;
 
-    FILE *handle() {
+    [[nodiscard]] FILE *handle() {
         return _file;
     }
 

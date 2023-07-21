@@ -14,16 +14,16 @@ class FileInputStream : public InputStream {
 
     void open(std::string_view path);
 
-    bool isOpen() const {
+    [[nodiscard]] bool isOpen() const {
         return _file != nullptr;
     }
 
-    virtual size_t read(void *data, size_t size) override;
-    virtual size_t skip(size_t size) override;
+    [[nodiscard]] virtual size_t read(void *data, size_t size) override;
+    [[nodiscard]] virtual size_t skip(size_t size) override;
     virtual void close() override;
     void seek(size_t pos);
 
-    FILE *handle() {
+    [[nodiscard]] FILE *handle() {
         return _file;
     }
 
