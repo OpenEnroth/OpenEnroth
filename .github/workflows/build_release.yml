@@ -18,11 +18,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:    
         
-    - uses: actions/upload-artifact@v3
-      with:
-        name: sourcecode
-        path: ./
-        
     - name: Advance nightly tag
       uses: actions/github-script@v3
       with:
