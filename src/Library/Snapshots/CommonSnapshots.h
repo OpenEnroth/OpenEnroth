@@ -33,23 +33,21 @@ void reconstruct(const T &src, T *dst) {
 // Standard conversions support.
 //
 
-namespace detail {
 template<class From, class To>
 struct ConvertTag {};
-} // namespace detail
 
+namespace tags {
 template<class From, class To>
-inline detail::ConvertTag<From, To> convert() {
-    return {};
-}
+constexpr ConvertTag<From, To> convert;
+} // namespace tags
 
 template<class T1, class T2>
-void snapshot(const T1 &src, T2 *dst, detail::ConvertTag<T1, T2>) {
+void snapshot(const T1 &src, T2 *dst, ConvertTag<T1, T2>) {
     *dst = src;
 }
 
 template<class T1, class T2>
-void reconstruct(const T1 &src, T2 *dst, detail::ConvertTag<T1, T2>) {
+void reconstruct(const T1 &src, T2 *dst, ConvertTag<T1, T2>) {
     *dst = src;
 }
 
@@ -139,7 +137,6 @@ void reconstruct(const std::array<T1, N> &src, IndexedArray<T2, L, H> *dst, cons
 // Crude IndexedSpan support.
 //
 
-namespace detail {
 template<auto FirstIndex, auto LastIndex>
 struct SegmentTag {
     static constexpr size_t SIZE = static_cast<ptrdiff_t>(LastIndex) - static_cast<ptrdiff_t>(FirstIndex) + 1;
@@ -148,23 +145,22 @@ struct SegmentTag {
         return Segment(FirstIndex, LastIndex);
     }
 };
-} // namespace detail
 
+namespace tags {
 template<auto First, auto Last>
-detail::SegmentTag<First, Last> segment() {
-    return {};
-}
+constexpr SegmentTag<First, Last> segment;
+} // namespace tags
 
 template<class T1, size_t N, class T2, auto L, auto H, auto LL, auto HH>
-void snapshot(const IndexedArray<T2, L, H> &src, std::array<T1, N> *dst, detail::SegmentTag<LL, HH> tag) {
-    static_assert(L <= LL && HH <= H && detail::SegmentTag<LL, HH>::SIZE == N);
+void snapshot(const IndexedArray<T2, L, H> &src, std::array<T1, N> *dst, SegmentTag<LL, HH> tag) {
+    static_assert(L <= LL && HH <= H && SegmentTag<LL, HH>::SIZE == N);
     for (size_t i = 0; auto index : tag.segment())
         snapshot(src[index], &(*dst)[i++]);
 }
 
 template<class T1, size_t N, class T2, auto L, auto H, auto LL, auto HH>
-void reconstruct(const std::array<T1, N> &src, IndexedArray<T2, L, H> *dst, detail::SegmentTag<LL, HH> tag) {
-    static_assert(L <= LL && HH <= H && detail::SegmentTag<LL, HH>::SIZE == N);
+void reconstruct(const std::array<T1, N> &src, IndexedArray<T2, L, H> *dst, SegmentTag<LL, HH> tag) {
+    static_assert(L <= LL && HH <= H && SegmentTag<LL, HH>::SIZE == N);
     for (size_t i = 0; auto index : tag.segment())
         reconstruct(src[i++], &(*dst)[index]);
 }
