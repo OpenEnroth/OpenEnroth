@@ -245,8 +245,8 @@ bool Bitmaps_LOD_Loader::Load(RgbaImage *rgbaImage, GrayscaleImage *indexedImage
 bool Sprites_LOD_Loader::Load(RgbaImage *rgbaImage, GrayscaleImage *indexedImage, Palette *palette) {
     Sprite *pSprite = lod->loadSprite(this->resource_name);
 
-    size_t w = pSprite->sprite_header->uWidth;
-    size_t h = pSprite->sprite_header->uHeight;
+    size_t w = pSprite->sprite_header->width;
+    size_t h = pSprite->sprite_header->height;
 
     *rgbaImage = RgbaImage::solid(w, h, Color());
 
