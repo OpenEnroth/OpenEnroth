@@ -9,6 +9,8 @@
 
 #include "Utility/Geometry/Vec.h"
 
+// TODO(captainurist): this should go to Core/, not Library/,
+
 struct EventTraceConfigLine {
     std::string section;
     std::string key;
