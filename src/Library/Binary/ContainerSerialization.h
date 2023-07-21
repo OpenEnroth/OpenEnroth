@@ -1,30 +1,59 @@
 #pragma once
 
-#include <span>
 #include <cassert>
+#include <span> // NOLINT
 #include <array>
-#include <vector>
-#include <type_traits>
 
 #include "MemCopySerialization.h"
 #include "BinaryTags.h"
+#include "BinaryConcepts.h"
 
 namespace detail {
-template<class T, size_t N>
-void deserializeSpan(InputStream & src, std::span<T, N> dst) {
+template<class Container>
+struct AppendWrapper {
+ public:
+    using value_type = typename Container::value_type;
+
+    explicit AppendWrapper(Container *container) : _container(container), _initialSize(container->size()) {}
+
+    size_t size() const {
+        return _container->size() - _initialSize;
+    }
+
+    auto data() const {
+        return _container->data() + _initialSize;
+    }
+
+    void resize(size_t size) {
+        _container->resize(_initialSize + size);
+    }
+
+ private:
+    Container *_container;
+    size_t _initialSize = 0;
+};
+} // namespace detail
+
+
+//
+// std::span support - doesn't write size to the stream.
+//
+
+template<StdSpan Span, class T = typename Span::value_type>
+void deserialize(InputStream &src, Span *dst) {
     if constexpr (is_memcopy_serializable_v<T>) {
-        size_t bytesExpected = dst.size() * sizeof(T);
-        size_t bytesRead = src.read(dst.data(), bytesExpected);
+        size_t bytesExpected = dst->size() * sizeof(T);
+        size_t bytesRead = src.read(dst->data(), bytesExpected);
         if (bytesRead != bytesExpected)
             throwBinarySerializationNoMoreDataError(bytesRead % sizeof(T), sizeof(T), typeid(T).name());
     } else {
-        for (T &element : dst)
+        for (T &element : *dst)
             deserialize(src, &element);
     }
 }
 
-template<class T, size_t N>
-void serializeSpan(std::span<const T, N> src, OutputStream *dst) {
+template<StdSpan Span, class T = typename Span::value_type>
+void serialize(const Span &src, OutputStream *dst) {
     if constexpr (is_memcopy_serializable_v<T>) {
         dst->write(src.data(), src.size() * sizeof(T));
     } else {
@@ -33,65 +62,68 @@ void serializeSpan(std::span<const T, N> src, OutputStream *dst) {
     }
 }
 
-template<class T>
-void deserializeAppend(InputStream &src, std::vector<T> *dst, size_t size) {
-    dst->resize(dst->size() + size);
-    T *end = dst->data() + dst->size();
-
-    deserializeSpan(src, std::span(end - size, end));
-}
-} // namespace detail
-
 
 //
-// std::array support.
+// std::array support - doesn't write size to the stream.
 //
 
 template<class T, size_t N>
+struct is_binary_serialization_proxy<std::array<T, N>> : std::true_type {}; // std::array forwards to std::span.
+
+template<class T, size_t N>
 void serialize(const std::array<T, N> &src, OutputStream *dst) {
-    detail::serializeSpan(std::span(src), dst);
+    serialize(std::span(src), dst);
 }
 
 template<class T, size_t N>
 void deserialize(InputStream &src, std::array<T, N> *dst) {
-    detail::deserializeSpan(src, std::span(*dst));
+    std::span span(*dst);
+    deserialize(src, &span);
 }
 
 
 //
-// std::vector support.
+// std::vector support - writes size to the stream, unless this is changed with tags.
 //
 
-template<class T>
-void serialize(const std::vector<T> &src, OutputStream *dst, UnsizedTag) {
-    detail::serializeSpan(std::span(src), dst);
-}
+template<ResizableContiguousContainer Container>
+struct is_binary_serialization_proxy<Container> : std::true_type {}; // ResizableContiguousContainer forwards to std::span.
 
-template<class T>
-void serialize(const std::vector<T> &src, OutputStream *dst) {
-    assert(src.size() <= UINT32_MAX); // Basically a check for memory corruption.
+template<ResizableContiguousContainer Container, class... Tags>
+void serialize(const Container &src, OutputStream *dst, const Tags &... tags) {
+    assert(src.size() <= UINT32_MAX);
 
     uint32_t size = src.size();
     serialize(size, dst);
-    serialize(src, dst, unsized());
+    std::span span(src.data(), src.size());
+    serialize(span, dst, tags...);
 }
 
-template<class T>
-void deserialize(InputStream &src, std::vector<T> *dst, AppendTag) {
+template<ResizableContiguousContainer Container, class... Tags>
+void deserialize(InputStream &src, Container *dst, const Tags &... tags) {
     uint32_t size;
     deserialize(src, &size);
-    detail::deserializeAppend(src, dst, size);
+
+    dst->resize(size);
+    std::span span(dst->data(), dst->size());
+    deserialize(src, &span, tags...);
 }
 
-template<class T>
-void deserialize(InputStream &src, std::vector<T> *dst, PresizedTag tag) {
-    dst->clear();
-    detail::deserializeAppend(src, dst, tag.size);
+template<ResizableContiguousContainer Container, class... Tags>
+void serialize(const Container &src, OutputStream *dst, UnsizedTag, const Tags &... tags) {
+    serialize(std::span(src), dst, tags...);
 }
 
-template<class T>
-void deserialize(InputStream &src, std::vector<T> *dst) {
-    dst->clear();
-    deserialize(src, dst, append());
+template<ResizableContiguousContainer Container, class... Tags>
+void deserialize(InputStream &src, Container *dst, PresizedTag tag, const Tags &... tags) {
+    dst->resize(tag.size);
+    std::span span(dst->data(), dst->size());
+    deserialize(src, &span, tags...);
+}
+
+template<ResizableContiguousContainer Container, class... Tags>
+void deserialize(InputStream &src, Container *dst, AppendTag, const Tags &... tags) {
+    detail::AppendWrapper wrapper(dst);
+    deserialize(src, &wrapper, tags...);
 }
 
