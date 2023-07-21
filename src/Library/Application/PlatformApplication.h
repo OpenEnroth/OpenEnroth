@@ -5,6 +5,7 @@
 #include <typeindex>
 #include <vector>
 #include <unordered_map>
+#include <utility>
 
 #include "Platform/PlatformOpenGLOptions.h"
 
@@ -59,7 +60,7 @@ class PlatformApplication {
         install(component.get());
 
         // TODO(captainurist): drop shared_ptr here once we have std::move_only_function
-        _cleanupRoutines.push_back([this, component = std::shared_ptr<T>(component.release())] {
+        _cleanupRoutines.push_back([this, component = std::shared_ptr<T>(std::move(component))] {
             remove(component.get());
         });
     }
