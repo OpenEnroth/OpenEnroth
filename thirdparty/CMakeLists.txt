@@ -40,13 +40,23 @@ add_subdirectory(openal_soft)
 if(BUILD_PLATFORM STREQUAL "linux")
     find_package(SDL2 CONFIG REQUIRED GLOBAL) # GLOBAL is required for SDL2 to be available in src/
     add_library(SDL2::SDL2OE ALIAS SDL2::SDL2) # Link dynamically on linux.
-else()
+elseif(BUILD_PLATFORM STREQUAL "android")
+    # Link dynamically on Android.
     set(SDL_TEST OFF)
-    set(SDL_SHARED OFF)
-    set(SDL_STATIC ON) # We're only interested in static SDL.
+    set(SDL_SHARED ON)
+    set(SDL_STATIC OFF)
     add_subdirectory(sdl)
     add_library(SDL2OE INTERFACE)
-    target_link_libraries(SDL2OE INTERFACE SDL2::SDL2-static SDL2::SDL2main) # Link statically everywhere else.
+    target_link_libraries(SDL2OE INTERFACE SDL2::SDL2 SDL2::SDL2main)
+    add_library(SDL2::SDL2OE ALIAS SDL2OE)
+else()
+    # Link statically on Windows & Mac.
+    set(SDL_TEST OFF)
+    set(SDL_SHARED OFF)
+    set(SDL_STATIC ON)
+    add_subdirectory(sdl)
+    add_library(SDL2OE INTERFACE)
+    target_link_libraries(SDL2OE INTERFACE SDL2::SDL2-static SDL2::SDL2main)
     add_library(SDL2::SDL2OE ALIAS SDL2OE)
 endif()
 
