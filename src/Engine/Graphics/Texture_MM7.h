@@ -9,7 +9,8 @@
 struct TextureHeader {
     std::array<char, 16> name; // TODO(captainurist): there's quite a lot of unsafe .data() calls for this field.
     uint32_t size; // Width * height, size of the first mipmap. Can be followed by smaller size bitmaps, down to 16x16.
-    uint32_t dataSize; // Size of the pixel data that follows, in bytes. Can be larger than `size` if mipmaps are present. Can be compressed.
+    uint32_t dataSize; // Size of the pixel data that follows, in bytes.
+                       // Can be larger than `size` if mipmaps are present. Can be compressed. Doesn't include palette.
     uint16_t width;
     uint16_t height;
     int16_t widthLn2;  // log2(width) for power of 2 sizes, otherwise 0.
