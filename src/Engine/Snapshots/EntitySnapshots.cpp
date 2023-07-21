@@ -449,7 +449,7 @@ void snapshot(const Party &src, Party_MM7 *dst) {
     dst->numBountiesCollected = src.uNumBountiesCollected;
 
     snapshot(src.monster_id_for_hunting, &dst->monsterIdForHunting);
-    snapshot(src.monster_for_hunting_killed, &dst->monsterForHuntingKilled, convert<bool, int16_t>());
+    snapshot(src.monster_for_hunting_killed, &dst->monsterForHuntingKilled, tags::convert<bool, int16_t>);
 
     dst->daysPlayedWithoutRest = src.days_played_without_rest;
 
@@ -548,7 +548,7 @@ void reconstruct(const Party_MM7 &src, Party *dst) {
     dst->uNumBountiesCollected = src.numBountiesCollected;
 
     reconstruct(src.monsterIdForHunting, &dst->monster_id_for_hunting);
-    reconstruct(src.monsterForHuntingKilled, &dst->monster_for_hunting_killed, convert<int16_t, bool>());
+    reconstruct(src.monsterForHuntingKilled, &dst->monster_for_hunting_killed, tags::convert<int16_t, bool>);
 
     dst->days_played_without_rest = src.daysPlayedWithoutRest;
 
@@ -646,7 +646,7 @@ void snapshot(const Character &src, Player_MM7 *dst) {
     dst->field_100 = src.field_100;
     dst->field_104 = src.field_104;
 
-    snapshot(src.pActiveSkills, &dst->activeSkills, segment<CHARACTER_SKILL_FIRST_VISIBLE, CHARACTER_SKILL_LAST_VISIBLE>());
+    snapshot(src.pActiveSkills, &dst->activeSkills, tags::segment<CHARACTER_SKILL_FIRST_VISIBLE, CHARACTER_SKILL_LAST_VISIBLE>);
     snapshot(src._achievedAwardsBits, &dst->achievedAwardsBits);
     snapshot(src.spellbook.bHaveSpell, &dst->spellbook.haveSpell);
 
@@ -897,7 +897,7 @@ void reconstruct(const Player_MM7 &src, Character *dst) {
     dst->field_100 = src.field_100;
     dst->field_104 = src.field_104;
 
-    reconstruct(src.activeSkills, &dst->pActiveSkills, segment<CHARACTER_SKILL_FIRST_VISIBLE, CHARACTER_SKILL_LAST_VISIBLE>());
+    reconstruct(src.activeSkills, &dst->pActiveSkills, tags::segment<CHARACTER_SKILL_FIRST_VISIBLE, CHARACTER_SKILL_LAST_VISIBLE>);
     reconstruct(src.achievedAwardsBits, &dst->_achievedAwardsBits);
     reconstruct(src.spellbook.haveSpell, &dst->spellbook.bHaveSpell);
 

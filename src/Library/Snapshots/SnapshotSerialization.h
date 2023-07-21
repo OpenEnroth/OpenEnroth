@@ -5,32 +5,29 @@
 
 #include "Library/Binary/BinarySerialization.h"
 
-namespace detail {
 template<class Via>
 struct ViaTag {};
-} // namespace detail
 
+namespace tags {
 /**
- * Creates a deserialization tag that instructs the binary serialization framework to first read a `Via` object
+ * Deserialization tag that instructs the binary serialization framework to first read a `Via` object
  * from a stream, and then use it to reconstruct the target object.
  *
  * Example usage:
  * ```
  * SaveGameHeader header;
  * Blob headerBlob = readHeaderBlob();
- * deserialize(headerBlob, &header, via<SaveGameHeader_MM7>());
+ * deserialize(headerBlob, &header, tags::via<SaveGameHeader_MM7>);
  * ```
  *
  * @tparam Via                          Intermediate type to read from the stream.
- * @return                              Tag object to be passed into the `deserialize` call.
  */
 template<class Via>
-detail::ViaTag<Via> via() {
-    return {};
-}
+constexpr ViaTag<Via> via;
+} // namespace tags
 
 template<NonBinaryProxy Src, NonBinaryProxy Dst, class Via> requires (!StdSpan<Dst>) // std::span is handled below.
-void deserialize(Src &src, Dst *dst, detail::ViaTag<Via>) {
+void deserialize(Src &src, Dst *dst, ViaTag<Via>) {
     static_assert(!std::is_same_v<Via, Dst>, "Intermediate and target types must be different.");
 
     Via tmp;
@@ -39,7 +36,7 @@ void deserialize(Src &src, Dst *dst, detail::ViaTag<Via>) {
 }
 
 template<NonBinaryProxy Src, NonBinaryProxy Dst, class Via> requires (!StdSpan<Src>) // std::span is handled below.
-void serialize(const Src &src, Dst *dst, detail::ViaTag<Via>) {
+void serialize(const Src &src, Dst *dst, ViaTag<Via>) {
     static_assert(!std::is_same_v<Via, Src>, "Intermediate and source types must be different.");
 
     Via tmp;
@@ -48,13 +45,13 @@ void serialize(const Src &src, Dst *dst, detail::ViaTag<Via>) {
 }
 
 template<NonBinaryProxy Src, StdSpan Dst, class Via>
-void deserialize(Src &src, Dst *dst, detail::ViaTag<Via> tag) {
+void deserialize(Src &src, Dst *dst, ViaTag<Via> tag) {
     for (auto &element : *dst)
         deserialize(src, &element, tag);
 }
 
 template<StdSpan Src, NonBinaryProxy Dst, class Via>
-void serialize(const Src &src, Dst *dst, detail::ViaTag<Via> tag) {
+void serialize(const Src &src, Dst *dst, ViaTag<Via> tag) {
     for (const auto &element : src)
         serialize(element, dst, tag);
 }

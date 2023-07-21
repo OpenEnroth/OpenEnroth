@@ -331,7 +331,7 @@ void IndoorLocation::Load(const std::string &filename, int num_days_played, int 
     IndoorDelta_MM7 delta;
     if (Blob blob = pSave_LOD->LoadCompressed(dlv_filename)) {
         try {
-            deserialize(blob, &delta, context(location));
+            deserialize(blob, &delta, tags::context(location));
 
             // Level was changed externally and we have a save there? Don't crash, just respawn.
             if (delta.header.totalFacesCount > 0 && delta.header.decorationCount > 0 &&
@@ -356,12 +356,12 @@ void IndoorLocation::Load(const std::string &filename, int num_days_played, int 
     assert(respawnInitial + respawnTimed <= 1);
 
     if (respawnInitial) {
-        deserialize(pGames_LOD->read(dlv_filename), &delta, context(location));
+        deserialize(pGames_LOD->read(dlv_filename), &delta, tags::context(location));
         *indoor_was_respawned = true;
     } else if (respawnTimed) {
         auto header = delta.header;
         auto visibleOutlines = delta.visibleOutlines;
-        deserialize(pGames_LOD->read(dlv_filename), &delta, context(location));
+        deserialize(pGames_LOD->read(dlv_filename), &delta, tags::context(location));
         delta.header = header;
         delta.visibleOutlines = visibleOutlines;
         *indoor_was_respawned = true;

@@ -44,11 +44,11 @@ void SoundList::FromFile(const Blob &data_mm6, const Blob &data_mm7, const Blob 
     std::vector<SoundInfo> sounds;
 
     if (data_mm6)
-        deserialize(data_mm6, &sounds, append(), via<SoundInfo_MM6>());
+        deserialize(data_mm6, &sounds, tags::append, tags::via<SoundInfo_MM6>);
     if (data_mm7)
-        deserialize(data_mm7, &sounds, append(), via<SoundInfo_MM7>());
+        deserialize(data_mm7, &sounds, tags::append, tags::via<SoundInfo_MM7>);
     if (data_mm8)
-        deserialize(data_mm8, &sounds, append(), via<SoundInfo_MM7>());
+        deserialize(data_mm8, &sounds, tags::append, tags::via<SoundInfo_MM7>);
 
     assert(!sounds.empty());
 

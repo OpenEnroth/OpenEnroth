@@ -61,7 +61,7 @@ void LoadGame(unsigned int uSlot) {
     pSave_LOD->LoadFile(to_file_path, 0);
 
     SaveGameHeader header;
-    deserialize(*pSave_LOD, &header, via<SaveGame_MM7>());
+    deserialize(*pSave_LOD, &header, tags::via<SaveGame_MM7>);
 
     // TODO(captainurist): incapsulate this too
     pParty->bTurnBasedModeOn = false;  // We always start in realtime after loading a game.
@@ -187,7 +187,7 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld) {
     save_header.locationName = pCurrentMapName;
     save_header.playingTime = pParty->GetPlayingTime();
 
-    serialize(save_header, pSave_LOD, via<SaveGame_MM7>());
+    serialize(save_header, pSave_LOD, tags::via<SaveGame_MM7>);
 
     // TODO(captainurist): incapsulate this too
     for (size_t i = 0; i < 4; ++i) {  // 4 - players
@@ -215,10 +215,10 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld) {
         CompactLayingItemsList();
 
         if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
-            serialize(*pIndoor, &uncompressed, via<IndoorDelta_MM7>());
+            serialize(*pIndoor, &uncompressed, tags::via<IndoorDelta_MM7>);
         } else {
             assert(uCurrentlyLoadedLevelType == LEVEL_OUTDOOR);
-            serialize(*pOutdoor, &uncompressed, via<OutdoorDelta_MM7>());
+            serialize(*pOutdoor, &uncompressed, tags::via<OutdoorDelta_MM7>);
         }
 
         LOD::CompressedHeader odm_data;
