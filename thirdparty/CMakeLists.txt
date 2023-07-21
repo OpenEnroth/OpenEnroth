@@ -40,6 +40,7 @@ add_subdirectory(openal_soft)
 if(BUILD_PLATFORM STREQUAL "linux")
     find_package(SDL2 CONFIG REQUIRED GLOBAL) # GLOBAL is required for SDL2 to be available in src/
     add_library(SDL2::SDL2OE ALIAS SDL2::SDL2) # Link dynamically on linux.
+    cmake_minimum_required(VERSION 3.24 FATAL_ERROR)
 else()
     set(SDL_TEST OFF)
     set(SDL_SHARED OFF)
