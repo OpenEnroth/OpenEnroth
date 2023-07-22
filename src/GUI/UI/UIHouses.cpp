@@ -453,25 +453,13 @@ void prepareHouse(HOUSE_ID house) {
 }
 
 void selectHouseNPCDialogueOption(DIALOGUE_TYPE topic) {
-    int pEventNumber;  // ecx@8
-    char *v12;         // eax@53
-    char *v13;         // eax@56
-    char *v14;         // eax@57
-    char *v15;         // eax@58
-    int pPrice;        // ecx@70
-
-    uDialogueType = (DIALOGUE_TYPE)(topic + 1);
+    uDialogueType = (DIALOGUE_TYPE)(topic + 1); // TODO(Nik-RE-dev): +1?
     NPCData *pCurrentNPCInfo = houseNpcs[currentHouseNpc].npc;
-    if (topic <= DIALOGUE_SCRIPTED_LINE_6) {
+
+    if (topic >= DIALOGUE_SCRIPTED_LINE_1 && topic <= DIALOGUE_SCRIPTED_LINE_6) {
+        int pEventNumber;
+
         switch (topic) {
-        case DIALOGUE_13_hiring_related:
-            current_npc_text = BuildDialogueString(
-                pNPCStats->pProfessions[pCurrentNPCInfo->profession].pJoinText,
-                pParty->activeCharacterIndex() - 1, 0, HOUSE_INVALID, 0);
-            NPCHireableDialogPrepare();
-            dialogue_show_profession_details = false;
-            BackToHouseMenu();
-            return;
         case DIALOGUE_SCRIPTED_LINE_1:
             pEventNumber = pCurrentNPCInfo->dialogue_1_evt_id;
             break;
@@ -495,29 +483,16 @@ void selectHouseNPCDialogueOption(DIALOGUE_TYPE topic) {
             return;
         }
 
-        if (pEventNumber < 200 || pEventNumber > 310) {
-            if (pEventNumber < 400 || pEventNumber > 410) {
-                if (pEventNumber == 139) {
-                    OracleDialogue();
-                } else {
-                    if (pEventNumber == 311) {
-                        // TODO(Nik-RE-dev): event 311 belongs to one of the teleports in Bracada
-                        __debugbreak();
-                        //openBountyHuntingDialogue();
-                    } else {
-                        current_npc_text.clear();
-                        activeLevelDecoration = (LevelDecoration *)1;
-                        eventProcessor(pEventNumber, Pid(), 1);
-                        activeLevelDecoration = nullptr;
-                    }
-                }
-            } else {
-                _dword_F8B1D8_last_npc_topic_menu = topic;
-                DrawJoinGuildWindow((GUILD_ID)(pEventNumber - 400));
-            }
-        } else {
-            _4B3FE5_training_dialogue(pEventNumber);
-        }
+        handleScriptedNPCTopicSelection(topic, pEventNumber);
+        BackToHouseMenu();
+        return;
+    }
+
+    if (topic == DIALOGUE_13_hiring_related) {
+        current_npc_text = BuildDialogueString(pNPCStats->pProfessions[pCurrentNPCInfo->profession].pJoinText,
+                                               pParty->activeCharacterIndex() - 1, 0, HOUSE_INVALID, 0);
+        NPCHireableDialogPrepare();
+        dialogue_show_profession_details = false;
         BackToHouseMenu();
         return;
     }
@@ -560,37 +535,31 @@ void selectHouseNPCDialogueOption(DIALOGUE_TYPE topic) {
                         player.SetVariable(VAR_Award, dword_F8B1AC_award_bit_number);
 
                     switch (_dword_F8B1D8_last_npc_topic_menu) {
-                    case DIALOGUE_SCRIPTED_LINE_1:
-                        pEventNumber = pCurrentNPCInfo->dialogue_1_evt_id;
-                        if (pEventNumber >= 400 && pEventNumber <= 416)
+                      case DIALOGUE_SCRIPTED_LINE_1:
+                        if (pCurrentNPCInfo->dialogue_1_evt_id >= 400 && pCurrentNPCInfo->dialogue_1_evt_id <= 416)
                             pCurrentNPCInfo->dialogue_1_evt_id = 0;
                         break;
-                    case DIALOGUE_SCRIPTED_LINE_2:
-                        pEventNumber = pCurrentNPCInfo->dialogue_2_evt_id;
-                        if (pEventNumber >= 400 && pEventNumber <= 416)
+                      case DIALOGUE_SCRIPTED_LINE_2:
+                        if (pCurrentNPCInfo->dialogue_2_evt_id >= 400 && pCurrentNPCInfo->dialogue_2_evt_id <= 416)
                             pCurrentNPCInfo->dialogue_2_evt_id = 0;
                         break;
-                    case DIALOGUE_SCRIPTED_LINE_3:
-                        pEventNumber = pCurrentNPCInfo->dialogue_3_evt_id;
-                        if (pEventNumber >= 400 && pEventNumber <= 416)
+                      case DIALOGUE_SCRIPTED_LINE_3:
+                        if (pCurrentNPCInfo->dialogue_3_evt_id >= 400 && pCurrentNPCInfo->dialogue_3_evt_id <= 416)
                             pCurrentNPCInfo->dialogue_3_evt_id = 0;
                         break;
-                    case DIALOGUE_SCRIPTED_LINE_4:
-                        pEventNumber = pCurrentNPCInfo->dialogue_4_evt_id;
-                        if (pEventNumber >= 400 && pEventNumber <= 416)
+                      case DIALOGUE_SCRIPTED_LINE_4:
+                        if (pCurrentNPCInfo->dialogue_4_evt_id >= 400 && pCurrentNPCInfo->dialogue_4_evt_id <= 416)
                             pCurrentNPCInfo->dialogue_4_evt_id = 0;
                         break;
-                    case DIALOGUE_SCRIPTED_LINE_5:
-                        pEventNumber = pCurrentNPCInfo->dialogue_5_evt_id;
-                        if (pEventNumber >= 400 && pEventNumber <= 416)
+                      case DIALOGUE_SCRIPTED_LINE_5:
+                        if (pCurrentNPCInfo->dialogue_5_evt_id >= 400 && pCurrentNPCInfo->dialogue_5_evt_id <= 416)
                             pCurrentNPCInfo->dialogue_5_evt_id = 0;
                         break;
-                    case DIALOGUE_SCRIPTED_LINE_6:
-                        pEventNumber = pCurrentNPCInfo->dialogue_6_evt_id;
-                        if (pEventNumber >= 400 && pEventNumber <= 416)
+                      case DIALOGUE_SCRIPTED_LINE_6:
+                        if (pCurrentNPCInfo->dialogue_6_evt_id >= 400 && pCurrentNPCInfo->dialogue_6_evt_id <= 416)
                             pCurrentNPCInfo->dialogue_6_evt_id = 0;
                         break;
-                    default:
+                      default:
                         break;
                     }
                     engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 1, 0);
@@ -612,20 +581,18 @@ void selectHouseNPCDialogueOption(DIALOGUE_TYPE topic) {
         return;
     }
 
-    if (pCurrentNPCInfo->profession != Burglar) {  // burglars have no hiring price
-        __debugbreak();  // probably hirelings found in buildings, not present
-                         // in MM7, changed "pCurrentNPCInfo->uProfession - 1"
-                         // to "pCurrentNPCInfo->uProfession", have to check in
-                         // other versions whether it's ok
-        pPrice =
-            pNPCStats->pProfessions[pCurrentNPCInfo->profession].uHirePrice;
+    if (pCurrentNPCInfo->profession != Burglar) {
+        // burglars have no hiring price probably hirelings found in buildings, not present in MM7,
+        // changed "pCurrentNPCInfo->uProfession - 1" to "pCurrentNPCInfo->uProfession", have to check in
+        // other versions whether it's ok
+        __debugbreak();
+        int pPrice = pNPCStats->pProfessions[pCurrentNPCInfo->profession].uHirePrice;
         if (pParty->GetGold() < (unsigned int)pPrice) {
             GameUI_SetStatusBar(LSTR_NOT_ENOUGH_GOLD);
             dialogue_show_profession_details = false;
             uDialogueType = DIALOGUE_13_hiring_related;
-            current_npc_text = BuildDialogueString(
-                pNPCStats->pProfessions[pCurrentNPCInfo->profession].pJoinText,
-                pParty->activeCharacterIndex() - 1, 0, HOUSE_INVALID, 0);
+            current_npc_text = BuildDialogueString(pNPCStats->pProfessions[pCurrentNPCInfo->profession].pJoinText,
+                                                   pParty->activeCharacterIndex() - 1, 0, HOUSE_INVALID, 0);
             if (pParty->hasActiveCharacter()) {
                 pParty->activeCharacter().playReaction(SPEECH_NOT_ENOUGH_GOLD);
             }
@@ -920,7 +887,7 @@ void GUIWindow_House::houseNPCDialogue() {
             } else {
                 optionsText.push_back(pNPCTopics[pNPC->dialogue_1_evt_id].pTopic);
             }
-            continue;
+            break;
           case DIALOGUE_SCRIPTED_LINE_2:
             if (pNPCTopics[pNPC->dialogue_2_evt_id].pTopic.empty()) {
                 optionsText.push_back("");
@@ -928,7 +895,7 @@ void GUIWindow_House::houseNPCDialogue() {
             } else {
                 optionsText.push_back(pNPCTopics[pNPC->dialogue_2_evt_id].pTopic);
             }
-            continue;
+            break;
           case DIALOGUE_SCRIPTED_LINE_3:
             if (pNPCTopics[pNPC->dialogue_3_evt_id].pTopic.empty()) {
                 optionsText.push_back("");
@@ -936,7 +903,7 @@ void GUIWindow_House::houseNPCDialogue() {
             } else {
                 optionsText.push_back(pNPCTopics[pNPC->dialogue_3_evt_id].pTopic);
             }
-            continue;
+            break;
           case DIALOGUE_SCRIPTED_LINE_4:
             if (pNPCTopics[pNPC->dialogue_4_evt_id].pTopic.empty()) {
                 optionsText.push_back("");
@@ -944,7 +911,7 @@ void GUIWindow_House::houseNPCDialogue() {
             } else {
                 optionsText.push_back(pNPCTopics[pNPC->dialogue_4_evt_id].pTopic);
             }
-            continue;
+            break;
           case DIALOGUE_SCRIPTED_LINE_5:
             if (pNPCTopics[pNPC->dialogue_5_evt_id].pTopic.empty()) {
                 optionsText.push_back("");
@@ -952,7 +919,7 @@ void GUIWindow_House::houseNPCDialogue() {
             } else {
                 optionsText.push_back(pNPCTopics[pNPC->dialogue_5_evt_id].pTopic);
             }
-            continue;
+            break;
           case DIALOGUE_SCRIPTED_LINE_6:
             if (pNPCTopics[pNPC->dialogue_6_evt_id].pTopic.empty()) {
                 optionsText.push_back("");
@@ -960,36 +927,32 @@ void GUIWindow_House::houseNPCDialogue() {
             } else {
                 optionsText.push_back(pNPCTopics[pNPC->dialogue_6_evt_id].pTopic);
             }
-            continue;
+            break;
           case DIALOGUE_HIRE_FIRE:
             optionsText.push_back(localization->GetString(LSTR_HIRE));
-            continue;
+            break;
           case DIALOGUE_PROFESSION_DETAILS:
             optionsText.push_back(localization->GetString(LSTR_MORE_INFORMATION));
-            continue;
+            break;
           case DIALOGUE_79_mastery_teacher:
             optionsText.push_back(_4B254D_SkillMasteryTeacher(right_panel_window.wData.val));
-            continue;
+            break;
           case DIALOGUE_82_join_guild:
             optionsText.push_back(GetJoinGuildDialogueOption(static_cast<GUILD_ID>(right_panel_window.wData.val)));
-            continue;
+            break;
           case DIALOGUE_83_bounty_hunting:
             current_npc_text = ((GUIWindow_TownHall*)window_SpeakInHouse)->bountyHuntingText();
             optionsText.push_back("");
-            continue;
-        }
-
-        if (pButton->msg_param > 0 && pButton->msg_param < DIALOGUE_13_hiring_related) {
-            optionsText.push_back(localization->GetString(LSTR_JOIN));
-            continue;
-        }
-        if (pButton->msg_param > DIALOGUE_13_hiring_related && pButton->msg_param < DIALOGUE_SCRIPTED_LINE_1) {
-            optionsText.push_back("");
-            continue;
-        }
-        if (pButton->msg_param != DIALOGUE_93) {
-            optionsText.push_back("");
-            continue;
+            break;
+          default:
+            if (pButton->msg_param > 0 && pButton->msg_param < DIALOGUE_13_hiring_related) {
+                // TODO(Nik-RE-dev): wtf?
+                optionsText.push_back(localization->GetString(LSTR_JOIN));
+            } else {
+                // TODO(Nik-RE-dev): must never happen?
+                optionsText.push_back("");
+            }
+            break;
         }
     }
 
