@@ -261,6 +261,7 @@ void Arena_SelectionFightLevel() {
 }
 
 void ArenaFight() {
+    const int LAST_ARENA_FIGHTER_TYPE = 258;
     int v0;                  // edi@1
     int v3;                  // eax@10
     signed int v4;           // esi@10
@@ -272,7 +273,7 @@ void ArenaFight() {
     int v18;                 // edx@53
     int i;                   // edi@55
     signed int v22;          // [sp-4h] [bp-144h]@51
-    int16_t v23[100] {};        // [sp+Ch] [bp-134h]@39
+    int16_t v23[LAST_ARENA_FIGHTER_TYPE] {};        // [sp+Ch] [bp-134h]@39
     int16_t monster_ids[6] {};  // [sp+128h] [bp-18h]@56
     int v26;                 // [sp+134h] [bp-Ch]@1
     int num_monsters;        // [sp+13Ch] [bp-4h]@17
@@ -345,7 +346,7 @@ void ArenaFight() {
     v6 = 0;
     // v27 = 1;
     // v7 = (char *)&pMonsterStats->pInfos[1].uLevel;
-    for (unsigned int i = 1; i <= 258; i++) {
+    for (unsigned int i = 1; i <= LAST_ARENA_FIGHTER_TYPE; i++) {
         if (pMonsterStats->pInfos[i].uAIType != 1) {  // if ( v7[8] != 1 )
             if (!MonsterStats::BelongsToSupertype(
                     pMonsterStats->pInfos[i].uID,
