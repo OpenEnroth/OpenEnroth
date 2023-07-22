@@ -9,10 +9,10 @@
 
 #include "BinaryConcepts.h"
 
-// Blob is a proxy binary serialization type, and we need to tell other overloads not to handle it.
-// This way overloads for Blob will always come first in the call chain, and this is what we want.
 template<>
-struct is_binary_serialization_proxy<Blob> : std::true_type {};
+struct is_proxy_binary_sink<Blob> : std::true_type {};
+template<>
+struct is_proxy_binary_source<Blob> : std::true_type {};
 
 template<class Src, class... Tags>
 void serialize(const Src &src, Blob *dst, const Tags &... tags) {
