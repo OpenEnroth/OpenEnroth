@@ -38,7 +38,8 @@ add_subdirectory(openal_soft)
 
 # SDL
 if(BUILD_PLATFORM STREQUAL "linux")
-    find_package(SDL2 CONFIG REQUIRED GLOBAL) # GLOBAL is required for SDL2 to be available in src/
+    find_package(SDL2 CONFIG REQUIRED) # TODO(captainurist): Just pass GLOBAL when we have cmake 3.24
+    set_target_properties(SDL2::SDL2 PROPERTIES IMPORTED_GLOBAL TRUE)
     add_library(SDL2::SDL2OE ALIAS SDL2::SDL2) # Link dynamically on linux.
 else()
     set(SDL_TEST OFF)
