@@ -29,7 +29,7 @@ constexpr ViaTag<Via> via;
 // Note: in theory the overloads below could accept a Tags... tail parameter and forward it to reconstruct / snapshot,
 // but I can't think of any sane use case where this would be needed. So, no tag tails.
 
-template<NonBinaryProxy Src, NonBinaryProxy Dst, class Via> requires (!StdSpan<Dst>) // std::span is handled below.
+template<RegularBinarySource Src, RegularBinarizable Dst, class Via> requires (!StdSpan<Dst>) // std::span is handled below.
 void deserialize(Src &src, Dst *dst, ViaTag<Via>) {
     static_assert(!std::is_same_v<Via, Dst>, "Intermediate and target types must be different.");
 
@@ -38,7 +38,7 @@ void deserialize(Src &src, Dst *dst, ViaTag<Via>) {
     reconstruct(tmp, dst);
 }
 
-template<NonBinaryProxy Src, NonBinaryProxy Dst, class Via> requires (!StdSpan<Src>) // std::span is handled below.
+template<RegularBinarizable Src, RegularBinarySink Dst, class Via> requires (!StdSpan<Src>) // std::span is handled below.
 void serialize(const Src &src, Dst *dst, ViaTag<Via>) {
     static_assert(!std::is_same_v<Via, Src>, "Intermediate and source types must be different.");
 
@@ -47,13 +47,13 @@ void serialize(const Src &src, Dst *dst, ViaTag<Via>) {
     serialize(tmp, dst);
 }
 
-template<NonBinaryProxy Src, StdSpan Dst, class Via>
+template<RegularBinarySource Src, StdSpan Dst, class Via>
 void deserialize(Src &src, Dst *dst, ViaTag<Via> tag) {
     for (auto &element : *dst)
         deserialize(src, &element, tag);
 }
 
-template<StdSpan Src, NonBinaryProxy Dst, class Via>
+template<StdSpan Src, RegularBinarySink Dst, class Via>
 void serialize(const Src &src, Dst *dst, ViaTag<Via> tag) {
     for (const auto &element : src)
         serialize(element, dst, tag);
