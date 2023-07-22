@@ -1,5 +1,7 @@
 precision highp float;
-//precision highp usamplerBuffer;
+#ifdef GL_ES
+precision highp usamplerBuffer;
+#endif
 
 in vec4 colour;
 in vec2 texuv;
