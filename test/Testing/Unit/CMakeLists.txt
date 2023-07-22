@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.20.4 FATAL_ERROR)
+cmake_minimum_required(VERSION 3.24 FATAL_ERROR)
 
 if(ENABLE_TESTS)
     set(TESTING_UNIT_SOURCES

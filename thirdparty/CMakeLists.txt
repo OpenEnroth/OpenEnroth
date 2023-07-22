@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.20.4 FATAL_ERROR)
+cmake_minimum_required(VERSION 3.24 FATAL_ERROR)
 
 set(BUILD_TESTING OFF CACHE BOOL "Don't build tests for subprojects. Value is forced." FORCE)
 
