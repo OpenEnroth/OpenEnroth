@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.20.4 FATAL_ERROR)
+cmake_minimum_required(VERSION 3.24 FATAL_ERROR)
 
 set(BUILD_TESTING OFF CACHE BOOL "Don't build tests for subprojects. Value is forced." FORCE)
 
@@ -38,7 +38,6 @@ add_subdirectory(openal_soft)
 
 # SDL
 if(BUILD_PLATFORM STREQUAL "linux")
-    cmake_minimum_required(VERSION 3.24 FATAL_ERROR)
     find_package(SDL2 CONFIG REQUIRED GLOBAL) # GLOBAL is required for SDL2 to be available in src/
     add_library(SDL2::SDL2OE ALIAS SDL2::SDL2) # Link dynamically on linux.
 else()
