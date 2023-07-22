@@ -1,5 +1,5 @@
 precision highp float;
-precision highp usamplerBuffer;
+//precision highp usamplerBuffer;
 
 in vec4 colour;
 in vec2 texuv;

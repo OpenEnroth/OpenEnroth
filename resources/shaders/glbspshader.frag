@@ -1,5 +1,5 @@
 precision highp float;
-precision highp sampler2DArray;
+//precision highp sampler2DArray;
 
 in vec4 vertexColour;
 in vec2 texuv;
