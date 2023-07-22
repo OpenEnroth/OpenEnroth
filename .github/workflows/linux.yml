@@ -66,6 +66,7 @@ jobs:
       working-directory: build
       run: |
         make UnitTest
+        make GameTest
 
     - name: Prepare artifact
       run: |
