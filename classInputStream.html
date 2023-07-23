@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;21b562c</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;53f3486</span>
    </div>
   </td>
  </tr>
@@ -101,6 +101,8 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a01ce2c2eab02d9826c5db7321dccc5dc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afb53adf30be18bfecda9cd4a42c03394"><td class="memItemLeft" align="right" valign="top">virtual size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classInputStream.html#afb53adf30be18bfecda9cd4a42c03394">skip</a> (size_t size)=0</td></tr>
 <tr class="separator:afb53adf30be18bfecda9cd4a42c03394"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a47c88a664d86b146829b6c5c9912449a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classInputStream.html#a47c88a664d86b146829b6c5c9912449a">skipOrFail</a> (size_t size)</td></tr>
+<tr class="separator:a47c88a664d86b146829b6c5c9912449a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0148f63b4e9e39a214362403a474a61c"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classInputStream.html#a0148f63b4e9e39a214362403a474a61c">close</a> ()=0</td></tr>
 <tr class="separator:a0148f63b4e9e39a214362403a474a61c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
@@ -337,6 +339,37 @@ Public Member Functions</h2></td></tr>
 </dl>
 
 <p>Implemented in <a class="el" href="classBlobInputStream.html#aec94f54aa8002d9c289e1f97ea4d622b">BlobInputStream</a>, <a class="el" href="classFileInputStream.html#a0de32c076c2c1f5629fd9d9792a49590">FileInputStream</a>, and <a class="el" href="classMemoryInputStream.html#a24bd1affb3a8203c65d69aad51b3d55d">MemoryInputStream</a>.</p>
+
+</div>
+</div>
+<a id="a47c88a664d86b146829b6c5c9912449a" name="a47c88a664d86b146829b6c5c9912449a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a47c88a664d86b146829b6c5c9912449a">&#9670;&#160;</a></span>skipOrFail()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void InputStream::skipOrFail </td>
+          <td>(</td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>size</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p >Same as <code>readOrFail</code>, but for skipping bytes.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">size</td><td>Number of bytes to skip. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname"><a class="el" href="classException.html">Exception</a></td><td>On error. </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
