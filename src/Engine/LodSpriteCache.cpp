@@ -1,5 +1,7 @@
 #include "LodSpriteCache.h"
 
+#include <vector>
+
 #include "Library/Lod/LodReader.h"
 #include "Library/Compression/Compression.h"
 
@@ -20,15 +22,15 @@ struct LODSpriteLine {
 #pragma pack(pop)
 
 void LODSprite::Release() {
-    this->word_1A = 0;
+    this->flags = 0;
     this->bitmap.reset();
-    this->pName[0] = 0;
-    this->word_16 = 0;
-    this->uPaletteId = 0;
-    this->uTexturePitch = 0;
-    this->uHeight = 0;
-    this->uWidth = 0;
-    this->uSpriteSize = 0;
+    this->name[0] = 0;
+    this->unk_0 = 0;
+    this->paletteId = 0;
+    this->emptyBottomLines = 0;
+    this->height = 0;
+    this->width = 0;
+    this->dataSize = 0;
 }
 
 LodSpriteCache::LodSpriteCache() = default;
@@ -72,8 +74,8 @@ Sprite *LodSpriteCache::loadSprite(const std::string &pContainerName) {
 
     Sprite &sprite = _sprites.emplace_back();
     sprite.pName = pContainerName;
-    sprite.uWidth = header->uWidth;
-    sprite.uHeight = header->uHeight;
+    sprite.uWidth = header->width;
+    sprite.uHeight = header->height;
     sprite.texture = assets->getSprite(pContainerName); // TODO(captainurist): very weird dependency here.
     sprite.sprite_header = header.release();
     return &sprite;
@@ -86,17 +88,18 @@ bool LodSpriteCache::LoadSpriteFromFile(LODSprite *pSprite, const std::string &p
     BlobInputStream input(_reader->read(pContainer));
     input.readOrFail(pSprite, sizeof(LODSpriteHeader));
 
-    strcpy(pSprite->pName, pContainer.c_str());
+    strcpy(pSprite->name.data(), pContainer.c_str());
 
-    std::unique_ptr<LODSpriteLine[]> pSpriteLines(new LODSpriteLine[pSprite->uHeight]);
-    input.readOrFail(pSpriteLines.get(), sizeof(LODSpriteLine) * pSprite->uHeight);
+    std::vector<LODSpriteLine> pSpriteLines;
+    pSpriteLines.resize(pSprite->height);
+    input.readOrFail(pSpriteLines.data(), sizeof(LODSpriteLine) * pSprite->height);
 
-    Blob pixels = input.readBlobOrFail(pSprite->uSpriteSize);
-    if (pSprite->uDecompressedSize)
-        pixels = zlib::Uncompress(pixels, pSprite->uDecompressedSize);
+    Blob pixels = input.readBlobOrFail(pSprite->dataSize);
+    if (pSprite->decompressedSize)
+        pixels = zlib::Uncompress(pixels, pSprite->decompressedSize);
 
-    pSprite->bitmap = GrayscaleImage::solid(pSprite->uWidth, pSprite->uHeight, 0);
-    for (size_t i = 0; i < pSprite->uHeight; i++) {
+    pSprite->bitmap = GrayscaleImage::solid(pSprite->width, pSprite->height, 0);
+    for (size_t i = 0; i < pSprite->height; i++) {
         if (pSpriteLines[i].begin >= 0) {
             memcpy(pSprite->bitmap[i].data() + pSpriteLines[i].begin,
                    static_cast<const char *>(pixels.data()) + pSpriteLines[i].offset,

@@ -81,12 +81,15 @@ void SdlEventLoop::dispatchEvent(PlatformEventHandler *eventHandler, const SDL_E
         break;
     case SDL_MOUSEBUTTONUP:
     case SDL_MOUSEBUTTONDOWN:
-    case SDL_FINGERUP:
-    case SDL_FINGERDOWN:
         dispatchMouseButtonEvent(eventHandler, &event->button);
         break;
     case SDL_MOUSEWHEEL:
         dispatchMouseWheelEvent(eventHandler, &event->wheel);
+    case SDL_FINGERUP:
+    case SDL_FINGERDOWN:
+    case SDL_FINGERMOTION:
+        dispatchTouchFingerEvent(eventHandler, &event->tfinger);
+        break;
     case SDL_WINDOWEVENT:
         dispatchWindowEvent(eventHandler, &event->window);
         break;
@@ -205,6 +208,34 @@ void SdlEventLoop::dispatchMouseWheelEvent(PlatformEventHandler *eventHandler, c
     e.window = _state->window(event->windowID);
     // SDL inverts event->y for us when event->direction == SDL_MOUSEWHEEL_FLIPPED, so we don't need to check for it.
     e.angleDelta = {event->x, event->y};
+    dispatchEvent(eventHandler, &e);
+}
+
+void SdlEventLoop::dispatchTouchFingerEvent(PlatformEventHandler *eventHandler, const SDL_TouchFingerEvent *event) {
+    if (event->windowID == 0)
+        return; // This happens.
+
+    PlatformMouseEvent e;
+    switch (event->type) {
+    case SDL_FINGERDOWN:
+        e.type = EVENT_MOUSE_BUTTON_PRESS;
+        e.button = BUTTON_LEFT;
+        e.buttons = BUTTON_LEFT; // Not calling SDL_GetMouseState here because if we want buttons to sync up properly
+                                 // then we'd also need to get touch state from inside the mouse event.
+        break;
+    case SDL_FINGERUP:
+        e.type = EVENT_MOUSE_BUTTON_RELEASE;
+        e.button = BUTTON_LEFT;
+        break;
+    case SDL_FINGERMOTION:
+        e.type = EVENT_MOUSE_MOVE;
+        break;
+    default:
+        return;
+    }
+    e.window = _state->window(event->windowID);
+    e.pos = Pointi(event->x * e.window->size().w, event->y * e.window->size().h);
+
     dispatchEvent(eventHandler, &e);
 }
 

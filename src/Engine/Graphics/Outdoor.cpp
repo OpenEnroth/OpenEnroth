@@ -880,7 +880,7 @@ void OutdoorLocation::Load(const std::string &filename, int days_played, int res
     OutdoorDelta_MM7 delta;
     if (Blob blob = pSave_LOD->LoadCompressed(ddm_filename)) {
         try {
-            deserialize(blob, &delta, context(location));
+            deserialize(blob, &delta, tags::context(location));
 
             size_t totalFaces = 0;
             for (BSPModel &model : pBModels)
@@ -909,13 +909,13 @@ void OutdoorLocation::Load(const std::string &filename, int days_played, int res
     assert(respawnInitial + respawnTimed <= 1);
 
     if (respawnInitial) {
-        deserialize(pGames_LOD->read(ddm_filename), &delta, context(location));
+        deserialize(pGames_LOD->read(ddm_filename), &delta, tags::context(location));
         *outdoors_was_respawned = true;
     } else if (respawnTimed) {
         auto header = delta.header;
         auto fullyRevealedCells = delta.fullyRevealedCells;
         auto partiallyRevealedCells = delta.partiallyRevealedCells;
-        deserialize(pGames_LOD->read(ddm_filename), &delta, context(location));
+        deserialize(pGames_LOD->read(ddm_filename), &delta, tags::context(location));
         delta.header = header;
         delta.fullyRevealedCells = fullyRevealedCells;
         delta.partiallyRevealedCells = partiallyRevealedCells;

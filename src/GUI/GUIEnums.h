@@ -266,6 +266,8 @@ enum class MenuType {
 };
 using enum MenuType;
 
+// TODO(captainurist): check against this:
+//  https://github.com/GrayFace/MMExtension/blob/4d6600f164315f38157591d7f0307a86594c22ef/Scripts/Core/ConstAndBits.lua#L875
 enum class ScreenType {
     SCREEN_GAME = 0,
     SCREEN_MENU = 1,

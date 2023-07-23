@@ -40,7 +40,7 @@ void LodTextureCache::releaseUnreserved() {
 
 Texture_MM7 *LodTextureCache::loadTexture(const std::string &pContainer, bool useDummyOnError) {
     for (Texture_MM7 &pTexture : _textures) {
-        if (iequals(pContainer.data(), pTexture.header.pName.data())) {
+        if (iequals(pContainer.data(), pTexture.header.name.data())) {
             return &pTexture;
         }
     }
@@ -53,7 +53,7 @@ Texture_MM7 *LodTextureCache::loadTexture(const std::string &pContainer, bool us
         return nullptr;
 
     for (Texture_MM7 &pTexture : _textures) {
-        if (iequals(pTexture.header.pName.data(), "pending")) {
+        if (iequals(pTexture.header.name.data(), "pending")) {
             return &pTexture;
         }
     }
@@ -72,10 +72,10 @@ Blob LodTextureCache::LoadCompressedTexture(const std::string &pContainer) {
     TextureHeader DstBuf;
     input.readOrFail(&DstBuf, sizeof(TextureHeader));
 
-    if (DstBuf.uDecompressedSize) {
-        return zlib::Uncompress(input.readBlobOrFail(DstBuf.uTextureSize), DstBuf.uDecompressedSize);
+    if (DstBuf.decompressedSize) {
+        return zlib::Uncompress(input.readBlobOrFail(DstBuf.dataSize), DstBuf.decompressedSize);
     } else {
-        return input.readBlobOrFail(DstBuf.uTextureSize);
+        return input.readBlobOrFail(DstBuf.dataSize);
     }
 }
 
@@ -88,27 +88,27 @@ int LodTextureCache::LoadTextureFromLOD(Texture_MM7 *pOutTex, const std::string 
     TextureHeader *header = &pOutTex->header;
     input.readOrFail(header, sizeof(TextureHeader));
 
-    strncpy(header->pName.data(), pContainer.c_str(), 16);
+    strncpy(header->name.data(), pContainer.c_str(), 16);
 
     // ICONS
-    if (!header->uDecompressedSize) {
-        pOutTex->paletted_pixels = (uint8_t *)malloc(header->uTextureSize);
-        if (header->uTextureSize)
-            input.readOrFail(pOutTex->paletted_pixels, header->uTextureSize);
+    if (!header->decompressedSize) {
+        pOutTex->paletted_pixels = (uint8_t *)malloc(header->dataSize);
+        if (header->dataSize)
+            input.readOrFail(pOutTex->paletted_pixels, header->dataSize);
     } else {
         // TODO(captainurist): just store Blob in pOutTex
-        Blob pixels = zlib::Uncompress(input.readBlobOrFail(header->uTextureSize), header->uDecompressedSize);
+        Blob pixels = zlib::Uncompress(input.readBlobOrFail(header->dataSize), header->decompressedSize);
         pOutTex->paletted_pixels = (uint8_t *)malloc(pixels.size());
         memcpy(pOutTex->paletted_pixels, pixels.data(), pixels.size());
-        header->uTextureSize = pixels.size();
+        header->dataSize = pixels.size();
     }
 
     pOutTex->pPalette24 = (uint8_t *)malloc(0x300);
     input.readOrFail(pOutTex->pPalette24, 0x300);
 
-    if (header->pBits & 2) {
+    if (header->flags & 2) {
         pOutTex->pLevelOfDetail1 =
-            &pOutTex->paletted_pixels[header->uSizeOfMaxLevelOfDetail];
+            &pOutTex->paletted_pixels[header->size];
         // v8->pLevelOfDetail2 =
         // &v8->pLevelOfDetail1[v8->uSizeOfMaxLevelOfDetail >> 2];
         // v8->pLevelOfDetail3 =
@@ -120,14 +120,14 @@ int LodTextureCache::LoadTextureFromLOD(Texture_MM7 *pOutTex, const std::string 
     }
 
     for (int v41 = 1; v41 < 15; ++v41) {
-        if (1 << v41 == header->uTextureWidth) header->uWidthLn2 = v41;
+        if (1 << v41 == header->width) header->widthLn2 = v41;
     }
     for (int v42 = 1; v42 < 15; ++v42) {
-        if (1 << v42 == header->uTextureHeight) header->uHeightLn2 = v42;
+        if (1 << v42 == header->height) header->heightLn2 = v42;
     }
 
-    header->uWidthMinus1 = (1 << header->uWidthLn2) - 1;
-    header->uHeightMinus1 = (1 << header->uHeightLn2) - 1;
+    header->widthMinus1 = (1 << header->widthLn2) - 1;
+    header->heightMinus1 = (1 << header->heightLn2) - 1;
 
     return 1;
 }

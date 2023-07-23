@@ -76,7 +76,7 @@ GUIWindow_Save::GUIWindow_Save() :
             pSavegameList->pSavegameHeader[i].name = localization->GetString(LSTR_EMPTY_SAVESLOT);
         } else {
             pLODFile.Open(str);
-            deserialize(pLODFile.LoadRaw("header.bin"), &pSavegameList->pSavegameHeader[i], via<SaveGameHeader_MM7>());
+            deserialize(pLODFile.LoadRaw("header.bin"), &pSavegameList->pSavegameHeader[i], tags::via<SaveGameHeader_MM7>);
 
             if (pSavegameList->pSavegameHeader[i].name.empty()) {
                 // blank so add something - suspect quicksaves
@@ -186,7 +186,7 @@ GUIWindow_Load::GUIWindow_Load(bool ingame) :
         }
 
         if (!pLODFile.Open(str)) __debugbreak();
-        deserialize(pLODFile.LoadRaw("header.bin"), &pSavegameList->pSavegameHeader[i], via<SaveGameHeader_MM7>());
+        deserialize(pLODFile.LoadRaw("header.bin"), &pSavegameList->pSavegameHeader[i], tags::via<SaveGameHeader_MM7>);
 
         if (iequals(pSavegameList->pFileList[i], localization->GetString(LSTR_AUTOSAVE_MM7))) {
             pSavegameList->pSavegameHeader[i].name = localization->GetString(LSTR_AUTOSAVE);

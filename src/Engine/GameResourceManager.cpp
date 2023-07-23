@@ -31,8 +31,8 @@ Blob GameResourceManager::uncompressPseudoTexture(const Blob &input) {
     TextureHeader header;
     deserialize(stream, &header);
 
-    Blob result = stream.readBlobOrFail(header.uTextureSize);
-    if (header.uDecompressedSize)
-        result = zlib::Uncompress(result, header.uDecompressedSize);
+    Blob result = stream.readBlobOrFail(header.dataSize);
+    if (header.decompressedSize)
+        result = zlib::Uncompress(result, header.decompressedSize);
     return result;
 }
