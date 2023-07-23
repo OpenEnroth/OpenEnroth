@@ -421,7 +421,7 @@ jobs:
     - name: UnitTest
       working-directory: build
       run: |
-        make make UnitTest
+        make UnitTest
 
     - name: GameTest
       working-directory: build
