@@ -2,7 +2,7 @@
 
 #include <vector>
 
-#include "Library/Compression/Compression.h"
+#include "Library/LodFormats/LodFormats.h"
 
 #include "Utility/Streams/BlobInputStream.h"
 
@@ -84,27 +84,13 @@ bool LodSpriteCache::LoadSpriteFromFile(LODSprite *pSprite, const std::string &p
     if (!_reader.exists(pContainer))
         return false;
 
-    BlobInputStream input(_reader.read(pContainer));
-    input.readOrFail(pSprite, sizeof(LODSpriteHeader));
+    LodSprite sprite = lod::decodeSprite(_reader.read(pContainer));
 
     strcpy(pSprite->name.data(), pContainer.c_str());
-
-    std::vector<LODSpriteLine> pSpriteLines;
-    pSpriteLines.resize(pSprite->height);
-    input.readOrFail(pSpriteLines.data(), sizeof(LODSpriteLine) * pSprite->height);
-
-    Blob pixels = input.readBlobOrFail(pSprite->dataSize);
-    if (pSprite->decompressedSize)
-        pixels = zlib::Uncompress(pixels, pSprite->decompressedSize);
-
-    pSprite->bitmap = GrayscaleImage::solid(pSprite->width, pSprite->height, 0);
-    for (size_t i = 0; i < pSprite->height; i++) {
-        if (pSpriteLines[i].begin >= 0) {
-            memcpy(pSprite->bitmap[i].data() + pSpriteLines[i].begin,
-                   static_cast<const char *>(pixels.data()) + pSpriteLines[i].offset,
-                   pSpriteLines[i].end - pSpriteLines[i].begin);
-        }
-    }
+    pSprite->bitmap = std::move(sprite.image);
+    pSprite->paletteId = sprite.paletteId;
+    pSprite->width = pSprite->bitmap.width();
+    pSprite->height = pSprite->bitmap.height();
 
     return true;
 }

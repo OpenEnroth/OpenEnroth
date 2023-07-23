@@ -4,6 +4,8 @@
 #include <array>
 
 #include "Library/Binary/MemCopySerialization.h"
+#include "Library/Image/Image.h"
+#include "Library/Image/Palette.h"
 
 #pragma pack(push, 1)
 struct TextureHeader {
@@ -33,7 +35,6 @@ struct Texture_MM7 {
     void Release();
 
     TextureHeader header;
-    uint8_t *paletted_pixels;
-    uint8_t *pLevelOfDetail1;
-    uint8_t *pPalette24;
+    GrayscaleImage paletted_pixels;
+    Palette palette;
 };

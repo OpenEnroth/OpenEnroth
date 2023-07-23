@@ -5,6 +5,7 @@
 #include <string>
 
 #include "Library/Color/Color.h"
+#include "Library/Image/Palette.h"
 
 #include "Utility/Geometry/Point.h"
 
@@ -19,7 +20,7 @@ struct FontData {
     uint8_t cLastChar = 0;   // 1
     uint16_t uFontHeight = 0;  // 5-6
     uint32_t palletes_count = 0;
-    uint8_t *pFontPalettes[5]{};
+    std::array<Palette, 5> pFontPalettes = {{}};
     std::array<GUICharMetric, 256> pMetrics = {{}};
     std::array<uint32_t, 256> font_pixels_offset = {{}};
     std::vector<uint8_t> pFontData;  // array of font pixels

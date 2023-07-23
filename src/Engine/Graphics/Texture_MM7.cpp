@@ -12,24 +12,11 @@ void Texture_MM7::Release() {
         __debugbreak();
     }
 
-    if (paletted_pixels != nullptr) {
-        free(paletted_pixels);
-        paletted_pixels = nullptr;
-    }
-
-    if (pPalette24 != nullptr) {
-        free(pPalette24);
-        pPalette24 = nullptr;
-    }
-
-    pLevelOfDetail1 = nullptr;
+    paletted_pixels = GrayscaleImage();
 
     memset(&header, 0, sizeof(header));
 }
 
 Texture_MM7::Texture_MM7() {
     memset(&header, 0, sizeof(header));
-    paletted_pixels = nullptr;
-    pLevelOfDetail1 = nullptr;
-    pPalette24 = nullptr;
 }

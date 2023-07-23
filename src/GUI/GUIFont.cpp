@@ -79,7 +79,7 @@ GUIFont *GUIFont::LoadFont(const char *pFontFile, const char *pFontPalette) {
     if (!pallete_texture)
         Error("Unable to open %s", pFontPalette);
 
-    pFont->pData->pFontPalettes[0] = pallete_texture->pPalette24;
+    pFont->pData->pFontPalettes[0] = pallete_texture->palette;
     pFont->pData->palletes_count = 1;
 
     // get max xhar width
@@ -200,7 +200,7 @@ Color GUIFont::DrawTextLine(const std::string &text, Color color, Color defaultC
 }
 
 void DrawCharToBuff(Color *draw_buff, const uint8_t *pCharPixels, int uCharWidth, int uCharHeight,
-                    uint8_t *pFontPalette, Color draw_color, int line_width) {
+                    const Palette &pFontPalette, Color draw_color, int line_width) {
     assert(draw_color.a > 0);
 
     const uint8_t *pPixels = pCharPixels;
@@ -209,10 +209,7 @@ void DrawCharToBuff(Color *draw_buff, const uint8_t *pCharPixels, int uCharWidth
             uint8_t char_pxl = *pPixels++;
             if (char_pxl) {
                 if (char_pxl == 1) {
-                    uint8_t r = pFontPalette[3];
-                    uint8_t g = pFontPalette[4];
-                    uint8_t b = pFontPalette[5];
-                    *draw_buff = Color(r, g, b);
+                    *draw_buff = pFontPalette.colors[1];
                 } else {
                     *draw_buff = draw_color;
                 }
