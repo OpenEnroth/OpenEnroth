@@ -391,7 +391,7 @@ jobs:
     - name: Checkout private data
       uses: actions/checkout@v3
       with:
-        repository: botanicvelious/OpenEnroth-Data
+        repository: OpenEnroth/OpenEnroth-Data
         path: OpenEnroth-Data
         token: ${{ secrets.DATA_ACCESS_TOKEN }}
 
