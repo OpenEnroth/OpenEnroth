@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.9.5"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>OpenEnroth: BinarySerializable Concept Reference</title>
+<title>OpenEnroth: RegularBinarySink Concept Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;6625280</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;21b562c</span>
    </div>
   </td>
  </tr>
@@ -69,20 +69,18 @@ $(function() {
 
 </div><!-- top -->
 <div class="header">
-  <div class="headertitle"><div class="title">BinarySerializable Concept Reference</div></div>
+  <div class="headertitle"><div class="title">RegularBinarySink Concept Reference</div></div>
 </div><!--header-->
 <div class="contents">
 
 <p><code>#include &lt;BinaryConcepts.h&gt;</code></p>
 <h2 class="groupheader">Concept definition</h2>
-<div class="fragment"><div class="line"><span class="keyword">template</span>&lt;<span class="keyword">class </span>Src, <span class="keyword">class </span>Dst, <span class="keyword">class</span>... Tag&gt;</div>
-<div class="line"><span class="keyword">concept </span><a class="code hl_concept" href="conceptBinarySerializable.html">BinarySerializable</a> =  <span class="keyword">requires</span>(<span class="keyword">const</span> Src &amp;src, Dst *dst, Tag... tag) {</div>
-<div class="line">    { <a class="code hl_function" href="CompositeSnapshots_8cpp.html#ae8c705cd30d39d17b7c0769c8c303c83">serialize</a>(src, dst, tag...) } -&gt; std::same_as&lt;void&gt;;</div>
-<div class="line">}</div>
-<div class="ttc" id="aCompositeSnapshots_8cpp_html_ae8c705cd30d39d17b7c0769c8c303c83"><div class="ttname"><a href="CompositeSnapshots_8cpp.html#ae8c705cd30d39d17b7c0769c8c303c83">serialize</a></div><div class="ttdeci">void serialize(const IndoorDelta_MM7 &amp;src, OutputStream *dst)</div><div class="ttdef"><b>Definition:</b> CompositeSnapshots.cpp:279</div></div>
-<div class="ttc" id="aconceptBinarySerializable_html"><div class="ttname"><a href="conceptBinarySerializable.html">BinarySerializable</a></div><div class="ttdef"><b>Definition:</b> BinaryConcepts.h:10</div></div>
+<div class="fragment"><div class="line"><span class="keyword">template</span>&lt;<span class="keyword">class</span> T&gt;</div>
+<div class="line"><span class="keyword">concept </span><a class="code hl_concept" href="conceptRegularBinarySink.html">RegularBinarySink</a> =  !<a class="code hl_struct" href="structis__proxy__binary__sink.html">is_proxy_binary_sink&lt;std::remove_cvref_t&lt;T&gt;</a>&gt;::value</div>
+<div class="ttc" id="aconceptRegularBinarySink_html"><div class="ttname"><a href="conceptRegularBinarySink.html">RegularBinarySink</a></div><div class="ttdef"><b>Definition:</b> BinaryConcepts.h:73</div></div>
+<div class="ttc" id="astructis__proxy__binary__sink_html"><div class="ttname"><a href="structis__proxy__binary__sink.html">is_proxy_binary_sink</a></div><div class="ttdef"><b>Definition:</b> BinaryConcepts.h:10</div></div>
 </div><!-- fragment --><a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p >Concepts checking that <code><a class="el" href="CompositeSnapshots_8cpp.html#ae8c705cd30d39d17b7c0769c8c303c83">serialize()</a></code> is callable with the provided arguments. </p>
+<div class="textblock"><dl class="section see"><dt>See also</dt><dd><a class="el" href="conceptRegularBinarySource.html">RegularBinarySource</a> </dd></dl>
 </div></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>

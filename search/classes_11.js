@@ -33,7 +33,7 @@ var searchData=
   ['sdlsurface_30',['SDLSurface',['../classorg_1_1libsdl_1_1app_1_1SDLSurface.html',1,'org::libsdl::app']]],
   ['sdlwindow_31',['SdlWindow',['../classSdlWindow.html',1,'']]],
   ['segment_32',['Segment',['../classSegment.html',1,'']]],
-  ['segmenttag_33',['SegmentTag',['../structdetail_1_1SegmentTag.html',1,'detail']]],
+  ['segmenttag_33',['SegmentTag',['../structSegmentTag.html',1,'']]],
   ['settings_34',['Settings',['../classGameConfig_1_1Settings.html',1,'GameConfig']]],
   ['shareddata_35',['SharedData',['../structEngineControlStateHandle_1_1SharedData.html',1,'EngineControlStateHandle']]],
   ['showtextinputtask_36',['ShowTextInputTask',['../classorg_1_1libsdl_1_1app_1_1SDLActivity_1_1ShowTextInputTask.html',1,'org::libsdl::app::SDLActivity']]],

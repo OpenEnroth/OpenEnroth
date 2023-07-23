@@ -17,7 +17,7 @@ var searchData=
   ['anyconfigentry_14',['AnyConfigEntry',['../classAnyConfigEntry.html',1,'']]],
   ['anyhandler_15',['AnyHandler',['../classAnyHandler.html',1,'']]],
   ['appendtag_16',['AppendTag',['../structAppendTag.html',1,'']]],
-  ['appendviatag_17',['AppendViaTag',['../structdetail_1_1AppendViaTag.html',1,'detail']]],
+  ['appendwrapper_17',['AppendWrapper',['../structdetail_1_1AppendWrapper.html',1,'detail']]],
   ['applicationproxy_18',['ApplicationProxy',['../classApplicationProxy.html',1,'']]],
   ['arcomage_5fmouse_19',['arcomage_mouse',['../structarcomage__mouse.html',1,'']]],
   ['arcomagecard_20',['ArcomageCard',['../structArcomageCard.html',1,'']]],

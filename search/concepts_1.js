@@ -1,5 +1,7 @@
 var searchData=
 [
-  ['regularbinarysource_0',['RegularBinarySource',['../conceptRegularBinarySource.html',1,'']]],
-  ['regularbinarytarget_1',['RegularBinaryTarget',['../conceptRegularBinaryTarget.html',1,'']]]
+  ['regularbinarizable_0',['RegularBinarizable',['../conceptRegularBinarizable.html',1,'']]],
+  ['regularbinarysink_1',['RegularBinarySink',['../conceptRegularBinarySink.html',1,'']]],
+  ['regularbinarysource_2',['RegularBinarySource',['../conceptRegularBinarySource.html',1,'']]],
+  ['resizablecontiguouscontainer_3',['ResizableContiguousContainer',['../conceptResizableContiguousContainer.html',1,'']]]
 ];

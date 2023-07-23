@@ -12,7 +12,7 @@ var indexSectionsWithContent =
   9: "cdops",
   10: "_acdegjlmnprstuw",
   11: "dmot",
-  12: "br"
+  12: "drs"
 };
 
 var indexSectionNames =
