@@ -8,11 +8,13 @@
 #include "Engine/Graphics/Indoor.h"
 #include "Engine/Graphics/Viewport.h"
 #include "Engine/Graphics/IRender.h"
+#include "Engine/Graphics/Level/Decoration.h"
 #include "Engine/Localization.h"
 #include "Engine/LOD.h"
 #include "Engine/Objects/Actor.h"
 #include "Engine/Party.h"
 #include "Engine/Tables/ItemTable.h"
+#include "Engine/Events/Processor.h"
 
 #include "GUI/GUIFont.h"
 #include "GUI/GUIWindow.h"
@@ -666,4 +668,29 @@ void NPCHireableDialogPrepare() {
         UIMSG_SelectHouseNPCDialogueOption, DIALOGUE_HIRE_FIRE, Io::InputAction::Invalid, localization->GetString(LSTR_HIRE));
     pDialogueWindow->_41D08F_set_keyboard_control_group(v0 + 1, 1, 0, 2);
     dialog_menu_id = DIALOGUE_OTHER;
+}
+
+void handleScriptedNPCTopicSelection(DIALOGUE_TYPE topic, int eventId) {
+    if (eventId == 311) {
+        // Original code also listed this event which presumably opened bounty dialogue but MM7
+        // use event 311 for some teleport in Bracada
+        __debugbreak();
+        return;
+    }
+
+    if (eventId == 139) {
+        OracleDialogue();
+    } else if (eventId == 399) {
+        Arena_SelectionFightLevel();
+    } else if (eventId >= 400 && eventId <= 410) {
+        _dword_F8B1D8_last_npc_topic_menu = topic;
+        DrawJoinGuildWindow((GUILD_ID)(eventId - 400));
+    } else if (eventId >= 200 && eventId <= 310) {
+        _4B3FE5_training_dialogue(eventId);
+    } else {
+        activeLevelDecoration = (LevelDecoration *)1;
+        current_npc_text.clear();
+        eventProcessor(eventId, Pid(), 1);
+        activeLevelDecoration = nullptr;
+    }
 }
