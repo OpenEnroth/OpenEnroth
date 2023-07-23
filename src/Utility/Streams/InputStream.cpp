@@ -35,3 +35,9 @@ std::string InputStream::readAll(size_t maxSize) {
             chunkSize *= 2;
     }
 }
+
+void InputStream::skipOrFail(size_t size) {
+    size_t bytes = skip(size);
+    if (bytes != size)
+        throw Exception("Failed to skip the requested number of bytes in a stream, requested {}, got {}", size, bytes);
+}

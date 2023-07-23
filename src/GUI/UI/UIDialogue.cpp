@@ -575,8 +575,6 @@ void BuildHireableNpcDialogue() {
 }
 
 void OnSelectNPCDialogueOption(DIALOGUE_TYPE option) {
-    int npc_event_id;  // ecx@10
-
     NPCData *speakingNPC = GetNPCData(sDialogue_SpeakingActorNPC_ID);
     uDialogueType = option;
     if (!speakingNPC->uFlags)
@@ -672,54 +670,32 @@ void OnSelectNPCDialogueOption(DIALOGUE_TYPE option) {
             return;
         }
     } else if (option >= DIALOGUE_SCRIPTED_LINE_1 && option <= DIALOGUE_SCRIPTED_LINE_6) {
+        int npc_event_id;
+
         switch (option) {
-            case DIALOGUE_SCRIPTED_LINE_1:
-                npc_event_id = speakingNPC->dialogue_1_evt_id;
-                break;
-            case DIALOGUE_SCRIPTED_LINE_2:
-                npc_event_id = speakingNPC->dialogue_2_evt_id;
-                break;
-            case DIALOGUE_SCRIPTED_LINE_3:
-                npc_event_id = speakingNPC->dialogue_3_evt_id;
-                break;
-            case DIALOGUE_SCRIPTED_LINE_4:
-                npc_event_id = speakingNPC->dialogue_4_evt_id;
-                break;
-            case DIALOGUE_SCRIPTED_LINE_5:
-                npc_event_id = speakingNPC->dialogue_5_evt_id;
-                break;
-            case DIALOGUE_SCRIPTED_LINE_6:
-                npc_event_id = speakingNPC->dialogue_6_evt_id;
-                break;
-            default:
-                break;
+          case DIALOGUE_SCRIPTED_LINE_1:
+            npc_event_id = speakingNPC->dialogue_1_evt_id;
+            break;
+          case DIALOGUE_SCRIPTED_LINE_2:
+            npc_event_id = speakingNPC->dialogue_2_evt_id;
+            break;
+          case DIALOGUE_SCRIPTED_LINE_3:
+            npc_event_id = speakingNPC->dialogue_3_evt_id;
+            break;
+          case DIALOGUE_SCRIPTED_LINE_4:
+            npc_event_id = speakingNPC->dialogue_4_evt_id;
+            break;
+          case DIALOGUE_SCRIPTED_LINE_5:
+            npc_event_id = speakingNPC->dialogue_5_evt_id;
+            break;
+          case DIALOGUE_SCRIPTED_LINE_6:
+            npc_event_id = speakingNPC->dialogue_6_evt_id;
+            break;
+          default:
+            break;
         }
-        if ((npc_event_id >= 200) && (npc_event_id <= 310)) {
-            _4B3FE5_training_dialogue(npc_event_id);
-        } else if ((npc_event_id >= 400) && (npc_event_id <= 410)) {
-            _dword_F8B1D8_last_npc_topic_menu = option;
-            DrawJoinGuildWindow((GUILD_ID)(npc_event_id - 400));
-        } else {
-            switch (npc_event_id) {
-                case 139:
-                    OracleDialogue();
-                    break;
-                case 311:
-                    // TODO(Nik-RE-dev): event 311 belongs to one of the teleports in Bracada
-                    __debugbreak();
-                    //openBountyHuntingDialogue();
-                    break;
-                case 399:
-                    Arena_SelectionFightLevel();
-                    break;
-                default:
-                    activeLevelDecoration = (LevelDecoration *)1;
-                    current_npc_text.clear();
-                    eventProcessor(npc_event_id, Pid(), 1);
-                    activeLevelDecoration = nullptr;
-                    break;
-            }
-        }
+
+        handleScriptedNPCTopicSelection(option, npc_event_id);
     }
     engine->Draw();
 }

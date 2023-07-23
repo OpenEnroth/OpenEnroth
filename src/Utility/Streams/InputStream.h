@@ -51,6 +51,14 @@ class InputStream {
     [[nodiscard]] virtual size_t skip(size_t size) = 0;
 
     /**
+     * Same as `readOrFail`, but for skipping bytes.
+     *
+     * @param size                      Number of bytes to skip.
+     * @throws Exception                On error.
+     */
+    void skipOrFail(size_t size);
+
+    /**
      * Closes this input stream. Reading from a closed stream will result in undefined behavior.
      *
      * Does nothing if the stream is already closed.
