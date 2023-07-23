@@ -374,6 +374,7 @@ jobs:
         files: ${{ runner.os }}_${{ env.TAG_NAME }}_${{ matrix.configuration }}_${{ matrix.architecture }}.zip                
 
   build_tests:
+    name: Run Tests
     runs-on: ubuntu-22.04
     needs: advanceNightlyTag
     strategy:
