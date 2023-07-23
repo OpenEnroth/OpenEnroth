@@ -372,3 +372,55 @@ jobs:
         prerelease: true
         tag_name: ${{ env.TAG_NAME }}
         files: ${{ runner.os }}_${{ env.TAG_NAME }}_${{ matrix.configuration }}_${{ matrix.architecture }}.zip                
+
+  build_tests:
+    runs-on: ubuntu-22.04
+    needs: [build_android, build_windows, build_linux, build_macos]
+    strategy:
+      fail-fast: false
+      matrix:
+        configuration: [Release]
+        architecture: [x64]
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+      with:
+        submodules: 'recursive'
+
+    - name: Checkout private data
+      uses: actions/checkout@v3
+      with:
+        repository: botanicvelious/OpenEnroth-Data
+        path: OpenEnroth-Data
+        token: ${{ secrets.DATA_ACCESS_TOKEN }}
+
+    - name: Copy shaders
+      run: |
+        cp -r /home/runner/work/OpenEnroth/OpenEnroth/resources/shaders /home/runner/work/OpenEnroth/OpenEnroth/OpenEnroth-Data
+
+    - name: Install dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y gcc-12 g++-12
+        sudo apt-get install -y libglu1-mesa-dev zlib1g-dev
+        sudo apt-get install -y libavformat-dev libavcodec-dev libswscale-dev
+        sudo apt-get install -y libsdl2-dev
+        sudo apt-get install -y mesa-utils xvfb x11-utils
+        
+    - name: Configure
+      run: |
+        export CC=gcc-12 && export CXX=g++-12
+        cmake -B build -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=${{ matrix.configuration }} -DENABLE_TESTS=On
+
+    - name: UnitTest
+      working-directory: build
+      run: |
+        make make -j3 UnitTest
+
+    - name: GameTest
+      working-directory: build
+      run: |
+        Xvfb&
+        xvfb-run make -j3 GameTest
+      env:
+        OPENENROTH_MM7_PATH: /home/runner/work/OpenEnroth/OpenEnroth/OpenEnroth-Data
