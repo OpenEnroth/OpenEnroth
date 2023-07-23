@@ -8,6 +8,12 @@ Currently only MM7 is playable. You can check out the [milestones](https://githu
 
 ![screenshot_main](https://user-images.githubusercontent.com/24377109/79051217-491a7800-7c2f-11ea-85c7-f9120b7d79dd.png)
 
+Download
+-------
+
+To download the code without having to compile it we have our releases at [https://github.com/OpenEnroth/OpenEnroth/releases](https://github.com/OpenEnroth/OpenEnroth/releases) 
+
+Note: Currently there are only the nightly builds which may have bugs.
 
 Discord
 -------
@@ -22,7 +28,7 @@ Getting Started on Windows
 
 1. You will need a GoG or any other version of Might and Magic VII. Just run the installer and install the game into default location.
 
-2. Build OpenEnroth as described in [HACKING.md](HACKING.md). Alternatively, you can ask for a prebuilt binary on Discord.
+2. Build OpenEnroth as described in [HACKING.md](HACKING.md). Alternatively, you can use the prebuilt releases.
 
 3. Copy OpenEnroth-specific resources from the `resources` folder of the repo to the folder where the game was installed:
 
