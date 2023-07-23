@@ -1,6 +1,6 @@
-precision highp float;
 #ifdef GL_ES
-precision highp sampler2DArray;
+    precision highp float;
+    precision highp sampler2DArray;
 #endif
 
 in vec4 vertexColour;
