@@ -375,7 +375,7 @@ jobs:
 
   build_tests:
     runs-on: ubuntu-22.04
-    needs: [build_android, build_windows, build_linux, build_macos]
+    needs: advanceNightlyTag
     strategy:
       fail-fast: false
       matrix:
