@@ -36,6 +36,7 @@ set(PREBUILT_DEPENDENCIES ${PREBUILT_DEPENDENCIES_DEFAULT} CACHE BOOL "Use prebu
 # Compiler options.
 add_compile_definitions(FMT_USE_NONTYPE_TEMPLATE_ARGS) # Enable _cf literals
 add_compile_definitions(PACKAGE_BUGREPORT="https://github.com/OpenEnroth/OpenEnroth/issues")
+add_compile_options(-ffp-contract=fast)
 
 if(BUILD_COMPILER STREQUAL "gcc" OR BUILD_COMPILER STREQUAL "clang")
     add_compile_options(-Werror=return-type) # Control reaches the end of non-void function, this is an error on MSVC
