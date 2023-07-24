@@ -1,4 +1,7 @@
-precision highp float;
+#ifdef GL_ES
+    precision highp float;
+#endif
+
 uniform sampler2D Texture;
 
 in vec2 Frag_UV;
