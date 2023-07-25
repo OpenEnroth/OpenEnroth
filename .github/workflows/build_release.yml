@@ -393,15 +393,15 @@ jobs:
       uses: actions/cache/restore@v3
       with:
         path: |
-          OpenEnroth-Data
+          OpenEnroth_GameData
         key: data-cache
 
     - name: Checkout private data
       if: steps.check-for-data-cache.outputs.cache-hit != 'true'
       uses: actions/checkout@v3
       with:
-        repository: botanicvelious/OpenEnroth-Data
-        path: OpenEnroth-Data
+        repository: OpenEnroth/OpenEnroth_GameData
+        path: OpenEnroth_GameData
         token: ${{ secrets.DATA_ACCESS_TOKEN }}
 
     - name: Cache data if needed
@@ -409,12 +409,12 @@ jobs:
       uses: actions/cache/save@v3
       with:
         path: |
-          OpenEnroth-Data
+          OpenEnroth_GameData
         key: data-cache
         
     - name: Copy shaders
       run: |
-        cp -r /home/runner/work/OpenEnroth/OpenEnroth/resources/shaders /home/runner/work/OpenEnroth/OpenEnroth/OpenEnroth-Data
+        cp -r /home/runner/work/OpenEnroth/OpenEnroth/resources/shaders /home/runner/work/OpenEnroth/OpenEnroth/OpenEnroth_GameData/mm7
 
     - name: Install dependencies
       run: |
@@ -446,4 +446,4 @@ jobs:
         Xvfb&
         xvfb-run make GameTest
       env:
-        OPENENROTH_MM7_PATH: /home/runner/work/OpenEnroth/OpenEnroth/OpenEnroth-Data
+        OPENENROTH_MM7_PATH: /home/runner/work/OpenEnroth/OpenEnroth/OpenEnroth_GameData/mm7
