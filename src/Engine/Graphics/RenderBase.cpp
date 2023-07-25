@@ -617,7 +617,7 @@ Blob RenderBase::PackScreenshot(const unsigned int width, const unsigned int hei
 }
 
 GraphicsImage *RenderBase::TakeScreenshot(const unsigned int width, const unsigned int height) {
-    return CreateTexture_Blank(MakeScreenshot32(width, height));
+    return GraphicsImage::Create(MakeScreenshot32(width, height));
 }
 
 void RenderBase::DrawTextureGrayShade(float a2, float a3, GraphicsImage *a4) {
@@ -734,52 +734,4 @@ void RenderBase::PresentBlackScreen() {
     BeginScene2D();
     ClearBlack();
     Present();
-}
-
-GraphicsImage *RenderBase::CreateTexture_Paletted(const std::string &name) {
-    return GraphicsImage::Create(std::make_unique<Paletted_Img_Loader>(pIcons_LOD, name));
-}
-
-GraphicsImage *RenderBase::CreateTexture_ColorKey(const std::string &name, Color colorkey) {
-    return GraphicsImage::Create(std::make_unique<ColorKey_LOD_Loader>(pIcons_LOD, name, colorkey));
-}
-
-GraphicsImage *RenderBase::CreateTexture_Solid(const std::string &name) {
-    return GraphicsImage::Create(std::make_unique<Image16bit_LOD_Loader>(pIcons_LOD, name));
-}
-
-GraphicsImage *RenderBase::CreateTexture_Alpha(const std::string &name) {
-    return GraphicsImage::Create(std::make_unique<Alpha_LOD_Loader>(pIcons_LOD, name));
-}
-
-GraphicsImage *RenderBase::CreateTexture_PCXFromIconsLOD(const std::string &name) {
-    return GraphicsImage::Create(std::make_unique<PCX_LOD_Compressed_Loader>(pIcons_LOD, name));
-}
-
-GraphicsImage *RenderBase::CreateTexture_PCXFromNewLOD(const std::string &name) {
-    return GraphicsImage::Create(std::make_unique<PCX_LOD_Compressed_Loader>(pSave_LOD, name));
-}
-
-GraphicsImage *RenderBase::CreateTexture_PCXFromFile(const std::string &name) {
-    return GraphicsImage::Create(std::make_unique<PCX_File_Loader>(name));
-}
-
-GraphicsImage *RenderBase::CreateTexture_PCXFromLOD(LOD::File *pLOD, const std::string &name) {
-    return GraphicsImage::Create(std::make_unique<PCX_LOD_Raw_Loader>(pLOD, name));
-}
-
-GraphicsImage *RenderBase::CreateTexture_Blank(unsigned int width, unsigned int height) {
-    return GraphicsImage::Create(width, height);
-}
-
-GraphicsImage *RenderBase::CreateTexture_Blank(RgbaImage image) {
-    return GraphicsImage::Create(std::move(image));
-}
-
-GraphicsImage *RenderBase::CreateTexture(const std::string &name) {
-    return GraphicsImage::Create(std::make_unique<Bitmaps_LOD_Loader>(pBitmaps_LOD, name));
-}
-
-GraphicsImage *RenderBase::CreateSprite(const std::string &name) {
-    return GraphicsImage::Create(std::make_unique<Sprites_LOD_Loader>(pSprites_LOD, name));
 }

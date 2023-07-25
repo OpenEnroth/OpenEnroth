@@ -1437,7 +1437,7 @@ void GameUI_DrawMinimap(unsigned int uX, unsigned int uY, unsigned int uZ,
     if (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR) {
         static GraphicsImage *minimaptemp;
         if (!minimaptemp) {
-            minimaptemp = render->CreateTexture_Blank(uWidth, uHeight);
+            minimaptemp = GraphicsImage::Create(uWidth, uHeight);
         }
 
         static uint16_t pOdmMinimap[117][137];

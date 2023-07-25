@@ -244,7 +244,7 @@ void RenderOpenGL::SaveWinnersCertificate(const std::string &filePath) {
     SavePCXImage32(filePath, sPixels);
 
     // reverse input and save to texture for later
-    assets->winnerCert = CreateTexture_Blank(std::move(sPixels));
+    assets->winnerCert = GraphicsImage::Create(std::move(sPixels));
 }
 
 bool RenderOpenGL::InitializeFullscreen() {
@@ -803,7 +803,7 @@ void RenderOpenGL::BlendTextures(int x, int y, GraphicsImage *imgin, GraphicsIma
 
         int w = imgin->width();
         int h = imgin->height();
-        GraphicsImage *temp = render->CreateTexture_Blank(w, h);
+        GraphicsImage *temp = GraphicsImage::Create(w, h);
         RgbaImage &dstImage = temp->rgba();
 
         Color c = maskImage.pixels()[2700];  // guess at brightest pixel
@@ -881,7 +881,7 @@ void RenderOpenGL::TexturePixelRotateDraw(float u, float v, GraphicsImage *img, 
             int width = img->width();
             int height = img->height();
             if (!cachedtemp[thisslot]) {
-                cachedtemp[thisslot] = CreateTexture_Blank(width, height);
+                cachedtemp[thisslot] = GraphicsImage::Create(width, height);
             }
 
             const Palette &palette = img->palette();
