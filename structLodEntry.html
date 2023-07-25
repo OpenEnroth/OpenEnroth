@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.9.5"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>OpenEnroth: LodReader::FileEntryDesc Struct Reference</title>
+<title>OpenEnroth: LodEntry Struct Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;3f7863b</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;b945ca0</span>
    </div>
   </td>
  </tr>
@@ -67,65 +67,79 @@ $(function() {
 </div>
 </div>
 
-<div id="nav-path" class="navpath">
-  <ul>
-<li class="navelem"><a class="el" href="classLodReader.html">LodReader</a></li><li class="navelem"><a class="el" href="structLodReader_1_1FileEntryDesc.html">FileEntryDesc</a></li>  </ul>
-</div>
 </div><!-- top -->
 <div class="header">
   <div class="summary">
 <a href="#pub-attribs">Public Attributes</a> &#124;
-<a href="structLodReader_1_1FileEntryDesc-members.html">List of all members</a>  </div>
-  <div class="headertitle"><div class="title">LodReader::FileEntryDesc Struct Reference</div></div>
+<a href="structLodEntry-members.html">List of all members</a>  </div>
+  <div class="headertitle"><div class="title">LodEntry Struct Reference</div></div>
 </div><!--header-->
 <div class="contents">
+
+<p><code>#include &lt;LodSnapshots.h&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
-<tr class="memitem:a067d79601890083bb0c6f9751c019a07"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structLodReader_1_1FileEntryDesc.html#a067d79601890083bb0c6f9751c019a07">name</a> {}</td></tr>
-<tr class="separator:a067d79601890083bb0c6f9751c019a07"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6c16ee2a0d83f74dfbed5dea43f5c096"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structLodReader_1_1FileEntryDesc.html#a6c16ee2a0d83f74dfbed5dea43f5c096">offset</a> = 0</td></tr>
-<tr class="separator:a6c16ee2a0d83f74dfbed5dea43f5c096"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac2fc9a1da9dc3be559bbf56099221a3f"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structLodReader_1_1FileEntryDesc.html#ac2fc9a1da9dc3be559bbf56099221a3f">size</a> = 0</td></tr>
-<tr class="separator:ac2fc9a1da9dc3be559bbf56099221a3f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6752be1d8ba705db5b9507fc25838ae5"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structLodEntry.html#a6752be1d8ba705db5b9507fc25838ae5">name</a></td></tr>
+<tr class="separator:a6752be1d8ba705db5b9507fc25838ae5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:add89aa3c7cfc7e8a162ad0d6d40c9961"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structLodEntry.html#add89aa3c7cfc7e8a162ad0d6d40c9961">dataOffset</a> = 0</td></tr>
+<tr class="separator:add89aa3c7cfc7e8a162ad0d6d40c9961"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9fdde3ad6bbf207692bfd2c45fe19ef5"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structLodEntry.html#a9fdde3ad6bbf207692bfd2c45fe19ef5">dataSize</a> = 0</td></tr>
+<tr class="separator:a9fdde3ad6bbf207692bfd2c45fe19ef5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3b2c8814bede08ce01acf5c87ad6ae16"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structLodEntry.html#a3b2c8814bede08ce01acf5c87ad6ae16">numItems</a> = 0</td></tr>
+<tr class="separator:a3b2c8814bede08ce01acf5c87ad6ae16"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Member Data Documentation</h2>
-<a id="a067d79601890083bb0c6f9751c019a07" name="a067d79601890083bb0c6f9751c019a07"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a067d79601890083bb0c6f9751c019a07">&#9670;&#160;</a></span>name</h2>
+<a id="add89aa3c7cfc7e8a162ad0d6d40c9961" name="add89aa3c7cfc7e8a162ad0d6d40c9961"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#add89aa3c7cfc7e8a162ad0d6d40c9961">&#9670;&#160;</a></span>dataOffset</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">std::string LodReader::FileEntryDesc::name {}</td>
+          <td class="memname">size_t LodEntry::dataOffset = 0</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
 </div>
 </div>
-<a id="a6c16ee2a0d83f74dfbed5dea43f5c096" name="a6c16ee2a0d83f74dfbed5dea43f5c096"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a6c16ee2a0d83f74dfbed5dea43f5c096">&#9670;&#160;</a></span>offset</h2>
+<a id="a9fdde3ad6bbf207692bfd2c45fe19ef5" name="a9fdde3ad6bbf207692bfd2c45fe19ef5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9fdde3ad6bbf207692bfd2c45fe19ef5">&#9670;&#160;</a></span>dataSize</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">size_t LodReader::FileEntryDesc::offset = 0</td>
+          <td class="memname">size_t LodEntry::dataSize = 0</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
 </div>
 </div>
-<a id="ac2fc9a1da9dc3be559bbf56099221a3f" name="ac2fc9a1da9dc3be559bbf56099221a3f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ac2fc9a1da9dc3be559bbf56099221a3f">&#9670;&#160;</a></span>size</h2>
+<a id="a6752be1d8ba705db5b9507fc25838ae5" name="a6752be1d8ba705db5b9507fc25838ae5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6752be1d8ba705db5b9507fc25838ae5">&#9670;&#160;</a></span>name</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">size_t LodReader::FileEntryDesc::size = 0</td>
+          <td class="memname">std::string LodEntry::name</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a3b2c8814bede08ce01acf5c87ad6ae16" name="a3b2c8814bede08ce01acf5c87ad6ae16"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3b2c8814bede08ce01acf5c87ad6ae16">&#9670;&#160;</a></span>numItems</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">size_t LodEntry::numItems = 0</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -133,7 +147,7 @@ Public Attributes</h2></td></tr>
 </div>
 </div>
 <hr/>The documentation for this struct was generated from the following file:<ul>
-<li>src/Library/Lod/<a class="el" href="LodReader_8h.html">LodReader.h</a></li>
+<li>src/Library/Lod/<a class="el" href="LodSnapshots_8h.html">LodSnapshots.h</a></li>
 </ul>
 </div><!-- contents -->
 <!-- start footer part -->

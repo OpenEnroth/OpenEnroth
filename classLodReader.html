@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;3f7863b</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;b945ca0</span>
    </div>
   </td>
  </tr>
@@ -72,8 +72,6 @@ $(function() {
   <div class="summary">
 <a href="#nested-classes">Classes</a> &#124;
 <a href="#pub-methods">Public Member Functions</a> &#124;
-<a href="#pub-static-methods">Static Public Member Functions</a> &#124;
-<a href="#pri-methods">Private Member Functions</a> &#124;
 <a href="#pri-attribs">Private Attributes</a> &#124;
 <a href="classLodReader-members.html">List of all members</a>  </div>
   <div class="headertitle"><div class="title">LodReader Class Reference<span class="mlabels"><span class="mlabel">final</span></span></div></div>
@@ -84,49 +82,94 @@ $(function() {
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Classes</h2></td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structLodReader_1_1FileEntryDesc.html">FileEntryDesc</a></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structLodReader_1_1LodRegion.html">LodRegion</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
+<tr class="memitem:a46ee75c86528c4542f245d6b4af4357f"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classLodReader.html#a46ee75c86528c4542f245d6b4af4357f">LodReader</a> ()</td></tr>
+<tr class="separator:a46ee75c86528c4542f245d6b4af4357f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a091281818fdf2deaf4c8e88203dbaa79"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classLodReader.html#a091281818fdf2deaf4c8e88203dbaa79">LodReader</a> (std::string_view path)</td></tr>
+<tr class="separator:a091281818fdf2deaf4c8e88203dbaa79"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0d025801538a991fd820792f42a79667"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classLodReader.html#a0d025801538a991fd820792f42a79667">~LodReader</a> ()</td></tr>
 <tr class="separator:a0d025801538a991fd820792f42a79667"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a10ac28b0f8f19d5c8639b10170238fb5"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classLodReader.html#a10ac28b0f8f19d5c8639b10170238fb5">open</a> (std::string_view path)</td></tr>
+<tr class="separator:a10ac28b0f8f19d5c8639b10170238fb5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a487be40762c489edea03c12866e68a43"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classLodReader.html#a487be40762c489edea03c12866e68a43">isOpen</a> () const</td></tr>
+<tr class="separator:a487be40762c489edea03c12866e68a43"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a714cc76c6d5c287d29f3296ad392c209"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classLodReader.html#a714cc76c6d5c287d29f3296ad392c209">exists</a> (const std::string &amp;filename) const</td></tr>
 <tr class="separator:a714cc76c6d5c287d29f3296ad392c209"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a19103200594bd0c6023baba12f403de9"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classBlob.html">Blob</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classLodReader.html#a19103200594bd0c6023baba12f403de9">read</a> (const std::string &amp;filename)</td></tr>
-<tr class="separator:a19103200594bd0c6023baba12f403de9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a84f46d35dd582adaa0c27021b094b6ad"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classBlob.html">Blob</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classLodReader.html#a84f46d35dd582adaa0c27021b094b6ad">readRaw</a> (const std::string &amp;filename)</td></tr>
-<tr class="separator:a84f46d35dd582adaa0c27021b094b6ad"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6f68b07f17dd601f1bebd9d7d501d47f"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classBlob.html">Blob</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classLodReader.html#a6f68b07f17dd601f1bebd9d7d501d47f">read</a> (const std::string &amp;filename) const</td></tr>
+<tr class="separator:a6f68b07f17dd601f1bebd9d7d501d47f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a61e87efe6ddf0eac8890d2aeb78b2501"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classBlob.html">Blob</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classLodReader.html#a61e87efe6ddf0eac8890d2aeb78b2501">readRaw</a> (const std::string &amp;filename) const</td></tr>
+<tr class="separator:a61e87efe6ddf0eac8890d2aeb78b2501"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a80818bb3647a0dd4960bbab6c953b3d5"><td class="memItemLeft" align="right" valign="top">std::vector&lt; std::string &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classLodReader.html#a80818bb3647a0dd4960bbab6c953b3d5">ls</a> () const</td></tr>
 <tr class="separator:a80818bb3647a0dd4960bbab6c953b3d5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-static-methods" name="pub-static-methods"></a>
-Static Public Member Functions</h2></td></tr>
-<tr class="memitem:ab3558fd37ad8bcf3b2910e56446e9a80"><td class="memItemLeft" align="right" valign="top">static std::unique_ptr&lt; <a class="el" href="classLodReader.html">LodReader</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classLodReader.html#ab3558fd37ad8bcf3b2910e56446e9a80">open</a> (const std::string &amp;filename)</td></tr>
-<tr class="separator:ab3558fd37ad8bcf3b2910e56446e9a80"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pri-methods" name="pri-methods"></a>
-Private Member Functions</h2></td></tr>
-<tr class="memitem:a8be295584ce60f4d7e352b861aa0b8c0"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classLodReader.html#a8be295584ce60f4d7e352b861aa0b8c0">parseDirectories</a> (size_t numDirectories, size_t dirOffset)</td></tr>
-<tr class="separator:a8be295584ce60f4d7e352b861aa0b8c0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a421ab83e9a212e3b774b37a86ae700d1"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classLodReader.html#a421ab83e9a212e3b774b37a86ae700d1">parseDirectoryFiles</a> (size_t numFiles, size_t filesOffset)</td></tr>
-<tr class="separator:a421ab83e9a212e3b774b37a86ae700d1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a45860d2123ba990958b3455823b93c9d"><td class="memItemLeft" align="right" valign="top">const std::string &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classLodReader.html#a45860d2123ba990958b3455823b93c9d">description</a> () const</td></tr>
+<tr class="separator:a45860d2123ba990958b3455823b93c9d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a51b4329a15389e3b4c6a935adb004bc0"><td class="memItemLeft" align="right" valign="top">const std::string &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classLodReader.html#a51b4329a15389e3b4c6a935adb004bc0">rootName</a> () const</td></tr>
+<tr class="separator:a51b4329a15389e3b4c6a935adb004bc0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pri-attribs" name="pri-attribs"></a>
 Private Attributes</h2></td></tr>
-<tr class="memitem:a46eb69d8bcb48e46687dc57fb6ceb614"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classBlob.html">Blob</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classLodReader.html#a46eb69d8bcb48e46687dc57fb6ceb614">_lod</a> = <a class="el" href="classBlob.html">Blob</a>()</td></tr>
+<tr class="memitem:a46eb69d8bcb48e46687dc57fb6ceb614"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classBlob.html">Blob</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classLodReader.html#a46eb69d8bcb48e46687dc57fb6ceb614">_lod</a></td></tr>
 <tr class="separator:a46eb69d8bcb48e46687dc57fb6ceb614"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a54f4ee6f46f58fe78f0579e6136f502b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="LodVersion_8h.html#a63d4571b1e87db9efa0a36b67d764103">LodVersion</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classLodReader.html#a54f4ee6f46f58fe78f0579e6136f502b">_version</a> = <a class="el" href="LodVersion_8h.html#a63d4571b1e87db9efa0a36b67d764103abdb1ee8d419d7cdf0e663cbc9ae396fc">LOD_VERSION_MM6</a></td></tr>
-<tr class="separator:a54f4ee6f46f58fe78f0579e6136f502b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a184836a0bb34916825fb984e38e4d2ea"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classLodReader.html#a184836a0bb34916825fb984e38e4d2ea">_path</a></td></tr>
+<tr class="separator:a184836a0bb34916825fb984e38e4d2ea"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af00d2e0397208cf4d98ce0e07d0098fe"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classLodReader.html#af00d2e0397208cf4d98ce0e07d0098fe">_description</a></td></tr>
 <tr class="separator:af00d2e0397208cf4d98ce0e07d0098fe"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:addb34b9a3131287947b2db0731a516a3"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="structLodReader_1_1FileEntryDesc.html">FileEntryDesc</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classLodReader.html#addb34b9a3131287947b2db0731a516a3">_files</a> {}</td></tr>
-<tr class="separator:addb34b9a3131287947b2db0731a516a3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a514da2c28fe82dfb02f00f9682655cce"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classLodReader.html#a514da2c28fe82dfb02f00f9682655cce">_rootName</a></td></tr>
+<tr class="separator:a514da2c28fe82dfb02f00f9682655cce"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afca35026c61b1b0d4e3840a9459cbf85"><td class="memItemLeft" align="right" valign="top">std::unordered_map&lt; std::string, <a class="el" href="structLodReader_1_1LodRegion.html">LodRegion</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classLodReader.html#afca35026c61b1b0d4e3840a9459cbf85">_files</a></td></tr>
+<tr class="separator:afca35026c61b1b0d4e3840a9459cbf85"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p >A single stop shop to read <a class="el" href="namespaceLOD.html">LOD</a> files. Even though LODs support a multi-directory structure, in reality vanilla games only ever had a single directory each.</p>
 <p >Given that we don't plan to expand the <a class="el" href="namespaceLOD.html">LOD</a> format support, when resolving the files this class always looks into the first available directory, which is consistent with the vanilla behaviour. </p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a id="a46ee75c86528c4542f245d6b4af4357f" name="a46ee75c86528c4542f245d6b4af4357f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a46ee75c86528c4542f245d6b4af4357f">&#9670;&#160;</a></span>LodReader() <span class="overload">[1/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">LodReader::LodReader </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">default</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a091281818fdf2deaf4c8e88203dbaa79" name="a091281818fdf2deaf4c8e88203dbaa79"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a091281818fdf2deaf4c8e88203dbaa79">&#9670;&#160;</a></span>LodReader() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">LodReader::LodReader </td>
+          <td>(</td>
+          <td class="paramtype">std::string_view&#160;</td>
+          <td class="paramname"><em>path</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="a0d025801538a991fd820792f42a79667" name="a0d025801538a991fd820792f42a79667"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a0d025801538a991fd820792f42a79667">&#9670;&#160;</a></span>~LodReader()</h2>
 
@@ -145,7 +188,7 @@ Private Attributes</h2></td></tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+<span class="mlabels"><span class="mlabel">default</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
@@ -153,6 +196,24 @@ Private Attributes</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
+<a id="a45860d2123ba990958b3455823b93c9d" name="a45860d2123ba990958b3455823b93c9d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a45860d2123ba990958b3455823b93c9d">&#9670;&#160;</a></span>description()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">const std::string &amp; LodReader::description </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<dl class="section return"><dt>Returns</dt><dd>Description of this <a class="el" href="namespaceLOD.html">LOD</a> file, as specified in the <a class="el" href="namespaceLOD.html">LOD</a> header. </dd></dl>
+
+</div>
+</div>
 <a id="a714cc76c6d5c287d29f3296ad392c209" name="a714cc76c6d5c287d29f3296ad392c209"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a714cc76c6d5c287d29f3296ad392c209">&#9670;&#160;</a></span>exists()</h2>
 
@@ -167,6 +228,38 @@ Private Attributes</h2></td></tr>
           <td> const</td>
         </tr>
       </table>
+</div><div class="memdoc">
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">filename</td><td>Name of the <a class="el" href="namespaceLOD.html">LOD</a> file entry. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Whether the file exists inside the <a class="el" href="namespaceLOD.html">LOD</a>. The check is case-insensitive. </dd></dl>
+
+</div>
+</div>
+<a id="a487be40762c489edea03c12866e68a43" name="a487be40762c489edea03c12866e68a43"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a487be40762c489edea03c12866e68a43">&#9670;&#160;</a></span>isOpen()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool LodReader::isOpen </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 
 </div>
@@ -185,109 +278,42 @@ Private Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<dl class="section return"><dt>Returns</dt><dd>List of all files in a <a class="el" href="namespaceLOD.html">LOD</a>. </dd></dl>
 
 </div>
 </div>
-<a id="ab3558fd37ad8bcf3b2910e56446e9a80" name="ab3558fd37ad8bcf3b2910e56446e9a80"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab3558fd37ad8bcf3b2910e56446e9a80">&#9670;&#160;</a></span>open()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">std::unique_ptr&lt; <a class="el" href="classLodReader.html">LodReader</a> &gt; LodReader::open </td>
-          <td>(</td>
-          <td class="paramtype">const std::string &amp;&#160;</td>
-          <td class="paramname"><em>filename</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">static</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a8be295584ce60f4d7e352b861aa0b8c0" name="a8be295584ce60f4d7e352b861aa0b8c0"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a8be295584ce60f4d7e352b861aa0b8c0">&#9670;&#160;</a></span>parseDirectories()</h2>
+<a id="a10ac28b0f8f19d5c8639b10170238fb5" name="a10ac28b0f8f19d5c8639b10170238fb5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a10ac28b0f8f19d5c8639b10170238fb5">&#9670;&#160;</a></span>open()</h2>
 
 <div class="memitem">
 <div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">bool LodReader::parseDirectories </td>
+          <td class="memname">void LodReader::open </td>
           <td>(</td>
-          <td class="paramtype">size_t&#160;</td>
-          <td class="paramname"><em>numDirectories</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
+          <td class="paramtype">std::string_view&#160;</td>
+          <td class="paramname"><em>path</em></td><td>)</td>
           <td></td>
-          <td class="paramtype">size_t&#160;</td>
-          <td class="paramname"><em>dirOffset</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
         </tr>
       </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">private</span></span>  </td>
-  </tr>
-</table>
 </div><div class="memdoc">
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">path</td><td>Path to the <a class="el" href="namespaceLOD.html">LOD</a> file to open for reading. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname"><a class="el" href="classException.html">Exception</a></td><td>If the <a class="el" href="namespaceLOD.html">LOD</a> couldn't be opened - e.g., if the file doesn't exist, or if it's not a <a class="el" href="namespaceLOD.html">LOD</a>. </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
-<a id="a421ab83e9a212e3b774b37a86ae700d1" name="a421ab83e9a212e3b774b37a86ae700d1"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a421ab83e9a212e3b774b37a86ae700d1">&#9670;&#160;</a></span>parseDirectoryFiles()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">bool LodReader::parseDirectoryFiles </td>
-          <td>(</td>
-          <td class="paramtype">size_t&#160;</td>
-          <td class="paramname"><em>numFiles</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">size_t&#160;</td>
-          <td class="paramname"><em>filesOffset</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">private</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a19103200594bd0c6023baba12f403de9" name="a19103200594bd0c6023baba12f403de9"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a19103200594bd0c6023baba12f403de9">&#9670;&#160;</a></span>read()</h2>
+<a id="a6f68b07f17dd601f1bebd9d7d501d47f" name="a6f68b07f17dd601f1bebd9d7d501d47f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6f68b07f17dd601f1bebd9d7d501d47f">&#9670;&#160;</a></span>read()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -297,15 +323,28 @@ Private Attributes</h2></td></tr>
           <td>(</td>
           <td class="paramtype">const std::string &amp;&#160;</td>
           <td class="paramname"><em>filename</em></td><td>)</td>
-          <td></td>
+          <td> const</td>
         </tr>
       </table>
 </div><div class="memdoc">
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">filename</td><td>Name of the <a class="el" href="namespaceLOD.html">LOD</a> file entry. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Contents of the file inside the <a class="el" href="namespaceLOD.html">LOD</a> as a <code><a class="el" href="classBlob.html">Blob</a></code>. </dd></dl>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname"><a class="el" href="classException.html">Exception</a></td><td>If file doesn't exist inside the <a class="el" href="namespaceLOD.html">LOD</a>. </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
-<a id="a84f46d35dd582adaa0c27021b094b6ad" name="a84f46d35dd582adaa0c27021b094b6ad"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a84f46d35dd582adaa0c27021b094b6ad">&#9670;&#160;</a></span>readRaw()</h2>
+<a id="a61e87efe6ddf0eac8890d2aeb78b2501" name="a61e87efe6ddf0eac8890d2aeb78b2501"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a61e87efe6ddf0eac8890d2aeb78b2501">&#9670;&#160;</a></span>readRaw()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -315,10 +354,28 @@ Private Attributes</h2></td></tr>
           <td>(</td>
           <td class="paramtype">const std::string &amp;&#160;</td>
           <td class="paramname"><em>filename</em></td><td>)</td>
-          <td></td>
+          <td> const</td>
         </tr>
       </table>
 </div><div class="memdoc">
+
+</div>
+</div>
+<a id="a51b4329a15389e3b4c6a935adb004bc0" name="a51b4329a15389e3b4c6a935adb004bc0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a51b4329a15389e3b4c6a935adb004bc0">&#9670;&#160;</a></span>rootName()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">const std::string &amp; LodReader::rootName </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<dl class="section return"><dt>Returns</dt><dd>Name of the single folder inside this <a class="el" href="namespaceLOD.html">LOD</a> file. </dd></dl>
 
 </div>
 </div>
@@ -345,8 +402,8 @@ Private Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="addb34b9a3131287947b2db0731a516a3" name="addb34b9a3131287947b2db0731a516a3"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#addb34b9a3131287947b2db0731a516a3">&#9670;&#160;</a></span>_files</h2>
+<a id="afca35026c61b1b0d4e3840a9459cbf85" name="afca35026c61b1b0d4e3840a9459cbf85"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afca35026c61b1b0d4e3840a9459cbf85">&#9670;&#160;</a></span>_files</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -355,7 +412,7 @@ Private Attributes</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">std::vector&lt;<a class="el" href="structLodReader_1_1FileEntryDesc.html">FileEntryDesc</a>&gt; LodReader::_files {}</td>
+          <td class="memname">std::unordered_map&lt;std::string, <a class="el" href="structLodReader_1_1LodRegion.html">LodRegion</a>&gt; LodReader::_files</td>
         </tr>
       </table>
   </td>
@@ -377,7 +434,7 @@ Private Attributes</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="classBlob.html">Blob</a> LodReader::_lod = <a class="el" href="classBlob.html">Blob</a>()</td>
+          <td class="memname"><a class="el" href="classBlob.html">Blob</a> LodReader::_lod</td>
         </tr>
       </table>
   </td>
@@ -389,8 +446,8 @@ Private Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="a54f4ee6f46f58fe78f0579e6136f502b" name="a54f4ee6f46f58fe78f0579e6136f502b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a54f4ee6f46f58fe78f0579e6136f502b">&#9670;&#160;</a></span>_version</h2>
+<a id="a184836a0bb34916825fb984e38e4d2ea" name="a184836a0bb34916825fb984e38e4d2ea"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a184836a0bb34916825fb984e38e4d2ea">&#9670;&#160;</a></span>_path</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -399,7 +456,29 @@ Private Attributes</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="LodVersion_8h.html#a63d4571b1e87db9efa0a36b67d764103">LodVersion</a> LodReader::_version = <a class="el" href="LodVersion_8h.html#a63d4571b1e87db9efa0a36b67d764103abdb1ee8d419d7cdf0e663cbc9ae396fc">LOD_VERSION_MM6</a></td>
+          <td class="memname">std::string LodReader::_path</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a514da2c28fe82dfb02f00f9682655cce" name="a514da2c28fe82dfb02f00f9682655cce"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a514da2c28fe82dfb02f00f9682655cce">&#9670;&#160;</a></span>_rootName</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::string LodReader::_rootName</td>
         </tr>
       </table>
   </td>

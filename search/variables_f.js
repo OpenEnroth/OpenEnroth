@@ -7,7 +7,7 @@ var searchData=
   ['object_5ftype_4',['object_type',['../structVis__SelectionFilter.html#a0cbe861a70212007149579c408f68795',1,'Vis_SelectionFilter::object_type()'],['../structVis__ObjectInfo.html#a1a87c2750a9f1a3bbc3071ffd7536b11',1,'Vis_ObjectInfo::object_type()']]],
   ['odm_5ffov_5fdeg_5',['odm_fov_deg',['../structCamera3D.html#a160b7b49996d1ad7039854b172404da6',1,'Camera3D']]],
   ['odm_5ffov_5frad_6',['odm_fov_rad',['../structCamera3D.html#a45ba0159fc825eabb2b3e2764a7ad4da',1,'Camera3D']]],
-  ['offset_7',['offset',['../structLodReader_1_1FileEntryDesc.html#a6c16ee2a0d83f74dfbed5dea43f5c096',1,'LodReader::FileEntryDesc::offset()'],['../structVideoList_1_1Node.html#ac8ecc73f90bc175960ef4564334bde9e',1,'VideoList::Node::offset()'],['../structLODSpriteLine.html#a94a6b22607b280e45e89d3fccc4b6fd0',1,'LODSpriteLine::offset()']]],
+  ['offset_7',['offset',['../structLodReader_1_1LodRegion.html#a6461a605a1fb098c9cef9db73c596bd2',1,'LodReader::LodRegion::offset()'],['../structVideoList_1_1Node.html#ac8ecc73f90bc175960ef4564334bde9e',1,'VideoList::Node::offset()'],['../structLODSpriteLine.html#a94a6b22607b280e45e89d3fccc4b6fd0',1,'LODSpriteLine::offset()']]],
   ['olivedrab_8',['OliveDrab',['../classColorTable.html#a6e50c2a04baea1e9d9ed4704421e746b',1,'ColorTable']]],
   ['onlongtimertriggers_9',['onLongTimerTriggers',['../Processor_8cpp.html#a7d5e45ce6ac370dbd1d441c363bb65bb',1,'Processor.cpp']]],
   ['onmapleavetriggers_10',['onMapLeaveTriggers',['../Processor_8cpp.html#af4bb75b65fca941a36c9da1ea08478f4',1,'Processor.cpp']]],

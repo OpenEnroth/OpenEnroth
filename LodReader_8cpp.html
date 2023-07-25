@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;3f7863b</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;b945ca0</span>
    </div>
   </td>
  </tr>
@@ -79,26 +79,30 @@ $(function() {
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><code>#include &quot;<a class="el" href="LodReader_8h.html">LodReader.h</a>&quot;</code><br />
-<code>#include &lt;algorithm&gt;</code><br />
 <code>#include &lt;cassert&gt;</code><br />
-<code>#include &lt;map&gt;</code><br />
-<code>#include &lt;iterator&gt;</code><br />
-<code>#include &quot;<a class="el" href="ErrorHandling_8h.html">Engine/ErrorHandling.h</a>&quot;</code><br />
+<code>#include &lt;utility&gt;</code><br />
 <code>#include &quot;<a class="el" href="Compression_8h.html">Library/Compression/Compression.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="LodDefinitions_8h.html">Library/Lod/LodDefinitions.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="String_8h.html">Utility/String.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="SnapshotSerialization_8h.html">Library/Snapshots/SnapshotSerialization.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="BlobInputStream_8h.html">Utility/Streams/BlobInputStream.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="Exception_8h.html">Utility/Exception.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="String_8h.html">Utility/String.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="LodSnapshots_8h.html">LodSnapshots.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="LodEnums_8h.html">LodEnums.h</a>&quot;</code><br />
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:aa7d115a10dc60ce2f191a09fe17c88b0"><td class="memItemLeft" align="right" valign="top">static size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="LodReader_8cpp.html#aa7d115a10dc60ce2f191a09fe17c88b0">getDirectoryHeaderImgSize</a> (<a class="el" href="LodVersion_8h.html#a63d4571b1e87db9efa0a36b67d764103">LodVersion</a> lod_version)</td></tr>
-<tr class="separator:aa7d115a10dc60ce2f191a09fe17c88b0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3d3a2a1c222ef0ab8297111501be9c3b"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="LodReader_8cpp.html#a3d3a2a1c222ef0ab8297111501be9c3b">lodHeaderParseVersion</a> (const <a class="el" href="structLodHeader__Mm6.html">LodHeader_Mm6</a> &amp;header, <a class="el" href="LodVersion_8h.html#a63d4571b1e87db9efa0a36b67d764103">LodVersion</a> &amp;out_version)</td></tr>
-<tr class="separator:a3d3a2a1c222ef0ab8297111501be9c3b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8eb21eb89d241937dca21df4c9d2bbbd"><td class="memItemLeft" align="right" valign="top">static size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="LodReader_8cpp.html#a8eb21eb89d241937dca21df4c9d2bbbd">fileEntrySize</a> (<a class="el" href="LodEnums_8h.html#a63d4571b1e87db9efa0a36b67d764103">LodVersion</a> version)</td></tr>
+<tr class="separator:a8eb21eb89d241937dca21df4c9d2bbbd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3a37ddb1f6f89099805092174981f421"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="structLodHeader.html">LodHeader</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="LodReader_8cpp.html#a3a37ddb1f6f89099805092174981f421">parseHeader</a> (<a class="el" href="classInputStream.html">InputStream</a> &amp;stream, std::string_view path, <a class="el" href="LodEnums_8h.html#a63d4571b1e87db9efa0a36b67d764103">LodVersion</a> *version)</td></tr>
+<tr class="separator:a3a37ddb1f6f89099805092174981f421"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7d6c1fb549408a8915352cfb5e053902"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="structLodEntry.html">LodEntry</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="LodReader_8cpp.html#a7d6c1fb549408a8915352cfb5e053902">parseDirectoryEntry</a> (<a class="el" href="classInputStream.html">InputStream</a> &amp;stream, <a class="el" href="LodEnums_8h.html#a63d4571b1e87db9efa0a36b67d764103">LodVersion</a> version, std::string_view path, size_t lodSize)</td></tr>
+<tr class="separator:a7d6c1fb549408a8915352cfb5e053902"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0527883fe938e9105fdac85e834919e7"><td class="memItemLeft" align="right" valign="top">static std::vector&lt; <a class="el" href="structLodEntry.html">LodEntry</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="LodReader_8cpp.html#a0527883fe938e9105fdac85e834919e7">parseFileEntries</a> (<a class="el" href="classInputStream.html">InputStream</a> &amp;stream, const <a class="el" href="structLodEntry.html">LodEntry</a> &amp;directoryEntry, <a class="el" href="LodEnums_8h.html#a63d4571b1e87db9efa0a36b67d764103">LodVersion</a> version, std::string_view path)</td></tr>
+<tr class="separator:a0527883fe938e9105fdac85e834919e7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Function Documentation</h2>
-<a id="aa7d115a10dc60ce2f191a09fe17c88b0" name="aa7d115a10dc60ce2f191a09fe17c88b0"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa7d115a10dc60ce2f191a09fe17c88b0">&#9670;&#160;</a></span>getDirectoryHeaderImgSize()</h2>
+<a id="a8eb21eb89d241937dca21df4c9d2bbbd" name="a8eb21eb89d241937dca21df4c9d2bbbd"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8eb21eb89d241937dca21df4c9d2bbbd">&#9670;&#160;</a></span>fileEntrySize()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -107,10 +111,10 @@ Functions</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">static size_t getDirectoryHeaderImgSize </td>
+          <td class="memname">static size_t fileEntrySize </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="LodVersion_8h.html#a63d4571b1e87db9efa0a36b67d764103">LodVersion</a>&#160;</td>
-          <td class="paramname"><em>lod_version</em></td><td>)</td>
+          <td class="paramtype"><a class="el" href="LodEnums_8h.html#a63d4571b1e87db9efa0a36b67d764103">LodVersion</a>&#160;</td>
+          <td class="paramname"><em>version</em></td><td>)</td>
           <td></td>
         </tr>
       </table>
@@ -123,8 +127,8 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="a3d3a2a1c222ef0ab8297111501be9c3b" name="a3d3a2a1c222ef0ab8297111501be9c3b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a3d3a2a1c222ef0ab8297111501be9c3b">&#9670;&#160;</a></span>lodHeaderParseVersion()</h2>
+<a id="a7d6c1fb549408a8915352cfb5e053902" name="a7d6c1fb549408a8915352cfb5e053902"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7d6c1fb549408a8915352cfb5e053902">&#9670;&#160;</a></span>parseDirectoryEntry()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -133,16 +137,118 @@ Functions</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">static bool lodHeaderParseVersion </td>
+          <td class="memname">static <a class="el" href="structLodEntry.html">LodEntry</a> parseDirectoryEntry </td>
           <td>(</td>
-          <td class="paramtype">const <a class="el" href="structLodHeader__Mm6.html">LodHeader_Mm6</a> &amp;&#160;</td>
-          <td class="paramname"><em>header</em>, </td>
+          <td class="paramtype"><a class="el" href="classInputStream.html">InputStream</a> &amp;&#160;</td>
+          <td class="paramname"><em>stream</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="LodVersion_8h.html#a63d4571b1e87db9efa0a36b67d764103">LodVersion</a> &amp;&#160;</td>
-          <td class="paramname"><em>out_version</em>&#160;</td>
+          <td class="paramtype"><a class="el" href="LodEnums_8h.html#a63d4571b1e87db9efa0a36b67d764103">LodVersion</a>&#160;</td>
+          <td class="paramname"><em>version</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::string_view&#160;</td>
+          <td class="paramname"><em>path</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>lodSize</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a0527883fe938e9105fdac85e834919e7" name="a0527883fe938e9105fdac85e834919e7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0527883fe938e9105fdac85e834919e7">&#9670;&#160;</a></span>parseFileEntries()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static std::vector&lt; <a class="el" href="structLodEntry.html">LodEntry</a> &gt; parseFileEntries </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classInputStream.html">InputStream</a> &amp;&#160;</td>
+          <td class="paramname"><em>stream</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="structLodEntry.html">LodEntry</a> &amp;&#160;</td>
+          <td class="paramname"><em>directoryEntry</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="LodEnums_8h.html#a63d4571b1e87db9efa0a36b67d764103">LodVersion</a>&#160;</td>
+          <td class="paramname"><em>version</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::string_view&#160;</td>
+          <td class="paramname"><em>path</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a3a37ddb1f6f89099805092174981f421" name="a3a37ddb1f6f89099805092174981f421"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3a37ddb1f6f89099805092174981f421">&#9670;&#160;</a></span>parseHeader()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static <a class="el" href="structLodHeader.html">LodHeader</a> parseHeader </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classInputStream.html">InputStream</a> &amp;&#160;</td>
+          <td class="paramname"><em>stream</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::string_view&#160;</td>
+          <td class="paramname"><em>path</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="LodEnums_8h.html#a63d4571b1e87db9efa0a36b67d764103">LodVersion</a> *&#160;</td>
+          <td class="paramname"><em>version</em>&#160;</td>
         </tr>
         <tr>
           <td></td>

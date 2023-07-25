@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;3f7863b</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;b945ca0</span>
    </div>
   </td>
  </tr>
@@ -108,6 +108,8 @@ Functions</h2></td></tr>
 <tr class="separator:a8f9d81b501ac9b4a827da9844e470524"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae97c0d39944acb26a50e765cd746e74c"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="String_8cpp.html#ae97c0d39944acb26a50e765cd746e74c">ilessAscii</a> (std::u8string_view a, std::u8string_view b)</td></tr>
 <tr class="separator:ae97c0d39944acb26a50e765cd746e74c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a804fd12d750831ab2f2e4abf398edecf"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="String_8cpp.html#a804fd12d750831ab2f2e4abf398edecf">toPrintable</a> (std::string_view <a class="el" href="Json__ut_8cpp.html#a3691308f2a4c2f6983f2880d32e29c84">s</a>, char placeholder)</td></tr>
+<tr class="separator:a804fd12d750831ab2f2e4abf398edecf"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Function Documentation</h2>
 <a id="a4ddc8ba5547805547250b2428a40b7c1" name="a4ddc8ba5547805547250b2428a40b7c1"></a>
@@ -387,6 +389,42 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+</div>
+</div>
+<a id="a804fd12d750831ab2f2e4abf398edecf" name="a804fd12d750831ab2f2e4abf398edecf"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a804fd12d750831ab2f2e4abf398edecf">&#9670;&#160;</a></span>toPrintable()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::string toPrintable </td>
+          <td>(</td>
+          <td class="paramtype">std::string_view&#160;</td>
+          <td class="paramname"><em>s</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">char&#160;</td>
+          <td class="paramname"><em>placeholder</em> = <code>'&#160;'</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">s</td><td>String to transform. </td></tr>
+    <tr><td class="paramname">placeholder</td><td><a class="el" href="classCharacter.html">Character</a> to replace all non-printable chars with. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Passed string, with all non-printable characters replaced with <code>placeholder</code>. </dd></dl>
 
 </div>
 </div>
