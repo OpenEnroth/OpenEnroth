@@ -389,9 +389,11 @@ jobs:
         submodules: 'recursive'
 
     - name: Check for Data cache
-      uses: actions/cache@v3
+      id: check-for-data-cache
+      uses: actions/cache/restore@v3
       with:
-        path: OpenEnroth-Data
+        path: |
+          OpenEnroth-Data
         key: data-cache
 
     - name: Checkout private data
