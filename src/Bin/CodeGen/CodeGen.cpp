@@ -182,9 +182,8 @@ int runBeaconsCodeGen(CodeGenOptions options, GameResourceManager *resourceManag
     MapStats mapStats;
     mapStats.Initialize(resourceManager->getEventsFile("MapStats.txt"));
 
-    std::unique_ptr<LodReader> gamesLod = LodReader::open(makeDataPath("data", "games.lod"));
-
-    std::vector<std::string> fileNames = gamesLod->ls();
+    LodReader gamesLod(makeDataPath("data", "games.lod"));
+    std::vector<std::string> fileNames = gamesLod.ls();
 
     for (size_t i = 0; i < fileNames.size(); i++) {
         const std::string &fileName = fileNames[i];

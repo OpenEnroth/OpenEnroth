@@ -84,3 +84,11 @@ bool iequalsAscii(std::u8string_view a, std::u8string_view b) {
 bool ilessAscii(std::u8string_view a, std::u8string_view b) {
     return iless(toCharStringView(a), toCharStringView(b));
 }
+
+std::string toPrintable(std::string_view s, char placeholder) {
+    std::string result(s.size(), ' ');
+    for (size_t i = 0; i < s.size(); i++)
+        if (s[i] >= '\x20' && s[i] <= '\x7E') // Ascii printable chars are in [0x20, 0x7E].
+            result[i] = s[i];
+    return result;
+}

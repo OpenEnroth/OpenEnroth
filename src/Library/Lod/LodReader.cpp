@@ -1,196 +1,173 @@
 #include "LodReader.h"
 
-#include <algorithm>
 #include <cassert>
-#include <map>
-#include <iterator>
-
-// TODO(captainurist): errorhandling should be moved to utility/library out of the engine
-#include "Engine/ErrorHandling.h"
+#include <utility>
 
 #include "Library/Compression/Compression.h"
-#include "Library/Lod/LodDefinitions.h"
+#include "Library/Snapshots/SnapshotSerialization.h"
 
-#include "Utility/String.h"
 #include "Utility/Streams/BlobInputStream.h"
+#include "Utility/Exception.h"
+#include "Utility/String.h"
 
-static size_t getDirectoryHeaderImgSize(LodVersion lod_version) {
-    switch (lod_version) {
-    case LOD_VERSION_MM6:
-    case LOD_VERSION_MM6_GAME:
-    case LOD_VERSION_MM7:
-    case LOD_VERSION_MM8:
-        return sizeof(LodDirectoryHeader_Mm6);
+#include "LodSnapshots.h"
+#include "LodEnums.h"
+
+static size_t fileEntrySize(LodVersion version) {
+    switch (version) {
+        case LOD_VERSION_MM6:
+        case LOD_VERSION_MM6_GAME:
+        case LOD_VERSION_MM7:
+            return sizeof(LodEntry_MM6);
+        case LOD_VERSION_MM8:
+            return sizeof(LodFileEntry_MM8);
+        default:
+            assert(false);
+            return 0;
     }
-
-    Error("Unknown LOD version: %u", lod_version);
-    return 0;
 }
 
-static bool lodHeaderParseVersion(const LodHeader_Mm6 &header, LodVersion &out_version) {
-    static std::map<std::string, LodVersion> versionMap = {
-        {"MMVI",     LOD_VERSION_MM6},
-        {"GameMMVI", LOD_VERSION_MM6_GAME},
-        {"MMVII",    LOD_VERSION_MM7},
-        {"MMVIII",   LOD_VERSION_MM8},
-    };
+static LodHeader parseHeader(InputStream &stream, std::string_view path, LodVersion *version) {
+    LodHeader header;
+    deserialize(stream, &header, tags::via<LodHeader_MM6>);
 
-    auto it = versionMap.find((const char *)header.version.data());
-    if (it != versionMap.end()) {
-        out_version = it->second;
-        return true;
-    }
+    if (header.signature != "LOD")
+        throw Exception("File '{}' is not a valid LOD: expected signature '{}', got '{}'", path, "LOD", toPrintable(header.signature));
 
-    return false;
+    if (!tryDeserialize(header.version, version))
+        throw Exception("File '{}' is not a valid LOD: version '{}' is not recognized", path, toPrintable(header.version));
+
+    // While LOD structure itself support multiple directories, all LOD files associated with
+    // vanilla MM6/7/8 games use a single directory.
+    if (header.numDirectories != 1)
+        throw Exception("File '{}' is not a valid LOD: expected a single directory, got '{}' directories", path, header.numDirectories);
+
+    return header;
 }
 
-bool LodReader::parseDirectoryFiles(size_t numFiles, size_t filesOffset) {
-    size_t fileHeaderSize = 0;
+static LodEntry parseDirectoryEntry(InputStream &stream, LodVersion version, std::string_view path, size_t lodSize) {
+    LodEntry result;
+    deserialize(stream, &result, tags::via<LodEntry_MM6>);
 
-    switch (_version) {
-      case LOD_VERSION_MM6:
-      case LOD_VERSION_MM6_GAME:
-      case LOD_VERSION_MM7:
-        fileHeaderSize = sizeof(LodFileHeader_Mm6);
-        break;
+    size_t expectedDataSize = result.numItems * fileEntrySize(version);
+    if (result.dataSize < expectedDataSize)
+        throw Exception("File '{}' is not a valid LOD: invalid root directory index size, expected at least {} bytes, got {} bytes", path, expectedDataSize, result.dataSize);
 
-      case LOD_VERSION_MM8:
-        fileHeaderSize = sizeof(LodFileHeader_Mm8);
-        break;
+    if (result.dataOffset + result.dataSize > lodSize)
+        throw Exception("File '{}' is not a valid LOD: root directory index points outside the LOD file", path);
 
-      default:
-        assert(false);
-    }
-
-    Blob filesBlob = _lod.subBlob(filesOffset, fileHeaderSize*numFiles);
-
-    if (filesBlob.size() < fileHeaderSize * numFiles) {
-        return false;
-    }
-
-    BlobInputStream stream(filesBlob);
-
-    for (size_t i = 0; i < numFiles; ++i) {
-        FileEntryDesc fileEntry;
-        switch (_version) {
-            case LOD_VERSION_MM6:
-            case LOD_VERSION_MM6_GAME:
-            case LOD_VERSION_MM7: {
-                LodFileHeader_Mm6 header;
-                deserialize(stream, &header);
-
-                fileEntry.name = std::string((char *)header.name.data());
-                fileEntry.offset = filesOffset + header.dataOffset;
-                fileEntry.size = header.size;
-                break;
-            }
-
-            case LOD_VERSION_MM8: {
-                LodFileHeader_Mm8 header;
-                deserialize(stream, &header);
-
-                fileEntry.name = std::string((char *)header.name.data());
-                fileEntry.offset = filesOffset + header.dataOffset;
-                fileEntry.size = header.dataSize;
-                break;
-            }
-        }
-
-        _files.push_back(fileEntry);
-    }
-
-    return true;
+    return result;
 }
 
-bool LodReader::parseDirectories(size_t numDirectories, size_t dirOffset) {
-    assert(getDirectoryHeaderImgSize(_version) == sizeof(LodDirectoryHeader_Mm6));
-
-    _files.clear();
-
-    if (numDirectories != 1) {
-        // While LOD structure itself support multiple directories, all LOD files associated with
-        // vanilla MM6/7/8 games use single directory.
-        Warn("LOD file have more that one directory, files will be read only from the first one.");
+static std::vector<LodEntry> parseFileEntries(InputStream &stream, const LodEntry &directoryEntry, LodVersion version, std::string_view path) {
+    std::vector<LodEntry> result;
+    if (version == LOD_VERSION_MM8) {
+        deserialize(stream, &result, tags::presized(directoryEntry.numItems), tags::via<LodFileEntry_MM8>);
+    } else {
+        deserialize(stream, &result, tags::presized(directoryEntry.numItems), tags::via<LodEntry_MM6>);
     }
 
-    Blob dirBlob = _lod.subBlob(dirOffset, sizeof(LodDirectoryHeader_Mm6));
-
-    if (dirBlob.size() < sizeof(LodDirectoryHeader_Mm6)) {
-        return false;
+    for (const LodEntry &entry : result) {
+        if (entry.numItems != 0)
+            throw Exception("File '{}' is not a valid LOD: subdirectories are not supported, but '{}' is a subdirectory", path, entry.name);
+        if (entry.dataOffset + entry.dataSize > directoryEntry.dataSize)
+            throw Exception("File '{}' is not a valid LOD: entry '{}' points outside the LOD file", path, entry.name);
     }
 
-    LodDirectoryHeader_Mm6 dirHeader;
-    deserialize(dirBlob, &dirHeader);
-
-    return parseDirectoryFiles(dirHeader.numFiles, dirHeader.dataOffset);
+    return result;
 }
 
-std::unique_ptr<LodReader> LodReader::open(const std::string &filename) {
-    std::unique_ptr<LodReader> lod = std::make_unique<LodReader>();
 
-    lod->_lod = Blob::fromFile(filename);
-    if (lod->_lod.size() < sizeof(LodHeader_Mm6)) {
-        Warn("LodReader::open: invalid LOD file: %s", filename.c_str());
-        return nullptr;
+LodReader::LodReader() = default;
+
+LodReader::LodReader(std::string_view path) {
+    open(path);
+}
+
+LodReader::~LodReader() = default;
+
+void LodReader::open(std::string_view path) {
+    Blob lod = Blob::fromFile(path); // This call throws if the file doesn't exist.
+
+    size_t expectedSize = sizeof(LodHeader_MM6) + sizeof(LodEntry_MM6); // Header + directory entry.
+    if (lod.size() < expectedSize)
+        throw Exception("File '{}' is not a valid LOD: expected file size at least {} bytes, got {} bytes", _path, expectedSize, _lod.size());
+
+    BlobInputStream lodStream(lod);
+    LodVersion version = LOD_VERSION_MM6;
+    LodHeader header = parseHeader(lodStream, path, &version);
+    LodEntry rootEntry = parseDirectoryEntry(lodStream, version, path, lod.size());
+
+    BlobInputStream dirStream(lod.subBlob(rootEntry.dataOffset, rootEntry.dataSize));
+    std::unordered_map<std::string, LodRegion> files;
+    for (const LodEntry &entry : parseFileEntries(dirStream, rootEntry, version, path)) {
+        std::string name = toLower(entry.name);
+        if (files.contains(name))
+            throw Exception("File '{}' is not a valid LOD: contains duplicate entries for '{}'", _path, name);
+
+        LodRegion region;
+        region.offset = rootEntry.dataOffset + entry.dataOffset;
+        region.size = entry.dataSize;
+        files.emplace(toLower(entry.name), region);
     }
 
-    LodHeader_Mm6 header;
-    deserialize(lod->_lod, &header);
-
-    if (memcmp(header.signature.data(), "LOD\0", sizeof(header.signature))) {
-        Warn("LodReader::open: invalid LOD file: %s", filename.c_str());
-        return nullptr;
-    }
-
-    if (!lodHeaderParseVersion(header, lod->_version)) {
-        Warn("LodReader::open: unknown LOD version: %s", (const char *)header.version.data());
-        return nullptr;
-    }
-
-    if (!lod->parseDirectories(header.numDirectories, sizeof(LodHeader_Mm6))) {
-        Warn("LodReader::open: corrupt directory index: %s", filename.c_str());
-        return nullptr;
-    }
-
-    lod->_description = std::string((const char *)header.description.data());
-    return lod;
+    // All good, this is a valid LOD, can update `this`.
+    _lod = std::move(lod);
+    _path = path;
+    _description = std::move(header.description);
+    _rootName = std::move(rootEntry.name);
+    _files = std::move(files);
 }
 
 bool LodReader::exists(const std::string &filename) const {
-    // TODO(Nik-RE-dev): use std::unordered_map to avoid full vector search
-    return _files.cend() != std::find_if(_files.cbegin(), _files.cend(), [&](const FileEntryDesc &file) { return iequals(file.name, filename); });
+    assert(isOpen());
+
+    return _files.contains(toLower(filename));
 }
 
-Blob LodReader::read(const std::string &filename) {
+Blob LodReader::read(const std::string &filename) const {
+    assert(isOpen());
+
     Blob result = readRaw(filename);
-    if (result.size() < sizeof(LodFileCompressionHeader_Mm6))
+    if (result.size() < sizeof(LodCompressionHeader_MM6))
         return result;
 
     BlobInputStream stream(result);
-    LodFileCompressionHeader_Mm6 header;
+    LodCompressionHeader_MM6 header;
     deserialize(stream, &header);
     if (header.version != 91969 || memcmp(header.signature.data(), "mvii", 4))
         return result; // Not compressed after all.
 
-    result = stream.readBlobOrFail(header.compressedSize);
+    result = stream.readBlobOrFail(header.dataSize);
     if (header.decompressedSize)
         result = zlib::Uncompress(result, header.decompressedSize);
     return result;
 }
 
-Blob LodReader::readRaw(const std::string &filename) {
-    const auto &file = std::find_if(_files.cbegin(), _files.cend(), [&](const FileEntryDesc &file) { return iequals(file.name, filename); });
+Blob LodReader::readRaw(const std::string &filename) const {
+    assert(isOpen());
 
-    if (_files.cend() == file) {
-        Warn("LodReader::read: file not found: %s", filename.c_str());
-        return Blob();
-    }
+    auto pos = _files.find(toLower(filename));
+    if (pos == _files.end())
+        throw Exception("Entry '{}' doesn't exist in LOD file '{}'", filename, _path);
 
-    return _lod.subBlob(file->offset, file->size);
+    return _lod.subBlob(pos->second.offset, pos->second.size);
 }
 
 std::vector<std::string> LodReader::ls() const {
-    std::vector<std::string> res;
-    std::transform(_files.begin(), _files.end(), std::back_inserter(res), [](const FileEntryDesc &f) { return f.name; });
-    return res;
+    assert(isOpen());
+
+    std::vector<std::string> result;
+    for (const auto &[name, _] : _files)
+        result.push_back(name);
+    return result;
 }
+
+const std::string &LodReader::description() const {
+    return _description;
+}
+
+const std::string &LodReader::rootName() const {
+    return _rootName;
+}
+

@@ -23,7 +23,7 @@ LodTextureCache::~LodTextureCache() {
 }
 
 bool LodTextureCache::open(const std::string &pFilename, const std::string &pFolderName) {
-    _reader = LodReader::open(pFilename);
+    _reader.open(pFilename);
     return true;
 }
 
@@ -67,7 +67,7 @@ Texture_MM7 *LodTextureCache::loadTexture(const std::string &pContainer, bool us
 
 
 Blob LodTextureCache::LoadCompressedTexture(const std::string &pContainer) {
-    BlobInputStream input(_reader->read(pContainer));
+    BlobInputStream input(_reader.read(pContainer));
 
     TextureHeader DstBuf;
     input.readOrFail(&DstBuf, sizeof(TextureHeader));
@@ -80,10 +80,10 @@ Blob LodTextureCache::LoadCompressedTexture(const std::string &pContainer) {
 }
 
 int LodTextureCache::LoadTextureFromLOD(Texture_MM7 *pOutTex, const std::string &pContainer) {
-    if (!_reader->exists(pContainer))
+    if (!_reader.exists(pContainer))
         return -1;
 
-    BlobInputStream input(_reader->read(pContainer));
+    BlobInputStream input(_reader.read(pContainer));
 
     TextureHeader *header = &pOutTex->header;
     input.readOrFail(header, sizeof(TextureHeader));

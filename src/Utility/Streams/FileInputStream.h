@@ -21,6 +21,9 @@ class FileInputStream : public InputStream {
     [[nodiscard]] virtual size_t read(void *data, size_t size) override;
     [[nodiscard]] virtual size_t skip(size_t size) override;
     virtual void close() override;
+
+    // TODO(captainurist): This throws on seek-beyond-eof, which is inconsistent with read().
+    //                     Need seek() && seekOrFail(). And position() && size().
     void seek(size_t pos);
 
     [[nodiscard]] FILE *handle() {

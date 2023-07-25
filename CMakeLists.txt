@@ -41,7 +41,9 @@ if(BUILD_COMPILER STREQUAL "gcc" OR BUILD_COMPILER STREQUAL "clang")
     add_compile_options(-Werror=return-type) # Control reaches the end of non-void function, this is an error on MSVC
     add_compile_options(-Werror=unused-result) # Ignoring return value of function declared with 'nodiscard' attribute
     add_compile_options(-Werror=unused-value) # Expression result unused
-elseif(BUILD_COMPILER STREQUAL "gcc")
+endif()
+
+if(BUILD_COMPILER STREQUAL "gcc")
     add_compile_definitions($<$<CONFIG:Debug>:_GLIBCXX_ASSERTIONS>)
     add_link_options(-fuse-ld=gold)
     add_link_options(-pthread)

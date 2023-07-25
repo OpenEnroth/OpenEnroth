@@ -8,6 +8,7 @@
 #include "Engine/Graphics/Sprites.h"
 
 #include "Library/Image/Image.h"
+#include "Library/Lod/LodReader.h"
 
 class LodReader;
 
@@ -49,7 +50,7 @@ class LodSpriteCache {
     bool LoadSpriteFromFile(LODSprite *pSpriteHeader, const std::string &pContainer);
 
  private:
-    std::unique_ptr<LodReader> _reader;
+    LodReader _reader;
     int _reservedCount = 0;
     std::deque<Sprite> _sprites;
 };

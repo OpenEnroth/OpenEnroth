@@ -572,7 +572,7 @@ int LOD::File::GetSubNodeIndex(const std::string &name) const {
 }
 
 bool Initialize_GamesLOD_NewLOD() {
-    pGames_LOD = LodReader::open(makeDataPath("data", "games.lod"));
+    pGames_LOD = std::make_unique<LodReader>(makeDataPath("data", "games.lod"));
     pSave_LOD = new LOD::WriteableFile;
     pSave_LOD->AllocSubIndicesAndIO(300, 100000);
     return true;
