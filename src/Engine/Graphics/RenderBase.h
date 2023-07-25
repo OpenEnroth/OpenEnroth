@@ -52,22 +52,6 @@ class RenderBase : public IRender {
     virtual void DrawBillboards_And_MaybeRenderSpecialEffects_And_EndScene() override;
     virtual void PresentBlackScreen() override;
 
-    virtual GraphicsImage *CreateTexture_Paletted(const std::string &name) override;
-    virtual GraphicsImage *CreateTexture_ColorKey(const std::string &name, Color colorkey) override;
-    virtual GraphicsImage *CreateTexture_Solid(const std::string &name) override;
-    virtual GraphicsImage *CreateTexture_Alpha(const std::string &name) override;
-
-    virtual GraphicsImage *CreateTexture_PCXFromFile(const std::string &name) override;
-    virtual GraphicsImage *CreateTexture_PCXFromIconsLOD(const std::string &name) override;
-    virtual GraphicsImage *CreateTexture_PCXFromNewLOD(const std::string &name) override;
-    virtual GraphicsImage *CreateTexture_PCXFromLOD(LOD::File *pLOD, const std::string &name) override;
-
-    virtual GraphicsImage *CreateTexture_Blank(unsigned int width, unsigned int height) override;
-    virtual GraphicsImage *CreateTexture_Blank(RgbaImage image) override;
-
-    virtual GraphicsImage *CreateTexture(const std::string &name) override;
-    virtual GraphicsImage *CreateSprite(const std::string &name) override;
-
  protected:
     unsigned int Billboard_ProbablyAddToListAndSortByZOrder(float z);
     void TransformBillboard(const SoftwareBillboard *a2, const RenderBillboard *pBillboard);

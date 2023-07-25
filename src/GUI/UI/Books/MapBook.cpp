@@ -177,7 +177,7 @@ void DrawBook_Map_sub(unsigned int tl_x, unsigned int tl_y, unsigned int br_x, i
 
         static GraphicsImage *minimaptemp = nullptr;
         if (!minimaptemp) {
-            minimaptemp = render->CreateTexture_Blank(screenWidth, screenHeight);
+            minimaptemp = GraphicsImage::Create(screenWidth, screenHeight);
         }
         Color *minitempix = minimaptemp->rgba().pixels().data();
         const Color *minimap_pixels = viewparams->location_minimap->rgba().pixels().data();

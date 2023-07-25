@@ -25,7 +25,6 @@ class AssetsManager {
 
     GraphicsImage *getImage_PCXFromFile(const std::string &name);
     GraphicsImage *getImage_PCXFromIconsLOD(const std::string &name);
-    GraphicsImage *getImage_PCXFromNewLOD(const std::string &name);
 
     GraphicsImage *getBitmap(const std::string &name);
     GraphicsImage *getSprite(const std::string &name);

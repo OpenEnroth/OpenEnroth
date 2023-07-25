@@ -58,22 +58,6 @@ class IRender {
     virtual struct nk_image NuklearImageLoad(GraphicsImage *img) = 0;
     virtual void NuklearImageFree(GraphicsImage *img) = 0;
 
-    virtual GraphicsImage *CreateTexture_Paletted(const std::string &name) = 0;
-    virtual GraphicsImage *CreateTexture_ColorKey(const std::string &name, Color colorkey) = 0;
-    virtual GraphicsImage *CreateTexture_Solid(const std::string &name) = 0;
-    virtual GraphicsImage *CreateTexture_Alpha(const std::string &name) = 0;
-
-    virtual GraphicsImage *CreateTexture_PCXFromFile(const std::string &name) = 0;
-    virtual GraphicsImage *CreateTexture_PCXFromIconsLOD(const std::string &name) = 0;
-    virtual GraphicsImage *CreateTexture_PCXFromNewLOD(const std::string &name) = 0;
-    virtual GraphicsImage *CreateTexture_PCXFromLOD(LOD::File *pLOD, const std::string &name) = 0;
-
-    virtual GraphicsImage *CreateTexture_Blank(unsigned int width, unsigned int height) = 0;
-    virtual GraphicsImage *CreateTexture_Blank(RgbaImage image) = 0;
-
-    virtual GraphicsImage *CreateTexture(const std::string &name) = 0;
-    virtual GraphicsImage *CreateSprite(const std::string &name) = 0;
-
     virtual void ClearBlack() = 0;
     virtual void PresentBlackScreen() = 0;
 
