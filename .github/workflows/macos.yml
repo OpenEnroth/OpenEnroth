@@ -48,6 +48,10 @@ jobs:
           OpenEnroth_GameData
         key: data-cache
 
+    - name: Copy shaders
+      run: |
+        cp -r /Users/runner/work/OpenEnroth/OpenEnroth/resources/shaders /Users/runner/work/OpenEnroth/OpenEnroth/OpenEnroth_GameData/mm7
+
     - name: Install dependencies
       run: |
         brew install ffmpeg@4
@@ -72,7 +76,7 @@ jobs:
         pwd
         make GameTest_NullRenderer
       env:
-        OPENENROTH_MM7_PATH: /home/runner/work/OpenEnroth/OpenEnroth/OpenEnroth_GameData/mm7        
+        OPENENROTH_MM7_PATH: /Users/runner/work/OpenEnroth/OpenEnroth/OpenEnroth_GameData/mm7        
         
     - name: Prepare artifact
       run: |
