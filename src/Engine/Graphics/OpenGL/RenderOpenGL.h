@@ -48,7 +48,6 @@ class RenderOpenGL : public RenderBase {
 
     virtual bool InitializeFullscreen() override;
 
-    virtual void CreateZBuffer() override;
     virtual void Release() override;
 
     virtual bool SwitchToWindow() override;
@@ -60,7 +59,6 @@ class RenderOpenGL : public RenderBase {
     virtual void DrawLines(const RenderVertexD3D3 *vertices,
         unsigned int num_vertices) override;
 
-    virtual void ClearZBuffer() override;
     virtual void RestoreFrontBuffer() override;
     virtual void RestoreBackBuffer() override;
     virtual void BltBackToFontFast(int a2, int a3, Recti *pSrcRect) override;
@@ -94,7 +92,6 @@ class RenderOpenGL : public RenderBase {
                                    GraphicsImage *) override;
     virtual void DrawImage(GraphicsImage *, const Recti &rect, unsigned int paletteid = 0, Color colourmask = colorTable.White) override;
 
-    virtual void ZDrawTextureAlpha(float u, float v, GraphicsImage *pTexture, int zVal) override;
     virtual void BlendTextures(int a2, int a3, GraphicsImage *a4, GraphicsImage *a5, int t,
                                int start_opacity, int end_opacity) override;
     virtual void TexturePixelRotateDraw(float u, float v, GraphicsImage *img, int time) override;
@@ -116,8 +113,6 @@ class RenderOpenGL : public RenderBase {
     virtual bool AreRenderSurfacesOk() override;
 
     virtual RgbaImage MakeScreenshot32(const int width, const int height) override;
-
-    virtual std::vector<Actor*> getActorsInViewport(int pDepth) override;
 
     virtual void BeginLightmaps() override;
     virtual void EndLightmaps() override;

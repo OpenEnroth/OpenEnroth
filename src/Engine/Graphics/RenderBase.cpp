@@ -35,9 +35,12 @@
 
 #include "Utility/Math/TrigLut.h"
 #include "Utility/Streams/FileOutputStream.h"
+#include "Utility/Memory/MemSet.h"
 #include "Utility/DataPath.h"
 
 #include "ImageLoader.h"
+
+static Sizei outputRender;
 
 bool RenderBase::Initialize() {
     window->resize({config->window.Width.value(), config->window.Height.value()});
@@ -734,4 +737,84 @@ void RenderBase::PresentBlackScreen() {
     BeginScene2D();
     ClearBlack();
     Present();
+}
+
+// TODO: should this be combined / moved out of render
+std::vector<Actor*> RenderBase::getActorsInViewport(int pDepth) {
+    std::vector<Actor*> foundActors;
+
+    for (int i = 0; i < render->uNumBillboardsToDraw; i++) {
+        int renderId = render->pBillboardRenderListD3D[i].sParentBillboardID;
+        if(renderId == -1) {
+            continue; // E.g. spell particle.
+        }
+
+        int pid = pBillboardRenderList[renderId].object_pid;
+        if (PID_TYPE(pid) == OBJECT_Actor) {
+            if (pBillboardRenderList[renderId].screen_space_z <= pDepth) {
+                int id = PID_ID(pid);
+                if (pActors[id].aiState != Dead &&
+                    pActors[id].aiState != Dying &&
+                    pActors[id].aiState != Removed &&
+                    pActors[id].aiState != Disabled &&
+                    pActors[id].aiState != Summoned) {
+                    if (vis->DoesRayIntersectBillboard(static_cast<float>(pDepth), i)) {
+                        // Limit for 100 actors was removed
+                        foundActors.push_back(&pActors[id]);
+                    }
+                }
+            }
+        }
+    }
+    return foundActors;
+}
+
+// TODO(pskelton): z buffer must go
+void RenderBase::CreateZBuffer() {
+    if (pActiveZBuffer)
+        free(pActiveZBuffer);
+
+    pActiveZBuffer = (int*)malloc(outputRender.w * outputRender.h * sizeof(int));
+    if (!pActiveZBuffer)
+        Error("Failed to create zbuffer");
+
+    ClearZBuffer();
+}
+
+// TODO(pskelton): z buffer must go
+void RenderBase::ClearZBuffer() {
+    memset32(this->pActiveZBuffer, 0xFFFF0000, outputRender.w * outputRender.h);
+}
+
+// TODO(pskelton): zbuffer must go
+void RenderBase::ZDrawTextureAlpha(float u, float v, GraphicsImage *img, int zVal) {
+    if (!img) return;
+
+    int uOutX = static_cast<int>(u * outputRender.w);
+    int uOutY = static_cast<int>(v * outputRender.h);
+    const RgbaImage &image = img->rgba();
+
+    if (uOutX < 0)
+        uOutX = 0;
+    if (uOutY < 0)
+        uOutY = 0;
+
+    for (int ys = 0; ys < image.height(); ys++) {
+        auto imageLine = image[ys];
+        for (int xs = 0; xs < image.width(); xs++) {
+            if (imageLine[xs].a != 0) {
+                this->pActiveZBuffer[uOutX + xs + outputRender.w * (uOutY + ys)] = zVal;
+            }
+        }
+    }
+}
+
+bool RenderBase::Reinitialize(bool firstInit) {
+    // TODO(captainurist): code copied from RenderOpenGL
+    if (config->graphics.RenderFilter.value() != 0)
+        outputRender = {config->graphics.RenderWidth.value(), config->graphics.RenderHeight.value()};
+    else
+        outputRender = window->size();
+
+    return true;
 }

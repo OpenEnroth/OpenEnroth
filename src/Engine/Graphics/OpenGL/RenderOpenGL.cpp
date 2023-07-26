@@ -68,11 +68,12 @@ RenderVertexSoft array_73D150[20];
 RenderVertexSoft VertexRenderList[50];
 RenderVertexD3D3 d3d_vertex_buffer[50];
 RenderVertexSoft array_507D30[50];
-Sizei outputRender = {0, 0};
-Sizei outputPresent = {0, 0};
-GLuint framebuffer = 0;
-GLuint framebufferTextures[2] = {0, 0};
-bool OpenGLES = false;
+
+static Sizei outputRender = {0, 0};
+static Sizei outputPresent = {0, 0};
+static GLuint framebuffer = 0;
+static GLuint framebufferTextures[2] = {0, 0};
+static bool OpenGLES = false;
 
 struct nk_vertex {
     float position[2]{};
@@ -269,24 +270,6 @@ void RenderOpenGL::ClearTarget(Color uColor) {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     return;
-}
-
-
-// TODO(pskelton): z buffer must go
-void RenderOpenGL::CreateZBuffer() {
-    if (pActiveZBuffer)
-        free(pActiveZBuffer);
-
-    pActiveZBuffer = (int*)malloc(outputRender.w * outputRender.h * sizeof(int));
-    if (!pActiveZBuffer)
-        Error("Failed to create zbuffer");
-
-    ClearZBuffer();
-}
-
-// TODO(pskelton): z buffer must go
-void RenderOpenGL::ClearZBuffer() {
-    memset32(this->pActiveZBuffer, 0xFFFF0000, outputRender.w * outputRender.h);
 }
 
 struct linesverts {
@@ -765,30 +748,6 @@ void RenderOpenGL::DrawImage(GraphicsImage *img, const Recti &rect, uint palette
     return;
 }
 
-// TODO(pskelton): zbuffer must go
-void RenderOpenGL::ZDrawTextureAlpha(float u, float v, GraphicsImage *img, int zVal) {
-    if (!img) return;
-
-    int uOutX = static_cast<int>(u * outputRender.w);
-    int uOutY = static_cast<int>(v * outputRender.h);
-    const RgbaImage &image = img->rgba();
-
-    if (uOutX < 0)
-        uOutX = 0;
-    if (uOutY < 0)
-        uOutY = 0;
-
-    for (int ys = 0; ys < image.height(); ys++) {
-        auto imageLine = image[ys];
-        for (int xs = 0; xs < image.width(); xs++) {
-            if (imageLine[xs].a != 0) {
-                this->pActiveZBuffer[uOutX + xs + outputRender.w * (uOutY + ys)] = zVal;
-            }
-        }
-    }
-}
-
-
 // TODO(pskelton): sort this - forcing the draw is slow
 // TODO(pskelton): stencil masking with opacity would be a better way to do this
 void RenderOpenGL::BlendTextures(int x, int y, GraphicsImage *imgin, GraphicsImage *imgblend, int time, int start_opacity,
@@ -1077,36 +1036,6 @@ RgbaImage RenderOpenGL::MakeScreenshot32(const int width, const int height) {
     }
 
     return pPixels;
-}
-
-// TODO: should this be combined / moved out of render
-std::vector<Actor*> RenderOpenGL::getActorsInViewport(int pDepth) {
-    std::vector<Actor*> foundActors;
-
-    for (int i = 0; i < render->uNumBillboardsToDraw; i++) {
-        int renderId = render->pBillboardRenderListD3D[i].sParentBillboardID;
-        if(renderId == -1) {
-            continue; // E.g. spell particle.
-        }
-
-        int pid = pBillboardRenderList[renderId].object_pid;
-        if (PID_TYPE(pid) == OBJECT_Actor) {
-            if (pBillboardRenderList[renderId].screen_space_z <= pDepth) {
-                int id = PID_ID(pid);
-                if (pActors[id].aiState != Dead &&
-                    pActors[id].aiState != Dying &&
-                    pActors[id].aiState != Removed &&
-                    pActors[id].aiState != Disabled &&
-                    pActors[id].aiState != Summoned) {
-                    if (vis->DoesRayIntersectBillboard(static_cast<float>(pDepth), i)) {
-                        // Limit for 100 actors was removed
-                        foundActors.push_back(&pActors[id]);
-                    }
-                }
-            }
-        }
-    }
-    return foundActors;
 }
 
 // TODO(pskelton): drop - not required in gl renderer now
@@ -5003,7 +4932,7 @@ bool RenderOpenGL::Reinitialize(bool firstInit) {
     //     ReloadShaders();
     // }
 
-    return true;
+    return RenderBase::Reinitialize(firstInit);
 }
 
 void RenderOpenGL::ReloadShaders() {

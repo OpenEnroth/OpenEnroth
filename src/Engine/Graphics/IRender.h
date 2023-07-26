@@ -156,9 +156,15 @@ class IRender {
     virtual GraphicsImage *TakeScreenshot(unsigned int width, unsigned int height) = 0;
     virtual void SaveScreenshot(const std::string &filename, unsigned int width,
                                 unsigned int height) = 0;
-    virtual Blob PackScreenshot(const unsigned int width, const unsigned int height) = 0;
+
+    /**
+     * @param width                         Final width of image to create.
+     * @param height                        Final height of image to create.
+     * @return                              Returns Blob containing packed pcx data and its size.
+     */
+    virtual Blob PackScreenshot(unsigned int width, unsigned int height) = 0;
     virtual void SavePCXScreenshot() = 0;
-    virtual RgbaImage MakeScreenshot32(const int width, const int height) = 0;
+    virtual RgbaImage MakeScreenshot32(int width, int height) = 0;
 
     virtual std::vector<Actor *> getActorsInViewport(int pDepth) = 0;
 
