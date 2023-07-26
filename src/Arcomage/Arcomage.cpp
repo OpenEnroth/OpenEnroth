@@ -2229,18 +2229,15 @@ void ApplyCardToPlayer(int player_num, unsigned int uCardID) {
     int quarry_p = 0;
 
     switch (pCard->compare_param) {
-        case 2:
-            if (player->quarry_level <
-                enemy->quarry_level)  //если рудники < рудника врага
+        case 2: // Mother Lode & Copping the Tech
+            if (player->quarry_level < enemy->quarry_level)
                 goto LABEL_26;
             goto LABEL_231;
-        case 3:
+        case 3: // Parity
             if (player->magic_level < enemy->magic_level) goto LABEL_26;
             goto LABEL_231;
         case 4:
-            if (player->zoo_level <
-                enemy->zoo_level)  //если зверинец < зверинца врага
-                goto LABEL_26;
+            if (player->zoo_level < enemy->zoo_level) goto LABEL_26;
             goto LABEL_231;
         case 5:
             if (player->quarry_level == enemy->quarry_level) goto LABEL_26;
@@ -2252,24 +2249,24 @@ void ApplyCardToPlayer(int player_num, unsigned int uCardID) {
             if (player->zoo_level == enemy->zoo_level) goto LABEL_26;
             goto LABEL_231;
         case 8:
-            if (player->quarry_level < enemy->quarry_level) goto LABEL_26;
+            if (player->quarry_level > enemy->quarry_level) goto LABEL_26;
             goto LABEL_231;
-        case 9:
-            if (player->magic_level < enemy->magic_level) goto LABEL_26;
+        case 9: // Unicorn
+            if (player->magic_level > enemy->magic_level) goto LABEL_26;
             goto LABEL_231;
         case 10:
-            if (player->zoo_level < enemy->zoo_level) goto LABEL_26;
+            if (player->zoo_level > enemy->zoo_level) goto LABEL_26;
             goto LABEL_231;
-        case 11:
+        case 11: // Foundations
             if (!player->wall_height) goto LABEL_26;
             goto LABEL_231;
         case 12:
             if (player->wall_height) goto LABEL_26;
             goto LABEL_231;
-        case 13:
+        case 13: // Spizzer
             if (!enemy->wall_height) goto LABEL_26;
             goto LABEL_231;
-        case 14:
+        case 14: // Corrosion Cloud
             if (enemy->wall_height) goto LABEL_26;
             goto LABEL_231;
         case 15:
@@ -2284,11 +2281,11 @@ void ApplyCardToPlayer(int player_num, unsigned int uCardID) {
         case 18:
             if (player->tower_height == enemy->tower_height) goto LABEL_26;
             goto LABEL_231;
-        case 19:
-            if (player->wall_height < enemy->wall_height) goto LABEL_26;
+        case 19: // Elven Archers
+            if (player->wall_height > enemy->wall_height) goto LABEL_26;
             goto LABEL_231;
         case 20:
-            if (player->tower_height < enemy->tower_height) goto LABEL_26;
+            if (player->tower_height > enemy->tower_height) goto LABEL_26;
             goto LABEL_231;
         default:
         LABEL_26:
