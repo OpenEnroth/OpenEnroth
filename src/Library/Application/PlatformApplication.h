@@ -39,6 +39,7 @@ class PlatformApplication {
     ~PlatformApplication();
 
     void initializeOpenGLContext(const PlatformOpenGLOptions &options);
+    void initializeOpenGLContext(std::unique_ptr<PlatformOpenGLContext> context);
 
     PlatformLogger *logger();
     Platform *platform();

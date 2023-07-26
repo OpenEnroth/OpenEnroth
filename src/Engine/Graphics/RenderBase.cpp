@@ -14,7 +14,6 @@
 #include "Engine/Objects/Actor.h"
 #include "Engine/Objects/SpriteObject.h"
 
-#include "Engine/EngineGlobals.h"
 #include "Engine/Graphics/Camera.h"
 #include "Engine/Graphics/LightmapBuilder.h"
 #include "Engine/Graphics/LightsStack.h"
@@ -28,8 +27,11 @@
 #include "Engine/Graphics/Level/Decoration.h"
 #include "Engine/Graphics/DecorationList.h"
 #include "Engine/Graphics/Image.h"
+#include "Engine/AssetsManager.h"
+#include "Engine/EngineGlobals.h"
 
 #include "Library/Image/PCX.h"
+#include "Library/Image/ImageFunctions.h"
 #include "Library/Random/Random.h"
 #include "Library/Logger/Logger.h"
 
@@ -40,7 +42,8 @@
 
 #include "ImageLoader.h"
 
-static Sizei outputRender;
+static Sizei outputRender = {0, 0};
+static Sizei outputPresent = {0, 0};
 
 bool RenderBase::Initialize() {
     window->resize({config->window.Width.value(), config->window.Height.value()});
@@ -811,10 +814,31 @@ void RenderBase::ZDrawTextureAlpha(float u, float v, GraphicsImage *img, int zVa
 
 bool RenderBase::Reinitialize(bool firstInit) {
     // TODO(captainurist): code copied from RenderOpenGL
+    outputPresent = window->size();
     if (config->graphics.RenderFilter.value() != 0)
         outputRender = {config->graphics.RenderWidth.value(), config->graphics.RenderHeight.value()};
     else
-        outputRender = window->size();
+        outputRender = outputPresent;
+
+    CreateZBuffer();
 
     return true;
+}
+
+Sizei RenderBase::GetRenderDimensions() {
+    return outputRender;
+}
+
+Sizei RenderBase::GetPresentDimensions() {
+    return outputPresent;
+}
+
+void RenderBase::SaveWinnersCertificate(const std::string &filePath) {
+    RgbaImage sPixels = flipVertically(ReadScreenPixels());
+
+    // save to disk
+    SavePCXImage32(filePath, sPixels);
+
+    // reverse input and save to texture for later
+    assets->winnerCert = GraphicsImage::Create(std::move(sPixels));
 }

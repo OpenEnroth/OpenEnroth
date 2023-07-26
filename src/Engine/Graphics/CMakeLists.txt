@@ -29,6 +29,7 @@ set(ENGINE_GRAPHICS_SOURCES
         ParticleEngine.cpp
         PortalFunctions.cpp
         RenderBase.cpp
+        RenderNull.cpp
         RenderEnums.cpp
         Sprites.cpp
         Texture_MM7.cpp
@@ -72,6 +73,7 @@ set(ENGINE_GRAPHICS_HEADERS
         PortalFunctions.h
         RenderBase.h
         RenderEntities.h
+        RenderNull.h
         RenderEnums.h
         Sprites.h
         TextureRenderId.h

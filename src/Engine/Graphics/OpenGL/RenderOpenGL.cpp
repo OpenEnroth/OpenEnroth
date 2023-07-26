@@ -238,16 +238,6 @@ RgbaImage RenderOpenGL::ReadScreenPixels() {
     return result;
 }
 
-void RenderOpenGL::SaveWinnersCertificate(const std::string &filePath) {
-    RgbaImage sPixels = flipVertically(ReadScreenPixels());
-
-    // save to disk
-    SavePCXImage32(filePath, sPixels);
-
-    // reverse input and save to texture for later
-    assets->winnerCert = GraphicsImage::Create(std::move(sPixels));
-}
-
 bool RenderOpenGL::InitializeFullscreen() {
     // pViewport->ResetScreen();
     // CreateZBuffer();
@@ -4815,14 +4805,6 @@ bool RenderOpenGL::InitShaders() {
 
     logger->info("shaders have been compiled successfully!");
     return true;
-}
-
-Sizei RenderOpenGL::GetRenderDimensions() {
-    return outputRender;
-}
-
-Sizei RenderOpenGL::GetPresentDimensions() {
-    return outputPresent;
 }
 
 bool RenderOpenGL::Reinitialize(bool firstInit) {

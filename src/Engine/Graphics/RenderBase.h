@@ -55,6 +55,11 @@ class RenderBase : public IRender {
 
     bool Reinitialize(bool firstInit) override;
 
+    virtual Sizei GetRenderDimensions() override;
+    virtual Sizei GetPresentDimensions() override;
+
+    virtual void SaveWinnersCertificate(const std::string &filePath) override;
+
  protected:
     unsigned int Billboard_ProbablyAddToListAndSortByZOrder(float z);
     void TransformBillboard(const SoftwareBillboard *a2, const RenderBillboard *pBillboard);

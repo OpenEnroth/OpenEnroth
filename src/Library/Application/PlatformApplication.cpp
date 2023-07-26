@@ -86,9 +86,14 @@ PlatformApplication::~PlatformApplication() {
 }
 
 void PlatformApplication::initializeOpenGLContext(const PlatformOpenGLOptions &options) {
-    assert(!_openGLContext);
+    initializeOpenGLContext(_window->createOpenGLContext(options));
+}
 
-    _openGLContext = _window->createOpenGLContext(options);
+void PlatformApplication::initializeOpenGLContext(std::unique_ptr<PlatformOpenGLContext> context) {
+    assert(!_openGLContext);
+    assert(context);
+
+    _openGLContext = std::move(context);
     initProxyLeaf<PlatformOpenGLContext>(_rootProxy.get(), _openGLContext.get());
 }
 
