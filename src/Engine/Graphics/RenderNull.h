@@ -1,34 +1,12 @@
 #pragma once
 
-#include <memory>
+#include "RenderBase.h"
+
 #include <string>
-#include <map>
-#include <vector>
 
-#include <glad/gl.h> // NOLINT: this is not a C system include.
-#include <glm/glm.hpp>
-
-#include "Engine/Graphics/FrameLimiter.h"
-#include "Engine/Graphics/RenderBase.h"
-
-#include "Library/Color/Colorf.h"
-
-#include "GLShaderLoader.h"
-
-class PlatformOpenGLContext;
-struct nk_state;
-
-class RenderOpenGL : public RenderBase {
+class RenderNull : public RenderBase {
  public:
-    RenderOpenGL(
-        std::shared_ptr<GameConfig> config,
-        DecalBuilder *decal_builder,
-        SpellFxRenderer *spellfx,
-        std::shared_ptr<ParticleEngine> particle_engine,
-        Vis *vis,
-        Logger *logger
-    );
-    virtual ~RenderOpenGL();
+    using RenderBase::RenderBase;
 
     virtual bool Initialize() override;
 
@@ -56,7 +34,7 @@ class RenderOpenGL : public RenderBase {
     virtual void RasterLine2D(signed int uX, signed int uY, signed int uZ,
                               signed int uW, Color uColor32) override;
     virtual void DrawLines(const RenderVertexD3D3 *vertices,
-        unsigned int num_vertices) override;
+                           unsigned int num_vertices) override;
 
     virtual void RestoreFrontBuffer() override;
     virtual void RestoreBackBuffer() override;
@@ -85,7 +63,7 @@ class RenderOpenGL : public RenderBase {
 
     virtual void DrawTextureNew(float u, float v, class GraphicsImage *, Color colourmask = colorTable.White) override;
 
-        virtual void DrawTextureCustomHeight(float u, float v, class GraphicsImage *,
+    virtual void DrawTextureCustomHeight(float u, float v, class GraphicsImage *,
                                          int height) override;
     virtual void DrawTextureOffset(int x, int y, int offset_x, int offset_y,
                                    GraphicsImage *) override;
@@ -125,7 +103,7 @@ class RenderOpenGL : public RenderBase {
     virtual void DrawDecal(struct Decal *pDecal, float z_bias) override;
 
     virtual void DrawFromSpriteSheet(Recti *pSrcRect, Pointi *pTargetPoint, int a3,
-                               int blend_mode) override;
+                                     int blend_mode) override;
 
     virtual void DrawIndoorFaces() override;
 
@@ -133,108 +111,8 @@ class RenderOpenGL : public RenderBase {
     virtual void ReleaseBSP() override;
 
     virtual void DrawTwodVerts() override;
-    void DrawBillboards();
 
-    virtual bool Reinitialize(bool firstInit) override;
     virtual void ReloadShaders() override;
 
- protected:
     virtual void DoRenderBillboards_D3D() override;
-    void SetBillboardBlendOptions(RenderBillboardD3D::OpacityType a1);
-
-    void DrawOutdoorSkyPolygon(struct Polygon *pSkyPolygon);
-    void DrawIndoorSkyPolygon(signed int uNumVertices,
-                              struct Polygon *pSkyPolygon);
-    void DrawForcePerVerts();
-
-    void SetFogParametersGL();
-
-    FrameLimiter _frameLimiter;
-
-    // these are the view and projection matrices for submission to shaders
-    glm::mat4 projmat = glm::mat4x4(1);
-    glm::mat4 viewmat = glm::mat4x4(1);
-    void _set_3d_projection_matrix();
-    void _set_3d_modelview_matrix();
-    void _set_ortho_projection(bool gameviewport = false);
-    void _set_ortho_modelview();
-
-    int clip_x{}, clip_y{};
-    int clip_z{}, clip_w{};
-
-    int GL_lastboundtex{};
-
-    int GPU_MAX_TEX_SIZE{};
-    int GPU_MAX_TEX_LAYERS{};
-    int GPU_MAX_TEX_UNITS{};
-    int GPU_MAX_UNIFORM_COMP{};
-    int GPU_MAX_TOTAL_TEXTURES{};
-
-    bool InitShaders();
-    GLShader terrainshader;
-    GLShader outbuildshader;
-    GLShader bspshader;
-    GLShader textshader;
-    GLShader lineshader;
-    GLShader twodshader;
-    GLShader billbshader;
-    GLShader decalshader;
-    GLShader forcepershader;
-    GLShader nuklearshader;
-
-    // terrain shader
-    GLuint terrainVBO{}, terrainVAO{};
-    // all terrain textures are square
-    GLuint terraintextures[8]{};
-    unsigned int numterraintexloaded[8]{};
-    unsigned int terraintexturesizes[8]{};
-    std::map<std::string, int> terraintexmap;
-
-    // outside building shader
-    GLuint outbuildVBO[16]{}, outbuildVAO[16]{};
-    GLuint outbuildtextures[16]{};
-    unsigned int numoutbuildtexloaded[16]{};
-    unsigned int outbuildtexturewidths[16]{};
-    unsigned int outbuildtextureheights[16]{};
-    std::map<std::string, int> outbuildtexmap;
-
-    // indoors bsp shader
-    GLuint bspVBO[16]{}, bspVAO[16]{};
-    GLuint bsptextures[16]{};
-    unsigned int bsptexloaded[16]{};
-    unsigned int bsptexturewidths[16]{};
-    unsigned int bsptextureheights[16]{};
-    std::map<std::string, int> bsptexmap;
-
-    // text shader
-    GLuint textVBO{}, textVAO{};
-    GLuint texmain{}, texshadow{};
-
-    // lines shader
-    GLuint lineVBO{}, lineVAO{};
-
-    // two d shader
-    GLuint twodVBO{}, twodVAO{};
-
-    // billboards shader
-    GLuint billbVBO{}, billbVAO{};
-    GLuint palbuf{}, paltex{};
-
-    // decal shader
-    GLuint decalVBO{}, decalVAO{};
-
-    // forced perspective shader
-    GLuint forceperVBO{}, forceperVAO{};
-
-    // Fog parameters
-    Colorf fog;
-    int fogstart{};
-    int fogmiddle{};
-    int fogend{};
-
-    float gamma{};
-
-    std::unique_ptr<nk_state> nk;
 };
-
-

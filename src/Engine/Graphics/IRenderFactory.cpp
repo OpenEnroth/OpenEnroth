@@ -6,6 +6,7 @@
 
 #include "Engine/EngineIocContainer.h"
 #include "Engine/Graphics/OpenGL/RenderOpenGL.h"
+#include "Engine/Graphics/RenderNull.h"
 
 using Graphics::IRenderFactory;
 
@@ -27,6 +28,17 @@ std::shared_ptr<IRender> IRenderFactory::Create(std::shared_ptr<GameConfig> conf
         case RENDERER_OPENGL_ES:
             logger->info("Initializing OpenGL ES renderer...");
             return std::make_shared<RenderOpenGL>(
+                config,
+                EngineIocContainer::ResolveDecalBuilder(),
+                EngineIocContainer::ResolveSpellFxRenderer(),
+                EngineIocContainer::ResolveParticleEngine(),
+                EngineIocContainer::ResolveVis(),
+                EngineIocContainer::ResolveLogger()
+            );
+
+        case RENDERER_NULL:
+            logger->info("Initializing null renderer...");
+            return std::make_shared<RenderNull>(
                 config,
                 EngineIocContainer::ResolveDecalBuilder(),
                 EngineIocContainer::ResolveSpellFxRenderer(),
