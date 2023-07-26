@@ -99,7 +99,7 @@ jobs:
       working-directory: build
       run: |
         Xvfb&
-        Xvfb-run make GameTest_NullRenderer
+        xvfb-run make GameTest_NullRenderer
       env:
         OPENENROTH_MM7_PATH: /home/runner/work/OpenEnroth/OpenEnroth/OpenEnroth_GameData/mm7
 
