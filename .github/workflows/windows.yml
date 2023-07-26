@@ -51,7 +51,7 @@ jobs:
 
     - name: Copy shaders
       run: |
-        xcopy D:\a\OpenEnroth\OpenEnroth\resources\shaders D:\a\OpenEnroth\OpenEnroth\OpenEnroth_GameData\mm7 /E/H/C/I
+        xcopy D:\a\OpenEnroth\OpenEnroth\resources D:\a\OpenEnroth\OpenEnroth\OpenEnroth_GameData\mm7 /E/H/C/I
 
     - name: Setup environment
       uses: ilammy/msvc-dev-cmd@v1
