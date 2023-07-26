@@ -4593,7 +4593,7 @@ bool RenderOpenGL::Initialize() {
         PlatformOpenGLOptions opts;
 
         // Set it only on startup as currently we don't support multiple contexts to be able to switch OpenGL<->OpenGLES in the middle of runtime.
-        OpenGLES = config->graphics.Renderer.value() == RendererType::OpenGLES;
+        OpenGLES = config->graphics.Renderer.value() == RENDERER_OPENGL_ES;
 
         if (!OpenGLES) {
             //  Use OpenGL 4.1 core
