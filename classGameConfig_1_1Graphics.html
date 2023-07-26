@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;18a21cd</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;ad22c30</span>
    </div>
   </td>
  </tr>
@@ -117,7 +117,7 @@ Public Member Functions</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
-<tr class="memitem:a54b902e7eeefa6bee690a30f89b889b1"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classConfigEntry.html">ConfigEntry</a>&lt; <a class="el" href="RendererType_8h.html#ae9c668e3a273ce92b9f4e134d0cbd6ce">RendererType</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGameConfig_1_1Graphics.html#a54b902e7eeefa6bee690a30f89b889b1">Renderer</a> = {this, &quot;renderer&quot;, <a class="el" href="GameConfig_8h.html#a6a9866164f69f22ef82f741d3aa8a007">ConfigRenderer</a>, &quot;Renderer to use, '<a class="el" href="RendererType_8h.html#ae9c668e3a273ce92b9f4e134d0cbd6cea760716b590ee7c0adc25f434f577d8be">OpenGL</a>' or '<a class="el" href="RenderOpenGL_8cpp.html#ad12c1f606bb601dcbeb8617f088772ef">OpenGLES</a>'.&quot;}</td></tr>
+<tr class="memitem:a54b902e7eeefa6bee690a30f89b889b1"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classConfigEntry.html">ConfigEntry</a>&lt; <a class="el" href="RenderEnums_8h.html#ae9c668e3a273ce92b9f4e134d0cbd6ce">RendererType</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGameConfig_1_1Graphics.html#a54b902e7eeefa6bee690a30f89b889b1">Renderer</a> = {this, &quot;renderer&quot;, <a class="el" href="GameConfig_8h.html#a6a9866164f69f22ef82f741d3aa8a007">ConfigRenderer</a>, &quot;Renderer to use, 'OpenGL' or '<a class="el" href="RenderOpenGL_8cpp.html#ad12c1f606bb601dcbeb8617f088772ef">OpenGLES</a>'.&quot;}</td></tr>
 <tr class="separator:a54b902e7eeefa6bee690a30f89b889b1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad6049b997c6e381ba9fba7deb1f06d74"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classGameConfig.html#a7be40f32922e33b7ecfd85e54cbc8b5b">Bool</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGameConfig_1_1Graphics.html#ad6049b997c6e381ba9fba7deb1f06d74">BloodSplats</a> = {this, &quot;bloodsplats&quot;, true, &quot;Enable bloodsplats under corpses.&quot;}</td></tr>
 <tr class="separator:ad6049b997c6e381ba9fba7deb1f06d74"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -609,7 +609,7 @@ Static Private Member Functions</h2></td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="classConfigEntry.html">ConfigEntry</a>&lt;<a class="el" href="RendererType_8h.html#ae9c668e3a273ce92b9f4e134d0cbd6ce">RendererType</a>&gt; GameConfig::Graphics::Renderer = {this, &quot;renderer&quot;, <a class="el" href="GameConfig_8h.html#a6a9866164f69f22ef82f741d3aa8a007">ConfigRenderer</a>, &quot;Renderer to use, '<a class="el" href="RendererType_8h.html#ae9c668e3a273ce92b9f4e134d0cbd6cea760716b590ee7c0adc25f434f577d8be">OpenGL</a>' or '<a class="el" href="RenderOpenGL_8cpp.html#ad12c1f606bb601dcbeb8617f088772ef">OpenGLES</a>'.&quot;}</td>
+          <td class="memname"><a class="el" href="classConfigEntry.html">ConfigEntry</a>&lt;<a class="el" href="RenderEnums_8h.html#ae9c668e3a273ce92b9f4e134d0cbd6ce">RendererType</a>&gt; GameConfig::Graphics::Renderer = {this, &quot;renderer&quot;, <a class="el" href="GameConfig_8h.html#a6a9866164f69f22ef82f741d3aa8a007">ConfigRenderer</a>, &quot;Renderer to use, 'OpenGL' or '<a class="el" href="RenderOpenGL_8cpp.html#ad12c1f606bb601dcbeb8617f088772ef">OpenGLES</a>'.&quot;}</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -630,7 +630,7 @@ Static Private Member Functions</h2></td></tr>
 <b>Initial value:</b><div class="fragment"><div class="line">= {<span class="keyword">this</span>, <span class="stringliteral">&quot;render_filter&quot;</span>, 2, &amp;<a class="code hl_function" href="classGameConfig_1_1Graphics.html#afca4136e373c6f36ea4fa68e6669837c">ValidateRenderFilter</a>,</div>
 <div class="line">                            <span class="stringliteral">&quot;Filtering method when scaling rendered framebuffer to window dimensions if they differ.&quot;</span></div>
 <div class="line">                            <span class="stringliteral">&quot; 0 - disabled (render dimensions will always match window dimensions), 1 - linear filter, 2 - nearest filter&quot;</span>}</div>
-<div class="ttc" id="aclassGameConfig_1_1Graphics_html_afca4136e373c6f36ea4fa68e6669837c"><div class="ttname"><a href="classGameConfig_1_1Graphics.html#afca4136e373c6f36ea4fa68e6669837c">GameConfig::Graphics::ValidateRenderFilter</a></div><div class="ttdeci">static int ValidateRenderFilter(int filter)</div><div class="ttdef"><b>Definition:</b> GameConfig.h:396</div></div>
+<div class="ttc" id="aclassGameConfig_1_1Graphics_html_afca4136e373c6f36ea4fa68e6669837c"><div class="ttname"><a href="classGameConfig_1_1Graphics.html#afca4136e373c6f36ea4fa68e6669837c">GameConfig::Graphics::ValidateRenderFilter</a></div><div class="ttdeci">static int ValidateRenderFilter(int filter)</div><div class="ttdef"><b>Definition:</b> GameConfig.h:395</div></div>
 </div><!-- fragment -->
 </div>
 </div>
@@ -724,7 +724,7 @@ Static Private Member Functions</h2></td></tr>
 </div><div class="memdoc">
 <b>Initial value:</b><div class="fragment"><div class="line">= {<span class="keyword">this</span>, <span class="stringliteral">&quot;torchlight_distance&quot;</span>, 800, &amp;<a class="code hl_function" href="classGameConfig_1_1Graphics.html#ab7ff204bc1b23315faa19f771fcbf5dd">ValidateTorchlight</a>,</div>
 <div class="line">                                  <span class="stringliteral">&quot;Torchlight distance per power level. Use 0 to disable torchlight.&quot;</span>}</div>
-<div class="ttc" id="aclassGameConfig_1_1Graphics_html_ab7ff204bc1b23315faa19f771fcbf5dd"><div class="ttname"><a href="classGameConfig_1_1Graphics.html#ab7ff204bc1b23315faa19f771fcbf5dd">GameConfig::Graphics::ValidateTorchlight</a></div><div class="ttdeci">static int ValidateTorchlight(int distance)</div><div class="ttdef"><b>Definition:</b> GameConfig.h:378</div></div>
+<div class="ttc" id="aclassGameConfig_1_1Graphics_html_ab7ff204bc1b23315faa19f771fcbf5dd"><div class="ttname"><a href="classGameConfig_1_1Graphics.html#ab7ff204bc1b23315faa19f771fcbf5dd">GameConfig::Graphics::ValidateTorchlight</a></div><div class="ttdeci">static int ValidateTorchlight(int distance)</div><div class="ttdef"><b>Definition:</b> GameConfig.h:377</div></div>
 </div><!-- fragment -->
 </div>
 </div>
