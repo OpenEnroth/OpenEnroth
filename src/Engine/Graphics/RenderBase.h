@@ -2,6 +2,7 @@
 
 #include <memory>
 #include <string>
+#include <vector>
 
 #include "Engine/Graphics/IRender.h"
 
@@ -32,11 +33,6 @@ class RenderBase : public IRender {
     virtual void SavePCXScreenshot() override;
     virtual void SavePCXImage32(const std::string &filename, RgbaImageView image);
     virtual void SaveScreenshot(const std::string &filename, unsigned int width, unsigned int height) override;
-    /**
-    * @param width                         Final width of image to create.
-    * @param height                        Final height of image to create.
-    * @return                              Returns Blob containing packed pcx data and its size.
-    */
     virtual Blob PackScreenshot(const unsigned int width, const unsigned int height) override;
     virtual GraphicsImage *TakeScreenshot(unsigned int width, unsigned int height) override;
 
@@ -51,6 +47,14 @@ class RenderBase : public IRender {
     virtual void DrawSpecialEffectsQuad(GraphicsImage *texture, int palette) override;
     virtual void DrawBillboards_And_MaybeRenderSpecialEffects_And_EndScene() override;
     virtual void PresentBlackScreen() override;
+
+    virtual std::vector<Actor*> getActorsInViewport(int pDepth) override;
+
+    virtual void CreateZBuffer() override;
+    virtual void ClearZBuffer() override;
+    virtual void ZDrawTextureAlpha(float u, float v, GraphicsImage *pTexture, int zVal) override;
+
+    bool Reinitialize(bool firstInit) override;
 
  protected:
     unsigned int Billboard_ProbablyAddToListAndSortByZOrder(float z);
