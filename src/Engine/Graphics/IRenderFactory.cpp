@@ -13,7 +13,7 @@ std::shared_ptr<IRender> IRenderFactory::Create(std::shared_ptr<GameConfig> conf
     RendererType rendererType = config->graphics.Renderer.value();
 
     switch (rendererType) {
-        case RendererType::OpenGL:
+        case RENDERER_OPENGL:
             logger->info("Initializing OpenGL renderer...");
             return std::make_shared<RenderOpenGL>(
                 config,
@@ -24,7 +24,7 @@ std::shared_ptr<IRender> IRenderFactory::Create(std::shared_ptr<GameConfig> conf
                 EngineIocContainer::ResolveLogger()
             );
 
-        case RendererType::OpenGLES:
+        case RENDERER_OPENGL_ES:
             logger->info("Initializing OpenGL ES renderer...");
             return std::make_shared<RenderOpenGL>(
                 config,

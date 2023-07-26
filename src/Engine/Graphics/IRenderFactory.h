@@ -3,7 +3,7 @@
 #include <memory>
 #include <string>
 
-#include "RendererType.h"
+#include "RenderEnums.h"
 
 class IRender;
 class GameConfig;

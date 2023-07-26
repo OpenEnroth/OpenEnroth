@@ -7,11 +7,6 @@
 #include "Library/Logger/Logger.h"
 #include "Library/Serialization/EnumSerialization.h"
 
-MM_DEFINE_ENUM_SERIALIZATION_FUNCTIONS(RendererType, CASE_INSENSITIVE, {
-    {RendererType::OpenGL, "OpenGL"},
-    {RendererType::OpenGLES, "OpenGLES"}
-})
-
 MM_DEFINE_ENUM_SERIALIZATION_FUNCTIONS(PlatformWindowMode, CASE_INSENSITIVE, {
     {WINDOW_MODE_WINDOWED, "windowed"},
     {WINDOW_MODE_BORDERLESS, "borderless"},
