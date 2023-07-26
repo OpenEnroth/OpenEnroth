@@ -15,7 +15,6 @@ if(ENABLE_TESTS)
     set(TEST_LIBRARY_SNAPSHOTS_SOURCES Tests/Snapshots_ut.cpp)
 
     add_library(test_library_snapshots OBJECT ${TEST_LIBRARY_SNAPSHOTS_SOURCES})
-    target_compile_definitions(test_library_snapshots PRIVATE TEST_GROUP=Snapshots)
     target_link_libraries(test_library_snapshots PUBLIC testing_unit library_snapshots)
 
     target_check_style(test_library_snapshots)

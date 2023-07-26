@@ -21,7 +21,6 @@ if(ENABLE_TESTS)
     set(TEST_LIBARY_JSON_SOURCES Tests/Json_ut.cpp)
 
     add_library(test_library_json OBJECT ${TEST_LIBARY_JSON_SOURCES})
-    target_compile_definitions(test_library_json PRIVATE TEST_GROUP=Json)
     target_link_libraries(test_library_json PUBLIC testing_unit library_json)
 
     target_check_style(test_library_json)

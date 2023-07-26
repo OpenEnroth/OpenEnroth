@@ -19,9 +19,5 @@ class GameTest : public testing::Test {
     TestController *const test = nullptr;
 };
 
-#ifndef TEST_GROUP
-#   error "Please define TEST_GROUP before including this header."
-#endif
-
 #define GAME_TEST(TestBase, TestName) \
-    GTEST_TEST_(TEST_GROUP, TestBase##_##TestName, GameTest, testing::internal::GetTypeId<GameTest>())
+    GTEST_TEST_(TestBase, TestName, GameTest, testing::internal::GetTypeId<GameTest>())
