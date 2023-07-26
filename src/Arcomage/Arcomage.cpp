@@ -2229,62 +2229,62 @@ void ApplyCardToPlayer(int player_num, unsigned int uCardID) {
     int quarry_p = 0;
 
     switch (pCard->compare_param) {
-        case 2: // Mother Lode & Copping the Tech
+        case ArcomageCompareParam::LESSER_QUARRY : // Mother Lode & Copping the Tech
             if (player->quarry_level < enemy->quarry_level)
                 goto LABEL_26;
             goto LABEL_231;
-        case 3: // Parity
+        case ArcomageCompareParam::LESSER_MAGIC: // Parity
             if (player->magic_level < enemy->magic_level) goto LABEL_26;
             goto LABEL_231;
-        case 4:
+        case ArcomageCompareParam::LESSER_ZOO:
             if (player->zoo_level < enemy->zoo_level) goto LABEL_26;
             goto LABEL_231;
-        case 5:
+        case ArcomageCompareParam::EQUAL_QUARRY:
             if (player->quarry_level == enemy->quarry_level) goto LABEL_26;
             goto LABEL_231;
-        case 6:
+        case ArcomageCompareParam::EQUAL_MAGIC:
             if (player->magic_level == enemy->magic_level) goto LABEL_26;
             goto LABEL_231;
-        case 7:
+        case ArcomageCompareParam::EQUAL_ZOO:
             if (player->zoo_level == enemy->zoo_level) goto LABEL_26;
             goto LABEL_231;
-        case 8:
+        case ArcomageCompareParam::GREATER_QUARRY:
             if (player->quarry_level > enemy->quarry_level) goto LABEL_26;
             goto LABEL_231;
-        case 9: // Unicorn
+        case ArcomageCompareParam::GREATER_MAGIC: // Unicorn
             if (player->magic_level > enemy->magic_level) goto LABEL_26;
             goto LABEL_231;
-        case 10:
+        case ArcomageCompareParam::GREATER_ZOO:
             if (player->zoo_level > enemy->zoo_level) goto LABEL_26;
             goto LABEL_231;
-        case 11: // Foundations
+        case ArcomageCompareParam::NO_WALL: // Foundations
             if (!player->wall_height) goto LABEL_26;
             goto LABEL_231;
-        case 12:
+        case ArcomageCompareParam::HAVE_WALL:
             if (player->wall_height) goto LABEL_26;
             goto LABEL_231;
-        case 13: // Spizzer
+        case ArcomageCompareParam::ENEMY_HAS_NO_WALL: // Spizzer
             if (!enemy->wall_height) goto LABEL_26;
             goto LABEL_231;
-        case 14: // Corrosion Cloud
+        case ArcomageCompareParam::ENEMY_HAS_WALL: // Corrosion Cloud
             if (enemy->wall_height) goto LABEL_26;
             goto LABEL_231;
-        case 15:
+        case ArcomageCompareParam::LESSER_WALL:
             if (player->wall_height < enemy->wall_height) goto LABEL_26;
             goto LABEL_231;
-        case 16:
+        case ArcomageCompareParam::LESSER_TOWER:
             if (player->tower_height < enemy->tower_height) goto LABEL_26;
             goto LABEL_231;
-        case 17:
+        case ArcomageCompareParam::EQUAL_WALL:
             if (player->wall_height == enemy->wall_height) goto LABEL_26;
             goto LABEL_231;
-        case 18:
+        case ArcomageCompareParam::EQUAL_TOWER:
             if (player->tower_height == enemy->tower_height) goto LABEL_26;
             goto LABEL_231;
-        case 19: // Elven Archers
+        case ArcomageCompareParam::GREATER_WALL: // Elven Archers
             if (player->wall_height > enemy->wall_height) goto LABEL_26;
             goto LABEL_231;
-        case 20:
+        case ArcomageCompareParam::GREATER_TOWER:
             if (player->tower_height > enemy->tower_height) goto LABEL_26;
             goto LABEL_231;
         default:
@@ -2367,7 +2367,7 @@ void ApplyCardToPlayer(int player_num, unsigned int uCardID) {
             APPLY_TO_BOTH(player, enemy, tower_height, pCard->to_pl_enm_tower,
                           tower_p, tower_e);
             break;
-        case 0:
+        case ArcomageCompareParam::INVALID:
         LABEL_231:
             num_actions_left = pCard->can_draw_extra_card2 + (pCard->field_4D == 1);
             num_cards_to_discard = pCard->can_draw_extra_card2;
