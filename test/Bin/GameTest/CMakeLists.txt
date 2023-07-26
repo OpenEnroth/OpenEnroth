@@ -31,4 +31,9 @@ if(ENABLE_TESTS)
             OpenEnroth_GameTest --test-path ${CMAKE_CURRENT_BINARY_DIR}/test_data/data
             DEPENDS OpenEnroth_GameTest OpenEnroth_TestData
             WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
+
+    add_custom_target(GameTest_NullRenderer
+            OpenEnroth_GameTest --test-path ${CMAKE_CURRENT_BINARY_DIR}/test_data/data --renderer null
+            DEPENDS OpenEnroth_GameTest OpenEnroth_TestData
+            WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
 endif()
