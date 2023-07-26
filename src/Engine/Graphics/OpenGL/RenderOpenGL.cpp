@@ -214,7 +214,7 @@ RenderOpenGL::RenderOpenGL(
     std::shared_ptr<ParticleEngine> particle_engine,
     Vis *vis,
     Logger *logger
-) : RenderBase(config, decal_builder, lightmap_builder, spellfx, particle_engine, vis, logger) {
+) : RenderBase(config, decal_builder, spellfx, particle_engine, vis, logger) {
     nk = std::make_unique<nk_state>();
     clip_w = 0;
     clip_x = 0;
