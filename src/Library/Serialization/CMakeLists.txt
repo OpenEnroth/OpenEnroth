@@ -26,7 +26,6 @@ if(ENABLE_TESTS)
     set(TEST_LIBRARY_SERIALIZATION_SOURCES Tests/Serialization_ut.cpp)
 
     add_library(test_library_serialization OBJECT ${TEST_LIBRARY_SERIALIZATION_SOURCES})
-    target_compile_definitions(test_library_serialization PRIVATE TEST_GROUP=Serialization)
     target_link_libraries(test_library_serialization PUBLIC testing_unit library_serialization)
 
     target_check_style(test_library_serialization)

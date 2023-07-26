@@ -8,7 +8,6 @@ if(ENABLE_TESTS)
 
     add_library(testing_unit ${TESTING_UNIT_SOURCES} ${TESTING_UNIT_HEADERS})
     target_link_libraries(testing_unit PUBLIC GTest::gtest)
-    target_compile_definitions(testing_unit PRIVATE TEST_GROUP=None)
 
     target_check_style(testing_unit)
 endif()
