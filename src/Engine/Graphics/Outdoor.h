@@ -21,7 +21,6 @@
 class Logger;
 class DecalBuilder;
 class SpellFxRenderer;
-class LightmapBuilder;
 class TileDesc;
 
 struct OutdoorLocationTileType {
@@ -202,7 +201,6 @@ struct OutdoorLocation {
     Logger *log = nullptr;
     DecalBuilder *decal_builder = nullptr;
     SpellFxRenderer *spell_fx_renderer = nullptr;
-    LightmapBuilder *lightmap_builder = nullptr;
 };
 
 extern OutdoorLocation *pOutdoor;

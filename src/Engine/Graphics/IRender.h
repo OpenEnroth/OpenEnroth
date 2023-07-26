@@ -22,7 +22,6 @@ class Sprite;
 class SpriteFrame;
 struct SoftwareBillboard;
 struct DecalBuilder;
-class LightmapBuilder;
 class ParticleEngine;
 struct SpellFxRenderer;
 class Vis;
@@ -39,7 +38,6 @@ class IRender {
     IRender(
         std::shared_ptr<GameConfig> config,
         DecalBuilder *decal_builder,
-        LightmapBuilder *lightmap_builder,
         SpellFxRenderer *spellfx,
         std::shared_ptr<ParticleEngine> particle_engine,
         Vis *vis,
@@ -212,7 +210,6 @@ class IRender {
     Logger *log = nullptr;
     DecalBuilder *decal_builder = nullptr;
     SpellFxRenderer *spell_fx_renderer = nullptr;
-    LightmapBuilder *lightmap_builder = nullptr;
     std::shared_ptr<ParticleEngine> particle_engine = nullptr;
     Vis *vis = nullptr;
 };

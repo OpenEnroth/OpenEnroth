@@ -11,12 +11,11 @@ class RenderBase : public IRender {
     inline RenderBase(
         std::shared_ptr<GameConfig> config,
         DecalBuilder *decal_builder,
-        LightmapBuilder *lightmap_builder,
         SpellFxRenderer *spellfx,
         std::shared_ptr<ParticleEngine> particle_engine,
         Vis *vis,
         Logger *logger
-    ) : IRender(config, decal_builder, lightmap_builder, spellfx, particle_engine, vis, logger) {
+    ) : IRender(config, decal_builder, spellfx, particle_engine, vis, logger) {
     }
 
     virtual bool Initialize() override;

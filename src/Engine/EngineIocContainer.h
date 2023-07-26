@@ -4,7 +4,6 @@
 
 struct BloodsplatContainer;
 struct DecalBuilder;
-class LightmapBuilder;
 class Logger;
 namespace Io {
     class Mouse;
@@ -29,7 +28,6 @@ class EngineIocContainer {
      static DecalBuilder *decal_builder;
      static BloodsplatContainer *bloodspalt_container;
      static SpellFxRenderer *spell_fx_renderer;
-     static LightmapBuilder *lightmap_builder;
      static std::shared_ptr<Io::Mouse> mouse;
      static std::shared_ptr<Nuklear> nuklear;
      static std::shared_ptr<ParticleEngine> particle_engine;
