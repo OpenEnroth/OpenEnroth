@@ -22,7 +22,6 @@ class Sprite;
 class SpriteFrame;
 struct SoftwareBillboard;
 struct DecalBuilder;
-class LightmapBuilder;
 class ParticleEngine;
 struct SpellFxRenderer;
 class Vis;
@@ -39,7 +38,6 @@ class IRender {
     IRender(
         std::shared_ptr<GameConfig> config,
         DecalBuilder *decal_builder,
-        LightmapBuilder *lightmap_builder,
         SpellFxRenderer *spellfx,
         std::shared_ptr<ParticleEngine> particle_engine,
         Vis *vis,
@@ -57,22 +55,6 @@ class IRender {
     virtual void NuklearFontFree(struct nk_tex_font *tfont) = 0;
     virtual struct nk_image NuklearImageLoad(GraphicsImage *img) = 0;
     virtual void NuklearImageFree(GraphicsImage *img) = 0;
-
-    virtual GraphicsImage *CreateTexture_Paletted(const std::string &name) = 0;
-    virtual GraphicsImage *CreateTexture_ColorKey(const std::string &name, Color colorkey) = 0;
-    virtual GraphicsImage *CreateTexture_Solid(const std::string &name) = 0;
-    virtual GraphicsImage *CreateTexture_Alpha(const std::string &name) = 0;
-
-    virtual GraphicsImage *CreateTexture_PCXFromFile(const std::string &name) = 0;
-    virtual GraphicsImage *CreateTexture_PCXFromIconsLOD(const std::string &name) = 0;
-    virtual GraphicsImage *CreateTexture_PCXFromNewLOD(const std::string &name) = 0;
-    virtual GraphicsImage *CreateTexture_PCXFromLOD(LOD::File *pLOD, const std::string &name) = 0;
-
-    virtual GraphicsImage *CreateTexture_Blank(unsigned int width, unsigned int height) = 0;
-    virtual GraphicsImage *CreateTexture_Blank(RgbaImage image) = 0;
-
-    virtual GraphicsImage *CreateTexture(const std::string &name) = 0;
-    virtual GraphicsImage *CreateSprite(const std::string &name) = 0;
 
     virtual void ClearBlack() = 0;
     virtual void PresentBlackScreen() = 0;
@@ -172,9 +154,15 @@ class IRender {
     virtual GraphicsImage *TakeScreenshot(unsigned int width, unsigned int height) = 0;
     virtual void SaveScreenshot(const std::string &filename, unsigned int width,
                                 unsigned int height) = 0;
-    virtual Blob PackScreenshot(const unsigned int width, const unsigned int height) = 0;
+
+    /**
+     * @param width                         Final width of image to create.
+     * @param height                        Final height of image to create.
+     * @return                              Returns Blob containing packed pcx data and its size.
+     */
+    virtual Blob PackScreenshot(unsigned int width, unsigned int height) = 0;
     virtual void SavePCXScreenshot() = 0;
-    virtual RgbaImage MakeScreenshot32(const int width, const int height) = 0;
+    virtual RgbaImage MakeScreenshot32(int width, int height) = 0;
 
     virtual std::vector<Actor *> getActorsInViewport(int pDepth) = 0;
 
@@ -222,7 +210,6 @@ class IRender {
     Logger *log = nullptr;
     DecalBuilder *decal_builder = nullptr;
     SpellFxRenderer *spell_fx_renderer = nullptr;
-    LightmapBuilder *lightmap_builder = nullptr;
     std::shared_ptr<ParticleEngine> particle_engine = nullptr;
     Vis *vis = nullptr;
 };

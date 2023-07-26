@@ -4,6 +4,7 @@
 #include <filesystem>
 #include <algorithm>
 #include <string>
+#include <memory>
 
 #include "Engine/Engine.h"
 #include "Engine/LOD.h"
@@ -74,7 +75,7 @@ void LoadGame(unsigned int uSlot) {
             LloydBeacon &beacon = player->vBeacons[j];
             std::string str = fmt::format("lloyd{}{}.pcx", i + 1, j + 1);
             //beacon.image = Image::Create(new PCX_LOD_Raw_Loader(pNew_LOD, str));
-            beacon.image = render->CreateTexture_PCXFromLOD(pSave_LOD, str);
+            beacon.image = GraphicsImage::Create(std::make_unique<PCX_LOD_Raw_Loader>(pSave_LOD, str));
             beacon.image->rgba(); // Force load!
         }
     }

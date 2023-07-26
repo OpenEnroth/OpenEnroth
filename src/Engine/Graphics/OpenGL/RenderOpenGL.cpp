@@ -68,11 +68,12 @@ RenderVertexSoft array_73D150[20];
 RenderVertexSoft VertexRenderList[50];
 RenderVertexD3D3 d3d_vertex_buffer[50];
 RenderVertexSoft array_507D30[50];
-Sizei outputRender = {0, 0};
-Sizei outputPresent = {0, 0};
-GLuint framebuffer = 0;
-GLuint framebufferTextures[2] = {0, 0};
-bool OpenGLES = false;
+
+static Sizei outputRender = {0, 0};
+static Sizei outputPresent = {0, 0};
+static GLuint framebuffer = 0;
+static GLuint framebufferTextures[2] = {0, 0};
+static bool OpenGLES = false;
 
 struct nk_vertex {
     float position[2]{};
@@ -213,7 +214,7 @@ RenderOpenGL::RenderOpenGL(
     std::shared_ptr<ParticleEngine> particle_engine,
     Vis *vis,
     Logger *logger
-) : RenderBase(config, decal_builder, lightmap_builder, spellfx, particle_engine, vis, logger) {
+) : RenderBase(config, decal_builder, spellfx, particle_engine, vis, logger) {
     nk = std::make_unique<nk_state>();
     clip_w = 0;
     clip_x = 0;
@@ -235,16 +236,6 @@ RgbaImage RenderOpenGL::ReadScreenPixels() {
         glBindFramebuffer(GL_READ_FRAMEBUFFER, 0);
     }
     return result;
-}
-
-void RenderOpenGL::SaveWinnersCertificate(const std::string &filePath) {
-    RgbaImage sPixels = flipVertically(ReadScreenPixels());
-
-    // save to disk
-    SavePCXImage32(filePath, sPixels);
-
-    // reverse input and save to texture for later
-    assets->winnerCert = CreateTexture_Blank(std::move(sPixels));
 }
 
 bool RenderOpenGL::InitializeFullscreen() {
@@ -269,24 +260,6 @@ void RenderOpenGL::ClearTarget(Color uColor) {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     return;
-}
-
-
-// TODO(pskelton): z buffer must go
-void RenderOpenGL::CreateZBuffer() {
-    if (pActiveZBuffer)
-        free(pActiveZBuffer);
-
-    pActiveZBuffer = (int*)malloc(outputRender.w * outputRender.h * sizeof(int));
-    if (!pActiveZBuffer)
-        Error("Failed to create zbuffer");
-
-    ClearZBuffer();
-}
-
-// TODO(pskelton): z buffer must go
-void RenderOpenGL::ClearZBuffer() {
-    memset32(this->pActiveZBuffer, 0xFFFF0000, outputRender.w * outputRender.h);
 }
 
 struct linesverts {
@@ -765,30 +738,6 @@ void RenderOpenGL::DrawImage(GraphicsImage *img, const Recti &rect, uint palette
     return;
 }
 
-// TODO(pskelton): zbuffer must go
-void RenderOpenGL::ZDrawTextureAlpha(float u, float v, GraphicsImage *img, int zVal) {
-    if (!img) return;
-
-    int uOutX = static_cast<int>(u * outputRender.w);
-    int uOutY = static_cast<int>(v * outputRender.h);
-    const RgbaImage &image = img->rgba();
-
-    if (uOutX < 0)
-        uOutX = 0;
-    if (uOutY < 0)
-        uOutY = 0;
-
-    for (int ys = 0; ys < image.height(); ys++) {
-        auto imageLine = image[ys];
-        for (int xs = 0; xs < image.width(); xs++) {
-            if (imageLine[xs].a != 0) {
-                this->pActiveZBuffer[uOutX + xs + outputRender.w * (uOutY + ys)] = zVal;
-            }
-        }
-    }
-}
-
-
 // TODO(pskelton): sort this - forcing the draw is slow
 // TODO(pskelton): stencil masking with opacity would be a better way to do this
 void RenderOpenGL::BlendTextures(int x, int y, GraphicsImage *imgin, GraphicsImage *imgblend, int time, int start_opacity,
@@ -803,7 +752,7 @@ void RenderOpenGL::BlendTextures(int x, int y, GraphicsImage *imgin, GraphicsIma
 
         int w = imgin->width();
         int h = imgin->height();
-        GraphicsImage *temp = render->CreateTexture_Blank(w, h);
+        GraphicsImage *temp = GraphicsImage::Create(w, h);
         RgbaImage &dstImage = temp->rgba();
 
         Color c = maskImage.pixels()[2700];  // guess at brightest pixel
@@ -881,7 +830,7 @@ void RenderOpenGL::TexturePixelRotateDraw(float u, float v, GraphicsImage *img, 
             int width = img->width();
             int height = img->height();
             if (!cachedtemp[thisslot]) {
-                cachedtemp[thisslot] = CreateTexture_Blank(width, height);
+                cachedtemp[thisslot] = GraphicsImage::Create(width, height);
             }
 
             const Palette &palette = img->palette();
@@ -1077,36 +1026,6 @@ RgbaImage RenderOpenGL::MakeScreenshot32(const int width, const int height) {
     }
 
     return pPixels;
-}
-
-// TODO: should this be combined / moved out of render
-std::vector<Actor*> RenderOpenGL::getActorsInViewport(int pDepth) {
-    std::vector<Actor*> foundActors;
-
-    for (int i = 0; i < render->uNumBillboardsToDraw; i++) {
-        int renderId = render->pBillboardRenderListD3D[i].sParentBillboardID;
-        if(renderId == -1) {
-            continue; // E.g. spell particle.
-        }
-
-        int pid = pBillboardRenderList[renderId].object_pid;
-        if (PID_TYPE(pid) == OBJECT_Actor) {
-            if (pBillboardRenderList[renderId].screen_space_z <= pDepth) {
-                int id = PID_ID(pid);
-                if (pActors[id].aiState != Dead &&
-                    pActors[id].aiState != Dying &&
-                    pActors[id].aiState != Removed &&
-                    pActors[id].aiState != Disabled &&
-                    pActors[id].aiState != Summoned) {
-                    if (vis->DoesRayIntersectBillboard(static_cast<float>(pDepth), i)) {
-                        // Limit for 100 actors was removed
-                        foundActors.push_back(&pActors[id]);
-                    }
-                }
-            }
-        }
-    }
-    return foundActors;
 }
 
 // TODO(pskelton): drop - not required in gl renderer now
@@ -4664,7 +4583,7 @@ bool RenderOpenGL::Initialize() {
         PlatformOpenGLOptions opts;
 
         // Set it only on startup as currently we don't support multiple contexts to be able to switch OpenGL<->OpenGLES in the middle of runtime.
-        OpenGLES = config->graphics.Renderer.value() == RendererType::OpenGLES;
+        OpenGLES = config->graphics.Renderer.value() == RENDERER_OPENGL_ES;
 
         if (!OpenGLES) {
             //  Use OpenGL 4.1 core
@@ -4888,14 +4807,6 @@ bool RenderOpenGL::InitShaders() {
     return true;
 }
 
-Sizei RenderOpenGL::GetRenderDimensions() {
-    return outputRender;
-}
-
-Sizei RenderOpenGL::GetPresentDimensions() {
-    return outputPresent;
-}
-
 bool RenderOpenGL::Reinitialize(bool firstInit) {
     outputPresent = window->size();
     if (config->graphics.RenderFilter.value() != 0)
@@ -5003,7 +4914,7 @@ bool RenderOpenGL::Reinitialize(bool firstInit) {
     //     ReloadShaders();
     // }
 
-    return true;
+    return RenderBase::Reinitialize(firstInit);
 }
 
 void RenderOpenGL::ReloadShaders() {

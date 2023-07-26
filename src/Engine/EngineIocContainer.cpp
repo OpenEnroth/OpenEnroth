@@ -80,7 +80,6 @@ Vis *EngineIocContainer::ResolveVis() {
 DecalBuilder *EngineIocContainer::decal_builder = nullptr;
 BloodsplatContainer *EngineIocContainer::bloodspalt_container = nullptr;
 SpellFxRenderer *EngineIocContainer::spell_fx_renderer = nullptr;
-LightmapBuilder *EngineIocContainer::lightmap_builder = nullptr;
 std::shared_ptr<Mouse> EngineIocContainer::mouse = nullptr;
 std::shared_ptr<Nuklear> EngineIocContainer::nuklear = nullptr;
 std::shared_ptr<ParticleEngine> EngineIocContainer::particle_engine = nullptr;

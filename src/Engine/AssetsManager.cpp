@@ -1,11 +1,12 @@
 #include "Engine/AssetsManager.h"
 
-#include <algorithm>
+#include <memory>
 
-#include "Engine/Graphics/IRender.h"
 #include "Engine/Graphics/ImageLoader.h"
 #include "Engine/Graphics/Image.h"
 #include "Engine/EngineIocContainer.h"
+#include "Engine/LodTextureCache.h"
+#include "Engine/LodSpriteCache.h"
 
 #include "GUI/GUIFont.h"
 
@@ -29,8 +30,6 @@ void AssetsManager::releaseAllTextures() {
     }
 
     ReloadFonts();
-
-    return;
 }
 
 bool AssetsManager::releaseImage(const std::string &name) {
@@ -51,7 +50,7 @@ GraphicsImage *AssetsManager::getImage_Paletted(const std::string &name) {
 
     auto i = images.find(filename);
     if (i == images.end()) {
-        auto image = render->CreateTexture_Paletted(name);
+        auto image = GraphicsImage::Create(std::make_unique<Paletted_Img_Loader>(pIcons_LOD, filename));
         images[filename] = image;
         return image;
     }
@@ -65,7 +64,7 @@ GraphicsImage *AssetsManager::getImage_ColorKey(const std::string &name, Color c
 
     auto i = images.find(filename);
     if (i == images.end()) {
-        auto image = render->CreateTexture_ColorKey(name, colorkey);
+        auto image = GraphicsImage::Create(std::make_unique<ColorKey_LOD_Loader>(pIcons_LOD, filename, colorkey));
         images[filename] = image;
         return image;
     }
@@ -80,7 +79,7 @@ GraphicsImage *AssetsManager::getImage_Solid(const std::string &name) {
 
     auto i = images.find(filename);
     if (i == images.end()) {
-        auto image = render->CreateTexture_Solid(name);
+        auto image = GraphicsImage::Create(std::make_unique<Image16bit_LOD_Loader>(pIcons_LOD, filename));
         images[filename] = image;
         return image;
     }
@@ -93,7 +92,7 @@ GraphicsImage *AssetsManager::getImage_Alpha(const std::string &name) {
 
     auto i = images.find(filename);
     if (i == images.end()) {
-        auto image = render->CreateTexture_Alpha(name);
+        auto image = GraphicsImage::Create(std::make_unique<Alpha_LOD_Loader>(pIcons_LOD, filename));
         images[filename] = image;
         return image;
     }
@@ -106,20 +105,7 @@ GraphicsImage *AssetsManager::getImage_PCXFromIconsLOD(const std::string &name) 
 
     auto i = images.find(filename);
     if (i == images.end()) {
-        auto image = render->CreateTexture_PCXFromIconsLOD(name);
-        images[filename] = image;
-        return image;
-    }
-
-    return i->second;
-}
-
-GraphicsImage *AssetsManager::getImage_PCXFromNewLOD(const std::string &name) {
-    std::string filename = toLower(name);
-
-    auto i = images.find(filename);
-    if (i == images.end()) {
-        auto image = render->CreateTexture_PCXFromNewLOD(name);
+        auto image = GraphicsImage::Create(std::make_unique<PCX_LOD_Compressed_Loader>(pIcons_LOD, filename));
         images[filename] = image;
         return image;
     }
@@ -132,7 +118,7 @@ GraphicsImage *AssetsManager::getImage_PCXFromFile(const std::string &name) {
 
     auto i = images.find(filename);
     if (i == images.end()) {
-        auto image = render->CreateTexture_PCXFromFile(name);
+        auto image = GraphicsImage::Create(std::make_unique<PCX_File_Loader>(filename));
         images[filename] = image;
         return image;
     }
@@ -145,9 +131,9 @@ GraphicsImage *AssetsManager::getBitmap(const std::string &name) {
 
     auto i = bitmaps.find(filename);
     if (i == bitmaps.end()) {
-        auto texture = render->CreateTexture(filename);
-        bitmaps[filename] = texture;
-        return texture;
+        auto image = GraphicsImage::Create(std::make_unique<Bitmaps_LOD_Loader>(pBitmaps_LOD, filename));
+        bitmaps[filename] = image;
+        return image;
     }
 
     return i->second;
@@ -171,9 +157,9 @@ GraphicsImage *AssetsManager::getSprite(const std::string &name) {
 
     auto i = sprites.find(filename);
     if (i == sprites.end()) {
-        auto texture = render->CreateSprite(filename);
-        sprites[filename] = texture;
-        return texture;
+        auto image = GraphicsImage::Create(std::make_unique<Sprites_LOD_Loader>(pSprites_LOD, filename));
+        sprites[filename] = image;
+        return image;
     }
 
     return i->second;

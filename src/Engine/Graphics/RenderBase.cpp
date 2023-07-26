@@ -14,7 +14,6 @@
 #include "Engine/Objects/Actor.h"
 #include "Engine/Objects/SpriteObject.h"
 
-#include "Engine/EngineGlobals.h"
 #include "Engine/Graphics/Camera.h"
 #include "Engine/Graphics/LightmapBuilder.h"
 #include "Engine/Graphics/LightsStack.h"
@@ -28,16 +27,23 @@
 #include "Engine/Graphics/Level/Decoration.h"
 #include "Engine/Graphics/DecorationList.h"
 #include "Engine/Graphics/Image.h"
+#include "Engine/AssetsManager.h"
+#include "Engine/EngineGlobals.h"
 
 #include "Library/Image/PCX.h"
+#include "Library/Image/ImageFunctions.h"
 #include "Library/Random/Random.h"
 #include "Library/Logger/Logger.h"
 
 #include "Utility/Math/TrigLut.h"
 #include "Utility/Streams/FileOutputStream.h"
+#include "Utility/Memory/MemSet.h"
 #include "Utility/DataPath.h"
 
 #include "ImageLoader.h"
+
+static Sizei outputRender = {0, 0};
+static Sizei outputPresent = {0, 0};
 
 bool RenderBase::Initialize() {
     window->resize({config->window.Width.value(), config->window.Height.value()});
@@ -617,7 +623,7 @@ Blob RenderBase::PackScreenshot(const unsigned int width, const unsigned int hei
 }
 
 GraphicsImage *RenderBase::TakeScreenshot(const unsigned int width, const unsigned int height) {
-    return CreateTexture_Blank(MakeScreenshot32(width, height));
+    return GraphicsImage::Create(MakeScreenshot32(width, height));
 }
 
 void RenderBase::DrawTextureGrayShade(float a2, float a3, GraphicsImage *a4) {
@@ -736,50 +742,103 @@ void RenderBase::PresentBlackScreen() {
     Present();
 }
 
-GraphicsImage *RenderBase::CreateTexture_Paletted(const std::string &name) {
-    return GraphicsImage::Create(std::make_unique<Paletted_Img_Loader>(pIcons_LOD, name));
+// TODO: should this be combined / moved out of render
+std::vector<Actor*> RenderBase::getActorsInViewport(int pDepth) {
+    std::vector<Actor*> foundActors;
+
+    for (int i = 0; i < render->uNumBillboardsToDraw; i++) {
+        int renderId = render->pBillboardRenderListD3D[i].sParentBillboardID;
+        if(renderId == -1) {
+            continue; // E.g. spell particle.
+        }
+
+        int pid = pBillboardRenderList[renderId].object_pid;
+        if (PID_TYPE(pid) == OBJECT_Actor) {
+            if (pBillboardRenderList[renderId].screen_space_z <= pDepth) {
+                int id = PID_ID(pid);
+                if (pActors[id].aiState != Dead &&
+                    pActors[id].aiState != Dying &&
+                    pActors[id].aiState != Removed &&
+                    pActors[id].aiState != Disabled &&
+                    pActors[id].aiState != Summoned) {
+                    if (vis->DoesRayIntersectBillboard(static_cast<float>(pDepth), i)) {
+                        // Limit for 100 actors was removed
+                        foundActors.push_back(&pActors[id]);
+                    }
+                }
+            }
+        }
+    }
+    return foundActors;
 }
 
-GraphicsImage *RenderBase::CreateTexture_ColorKey(const std::string &name, Color colorkey) {
-    return GraphicsImage::Create(std::make_unique<ColorKey_LOD_Loader>(pIcons_LOD, name, colorkey));
+// TODO(pskelton): z buffer must go
+void RenderBase::CreateZBuffer() {
+    if (pActiveZBuffer)
+        free(pActiveZBuffer);
+
+    pActiveZBuffer = (int*)malloc(outputRender.w * outputRender.h * sizeof(int));
+    if (!pActiveZBuffer)
+        Error("Failed to create zbuffer");
+
+    ClearZBuffer();
 }
 
-GraphicsImage *RenderBase::CreateTexture_Solid(const std::string &name) {
-    return GraphicsImage::Create(std::make_unique<Image16bit_LOD_Loader>(pIcons_LOD, name));
+// TODO(pskelton): z buffer must go
+void RenderBase::ClearZBuffer() {
+    memset32(this->pActiveZBuffer, 0xFFFF0000, outputRender.w * outputRender.h);
 }
 
-GraphicsImage *RenderBase::CreateTexture_Alpha(const std::string &name) {
-    return GraphicsImage::Create(std::make_unique<Alpha_LOD_Loader>(pIcons_LOD, name));
+// TODO(pskelton): zbuffer must go
+void RenderBase::ZDrawTextureAlpha(float u, float v, GraphicsImage *img, int zVal) {
+    if (!img) return;
+
+    int uOutX = static_cast<int>(u * outputRender.w);
+    int uOutY = static_cast<int>(v * outputRender.h);
+    const RgbaImage &image = img->rgba();
+
+    if (uOutX < 0)
+        uOutX = 0;
+    if (uOutY < 0)
+        uOutY = 0;
+
+    for (int ys = 0; ys < image.height(); ys++) {
+        auto imageLine = image[ys];
+        for (int xs = 0; xs < image.width(); xs++) {
+            if (imageLine[xs].a != 0) {
+                this->pActiveZBuffer[uOutX + xs + outputRender.w * (uOutY + ys)] = zVal;
+            }
+        }
+    }
 }
 
-GraphicsImage *RenderBase::CreateTexture_PCXFromIconsLOD(const std::string &name) {
-    return GraphicsImage::Create(std::make_unique<PCX_LOD_Compressed_Loader>(pIcons_LOD, name));
+bool RenderBase::Reinitialize(bool firstInit) {
+    // TODO(captainurist): code copied from RenderOpenGL
+    outputPresent = window->size();
+    if (config->graphics.RenderFilter.value() != 0)
+        outputRender = {config->graphics.RenderWidth.value(), config->graphics.RenderHeight.value()};
+    else
+        outputRender = outputPresent;
+
+    CreateZBuffer();
+
+    return true;
 }
 
-GraphicsImage *RenderBase::CreateTexture_PCXFromNewLOD(const std::string &name) {
-    return GraphicsImage::Create(std::make_unique<PCX_LOD_Compressed_Loader>(pSave_LOD, name));
+Sizei RenderBase::GetRenderDimensions() {
+    return outputRender;
 }
 
-GraphicsImage *RenderBase::CreateTexture_PCXFromFile(const std::string &name) {
-    return GraphicsImage::Create(std::make_unique<PCX_File_Loader>(name));
+Sizei RenderBase::GetPresentDimensions() {
+    return outputPresent;
 }
 
-GraphicsImage *RenderBase::CreateTexture_PCXFromLOD(LOD::File *pLOD, const std::string &name) {
-    return GraphicsImage::Create(std::make_unique<PCX_LOD_Raw_Loader>(pLOD, name));
-}
+void RenderBase::SaveWinnersCertificate(const std::string &filePath) {
+    RgbaImage sPixels = flipVertically(ReadScreenPixels());
 
-GraphicsImage *RenderBase::CreateTexture_Blank(unsigned int width, unsigned int height) {
-    return GraphicsImage::Create(width, height);
-}
+    // save to disk
+    SavePCXImage32(filePath, sPixels);
 
-GraphicsImage *RenderBase::CreateTexture_Blank(RgbaImage image) {
-    return GraphicsImage::Create(std::move(image));
-}
-
-GraphicsImage *RenderBase::CreateTexture(const std::string &name) {
-    return GraphicsImage::Create(std::make_unique<Bitmaps_LOD_Loader>(pBitmaps_LOD, name));
-}
-
-GraphicsImage *RenderBase::CreateSprite(const std::string &name) {
-    return GraphicsImage::Create(std::make_unique<Sprites_LOD_Loader>(pSprites_LOD, name));
+    // reverse input and save to texture for later
+    assets->winnerCert = GraphicsImage::Create(std::move(sPixels));
 }

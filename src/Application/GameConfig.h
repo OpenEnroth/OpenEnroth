@@ -4,19 +4,18 @@
 #include <algorithm>
 
 #include "Library/Config/Config.h"
-#include "Engine/Graphics/RendererType.h"
+#include "Engine/Graphics/RenderEnums.h"
 #include "Io/Key.h"
 #include "Platform/PlatformEnums.h"
 
 #ifdef __ANDROID__
-#define ConfigRenderer RendererType::OpenGLES
+#define ConfigRenderer RENDERER_OPENGL_ES
 #define ConfigWindowMode WINDOW_MODE_FULLSCREEN
 #else
-#define ConfigRenderer RendererType::OpenGL
+#define ConfigRenderer RENDERER_OPENGL
 #define ConfigWindowMode WINDOW_MODE_WINDOWED
 #endif
 
-MM_DECLARE_SERIALIZATION_FUNCTIONS(RendererType)
 MM_DECLARE_SERIALIZATION_FUNCTIONS(PlatformWindowMode)
 MM_DECLARE_SERIALIZATION_FUNCTIONS(PlatformLogLevel)
 

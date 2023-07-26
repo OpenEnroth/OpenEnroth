@@ -6,6 +6,8 @@
 
 #include "Engine/Graphics/Texture_MM7.h"
 
+#include "Library/Lod/LodReader.h"
+
 #include "Utility/Memory/Blob.h"
 
 class LodReader;
@@ -28,7 +30,7 @@ class LodTextureCache {
     int LoadTextureFromLOD(struct Texture_MM7 *pOutTex, const std::string &pContainer);
 
  private:
-    std::unique_ptr<LodReader> _reader;
+    LodReader _reader;
     int _reservedCount = 0;
     std::deque<Texture_MM7> _textures;
 };

@@ -97,8 +97,8 @@ GUIFont *GUIFont::LoadFont(const char *pFontFile, const char *pFontPalette) {
 void GUIFont::CreateFontTex() {
     this->ReleaseFontTex();
     // create blank textures
-    this->fonttex = render->CreateTexture_Blank(512, 512);
-    this->fontshadow = render->CreateTexture_Blank(512, 512);
+    this->fonttex = GraphicsImage::Create(512, 512);
+    this->fontshadow = GraphicsImage::Create(512, 512);
     Color *pPixelsfont = this->fonttex->rgba().pixels().data();
     Color *pPixelsshadow = this->fontshadow->rgba().pixels().data();
 

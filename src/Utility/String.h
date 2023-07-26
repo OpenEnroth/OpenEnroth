@@ -50,3 +50,9 @@ struct ILess {
     }
 };
 
+/**
+ * @param s                             String to transform.
+ * @param placeholder                   Character to replace all non-printable chars with.
+ * @return                              Passed string, with all non-printable characters replaced with `placeholder`.
+ */
+std::string toPrintable(std::string_view s, char placeholder = ' ');

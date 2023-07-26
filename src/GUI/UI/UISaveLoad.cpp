@@ -3,6 +3,7 @@
 #include <string>
 #include <filesystem>
 #include <algorithm>
+#include <memory>
 
 #include "Engine/Engine.h"
 #include "Engine/EngineGlobals.h"
@@ -85,7 +86,7 @@ GUIWindow_Save::GUIWindow_Save() :
                 pSavegameList->pSavegameHeader[i].name = test;
             }
 
-            pSavegameList->pSavegameThumbnails[i] = render->CreateTexture_PCXFromLOD(&pLODFile, "image.pcx");
+            pSavegameList->pSavegameThumbnails[i] = GraphicsImage::Create(std::make_unique<PCX_LOD_Raw_Loader>(&pLODFile, "image.pcx"));
             if (pSavegameList->pSavegameThumbnails[i]->width() == 0) {
                 pSavegameList->pSavegameThumbnails[i]->Release();
                 pSavegameList->pSavegameThumbnails[i] = nullptr;
@@ -199,7 +200,7 @@ GUIWindow_Load::GUIWindow_Load(bool ingame) :
             pSavegameList->pSavegameHeader[i].name = test;
         }
 
-        pSavegameList->pSavegameThumbnails[i] = render->CreateTexture_PCXFromLOD(&pLODFile, "image.pcx");
+        pSavegameList->pSavegameThumbnails[i] = GraphicsImage::Create(std::make_unique<PCX_LOD_Raw_Loader>(&pLODFile, "image.pcx"));
 
         if (pSavegameList->pSavegameThumbnails[i]->width() == 0) {
             pSavegameList->pSavegameThumbnails[i]->Release();

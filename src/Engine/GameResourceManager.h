@@ -5,7 +5,7 @@
 
 #include "Utility/Memory/Blob.h"
 
-class LodReader;
+#include "Library/Lod/LodReader.h"
 
 class GameResourceManager {
  public:
@@ -18,5 +18,5 @@ class GameResourceManager {
  private:
     Blob uncompressPseudoTexture(const Blob &input);
 
-    std::unique_ptr<LodReader> _eventsLodReader;
+    LodReader _eventsLodReader;
 };

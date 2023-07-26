@@ -2,7 +2,6 @@
 
 #include <vector>
 
-#include "Library/Lod/LodReader.h"
 #include "Library/Compression/Compression.h"
 
 #include "Utility/Streams/BlobInputStream.h"
@@ -42,7 +41,7 @@ LodSpriteCache::~LodSpriteCache() {
 }
 
 bool LodSpriteCache::open(const std::string &pFilename, const std::string &folder) {
-    _reader = LodReader::open(pFilename);
+    _reader.open(pFilename);
     return true;
 }
 
@@ -82,10 +81,10 @@ Sprite *LodSpriteCache::loadSprite(const std::string &pContainerName) {
 }
 
 bool LodSpriteCache::LoadSpriteFromFile(LODSprite *pSprite, const std::string &pContainer) {
-    if (!_reader->exists(pContainer))
+    if (!_reader.exists(pContainer))
         return false;
 
-    BlobInputStream input(_reader->read(pContainer));
+    BlobInputStream input(_reader.read(pContainer));
     input.readOrFail(pSprite, sizeof(LODSpriteHeader));
 
     strcpy(pSprite->name.data(), pContainer.c_str());
