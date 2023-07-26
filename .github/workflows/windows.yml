@@ -49,6 +49,10 @@ jobs:
           OpenEnroth_GameData
         key: data-cache
 
+    - name: Copy shaders
+      run: |
+        xcopy D:\a\OpenEnroth\OpenEnroth\resources\shaders D:\a\OpenEnroth\OpenEnroth\OpenEnroth_GameData\mm7 /E/H/C/I
+
     - name: Setup environment
       uses: ilammy/msvc-dev-cmd@v1
       with:
@@ -72,10 +76,9 @@ jobs:
     - name: GameTest
       working-directory: build
       run: |
-        pwd
         ninja GameTest_NullRenderer
       env:
-        OPENENROTH_MM7_PATH: /home/runner/work/OpenEnroth/OpenEnroth/OpenEnroth_GameData/mm7
+        OPENENROTH_MM7_PATH: D:\a\OpenEnroth\OpenEnroth\OpenEnroth_GameData\mm7
 
     - name: Prepare artifact
       shell: pwsh
