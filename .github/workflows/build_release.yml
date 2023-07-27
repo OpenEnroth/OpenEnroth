@@ -261,11 +261,9 @@ jobs:
         cp -r resources/* dist/
 
     - name: Zip Folder For Release
-      if: success() || failure()
       run: zip -r ./Linux_${{ env.TAG_NAME }}_${{ matrix.configuration }}_${{ matrix.architecture }}.zip dist
 
     - name: Publish Release
-      if: success() || failure()	
       uses: softprops/action-gh-release@v1
       with:
         prerelease: true
@@ -338,11 +336,9 @@ jobs:
         hdiutil create OpenEnroth.dmg -ov -volname "OpenEnroth" -fs HFS+ -srcfolder dist
         
     - name: Zip Folder For Release
-      if: success() || failure()
       run: zip -r ./MacOS_${{ env.TAG_NAME }}_${{ matrix.configuration }}_${{ matrix.architecture }}.zip dist
 
     - name: Publish Release
-      if: success() || failure()	
       uses: softprops/action-gh-release@v1
       with:
         prerelease: true
@@ -427,11 +423,9 @@ jobs:
         xcopy resources dist\ /E/H/C/I
           
     - name: Zip Folder For Release
-      if: success() || failure()	    
       run: Compress-Archive -Path dist -DestinationPath ./Windows_${{ env.TAG_NAME }}_${{ matrix.configuration }}_${{ matrix.architecture }}.zip
 
     - name: Publish Release
-      if: success() || failure()	    
       uses: softprops/action-gh-release@v1
       with:
         prerelease: true
