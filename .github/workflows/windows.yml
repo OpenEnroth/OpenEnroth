@@ -28,6 +28,7 @@ jobs:
     - name: Check for Data cache
       id: check-for-data-cache
       uses: actions/cache/restore@v3
+      enableCrossOsArchive: true
       with:
         path: |
           OpenEnroth_GameData
