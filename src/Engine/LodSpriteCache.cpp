@@ -1,6 +1,7 @@
 #include "LodSpriteCache.h"
 
 #include <vector>
+#include <utility>
 
 #include "Library/LodFormats/LodFormats.h"
 

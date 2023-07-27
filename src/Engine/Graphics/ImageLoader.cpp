@@ -203,7 +203,7 @@ bool Bitmaps_LOD_Loader::Load(RgbaImage *rgbaImage, GrayscaleImage *indexedImage
     size_t h = tex->indexed.height();
 
     // TODO(captainurist): no need to copy here.
-    *indexedImage = GrayscaleImage::copy(tex->indexed.width(), tex->indexed.height(), tex->indexed.pixels().data());
+    *indexedImage = GrayscaleImage::copy(tex->indexed.width(), tex->indexed.height(), tex->indexed.pixels().data()); // NOLINT: this is not std::copy.
 
     if (!transparentTextures.contains(tex->name)) {
         *palette = tex->palette;

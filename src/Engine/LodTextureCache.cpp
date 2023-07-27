@@ -1,5 +1,7 @@
 #include "LodTextureCache.h"
 
+#include <utility>
+
 #include "Library/LodFormats/LodFormats.h"
 
 #include "Utility/Streams/BlobInputStream.h"

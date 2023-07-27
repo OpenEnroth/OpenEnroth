@@ -1,7 +1,8 @@
 #include "LodFormats.h"
 
 #include <optional>
-#include <span>
+#include <span> // NOLINT: not a C header.
+#include <vector>
 
 #include "LodFormatSnapshots.h"
 
@@ -208,7 +209,7 @@ LodImage lod::decodeImage(const Blob &blob) {
 
     // TODO(captainurist): just store blob in GrayscaleImage, no need to copy here.
     if (pixels)
-        result.image = GrayscaleImage::copy(header.width, header.height, static_cast<const uint8_t *>(pixels.data()));
+        result.image = GrayscaleImage::copy(header.width, header.height, static_cast<const uint8_t *>(pixels.data())); // NOLINT: this is not std::copy.
     return result;
 }
 
