@@ -3,6 +3,12 @@ name: Doxygen
 on:
   pull_request:
   workflow_dispatch: #allows to manually run a workflow
+    inputs:
+      myCommit:
+        description: 'Commit SHA1'
+        required: false
+        default: ''
+        type: string 
   push:
   release:
     types: [published]
@@ -14,7 +20,8 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v3
       with:
-        submodules: "recursive"
+        submodules: 'recursive'
+        ref: ${{ inputs.myCommit }}
 
     - name: Install Doxygen
       run: |

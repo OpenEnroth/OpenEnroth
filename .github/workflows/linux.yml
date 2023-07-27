@@ -3,6 +3,12 @@ name: Linux
 on:
   pull_request:
   workflow_dispatch: #allows to manually run a workflow
+    inputs:
+      myCommit:
+        description: 'Commit SHA1'
+        required: false
+        default: ''
+        type: string 
   push:
   release:
     types: [published]
@@ -24,6 +30,20 @@ jobs:
       uses: actions/checkout@v3
       with:
         submodules: 'recursive'
+        ref: ${{ inputs.myCommit }}
+          
+    - name: Check for Data cache
+      id: check-for-data-cache
+      uses: actions/cache/restore@v3
+      with:
+        path: |
+          OpenEnroth_GameData
+        key: data-cache
+        
+    - name: Copy shaders
+      if: steps.check-for-data-cache.outputs.cache-hit == 'true'    
+      run: |
+        cp -r /home/runner/work/OpenEnroth/OpenEnroth/resources/shaders /home/runner/work/OpenEnroth/OpenEnroth/OpenEnroth_GameData/mm7
 
     - name: Install dependencies
       run: |
@@ -41,13 +61,16 @@ jobs:
           sudo apt-get install -y libglu1-mesa-dev:i386 zlib1g-dev:i386
           sudo apt-get install -y libavformat-dev:i386 libavcodec-dev:i386 libswscale-dev:i386
           sudo apt-get install -y libsdl2-dev:i386
+          sudo apt-get install -y libopenal-dev:i386
         fi
         if [ "${{ matrix.architecture }}" = "x64" ]; then
           sudo apt-get install -y gcc-12 g++-12
           sudo apt-get install -y libglu1-mesa-dev zlib1g-dev
           sudo apt-get install -y libavformat-dev libavcodec-dev libswscale-dev
           sudo apt-get install -y libsdl2-dev
+          sudo apt-get install -y libopenal-dev
         fi
+        sudo apt-get install -y mesa-utils xvfb x11-utils
 
     - name: Configure
       run: |
@@ -66,6 +89,16 @@ jobs:
       working-directory: build
       run: |
         make UnitTest
+
+    - name: GameTest
+      continue-on-error: true #gametest currently broken...
+      if: steps.check-for-data-cache.outputs.cache-hit == 'true'
+      working-directory: build
+      run: |
+        Xvfb&
+        xvfb-run make GameTest_NullRenderer
+      env:
+        OPENENROTH_MM7_PATH: /home/runner/work/OpenEnroth/OpenEnroth/OpenEnroth_GameData/mm7
 
     - name: Prepare artifact
       run: |
