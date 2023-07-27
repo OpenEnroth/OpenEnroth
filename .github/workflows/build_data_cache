@@ -1,0 +1,40 @@
+name: Populate Data Cache
+
+on:
+  schedule:
+    # schedule build once per day
+    - cron: "6 11 * * *"
+  workflow_dispatch:
+
+jobs:
+  build_data_cache:
+    runs-on: ubuntu-22.04
+    strategy:
+      fail-fast: false
+      matrix:
+        configuration: [Release]
+        architecture: [x64]
+    steps:
+    - name: Check for Data cache
+      id: check-for-data-cache
+      uses: actions/cache/restore@v3
+      with:
+        path: |
+          OpenEnroth_GameData
+        key: data-cache
+
+    - name: Checkout private data
+      if: steps.check-for-data-cache.outputs.cache-hit != 'true'
+      uses: actions/checkout@v3
+      with:
+        repository: OpenEnroth/OpenEnroth_GameData
+        path: OpenEnroth_GameData
+        token: ${{ secrets.DATA_ACCESS_TOKEN }}
+
+    - name: Cache data if needed
+      if: steps.check-for-data-cache.outputs.cache-hit != 'true'
+      uses: actions/cache/save@v3
+      with:
+        path: |
+          OpenEnroth_GameData
+        key: data-cache

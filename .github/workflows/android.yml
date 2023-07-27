@@ -2,6 +2,7 @@ name: Android
 
 on:
   pull_request:
+  workflow_dispatch: #allows to manually run a workflow
   push:
   release:
     types: [published]
