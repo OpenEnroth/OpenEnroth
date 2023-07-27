@@ -28,11 +28,11 @@ jobs:
     - name: Check for Data cache
       id: check-for-data-cache
       uses: actions/cache/restore@v3
-      enableCrossOsArchive: true
       with:
         path: |
           OpenEnroth_GameData
         key: data-cache
+        enableCrossOsArchive: true
 
     - name: Copy shaders
       if: steps.check-for-data-cache.outputs.cache-hit == 'true'    
