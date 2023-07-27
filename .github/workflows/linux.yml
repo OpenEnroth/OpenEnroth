@@ -32,22 +32,6 @@ jobs:
         path: |
           OpenEnroth_GameData
         key: data-cache
-
-    - name: Checkout private data
-      if: steps.check-for-data-cache.outputs.cache-hit != 'true'
-      uses: actions/checkout@v3
-      with:
-        repository: OpenEnroth/OpenEnroth_GameData
-        path: OpenEnroth_GameData
-        token: ${{ secrets.DATA_ACCESS_TOKEN }}
-
-    - name: Cache data if needed
-      if: steps.check-for-data-cache.outputs.cache-hit != 'true'
-      uses: actions/cache/save@v3
-      with:
-        path: |
-          OpenEnroth_GameData
-        key: data-cache
         
     - name: Copy shaders
       run: |
@@ -97,6 +81,7 @@ jobs:
         make UnitTest
 
     - name: GameTest
+      if: steps.check-for-data-cache.outputs.cache-hit == 'true'
       working-directory: build
       run: |
         Xvfb&
