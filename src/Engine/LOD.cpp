@@ -527,7 +527,7 @@ Blob LOD::File::LoadCompressedTexture(const std::string &pContainer) {
 }
 
 Blob LOD::File::LoadCompressed(const std::string &pContainer) {
-    return lod::decodeCompressed(LoadRaw(pContainer), LOD_ALLOW_BORKED_COMPRESSED_SIZE);
+    return lod::decodeCompressed(LoadRaw(pContainer));
 }
 
 int LOD::File::GetSubNodeIndex(const std::string &name) const {

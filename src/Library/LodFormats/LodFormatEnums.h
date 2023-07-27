@@ -1,7 +1,5 @@
 #pragma once
 
-#include "Utility/Flags.h"
-
 enum class LodFileFormat {
     LOD_FILE_COMPRESSED, // Potentially compressed file, `LodCompressionHeader_MM6` for header.
     LOD_FILE_IMAGE, // Image file, `LodImageHeader_MM6` for header, ends with a palette.
@@ -12,10 +10,3 @@ enum class LodFileFormat {
 };
 using enum LodFileFormat;
 
-
-enum class LodDecodeFlag {
-    LOD_ALLOW_BORKED_COMPRESSED_SIZE = 0x1,
-};
-using enum LodDecodeFlag;
-MM_DECLARE_FLAGS(LodDecodeFlags, LodDecodeFlag)
-MM_DECLARE_OPERATORS_FOR_FLAGS(LodDecodeFlags)
