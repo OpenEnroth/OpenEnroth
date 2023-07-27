@@ -114,7 +114,7 @@ jobs:
       run: |
         cd /usr/local/lib/android/sdk/ndk/
         unzip android-ndk-r26-beta1-linux.zip
-        mv android-ndk-r26-beta1-linux
+        mv android-ndk-r26-beta1-linux /usr/local/lib/android/sdk/ndk/26.0.10404224
         echo "ANDROID_NDK=/usr/local/lib/android/sdk/ndk/26.0.10404224" >> $GITHUB_ENV
         echo "ANDROID_NDK_HOME=/usr/local/lib/android/sdk/ndk/26.0.10404224" >> $GITHUB_ENV
         echo "ANDROID_NDK_LATEST_HOME=/usr/local/lib/android/sdk/ndk/26.0.10404224" >> $GITHUB_ENV        
