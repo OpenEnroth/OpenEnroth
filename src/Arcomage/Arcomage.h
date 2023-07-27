@@ -11,29 +11,30 @@
 
 class GraphicsImage;
 
-enum class ArcomageCompareParam {
-    INVALID = 0,
-    NO_COMPARE = 1,
-    LESSER_QUARRY = 2,
-    LESSER_MAGIC = 3,
-    LESSER_ZOO = 4,
-    EQUAL_QUARRY = 5,
-    EQUAL_MAGIC = 6,
-    EQUAL_ZOO = 7,
-    GREATER_QUARRY = 8,
-    GREATER_MAGIC = 9,
-    GREATER_ZOO = 10,
-    NO_WALL = 11,
-    HAVE_WALL = 12,
-    ENEMY_HAS_NO_WALL = 13,
-    ENEMY_HAS_WALL = 14,
-    LESSER_WALL = 15,
-    LESSER_TOWER = 16,
-    EQUAL_WALL = 17,
-    EQUAL_TOWER = 18,
-    GREATER_WALL = 19,
-    GREATER_TOWER = 20
+enum class ArcomageCheck {
+    CHECK_ALWAYS_SECONDARY = 0,
+    CHECK_ALWAYS_PRIMARY = 1,
+    CHECK_LESSER_QUARRY = 2,
+    CHECK_LESSER_MAGIC = 3,
+    CHECK_LESSER_ZOO = 4,
+    CHECK_EQUAL_QUARRY = 5,
+    CHECK_EQUAL_MAGIC = 6,
+    CHECK_EQUAL_ZOO = 7,
+    CHECK_GREATER_QUARRY = 8,
+    CHECK_GREATER_MAGIC = 9,
+    CHECK_GREATER_ZOO = 10,
+    CHECK_NO_WALL = 11,
+    CHECK_HAVE_WALL = 12,
+    CHECK_ENEMY_HAS_NO_WALL = 13,
+    CHECK_ENEMY_HAS_WALL = 14,
+    CHECK_LESSER_WALL = 15,
+    CHECK_LESSER_TOWER = 16,
+    CHECK_EQUAL_WALL = 17,
+    CHECK_EQUAL_TOWER = 18,
+    CHECK_GREATER_WALL = 19,
+    CHECK_GREATER_TOWER = 20
 };
+using enum ArcomageCheck;
 
 struct ArcomageCard {
     char pCardName[32];
@@ -46,7 +47,7 @@ struct ArcomageCard {
     int8_t needed_gems = 0;
     int8_t needed_beasts = 0;
     bool can_be_discarded = true;
-    ArcomageCompareParam compare_param = ArcomageCompareParam::NO_COMPARE;
+    ArcomageCheck compare_param = CHECK_ALWAYS_PRIMARY;
     int8_t field_30;  // play again
     int8_t draw_extra_card_count = 0;
     int8_t to_player_quarry_lvl = 0;
