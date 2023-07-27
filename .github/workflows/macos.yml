@@ -34,8 +34,9 @@ jobs:
         key: data-cache
 
     - name: Copy shaders
+      if: steps.check-for-data-cache.outputs.cache-hit == 'true'    
       run: |
-        cp -r /Users/runner/work/OpenEnroth/OpenEnroth/resources/shaders /Users/runner/work/OpenEnroth/OpenEnroth/OpenEnroth_GameData/mm7
+        cp -r /home/runner/work/OpenEnroth/OpenEnroth/resources/shaders /home/runner/work/OpenEnroth/OpenEnroth/OpenEnroth_GameData/mm7
 
     - name: Install dependencies
       run: |
