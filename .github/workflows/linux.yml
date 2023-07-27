@@ -24,6 +24,34 @@ jobs:
       with:
         submodules: 'recursive'
 
+    - name: Check for Data cache
+      id: check-for-data-cache
+      uses: actions/cache/restore@v3
+      with:
+        path: |
+          OpenEnroth_GameData
+        key: data-cache
+
+    - name: Checkout private data
+      if: steps.check-for-data-cache.outputs.cache-hit != 'true'
+      uses: actions/checkout@v3
+      with:
+        repository: OpenEnroth/OpenEnroth_GameData
+        path: OpenEnroth_GameData
+        token: ${{ secrets.DATA_ACCESS_TOKEN }}
+
+    - name: Cache data if needed
+      if: steps.check-for-data-cache.outputs.cache-hit != 'true'
+      uses: actions/cache/save@v3
+      with:
+        path: |
+          OpenEnroth_GameData
+        key: data-cache
+        
+    - name: Copy shaders
+      run: |
+        cp -r /home/runner/work/OpenEnroth/OpenEnroth/resources/shaders /home/runner/work/OpenEnroth/OpenEnroth/OpenEnroth_GameData/mm7
+
     - name: Install dependencies
       run: |
         if [ "${{ matrix.architecture }}" = "x86" ]; then
@@ -47,6 +75,7 @@ jobs:
           sudo apt-get install -y libavformat-dev libavcodec-dev libswscale-dev
           sudo apt-get install -y libsdl2-dev
         fi
+        sudo apt-get install -y mesa-utils xvfb x11-utils
 
     - name: Configure
       run: |
@@ -65,6 +94,14 @@ jobs:
       working-directory: build
       run: |
         make UnitTest
+
+    - name: GameTest
+      working-directory: build
+      run: |
+        Xvfb&
+        xvfb-run make GameTest_NullRenderer
+      env:
+        OPENENROTH_MM7_PATH: /home/runner/work/OpenEnroth/OpenEnroth/OpenEnroth_GameData/mm7
 
     - name: Prepare artifact
       run: |

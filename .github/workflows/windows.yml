@@ -24,6 +24,35 @@ jobs:
       with:
         submodules: 'recursive'
 
+
+    - name: Check for Data cache
+      id: check-for-data-cache
+      uses: actions/cache/restore@v3
+      with:
+        path: |
+          OpenEnroth_GameData
+        key: data-cache
+
+    - name: Checkout private data
+      if: steps.check-for-data-cache.outputs.cache-hit != 'true'
+      uses: actions/checkout@v3
+      with:
+        repository: OpenEnroth/OpenEnroth_GameData
+        path: OpenEnroth_GameData
+        token: ${{ secrets.DATA_ACCESS_TOKEN }}
+
+    - name: Cache data if needed
+      if: steps.check-for-data-cache.outputs.cache-hit != 'true'
+      uses: actions/cache/save@v3
+      with:
+        path: |
+          OpenEnroth_GameData
+        key: data-cache
+
+    - name: Copy shaders
+      run: |
+        xcopy D:\a\OpenEnroth\OpenEnroth\resources D:\a\OpenEnroth\OpenEnroth\OpenEnroth_GameData\mm7 /E/H/C/I
+
     - name: Setup environment
       uses: ilammy/msvc-dev-cmd@v1
       with:
@@ -43,6 +72,13 @@ jobs:
       working-directory: build
       run: |
         ninja UnitTest
+
+    - name: GameTest
+      working-directory: build
+      run: |
+        ninja GameTest_NullRenderer
+      env:
+        OPENENROTH_MM7_PATH: D:\a\OpenEnroth\OpenEnroth\OpenEnroth_GameData\mm7
 
     - name: Prepare artifact
       shell: pwsh
