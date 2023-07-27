@@ -7,7 +7,7 @@ on:
       myCommit:
         description: 'Commit SHA1'
         required: false
-        default: 'undefined'
+        default: ''
         type: string 
   push:
   release:
@@ -20,7 +20,8 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v3
       with:
-        submodules: "recursive"
+        submodules: 'recursive'
+        ref: ${{ inputs.myCommit }}
 
     - name: Install Doxygen
       run: |
