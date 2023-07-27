@@ -101,7 +101,7 @@ jobs:
       uses: actions/cache/restore@v3
       with:
         path: |
-          /usr/local/lib/android/sdk/ndk/android-ndk-r26-beta1-linux.zip
+          /usr/local/lib/android/sdk/ndk/26.0.10404224
         key: android-ndk-r26-beta1-linux
 
     - name: Download NDK
@@ -126,7 +126,7 @@ jobs:
       uses: actions/cache/save@v3
       with:
         path: |
-          /usr/local/lib/android/sdk/ndk/android-ndk-r26-beta1-linux.zip
+          /usr/local/lib/android/sdk/ndk/26.0.10404224
         key: android-ndk-r26-beta1-linux
 
     - name: Install dependencies
